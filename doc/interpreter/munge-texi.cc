@@ -154,6 +154,12 @@ process_texi_input_file (istream& is, ostream& os)
 			  while (isspace (doc_string[i]))
 			    i++;
 
+			  // Make `see also' references in functions
+			  // possible using @anchor{TAG} (new with
+			  // Texinfo 4.0).
+
+			  os << "@anchor{doc-" << symbol_name << "}\n";
+
 			  os << doc_string.substr (i);
 			}
 		      else

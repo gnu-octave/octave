@@ -1,3 +1,9 @@
+2000-01-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* interpreter/munge-texi.cc (process_texi_input_file): For Texinfo
+	doc strings, automatically insert an @anchor{doc-SYMBOL} command
+	just before the docstring for SYMBOL.
+
 1999-12-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* interpreter/munge-texi.cc (process_texi_input_file): Begin

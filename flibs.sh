@@ -54,58 +54,66 @@ want_arg=
 
 for arg in $foutput
 do
-  if test -z "$want_arg"
-  then
-    case $arg in
-      /*.a | /*values-X*.o)
-        exists=false
-        for f in $lflags
-        do
-          if test x$arg = x$f
-          then
-            exists=true
-          fi
-        done
-	if $exists
-	then
+  old_want_arg=$want_arg
+  want_arg=
+  case "$old_want_arg" in
+    '')
+      case $arg in
+	/*.a | /*values-X*.o)
+	  exists=false
+	  for f in $lflags
+	  do
+	    if test x$arg = x$f
+	    then
+	      exists=true
+	    fi
+	  done
+	  if $exists
+	  then
+	    arg=
+	  else
+	    lflags="$lflags $arg"
+	  fi
+	;;
+	-lang*)
 	  arg=
-        else
-          lflags="$lflags $arg"
-	fi
-      ;;
-      -lang*)
-        arg=
-      ;;
-      -[lL]*)
-        exists=false
-        for f in $lflags
-        do
-          if test x$arg = x$f
-          then
-            exists=true
-          fi
-        done
-	if $exists || test x$arg = x-lm -o x$arg = x-lc
-	then
+	;;
+	-[lLR])
+	  want_arg=$arg
 	  arg=
-        else
-          lflags="$lflags $arg"
-	fi
-      ;;
-      -u)
-        want_arg=$arg
-      ;;
-      -Y)
-        want_arg=$arg
-        arg=
-      ;;
-      *)
-        arg=
-      ;;
-    esac
-  else
-    if test x$want_arg = x-Y
-    then
+	;;
+	-[lLR]*)
+	  exists=false
+	  for f in $lflags
+	  do
+	    if test x$arg = x$f
+	    then
+	      exists=true
+	    fi
+	  done
+	  if $exists || test x$arg = x-lm -o x$arg = x-lc
+	  then
+	    arg=
+	  else
+	    lflags="$lflags $arg"
+	  fi
+	;;
+	-u)
+	  want_arg=$arg
+	;;
+	-Y)
+	  want_arg=$arg
+	  arg=
+	;;
+	*)
+	  arg=
+	;;
+      esac
+    ;;
+    -[lLR])
+      arg="$old_want_arg $arg"
+    ;;
+    -Y)
 
 # Should probably try to ensure unique directory options here too.
 # This probably only applies to Solaris systems, and then will only
@@ -117,13 +125,12 @@ do
       list=
       for elt in $arg
       do
-        list="$list -L $elt"
+	list="$list -L $elt"
       done
       IFS=$SAVE_IFS
       arg="$list"
-    fi
-    want_arg=
-  fi
+    ;;
+  esac
 
   if test -n "$arg"
   then

@@ -1,3 +1,9 @@
+Sun Oct 13 10:52:28 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* octave.cc (maximum_braindamage): Replace "true" with 1.0 and
+	"false" with 0.0 in calls to bind_builtin_variable().
+	Include sun-utils.h here.
+
 Sat Oct 12 13:40:21 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (distclean): Also delete mk-oct-links.

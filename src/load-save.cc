@@ -2935,7 +2935,7 @@ save variables in a file")
       argc--;
       argv++;
 
-      unsigned mode = ios::in;
+      unsigned mode = ios::out;
       if (format == LS_BINARY || format == LS_MAT_BINARY)
 	mode |= ios::bin;
 

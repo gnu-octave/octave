@@ -843,9 +843,11 @@ Array<T>::resize_and_fill (const dim_vector& dv, const T& val)
   int old_len = length ();
 
   int len = get_size (dv);
-
+  
   rep = new typename Array<T>::ArrayRep (len);
 
+  dim_vector dv_old = dimensions;
+  
   dimensions = dv;
 
   Array<int> ra_idx (dimensions.length (), 0);
@@ -861,10 +863,10 @@ Array<T>::resize_and_fill (const dim_vector& dv, const T& val)
 
   for (int i = 0; i < old_len; i++)
     {
-      if (index_in_bounds (ra_idx, dimensions))
-	xelem (ra_idx) = old_data[i];
+      if (index_in_bounds (ra_idx, dv_old))
+	xelem (ra_idx) = old_data[get_scalar_idx (ra_idx, dv_old)];
 
-      increment_index (ra_idx, dimensions);
+      increment_index (ra_idx, dv_old);
     }
 
   if (--old_rep->count <= 0)
@@ -2232,6 +2234,29 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 
   int rhs_nr = rhs.rows ();
   int rhs_nc = rhs.cols ();
+  
+  if (rhs.length () > 2)
+    {
+      dim_vector dv_tmp = rhs.squeeze().dims ();
+  
+      if (dv_tmp.length () > 2)
+	{
+	  (*current_liboctave_error_handler)
+	    ("Dimension mismatch");
+
+	  return 0;
+	}
+      
+      if (dv_tmp.length () == 1)
+	if (rhs_nr == 1)
+	  rhs_nc = dv_tmp.elem (0);
+
+      else if (dv_tmp.length () == 2)
+	{
+	  rhs_nr = dv_tmp.elem (0);
+	  rhs_nc = dv_tmp.elem (1);
+	}
+    }
 
   idx_vector *tmp = lhs.get_idx ();
 

@@ -45,7 +45,8 @@ function y = poly (x)
     usage ("poly (x), where x is a vector or a square matrix");
   endif
   
-  y = [1, zeros (1, n)];
+  y = zeros (1, n+1);
+  y(1) = 1;
   for j = 1:n;
     y(2:(j+1)) = y(2:(j+1)) - v(j) .* y(1:j);
   endfor

@@ -154,9 +154,15 @@ TC_REP::do_scalar_index (const Octave_object& args) const
 		if (! j)
 		  return retval;
 
+		int jmax = j.max ();
 		int len = j.length ();
 		if (len == j.ones_count ())
 		  cols = len;
+		else if (jmax > 0)
+		  {
+		    error ("invalid scalar index = %d", jmax+1);
+		    return retval;
+		  }
 	      }
 	    else if (arg.const_type () == magic_colon
 		     || (arg.is_scalar_type ()
@@ -182,9 +188,15 @@ TC_REP::do_scalar_index (const Octave_object& args) const
 		if (! i)
 		  return retval;
 
+		int imax = i.max ();
 		int len = i.length ();
 		if (len == i.ones_count ())
 		  rows = len;
+		else if (imax > 0)
+		  {
+		    error ("invalid scalar index = %d", imax+1);
+		    return retval;
+		  }
 	      }
 	    else if (arg.const_type () == magic_colon
 		     || (arg.is_scalar_type ()
@@ -199,6 +211,8 @@ TC_REP::do_scalar_index (const Octave_object& args) const
 	      }
 	    else
 	      break;
+
+// If only one index, cols will not be set.
 
 	    if (cols == 0)
 	      {

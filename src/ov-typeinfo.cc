@@ -314,11 +314,13 @@ octave_value_typeinfo::do_installed_type_names (void)
 }
 
 DEFUN (typeinfo, args, ,
-  "usage: typeinfo (expr)\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} typeinfo (@var{expr})\n\
 \n\
-Return the type of the expression EXPR, as a string.  If EXPR is\n\
-omitted, return an array of strings containing all the currently\n\
-installed data types.")
+Return the type of the expression @var{expr}, as a string.  If\n\
+@var{EXPR}  is omitted, return an array of strings containing all the\n\
+currently installed data types.\n\
+@end deftypefn")
 {
   octave_value retval;
 

@@ -479,8 +479,13 @@ octave_user_function::bind_automatic_vars
 }
 
 DEFUN (va_arg, args, ,
-  "va_arg (): return next argument in a function that takes a\n\
-variable number of parameters")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} va_arg ()\n\
+Return the value of hte next available argument and move the internal\n\
+pointer to the next argument.  It is an error to call @code{va_arg}\n\
+when ther eare no more arguments available, or in a function that\n\
+has not been declared to take a variable number of parameters.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -508,8 +513,13 @@ variable number of parameters")
 }
 
 DEFUN (va_start, args, ,
-  "va_start (): reset the pointer to the list of optional arguments\n\
-to the beginning")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} va_start ()\n\
+Position an internal pointer to the first unnamed argument in\n\
+functions that have been declared to accept a variable number of\n\
+arguments.  It is an error to call @code{va_start} in a function\n\
+that has not been declared to take a variable number of parameters.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -537,8 +547,15 @@ to the beginning")
 }
 
 DEFUN (vr_val, args, ,
-  "vr_val (X): append X to the list of optional return values for a\n\
-function that allows a variable number of return values")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} vr_val (@var{x})\n\
+Each time this function is called, it places the value of its argument\n\
+at the end of the list of values to return from the current\n\
+function.  Once @code{vr_val} has been called, there is no way to go\n\
+back to the beginning of the list and rewrite any of the return\n\
+values.  This function may only be called within functions that have\n\
+been declared to return an unspecified number of output arguments.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 

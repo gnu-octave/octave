@@ -1216,8 +1216,7 @@ kpse_expand (const std::string& s)
 }
 
 /* Forward declarations of functions from the original expand.c  */
-static char **brace_expand (const std::string&);
-static void free_array (char **);
+static string_vector brace_expand (const std::string&);
 
 /* If $KPSE_DOT is defined in the environment, prepend it to any relative
    path components. */
@@ -1266,11 +1265,11 @@ kpse_expand_kpse_dot (const std::string& path)
 static std::string
 kpse_brace_expand_element (const std::string& elt)
 {
-  unsigned i;
-  char **expansions = brace_expand (elt);
   std::string ret;
 
-  for (i = 0; expansions[i]; i++)
+  string_vector expansions = brace_expand (elt);
+
+  for (int i = 0; i < expansions.length (); i++)
     {
       /* Do $ and ~ expansion on each element.  */
       std::string x = kpse_expand (expansions[i]);
@@ -1287,8 +1286,6 @@ kpse_brace_expand_element (const std::string& elt)
       ret += x + ENV_SEP_STRING;
     }
 
-  free_array (expansions);
-
   ret.resize (ret.length () - 1);
 
   return ret;
@@ -1297,10 +1294,8 @@ kpse_brace_expand_element (const std::string& elt)
 /* Be careful to not waste all the memory we allocate for each element.  */
 
 std::string
-kpse_brace_expand (const std::string& path_arg)
+kpse_brace_expand (const std::string& path)
 {
-  const char *path = path_arg.c_str ();
-
   /* Must do variable expansion first because if we have
        foo = .:~
        TEXINPUTS = $foo
@@ -1330,12 +1325,10 @@ kpse_brace_expand (const std::string& path_arg)
 /* Expand all special constructs in a path, and include only the actually
    existing directories in the result. */
 std::string
-kpse_path_expand (const std::string& path_arg)
+kpse_path_expand (const std::string& path)
 {
   std::string ret;
   unsigned len;
-
-  const char *path = path_arg.c_str ();
 
   len = 0;
 
@@ -1438,206 +1431,115 @@ kpse_path_expand (const std::string& path_arg)
    expansions to preamble.  Expand postamble, and tack on the expansions to
    the result so far.  */
 
-/* The character which is used to separate arguments. */
-static int brace_arg_separator = ',';
-
-static int brace_gobbler (const char *, int *, int);
-static char **expand_amble (const char *),
-            **array_concat (char **, char **);
-
-/* Return the length of ARRAY, a NULL terminated array of char *. */
-static int
-array_len (char **array)
-{
-  register int i;
-  for (i = 0; array[i]; i++);
-  return (i);
-}
-
-/* Free the contents of ARRAY, a NULL terminated array of char *. */
-static void
-free_array (char **array)
-{
-  register int i = 0;
-
-  if (! array) return;
-
-  while (array[i])
-    free (array[i++]);
-
-  free (array);
-}
-
-/* Allocate and return a new copy of ARRAY and its contents. */
-static char **
-copy_array (char **array)
-{
-  register int i;
-  int len;
-  char **new_array;
-
-  len = array_len (array);
-
-  new_array = (char **)xmalloc ((len + 1) * sizeof (char *));
-  for (i = 0; array[i]; i++)
-    new_array[i] = xstrdup (array[i]);
-  new_array[i] = (char *)NULL;
-
-  return (new_array);
-}
-
-/* Return an array of strings; the brace expansion of TEXT. */
-static char **
-brace_expand (const std::string& text_arg)
-{
-  register int start;
-  char *preamble, *amble;
-  const char *postamble;
-  char **tack, **result;
-  int i, c;
-
-  const char *text = text_arg.c_str ();
-
-  /* Find the text of the preamble. */
-  i = 0;
-  c = brace_gobbler (text, &i, '{');
-
-  preamble = (char *) xmalloc (i + 1);
-  strncpy (preamble, text, i);
-  preamble[i] = 0;
-
-  result = (char **) xmalloc (2 * sizeof (char *));
-  result[0] = preamble;
-  result[1] = NULL;
-
-  /* Special case.  If we never found an exciting character, then
-     the preamble is all of the text, so just return that. */
-  if (c != '{')
-    return (result);
-
-  /* Find the amble.  This is the stuff inside this set of braces. */
-  start = ++i;
-  c = brace_gobbler (text, &i, '}');
-
-  /* What if there isn't a matching close brace? */
-  if (! c)
-    {
-      (*current_liboctave_warning_handler) ("%s: Unmatched {", text);
-      free (preamble);		/* Same as result[0]; see initialization. */
-      result[0] = xstrdup (text);
-      return (result);
-    }
-
-  amble = (char *) xmalloc (1 + (i - start));
-  strncpy (amble, &text[start], (i - start));
-  amble[i - start] = 0;
-
-  postamble = &text[i + 1];
-
-  tack = expand_amble (amble);
-  result = array_concat (result, tack);
-  free (amble);
-  free_array (tack);
-
-  tack = brace_expand (postamble);
-  result = array_concat (result, tack);
-  free_array (tack);
-
-  return (result);
-}
-
-/* Expand the text found inside of braces.  We simply try to split the
-   text at BRACE_ARG_SEPARATORs into separate strings.  We then brace
-   expand each slot which needs it, until there are no more slots which
-   need it. */
-static char **
-expand_amble (const char *text)
-{
-  char **result, **partial;
-  char *tem;
-  int start, i, c;
-
-  result = NULL;
-
-  for (start = 0, i = 0, c = 1; c; start = ++i)
-    {
-      int c0, c1;
-      int i0, i1;
-      i0 = i;
-      c0 = brace_gobbler (text, &i0, brace_arg_separator);
-      i1 = i;
-      c1 = brace_gobbler (text, &i1, ENV_SEP);
-      c = c0 | c1;
-      i = (i0 < i1 ? i0 : i1);
-
-      tem = (char *) xmalloc (1 + (i - start));
-      strncpy (tem, &text[start], (i - start));
-      tem[i- start] = 0;
-
-      partial = brace_expand (tem);
-
-      if (! result)
-	result = partial;
-      else
-	{
-	  register int lr = array_len (result);
-	  register int lp = array_len (partial);
-	  register int j;
-
-	  result = (char **) xrealloc (result, (1 + lp + lr) * sizeof (char *));
-
-	  for (j = 0; j < lp; j++)
-	    result[lr + j] = partial[j];
-
-	  result[lr + j] = NULL;
-	  free (partial);
-	}
-      free (tem);
-    }
-  return (result);
-}
-
 /* Return a new array of strings which is the result of appending each
    string in ARR2 to each string in ARR1.  The resultant array is
    len (arr1) * len (arr2) long.  For convenience, ARR1 (and its contents)
    are free ()'ed.  ARR1 can be NULL, in that case, a new version of ARR2
    is returned. */
-static char **
-array_concat (char **arr1, char **arr2)
+
+static string_vector
+array_concat (const string_vector& arr1, const string_vector& arr2)
 {
-  register int i, j, len, len1, len2;
-  register char **result;
+  string_vector result;
 
-  if (! arr1)
-    return (copy_array (arr2));
-
-  if (! arr2)
-    return (copy_array (arr1));
-
-  len1 = array_len (arr1);
-  len2 = array_len (arr2);
-
-  result = (char **) xmalloc ((1 + (len1 * len2)) * sizeof (char *));
-
-  len = 0;
-  for (i = 0; i < len2; i++)
+  if (arr1.empty ())
+    result = arr2;
+  else if (arr2.empty ())
+    result = arr1;
+  else
     {
-      int strlen_2 = strlen (arr2[i]);
+      int len1 = arr1.length ();
+      int len2 = arr2.length ();
 
-      for (j = 0; j < len1; j++)
+      result = string_vector (len1 * len2);
+
+      int k = 0;
+      for (int i = 0; i < len2; i++)
+	for (int j = 0; j < len1; j++)
+	  result[k++] = arr1[j] + arr2[i];
+    }
+
+  return result;
+}
+
+static int brace_gobbler (const std::string&, int&, int);
+static string_vector expand_amble (const std::string&);
+
+/* Return an array of strings; the brace expansion of TEXT. */
+static string_vector
+brace_expand (const std::string& text)
+{
+  /* Find the text of the preamble. */
+  int i = 0;
+  int c = brace_gobbler (text, i, '{');
+
+  std::string preamble = text.substr (0, i);
+
+  string_vector result = string_vector (preamble);
+
+  if (c == '{')
+    {
+      /* Find the amble.  This is the stuff inside this set of braces. */
+      int start = ++i;
+      c = brace_gobbler (text, i, '}');
+
+      /* What if there isn't a matching close brace? */
+      if (! c)
 	{
-	  int strlen_1 = strlen (arr1[j]);
+	  (*current_liboctave_warning_handler)
+	    ("%s: Unmatched {", text.c_str ());
 
-	  result[len] = (char *) xmalloc (1 + strlen_1 + strlen_2);
-	  strcpy (result[len], arr1[j]);
-	  strcpy (result[len] + strlen_1, arr2[i]);
-	  len++;
+	  result = string_vector (text);
+	}
+      else
+	{
+	  std::string amble = text.substr (start, i-start);
+	  result = array_concat (result, expand_amble (amble));
+
+	  std::string postamble = text.substr (i+1);
+	  result = array_concat (result, brace_expand (postamble));
 	}
     }
-  free_array (arr1);
 
-  result[len] = NULL;
-  return (result);
+  return result;
+}
+
+/* The character which is used to separate arguments. */
+static int brace_arg_separator = ',';
+
+/* Expand the text found inside of braces.  We simply try to split the
+   text at BRACE_ARG_SEPARATORs into separate strings.  We then brace
+   expand each slot which needs it, until there are no more slots which
+   need it. */
+static string_vector
+expand_amble (const std::string& text)
+{
+  string_vector result;
+
+  size_t text_len = text.length ();
+  size_t start;
+  int i, c;
+
+  for (start = 0, i = 0, c = 1; c && start < text_len; start = ++i)
+    {
+      int i0 = i;
+      int c0 = brace_gobbler (text, i0, brace_arg_separator);
+      int i1 = i;
+      int c1 = brace_gobbler (text, i1, ENV_SEP);
+      c = c0 | c1;
+      i = (i0 < i1 ? i0 : i1);
+
+      std::string tem = text.substr (start, i-start);
+
+      string_vector partial = brace_expand (tem);
+
+      if (result.empty ())
+	result = partial;
+      else
+	result.append (partial);
+    }
+
+  return result;
 }
 
 /* Start at INDEX, and skip characters in TEXT. Set INDEX to the
@@ -1645,14 +1547,18 @@ array_concat (char **arr1, char **arr2)
    quoting.  Return the character that caused us to stop searching;
    this is either the same as SATISFY, or 0. */
 static int
-brace_gobbler (const char *text, int *indx, int satisfy)
+brace_gobbler (const std::string& text, int& indx, int satisfy)
 {
-  register int i, c, quoted, level, pass_next;
+  int c = 0, level = 0, quoted = 0, pass_next = 0;
 
-  level = quoted = pass_next = 0;
+  size_t text_len = text.length ();
 
-  for (i = *indx; (c = text[i]); i++)
+  size_t i = indx;
+
+  for (; i < text_len; i++)
     {
+      c = text[i];
+
       if (pass_next)
 	{
 	  pass_next = 0;
@@ -1686,12 +1592,13 @@ brace_gobbler (const char *text, int *indx, int satisfy)
 	     an open brace followed immediately by a close brace, that
 	     was preceded with whitespace.  */
 	  if (c == '{' &&
-	      ((! i || brace_whitespace (text[i - 1])) &&
-	       (brace_whitespace (text[i + 1]) || text[i + 1] == '}')))
+	      ((i == 0 || brace_whitespace (text[i-1])) &&
+	       (i+1 < text_len &&
+		(brace_whitespace (text[i+1]) || text[i+1] == '}'))))
 	    continue;
 	  /* If this is being compiled as part of bash, ignore the `{'
 	     in a `${}' construct */
-	  if ((c != '{') || !i || (text[i - 1] != '$'))
+	  if ((c != '{') || i == 0 || (text[i-1] != '$'))
 	    break;
 	}
 
@@ -1701,8 +1608,8 @@ brace_gobbler (const char *text, int *indx, int satisfy)
 	level--;
     }
 
-  *indx = i;
-  return (c);
+  indx = i;
+  return c;
 }
 
 /* db.c: an external database to avoid filesystem lookups.  */

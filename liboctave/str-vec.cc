@@ -113,12 +113,12 @@ string_vector&
 string_vector::append (const string_vector& sv)
 {
   int len = length ();
-
-  int new_len = len + sv.length ();
+  int sv_len = sv.length ();
+  int new_len = len + sv_len;
 
   resize (new_len);
 
-  for (int i = 0; i < new_len; i++)
+  for (int i = 0; i < sv_len; i++)
     elem(len + i) = sv[i];
 
   return *this;

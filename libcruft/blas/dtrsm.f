@@ -1,6 +1,3 @@
-*
-************************************************************************
-*
       SUBROUTINE DTRSM ( SIDE, UPLO, TRANSA, DIAG, M, N, ALPHA, A, LDA,
      $                   B, LDB )
 *     .. Scalar Arguments ..

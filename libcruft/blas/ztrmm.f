@@ -237,7 +237,7 @@
             END IF
          ELSE
 *
-*           Form  B := alpha*B*A'   or   B := alpha*B*conjg( A' ).
+*           Form  B := alpha*A'*B   or   B := alpha*conjg( A' )*B.
 *
             IF( UPPER )THEN
                DO 120, J = 1, N

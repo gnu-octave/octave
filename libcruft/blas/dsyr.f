@@ -1,6 +1,3 @@
-*
-************************************************************************
-*
       SUBROUTINE DSYR  ( UPLO, N, ALPHA, X, INCX, A, LDA )
 *     .. Scalar Arguments ..
       DOUBLE PRECISION   ALPHA

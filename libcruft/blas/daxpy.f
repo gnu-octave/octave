@@ -1,47 +1,48 @@
-      SUBROUTINE DAXPY(N,DA,DX,INCX,DY,INCY)
-C
-C     CONSTANT TIMES A VECTOR PLUS A VECTOR.
-C     USES UNROLLED LOOPS FOR INCREMENTS EQUAL TO ONE.
-C     JACK DONGARRA, LINPACK, 3/11/78.
-C
-      DOUBLE PRECISION DX(1),DY(1),DA
-      INTEGER I,INCX,INCY,IXIY,M,MP1,N
-C
-      IF(N.LE.0)RETURN
-      IF (DA .EQ. 0.0D0) RETURN
-      IF(INCX.EQ.1.AND.INCY.EQ.1)GO TO 20
-C
-C        CODE FOR UNEQUAL INCREMENTS OR EQUAL INCREMENTS
-C          NOT EQUAL TO 1
-C
-      IX = 1
-      IY = 1
-      IF(INCX.LT.0)IX = (-N+1)*INCX + 1
-      IF(INCY.LT.0)IY = (-N+1)*INCY + 1
-      DO 10 I = 1,N
-        DY(IY) = DY(IY) + DA*DX(IX)
-        IX = IX + INCX
-        IY = IY + INCY
-   10 CONTINUE
-      RETURN
-C
-C        CODE FOR BOTH INCREMENTS EQUAL TO 1
-C
-C
-C        CLEAN-UP LOOP
-C
-   20 M = MOD(N,4)
-      IF( M .EQ. 0 ) GO TO 40
-      DO 30 I = 1,M
-        DY(I) = DY(I) + DA*DX(I)
-   30 CONTINUE
-      IF( N .LT. 4 ) RETURN
-   40 MP1 = M + 1
-      DO 50 I = MP1,N,4
-        DY(I) = DY(I) + DA*DX(I)
-        DY(I + 1) = DY(I + 1) + DA*DX(I + 1)
-        DY(I + 2) = DY(I + 2) + DA*DX(I + 2)
-        DY(I + 3) = DY(I + 3) + DA*DX(I + 3)
-   50 CONTINUE
-      RETURN
-      END
+      subroutine daxpy(n,da,dx,incx,dy,incy)
+c
+c     constant times a vector plus a vector.
+c     uses unrolled loops for increments equal to one.
+c     jack dongarra, linpack, 3/11/78.
+c     modified 12/3/93, array(1) declarations changed to array(*)
+c
+      double precision dx(*),dy(*),da
+      integer i,incx,incy,ix,iy,m,mp1,n
+c
+      if(n.le.0)return
+      if (da .eq. 0.0d0) return
+      if(incx.eq.1.and.incy.eq.1)go to 20
+c
+c        code for unequal increments or equal increments
+c          not equal to 1
+c
+      ix = 1
+      iy = 1
+      if(incx.lt.0)ix = (-n+1)*incx + 1
+      if(incy.lt.0)iy = (-n+1)*incy + 1
+      do 10 i = 1,n
+        dy(iy) = dy(iy) + da*dx(ix)
+        ix = ix + incx
+        iy = iy + incy
+   10 continue
+      return
+c
+c        code for both increments equal to 1
+c
+c
+c        clean-up loop
+c
+   20 m = mod(n,4)
+      if( m .eq. 0 ) go to 40
+      do 30 i = 1,m
+        dy(i) = dy(i) + da*dx(i)
+   30 continue
+      if( n .lt. 4 ) return
+   40 mp1 = m + 1
+      do 50 i = mp1,n,4
+        dy(i) = dy(i) + da*dx(i)
+        dy(i + 1) = dy(i + 1) + da*dx(i + 1)
+        dy(i + 2) = dy(i + 2) + da*dx(i + 2)
+        dy(i + 3) = dy(i + 3) + da*dx(i + 3)
+   50 continue
+      return
+      end

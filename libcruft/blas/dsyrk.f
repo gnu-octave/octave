@@ -1,6 +1,3 @@
-*
-************************************************************************
-*
       SUBROUTINE DSYRK ( UPLO, TRANS, N, K, ALPHA, A, LDA,
      $                   BETA, C, LDC )
 *     .. Scalar Arguments ..

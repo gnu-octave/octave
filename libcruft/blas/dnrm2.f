@@ -1,122 +1,60 @@
-      DOUBLE PRECISION FUNCTION DNRM2 ( N, DX, INCX)
-      INTEGER          NEXT
-      DOUBLE PRECISION   DX(1), CUTLO, CUTHI, HITEST, SUM, XMAX,ZERO,ONE
-      DATA   ZERO, ONE /0.0D0, 1.0D0/
-C
-C     EUCLIDEAN NORM OF THE N-VECTOR STORED IN DX() WITH STORAGE
-C     INCREMENT INCX .
-C     IF    N .LE. 0 RETURN WITH RESULT = 0.
-C     IF N .GE. 1 THEN INCX MUST BE .GE. 1
-C
-C           C.L.LAWSON, 1978 JAN 08
-C
-C     FOUR PHASE METHOD     USING TWO BUILT-IN CONSTANTS THAT ARE
-C     HOPEFULLY APPLICABLE TO ALL MACHINES.
-C         CUTLO = MAXIMUM OF  DSQRT(U/EPS)  OVER ALL KNOWN MACHINES.
-C         CUTHI = MINIMUM OF  DSQRT(V)      OVER ALL KNOWN MACHINES.
-C     WHERE
-C         EPS = SMALLEST NO. SUCH THAT EPS + 1. .GT. 1.
-C         U   = SMALLEST POSITIVE NO.   (UNDERFLOW LIMIT)
-C         V   = LARGEST  NO.            (OVERFLOW  LIMIT)
-C
-C     BRIEF OUTLINE OF ALGORITHM..
-C
-C     PHASE 1    SCANS ZERO COMPONENTS.
-C     MOVE TO PHASE 2 WHEN A COMPONENT IS NONZERO AND .LE. CUTLO
-C     MOVE TO PHASE 3 WHEN A COMPONENT IS .GT. CUTLO
-C     MOVE TO PHASE 4 WHEN A COMPONENT IS .GE. CUTHI/M
-C     WHERE M = N FOR X() REAL AND M = 2*N FOR COMPLEX.
-C
-C     VALUES FOR CUTLO AND CUTHI..
-C     FROM THE ENVIRONMENTAL PARAMETERS LISTED IN THE IMSL CONVERTER
-C     DOCUMENT THE LIMITING VALUES ARE AS FOLLOWS..
-C     CUTLO, S.P.   U/EPS = 2**(-102) FOR  HONEYWELL.  CLOSE SECONDS ARE
-C                   UNIVAC AND DEC AT 2**(-103)
-C                   THUS CUTLO = 2**(-51) = 4.44089E-16
-C     CUTHI, S.P.   V = 2**127 FOR UNIVAC, HONEYWELL, AND DEC.
-C                   THUS CUTHI = 2**(63.5) = 1.30438E19
-C     CUTLO, D.P.   U/EPS = 2**(-67) FOR HONEYWELL AND DEC.
-C                   THUS CUTLO = 2**(-33.5) = 8.23181D-11
-C     CUTHI, D.P.   SAME AS S.P.  CUTHI = 1.30438D19
-C     DATA CUTLO, CUTHI / 8.232D-11,  1.304D19 /
-C     DATA CUTLO, CUTHI / 4.441E-16,  1.304E19 /
-      DATA CUTLO, CUTHI / 8.232D-11,  1.304D19 /
-C
-      IF(N .GT. 0) GO TO 10
-         DNRM2  = ZERO
-         GO TO 300
-C
-   10 ASSIGN 30 TO NEXT
-      SUM = ZERO
-      NN = N * INCX
-C                                                 BEGIN MAIN LOOP
-      I = 1
-   20    GO TO NEXT,(30, 50, 70, 110)
-   30 IF( DABS(DX(I)) .GT. CUTLO) GO TO 85
-      ASSIGN 50 TO NEXT
-      XMAX = ZERO
-C
-C                        PHASE 1.  SUM IS ZERO
-C
-   50 IF( DX(I) .EQ. ZERO) GO TO 200
-      IF( DABS(DX(I)) .GT. CUTLO) GO TO 85
-C
-C                                PREPARE FOR PHASE 2.
-      ASSIGN 70 TO NEXT
-      GO TO 105
-C
-C                                PREPARE FOR PHASE 4.
-C
-  100 I = J
-      ASSIGN 110 TO NEXT
-      SUM = (SUM / DX(I)) / DX(I)
-  105 XMAX = DABS(DX(I))
-      GO TO 115
-C
-C                   PHASE 2.  SUM IS SMALL.
-C                             SCALE TO AVOID DESTRUCTIVE UNDERFLOW.
-C
-   70 IF( DABS(DX(I)) .GT. CUTLO ) GO TO 75
-C
-C                     COMMON CODE FOR PHASES 2 AND 4.
-C                     IN PHASE 4 SUM IS LARGE.  SCALE TO AVOID OVERFLOW.
-C
-  110 IF( DABS(DX(I)) .LE. XMAX ) GO TO 115
-         SUM = ONE + SUM * (XMAX / DX(I))**2
-         XMAX = DABS(DX(I))
-         GO TO 200
-C
-  115 SUM = SUM + (DX(I)/XMAX)**2
-      GO TO 200
-C
-C
-C                  PREPARE FOR PHASE 3.
-C
-   75 SUM = (SUM * XMAX) * XMAX
-C
-C
-C     FOR REAL OR D.P. SET HITEST = CUTHI/N
-C     FOR COMPLEX      SET HITEST = CUTHI/(2*N)
-C
-   85 HITEST = CUTHI/FLOAT( N )
-C
-C                   PHASE 3.  SUM IS MID-RANGE.  NO SCALING.
-C
-      DO 95 J =I,NN,INCX
-      IF(DABS(DX(J)) .GE. HITEST) GO TO 100
-   95    SUM = SUM + DX(J)**2
-      DNRM2 = DSQRT( SUM )
-      GO TO 300
-C
-  200 CONTINUE
-      I = I + INCX
-      IF ( I .LE. NN ) GO TO 20
-C
-C              END OF MAIN LOOP.
-C
-C              COMPUTE SQUARE ROOT AND ADJUST FOR SCALING.
-C
-      DNRM2 = XMAX * DSQRT(SUM)
-  300 CONTINUE
+      DOUBLE PRECISION FUNCTION DNRM2 ( N, X, INCX )
+*     .. Scalar Arguments ..
+      INTEGER                           INCX, N
+*     .. Array Arguments ..
+      DOUBLE PRECISION                  X( * )
+*     ..
+*
+*  DNRM2 returns the euclidean norm of a vector via the function
+*  name, so that
+*
+*     DNRM2 := sqrt( x'*x )
+*
+*
+*
+*  -- This version written on 25-October-1982.
+*     Modified on 14-October-1993 to inline the call to DLASSQ.
+*     Sven Hammarling, Nag Ltd.
+*
+*
+*     .. Parameters ..
+      DOUBLE PRECISION      ONE         , ZERO
+      PARAMETER           ( ONE = 1.0D+0, ZERO = 0.0D+0 )
+*     .. Local Scalars ..
+      INTEGER               IX
+      DOUBLE PRECISION      ABSXI, NORM, SCALE, SSQ
+*     .. Intrinsic Functions ..
+      INTRINSIC             ABS, SQRT
+*     ..
+*     .. Executable Statements ..
+      IF( N.LT.1 .OR. INCX.LT.1 )THEN
+         NORM  = ZERO
+      ELSE IF( N.EQ.1 )THEN
+         NORM  = ABS( X( 1 ) )
+      ELSE
+         SCALE = ZERO
+         SSQ   = ONE
+*        The following loop is equivalent to this call to the LAPACK
+*        auxiliary routine:
+*        CALL DLASSQ( N, X, INCX, SCALE, SSQ )
+*
+         DO 10, IX = 1, 1 + ( N - 1 )*INCX, INCX
+            IF( X( IX ).NE.ZERO )THEN
+               ABSXI = ABS( X( IX ) )
+               IF( SCALE.LT.ABSXI )THEN
+                  SSQ   = ONE   + SSQ*( SCALE/ABSXI )**2
+                  SCALE = ABSXI
+               ELSE
+                  SSQ   = SSQ   +     ( ABSXI/SCALE )**2
+               END IF
+            END IF
+   10    CONTINUE
+         NORM  = SCALE * SQRT( SSQ )
+      END IF
+*
+      DNRM2 = NORM
       RETURN
+*
+*     End of DNRM2.
+*
       END

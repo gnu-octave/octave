@@ -2,8 +2,9 @@
 c
 c     forms the dot product of two vectors.
 c     jack dongarra, 3/11/78.
+c     modified 12/3/93, array(1) declarations changed to array(*)
 c
-      double complex zx(1),zy(1),ztemp
+      double complex zx(*),zy(*),ztemp
       integer i,incx,incy,ix,iy,n
       ztemp = (0.0d0,0.0d0)
       zdotu = (0.0d0,0.0d0)

@@ -1,36 +1,37 @@
-      SUBROUTINE  DROT (N,DX,INCX,DY,INCY,C,S)
-C
-C     APPLIES A PLANE ROTATION.
-C     JACK DONGARRA, LINPACK, 3/11/78.
-C
-      DOUBLE PRECISION DX(1),DY(1),DTEMP,C,S
-      INTEGER I,INCX,INCY,IX,IY,N
-C
-      IF(N.LE.0)RETURN
-      IF(INCX.EQ.1.AND.INCY.EQ.1)GO TO 20
-C
-C       CODE FOR UNEQUAL INCREMENTS OR EQUAL INCREMENTS NOT EQUAL
-C         TO 1
-C
-      IX = 1
-      IY = 1
-      IF(INCX.LT.0)IX = (-N+1)*INCX + 1
-      IF(INCY.LT.0)IY = (-N+1)*INCY + 1
-      DO 10 I = 1,N
-        DTEMP = C*DX(IX) + S*DY(IY)
-        DY(IY) = C*DY(IY) - S*DX(IX)
-        DX(IX) = DTEMP
-        IX = IX + INCX
-        IY = IY + INCY
-   10 CONTINUE
-      RETURN
-C
-C       CODE FOR BOTH INCREMENTS EQUAL TO 1
-C
-   20 DO 30 I = 1,N
-        DTEMP = C*DX(I) + S*DY(I)
-        DY(I) = C*DY(I) - S*DX(I)
-        DX(I) = DTEMP
-   30 CONTINUE
-      RETURN
-      END
+      subroutine  drot (n,dx,incx,dy,incy,c,s)
+c
+c     applies a plane rotation.
+c     jack dongarra, linpack, 3/11/78.
+c     modified 12/3/93, array(1) declarations changed to array(*)
+c
+      double precision dx(*),dy(*),dtemp,c,s
+      integer i,incx,incy,ix,iy,n
+c
+      if(n.le.0)return
+      if(incx.eq.1.and.incy.eq.1)go to 20
+c
+c       code for unequal increments or equal increments not equal
+c         to 1
+c
+      ix = 1
+      iy = 1
+      if(incx.lt.0)ix = (-n+1)*incx + 1
+      if(incy.lt.0)iy = (-n+1)*incy + 1
+      do 10 i = 1,n
+        dtemp = c*dx(ix) + s*dy(iy)
+        dy(iy) = c*dy(iy) - s*dx(ix)
+        dx(ix) = dtemp
+        ix = ix + incx
+        iy = iy + incy
+   10 continue
+      return
+c
+c       code for both increments equal to 1
+c
+   20 do 30 i = 1,n
+        dtemp = c*dx(i) + s*dy(i)
+        dy(i) = c*dy(i) - s*dx(i)
+        dx(i) = dtemp
+   30 continue
+      return
+      end

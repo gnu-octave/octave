@@ -2,8 +2,9 @@
 c
 c     copies a vector, x, to a vector, y.
 c     jack dongarra, linpack, 4/11/78.
+c     modified 12/3/93, array(1) declarations changed to array(*)
 c
-      double complex zx(1),zy(1)
+      double complex zx(*),zy(*)
       integer i,incx,incy,ix,iy,n
 c
       if(n.le.0)return

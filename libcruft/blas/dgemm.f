@@ -1,37 +1,3 @@
-************************************************************************
-*
-*     File of the DOUBLE PRECISION Level-3 BLAS.
-*     ==========================================
-*
-*     SUBROUTINE DGEMM ( TRANSA, TRANSB, M, N, K, ALPHA, A, LDA, B, LDB,
-*    $                   BETA, C, LDC )
-*
-*     SUBROUTINE DSYMM ( SIDE,   UPLO,   M, N,    ALPHA, A, LDA, B, LDB,
-*    $                   BETA, C, LDC )
-*
-*     SUBROUTINE DSYRK ( UPLO,   TRANS,     N, K, ALPHA, A, LDA,
-*    $                   BETA, C, LDC )
-*
-*     SUBROUTINE DSYR2K( UPLO,   TRANS,     N, K, ALPHA, A, LDA, B, LDB,
-*    $                   BETA, C, LDC )
-*
-*     SUBROUTINE DTRMM ( SIDE, UPLO, TRANSA, DIAG, M, N, ALPHA, A, LDA,
-*    $                   B, LDB )
-*
-*     SUBROUTINE DTRSM ( SIDE, UPLO, TRANSA, DIAG, M, N, ALPHA, A, LDA,
-*    $                   B, LDB )
-*
-*     See:
-*
-*        Dongarra J. J.,   Du Croz J. J.,   Duff I.  and   Hammarling S.
-*        A set of  Level 3  Basic Linear Algebra Subprograms.  Technical
-*        Memorandum No.88 (Revision 1), Mathematics and Computer Science
-*        Division,  Argonne National Laboratory, 9700 South Cass Avenue,
-*        Argonne, Illinois 60439.
-*
-*
-************************************************************************
-*
       SUBROUTINE DGEMM ( TRANSA, TRANSB, M, N, K, ALPHA, A, LDA, B, LDB,
      $                   BETA, C, LDC )
 *     .. Scalar Arguments ..

@@ -1,6 +1,3 @@
-*
-************************************************************************
-*
       SUBROUTINE DTRMV ( UPLO, TRANS, DIAG, N, A, LDA, X, INCX )
 *     .. Scalar Arguments ..
       INTEGER            INCX, LDA, N

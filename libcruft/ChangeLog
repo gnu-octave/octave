@@ -1,3 +1,7 @@
+Wed Jan 15 21:04:29 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* blas/*.f: Update to latest version from Netlib.
+
 Tue Jan  7 00:17:17 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Version 2.0.1 released.

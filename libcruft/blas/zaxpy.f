@@ -2,8 +2,9 @@
 c
 c     constant times a vector plus a vector.
 c     jack dongarra, 3/11/78.
+c     modified 12/3/93, array(1) declarations changed to array(*)
 c
-      double complex zx(1),zy(1),za
+      double complex zx(*),zy(*),za
       integer i,incx,incy,ix,iy,n
       double precision dcabs1
       if(n.le.0)return

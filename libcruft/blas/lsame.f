@@ -1,89 +1,87 @@
-      LOGICAL FUNCTION LSAME ( CA, CB )
+      LOGICAL          FUNCTION LSAME( CA, CB )
+*
+*  -- LAPACK auxiliary routine (version 2.0) --
+*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
+*     Courant Institute, Argonne National Lab, and Rice University
+*     January 31, 1994
+*
 *     .. Scalar Arguments ..
-      CHARACTER*1            CA, CB
+      CHARACTER          CA, CB
 *     ..
 *
 *  Purpose
 *  =======
 *
-*  LSAME  tests if CA is the same letter as CB regardless of case.
-*  CB is assumed to be an upper case letter. LSAME returns .TRUE. if
-*  CA is either the same as CB or the equivalent lower case letter.
+*  LSAME returns .TRUE. if CA is the same letter as CB regardless of
+*  case.
 *
-*  N.B. This version of the routine is only correct for ASCII code.
-*       Installers must modify the routine for other character-codes.
+*  Arguments
+*  =========
 *
-*       For EBCDIC systems the constant IOFF must be changed to -64.
-*       For CDC systems using 6-12 bit representations, the system-
-*       specific code in comments must be activated.
+*  CA      (input) CHARACTER*1
+*  CB      (input) CHARACTER*1
+*          CA and CB specify the single characters to be compared.
 *
-*  Parameters
-*  ==========
+* =====================================================================
 *
-*  CA     - CHARACTER*1
-*  CB     - CHARACTER*1
-*           On entry, CA and CB specify characters to be compared.
-*           Unchanged on exit.
-*
-*
-*  Auxiliary routine for Level 2 Blas.
-*
-*  -- Written on 20-July-1986
-*     Richard Hanson, Sandia National Labs.
-*     Jeremy Du Croz, Nag Central Office.
-*
-*     .. Parameters ..
-      INTEGER                IOFF
-      PARAMETER            ( IOFF=32 )
 *     .. Intrinsic Functions ..
-      INTRINSIC              ICHAR
+      INTRINSIC          ICHAR
+*     ..
+*     .. Local Scalars ..
+      INTEGER            INTA, INTB, ZCODE
+*     ..
 *     .. Executable Statements ..
 *
 *     Test if the characters are equal
 *
-      LSAME = CA .EQ. CB
+      LSAME = CA.EQ.CB
+      IF( LSAME )
+     $   RETURN
 *
-*     Now test for equivalence
+*     Now test for equivalence if both characters are alphabetic.
 *
-      IF ( .NOT.LSAME ) THEN
-         LSAME = ICHAR(CA) - IOFF .EQ. ICHAR(CB)
+      ZCODE = ICHAR( 'Z' )
+*
+*     Use 'Z' rather than 'A' so that ASCII can be detected on Prime
+*     machines, on which ICHAR returns a value with bit 8 set.
+*     ICHAR('A') on Prime machines returns 193 which is the same as
+*     ICHAR('A') on an EBCDIC machine.
+*
+      INTA = ICHAR( CA )
+      INTB = ICHAR( CB )
+*
+      IF( ZCODE.EQ.90 .OR. ZCODE.EQ.122 ) THEN
+*
+*        ASCII is assumed - ZCODE is the ASCII code of either lower or
+*        upper case 'Z'.
+*
+         IF( INTA.GE.97 .AND. INTA.LE.122 ) INTA = INTA - 32
+         IF( INTB.GE.97 .AND. INTB.LE.122 ) INTB = INTB - 32
+*
+      ELSE IF( ZCODE.EQ.233 .OR. ZCODE.EQ.169 ) THEN
+*
+*        EBCDIC is assumed - ZCODE is the EBCDIC code of either lower or
+*        upper case 'Z'.
+*
+         IF( INTA.GE.129 .AND. INTA.LE.137 .OR.
+     $       INTA.GE.145 .AND. INTA.LE.153 .OR.
+     $       INTA.GE.162 .AND. INTA.LE.169 ) INTA = INTA + 64
+         IF( INTB.GE.129 .AND. INTB.LE.137 .OR.
+     $       INTB.GE.145 .AND. INTB.LE.153 .OR.
+     $       INTB.GE.162 .AND. INTB.LE.169 ) INTB = INTB + 64
+*
+      ELSE IF( ZCODE.EQ.218 .OR. ZCODE.EQ.250 ) THEN
+*
+*        ASCII is assumed, on Prime machines - ZCODE is the ASCII code
+*        plus 128 of either lower or upper case 'Z'.
+*
+         IF( INTA.GE.225 .AND. INTA.LE.250 ) INTA = INTA - 32
+         IF( INTB.GE.225 .AND. INTB.LE.250 ) INTB = INTB - 32
       END IF
-*
-      RETURN
-*
-*  The following comments contain code for CDC systems using 6-12 bit
-*  representations.
-*
-*     .. Parameters ..
-*     INTEGER                ICIRFX
-*     PARAMETER            ( ICIRFX=62 )
-*     .. Scalar Arguments ..
-*     CHARACTER*1            CB
-*     .. Array Arguments ..
-*     CHARACTER*1            CA(*)
-*     .. Local Scalars ..
-*     INTEGER                IVAL
-*     .. Intrinsic Functions ..
-*     INTRINSIC              ICHAR, CHAR
-*     .. Executable Statements ..
-*
-*     See if the first character in string CA equals string CB.
-*
-*     LSAME = CA(1) .EQ. CB .AND. CA(1) .NE. CHAR(ICIRFX)
-*
-*     IF (LSAME) RETURN
-*
-*     The characters are not identical. Now check them for equivalence.
-*     Look for the 'escape' character, circumflex, followed by the
-*     letter.
-*
-*     IVAL = ICHAR(CA(2))
-*     IF (IVAL.GE.ICHAR('A') .AND. IVAL.LE.ICHAR('Z')) THEN
-*        LSAME = CA(1) .EQ. CHAR(ICIRFX) .AND. CA(2) .EQ. CB
-*     END IF
+      LSAME = INTA.EQ.INTB
 *
 *     RETURN
 *
-*     End of LSAME.
+*     End of LSAME
 *
       END

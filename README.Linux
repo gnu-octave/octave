@@ -24,11 +24,13 @@ On my development system, I am using the following software:
 
   * Linux kernel 2.0.6
   * gcc/g++ 2.7.2
+  * g77 0.5.18
   * libg++/libstdc++ 2.7.1.0
   * libm 5.0.5
   * libc 5.2.18
   * libncurses 3.0
   * ld.so 1.7.14
+  * binutils 2.6
 
 I know from experience that the versions listed above seem to work
 well together.  But if you have a newer version of the kernel, you may
@@ -99,6 +101,11 @@ src directory using the command:
 
   ar cq libieee.a
 
+NOTE: you should fix this problem (either by editing the specs file or
+by creating the library) *before* running configure and compiling
+Octave.  Otherwise, configure may incorrectly determine that your
+system doesn't have support for some IEEE math functions.
+
 My system doesn't have g77
 --------------------------
 
@@ -140,4 +147,4 @@ jwe@bevo.che.wisc.edu
 University of Wisconsin-Madison
 Department of Chemical Engineering
 
-Thu Dec 19 13:07:46 1996
+Wed Jan 15 20:04:54 1997

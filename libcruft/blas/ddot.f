@@ -1,48 +1,49 @@
-      DOUBLE PRECISION FUNCTION DDOT(N,DX,INCX,DY,INCY)
-C
-C     FORMS THE DOT PRODUCT OF TWO VECTORS.
-C     USES UNROLLED LOOPS FOR INCREMENTS EQUAL TO ONE.
-C     JACK DONGARRA, LINPACK, 3/11/78.
-C
-      DOUBLE PRECISION DX(1),DY(1),DTEMP
-      INTEGER I,INCX,INCY,IX,IY,M,MP1,N
-C
-      DDOT = 0.0D0
-      DTEMP = 0.0D0
-      IF(N.LE.0)RETURN
-      IF(INCX.EQ.1.AND.INCY.EQ.1)GO TO 20
-C
-C        CODE FOR UNEQUAL INCREMENTS OR EQUAL INCREMENTS
-C          NOT EQUAL TO 1
-C
-      IX = 1
-      IY = 1
-      IF(INCX.LT.0)IX = (-N+1)*INCX + 1
-      IF(INCY.LT.0)IY = (-N+1)*INCY + 1
-      DO 10 I = 1,N
-        DTEMP = DTEMP + DX(IX)*DY(IY)
-        IX = IX + INCX
-        IY = IY + INCY
-   10 CONTINUE
-      DDOT = DTEMP
-      RETURN
-C
-C        CODE FOR BOTH INCREMENTS EQUAL TO 1
-C
-C
-C        CLEAN-UP LOOP
-C
-   20 M = MOD(N,5)
-      IF( M .EQ. 0 ) GO TO 40
-      DO 30 I = 1,M
-        DTEMP = DTEMP + DX(I)*DY(I)
-   30 CONTINUE
-      IF( N .LT. 5 ) GO TO 60
-   40 MP1 = M + 1
-      DO 50 I = MP1,N,5
-        DTEMP = DTEMP + DX(I)*DY(I) + DX(I + 1)*DY(I + 1) +
-     *   DX(I + 2)*DY(I + 2) + DX(I + 3)*DY(I + 3) + DX(I + 4)*DY(I + 4)
-   50 CONTINUE
-   60 DDOT = DTEMP
-      RETURN
-      END
+      double precision function ddot(n,dx,incx,dy,incy)
+c
+c     forms the dot product of two vectors.
+c     uses unrolled loops for increments equal to one.
+c     jack dongarra, linpack, 3/11/78.
+c     modified 12/3/93, array(1) declarations changed to array(*)
+c
+      double precision dx(*),dy(*),dtemp
+      integer i,incx,incy,ix,iy,m,mp1,n
+c
+      ddot = 0.0d0
+      dtemp = 0.0d0
+      if(n.le.0)return
+      if(incx.eq.1.and.incy.eq.1)go to 20
+c
+c        code for unequal increments or equal increments
+c          not equal to 1
+c
+      ix = 1
+      iy = 1
+      if(incx.lt.0)ix = (-n+1)*incx + 1
+      if(incy.lt.0)iy = (-n+1)*incy + 1
+      do 10 i = 1,n
+        dtemp = dtemp + dx(ix)*dy(iy)
+        ix = ix + incx
+        iy = iy + incy
+   10 continue
+      ddot = dtemp
+      return
+c
+c        code for both increments equal to 1
+c
+c
+c        clean-up loop
+c
+   20 m = mod(n,5)
+      if( m .eq. 0 ) go to 40
+      do 30 i = 1,m
+        dtemp = dtemp + dx(i)*dy(i)
+   30 continue
+      if( n .lt. 5 ) go to 60
+   40 mp1 = m + 1
+      do 50 i = mp1,n,5
+        dtemp = dtemp + dx(i)*dy(i) + dx(i + 1)*dy(i + 1) +
+     *   dx(i + 2)*dy(i + 2) + dx(i + 3)*dy(i + 3) + dx(i + 4)*dy(i + 4)
+   50 continue
+   60 ddot = dtemp
+      return
+      end

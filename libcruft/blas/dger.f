@@ -1,6 +1,3 @@
-*
-************************************************************************
-*
       SUBROUTINE DGER  ( M, N, ALPHA, X, INCX, Y, INCY, A, LDA )
 *     .. Scalar Arguments ..
       DOUBLE PRECISION   ALPHA

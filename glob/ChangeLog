@@ -1,3 +1,7 @@
+2002-10-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* fnmatch.h, glob.h, fnmatch.c, glob.c: Update to latest GNU sources.
+
 2002-05-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in: Add AC_CONFIG_HEADERS.

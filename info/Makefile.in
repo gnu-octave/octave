@@ -1,5 +1,5 @@
 # Makefile for texinfo/info.	-*- Indented-Text -*-
-# $Id: Makefile.in,v 1.38 1997-01-26 04:40:02 jwe Exp $
+# $Id: Makefile.in,v 1.39 1997-02-26 18:32:20 jwe Exp $
 # 
 # Copyright (C) 1993,96 Free Software Foundation, Inc.
 
@@ -155,7 +155,7 @@ distclean: clean texclean
 
 mostlyclean: clean
 
-realclean: distclean
+maintainer-clean realclean: distclean
 	$(RM) info.info info-stnd.info
 
 dist: all-info all-dvi

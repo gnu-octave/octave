@@ -206,6 +206,8 @@ endif
 all: stamp-prereq libraries stamp-oct-links octave DOCSTRINGS
 .PHONY: all
 
+objects: $(OBJECTS)
+
 stamp-oct-links: $(OCT_FILES)
 	if [ -n "$(OCT_FILES)" ]; then \
 	  $(srcdir)/mk-oct-links . $(addprefix $(srcdir)/, $(DLD_SRC)); \

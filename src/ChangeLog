@@ -1,5 +1,7 @@
 2000-03-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Makefile.in (objects): New target
+
 	* c_file_ptr_stream.h, c_file_ptr_stream.cc: New files.
 	* oct-stdstrm.h, oct-stdstrm.cc, oct-prcstrm.cc:
 	Use c_file_ptr_buf, i_c_file_ptr_stream, and o_c_fie_ptr_stream

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996, 1997 John W. Eaton
+Copyright (C) 2000 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,26 +20,18 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-#if !defined (octave_liboctave_utils_h)
-#define octave_liboctave_utils_h 1
-
-#include <cstdio>
-
-#include <string>
-
-extern int NINT (double x);
-extern double D_NINT (double x);
-
-extern char *strsave (const char *);
-
-extern void octave_putenv (const std::string&, const std::string&);
-
-extern std::string octave_fgets (std::FILE *);
-
-extern "C" void octave_qsort (void *base, size_t n, size_t size,
-			      int (*cmp) (const void *, const void *));
-
+#ifdef HAVE_CONFIG_H
+#include <config.h>
 #endif
+
+#include <stdlib.h>
+
+void
+octave_qsort (void *base, size_t n, size_t size,
+	      int (*cmp) (const void *, const void *))
+{
+  qsort (base, n, size, cmp);
+}
 
 /*
 ;;; Local Variables: ***

@@ -29,7 +29,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include <cassert>
-#include <cstdlib>
+
+#include "lo-utils.h"
 
 class idx_vector;
 
@@ -84,7 +85,7 @@ protected:
 
     void qsort (int (*compare) (const void *, const void *))
       {
-	::qsort (data, static_cast<size_t> (len), sizeof (T), compare);
+	octave_qsort (data, static_cast<size_t> (len), sizeof (T), compare);
       }
   };
 

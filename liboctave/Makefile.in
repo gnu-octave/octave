@@ -88,7 +88,7 @@ SOURCES := Bounds.cc CollocWt.cc DAE.cc DASSL.cc FEGrid.cc LinConst.cc \
 	LPsolve.cc LSODE.cc NLEqn.cc Quad.cc Range.cc cmd-edit.cc \
 	cmd-hist.cc data-conv.cc dir-ops.cc f2c-main.c file-ops.cc \
 	file-stat.cc filemode.c getopt.c getopt1.c glob-match.cc \
-	idx-vector.cc lo-ieee.cc lo-mappers.cc lo-specfun.cc \
+	idx-vector.cc lo-cutils.c lo-ieee.cc lo-mappers.cc lo-specfun.cc \
 	lo-sysdep.cc lo-utils.cc mach-info.cc mkdir.c oct-alloc.cc \
 	oct-env.cc oct-getopt.c oct-group.cc oct-kpse.c oct-passwd.cc \
 	oct-rl-edit.c oct-rl-hist.c oct-shlib.cc oct-syscalls.cc \
@@ -127,6 +127,8 @@ endif
 
 all: libraries
 .PHONY: all
+
+objects: $(OBJECTS)
 
 stmp-pic: pic
 	@if [ -f stmp-pic ]; then \

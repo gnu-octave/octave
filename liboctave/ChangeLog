@@ -1,3 +1,12 @@
+2000-03-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in: (objects): New target.
+
+	* lo-cutils.c: New file.
+	* Makefile.in (SOURCES): Add it to the list.
+	* lo-utils.h: Declare octave_qsort here.
+	* Array.h (Array::qsort): Use it here.
+
 2000-03-08  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-time.cc: Include <sys/types.h> and <unistd.h>, if available.

@@ -1,3 +1,8 @@
+Tue Jul 30 12:55:43 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* aclocal.m4 (OCTAVE_FLIBS): Also check for -bI:FILE arg to ld,
+	for AIX systems.
+
 Thu Jul 25 03:09:29 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in: On AIX systems, add "-ll -lld" to LIBDLFCN.

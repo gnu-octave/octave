@@ -163,6 +163,19 @@ for arg in $foutput; do
 	    lflags="$lflags $arg"
 	  fi
 	;;
+	-bI:*)
+	  exists=false
+	  for f in $lflags; do
+	    if test x$arg = x$f; then
+	      exists=true
+	    fi
+	  done
+	  if $exists; then
+	    arg=
+	  else
+	    lflags="$lflags -Xlinker $arg"
+	  fi
+	;;
 	-lang*)
 	  arg=
 	;;

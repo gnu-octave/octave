@@ -35,7 +35,7 @@ function X = bitget (A, n)
   endif
 
   if (isa (A, "double"))
-    Amax = log2 (Bmax) + 1;
+    Amax = log2 (bitmax) + 1;
     _conv = @double;
   else
     if (isa (A, "uint8"))

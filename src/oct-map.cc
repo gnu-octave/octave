@@ -124,7 +124,7 @@ concat (const Octave_map& ra, const Octave_map& rb, const Array<int>& ra_idx)
 	{
 	  Octave_map::const_iterator pb = rb.seek (ra.key(pa));
 
-	  if (pa == rb.end ())
+	  if (pb == rb.end ())
 	    {
 	      error ("field name mismatch in structure concatenation");
 	      break;

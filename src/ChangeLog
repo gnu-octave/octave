@@ -1,3 +1,10 @@
+2003-04-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* load-save.cc (hdf5_read_next_data): Extract list before
+	assigning to map element.
+	(add_hdf5_data): Prefix faked names with '_' so they are valid
+	identifiers.
+
 2003-03-24  Mats Jansson  <mats.e.jansson@home.se>
 
 	* syscalls.cc (Fkill): Fixed docstring typo.

@@ -1741,7 +1741,14 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
 	  if (is_list)
 	    lst.append (dsub.tc);
 	  else
-	    m [dsub.name] = dsub.tc;
+	    {
+	      octave_value ov = dsub.tc;
+
+	      if (ov.is_list ())
+		m [dsub.name] = ov.list_value ();
+	      else
+		m [dsub.name] = ov;
+	    }
 
 	  if (have_h5giterate_bug)
 	    current_item++;  // H5Giterate returned the last index processed
@@ -3953,7 +3960,7 @@ add_hdf5_data (hid_t loc_id, const octave_value& tc,
 	{
 	  // should we use lst.name_tags () to label the elements?
 	  char s[20];
-	  sprintf (s, "%d", i);
+	  sprintf (s, "_%d", i);
 	  bool retval2 = add_hdf5_data (data_id, lst (i), s, "",
 					false, save_as_floats);
 	  if (! retval2)

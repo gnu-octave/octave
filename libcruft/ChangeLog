@@ -1,3 +1,17 @@
+2002-11-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* misc/Makefile.in: Handle automatic dependency generation for
+	C/C++ source files.
+
+	* misc/quit.h (INCREMENT_OCTAVE_INTERRUPT_IMMEDIATELY,
+	DECREMENT_OCTAVE_INTERRUPT_IMMEDIATELY,
+	SET_OCTAVE_INTERRUPT_IMMEDIATELY): New macros.
+	(BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE,
+	BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE): Use them.
+	* f77-fcn.h (F77_XFCN): Likewise.
+
+	* misc/quit.cc: Include <cstring> for memcpy decl.
+
 2002-11-06  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* misc/f77-fcn.h (F77_XFCN): Adapt to new signal/exception

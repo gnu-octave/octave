@@ -52,6 +52,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #endif
 
+#include "oct-snprintf.h"
+
 void
 octave_sleep (unsigned int seconds)
 {
@@ -122,14 +124,9 @@ octave_strncasecmp (const char *s1, const char *s2, size_t n)
 // We manage storage.  User should not free it, and its contents are
 // only valid until next call to vsnprintf.
 
-#if defined __GNUC__ && __GNUC__ >= 3
-#define HAVE_C99_VSNPRINTF 1
-#endif
-
 char *
 octave_vsnprintf (const char *fmt, va_list args)
 {
-#if defined (HAVE_VSNPRINTF)
   static size_t size = 100;
 
   static char *buf = 0;
@@ -139,9 +136,7 @@ octave_vsnprintf (const char *fmt, va_list args)
   if (! buf)
     buf = malloc (size);
 
-#if defined (HAVE_C99_VSNPRINTF)
-
-  nchars = vsnprintf (buf, size, fmt, args);
+  nchars = portable_vsnprintf (buf, size, fmt, args);
 
   if (nchars >= size)
     {
@@ -153,31 +148,6 @@ octave_vsnprintf (const char *fmt, va_list args)
 
       return buf;
     }
-
-#else
-
-  while (1)
-    {
-      nchars = vsnprintf (buf, size, fmt, args);
-
-      if (nchars > -1)
-	return buf;
-      else
-	{
-	  size *= 2;
-
-	  buf = realloc (buf, size);
-
-	  if (! buf)
-	    return 0;
-	}
-    }
-
-#endif
-
-#else
-  return 0;
-#endif
 }
 
 char *

@@ -171,10 +171,10 @@ main_loop (void)
 	{
 	  unwind_protect::run_all ();
 	  can_interrupt = true;
-	  octave_interrupt_immediately = 0;
+	  SET_OCTAVE_INTERRUPT_IMMEDIATELY (0);
 	  octave_interrupt_state = 0;
-	  std::cout << "\n"; \
-	  octave_restore_signal_mask (); \
+	  std::cout << "\n";
+	  octave_restore_signal_mask ();
 	  octave_catch_interrupts ();
 	}
     }

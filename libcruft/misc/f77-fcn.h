@@ -66,9 +66,9 @@ extern "C" {
 	} \
       else \
         { \
-	  octave_interrupt_immediately++; \
+	  INCREMENT_OCTAVE_INTERRUPT_IMMEDIATELY; \
 	  F77_FUNC (f, F) args; \
-	  octave_interrupt_immediately--; \
+	  DECREMENT_OCTAVE_INTERRUPT_IMMEDIATELY; \
           octave_restore_current_context ((char *) saved_context); \
         } \
     } \

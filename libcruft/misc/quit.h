@@ -81,6 +81,15 @@ extern void octave_throw_interrupt_exception (void) GCC_ATTR_NORETURN;
 
 #define OCTAVE_CATCH_INTERRUPTS catch (octave_interrupt_exception)
 
+#define INCREMENT_OCTAVE_INTERRUPT_IMMEDIATELY \
+  do { octave_interrupt_immediately++; } while (0)
+
+#define DECREMENT_OCTAVE_INTERRUPT_IMMEDIATELY \
+  do { octave_interrupt_immediately--; } while (0)
+
+#define SET_OCTAVE_INTERRUPT_IMMEDIATELY(x) \
+  do { octave_interrupt_immediately = x; } while (0)
+
 #define BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE \
   do \
     { \
@@ -95,10 +104,10 @@ extern void octave_throw_interrupt_exception (void) GCC_ATTR_NORETURN;
 	} \
       else \
 	{ \
-	  octave_interrupt_immediately++
+	  INCREMENT_OCTAVE_INTERRUPT_IMMEDIATELY
 
 #define END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE \
-          octave_interrupt_immediately--; \
+	  DECREMENT_OCTAVE_INTERRUPT_IMMEDIATELY; \
           octave_restore_current_context ((char *) saved_context); \
         } \
     } \
@@ -115,6 +124,10 @@ extern void octave_throw_interrupt_exception (void) GCC_ATTR_NORETURN;
 #define OCTAVE_TRY_WITH_INTERRUPTS
 
 #define OCTAVE_CATCH_INTERRUPTS if (0)
+
+#define INCREMENT_OCTAVE_INTERRUPT_IMMEDIATELY do { } while (0)
+
+#define DECREMENT_OCTAVE_INTERRUPT_IMMEDIATELY do { } while (0)
 
 #define BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE do { } while (0)
 

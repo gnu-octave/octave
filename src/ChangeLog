@@ -1,3 +1,20 @@
+2002-11-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* cutils.c (octave_vsnprintf): Use portable_snprintf to avoid
+	having to cope with all kinds of buggy implementations.
+
+	* snprintf.c: New file.
+	* Makefile.in (DISTFILES): Add it to the list.
+
+	* oct-snprintf.h: New file.
+	* Makefile.in (INCLUDES): Add it to the list.
+
+	* oct-snprintf.c: New file.
+	* Makefile.in (DIST_SRC): Add it to the list.
+
+	* toplev.cc (main_loop): Use SET_OCTAVE_INTERRUPT_IMMEDIATELY
+	instead of assigning octave_interrupt_immediately.
+
 2002-11-06  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* utils.cc (jump_to_top_level): Delete.

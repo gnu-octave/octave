@@ -84,10 +84,10 @@ INCLUDES := BaseSLList.h Cell.h DLList.h Map.h Pix.h SLList.h \
 	defun-int.h defun.h dirfns.h dynamic-ld.h error.h file-io.h \
 	fn-cache.h gripes.h help.h input.h lex.h load-save.h \
 	oct-fstrm.h oct-hist.h oct-iostrm.h oct-map.h oct-obj.h \
-	oct-prcstrm.h oct-procbuf.h oct-stdstrm.h oct-stream.h \
-	oct-strstrm.h oct-lvalue.h oct.h octave.h ops.h pager.h parse.h \
-	pr-output.h procstream.h sighandlers.h siglist.h symtab.h \
-	sysdep.h token.h toplev.h unwind-prot.h utils.h \
+	oct-prcstrm.h oct-procbuf.h oct-snprintf.h oct-stdstrm.h \
+	oct-stream.h oct-strstrm.h oct-lvalue.h oct.h octave.h \
+	ops.h pager.h parse.h pr-output.h procstream.h sighandlers.h \
+	siglist.h symtab.h sysdep.h token.h toplev.h unwind-prot.h utils.h \
 	variables.h version.h xdiv.h xpow.h $(OV_INCLUDES) $(PT_INCLUDES)
 
 TI_XSRC := Array-oc.cc Array-os.cc Array-sym.cc Array-tc.cc Map-fnc.cc \
@@ -131,8 +131,9 @@ DIST_SRC := BaseSLList.cc Cell.cc DLList.cc Map.cc SLList.cc \
 	help.cc input.cc lex.l load-save.cc main.c mappers.cc \
 	matherr.c oct-fstrm.cc oct-hist.cc oct-iostrm.cc \
 	oct-map.cc oct-obj.cc oct-prcstrm.cc oct-procbuf.cc \
-	oct-stdstrm.cc oct-stream.cc oct-strstrm.cc oct-lvalue.cc \
-	pager.cc parse.y pr-output.cc procstream.cc sighandlers.cc \
+	oct-snprintf.c oct-stdstrm.cc oct-stream.cc \
+	oct-strstrm.cc oct-lvalue.cc pager.cc parse.y \
+	pr-output.cc procstream.cc sighandlers.cc \
 	siglist.c strcasecmp.c strncase.c strfns.cc symtab.cc \
 	syscalls.cc sysdep.cc system.c token.cc toplev.cc \
 	unwind-prot.cc utils.cc variables.cc xdiv.cc xpow.cc \
@@ -210,7 +211,7 @@ endif
 DISTFILES = Makefile.in ChangeLog mkdefs mkops mkgendoc \
 	DOCSTRINGS mkbuiltins mk-oct-links \
 	defaults.h.in oct-conf.h.in octave.gperf oct-gperf.h \
-	octave.cc parse.cc lex.cc y.tab.h \
+	octave.cc parse.cc lex.cc y.tab.h snprintf.c \
 	$(INCLUDES) $(DIST_SRC) $(OPT_HANDLERS)
 
 ifeq ($(SHARED_LIBS), true)

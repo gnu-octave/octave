@@ -200,6 +200,7 @@ redirect all input and screen output to a file.")
       write_to_diary_file = ! write_to_diary_file;
       open_diary_file ();
       break;
+
     case 2:
       {
 	char *arg = argv[1];

@@ -39,7 +39,6 @@
 	* control/base/damp.m: Ditto.
 	* control/base/dare.m: Ditto.
 	* control/base/dcgain.m: Ditto.
-	* control/base/dgkfdemo.m: Ditto.
 	* control/base/dgram.m: Ditto.
 	* control/base/dlqe.m: Ditto.
 	* control/base/dlqr.m: Ditto.
@@ -50,12 +49,6 @@
 	* control/base/freqresp.m: Ditto.
 	* control/base/gram.m: Ditto.
 	* control/base/impulse.m: Ditto.
-	* control/base/is_controllable.m: Ditto.
-	* control/base/is_detectable.m: Ditto.
-	* control/base/is_dgkf.m: Ditto.
-	* control/base/is_observable.m: Ditto.
-	* control/base/is_stabilizable.m: Ditto.
-	* control/base/is_stable.m: Ditto.
 	* control/base/lqe.m: Ditto.
 	* control/base/lqg.m: Ditto.
 	* control/base/lqr.m: Ditto.
@@ -85,6 +78,8 @@
 	* control/hinf/hinfsyn_chk.m: Ditto.
 	* control/hinf/hinfsyn_ric.m: Ditto.
 	* control/hinf/wgt1o.m: Ditto.
+	* control/hinf/dgkfdemo.m: Ditto.
+	* control/hinf/is_dgkf.m: Ditto.
 
 	* control/marsyas: New directory.
 	* control/marsyas/demomarsyas.m: Move here from control directory.
@@ -106,6 +101,11 @@
 	* control/system/is_sample.m: Ditto.
 	* control/system/is_signal_list.m: Ditto.
 	* control/system/is_siso.m: Ditto.
+	* control/system/is_controllable.m: Ditto.
+	* control/system/is_detectable.m: Ditto.
+	* control/system/is_observable.m: Ditto.
+	* control/system/is_stabilizable.m: Ditto.
+	* control/system/is_stable.m: Ditto.
 	* control/system/jet707.m: Ditto.
 	* control/system/listidx.m: Ditto.
 	* control/system/moddemo.m: Ditto.

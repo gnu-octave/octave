@@ -1,0 +1,14 @@
+#!/bin/sh
+# info-emacs-info
+# Written by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at> on 1996/07/01
+# Make Octave's `help -i' use Emacs info.
+# Requires a running Emacs and gnuserv.
+cmd="(Info-find-node \"$2\" \"Top\")"
+if [ $3 = "--directory" ];
+then
+	cmd="(add-to-list 'Info-directory-list \"$4\") $cmd"
+	shift 2
+fi
+cmd="(require 'info) $cmd"
+[ $4 ] && cmd="$cmd (Info-index \"$4\")"
+gnudoit -q $cmd

@@ -1,0 +1,13 @@
+#!/bin/sh
+# info-emacs-octave-help
+# Written by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at> on 1996/07/01
+# Make Octave's `help -i' use Emacs octave-help.
+# Requires a running Emacs and gnuserv, and installed `octave.el'.
+cmd="(require 'octave)"
+if [ $3 = "--directory" ];
+then
+	cmd="$cmd (add-to-list 'Info-directory-list \"$4\")"
+	shift 2
+fi
+cmd="$cmd (octave-help \"$4\")"
+gnudoit -q $cmd

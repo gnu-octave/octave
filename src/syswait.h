@@ -29,8 +29,23 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <sys/types.h>
 #endif
 
-#ifdef HAVE_SYS_WAIT_H
+#if defined (NeXT) && ! defined (_POSIX_SOURCE))
+#define HAVE_SYS_WAIT_H
+#endif
+
+#if defined HAVE_SYS_WAIT_H
 #include <sys/wait.h>
+#endif
+
+#if defined (NeXT)
+#define HAVE_WAITPID 1
+#define waitpid(a, b, c) \
+  wait4 ((a) == -1 ? 0 : (a), (union wait *)(b), c, 0)
+
+// Use the defaults below
+#undef WIFEXITED
+#undef WEXITSTATUS
+#undef WIFSIGNALLED
 #endif
 
 // NeXT has sys/wait.h, but it is not compatible with POSIX.1, so we

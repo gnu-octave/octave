@@ -1,3 +1,9 @@
+Fri Feb 28 01:56:52 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in (f77_rules_frag): Set default value to /dev/null
+	and redfine as needed.
+	(bsd_gcc_kluge_targets_frag): Likewise.
+
 Wed Feb 26 12:17:05 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* octMakefile.in (maintainer-clean): Delete some more stuff.

@@ -353,6 +353,11 @@ Default value: @code{" "}.
 
 Default value: @code{[]}.
 
+@item default_save_format
+@xref{Simple File I/O}.
+
+Default value: @code{"ascii"}.
+
 @item do_fortran_indexing
 @xref{Index Expressions}.
 

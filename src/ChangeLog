@@ -1,3 +1,10 @@
+Fri Feb 28 01:49:48 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* syswait.h: Include sys/wait.h on NeXT systems, but don't use the
+	WIFEXTED, WEXITSTATUS, and WIFSIGNALLED macros defined there.
+	Also define waitpid in terms of wait4.  From Rex A. Dieter
+	<rdieter@math.unl.edu>.
+
 Wed Feb 26 16:43:31 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-stream.cc (octave_base_stream::do_scanf): Don't report an

@@ -1,3 +1,8 @@
+Thu May 15 11:46:42 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* cmd-edit.cc (command_editor::increment_current_command_number):
+	New static function.
+
 Mon May 12 02:14:13 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* idx-vector.cc (IDX_VEC_REP::is_colon_equiv): Make it work when

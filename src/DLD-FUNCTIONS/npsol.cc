@@ -36,7 +36,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gripes.h"
 #include "help.h"
 #include "oct-obj.h"
-#include "oct-sym.h"
+#include "ov-fcn.h"
 #include "pager.h"
 #include "utils.h"
 #include "variables.h"
@@ -44,8 +44,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef NPSOL_MISSING
 
 // Global pointers for user defined functions required by npsol.
-static octave_symbol *npsol_objective;
-static octave_symbol *npsol_constraints;
+static octave_function *npsol_objective;
+static octave_function *npsol_constraints;
 
 static NPSOL_options npsol_opts;
 
@@ -77,7 +77,7 @@ npsol_objective_function (const ColumnVector& x)
   octave_value objective_value;
   if (npsol_objective)
     {
-      octave_value_list tmp = npsol_objective->eval (1, args);
+      octave_value_list tmp = npsol_objective->do_index_op (1, args);
 
       if (error_state)
 	{
@@ -146,7 +146,7 @@ npsol_constraint_function (const ColumnVector& x)
 
   if (npsol_constraints)
     {
-      octave_value_list tmp = npsol_constraints->eval (1, args);
+      octave_value_list tmp = npsol_constraints->do_index_op (1, args);
 
       if (error_state)
 	{

@@ -33,11 +33,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // time.
 //
 // If Octave is not configured for dynamic linking of builtin
-// functions, this is similar to DEFUN, except that it will generate
-// an extra static struct and an extra externally visible function.
+// functions, this is the same as DEFUN, except that it will generate
+// an extra externally visible function.
 //
-// The first DECLARE_FUN is for the struct, the second is for the
-// definition of the function.
+// The first DECLARE_FUN is for the benefit of the installer function
+// and the second is for the definition of the function.
 
 #if defined (MAKE_BUILTINS)
 #if ! (defined (OCTAVE_LITE) && defined (WITH_DYNAMIC_LINKING))
@@ -47,7 +47,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #else
 #define DEFUN_DLD(name, args_name, nargout_name, doc) \
   DECLARE_FUN (name, args_name, nargout_name); \
-  DEFINE_FUN_STRUCT_FUN (name, doc) \
+  DEFINE_FUN_INSTALLER_FUN (name, doc) \
   DECLARE_FUN (name, args_name, nargout_name)
 #endif
 

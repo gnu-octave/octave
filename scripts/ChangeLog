@@ -1,3 +1,7 @@
+Mon May 12 02:04:01 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* specfun/erfinv.m: Add missing semicolon.
+
 Wed Apr  2 22:04:03 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* miscellaneous/xor.m: Make type of return value logical.

@@ -32,9 +32,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov.h"
 #include "pt-mat.h"
 
-template class SLNode<tree_matrix_row *>;
-template class SLList<tree_matrix_row *>;
-
 template class SLNode<tree_matrix *>;
 template class SLList<tree_matrix *>;
 

@@ -1,5 +1,5 @@
 set test error-1
-set prog_output "error: foo\nerror: evaluating index expression near line 1, column 15\nerror: called from `g'\nerror: called from `f'"
+set prog_output "error: foo\nerror: called from `g'\nerror: called from `f'"
 do_test error-1.m
 
 set test error-2

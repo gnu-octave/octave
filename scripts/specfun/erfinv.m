@@ -45,7 +45,7 @@ function y = erfinv (x)
   
   i = find ((x > -1) & (x < 1));
   if any (i)
-    s = sqrt (pi) / 2
+    s = sqrt (pi) / 2;
     z_old = ones (length (i), 1);
     z_new = zeros (length (i), 1);
     while (any (any (abs (z_new - z_old) > 2 * eps)))

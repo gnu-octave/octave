@@ -36,16 +36,16 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gripes.h"
 #include "help.h"
 #include "oct-obj.h"
-#include "oct-sym.h"
+#include "ov-fcn.h"
 #include "pager.h"
 #include "utils.h"
 #include "variables.h"
 
 // Global pointer for user defined function required by lsode.
-static octave_symbol *lsode_fcn;
+static octave_function *lsode_fcn;
 
 // Global pointer for optional user defined jacobian function used by lsode.
-static octave_symbol *lsode_jac;
+static octave_function *lsode_jac;
 
 static LSODE_options lsode_opts;
 
@@ -67,7 +67,7 @@ lsode_user_function (const ColumnVector& x, double t)
 
   if (lsode_fcn)
     {
-      octave_value_list tmp = lsode_fcn->eval (1, args);
+      octave_value_list tmp = lsode_fcn->do_index_op (1, args);
 
       if (error_state)
 	{
@@ -107,7 +107,7 @@ lsode_user_jacobian (const ColumnVector& x, double t)
 
   if (lsode_jac)
     {
-      octave_value_list tmp = lsode_jac->eval (1, args);
+      octave_value_list tmp = lsode_jac->do_index_op (1, args);
 
       if (error_state)
 	{

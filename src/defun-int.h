@@ -23,7 +23,27 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_defun_int_h)
 #define octave_defun_int_h 1
 
-#include "oct-builtin.h"
+#include <string>
+
+class octave_value;
+
+// XXX FIXME XXX -- change to use actual pointer types instead of void*
+// when things are not changing as rapidly.
+
+extern void
+install_builtin_mapper (void *mf);
+
+extern void
+install_builtin_function (void *f, const string& name, const string& doc,
+			  bool is_text_fcn = false);
+
+extern void
+install_builtin_variable (const string& n, const octave_value& v,
+			  bool iaf, bool p, bool e, void *svf,
+			  const string& h);
+
+extern void
+alias_builtin (const string& alias, const string& name);
 
 // MAKE_BUILTINS is defined to extract function names and related
 // information and create the *.def files that are eventually used to
@@ -38,8 +58,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define DEFUN_INTERNAL(name, args_name, nargout_name, is_text_fcn, doc) \
   BEGIN_INSTALL_BUILTIN \
     extern DECLARE_FUN (name, args_name, nargout_name); \
-    install_builtin_function \
-      (new octave_builtin (F ## name, #name, doc), is_text_fcn); \
+    install_builtin_function (F ## name, #name, doc, is_text_fcn); \
   END_INSTALL_BUILTIN
 
 // Generate code for making another name for an existing function.
@@ -66,18 +85,33 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Define the structure that will be used to insert this function into
 // the symbol table.
 
-#define DEFINE_FUN_STRUCT_FUN(name, doc) \
-  octave_builtin * \
+#define DEFINE_FUN_INSTALLER_FUN(name, doc) \
+  bool \
   FS ## name (void) \
   { \
-    static octave_builtin *s = 0; \
-    if (! s) \
-      s = new octave_builtin (F ## name, #name, doc); \
-    return s; \
+    static bool installed = false; \
+    if (! installed) \
+      install_builtin_function (F ## name, #name, doc); \
+    return installed; \
   }
 
 #define DECLARE_FUN(name, args_name, nargout_name) \
-  octave_value_list F ## name (const octave_value_list& args_name, int nargout_name)
+  octave_value_list \
+  F ## name (const octave_value_list& args_name, int nargout_name)
+
+// How builtin variables are actually installed.
+
+#define DEFVAR_INTERNAL(name, sname, defn, inst_as_fcn, protect, sv_fcn, doc) \
+  install_builtin_variable (name, octave_value (defn), inst_as_fcn, \
+			    protect, (sv_fcn != 0), sv_fcn, doc)
+
+// How mapper functions are actually installed.
+
+#define DEFUN_MAPPER_INTERNAL(name, ch_map, d_d_map, d_c_map, c_c_map, \
+			      lo, hi, can_ret_cmplx_for_real, doc) \
+  install_builtin_mapper \
+    (new octave_mapper (ch_map, d_d_map, d_c_map, c_c_map, lo, hi, \
+			can_ret_cmplx_for_real, #name))
 
 #endif
 

@@ -35,13 +35,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gripes.h"
 #include "help.h"
 #include "oct-obj.h"
-#include "oct-sym.h"
+#include "ov-fcn.h"
 #include "pager.h"
 #include "utils.h"
 #include "variables.h"
 
 // Global pointer for user defined function required by dassl.
-static octave_symbol *dassl_fcn;
+static octave_function *dassl_fcn;
 
 static DASSL_options dassl_opts;
 
@@ -83,7 +83,7 @@ dassl_user_function (const ColumnVector& x, const ColumnVector& xdot, double t)
 
   if (dassl_fcn)
     {
-      octave_value_list tmp = dassl_fcn->eval (1, args);
+      octave_value_list tmp = dassl_fcn->do_index_op (1, args);
 
       if (error_state)
 	{

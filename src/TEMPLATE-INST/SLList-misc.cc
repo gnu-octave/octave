@@ -34,6 +34,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov.h"
 #include "pt-misc.h"
 
+template class SLNode<tree_argument_list *>;
+template class SLList<tree_argument_list *>;
+
 template class SLNode<tree_statement *>;
 template class SLList<tree_statement *>;
 

@@ -190,9 +190,9 @@ distclean: clean
 	rm -f Makefile 
 .PHONY: distclean
 
-maintainer-clean: distclean
+maintainer-clean: distclean clean-texi
 	rm -f tags TAGS octave.info octave.info-* octave.dvi octave.ps
-	rm -f octave_*.html $(TEXINFO)
+	rm -f octave_*.html
 .PHONY: maintainer-clean
 
 clean-texi:

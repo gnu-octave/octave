@@ -202,7 +202,8 @@ OCTAVE_LIBS += $(LIBKPATHSEA)
 endif
 
 ifeq ($(INCLUDE_LINK_DEPS),true)
-  OCTINTERP_LINK_DEPS = -L../liboctave $(LIBOCTAVE) -L../libcruft $(LIBCRUFT)
+  OCTINTERP_LINK_DEPS = \
+    -L../liboctave $(LIBOCTAVE) -L../libcruft $(LIBCRUFT) $(FLIBS)
   OCT_LINK_DEPS = \
     -L../libcruft $(LIBCRUFT) -L../liboctave $(LIBOCTAVE) \
     -L. $(LIBOCTINTERP) $(BLAS_LIBS) $(FFTW_LIBS) $(FLIBS)

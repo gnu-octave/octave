@@ -111,25 +111,32 @@ tree_statement::eval (bool silent, int nargout, bool in_function_body)
 	  // or not the expression will take care of binding ans and
 	  // printing the result.
 
+	  // XXX FIXME XXX -- it seems that we should just have to
+	  // call expr->rvalue () and that should take care of
+	  // everything, binding ans as necessary?
+
 	  bool do_bind_ans = false;
+
+	  bool script_file_executed = false;
 
 	  if (expr->is_identifier ())
 	    {
-	      bool script_file_executed = false;
-
 	      tree_identifier *id = static_cast<tree_identifier *> (expr);
 
-	      id->do_lookup (script_file_executed, false);
+	      id->do_lookup (script_file_executed, true);
 
 	      do_bind_ans = id->is_function ();
 	    }
 	  else
 	    do_bind_ans = (! expr->is_assignment_expression ());
 
-	  retval = expr->rvalue (nargout);
+	  if (! script_file_executed)
+	    {
+	      retval = expr->rvalue (nargout);
 
-	  if (do_bind_ans && ! (error_state || retval.empty ()))
-	    bind_ans (retval(0), pf);
+	      if (do_bind_ans && ! (error_state || retval.empty ()))
+		bind_ans (retval(0), pf);
+	    }
 	}
 
       unwind_protect::run ();

@@ -67,7 +67,7 @@ public:
   int idx_vector::length (void) const { return len; }
 
   int idx_vector::elem (int n) const { return data[n]; }
-
+  int idx_vector::checkelem (int n) const;
   int idx_vector::operator () (int n) const { return checkelem (n); }
 
   int idx_vector::max (void) const { return max_val; }

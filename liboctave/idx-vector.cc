@@ -273,12 +273,6 @@ idx_vector::convert_one_zero_to_idx (void)
     }
 }
 
-static inline int
-intcmp (int *i, int *j)
-{
-  return (*i - *j);
-}
-
 int
 idx_vector::checkelem (int n) const
 {
@@ -289,6 +283,12 @@ idx_vector::checkelem (int n) const
     }
 
   return elem (n);
+}
+
+static inline int
+intcmp (int *i, int *j)
+{
+  return (*i - *j);
 }
 
 void

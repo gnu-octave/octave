@@ -1,46 +1,46 @@
-set test is_struct-1
+set test isstruct-1
 set prog_output "ans = 0"
-do_test is_struct-1.m
+do_test isstruct-1.m
 
-set test is_struct-2
+set test isstruct-2
 set prog_output "ans = 0"
-do_test is_struct-2.m
+do_test isstruct-2.m
 
-set test is_struct-3
+set test isstruct-3
 set prog_output "ans = 0"
-do_test is_struct-3.m
+do_test isstruct-3.m
 
-set test is_struct-4
+set test isstruct-4
 set prog_output "ans = 0"
-do_test is_struct-4.m
+do_test isstruct-4.m
 
-set test is_struct-5
+set test isstruct-5
 set prog_output "ans = 0"
-do_test is_struct-5.m
+do_test isstruct-5.m
 
-set test is_struct-6
+set test isstruct-6
 set prog_output "ans = 0"
-do_test is_struct-6.m
+do_test isstruct-6.m
 
-set test is_struct-7
+set test isstruct-7
 set prog_output "ans = 0"
-do_test is_struct-7.m
+do_test isstruct-7.m
 
-set test is_struct-8
+set test isstruct-8
 set prog_output "ans = 1"
-do_test is_struct-8.m
+do_test isstruct-8.m
 
-set test is_struct-9
+set test isstruct-9
 set prog_output "ans = 1"
-do_test is_struct-9.m
+do_test isstruct-9.m
 
-set test is_struct-10
-set prog_output "\n... is_struct:.*"
-do_test is_struct-10.m
+set test isstruct-10
+set prog_output "\n... isstruct:.*"
+do_test isstruct-10.m
 
-set test is_struct-11
-set prog_output "\n... is_struct:.*"
-do_test is_struct-11.m
+set test isstruct-11
+set prog_output "\n... isstruct:.*"
+do_test isstruct-11.m
 
 set test struct_contains-1
 set prog_output "ans = 1"

@@ -20,21 +20,21 @@ set test beta-3
 set prog_output "error:.*"
 do_test beta-3.m
 
-set test betai-1
+set test betainc-1
 set prog_output "ans = 1"
-do_test betai-1.m
+do_test betainc-1.m
 
-set test betai-2
+set test betainc-2
 set prog_output "error:.*"
-do_test betai-2.m
+do_test betainc-2.m
 
-set test betai-3
+set test betainc-3
 set prog_output "error:.*"
-do_test betai-3.m
+do_test betainc-3.m
 
-set test betai-4
+set test betainc-4
 set prog_output "error:.*"
-do_test betai-4.m
+do_test betainc-4.m
 
 set test ceil-1
 set prog_output "ans = 1"
@@ -128,9 +128,9 @@ set test gamma-3
 set prog_output "error:.*"
 do_test gamma-3.m
 
-set test gammai-1
+set test gammainc-1
 set prog_output "ans = 1"
-do_test gammai-1.m
+do_test gammainc-1.m
 
 set test gcd-1
 set prog_output "ans = 1"

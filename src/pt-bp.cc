@@ -79,10 +79,10 @@ tree_breakpoint::visit_while_command (tree_while_command& cmd)
   if (expr)
     expr->accept (*this);
 
-  tree_statement_list *list = cmd.body ();
+  tree_statement_list *lst = cmd.body ();
 
-  if (list)
-    list->accept (*this);
+  if (lst)
+    lst->accept (*this);
 }
 
 void
@@ -243,10 +243,10 @@ tree_breakpoint::visit_simple_for_command (tree_simple_for_command& cmd)
   if (expr)
     expr->accept (*this);
 
-  tree_statement_list *list = cmd.body ();
+  tree_statement_list *lst = cmd.body ();
 
-  if (list)
-    list->accept (*this);
+  if (lst)
+    lst->accept (*this);
 }
 
 void 
@@ -263,10 +263,10 @@ tree_breakpoint::visit_complex_for_command (tree_complex_for_command& cmd)
   if (expr)
     expr->accept (*this);
 
-  tree_statement_list *list = cmd.body ();
+  tree_statement_list *lst = cmd.body ();
 
-  if (list)
-    list->accept (*this);
+  if (lst)
+    lst->accept (*this);
 
 }
 
@@ -310,10 +310,10 @@ tree_breakpoint::visit_if_clause (tree_if_clause& cmd)
   if (expr)
     expr->accept (*this);
 
-  tree_statement_list *list = cmd.commands ();
+  tree_statement_list *lst = cmd.commands ();
 
-  if (list)
-    list->accept (*this);
+  if (lst)
+    lst->accept (*this);
 }
 
 void
@@ -322,10 +322,10 @@ tree_breakpoint::visit_if_command (tree_if_command& cmd)
   if (found)
     return;
 
-  tree_if_command_list *list = cmd.cmd_list ();
+  tree_if_command_list *lst = cmd.cmd_list ();
 
-  if (list)
-    list->accept (*this);
+  if (lst)
+    lst->accept (*this);
 }
 
 void
@@ -410,10 +410,10 @@ tree_breakpoint::visit_multi_assignment (tree_multi_assignment& expr)
   if (found)
     return;
 
-  tree_argument_list *list = expr.left_hand_side ();
+  tree_argument_list *lst = expr.left_hand_side ();
 
-  if (list)
-    list->accept (*this);
+  if (lst)
+    lst->accept (*this);
 
   tree_expression *rhs = expr.right_hand_side ();
 

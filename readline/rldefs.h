@@ -38,6 +38,10 @@ extern "C" {
 #  include "memalloc.h"
 #endif
 
+#if defined (__CYGWIN32__)
+#define _POSIX_VERSION
+#endif
+
 #define NEW_TTY_DRIVER
 #define HAVE_BSD_SIGNALS
 /* #define USE_XON_XOFF */

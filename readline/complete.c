@@ -1016,7 +1016,7 @@ username_completion_function (text, state)
      int state;
      char *text;
 {
-#if defined (__GO32__)
+#if defined (__GO32__) || defined (__CYGWIN32__)
   return (char *)NULL;
 #else /* !__GO32__ */
   static char *username = (char *)NULL;

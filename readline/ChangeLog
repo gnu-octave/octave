@@ -1,3 +1,10 @@
+Mon Dec  9 13:13:59 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* complete.c (username_completion_function) [__CYGWIN32__]:
+	Don't do anything.
+
+	* rldefs.h [__CYGWIN32__]: Define _POSIX_VERSION.
+
 Thu Dec  5 18:10:28 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* config.sub: Update to current version from FSF.

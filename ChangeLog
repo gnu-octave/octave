@@ -1,6 +1,8 @@
-Sat Mar  1 01:34:08 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+Sat Mar  1 15:23:14 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Version 2.0.5 released.
+
+Sat Mar  1 01:34:08 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* config.h.bot: Unconditionally define WITH_KPATHSEARCH.
 

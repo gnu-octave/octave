@@ -1,6 +1,11 @@
-Sat Mar  1 01:34:08 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+Sat Mar  1 15:23:14 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Version 2.0.5 released.
+
+Sat Mar  1 01:34:08 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (stamp-oct-links): New target.  Make links in build
+	directory too, so that the tests will work.
 
 	* quad.cc: If quad is defined, undefine it.
 

@@ -171,8 +171,14 @@ else
   BINDISTFILES = octave $(OCT_FILES)
 endif
 
-all: libraries $(OCT_FILES) octave
+all: libraries stamp-oct-links octave
 .PHONY: all
+
+stamp-oct-links: $(OCT_FILES)
+	if [ -n "$(OCT_FILES)" ]; then \
+	  $(srcdir)/mk-oct-links . $(addprefix $(srcdir)/, $(DLD_SRC)) ; \
+	fi
+	touch stamp-oct-links
 
 stamp-prereq: stamp-picdir defaults.h oct-conf.h
 	touch stamp-prereq

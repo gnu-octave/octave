@@ -1,5 +1,7 @@
 Wed Jun  4 00:07:29 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Makeconf.in (mk-includedir-link, mk-libdir-link): Make them work.
+
 	* configure.in (OCTAVE_PROGRAM_INVOCATION_NAME): Delete check.
 	* aclocal.m4 (OCTAVE_PROGRAM_INVOCATION_NAME): Delete macro.
 

@@ -374,14 +374,13 @@ endef
 
 define mk-includedir-link
 src=`echo $(octincludedir) | sed 's|^$(includedir)/*||'` ; \
+echo $$src ; \
 if [ "$$src" = "octave" ] ; then \
   true ; \
 else \
-  if [ -d $(includedir)/octave ] ; then \
-    true ; \
-  else \
-    cd $(includedir) ; rm -f octave && $(LN_S) $$src octave ; \
-  fi ; \
+  cd $(includedir) ; \
+  rm -f octave ; \
+  $(LN_S) $$src octave ; \
 fi
 endef
 
@@ -394,10 +393,8 @@ src=`echo $(octlibdir) | sed 's|^$(libdir)/*||'` ; \
 if [ "$$src" = "octave" ] ; then \
   true ; \
 else \
-  if [ -d $(libdir)/octave ] ; then \
-    true ; \
-  else \
-    cd $(libdir) ; rm -f octave && $(LN_S) $$src octave ; \
-  fi ; \
+  cd $(libdir) ; \
+  rm -f octave ; \
+  $(LN_S) $$src octave ; \
 fi
 endef

@@ -1,3 +1,8 @@
+2004-07-12  John W. Eaton  <jwe@octave.org>
+
+	* oct-inttypes.h (octave_int<T>::nbits): New function.
+	(bitshift (const octave_int<T>&, int)): New function.
+
 2004-06-14  John W. Eaton  <jwe@octave.org>
 
 	* mx-base.h: Include headers for new int types.

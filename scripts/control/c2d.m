@@ -71,7 +71,6 @@
 ## Updated by John Ingram for system data structure August 1996
 
 function dsys = c2d (sys, opt, T)
-
   ## parse input arguments
   if(nargin < 1 | nargin > 3)
     usage("dsys=c2d(sys[,T])");
@@ -105,43 +104,49 @@ function dsys = c2d (sys, opt, T)
 
   sys = sysupdate(sys,"ss");
   [n,nz,m,p] = sysdimensions(sys);
-
-  if (n == 0)
-    warning("c2d: sys has no continuous states; setting outputs to discrete");
+  if(n == 0)
     dsys = syssetsignals(sys,"yd",ones(1:p));
-  elseif(strcmp(opt,"ex"))
-    ## construct new state-space (a,b,c,d) for continuous subsystem
-    [csys,Acd] = syscont(sys);   	# extract continuous subsystem
-    [csys_a, csys_b, csys_c, csys_d] = sys2ss(csys);
-    [ sys_a,  sys_b,  sys_c,  sys_d] = sys2ss( sys);
-    if(isempty(Acd))                Bmat = sys_b;
-    elseif(isempty(csys_b))         Bmat = Acd;
-    else                            Bmat = [Acd, csys_b];     endif
-    
-    row_zer = columns(Bmat);
-    csysn = sysdimensions(csys);
-    col_zer = csysn + row_zer;
-
-    [csysa,csysb,csysc,csysd] = sys2ss(csys);
-    if(isempty(Bmat) )
-      warning("c2d: no inputs to continuous subsystem.");
-      mat = csysa;
-    else
-      mat = [csysa, Bmat ; zeros( row_zer,col_zer) ];
-    endif
-
-    matexp = expm(mat * T);
+  elseif(strcmp(opt,"ex"));
+    [aa,bb,cc,dd] = sys2ss(sys);
+    crng= 1:n;
+    drng = n+(1:nz);
   
-    Abar = matexp( 1:csysn , 1:(csysn + columns(Acd)) );  
-    Bbar = matexp( 1:csysn , (columns(Abar) + 1):columns(matexp) );
+    ## partition state equations into continuous, imaginary subsystems
+    Ac = aa(crng,crng);
+    Bc = bb(crng,:);
+    if(nz == 0)
+      Acd = Adc = Add = Bd = 0;
+    else
+      Acd = aa(crng,drng);
+      Adc = aa(drng,crng);
+      Add = aa(drng,drng);
+      Bd  = bb(drng,:);
+      Bc  = [Bc, Acd];   ## append discrete states as inputs to cont system
+    endif
+    
+    ## convert state equations 
+    mat = [Ac, Bc; zeros(m+nz,n+nz+m)];
+    matexp = expm(mat * T);
 
-    newnz = rows(Abar);
-    outlist = ones(1,rows(csysc));
-    [stnames,innames,outnames] = sysgetsignals(csys);
-    dsys = ss2sys(Abar,Bbar,csysc,csysd,T,0,newnz,stnames,innames, ...
-	outnames,outlist);
+    ## replace Ac
+    aa(crng,crng) = matexp(crng,crng);    ## discretized homegenous diff eqn
+
+    ## replace Bc
+    bb(crng,:)    = matexp(crng,n+(1:m));
+
+    ## replace Acd
+    if(nz)
+      aa(crng,drng) = matexp(crng,n+m+(1:nz));
+    end
+
+    stnames = sysgetsignals(sys,"st");   ## continuous states renamed below
+    innames = sysgetsignals(sys,"in");
+    outnames = sysgetsignals(sys,"out");
+    outlist = 1:p;
+    dsys = ss2sys(aa,bb,cc,dd,T,0,n+nz,stnames,innames, ...
+  	outnames,outlist);
     ## rename states
-    for ii=1:newnz
+    for ii=1:n
       strval = sprintf("%s_d",sysgetsignals(dsys,"st",ii,1));
       dsys = syssetsignals(dsys,"st",strval,ii);
     endfor

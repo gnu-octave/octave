@@ -52,7 +52,7 @@ extern "C"
 // Local function: check for empty matrix arguments.  Probably should make 
 // this available elsewhere, since tc-xxx functions do this a lot.
 
-static inline int
+int
 empty_arg (tree_constant& arg)
 {
   return (arg.rows () == 0 || arg.columns () == 0);

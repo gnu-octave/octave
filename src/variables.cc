@@ -435,6 +435,25 @@ octave_lib_dir (void)
   return retval;
 }
 
+char *
+default_exec_path (void)
+{
+  static char *exec_path_string = 0;
+  delete [] exec_path_string;
+  char *octave_exec_path = getenv ("OCTAVE_EXEC_PATH");
+  if (octave_exec_path)
+    exec_path_string = strsave (octave_exec_path);
+  else
+    {
+      char *shell_path = getenv ("PATH");
+      if (shell_path)
+	exec_path_string = strconcat (":", shell_path);
+      else
+	exec_path_string = strsave ("");
+    }
+  return exec_path_string;
+}
+
 // Handle OCTAVE_PATH from the environment like TeX handles TEXINPUTS.
 // If the path starts with `:', prepend the standard path.  If it ends
 // with `:' append the standard path.  If it begins and ends with
@@ -470,6 +489,22 @@ default_info_file (void)
       info_file_string = strconcat (infodir, "/octave.info");
     }
   return info_file_string;
+}
+
+char *
+default_info_prog (void)
+{
+  static char *info_prog_string = 0;
+  delete [] info_prog_string;
+  char *oct_info_prog = getenv ("OCTAVE_INFO_PROGRAM");
+  if (oct_info_prog)
+    info_prog_string = strsave (oct_info_prog);
+  else
+    {
+      char *archdir = octave_arch_lib_dir ();
+      info_prog_string = strconcat (archdir, "/info");
+    }
+  return info_prog_string;
 }
 
 char *
@@ -1572,6 +1607,9 @@ install_builtin_variables (void)
   DEFVAR ("EDITOR", SBV_EDITOR, editor, 0, sv_editor,
     "name of the editor to be invoked by the edit_history command");
 
+  DEFVAR ("EXEC_PATH", SBV_EXEC_PATH, exec_path, 0, sv_exec_path,
+    "colon separated list of directories to search for programs to run");
+
   DEFCONST ("I", SBV_I, Complex (0.0, 1.0), 0, 0,
     "sqrt (-1)");
 
@@ -1580,6 +1618,9 @@ install_builtin_variables (void)
 
   DEFVAR ("INFO_FILE", SBV_INFO_FILE, info_file, 0, sv_info_file,
     "name of the Octave info file");
+
+  DEFVAR ("INFO_PROGRAM", SBV_INFO_PROGRAM, info_prog, 0, sv_info_prog,
+    "name of the Octave info reader");
 
   DEFCONST ("J", SBV_J, Complex (0.0, 1.0), 0, 0,
     "sqrt (-1)");

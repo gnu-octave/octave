@@ -64,9 +64,11 @@ struct user_preferences
 
   char *default_save_format;
   char *editor;
+  char *exec_path;
   char *gnuplot_binary;
   char *imagepath;
   char *info_file;
+  char *info_prog;
   char *loadpath;
   char *pager_binary;
   char *ps1;
@@ -118,9 +120,11 @@ extern int sv_completion_append_char (void);
 
 extern int sv_default_save_format (void);
 extern int sv_editor (void);
+extern int sv_exec_path (void);
 extern int sv_gnuplot_binary (void);
 extern int sv_imagepath (void);
 extern int sv_info_file (void);
+extern int sv_info_prog (void);
 extern int sv_loadpath (void);
 extern int sv_pager_binary (void);
 extern int sv_ps1 (void);

@@ -25,6 +25,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include <cstdio>
+#include <cstdlib>
 #include <cstring>
 
 #include "error.h"
@@ -80,9 +82,11 @@ init_user_prefs (void)
 
   user_pref.default_save_format = 0;
   user_pref.editor = 0;
+  user_pref.exec_path = 0;
   user_pref.gnuplot_binary = 0;
   user_pref.imagepath = 0;
   user_pref.info_file = 0;
+  user_pref.info_prog = 0;
   user_pref.loadpath = 0;
   user_pref.pager_binary = 0;
   user_pref.ps1 = 0;
@@ -724,6 +728,82 @@ sv_editor (void)
 }
 
 int
+sv_exec_path (void)
+{
+  int status = 0;
+
+  char *exec_path = builtin_string_variable ("EXEC_PATH");
+  if (exec_path)
+    {
+      char *arch_dir = octave_arch_lib_dir ();
+      char *bin_dir = octave_bin_dir ();
+
+      int len = strlen (arch_dir) + strlen (bin_dir) + strlen (SEPCHAR_STR);
+
+      static char *putenv_cmd = 0;
+
+      delete [] putenv_cmd;
+
+      putenv_cmd = 0;
+
+      int eplen = strlen (exec_path);
+
+      if (eplen > 0)
+	{
+	  int prepend = (exec_path[0] == ':');
+	  int append = (eplen > 1 && exec_path[eplen-1] == ':');
+
+	  if (prepend)
+	    {
+	      if (append)
+		{
+		  putenv_cmd = new char [2 * len + eplen + 6];
+		  sprintf (putenv_cmd,
+			   "PATH=%s" SEPCHAR_STR "%s%s%s" SEPCHAR_STR "%s",
+			   arch_dir, bin_dir, exec_path, arch_dir, bin_dir);
+		}
+	      else
+		{
+		  putenv_cmd = new char [len + eplen + 6];
+		  sprintf (putenv_cmd,
+			   "PATH=%s" SEPCHAR_STR "%s%s",
+			   arch_dir, bin_dir, exec_path);
+		}
+	    }
+	  else
+	    {
+	      if (append)
+		{
+		  putenv_cmd = new char [len + eplen + 6];
+		  sprintf (putenv_cmd,
+			   "PATH=%s%s" SEPCHAR_STR "%s",
+			   exec_path, arch_dir, bin_dir);
+		}
+	      else
+		{
+		  putenv_cmd = new char [len + eplen + 6];
+		  sprintf (putenv_cmd, "PATH=%s", exec_path);
+		}
+	    }
+	}
+      else
+	{
+	  putenv_cmd = new char [len+6];
+	  sprintf (putenv_cmd, "PATH=%s" SEPCHAR_STR "%s", arch_dir, bin_dir);
+	}
+
+      putenv (putenv_cmd);
+    }
+  else
+    {
+      gripe_invalid_value_specified ("EXEC_PATH");
+      status = -1;
+    }
+
+  return status;
+}
+
+int
 sv_gnuplot_binary (void)
 {
   int status = 0;
@@ -777,6 +857,26 @@ sv_info_file (void)
   else
     {
       gripe_invalid_value_specified ("INFO_FILE");
+      status = -1;
+    }
+
+  return status;
+}
+
+int
+sv_info_prog (void)
+{
+  int status = 0;
+
+  char *s = builtin_string_variable ("INFO_PROGRAM");
+  if (s)
+    {
+      delete [] user_pref.info_prog;
+      user_pref.info_prog = s;
+    }
+  else
+    {
+      gripe_invalid_value_specified ("INFO_PROGRAM");
       status = -1;
     }
 

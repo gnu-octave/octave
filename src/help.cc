@@ -529,7 +529,7 @@ try_info (const char *string)
 
   ostrstream cmd_buf;
 
-  cmd_buf << "info --file " << user_pref.info_file;
+  cmd_buf << user_pref.info_prog << " --file " << user_pref.info_file;
 
   char *directory_name = strsave (user_pref.info_file);
   char *file = strrchr (directory_name, '/');

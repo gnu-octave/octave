@@ -101,12 +101,21 @@ char *home_directory = 0;
 // Guess what?
 char *the_current_working_directory = 0;
 
-// Load path specified on command line.  (--path path; -p path)
+// The path that will be searched for programs that we execute.
+// (--exec-path path)
+char *exec_path = 0;
+
+// Load path specified on command line.
+// (--path path; -p path)
 char *load_path = 0;
 
 // Name of the info file specified on command line.
-// (--info-file file; -i file)
+// (--info-file file)
 char *info_file = 0;
+
+// Name of the info reader we'd like to use.
+// (--info-program program)
+char *info_prog = 0;
 
 // Name of the editor to be invoked by the edit_history command.
 char *editor = 0;
@@ -174,9 +183,10 @@ static int traditional = 0;
 
 // Usage message
 static const char *usage_string = 
-  "octave [-?Vdfhiqvx] [-p path] [--debug] [--help] [--ignore-init-file]\n\
-       [--info-file file] [--interactive] [--path path] [--silent]\n\
-       [--traditional] [--verbose] [--version] [--echo-commands] [file]";
+  "octave [-?Vdfhiqvx] [--debug] [--echo-commands] [--exec-path path]\n\
+       [--help] [--ignore-init-file] [--info-file file] [--info-program prog]\n\
+       [--interactive] [-p path] [--path path] [--silent] [--traditional]\n\
+       [--verbose] [--version] [file]";
 
 // This is here so that it's more likely that the usage message and
 // the real set of options will agree.  Note: the `+' must come first
@@ -185,23 +195,27 @@ static const char *short_opts = "+?Vdfhip:qvx";
 
 // Long options.  See the comments in getopt.h for the meanings of the
 // fields in this structure.
-#define INFO_FILE_OPTION 1
-#define TRADITIONAL_OPTION 2
+#define EXEC_PATH_OPTION 1
+#define INFO_FILE_OPTION 2
+#define INFO_PROG_OPTION 3
+#define TRADITIONAL_OPTION 4
 static struct option long_opts[] =
   {
     { "debug",            no_argument,       0, 'd' },
+    { "echo-commands",    no_argument,       0, 'x' },
+    { "exec-path",        required_argument, 0, EXEC_PATH_OPTION },
     { "help",             no_argument,       0, 'h' },
     { "interactive",      no_argument,       0, 'i' },
     { "info-file",        required_argument, 0, INFO_FILE_OPTION },
-    { "norc",             no_argument,       0, 'f' },
+    { "info-program",     required_argument, 0, INFO_PROG_OPTION },
     { "ignore-init-file", no_argument,       0, 'f' },
+    { "norc",             no_argument,       0, 'f' },
     { "path",             required_argument, 0, 'p' },
     { "quiet",            no_argument,       0, 'q' },
     { "silent",           no_argument,       0, 'q' },
     { "traditional",      no_argument,       0, TRADITIONAL_OPTION },
     { "verbose",          no_argument,       0, 'V' },
     { "version",          no_argument,       0, 'v' },
-    { "echo-commands",    no_argument,       0, 'x' },
     { 0,                  0,                 0, 0 }
   };
 
@@ -259,30 +273,6 @@ initialize_globals (char *name)
   else
     home_directory = strsave ("I have no home!");
 
-  char *shell_path = getenv ("PATH");
-  char *arch_dir = octave_arch_lib_dir ();
-  char *bin_dir = octave_bin_dir ();
-
-  int len = strlen (arch_dir) + strlen (bin_dir) + 7;
-
-  char *putenv_cmd = 0;
-
-  if (shell_path)
-    {
-      len += strlen (shell_path) + 1;
-      putenv_cmd = new char [len];
-      sprintf (putenv_cmd,
-	       "PATH=%s" SEPCHAR_STR "%s" SEPCHAR_STR "%s",
-	       arch_dir, bin_dir, shell_path);
-    }
-  else
-    {
-      putenv_cmd = new char [len];
-      sprintf (putenv_cmd, "PATH=%s" SEPCHAR_STR "%s", arch_dir, bin_dir);
-    }
-
-  putenv (putenv_cmd);
-
   // This may seem odd, but doing it this way means that we don't have
   // to modify the kpathsea library...
 
@@ -296,8 +286,8 @@ initialize_globals (char *name)
 
       if (oh)
 	{
-	  len = strlen (oh) + 18;
-	  putenv_cmd = new char [len];
+	  int len = strlen (oh) + 18;
+	  char *putenv_cmd = new char [len];
 	  sprintf (putenv_cmd, "TEXMF=%s/lib/octave", oh);
 	  putenv (putenv_cmd);
 	}
@@ -305,9 +295,13 @@ initialize_globals (char *name)
 	putenv (strsave ("TEXMF=" OCTAVE_DATADIR "/octave"));
     }
 
+  exec_path = default_exec_path ();
+
   load_path = default_path ();
 
   info_file = default_info_file ();
+
+  info_prog = default_info_prog ();
 
   editor = default_editor ();
 }
@@ -483,22 +477,27 @@ execute_startup_files (void)
 static void
 verbose_usage (void)
 {
-  cout << "\n" OCTAVE_NAME_VERSION_AND_COPYRIGHT "\n\n\
-Usage: " << usage_string << "\n\
+  cout << "\n" OCTAVE_NAME_VERSION_AND_COPYRIGHT "\n\
 \n\
-  -d, --debug             enter parser debugging mode\n\
-  -f, --ignore-init-file  don't read any initialization files\n\
-  -h, -?, --help          print short help message and exit\n\
-  -i, --interactive       force interactive behavior\n\
-  --info-file FILE        use top-level info file FILE\n\
-  -p PATH, --path PATH    set initial LOADPATH to PATH\n\
-  -q, --silent            don't print message at startup\n\
-  --traditional           set compatibility variables\n\
-  -V, --verbose           enable verbose output in some cases\n\
-  -v, --version           print version number and exit\n\
-  -x, --echo-commands     echo commands as they are executed\n\
+Usage: octave [options]\n\
 \n\
-  FILE                    execute commands from FILE\n\
+Options:\n\
+\n\
+  -d, --debug             Enter parser debugging mode.\n\
+  -x, --echo-commands     Echo commands as they are executed.\n\
+  --exec-path PATH        Set path for executing subprograms.\n\
+  -h, -?, --help          Print short help message and exit.\n\
+  -f, --ignore-init-file  Don't read any initialization files.\n\
+  --info-file FILE        Use top-level info file FILE.\n\
+  --info-program PROGRAM  Use PROGRAM for reading info files.\n\
+  -i, --interactive       Force interactive behavior.\n\
+  -p PATH, --path PATH    Set initial LOADPATH to PATH.\n\
+  -q, --silent            Don't print message at startup.\n\
+  --traditional           Set compatibility variables.\n\
+  -V, --verbose           Enable verbose output in some cases.\n\
+  -v, --version           Print version number and exit.\n\
+\n\
+  FILE                    Execute commands from FILE.\n\
 \n";
 
   exit (0);
@@ -646,9 +645,19 @@ main (int argc, char **argv)
 	  print_version_and_exit ();
 	  break;
 
+	case EXEC_PATH_OPTION:
+	  if (optarg)
+	    exec_path = strsave (optarg);
+	  break;
+
 	case INFO_FILE_OPTION:
 	  if (optarg)
 	    info_file = strsave (optarg);
+	  break;
+
+	case INFO_PROG_OPTION:
+	  if (optarg)
+	    info_prog = strsave (optarg);
 	  break;
 
 	case TRADITIONAL_OPTION:

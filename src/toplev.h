@@ -60,11 +60,17 @@ extern char *home_directory;
 // Guess what?
 extern char *the_current_working_directory;
 
+// The path that will be searched for programs that we execute.
+extern char *exec_path;
+
 // Load path specified on command line.
 extern char *load_path;
 
 // Name of the info file specified on command line.
 extern char *info_file;
+
+// Name of the info reader we'd like to use.
+extern char *info_prog;
 
 // Name of the editor to be invoked by the edit_history command.
 extern char *editor;

@@ -20,56 +20,41 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
-SOURCES = *.m
+SUBDIRS = base hinf obsolete sys
 
-DISTFILES = Makefile.in $(SOURCES)
+DISTSUBDIRS = $(SUBDIRS)
 
-FCN_FILES = $(wildcard $(srcdir)/*.m)
-FCN_FILES_NO_DIR = $(notdir $(FCN_FILES))
+BINDISTSUBDIRS = $(SUBDIRS)
 
-BINDISTFILES = $(FCN_FILES)
+DISTFILES = Makefile.in
 
 all:
 .PHONY: all
 
-install install-strip:
-	$(top_srcdir)/mkinstalldirs $(fcnfiledir)/$(script_sub_dir)
-	for f in $(FCN_FILES_NO_DIR); do \
-	  rm -f $(fcnfiledir)/$(script_sub_dir)/$$f; \
-	  $(INSTALL_DATA) $(srcdir)/$$f $(fcnfiledir)/$(script_sub_dir)/$$f; \
-	done
-.PHONY: install install-strip
+$(SUBDIRS):
+	echo making all in $@
+	$(MAKE) -C $@ all
+.PHONY: $(SUBDIRS)
 
-uninstall:
-	for f in $(FCN_FILES_NO_DIR); \
-	  do rm -f $(fcnfiledir)/$(script_sub_dir)/$$f; \
-	done
-.PHONY: uninstall
+install install-strip uninstall clean mostlyclean distclean maintainer-clean::
+	@$(subdir-for-command)
+.PHONY: install install-strip uninstall
+.PHONY: clean mostlyclean distclean maintainer-clean
 
-clean:
-.PHONY: clean
+tags TAGS:
+	$(SUBDIR_FOR_COMMAND)
 
-tags: $(SOURCES)
-	ctags $(SOURCES)
-
-TAGS: $(SOURCES)
-	etags $(SOURCES)
-
-mostlyclean: clean
-.PHONY: mostlyclean
-
-distclean: clean
+distclean::
 	rm -f Makefile
-.PHONY: distclean
 
-maintainer-clean: distclean
-	rm -f tags TAGS
-.PHONY: maintainer-clean
+maintainer-clean::
+	rm -f tags TAGS Makefile
 
 dist:
 	ln $(DISTFILES) ../../`cat ../../.fname`/scripts/control
+	for dir in $(DISTSUBDIRS); do mkdir ../../`cat ../../.fname`/scripts/control/$$dir; $(MAKE) -C $$dir $@; done
 .PHONY: dist
 
 bin-dist:
-	ln $(BINDISTFILES) ../../`cat ../../.fname`/scripts/control
+	for dir in $(BINDISTSUBDIRS); do mkdir ../../`cat ../../.fname`/scripts/control/$$dir; $(MAKE) -C $$dir $@; done
 .PHONY: bin-dist

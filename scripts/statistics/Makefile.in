@@ -20,18 +20,13 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
-SOURCES = # *.m
-
-DISTFILES = Makefile.in $(SOURCES)
+DISTFILES = Makefile.in
 
 SUBDIRS = base distributions models tests
 
 DISTSUBDIRS = $(SUBDIRS)
 
 BINDISTSUBDIRS = $(SUBDIRS)
-
-FCN_FILES = # $(wildcard $(srcdir)/*.m)
-FCN_FILES_NO_DIR = # $(notdir $(FCN_FILES))
 
 all: $(SUBDIRS)
 .PHONY: all
@@ -46,18 +41,8 @@ install install-strip uninstall clean mostlyclean distclean maintainer-clean::
 .PHONY: install install-strip uninstall
 .PHONY: clean mostlyclean distclean maintainer-clean
 
-install install-strip::
-
-uninstall::
-
-tags TAGS:: $(SOURCES)
+tags TAGS:
 	$(SUBDIR_FOR_COMMAND)
-
-tags::
-	ctags $(SOURCES)
-
-TAGS:: $(SOURCES)
-	etags $(SOURCES)
 
 distclean::
 	rm -f Makefile

@@ -79,9 +79,6 @@ CMDFILES = $(srcdir)/session.c $(srcdir)/echo_area.c $(srcdir)/infodoc.c \
 MAKEDOC_OBJECTS = makedoc.o xmalloc.o
 MAKEDOC_SOURCE = makedoc.c xmalloc.c
 
-.c.o:
-	$(CC) -c $(CPPFLAGS) $(LDEFS) -I$(common) $(UGLY_ALL_CFLAGS) $<
-
 all: libinfo.a # info.info info-stnd.info
 .PHONY: all
 

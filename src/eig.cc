@@ -1,7 +1,7 @@
 // f-eig.cc                                           -*- C++ -*-
 /*
 
-Copyright (C) 1993 John W. Eaton
+Copyright (C) 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -35,7 +35,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #ifdef WITH_DLD
 tree_constant *
-builtin_eig (const tree_constant *args, int nargin, int nargout)
+builtin_eig_2 (const tree_constant *args, int nargin, int nargout)
 {
   return eig (args, nargin, nargout);
 }

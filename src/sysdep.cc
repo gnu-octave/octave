@@ -81,7 +81,7 @@ double octave_Inf;
 // Octave's idea of not a number.
 double octave_NaN;
 
-#if defined (__386BSD__) && defined (HAVE_FLOATINGPOINT_H)
+#if defined (HAVE_FLOATINGPOINT_H)
 #include <floatingpoint.h>
 #endif
 
@@ -198,9 +198,11 @@ matherr (struct exception *x)
 void
 sysdep_init (void)
 {
-#if defined (__386BSD__) && defined (HAVE_FLOATINGPOINT_H)
+#if defined (HAVE_FPSETMASK)
+#if defined (__386BSD__) || defined (__FreeBSD__)
 // Disable trapping on common exceptions.
   fpsetmask (~(FP_X_OFL|FP_X_INV|FP_X_DZ|FP_X_DNML|FP_X_UFL|FP_X_IMP));
+#endif
 #endif
 
 #ifdef NeXT

@@ -20,7 +20,7 @@ dnl Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
 ### along with Octave; see the file COPYING.  If not, write to the Free
 ### Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
-AC_REVISION($Revision: 1.119 $)
+AC_REVISION($Revision: 1.120 $)
 AC_PREREQ(2.0)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -90,7 +90,9 @@ AC_ARG_ENABLE(info,
      LIBINFO="";
      INFO_DIR="";
    fi], [])
-AC_SUBST(USE_GNU_INFO)
+if $USE_GNU_INFO; then
+  AC_DEFINE(USE_GNU_INFO, 1)
+fi
 AC_SUBST(LIBINFO)
 AC_SUBST(INFO_DIR)
 
@@ -108,7 +110,9 @@ AC_ARG_ENABLE(readline,
      LIBREADLINE="";
      READLINE_DIR="";
    fi], [])
-AC_SUBST(USE_READLINE)
+if $USE_READLINE; then
+  AC_DEFINE(USE_READLINE, 1)
+fi
 AC_SUBST(LIBREADLINE)
 AC_SUBST(READLINE_DIR)
 

@@ -330,7 +330,7 @@ string
 kpse_path_search P3C(const_string, path,  const_string, name,
                      boolean, must_exist)
 {
-  static string *ret_list = 0
+  static string *ret_list = 0;
 
   if (ret_list)
     {

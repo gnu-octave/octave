@@ -1,2 +1,2 @@
 s.a = 2;
-isfield (s, 2)
+isfield (s, 2) == 0

@@ -679,8 +679,6 @@ the second must be a string.\n\
 
 	  retval = m.contains (key) != 0;
 	}
-      else
-	print_usage ("isfield");
     }
   else
     print_usage ("isfield");

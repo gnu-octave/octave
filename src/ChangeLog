@@ -1,4 +1,13 @@
+2004-07-27  John W. Eaton  <jwe@octave.org>
+
+	* ov-struct.cc (Fisfield): Only print usage message if number of
+	arguments is incorrect.  Return false for invalid arguments.
+	From Andy Adler <adler@site.uottawa.ca>.
+
 2004-07-27  David Bateman  <dbateman@free.fr>
+
+	* Cell.cc (Cell::index): Quit early if an error occurs when
+	creating index vector object.
 
 	* ov-int8.cc, ov-int16.cc, ov-int32.cc, ov-int64.cc, ov-uint8.cc, 
 	ov-uint16.cc, ov-uint32.cc, ov-uint64.cc (HDF5_SAVE_TYPE): Define

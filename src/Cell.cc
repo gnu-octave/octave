@@ -31,6 +31,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "idx-vector.h"
 
 #include "Cell.h"
+#include "error.h"
 
 Cell::Cell (const string_vector& sv)
   : ArrayN<octave_value> ()
@@ -59,16 +60,22 @@ Cell::index (const octave_value_list& idx_arg, bool resize_ok) const
       {
 	idx_vector i = idx_arg(0).index_vector ();
 
-	retval = index (i, resize_ok);
+	if (! error_state)
+	  retval = index (i, resize_ok);
       }
       break;
 
     case 2:
       {
 	idx_vector i = idx_arg(0).index_vector ();
-	idx_vector j = idx_arg(1).index_vector ();
 
-	retval = index (i, j, resize_ok);
+	if (! error_state)
+	  {
+	    idx_vector j = idx_arg(1).index_vector ();
+
+	    if (! error_state)
+	      retval = index (i, j, resize_ok);
+	  }
       }
       break;
 
@@ -77,9 +84,15 @@ Cell::index (const octave_value_list& idx_arg, bool resize_ok) const
 	Array<idx_vector> iv (n);
 
 	for (int i = 0; i < n; i++)
-	  iv(i) = idx_arg(i).index_vector ();
+	  {
+	    iv(i) = idx_arg(i).index_vector ();
 
-	retval = index (iv, resize_ok);
+	    if (error_state)
+	      break;
+	  }
+
+	if (!error_state)
+	  retval = index (iv, resize_ok);
       }
       break;
     }

@@ -44,7 +44,7 @@ function retval = num2str (x, arg)
       if (isstr (arg))
 	fmt = strcat (arg, "%-+", arg(2:end), "i");
       else
-	if (isnumeric (x) && round (x) == x && abs (x) < (10.^arg))
+	if (isnumeric (x) && round (x) == x && abs (x) < (10 .^ arg))
 	  fmt = sprintf ("%%%dd%%-+%ddi  ", arg, arg);
 	else
 	  fmt = sprintf ("%%%d.%dg%%-+%d.%dgi", arg+7, arg, arg+7, arg);
@@ -107,7 +107,7 @@ function retval = num2str (x, arg)
       if (isstr (arg))
 	fmt = arg;
       else
-	if (isnumeric (x) && round (x) == x && abs (x) < (10.^ arg))
+	if (isnumeric (x) && round (x) == x && abs (x) < (10 .^ arg))
 	  fmt = sprintf ("%%%dd  ", arg);
 	else
 	  fmt = sprintf ("%%%d.%dg", arg+7, arg);

@@ -35,11 +35,11 @@ set prog_output "\n... isfield:.*"
 do_test isfield-4.m
 
 set test isfield-5
-set prog_output "\n... isfield:.*"
+set prog_output "^ans = 1"
 do_test isfield-5.m
 
 set test isfield-6
-set prog_output "\n... isfield:.*"
+set prog_output "^ans = 1"
 do_test isfield-6.m
 
 set test isstruct-1

@@ -208,7 +208,7 @@ public:
   octave_int<T> min (void) const { return std::numeric_limits<T>::min (); }
   octave_int<T> max (void) const { return std::numeric_limits<T>::max (); }
 
-  int nbits (void) const { return sizeof (T) * CHAR_BIT; }
+  static int nbits (void) { return sizeof (T) * CHAR_BIT; }
 
 private:
 

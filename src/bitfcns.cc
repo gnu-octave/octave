@@ -86,172 +86,173 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  \
   if (nargin == 2) \
     { \
-      if (args(0).type_id () == octave_matrix::static_type_id () || \
-	  args(0).type_id () == octave_scalar::static_type_id () || \
-	  args(1).type_id () == octave_matrix::static_type_id () || \
-	  args(1).type_id () == octave_scalar::static_type_id ()) \
+      if (args(0).type_id () == octave_matrix::static_type_id () \
+	  || args(0).type_id () == octave_scalar::static_type_id () \
+	  || args(1).type_id () == octave_matrix::static_type_id () \
+	  || args(1).type_id () == octave_scalar::static_type_id ()) \
 	{ \
 	  bool arg0_is_int = true; \
 	  bool arg1_is_int = true; \
  \
-	  if (args(0).type_id () == octave_matrix::static_type_id () || \
-	      args(0).type_id () == octave_scalar::static_type_id ())	\
+	  if (args(0).type_id () == octave_matrix::static_type_id () \
+	      || args(0).type_id () == octave_scalar::static_type_id ()) \
 	    arg0_is_int = false; \
  \
-	  if (args(1).type_id () == octave_matrix::static_type_id () || \
-	      args(1).type_id () == octave_scalar::static_type_id ())	\
+	  if (args(1).type_id () == octave_matrix::static_type_id () \
+	      || args(1).type_id () == octave_scalar::static_type_id ()) \
 	    arg1_is_int = false; \
  \
 	  if (!arg0_is_int && !arg1_is_int) \
 	    { \
-	      uint64NDArray x (args(0).array_value ());		\
+	      uint64NDArray x (args(0).array_value ()); \
 	      uint64NDArray y (args(1).array_value ());	\
-	      if (! error_state)				\
-		BITOPX (OP, FNAME, uint64NDArray);		\
-	      retval = retval.array_value ();			\
+	      if (! error_state) \
+		BITOPX (OP, FNAME, uint64NDArray); \
+	      retval = retval.array_value (); \
 	    } \
 	  else \
 	    { \
 	      int p = (arg0_is_int ? 1 : 0); \
 	      int q = (arg0_is_int ? 0 : 1); \
+ \
 	      NDArray dx = args(p).array_value (); \
  \
-	      if (args(q).type_id () == octave_uint64_matrix::static_type_id () || \
-		  args(q).type_id () == octave_uint64_scalar::static_type_id ()) \
-		{							\
-		  uint64NDArray x (dx);					\
-		  uint64NDArray y = args(q).uint64_array_value ();	\
-		  if (! error_state)					\
-		    BITOPX (OP, FNAME, uint64NDArray);			\
+	      if (args(q).type_id () == octave_uint64_matrix::static_type_id () \
+		  || args(q).type_id () == octave_uint64_scalar::static_type_id ()) \
+		{ \
+		  uint64NDArray x (dx); \
+		  uint64NDArray y = args(q).uint64_array_value (); \
+		  if (! error_state) \
+		    BITOPX (OP, FNAME, uint64NDArray); \
 		 } \
-	      else if (args(q).type_id () == octave_uint32_matrix::static_type_id () || \
-		       args(q).type_id () == octave_uint32_scalar::static_type_id ()) \
-		{							\
-		  uint32NDArray x (dx);					\
-		  uint32NDArray y = args(q).uint32_array_value ();	\
-		  if (! error_state)					\
-		    BITOPX (OP, FNAME, uint32NDArray);			\
+	      else if (args(q).type_id () == octave_uint32_matrix::static_type_id () \
+		       || args(q).type_id () == octave_uint32_scalar::static_type_id ()) \
+		{ \
+		  uint32NDArray x (dx); \
+		  uint32NDArray y = args(q).uint32_array_value (); \
+		  if (! error_state) \
+		    BITOPX (OP, FNAME, uint32NDArray); \
 		} \
-	      else if (args(q).type_id () == octave_uint16_matrix::static_type_id () || \
-		       args(q).type_id () == octave_uint16_scalar::static_type_id ()) \
-		{							\
-		  uint16NDArray x (dx);					\
-		  uint16NDArray y = args(q).uint16_array_value ();	\
-		  if (! error_state)					\
-		    BITOPX (OP, FNAME, uint16NDArray);			\
+	      else if (args(q).type_id () == octave_uint16_matrix::static_type_id () \
+		       || args(q).type_id () == octave_uint16_scalar::static_type_id ()) \
+		{ \
+		  uint16NDArray x (dx); \
+		  uint16NDArray y = args(q).uint16_array_value (); \
+		  if (! error_state) \
+		    BITOPX (OP, FNAME, uint16NDArray); \
 		} \
-	      else if (args(q).type_id () == octave_uint8_matrix::static_type_id () || \
-		       args(q).type_id () == octave_uint8_scalar::static_type_id ()) \
-		{							\
-		  uint8NDArray x (dx);					\
-		  uint8NDArray y = args(q).uint8_array_value ();	\
-		  if (! error_state)					\
-		    BITOPX (OP, FNAME, uint8NDArray);			\
-		}							\
-	      else if (args(q).type_id () == octave_int64_matrix::static_type_id () || \
-		       args(q).type_id () == octave_int64_scalar::static_type_id ()) \
-		{							\
-		  int64NDArray x (dx);					\
-		  int64NDArray y = args(q).int64_array_value ();	\
-		  if (! error_state)					\
-		    BITOPX (OP, FNAME, int64NDArray);			\
-		}							\
-	      else if (args(q).type_id () == octave_int32_matrix::static_type_id () || \
-		       args(q).type_id () == octave_int32_scalar::static_type_id ()) \
-		{							\
-		  int32NDArray x (dx);					\
-		  int32NDArray y = args(q).int32_array_value ();	\
-		  if (! error_state)					\
-		    BITOPX (OP, FNAME, int32NDArray);			\
-		}							\
-	      else if (args(q).type_id () == octave_int16_matrix::static_type_id () || \
-	      args(q).type_id () == octave_int16_scalar::static_type_id ()) \
-		{							\
-		  int16NDArray x (dx);					\
-		  int16NDArray y = args(q).int16_array_value ();	\
-		  if (! error_state)					\
-		    BITOPX (OP, FNAME, int16NDArray);			\
-		}							\
-	      else if (args(q).type_id () == octave_int8_matrix::static_type_id () || \
-		       args(q).type_id () == octave_int8_scalar::static_type_id ()) \
-		{							\
-		  int8NDArray x (dx);					\
-		  int8NDArray y = args(q).int8_array_value ();		\
-		  if (! error_state)					\
-		    BITOPX (OP, FNAME, int8NDArray);			\
-		}							\
-	      else							\
-		error ("%s: illegal operand type", FNAME);		\
-	    }								\
-	}								\
-      else if (args(0).type_id () == args(1).type_id ())		\
+	      else if (args(q).type_id () == octave_uint8_matrix::static_type_id () \
+		       || args(q).type_id () == octave_uint8_scalar::static_type_id ()) \
+		{ \
+		  uint8NDArray x (dx); \
+		  uint8NDArray y = args(q).uint8_array_value (); \
+		  if (! error_state) \
+		    BITOPX (OP, FNAME, uint8NDArray); \
+		} \
+	      else if (args(q).type_id () == octave_int64_matrix::static_type_id () \
+		       || args(q).type_id () == octave_int64_scalar::static_type_id ()) \
+		{ \
+		  int64NDArray x (dx); \
+		  int64NDArray y = args(q).int64_array_value (); \
+		  if (! error_state) \
+		    BITOPX (OP, FNAME, int64NDArray); \
+		} \
+	      else if (args(q).type_id () == octave_int32_matrix::static_type_id () \
+		       || args(q).type_id () == octave_int32_scalar::static_type_id ()) \
+		{ \
+		  int32NDArray x (dx); \
+		  int32NDArray y = args(q).int32_array_value (); \
+		  if (! error_state) \
+		    BITOPX (OP, FNAME, int32NDArray); \
+		} \
+	      else if (args(q).type_id () == octave_int16_matrix::static_type_id () \
+		       || args(q).type_id () == octave_int16_scalar::static_type_id ()) \
+		{ \
+		  int16NDArray x (dx); \
+		  int16NDArray y = args(q).int16_array_value (); \
+		  if (! error_state) \
+		    BITOPX (OP, FNAME, int16NDArray); \
+		} \
+	      else if (args(q).type_id () == octave_int8_matrix::static_type_id () \
+		       || args(q).type_id () == octave_int8_scalar::static_type_id ()) \
+		{ \
+		  int8NDArray x (dx); \
+		  int8NDArray y = args(q).int8_array_value (); \
+		  if (! error_state) \
+		    BITOPX (OP, FNAME, int8NDArray); \
+		} \
+	      else \
+		error ("%s: invalid operand type", FNAME); \
+	    } \
+	} \
+      else if (args(0).type_id () == args(1).type_id ()) \
 	{ \
-	  if (args(0).type_id () == octave_uint64_matrix::static_type_id () || \
-	      args(0).type_id () == octave_uint64_scalar::static_type_id ()) \
+	  if (args(0).type_id () == octave_uint64_matrix::static_type_id () \
+	      || args(0).type_id () == octave_uint64_scalar::static_type_id ()) \
 	    { \
-	      uint64NDArray x = args(0).uint64_array_value ();	\
-	      uint64NDArray y = args(1).uint64_array_value ();	\
-	      if (! error_state)				\
-		BITOPX (OP, FNAME, uint64NDArray);		\
+	      uint64NDArray x = args(0).uint64_array_value (); \
+	      uint64NDArray y = args(1).uint64_array_value (); \
+	      if (! error_state) \
+		BITOPX (OP, FNAME, uint64NDArray); \
 	    } \
-	  else if (args(0).type_id () == octave_uint32_matrix::static_type_id () || \
-	      args(0).type_id () == octave_uint32_scalar::static_type_id ()) \
+	  else if (args(0).type_id () == octave_uint32_matrix::static_type_id () \
+		   || args(0).type_id () == octave_uint32_scalar::static_type_id ()) \
 	    { \
-	      uint32NDArray x = args(0).uint32_array_value ();	\
-	      uint32NDArray y = args(1).uint32_array_value ();	\
-	      if (! error_state)				\
-		BITOPX (OP, FNAME, uint32NDArray);		\
+	      uint32NDArray x = args(0).uint32_array_value (); \
+	      uint32NDArray y = args(1).uint32_array_value (); \
+	      if (! error_state) \
+		BITOPX (OP, FNAME, uint32NDArray); \
 	    } \
-	  else if (args(0).type_id () == octave_uint16_matrix::static_type_id () || \
-	      args(0).type_id () == octave_uint16_scalar::static_type_id ()) \
+	  else if (args(0).type_id () == octave_uint16_matrix::static_type_id () \
+		   || args(0).type_id () == octave_uint16_scalar::static_type_id ()) \
 	    { \
-	      uint16NDArray x = args(0).uint16_array_value ();	\
-	      uint16NDArray y = args(1).uint16_array_value ();	\
-	      if (! error_state)				\
-		BITOPX (OP, FNAME, uint16NDArray);		\
+	      uint16NDArray x = args(0).uint16_array_value (); \
+	      uint16NDArray y = args(1).uint16_array_value (); \
+	      if (! error_state) \
+		BITOPX (OP, FNAME, uint16NDArray); \
 	    } \
-	  else if (args(0).type_id () == octave_uint8_matrix::static_type_id () || \
-	      args(0).type_id () == octave_uint8_scalar::static_type_id ()) \
+	  else if (args(0).type_id () == octave_uint8_matrix::static_type_id () \
+		   || args(0).type_id () == octave_uint8_scalar::static_type_id ()) \
 	    { \
-	      uint8NDArray x = args(0).uint8_array_value ();	\
-	      uint8NDArray y = args(1).uint8_array_value ();	\
-	      if (! error_state)				\
-		BITOPX (OP, FNAME, uint8NDArray);		\
+	      uint8NDArray x = args(0).uint8_array_value (); \
+	      uint8NDArray y = args(1).uint8_array_value (); \
+	      if (! error_state) \
+		BITOPX (OP, FNAME, uint8NDArray); \
 	    } \
-	  else if (args(0).type_id () == octave_int64_matrix::static_type_id () || \
-	      args(0).type_id () == octave_int64_scalar::static_type_id ()) \
+	  else if (args(0).type_id () == octave_int64_matrix::static_type_id () \
+		   || args(0).type_id () == octave_int64_scalar::static_type_id ()) \
 	    { \
-	      int64NDArray x = args(0).int64_array_value ();	\
-	      int64NDArray y = args(1).int64_array_value ();	\
-	      if (! error_state)				\
-		BITOPX (OP, FNAME, int64NDArray);		\
+	      int64NDArray x = args(0).int64_array_value (); \
+	      int64NDArray y = args(1).int64_array_value (); \
+	      if (! error_state) \
+		BITOPX (OP, FNAME, int64NDArray); \
 	    } \
-	  else if (args(0).type_id () == octave_int32_matrix::static_type_id () || \
-	      args(0).type_id () == octave_int32_scalar::static_type_id ()) \
+	  else if (args(0).type_id () == octave_int32_matrix::static_type_id () \
+		   || args(0).type_id () == octave_int32_scalar::static_type_id ()) \
 	    { \
-	      int32NDArray x = args(0).int32_array_value ();	\
-	      int32NDArray y = args(1).int32_array_value ();	\
-	      if (! error_state)				\
-		BITOPX (OP, FNAME, int32NDArray);		\
+	      int32NDArray x = args(0).int32_array_value (); \
+	      int32NDArray y = args(1).int32_array_value (); \
+	      if (! error_state) \
+		BITOPX (OP, FNAME, int32NDArray); \
 	    } \
-	  else if (args(0).type_id () == octave_int16_matrix::static_type_id () || \
-	      args(0).type_id () == octave_int16_scalar::static_type_id ()) \
+	  else if (args(0).type_id () == octave_int16_matrix::static_type_id () \
+		   || args(0).type_id () == octave_int16_scalar::static_type_id ()) \
 	    { \
-	      int16NDArray x = args(0).int16_array_value ();	\
-	      int16NDArray y = args(1).int16_array_value ();	\
-	      if (! error_state)				\
-		BITOPX (OP, FNAME, int16NDArray);		\
+	      int16NDArray x = args(0).int16_array_value (); \
+	      int16NDArray y = args(1).int16_array_value (); \
+	      if (! error_state) \
+		BITOPX (OP, FNAME, int16NDArray); \
 	    } \
-	  else if (args(0).type_id () == octave_int8_matrix::static_type_id () || \
-	      args(0).type_id () == octave_int8_scalar::static_type_id ()) \
+	  else if (args(0).type_id () == octave_int8_matrix::static_type_id () \
+		   || args(0).type_id () == octave_int8_scalar::static_type_id ()) \
 	    { \
-	      int8NDArray x = args(0).int8_array_value ();	\
-	      int8NDArray y = args(1).int8_array_value ();	\
-	      if (! error_state)				\
-		BITOPX (OP, FNAME, int8NDArray);		\
+	      int8NDArray x = args(0).int8_array_value (); \
+	      int8NDArray y = args(1).int8_array_value (); \
+	      if (! error_state) \
+		BITOPX (OP, FNAME, int8NDArray); \
 	    } \
 	  else \
-	    error ("%s: illegal operand type", FNAME); \
+	    error ("%s: invalid operand type", FNAME); \
 	} \
       else \
 	error ("%s: must have matching operand types", FNAME); \
@@ -305,82 +306,84 @@ bitshift (const double& a, int n)
     return static_cast<EIGHT_BYTE_INT> (a);
 }
 
-// Note that the bitshift operators are undefined if shifted by more bits than
-// in the type. Therefore need to test for the size of the shift
-#define DO_BITSHIFT(T) \
-      if (! error_state) \
-	{ \
-          double d1, d2; \
- \
-          if (n.all_integers (d1, d2)) \
-            { \
-	      int m_nel = m.numel (); \
-	      int n_nel = n.numel (); \
- \
-	      bool is_scalar_op = (m_nel == 1 || n_nel == 1); \
- \
-	      dim_vector m_dv = m.dims (); \
-	      dim_vector n_dv = n.dims (); \
- \
-	      bool is_array_op = (m_dv == n_dv); \
- \
-	      if (is_array_op || is_scalar_op) \
-		{ \
-		  T ## NDArray result; \
- \
-		  if (m_nel != 1) \
-		    result.resize (m_dv); \
-		  else \
-		    result.resize (n_dv); \
- \
-		  for (int i = 0; i < m_nel; i++) \
-		    if (is_scalar_op) \
-		      for (int k = 0; k < n_nel; k++) \
-			if (static_cast<int> (n(k)) >= bits_in_type) \
-			  result(i+k) = 0; \
-			else \
-			  result(i+k) = bitshift (m(i), static_cast<int> (n(k))) & mask; \
-		    else \
-		      if (static_cast<int> (n(i)) >= bits_in_type) \
-			result(i) = 0;					\
-		      else 						\
-			result(i) = bitshift (m(i), static_cast<int> (n(i))) & mask; \
- \
-		  retval = result; \
-		} \
-	      else \
-		error ("bitshift: size of A and N must match, or one operand must be a scalar"); \
-	    } \
-          else \
-            error ("bitshift: expecting second argument to be integer"); \
-        }
+// Note that the bitshift operators are undefined if shifted by more
+// bits than in the type, so we need to test for the size of the
+// shift.
 
-#define DO_UBITSHIFT(T, N)					\
-  do								\
-    {								\
-      int bits_in_type = sizeof (octave_ ## T) << 3;		\
-      T ## NDArray m = m_arg.T ## _array_value ();		\
-	octave_ ## T mask = ~0ULL;				\
-      if ((N) < static_cast<int>(sizeof (octave_ ## T) << 3))	\
-	mask = mask >> ((sizeof (octave_ ## T) << 3) - (N));	\
-      else if ((N) < 1)						\
-	mask = 0;						\
-      DO_BITSHIFT (T);						\
-    }								\
+#define DO_BITSHIFT(T) \
+  if (! error_state) \
+    { \
+      double d1, d2; \
+ \
+      if (n.all_integers (d1, d2)) \
+	{ \
+	  int m_nel = m.numel (); \
+	  int n_nel = n.numel (); \
+ \
+	  bool is_scalar_op = (m_nel == 1 || n_nel == 1); \
+ \
+	  dim_vector m_dv = m.dims (); \
+	  dim_vector n_dv = n.dims (); \
+ \
+	  bool is_array_op = (m_dv == n_dv); \
+ \
+	  if (is_array_op || is_scalar_op) \
+	    { \
+	      T ## NDArray result; \
+ \
+	      if (m_nel != 1) \
+		result.resize (m_dv); \
+	      else \
+		result.resize (n_dv); \
+ \
+	      for (int i = 0; i < m_nel; i++) \
+		if (is_scalar_op) \
+		  for (int k = 0; k < n_nel; k++) \
+		    if (static_cast<int> (n(k)) >= bits_in_type) \
+		      result(i+k) = 0; \
+		    else \
+		      result(i+k) = bitshift (m(i), static_cast<int> (n(k))) & mask; \
+		else \
+		  if (static_cast<int> (n(i)) >= bits_in_type) \
+		    result(i) = 0;					\
+		  else 						\
+		    result(i) = bitshift (m(i), static_cast<int> (n(i))) & mask; \
+ \
+	      retval = result; \
+	    } \
+	  else \
+	    error ("bitshift: size of A and N must match, or one operand must be a scalar"); \
+	} \
+      else \
+	error ("bitshift: expecting second argument to be integer"); \
+    }
+
+#define DO_UBITSHIFT(T, N) \
+  do \
+    { \
+      int bits_in_type = sizeof (octave_ ## T) << 3; \
+      T ## NDArray m = m_arg.T ## _array_value (); \
+	octave_ ## T mask = ~0ULL; \
+      if ((N) < static_cast<int> (sizeof (octave_ ## T) << 3)) \
+	mask = mask >> ((sizeof (octave_ ## T) << 3) - (N)); \
+      else if ((N) < 1) \
+	mask = 0; \
+      DO_BITSHIFT (T); \
+    } \
   while (0)
 
-#define DO_SBITSHIFT(T, N)					\
-  do								\
-    {								\
-      int bits_in_type = sizeof (octave_ ## T) << 3;		\
-      T ## NDArray m = m_arg.T ## _array_value ();		\
-	octave_ ## T mask = -1;					\
-      if ((N) < static_cast<int>(sizeof (octave_ ## T) << 3))	\
-	mask = mask >> ((sizeof (octave_ ## T) << 3) - (N));	\
-      else if ((N) < 1)						\
-	mask = 0;						\
-      DO_BITSHIFT (T);						\
-    }								\
+#define DO_SBITSHIFT(T, N) \
+  do \
+    { \
+      int bits_in_type = sizeof (octave_ ## T) << 3; \
+      T ## NDArray m = m_arg.T ## _array_value (); \
+	octave_ ## T mask = -1; \
+      if ((N) < static_cast<int>(sizeof (octave_ ## T) << 3)) \
+	mask = mask >> ((sizeof (octave_ ## T) << 3) - (N)); \
+      else if ((N) < 1) \
+	mask = 0; \
+      DO_BITSHIFT (T); \
+    } \
   while (0)
 
 DEFUN (bitshift, args, ,
@@ -479,10 +482,10 @@ value. That is for IEEE-754 compatiable systems with @code{2^53 - 1}.\n\
 @end deftypefn")
 {
   octave_value retval;
-  if (args.length() != 0)
+  if (args.length () != 0)
     print_usage ("bitmax");
   else
-    retval = ((double)0x1FFFFFFFFFFFFFLL);
+    retval = (static_cast<double> (0x1FFFFFFFFFFFFFLL));
   return retval;
 }
 
@@ -495,7 +498,7 @@ DEFUN (intmax, args, ,
   std::string cname = "int32";
   int nargin = args.length ();
 
-  if (nargin == 1 && args(0).is_string())
+  if (nargin == 1 && args(0).is_string ())
     cname = args(0).string_value ();
   else if (nargin != 0)
     {
@@ -504,21 +507,21 @@ DEFUN (intmax, args, ,
     }
 
   if (cname == "uint8")
-    retval = octave_uint8 (std::numeric_limits<octave_uint8_t>::max());
+    retval = octave_uint8 (std::numeric_limits<octave_uint8_t>::max ());
   else if (cname == "uint16")
-    retval = octave_uint16 (std::numeric_limits<octave_uint16_t>::max());
+    retval = octave_uint16 (std::numeric_limits<octave_uint16_t>::max ());
   else if (cname == "uint32")
-    retval = octave_uint32 (std::numeric_limits<octave_uint32_t>::max());
+    retval = octave_uint32 (std::numeric_limits<octave_uint32_t>::max ());
   else if (cname == "uint64")
-    retval = octave_uint64 (std::numeric_limits<octave_uint64_t>::max());
+    retval = octave_uint64 (std::numeric_limits<octave_uint64_t>::max ());
   else if (cname == "int8")
-    retval = octave_int8 (std::numeric_limits<octave_int8_t>::max());
+    retval = octave_int8 (std::numeric_limits<octave_int8_t>::max ());
   else if (cname == "int16")
-    retval = octave_int16 (std::numeric_limits<octave_int16_t>::max());
+    retval = octave_int16 (std::numeric_limits<octave_int16_t>::max ());
   else if (cname == "int32")
-    retval = octave_int32 (std::numeric_limits<octave_int32_t>::max());
+    retval = octave_int32 (std::numeric_limits<octave_int32_t>::max ());
   else if (cname == "int64")
-    retval = octave_int64 (std::numeric_limits<octave_int64_t>::max());
+    retval = octave_int64 (std::numeric_limits<octave_int64_t>::max ());
   else
     error ("intmax: not defined for '%s' objects", cname.c_str ());
 
@@ -534,7 +537,7 @@ DEFUN (intmin, args, ,
   std::string cname = "int32";
   int nargin = args.length ();
 
-  if (nargin == 1 && args(0).is_string())
+  if (nargin == 1 && args(0).is_string ())
     cname = args(0).string_value ();
   else if (nargin != 0)
     {
@@ -543,21 +546,21 @@ DEFUN (intmin, args, ,
     }
 
   if (cname == "uint8")
-    retval = octave_uint8 (std::numeric_limits<octave_uint8_t>::min());
+    retval = octave_uint8 (std::numeric_limits<octave_uint8_t>::min ());
   else if (cname == "uint16")
     retval = octave_uint16 (std::numeric_limits<octave_uint16_t>::min());
   else if (cname == "uint32")
-    retval = octave_uint32 (std::numeric_limits<octave_uint32_t>::min());
+    retval = octave_uint32 (std::numeric_limits<octave_uint32_t>::min ());
   else if (cname == "uint64")
-    retval = octave_uint64 (std::numeric_limits<octave_uint64_t>::min());
+    retval = octave_uint64 (std::numeric_limits<octave_uint64_t>::min ());
   else if (cname == "int8")
-    retval = octave_int8 (std::numeric_limits<octave_int8_t>::min());
+    retval = octave_int8 (std::numeric_limits<octave_int8_t>::min ());
   else if (cname == "int16")
-    retval = octave_int16 (std::numeric_limits<octave_int16_t>::min());
+    retval = octave_int16 (std::numeric_limits<octave_int16_t>::min ());
   else if (cname == "int32")
-    retval = octave_int32 (std::numeric_limits<octave_int32_t>::min());
+    retval = octave_int32 (std::numeric_limits<octave_int32_t>::min ());
   else if (cname == "int64")
-    retval = octave_int64 (std::numeric_limits<octave_int64_t>::min());
+    retval = octave_int64 (std::numeric_limits<octave_int64_t>::min ());
   else
     error ("intmin: not defined for '%s' objects", cname.c_str ());
 

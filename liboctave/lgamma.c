@@ -33,7 +33,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 int signgam;
 
-extern int F77_FCN (dlgams, DLGAMS) (const double&, double&, double&);
+extern int F77_FCN (dlgams, DLGAMS) (const double*, double*, double*);
 
 double
 lgamma (double x)
@@ -41,7 +41,7 @@ lgamma (double x)
   double result;
   double sgngam;
 
-  F77_FCN (dlgams, DLGAMS) (x, result, sgngam);
+  F77_FCN (dlgams, DLGAMS) (&x, &result, &sgngam);
 
   signgam = (int) sgngam;
 

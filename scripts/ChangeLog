@@ -1,5 +1,7 @@
 Mon Jan 27 13:48:31 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Version 2.0.2 released.
+
 	* plot/__plt__.m: Use usleep() instead of replot to try to avoid
 	weird missing-lines bug without creating extra plots unecessarily.
 

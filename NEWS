@@ -11,6 +11,11 @@ Summary of changes for version 2.0.2:
 
   * size ("") is now [0, 0].
 
+  * New functions:
+
+      sleep   -- pause execution for a specified number of seconds
+      usleep  -- pause execution for a specified number of microseconds
+
 Summary of changes for version 2.0:
 ----------------------------------
 

@@ -1,3 +1,7 @@
+Mon Jan 27 15:52:29 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Version 2.0.2 released.
+
 Sat Jan 25 22:34:10 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in, balgen/Makefile.in, blas/Makefile.in,

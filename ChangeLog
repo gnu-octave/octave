@@ -1,5 +1,7 @@
 Mon Jan 27 00:10:10 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Version 2.0.2 released.
+
 	* configure.in: Add check for usleep().
 	(bsd_gcc_kluge_targets_frag): New fragment.
 

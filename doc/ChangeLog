@@ -1,3 +1,7 @@
+Mon Jan 27 15:52:33 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Version 2.0.2 released.
+
 Sun Jan 26 22:07:45 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* interpreter/Makefile.in: Make BUGS file directly from bugs.texi.

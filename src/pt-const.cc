@@ -2392,6 +2392,34 @@ tree_constant::operator delete (void *p, size_t size)
 #endif
 
 /*
+ * Construct return vector of empty matrices.  Return empty matrices
+ * and/or gripe when appropriate.
+ */
+tree_constant *
+vector_of_empties (int nargout, char *fcn_name)
+{
+  tree_constant *retval = NULL_TREE_CONST;
+
+// Got an empty argument, check if should gripe/return empty values.
+
+  int flag = user_pref.propagate_empty_matrices;
+  if (flag != 0)
+    {
+      if (flag < 0)
+	gripe_empty_arg (fcn_name, 0);
+
+      Matrix m;
+      retval = new tree_constant [nargout+1];
+      for (int i = 0; i < nargout; i++)
+	retval[i] = tree_constant (m);
+    }
+  else
+    gripe_empty_arg (fcn_name, 1);
+
+  return retval;
+}
+
+/*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
 ;;; page-delimiter: "^/\\*" ***

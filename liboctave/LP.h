@@ -29,29 +29,29 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "base-min.h"
 
 class
-LP : public base_minimizer
+octave_LP : public base_minimizer
 {
 public:
 
-  LP (void)
+  octave_LP (void)
     : base_minimizer (), c (), bnds (), lc () { }
 
-  LP (const ColumnVector& c_arg)
+  octave_LP (const ColumnVector& c_arg)
     : base_minimizer (), c (c_arg), bnds (), lc () { }
 
-  LP (const ColumnVector& c_arg, const Bounds& b)
+  octave_LP (const ColumnVector& c_arg, const Bounds& b)
     : base_minimizer (), c (c_arg), bnds (b), lc () { }
 
-  LP (const ColumnVector& c_arg, const Bounds& b, const LinConst& l)
+  octave_LP (const ColumnVector& c_arg, const Bounds& b, const LinConst& l)
     : base_minimizer (), c (c_arg), bnds (b), lc (l) { }
 
-  LP (const ColumnVector& c_arg, const LinConst& l)
+  octave_LP (const ColumnVector& c_arg, const LinConst& l)
     : base_minimizer (), c (c_arg), bnds (), lc (l) { }
 
-  LP (const LP& a)
+  octave_LP (const octave_LP& a)
     : base_minimizer (a), c (a.c), bnds (a.bnds), lc (a.lc) { }
 
-  LP& operator = (const LP& a)
+  octave_LP& operator = (const octave_LP& a)
     {
       if (this != &a)
 	{
@@ -64,7 +64,7 @@ public:
       return *this;
     }
 
-  ~LP (void) { }
+  ~octave_LP (void) { }
 
   ColumnVector linear_obj_coeff (void) const { return c; }
 

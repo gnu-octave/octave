@@ -1,3 +1,17 @@
+2002-09-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* cmd-edit.cc (do_decode_prompt_string): Cope with possibility
+	that geteuid doesn't exist.
+
+	* LP.h: Rename LP class to octave_LP.
+	LPsolve.h: Change all uses.
+
+	* file-ops.cc, oct-passwd.cc oct-syscalls.cc oct-group.cc: Remove
+	incorrect token-pasting op.
+
+	* statdefs.h [! S_ISLNK]: undef HAVE_LSTAT instead of trying to
+	define lstat.
+
 2002-09-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Array.cc, Array.h, Array2.cc, Array2.h, Array3.cc, Array3.h,

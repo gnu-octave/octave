@@ -32,32 +32,32 @@ class ColumnVector;
 #include "LP.h"
 
 class
-LPsolve : public LP
+LPsolve : public octave_LP
 {
 public:
 
   LPsolve (void)
-    : LP () { }
+    : octave_LP () { }
 
   LPsolve (const ColumnVector& c)
-    : LP (c) { }
+    : octave_LP (c) { }
 
   LPsolve (const ColumnVector& c, const Bounds& b)
-    : LP (c, b) { }
+    : octave_LP (c, b) { }
 
   LPsolve (const ColumnVector& c, const Bounds& b, const LinConst& lc)
-    : LP (c, b, lc) { }
+    : octave_LP (c, b, lc) { }
 
   LPsolve (const ColumnVector& c, const LinConst& lc)
-    : LP (c, lc) { }
+    : octave_LP (c, lc) { }
 
   LPsolve (const LPsolve& a)
-    : LP (a) { }
+    : octave_LP (a) { }
 
   LPsolve& operator = (const LPsolve& a)
     {
       if (this != &a)
-	LP::operator = (a);
+	octave_LP::operator = (a);
 
       return *this;
     }

@@ -928,7 +928,11 @@ command_editor::do_decode_prompt_string (const std::string& s)
 
 	    case '$':
 	      {
+#if defined (HAVE_GETEUID)
 		temp = (::geteuid () == 0 ? "#" : "$");
+#else
+		temp = "$";
+#endif
 
 		goto add_string;
 	      }

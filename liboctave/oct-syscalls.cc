@@ -45,7 +45,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "syswait.h"
 
 #define NOT_SUPPORTED(nm) \
-  nm ## ": not supported on this system"
+  nm ": not supported on this system"
 
 int
 octave_syscalls::dup2 (int old_fd, int new_fd)

@@ -66,7 +66,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #ifndef S_ISLNK
-#define lstat stat
+#undef HAVE_LSTAT
 #endif
 
 #endif

@@ -37,7 +37,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "str-vec.h"
 
 #define NOT_SUPPORTED(nm) \
-  nm ## ": not supported on this system"
+  nm ": not supported on this system"
 
 std::string
 octave_group::name (void) const

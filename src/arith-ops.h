@@ -29,63 +29,63 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class Matrix;
 class ComplexMatrix;
-class tree_constant;
+class octave_value;
 
-extern tree_constant do_unary_op (double d, tree_expression::type t);
+extern octave_value do_unary_op (double d, tree_expression::type t);
 
-extern tree_constant do_unary_op (const Matrix& a, tree_expression::type t);
+extern octave_value do_unary_op (const Matrix& a, tree_expression::type t);
 
-extern tree_constant do_unary_op (const Complex& c, tree_expression::type t);
+extern octave_value do_unary_op (const Complex& c, tree_expression::type t);
 
-extern tree_constant do_unary_op (const ComplexMatrix& a,
+extern octave_value do_unary_op (const ComplexMatrix& a,
 				  tree_expression::type t);
 
-extern tree_constant do_binary_op (double a, double b,
+extern octave_value do_binary_op (double a, double b,
 				   tree_expression::type t);
 
-extern tree_constant do_binary_op (double a, const Matrix& b,
+extern octave_value do_binary_op (double a, const Matrix& b,
 				   tree_expression::type t);
 
-extern tree_constant do_binary_op (double a, const Complex& b,
+extern octave_value do_binary_op (double a, const Complex& b,
 				   tree_expression::type t);
 
-extern tree_constant do_binary_op (double a, const ComplexMatrix& b,
+extern octave_value do_binary_op (double a, const ComplexMatrix& b,
 				   tree_expression::type t);
 
-extern tree_constant do_binary_op (const Matrix& a, double b,
+extern octave_value do_binary_op (const Matrix& a, double b,
 				   tree_expression::type t);
 
-extern tree_constant do_binary_op (const Matrix& a, const Matrix& b,
+extern octave_value do_binary_op (const Matrix& a, const Matrix& b,
 				   tree_expression::type t);
 
-extern tree_constant do_binary_op (const Matrix& a, const Complex& b,
+extern octave_value do_binary_op (const Matrix& a, const Complex& b,
 				   tree_expression::type t);
 
-extern tree_constant do_binary_op (const Matrix& a, const ComplexMatrix& b,
+extern octave_value do_binary_op (const Matrix& a, const ComplexMatrix& b,
 				   tree_expression::type t);
 
-extern tree_constant do_binary_op (const Complex& a, double b,
+extern octave_value do_binary_op (const Complex& a, double b,
 				   tree_expression::type t);
 
-extern tree_constant do_binary_op (const Complex& a, const Matrix& b,
+extern octave_value do_binary_op (const Complex& a, const Matrix& b,
 				   tree_expression::type t);
 
-extern tree_constant do_binary_op (const Complex& a, const Complex& b,
+extern octave_value do_binary_op (const Complex& a, const Complex& b,
 				   tree_expression::type t);
 
-extern tree_constant do_binary_op (const Complex& a, const ComplexMatrix& b,
+extern octave_value do_binary_op (const Complex& a, const ComplexMatrix& b,
 				   tree_expression::type t);
 
-extern tree_constant do_binary_op (const ComplexMatrix& a, double b,
+extern octave_value do_binary_op (const ComplexMatrix& a, double b,
 				   tree_expression::type t);
 
-extern tree_constant do_binary_op (const ComplexMatrix& a, const Matrix& b,
+extern octave_value do_binary_op (const ComplexMatrix& a, const Matrix& b,
 				   tree_expression::type t); 
 
-extern tree_constant do_binary_op (const ComplexMatrix& a, const Complex& b,
+extern octave_value do_binary_op (const ComplexMatrix& a, const Complex& b,
 				   tree_expression::type t); 
 
-extern tree_constant do_binary_op (const ComplexMatrix& a,
+extern octave_value do_binary_op (const ComplexMatrix& a,
 				   const ComplexMatrix& b,
 				   tree_expression::type t); 
 

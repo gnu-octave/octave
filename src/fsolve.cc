@@ -85,7 +85,7 @@ fsolve_user_function (const ColumnVector& x)
 
   int n = x.capacity ();
 
-  Octave_object args;
+  octave_value_list args;
   args.resize (1);
 
   if (n > 1)
@@ -93,19 +93,19 @@ fsolve_user_function (const ColumnVector& x)
       Matrix m (n, 1);
       for (int i = 0; i < n; i++)
 	m (i, 0) = x.elem (i);
-      tree_constant vars (m);
+      octave_value vars (m);
       args(0) = vars;
     }
   else
     {
       double d = x.elem (0);
-      tree_constant vars (d);
+      octave_value vars (d);
       args(0) = vars;
     }
 
   if (fsolve_fcn)
     {
-      Octave_object tmp = fsolve_fcn->eval (0, 1, args);
+      octave_value_list tmp = fsolve_fcn->eval (0, 1, args);
       if (tmp.length () > 0 && tmp(0).is_defined ())
 	{
 	  retval = tmp(0).vector_value ();
@@ -132,7 +132,7 @@ compute the vector of function values.  It must have the form\n\
 \n\
 where y and x are vectors.")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
@@ -260,10 +260,10 @@ set_fsolve_option (const string& keyword, double val)
   warning ("fsolve_options: no match for `%s'", keyword.c_str ());
 }
 
-static Octave_object
+static octave_value_list
 show_fsolve_option (const string& keyword)
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   NLEQN_OPTIONS *list = fsolve_option_table;
 
@@ -288,7 +288,7 @@ DEFUN_DLD_BUILTIN (fsolve_options, args, ,
 Set or show options for fsolve.  Keywords may be abbreviated\n\
 to the shortest match.")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 

@@ -36,7 +36,7 @@ DEFUN_DLD_BUILTIN (pinv, args, ,
   "pinv ( [, tol])\n\
 Returns the pseudoinverse of X; singular values less than tol are ignored.")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
@@ -46,7 +46,7 @@ Returns the pseudoinverse of X; singular values less than tol are ignored.")
       return retval;
     }
 
-  tree_constant arg = args(0);
+  octave_value arg = args(0);
 
   double tol = 0.0;
   if (nargin == 2)

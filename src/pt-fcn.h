@@ -107,22 +107,22 @@ public:
   void octave_va_start (void)
     { curr_va_arg_number = num_named_args; }
 
-  tree_constant octave_va_arg (void);
+  octave_value octave_va_arg (void);
 
-  Octave_object octave_all_va_args (void);
+  octave_value_list octave_all_va_args (void);
 
   bool takes_var_return (void) const;
 
-  void octave_vr_val (const tree_constant& val);
+  void octave_vr_val (const octave_value& val);
 
   void stash_function_name (const string& s);
 
   string function_name (void)
     { return fcn_name; }
 
-  tree_constant eval (bool print);
+  octave_value eval (bool print);
 
-  Octave_object eval (bool print, int nargout, const Octave_object& args);
+  octave_value_list eval (bool print, int nargout, const octave_value_list& args);
 
   void traceback_error (void);
 
@@ -139,7 +139,7 @@ private:
   time_t t_parsed;
   bool system_fcn_file;
   int num_named_args;
-  Octave_object args_passed;
+  octave_value_list args_passed;
   int num_args_passed;
   int curr_va_arg_number;
   tree_va_return_list *vr_list;

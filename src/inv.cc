@@ -35,7 +35,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 DEFUN_DLD_BUILTIN (inv, args, ,
   "inv (X): inverse of a square matrix")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
@@ -45,7 +45,7 @@ DEFUN_DLD_BUILTIN (inv, args, ,
       return retval;
     }
 
-  tree_constant arg = args(0);
+  octave_value arg = args(0);
 
   int nr = arg.rows ();
   int nc = arg.columns ();

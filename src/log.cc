@@ -40,7 +40,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 DEFUN_DLD_BUILTIN (logm, args, ,
   "logm (X): matrix logarithm")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
@@ -50,7 +50,7 @@ DEFUN_DLD_BUILTIN (logm, args, ,
       return retval;
     }
 
-  tree_constant arg = args(0);
+  octave_value arg = args(0);
 
   int arg_is_empty = empty_arg ("logm", arg.rows (), arg.columns ());
 
@@ -152,7 +152,7 @@ DEFUN_DLD_BUILTIN (logm, args, ,
 DEFUN_DLD_BUILTIN (sqrtm, args, ,
  "sqrtm (X): matrix sqrt")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
@@ -162,7 +162,7 @@ DEFUN_DLD_BUILTIN (sqrtm, args, ,
       return retval;
     }
 
-  tree_constant arg = args(0);
+  octave_value arg = args(0);
 
   int arg_is_empty = empty_arg ("sqrtm", arg.rows (), arg.columns ());
 

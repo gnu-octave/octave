@@ -389,7 +389,7 @@ octave_chdir (const string& path)
 DEFUN (clc, , ,
   "clc (): clear screen")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   rl_beg_of_line ();
   rl_kill_line (1);
@@ -413,7 +413,7 @@ DEFALIAS (home, clc);
 DEFUN (getenv, args, ,
   "getenv (STRING): get environment variable values")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
@@ -440,7 +440,7 @@ DEFUN (getenv, args, ,
 DEFUN (putenv, args, ,
   "putenv (VAR, VALUE): define environment variable VAR=VALUE")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
@@ -469,7 +469,7 @@ DEFUN (putenv, args, ,
 DEFUN (kbhit, , ,
   "kbhit: get a single character from the terminal")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   // XXX FIXME XXX -- add timeout and default value args?
 
@@ -488,7 +488,7 @@ DEFUN (kbhit, , ,
 DEFUN (pause, args, ,
   "pause (seconds): suspend program execution")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
@@ -576,7 +576,7 @@ oct_tilde_expand (const string& name)
 DEFUN (tilde_expand, args, ,
   "tilde_expand (STRING): perform tilde expansion on STRING")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 

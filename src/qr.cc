@@ -55,7 +55,7 @@ DEFUN_DLD_BUILTIN (qr, args, nargout,
 qr (X) alone returns the output of the LAPACK routine dgeqrf, such\n\
 that R = triu (qr (X))")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
@@ -65,14 +65,14 @@ that R = triu (qr (X))")
       return retval;
     }
 
-  tree_constant arg = args(0);
+  octave_value arg = args(0);
 
   int arg_is_empty = empty_arg ("qr", arg.rows (), arg.columns ());
 
   if (arg_is_empty < 0)
     return retval;
   else if (arg_is_empty > 0)
-    return Octave_object (3, Matrix ());
+    return octave_value_list (3, Matrix ());
 
   QR::type type = nargout == 1 ? QR::raw
     : (nargin == 2 ? QR::economy : QR::std);

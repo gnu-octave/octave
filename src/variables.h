@@ -27,8 +27,8 @@ class symbol_record;
 class symbol_table;
 
 class tree_fvc;
-class tree_constant;
-class Octave_object;
+class octave_value;
+class octave_value_list;
 class string_vector;
 
 #include <string>
@@ -39,13 +39,13 @@ typedef int (*sv_Function)(void);
 
 struct builtin_variable
 {
-  builtin_variable (const string& n, tree_constant *v, int iaf, int p,
+  builtin_variable (const string& n, octave_value *v, int iaf, int p,
 		    int e, sv_Function svf, const string& h)
     : name (n), value (v), install_as_function (iaf), protect (p),
       eternal (e), sv_function (svf), help_string (h) { }
 
   string name;
-  tree_constant *value;
+  octave_value *value;
   int install_as_function;
   int protect;
   int eternal;
@@ -53,7 +53,7 @@ struct builtin_variable
   string help_string;
 };
 
-typedef Octave_object (*Octave_builtin_fcn)(const Octave_object&, int);
+typedef octave_value_list (*Octave_builtin_fcn)(const octave_value_list&, int);
 
 struct builtin_function
 {
@@ -77,7 +77,7 @@ extern string get_help_from_file (const string& f);
 
 extern string builtin_string_variable (const string&);
 extern int builtin_real_scalar_variable (const string&, double&);
-extern tree_constant builtin_any_variable (const string&);
+extern octave_value builtin_any_variable (const string&);
 
 extern void link_to_global_variable (symbol_record *sr);
 extern void link_to_builtin_variable (symbol_record *sr);
@@ -89,7 +89,7 @@ extern bool is_builtin_variable (const string&);
 extern bool is_text_function_name (const string&);
 extern bool is_globally_visible (const string&);
 
-extern tree_fvc *is_valid_function (const tree_constant&, const string&,
+extern tree_fvc *is_valid_function (const octave_value&, const string&,
 				    int warn = 0); 
 
 extern string_vector make_name_list (void);
@@ -102,7 +102,7 @@ extern void install_builtin_variable (const builtin_variable& v);
 
 extern void
 install_builtin_variable_as_function
-  (const string& name, tree_constant *val, int protect = 0,
+  (const string& name, octave_value *val, int protect = 0,
    int eternal = 0, const string& help = string ());
 
 extern void alias_builtin (const string& alias, const string& name);
@@ -112,18 +112,18 @@ extern void bind_nargin_and_nargout (symbol_table *sym_tab,
 				     int nargin, int nargout);
 #endif
 
-extern void bind_ans (const tree_constant& val, int print);
+extern void bind_ans (const octave_value& val, int print);
 
 extern void bind_global_error_variable (void);
 
 extern void clear_global_error_variable (void *);
 
-extern void bind_builtin_variable (const string&, tree_constant *,
+extern void bind_builtin_variable (const string&, octave_value *,
 				   int protect = 0, int eternal = 0,
 				   sv_Function f = (sv_Function) 0,
 				   const string& help = string ());
 
-extern void bind_builtin_variable (const string&, const tree_constant&,
+extern void bind_builtin_variable (const string&, const octave_value&,
 				   int protect = 0, int eternal = 0,
 				   sv_Function f = (sv_Function) 0,
 				   const string& help = string ());

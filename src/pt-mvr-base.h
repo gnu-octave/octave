@@ -27,8 +27,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #pragma interface
 #endif
 
-class tree_constant;
-class Octave_object;
+class octave_value;
+class octave_value_list;
 
 #include "pt-exp-base.h"
 
@@ -48,10 +48,10 @@ public:
   bool is_multi_val_ret_expression (void) const
     { return true; }
 
-  tree_constant eval (bool print);
+  octave_value eval (bool print);
 
-  virtual Octave_object eval (bool print, int nargout,
-			      const Octave_object& args) = 0;
+  virtual octave_value_list eval (bool print, int nargout,
+			      const octave_value_list& args) = 0;
 };
 
 #endif

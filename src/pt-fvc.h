@@ -59,17 +59,17 @@ public:
 
   string name (void) const;
 
-  tree_identifier *define (tree_constant *t);
+  tree_identifier *define (octave_value *t);
   tree_identifier *define (tree_function *t);
 
   void document (const string& s);
 
-  tree_constant assign (tree_constant& t);
-  tree_constant assign (tree_constant& t, const Octave_object& args);
+  octave_value assign (octave_value& t);
+  octave_value assign (octave_value& t, const octave_value_list& args);
 
-  tree_constant assign (SLList<string> list, tree_constant& t);
-  tree_constant assign (SLList<string> list, tree_constant& t,
-			const Octave_object& args); 
+  octave_value assign (SLList<string> list, octave_value& t);
+  octave_value assign (SLList<string> list, octave_value& t,
+			const octave_value_list& args); 
 
   bool is_defined (void);
 
@@ -84,9 +84,9 @@ public:
   void mark_for_possible_ans_assign (void)
     { maybe_do_ans_assign = true; }
 
-  tree_constant eval (bool print);
+  octave_value eval (bool print);
 
-  Octave_object eval (bool print, int nargout, const Octave_object& args);
+  octave_value_list eval (bool print, int nargout, const octave_value_list& args);
 
   void eval_undefined_error (void);
 
@@ -127,15 +127,15 @@ public:
 
   string name (void) const;
 
-  tree_constant assign (tree_constant& t);
-  tree_constant assign (tree_constant& t, const Octave_object& args);
+  octave_value assign (octave_value& t);
+  octave_value assign (octave_value& t, const octave_value_list& args);
 
   void mark_for_possible_ans_assign (void)
     { id->mark_for_possible_ans_assign (); }
 
-  tree_constant eval (bool print);
+  octave_value eval (bool print);
 
-  Octave_object eval (bool print, int nargout, const Octave_object& args);
+  octave_value_list eval (bool print, int nargout, const octave_value_list& args);
 
   void print_code (ostream& os);
 
@@ -164,9 +164,9 @@ public:
   bool is_mapper_function (void) const
     { return is_mapper; }
 
-  tree_constant eval (bool print);
+  octave_value eval (bool print);
 
-  Octave_object eval (bool print, int nargout, const Octave_object& args);
+  octave_value_list eval (bool print, int nargout, const octave_value_list& args);
 
   string name (void) const
     { return my_name; }

@@ -116,11 +116,11 @@ tree_statement::print_code (ostream& os)
     }
 }
 
-tree_constant
+octave_value
 tree_statement_list::eval (bool print)
 {
   bool pf;
-  tree_constant retval;
+  octave_value retval;
 
   if (error_state)
     return retval;
@@ -147,7 +147,7 @@ tree_statement_list::eval (bool print)
 	    retval = expr->eval (pf);
 
 	  if (error_state)
-	    return tree_constant ();
+	    return octave_value ();
 
 	  if (breaking || continuing)
 	    break;
@@ -156,15 +156,15 @@ tree_statement_list::eval (bool print)
 	    break;
 	}
       else
-	retval = tree_constant ();
+	retval = octave_value ();
     }
   return retval;
 }
 
-Octave_object
+octave_value_list
 tree_statement_list::eval (bool print, int nargout)
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   if (nargout > 1)
     {
@@ -195,7 +195,7 @@ tree_statement_list::eval (bool print, int nargout)
 		{
 		  if (expr->is_multi_val_ret_expression ())
 		    {
-		      Octave_object args;
+		      octave_value_list args;
 		      tree_multi_val_ret *t = (tree_multi_val_ret *) expr;
 		      retval = t->eval (pf, nargout, args);
 		    }
@@ -204,7 +204,7 @@ tree_statement_list::eval (bool print, int nargout)
 		}
 
 	      if (error_state)
-		return tree_constant ();
+		return octave_value ();
 
 	      if (breaking || continuing)
 		break;
@@ -213,7 +213,7 @@ tree_statement_list::eval (bool print, int nargout)
 		break;
 	    }
 	  else
-	    retval = Octave_object ();
+	    retval = octave_value_list ();
 	}
       return retval;
     }
@@ -235,7 +235,7 @@ tree_statement_list::print_code (ostream& os)
     }
 }
 
-Octave_object
+octave_value_list
 tree_argument_list::convert_to_const_vector (void)
 {
   int len = length ();
@@ -244,7 +244,7 @@ tree_argument_list::convert_to_const_vector (void)
   // needs to be even when we have a list containing an all_va_args
   // token.
 
-  Octave_object args;
+  octave_value_list args;
   args.resize (len);
 
   Pix p = first ();
@@ -254,11 +254,11 @@ tree_argument_list::convert_to_const_vector (void)
       tree_expression *elt = this->operator () (p);
       if (elt)
 	{
-	  tree_constant tmp = elt->eval (false);
+	  octave_value tmp = elt->eval (false);
 	  if (error_state)
 	    {
 	      ::error ("evaluating argument list element number %d", k);
-	      args = Octave_object ();
+	      args = octave_value_list ();
 	      break;
 	    }
 	  else
@@ -267,7 +267,7 @@ tree_argument_list::convert_to_const_vector (void)
 		{
 		  if (curr_function)
 		    {
-		      Octave_object tva;
+		      octave_value_list tva;
 		      tva = curr_function->octave_all_va_args ();
 		      int n = tva.length ();
 		      for (int i = 0; i < n; i++)
@@ -276,7 +276,7 @@ tree_argument_list::convert_to_const_vector (void)
 		  else
 		    {
 		      ::error ("all_va_args is only valid inside functions");
-		      args = Octave_object ();
+		      args = octave_value_list ();
 		      break;
 		    }
 		}
@@ -287,7 +287,7 @@ tree_argument_list::convert_to_const_vector (void)
 	}
       else
 	{
-	  args(j++) = tree_constant ();
+	  args(j++) = octave_value ();
 	  break;
 	}
     }
@@ -340,7 +340,7 @@ tree_parameter_list::mark_as_formal_parameters (void)
 }
 
 void
-tree_parameter_list::initialize_undefined_elements (tree_constant& val)
+tree_parameter_list::initialize_undefined_elements (octave_value& val)
 {
   for (Pix p = first (); p != 0; next (p))
     {
@@ -351,7 +351,7 @@ tree_parameter_list::initialize_undefined_elements (tree_constant& val)
 }
 
 void
-tree_parameter_list::define_from_arg_vector (const Octave_object& args)
+tree_parameter_list::define_from_arg_vector (const octave_value_list& args)
 {
   int nargin = args.length ();
 
@@ -366,7 +366,7 @@ tree_parameter_list::define_from_arg_vector (const Octave_object& args)
     {
       tree_identifier *elt = this->operator () (p);
 
-      tree_constant *tmp = 0;
+      octave_value *tmp = 0;
 
       if (i < nargin)
 	{
@@ -375,7 +375,7 @@ tree_parameter_list::define_from_arg_vector (const Octave_object& args)
 	      ::error ("invalid use of colon in function argument list");
 	      return;
 	    }
-	  tmp = new tree_constant (args(i));
+	  tmp = new octave_value (args(i));
 	}
 
       elt->define (tmp);
@@ -384,7 +384,7 @@ tree_parameter_list::define_from_arg_vector (const Octave_object& args)
     }
 }
 
-Octave_object
+octave_value_list
 tree_parameter_list::convert_to_const_vector (tree_va_return_list *vr_list)
 {
   int nout = length ();
@@ -392,7 +392,7 @@ tree_parameter_list::convert_to_const_vector (tree_va_return_list *vr_list)
   if (vr_list)
     nout += vr_list->length ();
 
-  Octave_object retval;
+  octave_value_list retval;
   retval.resize (nout);
 
   int i = 0;

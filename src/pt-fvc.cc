@@ -79,7 +79,7 @@ any_element_greater_than (const Matrix& a, double val)
 // Are any of the arguments `:'?
 
 static bool
-any_arg_is_magic_colon (const Octave_object& args)
+any_arg_is_magic_colon (const octave_value_list& args)
 {
   int nargin = args.length ();
 
@@ -102,7 +102,7 @@ tree_identifier::name (void) const
 }
 
 tree_identifier *
-tree_identifier::define (tree_constant *t)
+tree_identifier::define (octave_value *t)
 {
   int status = sym->define (t);
   return status ? this : 0;
@@ -122,10 +122,10 @@ tree_identifier::document (const string& s)
     sym->document (s);
 }
 
-tree_constant
-tree_identifier::assign (tree_constant& rhs)
+octave_value
+tree_identifier::assign (octave_value& rhs)
 {
-  tree_constant retval;
+  octave_value retval;
 
   if (rhs.is_defined ())
     {
@@ -142,7 +142,7 @@ tree_identifier::assign (tree_constant& rhs)
 	  sym->clear ();
 	}
 
-      tree_constant *tmp = new tree_constant (rhs);
+      octave_value *tmp = new octave_value (rhs);
 
       if (sym->define (tmp))
 	retval = rhs;
@@ -153,10 +153,10 @@ tree_identifier::assign (tree_constant& rhs)
   return retval;
 }
 
-tree_constant
-tree_identifier::assign (tree_constant& rhs, const Octave_object& args)
+octave_value
+tree_identifier::assign (octave_value& rhs, const octave_value_list& args)
 {
-  tree_constant retval;
+  octave_value retval;
 
   if (rhs.is_defined ())
     {
@@ -189,7 +189,7 @@ tree_identifier::assign (tree_constant& rhs, const Octave_object& args)
 	    }
 	  else
 	    {
-	      tree_constant *tmp = new tree_constant ();
+	      octave_value *tmp = new octave_value ();
 	      retval = tmp->assign (rhs, args);
 	      if (retval.is_defined ())
 		sym->define (tmp);
@@ -200,10 +200,10 @@ tree_identifier::assign (tree_constant& rhs, const Octave_object& args)
   return retval;
 }
 
-tree_constant
-tree_identifier::assign (SLList<string> list, tree_constant& rhs)
+octave_value
+tree_identifier::assign (SLList<string> list, octave_value& rhs)
 {
-  tree_constant retval;
+  octave_value retval;
 
   if (rhs.is_defined ())
     {
@@ -212,12 +212,12 @@ tree_identifier::assign (SLList<string> list, tree_constant& rhs)
 
       tree_fvc *curr_val = sym->def ();
 
-      tree_constant *tmp = 0;
+      octave_value *tmp = 0;
       if (curr_val && curr_val->is_constant ())
-	tmp = (tree_constant *) curr_val;
+	tmp = (octave_value *) curr_val;
       else
 	{
-	  tmp = new tree_constant ();
+	  tmp = new octave_value ();
 	  if (! sym->define (tmp))
 	    {
 	      delete tmp;
@@ -232,11 +232,11 @@ tree_identifier::assign (SLList<string> list, tree_constant& rhs)
   return retval;
 }
 
-tree_constant
-tree_identifier::assign (SLList<string> list, tree_constant& rhs,
-			 const Octave_object& args)
+octave_value
+tree_identifier::assign (SLList<string> list, octave_value& rhs,
+			 const octave_value_list& args)
 {
-  tree_constant retval;
+  octave_value retval;
 
   if (rhs.is_defined ())
     {
@@ -247,9 +247,9 @@ tree_identifier::assign (SLList<string> list, tree_constant& rhs,
 	{
 	  tree_fvc *curr_val = sym->def ();
 
-	  tree_constant *tmp;
+	  octave_value *tmp;
 	  if (curr_val && curr_val->is_constant ())
-	    tmp = (tree_constant *) curr_val;
+	    tmp = (octave_value *) curr_val;
 	  else
 	    panic_impossible ();
 
@@ -266,7 +266,7 @@ tree_identifier::assign (SLList<string> list, tree_constant& rhs,
 	    }
 	  else
 	    {
-	      tree_constant *tmp = new tree_constant ();
+	      octave_value *tmp = new octave_value ();
 
 	      retval = tmp->assign_map_element (list, rhs, args);
 
@@ -359,10 +359,10 @@ tree_identifier::mark_as_formal_parameter (void)
     sym->mark_as_formal_parameter ();
 }
 
-tree_constant
+octave_value
 tree_identifier::eval (bool print)
 {
-  tree_constant retval;
+  octave_value retval;
 
   if (error_state)
     return retval;
@@ -379,8 +379,8 @@ tree_identifier::eval (bool print)
 
 	  if (nargout)
 	    {
-	      Octave_object tmp_args;
-	      Octave_object tmp = object_to_eval->eval (0, nargout, tmp_args);
+	      octave_value_list tmp_args;
+	      octave_value_list tmp = object_to_eval->eval (0, nargout, tmp_args);
 
 	      if (tmp.length () > 0)
 		retval = tmp(0);
@@ -403,10 +403,10 @@ tree_identifier::eval (bool print)
   return retval;
 }
 
-Octave_object
-tree_identifier::eval (bool print, int nargout, const Octave_object& args)
+octave_value_list
+tree_identifier::eval (bool print, int nargout, const octave_value_list& args)
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   if (error_state)
     return retval;
@@ -491,10 +491,10 @@ tree_indirect_ref::name (void) const
     }
 }
 
-tree_constant
-tree_indirect_ref::assign (tree_constant& t)
+octave_value
+tree_indirect_ref::assign (octave_value& t)
 {
-  tree_constant retval;
+  octave_value retval;
 
   if (refs.empty ())
     retval = id->assign (t);
@@ -504,10 +504,10 @@ tree_indirect_ref::assign (tree_constant& t)
   return retval;
 }
 
-tree_constant
-tree_indirect_ref::assign (tree_constant& t, const Octave_object& args)
+octave_value
+tree_indirect_ref::assign (octave_value& t, const octave_value_list& args)
 {
-  tree_constant retval;
+  octave_value retval;
 
   if (refs.empty ())
     retval = id->assign (t, args);
@@ -517,10 +517,10 @@ tree_indirect_ref::assign (tree_constant& t, const Octave_object& args)
   return retval;
 }
 
-tree_constant
+octave_value
 tree_indirect_ref::eval (bool print)
 {
-  tree_constant retval;
+  octave_value retval;
 
   if (error_state)
     return retval;
@@ -549,10 +549,10 @@ tree_indirect_ref::eval (bool print)
   return retval;
 }
 
-Octave_object
-tree_indirect_ref::eval (bool print, int nargout, const Octave_object& args)
+octave_value_list
+tree_indirect_ref::eval (bool print, int nargout, const octave_value_list& args)
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   if (error_state)
     return retval;
@@ -569,7 +569,7 @@ tree_indirect_ref::eval (bool print, int nargout, const Octave_object& args)
 
       if (object_to_eval)
 	{
-	  tree_constant tmp = object_to_eval->lookup_map_element (refs);
+	  octave_value tmp = object_to_eval->lookup_map_element (refs);
 
 	  if (! error_state)
 	    {
@@ -632,18 +632,18 @@ tree_builtin::tree_builtin (Octave_builtin_fcn g_fcn, const string& nm)
   my_name = nm;
 }
 
-tree_constant
+octave_value
 tree_builtin::eval (bool /* print */)
 {
-  tree_constant retval;
+  octave_value retval;
 
   if (error_state)
     return retval;
 
   if (fcn)
     {
-      Octave_object args;
-      Octave_object tmp = (*fcn) (args, 0);
+      octave_value_list args;
+      octave_value_list tmp = (*fcn) (args, 0);
       if (tmp.length () > 0)
 	retval = tmp(0);
     }
@@ -657,11 +657,11 @@ tree_builtin::eval (bool /* print */)
   return retval;
 }
 
-static tree_constant
-apply_mapper_fcn (const tree_constant& arg, Mapper_fcn& m_fcn,
+static octave_value
+apply_mapper_fcn (const octave_value& arg, Mapper_fcn& m_fcn,
 		  bool /* print */)
 {
-  tree_constant retval;
+  octave_value retval;
 
   if (arg.is_real_type ())
     {
@@ -744,10 +744,10 @@ apply_mapper_fcn (const tree_constant& arg, Mapper_fcn& m_fcn,
   return retval;
 }
 
-Octave_object
-tree_builtin::eval (bool /* print */, int nargout, const Octave_object& args)
+octave_value_list
+tree_builtin::eval (bool /* print */, int nargout, const octave_value_list& args)
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   if (error_state)
     return retval;
@@ -770,7 +770,7 @@ tree_builtin::eval (bool /* print */, int nargout, const Octave_object& args)
 //      else
       if (nargin > 0 && args(0).is_defined ())
 	{
-	  tree_constant tmp = apply_mapper_fcn (args(0), mapper_fcn, 0);
+	  octave_value tmp = apply_mapper_fcn (args(0), mapper_fcn, 0);
 	  retval(0) = tmp;
 	}
       else

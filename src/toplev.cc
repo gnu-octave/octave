@@ -271,7 +271,7 @@ DEFUN (source, args, ,
 Parse and execute the contents of FILE.  Like executing commands in a\n\
 script file but without requiring the file to be named `FILE.m'.")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
@@ -331,7 +331,7 @@ clean_up_and_exit (int retval)
 DEFUN_TEXT (casesen, args, ,
   "casesen [on|off]")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int argc = args.length () + 1;
 
@@ -355,7 +355,7 @@ DEFUN (computer, args, nargout,
 \n\
 Have Octave ask the system, \"What kind of computer are you?\"")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
@@ -390,7 +390,7 @@ DEFUN (quit, args, ,
 \n\
 STATUS should be an integer value.  If STATUS is missing, 0 is assumed.")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int exit_status = 0;
 
@@ -418,7 +418,7 @@ DEFALIAS (exit, quit);
 DEFUN (warranty, , ,
   "warranty (): describe copying conditions")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   ostrstream output_buf;
   output_buf << "\n" OCTAVE_NAME_VERSION_AND_COPYRIGHT "\n\n\
@@ -445,16 +445,16 @@ Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.\n\
 
 // XXX FIXME XXX -- this may not be the best place for these...
 
-Octave_object
-feval (const Octave_object& args, int nargout)
+octave_value_list
+feval (const octave_value_list& args, int nargout)
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   tree_fvc *fcn = is_valid_function (args(0), "feval", 1);
   if (fcn)
     {
       int tmp_nargin = args.length () - 1;
-      Octave_object tmp_args;
+      octave_value_list tmp_args;
       tmp_args.resize (tmp_nargin);
       for (int i = 0; i < tmp_nargin; i++)
 	tmp_args(i) = args(i+1);
@@ -469,7 +469,7 @@ DEFUN (feval, args, nargout,
 \n\
 evaluate NAME as a function, passing ARGS as its arguments")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
@@ -481,7 +481,7 @@ evaluate NAME as a function, passing ARGS as its arguments")
   return retval;
 }
 
-static Octave_object
+static octave_value_list
 eval_string (const string& s, int print, int& parse_status,
 	     int nargout) 
 {
@@ -518,7 +518,7 @@ eval_string (const string& s, int print, int& parse_status,
 
   run_unwind_frame ("eval_string");
 
-  Octave_object retval;
+  octave_value_list retval;
 
   if (parse_status == 0 && command)
     {
@@ -529,20 +529,20 @@ eval_string (const string& s, int print, int& parse_status,
   return retval;
 }
 
-tree_constant
+octave_value
 eval_string (const string& s, int print, int& parse_status)
 {
-  tree_constant retval;
+  octave_value retval;
 
-  Octave_object tmp = eval_string (s, print, parse_status, 1);
+  octave_value_list tmp = eval_string (s, print, parse_status, 1);
 
   retval = tmp(0);
 
   return retval;
 }
 
-static Octave_object
-eval_string (const tree_constant& arg, int& parse_status, int nargout)
+static octave_value_list
+eval_string (const octave_value& arg, int& parse_status, int nargout)
 {
   string s = arg.string_value ();
 
@@ -563,7 +563,7 @@ DEFUN (eval, args, nargout,
 Evaluate the string TRY as octave code.  If that fails, evaluate the\n\
 string CATCH.")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
@@ -594,7 +594,7 @@ string CATCH.")
 
 	  eval_string (args(1), parse_status, nargout);
 
-	  retval = Octave_object ();
+	  retval = octave_value_list ();
 	}
 
       run_unwind_frame ("Feval");
@@ -613,10 +613,10 @@ cleanup_iprocstream (void *p)
   delete (iprocstream *) p;
 }
 
-static Octave_object
+static octave_value_list
 do_system (const string& cmd_str, bool return_output)
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   iprocstream *cmd = new iprocstream (cmd_str.c_str ());
 
@@ -685,7 +685,7 @@ Otherwise, if the subprocess is executed synchronously, it's output is\n\
 sent to Octave's standard output (possibly being passed through the\n\
 pager).")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
@@ -757,7 +757,7 @@ do_octave_atexit (void)
 {
   while (! octave_atexit_functions.empty ())
     {
-      Octave_object fcn = octave_atexit_functions.pop ();
+      octave_value_list fcn = octave_atexit_functions.pop ();
 
       feval (fcn, 0);
     }
@@ -769,7 +769,7 @@ DEFUN(atexit, args, ,
 Functions are called with no arguments in the reverse of the order in
 which they were registered with atexit()")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
 #if defined (HAVE_ATEXIT) || defined (HAVE_ON_EXIT)
   int nargin = args.length ();

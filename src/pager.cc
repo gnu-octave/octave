@@ -204,7 +204,7 @@ diary [file]\n\
 \n\
 redirect all input and screen output to a file.")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int argc = args.length () + 1;
 
@@ -256,7 +256,7 @@ more off\n\
 \n\
 Turn output pagination on or off.")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int argc = args.length () + 1;
 

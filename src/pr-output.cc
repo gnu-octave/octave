@@ -1573,7 +1573,7 @@ octave_print_internal (ostream& os, const charMatrix& chm,
 DEFUN (disp, args, ,
   "disp (X): display value without name tag")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
@@ -1600,12 +1600,12 @@ init_format_state (void)
 static void
 set_output_prec_and_fw (int prec, int fw)
 {
-  tree_constant *tmp = 0;
+  octave_value *tmp = 0;
 
-  tmp = new tree_constant ((double) prec);
+  tmp = new octave_value ((double) prec);
   bind_builtin_variable ("output_precision", tmp);
 
-  tmp = new tree_constant ((double) fw);
+  tmp = new octave_value ((double) fw);
   bind_builtin_variable ("output_max_field_width", tmp);
 }
 
@@ -1738,7 +1738,7 @@ DEFUN_TEXT (format, args, ,
 \n\
 set output formatting style")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int argc = args.length () + 1;
 

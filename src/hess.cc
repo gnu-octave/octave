@@ -38,7 +38,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 DEFUN_DLD_BUILTIN (hess, args, nargout,
   "[P, H] = hess (A) or H = hess (A): Hessenberg decomposition")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
@@ -48,7 +48,7 @@ DEFUN_DLD_BUILTIN (hess, args, nargout,
       return retval;
     }
 
-  tree_constant arg = args(0);
+  octave_value arg = args(0);
 
   int nr = arg.rows ();
   int nc = arg.columns ();
@@ -58,7 +58,7 @@ DEFUN_DLD_BUILTIN (hess, args, nargout,
   if (arg_is_empty < 0)
     return retval;
   else if (arg_is_empty > 0)
-    return Octave_object (2, Matrix ());
+    return octave_value_list (2, Matrix ());
 
   if (nr != nc)
     {

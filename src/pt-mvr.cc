@@ -46,7 +46,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Make sure that all arguments have values.
 
 static bool
-all_args_defined (const Octave_object& args)
+all_args_defined (const octave_value_list& args)
 {
   int nargin = args.length ();
 
@@ -59,15 +59,15 @@ all_args_defined (const Octave_object& args)
 
 // Used internally.
 
-tree_constant
+octave_value
 tree_oct_obj::eval (bool /* print */)
 {
   return values(0);
 }
 
-Octave_object
+octave_value_list
 tree_oct_obj::eval (bool /* print */, int /* nargout */,
-		    const Octave_object& /* args */)
+		    const octave_value_list& /* args */)
 {
   return values;
 }
@@ -109,10 +109,10 @@ tree_index_expression::mark_for_possible_ans_assign (void)
     id->mark_for_possible_ans_assign ();
 }
 
-tree_constant
+octave_value
 tree_index_expression::eval (bool print)
 {
-  tree_constant retval;
+  octave_value retval;
 
   if (error_state)
     return retval;
@@ -122,7 +122,7 @@ tree_index_expression::eval (bool print)
       // Extract the arguments into a simple vector.  Don't pass null
       // args.
 
-      Octave_object args = list->convert_to_const_vector ();
+      octave_value_list args = list->convert_to_const_vector ();
 
       if (error_state)
 	eval_error ();
@@ -134,7 +134,7 @@ tree_index_expression::eval (bool print)
 	    {
 	      if (all_args_defined (args))
 		{
-		  Octave_object tmp = id->eval (print, 1, args);
+		  octave_value_list tmp = id->eval (print, 1, args);
 
 		  if (error_state)
 		    eval_error ();
@@ -160,11 +160,11 @@ tree_index_expression::eval (bool print)
   return retval;
 }
 
-Octave_object
+octave_value_list
 tree_index_expression::eval (bool print, int nargout,
-			     const Octave_object& /* args */)
+			     const octave_value_list& /* args */)
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   if (error_state)
     return retval;
@@ -174,7 +174,7 @@ tree_index_expression::eval (bool print, int nargout,
       // Extract the arguments into a simple vector.  Don't pass null
       // args.
 
-      Octave_object tmp_args = list->convert_to_const_vector ();
+      octave_value_list tmp_args = list->convert_to_const_vector ();
 
       if (error_state)
 	eval_error ();
@@ -201,7 +201,7 @@ tree_index_expression::eval (bool print, int nargout,
     }
   else
     {
-      Octave_object tmp_args;
+      octave_value_list tmp_args;
 
       retval = id->eval (print, nargout, tmp_args);
 
@@ -271,16 +271,16 @@ tree_multi_assignment_expression::~tree_multi_assignment_expression (void)
   delete rhs;
 }
 
-tree_constant
+octave_value
 tree_multi_assignment_expression::eval (bool print)
 {
-  tree_constant retval;
+  octave_value retval;
 
   if (error_state)
     return retval;
 
-  Octave_object tmp_args;
-  Octave_object result = eval (print, 1, tmp_args);
+  octave_value_list tmp_args;
+  octave_value_list result = eval (print, 1, tmp_args);
 
   if (result.length () > 0)
     retval = result(0);
@@ -288,18 +288,18 @@ tree_multi_assignment_expression::eval (bool print)
   return retval;
 }
 
-Octave_object
+octave_value_list
 tree_multi_assignment_expression::eval (bool print, int nargout,
-					const Octave_object& /* args */)
+					const octave_value_list& /* args */)
 {
   assert (etype == tree_expression::multi_assignment);
 
   if (error_state || ! rhs)
-    return Octave_object ();
+    return octave_value_list ();
 
   nargout = lhs->length ();
-  Octave_object tmp_args;
-  Octave_object results = rhs->eval (0, nargout, tmp_args);
+  octave_value_list tmp_args;
+  octave_value_list results = rhs->eval (0, nargout, tmp_args);
 
   if (error_state)
     eval_error ();
@@ -323,7 +323,7 @@ tree_multi_assignment_expression::eval (bool print, int nargout,
 	      // works, but maybe we should have the option of
 	      // skipping the assignment instead.
 
-	      tree_constant *tmp = 0;
+	      octave_value *tmp = 0;
 	      if (results(i).is_undefined ())
 		{
 		  error ("element number %d undefined in return list", i+1);
@@ -331,7 +331,7 @@ tree_multi_assignment_expression::eval (bool print, int nargout,
 		  break;
 		}
 	      else
-		tmp = new tree_constant (results(i));
+		tmp = new octave_value (results(i));
 
 	      tree_simple_assignment_expression tmp_expr
 		(lhs_expr, tmp, 1, 0, ma_line, ma_column);

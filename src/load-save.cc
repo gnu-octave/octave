@@ -79,7 +79,7 @@ enum load_save_format
 // Assumes TC is defined.
 
 static void
-install_loaded_variable (int force, char *name, const tree_constant& tc,
+install_loaded_variable (int force, char *name, const octave_value& tc,
 			 int global, char *doc)
 {
   // Is there already a symbol by this name?  If so, what is it?
@@ -197,7 +197,7 @@ install_loaded_variable (int force, char *name, const tree_constant& tc,
 
   if (sr)
     {
-      tree_constant *tmp_tc = new tree_constant (tc);
+      octave_value *tmp_tc = new octave_value (tc);
       sr->define (tmp_tc);
       if (doc)
 	sr->document (doc);
@@ -435,7 +435,7 @@ extract_keyword (istream& is, char *keyword, int& value)
 
 static char *
 read_ascii_data (istream& is, const string& filename, int& global,
-		 tree_constant& tc)
+		 octave_value& tc)
 {
   // Read name for this entry or break on EOF.
 
@@ -699,7 +699,7 @@ read_ascii_data (istream& is, const string& filename, int& global,
 static char *
 read_binary_data (istream& is, int swap, floating_point_format fmt,
 		  const string& filename, int& global,
-		  tree_constant& tc, char *&doc)
+		  octave_value& tc, char *&doc)
 {
   char tmp = 0;
 
@@ -1057,7 +1057,7 @@ get_floating_point_format (int mach)
 
 static char *
 read_mat_binary_data (istream& is, const string& filename,
-		      tree_constant& tc)
+		      octave_value& tc)
 {
   // These are initialized here instead of closer to where they are
   // first used to avoid errors from gcc about goto crossing
@@ -1256,20 +1256,20 @@ get_file_format (const string& fname, const string& orig_fname)
   return retval;
 }
 
-static Octave_object
+static octave_value_list
 do_load (istream& stream, const string& orig_fname, int force,
 	 load_save_format format, floating_point_format flt_fmt,
 	 int list_only, int swap, int verbose, const string_vector& argv,
 	 int argv_idx, int argc, int nargout)
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   ostrstream output_buf;
   int count = 0;
   for (;;)
     {
       int global = 0;
-      tree_constant tc;
+      octave_value tc;
 
       char *name = 0;
       char *doc = 0;
@@ -1376,7 +1376,7 @@ Octave text file.\n\
 If the option -force is given, variables with the same names as those
 found in the file will be replaced with the values read from the file.")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int argc = args.length () + 1;
 
@@ -1569,7 +1569,7 @@ get_save_type (double max_val, double min_val)
 // binary format described above for read_binary_data.
 
 static int
-save_binary_data (ostream& os, const tree_constant& tc,
+save_binary_data (ostream& os, const octave_value& tc,
 		  const string& name, const string& doc,
 		  int mark_as_global, int save_as_floats) 
 {
@@ -1711,7 +1711,7 @@ save_binary_data (ostream& os, const tree_constant& tc,
 // in the MatLab binary format.
 
 static int
-save_mat_binary_data (ostream& os, const tree_constant& tc,
+save_mat_binary_data (ostream& os, const octave_value& tc,
 		      const string& name) 
 {
   int fail = 0;
@@ -1889,7 +1889,7 @@ strip_infnan (const ComplexMatrix& m)
 // XXX FIXME XXX -- should probably write the help string here too.
 
 int
-save_ascii_data (ostream& os, const tree_constant& tc,
+save_ascii_data (ostream& os, const octave_value& tc,
 		 const string& name, int strip_nan_and_inf,
 		 int mark_as_global, int precision) 
 {
@@ -2028,7 +2028,7 @@ do_save (ostream& os, symbol_record *sr, load_save_format fmt,
   string name = sr->name ();
   string help = sr->help ();
   int global = sr->is_linked_to_global ();
-  tree_constant tc = *((tree_constant *) sr->def ());
+  octave_value tc = *((octave_value *) sr->def ());
 
   if (tc.is_undefined ())
     return;
@@ -2183,7 +2183,7 @@ DEFUN_TEXT (save, args, ,
 \n\
 save variables in a file")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int argc = args.length () + 1;
 
@@ -2246,7 +2246,7 @@ save variables in a file")
       i++;
 
       // XXX FIXME XXX -- should things intended for the screen end up
-      // in a tree_constant (string)?
+      // in a octave_value (string)?
 
       ostrstream buf;
 
@@ -2297,7 +2297,7 @@ save variables in a file")
 // nonzero, assume a parametric 3-dimensional plot will be generated.
 
 int
-save_three_d (ostream& os, const tree_constant& tc, int parametric)
+save_three_d (ostream& os, const octave_value& tc, int parametric)
 {
   int fail = 0;
 

@@ -39,7 +39,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 DEFUN (isstr, args, ,
   "isstr (X): return 1 if X is a string, 0 otherwise")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
@@ -54,7 +54,7 @@ DEFUN (isstr, args, ,
 DEFUN (setstr, args, ,
   "setstr (V): convert a vector to a string")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
@@ -69,13 +69,13 @@ DEFUN (setstr, args, ,
 DEFUN (toascii, args, ,
   "toascii (STRING): return ASCII representation of STRING in a matrix")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
   if (nargin == 1)
     {
-      tree_constant arg = args(0);
+      octave_value arg = args(0);
 
       if (arg.is_string ())
 	{

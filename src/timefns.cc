@@ -128,7 +128,7 @@ DEFUN (gmtime, args, ,
   returned from localtime() but with values corresponding to\n\
   Coordinated Universal Time (UTC).")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   if (args.length () == 1)
     {
@@ -140,7 +140,7 @@ DEFUN (gmtime, args, ,
 	  double ip;
 	  double fraction = modf (tmp, &ip); 
 
-	  retval = tree_constant (mk_tm_map (gmtime (&timeval), fraction));
+	  retval = octave_value (mk_tm_map (gmtime (&timeval), fraction));
 	}
     }
   else
@@ -167,7 +167,7 @@ DEFUN (localtime, args, ,
     isdst : Daylight Savings Time flag\n\
     zone  : Time zone")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   if (args.length () == 1)
     {
@@ -179,7 +179,7 @@ DEFUN (localtime, args, ,
 	  double ip;
 	  double fraction = modf (tmp, &ip); 
 
-	  retval = tree_constant (mk_tm_map (localtime (&timeval), fraction));
+	  retval = octave_value (mk_tm_map (localtime (&timeval), fraction));
 	}
     }
   else
@@ -191,7 +191,7 @@ DEFUN (localtime, args, ,
 DEFUN (mktime, args, ,
   "mktime (TMSTRUCT)")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   if (args.length () == 1 && args(0).is_map ()) 
     {
@@ -271,7 +271,7 @@ DEFUN (strftime, args, ,
     %y	last two digits of year (00..99)\n\
     %Y	year (1970...)")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   if (args.length () == 2 && args(0).is_string () && args(1).is_map ()) 
     {

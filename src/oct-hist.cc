@@ -521,7 +521,7 @@ DEFUN_TEXT (edit_history, args, ,
 \n\
 edit commands from the history list")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int argc = args.length () + 1;
 
@@ -540,7 +540,7 @@ DEFUN_TEXT (history, args, ,
 \n\
 display, save, or load command history")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int argc = args.length () + 1;
 
@@ -559,7 +559,7 @@ DEFUN_TEXT (run_history, args, ,
 \n\
 run commands from the history list")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int argc = args.length () + 1;
 

@@ -196,18 +196,18 @@ panic (const char *fmt, ...)
 
 typedef void (*error_fun)(const char *, ...);
 
-extern Octave_object Fsprintf (const Octave_object&, int);
+extern octave_value_list Fsprintf (const octave_value_list&, int);
 
-static Octave_object
-handle_message (error_fun f, const char *msg, const Octave_object& args)
+static octave_value_list
+handle_message (error_fun f, const char *msg, const octave_value_list& args)
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   string tstr;
 
   int nargin = args.length ();
 
-  tree_constant arg = ((nargin > 1) ? Fsprintf (args, 1) : args) (0);
+  octave_value arg = ((nargin > 1) ? Fsprintf (args, 1) : args) (0);
 
   if (arg.is_defined ())
     {

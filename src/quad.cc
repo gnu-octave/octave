@@ -50,12 +50,12 @@ quad_user_function (double x)
 {
   double retval = 0.0;
 
-  Octave_object args;
+  octave_value_list args;
   args(0) = x;
 
   if (quad_fcn)
     {
-      Octave_object tmp = quad_fcn->eval (0, 1, args);
+      octave_value_list tmp = quad_fcn->eval (0, 1, args);
 
       if (error_state)
 	{
@@ -105,7 +105,7 @@ tolerance.\n\
 The optional argument @var{sing} is a vector of values at which the\n\
 integrand is singular.")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
@@ -332,10 +332,10 @@ set_quad_option (const string& keyword, double val)
   warning ("quad_options: no match for `%s'", keyword.c_str ());
 }
 
-static Octave_object
+static octave_value_list
 show_quad_option (const string& keyword)
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   QUAD_OPTIONS *list = quad_option_table;
 
@@ -360,7 +360,7 @@ DEFUN_DLD_BUILTIN (quad_options, args, ,
 Set or show options for quad.  Keywords may be abbreviated\n\
 to the shortest match.")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 

@@ -30,8 +30,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "pt-const.h"
 
-template class SLNode<tree_constant>;
-template class SLList<tree_constant>;
+template class SLNode<octave_value>;
+template class SLList<octave_value>;
 
 /*
 ;;; Local Variables: ***

@@ -40,14 +40,14 @@ DEFUN_DLD_BUILTIN (qzval, args, ,
 compute generalized eigenvalues of the matrix pencil (A - lambda B).\n\
 A and B must be real matrices.")
 {
-  tree_constant retval;
+  octave_value retval;
 
   int nargin = args.length ();
 
   if (nargin == 2)
     {
-      tree_constant arg_a = args(0);
-      tree_constant arg_b = args(1);
+      octave_value arg_a = args(0);
+      octave_value arg_b = args(1);
 
       Matrix a = arg_a.matrix_value ();
       Matrix b = arg_b.matrix_value ();

@@ -59,16 +59,16 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "variables.h"
 
-#ifndef TC_REP
-#define TC_REP tree_constant::tree_constant_rep
+#ifndef OCT_VAL_REP
+#define OCT_VAL_REP octave_value::octave_value_rep
 #endif
 
 #ifndef MAX
 #define MAX(a,b) ((a) > (b) ? (a) : (b))
 #endif
 
-#ifndef TC_REP
-#define TC_REP tree_constant::tree_constant_rep
+#ifndef OCT_VAL_REP
+#define OCT_VAL_REP octave_value::octave_value_rep
 #endif
 
 #ifndef MAX
@@ -76,10 +76,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 // The following three variables could be made static members of the
-// TC_REP class.
+// OCT_VAL_REP class.
 
 // Pointer to the blocks of memory we manage.
-static TC_REP *tc_rep_newlist = 0;
+static OCT_VAL_REP *tc_rep_newlist = 0;
 
 // Multiplier for allocating new blocks.
 static const int tc_rep_newlist_grow_size = 128;
@@ -114,24 +114,24 @@ any_element_is_complex (const ComplexMatrix& a)
 }
 
 // The following three variables could be made static members of the
-// tree_constant class.
+// octave_value class.
 
 // Pointer to the blocks of memory we manage.
-static tree_constant *tc_newlist = 0;
+static octave_value *tc_newlist = 0;
 
 // Multiplier for allocating new blocks.
 static const int tc_newlist_grow_size = 128;
 
 Octave_map
-tree_constant::map_value (void) const
+octave_value::map_value (void) const
 {
   return rep->map_value ();
 }
 
-tree_constant::~tree_constant (void)
+octave_value::~octave_value (void)
 {
 #if defined (MDEBUG)
-  cerr << "~tree_constant: rep: " << rep
+  cerr << "~octave_value: rep: " << rep
        << " rep->count: " << rep->count << "\n";
 #endif
 
@@ -143,14 +143,14 @@ tree_constant::~tree_constant (void)
 }
 
 void *
-tree_constant::operator new (size_t size)
+octave_value::operator new (size_t size)
 {
-  assert (size == sizeof (tree_constant));
+  assert (size == sizeof (octave_value));
 
   if (! tc_newlist)
     {
-      int block_size = tc_newlist_grow_size * sizeof (tree_constant);
-      tc_newlist = (tree_constant *) new char [block_size];
+      int block_size = tc_newlist_grow_size * sizeof (octave_value);
+      tc_newlist = (octave_value *) new char [block_size];
 
       int i = 0;
 
@@ -160,23 +160,23 @@ tree_constant::operator new (size_t size)
       tc_newlist[i].freeptr = 0;
     }
 
-  tree_constant *tmp = tc_newlist;
+  octave_value *tmp = tc_newlist;
   tc_newlist = tc_newlist->freeptr;
   return tmp;
 }
 
 void
-tree_constant::operator delete (void *p, size_t /* size */)
+octave_value::operator delete (void *p, size_t /* size */)
 {
-  tree_constant *tmp = (tree_constant *) p;
+  octave_value *tmp = (octave_value *) p;
   tmp->freeptr = tc_newlist;
   tc_newlist = tmp;
 }
 
 // Simple assignment.
 
-tree_constant
-tree_constant::operator = (const tree_constant& a)
+octave_value
+octave_value::operator = (const octave_value& a)
 {
   if (rep != a.rep)
     {
@@ -188,11 +188,11 @@ tree_constant::operator = (const tree_constant& a)
   return *this;  
 }
 
-tree_constant
-tree_constant::lookup_map_element (const string& ref, bool insert,
+octave_value
+octave_value::lookup_map_element (const string& ref, bool insert,
 				   bool silent)
 {
-  tree_constant retval;
+  octave_value retval;
 
   if (! ref.empty ())
     {
@@ -218,13 +218,13 @@ tree_constant::lookup_map_element (const string& ref, bool insert,
   return retval;
 }
 
-tree_constant
-tree_constant::lookup_map_element (SLList<string>& list, bool insert,
+octave_value
+octave_value::lookup_map_element (SLList<string>& list, bool insert,
 				   bool silent)
 {
-  tree_constant retval;
+  octave_value retval;
 
-  tree_constant_rep *tmp_rep = rep;
+  octave_value_rep *tmp_rep = rep;
 
   Pix p = list.first ();
   while (p)
@@ -233,7 +233,7 @@ tree_constant::lookup_map_element (SLList<string>& list, bool insert,
 
       list.next (p);
 
-      tree_constant tmp;
+      octave_value tmp;
 
       tmp = tmp_rep->lookup_map_element (elt, insert, silent);
 
@@ -250,7 +250,7 @@ tree_constant::lookup_map_element (SLList<string>& list, bool insert,
 }
 
 void
-tree_constant::print (void)
+octave_value::print (void)
 {
   ostrstream output_buf;
   print (output_buf);
@@ -259,7 +259,7 @@ tree_constant::print (void)
 }
 
 void
-tree_constant::print_with_name (const string& name, bool print_padding)
+octave_value::print_with_name (const string& name, bool print_padding)
 {
   ostrstream output_buf;
   print_with_name (output_buf, name, print_padding);
@@ -268,7 +268,7 @@ tree_constant::print_with_name (const string& name, bool print_padding)
 }
 
 void
-tree_constant::print_with_name (ostream& output_buf, const string& name,
+octave_value::print_with_name (ostream& output_buf, const string& name,
 				bool print_padding) 
 {
   bool pad_after = false;
@@ -298,12 +298,12 @@ tree_constant::print_with_name (ostream& output_buf, const string& name,
 // Simple structure assignment.
 
 void
-tree_constant::make_unique (void)
+octave_value::make_unique (void)
 {
   if (rep->count > 1)
     {
       --rep->count;
-      rep = new tree_constant_rep (*rep);
+      rep = new octave_value_rep (*rep);
       rep->count = 1;
     }
 
@@ -316,8 +316,8 @@ tree_constant::make_unique (void)
     }
 }
 
-tree_constant::tree_constant_rep *
-tree_constant::make_unique_map (void)
+octave_value::octave_value_rep *
+octave_value::make_unique_map (void)
 {
   if (! rep->is_map ())
     {
@@ -325,7 +325,7 @@ tree_constant::make_unique_map (void)
 	delete rep;
 
       Octave_map m;
-      rep = new tree_constant_rep (m);
+      rep = new octave_value_rep (m);
       rep->count = 1;
     }
 
@@ -334,11 +334,11 @@ tree_constant::make_unique_map (void)
   return rep;
 }
 
-tree_constant
-tree_constant::assign_map_element (SLList<string>& list,
-				   tree_constant& rhs)
+octave_value
+octave_value::assign_map_element (SLList<string>& list,
+				   octave_value& rhs)
 {
-  tree_constant_rep *tmp_rep = make_unique_map ();
+  octave_value_rep *tmp_rep = make_unique_map ();
 
   if (rhs.is_map ())
     rhs.make_unique ();
@@ -350,7 +350,7 @@ tree_constant::assign_map_element (SLList<string>& list,
 
       list.next (p);
 
-      tree_constant& tmp = tmp_rep->lookup_map_element (elt, 1);
+      octave_value& tmp = tmp_rep->lookup_map_element (elt, 1);
 
       if (! p)
 	{
@@ -361,17 +361,17 @@ tree_constant::assign_map_element (SLList<string>& list,
       tmp_rep = tmp.make_unique_map ();
     }
 
-  return tree_constant ();
+  return octave_value ();
 }
 
 // Indexed structure assignment.
 
-tree_constant
-tree_constant::assign_map_element (SLList<string>& list,
-				   tree_constant& rhs,
-				   const Octave_object& args)
+octave_value
+octave_value::assign_map_element (SLList<string>& list,
+				   octave_value& rhs,
+				   const octave_value_list& args)
 {
-  tree_constant_rep *tmp_rep = make_unique_map ();
+  octave_value_rep *tmp_rep = make_unique_map ();
 
   if (rhs.is_map ())
     rhs.make_unique ();
@@ -383,7 +383,7 @@ tree_constant::assign_map_element (SLList<string>& list,
 
       list.next (p);
 
-      tree_constant& tmp = tmp_rep->lookup_map_element (elt, 1);
+      octave_value& tmp = tmp_rep->lookup_map_element (elt, 1);
 
       if (! p)
 	{
@@ -394,13 +394,13 @@ tree_constant::assign_map_element (SLList<string>& list,
       tmp_rep = tmp.make_unique_map ();
     }
 
-  return tree_constant ();
+  return octave_value ();
 }
 
-Octave_object
-tree_constant::eval (bool print, int, const Octave_object& args)
+octave_value_list
+octave_value::eval (bool print, int, const octave_value_list& args)
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   if (args.length () > 0)
     retval(0) = rep->do_index (args);
@@ -414,7 +414,7 @@ tree_constant::eval (bool print, int, const Octave_object& args)
 }
 
 void
-tree_constant::print_code (ostream& os)
+octave_value::print_code (ostream& os)
 {
   print_code_indent (os);
 
@@ -430,18 +430,18 @@ tree_constant::print_code (ostream& os)
 
 // The real representation of constants.
 
-TC_REP::tree_constant_rep (void)
+OCT_VAL_REP::octave_value_rep (void)
 {
   type_tag = unknown_constant;
 }
 
-TC_REP::tree_constant_rep (double d)
+OCT_VAL_REP::octave_value_rep (double d)
 {
   scalar = d;
   type_tag = scalar_constant;
 }
 
-TC_REP::tree_constant_rep (const Matrix& m)
+OCT_VAL_REP::octave_value_rep (const Matrix& m)
 {
   if (m.rows () == 1 && m.columns () == 1)
     {
@@ -455,7 +455,7 @@ TC_REP::tree_constant_rep (const Matrix& m)
     }
 }
 
-TC_REP::tree_constant_rep (const DiagMatrix& d)
+OCT_VAL_REP::octave_value_rep (const DiagMatrix& d)
 {
   if (d.rows () == 1 && d.columns () == 1)
     {
@@ -469,7 +469,7 @@ TC_REP::tree_constant_rep (const DiagMatrix& d)
     }
 }
 
-TC_REP::tree_constant_rep (const RowVector& v, int prefer_column_vector)
+OCT_VAL_REP::octave_value_rep (const RowVector& v, int prefer_column_vector)
 {
   int len = v.capacity ();
   if (len == 1)
@@ -502,7 +502,7 @@ TC_REP::tree_constant_rep (const RowVector& v, int prefer_column_vector)
     }
 }
 
-TC_REP::tree_constant_rep (const ColumnVector& v, int prefer_column_vector)
+OCT_VAL_REP::octave_value_rep (const ColumnVector& v, int prefer_column_vector)
 {
   int len = v.capacity ();
   if (len == 1)
@@ -535,7 +535,7 @@ TC_REP::tree_constant_rep (const ColumnVector& v, int prefer_column_vector)
     }
 }
 
-TC_REP::tree_constant_rep (const Complex& c)
+OCT_VAL_REP::octave_value_rep (const Complex& c)
 {
   if (::imag (c) == 0.0)
     {
@@ -549,7 +549,7 @@ TC_REP::tree_constant_rep (const Complex& c)
     }
 }
 
-TC_REP::tree_constant_rep (const ComplexMatrix& m)
+OCT_VAL_REP::octave_value_rep (const ComplexMatrix& m)
 {
   if (m.rows () == 1 && m.columns () == 1)
     {
@@ -573,7 +573,7 @@ TC_REP::tree_constant_rep (const ComplexMatrix& m)
     }
 }
 
-TC_REP::tree_constant_rep (const ComplexDiagMatrix& d)
+OCT_VAL_REP::octave_value_rep (const ComplexDiagMatrix& d)
 {
   if (d.rows () == 1 && d.columns () == 1)
     {
@@ -597,7 +597,7 @@ TC_REP::tree_constant_rep (const ComplexDiagMatrix& d)
     }
 }
 
-TC_REP::tree_constant_rep (const ComplexRowVector& v,
+OCT_VAL_REP::octave_value_rep (const ComplexRowVector& v,
 			   int prefer_column_vector) 
 {
   int len = v.capacity ();
@@ -641,7 +641,7 @@ TC_REP::tree_constant_rep (const ComplexRowVector& v,
     }
 }
 
-TC_REP::tree_constant_rep (const ComplexColumnVector& v, int
+OCT_VAL_REP::octave_value_rep (const ComplexColumnVector& v, int
 			   prefer_column_vector)
 {
   int len = v.capacity ();
@@ -685,19 +685,19 @@ TC_REP::tree_constant_rep (const ComplexColumnVector& v, int
     }
 }
 
-TC_REP::tree_constant_rep (const char *s)
+OCT_VAL_REP::octave_value_rep (const char *s)
 {
   char_matrix = new charMatrix (s);
   type_tag = char_matrix_constant_str;
 }
 
-TC_REP::tree_constant_rep (const string& s)
+OCT_VAL_REP::octave_value_rep (const string& s)
 {
   char_matrix = new charMatrix (s);
   type_tag = char_matrix_constant_str;
 }
 
-TC_REP::tree_constant_rep (const string_vector& s)
+OCT_VAL_REP::octave_value_rep (const string_vector& s)
 {
   int nr = s.length ();
   int nc = s.max_length ();
@@ -711,13 +711,13 @@ TC_REP::tree_constant_rep (const string_vector& s)
   type_tag = char_matrix_constant_str;
 }
 
-TC_REP::tree_constant_rep (const charMatrix& chm, bool is_str)
+OCT_VAL_REP::octave_value_rep (const charMatrix& chm, bool is_str)
 {
   char_matrix = new charMatrix (chm);
   type_tag = is_str ? char_matrix_constant_str : char_matrix_constant;
 }
 
-TC_REP::tree_constant_rep (double b, double l, double i)
+OCT_VAL_REP::octave_value_rep (double b, double l, double i)
 {
   range = new Range (b, l, i);
   int nel = range->nelem ();
@@ -747,7 +747,7 @@ TC_REP::tree_constant_rep (double b, double l, double i)
     }
 }
 
-TC_REP::tree_constant_rep (const Range& r)
+OCT_VAL_REP::octave_value_rep (const Range& r)
 {
   int nel = r.nelem ();
   if (nel > 1)
@@ -775,19 +775,19 @@ TC_REP::tree_constant_rep (const Range& r)
     }
 }
 
-TC_REP::tree_constant_rep (const Octave_map& m)
+OCT_VAL_REP::octave_value_rep (const Octave_map& m)
 {
   a_map = new Octave_map (m);
   type_tag = map_constant;
 }
 
-TC_REP::tree_constant_rep (TC_REP::constant_type t)
+OCT_VAL_REP::octave_value_rep (OCT_VAL_REP::constant_type t)
 {
   assert (t == magic_colon || t == all_va_args);
   type_tag = t;
 }
 
-TC_REP::tree_constant_rep (const tree_constant_rep& t)
+OCT_VAL_REP::octave_value_rep (const octave_value_rep& t)
 {
   type_tag = t.type_tag;
 
@@ -836,7 +836,7 @@ TC_REP::tree_constant_rep (const tree_constant_rep& t)
   orig_text = t.orig_text;
 }
 
-TC_REP::~tree_constant_rep (void)
+OCT_VAL_REP::~octave_value_rep (void)
 {
   switch (type_tag)
     {
@@ -874,14 +874,14 @@ TC_REP::~tree_constant_rep (void)
 }
 
 void *
-TC_REP::operator new (size_t size)
+OCT_VAL_REP::operator new (size_t size)
 {
-  assert (size == sizeof (TC_REP));
+  assert (size == sizeof (OCT_VAL_REP));
 
   if (! tc_rep_newlist)
     {
-      int block_size = tc_rep_newlist_grow_size * sizeof (TC_REP);
-      tc_rep_newlist = (TC_REP *) new char [block_size];
+      int block_size = tc_rep_newlist_grow_size * sizeof (OCT_VAL_REP);
+      tc_rep_newlist = (OCT_VAL_REP *) new char [block_size];
 
       int i = 0;
 
@@ -891,21 +891,21 @@ TC_REP::operator new (size_t size)
       tc_rep_newlist[i].freeptr = 0;
     }
 
-  TC_REP *tmp = tc_rep_newlist;
+  OCT_VAL_REP *tmp = tc_rep_newlist;
   tc_rep_newlist = tc_rep_newlist->freeptr;
   return tmp;
 }
 
 void
-TC_REP::operator delete (void *p, size_t /* size */)
+OCT_VAL_REP::operator delete (void *p, size_t /* size */)
 {
-  TC_REP *tmp = (TC_REP *) p;
+  OCT_VAL_REP *tmp = (OCT_VAL_REP *) p;
   tmp->freeptr = tc_rep_newlist;
   tc_rep_newlist = tmp;
 }
 
 int
-TC_REP::rows (void) const
+OCT_VAL_REP::rows (void) const
 {
   int retval = -1;
 
@@ -941,7 +941,7 @@ TC_REP::rows (void) const
 }
 
 int
-TC_REP::columns (void) const
+OCT_VAL_REP::columns (void) const
 {
   int retval = -1;
 
@@ -976,17 +976,17 @@ TC_REP::columns (void) const
   return retval;
 }
 
-tree_constant
-TC_REP::all (void) const
+octave_value
+OCT_VAL_REP::all (void) const
 {
-  tree_constant retval;
+  octave_value retval;
 
   if (error_state)
     return retval;
 
   if (! is_numeric_type ())
     {
-      tree_constant tmp = make_numeric ();
+      octave_value tmp = make_numeric ();
 
       if (error_state)
 	return retval;
@@ -1020,17 +1020,17 @@ TC_REP::all (void) const
   return retval;
 }
 
-tree_constant
-TC_REP::any (void) const
+octave_value
+OCT_VAL_REP::any (void) const
 {
-  tree_constant retval;
+  octave_value retval;
 
   if (error_state)
     return retval;
 
   if (! is_numeric_type ())
     {
-      tree_constant tmp = make_numeric ();
+      octave_value tmp = make_numeric ();
 
       if (error_state)
 	return retval;
@@ -1065,7 +1065,7 @@ TC_REP::any (void) const
 }
 
 bool
-TC_REP::valid_as_scalar_index (void) const
+OCT_VAL_REP::valid_as_scalar_index (void) const
 {
   return (type_tag == magic_colon
 	  || (type_tag == scalar_constant 
@@ -1078,7 +1078,7 @@ TC_REP::valid_as_scalar_index (void) const
 }
 
 bool
-TC_REP::valid_as_zero_index (void) const
+OCT_VAL_REP::valid_as_zero_index (void) const
 {
   return ((type_tag == scalar_constant
 	   && ! xisnan (scalar)
@@ -1093,7 +1093,7 @@ TC_REP::valid_as_zero_index (void) const
 }
 
 bool
-TC_REP::is_true (void) const
+OCT_VAL_REP::is_true (void) const
 {
   int retval = false;
 
@@ -1102,7 +1102,7 @@ TC_REP::is_true (void) const
 
   if (! is_numeric_type ())
     {
-      tree_constant tmp = make_numeric ();
+      octave_value tmp = make_numeric ();
 
       if (error_state)
 	return retval;
@@ -1155,7 +1155,7 @@ warn_implicit_conversion (const char *from, const char *to)
 // XXX FIXME XXX -- we need a better way of handling conversions.
 
 double
-TC_REP::double_value (bool force_string_conv) const
+OCT_VAL_REP::double_value (bool force_string_conv) const
 {
   double retval = octave_NaN;
 
@@ -1251,7 +1251,7 @@ TC_REP::double_value (bool force_string_conv) const
 }
 
 Matrix
-TC_REP::matrix_value (bool force_string_conv) const
+OCT_VAL_REP::matrix_value (bool force_string_conv) const
 {
   Matrix retval;
 
@@ -1319,7 +1319,7 @@ TC_REP::matrix_value (bool force_string_conv) const
 }
 
 Complex
-TC_REP::complex_value (bool force_string_conv) const
+OCT_VAL_REP::complex_value (bool force_string_conv) const
 {
   Complex retval (octave_NaN, octave_NaN);
 
@@ -1397,7 +1397,7 @@ TC_REP::complex_value (bool force_string_conv) const
 }
 
 ComplexMatrix
-TC_REP::complex_matrix_value (bool force_string_conv) const
+OCT_VAL_REP::complex_matrix_value (bool force_string_conv) const
 {
   ComplexMatrix retval;
 
@@ -1454,7 +1454,7 @@ TC_REP::complex_matrix_value (bool force_string_conv) const
 // XXX FIXME XXX -- this needs to try to do some conversions...
 
 charMatrix
-TC_REP::char_matrix_value (bool force_string_conv) const
+OCT_VAL_REP::char_matrix_value (bool force_string_conv) const
 {
   charMatrix retval;
 
@@ -1479,7 +1479,7 @@ TC_REP::char_matrix_value (bool force_string_conv) const
 }
 
 charMatrix
-TC_REP::all_strings (void) const
+OCT_VAL_REP::all_strings (void) const
 {
   if (type_tag == char_matrix_constant_str)
     return *char_matrix;
@@ -1491,7 +1491,7 @@ TC_REP::all_strings (void) const
 }
 
 string
-TC_REP::string_value (void) const
+OCT_VAL_REP::string_value (void) const
 {
   string retval;
 
@@ -1504,23 +1504,23 @@ TC_REP::string_value (void) const
 }
 
 Range
-TC_REP::range_value (void) const
+OCT_VAL_REP::range_value (void) const
 {
   assert (type_tag == range_constant);
   return *range;
 }
 
 Octave_map
-TC_REP::map_value (void) const
+OCT_VAL_REP::map_value (void) const
 {
   assert (type_tag == map_constant);
   return *a_map;
 }
 
-tree_constant&
-TC_REP::lookup_map_element (const string& name, bool insert, bool silent)
+octave_value&
+OCT_VAL_REP::lookup_map_element (const string& name, bool insert, bool silent)
 {
-  static tree_constant retval;
+  static octave_value retval;
 
   if (type_tag == map_constant)
     {
@@ -1543,7 +1543,7 @@ TC_REP::lookup_map_element (const string& name, bool insert, bool silent)
 // than relying on matrix_value() to do any possible type conversions.
 
 ColumnVector
-TC_REP::vector_value (bool force_string_conv,
+OCT_VAL_REP::vector_value (bool force_string_conv,
 		      bool force_vector_conversion) const
 {
   ColumnVector retval;
@@ -1587,7 +1587,7 @@ TC_REP::vector_value (bool force_string_conv,
 // conversions.
 
 ComplexColumnVector
-TC_REP::complex_vector_value (bool force_string_conv,
+OCT_VAL_REP::complex_vector_value (bool force_string_conv,
 			      bool force_vector_conversion) const
 {
   ComplexColumnVector retval;
@@ -1626,10 +1626,10 @@ TC_REP::complex_vector_value (bool force_string_conv,
   return retval;
 }
 
-tree_constant
-TC_REP::convert_to_str (void) const
+octave_value
+OCT_VAL_REP::convert_to_str (void) const
 {
-  tree_constant retval;
+  octave_value retval;
 
   switch (type_tag)
     {
@@ -1651,7 +1651,7 @@ TC_REP::convert_to_str (void) const
 	    char s[2];
 	    s[0] = (char) i;
 	    s[1] = '\0';
-	    retval = tree_constant (s, 1);
+	    retval = octave_value (s, 1);
 	  }
       }
       break;
@@ -1662,7 +1662,7 @@ TC_REP::convert_to_str (void) const
 	if (rows () == 0 && columns () == 0)
 	  {
 	    char s = '\0';
-	    retval = tree_constant (&s, 1);
+	    retval = octave_value (&s, 1);
 	  }
 	else
 	  {
@@ -1674,7 +1674,7 @@ TC_REP::convert_to_str (void) const
 	    if (nr == 0 || nc == 0)
 	      {
 		char s = '\0';
-		retval = tree_constant (&s, 1);
+		retval = octave_value (&s, 1);
 	      }
 	    else
 	      {
@@ -1702,7 +1702,7 @@ TC_REP::convert_to_str (void) const
 		      }
 		  }
 
-		retval = tree_constant (chm, 1);
+		retval = octave_value (chm, 1);
 	      }
 	  }
       }
@@ -1735,17 +1735,17 @@ TC_REP::convert_to_str (void) const
 		s[i] = (char) ival;
 	      }
 	  }
-	retval = tree_constant (s, 1);
+	retval = octave_value (s, 1);
 	delete [] s;
       }
       break;
 
     case char_matrix_constant:
-      retval = tree_constant (*char_matrix, 1);
+      retval = octave_value (*char_matrix, 1);
       break;
 
     case char_matrix_constant_str:
-      retval = tree_constant (*char_matrix, 1);
+      retval = octave_value (*char_matrix, 1);
       break;
 
     default:
@@ -1757,7 +1757,7 @@ TC_REP::convert_to_str (void) const
 }
 
 void
-TC_REP::convert_to_row_or_column_vector (void)
+OCT_VAL_REP::convert_to_row_or_column_vector (void)
 {
   assert (type_tag == matrix_constant || type_tag == complex_matrix_constant);
 
@@ -1816,7 +1816,7 @@ TC_REP::convert_to_row_or_column_vector (void)
 }
 
 void
-TC_REP::convert_to_matrix_type (bool make_complex)
+OCT_VAL_REP::convert_to_matrix_type (bool make_complex)
 {
   switch (type_tag)
     {
@@ -1885,7 +1885,7 @@ TC_REP::convert_to_matrix_type (bool make_complex)
 }
 
 void
-TC_REP::force_numeric (bool force_string_conv)
+OCT_VAL_REP::force_numeric (bool force_string_conv)
 {
   switch (type_tag)
     {
@@ -1971,10 +1971,10 @@ TC_REP::force_numeric (bool force_string_conv)
     }
 }
 
-tree_constant
-TC_REP::make_numeric (bool force_string_conv) const
+octave_value
+OCT_VAL_REP::make_numeric (bool force_string_conv) const
 {
-  tree_constant retval;
+  octave_value retval;
 
   switch (type_tag)
     {
@@ -2031,7 +2031,7 @@ TC_REP::make_numeric (bool force_string_conv) const
 }
 
 void
-TC_REP::bump_value (tree_expression::type etype)
+OCT_VAL_REP::bump_value (tree_expression::type etype)
 {
   switch (etype)
     {
@@ -2094,7 +2094,7 @@ TC_REP::bump_value (tree_expression::type etype)
 }
 
 void
-TC_REP::resize (int i, int j)
+OCT_VAL_REP::resize (int i, int j)
 {
   switch (type_tag)
     {
@@ -2113,7 +2113,7 @@ TC_REP::resize (int i, int j)
 }
 
 void
-TC_REP::resize (int i, int j, double val)
+OCT_VAL_REP::resize (int i, int j, double val)
 {
   switch (type_tag)
     {
@@ -2132,13 +2132,13 @@ TC_REP::resize (int i, int j, double val)
 }
 
 void
-TC_REP::stash_original_text (const string &s)
+OCT_VAL_REP::stash_original_text (const string &s)
 {
   orig_text = s;
 }
 
 void
-TC_REP::maybe_mutate (void)
+OCT_VAL_REP::maybe_mutate (void)
 {
   switch (type_tag)
     {
@@ -2216,7 +2216,7 @@ TC_REP::maybe_mutate (void)
 }
 
 void
-TC_REP::print (ostream& output_buf)
+OCT_VAL_REP::print (ostream& output_buf)
 {
   if (error_state)
     return;
@@ -2261,7 +2261,7 @@ TC_REP::print (ostream& output_buf)
 	// standard order.  Maybe all substructures first, maybe
 	// alphabetize entries, etc.
 
-	begin_unwind_frame ("TC_REP_print");
+	begin_unwind_frame ("OCT_VAL_REP_print");
 
 	unwind_protect_int (struct_indent);
 	unwind_protect_int (user_pref.struct_levels_to_print);
@@ -2279,7 +2279,7 @@ TC_REP::print (ostream& output_buf)
 		bool pad_after = false;
 
 		string key = a_map->key (p);
-		tree_constant val = a_map->contents (p);
+		octave_value val = a_map->contents (p);
 
 		a_map->next (p);
 
@@ -2314,7 +2314,7 @@ TC_REP::print (ostream& output_buf)
 	else
 	  output_buf << " <structure>\n";
 
-	run_unwind_frame ("TC_REP_print");
+	run_unwind_frame ("OCT_VAL_REP_print");
       }
       break;
 
@@ -2327,7 +2327,7 @@ TC_REP::print (ostream& output_buf)
 }
 
 void
-TC_REP::print_code (ostream& os)
+OCT_VAL_REP::print_code (ostream& os)
 {
   switch (type_tag)
     {
@@ -2390,8 +2390,8 @@ TC_REP::print_code (ostream& os)
 }
 
 void
-TC_REP::gripe_wrong_type_arg (const char *name,
-			      const tree_constant_rep& tcr) const
+OCT_VAL_REP::gripe_wrong_type_arg (const char *name,
+			      const octave_value_rep& tcr) const
 {
   if (name)
     ::error ("%s: wrong type argument `%s'", name, tcr.type_as_string ());
@@ -2400,7 +2400,7 @@ TC_REP::gripe_wrong_type_arg (const char *name,
 }
 
 char *
-TC_REP::type_as_string (void) const
+OCT_VAL_REP::type_as_string (void) const
 {
   switch (type_tag)
     {
@@ -2433,10 +2433,10 @@ TC_REP::type_as_string (void) const
     }
 }
 
-tree_constant
-do_binary_op (tree_constant& a, tree_constant& b, tree_expression::type t)
+octave_value
+do_binary_op (octave_value& a, octave_value& b, tree_expression::type t)
 {
-  tree_constant retval;
+  octave_value retval;
 
   bool first_empty = (a.rows () == 0 || a.columns () == 0);
   bool second_empty = (b.rows () == 0 || b.columns () == 0);
@@ -2453,18 +2453,18 @@ do_binary_op (tree_constant& a, tree_constant& b, tree_expression::type t)
 	}
     }
 
-  tree_constant tmp_a = a.make_numeric ();
+  octave_value tmp_a = a.make_numeric ();
 
   if (error_state)
     return retval;
 
-  tree_constant tmp_b = b.make_numeric ();
+  octave_value tmp_b = b.make_numeric ();
 
   if (error_state)
     return retval;
 
-  TC_REP::constant_type a_type = tmp_a.const_type ();
-  TC_REP::constant_type b_type = tmp_b.const_type ();
+  OCT_VAL_REP::constant_type a_type = tmp_a.const_type ();
+  OCT_VAL_REP::constant_type b_type = tmp_b.const_type ();
 
   double d1, d2;
   Matrix m1, m2;
@@ -2473,29 +2473,29 @@ do_binary_op (tree_constant& a, tree_constant& b, tree_expression::type t)
 
   switch (a_type)
     {
-    case TC_REP::scalar_constant:
+    case OCT_VAL_REP::scalar_constant:
 
       d1 = tmp_a.double_value ();
 
       switch (b_type)
 	{
-	case TC_REP::scalar_constant:
+	case OCT_VAL_REP::scalar_constant:
 	  d2 = tmp_b.double_value ();
 	  retval = do_binary_op (d1, d2, t);
 	  break;
 
-	case TC_REP::matrix_constant:
-	case TC_REP::char_matrix_constant:
+	case OCT_VAL_REP::matrix_constant:
+	case OCT_VAL_REP::char_matrix_constant:
 	  m2 = tmp_b.matrix_value ();
 	  retval = do_binary_op (d1, m2, t);
 	  break;
 
-	case TC_REP::complex_scalar_constant:
+	case OCT_VAL_REP::complex_scalar_constant:
 	  c2 = tmp_b.complex_value ();
 	  retval = do_binary_op (d1, c2, t);
 	  break;
 
-	case TC_REP::complex_matrix_constant:
+	case OCT_VAL_REP::complex_matrix_constant:
 	  cm2 = tmp_b.complex_matrix_value ();
 	  retval = do_binary_op (d1, cm2, t);
 	  break;
@@ -2506,30 +2506,30 @@ do_binary_op (tree_constant& a, tree_constant& b, tree_expression::type t)
 	}
       break;
 
-    case TC_REP::matrix_constant:
-    case TC_REP::char_matrix_constant:
+    case OCT_VAL_REP::matrix_constant:
+    case OCT_VAL_REP::char_matrix_constant:
 
       m1 = tmp_a.matrix_value ();
 
       switch (b_type)
 	{
-	case TC_REP::scalar_constant:
+	case OCT_VAL_REP::scalar_constant:
 	  d2 = tmp_b.double_value ();
 	  retval = do_binary_op (m1, d2, t);
 	  break;
 
-	case TC_REP::matrix_constant:
-	case TC_REP::char_matrix_constant:
+	case OCT_VAL_REP::matrix_constant:
+	case OCT_VAL_REP::char_matrix_constant:
 	  m2 = tmp_b.matrix_value ();
 	  retval = do_binary_op (m1, m2, t);
 	  break;
 
-	case TC_REP::complex_scalar_constant:
+	case OCT_VAL_REP::complex_scalar_constant:
 	  c2 = tmp_b.complex_value ();
 	  retval = do_binary_op (m1, c2, t);
 	  break;
 
-	case TC_REP::complex_matrix_constant:
+	case OCT_VAL_REP::complex_matrix_constant:
 	  cm2 = tmp_b.complex_matrix_value ();
 	  retval = do_binary_op (m1, cm2, t);
 	  break;
@@ -2540,29 +2540,29 @@ do_binary_op (tree_constant& a, tree_constant& b, tree_expression::type t)
 	}
       break;
 
-    case TC_REP::complex_scalar_constant:
+    case OCT_VAL_REP::complex_scalar_constant:
 
       c1 = tmp_a.complex_value ();
 
       switch (b_type)
 	{
-	case TC_REP::scalar_constant:
+	case OCT_VAL_REP::scalar_constant:
 	  d2 = tmp_b.double_value ();
 	  retval = do_binary_op (c1, d2, t);
 	  break;
 
-	case TC_REP::matrix_constant:
-	case TC_REP::char_matrix_constant:
+	case OCT_VAL_REP::matrix_constant:
+	case OCT_VAL_REP::char_matrix_constant:
 	  m2 = tmp_b.matrix_value ();
 	  retval = do_binary_op (c1, m2, t);
 	  break;
 
-	case TC_REP::complex_scalar_constant:
+	case OCT_VAL_REP::complex_scalar_constant:
 	  c2 = tmp_b.complex_value ();
 	  retval = do_binary_op (c1, c2, t);
 	  break;
 
-	case TC_REP::complex_matrix_constant:
+	case OCT_VAL_REP::complex_matrix_constant:
 	  cm2 = tmp_b.complex_matrix_value ();
 	  retval = do_binary_op (c1, cm2, t);
 	  break;
@@ -2573,29 +2573,29 @@ do_binary_op (tree_constant& a, tree_constant& b, tree_expression::type t)
 	}
       break;
 
-    case TC_REP::complex_matrix_constant:
+    case OCT_VAL_REP::complex_matrix_constant:
 
       cm1 = tmp_a.complex_matrix_value ();
 
       switch (b_type)
 	{
-	case TC_REP::scalar_constant:
+	case OCT_VAL_REP::scalar_constant:
 	  d2 = tmp_b.double_value ();
 	  retval = do_binary_op (cm1, d2, t);
 	  break;
 
-	case TC_REP::matrix_constant:
-	case TC_REP::char_matrix_constant:
+	case OCT_VAL_REP::matrix_constant:
+	case OCT_VAL_REP::char_matrix_constant:
 	  m2 = tmp_b.matrix_value ();
 	  retval = do_binary_op (cm1, m2, t);
 	  break;
 
-	case TC_REP::complex_scalar_constant:
+	case OCT_VAL_REP::complex_scalar_constant:
 	  c2 = tmp_b.complex_value ();
 	  retval = do_binary_op (cm1, c2, t);
 	  break;
 
-	case TC_REP::complex_matrix_constant:
+	case OCT_VAL_REP::complex_matrix_constant:
 	  cm2 = tmp_b.complex_matrix_value ();
 	  retval = do_binary_op (cm1, cm2, t);
 	  break;
@@ -2614,10 +2614,10 @@ do_binary_op (tree_constant& a, tree_constant& b, tree_expression::type t)
   return retval;
 }
 
-tree_constant
-do_unary_op (tree_constant& a, tree_expression::type t)
+octave_value
+do_unary_op (octave_value& a, tree_expression::type t)
 {
-  tree_constant retval;
+  octave_value retval;
 
   if (a.rows () == 0 || a.columns () == 0)
     {
@@ -2631,29 +2631,29 @@ do_unary_op (tree_constant& a, tree_expression::type t)
 	}
     }
 
-  tree_constant tmp_a = a.make_numeric ();
+  octave_value tmp_a = a.make_numeric ();
 
   if (error_state)
     return retval;
 
   switch (tmp_a.const_type ())
     {
-    case TC_REP::scalar_constant:
+    case OCT_VAL_REP::scalar_constant:
       retval = do_unary_op (tmp_a.double_value (), t);
       break;
 
-    case TC_REP::matrix_constant:
+    case OCT_VAL_REP::matrix_constant:
       {
 	Matrix m = tmp_a.matrix_value ();
 	retval = do_unary_op (m, t);
       }
       break;
 
-    case TC_REP::complex_scalar_constant:
+    case OCT_VAL_REP::complex_scalar_constant:
       retval = do_unary_op (tmp_a.complex_value (), t);
       break;
 
-    case TC_REP::complex_matrix_constant:
+    case OCT_VAL_REP::complex_matrix_constant:
       {
 	ComplexMatrix m = tmp_a.complex_matrix_value ();
 	retval = do_unary_op (m, t);
@@ -2671,7 +2671,7 @@ do_unary_op (tree_constant& a, tree_expression::type t)
 // Indexing operations for the tree-constant representation class.
 
 void
-TC_REP::clear_index (void)
+OCT_VAL_REP::clear_index (void)
 {
   switch (type_tag)
     {
@@ -2679,7 +2679,7 @@ TC_REP::clear_index (void)
       matrix->clear_index ();
       break;
 
-    case TC_REP::complex_matrix_constant:
+    case OCT_VAL_REP::complex_matrix_constant:
       complex_matrix->clear_index ();
       break;
 
@@ -2696,7 +2696,7 @@ TC_REP::clear_index (void)
 
 #if 0
 void
-TC_REP::set_index (double d)
+OCT_VAL_REP::set_index (double d)
 {
   switch (type_tag)
     {
@@ -2704,12 +2704,12 @@ TC_REP::set_index (double d)
       matrix->set_index (d);
       break;
 
-    case TC_REP::complex_matrix_constant:
+    case OCT_VAL_REP::complex_matrix_constant:
       complex_matrix->set_index (d);
       break;
 
-    case TC_REP::char_matrix_constant:
-    case TC_REP::char_matrix_constant_str:
+    case OCT_VAL_REP::char_matrix_constant:
+    case OCT_VAL_REP::char_matrix_constant_str:
       char_matrix->set_index (d);
       break;
 
@@ -2721,7 +2721,7 @@ TC_REP::set_index (double d)
 #endif
 
 void
-TC_REP::set_index (const Range& r)
+OCT_VAL_REP::set_index (const Range& r)
 {
   switch (type_tag)
     {
@@ -2729,12 +2729,12 @@ TC_REP::set_index (const Range& r)
       matrix->set_index (r);
       break;
 
-    case TC_REP::complex_matrix_constant:
+    case OCT_VAL_REP::complex_matrix_constant:
       complex_matrix->set_index (r);
       break;
 
-    case TC_REP::char_matrix_constant:
-    case TC_REP::char_matrix_constant_str:
+    case OCT_VAL_REP::char_matrix_constant:
+    case OCT_VAL_REP::char_matrix_constant_str:
       char_matrix->set_index (r);
       break;
 
@@ -2745,7 +2745,7 @@ TC_REP::set_index (const Range& r)
 }
 
 void
-TC_REP::set_index (const ColumnVector& v)
+OCT_VAL_REP::set_index (const ColumnVector& v)
 {
   switch (type_tag)
     {
@@ -2753,12 +2753,12 @@ TC_REP::set_index (const ColumnVector& v)
       matrix->set_index (v);
       break;
 
-    case TC_REP::complex_matrix_constant:
+    case OCT_VAL_REP::complex_matrix_constant:
       complex_matrix->set_index (v);
       break;
 
-    case TC_REP::char_matrix_constant:
-    case TC_REP::char_matrix_constant_str:
+    case OCT_VAL_REP::char_matrix_constant:
+    case OCT_VAL_REP::char_matrix_constant_str:
       char_matrix->set_index (v);
       break;
 
@@ -2769,7 +2769,7 @@ TC_REP::set_index (const ColumnVector& v)
 }
 
 void
-TC_REP::set_index (const Matrix& m)
+OCT_VAL_REP::set_index (const Matrix& m)
 {
   int nr = m.rows ();
   int nc = m.cols ();
@@ -2783,12 +2783,12 @@ TC_REP::set_index (const Matrix& m)
 	  matrix->set_index (m);
 	  break;
 
-	case TC_REP::complex_matrix_constant:
+	case OCT_VAL_REP::complex_matrix_constant:
 	  complex_matrix->set_index (m);
 	  break;
 
-	case TC_REP::char_matrix_constant:
-	case TC_REP::char_matrix_constant_str:
+	case OCT_VAL_REP::char_matrix_constant:
+	case OCT_VAL_REP::char_matrix_constant_str:
 	  char_matrix->set_index (m);
 	  break;
 
@@ -2804,7 +2804,7 @@ TC_REP::set_index (const Matrix& m)
 // XXX FIXME XXX -- this should probably be handled some other way...
 // The arg here is expected to be ':'.
 void
-TC_REP::set_index (char c)
+OCT_VAL_REP::set_index (char c)
 {
   switch (type_tag)
     {
@@ -2812,12 +2812,12 @@ TC_REP::set_index (char c)
       matrix->set_index (c);
       break;
 
-    case TC_REP::complex_matrix_constant:
+    case OCT_VAL_REP::complex_matrix_constant:
       complex_matrix->set_index (c);
       break;
 
-    case TC_REP::char_matrix_constant:
-    case TC_REP::char_matrix_constant_str:
+    case OCT_VAL_REP::char_matrix_constant:
+    case OCT_VAL_REP::char_matrix_constant_str:
       char_matrix->set_index (c);
       break;
 
@@ -2828,7 +2828,7 @@ TC_REP::set_index (char c)
 }
 
 void
-TC_REP::set_index (const Octave_object& args, bool rhs_is_complex)
+OCT_VAL_REP::set_index (const octave_value_list& args, bool rhs_is_complex)
 {
   switch (type_tag)
     {
@@ -2847,7 +2847,7 @@ TC_REP::set_index (const Octave_object& args, bool rhs_is_complex)
 
   for (int i = 0; i < n; i++)
     {
-      tree_constant arg = args (i);
+      octave_value arg = args (i);
 
       switch (arg.const_type ())
 	{
@@ -2873,7 +2873,7 @@ TC_REP::set_index (const Octave_object& args, bool rhs_is_complex)
 }
 
 static inline bool
-valid_scalar_indices (const Octave_object& args)
+valid_scalar_indices (const octave_value_list& args)
 {
   int nargin = args.length ();
 
@@ -2884,10 +2884,10 @@ valid_scalar_indices (const Octave_object& args)
   return true;
 }
 
-tree_constant
-TC_REP::do_index (const Octave_object& args)
+octave_value
+OCT_VAL_REP::do_index (const octave_value_list& args)
 {
-  tree_constant retval;
+  octave_value retval;
 
   if (error_state)
     return retval;
@@ -2936,7 +2936,7 @@ TC_REP::do_index (const Octave_object& args)
 	      break;
 
 	    case char_matrix_constant_str:
-	      retval = tree_constant (charMatrix (char_matrix->value ()), 1);
+	      retval = octave_value (charMatrix (char_matrix->value ()), 1);
 	      break;
 
 	    default:
@@ -2950,7 +2950,7 @@ TC_REP::do_index (const Octave_object& args)
 }
 
 void
-TC_REP::maybe_widen (TC_REP::constant_type rhs_type)
+OCT_VAL_REP::maybe_widen (OCT_VAL_REP::constant_type rhs_type)
 {
   switch (type_tag)
     {
@@ -3024,13 +3024,13 @@ extern void assign (Array2<double>&, const Array2<char>&);
 extern void assign (Array2<char>&, const Array2<char>&);
 
 void
-TC_REP::assign (tree_constant& rhs, const Octave_object& args)
+OCT_VAL_REP::assign (octave_value& rhs, const octave_value_list& args)
 {
   // XXX FIXME XXX -- we should probably have special cases for rhs
   // being a range type, since converting to a matrix can waste a lot
   // of memory.
 
-  tree_constant rhs_tmp = rhs;
+  octave_value rhs_tmp = rhs;
 
   if (! (is_string ()
 	 && (rhs_tmp.is_string ()
@@ -3147,7 +3147,7 @@ TC_REP::assign (tree_constant& rhs, const Octave_object& args)
 }
 
 bool
-TC_REP::print_as_scalar (void)
+OCT_VAL_REP::print_as_scalar (void)
 {
   int nr = rows ();
   int nc = columns ();
@@ -3161,7 +3161,7 @@ TC_REP::print_as_scalar (void)
 }
 
 bool
-TC_REP::print_as_structure (void)
+OCT_VAL_REP::print_as_structure (void)
 {
   return is_map ();
 }

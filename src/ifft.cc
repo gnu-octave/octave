@@ -38,7 +38,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 DEFUN_DLD_BUILTIN (ifft, args, ,
   "ifft (X [, N]): inverse fast fourier transform of a vector")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
@@ -48,7 +48,7 @@ DEFUN_DLD_BUILTIN (ifft, args, ,
       return retval;
     }
 
-  tree_constant arg = args(0);
+  octave_value arg = args(0);
     
   int n_points = arg.rows ();
   if (n_points == 1)

@@ -29,8 +29,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class ostream;
 
-class Octave_object;
-class tree_constant;
+class octave_value_list;
+class octave_value;
 class tree_command;
 class tree_expression;
 class tree_simple_assignment_expression;
@@ -116,9 +116,9 @@ public:
 
   void mark_as_function_body (void) { function_body = true; }
 
-  tree_constant eval (bool print);
+  octave_value eval (bool print);
 
-  Octave_object eval (bool print, int nargout);
+  octave_value_list eval (bool print, int nargout);
 
   void print_code (ostream& os);
 
@@ -149,7 +149,7 @@ public:
 	}
     }
 
-  Octave_object convert_to_const_vector (void);
+  octave_value_list convert_to_const_vector (void);
 
   void print_code (ostream& os);
 };
@@ -189,13 +189,13 @@ public:
   bool varargs_only (void)
     { return (marked_for_varargs < 0); }
 
-  void initialize_undefined_elements (tree_constant& val);
+  void initialize_undefined_elements (octave_value& val);
 
-  void define_from_arg_vector (const Octave_object& args);
+  void define_from_arg_vector (const octave_value_list& args);
 
   bool is_defined (void);
 
-  Octave_object convert_to_const_vector (tree_va_return_list *vr_list);
+  octave_value_list convert_to_const_vector (tree_va_return_list *vr_list);
 
   void print_code (ostream& os);
 
@@ -224,10 +224,10 @@ public:
 };
 
 class
-tree_va_return_list : public SLList<tree_constant>
+tree_va_return_list : public SLList<octave_value>
 {
 public:
-  tree_va_return_list (void) : SLList<tree_constant> () { }
+  tree_va_return_list (void) : SLList<octave_value> () { }
 
   ~tree_va_return_list (void) { }
 };

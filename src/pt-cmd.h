@@ -29,7 +29,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class ostream;
 
-class Octave_object;
+class octave_value_list;
 
 class tree_statement_list;
 class tree_global_init_list;
@@ -38,7 +38,7 @@ class tree_expression;
 class tree_index_expression;
 class tree_identifier;
 class tree_return_list;
-class tree_constant;
+class octave_value;
 class symbol_record;
 
 class tree_command;
@@ -145,13 +145,13 @@ public:
 
 private:
   void do_for_loop_once (tree_return_list *lst,
-			 const Octave_object& rhs, bool& quit);
+			 const octave_value_list& rhs, bool& quit);
 
   void do_for_loop_once (tree_index_expression *idx_expr,
-			 const tree_constant& rhs, bool& quit);
+			 const octave_value& rhs, bool& quit);
 
   void do_for_loop_once (tree_identifier *ident,
-			 tree_constant& rhs, bool& quit);
+			 octave_value& rhs, bool& quit);
 
   tree_index_expression *id;	// Identifier to modify.
   tree_return_list *id_list;	// List of identifiers to modify.

@@ -59,10 +59,10 @@ tree_prefix_expression::~tree_prefix_expression (void)
   delete id;
 }
 
-tree_constant
+octave_value
 tree_prefix_expression::eval (bool print)
 {
-  tree_constant retval;
+  octave_value retval;
 
   if (error_state)
     return retval;
@@ -77,7 +77,7 @@ tree_prefix_expression::eval (bool print)
 	  retval = id->eval (print);
 	  if (error_state)
 	    {
-	      retval = tree_constant ();
+	      retval = octave_value ();
 	      if (error_state)
 		eval_error ();
 	    }
@@ -143,10 +143,10 @@ tree_postfix_expression::~tree_postfix_expression (void)
   delete id;
 }
 
-tree_constant
+octave_value
 tree_postfix_expression::eval (bool print)
 {
-  tree_constant retval;
+  octave_value retval;
 
   if (error_state)
     return retval;
@@ -157,7 +157,7 @@ tree_postfix_expression::eval (bool print)
       id->bump_value (etype);
       if (error_state)
 	{
-	  retval = tree_constant ();
+	  retval = octave_value ();
 	  if (error_state)
 	    eval_error ();
 	}
@@ -217,13 +217,13 @@ tree_postfix_expression::print_code (ostream& os)
 
 // Unary expressions.
 
-tree_constant
+octave_value
 tree_unary_expression::eval (bool /* print */)
 {
   if (error_state)
-    return tree_constant ();
+    return octave_value ();
 
-  tree_constant retval;
+  octave_value retval;
 
   switch (etype)
     {
@@ -233,7 +233,7 @@ tree_unary_expression::eval (bool /* print */)
     case tree_expression::transpose:
       if (op)
 	{
-	  tree_constant u = op->eval (false);
+	  octave_value u = op->eval (false);
 	  if (error_state)
 	    eval_error ();
 	  else if (u.is_defined ())
@@ -241,7 +241,7 @@ tree_unary_expression::eval (bool /* print */)
 	      retval = do_unary_op (u, etype);
 	      if (error_state)
 		{
-		  retval = tree_constant ();
+		  retval = octave_value ();
 		  if (error_state)
 		    eval_error ();
 		}
@@ -335,13 +335,13 @@ tree_unary_expression::print_code (ostream& os)
 
 // Binary expressions.
  
-tree_constant
+octave_value
 tree_binary_expression::eval (bool /* print */)
 {
   if (error_state)
-    return tree_constant ();
+    return octave_value ();
 
-  tree_constant retval;
+  octave_value retval;
 
   switch (etype)
     {
@@ -365,12 +365,12 @@ tree_binary_expression::eval (bool /* print */)
     case tree_expression::or:
       if (op1)
 	{
-	  tree_constant a = op1->eval (false);
+	  octave_value a = op1->eval (false);
 	  if (error_state)
 	    eval_error ();
 	  else if (a.is_defined () && op2)
 	    {
-	      tree_constant b = op2->eval (false);
+	      octave_value b = op2->eval (false);
 	      if (error_state)
 		eval_error ();
 	      else if (b.is_defined ())
@@ -378,7 +378,7 @@ tree_binary_expression::eval (bool /* print */)
 		  retval = do_binary_op (a, b, etype);
 		  if (error_state)
 		    {
-		      retval = tree_constant ();
+		      retval = octave_value ();
 		      if (error_state)
 			eval_error ();
 		    }
@@ -393,7 +393,7 @@ tree_binary_expression::eval (bool /* print */)
 	bool result = false;
 	if (op1)
 	  {
-	    tree_constant a = op1->eval (false);
+	    octave_value a = op1->eval (false);
 	    if (error_state)
 	      {
 		eval_error ();
@@ -426,7 +426,7 @@ tree_binary_expression::eval (bool /* print */)
 
 	    if (op2)
 	      {
-		tree_constant b = op2->eval (false);
+		octave_value b = op2->eval (false);
 		if (error_state)
 		  {
 		    eval_error ();
@@ -442,7 +442,7 @@ tree_binary_expression::eval (bool /* print */)
 	      }
 	  }
       done:
-	retval = tree_constant ((double) result);
+	retval = octave_value ((double) result);
       }
       break;
 
@@ -628,19 +628,19 @@ tree_simple_assignment_expression::left_hand_side_id (void)
   return lhs->ident ();
 }
 
-tree_constant
+octave_value
 tree_simple_assignment_expression::eval (bool print)
 {
   assert (etype == tree_expression::assignment);
 
-  tree_constant retval;
+  octave_value retval;
 
   if (error_state)
     return retval;
 
   if (rhs)
     {
-      tree_constant rhs_val = rhs->eval (false);
+      octave_value rhs_val = rhs->eval (false);
       if (error_state)
 	{
 	  eval_error ();
@@ -660,7 +660,7 @@ tree_simple_assignment_expression::eval (bool print)
 	{
 	  // Extract the arguments into a simple vector.
 
-	  Octave_object args = index->convert_to_const_vector ();
+	  octave_value_list args = index->convert_to_const_vector ();
 
 	  if (error_state)
 	    eval_error ();
@@ -757,15 +757,15 @@ tree_colon_expression::chain (tree_expression *t)
   return retval;
 }
 
-tree_constant
+octave_value
 tree_colon_expression::eval (bool /* print */)
 {
-  tree_constant retval;
+  octave_value retval;
 
   if (error_state || ! op1 || ! op2)
     return retval;
 
-  tree_constant tmp = op1->eval (false);
+  octave_value tmp = op1->eval (false);
 
   if (tmp.is_undefined ())
     {
@@ -820,13 +820,13 @@ tree_colon_expression::eval (bool /* print */)
 	}
     }
 
-  retval = tree_constant (base, limit, inc);
+  retval = octave_value (base, limit, inc);
 
   if (error_state)
     {
       if (error_state)
 	eval_error ("evaluating colon expression");
-      return tree_constant ();
+      return octave_value ();
     }
 
   return retval;

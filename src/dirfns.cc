@@ -313,7 +313,7 @@ change current working directory\n\
 if no arguments are given, the current directory is changed to the\n\
 users home directory")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int argc = args.length () + 1;
 
@@ -342,7 +342,7 @@ users home directory")
     }
 
   string directory = get_working_directory ("cd");
-  tree_constant *dir = new tree_constant (directory);
+  octave_value *dir = new octave_value (directory);
   bind_builtin_variable ("PWD", dir, 1);
 
   return retval;
@@ -363,7 +363,7 @@ DEFUN_TEXT (ls, args, ,
 \n\
 print a directory listing")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int argc = args.length () + 1;
 
@@ -410,7 +410,7 @@ DEFALIAS (dir, ls);
 DEFUN (pwd, , nargout,
   "pwd (): print current working directory")
 {
-  Octave_object retval;
+  octave_value_list retval;
   string directory;
 
   if (verbatim_pwd)
@@ -445,7 +445,7 @@ Return an array of strings containing the list of all files in the
 named directory.  If sucessful, returns 0; otherwise an error message
 is printed.")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   if (args.length () == 1)
     {
@@ -484,7 +484,7 @@ DEFUN (mkdir, args, ,
 Create the directory named by NAME.  If successful, returns 0;\n\
 otherwise prints an error message.")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int status = 0;
 
@@ -520,7 +520,7 @@ DEFUN (rmdir, args, ,
 Remove the directory named by NAME.  If successful, returns 0;\n\
 otherwise prints an error message.")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int status = 0;
 
@@ -556,7 +556,7 @@ DEFUN (rename, args, ,
 Rename a file.  If successful, returns 0;\n\
 otherwise prints an error message and returns -1.")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int status = 0;
 

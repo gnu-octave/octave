@@ -40,19 +40,19 @@ class ostream;
 #include "pt-fvc.h"
 
 class Octave_map;
-class Octave_object;
+class octave_value_list;
 
 // Constants.
 
 class
-tree_constant : public tree_fvc
+octave_value : public tree_fvc
 {
 private:
 
-// The actual representation of the tree_constant.
+// The actual representation of the octave_value.
 
   class
-  tree_constant_rep
+  octave_value_rep
   {
   public:
 
@@ -78,35 +78,35 @@ private:
 	column_orient,
       };
 
-    tree_constant_rep (void);
+    octave_value_rep (void);
 
-    tree_constant_rep (double d);
-    tree_constant_rep (const Matrix& m);
-    tree_constant_rep (const DiagMatrix& d);
-    tree_constant_rep (const RowVector& v, int pcv);
-    tree_constant_rep (const ColumnVector& v, int pcv);
+    octave_value_rep (double d);
+    octave_value_rep (const Matrix& m);
+    octave_value_rep (const DiagMatrix& d);
+    octave_value_rep (const RowVector& v, int pcv);
+    octave_value_rep (const ColumnVector& v, int pcv);
 
-    tree_constant_rep (const Complex& c);
-    tree_constant_rep (const ComplexMatrix& m);
-    tree_constant_rep (const ComplexDiagMatrix& d);
-    tree_constant_rep (const ComplexRowVector& v, int pcv);
-    tree_constant_rep (const ComplexColumnVector& v, int pcv);
+    octave_value_rep (const Complex& c);
+    octave_value_rep (const ComplexMatrix& m);
+    octave_value_rep (const ComplexDiagMatrix& d);
+    octave_value_rep (const ComplexRowVector& v, int pcv);
+    octave_value_rep (const ComplexColumnVector& v, int pcv);
 
-    tree_constant_rep (const char *s);
-    tree_constant_rep (const string& s);
-    tree_constant_rep (const string_vector& s);
-    tree_constant_rep (const charMatrix& chm, bool is_string);
+    octave_value_rep (const char *s);
+    octave_value_rep (const string& s);
+    octave_value_rep (const string_vector& s);
+    octave_value_rep (const charMatrix& chm, bool is_string);
 
-    tree_constant_rep (double base, double limit, double inc);
-    tree_constant_rep (const Range& r);
+    octave_value_rep (double base, double limit, double inc);
+    octave_value_rep (const Range& r);
 
-    tree_constant_rep (const Octave_map& m);
+    octave_value_rep (const Octave_map& m);
 
-    tree_constant_rep (tree_constant_rep::constant_type t);
+    octave_value_rep (octave_value_rep::constant_type t);
 
-    tree_constant_rep (const tree_constant_rep& t);
+    octave_value_rep (const octave_value_rep& t);
 
-    ~tree_constant_rep (void);
+    ~octave_value_rep (void);
 
     void *operator new (size_t size);
     void operator delete (void *p, size_t size);
@@ -153,8 +153,8 @@ private:
     bool is_all_va_args (void) const
       { return type_tag == all_va_args; }
 
-    tree_constant all (void) const;
-    tree_constant any (void) const;
+    octave_value all (void) const;
+    octave_value any (void) const;
 
     bool is_real_type (void) const
       {
@@ -217,7 +217,7 @@ private:
     Range range_value (void) const;
     Octave_map map_value (void) const;
 
-    tree_constant& lookup_map_element (const string& name,
+    octave_value& lookup_map_element (const string& name,
 				       bool insert = false,
 				       bool silent = false);
 
@@ -228,7 +228,7 @@ private:
     complex_vector_value (bool frc_str_conv = false,
 			  bool frc_vec_conv = false) const;
 
-    tree_constant convert_to_str (void) const;
+    octave_value convert_to_str (void) const;
 
     void convert_to_row_or_column_vector (void);
 
@@ -247,17 +247,17 @@ private:
     void print_code (ostream& os);
 
     void gripe_wrong_type_arg (const char *name,
-			       const tree_constant_rep& tcr) const;
+			       const octave_value_rep& tcr) const;
 
     char *type_as_string (void) const;
 
     // Binary and unary operations.
 
-    friend tree_constant do_binary_op (tree_constant& a, tree_constant& b,
-				       tree_expression::type t);
-
-    friend tree_constant do_unary_op (tree_constant& a,
+    friend octave_value do_binary_op (octave_value& a, octave_value& b,
 				      tree_expression::type t);
+
+    friend octave_value do_unary_op (octave_value& a,
+				     tree_expression::type t);
 
     // We want to eliminate this.
 
@@ -266,7 +266,7 @@ private:
     // We want to get rid of these too:
 
     void force_numeric (bool frc_str_conv = false);
-    tree_constant make_numeric (bool frc_str_conv = false) const;
+    octave_value make_numeric (bool frc_str_conv = false) const;
 
     // But not this.
 
@@ -282,14 +282,14 @@ private:
     void set_index (const Matrix& m);
     void set_index (char c);
 
-    void set_index (const Octave_object& args,
+    void set_index (const octave_value_list& args,
 		    bool rhs_is_complex = false);
 
-    tree_constant do_index (const Octave_object& args);
+    octave_value do_index (const octave_value_list& args);
 
     void maybe_widen (constant_type t);
 
-    void assign (tree_constant& rhs, const Octave_object& args);
+    void assign (octave_value& rhs, const octave_value_list& args);
 
     bool print_as_scalar (void);
 
@@ -307,7 +307,7 @@ private:
 	Range *range;			// A set of evenly spaced values.
 	Octave_map *a_map;		// An associative array.
 
-	tree_constant_rep *freeptr;	// For custom memory management.
+	octave_value_rep *freeptr;	// For custom memory management.
       };
 
     constant_type type_tag;
@@ -319,8 +319,8 @@ private:
 
   union
     {
-      tree_constant *freeptr;  // For custom memory management.
-      tree_constant_rep *rep;  // The real representation.
+      octave_value *freeptr;  // For custom memory management.
+      octave_value_rep *rep;  // The real representation.
     };
 
 public:
@@ -351,105 +351,105 @@ public:
   // range            double, double, double
   //                  Range
   // map              Octave_map
-  // magic colon      tree_constant::magic_colon
-  // all_va_args      tree_constant::all_va_args
+  // magic colon      octave_value::magic_colon
+  // all_va_args      octave_value::all_va_args
 
-  tree_constant (void) : tree_fvc ()
-    { rep = new tree_constant_rep (); rep->count = 1; }
+  octave_value (void) : tree_fvc ()
+    { rep = new octave_value_rep (); rep->count = 1; }
 
-  tree_constant (double d, int l = -1, int c = -1) : tree_fvc (l, c)
-    { rep = new tree_constant_rep (d); rep->count = 1; }
+  octave_value (double d, int l = -1, int c = -1) : tree_fvc (l, c)
+    { rep = new octave_value_rep (d); rep->count = 1; }
 
-  tree_constant (const Matrix& m) : tree_fvc ()
-    { rep = new tree_constant_rep (m); rep->count = 1; }
+  octave_value (const Matrix& m) : tree_fvc ()
+    { rep = new octave_value_rep (m); rep->count = 1; }
 
-  tree_constant (const DiagMatrix& d) : tree_fvc ()
-    { rep = new tree_constant_rep (d); rep->count = 1; }
+  octave_value (const DiagMatrix& d) : tree_fvc ()
+    { rep = new octave_value_rep (d); rep->count = 1; }
 
-  tree_constant (const RowVector& v, int pcv = -1) : tree_fvc ()
-    { rep = new tree_constant_rep (v, pcv); rep->count = 1; }
+  octave_value (const RowVector& v, int pcv = -1) : tree_fvc ()
+    { rep = new octave_value_rep (v, pcv); rep->count = 1; }
 
-  tree_constant (const ColumnVector& v, int pcv = -1) : tree_fvc ()
-    { rep = new tree_constant_rep (v, pcv); rep->count = 1; }
+  octave_value (const ColumnVector& v, int pcv = -1) : tree_fvc ()
+    { rep = new octave_value_rep (v, pcv); rep->count = 1; }
 
-  tree_constant (const Complex& C, int l = -1, int c = -1) : tree_fvc (l, c)
-    { rep = new tree_constant_rep (C); rep->count = 1; }
+  octave_value (const Complex& C, int l = -1, int c = -1) : tree_fvc (l, c)
+    { rep = new octave_value_rep (C); rep->count = 1; }
 
-  tree_constant (const ComplexMatrix& m) : tree_fvc ()
-    { rep = new tree_constant_rep (m); rep->count = 1; }
+  octave_value (const ComplexMatrix& m) : tree_fvc ()
+    { rep = new octave_value_rep (m); rep->count = 1; }
 
-  tree_constant (const ComplexDiagMatrix& d) : tree_fvc ()
-    { rep = new tree_constant_rep (d); rep->count = 1; }
+  octave_value (const ComplexDiagMatrix& d) : tree_fvc ()
+    { rep = new octave_value_rep (d); rep->count = 1; }
 
-  tree_constant (const ComplexRowVector& v, int pcv = -1) : tree_fvc ()
-    { rep = new tree_constant_rep (v, pcv); rep->count = 1; }
+  octave_value (const ComplexRowVector& v, int pcv = -1) : tree_fvc ()
+    { rep = new octave_value_rep (v, pcv); rep->count = 1; }
 
-  tree_constant (const ComplexColumnVector& v, int pcv = -1) : tree_fvc () 
-    { rep = new tree_constant_rep (v, pcv); rep->count = 1; }
+  octave_value (const ComplexColumnVector& v, int pcv = -1) : tree_fvc () 
+    { rep = new octave_value_rep (v, pcv); rep->count = 1; }
 
-  tree_constant (const char *s, int l = -1, int c = -1) : tree_fvc (l, c)
-    { rep = new tree_constant_rep (s); rep->count = 1; }
+  octave_value (const char *s, int l = -1, int c = -1) : tree_fvc (l, c)
+    { rep = new octave_value_rep (s); rep->count = 1; }
 
-  tree_constant (const string& s, int l = -1, int c = -1) : tree_fvc (l, c)
-    { rep = new tree_constant_rep (s); rep->count = 1; }
+  octave_value (const string& s, int l = -1, int c = -1) : tree_fvc (l, c)
+    { rep = new octave_value_rep (s); rep->count = 1; }
 
-  tree_constant (const string_vector& s, int l = -1, int c = -1)
+  octave_value (const string_vector& s, int l = -1, int c = -1)
     : tree_fvc (l, c)
-    { rep = new tree_constant_rep (s); rep->count = 1; }
+    { rep = new octave_value_rep (s); rep->count = 1; }
 
-  tree_constant (const charMatrix& chm, bool is_string = false) : tree_fvc ()
-    { rep = new tree_constant_rep (chm, is_string); rep->count = 1; }
+  octave_value (const charMatrix& chm, bool is_string = false) : tree_fvc ()
+    { rep = new octave_value_rep (chm, is_string); rep->count = 1; }
 
-  tree_constant (double base, double limit, double inc) : tree_fvc ()
-    { rep = new tree_constant_rep (base, limit, inc); rep->count = 1; }
+  octave_value (double base, double limit, double inc) : tree_fvc ()
+    { rep = new octave_value_rep (base, limit, inc); rep->count = 1; }
 
-  tree_constant (const Range& r) : tree_fvc ()
-    { rep = new tree_constant_rep (r); rep->count = 1; }
+  octave_value (const Range& r) : tree_fvc ()
+    { rep = new octave_value_rep (r); rep->count = 1; }
 
-  tree_constant (const Octave_map& m) : tree_fvc ()
-    { rep = new tree_constant_rep (m); rep->count = 1; }
+  octave_value (const Octave_map& m) : tree_fvc ()
+    { rep = new octave_value_rep (m); rep->count = 1; }
 
-  tree_constant (tree_constant::magic_colon) : tree_fvc ()
+  octave_value (octave_value::magic_colon) : tree_fvc ()
     {
-      tree_constant_rep::constant_type tmp;
-      tmp = tree_constant_rep::magic_colon;
-      rep = new tree_constant_rep (tmp);
+      octave_value_rep::constant_type tmp;
+      tmp = octave_value_rep::magic_colon;
+      rep = new octave_value_rep (tmp);
       rep->count = 1;
     }
 
-  tree_constant (tree_constant::all_va_args) : tree_fvc ()
+  octave_value (octave_value::all_va_args) : tree_fvc ()
     {
-      tree_constant_rep::constant_type tmp;
-      tmp = tree_constant_rep::all_va_args;
-      rep = new tree_constant_rep (tmp);
+      octave_value_rep::constant_type tmp;
+      tmp = octave_value_rep::all_va_args;
+      rep = new octave_value_rep (tmp);
       rep->count = 1;
     }
 
   // Copy constructor.
 
-  tree_constant (const tree_constant& a) : tree_fvc ()
+  octave_value (const octave_value& a) : tree_fvc ()
     { rep = a.rep; rep->count++; }
 
   // Delete the representation of this constant if the count drops to
   // zero.
 
-  ~tree_constant (void);
+  ~octave_value (void);
 
   void *operator new (size_t size);
   void operator delete (void *p, size_t size);
 
   // Simple assignment.
 
-  tree_constant operator = (const tree_constant& a);
+  octave_value operator = (const octave_value& a);
 
   // Indexed assignment.
 
-  tree_constant assign (tree_constant& rhs, const Octave_object& args)
+  octave_value assign (octave_value& rhs, const octave_value_list& args)
     {
       if (rep->count > 1)
 	{
 	  --rep->count;
-	  rep = new tree_constant_rep (*rep);
+	  rep = new octave_value_rep (*rep);
 	  rep->count = 1;
 	}
 
@@ -460,14 +460,14 @@ public:
 
   // Simple structure assignment.
 
-  tree_constant assign_map_element (SLList<string>& list,
-				    tree_constant& rhs);
+  octave_value assign_map_element (SLList<string>& list,
+				    octave_value& rhs);
 
   // Indexed structure assignment.
 
-  tree_constant assign_map_element (SLList<string>& list,
-				    tree_constant& rhs,
-				    const Octave_object& args);
+  octave_value assign_map_element (SLList<string>& list,
+				    octave_value& rhs,
+				    const octave_value_list& args);
 
   // Type.  It would be nice to eliminate the need for this.
 
@@ -501,8 +501,8 @@ public:
 
   // Are any or all of the elements in this constant nonzero?
 
-  tree_constant all (void) const { return rep->all (); }
-  tree_constant any (void) const { return rep->any (); }
+  octave_value all (void) const { return rep->all (); }
+  octave_value any (void) const { return rep->any (); }
 
   // Other type stuff.
 
@@ -567,11 +567,11 @@ public:
 
   Octave_map map_value (void) const;
 
-  tree_constant lookup_map_element (const string& ref,
+  octave_value lookup_map_element (const string& ref,
 				    bool insert = false,
 				    bool silent = false);
 
-  tree_constant lookup_map_element (SLList<string>& list,
+  octave_value lookup_map_element (SLList<string>& list,
 				    bool insert = false,
 				    bool silent = false);
 
@@ -586,17 +586,17 @@ public:
 
   // Binary and unary operations.
 
-  friend tree_constant do_binary_op (tree_constant& a, tree_constant& b,
+  friend octave_value do_binary_op (octave_value& a, octave_value& b,
 				     tree_expression::type t);
 
-  friend tree_constant do_unary_op (tree_constant& a,
+  friend octave_value do_unary_op (octave_value& a,
 				    tree_expression::type t);
 
   // Conversions.  These should probably be private.  If a user of this
   // class wants a certain kind of constant, he should simply ask for
   // it, and we should convert it if possible.
 
-  tree_constant convert_to_str (void)
+  octave_value convert_to_str (void)
     { return rep->convert_to_str (); }
 
   void convert_to_row_or_column_vector (void)
@@ -609,7 +609,7 @@ public:
       if (rep->count > 1)
 	{
 	  --rep->count;
-	  rep = new tree_constant_rep (*rep);
+	  rep = new octave_value_rep (*rep);
 	  rep->count = 1;
 	}
 
@@ -626,7 +626,7 @@ public:
   // Evaluate this constant, possibly converting complex to real, or
   // matrix to scalar, etc.
 
-  tree_constant eval (bool print_result)
+  octave_value eval (bool print_result)
     {
       if (print_result)
 	{
@@ -637,7 +637,7 @@ public:
       return *this;
     }
 
-  Octave_object eval (bool, int, const Octave_object&);
+  octave_value_list eval (bool, int, const octave_value_list&);
 
   // Store the original text corresponding to this constant for later
   // pretty printing.
@@ -658,11 +658,11 @@ private:
 
   void make_unique (void);
 
-  tree_constant_rep *make_unique_map (void);
+  octave_value_rep *make_unique_map (void);
 
   // We want to eliminate this, or at least make it private.
 
-  tree_constant_rep::constant_type const_type (void) const
+  octave_value_rep::constant_type const_type (void) const
     { return rep->const_type (); }
 
   void convert_to_matrix_type (bool make_complex)
@@ -675,7 +675,7 @@ private:
   void force_numeric (bool frc_str_conv = false)
     { rep->force_numeric (frc_str_conv); }
 
-  tree_constant make_numeric (bool frc_str_conv = false) const
+  octave_value make_numeric (bool frc_str_conv = false) const
     {
       if (is_numeric_type ())
 	return *this;

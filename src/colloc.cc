@@ -38,7 +38,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 DEFUN_DLD_BUILTIN (colloc, args, ,
   "[R, A, B, Q] = colloc (N [, \"left\"] [, \"right\"]): collocation weights")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 

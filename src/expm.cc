@@ -36,7 +36,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 DEFUN_DLD_BUILTIN (expm, args, ,
   "expm (X): matrix exponential, e^A")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
@@ -46,7 +46,7 @@ DEFUN_DLD_BUILTIN (expm, args, ,
       return retval;
     }
 
-  tree_constant arg = args(0);
+  octave_value arg = args(0);
 
   int nr = arg.rows ();
   int nc = arg.columns ();

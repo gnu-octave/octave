@@ -97,7 +97,7 @@ static tree_plot_command *make_plot_command
 static tree_expression *finish_colon_expression (tree_colon_expression *e);
 
 // Build a constant.
-static tree_constant *make_constant (int op, token *tok_val);
+static octave_value *make_constant (int op, token *tok_val);
 
 // Build a binary expression.
 static tree_expression *make_binary_op
@@ -221,7 +221,7 @@ static void maybe_warn_missing_semi (tree_statement_list *);
   tree_matrix *tree_matrix_type;
   tree_matrix_row *tree_matrix_row_type;
   tree_expression *tree_expression_type;
-  tree_constant *tree_constant_type;
+  octave_value *octave_value_type;
   tree_identifier *tree_identifier_type;
   tree_indirect_ref *tree_indirect_ref_type;
   tree_function *tree_function_type;
@@ -773,9 +773,9 @@ simple_expr1	: NUM
 		| matrix
 		  { $$ = $1; }
 		| '[' ']'
-		  { $$ = new tree_constant (Matrix ()); }
+		  { $$ = new octave_value (Matrix ()); }
 		| '[' ';' ']'
-		  { $$ = new tree_constant (Matrix ()); }
+		  { $$ = new octave_value (Matrix ()); }
 		| colon_expr
 		  { $$ = finish_colon_expression ($1); }
 		| PLUS_PLUS identifier %prec UNARY
@@ -870,12 +870,12 @@ word_list_cmd	: identifier word_list
 
 word_list	: TEXT
 		  {
-		    tree_constant *tmp = make_constant (TEXT, $1);
+		    octave_value *tmp = make_constant (TEXT, $1);
 		    $$ = new tree_argument_list (tmp);
 		  }
 		| word_list TEXT
 		  {
-		    tree_constant *tmp = make_constant (TEXT, $2);
+		    octave_value *tmp = make_constant (TEXT, $2);
 		    $1->append (tmp);
 		    $$ = $1;
 		  }
@@ -1070,25 +1070,25 @@ identifier	: NAME
 
 arg_list	: ':'
 		  {
-		    tree_constant *colon;
-		    tree_constant::magic_colon t;
-		    colon = new tree_constant (t);
+		    octave_value *colon;
+		    octave_value::magic_colon t;
+		    colon = new octave_value (t);
 		    $$ = new tree_argument_list (colon);
 		  }
 		| expression
 		  { $$ = new tree_argument_list ($1); }
 		| ALL_VA_ARGS
 		  {
-		    tree_constant *all_va_args;
-		    tree_constant::all_va_args t;
-		    all_va_args = new tree_constant (t);
+		    octave_value *all_va_args;
+		    octave_value::all_va_args t;
+		    all_va_args = new octave_value (t);
 		    $$ = new tree_argument_list (all_va_args);
 		  }
 		| arg_list ',' ':'
 		  {
-		    tree_constant *colon;
-		    tree_constant::magic_colon t;
-		    colon = new tree_constant (t);
+		    octave_value *colon;
+		    octave_value::magic_colon t;
+		    colon = new octave_value (t);
 		    $1->append (colon);
 		    $$ = $1;
 		  }
@@ -1099,9 +1099,9 @@ arg_list	: ':'
 		  }
 		| arg_list ',' ALL_VA_ARGS
 		  {
-		    tree_constant *all_va_args;
-		    tree_constant::all_va_args t;
-		    all_va_args = new tree_constant (t);
+		    octave_value *all_va_args;
+		    octave_value::all_va_args t;
+		    all_va_args = new octave_value (t);
 		    $1->append (all_va_args);
 		    $$ = $1;
 		  }
@@ -1370,12 +1370,12 @@ finish_colon_expression (tree_colon_expression *e)
 
   if (e->is_range_constant ())
     {
-      tree_constant tmp = e->eval (0);
+      octave_value tmp = e->eval (0);
 
       delete e;
 
       if (! error_state)
-	retval = new tree_constant (tmp);
+	retval = new octave_value (tmp);
     }
   else
     retval = e;
@@ -1385,31 +1385,31 @@ finish_colon_expression (tree_colon_expression *e)
 
 // Make a constant.
 
-static tree_constant *
+static octave_value *
 make_constant (int op, token *tok_val)
 {
   int l = tok_val->line ();
   int c = tok_val->column ();
 
-  tree_constant *retval;
+  octave_value *retval;
 
   switch (op)
     {
     case NUM:
-      retval = new tree_constant (tok_val->number (), l, c);
+      retval = new octave_value (tok_val->number (), l, c);
       retval->stash_original_text (tok_val->text_rep ());
       break;
 
     case IMAG_NUM:
       {
 	Complex C (0.0, tok_val->number ());
-	retval = new tree_constant (C, l, c);
+	retval = new octave_value (C, l, c);
 	retval->stash_original_text (tok_val->text_rep ());
       }
       break;
 
     case TEXT:
-      retval = new tree_constant (tok_val->text (), l, c);
+      retval = new octave_value (tok_val->text (), l, c);
       break;
 
     default:
@@ -1524,13 +1524,13 @@ make_binary_op (int op, tree_expression *op1, token *tok_val,
 
   if (op1->is_constant () && op2->is_constant ())
     {
-      tree_constant tmp = retval->eval (0);
+      octave_value tmp = retval->eval (0);
 
       delete retval;
       retval = 0;
 
       if (! error_state)
-	retval = new tree_constant (tmp);
+	retval = new octave_value (tmp);
     }
 
   return retval;
@@ -1629,13 +1629,13 @@ make_unary_op (int op, tree_expression *op1, token *tok_val)
 
   if (op1->is_constant ())
     {
-      tree_constant tmp = retval->eval (0);
+      octave_value tmp = retval->eval (0);
 
       delete retval;
       retval = 0;
 
       if (! error_state)
-	retval = new tree_constant (tmp);
+	retval = new octave_value (tmp);
     }
 
   return retval;
@@ -2042,12 +2042,12 @@ finish_matrix (tree_matrix *m)
 
   if (m->is_matrix_constant ())
     {
-      tree_constant tmp = m->eval (0);
+      octave_value tmp = m->eval (0);
 
       delete m;
 
       if (! error_state)
-	retval = new tree_constant (tmp);
+	retval = new octave_value (tmp);
     }
   else
     retval = m;

@@ -974,7 +974,7 @@ mx_stupid_bool_op (Matrix_bool_op op, const ComplexMatrix& a,
 //   matrix
 //   complex_matrix
 
-tree_constant
+octave_value
 do_unary_op (double d, tree_expression::type t)
 {
   double result = 0.0;
@@ -999,10 +999,10 @@ do_unary_op (double d, tree_expression::type t)
       break;
     }
 
-  return tree_constant (result);
+  return octave_value (result);
 }
 
-tree_constant
+octave_value
 do_unary_op (const Matrix& a, tree_expression::type t)
 {
   Matrix result;
@@ -1027,10 +1027,10 @@ do_unary_op (const Matrix& a, tree_expression::type t)
       break;
     }
 
-  return tree_constant (result);
+  return octave_value (result);
 }
 
-tree_constant
+octave_value
 do_unary_op (const Complex& c, tree_expression::type t)
 {
   Complex result = 0.0;
@@ -1058,10 +1058,10 @@ do_unary_op (const Complex& c, tree_expression::type t)
       break;
     }
 
-  return tree_constant (result);
+  return octave_value (result);
 }
 
-tree_constant
+octave_value
 do_unary_op (const ComplexMatrix& a, tree_expression::type t)
 {
   ComplexMatrix result;
@@ -1089,7 +1089,7 @@ do_unary_op (const ComplexMatrix& a, tree_expression::type t)
       break;
     }
 
-  return tree_constant (result);
+  return octave_value (result);
 }
 
 // Binary operations.  One for each type combination, in the order
@@ -1107,7 +1107,7 @@ do_unary_op (const ComplexMatrix& a, tree_expression::type t)
 //                  +---+---+----+----+
 
 // -*- 1 -*-
-tree_constant
+octave_value
 do_binary_op (double a, double b, tree_expression::type t)
 {
   double result = 0.0;
@@ -1184,13 +1184,13 @@ do_binary_op (double a, double b, tree_expression::type t)
     }
 
   if (error_state)
-    return tree_constant ();
+    return octave_value ();
 
-  return tree_constant (result);
+  return octave_value (result);
 }
 
 // -*- 2 -*-
-tree_constant
+octave_value
 do_binary_op (double a, const Matrix& b, tree_expression::type t)
 {
   Matrix result;
@@ -1271,13 +1271,13 @@ do_binary_op (double a, const Matrix& b, tree_expression::type t)
     }
 
   if (error_state)
-    return tree_constant ();
+    return octave_value ();
 
-  return tree_constant (result);
+  return octave_value (result);
 }
 
 // -*- 3 -*-
-tree_constant
+octave_value
 do_binary_op (double a, const Complex& b, tree_expression::type t)
 {
   enum RT { RT_unknown, RT_real, RT_complex };
@@ -1371,18 +1371,18 @@ do_binary_op (double a, const Complex& b, tree_expression::type t)
     }
 
   if (error_state)
-    return tree_constant ();
+    return octave_value ();
 
   assert (result_type != RT_unknown);
 
   if (result_type == RT_real)
-    return tree_constant (result);
+    return octave_value (result);
   else
-    return tree_constant (complex_result);
+    return octave_value (complex_result);
 }
 
 // -*- 4 -*-
-tree_constant
+octave_value
 do_binary_op (double a, const ComplexMatrix& b, tree_expression::type t)
 {
   enum RT { RT_unknown, RT_real, RT_complex };
@@ -1478,18 +1478,18 @@ do_binary_op (double a, const ComplexMatrix& b, tree_expression::type t)
     }
 
   if (error_state)
-    return tree_constant ();
+    return octave_value ();
 
   assert (result_type != RT_unknown);
 
   if (result_type == RT_real)
-    return tree_constant (result);
+    return octave_value (result);
   else
-    return tree_constant (complex_result);
+    return octave_value (complex_result);
 }
 
 // -*- 5 -*-
-tree_constant
+octave_value
 do_binary_op (const Matrix& a, double b, tree_expression::type t)
 {
   Matrix result;
@@ -1568,13 +1568,13 @@ do_binary_op (const Matrix& a, double b, tree_expression::type t)
     }
 
   if (error_state)
-    return tree_constant ();
+    return octave_value ();
 
-  return tree_constant (result);
+  return octave_value (result);
 }
 
 // -*- 6 -*-
-tree_constant
+octave_value
 do_binary_op (const Matrix& a, const Matrix& b, tree_expression::type t)
 {
   Matrix result;
@@ -1674,13 +1674,13 @@ do_binary_op (const Matrix& a, const Matrix& b, tree_expression::type t)
     }
 
   if (error_state)
-    return tree_constant ();
+    return octave_value ();
 
-  return tree_constant (result);
+  return octave_value (result);
 }
 
 // -*- 7 -*-
-tree_constant
+octave_value
 do_binary_op (const Matrix& a, const Complex& b, tree_expression::type t)
 {
   enum RT { RT_unknown, RT_real, RT_complex };
@@ -1775,18 +1775,18 @@ do_binary_op (const Matrix& a, const Complex& b, tree_expression::type t)
     }
 
   if (error_state)
-    return tree_constant ();
+    return octave_value ();
 
   assert (result_type != RT_unknown);
 
   if (result_type == RT_real)
-    return tree_constant (result);
+    return octave_value (result);
   else
-    return tree_constant (complex_result);
+    return octave_value (complex_result);
 }
 
 // -*- 8 -*-
-tree_constant
+octave_value
 do_binary_op (const Matrix& a, const ComplexMatrix& b, tree_expression::type t)
 {
   enum RT { RT_unknown, RT_real, RT_complex };
@@ -1904,18 +1904,18 @@ do_binary_op (const Matrix& a, const ComplexMatrix& b, tree_expression::type t)
     }
 
   if (error_state)
-    return tree_constant ();
+    return octave_value ();
 
   assert (result_type != RT_unknown);
 
   if (result_type == RT_real)
-    return tree_constant (result);
+    return octave_value (result);
   else
-    return tree_constant (complex_result);
+    return octave_value (complex_result);
 }
 
 // -*- 9 -*-
-tree_constant
+octave_value
 do_binary_op (const Complex& a, double b, tree_expression::type t)
 {
   enum RT { RT_unknown, RT_real, RT_complex };
@@ -2009,18 +2009,18 @@ do_binary_op (const Complex& a, double b, tree_expression::type t)
     }
 
   if (error_state)
-    return tree_constant ();
+    return octave_value ();
 
   assert (result_type != RT_unknown);
 
   if (result_type == RT_real)
-    return tree_constant (result);
+    return octave_value (result);
   else
-    return tree_constant (complex_result);
+    return octave_value (complex_result);
 }
 
 // -*- 10 -*-
-tree_constant
+octave_value
 do_binary_op (const Complex& a, const Matrix& b, tree_expression::type t)
 {
   enum RT { RT_unknown, RT_real, RT_complex };
@@ -2117,18 +2117,18 @@ do_binary_op (const Complex& a, const Matrix& b, tree_expression::type t)
     }
 
   if (error_state)
-    return tree_constant ();
+    return octave_value ();
 
   assert (result_type != RT_unknown);
 
   if (result_type == RT_real)
-    return tree_constant (result);
+    return octave_value (result);
   else
-    return tree_constant (complex_result);
+    return octave_value (complex_result);
 }
 
 // -*- 11 -*-
-tree_constant
+octave_value
 do_binary_op (const Complex& a, const Complex& b, tree_expression::type t)
 {
   enum RT { RT_unknown, RT_real, RT_complex };
@@ -2222,18 +2222,18 @@ do_binary_op (const Complex& a, const Complex& b, tree_expression::type t)
     }
 
   if (error_state)
-    return tree_constant ();
+    return octave_value ();
 
   assert (result_type != RT_unknown);
 
   if (result_type == RT_real)
-    return tree_constant (result);
+    return octave_value (result);
   else
-    return tree_constant (complex_result);
+    return octave_value (complex_result);
 }
 
 // -*- 12 -*-
-tree_constant
+octave_value
 do_binary_op (const Complex& a, const ComplexMatrix& b,
 	      tree_expression::type t)
 {
@@ -2331,18 +2331,18 @@ do_binary_op (const Complex& a, const ComplexMatrix& b,
     }
 
   if (error_state)
-    return tree_constant ();
+    return octave_value ();
 
   assert (result_type != RT_unknown);
 
   if (result_type == RT_real)
-    return tree_constant (result);
+    return octave_value (result);
   else
-    return tree_constant (complex_result);
+    return octave_value (complex_result);
 }
 
 // -*- 13 -*-
-tree_constant
+octave_value
 do_binary_op (const ComplexMatrix& a, double b, tree_expression::type t)
 {
   enum RT { RT_unknown, RT_real, RT_complex };
@@ -2437,18 +2437,18 @@ do_binary_op (const ComplexMatrix& a, double b, tree_expression::type t)
     }
 
   if (error_state)
-    return tree_constant ();
+    return octave_value ();
 
   assert (result_type != RT_unknown);
 
   if (result_type == RT_real)
-    return tree_constant (result);
+    return octave_value (result);
   else
-    return tree_constant (complex_result);
+    return octave_value (complex_result);
 }
 
 // -*- 14 -*-
-tree_constant
+octave_value
 do_binary_op (const ComplexMatrix& a, const Matrix& b, tree_expression::type t)
 {
   enum RT { RT_unknown, RT_real, RT_complex };
@@ -2566,18 +2566,18 @@ do_binary_op (const ComplexMatrix& a, const Matrix& b, tree_expression::type t)
     }
 
   if (error_state)
-    return tree_constant ();
+    return octave_value ();
 
   assert (result_type != RT_unknown);
 
   if (result_type == RT_real)
-    return tree_constant (result);
+    return octave_value (result);
   else
-    return tree_constant (complex_result);
+    return octave_value (complex_result);
 }
 
 // -*- 15 -*-
-tree_constant
+octave_value
 do_binary_op (const ComplexMatrix& a, const Complex& b,
 	      tree_expression::type t)
 {
@@ -2673,18 +2673,18 @@ do_binary_op (const ComplexMatrix& a, const Complex& b,
     }
 
   if (error_state)
-    return tree_constant ();
+    return octave_value ();
 
   assert (result_type != RT_unknown);
 
   if (result_type == RT_real)
-    return tree_constant (result);
+    return octave_value (result);
   else
-    return tree_constant (complex_result);
+    return octave_value (complex_result);
 }
 
 // -*- 16 -*-
-tree_constant
+octave_value
 do_binary_op (const ComplexMatrix& a, const ComplexMatrix& b,
 	      tree_expression::type t)
 {
@@ -2803,14 +2803,14 @@ do_binary_op (const ComplexMatrix& a, const ComplexMatrix& b,
     }
 
   if (error_state)
-    return tree_constant ();
+    return octave_value ();
 
   assert (result_type != RT_unknown);
 
   if (result_type == RT_real)
-    return tree_constant (result);
+    return octave_value (result);
   else
-    return tree_constant (complex_result);
+    return octave_value (complex_result);
 }
 
 /*

@@ -80,11 +80,11 @@ Return system resource statistics.")
 
   tv_tmp ["sec"] = (double) ru.ru_utime.tv_sec;
   tv_tmp ["usec"] = (double) ru.ru_utime.tv_usec;
-  m ["utime"] = tree_constant (tv_tmp);
+  m ["utime"] = octave_value (tv_tmp);
 
   tv_tmp ["sec"] = (double) ru.ru_stime.tv_sec;
   tv_tmp ["usec"] = (double) ru.ru_stime.tv_usec;
-  m ["stime"] = tree_constant (tv_tmp);
+  m ["stime"] = octave_value (tv_tmp);
 
   m ["maxrss"] = (double) ru.ru_maxrss;
   m ["ixrss"] = (double) ru.ru_ixrss;
@@ -118,7 +118,7 @@ Return system resource statistics.")
 
   tv_tmp ["sec"] = (double) seconds;
   tv_tmp ["usec"] = (double) (fraction * 1e6 / HZ);
-  m ["utime"] = tree_constant (tv_tmp);
+  m ["utime"] = octave_value (tv_tmp);
 
   ticks = t.tms_stime + t.tms_cstime;
   fraction = ticks % HZ;
@@ -126,17 +126,17 @@ Return system resource statistics.")
 
   tv_tmp ["sec"] = (double) seconds;
   tv_tmp ["usec"] = (double) (fraction * 1e6 / HZ);
-  m ["stime"] = tree_constant (tv_tmp);
+  m ["stime"] = octave_value (tv_tmp);
 
 #else
 
   tv_tmp ["sec"] = 0.0;
   tv_tmp ["usec"] = 0.0;
-  m ["utime"] = tree_constant (tv_tmp);
+  m ["utime"] = octave_value (tv_tmp);
 
   tv_tmp ["sec"] = 0.0;
   tv_tmp ["usec"] = 0.0;
-  m ["stime"] = tree_constant (tv_tmp);
+  m ["stime"] = octave_value (tv_tmp);
 
 #endif
 
@@ -157,7 +157,7 @@ Return system resource statistics.")
 
 #endif
 
-  return tree_constant (m);
+  return octave_value (m);
 }
 
 /*

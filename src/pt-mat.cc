@@ -53,16 +53,16 @@ tm_row_const
 private:
 
   class
-  tm_row_const_rep : public SLList<tree_constant>
+  tm_row_const_rep : public SLList<octave_value>
   {
   public:
 
     tm_row_const_rep (void)
-      : SLList<tree_constant> (), count (1), nr (0), nc (0),
+      : SLList<octave_value> (), count (1), nr (0), nc (0),
 	all_str (false), is_cmplx (false), ok (false) { }
 
     tm_row_const_rep (const tree_matrix_row& mr)
-      : SLList<tree_constant> (), count (1), nr (0), nc (0),
+      : SLList<octave_value> (), count (1), nr (0), nc (0),
 	all_str (false), is_cmplx (false), ok (false)
         { init (mr); }
 
@@ -129,9 +129,9 @@ public:
   bool all_strings (void) const { return rep->all_str; }
   bool is_complex (void) const { return rep->is_cmplx; }
 
-  tree_constant& operator () (Pix p) { return rep->operator () (p); }
+  octave_value& operator () (Pix p) { return rep->operator () (p); }
 
-  const tree_constant& operator () (Pix p) const
+  const octave_value& operator () (Pix p) const
     { return rep->operator () (p); }
 
   Pix first (void) const { return rep->first (); }
@@ -160,7 +160,7 @@ tm_row_const::tm_row_const_rep::init (const tree_matrix_row& mr)
     {
       tree_expression *elt = mr (p);
 
-      tree_constant tmp = elt->eval (false);
+      octave_value tmp = elt->eval (false);
 
       if (error_state || tmp.is_undefined ())
 	break;
@@ -431,10 +431,10 @@ tree_matrix::is_matrix_constant (void) const
 // Less ugly than before, anyway.
 // Looking better all the time.
 
-tree_constant
+octave_value
 tree_matrix::eval (bool /* print */)
 {
-  tree_constant retval;
+  octave_value retval;
 
   tm_const tmp (*this);
 
@@ -470,7 +470,7 @@ tree_matrix::eval (bool /* print */)
 
 	  for (Pix q = row.first (); q != 0; row.next (q))
 	    {
-	      tree_constant elt = row (q);
+	      octave_value elt = row (q);
 
 	      if (found_complex)
 		{
@@ -515,7 +515,7 @@ tree_matrix::eval (bool /* print */)
 		}
 
 	      if (all_strings && chm.rows () > 0 && chm.cols () > 0)
-		retval = tree_constant (chm, true);
+		retval = octave_value (chm, true);
 	      else if (found_complex)
 		retval = cm;
 	      else

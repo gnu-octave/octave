@@ -40,7 +40,7 @@ DEFUN_DLD_BUILTIN (fft2, args, ,
 \n\
 two dimensional fast fourier transform of a vector")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
@@ -50,7 +50,7 @@ two dimensional fast fourier transform of a vector")
       return retval;
     }
 
-  tree_constant arg = args(0);
+  octave_value arg = args(0);
 
   int n_rows = arg.rows ();
   if (nargin > 1)

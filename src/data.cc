@@ -57,7 +57,7 @@ Software Foundation, Inc.
 DEFUN (all, args, ,
   "all (X): are all elements of X nonzero?")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
@@ -72,7 +72,7 @@ DEFUN (all, args, ,
 DEFUN (any, args, ,
   "any (X): are any elements of X nonzero?")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
@@ -141,14 +141,14 @@ map (d_dd_fcn f, const Matrix& x, const Matrix& y)
 DEFUN (atan2, args, ,
   "atan2 (Y, X): atan (Y / X) in range -pi to pi")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
   if (nargin == 2 && args(0).is_defined () && args(1).is_defined ())
     {
-      tree_constant arg_y = args(0);
-      tree_constant arg_x = args(1);
+      octave_value arg_y = args(0);
+      octave_value arg_x = args(1);
 
       int y_nr = arg_y.rows ();
       int y_nc = arg_y.columns ();
@@ -227,13 +227,13 @@ DEFUN (atan2, args, ,
 DEFUN (cumprod, args, ,
   "cumprod (X): cumulative products")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
   if (nargin == 1)
     {
-      tree_constant arg = args(0);
+      octave_value arg = args(0);
 
       if (arg.is_real_type ())
 	{
@@ -264,13 +264,13 @@ DEFUN (cumprod, args, ,
 DEFUN (cumsum, args, ,
   "cumsum (X): cumulative sums")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
   if (nargin == 1)
     {
-      tree_constant arg = args(0);
+      octave_value arg = args(0);
 
       if (arg.is_real_type ())
 	{
@@ -298,14 +298,14 @@ DEFUN (cumsum, args, ,
   return retval;
 }
 
-static tree_constant
+static octave_value
 make_diag (const Matrix& v, int k)
 {
   int nr = v.rows ();
   int nc = v.columns ();
   assert (nc == 1 || nr == 1);
 
-  tree_constant retval;
+  octave_value retval;
 
   int roff = 0;
   int coff = 0;
@@ -326,7 +326,7 @@ make_diag (const Matrix& v, int k)
       Matrix m (n, n, 0.0);
       for (int i = 0; i < nc; i++)
 	m.elem (i+roff, i+coff) = v.elem (0, i);
-      retval = tree_constant (m);
+      retval = octave_value (m);
     }
   else
     {
@@ -334,20 +334,20 @@ make_diag (const Matrix& v, int k)
       Matrix m (n, n, 0.0);
       for (int i = 0; i < nr; i++)
 	m.elem (i+roff, i+coff) = v.elem (i, 0);
-      retval = tree_constant (m);
+      retval = octave_value (m);
     }
 
   return retval;
 }
 
-static tree_constant
+static octave_value
 make_diag (const ComplexMatrix& v, int k)
 {
   int nr = v.rows ();
   int nc = v.columns ();
   assert (nc == 1 || nr == 1);
 
-  tree_constant retval;
+  octave_value retval;
 
   int roff = 0;
   int coff = 0;
@@ -368,7 +368,7 @@ make_diag (const ComplexMatrix& v, int k)
       ComplexMatrix m (n, n, 0.0);
       for (int i = 0; i < nc; i++)
 	m.elem (i+roff, i+coff) = v.elem (0, i);
-      retval = tree_constant (m);
+      retval = octave_value (m);
     }
   else
     {
@@ -376,16 +376,16 @@ make_diag (const ComplexMatrix& v, int k)
       ComplexMatrix m (n, n, 0.0);
       for (int i = 0; i < nr; i++)
 	m.elem (i+roff, i+coff) = v.elem (i, 0);
-      retval = tree_constant (m);
+      retval = octave_value (m);
     }
 
   return retval;
 }
 
-static tree_constant
-make_diag (const tree_constant& arg)
+static octave_value
+make_diag (const octave_value& arg)
 {
-  tree_constant retval;
+  octave_value retval;
 
   if (arg.is_real_type ())
     {
@@ -439,10 +439,10 @@ make_diag (const tree_constant& arg)
   return retval;
 }
 
-static tree_constant
-make_diag (const tree_constant& a, const tree_constant& b)
+static octave_value
+make_diag (const octave_value& a, const octave_value& b)
 {
-  tree_constant retval;
+  octave_value retval;
 
   double tmp = b.double_value ();
 
@@ -546,7 +546,7 @@ make_diag (const tree_constant& a, const tree_constant& b)
 DEFUN (diag, args, ,
   "diag (X [,k]): form/extract diagonals")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
@@ -563,13 +563,13 @@ DEFUN (diag, args, ,
 DEFUN (prod, args, ,
   "prod (X): products")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
   if (nargin == 1)
     {
-      tree_constant arg = args(0);
+      octave_value arg = args(0);
 
       if (arg.is_real_type ())
 	{
@@ -605,7 +605,7 @@ d = size (x): return number of rows and columns of x as a row vector\n\
 m = size (x, 1): return number of rows in x\n\
 m = size (x, 2): return number of columns in x")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
@@ -652,13 +652,13 @@ m = size (x, 2): return number of columns in x")
 DEFUN (sum, args, ,
   "sum (X): sum of elements")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
   if (nargin == 1)
     {
-      tree_constant arg = args(0);
+      octave_value arg = args(0);
 
       if (arg.is_real_type ())
 	{
@@ -689,13 +689,13 @@ DEFUN (sum, args, ,
 DEFUN (sumsq, args, ,
   "sumsq (X): sum of squares of elements")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
   if (nargin == 1)
     {
-      tree_constant arg = args(0);
+      octave_value arg = args(0);
 
       if (arg.is_real_type ())
 	{
@@ -726,13 +726,13 @@ DEFUN (sumsq, args, ,
 DEFUN (is_struct, args, ,
   "is_struct (x): return nonzero if x is a structure")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
   if (nargin == 1)
     {
-      tree_constant arg = args(0);
+      octave_value arg = args(0);
 
       if (arg.is_map ())
 	retval = 1.0;
@@ -750,7 +750,7 @@ DEFUN (struct_elements, args, ,
 \n\
 Return a list of the names of the elements of the structure S.")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
@@ -775,7 +775,7 @@ DEFUN (struct_contains, args, ,
 \n\
 return nonzero if S is a structure with element NAME")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
@@ -785,7 +785,7 @@ return nonzero if S is a structure with element NAME")
       if (args(0).is_map () && args(1).is_string ())
 	{
 	  string s = args(1).string_value ();
-	  tree_constant tmp = args(0).lookup_map_element (s, 0, 1);
+	  octave_value tmp = args(0).lookup_map_element (s, 0, 1);
 	  retval = (double) tmp.is_defined ();
 	}
     }
@@ -816,7 +816,7 @@ check_dimensions (int& nr, int& nc, const char *warnfor)
 }
 
 static void
-get_dimensions (const tree_constant& a, const char *warn_for,
+get_dimensions (const octave_value& a, const char *warn_for,
 		int& nr, int& nc)
 {
   if (a.is_scalar_type ())
@@ -847,7 +847,7 @@ get_dimensions (const tree_constant& a, const char *warn_for,
 }
 
 static void
-get_dimensions (const tree_constant& a, const tree_constant& b,
+get_dimensions (const octave_value& a, const octave_value& b,
 		const char *warn_for, int& nr, int& nc)
 {
   nr = NINT (a.double_value ());
@@ -859,29 +859,29 @@ get_dimensions (const tree_constant& a, const tree_constant& b,
     check_dimensions (nr, nc, warn_for); // May set error_state.
 }
 
-static tree_constant
-fill_matrix (const tree_constant& a, double val, const char *warn_for)
+static octave_value
+fill_matrix (const octave_value& a, double val, const char *warn_for)
 {
   int nr, nc;
   get_dimensions (a, warn_for, nr, nc);
 
   if (error_state)
-    return  tree_constant ();
+    return  octave_value ();
 
   Matrix m (nr, nc, val);
 
   return m;
 }
 
-static tree_constant
-fill_matrix (const tree_constant& a, const tree_constant& b,
+static octave_value
+fill_matrix (const octave_value& a, const octave_value& b,
 	     double val, const char *warn_for)
 {
   int nr, nc;
   get_dimensions (a, b, warn_for, nr, nc); // May set error_state.
 
   if (error_state)
-    return tree_constant ();
+    return octave_value ();
 
   Matrix m (nr, nc, val);
 
@@ -891,7 +891,7 @@ fill_matrix (const tree_constant& a, const tree_constant& b,
 DEFUN (ones, args, ,
   "ones (N), ones (N, M), ones (X): create a matrix of all ones")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
@@ -920,7 +920,7 @@ DEFUN (ones, args, ,
 DEFUN (zeros, args, ,
   "zeros (N), zeros (N, M), zeros (X): create a matrix of all zeros")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
@@ -946,14 +946,14 @@ DEFUN (zeros, args, ,
   return retval;
 }
 
-static tree_constant
-identity_matrix (const tree_constant& a)
+static octave_value
+identity_matrix (const octave_value& a)
 {
   int nr, nc;
   get_dimensions (a, "eye", nr, nc); // May set error_state.
 
   if (error_state)
-    return tree_constant ();
+    return octave_value ();
 
   Matrix m (nr, nc, 0.0);
 
@@ -967,14 +967,14 @@ identity_matrix (const tree_constant& a)
   return m;
 }
 
-static tree_constant
-identity_matrix (const tree_constant& a, const tree_constant& b)
+static octave_value
+identity_matrix (const octave_value& a, const octave_value& b)
 {
   int nr, nc;
   get_dimensions (a, b, "eye", nr, nc);  // May set error_state.
 
   if (error_state)
-    return tree_constant ();
+    return octave_value ();
 
   Matrix m (nr, nc, 0.0);
 
@@ -991,7 +991,7 @@ identity_matrix (const tree_constant& a, const tree_constant& b)
 DEFUN (eye, args, ,
   "eye (N), eye (N, M), eye (X): create an identity matrix")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
@@ -1029,7 +1029,7 @@ All three arguments must be scalars.\n\
 \n\
 See also: logspace")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
@@ -1053,8 +1053,8 @@ See also: logspace")
     {
       if (npoints > 1)
 	{
-	  tree_constant arg_1 = args(0);
-	  tree_constant arg_2 = args(1);
+	  octave_value arg_1 = args(0);
+	  octave_value arg_2 = args(1);
 
 	  if (arg_1.is_complex_type () || arg_2.is_complex_type ())
 	    {
@@ -1066,7 +1066,7 @@ See also: logspace")
 		  ComplexRowVector rv = linspace (x1, x2, npoints);
 
 		  if (! error_state)
-		    retval (0) = tree_constant (rv, 0);
+		    retval (0) = octave_value (rv, 0);
 		}
 	    }
 	  else
@@ -1079,7 +1079,7 @@ See also: logspace")
 		  RowVector rv = linspace (x1, x2, npoints);
 
 		  if (! error_state)
-		    retval (0) = tree_constant (rv, 0);
+		    retval (0) = octave_value (rv, 0);
 		}
 	    }
 	}

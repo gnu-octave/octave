@@ -50,7 +50,7 @@ characters:\n\
   D = discrete time poles\n\
   U = unordered schur (default)")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
@@ -60,7 +60,7 @@ characters:\n\
       return retval;
     }
 
-  tree_constant arg = args(0);
+  octave_value arg = args(0);
 
   string ord;
 
@@ -93,7 +93,7 @@ characters:\n\
   if (arg_is_empty < 0)
     return retval;
   else if (arg_is_empty > 0)
-    return Octave_object (2, Matrix ());
+    return octave_value_list (2, Matrix ());
 
   if (nr != nc)
     {

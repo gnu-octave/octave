@@ -46,7 +46,7 @@ unnecessary rows and columns of U and V.\n\
 \n\
 X may not contain any Inf or NaN values.")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
@@ -56,14 +56,14 @@ X may not contain any Inf or NaN values.")
       return retval;
     }
 
-  tree_constant arg = args(0);
+  octave_value arg = args(0);
 
   int arg_is_empty = empty_arg ("svd", arg.rows (), arg.columns ());
 
   if (arg_is_empty < 0)
     return retval;
   else if (arg_is_empty > 0)
-    return Octave_object (3, Matrix ());
+    return octave_value_list (3, Matrix ());
 
   SVD::type type = ((nargout == 0 || nargout == 1)
 		    ? SVD::sigma_only
@@ -88,7 +88,7 @@ X may not contain any Inf or NaN values.")
 
 	  if (nargout == 0 || nargout == 1)
 	    {
-	      retval(0) = tree_constant (sigma.diag (), 1);
+	      retval(0) = octave_value (sigma.diag (), 1);
 	    }
 	  else
 	    {
@@ -117,7 +117,7 @@ X may not contain any Inf or NaN values.")
 
 	  if (nargout == 0 || nargout == 1)
 	    {
-	      retval(0) = tree_constant (sigma.diag (), 1);
+	      retval(0) = octave_value (sigma.diag (), 1);
 	    }
 	  else
 	    {

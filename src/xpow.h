@@ -27,39 +27,39 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class Matrix;
 class ComplexMatrix;
-class tree_constant;
+class octave_value;
 
-extern tree_constant xpow (double a, double b);
-extern tree_constant xpow (double a, const Matrix& b);
-extern tree_constant xpow (double a, const Complex& b);
-extern tree_constant xpow (double a, const ComplexMatrix& b);
+extern octave_value xpow (double a, double b);
+extern octave_value xpow (double a, const Matrix& b);
+extern octave_value xpow (double a, const Complex& b);
+extern octave_value xpow (double a, const ComplexMatrix& b);
 
-extern tree_constant xpow (const Matrix& a, double b);
-extern tree_constant xpow (const Matrix& a, const Complex& b);
+extern octave_value xpow (const Matrix& a, double b);
+extern octave_value xpow (const Matrix& a, const Complex& b);
 
-extern tree_constant xpow (const Complex& a, double b);
-extern tree_constant xpow (const Complex& a, const Matrix& b);
-extern tree_constant xpow (const Complex& a, const Complex& b);
-extern tree_constant xpow (const Complex& a, const ComplexMatrix& b);
+extern octave_value xpow (const Complex& a, double b);
+extern octave_value xpow (const Complex& a, const Matrix& b);
+extern octave_value xpow (const Complex& a, const Complex& b);
+extern octave_value xpow (const Complex& a, const ComplexMatrix& b);
 
-extern tree_constant xpow (const ComplexMatrix& a, double b);
-extern tree_constant xpow (const ComplexMatrix& a, const Complex& b);
+extern octave_value xpow (const ComplexMatrix& a, double b);
+extern octave_value xpow (const ComplexMatrix& a, const Complex& b);
 
-extern tree_constant elem_xpow (double a, const Matrix& b);
-extern tree_constant elem_xpow (double a, const ComplexMatrix& b);
+extern octave_value elem_xpow (double a, const Matrix& b);
+extern octave_value elem_xpow (double a, const ComplexMatrix& b);
 
-extern tree_constant elem_xpow (const Matrix& a, double b);
-extern tree_constant elem_xpow (const Matrix& a, const Matrix& b);
-extern tree_constant elem_xpow (const Matrix& a, const Complex& b);
-extern tree_constant elem_xpow (const Matrix& a, const ComplexMatrix& b);
+extern octave_value elem_xpow (const Matrix& a, double b);
+extern octave_value elem_xpow (const Matrix& a, const Matrix& b);
+extern octave_value elem_xpow (const Matrix& a, const Complex& b);
+extern octave_value elem_xpow (const Matrix& a, const ComplexMatrix& b);
 
-extern tree_constant elem_xpow (const Complex& a, const Matrix& b);
-extern tree_constant elem_xpow (const Complex& a, const ComplexMatrix& b);
+extern octave_value elem_xpow (const Complex& a, const Matrix& b);
+extern octave_value elem_xpow (const Complex& a, const ComplexMatrix& b);
 
-extern tree_constant elem_xpow (const ComplexMatrix& a, double b);
-extern tree_constant elem_xpow (const ComplexMatrix& a, const Matrix& b);
-extern tree_constant elem_xpow (const ComplexMatrix& a, const Complex& b);
-extern tree_constant elem_xpow (const ComplexMatrix& a,
+extern octave_value elem_xpow (const ComplexMatrix& a, double b);
+extern octave_value elem_xpow (const ComplexMatrix& a, const Matrix& b);
+extern octave_value elem_xpow (const ComplexMatrix& a, const Complex& b);
+extern octave_value elem_xpow (const ComplexMatrix& a,
 				const ComplexMatrix& b);
 
 #endif

@@ -79,7 +79,7 @@ xisint (double x)
 //   E -> error, trapped in arith-ops.cc.
 
 // -*- 1 -*-
-tree_constant
+octave_value
 xpow (double a, double b)
 {
   if (a < 0.0 && (int) b != b)
@@ -92,10 +92,10 @@ xpow (double a, double b)
 }
 
 // -*- 2 -*-
-tree_constant
+octave_value
 xpow (double a, const Matrix& b)
 {
-  tree_constant retval;
+  octave_value retval;
 
   int nr = b.rows ();
   int nc = b.columns ();
@@ -125,7 +125,7 @@ xpow (double a, const Matrix& b)
 }
 
 // -*- 3 -*-
-tree_constant
+octave_value
 xpow (double a, const Complex& b)
 {
   Complex result;
@@ -135,10 +135,10 @@ xpow (double a, const Complex& b)
 }
 
 // -*- 4 -*-
-tree_constant
+octave_value
 xpow (double a, const ComplexMatrix& b)
 {
-  tree_constant retval;
+  octave_value retval;
 
   int nr = b.rows ();
   int nc = b.columns ();
@@ -170,10 +170,10 @@ xpow (double a, const ComplexMatrix& b)
 }
 
 // -*- 5 -*-
-tree_constant
+octave_value
 xpow (const Matrix& a, double b)
 {
-  tree_constant retval;
+  octave_value retval;
 
   int nr = a.rows ();
   int nc = a.columns ();
@@ -240,10 +240,10 @@ xpow (const Matrix& a, double b)
 }
 
 // -*- 6 -*-
-tree_constant
+octave_value
 xpow (const Matrix& a, const Complex& b)
 {
-  tree_constant retval;
+  octave_value retval;
 
   int nr = a.rows ();
   int nc = a.columns ();
@@ -270,7 +270,7 @@ xpow (const Matrix& a, const Complex& b)
 }
 
 // -*- 7 -*-
-tree_constant
+octave_value
 xpow (const Complex& a, double b)
 {
   Complex result;
@@ -284,10 +284,10 @@ xpow (const Complex& a, double b)
 }
 
 // -*- 8 -*-
-tree_constant
+octave_value
 xpow (const Complex& a, const Matrix& b)
 {
-  tree_constant retval;
+  octave_value retval;
 
   int nr = b.rows ();
   int nc = b.columns ();
@@ -319,7 +319,7 @@ xpow (const Complex& a, const Matrix& b)
 }
 
 // -*- 9 -*-
-tree_constant
+octave_value
 xpow (const Complex& a, const Complex& b)
 {
   Complex result;
@@ -328,10 +328,10 @@ xpow (const Complex& a, const Complex& b)
 }
 
 // -*- 10 -*-
-tree_constant
+octave_value
 xpow (const Complex& a, const ComplexMatrix& b)
 {
-  tree_constant retval;
+  octave_value retval;
 
   int nr = b.rows ();
   int nc = b.columns ();
@@ -363,10 +363,10 @@ xpow (const Complex& a, const ComplexMatrix& b)
 }
 
 // -*- 11 -*-
-tree_constant
+octave_value
 xpow (const ComplexMatrix& a, double b)
 {
-  tree_constant retval;
+  octave_value retval;
 
   int nr = a.rows ();
   int nc = a.columns ();
@@ -433,10 +433,10 @@ xpow (const ComplexMatrix& a, double b)
 }
 
 // -*- 12 -*-
-tree_constant
+octave_value
 xpow (const ComplexMatrix& a, const Complex& b)
 {
-  tree_constant retval;
+  octave_value retval;
 
   int nr = a.rows ();
   int nc = a.columns ();
@@ -478,10 +478,10 @@ xpow (const ComplexMatrix& a, const Complex& b)
 //   * -> not needed.
 
 // -*- 1 -*-
-tree_constant
+octave_value
 elem_xpow (double a, const Matrix& b)
 {
-  tree_constant retval;
+  octave_value retval;
 
   int nr = b.rows ();
   int nc = b.columns ();
@@ -512,7 +512,7 @@ elem_xpow (double a, const Matrix& b)
 }
 
 // -*- 2 -*-
-tree_constant
+octave_value
 elem_xpow (double a, const ComplexMatrix& b)
 {
   int nr = b.rows ();
@@ -527,10 +527,10 @@ elem_xpow (double a, const ComplexMatrix& b)
 }
 
 // -*- 3 -*-
-tree_constant
+octave_value
 elem_xpow (const Matrix& a, double b)
 {
-  tree_constant retval;
+  octave_value retval;
 
   int nr = a.rows ();
   int nc = a.columns ();
@@ -561,10 +561,10 @@ elem_xpow (const Matrix& a, double b)
 }
 
 // -*- 4 -*-
-tree_constant
+octave_value
 elem_xpow (const Matrix& a, const Matrix& b)
 {
-  tree_constant retval;
+  octave_value retval;
 
   int nr = a.rows ();
   int nc = a.columns ();
@@ -615,7 +615,7 @@ elem_xpow (const Matrix& a, const Matrix& b)
 }
 
 // -*- 5 -*-
-tree_constant
+octave_value
 elem_xpow (const Matrix& a, const Complex& b)
 {
   int nr = a.rows ();
@@ -630,7 +630,7 @@ elem_xpow (const Matrix& a, const Complex& b)
 }
 
 // -*- 6 -*-
-tree_constant
+octave_value
 elem_xpow (const Matrix& a, const ComplexMatrix& b)
 {
   int nr = a.rows ();
@@ -647,7 +647,7 @@ elem_xpow (const Matrix& a, const ComplexMatrix& b)
 }
 
 // -*- 7 -*-
-tree_constant
+octave_value
 elem_xpow (const Complex& a, const Matrix& b)
 {
   int nr = b.rows ();
@@ -668,7 +668,7 @@ elem_xpow (const Complex& a, const Matrix& b)
 }
 
 // -*- 8 -*-
-tree_constant
+octave_value
 elem_xpow (const Complex& a, const ComplexMatrix& b)
 {
   int nr = b.rows ();
@@ -683,7 +683,7 @@ elem_xpow (const Complex& a, const ComplexMatrix& b)
 }
 
 // -*- 9 -*-
-tree_constant
+octave_value
 elem_xpow (const ComplexMatrix& a, double b)
 {
   int nr = a.rows ();
@@ -708,7 +708,7 @@ elem_xpow (const ComplexMatrix& a, double b)
 }
 
 // -*- 10 -*-
-tree_constant
+octave_value
 elem_xpow (const ComplexMatrix& a, const Matrix& b)
 {
   int nr = a.rows ();
@@ -731,7 +731,7 @@ elem_xpow (const ComplexMatrix& a, const Matrix& b)
 }
 
 // -*- 11 -*-
-tree_constant
+octave_value
 elem_xpow (const ComplexMatrix& a, const Complex& b)
 {
   int nr = a.rows ();
@@ -746,7 +746,7 @@ elem_xpow (const ComplexMatrix& a, const Complex& b)
 }
 
 // -*- 12 -*-
-tree_constant
+octave_value
 elem_xpow (const ComplexMatrix& a, const ComplexMatrix& b)
 {
   int nr = a.rows ();

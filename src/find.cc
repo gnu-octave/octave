@@ -30,11 +30,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "help.h"
 #include "oct-obj.h"
 
-static Octave_object
+static octave_value_list
 find_to_fortran_idx (const ColumnVector i_idx, const ColumnVector j_idx,
-		     const tree_constant& val, int nr, int nargout)
+		     const octave_value& val, int nr, int nargout)
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   switch (nargout)
     {
@@ -49,7 +49,7 @@ find_to_fortran_idx (const ColumnVector i_idx, const ColumnVector j_idx,
 	// If the original argument was a row vector, force a row
 	// vector of indices to be returned.
 
-	retval(0) = tree_constant (tmp, (nr != 1));
+	retval(0) = octave_value (tmp, (nr != 1));
       }
       break;
 
@@ -58,12 +58,12 @@ find_to_fortran_idx (const ColumnVector i_idx, const ColumnVector j_idx,
       // Fall through!
 
     case 2:
-      retval(1) = tree_constant (j_idx, 1);
-      retval(0) = tree_constant (i_idx, 1);
+      retval(1) = octave_value (j_idx, 1);
+      retval(0) = octave_value (i_idx, 1);
 
       // If you want this to work more like Matlab, use
       //
-      //    retval(0) = tree_constant (i_idx, (nr != 1));
+      //    retval(0) = octave_value (i_idx, (nr != 1));
       //
       // instead of the previous statement.
 
@@ -77,7 +77,7 @@ find_to_fortran_idx (const ColumnVector i_idx, const ColumnVector j_idx,
   return retval;
 }
 
-static Octave_object
+static octave_value_list
 find_nonzero_elem_idx (const Matrix& m, int nargout)
 {
   int count = 0;
@@ -90,7 +90,7 @@ find_nonzero_elem_idx (const Matrix& m, int nargout)
       if (m.elem (i, j) != 0.0)
 	count++;
 
-  Octave_object retval (((nargout == 0) ? 1 : nargout), Matrix ());
+  octave_value_list retval (((nargout == 0) ? 1 : nargout), Matrix ());
 
   if (count == 0)
     return retval;
@@ -113,11 +113,11 @@ find_nonzero_elem_idx (const Matrix& m, int nargout)
 	  }
       }
 
-  tree_constant tmp (v, 1);
+  octave_value tmp (v, 1);
   return find_to_fortran_idx (i_idx, j_idx, tmp, m_nr, nargout);
 }
 
-static Octave_object
+static octave_value_list
 find_nonzero_elem_idx (const ComplexMatrix& m, int nargout)
 {
   int count = 0;
@@ -130,7 +130,7 @@ find_nonzero_elem_idx (const ComplexMatrix& m, int nargout)
       if (m.elem (i, j) != 0.0)
 	count++;
 
-  Octave_object retval (((nargout == 0) ? 1 : nargout), Matrix ());
+  octave_value_list retval (((nargout == 0) ? 1 : nargout), Matrix ());
 
   if (count == 0)
     return retval;
@@ -153,14 +153,14 @@ find_nonzero_elem_idx (const ComplexMatrix& m, int nargout)
 	  }
       }
 
-  tree_constant tmp (v, 1);
+  octave_value tmp (v, 1);
   return find_to_fortran_idx (i_idx, j_idx, tmp, m_nr, nargout);
 }
 
 DEFUN_DLD_BUILTIN (find, args, nargout,
   "find (X) or [I, J, V] = find (X): Return indices of nonzero elements")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
@@ -170,7 +170,7 @@ DEFUN_DLD_BUILTIN (find, args, nargout,
       return retval;
     }
 
-  tree_constant arg = args(0);
+  octave_value arg = args(0);
 
   if (arg.is_real_type ())
     {

@@ -34,7 +34,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 DEFUN_DLD_BUILTIN (lp_solve, , ,
   "lp_solve (): solve linear programs using lp_solve.")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   // Force a bad value of inform, and empty matrices for x and phi.
 
@@ -54,7 +54,7 @@ DEFUN_DLD_BUILTIN (lp_solve_options, , ,
 Set or show options for lp_solve.  Keywords may be abbreviated\n\
 to the shortest match.")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   error ("lp_solve_options: not implemented yet");
 

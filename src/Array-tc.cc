@@ -24,7 +24,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
-// Instantiate Arrays of tree_constants.
+// Instantiate Arrays of octave_values.
 
 #include "Array.h"
 #include "Array.cc"
@@ -43,7 +43,7 @@ extern template class Array<Complex>;
 extern template class Array2<Complex>;
 extern template class DiagArray2<Complex>;
 
-template class Array<tree_constant>;
+template class Array<octave_value>;
 
 /*
 ;;; Local Variables: ***

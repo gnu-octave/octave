@@ -53,7 +53,7 @@ dassl_user_function (const ColumnVector& x, const ColumnVector& xdot, double t)
 
   assert (nstates == xdot.capacity ());
 
-  Octave_object args;
+  octave_value_list args;
   args(2) = t;
 
   if (nstates > 1)
@@ -65,8 +65,8 @@ dassl_user_function (const ColumnVector& x, const ColumnVector& xdot, double t)
 	  m1 (i, 0) = x.elem (i);
 	  m2 (i, 0) = xdot.elem (i);
 	}
-      tree_constant state (m1);
-      tree_constant deriv (m2);
+      octave_value state (m1);
+      octave_value deriv (m2);
       args(1) = deriv;
       args(0) = state;
     }
@@ -74,15 +74,15 @@ dassl_user_function (const ColumnVector& x, const ColumnVector& xdot, double t)
     {
       double d1 = x.elem (0);
       double d2 = xdot.elem (0);
-      tree_constant state (d1);
-      tree_constant deriv (d2);
+      octave_value state (d1);
+      octave_value deriv (d2);
       args(1) = deriv;
       args(0) = state;
     }
 
   if (dassl_fcn)
     {
-      Octave_object tmp = dassl_fcn->eval (0, 1, args);
+      octave_value_list tmp = dassl_fcn->eval (0, 1, args);
 
       if (error_state)
 	{
@@ -115,7 +115,7 @@ compute the vector of residuals.  It must have the form\n\
 \n\
 where x, xdot, and res are vectors, and t is a scalar.")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
@@ -294,10 +294,10 @@ set_dassl_option (const string& keyword, double val)
   warning ("dassl_options: no match for `%s'", keyword.c_str ());
 }
 
-static Octave_object
+static octave_value_list
 show_dassl_option (const string& keyword)
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   DASSL_OPTIONS *list = dassl_option_table;
 
@@ -322,7 +322,7 @@ DEFUN_DLD_BUILTIN (dassl_options, args, ,
 Set or show options for dassl.  Keywords may be abbreviated\n\
 to the shortest match.")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 

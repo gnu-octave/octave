@@ -202,7 +202,7 @@ public:
       return this;
     }
 
-  tree_constant extract_plot_data (int ndim, tree_constant& data);
+  octave_value extract_plot_data (int ndim, octave_value& data);
 
   int handle_plot_data (int ndim, ostrstream& plot_buf);
 
@@ -233,7 +233,7 @@ public:
   void print_code (ostream& os);
 };
 
-extern string save_in_tmp_file (tree_constant& t, int ndim = 2,
+extern string save_in_tmp_file (octave_value& t, int ndim = 2,
 				bool parametric = false);
 
 extern void mark_for_deletion (const string&);

@@ -36,7 +36,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 DEFUN_DLD_BUILTIN (syl, args, nargout,
   "X = syl (A, B, C): solve the Sylvester equation A X + X B + C = 0")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
@@ -46,9 +46,9 @@ DEFUN_DLD_BUILTIN (syl, args, nargout,
       return retval;
     }
 
-  tree_constant arg_a = args(0);
-  tree_constant arg_b = args(1);
-  tree_constant arg_c = args(2);
+  octave_value arg_a = args(0);
+  octave_value arg_b = args(1);
+  octave_value arg_c = args(2);
 
   int a_nr = arg_a.rows ();
   int a_nc = arg_a.columns ();

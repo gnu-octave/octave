@@ -29,7 +29,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class ostream;
 
-class tree_constant;
+class octave_value;
 class tree_return_list;
 
 #include <SLList.h>
@@ -75,7 +75,7 @@ public:
 
   bool is_matrix_constant (void) const;
 
-  tree_constant eval (bool print);
+  octave_value eval (bool print);
 
   void print_code (ostream& os);
 };

@@ -103,7 +103,7 @@ Handle all of the following:
 
 */
 
-  Octave_object retval;
+  octave_value_list retval;
 
 #if defined (QPSOL_MISSING)
 
@@ -385,10 +385,10 @@ set_qpsol_option (const string& keyword, double val)
   warning ("qpsol_options: no match for `%s'", keyword.c_str ());
 }
 
-static Octave_object
+static octave_value_list
 show_qpsol_option (const string& keyword)
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   QPSOL_OPTIONS *list = qpsol_option_table;
 
@@ -425,7 +425,7 @@ Set or show options for qpsol.  Keywords may be abbreviated\n\
 to the shortest match.")
 #endif
 {
-  Octave_object retval;
+  octave_value_list retval;
 
 #if defined (QPSOL_MISSING)
 

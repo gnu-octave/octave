@@ -77,7 +77,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define DEFVAR_INT(name, sname, defn, inst_as_fcn, protect, sv_fcn, doc) \
   do \
     { \
-      builtin_variable sname (name, new tree_constant (defn), \
+      builtin_variable sname (name, new octave_value (defn), \
 			      inst_as_fcn, protect, (sv_fcn ? 1 : 0), \
 			      sv_fcn, doc); \
       install_builtin_variable (sname); \
@@ -88,7 +88,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
 //   name is the name of the function, unqouted.
 //
-//   args_name is the name of the Octave_object variable used to pass
+//   args_name is the name of the octave_value_list variable used to pass
 //     the argument list to this function.
 //
 //   nargout_name is the name of the int variable used to pass the

@@ -80,7 +80,7 @@ Handle all of the following:
 
 */
 
-  Octave_object retval;
+  octave_value_list retval;
 
   error ("fsqp: not implemented yet");
 
@@ -100,7 +100,7 @@ Set or show options for fsqp.  Keywords may be abbreviated\n\
 to the shortest match.")
 #endif
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   error ("fsqp_options: not implemented yet");
 

@@ -34,18 +34,18 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class string_vector;
 
 class
-Octave_map : public CHMap<tree_constant>
+Octave_map : public CHMap<octave_value>
 {
  public:
-  Octave_map (void) : CHMap<tree_constant> (tree_constant ()) { }
+  Octave_map (void) : CHMap<octave_value> (octave_value ()) { }
 
-  Octave_map (const string& key, const tree_constant& value)
-    : CHMap<tree_constant> (tree_constant ())
+  Octave_map (const string& key, const octave_value& value)
+    : CHMap<octave_value> (octave_value ())
       {
-	CHMap<tree_constant>::operator [] (key) = value;
+	CHMap<octave_value>::operator [] (key) = value;
       }
 
-  Octave_map (const Octave_map& m) : CHMap<tree_constant> (m) { }
+  Octave_map (const Octave_map& m) : CHMap<octave_value> (m) { }
 
   ~Octave_map (void) { }
 

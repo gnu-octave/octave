@@ -364,7 +364,7 @@ max (const ComplexMatrix& a, const ComplexMatrix& b)
 DEFUN_DLD_BUILTIN (min, args, nargout,
   "min (X): minimum value(s) of a vector (matrix)")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
@@ -374,8 +374,8 @@ DEFUN_DLD_BUILTIN (min, args, nargout,
       return retval;
     }
 
-  tree_constant arg1;
-  tree_constant arg2;
+  octave_value arg1;
+  octave_value arg2;
 
   switch (nargin)
     {
@@ -411,7 +411,7 @@ DEFUN_DLD_BUILTIN (min, args, nargout,
 	      if (m.rows () == 1)
 		retval(0) = m.row_min ();
 	      else
-		retval(0) = tree_constant (m.column_min (), 0);
+		retval(0) = octave_value (m.column_min (), 0);
 	    }
 	}
       else if (arg1.is_complex_type ())
@@ -423,7 +423,7 @@ DEFUN_DLD_BUILTIN (min, args, nargout,
 	      if (m.rows () == 1)
 		retval(0) = m.row_min ();
 	      else
-		retval(0) = tree_constant (m.column_min (), 0);
+		retval(0) = octave_value (m.column_min (), 0);
 	    }
 	}
       else
@@ -457,8 +457,8 @@ DEFUN_DLD_BUILTIN (min, args, nargout,
 		}
 	      else
 		{
-		  retval(1) = tree_constant (m.column_min_loc (), 0);
-		  retval(0) = tree_constant (m.column_min (), 0);
+		  retval(1) = octave_value (m.column_min_loc (), 0);
+		  retval(0) = octave_value (m.column_min (), 0);
 		}
 	    }
 	}
@@ -475,8 +475,8 @@ DEFUN_DLD_BUILTIN (min, args, nargout,
 		}
 	      else
 		{
-		  retval(1) = tree_constant (m.column_min_loc (), 0);
-		  retval(0) = tree_constant (m.column_min (), 0);
+		  retval(1) = octave_value (m.column_min_loc (), 0);
+		  retval(0) = octave_value (m.column_min (), 0);
 		}
 	    }
 	}
@@ -592,7 +592,7 @@ DEFUN_DLD_BUILTIN (min, args, nargout,
 DEFUN_DLD_BUILTIN (max, args, nargout,
   "max (X): maximum value(s) of a vector (matrix)")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
@@ -602,8 +602,8 @@ DEFUN_DLD_BUILTIN (max, args, nargout,
       return retval;
     }
 
-  tree_constant arg1;
-  tree_constant arg2;
+  octave_value arg1;
+  octave_value arg2;
 
   switch (nargin)
     {
@@ -639,7 +639,7 @@ DEFUN_DLD_BUILTIN (max, args, nargout,
 	      if (m.rows () == 1)
 		retval(0) = m.row_max ();
 	      else
-		retval(0) = tree_constant (m.column_max (), 0);
+		retval(0) = octave_value (m.column_max (), 0);
 	    }
 	}
       else if (arg1.is_complex_type ())
@@ -651,7 +651,7 @@ DEFUN_DLD_BUILTIN (max, args, nargout,
 	      if (m.rows () == 1)
 		retval(0) = m.row_max ();
 	      else
-		retval(0) = tree_constant (m.column_max (), 0);
+		retval(0) = octave_value (m.column_max (), 0);
 	    }
 	}
       else
@@ -685,8 +685,8 @@ DEFUN_DLD_BUILTIN (max, args, nargout,
 		}
 	      else
 		{
-		  retval(1) = tree_constant (m.column_max_loc (), 0);
-		  retval(0) = tree_constant (m.column_max (), 0);
+		  retval(1) = octave_value (m.column_max_loc (), 0);
+		  retval(0) = octave_value (m.column_max (), 0);
 		}
 	    }
 	}
@@ -703,8 +703,8 @@ DEFUN_DLD_BUILTIN (max, args, nargout,
 		}
 	      else
 		{
-		  retval(1) = tree_constant (m.column_max_loc (), 0);
-		  retval(0) = tree_constant (m.column_max (), 0);
+		  retval(1) = octave_value (m.column_max_loc (), 0);
+		  retval(0) = octave_value (m.column_max (), 0);
 		}
 	    }
 	}

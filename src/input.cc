@@ -661,9 +661,9 @@ generate_struct_completions (const char *text, char *& prefix,
     {
       tree_fvc *tmp_fvc = sr->def ();
 
-      tree_constant *def = 0;
+      octave_value *def = 0;
       if (tmp_fvc->is_constant ())
-	def = (tree_constant *) tmp_fvc;
+	def = (octave_value *) tmp_fvc;
 
       if (def && def->is_map ())
 	{
@@ -671,7 +671,7 @@ generate_struct_completions (const char *text, char *& prefix,
 
 	  if (elts && *elts)
 	    {
-	      tree_constant ult = def->lookup_map_element (elts, 0, 1);
+	      octave_value ult = def->lookup_map_element (elts, 0, 1);
 
 	      if (ult.is_map ())
 		{
@@ -756,15 +756,15 @@ looks_like_struct (const char *nm)
     {
       tree_fvc *tmp_fvc = sr->def ();
 
-      tree_constant *def = 0;
+      octave_value *def = 0;
       if (tmp_fvc->is_constant ())
-	def = (tree_constant *) tmp_fvc;
+	def = (octave_value *) tmp_fvc;
 
       if (def && def->is_map ())
 	{
 	  if (elts && *elts)
 	    {
-	      tree_constant ult = def->lookup_map_element (elts, 0, 1);
+	      octave_value ult = def->lookup_map_element (elts, 0, 1);
 
 	      if (ult.is_map ())
 		retval = 1;
@@ -1003,10 +1003,10 @@ match_sans_spaces (const char *standard, const char *test)
 
 // If the user simply hits return, this will produce an empty matrix.
 
-static Octave_object
-get_user_input (const Octave_object& args, int debug = 0)
+static octave_value_list
+get_user_input (const octave_value_list& args, int debug = 0)
 {
-  tree_constant retval;
+  octave_value retval;
 
   int nargin = args.length ();
 
@@ -1092,7 +1092,7 @@ DEFUN (input, args, ,
 Prompt user for input.  If the second argument is present, return
 value as a string.")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
@@ -1109,7 +1109,7 @@ DEFUN (keyboard, args, ,
 \n\
 maybe help in debugging function files")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
@@ -1132,7 +1132,7 @@ DEFUN_TEXT(echo, args, ,
 \n\
 Without any arguments, toggle the current echo state.")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int argc = args.length () + 1;
 

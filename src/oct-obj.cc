@@ -32,7 +32,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-obj.h"
 
 int
-Octave_object::all_strings (void) const
+octave_value_list::all_strings (void) const
 {
   int n = length ();
 
@@ -44,7 +44,7 @@ Octave_object::all_strings (void) const
 }
 
 string_vector
-Octave_object::make_argv (const string& fcn_name) const
+octave_value_list::make_argv (const string& fcn_name) const
 {
   string_vector argv;
 

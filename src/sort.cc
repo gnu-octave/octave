@@ -152,10 +152,10 @@ create_index_array (int n)
       ms.elem (i, j) = m.elem (k-1, j); \
     }
 
-static Octave_object
+static octave_value_list
 mx_sort (const Matrix& m)
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nr = m.rows ();
   int nc = m.columns ();
@@ -188,10 +188,10 @@ mx_sort (const Matrix& m)
   return retval;
 }
 
-static Octave_object
+static octave_value_list
 mx_sort (const RowVector& v)
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int n = v.capacity ();
 
@@ -214,16 +214,16 @@ mx_sort (const RowVector& v)
       VECTOR_CREATE_RETURN_VALUES (vs, v);
     }
 
-  retval (1) = tree_constant (idx, 0);
-  retval (0) = tree_constant (vs, 0);
+  retval (1) = octave_value (idx, 0);
+  retval (0) = octave_value (vs, 0);
 
   return retval;
 }
 
-static Octave_object
+static octave_value_list
 mx_sort (const ComplexMatrix& cm)
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nr = cm.rows ();
   int nc = cm.columns ();
@@ -266,10 +266,10 @@ mx_sort (const ComplexMatrix& cm)
   return retval;
 }
 
-static Octave_object
+static octave_value_list
 mx_sort (ComplexRowVector& cv)
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int n = cv.capacity ();
 
@@ -302,8 +302,8 @@ mx_sort (ComplexRowVector& cv)
       VECTOR_CREATE_RETURN_VALUES (cvs, cv);
     }
 
-  retval (1) = tree_constant (idx, 0);
-  retval (0) = tree_constant (cvs, 0);
+  retval (1) = octave_value (idx, 0);
+  retval (0) = octave_value (cvs, 0);
 
   return retval;
 }
@@ -313,7 +313,7 @@ DEFUN_DLD_BUILTIN (sort, args, nargout,
 \n\
 sort the columns of X, optionally return sort index")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
@@ -329,7 +329,7 @@ sort the columns of X, optionally return sort index")
   else
     retval.resize (1);
 
-  tree_constant arg = args(0);
+  octave_value arg = args(0);
 
   if (arg.is_real_type ())
     {

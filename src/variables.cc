@@ -124,10 +124,10 @@ is_globally_visible (const string& name)
   return (sr && sr->is_linked_to_global ());
 }
 
-// Is this tree_constant a valid function?
+// Is this octave_value a valid function?
 
 tree_fvc *
-is_valid_function (const tree_constant& arg, const string& warn_for, int warn)
+is_valid_function (const octave_value& arg, const string& warn_for, int warn)
 {
   tree_fvc *ans = 0;
 
@@ -167,7 +167,7 @@ DEFUN (is_global, args, ,
   "is_global (X): return 1 if the string X names a global variable\n\
 otherwise, return 0.")
 {
-  Octave_object retval = 0.0;
+  octave_value_list retval = 0.0;
 
   int nargin = args.length ();
 
@@ -203,7 +203,7 @@ returns:\n\
    3 : NAME is a .oct file in the current LOADPATH\n\
    5 : NAME is a built-in function")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
@@ -247,9 +247,9 @@ returns:\n\
 	  retval = 0.0;
 	  if (def->is_constant ())
 	    {
-	      tree_constant *tmp = (tree_constant *) def;
+	      octave_value *tmp = (octave_value *) def;
 
-	      tree_constant ult	= tmp->lookup_map_element (struct_elts, 0, 1);
+	      octave_value ult	= tmp->lookup_map_element (struct_elts, 0, 1);
 
 	      if (ult.is_defined ())
 		retval = 1.0;
@@ -902,7 +902,7 @@ builtin_string_variable (const string& name)
 
   if (defn)
     {
-      tree_constant val = defn->eval (0);
+      octave_value val = defn->eval (0);
 
       if (! error_state && val.is_string ())
 	retval = val.string_value ();
@@ -929,7 +929,7 @@ builtin_real_scalar_variable (const string& name, double& d)
 
   if (defn)
     {
-      tree_constant val = defn->eval (0);
+      octave_value val = defn->eval (0);
 
       if (! error_state && val.is_scalar_type ())
 	{
@@ -943,10 +943,10 @@ builtin_real_scalar_variable (const string& name, double& d)
 
 // Look for the given name in the global symbol table.
 
-tree_constant
+octave_value
 builtin_any_variable (const string& name)
 {
-  tree_constant retval;
+  octave_value retval;
 
   symbol_record *sr = global_sym_tab->lookup (name, 0, 0);
 
@@ -990,11 +990,11 @@ link_to_global_variable (symbol_record *sr)
     {
       // Would be nice not to have this cast.  XXX FIXME XXX
 
-      tree_constant *tmp = (tree_constant *) sr->def ();
+      octave_value *tmp = (octave_value *) sr->def ();
       if (tmp)
-	tmp = new tree_constant (*tmp);
+	tmp = new octave_value (*tmp);
       else
-	tmp = new tree_constant ();
+	tmp = new octave_value ();
       gsr->define (tmp);
     }
   else
@@ -1004,7 +1004,7 @@ link_to_global_variable (symbol_record *sr)
   // to hide it with a variable.
 
   if (gsr->is_function ())
-    gsr->define ((tree_constant *) 0);
+    gsr->define ((octave_value *) 0);
 
   sr->alias (gsr, 1);
   sr->mark_as_linked_to_global ();
@@ -1195,7 +1195,7 @@ DEFUN_TEXT (document, args, ,
 \n\
 Associate a cryptic message with a variable name.")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int argc = args.length () + 1;
 
@@ -1230,10 +1230,10 @@ Associate a cryptic message with a variable name.")
 // XXX FIXME XXX -- this should take a list of regular expressions
 // naming the variables to look for.
 
-static Octave_object
+static octave_value_list
 do_who (int argc, const string_vector& argv)
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int show_builtins = 0;
   int show_functions = (curr_sym_tab == top_level_sym_tab);
@@ -1338,7 +1338,7 @@ DEFUN_TEXT (who, args, ,
 List currently defined symbol(s).  Options may be shortened to one\n\
 character, but may not be combined.")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int argc = args.length () + 1;
 
@@ -1358,11 +1358,11 @@ DEFUN_TEXT (whos, args, ,
 List currently defined symbol(s).  Options may be shortened to one\n\
 character, but may not be combined.")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
-  Octave_object tmp_args;
+  octave_value_list tmp_args;
   for (int i = nargin; i > 0; i--)
     tmp_args(i) = args(i-1);
   tmp_args(0) = "-long";
@@ -1433,7 +1433,7 @@ install_builtin_variable (const builtin_variable& v)
 }
 
 void
-install_builtin_variable_as_function (const string& name, tree_constant *val,
+install_builtin_variable_as_function (const string& name, octave_value *val,
 				      int protect, int eternal,
 				      const string& help)
 {
@@ -1476,28 +1476,28 @@ alias_builtin (const string& alias, const string& name)
 void
 bind_nargin_and_nargout (symbol_table *sym_tab, int nargin, int nargout)
 {
-  tree_constant *tmp;
+  octave_value *tmp;
   symbol_record *sr;
 
   sr = sym_tab->lookup ("nargin", 1, 0);
   sr->unprotect ();
-  tmp = new tree_constant (nargin);
+  tmp = new octave_value (nargin);
   sr->define (tmp);
 
   sr = sym_tab->lookup ("nargout", 1, 0);
   sr->unprotect ();
-  tmp = new tree_constant (nargout);
+  tmp = new octave_value (nargout);
   sr->define (tmp);
 }
 #endif
 
 void
-bind_ans (const tree_constant& val, int print)
+bind_ans (const octave_value& val, int print)
 {
   static symbol_record *sr = global_sym_tab->lookup ("ans", 1, 0);
 
   tree_identifier *ans_id = new tree_identifier (sr);
-  tree_constant *tmp = new tree_constant (val);
+  octave_value *tmp = new octave_value (val);
 
   // XXX FIXME XXX -- making ans_id static, passing its address to
   // tree_simple_assignment_expression along with a flag to not delete
@@ -1540,7 +1540,7 @@ clear_global_error_variable (void *)
 // functions needed?
 
 void
-bind_builtin_variable (const string& varname, tree_constant *val,
+bind_builtin_variable (const string& varname, octave_value *val,
 		       int protect, int eternal, sv_Function sv_fcn,
 		       const string& help)
 {
@@ -1572,11 +1572,11 @@ bind_builtin_variable (const string& varname, tree_constant *val,
 }
 
 void
-bind_builtin_variable (const string& varname, const tree_constant& val,
+bind_builtin_variable (const string& varname, const octave_value& val,
 		       int protect, int eternal, sv_Function sv_fcn,
 		       const string& help)
 {
-  tree_constant *tc = new tree_constant (val);
+  octave_value *tc = new octave_value (val);
   bind_builtin_variable (varname, tc, protect, eternal, sv_fcn, help);
 }
 
@@ -1899,7 +1899,7 @@ functions.\n\
 \n\
 With -x, exclude the named variables")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int argc = args.length () + 1;
 

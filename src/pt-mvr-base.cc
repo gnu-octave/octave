@@ -34,11 +34,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // A base class for objects that can be return multiple values
 
-tree_constant
+octave_value
 tree_multi_val_ret::eval (bool /* print */)
 {
   panic ("invalid evaluation of generic expression");
-  return tree_constant ();
+  return octave_value ();
 }
 
 /*

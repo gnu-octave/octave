@@ -211,7 +211,7 @@ tree_for_command::~tree_for_command (void)
 
 inline void
 tree_for_command::do_for_loop_once (tree_return_list *lst,
-				    const Octave_object& rhs, bool& quit)
+				    const octave_value_list& rhs, bool& quit)
 {
   quit = false;
 
@@ -241,11 +241,11 @@ tree_for_command::do_for_loop_once (tree_return_list *lst,
 
 inline void
 tree_for_command::do_for_loop_once (tree_index_expression *idx_expr,
-				    const tree_constant& rhs, bool& quit)
+				    const octave_value& rhs, bool& quit)
 {
   quit = false;
 
-  tree_constant *tmp = new tree_constant (rhs);
+  octave_value *tmp = new octave_value (rhs);
   tree_simple_assignment_expression tmp_ass (idx_expr, tmp, true);
   tmp_ass.eval (false);
 
@@ -271,7 +271,7 @@ tree_for_command::do_for_loop_once (tree_index_expression *idx_expr,
 
 inline void
 tree_for_command::do_for_loop_once (tree_identifier *ident,
-				    tree_constant& rhs, bool& quit)
+				    octave_value& rhs, bool& quit)
 {
   quit = false;
 
@@ -303,7 +303,7 @@ tree_for_command::do_for_loop_once (tree_identifier *ident,
       if (ident) \
 	for (int i = 0; i < steps; i++) \
 	  { \
-	    tree_constant rhs (val); \
+	    octave_value rhs (val); \
 	    bool quit = false; \
 	    do_for_loop_once (ident, rhs, quit); \
 	    if (quit) \
@@ -312,7 +312,7 @@ tree_for_command::do_for_loop_once (tree_identifier *ident,
       else if (id_list) \
 	for (int i = 0; i < steps; i++) \
 	  { \
-	    Octave_object rhs (val); \
+	    octave_value_list rhs (val); \
 	    bool quit = false; \
 	    do_for_loop_once (id_list, rhs, quit); \
 	    if (quit) \
@@ -321,7 +321,7 @@ tree_for_command::do_for_loop_once (tree_identifier *ident,
       else \
 	for (int i = 0; i < steps; i++) \
 	  { \
-	    tree_constant rhs (val); \
+	    octave_value rhs (val); \
 	    bool quit = false; \
 	    do_for_loop_once (tmp_id, rhs, quit); \
 	    if (quit) \
@@ -336,7 +336,7 @@ tree_for_command::eval (void)
   if (error_state || ! expr)
     return;
 
-  tree_constant tmp_expr = expr->eval (false);
+  octave_value tmp_expr = expr->eval (false);
 
   if (error_state || tmp_expr.is_undefined ())
     {
@@ -369,7 +369,7 @@ tree_for_command::eval (void)
 	do_for_loop_once (ident, tmp_expr, quit);
       else if (id_list)
 	{
-	  Octave_object rhs (tmp_expr);
+	  octave_value_list rhs (tmp_expr);
 	  do_for_loop_once (id_list, rhs, quit);
 	}
       else
@@ -427,7 +427,7 @@ tree_for_command::eval (void)
 	    {
 	      double tmp_val = b + i * increment;
 
-	      tree_constant rhs (tmp_val);
+	      octave_value rhs (tmp_val);
 
 	      bool quit = false;
 	      do_for_loop_once (ident, rhs, quit);
@@ -442,7 +442,7 @@ tree_for_command::eval (void)
 	    {
 	      double tmp_val = b + i * increment;
 
-	      Octave_object rhs (tmp_val);
+	      octave_value_list rhs (tmp_val);
 
 	      bool quit = false;
 	      do_for_loop_once (id_list, rhs, quit);
@@ -457,7 +457,7 @@ tree_for_command::eval (void)
 	    {
 	      double tmp_val = b + i * increment;
 
-	      tree_constant rhs (tmp_val);
+	      octave_value rhs (tmp_val);
 
 	      bool quit = false;
 	      do_for_loop_once (tmp_id, rhs, quit);
@@ -475,7 +475,7 @@ tree_for_command::eval (void)
 
 	  for (Pix p = tmp_val.first (); p != 0; tmp_val.next (p))
 	    {
-	      tree_constant rhs (tmp_val.contents (p));
+	      octave_value rhs (tmp_val.contents (p));
 
 	      bool quit = false;
 	      do_for_loop_once (ident, rhs, quit);
@@ -494,7 +494,7 @@ tree_for_command::eval (void)
 
 	  for (Pix p = tmp_val.first (); p != 0; tmp_val.next (p))
 	    {
-	      Octave_object tmp;
+	      octave_value_list tmp;
 	      tmp (1) = tmp_val.key (p);
 	      tmp (0) = tmp_val.contents (p);
 
@@ -511,7 +511,7 @@ tree_for_command::eval (void)
 
 	  for (Pix p = tmp_val.first (); p != 0; tmp_val.next (p))
 	    {
-	      tree_constant rhs = tmp_val.contents (p);
+	      octave_value rhs = tmp_val.contents (p);
 
 	      bool quit = false;
 	      do_for_loop_once (tmp_id, rhs, quit);

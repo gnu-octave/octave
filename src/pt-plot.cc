@@ -404,7 +404,7 @@ plot_range::print (ostrstream& plot_buf)
 
   if (lower)
     {
-      tree_constant lower_val = lower->eval (false);
+      octave_value lower_val = lower->eval (false);
       if (error_state)
 	{
 	  ::error ("evaluating lower bound of plot range");
@@ -421,7 +421,7 @@ plot_range::print (ostrstream& plot_buf)
 
   if (upper)
     {
-      tree_constant upper_val = upper->eval (false);
+      octave_value upper_val = upper->eval (false);
       if (error_state)
 	{
 	  ::error ("evaluating upper bound of plot range");
@@ -472,7 +472,7 @@ subplot_using::eval (int ndim, int n_max)
     {
       if (x[i])
 	{
-	  tree_constant tmp = x[i]->eval (false);
+	  octave_value tmp = x[i]->eval (false);
 	  if (error_state)
 	    {
 	      ::error ("evaluating plot using command");
@@ -599,7 +599,7 @@ subplot_style::print (ostrstream& plot_buf)
 
       if (linetype)
 	{
-	  tree_constant tmp = linetype->eval (false);
+	  octave_value tmp = linetype->eval (false);
 	  if (! error_state && tmp.is_defined ())
 	    {
 	      double val = tmp.double_value ();
@@ -620,7 +620,7 @@ subplot_style::print (ostrstream& plot_buf)
 
       if (pointtype)
 	{
-	  tree_constant tmp = pointtype->eval (false);
+	  octave_value tmp = pointtype->eval (false);
 	  if (! error_state && tmp.is_defined ())
 	    {
 	      double val = tmp.double_value ();
@@ -678,24 +678,24 @@ subplot::~subplot (void)
   delete style_clause;
 }
 
-tree_constant
-subplot::extract_plot_data (int ndim, tree_constant& data)
+octave_value
+subplot::extract_plot_data (int ndim, octave_value& data)
 {
-  tree_constant retval;
+  octave_value retval;
 
   if (using_clause)
     {
       ColumnVector val = using_clause->values (ndim);
 
-      Octave_object args;
+      octave_value_list args;
       args(1) = val;
-      args(0) = tree_constant::magic_colon_t;
+      args(0) = octave_value::magic_colon_t;
 
-      Octave_object tmp = data.eval (0, 1, args);
+      octave_value_list tmp = data.eval (0, 1, args);
       retval = tmp(0);
 
       if (error_state)
-	return tree_constant ();
+	return octave_value ();
     }
   else
     {
@@ -710,7 +710,7 @@ subplot::extract_plot_data (int ndim, tree_constant& data)
 	{
 	  error ("plots with errorbars require 3 or 4 columns of data");
 	  error ("but %d were provided", nc);
-	  return tree_constant ();
+	  return octave_value ();
 	}
     }
 
@@ -722,7 +722,7 @@ subplot::handle_plot_data (int ndim, ostrstream& plot_buf)
 {
   if (plot_data)
     {
-      tree_constant data = plot_data->eval (false);
+      octave_value data = plot_data->eval (false);
 
       if (! error_state && data.is_defined ())
 	{
@@ -767,7 +767,7 @@ subplot::handle_plot_data (int ndim, ostrstream& plot_buf)
 	      // Eliminate the need for printing a using clause to
 	      // plot_buf.
 
-	      tree_constant tmp_data = extract_plot_data (ndim, data);
+	      octave_value tmp_data = extract_plot_data (ndim, data);
 
 	      if (tmp_data.is_defined ())
 		{
@@ -814,7 +814,7 @@ subplot::print (int ndim, ostrstream& plot_buf)
 
   if (title_clause)
     {
-      tree_constant tmp = title_clause->eval (false);
+      octave_value tmp = title_clause->eval (false);
       if (! error_state && tmp.is_string ())
 	plot_buf << " " << GNUPLOT_COMMAND_TITLE << " "
 	  << '"' << tmp.string_value () << '"';
@@ -912,7 +912,7 @@ subplot_list::print_code (ostream& os)
 }
 
 string
-save_in_tmp_file (tree_constant& t, int ndim, bool parametric)
+save_in_tmp_file (octave_value& t, int ndim, bool parametric)
 {
   string name = oct_tempnam ();
 
@@ -991,7 +991,7 @@ do_external_plotter_cd (const string& newdir)
 DEFUN (clearplot, , ,
   "clearplot (): clear the plot window")
 {
-  Octave_object retval;
+  octave_value_list retval;
   send_to_plot_stream ("clear\n");
 
   // XXX FIXME XXX -- instead of just clearing these things, it would
@@ -1017,7 +1017,7 @@ DEFALIAS (clg, clearplot);
 DEFUN (closeplot, , ,
   "closeplot (): close the stream to plotter")
 {
-  Octave_object retval;
+  octave_value_list retval;
   close_plot_stream ();
   return retval;
 }
@@ -1028,7 +1028,7 @@ DEFUN_TEXT (hold, args, ,
 determine whether the plot window is cleared before the next line is\n\
 drawn.  With no argument, toggle the current state.") 
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int argc = args.length () + 1;
 
@@ -1071,7 +1071,7 @@ Return 1 if hold is on, otherwise return 0.")
 DEFUN (purge_tmp_files, , ,
   "delete temporary data files used for plotting")
 {
-  Octave_object retval;
+  octave_value_list retval;
   cleanup_tmp_files ();
   return retval;
 }
@@ -1081,7 +1081,7 @@ DEFUN_TEXT (set, args, ,
 \n\
 set plotting options")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int argc = args.length () + 1;
 
@@ -1127,7 +1127,7 @@ DEFUN_TEXT (show, args, ,
 \n\
 show plotting options")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int argc = args.length () + 1;
 

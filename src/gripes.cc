@@ -123,19 +123,19 @@ gripe_data_conversion (const char *from, const char *to)
 }
 
 void
-gripe_wrong_type_arg (const char *name, const tree_constant& tc)
+gripe_wrong_type_arg (const char *name, const octave_value& tc)
 {
   error ("%s: wrong type argument `%s'", name, tc.type_as_string ());
 }
 
 void
-gripe_wrong_type_arg_for_unary_op (const tree_constant& op)
+gripe_wrong_type_arg_for_unary_op (const octave_value& op)
 {
   error ("invalid operand `%s' for unary operator", op.type_as_string ());
 }
 
 void
-gripe_wrong_type_arg_for_binary_op (const tree_constant& op)
+gripe_wrong_type_arg_for_binary_op (const octave_value& op)
 {
   error ("invalid operand `%s' for binary operator", op.type_as_string ());
 }

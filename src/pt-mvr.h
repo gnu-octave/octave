@@ -29,7 +29,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class ostream;
 
-class Octave_object;
+class octave_value_list;
 
 class tree_argument_list;
 class tree_identifier;
@@ -51,19 +51,19 @@ tree_oct_obj : public tree_multi_val_ret
 public:
   tree_oct_obj (int l = -1, int c = -1) : tree_multi_val_ret (l, c) { }
 
-  tree_oct_obj (const Octave_object& v, int l = -1, int c = -1)
+  tree_oct_obj (const octave_value_list& v, int l = -1, int c = -1)
     : tree_multi_val_ret (l, c), values (v) { }
 
   ~tree_oct_obj (void) { }
 
-  tree_constant eval (bool print);
+  octave_value eval (bool print);
 
-  Octave_object eval (bool print, int nargout, const Octave_object& args);
+  octave_value_list eval (bool print, int nargout, const octave_value_list& args);
 
   void print_code (ostream&) { }
 
 private:
-  Octave_object values;
+  octave_value_list values;
 };
 
 // Index expressions.
@@ -102,9 +102,9 @@ public:
 
   void mark_for_possible_ans_assign (void);
 
-  tree_constant eval (bool print);
+  octave_value eval (bool print);
 
-  Octave_object eval (bool print, int nargout, const Octave_object& args);
+  octave_value_list eval (bool print, int nargout, const octave_value_list& args);
 
   void eval_error (void);
 
@@ -134,9 +134,9 @@ tree_multi_assignment_expression : public tree_multi_val_ret
 
   ~tree_multi_assignment_expression (void);
 
-  tree_constant eval (bool print);
+  octave_value eval (bool print);
 
-  Octave_object eval (bool print, int nargout, const Octave_object& args);
+  octave_value_list eval (bool print, int nargout, const octave_value_list& args);
 
   bool is_assignment_expression (void) const
     { return true; }

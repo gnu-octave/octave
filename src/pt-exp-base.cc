@@ -44,7 +44,7 @@ tree_expression::is_logically_true (const char *warn_for)
 {
   bool expr_value = false;
 
-  tree_constant t1 = eval (false);
+  octave_value t1 = eval (false);
 
   if (! error_state)
     {
@@ -66,7 +66,7 @@ tree_expression::is_logically_true (const char *warn_for)
 	    }
 	  else if (! t1.is_scalar_type ())
 	    {
-	      tree_constant t2 = t1.all ();
+	      octave_value t2 = t1.all ();
 	      if (! error_state)
 		t1 = t2.all ();
 	    }
@@ -99,11 +99,11 @@ tree_expression::mark_for_possible_ans_assign (void)
   panic_impossible ();
 }
 
-tree_constant
+octave_value
 tree_expression::eval (bool /* print */)
 {
   panic ("invalid evaluation of generic expression");
-  return tree_constant ();
+  return octave_value ();
 }
 
 /*

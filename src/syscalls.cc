@@ -312,7 +312,7 @@ DEFUN (lstat, args, ,
   Like stat (NAME), but if NAME refers to a symbolic link, returns\n\
   information about the link itself, not the file that it points to.")
 {
-  tree_constant retval = -1.0;
+  octave_value retval = -1.0;
 
   if (args.length () == 1)
     {
@@ -323,7 +323,7 @@ DEFUN (lstat, args, ,
 	  file_stat fs (fname, false);
 
 	  if (fs)
-	    retval = tree_constant (mk_stat_map (fs));
+	    retval = octave_value (mk_stat_map (fs));
 	}
     }
   else
@@ -374,7 +374,7 @@ DEFUN (mkfifo, args, ,
 DEFUN (pipe, args, ,
   "[file_ids, status] = pipe (): create an interprocess channel")
 {
-  Octave_object retval (2, tree_constant (-1.0));
+  octave_value_list retval (2, octave_value (-1.0));
 
 #if defined (HAVE_PIPE)
   int nargin = args.length ();
@@ -434,7 +434,7 @@ DEFUN (stat, args, ,
 \n\
   If the file does not exist, -1 is returned.")
 {
-  tree_constant retval = -1.0;
+  octave_value retval = -1.0;
 
   if (args.length () == 1)
     {
@@ -445,7 +445,7 @@ DEFUN (stat, args, ,
 	  file_stat fs (fname);
 
 	  if (fs)
-	    retval = tree_constant (mk_stat_map (fs));
+	    retval = octave_value (mk_stat_map (fs));
 	}
     }
   else

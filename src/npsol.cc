@@ -53,7 +53,7 @@ npsol_objective_function (const ColumnVector& x)
 {
   int n = x.capacity ();
 
-  tree_constant decision_vars;
+  octave_value decision_vars;
   if (n > 1)
     {
       Matrix m (n, 1);
@@ -67,16 +67,16 @@ npsol_objective_function (const ColumnVector& x)
       decision_vars = d;
     }
 
-  Octave_object args;
+  octave_value_list args;
   args(0) = decision_vars;
 
   static double retval;
   retval = 0.0;
 
-  tree_constant objective_value;
+  octave_value objective_value;
   if (npsol_objective)
     {
-      Octave_object tmp = npsol_objective->eval (0, 1, args);
+      octave_value_list tmp = npsol_objective->eval (0, 1, args);
 
       if (error_state)
 	{
@@ -126,7 +126,7 @@ npsol_constraint_function (const ColumnVector& x)
 
   int n = x.capacity ();
 
-  tree_constant decision_vars;
+  octave_value decision_vars;
   if (n > 1)
     {
       Matrix m (n, 1);
@@ -140,12 +140,12 @@ npsol_constraint_function (const ColumnVector& x)
       decision_vars = d;
     }
 
-  Octave_object args;
+  octave_value_list args;
   args(0) = decision_vars;
 
   if (npsol_constraints)
     {
-      Octave_object tmp = npsol_constraints->eval (0, 1, args);
+      octave_value_list tmp = npsol_constraints->eval (0, 1, args);
 
       if (error_state)
 	{
@@ -272,7 +272,7 @@ Handle all of the following:
 
 */
 
-  Octave_object retval;
+  octave_value_list retval;
 
 #if defined (NPSOL_MISSING)
 
@@ -744,10 +744,10 @@ set_npsol_option (const string& keyword, double val)
   warning ("npsol_options: no match for `%s'", keyword.c_str ());
 }
 
-static Octave_object
+static octave_value_list
 show_npsol_option (const string& keyword)
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   NPSOL_OPTIONS *list = npsol_option_table;
 
@@ -784,7 +784,7 @@ Set or show options for npsol.  Keywords may be abbreviated\n\
 to the shortest match.")
 #endif
 {
-  Octave_object retval;
+  octave_value_list retval;
 
 #if defined (NPSOL_MISSING)
 

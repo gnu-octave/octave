@@ -61,7 +61,7 @@ where OPT is an optional single character argument as follows: \n\
 \n\
 [CC, DD, AA, BB] = balance (A, B, OPT) returns AA (BB) = CC*A*DD (CC*B*DD)")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
@@ -88,7 +88,7 @@ where OPT is an optional single character argument as follows: \n\
       my_nargin = nargin;
     }
 
-  tree_constant arg_a = args(0);
+  octave_value arg_a = args(0);
 
   int a_nr = arg_a.rows ();
   int a_nc = arg_a.columns ();
@@ -100,7 +100,7 @@ where OPT is an optional single character argument as follows: \n\
   if (arg_is_empty < 0)
     return retval;
   if (arg_is_empty > 0)
-    return Octave_object (2, Matrix ());
+    return octave_value_list (2, Matrix ());
 
   if (a_nr != a_nc)
     {
@@ -160,7 +160,7 @@ where OPT is an optional single character argument as follows: \n\
 
 	// 1st we have to check argument 2 dimensions and type...
 
-	tree_constant arg_b = args(1);
+	octave_value arg_b = args(1);
 
 	int b_nr = arg_b.rows ();
 	int b_nc = arg_b.columns ();

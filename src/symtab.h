@@ -42,7 +42,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class tree;
 class tree_fvc;
 class tree_builtin;
-class tree_constant;
+class octave_value;
 class tree_function;
 
 class string_vector;
@@ -62,7 +62,7 @@ class symbol_def
 public:
 
   symbol_def (void);
-  symbol_def (tree_constant *t);
+  symbol_def (octave_value *t);
   symbol_def (tree_builtin *t, unsigned fcn_type = 0);
   symbol_def (tree_function *t, unsigned fcn_type = 0);
 
@@ -77,7 +77,7 @@ public:
   int is_builtin_variable (void) const;
   int is_builtin_function (void) const;
 
-  void define (tree_constant *t);
+  void define (octave_value *t);
   void define (tree_builtin *t, unsigned fcn_type = 0);
   void define (tree_function *t, unsigned fcn_type = 0);
 
@@ -159,11 +159,11 @@ public:
 
   void set_sv_function (sv_Function f);
 
-  int define (tree_constant *t);
+  int define (octave_value *t);
   int define (tree_builtin *t, int text_fcn = 0);
   int define (tree_function *t, int text_fcn = 0);
-  int define_as_fcn (tree_constant *t);
-  int define_builtin_var (tree_constant *t);
+  int define_as_fcn (octave_value *t);
+  int define_builtin_var (octave_value *t);
 
   void document (const string& h);
 

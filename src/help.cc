@@ -677,7 +677,7 @@ DEFUN_TEXT (help, args, ,
 print cryptic yet witty messages")
 #endif
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int argc = args.length () + 1;
 
@@ -710,7 +710,7 @@ DEFUN_TEXT (type, args, nargout,
 \n\
 display the definition of each NAME that refers to a function")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   begin_unwind_frame ("Ftype");
 
@@ -782,14 +782,14 @@ display the definition of each NAME that refers to a function")
 
 		  assert (defn && defn->is_constant ());
 
-		  tree_constant *tmp = (tree_constant *) defn;
+		  octave_value *tmp = (octave_value *) defn;
 
 		  int var_ok = 1;
 		  if (tmp && tmp->is_map ())
 		    {
 		      if (! elts.empty ())
 			{
-			  tree_constant ult =
+			  octave_value ult =
 			    tmp->lookup_map_element (elts, 0, 1);
 
 			  if (! ult.is_defined ())
@@ -857,7 +857,7 @@ DEFUN_TEXT (which, args, nargout,
 display the type of each NAME.  If NAME is defined from an function\n\
 file, print the full name of the file.")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int argc = args.length () + 1;
 

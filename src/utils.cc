@@ -337,7 +337,7 @@ search_path_for_file (const string& path, const string& name)
 DEFUN (file_in_path, args, ,
   "file_in_path (PATH, NAME)")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int argc = args.length () + 1;
 
@@ -477,7 +477,7 @@ undo_string_escapes (const string& s)
 DEFUN (undo_string_escapes, args, ,
   "undo_string_escapes (STRING)")
 {
-  tree_constant retval;
+  octave_value retval;
 
   int nargin = args.length ();
 

@@ -25,7 +25,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <cstdio>
 
-class tree_constant;
+class octave_value;
 class tree_function;
 class tree_statement_list;
 class charMatrix;
@@ -40,7 +40,7 @@ extern void parse_and_execute (const string& s, int print = 0,
 			       int verbose = 0,
 			       const char *warn_for = 0);
 
-extern tree_constant eval_string (const string&, int print,
+extern octave_value eval_string (const string&, int print,
 				  int& parse_status);
 
 extern int main_loop (void);

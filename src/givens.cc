@@ -39,7 +39,7 @@ such that G [x; y] = [*; 0]  (x, y scalars)\n\
 \n\
 [c, s] = givens (x, y) returns the (c, s) values themselves.")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 

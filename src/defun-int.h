@@ -75,7 +75,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   }
 
 #define DECLARE_FUN(name, args_name, nargout_name) \
-  Octave_object F ## name (const Octave_object& args_name, int nargout_name)
+  octave_value_list F ## name (const octave_value_list& args_name, int nargout_name)
 
 #endif
 

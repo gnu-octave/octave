@@ -38,80 +38,80 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt-const.h"
 
 class
-Octave_object : public Array<tree_constant>
+octave_value_list : public Array<octave_value>
 {
 public:
 
-  Octave_object (void)
-    : Array<tree_constant> () { }
+  octave_value_list (void)
+    : Array<octave_value> () { }
 
-  Octave_object (int n, const tree_constant& val)
-    : Array<tree_constant> (n, val) { }
+  octave_value_list (int n, const octave_value& val)
+    : Array<octave_value> (n, val) { }
 
-  Octave_object (const tree_constant& tc)
-    : Array<tree_constant> (1, tc) { }
+  octave_value_list (const octave_value& tc)
+    : Array<octave_value> (1, tc) { }
 
-  Octave_object (double d)
-    : Array<tree_constant> (1, tree_constant (d)) { }
+  octave_value_list (double d)
+    : Array<octave_value> (1, octave_value (d)) { }
 
-  Octave_object (const Matrix& m)
-    : Array<tree_constant> (1, tree_constant (m)) { }
+  octave_value_list (const Matrix& m)
+    : Array<octave_value> (1, octave_value (m)) { }
 
-  Octave_object (const DiagMatrix& d)
-    : Array<tree_constant> (1, tree_constant (d)) { }
+  octave_value_list (const DiagMatrix& d)
+    : Array<octave_value> (1, octave_value (d)) { }
 
-  Octave_object (const RowVector& v, int pcv)
-    : Array<tree_constant> (1, tree_constant (v, pcv)) { }
+  octave_value_list (const RowVector& v, int pcv)
+    : Array<octave_value> (1, octave_value (v, pcv)) { }
 
-  Octave_object (const ColumnVector& v, int pcv)
-    : Array<tree_constant> (1, tree_constant (v, pcv)) { }
+  octave_value_list (const ColumnVector& v, int pcv)
+    : Array<octave_value> (1, octave_value (v, pcv)) { }
 
-  Octave_object (const Complex& c)
-    : Array<tree_constant> (1, tree_constant (c)) { }
+  octave_value_list (const Complex& c)
+    : Array<octave_value> (1, octave_value (c)) { }
 
-  Octave_object (const ComplexMatrix& m)
-    : Array<tree_constant> (1, tree_constant (m)) { }
+  octave_value_list (const ComplexMatrix& m)
+    : Array<octave_value> (1, octave_value (m)) { }
 
-  Octave_object (const ComplexDiagMatrix& d)
-    : Array<tree_constant> (1, tree_constant (d)) { }
+  octave_value_list (const ComplexDiagMatrix& d)
+    : Array<octave_value> (1, octave_value (d)) { }
 
-  Octave_object (const ComplexRowVector& v, int pcv)
-    : Array<tree_constant> (1, tree_constant (v, pcv)) { }
+  octave_value_list (const ComplexRowVector& v, int pcv)
+    : Array<octave_value> (1, octave_value (v, pcv)) { }
 
-  Octave_object (const ComplexColumnVector& v, int pcv)
-    : Array<tree_constant> (1, tree_constant (v, pcv)) { }
+  octave_value_list (const ComplexColumnVector& v, int pcv)
+    : Array<octave_value> (1, octave_value (v, pcv)) { }
 
-  Octave_object (const char *s)
-    : Array<tree_constant> (1, tree_constant (s)) { }
+  octave_value_list (const char *s)
+    : Array<octave_value> (1, octave_value (s)) { }
 
-  Octave_object (const string& s)
-    : Array<tree_constant> (1, tree_constant (s)) { }
+  octave_value_list (const string& s)
+    : Array<octave_value> (1, octave_value (s)) { }
 
-  Octave_object (const string_vector& s)
-    : Array<tree_constant> (1, tree_constant (s)) { }
+  octave_value_list (const string_vector& s)
+    : Array<octave_value> (1, octave_value (s)) { }
 
-  Octave_object (double base, double limit, double inc)
-    : Array<tree_constant> (1, tree_constant (base, limit, inc)) { }
+  octave_value_list (double base, double limit, double inc)
+    : Array<octave_value> (1, octave_value (base, limit, inc)) { }
 
-  Octave_object (const Range& r)
-    : Array<tree_constant> (1, tree_constant (r)) { }
+  octave_value_list (const Range& r)
+    : Array<octave_value> (1, octave_value (r)) { }
 
-  Octave_object (const Octave_object& obj)
-    : Array<tree_constant> (obj) { }
+  octave_value_list (const octave_value_list& obj)
+    : Array<octave_value> (obj) { }
 
-  Octave_object& operator = (const Octave_object& obj)
+  octave_value_list& operator = (const octave_value_list& obj)
     {
       if (this != &obj)
-	Array<tree_constant>::operator = (obj);
+	Array<octave_value>::operator = (obj);
 
       return *this;
     }
 
 // Assignment will resize on range errors.
 
-  tree_constant& operator () (int n) { return elem (n); }
+  octave_value& operator () (int n) { return elem (n); }
 
-  tree_constant operator () (int n) const { return elem (n); }
+  octave_value operator () (int n) const { return elem (n); }
 
   int all_strings (void) const;
 
@@ -122,17 +122,17 @@ private:
 // This constructor is private with no definition to keep statements
 // like
 //
-//   Octave_object foo = 5;
-//   Octave_object foo = 5.0;
+//   octave_value_list foo = 5;
+//   octave_value_list foo = 5.0;
 //
 // from doing different things.  Instead, you have to use the
 // constructor
 //
-//   Octave_object (n, val);
+//   octave_value_list (n, val);
 //
-// and supply a default value to create a vector-valued Octave_object.
+// and supply a default value to create a vector-valued octave_value_list.
 
-  Octave_object (int n);
+  octave_value_list (int n);
 
   void maybe_resize (int n)
     {
@@ -140,22 +140,22 @@ private:
 	resize (n + 1, Matrix ());
     }
 
-  tree_constant& elem (int n)
+  octave_value& elem (int n)
     {
       maybe_resize (n);
-      return Array<tree_constant>::elem (n);
+      return Array<octave_value>::elem (n);
     }
 
-  tree_constant& checkelem (int n);
+  octave_value& checkelem (int n);
 
-  tree_constant& xelem (int n);
+  octave_value& xelem (int n);
 
-  tree_constant elem (int n) const
+  octave_value elem (int n) const
     {
-      return Array<tree_constant>::operator () (n);
+      return Array<octave_value>::operator () (n);
     }
 
-  tree_constant checkelem (int n) const;
+  octave_value checkelem (int n) const;
 };
 
 #endif

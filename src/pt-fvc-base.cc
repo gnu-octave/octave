@@ -39,11 +39,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // A base class for objects that can be evaluated with argument lists.
 
-tree_constant
-tree_fvc::assign (tree_constant&, const Octave_object&)
+octave_value
+tree_fvc::assign (octave_value&, const octave_value_list&)
 {
   panic_impossible ();
-  return tree_constant ();
+  return octave_value ();
 }
 
 string
@@ -60,10 +60,10 @@ tree_fvc::bump_value (tree_expression::type)
   panic_impossible ();
 }
 
-tree_constant
+octave_value
 tree_fvc::lookup_map_element (SLList<string>&, bool, bool)
 {
-  static tree_constant retval;
+  static octave_value retval;
 
   int l = line ();
   int c = column ();

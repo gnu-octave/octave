@@ -30,7 +30,7 @@ class ostrstream;
 
 #include "lo-utils.h"
 
-class Octave_object;
+class octave_value_list;
 class string_vector;
 
 extern char *strsave (const char *);

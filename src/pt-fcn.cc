@@ -65,12 +65,12 @@ tree_function::install_nargin_and_nargout (void)
 void
 tree_function::bind_nargin_and_nargout (int nargin, int nargout)
 {
-  tree_constant *tmp;
+  octave_value *tmp;
 
-  tmp = new tree_constant (nargin);
+  tmp = new octave_value (nargin);
   nargin_sr->define (tmp);
 
-  tmp = new tree_constant (nargout);
+  tmp = new octave_value (nargout);
   nargout_sr->define (tmp);
 }
 
@@ -157,10 +157,10 @@ tree_function::takes_varargs (void) const
   return (param_list && param_list->takes_varargs ());
 }
 
-tree_constant
+octave_value
 tree_function::octave_va_arg (void)
 {
-  tree_constant retval;
+  octave_value retval;
 
   if (curr_va_arg_number < num_args_passed)
     retval = args_passed (curr_va_arg_number++);
@@ -171,10 +171,10 @@ tree_function::octave_va_arg (void)
   return retval;
 }
 
-Octave_object
+octave_value_list
 tree_function::octave_all_va_args (void)
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   retval.resize (num_args_passed - num_named_args);
 
@@ -192,7 +192,7 @@ tree_function::takes_var_return (void) const
 }
 
 void
-tree_function::octave_vr_val (const tree_constant& val)
+tree_function::octave_vr_val (const octave_value& val)
 {
   assert (vr_list);
 
@@ -205,16 +205,16 @@ tree_function::stash_function_name (const string& s)
   fcn_name = s;
 }
 
-tree_constant
+octave_value
 tree_function::eval (bool print)
 {
-  tree_constant retval;
+  octave_value retval;
 
   if (error_state || ! cmd_list)
     return retval;
 
-  Octave_object tmp_args;
-  Octave_object tmp = eval (print, 0, tmp_args);
+  octave_value_list tmp_args;
+  octave_value_list tmp = eval (print, 0, tmp_args);
 
   if (! error_state && tmp.length () > 0)
     retval = tmp(0);
@@ -246,10 +246,10 @@ clear_symbol_table (void *table)
   tmp->clear ();
 }
 
-Octave_object
-tree_function::eval (bool /* print */, int nargout, const Octave_object& args)
+octave_value_list
+tree_function::eval (bool /* print */, int nargout, const octave_value_list& args)
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   if (error_state)
     return retval;
@@ -333,7 +333,7 @@ tree_function::eval (bool /* print */, int nargout, const Octave_object& args)
     // Evaluate the commands that make up the function.
 
     bool pf = ! user_pref.silent_functions;
-    tree_constant last_computed_value = cmd_list->eval (pf);
+    octave_value last_computed_value = cmd_list->eval (pf);
 
     if (echo_commands)
       print_code_function_trailer ();
@@ -356,7 +356,7 @@ tree_function::eval (bool /* print */, int nargout, const Octave_object& args)
       {
 	if (nargout > 0 && user_pref.define_all_return_values)
 	  {
-	    tree_constant tmp = builtin_any_variable ("default_return_value");
+	    octave_value tmp = builtin_any_variable ("default_return_value");
 	    if (tmp.is_defined ())
 	      ret_list->initialize_undefined_elements (tmp);
 	  }
@@ -490,7 +490,7 @@ DEFUN (va_arg, args, ,
   "va_arg (): return next argument in a function that takes a\n\
 variable number of parameters")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
@@ -519,7 +519,7 @@ DEFUN (va_start, args, ,
   "va_start (): reset the pointer to the list of optional arguments\n\
 to the beginning")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
@@ -548,7 +548,7 @@ DEFUN (vr_val, args, ,
   "vr_val (X): append X to the list of optional return values for a
 function that allows a variable number of return values")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 

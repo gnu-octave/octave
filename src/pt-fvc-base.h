@@ -35,8 +35,8 @@ class ostream;
 
 #include <SLList.h>
 
-class tree_constant;
-class Octave_object;
+class octave_value;
+class octave_value_list;
 
 #include "pt-mvr-base.h"
 
@@ -50,14 +50,14 @@ public:
 
   ~tree_fvc (void) { }
 
-  virtual tree_constant assign (tree_constant& t,
-				const Octave_object& args);
+  virtual octave_value assign (octave_value& t,
+				const octave_value_list& args);
 
   virtual string name (void) const;
 
   virtual void bump_value (tree_expression::type);
 
-  virtual tree_constant lookup_map_element (SLList<string>& list,
+  virtual octave_value lookup_map_element (SLList<string>& list,
 					    bool insert = false,
 					    bool silent = false);
 

@@ -150,10 +150,10 @@ do_initialization (void)
   initialized = 1;
 }
 
-static Octave_object
-do_rand (const Octave_object& args, int nargin)
+static octave_value_list
+do_rand (const octave_value_list& args, int nargin)
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int n = 0;
   int m = 0;
@@ -167,7 +167,7 @@ do_rand (const Octave_object& args, int nargin)
     }
   else if (nargin == 1)
     {
-      tree_constant tmp = args(0);
+      octave_value tmp = args(0);
 
       if (tmp.is_string ())
 	{
@@ -341,7 +341,7 @@ rand (SEED, N)  -- set seed\n\
 \n\
 See also: randn")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
@@ -375,7 +375,7 @@ randn (SEED, N)  -- set seed\n\
 \n\
 See also: rand")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 

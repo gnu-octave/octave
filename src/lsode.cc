@@ -51,7 +51,7 @@ lsode_user_function (const ColumnVector& x, double t)
 
   int nstates = x.capacity ();
 
-  Octave_object args;
+  octave_value_list args;
   args(1) = t;
 
   if (nstates > 1)
@@ -59,19 +59,19 @@ lsode_user_function (const ColumnVector& x, double t)
       Matrix m (nstates, 1);
       for (int i = 0; i < nstates; i++)
 	m (i, 0) = x.elem (i);
-      tree_constant state (m);
+      octave_value state (m);
       args(0) = state;
     }
   else
     {
       double d = x.elem (0);
-      tree_constant state (d);
+      octave_value state (d);
       args(0) = state;
     }
 
   if (lsode_fcn)
     {
-      Octave_object tmp = lsode_fcn->eval (0, 1, args);
+      octave_value_list tmp = lsode_fcn->eval (0, 1, args);
 
       if (error_state)
 	{
@@ -103,7 +103,7 @@ compute the vector of right hand sides.  It must have the form\n\
 \n\
 where xdot and x are vectors and t is a scalar.\n")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 
@@ -275,10 +275,10 @@ set_lsode_option (const string& keyword, double val)
   warning ("lsode_options: no match for `%s'", keyword.c_str ());
 }
 
-static Octave_object
+static octave_value_list
 show_lsode_option (const string& keyword)
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   LSODE_OPTIONS *list = lsode_option_table;
 
@@ -303,7 +303,7 @@ DEFUN_DLD_BUILTIN (lsode_options, args, ,
 Set or show options for lsode.  Keywords may be abbreviated\n\
 to the shortest match.")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin = args.length ();
 

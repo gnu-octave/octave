@@ -23,7 +23,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_gripes_h)
 #define octave_gripes_h 1
 
-class tree_constant;
+class octave_value;
 
 extern void gripe_not_supported (void);
 extern void gripe_string_invalid (void);
@@ -40,9 +40,9 @@ extern void gripe_2_or_3_dim_plot (void);
 extern void gripe_unrecognized_float_fmt (void);
 extern void gripe_unrecognized_data_fmt (const char *warn_for);
 extern void gripe_data_conversion (const char *from, const char *to);
-extern void gripe_wrong_type_arg (const char *name, const tree_constant& tc);
-extern void gripe_wrong_type_arg_for_unary_op (const tree_constant& op);
-extern void gripe_wrong_type_arg_for_binary_op (const tree_constant& op);
+extern void gripe_wrong_type_arg (const char *name, const octave_value& tc);
+extern void gripe_wrong_type_arg_for_unary_op (const octave_value& op);
+extern void gripe_wrong_type_arg_for_binary_op (const octave_value& op);
 
 #endif
 

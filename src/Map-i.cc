@@ -20,7 +20,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-// Instantiate Maps of tree_constants.
+// Instantiate Maps of octave_values.
 
 #include "Map.h"
 #include "Map.cc"

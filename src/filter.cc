@@ -166,7 +166,7 @@ zeros.\n\
 The particular algorithm employed is known as a transposed Direct Form II\n\
 implementation.")
 {
-  Octave_object retval;
+  octave_value_list retval;
 
   int nargin  = args.length ();
 
@@ -199,7 +199,7 @@ implementation.")
 	      ComplexColumnVector y (filter (b, a, x));
 
 	      if (x_is_vector)
-		retval (0) = tree_constant (y, (args(2).columns () == 1));
+		retval (0) = octave_value (y, (args(2).columns () == 1));
 	      else
 		retval (0) = y;
 	    }
@@ -212,12 +212,12 @@ implementation.")
 		  ComplexColumnVector y (filter (b, a, x, si));
 
 		  if (si_is_vector)
-		    retval (1) = tree_constant (si, (args(3).columns () == 1));
+		    retval (1) = octave_value (si, (args(3).columns () == 1));
 		  else
 		    retval (1) = si;
 
 		  if (x_is_vector)
-		    retval (0) = tree_constant (y, (args(2).columns () == 1));
+		    retval (0) = octave_value (y, (args(2).columns () == 1));
 		  else
 		    retval (0) = y;
 		}
@@ -241,7 +241,7 @@ implementation.")
 	      ColumnVector y (filter (b, a, x));
 
 	      if (x_is_vector)
-		retval (0) = tree_constant (y, (args(2).columns () == 1));
+		retval (0) = octave_value (y, (args(2).columns () == 1));
 	      else
 		retval (0) = y;
 	    }
@@ -254,12 +254,12 @@ implementation.")
 		  ColumnVector y (filter (b, a, x, si));
 
 		  if (si_is_vector)
-		    retval (1) = tree_constant (si, (args(3).columns () == 1));
+		    retval (1) = octave_value (si, (args(3).columns () == 1));
 		  else
 		    retval (1) = si;
 
 		  if (x_is_vector)
-		    retval (0) = tree_constant (y, (args(2).columns () == 1));
+		    retval (0) = octave_value (y, (args(2).columns () == 1));
 		  else
 		    retval (0) = y;
 		}

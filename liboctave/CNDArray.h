@@ -89,6 +89,11 @@ public:
   ComplexNDArray sumsq (int dim = -1) const;
   int cat (const ComplexNDArray& ra_arg, int dim, int iidx, int move);
 
+  ComplexNDArray max (int dim = 0) const;
+  ComplexNDArray max (ArrayN<int>& index, int dim = 0) const;
+  ComplexNDArray min (int dim = 0) const;
+  ComplexNDArray min (ArrayN<int>& index, int dim = 0) const;
+
   ComplexNDArray& insert (const NDArray& a, int r, int c);
   ComplexNDArray& insert (const ComplexNDArray& a, int r, int c);
   
@@ -129,6 +134,14 @@ private:
   ComplexNDArray (Complex *d, const dim_vector& dv)
     : MArrayN<Complex> (d, dv) { }
 };
+
+extern ComplexNDArray min (const Complex& c, const ComplexNDArray& m);
+extern ComplexNDArray min (const ComplexNDArray& m, const Complex& c);
+extern ComplexNDArray min (const ComplexNDArray& a, const ComplexNDArray& b);
+
+extern ComplexNDArray max (const Complex& c, const ComplexNDArray& m);
+extern ComplexNDArray max (const ComplexNDArray& m, const Complex& c);
+extern ComplexNDArray max (const ComplexNDArray& a, const ComplexNDArray& b);
 
 NDS_CMP_OP_DECLS (ComplexNDArray, Complex)
 NDS_BOOL_OP_DECLS (ComplexNDArray, Complex)

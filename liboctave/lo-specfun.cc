@@ -29,6 +29,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "CMatrix.h"
 #include "dRowVector.h"
 #include "dMatrix.h"
+#include "dNDArray.h"
+#include "CNDArray.h"
 #include "f77-fcn.h"
 #include "lo-error.h"
 #include "lo-ieee.h"
@@ -607,6 +609,62 @@ do_bessel (fptr f, const char *fn, const Matrix& alpha,
   return retval;
 }
 
+static inline ComplexNDArray
+do_bessel (fptr f, const char *, double alpha, const ComplexNDArray& x,
+	   bool scaled, ArrayN<int>& ierr)
+{
+  dim_vector dv = x.dims ();
+  int nel = dv.numel ();
+  ComplexNDArray retval (dv);
+
+  ierr.resize (dv);
+
+  for (int i = 0; i < nel; i++)
+      retval(i) = f (x(i), alpha, (scaled ? 2 : 1), ierr(i));
+
+  return retval;
+}
+
+static inline ComplexNDArray
+do_bessel (fptr f, const char *, const NDArray& alpha, const Complex& x,
+	   bool scaled, ArrayN<int>& ierr)
+{
+  dim_vector dv = alpha.dims ();
+  int nel = dv.numel ();
+  ComplexNDArray retval (dv);
+
+  ierr.resize (dv);
+
+  for (int i = 0; i < nel; i++)
+    retval(i) = f (x, alpha(i), (scaled ? 2 : 1), ierr(i));
+
+  return retval;
+}
+
+static inline ComplexNDArray
+do_bessel (fptr f, const char *fn, const NDArray& alpha,
+	   const ComplexNDArray& x, bool scaled, ArrayN<int>& ierr)
+{
+  dim_vector dv = x.dims ();
+  ComplexNDArray retval;
+
+  if (dv == alpha.dims ())
+    {
+      int nel = dv.numel ();
+
+      retval.resize (dv);
+      ierr.resize (dv);
+
+      for (int i = 0; i < nel; i++)
+	retval(i) = f (x(i), alpha(i), (scaled ? 2 : 1), ierr(i));
+    }
+  else
+    (*current_liboctave_error_handler)
+      ("%s: the sizes of alpha and x must conform", fn);
+
+  return retval;
+}
+
 static inline ComplexMatrix
 do_bessel (fptr f, const char *, const RowVector& alpha,
 	   const ComplexColumnVector& x, bool scaled, Array2<int>& ierr)
@@ -656,6 +714,30 @@ do_bessel (fptr f, const char *, const RowVector& alpha,
     return do_bessel (fcn, #name, alpha, x, scaled, ierr); \
   }
 
+#define SN_BESSEL(name, fcn) \
+  ComplexNDArray \
+  name (double alpha, const ComplexNDArray& x, bool scaled, \
+	ArrayN<int>& ierr) \
+  { \
+    return do_bessel (fcn, #name, alpha, x, scaled, ierr); \
+  }
+
+#define NS_BESSEL(name, fcn) \
+  ComplexNDArray \
+  name (const NDArray& alpha, const Complex& x, bool scaled, \
+	ArrayN<int>& ierr) \
+  { \
+    return do_bessel (fcn, #name, alpha, x, scaled, ierr); \
+  }
+
+#define NN_BESSEL(name, fcn) \
+  ComplexNDArray \
+  name (const NDArray& alpha, const ComplexNDArray& x, bool scaled, \
+	ArrayN<int>& ierr) \
+  { \
+    return do_bessel (fcn, #name, alpha, x, scaled, ierr); \
+  }
+
 #define RC_BESSEL(name, fcn) \
   ComplexMatrix \
   name (const RowVector& alpha, const ComplexColumnVector& x, bool scaled, \
@@ -669,6 +751,9 @@ do_bessel (fptr f, const char *, const RowVector& alpha,
   SM_BESSEL (name, fcn) \
   MS_BESSEL (name, fcn) \
   MM_BESSEL (name, fcn) \
+  SN_BESSEL (name, fcn) \
+  NS_BESSEL (name, fcn) \
+  NN_BESSEL (name, fcn) \
   RC_BESSEL (name, fcn)
 
 ALL_BESSEL (besselj, zbesj)
@@ -778,6 +863,36 @@ biry (const ComplexMatrix& z, bool deriv, bool scaled, Array2<int>& ierr)
   return retval;
 }
 
+ComplexNDArray
+airy (const ComplexNDArray& z, bool deriv, bool scaled, ArrayN<int>& ierr)
+{
+  dim_vector dv = z.dims ();
+  int nel = dv.numel ();
+  ComplexNDArray retval (dv);
+
+  ierr.resize (dv);
+
+  for (int i = 0; i < nel; i++)
+    retval (i) = airy (z(i), deriv, scaled, ierr(i));
+
+  return retval;
+}
+
+ComplexNDArray
+biry (const ComplexNDArray& z, bool deriv, bool scaled, ArrayN<int>& ierr)
+{
+  dim_vector dv = z.dims ();
+  int nel = dv.numel ();
+  ComplexNDArray retval (dv);
+
+  ierr.resize (dv);
+
+  for (int i = 0; i < nel; i++)
+    retval (i) = biry (z(i), deriv, scaled, ierr(i));
+
+  return retval;
+}
+
 static void
 gripe_betainc_nonconformant (int r1, int c1, int r2, int c2, int r3,
 			     int c3)
@@ -785,6 +900,21 @@ gripe_betainc_nonconformant (int r1, int c1, int r2, int c2, int r3,
   (*current_liboctave_error_handler)
    ("betainc: nonconformant arguments (x is %dx%d, a is %dx%d, b is %dx%d)",
      r1, c1, r2, c2, r3, c3);
+}
+
+static dim_vector null_dims (0);
+
+static void
+gripe_betainc_nonconformant (const dim_vector& d1, const dim_vector& d2,
+			     const dim_vector& d3)
+{
+  std::string d1_str = d1.str ();
+  std::string d2_str = d2.str ();
+  std::string d3_str = d3.str ();
+
+  (*current_liboctave_error_handler)
+  ("betainc: nonconformant arguments (x is %s, a is %s, b is %s)",
+   d1_str.c_str (), d2_str.c_str (), d3_str.c_str ());
 }
 
 double
@@ -849,6 +979,56 @@ betainc (double x, const Matrix& a, const Matrix& b)
 
   return retval;
 }
+
+NDArray
+betainc (double x, double a, const NDArray& b)
+{
+  dim_vector dv = b.dims ();
+  int nel = dv.numel ();
+
+  NDArray retval (dv);
+
+  for (int i = 0; i < nel; i++)
+    retval (i) = betainc (x, a, b(i));
+
+  return retval;
+}
+
+NDArray
+betainc (double x, const NDArray& a, double b)
+{
+  dim_vector dv = a.dims ();
+  int nel = dv.numel ();
+
+  NDArray retval (dv);
+
+  for (int i = 0; i < nel; i++)
+    retval (i) = betainc (x, a(i), b);
+
+  return retval;
+}
+
+NDArray
+betainc (double x, const NDArray& a, const NDArray& b)
+{
+  NDArray retval;
+  dim_vector dv = a.dims ();
+
+  if (dv == b.dims ())
+    {
+      int nel = dv.numel ();
+
+      retval.resize (dv);
+
+      for (int i = 0; i < nel; i++)
+	retval (i) = betainc (x, a(i), b(i));
+    }
+  else
+    gripe_betainc_nonconformant (dim_vector (0), dv, b.dims ());
+  
+  return retval;
+}
+
 
 Matrix
 betainc (const Matrix& x, double a, double b)
@@ -939,6 +1119,83 @@ betainc (const Matrix& x, const Matrix& a, const Matrix& b)
     }
   else
     gripe_betainc_nonconformant (nr, nc, a_nr, a_nc, b_nr, b_nc);
+
+  return retval;
+}
+
+NDArray
+betainc (const NDArray& x, double a, double b)
+{
+  dim_vector dv = x.dims ();
+  int nel = dv.numel ();
+
+  NDArray retval (dv);
+
+  for (int i = 0; i < nel; i++)
+    retval (i) = betainc (x(i), a, b);
+
+  return retval;
+}
+
+NDArray
+betainc (const NDArray& x, double a, const NDArray& b)
+{
+  NDArray retval;
+  dim_vector dv = x.dims ();
+
+  if (dv == b.dims ())
+    {
+      int nel = dv.numel ();
+
+      retval.resize (dv);
+
+      for (int i = 0; i < nel; i++)
+	retval (i) = betainc (x(i), a, b(i));
+    }
+  else
+    gripe_betainc_nonconformant (dv, dim_vector (0), b.dims ());
+  
+  return retval;
+}
+
+NDArray
+betainc (const NDArray& x, const NDArray& a, double b)
+{
+  NDArray retval;
+  dim_vector dv = x.dims ();
+
+  if (dv == a.dims ())
+    {
+      int nel = dv.numel ();
+
+      retval.resize (dv);
+
+      for (int i = 0; i < nel; i++)
+	retval (i) = betainc (x(i), a(i), b);
+    }
+  else
+    gripe_betainc_nonconformant (dv, a.dims (), dim_vector (0));
+  
+  return retval;
+}
+
+NDArray
+betainc (const NDArray& x, const NDArray& a, const NDArray& b)
+{
+  NDArray retval;
+  dim_vector dv = x.dims ();
+
+  if (dv == a.dims () && dv == b.dims ())
+    {
+      int nel = dv.numel ();
+
+      retval.resize (dv);
+
+      for (int i = 0; i < nel; i++)
+	retval (i) = betainc (x(i), a(i), b(i));
+    }
+  else
+    gripe_betainc_nonconformant (dv, a.dims (), b.dims ());
 
   return retval;
 }
@@ -1052,6 +1309,98 @@ gammainc (const Matrix& x, const Matrix& a)
     (*current_liboctave_error_handler)
       ("gammainc: nonconformant arguments (arg 1 is %dx%d, arg 2 is %dx%d)",
        nr, nc, a_nr, a_nc);
+
+ done:
+
+  return retval;
+}
+
+NDArray
+gammainc (double x, const NDArray& a)
+{
+  dim_vector dv = a.dims ();
+  int nel = dv.numel ();
+
+  NDArray retval;
+  NDArray result (dv);
+
+  bool err;
+
+  for (int i = 0; i < nel; i++)
+    {
+      result (i) = gammainc (x, a(i), err);
+
+      if (err)
+	goto done;
+    }
+
+  retval = result;
+
+ done:
+
+  return retval;
+}
+
+NDArray
+gammainc (const NDArray& x, double a)
+{
+  dim_vector dv = x.dims ();
+  int nel = dv.numel ();
+
+  NDArray retval;
+  NDArray result (dv);
+
+  bool err;
+
+  for (int i = 0; i < nel; i++)
+    {
+      result (i) = gammainc (x(i), a, err);
+
+      if (err)
+	goto done;
+    }
+
+  retval = result;
+
+ done:
+
+  return retval;
+}
+
+NDArray
+gammainc (const NDArray& x, const NDArray& a)
+{
+  dim_vector dv = x.dims ();
+  int nel = dv.numel ();
+
+  NDArray retval;
+  NDArray result;
+
+  if (dv == a.dims ())
+    {
+      result.resize (dv);
+
+      bool err;
+
+      for (int i = 0; i < nel; i++)
+	{
+	  result (i) = gammainc (x(i), a(i), err);
+	  
+	  if (err)
+	    goto done;
+	}
+
+      retval = result;
+    }
+  else
+    {
+      std::string x_str = dv.str ();
+      std::string a_str = a.dims ().str ();
+
+      (*current_liboctave_error_handler)
+	("gammainc: nonconformant arguments (arg 1 is %s, arg 2 is %s)",
+	 x_str.c_str (), a_str. c_str ());
+    }
 
  done:
 

@@ -39,34 +39,28 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-obj.h"
 
 #if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
-extern MArray<double>
-filter (MArray<double>&, MArray<double>&, MArray<double>&);
+extern MArrayN<double>
+filter (MArray<double>&, MArray<double>&, MArrayN<double>&, int dim);
 
-extern MArray<Complex>
-filter (MArray<Complex>&, MArray<Complex>&, MArray<Complex>&);
+extern MArrayN<Complex>
+filter (MArray<Complex>&, MArray<Complex>&, MArrayN<Complex>&, int dim);
 #endif
 
 template <class T>
-MArray<T>
-filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si)
+MArrayN<T>
+filter (MArray<T>& b, MArray<T>& a, MArrayN<T>& x, MArrayN<T>& si, 
+	int dim = 0)
 {
-  MArray<T> y;
+  MArrayN<T> y;
 
   int a_len  = a.length ();
   int b_len  = b.length ();
-  int x_len  = x.length ();
-
-  int si_len = si.length ();
 
   int ab_len = a_len > b_len ? a_len : b_len;
 
   b.resize (ab_len, 0.0);
-
-  if (si.length () != ab_len - 1)
-    {
-      error ("filter: si must be a vector of length max (length (a), length (b)) - 1");
-      return y;
-    }
+  if (a_len > 1)
+    a.resize (ab_len, 0.0);
 
   T norm = a (0);
 
@@ -76,95 +70,183 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si)
       return y;
     }
 
-  y.resize (x_len, 0.0);
+  dim_vector x_dims = x.dims ();
+  if ((dim < 0) || (dim > x_dims.length ()))
+    {
+      error ("filter: filtering over invalid dimension");
+      return y;
+    }
+
+  int x_len = x_dims (dim);
+
+  dim_vector si_dims = si.dims ();
+  int si_len = si_dims (0);
+
+  if (si_len != ab_len - 1)
+    {
+      error ("filter: first dimension of si must be of length max (length (a), length (b)) - 1");
+      return y;
+    }
+
+  if (si_dims.length () != x_dims.length ())
+    {
+      error ("filter: dimensionality of si and x must agree");
+      return y;
+    }
+
+  int si_dim = 0;
+  for (int i = 0; i < x_dims.length (); i++)
+    {
+      if (i == dim)
+	continue;
+      
+      if (si_dims (++si_dim) != x_dims (i))
+	{
+	  error ("filter: dimensionality of si and x must agree");
+	  return y;
+	}
+    }
 
   if (norm != 1.0)
-    b = b / norm;
-
-  if (a_len > 1)
     {
-      a.resize (ab_len, 0.0);
+      a = a / norm;
+      b = b / norm;
+    }
 
-      if (norm != 1.0)
-	a = a / norm;
+  if ((a_len <= 1) && (si_len <= 1))
+    return b(0) * x;
 
-      for (int i = 0; i < x_len; i++)
+  y.resize (x_dims, 0.0);
+
+  int x_stride = 1;
+  for (int i = 0; i < dim; i++)
+    x_stride *= x_dims(i);
+
+  int x_num = x_dims.numel () / x_len;
+  for (int num = 0; num < x_num; num++)
+    {
+      int x_offset;
+      if (x_stride == 1)
+	x_offset = num * x_len;
+      else
 	{
-	  y (i) = si (0) + b (0) * x (i);
-
-	  if (si_len > 1)
+	  int x_offset2 = 0;
+	  x_offset = num;
+	  while (x_offset >= x_stride)
 	    {
-	      for (int j = 0; j < si_len - 1; j++)
-		{
-		  OCTAVE_QUIT;
-
-		  si (j) = si (j+1) - a (j+1) * y (i)
-		    + b (j+1) * x (i);
-		}
-
-	      si (si_len-1) = b (si_len) * x (i)
-		- a (si_len) * y (i);
+	      x_offset -= x_stride;
+	      x_offset2++;
 	    }
-	  else
-	    si (0) = b (si_len) * x (i)
-	      - a (si_len) * y (i);
+	  x_offset += x_offset2 * x_stride * x_len;
+	}
+      int si_offset = num * si_len;
+
+      if (a_len > 1)
+	{
+	  for (int i = 0; i < x_len; i++)
+	    {
+	      int idx = i * x_stride + x_offset; 
+	      y (idx) = si (si_offset) + b (0) * x (idx);
+
+	      if (si_len > 1)
+		{
+		  for (int j = 0; j < si_len - 1; j++)
+		    {
+		      OCTAVE_QUIT;
+
+		      si (j + si_offset) =  si (j + 1 + si_offset) - 
+			a (j+1) * y (idx) + b (j+1) * x (idx);
+		    }
+
+		  si (si_len - 1 + si_offset) = b (si_len) * x (idx)
+		    - a (si_len) * y (idx);
+		}
+	      else
+		si (si_offset) = b (si_len) * x (idx)
+		  - a (si_len) * y (idx);
+	    }
+	}
+      else if (si_len > 0)
+	{
+	  for (int i = 0; i < x_len; i++)
+	    {
+	      int idx = i * x_stride + x_offset; 
+	      y (idx) = si (si_offset) + b (0) * x (idx);
+
+	      if (si_len > 1)
+		{
+		  for (int j = 0; j < si_len - 1; j++)
+		    {
+		      OCTAVE_QUIT;
+
+		      si (j + si_offset) = si (j + 1 + si_offset) + 
+			b (j+1) * x (idx);
+		    }
+
+		  si (si_len - 1 + si_offset) = b (si_len) * x (idx);
+		}
+	      else
+		si (si_offset) = b (1) * x (idx);
+	    }
 	}
     }
-  else if (si_len > 0)
-    {
-      for (int i = 0; i < x_len; i++)
-	{
-	  y (i) = si (0) + b (0) * x (i);
-
-	  if (si_len > 1)
-	    {
-	      for (int j = 0; j < si_len - 1; j++)
-		{
-		  OCTAVE_QUIT;
-
-		  si (j) = si (j+1) + b (j+1) * x (i);
-		}
-
-	      si (si_len-1) = b (si_len) * x (i);
-	    }
-	  else
-	    si (0) = b (1) * x (i);
-	}
-    }
-  else
-    y = b (0) * x;
-
+  
   return y;
 }
 
 #if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
-extern MArray<double>
-filter (MArray<double>&, MArray<double>&, MArray<double>&,
-	MArray<double>&);
+extern MArrayN<double>
+filter (MArray<double>&, MArray<double>&, MArrayN<double>&,
+	MArrayN<double>&, int dim);
 
-extern MArray<Complex>
-filter (MArray<Complex>&, MArray<Complex>&, MArray<Complex>&,
-	MArray<Complex>&);
+extern MArrayN<Complex>
+filter (MArray<Complex>&, MArray<Complex>&, MArrayN<Complex>&,
+	MArrayN<Complex>&, int dim);
 #endif
 
 template <class T>
-MArray<T>
-filter (MArray<T>& b, MArray<T>& a, MArray<T>& x)
+MArrayN<T>
+filter (MArray<T>& b, MArray<T>& a, MArrayN<T>& x, int dim = -1)
 {
+  dim_vector x_dims = x.dims ();
+
+  if (dim < 0)
+    {
+      // Find first non-singleton dimension
+      while ((dim < x_dims.length()) && (x_dims (dim) <= 1))
+	dim++;
+  
+      // All dimensions singleton, pick first dimension
+      if (dim == x_dims.length ())
+	dim = 0;
+    }
+  else
+    if (dim < 0 || dim > x_dims.length ())
+      {
+	error ("filter: filtering over invalid dimension");
+	return MArrayN<T> ();
+      }
+
   int a_len = a.length ();
   int b_len = b.length ();
 
   int si_len = (a_len > b_len ? a_len : b_len) - 1;
+  dim_vector si_dims = x.dims ();
+  for (int i = dim; i > 0; i--)
+    si_dims (i) = si_dims (i-1);
+  si_dims (0) = si_len;
+  
+  MArrayN<T> si (si_dims, T (0.0));
 
-  MArray<T> si (si_len, T (0.0));
-
-  return filter (b, a, x, si);
+  return filter (b, a, x, si, dim);
 }
 
 DEFUN_DLD (filter, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {y =} filter (@var{b}, @var{a}, @var{x})\n\
 @deftypefnx {Loadable Function} {[@var{y}, @var{sf}] =} filter (@var{b}, @var{a}, @var{x}, @var{si})\n\
+@deftypefnx {Loadable Function} {[@var{y}, @var{sf}] =} filter (@var{b}, @var{a}, @var{x}, [], @var{dim})\n\
+@deftypefnx {Loadable Function} {[@var{y}, @var{sf}] =} filter (@var{b}, @var{a}, @var{x}, @var{si}, @var{dim})\n\
 Return the solution to the following linear, time-invariant difference\n\
 equation:\n\
 @iftex\n\
@@ -194,7 +276,8 @@ where\n\
  $a \\in \\Re^{N-1}$, $b \\in \\Re^{M-1}$, and $x \\in \\Re^P$.\n\
 @end tex\n\
 @end iftex\n\
-An equivalent form of this equation is:\n\
+over the first non-singleton dimension of @var{x} or over @var{dim} if\n\
+supplied. An equivalent form of this equation is:\n\
 @iftex\n\
 @tex\n\
 $$\n\
@@ -259,59 +342,91 @@ $$\n\
 
   int nargin  = args.length ();
 
-  if (nargin < 3 || nargin > 4)
+  if (nargin < 3 || nargin > 5)
     {
       print_usage ("filter");
       return retval;
     }
 
-  const char *errmsg = "filter: arguments must be vectors";
+  const char *errmsg = "filter: arguments a and b must be vectors";
 
-  bool x_is_row_vector = (args(2).rows () == 1);
+  int dim;
+  dim_vector x_dims = args(2).dims ();
 
-  bool si_is_row_vector = (nargin == 4 && args(3).rows () == 1);
+  if (nargin == 5)
+    {
+      dim = args(4).nint_value() - 1;
+      if (dim < 0 || dim >= x_dims.length ())
+	{
+	  error ("filter: filtering over invalid dimension");
+	  return retval;
+	}
+    }
+  else
+    {
+      // Find first non-singleton dimension
+      dim = 0;
+      while ((dim < x_dims.length()) && (x_dims (dim) <= 1))
+	dim++;
+  
+      // All dimensions singleton, pick first dimension
+      if (dim == x_dims.length ())
+	dim = 0;
+    }
 
   if (args(0).is_complex_type ()
       || args(1).is_complex_type ()
       || args(2).is_complex_type ()
-      || (nargin == 4 && args(3).is_complex_type ()))
+      || (nargin >= 4 && args(3).is_complex_type ()))
     {
       ComplexColumnVector b (args(0).complex_vector_value ());
       ComplexColumnVector a (args(1).complex_vector_value ());
-      ComplexColumnVector x (args(2).complex_vector_value ());
+
+      ComplexNDArray x (args(2).complex_array_value ());
 
       if (! error_state)
 	{
-	  ComplexColumnVector si;
+	  ComplexNDArray si;
 
-	  if (nargin == 3)
+	  if (nargin == 3 || args(3).is_empty ())
 	    {
 	      int a_len = a.length ();
 	      int b_len = b.length ();
 
 	      int si_len = (a_len > b_len ? a_len : b_len) - 1;
 
-	      si.resize (si_len, 0.0);
+	      dim_vector si_dims = x.dims ();
+	      for (int i = dim; i > 0; i--)
+		si_dims (i) = si_dims (i-1);
+	      si_dims (0) = si_len;
+
+	      si.resize (si_dims, 0.0);
 	    }
 	  else
-	    si = ComplexColumnVector (args(3).complex_vector_value ());
+	    {
+	      dim_vector si_dims = args (3).dims ();
+	      bool si_is_vector = true;
+	      for (int i=0; i < si_dims.length (); i++)
+		if ((si_dims (i) != 1) && (si_dims (i) < si_dims.numel ()))
+		  {
+		    si_is_vector = false;
+		    break;
+		  }
+
+	      if (si_is_vector)
+		si = ComplexNDArray (args(3).complex_vector_value ());
+	      else
+		si = args(3).complex_array_value ();
+	    }
 
 	  if (! error_state)
 	    {
-	      ComplexColumnVector y (filter (b, a, x, si));
+	      ComplexNDArray y (filter (b, a, x, si, dim));
 
 	      if (nargout == 2)
-		{
-		  if (si_is_row_vector)
-		    retval(1) = si.transpose ();
-		  else
-		    retval(1) = si;
-		}
+		retval(1) = si;
 
-	      if (x_is_row_vector)
-		retval(0) = y.transpose ();
-	      else
-		retval(0) = y;
+	      retval(0) = y;
 	    }
 	  else
 	    error (errmsg);
@@ -323,40 +438,52 @@ $$\n\
     {
       ColumnVector b (args(0).vector_value ());
       ColumnVector a (args(1).vector_value ());
-      ColumnVector x (args(2).vector_value ());
+
+      NDArray x (args(2).array_value ());
 
       if (! error_state)
 	{
-	  ColumnVector si;
+	  NDArray si;
 
-	  if (nargin == 3)
+	  if (nargin == 3 || args(3).is_empty ())
 	    {
 	      int a_len = a.length ();
 	      int b_len = b.length ();
 
 	      int si_len = (a_len > b_len ? a_len : b_len) - 1;
 
-	      si.resize (si_len, 0.0);
+	      dim_vector si_dims = x.dims ();
+	      for (int i = dim; i > 0; i--)
+		si_dims (i) = si_dims (i-1);
+	      si_dims (0) = si_len;
+
+	      si.resize (si_dims, 0.0);
 	    }
 	  else
-	    si = ColumnVector (args(3).vector_value ());
+	    {
+	      dim_vector si_dims = args (3).dims ();
+	      bool si_is_vector = true;
+	      for (int i=0; i < si_dims.length (); i++)
+		if ((si_dims (i) != 1) && (si_dims (i) < si_dims.numel ()))
+		  {
+		    si_is_vector = false;
+		    break;
+		  }
+
+	      if (si_is_vector)
+		si = NDArray (args(3).vector_value ());
+	      else
+		si = args(3).array_value ();
+	    }
 
 	  if (! error_state)
 	    {
-	      ColumnVector y (filter (b, a, x, si));
+	      NDArray y (filter (b, a, x, si, dim));
 
 	      if (nargout == 2)
-		{
-		  if (si_is_row_vector)
-		    retval(1) = si.transpose ();
-		  else
-		    retval(1) = si;
-		}
+		retval(1) = si;
 
-	      if (x_is_row_vector)
-		retval(0) = y.transpose ();
-	      else
-		retval(0) = y;
+	      retval(0) = y;
 	    }
 	  else
 	    error (errmsg);
@@ -368,19 +495,19 @@ $$\n\
   return retval;
 }
 
-template MArray<double>
-filter (MArray<double>&, MArray<double>&, MArray<double>&,
-	MArray<double>&);
+template MArrayN<double>
+filter (MArray<double>&, MArray<double>&, MArrayN<double>&,
+	MArrayN<double>&, int dim);
 
-template MArray<double>
-filter (MArray<double>&, MArray<double>&, MArray<double>&);
+template MArrayN<double>
+filter (MArray<double>&, MArray<double>&, MArrayN<double>&, int dim);
 
-template MArray<Complex>
-filter (MArray<Complex>&, MArray<Complex>&, MArray<Complex>&,
-	MArray<Complex>&);
+template MArrayN<Complex>
+filter (MArray<Complex>&, MArray<Complex>&, MArrayN<Complex>&,
+	MArrayN<Complex>&, int dim);
 
-template MArray<Complex>
-filter (MArray<Complex>&, MArray<Complex>&, MArray <Complex>&);
+template MArrayN<Complex>
+filter (MArray<Complex>&, MArray<Complex>&, MArrayN<Complex>&, int dim);
 
 /*
 ;;; Local Variables: ***

@@ -38,9 +38,11 @@ function [y, iterations] = erfinv (x)
 
   iterations = 0;
 
-  [m, n] = size (x);
-  x = reshape (x, m * n, 1);
-  y = zeros (m * n, 1);
+  sz = size (x);
+  nel = numel (x);
+
+  x = reshape (x, nel, 1);
+  y = zeros (nel, 1);
 
   i = find ((x < -1) | (x > 1) | isnan(x));
   if any (i)
@@ -69,6 +71,6 @@ function [y, iterations] = erfinv (x)
     y(i) = z_new;
   endif
 
-  y = reshape (y, m, n);
+  y = reshape (y, sz);
 
 endfunction

@@ -1,3 +1,21 @@
+2004-04-02  David Bateman  <dbateman@free.fr>
+
+	* lo-specfun.cc (besselj, bessely, besseli, besselk, besselh1, 
+	besselh2, airy, biry, betainc, gammainc, do_bessel):
+	New NDArray versions.
+	(SN_BESSEL, NS_BESSEL, NN_BESSEL): New macros.
+	* lo-specfun.h (besselj, bessely, besseli, besselk, besselh1, 
+	besselh2, airy, biry, betainc, gammainc): Provide decls.
+	
+	* dNDArray.cc (NDArray::min, NDArray::max, min, max):
+	New functions.
+	* dNDArray.h (NDArray::min, NDArray::max, min, max): Provide decls.
+
+	* CNDArray.cc (ComplexNDArray::min, ComplexNDArray::max, min, max):
+	New functions.
+	* CNDArray.h (ComplexNDArray::min, ComplexNDArray::max, min, max): 
+	Provide decls.
+
 2004-03-17  David Hoover  <jazzdaq@yahoo.com>
 
 	* DASPK.cc (DASPK::do_integrate): Always add n*n elements to the

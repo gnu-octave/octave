@@ -19,23 +19,36 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} center (@var{x})
+## @deftypefnx {Function File} {} center (@var{x}, @var{dim})
 ## If @var{x} is a vector, subtract its mean.
 ## If @var{x} is a matrix, do the above for each column.
+## If the optional argument @var{dim} is given, perform the above
+## operation along this dimension
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: Center by subtracting means
 
-function retval = center (x)
+function retval = center (x, varargin)
 
-  if (nargin != 1)
+  if (nargin != 1 && nargin != 2)
     usage ("center (x)");
   endif
 
   if (isvector (x))
-    retval = x - mean (x);
+    retval = x - mean (x, varargin{:});
   elseif (ismatrix (x))
-    retval = x - ones (rows (x), 1) * mean (x);
+    if nargin < 2
+      dim = min (find (size (x) > 1));
+      if isempty (dim), 
+	dim=1; 
+      endif;
+    else
+      dim = varargin {1};
+    endif
+    sz = ones (1, ndims (x));
+    sz (dim) = size (x, dim);
+    retval = x - repmat (mean (x, dim), sz);
   elseif (isempty (x))
     retval = x;
   else

@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{idxvec}, @var{errmsg}] =} listidx (@var{listvar}, @var{strlist})
+## @deftypefn {Function File} {[@var{idxvec}, @var{errmsg}] =} cellidx (@var{listvar}, @var{strlist})
 ## Return indices of string entries in @var{listvar} that match strings
 ## in @var{strlist}.
 ##
@@ -29,7 +29,7 @@
 ##
 ## If @var{strlist} contains a string not in @var{listvar}, then
 ## an error message is returned in @var{errmsg}.  If only one output
-## argument is requested, then @var{listidx} prints @var{errmsg} to the
+## argument is requested, then @var{cellidx} prints @var{errmsg} to the
 ## screen and exits with an error.
 ## @end deftypefn
 

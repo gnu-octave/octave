@@ -147,13 +147,18 @@ tree_static_command::do_init (tree_decl_elt& elt)
     {
       id->mark_as_static ();
 
-      tree_expression *expr = elt.expression ();
+      octave_lvalue ult = id->lvalue ();
 
-      if (expr)
+      if (ult.is_defined ())
 	{
-	  octave_value init_val = expr->rvalue ();
+	  tree_expression *expr = elt.expression ();
 
-	  octave_lvalue ult = id->lvalue ();
+	  octave_value init_val;
+
+	  if (expr)
+	    init_val = expr->rvalue ();
+	  else
+	    init_val = Matrix ();
 
 	  ult.assign (octave_value::op_asn_eq, init_val);
 	}

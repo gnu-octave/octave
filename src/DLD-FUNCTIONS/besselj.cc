@@ -97,6 +97,24 @@ int_array2_to_matrix (const Array2<int>& a)
   return retval;
 }
 
+static inline NDArray
+int_arrayN_to_array (const ArrayN<int>& a)
+{
+  dim_vector dv = a.dims ();
+  int nel = dv.numel ();
+
+  NDArray retval (dv);
+
+  for (int i = 0; i < nel; i++)
+    {
+      OCTAVE_QUIT;
+      
+      retval(i) = (double) (a(i));
+    }
+
+  return retval;
+}
+
 static void
 gripe_bessel_arg (const char *fn, const char *arg)
 {
@@ -145,17 +163,17 @@ do_bessel (enum bessel_type type, const char *fn,
 		}
 	      else
 		{
-		  ComplexMatrix x = x_arg.complex_matrix_value ();
+		  ComplexNDArray x = x_arg.complex_array_value ();
 
 		  if (! error_state)
 		    {
-		      Array2<int> ierr;
+		      ArrayN<int> ierr;
 		      octave_value result;
 
 		      DO_BESSEL (type, alpha, x, scaled, ierr, result);
 
 		      if (nargout > 1)
-			retval(1) = int_array2_to_matrix (ierr);
+			retval(1) = int_arrayN_to_array (ierr);
 
 		      retval(0) = result;
 		    }
@@ -168,21 +186,28 @@ do_bessel (enum bessel_type type, const char *fn,
 	}
       else
 	{
-	  Matrix alpha = args(0).matrix_value ();
+	  dim_vector dv0 = args(0).dims ();
+	  dim_vector dv1 = args(1).dims ();
+	  
+	  bool args0_is_row_vector = (dv0 (1) == dv0.numel ());
+	  bool args1_is_col_vector = (dv1 (0) == dv1.numel ());
 
-	  if (! error_state)
+	  if (args0_is_row_vector && args1_is_col_vector)
 	    {
-	      if (x_arg.is_scalar_type ())
+	      RowVector ralpha = args(0).row_vector_value ();
+
+	      if (! error_state)
 		{
-		  Complex x = x_arg.complex_value ();
+		  ComplexColumnVector cx = 
+		    x_arg.complex_column_vector_value ();
 
 		  if (! error_state)
 		    {
 		      Array2<int> ierr;
 		      octave_value result;
 
-		      DO_BESSEL (type, alpha, x, scaled, ierr, result);
-
+		      DO_BESSEL (type, ralpha, cx, scaled, ierr, result);
+		      
 		      if (nargout > 1)
 			retval(1) = int_array2_to_matrix (ierr);
 
@@ -192,45 +217,56 @@ do_bessel (enum bessel_type type, const char *fn,
 		    gripe_bessel_arg (fn, "second");
 		}
 	      else
+		gripe_bessel_arg (fn, "first");
+	    }
+	  else
+	    {
+	      NDArray alpha = args(0).array_value ();
+
+	      if (! error_state)
 		{
-		  ComplexMatrix x = x_arg.complex_matrix_value ();
-
-		  if (! error_state)
+		  if (x_arg.is_scalar_type ())
 		    {
-		      if (alpha.rows () == 1 && x.columns () == 1)
+		      Complex x = x_arg.complex_value ();
+
+		      if (! error_state)
 			{
-			  RowVector ralpha = alpha.row (0);
-			  ComplexColumnVector cx = x.column (0);
-
-			  Array2<int> ierr;
-			  octave_value result;
-
-			  DO_BESSEL (type, ralpha, cx, scaled, ierr, result);
-
-			  if (nargout > 1)
-			    retval(1) = int_array2_to_matrix (ierr);
-
-			  retval(0) = result;
-			}
-		      else
-			{
-			  Array2<int> ierr;
+			  ArrayN<int> ierr;
 			  octave_value result;
 
 			  DO_BESSEL (type, alpha, x, scaled, ierr, result);
 
 			  if (nargout > 1)
-			    retval(1) = int_array2_to_matrix (ierr);
+			    retval(1) = int_arrayN_to_array (ierr);
 
 			  retval(0) = result;
 			}
+		      else
+			gripe_bessel_arg (fn, "second");
 		    }
 		  else
-		    gripe_bessel_arg (fn, "second");
+		    {
+		      ComplexNDArray x = x_arg.complex_array_value ();
+
+		      if (! error_state)
+			{
+			  ArrayN<int> ierr;
+			  octave_value result;
+			  
+			  DO_BESSEL (type, alpha, x, scaled, ierr, result);
+			  
+			  if (nargout > 1)
+			    retval(1) = int_arrayN_to_array (ierr);
+			  
+			  retval(0) = result;
+			}
+		      else
+			gripe_bessel_arg (fn, "second");
+		    }
 		}
+	      else
+		gripe_bessel_arg (fn, "first");
 	    }
-	  else
-	    gripe_bessel_arg (fn, "first");
 	}
     }
   else
@@ -422,7 +458,7 @@ return @code{NaN}\n\
 
       int kind = 0;
 
-      ComplexMatrix z;
+      ComplexNDArray z;
 
       if (nargin > 1)
 	{
@@ -441,11 +477,11 @@ return @code{NaN}\n\
 
       if (! error_state)
 	{
-	  z = args(nargin == 1 ? 0 : 1).complex_matrix_value ();
+	  z = args(nargin == 1 ? 0 : 1).complex_array_value ();
 
 	  if (! error_state)
 	    {
-	      Array2<int> ierr;
+	      ArrayN<int> ierr;
 	      octave_value result;
 
 	      if (kind > 1)
@@ -454,7 +490,7 @@ return @code{NaN}\n\
 		result = airy (z, kind == 1, scale, ierr);
 
 	      if (nargout > 1)
-		retval(1) = int_array2_to_matrix (ierr);
+		retval(1) = int_arrayN_to_array (ierr);
 
 	      retval(0) = result;
 	    }

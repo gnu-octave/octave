@@ -88,7 +88,7 @@ compatible dimensions.\n\
 		    }
 		  else
 		    {
-		      Matrix b = b_arg.matrix_value ();
+		      NDArray b = b_arg.array_value ();
 
 		      if (! error_state)
 			retval = betainc (x, a, b);
@@ -97,7 +97,7 @@ compatible dimensions.\n\
 	    }
 	  else
 	    {
-	      Matrix a = a_arg.matrix_value ();
+	      NDArray a = a_arg.array_value ();
 
 	      if (! error_state)
 		{
@@ -110,7 +110,7 @@ compatible dimensions.\n\
 		    }
 		  else
 		    {
-		      Matrix b = b_arg.matrix_value ();
+		      NDArray b = b_arg.array_value ();
 
 		      if (! error_state)
 			retval = betainc (x, a, b);
@@ -120,7 +120,7 @@ compatible dimensions.\n\
 	}
       else
 	{
-	  Matrix x = x_arg.matrix_value ();
+	  NDArray x = x_arg.array_value ();
 
 	  if (a_arg.is_scalar_type ())
 	    {
@@ -137,7 +137,7 @@ compatible dimensions.\n\
 		    }
 		  else
 		    {
-		      Matrix b = b_arg.matrix_value ();
+		      NDArray b = b_arg.array_value ();
 
 		      if (! error_state)
 			retval = betainc (x, a, b);
@@ -146,7 +146,7 @@ compatible dimensions.\n\
 	    }
 	  else
 	    {
-	      Matrix a = a_arg.matrix_value ();
+	      NDArray a = a_arg.array_value ();
 
 	      if (! error_state)
 		{
@@ -159,7 +159,7 @@ compatible dimensions.\n\
 		    }
 		  else
 		    {
-		      Matrix b = b_arg.matrix_value ();
+		      NDArray b = b_arg.array_value ();
 
 		      if (! error_state)
 			retval = betainc (x, a, b);

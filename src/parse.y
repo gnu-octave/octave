@@ -2810,10 +2810,10 @@ make_decl_command (int tok, token *tok_val, tree_decl_init_list *lst)
       else
 	{
 	  if (reading_script_file)
-	    warning ("ignoring static declaration near line %d of file `%s'",
+	    warning ("ignoring persistent declaration near line %d of file `%s'",
 		     l, curr_fcn_file_full_name.c_str ());
 	  else
-	    warning ("ignoring static declaration near line %d", l);
+	    warning ("ignoring persistent declaration near line %d", l);
 	}
       break;
 

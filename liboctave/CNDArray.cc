@@ -683,6 +683,192 @@ ComplexNDArray::cat (const ComplexNDArray& ra_arg, int dim, int iidx, int move)
   return ::cat_ra(*this, ra_arg, dim, iidx, move);
 }
 
+static const Complex Complex_NaN_result (octave_NaN, octave_NaN);
+
+ComplexNDArray
+ComplexNDArray::max (int dim) const
+{
+  ArrayN<int> dummy_idx;
+  return max (dummy_idx, dim);
+}
+
+ComplexNDArray
+ComplexNDArray::max (ArrayN<int>& idx_arg, int dim) const
+{
+  dim_vector dv = dims ();
+  dim_vector dr = dims ();
+
+  if (dv.numel () == 0 || dim > dv.length () || dim < 0)
+    return ComplexNDArray ();
+  
+  dr(dim) = 1;
+
+  ComplexNDArray result (dr);
+  idx_arg.resize (dr);
+
+  int x_stride = 1;
+  int x_len = dv(dim);
+  for (int i = 0; i < dim; i++)
+    x_stride *= dv(i);
+
+  for (int i = 0; i < dr.numel (); i++)
+    {
+      int x_offset;
+      if (x_stride == 1)
+	x_offset = i * x_len;
+      else
+	{
+	  int x_offset2 = 0;
+	  x_offset = i;
+	  while (x_offset >= x_stride)
+	    {
+	      x_offset -= x_stride;
+	      x_offset2++;
+	    }
+	  x_offset += x_offset2 * x_stride * x_len;
+	}
+
+      int idx_j;
+
+      Complex tmp_max;
+
+      double abs_max = octave_NaN;
+
+      for (idx_j = 0; idx_j < x_len; idx_j++)
+	{
+	  tmp_max = elem (idx_j * x_stride + x_offset);
+	  
+	  if (! octave_is_NaN_or_NA (tmp_max))
+	    {
+	      abs_max = ::abs(tmp_max);
+	      break;
+	    }
+	}
+
+      for (int j = idx_j+1; j < x_len; j++)
+	{
+	  Complex tmp = elem (j * x_stride + x_offset);
+
+	  if (octave_is_NaN_or_NA (tmp))
+	    continue;
+
+	  double abs_tmp = ::abs (tmp);
+
+	  if (abs_tmp > abs_max)
+	    {
+	      idx_j = j;
+	      tmp_max = tmp;
+	      abs_max = abs_tmp;
+	    }
+	}
+
+      if (octave_is_NaN_or_NA (tmp_max))
+	{
+	  result.elem (i) = Complex_NaN_result;
+	  idx_arg.elem (i) = 0;
+	}
+      else
+	{
+	  result.elem (i) = tmp_max;
+	  idx_arg.elem (i) = idx_j;
+	}
+    }
+
+  return result;
+}
+
+ComplexNDArray
+ComplexNDArray::min (int dim) const
+{
+  ArrayN<int> dummy_idx;
+  return min (dummy_idx, dim);
+}
+
+ComplexNDArray
+ComplexNDArray::min (ArrayN<int>& idx_arg, int dim) const
+{
+  dim_vector dv = dims ();
+  dim_vector dr = dims ();
+
+  if (dv.numel () == 0 || dim > dv.length () || dim < 0)
+    return ComplexNDArray ();
+  
+  dr(dim) = 1;
+
+  ComplexNDArray result (dr);
+  idx_arg.resize (dr);
+
+  int x_stride = 1;
+  int x_len = dv(dim);
+  for (int i = 0; i < dim; i++)
+    x_stride *= dv(i);
+
+  for (int i = 0; i < dr.numel (); i++)
+    {
+      int x_offset;
+      if (x_stride == 1)
+	x_offset = i * x_len;
+      else
+	{
+	  int x_offset2 = 0;
+	  x_offset = i;
+	  while (x_offset >= x_stride)
+	    {
+	      x_offset -= x_stride;
+	      x_offset2++;
+	    }
+	  x_offset += x_offset2 * x_stride * x_len;
+	}
+
+      int idx_j;
+
+      Complex tmp_min;
+
+      double abs_min = octave_NaN;
+
+      for (idx_j = 0; idx_j < x_len; idx_j++)
+	{
+	  tmp_min = elem (idx_j * x_stride + x_offset);
+	  
+	  if (! octave_is_NaN_or_NA (tmp_min))
+	    {
+	      abs_min = ::abs(tmp_min);
+	      break;
+	    }
+	}
+
+      for (int j = idx_j+1; j < x_len; j++)
+	{
+	  Complex tmp = elem (j * x_stride + x_offset);
+
+	  if (octave_is_NaN_or_NA (tmp))
+	    continue;
+
+	  double abs_tmp = ::abs (tmp);
+
+	  if (abs_tmp < abs_min)
+	    {
+	      idx_j = j;
+	      tmp_min = tmp;
+	      abs_min = abs_tmp;
+	    }
+	}
+
+      if (octave_is_NaN_or_NA (tmp_min))
+	{
+	  result.elem (i) = Complex_NaN_result;
+	  idx_arg.elem (i) = 0;
+	}
+      else
+	{
+	  result.elem (i) = tmp_min;
+	  idx_arg.elem (i) = idx_j;
+	}
+    }
+
+  return result;
+}
+
 NDArray
 ComplexNDArray::abs (void) const
 {
@@ -834,6 +1020,141 @@ operator >> (std::istream& is, ComplexNDArray& a)
  done:
 
   return is;
+}
+
+// XXX FIXME XXX -- it would be nice to share code among the min/max
+// functions below.
+
+#define EMPTY_RETURN_CHECK(T) \
+  if (nel == 0)	\
+    return T (dv);
+
+ComplexNDArray
+min (const Complex& c, const ComplexNDArray& m)
+{
+  dim_vector dv = m.dims ();
+  int nel = dv.numel ();
+
+  EMPTY_RETURN_CHECK (ComplexNDArray);
+
+  ComplexNDArray result (dv);
+
+  for (int i = 0; i < nel; i++)
+    {
+      OCTAVE_QUIT;
+      result (i) = xmin (c, m (i));
+    }
+
+  return result;
+}
+
+ComplexNDArray
+min (const ComplexNDArray& m, const Complex& c)
+{
+  dim_vector dv = m.dims ();
+  int nel = dv.numel ();
+
+  EMPTY_RETURN_CHECK (ComplexNDArray);
+
+  ComplexNDArray result (dv);
+
+  for (int i = 0; i < nel; i++)
+    {
+      OCTAVE_QUIT;
+      result (i) = xmin (c, m (i));
+    }
+
+  return result;
+}
+
+ComplexNDArray
+min (const ComplexNDArray& a, const ComplexNDArray& b)
+{
+  dim_vector dv = a.dims ();
+  int nel = dv.numel ();
+
+  if (dv != b.dims ())
+    {
+      (*current_liboctave_error_handler)
+	("two-arg min expecting args of same size");
+      return ComplexNDArray ();
+    }
+
+  EMPTY_RETURN_CHECK (ComplexNDArray);
+
+  ComplexNDArray result (dv);
+
+  for (int i = 0; i < nel; i++)
+    {
+      OCTAVE_QUIT;
+      result (i) = xmin (a (i), b (i));
+    }
+
+  return result;
+}
+
+ComplexNDArray
+max (const Complex& c, const ComplexNDArray& m)
+{
+  dim_vector dv = m.dims ();
+  int nel = dv.numel ();
+
+  EMPTY_RETURN_CHECK (ComplexNDArray);
+
+  ComplexNDArray result (dv);
+
+  for (int i = 0; i < nel; i++)
+    {
+      OCTAVE_QUIT;
+      result (i) = xmax (c, m (i));
+    }
+
+  return result;
+}
+
+ComplexNDArray
+max (const ComplexNDArray& m, const Complex& c)
+{
+  dim_vector dv = m.dims ();
+  int nel = dv.numel ();
+
+  EMPTY_RETURN_CHECK (ComplexNDArray);
+
+  ComplexNDArray result (dv);
+
+  for (int i = 0; i < nel; i++)
+    {
+      OCTAVE_QUIT;
+      result (i) = xmax (c, m (i));
+    }
+
+  return result;
+}
+
+ComplexNDArray
+max (const ComplexNDArray& a, const ComplexNDArray& b)
+{
+  dim_vector dv = a.dims ();
+  int nel = dv.numel ();
+
+  if (dv != b.dims ())
+    {
+      (*current_liboctave_error_handler)
+	("two-arg max expecting args of same size");
+      return ComplexNDArray ();
+    }
+
+  EMPTY_RETURN_CHECK (ComplexNDArray);
+
+  ComplexNDArray result (dv);
+
+  for (int i = 0; i < nel; i++)
+    {
+      OCTAVE_QUIT;
+      result (i) = xmax (a (i), b (i));
+    }
+
+  return result;
 }
 
 NDS_CMP_OPS(ComplexNDArray, real, Complex, real)

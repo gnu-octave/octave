@@ -18,7 +18,7 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} moment (@var{x}, @var{p}, @var{opt})
+## @deftypefn {Function File} {} moment (@var{x}, @var{p}, @var{opt},@var{dim})
 ## If @var{x} is a vector, compute the @var{p}-th moment of @var{x}.
 ##
 ## If @var{x} is a matrix, return the row vector containing the
@@ -34,6 +34,9 @@
 ##
 ## @noindent
 ## computes the third central absolute moment of @var{x}.
+##
+## If the optional argument @var{dim} is supplied, work along dimension
+## @var{dim}.
 ## @end deftypefn
 
 ## Can easily be made to work for continuous distributions (using quad)
@@ -42,35 +45,73 @@
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: Compute moments
 
-function m = moment (x, p, opt)
+function m = moment (x, p, opt1, opt2)
 
-  if ((nargin < 2) || (nargin > 3))
-    usage ("moment (x, p, type");
+  if ((nargin < 2) || (nargin > 4))
+    usage ("moment (x, p, type, dim)");
   endif
 
-  [nr, nc] = size (x);
-  if (nr == 0 || nc == 0)
+  need_dim = 0;
+
+  if (nargin == 1)
+    opt = "";
+    need_dim = 1;
+  elseif (nargin == 2)
+    if (isstr (opt1))
+      opt = opt1;
+      need_dim = 1;
+    else
+      dim = opt1;
+      opt = "";
+    endif
+  elseif (nargin == 3)
+    if (isstr (opt1))
+      opt = opt1;
+      dim = opt2;
+    elseif (isstr (opt2))
+      opt = opt2;
+      dim = opt1;
+    else
+      usage ("moment: expecting opt to be a string");
+    endif
+  else
+    usage ("moment (x, p, dim, opt) or moment (x, p, dim, opt)");
+  endif
+
+  sz = size(x);
+  n = sz (dim);
+
+  if (need_dim)
+    t = find (size (x) != 1);
+    if (isempty (t))
+      dim = 1;
+    else
+      dim = t(1);
+    endif
+  endif
+
+  sz = size (x);
+  n = sz (dim);
+
+  if (numels (x) < 1)
     error ("moment: x must not be empty");
-  elseif (nr == 1)
-    x  = reshape (x, nc, 1);
-    nr = nc;
   endif
 
-  if (nargin == 3)
-    tmp = warn_str_to_num;
-    unwind_protect
-      warn_str_to_num = 0;
-      if any (opt == "c")
-	x = x - ones (nr, 1) * sum (x) / nr;
-      endif
-      if any (opt == "a")
-	x = abs (x);
-      endif
-    unwind_protect_cleanup
-      warn_str_to_num = tmp;
-    end_unwind_protect
-  endif
+  tmp = warn_str_to_num;
+  unwind_protect
+    warn_str_to_num = 0;
+    if any (opt == "c")
+      rng = ones(1, length (sz));
+      rng (dim) = sz (dim);
+      x = x - repmat (sum (x, dim), rng) / n;
+    endif
+    if any (opt == "a")
+      x = abs (x);
+    endif
+  unwind_protect_cleanup
+    warn_str_to_num = tmp;
+  end_unwind_protect
 
-  m = sum(x .^ p) / nr;
+  m = sum(x .^ p, dim) / n;
 
 endfunction

@@ -656,6 +656,156 @@ NDArray::sum (int dim) const
   MX_ND_REAL_OP_REDUCTION (+= elem (iter_idx), 0);
 }
 
+NDArray
+NDArray::max (int dim) const
+{
+  ArrayN<int> dummy_idx;
+  return max (dummy_idx, dim);
+}
+
+NDArray
+NDArray::max (ArrayN<int>& idx_arg, int dim) const
+{
+  dim_vector dv = dims ();
+  dim_vector dr = dims ();
+
+  if (dv.numel () == 0 || dim > dv.length () || dim < 0)
+    return NDArray ();
+  
+  dr(dim) = 1;
+
+  NDArray result (dr);
+  idx_arg.resize (dr);
+
+  int x_stride = 1;
+  int x_len = dv(dim);
+  for (int i = 0; i < dim; i++)
+    x_stride *= dv(i);
+
+  for (int i = 0; i < dr.numel (); i++)
+    {
+      int x_offset;
+      if (x_stride == 1)
+	x_offset = i * x_len;
+      else
+	{
+	  int x_offset2 = 0;
+	  x_offset = i;
+	  while (x_offset >= x_stride)
+	    {
+	      x_offset -= x_stride;
+	      x_offset2++;
+	    }
+	  x_offset += x_offset2 * x_stride * x_len;
+	}
+
+      int idx_j;
+
+      double tmp_max = octave_NaN;
+
+      for (idx_j = 0; idx_j < x_len; idx_j++)
+	{
+	  tmp_max = elem (idx_j * x_stride + x_offset);
+	  
+	  if (! octave_is_NaN_or_NA (tmp_max))
+	    break;
+	}
+
+      for (int j = idx_j+1; j < x_len; j++)
+	{
+	  double tmp = elem (j * x_stride + x_offset);
+
+	  if (octave_is_NaN_or_NA (tmp))
+	    continue;
+	  else if (tmp > tmp_max)
+	    {
+	      idx_j = j;
+	      tmp_max = tmp;
+	    }
+	}
+
+      result.elem (i) = tmp_max;
+      idx_arg.elem (i) = octave_is_NaN_or_NA (tmp_max) ? 0 : idx_j;
+    }
+
+  return result;
+}
+
+NDArray
+NDArray::min (int dim) const
+{
+  ArrayN<int> dummy_idx;
+  return min (dummy_idx, dim);
+}
+
+NDArray
+NDArray::min (ArrayN<int>& idx_arg, int dim) const
+{
+  dim_vector dv = dims ();
+  dim_vector dr = dims ();
+
+  if (dv.numel () == 0 || dim > dv.length () || dim < 0)
+    return NDArray ();
+  
+  dr(dim) = 1;
+
+  NDArray result (dr);
+  idx_arg.resize (dr);
+
+  int x_stride = 1;
+  int x_len = dv(dim);
+  for (int i = 0; i < dim; i++)
+    x_stride *= dv(i);
+
+  for (int i = 0; i < dr.numel (); i++)
+    {
+      int x_offset;
+      if (x_stride == 1)
+	x_offset = i * x_len;
+      else
+	{
+	  int x_offset2 = 0;
+	  x_offset = i;
+	  while (x_offset >= x_stride)
+	    {
+	      x_offset -= x_stride;
+	      x_offset2++;
+	    }
+	  x_offset += x_offset2 * x_stride * x_len;
+	}
+
+      int idx_j;
+
+      double tmp_min = octave_NaN;
+
+      for (idx_j = 0; idx_j < x_len; idx_j++)
+	{
+	  tmp_min = elem (idx_j * x_stride + x_offset);
+	  
+	  if (! octave_is_NaN_or_NA (tmp_min))
+	    break;
+	}
+
+      for (int j = idx_j+1; j < x_len; j++)
+	{
+	  double tmp = elem (j * x_stride + x_offset);
+
+	  if (octave_is_NaN_or_NA (tmp))
+	    continue;
+	  else if (tmp < tmp_min)
+	    {
+	      idx_j = j;
+	      tmp_min = tmp;
+	    }
+	}
+
+      result.elem (i) = tmp_min;
+      idx_arg.elem (i) = octave_is_NaN_or_NA (tmp_min) ? 0 : idx_j;
+    }
+
+  return result;
+}
+
 int
 NDArray::cat (const NDArray& ra_arg, int dim, int iidx, int move)
 {
@@ -774,6 +924,141 @@ operator >> (std::istream& is, NDArray& a)
  done:
 
   return is;
+}
+
+// XXX FIXME XXX -- it would be nice to share code among the min/max
+// functions below.
+
+#define EMPTY_RETURN_CHECK(T) \
+  if (nel == 0)	\
+    return T (dv);
+
+NDArray
+min (double d, const NDArray& m)
+{
+  dim_vector dv = m.dims ();
+  int nel = dv.numel ();
+
+  EMPTY_RETURN_CHECK (NDArray);
+
+  NDArray result (dv);
+
+  for (int i = 0; i < nel; i++)
+    {
+      OCTAVE_QUIT;
+      result (i) = xmin (d, m (i));
+    }
+
+  return result;
+}
+
+NDArray
+min (const NDArray& m, double d)
+{
+  dim_vector dv = m.dims ();
+  int nel = dv.numel ();
+
+  EMPTY_RETURN_CHECK (NDArray);
+
+  NDArray result (dv);
+
+  for (int i = 0; i < nel; i++)
+    {
+      OCTAVE_QUIT;
+      result (i) = xmin (d, m (i));
+    }
+
+  return result;
+}
+
+NDArray
+min (const NDArray& a, const NDArray& b)
+{
+  dim_vector dv = a.dims ();
+  int nel = dv.numel ();
+
+  if (dv != b.dims ())
+    {
+      (*current_liboctave_error_handler)
+	("two-arg min expecting args of same size");
+      return NDArray ();
+    }
+
+  EMPTY_RETURN_CHECK (NDArray);
+
+  NDArray result (dv);
+
+  for (int i = 0; i < nel; i++)
+    {
+      OCTAVE_QUIT;
+      result (i) = xmin (a (i), b (i));
+    }
+
+  return result;
+}
+
+NDArray
+max (double d, const NDArray& m)
+{
+  dim_vector dv = m.dims ();
+  int nel = dv.numel ();
+
+  EMPTY_RETURN_CHECK (NDArray);
+
+  NDArray result (dv);
+
+  for (int i = 0; i < nel; i++)
+    {
+      OCTAVE_QUIT;
+      result (i) = xmax (d, m (i));
+    }
+
+  return result;
+}
+
+NDArray
+max (const NDArray& m, double d)
+{
+  dim_vector dv = m.dims ();
+  int nel = dv.numel ();
+
+  EMPTY_RETURN_CHECK (NDArray);
+
+  NDArray result (dv);
+
+  for (int i = 0; i < nel; i++)
+    {
+      OCTAVE_QUIT;
+      result (i) = xmax (d, m (i));
+    }
+
+  return result;
+}
+
+NDArray
+max (const NDArray& a, const NDArray& b)
+{
+  dim_vector dv = a.dims ();
+  int nel = dv.numel ();
+
+  if (dv != b.dims ())
+    {
+      (*current_liboctave_error_handler)
+	("two-arg max expecting args of same size");
+      return NDArray ();
+    }
+
+  EMPTY_RETURN_CHECK (NDArray);
+
+  NDArray result (dv);
+
+  for (int i = 0; i < nel; i++)
+    {
+      OCTAVE_QUIT;
+      result (i) = xmax (a (i), b (i));
+    }
+
+  return result;
 }
 
 NDS_CMP_OPS(NDArray, , double, )

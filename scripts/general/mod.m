@@ -44,7 +44,8 @@ function r = mod (x, y)
     usage ("r = mod (x, y)");
   endif
 
-  if (any (size (x) != size (y)) && ! (isscalar (x) || isscalar (y)))
+  if (((ndims (x) != ndims (y)) || any (size (x) != size (y))) &&
+	 ! (isscalar (x) || isscalar (y)))
     error ("mod: argument sizes must agree");
   endif
 

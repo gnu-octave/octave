@@ -142,7 +142,7 @@ octave_bool_matrix::complex_value (bool) const
 octave_value
 octave_bool_matrix::convert_to_str_internal (bool pad, bool force) const
 {
-  octave_value tmp = octave_value (matrix_value ());
+  octave_value tmp = octave_value (array_value ());
   return tmp.convert_to_str (pad, force);
 }
 

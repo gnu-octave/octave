@@ -29,7 +29,7 @@
 ## @code{dmr2d} exits with an error if @var{sys} is not discrete
 ## @item   idx
 ## indices or names of states with sampling time 
-## @code{sysgettsam(@var{sys})} (may be empty); see @code{listidx}
+## @code{sysgettsam(@var{sys})} (may be empty); see @code{cellidx}
 ## @item   sprefix
 ## list of string prefixes of states with sampling time
 ## @code{sysgettsam(@var{sys})} (may be empty)

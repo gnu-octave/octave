@@ -38,13 +38,13 @@ function idxvec = sysidx (sys, sigtype, signamelist)
   endif
 
   ## extract correct set of signal names values
-  [idxvec, msg] = listidx (list ("in", "out", "st", "yd"), sigtype);
+  [idxvec, msg] = cellidx ({"in", "out", "st", "yd"}, sigtype);
   if (msg)
     error ("invalid sigtype = %s", sigtype);
   endif
 
   syssiglist = sysgetsignals (sys, sigtype);
-  [idxvec, msg] = listidx (syssiglist, signamelist);
+  [idxvec, msg] = cellidx (syssiglist, signamelist);
   if (length (msg))
     error ("sysidx (sigtype = %s): %s", sigtype,
 	   strrep (msg, "strlist", "signamelist"));

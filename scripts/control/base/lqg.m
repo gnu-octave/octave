@@ -40,7 +40,7 @@
 ## @itemx  r
 ## state, control weighting respectively.  Control ARE is
 ## @item  in_idx
-## names or indices of controlled inputs (see @code{sysidx}, @code{listidx})
+## names or indices of controlled inputs (see @code{sysidx}, @code{cellidx})
 ##
 ## default: last dim(R) inputs are assumed to be controlled inputs, all
 ## others are assumed to be noise inputs.

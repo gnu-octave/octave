@@ -33,7 +33,7 @@
 ##
 ## @example
 ## retsys = sysprune(Asys,[1:3,4],"u_1");
-## retsys = sysprune(Asys,list("tx","ty","tz"), 4);
+## retsys = sysprune(Asys,@{"tx","ty","tz"@}, 4);
 ## @end example
 ##
 ## @end table

@@ -34,21 +34,47 @@ function x = repmat (a, m, n)
     usage ("repmat (a, m, n)");
   endif
 
-  if (nargin == 2)
+  if (nargin == 3)
+    if (!isscalar (m) && !isscalar (n))
+      error ("repmat: with 3 arguments m and n must be scalar");
+    endif
+    idx = [m, n];
+  else 
     if (isscalar (m))
+      idx = [m, m];
       n = m;
-    elseif (isvector (m) && length (m) == 2)
-      n = m(2);
-      m = m(1);
+    elseif (isvector (m) && length (m) > 1)
+      # Ensure that we have a row vector
+      idx = m(:).';
     else
-      error ("repmat: only builds 2D matrices")
+      error ("repmat: invalid dimensional argument");
     endif
   endif
 
-  if (isstr (a))
-    x = setstr (kron (ones (m, n), toascii (a)));
+  if (numel (a) == 1)
+    if (isstr (a))
+      x = setstr (toascii (a) * ones (idx));
+    else
+      x = a * ones(idx);
+    endif
+  elseif (ndims (a) == 2 && length (idx) < 3)
+    if (isstr (a))
+      x = setstr (kron (ones (idx), toascii (a)));
+    else
+      x = kron (ones (idx), a);
+    endif
   else
-    x = kron (ones (m, n), a);
+    aidx = size(a);
+    if (length(aidx) > length(idx))
+      idx = [idx, ones(1,length(aidx)-length(idx))];
+    elseif (length(aidx) < length(idx))
+      aidx = [aidx, ones(1,length(idx)-length(aidx))];
+    endif
+    cidx = cell ();
+    for i=1:length(aidx)
+      cidx{i} = kron (ones (1, idx(i)), 1:aidx(i));
+    endfor
+    x = a (cidx{:});
   endif
 
 endfunction

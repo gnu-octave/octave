@@ -24,10 +24,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define octave_liboctave_specfun_h 1
 
 #include "oct-cmplx.h"
+#include "ArrayN.h"
 
 template <class T> class Array2;
 class Matrix;
 class ComplexMatrix;
+class NDArray;
+class ComplexNDArray;
 class RowVector;
 class ComplexColumnVector;
 class Range;
@@ -145,6 +148,78 @@ extern ComplexMatrix
 besselh2 (const Matrix& alpha, const ComplexMatrix& x, bool scaled,
 	  Array2<int>& ierr);
 
+extern ComplexNDArray
+besselj (double alpha, const ComplexNDArray& x, bool scaled,
+	 ArrayN<int>& ierr);
+
+extern ComplexNDArray
+bessely (double alpha, const ComplexNDArray& x, bool scaled,
+	 ArrayN<int>& ierr);
+
+extern ComplexNDArray
+besseli (double alpha, const ComplexNDArray& x, bool scaled,
+	 ArrayN<int>& ierr);
+
+extern ComplexNDArray
+besselk (double alpha, const ComplexNDArray& x, bool scaled,
+	 ArrayN<int>& ierr);
+
+extern ComplexNDArray
+besselh1 (double alpha, const ComplexNDArray& x, bool scaled,
+	  ArrayN<int>& ierr);
+
+extern ComplexNDArray
+besselh2 (double alpha, const ComplexNDArray& x, bool scaled,
+	  ArrayN<int>& ierr);
+
+extern ComplexNDArray
+besselj (const NDArray& alpha, const Complex& x, bool scaled,
+	 ArrayN<int>& ierr);
+
+extern ComplexNDArray
+bessely (const NDArray& alpha, const Complex& x, bool scaled,
+	 ArrayN<int>& ierr);
+
+extern ComplexNDArray
+besseli (const NDArray& alpha, const Complex& x, bool scaled,
+	 ArrayN<int>& ierr);
+
+extern ComplexNDArray
+besselk (const NDArray& alpha, const Complex& x, bool scaled,
+	 ArrayN<int>& ierr);
+
+extern ComplexNDArray
+besselh1 (const NDArray& alpha, const Complex& x, bool scaled,
+	  ArrayN<int>& ierr);
+
+extern ComplexNDArray
+besselh2 (const NDArray& alpha, const Complex& x, bool scaled,
+	  ArrayN<int>& ierr);
+
+extern ComplexNDArray
+besselj (const NDArray& alpha, const ComplexNDArray& x, bool scaled,
+	 ArrayN<int>& ierr);
+
+extern ComplexNDArray
+bessely (const NDArray& alpha, const ComplexNDArray& x, bool scaled,
+	 ArrayN<int>& ierr);
+
+extern ComplexNDArray
+besseli (const NDArray& alpha, const ComplexNDArray& x, bool scaled,
+	 ArrayN<int>& ierr);
+
+extern ComplexNDArray
+besselk (const NDArray& alpha, const ComplexNDArray& x, bool scaled,
+	 ArrayN<int>& ierr);
+
+extern ComplexNDArray
+besselh1 (const NDArray& alpha, const ComplexNDArray& x, bool scaled,
+	  ArrayN<int>& ierr);
+
+extern ComplexNDArray
+besselh2 (const NDArray& alpha, const ComplexNDArray& x, bool scaled,
+	  ArrayN<int>& ierr);
+
 extern ComplexMatrix
 besselj (const RowVector& alpha, const ComplexColumnVector& x, bool scaled,
 	 Array2<int>& ierr);
@@ -178,20 +253,39 @@ airy (const ComplexMatrix& z, bool deriv, bool scaled, Array2<int>& ierr);
 extern ComplexMatrix
 biry (const ComplexMatrix& z, bool deriv, bool scaled, Array2<int>& ierr);
 
+extern ComplexNDArray
+airy (const ComplexNDArray& z, bool deriv, bool scaled, ArrayN<int>& ierr);
+
+extern ComplexNDArray
+biry (const ComplexNDArray& z, bool deriv, bool scaled, ArrayN<int>& ierr);
+
 extern double betainc (double x, double a, double b);
 extern Matrix betainc (double x, double a, const Matrix& b);
 extern Matrix betainc (double x, const Matrix& a, double b);
 extern Matrix betainc (double x, const Matrix& a, const Matrix& b);
+
+extern NDArray betainc (double x, double a, const NDArray& b);
+extern NDArray betainc (double x, const NDArray& a, double b);
+extern NDArray betainc (double x, const NDArray& a, const NDArray& b);
 
 extern Matrix betainc (const Matrix& x, double a, double b);
 extern Matrix betainc (const Matrix& x, double a, const Matrix& b);
 extern Matrix betainc (const Matrix& x, const Matrix& a, double b);
 extern Matrix betainc (const Matrix& x, const Matrix& a, const Matrix& b);
 
+extern NDArray betainc (const NDArray& x, double a, double b);
+extern NDArray betainc (const NDArray& x, double a, const NDArray& b);
+extern NDArray betainc (const NDArray& x, const NDArray& a, double b);
+extern NDArray betainc (const NDArray& x, const NDArray& a, const NDArray& b);
+
 extern double gammainc (double x, double a, bool& err);
 extern Matrix gammainc (double x, const Matrix& a);
 extern Matrix gammainc (const Matrix& x, double a);
 extern Matrix gammainc (const Matrix& x, const Matrix& a);
+
+extern NDArray gammainc (double x, const NDArray& a);
+extern NDArray gammainc (const NDArray& x, double a);
+extern NDArray gammainc (const NDArray& x, const NDArray& a);
 
 inline double gammainc (double x, double a)
 {

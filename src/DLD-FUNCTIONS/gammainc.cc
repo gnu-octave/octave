@@ -86,7 +86,7 @@ If neither @var{x} nor @var{a} is scalar, the sizes of @var{x} and\n\
 		}
 	      else
 		{
-		  Matrix a = a_arg.matrix_value ();
+		  NDArray a = a_arg.array_value ();
 
 		  if (! error_state)
 		    retval = gammainc (x, a);
@@ -95,7 +95,7 @@ If neither @var{x} nor @var{a} is scalar, the sizes of @var{x} and\n\
 	}
       else
 	{
-	  Matrix x = x_arg.matrix_value ();
+	  NDArray x = x_arg.array_value ();
 
 	  if (! error_state)
 	    {
@@ -108,7 +108,7 @@ If neither @var{x} nor @var{a} is scalar, the sizes of @var{x} and\n\
 		}
 	      else
 		{
-		  Matrix a = a_arg.matrix_value ();
+		  NDArray a = a_arg.array_value ();
 
 		  if (! error_state)
 		    retval = gammainc (x, a);

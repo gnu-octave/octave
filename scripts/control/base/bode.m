@@ -67,7 +67,7 @@
 ##
 ## @strong{Example}
 ## @example
-## bode(sys,[],"y_3",list("u_1","u_4");
+## bode(sys,[],"y_3", @{"u_1","u_4"@});
 ## @end example
 ## @end table
 ## @strong{Outputs}

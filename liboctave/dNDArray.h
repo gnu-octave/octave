@@ -87,7 +87,12 @@ public:
   NDArray sum (int dim = -1) const;  
   NDArray sumsq (int dim = -1) const;
   int cat (const NDArray& ra_arg, int dim, int iidx, int move);
-     
+
+  NDArray max (int dim = 0) const;
+  NDArray max (ArrayN<int>& index, int dim = 0) const;
+  NDArray min (int dim = 0) const;
+  NDArray min (ArrayN<int>& index, int dim = 0) const;
+  
   NDArray abs (void) const;
 
   ComplexNDArray fourier (int dim = 1) const;
@@ -124,6 +129,14 @@ private:
 
   NDArray (double *d, const dim_vector& dv) : MArrayN<double> (d, dv) { }
 };
+
+extern NDArray min (double d, const NDArray& m);
+extern NDArray min (const NDArray& m, double d);
+extern NDArray min (const NDArray& a, const NDArray& b);
+
+extern NDArray max (double d, const NDArray& m);
+extern NDArray max (const NDArray& m, double d);
+extern NDArray max (const NDArray& a, const NDArray& b);
 
 NDS_CMP_OP_DECLS (NDArray, double)
 NDS_BOOL_OP_DECLS (NDArray, double)

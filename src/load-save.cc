@@ -306,6 +306,13 @@ get_file_format (const std::string& fname, const std::string& orig_fname)
 {
   load_save_format retval = LS_UNKNOWN;
 
+  // If the file doesn't exist do nothing
+  std::ifstream file_exist (fname.c_str ());
+  if (file_exist)
+    file_exist.close ();
+  else
+    return LS_UNKNOWN;
+
 #ifdef HAVE_HDF5
   // check this before we open the file
   if (H5Fis_hdf5 (fname.c_str ()) > 0)
@@ -722,19 +729,26 @@ variable names if they are invalid Octave identifiers.\n\
 	{
 	  i++;
 
-	  hdf5_ifstream hdf5_file (fname.c_str ());
-
-	  if (hdf5_file.file_id >= 0)
+	  // If the file doesn't exist do nothing
+	  std::ifstream file (fname.c_str (), std::ios::in);
+	  if (file)
 	    {
-	      retval = do_load (hdf5_file, orig_fname, force, format,
-				flt_fmt, list_only, swap, verbose,
-				argv, i, argc, nargout);
+	      file.close ();
+	      
+	      hdf5_ifstream hdf5_file (fname.c_str ());
 
-	      hdf5_file.close ();
+	      if (hdf5_file.file_id >= 0)
+		{
+		  retval = do_load (hdf5_file, orig_fname, force, format,
+				    flt_fmt, list_only, swap, verbose,
+				    argv, i, argc, nargout);
+
+		  hdf5_file.close ();
+		}
+	      else
+		error ("load: couldn't open input file `%s'",
+		       orig_fname.c_str ());
 	    }
-	  else
-	    error ("load: couldn't open input file `%s'",
-		   orig_fname.c_str ());
 	}
       else
 #endif /* HAVE_HDF5 */

@@ -46,18 +46,18 @@
 ## see below for system partitioning
 ##
 ## @item  stname
-## list of strings of state signal names
+## cell array of strings of state signal names
 ##
 ## default (@var{stname}=[] on input): @code{x_n} for continuous states,
 ##                     @code{xd_n} for discrete states
 ##
 ## @item inname
-## list of strings of input signal names
+## cell array of strings of input signal names
 ##
 ## default (@var{inname} = [] on input): @code{u_n}
 ##
 ## @item outname
-## list of strings of input signal names
+## cell array of strings of input signal names
 ##
 ## default (@var{outname} = [] on input): @code{y_n}
 ##
@@ -140,7 +140,7 @@
 ## octave:1> a = [1 2 3; 4 5 6; 7 8 10];
 ## octave:2> b = [0 0 ; 0 1 ; 1 0];
 ## octave:3> c = eye(3);
-## octave:4> sys = ss(a,b,c,[],0,3,0,list("volts","amps","joules"));
+## octave:4> sys = ss(a,b,c,[],0,3,0,@{"volts","amps","joules"@});
 ## octave:5> sysout(sys);
 ## Input(s)
 ##         1: u_1

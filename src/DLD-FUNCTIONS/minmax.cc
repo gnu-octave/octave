@@ -28,8 +28,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "lo-ieee.h"
 #include "lo-mappers.h"
-#include "dMatrix.h"
-#include "CMatrix.h"
+#include "dNDArray.h"
+#include "CNDArray.h"
 #include "quit.h"
 
 #include "defun-dld.h"
@@ -37,13 +37,15 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gripes.h"
 #include "oct-obj.h"
 
+#include "ov-cx-mat.h"
+
 #define MINMAX_BODY(FCN) \
  \
   octave_value_list retval;  \
  \
   int nargin = args.length (); \
  \
-  if (nargin < 1 || nargin > 2 || nargout > 2) \
+  if (nargin < 1 || nargin > 3 || nargout > 2) \
     { \
       print_usage (#FCN); \
       return retval; \
@@ -51,9 +53,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  \
   octave_value arg1; \
   octave_value arg2; \
+  octave_value arg3; \
  \
   switch (nargin) \
     { \
+    case 3: \
+      arg3 = args(2); \
+ \
     case 2: \
       arg2 = args(1); \
  \
@@ -66,97 +72,111 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
       break; \
     } \
  \
-  if (nargin == 1 && (nargout == 1 || nargout == 0)) \
+  int dim; \
+  dim_vector dv = ((const octave_complex_matrix&) arg1) .dims (); \
+  if (error_state) \
+    { \
+      gripe_wrong_type_arg (#FCN, arg1);  \
+      return retval; \
+    } \
+ \
+  if (nargin == 3) \
+    { \
+      dim = arg3.nint_value () - 1;  \
+      if (dim < 0 || dim >= dv.length ()) \
+        { \
+	  error ("%s: invalid dimension", #FCN); \
+	  return retval; \
+	} \
+    } \
+  else \
+    { \
+      dim = 0; \
+      while ((dim < dv.length ()) && (dv (dim) <= 1)) \
+	dim++; \
+      if (dim == dv.length ()) \
+	dim = 0; \
+    } \
+ \
+  bool single_arg = (nargin == 1) || arg2.is_empty();	\
+ \
+  if (single_arg) \
+    { \
+      dv(dim) = 1; \
+      int n_dims = dv.length (); \
+      for (int i = n_dims; i > 1; i--) \
+	{ \
+	  if (dv(i-1) == 1) \
+	    n_dims--; \
+	  else \
+	    break; \
+	} \
+      dv.resize (n_dims); \
+    } \
+ \
+  if (single_arg && (nargout == 1 || nargout == 0)) \
     { \
       if (arg1.is_real_type ()) \
 	{ \
-	  Matrix m = arg1.matrix_value (); \
+	  NDArray m = arg1.array_value (); \
  \
 	  if (! error_state) \
 	    { \
-	      if (m.rows () == 1) \
-		retval(0) = m.row_ ## FCN (); \
-	      else \
-		{ \
-		  if (m.rows () == 0 || m.columns () == 0) \
-		    retval(0) = Matrix (); \
-		  else \
-		    retval(0) = m.column_ ## FCN (); \
-		} \
+	      NDArray n = m. FCN (dim); \
+	      n.resize (dv); \
+	      retval(0) = n; \
 	    } \
 	} \
       else if (arg1.is_complex_type ()) \
 	{ \
-	  ComplexMatrix m = arg1.complex_matrix_value (); \
+	  ComplexNDArray m = arg1.complex_array_value (); \
  \
 	  if (! error_state) \
 	    { \
-	      if (m.rows () == 1) \
-		retval(0) = m.row_ ## FCN (); \
-	      else \
-		{ \
-		  if (m.rows () == 0 || m.columns () == 0) \
-		    retval(0) = Matrix (); \
-		  else \
-		    retval(0) = m.column_ ## FCN (); \
-		} \
+	      ComplexNDArray n = m. FCN (dim); \
+	      n.resize (dv); \
+	      retval(0) = n; \
 	    } \
 	} \
       else \
 	gripe_wrong_type_arg (#FCN, arg1); \
     } \
-  else if (nargin == 1 && nargout == 2) \
+  else if (single_arg && nargout == 2) \
     { \
-      Array<int> index; \
+      ArrayN<int> index; \
  \
       if (arg1.is_real_type ()) \
 	{ \
-	  Matrix m = arg1.matrix_value (); \
+	  NDArray m = arg1.array_value (); \
  \
 	  if (! error_state) \
 	    { \
-	      retval.resize (2); \
- \
-	      if (m.rows () == 1) \
-		retval(0) = m.row_ ## FCN (index); \
-	      else \
-		{ \
-		  if (m.rows () == 0 || m.columns () == 0) \
-		    retval(0) = Matrix (); \
-		  else \
-		    retval(0) = m.column_ ## FCN (index); \
-		} \
+	      NDArray n = m. FCN (index, dim);	\
+	      n.resize (dv); \
+	      retval(0) = n; \
 	    } \
 	} \
       else if (arg1.is_complex_type ()) \
 	{ \
-	  ComplexMatrix m = arg1.complex_matrix_value (); \
+	  ComplexNDArray m = arg1.complex_array_value (); \
  \
 	  if (! error_state) \
 	    { \
-	      retval.resize (2); \
- \
-	      if (m.rows () == 1) \
-		retval(0) = m.row_ ## FCN (index); \
-	      else \
-		{ \
-		  if (m.rows () == 0 || m.columns () == 0) \
-		    retval(0) = Matrix (); \
-		  else \
-		    retval(0) = m.column_ ## FCN (index); \
-		} \
+	      ComplexNDArray n = m. FCN (index, dim);	\
+	      n.resize (dv); \
+	      retval(0) = n; \
 	    } \
 	} \
       else \
 	gripe_wrong_type_arg (#FCN, arg1); \
  \
-      int len = index.length (); \
+      int len = index.numel (); \
  \
       if (len > 0) \
 	{ \
 	  double nan_val = lo_ieee_nan_value (); \
  \
-	  RowVector idx (len); \
+	  NDArray idx (index.dims ()); \
  \
 	  for (int i = 0; i < len; i++) \
 	    { \
@@ -169,9 +189,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 	  retval(1) = idx; \
 	} \
       else \
-	retval(1) = Matrix (); \
+	retval(1) = NDArray (); \
     } \
-  else if (nargin == 2) \
+  else \
     { \
       int arg1_is_scalar = arg1.is_scalar_type (); \
       int arg2_is_scalar = arg2.is_scalar_type (); \
@@ -184,10 +204,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 	  if (arg1_is_complex || arg2_is_complex) \
 	    { \
 	      Complex c1 = arg1.complex_value (); \
-	      ComplexMatrix m2 = arg2.complex_matrix_value (); \
+	      ComplexNDArray m2 = arg2.complex_array_value (); \
 	      if (! error_state) \
 		{ \
-		  ComplexMatrix result = FCN (c1, m2); \
+		  ComplexNDArray result = FCN (c1, m2); \
 		  if (! error_state) \
 		    retval(0) = result; \
 		} \
@@ -195,11 +215,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 	  else \
 	    { \
 	      double d1 = arg1.double_value (); \
-	      Matrix m2 = arg2.matrix_value (); \
+	      NDArray m2 = arg2.array_value (); \
  \
 	      if (! error_state) \
 		{ \
-		  Matrix result = FCN (d1, m2); \
+		  NDArray result = FCN (d1, m2); \
 		  if (! error_state) \
 		    retval(0) = result; \
 		} \
@@ -209,24 +229,24 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 	{ \
 	  if (arg1_is_complex || arg2_is_complex) \
 	    { \
-	      ComplexMatrix m1 = arg1.complex_matrix_value (); \
+	      ComplexNDArray m1 = arg1.complex_array_value (); \
  \
 	      if (! error_state) \
 		{ \
 		  Complex c2 = arg2.complex_value (); \
-		  ComplexMatrix result = FCN (m1, c2); \
+		  ComplexNDArray result = FCN (m1, c2); \
 		  if (! error_state) \
 		    retval(0) = result; \
 		} \
 	    } \
 	  else \
 	    { \
-	      Matrix m1 = arg1.matrix_value (); \
+	      NDArray m1 = arg1.array_value (); \
  \
 	      if (! error_state) \
 		{ \
 		  double d2 = arg2.double_value (); \
-		  Matrix result = FCN (m1, d2); \
+		  NDArray result = FCN (m1, d2); \
 		  if (! error_state) \
 		    retval(0) = result; \
 		} \
@@ -236,15 +256,15 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 	{ \
 	  if (arg1_is_complex || arg2_is_complex) \
 	    { \
-	      ComplexMatrix m1 = arg1.complex_matrix_value (); \
+	      ComplexNDArray m1 = arg1.complex_array_value (); \
  \
 	      if (! error_state) \
 		{ \
-		  ComplexMatrix m2 = arg2.complex_matrix_value (); \
+		  ComplexNDArray m2 = arg2.complex_array_value (); \
  \
 		  if (! error_state) \
 		    { \
-		      ComplexMatrix result = FCN (m1, m2); \
+		      ComplexNDArray result = FCN (m1, m2); \
 		      if (! error_state) \
 			retval(0) = result; \
 		    } \
@@ -252,15 +272,15 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 	    } \
 	  else \
 	    { \
-	      Matrix m1 = arg1.matrix_value (); \
+	      NDArray m1 = arg1.array_value (); \
  \
 	      if (! error_state) \
 		{ \
-		  Matrix m2 = arg2.matrix_value (); \
+		  NDArray m2 = arg2.array_value (); \
  \
 		  if (! error_state) \
 		    { \
-		      Matrix result = FCN (m1, m2); \
+		      NDArray result = FCN (m1, m2); \
 		      if (! error_state) \
 			retval(0) = result; \
 		    } \
@@ -268,21 +288,18 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 	    } \
 	} \
     } \
-  else \
-    panic_impossible (); \
  \
   return retval
 
 DEFUN_DLD (min, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Mapping Function} {} min (@var{x}, @var{y})\n\
+@deftypefn {Mapping Function} {} min (@var{x}, @var{y}, @var{dim})\n\
 @deftypefnx {Mapping Function} {[@var{w}, @var{iw}] =} min (@var{x})\n\
 @cindex Utility Functions\n\
 For a vector argument, return the minimum value.  For a matrix\n\
 argument, return the minimum value from each column, as a row\n\
-vector.\n\
-For two matrices (or a matrix and scalar),\n\
-return the pair-wise minimum.\n\
+vector, or over the dimension @var{dim} if defined. For two matrices\n\
+(or a matrix and scalar), return the pair-wise minimum.\n\
 Thus,\n\
 \n\
 @example\n\
@@ -323,14 +340,13 @@ minimum value(s). Thus,\n\
 
 DEFUN_DLD (max, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Mapping Function} {} max (@var{x}, @var{y})\n\
+@deftypefn {Mapping Function} {} max (@var{x}, @var{y}, @var{dim})\n\
 @deftypefnx {Mapping Function} {[@var{w}, @var{iw}] =} max (@var{x})\n\
 @cindex Utility Functions\n\
 For a vector argument, return the maximum value.  For a matrix\n\
 argument, return the maximum value from each column, as a row\n\
-vector.\n\
-For two matrices (or a matrix and scalar),\n\
-return the pair-wise maximum.\n\
+vector, or over the dimension @var{dim} if defined. For two matrices\n\
+(or a matrix and scalar), return the pair-wise maximum.\n\
 Thus,\n\
 \n\
 @example\n\

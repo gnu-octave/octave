@@ -231,21 +231,22 @@ empty_arg (const char *name, int nr, int nc)
 // See if the given file is in the path.
 
 std::string
-search_path_for_file (const std::string& path, const std::string& name)
+search_path_for_file (const std::string& path, const string_vector& names)
 {
   dir_path p (path);
 
-  return octave_env::make_absolute (p.find (name), octave_env::getcwd ());
+  return octave_env::make_absolute (p.find_first_of (names),
+				    octave_env::getcwd ());
 }
 
 // Find all locations of the given file in the path.
 
 string_vector
-search_path_for_all_files (const std::string& path, const std::string& name)
+search_path_for_all_files (const std::string& path, const string_vector& names)
 {
   dir_path p (path);
 
-  string_vector sv = p.find_all (name);
+  string_vector sv = p.find_all_first_of (names);
 
   int len = sv.length ();
 
@@ -275,6 +276,10 @@ Return the absolute name name of @var{file} if it can be found in\n\
 the list of directories specified by @code{LOADPATH}.\n\
 If no file is found, return an empty matrix.\n\
 \n\
+If the first argument is a cell array of of strings, search each\n\
+directory of the loadpath for element of the cell array and return\n\
+the first that matches.\n\
+\n\
 If the second optional argument @code{\"all\"} is supplied, return\n\
 a cell array containing the list of all files that have the same\n\
 name in the path.  If no files are found, return an empty cell array.\n\
@@ -283,25 +288,38 @@ name in the path.  If no files are found, return an empty cell array.\n\
 {
   octave_value retval;
 
-  int argc = args.length () + 1;
+  int nargin = args.length ();
 
-  string_vector argv = args.make_argv ("file_in_loadpath");
-
-  if (error_state)
-    return retval;
-
-  if (argc == 2)
+  if (nargin == 1 || nargin == 2)
     {
-      std::string fname
-	= octave_env::make_absolute (Vload_path_dir_path.find (argv[1]),
-				     octave_env::getcwd ());
-      if (fname.empty ())
-	retval = Matrix ();
+      string_vector names = args(0).all_strings ();
+
+      if (! error_state && names.length () > 0)
+	{
+	  if (nargin == 1)
+	    {
+	      std::string fname = octave_env::make_absolute
+		(Vload_path_dir_path.find_first_of (names),
+		 octave_env::getcwd ());
+
+	      if (fname.empty ())
+		retval = Matrix ();
+	      else
+		retval = fname;
+	    }
+	  else if (nargin == 2)
+	    {
+	      std::string opt = args(1).string_value ();
+
+	      if (! error_state && opt == "all")
+		retval = Cell (make_absolute (Vload_path_dir_path.find_all_first_of (names)));
+	      else
+		print_usage ("file_in_loadpath: invalid option");
+	    }
+	}
       else
-	retval = fname;
+	error ("file_in_loadpath: expecting string as first argument");
     }
-  else if (argc == 3 && argv[2] == "all")
-    retval = Cell (make_absolute (Vload_path_dir_path.find_all (argv[1])));
   else
     print_usage ("file_in_loadpath");
 
@@ -323,6 +341,10 @@ file_in_path (LOADPATH, \"nargchk.m\")\n\
      @result{} \"@value{OCTAVEHOME}/share/octave/2.0/m/general/nargchk.m\"\n\
 @end example\n\
 \n\
+If the second argument is a cell array of of strings, search each\n\
+directory of the path for element of the cell array and return\n\
+the first that matches.\n\
+\n\
 If the third optional argument @code{\"all\"} is supplied, return\n\
 a cell array containing the list of all files that have the same\n\
 name in the path.  If no files are found, return an empty cell array.\n\
@@ -330,24 +352,43 @@ name in the path.  If no files are found, return an empty cell array.\n\
 {
   octave_value retval;
 
-  int argc = args.length () + 1;
+  int nargin = args.length ();
 
-  string_vector argv = args.make_argv ("file_in_path");
-
-  if (error_state)
-    return retval;
-
-  if (argc == 3)
+  if (nargin == 2 || nargin == 3)
     {
-      std::string fname = search_path_for_file (argv[1], argv[2]);
+      std::string path = args(0).string_value ();
 
-      if (fname.empty ())
-	retval = Matrix ();
+      if (! error_state)
+	{
+	  string_vector names = args(0).all_strings ();
+
+	  if (! error_state && names.length () > 0)
+	    {
+	      if (nargin == 2)
+		{
+		  std::string fname = search_path_for_file (path, names);
+
+		  if (fname.empty ())
+		    retval = Matrix ();
+		  else
+		    retval = fname;
+		}
+	      else if (nargin == 3)
+		{
+		  std::string opt = args(1).string_value ();
+
+		  if (! error_state && opt == "all")
+		    retval = Cell (make_absolute (search_path_for_all_files (path, names)));
+		  else
+		    print_usage ("file_in_path: invalid option");
+		}
+	    }
+	  else
+	    error ("file_in_path: expecting string as second argument");
+	}
       else
-	retval = fname;
+	error ("file_in_path: expecting string as first argument");
     }
-  else if (argc == 4 && argv[3] == "all")
-    retval = Cell (make_absolute (search_path_for_all_files (argv[1], argv[2])));
   else
     print_usage ("file_in_path");
 
@@ -619,6 +660,24 @@ representation.\n\
 
   return retval;
 }
+
+DEFUN (find_first_of_in_loadpath, args, , "")
+{
+  octave_value retval;
+
+  if (args.length () == 1)
+    {
+      string_vector names = args(0).all_strings ();
+
+      if (! error_state)
+	retval = Vload_path_dir_path.find_all_first_of (names);
+    }
+  else
+    print_usage ("find_first_of_in_loadpath");
+
+  return retval;
+}
+
 
 // #if 0
 

@@ -1,3 +1,21 @@
+2002-12-26  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* utils.cc (search_path_for_file): Second arg now string_vector.
+	Use find_first_of, not find.
+	(search_path_for_all_files): Second arg now string_vector.
+	Use find_all_first_of, not find_all.
+	(Ffile_in_path): Accept cell array of strings as first argument.
+	(Ffile_in_loadpath): Likewise.
+
+	* dynamic-ld.cc (octave_dynamic_loader::load): New arg, file_name.
+	(octave_dynamic_loader::do_load): Likewise.  If file_name is not
+	empty, use it instead of searching in path.
+
+	* parse.y (load_fcn_from_file): Use find_first_of to perform search.
+
+	* ov-cell.cc (octave_cell::all_strings): New function.
+	* ov-cell.h: Provide decl.
+
 2002-12-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* parse.y (function_end): If parsing a nested function, set

@@ -88,6 +88,8 @@ public:
 
   octave_value_list list_value (void) const;
 
+  string_vector all_strings (void) const;
+
   void print (std::ostream& os, bool pr_as_read_syntax = false) const;
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;

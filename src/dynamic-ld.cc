@@ -209,7 +209,8 @@ void clear_function (const std::string& fcn_name)
 }
 
 bool
-octave_dynamic_loader::do_load (const std::string& fcn_name)
+octave_dynamic_loader::do_load (const std::string& fcn_name,
+				const std::string& file_name)
 {
   bool retval = false;
 
@@ -241,7 +242,8 @@ octave_dynamic_loader::do_load (const std::string& fcn_name)
 
       if (! function)
 	{
-	  std::string oct_file_name = oct_file_in_path (fcn_name);
+	  std::string oct_file_name
+	    = file_name.empty () ? oct_file_in_path (fcn_name) : file_name;
 
 	  if (! oct_file_name.empty ())
 	    {
@@ -299,9 +301,10 @@ octave_dynamic_loader::do_remove (const std::string& fcn_name, octave_shlib& shl
 }
 
 bool
-octave_dynamic_loader::load (const std::string& fcn_name)
+octave_dynamic_loader::load (const std::string& fcn_name,
+			     const std::string& file_name)
 {
-  return (instance_ok ()) ? instance->do_load (fcn_name) : false;
+  return (instance_ok ()) ? instance->do_load (fcn_name, file_name) : false;
 }
 
 bool

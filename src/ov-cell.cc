@@ -248,6 +248,30 @@ octave_cell::list_value (void) const
   return retval;
 }
 
+string_vector
+octave_cell::all_strings (void) const
+{
+  int nr = rows ();
+  int nc = columns ();
+
+  string_vector retval (nr * nc);
+
+  int k = 0;
+
+  for (int j = 0; j < nc; j++)
+    {
+      for (int i = 0; i < nr; i++)
+	{
+	  retval[k++] = matrix(i,j).string_value ();
+
+	  if (error_state)
+	    return string_vector ();
+	}
+    }
+
+  return retval;
+}
+
 void
 octave_cell::print (std::ostream& os, bool) const
 {

@@ -48,10 +48,10 @@ keyword_almost_match (const char * const *std, int *min_len,
 extern int empty_arg (const char *name, int nr, int nc);
 
 extern std::string
-search_path_for_file (const std::string&, const std::string&);
+search_path_for_file (const std::string&, const string_vector&);
 
 extern string_vector
-search_path_for_all_files (const std::string&, const std::string&);
+search_path_for_all_files (const std::string&, const string_vector&);
 
 extern std::string file_in_path (const std::string&, const std::string&);
 extern std::string fcn_file_in_path (const std::string&);

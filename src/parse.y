@@ -45,11 +45,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "file-ops.h"
 #include "file-stat.h"
 #include "lo-sstream.h"
+#include "oct-env.h"
 #include "oct-time.h"
 #include "quit.h"
 
 #include "comment-list.h"
+#include "defaults.h"
 #include "defun.h"
+#include "dirfns.h"
 #include "dynamic-ld.h"
 #include "error.h"
 #include "input.h"
@@ -3373,14 +3376,24 @@ load_fcn_from_file (symbol_record *sym_rec, bool exec_script)
 
   std::string nm = sym_rec->name ();
 
-  if (octave_dynamic_loader::load (nm))
+  static string_vector names (2);
+
+  names[0] = nm + ".oct";
+  names[1] = nm + ".m";
+
+  std::string file
+   = octave_env::make_absolute (Vload_path_dir_path.find_first_of (names),
+                                octave_env::getcwd ());
+
+  int len = file.length ();
+
+  if (file.substr (len-4, len-1) == ".oct")
     {
-      force_link_to_function (nm);
+      if (octave_dynamic_loader::load (nm, file))
+        force_link_to_function (nm);
     }
   else
     {
-      std::string ff = fcn_file_in_path (nm);
-
       // These are needed by yyparse.
 
       unwind_protect::begin_frame ("load_fcn_from_file");
@@ -3389,10 +3402,10 @@ load_fcn_from_file (symbol_record *sym_rec, bool exec_script)
       unwind_protect_str (curr_fcn_file_full_name);
 
       curr_fcn_file_name = nm;
-      curr_fcn_file_full_name = ff;
+      curr_fcn_file_full_name = file;
 
-      if (ff.length () > 0)
-	script_file_executed = parse_fcn_file (ff, exec_script);
+      if (file.length () > 0)
+	script_file_executed = parse_fcn_file (file, exec_script);
 
       if (! (error_state || script_file_executed))
 	force_link_to_function (nm);

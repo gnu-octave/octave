@@ -258,12 +258,10 @@ STATUS should be an integer value.  If STATUS is missing, 0 is assumed.")
 
       if (args.length () > 0)
 	{
-	  // XXX FIXME XXX -- need a safe uniform way to do this.
+	  int tmp = args(0).nint_value ();
 
-	  double tmp = args(0).double_value ();
-
-	  if (! error_state && ! xisnan (tmp))
-	    exit_status = NINT (tmp);
+	  if (! error_state)
+	    exit_status = tmp;
 	}
 
       clean_up_and_exit (exit_status);

@@ -445,7 +445,7 @@ make_diag (const octave_value& a, const octave_value& b)
 {
   octave_value retval;
 
-  double tmp = b.double_value ();
+  int k = b.nint_value ();
 
   if (error_state)
     {
@@ -453,7 +453,6 @@ make_diag (const octave_value& a, const octave_value& b)
       return retval;
     }
 
-  int k = NINT (tmp);
   int n = ABS (k) + 1;
 
   if (a.is_real_type ())
@@ -654,7 +653,7 @@ m = size (x, 2): return number of columns in x")
     }
   else if (nargin == 2 && nargout < 2)
     {
-      int nd = NINT (args(1).double_value ());
+      int nd = args(1).nint_value ();
 
       if (error_state)
 	error ("size: expecting scalar as second argument");
@@ -767,6 +766,46 @@ DEFUN (is_complex, args, ,
   return retval;
 }
 
+DEFUN (isempty, args, ,
+  "isempty (x): return nonzero if x is an empty matrix or empty list")
+{
+  double retval = 0.0;
+
+  if (args.length () == 1)
+    {
+      octave_value arg = args(0);
+
+      if (arg.is_matrix_type ())
+	retval = static_cast<double> (arg.rows () == 0 || arg.columns () == 0);
+      else if (arg.is_list ())
+	retval = static_cast<double> (arg.length () == 0);
+    }
+  else
+    print_usage ("isempty");
+
+  return retval;
+}
+
+DEFUN (is_matrix, args, ,
+  "is_matrix (x): return nonzero if x can be considered a matrix")
+{
+  double retval = 0.0;
+
+  if (args.length () == 1)
+    {
+      octave_value arg = args(0);
+
+      if (arg.is_scalar_type ())
+	retval = 1.0;
+      else if (arg.is_matrix_type ())
+	retval = static_cast<double> (arg.rows () >= 1 && arg.columns () >= 1);
+    }
+  else
+    print_usage ("is_matrix");
+
+  return retval;
+}
+
 DEFUN (is_struct, args, ,
   "is_struct (x): return nonzero if x is a structure")
 {
@@ -863,8 +902,7 @@ get_dimensions (const octave_value& a, const char *warn_for,
 {
   if (a.is_scalar_type ())
     {
-      double tmp = a.double_value ();
-      nr = nc = NINT (tmp);
+      nr = nc = a.nint_value ();
     }
   else
     {
@@ -892,8 +930,8 @@ static void
 get_dimensions (const octave_value& a, const octave_value& b,
 		const char *warn_for, int& nr, int& nc)
 {
-  nr = (a.is_empty ()) ? 0 : NINT (a.double_value ());
-  nc = (b.is_empty ()) ? 0 : NINT (b.double_value ());
+  nr = a.is_empty () ? 0 : a.nint_value ();
+  nc = b.is_empty () ? 0 : b.nint_value ();
 
   if (error_state)
     error ("%s: expecting two scalar arguments", warn_for);
@@ -1084,12 +1122,7 @@ See also: logspace")
     }
 
   if (nargin == 3)
-    {
-      double n = args(2).double_value ();
-
-      if (! error_state)
-	npoints = NINT (n);
-    }
+    npoints = args(2).nint_value ();
 
   if (! error_state)
     {

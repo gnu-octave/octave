@@ -880,32 +880,25 @@ do_fread (octave_stream& os, const octave_value& size_arg,
 
 	  if (! error_state)
 	    {
-	      double dskip = skip_arg.double_value ();
+	      int skip = skip_arg.int_value (true);
 
 	      if (! error_state)
 		{
-		  if (D_NINT (dskip) == dskip)
-		    {
-		      int skip = NINT (dskip);
+		  string arch = arch_arg.string_value ();
 
-		      string arch = arch_arg.string_value ();
+		  if (! error_state)
+		    {
+		      oct_mach_info::float_format flt_fmt
+			= oct_mach_info::string_to_float_format (arch);
 
 		      if (! error_state)
-			{
-			  oct_mach_info::float_format flt_fmt
-			    = oct_mach_info::string_to_float_format (arch);
-
-			  if (! error_state)
-			    retval = os.read (size, dt, skip, flt_fmt, count);
-			}
-		      else
-			::error ("fread: architecture type must be a string");
+			retval = os.read (size, dt, skip, flt_fmt, count);
 		    }
 		  else
-		    ::error ("fread: skip must be an integer");
+		    ::error ("fread: architecture type must be a string");
 		}
 	      else
-		::error ("fread: invalid skip specified");
+		::error ("fread: skip must be an integer");
 	    }
 	  else
 	    ::error ("fread: invalid data type specified");
@@ -1022,33 +1015,28 @@ do_fwrite (octave_stream& os, const octave_value& data,
 
       if (! error_state)
 	{
-	  double dskip = skip_arg.double_value ();
+	  int skip = skip_arg.int_value (true);
 
 	  if (! error_state)
 	    {
-	      if (D_NINT (dskip) == dskip)
-		{
-		  int skip = NINT (dskip);
+	      string arch = arch_arg.string_value ();
 
-		  string arch = arch_arg.string_value ();
+	      if (! error_state)
+		{
+		  oct_mach_info::float_format flt_fmt
+		    = oct_mach_info::string_to_float_format (arch);
 
 		  if (! error_state)
-		    {
-		      oct_mach_info::float_format flt_fmt
-			= oct_mach_info::string_to_float_format (arch);
-
-		      if (! error_state)
-			retval = os.write (data, dt, skip, flt_fmt);
-		    }
-		  else
-		    ::error ("fwrite: architecture type must be a string");
+		    retval = os.write (data, dt, skip, flt_fmt);
 		}
 	      else
-		::error ("fwrite: skip must be an integer");
+		::error ("fwrite: architecture type must be a string");
 	    }
 	  else
-	    ::error ("fwrite: invalid skip specified");
+	    ::error ("fwrite: skip must be an integer");
 	}
+      else
+	::error ("fwrite: invalid precision specified");
     }
   else
     ::error ("fwrite: precision must be a string");
@@ -1341,18 +1329,11 @@ printed.")
 
   if (args.length () == 1)
     {
-      double dmask = args(0).double_value ();
+      int mask = args(0).int_value (true);
 
-      if (error_state)
+      if (! error_state)
 	{
-	  status = -1;
-	  ::error ("umask: expecting integer argument");
-	}
-      else
-	{
-	  int mask = NINT (dmask);
-
-	  if (mask != dmask || mask < 0)
+	  if (mask < 0)
 	    {
 	      status = -1;
 	      ::error ("umask: MASK must be a positive integer value");
@@ -1364,6 +1345,11 @@ printed.")
 	      if (! error_state)
 		status = convert (file_ops::umask (oct_mask), 10, 8);
 	    }
+	}
+      else
+	{
+	  status = -1;
+	  ::error ("umask: expecting integer argument");
 	}
     }
   else

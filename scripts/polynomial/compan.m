@@ -42,7 +42,7 @@
 ##
 ## SEE ALSO: poly, roots, residue, conv, deconv, polyval, polyderiv, polyinteg
 
-## Author: Tony Richardson <amr@mpl.ucsd.edu>
+## Author: Tony Richardson <arichard@stark.cc.oh.us>
 ## Created: June 1994
 ## Adapted-By: jwe
 

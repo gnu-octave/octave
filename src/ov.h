@@ -360,6 +360,12 @@ public:
 
   octave_value eval (void) { return *this; }
 
+  virtual int int_value (bool req_int = false, bool frc_str_conv = false) const
+    { return rep->int_value (req_int, frc_str_conv); }
+
+  virtual int nint_value (bool frc_str_conv = false) const
+    { return rep->nint_value (frc_str_conv); }
+
   virtual double double_value (bool frc_str_conv = false) const
     { return rep->double_value (frc_str_conv); }
 

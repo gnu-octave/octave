@@ -1,4 +1,33 @@
+Thu Oct 29 09:27:04 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-list.cc (Fsplice): Use new octave_value::int_value function here.
+	(octave_list::do_index_op): Likewise.
+	(octave_list::assign): Likewise.
+	* toplev.cc (Fquit): Likewise.
+	* syscalls.cc (Fwaitpid): Likewise.
+	(Ffcntl): Likewise.
+	* file-io.cc (do_fread): Likewise.
+	(do_fwrite): Likewise.
+	* data.cc (make_diag): Likewise.
+	(Fsize): Likewise.
+	(get_dimensions): Likewise.
+	(Flinspace): 
+
+	* ov-base.cc (octave_base_value::int_value): New function.
+	(octave_base_value::nint_value): Ditto.
+	* ov.h (octave_value::int_value): Ditto.
+	(octave_value::nint_value): Ditto.
+
+	* ov-list.cc (octave_list::assign): Fix off-by-one error.
+
 Wed Oct 28 11:01:37 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* load-save.cc (read_mat_ascii_data): Try harder to convert file
+	name to valid variable name.
+
+	* data.cc (Fisempty, Fis_matrix): New functions.
+
+	* ov-str-mat.h (octave_char_matrix_str::is_matrix_type): New function.
 
 	* OPERATORS/op-list.cc: New file.
 	* Makefile.in (OP_XSRC): Add it to the list.

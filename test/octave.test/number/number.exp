@@ -31,11 +31,11 @@ set prog_output "ans = 0"
 do_test is_matrix-8.m
 
 set test is_matrix-9
-set prog_output "error:.*"
+set prog_output "\n... is_matrix:.*"
 do_test is_matrix-9.m
 
 set test is_matrix-10
-set prog_output "error:.*"
+set prog_output "\n... is_matrix:.*"
 do_test is_matrix-10.m
 
 set test is_vector-1

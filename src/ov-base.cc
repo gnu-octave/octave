@@ -167,6 +167,52 @@ octave_base_value::length (void) const
   return retval;
 }
 
+int
+octave_base_value::int_value (bool require_int, bool frc_str_conv) const
+{
+  int retval = 0;
+
+  double d = double_value (frc_str_conv);
+
+  if (! error_state)
+    {
+      if (require_int && D_NINT (d) != d)
+	{
+	  error ("conversion to integer value failed");
+	  return retval;
+	}
+
+      retval = static_cast<int> (d);
+    }
+  else
+    gripe_wrong_type_arg ("octave_base_value::int_value ()", type_name ());
+
+  return retval;
+}
+
+int
+octave_base_value::nint_value (bool frc_str_conv) const
+{
+  int retval = 0;
+
+  double d = double_value (frc_str_conv);
+
+  if (! error_state)
+    {
+      if (xisnan (d))
+	{
+	  error ("conversion of NaN to integer value failed");
+	  return retval;
+	}
+
+      retval = NINT (d);
+    }
+  else
+    gripe_wrong_type_arg ("octave_base_value::nint_value ()", type_name ());
+
+  return retval;
+}
+
 double
 octave_base_value::double_value (bool) const
 {

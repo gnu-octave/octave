@@ -1028,12 +1028,17 @@ read_mat_ascii_data (istream& is, const string& filename,
 
   string varname;
 
-  size_t pos = filename.find ('.');
+  size_t pos = filename.rfind ('/');
 
   if (pos != NPOS)
-    varname = filename.substr (0, pos);
+    varname = filename.substr (pos+1);
   else
     varname = filename;
+
+  pos = varname.find ('.');
+
+  if (pos != NPOS)
+    varname = varname.substr (0, pos);
 
   if (valid_identifier (varname.c_str ()))
     {

@@ -1,5 +1,18 @@
 Wed Oct 28 11:51:14 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* general/is_square.m: 
+
+	* general/isempty.m, general/is_matrix.m: Delete.
+
+	* general/is_symmetric: Delete special case for strings.  Whether
+	the conversion is valid should depend on implicit_str_to_num_ok.
+
+	* general/is_square.m: If arg is not a matrix, don't check size,
+	just return 0.
+	* general/is_symmetric: Likewise.
+	* general/is_vector.m: Likewise.
+	* general/is_scalar.m: Likewise.
+
 	* general/length.m: Delete.
 
 Fri Oct 23 00:21:55 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>

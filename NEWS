@@ -43,202 +43,229 @@ Summary of changes for version 2.1.x:
 
     In finance (new directory):
 
-      fv
-      fvl
-      irr
-      nper
-      npv
-      pmt
-      pv
-      pvl
-      rate
-      vol
+      fv    -- future value of an investment
+      fvl   -- future value of an initial lump sum investment
+      irr   -- internal rate of return of an investment
+      nper  -- number of payments needed for amortizing a loan
+      npv   -- net present value of a series of payments
+      pmt   -- amount of periodic payment needed to amortize a loan
+      pv    -- present value of an investment
+      pvl   -- present value of an investment that pays off at the end
+      rate  -- rate of return of an investment
+      vol   -- volatility of financial time series data
 
     In linear-algebra:
 
-      dmult
+      dmult -- rescale the rows of a matrix
 
     In signal:
 
-      arch_fit
-      arch_rnd
-      arch_test
-      arma_rnd
-      autocor
-      autocov
-      autoreg_matrix
-      bartlett
-      blackman
-      diffpara
-      durbinlevinson
-      fractdiff
-      hamming
-      hanning
-      hurst
-      periodogram
-      rectangle_lw
-      rectangle_sw
-      sinetone
-      sinewave
-      spectral_adf
-      spectral_xdf
-      spencer
-      stft
-      synthesis
-      triangle_lw
-      triangle_sw
-      yulewalker
+      arch_fit       -- fit an ARCH regression model
+      arch_rnd       -- simulate an ARCH process
+      arch_test      -- test for conditional heteroscedascity
+      arma_rnd       -- simulate an ARMA process
+      autocor        -- compute autocorrelations
+      autocov        -- compute autocovariances
+      autoreg_matrix -- design matrix for autoregressions
+      bartlett       -- coefficients of the Bartlett (triangular) window
+      blackman       -- coefficients of the Blackman window
+      diffpara       -- estimate the fractional differencing parameter
+      durbinlevinson -- perform one step of the Durbin-Levinson algorithm
+      fractdiff      -- compute fractional differences
+      hamming        -- coefficients of the Hamming window
+      hanning        -- coefficients of the Hanning window
+      hurst          -- estimate the Hurst parameter
+      periodogram    -- compute the periodogram
+      rectangle_lw   -- rectangular lag window
+      rectangle_sw   -- rectangular spectral window
+      sinetone       -- compute a sine tone
+      sinewave       -- compute a sine wave
+      spectral_adf   -- spectral density estimation
+      spectral_xdf   -- spectral density estimation
+      spencer        -- apply Spencer's 15-point MA filter
+      stft           -- short-term Fourier transform
+      synthesis      -- recover a signal from its short-term Fourier transform
+      triangle_lw    -- triangular lag window
+      triangle_sw    -- triangular spectral window
+      yulewalker     -- fit AR model by Yule-Walker method
 
     In statistics/base (new directory):
 
-      center
-      cloglog
-      cor
-      cov
-      cut
-      iqr
-      kendall
-      logit
-      mean
-      meansq
-      moment
-      ppplot
-      probit
-      qqplot
-      range
-      ranks
-      run_count
-      spearman
-      statistics
-      studentize
-      table
-      values
-      var
+      center     -- center by subtracting means
+      cloglog    -- complementary log-log function
+      cor        -- compute correlations
+      cov        -- compute covariances
+      cut        -- cut data into intervals
+      iqr        -- interquartile range
+      kendall    -- kendall's rank correlation tau
+      logit      -- logit transformation
+      mean       -- compute arithmetic, geometric, and harmonic mean
+      meansq     -- compute mean square
+      moment     -- compute moments
+      ppplot     -- perform a PP-plot (probability plot)
+      probit     -- probit transformation
+      qqplot     -- perform a QQ-plot (quantile plot)
+      range      -- compute range
+      ranks      -- compute ranks
+      run_count  -- count upward runs
+      spearman   -- spearman's rank correlation rho
+      statistics -- compute basic statistics
+      studentize -- subtract mean and divide by standard deviation
+      table      -- cross tabulation
+      values     -- extract unique elements
+      var        -- compute variance
 
     In statistics/distributions (new directory):
 
-      beta_cdf
-      beta_inv
-      beta_pdf
-      beta_rnd
-      binomial_cdf
-      binomial_inv
-      binomial_pdf
-      binomial_rnd
-      cauchy_cdf
-      cauchy_inv
-      cauchy_pdf
-      cauchy_rnd
-      chisquare_cdf
-      chisquare_inv
-      chisquare_pdf
-      chisquare_rnd
-      discrete_cdf
-      discrete_inv
-      discrete_pdf
-      discrete_rnd
-      empirical_cdf
-      empirical_inv
-      empirical_pdf
-      empirical_rnd
-      exponential_cdf
-      exponential_inv
-      exponential_pdf
-      exponential_rnd
-      f_cdf
-      f_inv
-      f_pdf
-      f_rnd
-      gamma_cdf
-      gamma_inv
-      gamma_pdf
-      gamma_rnd
-      geometric_cdf
-      geometric_inv
-      geometric_pdf
-      geometric_rnd
-      hypergeometric_cdf
-      hypergeometric_inv
-      hypergeometric_pdf
-      hypergeometric_rnd
-      kolmogorov_smirnov_cdf
-      laplace_cdf
-      laplace_inv
-      laplace_pdf
-      laplace_rnd
-      logistic_cdf
-      logistic_inv
-      logistic_pdf
-      logistic_rnd
-      lognormal_cdf
-      lognormal_inv
-      lognormal_pdf
-      lognormal_rnd
-      normal_cdf
-      normal_inv
-      normal_pdf
-      normal_rnd
-      pascal_cdf
-      pascal_inv
-      pascal_pdf
-      pascal_rnd
-      poisson_cdf
-      poisson_inv
-      poisson_pdf
-      poisson_rnd
-      stdnormal_cdf
-      stdnormal_inv
-      stdnormal_pdf
-      stdnormal_rnd
-      t_cdf
-      t_inv
-      t_pdf
-      t_rnd
-      uniform_cdf
-      uniform_inv
-      uniform_pdf
-      uniform_rnd
-      weibull_cdf
-      weibull_inv
-      weibull_pdf
-      weibull_rnd
-      wiener_rnd
+      beta_cdf           -- CDF of the Beta distribution
+      beta_inv           -- Quantile function of the Beta distribution
+      beta_pdf           -- PDF of the Beta distribution
+      beta_rnd           -- Random deviates from the Beta distribution
+
+      binomial_cdf       -- CDF of the binomial distribution
+      binomial_inv       -- Quantile function of the binomial distribution
+      binomial_pdf       -- PDF of the binomial distribution
+      binomial_rnd       -- Random deviates from the binomial distribution
+
+      cauchy_cdf         -- CDF of the Cauchy distribution
+      cauchy_inv         -- Quantile function of the Cauchy distribution
+      cauchy_pdf         -- PDF of the Cauchy distribution
+      cauchy_rnd         -- Random deviates from the Cauchy distribution
+
+      chisquare_cdf      -- CDF of the chi-square distribution
+      chisquare_inv      -- Quantile function of the chi-square distribution
+      chisquare_pdf      -- PDF of the chi-sqaure distribution
+      chisquare_rnd      -- Random deviates from the chi-square distribution
+
+      discrete_cdf       -- CDF of a discrete distribution
+      discrete_inv       -- Quantile function of a discrete distribution
+      discrete_pdf       -- PDF of a discrete distribution
+      discrete_rnd       -- Random deviates from a discrete distribution
+
+      empirical_cdf      -- CDF of the empirical distribution
+      empirical_inv      -- Quantile function of the empirical distribution
+      empirical_pdf      -- PDF of the empirical distribution
+      empirical_rnd      -- Bootstrap samples from the empirical distribution
+
+      exponential_cdf    -- CDF of the exponential distribution
+      exponential_inv    -- Quantile function of the exponential distribution
+      exponential_pdf    -- PDF of the exponential distribution
+      exponential_rnd    -- Random deviates from the exponential distribution
+
+      f_cdf              -- CDF of the F distribution
+      f_inv              -- Quantile function of the F distribution
+      f_pdf              -- PDF of the F distribution
+      f_rnd              -- Random deviates from the F distribution
+
+      gamma_cdf          -- CDF of the Gamma distribution
+      gamma_inv          -- Quantile function of the Gamma distribution
+      gamma_pdf          -- PDF of the Gamma distribution
+      gamma_rnd          -- Random deviates from the Gamma distribution
+
+      geometric_cdf      -- CDF of the geometric distribution
+      geometric_inv      -- Quantile function of the geometric distribution
+      geometric_pdf      -- PDF of the geometric distribution
+      geometric_rnd      -- Random deviates from the geometric distribution
+
+      hypergeometric_cdf -- CDF of the hypergeometric distribution
+      hypergeometric_inv -- Random deviates from hypergeometric distribution
+      hypergeometric_pdf -- PDF of the hypergeometric distribution
+      hypergeometric_rnd -- Random deviates from hypergeometric distribution
+
+      kolmogorov_smirnov_cdf -- CDF of the Kolmogorov-Smirnov distribution
+
+      laplace_cdf        -- CDF of the Laplace distribution
+      laplace_inv        -- Quantile function of the Laplace distribution
+      laplace_pdf        -- PDF of the Laplace distribution
+      laplace_rnd        -- Random deviates from the Laplace distribution
+
+      logistic_cdf       -- CDF of the logistic distribution
+      logistic_inv       -- Quantile function of the logistic distribution
+      logistic_pdf       -- PDF of the logistic distribution
+      logistic_rnd       -- Random deviates from the logistic distribution
+
+      lognormal_cdf      -- CDF of the log normal distribution
+      lognormal_inv      -- Quantile function of the log normal distribution
+      lognormal_pdf      -- PDF of the log normal distribution
+      lognormal_rnd      -- Random deviates from the log normal distribution
+
+      normal_cdf         -- CDF of the normal distribution
+      normal_inv         -- Quantile function of the normal distribution
+      normal_pdf         -- PDF of the normal distribution
+      normal_rnd         -- Random deviates from the normal distribution
+
+      pascal_cdf         -- CDF of the Pascal (negative binomial) distribution
+      pascal_inv         -- Quantile function of the Pascal distribution
+      pascal_pdf         -- PDF of the Pascal (negative binomial) distribution
+      pascal_rnd         -- Random deviates from the Pascal distribution
+
+      poisson_cdf        -- CDF of the Poisson distribution
+      poisson_inv        -- Quantile function of the Poisson distribution
+      poisson_pdf        -- PDF of the Poisson distribution
+      poisson_rnd        -- Random deviates from the Poisson distribution
+
+      stdnormal_cdf      -- CDF of the standard normal distribution
+      stdnormal_inv      -- Quantile function of standard normal distribution
+      stdnormal_pdf      -- PDF of the standard normal distribution
+      stdnormal_rnd      -- Random deviates from standard normal distribution
+
+      t_cdf              -- CDF of the t distribution
+      t_inv              -- Quantile function of the t distribution
+      t_pdf              -- PDF of the t distribution
+      t_rnd              -- Random deviates from the t distribution
+
+      uniform_cdf        -- CDF of the uniform distribution
+      uniform_inv        -- Quantile function of the uniform distribution
+      uniform_pdf        -- PDF of the uniform distribution
+      uniform_rnd        -- Random deviates from the uniform distribution
+
+      weibull_cdf        -- CDF of the Weibull distribution
+      weibull_inv        -- Quantile function of the Weibull distribution
+      weibull_pdf        -- PDF of the Weibull distribution
+      weibull_rnd        -- Random deviates from the Weibull distribution
+
+      wiener_rnd         -- Simulate a Wiener process
 
     In statistics/models (new directory):
 
-      logistic_regression
-      logistic_regression_derivatives
-      logistic_regression_likelihood
+      logistic_regression             -- ordinal logistic regression
+      logistic_regression_derivatives -- derivates of log-likelihood
+                                         in logistic regression
+      logistic_regression_likelihood  -- likelihood in logistic regression
 
     In statistics/tests (new directory):
 
-      anova
-      bartlett_test
-      chisquare_test_homogeneity
-      chisquare_test_independence
-      cor_test
-      f_test_regression
-      hotelling_test
-      hotelling_test_2
-      kolmogorov_smirnov_test
-      kolmogorov_smirnov_test_2
-      kruskal_wallis_test
-      manova
-      mcnemar_test
-      prop_test_2
-      run_test
-      sign_test
-      t_test
-      t_test_2
-      t_test_regression
-      u_test
-      var_test
-      welch_test
-      wilcoxon_test
-      z_test
-      z_test_2
+      anova                       -- one-way analysis of variance
+      bartlett_test               -- bartlett test for homogeneity of variances
+      chisquare_test_homogeneity  -- chi-square test for homogeneity
+      chisquare_test_independence -- chi-square test for independence
+      cor_test                    -- test for zero correlation
+      f_test_regression           -- test linear hypotheses in linear
+                                     regression model
+      hotelling_test              -- test for mean of a multivariate normal
+      hotelling_test_2            -- compare means of two multivariate normals
+      kolmogorov_smirnov_test     -- one-sample Kolmogorov-Smirnov test
+      kolmogorov_smirnov_test_2   -- two-sample Kolmogorov-Smirnov test
+      kruskal_wallis_test         -- kruskal-Wallis test
+      manova                      -- one-way multivariate analysis of variance
+      mcnemar_test                -- mcnemar's test for symmetry
+      prop_test_2                 -- compare two proportions
+      run_test                    -- run test for independence
+      sign_test                   -- sign test
+      t_test                      -- student's one-sample t test 
+      t_test_2                    -- student's two-sample t test
+      t_test_regression           -- test one linear hypothesis in linear
+                                     regression model
+      u_test                      -- mann-Whitney U-test
+      var_test                    -- f test to compare two variances
+      welch_test                  -- welch two-sample t test
+      wilcoxon_test               -- wilcoxon signed-rank test
+      z_test                      -- test for mean of a normal sample with
+                                     known variance
+      z_test_2                    -- compare means of two normal samples with
+                                     known variances
 
-  * The load command now accepts the option -append to save the
+  * The save command now accepts the option -append to save the
     variables at the end of the file, leaving the existing contents.
 
   * New command-line option --no-history (also available using the

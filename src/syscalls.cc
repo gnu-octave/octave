@@ -219,19 +219,12 @@ STATUS is nonzero and MSG contains a system-dependent error message.")
 
   if (nargin == 3)
     {
-      double d_fid = args(0).double_value ();
-      double d_req = args(1).double_value ();
-      double d_arg = args(2).double_value ();
+      int fid = args(0).int_value (true);
+      int req = args(1).int_value (true);
+      int arg = args(2).int_value (true);
 
-      if (! error_state
-	  && D_NINT (d_fid) == d_fid
-	  && D_NINT (d_req) == d_req
-	  && D_NINT (d_arg) == d_arg)
+      if (! error_state)
 	{
-	  int fid = NINT (d_fid);
-	  int req = NINT (d_req);
-	  int arg = NINT (d_arg);
-
 	  // XXX FIXME XXX -- Need better checking here?
 	  if (fid < 0)
 	    error ("fcntl: invalid file id");
@@ -246,7 +239,7 @@ STATUS is nonzero and MSG contains a system-dependent error message.")
 	    }
 	}
       else
-	error ("fcntl: file id must be an integer");
+	error ("fcntl: file id, request, and argument must be integers");
     }
   else
     print_usage ("fcntl");
@@ -663,47 +656,37 @@ error message.")
 
   if (nargin == 1 || nargin == 2)
     {
-      double pid_num = args(0).double_value ();
+      pid_t pid = args(0).int_value (true);
   
       if (! error_state)
 	{
-	  if (D_NINT (pid_num) != pid_num)
-	    error ("waitpid: PID must be an integer value");
-	  else
+	  int options = 0;
+
+	  if (args.length () == 2)
 	    {
-	      pid_t pid = (pid_t) pid_num;
-
-	      int options = 0;
-
-	      if (args.length () == 2)
-		{
-		  double options_num = args(1).double_value ();
-
-		  if (! error_state)
-		    {
-		      if (D_NINT (options_num) != options_num)
-			error ("waitpid: PID must be an integer value");
-		      else
-			{
-			  options = NINT (options_num);
-			  if (options < 0 || options > 3)
-			    error ("waitpid: invalid OPTIONS value specified");
-			}
-		    }
-		}
+	      options = args(1).int_value (true);
 
 	      if (! error_state)
 		{
-		  string msg;
-
-		  pid_t status
-		    = octave_syscalls::waitpid (pid, options, msg);
-
-		  retval(0) = static_cast<double> (status);
-		  retval(1) = msg;
+		  if (options < 0 || options > 3)
+		    error ("waitpid: invalid OPTIONS value specified");
 		}
+	      else
+		error ("waitpid: OPTIONS must be in integer");
+	    }
+
+	  if (! error_state)
+	    {
+	      string msg;
+
+	      pid_t status = octave_syscalls::waitpid (pid, options, msg);
+
+	      retval(0) = static_cast<double> (status);
+	      retval(1) = msg;
 	    }
 	}
+      else
+	error ("waitpid: PID must be an integer value");
     }
   else
     print_usage ("waitpid");

@@ -54,24 +54,19 @@ octave_list::do_index_op (const octave_value_list& idx)
 
   if (idx.length () == 1)
     {
-      double d = idx(0).double_value ();
+      int i = idx(0).int_value (true);
 
       if (! error_state)
 	{
-	  if (D_NINT (d) == d)
-	    {
-	      int n = lst.length ();
+	  int n = lst.length ();
 
-	      int i = static_cast<int> (d);
-
-	      if (i > 0 && i <= n)
-		retval = lst(i-1);
-	      else
-		error ("list index = %d out of range", i);
-	    }
+	  if (i > 0 && i <= n)
+	    retval = lst(i-1);
 	  else
-	    error ("list index must be an integer");
+	    error ("list index = %d out of range", i);
 	}
+      else
+	error ("list index must be an integer");
     }
   else
     error ("lists may only be indexed by a single scalar");
@@ -84,24 +79,19 @@ octave_list::assign (const octave_value_list& idx, const octave_value& rhs)
 {
   if (idx.length () == 1)
     {
-      double d = idx(0).double_value ();
+      int i = idx(0).int_value (true);
 
       if (! error_state)
 	{
-	  if (D_NINT (d) == d)
-	    {
-	      int n = lst.length ();
+	  int n = lst.length ();
 
-	      int i = static_cast<int> (d);
-
-	      if (i > 0 && (Vresize_on_range_error || i <= n))
-		lst(i) = rhs;
-	      else
-		error ("list index = %d out of range", i);
-	    }
+	  if (i > 0 && (Vresize_on_range_error || i <= n))
+	    lst(i-1) = rhs;
 	  else
-	    error ("list index must be an integer");
+	    error ("list index = %d out of range", i);
 	}
+      else
+	error ("list index must be an integer");
     }
   else
     error ("lists may only be indexed by a single scalar");
@@ -244,50 +234,38 @@ contents of LIST_2 (if any).  If LENGTH is omitted, ")
 
       if (! error_state)
 	{
-	  double d_offset = args(1).double_value ();
+	  int offset = args(1).int_value (true);
 
 	  if (! error_state)
 	    {
-	      if (D_NINT (d_offset) == d_offset)
-		{
-		  int offset = static_cast<int> (d_offset) - 1;
+	      offset--;
 
-		  int length = 0;
+	      int length = 0;
 
-		  if (nargin < 3)
-		    length = list_1.length () - offset;
-		  else
-		    {
-		      double d_length = args(2).double_value ();
+	      octave_value_list list_2;
 
-		      if (error_state)
-			return retval;
-		      else
-			{
-			  if (D_NINT (d_length) == d_length)
-			    length = static_cast<int> (d_length);
-			  else
-			    error ("splice: LENGTH must be an integer");
-			}
-		    }
-
-		  octave_value_list list_2;
-
-		  if (nargin == 4)
-		    {
-		      list_2 = args(3).list_value ();
-
-		      if (error_state)
-			{
-			  error ("splice: fourth argument must be a list");
-			  return retval;
-			}
-		    }
-
-		  retval = list_1.splice (offset, length, list_2);
-		}
+	      if (nargin < 3)
+		length = list_1.length () - offset;
 	      else
-		error ("splice: OFFSET must be an integer");
+		{
+		  length = args(2).int_value (true);
+
+		  if (! error_state)
+		    {
+		      if (nargin == 4)
+			{
+			  list_2 = args(3).list_value ();
+
+			  if (error_state)
+			    error ("splice: fourth argument must be a list");
+			}
+		    }
+		  else
+		    error ("splice: LENGTH must be an integer");
+		}
+
+	      if (! error_state)
+		retval = list_1.splice (offset, length, list_2);
 	    }
 	  else
 	    error ("splice: OFFSET must be an integer");

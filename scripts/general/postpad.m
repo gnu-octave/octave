@@ -29,7 +29,7 @@ function y = postpad (x, l, c)
 
   ## Author:
   ##  Tony Richardson
-  ##  amr@mpl.ucsd.edu
+  ##  arichard@stark.cc.oh.us
   ##  June 1994
 
   if (nargin == 2)

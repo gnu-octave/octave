@@ -37,6 +37,7 @@ class ostream;
 #include "str-vec.h"
 
 #include "error.h"
+#include "ov.h"
 #include "ov-ch-mat.h"
 #include "ov-typeinfo.h"
 
@@ -90,6 +91,8 @@ public:
   bool is_string (void) const { return true; }
 
   bool is_real_type (void) const { return true; }
+
+  bool is_matrix_type (void) const { return Vimplicit_str_to_num_ok; }
 
   bool valid_as_scalar_index (void) const;
   bool valid_as_zero_index (void) const;

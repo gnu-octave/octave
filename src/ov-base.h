@@ -147,6 +147,10 @@ public:
 
   bool is_function (void) const { return false; }
 
+  int int_value (bool = false, bool = false) const;
+
+  int nint_value (bool = false) const;
+
   double double_value (bool = false) const;
 
   double scalar_value (bool frc_str_conv = false) const

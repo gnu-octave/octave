@@ -32,6 +32,10 @@ extern "C" {
 #include <signal.h>
 #include <setjmp.h>
 
+#ifdef __cplusplus
+#include <new>
+#endif
+
 #if defined (OCTAVE_HAVE_SIG_JUMP)
 
 typedef sigjmp_buf octave_jmp_buf;
@@ -109,6 +113,8 @@ extern void octave_throw_bad_alloc (void) GCC_ATTR_NORETURN;
     } \
   while (0)
 
+#ifdef __cplusplus
+
 #define BEGIN_INTERRUPT_WITH_EXCEPTIONS \
   sig_atomic_t saved_octave_interrupt_immediately = octave_interrupt_immediately; \
  \
@@ -131,6 +137,7 @@ extern void octave_throw_bad_alloc (void) GCC_ATTR_NORETURN;
     } \
  \
   octave_interrupt_immediately = saved_octave_interrupt_immediately
+#endif
 
 #ifdef __cplusplus
 }

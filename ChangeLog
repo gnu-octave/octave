@@ -1,5 +1,8 @@
 2002-11-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* configure.in (OCTAVE_CXX_PRAGMA_INTERFACE_IMPLEMENTATION):
+	Delete use.
+
 	* aclocal.m4 (OCTAVE_LANG_PROG_NO_CONFDEFS): Delete.
 	(OCTAVE_CXX_PRAGMA_INTERFACE_IMPLEMENTATION): Delete.
 

@@ -106,7 +106,7 @@ tree_simple_assignment::rvalue (void)
 
 		  if (! error_state)
 		    {
-		      if (etype == octave_value::asn_eq)
+		      if (etype == octave_value::op_asn_eq)
 			retval = rhs_val;
 		      else
 			retval = ult.value ();
@@ -243,7 +243,7 @@ tree_multi_assignment::rvalue (int)
 
 			  if (! error_state)
 			    {
-			      if (etype == octave_value::asn_eq)
+			      if (etype == octave_value::op_asn_eq)
 				retval(k) = rhs_val(k);
 			      else
 				retval(k) = ult.value ();

@@ -1,3 +1,7 @@
+2002-12-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* load-save.cc (read_mat_ascii_data): Allow commas to separate values.
+
 2002-12-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in: No need to add $(LIBKPATHSEA) to LINK_DEPS, since

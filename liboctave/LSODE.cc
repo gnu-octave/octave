@@ -123,8 +123,12 @@ LSODE::do_integrate (double tout)
 
       nn = n;
 
+      int max_maxord = 0;
+
       if (integration_method () == "stiff")
 	{
+	  max_maxord = 5;
+
 	  if (jac)
 	    method_flag = 21;
 	  else
@@ -135,10 +139,30 @@ LSODE::do_integrate (double tout)
 	}
       else
 	{
+	  max_maxord = 12;
+
 	  method_flag = 10;
 
 	  liw = 20;
 	  lrw = 22 + 16 * n;
+	}
+
+      maxord = maximum_order ();
+
+      if (maxord >= 0)
+	{
+	  if (maxord > 0 && maxord <= max_maxord)
+	    {
+	      iwork(4) = maxord;
+	      iopt = 1;
+	    }	  
+	  else
+	    {
+	      (*current_liboctave_error_handler)
+		("lsode: invalid value for maximum order");
+	      integration_error = true;
+	      return retval;
+	    }
 	}
 
       iwork.resize (liw);

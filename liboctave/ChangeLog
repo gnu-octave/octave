@@ -1,3 +1,11 @@
+2002-12-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ODESSA.cc (ODESSA::integrate): Handle maxord.
+	* ODESSA-opts.in: Likewise.
+
+	* LSODE.cc (ODESSA::integrate): Handle maxord.
+	* LSODE-opts.in: Likewise.
+
 2002-12-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* ODESSA.cc (ODESSA::ODESSA): Initialize "initialized" data member

@@ -1899,7 +1899,7 @@ get_lines_and_columns (std::istream& is, const std::string& filename, int& nr, i
 
       file_line_number++;
 
-      size_t beg = buf.find_first_not_of (" \t");
+      size_t beg = buf.find_first_not_of (", \t");
 
       // If we see a CR as the last character in the buffer, we had a
       // CRLF pair as the line separator.  Any other CR in the text
@@ -1918,11 +1918,11 @@ get_lines_and_columns (std::istream& is, const std::string& filename, int& nr, i
 	{
 	  tmp_nc++;
 
-	  size_t end = buf.find_first_of (" \t", beg);
+	  size_t end = buf.find_first_of (", \t", beg);
 
 	  if (end != NPOS)
 	    {
-	      beg = buf.find_first_not_of (" \t", end);
+	      beg = buf.find_first_not_of (", \t", end);
 
 	      if (buf[beg] == '\r' && beg == buf.length () - 1)
 		{
@@ -1994,6 +1994,8 @@ read_mat_ascii_data (std::istream& is, const std::string& filename,
       int nr = 0;
       int nc = 0;
 
+      int total_count = 0;
+
       get_lines_and_columns (is, filename, nr, nc);
 
       OCTAVE_QUIT;
@@ -2010,6 +2012,7 @@ read_mat_ascii_data (std::istream& is, const std::string& filename,
 	      for (int i = 0; i < nr; i++)
 		{
 		  std::string buf = get_mat_data_input_line (is);
+		  std::cerr << buf<< std::endl;
 
 #ifdef HAVE_SSTREAM
 		  std::istringstream tmp_stream (buf);
@@ -2023,8 +2026,30 @@ read_mat_ascii_data (std::istream& is, const std::string& filename,
 
 		      d = octave_read_double (tmp_stream);
 
-		      if (tmp_stream)
-			tmp.elem (i, j) = d;
+		      if (tmp_stream || tmp_stream.eof ())
+			{
+			  tmp.elem (i, j) = d;
+			  total_count++;
+
+			  // Skip whitespace and commas.
+			  char c;
+			  while (1)
+			    {
+			      tmp_stream >> c;
+
+			      if (! tmp_stream)
+				break;
+
+			      if (! (c == ' ' || c == '\t' || c == ','))
+				{
+				  tmp_stream.putback (c);
+				  break;
+				}
+			    }
+
+			  if (tmp_stream.eof ())
+			    break;
+			}
 		      else
 			{
 			  error ("load: failed to read matrix from file `%s'",
@@ -2037,11 +2062,23 @@ read_mat_ascii_data (std::istream& is, const std::string& filename,
 		}
 	    }
 
-	  if (is)
+	  if (is || is.eof ())
 	    {
-	      tc = tmp;
+	      // XXX FIXME XXX -- not sure this is best, but it works.
 
-	      retval = varname;
+	      if (is.eof ())
+		is.clear ();
+
+	      int expected = nr * nc;
+
+	      if (expected == total_count)
+		{
+		  tc = tmp;
+		  retval = varname;
+		}
+	      else
+		error ("load: expected %d elements, found %d",
+		       expected, total_count);
 	    }
 	  else
 	    error ("load: failed to read matrix from file `%s'",

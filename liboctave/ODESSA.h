@@ -98,6 +98,7 @@ private:
   int liw;  
   int lrw;
   int method_flag;
+  int maxord;
   Array<int> iwork;
   Array<double> rwork;
   int itask;

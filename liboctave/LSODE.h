@@ -57,6 +57,7 @@ private:
   bool initialized;
 
   int method_flag;
+  int maxord;
   int itask;
   int iopt;
   int itol;

@@ -278,20 +278,24 @@ ODESSA::integrate (double tout)
 	idf = 0;
       
       iopt(2) = idf;
-      
-      
+
       if (restart)
 	{
 	  restart = false;
 	  istate = 1;
 	}
-      
+
+      int max_maxord = 0;
+
       if (integration_method () == "stiff")
 	{
 	  if (user_jsub)
 	    method_flag = 21;
 	  else
 	    method_flag = 22;
+
+	  max_maxord = 5;
+
 	  if (isopt)
 	    {
 	      liw = 21 + n + npar;
@@ -305,6 +309,8 @@ ODESSA::integrate (double tout)
 	}
       else
 	{
+	  max_maxord = 12;
+
 	  if (isopt)
 	    {
 	      if (user_jsub)
@@ -338,8 +344,27 @@ ODESSA::integrate (double tout)
 	    rwork.elem (i) = 0.0;
 	}
       
+      maxord = maximum_order ();
+
+      if (maxord >= 0)
+	{
+	  if (maxord > 0 && maxord <= max_maxord)
+	    {
+	      iwork(4) = maxord;
+	      iopt(0) = 1;
+	    }
+	  else
+	    {
+	      (*current_liboctave_error_handler)
+		("odessa: invalid value for maximum order");
+	      integration_error = true;
+	      return;
+	    }
+	}
+
       initialized = true;
     }
+
   integration_error = false;
 
   // NOTE: this won't work if LSODE passes copies of the state vector.

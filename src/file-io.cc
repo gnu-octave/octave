@@ -1613,8 +1613,8 @@ error message.\n\
 
       if (! error_state)
 	{
-	  std::auto_ptr<char> tmp_auto_ptr (strsave (tmpl8.c_str ()));
-	  char *tmp = tmp_auto_ptr.get ();
+	  OCTAVE_LOCAL_BUFFER (char, tmp, tmpl8.size () + 1);
+	  strcpy (tmp, tmpl8.c_str ());
 
 	  int fd = mkstemp (tmp);
 

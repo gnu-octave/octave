@@ -1,3 +1,12 @@
+2001-02-09  Cai Jianming  <caijianming@yahoo.co.uk>
+
+	* data.cc (DATA_REDUCTION): Undo previous change.
+
+2001-02-13  Matthew W. Roberts  <matt@nephi.tamu.edu>
+
+	* load-save.cc (Fload): Accept -4 as an alias for -v4 and -mat4-binary.
+	(Fsave): Likewise.
+
 2001-02-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* lex.l (lexical_feedbac::init):

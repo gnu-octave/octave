@@ -49,6 +49,18 @@ DEFUNOP_OP (hermitian, bool, /* no-op */)
 DEFBINOP_OP (eq, bool, bool, ==)
 DEFBINOP_OP (ne, bool, bool, !=)
 
+BINOPDECL (el_and, a1, a2)
+{
+  CAST_BINOP_ARGS (const octave_bool&, const octave_bool&);
+  return octave_value (v1.bool_value () && v2.bool_value ());
+}
+
+BINOPDECL (el_or, a1, a2)
+{
+  CAST_BINOP_ARGS (const octave_bool&, const octave_bool&);
+  return octave_value (v1.bool_value () || v2.bool_value ());
+}
+
 void
 install_b_b_ops (void)
 {
@@ -58,6 +70,8 @@ install_b_b_ops (void)
 
   INSTALL_BINOP (op_eq, octave_bool, octave_bool, eq);
   INSTALL_BINOP (op_ne, octave_bool, octave_bool, ne);
+  INSTALL_BINOP (op_el_and, octave_bool, octave_bool, el_and);
+  INSTALL_BINOP (op_el_or, octave_bool, octave_bool, el_or);
 }
 
 /*

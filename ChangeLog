@@ -1,3 +1,8 @@
+2001-02-10  Mumit Khan  <khan@nanotech.wisc.edu>
+
+	* test/octave.test/string/dec2hex-1.m: Don't assume hex format
+	produces lower case letters.
+
 2001-02-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* acconfig.h: Merge contents of config.h.bot.

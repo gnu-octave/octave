@@ -263,9 +263,6 @@ and @var{x}.  The result is in range -pi to pi.\n\
  \
       int dim = (nargin == 1 ? 0 : args(1).int_value (true) - 1); \
  \
-      if (dim == -1) \
-        dim = 0; \
- \
       if (! error_state) \
 	{ \
 	  if (dim == 0 || dim == 1) \

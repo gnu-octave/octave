@@ -3197,7 +3197,7 @@ lists of lists of matrices, or ...).\n\
 	{
 	  format = LS_MAT5_BINARY;
 	}
-      else if (argv[i] == "-mat4-binary" || argv[i] == "-4")
+      else if (argv[i] == "-mat4-binary" || argv[i] == "-4" || argv[i] == "-v4")
 	{
 	  format = LS_MAT_BINARY;
 	}
@@ -5016,7 +5016,7 @@ the file @file{data} in Octave's binary format.\n\
 	{
 	  format = LS_MAT5_BINARY;
 	}
-      else if (argv[i] == "-mat4-binary" || argv[i] == "-4")
+      else if (argv[i] == "-mat4-binary" || argv[i] == "-4" || argv[i] == "-v4")
 	{
 	  format = LS_MAT_BINARY;
 	}

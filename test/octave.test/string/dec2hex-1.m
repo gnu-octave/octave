@@ -1,1 +1,1 @@
-strcmp (dec2hex (2748), "abc")
+strcmp (tolower (dec2hex (2748)), "abc")

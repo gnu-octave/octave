@@ -1352,7 +1352,14 @@ do_scanf (const char *type, const Octave_object& args, int nargout)
       if (strcmp (type, "scanf") == 0
 	  || (doing_fscanf && file.number () == 0))
 	{
+// XXX FIXME XXX -- this should probably be possible for more than
+// just stdin/stdout pairs, using a list of output streams to flush.
+// The list could be created with a function like iostream's tie().
+
+	  flush_output_to_pager ();
+
 	  string = gnu_readline ("");
+
 	  if (string && *string)
 	    maybe_save_history (string);
 	}

@@ -1293,15 +1293,22 @@ read_ascii_data (istream& is, const char *filename, int& global,
 	{
 	  int nr = 0, nc = 0;
 
-	  if (extract_keyword (is, "rows", nr) && nr > 0
-	      && extract_keyword (is, "columns", nc) && nc > 0)
+	  if (extract_keyword (is, "rows", nr) && nr >= 0
+	      && extract_keyword (is, "columns", nc) && nc >= 0)
 	    {
-	      Matrix tmp (nr, nc);
-	      is >> tmp;
-	      if (is)
-		tc = tmp;
+	      if (nr > 0 && nc > 0)
+		{
+		  Matrix tmp (nr, nc);
+		  is >> tmp;
+		  if (is)
+		    tc = tmp;
+		  else
+		    error ("load: failed to load matrix constant");
+		}
+	      else if (nr == 0 || nc == 0)
+		tc = Matrix (nr, nc);
 	      else
-		error ("load: failed to load matrix constant");
+		panic_impossible ();
 	    }
 	  else
 	    error ("load: failed to extract number of rows and columns");

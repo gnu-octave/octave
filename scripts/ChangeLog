@@ -1,5 +1,27 @@
 2002-08-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* configure.in (AC_CONFIG_FILES): Add deprecated/Makefile to the
+	list.
+	* deprecated/Makefile.in: New file.
+
+2002-08-09  Paul Kienzle <pkienzle@users.sf.net>
+
+	* statistics/distributions/beta_cdf.m: Replace betai with betainc.
+	* statistics/distributions/binomial_cdf.m: Likewise.
+	* statistics/distributions/f_cdf.m: Likewise.
+	* statistics/distributions/t_cdf.m: Likewise.
+
+	* miscellaneous/bincoeff.m: Replace lgamma with gammaln.
+	* specfun/beta.m: Likewise.
+	* special-matrix/invhilb.m: Likewise (but it is only in a comment).
+	* statistics/distributions/gamma_pdf.m: Likewise.
+	* statistics/distributions/poisson_pdf.m: Likewise.
+
+	* statistics/distributions/gamma_cdf.m: replace gammai with gammainc
+	* statistics/distributions/poisson_cdf.m: Likewise.
+
+2002-08-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
 	* deprecated/is_bool.m: New file.
 	* deprecated/is_complex.m: New file.
 	* deprecated/is_global.m: New file.

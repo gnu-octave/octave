@@ -57,7 +57,7 @@ function cdf = f_cdf (x, m, n)
 
   k = find ((x > 0) & (x < Inf) & (m > 0) & (n > 0));
   if (any (k))
-    cdf(k) = 1 - betai (n(k) / 2, m(k) / 2, 1 ./ (1 + m(k) .* x(k) ./ n(k)));
+    cdf(k) = 1 - betainc (1 ./ (1 + m(k) .* x(k) ./ n(k)), n(k) / 2, m(k) / 2);
   endif
 
   cdf = reshape (cdf, r, c);

@@ -83,14 +83,14 @@ function b = bincoeff (n, k)
 
   ind = find ((k > 0) & ((n == real (round (n))) & (n < 0)));
   if any (ind)
-    b(ind) = (-1) .^ k(ind) .* exp (lgamma (abs (n(ind)) + k(ind)) ...
-        - lgamma (k(ind) + 1) - lgamma (abs (n(ind))));
+    b(ind) = (-1) .^ k(ind) .* exp (gammaln (abs (n(ind)) + k(ind)) ...
+        - gammaln (k(ind) + 1) - gammaln (abs (n(ind))));
   endif
 
   ind = find ((k > 0) & ((n != real (round (n))) | (n >= k)));
   if (length (ind) > 0)
-    b(ind) = exp (lgamma (n(ind) + 1) - lgamma (k(ind) + 1) ...
-        - lgamma (n(ind) - k(ind) + 1));
+    b(ind) = exp (gammaln (n(ind) + 1) - gammaln (k(ind) + 1) ...
+        - gammaln (n(ind) - k(ind) + 1));
   endif
 
   ## clean up rounding errors

@@ -60,7 +60,7 @@ function cdf = binomial_cdf (x, n, p)
 	    & (p >= 0) & (p <= 1));
   if (any (k))
     tmp = floor (x(k));
-    cdf(k) = 1 - betai (tmp + 1, n(k) - tmp, p(k));
+    cdf(k) = 1 - betainc (p(k), tmp + 1, n(k) - tmp);
   endif
 
   cdf = reshape (cdf, r, c);

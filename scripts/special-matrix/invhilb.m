@@ -85,7 +85,7 @@ function retval = invhilb (n)
     ## machine number, the result is also exact.  Otherwise we calculate
     ## (-1)^(i+j)*p(i)*(p(j)/(i+j-1)).
     ##
-    ## The Octave bincoeff routine uses transcendental functions (lgamma
+    ## The Octave bincoeff routine uses transcendental functions (gammaln
     ## and exp) rather than multiplications, for the sake of speed.  
     ## However, it rounds the answer to the nearest integer, which 
     ## justifies the claim about exactness made above.

@@ -27,9 +27,10 @@ AC_CONFIG_SRCDIR([startup/octaverc])
 
 AC_PROG_INSTALL
 
-AC_CONFIG_FILES([Makefile audio/Makefile control/Makefile control/base/Makefile \
-	  control/hinf/Makefile control/obsolete/Makefile \
-	  control/system/Makefile control/util/Makefile elfun/Makefile \
+AC_CONFIG_FILES([Makefile audio/Makefile control/Makefile \
+	  control/base/Makefile control/hinf/Makefile \
+	  control/obsolete/Makefile control/system/Makefile \
+	  control/util/Makefile deprecated/Makefile elfun/Makefile \
 	  finance/Makefile general/Makefile image/Makefile io/Makefile \
 	  linear-algebra/Makefile miscellaneous/Makefile plot/Makefile \
 	  polynomial/Makefile quaternion/Makefile set/Makefile \

@@ -50,7 +50,7 @@ function pdf = poisson_pdf (x, l)
 
   k = find ((x >= 0) & (x < Inf) & (x == round (x)) & (l > 0));
   if (any (k))
-    pdf(k) = exp (x(k) .* log (l(k)) - l(k) - lgamma (x(k) + 1));
+    pdf(k) = exp (x(k) .* log (l(k)) - l(k) - gammaln (x(k) + 1));
   endif
 
   pdf = reshape (pdf, r, c);

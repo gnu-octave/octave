@@ -1,4 +1,4 @@
-## Copyright (C) 1996, 1997 John W. Eaton
+## Copyright (C) 2002 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -18,33 +18,14 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Mapping Function} {} beta (@var{a}, @var{b})
-## Return the Beta function,
-## @iftex
-## @tex
-## $$
-##  B (a, b) = {\Gamma (a) \Gamma (b) \over \Gamma (a + b)}.
-## $$
-## @end tex
-## @end iftex
-## @ifinfo
-##
-## @example
-## beta (a, b) = gamma (a) * gamma (b) / gamma (a + b).
-## @end example
-## @end ifinfo
+## @deftypefn {Function File} {} is_struct (@var{a})
+## This function has been deprecated.  Use isstruct instead.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Created: 13 June 1993
-## Adapted-By: jwe
+## Author: jwe
 
-function retval = beta (a, b)
+function retval = is_struct (varargin)
 
-  if (nargin != 2)
-    usage ("beta (a, b)");
-  endif
-
-  retval = exp (gammaln (a) + gammaln (b) - gammaln (a+b));
+  retval = isstruct (varargin{:});
 
 endfunction

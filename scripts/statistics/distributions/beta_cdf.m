@@ -57,7 +57,7 @@ function cdf = beta_cdf (x, a, b)
 
   k = find ((x > 0) & (x < 1) & (a > 0) & (b > 0));
   if (any (k))
-    cdf (k) = betai (a(k), b(k), x(k));
+    cdf (k) = betainc (x(k), a(k), b(k));
   endif
 
   cdf = reshape (cdf, r, c);

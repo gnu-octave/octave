@@ -52,7 +52,7 @@ function cdf = gamma_cdf (x, a, b)
 
   k = find ((x > 0) & (a > 0) & (b > 0));
   if (any (k))
-    cdf (k) = gammai (a(k), b(k) .* x(k));
+    cdf (k) = gammainc (b(k) .* x(k), a(k));
   endif
 
   cdf = reshape (cdf, r, c);

@@ -56,7 +56,7 @@ function cdf = t_cdf (x, n)
 
   k = find ((x > -Inf) & (x < Inf) & (n > 0));
   if (any (k))
-    cdf(k) = betai (n(k) / 2, 1 / 2, 1 ./ (1 + x(k) .^ 2 ./ n(k))) / 2;
+    cdf(k) = betainc (1 ./ (1 + x(k) .^ 2 ./ n(k)), n(k) / 2, 1 / 2) / 2;
     ind = find (x(k) > 0);
     if (any (ind))
       cdf(k(ind)) = 1 - cdf(k(ind));

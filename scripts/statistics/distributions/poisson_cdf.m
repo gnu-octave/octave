@@ -56,7 +56,7 @@ function cdf = poisson_cdf (x, l)
 
   k = find ((x >= 0) & (x < Inf) & (l > 0));
   if (any (k))
-    cdf(k) = 1 - gammai (floor (x(k)) + 1, l(k));
+    cdf(k) = 1 - gammainc (l(k), floor (x(k)) + 1);
   endif
 
   cdf = reshape (cdf, r, c);

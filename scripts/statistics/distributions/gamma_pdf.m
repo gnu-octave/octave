@@ -59,7 +59,7 @@ function pdf = gamma_pdf (x, a, b)
   k = find ((x > 0) & (a > 1) & (b > 0));
   if (any (k))
     pdf(k) = exp (a(k) .* log (b(k)) + (a(k)-1) .* log (x(k))
-		  - b(k) .* x(k) - lgamma (a(k)));
+		  - b(k) .* x(k) - gammaln (a(k)));
   endif
 
   pdf = reshape (pdf, r, c);

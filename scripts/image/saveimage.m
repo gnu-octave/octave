@@ -112,7 +112,7 @@ function saveimage (filename, img, img_form, map)
 
 # Convert to another format if requested.
 
-  grey = ! (any (map(:,1) != map(:,2) || map(:,1) != map (:,3)));
+  grey = all (map(:,1) == map(:,2) && map(:,1) == map (:,3))
 
   pbm = pgm = ppm = 0;
 
@@ -190,14 +190,14 @@ function saveimage (filename, img, img_form, map)
 
     else
 
-      img_idx = (1:3:3*img_sz)+2;
-      map_idx = (2*map_nr+1):map_sz;
+      img_idx = ((1:3:3*img_sz)+2)';
+      map_idx = ((2*map_nr+1):map_sz)';
 
       tmap = map(map_idx);
       tmp(img_idx--) = tmap(img);
 
       map_idx = map_idx - map_nr;
-      tmap = map(map_idx);
+      tmap = map(map_idx,:);
       tmp(img_idx--) = tmap(img);
 
       map_idx = map_idx - map_nr;

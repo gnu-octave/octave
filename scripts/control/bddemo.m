@@ -59,7 +59,7 @@ function bddemo ()
       prompt
       help syssub
       prompt
-      disp('Example #1, \n')
+      disp("Example #1, \n")
       cmd = "sys1 = tf2sys([1 -1],[1 2 1]);";
       run_cmd
       cmd = "sys2 = tf2sys([1 -1],[1 2 3]);";

@@ -1,3 +1,12 @@
+1999-12-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lex.l (Vwarn_single_quote_string): New variable.
+	(syms_of_lex): DEFVAR it.
+	(warn_single_quote_string): New function.
+	(gripe_single_quote_string): New function.
+	Use new stuff to allow warnings for code that uses single quote
+	characters to introduce string constants.
+
 1999-12-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* mkbuiltins: Add #undef quad to generated file.

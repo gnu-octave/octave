@@ -77,7 +77,7 @@ function outsys = zp2sys (zer, pol, k, tsam, inname, outname)
   endif
 
   if (! is_scalar(k))
-     error('k must be a scalar');
+     error("k must be a scalar");
   endif
 
   ## Test proper numbers of poles and zeros.  The number of poles must be 

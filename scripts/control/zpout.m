@@ -46,7 +46,7 @@ function zpout (zer, pol, k, x)
   endif
  
   if (nargin == 3)
-    x = 's';
+    x = "s";
   elseif( ! isstr(x) )
     error("zpout: third argument must be a string");
   endif
@@ -100,7 +100,7 @@ function zpout (zer, pol, k, x)
       disp(denomstring)
     endif
   else
-    error('zpout: empty transfer function')
+    error ("zpout: empty transfer function")
   end
 
   empty_list_elements_ok = save_empty;

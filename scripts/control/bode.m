@@ -186,7 +186,7 @@ function [mag_r, phase_r, w_r] = bode (sys, w, outputs, inputs, plot_style)
       if (gnuplot_has_multiplot)
         subplot(2,1,2);
       else
-        prompt('Press any key for phase plot');
+        prompt("Press any key for phase plot");
       endif
       axvec = axis2dlim([vec(w),vec(phase)]);
       axvec(1:2) = wv;

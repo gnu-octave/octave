@@ -77,22 +77,29 @@ function sys = fir2sys (num, tsam, inname, outname)
 
   ## Test for the correct number of input arguments
   if (nargin < 1 | nargin > 4)
-    usage('sys=fir2sys(num[,tsam,inname,outname])');
+    usage ("sys = fir2sys(num [, tsam, inname, outname])");
   endif
 
   ## let tf2sys do the argument checking
   den = [1,zeros(1,length(num)-1)];
 
   ## check sampling interval (if any)
-  if(nargin <= 1)               tsam = 1;		# default 
-  elseif (isempty(tsam))        tsam = 1;		endif
+  if (nargin <= 1)
+    tsam = 1;		# default 
+  elseif (isempty(tsam))
+    tsam = 1;
+  endif
 
   ## Set name of input
-  if(nargin < 3)  inname = sysdefioname(1,"u");        endif
+  if (nargin < 3)
+    inname = sysdefioname (1, "u");
+  endif
 
   ## Set name of output
-  if(nargin < 4)  outname = sysdefioname(1,"y"); 	endif
+  if (nargin < 4)
+    outname = sysdefioname (1, "y");
+  endif
 
-  sys = tf2sys(num,den,tsam,inname,outname);
+  sys = tf2sys (num, den, tsam, inname, outname);
   
 endfunction

@@ -30,45 +30,45 @@ function dgkfdemo ()
   page_screen_output = 1;
   while (1)
     clc
-    menuopt=0;
-    while(menuopt > 10 || menuopt < 1)
-      menuopt = menu('Octave H2/Hinfinity options demo', ...
-	    'LQ regulator', ...
-	    'LG state estimator', ...
-	    'LQG optimal control design', ...
-	    'H2 gain of a system', ...
-	    'H2 optimal controller of a system', ...
-	    'Hinf gain of a system', ...
-	    'Hinf optimal controller of a SISO system', ...
-	    'Hinf optimal controller of a MIMO system', ...
-	    'Discrete-time Hinf optimal control by bilinear transform', ...
-	    'Return to main demo menu');
+    sel = 0;
+    while (sel > 10 || sel < 1)
+      sel = menu ("Octave H2/Hinfinity options demo",
+		  "LQ regulator",
+		  "LG state estimator",
+		  "LQG optimal control design",
+		  "H2 gain of a system",
+		  "H2 optimal controller of a system",
+		  "Hinf gain of a system",
+		  "Hinf optimal controller of a SISO system",
+		  "Hinf optimal controller of a MIMO system",
+		  "Discrete-time Hinf optimal control by bilinear transform",
+		  "Return to main demo menu");
     endwhile
-    if (menuopt == 1)
-      disp('Linear/Quadratic regulator design:')
-      disp('Compute optimal state feedback via the lqr command...')
+    if (sel == 1)
+      disp("Linear/Quadratic regulator design:")
+      disp("Compute optimal state feedback via the lqr command...")
       help lqr
-      disp(' ')
-      disp('Example:')
+      disp(" ")
+      disp("Example:")
       A = [0, 1; -2, -1]
       B = [0; 1]
       Q = [1, 0; 0, 0]
       R = 1
       disp("Q = state penalty matrix; R = input penalty matrix")
       prompt
-      disp('Compute state feedback gain k, ARE solution P, and closed-loop')
-      disp('poles as follows:');
+      disp("Compute state feedback gain k, ARE solution P, and closed-loop")
+      disp("poles as follows:");
       cmd = "[k, p, e] = lqr(A,B,Q,R)";
       run_cmd
       prompt
       disp("A similar approach can be used for LTI discrete-time systems")
       disp("by using the dlqr command in place of lqr (see LQG example).")
-    elseif (menuopt == 2)
-      disp('Linear/Gaussian estimator design:')
-      disp('Compute optimal state estimator via the lqe command...')
+    elseif (sel == 2)
+      disp("Linear/Gaussian estimator design:")
+      disp("Compute optimal state estimator via the lqe command...")
       help lqe
-      disp(' ')
-      disp('Example:')
+      disp(" ")
+      disp("Example:")
       A = [0, 1; -2, -1]
       disp("disturbance entry matrix G")
       G = eye(2)
@@ -79,16 +79,16 @@ function dgkfdemo ()
       disp("SigW = input disturbance intensity matrix;")
       disp("SigV = measurement noise intensity matrix")
       prompt
-      disp('Compute estimator feedback gain k, ARE solution P, and estimator')
-      disp('poles via the command: ')
+      disp("Compute estimator feedback gain k, ARE solution P, and estimator")
+      disp("poles via the command: ")
       cmd = "[k, p, e] = lqe(A,G,C,SigW,SigV)";
       run_cmd
       disp("A similar approach can be used for LTI discrete-time systems")
       disp("by using the dlqe command in place of lqe (see LQG example).")
-    elseif (menuopt == 3)
-      disp('LQG optimal controller of a system:')
-      disp('Input accepted as either A,B,C matrices or in system data structure form')
-      disp('in both discrete and continuous time.')
+    elseif (sel == 3)
+      disp("LQG optimal controller of a system:")
+      disp("Input accepted as either A,B,C matrices or in system data structure form")
+      disp("in both discrete and continuous time.")
       disp("Example 1: continuous time design:")
       prompt
       help lqg
@@ -142,9 +142,9 @@ function dgkfdemo ()
       Acl_poles = sortcom(eig(Acl))
       disp("Predicted poles from design = union(Er,Ee)")
       pred_poles = sortcom([Er;Ee])
-    elseif (menuopt == 4)
-      disp('H2 gain of a system: (Energy in impulse response)')
-      disp('Example 1: Stable plant:')
+    elseif (sel == 4)
+      disp("H2 gain of a system: (Energy in impulse response)")
+      disp("Example 1: Stable plant:")
       cmd = "A = [0, 1; -2, -1]; B = [0; 1]; C = [1, 0]; sys_poles = eig(A)";
       run_cmd
       disp("Put into Packed system form:")
@@ -161,7 +161,7 @@ function dgkfdemo ()
       plot(tt,ht)
       title("impulse response of example plant")
       prompt
-      disp('Example 2: unstable plant')
+      disp("Example 2: unstable plant")
       cmd = "A = [0, 1; 2, 1]";
       eval(cmd);
       cmd = "B = [0; 1]";
@@ -171,18 +171,18 @@ function dgkfdemo ()
       cmd = "sys_poles = eig(A)";
       run_cmd
       prompt
-      disp('Put into system data structure form:')
+      disp("Put into system data structure form:")
       cmd="Bsys = ss2sys(A,B,C);";
       run_cmd
-      disp('Evaluate 2-norm:')
+      disp("Evaluate 2-norm:")
       cmd = "BsysH2 = h2norm(Bsys)";
       run_cmd
-      disp(' ')
-      prompt('NOTICE: program returns a value without an error signal.')
-      disp('')
+      disp(" ")
+      prompt("NOTICE: program returns a value without an error signal.")
+      disp("")
 
-    elseif (menuopt == 5)
-      disp('H2 optimal controller of a system: command = h2syn:')
+    elseif (sel == 5)
+      disp("H2 optimal controller of a system: command = h2syn:")
       prompt
       help h2syn
       prompt
@@ -244,46 +244,46 @@ function dgkfdemo ()
       prompt
       disp("Related functions: is_dgkf, is_controllable, is_stabilizable,")
       disp("                is_observable, is_detectable")
-    elseif (menuopt == 6)
-      disp('Hinfinity gain of a system: (max gain over all j-omega)')
-      disp('Example 1: Stable plant:')
+    elseif (sel == 6)
+      disp("Hinfinity gain of a system: (max gain over all j-omega)")
+      disp("Example 1: Stable plant:")
       cmd = "A = [0, 1; -2, -1]; B = [0; 1]; C = [1, 0]; sys_poles = eig(A)";
       run_cmd
-      disp('Pack into system format:')
+      disp("Pack into system format:")
       cmd = "Asys = ss2sys(A,B,C);";
       run_cmd
-      disp('The infinity norm must be computed iteratively by')
-      disp('binary search.  For this example, we select tolerance tol = 0.01, ')
-      disp('min gain gmin = 1e-2, max gain gmax=1e4.')
-      disp('Search quits when upper bound <= (1+tol)*lower bound.')
+      disp("The infinity norm must be computed iteratively by")
+      disp("binary search.  For this example, we select tolerance tol = 0.01, ")
+      disp("min gain gmin = 1e-2, max gain gmax=1e4.")
+      disp("Search quits when upper bound <= (1+tol)*lower bound.")
       cmd = "tol = 0.01; gmin = 1e-2; gmax = 1e+4;";
       run_cmd
       cmd = "[AsysHinf,gmin,gmax] = hinfnorm(Asys,tol,gmin,gmax)"
       run_cmd
       disp("Check: look at max value of magntude Bode plot of Asys:");
       [M,P,w] = bode(Asys);
-      xlabel('Omega')
-      ylabel('|Asys(j omega)| ')
+      xlabel("Omega")
+      ylabel("|Asys(j omega)| ")
       grid();
       semilogx(w,M);
       disp(["Max magnitude is ",num2str(max(M)), ...
 	", compared with gmin=",num2str(gmin)," and gmax=", ...
         num2str(gmax),"."])
       prompt
-      disp('Example 2: unstable plant')
+      disp("Example 2: unstable plant")
       cmd = "A = [0, 1; 2, 1]; B = [0; 1]; C = [1, 0]; sys_poles = eig(A)";
       run_cmd
       disp("Pack into system format:")
       cmd = "Bsys = ss2sys(A,B,C);";
       run_cmd
-      disp('Evaluate with BsysH2 = hinfnorm(Bsys,tol,gmin,gmax)')
+      disp("Evaluate with BsysH2 = hinfnorm(Bsys,tol,gmin,gmax)")
       BsysH2 = hinfnorm(Bsys,tol,gmin,gmax)
-      disp(' ')
-      disp('NOTICE: program returns a value without an error signal.')
-      disp('')
+      disp(" ")
+      disp("NOTICE: program returns a value without an error signal.")
+      disp("")
 
-    elseif (menuopt == 7)
-      disp('Hinfinity optimal controller of a system: command = hinfsyn:')
+    elseif (sel == 7)
+      disp("Hinfinity optimal controller of a system: command = hinfsyn:")
       prompt
       help hinfsyn
       prompt
@@ -332,19 +332,19 @@ function dgkfdemo ()
       prompt
       disp("Related functions: is_dgkf, is_controllable, is_stabilizable,")
       disp("                   is_observable, is_detectable, buildssic")
-    elseif (menuopt == 8)
-      disp('Hinfinity optimal controller of MIMO system: command = hinfsyn:')
+    elseif (sel == 8)
+      disp("Hinfinity optimal controller of MIMO system: command = hinfsyn:")
       prompt
       help hinfsyn
       prompt
       disp("Example system: Boeing 707-321 airspeed/pitch angle control")
       disp(" ")
       hinfdemo
-    elseif (menuopt == 9)
+    elseif (sel == 9)
       disp("Discrete time H-infinity control via bilinear transform");
       prompt
       dhinfdemo
-    elseif (menuopt == 10)
+    elseif (sel == 10)
       return
     endif
     prompt

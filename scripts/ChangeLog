@@ -1,6 +1,31 @@
 1999-12-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* control/d2c.m: Use double quotes instead of single quotes for
+	string constants.
+	* control/dgkfdemo.m: Likewise.
+	* control/fir2sys.m: Likewise.
+	* control/frdemo.m: Likewise.
+	* control/moddemo.m: Likewise.
+	* control/minfo.m: Likewise.
+	* control/is_stabilizable.m: Likewise.
+	* control/is_dgkf.m: Likewise.
+	* control/polyout.m: Likewise.
+	* control/sysconnect.m: Likewise.
+	* control/sysrepdemo.m: Likewise.
+	* control/tf2sys.m: Likewise.
+	* control/tfout.m: Likewise.
+	* control/zp2sys.m: Likewise.
+	* control/zpout.m: Likewise.
+	* control/tzero.m: Likewise.
+
+	* control/DEMOcontrol.m: Handle moddemo case too.
+
+	* image/loadimage.m: Use double quotes instead of single quotes
+	for string constants.  Use sprintf instead of square brackets to
+	construct string.
+
 	* control/DEMOcontrol.m: Formatting tweaks.
+	* control/fir2sys.m: Likewise.
 
 1999-12-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

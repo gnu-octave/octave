@@ -44,7 +44,7 @@ function y = polyout (c, x)
   endif
   
   if (nargin == 1)
-    x = 's';
+    x = "s";
   elseif( ! isstr(x) )
     error("polyout: second argument must be a string");
   endif
@@ -57,8 +57,8 @@ function y = polyout (c, x)
     else                 tmp = num2str(c(1));       endif
 
     for ii=2:n
-      if(real(c(ii)) < 0)     ns = ' - ';    c(ii) = -c(ii);
-      else                    ns = ' + ';                      endif
+      if(real(c(ii)) < 0)     ns = " - ";    c(ii) = -c(ii);
+      else                    ns = " + ";                      endif
 
       if( imag(c(ii)) )       nstr = sprintf("(%s)",com2str(c(ii)) );
       else                    nstr = num2str(c(ii));           endif

@@ -59,16 +59,16 @@ function outsys = tf2sys (num, den, tsam, inname, outname)
 
   ## Test for the correct number of input arguments
   if ((nargin < 2) || (nargin > 5))
-    usage('outsys=tf2sys(num,den[,tsam,inname,outname])');
+    usage ("outsys = tf2sys (num, den [, tsam, inname, outname])");
     return
   endif
 
   ## check input format 
   if( ! ( (is_vector(num) || is_scalar(num)) && ...
 	(is_vector(den) || is_scalar(den))) )
-    error(['num (',num2str(rows(num)),'x',num2str(columns(num)), ...
-      ') and den (',num2str(rows(den)),'x',num2str(columns(den)), ...
-      ') must be vectors'])
+    error(["num (",num2str(rows(num)),"x",num2str(columns(num)), ...
+      ") and den (",num2str(rows(den)),"x",num2str(columns(den)), ...
+      ") must be vectors"])
   endif
   
   ## strip leading zero coefficients
@@ -83,7 +83,7 @@ function outsys = tf2sys (num, den, tsam, inname, outname)
   if(nargin <= 2)           tsam = 0;		# default
   elseif (isempty(tsam))    tsam = 0;           endif
   if ( (! (is_scalar(tsam) && (imag(tsam) == 0) )) || (tsam < 0) )
-    error('tsam must be a positive real scalar')
+    error("tsam must be a positive real scalar")
   endif
 
   outsys.num = num;

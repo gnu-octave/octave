@@ -151,7 +151,7 @@ function [retval, dgkf_struct] = is_dgkf (Asys, nu, ny, tol)
 
   [A,B,C,D] = sys2ss(Asys);
   ## scale input/output for numerical reasons
-  if(norm(C,'fro')*norm(B,'fro') == 0)
+  if(norm (C, "fro") * norm (B, "fro") == 0)
     error("||C||*||B|| = 0; no dynamic connnection from inputs to outputs");
   endif
   xx = sqrt(norm(B, Inf) / norm(C, Inf));

@@ -165,6 +165,8 @@ static int Vwhitespace_in_literal_matrix;
 
 static bool Vwarn_separator_insert = false;
 
+static bool Vwarn_single_quote_string = false;
+
 // Forward declarations for functions defined at the bottom of this
 // file.
 
@@ -189,6 +191,7 @@ static bool have_ellipsis_continuation (bool trailing_comments_ok = true);
 static yum_yum eat_whitespace (void);
 static yum_yum eat_continuation (void);
 static void maybe_warn_separator_insert (char sep);
+static void gripe_single_quote_string (void);
 
 %}
 
@@ -1755,6 +1758,10 @@ handle_string (char delim, int text_style)
 
 		  yylval.tok_val = new token (s);
 		  token_stack.push (yylval.tok_val);
+
+		  if (delim == '\'')
+		    gripe_single_quote_string ();
+
 		  return TEXT;
 		}
 	    }
@@ -2217,10 +2224,34 @@ maybe_warn_separator_insert (char sep)
     }
 }
 
+static void
+gripe_single_quote_string (void)
+{
+  string nm = curr_fcn_file_full_name;
+
+  if (Vwarn_single_quote_string)
+    {
+      if (nm.empty ())
+	warning ("single quote delimited string near line %d",
+		 input_line_number);
+      else
+	warning ("single quote delimited string near line %d of file %s",
+		 input_line_number, nm.c_str ());
+    }
+}
+
 static int
 warn_separator_insert (void)
 {
   Vwarn_separator_insert = check_preference ("warn_separator_insert");
+
+  return 0;
+}
+
+static int
+warn_single_quote_string (void)
+{
+  Vwarn_single_quote_string = check_preference ("warn_single_quote_string");
 
   return 0;
 }
@@ -2251,6 +2282,10 @@ symbols_of_lex (void)
   DEFVAR (warn_separator_insert, 0.0, warn_separator_insert,
     "print warning if commas or semicolons that might be inserted\n\
 automatically in literal matrices");
+
+  DEFVAR (warn_single_quote_string, 0.0, warn_single_quote_string,
+    "print warning if a signle quote character is used to introduce a\n\
+ string constant");
 
   DEFVAR (whitespace_in_literal_matrix, "", whitespace_in_literal_matrix,
     "control auto-insertion of commas and semicolons in literal matrices");

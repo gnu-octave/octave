@@ -127,7 +127,7 @@ function sys = sysconnect (sys, output_list, input_list, order, tol)
   output_list = reshape(output_list,1,length(output_list));
 
   ## make sure we're in state space form
-  sys = sysupdate(sys,'ss');
+  sys = sysupdate (sys, "ss");
 
   ## permute rows and columns of B,C,D matrices into pseudo-dgkf form...
   all_inputs = sysreorder(mm,input_list);
@@ -268,8 +268,10 @@ function sys = sysconnect (sys, output_list, input_list, order, tol)
   endfor
   
   ## maintain original system type if it was SISO
-  if    (strcmp(sysgettype(sys),"tf") )       sysupdate(sys,'tf');
-  elseif(strcmp(sysgettype(sys),"zp") )       sysupdate(sys,'zp');
+  if (strcmp (sysgettype (sys), "tf"))
+    sysupdate (sys, "tf");
+  elseif (strcmp (sysgettype (sys),"zp"))
+    sysupdate (sys, "zp");
   endif
 
 endfunction

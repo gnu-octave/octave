@@ -42,7 +42,7 @@ function tfout (num, denom, x)
   endif
   
   if (nargin == 2)
-    x = 's';
+    x = "s";
   elseif( ! isstr(x) )
     error("tfout: third argument must be a string");
   endif
@@ -56,7 +56,7 @@ function tfout (num, denom, x)
     disp(y)
     disp(denomstring)
   else
-    error('tfout: empty transfer function')
+    error ("tfout: empty transfer function")
   end
 
   empty_list_elements_ok = save_empty;

@@ -30,7 +30,7 @@ function sysrepdemo ()
   save_val = page_screen_output;
   page_screen_output = 1;
 
-  disp('System representation demo:')
+  disp("System representation demo:")
   num = [5, -1];
   denom = [1, -2, 6];
   a = b = c = [];
@@ -43,7 +43,7 @@ function sysrepdemo ()
   ch_quit = ch_details+1;
   while(syschoice != ch_quit)
    disp(" ")
-    syschoice = menu('Octave System Representation Menu', ...
+    syschoice = menu("Octave System Representation Menu", ...
       "General overview of system representation (DO THIS FIRST)", ...
       "Initialize a system (ss2sys, tf2sys, zp2sys)", ...
       "Extract data from a system(sys2ss, sys2tf, sys2zp, etc.)", ...
@@ -54,11 +54,11 @@ function sysrepdemo ()
     if(syschoice == 1)  # general overview
       disp("The Octave Control Systems Toolbox (OCST) was designed to")
       disp("provide a simple user interface to a powerful set of tools.")
-      disp(' ')
-      disp('               ----------')
-      disp(' input(s) ---->| System | ---> output(s) ')
-      disp('               ----------')
-      disp(' ')
+      disp(" ")
+      disp("               ----------")
+      disp(" input(s) ---->| System | ---> output(s) ")
+      disp("               ----------")
+      disp(" ")
       disp("Like other computer-aided control system design tools, the OCST")
       disp("enables users to enter their descriptions of dynamic systems in ")
       disp("their preferred form (state space, transfer function, or ");
@@ -101,7 +101,7 @@ function sysrepdemo ()
       disp("OCST package will be quite easy to use.")
     elseif(syschoice == ch_init) % Initialize
       disp("Initialization of a system:");
-      disp(' ');
+      disp(" ");
       formopt = 0;
       while(formopt != 4)
       disp("Three data formats may be used to initialize a system:")
@@ -111,15 +111,15 @@ function sysrepdemo ()
 		"zero-pole form         (zp2sys)", ...
 	    	"Return to System representation menu");
         if(formopt == 1)
-          disp('State space representation of a system is based on the usual')
-          disp('multi-variable differential equations')
-          disp(' ')
-          disp('  . ')
-          disp('  x = A x + B u      -or -   x(k+1) = A x(k) + B u(k) ')
-          disp('  y = C x + D u                y(k) = C x(k) + D u(k) ')
-          disp(' ')
-          disp('for matrices A, B, C, D of appropriate dimension.')
-          disp(' ')
+          disp("State space representation of a system is based on the usual")
+          disp("multi-variable differential equations")
+          disp(" ")
+          disp("  . ")
+          disp("  x = A x + B u      -or -   x(k+1) = A x(k) + B u(k) ")
+          disp("  y = C x + D u                y(k) = C x(k) + D u(k) ")
+          disp(" ")
+          disp("for matrices A, B, C, D of appropriate dimension.")
+          disp(" ")
           ssopt = 0;
           ssquit = 5;
           while(ssopt < ssquit)

@@ -174,8 +174,8 @@ function csys = d2c (sys, opt)
         for ii=1:rows(Mtop)
           for jj=1:columns(Mtop)
   	  DMall(ii,jj) = Mall(ii,jj) + geps;
-            GrMall(ii,jj) = norm(Amat - expm(DMall*T),'fro') ...
-  	    - norm(Amat-expm(Mall*T),'fro');
+            GrMall(ii,jj) = norm (Amat - expm (DMall*T), "fro") ...
+  		- norm (Amat - expm (Mall*T), "fro");
       	  DMall(ii,jj) = Mall(ii,jj);
           endfor
         endfor

@@ -60,6 +60,7 @@ function DEMOcontrol ()
     		"Block diagram manipulations",
     		"Frequency response functions",
     		"State space analysis functions",
+    		"System model manipulations",
     		"Root locus functions",
 		"LQG/H2/Hinfinity functions",
     		"End");
@@ -70,9 +71,10 @@ function DEMOcontrol ()
       case (2) bddemo ();
       case (3) frdemo ();
       case (4) analdemo ();
-      case (5) rldemo ();
-      case (6) dgkfdemo ();
-      case (7) return;
+      case (5) moddemo ();
+      case (6) rldemo ();
+      case (7) dgkfdemo ();
+      case (8) return;
     endswitch
 
   endwhile

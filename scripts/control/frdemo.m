@@ -33,11 +33,11 @@ function frdemo ()
   j = 0;
   while (j != 4)
     disp("");
-    j = menu("Octave Controls Systems Toolbox Frequency Response Demo",...
-             'Bode analysis (bode)',...
-             'Nyquist analysis (nyquist)',...
-	     "Nichols analysis (nichols)", ...
-             'Return to main demo menu');
+    j = menu("Octave Controls Systems Toolbox Frequency Response Demo",
+             "Bode analysis (bode)",
+             "Nyquist analysis (nyquist)",
+	     "Nichols analysis (nichols)", 
+             "Return to main demo menu");
    
     if (j == 1)
       k1 = 0;
@@ -45,11 +45,11 @@ function frdemo ()
         disp("\n");
         clc
 
-        k1 = menu("Bode analysis (bode)",...
-                  'Continuous system bode analysis',...
-                  'Discrete system bode analysis',...
-                  'Bode command description', ...
-                  'Return to frdemo menu');
+        k1 = menu("Bode analysis (bode)",
+                  "Continuous system bode analysis",
+                  "Discrete system bode analysis",
+                  "Bode command description", 
+                  "Return to frdemo menu");
        
         if( k1 == 1 )
           disp(" ")
@@ -147,7 +147,7 @@ function frdemo ()
           eval(cmd);
           disp("\nNotice that there are now 2 inputs and 2 outputs, and that it did");
  	  disp("not matter what form the two systems were in when they were grouped.");
-          disp(["\nTo view the system\'s bode plots, execute the",...
+          disp(["\nTo view the system's bode plots, execute the",
         	" following command:\n"])
           cmd = "bode(sys_mimo);";
           run_cmd;
@@ -311,11 +311,11 @@ function frdemo ()
         disp("")
         clc;
 
-        k2 = menu("Nyquist analysis (Nyquist)",...
-                  'Continuous system nyquist analysis',...
-        	  'Discrete system nyquist analysis',...
-        	  'Mixed system nyquist analysis',...
-                  'Return to frdemo menu');
+        k2 = menu("Nyquist analysis (Nyquist)",
+                  "Continuous system nyquist analysis",
+        	  "Discrete system nyquist analysis",
+        	  "Mixed system nyquist analysis",
+                  "Return to frdemo menu");
 
         if( k2 == 1 )
           disp("")

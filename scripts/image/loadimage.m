@@ -45,7 +45,7 @@ function [img_retval, map_retval] = loadimage (filename)
 
   ## The file is assumed to have variables img and map, or X and map.
 
-  eval (['load ', file]);
+  eval (sprintf ("load %s", file));
 
   if (exist ("img"))
     img_retval = img;

@@ -75,7 +75,7 @@ function [retval, U] = is_stabilizable (a, b, tol)
     ## now use an ordered Schur decomposition to get an orthogonal
     ## basis of the unstable subspace...
     n = rows(a);
-    [ua,s] = schur(-(a+eye(n)*tol),'A');
+    [ua, s] = schur (-(a+eye(n)*tol), "A");
     k = sum( real(eig(a)) >= 0 );	# count unstable poles 
 
     if( k > 0 )

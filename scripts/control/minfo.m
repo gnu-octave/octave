@@ -39,7 +39,7 @@ function [systype, nout, nin, ncstates, ndstates] = minfo (inmat)
   warning("minfo: obsolete.  Use sys2ss, sys2tf, or sys2zp.");
     
   if (nargin ~= 1 )
-    disp('MINFO: Wrong number of arguments')
+    disp ("MINFO: Wrong number of arguments")
     systype = nout = nin = ncstates = ndstates = [];
   endif
   

@@ -2,33 +2,292 @@ set test time-1
 set prog_output "ans = 1"
 do_test time-1.m
 
-# ctime
-# gmtime
-# localtime
-# mktime
-# asctime
-# strftime
-# clock
-# date
-# etime
-# cputime
-# is_leap_year
-# tic-toc
-# pause
-# sleep
-# usleep
-# rename
-# unlink
-# readdir
-# mkdir
+set test ctime-1
+set prog_output "ans = 1"
+do_test ctime-1.m
+
+set test ctime-2
+set prog_output "usage:.*"
+do_test ctime-2.m
+
+set test ctime-3
+set prog_output "usage:.*"
+do_test ctime-3.m
+
+set test gmtime-1
+set prog_output "ans = 1"
+do_test gmtime-1.m
+
+set test gmtime-2
+set prog_output "\n... gmtime:.*"
+do_test gmtime-2.m
+
+set test gmtime-3
+set prog_output "\n... gmtime:.*"
+do_test gmtime-3.m
+
+set test localtime-1
+set prog_output "ans = 1"
+do_test localtime-1.m
+
+set test localtime-2
+set prog_output "\n... localtime:.*"
+do_test localtime-2.m
+
+set test localtime-3
+set prog_output "\n... localtime:.*"
+do_test localtime-3.m
+
+set test mktime-1
+set prog_output "ans = 1"
+do_test mktime-1.m
+
+set test mktime-2
+set prog_output "\n... mktime:.*"
+do_test mktime-2.m
+
+set test mktime-3
+set prog_output "\n... mktime:.*"
+do_test mktime-3.m
+
+set test asctime-1
+set prog_output "ans = 1"
+do_test asctime-1.m
+
+set test asctime-2
+set prog_output "usage:.*"
+do_test asctime-2.m
+
+set test asctime-3
+set prog_output "usage:.*"
+do_test asctime-3.m
+
+set test strftime-1
+set prog_output "ans = 1"
+do_test strftime-1.m
+
+set test strftime-2
+set prog_output "\n... strftime:.*"
+do_test strftime-2.m
+
+set test strftime-3
+set prog_output "\n... strftime:.*"
+do_test strftime-3.m
+
+set test clock-1
+set prog_output "ans = 1"
+do_test clock-1.m
+
+set test date-1
+set prog_output "ans = 1"
+do_test date-1.m
+
+set test etime-1
+set prog_output "ans = 1"
+do_test etime-1.m
+
+set test etime-2
+set prog_output "usage:.*"
+do_test etime-2.m
+
+set test etime-3
+set prog_output "usage:.*"
+do_test etime-3.m
+
+set test cputime-1
+set prog_output "ans = 1"
+do_test cputime-1.m
+
+set test is_leap_year-1
+set prog_output "ans = 1"
+do_test is_leap_year-1.m
+
+set test is_leap_year-2
+set prog_output "usage:.*"
+do_test is_leap_year-2.m
+
+set test tic-toc-1
+set prog_output "ans = 1"
+do_test tic-toc-1.m
+
+set test pause-1
+set prog_output "ok"
+do_test pause-1.m
+
+set test pause-2
+set prog_output "\n... pause:.*"
+do_test pause-2.m
+
+set test sleep-1
+set prog_output "ok"
+do_test sleep-1.m
+
+set test sleep-2
+set prog_output "\n... sleep:.*"
+do_test sleep-2.m
+
+set test sleep-3
+set prog_output "\n... sleep:.*"
+do_test sleep-3.m
+
+set test usleep-1
+set prog_output "ok"
+do_test usleep-1.m
+
+set test usleep-2
+set prog_output "\n... usleep:.*"
+do_test usleep-2.m
+
+set test usleep-3
+set prog_output "\n... usleep:.*"
+do_test usleep-3.m
+
+set test rename-1
+set prog_output "ans = 1"
+do_test rename-1.m
+
+set test rename-2
+set prog_output "\n... rename:.*"
+do_test rename-2.m
+
+set test rename-3
+set prog_output "\n... rename:.*"
+do_test rename-3.m
+
+set test unlink-1
+set prog_output "ans = 1"
+do_test unlink-1.m
+
+set test unlink-2
+set prog_output "\n... unlink:.*"
+do_test unlink-2.m
+
+set test unlink-3
+set prog_output "\n... unlink:.*"
+do_test unlink-3.m
+
+set test readdir-1
+set prog_output "ans = 1"
+do_test readdir-1.m
+
+set test readdir-2
+set prog_output "\n... readdir:.*"
+do_test readdir-2.m
+
+set test readdir-3
+set prog_output "\n... readdir:.*"
+do_test readdir-3.m
+
+set test mk-rm-dir-1
+set prog_output "ans = 1"
+do_test mk-rm-dir-1.m
+
+set test mkdir-1
+set prog_output "\n... mkdir:.*"
+do_test mkdir-1.m
+
+set test mkdir-2
+set prog_output "\n... mkdir:.*"
+do_test mkdir-2.m
+
+set test rmdir-1
+set prog_output "\n... rmdir:.*"
+do_test rmdir-1.m
+
+set test rmdir-2
+set prog_output "\n... rmdir:.*"
+do_test rmdir-2.m
+
 # mkfifo
-# umask
-# stat
-# lstat
-# glob
-# fnmatch
-# file_in_path
-# tilde_expand
+
+set test umask-1
+set prog_output "ans = 1"
+do_test umask-1.m
+
+set test umask-2
+set prog_output "\n... umask:.*"
+do_test umask-2.m
+
+set test umask-3
+set prog_output "\n... umask:.*"
+do_test umask-3.m
+
+set test stat-1
+set prog_output "ans = 1"
+do_test stat-1.m
+
+set test stat-2
+set prog_output "\n... stat:.*"
+do_test stat-2.m
+
+set test stat-3
+set prog_output "\n... stat:.*"
+do_test stat-3.m
+
+set test lstat-1
+set prog_output "ans = 1"
+do_test lstat-1.m
+
+set test lstat-2
+set prog_output "\n... lstat:.*"
+do_test lstat-2.m
+
+set test lstat-3
+set prog_output "\n... lstat:.*"
+do_test lstat-3.m
+
+set test glob-1
+set prog_output "ans = 1"
+do_test glob-1.m
+
+set test glob-2
+set prog_output "\n... glob:*"
+do_test glob-2.m
+
+set test glob-3
+set prog_output "\n... glob:.*"
+do_test glob-3.m
+
+set test fnmatch-1
+set prog_output "ans = 1"
+do_test fnmatch-1.m
+
+set test fnmatch-2
+set prog_output "\n... fnmatch:.*"
+do_test fnmatch-2.m
+
+set test fnmatch-3
+set prog_output "\n... fnmatch:.*"
+do_test fnmatch-3.m
+
+set test file_in_path-1
+set prog_output "ans = 1"
+do_test file_in_path-1.m
+
+set test file_in_path-2
+set prog_output "error:.*"
+do_test file_in_path-2.m
+
+set test file_in_path-3
+set prog_output "\n... file_in_path:.*"
+do_test file_in_path-3.m
+
+set test file_in_path-4
+set prog_output "\n... file_in_path:.*"
+do_test file_in_path-4.m
+
+set test tilde_expand-1
+set prog_output "ans = 1"
+do_test tilde_expand-1.m
+
+set test tilde_expand-2
+set prog_output "\n... tilde_expand:.*"
+do_test tilde_expand-2.m
+
+set test tilde_expand-3
+set prog_output "\n... tilde_expand:.*"
+do_test tilde_expand-3.m
+
 # system
 # popen
 # pclose

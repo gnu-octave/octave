@@ -33,63 +33,61 @@
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>
 ## Created: June 1994
 ## Adapted-By: jwe
-## Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
-##    handle b/a and b*a
 
 function [q, r] = polyderiv (p, a)
 
-  if (nargin < 1 || nargin > 3)
-    usage ("q=polyderiv(p) or q=polyderiv(b,a) or [q, r]=polyderiv(b,a)");
-  endif
-
-  if (! isvector (p))
-    error ("polyderiv: argument must be a vector");
-  endif
-
-  if (nargin == 2)
-    if (! isvector (a))
+  if (nargin == 1 || nargin == 2)
+    if (! isvector (p))
       error ("polyderiv: argument must be a vector");
     endif
-    if (nargout == 1) 
-      ## derivative of p*a returns a single polynomial
-      q = polyderiv(conv(p,a));
-    else
-      ## derivative of p/a returns numerator and denominator
-      r = conv(a, a);
-      if numel(p) == 1
-	q = -p * polyderiv(a);
-      elseif numel(a) == 1
-	q = a * polyderiv(p);
+    if (nargin == 2)
+      if (! isvector (a))
+	error ("polyderiv: argument must be a vector");
+      endif
+      if (nargout == 1) 
+	## derivative of p*a returns a single polynomial
+	q = polyderiv (conv (p, a));
       else
-      	q = conv(polyderiv(p),a) - conv(p,polyderiv(a));
-      	q = polyreduce(q);
+	## derivative of p/a returns numerator and denominator
+	r = conv (a, a);
+	if (numel (p) == 1)
+	  q = -p * polyderiv (a);
+	elseif (numel (a) == 1)
+	  q = a * polyderiv (p);
+	else
+	  q = conv (polyderiv (p), a) - conv (p, polyderiv (a));
+	  q = polyreduce (q);
+	endif
+
+	## remove common factors from numerator and denominator
+	x = polygcd (q, r);
+	if (length(x) != 1)
+	  q = deconv (q, x);
+	  r = deconv (r, x);
+	endif
+
+	## move all the gain into the numerator
+	q = q/r(1);
+	r = r/r(1);
+      endif
+    else
+      lp = numel (p);
+      if (lp == 1)
+	q = 0;
+	return;
+      elseif (lp == 0)
+	q = [];
+	return;
       endif
 
-      ## remove common factors from numerator and denominator
-      x = polygcd(q,r);
-      if length(x)!=1
-      	q=deconv(q,x);
-      	r=deconv(r,x);
-      endif
+      ## Force P to be a row vector.
+      p = p(:).';
 
-      ## move all the gain into the numerator
-      q=q/r(1);
-      r=r/r(1);
+      q = p(1:(lp-1)) .* [(lp-1):-1:1];
     endif
   else
-    lp = numel (p);
-    if (lp == 1)
-      q = 0;
-      return;
-    elseif (lp == 0)
-      q = [];
-      return;
-    end
-
-    ## Force P to be a row vector.
-    p = p(:).';
-
-    q = p (1:(lp-1)) .* [(lp-1):-1:1];
+    usage ("q = polyderiv (p) or q = polyderiv (b, a) or [q, r] = polyderiv (b, a)");
   endif
+
 
 endfunction

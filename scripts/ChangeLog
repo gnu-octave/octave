@@ -1,3 +1,9 @@
+2005-03-16  Paul Kienzle  <pkienzle@users.sf.net>
+
+	* polynomial/polyderiv.m : Accept a*b, a/b.  Auto-reduce common terms.
+	* polynomial/polyder.m: Ditto.
+        * polynomial/polygcd.m: New function.
+
 2005-03-16  John W. Eaton  <jwe@octave.org>
 
 	* control/base/__stepimp__.m, control/base/bode.m,

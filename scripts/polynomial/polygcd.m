@@ -37,29 +37,37 @@
 ## @seealso{poly, polyinteg, polyderiv, polyreduce, roots, conv, deconv,
 ## residue, filter, polyval, and polyvalm}
 
-function x = polygcd(b,a,tol)
-  if (nargin<2 || nargin>3)
-    usage("x=polygcd(b,a [,tol])");
-  endif
-  if (nargin<3), tol=sqrt(eps); endif
-  if (length(a)==1 || length(b)==1)
-    if a==0, x=b;
-    elseif b==0, x=a;
-    else x=1;
+function x = polygcd (b, a, tol)
+
+  if (nargin == 2 || nargin == 3)
+    if (nargin == 2)
+      tol = sqrt (eps);
     endif
-    return;
-  endif
-  a = a./a(1);
-  while (1)
-    [d, r] = deconv(b, a);
-    nz = find(abs(r)>tol);
-    if isempty(nz)
-      x = a; 
-      return;
+    if (length (a) == 1 || length (b) == 1)
+      if (a == 0)
+	x = b;
+      elseif (b == 0)
+	x = a;
+      else
+	x = 1;
+      endif
     else
-      r = r(nz(1):length(r));
+      a /= a(1);
+      while (1)
+	[d, r] = deconv (b, a);
+	nz = find (abs (r) > tol);
+	if (isempty (nz))
+	  x = a;
+	  break;
+	else
+	  r = r(nz(1):length(r));
+	endif
+	b = a;
+	a /= r(1);
+      endwhile
     endif
-    b = a;
-    a = r./r(1);
-  endwhile
+  else
+    usage ("x = polygcd (b, a [,tol])");
+  endif
+
 endfunction

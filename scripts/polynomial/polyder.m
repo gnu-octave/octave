@@ -25,21 +25,19 @@
 ## @end deftypefn
 
 ## Author: John W. Eaton
-## Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
-##    handle b/a and b*a
 
 function [q, r] = polyder (p, a)
 
   if (nargin == 1)
     q = polyderiv (p);
-  elseif (nargin==2)
-    if (nargout==2)
-      [q, r] = polyderiv (p,a);
+  elseif (nargin == 2)
+    if (nargout == 2)
+      [q, r] = polyderiv (p, a);
     else
-      q = polyderiv (p,a);
+      q = polyderiv (p, a);
     endif
   else
-    usage ("q=polyder(p) or q=polyder(b,a) or [q, r]=polyder(b,a)");
+    usage ("q = polyder (p) or q = polyder (b, a) or [q, r] = polyder (b, a)");
   endif
 
 endfunction

@@ -388,6 +388,8 @@ tree_parameter_list::define_from_arg_vector (const octave_value_list& args)
     {
       tree_identifier *elt = this->operator () (p);
 
+      octave_variable_reference ref = elt->reference ();
+
       if (i < nargin)
 	{
 	  if (args(i).is_defined () && args(i).is_magic_colon ())
@@ -396,10 +398,10 @@ tree_parameter_list::define_from_arg_vector (const octave_value_list& args)
 	      return;
 	    }
 
-	  elt->define (args(i));
+	  ref.assign (octave_value::asn_eq, args(i));
 	}
       else
-	elt->define (octave_value ());
+	ref.assign (octave_value::asn_eq, octave_value ());
 
       next (p);
     }

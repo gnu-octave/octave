@@ -53,23 +53,9 @@ tree_identifier::name (void) const
 }
 
 tree_identifier *
-tree_identifier::define (octave_symbol *s, unsigned int sym_type)
-{
-  int status = sym->define (s, sym_type);
-  return status ? this : 0;
-}
-
-tree_identifier *
 tree_identifier::define (octave_function *f, unsigned int sym_type)
 {
   int status = sym->define (f, sym_type);
-  return status ? this : 0;
-}
-
-tree_identifier *
-tree_identifier::define (const octave_value& v)
-{
-  int status = sym->define (v);
   return status ? this : 0;
 }
 

@@ -63,11 +63,7 @@ public:
 
   string name (void) const;
 
-  tree_identifier *define (octave_symbol *s, unsigned int sym_type);
-
   tree_identifier *define (octave_function *f, unsigned int sym_type);
-
-  tree_identifier *define (const octave_value& v);
 
   void document (const string& s);
 

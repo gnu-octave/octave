@@ -312,7 +312,7 @@ endif
 # The -L flags to use for the mkoctfile scrip (for --link-stand-alone)
 MKOCTFILE_LFLAGS = -L$(octlibdir)
 
-MKOCTFILE_DL_LDFLAGS = @MKOCTFILE_DL_DFLAGS@
+MKOCTFILE_DL_LDFLAGS = @MKOCTFILE_DL_LDFLAGS@
 
 NO_OCT_FILE_STRIP = @NO_OCT_FILE_STRIP@
 

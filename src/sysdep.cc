@@ -55,6 +55,19 @@ Software Foundation, Inc.
 LOSE! LOSE!
 #endif
 
+#if defined (HAVE_FLOATINGPOINT_H)
+#include <floatingpoint.h>
+#endif
+
+#if !defined (HAVE_GETHOSTNAME) && defined (HAVE_SYS_UTSNAME_H)
+#include <sys/utsname.h>
+#endif
+
+#include <readline/readline.h>
+
+extern char *term_clrpag;
+extern "C" void _rl_output_character_function ();
+
 #include "defun.h"
 #include "error.h"
 #include "f77-uscore.h"
@@ -66,15 +79,7 @@ LOSE! LOSE!
 #include "tree-const.h"
 #include "utils.h"
 
-extern "C"
-{
-#include <readline/readline.h>
-
-extern char *term_clrpag;
-extern void _rl_output_character_function ();
-
-extern double F77_FCN (d1mach, D1MACH) (const int&);
-}
+extern "C" double F77_FCN (d1mach, D1MACH) (const int&);
 
 #ifndef STDIN_FILENO
 #define STDIN_FILENO 1
@@ -91,10 +96,6 @@ floating_point_format native_float_format = OCTAVE_UNKNOWN_FLT_FMT;
 
 // Nonzero if the machine we are running on is big-endian.
 int octave_words_big_endian;
-
-#if defined (HAVE_FLOATINGPOINT_H)
-#include <floatingpoint.h>
-#endif
 
 #ifdef NeXT
 extern "C"
@@ -635,8 +636,6 @@ DEFUN ("isieee", Fisieee, Sisieee, 1, 1,
 
 #if !defined (HAVE_GETHOSTNAME) && defined (HAVE_SYS_UTSNAME_H)
 extern "C"
-{
-#include <sys/utsname.h>
 int
 gethostname (char *name, int namelen)
 {
@@ -651,7 +650,6 @@ gethostname (char *name, int namelen)
   name[namelen] = '\0';
 
   return 0;
-}
 }
 #endif
 

@@ -120,8 +120,8 @@ PT_SRC := pt.cc pt-arg-list.cc pt-assign.cc pt-binop.cc pt-check.cc \
 DIST_SRC := BaseSLList.cc Map.cc SLList.cc SLStack.cc Stack.cc \
 	data.cc defaults.cc defun.cc dirfns.cc dynamic-ld.cc \
 	error.cc file-io.cc fn-cache.cc gripes.cc help.cc input.cc \
-	lex.l load-save.cc mappers.cc oct-fstrm.cc oct-hist.cc \
-	oct-iostrm.cc oct-map.cc oct-obj.cc oct-prcstrm.cc \
+	lex.l load-save.cc mappers.cc matherr.c oct-fstrm.cc \
+	oct-hist.cc oct-iostrm.cc oct-map.cc oct-obj.cc oct-prcstrm.cc \
 	oct-procbuf.cc oct-stdstrm.cc oct-stream.cc oct-strstrm.cc \
 	oct-lvalue.cc pager.cc parse.y pr-output.cc procstream.cc \
 	sighandlers.cc strcasecmp.c strncase.c strfns.cc \

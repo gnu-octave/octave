@@ -187,9 +187,6 @@ NLEqn::solve (int& info)
 	(*current_liboctave_error_handler) ("unrecoverable error in hybrd1");
     }
 
-  if (info < 0)
-    retval.resize (0);
-
   return retval;
 }
 

@@ -1,5 +1,8 @@
 2002-10-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* DLD-FUNCTIONS/fsolve.cc (Ffsolve): Always return solution.
+	Don't barf on nargout == 3.
+
 	* pt-idx.h (tree_index_expression::dyn_field): New data member.
 	* pt-idx.cc (tree_index_expression::tree_index_expression
 	(tree_expression*, tree_expression*, int, int)): New constructor.

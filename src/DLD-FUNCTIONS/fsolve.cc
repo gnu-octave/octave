@@ -185,10 +185,10 @@ parameters for @code{fsolve}.\n\
       if (error_state)
 	FSOLVE_ABORT1 ("expecting vector as second argument");
 
-      if (nargin > 2)
+      if (nargin > 3)
 	warning ("fsolve: ignoring extra arguments");
 
-      if (nargout > 2)
+      if (nargout > 3)
 	warning ("fsolve: can't compute path output yet");
 
       NLFunc nleqn_fcn (fsolve_user_function);
@@ -205,15 +205,10 @@ parameters for @code{fsolve}.\n\
 	  retval(2) = msg;
 	  retval(1) = static_cast<double> (hybrd_info_to_fsolve_info (info));
 
-	  if (nleqn.solution_ok ())
-	    retval(0) = soln;
-	  else
-	    {
-	      retval(0) = Matrix ();
+	  retval(0) = soln;
 
-	      if (nargout < 2)
-		error ("fsolve: %s", msg.c_str ());
-	    }
+	  if (! nleqn.solution_ok () && nargout < 2)
+	    error ("fsolve: %s", msg.c_str ());
 	}
     }
   else

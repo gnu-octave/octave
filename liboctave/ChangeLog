@@ -1,3 +1,8 @@
+2002-10-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* NLEqn.cc (NLEqn::solve): Return current estimate of solution
+	instead of empty vector if user termninates iteration.
+
 2002-10-28  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* lo-utils.cc (read_inf_nan_na, octave_read_double,

@@ -877,77 +877,77 @@ void
 symbols_of_syscalls (void)
 {
 #if defined (F_DUPFD)
-  DEFCONST (F_DUPFD, static_cast<double> (F_DUPFD),
+  DEFCONSTX ("F_DUPFD", SBV_F_DUPFD, static_cast<double> (F_DUPFD),
     "");
 #endif
 
 #if defined (F_GETFD)
-  DEFCONST (F_GETFD, static_cast<double> (F_GETFD),
+  DEFCONSTX ("F_GETFD", SBV_F_GETFD, static_cast<double> (F_GETFD),
     "");
 #endif
 
 #if defined (F_GETFL)
-  DEFCONST (F_GETFL, static_cast<double> (F_GETFL),
+  DEFCONSTX ("F_GETFL", SBV_F_GETFL, static_cast<double> (F_GETFL),
     "");
 #endif
 
 #if defined (F_SETFD)
-  DEFCONST (F_SETFD, static_cast<double> (F_SETFD),
+  DEFCONSTX ("F_SETFD", SBV_F_SETFD, static_cast<double> (F_SETFD),
     "");
 #endif
 
 #if defined (F_SETFL)
-  DEFCONST (F_SETFL, static_cast<double> (F_SETFL),
+  DEFCONSTX ("F_SETFL", SBV_F_SETFL, static_cast<double> (F_SETFL),
     "");
 #endif
 
 #if defined (O_APPEND)
-  DEFCONST (O_APPEND, static_cast<double> (O_APPEND),
+  DEFCONSTX ("O_APPEND", SBV_O_APPEND, static_cast<double> (O_APPEND),
     "");
 #endif
 
 #if defined (O_ASYNC)
-  DEFCONST (O_ASYNC, static_cast<double> (O_ASYNC),
+  DEFCONSTX ("O_ASYNC", SBV_O_ASYNC, static_cast<double> (O_ASYNC),
     "");
 #endif
 
 #if defined (O_CREAT)
-  DEFCONST (O_CREAT, static_cast<double> (O_CREAT),
+  DEFCONSTX ("O_CREAT", SBV_O_CREAT, static_cast<double> (O_CREAT),
     "");
 #endif
 
 #if defined (O_EXCL)
-  DEFCONST (O_EXCL, static_cast<double> (O_EXCL),
+  DEFCONSTX ("O_EXCL", SBV_O_EXCL, static_cast<double> (O_EXCL),
     "");
 #endif
 
 #if defined (O_NONBLOCK)
-  DEFCONST (O_NONBLOCK, static_cast<double> (O_NONBLOCK),
+  DEFCONSTX ("O_NONBLOCK", SBV_O_NONBLOCK, static_cast<double> (O_NONBLOCK),
     "");
 #endif
 
 #if defined (O_RDONLY)
-  DEFCONST (O_RDONLY, static_cast<double> (O_RDONLY),
+  DEFCONSTX ("O_RDONLY", SBV_O_RDONLY, static_cast<double> (O_RDONLY),
     "");
 #endif
 
 #if defined (O_RDWR)
-  DEFCONST (O_RDWR, static_cast<double> (O_RDWR),
+  DEFCONSTX ("O_RDWR", SBV_O_RDWR, static_cast<double> (O_RDWR),
     "");
 #endif
 
 #if defined (O_SYNC)
-  DEFCONST (O_SYNC, static_cast<double> (O_SYNC),
+  DEFCONSTX ("O_SYNC", SBV_O_SYNC, static_cast<double> (O_SYNC),
     "");
 #endif
 
 #if defined (O_TRUNC)
-  DEFCONST (O_TRUNC, static_cast<double> (O_TRUNC),
+  DEFCONSTX ("O_TRUNC", SBV_O_TRUNC, static_cast<double> (O_TRUNC),
     "");
 #endif
 
 #if defined (O_WRONLY)
-  DEFCONST (O_WRONLY, static_cast<double> (O_WRONLY),
+  DEFCONSTX ("O_WRONLY", SBV_O_WRONLY, static_cast<double> (O_WRONLY),
     "");
 #endif
 }

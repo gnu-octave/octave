@@ -1,5 +1,8 @@
 1999-11-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* syscalls.cc (symbols_of_syscalls): Use DEFCONSTX to define
+	Octave constants for C macros like O_WRONLY.
+
 	* oct-lvalue.cc (octave_lvalue::set_index): Disallow expressions
 	like x(i)(j) = rhs.
 

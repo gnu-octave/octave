@@ -21,7 +21,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA. 
 
-AC_REVISION($Revision: 1.313 $)
+AC_REVISION($Revision: 1.314 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -298,6 +298,21 @@ AC_SUBST(LD_STATIC_FLAG)
 
 OCTAVE_CXX_PREPENDS_UNDERSCORE
 
+dnl This is bogus.  We shouldn't have to explicitly add libc too!
+
+### Look for math library.  If found, this will add -lm to LIBS.
+
+case "$canonical_host_type" in
+  *-*-nextstep*)
+  ;;  
+  *-*-linux*)
+    AC_CHECK_LIB(m, sin, , , -lc)
+  ;;
+  *)
+    AC_CHECK_LIB(m, sin)
+  ;;
+esac
+
 ### We need these before trying to find libf2c.
 
 OCTAVE_PROG_AR
@@ -433,11 +448,11 @@ EOF
     fi
   fi
   rm -f conftest*
-  AC_CHECK_LIB(f2c, f_open, FLIBS=-lf2c, FLIBS=, [-L. -lconflib -lm])
+  AC_CHECK_LIB(f2c, f_open, FLIBS=-lf2c, FLIBS=, [-L. -lconflib])
   rm -f $oct_conflib
 
   if test -z "$FLIBS"; then
-    AC_CHECK_LIB(F77, d_sin, FLIBS=-lF77, FLIBS=, -lm)
+    AC_CHECK_LIB(F77, d_sin, FLIBS=-lF77, FLIBS=)
     if test -n "$FLIBS"; then
       AC_CHECK_LIB(I77, f_rew, FLIBS="$FLIBS -lI77", FLIBS=, -lF77)
     fi
@@ -767,6 +782,7 @@ OCTAVE_SMART_PUTENV
 
 LIBDLFCN=
 DLFCN_INCFLAGS=
+RDYNAMIC_FLAG=
 if test "$WITH_DL" = yes || test "$WITH_DL" = maybe; then
   case "$canonical_host_type" in
     rs6000-ibm-aix* | powerpc-ibm-aix*)
@@ -796,6 +812,7 @@ changequote([,])dnl
     ;;
   esac
   if $WITH_DL; then
+    OCTAVE_CXX_FLAG(-rdynamic, [RDYNAMIC_FLAG=-rdynamic])
     AC_DEFINE(WITH_DL, 1)
   fi
 else
@@ -804,6 +821,7 @@ fi
 AC_SUBST(WITH_DL)
 AC_SUBST(LIBDLFCN)
 AC_SUBST(DLFCN_INCFLAGS)
+AC_SUBST(RDYNAMIC_FLAG)
 
 if test "$WITH_SHL" = yes || test "$WITH_SHL" = maybe; then
   AC_CHECK_LIB(dld, shl_load)
@@ -891,18 +909,7 @@ dnl with an argument.
 ### are often available.  If they are missing, we try to replace them
 ### with functions from the BSD/NET2 math library.
 
-AC_CHECK_LIB(sunmath, quiet_nan, , , -lm)
-
-dnl This is bogus.  We shouldn't have to explicitly add libc too!
-
-case "$canonical_host_type" in
-  *-*-linux*)
-    AC_CHECK_LIB(m, sin, , , -lc)
-  ;;
-  *)
-    AC_CHECK_LIB(m, sin)
-  ;;
-esac
+AC_CHECK_LIB(sunmath, quiet_nan)
 
 ### I am told that Inf and NaN don't work on m68k HP sytems, and that
 ### on SCO systems, isnan and isinf don't work, but they can be

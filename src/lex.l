@@ -609,6 +609,7 @@ EXPON	([DdEe][+-]?{D}+)
 		    in_brace_or_paren.pop ();
 		  do_comma_insert_check ();
 		  current_input_column++;
+		  cant_be_identifier = 1;
 		  quote_is_transpose = 1;
 		  convert_spaces_to_comma = (! in_brace_or_paren.empty ()
 					     && in_brace_or_paren.top ());

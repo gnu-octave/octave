@@ -22,8 +22,8 @@
 ## This function is an alias for @code{tmpnam}.
 ## @end deftypefn
 
-function filename = tempname ()
+function filename = tempname (varargin)
 
-  filename = tmpnam ();
+  filename = tmpnam (varargin{:});
 
 endfunction

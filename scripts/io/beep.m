@@ -27,6 +27,10 @@
 
 function beep ()
 
-  puts ("\a");
+  if (nargin == 0)
+    puts ("\a");
+  else
+    usage ("beep ()");
+  endif
 
 endfunction

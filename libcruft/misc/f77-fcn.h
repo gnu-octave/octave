@@ -23,11 +23,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_f77_fcn_h)
 #define octave_f77_fcn_h 1
 
+#include "quit.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include "quit.h"
 
 /* Hack to stringize macro results. */
 #define xSTRINGIZE(x) #x

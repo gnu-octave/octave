@@ -24,6 +24,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define octave_quit_h 1
 
 #ifdef __cplusplus
+#include <new>
 extern "C" {
 #endif
 
@@ -31,10 +32,6 @@ extern "C" {
 
 #include <signal.h>
 #include <setjmp.h>
-
-#ifdef __cplusplus
-#include <new>
-#endif
 
 #if defined (OCTAVE_HAVE_SIG_JUMP)
 

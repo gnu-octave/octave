@@ -161,7 +161,7 @@ xreal (const Complex& x)
 void
 install_mapper_functions (void)
 {
-  DEFUN_MAPPER (abs, xabs, 0, 0, std::fabs, abs, 0, 0.0, 0.0, 1, 0,
+  DEFUN_MAPPER (abs, xabs, 0, 0, fabs, abs, 0, 0.0, 0.0, 1, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} abs (@var{z})\n\
 Compute the magnitude of @var{z}, defined as\n\
@@ -184,7 +184,7 @@ abs (3 + 4i)\n\
 @end example\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (acos, 0, 0, 0, std::acos, 0, acos, -1.0, 1.0, 0, 1,
+  DEFUN_MAPPER (acos, 0, 0, 0, acos, 0, acos, -1.0, 1.0, 0, 1,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} acos (@var{x})\n\
 Compute the inverse cosine of each element of @var{x}.\n\
@@ -229,7 +229,7 @@ arg (3 + 4i)\n\
 @end example\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (asin, 0, 0, 0, std::asin, 0, asin, -1.0, 1.0, 0, 1,
+  DEFUN_MAPPER (asin, 0, 0, 0, asin, 0, asin, -1.0, 1.0, 0, 1,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} asin (@var{x})\n\
 Compute the inverse sine of each element of @var{x}.\n\
@@ -241,7 +241,7 @@ Compute the inverse sine of each element of @var{x}.\n\
 Ompute the inverse hyperbolic sine of each element of @var{x}.\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (atan, 0, 0, 0, std::atan, 0, atan, 0.0, 0.0, 0, 0,
+  DEFUN_MAPPER (atan, 0, 0, 0, atan, 0, atan, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} atan (@var{x})\n\
 Compute the inverse tangent of each element of @var{x}.\n\
@@ -253,7 +253,7 @@ Compute the inverse tangent of each element of @var{x}.\n\
 Compute the inverse hyperbolic tanget of each element of @var{x}.\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (ceil, 0, 0, 0, std::ceil, 0, ceil, 0.0, 0.0, 0, 0,
+  DEFUN_MAPPER (ceil, 0, 0, 0, ceil, 0, ceil, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} ceil (@var{x})\n\
 Return the smallest integer not less than @var{x}.  If @var{x} is\n\
@@ -275,13 +275,13 @@ $\\bar{z} = x - iy$.\n\
 @end deftypefn\n\
 @seealso{real and imag}");
 
-  DEFUN_MAPPER (cos, 0, 0, 0, std::cos, 0, cos, 0.0, 0.0, 0, 0,
+  DEFUN_MAPPER (cos, 0, 0, 0, cos, 0, cos, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} cos (@var{x})\n\
 Compute the cosine of each element of @var{x}.\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (cosh, 0, 0, 0, std::cosh, 0, cosh, 0.0, 0.0, 0, 0,
+  DEFUN_MAPPER (cosh, 0, 0, 0, cosh, 0, cosh, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} cosh (@var{x})\n\
 Compute the hyperbolic cosine of each element of @var{x}.\n\
@@ -327,7 +327,7 @@ $1 - {\\rm erf} (z)$.\n\
 \n\
 @seealso{erf and erfinv}");
 
-  DEFUN_MAPPER (exp, 0, 0, 0, std::exp, 0, exp, 0.0, 0.0, 0, 0,
+  DEFUN_MAPPER (exp, 0, 0, 0, exp, 0, exp, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} exp (@var{x})\n\
 Compute the exponential of @var{x}.  To compute the matrix exponential,\n\
@@ -355,7 +355,7 @@ Truncate @var{x} toward zero.  If @var{x} is complex, return\n\
 @code{fix (real (@var{x})) + fix (imag (@var{x})) * I}.\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (floor, 0, 0, 0, std::floor, 0, floor, 0.0, 0.0, 0, 0,
+  DEFUN_MAPPER (floor, 0, 0, 0, floor, 0, floor, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} floor (@var{x})\n\
 Return the largest integer not greater than @var{x}.  If @var{x} is\n\
@@ -536,7 +536,7 @@ Return the natural logarithm of the gamma function.\n\
 @end deftypefn\n\
 @seealso{gamma and gammai}");
 
-  DEFUN_MAPPER (log, 0, 0, 0, std::log, 0, log, 0.0, DBL_MAX, 0, 1,
+  DEFUN_MAPPER (log, 0, 0, 0, log, 0, log, 0.0, DBL_MAX, 0, 1,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} log (@var{x})\n\
 Compute the natural logarithm for each element of @var{x}.  To compute the\n\
@@ -544,7 +544,7 @@ matrix logarithm, see @ref{Linear Algebra}.\n\
 @end deftypefn\n\
 @seealso{log2, log10, logspace, and exp}");
 
-  DEFUN_MAPPER (log10, 0, 0, 0, std::log10, 0, log10, 0.0, DBL_MAX, 0, 1,
+  DEFUN_MAPPER (log10, 0, 0, 0, log10, 0, log10, 0.0, DBL_MAX, 0, 1,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} log10 (@var{x})\n\
 Compute the base-10 logarithm for each element of @var{x}.\n\
@@ -589,19 +589,19 @@ sign (x) =  0, x = 0;\n\
 For complex arguments, @code{sign} returns @code{x ./ abs (@var{x})}.\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (sin, 0, 0, 0, std::sin, 0, sin, 0.0, 0.0, 0, 0,
+  DEFUN_MAPPER (sin, 0, 0, 0, sin, 0, sin, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} sin (@var{x})\n\
 Compute the sin of each element of @var{x}.\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (sinh, 0, 0, 0, std::sinh, 0, sinh, 0.0, 0.0, 0, 0,
+  DEFUN_MAPPER (sinh, 0, 0, 0, sinh, 0, sinh, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} sinh (@var{x})\n\
 Compute the inverse hyperbolic sin of each element of @var{x}.\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (sqrt, 0, 0, 0, std::sqrt, 0, sqrt, 0.0, DBL_MAX, 0, 1,
+  DEFUN_MAPPER (sqrt, 0, 0, 0, sqrt, 0, sqrt, 0.0, DBL_MAX, 0, 1,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} sqrt (@var{x})\n\
 Compute the square root of @var{x}.  If @var{x} is negative, a complex\n\
@@ -609,13 +609,13 @@ result is returned.  To compute the matrix square root, see\n\
 @ref{Linear Algebra}.\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (tan, 0, 0, 0, std::tan, 0, tan, 0.0, 0.0, 0, 0,
+  DEFUN_MAPPER (tan, 0, 0, 0, tan, 0, tan, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} tan (@var{z})\n\
 Compute tanget of each element of @var{x}.\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (tanh, 0, 0, 0, std::tanh, 0, tanh, 0.0, 0.0, 0, 0,
+  DEFUN_MAPPER (tanh, 0, 0, 0, tanh, 0, tanh, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} tanh (@var{x})\n\
 Compute hyperbolic tangent of each element of @var{x}.\n\

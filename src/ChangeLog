@@ -1,3 +1,7 @@
+2003-01-03  John W Eaton  <eatonj@sun-68.cae.wisc.edu>
+
+	* mappers.cc: Remove std:: qualifiers from C library names.
+
 2003-01-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pt-exp.h (tree_expression::has_magic_end): New pure virtual function.

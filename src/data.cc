@@ -1004,7 +1004,7 @@ fill_matrix (const octave_value_list& args, double val, const char *fcn)
 	      break;
 
 	    default:
-	      retval =  ArrayN<double> (dims, val);
+	      retval =  NDArray (dims, val);
 	      break;
 	    }
 	}

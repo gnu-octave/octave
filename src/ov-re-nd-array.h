@@ -45,18 +45,18 @@ class octave_value_list;
 // Real N-dimensional array values.
 
 class
-octave_double_nd_array : public octave_base_nd_array<ArrayN<double> >
+octave_double_nd_array : public octave_base_nd_array<NDArray>
 {
 public:
 
   octave_double_nd_array (void)
-    : octave_base_nd_array<ArrayN<double> > () { }
+    : octave_base_nd_array<NDArray> () { }
 
-  octave_double_nd_array (const ArrayN<double>& a)
-    : octave_base_nd_array<ArrayN<double> > (a) { }
+  octave_double_nd_array (const NDArray& a)
+    : octave_base_nd_array<NDArray> (a) { }
 
   octave_double_nd_array (const octave_double_nd_array& a)
-    : octave_base_nd_array<ArrayN<double> > (a) { }
+    : octave_base_nd_array<NDArray> (a) { }
 
   ~octave_double_nd_array (void) { }
 
@@ -68,9 +68,9 @@ public:
 
   octave_value *try_narrowing_conversion (void);
 
-  void assign (const octave_value_list& idx, const ArrayN<double>& rhs);
+  void assign (const octave_value_list& idx, const NDArray& rhs);
 
-  // Need to implement idx_vector (ArrayN<double>) for this one.
+  // Need to implement idx_vector (NDArray) for this one.
   //
   // idx_vector index_vector (void) const { return idx_vector (array); }
 
@@ -84,7 +84,7 @@ public:
 
   double double_value (bool = false) const;
 
-  ArrayN<double> double_nd_array_value (bool = false) const { return array; }
+  NDArray double_nd_array_value (bool = false) const { return array; }
 
   double scalar_value (bool frc_str_conv = false) const
     { return double_value (frc_str_conv); }

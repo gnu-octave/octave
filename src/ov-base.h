@@ -191,7 +191,7 @@ public:
 
   Matrix matrix_value (bool = false) const;
 
-  ArrayN<double> double_nd_array_value (bool frc_str_conv = false) const;
+  NDArray double_nd_array_value (bool frc_str_conv = false) const;
 
   Complex complex_value (bool = false) const;
 

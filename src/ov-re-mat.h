@@ -98,8 +98,8 @@ public:
   ComplexMatrix complex_matrix_value (bool = false) const
     { return ComplexMatrix (matrix); }
 
-  ArrayN<double> double_nd_array_value (bool = false) const
-    { return ArrayN<double> (matrix); }
+  NDArray double_nd_array_value (bool = false) const
+    { return NDArray (matrix); }
 
   void increment (void) { matrix += 1.0; }
 

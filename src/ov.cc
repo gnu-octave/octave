@@ -407,7 +407,7 @@ octave_value::octave_value (const Matrix& m)
   maybe_mutate ();
 }
 
-octave_value::octave_value (const ArrayN<double>& a)
+octave_value::octave_value (const NDArray& a)
   : rep (new octave_double_nd_array (a))
 {
   rep->count = 1;

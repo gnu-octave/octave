@@ -1,3 +1,9 @@
+2003-09-10  Petter Risholm  <risholm@stud.ntnu.no>
+
+	* data.cc, ov-base.cc, ov-base.h, ov.h, ov.cc, ov-re-mat.h,
+	ov-scalar.h, ov-re-nd-array.h, ov-re-nd-array.cc: Use NDArray, not
+	ArrayN<double>.
+
 2003-09-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* ov.h (octave_value::double_nd_array_value): New function.

@@ -291,10 +291,10 @@ octave_base_value::matrix_value (bool) const
   return retval;
 }
 
-ArrayN<double>
+NDArray
 octave_base_value::double_nd_array_value (bool) const
 {
-  ArrayN<double> retval;
+  NDArray retval;
   gripe_wrong_type_arg ("octave_base_value::double_nd_array_value()",
 			type_name ());
   return retval;

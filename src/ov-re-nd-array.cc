@@ -47,7 +47,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pr-output.h"
 #include "variables.h"
 
-template class octave_base_nd_array<ArrayN<double> >;
+template class octave_base_nd_array<NDArray>;
 
 DEFINE_OCTAVE_ALLOCATOR (octave_double_nd_array);
 
@@ -83,7 +83,7 @@ octave_double_nd_array::try_narrowing_conversion (void)
 
 void
 octave_double_nd_array::assign (const octave_value_list& idx,
-				const ArrayN<double>& rhs)
+				const NDArray& rhs)
 {
   int len = idx.length ();
 

@@ -33,7 +33,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string>
 #include <list>
 
-#include "ArrayN.h"
+
 #include "Range.h"
 #include "idx-vector.h"
 #include "mx-base.h"
@@ -184,7 +184,7 @@ public:
   octave_value (double d);
   octave_value (const Cell& m);
   octave_value (const Matrix& m);
-  octave_value (const ArrayN<double>& m);
+  octave_value (const NDArray& m);
   octave_value (const DiagMatrix& d);
   octave_value (const RowVector& v);
   octave_value (const ColumnVector& v);
@@ -475,7 +475,7 @@ public:
   virtual Matrix matrix_value (bool frc_str_conv = false) const
     { return rep->matrix_value (frc_str_conv); }
 
-  virtual ArrayN<double> double_nd_array_value (bool frc_str_conv = false) const
+  virtual NDArray double_nd_array_value (bool frc_str_conv = false) const
     { return rep->double_nd_array_value (frc_str_conv); }
 
   virtual Complex complex_value (bool frc_str_conv = false) const

@@ -1,3 +1,10 @@
+2003-09-10  Petter Risholm  <risholm@stud.ntnu.no>
+
+	* mx-base.h: Include NDArray.h, not ArrayN.h.
+
+	* MArrayN.cc, MArrayN.h, NDArray.h, NDArray.cc: New files.
+	* Makefile.in: Add them to the appropriate lists.
+
 2003-09-09  David Bateman <dbateman@free.fr>
 
 	* lo-specfun.cc (zbesj, zbesy, zbesi, zbesk, zbesh1, zbesh2, airy,

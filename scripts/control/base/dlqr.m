@@ -1,4 +1,4 @@
-## Copyright (C) 1993, 1994, 1995 Auburn University.  All rights reserved.
+## Copyright (C) 1993, 1994, 1995 Auburn University
 ##
 ## This file is part of Octave.
 ##
@@ -95,19 +95,14 @@
 ## (@var{a} - @var{b}@var{k}).
 ## @end ifinfo
 ## @end table
-## @strong{References}
-## @enumerate
-## @item Anderson and Moore, Optimal Control: Linear Quadratic Methods,
-##      Prentice-Hall, 1990, pp. 56-58
-## @item  Kuo, Digital Control Systems, Harcourt Brace Jovanovich, 1992,
-##      section 11-5-2.
-## @end enumerate
 ## @end deftypefn
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 ## Created: August 1993
 ## Converted to discrete time by R. B. Tenison
 ## (btenison@eng.auburn.edu) October 1993
+## Modified by Gabriele Pannocchia <pannocchia@ing.unipi.it>
+## July 2000
 
 function [k, p, e] = dlqr (a, b, q, r, s)
 
@@ -154,13 +149,14 @@ function [k, p, e] = dlqr (a, b, q, r, s)
   endif
 
   ## Check that q, (r) are symmetric, positive (semi)definite
-  if (is_symmetric (q) && is_symmetric (r) ...
+  if (is_symmetric (q) && is_symmetric (r)
       && all (eig (q) >= 0) && all (eig (r) > 0))
     p = dare (ao, b, qo, r);
-    k = (r+b'*p*b)\b'*p*a + r\s';
+    k = (r+b'*p*b)\(b'*p*a + s');
     e = eig (a - b*k);
   else
     error ("dlqr: q (r) must be symmetric positive (semi) definite");
   endif
 
 endfunction
+

@@ -1,4 +1,4 @@
-## Copyright (C) 1993, 1994, 1995, 2000 Auburn University.  All rights reserved.
+## Copyright (C) 1993, 1994, 1995 Auburn University
 ##
 ## This file is part of Octave.
 ##
@@ -26,7 +26,7 @@
 ##  x_{k+1} = A x_k + B u_k + G w_k
 ## $$
 ## $$
-##  y_k = C x_k + D u_k + w_k
+##  y_k = C x_k + D u_k + v_k
 ## $$
 ## @end tex
 ## @end iftex
@@ -34,7 +34,7 @@
 ##
 ## @example
 ## x[k+1] = A x[k] + B u[k] + G w[k]
-##   y[k] = C x[k] + D u[k] + w[k]
+##   y[k] = C x[k] + D u[k] + v[k]
 ## @end example
 ##
 ## @end ifinfo
@@ -49,14 +49,18 @@
 ## @iftex
 ## @tex
 ## $$
-##  z_{k+1} = A z_k + B u_k + L (y_k - C z_k - D u_k)
+##  z_{k|k} = z_{k|k-1} + l (y_k - C z_{k|k-1} - D u_k)
+## $$
+## $$
+##  z_{k+1|k} = A z_{k|k} + B u_k
 ## $$
 ## @end tex
 ## @end iftex
 ## @ifinfo
 ##
 ## @example
-## z[k+1] = A z[k] + B u[k] + L (y[k] - C z[k] - D u[k])
+## z[k|k] = z[k|k-1] + L (y[k] - C z[k|k-1] - D u[k])
+## z[k+1|k] = A z[k|k] + B u[k]
 ## @end example
 ## @end ifinfo
 ##
@@ -65,17 +69,16 @@
 ##
 ## @table @var
 ## @item l
-## The observer gain.  The estimator state matrix
+## The observer gain,
 ## @iftex
 ## @tex
-## $(A - LC)$
+## $(A - ALC)$.
 ## @end tex
 ## @end iftex
 ## @ifinfo
-## (@var{a} - @var{l}@var{c})
+## (@var{a} - @var{a}@var{l}@var{c}).
 ## @end ifinfo
-## is stable.   NOTE: This differs from the MATLAB dlqe function, which 
-## returns L such that (A - A L C) is stable.
+## is stable.
 ##
 ## @item m
 ## The Riccati equation solution.
@@ -87,11 +90,11 @@
 ## The closed loop poles of
 ## @iftex
 ## @tex
-## $(A - LC)$.
+## $(A - ALC)$.
 ## @end tex
 ## @end iftex
 ## @ifinfo
-## (@var{a} - @var{l}@var{c}).
+## (@var{a} - @var{a}@var{l}@var{c}).
 ## @end ifinfo
 ## @end table
 ## @end deftypefn
@@ -100,6 +103,8 @@
 ## Created: August 1993
 ## Modified for discrete time by R. Bruce Tenison (btenison@eng.auburn.edu)
 ## October, 1993
+## Modified by Gabriele Pannocchia <pannocchia@ing.unipi.it>
+## July 2000
 
 function [l, m, p, e] = dlqe (a, g, c, sigw, sigv, s)
 
@@ -110,17 +115,14 @@ function [l, m, p, e] = dlqe (a, g, c, sigw, sigv, s)
   ## The problem is dual to the regulator design, so transform to dlqr call.
 
   if (nargin == 5)
-    [k, p, e] = dlqr (a', c', g*sigw*g', sigv);
-    m = p;
-    l = k';
+    [k, m, e] = dlqr (a', c', g*sigw*g', sigv);
   else
-    [k, p, e] = dlqr (a', c', g*sigw*g', sigv, g*s);
-    m = p;
-    l = k';
-    a = a-g*t/sigv*c;
-    sigw = sigw-t/sigv;
+    [k, m, e] = dlqr (a', c', g*sigw*g', sigv, g*s);
+    warning ("dlqe: use dkalman when there is a cross-covariance term");
   endif
 
-  p = a\(m-g*sigw*g')/a';
+  l = m*c'/(c*m*c'+sigv);
+  p = m - m*c'/(c*m*c'+sigv)*c*m;
 
 endfunction
+

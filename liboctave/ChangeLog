@@ -1,3 +1,7 @@
+Thu Jul 24 14:32:48 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* file-ops.cc (tilde_expand_word): Fix off-by-one error.
+
 Wed Jul  9 19:40:23 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* lo-sysdep.cc (octave_getcwd): If getwd is available, use it.

@@ -1,3 +1,9 @@
+Thu Jul 17 13:06:48 1997  Klaus Gebhardt <gebhardt@crunch.ikp.physik.th-darmstadt.de>
+
+	* DLD-FUNCTIONS/rand.cc (Frand): Use F77_XFCN to call getsd,
+	setsd, setall, setcgn, dgenunf, and dgennor since they can call
+	XSTOPX.
+
 Mon Jul 14 12:54:23 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* dynamic-ld.cc (octave_dynamic_loader::load_fcn_from_dot_oct_file):

@@ -71,7 +71,7 @@ curr_rand_seed (void)
 {
   union d2i { double d; int i[2]; };
   union d2i u;
-  F77_FCN (getsd, GETSD) (u.i[0], u.i[1]);
+  F77_XFCN (getsd, GETSD, (u.i[0], u.i[1]));
   return u.d;
 }
 
@@ -98,7 +98,7 @@ set_rand_seed (double val)
   u.d = val;
   int i0 = force_to_fit_range (u.i[0], 1, 2147483563);
   int i1 = force_to_fit_range (u.i[1], 1, 2147483399);
-  F77_FCN (setsd, SETSD) (i0, i1);
+  F77_XFCN (setsd, SETSD, (i0, i1));
 }
 
 static char *
@@ -139,7 +139,7 @@ do_initialization (void)
   s0 = force_to_fit_range (s0, 1, 2147483563);
   s1 = force_to_fit_range (s1, 1, 2147483399);
 
-  F77_FCN (setall, SETALL) (s0, s1);
+  F77_XFCN (setall, SETALL, (s0, s1));
 
   initialized = 1;
 }
@@ -179,13 +179,13 @@ do_rand (const octave_value_list& args, int nargin)
 	    {
 	      current_distribution = uniform_dist;
 
-	      F77_FCN (setcgn, SETCGN) (uniform_dist);
+	      F77_XFCN (setcgn, SETCGN, (uniform_dist));
 	    }
 	  else if (s_arg == "normal")
 	    {
 	      current_distribution = normal_dist;
 
-	      F77_FCN (setcgn, SETCGN) (normal_dist);
+	      F77_XFCN (setcgn, SETCGN, (normal_dist));
 	    }
 	  else
 	    error ("rand: unrecognized string argument");
@@ -301,12 +301,12 @@ do_rand (const octave_value_list& args, int nargin)
 	    switch (current_distribution)
 	      {
 	      case uniform_dist:
-		F77_FCN (dgenunf, DGENUNF) (0.0, 1.0, val);
+		F77_XFCN (dgenunf, DGENUNF, (0.0, 1.0, val));
 		rand_mat (i, j) = val;
 		break;
 
 	      case normal_dist:
-		F77_FCN (dgennor, DGENNOR) (0.0, 1.0, val);
+		F77_XFCN (dgennor, DGENNOR, (0.0, 1.0, val));
 		rand_mat (i, j) = val;
 		break;
 
@@ -355,7 +355,7 @@ See also: randn")
 static void
 reset_rand_generator (void *)
 {
-  F77_FCN (setcgn, SETCGN) (current_distribution);
+  F77_XFCN (setcgn, SETCGN, (current_distribution));
 }
 
 DEFUN_DLD (randn, args, nargout,
@@ -392,7 +392,7 @@ See also: rand")
 
       current_distribution = normal_dist;
 
-      F77_FCN (setcgn, SETCGN) (normal_dist);
+      F77_XFCN (setcgn, SETCGN, (normal_dist));
 
       retval = do_rand (args, nargin);
 

@@ -85,17 +85,18 @@ dnl
 ld_run_path=`echo $foutput | \
   sed -n -e 's/^.*LD_RUN_PATH *= *\([^ ]*\).*/\1/p'`
 dnl
-dnl We are only supposed to find this on Solaris systems, and this
-dnl substitution is probably only going to work with gcc on those
-dnl systems...
+dnl We are only supposed to find this on Solaris systems...
+dnl Uh, the run path should be absolute, shouldn't it?
 dnl
-if test -n "$ld_run_path"; then
-  if test "$ac_cv_prog_gcc" = yes; then
-    ld_run_path="-Xlinker -R -Xlinker $ld_run_path"
-  else
-    ld_run_path="-R $ld_run_path"
-  fi
-fi
+case "$ld_run_path" in
+  /*)
+    if test "$ac_cv_prog_gcc" = yes; then
+      ld_run_path="-Xlinker -R -Xlinker $ld_run_path"
+    else
+      ld_run_path="-R $ld_run_path"
+    fi
+  ;;
+esac
 dnl
 flibs=
 lflags=

@@ -1,3 +1,8 @@
+Thu Jul 17 13:31:08 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* aclocal.m4 (OCTAVE_FLIBS): Only accept an ld_run_path that is
+	absolute.
+
 Wed Jul  9 19:27:38 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in: Also check for getwd.

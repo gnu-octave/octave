@@ -348,10 +348,7 @@ tilde_expand_word (const string& filename)
 	= file_ops::tilde_expansion_preexpansion_hook (username);
 
       if (! expansion.empty ())
-	{
-	  dirname = expansion + filename.substr (user_len);
-	  return dirname;
-	}
+	return expansion + filename.substr (user_len+1);
     }
 
   // No preexpansion hook, or the preexpansion hook failed.  Look in the
@@ -370,7 +367,7 @@ tilde_expand_word (const string& filename)
 	    = file_ops::tilde_expansion_failure_hook (username);
 
 	  if (! expansion.empty ())
-	    dirname = expansion + filename.substr (user_len);
+	    dirname = expansion + filename.substr (user_len+1);
 	}
 
       // If we don't have a failure hook, or if the failure hook did not
@@ -380,7 +377,7 @@ tilde_expand_word (const string& filename)
 	dirname = filename;
     }
   else
-    dirname = pw.dir () + filename.substr (user_len);
+    dirname = pw.dir () + filename.substr (user_len+1);
 
   return dirname;
 }

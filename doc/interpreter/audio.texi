@@ -1,4 +1,4 @@
-@c Copyright (C) 1996 John W. Eaton
+@c Copyright (C) 1996, 1997 John W. Eaton
 @c Written by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at> on 1996/05/14
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
@@ -82,7 +82,7 @@ Plays the audio file @file{@var{name}.@var{ext}} or in the vector
 @deftypefn {Function File} {} record (@var{sec}, @var{sampling_rate})
 Records @var{sec} seconds of audio input into the vector @var{x}.  The
 default value for @var{sampling_rate} is 8000 samples per second, or
-8kHz.  The program waits until the @key{ENTER} key is hit, and then
+8kHz.  The program waits until the user types @kbd{RET} and then
 immediately starts to record.
 @end deftypefn
 

@@ -1,8 +1,8 @@
-@c Copyright (C) 1996 John W. Eaton
+@c Copyright (C) 1996, 1997 John W. Eaton
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Functions and Scripts, Built-in Variables, Statements, Top
+@node Functions and Scripts, Error Handling, Statements, Top
 @chapter Functions and Script Files
 @cindex defining functions
 @cindex user-defined functions
@@ -64,7 +64,7 @@ endfunction
 
 The @code{printf} statement (@pxref{Input and Output}) simply tells
 Octave to print the string @code{"\a"}.  The special character @samp{\a}
-stands for the alert character (ASCII 7).  @xref{String Constants}.
+stands for the alert character (ASCII 7).  @xref{Strings}.
 
 Once this function is defined, you can ask Octave to evaluate it by
 typing the name of the function.
@@ -222,30 +222,6 @@ top level, @code{nargin} holds the number of command line arguments that
 were passed to Octave.
 @end defvr
 
-@defvr {Automatic Variable} nargout
-When a function is called, this local variable is automatically
-initialized to the number of arguments expected to be returned.  For
-example, 
-
-@example
-f ()
-@end example
-
-@noindent
-will result in @code{nargout} being set to 0 inside the function
-@code{f} and
-
-@example
-[s, t] = f ()
-@end example
-
-@noindent
-will result in @code{nargout} being set to 2 inside the function
-@code{f}.
-
-At the top level, @code{nargout} is undefined.
-@end defvr
-
 @defvr {Built-in Variable} silent_functions
 If the value of @code{silent_functions} is nonzero, internal output
 from a function is suppressed.  Otherwise, the results of expressions
@@ -359,7 +335,31 @@ c = 2
 @noindent
 provided that the built-in variable @code{define_all_return_values} is
 nonzero and the value of @code{default_return_value} is @samp{[]}.
-@xref{Built-in Variables}.
+@xref{Summary of Built-in Variables}.
+
+@defvr {Automatic Variable} nargout
+When a function is called, this local variable is automatically
+initialized to the number of arguments expected to be returned.  For
+example, 
+
+@example
+f ()
+@end example
+
+@noindent
+will result in @code{nargout} being set to 0 inside the function
+@code{f} and
+
+@example
+[s, t] = f ()
+@end example
+
+@noindent
+will result in @code{nargout} being set to 2 inside the function
+@code{f}.
+
+At the top level, @code{nargout} is undefined.
+@end defvr
 
 @defvr {Built-in Variable} default_return_value
 The value given to otherwise unitialized return values if
@@ -373,6 +373,15 @@ will substitute the value specified by @code{default_return_value} for
 any return values that remain undefined when a function returns.  The
 default value is 0.
 @end defvr
+
+@deftypefn {Function File} {} nargchk (@var{nargin_min}, @var{nargin_max}, @var{n})
+If @var{n} is in the range @var{nargin_min} through @var{nargin_max}
+inclusive, return the empty matrix.  Otherwise, return a message
+indicating whether @var{n} is too large or too small.
+
+This is useful for checking to see that the number of arguments supplied
+to a function is within an acceptable range.
+@end deftypefn
 
 @node Variable-length Argument Lists, Variable-length Return Lists, Multiple Return Values, Functions and Scripts
 @section Variable-length Argument Lists
@@ -406,7 +415,7 @@ and must be the last element in the list of arguments.
 @deftypefn {Built-in Function} {} va_start ()
 Position an internal pointer to the first unnamed argument and allows
 you to cycle through the arguments more than once.  It is not necessary
-to call @code{va_start()} if you do not plan to cycle through the
+to call @code{va_start} if you do not plan to cycle through the
 arguments more than once.  This function may only be called inside
 functions that have been declared to accept a variable number of input
 arguments.
@@ -447,7 +456,7 @@ g (1, 2, 3)
 @defvr {Keyword} all_va_args
 This keyword stands for the entire list of optional argument, so it is
 possible to use it more than once within the same function without
-having to call @code{va_start ()}.  It can only be used within functions
+having to call @code{va_start}.  It can only be used within functions
 that take a variable number of arguments.  It is an error to use it in
 other contexts.
 @end defvr
@@ -487,7 +496,7 @@ list of returned values.
 @deftypefn {Built-in Function} {} vr_val (@var{val})
 Each time this function is called, it places the value of its argument
 at the end of the list of values to return from the current function.
-Once @code{vr_val()} has been called, there is no way to go back to the
+Once @code{vr_val} has been called, there is no way to go back to the
 beginning of the list and rewrite any of the return values.  This
 function may only be called within functions that have been declared to
 return an unspecified number of output arguments (by using the special
@@ -643,7 +652,7 @@ directories that are distributed with Octave.
 
 @defvr {Built-in Variable} ignore_function_time_stamp
 This variable can be used to prevent Octave from making the system call
-@code{stat()} each time it looks up functions defined in function files.
+@code{stat} each time it looks up functions defined in function files.
 If @code{ignore_function_time_stamp} to @code{"system"}, Octave will not
 automatically recompile function files in subdirectories of
 @code{@value{OCTAVEHOME}/lib/@value{VERSION}} if they have changed since
@@ -755,7 +764,7 @@ Code like this appearing within a function body could fool Octave if
 definitions were resolved as the function was being compiled.  It would
 be virtually impossible to make Octave clever enough to evaluate this
 code in a consistent fashion.  The parser would have to be able to
-perform the @samp{eval ()} statement at compile time, and that would be
+perform the call to @code{eval} at compile time, and that would be
 impossible unless all the references in the string to be evaluated could
 also be resolved, and requiring that would be too restrictive (the
 string might come from user input, or depend on things that are not
@@ -764,7 +773,7 @@ known until the function is evaluated).
 @deftypefn {Built-in Function} {} source (@var{file})
 Parse and execute the contents of @var{file}.  This is equivalent to
 executing commands from a script file, but without requiring the file to
-be name @var{file}.m.
+be named @var{file}.m.
 @end deftypefn
 
 @node Dynamically Linked Functions, Organization of Functions, Script Files, Functions and Scripts
@@ -781,8 +790,8 @@ features work on other systems using system-specific dynamic linking
 facilities.
 
 Here is an example of how to write a C++ function that Octave can load,
-with commentary.  The source for this function is distributed with
-Octave, in the file @file{examples/hello.cc}.
+with commentary.  The source for this function is included in the source
+distributions of Octave, in the file @file{examples/hello.cc}.
 
 To use this file, your version of Octave must support dynamic
 linking.  To find out if it does, type the command
@@ -899,7 +908,7 @@ The arguments to this function are available in @samp{args}.
 The @code{octave_value_list} class is a zero-based array of
 @code{octave_value} objects.  The declaration for the
 @code{octave_value} class is in the file @code{pt-const.h}.  The
-@code{print()} method will send its output to @code{octave_stdout}, so
+@code{print} method will send its output to @code{octave_stdout}, so
 it will also end up going through the pager.
 
 @example

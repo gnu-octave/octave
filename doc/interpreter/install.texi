@@ -1,4 +1,4 @@
-@c Copyright (C) 1996 John W. Eaton
+@c Copyright (C) 1996, 1997 John W. Eaton
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
@@ -6,7 +6,7 @@
 @c in the Octave distribution, as well as in the Octave manual.
 
 @ifclear INSTALLONLY
-@node Installation, Trouble, Emacs, Top
+@node Installation, Emacs, Trouble, Top
 @appendix Installing Octave
 @end ifclear
 
@@ -217,7 +217,8 @@ warning: ANSI C++ prohibits conversion from `(int)' to `(...)'
 while compiling @file{sighandlers.cc}, you may need to edit some files
 in the gcc include subdirectory to add proper prototypes for functions
 there.  For example, Ultrix 4.2 needs proper declarations for the
-@code{signal()} and the @code{SIG_IGN} macro in the file @file{signal.h}.
+@code{signal} function and the @code{SIG_IGN} macro in the file
+@file{signal.h}.
 
 On some systems the @code{SIG_IGN} macro is defined to be something like
 this:
@@ -234,10 +235,10 @@ when it should really be something like:
 @end example
 
 @noindent
-to match the prototype declaration for @code{signal()}.  This change
-should also be made for the @code{SIG_DFL} and @code{SIG_ERR} symbols.
-It may be necessary to change the definitions in @file{sys/signal.h} as
-well.
+to match the prototype declaration for the @code{signal} function.  This
+change should also be made for the @code{SIG_DFL} and @code{SIG_ERR}
+symbols. It may be necessary to change the definitions in
+@file{sys/signal.h} as well.
 
 The gcc fixincludes/fixproto script should probably fix these problems
 when gcc installs its modified set of header files, but I don't think

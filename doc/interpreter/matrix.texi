@@ -1,8 +1,8 @@
-@c Copyright (C) 1996 John W. Eaton
+@c Copyright (C) 1996, 1997 John W. Eaton
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Matrix Manipulation, Special Matrices, Plotting, Top
+@node Matrix Manipulation, Arithmetic, Plotting, Top
 @chapter Matrix Manipulation
 
 There are a number of functions available for checking to see if the
@@ -15,6 +15,8 @@ lower-triangular parts, or sort the columns of a matrix.
 @menu
 * Finding Elements and Checking Conditions::  
 * Rearranging Matrices::        
+* Special Utility Matrices::    
+* Famous Matrices::             
 @end menu
 
 @node Finding Elements and Checking Conditions, Rearranging Matrices, Matrix Manipulation, Matrix Manipulation
@@ -201,7 +203,7 @@ containing the the nonzero values.  For example,
 @end example
 @end deftypefn
         
-@node Rearranging Matrices,  , Finding Elements and Checking Conditions, Matrix Manipulation
+@node Rearranging Matrices, Special Utility Matrices, Finding Elements and Checking Conditions, Matrix Manipulation
 @section Rearranging Matrices
 
 @deftypefn {Function File} {} fliplr (@var{x})
@@ -421,4 +423,392 @@ one column above the other.
 
 See Magnus and Neudecker (1988), Matrix differential calculus with
 applications in statistics and econometrics.
+@end deftypefn
+
+@node Special Utility Matrices, Famous Matrices, Rearranging Matrices, Matrix Manipulation
+@section Special Utility Matrices
+
+@deftypefn {Built-in Function} {} eye (@var{x})
+@deftypefnx {Built-in Function} {} eye (@var{n}, @var{m})
+Returns an identity matrix.  If invoked with a single scalar argument,
+@code{eye} returns a square matrix with the dimension specified.  If you
+supply two scalar arguments, @code{eye} takes them to be the number of
+rows and columns.  If given a vector with two elements, @code{eye} uses
+the values of the elements as the number of rows and columns,
+respecively.  For example,
+
+@example
+@group
+eye (3)
+
+     @result{}  1  0  0
+         0  1  0
+         0  0  1
+@end group
+@end example
+
+The following expressions all produce the same result:
+
+@example
+@group
+eye (2)
+@equiv{}
+eye (2, 2)
+@equiv{}
+eye (size ([1, 2; 3, 4])
+@end group
+@end example
+
+For compatibility with @sc{Matlab}, calling @code{eye} with no arguments
+is equivalent to calling it with an argument of 1.
+@end deftypefn
+
+@deftypefn {Built-in Function} {} ones (@var{x})
+@deftypefnx {Built-in Function} {} ones (@var{n}, @var{m})
+Returns a matrix whose elements are all 1.  The arguments are handled
+the same as the arguments for @code{eye}.
+
+If you need to create a matrix whose values are all the same, you should
+use an expression like
+
+@example
+val_matrix = val * ones (n, m)
+@end example
+@end deftypefn
+
+@deftypefn {Built-in Function} {} zeros (@var{x})
+@deftypefnx {Built-in Function} {} zeros (@var{n}, @var{m})
+Returns a matrix whose elements are all 0.  The arguments are handled
+the same as the arguments for @code{eye}.
+@end deftypefn
+
+@deftypefn {Loadable Function} {} rand (@var{x})
+@deftypefnx {Loadable Function} {} rand (@var{n}, @var{m})
+@deftypefnx {Loadable Function} {} rand (@code{"seed"}, @var{x})
+Returns a matrix with random elements uniformly distributed on the
+interval (0, 1).  The arguments are handled the same as the arguments
+for @code{eye}.  In
+addition, you can set the seed for the random number generator using the
+form
+
+@example
+randn ("seed", @var{x})
+@end example
+
+@noindent
+where @var{x} is a scalar value.  If called as
+
+@example
+rand ("seed")
+@end example
+
+@noindent
+@code{rand} returns the current value of the seed.
+@end deftypefn
+
+@deftypefn {Loadable Function} {} randn (@var{x})
+@deftypefnx {Loadable Function} {} randn (@var{n}, @var{m})
+@deftypefnx {Loadable Function} {} randn (@code{"seed"}, @var{x})
+Returns a matrix with normally distributed random elements.  The
+arguments are handled the same as the arguments for @code{eye}.  In
+addition, you can set the seed for the random number generator using the
+form
+
+@example
+randn ("seed", @var{x})
+@end example
+
+@noindent
+where @var{x} is a scalar value.  If called as
+
+@example
+randn ("seed")
+@end example
+
+@noindent
+@code{randn} returns the current value of the seed.
+@end deftypefn
+
+The @code{rand} and @code{randn} functions use separate generators.
+This ensures that
+
+@example
+@group
+rand ("seed", 13);
+randn ("seed", 13);
+u = rand (100, 1);
+n = randn (100, 1);
+@end group
+@end example
+
+@noindent
+and
+
+@example
+@group
+rand ("seed", 13);
+randn ("seed", 13);
+u = zeros (100, 1);
+n = zeros (100, 1);
+for i = 1:100
+  u(i) = rand ();
+  n(i) = randn ();
+end
+@end group
+@end example
+
+@noindent
+produce equivalent results.
+
+Normally, @code{rand} and @code{randn} obtain their initial
+seeds from the system clock, so that the sequence of random numbers is
+not the same each time you run Octave.  If you really do need for to
+reproduce a sequence of numbers exactly, you can set the seed to a
+specific value.
+
+If it is invoked without arguments, @code{rand} and @code{randn} return a
+single element of a random sequence.
+
+The @code{rand} and @code{randn} functions use Fortran code from RANLIB,
+a library of fortran routines for random number generation, compiled by
+Barry W. Brown and James Lovato of the Department of Biomathematics at
+The University of Texas, M.D. Anderson Cancer Center, Houston, TX 77030.
+
+@deftypefn {Built-in Function} {} diag (@var{v}, @var{k})
+Returns a diagonal matrix with vector @var{v} on diagonal @var{k}.  The
+second argument is optional.  If it is positive, the vector is placed on
+the @var{k}-th super-diagonal.  If it is negative, it is placed on the
+@var{-k}-th sub-diagonal.  The default value of @var{k} is 0, and the
+vector is placed on the main diagonal.  For example,
+
+@example
+@group
+diag ([1, 2, 3], 1)
+
+     @result{}  0  1  0  0
+         0  0  2  0
+         0  0  0  3
+         0  0  0  0
+@end group
+@end example
+@end deftypefn
+
+@c XXX FIXME XXX -- is this really worth documenting?
+@c
+@c @defvr {Built-in Variable} ok_to_lose_imaginary_part
+@c If the value of @code{ok_to_lose_imaginary_part} is nonzero, implicit
+@c conversions of complex numbers to real numbers are allowed (for example,
+@c by fsolve).  If the value is @code{"warn"}, the conversion is allowed,
+@c but a warning is printed.  Otherwise, an error message is printed and
+@c control is returned to the top level.  The default value is
+@c @code{"warn"}.
+@c 
+@c XXX FIXME XXX -- this is here because it is used by @code{ones},
+@c @code{zeros}, @code{rand}, etc.
+@c @end defvr
+
+The functions @code{linspace} and @code{logspace} make it very easy to
+create vectors with evenly or logarithmically spaced elements.
+@xref{Ranges}.
+
+@deftypefn {Function File} {} linspace (@var{base}, @var{limit}, @var{n})
+creates a row vector with @var{n} (@var{n} greater than 1) linearly
+spaced elements between @var{base} and @var{limit}.  The @var{base} and
+@var{limit} are always included in the range.  If @var{base} is greater
+than @var{limit}, the elements are stored in decreasing order.  If the
+number of points is not specified, a value of 100 is used.
+
+The @code{linspace} function always returns a row vector, regardless of
+the value of @code{prefer_column_vectors}.
+@end deftypefn
+
+@deftypefn {Function File} {} logspace (@var{base}, @var{limit}, @var{n})
+Similar to @code{linspace} except that the values are logarithmically
+spaced from
+@iftex
+@tex
+$10^{base}$ to $10^{limit}$.
+@end tex
+@end iftex
+@ifinfo
+10^base to 10^limit.
+@end ifinfo
+
+If @var{limit} is equal to
+@iftex
+@tex
+$\pi$,
+@end tex
+@end iftex
+@ifinfo
+pi,
+@end ifinfo
+the points are between
+@iftex
+@tex
+$10^{base}$ and $\pi$,
+@end tex
+@end iftex
+@ifinfo
+10^base and pi,
+@end ifinfo
+@emph{not}
+@iftex
+@tex
+$10^{base}$ and $10^{\pi}$,
+@end tex
+@end iftex
+@ifinfo
+10^base and 10^pi,
+@end ifinfo
+in order to  be compatible with the corresponding @sc{Matlab} function.
+@end deftypefn
+
+@defvr {Built-in Variable} treat_neg_dim_as_zero
+If the value of @code{treat_neg_dim_as_zero} is nonzero, expressions
+like
+
+@example
+eye (-1)
+@end example
+
+@noindent
+produce an empty matrix (i.e., row and column dimensions are zero).
+Otherwise, an error message is printed and control is returned to the
+top level.  The default value is 0.
+@end defvr
+
+@node Famous Matrices,  , Special Utility Matrices, Matrix Manipulation
+@section Famous Matrices
+
+The following functions return famous matrix forms.
+
+@deftypefn {Function File} {} hadamard (@var{k})
+Return the Hadamard matrix of order n = 2^k.
+@end deftypefn
+
+@deftypefn {Function File} {} hankel (@var{c}, @var{r})
+Return the Hankel matrix constructed given the first column @var{c}, and
+(optionally) the last row @var{r}.  If the last element of @var{c} is
+not the same as the first element of @var{r}, the last element of
+@var{c} is used.  If the second argument is omitted, the last row is
+taken to be the same as the first column.
+
+A Hankel matrix formed from an m-vector @var{c}, and an n-vector
+@var{r}, has the elements
+@iftex
+@tex
+$$
+H (i, j) = \cases{c_{i+j-1},&$i+j-1\le m$;\cr r_{i+j-m},&otherwise.\cr}
+$$
+@end tex
+@end iftex
+@ifinfo
+
+@example
+@group
+H (i, j) = c (i+j-1),  i+j-1 <= m;
+H (i, j) = r (i+j-m),  otherwise
+@end group
+@end example
+@end ifinfo
+@end deftypefn
+
+@deftypefn {Function File} {} hilb (@var{n})
+Return the Hilbert matrix of order @var{n}.  The
+@iftex
+@tex
+$i,\,j$
+@end tex
+@end iftex
+@ifinfo
+i, j
+@end ifinfo
+element of a Hilbert matrix is defined as
+@iftex
+@tex
+$$
+H (i, j) = {1 \over (i + j - 1)}
+$$
+@end tex
+@end iftex
+@ifinfo
+
+@example
+H (i, j) = 1 / (i + j - 1)
+@end example
+@end ifinfo
+@end deftypefn
+
+@deftypefn {Function File} {} invhilb (@var{n})
+Return the inverse of a Hilbert matrix of order @var{n}.  This is exact.
+Compare with the numerical calculation of @code{inverse (hilb (n))},
+which suffers from the ill-conditioning of the Hilbert matrix, and the
+finite precision of your computer's floating point arithmetic.
+@end deftypefn
+
+@deftypefn {Function File} {} toeplitz (@var{c}, @var{r})
+Return the Toeplitz matrix constructed given the first column @var{c},
+and (optionally) the first row @var{r}.  If the first element of @var{c}
+is not the same as the first element of @var{r}, the first element of
+@var{c} is used.  If the second argument is omitted, the first row is
+taken to be the same as the first column.
+
+A square Toeplitz matrix has the form
+@iftex
+@tex
+$$
+\left[\matrix{c_0    & r_1     & r_2      & \ldots & r_n\cr
+              c_1    & c_0     & r_1      &        & c_{n-1}\cr
+              c_2    & c_1     & c_0      &        & c_{n-2}\cr
+              \vdots &         &          &        & \vdots\cr
+              c_n    & c_{n-1} & c_{n-2} & \ldots & c_0}\right].
+$$
+@end tex
+@end iftex
+@ifinfo
+
+@example
+@group
+c(0)  r(1)   r(2)  ...  r(n)
+c(1)  c(0)   r(1)      r(n-1)
+c(2)  c(1)   c(0)      r(n-2)
+ .                       .
+ .                       .
+ .                       .
+
+c(n) c(n-1) c(n-2) ...  c(0)
+@end group
+@end example
+@end ifinfo
+@end deftypefn
+
+@deftypefn {Function File} {} vander (@var{c})
+Return the Vandermonde matrix whose next to last column is @var{c}.
+
+A Vandermonde matrix has the form
+@iftex
+@tex
+$$
+\left[\matrix{c_0^n  & \ldots & c_0^2  & c_0    & 1\cr
+              c_1^n  & \ldots & c_1^2  & c_1    & 1\cr
+              \vdots &        & \vdots & \vdots & \vdots\cr
+              c_n^n  & \ldots & c_n^2  & c_n    & 1}\right].
+$$
+@end tex
+@end iftex
+@ifinfo
+
+@example
+@group
+c(0)^n ... c(0)^2  c(0)  1
+c(1)^n ... c(1)^2  c(1)  1
+ .           .      .    .
+ .           .      .    .
+ .           .      .    .
+                 
+c(n)^n ... c(n)^2  c(n)  1
+@end group
+@end example
+@end ifinfo
 @end deftypefn

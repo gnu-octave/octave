@@ -1,9 +1,9 @@
-@c Copyright (C) 1996 John W. Eaton
+@c Copyright (C) 1996, 1997 John W. Eaton
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
 @cindex amusements
-@node Amusements, Emacs, Programming Utilities, Top
+@node Amusements, Tips, Programming Utilities, Top
 @chapter Amusements
 
 @cindex lottery numbers

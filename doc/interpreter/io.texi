@@ -1,8 +1,8 @@
-@c Copyright (C) 1996 John W. Eaton
+@c Copyright (C) 1996, 1997 John W. Eaton
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Input and Output, Plotting, Built-in Variables, Top
+@node Input and Output, Plotting, Error Handling, Top
 @chapter Input and Output
 
 There are two distinct classes of input and output functions.  The first
@@ -24,8 +24,8 @@ is ready to print the top level prompt, or read from the standard input
 This means that there may be some delay before any output appears on
 your screen if you have asked Octave to perform a significant amount of
 work with a single command statement.  The function @code{fflush} may be
-used to force output to be sent to the pager immediately.  @xref{C-Style
-I/O Functions}.
+used to force output to be sent to the pager (or any other stream)
+immediately.
 
 You can select the program to run as the pager by setting the variable
 @code{PAGER}, and you can turn paging off by setting the value of the
@@ -61,6 +61,13 @@ If the value of @code{page_output_immediately} is nonzero, Octave sends
 output to the pager as soon as it is available.  Otherwise, Octave
 buffers its output and waits until just before the prompt is printed to
 flush it to the pager.  The default value is 0.
+
+@deftypefn {Built-in Function} {} fflush (@var{fid})
+Flush output to @var{fid}.  This is useful for ensuring that all
+pending output makes it to the screen before some other event occurs.
+For example, it is always a good idea to flush the standard output
+stream before calling @code{input}.
+@end deftypefn
 
 @c XXX FIXME XXX -- maybe this would be a good place to describe the
 @c following message:
@@ -229,10 +236,10 @@ values are printed.  The default value is 1.
 @node Terminal Input, Simple File I/O, Terminal Output, Basic Input and Output
 @subsection Terminal Input
 
-Octave has two functions that make it easy to get input from the
-terminal.  The @code{input} function is normally used for managing an
-interactive dialog with a user, and the @code{keyboard} function is
-normally used for doing simple debugging.
+Octave has three functions that make it easy to prompt users for
+input.  The @code{input} and @code{menu} functions are normally
+used for managing an interactive dialog with a user, and the
+@code{keyboard} function is normally used for doing simple debugging.
 
 @deftypefn {Built-in Function} {} input (@var{prompt})
 @deftypefnx {Built-in Function} {} input (@var{prompt}, "s")
@@ -265,7 +272,16 @@ directly, without evaluating it first.
 Because there may be output waiting to be displayed by the pager, it is
 a good idea to always call @code{fflush (stdout)} before calling
 @code{input}.  This will ensure that all pending output is written to
-the screen before your prompt.  @xref{C-Style I/O Functions}.
+the screen before your prompt.  @xref{Input and Output}.
+@end deftypefn
+
+@deftypefn {Function File} {} menu (@var{title}, @var{opt1}, @dots{})
+Print a title string followed by a series of options.  Each option will
+be printed along with a number.  The return value is the number of the
+option selected by the user.  This function is useful for interactive
+programs.  There is no limit to the number of options that may be passed
+in, but it may be confusing to present more than will fit easily on one
+screen.
 @end deftypefn
 
 @deftypefn {Built-in Function} {} keyboard (@var{prompt})
@@ -284,6 +300,25 @@ If @code{keyboard} is invoked without any arguments, a default prompt of
 For both @code{input} and @code{keyboard}, the normal command line
 history and editing functions are available at the prompt.
 
+Octave also has a function that makes it possible to get a single
+character from the keyboard without requiring the user to type a
+carriage return.
+
+@c XXX FIXME XXX -- perhaps kbhit should also be able to print a prompt
+@c string?
+
+@deftypefn {Built-in Function} {} kbhit ()
+Read a single keystroke from the keyboard.  For example,
+
+@example
+x = kbhit ();
+@end example
+
+@noindent
+will set @var{x} to the next character typed at the keyboard as soon as
+it is typed.
+@end deftypefn
+
 @node Simple File I/O,  , Terminal Input, Basic Input and Output
 @subsection Simple File I/O
 
@@ -292,7 +327,7 @@ read from disk files in various formats.  The default format of files
 written by the @code{save} command can be controlled using the built-in
 variables @code{default_save_format} and @code{save_precision}.
 
-Note that Octave can not save or load structure variables or any
+Note that Octave can not yet save or load structure variables or any
 user-defined types.
 
 @deffn {Command} save options file v1 v2 @dots{}
@@ -431,7 +466,6 @@ can be accessed using their corresponding numeric file ids, you should
 always use the symbolic names given in the table below, since it will
 make your programs easier to understand.
 
-
 @defvr {Built-in Variable} stdin
 The standard input stream (file id 0).  When Octave is used
 interactively, this is filtered through the command line editing
@@ -451,6 +485,8 @@ messages and prompts.
 
 @menu
 * Opening and Closing Files::   
+* Simple Output::               
+* Line-Oriented Input::         
 * Formatted Output::            
 * Output Conversion for Matrices::  
 * Output Conversion Syntax::    
@@ -464,10 +500,12 @@ messages and prompts.
 * Numeric Input Conversions::   
 * String Input Conversions::    
 * Binary I/O::                  
-* Other I/O Functions::         
+* Temporary Files::             
+* EOF and Errors::              
+* File Positioning::            
 @end menu
 
-@node Opening and Closing Files, Formatted Output, C-Style I/O Functions, C-Style I/O Functions
+@node Opening and Closing Files, Simple Output, C-Style I/O Functions, C-Style I/O Functions
 @subsection Opening and Closing Files
 
 @deftypefn {Built-in Function} {[fid, msg] =} fopen (@var{name}, @var{mode}, @var{arch})
@@ -564,7 +602,45 @@ close the file, an error message is printed and @code{fclose} returns
 0.  Otherwise, it returns 1.
 @end deftypefn
 
-@node Formatted Output, Output Conversion for Matrices, Opening and Closing Files, C-Style I/O Functions
+@node Simple Output, Line-Oriented Input, Opening and Closing Files, C-Style I/O Functions
+@subsection Simple Output
+
+@deftypefn {Built-in Function} {} fputs (@var{fid}, @var{string})
+Write a string to a file with no formatting.
+@end deftypefn
+
+@deftypefn {Built-in Function} {} puts (@var{string})
+Write a string to the standard output with no formatting.
+@end deftypefn
+
+@node Line-Oriented Input, Formatted Output, Simple Output, C-Style I/O Functions
+@subsection Line-Oriented Input
+
+@deftypefn {Built-in Function} {} fgetl (@var{fid}, @var{len})
+Read characters from a file, stopping at the first newline character
+that is encountered or after @var{len} characters have been read, and
+returning the characters as a string.  The newline is not included in
+the returned value.
+
+If @var{len} is omitted, @code{fgetl} reads until the next newline
+character.
+
+If there are no more characters to read, @code{fgetl} returns -1.
+@end deftypefn
+
+@deftypefn {Built-in Function} {} fgets (@var{fid}, @var{len})
+Read characters from a file, stopping at the first newline character
+that is encountered or after @var{len} characters have been read, and
+returning the characters as a string.  The newline is included in the
+returned value.
+
+If @var{len} is omitted, @code{fgets} reads until the next newline
+character.
+
+If there are no more characters to read, @code{fgets} returns -1.
+@end deftypefn
+
+@node Formatted Output, Output Conversion for Matrices, Line-Oriented Input, C-Style I/O Functions
 @subsection Formatted Output
 
 This section describes how to call @code{printf} and related functions.
@@ -648,6 +724,37 @@ described in more detail in the following sections.
 
 @node Output Conversion for Matrices, Output Conversion Syntax, Formatted Output, C-Style I/O Functions
 @subsection Output Conversion for Matrices
+
+When given a matrix value, Octave's formatted output functions cycle
+through the format template until all the values in the matrix have been
+printed.  For example,
+
+@example
+@group
+printf ("%4.2f %10.2e %8.4g\n", hilb (3));
+
+     @print{} 1.00   5.00e-01   0.3333
+     @print{} 0.50   3.33e-01     0.25
+     @print{} 0.33   2.50e-01      0.2
+@end group
+@end example
+
+If more than one value is to be printed in a single call, the output
+functions do not return to the beginning of the format template when
+moving on from one value to the next.  This can lead to confusing output
+if the number of elements in the matrices are not exact multiples of the
+number of conversions in the format template.  For example,
+
+@example
+@group
+printf ("%4.2f %10.2e %8.4g\n", [1, 2], [3, 4]);
+
+     @print{} 1.00   2.00e+00        3
+     @print{} 4.00
+@end group
+@end example
+
+If this is not what you want, use a series of calls instead of just one.
 
 @node Output Conversion Syntax, Table of Output Conversions, Output Conversion for Matrices, C-Style I/O Functions
 @subsection Output Conversion Syntax
@@ -1152,7 +1259,7 @@ with the conversion @samp{%10c} produces @code{" hello, wo"}, but
 reading the same input with the conversion @samp{%10s} produces
 @code{"hello,"}.
 
-@node Binary I/O, Other I/O Functions, String Input Conversions, C-Style I/O Functions
+@node Binary I/O, Temporary Files, String Input Conversions, C-Style I/O Functions
 @subsection Binary I/O
 
 Octave has to C-style functions for reading and writing binary data.
@@ -1202,76 +1309,54 @@ The behavior of @code{fwrite} is undefined if the values in @var{data}
 are too large to fit in the specified precision.
 @end deftypefn
 
-@node Other I/O Functions,  , Binary I/O, C-Style I/O Functions
-@subsection Other I/O Functions
+@node Temporary Files, EOF and Errors, Binary I/O, C-Style I/O Functions
+@subsection Temporary Files
 
-@menu
-* Miscellaneous Output Functions::  
-* Miscellaneous Input Functions::  
-* File Positioning Functions::  
-* File Status Functions::       
-* Subprocesses Communication::  
-@end menu
+@deftypefn {Built-in Function} {} tmpnam ()
+Return a unique temporary file name as a string.
 
-@node Miscellaneous Output Functions, Miscellaneous Input Functions, Other I/O Functions, Other I/O Functions
-@subsubsection Miscellaneous Output Functions
-
-@deftypefn {Built-in Function} {} fflush (@var{fid})
-Flush output to @var{fid}.  This is useful for ensuring that all
-pending output makes it to the screen before some other event occurs.
-For example, it is always a good idea to flush the standard output
-stream before calling @code{input}.
+Since the named file is not opened, by @code{tmpnam}, it
+is possible (though relatively unlikely) that it will not be available
+by the time your program attempts to open it.
 @end deftypefn
 
-@deftypefn {Built-in Function} {} fputs (@var{fid}, @var{string})
-Write a string to a file with no formatting.
+@node EOF and Errors, File Positioning, Temporary Files, C-Style I/O Functions
+@subsection End of File and Errors
+
+@deftypefn {Built-in Function} {} feof (@var{fid})
+Returns 1 if an end-of-file condition has been encountered for a given
+file and 0 otherwise.  Note that it will only return 1 if the end of the
+file has already been encountered, not if the next read operation will
+result in an end-of-file condition.
 @end deftypefn
 
-@deftypefn {Built-in Function} {} puts (@var{string})
-Write a string to the standard output with no formatting.
+@deftypefn {Built-in Function} {} ferror (@var{fid})
+Returns 1 if an error condition has been encountered for a given file
+and 0 otherwise.  Note that it will only return 1 if an error has
+already been encountered, not if the next operation will result in an
+error condition.
 @end deftypefn
 
-@node Miscellaneous Input Functions, File Positioning Functions, Miscellaneous Output Functions, Other I/O Functions
-@subsubsection Miscellaneous Input Functions
-
-@deftypefn {Built-in Function} {} fgetl (@var{fid}, @var{len})
-Read characters from a file, stopping at the first newline character
-that is encountered or after @var{len} characters have been read, and
-returning the characters as a string.  The newline is not included in
-the returned value.
-
-If @var{len} is omitted, @code{fgetl} reads until the next newline
-character.
-
-If there are no more characters to read, @code{fgetl} returns -1.
-@end deftypefn
-
-@deftypefn {Built-in Function} {} fgets (@var{fid}, @var{len})
-Read characters from a file, stopping at the first newline character
-that is encountered or after @var{len} characters have been read, and
-returning the characters as a string.  The newline is included in the
-returned value.
-
-If @var{len} is omitted, @code{fgets} reads until the next newline
-character.
-
-If there are no more characters to read, @code{fgets} returns -1.
-@end deftypefn
-
-@deftypefn {Built-in Function} {} kbhit ()
-Read a single keystroke from the keyboard.  For example,
+@deftypefn {Built-in Function} {} freport ()
+Print a list of which files have been opened, and whether they are open
+for reading, writing, or both.  For example,
 
 @example
-x = kbhit ();
-@end example
+@group
+freport ()
 
-@noindent
-will set @var{x} to the next character typed at the keyboard, without
-requiring a carriage return to be typed.
+     @print{}  number  mode  name
+     @print{} 
+     @print{}       0     r  stdin
+     @print{}       1     w  stdout
+     @print{}       2     w  stderr
+     @print{}       3     r  myfile
+@end group
+@end example
 @end deftypefn
 
-@node File Positioning Functions, File Status Functions, Miscellaneous Input Functions, Other I/O Functions
-@subsubsection File Positioning Functions
+@node File Positioning,  , EOF and Errors, C-Style I/O Functions
+@subsection File Positioning
 
 Three functions are available for setting and determining the position of
 the file pointer for a given file.
@@ -1314,56 +1399,4 @@ frewind (myfile);
 fourch = fgets (myfile, 4);
 fseek (myfile, marker, SEEK_SET);
 @end example
-
-@node File Status Functions, Subprocesses Communication, File Positioning Functions, Other I/O Functions
-@subsubsection File Status Functions
-
-@deftypefn {Built-in Function} {} feof (@var{fid})
-Returns 1 if an end-of-file condition has been encountered for a given
-file and 0 otherwise.  Note that it will only return 1 if the end of the
-file has already been encountered, not if the next read operation will
-result in an end-of-file condition.
-@end deftypefn
-
-@deftypefn {Built-in Function} {} ferror (@var{fid})
-Returns 1 if an error condition has been encountered for a given file
-and 0 otherwise.  Note that it will only return 1 if an error has
-already been encountered, not if the next operation will result in an
-error condition.
-@end deftypefn
-
-@deftypefn {Built-in Function} {} freport ()
-Finally, it is often useful to know exactly which files have been
-opened, and whether they are open for reading, writing, or both.  The
-command @code{freport} prints this information for all open files.  For
-example,
-
-@example
-@group
-freport ()
-
-     @print{}  number  mode  name
-     @print{} 
-     @print{}       0     r  stdin
-     @print{}       1     w  stdout
-     @print{}       2     w  stderr
-     @print{}       3     r  myfile
-@end group
-@end example
-@end deftypefn
-
-@node Subprocesses Communication,  , File Status Functions, Other I/O Functions
-@subsubsection Communication with Subprocesses
-
-@deftypefn {Built-in Function} {[@var{in}, @var{out}, @var{pid}] =} popen2 (@var{command}, @var{args})
-Start a subprocess with 2-way communication.
-@end deftypefn
-
-@deftypefn {Built-in Function} {fid =} popen (@var{command}, @var{mode})
-Open a pipe to a subprocess.
-@end deftypefn
-
-@deftypefn {Built-in Function} {} pclose (@var{fid})
-Close a pipe from a subprocess.
-@end deftypefn
 

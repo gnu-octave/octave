@@ -1,4 +1,4 @@
-@c Copyright (C) 1996 John W. Eaton
+@c Copyright (C) 1996, 1997 John W. Eaton
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
@@ -40,9 +40,16 @@ dt
 @noindent
 using Hindmarsh's ODE solver LSODE.
 
-@deftypefn {Lodable Function} {} lsode (@var{fcn}, @var{x0}, @var{t_out}, @var{t_crit})
-The first argument is the name of the function to call to
-compute the vector of right hand sides.  It must have the form
+@deftypefn {Lodable Function} {} lsode (@var{fcn}, @var{x0}, @var{t}, @var{t_crit})
+Return a matrix of @var{x} as a function of @var{t}, given the initial
+state of the system @var{x0}.  Each row in the result matrix corresponds
+to one of the elements in the vector @var{t}.  The first element of
+@var{t} corresponds to the initial state @var{x0}, so that the first row
+of the output is @var{x0}.
+
+The first argument, @var{fcn}, is a string that names the function to
+call to compute the vector of right hand sides for the set of equations.
+It must have the form
 
 @example
 @var{xdot} = f (@var{x}, @var{t})
@@ -51,52 +58,54 @@ compute the vector of right hand sides.  It must have the form
 @noindent
 where @var{xdot} and @var{x} are vectors and @var{t} is a scalar.
 
-The second argument specifies the initial condition, and the third
-specifies a vector of output times at which the solution is desired,
-including the time corresponding to the initial condition.
-
 The fourth argument is optional, and may be used to specify a set of
 times that the ODE solver should not integrate past.  It is useful for
 avoiding difficulties with singularities and points where there is a
 discontinuity in the derivative.
+@end deftypefn
 
-Here is an example of solving a set of two differential equations using
-@code{lsode}.  The function
+Here is an example of solving a set of three differential equations using
+@code{lsode}.  Given the function
+
+@cindex oregonator
 
 @example
-function xdot = f (x, t) 
+@group
+function xdot = f (x, t)
 
-  r = 0.25;
-  k = 1.4;
-  a = 1.5;
-  b = 0.16;
-  c = 0.9;
-  d = 0.8;
+  xdot = zeros (3,1);
 
-  xdot(1) = r*x(1)*(1 - x(1)/k) - a*x(1)*x(2)/(1 + b*x(1));
-  xdot(2) = c*a*x(1)*x(2)/(1 + b*x(1)) - d*x(2);
+  xdot(1) = 77.27 * (x(2) - x(1)*x(2) + x(1) \
+            - 8.375e-06*x(1)^2);
+  xdot(2) = (x(3) - x(1)*x(2) - x(2)) / 77.27;
+  xdot(3) = 0.161*(x(1) - x(3));
 
 endfunction
+@end group
 @end example
 
 @noindent
-is integrated with the command
+and the initial condition @code{x0 = [ 4; 1.1; 4 ]}, the set of
+equations can be integrated using the command
 
 @example
-x = lsode ("f", [1; 2], (t = linspace (0, 50, 200)'));
+@group
+t = linspace (0, 500, 1000);
+
+y = lsode ("f", x0, t);
+@end group
 @end example
 
-@noindent
-producing a set of 200 values stored in the variable @var{x}.  Note that
-this example takes advantage of the fact that an assignment produces a
-value to store the values of the output times in the variable @var{t}
-directly in the function call   The results can then be plotted using
-the command
+If you try this, you will see that the value of the result changes
+dramatically between @var{t} = 0 and 5, and again around @var{t} = 305.
+A more efficient set of output points might be
 
 @example
-plot (t, x)
+@group
+t = [0, logspace (-1, log10(303), 150), \
+        logspace (log10(304), log10(500), 150)];
+@end group
 @end example
-@end deftypefn
 
 @deftypefn {Lodable Function} {} lsode_options (@var{opt}, @var{val})
 When called with two arguments, this function allows you set options
@@ -108,7 +117,7 @@ their current values are displayed.
 
 See Alan C. Hindmarsh, @cite{ODEPACK, A Systematized Collection of ODE
 Solvers}, in Scientific Computing, R. S. Stepleman, editor, (1983) for
-more information about this family of ODE solvers.
+more information about the inner workings of @code{lsode}.
 
 @node Differential-Algebraic Equations,  , Ordinary Differential Equations, Differential Equations
 @section Differential-Algebraic Equations
@@ -128,9 +137,17 @@ $$
 @end example
 @end ifinfo
 
-@deftypefn {Loadable Function} {[@var{x}, @var{xdot}] =} dassl (@var{fcn}, @var{x_0}, @var{xdot_0}, @var{t_out}, @var{t_crit})
-The first argument is the name of the function to call to
-compute the vector of residuals.  It must have the form
+@deftypefn {Loadable Function} {[@var{x}, @var{xdot}] =} dassl (@var{fcn}, @var{x0}, @var{xdot0}, @var{t}, @var{t_crit})
+Return a matrix of states and their first derivaties with respect to
+@var{t}.  Each row in the result matrices correspond to one of the
+elements in the vector @var{t}.  The first element of @var{t}
+corresponds to the initial state @var{x0} and derivative @var{xdot0}, so
+that the first row of the output @var{x} is @var{x0} and the first row
+of the output @var{xdot} is @var{xdot0}.
+
+The first argument, @var{fcn}, is a string that names the function to
+call to compute the vector of residuals for the set of equations.
+It must have the form
 
 @example
 @var{res} = f (@var{x}, @var{xdot}, @var{t})

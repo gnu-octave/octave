@@ -4,8 +4,8 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Emacs, Installation, Amusements, Top
-@chapter Using Emacs With Octave
+@node Emacs, Grammar, Installation, Top
+@appendix Using Emacs With Octave
 
 The development of Octave code can greatly be facilitated using Emacs
 with Octave mode, a major mode for editing Octave files which can e.g.@:
@@ -35,12 +35,12 @@ or suggestions on using Emacs with Octave.
 @end menu
 
 @node Installing the Emacs Octave Package, Using Octave Mode, Emacs, Emacs
-@section Installing the Emacs Octave Package
+@appendixsec Installing the Emacs Octave Package
 
-The Emacs package @file{octave} consists of the three files
-@file{octave-mod.el}, @file{octave-inf.el}, and @file{octave-hlp.el}.
-These files, or better yet their byte-compiled versions, should be
-somewhere in your Emacs load-path.
+The Emacs package @file{octave} consists of @file{octave-mod.el},
+@file{octave-inf.el}, and @file{octave-hlp.el}.  These files, or better
+yet their byte-compiled versions, should be somewhere in your Emacs
+load-path.
 
 If you have GNU Emacs with a version number at least as high as 19.35,
 you are all set up, because the package is respectively will be part of
@@ -52,7 +52,7 @@ depends on how your Emacs was installed).  Byte-compile them for speed
 if you want.
 
 @node Using Octave Mode, Running Octave From Within Emacs, Installing the Emacs Octave Package, Emacs
-@section Using Octave Mode
+@appendixsec Using Octave Mode
 
 If you are lucky, your sysadmins have already arranged everything so
 that Emacs automatically goes into Octave mode whenever you visit an
@@ -68,7 +68,7 @@ your @file{~/.emacs} file:
 @lisp
 (autoload 'octave-mode "octave-mod" nil t)
 (setq auto-mode-alist
-      (cons '(\"\\\\.m$\" . octave-mode) auto-mode-alist))
+      (cons '("\\.m$" . octave-mode) auto-mode-alist))
 @end lisp
 
 @item
@@ -272,7 +272,7 @@ solution is
 @noindent
 (this works for all modes by adding to the startup hooks, without having
 to know the particular binding of @key{RET} in that mode!).  Similar
-considerations apply for using @key{M-RET} as @key{M-LFD}.  As Barry
+considerations apply for using @kbd{M-RET} as @kbd{M-LFD}.  As Barry
 A. Warsaw <bwarsaw@@cnri.reston.va.us> says in the documentation for his
 @code{cc-mode}, ``This is a very common question. @code{:-)} If you want
 this to be the default behavior, don't lobby me, lobby RMS!''
@@ -343,7 +343,7 @@ added.  You just need to add a description of the problem, including a
 reproducible test case and send the message.
 
 @node Running Octave From Within Emacs, Using the Emacs Info Reader for Octave, Using Octave Mode, Emacs
-@section Running Octave From Within Emacs
+@appendixsec Running Octave From Within Emacs
 
 The package @file{octave} provides commands for running an inferior
 Octave process in a special Emacs buffer.  Use 
@@ -454,17 +454,15 @@ when Octave is waiting for input, or done sending output.
 @end quotation
 
 @node Using the Emacs Info Reader for Octave,  , Running Octave From Within Emacs, Emacs
-@section Using the Emacs Info Reader for Octave
+@appendixsec Using the Emacs Info Reader for Octave
 
-You can also set up the Emacs Info reader for dealing with the results
-of Octave's @samp{help -i}.  For this, the package @file{gnuserv} needs
-to be installed, which unfortunately still does not come with GNU Emacs
-(it does with XEmacs).  It can be retrieved from any GNU Emacs Lisp Code
-Directory archive, e.g.@:
-@file{ftp://ftp.cis.ohio-state.edu/pub/gnu/emacs/elisp-archive},
+You can also have Octave's @kbd{help -i} command invoke the Emacs Info
+reader.  To do this, you'll need @file{gnuserv}, which can be retrieved
+from any GNU Emacs Lisp Code Directory archive, e.g.@:
+@url{ftp://ftp.cis.ohio-state.edu/pub/gnu/emacs/elisp-archive},
 in the @file{packages} subdirectory.  The alpha version of an enhanced
 version of gnuserv is available at 
-@file{ftp://ftp.wellfleet.com/netman/psmith/emacs/gnuserv-2.1alpha.tar.gz}.
+@url{ftp://ftp.wellfleet.com/netman/psmith/emacs/gnuserv-2.1alpha.tar.gz}.
 
 If @file{gnuserv} is installed, add the lines
 @lisp
@@ -484,7 +482,7 @@ that the Emacs variable @code{octave-help-files} is set correctly).  In
 this case, set @code{INFO_PROGRAM} to @code{"info-emacs-octave-help"}.
 
 If you use Octave from within Emacs, these settings are best done in the
-@file{~/.emacs-octave} startup file (or the file pointed to by the Emacs
+startup file @file{~/.emacs-octave} (or the file pointed to by the Emacs
 variable @code{inferior-octave-startup-file}).
 
 @c Local Variables:

@@ -20,14 +20,15 @@ INSTALL_DATA = @INSTALL_DATA@
 
 SOURCES =
 
-TEXINFO = amuse.texi arith.texi audio.texi basics.texi bugs.texi \
-	control.texi cp-idx.texi diffeq.texi emacs.texi expr.texi \
-	extend.texi fn-idx.texi func.texi image.texi install.texi \
-	intro.texi invoke.texi io.texi linalg.texi matrix.texi \
-	nonlin.texi octave.texi op-idx.texi optim.texi plot.texi \
-	poly.texi preface.texi program.texi quad.texi set.texi \
-	signal.texi special.texi stats.texi stmt.texi strings.texi \
-	system.texi var.texi vr-idx.texi
+TEXINFO = arith.texi audio.texi basics.texi bugs.texi control.texi \
+	cp-idx.texi data.texi diffeq.texi emacs.texi errors.texi \
+	eval.texi expr.texi fn-idx.texi func.texi gpl.texi \
+	grammar.texi image.texi install.texi intro.texi io.texi \
+	linalg.texi matrix.texi nonlin.texi numbers.texi octave.texi \
+	op-idx.texi optim.texi plot.texi poly.texi preface.texi \
+	quad.texi set.texi signal.texi stats.texi stmt.texi \
+	strings.texi struct.texi system.texi tips.texi var.texi \
+	vr-idx.texi
 
 FORMATTED = octave.dvi octave.ps octave.info octave.info octave.info-[0-9]*
 
@@ -64,7 +65,8 @@ conf.texi: $(srcdir)/../../src/version.h ../../Makeconf Makefile \
 	@echo "Making conf.texi from conf.texi.in..."
 	@(version_val=${version}; \
 	sed < $(srcdir)/../conf.texi.in > conf.texi.tmp \
-	-e "s;%OCTAVE_VERSION%;$$version_val;" \
+	-e "s;%OCTAVE_VERSION%;${version_val};" \
+	-e "s;%TARGET_HOST_TYPE%;${target_host_type};" \
 	-e "s;%OCTAVE_HOME%;${prefix};")
 	@if test "$(srcdir)" = "." ; then \
 	  $(top_srcdir)/move-if-change conf.texi.tmp conf.texi; \

@@ -1,4 +1,4 @@
-@c Copyright (C) 1996 John W. Eaton
+@c Copyright (C) 1996, 1997 John W. Eaton
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
@@ -11,7 +11,8 @@ the X Window System, and you must have either @code{xloadimage} or
 manipulate images, however, so some of these functions may be useful
 even if you are not able to view the results.
 
-@deftypefn {Function File} {} colormap
+@deftypefn {Function File} {} colormap (@var{map})
+@deftypefnx {Function File} {} colormap ("default")
 Set the current colormap.
 
 @code{colormap (@var{map})} sets the current colormap to @var{map}.  The
@@ -26,37 +27,33 @@ With no arguments, @code{colormap} returns the current color map.
 @end deftypefn
 
 @deftypefn {Function File} {} gray (@var{n})
-Create a gray colormap with values from 0 to @var{n}.  The argument
-@var{n} should be a scalar.  If it is omitted, 64 is assumed.
+Return a gray colormap with @var{n} entries corresponding to values from
+0 to @var{n}.  The argument @var{n} should be a scalar.  If it is
+omitted, 64 is assumed.
 @end deftypefn
 
-@deftypefn {Function File} {} gray2ind
+@deftypefn {Function File} {[@var{img}, @var{map}] =} gray2ind (@var{})
 Convert a gray scale intensity image to an Octave indexed image.
 @end deftypefn
 
-@deftypefn {Function File} {} image
-Display an Octave image matrix.
-
-@code{image (@var{x})} displays a matrix as a color image.  The elements
-of @var{x} are indices into the current colormap and should have values
-between 1 and the length of the colormap.
-
-@code{image (@var{x}, @var{zoom})} changes the zoom factor.  The default
-value is 4.
+@deftypefn {Function File} {} image (@var{x}, @var{zoom})
+Display a matrix as a color image.  The elements of @var{x} are indices
+into the current colormap and should have values between 1 and the
+length of the colormap.  If @var{zoom} is omitted, a value of 4 is
+assumed. 
 @end deftypefn
 
-@deftypefn {Function File} {} imagesc
-Scale and display a matrix as an image.
-
-@code{imagesc (@var{x})} displays a scaled version of the matrix
-@var{x}.  The matrix is scaled so that its entries are indices into the
-current colormap.  The scaled matrix is returned.
-
-@code{imagesc (@var{x}, @var{zoom})} sets the magnification, the default
-value is 4.
+@deftypefn {Function File} {} imagesc (@var{x}, @var{zoom})
+Display a scaled version of the matrix @var{x} as a color image.  The
+matrix is scaled so that its entries are indices into the current
+colormap.  The scaled matrix is returned.  If @var{zoom} is omitted, a
+value of 4 is assumed.
 @end deftypefn
 
-@deftypefn {Function File} {} imshow
+@deftypefn {Function File} {} imshow (@var{x}, @var{map})
+@deftypefnx {Function File} {} imshow (@var{x}, @var{n})
+@deftypefnx {Function File} {} imshow (@var{i}, @var{n})
+@deftypefnx {Function File} {} imshow (@var{r}, @var{g}, @var{b})
 Display images.
 
 @code{imshow (@var{x})} displays an indexed image using the current
@@ -70,71 +67,57 @@ specified colormap.
 @code{imshow (@var{r}, @var{g}, @var{b})} displays an RGB image.
 @end deftypefn
 
-@deftypefn {Function File} {} ind2gray
+@deftypefn {Function File} {} ind2gray (@var{x}, @var{map})
 Convert an Octave indexed image to a gray scale intensity image.
-
-@code{@var{y} = ind2gray (@var{x})} converts an indexed image to a gray
-scale intensity image.  The current colormap is used to determine the
-intensities.  The intensity values lie between 0 and 1 inclusive.
-
-@code{@var{y} = ind2gray (@var{x}, @var{map})} uses the specified
-colormap instead of the current one in the conversion process.
+If @var{map} is omitted, the current colormap is used to determine the
+intensities.
 @end deftypefn
 
-@deftypefn {Function File} {} ind2rgb
+@deftypefn {Function File} {[@var{r}, @var{g}, @var{b}] =} ind2rgb (@var{x}, @var{map})
 Convert an indexed image to red, green, and blue color components.
-
-@code{[@var{r}, @var{g}, @var{b}] = ind2rgb (@var{x})} uses the current
-colormap for the conversion.
-
-@code{[@var{r}, @var{g}, @var{b}] = ind2rgb (@var{x}, @var{map})} uses
-the specified colormap.
+If @var{map} is omitted, the current colormap is used for the conversion.
 @end deftypefn
 
-@deftypefn {Function File} {} loadimage
-Load an image file.
-
-@code{[@var{x}, @var{map}] = loadimage (@var{file})} loads an image and
-it's associated color map from the specified @var{file}.  The image must
-be stored in Octave's image format.
+@deftypefn {Function File} {[@var{x}, @var{map}] =} loadimage (@var{file})
+Load an image file and it's associated color map from the specified
+@var{file}.  The image must be stored in Octave's image format.
 @end deftypefn
 
-@c @deftypefn {Function File} {} rgb2ntsc
-@c @end deftypefn
+@deftypefn {Function File} {} rgb2ntsc (@var{rgb})
+Image format conversion.
+@end deftypefn
 
-@c @c @deftypefn {Function File} {} ntsc2rgb
-@c @end deftypefn
+@deftypefn {Function File} {} ntsc2rgb (@var{yiq})
+Image format conversion.
+@end deftypefn
 
 @deftypefn {Function File} {} ocean (@var{n})
 Create color colormap.  The argument @var{n} should be a scalar.  If it
 is omitted, 64 is assumed.
 @end deftypefn
 
-@deftypefn {Function File} {} rgb2ind
+@deftypefn {Function File} {[@var{x}, @var{map}] =} rgb2ind (@var{r}, @var{g}, @var{b})
 Convert and RGB image to an Octave indexed image.
-
-@code{[@var{x}, @var{map}] = rgb2ind (@var{r}, @var{g}, @var{b})}
 @end deftypefn
 
-@deftypefn {Function File} {} saveimage
-Save a matrix to disk in image format.
+@deftypefn {Function File} {} saveimage (@var{file}, @var{x}, @var{fmt}, @var{map})
+Save the matrix @var{x} to @var{file} in image format @var{fmt}.  Valid
+values for @var{fmt} are
 
-@code{saveimage (@var{file}, @var{x})} saves matrix @var{x} to @var{file}
-in Octave's image format.  The current colormap is also saved in the file.
+@table @code
+@item "img"
+Octave's image format.  The current colormap is also saved in the file.
 
-@code{saveimage (@var{file}, @var{x}, "img")} saves the image in the
-default format and is the same as @code{saveimage (@var{file}, @var{x})}.
+@item "ppm"
+Portable pixmap format.
 
-@code{saveimage (@var{file}, @var{x}, "ppm")} saves the image in ppm
-format instead of the default Octave image format.
+@item "ps"
+PostScript format.  Note that images saved in PostScript format can not
+be read back into Octave with loadimage.
+@end table
 
-@code{saveimage (@var{file}, @var{x}, "ps")} saves the image in
-PostScript format instead of the default Octave image format.  (Note:
-images saved in PostScript format can not be read back into Octave with
-loadimage.)
-
-@code{saveimage (@var{file}, @var{x}, @var{fmt}, @var{map})} saves the
-image along with the specified colormap in the specified format.
+If the fourth argument is supplied, the specified colormap will also be
+saved along with the image.
 
 Note: if the colormap contains only two entries and these entries are
 black and white, the bitmap ppm and PostScript formats are used.  If the

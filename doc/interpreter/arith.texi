@@ -1,8 +1,8 @@
-@c Copyright (C) 1996 John W. Eaton
+@c Copyright (C) 1996, 1997 John W. Eaton
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Arithmetic, Linear Algebra, String Functions, Top
+@node Arithmetic, Linear Algebra, Matrix Manipulation, Top
 @chapter Arithmetic
 
 Unless otherwise noted, all of the functions described in this chapter
@@ -625,7 +625,7 @@ The @code{I} and @code{J} forms are true constants, and cannot be
 modified.  The @code{i} and @code{j} forms are like ordinary variables,
 and may be used for other purposes.  However, unlike other variables,
 they once again assume their special predefined values if they are
-cleared @xref{Miscellaneous Utilities}.
+cleared @xref{Status of Variables}.
 @end defvr
 
 @defvr {Built-in Variable} Inf

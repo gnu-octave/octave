@@ -1,4 +1,4 @@
-@c Copyright (C) 1996 John W. Eaton
+@c Copyright (C) 1996, 1997 John W. Eaton
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
@@ -20,7 +20,7 @@ The second argument is optional.  If it is not specified, a value of 1
 is assumed.  This corresponds to removing a linear trend.
 @end deftypefn
 
-@deftypefn {Function} {} fft (@var{a} [, @var{n}])
+@deftypefn {Function} {} fft (@var{a}, @var{n})
 Compute the FFT of @var{a} using subroutines from FFTPACK.  If @var{a}
 is a matrix, @code{fft} computes the FFT for each column of @var{a}.
 
@@ -31,7 +31,7 @@ matrix, @var{n} specifies the number of rows of @var{a} to use.  If
 padded with zeros.
 @end deftypefn
 
-@deftypefn {Loadable Function} {} ifft (@var{a} [, @var{n}])
+@deftypefn {Loadable Function} {} ifft (@var{a}, @var{n})
 Compute the inverse FFT of @var{a} using subroutines from FFTPACK.  If
 @var{a} is a matrix, @code{fft} computes the inverse FFT for each column
 of @var{a}.
@@ -43,7 +43,7 @@ matrix, @var{n} specifies the number of rows of @var{a} to use.  If
 padded with zeros.
 @end deftypefn
 
-@deftypefn {Loadable Function} {} fft2 (@var{a} [, @var{n} [, @var{m}]])
+@deftypefn {Loadable Function} {} fft2 (@var{a}, @var{n}, @var{m})
 Compute the two dimensional FFT of @var{a}.
 
 The optional arguments @var{n} and @var{m} may be used specify the
@@ -52,7 +52,7 @@ larger than the size of @var{a}, @var{a} is resized and padded with
 zeros.
 @end deftypefn
 
-@deftypefn {Loadable Function} {} ifft2 (@var{a} [, @var{n} [, @var{m}]])
+@deftypefn {Loadable Function} {} ifft2 (@var{a}, @var{n}, @var{m})
 Compute the two dimensional inverse FFT of @var{a}.
 
 The optional arguments @var{n} and @var{m} may be used specify the
@@ -61,7 +61,7 @@ larger than the size of @var{a}, @var{a} is resized and padded with
 zeros.
 @end deftypefn
 
-@deftypefn {Built-in Function} {} fftconv (@var{a}, @var{b}, @var{N})
+@deftypefn {Built-in Function} {} fftconv (@var{a}, @var{b}, @var{n})
 This function returns the convolution of the vectors @var{a} and
 @var{b}, a vector with length equal to the @code{length (a) + length (b)
 - 1}.  If @var{a} and @var{b} are the coefficient vectors of two
@@ -69,15 +69,15 @@ polynomials, the returned value is the coefficient vector of the product
 polynomial.
 
 The computation uses the FFT by calling the function @code{fftfilt}.  If
-the optional argument @var{N} is specified, an N-point FFT is used.
+the optional argument @var{n} is specified, an N-point FFT is used.
 @end deftypefn
 
-@deftypefn {Function File} {} fftfilt (@var{b}, @var{x}, @var{N})
+@deftypefn {Function File} {} fftfilt (@var{b}, @var{x}, @var{n})
 
 With two arguments, @code{fftfilt} filters @var{x} with the FIR filter
 @var{b} using the FFT.
 
-Given the optional third argument, @var{N}, @code{fftfilt} uses the
+Given the optional third argument, @var{n}, @code{fftfilt} uses the
 overlap-add method to filter @var{x} with @var{b} using an N-point FFT.
 @end deftypefn
 
@@ -173,12 +173,25 @@ minus one.  If @var{si} is not set, the initial state vector is set to
 all zeros.
 @end deftypefn
 
-@deftypefn {Function File} {} freqz
-Compute the frequency response of a filter.
+@deftypefn {Function File} {[@var{h}, @var{w}] =} freqz (@var{b}, @var{a}, @var{n}, "whole")
+Return the complex frequency response @var{h} of the rational IIR filter
+whose numerator and denominator coefficients are @var{b} and @var{a},
+respectively.  The response is evaluated at @var{n} angular frequencies
+between 0 and
+@ifinfo
+ 2*pi.
+@end ifinfo
+@iftex
+@tex
+ $2\pi$.
+@end tex
+@end iftex
 
-@code{[@var{h}, @var{w}] = freqz (@var{b})} returns the complex frequency
-response @var{h} of the FIR filter with coefficients @var{b}. The
-response is evaluated at 512 angular frequencies between 0 and
+@noindent
+The output value @var{w} is a vector of the frequencies.
+
+If the fourth argument is omitted, the response is evaluated at
+frequencies between 0 and
 @ifinfo
  pi.
 @end ifinfo
@@ -188,29 +201,13 @@ response is evaluated at 512 angular frequencies between 0 and
 @end tex
 @end iftex
 
-@noindent
-The output value @var{w} is a vector containing the 512 frequencies.
+If @var{n} is omitted, a value of 512 is assumed.
 
-@code{[@var{h}, @var{w}] = freqz (@var{b}, @var{a})} returns the complex
-frequency response of the rational IIR filter whose numerator has
-coefficients @var{b} and denominator coefficients @var{a}.
+If @var{a} is omitted, the denominator is assumed to be 1 (this
+corresponds to a simple FIR filter).
 
-
-@code{[@var{h}, @var{w}] = freqz (@var{b}, @var{a}, @var{n})} returns the
-response evaluated at @var{n} angular frequencies.  For fastest
-computation n should factor into a small number of small primes.
-
-
-@code{[@var{h}, @var{w}] = freqz (@var{b}, @var{a}, @var{n}, "whole")}
-evaluates the response at n frequencies between 0 and
-@ifinfo
- 2*pi.
-@end ifinfo
-@iftex
-@tex
- $2\pi$.
-@end tex
-@end iftex
+For fastest computation, @var{n} should factor into a small number of
+small primes.
 @end deftypefn
 
 @deftypefn {Function File} {} sinc (@var{x})

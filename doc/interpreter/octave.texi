@@ -1,4 +1,4 @@
-% Copyright (C) 1996 John W. Eaton
+% Copyright (C) 1996, 1997 John W. Eaton
 % This is part of the Octave manual.
 % For copying conditions, see the file gpl.texi.
 
@@ -16,9 +16,7 @@ END-INFO-DIR-ENTRY
 @c Settings for printing on 8-1/2 by 11 inch paper:
 @c -----------------------------------------------
 
-@c @ignore
 @setchapternewpage odd
-@c @end ignore
 
 @c Settings for small book format:
 @c ------------------------------
@@ -44,7 +42,7 @@ END-INFO-DIR-ENTRY
 
 @ifinfo
 
-Copyright (C) 1996 John W. Eaton.
+Copyright (C) 1996, 1997 John W. Eaton.
 
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
@@ -70,15 +68,15 @@ modified versions.
 @titlepage
 @title{Octave}
 @subtitle{A high-level interactive language for numerical computations}
-@subtitle{Edition 2 for Octave version @value{VERSION}}
+@subtitle{Edition 3 for Octave version @value{VERSION}}
 @subtitle{October 1996}
 @author{John W. Eaton}
 @page
 @vskip 0pt plus 1filll
-Copyright @copyright{} 1996 John W. Eaton.
+Copyright @copyright{} 1996, 1997 John W. Eaton.
 
-This is the second edition of the Octave documentation,
-and is consistent with version @value{VERSION} of Octave.
+This is the third edition of the Octave documentation, and is consistent
+with version @value{VERSION} of Octave.
 
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
@@ -91,6 +89,11 @@ notice identical to this one.
 
 Permission is granted to copy and distribute translations of this manual
 into another language, under the same conditions as for modified versions.
+
+Portions of this document have been adapted from the @code{gawk},
+@code{readline}, @code{gcc}, and C library manuals, published by the Free
+Software Foundation, 59 Temple Place---Suite 330, Boston, MA
+02111--1307, USA.
 @end titlepage
 
 @ifinfo
@@ -105,17 +108,20 @@ It corresponds to Octave version @value{VERSION}.
 @menu
 * Preface::                     
 * Introduction::                A brief introduction to Octave.
-* Invoking Octave::             Command options supported by Octave.
-* Basics::                      
+* Getting Started::             
+* Data Types::                  
+* Numeric Data Types::          
+* Strings::                     
+* Data Structures::             
+* Variables::                   
 * Expressions::                 Expressions.
+* Evaluation::                  
 * Statements::                  Looping and program flow control.
 * Functions and Scripts::       
-* Built-in Variables::          Descriptions of all built-in variables.
+* Error Handling::              
 * Input and Output::            
 * Plotting::                    
 * Matrix Manipulation::         
-* Special Matrices::            
-* String Functions::            
 * Arithmetic::                  
 * Linear Algebra::              
 * Nonlinear Equations::         
@@ -130,19 +136,24 @@ It corresponds to Octave version @value{VERSION}.
 * Image Processing::            
 * Audio Processing::            
 * System Utilities::            
-* Programming Utilities::       
-* Amusements::                  
-* Emacs::                       
-* Installation::                How to configure, compile and install Octave.
+* Tips::                        
 * Trouble::                     If you have trouble installing Octave.
+* Installation::                How to configure, compile and install Octave.
+* Emacs::                       
+* Grammar::                     
 * Copying::                     The GNU General Public License.
 * Concept Index::               An item for each concept.
 * Variable Index::              An item for each documented variable.
 * Function Index::              An item for each documented function.
 * Operator Index::              An item for each documented operator.
 
-
  --- The Detailed Node Listing ---
+
+Preface
+
+* Acknowlegements::             
+* How You Can Contribute to Octave::  
+* Distribution::                
 
 A Brief Introduction to Octave
 
@@ -164,46 +175,77 @@ Format of Descriptions
 * A Sample Command Description::  
 * A Sample Variable Description::  
 
+Getting Started
+
+* Invoking Octave::             
+* Quitting Octave::             
+* Getting Help::                
+* Command Line Editing::        
+* Errors::                      
+* Executable Octave Programs::  
+* Comments::                    
+
 Invoking Octave
 
 * Command Line Options::        
 * Startup Files::               
 
-Basics
+Command Line Editing
 
-* Comments::                    
-* Executable Octave Programs::  
-* Errors::                      
-* Help::                        
-* Command Line Editing::        
-* Command History Functions::   
+* Cursor Motion::               
+* Killing and Yanking::         
+* Commands For Text::           
+* Commands For Completion::     
+* Commands For History::        
+* Customizing the Prompt::      
+* Diary and Echo Commands::     
+
+Data Types
+
+* Built-in Data Types::         
+* User-defined Data Types::     
+* Object Sizes::                
+
+Built-in Data Types
+
+* Numeric Objects::             
+* String Objects::              
+* Data Structure Objects::      
+
+Numeric Data Types
+
+* Matrices::                    
+* Ranges::                      
+* Predicates for Numeric Objects::  
+
+Matrices
+
+* Empty Matrices::              
+
+Strings
+
+* Creating Strings::            
+* Searching and Replacing::     
+* String Conversions::          
+* Character Class Functions::   
+
+Variables
+
+* Global Variables::            
+* Status of Variables::         
+* Summary of Built-in Variables::  
+* Defaults from the Environment::  
 
 Expressions
 
-* Constant Expressions::        
-* Matrices::                    
-* Ranges::                      
-* Variables::                   
 * Index Expressions::           
-* Data Structures::             
 * Calling Functions::           
-* Global Variables::            
-* Keywords::                    
 * Arithmetic Ops::              
 * Comparison Ops::              
 * Boolean Expressions::         
 * Assignment Ops::              
 * Increment Ops::               
 * Operator Precedence::         
-
-Constant Expressions
-
-* Numeric Constants::           
-* String Constants::            
-
-Matrices
-
-* Empty Matrices::              
 
 Calling Functions
 
@@ -242,11 +284,6 @@ Functions and Script Files
 * Dynamically Linked Functions::  
 * Organization of Functions::   
 
-Built-in Variables
-
-* Miscellaneous Built-in Variables::  
-* Summary of Preference Variables::  
-
 Input and Output
 
 * Basic Input and Output::      
@@ -261,6 +298,8 @@ Basic Input and Output
 C-Style I/O Functions
 
 * Opening and Closing Files::   
+* Simple Output::               
+* Line-Oriented Input::         
 * Formatted Output::            
 * Output Conversion for Matrices::  
 * Output Conversion Syntax::    
@@ -274,15 +313,9 @@ C-Style I/O Functions
 * Numeric Input Conversions::   
 * String Input Conversions::    
 * Binary I/O::                  
-* Other I/O Functions::         
-
-Other I/O Functions
-
-* Miscellaneous Output Functions::  
-* Miscellaneous Input Functions::  
-* File Positioning Functions::  
-* File Status Functions::       
-* Subprocesses Communication::  
+* Temporary Files::             
+* EOF and Errors::              
+* File Positioning::            
 
 Plotting
 
@@ -295,9 +328,6 @@ Matrix Manipulation
 
 * Finding Elements and Checking Conditions::  
 * Rearranging Matrices::        
-
-Special Matrices
-
 * Special Utility Matrices::    
 * Famous Matrices::             
 
@@ -318,7 +348,7 @@ Linear Algebra
 
 Quadrature
 
-* Functions of one Variable::   
+* Functions of One Variable::   
 * Orthogonal Collocation::      
 
 Differential Equations
@@ -336,33 +366,21 @@ System Utilities
 
 * Timing Utilities::            
 * Filesystem Utilities::        
-* Interacting with the OS::     
+* Controlling Subprocesses::    
+* Process ID Information::      
+* Environment Variables::       
+* Current Working Directory::   
 * Password Database Functions::  
 * Group Database Functions::    
 * System Information::          
-* Other Functions::             
 
-Programming Utilities
+Tips and Standards
 
-* Evaluating Strings as Commands::  
-* Miscellaneous Utilities::     
-
-Using Emacs With Octave
-
-* Installing the Emacs Octave Package::  
-* Using Octave Mode::           
-* Running Octave From Within Emacs::  
-* Using the Emacs Info Reader for Octave::  
-
-Installing Octave
-
-* Installation Problems::       
-* Binary Distributions::        
-
-Binary Distributions
-
-* Installing Octave from a Binary Distribution::  
-* Creating a Binary Distribution::  
+* Style Tips::                  Writing clean and robust programs.
+* Coding Tips::                 Making code run faster.
+* Documentation Tips::          Writing readable documentation strings.
+* Comment Tips::                Conventions for writing comments.
+* Function Headers::            Standard headers for functions.
 
 Known Causes of Trouble with Octave
 
@@ -380,21 +398,45 @@ Reporting Bugs
 * Where: Bug Lists.             Where to send your bug report.
 * Reporting: Bug Reporting.     How to report a bug effectively.
 * Patches: Sending Patches.     How to send a patch for Octave.
+
+Installing Octave
+
+* Installation Problems::       
+* Binary Distributions::        
+
+Binary Distributions
+
+* Installing Octave from a Binary Distribution::  
+* Creating a Binary Distribution::  
+
+Using Emacs With Octave
+
+* Installing the Emacs Octave Package::  
+* Using Octave Mode::           
+* Running Octave From Within Emacs::  
+* Using the Emacs Info Reader for Octave::  
+
+Grammar
+
+* Keywords::                    
 @end menu
 
 @include preface.texi
 @include intro.texi
-@include invoke.texi
 @include basics.texi
+@include data.texi
+@include numbers.texi
+@include strings.texi
+@include struct.texi
+@include var.texi
 @include expr.texi
+@include eval.texi
 @include stmt.texi
 @include func.texi
-@include var.texi
+@include errors.texi
 @include io.texi
 @include plot.texi
 @include matrix.texi
-@include special.texi
-@include strings.texi
 @include arith.texi
 @include linalg.texi
 @include nonlin.texi
@@ -409,17 +451,22 @@ Reporting Bugs
 @include image.texi
 @include audio.texi
 @include system.texi
-@include program.texi
-@include amuse.texi
+
+@c maybe add again later, if anyone every writes any really interesting
+@c fun stuff for Octave.
+@c
+@c @include amuse.texi
 
 @c Appendices start here.  Installation and bugs have to go before the
 @c readline and Info appendices because we want to have separate indices
 @c for them, and there appears to be no way to go back to the original
 @c set of indices once a redirection has taken place.
 
-@include emacs.texi
-@include install.texi
+@include tips.texi
 @include bugs.texi
+@include install.texi
+@include emacs.texi
+@include grammar.texi
 @include gpl.texi
 
 @include cp-idx.texi

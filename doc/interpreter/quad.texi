@@ -1,4 +1,4 @@
-@c Copyright (C) 1996 John W. Eaton
+@c Copyright (C) 1996, 1997 John W. Eaton
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
@@ -6,14 +6,14 @@
 @chapter Quadrature
 
 @menu
-* Functions of one Variable::   
+* Functions of One Variable::   
 * Orthogonal Collocation::      
 @end menu
 
-@node Functions of one Variable, Orthogonal Collocation, Quadrature, Quadrature
-@section Functions of one Variable
+@node Functions of One Variable, Orthogonal Collocation, Quadrature, Quadrature
+@section Functions of One Variable
 
-@deftypefn {Loadable Function} {[@var{v}, @var{ier}, @var{nfun}] =} quad (@var{f}, @var{a}, @var{b}, @var{tol}, @var{sing})
+@deftypefn {Loadable Function} {[@var{v}, @var{ier}, @var{nfun}, @var{err}] =} quad (@var{f}, @var{a}, @var{b}, @var{tol}, @var{sing})
 Integrate a nonlinear function of one variable using Quadpack.
 The first argument is the name of the  function to call to compute the
 value of the integrand.  It must have the form
@@ -37,6 +37,12 @@ tolerance to zero.
 
 The optional argument @var{sing} is a vector of values at which the
 integrand is known to be singular.
+
+The result of the integration is returned in @var{v} and @var{ier}
+contains an integer error code (0 indicates a successful integration).
+The value of @var{nfun} indicates how many function evaluations were
+required, and @var{err} contains an estimate of the error in the
+solution.
 @end deftypefn
 
 @deftypefn {Loadable Function} {} quad_options (@var{opt}, @var{val})
@@ -47,7 +53,64 @@ no arguments are supplied, the names of all the available options and
 their current values are displayed.
 @end deftypefn
 
-@node Orthogonal Collocation,  , Functions of one Variable, Quadrature
+Here is an example of using @code{quad} to integrate the function
+
+@iftex
+@tex
+$$
+ f(x) = x \sin (1/x) \sqrt {|1 - x|}
+$$
+from $x = 0$ to $x = 3$.
+@end tex
+@end iftex
+@ifinfo
+@example
+  @var{f}(@var{x}) = @var{x} * sin (1/@var{x}) * sqrt (abs (1 - @var{x}))
+@end example
+
+@noindent
+from @var{x} = 0 to @var{x} = 3.
+@end ifinfo
+
+This is a fairly difficult integration (plot the function over the range
+of integration to see why).
+
+The first step is to define the function:
+
+@example
+@group
+function y = f (x)
+  y = x .* sin (1 ./ x) .* sqrt (abs (1 - x));
+endfunction
+@end group
+@end example
+
+Note the use of the `dot' forms of the operators.  This is not necessary
+for the call to @code{quad}, but it makes it much easier to generate a
+set of points for plotting.
+
+Then we simply call quad:
+
+@example
+@group
+[v, ier, nfun, err] = quad ("f", 0, 3)
+
+     @result{} 1.9819
+
+     @result{} 1
+
+     @result{} 5061
+
+     @result{} 1.1522e-07
+@end group
+@end example
+
+Although @code{quad} returns a nonzero value for @var{ier}, the result
+is reasonably accurate (to understand what is happening, examine what
+happens to the result if you move the lower bound to 0.1, then 0.01,
+then 0.001, etc.).
+
+@node Orthogonal Collocation,  , Functions of One Variable, Quadrature
 @section Orthogonal Collocation
 
 @deftypefn {Loadable Function} {[@var{r}, @var{A}, @var{B}, @var{q}] =} colloc (@var{n}, "left", "right")

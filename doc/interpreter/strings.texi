@@ -1,18 +1,128 @@
-@c Copyright (C) 1996 John W. Eaton
+@c Copyright (C) 1996, 1997 John W. Eaton
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
+@node Strings, Data Structures, Numeric Data Types, Top
+@chapter Strings
 @cindex strings
+@cindex character strings
+@opindex "
+@opindex '
 
-@node String Functions, Arithmetic, Special Matrices, Top
-@chapter String Functions
+A @dfn{string constant} consists of a sequence of characters enclosed in
+either double-quote or single-quote marks.  For example, both of the
+following expressions
 
-@deftypefn {Function File} {} strcmp (@var{s1}, @var{s2})
-Compares two strings, returning 1 if they are the same, and 0 otherwise.
+@example
+@group
+"parrot"
+'parrot'
+@end group
+@end example
 
-@strong{Note: For compatibility with @sc{Matlab}, Octave's strcmp
-function returns 1 if the strings are equal, and 0 otherwise.  This is
-just the opposite of the corresponding C library function.}
+@noindent
+represent the string whose contents are @samp{parrot}.  Strings in
+Octave can be of any length.
+
+Since the single-quote mark is also used for the transpose operator
+(@pxref{Arithmetic Ops}) but double-quote marks have no other purpose in
+Octave, it is best to use double-quote marks to denote strings.
+
+@c XXX FIXME XXX -- this is probably pretty confusing.
+
+@cindex escape sequence notation
+Some characters cannot be included literally in a string constant.  You
+represent them instead with @dfn{escape sequences}, which are character
+sequences beginning with a backslash (@samp{\}).
+
+One use of an escape sequence is to include a double-quote
+(single-quote) character in a string constant that has been defined
+using double-quote (single-quote) marks.  Since a plain double-quote
+would end the string, you must use @samp{\"} to represent a single
+double-quote character as a part of the string.  The backslash character
+itself is another character that cannot be included normally.  You must
+write @samp{\\} to put one backslash in the string.  Thus, the string
+whose contents are the two characters @samp{"\} must be written
+@code{"\"\\"}.
+
+Another use of backslash is to represent unprintable characters
+such as newline.  While there is nothing to stop you from writing most
+of these characters directly in a string constant, they may look ugly.
+
+Here is a table of all the escape sequences used in Octave.  They are
+the same as those used in the C programming langauge.
+
+@table @code
+@item \\
+Represents a literal backslash, @samp{\}.
+
+@item \"
+Represents a literal double-quote character, @samp{"}.
+
+@item \'
+Represents a literal single-quote character, @samp{'}.
+
+@item \a
+Represents the ``alert'' character, control-g, ASCII code 7.
+
+@item \b
+Represents a backspace, control-h, ASCII code 8.
+
+@item \f
+Represents a formfeed, control-l, ASCII code 12.
+
+@item \n
+Represents a newline, control-j, ASCII code 10.
+
+@item \r
+Represents a carriage return, control-m, ASCII code 13.
+
+@item \t
+Represents a horizontal tab, control-i, ASCII code 9.
+
+@item \v
+Represents a vertical tab, control-k, ASCII code 11.
+
+@c We don't do octal or hex this way yet.
+@c
+@c @item \@var{nnn}
+@c Represents the octal value @var{nnn}, where @var{nnn} are one to three
+@c digits between 0 and 7.  For example, the code for the ASCII ESC
+@c (escape) character is @samp{\033}.@refill
+@c 
+@c @item \x@var{hh}@dots{}
+@c Represents the hexadecimal value @var{hh}, where @var{hh} are hexadecimal
+@c digits (@samp{0} through @samp{9} and either @samp{A} through @samp{F} or
+@c @samp{a} through @samp{f}).  Like the same construct in @sc{ansi} C,
+@c the escape 
+@c sequence continues until the first non-hexadecimal digit is seen.  However,
+@c using more than two hexadecimal digits produces undefined results.  (The
+@c @samp{\x} escape sequence is not allowed in @sc{posix} @code{awk}.)@refill
+@end table
+
+Strings may be concatenated using the notation for defining matrices.
+For example, the expression
+
+@example
+[ "foo" , "bar" , "baz" ]
+@end example
+
+@noindent
+produces the string whose contents are @samp{foobarbaz}.  The next
+section explains more about how to create matrices.
+
+@menu
+* Creating Strings::            
+* Searching and Replacing::     
+* String Conversions::          
+* Character Class Functions::   
+@end menu
+
+@node Creating Strings, Searching and Replacing, Strings, Strings
+@section Creating Strings
+
+@deftypefn {Function File} {} blanks (@var{n})
+Returns a string of @var{n} blanks.
 @end deftypefn
 
 @deftypefn {Function File} {} int2str (@var{n})
@@ -35,76 +145,44 @@ setstr ([97, 98, 99])
 @end example
 @end deftypefn
 
-@defvr {Built-in Variable} implicit_str_to_num_ok
-If the value of @code{implicit_str_to_num_ok} is nonzero, implicit
-conversions of strings to their numeric ASCII equivalents are allowed.
-Otherwise, an error message is printed and control is returned to the
-top level.  The default value is 0.
+@deftypefn {Function File} {} strcat (@var{s1}, @var{s2}, @dots{})
+Return a string containing all the arguments contatenated.  For example,
+
+@example
+@group
+s = [ "ab"; "cde" ]
+strcat (s, s, s)
+
+     @result{}  ab ab ab
+         cdecdecde
+@end group
+@end example
+@end deftypefn
+
+@defvr {Built-in Variable} string_fill_char
 @end defvr
 
-@deftypefn {Built-in Function} {} undo_string_escapes (@var{s})
-Converts special characters in strings back to their escaped forms.  For
-example, the expression
+@deftypefn {Function File} {} str2mat (@var{s_1}, @dots{}, @var{s_n})
+Returns a matrix containing the strings @var{s_1}, @dots{}, @var{s_n} as
+its rows.  Each string is padded with blanks in order to form a valid
+matrix.
 
-@example
-bell = "\a";
-@end example
-
-@noindent
-assigns the value of the alert character (control-g, ASCII code 7) to
-the string variable @var{bell}.  If this string is printed, the
-system will ring the terminal bell (if it is possible).  This is
-normally the desired outcome.  However, sometimes it is useful to be
-able to print the original representation of the string, with the
-special characters replaced by their escape sequences.  For example,
-
-@example
-octave:13> undo_string_escapes (bell)
-ans = \a
-@end example
-
-@noindent
-replaces the unprintable alert character with its printable
-representation.  @xref{String Constants}, for a description of string
-escapes.
+@quotation
+@strong{Note:}
+This function is modelled after @sc{MATLAB}.  In Octave, you can create
+a matrix of strings by @kbd{[@var{s_1}; @dots{}; @var{s_n}]}.
+@end quotation
 @end deftypefn
 
-@deftypefn {Function File} {} bin2dec (@var{s})
-Given a binary number represented as a string of zeros and ones,
-returns the corresponding decimal number.  For example,
-
-@example
-bin2dec ("1110")
-     @result{} 14
-@end example
+@deftypefn {Built-in Function} {} isstr (@var{a})
+Return 1 if @var{a} is a string.  Otherwise, return 0.
 @end deftypefn
 
-@deftypefn {Function File} {} blanks (@var{n})
-Returns a string of @var{n} blanks.
-@end deftypefn
+@node Searching and Replacing, String Conversions, Creating Strings, Strings
+@section Searching and Replacing
 
 @deftypefn {Function File} {} deblank (@var{s})
 Removes the trailing blanks from the string @var{s}. 
-@end deftypefn
-
-@deftypefn {Function File} {} dec2bin (@var{n})
-Given a nonnegative integer, returns the corresponding binary number as
-a string of ones and zeros.  For example, 
-
-@example
-dec2bin (14)
-     @result{} "1110"
-@end example
-@end deftypefn
-
-@deftypefn {Function File} {} dec2hex (@var{n})
-Given a nonnegative integer, returns the corresponding hexadecimal
-number as a string.  For example,
-
-@example
-dec2hex (2748)
-     @result{} "abc"
-@end example
 @end deftypefn
 
 @deftypefn {Function File} {} findstr (@var{s}, @var{t}, @var{overlap})
@@ -118,18 +196,6 @@ findstr ("ababab", "a")
      @result{} [1  3  5]
 findstr ("abababa", "aba", 0)
      @result{} [1, 5]
-@end example
-@end deftypefn
-
-@deftypefn {Function File} {} hex2dec (@var{s})
-Given a hexadecimal number represented as a string, returns the
-corresponding decimal number.  For example,
-
-@example
-hex2dec ("12B")
-     @result{} 299
-hex2dec ("12b")
-     @result{} 299
 @end example
 @end deftypefn
 
@@ -170,24 +236,13 @@ split ("Test string", "t")
 @end example
 @end deftypefn
 
-@deftypefn {Function File} {} str2num (@var{s})
-Convert the string @var{s} to a number.
+@deftypefn {Function File} {} strcmp (@var{s1}, @var{s2})
+Compares two strings, returning 1 if they are the same, and 0 otherwise.
+
+@strong{Note: For compatibility with @sc{Matlab}, Octave's strcmp
+function returns 1 if the strings are equal, and 0 otherwise.  This is
+just the opposite of the corresponding C library function.}
 @end deftypefn
-
-@deftypefn {Function File} {} str2mat (@var{s_1}, @dots{}, @var{s_n})
-Returns a matrix containing the strings @var{s_1}, @dots{}, @var{s_n} as
-its rows.  Each string is padded with blanks in order to form a valid
-matrix.
-
-@quotation
-@strong{Note:}
-This function is modelled after @sc{MATLAB}.  In Octave, you can create
-a matrix of strings by @kbd{[@var{s_1}; @dots{}; @var{s_n}]}.
-@end quotation
-@end deftypefn
-
-@defvr {Built-in Variable} string_fill_char
-@end defvr
 
 @deftypefn {Function File} {} strrep (@var{s}, @var{x}, @var{y})
 Replaces all occurences of the substring @var{x} of the string @var{s}
@@ -215,6 +270,67 @@ This function is patterned after AWK.  You can get the same result by
 @end quotation
 @end deftypefn
 
+@node String Conversions, Character Class Functions, Searching and Replacing, Strings
+@section String Conversions
+
+@deftypefn {Function File} {} bin2dec (@var{s})
+Given a binary number represented as a string of zeros and ones,
+returns the corresponding decimal number.  For example,
+
+@example
+bin2dec ("1110")
+     @result{} 14
+@end example
+@end deftypefn
+
+@deftypefn {Function File} {} dec2bin (@var{n})
+Given a nonnegative integer, returns the corresponding binary number as
+a string of ones and zeros.  For example, 
+
+@example
+dec2bin (14)
+     @result{} "1110"
+@end example
+@end deftypefn
+
+@deftypefn {Function File} {} dec2hex (@var{n})
+Given a nonnegative integer, returns the corresponding hexadecimal
+number as a string.  For example,
+
+@example
+dec2hex (2748)
+     @result{} "abc"
+@end example
+@end deftypefn
+
+@deftypefn {Function File} {} hex2dec (@var{s})
+Given a hexadecimal number represented as a string, returns the
+corresponding decimal number.  For example,
+
+@example
+hex2dec ("12B")
+     @result{} 299
+hex2dec ("12b")
+     @result{} 299
+@end example
+@end deftypefn
+
+@deftypefn {Function File} {} str2num (@var{s})
+Convert the string @var{s} to a number.
+@end deftypefn
+
+@deftypefn {Function File} {} toascii (@var{s})
+Return ASCII representation of @var{s} in a matrix.  For example,
+
+@example
+@group
+toascii ("ASCII")
+     @result{} [ 65, 83, 67, 73, 73 ]
+@end group
+
+@end example
+@end deftypefn
+
 @deftypefn {Function File} {} tolower (@var{s})
 Return a copy of the string @var{s}, with each upper-case character
 replaced by the corresponding lower-case one; nonalphabetic characters
@@ -239,17 +355,41 @@ toupper ("MiXeD cAsE 123")
 @end example
 @end deftypefn
 
-@deftypefn {Function File} {} toascii (@var{s})
-Return ASCII representation of @var{s} in a matrix.  For example,
+@deftypefn {Built-in Function} {} undo_string_escapes (@var{s})
+Converts special characters in strings back to their escaped forms.  For
+example, the expression
 
 @example
-@group
-toascii ("ASCII")
-     @result{} [ 65, 83, 67, 73, 73 ]
-@end group
-
+bell = "\a";
 @end example
+
+@noindent
+assigns the value of the alert character (control-g, ASCII code 7) to
+the string variable @code{bell}.  If this string is printed, the
+system will ring the terminal bell (if it is possible).  This is
+normally the desired outcome.  However, sometimes it is useful to be
+able to print the original representation of the string, with the
+special characters replaced by their escape sequences.  For example,
+
+@example
+octave:13> undo_string_escapes (bell)
+ans = \a
+@end example
+
+@noindent
+replaces the unprintable alert character with its printable
+representation.
 @end deftypefn
+
+@defvr {Built-in Variable} implicit_str_to_num_ok
+If the value of @code{implicit_str_to_num_ok} is nonzero, implicit
+conversions of strings to their numeric ASCII equivalents are allowed.
+Otherwise, an error message is printed and control is returned to the
+top level.  The default value is 0.
+@end defvr
+
+@node Character Class Functions,  , String Conversions, Strings
+@section Character Class Functions
 
 Octave also provides the following C-type character class test
 functions.  They all operate on string arrays and return matrices of

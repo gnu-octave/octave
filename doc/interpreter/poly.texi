@@ -1,4 +1,4 @@
-@c Copyright (C) 1996 John W. Eaton
+@c Copyright (C) 1996, 1997 John W. Eaton
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
@@ -110,6 +110,22 @@ whose roots are the elements of @var{x}.
 @deftypefn {Function File} {} polyderiv (@var{c})
 Returns the coefficients of the derivative of the polynomial whose
 coefficients are given by vector @var{c}.
+@end deftypefn
+
+@deftypefn {Function File} {} polyfit (@var{n}, @var{y}, @var{n})
+Returns the coefficients of a polynomial @var{p}(@var{x}) of degree
+@var{n} that minimizes 
+@iftex
+@tex
+$$
+\sum_{i=1}^N (p(x_i) - y_i)^2
+$$
+@end tex
+@end iftex
+@ifinfo
+@code{sumsq (p(x(i)) - y(i))},
+@end ifinfo
+ to best fit the data in the least squares sense.
 @end deftypefn
 
 @deftypefn {Function File} {} polyinteg (@var{c})

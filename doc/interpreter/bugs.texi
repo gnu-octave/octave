@@ -1,4 +1,4 @@
-@c Copyright (C) 1996 John W. Eaton
+@c Copyright (C) 1996, 1997 John W. Eaton
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
@@ -6,8 +6,8 @@
 @c in the Octave distribution, as well as in the Octave manual.
 
 @ifclear BUGSONLY
-@node Trouble, Copying, Installation, Top
-@appendix Known Causes of Trouble with Octave
+@node Trouble, Installation, Tips, Top
+@appendix Known Causes of Trouble
 @end ifclear
 
 @ifset BUGSONLY

@@ -1,8 +1,8 @@
-@c Copyright (C) 1996 John W. Eaton
+@c Copyright (C) 1996, 1997 John W. Eaton
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Invoking Octave, Basics, Introduction, Top
+@node Invoking Octave, Getting Started, Introduction, Top
 @chapter Invoking Octave
 
 Normally, Octave is used interactively by running the program

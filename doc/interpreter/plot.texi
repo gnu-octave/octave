@@ -1,4 +1,4 @@
-@c Copyright (C) 1996 John W. Eaton
+@c Copyright (C) 1996, 1997 John W. Eaton
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
@@ -8,7 +8,7 @@
 All of Octave's plotting functions use @code{gnuplot} to handle the
 actual graphics.  There are two low-level functions, @code{gplot} and
 @code{gsplot}, that behave almost exactly like the corresponding
-@code{gnuplot} functions @code{plot} and @samp{splot}.  A number of
+@code{gnuplot} functions @code{plot} and @code{splot}.  A number of
 other higher level plotting functions, patterned after the graphics
 functions found in @sc{Matlab} version 3.5, are also available.
 These higher level functions are all implemented in terms of the two
@@ -101,17 +101,27 @@ larger than the actual range of the data so that the curves do not touch
 the border of the plot.
 @end deffn
 
-@deffn {Command} set options
-@deffnx {Command} show options
+@deffn {Command} gset options
+@deffnx {Command} gshow options
 @deffnx {Command} replot options
 In addition to the basic plotting commands, the whole range of
-@code{set} and @code{show} commands from @code{gnuplot} are available,
+@code{gset} and @code{gshow} commands from @code{gnuplot} are available,
 as is @code{replot}.
 
-The @code{set} and @code{show} commands allow you to set and show
-@code{gnuplot} parameters.  For more information about the set and show
-commands, see the @code{gnuplot} user's guide (also available on line if
-you run @code{gnuplot} directly, instead of running it from Octave).
+@findex set
+@findex show
+Note that in Octave 2.0, the @code{set} and @code{show} commands were
+renamed to @code{gset} and @code{gshow} in order to allow for
+compatibility with the @sc{Matlab} graphics and GUI commands in a future
+version of Octave.  (For now, the old @code{set} and @code{show}
+commands do work, but they print an annoying warning message to try to
+get people to switch to using @code{gset} and @code{gshow}.)
+
+The @code{gset} and @code{gshow} commands allow you to set and show
+@code{gnuplot} parameters.  For more information about the @code{gset}
+and @code{gshow} commands, see the documentation for @code{set} and
+@code{show} in the @code{gnuplot} user's guide (also available on line
+if you run @code{gnuplot} directly, instead of running it from Octave).
 
 The @code{replot} command allows you to force the plot to be
 redisplayed.  This is useful if you have changed something about the
@@ -122,9 +132,9 @@ data ranges) so you can add additional lines to existing plots.
 For example,
 
 @example
-set term tek40
-set output "/dev/plotter"
-set title "sine with lines and cosine with impulses"
+gset term tek40
+gset output "/dev/plotter"
+gset title "sine with lines and cosine with impulses"
 replot "sin (x) w l"
 @end example
 
@@ -136,6 +146,10 @@ hardcopy output devices because even when you are adding additional
 lines with a replot command, gnuplot always redraws the entire plot, and
 you probably don't want to have a completely new plot generated every
 time something as minor as an axis label changes.
+
+@findex shg
+The command @code{shg} is equivalent to executing @code{replot} without
+any arguments.
 @end deffn
 
 @defvr {Built-in Variable} automatic_replot
@@ -215,52 +229,52 @@ If both arguments are scalars, a single point is plotted.
 The @var{fmt} argument, if present is interpreted as follows.  If
 @var{fmt} is missing, the default gnuplot line style is assumed.
 
-@table @asis
-@item @samp{-}
+@table @samp
+@item -
 Set lines plot style (default).
 
-@item @samp{.}
+@item .
 Set dots plot style.
 
-@item @samp{@@}
+@item @@
 Set points plot style.
 
-@item @samp{-@@}
+@item -@@
 Set linespoints plot style.
 
-@item @samp{^}
+@item ^
 Set impulses plot style.
 
-@item @samp{L}
+@item L
 Set steps plot style.
 
-@item @samp{#}
+@item #
 Set boxes plot style.
 
-@item @samp{~}
+@item ~
 Set errorbars plot style.
 
-@item @samp{#~}
+@item #~
 Set boxerrorbars plot style.
 
-@item @samp{n}
+@item n
 Interpreted as the plot color if @var{n} is an integer in the range 1 to
 6.
 
-@item @samp{nm}
+@item nm
 If @var{nm} is a two digit integer and @var{m} is an integer in the
 range 1 to 6, @var{m} is interpreted as the point style.  This is only
 valid in combination with the @code{@@} or @code{-@@} specifiers.
 
-@item @samp{c}
+@item c
 If @var{c} is one of @var{"r"}, @var{"g"}, @var{"b"}, @var{"m"},
 @var{"c"}, or @var{"w"}, it is interpreted as the plot color (red,
 green, blue, magenta, cyan, or white).
 
-@item @samp{+}
-@itemx @samp{*}
-@itemx @samp{o}
-@itemx @samp{x}
+@item +
+@itemx *
+@itemx o
+@itemx x
 Used in combination with the points or linespoints styles, set the point
 style.
 @end table
@@ -285,15 +299,15 @@ plot (x, y, "@@12", x, y2, x, y3, "4", x, y4, "+")
 @end example
 
 This command will plot @var{y} with points of type 2 (displayed as
-@code{+}) and color 1 (red), @var{y2} with lines, @var{y3} with lines of
-color 4 (magenta) and @var{y4} with points displayed as @code{+}.
+@samp{+}) and color 1 (red), @var{y2} with lines, @var{y3} with lines of
+color 4 (magenta) and @var{y4} with points displayed as @samp{+}.
 
 @example
 plot (b, "*")
 @end example
 
 This command will plot the data in @var{b} will be plotted with points
-displayed as @code{*}.
+displayed as @samp{*}.
 @end deftypefn
 
 @deftypefn {Function File} {} hold @var{args}
@@ -393,10 +407,10 @@ will plot a random surface, with the x and y values taken from the row
 and column indices of the matrix.
 
 If parametric plotting mode is set (using the command
-@samp{set parametric}, then @code{gsplot} takes the columns of the
+@kbd{gset parametric}, then @code{gsplot} takes the columns of the
 matrix three at a time as the x, y and z values that define a line in
 three space.  Any extra columns are ignored, and the x and y values are
-expected to be sorted.  For example, with @samp{parametric} set, it
+expected to be sorted.  For example, with @kbd{parametric} set, it
 makes sense to plot a matrix like
 @iftex
 @tex
@@ -437,16 +451,6 @@ See the file @file{sombrero.m} for an example of using @code{mesh} and
 @code{meshdom}.
 @end deftypefn
 
-@deftypefn {Function File} {[@var{xx}, @var{yy}] =} meshgrid (@var{x}, @var{y})
-Given vectors of @var{x} and @var{y} coordinates, return two matrices
-corresponding to the @var{x} and @var{y} coordinates of a mesh.  The
-rows of @var{xx} are copies of @var{x}, and the columns of @var{yy} are
-copies of @var{y}. 
-
-@code{[@var{xx}, @var{yy}] = meshgrid (@var{x})} is an abbreviation for
-@code{[@var{xx}, @var{yy}] = meshgrid (@var{x}, @var{x})}.
-@end deftypefn
-
 @defvr {Built-in Variable} gnuplot_binary
 The name of the program invoked by the plot command.  The default value
 is @code{"gnuplot"}.  @xref{Installation}.
@@ -459,6 +463,12 @@ of gnuplot has support for multiple frames that is included in recent
 can be changed in your startup script or at the command line in case
 configure got it wrong, or if you upgrade your gnuplot installation.
 @end defvr
+
+@deftypefn {Function File} {} figure (@var{n})
+Set the current plot window to plot window @var{n}.  This function
+currently requires X11 and a version of gnuplot that supports multiple
+frames.
+@end deftypefn
 
 @defvr {Built-in Variable} gnuplot_has_multiplot
 If the value of this variable is nonzero, Octave assumes that your copy
@@ -477,13 +487,12 @@ supports the multiplot feature.
 @deftypefn {Function File} {} mplot (@var{x}, @var{y})
 @deftypefnx {Function File} {} mplot (@var{x}, @var{y}, @var{fmt})
 @deftypefnx {Function File} {} mplot (@var{x1}, @var{y1}, @var{x2}, @var{y2})
-This is a modified version of @code{plot()} to work with the multiplot
-version of @code{gnuplot} to plot multiple plots per page. 
+This is a modified version of the @code{plot} function that works with
+the multiplot version of @code{gnuplot} to plot multiple plots per page. 
 This plot version automatically advances to the next subplot position
 after each set of arguments are processed.
 
-See command @var{plot()} for the various options to this command
-as this is just mulitplot version of the same command.
+See the description of the @var{plot} function for the various options.
 @end deftypefn
 
 @deftypefn {Function File} {} multiplot (@var{xn}, @var{yn})
@@ -497,6 +506,35 @@ mode.
 
 @deftypefn {Function File} {} oneplot ()
 If in multiplot mode, switches to single plot mode.
+@end deftypefn
+
+@deftypefn {Function File} {} plot_border (...)
+Multiple arguments allowed to specify the sides on which the border
+is shown.  Allowed arguments include:
+
+@table @code
+@item "blank"
+No borders displayed.
+
+@item "all"
+All borders displayed
+
+@item "north"
+North Border
+
+@item "south"
+South Border
+
+@item "east"
+East Border
+
+@item "west"
+West Border
+@end table
+
+@noindent
+The arguments may be abbreviated to single characters.  Without any
+arguments, @code{plot_border} turns borders off.
 @end deftypefn
 
 @deftypefn {Function File} {} subplot (@var{rows}, @var{cols}, @var{index})
@@ -527,50 +565,40 @@ and then the next row is filled.
 For example, a plot with 4 by 2 grid will have plot indices running as
 follows:
 
-@example
+@iftex
+@tex
+\vskip 10pt
+\hfil\vbox{\offinterlineskip\hrule
+\halign{\vrule#&&\qquad\hfil#\hfil\qquad\vrule\cr
+height13pt&1&2&3&4\cr height12pt&&&&\cr\noalign{\hrule}
+height13pt&5&6&7&8\cr height12pt&&&&\cr\noalign{\hrule}}}
+\hfil
+\vskip 10pt
+@end tex
+@end iftex
+@ifinfo
+@display
 @group
-  +-------+-------+-------+-------+
-  |       |       |       |       |
-  |   1   |   2   |   3   |   4   |
-  |       |       |       |       |
-  +-------+-------+-------+-------+
-  |       |       |       |       |
-  |   5   |   6   |   7   |   8   |
-  |       |       |       |       |
-  +-------+-------+-------+-------+
++-----+-----+-----+-----+
+|  1  |  2  |  3  |  4  |
++-----+-----+-----+-----+
+|  5  |  6  |  7  |  8  |
++-----+-----+-----+-----+
 @end group
-@end example
+@end display
+@end ifinfo
 @end deftypefn
 
 @deftypefn {Function File} {} subwindow (@var{xn}, @var{yn})
 Sets the subwindow position in multiplot mode for the next plot.  The
 multiplot mode has to be previously initialized using the
-@code{multiplot()} command, otherwise this command just becomes an alias
-to @var{multiplot()}
+@code{multiplot} function, otherwise this command just becomes an alias
+to @var{multiplot}
 @end deftypefn
 
 @deftypefn {Function File} {} top_title (@var{string})
 @deftypefnx {Function File} {} bottom_title (@var{string})
 Makes a title with text @var{string} at the top (bottom) of the plot.
-@end deftypefn
-
-@deftypefn {Function File} {} plot_border (...)
-Multiple arguments allowed to specify the sides on which the border
-is shown.  Allowed arguments include:
-
-@example
-@group
- "blank", "BLANK", "b", "B",  @result{}  No borders displayed
-   "all",   "ALL", "a", "A",  @result{}  All borders displayed
- "north", "NORTH", "n", "N",  @result{}  North Border
- "south", "SOUTH", "s", "S",  @result{}  South Border
-  "east",  "EAST", "e", "E",  @result{}  East Border
-  "west",  "WEST", "w", "W",  @result{}  West Border
-@end group
-@end example
-
-@noindent
-Without any arguments, turns borders off.
 @end deftypefn
 
 @node Miscellaneous Plotting Functions,  , Multiple Plots on One Page, Plotting
@@ -653,9 +681,9 @@ allows you to increase the resolution.
 Clear the plot window and any titles or axis labels.  The name
 @code{clg} is aliased to @code{clearplot} for compatibility with @sc{Matlab}.
 
-The commands @samp{gplot clear}, @samp{gsplot clear}, and @samp{replot
-clear} are equivalent to @samp{clearplot}.  (Previously, commands like
-@samp{gplot clear} would evaluate @samp{clear} as an ordinary expression
+The commands @kbd{gplot clear}, @kbd{gsplot clear}, and @kbd{replot
+clear} are equivalent to @code{clearplot}.  (Previously, commands like
+@kbd{gplot clear} would evaluate @code{clear} as an ordinary expression
 and clear all the visible variables.)
 @end deftypefn
 

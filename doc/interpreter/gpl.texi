@@ -1,10 +1,10 @@
-@c Copyright (C) 1996 John W. Eaton
+@c Copyright (C) 1996, 1997 John W. Eaton
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
 @cindex warranty
 @cindex copyright
-@node Copying, Concept Index, Trouble, Top
+@node Copying, Concept Index, Grammar, Top
 @appendix GNU GENERAL PUBLIC LICENSE
 @center Version 2, June 1991
 

@@ -1,8 +1,8 @@
-@c Copyright (C) 1996 John W. Eaton
+@c Copyright (C) 1996, 1997 John W. Eaton
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node System Utilities, Programming Utilities, Audio Processing, Top
+@node System Utilities, Tips, Audio Processing, Top
 @chapter System Utilities
 
 This chapter describes the functions that are available to allow you to
@@ -14,24 +14,22 @@ and even start other programs from the Octave prompt.
 @menu
 * Timing Utilities::            
 * Filesystem Utilities::        
-* Interacting with the OS::     
+* Controlling Subprocesses::    
+* Process ID Information::      
+* Environment Variables::       
+* Current Working Directory::   
 * Password Database Functions::  
 * Group Database Functions::    
 * System Information::          
-* Other Functions::             
 @end menu
 
 @node Timing Utilities, Filesystem Utilities, System Utilities, System Utilities
 @section Timing Utilities
 
-@deftypefn {Loadable Function} {} time ()
-Return the current time as the number of seconds since the epoch.  The
-epoch is referenced to 00:00:00 CUT (Coordinated Universal Time) 1 Jan
-1970.
-@end deftypefn
-
-Several of Octave's time functions use a data structure for time that
-includes the following elements:
+Octave's core set of functions for manipulating time values are
+patterned after the corresponding functions from the standard C library.
+Several of these functions use a data structure for time that includes
+the following elements:
 
 @table @code
 @item usec
@@ -69,13 +67,21 @@ Daylight Savings Time flag.
 Time zone.
 @end table
 
-@deftypefn {Loadable Function} {} mktime (@var{time_struct})
-Convert a time structure to the number of seconds since the epoch.
+@noindent
+In the descriptions of the following functions, this structure is
+referred to as a @var{tm_struct}.
+
+@deftypefn {Loadable Function} {} time ()
+Return the current time as the number of seconds since the epoch.  The
+epoch is referenced to 00:00:00 CUT (Coordinated Universal Time) 1 Jan
+1970.
 @end deftypefn
 
-@deftypefn {Loadable Function} {} localtime (@var{t})
-Given a value returned from time (or any nonnegative integer),
-return a time structure corresponding to the local time zone.
+@deftypefn {Function File} {} ctime (@var{t})
+Convert a value returned from @code{time} (or any other nonnegative
+integer), to the local time and return a string of the same form as
+@code{asctime}.  The function @code{ctime (time)} is equivalent to
+@code{asctime (localtime (time))}.
 @end deftypefn
 
 @deftypefn {Loadable Function} {} gmtime (@var{t})
@@ -83,13 +89,22 @@ Given a value returned from time (or any nonnegative integer),
 return a time structure corresponding to CUT.
 @end deftypefn
 
-@deftypefn {Function File} {} asctime (@var{time_struct})
+@deftypefn {Loadable Function} {} localtime (@var{t})
+Given a value returned from time (or any nonnegative integer),
+return a time structure corresponding to the local time zone.
+@end deftypefn
+
+@deftypefn {Loadable Function} {} mktime (@var{tm_struct})
+Convert a time structure to the number of seconds since the epoch.
+@end deftypefn
+
+@deftypefn {Function File} {} asctime (@var{tm_struct})
 Convert a time structure to a string using the following five-field
 format: Thu Mar 28 08:40:14 1996.  The function @code{ctime (time)} is
 equivalent to @code{asctime (localtime (time))}.
 @end deftypefn
 
-@deftypefn {Loadable Function} {} strftime (@var{time_struct})
+@deftypefn {Loadable Function} {} strftime (@var{tm_struct})
 Format a time structure in a flexible way using @samp{%} substitutions
 similar to those in @code{printf}.  Except where noted, substituted
 fields have a fixed size; numeric fields are padded if necessary.
@@ -231,6 +246,11 @@ Year (1970-).
 @end table
 @end deftypefn
 
+Most of the remaining functions described in this section are not
+patterned after the standard C library.  Some are available for
+compatiblity with @sc{Matlab} and others are provided because they are
+useful.
+
 @deftypefn {Function File} {} clock ()
 Return a vector containing the current year, month (1-12), day (1-31),
 hour (0-23), minute (0-59) and second (0-61).  For example,
@@ -328,50 +348,182 @@ t = cputime (); sleep (5); cputime () - t
 coarse resolution.)
 @end deftypefn
 
-@node Filesystem Utilities, Interacting with the OS, Timing Utilities, System Utilities
+@deftypefn {Built-in Function} {} pause (@var{seconds})
+Suspend the execution of the program.  If invoked without any arguments,
+Octave waits until you type a character.  With a numeric argument, it
+pauses for the given number of seconds.  For example, the following
+statement prints a message and then waits 5 seconds before clearing the
+screen.
+
+@example
+@group
+fprintf (stderr, "wait please...\n");
+pause (5);
+clc;
+@end group
+@end example
+@end deftypefn
+
+@deftypefn {Built-in Function} {} sleep (@var{seconds})
+Suspend the execution of the program.
+@end deftypefn
+
+@deftypefn {Built-in Function} {} usleep (@var{microseconds})
+Suspend the execution of the program.
+@end deftypefn
+
+@node Filesystem Utilities, Controlling Subprocesses, Timing Utilities, System Utilities
 @section Filesystem Utilities
 
 Octave includes the following functions for renaming and deleting files,
 creating, deleting, and reading directories, and for getting information
 about the status of files.
 
-@deftypefn {Built-in Function} {} rename (@var{from}, @var{to})
-Rename a file.
+@deftypefn {Built-in Function} {[@var{err}, @var{msg}] =} rename (@var{old}, @var{new})
+Change the name of file @var{old} to @var{new}.
+
+If successful, @var{err} is 0 and @var{msg} is an empty string.
+Otherwise, @var{err} is nonzero and @var{msg} contains a
+system-dependent error message.
 @end deftypefn
 
-@deftypefn {Built-in Function} {} unlink (@var{file})
-Delete a file.
+@deftypefn {Built-in Function} {[@var{err}, @var{msg}] =} unlink (@var{file})
+Delete @var{file}.
+
+If successful, @var{err} is 0 and @var{msg} is an empty string.
+Otherwise, @var{err} is nonzero and @var{msg} contains a
+system-dependent error message.
 @end deftypefn
 
-@deftypefn {Built-in Function} {} readdir (@var{dir})
-Returns names of files in the directory @var{dir} as an array of
-strings.
+@deftypefn {Built-in Function} {[@var{files}, @var{err}, @var{msg}] =} readdir (@var{dir})
+Return names of the files in the directory @var{dir} as an array of
+strings.  If an error occurs, return an empty matrix in @var{files}.
+
+If successful, @var{err} is 0 and @var{msg} is an empty string.
+Otherwise, @var{err} is nonzero and @var{msg} contains a
+system-dependent error message.
 @end deftypefn
 
-@deftypefn {Built-in Function} {} mkdir (@var{dir})
-Create a directory
+@deftypefn {Built-in Function} {[@var{err}, @var{msg}] =} mkdir (@var{dir})
+Create a directory named @var{dir}.
+
+If successful, @var{err} is 0 and @var{msg} is an empty string.
+Otherwise, @var{err} is nonzero and @var{msg} contains a
+system-dependent error message.
 @end deftypefn
 
-@deftypefn {Built-in Function} {} rmdir (@var{dir})
-Remove a directory.
+@deftypefn {Built-in Function} {[@var{err}, @var{msg}] =} rmdir (@var{dir})
+Remove the directory named @var{dir}.
+
+If successful, @var{err} is 0 and @var{msg} is an empty string.
+Otherwise, @var{err} is nonzero and @var{msg} contains a
+system-dependent error message.
+@end deftypefn
+
+@deftypefn {Built-in Function} {[@var{err}, @var{msg}] =} mkfifo (@var{name})
+Create a FIFO special file.
+
+If successful, @var{err} is 0 and @var{msg} is an empty string.
+Otherwise, @var{err} is nonzero and @var{msg} contains a
+system-dependent error message.
 @end deftypefn
 
 @c XXX FIXME XXX -- this needs to be explained, but I don't feel up to
 @c it just now...
 
 @deftypefn {Built-in Function} {} umask (@var{mask})
-Set permission mask for file creation.
+Set the permission mask for file creation.  The parameter @var{mask} is
+interpreted as an octal number.
 @end deftypefn
 
-@deftypefn {Built-in Function} {} stat (@var{file})
-Get information about a file.  If @var{file} is a symbolic link,
-@code{stat} returns information about the file that the symbolic link
-references.
-@end deftypefn
+@deftypefn {Built-in Function} {[info, err, msg] =} stat (@var{file})
+@deftypefnx {Built-in Function} {[info, err, msg] =} lstat (@var{file})
+Return a structure @var{s} containing the following information about
+@var{file}.
 
-@deftypefn {Built-in Function} {} lstat (@var{file})
-Get information about a symbolic link.  If @var{file} is not a symbolic
-link, @code{lstat} is equivalent to @code{stat}.
+@table @code
+@item dev
+ID of device containing a directory entry for this file.
+
+@item ino
+File number of the file.
+
+@item modestr
+File mode, as a string of ten letters or dashes as would be returned by
+@kbd{ls -l}.
+
+@item nlink
+Number of links.
+
+@item uid
+User ID of file's owner.
+
+@item gid
+Group ID of file's group.
+
+@item rdev
+ID of device for block or character special files.
+
+@item size
+Size in bytes.
+
+@item atime
+Time of last access in the same form as time values returned from
+@code{time}.  @xref{Timing Utilities}.
+
+@item mtime
+Time of last modification in the same form as time values returned from
+@code{time}.  @xref{Timing Utilities}.
+
+@item ctime
+Time of last file status change in the same form as time values returned from
+@code{time}.  @xref{Timing Utilities}.
+
+@item blksize
+Size of blocks in the file.
+
+@item blocks
+Number of blocks allocated for file.
+@end table
+
+If the call is successful @var{err} is 0 and @var{msg} is an empty
+string.  If the file does not exist, or some other error occurs, @var{s}
+is an empty matrix, @var{err} is -1, and @var{msg} contains the
+corresponding system error message.
+
+If @var{file} is a symbolic link, @code{stat} will return information
+about the actual file the is referenced by the link.  Use @code{lstat}
+if you want information about the symbolic link itself.
+
+For example,
+
+@example
+@group
+[s, err, msg] = stat ("/vmlinuz")
+
+     @result{} s =
+        @{
+          atime = 855399756
+          rdev = 0
+          ctime = 847219094
+          uid = 0
+          size = 389218
+          blksize = 4096
+          mtime = 847219094
+          gid = 6
+          nlink = 1
+          blocks = 768
+          modestr = -rw-r--r--
+          ino = 9316
+          dev = 2049
+        @}
+
+     @result{} err = 0
+
+     @result{} msg = 
+
+@end group
+@end example
 @end deftypefn
 
 @deftypefn {Built-in Function} {} glob (@var{pattern})
@@ -387,117 +539,37 @@ the elements of the string array @var{pattern}, using the rules of
 filename pattern matching.
 @end deftypefn
 
-@node Interacting with the OS, Password Database Functions, Filesystem Utilities, System Utilities
-@section Interacting with the OS
+@deftypefn {Built-in Function} {} file_in_path (@var{path}, @var{file})
+Return the absolute name name of @var{file} if it can be found in
+@var{path}.  The value of @var{path} should be a colon-separated list of
+directories in the format described for the built-in variable
+@code{LOADPATH}.
 
-@deftypefn {Built-in Function} {} fork ()
-Create a copy of the current process.
+If the file cannot be found in the path, an empty matrix is returned.
+For example,
+
+@example
+octave:13> file_in_path (LOADPATH, "nargchk.m")
+ans = "@value{OCTAVEHOME}/share/octave/2.0/m/general/nargchk.m"
+@end example
 @end deftypefn
 
-@deftypefn {Built-in Function} {} exec (@var{file}, @var{args})
-Replace current process with a new process.
+@deftypefn {Built-in Function} {} tilde_expand (@var{string})
+Performs tilde expansion on @var{string}.
 @end deftypefn
 
-@deftypefn {Built-in Function} {fid =} dup2 (@var{old}, @var{new})
-Duplicate a file descriptor.
-@end deftypefn
+@node Controlling Subprocesses, Process ID Information, Filesystem Utilities, System Utilities
+@section Controlling Subprocesses
 
-@deftypefn {Built-in Function} {[@var{file_ids}, @var{status}] =} pipe ()
-Create an interprocess channel.
-@end deftypefn
+Octave includes some high-level commands like @code{system} and
+@code{popen} for starting subprocesses.  If you want to run another
+program to perform some task and then look at its output, you will
+probably want to use these functions.
 
-@deftypefn {Built-in Function} {} fcntl (@var{fid}, @var{request}, @var{argument})
-Control open file descriptors.
-
-@vtable @code
-@item F_DUPFD
-@item F_GETFD
-@item F_GETFL
-@item F_SETFD
-@item F_SETFL
-@item O_APPEND
-@item O_CREAT
-@item O_EXCL
-@item O_NONBLOCK
-@item O_RDONLY
-@item O_RDWR
-@item O_TRUNC
-@item O_WRONLY
-@end vtable
-@end deftypefn
-
-@deftypefn {Built-in Function} {} getpgrp ()
-Return the process group id of the current process.
-@end deftypefn
-
-@deftypefn {Built-in Function} {} getpid ()
-Return the process id of the current process.
-@end deftypefn
-
-@deftypefn {Built-in Function} {} getppid ()
-Return the process id of the parent process.
-@end deftypefn
-
-@deftypefn {Built-in Function} {} geteuid ()
-Return the effective user id of the current process.
-@end deftypefn
-
-@deftypefn {Built-in Function} {} getuid ()
-Return the real user id of the current process.
-@end deftypefn
-
-@deftypefn {Built-in Function} {} getegid ()
-Return the effective group id of the current process.
-@end deftypefn
-
-@deftypefn {Built-in Function} {} getgid ()
-Return the real group id of the current process.
-@end deftypefn
-
-@deftypefn {Built-in Function} {} mkfifo       
-Create a FIFO special file.
-@end deftypefn
-
-@deftypefn {Built-in Function} {} waitpid (@var{pid}, @var{options})
-Wait for process @var{pid} to terminate.  The @var{pid} argument can be:
-
-@table @asis
-@item -1
-Wait for any child process.
-
-@item 0
-Wait for any child process whose process group ID is equal to that of
-the Octave interpreter process.
-
-@item > 0
-Wait for termination of the child process with ID @var{PID}.
-@end table
-
-The @var{options} argument can be:
-
-@table @asis
-@item 0
-Wait until signal is received or a child process exits (this is the
-default if the @var{options} argument is missing).
-
-@item 1
-Do not hang if status is not immediately available.
-
-@item 2
-Report the status of any child processes that are stopped, and whose
-status has not yet been reported since they stopped.
-
-@item 3
-Implies both 1 and 2.
-@end table
-
-If the return value is greater than 0, it is the process ID of the child
-process that exited.  If an error occurs, -1 is returned.
-@end deftypefn
-
-@deftypefn {Built-in Function} {} atexit (@var{fcn})
-Register function to be called when Octave exits.
-@end deftypefn
+Octave also provides several very low-level Unix-like functions which
+can also be used for starting subprocesses, but you should probably only
+use them if you can't find any way to do what you need with the
+higher-level functions.
 
 @deftypefn {Built-in Function} {} system (@var{string}, @var{return_output}, @var{type})
 Execute a shell command specified by @var{string}.  The second argument is optional.
@@ -539,6 +611,18 @@ will set the variable @code{output} to the string @samp{foo}, and the
 variable @code{status} to the integer @samp{2}.
 @end deftypefn
 
+@deftypefn {Built-in Function} {fid =} popen (@var{command}, @var{mode})
+Open a pipe to a subprocess.
+@end deftypefn
+
+@deftypefn {Built-in Function} {} pclose (@var{fid})
+Close a pipe from a subprocess.
+@end deftypefn
+
+@deftypefn {Built-in Function} {[@var{in}, @var{out}, @var{pid}] =} popen2 (@var{command}, @var{args})
+Start a subprocess with 2-way communication.
+@end deftypefn
+
 @defvr {Built-in Variable} EXEC_PATH
 The variable @code{EXEC_PATH} is a colon separated list of directories
 to search when executing subprograms.  Its initial value is taken from
@@ -562,6 +646,190 @@ is the top-level directory where all of Octave is installed
 your shell path.
 @end defvr
 
+In most cases, the following functions simply decode their arguments and
+make the corresponding Unix system calls.  For a complete example of how
+they can be used, look at the definition of the function @code{popen2}.
+
+@deftypefn {Built-in Function} {[@var{pid}, @var{msg}] =} fork ()
+Create a copy of the current process.
+
+Fork can return one of the following values:
+
+@table @asis
+@item > 0
+You are in the parent process.  The value returned from @code{fork} is
+the process id of the child process.  You should probably arrange to
+wait for any child processes to exit.
+
+@item 0
+You are in the child process.  You can call @code{exec} to start another
+process.  If that fails, you should probably call @code{exit}.
+
+@item < 0
+The call to @code{fork} failed for some reason.  You must take evasive
+action.  A system dependent error message will be waiting in @var{msg}.
+@end table
+@end deftypefn
+
+@deftypefn {Built-in Function} {[@var{err}, @var{msg}] =} exec (@var{file}, @var{args})
+Replace current process with a new process.  Calling @code{exec} without
+first calling @code{fork} will terminate your current Octave process and
+replace it with the program named by @var{file}.  For example,
+
+@example
+exec ("ls" "-l")
+@end example
+
+@noindent
+will run @code{ls} and return you to your shell prompt.
+
+If successful, @code{exec} does not return.  If @code{exec} does return,
+@var{err} will be nonzero, and @var{msg} will contain a system-dependent
+error message.
+@end deftypefn
+
+@deftypefn {Built-in Function} {[@var{file_ids}, @var{err}, @var{msg}] =} pipe ()
+Create a pipe and return the vector @var{file_ids}, which corresponding
+to the reading and writing ends of the pipe.
+
+If successful, @var{err} is 0 and @var{msg} is an empty string.
+Otherwise, @var{err} is nonzero and @var{msg} contains a
+system-dependent error message.
+@end deftypefn
+
+@deftypefn {Built-in Function} {[fid, msg] =} dup2 (@var{old}, @var{new})
+Duplicate a file descriptor.
+
+If successful, @var{fid} is greater than zero and contains the new file
+ID.  Otherwise, @var{fid} is negative and @var{msg} contains a
+system-dependent error message.
+@end deftypefn
+
+@deftypefn {Built-in Function} {[@var{pid}, @var{msg}] =} waitpid (@var{pid}, @var{options})
+Wait for process @var{pid} to terminate.  The @var{pid} argument can be:
+
+@table @asis
+@item -1
+Wait for any child process.
+
+@item 0
+Wait for any child process whose process group ID is equal to that of
+the Octave interpreter process.
+
+@item > 0
+Wait for termination of the child process with ID @var{PID}.
+@end table
+
+The @var{options} argument can be:
+
+@table @asis
+@item 0
+Wait until signal is received or a child process exits (this is the
+default if the @var{options} argument is missing).
+
+@item 1
+Do not hang if status is not immediately available.
+
+@item 2
+Report the status of any child processes that are stopped, and whose
+status has not yet been reported since they stopped.
+
+@item 3
+Implies both 1 and 2.
+@end table
+
+If the returned value of @var{pid} is greater than 0, it is the process
+ID of the child process that exited.  If an error occurs, @var{pid} will
+be less than zero and @var{msg} will contain a system-dependent error
+message.
+@end deftypefn
+
+@deftypefn {Built-in Function} {[@var{err}, @var{msg}] =} fcntl (@var{fid}, @var{request}, @var{arg})
+Change the properties of the open file @var{fid}.  The following values
+may be passed as @var{request}:
+
+@vtable @code
+@item F_DUPFD
+Return a duplicate file descriptor.
+
+@item F_GETFD
+Return the file descriptor flags for @var{fid}.
+
+@item F_SETFD
+Set the file descriptor flags for @var{fid}.
+
+@item F_GETFL
+Return the file status flags for @var{fid}.  The following codes may be
+returned (some of the flags may be undefined on some systems).
+
+@vtable @code
+@item O_RDONLY
+Open for reading only.
+
+@item O_WRONLY
+Open for writing only.
+
+@item O_RDWR
+Open for reading and writing.
+
+@item O_APPEND
+Append on each write.
+
+@item O_NONBLOCK
+Nonblocking mode.
+
+@item O_SYNC
+Wait for writes to complete.
+
+@item O_ASYNC
+Asynchronous I/O.
+@end vtable
+
+@item F_SETFL
+Set the file status flags for @var{fid} to the value specified by
+@var{arg}.  The only flags that can be changed are @code{O_APPEND} and
+@code{O_NONBLOCK}.
+@end vtable
+
+If successful, @var{err} is 0 and @var{msg} is an empty string.
+Otherwise, @var{err} is nonzero and @var{msg} contains a
+system-dependent error message.
+@end deftypefn
+
+@node Process ID Information, Environment Variables, Controlling Subprocesses, System Utilities
+@section Process, Group, and User IDs
+
+@deftypefn {Built-in Function} {} getpgrp ()
+Return the process group id of the current process.
+@end deftypefn
+
+@deftypefn {Built-in Function} {} getpid ()
+Return the process id of the current process.
+@end deftypefn
+
+@deftypefn {Built-in Function} {} getppid ()
+Return the process id of the parent process.
+@end deftypefn
+
+@deftypefn {Built-in Function} {} geteuid ()
+Return the effective user id of the current process.
+@end deftypefn
+
+@deftypefn {Built-in Function} {} getuid ()
+Return the real user id of the current process.
+@end deftypefn
+
+@deftypefn {Built-in Function} {} getegid ()
+Return the effective group id of the current process.
+@end deftypefn
+
+@deftypefn {Built-in Function} {} getgid ()
+Return the real group id of the current process.
+@end deftypefn
+
+@node Environment Variables, Current Working Directory, Process ID Information, System Utilities
+@section Environemnt Variables
+
 @deftypefn {Built-in Function} {} getenv (@var{var})
 Returns the value of the environment variable @var{var}.  For example,
 
@@ -577,10 +845,8 @@ returns a string containing the value of your path.
 Set the value of the environment variable @var{var} to @var{value}.
 @end deftypefn
 
-@deftypefn {Built-in Function} {} clc ()
-@deftypefnx {Built-in Function} {} home ()
-Clear the terminal screen and move the cursor to the upper left corner.
-@end deftypefn
+@node Current Working Directory, Password Database Functions, Environment Variables, System Utilities
+@section Current Working Directory
 
 @deffn {Command} cd dir
 @deffnx {Command} chdir dir
@@ -622,7 +888,7 @@ system's directory listing command, so the available options may vary
 from system to system.
 @end deffn
 
-@node Password Database Functions, Group Database Functions, Interacting with the OS, System Utilities
+@node Password Database Functions, Group Database Functions, Current Working Directory, System Utilities
 @section Password Database Functions
 
 Octave's password database functions return information in a structure
@@ -651,21 +917,22 @@ The home directory.
 The initial shell.
 @end table
 
-@deftypefn {Loadable Function} {passwd_struct =} getpwent ()
-Return an entry from the password database, opening it if necessary.
-Once the end of the data has been reached, @code{getpwent} returns 0.
+@deftypefn {Loadable Function} {} getpwent ()
+Return a structure containing an entry from the password database,
+opening it if necessary. Once the end of the data has been reached,
+@code{getpwent} returns 0.
 @end deftypefn
 
-@deftypefn {Loadable Function} {passwd_struct =} getpwuid (@var{uid}).
-Return the first entry from the password database with the user ID
-@var{uid}.  If the user ID does not exist in the database,
-@code{getpwuid} returns 0.
+@deftypefn {Loadable Function} {} getpwuid (@var{uid}).
+Return a structure containing the first entry from the password database
+with the user ID @var{uid}.  If the user ID does not exist in the
+database, @code{getpwuid} returns 0.
 @end deftypefn
 
-@deftypefn {Loadable Function} {passwd_struct =} getpwnam (@var{name})
-Return the first entry from the password database with the user name
-@var{name}.  If the user name does not exist in the database,
-@code{getpwname} returns 0.
+@deftypefn {Loadable Function} {} getpwnam (@var{name})
+Return a structure containing the first entry from the password database
+with the user name @var{name}.  If the user name does not exist in the
+database, @code{getpwname} returns 0.
 @end deftypefn
 
 @deftypefn {Loadable Function} {} setpwent ()
@@ -721,7 +988,7 @@ Return the internal pointer to the beginning of the group database.
 Close the group database.
 @end deftypefn
 
-@node System Information, Other Functions, Group Database Functions, System Utilities
+@node System Information,  , Group Database Functions, System Utilities
 @section System Information
 
 @deftypefn {Built-in Function} {} computer ()
@@ -741,7 +1008,16 @@ floating point calculations.
 
 @deftypefn {Built-in Function} {} version ()
 Returns Octave's version number as a string.  This is also the value of
-the built-in variable @code{OCTAVE_VERSION}.  @xref{Built-in Variables}.
+the built-in variable @code{OCTAVE_VERSION}.
+@end deftypefn
+
+@defvr {Built-in Variable} OCTAVE_VERSION
+The version number of Octave, as a string.
+@end defvr
+
+@deftypefn {Built-in Function} {} octave_config_info ()
+Return a structure containing configuration and installation
+information.
 @end deftypefn
 
 @deftypefn {Loadable Function} {} getrusage ()
@@ -804,49 +1080,4 @@ elements @code{sec} (seconds) @code{usec} (microseconds).
 A structure containing the user CPU time used.  The structure has the
 elements @code{sec} (seconds) @code{usec} (microseconds).
 @end table
-@end deftypefn
-
-@node Other Functions,  , System Information, System Utilities
-@section Other Functions
-
-@c XXX FIXME XXX -- need to define tilde expansion.
- 
-@deftypefn {Built-in Function} {} tilde_expand (@var{string})
-Performs tilde expansion on @var{string}.
-@end deftypefn
-
-@deftypefn {Built-in Function} {} pause (@var{seconds})
-Suspend the execution of the program.  If invoked without any arguments,
-Octave waits until you type a character.  With a numeric argument, it
-pauses for the given number of seconds.  For example, the following
-statement prints a message and then waits 5 seconds before clearing the
-screen.
-
-@example
-@group
-fprintf (stderr, "wait please...\n");
-pause (5);
-clc;
-@end group
-@end example
-@end deftypefn
-
-@deftypefn {Built-in Function} {} sleep (@var{seconds})
-Suspend the execution of the program.
-@end deftypefn
-
-@deftypefn {Built-in Function} {} usleep (@var{microseconds})
-Suspend the execution of the program.
-@end deftypefn
-
-@c XXX FIXME XXX -- not really sure where these should go.
-
-@cindex exiting octave
-@cindex quitting octave
-
-@deftypefn {Built-in Function} {} exit (@var{status})
-@deftypefnx {Built-in Function} {} quit (@var{status})
-Exit the current Octave session.  If the optional integer value
-@var{status} is supplied, pass that value to the operating system as the
-Octave's exit status.
 @end deftypefn

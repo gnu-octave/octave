@@ -1,8 +1,8 @@
-@c Copyright (C) 1996 John W. Eaton
+@c Copyright (C) 1996, 1997 John W. Eaton
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Statements, Functions and Scripts, Expressions, Top
+@node Statements, Functions and Scripts, Evaluation, Top
 @chapter Statements
 @cindex statements
 
@@ -628,7 +628,8 @@ printed in the builtin constant @code{__error_text__}.  This is the same
 as @code{eval (@var{try}, @var{catch})} (which may now also use
 @code{__error_text__}) but it is more efficient since the commands do
 not need to be parsed each time the @var{try} and @var{catch} statements
-are evaluated.
+are evaluated.  @xref{Error Handling}, for more information about the
+@code{__error_text__} variable.
 
 Octave's @var{try} block is a very limited variation on the Lisp
 condition-case form (limited because it cannot handle different classes
@@ -687,7 +688,7 @@ possible to write statements like
 @example
 @group
 if (fine_dining_destination == on_a_boat
-    || fine_dining_destination == on_a_train
+    || fine_dining_destination == on_a_train)
   suess (i, will, not, eat, them, sam, i, am, i,
          will, not, eat, green, eggs, and, ham);
 endif

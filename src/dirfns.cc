@@ -318,7 +318,7 @@ users home directory")
 
   int argc = args.length () + 1;
 
-  string_vector argv = make_argv (args, "cd");
+  string_vector argv = args.make_argv ("cd");
 
   if (error_state)
     return retval;
@@ -353,6 +353,12 @@ DEFALIAS (chdir, cd);
 
 // Get a directory listing.
 
+static void
+cleanup_iprocstream (void *p)
+{
+  delete (iprocstream *) p;
+}
+
 DEFUN_TEXT (ls, args, ,
   "ls [options]\n\
 \n\
@@ -362,7 +368,7 @@ print a directory listing")
 
   int argc = args.length () + 1;
 
-  string_vector argv = make_argv (args, "ls");
+  string_vector argv = args.make_argv ("ls");
 
   if (error_state)
     return retval;

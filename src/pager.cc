@@ -112,6 +112,12 @@ maybe_page_output (ostrstream& msg_buf)
     }
 }
 
+static void
+cleanup_oprocstream (void *p)
+{
+  delete (oprocstream *) p;
+}
+
 void
 flush_output_to_pager (void)
 {
@@ -203,7 +209,7 @@ redirect all input and screen output to a file.")
 
   int argc = args.length () + 1;
 
-  string_vector argv = make_argv (args, "diary");
+  string_vector argv = args.make_argv ("diary");
 
   if (error_state)
     return retval;
@@ -255,7 +261,7 @@ Turn output pagination on or off.")
 
   int argc = args.length () + 1;
 
-  string_vector argv = make_argv (args, "more");
+  string_vector argv = args.make_argv ("more");
 
   if (error_state)
     return retval;

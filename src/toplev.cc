@@ -332,7 +332,7 @@ DEFUN_TEXT (casesen, args, ,
 
   int argc = args.length () + 1;
 
-  string_vector argv = make_argv (args, "casesen");
+  string_vector argv = args.make_argv ("casesen");
 
   if (error_state)
     return retval;
@@ -597,6 +597,12 @@ string CATCH.")
 }
 
 // Execute a shell command.
+
+static void
+cleanup_iprocstream (void *p)
+{
+  delete (iprocstream *) p;
+}
 
 DEFUN (system, args, nargout,
   "system (string [, return_output]): execute shell commands")

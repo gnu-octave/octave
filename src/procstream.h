@@ -28,51 +28,109 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #pragma interface
 #endif
 
-#include <fstream.h>
-
-class procbuf;
+#include <iostream.h>
+#include <procbuf.h>
 
 class
-iprocstream : public ifstream
+procstreambase : virtual public ios
 {
 public:
-  iprocstream (void) { pbuf = 0; }
-  iprocstream (const char *command, int mode=ios::in);
 
-  ~iprocstream (void);
+  procstreambase (void) { pb_init (); }
 
-  void open (const char *command, int mode=ios::in);
+  procstreambase (const char *name, int mode);
 
-  int is_open (void);
+  ~procstreambase (void) { close (); }
+
+  void open (const char *name, int mode);
+
+  int is_open (void) const { return pb.is_open (); }
 
   int close (void);
 
 private:
-  procbuf *pbuf;
-};
 
-extern void cleanup_iprocstream (void *);
+  procbuf pb;
+
+  void pb_init (void) { init (&pb); }
+
+  procstreambase (const procstreambase&);
+
+  procstreambase& operator = (const procstreambase&);
+};
 
 class
-oprocstream : public ofstream
+iprocstream : public procstreambase, public istream
 {
 public:
-  oprocstream (void) { pbuf = 0; }
-  oprocstream (const char *command, int mode=ios::out);
 
-  ~oprocstream (void);
+  iprocstream (void) : procstreambase () { }
 
-  void open (const char *command, int mode=ios::out);
+  iprocstream (const char *name, int mode=ios::in)
+    : procstreambase(name, mode) { }
 
-  int is_open (void);
+  ~iprocstream (void) { }
 
-  int close (void);
+  void open (const char *name, int mode=ios::in)
+    {
+      procstreambase::open (name, mode);
+    }
 
 private:
-  procbuf *pbuf;
+
+  iprocstream (const iprocstream&);
+
+  iprocstream& operator = (const iprocstream&);
 };
 
-extern void cleanup_oprocstream (void *);
+class
+oprocstream : public procstreambase, public ostream
+{
+public:
+ 
+  oprocstream (void) : procstreambase () { }
+
+  oprocstream (const char *name, int mode=ios::out)
+    : procstreambase(name, mode) { }
+
+  ~oprocstream (void) { }
+
+  void open (const char *name, int mode=ios::out)
+    {
+      procstreambase::open(name, mode);
+    }
+
+private:
+
+  oprocstream (const oprocstream&);
+
+  oprocstream& operator = (const oprocstream&);
+};
+
+class
+procstream : public procstreambase, public iostream
+{
+public:
+
+  procstream (void) : procstreambase () { }
+
+  procstream (const char *name, int mode)
+    : procstreambase(name, mode) { }
+
+
+  ~procstream (void) { }
+
+  void open (const char *name, int mode)
+    {
+      procstreambase::open(name, mode);
+    }
+
+private:
+
+  procstream (const procstream&);
+
+  procstream& operator = (const procstream&);
+};
 
 #endif
 

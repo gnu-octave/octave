@@ -29,125 +29,39 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
-#include <fstream.h>
-#include <procbuf.h>
-
 #include "procstream.h"
 
-iprocstream::iprocstream (const char *command, int mode)
+procstreambase::procstreambase (const char *command, int mode)
 {
-  pbuf = new procbuf ();
+  pb_init ();
 
-  init (pbuf);
-
-  if (! pbuf->open (command, mode))
+  if (! pb.open (command, mode))
     set (ios::badbit);
-}
-
-iprocstream::~iprocstream (void)
-{
-  delete pbuf;
 }
 
 void
-iprocstream::open (const char *command, int mode)
+procstreambase::open (const char *command, int mode)
 {
   clear ();
 
-  if (pbuf)
-    delete pbuf;
-
-  pbuf = new procbuf ();
-
-  init (pbuf);
-
-  if (! pbuf->open (command, mode))
+  if (! pb.open (command, mode))
     set (ios::badbit);
 }
 
 int
-iprocstream::is_open (void)
-{
-  return pbuf && pbuf->is_open ();
-}
-
-int
-iprocstream::close (void)
+procstreambase::close (void)
 {
   int status = 0;
 
   if (is_open ())
     {
-      status = pbuf->sys_close ();
+      status = pb.sys_close ();
 
-      if (! pbuf->close ())
+      if (! pb.close ())
 	set (ios::failbit);
     }
 
   return status;
-}
-
-void
-cleanup_iprocstream (void *buf)
-{
-  delete (iprocstream *) buf;
-}
-
-oprocstream::oprocstream (const char *command, int mode)
-{
-  pbuf = new procbuf ();
-
-  init (pbuf);
-
-  if (! pbuf->open (command, mode))
-    set (ios::badbit);
-}
-
-oprocstream::~oprocstream (void)
-{
-  delete pbuf;
-}
-
-void
-oprocstream::open (const char *command, int mode)
-{
-  clear ();
-
-  if (pbuf)
-    delete pbuf;
-    
-  pbuf = new procbuf ();
-
-  init (pbuf);
-
-  if (! pbuf->open (command, mode))
-    set (ios::badbit);
-}
-
-int
-oprocstream::is_open (void)
-{
-  return pbuf && pbuf->is_open ();
-}
-
-int
-oprocstream::close (void)
-{
-  int status = 0;
-
-  if (is_open ())
-    {
-      if (! pbuf->close ())
-	set (ios::failbit);
-    }
-
-  return status;
-}
-
-void
-cleanup_oprocstream (void *buf)
-{
-  delete (oprocstream *) buf;
 }
 
 /*

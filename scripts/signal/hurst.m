@@ -33,9 +33,9 @@ function H = hurst (x)
     usage ("hurst (x)");
   endif
 
-  if (is_scalar (x))
+  if (isscalar (x))
     error ("hurst: x must not be a scalar")
-  elseif (is_vector (x))
+  elseif (isvector (x))
     x = reshape (x, length (x), 1);
   end
 

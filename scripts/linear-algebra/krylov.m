@@ -61,7 +61,7 @@ function [Uret,H,nu] = krylov(A,V,k,eps1,pflg);
     eps1 = defeps;
   endif
 
-  na = is_square (A);
+  na = issquare (A);
   if (! na)
     error ("A(%d x %d) must be square", rows (A), columns (A));
   endif
@@ -72,7 +72,7 @@ function [Uret,H,nu] = krylov(A,V,k,eps1,pflg);
 	  na, na, m, kb)
   endif
 
-  if (! is_scalar (k))
+  if (! isscalar (k))
     error ("krylov: third argument must be a scalar integer");
   endif
 

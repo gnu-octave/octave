@@ -49,15 +49,15 @@ function [pval, Tsq] = hotelling_test_2 (x, y)
     usage ("hotelling_test_2 (x, y)");
   endif
 
-  if (is_vector (x))
+  if (isvector (x))
     n_x = length (x);
-    if (! is_vector (y))
+    if (! isvector (y))
       error ("hotelling_test_2: if x is a vector, y must also be a vector");
     else
       n_y = length (y);
       p   = 1;
     endif
-  elseif (is_matrix (x))
+  elseif (ismatrix (x))
     [n_x, p] = size (x);
     [n_y, q] = size (y);
     if (p != q)

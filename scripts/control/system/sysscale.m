@@ -49,7 +49,7 @@ function sys = sysscale (sys, outscale, inscale, outname, inname)
 
   if( (nargin < 3) || (nargin > 5)  )
     usage("retsys = sysscale(Asys,output_list,input_list{,inname,outname})");
-  elseif (!is_struct(sys))
+  elseif (!isstruct(sys))
     error("sys must be a structured system");
   endif
 
@@ -110,7 +110,7 @@ function sys = sysscale (sys, outscale, inscale, outname, inname)
   sysc = outscale*sysc;
   sysd = outscale*sysd*inscale;
 
-  if( !is_square(outscale) )
+  if( !issquare(outscale) )
     ## strip extra output names (if any)
     sysoutname = sysoutname(1:min(rows(outscale),columns(outscale)));
     if( nargin < 4)
@@ -121,7 +121,7 @@ function sys = sysscale (sys, outscale, inscale, outname, inname)
   else
     outname = sysoutname;
   endif
-  if( !is_square(inscale) )
+  if( !issquare(inscale) )
     ## strip extra output names (if any)
     sysinname = sysinname(1:min(rows(inscale),columns(inscale)));
     if(nargin < 5)

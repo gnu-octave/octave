@@ -31,8 +31,8 @@
 ## Default: tol = 10*norm(a,'fro')*eps
 ##
 ## @end deftypefn
-## @seealso{is_stabilizable, size, rows, columns, length, is_matrix,
-## is_scalar, and is_vector}
+## @seealso{is_stabilizable, size, rows, columns, length, ismatrix,
+## isscalar, and isvector}
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 ## Created: August 1993
@@ -42,7 +42,7 @@ function [retval, U] = is_detectable (a, c, tol)
 
   if( nargin < 1)
     usage("[retval,U] = is_detectable(a , c {, tol})");
-  elseif(is_struct(a))
+  elseif(isstruct(a))
     ## system form
     if(nargin == 2)
       tol = c;

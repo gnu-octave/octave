@@ -35,7 +35,7 @@ function [xx, yy] = meshgrid (x, y)
     y = x;
   endif
   if (nargin > 0 && nargin < 3)
-    if (is_vector (x) && is_vector (y))
+    if (isvector (x) && isvector (y))
       xx = ones (length (y), 1) * x(:).';
       yy = y(:) * ones (1, length (x));
     else

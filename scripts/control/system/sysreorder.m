@@ -43,7 +43,7 @@ function pv = sysreorder (vlen, list)
   A = pv'*ones(size(list));
   B = ones(size(pv'))*list;
   X = (A != B);
-  if(!is_vector(X))
+  if(!isvector(X))
     y = min(X');
   else
    y = X';

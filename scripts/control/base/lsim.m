@@ -45,7 +45,7 @@ function [y, x] = lsim (sys, u, t, x0)
     usage("[y,x] = lsim(sys,u,t[,x0])");
   endif
 
-  if(!is_struct(sys))
+  if(!isstruct(sys))
     error("sys must be in system data structure");
   endif
 

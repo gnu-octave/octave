@@ -44,7 +44,7 @@ function r = mod (x, y)
     usage ("r = mod (x, y)");
   endif
 
-  if (any (size (x) != size (y)) && ! (is_scalar (x) || is_scalar (y)))
+  if (any (size (x) != size (y)) && ! (isscalar (x) || isscalar (y)))
     error ("mod: argument sizes must agree");
   endif
 
@@ -56,12 +56,12 @@ function r = mod (x, y)
     if (all (nz(:)))
       ## No elements of y are zero.
       r = x - y .* floor (x ./ y);
-    elseif (is_scalar (y))
+    elseif (isscalar (y))
       ## y must be zero.
       r = x;
     else
       ## Some elements of y are zero.
-      if (is_scalar (x))
+      if (isscalar (x))
 	r = x * ones (size (y));
       else
 	r = x;

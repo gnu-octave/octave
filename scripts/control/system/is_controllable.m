@@ -53,7 +53,7 @@
 ## has a single input; otherwise a block Arnoldi iteration is performed
 ## with @code{krylovb}.
 ## @end deftypefn
-## @seealso{size, rows, columns, length, is_matrix, is_scalar, is_vector
+## @seealso{size, rows, columns, length, ismatrix, isscalar, isvector
 ## is_observable, is_stabilizable, is_detectable, krylov, and krylovb}
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
@@ -67,7 +67,7 @@ function [retval, U] = is_controllable (a, b, tol)
   if(nargin < 1 | nargin > 3)
     usage("[retval,U] = %s\n\t%s", "is_controllable(a {, b, tol})", ...
         "is_controllable(sys{,tol})");
-  elseif(is_struct(a))
+  elseif(isstruct(a))
     ## system structure passed.
     sys = sysupdate(a,"ss");
     [a,bs] = sys2ss(sys);
@@ -91,7 +91,7 @@ function [retval, U] = is_controllable (a, b, tol)
   if(deftol) tol = 1000*eps; endif
 
   ## check tol dimensions
-  if( !is_scalar(tol) )
+  if( !isscalar(tol) )
     error("is_controllable: tol(%dx%d) must be a scalar", ...
         rows(tol),columns(tol));
   elseif( !is_sample(tol) )
@@ -99,7 +99,7 @@ function [retval, U] = is_controllable (a, b, tol)
   endif
 
   ## check dimensions compatibility
-  n = is_square (a);
+  n = issquare (a);
   [nr, nc] = size (b);
 
   if (n == 0 | n != nr | nc == 0)

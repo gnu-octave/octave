@@ -49,7 +49,7 @@ function K = place (sys, P)
 
   ## check arguments
 
-  if(!is_struct(sys))
+  if(!isstruct(sys))
     error("sys must be in system data structure format (see ss2sys)");
   endif
   sys = sysupdate(sys,"ss");    # make sure it has state space form up to date

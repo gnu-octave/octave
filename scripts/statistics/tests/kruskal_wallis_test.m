@@ -50,7 +50,7 @@ function [pval, k, df] = kruskal_wallis_test (varargin)
 
   for i = 1 : m;
     x = varargin{i};
-    if (! is_vector (x))
+    if (! isvector (x))
       error ("kruskal_wallis_test: all arguments must be vectors");
     endif
     l = length (x);

@@ -35,7 +35,7 @@ function p = polyreduce (p)
     usage ("polyreduce (p)");
   endif
 
-  if (! (is_vector (p) || isempty (p)))
+  if (! (isvector (p) || isempty (p)))
     error ("polyreduce: argument must be a vector");
   endif
 

@@ -46,9 +46,9 @@ function __errcomm__ (caller, varargin)
     while (nargin)
       a = varargin{k++};
       nargin--;
-      if (is_vector (a))
+      if (isvector (a))
         a = a(:);
-      elseif (is_matrix (a))
+      elseif (ismatrix (a))
         ;
       else
         usage ("%s (...)", caller);
@@ -67,9 +67,9 @@ function __errcomm__ (caller, varargin)
 	  endfor
 	  eval (sprintf ("%s, fmt);", cmd));
 	  break;
-	elseif (is_vector (a))
+	elseif (isvector (a))
 	  a = a(:);
-	elseif (is_matrix (a))
+	elseif (ismatrix (a))
 	  ;
 	else
 	  error ("wrong argument types");

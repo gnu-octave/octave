@@ -55,7 +55,7 @@ function [a, b] = arch_fit (y, X, p, ITER, gamma, a0, b0)
     usage ("arch_fit (y, X, p, ITER, gamma, a0, b0)");
   endif
 
-  if (! (is_vector (y)))
+  if (! (isvector (y)))
     error ("arch_test: y must be a vector");
   endif
 

@@ -1,1 +1,1 @@
-is_struct (getrusage ())
+isstruct (getrusage ())

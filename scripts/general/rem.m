@@ -39,7 +39,7 @@ function r = rem (x, y)
     usage ("rem (x, y)");
   endif
 
-  if (any (size (x) != size (y)) && ! (is_scalar (x) || is_scalar (y)))
+  if (any (size (x) != size (y)) && ! (isscalar (x) || isscalar (y)))
     error ("rem: argument sizes must agree");
   endif
 

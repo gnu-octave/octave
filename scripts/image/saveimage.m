@@ -100,7 +100,7 @@ function saveimage (filename, img, img_form, map)
     error ("unsupported image format specification");
   endif
 
-  if (! is_matrix (img))
+  if (! ismatrix (img))
     warning ("image variable is not a matrix");
   endif
 

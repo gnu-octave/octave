@@ -33,7 +33,7 @@ function playaudio (name, ext)
 
   usage_msg = "playaudio (name, ext)  or  playaudio (X)";
 
-  if (nargin == 1 && is_vector (name) && ! isstr (name))
+  if (nargin == 1 && isvector (name) && ! isstr (name))
     ## play a vector
     [nr, nc] = size (name);
     if (nc != 1)

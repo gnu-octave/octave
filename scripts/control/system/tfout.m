@@ -36,7 +36,7 @@ function tfout (num, denom, x)
     usage("tfout(num,denom[,x])");
   endif
 
-  if ( (!is_vector(num)) | (!is_vector(denom)) )
+  if ( (!isvector(num)) | (!isvector(denom)) )
     error("tfout: first two argument must be vectors");
   endif
 

@@ -72,7 +72,7 @@ function [K, Q1, P1, Ee, Er] = lqg (sys, Sigw, Sigv, Q, R, input_list)
   if ( (nargin < 5) | (nargin > 6))
     usage("[K,Q1,P1,Ee,Er] = lqg(sys,Sigw, Sigv,Q,R{,input_list})");
 
-  elseif(!is_struct(sys) )
+  elseif(!isstruct(sys) )
     error("sys must be in system data structure");
   endif
 
@@ -108,7 +108,7 @@ function [K, Q1, P1, Ee, Er] = lqg (sys, Sigw, Sigv, Q, R, input_list)
 
   varname = list("Sigw","Sigv","Q","R");
   for kk=1:length(varname);
-    eval(sprintf("chk = is_square(%s);",nth(varname,kk)));
+    eval(sprintf("chk = issquare(%s);",nth(varname,kk)));
     if(! chk ) error("lqg: %s is not square",nth(varname,kk)); endif
   endfor
 

@@ -42,7 +42,7 @@ function [zer, pol, k, tsam, inname, outname] = sys2zp (sys)
 
   if(nargin != 1)
     usage("[zer,pol,k,tsam,inname,outname] = sys2zp(sys)");
-  elseif( !is_struct(sys))
+  elseif( !isstruct(sys))
     error("sysconnect: sys must be in system data structure form")
   elseif (! is_siso(sys) )
     [n, nz, m, p] = sysdimensions(sys);

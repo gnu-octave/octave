@@ -32,10 +32,10 @@ function rnd = laplace_rnd (r, c)
     usage ("laplace_rnd (r, c)");
   endif
 
-  if (! (is_scalar (r) && (r > 0) && (r == round (r))))
+  if (! (isscalar (r) && (r > 0) && (r == round (r))))
     error ("laplace_rnd: r must be a positive integer");
   endif
-  if (! (is_scalar (c) && (c > 0) && (c == round (c))))
+  if (! (isscalar (c) && (c > 0) && (c == round (c))))
     error ("laplace_rnd: c must be a positive integer");
   endif
 

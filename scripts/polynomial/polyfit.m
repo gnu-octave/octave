@@ -52,11 +52,11 @@ function [p, yf] = polyfit (x, y, n)
     usage ("polyfit (x, y, n)");
   endif
 
-  if (! (is_vector (x) && is_vector (y) && size (x) == size (y)))
+  if (! (isvector (x) && isvector (y) && size (x) == size (y)))
     error ("polyfit: x and y must be vectors of the same size");
   endif
 
-  if (! (is_scalar (n) && n >= 0 && ! isinf (n) && n == round (n)))
+  if (! (isscalar (n) && n >= 0 && ! isinf (n) && n == round (n)))
     error ("polyfit: n must be a nonnegative integer");
   endif
 

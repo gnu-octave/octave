@@ -214,10 +214,10 @@ function retsys = ss2sys (a, b, c, d, tsam, n, nz, stname, inname, outname, outl
   ## check for continuous states
   if( (nargin < 6) & (tsam == 0) )               n = na;
   elseif(nargin < 6)                             n = 0;
-  elseif((!is_matrix(n)) | isstr(n))
+  elseif((!ismatrix(n)) | isstr(n))
     error("Parameter n is not a numerical value.");
-  elseif( (!is_scalar(n)) | (n < 0 ) | (n != round(n)) )
-    if(is_scalar(n))     error("invalid value of n=%d,%e",n,n);
+  elseif( (!isscalar(n)) | (n < 0 ) | (n != round(n)) )
+    if(isscalar(n))     error("invalid value of n=%d,%e",n,n);
     else                 error("invalid value of n=(%dx%d)", ...
                            rows(n), columns(n));                endif
   endif
@@ -225,10 +225,10 @@ function retsys = ss2sys (a, b, c, d, tsam, n, nz, stname, inname, outname, outl
   ## check for num discrete states
   if( (nargin < 7) & (tsam == 0))               nz = 0;
   elseif(nargin < 7)                            nz = na - n;
-  elseif((!is_matrix(nz)) | isstr(nz))
+  elseif((!ismatrix(nz)) | isstr(nz))
     error("Parameter nz is not a numerical value.");
-  elseif( (!is_scalar(nz)) | (nz < 0 ) | (nz != round(nz)) )
-    if(is_scalar(nz))
+  elseif( (!isscalar(nz)) | (nz < 0 ) | (nz != round(nz)) )
+    if(isscalar(nz))
       error(["invalid value of nz=",num2str(nz)]);
     else
       error(["invalid value of nz=(",num2str(rows(nz)),"x", ...

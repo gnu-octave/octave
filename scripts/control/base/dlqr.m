@@ -111,7 +111,7 @@ function [k, p, e] = dlqr (a, b, q, r, s)
   endif
 
   ## Check a.
-  if ((n = is_square (a)) == 0)
+  if ((n = issquare (a)) == 0)
     error ("dlqr: requires 1st parameter(a) to be square");
   endif
 
@@ -122,12 +122,12 @@ function [k, p, e] = dlqr (a, b, q, r, s)
   endif
 
   ## Check q.
-  if ((n1 = is_square (q)) == 0 || n1 != n)
+  if ((n1 = issquare (q)) == 0 || n1 != n)
     error ("dlqr: q must be square and conformal with a");
   endif
 
   ## Check r.
-  if((m1 = is_square(r)) == 0 || m1 != m)
+  if((m1 = issquare(r)) == 0 || m1 != m)
     error ("dlqr: r must be square and conformal with column dimension of b");
   endif
 
@@ -149,7 +149,7 @@ function [k, p, e] = dlqr (a, b, q, r, s)
   endif
 
   ## Check that q, (r) are symmetric, positive (semi)definite
-  if (is_symmetric (q) && is_symmetric (r)
+  if (issymmetric (q) && issymmetric (r)
       && all (eig (q) >= 0) && all (eig (r) > 0))
     p = dare (ao, b, qo, r);
     k = (r+b'*p*b)\(b'*p*a + s');

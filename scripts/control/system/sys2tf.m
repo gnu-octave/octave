@@ -42,7 +42,7 @@ function [num, den, tsam, inname, outname] = sys2tf (Asys)
     usage("[num,den,tsam,inname,outname] = sys2tf(Asys)");
   endif
 
-  if( !is_struct(Asys))
+  if( !isstruct(Asys))
     error("Asys must be a system data structure (see ss2sys, tf2sys, zp2sys)");
   elseif (! is_siso(Asys) )
     [n, nz, m, p] = sysdimensions(Asys);

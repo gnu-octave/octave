@@ -38,7 +38,7 @@ function y = detrend (x, p)
   if (nargin == 1)
     p = 1;
   elseif (nargin == 2)
-    if (! (is_scalar (p) && p == round (p) && p >= 0))
+    if (! (isscalar (p) && p == round (p) && p >= 0))
       error ("detrend: p must be a nonnegative integer");
     endif
   else

@@ -49,7 +49,7 @@ function [p, y] = ppplot (x, dist, varargin)
     usage ("ppplot (x, dist, params)");
   endif
 
-  if (! is_vector (x))
+  if (! isvector (x))
     error ("ppplot: x must be a vector");
   endif
 

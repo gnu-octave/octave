@@ -63,21 +63,21 @@ function outsys = zp2sys (zer, pol, k, tsam, inname, outname)
   endif
 
   ## check input format
-  if( ! (is_vector(zer) | isempty(zer) ) )
+  if( ! (isvector(zer) | isempty(zer) ) )
     error("zer must be a vector or empty");
   endif
   if(!isempty(zer))
     zer = reshape(zer,1,length(zer));           # make it a row vector
   endif
 
-  if( ! (is_vector(pol) | isempty(pol)))
+  if( ! (isvector(pol) | isempty(pol)))
     error("pol must be a vector");
   endif
   if(!isempty(pol))
     pol = reshape(pol,1,length(pol));
   endif
 
-  if (! is_scalar(k))
+  if (! isscalar(k))
      error("k must be a scalar");
   endif
 
@@ -104,7 +104,7 @@ function outsys = zp2sys (zer, pol, k, tsam, inname, outname)
 
   ## Set the type of system
   if (nargin > 3)
-    if( !is_scalar(tsam) )
+    if( !isscalar(tsam) )
       error("tsam must be a nonnegative scalar");
     endif
     if (tsam < 0)
@@ -125,7 +125,7 @@ function outsys = zp2sys (zer, pol, k, tsam, inname, outname)
   if (nargin > 4)
     ## make sure its a string
     if(!isempty(inname))
-      if(!is_list(inname))  inname = list(inname); endif
+      if(!islist(inname))  inname = list(inname); endif
       if(!is_signal_list(inname))
         error("inname must be a single signal name");
       endif
@@ -136,7 +136,7 @@ function outsys = zp2sys (zer, pol, k, tsam, inname, outname)
   ## Set name of output
   if (nargin > 5)
     if(!isempty(outname))
-      if(!is_list(outname))        outname = list(outname);    endif
+      if(!islist(outname))        outname = list(outname);    endif
       if(!is_signal_list(outname))
         error("outname must be a single signal name");
       endif

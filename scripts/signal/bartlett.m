@@ -35,7 +35,7 @@ function c = bartlett (m)
     usage ("bartlett (m)");
   endif
 
-  if (! (is_scalar (m) && (m == round (m)) && (m > 0)))
+  if (! (isscalar (m) && (m == round (m)) && (m > 0)))
     error ("bartlett: m has to be an integer > 0");
   endif
 

@@ -36,7 +36,7 @@ function X = autoreg_matrix (y, k)
     usage ("autoreg_matrix (y, k)");
   endif
 
-  if (! (is_vector (y)))
+  if (! (isvector (y)))
     error ("autoreg_matrix: y must be a vector");
   endif
 

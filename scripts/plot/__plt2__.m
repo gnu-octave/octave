@@ -43,20 +43,20 @@ function __plt2__ (x1, x2, fmt)
   if (any (any (imag (x2))))
     x2 = real (x2);
   endif
-  if (is_scalar (x1))
-    if (is_scalar (x2))
+  if (isscalar (x1))
+    if (isscalar (x2))
       __plt2ss__ (x1, x2, fmt);
     endif
-  elseif (is_vector (x1))
-    if (is_vector (x2))
+  elseif (isvector (x1))
+    if (isvector (x2))
       __plt2vv__ (x1, x2, fmt);
-    elseif (is_matrix (x2))
+    elseif (ismatrix (x2))
       __plt2vm__ (x1, x2, fmt);
     endif
-  elseif (is_matrix (x1))
-    if (is_vector (x2))
+  elseif (ismatrix (x1))
+    if (isvector (x2))
       __plt2mv__ (x1, x2, fmt);
-    elseif (is_matrix (x2))
+    elseif (ismatrix (x2))
       __plt2mm__ (x1, x2, fmt);
     endif
   endif

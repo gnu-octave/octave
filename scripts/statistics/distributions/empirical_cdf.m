@@ -29,7 +29,7 @@
 
 function cdf = empirical_cdf (x, data)
 
-  if (! is_vector (data))
+  if (! isvector (data))
     error ("empirical_cdf: data must be a vector");
   endif
 

@@ -58,14 +58,14 @@ function [pval, t, df] = t_test_regression (y, X, R, r, alt)
     usage ("[pval, t, df] = t_test_regression (y, X, R, r, alt)");
   endif
 
-  if (! is_scalar (r))
+  if (! isscalar (r))
     error ("t_test_regression: r must be a scalar");
   elseif (! isstr (alt))
     error ("t_test_regression: alt must be a string");
   endif
 
   [T, k] = size (X);
-  if (! (is_vector (y) && (length (y) == T)))
+  if (! (isvector (y) && (length (y) == T)))
     error ("t_test_regression: y must be a vector of length rows (X)");
   endif
   s      = size (R);

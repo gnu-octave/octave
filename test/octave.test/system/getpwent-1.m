@@ -1,5 +1,5 @@
 s = getpwent ();
-(is_struct (s)
+(isstruct (s)
  && struct_contains (s, "name")
  && struct_contains (s, "passwd")
  && struct_contains (s, "uid")

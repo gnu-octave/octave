@@ -49,14 +49,14 @@ function retval = skewness (x)
     usage ("skewness (x)");
   endif
 
-  if (is_vector (x))
+  if (isvector (x))
     x = x - mean (x);
     if (! any (x))
       retval = 0;
     else
       retval = sum (x .^ 3) / (length (x) * std (x) ^ 3);
     endif
-  elseif (is_matrix (x))
+  elseif (ismatrix (x))
     [nr, nc] = size (x);
     x = x - ones (nr, 1) * mean (x);
     retval = zeros (1, nc);

@@ -78,8 +78,8 @@ function sys = sysprune (sys, output_idx, input_idx, state_idx)
   endif
 
   ## check dimensions
-  if( !(is_vector(output_idx) | isempty(output_idx) )  )
-    if(!is_matrix(output_idx))
+  if( !(isvector(output_idx) | isempty(output_idx) )  )
+    if(!ismatrix(output_idx))
       error("sysprune: bad argument passed for output_idx");
     else
       error("sysprune: output_idx (%d x %d) must be a vector or empty", ...
@@ -89,8 +89,8 @@ function sys = sysprune (sys, output_idx, input_idx, state_idx)
      error("sysprune: duplicate entries found in output_idx");
   endif
 
-  if( !(is_vector(input_idx) | isempty(input_idx) )  )
-    if(!is_matrix(input_idx))
+  if( !(isvector(input_idx) | isempty(input_idx) )  )
+    if(!ismatrix(input_idx))
       error("sysprune: bad argument passed for input_idx");
     else
       error("sysprune: input_idx (%d x %d) must be a vector or empty", ...
@@ -100,8 +100,8 @@ function sys = sysprune (sys, output_idx, input_idx, state_idx)
      error("sysprune: duplicate entries found in input_idx");
   endif
 
-  if( !(is_vector(state_idx) | isempty(state_idx) )  )
-    if(!is_matrix(state_idx))
+  if( !(isvector(state_idx) | isempty(state_idx) )  )
+    if(!ismatrix(state_idx))
       error("sysprune: bad argument passed for state_idx");
     else
       error("sysprune: state_idx (%d x %d) must be a vector or empty", ...
@@ -117,7 +117,7 @@ function sys = sysprune (sys, output_idx, input_idx, state_idx)
   li = length(input_idx);
   lst = length(state_idx);
 
-  if( !is_struct(sys))
+  if( !isstruct(sys))
     error("Asys must be a system data structure (see ss2sys, tf2sys, or zp2sys)")
   elseif(pp < lo)
     error([num2str(lo)," output_idx entries, system has only ", ...

@@ -43,11 +43,11 @@ function n = nper (r, p, a, l, m)
     usage ("nper (r, p, a, l, method)");
   endif
 
-  if (! (is_scalar (r) && (r > -1)))
+  if (! (isscalar (r) && (r > -1)))
     error ("nper: r must be a scalar > -1");
-  elseif (! is_scalar (p))
+  elseif (! isscalar (p))
     error ("nper: p must be a scalar");
-  elseif (! is_scalar (a))
+  elseif (! isscalar (a))
     error ("nper: a must be a scalar");
   endif
 

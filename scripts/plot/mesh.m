@@ -39,7 +39,7 @@ function mesh (x, y, z)
 
   if (nargin == 1)
     z = x;
-    if (is_matrix (z))
+    if (ismatrix (z))
       gset hidden3d;
       gset data style lines;
       gset surface;
@@ -52,7 +52,7 @@ function mesh (x, y, z)
       error ("mesh: argument must be a matrix");
     endif
   elseif (nargin == 3)
-    if (is_vector (x) && is_vector (y) && is_matrix (z))
+    if (isvector (x) && isvector (y) && ismatrix (z))
       xlen = length (x);
       ylen = length (y);
       if (xlen == columns (z) && ylen == rows (z))
@@ -82,7 +82,7 @@ function mesh (x, y, z)
         msg = sprintf ("%s\ncolumns (z) must be the same as length (x)", msg);
         error (msg);
       endif
-    elseif (is_matrix (x) && is_matrix (y) && is_matrix (z))
+    elseif (ismatrix (x) && ismatrix (y) && ismatrix (z))
       xlen = columns (z);
       ylen = rows (z);
       if (xlen == columns (x) && xlen == columns (y) &&

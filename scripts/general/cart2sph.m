@@ -36,7 +36,7 @@ function [Theta, Phi, R] = cart2sph (X, Y, Z)
     usage ("[Theta, Phi, R] = cart2sph (X, Y, Z)")
   endif
 
-  if ((! (is_matrix (X) && is_matrix (Y) && is_matrix (Z)))
+  if ((! (ismatrix (X) && ismatrix (Y) && ismatrix (Z)))
       || size (X) != size (Y)
       || size (X) != size (Z))
     error ("cart2sph: arguments must be matrices of same size");

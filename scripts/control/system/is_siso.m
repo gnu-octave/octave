@@ -29,7 +29,7 @@ function  SISO = is_siso (sys)
 
   if(nargin != 1)
     usage("SISO = is_siso(sys)");
-  elseif( !is_struct(sys))
+  elseif( !isstruct(sys))
     error("input must be a system structure (see ss2sys, tf2sys, zp2sys)");
   endif
 

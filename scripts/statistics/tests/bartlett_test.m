@@ -47,7 +47,7 @@ function [pval, chisq, df] = bartlett_test (varargin)
 
   for i = 1 : k;
     x = varargin{i};
-    if (! is_vector (x))
+    if (! isvector (x))
       error ("bartlett_test: all arguments must be vectors");
     endif
     f(i) = length (x) - 1;

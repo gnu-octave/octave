@@ -92,22 +92,22 @@ function [tvals, Plist] = dre (sys, Q, R, Qf, t0, tf, Ptol, maxits)
 
   if(nargin < 6 | nargin > 8 | nargout != 2)
     usage("[tvals,Plist] = dre(sys,Q,R,Qf,t0,tf{,Ptol})");
-  elseif(!is_struct(sys))
+  elseif(!isstruct(sys))
     error("sys must be a system data structure")
   elseif(is_digital(sys))
     error("sys must be a continuous time system")
-  elseif(!is_matrix(Q) | !is_matrix(R) | !is_matrix(Qf))
+  elseif(!ismatrix(Q) | !ismatrix(R) | !ismatrix(Qf))
     error("Q, R, and Qf must be matrices.");
-  elseif(!is_scalar(t0) | !is_scalar(tf))
+  elseif(!isscalar(t0) | !isscalar(tf))
     error("t0 and tf must be scalars")
   elseif(t0 >= tf)              error("t0=%e >= tf=%e",t0,tf);
   elseif(nargin == 6)           Ptol = 0.1;
-  elseif(!is_scalar(Ptol))      error("Ptol must be a scalar");
+  elseif(!isscalar(Ptol))      error("Ptol must be a scalar");
   elseif(Ptol <= 0)             error("Ptol must be positive");
   endif
 
   if(nargin < 8) maxits = 10;
-  elseif(!is_scalar(maxits))    error("maxits must be a scalar");
+  elseif(!isscalar(maxits))    error("maxits must be a scalar");
   elseif(maxits <= 0)           error("maxits must be positive");
   endif
   maxits = ceil(maxits);

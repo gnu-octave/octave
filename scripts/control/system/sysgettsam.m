@@ -23,7 +23,7 @@
 
 function T = sysgettsam (sys)
 
-  if(!is_struct(sys))
+  if(!isstruct(sys))
     usage("T = sysgettsam(sys)");
   endif
 

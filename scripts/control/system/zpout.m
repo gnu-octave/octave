@@ -36,11 +36,11 @@ function zpout (zer, pol, k, x)
     usage("zpout(zer,pol,k[,x])");
   endif
 
-  if( !(is_vector(zer) | isempty(zer)) | !(is_vector(pol) | isempty(pol)) )
+  if( !(isvector(zer) | isempty(zer)) | !(isvector(pol) | isempty(pol)) )
     error("zer, pol must be vectors or empty");
   endif
 
-  if(!is_scalar(k))
+  if(!isscalar(k))
     error("zpout: argument k must be a scalar.")
   endif
 

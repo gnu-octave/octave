@@ -57,7 +57,7 @@ function retval = vander (c)
     usage ("vander (c)");
   endif
 
-  if (is_vector (c))
+  if (isvector (c))
     n = length (c);
     retval = zeros (n, n);
     j = 1:n;

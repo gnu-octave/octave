@@ -38,7 +38,7 @@ function y = conv (a, b)
     usage ("conv(a, b)");
   endif
 
-  if (! (is_vector (a) && is_vector (b)))
+  if (! (isvector (a) && isvector (b)))
     error("conv: both arguments must be vectors");
   endif
 

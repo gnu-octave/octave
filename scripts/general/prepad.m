@@ -42,9 +42,9 @@ function y = prepad (x, l, c)
     usage ("prepad (x, l) or prepad (x, l, c)");
   endif
 
-  if (! is_matrix (x))
+  if (! ismatrix (x))
     error ("first argument must be a vector or matrix");
-  elseif (! is_scalar (l))
+  elseif (! isscalar (l))
     error ("second argument must be a scaler");
   endif
 

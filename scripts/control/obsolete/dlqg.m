@@ -54,7 +54,7 @@ function [K, Q, P, Ee, Er] = dlqg (A, B, C, G, Sigw, Sigv, Q, R)
     ## system data structure format
 
     ## check that it really is system data structure
-    if(! is_struct(A) )
+    if(! isstruct(A) )
       error("dlqg: 5 arguments, first argument is not a system data structure structure")
     endif
 
@@ -106,7 +106,7 @@ function [K, Q, P, Ee, Er] = dlqg (A, B, C, G, Sigw, Sigv, Q, R)
     error ("dlqg: invalid number of arguments")
   endif
 
-  if (! (is_square(Sigw) && is_square(Sigv) ) )
+  if (! (issquare(Sigw) && issquare(Sigv) ) )
     error("dlqg: Sigw, Sigv must be square");
   endif
 

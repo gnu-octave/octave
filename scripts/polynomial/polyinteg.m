@@ -37,7 +37,7 @@ function p = polyinteg (p)
     usage ("polyinteg (vector)");
   endif
 
-  if (! (is_vector (p) || isempty (p)))
+  if (! (isvector (p) || isempty (p)))
     error ("argument must be a vector");
   endif
 

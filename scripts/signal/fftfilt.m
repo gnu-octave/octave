@@ -69,7 +69,7 @@ function y = fftfilt (b, x, N)
     y = ifft (fft (x, N) .* B(:,ones (1, c_x)));
   else
     ## Use overlap-add method ...
-    if (! (is_scalar (N)))
+    if (! (isscalar (N)))
       error ("fftfilt: N has to be a scalar");
     endif
     N = 2 ^ (ceil (log (max ([N, l_b])) / log (2)));

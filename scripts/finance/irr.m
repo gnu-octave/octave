@@ -37,13 +37,13 @@ function r = irr (p, i)
     usage ("irr (p, i)");
   endif
 
-  if (! (is_vector (p)))
+  if (! (isvector (p)))
     error ("irr: p must be a vector");
   else
     p_string = strcat ("[", sprintf ("%.15f, ", p), "]");
   endif
 
-  if (! is_scalar (i))
+  if (! isscalar (i))
     error ("irr: i must be a scalar");
   endif
 

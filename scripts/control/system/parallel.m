@@ -41,9 +41,9 @@ function sysp = parallel (Asys, Bsys)
   if(nargin != 2)
     usage("sysp = parallel(Asys,Bsys)");
   endif
-  if(! is_struct(Asys) )
+  if(! isstruct(Asys) )
     error("1st input argument is not a system data structure")
-  elseif (! is_struct(Bsys) )
+  elseif (! isstruct(Bsys) )
     error("2nd input argument is not a system data structure")
   endif
   [Ann,Anz,mA] = sysdimensions(Asys);

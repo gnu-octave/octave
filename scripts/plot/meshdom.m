@@ -31,7 +31,7 @@
 function [xx, yy] = meshdom (x, y)
 
   if (nargin == 2)
-    if (is_vector (x) && is_vector (y))
+    if (isvector (x) && isvector (y))
       xx = ones (length (y), 1) * x(:).';
       yy = flipud (y(:)) * ones (1, length (x));
     else

@@ -82,9 +82,9 @@ function retsys = sysappend (sys, b, c, d, outname, inname, yd)
   empty_list_elements_ok = 1;
 
   ## check input arguments
-  if ( (nargin < 2) | (nargin > 7) | (!is_struct(sys)))
+  if ( (nargin < 2) | (nargin > 7) | (!isstruct(sys)))
     usage("retsys = sysappend(sys,b,c[,d,outname,inname,yd]) ");
-  elseif(!is_struct(sys))
+  elseif(!isstruct(sys))
     error("sys must be a system data structure");
   endif
 
@@ -149,7 +149,7 @@ function retsys = sysappend (sys, b, c, d, outname, inname, yd)
 
     ## construct new yd entries
     if(nargin == 7)
-      if(!is_vector(yd))
+      if(!isvector(yd))
         error(sprintf("yd(%dx%d) must be a vector",rows(yd),columns(yd)))
       elseif(rows(c) != length(yd) & rows(d) != length(yd))
         error(sprintf("length(yd) = %d; c(%dx%d), d(%dx%d); mismatch", ...

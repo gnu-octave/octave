@@ -40,7 +40,7 @@ function [yy, idx] = sortcom (xx, opt)
 
   if( nargin < 1 | nargin > 2 )
      usage("yy = sortcom(xx[,opt]");
-  elseif( !(is_vector(xx) | isempty(xx) ))
+  elseif( !(isvector(xx) | isempty(xx) ))
     error("sortcom: first argument must be a vector");
   endif
 

@@ -51,7 +51,7 @@ function subwindow (xn, yn)
 
   ## check for scalar inputs
 
-  if (! (is_scalar (xn) && is_scalar (yn)))
+  if (! (isscalar (xn) && isscalar (yn)))
     error ("subwindow: xn and yn have to be scalars");
   endif
 

@@ -45,7 +45,7 @@ function [d, D] = diffpara (X, a, b)
   if ((nargin < 1) || (nargin > 3))
     usage ("[d, D] = diffpara (X, a, b)");
   else
-    if (is_vector (X))
+    if (isvector (X))
       n = length (X);
       k = 1;
       X = reshape (X, n, 1);
@@ -61,7 +61,7 @@ function [d, D] = diffpara (X, a, b)
     endif
   endif
 
-  if (! (is_scalar (a) && is_scalar (b)))
+  if (! (isscalar (a) && isscalar (b)))
     error ("diffpara: a and b must be scalars");
   endif
 

@@ -115,7 +115,7 @@ function [Lp, Lf, P, Z] = dkalman (A, G, C, Qw, Rv, S)
   endif
 
   ## Check A.
-  if ((n = is_square (A)) == 0)
+  if ((n = issquare (A)) == 0)
     error ("dkalman: requires 1st parameter(A) to be square");
   endif
 
@@ -132,7 +132,7 @@ function [Lp, Lf, P, Z] = dkalman (A, G, C, Qw, Rv, S)
   endif
 
   ## Check Qw.
-  if ((nw1 = is_square (Qw)) == 0)
+  if ((nw1 = issquare (Qw)) == 0)
     error ("dkalman: requires 4rd parameter(Qw) to be square");
   else
     if (nw1 != nw)
@@ -141,7 +141,7 @@ function [Lp, Lf, P, Z] = dkalman (A, G, C, Qw, Rv, S)
   endif
 
   ## Check Rv.
-  if ((p1 = is_square (Rv)) == 0)
+  if ((p1 = issquare (Rv)) == 0)
     error ("dkalman: requires 5rd parameter(Rv) to be square");
   else
     if (p1 != p)

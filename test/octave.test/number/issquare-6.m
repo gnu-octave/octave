@@ -1,0 +1,1 @@
+issquare ("test")

@@ -145,7 +145,7 @@ function [stname, inname, outname, yd] = sysgetsignals (sys, sigid, signum, strf
     usage("[stname{,inname,outname,yd}] = sysgetsignals(sys{,sigid,signum})")
   elseif(nargin > 1 & nargout > 1)
     usage("sig = sysgetsignals(sys,sigid{,signum,strflg})")
-  elseif( ! is_struct(sys) )
+  elseif( ! isstruct(sys) )
     error("input argument must be a system data structure");
   endif
   if(nargin < 4)  strflg = 0; endif
@@ -174,7 +174,7 @@ function [stname, inname, outname, yd] = sysgetsignals (sys, sigid, signum, strf
         error(sprintf("sysgetsignals(sys,\"%s\",%d):only %d entries.\n", ...
           sigid,signum, rows(stname)));
       else
-        if(!is_scalar(strflg))
+        if(!isscalar(strflg))
           error("strflg must be a scalar");
         endif
         switch(strflg)

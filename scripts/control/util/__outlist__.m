@@ -66,7 +66,7 @@ function str_val = __outlist__ (name_list, tabchar, yd, ilist)
 
   str_val = "";
   dstr = list(""," (discrete)");
-  if((m >= 1) && (is_list(name_list)))
+  if((m >= 1) && (islist(name_list)))
     for ii=1:m
       str_val = sprintf("%s%s%d: %s%s\n",str_val,tabchar, ilist(ii), ...
           nth(name_list,ii),nth(dstr,yd(ii)+1));

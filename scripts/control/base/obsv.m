@@ -43,7 +43,7 @@ function Qb = obsv (sys, c)
 
   if (nargin == 2)
     a = sys;
-  elseif (nargin == 1 && is_struct(sys))
+  elseif (nargin == 1 && isstruct(sys))
     sysupdate(sys,"ss");
     [a,b,c] = sys2ss(sys);
   else

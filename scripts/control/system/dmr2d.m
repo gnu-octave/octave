@@ -78,7 +78,7 @@ function [dsys, fidx] = dmr2d (sys, idx, sprefix, Ts2, cuflg)
   if(nargin != 4 | nargout > 2)
     usage("[dsys,fidx] = dmr2d (sys, idx, sprefix, Ts2 {,cuflg})");
 
-  elseif (!is_struct(sys))
+  elseif (!isstruct(sys))
     error("sys must be in system data structure form");
 
   elseif(!is_digital(sys))
@@ -89,7 +89,7 @@ function [dsys, fidx] = dmr2d (sys, idx, sprefix, Ts2, cuflg)
   if(is_signal_list(idx) | isstr(idx))
     idx = sysidx(sys,"st",idx);
 
-  elseif (!(is_vector(idx) | isempty(idx)))
+  elseif (!(isvector(idx) | isempty(idx)))
     error(["idx(",num2str(rows(idx)),"x",num2str(columns(idx)), ...
       ") must be a vector"]);
 
@@ -110,7 +110,7 @@ function [dsys, fidx] = dmr2d (sys, idx, sprefix, Ts2, cuflg)
   ## optional argument: cuflg
   if(nargin <= 4)
     cuflg = 1;          # default: constant inputs over Ts2 sampling interv.
-  elseif( !is_scalar(cuflg) )
+  elseif( !isscalar(cuflg) )
     error("cuflg must be a scalar")
   elseif( cuflg != 0 | cuflg != 1)
     error(["cuflg = ",num2str(cuflg),", should be 0 or 1"]);

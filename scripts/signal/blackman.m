@@ -34,7 +34,7 @@ function c = blackman (m)
     usage ("blackman (m)");
   endif
 
-  if (! (is_scalar (m) && (m == round (m)) && (m > 0)))
+  if (! (isscalar (m) && (m == round (m)) && (m > 0)))
     error ("blackman: m has to be an integer > 0");
   endif
 

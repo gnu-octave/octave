@@ -40,11 +40,11 @@ function p = pmt (r, n, a, l, m)
     usage ("pmt (r, n, a, l, method)");
   endif
 
-  if (! (is_scalar (r) && r > -1))
+  if (! (isscalar (r) && r > -1))
     error ("pmt: rate must be a scalar > -1");
-  elseif (! (is_scalar (n) && n > 0))
+  elseif (! (isscalar (n) && n > 0))
     error ("pmt: n must be a positive scalar");
-  elseif (! (is_scalar (a) && a > 0))
+  elseif (! (isscalar (a) && a > 0))
     error ("pmt: a must be a positive scalar");
   endif
 

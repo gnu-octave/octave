@@ -48,8 +48,8 @@ function [Xinf, x_ha_err] = hinfsyn_ric (A, BB, C1, d1dot, R, ptol)
 
   x_ha_err = 0;        # assume success
   Xinf = [];                 # default return value
-  n = is_square(A);
-  nw = is_square(R);
+  n = issquare(A);
+  nw = issquare(R);
   if(rank(R) != nw)    x_ha_err = 6;
   else                 # build hamiltonian Ha for X_inf
     xx = ([BB; -C1'*d1dot]/R) * [d1dot'*C1, BB'];

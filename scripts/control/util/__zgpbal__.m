@@ -43,7 +43,7 @@
 
 function retsys = __zgpbal__ (Asys)
 
-  if( (nargin != 1) | (!is_struct(Asys)))
+  if( (nargin != 1) | (!isstruct(Asys)))
     usage("retsys = __zgpbal__ (Asys)");
   endif
 

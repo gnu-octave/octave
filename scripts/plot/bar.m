@@ -50,7 +50,7 @@
 function [xb, yb] = bar (x, y)
 
   if (nargin == 1)
-    if (is_vector (x))
+    if (isvector (x))
       len = 3 * length (x) + 1;
       tmp_xb = tmp_yb = zeros (len, 1);
       tmp_xb(1) = 0.5;
@@ -69,7 +69,7 @@ function [xb, yb] = bar (x, y)
       error ("bar: argument must be a vector");
     endif
   elseif (nargin == 2)
-    if (is_vector (x) && is_vector (y))
+    if (isvector (x) && isvector (y))
       xlen = length (x);
       ylen = length (y);
       if (xlen == ylen)

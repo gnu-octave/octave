@@ -40,11 +40,11 @@ function r = rate (n, p, v, l, m)
     usage ("rate (n, p, v, l, method)");
   endif
 
-  if (! (is_scalar (n) && (n > 0)))
+  if (! (isscalar (n) && (n > 0)))
     error ("rate: n must be a positive scalar");
-  elseif (! is_scalar (p))
+  elseif (! isscalar (p))
     error ("rate: p must be a scalar");
-  elseif (! is_scalar (v))
+  elseif (! isscalar (v))
     error ("rate: p must be a scalar");
   endif
 
@@ -64,7 +64,7 @@ function r = rate (n, p, v, l, m)
     m = "e";
   endif
 
-  if (! is_scalar (l))
+  if (! isscalar (l))
     error ("rate: l must be a scalar");
   endif
 

@@ -39,7 +39,7 @@ function hsval = rgb2hsv (rgb)
     usage ("hsv_map = rgb2hsv (rgb_map)");
   endif
 
-  if (! is_matrix (rgb) || columns (rgb) != 3)
+  if (! ismatrix (rgb) || columns (rgb) != 3)
     error ("rgb2hsv: argument must be a matrix of size n x 3");
   endif
 

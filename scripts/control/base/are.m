@@ -77,21 +77,21 @@ function x = are (a, b, c, opt)
     else
       opt = "B";
     endif
-    if ((n = is_square(a)) == 0)
+    if ((n = issquare(a)) == 0)
       error ("are: a is not square");
     endif
 
     if (is_controllable(a,b) == 0)
       warning ("are: a, b are not controllable");
     endif
-    if ((m = is_square (b)) == 0)
+    if ((m = issquare (b)) == 0)
       b = b * b';
       m = rows (b);
     endif
     if (is_observable (a, c) == 0)
       warning ("are: a,c are not observable");
     endif
-    if ((p = is_square (c)) == 0)
+    if ((p = issquare (c)) == 0)
       c = c' * c;
       p = rows (c);
     endif

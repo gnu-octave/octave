@@ -1,0 +1,1 @@
+isvector (["test"; "ing"])

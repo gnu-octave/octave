@@ -49,7 +49,7 @@ function x = arma_rnd (a, b, v, t, n)
     if (nargin == 4)
       n = 100;
     elseif (nargin == 5)
-      if (!is_scalar (t))
+      if (!isscalar (t))
         error ("arma_rnd: n must be a scalar");
       endif
     else
@@ -60,7 +60,7 @@ function x = arma_rnd (a, b, v, t, n)
       error ("arma_rnd: a and b must not be matrices");
     endif
 
-    if (!is_scalar (t))
+    if (!isscalar (t))
       error ("arma_rnd: t must be a scalar");
     endif
 

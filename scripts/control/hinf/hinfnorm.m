@@ -67,7 +67,7 @@ function [g, gmin, gmax] = hinfnorm (sys, tol, gmin, gmax, ptol)
 
   if((nargin == 0) || (nargin > 4))
     usage("[g gmin gmax] = hinfnorm(sys[,tol,gmin,gmax,ptol])");
-  elseif(!is_struct(sys))
+  elseif(!isstruct(sys))
     error("Sys must be a system data structure");
   endif
 
@@ -103,8 +103,8 @@ function [g, gmin, gmax] = hinfnorm (sys, tol, gmin, gmax, ptol)
   endif
 
   ## check for scalar input arguments 2...5
-  if( ! (is_scalar(tol) && is_scalar(gmin)
-        && is_scalar(gmax) && is_scalar(ptol)) )
+  if( ! (isscalar(tol) && isscalar(gmin)
+        && isscalar(gmax) && isscalar(ptol)) )
     error("hinfnorm: tol, gmin, gmax, ptol must be scalars");
   endif
 

@@ -46,7 +46,7 @@ function [pval, z] = wilcoxon_test (x, y, alt)
     usage ("[pval, z] = wilcoxon_test (x, y, alt)");
   endif
 
-  if (! (is_vector (x) && is_vector (y) && (length (x) == length (y))))
+  if (! (isvector (x) && isvector (y) && (length (x) == length (y))))
     error ("wilcoxon_test: x and y must be vectors of the same length");
   endif
 

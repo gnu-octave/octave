@@ -78,7 +78,7 @@ function dsys = c2d (sys, opt, T)
   ## parse input arguments
   if(nargin < 1 | nargin > 3)
     usage("dsys=c2d(sys[,T])");
-  elseif (!is_struct(sys))
+  elseif (!isstruct(sys))
     error("sys must be a system data structure");
   elseif (nargin == 1)
     opt = "ex";

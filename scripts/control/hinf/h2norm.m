@@ -33,7 +33,7 @@ function h2gain = h2norm (sys)
 
   if((nargin != 1))
     usage("h2gain = h2norm(sys)");
-  elseif(!is_struct(sys))
+  elseif(!isstruct(sys))
     error("Sys must be in system data structure");
   end
   dflg = is_digital(sys);

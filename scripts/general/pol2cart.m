@@ -40,9 +40,9 @@ function [X, Y, Z] = pol2cart (Theta, R, Z)
     error ("pol2cart: number of output arguments must not be greater than number of input arguments");
   endif
 
-  if ((! (is_matrix (Theta) && is_matrix (R)))
+  if ((! (ismatrix (Theta) && ismatrix (R)))
       || (size (Theta) != size (R))
-      || (nargin == 3 && (! (size (R) == size (Z) && is_matrix (Z)))))
+      || (nargin == 3 && (! (size (R) == size (Z) && ismatrix (Z)))))
     error ("pol2cart: arguments must be matrices of same size");
   endif
 

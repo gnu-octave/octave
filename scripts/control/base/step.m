@@ -59,7 +59,7 @@ function [y, t] = step (sys, inp, tstop, n)
     usage ("[y, u] = step (sys, inp, tstop, n)");
   endif
 
-  if (! is_struct (sys))
+  if (! isstruct (sys))
     error ("step: sys must be a system data structure.");
   endif
 

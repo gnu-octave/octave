@@ -36,7 +36,7 @@ function [X, Y, Z] = sph2cart (Theta, Phi, R)
     usage ("[X, Y, Z] = sph2cart (Theta, Phi, R)");
   endif
 
-  if ((! (is_matrix (Theta) && is_matrix (Phi) && is_matrix (R)))
+  if ((! (ismatrix (Theta) && ismatrix (Phi) && ismatrix (R)))
       || size (Theta) != size (Phi)
       || size (Theta) != size (R))
     error ("sph2cart: arguments must be matrices of same size");

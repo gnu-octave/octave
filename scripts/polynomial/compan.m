@@ -65,7 +65,7 @@ function A = compan (c)
     usage ("compan (vector)");
   endif
 
-  if (! is_vector (c))
+  if (! isvector (c))
     error ("compan: expecting a vector argument");
   endif
 

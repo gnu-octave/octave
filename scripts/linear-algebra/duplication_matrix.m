@@ -79,7 +79,7 @@ function d = duplication_matrix (n)
     usage ("duplication_matrix (n)");
   endif
 
-  if (! (is_scalar (n) && n == round (n) && n > 0))
+  if (! (isscalar (n) && n == round (n) && n > 0))
     error ("duplication_matrix: n must be a positive integer");
   endif
 

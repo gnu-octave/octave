@@ -32,7 +32,7 @@ function gm = dcgain (sys, tol)
   if((nargin < 1) || (nargin > 2) || (nargout > 1))
     usage("[gm, ok] = dcgain(sys[, tol])");
   endif
-  if(!is_struct(sys))
+  if(!isstruct(sys))
     error("dcgain: first argument is not a system data structure.")
   endif
   sys = sysupdate(sys, "ss");

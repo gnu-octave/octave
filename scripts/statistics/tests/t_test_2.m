@@ -48,7 +48,7 @@ function [pval, t, df] = t_test_2 (x, y, alt)
         usage ("[pval, t, df] = t_test_2 (x, y, alt)");
   endif
 
-  if (! (is_vector (x) && is_vector (y)))
+  if (! (isvector (x) && isvector (y)))
     error ("t_test_2: both x and y must be vectors");
   endif
 

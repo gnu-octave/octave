@@ -33,10 +33,10 @@
 function rnd = cauchy_rnd (l, scale, r, c)
 
   if (nargin == 4)
-    if (! (is_scalar (r) && (r > 0) && (r == round (r))))
+    if (! (isscalar (r) && (r > 0) && (r == round (r))))
       error ("cauchy_rnd: r must be a positive integer");
     endif
-    if (! (is_scalar (c) && (c > 0) && (c == round (c))))
+    if (! (isscalar (c) && (c > 0) && (c == round (c))))
       error ("cauchy_rnd: c must be a positive integer");
     endif
     [retval, l, scale] = common_size (l, scale, zeros (r, c));

@@ -52,7 +52,7 @@ function [pval, ks, d] = kolmogorov_smirnov_test_2 (x, y, alt)
     usage ("[pval, ks] = kolmogorov_smirnov_test_2 (x, y, tol)");
   endif
 
-  if (! (is_vector (x) && is_vector (y)))
+  if (! (isvector (x) && isvector (y)))
     error ("kolmogorov_smirnov_test_2: both x and y must be vectors");
   endif
 

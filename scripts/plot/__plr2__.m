@@ -37,14 +37,14 @@ function __plr2__ (theta, rho, fmt)
     rho = real (rho);
   endif
 
-  if (is_scalar (theta))
-    if (is_scalar (rho))
+  if (isscalar (theta))
+    if (isscalar (rho))
       x = rho * cos (theta);
       y = rho * sin (theta);
       __plt2ss__ (x, y, fmt);
     endif
-  elseif (is_vector (theta))
-    if (is_vector (rho))
+  elseif (isvector (theta))
+    if (isvector (rho))
       if (length (theta) != length (rho))
         error ("polar: vector lengths must match");
       endif
@@ -57,7 +57,7 @@ function __plr2__ (theta, rho, fmt)
       x = rho .* cos (theta);
       y = rho .* sin (theta);
       __plt2vv__ (x, y, fmt);
-    elseif (is_matrix (rho))
+    elseif (ismatrix (rho))
       [t_nr, t_nc] = size (theta);
       if (t_nr == 1)
         theta = theta';
@@ -79,8 +79,8 @@ function __plr2__ (theta, rho, fmt)
       y = diag (sin (theta)) * rho;
       __plt2vm__ (x, y, fmt);
     endif
-  elseif (is_matrix (theta))
-    if (is_vector (rho))
+  elseif (ismatrix (theta))
+    if (isvector (rho))
       [r_nr, r_nc] = size (rho);
       if (r_nr == 1)
         rho = rho';
@@ -102,7 +102,7 @@ function __plr2__ (theta, rho, fmt)
       x = diag_r * cos (theta);
       y = diag_r * sin (theta);
       __plt2mv__ (x, y, fmt);
-    elseif (is_matrix (rho))
+    elseif (ismatrix (rho))
       if (size (rho) != size (theta))
         error ("polar: matrix dimensions must match");
       endif

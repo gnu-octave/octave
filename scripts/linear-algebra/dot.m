@@ -30,7 +30,7 @@ function z = dot (x, y)
     usage ("dot (x, y)");
   endif
 
-  if (is_vector (x) && is_vector (y) && length (x) == length (y))
+  if (isvector (x) && isvector (y) && length (x) == length (y))
     [x_nr, x_nc] = size (x);
     [y_nr, y_nc] = size (y);
     if (x_nr == 1)

@@ -30,7 +30,7 @@ function USEW = freqchkw (w)
 
   if(isempty(w))
     USEW = 0;
-  elseif(!is_vector(w))
+  elseif(!isvector(w))
     error(["w (",num2str(rows(w)),"x",num2str(columns(w)), ...
       "): must be [], a vector or a scalar"]);
   elseif( (max(abs(imag(w))) != 0) && (min(real(w)) <= 0) )

@@ -35,9 +35,9 @@
 function [housv, beta, zer] = housh (x, j, z)
 
   ## check for valid inputs
-  if (!is_vector (x) && ! is_scalar (x))
+  if (!isvector (x) && ! isscalar (x))
     error ("housh: first input must be a vector")
-  elseif (! is_scalar(j))
+  elseif (! isscalar(j))
     error ("housh: second argment must be an integer scalar")
   else
     housv = x;

@@ -37,7 +37,7 @@ function v = vech (x)
     usage ("vech (x)");
   endif
 
-  if (! is_square (x))
+  if (! issquare (x))
     error ("vech: x must be square");
   endif
 

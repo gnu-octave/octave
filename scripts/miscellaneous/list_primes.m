@@ -38,7 +38,7 @@
 function retval = list_primes (n)
 
   if (nargin > 0)
-    if (! is_scalar (n))
+    if (! isscalar (n))
       error ("list_primes: argument must be a scalar");
     endif
   endif

@@ -39,7 +39,7 @@ function [a, b, c, d] = quaternion (w, x, y, z)
 
   switch (nargin)
     case(1)
-      if (! (is_vector (w) && length (w) == 4))
+      if (! (isvector (w) && length (w) == 4))
 	error ("input vector must be of length 4)");
       endif
       ## extract data
@@ -80,9 +80,9 @@ function [a, b, c, d] = quaternion (w, x, y, z)
     vv = w;
     theta = x;
 
-    if (! is_vector (vv) || length (vv) != 3)
+    if (! isvector (vv) || length (vv) != 3)
       error ("vv must be a length three vector");
-    elseif (! is_scalar (theta))
+    elseif (! isscalar (theta))
       error ("theta must be a scalar");
     elseif (norm (vv) == 0)
       error ("quaternion: vv is zero");
@@ -103,7 +103,7 @@ function [a, b, c, d] = quaternion (w, x, y, z)
     if (nargout != 1)
       usage ("w = quaterion (a, b, c, d)");
     endif
-    if (! (is_scalar (w) && is_scalar (x) && is_scalar (y) && is_scalar (z)))
+    if (! (isscalar (w) && isscalar (x) && isscalar (y) && isscalar (z)))
       error ("input values must be scalars");
     endif
     a = [w, x, y, z];

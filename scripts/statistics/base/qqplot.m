@@ -51,7 +51,7 @@ function [q, s] = qqplot (x, dist, varargin)
     usage ("qqplot (x, dist, params)");
   endif
 
-  if (! (is_vector(x)))
+  if (! (isvector(x)))
     error ("qqplot: x must be a vector");
   endif
 

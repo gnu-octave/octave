@@ -54,7 +54,7 @@ function retsys = sysout (sys, opt)
     return;
   endif
 
-  if(! is_struct(sys))
+  if(! isstruct(sys))
     disp("sysout: input must be a system structure")
   endif
 

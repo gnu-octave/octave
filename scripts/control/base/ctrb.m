@@ -40,7 +40,7 @@ function Qs = ctrb (sys, b)
 
   if (nargin == 2)
     a = sys;
-  elseif (nargin == 1 && is_struct(sys))
+  elseif (nargin == 1 && isstruct(sys))
     sysupdate(sys,"ss");
     [a,b] = sys2ss(sys);
   else

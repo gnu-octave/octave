@@ -43,7 +43,7 @@ function [pval, f, df_num, df_den] = f_test_regression (y, X, R, r)
   endif
 
   [T, k] = size (X);
-  if (! (is_vector (y) && (length (y) == T)))
+  if (! (isvector (y) && (length (y) == T)))
     error ("f_test_regression: y must be a vector of length rows (X)");
   endif
   y = reshape (y, T, 1);

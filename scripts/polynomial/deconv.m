@@ -40,7 +40,7 @@ function [b, r] = deconv (y, a)
     usage ("deconv (y, a)");
   endif
 
-  if (! (is_vector (y) && is_vector (a)))
+  if (! (isvector (y) && isvector (a)))
     error("conv: both arguments must be vectors");
   endif
 

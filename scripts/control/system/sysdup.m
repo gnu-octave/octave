@@ -61,7 +61,7 @@ function retsys = sysdup (Asys, output_list, input_list)
     usage("retsys = sysdup(Asys,output_list,input_list)");
   endif
 
-  if( !is_struct(Asys))
+  if( !isstruct(Asys))
     error("Asys must be a system data structure (see ss2sys, tf2sys, or zp2sys)")
   endif
 
@@ -78,7 +78,7 @@ function retsys = sysdup (Asys, output_list, input_list)
   endif
 
   ## first duplicate inputs
-  if(is_vector(input_list))
+  if(isvector(input_list))
     for ii=1:length(input_list);
       bb(:,mm+ii) = bb(:,input_list(ii));
       dd(:,mm+ii) = dd(:,input_list(ii));

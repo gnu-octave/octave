@@ -36,9 +36,9 @@
 
 function vi = qtransv (vb, qib)
 
-  if (! is_vector (vb) || length (vb) != 3)
+  if (! isvector (vb) || length (vb) != 3)
     error ("qtransv: v(%d,%d) must be a 3-D vector", rows (vb), columns (vb));
-  elseif (! is_vector (qib) || length (qib) != 4)
+  elseif (! isvector (qib) || length (qib) != 4)
     error ("qtransv: q(%d,%d) must be a quaternion", rows (qib), columns (qib));
   elseif (max (abs (imag (vb))) + max (abs (imag (qib))) != 0)
     error ("qtransv: input values must be real");

@@ -48,10 +48,10 @@ function [pval, z] = z_test_2 (x, y, v_x, v_y, alt)
     usage ("[pval, z] = z_test_2 (x, y, v_x, v_y, alt)");
   endif
 
-  if (! (is_vector (x) && is_vector (y)))
+  if (! (isvector (x) && isvector (y)))
     error("z_test_2: both x and y must be vectors");
-  elseif (! (is_scalar (v_x) && (v_x > 0)
-             && is_scalar (v_y) && (v_y > 0)))
+  elseif (! (isscalar (v_x) && (v_x > 0)
+             && isscalar (v_y) && (v_y > 0)))
     error ("z_test_2: both v_x and v_y must be positive scalars");
   endif
 

@@ -8,7 +8,7 @@ function retval = testqr (q, r, a, p)
   else
     n1 = norm (q'*q-eye(columns(q)))
     retval = (n1 < tol);
-    if (is_vector (p))
+    if (isvector (p))
       n2 = norm (q*r-a(:,p))
       retval = (retval && n2 < tol);
     else

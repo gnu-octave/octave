@@ -54,11 +54,11 @@ function out = ltifr (a, b, w)
   if (nargin == 2)
     sys = a;
     w = b;
-    if(!is_struct(sys))
+    if(!isstruct(sys))
       error("two arguments: 1st must be a system data structure");
     endif
 
-    if (!is_vector(w))
+    if (!isvector(w))
       error("w must be a vector");
     endif
 
@@ -79,13 +79,13 @@ function out = ltifr (a, b, w)
         rows(b),columns(b));
     endif
 
-    if (!is_square(a))
+    if (!issquare(a))
       error("ltifr:  A(%dx$d) must be square.",rows(a),columns(a))
     endif
 
   endif
 
-  if (!is_vector(w))
+  if (!isvector(w))
     error("w must be a vector");
   endif
 

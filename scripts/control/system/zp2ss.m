@@ -58,13 +58,13 @@ function [a, b, c, d] = zp2ss (zer, pol, k)
     error("Incorrect number of input arguments");
   endif
 
-  if(! (is_vector(zer) | isempty(zer)) )
+  if(! (isvector(zer) | isempty(zer)) )
     error(["zer(",num2str(rows(zer)),",",num2str(columns(zer)), ...
         ") should be a vector"]);
-  elseif(! (is_vector(pol) | isempty(pol) ) )
+  elseif(! (isvector(pol) | isempty(pol) ) )
     error(["pol(",num2str(rows(pol)),",",num2str(columns(pol)), ...
         ") should be a vector"]);
-  elseif(! is_scalar(k))
+  elseif(! isscalar(k))
     error(["k(",num2str(rows(k)),",",num2str(columns(k)), ...
         ") should be a scalar"]);
   elseif( k != real(k))

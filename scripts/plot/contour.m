@@ -42,13 +42,13 @@ function contour (x, y, z, n)
     else
       n = y; 
     endif
-    if (is_matrix (z))
+    if (ismatrix (z))
       gset nosurface;
       gset contour;
       gset cntrparam bspline;
-      if (is_scalar (n))
+      if (isscalar (n))
         command = sprintf ("gset cntrparam levels %d", n);
-      elseif (is_vector (n))
+      elseif (isvector (n))
         tmp = sprintf ("%f", n(1));
         for i = 2:length (n)
           tmp = sprintf ("%s, %f", tmp, n(i));
@@ -66,7 +66,7 @@ function contour (x, y, z, n)
     if (nargin == 3)
       n = 10;
     endif
-    if (is_vector (x) && is_vector (y) && is_matrix (z))
+    if (isvector (x) && isvector (y) && ismatrix (z))
       xlen = length (x);
       ylen = length (y);
       if (xlen == rows (z) && ylen == columns (z))
@@ -85,9 +85,9 @@ function contour (x, y, z, n)
         gset nosurface;
         gset contour;
         gset cntrparam bspline;
-        if (is_scalar (n))
+        if (isscalar (n))
           command = sprintf ("gset cntrparam levels %d", n);
-        elseif (is_vector (n))
+        elseif (isvector (n))
           tmp = sprintf ("%f", n(1));
           for i = 2:length (n)
             tmp = sprintf ("%s, %f", tmp, n(i));

@@ -36,11 +36,11 @@ function v = pvl (r, n, p)
     usage ("pvl (r, n, p)");
   endif
 
-  if (! (is_scalar (r) && (r > -1)))
+  if (! (isscalar (r) && (r > -1)))
     error ("pvl: r has to be a scalar > -1");
-  elseif (! (is_scalar (n) && (n > 0)))
+  elseif (! (isscalar (n) && (n > 0)))
     error ("pvl: n has to be a positive scalar");
-  elseif (! is_scalar (p))
+  elseif (! isscalar (p))
     error ("pvl: p has to be a scalar");
   endif
 

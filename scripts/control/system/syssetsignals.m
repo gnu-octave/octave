@@ -91,7 +91,7 @@ function retsys = syssetsignals (sys, opt, names, sig_idx)
 
   if (nargin < 3 | nargin > 4)
     usage("retsys=syssetsignals(sys,opt,names{,sig_idx})");
-  elseif (!is_struct(sys))
+  elseif (!isstruct(sys))
     error("sys must be a system data structure");
   elseif (isempty(opt))
     opt = "out";
@@ -125,7 +125,7 @@ function retsys = syssetsignals (sys, opt, names, sig_idx)
 
   if(strcmp(opt,"yd") == 0)
     ## it's a signal name list we're changing
-    if(!is_list(names))
+    if(!islist(names))
       names = list(names);
     endif
     if(!is_signal_list(names))
@@ -179,7 +179,7 @@ function retsys = syssetsignals (sys, opt, names, sig_idx)
       sigvals = [];
     else
       nsigs = length(sig_vals);
-      if(!is_vector(names))
+      if(!isvector(names))
         error("syssetsignals: opt=yd, names(%dx%d) must be a vector", ...
           rows(names), columns(names));
       endif

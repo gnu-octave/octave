@@ -37,7 +37,7 @@
 ## tol is a roundoff paramter, set to 200*eps if omitted.
 ## @end deftypefn
 
-## See also: size, rows, columns, length, is_matrix, is_scalar, is_vector
+## See also: size, rows, columns, length, ismatrix, isscalar, isvector
 ##     is_observable, is_stabilizable, is_detectable
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
@@ -48,7 +48,7 @@
 function [retval, U] = is_stabilizable (a, b, tol)
 
   if(nargin < 1)        usage("[retval,U] = is_stabilizable(a {, b ,tol})");
-  elseif(is_struct(a))
+  elseif(isstruct(a))
     ## sustem passed.
     if(nargin == 2)
       tol = b;          % get tolerance

@@ -51,7 +51,7 @@ function multiplot (xn, yn)
     usage ("multiplot (xn, yn)");
   endif
 
-  if (! (is_scalar (xn) && is_scalar (yn)))
+  if (! (isscalar (xn) && isscalar (yn)))
     error ("multiplot: xn and yn have to be scalars");
   endif
 

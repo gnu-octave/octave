@@ -43,7 +43,7 @@ function [pval, chisq, df] = chisquare_test_homogeneity (x, y, c)
     usage ("[pval, chisq, df] = chisquare_test_homogeneity (x, y, c)");
   endif
 
-  if (! (is_vector(x) && is_vector(y) && is_vector(c)))
+  if (! (isvector(x) && isvector(y) && isvector(c)))
     error ("chisquare_test_homogeneity: x, y and c must be vectors");
   endif
   ## Now test c for strictly increasing entries

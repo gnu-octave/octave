@@ -55,7 +55,7 @@ function [zer, gain] = tzero (A, B, C, D)
   ## get A,B,C,D and Asys variables, regardless of initial form
   if(nargin == 4)
     Asys = ss2sys(A,B,C,D);
-  elseif( (nargin == 1) && (! is_struct(A)))
+  elseif( (nargin == 1) && (! isstruct(A)))
     usage("[zer,gain] = tzero(A,B,C,D) or zer = tzero(Asys)");
   elseif(nargin != 1)
     usage("[zer,gain] = tzero(A,B,C,D) or zer = tzero(Asys)");

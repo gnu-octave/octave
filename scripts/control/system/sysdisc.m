@@ -41,7 +41,7 @@ function [dsys, Adc, Cdc] = sysdisc (sys)
 
   if (nargin != 1)
     usage("[dsys,Adc,Cdc] = sysdisc(sys)");
-  elseif (!is_struct(sys))
+  elseif (!isstruct(sys))
     error("sys must be in system data structure form");
   endif
 

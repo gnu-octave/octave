@@ -67,7 +67,7 @@ function t = cor_test (X, Y, ALTERNATIVE, METHOD)
     usage ("cor_test (X, Y, ALTERNATIVE, METHOD)")
   endif
 
-  if (!is_vector (X) || !is_vector (Y) || length (X) != length (Y))
+  if (!isvector (X) || !isvector (Y) || length (X) != length (Y))
     error ("cor_test: X and Y must be vectors of the same length")
   endif
 

@@ -232,7 +232,7 @@ function curr_axis = axis (ax, varargin)
       warning (["unknown axis option '", ax, "'"]);
     endif
 
-  elseif (is_vector (ax))
+  elseif (isvector (ax))
 
     len = length (ax);
 

@@ -42,7 +42,7 @@ function Asys = packsys (a, b, c, d, dflg)
 
   ## check dflg
   if(nargin == 5)
-    if( !is_scalar(dflg))
+    if( !isscalar(dflg))
       [m,n] = size(dflg);
       error(["packsys: dflg (",num2str(m),",",num2str(n), ...
         ") must be a scalar."]);

@@ -37,7 +37,7 @@ function damp (p, tsam)
   if(nargin < 1 || nargin > 2)
     usage("damp(p,[ tsamp])")
   endif
-  if(is_struct(p))
+  if(isstruct(p))
     if (nargin != 1)
       error("damp: when p is a system, tsamp parameter is not allowed.");
     endif
@@ -50,7 +50,7 @@ function damp (p, tsam)
         t_samp = tsam;
     endif
   endif
-  if (!is_square(aa))
+  if (!issquare(aa))
     error("damp: Matrix p is not square.")
   endif
   if (DIGITAL && t_samp <= 0.0)

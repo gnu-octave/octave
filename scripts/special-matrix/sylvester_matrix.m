@@ -39,7 +39,7 @@ function retval = sylvester_matrix (k)
     usage ("sylvester_matrix (n)");
   endif
 
-  if (is_scalar (k))
+  if (isscalar (k))
     if (k < 1)
       retval = 1;
     else

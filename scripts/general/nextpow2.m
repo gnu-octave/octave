@@ -43,7 +43,7 @@ function n = nextpow2 (x)
     usage ("nextpow2 (x)");
   endif
 
-  if (! (is_scalar (x) || is_vector (x)))
+  if (! (isscalar (x) || isvector (x)))
     error ("nextpow2: x must be a scalar or a vector");
   endif
 

@@ -37,7 +37,7 @@ function retval = spencer (X)
   n = xr;
   c = xc;
 
-  if (is_vector(X))
+  if (isvector(X))
    n = length(X);
    c = 1;
    X = reshape(X, n, 1);

@@ -35,13 +35,13 @@ function rnd = discrete_rnd (n, v, p)
     usage ("discrete_rnd (n, v, p)");
   endif
 
-  if (! is_scalar (n))
+  if (! isscalar (n))
     error ("discrete_rnd: n must be a scalar");
   endif
 
-  if (! is_vector (v))
+  if (! isvector (v))
     error ("discrete_rnd: v must be a vector");
-  elseif (! is_vector (p) || (length (p) != length (v)))
+  elseif (! isvector (p) || (length (p) != length (v)))
     error ("discrete_rnd: p must be a vector with length (v) elements");
   elseif (! (all (p >= 0) && any (p)))
     error ("discrete_rnd: p must be a nonzero, nonnegative vector");

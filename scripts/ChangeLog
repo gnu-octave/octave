@@ -11,6 +11,7 @@
 	* deprecated/is_struct.m: New file.
 	* deprecated/is_symmetric.m: New file.
 	* deprecated/is_vector.m: New file.
+	* Change all callers of these functions to use the new names.
 
 	* deprecated: New directory.
 	* Makefile.in (SUBDIRS): Add it to the list.

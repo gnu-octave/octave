@@ -37,7 +37,7 @@ function msg = strerror (name, err)
     error ("strerror: first argument must be a string");
   endif
 
-  if (! is_scalar (err))
+  if (! isscalar (err))
     error ("strerror: second argument must be a scalar");
   endif
 

@@ -42,7 +42,7 @@ function v = npv (r, p, i)
     usage ("npv (r, p, i");
   endif
 
-  if (! (is_vector (p)))
+  if (! (isvector (p)))
     error ("npv: p has to be a vector");
   else
     n = length (p);
@@ -52,16 +52,16 @@ function v = npv (r, p, i)
   if (any (any (r <= -1)))
     error ("npv: all interest rates must be > -1");
   endif
-  if (is_scalar (r))
+  if (isscalar (r))
     d = 1 ./ (1 + r) .^ (0 : n);
-  elseif (is_vector (r) && (length (r) == n))
+  elseif (isvector (r) && (length (r) == n))
     d = [1, (1 ./ cumprod (reshape (1 + r, 1, n)))];
   else
     error ("npv: r must be a scalar or a vector of the same length as p");
   endif
 
   if (nargin == 3)
-    if (! is_scalar (i))
+    if (! isscalar (i))
       error ("npv: I_0 must be a scalar");
     endif
   else

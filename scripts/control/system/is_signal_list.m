@@ -23,7 +23,7 @@
 
 function flg = is_signal_list(mylist)
 
-  flg = is_list(mylist);
+  flg = islist(mylist);
 
   if (flg)
     for ii = 1:length (mylist)

@@ -32,9 +32,9 @@ function retval = center (x)
     usage ("center (x)");
   endif
 
-  if (is_vector (x))
+  if (isvector (x))
     retval = x - mean (x);
-  elseif (is_matrix (x))
+  elseif (ismatrix (x))
     retval = x - ones (rows (x), 1) * mean (x);
   elseif (isempty (x))
     retval = x;

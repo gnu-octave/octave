@@ -40,7 +40,7 @@ function y = polyval (c, x)
     usage ("polyval (c, x)");
   endif
 
-  if (! (is_vector (c) || isempty (c)))
+  if (! (isvector (c) || isempty (c)))
     error ("polyval: first argument must be a vector");
   endif
 

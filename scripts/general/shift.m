@@ -45,7 +45,7 @@ function y = shift (x, b)
     nc = 0;
   endif
 
-  if (! (is_scalar (b) && b == round (b)))
+  if (! (isscalar (b) && b == round (b)))
     error ("shift: b must be an integer");
   endif
 

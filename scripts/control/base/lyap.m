@@ -86,7 +86,7 @@ function x = lyap (a, b, c)
     usage ("lyap (a, b {,c})");
   endif
 
-  if ((n = is_square(a)) == 0)
+  if ((n = issquare(a)) == 0)
     error ("lyap: a is not square");
   endif
 
@@ -94,7 +94,7 @@ function x = lyap (a, b, c)
 
     ## Transform Lyapunov equation to Sylvester equation form.
 
-    if ((m = is_square (b)) == 0)
+    if ((m = issquare (b)) == 0)
       if ((m = rows (b)) == n)
 
         ## solve a x + x a' + b b' = 0
@@ -124,7 +124,7 @@ function x = lyap (a, b, c)
 
     ## Check dimensions.
 
-    if ((m = is_square (b)) == 0)
+    if ((m = issquare (b)) == 0)
       error ("lyap: b must be square in a sylvester equation");
     endif
 

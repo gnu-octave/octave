@@ -49,7 +49,7 @@ function [nn, xx] = hist (y, x, norm)
     usage ("[nn, xx] = hist (y, x, norm)");
   endif
 
-  if (is_vector (y))
+  if (isvector (y))
     max_val = max (y);
     min_val = min (y);
   else
@@ -63,7 +63,7 @@ function [nn, xx] = hist (y, x, norm)
     cutoff = x + delta;
   else
     ## nargin is either 2 or 3
-    if (is_scalar (x))
+    if (isscalar (x))
       n = x;
       if (n <= 0)
         error ("hist: number of bins must be positive");
@@ -71,7 +71,7 @@ function [nn, xx] = hist (y, x, norm)
       delta = (max_val - min_val) / n / 2;
       x = linspace (min_val+delta, max_val-delta, n);
       cutoff = x + delta;
-    elseif (is_vector (x))
+    elseif (isvector (x))
       tmp = sort (x);
       if (any (tmp != x))
         warning ("hist: bin values not sorted on input");

@@ -117,7 +117,7 @@ function [h_r, w_r] = freqz (b, a, n, region, Fs)
   b = reshape (b, 1, lb);
   k = max ([la, lb]);
 
-  if (! is_scalar (n))
+  if (! isscalar (n))
     if (nargin == 4) ## Fs was specified
       w = 2*pi*n/Fs;
     else

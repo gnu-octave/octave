@@ -35,9 +35,9 @@ function x = repmat (a, m, n)
   endif
 
   if (nargin == 2)
-    if (is_scalar (m))
+    if (isscalar (m))
       n = m;
-    elseif (is_vector (m) && length (m) == 2)
+    elseif (isvector (m) && length (m) == 2)
       n = m(2);
       m = m(1);
     else

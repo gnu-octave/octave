@@ -29,7 +29,7 @@
 
 function Aib = qtransvmat (qib)
 
-  if (! is_vector(qib) || length (qib) != 4)
+  if (! isvector(qib) || length (qib) != 4)
     error ("qtransvmat: q(%d,%d) must be a quaternion", rows (qib), \
 	   columns (qib));
   elseif (max (abs (imag (qib))) != 0)

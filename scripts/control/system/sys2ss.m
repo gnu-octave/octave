@@ -83,7 +83,7 @@ function [a, b, c, d, tsam, n, nz, stname, inname, outname, yd] = sys2ss (sys)
     usage("[a,b,c,d,tsam,n,nz,stname,inname,outname,yd] = sys2ss(sys)")
   endif
 
-  if( ! is_struct(sys) )
+  if( ! isstruct(sys) )
     error("input argument must be a system data structure");
   endif
 

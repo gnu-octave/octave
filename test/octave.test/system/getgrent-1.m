@@ -1,5 +1,5 @@
 x = getgrent ();
-(is_struct (x)
+(isstruct (x)
  && struct_contains (x, "name")
  && struct_contains (x, "passwd")
  && struct_contains (x, "gid")

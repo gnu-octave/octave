@@ -29,7 +29,7 @@
 
 function x = zgshsr (y)
 
-  if(!is_vector(y))
+  if(!isvector(y))
     error(sprintf("y(%dx%d) must be a vector",rows(y),columns(y)));
   endif
   x = vec(y);

@@ -48,10 +48,10 @@ function [pval, t, df] = t_test (x, m, alt)
     usage ("[pval, t, df] = t_test (x, m, alt)");
   endif
 
-  if (! is_vector (x))
+  if (! isvector (x))
     error ("t_test: x must be a vector");
   endif
-  if (! is_scalar (m))
+  if (! isscalar (m))
     error ("t_test: m must be a scalar");
   endif
 

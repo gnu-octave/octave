@@ -72,7 +72,7 @@ function [pval, lm] = arch_test (y, X, p)
     error ("arch_test needs 3 input arguments");
   endif
 
-  if (! (is_vector (y)))
+  if (! (isvector (y)))
     error ("arch_test: y must be a vector");
   endif
   T   = length (y);
@@ -83,7 +83,7 @@ function [pval, lm] = arch_test (y, X, p)
   elseif (! (rx == T))
     error ("arch_test: either rows(X) == length(y), or X is a scalar");
   endif
-  if (! (is_scalar(p) && (rem(p, 1) == 0) && (p > 0)))
+  if (! (isscalar(p) && (rem(p, 1) == 0) && (p > 0)))
     error ("arch_test: p must be a positive integer");
   endif
 

@@ -35,9 +35,9 @@ function pdf = discrete_pdf (x, v, p)
 
   [r, c] = size (x);
 
-  if (! is_vector (v))
+  if (! isvector (v))
     error ("discrete_pdf: v must be a vector");
-  elseif (! is_vector (p) || (length (p) != length (v)))
+  elseif (! isvector (p) || (length (p) != length (v)))
     error ("discrete_pdf: p must be a vector with length (v) elements");
   elseif (! (all (p >= 0) && any (p)))
     error ("discrete_pdf: p must be a nonzero, nonnegative vector");

@@ -36,7 +36,7 @@ function S = statistics (X)
   endif
 
   if (prod (size (X)) > 1)
-    if (is_vector (X))
+    if (isvector (X))
       X = reshape (X, length (X), 1);
     endif
     for k=1:columns(X)

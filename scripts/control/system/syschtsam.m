@@ -29,9 +29,9 @@ function retsys = syschtsam (sys, tsam)
 
   if (nargin != 2)
     usage("retsys = syschtsam(sys,tsam)");
-  elseif (!is_struct(sys))
+  elseif (!isstruct(sys))
     error("sys must be in system data structure form");
-  elseif(!is_scalar(tsam))
+  elseif(!isscalar(tsam))
     disp("syschtsam:")
     tsam
     error("tsam must be a scalar")

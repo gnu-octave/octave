@@ -47,13 +47,13 @@ function manova (Y, g)
     usage ("manova (Y, g)");
   endif
 
-  if (is_vector (Y))
+  if (isvector (Y))
     error ("manova: Y must not be a vector");
   endif
 
   [n, p] = size (Y);
 
-  if (!is_vector (g) || (length (g) != n))
+  if (!isvector (g) || (length (g) != n))
     error ("manova: g must be a vector of length rows (Y)");
   endif
 

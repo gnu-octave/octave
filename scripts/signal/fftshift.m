@@ -46,11 +46,11 @@ function retval = fftshift (V)
     usage ("usage: fftshift (X)");
   endif
 
-  if (is_vector (V))
+  if (isvector (V))
     x = length (V);
     xx = ceil (x/2);
     retval = V([xx+1:x, 1:xx]);
-  elseif (is_matrix (V))
+  elseif (ismatrix (V))
     [x, y] = size (V);
     xx = ceil (x/2);
     yy = ceil (y/2);

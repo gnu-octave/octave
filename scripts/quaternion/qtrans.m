@@ -28,9 +28,9 @@
 
 function v = qtrans (v, q)
 
-  if (! is_vector (v) || length (v) != 4)
+  if (! isvector (v) || length (v) != 4)
     error ("qtrans: v(%d,%d) must be a quaternion", rows (v), columns (v));
-  elseif (! is_vector (q) || length (q) != 4)
+  elseif (! isvector (q) || length (q) != 4)
     error ("qtrans: q(%d,%d) must be a quaternion", rows (q), columns (q));
   endif
 

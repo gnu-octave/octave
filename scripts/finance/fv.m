@@ -43,11 +43,11 @@ function v = fv (r, n, p, l, m)
     usage ("fv (r, n, p, l, method)");
   endif
 
-  if (! (is_scalar (r) && (r > -1)))
+  if (! (isscalar (r) && (r > -1)))
     error ("fv: r must be a scalar > -1");
-  elseif (! (is_scalar (n) && (n > 0)))
+  elseif (! (isscalar (n) && (n > 0)))
     error ("fv: n must be a positive scalar");
-  elseif (! is_scalar (p))
+  elseif (! isscalar (p))
     error ("fv: p must be a scalar");
   endif
 
@@ -71,7 +71,7 @@ function v = fv (r, n, p, l, m)
     if strcmp (m, "b")
       v = v * (1 + r);
     endif
-    if is_scalar (l)
+    if isscalar (l)
       v = v + fvl (r, n, l);
     else
       error ("fv: l must be a scalar");

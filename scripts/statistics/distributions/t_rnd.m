@@ -33,10 +33,10 @@
 function rnd = t_rnd (n, r, c)
 
   if (nargin == 3)
-    if (! (is_scalar (r) && (r > 0) && (r == round (r))))
+    if (! (isscalar (r) && (r > 0) && (r == round (r))))
       error ("t_rnd: r must be a positive integer");
     endif
-    if (! (is_scalar (c) && (c > 0) && (c == round (c))))
+    if (! (isscalar (c) && (c > 0) && (c == round (c))))
       error ("t_rnd: c must be a positive integer");
     endif
     [retval, n] = common_size (n, zeros (r, c));

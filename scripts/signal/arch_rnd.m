@@ -48,7 +48,7 @@ function y = arch_rnd (a, b, T)
   if (! ((min (size (a)) == 1) && (min (size (b)) == 1)))
     error ("arch_rnd: a and b must both be scalars or vectors");
   endif
-  if (! (is_scalar (T) && (T > 0) && (rem (T, 1) == 0)))
+  if (! (isscalar (T) && (T > 0) && (rem (T, 1) == 0)))
     error ("arch_rnd: T must be a positive integer");
   endif
 

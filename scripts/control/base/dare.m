@@ -93,7 +93,7 @@ function x = dare (a, b, c, r, opt)
       warning ("dare: a,c are not observable");
     endif
 
-    if ((p = is_square (c)) == 0)
+    if ((p = issquare (c)) == 0)
       c = c'*c;
       p = rows (c);
     endif
@@ -101,7 +101,7 @@ function x = dare (a, b, c, r, opt)
     ## Check r dimensions.
     n = rows(a);
     m = columns(b);
-    if ((m1 = is_square (r)) == 0)
+    if ((m1 = issquare (r)) == 0)
       warning ("dare: r is not square");
     elseif (m1 != m)
       warning ("b,r are not conformable");

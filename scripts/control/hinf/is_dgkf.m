@@ -124,9 +124,9 @@ function [retval, dgkf_struct] = is_dgkf (Asys, nu, ny, tol)
 
   if (nargin < 3) | (nargin > 4)
     usage("[retval,dgkf_struct] = is_dgkf(Asys,nu,ny{,tol})");
-  elseif (! is_scalar(nu) | ! is_scalar(ny) )
+  elseif (! isscalar(nu) | ! isscalar(ny) )
     error("is_dgkf: arguments 2 and 3 must be scalars")
-  elseif (! is_struct(Asys) )
+  elseif (! isstruct(Asys) )
     error("Argument 1 must be a system data structure");
   endif
   if(nargin < 4)

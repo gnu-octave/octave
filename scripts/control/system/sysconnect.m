@@ -116,7 +116,7 @@ function sys = sysconnect (sys, output_list, input_list, order, tol)
   [nc,nz,mm,pp] = sysdimensions(sys);
   nn = nc+nz;
 
-  if( !is_struct(sys))
+  if( !isstruct(sys))
     error("sys must be in structured system form")
   elseif(pp < li)
     error(["length(output_list)=",num2str(li),", sys has only ", ...

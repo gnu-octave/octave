@@ -78,7 +78,7 @@ function [n, m, p] = abcddim (a, b, c, d)
   [c, cn, cm] = __abcddims__ (c);
   [d, dn, dm] = __abcddims__ (d);
 
-  if ( (!is_square(a)) & (!isempty(a)) )
+  if ( (!issquare(a)) & (!isempty(a)) )
     warning (["abcddim: a is not square (",num2str(an),"x",num2str(am),")"]);
     return
   endif

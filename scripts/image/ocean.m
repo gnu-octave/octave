@@ -32,7 +32,7 @@ function map = ocean (number)
   if (nargin == 0)
     number = 64;
   elseif (nargin == 1)
-    if (! is_scalar (number))
+    if (! isscalar (number))
       error ("ocean: argument must be a scalar");
     endif
   else

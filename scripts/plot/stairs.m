@@ -51,7 +51,7 @@ function [xs, ys] = stairs (x, y)
 
 
   if (nargin == 1)
-    if (is_vector (x))
+    if (isvector (x))
       len = 2 * length (x);
       tmp_xs = tmp_ys = zeros (len, 1);
       k = 0;
@@ -65,7 +65,7 @@ function [xs, ys] = stairs (x, y)
       error ("stairs: argument must be a vector");
     endif
   elseif (nargin == 2)
-    if (is_vector (x) && is_vector (y))
+    if (isvector (x) && isvector (y))
       xlen = length (x);
       ylen = length (y);
       if (xlen == ylen)

@@ -21,7 +21,7 @@
 ## @deftypefn {Function File} {} rows (@var{a})
 ## Return the number of rows of @var{a}.
 ## @end deftypefn
-## @seealso{size, columns, length, is_scalar, is_vector, and is_matrix}
+## @seealso{size, columns, length, isscalar, isvector, and ismatrix}
 
 ## Author: jwe
 

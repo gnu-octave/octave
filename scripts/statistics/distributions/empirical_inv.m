@@ -29,7 +29,7 @@
 
 function inv = empirical_inv (x, data)
 
-  if (! is_vector (data))
+  if (! isvector (data))
     error ("empirical_inv: data must be a vector");
   endif
 

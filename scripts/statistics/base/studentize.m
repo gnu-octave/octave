@@ -34,13 +34,13 @@ function t = studentize (x)
     usage ("studentize (x)");
   endif
 
-  if is_vector (x)
+  if isvector (x)
     if (std (x) == 0)
       t = zeros (size (x));
     else
       t = (x - mean (x)) / std (x);
     endif
-  elseif is_matrix (x)
+  elseif ismatrix (x)
     l = ones (rows (x), 1);
     t = x - l * mean (x);
     t = t ./ (l * max ([(std (t)); (! any (t))]));

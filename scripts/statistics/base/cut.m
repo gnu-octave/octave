@@ -41,13 +41,13 @@ function group = cut (X, BREAKS)
     usage ("cut (X, BREAKS)");
   endif
 
-  if (! is_vector (X))
+  if (! isvector (X))
     error ("cut: X must be a vector");
   endif
-  if is_scalar (BREAKS)
+  if isscalar (BREAKS)
     BREAKS = linspace (min (X), max (X), BREAKS + 1);
     BREAKS(1) = BREAKS(1) - 1;
-  elseif is_vector (BREAKS)
+  elseif isvector (BREAKS)
     BREAKS = sort (BREAKS);
   else
     error ("cut: BREAKS must be a scalar or vector");

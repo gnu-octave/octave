@@ -46,7 +46,7 @@ function sys = sysmult (varargin)
   arglist = list();
   for kk=1:nargin
     arglist(kk) = varargin{kk};
-    if(!is_struct(nth(arglist,kk)))
+    if(!isstruct(nth(arglist,kk)))
       error("sysadd: argument %d is not a data structure",kk);
     endif
   endfor

@@ -43,9 +43,9 @@ function [num, den] = zp2tf (zer, pol, k)
   [rp,cp] = size(pol);
   [rz,cz] = size(zer);
 
-  if(!(is_vector(zer) | isempty(zer)) )
+  if(!(isvector(zer) | isempty(zer)) )
     error(sprintf("zer(%dx%d) must be a vector",rz,cz));
-  elseif(!(is_vector(pol) | isempty(pol)) )
+  elseif(!(isvector(pol) | isempty(pol)) )
     error(sprintf("pol(%dx%d) must be a vector",rp,cp));
   elseif(length(zer) > length(pol))
     error(sprintf("zer(%dx%d) longer than pol(%dx%d)",rz,cz,rp,cp));

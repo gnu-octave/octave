@@ -27,6 +27,6 @@
 
 function out = is_sample (Ts)
 
-  out = (is_scalar(Ts) && (Ts == abs(Ts)) && (Ts != 0) );
+  out = (isscalar(Ts) && (Ts == abs(Ts)) && (Ts != 0) );
 
 endfunction

@@ -47,7 +47,7 @@ function x = diff (x, k)
   if (nargin == 1)
     k = 1;
   elseif (nargin == 2)
-    if (! (is_scalar (k) && k == round (k) && k >= 0))
+    if (! (isscalar (k) && k == round (k) && k >= 0))
       error ("diff: k must be a nonnegative integer");
     elseif (k == 0)
       return;
@@ -58,7 +58,7 @@ function x = diff (x, k)
 
   if (isstr (x))
     error ("diff: symbolic differentiation not (yet) supported");
-  elseif (is_vector (x))
+  elseif (isvector (x))
     n = length (x);
     if (n <= k)
       x = [];
@@ -67,7 +67,7 @@ function x = diff (x, k)
         x = x (2 : (n - i + 1)) - x (1 : (n - i));
       endfor
     endif
-  elseif (is_matrix (x))
+  elseif (ismatrix (x))
     n = rows (x);
     if (n <= k)
       x = [];

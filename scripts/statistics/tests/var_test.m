@@ -47,7 +47,7 @@ function [pval, f, df_num, df_den] = var_test (x, y, alt)
     usage ("[pval, f, df_num, df_den] = var_test (x, y, alt)");
   endif
 
-  if (! (is_vector (x) && is_vector (y)))
+  if (! (isvector (x) && isvector (y)))
     error ("var_test: both x and y must be vectors");
   endif
 

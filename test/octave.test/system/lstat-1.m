@@ -1,6 +1,6 @@
 [s, err, msg] = lstat ("/");
 (err == 0
- && is_struct (s)
+ && isstruct (s)
  && struct_contains (s, "dev")
  && struct_contains (s, "ino")
  && struct_contains (s, "modestr")

@@ -39,7 +39,7 @@ function y = polyout (c, x)
     usage("polyout (c, x)");
   endif
 
-  if (! is_vector (c))
+  if (! isvector (c))
     error("polyout: first argument must be a vector");
   endif
 

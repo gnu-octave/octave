@@ -29,7 +29,7 @@
 
 function pdf = empirical_pdf (x, data)
 
-  if (! is_vector (data))
+  if (! isvector (data))
     error ("empirical_pdf: data must be a vector");
   endif
 

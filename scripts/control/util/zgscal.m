@@ -53,7 +53,7 @@ function x = zgscal (a, b, c, d, z, n, m, p)
   endfor
 
   [U,H,k1] = krylov(F,z,nmp,1e-12,1);
-  if(!is_square(H))
+  if(!issquare(H))
     if(columns(H) != k1)
       error("zgscal(tzero): k1=%d, columns(H)=%d",k1,columns(H));
     elseif(rows(H) != k1+1)

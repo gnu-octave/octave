@@ -134,7 +134,7 @@ function sys = buildssic (Clst, Ulst, Olst, Ilst, s1, s2, s3, s4, s5, s6, s7, s8
     usage("sys = buildssic(Clst,Ulst,Olst,Ilst,s1,s2,s3,s4,s5,s6,s7,s8)");
   endif
   if (nargin >= 5)
-    if (!is_struct(s1))
+    if (!isstruct(s1))
       error("---> s1 must be a structed system.");
     endif
     s1 = sysupdate(s1, "ss");
@@ -151,7 +151,7 @@ function sys = buildssic (Clst, Ulst, Olst, Ilst, s1, s2, s3, s4, s5, s6, s7, s8
   endif
   for ii = 6:nargin
     eval(["ss = s", num2str(ii-4), ";"]);
-    if (!is_struct(ss))
+    if (!isstruct(ss))
       error("---> Parameter must be a structed system.");
     endif
     ss = sysupdate(ss, "ss");
@@ -197,7 +197,7 @@ function sys = buildssic (Clst, Ulst, Olst, Ilst, s1, s2, s3, s4, s5, s6, s7, s8
   ## empty vector Ulst is OK
   lul = length(Ulst);
   if (lul)
-    if (!is_vector(Ulst))
+    if (!isvector(Ulst))
       error("---> Input u list Ulst must be a vector.");
     endif
     if (lul > m)
@@ -206,10 +206,10 @@ function sys = buildssic (Clst, Ulst, Olst, Ilst, s1, s2, s3, s4, s5, s6, s7, s8
   endif
   if (!length(Olst))  Olst = [1:(p+lul)];  endif
   if (!length(Ilst))  Ilst = [1:m];        endif
-  if (!is_vector(Olst))
+  if (!isvector(Olst))
     error("---> Output list Olst must be a vector.");
   endif
-  if (!is_vector(Ilst))
+  if (!isvector(Ilst))
     error("---> Input list Ilst must be a vector.");
   endif
 

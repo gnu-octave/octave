@@ -28,7 +28,7 @@
 
 function rnd = empirical_rnd (n, data)
 
-  if (! is_vector (data))
+  if (! isvector (data))
     error ("empirical_rnd: data must be a vector");
   endif
 

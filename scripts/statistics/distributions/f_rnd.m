@@ -33,10 +33,10 @@
 function rnd = f_rnd (m, n, r, c)
 
   if (nargin == 4)
-    if (! (is_scalar (r) && (r > 0) && (r == round (r))))
+    if (! (isscalar (r) && (r > 0) && (r == round (r))))
       error ("f_rnd: r must be a positive integer");
     endif
-    if (! (is_scalar (c) && (c > 0) && (c == round (c))))
+    if (! (isscalar (c) && (c > 0) && (c == round (c))))
       error ("f_rnd: c must be a positive integer");
     endif
     [retval, m, n] = common_size (m, n, zeros (r, c));

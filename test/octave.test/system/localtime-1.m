@@ -1,5 +1,5 @@
 ts = localtime (time ())
-(is_struct (ts)
+(isstruct (ts)
  && struct_contains (ts, "usec")
  && struct_contains (ts, "year")
  && struct_contains (ts, "mon")

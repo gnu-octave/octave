@@ -52,7 +52,7 @@ function cdf = kolmogorov_smirnov_cdf (x, tol)
   if (nargin == 1)
     tol = eps;
   else
-    if (! is_scalar (tol) || ! (tol > 0))
+    if (! isscalar (tol) || ! (tol > 0))
       error ("kolmogorov_smirnov_cdf: tol has to be a positive scalar");
     endif
   endif

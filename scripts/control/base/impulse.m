@@ -58,7 +58,7 @@ function [y, t] = impulse (sys, inp, tstop, n)
     usage ("[y, u] = impulse (sys, inp, tstop, n)");
   endif
 
-  if (! is_struct (sys))
+  if (! isstruct (sys))
     error ("impulse: sys must be a system data structure.");
   endif
 

@@ -37,7 +37,7 @@
 ## @end table
 ## @end table
 ## @end deftypefn
-## @seealso{size, rows, columns, length, is_matrix, is_scalar, is_vector
+## @seealso{size, rows, columns, length, ismatrix, isscalar, isvector
 ## is_observable, is_stabilizable, is_detectable, krylov, and krylovb}
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
@@ -48,7 +48,7 @@
 function retval = is_stable (a, tol, disc)
 
   if( (nargin < 1) | (nargin > 3) )   usage("is_stable(a {,tol,disc})");
-  elseif(is_struct(a))
+  elseif(isstruct(a))
     ## system was passed
     if(nargin < 3)                      disc = is_digital(a);
     elseif(disc != is_digital(a))
@@ -58,13 +58,13 @@ function retval = is_stable (a, tol, disc)
     a = sys2ss(sys);
   else
     if(nargin < 3)              disc = 0;               endif
-    if(is_square(a) == 0)
+    if(issquare(a) == 0)
       error("A(%dx%d) must be square",rows(A), columns(A));
     endif
   endif
 
   if(nargin < 2)                tol = 200*eps;
-  elseif( !is_scalar(tol) )
+  elseif( !isscalar(tol) )
     error("is_stable: tol(%dx%d) must be a scalar",rows(tol),columns(tol));
   endif
 

@@ -51,9 +51,9 @@ function [a, b, c, d] = tf2ss (num, den)
   if(nargin != 2)        error("tf2ss: wrong number of input arguments")
   elseif(isempty(num))   error("tf2ss: empty numerator");
   elseif(isempty(den))   error("tf2ss: empy denominator");
-  elseif(!is_vector(num))
+  elseif(!isvector(num))
     error(sprintf("num(%dx%d) must be a vector",rows(num),columns(num)));
-  elseif(!is_vector(den))
+  elseif(!isvector(den))
     error(sprintf("den(%dx%d) must be a vector",rows(den),columns(den)));
   endif
 

@@ -43,11 +43,11 @@ function v = pv (r, n, p, l, m)
     usage ("pv (r, n, p, l, method)");
   endif
 
-  if (! (is_scalar (r) && (r > -1)))
+  if (! (isscalar (r) && (r > -1)))
     error ("pv: r must be a scalar > -1");
-  elseif (! (is_scalar (n) && (n > 0)))
+  elseif (! (isscalar (n) && (n > 0)))
     error ("pv: n must be a positive scalar");
-  elseif (! is_scalar (p))
+  elseif (! isscalar (p))
     error ("pv: p must be a scalar");
   endif
 
@@ -71,7 +71,7 @@ function v = pv (r, n, p, l, m)
     if (strcmp (m, "b"))
       v = v * (1 + r);
     endif
-    if (is_scalar (l))
+    if (isscalar (l))
       v = v + pvl (r, n, l);
     else
       error ("pv: l must be a scalar");

@@ -49,7 +49,7 @@ function [pval, b, n] = sign_test (x, y, alt)
     usage ("[pval, b, n] = sign_test (x, y, alt)");
   endif
 
-  if (! (is_vector (x) && is_vector (y) && (length (x) == length (y))))
+  if (! (isvector (x) && isvector (y) && (length (x) == length (y))))
     error ("sign_test: x and y must be vectors of the same length");
   endif
 

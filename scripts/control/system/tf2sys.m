@@ -66,8 +66,8 @@ function outsys = tf2sys (num, den, tsam, inname, outname)
   endif
 
   ## check input format
-  if( ! ( (is_vector(num) || is_scalar(num)) && ...
-        (is_vector(den) || is_scalar(den))) )
+  if( ! ( (isvector(num) || isscalar(num)) && ...
+        (isvector(den) || isscalar(den))) )
     error(["num (",num2str(rows(num)),"x",num2str(columns(num)), ...
       ") and den (",num2str(rows(den)),"x",num2str(columns(den)), ...
       ") must be vectors"])
@@ -84,7 +84,7 @@ function outsys = tf2sys (num, den, tsam, inname, outname)
   ## check sampling interval (if any)
   if(nargin <= 2)           tsam = 0;           # default
   elseif (isempty(tsam))    tsam = 0;           endif
-  if ( (! (is_scalar(tsam) && (imag(tsam) == 0) )) || (tsam < 0) )
+  if ( (! (isscalar(tsam) && (imag(tsam) == 0) )) || (tsam < 0) )
     error("tsam must be a positive real scalar")
   endif
 
@@ -113,7 +113,7 @@ function outsys = tf2sys (num, den, tsam, inname, outname)
   if (nargin > 3)
     ## make sure its a list of a single string
     if(!isempty(inname))
-      if(!is_list(inname))  inname = list(inname);  endif
+      if(!islist(inname))  inname = list(inname);  endif
       if( !is_signal_list(inname) )
         error("inname must be a string or list of strings");
       endif
@@ -128,7 +128,7 @@ function outsys = tf2sys (num, den, tsam, inname, outname)
   ## Set name of output
   if (nargin > 4)
     if(!isempty(outname))
-      if(!is_list(outname))  outname = list(outname);  endif
+      if(!islist(outname))  outname = list(outname);  endif
       if(!is_signal_list(outname))
         error("outname must be a string or a list of strings");
       endif

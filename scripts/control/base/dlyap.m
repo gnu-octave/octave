@@ -63,11 +63,11 @@
 
 function x = dlyap (a, b)
 
-  if ((n = is_square (a)) == 0)
+  if ((n = issquare (a)) == 0)
     warning ("dlyap: a must be square");
   endif
 
-  if ((m = is_square (b)) == 0)
+  if ((m = issquare (b)) == 0)
     [n1, m] = size (b);
     if (n1 == n)
       b = b*b';

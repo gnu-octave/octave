@@ -42,18 +42,18 @@ function [pval, Tsq] = hotelling_test (x, m)
     usage ("hotelling_test (x, m)");
   endif
 
-  if (is_vector (x))
-    if (! is_scalar (m))
+  if (isvector (x))
+    if (! isscalar (m))
       error ("hotelling_test: if x is a vector, m must be a scalar");
     endif
     n = length (x);
     p = 1;
-  elseif (is_matrix (x))
+  elseif (ismatrix (x))
     [n, p] = size (x);
     if (n <= p)
       error ("hotelling_test: x must have more rows than columns");
     endif
-    if (is_vector (m) && length (m) == p)
+    if (isvector (m) && length (m) == p)
       m = reshape (m, 1, p);
     else
       error ("hotelling_test: if x is a matrix, m must be a vector of length columns (x)");

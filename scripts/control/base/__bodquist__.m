@@ -58,7 +58,7 @@ function [f, w, rsys] = __bodquist__ (sys, w, outputs, inputs, rname)
   endif
 
   ## check each argument to see if it's in the correct form
-  if (!is_struct(sys))
+  if (!isstruct(sys))
     error("sys must be a system data structure");
   endif
 

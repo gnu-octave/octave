@@ -94,7 +94,7 @@ function subplot (rows, columns, index)
 
   if (nargin == 1)
 
-    if (! (is_scalar (rows) && rows >= 0))
+    if (! (isscalar (rows) && rows >= 0))
       error ("subplot: input rcn has to be a positive scalar");
     endif
 
@@ -105,7 +105,7 @@ function subplot (rows, columns, index)
     tmp = (tmp - columns) / 10;
     rows = rem (tmp, 10);
 
-  elseif (! (is_scalar (columns) && is_scalar (rows) && is_scalar (index)))
+  elseif (! (isscalar (columns) && isscalar (rows) && isscalar (index)))
     error ("subplot: columns, rows, and index have to be scalars");
   endif
 

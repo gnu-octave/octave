@@ -28,7 +28,7 @@
 
 function retval = randperm (n)
 
-  if (nargin == 1 && is_scalar (n) && floor (n) == n)
+  if (nargin == 1 && isscalar (n) && floor (n) == n)
     if (n > 0)
       [junk, retval] = sort (rand (1, n));
     else

@@ -45,11 +45,11 @@ function retval = sinetone (f, r, s, a)
   endif
 
   [err, f, a] = common_size (f, a);
-  if (err || ! is_vector (f))
+  if (err || ! isvector (f))
     error ("sinetone: freq and ampl must be vectors of common size");
   endif
 
-  if (! (is_scalar (r) && is_scalar (s)))
+  if (! (isscalar (r) && isscalar (s)))
     error ("sinetone: rate and sec must be scalars");
   endif
 

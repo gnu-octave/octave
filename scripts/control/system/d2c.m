@@ -64,7 +64,7 @@ function csys = d2c (sys, opt)
 
   if( (nargin != 1) & (nargin != 2) )
     usage("csys = d2c(sys[,tol]), csys = d2c(sys,opt)");
-  elseif (!is_struct(sys))
+  elseif (!isstruct(sys))
     error("sys must be in system data structure");
   elseif(nargin == 1)
     opt = "log";

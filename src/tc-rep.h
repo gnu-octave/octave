@@ -297,8 +297,6 @@ private:
 
   int save (ostream& os, int mark_as_global, int precision);
   int save_three_d (ostream& os, int parametric);
-  int load (istream& is);
-  constant_type load (istream& is, constant_type t);
 
   double double_value (void) const;
   Matrix matrix_value (void) const;

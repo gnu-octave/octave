@@ -192,11 +192,6 @@ public:
   int save_three_d (ostream& os, int parametric = 0)
     { return rep->save_three_d (os, parametric); }
 
-  int load (istream& is) { return rep->load (is); }
-  tree_constant_rep::constant_type load
-    (istream& is, tree_constant_rep::constant_type t)
-      { return rep->load (is, t); }
-
   double double_value (void) const { return rep->double_value (); }
   Matrix matrix_value (void) const { return rep->matrix_value (); }
   Complex complex_value (void) const { return rep->complex_value (); }

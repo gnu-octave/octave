@@ -47,7 +47,7 @@ class subplot_list;
 class
 tree_plot_command : public tree_command
 {
- public:
+public:
   tree_plot_command (void);
   tree_plot_command (subplot_list *plt, int nd);
   tree_plot_command (subplot_list *plt, plot_limits *rng, int nd);
@@ -56,21 +56,18 @@ tree_plot_command : public tree_command
 
   void eval (void);
 
-  void print_code (ostream& os)
-    {
-      os << "<plot command printing not implemented yet>";
-    }
+  void print_code (ostream& os);
 
- private:
+private:
   int ndim;
   plot_limits *range;
   subplot_list *plot_list;
 };
 
 class
-plot_limits
+plot_limits : public tree_print_code
 {
- public:
+public:
   plot_limits (void);
   plot_limits (plot_range *xlim);
   plot_limits (plot_range *xlim, plot_range *ylim);
@@ -81,16 +78,18 @@ plot_limits
 
   void print (int print, ostrstream& plot_buf);
 
- private:
+  void print_code (ostream& os);
+
+private:
   plot_range *x_range;
   plot_range *y_range;
   plot_range *z_range;
 };
 
 class
-plot_range
+plot_range : public tree_print_code
 {
- public:
+public:
   plot_range (void);
   plot_range (tree_expression *l, tree_expression *u);
 
@@ -98,15 +97,17 @@ plot_range
 
   void print (ostrstream& plot_buf);
 
- private:
+  void print_code (ostream& os);
+
+private:
   tree_expression *lower;
   tree_expression *upper;
 };
 
 class
-subplot_using
+subplot_using : public tree_print_code
 {
- public:
+public:
   subplot_using (void);
   subplot_using (tree_expression *fmt);
 
@@ -118,16 +119,18 @@ subplot_using
 
   int print (int ndim, int n_max, ostrstream& plot_buf);
 
- private:
+  void print_code (ostream& os);
+
+private:
   int qualifier_count;
   tree_expression *x[4];
   tree_expression *scanf_fmt;
 };
 
 class
-subplot_style
+subplot_style : public tree_print_code
 {
- public:
+public:
   subplot_style (void);
   subplot_style (char *s);
   subplot_style (char *s, tree_expression *lt);
@@ -137,14 +140,16 @@ subplot_style
 
   int print (ostrstream& plot_buf);
 
- private:
+  void print_code (ostream& os);
+
+private:
   char *style;
   tree_expression *linetype;
   tree_expression *pointtype;
 };
 
 class
-subplot
+subplot : public tree_print_code
 {
 public:
   subplot (void)
@@ -185,6 +190,8 @@ public:
 
   int print (int ndim, ostrstream& plot_buf);
 
+  void print_code (ostream& os);
+
 private:
   tree_expression *plot_data;
   subplot_using *using;
@@ -193,7 +200,7 @@ private:
 };
 
 class
-subplot_list : public SLList<subplot *>
+subplot_list : public SLList<subplot *>, public tree_print_code
 {
  public:
   subplot_list (void) : SLList<subplot *> () { }
@@ -208,6 +215,10 @@ subplot_list : public SLList<subplot *>
 	  delete t;
 	}
     }
+
+  int print (int ndim, ostrstream& plot_buf);
+
+  void print_code (ostream& os);
 };
 
 extern char *save_in_tmp_file (tree_constant& t, int ndim = 2,

@@ -64,15 +64,27 @@ struct builtin_function
 
 extern void initialize_symbol_tables (void);
 
-extern int symbol_out_of_date (symbol_record *sr);
-
-extern int load_fcn_from_file (symbol_record *s, int exec_script = 1);
-
 extern int lookup (symbol_record *s, int exec_script = 1);
 
 extern symbol_record *lookup_by_name (const char *nm, int exec_script = 1);
 
-extern void document_symbol (const char *name, const char *help);
+extern char *builtin_string_variable (const char *);
+extern int builtin_real_scalar_variable (const char *, double&);
+
+extern void link_to_global_variable (symbol_record *sr);
+extern void link_to_builtin_variable (symbol_record *sr);
+extern void link_to_builtin_or_function (symbol_record *sr);
+
+extern void force_link_to_function (const char *s);
+
+extern int is_builtin_variable (const char *name);
+extern int is_text_function_name (const char *s);
+
+extern tree_fvc *is_valid_function (const tree_constant&, char *,
+				    int warn = 0); 
+extern int takes_correct_nargs (tree_fvc *, int, char *, int warn = 0);
+
+extern char **make_name_list (void);
 
 extern void install_builtin_mapper (builtin_mapper_function *mf);
 
@@ -96,39 +108,13 @@ extern void bind_builtin_variable (const char *, tree_constant *,
 				   sv_Function f = (sv_Function) 0,
 				   const char *help = 0);
 
-extern char *builtin_string_variable (const char *);
-extern int builtin_real_scalar_variable (const char *, double&);
-
-extern void link_to_global_variable (symbol_record *sr);
-extern void link_to_builtin_variable (symbol_record *sr);
-extern void link_to_builtin_or_function (symbol_record *sr);
-
-extern void force_link_to_function (const char *s);
-
-extern char *extract_keyword (istream&, char *);
-extern int extract_keyword (istream&, char *, int&);
-
-extern void skip_comments (istream&);
-extern int valid_identifier (char *);
-extern int identifier_exists (char *);
-extern int is_builtin_variable (const char *name);
-extern tree_fvc *is_valid_function (const tree_constant&, char *,
-				    int warn = 0); 
-extern int takes_correct_nargs (tree_fvc *, int, char *, int warn = 0);
-extern char **make_name_list (void);
-
-extern int is_text_function_name (const char *s);
-
 extern void install_builtin_variables (void);
 
-extern char *octave_home (void);
 extern char *octave_lib_dir (void);
-extern char *octave_info_dir (void);
 extern char *default_path (void);
 extern char *default_info_file (void);
 extern char *default_editor (void);
 extern char *get_site_defaults (void);
-extern char *default_pager (void);
 
 // Symbol table for symbols at the top level.
 extern symbol_table *top_level_sym_tab;

@@ -564,11 +564,11 @@ enum octave_kw_id { a_kw };
 %}
 struct octave_kw { const char *name; int tok; octave_kw_id kw_id; };
 %%
-foo" | $GPERF -t -C -D -E -G -L ANSI-C -H octave_kw_hash -N octave_kw_lookup > /dev/null 2>&1; then
+foo" | $GPERF -t -C -D -E -G -L C++ -H octave_kw_hash -N octave_kw_lookup > /dev/null 2>&1; then
       true
     else
       GPERF=""
-      warn_gperf="I found gperf, but it does not support all of the following options: -t -C -D -E -G -L ANSI-C -H -N; you need gperf 2.7 or a more recent version"
+      warn_gperf="I found gperf, but it does not support all of the following options: -t -C -D -E -G -L C++ -H -N; you need gperf 3.0.1 or a more recent version"
       AC_MSG_WARN($warn_gperf)
     fi
   else

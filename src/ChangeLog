@@ -44,7 +44,7 @@
 
 2004-11-17  John W. Eaton  <jwe@octave.org>
 
-	* version.h (OCTAVE_VERSION): Now 2.1.62.
+	* version.h (OCTAVE_VERSION): Now 2.1.63.
 	(OCTAVE_API_VERSION): Now api-v12.
 
 2004-11-17  David Bateman  <dbateman@free.fr>

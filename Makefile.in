@@ -52,7 +52,7 @@ header-msg: FORCE
 	@echo "*    bison (1.31 or a more recent version) -- required if"
 	@echo "*    you need to recreate parse.cc from parse.y"
 	@echo "*"
-	@echo "*    gperf (2.7.1 or a more recent version) -- required if"
+	@echo "*    gperf (3.0.1 or a more recent version) -- required if"
 	@echo "*    you need to recreate oct-gperf.h from octave.gperf"
 	@echo "*"
 	@echo "*  Now would be a good time to read INSTALL.OCTAVE if"

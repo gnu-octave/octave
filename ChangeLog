@@ -1,3 +1,9 @@
+2004-12-03  John W. Eaton  <jwe@octave.org>
+
+	* aclocal.m4 (OCTAVE_PROG_GPERF): Check with -L C++, not -L ANSI_C.
+	* Makefile.in (header-msg): Change recommended gperf version to
+	3.0.1 or more recent.
+
 2004-11-12  John W. Eaton  <jwe@octave.org>
 
 	* Back off on -ffloat-store until we decide whether it is really

@@ -1,7 +1,7 @@
 // Range.h                                               -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -32,40 +32,25 @@ class istream;
 class ostream;
 class Matrix;
 
-class Range
+class
+Range
 {
  public:
+
   Range (void)
-    {
-      rng_base = -1;
-      rng_limit = -1;
-      rng_inc = -1;
-      rng_nelem = -1;
-    }
+    : rng_base (-1), rng_limit (-1), rng_inc (-1), rng_nelem (-1) { }
 
   Range (const Range& r)
-    {
-      rng_base = r.rng_base;
-      rng_limit = r.rng_limit;
-      rng_inc = r.rng_inc;
-      rng_nelem = r.rng_nelem;
-    }
+    : rng_base (r.rng_base), rng_limit (r.rng_limit), rng_inc (r.rng_inc),
+      rng_nelem (r.rng_nelem) { }
 
   Range (double b, double l)
-    {
-      rng_base = b;
-      rng_limit = l;
-      rng_inc = 1;
-      rng_nelem = nelem_internal ();
-    }
+    : rng_base (b), rng_limit (l), rng_inc (1),
+      rng_nelem (nelem_internal ()) { }
 
   Range (double b, double l, double i)
-    {
-      rng_base = b;
-      rng_limit = l;
-      rng_inc = i;
-      rng_nelem = nelem_internal ();
-    }
+    : rng_base (b), rng_limit (l), rng_inc (i),
+      rng_nelem (nelem_internal ()) { }
 
   double base (void) const { return rng_base;  }
   double limit (void) const { return rng_limit; }
@@ -90,9 +75,11 @@ class Range
   void print_range (void);
 
  private:
+
   double rng_base;
   double rng_limit;
   double rng_inc;
+
   int rng_nelem;
 
   int nelem_internal (void) const;

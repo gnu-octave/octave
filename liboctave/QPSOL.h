@@ -34,9 +34,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "dColVector.h"
 #include "QP.h"
 
-class QPSOL_options
+class
+QPSOL_options
 {
- public:
+public:
 
   QPSOL_options (void);
   QPSOL_options (const QPSOL_options& opt);
@@ -60,7 +61,7 @@ class QPSOL_options
   int iteration_limit (void);
   int print_level (void);
 
- private:
+private:
 
   double x_feasibility_tolerance;
   double x_infinite_bound;
@@ -68,9 +69,10 @@ class QPSOL_options
   int x_print_level;
 };
 
-class QPSOL : public QP, public QPSOL_options
+class
+QPSOL : public QP, public QPSOL_options
 {
- public:
+public:
 
   QPSOL (void)
     : QP (), QPSOL_options () { }

@@ -71,20 +71,17 @@ function y = ranks (x, dim)
     endif
     sz = size (x);
     infvec = -Inf * ones ([1, sz(2 : end)]);
-    [xs, y] = sort (x);
+    [xs, xi] = sort (x);
     eq_el = find (diff ([xs; infvec]) == 0);
     if (isempty (eq_el))
-      [eq_el, y] = sort (y);  
+      [eq_el, y] = sort (xi);
     else
       runs = complement (eq_el+1, eq_el);
-      runs = reshape (y (runs), size (runs)) + floor (runs ./ sz(1)) * sz(1);
       len = diff (find (diff ([Inf; eq_el; -Inf]) != 1)) + 1;
-      [eq_el, y] = sort (y);
+      [eq_el, y] = sort (xi);
       for i = 1 : length(runs)
-	p = y(runs(i)) + (len(i) - 1) / 2;
-	for j = 0 : len(i) - 1
-	  y(runs(i) + j) = p;
-	endfor
+	y (xi (runs (i) + [0:(len(i)-1)]) + floor (runs (i) ./ sz(1)) 
+	   * sz(1)) = eq_el(runs(i)) + (len(i) - 1) / 2;
       endfor
     endif  
     if (dim != 1)

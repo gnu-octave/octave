@@ -1,3 +1,8 @@
+2004-08-27  David Bateman  <dbateman@free.fr>
+
+	* statistics/base/ranks.m: Handle non-consecutive ties.
+	Eliminate loop.
+
 2004-07-27  David Bateman  <dbateman@free.fr>
 
 	* general/num2str.m: Also insert spaces in output when precision

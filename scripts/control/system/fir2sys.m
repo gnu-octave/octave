@@ -92,12 +92,12 @@ function sys = fir2sys (num, tsam, inname, outname)
 
   ## Set name of input
   if (nargin < 3)
-    inname = sysdefioname (1, "u");
+    inname = __sysdefioname__ (1, "u");
   endif
 
   ## Set name of output
   if (nargin < 4)
-    outname = sysdefioname (1, "y");
+    outname = __sysdefioname__ (1, "y");
   endif
 
   sys = tf2sys (num, den, tsam, inname, outname);

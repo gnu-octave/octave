@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{poly}, @var{rvals}] =} zp2ssg2 (@var{rvals})
+## @deftypefn {Function File} {[@var{poly}, @var{rvals}] =} __zp2ssg2__ (@var{rvals})
 ## Used internally in @code{zp2ss}
 ## Extract 2 values from @var{rvals} (if possible) and construct
 ## a polynomial with those roots.
@@ -26,7 +26,7 @@
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 ## Created: August 1996
 
-function [poly, rvals] = zp2ssg2 (rvals)
+function [poly, rvals] = __zp2ssg2__ (rvals)
 
   ## locate imaginary roots (if any)
   cidx = find(imag(rvals));

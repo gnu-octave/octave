@@ -256,9 +256,9 @@ function retsys = ss2sys (a, b, c, d, tsam, n, nz, stname, inname, outname, outl
   ## Set the system vector:  active = 2(ss), updated = [0 0 1];
   retsys.sys = [2, 0, 0, 1];
 
-  retsys.stname = sysdefstname(n,nz);
-  retsys.inname = sysdefioname(m,"u");
-  retsys.outname = sysdefioname(p,"y");
+  retsys.stname = __sysdefstname__ (n, nz);
+  retsys.inname = __sysdefioname__ (m, "u");
+  retsys.outname = __sysdefioname__ (p, "y");
 
   ## check for state names
   if(nargin >= 8)

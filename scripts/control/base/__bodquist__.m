@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{f}, @var{w}] =} bodquist (@var{sys}, @var{w}, @var{out_idx}, @var{in_idx})
+## @deftypefn {Function File} {[@var{f}, @var{w}] =} __bodquist__ (@var{sys}, @var{w}, @var{out_idx}, @var{in_idx})
 ## used internally by bode, nyquist; compute system frequency response.
 ##
 ## @strong{Inputs}
@@ -31,7 +31,7 @@
 ## @item in_idx
 ## list of inputs; empty if user wants all
 ## @item rname
-## name of routine that called bodquist ("bode" or "nyquist")
+## name of routine that called __bodquist__ ("bode" or "nyquist")
 ## @end table
 ## @strong{Outputs}
 ## @table @var
@@ -40,21 +40,21 @@
 ## @item f
 ## frequency response of sys; @math{f(ii) = f(omega(ii))}
 ## @end table
-## @strong{Note} bodquist could easily be incorporated into a Nichols
+## @strong{Note} __bodquist__ could easily be incorporated into a Nichols
 ## plot function; this is in a "to do" list.
 ##
 ## Both bode and nyquist share the same introduction, so the common parts are
-## in bodquist.  It contains the part that finds the number of arguments,
+## in __bodquist__.  It contains the part that finds the number of arguments,
 ## determines whether or not the system is SISO, and computes the frequency
 ## response.  Only the way the response is plotted is different between the
 ## two functions.
 ## @end deftypefn
 
-function [f, w] = bodquist (sys, w, outputs, inputs, rname)
+function [f, w] = __bodquist__ (sys, w, outputs, inputs, rname)
 
   ## check number of input arguments given
   if (nargin != 5)
-    usage("[f,w] = bodquist(sys,w,outputs,inputs,rname)");
+    usage ("[f, w] = __bodquist__ (sys, w, outputs, inputs, rname)");
   endif
 
   ## check each argument to see if it's in the correct form
@@ -62,7 +62,7 @@ function [f, w] = bodquist (sys, w, outputs, inputs, rname)
     error("sys must be a system data structure");
   endif
 
-  ## let freqresp determine w if it's not already given
+  ## let __freqresp__ determine w if it's not already given
   USEW = freqchkw(w);
 
   ## get initial dimensions (revised below if sysprune is called)
@@ -86,7 +86,7 @@ function [f, w] = bodquist (sys, w, outputs, inputs, rname)
   endif
 
   ## get system frequency response
-  [f,w] = freqresp(sys,USEW,w);
+  [f, w] = __freqresp__ (sys, USEW, w);
 
   phase = arg(f)*180.0/pi;
 
@@ -132,11 +132,12 @@ function [f, w] = bodquist (sys, w, outputs, inputs, rname)
         if(isempty(wnew))   # all small crossovers
           pcnt = 0;
         else
-          [fnew,wnew] = freqresp(sys,1,wnew);    # get new freq resp points
-          w = [w,wnew];                 # combine with old freq resp
-          f = [f,fnew];
-          [w,idx] = sort(w);            # sort into order
-          f = f(idx);
+	  ## get new freq resp points, combine with old, and sort.
+          [fnew, wnew] = __freqresp__ (sys, 1, wnew);
+          w = [w, wnew];
+          f = [f, fnew];
+          [w, idx] = sort (w);
+          f = f (idx);
           phase = arg(f)*180.0/pi;
         endif
       endif

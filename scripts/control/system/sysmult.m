@@ -91,8 +91,8 @@ function sys = sysmult (...)
     endif
 
     ## change signal names to avoid spurious warnings from sysgroup
-    Asys = syssetsignals(Asys,"in",sysdefioname(Am,"A_sysmult_tmp_name"));
-    Bsys = syssetsignals(Bsys,"out",sysdefioname(Bp,"B_sysmult_tmp_name"));
+    Asys = syssetsignals(Asys,"in",__sysdefioname__(Am,"A_sysmult_tmp_name"));
+    Bsys = syssetsignals(Bsys,"out",__sysdefioname__(Bp,"B_sysmult_tmp_name"));
 
     sys = sysgroup(Asys,Bsys);
 

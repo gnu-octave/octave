@@ -126,9 +126,9 @@ function sys = sysgroup (...)
     stname = stname(pv);
 
     ## check for duplicate signal names
-    inname = sysgroupn(inname,"input");
-    stname = sysgroupn(stname,"state");
-    outname = sysgroupn(outname,"output");
+    inname = __sysgroupn__ (inname, "input");
+    stname = __sysgroupn__ (stname, "state");
+    outname = __sysgroupn__ (outname, "output");
 
     ## mark discrete outputs
     outlist = find([Ayd, Byd]);

@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{n_tot}, @var{st_c}, @var{st_d}, @var{y_c}, @var{y_d}] =} syscont_disc(@var{sys})
+## @deftypefn {Function File} {[@var{n_tot}, @var{st_c}, @var{st_d}, @var{y_c}, @var{y_d}] =} __syscont_disc__ (@var{sys})
 ## Used internally in syscont and sysdisc.
 ##
 ## @strong{Inputs}
@@ -41,7 +41,7 @@
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 ## Created: February 1997
 
-function [n_tot, st_c, st_d, y_c, y_d] = syscont_disc (sys)
+function [n_tot, st_c, st_d, y_c, y_d] = __syscont_disc__ (sys)
 
   ## get ranges for discrete/continuous states and outputs
   [nn,nz,mm,pp,yd] = sysdimensions(sys);

@@ -74,8 +74,8 @@ function outsys = tf2sys (num, den, tsam, inname, outname)
   endif
 
   ## strip leading zero coefficients
-  num = tf2sysl(num);
-  den = tf2sysl(den);
+  num = __tf2sysl__ (num);
+  den = __tf2sysl__ (den);
 
   if (length(num) >  length(den))
     error("# of poles (%d) < # of zeros (%d)",length(den)-1, length(num)-1);
@@ -105,9 +105,9 @@ function outsys = tf2sys (num, den, tsam, inname, outname)
     outsys.yd = 1;
   endif
 
-  outsys.inname  = sysdefioname(1,"u");
-  outsys.outname = sysdefioname(1,"y");
-  outsys.stname  = sysdefstname(outsys.n,outsys.nz);
+  outsys.inname  = __sysdefioname__ (1, "u");
+  outsys.outname = __sysdefioname__ (1, "y");
+  outsys.stname  = __sysdefstname__ (outsys.n, outsys.nz);
 
   ## Set name of input
   if (nargin > 3)

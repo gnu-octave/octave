@@ -29,7 +29,7 @@
 ##         (the system sampling time)
 ##      default: the default frequency range is selected as follows: (These
 ##        steps are NOT performed if w is specified)
-##          (1) via routine bodquist, isolate all poles and zeros away from
+##          (1) via routine __bodquist__, isolate all poles and zeros away from
 ##              w=0 (jw=0 or exp(jwT)=1) and select the frequency
 ##             range based on the breakpoint locations of the frequencies.
 ##          (2) if sys is discrete time, the frequency range is limited
@@ -66,7 +66,7 @@ function [mag, phase, w] = nichols (sys, w, outputs, inputs)
     inputs = [];
   endif
 
-  [f, w] = bodquist(sys,w,outputs,inputs,"nichols");
+  [f, w] = __bodquist__ (sys, w, outputs, inputs, "nichols");
 
   [stname,inname,outname] = sysgetsignals(sys);
   systsam = sysgettsam(sys);
@@ -98,8 +98,8 @@ function [mag, phase, w] = nichols (sys, w, outputs, inputs)
         sysgetsignals(sys,"in",1,1), ", y=",sysgetsignals(sys,"out",1,1)]);
     else
       title([ "||Y(", tistr, ")/U(", tistr, ")||"]);
-      printf("MIMO plot from\n%s\nto\n%s\n",outlist(inname,"    "), ...
-        outlist(outname,"       "));
+      printf("MIMO plot from\n%s\nto\n%s\n",__outlist__(inname,"    "), ...
+        __outlist__(outname,"       "));
     endif
     if(max(mag) > 0)
       ylabel("Gain in dB");

@@ -54,8 +54,8 @@ function sysp = parallel (Asys, Bsys)
   Ain = sysgetsignals(Asys,"in");
 
   ## change signal names to avoid warning messages from sysgroup
-  Asys = syssetsignals(Asys,"in",sysdefioname(length(Ain),"Ain_u"));
-  Bsys = syssetsignals(Bsys,"in",sysdefioname(length(Ain),"Bin_u"));
+  Asys = syssetsignals(Asys,"in",__sysdefioname__(length(Ain),"Ain_u"));
+  Bsys = syssetsignals(Bsys,"in",__sysdefioname__(length(Ain),"Bin_u"));
 
   sysp = sysgroup(Asys,Bsys);
   sysD = ss2sys([],[],[],[eye(mA);eye(mA)]);

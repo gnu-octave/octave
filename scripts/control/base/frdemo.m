@@ -137,7 +137,7 @@ function frdemo ()
           disp(cmd);  eval(cmd);
           cmd = "[nn,nz] = sysdimensions(sys2);";
           disp(cmd);  eval(cmd);
-          cmd = "sys2 = syssetsignals(sys2,\"st\",sysdefioname(nn+nz,\"x_sys2\"));";
+          cmd = "sys2 = syssetsignals(sys2,\"st\",__sysdefioname__(nn+nz,\"x_sys2\"));";
           disp(cmd);  eval(cmd);
           cmd = "sys_mimo = sysgroup(sys2,sys3);";
           disp(cmd); eval(cmd);
@@ -268,7 +268,7 @@ function frdemo ()
           disp(cmd); eval(cmd);
           cmd = "sys2 = syssetsignals(sys2,\"in\",\"u_sys2\");";
           disp(cmd); eval(cmd);
-          cmd = "sys2 = syssetsignals(sys2,\"st\",sysdefioname(nn+nz,\"x_sys2\"));";
+          cmd = "sys2 = syssetsignals(sys2,\"st\",__sysdefioname__(nn+nz,\"x_sys2\"));";
           disp(cmd); eval(cmd);
           cmd = "sys_mimo = sysgroup(sys2,sys3);";
           disp(cmd); eval(cmd);
@@ -419,7 +419,7 @@ function frdemo ()
           disp(cmd); eval(cmd);
           cmd = "sys2 = syssetsignals(sys2,\"in\",\"u_sys2\");";
           disp(cmd); eval(cmd);
-          cmd = "sys2 = syssetsignals(sys2,\"st\",sysdefioname(nn+nz,\"x_sys2\"));";
+          cmd = "sys2 = syssetsignals(sys2,\"st\",__sysdefioname__(nn+nz,\"x_sys2\"));";
           disp(cmd); eval(cmd);
           cmd = "sys_mimo = sysgroup(sys2,sys3);";
           disp(cmd); eval(cmd);

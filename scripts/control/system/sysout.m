@@ -72,13 +72,13 @@ function retsys = sysout (sys, opt)
   [nn,nz,mm,pp] = sysdimensions(sys);
   if( mm > 0)
     disp("Input(s)")
-    disp(outlist(sysgetsignals(sys,"in"),"      "));
+    disp(__outlist__(sysgetsignals(sys,"in"),"      "));
   else
     disp("Input(s): none");
   endif
   if (pp > 0)
     disp("Output(s):")
-    disp(outlist(sysgetsignals(sys,"out"), ...
+    disp(__outlist__(sysgetsignals(sys,"out"), ...
           "     ",sysgetsignals(sys,"yd")) );
   else
     disp("Output(s): none");
@@ -116,7 +116,7 @@ function retsys = sysout (sys, opt)
       if(!isempty(xi))
         xd(xi) = 1;
       endif
-      disp(outlist(sysgetsignals(sys,"st"),"    ",xd));
+      disp(__outlist__(sysgetsignals(sys,"st"),"    ",xd));
     else
       disp("State(s): none");
     endif

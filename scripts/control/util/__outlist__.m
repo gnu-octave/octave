@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} outlist (@var{lmat}@{, @var{tabchar}, @var{yd}, @var{ilist} @})
+## @deftypefn {Function File} {} __outlist__ (@var{lmat}@{, @var{tabchar}, @var{yd}, @var{ilist} @})
 ## Prints an enumerated list of strings.
 ## internal use only; minimal argument checking performed
 ##
@@ -44,7 +44,7 @@
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 ## Created: December 1995
 
-function str_val = outlist (name_list, tabchar, yd, ilist)
+function str_val = __outlist__ (name_list, tabchar, yd, ilist)
 
   ## save for restore later
   save_empty = empty_list_elements_ok;

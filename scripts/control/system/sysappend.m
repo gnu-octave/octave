@@ -113,7 +113,7 @@ function retsys = sysappend (sys, b, c, d, outname, inname, yd)
           (Bm-Am),rows(inname),columns(inname)));
       endif
     else
-      inname = sysdefioname(Bm,"u",(Am+1));
+      inname = __sysdefioname__(Bm,"u",(Am+1));
     endif
     if(Am)   Ain = append(Ain,inname);
     else     Ain = inname;              endif
@@ -142,7 +142,7 @@ function retsys = sysappend (sys, b, c, d, outname, inname, yd)
           (Bp-Ap),rows(outname),columns(outname)));
       endif
     else
-      outname = sysdefioname(Bp,"y",(Ap+1));
+      outname = __sysdefioname__(Bp,"y",(Ap+1));
     endif
     if(Ap)   Aout = append(Aout,outname);
     else     Aout = outname;                endif

@@ -73,10 +73,10 @@ function [n, m, p] = abcddim (a, b, c, d)
 
   n = m = p = -1;
 
-  [a,an,am] = abcddims(a);
-  [b,bn,bm] = abcddims(b);
-  [c,cn,cm] = abcddims(c);
-  [d,dn,dm] = abcddims(d);
+  [a, an, am] = __abcddims__ (a);
+  [b, bn, bm] = __abcddims__ (b);
+  [c, cn, cm] = __abcddims__ (c);
+  [d, dn, dm] = __abcddims__ (d);
 
   if ( (!is_square(a)) & (!isempty(a)) )
     warning (["abcddim: a is not square (",num2str(an),"x",num2str(am),")"]);
@@ -103,7 +103,7 @@ function [n, m, p] = abcddim (a, b, c, d)
 
   if( (dn == 0) & have_connections)
     warning("abcddim: empty d matrix passed; setting compatibly with b, c");
-    [d,dn,dm] = abcddims(zeros(cn,bm));
+    [d, dn, dm] = __abcddims__ (zeros (cn, bm));
   endif
 
   if(an > 0)

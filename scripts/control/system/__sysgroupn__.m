@@ -17,8 +17,8 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{names} =} sysgroupn (@var{names})
-## names = sysgroupn(names)
+## @deftypefn {Function File} {@var{names} =} __sysgroupn__ (@var{names})
+## names = __sysgroupn__(names)
 ## Locate and mark duplicate names
 ## inputs:
 ## names: list of signal names
@@ -30,7 +30,7 @@
 ## used internally in sysgroup and elsewhere.
 ## @end deftypefn
 
-function names = sysgroupn (names, kind)
+function names = __sysgroupn__ (names, kind)
 
   ## check for duplicate names
   l = length(names);

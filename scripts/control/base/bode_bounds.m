@@ -22,7 +22,7 @@
 ## poles and zeros.
 ## Frequency range is the interval [10^wmin,10^wmax]
 ##
-## Used internally in freqresp (@code{bode}, @code{nyquist})
+## Used internally in __freqresp__ (@code{bode}, @code{nyquist})
 ## @end deftypefn
 
 function [wmin, wmax] = bode_bounds (zer, pol, DIGITAL, tsam)

@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{retsys} =} zgpbal (@var{Asys})
+## @deftypefn {Function File} {@var{retsys} =} __zgpbal__ (@var{Asys})
 ##
 ## used internally in @code{tzero}; minimal argument checking performed
 ##
@@ -25,12 +25,12 @@
 ## balancing method (Hodel and Tiller, Allerton Conference, 1991)
 ## Based on Ward's balancing algorithm (SIAM J. Sci Stat. Comput., 1981)
 ##
-## zgpbal computes a state/input/output weighting that attempts to
+## __zgpbal__ computes a state/input/output weighting that attempts to
 ## reduced the range of the magnitudes of the nonzero elements of [a,b,c,d]
 ## The weighting uses scalar multiplication by powers of 2, so no roundoff
 ## will occur.
 ##
-## zgpbal should be followed by zgpred
+## __zgpbal__ should be followed by zgpred
 ## @end deftypefn
 
 ## References:
@@ -41,10 +41,10 @@
 ## Created: July 24, 1992
 ## Conversion to Octave by R. Bruce Tenison July 3, 1994
 
-function retsys = zgpbal (Asys)
+function retsys = __zgpbal__ (Asys)
 
   if( (nargin != 1) | (!is_struct(Asys)))
-    usage("retsys = zgpbal(Asys)");
+    usage("retsys = __zgpbal__ (Asys)");
   endif
 
   Asys = sysupdate(Asys,"ss");
@@ -58,9 +58,9 @@ function retsys = zgpbal (Asys)
   ## set up log vector zz, incidence matrix ff
   zz = zginit(a,b,c,d);
 
-  ## disp("zgpbal: zginit returns")
+  ## disp("__zgpbal__: zginit returns")
   ## zz
-  ## disp("/zgpbal")
+  ## disp("/__zgpbal__")
 
   if (norm(zz))
     ## generalized conjugate gradient approach

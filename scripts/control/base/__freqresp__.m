@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{out} =} freqresp (@var{sys}, @var{USEW}@{,@var{w}@});
+## @deftypefn {Function File} {@var{out} =} __freqresp__ (@var{sys}, @var{USEW}@{,@var{w}@});
 ## Frequency response function - used internally by @code{bode}, @code{nyquist}.
 ## minimal argument checking; "do not attempt to do this at home"
 ##
@@ -42,7 +42,7 @@
 ## Author: R. Bruce Tenison <btenison@eng.auburn.edu>
 ## Created: July 11, 1994
 
-function [ff, w] = freqresp (sys, USEW, w);
+function [ff, w] = __freqresp__ (sys, USEW, w);
 
   ## SYS_INTERNAL accesses members of system data structure
 
@@ -50,13 +50,13 @@ function [ff, w] = freqresp (sys, USEW, w);
   empty_list_elements_ok = 1;
 
   ## Check Args
-  if( (nargin < 2) || (nargin > 4) )
-    usage ("[ff,w] = freqresp(sys,USEW{,w})");
-  elseif( USEW & (nargin < 3) )
-    error("USEW=1 but w was not passed.");
-  elseif( USEW & isempty(w))
-    warning("USEW=1 but w is empty; setting USEW=0");
-    USEW=0;
+  if ((nargin < 2) || (nargin > 4))
+    usage ("[ff, w] = __freqresp__ (sys, USEW, w)");
+  elseif (USEW & (nargin < 3) )
+    error ("USEW = 1 but w was not passed.");
+  elseif (USEW & isempty(w))
+    warning("USEW = 1 but w is empty; setting USEW=0");
+    USEW = 0;
   endif
 
   DIGITAL = is_digital(sys);

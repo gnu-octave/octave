@@ -17,14 +17,14 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{ioname} =} sysdefioname (@var{n},@var{str} @{,@var{m}@})
+## @deftypefn {Function File} {@var{ioname} =} __sysdefioname__ (@var{n},@var{str} @{,@var{m}@})
 ## return default input or output names given @var{n}, @var{str}, @var{m}.
 ## @var{n} is the final value, @var{str} is the string prefix, and @var{m}
 ## is start value
 ##
 ## used internally, minimal argument checking
 ##
-## @strong{Example} @code{ioname = sysdefioname(5,"u",3)}
+## @strong{Example} @code{ioname = __sysdefioname__(5,"u",3)}
 ## returns the list:
 ## @example
 ## ioname =
@@ -36,10 +36,10 @@
 ## @end example
 ## @end deftypefn
 
-function ioname = sysdefioname (n, str, m)
+function ioname = __sysdefioname__ (n, str, m)
 
   if (nargin < 2 | nargin > 3)
-    usage("ioname = sysdefioname(n,str[,m])");
+    usage ("ioname = __sysdefioname__ (n, str, m)");
   endif
 
   if (nargin == 2)           m = min(1,n);            endif

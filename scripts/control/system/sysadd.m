@@ -94,10 +94,10 @@ function sys = sysadd (...)
     Hsys = sysupdate(Hsys,"ss");
 
     ## change signal names to avoid warning messages from sysgroup
-    Gsys = syssetsignals(Gsys,"in",sysdefioname(length(Gin),"Gin_u"));
-    Gsys = syssetsignals(Gsys,"out",sysdefioname(length(Gout),"Gout_u"));
-    Hsys = syssetsignals(Hsys,"in",sysdefioname(length(Hin),"Hin_u"));
-    Hsys = syssetsignals(Hsys,"out",sysdefioname(length(Hout),"Hout_u"));
+    Gsys = syssetsignals(Gsys,"in",__sysdefioname__(length(Gin),"Gin_u"));
+    Gsys = syssetsignals(Gsys,"out",__sysdefioname__(length(Gout),"Gout_u"));
+    Hsys = syssetsignals(Hsys,"in",__sysdefioname__(length(Hin),"Hin_u"));
+    Hsys = syssetsignals(Hsys,"out",__sysdefioname__(length(Hout),"Hout_u"));
 
     sys = sysgroup(Gsys,Hsys);
 

@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{old_names} =} syschnamesl (@var{olist}, @var{old_names}, @var{inames}, @var{listname})
+## @deftypefn {Function File} {@var{old_names} =} __syschnamesl__ (@var{olist}, @var{old_names}, @var{inames}, @var{listname})
 ## used internally in syschnames
 ## item olist: index list
 ## old_names: original list names
@@ -27,7 +27,7 @@
 ## combines the two string lists old_names and inames
 ## @end deftypefn
 
-function old_names = syschnamesl (olist, old_names, inames, listname)
+function old_names = __syschnamesl__ (olist, old_names, inames, listname)
 
   probstr = [];
   if( max(olist) > rows(old_names) )
@@ -79,9 +79,9 @@ function old_names = syschnamesl (olist, old_names, inames, listname)
   if(!isempty(probstr))
     ## the following lines are NOT debugging code!
     disp("Problem in syschnames: old names are")
-    outlist(old_names," ")
+    __outlist__(old_names," ")
     disp("new names are")
-    outlist(inames,"    ")
+    __outlist__(inames,"    ")
     disp("list indices are")
     disp(olist)
     error(sprintf("syschnames: \"%s\" dim=(%d x %d)--\n\t%s\n", ...
@@ -90,18 +90,18 @@ function old_names = syschnamesl (olist, old_names, inames, listname)
 
   ## change zeros  to blanks
   if( find(old_names == 0) )
-    ## disp("syschnamesl: old_names contains zeros ")
+    ## disp("__syschnamesl__: old_names contains zeros ")
     ## old_names
-    ## disp("/syschnamesl");
+    ## disp("/__syschnamesl__");
 
     [ii,jj] = find(old_names == 0);
     for idx=1:length(ii)
       old_names(ii(idx),jj(idx)) = " ";
     endfor
 
-    ## disp("syschnamesl: old_names fixed zeros ")
+    ## disp("__syschnamesl__: old_names fixed zeros ")
     ## old_names
-    ## disp("/syschnamesl");
+    ## disp("/__syschnamesl__");
   endif
 
   ## just in case it's not a string anymore
@@ -109,8 +109,8 @@ function old_names = syschnamesl (olist, old_names, inames, listname)
     old_names = setstr(old_names);
   endif
 
-  ## disp("syschnamesl: exit, old_names=")
+  ## disp("__syschnamesl__: exit, old_names=")
   ## old_names
-  ## disp("/syschnamesl: exiting")
+  ## disp("/__syschnamesl__: exiting")
 
 endfunction

@@ -43,7 +43,7 @@
 ##
 ## When invoked with the output paramter y the plot is not displayed.
 ## @end deftypefn
-## @seealso{impulse and stepimp}
+## @seealso{impulse and __stepimp__}
 
 ## Author: Kai P. Mueller <mueller@ifr.ing.tu-bs.de>
 ## Created: September 30, 1997
@@ -51,39 +51,39 @@
 
 function [y, t] = step (sys, inp, tstop, n)
 
-  if((nargin < 1) || (nargin > 4))
-    usage("[y, u] = step(sys[, inp, tstop, n])");
+  if ((nargin < 1) || (nargin > 4))
+    usage ("[y, u] = step(sys, inp, tstop, n)");
   endif
 
-  if(nargout > 2)
-    usage("[y, u] = step(sys[, inp, tstop, n])");
+  if (nargout > 2)
+    usage ("[y, u] = step (sys, inp, tstop, n)");
   endif
 
-  if(!is_struct(sys))
-    error("step: sys must be a system data structure.");
+  if (! is_struct (sys))
+    error ("step: sys must be a system data structure.");
   endif
 
   if (nargout == 0)
     switch (nargin)
       case (1)
-        stepimp(1, sys);
+        __stepimp__ (1, sys);
       case (2)
-        stepimp(1, sys, inp);
+        __stepimp__ (1, sys, inp);
       case (3)
-        stepimp(1, sys, inp, tstop);
+        __stepimp__ (1, sys, inp, tstop);
       case (4)
-        stepimp(1, sys, inp, tstop, n);
+        __stepimp__ (1, sys, inp, tstop, n);
     endswitch
   else
     switch (nargin)
       case (1)
-        [y, t] = stepimp(1, sys);
+        [y, t] = __stepimp__ (1, sys);
       case (2)
-        [y, t] = stepimp(1, sys, inp);
+        [y, t] = __stepimp__ (1, sys, inp);
       case (3)
-        [y, t] = stepimp(1, sys, inp, tstop);
+        [y, t] = __stepimp__ (1, sys, inp, tstop);
       case (4)
-        [y, t] = stepimp(1, sys, inp, tstop, n);
+        [y, t] = __stepimp__ (1, sys, inp, tstop, n);
     endswitch
   endif
 

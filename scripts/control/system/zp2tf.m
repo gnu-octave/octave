@@ -55,18 +55,18 @@ function [num, den] = zp2tf (zer, pol, k)
 
   num = k;  den = 1;
 
-  ## call zp2ssg2 if there are complex conjugate pairs left, otherwise
+  ## call __zp2ssg2__ if there are complex conjugate pairs left, otherwise
   ## construct real zeros one by one.  Repeat for poles.
 
   while(!isempty(zer))
-    if( max(abs(imag(zer))) )     [poly,zer] = zp2ssg2(zer);
+    if( max(abs(imag(zer))) )     [poly, zer] = __zp2ssg2__ (zer);
     else                          poly = [1, -zer(1)];
                                   zer = zer(2:length(zer));      endif
     num = conv(num,poly);
   endwhile
 
   while(!isempty(pol))
-    if( max(abs(imag(pol))) )     [poly,pol] = zp2ssg2(pol);
+    if( max(abs(imag(pol))) )     [poly, pol] = __zp2ssg2__ (pol);
     else                          poly = [1, -pol(1)];
                                   pol = pol(2:length(pol));      endif
     den = conv(den,poly);

@@ -1,3 +1,20 @@
+2000-01-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* control/system/__abcddims__.m: Rename from
+	control/system/abcddims.m, change all callers.
+	* control/base/__bodquist__.m: Likewise.
+	* control/base/__freqresp__.m: Likewise.
+	* control/util/__outlist__.m: Likewise.
+	* control/base/__stepimp__.m: Likewise.
+	* control/system/__syschnamesl__.m: Likewise.
+	* control/system/__syscont_disc__.m: Likewise.
+	* control/system/__sysdefioname__.m: Likewise.
+	* control/system/__sysdefstname__.m: Likewise.
+	* control/system/__sysgroupn__.m: Likewise.
+	* control/system/__tf2sysl__.m: Likewise.
+	* control/util/__zgpbal__.m: Likewise.
+	* control/system/__zp2ssg2__.m: Likewise.
+
 2000-01-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* control/base/Makefile.in: Ditto.

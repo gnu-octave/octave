@@ -78,7 +78,7 @@ function [zer, gain] = tzero (A, B, C, D)
   ## First, balance the system via the zero computation generalized eigenvalue
   ## problem balancing method (Hodel and Tiller, Linear Alg. Appl., 1992)
 
-  Asys = zgpbal(Asys); [A,B,C,D] = sys2ss(Asys);   # balance coefficients
+  Asys = __zgpbal__ (Asys); [A,B,C,D] = sys2ss(Asys);   # balance coefficients
   meps = 2*eps*norm ([A, B; C, D], "fro");
   Asys = zgreduce(Asys,meps);  [A, B, C, D] = sys2ss(Asys); # ENVD algorithm
   if(!isempty(A))

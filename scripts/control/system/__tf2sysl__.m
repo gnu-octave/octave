@@ -17,12 +17,12 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{vec} =} tf2sysl (@var{vec})
+## @deftypefn {Function File} {@var{vec} =} __tf2sysl__ (@var{vec})
 ## used internally in @ref{tf2sys}.
 ## strip leading zero coefficients to get the true polynomial length
 ## @end deftypefn
 
-function vec = tf2sysl (vec)
+function vec = __tf2sysl__ (vec)
 
   while( (length(vec) > 1) & (vec(1) == 0) )
     vec = vec(2:length(vec));

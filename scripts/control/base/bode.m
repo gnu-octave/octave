@@ -41,7 +41,7 @@
 ## @strong{ Default} the default frequency range is selected as follows: (These
 ## steps are NOT performed if @var{w} is specified)
 ## @enumerate
-## @item via routine bodquist, isolate all poles and zeros away from
+## @item via routine __bodquist__, isolate all poles and zeros away from
 ## @var{w}=0 (@var{jw}=0 or @math{@code{exp}(jwT)}=1) and select the frequency
 ## range based on the breakpoint locations of the frequencies.
 ## @item if @var{sys} is discrete time, the frequency range is limited
@@ -126,7 +126,7 @@ function [mag_r, phase_r, w_r] = bode (sys, w, outputs, inputs, plot_style)
     error ("bode: invalid value of plot_style specified");
   endif
 
-  [f, w] = bodquist(sys,w,outputs,inputs,"bode");
+  [f, w] = __bodquist__ (sys, w, outputs, inputs, "bode");
 
   [stname,inname,outname] = sysgetsignals(sys);
   systsam = sysgettsam(sys);
@@ -162,9 +162,9 @@ function [mag_r, phase_r, w_r] = bode (sys, w, outputs, inputs, plot_style)
     else
       title([ "||Y(", tistr, ")/U(", tistr, ")||"]);
       disp("MIMO plot from")
-      disp(outlist(inname,"     "));
+      disp(__outlist__(inname,"     "));
       disp("to")
-      disp(outlist(outname,"    "));
+      disp(__outlist__(outname,"    "));
     endif
     wv = [min(w), max(w)];
     if(do_db_plot && max(mag) > 0)

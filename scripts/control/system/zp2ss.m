@@ -122,12 +122,12 @@ function [a, b, c, d] = zp2ss (zer, pol, k)
     case(2)
       ## got a complex pole or zero, need two roots (if available)
       if(length(zer) > 1)
-        [num,zer] = zp2ssg2(zer);       # get two zeros
+        [num, zer] = __zp2ssg2__ (zer);       # get two zeros
       elseif(length(zer) == 1)
         num = [1, -zer];                # use last zero (better be real!)
         zer = [];
       endif
-      [den,pol] = zp2ssg2(pol);         # get two poles
+      [den, pol] = __zp2ssg2__ (pol);         # get two poles
     otherwise
       error(["pcnt = ",num2str(pcnt)])
     endswitch
@@ -136,12 +136,12 @@ function [a, b, c, d] = zp2ss (zer, pol, k)
     zpsys1 = tf2sys(num,den,0,"u","yy");
 
     ## change names to avoid warning messages from sysgroup
-    zpsys  = syssetsignals(zpsys,"in","u1",1);
-    zpsys1 = sysupdate(zpsys1,"ss");
-    nn     = sysdimensions(zpsys);        # working with continuous system
-    zpsys  = syssetsignals(zpsys,"st", sysdefioname(nn,"x"));
-    nn1    = sysdimensions(zpsys1);
-    zpsys1 = syssetsignals(zpsys1,"st",sysdefioname(nn1,"xx"));
+    zpsys  = syssetsignals (zpsys, "in", "u1", 1);
+    zpsys1 = sysupdate (zpsys1, "ss");
+    nn     = sysdimensions (zpsys);        # working with continuous system
+    zpsys  = syssetsignals (zpsys, "st", __sysdefioname__ (nn, "x"));
+    nn1    = sysdimensions (zpsys1);
+    zpsys1 = syssetsignals (zpsys1, "st", __sysdefioname__ (nn1, "xx"));
 
     zpsys = sysmult(zpsys,zpsys1);
 

@@ -116,7 +116,7 @@ function sys = sysscale (sys, outscale, inscale, outname, inname)
     if( nargin < 4)
       warning("sysscale: outscale not square, outname not specified");
       warning("sysscale:  using default output names");
-      outname = sysdefioname(rows(sysc),"y");
+      outname = __sysdefioname__(rows(sysc),"y");
     endif
   else
     outname = sysoutname;
@@ -127,7 +127,7 @@ function sys = sysscale (sys, outscale, inscale, outname, inname)
     if(nargin < 5)
       warning("sysscale: inscale not square, inname not specified");
       warning("sysscale:  using default input names");
-      inname = sysdefioname(columns(sysb),"u");
+      inname = __sysdefioname__(columns(sysb),"u");
     endif
   else
     inname = sysgetsignals(sys,"in");

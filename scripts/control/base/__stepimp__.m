@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{y}, @var{t}] = } stepimp (@var{sitype}, @var{sys} [, @var{inp}, @var{tstop}, @var{n}])
+## @deftypefn {Function File} {[@var{y}, @var{t}] = } __stepimp__ (@var{sitype}, @var{sys} [, @var{inp}, @var{tstop}, @var{n}])
 ## Impulse or step response for a linear system.
 ## The system can be discrete or multivariable (or both).
 ## This m-file contains the "common code" of step and impulse.
@@ -34,11 +34,11 @@
 ## Created: October 2, 1997
 ## based on lsim.m of Scottedward Hodel
 
-function [y, t] = stepimp (sitype, sys, inp, tstop, n)
+function [y, t] = __stepimp__ (sitype, sys, inp, tstop, n)
 
   if (sitype == 1)         IMPULSE = 0;
   elseif (sitype == 2)     IMPULSE = 1;
-  else                     error("stepimp: invalid sitype argument.")
+  else                     error("__stepimp__: invalid sitype argument.")
   endif
   sys = sysupdate(sys,"ss");
 
@@ -59,7 +59,7 @@ function [y, t] = stepimp (sitype, sys, inp, tstop, n)
   if (DIGITAL)
     NSTATES = ndstates;
     if (TSAMPLE < eps)
-      error("stepimp: sampling time of discrete system too small.")
+      error("__stepimp__: sampling time of discrete system too small.")
     endif
   else        NSTATES = ncstates;       endif
   if (NSTATES < 1)
@@ -110,7 +110,7 @@ function [y, t] = stepimp (sitype, sys, inp, tstop, n)
     if (nargin == 5)
       n = round(n);
       if (n < 2)
-        error("stepimp: n must not be less than 2.")
+        error("__stepimp__: n must not be less than 2.")
       endif
     else
       if (nargin == 4)

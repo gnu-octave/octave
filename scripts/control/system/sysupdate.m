@@ -116,7 +116,7 @@ function sys = sysupdate (sys, opt)
     endif
 
     ## create new state names
-    sys.stname = sysdefstname(sys.n, sys.nz);
+    sys.stname = __sysdefstname__ (sys.n, sys.nz);
   endif
 
 

@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{y}, @var{my}, @var{ny}] =} abcddims (@var{x})
+## @deftypefn {Function File} {[@var{y}, @var{my}, @var{ny}] =} __abcddims__ (@var{x})
 ##
 ## Used internally in @code{abcddim}.  If @var{x} is a zero-size matrix,
 ## both dimensions are set to 0 in @var{y}.
@@ -27,7 +27,7 @@
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 ## Created: February 1997
 
-function [y, my, ny] = abcddims (x)
+function [y, my, ny] = __abcddims__ (x)
 
   y = x;
   if(isempty(y))

@@ -38,7 +38,7 @@
 ## steps are NOT performed if @var{w} is specified)
 ## @end table
 ## @enumerate
-## @item via routine bodquist, isolate all poles and zeros away from
+## @item via routine __bodquist__, isolate all poles and zeros away from
 ## @var{w}=0 (@var{jw}=0 or @math{exp(@var{jwT})=1}) and select the frequency
 ## range based on the breakpoint locations of the frequencies.
 ## @item if @var{sys} is discrete time, the frequency range is limited
@@ -93,7 +93,7 @@
 function [realp, imagp, w] = nyquist (sys, w, outputs, inputs, atol)
 
   ## Both bode and nyquist share the same introduction, so the common
-  ## parts are in a file called bodquist.m.  It contains the part that
+  ## parts are in a file called __bodquist__.m.  It contains the part that
   ## finds the number of arguments, determines whether or not the system
   ## is SISO, andd computes the frequency response.  Only the way the
   ## response is plotted is different between the two functions.
@@ -117,9 +117,9 @@ function [realp, imagp, w] = nyquist (sys, w, outputs, inputs, atol)
     error("atol must be a nonnegative scalar.")
   endif
 
-  ## signal to bodquist who's calling
+  ## signal to __bodquist__ who's calling
 
-  [f,w] = bodquist(sys,w,outputs,inputs,"nyquist");
+  [f, w] = __bodquist__ (sys, w, outputs, inputs, "nyquist");
 
   ## Get the real and imaginary part of f.
   realp = real(f);

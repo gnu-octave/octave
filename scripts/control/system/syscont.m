@@ -50,8 +50,8 @@ function [csys, Acd, Ccd] = syscont (sys)
     error("sys must be in system data structure form");
   endif
 
-  sys = sysupdate(sys,"ss");
-  [n_tot,st_c,st_d,y_c,y_d] = syscont_disc(sys);        # get ranges
+  sys = sysupdate (sys, "ss");
+  [n_tot, st_c, st_d, y_c, y_d] = __syscont_disc__ (sys);        # get ranges
 
   ## assume there's nothing there; build partitions as appropriate
   Acc = Acd = Bcc = Ccc = Ccd = Dcc = [];

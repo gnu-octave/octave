@@ -117,9 +117,9 @@ function outsys = zp2sys (zer, pol, k, tsam, inname, outname)
     outsys.tsam = tsam;
   endif
 
-  outsys.inname = sysdefioname(1,"u");
-  outsys.outname = sysdefioname(1,"y");
-  outsys.stname = sysdefstname(outsys.n,outsys.nz);
+  outsys.inname = __sysdefioname__ (1, "u");
+  outsys.outname = __sysdefioname__ (1, "y");
+  outsys.stname = __sysdefstname__ (outsys.n, outsys.nz);
 
   ## Set name of input
   if (nargin > 4)

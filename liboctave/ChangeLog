@@ -1,6 +1,7 @@
 2005-01-26  David Bateman <dbateman@free.fr>
 
-	* Array.cc (Array<T>::insert): Add special case for fast concatenation.
+	* Array.cc (Array<T>::insert): Handle generic case, not just
+	special case for fast concatenation.
 
 2005-01-18  John W. Eaton  <jwe@octave.org>
 

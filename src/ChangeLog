@@ -1,3 +1,9 @@
+2000-04-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* dynamic-ld.cc (octave_dynamic_loader::do_load): Also fail with
+	error message if we don't find the mangled function name in the
+	file.
+
 2000-03-31  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-stream.cc (printf_value_cache::string_value): Return string

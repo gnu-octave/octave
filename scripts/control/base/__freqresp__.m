@@ -46,88 +46,91 @@ function [ff, w] = __freqresp__ (sys, USEW, w);
 
   ## SYS_INTERNAL accesses members of system data structure
 
-  save_val = empty_list_elements_ok;
-  empty_list_elements_ok = 1;
+  save_warn_empty_list_elements = warn_empty_list_elements;
+  unwind_protect
+    warn_empty_list_elements = 0;
 
-  ## Check Args
-  if ((nargin < 2) || (nargin > 4))
-    usage ("[ff, w] = __freqresp__ (sys, USEW, w)");
-  elseif (USEW & (nargin < 3) )
-    error ("USEW = 1 but w was not passed.");
-  elseif (USEW & isempty(w))
-    warning("USEW = 1 but w is empty; setting USEW=0");
-    USEW = 0;
-  endif
-
-  DIGITAL = is_digital(sys);
-
-  ## compute default w if needed
-  if(!USEW)
-    if(is_siso(sys))
-      sys = sysupdate(sys,"zp");
-      [zer,pol] = sys2zp(sys);
-    else
-      zer = tzero(sys);
-      pol = eig(sys2ss(sys));
+    ## Check Args
+    if ((nargin < 2) || (nargin > 4))
+      usage ("[ff, w] = __freqresp__ (sys, USEW, w)");
+    elseif (USEW & (nargin < 3) )
+      error ("USEW = 1 but w was not passed.");
+    elseif (USEW & isempty(w))
+      warning("USEW = 1 but w is empty; setting USEW=0");
+      USEW = 0;
     endif
 
-    ## get default frequency range
-    [wmin,wmax] = bode_bounds(zer,pol,DIGITAL,sysgettsam(sys));
-    w = logspace(wmin,wmax,50);
-  else
-    w = reshape(w,1,length(w));         # make sure it's a row vector
-  endif
+    DIGITAL = is_digital(sys);
 
-  ## now get complex values of s or z
-  if(DIGITAL)
-    jw = exp(i*w*sysgettsam(sys));
-  else
-    jw = i*w;
-  endif
+    ## compute default w if needed
+    if(!USEW)
+      if(is_siso(sys))
+	sys = sysupdate(sys,"zp");
+	[zer,pol] = sys2zp(sys);
+      else
+	zer = tzero(sys);
+	pol = eig(sys2ss(sys));
+      endif
 
-  [nn,nz,mm,pp] = sysdimensions(sys);
+      ## get default frequency range
+      [wmin,wmax] = bode_bounds(zer,pol,DIGITAL,sysgettsam(sys));
+      w = logspace(wmin,wmax,50);
+    else
+      w = reshape(w,1,length(w));         # make sure it's a row vector
+    endif
 
-  ## now compute the frequency response - divide by zero yields a warning
-  if (strcmp(sysgettype(sys),"zp"))
-    ## zero-pole form (preferred)
-    [zer,pol,sysk] = sys2zp(sys);
-    ff = ones(size(jw));
-    l1 = min(length(zer)*(1-isempty(zer)),length(pol)*(1-isempty(pol)));
-    for ii=1:l1
-      ff = ff .* (jw - zer(ii)) ./ (jw - pol(ii));
-    endfor
+    ## now get complex values of s or z
+    if(DIGITAL)
+      jw = exp(i*w*sysgettsam(sys));
+    else
+      jw = i*w;
+    endif
 
-    ## require proper  transfer function, so now just get poles.
-    for ii=(l1+1):length(pol)
-      ff = ff ./ (jw - pol(ii));
-    endfor
-    ff = ff*sysk;
+    [nn,nz,mm,pp] = sysdimensions(sys);
 
-  elseif (strcmp(sysgettype(sys),"tf"))
-    ## transfer function form
-    [num,den] = sys2tf(sys);
-    ff = polyval(num,jw)./polyval(den,jw);
-  elseif (mm==pp)
-    ## The system is square; do state-space form bode plot
-    [sysa,sysb,sysc,sysd,tsam,sysn,sysnz] = sys2ss(sys);
-    n = sysn + sysnz;
-    for ii=1:length(jw);
-      ff(ii) = det(sysc*((jw(ii).*eye(n)-sysa)\sysb)+sysd);
-    endfor;
-  else
-    ## Must be state space... bode
-    [sysa,sysb,sysc,sysd,tsam,sysn,sysnz] = sys2ss(sys);
-    n = sysn + sysnz;
-    for ii=1:length(jw);
-      ff(ii) = norm(sysc*((jw(ii)*eye(n)-sysa)\sysb)+sysd);
-    endfor
+    ## now compute the frequency response - divide by zero yields a warning
+    if (strcmp(sysgettype(sys),"zp"))
+      ## zero-pole form (preferred)
+      [zer,pol,sysk] = sys2zp(sys);
+      ff = ones(size(jw));
+      l1 = min(length(zer)*(1-isempty(zer)),length(pol)*(1-isempty(pol)));
+      for ii=1:l1
+	ff = ff .* (jw - zer(ii)) ./ (jw - pol(ii));
+      endfor
 
-  endif
+      ## require proper  transfer function, so now just get poles.
+      for ii=(l1+1):length(pol)
+	ff = ff ./ (jw - pol(ii));
+      endfor
+      ff = ff*sysk;
 
-  w = reshape(w,1,length(w));
-  ff = reshape(ff,1,length(ff));
+    elseif (strcmp(sysgettype(sys),"tf"))
+      ## transfer function form
+      [num,den] = sys2tf(sys);
+      ff = polyval(num,jw)./polyval(den,jw);
+    elseif (mm==pp)
+      ## The system is square; do state-space form bode plot
+      [sysa,sysb,sysc,sysd,tsam,sysn,sysnz] = sys2ss(sys);
+      n = sysn + sysnz;
+      for ii=1:length(jw);
+	ff(ii) = det(sysc*((jw(ii).*eye(n)-sysa)\sysb)+sysd);
+      endfor;
+    else
+      ## Must be state space... bode
+      [sysa,sysb,sysc,sysd,tsam,sysn,sysnz] = sys2ss(sys);
+      n = sysn + sysnz;
+      for ii=1:length(jw);
+	ff(ii) = norm(sysc*((jw(ii)*eye(n)-sysa)\sysb)+sysd);
+      endfor
 
-  ## restore global variable
-  empty_list_elements_ok = save_val;
+    endif
+
+    w = reshape(w,1,length(w));
+    ff = reshape(ff,1,length(ff));
+
+  unwind_protect_cleanup
+    warn_empty_list_elements = save_warn_empty_list_elements;
+  end_unwind_protect
+
 endfunction
 

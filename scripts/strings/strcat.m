@@ -36,9 +36,9 @@
 function st = strcat (s, t, varargin)
 
   if (nargin > 1)
-    save_empty_list_elements_ok = empty_list_elements_ok;
+    save_warn_empty_list_elements = warn_empty_list_elements;
     unwind_protect
-      empty_list_elements_ok = 1;
+      warn_empty_list_elements = 0;
       if (isstr (s) && isstr (t))
         tmpst = [s, t];
       else
@@ -55,7 +55,7 @@ function st = strcat (s, t, varargin)
         endif
       endwhile
     unwind_protect_cleanup
-      empty_list_elements_ok = save_empty_list_elements_ok;
+      warn_empty_list_elements = save_warn_empty_list_elements;
     end_unwind_protect
   else
     usage ("strcat (s, t, ...)");

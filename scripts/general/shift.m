@@ -49,11 +49,9 @@ function y = shift (x, b)
     error ("shift: b must be an integer");
   endif
 
-  elo = empty_list_elements_ok;
-
+  save_warn_empty_list_elements = warn_empty_list_elements;
   unwind_protect
-
-    empty_list_elements_ok = 1;
+    warn_empty_list_elements = 0;
 
     if (b >= 0)
       b = rem (b, nr);
@@ -68,9 +66,7 @@ function y = shift (x, b)
     endif
 
   unwind_protect_cleanup
-
-    empty_list_elements_ok = elo;
-
+    warn_empty_list_elements = save_warn_empty_list_elements;
   end_unwind_protect
 
   if (nc == 0)

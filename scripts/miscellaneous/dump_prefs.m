@@ -59,7 +59,6 @@ function dump_prefs (file)
               "default_save_format";
               "define_all_return_values";
               "echo_executing_commands";
-              "empty_list_elements_ok";
               "fixed_point_format";
               "gnuplot_binary";
               "gnuplot_command_end";
@@ -96,6 +95,7 @@ function dump_prefs (file)
               "suppress_verbose_help_message";
               "warn_assign_as_truth_value";
               "warn_divide_by_zero";
+              "warn_empty_list_elements";
               "warn_fortran_indexing";
               "warn_function_name_clash";
               "warn_future_time_stamp";

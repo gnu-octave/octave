@@ -1,3 +1,17 @@
+2003-07-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* control/base/pzmap.m, control/base/place.m,
+	control/base/__freqresp__.m, control/system/sysappend.m,
+	control/system/syscont.m, control/system/sysdisc.m,
+	control/system/sysgroup.m, control/system/tfout.m,
+	control/system/zp2ss.m, control/system/zpout.m,
+	control/util/__outlist__.m, signal/arma_rnd.m, general/shift.m,
+	strings/strcat.m: Save and restore warn_empty_list_elements, not
+	empty_list_elements_ok.
+
+	* miscellaneous/dump_prefs.m: Add warn_empty_list_elements to the list.
+	Delete empty_list_elements_ok from the list.
+
 2003-07-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* miscellaneous/dump_prefs.m: Include warn_neg_dim_as_zero in the

@@ -314,12 +314,7 @@ Empty matrices may also be used in assignment statements as a convenient
 way to delete rows or columns of matrices.
 @xref{Assignment Ops, ,Assignment Expressions}.
 
-Octave will normally issue a warning if it finds an empty matrix in the
-list of elements that make up another matrix.  You can use the variable
-@code{empty_list_elements_ok} to suppress the warning or to treat it as
-an error.
-
-@DOCSTRING(empty_list_elements_ok)
+@DOCSTRING(warn_empty_list_elements)
 
 When Octave parses a matrix expression, it examines the elements of the
 list to determine whether they are all constants.  If they are, it

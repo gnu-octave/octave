@@ -1,3 +1,15 @@
+2003-07-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pt-mat.cc (Vwarn_empty_list_elements): New variable.
+	(warn_empty_list_elements): New function.
+	(symbols_of_pt_mat): Add DEFVAR for warn_empty_list_elements.
+	(): Check Vwarn_empty_list_elements, not
+	Vempty_list_elements_ok.
+
+	* pt-mat.cc (Vempty_list_elements_ok): Delete.
+	(empty_list_elements_ok): Delete.
+	(symbols_of_pt_mat): Delete DEFVAR for empty_list_elements_ok.
+
 2003-07-11  Russell Standish <R.Standish@unsw.edu.au>
 
 	* TEMPLATE-INST/Array-tc.cc (resize_fill_value): Provide

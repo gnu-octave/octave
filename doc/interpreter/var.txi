@@ -266,11 +266,6 @@ Default value: 1.
 
 Default value: 0.
 
-@item empty_list_elements_ok
-@xref{Empty Matrices}.
-
-Default value: @code{"warn"}.
-
 @item fixed_point_format
 @xref{Matrices}.
 
@@ -390,6 +385,11 @@ Default value: 1.
 @xref{Arithmetic Ops}.
 
 Default value: 1.
+
+@item warn_empty_list_elements
+@xref{Empty Matrices}.
+
+Default value: 0.
 
 @item warn_fortran_indexing
 @xref{Index Expressions}.

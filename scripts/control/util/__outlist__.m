@@ -46,35 +46,36 @@
 
 function str_val = __outlist__ (name_list, tabchar, yd, ilist)
 
-  ## save for restore later
-  save_empty = empty_list_elements_ok;
-  empty_list_elements_ok = 1;
+  save_warn_empty_list_elements = warn_empty_list_elements;
+  unwind_protect
+    warn_empty_list_elements = 0;
 
-  if( nargin < 1 | nargin > 4 )
-    usage("str_val = outlist(x[,tabchar,yd,ilist])");
-  endif
+    if( nargin < 1 | nargin > 4 )
+      usage("str_val = outlist(x[,tabchar,yd,ilist])");
+    endif
 
-  m = length(name_list);
-  if(nargin < 4)           ilist = 1:m;          endif
-  if(nargin ==1)
-    empty_list_elements_ok = 1;
-    tabchar = "";
-  endif
+    m = length(name_list);
+    if(nargin < 4)           ilist = 1:m;          endif
+    if(nargin ==1)
+      tabchar = "";
+    endif
 
-  if(nargin < 3)             yd = zeros(1,m);
-  elseif(isempty(yd))        yd = zeros(1,m);          endif
+    if(nargin < 3)             yd = zeros(1,m);
+    elseif(isempty(yd))        yd = zeros(1,m);          endif
 
-  str_val = "";
-  dstr = list(""," (discrete)");
-  if((m >= 1) && (islist(name_list)))
-    for ii=1:m
-      str_val = sprintf("%s%s%d: %s%s\n",str_val,tabchar, ilist(ii), ...
-          nth(name_list,ii),nth(dstr,yd(ii)+1));
-    endfor
-  else
-    str_val = sprintf("%sNone",tabchar);
-  endif
+    str_val = "";
+    dstr = list(""," (discrete)");
+    if((m >= 1) && (islist(name_list)))
+      for ii=1:m
+	str_val = sprintf("%s%s%d: %s%s\n",str_val,tabchar, ilist(ii), ...
+			  nth(name_list,ii),nth(dstr,yd(ii)+1));
+      endfor
+    else
+      str_val = sprintf("%sNone",tabchar);
+    endif
 
-  empty_list_elements_ok = save_empty;
+  unwind_protect_cleanup
+    warn_empty_list_elements = save_warn_empty_list_elements;
+  end_unwind_protect
 
 endfunction

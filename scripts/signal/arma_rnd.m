@@ -42,9 +42,9 @@
 
 function x = arma_rnd (a, b, v, t, n)
 
+  save_warn_empty_list_elements = warn_empty_list_elements;
   unwind_protect
-    orig_listelemok = empty_list_elements_ok;
-    empty_list_elements_ok = "true";
+    warn_empty_list_elements = 0;
 
     if (nargin == 4)
       n = 100;
@@ -81,9 +81,7 @@ function x = arma_rnd (a, b, v, t, n)
     x = x(n + 1 : t + n);
 
   unwind_protect_cleanup
-
-    empty_list_elements_ok = orig_listelemok;
-
+    warn_empty_list_elements = save_warn_empty_list_elements;
   end_unwind_protect
 
 endfunction

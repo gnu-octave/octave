@@ -42,11 +42,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov.h"
 #include "variables.h"
 
-// Are empty elements in a matrix list ok?  For example, is the empty
-// matrix in an expression like `[[], 1]' ok?  A positive value means
-// yes.  A negative value means yes, but print a warning message.
-// Zero means it should be considered an error.
-static int Vempty_list_elements_ok;
+// If TRUE, print a warning message for empty elements in a matrix list.
+static bool Vwarn_empty_list_elements;
 
 // The character to fill with when creating string arrays.
 char Vstring_fill_char = ' ';
@@ -189,19 +186,7 @@ tm_row_const::tm_row_const_rep::init (const tree_argument_list& row)
 	  int this_elt_nr = tmp.rows ();
 	  int this_elt_nc = tmp.columns ();
 
-	  if (this_elt_nr == 0 && this_elt_nc == 0)
-	    {
-	      if (Vempty_list_elements_ok < 0)
-		eval_warning ("empty matrix found in matrix list",
-			      elt->line (), elt->column ());
-	      else if (Vempty_list_elements_ok == 0)
-		{
-		  eval_error ("empty matrix found in matrix list",
-			      elt->line (), elt->column ());
-		  break;
-		}
-	    }
-	  else
+	  if (this_elt_nr > 0 || this_elt_nc > 0)
 	    {
 	      all_mt = false;
 
@@ -222,6 +207,9 @@ tm_row_const::tm_row_const_rep::init (const tree_argument_list& row)
 
 	      append (tmp);
 	    }
+	  else if (Vwarn_empty_list_elements)
+	    eval_warning ("empty matrix found in matrix list",
+			  elt->line (), elt->column ());
 
 	  if (all_str && ! tmp.is_string ())
 	    all_str = false;
@@ -358,17 +346,7 @@ tm_const::init (const tree_matrix& tm)
 	  int this_elt_nr = elt.rows ();
 	  int this_elt_nc = elt.cols ();
 
-	  if (this_elt_nr == 0 && this_elt_nc == 0)
-	    {
-	      if (Vempty_list_elements_ok < 0)
-		warning ("empty matrix found in matrix list");
-	      else if (Vempty_list_elements_ok == 0)
-		{
-		  ::error ("empty matrix found in matrix list");
-		  break;
-		}
-	    }
-	  else
+	  if (this_elt_nr > 0 || this_elt_nc > 0)
 	    {
 	      all_mt = false;
 
@@ -392,6 +370,8 @@ tm_const::init (const tree_matrix& tm)
 
 	      nr += this_elt_nr;
 	    }
+	  else if (Vwarn_empty_list_elements)
+	    warning ("empty matrix found in matrix list");
 	}
     }
 
@@ -588,9 +568,9 @@ tree_matrix::accept (tree_walker& tw)
 }
 
 static int
-empty_list_elements_ok (void)
+warn_empty_list_elements (void)
 {
-  Vempty_list_elements_ok = check_preference ("empty_list_elements_ok");
+  Vwarn_empty_list_elements = check_preference ("warn_empty_list_elements");
 
   return 0;
 }
@@ -624,25 +604,6 @@ string_fill_char (void)
 void
 symbols_of_pt_mat (void)
 {
-  DEFVAR (empty_list_elements_ok, true, empty_list_elements_ok,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} empty_list_elements_ok\n\
-This variable controls whether Octave ignores empty matrices in a matrix\n\
-list.\n\
-\n\
-For example, if the value of @code{empty_list_elements_ok} is\n\
-nonzero, Octave will ignore the empty matrices in the expression\n\
-\n\
-@example\n\
-a = [1, [], 3, [], 5]\n\
-@end example\n\
-\n\
-@noindent\n\
-and the variable @code{a} will be assigned the value @code{[ 1, 3, 5 ]}.\n\
-\n\
-The default value is 1.\n\
-@end defvr");
-
   DEFVAR (string_fill_char, " ", string_fill_char,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} string_fill_char\n\
@@ -660,6 +621,21 @@ string_fill_char = \"X\";\n\
 @end group\n\
 @end example\n\
 @end defvr");
+
+  DEFVAR (warn_empty_list_elements, false, warn_empty_list_elements,
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} warn_empty_list_elements\n\
+If the value of @code{warn_empty_list_elements} is nonzero, print a\n\
+warning when an empty matrix is found in a matrix list.  For example,\n\
+\n\
+@example\n\
+a = [1, [], 3, [], 5]\n\
+@end example\n\
+\n\
+@noindent\n\
+The default value is 0.\n\
+@end defvr");
+
 }
 
 /*

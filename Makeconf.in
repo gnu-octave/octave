@@ -155,8 +155,12 @@ libdir = @libdir@
 # rather than directly by users.
 libexecdir = @libexecdir@
 
+# The prefix for Octave's include file directory.  The default is
+# ${prefix}/include
+topincludedir = @topincludedir@
+
 # Where to install Octave's include files.  The default is
-# ${prefix}/include/octave
+# ${topincludedir}/octave-${version}
 includedir = @includedir@
 
 # Where to install Octave's man pages, and what extension they should

@@ -32,7 +32,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "help.h"
 #include "defun-dld.h"
 
-DEFUN_DLD_BUILTIN ("lpsolve", Flpsolve, Slpsolve, 11, 3,
+DEFUN_DLD_BUILTIN ("lp_solve", Flp_solve, Slp_solve, 11, 3,
   "lp_solve (): solve linear programs using lp_solve.")
 {
   Octave_object retval;
@@ -43,12 +43,13 @@ DEFUN_DLD_BUILTIN ("lpsolve", Flpsolve, Slpsolve, 11, 3,
   retval(1) = m;
   retval(0) = m;
 
-  error ("lpsolve: not implemented yet");
+  error ("lp_solve: not implemented yet");
 
   return retval;
 }
 
-DEFUN_DLD_BUILTIN ("lpsolve_options", Flpsolve_options, Slpsolve_options, -1, 1,
+DEFUN_DLD_BUILTIN ("lp_solve_options", Flp_solve_options,
+		   Slp_solve_options, -1, 1, 
   "lp_solve_options (KEYWORD, VALUE)\n\
 \n\
 Set or show options for lp_solve.  Keywords may be abbreviated\n\
@@ -56,7 +57,7 @@ to the shortest match.")
 {
   Octave_object retval;
 
-  error ("lpsolve_options: not implemented yet");
+  error ("lp_solve_options: not implemented yet");
 
   return retval;
 }

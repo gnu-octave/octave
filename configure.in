@@ -20,7 +20,7 @@ dnl Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
 ### along with Octave; see the file COPYING.  If not, write to the Free
 ### Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
-AC_REVISION($Revision: 1.113 $)
+AC_REVISION($Revision: 1.114 $)
 AC_PREREQ(2.0)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -359,55 +359,83 @@ OCTAVE_CXXLIBS
 ###     fc : Convex
 ###
 ### I don't think the Cray compiler will ever work like f2c...
-
-### XXX FIXME XXX -- I don't think the logic here is quite right if we
-### want to allow --with-g77 or --with-f2c to force them to be used
-### even if they aren't available or don't appear to work correctly.
+###
+### The optional arguments to --with-g77 or --with-f2c force g77 or
+### f2c to be used.  The optional argument to can be used to set the
+### name of g77 or f2c.  For example `--with-g77=/opt/gnu/bin/f77'
+### says that we are using g77 but it is installed as
+### /opt/gnu/bin/f77.
+###
+### If neither of those options are specified, look for a Fortran
+### compiler.  If one is found, see if it is compatible with our
+### assumptions.  If it is, use it.  Otherwise, look for f2c.
+###
+### Issue a warning if we can't find a compatible fortran compiler or
+### f2c.
 
 if $use_g77; then
-  F77=g77
+  if test "$with_g77" = "yes"; then
+    F77=g77
+  else
+    F77="$with_g77"
+  fi
+  AC_MSG_RESULT([defining F77 to be $F77])
 elif $use_f2c; then
   F77=
+  if test "$with_f2c" = "yes"; then
+    F2C=g77
+  else
+    F2C="$with_f2c"
+  fi
+  AC_MSG_RESULT([defining F2C to be $F2C])
 else
   AC_CHECK_PROGS(F77, xlf cf77 f77 g77 fc)
 fi
 
-# If it looks like we have a Fortran compiler, try to determine
-# whether it might be compatible with f2c.
+FUGLY=
+have_fortran_compiler=false
+have_f2c=false
 
-if test -n "$F77"; then
+if $use_g77; then
+  FUGLY=-fugly
+  AC_MSG_RESULT([defining FUGLY to be $FUGLY])
   OCTAVE_FLIBS
-  OCTAVE_F77_APPEND_UNDERSCORE
-  OCTAVE_F2C_F77_COMPAT
-
-  if test "$octave_cv_f2c_f77_compat" = no; then
-    F77=
+  AC_DEFINE(F77_APPEND_UNDERSCORE, 1)
+  AC_MSG_RESULT([defining F77_APPEND_UNDERSCORE to be 1])
+  have_fortran_compiler=true
+elif $use_f2c; then
+  have_f2c=true
+else
+  if test -n "$F77"; then
+    OCTAVE_FLIBS
+    OCTAVE_F77_APPEND_UNDERSCORE
+    OCTAVE_F2C_F77_COMPAT
+    if test "$octave_cv_f2c_f77_compat" = no; then
+      F77=
+    else
+      if test -z "$FFLAGS"; then
+        FFLAGS="-O"
+        AC_MSG_RESULT([defining FFLAGS to be $FFLAGS])
+      fi
+    fi
+  fi
+  if test -n "$F77"; then
+    have_fortran_compiler=true
   else
-    if test -z "$FFLAGS"; then
-      FFLAGS="-O"
-      AC_MSG_RESULT([defining FFLAGS to be $FFLAGS])
+    AC_CHECK_PROG(F2C, f2c, f2c, [])
+    if test -n "$F2C"; then
+      have_f2c=true
     fi
   fi
 fi
 
-### If we can't find a Fortran compiler, or if it looks like it isn't
-### compatible with f2c, try to find f2c.
-
-if test -z "$F77"; then
-  AC_CHECK_PROG(F2C, f2c, f2c, [])
-fi
-
-### At this point, either F77, F2C, use_f2c, or use_g77 should be set.
-
-if test -n "$F77"; then
-  if test "$F77" = "g77"; then
-    FUGLY=-fugly
-    AC_MSG_RESULT([defining FUGLY to be $FUGLY])
-  fi
+if $have_fortran_compiler; then
   DOT_C_FROM_DOT_F_CMD=
   DOT_O_FROM_DOT_F_PAT='.f.o:'
   DOT_O_FROM_DOT_F_CMD='	$(FC) -c $(ALL_FFLAGS) $<'
-elif test -n "$F2C" || $use_f2c; then
+elif $have_f2c; then
+  AC_DEFINE(F77_APPEND_UNDERSCORE, 1)
+  AC_MSG_RESULT([defining F77_APPEND_UNDERSCORE to be 1])
   AC_CHECK_LIB(f2c, main, FLIBS=-lf2c, [])
   if test -z "$FLIBS" ; then
     AC_CHECK_LIB(F77, main, FLIBS=-lF77, [])
@@ -423,7 +451,6 @@ elif test -n "$F2C" || $use_f2c; then
   DOT_O_FROM_DOT_F_PAT='%.o : %.f'
   DOT_O_FROM_DOT_F_CMD=
   AC_MSG_RESULT([defining DOT_O_FROM_DOT_F_PAT to be $DOT_O_FROM_DOT_F_PAT])
-  AC_DEFINE(F77_APPEND_UNDERSCORE, 1)
 else
   AC_MSG_WARN([in order to build octave, you must have a compatible])
   AC_MSG_WARN([Fortran compiler or f2c installed and in your path.])

@@ -249,8 +249,6 @@ octave_ieee_init (void)
 
   if (native_float_format == OCTAVE_UNKNOWN_FLT_FMT)
     panic ("unrecognized floating point format!");
-     
-  cerr << native_float_format << "\n";
 }
 
 #if defined (EXCEPTION_IN_MATH)

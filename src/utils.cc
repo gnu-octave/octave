@@ -704,9 +704,11 @@ octave_vformat (ostream& os, const char *fmt, va_list args)
 
   char *s = buf.str ();
 
+  os << s;
+
   retval = strlen (s);
 
-  os << s;
+  delete [] s;
 
 #else
 
@@ -717,6 +719,8 @@ octave_vformat (ostream& os, const char *fmt, va_list args)
       os << s;
 
       retval = strlen (s);
+
+      free (s);
     }
 
 #endif

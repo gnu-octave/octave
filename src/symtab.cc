@@ -633,7 +633,7 @@ symbol_record::read_only_error (void)
       else if (is_function ())
 	tag = "function";
 	
-      ::error ("can't redefined read-only %s `%s'", tag, nm);
+      ::error ("can't redefine read-only %s `%s'", tag, nm);
 
       return 1;
     }

@@ -103,6 +103,9 @@ extern "C"
 // Is this a parametric plot?  Makes a difference for 3D plotting.
 extern int parametric_plot;
 
+// Should the graph window be cleared before plotting the next line?
+extern int clear_before_plotting;
+
 /*
  * Format a list in neat columns.  Mostly stolen from GNU ls.  This
  * should maybe be in utils.cc.
@@ -626,6 +629,36 @@ builtin_history (int argc, char **argv)
   tree_constant retval;
 
   do_history (argc, argv);
+
+  return retval;
+}
+
+/*
+ * Change state flag that determines whether lines are added to plots
+ * or drawn on new plots.
+ */
+tree_constant
+builtin_hold (int argc, char **argv)
+{
+  tree_constant retval;
+  
+  switch (argc)
+    {
+    case 1:
+      clear_before_plotting = ! clear_before_plotting;
+      break;
+    case 2:
+      if (strcasecmp (argv[1], "on") == 0)
+	clear_before_plotting = 0;
+      else if (strcasecmp (argv[1], "off") == 0)
+	clear_before_plotting = 1;
+      else
+	print_usage ("hold");
+      break;
+    default:
+      print_usage ("hold");
+      break;
+    }
 
   return retval;
 }

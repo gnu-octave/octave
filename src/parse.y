@@ -371,13 +371,25 @@ command		: plot_command
 
 plot_command	: PLOT plot_command1
 		  {
-		    tree_subplot_list *tmp = $2->reverse ();
-		    $$ = new tree_plot_command (tmp, $1->pttype ());
-		    plotting = 0;
-		    past_plot_range = 0;
-		    in_plot_range = 0;
-		    in_plot_using = 0;
-		    in_plot_style = 0;
+		    tree_subplot_list *tmp = (tree_subplot_list *) NULL;
+		    if ($2 != (tree_subplot_list *) NULL)
+		      tmp = $2->reverse ();
+
+		    if (tmp == (tree_subplot_list *) NULL
+			&& $1->pttype () != token::replot)
+		      {
+			yyerror ("must have something to plot");
+			ABORT_PARSE;
+		      }
+		    else
+		      {
+			$$ = new tree_plot_command (tmp, $1->pttype ());
+			plotting = 0;
+			past_plot_range = 0;
+			in_plot_range = 0;
+			in_plot_using = 0;
+			in_plot_style = 0;
+		      }
 		  }
 		| PLOT ranges plot_command1
 		  {
@@ -419,7 +431,9 @@ ranges1		: OPEN_BRACE expression COLON expression CLOSE_BRACE
 		  { $$ = new tree_plot_range (); }
 		;
 
-plot_command1	: plot_command2
+plot_command1	: // empty
+		  { $$ = (tree_subplot_list *) NULL; }
+		| plot_command2
 		  { $$ = $1; }
 		| plot_command1 ',' plot_command2
 		  { $$ = $1->chain ($3); }

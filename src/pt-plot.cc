@@ -40,10 +40,13 @@ extern "C"
 }
 
 // The number of lines we\'ve plotted so far.
-static int plot_line_count;
+int plot_line_count;
 
 // Is this a parametric plot?  Makes a difference for 3D plotting.
 int parametric_plot = 0;
+
+// Should the graph window be cleared before plotting the next line?
+int clear_before_plotting = 1;
 
 /*
  * Plotting, eh?
@@ -90,13 +93,33 @@ tree_plot_command::eval (int print)
   switch (ndim)
     {
     case 1:
-      plot_buf << "replot";
+      if (plot_line_count == 0)
+	{
+	  if (plot_list)
+	    plot_buf << "plot";
+	  else
+	    {
+	      ::error ("replot: must have something to plot");
+	      return retval;
+	    }
+	}
+      else
+	plot_buf << "replot";
       break;
     case 2:
-      plot_buf << "plot";
+      if (clear_before_plotting || plot_line_count == 0)
+	{
+	  plot_line_count = 0;
+	  plot_buf << "plot";
+	}
+      else
+	plot_buf << "replot";
       break;
     case 3:
-      plot_buf << "splot";
+      {
+	plot_line_count = 0;
+	plot_buf << "splot";
+      }
       break;
     default:
       panic_impossible ();
@@ -104,12 +127,17 @@ tree_plot_command::eval (int print)
     }
 
   if (range != (tree_plot_limits *) NULL)
-    range->print (ndim, plot_buf);
+    {
+      if (plot_line_count == 0)
+	range->print (ndim, plot_buf);
+      else
+	warning ("can't specify new plot ranges with `replot' or while\
+ hold is on");
+    }
 
   if (error_state)
     return retval;
 
-  plot_line_count = 0;
   tree_subplot_list *ptr = plot_list;
   for ( ; ptr != NULL_TREE ; ptr = ptr->next_elem ())
     {

@@ -184,6 +184,10 @@ if no arguments are given, clear all user-defined variables and functions", },
     "history [N] [-w file] [-r file] [-q]\n\n\
 display, save, or load command history", },
 
+  { "hold", -1, builtin_hold,
+    "hold [on|off]\n\n\
+determine whether the plot window is cleared before the next line is drawn", },
+
   { "load", -1, builtin_load,
     "load [-force] file\n\nload variables from a file", },
 

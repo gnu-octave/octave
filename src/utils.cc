@@ -129,6 +129,9 @@ char *tilde_expand (char *s); /* From readline's tilde.c */
 // Top level context (?)
 extern jmp_buf toplevel;
 
+// The number of lines we\'ve plotted so far.
+extern int plot_line_count;
+
 // Pipe to gnuplot.
 static oprocstream plot_stream;
 
@@ -546,7 +549,7 @@ default_info_file (void)
   else
     {
       char *infodir = octave_info_dir ();
-      info_file_string = strconcat (infodir, "octave.info");
+      info_file_string = strconcat (infodir, "/octave.info");
     }
   return info_file_string;
 }
@@ -1302,6 +1305,8 @@ send_to_plot_stream (const char *cmd)
 
   if (! plot_stream.is_open ())
     {
+      plot_line_count = 0;
+
       char *plot_prog = user_pref.gnuplot_binary;
       if (plot_prog != (char *) NULL)
 	{
@@ -1351,6 +1356,8 @@ close_plot_stream (void)
 {
   if (plot_stream.is_open ())
     plot_stream.close ();
+
+  plot_line_count = 0;
 }
 
 int

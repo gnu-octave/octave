@@ -55,7 +55,11 @@ mk_gr_map (struct group *gr)
       Octave_map m;
 
       m ["name"] = gr->gr_name;
+#if defined (HAVE_GR_PASSWD)
       m ["passwd"] = gr->gr_passwd;
+#else
+      m ["passwd"] = "";
+#endif
       m ["gid"] = STATIC_CAST (double, gr->gr_gid);
 
       if (gr->gr_mem)

@@ -1,3 +1,8 @@
+Wed Nov 20 00:35:57 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* getgrent.cc (mk_gr_map): Only set the passwd field if
+	HAVE_GR_PASSWD is defined.
+
 Tue Nov 19 12:01:13 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* sysdep.cc (OS2_init): New function.

@@ -1,5 +1,7 @@
 Tue Nov 19 23:04:24 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* misc/Makefile.in: Add variables for installing things.
+
 	* Makerules.in (install, uninstall): Make these double colon rules.
 
 	* f77-fcn.c, f77-fcn.h: New files, from liboctave.

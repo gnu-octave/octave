@@ -21,7 +21,7 @@ dnl Copyright (C) 1996 John W. Eaton
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA. 
 
-AC_REVISION($Revision: 1.234 $)
+AC_REVISION($Revision: 1.235 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -810,6 +810,8 @@ AC_STRUCT_ST_RDEV
 AC_STRUCT_TM
 AC_STRUCT_TIMEZONE
 AC_FUNC_CLOSEDIR_VOID
+
+OCTAVE_STRUCT_GR_PASSWD
 
 TERMLIBS=""
 for termlib in termcap terminfo ncurses curses termlib; do

@@ -33,6 +33,9 @@
 /* Define if your gnuplot has mutliplot. */
 #undef GNUPLOT_HAS_MULTIPLOT
 
+/* Define if your system's struct group has a gr_passwd field. */
+#undef HAVE_GR_PASSWD
+
 /* Define if you have isinf(). */
 #undef HAVE_ISINF
 

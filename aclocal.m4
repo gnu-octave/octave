@@ -16,8 +16,9 @@ dnl for more details.
 dnl 
 dnl You should have received a copy of the GNU General Public License
 dnl along with Octave; see the file COPYING.  If not, write to the Free
-dnl Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-
+dnl Software Foundation, 59 Temple Place - Suite 330, Boston, MA
+dnl 02111-1307, USA. 
+dnl
 dnl See what libraries are used by the C++ compiler.  Need this for
 dnl dynamic linking.
 dnl
@@ -101,7 +102,7 @@ changequote([, ])])
 AC_MSG_RESULT([$octave_cv_cxxlibs])
 CXXLIBS="$octave_cv_cxxlibs"
 AC_SUBST(CXXLIBS)])
-
+dnl
 dnl See what libraries are used by the Fortran compiler.
 dnl
 dnl Write a minimal program and compile it with -v.  I don't know what
@@ -242,7 +243,7 @@ changequote([, ])dnl
 octave_cv_flibs="$flibs_result"])
 FLIBS="$octave_cv_flibs"
 AC_MSG_RESULT([$FLIBS])])
-
+dnl
 dnl See if the Fortran compiler uses uppercase external names.
 dnl
 dnl OCTAVE_F77_UPPERCASE_NAMES()
@@ -264,7 +265,7 @@ AC_MSG_RESULT([$octave_cv_f77_uppercase_names])
 if test "$octave_cv_f77_uppercase_names" = yes; then
   AC_DEFINE(F77_UPPERCASE_NAMES, 1)
 fi])
-
+dnl
 dnl See if the Fortran compiler appends underscores to external names.
 dnl
 dnl OCTAVE_F77_APPEND_UNDERSCORE()
@@ -293,7 +294,7 @@ AC_MSG_RESULT([$octave_cv_f77_append_underscore])
 if test "$octave_cv_f77_append_underscore" = yes; then
   AC_DEFINE(F77_APPEND_UNDERSCORE, 1)
 fi])
-
+dnl
 dnl See if the Fortran compiler is compatible with f2c.
 dnl
 dnl Write a minimal program, compile it, and see if it works as
@@ -355,7 +356,19 @@ if ${CC-cc} -c ctest.c 1>&AC_FD_CC 2>&AC_FD_CC; then
 fi])
 rm -f ftest* ctest* core
 AC_MSG_RESULT([$octave_cv_f2c_f77_compat])])
-
+dnl
+dnl See if struct group has a gr_passwd field.
+dnl
+AC_DEFUN(OCTAVE_STRUCT_GR_PASSWD,
+[AC_CACHE_CHECK([for gr_passwd in struct group], octave_cv_struct_gr_passwd,
+[AC_TRY_COMPILE([#include <sys/types.h>
+#include <grp.h>], [struct group s; s.gr_passwd;],
+octave_cv_struct_gr_passwd=yes, octave_cv_struct_gr_passwd=no)])
+if test $octave_cv_struct_gr_passwd = yes; then
+  AC_DEFINE(HAVE_GR_PASSWD)
+fi
+])
+dnl
 dnl The following test is from Karl Berry's Kpathseach library.  I'm
 dnl including it here in case we someday want to make the use of
 dnl kpathsea optional.

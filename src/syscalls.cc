@@ -146,7 +146,7 @@ DEFUN (exec, args, ,
 \n\
 Replace current process with a new process.\n\
 \n\
-If successful, exec does not return.  If exec does return, status will
+If successful, exec does not return.  If exec does return, status will\n\
 be nonzero, and MSG will contain a system-dependent error message.")
 {
   octave_value_list retval;
@@ -606,7 +606,7 @@ STATUS is nonzero and MSG contains a system-dependent error message.")
 DEFUN (stat, args, ,
   "[S, ERR, MSG] = stat (NAME)\n\
 \n\
-  Given the name of a file, return a structure S with the following
+  Given the name of a file, return a structure S with the following\n\
   elements:\n\
 \n\
     dev     : id of device containing a directory entry for this file\n\

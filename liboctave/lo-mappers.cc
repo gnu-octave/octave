@@ -264,7 +264,6 @@ atan (const Complex& x)
 Complex
 atanh (const Complex& x)
 {
-  static Complex i (0, 1);
   Complex retval = log ((1 + x) / (1 - x)) / 2.0;
   return retval;
 }
@@ -278,7 +277,8 @@ ceil (const Complex& x)
 Complex
 fix (const Complex& x)
 {
-  return Complex (real (x), imag (x));
+  return Complex (static_cast<int> (real (x)),
+		  static_cast<int> (imag (x)));
 }
 
 Complex

@@ -431,7 +431,7 @@ redistributable.  For more information, read the file\n\
 libcruft/qpsol/README.MISSING in the source distribution.")
 #else
 DEFUN_DLD (qpsol_options, args, ,
-  "qpsol_options (KEYWORD, VALUE)\n
+  "qpsol_options (KEYWORD, VALUE)\n\
 \n\
 Set or show options for qpsol.  Keywords may be abbreviated\n\
 to the shortest match.")

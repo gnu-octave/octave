@@ -1621,7 +1621,7 @@ symbols_of_variables (void)
     "echo commands as they are executed");
 
   DEFCONST (error_text, "", 0, 0,
-    "the text of error messages that would have been printed in the
+    "the text of error messages that would have been printed in the\n\
 body of the most recent unwind_protect statement or the TRY part of\n\
 the most recent eval() command.  Outside of unwind_protect and\n\
 eval(), or if no error has ocurred within them, the value of\n\
@@ -1678,7 +1678,7 @@ DEFUN_TEXT (clear, args, ,
 \n\
 Clear symbol(s) matching a list of globbing patterns.\n\
 \n\
-If no arguments are given, clear all user-defined variables and
+If no arguments are given, clear all user-defined variables and\n\
 functions.\n\
 \n\
 With -x, exclude the named variables")

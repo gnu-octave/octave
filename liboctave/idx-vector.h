@@ -42,7 +42,7 @@ private:
   {
   public:
 
-    idx_vector_rep::idx_vector_rep (void)
+    idx_vector_rep (void)
       {
 	colon = 0;
 	len = 0;
@@ -70,7 +70,7 @@ private:
 
     idx_vector_rep (const idx_vector_rep& a);
 
-    idx_vector_rep::~idx_vector_rep (void) { delete [] data; }
+    ~idx_vector_rep (void) { delete [] data; }
 
     idx_vector_rep& operator = (const idx_vector_rep& a);
 
@@ -133,7 +133,7 @@ private:
 
 public:
 
-  idx_vector::idx_vector (void)
+  idx_vector (void)
     {
       rep = new idx_vector_rep ();
       rep->count = 1;
@@ -175,7 +175,7 @@ public:
       rep->count++;
     }
 
-  idx_vector::~idx_vector (void)
+  ~idx_vector (void)
     {
       if (--rep->count <= 0)
 	delete rep;
@@ -194,22 +194,22 @@ public:
       return *this;
     }
 
-  idx_vector::operator void * () const
+  operator void * () const
     { return static_cast<void *> (rep->ok ()); }
 
-  int idx_vector::capacity (void) const { return rep->capacity (); }
-  int idx_vector::length (int cl) const { return rep->length (cl); }
+  int capacity (void) const { return rep->capacity (); }
+  int length (int cl) const { return rep->length (cl); }
 
-  int idx_vector::elem (int n) const { return rep->elem (n); }
-  int idx_vector::checkelem (int n) const { return rep->checkelem (n); }
-  int idx_vector::operator () (int n) const { return rep->operator () (n); }
+  int elem (int n) const { return rep->elem (n); }
+  int checkelem (int n) const { return rep->checkelem (n); }
+  int operator () (int n) const { return rep->operator () (n); }
 
-  int idx_vector::max (void) const { return rep->max (); }
-  int idx_vector::min (void) const { return rep->min (); }
+  int max (void) const { return rep->max (); }
+  int min (void) const { return rep->min (); }
 
-  int idx_vector::one_zero_only (void) const { return rep->one_zero_only (); }
-  int idx_vector::zeros_count (void) const { return rep->zeros_count (); }
-  int idx_vector::ones_count (void) const { return rep->ones_count (); }
+  int one_zero_only (void) const { return rep->one_zero_only (); }
+  int zeros_count (void) const { return rep->zeros_count (); }
+  int ones_count (void) const { return rep->ones_count (); }
 
   int is_colon (void) const { return rep->is_colon (); }
   int is_colon_equiv (int n, int sort_uniq = 0) const

@@ -129,7 +129,7 @@ DEFUN_DLD (fsolve, args, nargout,
 Where the first argument is the name of the  function to call to\n\
 compute the vector of function values.  It must have the form\n\
 \n\
-  y = f (x)
+  y = f (x)\n\
 \n\
 where y and x are vectors.")
 {

@@ -41,7 +41,7 @@ public:
     {
       std,
       economy,
-      sigma_only,
+      sigma_only
     };
 
   SVD (void) : sigma (), left_sm (), right_sm () { }

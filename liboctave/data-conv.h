@@ -84,7 +84,7 @@ enum save_type
     LS_SHORT,
     LS_INT,
     LS_FLOAT,
-    LS_DOUBLE,
+    LS_DOUBLE
   };
 
 extern void

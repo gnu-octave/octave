@@ -40,7 +40,7 @@ public:
     {
       std,
       raw,
-      economy,
+      economy
     };
 
   QR (void) : q (), r () { }

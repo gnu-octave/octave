@@ -171,7 +171,7 @@ public:
   // unnecessarily force a copy, but that is not so easy, and I see no
   // clean way to do it.
 
-  T& Array<T>::checkelem (int n)
+  T& checkelem (int n)
     {
       if (n < 0 || n >= rep->length ())
 	return range_error ("T& Array<T>::checkelem", n);
@@ -194,7 +194,7 @@ public:
   T& operator () (int n) { return elem (n); }
 #endif
 
-  T Array<T>::checkelem (int n) const
+  T checkelem (int n) const
     {
       if (n < 0 || n >= rep->length ())
 	return range_error ("T Array<T>::checkelem", n);
@@ -202,12 +202,12 @@ public:
 	return xelem (n);
     }
 
-  T Array<T>::elem (int n) const { return xelem (n); }
+  T elem (int n) const { return xelem (n); }
 
 #if defined (BOUNDS_CHECKING)
-  T Array<T>::operator () (int n) const { return checkelem (n); }
+  T operator () (int n) const { return checkelem (n); }
 #else
-  T Array<T>::operator () (int n) const { return elem (n); }
+  T operator () (int n) const { return elem (n); }
 #endif
 
   void resize (int n);

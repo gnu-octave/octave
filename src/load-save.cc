@@ -1572,11 +1572,11 @@ DEFUN_TEXT (load, args, nargout,
 \n\
 Load variables from a file.\n\
 \n\
-If no argument is supplied to select a format, load tries to read the
-named file as an Octave binary, then as a .mat file, and then as an
+If no argument is supplied to select a format, load tries to read the\n\
+named file as an Octave binary, then as a .mat file, and then as an\n\
 Octave text file.\n\
 \n\
-If the option -force is given, variables with the same names as those
+If the option -force is given, variables with the same names as those\n\
 found in the file will be replaced with the values read from the file.")
 {
   octave_value_list retval;

@@ -487,7 +487,7 @@ to the beginning")
 }
 
 DEFUN (vr_val, args, ,
-  "vr_val (X): append X to the list of optional return values for a
+  "vr_val (X): append X to the list of optional return values for a\n\
 function that allows a variable number of return values")
 {
   octave_value_list retval;

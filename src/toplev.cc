@@ -820,7 +820,7 @@ do_octave_atexit (void)
 DEFUN (atexit, args, ,
   "atexit (NAME): register NAME as a function to call when Octave exits\n\
 \n\
-Functions are called with no arguments in the reverse of the order in
+Functions are called with no arguments in the reverse of the order in\n\
 which they were registered with atexit()")
 {
   octave_value_list retval;

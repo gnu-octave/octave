@@ -443,7 +443,7 @@ DEFUN (pwd, , nargout,
 DEFUN (readdir, args, ,
   "[FILES, STATUS, MSG] = readdir (NAME)\n\
 \n\
-Return an array of strings containing the list of all files in the
+Return an array of strings containing the list of all files in the\n\
 named directory in FILES, or an empty matrix if an error occurs\n\
 \n\
 If successful, STATUS is 0 and MSG is an empty string.  Otherwise,\n\

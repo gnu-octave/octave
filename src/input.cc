@@ -1102,7 +1102,7 @@ get_user_input (const octave_value_list& args, int debug = 0)
 DEFUN (input, args, ,
   "input (PROMPT [, S])\n\
 \n\
-Prompt user for input.  If the second argument is present, return
+Prompt user for input.  If the second argument is present, return\n\
 value as a string.")
 {
   octave_value_list retval;

@@ -255,7 +255,7 @@ DEFUN (error, args, ,
 This should eventually take us up to the top level, possibly\n\
 printing traceback messages as we go.\n\
 \n\
-If the resulting error message ends in a newline character, traceback
+If the resulting error message ends in a newline character, traceback\n\
 messages are not printed.\n\
 \n\
 See also: printf") 

@@ -934,7 +934,7 @@ Reads data in binary form of type PRECISION from a file.\n\
   SKIP      : number of bytes to skip before each element is read\n\
               (default is 0)\n\
 \n\
-  ARCH      : string specifying the data format for the file.  Valid
+  ARCH      : string specifying the data format for the file.  Valid\n\
               values are\n\
 \n\
     native   --  the format of the current machine (default)\n\
@@ -1071,7 +1071,7 @@ DEFUN (fwrite, args, ,
   SKIP      : number of bytes to skip before each element is read\n\
               (the default is 0)\n\
 \n\
-  ARCH      : string specifying the data format for the file.  Valid
+  ARCH      : string specifying the data format for the file.  Valid\n\
               values are\n\
 \n\
     native   --  the format of the current machine (default)\n\
@@ -1079,11 +1079,10 @@ DEFUN (fwrite, args, ,
     ieee-be  --  IEEE little endian\n\
     vaxd     --  VAX D floating format\n\
     vaxg     --  VAX G floating format\n\
-    cray     --  Cray floating format\n
+    cray     --  Cray floating format\n\
 \n\
   however, conversions are currently only supported for ieee-be, and\n\
   ieee-le formats.\n\
-\n\
 \n\
   COUNT     : number of elements written")
 {
@@ -1307,10 +1306,10 @@ convert (int x, int ibase, int obase)
 DEFUN (umask, args, ,
   "umask (MASK)\n\
 \n\
-Change the file permission mask for file creation for the current
-process.  MASK is an integer, interpreted as an octal number.  If
-successful, returns the previous value of the mask (as an integer to
-be interpreted as an octal number); otherwise an error message is
+Change the file permission mask for file creation for the current\n\
+process.  MASK is an integer, interpreted as an octal number.  If\n\
+successful, returns the previous value of the mask (as an integer to\n\
+be interpreted as an octal number); otherwise an error message is\n\
 printed.")
 {
   octave_value_list retval;

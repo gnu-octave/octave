@@ -250,7 +250,7 @@ function to call.  The objective function must be of the form\n\
 \n\
 where x is a vector and y is a scalar.\n\
 \n\
-The argument G is a string containing the name of the function that
+The argument G is a string containing the name of the function that\n\
 defines the nonlinear constraints.  It must be of the form\n\
 \n\
   y = g (x)\n\

@@ -587,7 +587,7 @@ omitted, it defaults to 1 (column-wise products).\n\
 DEFUN (length, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} length (@var{a})\n\
-Return the `lenghth' of the object @var{a}.  For matrix objects, the\n\
+Return the `length' of the object @var{a}.  For matrix objects, the\n\
 length is the number of rows or columns, whichever is greater (this\n\
 odd definition is used for compatibility with Matlab).\n\
 @end deftypefn")

@@ -7,7 +7,10 @@ function r = roots (v)
 # Copyright Dept of Probability Theory and Statistics TU Wien
   
   [nr, nc] = size(v);
-  if !((nr == 1 && nc > 1) || (nc == 1 && nr > 1))
+  if (nr <= 1 && nc <= 1)
+    r = [];
+    return;
+  elseif (! ((nr == 1 && nc > 1) || (nc == 1 && nr > 1)))
     usage ("roots (v), where v is a nonzero vector");
   endif
 

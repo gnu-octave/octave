@@ -46,7 +46,7 @@ octave_fcn_file_name_cache *octave_fcn_file_name_cache::instance = 0;
 bool
 octave_fcn_file_name_cache::update (const string& path)
 {
-  bool retval = false;
+  bool something_changed = false;
 
   dir_path p = path.empty () ? dir_path (Vload_path) : dir_path (path);
 
@@ -61,16 +61,16 @@ octave_fcn_file_name_cache::update (const string& path)
       if (cache.contains (d))
 	{
 	  if (cache[d].update (d))
-	    retval = true;
+	    something_changed = true;
 	}
       else
 	{
 	  cache[d] = file_name_cache_elt (d);
-	  retval = true;
+	  something_changed = true;
 	}
     }
 
-  return retval;
+  return something_changed;
 }
 
 // Check to see if any of the elements in the cache need to be
@@ -79,18 +79,30 @@ octave_fcn_file_name_cache::update (const string& path)
 string_vector
 octave_fcn_file_name_cache::do_list (const string& path, bool no_suffix)
 {
-  // Only recompute the cache if something has changed.
+  update (path);
 
-  if (update (path))
+  string_vector fcn_file_names;
+  string_vector fcn_file_names_no_suffix;
+
+  // For now, always generate the list of function files on each
+  // call.
+
+  // XXX FIXME XXX -- this could probably be improved by keeping lists
+  // of all the function files for the current load path and only
+  // updating that when the load path changes.  Have to be careful to
+  // return the right thing when we are only looking for a subset of
+  // all the files in the load path.
+
+  int total_len = 0;
+
+  dir_path p = path.empty () ? dir_path (Vload_path) : dir_path (path);
+
+  string_vector dirs = p.all_directories ();
+
+  int ndirs = dirs.length ();
+
+  if (ndirs > 1)
     {
-      int total_len = 0;
-
-      dir_path p (Vload_path);
-
-      string_vector dirs = p.all_directories ();
-
-      int ndirs = dirs.length ();
-
       for (int i = 0; i < ndirs; i++)
 	{
 	  string d = dirs[i];
@@ -122,6 +134,15 @@ octave_fcn_file_name_cache::do_list (const string& path, bool no_suffix)
 	      k++;
 	    }
 	}
+    }
+  else if (ndirs == 1)
+    {
+      string d = dirs[0];
+
+      file_name_cache_elt elt = cache[d];
+
+      fcn_file_names = elt.fcn_file_names;
+      fcn_file_names_no_suffix = elt.fcn_file_names_no_suffix;
     }
 
   return no_suffix ? fcn_file_names_no_suffix : fcn_file_names;

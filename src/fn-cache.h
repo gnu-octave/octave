@@ -112,13 +112,6 @@ private:
   // and the corresponding cache elements.
   CHMap<file_name_cache_elt> cache;
 
-  // The list of function file names in the cache.
-  string_vector fcn_file_names;
-
-  // The list of function file names in the cache without the .m or
-  // .oct suffixes.
-  string_vector fcn_file_names_no_suffix;
-
   string_vector do_list (const string& path, bool no_suffix);
 };
 

@@ -887,9 +887,11 @@ template void
 do_scanf_conv (istream&, const char*, int*, Matrix&, double*, int&,
 	       int, int, bool);
 
+#if 0
 template void
 do_scanf_conv (istream&, const char*, float*, Matrix&, double*, int&,
 	       int, int, bool);
+#endif
 
 template void
 do_scanf_conv (istream&, const char*, double*, Matrix&, double*, int&,
@@ -982,20 +984,10 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 
 		case 'e': case 'f': case 'g':
 		  {
-		    if (elt->modifier == 'l')
-		      {
-			double tmp;
+		    double tmp;
 
-			do_scanf_conv (is, fmt, &tmp, mval, data,
-				       count, nr, max_size, discard); 
-		      }
-		    else
-		      {
-			float tmp;
-
-			do_scanf_conv (is, fmt, &tmp, mval, data,
-				       count, nr, max_size, discard); 
-		      }
+		    do_scanf_conv (is, fmt, &tmp, mval, data, count,
+				   nr, max_size, discard);
 		  }
 		  break;
 
@@ -1231,8 +1223,10 @@ do_oscanf_num_conv (istream& is, const char *fmt, T valptr, bool discard)
 template octave_value
 do_oscanf_num_conv (istream&, const char*, int*, bool);
 
+#if 0
 template octave_value
 do_oscanf_num_conv (istream&, const char*, float*, bool);
+#endif
 
 template octave_value
 do_oscanf_num_conv (istream&, const char*, double*, bool);
@@ -1298,18 +1292,9 @@ octave_base_stream::do_oscanf (const scanf_format_elt *elt)
 
 	    case 'e': case 'f': case 'g':
 	      {
-		if (elt->modifier == 'l')
-		  {
-		    double tmp;
+		double tmp;
 
-		    retval = do_oscanf_num_conv (is, fmt, &tmp, discard);
-		  }
-		else
-		  {
-		    float tmp;
-
-		    retval = do_oscanf_num_conv (is, fmt, &tmp, discard);
-		  }
+		retval = do_oscanf_num_conv (is, fmt, &tmp, discard);
 	      }
 	      break;
 

@@ -100,6 +100,19 @@ A binary release of g77 that should work with gcc 2.7.2 is available
 from sunsite.unc.edu in the directory /pub/Linux/devel/lang/fortran.
 There is also a Debian package for g77.
 
+Problems with g77 on Debian 1.2 systems (and possibly others)
+-------------------------------------------------------------
+
+The location of the compiler binaries has changed, so the g77 0.5.18
+package can not be used without modification.  The problem is that the
+Debian package was built for gcc 2.7.2 and not 2.7.2.1 and the f771
+backend is installed in the wrong directory.
+
+Version 0.5.19 of g77 has just been released.  A fixed Debian package
+may be made available soon.  Until then, you can make things work by
+copying f771 and libf2c.a from /usr/lib/gcc-lib/i486-linux/2.7.2 to
+/usr/lib/gcc-lib/i486-linux/2.7.2.1.
+
 Upgrading your compiler and libraries
 -------------------------------------
 
@@ -116,4 +129,4 @@ jwe@bevo.che.wisc.edu
 University of Wisconsin-Madison
 Department of Chemical Engineering
 
-Tue Dec 17 13:24:52 1996
+Thu Dec 19 13:07:46 1996

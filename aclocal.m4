@@ -134,7 +134,11 @@ dnl substitution is probably only going to work with gcc on those
 dnl systems...
 dnl
 if test -n "$ld_run_path"; then
-  ld_run_path="-Xlinker -R -Xlinker $ld_run_path"
+  if test "$ac_cv_prog_gcc" = yes; then
+    ld_run_path="-Xlinker -R -Xlinker $ld_run_path"
+  else
+    ld_run_path="-R $ld_run_path"
+  fi
 fi
 dnl
 flibs=
@@ -174,7 +178,11 @@ for arg in $foutput; do
 	  if $exists; then
 	    arg=
 	  else
-	    lflags="$lflags -Xlinker $arg"
+	    if test "$ac_cv_prog_gcc" = yes; then
+	      lflags="$lflags -Xlinker $arg"
+	    else
+	      lflags="$lflags $arg"
+	    fi
 	  fi
 	;;
 	-lang*)

@@ -194,7 +194,7 @@ sigchld_handler (int /* sig */)
      = octave_ignore_interrupts ();
 
   volatile sig_handler *saved_sigchld_handler
-    = octave_set_sighanlder (SIGCHLD, SIG_IGN);
+    = octave_set_signal_hanlder (SIGCHLD, SIG_IGN);
 #endif
 
   int n = octave_child_list::length ();
@@ -231,7 +231,7 @@ sigchld_handler (int /* sig */)
     }
 
 #if defined (__EMX__)
-  octave_set_inerrupt_handler (saved_interrupt_handler);
+  octave_set_interrupt_handler (saved_interrupt_handler);
 
   octave_set_signal_handler (SIGCHLD, saved_sigchld_handler);
 #endif

@@ -1,3 +1,11 @@
+Thu Dec 19 12:13:42 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-stream.cc (octave_base_stream::do_scanf):
+	Don't treat %l{e,f,g} differently from %{e,f,g}.
+	(octave_base_stream::do_oscanf): Likewise.
+
+	* sighandlers.cc (sigchld_handler): Fix typos.
+
 Wed Dec 18 20:17:23 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* file-io.cc (Ffgetl, Ffgets): Also return number of characters	read.

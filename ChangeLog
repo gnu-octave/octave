@@ -1,3 +1,8 @@
+Thu Dec 19 16:18:59 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* aclocal.m4 (OCTAVE_FLIBS): Only add -Xlinker args if compiler is
+	gcc.
+
 Sat Dec 14 09:46:50 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* README.Linux: New file.

@@ -1,5 +1,7 @@
 2005-03-29  John W. Eaton  <jwe@octave.org>
 
+	* load-save.cc (Fload, Fsave): Also accept -V4 option.
+
 	* ls-hdf5.h (hdf5_fstreambase::hdf5_fstreambase,
 	hdf5_fstreambase::open): Use & instead of == to test whether mode
 	is std::ios::in or std::ios::out.

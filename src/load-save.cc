@@ -588,9 +588,13 @@ Force Octave to assume the file is in Octave's binary format.\n\
 \n\
 @item -mat\n\
 @itemx -mat-binary\n\
-Force Octave to assume the file is in @sc{Matlab}'s binary format.\n\
+Force Octave to assume the file is in @sc{Matlab}'s version 6 binary\n\
+format.\n\
 \n\
-@item -mat4-binary\n\
+@item -V4\n\
+@itemx -v4\n\
+@itemx -4\n\
+@itemx -mat4-binary\n\
 Force Octave to assume the file is in the binary format written by\n\
 @sc{Matlab} version 4.\n\
 \n\
@@ -666,7 +670,8 @@ Force Octave to assume the file is in Octave's text format.\n\
 	{
 	  format = LS_MAT5_BINARY;
 	}
-      else if (argv[i] == "-mat4-binary" || argv[i] == "-4" || argv[i] == "-v4")
+      else if (argv[i] == "-mat4-binary" || argv[i] == "-V4"
+	       || argv[i] == "-v4" || argv[i] == "-4")
 	{
 	  format = LS_MAT_BINARY;
 	}
@@ -1235,7 +1240,10 @@ values to be saved can be represented in single precision.\n\
 @itemx -mat-binary\n\
 Save the data in @sc{Matlab}'s binary data format.\n\
 \n\
-@item -mat4-binary\n\
+@item -V4\n\
+@itemx -v4\n\
+@itemx -4\n\
+@itemx -mat4-binary\n\
 Save the data in the binary format written by @sc{Matlab} version 4.\n\
 \n\
 @item -hdf5\n\
@@ -1348,7 +1356,8 @@ the file @file{data} in Octave's binary format.\n\
 	{
 	  format = LS_MAT5_BINARY;
 	}
-      else if (argv[i] == "-mat4-binary" || argv[i] == "-4" || argv[i] == "-v4")
+      else if (argv[i] == "-mat4-binary" || argv[i] == "-V4"
+	       || argv[i] == "-v4" || argv[i] == "-4")
 	{
 	  format = LS_MAT_BINARY;
 	}

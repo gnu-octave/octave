@@ -749,7 +749,7 @@ private:
  * class but that don't need to be class members or friends.
  */
 
-extern tree_constant *make_empties (int nargout, char *fcn_name);
+extern tree_constant *vector_of_empties (int nargout, char *fcn_name);
 
 #endif
 

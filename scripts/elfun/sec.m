@@ -6,6 +6,6 @@ function w = sec (z)
     usage ("sec (z)");
   endif
   
-  y = 1 ./ cos(z);
+  w = 1 ./ cos(z);
   
 endfunction

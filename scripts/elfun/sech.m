@@ -6,6 +6,6 @@ function w = sech (z)
     usage ("sech (z)");
   endif
 
-  y = 1 ./ cosh(z);
+  w = 1 ./ cosh(z);
   
 endfunction

@@ -45,7 +45,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-glob.h"
 #include "str-vec.h"
 
-#include "arith-ops.h"
 #include "defaults.h"
 #include "data.h"
 #include "defun.h"
@@ -112,6 +111,60 @@ symbol_table *curr_sym_tab = 0;
 // Symbol table for global symbols.
 symbol_table *global_sym_tab = 0;
 
+octave_variable_reference::octave_variable_reference (tree_indirect_ref *i)
+  : id (0), indir (i)
+{
+  if (indir->is_identifier_only ())
+    {
+      id = indir->ident ();
+      indir = 0;
+    }
+}
+
+void
+octave_variable_reference::assign (const octave_value& rhs)
+{
+  if (id)
+    id->assign (rhs);
+  else if (indir)
+    {
+      octave_value& ult = indir->reference ();
+      ult = rhs;
+    }
+  else
+    panic_impossible ();
+}
+
+void
+octave_variable_reference::assign (const octave_value_list& idx,
+				   const octave_value& rhs)
+{
+  if (id)
+    id->assign (idx, rhs);
+  else if (indir)
+    {
+      octave_value& ult = indir->reference ();
+      ult.assign (idx, rhs);
+    }
+  else
+    panic_impossible ();
+}
+
+octave_value
+octave_variable_reference::value (void)
+{
+  octave_value retval;
+
+  if (id)
+    retval = id->value ();
+  else if (indir)
+    retval = indir->value ();
+  else
+    panic_impossible ();
+
+  return retval;
+}
+  
 // Initialization.
 
 // Create the initial symbol tables and set the current scope at the
@@ -291,22 +344,8 @@ returns:\n\
 
   if (sr && sr->is_variable () && sr->is_defined ())
     {
-      retval = 1.0;
-      tree_fvc *def = sr->def ();
-
-      if (! struct_elts.empty ())
-	{
-	  retval = 0.0;
-	  if (def->is_constant ())
-	    {
-	      octave_value *tmp = (octave_value *) def;
-
-	      octave_value ult	= tmp->lookup_map_element (struct_elts, 0, 1);
-
-	      if (ult.is_defined ())
-		retval = 1.0;
-	    }
-	}
+      if (struct_elts.empty () || sr->is_map_element (struct_elts))
+	retval = 1.0;
     }
   else if (sr && sr->is_builtin_function ())
     {
@@ -847,11 +886,11 @@ link_to_global_variable (symbol_record *sr)
     {
       // Would be nice not to have this cast.  XXX FIXME XXX
 
-      octave_value *tmp = (octave_value *) sr->def ();
+      tree_constant *tmp = (tree_constant *) sr->def ();
       if (tmp)
-	tmp = new octave_value (*tmp);
+	tmp = new tree_constant (*tmp);
       else
-	tmp = new octave_value ();
+	tmp = new tree_constant ();
       gsr->define (tmp);
     }
   else
@@ -861,7 +900,7 @@ link_to_global_variable (symbol_record *sr)
   // to hide it with a variable.
 
   if (gsr->is_function ())
-    gsr->define ((octave_value *) 0);
+    gsr->define ((tree_constant *) 0);
 
   sr->alias (gsr, 1);
   sr->mark_as_linked_to_global ();
@@ -986,7 +1025,7 @@ print_symbol_info_line (ostream& os, const symbol_record_info& s)
 #if 0
   os << (s.hides_fcn () ? "f" : (s.hides_builtin () ? "F" : "-"));
 #endif
-  os.form ("  %-16s", s.type_as_string ().c_str ());
+  os.form ("  %-16s", s.type_name ().c_str ());
   if (s.is_function ())
     os << "      -      -";
   else
@@ -1281,7 +1320,8 @@ install_builtin_variable (const builtin_variable& v)
 }
 
 void
-install_builtin_variable_as_function (const string& name, octave_value *val,
+install_builtin_variable_as_function (const string& name,
+				      const octave_value& val,
 				      int protect, int eternal,
 				      const string& help)
 {
@@ -1345,7 +1385,7 @@ bind_ans (const octave_value& val, int print)
   static symbol_record *sr = global_sym_tab->lookup ("ans", 1, 0);
 
   tree_identifier *ans_id = new tree_identifier (sr);
-  octave_value *tmp = new octave_value (val);
+  tree_constant *tmp = new tree_constant (val);
 
   // XXX FIXME XXX -- making ans_id static, passing its address to
   // tree_simple_assignment_expression along with a flag to not delete
@@ -1388,7 +1428,7 @@ clear_global_error_variable (void *)
 // functions needed?
 
 void
-bind_builtin_variable (const string& varname, octave_value *val,
+bind_builtin_variable (const string& varname, const octave_value& val,
 		       int protect, int eternal, sv_Function sv_fcn,
 		       const string& help)
 {
@@ -1417,15 +1457,6 @@ bind_builtin_variable (const string& varname, octave_value *val,
     sr->make_eternal ();
 
   sr->document (help);
-}
-
-void
-bind_builtin_variable (const string& varname, const octave_value& val,
-		       int protect, int eternal, sv_Function sv_fcn,
-		       const string& help)
-{
-  octave_value *tc = new octave_value (val);
-  bind_builtin_variable (varname, tc, protect, eternal, sv_fcn, help);
 }
 
 // XXX FIXME XXX -- some of these should do their own checking to be
@@ -1556,7 +1587,6 @@ directory specification");
 void
 install_builtin_variables (void)
 {
-  symbols_of_arith_ops ();
   symbols_of_data ();
   symbols_of_defaults ();
   symbols_of_dirfns ();
@@ -1569,11 +1599,11 @@ install_builtin_variables (void)
   symbols_of_pager ();
   symbols_of_parse ();
   symbols_of_pr_output ();
-  symbols_of_pt_const ();
   symbols_of_pt_fcn ();
   symbols_of_pt_mat ();
   symbols_of_pt_plot ();
   symbols_of_syscalls ();
+  symbols_of_value ();
   symbols_of_variables ();
 }
 

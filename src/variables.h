@@ -27,11 +27,15 @@ class symbol_record;
 class symbol_table;
 
 class tree_fvc;
+class tree_identifier;
+class tree_indirect_ref;
 class octave_value;
 class octave_value_list;
 class string_vector;
 
 #include <string>
+
+#include "ov.h"
 
 struct builtin_mapper_function;
 
@@ -39,18 +43,48 @@ typedef int (*sv_Function)(void);
 
 struct builtin_variable
 {
-  builtin_variable (const string& n, octave_value *v, int iaf, int p,
+  builtin_variable (const string& n, const octave_value& v, int iaf, int p,
 		    int e, sv_Function svf, const string& h)
     : name (n), value (v), install_as_function (iaf), protect (p),
       eternal (e), sv_function (svf), help_string (h) { }
 
   string name;
-  octave_value *value;
+  octave_value value;
   int install_as_function;
   int protect;
   int eternal;
   sv_Function sv_function;
   string help_string;
+};
+
+class
+octave_variable_reference
+{
+public:
+
+  octave_variable_reference (tree_identifier *i) : id (i), indir (0) { }
+
+  octave_variable_reference (tree_indirect_ref *i);
+
+  ~octave_variable_reference (void) { }
+
+  void assign (const octave_value&);
+
+  void assign (const octave_value_list&, const octave_value&);
+
+  octave_value value (void);
+
+private:
+
+  tree_identifier *id;
+
+  tree_indirect_ref *indir;
+
+  // No copying!
+
+  octave_variable_reference (const octave_variable_reference&);
+
+  octave_variable_reference& operator = (const octave_variable_reference&);
 };
 
 typedef octave_value_list (*Octave_builtin_fcn)(const octave_value_list&, int);
@@ -103,9 +137,10 @@ extern void install_builtin_function (const builtin_function& gf);
 extern void install_builtin_variable (const builtin_variable& v);
 
 extern void
-install_builtin_variable_as_function
-  (const string& name, octave_value *val, int protect = 0,
-   int eternal = 0, const string& help = string ());
+install_builtin_variable_as_function (const string& name,
+				      const octave_value& val,
+				      int protect = 0, int eternal = 0,
+				      const string& help = string ());
 
 extern void alias_builtin (const string& alias, const string& name);
 
@@ -119,11 +154,6 @@ extern void bind_ans (const octave_value& val, int print);
 extern void bind_global_error_variable (void);
 
 extern void clear_global_error_variable (void *);
-
-extern void bind_builtin_variable (const string&, octave_value *,
-				   int protect = 0, int eternal = 0,
-				   sv_Function f = (sv_Function) 0,
-				   const string& help = string ());
 
 extern void bind_builtin_variable (const string&, const octave_value&,
 				   int protect = 0, int eternal = 0,

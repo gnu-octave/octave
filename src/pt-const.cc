@@ -44,7 +44,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Range.h"
 #include "str-vec.h"
 
-#include "arith-ops.h"
 #include "defun.h"
 #include "error.h"
 #include "gripes.h"
@@ -60,6 +59,82 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
+
+Octave_map
+tree_constant::map_value (void) const
+{
+  return val.map_value ();
+}
+
+void
+tree_constant::print (void)
+{
+}
+
+#if 0
+octave_value
+tree_constant::assign_map_element (SLList<string>&, const octave_value&)
+{
+  octave_value retval;
+  error ("tree_constant::assign_map_element(): not implemented");
+  return retval;
+}
+
+octave_value
+tree_constant::assign_map_element (SLList<string>&, const octave_value_list&,
+				   const octave_value&)
+{
+  octave_value retval;
+  error ("tree_constant::assign_map_element(): not implemented");
+  return retval;
+}
+#endif
+
+octave_value
+tree_constant::eval (bool print_result)
+{
+  if (print_result)
+    val.print ();
+
+  return val;
+}
+
+octave_value_list
+tree_constant::eval (bool, int, const octave_value_list& idx)
+{
+  octave_value_list retval;
+
+  if (idx.length () >  0)
+    retval (0) = index (idx);
+  else
+    retval (0) = val;
+
+  return retval;
+}
+
+octave_value
+tree_constant::lookup_map_element (const string&, bool, bool)
+{
+  octave_value retval;
+  error ("tree_constant::lookup_map_element() not implemented");
+  return retval;
+}
+
+octave_value
+tree_constant::lookup_map_element (SLList<string>&, bool, bool)
+{
+  octave_value retval;
+  error ("tree_constant::lookup_map_element() not implemented");
+  return retval;
+}
+
+void
+tree_constant::accept (tree_walker& tw)
+{
+  tw.visit_constant (*this);
+}
+
+#if 0
 
 #ifndef OCT_VAL_REP
 #define OCT_VAL_REP octave_value::octave_value_rep
@@ -85,74 +160,6 @@ static OCT_VAL_REP *tc_rep_newlist = 0;
 
 // Multiplier for allocating new blocks.
 static const int tc_rep_newlist_grow_size = 128;
-
-// If TRUE, allow assignments like
-//
-//   octave> A(1) = 3; A(2) = 5
-//
-// for A already defined and a matrix type.
-static bool Vdo_fortran_indexing;
-
-// Should we allow things like:
-//
-//   octave> 'abc' + 0
-//   97 98 99
-//
-// to happen?  A positive value means yes.  A negative value means
-// yes, but print a warning message.  Zero means it should be
-// considered an error.
-int Vimplicit_str_to_num_ok;
-
-// Should we allow silent conversion of complex to real when a real
-// type is what we're really looking for?  A positive value means yes.
-// A negative value means yes, but print a warning message.  Zero
-// means it should be considered an error.
-static int Vok_to_lose_imaginary_part;
-
-// If TRUE, create column vectors when doing assignments like:
-//
-//   octave> A(1) = 3; A(2) = 5
-//
-// (for A undefined).  Only matters when resize_on_range_error is also
-// TRUE.
-static bool Vprefer_column_vectors;
-
-// If TRUE, prefer logical (zore-one) indexing over normal indexing
-// when there is a conflice.  For example, given a = [2, 3], the
-// expression  a ([1, 1]) would return [2 3] (instead of [2 2], which
-// would be returned if prefer_zero_one_indxing were FALSE).
-static bool Vprefer_zero_one_indexing;
-
-// If TRUE, print the name along with the value.
-static bool Vprint_answer_id_name;
-
-// Should operations on empty matrices return empty matrices or an
-// error?  A positive value means yes.  A negative value means yes,
-// but print a warning message.  Zero means it should be considered an
-// error.
-int Vpropagate_empty_matrices;
-
-// If TRUE, resize matrices when performing and indexed assignment and
-// the indices are outside the current bounds.
-bool Vresize_on_range_error;
-
-// How many levels of structure elements should we print?
-static int Vstruct_levels_to_print;
-
-// Indentation level for structures.
-static int struct_indent = 0;
-
-static void
-increment_struct_indent (void)
-{
-  struct_indent += 2;
-}
-
-static void
-decrement_struct_indent (void)
-{
-  struct_indent -= 2;
-}
 
 // XXX FIXME XXX -- these should be member functions.
 
@@ -281,107 +288,6 @@ octave_value::operator = (const octave_value& a)
   return *this;  
 }
 
-octave_value
-octave_value::lookup_map_element (const string& ref, bool insert,
-				   bool silent)
-{
-  octave_value retval;
-
-  if (! ref.empty ())
-    {
-      SLList<string> list;
-
-      size_t beg = 0;
-      size_t end;
-
-      do
-	{
-	  end = ref.find ('.', beg);
-
-	  string tmp = (end == NPOS)
-	    ? ref.substr (beg) : ref.substr (beg, end - beg);
-
-	  list.append (tmp);
-	}
-      while (end != NPOS && (beg = end + 1));
-
-      retval = lookup_map_element (list, insert, silent);
-    }
-
-  return retval;
-}
-
-octave_value
-octave_value::lookup_map_element (SLList<string>& list, bool insert,
-				   bool silent)
-{
-  octave_value retval;
-
-  octave_value_rep *tmp_rep = rep;
-
-  Pix p = list.first ();
-  while (p)
-    {
-      string elt = list (p);
-
-      list.next (p);
-
-      octave_value tmp;
-
-      tmp = tmp_rep->lookup_map_element (elt, insert, silent);
-
-      if (error_state)
-	break;
-
-      tmp_rep = tmp.rep;
-
-      if (! p)
-	retval = tmp;
-    }
-
-  return retval;
-}
-
-void
-octave_value::print (void)
-{
-  print (octave_stdout);
-}
-
-void
-octave_value::print_with_name (const string& name, bool print_padding)
-{
-  print_with_name (octave_stdout, name, print_padding);
-}
-
-void
-octave_value::print_with_name (ostream& output_buf, const string& name,
-			       bool print_padding) 
-{
-  bool pad_after = false;
-
-  if (Vprint_answer_id_name)
-    {
-      if (print_as_scalar ())
-	output_buf << name << " = ";
-      else if (print_as_structure ())
-	{
-	  pad_after = true;
-	  output_buf << name << " =";
-	}
-      else
-	{
-	  pad_after = true;
-	  output_buf << name << " =\n\n";
-	}
-    }
-
-  print (output_buf);
-
-  if (print_padding && pad_after)
-    output_buf << "\n";
-}
-
 // Simple structure assignment.
 
 void
@@ -500,515 +406,6 @@ octave_value::eval (bool print, int, const octave_value_list& args)
   return retval;
 }
 
-void
-octave_value::accept (tree_walker& tw)
-{
-  tw.visit_octave_value (*this);
-}
-
-// The real representation of constants.
-
-OCT_VAL_REP::octave_value_rep (void)
-{
-  type_tag = unknown_constant;
-}
-
-OCT_VAL_REP::octave_value_rep (double d)
-{
-  scalar = d;
-  type_tag = scalar_constant;
-}
-
-// XXX FIXME XXX -- perhaps these constructors should just do the
-// obvious thing and then call maybe_mutate() instead of duplicating
-// most of that logic several times here...
-
-OCT_VAL_REP::octave_value_rep (const Matrix& m)
-{
-  if (m.rows () == 1 && m.columns () == 1)
-    {
-      scalar = m (0, 0);
-      type_tag = scalar_constant;
-    }
-  else
-    {
-      matrix = new Matrix (m);
-      type_tag = matrix_constant;
-    }
-}
-
-OCT_VAL_REP::octave_value_rep (const DiagMatrix& d)
-{
-  if (d.rows () == 1 && d.columns () == 1)
-    {
-      scalar = d (0, 0);
-      type_tag = scalar_constant;
-    }
-  else
-    {
-      matrix = new Matrix (d);
-      type_tag = matrix_constant;
-    }
-}
-
-OCT_VAL_REP::octave_value_rep (const RowVector& v, int prefer_column_vector)
-{
-  int len = v.capacity ();
-  if (len == 1)
-    {
-      scalar = v (0);
-      type_tag = scalar_constant;
-    }
-  else
-    {
-      int pcv = (prefer_column_vector < 0)
-	? Vprefer_column_vectors
-	  : prefer_column_vector;
-
-      if (pcv)
-	{
-	  Matrix m (len, 1);
-	  for (int i = 0; i < len; i++)
-	    m (i, 0) = v (i);
-	  matrix = new Matrix (m);
-	  type_tag = matrix_constant;
-	}
-      else
-	{
-	  Matrix m (1, len);
-	  for (int i = 0; i < len; i++)
-	    m (0, i) = v (i);
-	  matrix = new Matrix (m);
-	  type_tag = matrix_constant;
-	}
-    }
-}
-
-OCT_VAL_REP::octave_value_rep (const ColumnVector& v, int prefer_column_vector)
-{
-  int len = v.capacity ();
-  if (len == 1)
-    {
-      scalar = v (0);
-      type_tag = scalar_constant;
-    }
-  else
-    {
-      int pcv = (prefer_column_vector < 0)
-	? Vprefer_column_vectors
-	  : prefer_column_vector;
-
-      if (pcv)
-	{
-	  Matrix m (len, 1);
-	  for (int i = 0; i < len; i++)
-	    m (i, 0) = v (i);
-	  matrix = new Matrix (m);
-	  type_tag = matrix_constant;
-	}
-      else
-	{
-	  Matrix m (1, len);
-	  for (int i = 0; i < len; i++)
-	    m (0, i) = v (i);
-	  matrix = new Matrix (m);
-	  type_tag = matrix_constant;
-	}
-    }
-}
-
-OCT_VAL_REP::octave_value_rep (const Complex& c)
-{
-  if (::imag (c) == 0.0)
-    {
-      scalar = ::real (c);
-      type_tag = scalar_constant;
-    }
-  else
-    {
-      complex_scalar = new Complex (c);
-      type_tag = complex_scalar_constant;
-    }
-}
-
-OCT_VAL_REP::octave_value_rep (const ComplexMatrix& m)
-{
-  if (m.rows () == 1 && m.columns () == 1)
-    {
-      Complex c = m (0, 0);
-
-      if (::imag (c) == 0.0)
-	{
-	  scalar = ::real (c);
-	  type_tag = scalar_constant;
-	}
-      else
-	{
-	  complex_scalar = new Complex (c);
-	  type_tag = complex_scalar_constant;
-	}
-    }
-  else if (! any_element_is_complex (*complex_matrix))
-    {
-      matrix = new Matrix (::real (m));
-      type_tag = matrix_constant;
-    }
-  else
-    {
-      complex_matrix = new ComplexMatrix (m);
-      type_tag = complex_matrix_constant;
-    }
-}
-
-OCT_VAL_REP::octave_value_rep (const ComplexDiagMatrix& d)
-{
-  if (d.rows () == 1 && d.columns () == 1)
-    {
-      Complex c = d (0, 0);
-
-      if (::imag (c) == 0.0)
-	{
-	  scalar = ::real (c);
-	  type_tag = scalar_constant;
-	}
-      else
-	{
-	  complex_scalar = new Complex (c);
-	  type_tag = complex_scalar_constant;
-	}
-    }
-  else if (! any_element_is_complex (d))
-    {
-      matrix = new Matrix (::real (d));
-      type_tag = matrix_constant;
-    }
-  else
-    {
-      complex_matrix = new ComplexMatrix (d);
-      type_tag = complex_matrix_constant;
-    }
-}
-
-OCT_VAL_REP::octave_value_rep (const ComplexRowVector& v,
-			   int prefer_column_vector) 
-{
-  int len = v.capacity ();
-  if (len == 1)
-    {
-      Complex c = v (0);
-
-      if (::imag (c) == 0.0)
-	{
-	  scalar = ::real (c);
-	  type_tag = scalar_constant;
-	}
-      else
-	{
-	  complex_scalar = new Complex (c);
-	  type_tag = complex_scalar_constant;
-	}
-    }
-  else
-    {
-      int pcv = (prefer_column_vector < 0)
-	? Vprefer_column_vectors
-	  : prefer_column_vector;
-
-      if (pcv)
-	{
-	  if (! any_element_is_complex (v))
-	    {
-	      Matrix m (len, 1);
-	      for (int i = 0; i < len; i++)
-		m (i, 0) = ::real (v (i));
-	      matrix = new Matrix (m);
-	      type_tag = matrix_constant;
-	    }
-	  else
-	    {
-	      ComplexMatrix m (len, 1);
-	      for (int i = 0; i < len; i++)
-		m (i, 0) = v (i);
-	      complex_matrix = new ComplexMatrix (m);
-	      type_tag = complex_matrix_constant;
-	    }
-	}
-      else
-	{
-	  if (! any_element_is_complex (v))
-	    {
-	      Matrix m (len, 1);
-	      for (int i = 0; i < len; i++)
-		m (0, i) = ::real (v (i));
-	      matrix = new Matrix (m);
-	      type_tag = matrix_constant;
-	    }
-	  else
-	    {
-	      ComplexMatrix m (1, len);
-	      for (int i = 0; i < len; i++)
-		m (0, i) = v (i);
-	      complex_matrix = new ComplexMatrix (m);
-	      type_tag = complex_matrix_constant;
-	    }
-	}
-    }
-}
-
-OCT_VAL_REP::octave_value_rep (const ComplexColumnVector& v, int
-			   prefer_column_vector)
-{
-  int len = v.capacity ();
-  if (len == 1)
-    {
-      Complex c = v (0);
-
-      if (::imag (c) == 0.0)
-	{
-	  scalar = ::real (c);
-	  type_tag = scalar_constant;
-	}
-      else
-	{
-	  complex_scalar = new Complex (c);
-	  type_tag = complex_scalar_constant;
-	}
-    }
-  else
-    {
-      int pcv = (prefer_column_vector < 0)
-	? Vprefer_column_vectors
-	  : prefer_column_vector;
-
-      if (pcv)
-	{
-	  if (! any_element_is_complex (v))
-	    {
-	      Matrix m (len, 1);
-	      for (int i = 0; i < len; i++)
-		m (i, 0) = ::real (v (i));
-	      matrix = new Matrix (m);
-	      type_tag = matrix_constant;
-	    }
-	  else
-	    {
-	      ComplexMatrix m (len, 1);
-	      for (int i = 0; i < len; i++)
-		m (i, 0) = v (i);
-	      complex_matrix = new ComplexMatrix (m);
-	      type_tag = complex_matrix_constant;
-	    }
-	}
-      else
-	{
-	  if (! any_element_is_complex (v))
-	    {
-	      Matrix m (len, 1);
-	      for (int i = 0; i < len; i++)
-		m (0, i) = ::real (v (i));
-	      matrix = new Matrix (m);
-	      type_tag = matrix_constant;
-	    }
-	  else
-	    {
-	      ComplexMatrix m (1, len);
-	      for (int i = 0; i < len; i++)
-		m (0, i) = v (i);
-	      complex_matrix = new ComplexMatrix (m);
-	      type_tag = complex_matrix_constant;
-	    }
-	}
-    }
-}
-
-OCT_VAL_REP::octave_value_rep (const char *s)
-{
-  char_matrix = new charMatrix (s);
-  type_tag = char_matrix_constant_str;
-}
-
-OCT_VAL_REP::octave_value_rep (const string& s)
-{
-  char_matrix = new charMatrix (s);
-  type_tag = char_matrix_constant_str;
-}
-
-OCT_VAL_REP::octave_value_rep (const string_vector& s)
-{
-  int nr = s.length ();
-  int nc = s.max_length ();
-  char_matrix = new charMatrix (nr, nc, 0);
-  for (int i = 0; i < nr; i++)
-    {
-      nc = s[i].length ();
-      for (int j = 0; j < nc; j++)
-	(*char_matrix) (i, j) = s[i][j];
-    }
-  type_tag = char_matrix_constant_str;
-}
-
-OCT_VAL_REP::octave_value_rep (const charMatrix& chm, bool is_str)
-{
-  char_matrix = new charMatrix (chm);
-  type_tag = is_str ? char_matrix_constant_str : char_matrix_constant;
-}
-
-OCT_VAL_REP::octave_value_rep (double b, double l, double i)
-{
-  range = new Range (b, l, i);
-  int nel = range->nelem ();
-  if (nel > 1)
-    type_tag = range_constant;
-  else
-    {
-      delete range;
-      if (nel == 1)
-	{
-	  scalar = b;
-	  type_tag = scalar_constant;
-	}
-      else if (nel == 0)
-	{
-	  matrix = new Matrix ();
-	  type_tag = matrix_constant;
-	}
-      else
-	{
-	  type_tag = unknown_constant;
-	  if (nel == -1)
-	    ::error ("number of elements in range exceeds INT_MAX");
-	  else
-	    ::error ("invalid range");
-	}
-    }
-}
-
-OCT_VAL_REP::octave_value_rep (const Range& r)
-{
-  int nel = r.nelem ();
-  if (nel > 1)
-    {
-      range = new Range (r);
-      type_tag = range_constant;
-    }
-  else if (nel == 1)
-    {
-      scalar = r.base ();
-      type_tag = scalar_constant;
-    }
-  else if (nel == 0)
-    {
-      matrix = new Matrix ();
-      type_tag = matrix_constant;
-    }
-  else
-    {
-      type_tag = unknown_constant;
-      if (nel == -1)
-	::error ("number of elements in range exceeds INT_MAX");
-      else
-	::error ("invalid range");
-    }
-}
-
-OCT_VAL_REP::octave_value_rep (const Octave_map& m)
-{
-  a_map = new Octave_map (m);
-  type_tag = map_constant;
-}
-
-OCT_VAL_REP::octave_value_rep (OCT_VAL_REP::constant_type t)
-{
-  assert (t == magic_colon || t == all_va_args);
-  type_tag = t;
-}
-
-OCT_VAL_REP::octave_value_rep (const octave_value_rep& t)
-{
-  type_tag = t.type_tag;
-
-  switch (t.type_tag)
-    {
-    case unknown_constant:
-      break;
-
-    case scalar_constant:
-      scalar = t.scalar;
-      break;
-
-    case matrix_constant:
-      matrix = new Matrix (*(t.matrix));
-      break;
-
-    case char_matrix_constant:
-      char_matrix = new charMatrix (*(t.char_matrix));
-      break;
-
-    case char_matrix_constant_str:
-      char_matrix = new charMatrix (*(t.char_matrix));
-      break;
-
-    case complex_matrix_constant:
-      complex_matrix = new ComplexMatrix (*(t.complex_matrix));
-      break;
-
-    case complex_scalar_constant:
-      complex_scalar = new Complex (*(t.complex_scalar));
-      break;
-
-    case range_constant:
-      range = new Range (*(t.range));
-      break;
-
-    case map_constant:
-      a_map = new Octave_map (*(t.a_map));
-      break;
-
-    case magic_colon:
-    case all_va_args:
-      break;
-    }
-
-  orig_text = t.orig_text;
-}
-
-OCT_VAL_REP::~octave_value_rep (void)
-{
-  switch (type_tag)
-    {
-    case matrix_constant:
-      delete matrix;
-      break;
-
-    case complex_scalar_constant:
-      delete complex_scalar;
-      break;
-
-    case complex_matrix_constant:
-      delete complex_matrix;
-      break;
-
-    case char_matrix_constant:
-    case char_matrix_constant_str:
-      delete char_matrix;
-      break;
-
-    case range_constant:
-      delete range;
-      break;
-
-    case map_constant:
-      delete a_map;
-      break;
-
-    case unknown_constant:
-    case scalar_constant:
-    case magic_colon:
-    case all_va_args:
-      break;
-    }
-}
-
 void *
 OCT_VAL_REP::operator new (size_t size)
 {
@@ -1040,78 +437,6 @@ OCT_VAL_REP::operator delete (void *p, size_t /* size */)
   tc_rep_newlist = tmp;
 }
 
-int
-OCT_VAL_REP::rows (void) const
-{
-  int retval = -1;
-
-  switch (type_tag)
-    {
-    case scalar_constant:
-    case complex_scalar_constant:
-      retval = 1;
-      break;
-
-    case char_matrix_constant:
-    case char_matrix_constant_str:
-      retval = char_matrix->rows ();
-      break;
-
-    case range_constant:
-      retval = (columns () > 0);
-      break;
-
-    case matrix_constant:
-      retval = matrix->rows ();
-      break;
-
-    case complex_matrix_constant:
-      retval = complex_matrix->rows ();
-      break;
-
-    default:
-      break;
-    }
-
-  return retval;
-}
-
-int
-OCT_VAL_REP::columns (void) const
-{
-  int retval = -1;
-
-  switch (type_tag)
-    {
-    case scalar_constant:
-    case complex_scalar_constant:
-      retval = 1;
-      break;
-
-    case matrix_constant:
-      retval = matrix->columns ();
-      break;
-
-    case complex_matrix_constant:
-      retval = complex_matrix->columns ();
-      break;
-
-    case char_matrix_constant:
-    case char_matrix_constant_str:
-      retval = char_matrix->columns ();
-      break;
-
-    case range_constant:
-      retval = range->nelem ();
-      break;
-
-    default:
-      break;
-    }
-
-  return retval;
-}
-
 octave_value
 OCT_VAL_REP::all (void) const
 {
@@ -1132,22 +457,6 @@ OCT_VAL_REP::all (void) const
 
   switch (type_tag)
     {
-    case scalar_constant:
-      retval = (double) (scalar != 0.0);
-      break;
-
-    case matrix_constant:
-      retval = matrix->all ();
-      break;
-
-    case complex_scalar_constant:
-      retval = (double) (*complex_scalar != 0.0);
-      break;
-
-    case complex_matrix_constant:
-      retval = complex_matrix->all ();
-      break;
-
     default:
       gripe_wrong_type_arg ("all", *this);
       break;
@@ -1176,116 +485,12 @@ OCT_VAL_REP::any (void) const
 
   switch (type_tag)
     {
-    case scalar_constant:
-      retval = (double) (scalar != 0.0);
-      break;
-
-    case matrix_constant:
-      retval = matrix->any ();
-      break;
-
-    case complex_scalar_constant:
-      retval = (double) (*complex_scalar != 0.0);
-      break;
-
-    case complex_matrix_constant:
-      retval = complex_matrix->any ();
-      break;
-
     default:
       gripe_wrong_type_arg ("any", *this);
       break;
     }
 
   return retval;
-}
-
-bool
-OCT_VAL_REP::valid_as_scalar_index (void) const
-{
-  return (type_tag == magic_colon
-	  || (type_tag == scalar_constant 
-	      && ! xisnan (scalar)
-	      && NINT (scalar) == 1)
-	  || (type_tag == range_constant
-	      && range->nelem () == 1
-	      && ! xisnan (range->base ())
-	      && NINT (range->base ()) == 1));
-}
-
-bool
-OCT_VAL_REP::valid_as_zero_index (void) const
-{
-  return ((type_tag == scalar_constant
-	   && ! xisnan (scalar)
-	   && NINT (scalar) == 0)
-	  || (type_tag == matrix_constant
-	      && matrix->rows () == 0
-	      && matrix->columns () == 0)
-	  || (type_tag == range_constant
-	      && range->nelem () == 1
-	      && ! xisnan (range->base ())
-	      && NINT (range->base ()) == 0));
-}
-
-bool
-OCT_VAL_REP::is_true (void) const
-{
-  int retval = false;
-
-  if (error_state)
-    return retval;
-
-  if (! is_numeric_type ())
-    {
-      octave_value tmp = make_numeric ();
-
-      if (error_state)
-	return retval;
-
-      return tmp.is_true ();
-    }
-
-  switch (type_tag)
-    {
-    case scalar_constant:
-      retval = (scalar != 0.0);
-      break;
-
-    case matrix_constant:
-      {
-	Matrix m = (matrix->all ()) . all ();
-	retval = (m.rows () == 1
-		  && m.columns () == 1
-		  && m (0, 0) != 0.0);
-      }
-      break;
-
-    case complex_scalar_constant:
-      retval = (*complex_scalar != 0.0);
-      break;
-
-    case complex_matrix_constant:
-      {
-	Matrix m = (complex_matrix->all ()) . all ();
-	retval = (m.rows () == 1
-		  && m.columns () == 1
-		  && m (0, 0) != 0.0);
-      }
-      break;
-
-    default:
-      gripe_wrong_type_arg (0, *this);
-      break;
-    }
-
-  return retval;
-}
-
-static void
-warn_implicit_conversion (const char *from, const char *to)
-{
-  warning ("implicit conversion from %s to %s", from, to);
 }
 
 // XXX FIXME XXX -- we need a better way of handling conversions.
@@ -1297,58 +502,6 @@ OCT_VAL_REP::double_value (bool force_string_conv) const
 
   switch (type_tag)
     {
-    case scalar_constant:
-      retval = scalar;
-      break;
-
-    case matrix_constant:
-      {
-	if (Vdo_fortran_indexing && rows () > 0 && columns () > 0)
-	  retval = (*matrix) (0, 0);
-	else
-	  gripe_invalid_conversion ("real matrix", "real scalar");
-      }
-      break;
-
-    case complex_matrix_constant:
-    case complex_scalar_constant:
-      {
-	int flag = Vok_to_lose_imaginary_part;
-
-	if (flag < 0)
-	  warn_implicit_conversion ("complex scalar", "real scalar");
-
-	if (flag)
-	  {
-	    if (type_tag == complex_scalar_constant)
-	      retval = ::real (*complex_scalar);
-	    else if (type_tag == complex_matrix_constant)
-	      {
-		if (Vdo_fortran_indexing
-		    && rows () > 0 && columns () > 0)
-		  retval = ::real ((*complex_matrix) (0, 0));
-		else
-		  gripe_invalid_conversion ("complex matrix", "real scalar");
-	      }
-	    else
-	      panic_impossible ();
-	  }
-	else
-	  gripe_invalid_conversion ("complex scalar", "real scalar");
-      }
-      break;
-
-    case char_matrix_constant:
-      {
-	int len = char_matrix->rows ();
-	if ((char_matrix->rows () == 1 && len == 1)
-	    || (len > 1 && Vdo_fortran_indexing))
-	  retval = toascii ((int) (*char_matrix) (0, 0));
-	else
-	  gripe_invalid_conversion ("char matrix", "real scalar");
-      }
-      break;
-
     case char_matrix_constant_str:
       {
 	int flag = force_string_conv;
@@ -1356,7 +509,7 @@ OCT_VAL_REP::double_value (bool force_string_conv) const
 	  flag = Vimplicit_str_to_num_ok;
 
 	if (flag < 0)
-	  warn_implicit_conversion ("string", "real scalar");
+	  gripe_implicit_conversion ("string", "real scalar");
 
 	int len = char_matrix->rows ();
 	if (flag
@@ -1368,18 +521,8 @@ OCT_VAL_REP::double_value (bool force_string_conv) const
       }
       break;
 
-    case range_constant:
-      {
-	int nel = range->nelem ();
-	if (nel == 1 || (nel > 1 && Vdo_fortran_indexing))
-	  retval = range->base ();
-	else
-	  gripe_invalid_conversion ("range", "real scalar");
-      }
-      break;
-
     default:
-      gripe_invalid_conversion (type_as_string (), "real scalar");
+      gripe_invalid_conversion (type_name (), "real scalar");
       break;
     }
 
@@ -1393,35 +536,6 @@ OCT_VAL_REP::matrix_value (bool force_string_conv) const
 
   switch (type_tag)
     {
-    case scalar_constant:
-      retval = Matrix (1, 1, scalar);
-      break;
-
-    case matrix_constant:
-      retval = *matrix;
-      break;
-
-    case complex_scalar_constant:
-    case complex_matrix_constant:
-      {
-	int flag = Vok_to_lose_imaginary_part;
-	if (flag < 0)
-	  warn_implicit_conversion ("complex matrix", "real matrix");
-
-	if (flag)
-	  {
-	    if (type_tag == complex_scalar_constant)
-	      retval = Matrix (1, 1, ::real (*complex_scalar));
-	    else if (type_tag == complex_matrix_constant)
-	      retval = ::real (*complex_matrix);
-	    else
-	      panic_impossible ();
-	  }
-	else
-	  gripe_invalid_conversion ("complex matrix", "real matrix");
-      }
-      break;
-
     case char_matrix_constant:
       retval = Matrix (*char_matrix);
       break;
@@ -1433,7 +547,7 @@ OCT_VAL_REP::matrix_value (bool force_string_conv) const
 	  flag = Vimplicit_str_to_num_ok;
 
 	if (flag < 0)
-	  warn_implicit_conversion ("string", "real matrix");
+	  gripe_implicit_conversion ("string", "real matrix");
 
 	if (flag)
 	  retval = Matrix (*char_matrix);
@@ -1442,12 +556,8 @@ OCT_VAL_REP::matrix_value (bool force_string_conv) const
       }
       break;
 
-    case range_constant:
-      retval = range->matrix_value ();
-      break;
-
     default:
-      gripe_invalid_conversion (type_as_string (), "real matrix");
+      gripe_invalid_conversion (type_name (), "real matrix");
       break;
     }
 
@@ -1461,29 +571,6 @@ OCT_VAL_REP::complex_value (bool force_string_conv) const
 
   switch (type_tag)
     {
-    case complex_scalar_constant:
-      retval = *complex_scalar;
-      break;
-
-    case scalar_constant:
-      retval = scalar;
-      break;
-
-    case complex_matrix_constant:
-    case matrix_constant:
-      {
-	if (Vdo_fortran_indexing && rows () > 0 && columns () > 0)
-	  {
-	    if (type_tag == complex_matrix_constant)
-	      retval = (*complex_matrix) (0, 0);
-	    else
-	      retval = (*matrix) (0, 0);
-	  }
-	else
-	  gripe_invalid_conversion ("real matrix", "real scalar");
-      }
-      break;
-
     case char_matrix_constant:
       {
 	int len = char_matrix->cols ();
@@ -1502,7 +589,7 @@ OCT_VAL_REP::complex_value (bool force_string_conv) const
 	  flag = Vimplicit_str_to_num_ok;
 
 	if (flag < 0)
-	  warn_implicit_conversion ("string", "complex scalar");
+	  gripe_implicit_conversion ("string", "complex scalar");
 
 	int len = char_matrix->cols ();
 	if (flag
@@ -1514,18 +601,8 @@ OCT_VAL_REP::complex_value (bool force_string_conv) const
       }
       break;
 
-    case range_constant:
-      {
-	int nel = range->nelem ();
-	if (nel == 1 || (nel > 1 && Vdo_fortran_indexing))
-	  retval = range->base ();
-	else
-	  gripe_invalid_conversion ("range", "complex scalar");
-      }
-      break;
-
     default:
-      gripe_invalid_conversion (type_as_string (), "complex scalar");
+      gripe_invalid_conversion (type_name (), "complex scalar");
       break;
     }
 
@@ -1539,22 +616,6 @@ OCT_VAL_REP::complex_matrix_value (bool force_string_conv) const
 
   switch (type_tag)
     {
-    case scalar_constant:
-      retval = ComplexMatrix (1, 1, Complex (scalar));
-      break;
-
-    case complex_scalar_constant:
-      retval = ComplexMatrix (1, 1, *complex_scalar);
-      break;
-
-    case matrix_constant:
-      retval = ComplexMatrix (*matrix);
-      break;
-
-    case complex_matrix_constant:
-      retval = *complex_matrix;
-      break;
-
     case char_matrix_constant:
       retval = ComplexMatrix (*char_matrix);
       break;
@@ -1566,7 +627,7 @@ OCT_VAL_REP::complex_matrix_value (bool force_string_conv) const
 	  flag = Vimplicit_str_to_num_ok;
 
 	if (flag < 0)
-	  warn_implicit_conversion ("string", "complex matrix");
+	  gripe_implicit_conversion ("string", "complex matrix");
 
 	if (flag)
 	  retval = ComplexMatrix (*char_matrix);
@@ -1575,12 +636,8 @@ OCT_VAL_REP::complex_matrix_value (bool force_string_conv) const
       }
       break;
 
-    case range_constant:
-      retval = range->matrix_value ();
-      break;
-
     default:
-      gripe_invalid_conversion (type_as_string (), "complex matrix");
+      gripe_invalid_conversion (type_name (), "complex matrix");
       break;
     }
 
@@ -1607,7 +664,7 @@ OCT_VAL_REP::char_matrix_value (bool force_string_conv) const
 
     default:
       if (! (rows () == 0 && columns () == 0))
-	gripe_invalid_conversion (type_as_string (), "string");
+	gripe_invalid_conversion (type_name (), "string");
       break;
     }
 
@@ -1621,7 +678,7 @@ OCT_VAL_REP::all_strings (void) const
     return *char_matrix;
   else
     {
-      gripe_invalid_conversion (type_as_string (), "string");
+      gripe_invalid_conversion (type_name (), "string");
       return 0;
     }
 }
@@ -1634,16 +691,9 @@ OCT_VAL_REP::string_value (void) const
   if (type_tag == char_matrix_constant_str)
     retval = char_matrix->row_as_string (0);  // XXX FIXME??? XXX
   else
-    gripe_invalid_conversion (type_as_string (), "string");
+    gripe_invalid_conversion (type_name (), "string");
 
   return retval;
-}
-
-Range
-OCT_VAL_REP::range_value (void) const
-{
-  assert (type_tag == range_constant);
-  return *range;
 }
 
 Octave_map
@@ -1651,28 +701,6 @@ OCT_VAL_REP::map_value (void) const
 {
   assert (type_tag == map_constant);
   return *a_map;
-}
-
-octave_value&
-OCT_VAL_REP::lookup_map_element (const string& name, bool insert, bool silent)
-{
-  static octave_value retval;
-
-  if (type_tag == map_constant)
-    {
-      Pix idx = a_map->seek (name);
-
-      if (idx)
-	return a_map->contents (idx);
-      else if (insert)
-	return (*a_map) [name];
-      else if (! silent)
-	error ("structure has no member `%s'", name.c_str ());
-    }
-  else if (! silent)
-    error ("invalid structure access attempted");
-
-  return retval;
 }
 
 // This could be made more efficient by doing all the work here rather
@@ -1885,7 +913,7 @@ OCT_VAL_REP::convert_to_str (void) const
       break;
 
     default:
-      gripe_invalid_conversion (type_as_string (), "string");
+      gripe_invalid_conversion (type_name (), "string");
       break;
     }
 
@@ -2102,7 +1130,7 @@ OCT_VAL_REP::force_numeric (bool force_string_conv)
       break;
 
     default:
-      gripe_invalid_conversion (type_as_string (), "numeric type");
+      gripe_invalid_conversion (type_name (), "numeric type");
       break;
     }
 }
@@ -2141,7 +1169,7 @@ OCT_VAL_REP::make_numeric (bool force_string_conv) const
 	  flag = Vimplicit_str_to_num_ok;
 
 	if (flag < 0)
-	  warn_implicit_conversion ("string", "char matrix");
+	  gripe_implicit_conversion ("string", "char matrix");
 
 	if (flag)
 	  {
@@ -2159,118 +1187,11 @@ OCT_VAL_REP::make_numeric (bool force_string_conv) const
       break;
 
     default:
-      gripe_invalid_conversion (type_as_string (), "numeric value");
+      gripe_invalid_conversion (type_name (), "numeric value");
       break;
     }
 
   return retval;
-}
-
-void
-OCT_VAL_REP::bump_value (tree_expression::type etype)
-{
-  switch (etype)
-    {
-    case tree_expression::increment:
-      switch (type_tag)
-	{
-	case scalar_constant:
-	  scalar++;
-	  break;
-
-	case matrix_constant:
-	  *matrix = *matrix + 1.0;
-	  break;
-
-	case complex_scalar_constant:
-	  *complex_scalar = *complex_scalar + 1.0;
-	  break;
-
-	case complex_matrix_constant:
-	  *complex_matrix = *complex_matrix + 1.0;
-	  break;
-
-	case range_constant:
-	  range->set_base (range->base () + 1.0);
-	  range->set_limit (range->limit () + 1.0);
-	  break;
-
-	default:
-	  gripe_wrong_type_arg ("operator ++", type_as_string ());
-	  break;
-	}
-      break;
-
-    case tree_expression::decrement:
-      switch (type_tag)
-	{
-	case scalar_constant:
-	  scalar--;
-	  break;
-
-	case matrix_constant:
-	  *matrix = *matrix - 1.0;
-	  break;
-
-	case range_constant:
-	  range->set_base (range->base () - 1.0);
-	  range->set_limit (range->limit () - 1.0);
-	  break;
-
-	default:
-	  gripe_wrong_type_arg ("operator --", type_as_string ());
-	  break;
-	}
-      break;
-
-    default:
-      panic_impossible ();
-      break;
-    }
-}
-
-void
-OCT_VAL_REP::resize (int i, int j)
-{
-  switch (type_tag)
-    {
-    case matrix_constant:
-      matrix->resize (i, j);
-      break;
-
-    case complex_matrix_constant:
-      complex_matrix->resize (i, j);
-      break;
-
-    default:
-      gripe_wrong_type_arg ("resize", type_as_string ());
-      break;
-    }
-}
-
-void
-OCT_VAL_REP::resize (int i, int j, double val)
-{
-  switch (type_tag)
-    {
-    case matrix_constant:
-      matrix->resize (i, j, val);
-      break;
-
-    case complex_matrix_constant:
-      complex_matrix->resize (i, j, val);
-      break;
-
-    default:
-      gripe_wrong_type_arg ("resize", type_as_string ());
-      break;
-    }
-}
-
-void
-OCT_VAL_REP::stash_original_text (const string &s)
-{
-  orig_text = s;
 }
 
 void
@@ -2357,40 +1278,6 @@ OCT_VAL_REP::print (ostream& output_buf)
   if (error_state)
     return;
 
-  switch (type_tag)
-    {
-    case scalar_constant:
-      octave_print_internal (output_buf, scalar, false);
-      break;
-
-    case matrix_constant:
-      octave_print_internal (output_buf, *matrix, false,
-			     struct_indent);
-      break;
-
-    case complex_scalar_constant:
-      octave_print_internal (output_buf, *complex_scalar, false);
-      break;
-
-    case complex_matrix_constant:
-      octave_print_internal (output_buf, *complex_matrix, false,
-			     struct_indent);
-      break;
-
-    case char_matrix_constant:
-      octave_print_internal (output_buf, *char_matrix, false,
-			     struct_indent);
-      break;
-
-    case char_matrix_constant_str:
-      octave_print_internal (output_buf, *char_matrix, false, true,
-			     struct_indent);
-      break;
-
-    case range_constant:
-      octave_print_internal (output_buf, *range, false, struct_indent);
-      break;
-
     case map_constant:
       {
 	// XXX FIXME XXX -- would be nice to print the output in some
@@ -2453,315 +1340,6 @@ OCT_VAL_REP::print (ostream& output_buf)
 	run_unwind_frame ("OCT_VAL_REP_print");
       }
       break;
-
-    case unknown_constant:
-    case magic_colon:
-    case all_va_args:
-      panic_impossible ();
-      break;
-    }
-}
-
-void
-OCT_VAL_REP::gripe_wrong_type_arg (const char *name,
-			      const octave_value_rep& tcr) const
-{
-  if (name)
-    ::error ("%s: wrong type argument `%s'", name, tcr.type_as_string ());
-  else
-    ::error ("wrong type argument `%s'", name, tcr.type_as_string ());
-}
-
-char *
-OCT_VAL_REP::type_as_string (void) const
-{
-  switch (type_tag)
-    {
-    case scalar_constant:
-      return "real scalar";
-
-    case matrix_constant:
-      return "real matrix";
-
-    case complex_scalar_constant:
-      return "complex scalar";
-
-    case complex_matrix_constant:
-      return "complex matrix";
-
-    case char_matrix_constant:
-      return "char matrix";
-
-    case char_matrix_constant_str:
-      return "string";
-
-    case range_constant:
-      return "range";
-
-    case map_constant:
-      return "structure";
-
-    default:
-      return "<unknown type>";
-    }
-}
-
-octave_value
-do_binary_op (octave_value& a, octave_value& b, tree_expression::type t)
-{
-  octave_value retval;
-
-  bool first_empty = (a.rows () == 0 || a.columns () == 0);
-  bool second_empty = (b.rows () == 0 || b.columns () == 0);
-
-  if (first_empty || second_empty)
-    {
-      int flag = Vpropagate_empty_matrices;
-      if (flag < 0)
-	warning ("binary operation on empty matrix");
-      else if (flag == 0)
-	{
-	  ::error ("invalid binary operation on empty matrix");
-	  return retval;
-	}
-    }
-
-  int force = (a.is_string () && b.is_string ()
-	       && (t == tree_expression::cmp_lt
-		   || t == tree_expression::cmp_le
-		   || t == tree_expression::cmp_eq
-		   || t == tree_expression::cmp_ge
-		   || t == tree_expression::cmp_gt
-		   || t == tree_expression::cmp_ne));
-
-  octave_value tmp_a = a.make_numeric (force);
-
-  if (error_state)
-    return retval;
-
-  octave_value tmp_b = b.make_numeric (force);
-
-  if (error_state)
-    return retval;
-
-  OCT_VAL_REP::constant_type a_type = tmp_a.const_type ();
-  OCT_VAL_REP::constant_type b_type = tmp_b.const_type ();
-
-  double d1, d2;
-  Matrix m1, m2;
-  Complex c1, c2;
-  ComplexMatrix cm1, cm2;
-
-  switch (a_type)
-    {
-    case OCT_VAL_REP::scalar_constant:
-
-      d1 = tmp_a.double_value ();
-
-      switch (b_type)
-	{
-	case OCT_VAL_REP::scalar_constant:
-	  d2 = tmp_b.double_value ();
-	  retval = do_binary_op (d1, d2, t);
-	  break;
-
-	case OCT_VAL_REP::matrix_constant:
-	case OCT_VAL_REP::char_matrix_constant:
-	  m2 = tmp_b.matrix_value ();
-	  retval = do_binary_op (d1, m2, t);
-	  break;
-
-	case OCT_VAL_REP::complex_scalar_constant:
-	  c2 = tmp_b.complex_value ();
-	  retval = do_binary_op (d1, c2, t);
-	  break;
-
-	case OCT_VAL_REP::complex_matrix_constant:
-	  cm2 = tmp_b.complex_matrix_value ();
-	  retval = do_binary_op (d1, cm2, t);
-	  break;
-
-	default:
-	  gripe_wrong_type_arg_for_binary_op (tmp_b);
-	  break;
-	}
-      break;
-
-    case OCT_VAL_REP::matrix_constant:
-    case OCT_VAL_REP::char_matrix_constant:
-
-      m1 = tmp_a.matrix_value ();
-
-      switch (b_type)
-	{
-	case OCT_VAL_REP::scalar_constant:
-	  d2 = tmp_b.double_value ();
-	  retval = do_binary_op (m1, d2, t);
-	  break;
-
-	case OCT_VAL_REP::matrix_constant:
-	case OCT_VAL_REP::char_matrix_constant:
-	  m2 = tmp_b.matrix_value ();
-	  retval = do_binary_op (m1, m2, t);
-	  break;
-
-	case OCT_VAL_REP::complex_scalar_constant:
-	  c2 = tmp_b.complex_value ();
-	  retval = do_binary_op (m1, c2, t);
-	  break;
-
-	case OCT_VAL_REP::complex_matrix_constant:
-	  cm2 = tmp_b.complex_matrix_value ();
-	  retval = do_binary_op (m1, cm2, t);
-	  break;
-
-	default:
-	  gripe_wrong_type_arg_for_binary_op (tmp_b);
-	  break;
-	}
-      break;
-
-    case OCT_VAL_REP::complex_scalar_constant:
-
-      c1 = tmp_a.complex_value ();
-
-      switch (b_type)
-	{
-	case OCT_VAL_REP::scalar_constant:
-	  d2 = tmp_b.double_value ();
-	  retval = do_binary_op (c1, d2, t);
-	  break;
-
-	case OCT_VAL_REP::matrix_constant:
-	case OCT_VAL_REP::char_matrix_constant:
-	  m2 = tmp_b.matrix_value ();
-	  retval = do_binary_op (c1, m2, t);
-	  break;
-
-	case OCT_VAL_REP::complex_scalar_constant:
-	  c2 = tmp_b.complex_value ();
-	  retval = do_binary_op (c1, c2, t);
-	  break;
-
-	case OCT_VAL_REP::complex_matrix_constant:
-	  cm2 = tmp_b.complex_matrix_value ();
-	  retval = do_binary_op (c1, cm2, t);
-	  break;
-
-	default:
-	  gripe_wrong_type_arg_for_binary_op (tmp_b);
-	  break;
-	}
-      break;
-
-    case OCT_VAL_REP::complex_matrix_constant:
-
-      cm1 = tmp_a.complex_matrix_value ();
-
-      switch (b_type)
-	{
-	case OCT_VAL_REP::scalar_constant:
-	  d2 = tmp_b.double_value ();
-	  retval = do_binary_op (cm1, d2, t);
-	  break;
-
-	case OCT_VAL_REP::matrix_constant:
-	case OCT_VAL_REP::char_matrix_constant:
-	  m2 = tmp_b.matrix_value ();
-	  retval = do_binary_op (cm1, m2, t);
-	  break;
-
-	case OCT_VAL_REP::complex_scalar_constant:
-	  c2 = tmp_b.complex_value ();
-	  retval = do_binary_op (cm1, c2, t);
-	  break;
-
-	case OCT_VAL_REP::complex_matrix_constant:
-	  cm2 = tmp_b.complex_matrix_value ();
-	  retval = do_binary_op (cm1, cm2, t);
-	  break;
-
-	default:
-	  gripe_wrong_type_arg_for_binary_op (tmp_b);
-	  break;
-	}
-      break;
-
-    default:
-      gripe_wrong_type_arg_for_binary_op (tmp_a);
-      break;
-    }
-
-  return retval;
-}
-
-octave_value
-do_unary_op (octave_value& a, tree_expression::type t)
-{
-  octave_value retval;
-
-  if (a.rows () == 0 || a.columns () == 0)
-    {
-      int flag = Vpropagate_empty_matrices;
-      if (flag < 0)
-	warning ("unary operation on empty matrix");
-      else if (flag == 0)
-	{
-	  ::error ("invalid unary operation on empty matrix");
-	  return retval;
-	}
-    }
-
-  // XXX FIXME XXX -- it is very unlikely that this is the correct
-  // place for this special case...
-
-  if (a.const_type () == OCT_VAL_REP::char_matrix_constant_str
-      && (t == tree_expression::transpose
-	  || t == tree_expression::hermitian))
-    {
-      charMatrix chm = a.all_strings ();
-
-      if (! error_state)
-	retval = octave_value (chm.transpose (), true);
-    }
-  else
-    {
-      octave_value tmp_a = a.make_numeric ();
-
-      if (error_state)
-	return retval;
-
-      switch (tmp_a.const_type ())
-	{
-	case OCT_VAL_REP::scalar_constant:
-	  retval = do_unary_op (tmp_a.double_value (), t);
-	  break;
-
-	case OCT_VAL_REP::matrix_constant:
-	  {
-	    Matrix m = tmp_a.matrix_value ();
-	    retval = do_unary_op (m, t);
-	  }
-	  break;
-
-	case OCT_VAL_REP::complex_scalar_constant:
-	  retval = do_unary_op (tmp_a.complex_value (), t);
-	  break;
-
-	case OCT_VAL_REP::complex_matrix_constant:
-	  {
-	    ComplexMatrix m = tmp_a.complex_matrix_value ();
-	    retval = do_unary_op (m, t);
-	  }
-	  break;
-
-	default:
-	  gripe_wrong_type_arg_for_unary_op (tmp_a);
-	  break;
-	}
-    }
-
-  return retval;
 }
 
 // Indexing operations for the tree-constant representation class.
@@ -2945,7 +1523,7 @@ OCT_VAL_REP::set_index (const octave_value_list& args, bool rhs_is_complex)
       break;
 
     default:
-      ::error ("indexing %s type not implemented", type_as_string ());
+      ::error ("indexing %s type not implemented", type_name ());
       break;
     }
 
@@ -3058,7 +1636,7 @@ OCT_VAL_REP::do_index (const octave_value_list& args)
 	      break;
 
 	    default:
-	      error ("can't index %s variables", type_as_string ());
+	      error ("can't index %s variables", type_name ());
 	      break;
 	    }
 
@@ -3270,147 +1848,7 @@ OCT_VAL_REP::assign (octave_value& rhs, const octave_value_list& args)
     maybe_mutate ();
 }
 
-bool
-OCT_VAL_REP::print_as_scalar (void)
-{
-  int nr = rows ();
-  int nc = columns ();
-
-  return (is_scalar_type ()
-	  || (is_string () && nr <= 1)
-	  || (is_matrix_type ()
-	      && ((nr == 1 && nc == 1)
-		  || nr == 0
-		  || nc == 0)));
-}
-
-bool
-OCT_VAL_REP::print_as_structure (void)
-{
-  return is_map ();
-}
-
-static int
-do_fortran_indexing (void)
-{
-  Vdo_fortran_indexing = check_preference ("do_fortran_indexing");
-
-  liboctave_dfi_flag = Vdo_fortran_indexing;
-
-  return 0;
-}
-
-static int
-implicit_str_to_num_ok (void)
-{
-  Vimplicit_str_to_num_ok = check_preference ("implicit_str_to_num_ok");
-
-  return 0;
-}
-
-static int
-ok_to_lose_imaginary_part (void)
-{
-  Vok_to_lose_imaginary_part = check_preference ("ok_to_lose_imaginary_part");
-
-  return 0;
-}
-
-static int
-prefer_column_vectors (void)
-{
-  Vprefer_column_vectors
-    = check_preference ("prefer_column_vectors");
-
-  liboctave_pcv_flag = Vprefer_column_vectors;
-
-  return 0;
-}
-
-static int
-prefer_zero_one_indexing (void)
-{
-  Vprefer_zero_one_indexing = check_preference ("prefer_zero_one_indexing");
-
-  liboctave_pzo_flag = Vprefer_zero_one_indexing;
-
-  return 0;
-}
-
-static int
-print_answer_id_name (void)
-{
-  Vprint_answer_id_name = check_preference ("print_answer_id_name");
-
-  return 0;
-}
-
-static int
-propagate_empty_matrices (void)
-{
-  Vpropagate_empty_matrices = check_preference ("propagate_empty_matrices");
-
-  return 0;
-}
-
-static int
-resize_on_range_error (void)
-{
-  Vresize_on_range_error = check_preference ("resize_on_range_error");
-
-  liboctave_rre_flag = Vresize_on_range_error;
-
-  return 0;
-}
-
-static int
-struct_levels_to_print (void)
-{
-  double val;
-  if (builtin_real_scalar_variable ("struct_levels_to_print", val)
-      && ! xisnan (val))
-    {
-      int ival = NINT (val);
-      if (ival >= 0 && (double) ival == val)
-	{
-	  Vstruct_levels_to_print = ival;
-	  return 0;
-	}
-    }
-  gripe_invalid_value_specified ("struct_levels_to_print");
-  return -1;
-}
-
-void
-symbols_of_pt_const (void)
-{
-  DEFVAR (do_fortran_indexing, 0.0, 0, do_fortran_indexing,
-    "allow single indices for matrices");
-
-  DEFVAR (implicit_str_to_num_ok, 0.0, 0, implicit_str_to_num_ok,
-    "allow implicit string to number conversion");
-
-  DEFVAR (ok_to_lose_imaginary_part, "warn", 0, ok_to_lose_imaginary_part,
-    "silently convert from complex to real by dropping imaginary part");
-
-  DEFVAR (prefer_column_vectors, 1.0, 0, prefer_column_vectors,
-    "prefer column/row vectors");
-
-  DEFVAR (prefer_zero_one_indexing, 0.0, 0, prefer_zero_one_indexing,
-    "when there is a conflict, prefer zero-one style indexing");
-
-  DEFVAR (print_answer_id_name, 1.0, 0, print_answer_id_name,
-    "set output style to print `var_name = ...'");
-
-  DEFVAR (propagate_empty_matrices, 1.0, 0, propagate_empty_matrices,
-    "operations on empty matrices return an empty matrix, not an error");
-
-  DEFVAR (resize_on_range_error, 1.0, 0, resize_on_range_error,
-    "enlarge matrices on assignment");
-
-  DEFVAR (struct_levels_to_print, 2.0, 0, struct_levels_to_print,
-    "number of levels of structure elements to print");
-}
+#endif
 
 /*
 ;;; Local Variables: ***

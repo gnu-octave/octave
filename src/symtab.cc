@@ -48,7 +48,7 @@ symbol_def::symbol_def (void)
   init_state ();
 }
 
-symbol_def::symbol_def (octave_value *t)
+symbol_def::symbol_def (tree_constant *t)
 {
   init_state ();
   definition = t;
@@ -134,8 +134,15 @@ symbol_def::is_builtin_function (void) const
   return (type & BUILTIN_FUNCTION);
 }
 
+// XXX FIXME XXX
+int
+symbol_def::is_map_element (const string& /* elts */) const
+{
+  return 0;
+}
+
 void
-symbol_def::define (octave_value *t)
+symbol_def::define (tree_constant *t)
 {
   definition = t;
   if (! is_builtin_variable ())
@@ -306,6 +313,12 @@ symbol_record::is_builtin_variable (void) const
   return definition ? definition->is_builtin_variable () : 0;
 }
 
+int
+symbol_record::is_map_element (const string& elts) const
+{
+  return definition ? definition->is_map_element (elts) : 0;
+}
+
 unsigned
 symbol_record::type (void) const
 {
@@ -369,7 +382,7 @@ symbol_record::set_sv_function (sv_Function f)
 }
 
 int
-symbol_record::define (octave_value *t)
+symbol_record::define (tree_constant *t)
 {
   if (is_variable () && read_only_error ())
     return 0;
@@ -397,13 +410,20 @@ symbol_record::define (octave_value *t)
     {
       // Would be nice to be able to avoid this cast.  XXX FIXME XXX
 
-      definition->define ((octave_value *) saved_def);
+      definition->define ((tree_constant *) saved_def);
       return 0;
     }
 
   delete saved_def;
 
   return 1;
+}
+
+int
+symbol_record::define (const octave_value& v)
+{
+  tree_constant *t = new tree_constant (v);
+  return define (t);
 }
 
 int
@@ -464,7 +484,7 @@ symbol_record::define (tree_function *t, int text_fcn)
 }
 
 int
-symbol_record::define_as_fcn (octave_value *t)
+symbol_record::define_as_fcn (const octave_value& v)
 {
   if (is_variable () && read_only_error ())
     return 0;
@@ -481,6 +501,7 @@ symbol_record::define_as_fcn (octave_value *t)
       maybe_delete (old_def);
     }
 
+  tree_constant *t = new tree_constant (v);
   symbol_def *new_def = new symbol_def (t);
   push_def (new_def);
   definition->count = 1;
@@ -490,8 +511,9 @@ symbol_record::define_as_fcn (octave_value *t)
 }
 
 int
-symbol_record::define_builtin_var (octave_value *t)
+symbol_record::define_builtin_var (const octave_value& v)
 {
+  tree_constant *t = new tree_constant (v);
   define (t);
   if (is_variable ())
     definition->type = symbol_def::BUILTIN_VARIABLE;
@@ -568,6 +590,43 @@ int
 symbol_record::is_linked_to_global (void) const
 {
   return linked_to_global;
+}
+
+octave_value
+symbol_record::variable_value (void) const
+{
+  octave_value retval;
+
+  if (is_variable ())
+    {
+      tree_constant *tmp = (tree_constant *) def ();
+      retval = tmp->value ();
+    }
+
+  return retval;
+}
+
+octave_value&
+symbol_record::variable_reference (void)
+{
+  if (is_function ())
+    clear ();
+
+  if (! is_defined ())
+    {
+      if (! (is_formal_parameter () || is_linked_to_global ()))
+	link_to_builtin_variable (this);
+
+      if (! is_defined ())
+	{
+	  tree_constant *tmp = new tree_constant ();
+	  define (tmp);
+	}
+    }
+
+  tree_constant *tmp = (tree_constant *) def ();
+
+  return tmp->reference ();
 }
 
 symbol_record *
@@ -678,7 +737,7 @@ symbol_record_info::symbol_record_info (const symbol_record& sr)
     {
       // Would be nice to avoid this cast.  XXX FIXME XXX
 
-      octave_value *tmp = (octave_value *) sr.def ();
+      tree_constant *tmp = (tree_constant *) sr.def ();
       if (tmp->is_real_scalar ())
 	const_type = SR_INFO_SCALAR;
       else if (tmp->is_complex_scalar ())
@@ -776,7 +835,7 @@ symbol_record_info::hides_builtin (void) const
 }
 
 string
-symbol_record_info::type_as_string (void) const
+symbol_record_info::type_name (void) const
 {
   if (type == symbol_def::USER_FUNCTION)
     return "user function";

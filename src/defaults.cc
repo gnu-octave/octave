@@ -46,7 +46,7 @@ Software Foundation, Inc.
 #include "error.h"
 #include "gripes.h"
 #include "help.h"
-#include "pt-const.h"
+#include "ov.h"
 #include "toplev.h"
 #include "variables.h"
 #include "version.h"

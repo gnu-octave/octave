@@ -34,17 +34,20 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "error.h"
 #include "oct-obj.h"
-#include "pt-const.h"
+#include "ov.h"
 #include "pt-fvc-base.h"
 
 // A base class for objects that can be evaluated with argument lists.
 
-octave_value
-tree_fvc::assign (octave_value&, const octave_value_list&)
+#if 0
+octave_value&
+tree_fvc::assign (const octave_value_list&, const octave_value&)
 {
+  static octave_value foo;
   panic_impossible ();
-  return octave_value ();
+  return foo;
 }
+#endif
 
 string
 tree_fvc::name (void) const
@@ -55,11 +58,18 @@ tree_fvc::name (void) const
 }
 
 void
-tree_fvc::bump_value (tree_expression::type)
+tree_fvc::increment (void)
 {
   panic_impossible ();
 }
 
+void
+tree_fvc::decrement (void)
+{
+  panic_impossible ();
+}
+
+#if 0
 octave_value
 tree_fvc::lookup_map_element (SLList<string>&, bool, bool)
 {
@@ -75,6 +85,7 @@ tree_fvc::lookup_map_element (SLList<string>&, bool, bool)
 
   return retval;
 }
+#endif
 
 time_t
 tree_fvc::time_parsed (void)

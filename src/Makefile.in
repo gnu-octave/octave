@@ -36,11 +36,11 @@ INSTALL_DATA = @INSTALL_DATA@
 XALL_CXXFLAGS_1 = $(subst -fexternal-templates, , $(ALL_CXXFLAGS))
 XALL_CXXFLAGS = $(subst -fno-implicit-templates, , $(XALL_CXXFLAGS_1))
 
-%.def : %.cc
+%.df : %.cc
 	@echo making $@ from $<
 	@$(CXXCPP) -c $(CPPFLAGS) $(XALL_CXXFLAGS) -DMAKE_BUILTINS $< \
-	  | $(srcdir)/mkdefs > $@.tmp
-	@mv $@.tmp $@
+	  | $(srcdir)/mkdefs > $@.t
+	@mv $@.t $@
 
 # How to make a .oct file from a .o file:
 
@@ -83,7 +83,7 @@ else
   DLD_STATIC_OBJ := $(DLD_OBJ)
 endif
 
-INCLUDES := arith-ops.h builtins.h data.h defun.h defun-dld.h \
+INCLUDES := builtins.h data.h defun.h defun-dld.h \
 	defun-int.h dirfns.h dynamic-ld.h error.h file-io.h \
 	fn-cache.h gripes.h help.h input.h lex.h load-save.h \
 	mappers.h oct.h oct-fstrm.h oct-hist.h oct-iostrm.h \
@@ -96,9 +96,13 @@ INCLUDES := arith-ops.h builtins.h data.h defun.h defun-dld.h \
 	syscalls.h sysdep.h systime.h syswait.h token.h toplev.h \
 	unwind-prot.h utils.h variables.h version.h \
 	xdiv.h xpow.h Map.h SLStack.h Stack.h \
-	matrix.h complex-matrix.h char-matrix.h struct.h scalar.h \
-	range.h complex.h all-va-args.h magic-colon.h base-value.h \
-	char-matrix-str.h value.h
+	ov-re-mat.h ov-cx-mat.h ov-ch-mat.h ov-struct.h ov-scalar.h \
+	ov-range.h ov-complex.h ov-va-args.h ov-colon.h ov-base.h \
+	ov-str-mat.h ov.h ov-typeinfo.h ops.h \
+	op-cm-cm.h op-cm-cs.h op-cm-m.h op-cm-s.h op-cs-cm.h \
+	op-cs-cs.h op-cs-m.h op-cs-s.h op-m-cm.h op-m-cs.h \
+	op-m-m.h op-m-s.h op-s-cm.h op-s-cs.h op-s-m.h op-s-s.h \
+	op-str-str.h
 
 TI_SRC := Array-oc.cc Array-os.cc Array-tc.cc Map-fnc.cc Map-tc.cc \
 	SLList-expr.cc SLList-misc.cc SLList-plot.cc SLList-str.cc \
@@ -115,7 +119,7 @@ ifeq ($(SHARED_LIBS), true)
   endif
 endif
 
-SOURCES := arith-ops.cc data.cc defaults.cc dirfns.cc dynamic-ld.cc \
+SOURCES := data.cc defaults.cc dirfns.cc dynamic-ld.cc \
 	error.cc file-io.cc fn-cache.cc gripes.cc help.cc input.cc \
 	lex.l load-save.cc mappers.cc oct-fstrm.cc oct-hist.cc \
 	oct-iostrm.cc oct-map.cc oct-obj.cc oct-prcstrm.cc \
@@ -127,9 +131,13 @@ SOURCES := arith-ops.cc data.cc defaults.cc dirfns.cc dynamic-ld.cc \
 	sighandlers.cc strcasecmp.c strncase.c strfns.cc strftime.c \
 	symtab.cc syscalls.cc sysdep.cc timefns.cc token.cc toplev.cc \
 	unwind-prot.cc utils.cc variables.cc xdiv.cc xpow.cc \
-	base-value.cc char-matrix.cc matrix.cc complex-matrix.cc \
-	range.cc scalar.cc complex.cc char-matrix-str.cc struct.cc \
-	value.cc
+	ov-base.cc ov-ch-mat.cc ov-re-mat.cc ov-cx-mat.cc ov-range.cc \
+	ov-scalar.cc ov-complex.cc ov-str-mat.cc ov-struct.cc \
+	ov-va-args.cc ov-colon.cc ov.cc ov-typeinfo.cc ops.cc \
+	op-cm-cm.cc op-cm-cs.cc op-cm-m.cc op-cm-s.cc op-cs-cm.cc \
+	op-cs-cs.cc op-cs-m.cc op-cs-s.cc op-m-cm.cc op-m-cs.cc \
+	op-m-m.cc op-m-s.cc op-s-cm.cc op-s-cs.cc op-s-m.cc op-s-s.cc \
+	op-str-str.cc
 
 TEMPLATE_SRC = Map.cc SLStack.cc
 
@@ -158,9 +166,9 @@ MAKEDEPS := $(patsubst %.cc, %.d, $(DEP_SOURCES))
 DEF_FILES_5 := $(SOURCES) $(DLD_SRC) $(TI_SRC)
 DEF_FILES_4 := $(addprefix $(srcdir)/, $(DEF_FILES_5))
 DEF_FILES_3 := $(notdir $(shell grep -l "^DEFUN" $(DEF_FILES_4)))
-DEF_FILES_2 := $(patsubst %.y, %.def, $(DEF_FILES_3))
-DEF_FILES_1 := $(patsubst %.l, %.def, $(DEF_FILES_2))
-DEF_FILES := $(patsubst %.cc, %.def, $(DEF_FILES_1))
+DEF_FILES_2 := $(patsubst %.y, %.df, $(DEF_FILES_3))
+DEF_FILES_1 := $(patsubst %.l, %.df, $(DEF_FILES_2))
+DEF_FILES := $(patsubst %.cc, %.df, $(DEF_FILES_1))
 
 OCTAVE_LFLAGS = -L../liboctave -L../libcruft -L../readline \
 	-L../kpathsea -L../glob -L../dlfcn -L. $(RLD_FLAG)
@@ -241,8 +249,8 @@ stamp-tinst: $(TI_PICOBJ)
 
 builtins.cc: $(DEF_FILES) mkbuiltins
 	@echo making $@ from $(DEF_FILES)
-	@$(srcdir)/mkbuiltins $(DEF_FILES) > $@.tmp
-	@$(top_srcdir)/move-if-change $@.tmp $@
+	@$(srcdir)/mkbuiltins $(DEF_FILES) > $@.t
+	@$(top_srcdir)/move-if-change $@.t $@
 
 $(DEF_FILES): mkdefs defun-int.h defun-dld.h defun.h defaults.h oct-conf.h
 
@@ -317,7 +325,7 @@ TAGS: $(SOURCES) $(DLD_SRC) $(TI_SRC)
 	etags $(SOURCES) $(DLD_SRC) $(TI_SRC)
 
 clean:
-	rm -f *.a *.o *.d *.def pic/*.o builtins.cc defaults.h oct-conf.h
+	rm -f *.a *.o *.d *.df pic/*.o builtins.cc defaults.h oct-conf.h
 	if $(SHARED_LIBS); then rm -f *.$(SHLEXT); fi
 .PHONY: clean
 
@@ -340,13 +348,13 @@ maintainer-clean: distclean
 local-dist: parse.cc lex.cc oct-gperf.h
 	ln $(DISTFILES) ../`cat ../.fname`/src
 	rm -f parse.cc lex.cc y.tab.h y.output yy.lex.c
-	rm -f oct-gperf.h defaults.h oct-conf.h *.d *.def
+	rm -f oct-gperf.h defaults.h oct-conf.h *.d *.df
 .PHONY: local-dist
 
 dist: parse.cc lex.cc oct-gperf.h
 	ln $(DISTFILES) ../`cat ../.fname`/src
 	rm -f parse.cc lex.cc y.tab.h y.output yy.lex.c
-	rm -f oct-gperf.h defaults.h oct-conf.h *.d *.def builtins.cc
+	rm -f oct-gperf.h defaults.h oct-conf.h *.d *.df builtins.cc
 .PHONY: dist
 
 conf-dist:
@@ -364,8 +372,8 @@ oct-conf.h: oct-conf.h.in ../Makeconf Makefile
 oct-gperf.h: octave.gperf
 	@echo "making $@ from $<"
 	@gperf -a -C -E -H octave_kw_hash -g -N octave_kw_lookup -p -t \
-	  $< > $@.tmp
-	@$(top_srcdir)/move-if-change $@.tmp $@
+	  $< > $@.t
+	@$(top_srcdir)/move-if-change $@.t $@
 
 check: all
 .PHONY: check

@@ -112,6 +112,8 @@ public:
 
   int length (void) const { return data.length (); }
 
+  bool empty (void) const { return length () == 0; }
+
   void resize (int n) { data.resize (n); }
 
   void resize (int n, const octave_value& val) { data.resize (n, val); }

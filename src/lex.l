@@ -894,6 +894,8 @@ plot_style_token (char *s)
 {
   static char *plot_styles[] = 
     {
+      "boxes"
+      "boxerrorbars",
       "dots",
       "errorbars",
       "impulses",
@@ -1115,13 +1117,13 @@ is_keyword (char *s)
       promptflag--;
       yylval.tok_val = new token (l, c);
       token_stack.push (yylval.tok_val);
-      return UNWIND_PROTECT;
+      return UNWIND;
     }
   else if (strcmp ("unwind_protect_cleanup", s) == 0)
     {
       yylval.tok_val = new token (l, c);
       token_stack.push (yylval.tok_val);
-      return UNWIND_PROTECT_CLEANUP;
+      return CLEANUP;
     }
   else if (strcmp ("end_unwind_protect", s) == 0)
     {

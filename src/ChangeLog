@@ -1,3 +1,8 @@
+2004-04-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-stream.cc (printf_value_cache::curr_value): Now NDArray.
+	(printf_value_cache::double_value): Extract N-d array, not Matrix.
+
 2004-04-21  John W. Eaton  <jwe@octave.org>
 
 	* parse.y (function2): Pass id name to frob_function.  Delete id.

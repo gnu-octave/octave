@@ -2123,7 +2123,7 @@ private:
   int n_vals;
   int n_elts;
   const double *data;
-  Matrix curr_val;
+  NDArray curr_val;
   state curr_state;
 
   // Must create value cache with values!
@@ -2151,7 +2151,7 @@ printf_value_cache::double_value (void)
 	{
 	  octave_value tmp_val = values (val_idx);
 
-	  curr_val = tmp_val.matrix_value ();
+	  curr_val = tmp_val.array_value ();
 
 	  if (! error_state)
 	    {

@@ -1,0 +1,145 @@
+// Template stack class                                  -*- C++ -*-
+/*
+
+Copyright (C) 1993 John W. Eaton
+
+This file is part of Octave.
+
+Octave is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2, or (at your option) any
+later version.
+
+Octave is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with Octave; see the file COPYING.  If not, write to the Free
+Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+
+*/
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#if defined (__GNUG__) && defined (USE_EXTERNAL_TEMPLATES)
+#pragma implementation
+#endif
+
+#include "SLStack.h"
+
+template <class T>
+SLStack<T>::SLStack (void) : p ()
+{
+}
+
+template <class T>
+SLStack<T>::SLStack (const SLStack<T>& a) : p (a.p)
+{
+}
+
+template <class T>
+SLStack<T>::~SLStack (void)
+{
+}
+
+template <class T>
+void
+SLStack<T>::push (const T& item)
+{
+  p.prepend (item);
+}
+
+template <class T>
+T
+SLStack<T>::pop (void)
+{
+  return p.remove_front ();
+}
+
+template <class T>
+T&
+SLStack<T>::top (void)
+{
+  return p.front ();
+}
+
+template <class T>
+void
+SLStack<T>::del_top (void)
+{
+  p.del_front ();
+}
+
+template <class T>
+void
+SLStack<T>::operator = (const SLStack<T>& s)
+{
+  p = s.p;
+}
+
+template <class T>
+int
+SLStack<T>::empty (void)
+{
+  return p.empty ();
+}
+
+template <class T>
+int
+SLStack<T>::full (void)
+{
+  return 0;
+}
+
+template <class T>
+int
+SLStack<T>::length (void)
+{
+  return p.length ();
+}
+
+template <class T>
+int
+SLStack<T>::OK (void)
+{
+  return p.OK ();
+}
+
+template <class T>
+void
+SLStack<T>::clear (void)
+{
+  p.clear ();
+}
+
+#ifdef __GNUG__
+#if defined (OCTAVE_SOURCE) && defined (USE_EXTERNAL_TEMPLATES)
+
+typedef SLStack<int> slstack_type_int;
+typedef SLStack<char *> slstack_type_p_char;
+
+#include "symtab.h"
+typedef SLStack<symbol_def *> slstack_type_p_symbol_def;
+
+#include "token.h"
+typedef SLStack<token *> slstack_type_p_token;
+
+#include "tree.h"
+typedef SLStack<tree_matrix *> slstack_type_p_tree_matrix;
+
+#include "unwind-prot.h"
+typedef SLStack<unwind_elem> slstack_type_unwind_elem;
+
+#endif
+#endif
+
+/*
+;;; Local Variables: ***
+;;; mode: C++ ***
+;;; page-delimiter: "^/\\*" ***
+;;; End: ***
+*/

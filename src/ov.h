@@ -365,7 +365,7 @@ public:
 
   void print (bool pr_as_read_syntax = false);
 
-  virtual void print (ostream& os, bool pr_as_read_syntax)
+  virtual void print (ostream& os, bool pr_as_read_syntax = false)
     { rep->print (os, pr_as_read_syntax); }
 
   void print_with_name (const string& name, bool print_padding = true);

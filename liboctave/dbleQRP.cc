@@ -140,7 +140,7 @@ QRP::QRP (const Matrix& a, QR::type qr_type)
 	(*current_liboctave_error_handler) ("unrecoverable error in dorgqr");
       else
 	{
-	  q = Matrix (tmp_data, m, m);
+	  q = A_fact;
 	  q.resize (m, n2);
 	}
     }

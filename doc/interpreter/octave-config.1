@@ -1,0 +1,37 @@
+.\" Man page contributed by Dirk Eddelbuettel <edd@debian.org>
+.\" and released under the GNU GPL
+.TH OCTAVE-CONFIG 1 "19 February 2003" "GNU Octave"
+.SH NAME
+octave-config - GNU Octave component and library information retrieval
+.SH SYNOPSIS
+.BR octave-config\  [--m-site-dir]\ [--oct-site-dir]\ [-v|--version]\ 
+[-h|-?|--help]
+.SH DESCRIPTION
+.PP
+\fIoctave-config\fP is a tool to obtain directory information for 
+.f .oct
+and 
+.f .m
+files for
+.BR octave (1).
+.SH OPTIONS
+.l
+\fIoctave-config\fP accepts the following options:
+.TP 8
+.B \--m-site-dir
+Display the main directory for local, or site-specific, .m script files.
+.TP 8
+.B \--oct-site-dir
+Display the main directory for local, or site-specific, .oct dynamic-link libraries.
+.B \-v|\-\-version
+Display the version number of 
+.BR octave (1).
+.TP 8
+.B \-h|-?|--help
+Display a help page about
+\fIoctave-config\fP
+.SH AUTHOR
+John W. Eaton <jwe@bevo.che.wisc.edu>
+
+This manual page was contributed by Dirk Eddelbuettel <edd@debian.org> 
+for the Debian GNU/Linux distribution but may be used by others.

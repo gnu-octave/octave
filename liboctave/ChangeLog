@@ -1,3 +1,7 @@
+2003-01-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Array2-idx.h (Array2<T>::index): Fix off-by-one error.
+
 2003-01-16  Mumit Khan  <khan@nanotech.wisc.edu>
 
 	* oct-syscalls.cc: Include signal.h.
@@ -45,8 +49,8 @@
 
 	* Makefile.in (distclean): Also remove stamp-prereq.
 
-	* Array2-idx.h (assign): If assignment conforms but the RHS and
-	index are empty matrices, don't do anything.
+	* Array2-idx.h (Array2<T>::assign): If assignment conforms but the
+	RHS and index are empty matrices, don't do anything.
 
 2002-12-26  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

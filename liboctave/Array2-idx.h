@@ -128,15 +128,13 @@ Array2<T>::index (idx_vector& idx_arg, int resize_ok,
 
 	  retval.resize (result_nr, result_nc);
 
-
-
 	  int k = 0;
 	  for (int j = 0; j < result_nc; j++)
 	    {
 	      for (int i = 0; i < result_nr; i++)
 		{
 		  int ii = idx_arg.elem (k++);
-		  if (ii > orig_len)
+		  if (ii >= orig_len)
 		    retval.elem (i, j) = resize_fill_value;
 		  else
 		    {
@@ -189,7 +187,7 @@ Array2<T>::index (idx_vector& idx_i, idx_vector& idx_j, int resize_ok,
 	      for (int i = 0; i < n; i++)
 		{
 		  int ii = idx_i.elem (i);
-		  if (ii > nr || jj > nc)
+		  if (ii >= nr || jj >= nc)
 		    retval.elem (i, j) = resize_fill_value;
 		  else
 		    retval.elem (i, j) = elem (ii, jj);

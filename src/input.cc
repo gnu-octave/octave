@@ -45,6 +45,7 @@ Free Software Foundation, Inc.
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream.h>
+#include <strstream.h>
 #include <string.h>
 #include <assert.h>
 #include <signal.h>
@@ -429,6 +430,33 @@ decode_prompt_string (const char *string)
   return result;
 }
 
+static void
+do_input_echo (const char *input_string)
+{
+  if (echo_input)
+    {
+      ostrstream buf;
+
+      if (! forced_interactive)
+	{
+	  char *prefix = decode_prompt_string (user_pref.ps4);
+	  buf << prefix;
+	  delete [] prefix;
+	}
+
+      if (input_string)
+	{
+	  buf << input_string;
+	  int len = strlen (input_string);
+	  if (input_string[len-1] != '\n')
+	    buf << "\n";
+	}
+
+      maybe_page_output (buf);
+    }
+}
+
+
 // Use GNU readline to get an input line and store it in the history
 // list.
 
@@ -469,13 +497,7 @@ octave_gets (void)
 
       maybe_write_to_diary_file (octave_gets_line);
 
-      if (echo_input)
-	{
-	  if (! forced_interactive)
-	    cout << "+ ";
-
-	  cout << octave_gets_line << "\n";
-	}
+      do_input_echo (octave_gets_line);
     }
 
   maybe_write_to_diary_file ("\n");
@@ -562,17 +584,14 @@ octave_read (char *buf, int max_size)
 	delete [] stashed_line;
 
       stashed_line = strsave (buf);
+
       current_input_line = stashed_line;
 
-      if (echo_input && current_input_line && *current_input_line)
-	{
-	  if (! forced_interactive)
-	    cout << "+ ";
-
-	  cout << current_input_line << "\n";
-	}
+      do_input_echo (current_input_line);
     }
+
   input_line_number++;
+
   return status;
 }
 

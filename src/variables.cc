@@ -1461,6 +1461,9 @@ install_builtin_variables (void)
   DEFVAR ("PS2", SBV_PS2, "> ", 0, 0, 1, sv_ps2,
     "secondary prompt string");
 
+  DEFVAR ("PS4", SBV_PS4, "+ ", 0, 0, 1, sv_ps4,
+    "string printed before echoed input (enabled by --echo-input)");
+
   DEFVAR ("PWD", SBV_PWD, get_working_directory ("initialize_globals"),
 	  0, 1, 1, sv_pwd,
     "current working directory");

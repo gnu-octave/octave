@@ -77,6 +77,7 @@ init_user_prefs (void)
   user_pref.pager_binary = 0;
   user_pref.ps1 = 0;
   user_pref.ps2 = 0;
+  user_pref.ps4 = 0;
   user_pref.pwd = 0;
 }
 
@@ -725,6 +726,26 @@ sv_ps2 (void)
   else
     {
       warning ("invalid value specified for PS2");
+      status = -1;
+    }
+
+  return status;
+}
+
+int
+sv_ps4 (void)
+{
+  int status = 0;
+
+  char *s = builtin_string_variable ("PS4");
+  if (s)
+    {
+      delete [] user_pref.ps4;
+      user_pref.ps4 = s;
+    }
+  else
+    {
+      warning ("invalid value specified for PS4");
       status = -1;
     }
 

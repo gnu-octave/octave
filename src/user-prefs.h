@@ -61,6 +61,7 @@ struct user_preferences
   char *pager_binary;
   char *ps1;
   char *ps2;
+  char *ps4;
   char *pwd;
 };
 
@@ -104,6 +105,7 @@ extern int sv_loadpath (void);
 extern int sv_pager_binary (void);
 extern int sv_ps1 (void);
 extern int sv_ps2 (void);
+extern int sv_ps4 (void);
 extern int sv_pwd (void);
 
 #endif

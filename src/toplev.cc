@@ -410,7 +410,7 @@ If two input arguments are given (the actual value of\n\
 @var{return_output} is irrelevant) and the subprocess is started\n\
 synchronously, or if @var{system} is called with one input argument and\n\
 one or more output arguments, the output from the command is returned.\n\
-Otherwise, if the subprocess is executed synchronously, it's output is\n\
+Otherwise, if the subprocess is executed synchronously, its output is\n\
 sent to the standard output.  To send the output of a command executed\n\
 with @var{system} through the pager, use a command like\n\
 \n\

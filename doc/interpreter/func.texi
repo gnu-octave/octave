@@ -743,7 +743,7 @@ known until the function is evaluated).
 
 @deftypefn {Built-in Function} {} source (@var{file})
 Parse and execute the contents of @var{file}.  This is equivalent to
-executing commands from a script file, but without requiring the file ot
+executing commands from a script file, but without requiring the file to
 be name @var{file}.m.
 @end deftypefn
 

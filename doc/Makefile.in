@@ -33,9 +33,11 @@ all: $(SUBDIRS)
 
 ../INSTALL.OCTAVE:
 	cd interpreter ; $(MAKE) ../../INSTALL.OCTAVE
+.PHONY: ../INSTALL.OCTAVE
 
 ../BUGS:
 	cd interpreter ; $(MAKE) ../../BUGS
+.PHONY: ../BUGS
 
 $(SUBDIRS):
 	echo making all in $@

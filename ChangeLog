@@ -1,5 +1,8 @@
 Wed Jan 29 00:18:55 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* examples/Makefile.in (install): Install info-emacs-info and
+	info-emacs-octave-help in $(archlibdir).
+
 	* configure.in (INSTALL_SCRIPT): Substitute this in Makefiles.
 	* octMakefile.in (INSTALL_SCRIPT): New macro.
 	(install): Use it.

@@ -34,6 +34,9 @@ all:
 .PHONY: all
 
 install:
+	for f in $(SCRIPTS); do \
+	  $(INSTALL_SCRIPT) $(srcdir)/$$f $(archlibdir)/$$f ; \
+	done
 .PHONY: install
 
 tags:

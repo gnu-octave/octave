@@ -1,4 +1,4 @@
-# Copyright (C) 1993 John W. Eaton
+# Copyright (C) 1993, 1994 John W. Eaton
 # 
 # This file is part of Octave.
 # 
@@ -24,7 +24,7 @@ function [k, p, e] = lqe (a, g, c, sigw, sigv, zz)
 # continuous time system
 #
 #   dx/dt = A x + B u + G w
-#       y = C x + D u + w
+#       y = C x + D u + v
 #
 # where w, v are zero-mean gaussian noise processes with respective
 # intensities SigW = cov (w, w) and SigV = cov (v, v).
@@ -53,5 +53,7 @@ function [k, p, e] = lqe (a, g, c, sigw, sigv, zz)
   else
     [k, p, e] = lqr (a', c', g*sigw*g', sigv, g*zz);
   endif
+
+  k = k';
 
 endfunction

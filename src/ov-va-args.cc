@@ -39,7 +39,14 @@ int octave_all_va_args::t_id = -1;
 const string octave_all_va_args::t_name ("va-arg");
 
 void
-octave_all_va_args::print (ostream& os, bool)
+octave_all_va_args::print (ostream& os, bool) const
+{
+  indent (os);
+  print (os);
+}
+
+void
+octave_all_va_args::print_raw (ostream& os, bool) const
 {
   os << "all_va_args";
 }

@@ -28,6 +28,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include <iostream.h>
+
 #include "lo-ieee.h"
 
 #include "oct-obj.h"
@@ -153,9 +155,25 @@ octave_complex::complex_matrix_value (bool) const
 }
 
 void
-octave_complex::print (ostream& os, bool pr_as_read_syntax)
+octave_complex::print (ostream& os, bool pr_as_read_syntax) const
+{
+  indent (os);
+  print_raw (os, pr_as_read_syntax);
+  newline (os);
+}
+
+void
+octave_complex::print_raw (ostream& os, bool pr_as_read_syntax) const
 {
   octave_print_internal (os, scalar, pr_as_read_syntax);
+}
+
+bool
+octave_complex::print_name_tag (ostream& os, const string& name) const
+{
+  indent (os);
+  os << name << " = ";
+  return false;    
 }
 
 /*

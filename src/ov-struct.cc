@@ -65,7 +65,13 @@ octave_struct::struct_elt_ref (const string& nm)
 }
 
 void
-octave_struct::print (ostream& os, bool)
+octave_struct::print (ostream& os, bool) const
+{
+  print_raw (os);
+}
+
+void
+octave_struct::print_raw (ostream& os, bool) const
 {
   // XXX FIXME XXX -- would be nice to print the output in some
   // standard order.  Maybe all substructures first, maybe
@@ -73,57 +79,47 @@ octave_struct::print (ostream& os, bool)
 
   begin_unwind_frame ("octave_struct_print");
 
-  unwind_protect_int (struct_indent);
   unwind_protect_int (Vstruct_levels_to_print);
 
   if (Vstruct_levels_to_print-- > 0)
     {
-      os.form ("\n%*s{\n", struct_indent, "");
+      newline (os);
+      indent (os);
+      os << "{";
+      newline (os);
 
-      increment_struct_indent ();
+      increment_indent_level ();
 
-      Pix p = map.first ();
-
-      while (p)
+      for (Pix p = map.first (); p; map.next (p))
 	{
-	  bool pad_after = false;
-
 	  string key = map.key (p);
 	  octave_value val = map.contents (p);
 
-	  map.next (p);
-
-	  os.form ("%*s%s =", struct_indent, "", key.c_str ());
-
-	  if (val.print_as_scalar ())
-	    os << " ";
-	  else if (val.is_map ())
-	    {
-	      if (p)
-		pad_after = true;
-	    }
-	  else
-	    {
-	      if (p)
-		pad_after = true;
-
-	      os << "\n\n";
-	    }
-
-	  val.print (os);
-
-	  if (pad_after)
-	    os << "\n";
+	  val.print_with_name (os, key);
 	}
 
-      decrement_struct_indent ();
+      decrement_indent_level ();
 
-      os.form ("%*s%s", struct_indent, "", "}\n");
+      indent (os);
+      os << "}";
+      newline (os);
     }
   else
-    os << " <structure>\n";
+    {
+      os << " <structure>";
+      newline (os);
+    }
 
   run_unwind_frame ("octave_struct_print");
+}
+
+bool
+octave_struct::print_name_tag (ostream& os, const string& name) const
+{
+  indent (os);
+  os << name << " =";
+  newline (os);
+  return false;
 }
 
 /*

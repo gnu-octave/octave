@@ -28,6 +28,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include <iostream.h>
+
 #include "lo-ieee.h"
 #include "lo-utils.h"
 
@@ -202,9 +204,40 @@ octave_range::convert_to_str (void) const
 }
 
 void
-octave_range::print (ostream& os, bool pr_as_read_syntax)
+octave_range::print (ostream& os, bool pr_as_read_syntax) const
 {
-  octave_print_internal (os, range, pr_as_read_syntax, struct_indent);
+  indent (os);
+  print_raw (os, pr_as_read_syntax);
+  newline (os);
+}
+
+void
+octave_range::print_raw (ostream& os, bool pr_as_read_syntax) const
+{
+  octave_print_internal (os, range, pr_as_read_syntax,
+			 current_print_indent_level ());
+}
+
+bool
+octave_range::print_name_tag (ostream& os, const string& name) const
+{
+  bool retval = false;
+
+  int n = range.nelem ();
+
+  indent (os);
+
+  if (n == 0 || n == 1)
+    os << name << " = ";
+  else
+    {
+      os << name << " =";
+      newline (os);
+      newline (os);
+      retval = true;
+    }
+    
+  return retval;
 }
 
 /*

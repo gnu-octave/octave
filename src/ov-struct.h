@@ -83,7 +83,11 @@ public:
 
   Octave_map map_value (void) const { return map; }
 
-  void print (ostream& os, bool pr_as_read_syntax = false);
+  void print (ostream& os, bool pr_as_read_syntax = false) const;
+
+  void print_raw (ostream& os, bool pr_as_read_syntax = false) const;
+
+  bool print_name_tag (ostream& os, const string& name) const;
 
   int type_id (void) const { return t_id; }
 

@@ -39,7 +39,14 @@ int octave_magic_colon::t_id = -1;
 const string octave_magic_colon::t_name ("magic-colon");
 
 void
-octave_magic_colon::print (ostream& os, bool)
+octave_magic_colon::print (ostream& os, bool) const
+{
+  indent (os);
+  print_raw (os);
+}
+
+void
+octave_magic_colon::print_raw (ostream& os, bool) const
 {
   os << ":";
 }

@@ -28,6 +28,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include <iostream.h>
+
 #include "lo-ieee.h"
 #include "mx-base.h"
 
@@ -216,10 +218,38 @@ octave_char_matrix_str::string_value (void) const
 }
 
 void
-octave_char_matrix_str::print (ostream& os, bool pr_as_read_syntax)
+octave_char_matrix_str::print (ostream& os, bool pr_as_read_syntax) const
+{
+  indent (os);
+  print_raw (os, pr_as_read_syntax);
+  newline (os);
+}
+
+void
+octave_char_matrix_str::print_raw (ostream& os, bool pr_as_read_syntax) const
 {
   octave_print_internal (os, matrix, pr_as_read_syntax, true,
-			 struct_indent);
+			 current_print_indent_level ());
+}
+
+bool
+octave_char_matrix_str::print_name_tag (ostream& os, const string& name) const
+{
+  bool retval = false;
+
+  indent (os);
+
+  if (rows () == 1)
+    os << name << " = ";
+  else
+    {
+      os << name << " =";
+      newline (os);
+      newline (os);
+      retval = true;
+    }
+
+  return retval;
 }
 
 /*

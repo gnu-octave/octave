@@ -122,7 +122,11 @@ public:
   octave_value hermitian (void) const
     { return octave_value (matrix.transpose ()); }
 
-  void print (ostream& os, bool pr_as_read_syntax = false);
+  void print (ostream& os, bool pr_as_read_syntax = false) const;
+
+  void print_raw (ostream& os, bool pr_as_read_syntax = false) const;
+
+  bool print_name_tag (ostream& os, const string& name) const;
 
   int type_id (void) const { return t_id; }
 

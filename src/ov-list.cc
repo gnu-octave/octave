@@ -80,48 +80,49 @@ octave_list::index (const octave_value_list& idx) const
 }
 
 void
-octave_list::print (ostream& os, bool)
+octave_list::print (ostream& os, bool) const
+{
+  print_raw (os);
+}
+
+void
+octave_list::print_raw (ostream& os, bool) const
 {
   begin_unwind_frame ("octave_list_print");
 
-  unwind_protect_int (list_indent);
+  indent (os);
+  os << "(";
+  newline (os);
 
-  os.form ("\n%*s{\n", list_indent, "");
-
-  increment_list_indent ();
+  increment_indent_level ();
 
   int n = lst.length ();
 
   for (int i = 0; i < n; i++)
     {
-      bool pad_after = false;
-
       octave_value val = lst(i);
 
-      os.form ("%*s", list_indent, "");
-
-      if (val.print_as_scalar ())
-	os << " ";
-      else if (val.is_list ())
-	pad_after = true;
-      else
-	{
-	  pad_after = true;
-
-	  os << "\n\n";
-	}
+      indent (os);
 
       val.print (os);
-
-      if (pad_after)
-	os << "\n";
     }
 
-  decrement_list_indent ();
+  decrement_indent_level ();
 
-  os.form ("%*s%s", list_indent, "", "}\n");
+  indent (os);
+  os << ")";
+  newline (os);
 
   run_unwind_frame ("octave_list_print");
+}
+
+bool
+octave_list::print_name_tag (ostream& os, const string& name) const
+{
+  indent (os);
+  os << name << " =";
+  newline (os);
+  return false;
 }
 
 DEFUN (make_list, args, ,

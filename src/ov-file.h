@@ -20,8 +20,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-#if !defined (octave_list_h)
-#define octave_list_h 1
+#if !defined (octave_file_h)
+#define octave_file_h 1
 
 #if defined (__GNUG__)
 #pragma interface
@@ -33,36 +33,34 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class ostream;
 
-#include "mx-base.h"
-#include "str-vec.h"
-
-#include "error.h"
 #include "oct-alloc.h"
-#include "oct-obj.h"
 #include "ov-base.h"
 #include "ov-typeinfo.h"
 
 class tree_walker;
+class octave_stream;
+class octave_value;
+class octave_value_list;
 
 // Lists.
 
 class
-octave_list : public octave_base_value
+octave_file : public octave_base_value
 {
 public:
 
-  octave_list (void)
-    : octave_base_value () { }
+  octave_file (void)
+    : octave_base_value (), stream (0), number (-1) { }
 
-  octave_list (const octave_value_list& l)
-    : octave_base_value (), lst (l) { }
+  octave_file (octave_stream *s, int n)
+    : octave_base_value (), stream (s), number (n) { }
 
-  octave_list (const octave_list& l)
-    : octave_base_value (), lst (l.lst) { }
+  octave_file (const octave_file& f)
+    : octave_base_value (), stream (f.stream), number (f.number) { }
 
-  ~octave_list (void) { }
+  ~octave_file (void) { }
 
-  octave_value *clone (void) { return new octave_list (*this); }
+  octave_value *clone (void) { return new octave_file (*this); }
 
   void *operator new (size_t size)
     { return allocator.alloc (size); }
@@ -70,13 +68,17 @@ public:
   void operator delete (void *p, size_t size)
     { allocator.free (p, size); }
 
-  octave_value index (const octave_value_list& idx) const;
+  type_conv_fcn numeric_conversion_function (void) const;
+
+  double double_value (void) const { return static_cast<double> (number); }
+
+  octave_stream *stream_value (void) const { return stream; }
+
+  int stream_number (void) const { return number; }
 
   bool is_defined (void) const { return true; }
 
-  bool is_list (void) const { return true; }
-
-  octave_value_list list_value (void) const { return lst; }
+  bool is_file (void) const { return true; }
 
   void print (ostream& os, bool pr_as_read_syntax = false) const;
 
@@ -95,8 +97,11 @@ public:
 
 private:
 
-  // The list of Octave values.
-  octave_value_list lst;
+  // The stream object.
+  octave_stream *stream;
+
+  // The number of the beast.
+  int number;
 
   // For custom memory management.
   static octave_allocator allocator;

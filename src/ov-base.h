@@ -100,6 +100,8 @@ public:
 
   bool is_map (void) const { return false; }
 
+  bool is_file (void) const { return false; }
+
   bool is_list (void) const { return false; }
 
   bool is_magic_colon (void) const { return false; }
@@ -152,6 +154,10 @@ public:
 
   Octave_map map_value (void) const;
 
+  octave_stream *stream_value (void) const;
+
+  int stream_number (void) const;
+
   octave_value_list list_value (void) const;
 
   bool bool_value (void) const;
@@ -174,7 +180,11 @@ public:
 
   void convert_to_row_or_column_vector (void);
 
-  void print (ostream& os, bool pr_as_read_syntax = false);
+  void print (ostream& os, bool pr_as_read_syntax = false) const;
+
+  void print_raw (ostream& os, bool pr_as_read_syntax = false) const;
+
+  bool print_name_tag (ostream& os, const string& name) const;
 
   int type_id (void) const { return t_id; }
 

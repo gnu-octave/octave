@@ -28,6 +28,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include <iostream.h>
+
 #include "lo-ieee.h"
 
 #include "gripes.h"
@@ -99,9 +101,25 @@ octave_base_value::convert_to_row_or_column_vector (void)
 }
 
 void
-octave_base_value::print (ostream&, bool)
+octave_base_value::print (ostream&, bool) const
 {
   gripe_wrong_type_arg ("octave_base_value::print()", type_name ());
+}
+
+void
+octave_base_value::print_raw (ostream&, bool) const
+{
+  gripe_wrong_type_arg ("octave_base_value::print_raw()", type_name ());
+}
+
+bool
+octave_base_value::print_name_tag (ostream& os, const string& name) const
+{
+  indent (os);
+  os << name << " =";
+  newline (os);
+  newline (os);
+  return true;
 }
 
 double
@@ -175,6 +193,22 @@ octave_base_value::map_value (void) const
 {
   Octave_map retval;
   gripe_wrong_type_arg ("octave_base_value::map_value()", type_name ());
+  return retval;
+}
+
+octave_stream *
+octave_base_value::stream_value (void) const
+{
+  octave_stream *retval = 0;
+  gripe_wrong_type_arg ("octave_base_value::stream_value()", type_name ());
+  return retval;
+}
+
+int
+octave_base_value::stream_number (void) const
+{
+  int retval = -1;
+  gripe_wrong_type_arg ("octave_base_value::stream_number()", type_name ());
   return retval;
 }
 

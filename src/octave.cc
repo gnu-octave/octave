@@ -44,6 +44,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "getopt.h"
 
+#include "liboctave-error.h"
+
 #include "sighandlers.h"
 #include "variables.h"
 #include "error.h"
@@ -382,6 +384,9 @@ main (int argc, char **argv)
 
 // This is not really the right place to do this...
   set_Complex_error_handler (octave_Complex_error_handler);
+
+// Or this, probably...
+  set_liboctave_error_handler (error);
 
 // Do this first, since some command line arguments may override the
 // defaults.

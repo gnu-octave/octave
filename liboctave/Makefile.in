@@ -30,13 +30,14 @@ include $(TOPDIR)/Makeconf
 INCLUDES = Bounds.h CollocWt.h DAE.h DAEFunc.h FEGrid.h FSQP.h \
 	LinConst.h LP.h LPsolve.h Matrix.h NLConst.h NLEqn.h \
 	NLFunc.h NLP.h NPSOL.h ODE.h ODEFunc.h Objective.h QLD.h \
-	QP.h QPSOL.h Quad.h Range.h f77-uscore.h sun-utils.h
+	QP.h QPSOL.h Quad.h Range.h f77-uscore.h sun-utils.h \
+	liboctave-error.h
 
 SOURCES = Bounds.cc ColVector.cc CollocWt.cc DAE.cc DAEFunc.cc \
 	DiagMatrix.cc FEGrid.cc FSQP.cc LinConst.cc LP.cc LPsolve.cc \
 	Matrix-ext.cc Matrix.cc NLConst.cc NLEqn.cc NLFunc.cc NPSOL.cc \
 	Objective.cc ODE.cc ODEFunc.cc QLD.cc QP.cc QPSOL.cc Quad.cc \
-	Range.cc RowVector.cc sun-utils.cc
+	Range.cc RowVector.cc sun-utils.cc liboctave-error.cc
 
 EXTRAS = mx-inlines.cc
 

@@ -41,9 +41,6 @@ extern void set_liboctave_error_handler (liboctave_error_handler f);
 
 extern void liboctave_fatal (const char *fmt, ...);
 
-// Current error state.
-extern int error_state;
-
 #endif
 
 /*

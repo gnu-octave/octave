@@ -45,6 +45,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "cmd-hist.h"
 #include "file-ops.h"
 #include "file-stat.h"
+#include "oct-time.h"
 
 #include "comment-list.h"
 #include "defun.h"
@@ -2469,7 +2470,7 @@ frob_function (tree_identifier *id, octave_user_function *fcn)
 	  id_name = id->name ();
 	}
 
-      time_t now = time (0);
+      octave_time now;
 
       fcn->stash_function_name (id_name);
       fcn->stash_fcn_file_name ();

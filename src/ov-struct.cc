@@ -956,10 +956,10 @@ that is @code{numel (@var{FIELDS}) == size (@var{CELL}, @var{DIM})}.\n\
 A = cell2struct(@{'Peter', 'Hannah', 'Robert'; 185, 170, 168@}, @{'Name','Height'@}, 1);\n\
 A(1)\n\
 @result{} ans =\n\
-   @{\n\
-     Height = 185\n\
-     Name   = Peter\n\
-   @}\n\
+      @{\n\
+        Height = 185\n\
+        Name   = Peter\n\
+      @}\n\
 \n\
 @end group\n\
 @end example\n\

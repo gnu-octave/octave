@@ -1,3 +1,9 @@
+2004-02-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* control/system/__sysconcat__.m, control/system/__tfl__.m,
+	control/system/cellidx.m, control/system/ss.m,
+	control/system/tf.m, control/system/zp.m: New functions.
+
 2004-02-16  Glenn Golden  <gdg@zplane.com>
 
 	* statistics/distributions/discrete_inv.m:

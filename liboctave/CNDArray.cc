@@ -30,6 +30,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include <cfloat>
+#include <vector>
 
 #include "Array-util.h"
 #include "CNDArray.h"
@@ -39,7 +40,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "lo-mappers.h"
 
 #if defined (HAVE_FFTW3)
-#  include "oct-fftw.h"
+#include "oct-fftw.h"
 #else
 extern "C"
 {

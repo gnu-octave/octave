@@ -1638,13 +1638,12 @@ read_mat_file_header (istream& is, int& swap, FOUR_BYTE_INT& mopt,
 {
   swap = 0;
 
+// We expect to fail here, at the beginning of a record, so not being
+// able to read another mopt value should not result in an error. 
+
   is.read (&mopt, 4);
   if (! is)
-    {
-      if (! is.eof ())
-	goto data_read_error;
-      return 1;
-    }
+    return 1;
 
   if (! is.read (&nr, 4))
     goto data_read_error;
@@ -1672,7 +1671,9 @@ read_mat_file_header (istream& is, int& swap, FOUR_BYTE_INT& mopt,
     swap = 1;
 #endif
 
-  if (mopt > 9999)
+// mopt is signed, therefore byte swap may result in negative value.
+
+  if (mopt > 9999 || mopt < 0)
     swap = 1;
 
   if (swap)
@@ -1684,7 +1685,7 @@ read_mat_file_header (istream& is, int& swap, FOUR_BYTE_INT& mopt,
       swap_4_bytes ((char *) &len);
     }
 
-  if (mopt > 9999 || imag > 1 || imag < 0 || len > 8192)
+  if (mopt > 9999 || mopt < 0 || imag > 1 || imag < 0)
     {
       if (! quiet)
 	error ("load: can't read binary file");
@@ -2448,7 +2449,7 @@ save_mat_binary_data (ostream& os, const tree_constant& tc, char *name)
       double tmp = tc.double_value ();
       os.write (&tmp, 8);
     }
-  else if (tc.is_real_matrix () || tc.is_range ())
+  else if (tc.is_real_matrix ())
     {
       Matrix m = tc.matrix_value ();
       os.write (m.data (), 8 * len);
@@ -2474,6 +2475,18 @@ save_mat_binary_data (ostream& os, const tree_constant& tc, char *name)
       Matrix m = tc.matrix_value ();
       os.write (m.data (), 8 * len);
       run_unwind_frame ("save_mat_binary_data");
+    }
+  else if (tc.is_range ())
+    {
+      Range r = tc.range_value ();
+      double base = r.base ();
+      double inc = r.inc ();
+      int nel = r.nelem ();
+      for (int i = 0; i < nel; i++)
+	{
+	  double x = base + i * inc;
+	  os.write (&x, 8);
+	}
     }
   else
     {
@@ -2793,6 +2806,9 @@ get_default_save_format (void)
 
   if (strcasecmp (fmt, "binary") == 0)
     retval = LS_BINARY;
+  else if (strcasecmp (fmt, "mat-binary") == 0
+	   || strcasecmp (fmt, "mat_binary") == 0)
+    retval = LS_MAT_BINARY;
       
   return retval;
 }
@@ -2935,7 +2951,7 @@ save variables in a file")
       argc--;
       argv++;
 
-      unsigned mode = ios::out;
+      unsigned mode = ios::out|ios::trunc;
       if (format == LS_BINARY || format == LS_MAT_BINARY)
 	mode |= ios::bin;
 

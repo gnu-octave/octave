@@ -1002,24 +1002,6 @@ DiagArray<T>::resize (int r, int c, const T& val)
     delete old_rep;
 }
 
-#if defined (__GNUG__)
-#if defined (OCTAVE_SOURCE) && defined (USE_EXTERNAL_TEMPLATES)
-
-typedef Array<double> array_type_double;
-typedef Array2<double> array2_type_double;
-typedef DiagArray<double> diag_array_type_double;
-
-#include <Complex.h>
-typedef Array<Complex> array_type_complex;
-typedef Array2<Complex> array2_type_complex;
-typedef DiagArray<Complex> diag_array_type_complex;
-
-#include "tree-const.h"
-typedef Array<tree_constant> array_type_tree_constant;
-
-#endif
-#endif
-
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

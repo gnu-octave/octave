@@ -387,15 +387,6 @@ main (int argc, char **argv)
 	}
     }
 
-  if (! inhibit_startup_message)
-    {
-      cout << "Octave, version " << version_string
-	   << ".  Copyright (C) 1992, 1993, John W. Eaton.\n"
-	   << "This is free software with ABSOLUTELY NO WARRANTY.\n"
-	   << "For details, type `warranty'.\n"
-	   << "\n";
-    }
-
 // Make sure we clean up when we exit.
   atexit (cleanup_tmp_files);
 
@@ -427,7 +418,12 @@ main (int argc, char **argv)
 
 // If there is an extra argument, see if it names a file to read.
 
-  if (optind != argc)
+  int remaining_args = argc - optind;
+  if (remaining_args > 1)
+    {
+      usage ();
+    }
+  else if (remaining_args == 1)
     {
       FILE *infile = get_input_from_file (argv[optind]);
       if (infile == (FILE *) NULL)
@@ -437,10 +433,10 @@ main (int argc, char **argv)
     }
   else
     {
+      switch_to_buffer (create_buffer (get_input_from_stdin ()));
+
 // Is input coming from a terminal?  If so, we are probably
 // interactive.
-
-      switch_to_buffer (create_buffer (get_input_from_stdin ()));
 
       interactive = (isatty (fileno (stdin)) && isatty (fileno (stdout)));
     }
@@ -455,6 +451,15 @@ main (int argc, char **argv)
     using_readline = 0;
 
   install_signal_handlers ();
+
+  if (! inhibit_startup_message)
+    {
+      cout << "Octave, version " << version_string
+	   << ".  Copyright (C) 1992, 1993, John W. Eaton.\n"
+	   << "This is free software with ABSOLUTELY NO WARRANTY.\n"
+	   << "For details, type `warranty'.\n"
+	   << "\n";
+    }
 
 // Allow the user to interrupt us without exiting.
 

@@ -76,8 +76,6 @@ public:
 
   octave_value *try_narrowing_conversion (void);
 
-  octave_value do_index_op (const octave_value_list& idx);
-
   void assign (const octave_value_list& idx, const Matrix& rhs);
 
   void assign_struct_elt (assign_op, const string& elt_nm,
@@ -111,8 +109,6 @@ public:
   bool valid_as_scalar_index (void) const;
 
   bool valid_as_zero_index (void) const { return is_zero_by_zero (); }
-
-  bool is_true (void) const;
 
   double double_value (bool = false) const;
 

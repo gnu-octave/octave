@@ -1,3 +1,8 @@
+Tue Nov 17 23:47:24 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lo-specfun.cc (besselh, airy, biry): New functions.
+	Update Bessel function support to use library by D. E. Amos.
+
 Thu Nov 12 17:44:15 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* cmd-edit.h (command_editor::readline): Add new variation that

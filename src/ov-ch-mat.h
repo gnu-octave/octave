@@ -94,8 +94,6 @@ public:
   bool valid_as_scalar_index (void) const;
   bool valid_as_zero_index (void) const;
 
-  bool is_true (void) const;
-
   double double_value (bool = false) const;
 
   double scalar_value (bool frc_str_conv = false) const

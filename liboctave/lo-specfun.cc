@@ -25,25 +25,46 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include "Range.h"
-#include "dColVector.h"
+#include "CColVector.h"
+#include "CMatrix.h"
+#include "dRowVector.h"
 #include "dMatrix.h"
 #include "f77-fcn.h"
 #include "lo-error.h"
+#include "lo-ieee.h"
+#include "lo-specfun.h"
 #include "mx-inlines.cc"
 
 extern "C"
 {
-  int F77_FCN (rjbesl, RJBESL) (const double&, const double&,
-				const int&, double*, int&);
+  int F77_FCN (zbesj, ZBESJ) (const double&, const double&,
+			      const double&, const int&, const int&,
+			      double*, double*, int&, int&);
 
-  int F77_FCN (rybesl, RYBESL) (const double&, const double&,
-				const int&, double*, int&);
+  int F77_FCN (zbesy, ZBESY) (const double&, const double&,
+			      const double&, const int&, const int&,
+			      double*, double*, int&,
+			      double*, double*, int&);
 
-  int F77_FCN (ribesl, RIBESL) (const double&, const double&,
-				const int&, const int&, double*, int&);
+  int F77_FCN (zbesi, ZBESI) (const double&, const double&,
+			      const double&, const int&, const int&,
+			      double*, double*, int&, int&);
 
-  int F77_FCN (rkbesl, RKBESL) (const double&, const double&,
-				const int&, const int&, double*, int&);
+  int F77_FCN (zbesk, ZBESK) (const double&, const double&,
+			      const double&, const int&, const int&,
+			      double*, double*, int&, int&);
+
+  int F77_FCN (zbesh, ZBESH) (const double&, const double&,
+			      const double&, const int&, const int&,
+			      const int&, double*, double*, int&, int&);
+
+  int F77_FCN (zairy, ZAIRY) (const double&, const double&,
+			      const int&, const int&,
+			      double&, double&, int&, int&);
+
+  int F77_FCN (zbiry, ZBIRY) (const double&, const double&,
+			      const int&, const int&,
+			      double&, double&, int&);
 
   int F77_FCN (xdacosh, XDACOSH) (const double&, double&);
 
@@ -132,179 +153,518 @@ xlgamma (double x)
   return result;
 }
 
-int
-F77_FCN (ribesl, RIBESL) (const double& x, const double& alpha,
-			  const int& nb, double *result, int& ncalc)
+static inline Complex
+zbesj (const Complex& z, double alpha, int kode, int& ierr);
+
+static inline Complex
+zbesy (const Complex& z, double alpha, int kode, int& ierr);
+
+static inline Complex
+zbesi (const Complex& z, double alpha, int kode, int& ierr);
+
+static inline Complex
+zbesk (const Complex& z, double alpha, int kode, int& ierr);
+
+static inline Complex
+zbesh1 (const Complex& z, double alpha, int kode, int& ierr);
+
+static inline Complex
+zbesh2 (const Complex& z, double alpha, int kode, int& ierr);
+
+static inline Complex
+bessel_return_value (const Complex& val, int ierr)
 {
-  int retval = 0;
-  F77_FCN (ribesl, RIBESL) (x, alpha, nb, 1, result, ncalc);
+  static const Complex inf_val = Complex (octave_Inf, octave_Inf);
+  static const Complex nan_val = Complex (octave_NaN, octave_NaN);
+
+  Complex retval;
+
+  switch (ierr)
+    {
+    case 0:
+    case 3:
+      retval = val;
+      break;
+
+    case 2:
+      retval = inf_val;
+      break;
+
+    default:
+      retval = nan_val;
+      break;
+    }
+
   return retval;
 }
 
-int
-F77_FCN (rkbesl, RKBESL) (const double& x, const double& alpha,
-			  const int& nb, double *result, int& ncalc)
+static inline Complex
+zbesj (const Complex& z, double alpha, int kode, int& ierr)
 {
-  int retval = 0;
-  F77_FCN (rkbesl, RKBESL) (x, alpha, nb, 1, result, ncalc);
-  return retval;
-}
-
-typedef int (*fptr) (const double&, const double&, const int&, double*, int&);
-
-static Matrix
-do_bessel (fptr f, const char *fn, double alpha, const Matrix& x)
-{
-  Matrix retval;
+  Complex retval;
 
   if (alpha >= 0.0)
     {
-      int nb = 1;
+      double yr = 0.0;
+      double yi = 0.0;
 
-      if (alpha >= 1.0)
-	{
-	  double integral;
-	  alpha = modf (alpha, &integral);
-	  nb = static_cast<int> (integral) + 1;
-	}
+      int nz;
 
-      Array<double> tmp (nb);
+      double zr = z.real ();
+      double zi = z.imag ();
 
-      double *ptmp = tmp.fortran_vec ();
+      F77_FCN (zbesj, ZBESJ) (zr, zi, alpha, kode, 1, &yr, &yi, nz, ierr);
 
-      int x_nr = x.rows ();
-      int x_nc = x.cols ();
+      if (zi == 0.0 && zr > 0.0)
+	yi = 0.0;
 
-      retval.resize (x_nr, x_nc);
-
-      int ncalc;
-
-      for (int j = 0; j < x_nc; j++)
-	{
-	  for (int i = 0; i < x_nr; i++)
-	    {
-	      f (x(i,j), alpha, nb, ptmp, ncalc);
-
-	      if (ncalc < 0)
-		{
-		  (*current_liboctave_error_handler)
-		    ("%s: error computing function values", fn);
-
-		  return Matrix ();
-		}
-
-	      retval(i,j) = tmp(nb-1);
-	    }
-	}
+      retval = bessel_return_value (Complex (yr, yi), ierr);
     }
   else
-    (*current_liboctave_error_handler)
-      ("%s: alpha must be greater than zero", fn);
-
-  return retval;
-}
-
-static Matrix
-do_bessel (fptr f, const char *fn, const Range& alpha_range,
-	   const ColumnVector& x)
-{
-  Matrix retval;
-
-  double alpha_base = alpha_range.base ();
-
-  if (alpha_base >= 0.0)
     {
-      int nb_orig = alpha_range.nelem ();
-      int nb = nb_orig;
-      int offset = 0;
+      alpha = -alpha;
 
-      if (alpha_base >= 1.0)
+      Complex tmp = cos (M_PI * alpha) * zbesj (z, alpha, kode, ierr);
+
+      if (ierr == 0 || ierr == 3)
 	{
-	  double integral;
-	  alpha_base = modf (alpha_base, &integral);
-	  offset = static_cast<int> (integral);
-	  nb += offset;
+	  tmp -= sin (M_PI * alpha) * zbesy (z, alpha, kode, ierr);
+
+	  retval = bessel_return_value (tmp, ierr);
 	}
-
-      Array<double> tmp (nb);
-
-      double *ptmp = tmp.fortran_vec ();
-
-      int x_len = x.length ();
-
-      retval.resize (x_len, nb_orig);
-
-      int ncalc;
-
-      for (int i = 0; i < x_len; i++)
-	{
-	  f (x(i), alpha_base, nb, ptmp, ncalc);
-
-	  if (ncalc < 0)
-	    {
-	      (*current_liboctave_error_handler)
-		("%s: error computing function values", fn);
-
-	      return Matrix ();
-	    }
-
-	  for (int j = 0; j < nb_orig; j++)
-	    retval(i,j) = tmp(offset+j);
-	}
+      else
+	retval = Complex (octave_NaN, octave_NaN);
     }
-  else
-    (*current_liboctave_error_handler)
-      ("%s: alpha must be greater than zero", fn);
 
   return retval;
 }
 
-Matrix
-besselj (double alpha, const Matrix& x)
+static inline Complex
+zbesy (const Complex& z, double alpha, int kode, int& ierr)
 {
-  return do_bessel (F77_FCN (rjbesl, RJBESL), "besselj", alpha, x);
+  Complex retval;
+
+  if (alpha >= 0.0)
+    {
+      double yr = 0.0;
+      double yi = 0.0;
+
+      int nz;
+
+      double wr, wi;
+
+      double zr = z.real ();
+      double zi = z.imag ();
+
+      ierr = 0;
+
+      if (zr == 0.0 && zi == 0.0)
+	{
+	  yr = -octave_Inf;
+	  yi = 0.0;
+	}
+      else
+	{
+	  F77_FCN (zbesy, ZBESY) (zr, zi, alpha, kode, 1, &yr, &yi, nz,
+				  &wr, &wi, ierr);
+
+	  if (zi == 0.0 && zr > 0.0)
+	    yi = 0.0;
+	}
+
+      return bessel_return_value (Complex (yr, yi), ierr);
+    }
+  else
+    {
+      alpha = -alpha;
+
+      Complex tmp = cos (M_PI * alpha) * zbesy (z, alpha, kode, ierr);
+
+      if (ierr == 0 || ierr == 3)
+	{
+	  tmp += sin (M_PI * alpha) * zbesj (z, alpha, kode, ierr);
+
+	  retval = bessel_return_value (tmp, ierr);
+	}
+      else
+	retval = Complex (octave_NaN, octave_NaN);
+    }
+
+  return retval;
 }
 
-Matrix
-bessely (double alpha, const Matrix& x)
+static inline Complex
+zbesi (const Complex& z, double alpha, int kode, int& ierr)
 {
-  return do_bessel (F77_FCN (rybesl, RYBESL), "bessely", alpha, x);
+  Complex retval;
+
+  if (alpha >= 0.0)
+    {
+      double yr = 0.0;
+      double yi = 0.0;
+
+      int nz;
+
+      double zr = z.real ();
+      double zi = z.imag ();
+
+      F77_FCN (zbesi, ZBESI) (zr, zi, alpha, kode, 1, &yr, &yi, nz, ierr);
+
+      if (zi == 0.0 && zr > 0.0)
+	yi = 0.0;
+
+      retval = bessel_return_value (Complex (yr, yi), ierr);
+    }
+  else
+    {
+      alpha = -alpha;
+
+      Complex tmp = zbesi (z, alpha, kode, ierr);
+
+      if (ierr == 0 || ierr == 3)
+	{
+	  tmp += (2.0 / M_PI) * sin (M_PI * alpha)
+	    * zbesk (z, alpha, kode, ierr);
+
+	  retval = bessel_return_value (tmp, ierr);
+	}
+      else
+	retval = Complex (octave_NaN, octave_NaN);
+    }
+
+  return retval;
 }
 
-Matrix
-besseli (double alpha, const Matrix& x)
+static inline Complex
+zbesk (const Complex& z, double alpha, int kode, int& ierr)
 {
-  return do_bessel (F77_FCN (ribesl, RIBESL), "besseli", alpha, x);
+  Complex retval;
+
+  if (alpha >= 0.0)
+    {
+      double yr = 0.0;
+      double yi = 0.0;
+
+      int nz;
+
+      double zr = z.real ();
+      double zi = z.imag ();
+
+      ierr = 0;
+
+      if (zr == 0.0 && zi == 0.0)
+	{
+	  yr = octave_Inf;
+	  yi = 0.0;
+	}
+      else
+	{
+	  F77_FCN (zbesk, ZBESK) (zr, zi, alpha, kode, 1, &yr, &yi, nz, ierr);
+
+	  if (zi == 0.0 && zr > 0.0)
+	    yi = 0.0;
+	}
+
+      retval = bessel_return_value (Complex (yr, yi), ierr);
+    }
+  else
+    {
+      Complex tmp = zbesk (z, -alpha, kode, ierr);
+
+      retval = bessel_return_value (tmp, ierr);
+    }
+
+  return retval;
 }
 
-Matrix
-besselk (double alpha, const Matrix& x)
+static inline Complex
+zbesh1 (const Complex& z, double alpha, int kode, int& ierr)
 {
-  return do_bessel (F77_FCN (rkbesl, RKBESL), "besselk", alpha, x);
+  Complex retval;
+
+  if (alpha >= 0.0)
+    {
+      double yr = 0.0;
+      double yi = 0.0;
+
+      int nz;
+
+      double zr = z.real ();
+      double zi = z.imag ();
+
+      F77_FCN (zbesh, ZBESH) (zr, zi, alpha, kode, 1, 1, &yr, &yi, nz, ierr);
+
+      retval = bessel_return_value (Complex (yr, yi), ierr);
+    }
+  else
+    {
+      alpha = -alpha;
+
+      static const Complex eye = Complex (0.0, 1.0);
+
+      Complex tmp = exp (M_PI * alpha * eye) * zbesh1 (z, alpha, kode, ierr);
+
+      retval = bessel_return_value (tmp, ierr);
+    }
+
+  return retval;
 }
 
-Matrix
-besselj (const Range& alpha, const ColumnVector& x)
+static inline Complex
+zbesh2 (const Complex& z, double alpha, int kode, int& ierr)
 {
-  return do_bessel (F77_FCN (rjbesl, RJBESL), "besselj", alpha, x);
+  Complex retval;
+
+  if (alpha >= 0.0)
+    {
+      double yr = 0.0;
+      double yi = 0.0;
+
+      int nz;
+
+      double zr = z.real ();
+      double zi = z.imag ();
+
+      F77_FCN (zbesh, ZBESH) (zr, zi, alpha, kode, 2, 1, &yr, &yi, nz, ierr);
+
+      retval = bessel_return_value (Complex (yr, yi), ierr);
+    }
+  else
+    {
+      alpha = -alpha;
+
+      static const Complex eye = Complex (0.0, 1.0);
+
+      Complex tmp = exp (-M_PI * alpha * eye) * zbesh2 (z, alpha, kode, ierr);
+
+      retval = bessel_return_value (tmp, ierr);
+    }
+
+  return retval;
 }
 
-Matrix
-bessely (const Range& alpha, const ColumnVector& x)
+typedef Complex (*fptr) (const Complex&, double, int, int&);
+
+static inline Complex
+do_bessel (fptr f, const char *, double alpha, const Complex& x,
+	   bool scaled, int& ierr)
 {
-  return do_bessel (F77_FCN (rybesl, RYBESL), "bessely", alpha, x);
+  Complex retval;
+
+  retval = f (x, alpha, (scaled ? 2 : 1), ierr);
+
+  return retval;
 }
 
-Matrix
-besseli (const Range& alpha, const ColumnVector& x)
+static inline ComplexMatrix
+do_bessel (fptr f, const char *, double alpha, const ComplexMatrix& x,
+	   bool scaled, Array2<int>& ierr)
 {
-  return do_bessel (F77_FCN (ribesl, RIBESL), "besseli", alpha, x);
+  int nr = x.rows ();
+  int nc = x.cols ();
+
+  ComplexMatrix retval (nr, nc);
+
+  ierr.resize (nr, nc);
+
+  for (int j = 0; j < nc; j++)
+    for (int i = 0; i < nr; i++)
+      retval(i,j) = f (x(i,j), alpha, (scaled ? 2 : 1), ierr(i,j));
+
+  return retval;
 }
 
-Matrix
-besselk (const Range& alpha, const ColumnVector& x)
+static inline ComplexMatrix
+do_bessel (fptr f, const char *, const Matrix& alpha, const Complex& x,
+	   bool scaled, Array2<int>& ierr)
 {
-  return do_bessel (F77_FCN (rkbesl, RKBESL), "besselk", alpha, x);
+  int nr = alpha.rows ();
+  int nc = alpha.cols ();
+
+  ComplexMatrix retval (nr, nc);
+
+  ierr.resize (nr, nc);
+
+  for (int j = 0; j < nc; j++)
+    for (int i = 0; i < nr; i++)
+      retval(i,j) = f (x, alpha(i,j), (scaled ? 2 : 1), ierr(i,j));
+
+  return retval;
+}
+
+static inline ComplexMatrix
+do_bessel (fptr f, const char *fn, const Matrix& alpha,
+	   const ComplexMatrix& x, bool scaled, Array2<int>& ierr)
+{
+  ComplexMatrix retval;
+
+  int x_nr = x.rows ();
+  int x_nc = x.cols ();
+
+  int alpha_nr = alpha.rows ();
+  int alpha_nc = alpha.cols ();
+
+  if (x_nr == alpha_nr && x_nc == alpha_nc)
+    {
+      int nr = x_nr;
+      int nc = x_nc;
+
+      retval.resize (nr, nc);
+
+      ierr.resize (nr, nc);
+
+      for (int j = 0; j < nc; j++)
+	for (int i = 0; i < nr; i++)
+	  retval(i,j) = f (x(i,j), alpha(i,j), (scaled ? 2 : 1), ierr(i,j));
+    }
+  else
+    (*current_liboctave_error_handler)
+      ("%s: the sizes of alpha and x must conform", fn);
+
+  return retval;
+}
+
+static inline ComplexMatrix
+do_bessel (fptr f, const char *, const RowVector& alpha,
+	   const ComplexColumnVector& x, bool scaled, Array2<int>& ierr)
+{
+  int nr = x.length ();
+  int nc = alpha.length ();
+
+  ComplexMatrix retval (nr, nc);
+
+  ierr.resize (nr, nc);
+
+  for (int j = 0; j < nc; j++)
+    for (int i = 0; i < nr; i++)
+      retval(i,j) = f (x(i), alpha(j), (scaled ? 2 : 1), ierr(i,j));
+
+  return retval;
+}
+
+#define SS_BESSEL(name, fcn) \
+  Complex \
+  name (double alpha, const Complex& x, bool scaled, int& ierr) \
+  { \
+    return do_bessel (fcn, #name, alpha, x, scaled, ierr); \
+  }
+
+#define SM_BESSEL(name, fcn) \
+  ComplexMatrix \
+  name (double alpha, const ComplexMatrix& x, bool scaled, \
+	Array2<int>& ierr) \
+  { \
+    return do_bessel (fcn, #name, alpha, x, scaled, ierr); \
+  }
+
+#define MS_BESSEL(name, fcn) \
+  ComplexMatrix \
+  name (const Matrix& alpha, const Complex& x, bool scaled, \
+	Array2<int>& ierr) \
+  { \
+    return do_bessel (fcn, #name, alpha, x, scaled, ierr); \
+  }
+
+#define MM_BESSEL(name, fcn) \
+  ComplexMatrix \
+  name (const Matrix& alpha, const ComplexMatrix& x, bool scaled, \
+	Array2<int>& ierr) \
+  { \
+    return do_bessel (fcn, #name, alpha, x, scaled, ierr); \
+  }
+
+#define RC_BESSEL(name, fcn) \
+  ComplexMatrix \
+  name (const RowVector& alpha, const ComplexColumnVector& x, bool scaled, \
+        Array2<int>& ierr) \
+  { \
+    return do_bessel (fcn, #name, alpha, x, scaled, ierr); \
+  }
+
+#define ALL_BESSEL(name, fcn) \
+  SS_BESSEL (name, fcn) \
+  SM_BESSEL (name, fcn) \
+  MS_BESSEL (name, fcn) \
+  MM_BESSEL (name, fcn) \
+  RC_BESSEL (name, fcn)
+
+ALL_BESSEL (besselj, zbesj)
+ALL_BESSEL (bessely, zbesy)
+ALL_BESSEL (besseli, zbesi)
+ALL_BESSEL (besselk, zbesk)
+ALL_BESSEL (besselh1, zbesh1)
+ALL_BESSEL (besselh2, zbesh2)
+
+Complex
+airy (const Complex& z, bool deriv, bool scaled, int& ierr)
+{
+  double ar = 0.0;
+  double ai = 0.0;
+
+  int nz;
+
+  double zr = z.real ();
+  double zi = z.imag ();
+
+  int id = deriv ? 1 : 0;
+
+  int kode = scaled ? 2 : 1;
+
+  F77_FCN (zairy, ZAIRY) (zr, zi, id, kode, ar, ai, nz, ierr);
+
+  return bessel_return_value (Complex (ar, ai), ierr);
+}
+
+Complex
+biry (const Complex& z, bool deriv, bool scaled, int& ierr)
+{
+  double ar = 0.0;
+  double ai = 0.0;
+
+  double zr = z.real ();
+  double zi = z.imag ();
+
+  int id = deriv ? 1 : 0;
+
+  int kode = scaled ? 2 : 1;
+
+  F77_FCN (zbiry, ZBIRY) (zr, zi, id, kode, ar, ai, ierr);
+
+  return bessel_return_value (Complex (ar, ai), ierr);
+}
+
+ComplexMatrix
+airy (const ComplexMatrix& z, bool deriv, bool scaled, Array2<int>& ierr)
+{
+  int nr = z.rows ();
+  int nc = z.cols ();
+
+  ComplexMatrix retval (nr, nc);
+
+  ierr.resize (nr, nc);
+
+  for (int j = 0; j < nc; j++)
+    for (int i = 0; i < nr; i++)
+      retval(i,j) = airy (z(i,j), deriv, scaled, ierr(i,j));
+
+  return retval;
+}
+
+ComplexMatrix
+biry (const ComplexMatrix& z, bool deriv, bool scaled, Array2<int>& ierr)
+{
+  int nr = z.rows ();
+  int nc = z.cols ();
+
+  ComplexMatrix retval (nr, nc);
+
+  ierr.resize (nr, nc);
+
+  for (int j = 0; j < nc; j++)
+    for (int i = 0; i < nr; i++)
+      retval(i,j) = biry (z(i,j), deriv, scaled, ierr(i,j));
+
+  return retval;
 }
 
 static void

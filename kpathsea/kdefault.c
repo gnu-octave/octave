@@ -62,7 +62,7 @@ kpse_expand_default P2C(const_string, path,  const_string, fallback)
       /* What we'll return if we find none.  */
       expansion = xstrdup (path);
 
-      for (loc = path; *loc && expansion == path; loc++)
+      for (loc = path; *loc; loc++)
         {
           if (IS_ENV_SEP (loc[0]) && IS_ENV_SEP (loc[1]))
             { /* We have a doubled colon.  */
@@ -75,6 +75,8 @@ kpse_expand_default P2C(const_string, path,  const_string, fallback)
               /* Copy in FALLBACK, and then the rest of PATH.  */
               strcat (expansion, fallback);
               strcat (expansion, loc + 1);
+
+	      break;
             }
         }
     }

@@ -65,6 +65,8 @@ public:
 
   octave_value *clone (void) { return new octave_base_matrix (*this); }
 
+  octave_value do_index_op (const octave_value_list& idx);
+
   int rows (void) const { return matrix.rows (); }
   int columns (void) const { return matrix.columns (); }
 
@@ -79,6 +81,8 @@ public:
   bool is_defined (void) const { return true; }
 
   bool is_constant (void) const { return true; }
+
+  bool is_true (void) const;
 
   virtual bool print_as_scalar (void) const;
 

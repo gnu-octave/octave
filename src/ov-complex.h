@@ -102,8 +102,6 @@ public:
 
   bool is_true (void) const { return (scalar != 0.0); }
 
-  bool is_empty (void) const { return (rows () == 0 && columns () == 0); }
-
   double double_value (bool = false) const;
 
   double scalar_value (bool frc_str_conv = false) const

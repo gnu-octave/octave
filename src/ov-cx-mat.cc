@@ -90,40 +90,6 @@ octave_complex_matrix::try_narrowing_conversion (void)
   return retval;
 }
 
-octave_value
-octave_complex_matrix::do_index_op (const octave_value_list& idx)
-{
-  octave_value retval;
-
-  int len = idx.length ();
-
-  switch (len)
-    {
-    case 2:
-      {
-	idx_vector i = idx (0).index_vector ();
-	idx_vector j = idx (1).index_vector ();
-
-	retval = ComplexMatrix (matrix.index (i, j));
-      }
-      break;
-
-    case 1:
-      {
-	idx_vector i = idx (0).index_vector ();
-
-	retval = ComplexMatrix (matrix.index (i));
-      }
-      break;
-
-    default:
-      error ("invalid number of indices (%d) for complex matrix value", len);
-      break;
-    }
-
-  return retval;
-}
-
 #if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
 extern void assign (Array2<Complex>&, const Array2<Complex>&);
 #endif
@@ -218,30 +184,6 @@ octave_complex_matrix::valid_as_zero_index (void) const
 {
   // XXX FIXME XXX
   return false;
-}
-
-bool
-octave_complex_matrix::is_true (void) const
-{
-  bool retval = false;
-
-  if (rows () == 0 || columns () == 0)
-    {
-      int flag = Vpropagate_empty_matrices;
-
-      if (flag < 0)
-	warning ("empty matrix used in conditional expression");
-      else if (flag == 0)
-	error ("empty matrix used in conditional expression");
-    }
-  else
-    {
-      Matrix m = (matrix.all ()) . all ();
-
-      retval = (m.rows () == 1 && m.columns () == 1 && m (0, 0) != 0.0);
-    }
-
-  return retval;
 }
 
 double

@@ -23,8 +23,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_liboctave_specfun_h)
 #define octave_liboctave_specfun_h 1
 
-class ColumnVector;
+#include "oct-cmplx.h"
+
+template <class T> class Array2;
 class Matrix;
+class ComplexMatrix;
+class RowVector;
+class ComplexColumnVector;
 class Range;
 
 #if !defined (HAVE_ACOSH)
@@ -50,15 +55,128 @@ extern double erfc (double);
 extern double xgamma (double x);
 extern double xlgamma (double x);
 
-extern Matrix besselj (double alpha, const Matrix& x);
-extern Matrix bessely (double alpha, const Matrix& x);
-extern Matrix besseli (double alpha, const Matrix& x);
-extern Matrix besselk (double alpha, const Matrix& x);
+extern Complex
+besselj (double alpha, const Complex& x, bool scaled, int& ierr);
 
-extern Matrix besselj (const Range& alpha, const ColumnVector& x);
-extern Matrix bessely (const Range& alpha, const ColumnVector& x);
-extern Matrix besseli (const Range& alpha, const ColumnVector& x);
-extern Matrix besselk (const Range& alpha, const ColumnVector& x);
+extern Complex
+bessely (double alpha, const Complex& x, bool scaled, int& ierr);
+
+extern Complex
+besseli (double alpha, const Complex& x, bool scaled, int& ierr);
+
+extern Complex
+besselk (double alpha, const Complex& x, bool scaled, int& ierr);
+
+extern Complex
+besselh1 (double alpha, const Complex& x, bool scaled, int& ierr);
+
+extern Complex
+besselh2 (double alpha, const Complex& x, bool scaled, int& ierr);
+
+extern ComplexMatrix
+besselj (double alpha, const ComplexMatrix& x, bool scaled,
+	 Array2<int>& ierr);
+
+extern ComplexMatrix
+bessely (double alpha, const ComplexMatrix& x, bool scaled,
+	 Array2<int>& ierr);
+
+extern ComplexMatrix
+besseli (double alpha, const ComplexMatrix& x, bool scaled,
+	 Array2<int>& ierr);
+
+extern ComplexMatrix
+besselk (double alpha, const ComplexMatrix& x, bool scaled,
+	 Array2<int>& ierr);
+
+extern ComplexMatrix
+besselh1 (double alpha, const ComplexMatrix& x, bool scaled,
+	  Array2<int>& ierr);
+
+extern ComplexMatrix
+besselh2 (double alpha, const ComplexMatrix& x, bool scaled,
+	  Array2<int>& ierr);
+
+extern ComplexMatrix
+besselj (const Matrix& alpha, const Complex& x, bool scaled,
+	 Array2<int>& ierr);
+
+extern ComplexMatrix
+bessely (const Matrix& alpha, const Complex& x, bool scaled,
+	 Array2<int>& ierr);
+
+extern ComplexMatrix
+besseli (const Matrix& alpha, const Complex& x, bool scaled,
+	 Array2<int>& ierr);
+
+extern ComplexMatrix
+besselk (const Matrix& alpha, const Complex& x, bool scaled,
+	 Array2<int>& ierr);
+
+extern ComplexMatrix
+besselh1 (const Matrix& alpha, const Complex& x, bool scaled,
+	  Array2<int>& ierr);
+
+extern ComplexMatrix
+besselh2 (const Matrix& alpha, const Complex& x, bool scaled,
+	  Array2<int>& ierr);
+
+extern ComplexMatrix
+besselj (const Matrix& alpha, const ComplexMatrix& x, bool scaled,
+	 Array2<int>& ierr);
+
+extern ComplexMatrix
+bessely (const Matrix& alpha, const ComplexMatrix& x, bool scaled,
+	 Array2<int>& ierr);
+
+extern ComplexMatrix
+besseli (const Matrix& alpha, const ComplexMatrix& x, bool scaled,
+	 Array2<int>& ierr);
+
+extern ComplexMatrix
+besselk (const Matrix& alpha, const ComplexMatrix& x, bool scaled,
+	 Array2<int>& ierr);
+
+extern ComplexMatrix
+besselh1 (const Matrix& alpha, const ComplexMatrix& x, bool scaled,
+	  Array2<int>& ierr);
+
+extern ComplexMatrix
+besselh2 (const Matrix& alpha, const ComplexMatrix& x, bool scaled,
+	  Array2<int>& ierr);
+
+extern ComplexMatrix
+besselj (const RowVector& alpha, const ComplexColumnVector& x, bool scaled,
+	 Array2<int>& ierr);
+
+extern ComplexMatrix
+bessely (const RowVector& alpha, const ComplexColumnVector& x, bool scaled,
+	 Array2<int>& ierr);
+
+extern ComplexMatrix
+besseli (const RowVector& alpha, const ComplexColumnVector& x, bool scaled,
+	 Array2<int>& ierr);
+
+extern ComplexMatrix
+besselk (const RowVector& alpha, const ComplexColumnVector& x, bool scaled,
+	 Array2<int>& ierr);
+
+extern ComplexMatrix
+besselh1 (const RowVector& alpha, const ComplexColumnVector& x, bool scaled,
+	  Array2<int>& ierr);
+
+extern ComplexMatrix
+besselh2 (const RowVector& alpha, const ComplexColumnVector& x, bool scaled,
+	  Array2<int>& ierr);
+
+extern Complex airy (const Complex& z, bool deriv, bool scaled, int& ierr);
+extern Complex biry (const Complex& z, bool deriv, bool scaled, int& ierr);
+
+extern ComplexMatrix
+airy (const ComplexMatrix& z, bool deriv, bool scaled, Array2<int>& ierr);
+
+extern ComplexMatrix
+biry (const ComplexMatrix& z, bool deriv, bool scaled, Array2<int>& ierr);
 
 extern double betainc (double x, double a, double b);
 extern Matrix betainc (double x, double a, const Matrix& b);

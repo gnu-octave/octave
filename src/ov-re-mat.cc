@@ -58,7 +58,7 @@ octave_matrix::octave_matrix (const RowVector& v, int pcv)
 
 octave_matrix::octave_matrix (const ColumnVector& v, int pcv)
   : octave_base_matrix<Matrix> ((pcv < 0 && Vprefer_column_vectors) || pcv
-			       ? Matrix (v) : Matrix (v.transpose ())) { }
+				? Matrix (v) : Matrix (v.transpose ())) { }
 
 octave_value *
 octave_matrix::try_narrowing_conversion (void)
@@ -70,40 +70,6 @@ octave_matrix::try_narrowing_conversion (void)
 
   if (nr == 1 && nc == 1)
     retval = new octave_scalar (matrix (0, 0));
-
-  return retval;
-}
-
-octave_value
-octave_matrix::do_index_op (const octave_value_list& idx)
-{
-  octave_value retval;
-
-  int len = idx.length ();
-
-  switch (len)
-    {
-    case 2:
-      {
-	idx_vector i = idx (0).index_vector ();
-	idx_vector j = idx (1).index_vector ();
-
-	retval = Matrix (matrix.index (i, j));
-      }
-      break;
-
-    case 1:
-      {
-	idx_vector i = idx (0).index_vector ();
-
-	retval = Matrix (matrix.index (i));
-      }
-      break;
-
-    default:
-      error ("invalid number of indices (%d) for matrix value", len);
-      break;
-    }
 
   return retval;
 }
@@ -260,30 +226,6 @@ octave_matrix::valid_as_scalar_index (void) const
 {
   // XXX FIXME XXX
   return false;
-}
-
-bool
-octave_matrix::is_true (void) const
-{
-  bool retval = false;
-
-  if (rows () == 0 || columns () == 0)
-    {
-      int flag = Vpropagate_empty_matrices;
-
-      if (flag < 0)
-	warning ("empty matrix used in conditional expression");
-      else if (flag == 0)
-	error ("empty matrix used in conditional expression");
-    }
-  else
-    {
-      Matrix m = (matrix.all ()) . all ();
-
-      retval = (m.rows () == 1 && m.columns () == 1 && m (0, 0) != 0.0);
-    }
-
-  return retval;
 }
 
 double

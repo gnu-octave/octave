@@ -76,8 +76,6 @@ public:
 
   octave_value *try_narrowing_conversion (void);
 
-  octave_value do_index_op (const octave_value_list& idx);
-
   void assign (const octave_value_list& idx, const ComplexMatrix& rhs);
 
   void assign (const octave_value_list& idx, const Matrix& rhs);
@@ -95,10 +93,6 @@ public:
 
   bool valid_as_scalar_index (void) const;
   bool valid_as_zero_index (void) const;
-
-  bool is_true (void) const;
-
-  bool is_empty (void) const { return (rows () == 0 && columns () == 0); }
 
   double double_value (bool = false) const;
 

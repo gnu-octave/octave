@@ -54,13 +54,13 @@ octave_bool_matrix : public octave_base_matrix<boolMatrix>
 public:
 
   octave_bool_matrix (void)
-    : octave_base_matrix () { }
+    : octave_base_matrix<boolMatrix> () { }
 
   octave_bool_matrix (const boolMatrix& bm)
-    : octave_base_matrix (bm) { }
+    : octave_base_matrix<boolMatrix> (bm) { }
 
   octave_bool_matrix (const octave_bool_matrix& bm)
-    : octave_base_matrix (bm) { }
+    : octave_base_matrix<boolMatrix> (bm) { }
 
   ~octave_bool_matrix (void) { }
 
@@ -69,8 +69,6 @@ public:
   type_conv_fcn numeric_conversion_function (void) const;
 
   octave_value *try_narrowing_conversion (void);
-
-  octave_value do_index_op (const octave_value_list& idx);
 
   void assign (const octave_value_list& idx, const boolMatrix& rhs);
 
@@ -92,8 +90,6 @@ public:
   bool valid_as_scalar_index (void) const;
 
   bool valid_as_zero_index (void) const { return is_zero_by_zero (); }
-
-  bool is_true (void) const;
 
   double double_value (bool = false) const;
 

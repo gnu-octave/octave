@@ -62,30 +62,6 @@ octave_char_matrix::valid_as_zero_index (void) const
   return retval;
 }
 
-bool
-octave_char_matrix::is_true (void) const
-{
-  bool retval = false;
-
-  if (rows () == 0 || columns () == 0)
-    {
-      int flag = Vpropagate_empty_matrices;
-
-      if (flag < 0)
-	warning ("empty matrix used in conditional expression");
-      else if (flag == 0)
-	error ("empty matrix used in conditional expression");
-    }
-  else
-    {
-      Matrix m = (matrix.all ()) . all ();
-
-      retval = (m.rows () == 1 && m.columns () == 1 && m (0, 0) != 0.0);
-    }
-
-  return retval;
-}
-
 double
 octave_char_matrix::double_value (bool) const
 {

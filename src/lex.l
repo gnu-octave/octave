@@ -201,7 +201,7 @@ EPOW	(\.{POW})
 NOT	((\~)|(\!))
 IDENT	([_a-zA-Z][_a-zA-Z0-9]*)
 EXPON	([DdEe][+-]?{D}+)
-NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
+NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %%
 
 %{
@@ -1383,6 +1383,12 @@ eat_whitespace (void)
   return retval;
 }
 
+static inline bool
+looks_like_hex (const char *s, int len)
+{
+  return (len > 2 && s[0] == '0' && (s[1] == 'x' || s[1] == 'X'));
+}
+
 static void
 handle_number (char *yytext)
 {
@@ -1393,8 +1399,17 @@ handle_number (char *yytext)
   if (idx)
     *idx = 'e';
 
-  double value;
-  int nread = sscanf (tmp, "%lf", &value);
+  double value = 0.0;
+  int nread = 0;
+
+  if (looks_like_hex (tmp, strlen (tmp)))
+    {
+      unsigned long ival;
+      nread = sscanf (tmp, "%lx", &ival);
+      value = static_cast<double> (ival);
+    }
+  else
+    nread = sscanf (tmp, "%lf", &value);
 
   delete [] tmp;
 

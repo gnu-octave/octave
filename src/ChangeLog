@@ -1,3 +1,31 @@
+Wed Nov 18 01:18:46 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-base-mat.cc (octave_base_matrix::is_true): New function.
+	* ov-bool-mat.cc (octave_bool_matrix::is_true): Delete.
+	* ov-ch-mat.cc (octave_char_matrix::is_true): Delete.
+	* ov-cx-mat.cc (octave_complex_matrix::is_true): Delete.
+	* ov-re-mat.cc (octave_matrix::is_true): Delete.
+
+	* ov-base-mat.cc (octave_base_matrix::do_index_op): New function.
+	* ov-bool-mat.cc (octave_bool_matrix::do_index_op): Delete.
+	* ov-cx-mat.cc (octave_complex_matrix::do_index_op): Delete.
+	* ov-re-mat.cc (octave_matrix::do_index_op): Delete.
+
+	* mappers.cc: Don't include lo-specfun.h.
+
+Tue Nov 17 14:35:56 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* besselj.cc (Fbesselh, Fairy); New functions.
+	(Fbesselj, Fbessely, Fbesselk, Fbesseli): Update doc strings.
+	(do_bessel): Handle additional args.
+
+Fri Nov 13 14:47:11 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lex.l (NUMBER): Allow hexadecimal constants.
+	(looks_like_hex): New function.
+	(handle_number): Check for hexadecimal constants and convert them
+	to unsigned integer values.
+
 Thu Nov 12 11:13:24 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* input.cc (gnu_readline): Check for EOF from command_editor::readline.

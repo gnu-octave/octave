@@ -1,3 +1,11 @@
+Fri Nov 13 08:24:34 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* kdefault.c (kpse_expand_default): In loop that checks for
+	doubled colon, just break out of the inner loop when a match is
+	found.  Don't check for expansion == path because we've already
+	duplicated path to avoid memory problems (see previous change).
+	From Rafael Laboissiere <rafael@icp.inpg.fr>.
+
 Fri Oct 23 22:05:46 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* kdefault.c (kpse_expand_default): Always return newly allocated

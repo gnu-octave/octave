@@ -65,7 +65,7 @@ struct user_preferences
 
 extern user_preferences user_pref;
 
-extern int init_user_prefs (void);
+extern void init_user_prefs (void);
 
 extern int automatic_replot (void);
 extern int commas_in_literal_matrix (void);

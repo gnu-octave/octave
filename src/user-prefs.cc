@@ -39,7 +39,7 @@ user_preferences user_pref;
 
 // Initialize global user_pref structure.
 
-int
+void
 init_user_prefs (void)
 {
   user_pref.automatic_replot = 0;

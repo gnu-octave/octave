@@ -555,21 +555,6 @@ DEFUN ("diag", Fdiag, Sdiag, 2, 1,
   return retval;
 }
 
-DEFUN ("isstr", Fisstr, Sisstr, 1, 1,
-  "isstr (X): return 1 if X is a string, 0 otherwise")
-{
-  Octave_object retval;
-
-  int nargin = args.length ();
-
-  if (nargin == 1 && args(0).is_defined ())
-    retval = (double) args(0).is_string ();
-  else
-    print_usage ("isstr");
-
-  return retval;
-}
-
 DEFUN ("prod", Fprod, Sprod, 1, 1,
   "prod (X): products")
 {
@@ -603,21 +588,6 @@ DEFUN ("prod", Fprod, Sprod, 1, 1,
     }
   else
     print_usage ("prod");
-
-  return retval;
-}
-
-DEFUN ("setstr", Fsetstr, Ssetstr, 1, 1,
-  "setstr (V): convert a vector to a string")
-{
-  Octave_object retval;
-
-  int nargin = args.length ();
-
-  if (nargin == 1 && args(0).is_defined ())
-    retval = args(0).convert_to_str ();
-  else
-    print_usage ("setstr");
 
   return retval;
 }

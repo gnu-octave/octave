@@ -37,7 +37,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt-exp.h"
 #include "pt-mat.h"
 #include "pt-misc.h"
-#include "pt-mvr.h"
 #include "pt-walk.h"
 #include "utils.h"
 #include "ov.h"
@@ -72,10 +71,10 @@ private:
       : SLList<octave_value> (), count (1), nr (0), nc (0),
 	all_str (false), is_cmplx (false), all_mt (true), ok (false) { }
 
-    tm_row_const_rep (const tree_matrix_row& mr)
+    tm_row_const_rep (const tree_argument_list& row)
       : SLList<octave_value> (), count (1), nr (0), nc (0),
 	all_str (false), is_cmplx (false), all_mt (true), ok (false)
-        { init (mr); }
+        { init (row); }
 
     ~tm_row_const_rep (void) { }
 
@@ -90,15 +89,13 @@ private:
 
     bool ok;
 
-    void init (const tree_matrix_row&);
+    void init (const tree_argument_list&);
 
   private:
 
     tm_row_const_rep (const tm_row_const_rep&);
 
-    tm_row_const_rep& operator =
-      (const tm_row_const_rep&);
-
+    tm_row_const_rep& operator = (const tm_row_const_rep&);
 
     void eval_error (const char *msg, int l, int c) const;
 
@@ -109,8 +106,8 @@ public:
 
   tm_row_const (void) : rep (0) { }
 
-  tm_row_const (const tree_matrix_row& mr)
-    : rep (new tm_row_const_rep (mr)) { }
+  tm_row_const (const tree_argument_list& row)
+    : rep (new tm_row_const_rep (row)) { }
 
   tm_row_const (const tm_row_const& x) : rep (x.rep)
     {
@@ -167,17 +164,17 @@ private:
 };
 
 void
-tm_row_const::tm_row_const_rep::init (const tree_matrix_row& mr)
+tm_row_const::tm_row_const_rep::init (const tree_argument_list& row)
 {
   all_str = true;
 
   bool first_elem = true;
 
-  for (Pix p = mr.first (); p != 0; mr.next (p))
+  for (Pix p = row.first (); p != 0; row.next (p))
     {
-      tree_expression *elt = mr (p);
+      tree_expression *elt = row (p);
 
-      octave_value tmp = elt->eval ();
+      octave_value tmp = elt->rvalue ();
 
       if (error_state || tmp.is_undefined ())
 	break;
@@ -313,7 +310,7 @@ tm_const::init (const tree_matrix& tm)
 
   for (Pix p = tm.first (); p != 0; tm.next (p))
     {
-      tree_matrix_row *elt = tm (p);
+      tree_argument_list *elt = tm (p);
 
       tm_row_const tmp (*elt);
 
@@ -383,78 +380,11 @@ tm_const::init (const tree_matrix& tm)
 }
 
 bool
-tree_matrix_row::all_elements_are_constant (void) const
-{
-  for (Pix p = first (); p != 0; next (p))
-    {
-      tree_expression *elt = this->operator () (p);
-
-      if (! elt->is_constant ())
-	return false;
-    }
-
-  return true;
-}
-
-tree_return_list *
-tree_matrix_row::to_return_list (void)
-{
-  tree_return_list *retval = 0;
-
-  bool first_elem = true;
-
-  for (Pix p = first (); p != 0; next (p))
-    {
-      tree_expression *elt = this->operator () (p);
-
-      bool is_id = elt->is_identifier ();
-
-      bool is_idx_expr = elt->is_index_expression ();
-
-      if (is_id || is_idx_expr)
-	{
-	  tree_index_expression *idx_expr;
-
-	  if (is_id)
-	    {
-	      tree_identifier *id = static_cast<tree_identifier *> (elt);
-	      idx_expr = new tree_index_expression (id);
-	    }
-	  else
-	    idx_expr = static_cast<tree_index_expression *> (elt);
-
-	  if (first_elem)
-	    {
-	      first_elem = false;
-
-	      retval = new tree_return_list (idx_expr);
-	    }
-	  else
-	    retval->append (idx_expr);
-	}
-      else
-	{
-	  delete retval;
-	  retval = 0;
-	  break;
-	}
-    }
-
-  return retval;
-}
-
-void
-tree_matrix_row::accept (tree_walker& tw)
-{
-  tw.visit_matrix_row (*this);
-}
-
-bool
 tree_matrix::all_elements_are_constant (void) const
 {
   for (Pix p = first (); p != 0; next (p))
     {
-      tree_matrix_row *elt = this->operator () (p);
+      tree_argument_list *elt = this->operator () (p);
 
       if (! elt->all_elements_are_constant ())
 	return false;
@@ -467,8 +397,21 @@ tree_matrix::all_elements_are_constant (void) const
 // Less ugly than before, anyway.
 // Looking better all the time.
 
+octave_value_list
+tree_matrix::rvalue (int nargout)
+{
+  octave_value_list retval;
+
+  if (nargout > 1)
+    error ("invalid number of output arguments for matrix list");
+  else
+    retval = rvalue ();
+
+  return retval;
+}
+
 octave_value
-tree_matrix::eval (bool /* print */)
+tree_matrix::rvalue (void)
 {
   octave_value retval;
 

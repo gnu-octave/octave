@@ -32,7 +32,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gripes.h"
 #include "oct-map.h"
 #include "oct-obj.h"
-#include "oct-sym.h"
 #include "oct-var-ref.h"
 #include "pager.h"
 #include "pt-const.h"
@@ -47,124 +46,70 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 tree_indirect_ref::~tree_indirect_ref (void)
 {
-  if (! preserve_ident)
-    delete id;
-
-  if (! preserve_indir)
-    delete indir;
-}
-
-void
-tree_indirect_ref::mark_for_possible_ans_assign (void)
-{
-  maybe_do_ans_assign = true;
-
-  if (is_identifier_only ())
-    id->mark_for_possible_ans_assign ();
+  delete expr;
 }
 
 string
 tree_indirect_ref::name (void) const
 {
-  string retval;
+  return expr->name () + "." + nm;
+}
 
-  if (is_identifier_only ())
-    retval = id->name ();
+octave_value_list
+tree_indirect_ref::rvalue (int nargout)
+{
+  octave_value_list retval;
+
+  if (nargout > 1)
+    error ("%s, %s", __FILE__, __LINE__);
   else
     {
-      if (id)
-	retval = id->name ();
-      else if (indir)
-	retval = indir->name ();
-      else
-	panic_impossible ();
+      octave_value_list tmp = expr->rvalue (nargout);
 
-      retval.append (".");
-      retval.append (nm);
+      if (tmp.empty ())
+	error ("%s, %s", __FILE__, __LINE__);
+      else
+	{
+	  octave_value val = tmp(0).do_struct_elt_index_op (nm);
+
+	  if (print_result () && nargout == 0 && val.is_defined ())
+	    val.print_with_name (octave_stdout, name ());
+
+	  retval = val;
+	}
     }
-	
+
   return retval;
 }
 
 octave_value
-tree_indirect_ref::eval (bool print)
+tree_indirect_ref::rvalue (void)
 {
   octave_value retval;
 
-  if (is_identifier_only ())
-    retval = id->eval (print);
-  else
-    {
-      octave_variable_reference tmp = reference ();
+  octave_value_list tmp = rvalue (1);
 
-      if (! (error_state || tmp.is_undefined ()))
-	{
-	  retval = tmp.value ();
-
-	  if (! error_state && maybe_do_ans_assign && retval.is_defined ())
-	    bind_ans (retval, print);
-	}
-    }
+  if (! tmp.empty ())
+    retval = tmp(0);
 
   return retval;
 }
 
-octave_value_list
-tree_indirect_ref::eval (bool print, int nargout,
-			 const octave_value_list& args)
+octave_variable_reference
+tree_indirect_ref::lvalue (void)
 {
-  octave_value_list retval;
+  octave_variable_reference tmp = expr->lvalue ();
 
-  if (is_identifier_only ())
-    retval = id->eval (print, nargout, args);
-  else
-    {
-      octave_variable_reference tmp = reference ();
+  if (tmp.is_undefined () || ! tmp.is_map ())
+    tmp.define (Octave_map ());
 
-      if (! (error_state || tmp.is_undefined ()))
-	{
-	  tmp.index (args);
-
-	  retval = tmp.value ();
-
-	  if (! error_state && maybe_do_ans_assign && nargout == 1
-	      && retval.length () > 0 && retval(0).is_defined ())
-	    {
-	      bind_ans (retval(0), print);
-	    }
-	}
-    }
-
-  return retval;
+  return tmp.struct_elt_ref (nm);
 }
 
 void
 tree_indirect_ref::accept (tree_walker& tw)
 {
   tw.visit_indirect_ref (*this);
-}
-
-octave_variable_reference
-tree_indirect_ref::reference (void)
-{
-  if (is_identifier_only ())
-    return id->reference ();
-  else
-    {
-      octave_variable_reference tmp;
-
-      if (id)
-	tmp = id->reference ();
-      else if (indir)
-	tmp = indir->reference ();
-      else
-	panic_impossible ();
-
-      if (tmp.is_undefined ())
-	tmp.define (Octave_map ());
-
-      return tmp.struct_elt_ref (nm);
-    }
 }
 
 /*

@@ -46,7 +46,7 @@ tree_expression::is_logically_true (const char *warn_for)
 {
   bool expr_value = false;
 
-  octave_value t1 = eval ();
+  octave_value t1 = rvalue ();
 
   if (! error_state)
     {
@@ -62,23 +62,24 @@ tree_expression::is_logically_true (const char *warn_for)
   return expr_value;
 }
 
-void
-tree_expression::mark_for_possible_ans_assign (void)
-{
-  panic_impossible ();
-}
-
 octave_value
-tree_expression::eval (bool /* print */)
+tree_expression::rvalue (void)
 {
-  panic ("invalid evaluation of generic expression");
+  ::error ("invalid rvalue function called in expression");
   return octave_value ();
 }
 
-octave_variable_reference
-tree_expression::reference (void)
+octave_value_list
+tree_expression::rvalue (int nargout)
 {
-  panic ("invalid attempt to convert generic expression to lvalue");
+  ::error ("invalid rvalue function called in expression");
+  return octave_value_list ();
+}
+
+octave_variable_reference
+tree_expression::lvalue (void)
+{
+  ::error ("invalid lvalue function called in expression");
   return octave_variable_reference ();
 }
 

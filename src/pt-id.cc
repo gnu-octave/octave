@@ -30,8 +30,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "error.h"
 #include "oct-obj.h"
-#include "oct-fcn.h"
-#include "oct-sym.h"
 #include "oct-var-ref.h"
 #include "pager.h"
 #include "pt-const.h"
@@ -72,6 +70,12 @@ tree_identifier::is_defined (void)
   return (sym && sym->is_defined ());
 }
 
+bool
+tree_identifier::is_function (void)
+{
+  return (sym && sym->is_function ());
+}
+
 void
 tree_identifier::eval_undefined_error (void)
 {
@@ -100,17 +104,14 @@ tree_identifier::eval_undefined_error (void)
 //   * On systems that support dynamic linking, we prefer .oct files
 //     over .m files.
 
-octave_symbol *
+octave_value
 tree_identifier::do_lookup (bool& script_file_executed, bool exec_script)
 {
+  static octave_value foo;
+
   script_file_executed = lookup (sym, exec_script);
 
-  octave_symbol *retval = 0;
-
-  if (! script_file_executed)
-    retval = sym->def ();
-
-  return retval;
+  return script_file_executed ? foo : sym->def ();
 }
 
 void
@@ -134,57 +135,8 @@ tree_identifier::mark_as_formal_parameter (void)
     sym->mark_as_formal_parameter ();
 }
 
-octave_value
-tree_identifier::eval (bool print)
-{
-  octave_value retval;
-
-  if (error_state)
-    return retval;
-
-  bool script_file_executed = false;
-
-  octave_symbol *object_to_eval = do_lookup (script_file_executed);
-
-  if (! script_file_executed)
-    {
-      if (object_to_eval)
-	{
-	  int nargout = maybe_do_ans_assign ? 0 : 1;
-
-	  if (nargout)
-	    {
-	      octave_value_list tmp_args;
-	      octave_value_list tmp = object_to_eval->eval (nargout, tmp_args);
-
-	      if (tmp.length () > 0)
-		retval = tmp(0);
-	    }
-	  else
-	    retval = object_to_eval->eval ();
-	}
-      else
-	eval_undefined_error ();
-    }
-
-  if (! error_state)
-    {
-      if (retval.is_defined ())
-	{
-	  if (maybe_do_ans_assign && ! object_to_eval->is_constant ())
-	    bind_ans (retval, print);
-	  else if (print)
-	    retval.print_with_name (octave_stdout, name ());
-	}
-      else if (object_to_eval && object_to_eval->is_constant ())
-	eval_undefined_error ();
-    }
-
-  return retval;
-}
-
 octave_value_list
-tree_identifier::eval (bool print, int nargout, const octave_value_list& args)
+tree_identifier::rvalue (int nargout)
 {
   octave_value_list retval;
 
@@ -193,26 +145,36 @@ tree_identifier::eval (bool print, int nargout, const octave_value_list& args)
 
   bool script_file_executed = false;
 
-  octave_symbol *object_to_eval = do_lookup (script_file_executed);
+  octave_value val = do_lookup (script_file_executed);
 
   if (! script_file_executed)
     {
-      if (object_to_eval)
+      if (val.is_defined ())
 	{
-	  if (maybe_do_ans_assign && nargout == 1)
+	  // XXX GAGME XXX -- this would be cleaner if we required
+	  // parens to indicate function calls.
+	  //
+	  // If this identifier refers to a function, we need to know
+	  // whether it is indexed so that we can do the same thing
+	  // for `f' and `f()'.  If the index is present, return the
+	  // function object and let tree_index_expression::rvalue
+	  // handle indexing.  Otherwise, arrange to call the function
+	  // here, so that we don't return the function definition as
+	  // a value.
+
+	  if (val.is_function () && ! is_postfix_indexed ())
 	    {
-	      // Don't count the output arguments that we create
-	      // automatically.
+	      octave_value_list tmp_args;
 
-	      nargout = 0;
-
-	      retval = object_to_eval->eval (nargout, args);
-
-	      if (retval.length () > 0 && retval(0).is_defined ())
-		bind_ans (retval(0), print);
+	      retval = val.do_index_op (nargout, tmp_args);
 	    }
 	  else
-	    retval = object_to_eval->eval (nargout, args);
+	    {
+	      if (print_result () && nargout == 0)
+		val.print_with_name (octave_stdout, name ());
+
+	      retval = val;
+	    }
 	}
       else
 	eval_undefined_error ();
@@ -221,22 +183,29 @@ tree_identifier::eval (bool print, int nargout, const octave_value_list& args)
   return retval;
 }
 
+octave_value
+tree_identifier::rvalue (void)
+{
+  octave_value retval;
+
+  octave_value_list tmp = rvalue (1);
+
+  if (! tmp.empty ())
+    retval = tmp(0);
+
+  return retval;
+}
+
+octave_variable_reference
+tree_identifier::lvalue (void)
+{
+  return sym->variable_reference ();
+}
+
 void
 tree_identifier::accept (tree_walker& tw)
 {
   tw.visit_identifier (*this);
-}
-
-octave_value
-tree_identifier::value (void) const
-{
-  return sym->variable_value ();
-}
-
-octave_variable_reference
-tree_identifier::reference (void)
-{
-  return sym->variable_reference ();
 }
 
 /*

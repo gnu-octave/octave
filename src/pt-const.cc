@@ -30,6 +30,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <iostream.h>
 
+#include "error.h"
 #include "oct-obj.h"
 #include "pager.h"
 #include "pt-const.h"
@@ -59,19 +60,17 @@ tree_constant::print_raw (ostream& os, bool pr_as_read_syntax,
     val.print_raw (os, pr_as_read_syntax);
 }
 
-octave_value
-tree_constant::eval (bool print_result)
-{
-  if (print_result)
-    val.print (octave_stdout);
-
-  return val;
-}
-
 octave_value_list
-tree_constant::eval (bool, int, const octave_value_list& idx)
+tree_constant::rvalue (int nargout)
 {
-  return (idx.length () > 0) ? val.do_index_op (idx) : val;
+  octave_value_list retval;
+
+  if (nargout > 1)
+    error ("invalid number of output arguments for constant expression");
+  else
+    retval = rvalue ();
+
+  return retval;
 }
 
 void

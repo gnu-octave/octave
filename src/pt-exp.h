@@ -33,6 +33,7 @@ class tree_identifier;
 class tree_index_expression;
 class tree_indirect_ref;
 class tree_argument_list;
+class tree_assignment_lhs;
 
 class tree_walker;
 
@@ -40,6 +41,7 @@ class octave_value;
 class octave_value_list;
 class octave_variable_reference;
 
+#include "oct-obj.h"
 #include "pt-exp-base.h"
 
 // Unary expressions.
@@ -90,7 +92,12 @@ public:
 
   ~tree_prefix_expression (void) { }
 
-  octave_value eval (bool print = false);
+  bool rvalue_ok (void) const
+    { return true; }
+
+  octave_value rvalue (void);
+
+  octave_value_list rvalue (int nargou);
 
   void eval_error (void);
 
@@ -129,7 +136,12 @@ public:
 
   ~tree_postfix_expression (void) { }
 
-  octave_value eval (bool print = false);
+  bool rvalue_ok (void) const
+    { return true; }
+
+  octave_value rvalue (void);
+
+  octave_value_list rvalue (int nargout);
 
   void eval_error (void);
 
@@ -167,7 +179,12 @@ public:
       delete op_rhs;
     }
 
-  octave_value eval (bool print = false);
+  bool rvalue_ok (void) const
+    { return true; }
+
+  octave_value rvalue (void);
+
+  octave_value_list rvalue (int nargou);
 
   void eval_error (void);
 
@@ -213,7 +230,12 @@ public:
 
   ~tree_boolean_expression (void) { }
 
-  octave_value eval (bool print = false);
+  bool rvalue_ok (void) const
+    { return true; }
+
+  octave_value rvalue (void);
+
+  octave_value_list rvalue (int nargout);
 
   string oper (void) const;
 
@@ -226,43 +248,28 @@ private:
 // Simple assignment expressions.
 
 class
-tree_simple_assignment_expression : public tree_expression
+tree_simple_assignment : public tree_expression
 {
 public:
 
-  tree_simple_assignment_expression
-    (bool plhs = false, bool ans_assign = false, int l = -1, int c = -1,
-     octave_value::assign_op t = octave_value::asn_eq)
-    : tree_expression (l, c), lhs_idx_expr (0), lhs (0), index (0),
-      rhs (0), preserve (plhs), ans_ass (ans_assign), etype (t) { }
+  tree_simple_assignment (bool plhs = false, int l = -1, int c = -1,
+			  octave_value::assign_op t = octave_value::asn_eq)
+    : tree_expression (l, c), lhs (0), rhs (0), preserve (plhs), etype (t) { }
 
-  tree_simple_assignment_expression
-    (tree_identifier *i, tree_expression *r, bool plhs = false,
-     bool ans_assign = false, int l = -1, int c = -1,
-     octave_value::assign_op t = octave_value::asn_eq);
+  tree_simple_assignment (tree_expression *le, tree_expression *re,
+			  bool plhs = false, int l = -1, int c = -1,
+			  octave_value::assign_op t = octave_value::asn_eq)
+    : tree_expression (l, c), lhs (le), rhs (re), preserve (plhs),
+      etype (t) { }
 
-  tree_simple_assignment_expression
-    (tree_indirect_ref *i, tree_expression *r, bool plhs = false,
-     bool ans_assign = false, int l = -1, int c = -1,
-     octave_value::assign_op t = octave_value::asn_eq)
-    : tree_expression (l, c), lhs_idx_expr (0), lhs (i), index (0),
-      rhs (r), preserve (plhs), ans_ass (ans_assign), etype (t) { }
+  ~tree_simple_assignment (void);
 
-  tree_simple_assignment_expression
-    (tree_index_expression *idx_expr, tree_expression *r,
-     bool plhs = false, bool ans_assign = false, int l = -1, int c = -1,
-     octave_value::assign_op t = octave_value::asn_eq);
+  bool rvalue_ok (void) const
+    { return true; }
 
-  ~tree_simple_assignment_expression (void);
+  octave_value rvalue (void);
 
-  bool left_hand_side_is_identifier_only (void);
-
-  tree_identifier *left_hand_side_id (void);
-
-  bool is_ans_assign (void)
-    { return ans_ass; }
-
-  octave_value eval (bool print = false);
+  octave_value_list rvalue (int nargout);
 
   bool is_assignment_expression (void) const
     { return true; }
@@ -271,9 +278,7 @@ public:
 
   string oper (void) const;
 
-  tree_indirect_ref *left_hand_side (void) { return lhs; }
-
-  tree_argument_list *lhs_index (void) { return index; }
+  tree_expression *left_hand_side (void) { return lhs; }
 
   tree_expression *right_hand_side (void) { return rhs; }
 
@@ -288,17 +293,8 @@ private:
   void do_assign (octave_variable_reference& ult,
 		  const octave_value& rhs_val);
 
-  // The left hand side of the assignment, as an index expression.  If
-  // the assignment is constructed from an index expression, the index
-  // expression is split into the its components in the constructor.
-  tree_index_expression *lhs_idx_expr;
-
-  // The indirect reference (id or structure reference) on the left
-  // hand side of the assignemnt.
-  tree_indirect_ref *lhs;
-
-  // The index of the left hand side of the assignment, if any.
-  tree_argument_list *index;
+  // The left hand side of the assignment.
+  tree_expression *lhs;
 
   // The right hand side of the assignment.
   tree_expression *rhs;
@@ -323,9 +319,8 @@ public:
   tree_colon_expression (int l = -1, int c = -1)
     : tree_expression (l, c), op_base (0), op_limit (0), op_increment (0) { }
 
-  tree_colon_expression (tree_expression *a, tree_expression *b,
-			 int l = -1, int c = -1)
-    : tree_expression (l, c), op_base (a), op_limit (b), op_increment (0) { }
+  tree_colon_expression (tree_expression *e, int l = -1, int c = -1)
+    : tree_expression (l, c), op_base (e), op_limit (0), op_increment (0) { }
 
   ~tree_colon_expression (void)
     {
@@ -334,11 +329,16 @@ public:
       delete op_increment;
     }
 
-  tree_colon_expression *chain (tree_expression *t);
+  tree_colon_expression *append (tree_expression *t);
 
-  octave_value eval (bool print = false);
+  bool rvalue_ok (void) const
+    { return true; }
 
-  void eval_error (const char *s);
+  octave_value rvalue (void);
+
+  octave_value_list rvalue (int nargout);
+
+  void eval_error (const string& s = string ());
 
   tree_expression *base (void) { return op_base; }
   tree_expression *limit (void) { return op_limit; }
@@ -352,6 +352,91 @@ private:
   tree_expression *op_base;
   tree_expression *op_limit;
   tree_expression *op_increment;
+};
+
+// Index expressions.
+
+class
+tree_index_expression : public tree_expression
+{
+public:
+
+  tree_index_expression (tree_expression *e = 0, tree_argument_list *lst = 0,
+			 int l = -1, int c = -1)
+    : tree_expression (l, c), expr (e), list (lst), arg_nm () { }
+
+  ~tree_index_expression (void);
+
+  bool is_index_expression (void) const
+    { return true; }
+
+  tree_expression *expression (void)
+    { return expr; }
+
+  tree_argument_list *arg_list (void)
+    { return list; }
+
+  bool rvalue_ok (void) const
+    { return true; }
+
+  octave_value rvalue (void);
+
+  octave_value_list rvalue (int nargout);
+
+  octave_variable_reference lvalue (void);
+
+  void eval_error (void);
+
+  void accept (tree_walker& tw);
+
+private:
+
+  tree_expression *expr;
+
+  tree_argument_list *list;
+
+  string_vector arg_nm;
+};
+
+// Multi-valued assignment expressions.
+
+class
+tree_multi_assignment : public tree_expression
+{
+public:
+
+  tree_multi_assignment (bool plhs = false, int l = -1, int c = -1)
+    : tree_expression (l, c), preserve (plhs), lhs (0), rhs (0) { }
+
+  tree_multi_assignment (tree_argument_list *lst, tree_expression *r,
+			 bool plhs = false, int l = -1, int c = -1)
+    : tree_expression (l, c), preserve (plhs), lhs (lst), rhs (r) { }
+
+  ~tree_multi_assignment (void);
+
+  bool is_assignment_expression (void) const
+    { return true; }
+
+  bool rvalue_ok (void) const
+    { return true; }
+
+  octave_value rvalue (void);
+
+  octave_value_list rvalue (int nargout);
+
+  void eval_error (void);
+
+  tree_argument_list *left_hand_side (void) { return lhs; }
+
+  tree_expression *right_hand_side (void) { return rhs; }
+
+  void accept (tree_walker& tw);
+
+private:
+
+  bool preserve;
+  tree_argument_list *lhs;
+  tree_expression *rhs;
 };
 
 #endif

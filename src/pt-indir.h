@@ -33,64 +33,42 @@ class ostream;
 
 class octave_value;
 class octave_value_list;
-class tree_identifier;
 class tree_walker;
 
-#include "pt-mvr-base.h"
+#include "pt-exp-base.h"
 
 // Indirect references to values (structure references).
 
 class
-tree_indirect_ref : public tree_multi_val_ret
+tree_indirect_ref : public tree_expression
 {
 public:
 
   tree_indirect_ref (int l = -1, int c = -1)
-    : tree_multi_val_ret (l, c), id (0), indir (0), nm (),
-      preserve_ident (false), preserve_indir (false),
-      maybe_do_ans_assign (false) { }
+    : tree_expression (l, c), expr (0), nm () { }
 
-  tree_indirect_ref (tree_identifier *i, int l = -1, int c = -1)
-    : tree_multi_val_ret (l, c), id (i), indir (0), nm (),
-      preserve_ident (false), preserve_indir (false),
-      maybe_do_ans_assign (false) { }
-
-  tree_indirect_ref (tree_indirect_ref *i, const string& n,
+  tree_indirect_ref (tree_expression *e, const string& n,
 		     int l = -1, int c = -1)
-    : tree_multi_val_ret (l, c), id (0), indir (i), nm (n),
-      preserve_ident (false), preserve_indir (false),
-      maybe_do_ans_assign (false) { }
+    : tree_expression (l, c), expr (e), nm (n) { }
 
   ~tree_indirect_ref (void);
 
   bool is_indirect_ref (void) const
     { return true; }
 
-  bool is_identifier_only (void) const
-    { return (id && nm.empty ()); }
-
-  tree_identifier *ident (void)
-    { return id; }
-
-  tree_indirect_ref *indirect (void)
-    { return indir; }
-
-  void preserve_identifier (void)
-    { preserve_ident = true; }
-
-  void preserve_indirect (void)
-    { preserve_indir = true; }
-
-  void mark_for_possible_ans_assign (void);
-
   string name (void) const;
 
-  octave_value eval (bool print = false);
+  bool rvalue_ok (void) const
+    { return true; }
 
-  octave_value_list
-  eval (bool print, int nargout, const octave_value_list& args);
+  octave_value rvalue (void);
 
-  octave_variable_reference reference (void);
+  octave_value_list rvalue (int nargout);
+
+  octave_variable_reference lvalue (void);
+
+  tree_expression *expression (void)
+    { return expr; }
 
   string elt_name (void)
     { return nm; }
@@ -99,25 +77,11 @@ public:
 
 private:
 
-  // The identifier for this structure reference.  For example, in
-  // a.b.c, a is the id.
-  tree_identifier *id;
-
-  // This element just points to another indirect reference.
-  tree_indirect_ref *indir;
+  // The LHS of this structure reference.
+  tree_expression *expr;
 
   // The sub-element name.
   string nm;
-
-  // True if we should not delete the identifier.
-  bool preserve_ident;
-
-  // True if we should not delete the indirect reference.
-  bool preserve_indir;
-
-  // True if we should consider assigning the result of evaluating
-  // this identifier to the built-in variable ans.
-  bool maybe_do_ans_assign;
 };
 
 #endif

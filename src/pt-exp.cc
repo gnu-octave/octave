@@ -44,7 +44,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt-id.h"
 #include "pt-indir.h"
 #include "pt-misc.h"
-#include "pt-mvr.h"
 #include "pt-pr-code.h"
 #include "pt-walk.h"
 #include "utils.h"
@@ -62,8 +61,22 @@ static bool Vprint_rhs_assign_val;
 
 // Prefix expressions.
 
+octave_value_list
+tree_prefix_expression::rvalue (int nargout)
+{
+  octave_value_list retval;
+
+  if (nargout > 1)
+    error ("prefix operator `%s': invalid number of output arguments",
+	   oper () . c_str ());
+  else
+    retval = rvalue ();
+
+  return retval;
+}
+
 octave_value
-tree_prefix_expression::eval (bool)
+tree_prefix_expression::rvalue (void)
 {
   octave_value retval;
 
@@ -74,28 +87,40 @@ tree_prefix_expression::eval (bool)
     {
       if (etype == unot || etype == uminus)
 	{
-	  octave_value val = op->eval ();
+	  octave_value val = op->rvalue ();
 
 	  if (! error_state)
 	    {
-	      if (etype == unot)
-		retval = val.not ();
+	      if (val.is_defined ())
+		{
+		  if (etype == unot)
+		    retval = val.not ();
+		  else
+		    retval = val.uminus ();
+		}
 	      else
-		retval = val.uminus ();
+		error ("argument to prefix operator `%s' undefined",
+		       oper () . c_str ());
 	    }
 	}
       else if (etype == increment || etype == decrement)
 	{
-	  octave_variable_reference ref = op->reference ();
+	  octave_variable_reference ref = op->lvalue ();
 
 	  if (! error_state)
 	    {
-	      if (etype == increment)
-		ref.increment ();
-	      else
-		ref.decrement ();
+	      if (ref.is_defined ())
+		{
+		  if (etype == increment)
+		    ref.increment ();
+		  else
+		    ref.decrement ();
 
-	      retval = ref.value ();
+		  retval = ref.value ();
+		}
+	      else
+		error ("argument to prefix operator `%s' undefined",
+		       oper () . c_str ());
 	    }
 	}
       else
@@ -103,6 +128,14 @@ tree_prefix_expression::eval (bool)
     }
 
   return retval;
+}
+
+void
+tree_prefix_expression::eval_error (void)
+{
+  if (error_state > 0)
+    ::error ("evaluating prefix operator `%s' near line %d, column %d",
+	     oper () . c_str (), line (), column ());
 }
 
 string
@@ -136,14 +169,6 @@ tree_prefix_expression::oper (void) const
 }
 
 void
-tree_prefix_expression::eval_error (void)
-{
-  if (error_state > 0)
-    ::error ("evaluating prefix operator `%s' near line %d, column %d",
-	     oper () . c_str (), line (), column ());
-}
-
-void
 tree_prefix_expression::accept (tree_walker& tw)
 {
   tw.visit_prefix_expression (*this);
@@ -151,8 +176,22 @@ tree_prefix_expression::accept (tree_walker& tw)
 
 // Postfix expressions.
 
+octave_value_list
+tree_postfix_expression::rvalue (int nargout)
+{
+  octave_value_list retval;
+
+  if (nargout > 1)
+    error ("postfix operator `%s': invalid number of output arguments",
+	   oper () . c_str ());
+  else
+    retval = rvalue ();
+
+  return retval;
+}
+
 octave_value
-tree_postfix_expression::eval (bool)
+tree_postfix_expression::rvalue (void)
 {
   octave_value retval;
 
@@ -163,28 +202,40 @@ tree_postfix_expression::eval (bool)
     {
       if (etype == transpose || etype == hermitian)
 	{
-	  octave_value val = op->eval ();
+	  octave_value val = op->rvalue ();
 
 	  if (! error_state)
 	    {
-	      if (etype == transpose)
-		retval = val.transpose ();
+	      if (val.is_defined ())
+		{
+		  if (etype == transpose)
+		    retval = val.transpose ();
+		  else
+		    retval = val.hermitian ();
+		}
 	      else
-		retval = val.hermitian ();
+		error ("argument to postfix operator `%s' undefined",
+		       oper () . c_str ());
 	    }
 	}
       else if (etype == increment || etype == decrement)
 	{
-	  octave_variable_reference ref = op->reference ();
+	  octave_variable_reference ref = op->lvalue ();
 
 	  if (! error_state)
 	    {
-	      retval = ref.value ();
+	      if (ref.is_defined ())
+		{
+		  retval = ref.value ();
 
-	      if (etype == increment)
-		ref.increment ();
+		  if (etype == increment)
+		    ref.increment ();
+		  else
+		    ref.decrement ();
+		}
 	      else
-		ref.decrement ();
+		error ("argument to postfix operator `%s' undefined",
+		       oper () . c_str ());
 	    }
 	}
       else
@@ -192,6 +243,14 @@ tree_postfix_expression::eval (bool)
     }
 
   return retval;
+}
+
+void
+tree_postfix_expression::eval_error (void)
+{
+  if (error_state > 0)
+    ::error ("evaluating postfix operator `%s' near line %d, column %d",
+	     oper () . c_str (), line (), column ());
 }
 
 string
@@ -225,14 +284,6 @@ tree_postfix_expression::oper (void) const
 }
 
 void
-tree_postfix_expression::eval_error (void)
-{
-  if (error_state > 0)
-    ::error ("evaluating postfix operator `%s' near line %d, column %d",
-	     oper () . c_str (), line (), column ());
-}
-
-void
 tree_postfix_expression::accept (tree_walker& tw)
 {
   tw.visit_postfix_expression (*this);
@@ -240,8 +291,22 @@ tree_postfix_expression::accept (tree_walker& tw)
 
 // Binary expressions.
  
+octave_value_list
+tree_binary_expression::rvalue (int nargout)
+{
+  octave_value_list retval;
+
+  if (nargout > 1)
+    error ("binary operator `%s': invalid number of output arguments",
+	   oper () . c_str ());
+  else
+    retval = rvalue ();
+
+  return retval;
+}
+
 octave_value
-tree_binary_expression::eval (bool /* print */)
+tree_binary_expression::rvalue (void)
 {
   octave_value retval;
 
@@ -250,13 +315,13 @@ tree_binary_expression::eval (bool /* print */)
 
   if (op_lhs)
     {
-      octave_value a = op_lhs->eval ();
+      octave_value a = op_lhs->rvalue ();
 
       if (error_state)
 	eval_error ();
       else if (a.is_defined () && op_rhs)
 	{
-	  octave_value b = op_rhs->eval ();
+	  octave_value b = op_rhs->rvalue ();
 
 	  if (error_state)
 	    eval_error ();
@@ -282,18 +347,18 @@ tree_binary_expression::eval (bool /* print */)
   return retval;
 }
 
-string
-tree_binary_expression::oper (void) const
-{
-  return octave_value::binary_op_as_string (etype);
-}
-
 void
 tree_binary_expression::eval_error (void)
 {
   if (error_state > 0)
     ::error ("evaluating binary operator `%s' near line %d, column %d",
 	     oper () . c_str (), line (), column ());
+}
+
+string
+tree_binary_expression::oper (void) const
+{
+  return octave_value::binary_op_as_string (etype);
 }
 
 void
@@ -304,8 +369,22 @@ tree_binary_expression::accept (tree_walker& tw)
 
 // Boolean expressions.
  
+octave_value_list
+tree_boolean_expression::rvalue (int nargout)
+{
+  octave_value_list retval;
+
+  if (nargout > 1)
+    error ("binary operator `%s': invalid number of output arguments",
+	   oper () . c_str ());
+  else
+    retval = rvalue ();
+
+  return retval;
+}
+
 octave_value
-tree_boolean_expression::eval (bool /* print */)
+tree_boolean_expression::rvalue (void)
 {
   octave_value retval;
 
@@ -316,7 +395,7 @@ tree_boolean_expression::eval (bool /* print */)
 
   if (op_lhs)
     {
-      octave_value a = op_lhs->eval ();
+      octave_value a = op_lhs->rvalue ();
 
       if (error_state)
 	eval_error ();
@@ -344,7 +423,7 @@ tree_boolean_expression::eval (bool /* print */)
 
 	      if (op_rhs)
 		{
-		  octave_value b = op_rhs->eval ();
+		  octave_value b = op_rhs->rvalue ();
 
 		  if (error_state)
 		    eval_error ();
@@ -396,50 +475,29 @@ tree_boolean_expression::oper (void) const
 
 // Simple assignment expressions.
 
-tree_simple_assignment_expression::tree_simple_assignment_expression
-  (tree_identifier *i, tree_expression *r, bool plhs, bool ans_assign,
-   int l, int c, octave_value::assign_op t)
-    : tree_expression (l, c), lhs_idx_expr (0),
-      lhs (new tree_indirect_ref (i)), index (0), rhs (r),
-      preserve (plhs), ans_ass (ans_assign), etype (t) { }
-
-tree_simple_assignment_expression::tree_simple_assignment_expression
-  (tree_index_expression *idx_expr, tree_expression *r, bool plhs,
-   bool ans_assign, int l, int c, octave_value::assign_op t)
-    : tree_expression (l, c), lhs_idx_expr (idx_expr),
-      lhs (idx_expr->ident ()), index (idx_expr->arg_list ()), rhs (r),
-      preserve (plhs), ans_ass (ans_assign), etype (t) { }
-
-tree_simple_assignment_expression::~tree_simple_assignment_expression (void)
+tree_simple_assignment::~tree_simple_assignment (void)
 {
   if (! preserve)
-    {
-      if (lhs_idx_expr)
-	delete lhs_idx_expr;
-      else
-	delete lhs;
-    }
+    delete lhs;
 
   delete rhs;
 }
 
-bool
-tree_simple_assignment_expression::left_hand_side_is_identifier_only (void)
+octave_value_list
+tree_simple_assignment::rvalue (int nargout)
 {
-  return lhs->is_identifier_only ();
-}
+  octave_value_list retval;
 
-tree_identifier *
-tree_simple_assignment_expression::left_hand_side_id (void)
-{
-  return lhs->ident ();
-}
+  if (nargout > 1)
+    error ("invalid number of output arguments for expression X = RHS");
+  else
+    retval = rvalue ();
 
-// ??? FIXME ??? -- should octave_value::assign return the right thing
-// for us to return?
+  return retval;
+}
 
 octave_value
-tree_simple_assignment_expression::eval (bool print)
+tree_simple_assignment::rvalue (void)
 {
   octave_value rhs_val;
 
@@ -448,12 +506,12 @@ tree_simple_assignment_expression::eval (bool print)
 
   if (rhs)
     {
-      octave_value lhs_val;
+      octave_value_list tmp = rhs->rvalue ();
 
-      rhs_val = rhs->eval ();
-
-      if (! error_state)
+      if (! (error_state || tmp.empty ()))
 	{
+	  rhs_val = tmp(0);
+
 	  if (rhs_val.is_undefined ())
 	    {
 	      error ("value on right hand side of assignment is undefined");
@@ -461,89 +519,55 @@ tree_simple_assignment_expression::eval (bool print)
 	    }
 	  else
 	    {
-	      octave_variable_reference ult = lhs->reference ();
+	      octave_variable_reference ult = lhs->lvalue ();
 
 	      if (error_state)
 		eval_error ();
 	      else
 		{
-		  if (index)
+		  ult.assign (etype, rhs_val);
+
+		  if (error_state)
+		    eval_error ();
+		  else if (! Vprint_rhs_assign_val)
 		    {
-		      // Extract the arguments into a simple vector.
+		      octave_value lhs_val = ult.value ();
 
-		      octave_value_list args
-			= index->convert_to_const_vector ();
-
-		      if (! error_state)
+		      if (! error_state && print_result ())
 			{
-			  int nargin = args.length ();
-
-			  if (nargin > 0)
+			  if (Vprint_rhs_assign_val)
 			    {
-			      ult.index (args);
+			      ostrstream buf;
 
-			      ult.assign (etype, rhs_val);
+			      tree_print_code tpc (buf);
 
-			      if (error_state)
-				eval_error ();
-			      else if (! Vprint_rhs_assign_val)
-				lhs_val = ult.value ();
+			      lhs->accept (tpc);
+
+			      buf << ends;
+
+			      const char *tag = buf.str ();
+
+			      rhs_val.print_with_name (octave_stdout, tag);
+
+			      delete [] tag;
 			    }
 			  else
-			    error ("??? invalid index list ???");
+			    lhs_val.print_with_name (octave_stdout,
+						     lhs->name ());
 			}
-		      else
-			eval_error ();
-		    }
-		  else
-		    {
-		      ult.assign (etype, rhs_val);
-
-		      if (error_state)
-			eval_error ();
-		      else if (! Vprint_rhs_assign_val)
-			lhs_val = ult.value ();
 		    }
 		}
 	    }
 	}
       else
 	eval_error ();
-
-      if (! error_state && print)
-	{
-	  if (Vprint_rhs_assign_val)
-	    {
-	      ostrstream buf;
-
-	      buf << lhs->name ();
-
-	      if (index)
-		{
-		  buf << " (";
-		  tree_print_code tpc (buf);
-		  index->accept (tpc);
-		  buf << ")";
-		}
-
-	      buf << ends;
-
-	      const char *tag = buf.str ();
-
-	      rhs_val.print_with_name (octave_stdout, tag);
-
-	      delete [] tag;
-	    }
-	  else
-	    lhs_val.print_with_name (octave_stdout, lhs->name ());
-	}
     }
 
   return rhs_val;
 }
 
 void
-tree_simple_assignment_expression::eval_error (void)
+tree_simple_assignment::eval_error (void)
 {
   if (error_state > 0)
     {
@@ -557,49 +581,74 @@ tree_simple_assignment_expression::eval_error (void)
 }
 
 string
-tree_simple_assignment_expression::oper (void) const
+tree_simple_assignment::oper (void) const
 {
   return octave_value::assign_op_as_string (etype);
 }
 
 void
-tree_simple_assignment_expression::accept (tree_walker& tw)
+tree_simple_assignment::accept (tree_walker& tw)
 {
-  tw.visit_simple_assignment_expression (*this);
+  tw.visit_simple_assignment (*this);
 }
 
 // Colon expressions.
 
 tree_colon_expression *
-tree_colon_expression::chain (tree_expression *t)
+tree_colon_expression::append (tree_expression *t)
 {
   tree_colon_expression *retval = 0;
-  if (! op_base || op_increment)
-    ::error ("invalid colon expression");
-  else
-    {
-      // Stupid syntax:
-      //
-      // base : limit
-      // base : increment : limit
 
-      op_increment = op_limit;
-      op_limit = t;
+  if (op_base)
+    {
+      if (op_limit)
+	{
+	  if (op_increment)
+	    ::error ("invalid colon expression");
+	  else
+	    {
+	      // Stupid syntax:
+	      //
+	      // base : limit
+	      // base : increment : limit
+
+	      op_increment = op_limit;
+	      op_limit = t;
+	    }
+	}
+      else
+	op_limit = t;
 
       retval = this;
     }
+  else
+    ::error ("invalid colon expression");
+
+  return retval;
+}
+
+octave_value_list
+tree_colon_expression::rvalue (int nargout)
+{
+  octave_value_list retval;
+
+  if (nargout > 1)
+    error ("invalid number of output arguments for colon expression");
+  else
+    retval = rvalue ();
+
   return retval;
 }
 
 octave_value
-tree_colon_expression::eval (bool /* print */)
+tree_colon_expression::rvalue (void)
 {
   octave_value retval;
 
   if (error_state || ! op_base || ! op_limit)
     return retval;
 
-  octave_value tmp = op_base->eval ();
+  octave_value tmp = op_base->rvalue ();
 
   if (tmp.is_undefined ())
     {
@@ -607,16 +656,15 @@ tree_colon_expression::eval (bool /* print */)
       return retval;
     }
 
-  double base = tmp.double_value ();
+  double xbase = tmp.double_value ();
 
   if (error_state)
     {
-      error ("colon expression elements must be scalars");
-      eval_error ("evaluating colon expression");
+      eval_error ("colon expression elements must be scalars");
       return retval;
     }
 
-  tmp = op_limit->eval ();
+  tmp = op_limit->rvalue ();
 
   if (tmp.is_undefined ())
     {
@@ -624,20 +672,19 @@ tree_colon_expression::eval (bool /* print */)
       return retval;
     }
 
-  double limit = tmp.double_value ();
+  double xlimit = tmp.double_value ();
 
   if (error_state)
     {
-      error ("colon expression elements must be scalars");
-      eval_error ("evaluating colon expression");
+      eval_error ("colon expression elements must be scalars");
       return retval;
     }
 
-  double inc = 1.0;
+  double xinc = 1.0;
 
   if (op_increment)
     {
-      tmp = op_increment->eval ();
+      tmp = op_increment->rvalue ();
 
       if (tmp.is_undefined ())
 	{
@@ -645,22 +692,22 @@ tree_colon_expression::eval (bool /* print */)
 	  return retval;
 	}
 
-      inc = tmp.double_value ();
+      xinc = tmp.double_value ();
 
       if (error_state)
 	{
-	  error ("colon expression elements must be scalars");
-	  eval_error ("evaluating colon expression");
+	  eval_error ("colon expression elements must be scalars");
 	  return retval;
 	}
     }
 
-  retval = octave_value (base, limit, inc);
+  retval = octave_value (xbase, xlimit, xinc);
 
   if (error_state)
     {
       if (error_state)
-	eval_error ("evaluating colon expression");
+	eval_error ();
+
       return octave_value ();
     }
 
@@ -668,16 +715,269 @@ tree_colon_expression::eval (bool /* print */)
 }
 
 void
-tree_colon_expression::eval_error (const char *s)
+tree_colon_expression::eval_error (const string& s)
 {
   if (error_state > 0)
-    ::error ("%s near line %d column %d", s, line (), column ());
+    {
+      if (! s.empty ())
+	::error ("%s", s.c_str ());
+
+      ::error ("evaluating colon expression near line %d column %d",
+	       line (), column ());
+    }
 }
 
 void
 tree_colon_expression::accept (tree_walker& tw)
 {
   tw.visit_colon_expression (*this);
+}
+
+tree_index_expression::~tree_index_expression (void)
+{
+  delete expr;
+  delete list;
+}
+
+octave_value_list
+tree_index_expression::rvalue (int nargout)
+{
+  octave_value_list retval;
+
+  if (error_state)
+    return retval;
+
+  octave_value tmp = expr->rvalue ();
+
+  if (! error_state)
+    {
+      octave_value_list args;
+
+      if (list)
+	args = list->convert_to_const_vector ();
+
+      if (! error_state)
+	{
+	  if (! args.empty ())
+	    args.stash_name_tags (arg_nm);
+
+	  // XXX FIXME XXX -- is this the right thing to do?
+	  if (tmp.is_constant ())
+	    retval = tmp.do_index_op (args);
+	  else
+	    retval = tmp.do_index_op (nargout, args);
+	}
+      else
+	eval_error ();
+    }
+  else
+    eval_error ();
+
+  return retval;
+}
+
+octave_value
+tree_index_expression::rvalue (void)
+{
+  octave_value retval;
+
+  octave_value_list tmp = rvalue (1);
+
+  if (! tmp.empty ())
+    retval = tmp(0);
+
+  return retval;
+}
+
+octave_variable_reference
+tree_index_expression::lvalue (void)
+{
+  octave_variable_reference retval;
+
+  if (! error_state)
+    {
+      retval = expr->lvalue ();
+
+      if (! error_state)
+	{
+	  octave_value_list args;
+	  
+	  if (list)
+	    args = list->convert_to_const_vector ();
+
+	  retval.index (args);
+	}
+    }
+
+  return retval;
+}
+
+void
+tree_index_expression::eval_error (void)
+{
+  if (error_state > 0)
+    {
+      int l = line ();
+      int c = column ();
+
+      if (l != -1 && c != -1)
+	{
+	  if (list)
+	    ::error ("evaluating index expression near line %d, column %d",
+		     l, c);
+	  else
+	    ::error ("evaluating expression near line %d, column %d", l, c);
+	}
+      else
+	{
+	  if (list)
+	    ::error ("evaluating index expression");
+	  else
+	    ::error ("evaluating expression");
+	}
+    }
+}
+
+void
+tree_index_expression::accept (tree_walker& tw)
+{
+  tw.visit_index_expression (*this);
+}
+
+tree_multi_assignment::~tree_multi_assignment (void)
+{
+  if (! preserve)
+    delete lhs;
+
+  delete rhs;
+}
+
+octave_value
+tree_multi_assignment::rvalue (void)
+{
+  octave_value retval;
+
+  octave_value_list tmp = rvalue (1);
+
+  if (! tmp.empty ())
+    retval = tmp(0);
+
+  return retval;
+}
+
+octave_value_list
+tree_multi_assignment::rvalue (int nargout)
+{
+  octave_value_list rhs_val;
+
+  if (error_state)
+    return rhs_val;
+
+  if (rhs)
+    {
+      int n_out = lhs->length ();
+
+      rhs_val = rhs->rvalue (n_out);
+
+      if (! (error_state || rhs_val.empty ()))
+	{
+	  if (rhs_val.empty ())
+	    {
+	      error ("value on right hand side of assignment is undefined");
+	      eval_error ();
+	    }
+	  else
+	    {
+	      int k = 0;
+
+	      int n = rhs_val.length ();
+
+	      for (Pix p = lhs->first (); p != 0; lhs->next (p))
+		{
+		  tree_expression *lhs_elt = lhs->operator () (p);
+
+		  if (lhs_elt)
+		    {
+		      octave_variable_reference ult = lhs_elt->lvalue ();
+
+		      if (error_state)
+			eval_error ();
+		      else
+			{
+			  octave_value tmp = k < n
+			    ? rhs_val(k++) : octave_value ();
+
+			  if (tmp.is_defined ())
+			    {
+			      // XXX FIXME XXX -- handle other assignment ops.
+			      ult.assign (octave_value::asn_eq, tmp);
+			    }
+			  else
+			    error ("element number %d undefined in return list", k+1);
+
+			  if (error_state)
+			    eval_error ();
+			  else if (! Vprint_rhs_assign_val)
+			    {
+			      octave_value lhs_val = ult.value ();
+
+			      if (! error_state && print_result ())
+				{
+				  if (Vprint_rhs_assign_val)
+				    {
+				      ostrstream buf;
+
+				      tree_print_code tpc (buf);
+
+				      lhs_elt->accept (tpc);
+
+				      buf << ends;
+
+				      const char *tag = buf.str ();
+
+				      tmp.print_with_name
+					(octave_stdout, tag);
+
+				      delete [] tag;
+				    }
+				  else
+				    lhs_val.print_with_name (octave_stdout,
+							     lhs_elt->name ());
+				}
+			    }
+			}
+		    }
+
+		  if (error_state)
+		    break;
+		}
+	    }
+	}
+      else
+	eval_error ();
+    }
+
+  return rhs_val;
+}
+
+void
+tree_multi_assignment::eval_error (void)
+{
+  if (error_state > 0)
+    {
+      int l = line ();
+      int c = column ();
+
+      if (l != -1 && c != -1)
+	::error ("evaluating assignment expression near line %d, column %d",
+		 l, c);
+    }
+}
+
+void
+tree_multi_assignment::accept (tree_walker& tw)
+{
+  tw.visit_multi_assignment (*this);
 }
 
 static int

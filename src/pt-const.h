@@ -33,7 +33,7 @@ class ostream;
 
 #include "oct-alloc.h"
 
-#include "pt-mvr-base.h"
+#include "pt-exp-base.h"
 
 class octave_value_list;
 
@@ -42,18 +42,18 @@ class tree_walker;
 #include "ov.h"
 
 class
-tree_constant : public tree_multi_val_ret
+tree_constant : public tree_expression
 {
 public:
 
   tree_constant (int l = -1, int c = -1)
-    : tree_multi_val_ret (l, c), val (), orig_text () { }
+    : tree_expression (l, c), val (), orig_text () { }
 
   tree_constant (const octave_value& v, int l = -1, int c = -1)
-    : tree_multi_val_ret (l, c), val (v), orig_text () { }
+    : tree_expression (l, c), val (v), orig_text () { }
 
   tree_constant (const tree_constant& a)
-    : tree_multi_val_ret (-1, -1), val (a.val), orig_text () { }
+    : tree_expression (-1, -1), val (a.val), orig_text () { }
 
   ~tree_constant (void) { }
 
@@ -61,7 +61,7 @@ public:
     {
       if (this != &a)
 	{
-	  tree_multi_val_ret::operator = (a);
+	  tree_expression::operator = (a);
 	  val = a.val;
 	}
       return *this;
@@ -75,7 +75,8 @@ public:
 
   // Type.  It would be nice to eliminate the need for this.
 
-  bool is_constant (void) const { return true; }
+  bool is_constant (void) const
+    { return true; }
 
   void maybe_mutate (void)
     { val.maybe_mutate (); }
@@ -86,10 +87,15 @@ public:
   void print_raw (ostream& os, bool pr_as_read_syntax = false,
 		  bool pr_orig_txt = true);
 
-  octave_value eval (bool print = false);
+  bool rvalue_ok (void) const
+    { return true; }
 
-  octave_value_list
-  eval (bool print, int nargout, const octave_value_list& args);
+  octave_value rvalue (void)
+    { return val; }
+
+  octave_value_list rvalue (int nargout);
+
+  void accept (tree_walker& tw);
 
   // Store the original text corresponding to this constant for later
   // pretty printing.
@@ -99,8 +105,6 @@ public:
 
   string original_text (void) const
     { return orig_text; }
-
-  void accept (tree_walker& tw);
 
 private:
 

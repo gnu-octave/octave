@@ -33,28 +33,27 @@ class ostream;
 
 class octave_value;
 class octave_value_list;
-class octave_symbol;
 class octave_function;
 class symbol_record;
 
 class tree_walker;
 
-#include "pt-mvr-base.h"
+#include "pt-exp-base.h"
 
 // Symbols from the symbol table.
 
 class
-tree_identifier : public tree_multi_val_ret
+tree_identifier : public tree_expression
 {
   friend class tree_index_expression;
 
 public:
 
   tree_identifier (int l = -1, int c = -1)
-    : tree_multi_val_ret (l, c), sym (0), maybe_do_ans_assign (false) { }
+    : tree_expression (l, c), sym (0) { }
 
   tree_identifier (symbol_record *s, int l = -1, int c = -1)
-    : tree_multi_val_ret (l, c), sym (s), maybe_do_ans_assign (false) { }
+    : tree_expression (l, c), sym (s) { }
 
   ~tree_identifier (void) { }
 
@@ -69,8 +68,10 @@ public:
 
   bool is_defined (void);
 
-  octave_symbol *do_lookup (bool& script_file_executed, bool
-			    exec_script = true);
+  bool is_function (void);
+
+  octave_value
+  do_lookup (bool& script_file_executed, bool exec_script = true);
 
   void link_to_global (void);
 
@@ -78,30 +79,20 @@ public:
 
   void mark_as_formal_parameter (void);
 
-  void mark_for_possible_ans_assign (void)
-    { maybe_do_ans_assign = true; }
+  octave_value rvalue (void);
 
-  octave_value eval (bool print = false);
+  octave_value_list rvalue (int nargout);
 
-  octave_value_list
-  eval (bool print, int nargout, const octave_value_list& args);
+  octave_variable_reference lvalue (void);
 
   void eval_undefined_error (void);
 
   void accept (tree_walker& tw);
 
-  octave_value value (void) const;
-
-  octave_variable_reference reference (void);
-
 private:
 
   // The symbol record that this identifier references.
   symbol_record *sym;
-
-  // True if we should consider assigning the result of evaluating
-  // this identifier to the built-in variable ans.
-  bool maybe_do_ans_assign;
 };
 
 #endif

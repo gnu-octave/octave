@@ -42,42 +42,27 @@ class tree_walker;
 // other matrices, variables, and functions.
 
 class
-tree_matrix_row : public SLList<tree_expression *>
+tree_matrix : public tree_expression, public SLList<tree_argument_list *>
 {
 public:
 
-  tree_matrix_row (tree_expression *e = 0) : SLList<tree_expression *> ()
-    {
-      if (e)
-	append (e);
-    }
-
-  ~tree_matrix_row (void) { }
-
-  bool all_elements_are_constant (void) const;
-
-  tree_return_list *to_return_list (void);
-
-  void accept (tree_walker& tw);
-};
-
-class
-tree_matrix : public tree_expression, public SLList<tree_matrix_row *>
-{
-public:
-
-  tree_matrix (tree_matrix_row *mr = 0)
-    : tree_expression (), SLList<tree_matrix_row *> ()
+  tree_matrix (tree_argument_list *row = 0)
+    : tree_expression (), SLList<tree_argument_list *> ()
       {
-	if (mr)
-	  append (mr);
+	if (row)
+	  append (row);
       }
 
   ~tree_matrix (void) { }
 
   bool all_elements_are_constant (void) const;
 
-  octave_value eval (bool print = false);
+  bool rvalue_ok (void) const
+    { return true; }
+
+  octave_value rvalue (void);
+
+  octave_value_list rvalue (int nargout);
 
   void accept (tree_walker& tw);
 };

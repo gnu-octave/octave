@@ -1,4 +1,22 @@
-function [R G B] = ind2rgb(X,map)
+# Copyright (C) 1995 John W. Eaton
+# 
+# This file is part of Octave.
+# 
+# Octave is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the
+# Free Software Foundation; either version 2, or (at your option) any
+# later version.
+# 
+# Octave is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+# for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with Octave; see the file COPYING.  If not, write to the Free
+# Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+
+function [R, G, B] = ind2rgb (X, map)
 
 # Convert an indexed image to red, green, and blue color components.
 #
@@ -8,11 +26,17 @@ function [R G B] = ind2rgb(X,map)
 #
 # SEE ALSO: rgb2ind, image, imshow, ind2gray, gray2ind.
 
-  if(nargin == 1)
-    map = colormap;
+# Written by Tony Richardson (amr@mpl.ucsd.edu) July 1994.
+
+  if (nargin < 1 || nargin > 2)
+    usage ("ind2rgb (X, map)");
+  elseif (nargin == 1)
+    map = colormap ();
   endif
 
-  [hi wi] = size(X);
+  [hi, wi] = size (X);
+
+# XXX FIXME XXX -- we should check size of X and map.
 
   pref = do_fortran_indexing;
 
@@ -20,13 +44,13 @@ function [R G B] = ind2rgb(X,map)
 
     do_fortran_indexing = "true";
 
-    R = map(X(:),1);
-    G = map(X(:),2);
-    B = map(X(:),3);
+    R = map (X(:), 1);
+    G = map (X(:), 2);
+    B = map (X(:), 3);
 
-    R = reshape(R,hi,wi);
-    G = reshape(G,hi,wi);
-    B = reshape(B,hi,wi);
+    R = reshape (R, hi, wi);
+    G = reshape (G, hi, wi);
+    B = reshape (B, hi, wi);
 
   unwind_protect_cleanup
     do_fortran_indexing = pref;

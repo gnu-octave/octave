@@ -62,6 +62,16 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "user-prefs.h"
 #include "utils.h"
 
+// If TRUE, a replot command is issued automatically each time a plot
+// changes in some way.
+static bool Vautomatic_replot;
+
+// The name of the shell command to execute to start gnuplot.
+static string Vgnuplot_binary;
+
+// TRUE if gnuplot appears to support multiplot.
+static bool Vgnuplot_has_multiplot;
+
 // The number of lines we've plotted so far.
 static int plot_line_count = 0;
 
@@ -124,7 +134,7 @@ open_plot_stream (void)
 
       plot_line_count = 0;
 
-      string plot_prog = user_pref.gnuplot_binary;
+      string plot_prog = Vgnuplot_binary;
 
       if (! plot_prog.empty ())
 	{
@@ -208,7 +218,7 @@ send_to_plot_stream (const char *cmd)
 
       if (! (is_replot || is_splot || is_plot)
 	  && plot_line_count > 0
-	  && user_pref.automatic_replot)
+	  && Vautomatic_replot)
 	*plot_stream << GNUPLOT_COMMAND_REPLOT << "\n";
 
       plot_stream->flush ();
@@ -1038,6 +1048,59 @@ show plotting options")
   delete [] plot_command;
 
   return retval;
+}
+
+static int
+automatic_replot (void)
+{
+  Vautomatic_replot = check_preference ("automatic_replot");
+
+  return 0;
+}
+
+int
+gnuplot_binary (void)
+{
+  int status = 0;
+
+  string s = builtin_string_variable ("gnuplot_binary");
+
+  if (s.empty ())
+    {
+      gripe_invalid_value_specified ("gnuplot_binary");
+      status = -1;
+    }
+  else
+    Vgnuplot_binary = s;
+
+  return status;
+}
+
+static int
+gnuplot_has_multiplot (void)
+{
+  Vgnuplot_has_multiplot = check_preference ("gnuplot_has_multiplot");
+
+  return 0;
+}
+
+void
+symbols_of_pt_plot (void)
+{
+  DEFVAR (automatic_replot, 0.0, 0, automatic_replot,
+    "if true, auto-insert a replot command when a plot changes");
+
+  DEFVAR (gnuplot_binary, "gnuplot", 0, gnuplot_binary,
+    "path to gnuplot binary");
+
+#ifdef GNUPLOT_HAS_MULTIPLOT
+  double with_multiplot = 1.0;
+#else
+  double with_multiplot = 0.0;
+#endif
+
+  DEFVAR (gnuplot_has_multiplot, with_multiplot, 0, gnuplot_has_multiplot,
+    "true if gnuplot supports multiplot, false otherwise");
 }
 
 /*

@@ -40,6 +40,8 @@ class subplot_style;
 class subplot;
 class subplot_list;
 
+#include <string>
+
 #include <SLList.h>
 
 #include "dColVector.h"
@@ -235,7 +237,7 @@ public:
 extern char *save_in_tmp_file (tree_constant& t, int ndim = 2,
 			       int parametric = 0);
 
-extern void mark_for_deletion (const char *filename);
+extern void mark_for_deletion (const string&);
 
 extern void cleanup_tmp_files (void);
 

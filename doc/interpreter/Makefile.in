@@ -36,7 +36,7 @@ FAQ_TEXINFO = FAQ.texi
 
 ALL_TEXINFO = $(TEXINFO) $(LIB_TEXINFO) $(FAQ_TEXINFO)
 
-REFCARD = refcard.tex.in refcard.tex
+REFCARD = refcard.tex
 
 FORMATTED =  octave.dvi octave.ps octave.info octave.info-[0-9]* \
 	FAQ.info FAQ.dvi FAQ.ps refcard.dvi refcard.ps
@@ -84,27 +84,11 @@ liboctave.dvi: $(LIB_TEXINFO) conf.texi
 liboctave.ps: liboctave.dvi
 	dvips -o liboctave.ps liboctave.dvi
 
-refcard.tex: refcard.tex.in
-	sed 's/@LOCAL@.*$$//' refcard.tex.in > refcard.tex.tmp
-	mv refcard.tex.tmp refcard.tex
-	rm -f refcard.tex.tmp
-
-refcard-local.tex: refcard.tex.in
-	sed 's/@LOCAL@//' refcard.tex.in > refcard-local.tex.tmp
-	mv refcard-local.tex.tmp refcard-local.tex
-	rm -f refcard-local.tex.tmp
-
 refcard.dvi: refcard.tex
 	tex $(srcdir)/refcard.tex
 
-refcard-local.dvi: refcard-local.tex
-	tex $(srcdir)/refcard-local.tex
-
 refcard.ps: refcard.dvi
 	dvips -o refcard.ps refcard.dvi
-
-refcard-local.ps: refcard-local.dvi
-	dvips -o refcard-local.ps refcard-local.dvi
 
 ../INSTALL.OCTAVE: install1.texi install.texi
 	-makeinfo --no-header -I$(srcdir)/doc install1.texi
@@ -199,7 +183,7 @@ clean:
 	liboctave.fn liboctave.pg liboctave.tp liboctave.cps \
 	liboctave.fns liboctave.pgs liboctave.tps liboctave.aux \
 	liboctave.log liboctave.toc liboctave.dvi liboctave.ps \
-	refcard.dvi refcard.ps refcard-local.dvi refcard-local.ps
+	refcard.dvi refcard.ps
 .PHONY: clean
 
 mostlyclean:
@@ -207,7 +191,7 @@ mostlyclean:
 .PHONY: mostlyclean
 
 distclean: clean
-	rm -f Makefile refcard-local.tex
+	rm -f Makefile
 .PHONY: distclean
 
 realclean: distclean

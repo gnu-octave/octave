@@ -109,12 +109,12 @@ octave_fftw_planner::create_plan (int dir, const int rank,
   int which = (dir == FFTW_FORWARD) ? 0 : 1;
   fftw_plan *cur_plan_p = &plan[which];
   bool create_new_plan = false;
-  char in_align = (X_CAST (int, in)) & 0xF;
-  char out_align = (X_CAST (int, out)) & 0xF;
+  char in_align = (reinterpret_cast<long> (in)) & 0xF;
+  char out_align = (reinterpret_cast<long> (out)) & 0xF;
 
-  if (plan[which] == 0 || d[which] != dist || s[which] != stride ||
-      r[which] != rank || h[which] != howmany ||
-      ialign[which] != in_align || oalign[which] != out_align)
+  if (plan[which] == 0 || d[which] != dist || s[which] != stride
+      || r[which] != rank || h[which] != howmany
+      || ialign[which] != in_align || oalign[which] != out_align)
     create_new_plan = true;
   else
     // We still might not have the same shape of array
@@ -163,12 +163,11 @@ octave_fftw_planner::create_plan (const int rank, const dim_vector dims,
 {
   fftw_plan *cur_plan_p = &rplan;
   bool create_new_plan = false;
-  char in_align = (X_CAST (int, in)) & 0xF;
-  char out_align = (X_CAST (int, out)) & 0xF;
+  char in_align = (reinterpret_cast<long> (in)) & 0xF;
+  char out_align = (reinterpret_cast<long> (out)) & 0xF;
 
-  if (rplan == 0 || rd != dist || rs != stride ||
-      rr != rank || rh != howmany ||
-      rialign != in_align || roalign != out_align)
+  if (rplan == 0 || rd != dist || rs != stride || rr != rank
+      || rh != howmany || rialign != in_align || roalign != out_align)
     create_new_plan = true;
   else
     // We still might not have the same shape of array

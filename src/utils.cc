@@ -810,7 +810,7 @@ get_dimensions (const octave_value& a, const char *warn_for,
           int n = v.length ();
           dim.resize (n);
           for (int i = 0; i < n; i++)
-            dim(i) = fix (v(i));
+            dim(i) = static_cast<int> (fix (v(i)));
         }
       else
         warning ("%s (A): use %s (size (A)) instead", warn_for, warn_for);
@@ -840,8 +840,8 @@ get_dimensions (const octave_value& a, const char *warn_for,
 	  if (error_state)
 	    return;
 
-	  nr = fix (v (0));
-	  nc = fix (v (1));
+	  nr = static_cast<int> (fix (v (0)));
+	  nc = static_cast<int> (fix (v (1)));
 	}
       else
 	warning ("%s (A): use %s (size (A)) instead", warn_for, warn_for);
@@ -1072,10 +1072,10 @@ octave_sleep (double seconds)
       double t;
 
       unsigned int usec
-	= static_cast <unsigned int> (modf (seconds, &t) * 1000000);
+	= static_cast<unsigned int> (modf (seconds, &t) * 1000000);
 
       unsigned int sec
-	= (t > UINT_MAX) ? UINT_MAX : static_cast <unsigned int> (t);
+	= (t > UINT_MAX) ? UINT_MAX : static_cast<unsigned int> (t);
 
       octave_sleep (sec);
       octave_usleep (usec);

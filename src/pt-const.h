@@ -324,16 +324,19 @@ public:
       rep->bump_value (et);
     }
 
+  void print (void);
+  void print (ostream& os) { rep->print (os); }
+
 // Evaluate this constant, possibly converting complex to real, or
 // matrix to scalar, etc.
 
-  tree_constant eval (int print)
+  tree_constant eval (int print_result)
     {
       if (! is_scalar_type ())
 	rep->maybe_mutate ();
 
-      if (print)
-	rep->print ();
+      if (print_result)
+	print ();
 
       return *this;
     }
@@ -430,6 +433,10 @@ private:
 	return rep->make_numeric ();
     }
 };
+
+extern int print_as_scalar (const tree_constant& val);
+
+extern int print_as_structure (const tree_constant& val);
 
 // XXX FIXME XXX -- this is not used very much now.  Perhaps it can be
 // eliminated.

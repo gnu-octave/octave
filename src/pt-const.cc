@@ -26,11 +26,13 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #endif
 
 #include <iostream.h>
+#include <strstream.h>
 
 #include "tree-const.h"
+#include "user-prefs.h"
+#include "pager.h"
 #include "error.h"
 #include "gripes.h"
-#include "user-prefs.h"
 #include "oct-map.h"
 
 // The following three variables could be made static members of the
@@ -132,6 +134,15 @@ tree_constant::lookup_map_element (SLList<char*>& list)
     }
 
   return retval;
+}
+
+void
+tree_constant::print (void)
+{
+  ostrstream output_buf;
+  print (output_buf);
+  output_buf << ends;
+  maybe_page_output (output_buf);
 }
 
 // Simple structure assignment.
@@ -249,6 +260,25 @@ tree_constant::print_code (ostream& os)
 
   if (in_parens)
     os << ")";
+}
+
+int
+print_as_scalar (const tree_constant& val)
+{
+  int nr = val.rows ();
+  int nc = val.columns ();
+  return (val.is_scalar_type ()
+	  || val.is_string ()
+	  || (val.is_matrix_type ()
+	      && ((nr == 1 && nc == 1)
+		  || nr == 0
+		  || nc == 0)));
+}
+
+int
+print_as_structure (const tree_constant& val)
+{
+  return val.is_map ();
 }
 
 // Construct return vector of empty matrices.  Return empty matrices

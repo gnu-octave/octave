@@ -29,7 +29,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <string.h>
 #include <fstream.h>
 #include <iostream.h>
-#include <strstream.h>
 
 #include "mx-base.h"
 #include "Range.h"
@@ -41,10 +40,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "gripes.h"
 #include "user-prefs.h"
 #include "utils.h"
-#include "pager.h"
 #include "pr-output.h"
 #include "tree-const.h"
 #include "idx-vector.h"
+#include "unwind-prot.h"
 #include "oct-map.h"
 
 #include "tc-inlines.h"
@@ -57,6 +56,9 @@ static TC_REP *newlist = 0;
 
 // Multiplier for allocating new blocks.
 static const int newlist_grow_size = 128;
+
+// Indentation level for structures.
+static int structure_indent_level = 0;
 
 static int
 any_element_is_complex (const ComplexMatrix& a)
@@ -1729,12 +1731,10 @@ TC_REP::maybe_mutate (void)
 }
 
 void
-TC_REP::print (void)
+TC_REP::print (ostream& output_buf)
 {
   if (error_state)
     return;
-
-  ostrstream output_buf;
 
   switch (type_tag)
     {
@@ -1764,18 +1764,42 @@ TC_REP::print (void)
 
     case map_constant:
       {
-	output_buf << "<structure";
-	int first = 1;
-	for (Pix p = a_map->first (); p != 0; a_map->next (p))
+// XXX FIXME XXX -- would be nice to print the output in some standard
+// order.  Maybe all substructures first, maybe alphabetize entries,
+// etc.
+	begin_unwind_frame ("TC_REP_print");
+
+	unwind_protect_int (structure_indent_level);
+	unwind_protect_int (user_pref.struct_levels_to_print);
+
+	structure_indent_level += 2;
+
+	if (user_pref.struct_levels_to_print > 0)
 	  {
-	    if (first)
+	    user_pref.struct_levels_to_print--;
+
+	    for (Pix p = a_map->first (); p != 0; a_map->next (p))
 	      {
-		output_buf << ":";
-		first = 0;
+		const char *key = a_map->key (p);
+		tree_constant val = a_map->contents (p);
+
+		output_buf.form ("%*s%s = ", structure_indent_level,
+				 "", key);
+
+		if (print_as_structure (val))
+		  output_buf << "{\n";
+		else if (! print_as_scalar (val))
+		  output_buf << "\n";
+
+		val.print (output_buf);
 	      }
-	    output_buf << " " << a_map->key (p);
+
+	    output_buf.form ("%*s%s", structure_indent_level, "", "}\n");
 	  }
-	output_buf << ">\n";
+	else
+	  output_buf << "<structure>\n";
+
+	run_unwind_frame ("TC_REP_print");
       }
       break;
 
@@ -1785,9 +1809,6 @@ TC_REP::print (void)
       panic_impossible ();
       break;
     }
-
-  output_buf << ends;
-  maybe_page_output (output_buf);
 }
 
 void

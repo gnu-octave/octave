@@ -44,7 +44,7 @@ function cdf = discrete_cdf (x, v, p)
   m = length (v);
   x = reshape (x, n, 1);
   v = reshape (v, 1, m);
-  P = reshape (P / sum (P), m, 1);
+  p = reshape (p / sum (p), m, 1);
 
   cdf = zeros (n, 1);
   k = find (isnan (x));
@@ -54,7 +54,7 @@ function cdf = discrete_cdf (x, v, p)
   k = find (!isnan (x));
   if (any (k))
     n = length (k);
-    cdf (k) = ((x(k) * ones (1, m)) >= (ones (n, 1) * V)) * P;
+    cdf (k) = ((x(k) * ones (1, m)) >= (ones (n, 1) * v)) * p;
   endif
 
   cdf = reshape (cdf, r, c);

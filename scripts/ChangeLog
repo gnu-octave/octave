@@ -1,3 +1,8 @@
+2001-06-06  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* statistics/distributions/discrete_cdf.m: Downcase incorrectly
+	capitalized variable names.
+
 2001-05-30  Jean-Francois Cardoso  <cardoso@tsi.enst.fr>
 
 	* m/image/saveimage.m: fix saving an image to Postscript format.

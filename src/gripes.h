@@ -31,6 +31,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 extern void gripe_string_invalid (void);
 extern void gripe_range_invalid (void);
 extern void gripe_nonconformant (void);
+extern void gripe_nonconformant (int r1, int c1, int r2, int c2);
 extern void gripe_empty_arg (const char *name, int is_error);
 extern void gripe_square_matrix_required (const char *name);
 extern void gripe_user_supplied_eval (const char *name);

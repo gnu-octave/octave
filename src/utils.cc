@@ -190,10 +190,8 @@ check_dimensions (int& nr, int& nc, char *warnfor)
       if (user_pref.treat_neg_dim_as_zero)
 	nr = nc = 0;
       else
-	{
-	  message (warnfor, "can't create a matrix with negative dimensions");
-	  jump_to_top_level ();
-	}
+	error ("%s: can't create a matrix with negative dimensions",
+	       warnfor);
     }
 }
 

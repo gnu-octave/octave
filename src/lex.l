@@ -30,52 +30,19 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 %{
 
-// Arrange to get input via readline.
-
-#ifdef YY_INPUT
-#undef YY_INPUT
-#define YY_INPUT(buf,result,max_size) \
-  if ((result = octave_read (buf, max_size)) < 0) \
-    YY_FATAL_ERROR ("octave_read () in flex scanner failed");
-#endif
-
-// Try to avoid crashing out completely on fatal scanner errors.
-
-#ifdef YY_FATAL_ERROR
-#undef YY_FATAL_ERROR
-#define YY_FATAL_ERROR(msg) \
-  do \
-    { \
-      error (msg); \
-      jump_to_top_level (); \
-    } \
-  while (0)
-#endif
-
 #include "input.h"
-
-// The type of an END token.  This declaration is repeated in parse.y.
-// It must appear before y.tab.h is included.
-enum end_tok_type
-  {
-    simple_end,
-    for_end,
-    function_end,
-    if_end,
-    while_end,
-  };
-
-// The type of a PLOT token.  This declaration is repeated in parse.y.
-// It must appear before y.tab.h is included.
-enum plot_tok_type
-  {
-    two_dee = 2,
-    three_dee = 3,
-  };
+#include "token.h"
 
 #include "SLStack.h"
 
+// Stack to hold tokens so that we can delete them when the parser is
+// reset and avoid growing forever just because we are stashing some
+// information.  This has to appear before lex.h is included, because
+// one of the macros defined there uses token_stack.
+static SLStack <token*> token_stack;
+
 #include "variables.h"
+#include "octave.h"
 #include "symtab.h"
 #include "error.h"
 #include "utils.h"
@@ -128,30 +95,6 @@ static int next_token_is_bin_op (int spc_prev, char *yytext);
 static int next_token_is_postfix_unary_op (int spc_prev, char *yytext);
 static char *strip_trailing_whitespace (char *s);
 
-#define DO_COMMA_INSERT_CHECK yyless (do_comma_insert_check ())
-
-#define RETURN(token) \
-  do \
-    { \
-      current_input_column += yyleng; \
-      quote_is_transpose = 0; \
-      cant_be_identifier = 0; \
-      convert_spaces_to_comma = 1; \
-      return (token); \
-    } \
-  while (0)
-
-#define BIN_OP_RETURN(token) \
-  do \
-    { \
-      current_input_column += yyleng; \
-      quote_is_transpose = 0; \
-      cant_be_identifier = 0; \
-      convert_spaces_to_comma = 0; \
-      return (token); \
-    } \
-  while (0)
-
 %}
 
 D	[0-9]
@@ -182,14 +125,14 @@ EXPON	([DdEe][+-]?{D}+)
 
 <COMMENT>\n		{
 			  BEGIN 0;
-			  current_input_column = 0;
+			  current_input_column = 1;
 			  quote_is_transpose = 0;
 			  cant_be_identifier = 0;
 			  convert_spaces_to_comma = 1;
 			  return '\n';
 			}
 
-<COMMENT><<EOF>>	{ RETURN (END_OF_INPUT); }
+<COMMENT><<EOF>>	{ TOK_RETURN (END_OF_INPUT); }
 
 <COMMENT>.*$		{ current_input_column += yyleng; }
 
@@ -206,7 +149,7 @@ EXPON	([DdEe][+-]?{D}+)
 <HELP_FCN>\n		|
 <TEXT_FCN>\n		{
 		          BEGIN 0;
-			  current_input_column = 0;
+			  current_input_column = 1;
 			  quote_is_transpose = 0;
 			  cant_be_identifier = 0;
 			  convert_spaces_to_comma = 1;
@@ -216,43 +159,47 @@ EXPON	([DdEe][+-]?{D}+)
 <TEXT_FCN>[\;\,]	{
 			  if (doing_set)
 			    {
-			      yylval.string = strsave (yytext);
-			      RETURN (TEXT);
+			      yylval.tok_val = new token (yytext);
+			      token_stack.push (yylval.tok_val);
+			      TOK_RETURN (TEXT);
 			    }
 			  else
 			    {
 			      BEGIN 0;
-			      RETURN (',');
+			      TOK_RETURN (',');
 			    }
 		        }
 
 <HELP_FCN>[^ \t\n]*{S}*	    |
 <TEXT_FCN>[^ \t\n\;\,]*{S}* {
-
-			  static char *tok = (char *) NULL;
-			  delete [] tok;
-			  tok = strip_trailing_whitespace (yytext);
-
-			  yylval.string = strsave (tok);
-			  RETURN (TEXT);
-			}
+			      static char *tok = (char *) NULL;
+			      delete [] tok;
+			      tok = strip_trailing_whitespace (yytext);
+			      yylval.tok_val = new token (tok);
+			      token_stack.push (yylval.tok_val);
+			      TOK_RETURN (TEXT);
+			    }
 
 <TEXT_FCN>\'{QSTR}*[\n\'] {
 			  if (yytext[yyleng-1] == '\n')
 			    {
 			      error ("unterminated string constant");
-			      current_input_column = 0;
+			      current_input_column = 1;
 			      jump_to_top_level ();
 			    }
 			  else
 			    {
+			      static char *tok = (char *) NULL;
+			      delete [] tok;
 			      int off1 = doing_set ? 0 : 1;
 			      int off2 = doing_set ? 0 : 2;
-			      yylval.string = strsave (&yytext[off1]);
-			      yylval.string[yyleng-off2] = '\0';
+			      tok = strsave (&yytext[off1]);
+			      tok[yyleng-off2] = '\0';
+			      do_string_escapes (tok);
+			      yylval.tok_val = new token (tok);
+			      token_stack.push (yylval.tok_val);
 			      current_input_column += yyleng;
 			    }
-			  do_string_escapes (yylval.string);
 			  return TEXT;
 			}
 
@@ -260,18 +207,22 @@ EXPON	([DdEe][+-]?{D}+)
 			  if (yytext[yyleng-1] == '\n')
 			    {
 			      error ("unterminated string constant");
-			      current_input_column = 0;
+			      current_input_column = 1;
 			      jump_to_top_level ();
 			    }
 			  else
 			    {
+			      static char *tok = (char *) NULL;
+			      delete [] tok;
 			      int off1 = doing_set ? 0 : 1;
 			      int off2 = doing_set ? 0 : 2;
-			      yylval.string = strsave (&yytext[off1]);
-			      yylval.string[yyleng-off2] = '\0';
+			      tok = strsave (&yytext[off1]);
+			      tok[yyleng-off2] = '\0';
+			      do_string_escapes (tok);
+			      yylval.tok_val = new token (tok);
+			      token_stack.push (yylval.tok_val);
 			      current_input_column += yyleng;
 			    }
-			  do_string_escapes (yylval.string);
 			  return TEXT;
 			}
 
@@ -286,19 +237,23 @@ EXPON	([DdEe][+-]?{D}+)
 			  if (yytext[yyleng-1] == '\n')
 			    {
 			      error ("unterminated string constant");
-			      current_input_column = 0;
+			      current_input_column = 1;
 			      jump_to_top_level ();
 			    }
 			  else
 			    {
-			      yylval.string = strsave (yytext);
-			      yylval.string[yyleng-1] = '\0';
+			      static char *tok = (char *) NULL;
+			      delete [] tok;
+			      tok = strsave (yytext);
+			      tok[yyleng-1] = '\0';
+			      do_string_escapes (tok);
+			      yylval.tok_val = new token (tok);
+			      token_stack.push (yylval.tok_val);
+			      quote_is_transpose = 1;
+			      cant_be_identifier = 1;
+			      convert_spaces_to_comma = 1;
 			      current_input_column += yyleng;
 			    }
-			  do_string_escapes (yylval.string);
-			  quote_is_transpose = 1;
-			  cant_be_identifier = 1;
-			  convert_spaces_to_comma = 1;
 			  return TEXT;
 			}
 
@@ -312,19 +267,23 @@ EXPON	([DdEe][+-]?{D}+)
 			  if (yytext[yyleng-1] == '\n')
 			    {
 			      error ("unterminated string constant");
-			      current_input_column = 0;
+			      current_input_column = 1;
 			      jump_to_top_level ();
 			    }
 			  else
 			    {
-			      yylval.string = strsave (yytext);
-			      yylval.string[yyleng-1] = '\0';
+			      static char *tok = (char *) NULL;
+			      delete [] tok;
+			      tok = strsave (yytext);
+			      tok[yyleng-1] = '\0';
+			      do_string_escapes (tok);
+			      yylval.tok_val = new token (tok);
+			      token_stack.push (yylval.tok_val);
+			      quote_is_transpose = 1;
+			      cant_be_identifier = 1;
+			      convert_spaces_to_comma = 1;
 			      current_input_column += yyleng;
 			    }
-			  do_string_escapes (yylval.string);
-			  quote_is_transpose = 1;
-			  cant_be_identifier = 1;
-			  convert_spaces_to_comma = 1;
 			  return TEXT;
 			}
 
@@ -347,7 +306,7 @@ EXPON	([DdEe][+-]?{D}+)
 			  braceflag--;
 			  if (braceflag == 0)
 			    {
-			      if (!defining_func)
+			      if (! defining_func)
 				promptflag++;
 			      BEGIN 0;
 			    }
@@ -364,7 +323,7 @@ EXPON	([DdEe][+-]?{D}+)
 			  if (braceflag == 0)
 			    {
 			      BEGIN 0;
-			      if (!defining_func)
+			      if (! defining_func)
 				promptflag++;
 			    }
 			  fixup_column_count (yytext);
@@ -384,7 +343,7 @@ EXPON	([DdEe][+-]?{D}+)
 			  braceflag--;
 			  if (braceflag == 0)
 			    {
-			      if (!defining_func)
+			      if (! defining_func)
 				promptflag++;
 			      BEGIN 0;
 			    }
@@ -417,7 +376,7 @@ EXPON	([DdEe][+-]?{D}+)
 			  return ']';
 			}
 
-<MATRIX>{S}*\,{S}*	{ RETURN (','); }
+<MATRIX>{S}*\,{S}*	{ TOK_RETURN (','); }
 
 <MATRIX>{S}+		{
 			  int bin_op = next_token_is_bin_op (1, yytext);
@@ -427,7 +386,7 @@ EXPON	([DdEe][+-]?{D}+)
  			  if (! (postfix_un_op || bin_op)
 			      && in_brace_or_paren.top ()
 			      && convert_spaces_to_comma)
-			    RETURN (',');
+			    TOK_RETURN (',');
 			}
 
 <MATRIX>{SN}*\;{SN}*	|
@@ -446,22 +405,27 @@ EXPON	([DdEe][+-]?{D}+)
 			  if (plotting && ! past_plot_range)
 			    {
 			      in_plot_range = 0;
-			      RETURN (CLOSE_BRACE);
+			      TOK_RETURN (CLOSE_BRACE);
 			    }
 			  else
-			    RETURN (']');
+			    TOK_RETURN (']');
 			}
 
 {D}+{EXPON}?{Im}	|
 {D}+\.{D}*{EXPON}?{Im}	|
 \.{D}+{EXPON}?{Im}	{
-			  int nread = sscanf (yytext, "%lf", &(yylval.number));
+			  double value;
+			  int nread = sscanf (yytext, "%lf", &value);
 			  assert (nread == 1);
 			  quote_is_transpose = 1;
 			  cant_be_identifier = 1;
 			  convert_spaces_to_comma = 1;
 			  if (plotting && ! in_plot_range)
 			    past_plot_range = 1;
+			  yylval.tok_val = new token (value,
+						      input_line_number,
+						      current_input_column);
+			  token_stack.push (yylval.tok_val);
 			  current_input_column += yyleng;
 			  DO_COMMA_INSERT_CHECK;
 			  return IMAG_NUM;
@@ -471,13 +435,18 @@ EXPON	([DdEe][+-]?{D}+)
 {D}+\.{D}*{EXPON}?	|
 \.{D}+{EXPON}?		|
 			{
-			  int nread = sscanf (yytext, "%lf", &(yylval.number));
+			  double value;
+			  int nread = sscanf (yytext, "%lf", &value);
 			  assert (nread == 1);
 			  quote_is_transpose = 1;
 			  cant_be_identifier = 1;
 			  convert_spaces_to_comma = 1;
 			  if (plotting && ! in_plot_range)
 			    past_plot_range = 1;
+			  yylval.tok_val = new token (value,
+						      input_line_number,
+						      current_input_column);
+			  token_stack.push (yylval.tok_val);
 			  current_input_column += yyleng;
 			  DO_COMMA_INSERT_CHECK;
 			  return NUM;
@@ -488,7 +457,7 @@ EXPON	([DdEe][+-]?{D}+)
 		  if (plotting && ! past_plot_range)
 		    {
 		      in_plot_range = 1;
-		      RETURN (OPEN_BRACE);
+		      TOK_RETURN (OPEN_BRACE);
 		    }
 
 		  if (do_comma_insert)
@@ -506,7 +475,7 @@ EXPON	([DdEe][+-]?{D}+)
 		      braceflag++;
 		      promptflag--;
 		      BEGIN NEW_MATRIX;
-		      RETURN ('[');
+		      TOK_RETURN ('[');
 		    }
 		}
 
@@ -517,10 +486,10 @@ EXPON	([DdEe][+-]?{D}+)
 // Line continuation.
 
 		  promptflag--;
-		  current_input_column = 0;
+		  current_input_column = 1;
 		}
 
-<<EOF>>		RETURN (END_OF_INPUT);
+<<EOF>>		TOK_RETURN (END_OF_INPUT);
 
 {IDENT}{S}*	{
 
@@ -533,7 +502,7 @@ EXPON	([DdEe][+-]?{D}+)
 
 		  int kw_token = is_keyword (tok);
 		  if (kw_token)
-		    RETURN (kw_token);
+		    TOK_RETURN (kw_token);
 
 		  if (plotting && cant_be_identifier)
 		    {
@@ -556,11 +525,12 @@ EXPON	([DdEe][+-]?{D}+)
 		      char *sty = plot_style_token (&tok[1]);
 		      if (sty != (char *) NULL)
 			{
-			  yylval.string = strsave (sty);
+			  yylval.tok_val = new token (sty);
+			  token_stack.push (yylval.tok_val);
 			  if (in_plot_style)
 			    {
 			      in_plot_style = 0;
-			      RETURN (STYLE);
+			      TOK_RETURN (STYLE);
 			    }
 			}
 		    }
@@ -577,14 +547,25 @@ EXPON	([DdEe][+-]?{D}+)
 		      BEGIN TEXT_FCN;
 
 		      if (strcmp (tok, "clear") == 0)
-			return CLEAR;
+			{
+			  symbol_record *sr =
+			    global_sym_tab->lookup ("clear", 1, 0);
+			  assert (sr != (symbol_record *) NULL);
+			  yylval.tok_val = new token (sr, input_line_number,
+						      current_input_column);
+			  token_stack.push (yylval.tok_val);
+			  return CLEAR;
+			}
 		      else if (strcmp (tok, "help") == 0)
 			BEGIN HELP_FCN;
 		      else if (strcmp (tok, "set") == 0)
 			doing_set = 1;
 		    }
 
-		  yylval.sym_rec = lookup_identifier (tok);
+		  yylval.tok_val = new token (lookup_identifier (tok),
+					      input_line_number,
+					      current_input_column);
+		  token_stack.push (yylval.tok_val);
 
 		  quote_is_transpose = 1;
 		  current_input_column += yyleng;
@@ -631,7 +612,7 @@ EXPON	([DdEe][+-]?{D}+)
 
 		  int kw_token = is_keyword (yytext);
 		  if (kw_token)
-		    RETURN (kw_token);
+		    TOK_RETURN (kw_token);
 
 		  if (plotting && cant_be_identifier)
 		    {
@@ -657,7 +638,15 @@ EXPON	([DdEe][+-]?{D}+)
 		      BEGIN TEXT_FCN;
 
 		      if (strcmp (yytext, "clear") == 0)
-			return CLEAR;
+			{
+			  symbol_record *sr =
+			    global_sym_tab->lookup ("clear", 1, 0);
+			  assert (sr != (symbol_record *) NULL);
+			  yylval.tok_val = new token (sr, input_line_number,
+						      current_input_column);
+			  token_stack.push (yylval.tok_val);
+			  return CLEAR;
+			}
 		      else if (strcmp (yytext, "help") == 0)
 			BEGIN HELP_FCN;
 		      else if (strcmp (yytext, "set") == 0)
@@ -667,7 +656,10 @@ EXPON	([DdEe][+-]?{D}+)
 		  if (defining_func && maybe_screwed)
 		    curr_sym_tab = tmp_local_sym_tab;
 
-		  yylval.sym_rec = lookup_identifier (yytext);
+		  yylval.tok_val = new token (lookup_identifier (yytext),
+					      input_line_number,
+					      current_input_column);
+		  token_stack.push (yylval.tok_val);
 
 		  convert_spaces_to_comma = 1;
 		  current_input_column += yyleng;
@@ -686,7 +678,7 @@ EXPON	([DdEe][+-]?{D}+)
 "\n"		{
 		  quote_is_transpose = 0;
 		  cant_be_identifier = 0;
-		  current_input_column = 0;
+		  current_input_column = 1;
 		  convert_spaces_to_comma = 1;
 		  return '\n';
 		}
@@ -706,65 +698,65 @@ EXPON	([DdEe][+-]?{D}+)
 
 ":"		{
 		  if (plotting && (in_plot_range || in_plot_using))
-		    RETURN (COLON);
+		    BIN_OP_RETURN (COLON, 1);
 		  else
-		    BIN_OP_RETURN (':');
+		    BIN_OP_RETURN (':', 0);
 		}
 
 \"		{ BEGIN DQSTRING; }
-".**"		{ BIN_OP_RETURN (EPOW); }
-".*"		{ BIN_OP_RETURN (EMUL); }
-"./"		{ BIN_OP_RETURN (EDIV); }
-".\\"		{ BIN_OP_RETURN (ELEFTDIV); }
-".^"		{ BIN_OP_RETURN (EPOW); }
-".'"		{ DO_COMMA_INSERT_CHECK; RETURN (TRANSPOSE); }
-"++"		{ DO_COMMA_INSERT_CHECK; RETURN (PLUS_PLUS); }
-"--"		{ DO_COMMA_INSERT_CHECK; RETURN (MINUS_MINUS); }
-"<="		{ BIN_OP_RETURN (EXPR_LE); }
-"=="		{ BIN_OP_RETURN (EXPR_EQ); }
-"~="		{ BIN_OP_RETURN (EXPR_NE); }
-"!="		{ BIN_OP_RETURN (EXPR_NE); }
-"<>"		{ BIN_OP_RETURN (EXPR_NE); }
-">="		{ BIN_OP_RETURN (EXPR_GE); }
-"||"		{ BIN_OP_RETURN (EXPR_OR); }
-"&&"		{ BIN_OP_RETURN (EXPR_AND); }
-"|"		{ BIN_OP_RETURN (EXPR_OR); }
-"&"		{ BIN_OP_RETURN (EXPR_AND); }
+".**"		{ BIN_OP_RETURN (EPOW, 0); }
+".*"		{ BIN_OP_RETURN (EMUL, 0); }
+"./"		{ BIN_OP_RETURN (EDIV, 0); }
+".\\"		{ BIN_OP_RETURN (ELEFTDIV, 0); }
+".^"		{ BIN_OP_RETURN (EPOW, 0); }
+".'"		{ DO_COMMA_INSERT_CHECK; BIN_OP_RETURN (TRANSPOSE, 1); }
+"++"		{ DO_COMMA_INSERT_CHECK; BIN_OP_RETURN (PLUS_PLUS, 1); }
+"--"		{ DO_COMMA_INSERT_CHECK; BIN_OP_RETURN (MINUS_MINUS, 1); }
+"<="		{ BIN_OP_RETURN (EXPR_LE, 0); }
+"=="		{ BIN_OP_RETURN (EXPR_EQ, 0); }
+"~="		{ BIN_OP_RETURN (EXPR_NE, 0); }
+"!="		{ BIN_OP_RETURN (EXPR_NE, 0); }
+"<>"		{ BIN_OP_RETURN (EXPR_NE, 0); }
+">="		{ BIN_OP_RETURN (EXPR_GE, 0); }
+"||"		{ BIN_OP_RETURN (EXPR_OR, 0); }
+"&&"		{ BIN_OP_RETURN (EXPR_AND, 0); }
+"|"		{ BIN_OP_RETURN (EXPR_OR, 0); }
+"&"		{ BIN_OP_RETURN (EXPR_AND, 0); }
 "!"		{
 		  if (plotting && ! in_plot_range)
 		    past_plot_range = 1;
-		  RETURN (EXPR_NOT);
+		  BIN_OP_RETURN (EXPR_NOT, 1);
 		}
 "~"		{
 		  if (plotting && ! in_plot_range)
 		    past_plot_range = 1;
-		  BIN_OP_RETURN (EXPR_NOT);
+		  BIN_OP_RETURN (EXPR_NOT, 0);
 		}
-"<"		{ BIN_OP_RETURN (EXPR_LT); }
-">"		{ BIN_OP_RETURN (EXPR_GT); }
+"<"		{ BIN_OP_RETURN (EXPR_LT, 0); }
+">"		{ BIN_OP_RETURN (EXPR_GT, 0); }
 "+"		{ 
 		  if (plotting && ! in_plot_range)
 		    past_plot_range = 1;
-		  BIN_OP_RETURN ('+');
+		  BIN_OP_RETURN ('+', 0);
 		}
 "-"		{
 		  if (plotting && ! in_plot_range)
 		    past_plot_range = 1;
-		  BIN_OP_RETURN ('-');
+		  BIN_OP_RETURN ('-', 0);
 		}
-"**"		{ BIN_OP_RETURN (POW); }
-"*"		{ BIN_OP_RETURN ('*'); }
-"/"		{ BIN_OP_RETURN ('/'); }
-"\\"		{ BIN_OP_RETURN (LEFTDIV); }
-";"		{ RETURN (';'); }
-","		{ RETURN (','); }
-"^"		{ BIN_OP_RETURN (POW); }
-"="		{ RETURN ('='); }
+"**"		{ BIN_OP_RETURN (POW, 0); }
+"*"		{ BIN_OP_RETURN ('*', 0); }
+"/"		{ BIN_OP_RETURN ('/', 0); }
+"\\"		{ BIN_OP_RETURN (LEFTDIV, 0); }
+";"		{ BIN_OP_RETURN (';', 1); }
+","		{ BIN_OP_RETURN (',', 1); }
+"^"		{ BIN_OP_RETURN (POW, 0); }
+"="		{ BIN_OP_RETURN ('=', 1); }
 "("		{
 		  if (plotting && ! in_plot_range)
 		    past_plot_range = 1;
 		  in_brace_or_paren.push (0);
-		  RETURN ('(');
+		  TOK_RETURN ('(');
 		}
 ")"		{
 		  if (! in_brace_or_paren.empty ())
@@ -780,7 +772,7 @@ EXPON	([DdEe][+-]?{D}+)
 // We return everything else as single character tokens, which should
 // eventually result in a parse error.
 
-		  RETURN (yytext[0]);
+		  TOK_RETURN (yytext[0]);
 		}
 
 %%
@@ -801,7 +793,8 @@ do_comma_insert_check (void)
 }
 
 /*
- * Fix things up for errors or interrupts.
+ * Fix things up for errors or interrupts.  This could use a few
+ * comments now, eh?
  */
 void
 reset_parser (void)
@@ -820,7 +813,9 @@ reset_parser (void)
   curr_sym_tab = top_level_sym_tab;
   get_input_from_eval_string = 0;
   quote_is_transpose = 0;
-  current_input_column = 0;
+  current_input_column = 1;
+// Might have been reset by defining a function.
+  input_line_number = current_command_number - 1;
   do_comma_insert = 0;
   plotting = 0;
   past_plot_range = 0;
@@ -831,6 +826,8 @@ reset_parser (void)
   convert_spaces_to_comma = 1;
   beginning_of_function = 0;
   in_brace_or_paren.clear ();
+  while (! token_stack.empty ())
+    delete token_stack.pop ();
   yyrestart (stdin);
 }
 
@@ -906,7 +903,7 @@ fixup_column_count (char *s)
   while ((c = *s++) != '\0')
     {
       if (c == '\n')
-	  current_input_column = 0;
+	  current_input_column = 1;
       else
 	current_input_column++;
     }
@@ -1027,32 +1024,68 @@ is_keyword (char *s)
       if (sty != (char *) NULL)
 	{
 	  in_plot_style = 0;
-	  yylval.string = strsave (sty);
+	  yylval.tok_val = new token (sty);
+	  token_stack.push (yylval.tok_val);
 	  return STYLE;
 	}
     }
 
+  int l = input_line_number;
+  int c = current_input_column;
+
   int end_found = 0;
   if (strcmp ("break", s) == 0)
-    return BREAK;
+    {
+      return BREAK;
+    }
   else if (strcmp ("continue", s) == 0)
-    return CONTINUE;
+    {
+      return CONTINUE;
+    }
   else if (strcmp ("else", s) == 0)
-    { return ELSE; }
+    {
+      return ELSE;
+    }
   else if (strcmp ("elseif", s) == 0)
-    { return ELSEIF; }
+    {
+      return ELSEIF;
+    }
   else if (strcmp ("end", s) == 0)
-    { end_found = 1; yylval.ettype = simple_end; }
+    {
+      end_found = 1;
+      yylval.tok_val = new token (token::simple_end, l, c);
+      token_stack.push (yylval.tok_val);
+    }
   else if (strcmp ("endfor", s) == 0)
-    { end_found = 1; yylval.ettype = for_end; }
+    {
+      end_found = 1;
+      yylval.tok_val = new token (token::for_end, l, c);
+      token_stack.push (yylval.tok_val);
+    }
   else if (strcmp ("endfunction", s) == 0)
-    { end_found = 1; yylval.ettype = function_end; }
+    {
+      end_found = 1;
+      yylval.tok_val = new token (token::function_end, l, c);
+      token_stack.push (yylval.tok_val);
+    }
   else if (strcmp ("endif", s) == 0)
-    { end_found = 1; yylval.ettype = if_end; }
+    {
+      end_found = 1;
+      yylval.tok_val = new token (token::if_end, l, c);
+      token_stack.push (yylval.tok_val);
+    }
   else if (strcmp ("endwhile", s) == 0)
-    { end_found = 1; yylval.ettype = while_end; }
+    {
+      end_found = 1;
+      yylval.tok_val = new token (token::while_end, l, c);
+      token_stack.push (yylval.tok_val);
+    }
   else if (strcmp ("for", s) == 0)
-    { promptflag--; looping++; return FOR; }
+    {
+      promptflag--;
+      looping++;
+      return FOR;
+    }
   else if (strcmp ("function", s) == 0)
     {
       if (defining_func)
@@ -1068,25 +1101,47 @@ is_keyword (char *s)
 	  promptflag--;
 	  beginning_of_function = 1;
 	  help_buf[0] = '\0';
+	  input_line_number = 1;
 	  return FCN;
 	}
     }
   else if (strcmp ("global", s) == 0)
-    return GLOBAL;
+    {
+      return GLOBAL;
+    }
   else if (strcmp ("gplot", s) == 0)
-    { plotting = 1; yylval.pttype = two_dee; return PLOT; }
+    {
+      plotting = 1;
+      yylval.tok_val = new token (token::two_dee, l, c);
+      return PLOT;
+    }
   else if (strcmp ("gsplot", s) == 0)
-    { plotting = 1; yylval.pttype = three_dee; return PLOT; }
+    {
+      plotting = 1;
+      yylval.tok_val = new token (token::three_dee, l, c);
+      token_stack.push (yylval.tok_val);
+      return PLOT;
+    }
   else if (strcmp ("if", s) == 0)
-    { iffing++; promptflag--; return IF; }
+    {
+      iffing++;
+      promptflag--;
+      return IF;
+    }
   else if (strcmp ("return", s) == 0)
-    return FUNC_RET;
+    {
+      return FUNC_RET;
+    }
   else if (strcmp ("while", s) == 0)
-    { promptflag--; looping++; return WHILE; }
+    {
+      promptflag--;
+      looping++;
+      return WHILE;
+    }
 
   if (end_found)
     {
-      if (!defining_func && !looping)
+      if (! defining_func && ! looping)
 	promptflag++;
       return END;
     }

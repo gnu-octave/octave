@@ -175,8 +175,8 @@ tree_identifier : public tree
   friend class tree_index_expression;
 
 public:
-  tree_identifier (void);
-  tree_identifier (symbol_record *s);
+  tree_identifier (int l = -1, int c = -1);
+  tree_identifier (symbol_record *s, int l = -1, int c = -1);
 
   ~tree_identifier (void);
 
@@ -240,6 +240,9 @@ public:
   char *m_file_name (void);
   time_t time_parsed (void);
 
+  void stash_function_name (char *s);
+  char *function_name (void);
+
   tree_constant eval (int print);
 
   tree_constant *eval (int print, int nargout);
@@ -250,14 +253,17 @@ public:
 
   int max_expected_args (void);
 
+  void traceback_error (void);
+
 private:
   int call_depth;
   tree_parameter_list *param_list;
   tree_parameter_list *ret_list;
   symbol_table *sym_tab;
   tree *cmd_list;
-  time_t t_parsed;
   char *file_name;
+  char *fcn_name;
+  time_t t_parsed;
 };
 
 /*
@@ -284,12 +290,15 @@ class
 tree_prefix_expression : public tree_expression
 {
  public:
-  tree_prefix_expression (void);
-  tree_prefix_expression (tree_identifier *t, tree::expression_type et);
+  tree_prefix_expression (int l = -1, int c = -1);
+  tree_prefix_expression (tree_identifier *t, tree::expression_type et,
+			  int l = -1, int c = -1);
 
   ~tree_prefix_expression (void);
 
   tree_constant eval (int print);
+
+  void eval_error (void);
 
  private:
   tree_identifier *id;
@@ -302,12 +311,15 @@ class
 tree_postfix_expression : public tree_expression
 {
  public:
-  tree_postfix_expression (void);
-  tree_postfix_expression (tree_identifier *t, tree::expression_type et);
+  tree_postfix_expression (int l = -1, int c = -1);
+  tree_postfix_expression (tree_identifier *t, tree::expression_type et,
+			   int l = -1, int c = -1);
 
   ~tree_postfix_expression (void);
 
   tree_constant eval (int print);
+
+  void eval_error (void);
 
  private:
   tree_identifier *id;
@@ -320,12 +332,15 @@ class
 tree_unary_expression : public tree_expression
 {
  public:
-  tree_unary_expression (void);
-  tree_unary_expression (tree *a, tree::expression_type t);
+  tree_unary_expression (int l = -1, int c = -1);
+  tree_unary_expression (tree *a, tree::expression_type t, int l = -1,
+			 int c = -1);
 
   ~tree_unary_expression (void);
 
   tree_constant eval (int print);
+
+  void eval_error (void);
 
  private:
   tree *op;
@@ -338,12 +353,15 @@ class
 tree_binary_expression : public tree_expression
 {
  public:
-  tree_binary_expression (void);
-  tree_binary_expression (tree *a, tree *b, tree::expression_type t);
+  tree_binary_expression (int l = -1, int c = -1);
+  tree_binary_expression (tree *a, tree *b, tree::expression_type t,
+			  int l = -1, int c = -1);
 
   ~tree_binary_expression (void);
 
   tree_constant eval (int print);
+
+  void eval_error (void);
 
  private:
   tree *op1;
@@ -375,13 +393,17 @@ class
 tree_simple_assignment_expression : public tree_assignment_expression
 {
  public:
-  tree_simple_assignment_expression (void);
-  tree_simple_assignment_expression (tree_identifier *i, tree *r);
-  tree_simple_assignment_expression (tree_index_expression *idx_expr, tree *r);
+  tree_simple_assignment_expression (int l = -1, int c = -1);
+  tree_simple_assignment_expression (tree_identifier *i, tree *r,
+				     int l = -1, int c = -1);
+  tree_simple_assignment_expression (tree_index_expression *idx_expr,
+				     tree *r, int l = -1, int c = -1);
 
   ~tree_simple_assignment_expression (void);
 
   tree_constant eval (int print);
+
+  void eval_error (void);
 
  private:
   tree_identifier *lhs;
@@ -396,14 +418,17 @@ class
 tree_multi_assignment_expression : public tree_assignment_expression
 {
  public:
-  tree_multi_assignment_expression (void);
-  tree_multi_assignment_expression (tree_return_list *l, tree *r);
+  tree_multi_assignment_expression (int l = -1, int c = -1);
+  tree_multi_assignment_expression (tree_return_list *lst, tree *r,
+				    int l = -1, int c = -1);
 
   ~tree_multi_assignment_expression (void);
 
   tree_constant eval (int print);
 
   tree_constant *eval (int print, int nargout);
+
+  void eval_error (void);
 
  private:
   tree_return_list *lhs;
@@ -417,14 +442,16 @@ class
 tree_colon_expression : public tree_expression
 {
  public:
-  tree_colon_expression (void);
-  tree_colon_expression (tree *a, tree *b);
+  tree_colon_expression (int l = -1, int c = -1);
+  tree_colon_expression (tree *a, tree *b, int l = -1, int c = -1);
 
   ~tree_colon_expression (void);
 
   tree_colon_expression *chain (tree *t);
 
   tree_constant eval (int print);
+
+  void eval_error (const char *s);
 
  private:
   tree *op1;
@@ -439,9 +466,10 @@ class
 tree_index_expression : public tree_expression
 {
  public:
-  tree_index_expression (void);
-  tree_index_expression (tree_identifier *i);
-  tree_index_expression (tree_identifier *i, tree_argument_list *l);
+  tree_index_expression (int l = -1, int c = -1);
+  tree_index_expression (tree_identifier *i, int l = -1, int c = -1);
+  tree_index_expression (tree_identifier *i, tree_argument_list *lst,
+			 int l = -1, int c = -1);
 
   ~tree_index_expression (void);
 
@@ -454,6 +482,8 @@ tree_index_expression : public tree_expression
   tree_constant eval (int print);
 
   tree_constant *eval (int print, int nargout);
+
+  void eval_error (void);
 
  private:
   tree_identifier *id;
@@ -619,7 +649,7 @@ tree_while_command : public tree_command
  public:
   tree_while_command (void);
   tree_while_command (tree *e);
-  tree_while_command (tree *e, tree *l);
+  tree_while_command (tree *e, tree *lst);
 
   ~tree_while_command (void);
 
@@ -638,7 +668,7 @@ tree_for_command : public tree_command
 {
  public:
   tree_for_command (void);
-  tree_for_command (tree_index_expression *id, tree *e, tree *l);
+  tree_for_command (tree_index_expression *id, tree *e, tree *lst);
 
   ~tree_for_command (void);
 

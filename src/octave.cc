@@ -229,7 +229,7 @@ parse_and_execute (char *s, int print)
       unwind_protect_int (echo_input);
 
       input_line_number = 0;
-      current_input_column = 0;
+      current_input_column = 1;
       echo_input = 0;
 
       parse_and_execute (f, print);
@@ -479,6 +479,7 @@ main (int argc, char **argv)
       retval = yyparse ();
       if (retval == 0 && global_command != NULL_TREE)
 	{
+	  error_state = 0;
 	  global_command->eval (1);
 	  delete global_command;
 	  current_command_number++;

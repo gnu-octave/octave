@@ -47,6 +47,13 @@ gripe_nonconformant (void)
 }
 
 void
+gripe_nonconformant (int r1, int c1, int r2, int c2)
+{
+  error ("nonconformant matrices (op1 is %dx%d, op2 is %dx%d)",
+	 r1, c1, r2, c2);
+}
+
+void
 gripe_empty_arg (const char *name, int is_error)
 {
   if (is_error)

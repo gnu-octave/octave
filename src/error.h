@@ -38,6 +38,9 @@ extern void warning (const char *fmt, ...);
 extern void error (const char *fmt, ...);
 extern void volatile panic (const char *fmt, ...);
 
+// Current error state.
+extern int error_state;
+
 #endif
 
 /*

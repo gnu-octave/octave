@@ -24,6 +24,54 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (_lex_h)
 #define _lex_h 1
 
+// Arrange to get input via readline.
+
+#ifdef YY_INPUT
+#undef YY_INPUT
+#define YY_INPUT(buf,result,max_size) \
+  if ((result = octave_read (buf, max_size)) < 0) \
+    YY_FATAL_ERROR ("octave_read () in flex scanner failed");
+#endif
+
+// Try to avoid crashing out completely on fatal scanner errors.
+
+#ifdef YY_FATAL_ERROR
+#undef YY_FATAL_ERROR
+#define YY_FATAL_ERROR(msg) \
+  do \
+    { \
+      error (msg); \
+      jump_to_top_level (); \
+    } \
+  while (0)
+#endif
+
+#define DO_COMMA_INSERT_CHECK yyless (do_comma_insert_check ())
+
+#define TOK_RETURN(tok) \
+  do \
+    { \
+      current_input_column += yyleng; \
+      quote_is_transpose = 0; \
+      cant_be_identifier = 0; \
+      convert_spaces_to_comma = 1; \
+      return (tok); \
+    } \
+  while (0)
+
+#define BIN_OP_RETURN(tok,convert) \
+  do \
+    { \
+      yylval.tok_val = new token (input_line_number, current_input_column); \
+      token_stack.push (yylval.tok_val); \
+      current_input_column += yyleng; \
+      quote_is_transpose = 0; \
+      cant_be_identifier = 0; \
+      convert_spaces_to_comma = convert; \
+      return (tok); \
+    } \
+  while (0)
+
 typedef struct yy_buffer_state *YY_BUFFER_STATE;
 
 // Associate a buffer with a new file to read.

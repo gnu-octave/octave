@@ -39,28 +39,31 @@ range_max_check (int i, int imax)
   if (i > imax)
     {
       error ("matrix index = %d exceeds maximum dimension = %d", i, imax);
-      jump_to_top_level ();
+      return -1;
     }
+  return 0;
 }
 
 static inline int
 range_max_check (int i, int j, int nr, int nc)
 {
+  int status = 0;
   i++;
   if (i > nr)
     {
       error ("matrix row index = %d exceeds maximum row dimension = %d",
 	     i, nr);
-      jump_to_top_level ();
+      status = -1;
     }
 
   j++;
   if (j > nc)
     {
       error ("matrix column index = %d exceeds maximum column dimension = %d",
-	     j, nc); 
-      jump_to_top_level ();
+	     j, nc);
+      status = -1;
     }
+  return status;
 }
 
 static inline int
@@ -77,43 +80,46 @@ is_zero_one (const Range& r)
   return (NINT (b) == 0 && NINT (l) == 1 && r.nelem () == 2);
 }
 
-static inline void
+static inline int
 index_check (int i, char *rc)
 {
   if (i < 0)
     {
       error ("invalid %s index = %d", rc, i+1);
-      jump_to_top_level ();
+      return -1;
     }
+  return 0;
 }
 
-static inline void
+static inline int
 index_check (const Range& r, int& max_val, char *rc)
 {
-  double b = r.base ();
-  int ib = tree_to_mat_idx (b);
-
   if (r.nelem () < 1)
     {
       error ("range invalid as %s index", rc);
-      jump_to_top_level ();
+      return -1;
     }
+
+  double b = r.base ();
+  int ib = tree_to_mat_idx (b);
 
   if (ib < 0)
     {
       error ("invalid %s index = %d", rc, ib+1);
-      jump_to_top_level ();
+      return -1;
     }
 
   double lim = r.limit ();
   max_val = tree_to_mat_idx (lim);
+
+  return 0;
 }
 
-static inline void
+static inline int
 index_check (const Range& r, char *rc)
 {
   int max_val;
-  index_check (r, max_val, rc);
+  return index_check (r, max_val, rc);
 }
 
 static inline int

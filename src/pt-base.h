@@ -151,6 +151,13 @@ public:
 
   virtual int save (ostream& os, int mark_as_global = 0)
     { assert (0); return 0; }
+
+  virtual int line (void) { return line_num; }
+  virtual int column (void) { return column_num; }
+
+protected:
+  int line_num;
+  int column_num;
 };
 
 #endif

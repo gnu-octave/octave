@@ -104,7 +104,7 @@ get_dimensions (tree_constant& a, char *warn_for, int& nr, int& nc)
       nc = a.columns ();
     }
 
-  check_dimensions (nr, nc, warn_for); // No return on error.
+  check_dimensions (nr, nc, warn_for); // May set error_state.
 }
 
 static void
@@ -119,20 +119,20 @@ get_dimensions (tree_constant& a, tree_constant& b, char *warn_for,
       nr = NINT (tmpa.double_value ());
       nc = NINT (tmpb.double_value ());
 
-      check_dimensions (nr, nc, warn_for); // No return on error.
+      check_dimensions (nr, nc, warn_for); // May set error_state.
     }
   else
-    {
-      error ("%s: expecting two scalar arguments", warn_for);
-      jump_to_top_level ();
-    }
+    error ("%s: expecting two scalar arguments", warn_for);
 }
 
 tree_constant
 fill_matrix (tree_constant& a, double val, char *warn_for)
 {
   int nr, nc;
-  get_dimensions (a, warn_for, nr, nc); // No return on error.
+  get_dimensions (a, warn_for, nr, nc);
+
+  if (error_state)
+    return  tree_constant ();
 
   Matrix m (nr, nc, val);
 
@@ -143,7 +143,10 @@ tree_constant
 fill_matrix (tree_constant& a, tree_constant& b, double val, char *warn_for)
 {
   int nr, nc;
-  get_dimensions (a, b, warn_for, nr, nc); // No return on error.
+  get_dimensions (a, b, warn_for, nr, nc); // May set error_state.
+
+  if (error_state)
+    return tree_constant ();
 
   Matrix m (nr, nc, val);
 
@@ -154,7 +157,10 @@ tree_constant
 identity_matrix (tree_constant& a)
 {
   int nr, nc;
-  get_dimensions (a, "eye", nr, nc); // No return on error.
+  get_dimensions (a, "eye", nr, nc); // May set error_state.
+
+  if (error_state)
+    return tree_constant ();
 
   Matrix m (nr, nc, 0.0);
 
@@ -172,7 +178,10 @@ tree_constant
 identity_matrix (tree_constant& a, tree_constant& b)
 {
   int nr, nc;
-  get_dimensions (a, b, "eye", nr, nc);  // No return on error.
+  get_dimensions (a, b, "eye", nr, nc);  // May set error_state.
+
+  if (error_state)
+    return tree_constant ();
 
   Matrix m (nr, nc, 0.0);
 

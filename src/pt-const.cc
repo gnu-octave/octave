@@ -865,6 +865,8 @@ tree_constant_rep::make_numeric (int force_str_conv = 0)
 tree_constant
 do_binary_op (tree_constant& a, tree_constant& b, tree::expression_type t)
 {
+  tree_constant ans;
+
   int first_empty = (a.rows () == 0 || a.columns () == 0);
   int second_empty = (b.rows () == 0 || b.columns () == 0);
 
@@ -876,7 +878,7 @@ do_binary_op (tree_constant& a, tree_constant& b, tree::expression_type t)
       else if (flag == 0)
 	{
 	  error ("invalid binary operation on empty matrix");
-	  jump_to_top_level ();
+	  return ans;
 	}
     }
 
@@ -890,8 +892,6 @@ do_binary_op (tree_constant& a, tree_constant& b, tree::expression_type t)
   Matrix m1, m2;
   Complex c1, c2;
   ComplexMatrix cm1, cm2;
-
-  tree_constant ans;
 
   switch (a_type)
     {
@@ -1010,6 +1010,8 @@ do_binary_op (tree_constant& a, tree_constant& b, tree::expression_type t)
 tree_constant
 do_unary_op (tree_constant& a, tree::expression_type t)
 {
+  tree_constant ans;
+
   if (a.rows () == 0 || a.columns () == 0)
     {
       int flag = user_pref.propagate_empty_matrices;
@@ -1018,13 +1020,11 @@ do_unary_op (tree_constant& a, tree::expression_type t)
       else if (flag == 0)
 	{
 	  error ("invalid unary operation on empty matrix");
-	  jump_to_top_level ();
+	  return ans;
 	}
     }
 
   tree_constant tmp_a = a.make_numeric ();
-
-  tree_constant ans;
 
   switch (tmp_a.const_type ())
     {
@@ -1118,6 +1118,9 @@ tree_constant_rep::bump_value (tree::expression_type etype)
 void
 tree_constant_rep::eval (int print)
 {
+  if (error_state)
+    return;
+
   switch (type_tag)
     {
     case complex_scalar_constant:
@@ -1149,11 +1152,44 @@ tree_constant_rep::eval (int print)
       break;
     }
 
+  int nr = rows ();
+  int nc = columns ();
+
+  if (nr == 1 && nc == 1)
+    {
+      switch (type_tag)
+	{
+	case matrix_constant:
+	  {
+	    double d = matrix->elem (0, 0);
+	    delete matrix;
+	    scalar = d;
+	    type_tag = scalar_constant;
+	  }
+	  break;
+	case complex_matrix_constant:
+	  {
+	    Complex c = complex_matrix->elem (0, 0);
+	    delete complex_matrix;
+	    complex_scalar = new Complex (c);
+	    type_tag = complex_scalar_constant;
+	  }
+	  break;
+	case range_constant:
+	  {
+	    double d = range->base ();
+	    delete range;
+	    scalar = d;
+	    type_tag = scalar_constant;
+	  }
+	  break;
+	default:
+	  break;
+	}
+    }
+
   if (print)
     {
-      int nr = rows ();
-      int nc = columns ();
-
       ostrstream output_buf;
       switch (type_tag)
 	{
@@ -1206,6 +1242,9 @@ tree_constant *
 tree_constant_rep::eval (tree_constant *args, int nargin, int nargout,
 			 int print)
 {
+  if (error_state)
+    return NULL_TREE_CONST;
+
   tree_constant *retval = new tree_constant [2];
   switch (type_tag)
     {

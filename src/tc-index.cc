@@ -47,8 +47,6 @@ tree_constant_rep::valid_as_scalar_index (void)
 tree_constant
 tree_constant_rep::do_scalar_index (tree_constant *args, int nargs) 
 {
-  tree_constant retval;
-
   if (valid_scalar_indices (args, nargs))
     {
       if (type_tag == scalar_constant)
@@ -133,15 +131,13 @@ tree_constant_rep::do_scalar_index (tree_constant *args, int nargs)
 	  break;
 	default:
 	  error ("illegal number of arguments for scalar type");
-	  jump_to_top_level ();
+	  return tree_constant ();
 	  break;
 	}
     }
 
   error ("index invalid or out of range for scalar type");
-  jump_to_top_level ();
-
-  return retval;
+  return tree_constant ();
 }
 
 tree_constant
@@ -215,8 +211,10 @@ tree_constant_rep::fortran_style_matrix_index (tree_constant& i_arg)
 	int i = NINT (tmp_i.double_value ());
 	int ii = fortran_row (i, nr) - 1;
 	int jj = fortran_column (i, nr) - 1;
-	index_check (i-1, "");
-	range_max_check (i-1, nr * nc);
+	if (index_check (i-1, "") < 0)
+	  return tree_constant ();
+	if (range_max_check (i-1, nr * nc) < 0)
+	  return tree_constant ();
 	retval = do_matrix_index (ii, jj);
       }
       break;
@@ -238,11 +236,9 @@ tree_constant_rep::fortran_style_matrix_index (tree_constant& i_arg)
       break;
     case string_constant:
       gripe_string_invalid ();
-      jump_to_top_level ();
       break;
     case range_constant:
       gripe_range_invalid ();
-      jump_to_top_level ();
       break;
     case magic_colon:
       retval = do_matrix_index (magic_colon);
@@ -334,7 +330,7 @@ tree_constant_rep::fortran_style_matrix_index (Matrix& mi)
 	error ("empty matrix invalid as index");
       else
 	error ("invalid matrix index");
-      jump_to_top_level ();
+      return tree_constant ();
     }
 
   return retval;
@@ -364,15 +360,18 @@ tree_constant_rep::do_vector_index (tree_constant& i_arg)
     case scalar_constant:
       {
         int i = tree_to_mat_idx (tmp_i.double_value ());
-        index_check (i, "");
+        if (index_check (i, "") < 0)
+	  return tree_constant ();
         if (swap_indices)
           {
-	    range_max_check (i, nc);
+	    if (range_max_check (i, nc) < 0)
+	      return tree_constant ();
 	    retval = do_matrix_index (0, i);
           }
         else
           {
-	    range_max_check (i, nr);
+	    if (range_max_check (i, nr) < 0)
+	      return tree_constant ();
 	    retval = do_matrix_index (i, 0);
           }
       }
@@ -392,12 +391,14 @@ tree_constant_rep::do_vector_index (tree_constant& i_arg)
 	    int imax = iv.max ();
 	    if (swap_indices)
 	      {
-		range_max_check (imax, nc);
+		if (range_max_check (imax, nc) < 0)
+		  return tree_constant ();
 		retval = do_matrix_index (0, iv);
 	      }
 	    else
 	      {
-		range_max_check (imax, nr);
+		if (range_max_check (imax, nr) < 0)
+		  return tree_constant ();
 		retval = do_matrix_index (iv, 0);
 	      }
 	  }
@@ -419,15 +420,18 @@ tree_constant_rep::do_vector_index (tree_constant& i_arg)
 	else
 	  {
 	    int imax;
-	    index_check (ri, imax, "");
+	    if (index_check (ri, imax, "") < 0)
+	      return tree_constant ();
 	    if (swap_indices)
 	      {
-		range_max_check (imax, nc);
+		if (range_max_check (imax, nc) < 0)
+		  return tree_constant ();
 		retval = do_matrix_index (0, ri);
 	      }
 	    else
 	      {
-		range_max_check (imax, nr);
+		if (range_max_check (imax, nr) < 0)
+		  return tree_constant ();
 		retval = do_matrix_index (ri, 0);
 	      }
 	  }
@@ -462,7 +466,8 @@ tree_constant_rep::do_matrix_index (tree_constant& i_arg, tree_constant& j_arg)
     case scalar_constant:
       {
         int i = tree_to_mat_idx (tmp_i.double_value ());
-	index_check (i, "row");
+	if (index_check (i, "row") < 0)
+	  return tree_constant ();
 	retval = do_matrix_index (i, j_arg);
       }
       break;
@@ -493,7 +498,8 @@ tree_constant_rep::do_matrix_index (tree_constant& i_arg, tree_constant& j_arg)
 	else
 	  {
 	    int imax;
-	    index_check (ri, imax, "row");
+	    if (index_check (ri, imax, "row") < 0)
+	      return tree_constant ();
 	    retval = do_matrix_index (ri, imax, j_arg);
 	  }
       }
@@ -527,8 +533,10 @@ tree_constant_rep::do_matrix_index (int i, tree_constant& j_arg)
     case scalar_constant:
       {
 	int j = tree_to_mat_idx (tmp_j.double_value ());
-	index_check (j, "column");
-	range_max_check (i, j, nr, nc);
+	if (index_check (j, "column") < 0)
+	  return tree_constant ();
+	if (range_max_check (i, j, nr, nc) < 0)
+	  return tree_constant ();
 	retval = do_matrix_index (i, j);
       }
       break;
@@ -544,7 +552,8 @@ tree_constant_rep::do_matrix_index (int i, tree_constant& j_arg)
 	  }
 	else
 	  {
-	    range_max_check (i, jv.max (), nr, nc);
+	    if (range_max_check (i, jv.max (), nr, nc) < 0)
+	      return tree_constant ();
 	    retval = do_matrix_index (i, jv);
 	  }
       }
@@ -562,14 +571,17 @@ tree_constant_rep::do_matrix_index (int i, tree_constant& j_arg)
 	else
 	  {
 	    int jmax;
-	    index_check (rj, jmax, "column");
-	    range_max_check (i, jmax, nr, nc);
+	    if (index_check (rj, jmax, "column") < 0)
+	      return tree_constant ();
+	    if (range_max_check (i, jmax, nr, nc) < 0)
+	      return tree_constant ();
 	    retval = do_matrix_index (i, rj);
 	  }
       }
       break;
     case magic_colon:
-      range_max_check (i, 0, nr, nc);
+      if (range_max_check (i, 0, nr, nc) < 0)
+	return tree_constant ();
       retval = do_matrix_index (i, magic_colon);
       break;
     default:
@@ -598,8 +610,10 @@ tree_constant_rep::do_matrix_index (idx_vector& iv, tree_constant& j_arg)
     case scalar_constant:
       {
 	int j = tree_to_mat_idx (tmp_j.double_value ());
-	index_check (j, "column");
-	range_max_check (iv.max (), j, nr, nc);
+	if (index_check (j, "column") < 0)
+	  return tree_constant ();
+	if (range_max_check (iv.max (), j, nr, nc) < 0)
+	  return tree_constant ();
 	retval = do_matrix_index (iv, j);
       }
       break;
@@ -615,7 +629,8 @@ tree_constant_rep::do_matrix_index (idx_vector& iv, tree_constant& j_arg)
 	  }
 	else
 	  {
-	    range_max_check (iv.max (), jv.max (), nr, nc);
+	    if (range_max_check (iv.max (), jv.max (), nr, nc) < 0)
+	      return tree_constant ();
 	    retval = do_matrix_index (iv, jv);
 	  }
       }
@@ -633,14 +648,17 @@ tree_constant_rep::do_matrix_index (idx_vector& iv, tree_constant& j_arg)
 	else
 	  {
 	    int jmax;
-	    index_check (rj, jmax, "column");
-	    range_max_check (iv.max (), jmax, nr, nc);
+	    if (index_check (rj, jmax, "column") < 0)
+	      return tree_constant ();
+	    if (range_max_check (iv.max (), jmax, nr, nc) < 0)
+	      return tree_constant ();
 	    retval = do_matrix_index (iv, rj);
 	  }
       }
       break;
     case magic_colon:
-      range_max_check (iv.max (), 0, nr, nc);
+      if (range_max_check (iv.max (), 0, nr, nc) < 0)
+	return tree_constant ();
       retval = do_matrix_index (iv, magic_colon);
       break;
     default:
@@ -669,8 +687,10 @@ tree_constant_rep::do_matrix_index (Range& ri, int imax, tree_constant& j_arg)
     case scalar_constant:
       {
 	int j = tree_to_mat_idx (tmp_j.double_value ());
-	index_check (j, "column");
-	range_max_check (imax, j, nr, nc);
+	if (index_check (j, "column") < 0)
+	  return tree_constant ();
+	if (range_max_check (imax, j, nr, nc) < 0)
+	  return tree_constant ();
 	retval = do_matrix_index (ri, j);
       }
       break;
@@ -686,7 +706,8 @@ tree_constant_rep::do_matrix_index (Range& ri, int imax, tree_constant& j_arg)
 	  }
 	else
 	  {
-	    range_max_check (imax, jv.max (), nr, nc);
+	    if (range_max_check (imax, jv.max (), nr, nc) < 0)
+	      return tree_constant ();
 	    retval = do_matrix_index (ri, jv);
 	  }
       }
@@ -704,8 +725,10 @@ tree_constant_rep::do_matrix_index (Range& ri, int imax, tree_constant& j_arg)
 	else
 	  {
 	    int jmax;
-	    index_check (rj, jmax, "column");
-	    range_max_check (imax, jmax, nr, nc);
+	    if (index_check (rj, jmax, "column") < 0)
+	      return tree_constant ();
+	    if (range_max_check (imax, jmax, nr, nc) < 0)
+	      return tree_constant ();
 	    retval = do_matrix_index (ri, rj);
 	  }
       }
@@ -740,8 +763,10 @@ tree_constant_rep::do_matrix_index (tree_constant_rep::constant_type mci,
     case scalar_constant:
       {
 	int j = tree_to_mat_idx (tmp_j.double_value ());
-	index_check (j, "column");
-	range_max_check (0, j, nr, nc);
+	if (index_check (j, "column") < 0)
+	  return tree_constant ();
+	if (range_max_check (0, j, nr, nc) < 0)
+	  return tree_constant ();
 	retval = do_matrix_index (magic_colon, j);
       }
       break;
@@ -757,7 +782,8 @@ tree_constant_rep::do_matrix_index (tree_constant_rep::constant_type mci,
 	  }
 	else
 	  {
-	    range_max_check (0, jv.max (), nr, nc);
+	    if (range_max_check (0, jv.max (), nr, nc) < 0)
+	      return tree_constant ();
 	    retval = do_matrix_index (magic_colon, jv);
 	  }
       }
@@ -775,8 +801,10 @@ tree_constant_rep::do_matrix_index (tree_constant_rep::constant_type mci,
 	else
 	  {
 	    int jmax;
-	    index_check (rj, jmax, "column");
-	    range_max_check (0, jmax, nr, nc);
+	    if (index_check (rj, jmax, "column") < 0)
+	      return tree_constant ();
+	    if (range_max_check (0, jmax, nr, nc) < 0)
+	      return tree_constant ();
 	    retval = do_matrix_index (magic_colon, rj);
 	  }
       }

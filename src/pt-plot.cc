@@ -81,6 +81,9 @@ tree_plot_command::eval (int print)
 {
   tree_constant retval;
 
+  if (error_state)
+    return retval;
+
   ostrstream plot_buf;
 
   switch (ndim)

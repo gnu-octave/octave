@@ -76,6 +76,129 @@ Matrix_bool_op
 };
 
 /*
+ * Check row and column dimensions for binary matrix operations.
+ */
+static inline int
+m_add_conform (Matrix& a, Matrix& b, int warn)
+{
+  int ar = a.rows ();
+  int ac = a.columns ();
+  int br = b.rows ();
+  int bc = b.columns ();
+
+  int ok = (ar == br && ac == bc);
+
+  if (! ok && warn)
+    gripe_nonconformant (ar, ac, br, bc);
+
+  return ok;
+}
+
+static inline int
+m_add_conform (Matrix& a, ComplexMatrix& b, int warn)
+{
+  int ar = a.rows ();
+  int ac = a.columns ();
+  int br = b.rows ();
+  int bc = b.columns ();
+
+  int ok = (ar == br && ac == bc);
+
+  if (! ok && warn)
+    gripe_nonconformant (ar, ac, br, bc);
+
+  return ok;
+}
+
+static inline int
+m_add_conform (ComplexMatrix& a, Matrix& b, int warn)
+{
+  int ar = a.rows ();
+  int ac = a.columns ();
+  int br = b.rows ();
+  int bc = b.columns ();
+
+  int ok = (ar == br && ac == bc);
+
+  if (! ok && warn)
+    gripe_nonconformant (ar, ac, br, bc);
+
+  return ok;
+}
+
+static inline int
+m_add_conform (ComplexMatrix& a, ComplexMatrix& b, int warn)
+{
+  int ar = a.rows ();
+  int ac = a.columns ();
+  int br = b.rows ();
+  int bc = b.columns ();
+
+  int ok = (ar == br && ac == bc);
+
+  if (! ok && warn)
+    gripe_nonconformant (ar, ac, br, bc);
+
+  return ok;
+}
+
+static inline int
+m_mul_conform (Matrix& a, Matrix& b, int warn)
+{
+  int ac = a.columns ();
+  int br = b.rows ();
+
+  int ok = (ac == br);
+
+  if (! ok && warn)
+    gripe_nonconformant (a.rows (), ac, br, b.columns ());
+
+  return ok;
+}
+
+static inline int
+m_mul_conform (Matrix& a, ComplexMatrix& b, int warn)
+{
+  int ac = a.columns ();
+  int br = b.rows ();
+
+  int ok = (ac == br);
+
+  if (! ok && warn)
+    gripe_nonconformant (a.rows (), ac, br, b.columns ());
+
+  return ok;
+}
+
+static inline int
+m_mul_conform (ComplexMatrix& a, Matrix& b, int warn)
+{
+  int ac = a.columns ();
+  int br = b.rows ();
+
+  int ok = (ac == br);
+
+  if (! ok && warn)
+    gripe_nonconformant (a.rows (), ac, br, b.columns ());
+
+  return ok;
+}
+
+static inline int
+m_mul_conform (ComplexMatrix& a, ComplexMatrix& b, int warn)
+{
+  int ac = a.columns ();
+  int br = b.rows ();
+
+  int ok = (a.columns () == br);
+
+  if (! ok && warn)
+    gripe_nonconformant (a.rows (), ac, br, b.columns ());
+
+  return ok;
+}
+
+/*
  * Stupid binary comparison operations like the ones Matlab provides.
  * One for each type combination, in the order given here:
  *
@@ -97,7 +220,9 @@ mx_stupid_bool_op (Matrix_bool_op op, double s, Matrix& a)
 {
   int ar = a.rows ();
   int ac = a.columns ();
+
   Matrix t (ar, ac);
+
   for (int j = 0; j < ac; j++)
     for (int i = 0; i < ar; i++)
       {
@@ -132,6 +257,7 @@ mx_stupid_bool_op (Matrix_bool_op op, double s, Matrix& a)
 	    break;
 	}
     }
+
   return t;
 }
 
@@ -141,7 +267,9 @@ mx_stupid_bool_op (Matrix_bool_op op, double s, ComplexMatrix& a)
 {
   int ar = a.rows ();
   int ac = a.columns ();
+
   Matrix t (ar, ac);
+
   for (int j = 0; j < ac; j++)
     for (int i = 0; i < ar; i++)
       {
@@ -176,6 +304,7 @@ mx_stupid_bool_op (Matrix_bool_op op, double s, ComplexMatrix& a)
 	    break;
 	}
     }
+
   return t;
 }
 
@@ -185,7 +314,9 @@ mx_stupid_bool_op (Matrix_bool_op op, Matrix& a, double s)
 {
   int ar = a.rows ();
   int ac = a.columns ();
+
   Matrix t (ar, ac);
+
   for (int j = 0; j < ac; j++)
     for (int i = 0; i < ar; i++)
       {
@@ -220,6 +351,7 @@ mx_stupid_bool_op (Matrix_bool_op op, Matrix& a, double s)
 	    break;
 	}
     }
+
   return t;
 }
 
@@ -229,7 +361,9 @@ mx_stupid_bool_op (Matrix_bool_op op, Matrix& a, Complex& s)
 {
   int ar = a.rows ();
   int ac = a.columns ();
+
   Matrix t (ar, ac);
+
   for (int j = 0; j < ac; j++)
     for (int i = 0; i < ar; i++)
       {
@@ -264,6 +398,7 @@ mx_stupid_bool_op (Matrix_bool_op op, Matrix& a, Complex& s)
 	    break;
 	}
     }
+
   return t;
 }
 
@@ -271,15 +406,12 @@ mx_stupid_bool_op (Matrix_bool_op op, Matrix& a, Complex& s)
 static Matrix
 mx_stupid_bool_op (Matrix_bool_op op, Matrix& a, Matrix& b)
 {
+  if (! m_add_conform (a, b, 1))
+    return Matrix ();
+     
   int ar = a.rows ();
   int ac = a.columns ();
 
-  if (ar != b.rows () || ac != b.columns ())
-    {
-      gripe_nonconformant ();
-      jump_to_top_level ();
-    }
-     
   Matrix c (ar, ac);
 
   for (int j = 0; j < ac; j++)
@@ -316,6 +448,7 @@ mx_stupid_bool_op (Matrix_bool_op op, Matrix& a, Matrix& b)
 	    break;
 	  }
       }
+
   return c;
 }
 
@@ -323,15 +456,12 @@ mx_stupid_bool_op (Matrix_bool_op op, Matrix& a, Matrix& b)
 static Matrix
 mx_stupid_bool_op (Matrix_bool_op op, Matrix& a, ComplexMatrix& b)
 {
+  if (! m_add_conform (a, b, 1))
+    return Matrix ();
+     
   int ar = a.rows ();
   int ac = a.columns ();
 
-  if (ar != b.rows () || ac != b.columns ())
-    {
-      gripe_nonconformant ();
-      jump_to_top_level ();
-    }
-     
   Matrix c (ar, ac);
 
   for (int j = 0; j < ac; j++)
@@ -377,7 +507,9 @@ mx_stupid_bool_op (Matrix_bool_op op, Complex& s, Matrix& a)
 {
   int ar = a.rows ();
   int ac = a.columns ();
+
   Matrix t (ar, ac);
+
   for (int j = 0; j < ac; j++)
     for (int i = 0; i < ar; i++)
       {
@@ -412,6 +544,7 @@ mx_stupid_bool_op (Matrix_bool_op op, Complex& s, Matrix& a)
 	    break;
 	}
     }
+
   return t;
 }
 
@@ -421,7 +554,9 @@ mx_stupid_bool_op (Matrix_bool_op op, Complex& s, ComplexMatrix& a)
 {
   int ar = a.rows ();
   int ac = a.columns ();
+
   Matrix t (ar, ac);
+
   for (int j = 0; j < ac; j++)
     for (int i = 0; i < ar; i++)
       {
@@ -456,6 +591,7 @@ mx_stupid_bool_op (Matrix_bool_op op, Complex& s, ComplexMatrix& a)
 	    break;
 	}
     }
+
   return t;
 }
 
@@ -465,7 +601,9 @@ mx_stupid_bool_op (Matrix_bool_op op, ComplexMatrix& a, double s)
 {
   int ar = a.rows ();
   int ac = a.columns ();
+
   Matrix t (ar, ac);
+
   for (int j = 0; j < ac; j++)
     for (int i = 0; i < ar; i++)
       {
@@ -500,6 +638,7 @@ mx_stupid_bool_op (Matrix_bool_op op, ComplexMatrix& a, double s)
 	    break;
 	}
     }
+
   return t;
 }
 
@@ -509,7 +648,9 @@ mx_stupid_bool_op (Matrix_bool_op op, ComplexMatrix& a, Complex& s)
 {
   int ar = a.rows ();
   int ac = a.columns ();
+
   Matrix t (ar, ac);
+
   for (int j = 0; j < ac; j++)
     for (int i = 0; i < ar; i++)
       {
@@ -544,6 +685,7 @@ mx_stupid_bool_op (Matrix_bool_op op, ComplexMatrix& a, Complex& s)
 	    break;
 	}
     }
+
   return t;
 }
 
@@ -551,15 +693,12 @@ mx_stupid_bool_op (Matrix_bool_op op, ComplexMatrix& a, Complex& s)
 static Matrix
 mx_stupid_bool_op (Matrix_bool_op op, ComplexMatrix& a, Matrix& b)
 {
+  if (! m_add_conform (a, b, 1))
+    return Matrix ();
+     
   int ar = a.rows ();
   int ac = a.columns ();
 
-  if (ar != b.rows () || ac != b.columns ())
-    {
-      gripe_nonconformant ();
-      jump_to_top_level ();
-    }
-     
   Matrix c (ar, ac);
 
   for (int j = 0; j < ac; j++)
@@ -603,15 +742,12 @@ mx_stupid_bool_op (Matrix_bool_op op, ComplexMatrix& a, Matrix& b)
 static Matrix
 mx_stupid_bool_op (Matrix_bool_op op, ComplexMatrix& a, ComplexMatrix& b)
 {
+  if (! m_add_conform (a, b, 1))
+    return Matrix ();
+     
   int ar = a.rows ();
   int ac = a.columns ();
 
-  if (ar != b.rows () || ac != b.columns ())
-    {
-      gripe_nonconformant ();
-      jump_to_top_level ();
-    }
-     
   Matrix c (ar, ac);
 
   for (int j = 0; j < ac; j++)
@@ -648,82 +784,8 @@ mx_stupid_bool_op (Matrix_bool_op op, ComplexMatrix& a, ComplexMatrix& b)
 	    break;
 	  }
       }
+
   return c;
-}
-
-/*
- * Check row and column dimensions for binary matrix operations.
- */
-static inline int
-m_add_conform (Matrix& m1, Matrix& m2, int warn)
-{
-  int ok = (m1.rows () == m2.rows () && m1.columns () == m2.columns ());
-  if (!ok && warn)
-    gripe_nonconformant ();
-  return ok;
-}
-
-static inline int
-m_add_conform (Matrix& m1, ComplexMatrix& m2, int warn)
-{
-  int ok = (m1.rows () == m2.rows () && m1.columns () == m2.columns ());
-  if (!ok && warn)
-    gripe_nonconformant ();
-  return ok;
-}
-
-static inline int
-m_add_conform (ComplexMatrix& m1, Matrix& m2, int warn)
-{
-  int ok = (m1.rows () == m2.rows () && m1.columns () == m2.columns ());
-  if (!ok && warn)
-    gripe_nonconformant ();
-  return ok;
-}
-
-static inline int
-m_add_conform (ComplexMatrix& m1, ComplexMatrix& m2, int warn)
-{
-  int ok = (m1.rows () == m2.rows () && m1.columns () == m2.columns ());
-  if (!ok && warn)
-    gripe_nonconformant ();
-  return ok;
-}
-
-static inline int
-m_mul_conform (Matrix& m1, Matrix& m2, int warn)
-{
-  int ok = (m1.columns () == m2.rows ());
-  if (!ok && warn)
-    gripe_nonconformant ();
-  return ok;
-}
-
-static inline int
-m_mul_conform (Matrix& m1, ComplexMatrix& m2, int warn)
-{
-  int ok = (m1.columns () == m2.rows ());
-  if (!ok && warn)
-    gripe_nonconformant ();
-  return ok;
-}
-
-static inline int
-m_mul_conform (ComplexMatrix& m1, Matrix& m2, int warn)
-{
-  int ok = (m1.columns () == m2.rows ());
-  if (!ok && warn)
-    gripe_nonconformant ();
-  return ok;
-}
-
-static inline int
-m_mul_conform (ComplexMatrix& m1, ComplexMatrix& m2, int warn)
-{
-  int ok = (m1.columns () == m2.rows ());
-  if (!ok && warn)
-    gripe_nonconformant ();
-  return ok;
 }
 
 /*
@@ -740,6 +802,7 @@ tree_constant
 do_unary_op (double d, tree::expression_type t)
 {
   double result = 0.0;
+
   switch (t)
     {
     case tree::not:
@@ -764,6 +827,7 @@ tree_constant
 do_unary_op (Matrix& a, tree::expression_type t)
 {
   Matrix result;
+
   switch (t)
     {
     case tree::not:
@@ -788,6 +852,7 @@ tree_constant
 do_unary_op (Complex& c, tree::expression_type t)
 {
   Complex result = 0.0;
+
   switch (t)
     {
     case tree::not:
@@ -814,6 +879,7 @@ tree_constant
 do_unary_op (ComplexMatrix& a, tree::expression_type t)
 {
   ComplexMatrix result;
+
   switch (t)
     {
     case tree::not:
@@ -857,6 +923,7 @@ tree_constant
 do_binary_op (double a, double b, tree::expression_type t)
 {
   double result = 0.0;
+
   switch (t)
     {
     case tree::add:
@@ -914,6 +981,9 @@ do_binary_op (double a, double b, tree::expression_type t)
       break;
     }
 
+  if (error_state)
+    return tree_constant ();
+
   return tree_constant (result);
 }
 
@@ -922,6 +992,7 @@ tree_constant
 do_binary_op (double a, Matrix& b, tree::expression_type t)
 {
   Matrix result;
+
   switch (t)
     {
     case tree::add:
@@ -944,8 +1015,7 @@ do_binary_op (double a, Matrix& b, tree::expression_type t)
       return x_el_div (a, b);
       break;
     case tree::divide:
-      error ("nonconformant right division");
-      return tree_constant ();
+      gripe_nonconformant (1, 1, b.rows (), b.columns ());
       break;
     case tree::power:
       return xpow (a, b);
@@ -982,6 +1052,9 @@ do_binary_op (double a, Matrix& b, tree::expression_type t)
       break;
     }
 
+  if (error_state)
+    return tree_constant ();
+
   return tree_constant (result);
 }
 
@@ -994,6 +1067,7 @@ do_binary_op (double a, Complex& b, tree::expression_type t)
 
   double result = 0.0;
   Complex complex_result;
+
   switch (t)
     {
     case tree::add:
@@ -1064,7 +1138,11 @@ do_binary_op (double a, Complex& b, tree::expression_type t)
       break;
     }
 
+  if (error_state)
+    return tree_constant ();
+
   assert (result_type != RT_unknown);
+
   if (result_type == RT_real)
     return tree_constant (result);
   else
@@ -1080,6 +1158,7 @@ do_binary_op (double a, ComplexMatrix& b, tree::expression_type t)
 
   Matrix result;
   ComplexMatrix complex_result;
+
   switch (t)
     {
     case tree::add:
@@ -1105,8 +1184,7 @@ do_binary_op (double a, ComplexMatrix& b, tree::expression_type t)
       return x_el_div (a, b);
       break;
     case tree::divide:
-      error ("nonconformant right division");
-      return tree_constant ();
+      gripe_nonconformant (1, 1, b.rows (), b.columns ());
       break;
     case tree::power:
       return xpow (a, b);
@@ -1151,7 +1229,11 @@ do_binary_op (double a, ComplexMatrix& b, tree::expression_type t)
       break;
     }
 
+  if (error_state)
+    return tree_constant ();
+
   assert (result_type != RT_unknown);
+
   if (result_type == RT_real)
     return tree_constant (result);
   else
@@ -1163,6 +1245,7 @@ tree_constant
 do_binary_op (Matrix& a, double b, tree::expression_type t)
 {
   Matrix result;
+
   switch (t)
     {
     case tree::add:
@@ -1183,8 +1266,7 @@ do_binary_op (Matrix& a, double b, tree::expression_type t)
       return x_el_div (b, a);
       break;
     case tree::leftdiv:
-      error ("nonconformant left division");
-      return tree_constant ();
+      gripe_nonconformant (a.rows (), a.columns (), 1, 1);
       break;
     case tree::power:
       return xpow (a, b);
@@ -1221,6 +1303,9 @@ do_binary_op (Matrix& a, double b, tree::expression_type t)
       break;
     }
 
+  if (error_state)
+    return tree_constant ();
+
   return tree_constant (result);
 }
 
@@ -1230,45 +1315,31 @@ do_binary_op (Matrix& a, Matrix& b, tree::expression_type t)
 {
   Matrix result;
 
-  int error_cond = 0;
-
   switch (t)
     {
     case tree::add:
       if (m_add_conform (a, b, 1))
 	result = a + b;
-      else
-	error_cond = 1;
       break;
     case tree::subtract:
       if (m_add_conform (a, b, 1))
 	result = a - b;
-      else
-	error_cond = 1;
       break;
     case tree::el_mul:
       if (m_add_conform (a, b, 1))
 	result = a.product (b);
-      else
-	error_cond = 1;
       break;
     case tree::multiply:
       if (m_mul_conform (a, b, 1))
 	result = a * b;
-      else
-	error_cond = 1;
       break;
     case tree::el_div:
       if (m_add_conform (a, b, 1))
 	result = a.quotient (b);
-      else
-	error_cond = 1;
       break;
     case tree::el_leftdiv:
       if (m_add_conform (a, b, 1))
 	result = b.quotient (a);
-      else
-	error_cond = 1;
       break;
     case tree::leftdiv:
       return xleftdiv (a, b);
@@ -1278,71 +1349,52 @@ do_binary_op (Matrix& a, Matrix& b, tree::expression_type t)
       break;
     case tree::power:
       error ("can't do A ^ B for A and B both matrices");
-      error_cond = 1;
       break;
     case tree::elem_pow:
       if (m_add_conform (a, b, 1))
 	return elem_xpow (a, b);
-      else
-	error_cond = 1;
       break;
     case tree::cmp_lt:
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_LT, a, b);
-      else
-	error_cond = 1;
       break;
     case tree::cmp_le:
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_LE, a, b);
-      else
-	error_cond = 1;
       break;
     case tree::cmp_eq:
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_EQ, a, b);
-      else
-	error_cond = 1;
       break;
     case tree::cmp_ge:
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_GE, a, b);
-      else
-	error_cond = 1;
       break;
     case tree::cmp_gt:
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_GT, a, b);
-      else
-	error_cond = 1;
       break;
     case tree::cmp_ne:
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_NE, a, b);
-      else
-	error_cond = 1;
       break;
     case tree::and:
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_AND, a, b);
-      else
-	error_cond = 1;
       break;
     case tree::or:
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_OR, a, b);
-      else
-	error_cond = 1;
       break;
     default:
       panic_impossible ();
       break;
     }
 
-  if (error_cond)
+  if (error_state)
     return tree_constant ();
-  else
-    return tree_constant (result);
+
+  return tree_constant (result);
 }
 
 /* 7 */
@@ -1354,6 +1406,7 @@ do_binary_op (Matrix& a, Complex& b, tree::expression_type t)
 
   Matrix result;
   ComplexMatrix complex_result;
+
   switch (t)
     {
     case tree::add:
@@ -1378,8 +1431,7 @@ do_binary_op (Matrix& a, Complex& b, tree::expression_type t)
       return x_el_div (b, a);
       break;
     case tree::leftdiv:
-      error ("nonconformant left division");
-      return tree_constant ();
+      gripe_nonconformant (a.rows (), a.columns (), 1, 1);
       break;
     case tree::power:
       return xpow (a, b);
@@ -1424,7 +1476,11 @@ do_binary_op (Matrix& a, Complex& b, tree::expression_type t)
       break;
     }
 
+  if (error_state)
+    return tree_constant ();
+
   assert (result_type != RT_unknown);
+
   if (result_type == RT_real)
     return tree_constant (result);
   else
@@ -1440,49 +1496,38 @@ do_binary_op (Matrix& a, ComplexMatrix& b, tree::expression_type t)
 
   Matrix result;
   ComplexMatrix complex_result;
+
   switch (t)
     {
     case tree::add:
       result_type = RT_complex;
       if (m_add_conform (a, b, 1))
 	complex_result = a + b;
-      else
-	return tree_constant ();
       break;
     case tree::subtract:
       result_type = RT_complex;
       if (m_add_conform (a, b, 1))
 	complex_result = a - b;
-      else
-	return tree_constant ();
       break;
     case tree::el_mul:
       result_type = RT_complex;
       if (m_add_conform (a, b, 1))
 	complex_result = a.product (b);
-      else
-	return tree_constant ();
       break;
     case tree::multiply:
       result_type = RT_complex;
       if (m_mul_conform (a, b, 1))
 	complex_result = a * b;
-      else
-	return tree_constant ();
       break;
     case tree::el_div:
       result_type = RT_complex;
       if (m_add_conform (a, b, 1))
 	complex_result = a.quotient (b);
-      else
-	return tree_constant ();
       break;
     case tree::el_leftdiv:
       result_type = RT_complex;
       if (m_add_conform (a, b, 1))
 	complex_result = b.quotient (a);
-      else
-	return tree_constant ();
       break;
     case tree::leftdiv:
       return xleftdiv (a, b);
@@ -1492,76 +1537,61 @@ do_binary_op (Matrix& a, ComplexMatrix& b, tree::expression_type t)
       break;
     case tree::power:
       error ("can't do A ^ B for A and B both matrices");
-      return tree_constant ();
       break;
     case tree::elem_pow:
       if (m_add_conform (a, b, 1))
 	return elem_xpow (a, b);
-      else
-	return tree_constant ();
       break;
     case tree::cmp_lt:
       result_type = RT_real;
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_LT, a, b);
-      else
-	return tree_constant ();
       break;
     case tree::cmp_le:
       result_type = RT_real;
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_LE, a, b);
-      else
-	return tree_constant ();
       break;
     case tree::cmp_eq:
       result_type = RT_real;
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_EQ, a, b);
-      else
-	return tree_constant ();
       break;
     case tree::cmp_ge:
       result_type = RT_real;
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_GE, a, b);
-      else
-	return tree_constant ();
       break;
     case tree::cmp_gt:
       result_type = RT_real;
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_GT, a, b);
-      else
-	return tree_constant ();
       break;
     case tree::cmp_ne:
       result_type = RT_real;
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_NE, a, b);
-      else
-	return tree_constant ();
       break;
     case tree::and:
       result_type = RT_real;
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_AND, a, b);
-      else
-	return tree_constant ();
       break;
     case tree::or:
       result_type = RT_real;
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_OR, a, b);
-      else
-	return tree_constant ();
       break;
     default:
       panic_impossible ();
       break;
     }
 
+  if (error_state)
+    return tree_constant ();
+
   assert (result_type != RT_unknown);
+
   if (result_type == RT_real)
     return tree_constant (result);
   else
@@ -1577,6 +1607,7 @@ do_binary_op (Complex& a, double b, tree::expression_type t)
 
   double result = 0.0;
   Complex complex_result;
+
   switch (t)
     {
     case tree::add:
@@ -1647,7 +1678,11 @@ do_binary_op (Complex& a, double b, tree::expression_type t)
       break;
     }
 
+  if (error_state)
+    return tree_constant ();
+
   assert (result_type != RT_unknown);
+
   if (result_type == RT_real)
     return tree_constant (result);
   else
@@ -1663,6 +1698,7 @@ do_binary_op (Complex& a, Matrix& b, tree::expression_type t)
 
   Matrix result;
   ComplexMatrix complex_result;
+
   switch (t)
     {
     case tree::add:
@@ -1688,8 +1724,7 @@ do_binary_op (Complex& a, Matrix& b, tree::expression_type t)
       return x_el_div (a, b);
       break;
     case tree::divide:
-      error ("nonconformant right division");
-      return tree_constant ();
+      gripe_nonconformant (1, 1, b.rows (), b.columns ());
       break;
     case tree::power:
       return xpow (a, b);
@@ -1734,7 +1769,11 @@ do_binary_op (Complex& a, Matrix& b, tree::expression_type t)
       break;
     }
 
+  if (error_state)
+    return tree_constant ();
+
   assert (result_type != RT_unknown);
+
   if (result_type == RT_real)
     return tree_constant (result);
   else
@@ -1750,6 +1789,7 @@ do_binary_op (Complex& a, Complex& b, tree::expression_type t)
 
   double result = 0.0;
   Complex complex_result;
+
   switch (t)
     {
     case tree::add:
@@ -1820,7 +1860,11 @@ do_binary_op (Complex& a, Complex& b, tree::expression_type t)
       break;
     }
 
+  if (error_state)
+    return tree_constant ();
+
   assert (result_type != RT_unknown);
+
   if (result_type == RT_real)
     return tree_constant (result);
   else
@@ -1836,6 +1880,7 @@ do_binary_op (Complex& a, ComplexMatrix& b, tree::expression_type t)
 
   Matrix result;
   ComplexMatrix complex_result;
+
   switch (t)
     {
     case tree::add:
@@ -1861,8 +1906,7 @@ do_binary_op (Complex& a, ComplexMatrix& b, tree::expression_type t)
       return x_el_div (a, b);
       break;
     case tree::divide:
-      error ("nonconformant right division");
-      return tree_constant ();
+      gripe_nonconformant (1, 1, b.rows (), b.columns ());
       break;
     case tree::power:
       return xpow (a, b);
@@ -1907,7 +1951,11 @@ do_binary_op (Complex& a, ComplexMatrix& b, tree::expression_type t)
       break;
     }
 
+  if (error_state)
+    return tree_constant ();
+
   assert (result_type != RT_unknown);
+
   if (result_type == RT_real)
     return tree_constant (result);
   else
@@ -1923,6 +1971,7 @@ do_binary_op (ComplexMatrix& a, double b, tree::expression_type t)
 
   Matrix result;
   ComplexMatrix complex_result;
+
   switch (t)
     {
     case tree::add:
@@ -1947,8 +1996,7 @@ do_binary_op (ComplexMatrix& a, double b, tree::expression_type t)
       return x_el_div (b, a);
       break;
     case tree::leftdiv:
-      error ("nonconformant left division");
-      return tree_constant ();
+      gripe_nonconformant (a.rows (), a.columns (), 1, 1);
       break;
     case tree::power:
       return xpow (a, b);
@@ -1993,7 +2041,11 @@ do_binary_op (ComplexMatrix& a, double b, tree::expression_type t)
       break;
     }
 
+  if (error_state)
+    return tree_constant ();
+
   assert (result_type != RT_unknown);
+
   if (result_type == RT_real)
     return tree_constant (result);
   else
@@ -2009,49 +2061,38 @@ do_binary_op (ComplexMatrix& a, Matrix& b, tree::expression_type t)
 
   Matrix result;
   ComplexMatrix complex_result;
+
   switch (t)
     {
     case tree::add:
       result_type = RT_complex;
       if (m_add_conform (a, b, 1))
 	complex_result = a + b;
-      else
-	return tree_constant ();
       break;
     case tree::subtract:
       result_type = RT_complex;
       if (m_add_conform (a, b, 1))
 	complex_result = a - b;
-      else
-	return tree_constant ();
       break;
     case tree::el_mul:
       result_type = RT_complex;
       if (m_add_conform (a, b, 1))
 	complex_result = a.product (b);
-      else
-	return tree_constant ();
       break;
     case tree::multiply:
       result_type = RT_complex;
       if (m_mul_conform (a, b, 1))
 	complex_result = a * b;
-      else
-	return tree_constant ();
       break;
     case tree::el_div:
       result_type = RT_complex;
       if (m_add_conform (a, b, 1))
 	complex_result = a.quotient (b);
-      else
-	return tree_constant ();
       break;
     case tree::el_leftdiv:
       result_type = RT_complex;
       if (m_add_conform (a, b, 1))
 	complex_result = a.quotient (b);
-      else
-	return tree_constant ();
       break;
     case tree::leftdiv:
       return xleftdiv (a, b);
@@ -2061,76 +2102,61 @@ do_binary_op (ComplexMatrix& a, Matrix& b, tree::expression_type t)
       break;
     case tree::power:
       error ("can't do A ^ B for A and B both matrices");
-      return tree_constant ();
       break;
     case tree::elem_pow:
       if (m_add_conform (a, b, 1))
 	return elem_xpow (a, b);
-      else
-	return tree_constant ();
       break;
     case tree::cmp_lt:
       result_type = RT_real;
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_LT, a, b);
-      else
-	return tree_constant ();
       break;
     case tree::cmp_le:
       result_type = RT_real;
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_LE, a, b);
-      else
-	return tree_constant ();
       break;
     case tree::cmp_eq:
       result_type = RT_real;
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_EQ, a, b);
-      else
-	return tree_constant ();
       break;
     case tree::cmp_ge:
       result_type = RT_real;
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_GE, a, b);
-      else
-	return tree_constant ();
       break;
     case tree::cmp_gt:
       result_type = RT_real;
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_GT, a, b);
-      else
-	return tree_constant ();
       break;
     case tree::cmp_ne:
       result_type = RT_real;
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_NE, a, b);
-      else
-	return tree_constant ();
       break;
     case tree::and:
       result_type = RT_real;
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_AND, a, b);
-      else
-	return tree_constant ();
       break;
     case tree::or:
       result_type = RT_real;
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_OR, a, b);
-      else
-	return tree_constant ();
       break;
     default:
       panic_impossible ();
       break;
     }
 
+  if (error_state)
+    return tree_constant ();
+
   assert (result_type != RT_unknown);
+
   if (result_type == RT_real)
     return tree_constant (result);
   else
@@ -2146,6 +2172,7 @@ do_binary_op (ComplexMatrix& a, Complex& b, tree::expression_type t)
 
   Matrix result;
   ComplexMatrix complex_result;
+
   switch (t)
     {
     case tree::add:
@@ -2170,8 +2197,7 @@ do_binary_op (ComplexMatrix& a, Complex& b, tree::expression_type t)
       return x_el_div (b, a);
       break;
     case tree::leftdiv:
-      error ("nonconformant left division");
-      return tree_constant ();
+      gripe_nonconformant (a.rows (), a.columns (), 1, 1);
       break;
     case tree::power:
       return xpow (a, b);
@@ -2216,7 +2242,11 @@ do_binary_op (ComplexMatrix& a, Complex& b, tree::expression_type t)
       break;
     }
 
+  if (error_state)
+    return tree_constant ();
+
   assert (result_type != RT_unknown);
+
   if (result_type == RT_real)
     return tree_constant (result);
   else
@@ -2232,49 +2262,38 @@ do_binary_op (ComplexMatrix& a, ComplexMatrix& b, tree::expression_type t)
 
   Matrix result;
   ComplexMatrix complex_result;
+
   switch (t)
     {
     case tree::add:
       result_type = RT_complex;
       if (m_add_conform (a, b, 1))
 	complex_result = a + b;
-      else
-	return tree_constant ();
       break;
     case tree::subtract:
       result_type = RT_complex;
       if (m_add_conform (a, b, 1))
 	complex_result = a - b;
-      else
-	return tree_constant ();
       break;
     case tree::el_mul:
       result_type = RT_complex;
       if (m_add_conform (a, b, 1))
 	complex_result = a.product (b);
-      else
-	return tree_constant ();
       break;
     case tree::multiply:
       result_type = RT_complex;
       if (m_mul_conform (a, b, 1))
 	complex_result = a * b;
-      else
-	return tree_constant ();
       break;
     case tree::el_div:
       result_type = RT_complex;
       if (m_add_conform (a, b, 1))
 	complex_result = a.quotient (b);
-      else
-	return tree_constant ();
       break;
     case tree::el_leftdiv:
       result_type = RT_complex;
       if (m_add_conform (a, b, 1))
 	complex_result = b.quotient (a);
-      else
-	return tree_constant ();
       break;
     case tree::leftdiv:
       return xleftdiv (a, b);
@@ -2284,76 +2303,61 @@ do_binary_op (ComplexMatrix& a, ComplexMatrix& b, tree::expression_type t)
       break;
     case tree::power:
       error ("can't do A ^ B for A and B both matrices");
-      return tree_constant ();
       break;
     case tree::elem_pow:
       if (m_add_conform (a, b, 1))
 	return elem_xpow (a, b);
-      else
-	return tree_constant ();
       break;
     case tree::cmp_lt:
       result_type = RT_real;
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_LT, a, b);
-      else
-	return tree_constant ();
       break;
     case tree::cmp_le:
       result_type = RT_real;
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_LE, a, b);
-      else
-	return tree_constant ();
       break;
     case tree::cmp_eq:
       result_type = RT_real;
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_EQ, a, b);
-      else
-	return tree_constant ();
       break;
     case tree::cmp_ge:
       result_type = RT_real;
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_GE, a, b);
-      else
-	return tree_constant ();
       break;
     case tree::cmp_gt:
       result_type = RT_real;
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_GT, a, b);
-      else
-	return tree_constant ();
       break;
     case tree::cmp_ne:
       result_type = RT_real;
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_NE, a, b);
-      else
-	return tree_constant ();
       break;
     case tree::and:
       result_type = RT_real;
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_AND, a, b);
-      else
-	return tree_constant ();
       break;
     case tree::or:
       result_type = RT_real;
       if (m_add_conform (a, b, 1))
 	result = mx_stupid_bool_op (Matrix_OR, a, b);
-      else
-	return tree_constant ();
       break;
     default:
       panic_impossible ();
       break;
     }
 
+  if (error_state)
+    return tree_constant ();
+
   assert (result_type != RT_unknown);
+
   if (result_type == RT_real)
     return tree_constant (result);
   else

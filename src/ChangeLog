@@ -1,3 +1,9 @@
+2004-09-08  John W. Eaton  <jwe@octave.org>
+
+	* pt-arg-list.cc (convert_to_const_vector):
+	Unwind-protect index_position before modifying it.
+	Don't protect and set index_position unless stash_object is true.
+
 2004-09-08  David Bateman  <dbateman@free.fr>
 
 	* ov-fcn-inline.cc (octave_fcn_inline::save_ascii,

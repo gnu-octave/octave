@@ -195,7 +195,12 @@ tree_argument_list::convert_to_const_vector (const octave_value *object)
   int j = 0;
   for (int k = 0; k < len; k++)
     {
-      index_position = (len == 1) ? -1 : k;
+      if (stash_object)
+	{
+	  unwind_protect_int (index_position);
+
+	  index_position = (len == 1) ? -1 : k;
+	}
 
       tree_expression *elt = *p++;
 

@@ -51,6 +51,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "error.h"
 #include "file-ops.h"
 #include "help.h"
+#include "lo-ieee.h"
 #include "oct-fstrm.h"
 #include "oct-iostrm.h"
 #include "oct-map.h"
@@ -66,9 +67,17 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 void
 initialize_file_io (void)
 {
-  octave_istream *stdin_stream = new octave_istream (&cin, "stdin");
-  octave_ostream *stdout_stream = new octave_ostream (&cout, "stdout");
-  octave_ostream *stderr_stream = new octave_ostream (&cerr, "stderr");
+  octave_istream *stdin_stream
+    = new octave_istream (&cin, "stdin");
+
+  // This uses octave_stdout (see pager.h), not cout so that Octave's
+  // standard output stream will pass through the pager.
+
+  octave_ostream *stdout_stream
+    = new octave_ostream (&octave_stdout, "stdout");
+
+  octave_ostream *stderr_stream
+    = new octave_ostream (&cerr, "stderr");
 
   octave_stream_list::insert (stdin_stream);
   octave_stream_list::insert (stdout_stream);
@@ -128,7 +137,7 @@ fopen_mode_to_ios_mode (const string& mode)
 }
 
 DEFUN (fclose, args, ,
-  "fclose (FILENAME or FILENUM): close a file")
+  "fclose (FILENUM): close a file")
 {
   double retval = -1.0;
 
@@ -148,7 +157,7 @@ DEFUN (fclose, args, ,
 }
 
 DEFUN (fflush, args, ,
-  "fflush (FILENAME or FILENUM): flush buffered data to output file")
+  "fflush (FILENUM): flush buffered data to output file")
 {
   double retval = -1.0;
 
@@ -170,7 +179,7 @@ DEFUN (fflush, args, ,
 }
 
 DEFUN (fgetl, args, ,
-  "STRING = fgetl (FILENAME or FILENUM [, LENGTH])\n\
+  "STRING = fgetl (FILENUM [, LENGTH])\n\
 \n\
 read a string from a file")
 {
@@ -204,7 +213,7 @@ read a string from a file")
 }
 
 DEFUN (fgets, args, ,
-  "STRING = fgets (FILENAME or FILENUM [, LENGTH])\n\
+  "STRING = fgets (FILENUM [, LENGTH])\n\
 \n\
 read a string from a file")
 {
@@ -249,7 +258,8 @@ do_stream_open (const string& name, const string& mode,
 
   if (! error_state)
     {
-      octave_base_stream::arch_type at = octave_stream::string_to_arch (arch);
+      octave_base_stream::arch_type at
+	= octave_stream::string_to_arch_type (arch);
 
       if (! error_state)
 	retval = new octave_fstream (name, md, at);
@@ -381,7 +391,7 @@ DEFUN (freport, args, ,
 }
 
 DEFUN (frewind, args, ,
-  "frewind (FILENAME or FILENUM): set file position at beginning of file")
+  "frewind (FILENUM): set file position at beginning of file")
 {
   double retval = -1.0;
 
@@ -403,7 +413,7 @@ DEFUN (frewind, args, ,
 }
 
 DEFUN (fseek, args, ,
-  "fseek (FILENAME or FILENUM, OFFSET [, ORIGIN])\n\
+  "fseek (FILENUM, OFFSET [, ORIGIN])\n\
 \n\
 set file position for reading or writing")
 {
@@ -432,7 +442,7 @@ set file position for reading or writing")
 }
 
 DEFUN (ftell, args, ,
-  "POSITION = ftell (FILENAME or FILENUM): returns the current file position")
+  "POSITION = ftell (FILENUM): returns the current file position")
 {
   double retval = -1.0;
 
@@ -454,7 +464,7 @@ DEFUN (ftell, args, ,
 }
 
 DEFUN (fprintf, args, ,
-  "fprintf (FILENAME or FILENUM, FORMAT, ...)")
+  "fprintf (FILENUM, FORMAT, ...)")
 {
   double retval = -1.0;
 
@@ -495,7 +505,7 @@ DEFUN (fprintf, args, ,
 }
 
 DEFUN (fputs, args, ,
-  "fputs (FILENAME or FILENUM, STRING)")
+  "fputs (FILENUM, STRING)")
 {
   double retval = -1.0;
 
@@ -521,14 +531,14 @@ DEFUN (sprintf, args, ,
 {
   octave_value_list retval;
 
-  retval(2) = -1.0;
-  retval(1) = "unknown error";
-  retval(0) = "";
-
   int nargin = args.length ();
 
   if (nargin > 0)
     {
+      retval(2) = -1.0;
+      retval(1) = "unknown error";
+      retval(0) = "";
+
       octave_ostrstream ostr;
 
       octave_stream os (&ostr);
@@ -568,9 +578,12 @@ DEFUN (sprintf, args, ,
 }
 
 DEFUN (fscanf, args, ,
-  "[A, B, C, ...] = fscanf (FILENAME or FILENUM, FORMAT, SIZE)")
+  "[A, B, C, ...] = fscanf (FILENUM, FORMAT, SIZE)")
 {
   octave_value_list retval;
+
+  retval (1) = 0.0;
+  retval (0) = Matrix ();
 
   int nargin = args.length ();
 
@@ -586,13 +599,16 @@ DEFUN (fscanf, args, ,
 
 	      int count = 0;
 
-	      // XXX FIXME XXX
-	      Array<int> size (2);
+	      Matrix size = (nargin == 3)
+		? args(2).matrix_value () : Matrix (1, 1, octave_Inf);
 
-	      octave_value tmp = os->scanf (fmt, size, count);
+	      if (! error_state)
+		{
+		  octave_value tmp = os->scanf (fmt, size, count);
 
-	      retval(1) = (double) count;
-	      retval(0) = tmp;
+		  retval(1) = (double) count;
+		  retval(0) = tmp;
+		}
 	    }
 	  else
 	    ::error ("fscanf: format must be a string");
@@ -611,15 +627,15 @@ DEFUN (sscanf, args, ,
 {
   octave_value_list retval;
 
-  retval(3) = -1.0;
-  retval(2) = "unknown error";
-  retval(1) = 0.0;
-  retval(0) = Matrix ();
-
   int nargin = args.length ();
 
   if (nargin == 2 || nargin == 3)
     {
+      retval(3) = -1.0;
+      retval(2) = "unknown error";
+      retval(1) = 0.0;
+      retval(0) = Matrix ();
+
       if (args(0).is_string ())
 	{
 	  string data = args(0).string_value ();
@@ -636,13 +652,18 @@ DEFUN (sscanf, args, ,
 
 		  int count = 0;
 
-		  // XXX FIXME XXX
-		  Array<int> size (2);
+		  Matrix size = (nargin == 3)
+		    ? args(2).matrix_value () : Matrix (1, 1, octave_Inf);
 
 		  octave_value tmp = os.scanf (fmt, size, count);
 
+		  // XXX FIXME XXX -- is this the right thing to do?
+		  // Extract error message first, because getting
+		  // position will clear it.
+		  string errmsg = os.error ();
+
 		  retval(3) = (double) (os.tell () + 1);
-		  retval(2) = os.error ();
+		  retval(2) = errmsg;
 		  retval(1) = (double) count;
 		  retval(0) = tmp;
 		}
@@ -661,8 +682,69 @@ DEFUN (sscanf, args, ,
   return retval;
 }
 
-DEFUN (fread, , ,
-  "[DATA, COUNT] = fread (FILENUM, SIZE, PRECISION)\n\
+static octave_value
+do_fread (octave_stream& os, const octave_value& size_arg,
+	  const octave_value& prec_arg, const octave_value& skip_arg,
+	  const octave_value& arch_arg, int& count)
+{
+  octave_value retval;
+
+  count = -1;
+
+  Matrix size = size_arg.matrix_value ();
+
+  if (! error_state)
+    {
+      string prec = prec_arg.string_value ();
+
+      if (! error_state)
+	{
+	  octave_base_stream::data_type dt
+	    = octave_stream::string_to_data_type (prec);
+
+	  if (! error_state)
+	    {
+	      double dskip = skip_arg.double_value ();
+
+	      if (! error_state)
+		{
+		  if (D_NINT (dskip) == dskip)
+		    {
+		      int skip = NINT (dskip);
+
+		      string arch = arch_arg.string_value ();
+
+		      if (! error_state)
+			{
+			  octave_base_stream::arch_type at
+			    = octave_stream::string_to_arch_type (arch);
+
+			  if (! error_state)
+			    retval = os.read (size, dt, skip, at, count);
+			}
+		      else
+			::error ("fread: architecture type must be a string");
+		    }
+		  else
+		    ::error ("fread: skip must be an integer");
+		}
+	      else
+		::error ("fread: invalid skip specified");
+	    }
+	  else
+	    ::error ("fread: invalid data type specified");
+	}
+      else
+	::error ("fread: precision must be a string");
+    }
+  else
+    ::error ("fread: invalid size specified");
+
+  return retval;
+}
+
+DEFUN (fread, args, ,
+  "[DATA, COUNT] = fread (FILENUM [, SIZE] [, PRECISION] [, SKIP] [, ARCH])\n\
 \n\
  Reads data in binary form of type PRECISION from a file.\n\
 \n\
@@ -677,12 +759,98 @@ DEFUN (fread, , ,
  COUNT     : number of elements read")
 {
   octave_value_list retval;
-  // XXX IMPLEMENTME XXX
+
+  int nargin = args.length ();
+
+  if (nargin > 1 && nargin < 6)
+    {
+      retval(1) = -1.0;
+      retval(0) = Matrix ();
+
+      octave_stream *os = octave_stream_list::lookup (args(0));
+
+      if (os)
+	{
+	  octave_value size = (nargin > 1)
+	    ? args(1) : octave_value (octave_Inf);
+
+	  octave_value prec = (nargin > 2)
+	    ? args(2) : octave_value ("uchar");
+
+	  octave_value skip = (nargin > 3)
+	    ? args(3) : octave_value (0.0);
+
+	  octave_value arch = (nargin > 4)
+	    ? args(4) : octave_value ("native");
+
+	  int count = -1;
+
+	  octave_value tmp = do_fread (*os, size, prec, skip, arch, count);
+
+	  retval(1) = (double) count;
+	  retval(0) = tmp;
+	}
+      else
+	gripe_invalid_file_id ("fread");
+    }
+  else
+    print_usage ("fread");
+
   return retval;
 }
 
-DEFUN (fwrite, , ,
-  "COUNT = fwrite (FILENUM, DATA, PRECISION)\n\
+static int
+do_fwrite (octave_stream& os, const octave_value& data,
+	   const octave_value& prec_arg, const octave_value& skip_arg,
+	   const octave_value& arch_arg)
+{
+  int retval = -1;
+
+  string prec = prec_arg.string_value ();
+
+  if (! error_state)
+    {
+      octave_base_stream::data_type dt
+	= octave_stream::string_to_data_type (prec);
+
+      if (! error_state)
+	{
+	  double dskip = skip_arg.double_value ();
+
+	  if (! error_state)
+	    {
+	      if (D_NINT (dskip) == dskip)
+		{
+		  int skip = NINT (dskip);
+
+		  string arch = arch_arg.string_value ();
+
+		  if (! error_state)
+		    {
+		      octave_base_stream::arch_type at
+			= octave_stream::string_to_arch_type (arch);
+
+		      if (! error_state)
+			retval = os.write (data, dt, skip, at);
+		    }
+		  else
+		    ::error ("fwrite: architecture type must be a string");
+		}
+	      else
+		::error ("fwrite: skip must be an integer");
+	    }
+	  else
+	    ::error ("fwrite: invalid skip specified");
+	}
+    }
+  else
+    ::error ("fwrite: precision must be a string");
+
+  return retval;
+}
+
+DEFUN (fwrite, args, ,
+  "COUNT = fwrite (FILENUM, DATA [, PRECISION] [, SKIP] [, ARCH])\n\
 \n\
  Writes data to a file in binary form of size PRECISION\n\
 \n\
@@ -695,16 +863,37 @@ DEFUN (fwrite, , ,
 \n\
  COUNT     : number of elements written")
 {
-  octave_value_list retval;
-  // XXX IMPLEMENTME XXX
+  octave_value retval = -1.0;
+
+  int nargin = args.length ();
+
+  if (nargin > 1 && nargin < 6)
+    {
+      octave_stream *os = octave_stream_list::lookup (args(0));
+
+      if (os)
+	{
+	  octave_value data = args(1);
+	  octave_value prec = (nargin > 2) ? args(2) : octave_value ("uchar");
+	  octave_value skip = (nargin > 3) ? args(3) : octave_value (0.0);
+	  octave_value arch = (nargin > 4) ? args(4) : octave_value ("native");
+
+	  retval = do_fwrite (*os, data, prec, skip, arch);
+	}
+      else
+	gripe_invalid_file_id ("fwrite");
+    }
+  else
+    print_usage ("fwrite");
+
   return retval;
 }
 
 DEFUN (feof, args, ,
-  "ERROR = feof (FILENAME or FILENUM)\n\
+  "ERROR = feof (FILENUM)\n\
 \n\
  Returns a non zero value for an end of file condition for the\n\
- file specified by FILENAME or FILENUM from fopen")
+ file specified by FILENUM from fopen")
 {
   double retval = -1.0;
 
@@ -726,10 +915,10 @@ DEFUN (feof, args, ,
 }
 
 DEFUN (ferror, args, ,
-  "ERROR = ferror (FILENAME or FILENUM, [\"clear\"])\n\
+  "ERROR = ferror (FILENUM, [\"clear\"])\n\
 \n\
  Returns a non zero value for an error condition on the\n\
- file specified by FILENAME or FILENUM from fopen")
+ file specified by FILENUM from fopen")
 {
   octave_value_list retval;
 
@@ -819,7 +1008,7 @@ DEFUN (popen, args, ,
 }
 
 DEFUN (pclose, args, ,
-  "pclose (FILENAME or FILENUM)\n\
+  "pclose (FILENUM)\n\
 \n\
   Close a pipe and terminate the associated process")
 {

@@ -24,6 +24,8 @@
 ;; Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 ;; Boston, MA 02111-1307, USA.
 
+;;; Commentary:
+
 ;;; Code:
 
 (require 'octave-mod)
@@ -93,6 +95,17 @@ mode, set this to (\"-q\" \"--traditional\")."
   ;; Could certainly do more font locking in inferior Octave ...
   "Additional expressions to highlight in Inferior Octave mode.")
 
+
+;;; Compatibility functions
+(if (not (fboundp 'comint-line-beginning-position))
+    ;; comint-line-beginning-position is defined in Emacs 21
+    (defun comint-line-beginning-position ()
+      "Returns the buffer position of the beginning of the line, after any prompt.
+The prompt is assumed to be any text at the beginning of the line matching
+the regular expression `comint-prompt-regexp', a buffer local variable."
+      (save-excursion (comint-bol nil) (point))))
+
+
 (defvar inferior-octave-output-list nil)
 (defvar inferior-octave-output-string nil)
 (defvar inferior-octave-receive-in-progress nil)
@@ -103,7 +116,7 @@ mode, set this to (\"-q\" \"--traditional\")."
   "Non-nil means that `inferior-octave-complete' is impossible.")
 
 (defvar inferior-octave-dynamic-complete-functions
-  '(inferior-octave-complete comint-dynamic-complete-filename)  
+  '(inferior-octave-complete comint-dynamic-complete-filename)
   "List of functions called to perform completion for inferior Octave.
 This variable is used to initialize `comint-dynamic-complete-functions'
 in the Inferior Octave buffer.")
@@ -125,12 +138,12 @@ Entry to this mode successively runs the hooks `comint-mode-hook' and
   (use-local-map inferior-octave-mode-map)
   (set-syntax-table inferior-octave-mode-syntax-table)
 
-  (make-local-variable 'comment-start)  
+  (make-local-variable 'comment-start)
   (setq comment-start octave-comment-start)
   (make-local-variable 'comment-end)
   (setq comment-end "")
   (make-local-variable 'comment-column)
-  (setq comment-column 32)    
+  (setq comment-column 32)
   (make-local-variable 'comment-start-skip)
   (setq comment-start-skip octave-comment-start-skip)
 
@@ -214,7 +227,7 @@ startup file, `~/.emacs-octave'."
       (setq commands
 	    (list "page_screen_output = 0;\n"
 		  (if (not (string-equal
-			    inferior-octave-output-string ">> ")) 
+			    inferior-octave-output-string ">> "))
 		      "PS1=\"\\\\s> \";\n")
 		  (if (file-exists-p file)
 		      (format "source (\"%s\");\n" file))))
@@ -243,11 +256,10 @@ This is implemented using the Octave command `completion_matches' which
 is NOT available with versions of Octave prior to 2.0."
   (interactive)
   (let* ((end (point))
-	 (command (save-excursion
-		    (skip-syntax-backward "w_")
-		    (and (looking-at comint-prompt-regexp)
-			 (goto-char (match-end 0)))
-		    (buffer-substring-no-properties (point) end)))
+	 (command
+	  (save-excursion
+	    (skip-syntax-backward "w_" (comint-line-beginning-position))
+	    (buffer-substring-no-properties (point) end)))
 	 (proc (get-buffer-process inferior-octave-buffer))
 	 (filter (process-filter proc)))
     (cond (inferior-octave-complete-impossible

@@ -1,3 +1,14 @@
+2005-03-15  John W. Eaton  <jwe@octave.org>
+
+	* emacs/octave-inf.el, emacs/octave-mod.el, emacs/octave-hlp.el:
+	Import changes from Emacs.
+
+2005-03-14  Rafael Laboissiere  <rafael@debian.org>
+
+	* emacs/octave-mod.el (octave-end-keywords): Omit "end" from the list.
+	(octave-reserved-words): Include "end" here.
+	(octve-block-match-alist): Don't include "end" here.
+
 2005-03-14  John W. Eaton  <jwe@octave.org>
 
 	* configure.in: Check for umfpack/umfpack.h instead of just umfpack.h.

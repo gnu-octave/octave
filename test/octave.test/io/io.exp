@@ -3,6 +3,12 @@
 # disp
 # save
 # load
+# fputs
+# fgetl
+# fgets
+# fprintf
+# fscanf
+# ferror
 
 set test puts-1
 set prog_output "foo\nans = 0"
@@ -100,30 +106,17 @@ set test tmpnam-2
 set prog_output "\n... tmpnam:.*"
 do_test tmpnam-2.m
 
-# set test file-io-1
-# set prog_output "ans = 1"
-# do_test file-io-1.m
+## set test file-io-1
+## set prog_output "ok"
+## do_test file-io-1.m
 
-# set test binary-io-1
-# set prog_output "ans = 1"
-# do_test binary-io-1.m
+set test binary-io-1
+set prog_output "ok"
+do_test binary-io-1.m
 
-# set test file-pos-1
-# set prog_output "ans = 1"
-# do_test file-pos-1.m
-
-# fputs
-# fgetl
-# fgets
-# fprintf
-# fscanf
-# fread
-# fwrite
-# feof
-# ferror
-# ftell
-# fseek
-# frewind
+set test file-pos-1
+set prog_output "ok"
+do_test file-pos-1.m
 
 set test fputs-1
 set prog_output "\n... fputs:.*"

@@ -1,3 +1,8 @@
+Thu Feb 27 03:34:48 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* texinfo.tex (\codeunder): Maybe make it work for @var{} inside
+	@code{}.
+
 Wed Feb 26 12:03:48 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* refcard/Makefile.in (mostlyclean clean): Delete log files.

@@ -1,3 +1,13 @@
+Wed Nov  4 17:21:41 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-base.cc (octave_base_value::rows, octave_base_value::columns,
+ 	octave_base_value::length): Delete.
+	* ov-base.h (octave_base_value::rows, octave_base_value::columns,
+ 	octave_base_value::length): Define here.  All return -1 if not
+	defined in a derived class.
+
+	* data.cc (Fis_matrix): Also return true if the arg is a range.
+
 Tue Nov  3 09:40:24 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* data.cc (Fis_bool): New function.

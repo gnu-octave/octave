@@ -144,30 +144,6 @@ octave_base_value::print_name_tag (ostream& os, const string& name) const
 }
 
 int
-octave_base_value::rows (void) const
-{
-  int retval = -1;
-  gripe_wrong_type_arg ("octave_base_value::rows ()", type_name ());
-  return retval;
-}
-
-int
-octave_base_value::columns (void) const
-{
-  int retval = -1;
-  gripe_wrong_type_arg ("octave_base_value::columns ()", type_name ());
-  return retval;
-}
-
-int
-octave_base_value::length (void) const
-{
-  int retval = -1;
-  gripe_wrong_type_arg ("octave_base_value::length ()", type_name ());
-  return retval;
-}
-
-int
 octave_base_value::int_value (bool require_int, bool frc_str_conv) const
 {
   int retval = 0;

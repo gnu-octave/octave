@@ -836,7 +836,7 @@ DEFUN (is_matrix, args, ,
     {
       octave_value arg = args(0);
 
-      if (arg.is_scalar_type ())
+      if (arg.is_scalar_type () || arg.is_range ())
 	retval = 1.0;
       else if (arg.is_matrix_type ())
 	retval = static_cast<double> (arg.rows () >= 1 && arg.columns () >= 1);

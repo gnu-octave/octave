@@ -1,5 +1,9 @@
 Fri Nov  8 09:55:40 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Makefile.in (libcruft.a): Delete target.
+	* Makerules.in, Makefile.in: Use real archive rules to build
+	libcruft.a in parts.
+
 	* Makefile.in (install): Use $(INSTALL_PROGRAM) for installing
 	shared library.
 

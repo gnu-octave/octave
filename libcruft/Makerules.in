@@ -2,6 +2,9 @@
 #
 # Common rules for octave's libcruft directories.
 #
+# XXX FIXME XXX -- assumes that the libcruft directory tree is only
+# one level deep.
+#
 # John W. Eaton
 # jwe@bevo.che.wisc.edu
 # University of Wisconsin-Madison
@@ -25,9 +28,31 @@ endif
 CWD = $(shell pwd)
 THISDIR = $(notdir $(CWD))
 
-all: stamp-picdir $(CRUFT_OBJ) $(CRUFT_PICOBJ) \
-	$(SPECIAL_DEPEND) $(SPECIAL_PICDEPEND)
+LIBCRUFT = ../libcruft.a
+
+LIBCRUFT_OBJS = $(CRUFT_OBJ) $(SPECIAL_DEPEND)
+
+LIBCRUFT_DEPS = $(LIBCRUFT)($(LIBCRUFT_OBJS))
+
+all: stamp-picdir $(LIBCRUFT) $(CRUFT_PICOBJ) $(SPECIAL_PICDEPEND)
 .PHONY: all
+
+# Cancel the default action for when an archive member is out of
+# date.  Instead of inserting the out of date members individually, we
+# will insert them in batches, even if some of them are up to date.
+# This is much faster for a large archive like libcruft.a.
+
+(%) : %
+	@true
+
+$(LIBCRUFT): $(LIBCRUFT_DEPS)
+	$(AR) $(ARFLAGS) $(LIBCRUFT) $(LIBCRUFT_OBJS)
+	$(RANLIB) $(LIBCRUFT)
+
+# This is necessary, otherwise we won't have any .o files left when it
+# comes time to insert them in the archive.
+
+.PRECIOUS: $(LIBCRUFT_OBJS)
 
 stamp-picdir:
 	if [ "$(SHARED_LIBS)" = true ]; then \

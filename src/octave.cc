@@ -778,32 +778,42 @@ DEFUN ("shell_cmd", Fshell_cmd, Sshell_cmd, 2, 1,
 
   int nargin = args.length ();
 
-  if (nargin == 2 && args(1).is_string ())
+  if (nargin < 2 || nargin > 3)
     {
-      iprocstream cmd (args(1).string_value ());
-      char ch;
+      print_usage ("shell_cmd");
+      return retval;
+    }
+
+  tree_constant tc_command = args(1);
+
+  if (tc_command.is_string ())
+    {
+      iprocstream cmd (tc_command.string_value ());
+
       ostrstream output_buf;
+
+      char ch;
       while (cmd.get (ch))
 	output_buf.put (ch);
+
       output_buf << ends;
+
       int status = cmd.close ();
-      switch (nargout)
+
+      if (nargout > 0 || nargin > 2)
 	{
-	case 1:
-	  maybe_page_output (output_buf);
-	  retval.resize (1);
-	  retval(0) = tree_constant ((double) status);
-	  break;
-	case 2:
-	  retval.resize (2);
-	  retval(0) = tree_constant ((double) status);
-	  retval(1) = tree_constant (output_buf.str ());
-	  break;
-	  break;
+	  char *msg = output_buf.str ();
+
+	  retval(1) = (double) status;
+	  retval(0) = msg;
+
+	  delete [] msg;
 	}
+      else
+	maybe_page_output (output_buf);
     }
   else
-    print_usage ("shell_cmd");
+    error ("shell_cmd: expecting string as first argument");
 
   return retval;
 }

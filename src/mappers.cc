@@ -104,6 +104,26 @@ signum (double x)
 }
 
 double
+xerf (double x)
+{
+#if defined (HAVE_ERF)
+  return erf (x);
+#else
+  error ("erf(x) not available on this system");
+#endif
+}
+
+double
+xerfc (double x)
+{
+#if defined (HAVE_ERFC)
+  return erfc (x);
+#else
+  error ("erfc(x) not available on this system");
+#endif
+}
+
+double
 xisnan (double x)
 {
 #if defined (HAVE_ISNAN)
@@ -126,6 +146,17 @@ xfinite (double x)
 }
 
 double
+xgamma (double x)
+{
+#if defined (HAVE_LGAMMA)
+  double y = lgamma (x);
+  return signgam * exp (y);
+#else
+  error ("gamma(x) not available on this system");
+#endif
+}
+
+double
 xisinf (double x)
 {
 #if defined (HAVE_ISINF)
@@ -134,6 +165,16 @@ xisinf (double x)
   return (double) (! (finite (x) || isnan (x)));
 #else
   return (double) (x == DBL_MAX || x == -DBL_MAX);
+#endif
+}
+
+double
+xlgamma (double x)
+{
+#if defined (HAVE_LGAMMA)
+  return lgamma (x);
+#else
+  error ("lgamma (x) not available on this system");
 #endif
 }
 
@@ -317,6 +358,12 @@ install_mapper_functions (void)
   DEFUN_MAPPER ("cosh", Scosh, 0, 0.0, 0.0, cosh, 0, cosh,
     "cosh (X): compute cosh (X) for each element of X");
 
+  DEFUN_MAPPER ("erf", Serf, 0, 0.0, 0.0, xerf, 0, 0,
+    "erf (X): compute erf (X) for each element of X");
+
+  DEFUN_MAPPER ("erfc", Serfc, 0, 0.0, 0.0, xerfc, 0, 0,
+    "erfc (X): compute erfc (X) for each element of X");
+
   DEFUN_MAPPER ("exp", Sexp, 0, 0.0, 0.0, exp, 0, exp,
     "exp (X): compute exp (X) for each element of X");
 
@@ -329,16 +376,20 @@ install_mapper_functions (void)
   DEFUN_MAPPER ("floor", Sfloor, 0, 0.0, 0.0, floor, 0, floor,
     "floor (X): round elements of X toward -Inf");
 
+  DEFUN_MAPPER ("gamma", Sgamma, 0, 0.0, 0.0, xgamma, 0, 0,
+    "gamma (X): compute gamma (X) for each element of X");
+
   DEFUN_MAPPER ("isinf", Sisinf, 0, 0.0, 0.0, xisinf, xisinf, 0,
     "isinf (X): return 1 for elements of X infinite");
 
   DEFUN_MAPPER ("imag", Simag, 0, 0.0, 0.0, imag, imag, 0,
     "imag (X): return imaginary part for each elements of X");
 
-#ifdef HAVE_ISNAN
   DEFUN_MAPPER ("isnan", Sisnan, 0, 0.0, 0.0, xisnan, xisnan, 0,
     "isnan (X): return 1 where elements of X are NaNs");
-#endif
+
+  DEFUN_MAPPER ("lgamma", Slgamma, 0, 0.0, 0.0, xlgamma, 0, 0,
+    "lgamma (X): compute log gamma (X) for each element of X");
 
   DEFUN_MAPPER ("log", Slog, 1, 0.0, DBL_MAX, log, 0, log,
     "log (X): compute log (X) for each element of X");

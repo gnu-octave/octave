@@ -343,7 +343,7 @@ Handle all of the following:
       // 1. npsol (x, phi)
 
       NPSOL nlp (x, func);
-      nlp.copy (npsol_opts);
+      nlp.set_options (npsol_opts);
       soln = nlp.minimize (objf, inform, lambda);
 
       goto solved;
@@ -354,7 +354,7 @@ Handle all of the following:
       // 2. npsol (x, phi, lb, ub)
 
       NPSOL nlp (x, func, bounds);
-      nlp.copy (npsol_opts);
+      nlp.set_options (npsol_opts);
       soln = nlp.minimize (objf, inform, lambda);
 
       goto solved;
@@ -395,7 +395,7 @@ Handle all of the following:
 	      // 7. npsol (x, phi, llb, c, lub)
 
 	      NPSOL nlp (x, func, linear_constraints);
-	      nlp.copy (npsol_opts);
+	      nlp.set_options (npsol_opts);
 	      soln = nlp.minimize (objf, inform, lambda);
 	    }
 	  else
@@ -403,7 +403,7 @@ Handle all of the following:
 	      // 3. npsol (x, phi, lb, ub, llb, c, lub)
 
 	      NPSOL nlp (x, func, bounds, linear_constraints);
-	      nlp.copy (npsol_opts);
+	      nlp.set_options (npsol_opts);
 	      soln = nlp.minimize (objf, inform, lambda);
 	    }
 	  goto solved;
@@ -426,7 +426,7 @@ Handle all of the following:
 	      // 8. npsol (x, phi, nllb, g, nlub)
 
 	      NPSOL nlp (x, func, nonlinear_constraints);
-	      nlp.copy (npsol_opts);
+	      nlp.set_options (npsol_opts);
 	      soln = nlp.minimize (objf, inform, lambda);
 	    }
 	  else
@@ -434,7 +434,7 @@ Handle all of the following:
 	      // 5. npsol (x, phi, lb, ub, nllb, g, nlub)
 
 	      NPSOL nlp (x, func, bounds, nonlinear_constraints);
-	      nlp.copy (npsol_opts);
+	      nlp.set_options (npsol_opts);
 	      soln = nlp.minimize (objf, inform, lambda);
 	    }
 	  goto solved;
@@ -490,7 +490,7 @@ Handle all of the following:
 
 	      NPSOL nlp (x, func, linear_constraints,
 			 nonlinear_constraints);
-	      nlp.copy (npsol_opts);
+	      nlp.set_options (npsol_opts);
 	      soln = nlp.minimize (objf, inform, lambda);
 	    }
 	  else
@@ -499,7 +499,7 @@ Handle all of the following:
 
 	      NPSOL nlp (x, func, bounds, linear_constraints,
 			 nonlinear_constraints);
-	      nlp.copy (npsol_opts);
+	      nlp.set_options (npsol_opts);
 	      soln = nlp.minimize (objf, inform, lambda);
 	    }
 	  goto solved;

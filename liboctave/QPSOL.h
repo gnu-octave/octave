@@ -30,6 +30,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #ifndef QPSOL_MISSING
 
+#include <cfloat>
+#include <cmath>
+
 #include "dMatrix.h"
 #include "dColVector.h"
 #include "QP.h"
@@ -39,27 +42,57 @@ QPSOL_options
 {
 public:
 
-  QPSOL_options (void);
-  QPSOL_options (const QPSOL_options& opt);
+  QPSOL_options (void) { init (); }
 
-  QPSOL_options& operator = (const QPSOL_options& opt);
+  QPSOL_options (const QPSOL_options& opt) { set_options (opt); }
 
-  ~QPSOL_options (void);
+  QPSOL_options& operator = (const QPSOL_options& opt)
+    {
+      if (this != &opt)
+	set_options (opt);
 
-  void init (void);
-  void copy (const QPSOL_options& opt);
+      return *this;
+    }
 
-  void set_default_options (void);
+  ~QPSOL_options (void) { }
 
-  void set_feasibility_tolerance (double);
-  void set_infinite_bound (double);
-  void set_iteration_limit (int);
-  void set_print_level (int);
+  void init (void)
+    {
+      x_feasibility_tolerance = ::sqrt (DBL_EPSILON);
+      x_infinite_bound = 1.0e+30;
+      x_iteration_limit = -1;
+      x_print_level = 0;
+    }
 
-  double feasibility_tolerance (void);
-  double infinite_bound (void);
-  int iteration_limit (void);
-  int print_level (void);
+  void set_default_options (void) { init (); }
+
+  void set_options (const QPSOL_options& opt)
+    {
+      x_feasibility_tolerance = opt.x_feasibility_tolerance;
+      x_infinite_bound = opt.x_infinite_bound;
+      x_iteration_limit = opt.x_iteration_limit;
+      x_print_level = opt.x_print_level;
+    }
+
+  void set_feasibility_tolerance (double val)
+    { x_feasibility_tolerance = (val > 0.0) ? val : ::sqrt (DBL_EPSILON); }
+
+  void set_infinite_bound (double val)
+    { x_infinite_bound = (val > 0.0) ? val : 1.0e+30; }
+
+  void set_iteration_limit (int val)
+    { x_iteration_limit = (val > 0) ? val : -1; }
+
+  void set_print_level (int val)
+    { x_print_level = (val >= 0) ? val : 0; }
+
+  double feasibility_tolerance (void) { return x_feasibility_tolerance; }
+
+  double infinite_bound (void) { return x_infinite_bound; }
+
+  int iteration_limit (void) { return x_iteration_limit; }
+
+  int print_level (void) { return x_print_level; }
 
 private:
 

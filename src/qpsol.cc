@@ -157,7 +157,7 @@ Handle all of the following:
       // 1. qpsol (x, H, c)
 
       QPSOL qp (x, H, c);
-      qp.copy (qpsol_opts);
+      qp.set_options (qpsol_opts);
       soln = qp.minimize (objf, inform, lambda);
 
       goto solved;
@@ -168,7 +168,7 @@ Handle all of the following:
       //  2. qpsol (x, H, c, lb, ub)
 
       QPSOL qp (x, H, c, bounds);
-      qp.copy (qpsol_opts);
+      qp.set_options (qpsol_opts);
       soln = qp.minimize (objf, inform, lambda);
 
       goto solved;
@@ -203,7 +203,7 @@ Handle all of the following:
 	  // 3. qpsol (x, H, c, lb, ub, llb, A, lub)
 
 	  QPSOL qp (x, H, c, bounds, linear_constraints);
-	  qp.copy (qpsol_opts);
+	  qp.set_options (qpsol_opts);
 	  soln = qp.minimize (objf, inform, lambda);
 	}
       else
@@ -211,7 +211,7 @@ Handle all of the following:
 	  // 4. qpsol (x, H, c,         llb, A, lub)
 
 	 QPSOL qp (x, H, c, linear_constraints);
-	 qp.copy (qpsol_opts);
+	 qp.set_options (qpsol_opts);
 	 soln = qp.minimize (objf, inform, lambda);
        }
       goto solved;

@@ -74,6 +74,33 @@ static SLStack <char *> tmp_files;
 // Pipe to gnuplot.
 static oprocstream plot_stream;
 
+// Use shortest possible abbreviations to minimize trouble caused by
+// gnuplot's fixed-length command line buffer.
+
+#ifndef GNUPLOT_COMMAND_PLOT  
+#define GNUPLOT_COMMAND_PLOT   "pl"
+#endif
+
+#ifndef GNUPLOT_COMMAND_REPLOT 
+#define GNUPLOT_COMMAND_REPLOT "rep"
+#endif
+
+#ifndef GNUPLOT_COMMAND_SPLOT 
+#define GNUPLOT_COMMAND_SPLOT  "sp"
+#endif
+
+#ifndef GNUPLOT_COMMAND_USING
+#define GNUPLOT_COMMAND_USING  "u"
+#endif
+
+#ifndef GNUPLOT_COMMAND_WITH 
+#define GNUPLOT_COMMAND_WITH   "w"
+#endif
+
+#ifndef GNUPLOT_COMMAND_TITLE
+#define GNUPLOT_COMMAND_TITLE  "t"
+#endif
+
 static void
 open_plot_stream (void)
 {
@@ -144,7 +171,7 @@ send_to_plot_stream (const char *cmd)
       if (! (is_replot || is_splot || is_plot)
 	  && plot_line_count > 0
 	  && user_pref.automatic_replot)
-	plot_stream << "replot\n";
+	plot_stream << GNUPLOT_COMMAND_REPLOT << "\n";
       plot_stream.flush ();
       pipe_handler_error_count = 0;
     }
@@ -200,7 +227,7 @@ tree_plot_command::eval (void)
       if (plot_line_count == 0)
 	{
 	  if (plot_list)
-	    plot_buf << "plot";
+	    plot_buf << GNUPLOT_COMMAND_PLOT;
 	  else
 	    {
 	      ::error ("replot: must have something to plot");
@@ -208,14 +235,14 @@ tree_plot_command::eval (void)
 	    }
 	}
       else
-	plot_buf << "replot";
+	plot_buf << GNUPLOT_COMMAND_REPLOT;
       break;
 
     case 2:
       if (clear_before_plotting || plot_line_count == 0)
 	{
 	  plot_line_count = 0;
-	  plot_buf << "plot";
+	  plot_buf << GNUPLOT_COMMAND_PLOT;
 	}
       else
 	plot_buf << "replot";
@@ -224,7 +251,7 @@ tree_plot_command::eval (void)
     case 3:
       {
 	plot_line_count = 0;
-	plot_buf << "splot";
+	plot_buf << GNUPLOT_COMMAND_SPLOT;
       }
       break;
 
@@ -518,7 +545,7 @@ subplot_using::print (int ndim, int n_max, ostrstream& plot_buf)
 	    {
 	      val = tmp.double_value ();
 	      if (i == 0)
-		plot_buf << " using ";
+		plot_buf << " " << GNUPLOT_COMMAND_USING << " ";
 	      else
 		plot_buf << ":";
 
@@ -600,7 +627,7 @@ subplot_style::print (ostrstream& plot_buf)
 {
   if (style)
     {
-      plot_buf << " with " << style;
+      plot_buf << " " << GNUPLOT_COMMAND_WITH << " " << style;
 
       if (linetype)
 	{
@@ -729,15 +756,18 @@ subplot::print (int ndim, ostrstream& plot_buf)
     {
       tree_constant tmp = title->eval (0);
       if (! error_state && tmp.is_string ())
-	plot_buf << " title " << '"' << tmp.string_value () << '"';
+	plot_buf << " " << GNUPLOT_COMMAND_TITLE << " "
+	  << '"' << tmp.string_value () << '"';
       else
 	{
 	  warning ("line title must be a string");
-	  plot_buf << " title " << '"' << "line " << plot_line_count << '"';
+	  plot_buf << " " << GNUPLOT_COMMAND_TITLE << " "
+	    << '"' << "line " << plot_line_count << '"';
 	}
     }
   else
-    plot_buf << " title " << '"' << "line " << plot_line_count << '"';
+    plot_buf << " " << GNUPLOT_COMMAND_TITLE << " "
+      << '"' << "line " << plot_line_count << '"';
 
   if (style)
     {

@@ -87,13 +87,13 @@ octave.info:
 	cd doc ; $(MAKE) octave.info
 .PHONY: octave.info
 
-INSTALL.info:
+INSTALL.OCTAVE:
 	cd doc ; $(MAKE) ../INSTALL.OCTAVE
-.PHONY: INSTALL.info
+.PHONY: INSTALL.OCTAVE
 
-BUGS.info:
+BUGS:
 	cd doc ; $(MAKE) ../BUGS
-.PHONY: BUGS.info
+.PHONY: BUGS
 
 install::
 	$(top_srcdir)/mkinstalldirs $(DIRS_TO_MAKE)
@@ -147,7 +147,7 @@ dist-z:
 
 # Rules for making a source distribution.
 
-links-for-dist: octave.info INSTALL.info BUGS.info
+links-for-dist: octave.info INSTALL.OCTAVE BUGS
 	echo octave-$(version) > .fname
 	rm -rf `cat .fname`
 	mkdir `cat .fname`
@@ -170,7 +170,7 @@ dist: clean-dist-tar
 
 # Rules for making a binary distribution.
 
-links-for-bin-dist: octave.info INSTALL.info BUGS.info
+links-for-bin-dist: octave.info INSTALL.OCTAVE BUGS
 	echo octave-$(version) > .fname
 	rm -rf `cat .fname`
 	mkdir `cat .fname`
@@ -213,7 +213,7 @@ doc-dist: doc-dist-tar
 
 # Rules for making a distribution for local use.
 
-local-dist-tar: octave.info INSTALL.info BUGS.info
+local-dist-tar: octave.info INSTALL.OCTAVE BUGS
 	echo octave-local-$(version) > .fname
 	rm -rf `cat .fname`
 	mkdir `cat .fname`

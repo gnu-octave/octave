@@ -32,7 +32,7 @@ all: FORCE
 	$(MAKE) -f octMakefile all
 
 TARGETS = octave-bug libcruft liboctave kpathsea info plplot readline \
-	src scripts doc check octave.info INSTALL.info BUGS.info \
+	src scripts doc check octave.info INSTALL.OCTAVE BUGS \
 	install uninstall tags TAGS clean-tar dist-z links-for-dist dist-tar \
 	clean-dist-tar dist links-for-bin-dist bin-dist-tar \
 	clean-bin-dist-tar binary-dist doc-dist-tar clean-doc-dist-tar \

@@ -29,6 +29,12 @@ DISTSUBDIRS = $(SUBDIRS)
 all: $(SUBDIRS)
 .PHONY: all
 
+../INSTALL.OCTAVE:
+	cd interpreter ; $(MAKE) ../../INSTALL.OCTAVE
+
+../BUGS:
+	cd interpreter ; $(MAKE) ../../BUGS
+
 $(SUBDIRS):
 	echo making all in $@
 	cd $@ ; $(MAKE) all

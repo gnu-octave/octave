@@ -48,7 +48,7 @@ fi
 flibs=
 lflags=
 
-# If want arg is set, we know we want the arg to be added to the list,
+# If want_arg is set, we know we want the arg to be added to the list,
 # so we don't have to examine it.
 want_arg=
 
@@ -72,6 +72,9 @@ do
         else
           lflags="$lflags $arg"
 	fi
+      ;;
+      -lang*)
+        arg=
       ;;
       -[lL]*)
         exists=false

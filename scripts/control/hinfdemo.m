@@ -125,6 +125,7 @@
 ## @end display
 ##	W1 and W2 are the robustness and performancs weighting
 ##       functions
+## @end table
 ## @end deftypefn
 
 ## Kai P. Mueller 30-APR-1998 <mueller@ifr.ing.tu-bs.de

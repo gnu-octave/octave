@@ -23,13 +23,13 @@ function perror (name, err)
 
   if (strcmp (name, "fsolve"))
 
-    if (info == -1)
+    if (err == -1)
       printf ("input error\n");
-    elseif (info == 1)
+    elseif (err == 1)
       printf ("solution converged to requested tolerance\n");
-    elseif (info == 4)
+    elseif (err == 4)
       printf ("iteration limit exceeded\n");
-    elseif (info == 3)
+    elseif (err == 3)
       printf ("iteration is not making good progress\n");
     else
       error ("perror: unrecognized error code for fsolve");

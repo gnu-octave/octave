@@ -17,11 +17,11 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{m} =} gram (@var{a}, @var{b})
+## @deftypefn {Function File} {} gram (@var{a}, @var{b})
 ## Return controllability grammian @var{m} of the continuous time system
-## @math{ dx/dt = a x + b u}.
+## @math{dx/dt = a x + b u}.
 ##
-## @var{m} satisfies @math{ a m + m a' + b b' = 0 }.
+## @var{m} satisfies @math{a m + m a' + b b' = 0}.
 ## @end deftypefn
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>

@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{y}, @var{t}] =} step (@var{sys}@{, @var{inp},@var{tstop}, @var{n}@})
+## @deftypefn {Function File} {[@var{y}, @var{t}] =} step (@var{sys}, @var{inp}, @var{tstop}, @var{n})
 ## Step response for a linear system.
 ## The system can be discrete or multivariable (or both).
 ## If no output arguments are specified, @code{step}

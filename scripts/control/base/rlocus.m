@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{outputs} =} rlocus (@var{inputs})
+## @deftypefn {Function File} {} rlocus (@var{inputs})
 ## @format
 ## [rldata, k] = rlocus(sys[,increment,min_k,max_k])
 ## Displays root locus plot of the specified SISO system.

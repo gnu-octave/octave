@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{sysp} =} parallel (@var{Asys}, @var{Bsys})
+## @deftypefn {Function File} {} parallel (@var{Asys}, @var{Bsys})
 ## Forms the parallel connection of two systems.
 ##
 ##              ____________________

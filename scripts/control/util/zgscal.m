@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{x} =} zgscal (@var{f}, @var{z}, @var{n}, @var{m}, @var{p})
+## @deftypefn {Function File} {} zgscal (@var{f}, @var{z}, @var{n}, @var{m}, @var{p})
 ## Generalized conjugate gradient iteration to
 ## solve zero-computation generalized eigenvalue problem balancing equation
 ## @math{fx=z};

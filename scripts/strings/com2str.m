@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{retval} =} com2str(@var{zz}, @var{flg})
+## @deftypefn {Function File} {} com2str(@var{zz}, @var{flg})
 ##
 ## convert complex number to a string
 ## @strong{Inputs}

@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{wmin}, @var{wmax}] =} bode_bounds (@var{zer}, @var{pol}, @var{dflg}@{, @var{tsam} @})
+## @deftypefn {Function File} {[@var{wmin}, @var{wmax}] =} bode_bounds (@var{zer}, @var{pol}, @var{dflg}, @var{tsam})
 ## Get default range of frequencies based on cutoff frequencies of system
 ## poles and zeros.
 ## Frequency range is the interval [10^wmin,10^wmax]

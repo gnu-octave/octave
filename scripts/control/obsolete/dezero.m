@@ -18,7 +18,7 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Functin File} {@var{t} =} dezero (@var{s})
+## @deftypefn {Functin File} {} dezero (@var{s})
 ## Remove trailing blank entries and all zero entries from the string s.
 ## @end deftypefn
 

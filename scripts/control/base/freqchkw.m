@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{retval} =} freqchkw (@var{w})
+## @deftypefn {Function File} {} freqchkw (@var{w})
 ## Used by @code{__freqresp__} to check that input frequency vector @var{w}
 ## is valid.
 ## Returns boolean value.

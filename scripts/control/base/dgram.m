@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{m} =} dgram (@var{a}, @var{b})
+## @deftypefn {Function File} {} dgram (@var{a}, @var{b})
 ## Return controllability grammian of discrete time system
 ## @example
 ##   x(k+1) = a x(k) + b u(k)

@@ -17,8 +17,8 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{csys} =} d2c (@var{sys}@{,@var{tol}@})
-## @deftypefnx {Function File} {@var{csys} =} d2c (@var{sys}, @var{opt})
+## @deftypefn {Function File} {} d2c (@var{sys}, @var{tol})
+## @deftypefnx {Function File} {} d2c (@var{sys}, @var{opt})
 ## Convert discrete (sub)system to a purely continuous system.  Sampling
 ## time used is @code{sysgettsam(@var{sys})}
 ##
@@ -38,9 +38,9 @@
 ## followed by a steepest descent algorithm to identify continuous time
 ## @var{A}, @var{B}, to get a better fit to the original data.
 ##
-## If called as @code{d2c}(@var{sys},@var{tol}), @var{tol=}positive scalar,
-## the @code{"log"} option is used.  The default value for @var{tol} is
-## @code{1e-8}.
+## If called as @code{d2c (@var{sys}, @var{tol})}, with @var{tol}
+## positive scalar, the @code{"log"} option is used.  The default value
+## for @var{tol} is @code{1e-8}.
 ## @item        "bi"
 ## Conversion is performed via bilinear transform
 ## @math{z = (1 + s T / 2)/(1 - s T / 2)} where @var{T} is the

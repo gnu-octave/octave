@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{pv} =} sysreorder (@var{vlen}, @{var{list})
+## @deftypefn {Function File} {} sysreorder (@var{vlen}, @var{list})
 ##
 ## @strong{Inputs}
 ## @var{vlen}=vector length, @var{list}= a subset of @code{[1:vlen]},

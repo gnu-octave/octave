@@ -17,9 +17,9 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{retval} =} is_stable (@var{a}@{,@var{tol},@var{dflg}@})
-## @deftypefnx {Function File} {@var{retval} =} is_stable (@var{sys}@{,@var{tol}@})
-## Returns retval = 1 if the matrix @var{a} or the system @var{sys}
+## @deftypefn {Function File} {} is_stable (@var{a}, @var{tol}, @var{dflg})
+## @deftypefnx {Function File} {} is_stable (@var{sys}, @var{tol})
+## Returns 1 if the matrix @var{a} or the system @var{sys}
 ## is stable, or 0 if not.
 ##
 ## @strong{Inputs}

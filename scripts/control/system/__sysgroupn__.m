@@ -17,8 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{names} =} __sysgroupn__ (@var{names})
-## names = __sysgroupn__(names)
+## @deftypefn {Function File} {} __sysgroupn__ (@var{names})
 ## Locate and mark duplicate names
 ## inputs:
 ## names: list of signal names

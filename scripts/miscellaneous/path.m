@@ -18,7 +18,7 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{p} =} path (@dots{})
+## @deftypefn {Function File} {} path (@dots{})
 ## Modify or display Octave's @code{LOADPATH}.
 ##
 ## If @var{nargin} and @var{nargout} are zero, display the elements of

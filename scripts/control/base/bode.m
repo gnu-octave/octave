@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{mag}, @var{phase}, @var{w}] =} bode(@var{sys}@{,@var{w}, @var{out_idx}, @var{in_idx}@})
+## @deftypefn {Function File} {[@var{mag}, @var{phase}, @var{w}] =} bode(@var{sys}, @var{w}, @var{out_idx}, @var{in_idx})
 ## If no output arguments are given: produce Bode plots of a system; otherwise,
 ## compute the frequency response of a system data structure
 ##
@@ -38,7 +38,7 @@
 ## @item @math{G(z)} is the system transfer function.
 ## @end itemize
 ##
-## @strong{ Default} the default frequency range is selected as follows: (These
+## @strong{Default} the default frequency range is selected as follows: (These
 ## steps are NOT performed if @var{w} is specified)
 ## @enumerate
 ## @item via routine __bodquist__, isolate all poles and zeros away from

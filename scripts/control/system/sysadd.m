@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{sys} =}  sysadd (@var{Gsys}, @var{Hsys})
+## @deftypefn {Function File} {}  sysadd (@var{Gsys}, @var{Hsys})
 ## returns @var{sys} = @var{Gsys} + @var{Hsys}.
 ## @itemize @bullet
 ## @item Exits with

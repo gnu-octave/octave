@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{tvals},@var{Plist}] =} dre (@var{sys},@var{Q},@var{R},@var{Qf},@var{t0},@var{tf}[,@var{Ptol},@var{maxits}]);
+## @deftypefn {Function File} {[@var{tvals}, @var{Plist}] =} dre (@var{sys}, @var{Q}, @var{R}, @var{Qf}, @var{t0}, @var{tf}[, @var{Ptol}, @var{maxits}]);
 ## Solve the differential Riccati equation
 ## @ifinfo
 ## @example
@@ -77,7 +77,7 @@
 ## @item tvals
 ## time values at which @var{P}(@var{t}) is computed
 ## @item Plist
-## list values of @var{P}(@var{t}); nth(@var{Plist},@var{ii})
+## list values of @var{P}(@var{t}); nth (@var{Plist}, @var{ii})
 ## is @var{P}(@var{tvals}(@var{ii})).
 ##
 ## @item tvals

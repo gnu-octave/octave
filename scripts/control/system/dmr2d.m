@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{dsys}, @var{fidx}] =} dmr2d (@var{sys}, @var{idx}, @var{sprefix}, @var{Ts2} @{,@var{cuflg}@})
+## @deftypefn {Function File} {[@var{dsys}, @var{fidx}] =} dmr2d (@var{sys}, @var{idx}, @var{sprefix}, @var{Ts2}, @var{cuflg})
 ## convert a multirate digital system to a single rate digital system
 ## states specified by @var{idx}, @var{sprefix} are sampled at @var{Ts2}, all
 ## others are assumed sampled at @var{Ts1} = @code{sysgettsam(@var{sys})}.

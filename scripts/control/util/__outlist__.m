@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __outlist__ (@var{lmat}@{, @var{tabchar}, @var{yd}, @var{ilist} @})
+## @deftypefn {Function File} {} __outlist__ (@var{lmat}, @var{tabchar}, @var{yd}, @var{ilist})
 ## Prints an enumerated list of strings.
 ## internal use only; minimal argument checking performed
 ##
@@ -30,7 +30,7 @@
 ## @item   yd
 ## indices of strings to append with the string "(discrete)"
 ## (used by @var{sysout}; minimal checking of this argument)
-## @math{yd = [] } indicates all outputs are continuous
+## @math{yd = []} indicates all outputs are continuous
 ## @item ilist
 ## index numbers to print with names.
 ##

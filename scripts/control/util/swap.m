@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{outputs} =} swap (@var{inputs})
+## @deftypefn {Function File} {} swap (@var{inputs})
 ## @format
 ## [a1,b1] = swap(a,b)
 ## interchange a and b

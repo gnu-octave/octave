@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{x} =} zgshsr (@var{y})
+## @deftypefn {Function File} {} zgshsr (@var{y})
 ## apply householder vector based on @math{e^(m)} to
 ## (column vector) y.
 ## Called by zgfslv

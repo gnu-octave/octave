@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{a}, @var{b}, @var{c}, @var{d}, @var{tsam},@var{n}, @var{nz}, @var{stname}, @var{inname}, @var{outname}, @var{yd}] =} sys2ss (@var{sys})
+## @deftypefn {Function File} {[@var{a}, @var{b}, @var{c}, @var{d}, @var{tsam}, @var{n}, @var{nz}, @var{stname}, @var{inname}, @var{outname}, @var{yd}] =} sys2ss (@var{sys})
 ## Extract state space representation from system data structure.
 ##
 ## @strong{Inputs}

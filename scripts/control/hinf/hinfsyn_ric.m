@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{Xinf},@var{x_ha_err}] =} hinfsyn_ric(@var{A},@var{BB}.@var{C1},@var{d1dot},@var{R},@var{ptol})
+## @deftypefn {Function File} {[@var{Xinf}, @var{x_ha_err}] =} hinfsyn_ric (@var{A}, @var{BB}, @var{C1}, @var{d1dot}, @var{R}, @var{ptol})
 ## Forms
 ## @example
 ## xx = ([BB; -C1'*d1dot]/R) * [d1dot'*C1 BB'];

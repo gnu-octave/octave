@@ -17,8 +17,8 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} tfout (@var{num}, @var{denom}@{, @var{x}@})
-## Print formatted transfer function @math{n(s)/d(s) } to the screen.
+## @deftypefn {Function File} {} tfout (@var{num}, @var{denom}, @var{x})
+## Print formatted transfer function @math{n(s)/d(s)} to the screen.
 ## @var{x} defaults to the string @code{"s"}
 ## @end deftypefn
 ## @seealso{polyval, polyvalm, poly, roots, conv, deconv, residue,

@@ -18,7 +18,7 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{fmt} =} __pltopt__ (@var{caller}, @var{opt})
+## @deftypefn {Function File} {} __pltopt__ (@var{caller}, @var{opt})
 ## Decode plot option strings.
 ##
 ## If @var{opt} is a valid option string, return a string of the form

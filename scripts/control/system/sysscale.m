@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{sys} =} sysscale (@var{sys}, @var{outscale}, @var{inscale}@{, @var{outname}, @var{inname}@})
+## @deftypefn {Function File} {} sysscale (@var{sys}, @var{outscale}, @var{inscale}, @var{outname}, @var{inname})
 ## scale inputs/outputs of a system.
 ##
 ## @strong{Inputs}

@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} sysout (@var{sys}@{, @var{opt}@})
+## @deftypefn {Function File} {} sysout (@var{sys}, @var{opt})
 ## print out a system data structure in desired format
 ## @table @var
 ## @item  sys

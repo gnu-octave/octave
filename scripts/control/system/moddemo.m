@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{outputs} =} moddemo (@var{inputs})
+## @deftypefn {Function File} {} moddemo (@var{inputs})
 ## Octave Controls toolbox demo: Model Manipulations demo
 ## @end deftypefn
 

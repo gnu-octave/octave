@@ -187,7 +187,7 @@ Generalized eigenvalue problem @math{A x = s B x},\n\
 \n\
 Computes the generalized eigenvalues @var{lambda} of @math{(A - sB)}.\n\
 \n\
-@item @code{[AA, BB, Q, Z @{, V, W, lambda@}] = qz (A, B)}\n\
+@item @code{[AA, BB, Q, Z, V, W, lambda] = qz (A, B)}\n\
 \n\
 Computes qz decomposition, generalized eigenvectors, and \n\
         generalized eigenvalues of @math{(A - sB)}\n\

@@ -17,8 +17,8 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{out} =} ltifr (@var{A}, @var{B}, @var{w})
-## @deftypefnx {Function File} {@var{out} =} ltifr (@var{sys}, @var{w})
+## @deftypefn {Function File} {} ltifr (@var{A}, @var{B}, @var{w})
+## @deftypefnx {Function File} {} ltifr (@var{sys}, @var{w})
 ## Linear time invariant frequency response of single input systems
 ## @strong{Inputs}
 ## @table @var

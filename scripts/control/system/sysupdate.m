@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 0211
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{sys} =} sysupdate (@var{sys}, @var{opt})
+## @deftypefn {Function File} {} sysupdate (@var{sys}, @var{opt})
 ## Update the internal representation of a system.
 ##
 ## @strong{Inputs}

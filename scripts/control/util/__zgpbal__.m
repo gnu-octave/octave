@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{retsys} =} __zgpbal__ (@var{Asys})
+## @deftypefn {Function File} {} __zgpbal__ (@var{Asys})
 ##
 ## used internally in @code{tzero}; minimal argument checking performed
 ##

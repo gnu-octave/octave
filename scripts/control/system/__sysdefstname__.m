@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{stname} =} __sysdefstname__ (@var{n}, @var{nz})
+## @deftypefn {Function File} {} __sysdefstname__ (@var{n}, @var{nz})
 ## return default state names given @var{n}, @var{nz}
 ##
 ## used internally, minimal argument checking

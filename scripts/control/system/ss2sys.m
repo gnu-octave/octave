@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{sys} =} ss2sys (@var{a}, @var{b}, @var{c}@{,@var{d}, @var{tsam}, @var{n}, @var{nz}, @var{stname}, @var{inname}, @var{outname}, @var{outlist}@})
+## @deftypefn {Function File} {} ss2sys (@var{a}, @var{b}, @var{c}, @var{d}, @var{tsam}, @var{n}, @var{nz}, @var{stname}, @var{inname}, @var{outname}, @var{outlist})
 ## Create system structure from state-space data.   May be continous,
 ## discrete, or mixed (sampeled-data)
 ##
@@ -97,13 +97,13 @@
 ## @end example
 ## with dynamic equations:
 ## @ifinfo
-## @math{  d/dt xc(t)     = acc*xc(t)      + acd*xd(k*tsam) + bc*u(t)}
+## @math{d/dt xc(t)     = acc*xc(t)      + acd*xd(k*tsam) + bc*u(t)}
 ##
-## @math{  xd((k+1)*tsam) = adc*xc(k*tsam) + add*xd(k*tsam) + bd*u(k*tsam)}
+## @math{xd((k+1)*tsam) = adc*xc(k*tsam) + add*xd(k*tsam) + bd*u(k*tsam)}
 ##
-## @math{  yc(t)      = ccc*xc(t)      + ccd*xd(k*tsam) + dc*u(t)}
+## @math{yc(t)      = ccc*xc(t)      + ccd*xd(k*tsam) + dc*u(t)}
 ##
-## @math{  yd(k*tsam) = cdc*xc(k*tsam) + cdd*xd(k*tsam) + dd*u(k*tsam)}
+## @math{yd(k*tsam) = cdc*xc(k*tsam) + cdd*xd(k*tsam) + dd*u(k*tsam)}
 ## @end ifinfo
 ## @iftex
 ## @tex

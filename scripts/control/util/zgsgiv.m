@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[a, b] =} zgsgiv (@var{c}, @var{s}, @var{a}, @var{b})
-## apply givens rotation c,s to row vectors @var{a},@var{b}
+## Apply givens rotation c,s to row vectors @var{a}, @var{b}.
 ## No longer used in zero-balancing (__zgpbal__); kept for backward
 ## compatibility.
 ## @end deftypefn

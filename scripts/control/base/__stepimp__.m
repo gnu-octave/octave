@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{y}, @var{t}] = } __stepimp__ (@var{sitype}, @var{sys} [, @var{inp}, @var{tstop}, @var{n}])
+## @deftypefn {Function File} {[@var{y}, @var{t}] =} __stepimp__ (@var{sitype}, @var{sys} [, @var{inp}, @var{tstop}, @var{n}])
 ## Impulse or step response for a linear system.
 ## The system can be discrete or multivariable (or both).
 ## This m-file contains the "common code" of step and impulse.

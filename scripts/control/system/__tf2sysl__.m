@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{vec} =} __tf2sysl__ (@var{vec})
+## @deftypefn {Function File} {} __tf2sysl__ (@var{vec})
 ## used internally in tf2sys.
 ## strip leading zero coefficients to get the true polynomial length
 ## @end deftypefn

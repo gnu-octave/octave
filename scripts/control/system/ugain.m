@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{outsys} =} ugain (@var{n})
+## @deftypefn {Function File} {} ugain (@var{n})
 ## Creates a system with unity gain, no states.
 ## This trivial system is sometimes needed to create arbitrary
 ## complex systems from simple systems with buildssic.

@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{out} =} __freqresp__ (@var{sys}, @var{USEW}@{,@var{w}@});
+## @deftypefn {Function File} {} __freqresp__ (@var{sys}, @var{USEW}, @var{w})
 ## Frequency response function - used internally by @code{bode}, @code{nyquist}.
 ## minimal argument checking; "do not attempt to do this at home"
 ##

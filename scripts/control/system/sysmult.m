@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{sys} =} sysmult (@var{Asys}, @var{Bsys})
+## @deftypefn {Function File} {} sysmult (@var{Asys}, @var{Bsys})
 ## Compute @math{sys = Asys*Bsys} (series connection):
 ## @example
 ## @group

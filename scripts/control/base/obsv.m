@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-##@deftypefn {Function File} {@var{Qb} =} obsv (@var{sys}@{, @var{c}@})
+##@deftypefn {Function File} {} obsv (@var{sys}, @var{c})
 ## Build observability matrix
 ## @example
 ## @group

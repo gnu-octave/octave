@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{sys} =} zp2sys (@var{zer},@var{pol},@var{k}@{,@var{tsam},@var{inname},@var{outname}@})
+## @deftypefn {Function File} {} zp2sys (@var{zer}, @var{pol}, @var{k}, @var{tsam}, @var{inname}, @var{outname})
 ## Create system data structure from zero-pole data.
 ##
 ## @strong{Inputs}

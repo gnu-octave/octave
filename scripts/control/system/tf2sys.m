@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{sys} =} tf2sys (@var{num}, @var{den} @{, @var{tsam}, @var{inname}, @var{outname} @})
+## @deftypefn {Function File} {} tf2sys (@var{num}, @var{den}, @var{tsam}, @var{inname}, @var{outname})
 ## build system data structure from transfer function format data
 ##
 ## @strong{Inputs}

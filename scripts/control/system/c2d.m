@@ -17,8 +17,8 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{dsys} =} c2d (@var{sys}@{, @var{opt}, @var{T}@})
-## @deftypefnx {Function File} {@var{dsys} =} c2d (@var{sys}@{, @var{T}@})
+## @deftypefn {Function File} {} c2d (@var{sys}, @var{opt}, @var{T})
+## @deftypefnx {Function File} {} c2d (@var{sys}, @var{T})
 ##
 ## @strong{Inputs}
 ## @table @var

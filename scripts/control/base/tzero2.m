@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{zr} =} tzero2 (@var{a}, @var{b}, @var{c}, @var{d}, @var{bal})
+## @deftypefn {Function File} {} tzero2 (@var{a}, @var{b}, @var{c}, @var{d}, @var{bal})
 ## Compute the transmission zeros of a, b, c, d.
 ##
 ## bal = balancing option (see balance); default is "B".

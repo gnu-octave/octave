@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{outputs} =} tf2ss (@var{inputs})
+## @deftypefn {Function File} {} tf2ss (@var{inputs})
 ## @format
 ## Conversion from tranfer function to state-space.
 ## The state space system

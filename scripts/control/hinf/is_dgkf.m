@@ -60,13 +60,13 @@
 ## @item      Bu
 ## (@var{n} x @var{nu}) @var{Ru}-transformed controlled input matrix;
 ##
-## @strong{Note} @math{B = [Bw Bu] }
+## @strong{Note} @math{B = [Bw Bu]}
 ## @item      Cz
 ## (@var{nz} x @var{n}) Qz-transformed error output matrix
 ## @item      Cy
 ## (@var{ny} x @var{n}) @var{Ry}-transformed measured output matrix
 ##
-## @strong{Note} @math{C = [Cz; Cy] }
+## @strong{Note} @math{C = [Cz; Cy]}
 ## @item      Dzu
 ## @item      Dyw
 ## off-diagonal blocks of transformed @var{D} matrix that enter

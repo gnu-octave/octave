@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{retval} =} is_digital (@var{sys})
+## @deftypefn {Function File} {} is_digital (@var{sys})
 ## Return nonzero if system is digital;
 ## inputs:
 ## sys: system data structure

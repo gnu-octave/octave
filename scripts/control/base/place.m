@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{K} =} place (@var{sys}, @var{P})
+## @deftypefn {Function File} {} place (@var{sys}, @var{P})
 ## Computes the matrix  K such that if the state
 ## is feedback with gain K, then the eigenvalues  of the closed loop
 ## system (i.e. A-BK) are those specified in the vector P.

@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{retsys} =} sysappend (@var{sys}, @var{b}@{, @var{c}, @var{d}, @var{outname}, @var{inname}, @var{yd}@})
+## @deftypefn {Function File} {} sysappend (@var{sys}, @var{b}, @var{c}, @var{d}, @var{outname}, @var{inname}, @var{yd})
 ## appends new inputs and/or outputs to a system
 ##
 ## @strong{Inputs}

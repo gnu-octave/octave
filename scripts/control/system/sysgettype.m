@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{systype} =} sysgettype (@var{sys})
+## @deftypefn {Function File} {} sysgettype (@var{sys})
 ## return the initial system type of the system
 ##
 ## @strong{Inputs}

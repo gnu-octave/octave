@@ -18,15 +18,15 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{x} =} prepad (@var{x}, @var{l}, @var{c})
-## @deftypefnx {Function File} {@var{x} =} postpad (@var{x}, @var{l}, @var{c})
+## @deftypefn {Function File} {} prepad (@var{x}, @var{l}, @var{c})
+## @deftypefnx {Function File} {} postpad (@var{x}, @var{l}, @var{c})
 ##
 ## Prepends (appends) the scalar value @var{c} to the vector @var{x}
 ## until it is of length @var{l}.  If the third argument is not
 ## supplied, a value of 0 is used.
 ##
-## If @code{length (x) > l}, elements from the beginning (end) of
-## @var{x} are removed until a vector of length l is obtained.
+## If @code{length (@var{x}) > @var{l}}, elements from the beginning (end) of
+## @var{x} are removed until a vector of length @var{l} is obtained.
 ## @end deftypefn
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>

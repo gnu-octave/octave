@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{x} =} zgfslv (@var{n}, @var{m}, @var{p}, @var{b})
+## @deftypefn {Function File} {} zgfslv (@var{n}, @var{m}, @var{p}, @var{b})
 ## Solve system of equations for dense zgep problem.
 ## @end deftypefn
 

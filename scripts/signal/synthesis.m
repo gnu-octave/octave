@@ -15,7 +15,7 @@
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{x} =} synthesis (@var{y}, @var{c})
+## @deftypefn {Function File} {} synthesis (@var{y}, @var{c})
 ## Compute a signal from its short-time Fourier transform @var{y} and a
 ## 3-element vector @var{c} specifying window size, increment, and
 ## window type.

@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File } { outputs =} swaprows ( inputs )
+## @deftypefn {Function File} {} swaprows (inputs)
 ## @format
 ##  function B = swaprows(A)
 ##  permute rows of A into reverse order

@@ -17,8 +17,8 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{retval}, @var{U}] =} is_controllable (@var{sys}@{, @var{tol}@})
-## @deftypefnx {Function File} {[@var{retval}, @var{U}] =} is_controllable (@var{a}@{, @var{b}, @var{tol}@})
+## @deftypefn {Function File} {[@var{retval}, @var{U}] =} is_controllable (@var{sys}, @var{tol})
+## @deftypefnx {Function File} {[@var{retval}, @var{U}] =} is_controllable (@var{a}, @var{b}, @var{tol})
 ## Logical check for system controllability.
 ##
 ## @strong{Inputs}

@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{outsys} =} ord2 (@var{nfreq}, @var{damp}@{[, @var{gain}@})
+## @deftypefn {Function File} {} ord2 (@var{nfreq}, @var{damp}, @var{gain})
 ## Creates a continuous 2nd order system with parameters:
 ## @strong{Inputs}
 ## @table @var

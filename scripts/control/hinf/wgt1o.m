@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{wsys} =} wgt1o (@var{vl}, @var{vh}, @var{fc})
+## @deftypefn {Function File} {} wgt1o (@var{vl}, @var{vh}, @var{fc})
 ## State space description of a first order weighting function.
 ##
 ## Weighting function are needed by the H2/H_infinity design procedure.

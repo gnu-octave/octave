@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{sys} =} fir2sys (@var{num}@{, @var{tsam}, @var{inname}, @var{outname} @})
+## @deftypefn {Function File} {} fir2sys (@var{num}, @var{tsam}, @var{inname}, @var{outname})
 ## construct a system data structure from FIR description
 ##
 ## @strong{Inputs:}

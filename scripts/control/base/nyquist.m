@@ -17,8 +17,8 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{realp}, @var{imagp}, @var{w}] =} nyquist (@var{sys}@{, @var{w}, @var{out_idx}, @var{in_idx}, @var{atol}@})
-## @deftypefnx {Function File } {} nyquist (@var{sys}@{, @var{w}, @var{out_idx}, @var{in_idx}, @var{atol}@})
+## @deftypefn {Function File} {[@var{realp}, @var{imagp}, @var{w}] =} nyquist (@var{sys}, @var{w}, @var{out_idx}, @var{in_idx}, @var{atol})
+## @deftypefnx {Function File} {} nyquist (@var{sys}, @var{w}, @var{out_idx}, @var{in_idx}, @var{atol})
 ## Produce Nyquist plots of a system; if no output arguments are given, Nyquist
 ## plot is printed to the screen.
 ##

@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{retsys} =} sysdup (@var{Asys}, @var{out_idx}, @var{in_idx})
+## @deftypefn {Function File} {} sysdup (@var{Asys}, @var{out_idx}, @var{in_idx})
 ## Duplicate specified input/output connections of a system
 ##
 ## @strong{Inputs}

@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} lsim (@var{sys}, @var{u}, @var{t}@{,@var{x0}@})
+## @deftypefn {Function File} {} lsim (@var{sys}, @var{u}, @var{t}, @var{x0})
 ## Produce output for a linear simulation of a system
 ##
 ## Produces a plot for the output of the system, sys.

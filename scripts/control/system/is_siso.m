@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{retval} =} is_siso (@var{sys})
+## @deftypefn {Function File} {} is_siso (@var{sys})
 ## return nonzero if the system data structure
 ## @var{sys} is single-input, single-output.
 ## @end deftypefn

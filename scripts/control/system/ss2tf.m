@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{outputs} =} ss2tf (@var{inputs})
+## @deftypefn {Function File} {} ss2tf (@var{inputs})
 ## @format
 ## [num,den] = ss2tf(a,b,c,d)
 ## Conversion from tranfer function to state-space.

@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} zpout (@var{zer}, @var{pol}, @var{k}@{, @var{x}@})
+## @deftypefn {Function File} {} zpout (@var{zer}, @var{pol}, @var{k}, @var{x})
 ## print formatted zero-pole form to the screen.
 ## @var{x} defaults to the string @code{"s"}
 ## @end deftypefn

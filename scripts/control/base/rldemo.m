@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-##@deftypefn {Function File} {@var{outputs} =} rldemo (@var{inputs})
+##@deftypefn {Function File} {} rldemo (@var{inputs})
 ##Octave Controls toolbox demo: Root Locus demo
 ##@end deftypefn
 

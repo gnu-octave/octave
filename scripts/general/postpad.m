@@ -18,7 +18,7 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{x} =} postpad (@var{x}, @var{l}, @var{c})
+## @deftypefn {Function File} {} postpad (@var{x}, @var{l}, @var{c})
 ## See prepad.
 ## @end deftypefn
 

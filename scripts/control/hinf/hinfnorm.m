@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{g}, @var{gmin}, @var{gmax}] =} hinfnorm(@var{sys}@{, @var{tol}, @var{gmin}, @var{gmax}, @var{ptol}@})
+## @deftypefn {Function File} {[@var{g}, @var{gmin}, @var{gmax}] =} hinfnorm(@var{sys}, @var{tol}, @var{gmin}, @var{gmax}, @var{ptol})
 ##  Computes the H infinity norm of a system data structure.
 ##
 ## @strong{Inputs}

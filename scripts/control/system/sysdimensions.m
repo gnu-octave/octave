@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{n}, @var{nz}, @var{m}, @var{p}, @var{yd}] =} sysdimensions (@var{sys}@{, @var{opt}@})
+## @deftypefn {Function File} {[@var{n}, @var{nz}, @var{m}, @var{p}, @var{yd}] =} sysdimensions (@var{sys}, @var{opt})
 ## return the number of states, inputs, and/or outputs in the system
 ## @var{sys}.
 ##

@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn{Function File} {@var{axvec} =} axis2dlim (@var{axdata})
+## @deftypefn{Function File} {} axis2dlim (@var{axdata})
 ## determine axis limits for 2-d data(column vectors); leaves a 10% margin
 ## around the plots.
 ## puts in margins of +/- 0.1 if data is one dimensional (or a single point)

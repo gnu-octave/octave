@@ -21,7 +21,7 @@
 ## Used internally in syscont and sysdisc.
 ##
 ## @strong{Inputs}
-## @var{ sys} is a system data structure.
+## @var{sys} is a system data structure.
 ##
 ## @strong{Outputs}
 ## @table @var

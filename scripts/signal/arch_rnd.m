@@ -15,10 +15,10 @@
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{y} =} arch_rnd (@var{a}, @var{b}, @var{t})
-## Simulate an ARCH sequence, @var{y}, of length @var{t} with AR
+## @deftypefn {Function File} {} arch_rnd (@var{a}, @var{b}, @var{t})
+## Simulate an ARCH sequence of length @var{t} with AR
 ## coefficients @var{b} and CH coefficients @var{a}.  I.e., the result
-## follows the model
+## @math{y(t)} follows the model
 ##
 ## @example
 ## y(t) = b(1) + b(2) * y(t-1) + @dots{} + b(lb) * y(t-lb+1) + e(t),

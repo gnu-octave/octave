@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{y} =} zgfmul (@var{a}, @var{b}, @var{c}, @var{d}, @var{x})
+## @deftypefn {Function File} {} zgfmul (@var{a}, @var{b}, @var{c}, @var{d}, @var{x})
 ##
 ## Compute product of zgep incidence matrix @var{F} with vector @var{x}.
 ## Used by zgepbal (in zgscal) as part of generalized conjugate gradient

@@ -18,7 +18,7 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{winning_numbers} =} texas_lotto ()
+## @deftypefn {Function File} {} texas_lotto ()
 ## Pick 6 unique numbers between 1 and 50 that are guaranteed to win
 ## the Texas Lotto.
 ## @end deftypefn

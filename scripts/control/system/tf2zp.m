@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{outputs} =} tf2zp (@var{inputs})
+## @deftypefn {Function File} {} tf2zp (@var{inputs})
 ## Converts transfer functions to poles / zeros.
 ##
 ## [zer,pol,k] = tf2zp(num,den) returns the zeros and poles of the SISO system

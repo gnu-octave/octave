@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{retsys} =} sysconnect (@var{sys}, @var{out_idx},@var{in_idx}@{,@var{order}, @var{tol}@})
+## @deftypefn {Function File} {} sysconnect (@var{sys}, @var{out_idx}, @var{in_idx}, @var{order}, @var{tol})
 ## Close the loop from specified outputs to respective specified inputs
 ##
 ## @strong{Inputs}

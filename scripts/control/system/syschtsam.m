@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{retsys} =} syschtsam (@var{sys}, @var{tsam})
+## @deftypefn {Function File} {} syschtsam (@var{sys}, @var{tsam})
 ## This function changes the sampling time (tsam) of the system.  Exits with
 ## an error if sys is purely continuous time.
 ## @end deftypefn

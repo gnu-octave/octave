@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{ioname} =} __sysdefioname__ (@var{n},@var{str} @{,@var{m}@})
+## @deftypefn {Function File} {} __sysdefioname__ (@var{n}, @var{str}, @var{m})
 ## return default input or output names given @var{n}, @var{str}, @var{m}.
 ## @var{n} is the final value, @var{str} is the string prefix, and @var{m}
 ## is start value

@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{sys} =} syssub (@var{Gsys}, @var{Hsys})
+## @deftypefn {Function File} {} syssub (@var{Gsys}, @var{Hsys})
 ## returns @math{sys = Gsys - Hsys}
 ##
 ## Method: @var{Gsys} and @var{Hsys} are connected in parallel

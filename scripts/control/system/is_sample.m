@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{retval} =} is_sample (@var{Ts})
+## @deftypefn {Function File} {} is_sample (@var{Ts})
 ## return true if @var{Ts} is a valid sampling time
 ## (real,scalar, > 0)
 ## @end deftypefn

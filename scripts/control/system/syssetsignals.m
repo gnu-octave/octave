@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{retsys} =} syssetsignals (@var{sys}, @var{opt}, @var{names}@{, @var{sig_idx}@})
+## @deftypefn {Function File} {} syssetsignals (@var{sys}, @var{opt}, @var{names}, @var{sig_idx})
 ## change the names of selected inputs, outputs and states.
 ## @strong{Inputs}
 ## @table @var

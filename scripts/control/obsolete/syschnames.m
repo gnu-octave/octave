@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File } {@var{retsys} =} syschnames (@var{sys}, @var{opt}, @var{list}, @var{names})
+## @deftypefn {Function File} {} syschnames (@var{sys}, @var{opt}, @var{list}, @var{names})
 ## Superseded by @code{syssetsignals}
 ## @end deftypefn
 

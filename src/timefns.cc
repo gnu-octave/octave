@@ -32,25 +32,37 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "systime.h"
 #include "defun.h"
 
+#include <sys/resource.h>
+
+#ifndef RUSAGE_SELF
+#define RUSAGE_SELF 0
+#endif
+
 DEFUN ("clock", Fclock, Sclock, 1, 0,
   "clock (): return current date and time in vector with elements\n\
 \n\
   [ year, month, day-of-month, hour, minute, second ]")
 {
   time_t now;
-  struct tm *tm;
   double fraction = 0.0;
 
 #ifdef HAVE_GETTIMEOFDAY
+
   struct timeval tp;
+
   gettimeofday (&tp, 0);
+
   now = tp.tv_sec;
+
   fraction = tp.tv_usec / 1e6;
+
 #else
+
   time (&now);
+
 #endif
 
-  tm = localtime (&now);
+  struct tm *tm = localtime (&now);
 
   Matrix m (1, 6);
   m.elem (0, 0) = tm->tm_year + 1900;
@@ -61,6 +73,34 @@ DEFUN ("clock", Fclock, Sclock, 1, 0,
   m.elem (0, 5) = tm->tm_sec + fraction;
 
   return m;
+}
+
+DEFUN ("cputime", Fcputime, Scputime, 0, 0,
+  "[total, user, system] = cputime ()\n\
+\n\
+Return CPU time statistics.")
+{
+  Octave_object retval (3, Matrix (1, 1, 0.0));
+
+#if defined (HAVE_GETRUSAGE)
+
+  struct rusage resource_stats;
+
+  getrusage (RUSAGE_SELF, &resource_stats);
+
+  struct timeval usr = resource_stats.ru_utime;
+  struct timeval sys = resource_stats.ru_stime;
+
+  double usr_time = usr.tv_sec + usr.tv_usec / 1e6;
+  double sys_time = sys.tv_sec + sys.tv_usec / 1e6;
+
+  retval (2) = sys_time;
+  retval (1) = usr_time;
+  retval (0) = usr_time + sys_time;
+
+#endif
+
+  return retval;
 }
 
 DEFUN ("date", Fdate, Sdate, 1, 0,

@@ -377,17 +377,17 @@ verbose_usage (void)
 Usage: " << usage_string << "\n\
 \n\
   -d, --debug             enter parser debugging mode\n\
-  -f, --ignore-init-file  don't read ~/.octaverc or .octaverc at startup\n\
+  -f, --ignore-init-file  don't read any initialization files\n\
   -h, -?, --help          print short help message and exit\n\
   -i, --interactive       force interactive behavior\n\
-  --info-file file        use top-level info file `file'\n\
-  -p path, --path path    set initial LOADPATH to `path'\n\
+  --info-file FILE        use top-level info file FILE\n\
+  -p PATH, --path PATH    set initial LOADPATH to PATH\n\
   -q, --silent            don't print message at startup\n\
   -V, --verbose           enable verbose output in some cases\n\
   -v, --version           print version number and exit\n\
   -x, --echo-commands     echo commands as they are executed\n\
 \n\
-  file                    execute commands from `file'\n\
+  FILE                    execute commands from FILE\n\
 \n";
 
   exit (0);

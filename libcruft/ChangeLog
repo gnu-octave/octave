@@ -1,3 +1,10 @@
+Thu Oct 24 20:22:47 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (CRUFT_OBJ): No special treatment for d1mach.o.
+
+	* misc/machar.c, misc/d1mach.f: New files
+	* misc/Makefile.in: Fix to not generate d1mach.f.
+
 Mon Oct 14 11:07:25 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (distclean): Remove stamp-shared too.

@@ -110,7 +110,7 @@ Quad : public Quad_options
   Quad (integrand_fcn fcn, double abs, double rel)
     : Quad_options (abs, rel), f (fcn) { }
 
-  ~Quad (void) { }
+  virtual ~Quad (void) { }
 
   virtual double integrate (void)
     {

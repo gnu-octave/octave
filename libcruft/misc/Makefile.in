@@ -12,11 +12,9 @@ srcdir = @srcdir@
 top_srcdir = @top_srcdir@
 VPATH = @srcdir@
 
-SPECIAL := gen-d1mach.c d1mach-tst.for dostop.c f77-extern.cc lo-error.cc
+SPECIAL := machar.c d1mach-tst.for dostop.c f77-extern.cc lo-error.cc
 
-SPECIAL_DEPEND := d1mach.o dostop.o f77-extern.o lo-error.o
-
-DISTFILES := $(subst d1mach.f, , $(DISTFILES))
+SPECIAL_DEPEND := d1mach.o machar.o dostop.o f77-extern.o lo-error.o
 
 EXTERNAL_DISTFILES = $(DISTFILES)
 
@@ -34,15 +32,13 @@ endif
 
 include ../Makerules
 
-d1mach.f: gen-d1mach
-	./gen-d1mach > d1mach.f
-
 # Don't optimize.
 
 XCC = $(patsubst -O%, , $(CC))
+XALL_CFLAGS = $(patsubst -O%, , $(ALL_CFLAGS))
 
-gen-d1mach: $(srcdir)/gen-d1mach.c
-	$(XCC) -DDP -o gen-d1mach $(srcdir)/gen-d1mach.c -lm
+machar.o: $(srcdir)/machar.c
+	$(XCC) -c $(CPP_FLAGS) $(XALL_CFLAGS) -DDP $(srcdir)/machar.c
 
 distclean::
 	rm -f d1mach.f gen-d1mach

@@ -1,3 +1,9 @@
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#include "f77-fcn.h"
+
 /*
 
 This file combines the single and double precision versions of machar,
@@ -358,58 +364,17 @@ rmachar(ibeta,it,irnd,ngrd,machep,negep,iexp,minexp,
 
 }
 
-typedef union
+void
+#if defined (F77_APPEND_UNDERSCORE)
+machar_ (REAL *xmin, REAL *xmax, REAL *epsneg, REAL *eps, REAL *log10_ibeta)
+#else
+machar (REAL *xmin, REAL *xmax, REAL *epsneg, REAL *eps, REAL *log10_ibeta)
+#endif
 {
-  double d;
-  int i[2];
-} equiv;
-
-int
-main (void)
-{
-  /* Works for 32 bit machines with 32 bit ints and 64 bit doubles */
-
   int ibeta, iexp, irnd, it, machep, maxexp, minexp, negep, ngrd;
-  REAL eps, epsneg, xmax, xmin;
-  int i;
-  equiv flt_params[6];
 
   rmachar (&ibeta, &it, &irnd, &ngrd, &machep, &negep, &iexp, &minexp,
-	   &maxexp, &eps, &epsneg, &xmin, &xmax);
+	   &maxexp, eps, epsneg, xmin, xmax);
 
-  flt_params[1].d = xmin;
-  flt_params[2].d = xmax;
-  flt_params[3].d = epsneg;
-  flt_params[4].d = eps;
-  flt_params[5].d = log10 ((double) ibeta);
-
-  printf ("* d1mach.f  Do not edit.  Generated automatically by gen-d1mach.c\n\
-      double precision function d1mach(i)\n\
-      integer i\n\
-      integer i1var (2)\n\
-      integer i2var (2)\n\
-      integer i3var (2)\n\
-      integer i4var (2)\n\
-      integer i5var (2)\n\
-      double precision dmach(5)\n\
-      equivalence (dmach(1), i1var(1))\n\
-      equivalence (dmach(2), i2var(1))\n\
-      equivalence (dmach(3), i3var(1))\n\
-      equivalence (dmach(4), i4var(1))\n\
-      equivalence (dmach(5), i5var(1))\n");
-
-  for (i = 1; i < 6; i++)
-    printf ("      data i%dvar(1), i%dvar(2) / %ld , %ld /\n",
-	    i, i, flt_params[i].i[0], flt_params[i].i[1]);
-
-  printf ("      if (i .lt. 1  .or.  i .gt. 5) goto 999\n\
-      d1mach = dmach(i)\n\
-      return\n\
-  999 write(*,1999) i\n\
- 1999 format(' d1mach - i out of bounds', i10)\n\
-      call xstopx (' ')\n\
-      d1mach = 0\n\
-      end\n");
-
-  return 0;
+  *log10_ibeta = log10 ((REAL) ibeta);
 }

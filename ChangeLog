@@ -1,3 +1,8 @@
+2004-04-06  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+  	* configure.in : add the option --with-ieee754 and use it to define
+	HAVE_IEEE754_COMPLIANCE
+
 2004-04-02  David Bateman  <dbateman@free.fr>
 
 	* configure.in: Warn about g++ 2.9x versions.

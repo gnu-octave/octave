@@ -1,3 +1,9 @@
+2004-04-06  David Bateman  <dbateman@free.fr>
+
+  	* oct-sort.cc: New template class for arbitrary sorting.
+  	* oct-sort.h: Declaration of sort class.
+  	* Makefile: Add them to the appropriate lists.
+
 2004-04-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* mx-inlines.cc (MX_ND_CUMULATIVE_OP): Fix off-by-one error.

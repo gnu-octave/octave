@@ -1,5 +1,7 @@
 2002-11-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* version.h (OCTAVE_VERSION): Now 2.1.39.
+
 	* variables.cc (generate_struct_completions): Temporarily reset
 	discard_error_messages and error_state
 	(looks_like_struct): Temporarily reset Vwarning option,

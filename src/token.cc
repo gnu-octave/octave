@@ -51,12 +51,13 @@ token::token (const string& s, int l, int c)
   str = new string (s);
 }
 
-token::token (double d, const string& /* s */, int l, int c)
+token::token (double d, const string& s, int l, int c)
 {
   line_num = l;
   column_num = c;
   type_tag = double_token;
   num = d;
+  orig_text = s;
 }
 
 token::token (end_tok_type t, int l, int c)

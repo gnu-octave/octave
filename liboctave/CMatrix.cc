@@ -774,7 +774,7 @@ ComplexMatrix::inverse (int& info) const
 }
 
 ComplexMatrix
-ComplexMatrix::inverse (int& info, double& rcond) const
+ComplexMatrix::inverse (int& info, double& rcond, int force) const
 {
   int nr = rows ();
   int nc = cols ();
@@ -794,7 +794,7 @@ ComplexMatrix::inverse (int& info, double& rcond) const
   F77_FCN (zgeco, ZGECO) (tmp_data, nr, nc, ipvt, rcond, z);
 
   volatile double rcond_plus_one = rcond + 1.0;
-  if (rcond_plus_one == 1.0)
+  if (rcond_plus_one == 1.0 && ! force)
     {
       info = -1;
       copy (tmp_data, data (), len);  // Restore contents.

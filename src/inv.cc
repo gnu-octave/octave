@@ -76,7 +76,7 @@ DEFUN_DLD_BUILTIN ("inv", Finv, Sinv, 10,
 	  int info;
 	  double rcond = 0.0;
 
-	  retval = m.inverse (info, rcond);
+	  retval = m.inverse (info, rcond, 1);
 
 	  if (info == -1)
 	    warning ("inverse: matrix singular to machine precision,\
@@ -92,7 +92,7 @@ DEFUN_DLD_BUILTIN ("inv", Finv, Sinv, 10,
 	  int info;
 	  double rcond = 0.0;
 
-	  retval = m.inverse (info, rcond);
+	  retval = m.inverse (info, rcond, 1);
 
 	  if (info == -1)
 	    warning ("inverse: matrix singular to machine precision,\

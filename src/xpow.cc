@@ -206,7 +206,7 @@ xpow (const Matrix& a, double b)
 		  int info;
 		  double rcond = 0.0;
 
-		  atmp = a.inverse (info, rcond);
+		  atmp = a.inverse (info, rcond, 1);
 
 		  if (info == -1)
 		    warning ("inverse: matrix singular to machine\
@@ -399,7 +399,7 @@ xpow (const ComplexMatrix& a, double b)
 		  int info;
 		  double rcond = 0.0;
 
-		  atmp = a.inverse (info, rcond);
+		  atmp = a.inverse (info, rcond, 1);
 
 		  if (info == -1)
 		    warning ("inverse: matrix singular to machine\

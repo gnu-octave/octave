@@ -108,7 +108,7 @@ public:
 
   Matrix inverse (void) const;
   Matrix inverse (int& info) const;
-  Matrix inverse (int& info, double& rcond) const;
+  Matrix inverse (int& info, double& rcond, int force = 0) const;
 
   Matrix pseudo_inverse (double tol = 0.0);
 

@@ -124,7 +124,7 @@ public:
 
   ComplexMatrix inverse (void) const;
   ComplexMatrix inverse (int& info) const;
-  ComplexMatrix inverse (int& info, double& rcond) const;
+  ComplexMatrix inverse (int& info, double& rcond, int force = 0) const;
 
   ComplexMatrix pseudo_inverse (double tol = 0.0);
 

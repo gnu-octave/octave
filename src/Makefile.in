@@ -82,18 +82,19 @@ else
 endif
 
 INCLUDES := arith-ops.h builtins.h defaults.h.in defun.h defun-dld.h \
-	defun-int.h dirfns.h dynamic-ld.h error.h file-info.h \
+	defun-int.h dirfns.h dynamic-ld.h error.h \
 	file-io.h gripes.h help.h input.h lex.h load-save.h \
-	mappers.h oct-gperf.h oct-hist.h oct-map.h oct-obj.h \
-	pager.h parse.h pathlen.h pr-output.h \
+	mappers.h oct-fstrm.h oct-gperf.h oct-hist.h oct-iostrm.h \
+	oct-map.h oct-obj.h oct-prcstrm.h oct-stdstrm.h oct-stream.h \
+	oct-strstrm.h pager.h parse.h pathlen.h pr-output.h \
 	procstream.h pt-base.h pt-cmd.h pt-const.h pt-exp-base.h \
 	pt-exp.h pt-fcn.h pt-fvc-base.h pt-fvc.h pt-mat.h pt-misc.h \
 	pt-mvr-base.h pt-mvr.h pt-plot.h sighandlers.h symtab.h \
-	sysdep.h systime.h syswait.h token.h toplev.h unwind-prot.h \
-	user-prefs.h utils.h variables.h version.h xdiv.h xpow.h Map.h \
-	SLStack.h Stack.h
+	syscalls.h sysdep.h systime.h syswait.h token.h toplev.h \
+	unwind-prot.h user-prefs.h utils.h variables.h version.h \
+	xdiv.h xpow.h Map.h SLStack.h Stack.h
 
-TI_SRC := Array-tc.cc Map-tc.cc DLList-fi.cc \
+TI_SRC := Array-os.cc Array-tc.cc Map-tc.cc DLList-fi.cc \
 	SLList-expr.cc SLList-misc.cc SLList-plot.cc SLList-str.cc \
 	SLList-tc.cc SLList-tm.cc SLStack-i.cc SLStack-pc.cc \
 	SLStack-str.cc SLStack-sym.cc SLStack-tok.cc SLStack-ue.cc \
@@ -107,14 +108,15 @@ ifdef CXXPICFLAG
 endif
 
 SOURCES := arith-ops.cc data.cc dirfns.cc dynamic-ld.cc error.cc \
-	file-info.cc file-io.cc gripes.cc help.cc input.cc lex.l \
-	load-save.cc mappers.cc oct-hist.cc oct-map.cc oct-obj.cc \
-	pager.cc parse.y pr-output.cc procstream.cc \
+	file-io.cc gripes.cc help.cc input.cc lex.l \
+	load-save.cc mappers.cc oct-fstrm.cc oct-hist.cc oct-iostrm.cc \
+	oct-map.cc oct-obj.cc oct-prcstrm.cc oct-stdstrm.cc oct-stream.cc \
+	oct-strstrm.cc pager.cc parse.y pr-output.cc procstream.cc \
 	pt-base.cc pt-cmd.cc pt-const.cc pt-exp-base.cc pt-exp.cc \
 	pt-fcn.cc pt-fvc-base.cc pt-fvc.cc pt-mat.cc pt-misc.cc \
 	pt-mvr-base.cc pt-mvr.cc pt-plot.cc resource.cc \
 	sighandlers.cc strcasecmp.c strncase.c strfns.cc strftime.c \
-	symtab.cc sysdep.cc timefns.cc token.cc toplev.cc \
+	symtab.cc syscalls.cc sysdep.cc timefns.cc token.cc toplev.cc \
 	unwind-prot.cc user-prefs.cc utils.cc variables.cc xdiv.cc \
 	xpow.cc
 

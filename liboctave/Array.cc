@@ -831,7 +831,7 @@ DiagArray<T>::columns (void) const
   return nc;
 }
 
-#if defind (_AIX)
+#if defined (_AIX)
 template <class T>
 T&
 DiagArray<T>::elem (int r, int c)
@@ -865,6 +865,7 @@ DiagArray<T>::operator () (int r, int c)
     }
   return (r == c) ? Array<T>::elem (r) : foo;
 }
+#endif
 
 template <class T>
 T&

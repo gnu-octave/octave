@@ -57,7 +57,7 @@ NLEqn::error (const char* msg)
 NLEqn::NLEqn (void) : NLFunc (), x (), n (0) {}
 
 NLEqn::NLEqn (const Vector& xvec, const NLFunc f) 
-  : NLFunc (f), x (xvec), n (x.capacity ()) {}
+  : NLFunc (f), x (xvec), n (xvec.capacity ()) {}
 
 NLEqn::NLEqn (const NLEqn& a) : NLFunc (a.fun, a.jac), x (a.x), n (a.n) {}
 

@@ -223,7 +223,6 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
   enum arrayclasstype arrayclass;
   FOUR_BYTE_INT junk;
   FOUR_BYTE_INT flags;
-  FOUR_BYTE_INT dimension_length;
   dim_vector dims;
   int len;
   int element_length;
@@ -273,13 +272,15 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
   
   // dimensions array subelement
   {
-    if (read_mat5_tag (is, swap, type, dimension_length) || type != miINT32)
+    FOUR_BYTE_INT dim_len;
+
+    if (read_mat5_tag (is, swap, type, dim_len) || type != miINT32)
       {
 	error ("load: invalid dimensions array subelement");
 	goto early_read_error;
       }
 
-    int ndims = dimension_length / 4;
+    int ndims = dim_len / 4;
     dims.resize (ndims);
     for (int i = 0; i < ndims; i++)
       {
@@ -290,7 +291,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
     re.resize (dims);
 
     std::streampos tmp_pos = is.tellg ();
-    is.seekg (tmp_pos + static_cast<std::streamoff> (PAD (dimension_length) - dimension_length));
+    is.seekg (tmp_pos + static_cast<std::streamoff> (PAD (dim_len) - dim_len));
   }
 
   if (read_mat5_tag (is, swap, type, len) || type != miINT8)
@@ -768,13 +769,20 @@ save_mat5_binary_element (std::ostream& os,
   {
     dim_vector dv = tc.dims ();
     int nd = tc.ndims ();
+    int dim_len = 4*nd;
 
-    write_mat5_tag (os, miINT32, 8);
+    write_mat5_tag (os, miINT32, dim_len);
 
     for (int i = 0; i < nd; i++)
       {
-	int n = dv(i);
+	FOUR_BYTE_INT n = dv(i);
 	os.write ((char *)&n, 4);
+      }
+
+    if (PAD (dim_len) > dim_len)
+      {
+	static char buf[9]="\x00\x00\x00\x00\x00\x00\x00\x00";
+	os.write (buf, PAD (dim_len) - dim_len);
       }
   }
 

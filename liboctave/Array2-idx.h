@@ -43,10 +43,7 @@ Array2<T>::value (void)
     }
   else if (n_idx == 1)
     {
-      idx_vector *tmp = get_idx ();
-      idx_vector idx = tmp[0];
-
-      return index (idx);
+      return index (idx[0]);
     }
   else
     (*current_liboctave_error_handler)
@@ -59,19 +56,19 @@ Array2<T>::value (void)
 
 template <class T>
 Array2<T>
-Array2<T>::index (idx_vector& idx) const
+Array2<T>::index (idx_vector& idx_arg) const
 {
   Array2<T> retval;
 
   int nr = d1;
   int nc = d2;
 
-  int idx_orig_rows = idx.orig_rows ();
-  int idx_orig_columns = idx.orig_columns ();
+  int idx_orig_rows = idx_arg.orig_rows ();
+  int idx_orig_columns = idx_arg.orig_columns ();
 
   if (nr == 1 && nc == 1)
     {
-      Array<T> tmp = Array<T>::index (idx);
+      Array<T> tmp = Array<T>::index (idx_arg);
 
       int len = tmp.length ();
 
@@ -87,9 +84,9 @@ Array2<T>::index (idx_vector& idx) const
     }
   else if (nr == 1 || nc == 1)
     {
-      int result_is_column_vector = (nc == 1 || idx.is_colon ());
+      int result_is_column_vector = (nc == 1 || idx_arg.is_colon ());
 
-      Array<T> tmp = Array<T>::index (idx);
+      Array<T> tmp = Array<T>::index (idx_arg);
 
       int len = tmp.length ();
 
@@ -104,29 +101,29 @@ Array2<T>::index (idx_vector& idx) const
 	}
     }
   else if (liboctave_dfi_flag
-	   || idx.is_colon ()
-	   || (idx.one_zero_only ()
+	   || idx_arg.is_colon ()
+	   || (idx_arg.one_zero_only ()
 	       && idx_orig_rows == nr
 	       && idx_orig_columns == nc))
     {
       // This code is only for indexing matrices.  The vector
       // cases are handled above.
 
-      idx.freeze (nr * nc, "matrix");
+      idx_arg.freeze (nr * nc, "matrix");
 
-      if (idx)
+      if (idx_arg)
 	{
 	  int result_nr = idx_orig_rows;
 	  int result_nc = idx_orig_columns;
 
-	  if (idx.is_colon ())
+	  if (idx_arg.is_colon ())
 	    {
 	      result_nr = nr * nc;
 	      result_nc = result_nr ? 1 : 0;
 	    }
-	  else if (idx.one_zero_only ())
+	  else if (idx_arg.one_zero_only ())
 	    {
-	      result_nr = idx.ones_count ();
+	      result_nr = idx_arg.ones_count ();
 	      result_nc = (result_nr > 0 ? 1 : 0);
 	    }
 
@@ -137,7 +134,7 @@ Array2<T>::index (idx_vector& idx) const
 	    {
 	      for (int i = 0; i < result_nr; i++)
 		{
-		  int ii = idx.elem (k++);
+		  int ii = idx_arg.elem (k++);
 		  int fr = ii % nr;
 		  int fc = (ii - fr) / nr;
 		  retval.elem (i, j) = elem (fr, fc);
@@ -220,7 +217,7 @@ Array2<T>::index (idx_vector& idx_i, idx_vector& idx_j) const
 
 template <class T>
 void
-Array2<T>::maybe_delete_elements (idx_vector& idx_i)
+Array2<T>::maybe_delete_elements (idx_vector& idx_arg)
 {
   int nr = d1;
   int nc = d2;
@@ -241,7 +238,7 @@ Array2<T>::maybe_delete_elements (idx_vector& idx_i)
       return;
     }
 
-  if (idx_i.is_colon_equiv (n, 1))
+  if (idx_arg.is_colon_equiv (n, 1))
     {
       // Either A(:) = [] or A(idx) = [] with idx enumerating all
       // elements, so we delete all elements and return [](0x0).  To
@@ -252,9 +249,9 @@ Array2<T>::maybe_delete_elements (idx_vector& idx_i)
       return;
     }
 
-  idx_i.sort (true);
+  idx_arg.sort (true);
 
-  int num_to_delete = idx_i.length (n);
+  int num_to_delete = idx_arg.length (n);
 
   if (num_to_delete != 0)
     {
@@ -263,7 +260,7 @@ Array2<T>::maybe_delete_elements (idx_vector& idx_i)
       int idx = 0;
 
       for (int i = 0; i < n; i++)
-	if (i == idx_i.elem (idx))
+	if (i == idx_arg.elem (idx))
 	  {
 	    idx++;
 	    new_n--;
@@ -280,7 +277,7 @@ Array2<T>::maybe_delete_elements (idx_vector& idx_i)
 	  idx = 0;
 	  for (int i = 0; i < n; i++)
 	    {
-	      if (idx < num_to_delete && i == idx_i.elem (idx))
+	      if (idx < num_to_delete && i == idx_arg.elem (idx))
 		idx++;
 	      else
 		{

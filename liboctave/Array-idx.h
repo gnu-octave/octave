@@ -36,14 +36,14 @@ Array<T>::clear_index (void)
 
 template <class T>
 void
-Array<T>::set_index (const idx_vector& i)
+Array<T>::set_index (const idx_vector& idx_arg)
 {
   if (! idx)
     idx = new idx_vector [max_indices];
 
   if (idx_count < max_indices)
     {
-      idx[idx_count++] = i;
+      idx[idx_count++] = idx_arg;
     }
   else
     {

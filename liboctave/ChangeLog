@@ -1,6 +1,6 @@
 2000-02-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
-	* Array-idx.h: Avoid shadowing warnings for idx.
+	* Array2-idx.h, Array-idx.h: Avoid shadowing warnings for idx.
 
 	* Quad.h: Use do_integrate as name of pure virtual function.
 

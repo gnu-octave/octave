@@ -1,3 +1,7 @@
+2001-07-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* parse.y: Clear help_buf after documenting function.
+
 2001-06-29  Mumit Khan  <khan@nanotech.wisc.edu>
 
 	* defun-int.h (DEFINE_FUN_INSTALLER_FUN{2,3}): New macros.

@@ -2502,6 +2502,8 @@ frob_function (tree_identifier *id, octave_user_function *fcn)
 
   id->document (help_buf);
 
+  help_buf.resize (0);
+
   return fcn;
 }
 
@@ -3284,9 +3286,9 @@ be named @file{@var{file}.m}.\n\
 }
 
 // Evaluate an Octave function (built-in or interpreted) and return
-// the list of result values.  the results.  NAME is the name of the
-// function to call.  ARGS are the arguments to the function.  NARGOUT
-// is the number of output arguments expected.
+// the list of result values.  NAME is the name of the function to
+// call.  ARGS are the arguments to the function.  NARGOUT is the
+// number of output arguments expected. 
 
 octave_value_list
 feval (const std::string& name, const octave_value_list& args, int nargout)

@@ -1460,6 +1460,9 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double*,
  \
   tbuf[n] = '\0'; \
  \
+  if (n > 0 && c == EOF) \
+    is.clear (); \
+ \
   std::string tmp = tbuf; \
  \
   delete [] tbuf

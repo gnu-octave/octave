@@ -1,3 +1,11 @@
+2003-07-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* miscellaneous/dump_prefs.m: Include warn_neg_dim_as_zero in the
+	list.
+	Delete treat_neg_dim_as_zero from the list.
+
+	* strings/blanks.m: Don't check treat_neg_dim_as_zero.
+
 2003-07-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* general/reshape.m: Omit do_fortran_indexing from doc string (it

@@ -217,10 +217,10 @@ octave_range::complex_value (bool) const
 }
 
 octave_value
-octave_range::convert_to_str_internal (bool pad) const
+octave_range::convert_to_str_internal (bool pad, bool force) const
 {
   octave_value tmp (range.matrix_value ());
-  return tmp.convert_to_str (pad);
+  return tmp.convert_to_str (pad, force);
 }
 
 void

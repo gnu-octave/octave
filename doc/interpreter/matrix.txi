@@ -190,7 +190,7 @@ create vectors with evenly or logarithmically spaced elements.
 
 @DOCSTRING(logspace)
 
-@DOCSTRING(treat_neg_dim_as_zero)
+@DOCSTRING(warn_neg_dim_as_zero)
 
 @DOCSTRING(warn_imag_to_real)
 

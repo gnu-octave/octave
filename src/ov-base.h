@@ -195,9 +195,9 @@ public:
 
   charMatrix char_matrix_value (bool = false) const;
 
-  string_vector all_strings (bool pad = false) const;
+  string_vector all_strings (bool pad = false, bool force = false) const;
 
-  std::string string_value (void) const;
+  std::string string_value (bool force = false) const;
 
   Range range_value (void) const;
 
@@ -219,7 +219,7 @@ public:
 
   boolMatrix bool_matrix_value (void) const;
 
-  octave_value convert_to_str_internal (bool pad = false) const;
+  octave_value convert_to_str_internal (bool pad, bool force) const;
 
   void convert_to_row_or_column_vector (void);
 

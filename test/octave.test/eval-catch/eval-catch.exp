@@ -10,12 +10,12 @@ do_test eval-catch-2.m
 
 ## suppress error; do not execute code after error
 set test eval-catch-3
-set prog_output "ans = 2"
+set prog_output "^ans = 2"
 do_test eval-catch-3.m
 
 ## execute catch clause
 set test eval-catch-4
-set prog_output "ans = 1"
+set prog_output "^ans = 1"
 do_test eval-catch-4.m
 
 ## define __error_text__ *only* within catch-string
@@ -30,7 +30,7 @@ do_test eval-catch-6.m
 
 ## pass __error_text__ to user-defined subroutine
 set test eval-catch-7
-set prog_output "ans = <`a' undefined.*\n>"
+set prog_output "^ans = <`a' undefined.*\n>"
 do_test eval-catch-7.m
 
 ## handle nested eval: eval in try-string

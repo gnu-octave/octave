@@ -100,9 +100,9 @@ public:
 
   Matrix matrix_value (bool = false) const;
 
-  string_vector all_strings (bool pad = false) const;
+  string_vector all_strings (bool pad = false, bool force = false) const;
 
-  std::string string_value (void) const;
+  std::string string_value (bool force = false) const;
 
   bool print_as_scalar (void) const { return (rows () <= 1); }
 

@@ -1,2 +1,2 @@
-warn_str_to_num = 1;
+warn_str_to_num = 0;
 "d" + 0

@@ -1,5 +1,5 @@
 set test all-1
-set prog_output "ans = 1"
+set prog_output "^ans = 1"
 do_test all-1.m
 
 set test all-2
@@ -11,7 +11,7 @@ set prog_output "\n... all:.*"
 do_test all-3.m
 
 set test any-1
-set prog_output "ans = 1"
+set prog_output "^ans = 1"
 do_test any-1.m
 
 set test any-2
@@ -23,31 +23,31 @@ set prog_output "\n... any:.*"
 do_test any-3.m
 
 set test diff-1
-set prog_output "ans = 1"
+set prog_output "^ans = 1"
 do_test diff-1.m
 
 set test diff-2
-set prog_output "error:.*"
+set prog_output "^error:.*"
 do_test diff-2.m
 
 set test diff-3
-set prog_output "error:.*"
+set prog_output "^error:.*"
 do_test diff-3.m
 
 set test diff-4
-set prog_output "usage:.*"
+set prog_output "^usage:.*"
 do_test diff-4.m
 
 set test diff-5
-set prog_output "usage:.*"
+set prog_output "^usage:.*"
 do_test diff-5.m
 
 set test find-1
-set prog_output "ans = 1"
+set prog_output "^ans = 1"
 do_test find-1.m
 
 set test find-2
-set prog_output "ans = 1"
+set prog_output "^ans = 1"
 do_test find-2.m
 
 set test find-3
@@ -59,71 +59,71 @@ set prog_output "\n... find:.*"
 do_test find-4.m
 
 set test fliplr-1
-set prog_output "ans = 1"
+set prog_output "^ans = 1"
 do_test fliplr-1.m
 
 set test fliplr-2
-set prog_output "usage:.*"
+set prog_output "^usage:.*"
 do_test fliplr-2.m
 
 set test fliplr-3
-set prog_output "usage:.*"
+set prog_output "^usage:.*"
 do_test fliplr-3.m
 
 set test flipud-1
-set prog_output "ans = 1"
+set prog_output "^ans = 1"
 do_test flipud-1.m
 
 set test flipud-2
-set prog_output "usage:.*"
+set prog_output "^usage:.*"
 do_test flipud-2.m
 
 set test flipud-3
-set prog_output "usage:.*"
+set prog_output "^usage:.*"
 do_test flipud-3.m
 
 set test rot90-1
-set prog_output "ans = 1"
+set prog_output "^ans = 1"
 do_test rot90-1.m
 
 set test rot90-2
-set prog_output "usage:.*"
+set prog_output "^usage:.*"
 do_test rot90-2.m
 
 set test rot90-3
-set prog_output "usage:.*"
+set prog_output "^usage:.*"
 do_test rot90-3.m
 
 set test reshape-1
-set prog_output "ans = 1"
+set prog_output "^ans = 1"
 do_test reshape-1.m
 
 set test reshape-2
-set prog_output "error:.*"
+set prog_output "^error:.*"
 do_test reshape-2.m
 
 set test reshape-3
-set prog_output "usage:.*"
+set prog_output "^usage:.*"
 do_test reshape-3.m
 
 set test reshape-4
-set prog_output "usage:.*"
+set prog_output "^usage:.*"
 do_test reshape-4.m
 
 set test shift-1
-set prog_output "ans = 1"
+set prog_output "^ans = 1"
 do_test shift-1.m
 
 set test shift-2
-set prog_output "usage:.*"
+set prog_output "^usage:.*"
 do_test shift-2.m
 
 set test shift-3
-set prog_output "usage:.*"
+set prog_output "^usage:.*"
 do_test shift-3.m
 
 set test sort-1
-set prog_output "ans = 1"
+set prog_output "^ans = 1"
 do_test sort-1.m
 
 set test sort-2
@@ -135,55 +135,55 @@ set prog_output "\n... sort:.*"
 do_test sort-3.m
 
 set test tril-1
-set prog_output "ans = 1"
+set prog_output "^ans = 1"
 do_test tril-1.m
 
 set test tril-2
-set prog_output "usage:.*"
+set prog_output "^usage:.*"
 do_test tril-2.m
 
 set test tril-3
-set prog_output "usage:.*"
+set prog_output "^usage:.*"
 do_test tril-3.m
 
 set test triu-1
-set prog_output "ans = 1"
+set prog_output "^ans = 1"
 do_test triu-1.m
 
 set test triu-2
-set prog_output "usage:.*"
+set prog_output "^usage:.*"
 do_test triu-2.m
 
 set test triu-3
-set prog_output "usage:.*"
+set prog_output "^usage:.*"
 do_test triu-3.m
 
 set test vec-1
-set prog_output "ans = 1"
+set prog_output "^ans = 1"
 do_test vec-1.m
 
 set test vec-2
-set prog_output "usage:.*"
+set prog_output "^usage:.*"
 do_test vec-2.m
 
 set test vec-3
-set prog_output "usage:.*"
+set prog_output "^usage:.*"
 do_test vec-3.m
 
 set test vech-1
-set prog_output "ans = 1"
+set prog_output "^ans = 1"
 do_test vech-1.m
 
 set test vech-2
-set prog_output "usage:.*"
+set prog_output "^usage:.*"
 do_test vech-2.m
 
 set test vech-3
-set prog_output "usage:.*"
+set prog_output "^usage:.*"
 do_test vech-3.m
 
 set test eye-1
-set prog_output "ans = 1"
+set prog_output "^ans = 1"
 do_test eye-1.m
 
 set test eye-2
@@ -191,7 +191,7 @@ set prog_output "\n... eye:.*"
 do_test eye-2.m
 
 set test ones-1
-set prog_output "ans = 1"
+set prog_output "^ans = 1"
 do_test ones-1.m
 
 set test ones-2
@@ -199,7 +199,7 @@ set prog_output "\n... ones:.*"
 do_test ones-2.m
 
 set test zeros-1
-set prog_output "ans = 1"
+set prog_output "^ans = 1"
 do_test zeros-1.m
 
 set test zeros-2
@@ -207,7 +207,7 @@ set prog_output "\n... zeros:.*"
 do_test zeros-2.m
 
 set test rand-1
-set prog_output "ans = 1"
+set prog_output "^ans = 1"
 do_test rand-1.m
 
 set test rand-2
@@ -215,7 +215,7 @@ set prog_output "\n... rand:.*"
 do_test rand-2.m
 
 set test randn-1
-set prog_output "ans = 1"
+set prog_output "^ans = 1"
 do_test randn-1.m
 
 set test randn-2
@@ -223,7 +223,7 @@ set prog_output "\n... randn:.*"
 do_test randn-2.m
 
 set test diag-1
-set prog_output "ans = 1"
+set prog_output "^ans = 1"
 do_test diag-1.m
 
 set test diag-2
@@ -235,11 +235,11 @@ set prog_output "\n... diag:.*"
 do_test diag-3.m
 
 set test linspace-1
-set prog_output "ans = 1"
+set prog_output "^ans = 1"
 do_test linspace-1.m
 
 set test linspace-2
-set prog_output "ans = 1"
+set prog_output "^ans = 1"
 do_test linspace-2.m
 
 set test linspace-3
@@ -251,113 +251,113 @@ set prog_output "\n... linspace:.*"
 do_test linspace-4.m
 
 set test linspace-5
-set prog_output "warning:.*"
+set prog_output "^warning:.*"
 do_test linspace-5.m
 
 set test logspace-1
-set prog_output "ans = 1"
+set prog_output "^ans = 1"
 do_test logspace-1.m
 
 set test logspace-2
-set prog_output "error:.*"
+set prog_output "^error:.*"
 do_test logspace-2.m
 
 set test logspace-3
-set prog_output "usage:.*"
+set prog_output "^usage:.*"
 do_test logspace-3.m
 
 set test logspace-4
-set prog_output "usage:.*"
+set prog_output "^usage:.*"
 do_test logspace-4.m
 
 set test sylvester_matrix-1
-set prog_output "ans = 1"
+set prog_output "^ans = 1"
 do_test sylvester_matrix-1.m
 
 set test sylvester_matrix-2
-set prog_output "error:.*"
+set prog_output "^error:.*"
 do_test sylvester_matrix-2.m
 
 set test sylvester_matrix-3
-set prog_output "usage:.*"
+set prog_output "^usage:.*"
 do_test sylvester_matrix-3.m
 
 set test sylvester_matrix-4
-set prog_output "usage:.*"
+set prog_output "^usage:.*"
 do_test sylvester_matrix-4.m
 
 set test hankel-1
-set prog_output "ans = 1"
+set prog_output "^ans = 1"
 do_test hankel-1.m
 
 set test hankel-2
-set prog_output "error:.*"
+set prog_output "^error:.*"
 do_test hankel-2.m
 
 set test hankel-3
-set prog_output "usage:.*"
+set prog_output "^usage:.*"
 do_test hankel-3.m
 
 set test hankel-4
-set prog_output "usage:.*"
+set prog_output "^usage:.*"
 do_test hankel-4.m
 
 set test hilb-1
-set prog_output "ans = 1"
+set prog_output "^ans = 1"
 do_test hilb-1.m
 
 set test hilb-2
-set prog_output "usage:.*"
+set prog_output "^usage:.*"
 do_test hilb-2.m
 
 set test hilb-3
-set prog_output "usage:.*"
+set prog_output "^usage:.*"
 do_test hilb-3.m
 
 set test invhilb-1
-set prog_output "ans = 1"
+set prog_output "^ans = 1"
 do_test invhilb-1.m
 
 set test invhilb-2
-set prog_output "error:.*"
+set prog_output "^error:.*"
 do_test invhilb-2.m
 
 set test invhilb-3
-set prog_output "usage:.*"
+set prog_output "^usage:.*"
 do_test invhilb-3.m
 
 set test invhilb-4
-set prog_output "usage:.*"
+set prog_output "^usage:.*"
 do_test invhilb-4.m
 
 set test toeplitz-1
-set prog_output "ans = 1"
+set prog_output "^ans = 1"
 do_test toeplitz-1.m
 
 set test toeplitz-2
-set prog_output "error:.*"
+set prog_output "^error:.*"
 do_test toeplitz-2.m
 
 set test toeplitz-3
-set prog_output "usage:.*"
+set prog_output "^usage:.*"
 do_test toeplitz-3.m
 
 set test toeplitz-4
-set prog_output "usage:.*"
+set prog_output "^usage:.*"
 do_test toeplitz-4.m
 
 set test vander-1
-set prog_output "ans = 1"
+set prog_output "^ans = 1"
 do_test vander-1.m
 
 set test vander-2
-set prog_output "error:.*"
+set prog_output "^error:.*"
 do_test vander-2.m
 
 set test vander-3
-set prog_output "usage:.*"
+set prog_output "^usage:.*"
 do_test vander-3.m
 
 set test vander-4
-set prog_output "usage:.*"
+set prog_output "^usage:.*"
 do_test vander-4.m

@@ -77,7 +77,7 @@ octave_scalar::do_index_op (const octave_value_list& idx, int resize_ok)
 }
 
 octave_value
-octave_scalar::convert_to_str_internal (bool) const
+octave_scalar::convert_to_str_internal (bool, bool) const
 {
   octave_value retval;
 

@@ -98,10 +98,10 @@ public:
 
   octave_value_list list_value (void) const;
 
-  octave_value convert_to_str_internal (bool pad = false) const
-    { return all_strings (pad); }
+  octave_value convert_to_str_internal (bool pad, bool force) const
+    { return all_strings (pad, force); }
 
-  string_vector all_strings (bool pad = false) const;
+  string_vector all_strings (bool pad = false, bool force = false) const;
 
   void print (std::ostream& os, bool pr_as_read_syntax = false) const;
 

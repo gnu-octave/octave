@@ -166,7 +166,7 @@ octave_base_value::subsasgn (const std::string& type,
 }
 
 octave_value
-octave_base_value::convert_to_str_internal (bool) const
+octave_base_value::convert_to_str_internal (bool, bool) const
 {
   gripe_wrong_type_arg ("octave_base_value::convert_to_str_internal ()",
 			type_name ());
@@ -323,11 +323,11 @@ octave_base_value::char_matrix_value (bool) const
 }
 
 string_vector
-octave_base_value::all_strings (bool pad) const
+octave_base_value::all_strings (bool pad, bool force) const
 {
   string_vector retval;
 
-  octave_value tmp = convert_to_str (pad);
+  octave_value tmp = convert_to_str (pad, force);
 
   if (! error_state)
     retval = tmp.all_strings ();
@@ -336,11 +336,11 @@ octave_base_value::all_strings (bool pad) const
 }
 
 std::string
-octave_base_value::string_value (void) const
+octave_base_value::string_value (bool force) const
 {
   std::string retval;
 
-  octave_value tmp = convert_to_str ();
+  octave_value tmp = convert_to_str (force);
 
   if (! error_state)
     retval = tmp.string_value ();

@@ -728,7 +728,6 @@ variables may have been introduced since this document was last updated.
   initialize_global_variables   = true
   page_screen_output            = false
   print_empty_dimensions        = false
-  treat_neg_dim_as_zero         = true
   warn_function_name_clash      = false
   whitespace_in_literal_matrix  = "traditional"
 @end group

@@ -1,4 +1,4 @@
-ts = localtime (time ())
+ts = localtime (time ());
 (isstruct (ts)
  && struct_contains (ts, "usec")
  && struct_contains (ts, "year")

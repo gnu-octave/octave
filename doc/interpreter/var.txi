@@ -376,11 +376,6 @@ Default value: 2.
 
 Default value: 1.
 
-@item treat_neg_dim_as_zero
-@xref{Special Utility Matrices}.
-
-Default value: 0.
-
 @item warn_assign_as_truth_value
 @xref{The if Statement}.
 
@@ -413,6 +408,11 @@ Default value: 0.
 
 @item warn_missing_semicolon
 @xref{Defining Functions}.
+
+Default value: 0.
+
+@item warn_neg_dim_as_zero
+@xref{Special Utility Matrices}.
 
 Default value: 0.
 

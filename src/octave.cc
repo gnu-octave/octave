@@ -354,7 +354,6 @@ maximum_braindamage (void)
   bind_builtin_variable ("initialize_global_variables", true);
   bind_builtin_variable ("page_screen_output", false);
   bind_builtin_variable ("print_empty_dimensions", false);
-  bind_builtin_variable ("treat_neg_dim_as_zero", true);
   bind_builtin_variable ("warn_function_name_clash", false);
   bind_builtin_variable ("whitespace_in_literal_matrix", "traditional");
 }

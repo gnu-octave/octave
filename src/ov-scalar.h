@@ -94,7 +94,7 @@ public:
   ComplexMatrix complex_matrix_value (bool = false) const
     { return  ComplexMatrix (1, 1, Complex (scalar)); }
 
-  octave_value convert_to_str_internal (bool pad = false) const;
+  octave_value convert_to_str_internal (bool pad, bool force) const;
 
   void increment (void) { ++scalar; }
 

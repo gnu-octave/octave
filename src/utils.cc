@@ -71,11 +71,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "variables.h"
 
-// Should expressions like ones (-1, 5) result in an empty matrix or
-// an error?  A positive value means yes.  A negative value means
-// yes, but print a warning message.  Zero means it should be
-// considered an error.
-static int Vtreat_neg_dim_as_zero;
+// If TRUE, print a warning for expressions like
+//
+//   ones (-1, 5)
+//
+static int Vwarn_neg_dim_as_zero;
 
 // Return TRUE if S is a valid identifier.
 
@@ -777,18 +777,11 @@ check_dimensions (int& nr, int& nc, const char *warnfor)
 {
   if (nr < 0 || nc < 0)
     {
-      if (Vtreat_neg_dim_as_zero)
-	{
-	  nr = (nr < 0) ? 0 : nr;
-	  nc = (nc < 0) ? 0 : nc;
+      if (Vwarn_neg_dim_as_zero)
+	warning ("%s: converting negative dimension to zero", warnfor);
 
-	  if (Vtreat_neg_dim_as_zero < 0)
-	    warning ("%s: converting negative dimension to zero",
-		     warnfor);
-	}
-      else
-	error ("%s: can't create a matrix with negative dimensions",
-	       warnfor);
+      nr = (nr < 0) ? 0 : nr;
+      nc = (nc < 0) ? 0 : nc;
     }
 }
 
@@ -1012,9 +1005,9 @@ octave_sleep (double seconds)
 }
 
 static int
-treat_neg_dim_as_zero (void)
+warn_neg_dim_as_zero (void)
 {
-  Vtreat_neg_dim_as_zero = check_preference ("treat_neg_dim_as_zero");
+  Vwarn_neg_dim_as_zero = check_preference ("warn_neg_dim_as_zero");
 
   return 0;
 }
@@ -1022,20 +1015,18 @@ treat_neg_dim_as_zero (void)
 void
 symbols_of_utils (void)
 {
-  DEFVAR (treat_neg_dim_as_zero, false, treat_neg_dim_as_zero,
+  DEFVAR (warn_neg_dim_as_zero, false, warn_neg_dim_as_zero,
     "-*- texinfo -*-\n\
-@defvr {Built-in Variable} treat_neg_dim_as_zero\n\
-If the value of @code{treat_neg_dim_as_zero} is nonzero, expressions\n\
-like\n\
+@defvr {Built-in Variable} warn_neg_dim_as_zero\n\
+If the value of @code{warn_neg_dim_as_zero} is nonzero, print a warning\n\
+for expressions like\n\
 \n\
 @example\n\
 eye (-1)\n\
 @end example\n\
 \n\
 @noindent\n\
-produce an empty matrix (i.e., row and column dimensions are zero).\n\
-Otherwise, an error message is printed and control is returned to the\n\
-top level.  The default value is 0.\n\
+The default value is 0.\n\
 @end defvr");
 }
 

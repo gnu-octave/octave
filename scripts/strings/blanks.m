@@ -31,7 +31,7 @@ function s = blanks (n)
     usage ("blanks (n)");
   endif
 
-  if (isscalar (n) && n == round (n) && (treat_neg_dim_as_zero || n >= 0))
+  if (isscalar (n) && n == round (n))
     s = setstr (ones (1, n) * toascii (" "));
   else
     error ("blanks: n must be a non-negative integer");

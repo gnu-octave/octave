@@ -156,11 +156,11 @@ All Octave abbrevs start with a grave accent (`).")
     "sighup_dumps_octave_core" "sigterm_dumps_octave_core"
     "silent_functions" "split_long_rows" "stderr" "stdin" "stdout"
     "string_fill_char" "struct_levels_to_print"
-    "suppress_verbose_help_message" "treat_neg_dim_as_zero"
-    "warn_assign_as_truth_value" "warn_comma_in_global_decl"
-    "warn_divide_by_zero" "warn_fortran_indexing" "warn_function_name_clash"
-    "warn_imag_to_real" "warn_missing_semicolon"
-     "warn_num_to_str" "warn_str_to_num" "whitespace_in_literal_matrix")
+    "suppress_verbose_help_message" "warn_assign_as_truth_value"
+    "warn_comma_in_global_decl" "warn_divide_by_zero"
+    "warn_fortran_indexing" "warn_function_name_clash"
+    "warn_imag_to_real" "warn_missing_semicolon" "warn_neg_dim_as_zero"
+    "warn_num_to_str" "warn_str_to_num" "whitespace_in_literal_matrix")
   "Builtin variables in Octave.")
 
 (defvar octave-function-header-regexp

@@ -3,7 +3,7 @@ set prog_output "x = 1"
 do_test eval-1.m
 
 set test eval-2
-set prog_output "ans = 1"
+set prog_output "^ans = 1"
 do_test eval-2.m
 
 set test eval-3
@@ -19,7 +19,7 @@ set prog_output "flipud = 2"
 do_test eval-5.m
 
 set test eval-6
-set prog_output "ans = 2"
+set prog_output "^ans = 2"
 do_test eval-6.m
 
 set test eval-7
@@ -27,7 +27,7 @@ set prog_output "^$"
 do_test eval-7.m
 
 set test eval-8
-set prog_output "ans = 1"
+set prog_output "^ans = 1"
 do_test eval-8.m
 
 set test eval-9
@@ -35,6 +35,6 @@ set prog_output "^$"
 do_test eval-9.m
 
 set test eval-10
-set prog_output "ans = 1"
+set prog_output "^ans = 1"
 do_test eval-10.m
 

@@ -1,3 +1,28 @@
+2003-07-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* strfns.cc (Fchar): Force string conversions without warnings.
+
+	* ov.h (octave_value::convert_to_str, octave_value::all_strings,
+	octave_value::string_value, octave_value:convert_to_str_internal):
+	New arg, force.  Fix all derived classes to match.
+
+	* strfns.cc (Fchar): Temporarily reset Vwarn_num_to_str to avoid
+	warnings.
+
+	* ov.cc (convert_to_str): New arg, force.
+
+	* octave.cc (maximum_braindamage): Don't set treat_neg_dim_as_zero.
+
+	* utils.cc (Vwarn_neg_dim_as_zero): New variable.
+	(warn_neg_dim_as_zero): New function.
+	(symbols_of_utils): Add DEFVAR for warn_neg_dim_as_zero.
+	(check_dimensions): Check Vwarn_neg_dim_as_zero, not
+	Vtreat_neg_dim_as_zero.
+
+	* utils.cc (Vtreat_neg_dim_as_zero): Delete.
+	(treat_neg_dim_as_zero): Delete.
+	(symbols_of_utils): Delete DEFVAR for treat_neg_dim_as_zero.
+
 2003-07-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* octave.cc (maximum_braindamage): Don't set prefer_column_vectors.

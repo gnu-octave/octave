@@ -161,7 +161,7 @@ octave_char_matrix_str::matrix_value (bool force_string_conv) const
 }
 
 string_vector
-octave_char_matrix_str::all_strings (bool) const
+octave_char_matrix_str::all_strings (bool, bool) const
 {
   int n = matrix.rows ();
 
@@ -174,7 +174,7 @@ octave_char_matrix_str::all_strings (bool) const
 }
 
 std::string
-octave_char_matrix_str::string_value (void) const
+octave_char_matrix_str::string_value (bool) const
 {
   return matrix.row_as_string (0);  // XXX FIXME??? XXX
 }

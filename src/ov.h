@@ -478,10 +478,11 @@ public:
   virtual charMatrix char_matrix_value (bool frc_str_conv = false) const
     { return rep->char_matrix_value (frc_str_conv); }
 
-  virtual string_vector all_strings (bool pad = false) const
+  virtual string_vector all_strings (bool pad = false,
+				     bool force = false) const
     { return rep->all_strings (pad); }
 
-  virtual std::string string_value (void) const
+  virtual std::string string_value (bool force = false) const
     { return rep->string_value (); }
 
   virtual Range range_value (void) const
@@ -536,10 +537,10 @@ public:
   // class wants a certain kind of constant, he should simply ask for
   // it, and we should convert it if possible.
 
-  octave_value convert_to_str (bool pad = false) const;
+  octave_value convert_to_str (bool pad = false, bool force = false) const;
 
-  virtual octave_value convert_to_str_internal (bool pad = false) const
-    { return rep->convert_to_str_internal (pad); }
+  virtual octave_value convert_to_str_internal (bool pad, bool force) const
+    { return rep->convert_to_str_internal (pad, force); }
 
   virtual void convert_to_row_or_column_vector (void)
     { rep->convert_to_row_or_column_vector (); }
@@ -547,7 +548,8 @@ public:
   virtual void print (std::ostream& os, bool pr_as_read_syntax = false) const
     { rep->print (os, pr_as_read_syntax); }
 
-  virtual void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const
+  virtual void print_raw (std::ostream& os,
+			  bool pr_as_read_syntax = false) const
     { rep->print_raw (os, pr_as_read_syntax); }
 
   virtual bool print_name_tag (std::ostream& os, const std::string& name) const

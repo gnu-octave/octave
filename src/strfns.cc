@@ -33,6 +33,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gripes.h"
 #include "ov.h"
 #include "oct-obj.h"
+#include "unwind-prot.h"
 #include "utils.h"
 
 DEFUN (char, args, ,
@@ -67,7 +68,7 @@ of the string array have the same length.\n\
   int nargin = args.length ();
 
   if (nargin == 1)
-    retval = args(0).convert_to_str (true);
+    retval = args(0).convert_to_str (true, true);
   else if (nargin > 1)
     {
       int n_elts = 0;
@@ -76,11 +77,11 @@ of the string array have the same length.\n\
 
       for (int i = 0; i < nargin; i++)
 	{
-	  string_vector s = args(i).all_strings ();
+	  string_vector s = args(i).all_strings (false, true);
 
 	  if (error_state)
 	    {
-	      error ("char: expecting arguments to be strings");
+	      error ("char: unable to convert some args to strings");
 	      return retval;
 	    }
 
@@ -98,7 +99,7 @@ of the string array have the same length.\n\
 
       for (int i = 0; i < nargin; i++)
 	{
-	  string_vector s = args(i).all_strings ();
+	  string_vector s = args(i).all_strings (false, true);
 
 	  int n = s.length ();
 

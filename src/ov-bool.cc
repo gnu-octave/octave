@@ -103,7 +103,7 @@ octave_bool::do_index_op (const octave_value_list& idx, int resize_ok)
 }
 
 octave_value
-octave_bool::convert_to_str_internal (bool) const
+octave_bool::convert_to_str_internal (bool, bool) const
 {
   char s[2];
   s[0] = static_cast<char> (scalar);

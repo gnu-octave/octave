@@ -127,6 +127,13 @@ octave_bool_matrix::complex_value (bool) const
   return retval;
 }
 
+octave_value
+octave_bool_matrix::convert_to_str_internal (bool pad, bool force) const
+{
+  octave_value tmp = octave_value (matrix_value ());
+  return tmp.convert_to_str (pad, force);
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

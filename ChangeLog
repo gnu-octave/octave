@@ -1,3 +1,9 @@
+2003-07-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* emacs/octave-mod.el (octave-variables): Add warn_neg_dim_as_zero
+	to the list.
+	Delete treat_neg_dim_as_zero from the list.
+
 2003-07-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* emacs/octave-mod.el (octave-variables): Include

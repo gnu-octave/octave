@@ -256,7 +256,7 @@ octave_cell::list_value (void) const
 }
 
 string_vector
-octave_cell::all_strings (bool pad) const
+octave_cell::all_strings (bool pad, bool) const
 {
   string_vector retval;
 

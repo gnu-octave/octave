@@ -94,7 +94,6 @@ function dump_prefs (file)
               "string_fill_char";
               "struct_levels_to_print";
               "suppress_verbose_help_message";
-              "treat_neg_dim_as_zero";
               "warn_assign_as_truth_value";
               "warn_divide_by_zero";
               "warn_fortran_indexing";
@@ -102,6 +101,7 @@ function dump_prefs (file)
               "warn_future_time_stamp";
               "warn_imag_to_real";
               "warn_missing_semicolon";
+              "warn_neg_dim_as_zero";
               "warn_num_to_str";
               "warn_str_to_num";
               "warn_variable_switch_label";

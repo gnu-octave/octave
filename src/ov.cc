@@ -1128,11 +1128,11 @@ octave_value::complex_vector_value (bool force_string_conv,
 }
 
 octave_value
-octave_value::convert_to_str (bool pad) const
+octave_value::convert_to_str (bool pad, bool force) const
 {
-  octave_value retval = convert_to_str_internal (pad);
+  octave_value retval = convert_to_str_internal (pad, force);
 
-  if (is_numeric_type () && Vwarn_num_to_str)
+  if (! force && is_numeric_type () && Vwarn_num_to_str)
     gripe_implicit_conversion (type_name (), retval.type_name ());
 
   return retval;

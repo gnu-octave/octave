@@ -63,7 +63,7 @@ public:
   void print_code (ostream&) { }
 
 private:
-  octave_value_list values;
+  const octave_value_list values;
 };
 
 // Index expressions.

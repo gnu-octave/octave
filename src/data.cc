@@ -593,7 +593,7 @@ DEFUN ("prod", Fprod, Sprod, 1, 1,
 }
 
 DEFUN ("size", Fsize, Ssize, 2, 1,
-[m, n] = size (x): return rows and columns of X\n\
+  "[m, n] = size (x): return rows and columns of X\n\
 \n\
 d = size (x): return number of rows and columns of x as a row vector\n\
 \n\

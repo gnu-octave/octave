@@ -1,5 +1,12 @@
 2004-02-05  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* data.cc (Fsize): Update for N-d objects.
+
+	* ls-mat5.cc (read_mat5_binary_element): Force conversion.
+
+	* ov-base.cc (octave_base_value::char_matrix_value):
+	Pass force arg to convert_to_str.
+
 	* data.cc (Freshape): Chop trailing singletons from new dimensions.
 
 2004-02-03  John W. Eaton  <jwe@bevo.che.wisc.edu>

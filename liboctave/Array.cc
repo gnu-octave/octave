@@ -1468,6 +1468,17 @@ Array<T>::maybe_delete_elements (Array<idx_vector>& ra_idx, const T& rfv)
       // We have colons in all indices except for one.
       // This index tells us which slice to delete
 
+      if (n_idx < lhs_dims.length ())
+	{
+	  for (int i = n_idx; i < lhs_dims.length (); i++)
+	    lhs_dims(n_idx-1) *= lhs_dims(i);
+
+	  lhs_dims.resize (n_idx);
+
+	  // Reshape *this.
+	  dimensions = lhs_dims;
+	}
+
       int non_col = 0;
 
       // Find the non-colon column.
@@ -1542,12 +1553,6 @@ Array<T>::maybe_delete_elements (Array<idx_vector>& ra_idx, const T& rfv)
 		  T *new_data = new T [num_new_elem];
 
 		  Array<int> result_idx (lhs_dims.length (), 0);
-
-		  dim_vector lhs_inc;
-		  lhs_inc.resize (lhs_dims.length ());
-
-		  for (int i = 0; i < lhs_dims.length (); i++)
-		    lhs_inc(i) = lhs_dims(i) + 1;
 
 		  dim_vector new_lhs_dim = lhs_dims;
 
@@ -2851,17 +2856,11 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 	  for (int i = 0; i < rhs_dims.length (); i++)
 	    frozen_rhs(i) = rhs_dims(i);
 
-	  dim_vector lhs_inc;
-	  lhs_inc.resize (lhs_dims.length ());
-
-	  for (int i = 0; i < lhs_dims.length (); i++)
-	    lhs_inc(i) = lhs_dims(i) + 1;
-
 	  for (int i = 0; i < n; i++)
 	    {
 	      elt_idx = get_elt_idx (idx, result_idx);
 
-	      if (index_in_bounds (elt_idx, lhs_inc))
+	      if (index_in_bounds (elt_idx, lhs_dims))
 		{
 		  int s = compute_index (result_rhs_idx, rhs_dims);
 

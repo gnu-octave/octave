@@ -388,11 +388,11 @@ octave_base_value::bool_array_value (void) const
 }
 
 charMatrix
-octave_base_value::char_matrix_value (bool) const
+octave_base_value::char_matrix_value (bool force) const
 {
   charMatrix retval;
 
-  octave_value tmp = convert_to_str ();
+  octave_value tmp = convert_to_str (false, force);
 
   if (! error_state)
     retval = tmp.char_matrix_value ();

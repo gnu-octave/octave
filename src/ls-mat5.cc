@@ -508,7 +508,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	tc = re;
 
       if (arrayclass == mxCHAR_CLASS)
-	tc = tc.convert_to_str ();
+	tc = tc.convert_to_str (false, true);
     }
 
   is.seekg (pos + static_cast<std::streamoff> (element_length));

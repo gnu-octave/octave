@@ -1,5 +1,11 @@
 2004-02-05  Petter Risholm  <risholm@stud.ntnu.no>
 
+	* Array.cc (Array<T>::maybe_delete_elements): Reshape LHS
+	when number of indices is less than number of dimensions.
+
+	* Array.cc (Array<T>::assignN, Array<T>::maybe_delete_elements):
+	Remove unsued variable lhs_inc.
+
 	* Array.cc (Array<T>::maybe_delete_elements): Declare idx_is_colon
 	and idx_is_colon_equiv Array<int> instead of dim_vector.
 

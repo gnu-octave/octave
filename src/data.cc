@@ -792,9 +792,9 @@ DEFUN (size, args, nargout,
 Return the number rows and columns of @var{a}.\n\
 \n\
 With one input argument and one output argument, the result is returned\n\
-in a 2 element row vector.  If there are two output arguments, the\n\
-number of rows is assigned to the first, and the number of columns to\n\
-the second.  For example,\n\
+in a row vector.  If there are multiple output arguments, the number of\n\
+rows is assigned to the first, and the number of columns to the second,\n\
+etc.  For example,\n\
 \n\
 @example\n\
 @group\n\
@@ -807,8 +807,8 @@ size ([1, 2; 3, 4; 5, 6])\n\
 @end group\n\
 @end example\n\
 \n\
-If given a second argument of either 1 or 2, @code{size} will return\n\
-only the row or column dimension.  For example\n\
+If given a second argument, @code{size} will return the size of the\n\
+corresponding dimension.  For example\n\
 \n\
 @example\n\
 size ([1, 2; 3, 4; 5, 6], 2)\n\
@@ -852,12 +852,12 @@ returns the number of columns in the given matrix.\n\
 	error ("size: expecting scalar as second argument");
       else
 	{
-	  if (nd == 1)
-	    retval(0) = args(0).rows ();
-	  else if (nd == 2)
-	    retval(0) = args(0).columns ();
+	  dim_vector dv = args(0).dims ();
+
+	  if (nd > 0 && nd <= dv.length ())
+	    retval(0) = dv(nd-1);
 	  else
-	    error ("size: invalid second argument -- expecting 1 or 2");
+	    error ("size: requested dimension (= %d) out of range", nd);
 	}
     }
   else

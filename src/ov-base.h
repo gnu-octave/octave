@@ -210,7 +210,7 @@ public:
 
   boolNDArray bool_array_value (void) const;
 
-  charMatrix char_matrix_value (bool = false) const;
+  charMatrix char_matrix_value (bool force = false) const;
 
   charNDArray char_array_value (bool = false) const;
 

@@ -68,8 +68,8 @@ ieee754_compare (vec_index *a, vec_index *b)
   return (a->vec < b->vec);
 }
 
-template octave_sort<unsigned EIGHT_BYTE_INT>;
-template octave_sort<vec_index *>;
+template class octave_sort<unsigned EIGHT_BYTE_INT>;
+template class octave_sort<vec_index *>;
 #else
 struct vec_index
 {
@@ -89,8 +89,8 @@ double_compare (vec_index *a, vec_index *b)
   return (xisnan(b->vec) || (a->vec < b->vec));
 }
 
-template octave_sort<double>;
-template octave_sort<vec_index *>;
+template class octave_sort<double>;
+template class octave_sort<vec_index *>;
 #endif
 
 struct complex_vec_index
@@ -105,7 +105,7 @@ complex_compare (complex_vec_index *a, complex_vec_index *b)
   return (xisnan(b->vec) || (abs(a->vec) < abs(b->vec)));
 }
 
-template octave_sort<complex_vec_index *>;
+template class octave_sort<complex_vec_index *>;
 
 static octave_value_list
 mx_sort (NDArray &m, bool return_idx, int dim)

@@ -1,3 +1,8 @@
+2004-04-27  David Bateman  <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/sort.cc: Add missing "class" keywords to template
+	instantiations.
+
 2004-04-22  John W. Eaton  <jwe@octave.org>
 
 	* pt-plot.cc (Fclearplot): Temporarily turn off automatic_replot.

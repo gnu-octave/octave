@@ -87,6 +87,21 @@ fi
 AC_LANG_POP(C++)
 ])
 dnl
+dnl See if the compiler supports placement delete
+dnl
+AC_DEFUN(OCTAVE_PLACEMENT_DELETE,
+[AC_CACHE_CHECK([whether <new> defines placement delete operator],
+octave_cv_placement_delete,
+[AC_LANG_PUSH(C++)
+AC_TRY_COMPILE([#include <new>],
+[operator delete((void *)0, (void *)0);],
+octave_cv_placement_delete=yes, octave_cv_placement_delete=no)])
+if test $octave_cv_placement_delete = yes; then
+AC_DEFINE(HAVE_PLACEMENT_DELETE,1,[Define if C++ supports operator delete(void *, void *)])
+fi
+AC_LANG_POP(C++)
+])
+dnl
 dnl The following test is from Karl Berry's Kpathseach library.  I'm
 dnl including it here in case we someday want to make the use of
 dnl kpathsea optional.

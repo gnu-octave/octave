@@ -116,7 +116,7 @@ Return system resource statistics.")
 
   getrusage (RUSAGE_SELF, &resource_stats);
 
-  retval = mk_ru_map (&resource_stats);
+  retval = tree_constant (mk_ru_map (&resource_stats));
 
 #endif
 

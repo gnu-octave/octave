@@ -203,6 +203,23 @@ static builtin_general_functions general_functions[] =
   { "any", 2, 1, builtin_any,
     "any(X): are any elements of X nonzero?\n", },
 
+  { "balance", 4, 4, builtin_balance,
+    "balancing for algebraic and generalized eigenvalue prblems\n\
+Usage: \n\
+  algebraic eigenvalues problem:\n\
+    aa = balance(a{,opt}) or [{dd,}aa] =  balance(a{,opt})\n\
+  generalized eigenvalue problem:\n\
+    [cc, dd, aa, bb] = balance (a, b {,opt})\n\
+where 'opt' is an optional single character argument as follows: \n\
+  'N' or 'n': no balancing; arguments copied, transformation(s) \n\
+              set to identity\n\
+  'P' or 'p': permute argument(s) to isolate eigenvalues where possible\n\
+  'S' or 's': scale to improve accuracy of computed eigenvalues\n\
+  'B' or 'b': (default) permute and scale, in that order. Rows/columns of a \n\
+              (and b) that are isolated by permutation are not scaled\n\
+[dd, aa] = balance (a, opt) returns aa = dd\a*dd,\n\
+[cc, dd, aa, bb] = balance (a, b, opt) returns aa (bb) = cc*a*dd (cc*b*dd)\n", },
+
   { "clc", 1, 0, builtin_clc,
     "clear screen\n", },
 

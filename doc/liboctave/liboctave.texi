@@ -24,7 +24,7 @@
 
 @defindex op
 
-@c @include conf.texi
+@include ../conf.texi
 
 @settitle Octave C++ Classes
 

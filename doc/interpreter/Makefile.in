@@ -32,7 +32,7 @@ TEXINFO = arith.texi audio.texi basics.texi bugs.texi control.texi \
 
 FORMATTED = octave.dvi octave.ps octave.info octave.info-[0-9]*
 
-DISTFILES = Makefile.in dir octave.1 conf.texi $(TEXINFO) $(FORMATTED)
+DISTFILES = Makefile.in dir octave.1 $(TEXINFO) $(FORMATTED)
 
 ifeq ($(wildcard octave.info), )
   BINDISTFILES = $(srcdir)/octave.1 $(srcdir)/octave.info \
@@ -53,34 +53,13 @@ SPELL = $(patsubst %.texi, %.spell, $(TEXINFO))
 	sed -e 's/@@/ at /g' -e 's/@[a-zA-Z]*//g' $< | spell > $@.tmp
 	mv $@.tmp $@
 
-all: conf.texi octave.info octave.dvi octave.ps
+all: octave.info octave.dvi octave.ps
 .PHONY: all
 
-# This mess is supposed to prevent us from making info files
-# unnecessarily when building Octave in a subdirectory.
-
-conf.texi: $(srcdir)/../../src/version.h ../../Makeconf Makefile \
-	$(srcdir)/../conf.texi.in
-	@echo "Making conf.texi from conf.texi.in..."
-	sed < $(srcdir)/../conf.texi.in > conf.texi.tmp \
-	  -e "s;%OCTAVE_VERSION%;${version};" \
-	  -e "s;%TARGET_HOST_TYPE%;${target_host_type};" \
-	  -e "s;%OCTAVE_HOME%;${prefix};"
-	@if test "$(srcdir)" = "." ; then \
-	  $(top_srcdir)/move-if-change conf.texi.tmp conf.texi; \
-	else \
-	  if cmp conf.texi.tmp $(srcdir)/conf.texi > /dev/null; then \
-	    echo conf.texi is unchanged; \
-	    rm -f conf.texi.tmp; \
-	  else \
-	    mv -f conf.texi.tmp conf.texi; \
-	  fi; \
-	fi
-
-octave.info: $(TEXINFO) conf.texi
+octave.info: $(TEXINFO) ../conf.texi
 	-makeinfo -I$(srcdir) $(srcdir)/octave.texi
 
-octave.dvi: $(TEXINFO) conf.texi
+octave.dvi: $(TEXINFO) ../conf.texi
 	-TEXINPUTS="$(srcdir):$(srcdir)/..:$(TEXINPUTS):" ; \
 	  export TEXINPUTS ; \
 	  $(TEXI2DVI) $(srcdir)/octave.texi

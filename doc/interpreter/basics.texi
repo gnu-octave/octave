@@ -252,20 +252,20 @@ files:
 @cindex startup files
 
 @table @code
-@item OCTAVE_HOME/share/octave/site/m/startup/octaverc
-Where @code{OCTAVE_HOME} is the directory in which all of Octave is
-installed (the default is @file{/usr/local}).  This file is provided so
-that changes to the default Octave environment can be made globally for
-all users at your site for all versions of Octave you have installed.
-Some care should be taken when making changes to this file, since all
-users of Octave at your site will be affected.
+@item @var{OCTAVE_HOME}/share/octave/site/m/startup/octaverc
+Where @var{OCTAVE_HOME} is the directory in which all of Octave is
+installed (the default is @file{@value{OCTAVEHOME}}).  This file is
+provided so that changes to the default Octave environment can be made
+globally for all users at your site for all versions of Octave you have
+installed.  Some care should be taken when making changes to this file,
+since all users of Octave at your site will be affected.
 
-@item OCTAVE_HOME/share/octave/VERSION/m/startup/octaverc
-Where @code{OCTAVE_HOME} is the directory in which all of Octave is
-installed (the default is @file{/usr/local}), and @code{VERSION} is the
-version number of Octave.  This file is provided so that changes to the
-default Octave environment can be made globally for all users for a
-particular version of Octave.  Some care should be taken when making
+@item @var{OCTAVE_HOME}/share/octave/@var{VERSION}/m/startup/octaverc
+Where @var{OCTAVE_HOME} is the directory in which all of Octave is
+installed (the default is @file{@value{OCTAVEHOME}}), and @var{VERSION}
+is the version number of Octave.  This file is provided so that changes
+to the default Octave environment can be made globally for all users for
+a particular version of Octave.  Some care should be taken when making
 changes to this file, since all users of Octave at your site will be
 affected.
 
@@ -358,16 +358,19 @@ for those, you must type @kbd{help comma} or @kbd{help semicolon}.
 
 @defvr {Built-in Variable} INFO_FILE
 The variable @code{INFO_FILE} names the location of the Octave info file.
-The default value is @code{"@value{OCTAVEHOME}/info/octave.info"}.
+The default value is @code{"@var{OCTAVE_HOME}/info/octave.info"}, where
+@var{OCTAVE_HOME} is the directory where all of Octave is installed.
 @end defvr
 
 @defvr {Built-in Variable} INFO_PROGRAM
 The variable @code{INFO_PROGRAM} names the info program to run.  Its
 initial value is
-@code{@value{OCTAVEHOME}/libexec/octave/VERSION/exec/ARCH/info}, but
-that value can be overridden by the environment variable
-@code{OCTAVE_INFO_PROGRAM}, or the command line argument
-@code{--info-program NAME}, or by setting the value of
+@code{"@var{OCTAVE_HOME}/libexec/octave/@var{VERSION}/exec/@var{ARCH}/info"},
+where @var{OCTAVE_HOME} is the directory where all of Octave is
+installed, @var{VERSION} is the Octave version number, and @var{ARCH} is
+the machine type.  The value of @code{INFO_PROGRAM} can be overridden by
+the environment variable @code{OCTAVE_INFO_PROGRAM}, or the command line
+argument @code{--info-program NAME}, or by setting the value of
 @code{INFO_PROGRAM} in a startup script.
 @end defvr
 
@@ -1011,15 +1014,16 @@ the following lines:
 
 @example
 @group
-#! @value{OCTAVEHOME}/bin/octave -qf
+#! /path/to/octave -qf
 # a sample Octave program
 printf ("Hello, world!\n");
 @end group
 @end example
 
 @noindent
-After making this file executable (with the @code{chmod} command), you
-can simply type:
+(where @code{/path/to/octave} should be replaced with the full file name
+for your Octave binary).  After making this file executable (with the
+@code{chmod} command), you can simply type:
 
 @example
 hello
@@ -1058,7 +1062,7 @@ reproduce the command line that is used to execute it.
 
 @example
 @group
-#! @value{OCTAVEHOME}/bin/octave -qf
+#! /bin/octave -qf
 printf ("%s", program_name);
 for i = 1:nargin
   printf (" %s", argv(i,:));

@@ -1,3 +1,15 @@
+Wed Feb 19 10:30:14 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Version 2.0.4 released.
+
+	* Makefile.in (DISTFILES): Distribute conf.texi, not conf.texi.in.
+
+	* liboctave/Makefile.in: Don't make or distribute conf.texi.
+	(liboctave.info, liboctave.dvi): Depend on ../conf.texi, not conf.texi.
+
+	* interpreter/Makefile.in: Don't create or distribute conf.texi.
+	(octave.info, octave.dvi): Depend on ../conf.texi, not conf.texi.
+
 Tue Feb 18 09:22:04 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Version 2.0.3 released.

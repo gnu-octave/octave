@@ -241,22 +241,22 @@ files:
 @cindex startup files
 
 @table @code
-@item OCTAVE_HOME/share/octave/site/m/startup/octaverc
-Where @code{OCTAVE_HOME} is the directory in which all of Octave is
-installed (the default is @file{/usr/local}).  This file is provided so
-that changes to the default Octave environment can be made globally for
-all users at your site for all versions of Octave you have installed.
-Some care should be taken when making changes to this file, since all
-users of Octave at your site will be affected.
+@item @var{OCTAVE_HOME}/share/octave/site/m/startup/octaverc
+Where @var{OCTAVE_HOME} is the directory in which all of Octave is
+installed (the default is @file{@value{OCTAVEHOME}}).  This file is
+provided so that changes to the default Octave environment can be made
+globally for all users at your site for all versions of Octave you have
+installed.  Some care should be taken when making changes to this file,
+since all users of Octave at your site will be affected.
 
-@item OCTAVE_HOME/share/octave/VERSION/m/startup/octaverc
+@item @var{OCTAVE_HOME}/share/octave/@var{VERSION}/m/startup/octaverc
 Where @code{OCTAVE_HOME} is the directory in which all of Octave is
-installed (the default is @file{/usr/local}), and @code{VERSION} is the
-version number of Octave.  This file is provided so that changes to the
-default Octave environment can be made globally for all users for a
-particular version of Octave.  Some care should be taken when making
-changes to this file, since all users of Octave at your site will be
-affected.
+installed (the default is @file{@value{OCTAVE_HOME}}), and
+@var{VERSION} is the version number of Octave.  This file is provided
+so that changes to the default Octave environment can be made globally
+for all users for a particular version of Octave.  Some care should be
+taken when making changes to this file, since all users of Octave at
+your site will be affected.
 
 @item ~/.octaverc
 @cindex @code{~/.octaverc}

@@ -794,17 +794,17 @@ begins (ends) with a colon, the directories
 
 @example
 @group
-OCTAVE_HOME/libexec/octave/site/exec/ARCH
-OCTAVE_HOME/libexec/octave/VERSION/exec/ARCH
+@var{OCTAVE_HOME}/libexec/octave/site/exec/@var{ARCH}
+@var{OCTAVE_HOME}/libexec/octave/@var{VERSION}/exec/@var{ARCH}
 @end group
 @end example
 
 @noindent
-are prepended (appended) to @code{EXEC_PATH}, where @code{OCTAVE_HOME}
+are prepended (appended) to @code{EXEC_PATH}, where @var{OCTAVE_HOME}
 is the top-level directory where all of Octave is installed
-(@file{/usr/local} by default).  If you don't specify a value for
-@code{EXEC_PATH} explicitly, these special directories are prepended to
-your shell path.
+(the default value is @file{@value{OCTAVEHOME}}).  If you don't specify
+a value for @code{EXEC_PATH} explicitly, these special directories are
+prepended to your shell path.
 @end defvr
 
 In most cases, the following functions simply decode their arguments and

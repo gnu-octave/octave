@@ -611,8 +611,8 @@ has to be done to ensure that the correct function definition is used.
 To avoid degrading performance unnecessarily by checking the time stamps
 on functions that are not likely to change, Octave assumes that function
 files in the directory tree
-@file{@value{OCTAVEHOME}/share/octave/@value{VERSION}/m} will not
-change, so it doesn't have to check their time stamps every time the
+@file{@var{OCTAVE_HOME}/share/octave/@var{VERSION}/m}
+will not change, so it doesn't have to check their time stamps every time the
 functions defined in those files are used.  This is normally a very good
 assumption and provides a significant improvement in performance for the
 function files that are distributed with Octave.
@@ -657,14 +657,14 @@ This variable can be used to prevent Octave from making the system call
 @code{stat} each time it looks up functions defined in function files.
 If @code{ignore_function_time_stamp} to @code{"system"}, Octave will not
 automatically recompile function files in subdirectories of
-@file{@value{OCTAVEHOME}/lib/@value{VERSION}} if they have changed since
+@file{@var{OCTAVE_HOME}/lib/@var{VERSION}} if they have changed since
 they were last compiled, but will recompile other function files in the
 @code{LOADPATH} if they change.  If set to @code{"all"}, Octave will not
 recompile any function files unless their definitions are removed with
 @code{clear}.  For any other value of @code{ignore_function_time_stamp},
 Octave will always check to see if functions defined in function files
-need to recompiled.  The default value of
-@code{ignore_function_time_stamp} is @code{"system"}.
+need to recompiled.  The default value of @code{ignore_function_time_stamp} is
+@code{"system"}.
 @end defvr
 
 @defvr {Built-in Variable} warn_function_name_clash
@@ -984,8 +984,8 @@ read the source code for Octave.
 
 Many of Octave's standard functions are distributed as function files.
 They are loosely organized by topic, in subdirectories of
-@file{OCTAVE_HOME/lib/octave/VERSION/m}, to make it easier to find
-them.
+@file{@var{OCTAVE_HOME}/lib/octave/@var{VERSION}/m}, to make it easier
+to find them.
 
 The following is a list of all the function file subdirectories, and the
 types of functions you will find there.

@@ -36,7 +36,7 @@ END-INFO-DIR-ENTRY
 @c This file doesn't include a chapter, so it must not be included
 @c if you want to run the Emacs function texinfo-multiple-files-update.
 
-@include conf.texi
+@include ../conf.texi
 
 @settitle Octave
 

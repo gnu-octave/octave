@@ -25,7 +25,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include <climits>
-#include <csetjmp>
 #include <cstring>
 
 #include <fstream>
@@ -39,6 +38,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 #include <unistd.h>
 #endif
+
+// Include setjmp.h, not csetjmp since the latter might only define
+// the ANSI standard C interface.
+
+#include <setjmp.h>
 
 #if defined (HAVE_TERMIOS_H)
 #include <termios.h>

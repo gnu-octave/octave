@@ -42,8 +42,6 @@ class subplot_list;
 
 class tree_walker;
 
-#include <csignal>
-
 #include <string>
 
 #include <SLList.h>

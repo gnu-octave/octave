@@ -35,7 +35,6 @@ Software Foundation, Inc.
 #include <config.h>
 #endif
 
-#include <csignal>
 #include <cstdlib>
 #include <cstring>
 

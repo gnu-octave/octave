@@ -33,10 +33,15 @@ Free Software Foundation, Inc.
 #if !defined (octave_sighandlers_h)
 #define octave_sighandlers_h 1
 
-#include <Array.h>
+// Include signal.h, not csignal since the latter might only define
+// the ANSI standard C signal interface.
+
+#include <signal.h>
 
 #include "syswait.h"
 #include "siglist.h"
+
+#include <Array.h>
 
 // Signal handler return type.
 #ifndef RETSIGTYPE

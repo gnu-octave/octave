@@ -25,8 +25,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include <cassert>
-#include <csetjmp>
-#include <csignal>
 #include <cstdlib>
 #include <cstring>
 
@@ -41,6 +39,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 #include <unistd.h>
 #endif
+
+// Include setjmp.h, not csetjmp since the latter might only define
+// the ANSI standard C interface.
+
+#include <setjmp.h>
 
 #include "cmd-edit.h"
 #include "file-ops.h"

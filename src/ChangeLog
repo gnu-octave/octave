@@ -1,5 +1,21 @@
 2000-02-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* sighandlers.h: Include signal.h here.
+	* sighandlers.cc: Not here.
+
+	* utils.cc: Include setjmp.h, not csetjmp.
+	* toplev.cc: Ditto.
+
+	* sighandlers.cc: Include signal.h, not csignal.
+
+	* pt-plot.h: Don't include csignal.
+	* toplev.cc: Ditto.
+	* oct-hist.cc: Ditto.
+	* octave.cc: Ditto.
+	* pager.cc: Ditto.
+	* input.cc: Ditto.
+	* help.cc: Ditto.
+
 	* pt-plot.cc (send_to_plot_stream): Use operator== and substr
 	method to do limited-length string comparison.
 	* input.cc (generate_completion): Likewise.

@@ -47,7 +47,6 @@ Software Foundation, Inc.
 #include <fcntl.h>
 
 #include <readline/history.h>
-#include <readline/tilde.h>
 
 #include "defun.h"
 #include "error.h"
@@ -58,6 +57,7 @@ Software Foundation, Inc.
 #include "pager.h"
 #include "sighandlers.h"
 #include "statdefs.h"
+#include "sysdep.h"
 #include "unwind-prot.h"
 #include "user-prefs.h"
 #include "utils.h"

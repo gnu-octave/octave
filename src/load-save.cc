@@ -34,8 +34,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <fstream.h>
 #include <strstream.h>
 
-#include <readline/tilde.h>
-
 #include "fnmatch.h"
 
 #include "defun.h"

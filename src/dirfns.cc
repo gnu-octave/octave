@@ -46,8 +46,6 @@ Free Software Foundation, Inc.
 
 #include <strstream.h>
 
-#include <readline/tilde.h>
-
 #include "defun.h"
 #include "dirfns.h"
 #include "error.h"

@@ -40,8 +40,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <unistd.h>
 #endif
 
-#include <readline/tilde.h>
-
 #include "SLStack.h"
 #include "procstream.h"
 
@@ -50,6 +48,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gripes.h"
 #include "help.h"
 #include "load-save.h"
+#include "sysdep.h"
 #include "tree-base.h"
 #include "tree-cmd.h"
 #include "tree-const.h"

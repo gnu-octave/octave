@@ -48,8 +48,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 LOSE! LOSE!
 #endif
 
-#include <readline/tilde.h>
-
 #ifndef HAVE_STRNCASECMP
 extern "C" int strncasecmp (const char*, const char*, size_t);
 #endif
@@ -70,6 +68,7 @@ extern "C" int strncasecmp (const char*, const char*, size_t);
 #include "toplev.h"
 #include "pager.h"
 #include "pathsearch.h"
+#include "sysdep.h"
 #include "sysdir.h"
 #include "tree-const.h"
 #include "unwind-prot.h"

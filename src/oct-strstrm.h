@@ -23,8 +23,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_octave_strstream_h)
 #define octave_octave_strstream_h 1
 
-#include <strstream>
 #include <string>
+
+#include "lo-sstream.h"
 
 #include "oct-stream.h"
 
@@ -114,7 +115,7 @@ protected:
 
 private:
 
-  std::istrstream is;
+  ISSTREAM is;
 
   // No copying!
 
@@ -147,10 +148,9 @@ public:
 
   std::string str (void)
     {
-      os << std::ends;
-      char *tmp = os.str ();
-      std::string retval = tmp;
-      delete [] tmp;
+      os << OSSTREAM_ENDS;
+      std::string retval = OSSTREAM_STR (os);
+      OSSTREAM_FREEZE (os);
       return retval;
     }
 
@@ -166,7 +166,7 @@ protected:
 
 private:
 
-  std::ostrstream os;
+  OSSTREAM os;
 
   // No copying!
 

@@ -30,6 +30,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "procstream.h"
 
+procstreambase::procstreambase (const std::string& command, int mode)
+{
+  pb_init ();
+
+  if (! pb.open (command.c_str (), mode))
+    std::ios::setstate (std::ios::badbit);
+}
+
 procstreambase::procstreambase (const char *command, int mode)
 {
   pb_init ();

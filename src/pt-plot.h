@@ -28,7 +28,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include <iostream>
-#include <strstream>
+
+#include "lo-sstream.h"
 
 class tree_expression;
 class tree_plot_command;
@@ -100,7 +101,7 @@ public:
 
   ~plot_limits (void);
 
-  void print (int ndim, std::ostrstream& plot_buf);
+  void print (int ndim, OSSTREAM& plot_buf);
 
   plot_range *x_limits (void) { return x_range; }
   plot_range *y_limits (void) { return y_range; }
@@ -133,7 +134,7 @@ public:
 
   ~plot_range (void);
 
-  void print (std::ostrstream& plot_buf);
+  void print (OSSTREAM& plot_buf);
 
   tree_expression *lower_bound (void) { return lower; }
 
@@ -188,7 +189,7 @@ public:
 
   ColumnVector values (int ndim, int n_max = 0);
 
-  int print (int ndim, int n_max, std::ostrstream& plot_buf);
+  int print (int ndim, int n_max, OSSTREAM& plot_buf);
 
   int qualifier_count (void) { return qual_count; }
 
@@ -233,7 +234,7 @@ public:
 
   ~subplot_style (void);
 
-  int print (std::ostrstream& plot_buf);
+  int print (OSSTREAM& plot_buf);
 
   bool columns_ok (int nc);
 
@@ -273,7 +274,7 @@ public:
 
   ~subplot_axes (void) { }
 
-  int print (std::ostrstream& plot_buf);
+  int print (OSSTREAM& plot_buf);
 
   std::string axes (void) { return sp_axes; }
 
@@ -354,9 +355,9 @@ public:
 
   octave_value extract_plot_data (int ndim, octave_value& data);
 
-  int handle_plot_data (int ndim, std::ostrstream& plot_buf);
+  int handle_plot_data (int ndim, OSSTREAM& plot_buf);
 
-  int print (int ndim, std::ostrstream& plot_buf);
+  int print (int ndim, OSSTREAM& plot_buf);
 
   tree_expression *plot_data (void) { return sp_plot_data; }
 
@@ -407,7 +408,7 @@ public:
 
   ~subplot_list (void);
 
-  int print (int ndim, std::ostrstream& plot_buf);
+  int print (int ndim, OSSTREAM& plot_buf);
 
   void accept (tree_walker& tw);
 

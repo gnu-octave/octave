@@ -27,7 +27,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cstring>
 
 #include <iostream>
-#include <strstream>
 #include <string>
 
 #include "cmd-edit.h"
@@ -40,8 +39,6 @@ command_history *command_history::instance = 0;
 #if defined (USE_READLINE)
 
 #include <cstdlib>
-
-#include <strstream>
 
 #ifdef HAVE_FCNTL_H
 #include <fcntl.h>

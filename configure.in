@@ -22,7 +22,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### 02111-1307, USA. 
 
 AC_INIT
-AC_REVISION($Revision: 1.363 $)
+AC_REVISION($Revision: 1.364 $)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -790,12 +790,20 @@ AC_HEADER_DIRENT
 AC_HEADER_TIME
 AC_HEADER_SYS_WAIT
 
+### C headers
+
 AC_CHECK_HEADERS(assert.h curses.h dlfcn.h fcntl.h float.h \
-  floatingpoint.h grp.h ieeefp.h limits.h memory.h \
-  nan.h ncurses.h poll.h pwd.h stdlib.h string.h sys/ioctl.h \
+  floatingpoint.h grp.h ieeefp.h limits.h memory.h nan.h \
+  ncurses.h poll.h pwd.h stdlib.h string.h sys/ioctl.h \
   sys/param.h sys/poll.h sys/resource.h sys/select.h sys/stat.h \
   sys/time.h sys/times.h sys/types.h sys/utsname.h termcap.h \
   unistd.h varargs.h)
+
+### C++ headers
+
+AC_LANG_PUSH(C++)
+AC_CHECK_HEADERS(sstream)
+AC_LANG_POP(C++)
 
 have_termios_h=no
 AC_CHECK_HEADERS($TERMIOS_H, have_termios_h=yes)

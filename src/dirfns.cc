@@ -30,7 +30,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cstdlib>
 #include <cstring>
 
-#include <strstream>
 #include <string>
 
 #ifdef HAVE_UNISTD_H
@@ -43,6 +42,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "file-ops.h"
 #include "file-stat.h"
 #include "glob-match.h"
+#include "lo-sstream.h"
 #include "oct-env.h"
 #include "str-vec.h"
 
@@ -167,18 +167,17 @@ from system to system.\n\
   if (error_state)
     return retval;
 
-  std::ostrstream ls_buf;
+  OSSTREAM ls_buf;
 
   ls_buf << "ls -C ";
   for (int i = 1; i < argc; i++)
     ls_buf << file_ops::tilde_expand (argv[i]) << " ";
 
-  ls_buf << std::ends;
-  char *ls_command = ls_buf.str ();
+  ls_buf << OSSTREAM_ENDS;
 
-  iprocstream *cmd = new iprocstream (ls_command);
+  iprocstream *cmd = new iprocstream (OSSTREAM_STR (ls_buf));
 
-  delete [] ls_command;
+  OSSTREAM_FREEZE (ls_buf);
 
   unwind_protect::add (cleanup_iprocstream, cmd);
 

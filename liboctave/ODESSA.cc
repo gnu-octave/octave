@@ -28,11 +28,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
-#include <cstdlib>
 #include <cfloat>
 #include <cmath>
-
-#include <strstream>
 
 // For instantiating the Array<Matrix> object.
 #include "Array.h"
@@ -41,15 +38,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ODESSA.h"
 #include "f77-fcn.h"
 #include "lo-error.h"
-#include "error.h"
-#include "gripes.h"
-#include "oct-obj.h"
-#include "ov-fcn.h"
-#include "pager.h"
-#include "parse.h"
-#include "unwind-prot.h"
-#include "utils.h"
-#include "variables.h"
+#include "lo-sstream.h"
 
 typedef int (*odessa_fcn_ptr) (int*, const double&, double*,
 			       double*, double*);
@@ -457,11 +446,10 @@ ODESSA::error_message (void) const
 {
   std::string retval;
 
-  std::ostrstream buf;
-  buf << t << ends;
-  const char *t = buf.str ();
-  std::string t_curr = t;
-  delete [] t;
+  OSSTREAM buf;
+  buf << t << OSSTREAM_ENDS;
+  std::string t_curr = OSSTREAM_STR (buf);
+  OSSTREAM_FREEZE (buf);
 
   switch (istate)
     {

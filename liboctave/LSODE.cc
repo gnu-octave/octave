@@ -31,11 +31,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cfloat>
 #include <cmath>
 
-#include <strstream>
-
 #include "LSODE.h"
 #include "f77-fcn.h"
 #include "lo-error.h"
+#include "lo-sstream.h"
 
 typedef int (*lsode_fcn_ptr) (const int&, const double&, double*,
 			      double*, int&);
@@ -286,11 +285,10 @@ LSODE::error_message (void) const
 {
   std::string retval;
 
-  std::ostrstream buf;
-  buf << t << ends;
-  const char *t = buf.str ();
-  std::string t_curr = t;
-  delete [] t;
+  OSSTREAM buf;
+  buf << t << OSSTREAM_ENDS;
+  std::string t_curr = OSSTREAM_STR (buf);
+  OSSTREAM_FREEZE (buf);
 
   switch (istate)
     {

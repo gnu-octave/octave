@@ -28,12 +28,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cstring>
 
 #include <iomanip>
-#include <strstream>
 #include <fstream>
 #include <string>
 
 #include "lo-ieee.h"
 #include "lo-mappers.h"
+#include "lo-sstream.h"
 #include "lo-utils.h"
 #include "str-vec.h"
 
@@ -166,7 +166,7 @@ scanf_format_list::scanf_format_list (const std::string& s)
       have_more = true;
 
       if (! buf)
-	buf = new std::ostrstream ();
+	buf = new OSSTREAM ();
 
       if (s[i] == '%')
 	{
@@ -241,25 +241,22 @@ scanf_format_list::add_elt_to_list (int width, bool discard, char type,
 {
   if (buf)
     {
-      *buf << std::ends;
+      *buf << OSSTREAM_ENDS;
 
-      char *text = buf->str ();
+      std::string text = OSSTREAM_STR (*buf);
 
-      if (text)
+      OSSTREAM_FREEZE (*buf);
+
+      if (! text.empty ())
 	{
-	  if (*text)
-	    {
-	      scanf_format_elt *elt
-		= new scanf_format_elt (text, width, discard, type,
-					modifier, char_class);
+	  scanf_format_elt *elt
+	    = new scanf_format_elt (text.c_str (), width, discard, type,
+				    modifier, char_class);
 
-	      if (num_elts == list.length ())
-		list.resize (2 * num_elts);
+	  if (num_elts == list.length ())
+	    list.resize (2 * num_elts);
 
-	      list(num_elts++) = elt;
-	    }
-
-	  delete [] text;
+	  list(num_elts++) = elt;
 	}
 
       delete buf;
@@ -594,7 +591,7 @@ printf_format_list::printf_format_list (const std::string& s)
 
       if (! buf)
 	{
-	  buf = new std::ostrstream ();
+	  buf = new OSSTREAM ();
 	  empty_buf = true;
 	}
 
@@ -662,25 +659,22 @@ printf_format_list::add_elt_to_list (int args, const std::string& flags,
 {
   if (buf)
     {
-      *buf << std::ends;
+      *buf << OSSTREAM_ENDS;
 
-      char *text = buf->str ();
+      std::string text = OSSTREAM_STR (*buf);
 
-      if (text)
+      OSSTREAM_FREEZE (*buf);
+
+      if (! text.empty ())
 	{
-	  if (*text)
-	    {
-	      printf_format_elt *elt
-		= new printf_format_elt (text, args, fw, prec, flags,
-					 type, modifier);
+	  printf_format_elt *elt
+	    = new printf_format_elt (text.c_str (), args, fw, prec, flags,
+				     type, modifier);
 
-	      if (num_elts == list.length ())
-		list.resize (2 * num_elts);
+	  if (num_elts == list.length ())
+	    list.resize (2 * num_elts);
 
-	      list(num_elts++) = elt;
-	    }
-
-	  delete [] text;
+	  list(num_elts++) = elt;
 	}
 
       delete buf;
@@ -941,9 +935,7 @@ octave_base_stream::do_gets (int max_len, bool& err,
     {
       std::istream& is = *isp;
 
-      // XXX FIXME XXX -- this should probably be converted to use
-      // sstream when that is available.
-      std::ostrstream buf;
+      OSSTREAM buf;
 
       int c = 0;
       int char_count = 0;
@@ -985,10 +977,9 @@ octave_base_stream::do_gets (int max_len, bool& err,
 	}
       else
 	{
-	  buf << std::ends;
-	  char *tmp = buf.str ();
-	  retval = tmp;
-	  delete [] tmp;
+	  buf << OSSTREAM_ENDS;
+	  retval = OSSTREAM_STR (buf);
+	  OSSTREAM_FREEZE (buf);
 	}
     }
   else
@@ -1229,38 +1220,42 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double*,
  \
   int width = elt->width ? elt->width : 1; \
  \
-  char *tmp = new char[width + 1]; \
+  char *tbuf = new char[width + 1]; \
  \
   int c = EOF; \
   int n = 0; \
  \
   while (is && n < width && (c = is.get ()) != EOF) \
-    tmp[n++] = (char) c; \
+    tbuf[n++] = (char) c; \
  \
-  tmp[n] = '\0'
+  tbuf[n] = '\0'; \
+ \
+  std::string tmp = tbuf; \
+ \
+  delete [] tbuf
 
 // For a `%s' format, skip initial whitespace and then read until the
 // next whitespace character.
 #define BEGIN_S_CONVERSION() \
   int width = elt->width; \
  \
-  char *tmp = 0; \
+  std::string tmp; \
  \
   do \
     { \
       if (width) \
 	{ \
-	  tmp = new char [width+1]; \
+	  char *tbuf = new char [width+1]; \
  \
-	  OCTAVE_SCAN (is, *elt, tmp); \
+	  OCTAVE_SCAN (is, *elt, tbuf); \
  \
-	  tmp[width] = '\0'; \
+	  tbuf[width] = '\0'; \
+          tmp = tbuf; \
+          delete [] tbuf; \
 	} \
       else \
 	{ \
-	  std::string buf; \
-	  is >> std::ws >> buf; \
-	  tmp = strsave (buf.c_str()); \
+	  is >> std::ws >> tmp; \
 	} \
     } \
   while (0)
@@ -1269,21 +1264,23 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double*,
 #define BEGIN_CHAR_CLASS_CONVERSION() \
   int width = elt->width; \
  \
-  char *tmp = 0; \
+  std::string tmp; \
  \
   do \
     { \
       if (width) \
 	{ \
-	  tmp = new char[width+1]; \
+	  char *tbuf = new char[width+1]; \
  \
-	  OCTAVE_SCAN (is, *elt, tmp); \
+	  OCTAVE_SCAN (is, *elt, tbuf); \
  \
-	  tmp[width] = '\0'; \
+	  tbuf[width] = '\0'; \
+          tmp = tbuf; \
+          delete [] tbuf; \
 	} \
       else \
 	{ \
-	  std::ostrstream buf; \
+	  OSSTREAM buf; \
  \
 	  std::string char_class = elt->char_class; \
  \
@@ -1305,11 +1302,11 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double*,
 	  if (c != EOF) \
 	    is.putback (c); \
  \
-	  buf << std::ends; \
+	  buf << OSSTREAM_ENDS; \
+	  tmp = OSSTREAM_STR (buf); \
+	  OSSTREAM_FREEZE (buf); \
  \
-	  tmp = buf.str (); \
- \
-	  if (strlen (tmp) == 0) \
+	  if (tmp.empty ()) \
 	    is.setstate (std::ios::failbit); \
 	} \
     } \
@@ -1318,7 +1315,7 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double*,
 #define FINISH_CHARACTER_CONVERSION() \
   do \
     { \
-      width = strlen (tmp); \
+      width = tmp.length (); \
  \
       if (is) \
 	{ \
@@ -1351,8 +1348,6 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double*,
 		} \
 	    } \
 	} \
- \
-      delete [] tmp; \
     } \
   while (0)
 
@@ -1818,8 +1813,6 @@ octave_base_stream::do_oscanf (const scanf_format_elt *elt,
 		if (! discard)
 		  retval = tmp;
 
-		delete [] tmp;
-
 		if (! is)
 		  quit = true;
 
@@ -1834,8 +1827,6 @@ octave_base_stream::do_oscanf (const scanf_format_elt *elt,
 		if (! discard)
 		  retval = tmp;
 
-		delete [] tmp;
-
 		if (! is)
 		  quit = true;
 	      }
@@ -1847,8 +1838,6 @@ octave_base_stream::do_oscanf (const scanf_format_elt *elt,
 
 		if (! discard)
 		  retval = tmp;
-
-		delete [] tmp;
 
 		if (! is)
 		  quit = true;
@@ -3133,7 +3122,7 @@ octave_stream_list::do_list_open_files (void) const
 
   // XXX FIXME XXX -- this should probably be converted to use sstream
   // when that is available.
-  std::ostrstream buf;
+  OSSTREAM buf;
 
   buf << "\n"
       << "  number  mode  arch       name\n"
@@ -3162,13 +3151,11 @@ octave_stream_list::do_list_open_files (void) const
 	}
     }
 
-  buf << "\n" << std::ends;
+  buf << "\n" << OSSTREAM_ENDS;
 
-  char *tmp = buf.str ();
+  retval = OSSTREAM_STR (buf);
 
-  retval = tmp;
-
-  delete [] tmp;
+  OSSTREAM_FREEZE (buf);
 
   return retval;
 }

@@ -29,8 +29,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include <iostream>
-#include <strstream>
 
+#include "lo-sstream.h"
 #include "lo-utils.h"
 
 #include "defun.h"
@@ -238,15 +238,14 @@ octave_list::print_raw (std::ostream& os, bool) const
 
       for (int i = 0; i < n; i++)
 	{
-	  std::ostrstream buf;
-	  buf << "[" << i+1 << "]" << std::ends;
-	  const char *nm = buf.str ();
+	  OSSTREAM buf;
+	  buf << "[" << i+1 << "]" << OSSTREAM_ENDS;
 
 	  octave_value val = lst(i);
 
-	  val.print_with_name (os, nm);
+	  val.print_with_name (os, OSSTREAM_STR (buf));
 
-	  delete [] nm;
+	  OSSTREAM_FREEZE (buf);
 	}
 
       decrement_indent_level ();

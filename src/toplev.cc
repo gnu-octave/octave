@@ -30,7 +30,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <fstream>
 #include <iostream>
-#include <strstream>
 #include <string>
 
 #ifdef HAVE_UNISTD_H
@@ -49,6 +48,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "file-ops.h"
 #include "lo-error.h"
 #include "lo-mappers.h"
+#include "lo-sstream.h"
 #include "oct-env.h"
 #include "str-vec.h"
 
@@ -341,7 +341,7 @@ run_command_and_return_output (const std::string& cmd_str)
 
       if (*cmd)
 	{
-	  std::ostrstream output_buf;
+	  OSSTREAM output_buf;
 
 	  // XXX FIXME XXX -- sometimes, the subprocess hasn't written
 	  // anything before we try to read from the procstream.  The
@@ -373,14 +373,12 @@ run_command_and_return_output (const std::string& cmd_str)
 	  else
 	    cmd_status = 127;
 
-	  output_buf << std::ends;
-
-	  char *msg = output_buf.str ();
+	  output_buf << OSSTREAM_ENDS;
 
 	  retval(1) = (double) cmd_status;
-	  retval(0) = msg;
+	  retval(0) = OSSTREAM_STR (output_buf);
 
-	  delete [] msg;
+	  OSSTREAM_FREEZE (output_buf);
 	}
 
       unwind_protect::run ();

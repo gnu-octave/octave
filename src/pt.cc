@@ -29,8 +29,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include <iostream>
-#include <strstream>
 #include <string>
+
+#include "lo-sstream.h"
 
 #include "pt.h"
 #include "pt-pr-code.h"
@@ -53,19 +54,17 @@ const tree *tree::break_statement = 0;
 std::string
 tree::str_print_code (void)
 {
-  std::ostrstream buf;
+  OSSTREAM buf;
 
   tree_print_code tpc (buf);
 
   accept (tpc);
 
-  buf << std::ends;
+  buf << OSSTREAM_ENDS;
 
-  const char *s = buf.str ();
+  std::string retval = OSSTREAM_STR (buf);
 
-  std::string retval = s;
-
-  delete [] s;
+  OSSTREAM_FREEZE (buf);
 
   return retval;
 }

@@ -29,8 +29,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include <iostream>
-#include <strstream>
 
+#include "lo-sstream.h"
 #include "lo-utils.h"
 
 #include "defun.h"
@@ -268,15 +268,14 @@ octave_cell::print_raw (std::ostream& os, bool) const
 	{
 	  for (int i = 0; i < nr; i++)
 	    {
-	      std::ostrstream buf;
-	      buf << "[" << i+1 << "," << j+1 << "]" << std::ends;
-	      const char *nm = buf.str ();
+	      OSSTREAM buf;
+	      buf << "[" << i+1 << "," << j+1 << "]" << OSSTREAM_ENDS;
 
 	      octave_value val = matrix(i,j);
 
-	      val.print_with_name (os, nm);
+	      val.print_with_name (os, OSSTREAM_STR (buf));
 
-	      delete [] nm;
+	      OSSTREAM_FREEZE (buf);
 	    }
 	}
 

@@ -27,8 +27,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cstdarg>
 #include <cstring>
 
-#include <strstream>
 #include <string>
+
+#include "lo-sstream.h"
 
 #include "defun.h"
 #include "error.h"
@@ -100,7 +101,7 @@ bool buffer_error_messages = false;
 bool discard_error_messages = false;
 
 // The message buffer.
-static std::ostrstream *error_message_buffer = 0;
+static OSSTREAM *error_message_buffer = 0;
 
 // Warning messages are never buffered.
 
@@ -109,24 +110,22 @@ vwarning (const char *name, const char *fmt, va_list args)
 {
   flush_octave_stdout ();
 
-  std::ostrstream output_buf;
+  OSSTREAM output_buf;
 
   if (name)
     output_buf << name << ": ";
 
   octave_vformat (output_buf, fmt, args);
 
-  output_buf << std::endl << std::ends;
-
-  char *msg = output_buf.str ();
+  output_buf << std::endl << OSSTREAM_ENDS;
 
   // XXX FIXME XXX -- we really want to capture the message before it
   // has all the formatting goop attached to it.  We probably also
   // want just the message, not the traceback information.
 
-  std::string msg_string = msg;
+  std::string msg_string = OSSTREAM_STR (output_buf);
 
-  delete [] msg;
+  OSSTREAM_FREEZE (output_buf);
 
   if (! warning_state)
     {
@@ -150,7 +149,7 @@ verror (const char *name, const char *fmt, va_list args)
 
   bool to_beep_or_not_to_beep_p = Vbeep_on_error && ! error_state;
 
-  std::ostrstream output_buf;
+  OSSTREAM output_buf;
 
   if (to_beep_or_not_to_beep_p)
     output_buf << "\a";
@@ -160,17 +159,15 @@ verror (const char *name, const char *fmt, va_list args)
 
   octave_vformat (output_buf, fmt, args);
 
-  output_buf << std::endl << std::ends;
-
-  char *msg = output_buf.str ();
+  output_buf << std::endl << OSSTREAM_ENDS;
 
   // XXX FIXME XXX -- we really want to capture the message before it
   // has all the formatting goop attached to it.  We probably also
   // want just the message, not the traceback information.
 
-  std::string msg_string = msg;
+  std::string msg_string = OSSTREAM_STR (output_buf);
 
-  delete [] msg;
+  OSSTREAM_FREEZE (output_buf);
 
   if (! error_state && name && ! strcmp (name, "error"))
     {
@@ -184,7 +181,7 @@ verror (const char *name, const char *fmt, va_list args)
 
       if (! error_message_buffer)
 	{
-	  error_message_buffer = new std::ostrstream;
+	  error_message_buffer = new OSSTREAM;
 
 	  // XXX FIXME XXX -- this is ugly, but it prevents
 	  //
@@ -329,7 +326,7 @@ pr_where (const char *name)
       // even if there were multiple statements on the original source
       // line.
 
-      std::ostrstream output_buf;
+      OSSTREAM output_buf;
 
       output_buf << std::endl;
 
@@ -337,13 +334,11 @@ pr_where (const char *name)
 
       curr_statement->accept (tpc);
 
-      output_buf << std::endl << std::ends;
+      output_buf << std::endl << OSSTREAM_ENDS;
 
-      char *msg = output_buf.str ();
+      pr_where_1 ("%s", OSSTREAM_C_STR (output_buf));
 
-      pr_where_1 ("%s", msg);
-
-      delete [] msg;
+      OSSTREAM_FREEZE (output_buf);
     }
 }
 
@@ -721,13 +716,13 @@ bind_global_error_variable (void)
 {
   if (error_message_buffer)
     {
-      *error_message_buffer << std::ends;
+      *error_message_buffer << OSSTREAM_ENDS;
 
-      char *error_text = error_message_buffer->str ();
+      bind_builtin_variable ("__error_text__",
+			     OSSTREAM_STR (*error_message_buffer),
+			     true);
 
-      bind_builtin_variable ("__error_text__", error_text, true);
-
-      delete [] error_text;
+      OSSTREAM_FREEZE (*error_message_buffer);
 
       delete error_message_buffer;
 

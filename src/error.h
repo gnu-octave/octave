@@ -24,7 +24,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define octave_error_h 1
 
 #include <string>
-#include <strstream>
 
 #define panic_impossible() \
   panic ("impossible state reached in file `%s' at line %d", \

@@ -38,8 +38,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cstdlib>
 #endif
 
-#include <strstream.h>
-
 #include "Cell.h"
 #include "Matrix.h"
 #include "cmd-edit.h"
@@ -47,6 +45,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "file-ops.h"
 #include "file-stat.h"
 #include "oct-time.h"
+#include "lo-sstream.h"
 
 #include "comment-list.h"
 #include "defun.h"
@@ -1483,7 +1482,7 @@ yyerror (const char *s)
 {
   int err_col = current_input_column - 1;
 
-  std::ostrstream output_buf;
+  OSSTREAM output_buf;
 
   if (reading_fcn_file || reading_script_file)
     output_buf << "parse error near line " << input_line_number
@@ -1503,7 +1502,7 @@ yyerror (const char *s)
       if (current_input_line[len-1] == '\n')
         current_input_line.resize (len-1);
 
-// Print the line, maybe with a pointer near the error token.
+      // Print the line, maybe with a pointer near the error token.
 
       output_buf << ">>> " << current_input_line << "\n";
 
@@ -1516,13 +1515,11 @@ yyerror (const char *s)
       output_buf << "^";
     }
 
-  output_buf << "\n" << std::ends;
+  output_buf << "\n" << OSSTREAM_ENDS;
 
-  char *msg = output_buf.str ();
+  parse_error ("%s", OSSTREAM_C_STR (output_buf));
 
-  parse_error ("%s", msg);
-
-  delete [] msg;
+  OSSTREAM_FREEZE (output_buf);
 }
 
 // Error mesages for mismatched end tokens.
@@ -1702,19 +1699,17 @@ fold (tree_binary_expression *e)
 	{
 	  tree_constant *tc_retval = new tree_constant (tmp);
 
-	  std::ostrstream buf;
+	  OSSTREAM buf;
 
 	  tree_print_code tpc (buf);
 
 	  e->accept (tpc);
 
-	  buf << std::ends;
+	  buf << OSSTREAM_ENDS;
 
-	  char *s = buf.str ();
+	  tc_retval->stash_original_text (OSSTREAM_STR (buf));
 
-	  tc_retval->stash_original_text (s);
-
-	  delete [] s;
+	  OSSTREAM_FREEZE (buf);
 
 	  delete e;
 
@@ -1749,19 +1744,17 @@ fold (tree_unary_expression *e)
 	{
 	  tree_constant *tc_retval = new tree_constant (tmp);
 
-	  std::ostrstream buf;
+	  OSSTREAM buf;
 
 	  tree_print_code tpc (buf);
 
 	  e->accept (tpc);
 
-	  buf << std::ends;
+	  buf << OSSTREAM_ENDS;
 
-	  char *s = buf.str ();
+	  tc_retval->stash_original_text (OSSTREAM_STR (buf));
 
-	  tc_retval->stash_original_text (s);
-
-	  delete [] s;
+	  OSSTREAM_FREEZE (buf);
 
 	  delete e;
 
@@ -1805,19 +1798,17 @@ finish_colon_expression (tree_colon_expression *e)
 		{
 		  tree_constant *tc_retval = new tree_constant (tmp);
 
-		  std::ostrstream buf;
+		  OSSTREAM buf;
 
 		  tree_print_code tpc (buf);
 
 		  e->accept (tpc);
 
-		  buf << std::ends;
+		  buf << OSSTREAM_ENDS;
 
-		  char *s = buf.str ();
+		  tc_retval->stash_original_text (OSSTREAM_STR (buf));
 
-		  tc_retval->stash_original_text (s);
-
-		  delete [] s;
+		  OSSTREAM_FREEZE (buf);
 
 		  delete e;
 
@@ -2724,19 +2715,17 @@ finish_matrix (tree_matrix *m)
 	{
 	  tree_constant *tc_retval = new tree_constant (tmp);
 
-	  std::ostrstream buf;
+	  OSSTREAM buf;
 
 	  tree_print_code tpc (buf);
 
 	  m->accept (tpc);
 
-	  buf << std::ends;
+	  buf << OSSTREAM_ENDS;
 
-	  char *s = buf.str ();
+	  tc_retval->stash_original_text (OSSTREAM_STR (buf));
 
-	  tc_retval->stash_original_text (s);
-
-	  delete [] s;
+	  OSSTREAM_FREEZE (buf);
 
 	  delete m;
 

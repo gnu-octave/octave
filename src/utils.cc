@@ -30,7 +30,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <fstream>
 #include <iostream>
-#include <strstream>
 #include <string>
 
 #ifdef HAVE_UNISTD_H
@@ -60,6 +59,7 @@ LOSE! LOSE!
 #include "dir-ops.h"
 #include "file-ops.h"
 #include "file-stat.h"
+#include "lo-sstream.h"
 #include "oct-cmplx.h"
 #include "oct-env.h"
 #include "pathsearch.h"
@@ -727,19 +727,19 @@ octave_vformat (std::ostream& os, const char *fmt, va_list args)
 
 #if defined (__GNUG__) && !CXX_ISO_COMPLIANT_LIBRARY
 
-  std::ostrstream buf;
+  OSSTREAM buf;
 
   buf.vform (fmt, args);
 
-  buf << std::ends;
+  buf << OSSTREAM_ENDS;
 
-  char *s = buf.str ();
+  std::string s = OSSTREAM_STR (buf);
+
+  OSSTREAM_FREEZE (buf);
 
   os << s;
 
-  retval = strlen (s);
-
-  delete [] s;
+  retval = s.length ();
 
 #else
 

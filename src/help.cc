@@ -29,7 +29,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <iostream>
 #include <fstream>
-#include <strstream>
 #include <string>
 
 #ifdef HAVE_UNISTD_H
@@ -41,6 +40,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "cmd-edit.h"
 #include "file-ops.h"
+#include "lo-sstream.h"
 #include "oct-env.h"
 #include "str-vec.h"
 
@@ -507,12 +507,7 @@ try_info (const std::string& nm)
 {
   int status = 0;
 
-  static char *cmd_str = 0;
-
-  delete [] cmd_str;
-  cmd_str = 0;
-
-  std::ostrstream cmd_buf;
+  OSSTREAM cmd_buf;
 
   cmd_buf << Vinfo_prog << " --file " << Vinfo_file;
 
@@ -528,14 +523,14 @@ try_info (const std::string& nm)
   if (nm.length () > 0)
     cmd_buf << " --index-search " << nm;
 
-  cmd_buf << std::ends;
-
-  cmd_str = cmd_buf.str ();
+  cmd_buf << OSSTREAM_ENDS;
 
   volatile octave_interrupt_handler old_interrupt_handler
     = octave_ignore_interrupts ();
 
-  status = system (cmd_str);
+  status = system (OSSTREAM_C_STR (cmd_buf));
+
+  OSSTREAM_FREEZE (cmd_buf);
 
   octave_set_interrupt_handler (old_interrupt_handler);
 
@@ -616,7 +611,8 @@ display_help_text (std::ostream& os, const std::string& msg)
       if (cols > 80)
 	cols = 72;
 
-      std::ostrstream buf;
+      OSSTREAM buf;
+
       buf << "sed -e 's/^[#%]+ *//' -e 's/^ *@/@/' | "
 	  << Vmakeinfo_prog
 	  << " -D \"VERSION " << OCTAVE_VERSION << "\""
@@ -629,13 +625,11 @@ display_help_text (std::ostream& os, const std::string& msg)
 	  << " --force"
 	  << " --output " << tmp_file_name
 	  << " > /dev/null 2>&1"
-	  << std::ends;
+	  << OSSTREAM_ENDS;
 
-      char *cmd = buf.str ();
+      oprocstream filter (OSSTREAM_STR (buf));
 
-      oprocstream filter (cmd);
-
-      delete [] cmd;
+      OSSTREAM_FREEZE (buf);
 
       if (filter && filter.is_open ())
 	{
@@ -898,7 +892,7 @@ representation.  This problem may be fixed in a future release.\n\
 
 	  if (idx < argc)
 	    {
-	      std::ostrstream output_buf;
+	      OSSTREAM output_buf;
 
 	      for (int i = idx; i < argc; i++)
 		{
@@ -915,13 +909,11 @@ representation.  This problem may be fixed in a future release.\n\
 
 	      if (nargout != 0)
 		{
-		  output_buf << std::ends;
+		  output_buf << OSSTREAM_ENDS;
 
-		  char *s = output_buf.str ();
+		  retval = OSSTREAM_STR (output_buf);
 
-		  retval = s;
-
-		  delete [] s;
+		  OSSTREAM_FREEZE (output_buf);
 		}
 	    }
 	  else

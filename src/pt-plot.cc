@@ -32,7 +32,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <fstream>
 #include <iostream>
-#include <strstream>
 #include <string>
 
 #ifdef HAVE_UNISTD_H
@@ -83,7 +82,7 @@ static int plot_line_count = 0;
 static bool parametric_plot = false;
 
 // The gnuplot terminal type.
-static char *gnuplot_terminal_type = 0;
+static std::string gnuplot_terminal_type;
 
 // Should the graph window be cleared before plotting the next line?
 static bool clear_before_plotting = true;
@@ -187,14 +186,14 @@ open_plot_stream (void)
       initialized = true;
       *plot_stream << "set data style lines\n";
 
-      if (gnuplot_terminal_type)
+      if (! gnuplot_terminal_type.empty ())
 	*plot_stream << "set term " << gnuplot_terminal_type
 		     << Vgnuplot_command_end; 
     }
 }
 
 static int
-send_to_plot_stream (const char *cmd)
+send_to_plot_stream (const std::string& cmd)
 {
   if (! (plot_stream && *plot_stream))
     {
@@ -208,11 +207,9 @@ send_to_plot_stream (const char *cmd)
   int splot_len = Vgnuplot_command_splot.length ();
   int plot_len = Vgnuplot_command_plot.length ();
 
-  std::string s = cmd;
-
-  bool is_replot = (Vgnuplot_command_replot == s.substr (0, replot_len));
-  bool is_splot = (Vgnuplot_command_splot == s.substr (0, splot_len));
-  bool is_plot = (Vgnuplot_command_plot == s.substr (0, plot_len));
+  bool is_replot = (Vgnuplot_command_replot == cmd.substr (0, replot_len));
+  bool is_splot = (Vgnuplot_command_splot == cmd.substr (0, splot_len));
+  bool is_plot = (Vgnuplot_command_plot == cmd.substr (0, plot_len));
 
   if (plot_line_count == 0 && is_replot)
     error ("replot: no previous plot");
@@ -247,7 +244,7 @@ tree_plot_command::eval (void)
 
   open_plot_stream ();
 
-  std::ostrstream plot_buf;
+  OSSTREAM plot_buf;
 
   switch (ndim)
     {
@@ -311,27 +308,25 @@ tree_plot_command::eval (void)
 	return;
     }
 
-  plot_buf << Vgnuplot_command_end << std::ends;
+  plot_buf << Vgnuplot_command_end << OSSTREAM_ENDS;
 
   // Just testing...
   //  char *message = plot_buf.str ();
   //  std::cout << "[*]" << message << "[*]\n";
 
+  std::string message = OSSTREAM_STR (plot_buf);
+
   if (parametric_plot && ndim == 2)
     {
       warning ("can't make 2D parametric plot -- setting noparametric...");
       send_to_plot_stream ("set noparametric\n");
-      char *message = plot_buf.str ();
       send_to_plot_stream (message);
-      delete [] message;
       send_to_plot_stream ("set parametric\n");
     }
   else
-    {
-      char *message = plot_buf.str ();
-      send_to_plot_stream (message);
-      delete [] message;
-    }
+    send_to_plot_stream (message);
+
+  OSSTREAM_FREEZE (plot_buf);
 }
 
 void
@@ -348,7 +343,7 @@ plot_limits::~plot_limits (void)
 }
 
 void
-plot_limits::print (int ndim, std::ostrstream& plot_buf)
+plot_limits::print (int ndim, OSSTREAM& plot_buf)
 {
   if (ndim  == 2 || ndim == 3)
     {
@@ -380,7 +375,7 @@ plot_range::~plot_range (void)
 }
 
 void
-plot_range::print (std::ostrstream& plot_buf)
+plot_range::print (OSSTREAM& plot_buf)
 {
   plot_buf << " [";
 
@@ -504,7 +499,7 @@ subplot_using::values (int ndim, int n_max)
 }
 
 int
-subplot_using::print (int ndim, int n_max, std::ostrstream& plot_buf)
+subplot_using::print (int ndim, int n_max, OSSTREAM& plot_buf)
 {
   int status = eval (ndim, n_max);
 
@@ -537,7 +532,7 @@ subplot_style::~subplot_style (void)
 }
 
 int
-subplot_style::print (std::ostrstream& plot_buf)
+subplot_style::print (OSSTREAM& plot_buf)
 {
   if (! sp_style.empty ())
     {
@@ -629,7 +624,7 @@ subplot_style::accept (tree_walker& tw)
 }
 
 int
-subplot_axes::print (std::ostrstream& plot_buf)
+subplot_axes::print (OSSTREAM& plot_buf)
 {
   if (! sp_axes.empty ())
     plot_buf << " " << Vgnuplot_command_axes << " " << sp_axes;
@@ -685,7 +680,7 @@ subplot::extract_plot_data (int ndim, octave_value& data)
 }
 
 int
-subplot::handle_plot_data (int ndim, std::ostrstream& plot_buf)
+subplot::handle_plot_data (int ndim, OSSTREAM& plot_buf)
 {
   if (sp_plot_data)
     {
@@ -772,7 +767,7 @@ subplot::handle_plot_data (int ndim, std::ostrstream& plot_buf)
 }
 
 int
-subplot::print (int ndim, std::ostrstream& plot_buf)
+subplot::print (int ndim, OSSTREAM& plot_buf)
 {
   int status = handle_plot_data (ndim, plot_buf);
 
@@ -830,7 +825,7 @@ subplot_list::~subplot_list (void)
 }
 
 int
-subplot_list::print (int ndim, std::ostrstream& plot_buf)
+subplot_list::print (int ndim, OSSTREAM& plot_buf)
 {
   int status = 0;
 
@@ -930,11 +925,11 @@ do_external_plotter_cd (const std::string& newdir)
 {
   if (plot_stream && *plot_stream)
     {
-      std::ostrstream plot_buf;
-      plot_buf << "cd \"" << newdir << "\"" << Vgnuplot_command_end << std::ends;
-      char *message = plot_buf.str ();
-      send_to_plot_stream (message);
-      delete [] message;
+      OSSTREAM plot_buf;
+      plot_buf << "cd \"" << newdir << "\"" << Vgnuplot_command_end
+	       << OSSTREAM_ENDS;
+      send_to_plot_stream (OSSTREAM_STR (plot_buf));
+      OSSTREAM_FREEZE (plot_buf);
     }
 }
 
@@ -1110,7 +1105,7 @@ Set plotting options for gnuplot\n\
   if (error_state)
     return retval;
 
-  std::ostrstream plot_buf;
+  OSSTREAM plot_buf;
 
   if (argc > 1)
     {
@@ -1120,15 +1115,16 @@ Set plotting options for gnuplot\n\
 	parametric_plot = false;
       else if (almost_match ("term", argv[1], 1))
 	{
-	  delete [] gnuplot_terminal_type;
-	  std::ostrstream buf;
+	  gnuplot_terminal_type = "";
+	  OSSTREAM buf;
 	  int i;
 	  for (i = 2; i < argc-1; i++)
 	    buf << argv[i] << " ";
 	  if (i < argc)
 	    buf << argv[i];
-	  buf << Vgnuplot_command_end << std::ends;
-	  gnuplot_terminal_type = buf.str ();
+	  buf << Vgnuplot_command_end << OSSTREAM_ENDS;
+	  gnuplot_terminal_type = OSSTREAM_STR (buf);
+	  OSSTREAM_FREEZE (buf);
 	}
     }
 
@@ -1139,12 +1135,11 @@ Set plotting options for gnuplot\n\
   if (i < argc)
     plot_buf << argv[i];
 
-  plot_buf << Vgnuplot_command_end << std::ends;
+  plot_buf << Vgnuplot_command_end << OSSTREAM_ENDS;
 
-  char *plot_command = plot_buf.str ();
-  send_to_plot_stream (plot_command);
+  send_to_plot_stream (OSSTREAM_STR (plot_buf));
 
-  delete [] plot_command;
+  OSSTREAM_FREEZE (plot_buf);
 
   return retval;
 }
@@ -1172,7 +1167,7 @@ Show plotting options.\n\
   if (error_state)
     return retval;
 
-  std::ostrstream plot_buf;
+  OSSTREAM plot_buf;
 
   int i;
   for (i = 0; i < argc-1; i++)
@@ -1180,12 +1175,11 @@ Show plotting options.\n\
   if (i < argc)
     plot_buf << argv[i];
 
-  plot_buf << Vgnuplot_command_end << std::ends;
+  plot_buf << Vgnuplot_command_end << OSSTREAM_ENDS;
 
-  char *plot_command = plot_buf.str ();
-  send_to_plot_stream (plot_command);
+  send_to_plot_stream (OSSTREAM_STR (plot_buf));
 
-  delete [] plot_command;
+  OSSTREAM_FREEZE (plot_buf);
 
   return retval;
 }

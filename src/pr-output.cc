@@ -31,7 +31,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <iomanip>
 #include <iostream>
-#include <strstream>
 #include <string>
 
 #include "CMatrix.h"
@@ -39,6 +38,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "cmd-edit.h"
 #include "dMatrix.h"
 #include "lo-mappers.h"
+#include "lo-sstream.h"
 #include "mach-info.h"
 #include "oct-cmplx.h"
 #include "str-vec.h"
@@ -1789,12 +1789,11 @@ returns the formatted output in a string.\n\
 	args(0).print (octave_stdout);
       else
 	{
-	  std::ostrstream buf;
+	  OSSTREAM buf;
 	  args(0).print (buf);
-	  buf << std::ends;
-	  char *tmp = buf.str ();
-	  retval = tmp;
-	  delete [] tmp;
+	  buf << OSSTREAM_ENDS;
+	  retval = OSSTREAM_STR (buf);
+	  OSSTREAM_FREEZE (buf);
 	}
     }
   else

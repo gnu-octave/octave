@@ -35,7 +35,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iomanip>
 #include <iostream>
 #include <fstream>
-#include <strstream>
 #include <string>
 
 #ifdef HAVE_HDF5
@@ -47,6 +46,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "file-ops.h"
 #include "glob-match.h"
 #include "lo-mappers.h"
+#include "lo-sstream.h"
 #include "mach-info.h"
 #include "oct-env.h"
 #include "oct-time.h"
@@ -358,7 +358,7 @@ extract_keyword (std::istream& is, const char *keyword)
     {
       if (c == '%' || c == '#')
 	{
-	  std::ostrstream buf;
+	  OSSTREAM buf;
 	
 	  while (is.get (c) && (c == ' ' || c == '\t' || c == '%' || c == '#'))
 	    ; // Skip whitespace and comment characters.
@@ -369,14 +369,14 @@ extract_keyword (std::istream& is, const char *keyword)
 	  while (is.get (c) && isalpha (c))
 	    buf << c;
 
-	  buf << std::ends;
-	  char *tmp = buf.str ();
+	  buf << OSSTREAM_ENDS;
+	  const char *tmp = OSSTREAM_C_STR (buf);
+	  OSSTREAM_FREEZE (buf);
 	  int match = (strncmp (tmp, keyword, strlen (keyword)) == 0);
-	  delete [] tmp;
 
 	  if (match)
 	    {
-	      std::ostrstream value;
+	      OSSTREAM value;
 	      while (is.get (c) && (c == ' ' || c == '\t' || c == ':'))
 		; // Skip whitespace and the colon.
 
@@ -386,8 +386,9 @@ extract_keyword (std::istream& is, const char *keyword)
 		  while (is.get (c) && c != '\n')
 		    value << c;
 		}
-	      value << std::ends;
-	      retval = value.str ();
+	      value << OSSTREAM_ENDS;
+	      retval = strsave (OSSTREAM_C_STR (value));
+	      OSSTREAM_FREEZE (value);
 	      break;
 	    }
 	}
@@ -426,7 +427,7 @@ extract_keyword (std::istream& is, const char *keyword, int& value)
     {
       if (c == '%' || c == '#')
 	{
-	  std::ostrstream buf;
+	  OSSTREAM buf;
 
 	  while (is.get (c) && (c == ' ' || c == '\t' || c == '%' || c == '#'))
 	    ; // Skip whitespace and comment characters.
@@ -437,10 +438,10 @@ extract_keyword (std::istream& is, const char *keyword, int& value)
 	  while (is.get (c) && isalpha (c))
 	    buf << c;
 
-	  buf << std::ends;
-	  char *tmp = buf.str ();
+	  buf << OSSTREAM_ENDS;
+	  const char *tmp = OSSTREAM_C_STR (buf);
 	  int match = (strncmp (tmp, keyword, strlen (keyword)) == 0);
-	  delete [] tmp;
+	  OSSTREAM_FREEZE (buf);
 
 	  if (match)
 	    {
@@ -2023,7 +2024,11 @@ read_mat_ascii_data (std::istream& is, const std::string& filename,
 		{
 		  std::string buf = get_mat_data_input_line (is);
 
+#ifdef HAVE_SSTREAM
+		  std::istringstream tmp_stream (buf);
+#else
 		  std::istrstream tmp_stream (buf.c_str ());
+#endif
 
 		  for (int j = 0; j < nc; j++)
 		    {
@@ -2939,8 +2944,10 @@ do_load (std::istream& stream, const std::string& orig_fname, bool force,
 
   Octave_map retstruct;
 
-  std::ostrstream output_buf;
+  OSSTREAM output_buf;
+
   int count = 0;
+
   for (;;)
     {
       bool global = false;
@@ -3064,16 +3071,14 @@ do_load (std::istream& stream, const std::string& orig_fname, bool force,
 
   if (list_only && count)
     {
-      output_buf << std::ends;
-
-      char *msg = output_buf.str ();
+      output_buf << OSSTREAM_ENDS;
+      std::string msg = OSSTREAM_STR (output_buf);
+      OSSTREAM_FREEZE (output_buf);
 
       if (nargout > 0)
 	retval = msg;
       else
 	octave_stdout << msg;
-
-      delete [] msg;
     }
   else if (! retstruct.empty ())
     retval = retstruct;

@@ -1,3 +1,35 @@
+2002-08-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pager.h: Include lo-sstream.h and use macros instead of using
+	strstreambuf class directly.
+
+	* load-save.cc (read_mat_ascii_data): Handle istrstream here too.
+
+	* procstream.h (procstream::procstream): Also accept std::string arg.
+	(iprocstream::iprocstream, iprocstream::open): Likewise.
+	(oprocstream::oprocstream, oprocstream::open): Likewise.
+	(procstreambase::procstreambase, procstreambase::open): Likewise.
+
+	* pt-plot.cc (gnuplot_terminal_type): Now std::string&, not char*.
+	(send_to_plot_stream): Likewise, for cmd arg.
+
+	* pt-plot.h, pt-plot.cc: Include lo-sstream.h and use macros
+	instead of using strstream classes directly.
+	* oct-strstrm.h: Likewise.
+	* error.h, error.cc: Likewise.
+	* oct-stream.h, oct-stream.cc: Likewise.
+	* lex.l: Likewise.
+	* toplev.cc: Likewise.
+	* utils.cc: Likewise.
+	* pt.cc: Likewise.
+	* pr-output.cc: Likewise.
+	* ov-list.cc: Likewise.
+	* ov-cs-list.cc: Likewise.
+	* ov-cell.cc: Likewise.
+	* load-save.cc: Likewise.
+	* help.cc: Likewise.
+	* dirfns.cc: Likewise.
+
 2002-08-15  Paul Kienzle <pkienzle@jazz.ncnr.nist.gov>
 
 	* input.cc (octave_read): Do a better job of buffering.

@@ -36,6 +36,7 @@ must match the dimension of the state vector, and the absolute
 tolerance must also be a vector of the same length.
 
 The local error test applied at each integration step is
+
 @example
   abs (local error in x(i)) <= rtol(i) * abs (Y(i)) + atol(i)
 @end example
@@ -62,7 +63,7 @@ END_OPTION
 OPTION
   NAME = "compute consistent initial condition"
   DOC_ITEM
-If nonzero, dassl will attempt to compute a consistent set of intial
+If nonzero, @code{dassl} will attempt to compute a consistent set of intial
 conditions.  This is generally not reliable, so it is best to provide
 a consistent set and leave this option set to zero.
   END_DOC_ITEM
@@ -113,7 +114,7 @@ OPTION
   NAME = "maximum step size"
   DOC_ITEM
 Setting the maximum stepsize will avoid passing over very large
-regions.
+regions  (default is not specified).
   END_DOC_ITEM
   TYPE = "double"
   INIT_VALUE = "-1.0"

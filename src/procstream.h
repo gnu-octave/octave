@@ -28,6 +28,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include <iostream>
+#include <string>
 
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
@@ -42,9 +43,14 @@ public:
 
   procstreambase (void) { pb_init (); }
 
+  procstreambase (const std::string& name, int mode);
+
   procstreambase (const char *name, int mode);
 
   ~procstreambase (void) { close (); }
+
+  void open (const std::string& name, int mode)
+    { open (name.c_str (), mode); }
 
   void open (const char *name, int mode);
 
@@ -73,10 +79,16 @@ public:
 
   iprocstream (void) : std::istream (0), procstreambase () { }
 
+  iprocstream (const std::string& name, int mode = std::ios::in)
+    : std::istream (0), procstreambase (name, mode) { }
+
   iprocstream (const char *name, int mode = std::ios::in)
     : std::istream (0), procstreambase (name, mode) { }
 
   ~iprocstream (void) { }
+
+  void open (const std::string& name, int mode = std::ios::in)
+    { procstreambase::open (name, mode); }
 
   void open (const char *name, int mode = std::ios::in)
     { procstreambase::open (name, mode); }
@@ -96,10 +108,16 @@ public:
  
   oprocstream (void) : std::ostream (0), procstreambase () { }
 
+  oprocstream (const std::string& name, int mode = std::ios::out)
+    : std::ostream (0), procstreambase(name, mode) { }
+
   oprocstream (const char *name, int mode = std::ios::out)
     : std::ostream (0), procstreambase(name, mode) { }
 
   ~oprocstream (void) { }
+
+  void open (const std::string& name, int mode = std::ios::out)
+    { procstreambase::open (name, mode); }
 
   void open (const char *name, int mode = std::ios::out)
     { procstreambase::open (name, mode); }
@@ -119,10 +137,16 @@ public:
 
   procstream (void) : std::iostream (0), procstreambase () { }
 
+  procstream (const std::string& name, int mode)
+    : std::iostream (0), procstreambase (name, mode) { }
+
   procstream (const char *name, int mode)
     : std::iostream (0), procstreambase (name, mode) { }
 
   ~procstream (void) { }
+
+  void open (const std::string& name, int mode)
+    { procstreambase::open (name, mode); }
 
   void open (const char *name, int mode)
     { procstreambase::open (name, mode); }

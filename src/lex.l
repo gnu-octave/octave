@@ -31,12 +31,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cctype>
 #include <cstring>
 
-#include <strstream>
 #include <string>
 
 #include "SLStack.h"
 
 #include "cmd-edit.h"
+#include "lo-sstream.h"
 
 // These would be alphabetical, but y.tab.h must be included before
 // oct-gperf.h and y.tab.h must be included after token.h and the tree
@@ -1787,7 +1787,7 @@ handle_number (void)
 static bool
 have_continuation (bool trailing_comments_ok)
 {
-  std::ostrstream buf;
+  OSSTREAM buf;
 
   std::string comment_buf;
 
@@ -1879,15 +1879,14 @@ have_continuation (bool trailing_comments_ok)
   return false;
 
 cleanup:
-  buf << std::ends;
-  char *s = buf.str ();
-  if (s)
-    {
-      int len = strlen (s);
-      while (len--)
-	unput (s[len]);
-    }
-  delete [] s;
+
+  buf << OSSTREAM_ENDS;
+  std::string s = OSSTREAM_STR (buf);
+  OSSTREAM_FREEZE (buf);
+
+  int len = s.length ();
+  while (len--)
+    unput (s[len]);
 
   return false;
 }
@@ -1941,7 +1940,7 @@ eat_continuation (void)
 static int
 handle_string (char delim, int text_style)
 {
-  std::ostrstream buf;
+  OSSTREAM buf;
 
   int bos_line = input_line_number;
   int bos_col = current_input_column;
@@ -1994,10 +1993,9 @@ handle_string (char delim, int text_style)
 	      else
 		{
 		  unput (c);
-		  buf << std::ends;
-		  char *t = buf.str ();
-		  std::string s = do_string_escapes (t);
-		  delete [] t;
+		  buf << OSSTREAM_ENDS;
+		  std::string s = do_string_escapes (OSSTREAM_STR (buf));
+		  OSSTREAM_FREEZE (buf);
 
 		  if (text_style && lexer_flags.doing_set)
 		    {

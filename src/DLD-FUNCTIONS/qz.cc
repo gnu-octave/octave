@@ -31,11 +31,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "config.h"
 
 #include <cfloat>
+#include <cmath>
+
 #include <iostream>
-#include <iomanip.h>
-#include <math.h>
-#include <string.h>
-#include <strstream.h>
+#include <iomanip>
 
 #include "CmplxQRP.h"
 #include "dbleQR.h"

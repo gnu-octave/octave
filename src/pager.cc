@@ -288,7 +288,7 @@ octave_pager_stream *octave_pager_stream::instance = 0;
 
 octave_pager_stream::octave_pager_stream (void) : std::ostream (0), pb (0)
 {
-  pb = new octave_pager_buf;
+  pb = new octave_pager_buf ();
   rdbuf (pb);
   setf (unitbuf);
 }
@@ -326,7 +326,7 @@ octave_diary_stream *octave_diary_stream::instance = 0;
 
 octave_diary_stream::octave_diary_stream (void) : std::ostream (0), db (0)
 {
-  db = new octave_diary_buf;
+  db = new octave_diary_buf ();
   rdbuf (db);
   setf (unitbuf);
 }

@@ -1,3 +1,8 @@
+Wed Oct 16 12:00:11 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pt-fvc.cc (tree_identifier::eval): Avoid dereferencing null
+	object_to_eval.
+
 Tue Oct 15 11:35:51 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* op-cs-cm.cc, op-cs-cs.cc, op-cs-m.cc, op-cs-s.cc

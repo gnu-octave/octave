@@ -140,7 +140,11 @@ is_valid_function (const std::string& fcn_name, const std::string& warn_for, boo
   symbol_record *sr = 0;
 
   if (! fcn_name.empty ())
-    sr = lookup_by_name (fcn_name);
+    {
+      sr = global_sym_tab->lookup (fcn_name, true);
+
+      lookup (sr, false);
+    }
 
   if (sr)
     {

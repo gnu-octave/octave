@@ -1,3 +1,11 @@
+2000-03-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-lvalue.h (dummy_val): New static variable.
+	(octave_lvalue::octave_lvalue): Use it to initialize val.
+
+	* variables.cc (is_valid_function): Look in the global symbol
+	table for functions.
+
 2000-03-21  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* src/Makefile.in (LIBRARIES): Conditionally define.

@@ -150,6 +150,16 @@ function saveimage (filename, img, img_form, map)
   img (idx) = ones (size (idx));
 
   if (strcmp (img_form, "ppm"))
+
+    ## Would be nice to make this consistent with the line used by the
+    ## load/save functions, but we need a good way to get username and
+    ## hostname information.
+
+    time_string = ctime (time ());
+    time_string = time_string (1:length (time_string)-1);
+    tagline = sprintf ("# Created by Octave %s, %s",
+		       __OCTAVE_VERSION__, time_string);
+
     if (grey && map_nr == 2 && bw)
 
       if (map(1) != 0)
@@ -181,7 +191,7 @@ function saveimage (filename, img, img_form, map)
       endfor
 
       fid = fopen (filename, "w");
-      fprintf (fid, "P4\n%d %d\n", img_nr, img_nc);
+      fprintf (fid, "P4\n%s\n%d %d\n", tagline, img_nr, img_nc);
       fwrite (fid, tmp, "char");
       fprintf (fid, "\n");
       fclose (fid);
@@ -189,7 +199,7 @@ function saveimage (filename, img, img_form, map)
     elseif (grey)
 
       fid = fopen (filename, "w");
-      fprintf (fid, "P5\n%d %d\n255\n", img_nr, img_nc);
+      fprintf (fid, "P5\n%s\n%d %d\n255\n", tagline, img_nr, img_nc);
       fwrite (fid, map(img), "uchar");
       fprintf (fid, "\n");
       fclose (fid);
@@ -211,7 +221,7 @@ function saveimage (filename, img, img_form, map)
       tmp(img_idx--) = tmap(img);
 
       fid = fopen (filename, "w");
-      fprintf (fid, "P6\n%d %d\n255\n", img_nr, img_nc);
+      fprintf (fid, "P6\n%s\n%d %d\n255\n", tagline, img_nr, img_nc);
       fwrite (fid, tmp, "uchar");
       fprintf (fid, "\n");
       fclose (fid);

@@ -31,12 +31,18 @@ class octave_value_list;
 #include "oct-obj.h"
 #include "symtab.h"
 
+// XXX FIXME XXX -- eliminate the following kluge?
+
+// This variable is used when creating dummy octave_lvalue objects.
+static octave_value dummy_val;
+
 class
 octave_lvalue
 {
 public:
 
-  octave_lvalue (octave_value *v = 0, symbol_record::change_function f = 0)
+  octave_lvalue (octave_value *v = &dummy_val,
+		 symbol_record::change_function f = 0)
     : val (v), idx (), chg_fcn (f), struct_elt_name (), index_set (false) { }
 
   octave_lvalue (octave_value *v, const std::string& nm,

@@ -1,3 +1,9 @@
+2000-03-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* image/saveimage.m: Add comment to file saying who created it and
+	when it was created.  Suggested by Stephen Eglen
+	<stephen@cogsci.ed.ac.uk>.
+
 2000-03-21  Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
 
 	* polynomial/polyreduce.m: Simplify by looking for the first

@@ -1430,10 +1430,13 @@ tree_constant_rep::load (istream& is)
 	  *ptr = '\0';
 	  is_global = (strncmp (tag, "global", 6) == 0);
 	  *ptr = ' ';
-	  ptr++;
+	  if (is_global)
+	    ptr++;
+	  else
+	    ptr = tag;
 	}
       else
-	ptr = &tag[0];
+	ptr = tag;
 
       if (strncmp (ptr, "scalar", 6) == 0)
 	type_tag = load (is, scalar_constant);
@@ -1491,6 +1494,7 @@ tree_constant_rep::load (istream& is, tree_constant_rep::constant_type t)
       }
       break;
     case complex_scalar_constant:
+      complex_scalar = new Complex;
       is >> *complex_scalar;
       if (is)
 	status = complex_scalar_constant;

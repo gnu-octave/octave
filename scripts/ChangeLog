@@ -1,3 +1,7 @@
+1999-12-08  Daniel Calvelo <dcalvelo@pharion.univ-lille2.fr>
+
+	* signal/spectral_adf.m: Fix typo.
+
 1999-11-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* linear-algebra/cond.m: Texinfoize doc string.

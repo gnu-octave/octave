@@ -26,7 +26,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_input_h)
 #define octave_input_h 1
 
-#include <stdio.h>
+#include <cstdio>
 
 extern int octave_read (char *buf, int max_size);
 extern FILE *get_input_from_file (char *name, int warn = 1);

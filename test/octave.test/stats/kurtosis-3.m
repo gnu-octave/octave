@@ -1,1 +1,1 @@
-kurtosis (1, 2)
+kurtosis (1, 2, 3)

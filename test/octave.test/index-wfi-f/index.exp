@@ -161,3 +161,7 @@ do_test m-3.m
 set test index-m-4
 set prog_output "^ans = 3"
 do_test m-4.m
+
+set test misc
+set prog_output "^ok"
+do_test misc.m

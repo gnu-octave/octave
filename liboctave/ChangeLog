@@ -1,3 +1,17 @@
+2004-04-30  David Bateman  <dbateman@free.fr>
+
+        * dim_vector.h (dim_vector::dim_vector_rep::dim_vector_rep):
+	New arg, fill_value.
+	(dim_vector::resize): Allow optional fill_value argument.
+
+        * Array.cc (Array<T>::index (Array<idx_vector>&, int, const T&)):
+	Don't chop trailing dimensions of Array<idx_vector> if there is
+	more than one element in idx_vector.  Resize the return value to
+	the size of Array<idx_vector>.
+
+	* Array-util.cc (short_freeze): Better freeze of last dimension of
+	idx_vector that is shorter than a dim_vector.
+
 2004-04-23  John W. Eaton  <jwe@octave.org>
 
 	* oct-sort.cc: Don't include oct-obj.h.

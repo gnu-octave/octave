@@ -1,1 +1,1 @@
-skewness (1, 2)
+skewness (1, 2, 3)

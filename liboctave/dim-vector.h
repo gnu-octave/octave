@@ -77,7 +77,7 @@ protected:
 	}
     }
 
-    dim_vector_rep (int n, const dim_vector_rep *dv)
+    dim_vector_rep (int n, const dim_vector_rep *dv, int fill_value = 0)
       : dims ((dv && n > 0) ? new int [n] : 0),
 	ndims (n > 0 ? n : 0), count (1)
     {
@@ -91,7 +91,7 @@ protected:
 	    dims[i] = dv->dims[i];
 
 	  for (int i = dv_ndims; i < n; i++)
-	    dims[i] = 0;
+	    dims[i] = fill_value;
 	}
     }
 
@@ -196,7 +196,7 @@ public:
 
   int operator () (int i) const { return elem (i); }
 
-  void resize (int n)
+  void resize (int n, int fill_value = 0)
   {
     int len = length ();
 
@@ -204,7 +204,7 @@ public:
       {
 	dim_vector_rep *old_rep = rep;
 
-	rep = new dim_vector_rep (n, old_rep);
+	rep = new dim_vector_rep (n, old_rep, fill_value);
 
 	if (--old_rep->count <= 0)
 	  delete old_rep;

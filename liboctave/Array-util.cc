@@ -422,28 +422,24 @@ short_freeze (Array<idx_vector>& ra_idx, const dim_vector& dimensions,
       else
 	{
 	  int last_ra_idx = ra_idx(n-1)(0);
+	  for (int i = 1; i < ra_idx (n - 1).capacity (); i++)
+	    last_ra_idx = (last_ra_idx > ra_idx(n-1)(i) ? last_ra_idx : 
+			   ra_idx(n-1)(i));
 
-	  if (last_ra_idx < dimensions(n - 1))
+	  if (last_ra_idx < size_left)
             {
-              retval(n - 1) = ra_idx(n - 1).freeze (dimensions(n-1),
-						    "dimension", resize_ok);
+              retval(n-1) = ra_idx(n-1).freeze (size_left,
+						"dimension", resize_ok);
             }
           else
             {
-              if (size_left <= last_ra_idx)
-                {
-         	  // Make it larger than it should be to get an error
-         	  // later.
+	      // Make it larger than it should be to get an error
+	      // later.
 
-                  retval.resize(n_dims + 1);
+	      retval.resize (n_dims+1);
 
-                  (*current_liboctave_error_handler)
-                    ("index exceeds N-d array dimensions");
-                }
-              else
-                {
-                  retval(n-1) = 1;
-                }
+	      (*current_liboctave_error_handler)
+		("index exceeds N-d array dimensions");
 	    }
 	}
     }

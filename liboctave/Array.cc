@@ -2286,78 +2286,82 @@ Array<T>::index (Array<idx_vector>& ra_idx, int resize_ok, const T&) const
 
   int ra_idx_len = ra_idx.length ();
 
-  while (ra_idx_len > n_dims)
+  bool trim_trailing_singletons = true;
+  for (int j = ra_idx_len; j > n_dims; j--)
     {
-      if (ra_idx(ra_idx_len-1) == 1)
+      idx_vector iidx = ra_idx (ra_idx_len-1);
+      if (iidx.capacity () == 1 && trim_trailing_singletons)
 	ra_idx_len--;
       else
-	break;
+	trim_trailing_singletons = false;
+
+      for (int i = 0; i < iidx.capacity (); i++)
+	if (iidx (i) != 0)
+	  {
+	    (*current_liboctave_error_handler)
+	      ("index exceeds N-d array dimensions");
+	    
+	    return retval;
+	  }
     }
 
   ra_idx.resize (ra_idx_len);
 
-  if (n_dims < ra_idx.length ())
-    {
-      (*current_liboctave_error_handler)
-	("index exceeds N-d array dimensions");
+  dim_vector new_dims = dims ();
+  dim_vector frozen_lengths;
 
-      return retval;
+  if (! any_orig_empty (ra_idx) && ra_idx_len < n_dims)
+    frozen_lengths = short_freeze (ra_idx, dimensions, resize_ok);
+  else
+    {
+      new_dims.resize (ra_idx_len, 1);
+      frozen_lengths = freeze (ra_idx, new_dims, resize_ok);
     }
 
-  dim_vector frozen_lengths = short_freeze (ra_idx, dimensions, resize_ok);
-
-  if (frozen_lengths.length () <= n_dims)
+  if (all_ok (ra_idx))
     {
-      if (all_ok (ra_idx))
+      if (any_orig_empty (ra_idx) || frozen_lengths.any_zero ())
 	{
-	  if (any_orig_empty (ra_idx) || frozen_lengths.any_zero ())
+	  frozen_lengths.chop_trailing_singletons ();
+
+	  retval.resize (frozen_lengths);
+	}
+      else if (frozen_lengths.length () == n_dims
+	       && all_colon_equiv (ra_idx, dimensions))
+	{
+	  retval = *this;
+	}
+      else
+	{
+	  dim_vector frozen_lengths_for_resize = frozen_lengths;
+
+	  frozen_lengths_for_resize.chop_trailing_singletons ();
+
+	  retval.resize (frozen_lengths_for_resize);
+
+	  int n = retval.length ();
+
+	  Array<int> result_idx (ra_idx.length (), 0);
+
+	  Array<int> elt_idx;
+
+	  for (int i = 0; i < n; i++)
 	    {
-	      frozen_lengths.chop_trailing_singletons ();
+	      elt_idx = get_elt_idx (ra_idx, result_idx);
 
-	      retval.resize (frozen_lengths);
-	    }
-	  else if (frozen_lengths.length () == n_dims
-		   && all_colon_equiv (ra_idx, dimensions))
-	    {
-	      retval = *this;
-	    }
-	  else
-	    {
-	      dim_vector frozen_lengths_for_resize = frozen_lengths;
+	      int numelem_elt = get_scalar_idx (elt_idx, new_dims);
 
-	      frozen_lengths_for_resize.chop_trailing_singletons ();
+	      if (numelem_elt > length () || numelem_elt < 0)
+		(*current_liboctave_error_handler)
+		  ("invalid N-d array index");
+	      else
+		retval.elem (i) = elem (numelem_elt);
 
-	      retval.resize (frozen_lengths_for_resize);
+	      increment_index (result_idx, frozen_lengths);
 
-	      int n = retval.length ();
-
-	      Array<int> result_idx (ra_idx.length (), 0);
-
-	      dim_vector this_dims = dims ();
-
-	      Array<int> elt_idx;
-
-	      for (int i = 0; i < n; i++)
-		{
-		  elt_idx = get_elt_idx (ra_idx, result_idx);
-
-		  int numelem_elt = get_scalar_idx (elt_idx, this_dims);
-
-		  if (numelem_elt > length () || numelem_elt < 0)
-		    (*current_liboctave_error_handler)
-		      ("invalid N-d array index");
-		  else
-		    retval.elem (i) = elem (numelem_elt);
-
-		  increment_index (result_idx, frozen_lengths);
-
-		}
 	    }
 	}
     }
-  else
-    (*current_liboctave_error_handler)
-      ("invalid number of dimensions for N-dimensional array index");
 
   return retval;
 }

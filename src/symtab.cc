@@ -38,7 +38,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt-fcn.h"
 #include "pt-fvc.h"
 #include "symtab.h"
-#include "user-prefs.h"
 #include "utils.h"
 #include "variables.h"
 
@@ -626,18 +625,7 @@ symbol_record::read_only_error (void)
     {
       if (is_variable ())
 	{
-	  if (user_pref.read_only_constants)
-	    {
-	      if (user_pref.read_only_constants < 0)
-		{
-		  ::warning ("redefinition of constant `%s'",
-			     nm.c_str ());
-		  return 0;
-		}
-	      else
-		::error ("can't redefine read-only constant `%s'",
-			 nm.c_str ());
-	    }
+	  ::error ("can't redefine read-only constant `%s'", nm.c_str ());
 	}
       else if (is_function ())
 	{

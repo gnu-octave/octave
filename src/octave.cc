@@ -68,7 +68,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt-misc.h"
 #include "pt-plot.h"
 #include "unwind-prot.h"
-#include "user-prefs.h"
 #include "utils.h"
 #include "variables.h"
 #include "version.h"
@@ -189,38 +188,22 @@ initialize_globals (const string& name)
     program_invocation_short_name = program_invocation_name;
 #endif
 
-  raw_prog_name = name;
-  size_t pos = raw_prog_name.rfind ('/');
-  if (pos == NPOS)
-    prog_name = raw_prog_name;
-  else
-    prog_name = raw_prog_name.substr (pos+1);
+  Vprogram_invocation_name = name;
+  size_t pos = Vprogram_invocation_name.rfind ('/');
+  Vprogram_name = (pos == NPOS)
+    ? Vprogram_invocation_name : Vprogram_invocation_name.substr (pos+1);
 
   struct passwd *entry = getpwuid (getuid ());
-  if (entry)
-    user_name = entry->pw_name;
-  else
-    user_name = "I have no name!";
-  endpwent ();
+  Vuser_name = entry ? entry->pw_name : "I have no name!";
 
   char hostname[256];
-  if (gethostname (hostname, 255) < 0)
-    host_name = "I have no host!";
-  else
-    host_name = hostname;
+  int status = gethostname (hostname, 255);
+  Vhost_name = (status < 0) ? "I have no host!" : hostname;
 
   char *hd = getenv ("HOME");
-  home_directory = hd ? hd : "I have no home!";
+  Vhome_directory = hd ? hd : "I have no home!";
 
-  exec_path = default_exec_path ();
-
-  load_path = default_path ();
-
-  info_file = default_info_file ();
-
-  info_prog = default_info_prog ();
-
-  editor = default_editor ();
+  install_defaults ();
 }
 
 static void
@@ -260,10 +243,8 @@ execute_startup_files (void)
   // files.
 
   unwind_protect_int (input_from_startup_file);
-  unwind_protect_int (user_pref.echo_executing_commands);
 
   input_from_startup_file = 1;
-  user_pref.echo_executing_commands = ECHO_OFF;
 
   int verbose = (verbose_flag && ! inhibit_startup_message);
 
@@ -272,19 +253,17 @@ execute_startup_files (void)
   // then from the file $(prefix)/lib/octave/$(version)/m/octaverc (if
   // it exists).
 
-  string lsd = get_local_site_defaults ();
-  parse_and_execute (lsd, 0, verbose);
+  parse_and_execute (Vlocal_site_defaults_file, 0, verbose);
 
-  string sd = get_site_defaults ();
-  parse_and_execute (sd, 0, verbose);
+  parse_and_execute (Vsite_defaults_file, 0, verbose);
 
   // Try to execute commands from $HOME/.octaverc and ./.octaverc.
 
   int home_rc_already_executed = 0;
   string home_rc;
-  if (! home_directory.empty ())
+  if (! Vhome_directory.empty ())
     {
-      home_rc = home_directory;
+      home_rc = Vhome_directory;
       home_rc.append ("/.octaverc");
       parse_and_execute (home_rc, 0, verbose);
 
@@ -389,13 +368,12 @@ maximum_braindamage (void)
 int
 main (int argc, char **argv)
 {
-  int echo_commands = ECHO_OFF;
-
-  // The order of these calls is important, and initialize_globals
-  // must come before the options are processed because some command
-  // line options override defaults.
-
-  init_user_prefs ();
+  // The order of these calls is important.  The call to
+  // initialize_globals must come before install_builtins because
+  // default variable values must be available for the varaibles to be
+  // installed, and the call to install_builtins must come before the
+  // options are processed because some command line options override
+  // defaults by calling bind_builtin_variable.
 
   sysdep_init ();
 
@@ -404,6 +382,14 @@ main (int argc, char **argv)
   initialize_globals (argv[0]);
 
   initialize_pathsearch ();
+
+  install_signal_handlers ();
+
+  initialize_file_io ();
+
+  initialize_symbol_tables ();  
+
+  install_builtins ();
 
   prog_args args (argc, argv, short_opts, long_opts);
 
@@ -435,7 +421,7 @@ main (int argc, char **argv)
 
 	case 'p':
 	  if (args.optarg ())
-	    load_path = string (args.optarg ());
+	    bind_builtin_variable ("LOADPATH", args.optarg ());
 	  break;
 
 	case 'q':
@@ -443,7 +429,10 @@ main (int argc, char **argv)
 	  break;
 
 	case 'x':
-	  echo_commands = (ECHO_SCRIPTS | ECHO_FUNCTIONS | ECHO_CMD_LINE);
+	  {
+	    double tmp = (ECHO_SCRIPTS | ECHO_FUNCTIONS | ECHO_CMD_LINE);
+	    bind_builtin_variable ("echo_executing_commands", tmp);
+	  }
 	  break;
 
 	case 'v':
@@ -452,17 +441,17 @@ main (int argc, char **argv)
 
 	case EXEC_PATH_OPTION:
 	  if (args.optarg ())
-	    exec_path = string (args.optarg ());
+	    bind_builtin_variable ("EXEC_PATH", args.optarg ());
 	  break;
 
 	case INFO_FILE_OPTION:
 	  if (args.optarg ())
-	    info_file = string (args.optarg ());
+	    bind_builtin_variable ("INFO_FILE", args.optarg ());
 	  break;
 
 	case INFO_PROG_OPTION:
 	  if (args.optarg ())
-	    info_prog = string (args.optarg ());
+	    bind_builtin_variable ("INFO_PROGRAM", args.optarg ());
 	  break;
 
 	case NO_LINE_EDITING_OPTION:
@@ -492,14 +481,6 @@ main (int argc, char **argv)
   // These can come after command line args since none of them set any
   // defaults that might be changed by command line options.
 
-  install_signal_handlers ();
-
-  initialize_file_io ();
-
-  initialize_symbol_tables ();  
-
-  install_builtins ();
-
   initialize_readline ();
 
   init_dynamic_linker ();
@@ -509,9 +490,6 @@ main (int argc, char **argv)
 
   if (traditional)
     maximum_braindamage ();
-
-  bind_builtin_variable ("echo_executing_commands",
-			 (double) echo_commands);
 
   if (read_init_files)
     execute_startup_files ();

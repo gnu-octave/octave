@@ -48,6 +48,7 @@ Software Foundation, Inc.
 #include "file-ops.h"
 #include "str-vec.h"
 
+#include "defaults.h"
 #include "defun.h"
 #include "error.h"
 #include "input.h"
@@ -58,8 +59,8 @@ Software Foundation, Inc.
 #include "sysdep.h"
 #include "toplev.h"
 #include "unwind-prot.h"
-#include "user-prefs.h"
 #include "utils.h"
+#include "variables.h"
 
 // Nonzero means input is coming from temporary history file.
 int input_from_tmp_history_file = 0;
@@ -104,9 +105,9 @@ default_history_file (void)
 
   if (file.empty ())
     {
-      if (! home_directory.empty ())
+      if (! Vhome_directory.empty ())
 	{
-	  file = home_directory;
+	  file = Vhome_directory;
 	  file.append ("/.octave_hist");
 	}
       else
@@ -417,7 +418,7 @@ do_edit_history (int argc, const string_vector& argv)
 
   // Call up our favorite editor on the file of commands.
 
-  string cmd = user_pref.editor;
+  string cmd = Veditor;
   cmd.append (" ");
   cmd.append (name);
 
@@ -463,9 +464,9 @@ do_edit_history (int argc, const string_vector& argv)
   // sense.
 
   begin_unwind_frame ("do_edit_history");
-  unwind_protect_int (user_pref.echo_executing_commands);
+  unwind_protect_int (Vecho_executing_commands);
   unwind_protect_int (input_from_tmp_history_file);
-  user_pref.echo_executing_commands = ECHO_CMD_LINE;
+  Vecho_executing_commands = ECHO_CMD_LINE;
   input_from_tmp_history_file = 1;
 
   parse_and_execute (name, 1);
@@ -490,9 +491,9 @@ do_run_history (int argc, const string_vector& argv)
   // sense.
 
   begin_unwind_frame ("do_run_history");
-  unwind_protect_int (user_pref.echo_executing_commands);
+  unwind_protect_int (Vecho_executing_commands);
   unwind_protect_int (input_from_tmp_history_file);
-  user_pref.echo_executing_commands = ECHO_CMD_LINE;
+  Vecho_executing_commands = ECHO_CMD_LINE;
   input_from_tmp_history_file = 1;
 
   parse_and_execute (name, 1);

@@ -45,14 +45,19 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-glob.h"
 #include "str-vec.h"
 
+#include "arith-ops.h"
 #include "defaults.h"
+#include "data.h"
 #include "defun.h"
 #include "dirfns.h"
 #include "dynamic-ld.h"
 #include "error.h"
+#include "file-io.h"
+#include "gripes.h"
 #include "help.h"
 #include "input.h"
 #include "lex.h"
+#include "load-save.h"
 #include "mappers.h"
 #include "oct-hist.h"
 #include "toplev.h"
@@ -69,11 +74,33 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt-plot.h"
 #include "pr-output.h"
 #include "syscalls.h"
+#include "toplev.h"
 #include "unwind-prot.h"
-#include "user-prefs.h"
 #include "utils.h"
 #include "variables.h"
 #include "version.h"
+
+// Echo commands as they are executed?
+//
+//   1  ==>  echo commands read from script files
+//   2  ==>  echo commands from functions
+//   4  ==>  echo commands read from command line
+//
+// more than one state can be active at once.
+int Vecho_executing_commands;
+
+// Where history is saved.
+static string Vhistory_file;
+
+// The number of lines to keep in the history file.
+static int Vhistory_size;
+
+// Should Octave always check to see if function files have changed
+// since they were last compiled?
+static bool Vignore_function_time_stamp;
+
+// TRUE if we are saving history.
+static int Vsaving_history;
 
 // Symbol table for symbols at the top level.
 symbol_table *top_level_sym_tab = 0;
@@ -299,206 +326,13 @@ returns:\n\
   return retval;
 }
 
-// XXX FIXME XXX -- should these really be here?
-
-static string
-octave_home (void)
-{
-  char *oh = getenv ("OCTAVE_HOME");
-
-  return oh ? string (oh) : string (OCTAVE_PREFIX);
-}
-
-static string
-subst_octave_home (const string& s)
-{
-  string retval;
-
-  string home = octave_home ();
-  string prefix = OCTAVE_PREFIX;
-
-  retval = s;
-
-  if (home != prefix)
-    {
-      int len = prefix.length ();
-      size_t start = 0;
-      while ((start = s.find (prefix)) != NPOS)
-	{
-	  retval.replace (start, len, home);
-	  start++;
-	}
-    }
-
-  return retval;
-}
-
-static string
-octave_info_dir (void)
-{
-  return subst_octave_home (OCTAVE_INFODIR);
-}
-
-string
-octave_arch_lib_dir (void)
-{
-  return subst_octave_home (OCTAVE_ARCHLIBDIR);
-}
-
-string
-octave_fcn_file_dir (void)
-{
-  return subst_octave_home (OCTAVE_FCNFILEDIR);
-}
-
-string
-octave_bin_dir (void)
-{
-  return subst_octave_home (OCTAVE_BINDIR);
-}
-
-string
-maybe_add_default_load_path (const string& pathstring)
-{
-  string std_path = subst_octave_home (OCTAVE_FCNFILEPATH);
-
-  string retval;
-
-  if (! pathstring.empty ())
-    {
-      if (pathstring[0] == SEPCHAR)
-	{
-	  retval = std_path;
-	  retval.append (pathstring);
-	}
-      else
-	retval = pathstring;
-
-      if (pathstring[pathstring.length () - 1] == SEPCHAR)
-	retval.append (std_path);
-    }
-
-  return retval;
-}
-
-string
-octave_lib_dir (void)
-{
-  return subst_octave_home (OCTAVE_LIBDIR);
-}
-
-string
-default_exec_path (void)
-{
-  string exec_path_string;
-
-  char *octave_exec_path = getenv ("OCTAVE_EXEC_PATH");
-
-  if (octave_exec_path)
-    exec_path_string = string (octave_exec_path);
-  else
-    {
-      char *shell_path = getenv ("PATH");
-
-      if (shell_path)
-	{
-	  exec_path_string = string (":");
-	  exec_path_string.append (shell_path);
-	}
-    }
-
-  return exec_path_string;
-}
-
-// Handle OCTAVE_PATH from the environment like TeX handles TEXINPUTS.
-// If the path starts with `:', prepend the standard path.  If it ends
-// with `:' append the standard path.  If it begins and ends with
-// `:', do both (which is useless, but the luser asked for it...).
-
-string
-default_path (void)
-{
-  string std_path = subst_octave_home (OCTAVE_FCNFILEPATH);
-
-  char *oct_path = getenv ("OCTAVE_PATH");
-
-  return oct_path ? string (oct_path) : std_path;
-}
-
-string
-default_info_file (void)
-{
-  string info_file_string;
-
-  char *oct_info_file = getenv ("OCTAVE_INFO_FILE");
-
-  if (oct_info_file)
-    info_file_string = string (oct_info_file);
-  else
-    {
-      string infodir = octave_info_dir ();
-      info_file_string = infodir.append ("/octave.info");
-    }
-
-  return info_file_string;
-}
-
-string
-default_info_prog (void)
-{
-  string info_prog_string;
-
-  char *oct_info_prog = getenv ("OCTAVE_INFO_PROGRAM");
-
-  if (oct_info_prog)
-    info_prog_string = string (oct_info_prog);
-  else
-    {
-      string archdir = octave_arch_lib_dir ();
-      info_prog_string = archdir.append ("/info");
-    }
-
-  return info_prog_string;
-}
-
-string
-default_editor (void)
-{
-  string editor_string = "vi";
-
-  char *env_editor = getenv ("EDITOR");
-
-  if (env_editor && *env_editor)
-    editor_string = string (env_editor);
-
-  return editor_string;
-}
-
-string
-get_local_site_defaults (void)
-{
-  string startupdir = subst_octave_home (OCTAVE_LOCALSTARTUPFILEDIR);
-  return startupdir.append ("/octaverc");
-}
-
-string
-get_site_defaults (void)
-{
-  string startupdir = subst_octave_home (OCTAVE_STARTUPFILEDIR);
-  return startupdir.append ("/octaverc");
-}
-
-// Functions for looking up variables and functions.
-
 // Is there a corresponding function file that is newer than the
 // symbol definition?
 
 static int
 symbol_out_of_date (symbol_record *sr)
 {
-  int ignore = user_pref.ignore_function_time_stamp;
-
-  if (ignore == 2)
+  if (Vignore_function_time_stamp == 2)
     return 0;
 
   if (sr)
@@ -507,7 +341,9 @@ symbol_out_of_date (symbol_record *sr)
       if (ans)
 	{
 	  string ff = ans->fcn_file_name ();
-	  if (! ff.empty () && ! (ignore && ans->is_system_fcn_file ()))
+	  if (! ff.empty ()
+	      && ! (Vignore_function_time_stamp
+		    && ans->is_system_fcn_file ()))
 	    {
 	      time_t tp = ans->time_parsed ();
 
@@ -664,7 +500,7 @@ is_function_file (FILE *ffile)
 static void
 restore_command_history (void *)
 {
-  octave_command_history.ignore_entries (! user_pref.saving_history);
+  octave_command_history.ignore_entries (! Vsaving_history);
 }
 
 static int
@@ -704,18 +540,18 @@ parse_fcn_file (int exec_script, const string& ff)
 	{
 	  // XXX FIXME XXX -- we shouldn't need both the
 	  // octave_command_history object and the
-	  // user_pref.saving_history variable...
+	  // Vsaving_history variable...
 	  octave_command_history.ignore_entries ();
 
 	  add_unwind_protect (restore_command_history, 0);
 
-	  unwind_protect_int (user_pref.echo_executing_commands);
-	  unwind_protect_int (user_pref.saving_history);
+	  unwind_protect_int (Vecho_executing_commands);
+	  unwind_protect_int (Vsaving_history);
 	  unwind_protect_int (reading_fcn_file);
 	  unwind_protect_int (input_from_command_line_file);
 
-	  user_pref.echo_executing_commands = ECHO_OFF;
-	  user_pref.saving_history = 0;
+	  Vecho_executing_commands = ECHO_OFF;
+	  Vsaving_history = 0;
 	  reading_fcn_file = 1;
 	  input_from_command_line_file = 0;
 
@@ -750,15 +586,15 @@ parse_fcn_file (int exec_script, const string& ff)
 
 	  // XXX FIXME XXX -- we shouldn't need both the
 	  // octave_command_history object and the
-	  // user_pref.saving_history variable...
+	  // Vsaving_history variable...
 	  octave_command_history.ignore_entries ();
 
 	  add_unwind_protect (restore_command_history, 0);
 
-	  unwind_protect_int (user_pref.saving_history);
+	  unwind_protect_int (Vsaving_history);
 	  unwind_protect_int (reading_script_file);
 
-	  user_pref.saving_history = 0;
+	  Vsaving_history = 0;
 	  reading_script_file = 1;
 
 	  parse_and_execute (ffile, 1);
@@ -1555,74 +1391,102 @@ bind_builtin_variable (const string& varname, const octave_value& val,
   bind_builtin_variable (varname, tc, protect, eternal, sv_fcn, help);
 }
 
-// XXX FIXME XX -- these should probably be moved to where they
-// logically belong instead of being all grouped here.
+// XXX FIXME XXX -- some of these should do their own checking to be
+// able to provide more meaningful warning or error messages.
 
-// This is split up to try to make compiling with gcc consume less
-// memory and go a little faster.
-
-static void
-install_builtin_variables_1 (void)
+static int
+echo_executing_commands (void)
 {
-  DEFVAR (EDITOR, editor, 0, sv_editor,
-    "name of the editor to be invoked by the edit_history command");
+  Vecho_executing_commands = check_preference ("echo_executing_commands"); 
 
-  DEFVAR (EXEC_PATH, exec_path, 0, sv_exec_path,
-    "colon separated list of directories to search for programs to run");
-
-  DEFCONST (I, Complex (0.0, 1.0), 0, 0,
-    "sqrt (-1)");
-
-  DEFCONST (Inf, octave_Inf, 0, 0,
-    "infinity");
-
-  DEFVAR (INFO_FILE, info_file, 0, sv_info_file,
-    "name of the Octave info file");
-
-  DEFVAR (INFO_PROGRAM, info_prog, 0, sv_info_prog,
-    "name of the Octave info reader");
-
-  DEFCONST (J, Complex (0.0, 1.0), 0, 0,
-    "sqrt (-1)");
-
-  DEFCONST (NaN, octave_NaN, 0, 0,
-    "not a number");
-
-  DEFVAR (LOADPATH, load_path, 0, sv_loadpath,
-    "colon separated list of directories to search for scripts");
-
-  DEFVAR (IMAGEPATH, OCTAVE_IMAGEPATH, 0,
-	  sv_imagepath,
-    "colon separated list of directories to search for image files");
+  return 0;
 }
 
-static void
-install_builtin_variables_2 (void)
+static int
+history_size (void)
 {
-  DEFCONSTX ("OCTAVE_VERSION", SBV_OCTAVE_VERSION, OCTAVE_VERSION, 0, 0,
-    "Octave version");
+  double val;
+  if (builtin_real_scalar_variable ("history_size", val)
+      && ! xisnan (val))
+    {
+      int ival = NINT (val);
+      if (ival >= 0 && (double) ival == val)
+	{
+	  Vhistory_size = ival;
+	  octave_command_history.set_size (ival);
+	  return 0;
+	}
+    }
+  gripe_invalid_value_specified ("history_size");
+  return -1;
+}
 
-  DEFCONST (PWD, get_working_directory ("initialize_globals"), 0, sv_pwd,
-    "current working directory");
+static int
+history_file (void)
+{
+  int status = 0;
 
-  DEFCONST (SEEK_SET, 0.0, 0, 0,
-    "used with fseek to position file relative to the beginning");
+  string s = builtin_string_variable ("history_file");
 
-  DEFCONST (SEEK_CUR, 1.0, 0, 0,
-    "used with fseek to position file relative to the current position");
+  if (s.empty ())
+    {
+      gripe_invalid_value_specified ("history_file");
+      status = -1;
+    }
+  else
+    {
+      Vhistory_file = s;
+      octave_command_history.set_file (oct_tilde_expand (s));
+    }
 
-  DEFCONST (SEEK_END, 2.0, 0, 0,
-    "used with fseek to position file relative to the end");
+  return status;
+}
 
+static int
+ignore_function_time_stamp (void)
+{
+  int pref = 0;
+
+  string val = builtin_string_variable ("ignore_function_time_stamp");
+
+  if (! val.empty ())
+    {
+      if (val.compare ("all", 0, 3) == 0)
+	pref = 2;
+      if (val.compare ("system", 0, 6) == 0)
+	pref = 1;
+    }
+
+  Vignore_function_time_stamp = pref;
+
+  return 0;
+}
+
+static int
+saving_history (void)
+{
+  Vsaving_history = check_preference ("saving_history");
+
+  octave_command_history.ignore_entries (! Vsaving_history);
+
+  return 0;
+}
+
+// XXX FIXME XXX -- there still may be better places for some of these
+// to be defined.
+
+static void
+symbols_of_variables (void)
+{
   DEFVAR (ans, , 0, 0,
     "");
-}
 
-static void
-install_builtin_variables_3 (void)
-{
   DEFCONST (argv, , 0, 0,
     "the command line arguments this program was invoked with");
+
+  DEFVAR (echo_executing_commands, (double) ECHO_OFF, 0,
+	  echo_executing_commands,
+    "echo commands as they are executed");
 
   DEFCONST (error_text, "", 0, 0,
     "the text of error messages that would have been printed in the
@@ -1631,140 +1495,40 @@ the most recent eval() command.  Outside of unwind_protect and\n\
 eval(), or if no error has ocurred within them, the value of\n\
 __error_text__ is guaranteed to be the empty string.");
 
-  DEFVAR (default_save_format, "ascii", 0, sv_default_save_format,
-    "default format for files created with save, may be one of\n\
-\"binary\", \"text\", or \"mat-binary\"");
-
-  DEFVAR (echo_executing_commands, 0.0, 0, echo_executing_commands,
-    "echo commands as they are executed");
-}
-
-static void
-install_builtin_variables_4 (void)
-{
-#if defined (M_E)
-  double e_val = M_E;
-#else
-  double e_val = exp (1.0);
-#endif
-
-  DEFCONST (e, e_val, 0, 0,
-    "exp (1)");
-
-  DEFCONST (eps, DBL_EPSILON, 0, 0,
-    "machine precision");
-
-  DEFVAR (history_file, default_history_file (), 0, sv_history_file,
+  DEFVAR (history_file, default_history_file (), 0, history_file,
     "name of command history file");
 
   DEFVAR (history_size, default_history_size (), 0, history_size,
     "number of commands to save in the history list");
 
-  DEFCONST (i, Complex (0.0, 1.0), 1, 0,
-    "sqrt (-1)");
-
   DEFVAR (ignore_function_time_stamp, "system", 0, ignore_function_time_stamp,
     "don't check to see if function files have changed since they were\n\
   last compiled.  Possible values are \"system\" and \"all\"");
-}
 
-static void
-install_builtin_variables_5 (void)
-{
-  DEFCONST (inf, octave_Inf, 0, 0,
-    "infinity");
-
-  DEFCONST (j, Complex (0.0, 1.0), 1, 0,
-    "sqrt (-1)");
-
-  DEFCONST (nan, octave_NaN, 0, 0,
-    "not a number");
-
-#if defined (M_PI)
-  double pi_val = M_PI;
-#else
-  double pi_val = 4.0 * atan (1.0);
-#endif
-
-  DEFCONST (pi, pi_val, 0, 0,
-    "ratio of the circumference of a circle to its diameter");
-}
-
-static void
-install_builtin_variables_6 (void)
-{
-  DEFVAR (print_answer_id_name, 1.0, 0, print_answer_id_name,
-    "set output style to print `var_name = ...'");
-
-  DEFCONST (program_invocation_name, raw_prog_name, 0, 0,
+  DEFCONST (program_invocation_name, Vprogram_invocation_name, 0, 0,
     "the full name of the current program or script, including the\n\
 directory specification");
 
-  DEFCONST (program_name, prog_name, 0, 0,
+  DEFCONST (program_name, Vprogram_name, 0, 0,
     "the name of the current program or script");
-
-#if 0
-  DEFVAR (read_only_constants, 1.0, 0, read_only_constants,
-    "allow built-in constants to be modified");
-#endif
-
-  DEFCONST (realmax, DBL_MAX, 0, 0,
-    "realmax (): return largest representable floating point number");
-
-  DEFCONST (realmin, DBL_MIN, 0, 0,
-    "realmin (): return smallest representable floating point number");
-}
-
-static void
-install_builtin_variables_7 (void)
-{
-  DEFVAR (save_precision, 15.0, 0, set_save_precision,
-    "number of significant figures kept by the ASCII save command");
 
   DEFVAR (saving_history, 1.0, 0, saving_history,
     "save command history");
-
-#ifdef USE_GNU_INFO
-  DEFVAR (suppress_verbose_help_message, 0.0, 0, suppress_verbose_help_message,
-    "suppress printing of message pointing to additional help in the\n\
-help and usage functions");
-#endif
-
-  DEFCONSTX ("stdin", SBV_stdin, 0.0, 0, 0,
-    "file number of the standard input stream");
-
-  DEFCONSTX ("stdout", SBV_stderr, 1.0, 0, 0,
-    "file number of the standard output stream");
-
-  DEFCONSTX ("stderr", SBV_stderr, 2.0, 0, 0,
-    "file number of the standard error stream");
-
-  DEFVAR (treat_neg_dim_as_zero, 0.0, 0, treat_neg_dim_as_zero,
-    "convert negative dimensions to zero");
-}
-
-static void
-install_builtin_variables_8 (void)
-{
-  DEFVAR (warn_divide_by_zero, 1.0, 0, warn_divide_by_zero,
-    "on IEEE machines, allow divide by zero errors to be suppressed");
 }
 
 void
 install_builtin_variables (void)
 {
-  install_builtin_variables_1 ();
-  install_builtin_variables_2 ();
-  install_builtin_variables_3 ();
-  install_builtin_variables_4 ();
-  install_builtin_variables_5 ();
-  install_builtin_variables_6 ();
-  install_builtin_variables_7 ();
-  install_builtin_variables_8 ();
-
+  symbols_of_arith_ops ();
+  symbols_of_data ();
+  symbols_of_defaults ();
+  symbols_of_dirfns ();
   symbols_of_error ();
+  symbols_of_file_io ();
+  symbols_of_help ();
   symbols_of_input ();
   symbols_of_lex ();
+  symbols_of_load_save ();
   symbols_of_pager ();
   symbols_of_parse ();
   symbols_of_pr_output ();
@@ -1773,6 +1537,7 @@ install_builtin_variables (void)
   symbols_of_pt_mat ();
   symbols_of_pt_plot ();
   symbols_of_syscalls ();
+  symbols_of_variables ();
 }
 
 // Deleting names from the symbol tables.

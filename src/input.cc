@@ -77,7 +77,6 @@ Free Software Foundation, Inc.
 #include "sighandlers.h"
 #include "symtab.h"
 #include "sysdep.h"
-#include "user-prefs.h"
 #include "utils.h"
 #include "variables.h"
 
@@ -244,7 +243,7 @@ decode_prompt_string (const string& s)
 
 	    case 's':
 	      {
-		temp = base_pathname (prog_name);
+		temp = base_pathname (Vprogram_name);
 
 		goto add_string;
 	      }
@@ -257,7 +256,7 @@ decode_prompt_string (const string& s)
 		// Use the value of PWD because it is much more
 		// effecient.
 
-		temp = user_pref.pwd;
+		temp = Vcurrent_directory;
 
 		if (temp.empty ())
 		  temp = octave_getcwd ();
@@ -280,14 +279,14 @@ decode_prompt_string (const string& s)
       
 	    case 'u':
 	      {
-		temp = user_name;
+		temp = Vuser_name;
 
 		goto add_string;
 	      }
 
 	    case 'h':
 	      {
-		temp = host_name;
+		temp = Vhost_name;
 
 		size_t pos = temp.find ('.');
 
@@ -376,8 +375,8 @@ static void
 do_input_echo (const string& input_string)
 {
   int do_echo = reading_script_file ?
-    (user_pref.echo_executing_commands & ECHO_SCRIPTS)
-      : (user_pref.echo_executing_commands & ECHO_CMD_LINE);
+    (Vecho_executing_commands & ECHO_SCRIPTS)
+      : (Vecho_executing_commands & ECHO_CMD_LINE);
 
   if (do_echo)
     {
@@ -1154,8 +1153,8 @@ Without any arguments, toggle the current echo state.")
     {
     case 1:
       {
-	int echo_cmds = user_pref.echo_executing_commands;
-	if ((echo_cmds & ECHO_SCRIPTS) || (echo_cmds & ECHO_FUNCTIONS))
+	if ((Vecho_executing_commands & ECHO_SCRIPTS)
+	    || (Vecho_executing_commands & ECHO_FUNCTIONS))
 	  bind_builtin_variable ("echo_executing_commands", ECHO_OFF);
 	else
 	  bind_builtin_variable ("echo_executing_commands", ECHO_SCRIPTS);

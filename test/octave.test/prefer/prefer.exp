@@ -109,7 +109,7 @@ do_test prefer-24.m
 ## return_last_computed_value
 
 set test return-last-computed-value-1
-set prog_output "^ans = 1"
+set prog_output "^$"
 do_test prefer-25.m
 
 set test return-last-computed-value-2

@@ -1,3 +1,9 @@
+2003-07-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* emacs/octave-mod.el (octave-variables): Delete
+	default_return_value and define_all_return_values from the list.
+	Add warn_undefined_return_values to the list.
+
 2003-07-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* emacs/octave-mod.el (octave-variables):

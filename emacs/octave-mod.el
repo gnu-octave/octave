@@ -140,8 +140,8 @@ All Octave abbrevs start with a grave accent (`).")
     "__program_invocation_name__" "__program_name__" "__realmax__"
     "__realmin__" "__stderr__" "__stdin__" "__stdout__" "ans" "argv"
     "automatic_replot" "beep_on_error" "completion_append_char"
-    "crash_dumps_octave_core" "default_return_value" "default_save_format"
-    "define_all_return_values" "e" "echo_executing_commands" "eps"
+    "crash_dumps_octave_core" "default_save_format"
+    "e" "echo_executing_commands" "eps"
     "error_text" "gnuplot_binary" "history_file"
     "history_size" "ignore_function_time_stamp"
     "inf" "nan" "nargin" "output_max_field_width" "output_precision"
@@ -160,7 +160,7 @@ All Octave abbrevs start with a grave accent (`).")
     "warn_neg_dim_as_zero" "warn_num_to_str" "warn_precedence_change"
     "warn_reload_forces_clear" "warn_separator_insert"
     "warn_single_quote_string" "warn_str_to_num"
-    "warn_variable_switch_label")
+    "warn_undefined_return_values" "warn_variable_switch_label")
   "Builtin variables in Octave.")
 
 (defvar octave-function-header-regexp

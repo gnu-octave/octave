@@ -28,6 +28,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include "defun.h"
 #include "error.h"
 #include "ov.h"
 #include "oct-lvalue.h"
@@ -35,6 +36,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt-idx.h"
 #include "pt-misc.h"
 #include "pt-walk.h"
+#include "utils.h"
+
+// If TRUE, print a warning if a function does not define all the
+// values in the return list which are expected.
+static bool Vwarn_undefined_return_values;
 
 // Parameter lists.
 
@@ -59,14 +65,30 @@ tree_parameter_list::mark_as_formal_parameters (void)
 }
 
 void
-tree_parameter_list::initialize_undefined_elements (const octave_value& val)
+tree_parameter_list::initialize_undefined_elements (const std::string& warnfor,
+						    int nargout,
+						    const octave_value& val)
 {
+  bool warned = false;
+
+  int count = 0;
+
   for (iterator p = begin (); p != end (); p++)
     {
+      if (++count > nargout)
+	break;
+
       tree_identifier *elt = *p;
 
       if (! elt->is_defined ())
 	{
+	  if (Vwarn_undefined_return_values && ! warned)
+	    {
+	      warned = true;
+	      warning ("%s: some elements in list of return values are undefined",
+		       warnfor.c_str ());
+	    }
+
 	  octave_lvalue tmp = elt->lvalue ();
 
 	  tmp.assign (octave_value::op_asn_eq, val);
@@ -198,6 +220,27 @@ void
 tree_return_list::accept (tree_walker& tw)
 {
   tw.visit_return_list (*this);
+}
+
+static int
+warn_undefined_return_values (void)
+{
+  Vwarn_undefined_return_values
+    = check_preference ("warn_undefined_return_values");
+
+  return 0;
+}
+
+void
+symbols_of_pt_misc (void)
+{
+  DEFVAR (warn_undefined_return_values, true, warn_undefined_return_values,
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} warn_undefined_return_values\n\
+If the value of @code{warn_undefined_return_values} is nonzero,\n\
+print a warning if a function does not define all the values in\n\
+the return list which are expected.  The default value is 1.\n\
+@end defvr");
 }
 
 /*

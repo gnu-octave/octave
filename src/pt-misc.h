@@ -65,7 +65,8 @@ public:
 
   bool varargs_only (void) { return (marked_for_varargs < 0); }
 
-  void initialize_undefined_elements (const octave_value& val);
+  void initialize_undefined_elements (const std::string& warnfor,
+				      int nargout, const octave_value& val);
 
   void define_from_arg_vector (const octave_value_list& args);
 

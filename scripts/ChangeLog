@@ -1,3 +1,10 @@
+2003-07-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* miscellaneous/dump_prefs.m: Delete define_all_return_values and
+	default_return_value from the list.
+	Add warn_undefined_return_values to the list.
+	
+
 2003-07-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* miscellaneous/dump_prefs.m: Delete default_global_variable_value

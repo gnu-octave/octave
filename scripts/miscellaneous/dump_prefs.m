@@ -53,9 +53,7 @@ function dump_prefs (file)
               "beep_on_error";
               "completion_append_char";
               "crash_dumps_octave_core";
-              "default_return_value";
               "default_save_format";
-              "define_all_return_values";
               "echo_executing_commands";
               "fixed_point_format";
               "gnuplot_binary";
@@ -101,6 +99,7 @@ function dump_prefs (file)
               "warn_num_to_str";
               "warn_resize_on_range_error";
               "warn_str_to_num";
+              "warn_undefined_return_values";
               "warn_variable_switch_label";
               "whitespace_in_literal_matrix"];
 

@@ -51,16 +51,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "parse.h"
 #include "variables.h"
 
-// If TRUE, variables returned from functions have default values even
-// if they are not explicitly initialized.
-static bool Vdefine_all_return_values;
-
 // Maximum nesting level for functions called recursively.
 static int Vmax_recursion_depth;
-
-// If TRUE, the last computed value is returned from functions that
-// don't actually define any return variables.
-static bool Vreturn_last_computed_value;
 
 // User defined functions.
 
@@ -492,21 +484,14 @@ octave_user_function::do_multi_index_op (int nargout,
 
     if (ret_list)
       {
-	if (Vdefine_all_return_values)
-	  {
-	    octave_value tmp = builtin_any_variable ("default_return_value");
-
-	    if (tmp.is_defined ())
-	      ret_list->initialize_undefined_elements (tmp);
-	  }
+	ret_list->initialize_undefined_elements (function_name (),
+						 nargout, Matrix ());
 
 	if (has_varargout ())
 	  varargout_to_vr_val ();
 
 	retval = ret_list->convert_to_const_vector (vr_list);
       }
-    else if (Vreturn_last_computed_value)
-      retval(0) = last_computed_value;
   }
 
  abort:
@@ -735,14 +720,6 @@ been declared to return an unspecified number of output arguments.\n\
 }
 
 static int
-define_all_return_values (void)
-{
-  Vdefine_all_return_values = check_preference ("define_all_return_values");
-
-  return 0;
-}
-
-static int
 max_recursion_depth (void)
 {
   Vmax_recursion_depth = check_preference ("max_recursion_depth");
@@ -750,35 +727,9 @@ max_recursion_depth (void)
   return 0;
 }
 
-static int
-return_last_computed_value (void)
-{
-  Vreturn_last_computed_value
-    = check_preference ("return_last_computed_value");
-
-  return 0;
-}
-
 void
 symbols_of_ov_usr_fcn (void)
 {
-  DEFVAR (default_return_value, Matrix (), 0,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} default_return_value\n\
-The value given to otherwise uninitialized return values if\n\
-@code{define_all_return_values} is nonzero.  The default value is\n\
-@code{[]}.\n\
-@end defvr");
-
-  DEFVAR (define_all_return_values, false, define_all_return_values,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} define_all_return_values\n\
-If the value of @code{define_all_return_values} is nonzero, Octave\n\
-will substitute the value specified by @code{default_return_value} for\n\
-any return values that remain undefined when a function returns.  The\n\
-default value is 0.\n\
-@end defvr");
-
   DEFVAR (max_recursion_depth, 256.0, max_recursion_depth,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} max_recursion_depth\n\
@@ -787,28 +738,6 @@ If the limit is exceeded, an error message is printed and control\n\
 returns to the top level.\n\
 \n\
 The default value is 256.\n\
-@end defvr");
-
-  DEFVAR (return_last_computed_value, false, return_last_computed_value,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} return_last_computed_value\n\
-If the value of @code{return_last_computed_value} is true, and a\n\
-function is defined without explicitly specifying a return value, the\n\
-function will return the value of the last expression.  Otherwise, no\n\
-value will be returned.  The default value is 0.\n\
-\n\
-For example, the function\n\
-\n\
-@example\n\
-function f ()\n\
-  2 + 2;\n\
-endfunction\n\
-@end example\n\
-\n\
-@noindent\n\
-will either return nothing, if the value of\n\
-@code{return_last_computed_value} is 0, or 4, if the value of\n\
-@code{return_last_computed_value} is nonzero.\n\
 @end defvr");
 }
 

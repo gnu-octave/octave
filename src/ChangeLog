@@ -1,3 +1,22 @@
+2003-07-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pt-misc.cc (tree_parameter_list::initialize_undefined_elements):
+	New args, warnfor and nargout.  Change all callers.
+	(symbols_of_pt_misc): New function.
+	(warn_undefined_return_values): New function.
+
+	* octave.cc (maximum_braindamage): Don't set
+	define_all_return_values.
+
+	* ov-usr-fcn.cc (ov_user_function::do_multi_index_op): Always
+	intiialize undefined elements in ret_list to [].
+	Never return last computed value.
+	(Vreturn_last_computed_value, Vdefine_all_return_values): Delete.
+	(return_last_computed_value, define_all_return_values): Delete.
+	(symbols_of_ov_usr_fcn): Delete DEFVARs for
+	return_last_computed_value, define_all_return_values, and
+	default_return_value.
+
 2003-07-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pt-misc.cc (tree_parameter_list::convert_to_const_vector):

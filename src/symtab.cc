@@ -473,7 +473,7 @@ symbol_table::lookup (const std::string& nm, bool insert, bool warn)
 {
   if (Vdebug_symtab_lookups)
     {
-      std::cerr << (table_name.empty () ? "???" : table_name)
+      std::cerr << (table_name.empty () ? std::string ("???") : table_name)
 		<< " symtab::lookup ["
 		<< (insert ? "I" : "-")
 		<< (warn ? "W" : "-")
@@ -511,7 +511,7 @@ symbol_table::rename (const std::string& old_name, const std::string& new_name)
 {
   if (Vdebug_symtab_lookups)
     {
-      std::cerr << (table_name.empty () ? "???" : table_name)
+      std::cerr << (table_name.empty () ? std::string ("???") : table_name)
 		<< " symtab::rename "
 		<< "\"" << old_name << "\""
 		<< " to "

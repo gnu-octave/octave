@@ -1,6 +1,13 @@
-2003-01-03  John W Eaton  <eatonj@sun-68.cae.wisc.edu>
+2003-01-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* symtab.cc (symbol_table::rename): Explicitly convert C string to
+	std::string so type of second arg of ?: matches third.
+	(symbol_table::lookup): Likewise.
 
 	* mappers.cc: Remove std:: qualifiers from C library names.
+
+	* pr-output.cc: Replace std:: qualifiers on pow with STD_QUAL.
+	(STD_QUAL): New macro.
 
 2003-01-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

@@ -119,14 +119,14 @@ octave_strncasecmp (const char *s1, const char *s2, size_t n)
   return strncasecmp (s1, s2, n);
 }
 
-// XXX FIXME XXX -- we really need a configure test for this.
+/* XXX FIXME XXX -- we really need a configure test for this.  */
 
 #if defined __GNUC__ && __GNUC__ >= 3
 #define HAVE_C99_VSNPRINTF 1
 #endif
 
-// We manage storage.  User should not free it, and its contents are
-// only valid until next call to vsnprintf.
+/* We manage storage.  User should not free it, and its contents are
+   only valid until next call to vsnprintf.  */
 
 char *
 octave_vsnprintf (const char *fmt, va_list args)

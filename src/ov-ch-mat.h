@@ -118,7 +118,7 @@ public:
   charMatrix char_matrix_value (bool = false) const { return matrix; }
 
   octave_value convert_to_str (void) const
-    { return octave_value (matrix); }
+    { return octave_value (matrix, true); }
 
   octave_value transpose (void) const
     { return octave_value (matrix.transpose ()); }

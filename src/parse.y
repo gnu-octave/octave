@@ -1489,7 +1489,16 @@ make_plot_command (token *tok, plot_limits *range, subplot_list *list)
 static tree_expression *
 fold (tree_binary_expression *e)
 {
-  tree_expression *retval = 0;
+  tree_expression *retval = e;
+
+  unwind_protect::begin_frame ("fold");
+
+  unwind_protect_int (error_state);
+
+  unwind_protect_bool (buffer_error_messages);
+  buffer_error_messages = true;
+
+  unwind_protect::add (clear_global_error_variable, 0);
 
   tree_expression *op1 = e->lhs ();
   tree_expression *op2 = e->rhs ();
@@ -1520,11 +1529,9 @@ fold (tree_binary_expression *e)
 
 	  retval = tc_retval;
 	}
-      else
-	delete e;
     }
-  else
-    retval = e;
+
+  unwind_protect::run_frame ("fold");
 
   return retval;
 }
@@ -1534,7 +1541,16 @@ fold (tree_binary_expression *e)
 static tree_expression *
 finish_colon_expression (tree_colon_expression *e)
 {
-  tree_expression *retval = 0;
+  tree_expression *retval = e;
+
+  unwind_protect::begin_frame ("finish_colon_expression");
+
+  unwind_protect_int (error_state);
+
+  unwind_protect_bool (buffer_error_messages);
+  buffer_error_messages = true;
+
+  unwind_protect::add (clear_global_error_variable, 0);
 
   tree_expression *base = e->base ();
   tree_expression *limit = e->limit ();
@@ -1571,11 +1587,7 @@ finish_colon_expression (tree_colon_expression *e)
 
 		  retval = tc_retval;
 		}
-	      else
-		delete e;
 	    }
-	  else
-	    retval = e;
 	}
       else
 	{
@@ -1587,6 +1599,8 @@ finish_colon_expression (tree_colon_expression *e)
 	  retval = base;
 	}
     }
+
+  unwind_protect::run_frame ("finish_colon_expression");
 
   return retval;
 }
@@ -1803,6 +1817,8 @@ make_prefix_op (int op, tree_expression *op1, token *tok_val)
   int l = tok_val->line ();
   int c = tok_val->column ();
 
+  // XXX FIXME XXX -- what about constant folding here?
+
   return new tree_prefix_expression (t, op1, l, c);
 }
 
@@ -1838,6 +1854,8 @@ make_postfix_op (int op, tree_expression *op1, token *tok_val)
 
   int l = tok_val->line ();
   int c = tok_val->column ();
+
+  // XXX FIXME XXX -- what about constant folding here?
 
   return new tree_postfix_expression (t, op1, l, c);
 }
@@ -2320,7 +2338,16 @@ make_decl_command (int tok, token *tok_val, tree_decl_init_list *lst)
 static tree_expression *
 finish_matrix (tree_matrix *m)
 {
-  tree_expression *retval = 0;
+  tree_expression *retval = m;
+
+  unwind_protect::begin_frame ("finish_matrix");
+
+  unwind_protect_int (error_state);
+
+  unwind_protect_bool (buffer_error_messages);
+  buffer_error_messages = true;
+
+  unwind_protect::add (clear_global_error_variable, 0);
 
   if (m->all_elements_are_constant ())
     {
@@ -2348,11 +2375,9 @@ finish_matrix (tree_matrix *m)
 
 	  retval = tc_retval;
 	}
-      else
-	delete m;
     }
-  else
-    retval = m;
+
+  unwind_protect::run_frame ("finish_matrix");
 
   return retval;
 }

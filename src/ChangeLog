@@ -1,3 +1,26 @@
+Thu Nov 20 15:16:22 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* octave.cc (maximum_braindamage): Bind implicit_num_to_str_ok to 1.
+	* pt-mat.cc (Vimplicit_num_to_str_ok): New static variable.
+	(implicit_num_to_str_ok): New function.
+	(symbols_of_pt_mat): DEFVAR implicit_num_to_str_ok.
+	(tm_row_const::some_str): New data member.
+	(tm_row_const::some_strings_p): New function.
+	(tm_row_const::init): Set some_str.
+	(tm_const::some_str): New data member.
+	(tm_const::some_strings_p): New function.
+	(tm_const::init): Set some_str.
+	(tree_matrix::eval): If Vimplicit_num_to_str_ok is true and some
+	of the elements are strings, force a string conversion before
+	returning.
+
+	* parse.y (fold, finish_colon_expression, finish_matrix):
+	If an error occurs, return the original expression.
+	Use unwind_protect to restore error_state.
+
+	* ov-ch-mat.h (octave_char_matrix::convert_to_str): Result is
+	char_matrix_str, not just char_matrix.
+
 Wed Nov 19 02:05:40 1997  Mumit Khan <khan@dhaka.xraylith.wisc.edu>
 
 	* DLD-FUNCTIONS/filter.cc: Don't include extern template decls if

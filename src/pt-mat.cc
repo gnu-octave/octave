@@ -48,6 +48,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Zero means it should be considered an error.
 static int Vempty_list_elements_ok;
 
+// Should `[97, 98, 99, "123"]' be a string?
+static bool Vimplicit_num_to_str_ok;
+
 // The character to fill with when creating string arrays.
 static char Vstring_fill_char;
 
@@ -69,12 +72,14 @@ private:
 
     tm_row_const_rep (void)
       : SLList<octave_value> (), count (1), nr (0), nc (0),
-	all_str (false), is_cmplx (false), all_mt (true), ok (false) { }
+	all_str (false), some_str (false), is_cmplx (false),
+	all_mt (true), ok (false) { }
 
     tm_row_const_rep (const tree_argument_list& row)
       : SLList<octave_value> (), count (1), nr (0), nc (0),
-	all_str (false), is_cmplx (false), all_mt (true), ok (false)
-        { init (row); }
+	all_str (false), some_str (false), is_cmplx (false),
+	all_mt (true), ok (false)
+    { init (row); }
 
     ~tm_row_const_rep (void) { }
 
@@ -84,6 +89,7 @@ private:
     int nc;
 
     bool all_str;
+    bool some_str;
     bool is_cmplx;
     bool all_mt;
 
@@ -143,6 +149,7 @@ public:
   int cols (void) { return rep->nc; }
 
   bool all_strings_p (void) const { return rep->all_str; }
+  bool some_strings_p (void) const { return rep->some_str; }
   bool complex_p (void) const { return rep->is_cmplx; }
   bool all_empty_p (void) const { return rep->all_mt; }
 
@@ -222,6 +229,9 @@ tm_row_const::tm_row_const_rep::init (const tree_argument_list& row)
 	  if (all_str && ! tmp.is_string ())
 	    all_str = false;
 
+	  if (! some_str && tmp.is_string ())
+	    some_str = true;
+
 	  if (! is_cmplx && tmp.is_complex_type ())
 	    is_cmplx = true;
 	}
@@ -262,8 +272,9 @@ tm_const : public SLList<tm_row_const>
 public:
 
   tm_const (const tree_matrix& tm)
-    : SLList<tm_row_const> (), nr (0), nc (0), all_str (false),
-      is_cmplx (false), all_mt (true), ok (false)
+    : SLList<tm_row_const> (), nr (0), nc (0),
+      all_str (false), some_str (false), is_cmplx (false),
+      all_mt (true), ok (false)
       { init (tm); }
 
   ~tm_const (void) { }
@@ -272,6 +283,7 @@ public:
   int cols (void) const { return nc; }
 
   bool all_strings_p (void) const { return all_str; }
+  bool some_strings_p (void) const { return some_str; }
   bool complex_p (void) const { return is_cmplx; }
   bool all_empty_p (void) const { return all_mt; }
 
@@ -284,6 +296,7 @@ private:
   int nc;
 
   bool all_str;
+  bool some_str;
   bool is_cmplx;
   bool all_mt;
 
@@ -320,6 +333,9 @@ tm_const::init (const tree_matrix& tm)
 	{
 	  if (all_str && ! tmp.all_strings_p ())
 	    all_str = false;
+
+	  if (! some_str && tmp.some_strings_p ())
+	    some_str = true;
 
 	  if (! is_cmplx && tmp.complex_p ())
 	    is_cmplx = true;
@@ -429,7 +445,10 @@ tree_matrix::rvalue (void)
   tm_const tmp (*this);
 
   bool all_strings_p = false;
+  bool some_strings_p = false;
   bool all_empty_p = false;
+
+  bool frc_str_conv = false;
 
   if (tmp)
     {
@@ -446,7 +465,10 @@ tree_matrix::rvalue (void)
       bool found_complex = tmp.complex_p ();
 
       all_strings_p = tmp.all_strings_p ();
+      some_strings_p = tmp.some_strings_p ();
       all_empty_p = tmp.all_empty_p ();
+
+      frc_str_conv = Vimplicit_num_to_str_ok && some_strings_p;
 
       if (all_strings_p)
 	chm.resize (nr, nc, Vstring_fill_char);
@@ -500,7 +522,7 @@ tree_matrix::rvalue (void)
 		    }
 		  else
 		    {
-		      Matrix m_elt = elt.matrix_value ();
+		      Matrix m_elt = elt.matrix_value (frc_str_conv);
 
 		      if (error_state)
 			goto done;
@@ -525,12 +547,17 @@ tree_matrix::rvalue (void)
 
 done:
 
-  if (! error_state && retval.is_undefined () && all_empty_p)
+  if (! error_state)
     {
-      if (all_strings_p)
-	retval = "";
-      else
-	retval = Matrix ();
+      if (retval.is_undefined () && all_empty_p)
+	{
+	  if (all_strings_p)
+	    retval = "";
+	  else
+	    retval = Matrix ();
+	}
+      else if (frc_str_conv && ! retval.is_string ())
+	retval = retval.convert_to_str ();
     }
 
   return retval;
@@ -546,6 +573,14 @@ static int
 empty_list_elements_ok (void)
 {
   Vempty_list_elements_ok = check_preference ("empty_list_elements_ok");
+
+  return 0;
+}
+
+static int
+implicit_num_to_str_ok (void)
+{
+  Vimplicit_num_to_str_ok = check_preference ("implicit_num_to_str_ok");
 
   return 0;
 }
@@ -581,6 +616,9 @@ symbols_of_pt_mat (void)
 {
   DEFVAR (empty_list_elements_ok, "warn", 0, empty_list_elements_ok,
     "ignore the empty element in expressions like `a = [[], 1]'");
+
+  DEFVAR (implicit_num_to_str_ok, 0.0, 0, implicit_num_to_str_ok,
+    "make the result of things like `[97, 98, 99, \"123\"]' be a string");
 
   DEFVAR (string_fill_char, " ", 0, string_fill_char,
     "the character to fill with when creating string arrays.");

@@ -427,30 +427,39 @@ operator / (const Complex& s, const RowVector& a)
 ComplexRowVector
 operator * (const ComplexRowVector& v, const ComplexMatrix& a)
 {
+  ComplexRowVector retval;
+
   int len = v.length ();
+
   if (a.rows () != len)
+    (*current_liboctave_error_handler)
+      ("nonconformant vector multiplication attempted");
+  else
     {
-      (*current_liboctave_error_handler)
-	("nonconformant vector multiplication attempted");
-      return ComplexRowVector ();
+      int a_nr = a.rows ();
+      int a_nc = a.cols ();
+
+      if (len == 0)
+	retval.resize (a_nc, 0.0);
+      else
+	{
+	  // Transpose A to form A'*x == (x'*A)'
+
+	  int ld = a_nr;
+
+	  retval.resize (a_nc);
+	  Complex *y = retval.fortran_vec ();
+
+	  F77_XFCN (zgemv, ZGEMV, ("T", a_nr, a_nc, 1.0, a.data (),
+				   ld, v.data (), 1, 0.0, y, 1, 1L));
+
+	  if (f77_exception_encountered)
+	    (*current_liboctave_error_handler)
+	      ("unrecoverable error in zgemv");
+	}
     }
 
-  if (len == 0)
-    return ComplexRowVector (a.cols (), 0.0);
-
-  // Transpose A to form A'*x == (x'*A)'
-
-  int a_nr = a.rows ();
-  int a_nc = a.cols ();
-
-  int ld = a_nr;
-
-  Complex *y = new Complex [a_nc];
-
-  F77_FCN (zgemv, ZGEMV) ("T", a_nr, a_nc, 1.0, a.data (), ld,
-			  v.data (), 1, 0.0, y, 1, 1L); 
-
-  return ComplexRowVector (y, a_nc);
+  return retval;
 }
 
 ComplexRowVector

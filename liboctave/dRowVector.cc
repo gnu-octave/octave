@@ -211,30 +211,39 @@ RowVector::operator -= (const RowVector& a)
 RowVector
 operator * (const RowVector& v, const Matrix& a)
 {
+  RowVector retval;
+
   int len = v.length ();
+
   if (a.rows () != len)
+    (*current_liboctave_error_handler)
+      ("nonconformant vector multiplication attempted");
+  else
     {
-      (*current_liboctave_error_handler)
-	("nonconformant vector multiplication attempted");
-      return RowVector ();
+      int a_nr = a.rows ();
+      int a_nc = a.cols ();
+
+      if (len == 0)
+	retval.resize (a_nc, 0.0);
+      else
+	{
+	  // Transpose A to form A'*x == (x'*A)'
+
+	  int ld = a_nr;
+
+	  retval.resize (a_nc);
+	  double *y = retval.fortran_vec ();
+
+	  F77_XFCN (dgemv, DGEMV, ("T", a_nr, a_nc, 1.0, a.data (),
+				   ld, v.data (), 1, 0.0, y, 1, 1L));
+
+	  if (f77_exception_encountered)
+	    (*current_liboctave_error_handler)
+	      ("unrecoverable error in dgemv");
+	}
     }
 
-  if (len == 0)
-    return RowVector (a.cols (), 0.0);
-
-  // Transpose A to form A'*x == (x'*A)'
-
-  int a_nr = a.rows ();
-  int a_nc = a.cols ();
-
-  int ld = a_nr;
-
-  double *y = new double [a_nc];
-
-  F77_FCN (dgemv, DGEMV) ("T", a_nr, a_nc, 1.0, a.data (), ld,
-			  v.data (), 1, 0.0, y, 1, 1L);
-
-  return RowVector (y, a_nc);
+  return retval;
 }
 
 // other operations
@@ -353,15 +362,17 @@ linspace (double x1, double x2, int n)
 double
 operator * (const RowVector& v, const ColumnVector& a)
 {
-  int len = v.length ();
-  if (len != a.length ())
-    {
-      (*current_liboctave_error_handler)
-	("nonconformant vector multiplication attempted");
-      return 0.0;
-    }
+  double retval = 0.0;
 
-  return F77_FCN (ddot, DDOT) (len, v.data (), 1, a.data (), 1);
+  int len = v.length ();
+
+  if (len != a.length ())
+    (*current_liboctave_error_handler)
+      ("nonconformant vector multiplication attempted");
+  else if (len != 0)
+    retval = F77_FCN (ddot, DDOT) (len, v.data (), 1, a.data (), 1);
+
+  return retval;
 }
 
 Complex

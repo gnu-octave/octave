@@ -210,26 +210,35 @@ ColumnVector::operator -= (const ColumnVector& a)
 ColumnVector
 operator * (const Matrix& m, const ColumnVector& a)
 {
+  ColumnVector retval;
+
   int nr = m.rows ();
   int nc = m.cols ();
+
   if (nc != a.length ())
+    (*current_liboctave_error_handler)
+      ("nonconformant matrix multiplication attempted");
+  else
     {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix multiplication attempted");
-      return ColumnVector ();
+      if (nr == 0 || nc == 0)
+	retval.resize (nr, 0.0);
+      else
+	{
+	  int ld = nr;
+
+	  retval.resize (nr);
+	  double *y = retval.fortran_vec ();
+
+	  F77_XFCN (dgemv, DGEMV, ("N", nr, nc, 1.0, m.data (), ld,
+				   a.data (), 1, 0.0, y, 1, 1L));
+
+	  if (f77_exception_encountered)
+	    (*current_liboctave_error_handler)
+	      ("unrecoverable error in dgemv");
+	}
     }
 
-  if (nr == 0 || nc == 0)
-    return ColumnVector (0);
-
-  int ld = nr;
-
-  double *y = new double [nr];
-
-  F77_FCN (dgemv, DGEMV) ("N", nr, nc, 1.0, m.data (), ld, a.data (),
-			  1, 0.0, y, 1, 1L);
-
-  return ColumnVector (y, nr);
+  return retval;
 }
 
 // diagonal matrix by column vector -> column vector operations
@@ -237,28 +246,33 @@ operator * (const Matrix& m, const ColumnVector& a)
 ColumnVector
 operator * (const DiagMatrix& m, const ColumnVector& a)
 {
+  ColumnVector retval;
+
   int nr = m.rows ();
   int nc = m.cols ();
+
   int a_len = a.length ();
+
   if (nc != a_len)
+    (*current_liboctave_error_handler)
+      ("nonconformant matrix multiplication attempted");
+  else
     {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix multiplication attempted");
-      return ColumnVector ();
+      if (nr == 0 || nc == 0)
+	retval.resize (nr, 0.0);
+      else
+	{
+	  retval.resize (nr);
+
+	  for (int i = 0; i < a_len; i++)
+	    retval.elem (i) = a.elem (i) * m.elem (i, i);
+
+	  for (int i = a_len; i < nr; i++)
+	    retval.elem (i) = 0.0;
+	}
     }
 
-  if (nc == 0 || nr == 0)
-    return ColumnVector (0);
-
-  ColumnVector result (nr);
-
-  for (int i = 0; i < a_len; i++)
-    result.elem (i) = a.elem (i) * m.elem (i, i);
-
-  for (int i = a_len; i < nr; i++)
-    result.elem (i) = 0.0;
-
-  return result;
+  return retval;
 }
 
 // other operations

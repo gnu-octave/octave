@@ -435,26 +435,35 @@ operator * (const ComplexMatrix& m, const ColumnVector& a)
 ComplexColumnVector
 operator * (const ComplexMatrix& m, const ComplexColumnVector& a)
 {
+  ComplexColumnVector retval;
+
   int nr = m.rows ();
   int nc = m.cols ();
+
   if (nc != a.length ())
+    (*current_liboctave_error_handler)
+      ("nonconformant matrix multiplication attempted");
+  else
     {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix multiplication attempted");
-      return ComplexColumnVector ();
+      if (nc == 0 || nr == 0)
+	retval.resize (nr, 0.0);
+      else
+	{
+	  int ld = nr;
+
+	  retval.resize (nr);
+	  Complex *y = retval.fortran_vec ();
+
+	  F77_XFCN (zgemv, ZGEMV, ("N", nr, nc, 1.0, m.data (), ld,
+				   a.data (), 1, 0.0, y, 1, 1L));
+
+	  if (f77_exception_encountered)
+	    (*current_liboctave_error_handler)
+	      ("unrecoverable error in zgemv");
+	}
     }
 
-  if (nc == 0 || nr == 0)
-    return ComplexColumnVector (0);
-
-  int ld = nr;
-
-  Complex *y = new Complex [nr];
-
-  F77_FCN (zgemv, ZGEMV) ("N", nr, nc, 1.0, m.data (), ld, a.data (),
-			  1, 0.0, y, 1, 1L);
-
-  return ComplexColumnVector (y, nr);
+  return retval;
 }
 
 // column vector by column vector -> column vector operations

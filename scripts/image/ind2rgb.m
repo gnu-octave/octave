@@ -1,32 +1,33 @@
-# Copyright (C) 1996 John W. Eaton
-# 
-# This file is part of Octave.
-# 
-# Octave is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License as published by the
-# Free Software Foundation; either version 2, or (at your option) any
-# later version.
-# 
-# Octave is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-# for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with Octave; see the file COPYING.  If not, write to the Free
-# Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+### Copyright (C) 1996 John W. Eaton
+###
+### This file is part of Octave.
+###
+### Octave is free software; you can redistribute it and/or modify it
+### under the terms of the GNU General Public License as published by
+### the Free Software Foundation; either version 2, or (at your option)
+### any later version.
+###
+### Octave is distributed in the hope that it will be useful, but
+### WITHOUT ANY WARRANTY; without even the implied warranty of
+### MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+### General Public License for more details.
+###
+### You should have received a copy of the GNU General Public License
+### along with Octave; see the file COPYING.  If not, write to the Free
+### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
+### 02111-1307, USA.
 
 function [R, G, B] = ind2rgb (X, map)
 
-# Convert an indexed image to red, green, and blue color components.
-#
-# [R G B] = ind2rgb(X) uses the current colormap for the conversion.
-#
-# [R G B] = ind2rgb(X,map) uses the specified colormap.
-#
-# SEE ALSO: rgb2ind, image, imshow, ind2gray, gray2ind.
+  ## Convert an indexed image to red, green, and blue color components.
+  ##
+  ## [R G B] = ind2rgb(X) uses the current colormap for the conversion.
+  ##
+  ## [R G B] = ind2rgb(X,map) uses the specified colormap.
+  ##
+  ## SEE ALSO: rgb2ind, image, imshow, ind2gray, gray2ind.
 
-# Written by Tony Richardson (amr@mpl.ucsd.edu) July 1994.
+  ## Written by Tony Richardson (amr@mpl.ucsd.edu) July 1994.
 
   if (nargin < 1 || nargin > 2)
     usage ("ind2rgb (X, map)");
@@ -36,7 +37,7 @@ function [R, G, B] = ind2rgb (X, map)
 
   [hi, wi] = size (X);
 
-# XXX FIXME XXX -- we should check size of X and map.
+  ## XXX FIXME XXX -- we should check size of X and map.
 
   pref = do_fortran_indexing;
 

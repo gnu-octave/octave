@@ -1,44 +1,44 @@
-# Copyright (C) 1996 John W. Eaton
-# 
-# This file is part of Octave.
-# 
-# Octave is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License as published by the
-# Free Software Foundation; either version 2, or (at your option) any
-# later version.
-# 
-# Octave is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-# for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with Octave; see the file COPYING.  If not, write to the Free
-# Software Foundation, 59 Temple Place - Suite 330, Boston, MA
-# 02111-1307, USA. 
+### Copyright (C) 1996 John W. Eaton
+###
+### This file is part of Octave.
+###
+### Octave is free software; you can redistribute it and/or modify it
+### under the terms of the GNU General Public License as published by
+### the Free Software Foundation; either version 2, or (at your option)
+### any later version.
+###
+### Octave is distributed in the hope that it will be useful, but
+### WITHOUT ANY WARRANTY; without even the implied warranty of
+### MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+### General Public License for more details.
+###
+### You should have received a copy of the GNU General Public License
+### along with Octave; see the file COPYING.  If not, write to the Free
+### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
+### 02111-1307, USA.
 
 function plot_border (...)
 
-# usage: plot_border (...)
-#
-# NOTE: this will work only with gnuplot installed with
-#       multiplot patch
-#
-# Multiple arguments allowed to specify the sides on which the border
-# is shown. allowed strings: 
-#
-# allowed input strings:
-#
-#  "blank", "BLANK", "b", "B",   --->  No borders displayed
-#    "all",   "ALL", "a", "A",   ---> All borders displayed
-#  "north", "NORTH", "n", "N",   ---> North Border
-#  "south", "SOUTH", "s", "S",   ---> South Border
-#   "east",  "EAST", "e", "E",   --->  East Border
-#   "west",  "WEST", "w", "W",   --->  West Border
-#
-# Without any arguments, turns borders off.
+  ## usage: plot_border (...)
+  ##
+  ## NOTE: this will work only with gnuplot installed with
+  ##       multiplot patch
+  ##
+  ## Multiple arguments allowed to specify the sides on which the border
+  ## is shown. allowed strings: 
+  ##
+  ## allowed input strings:
+  ##
+  ##  "blank", "BLANK", "b", "B",   --->  No borders displayed
+  ##    "all",   "ALL", "a", "A",   ---> All borders displayed
+  ##  "north", "NORTH", "n", "N",   ---> North Border
+  ##  "south", "SOUTH", "s", "S",   ---> South Border
+  ##   "east",  "EAST", "e", "E",   --->  East Border
+  ##   "west",  "WEST", "w", "W",   --->  West Border
+  ##
+  ## Without any arguments, turns borders off.
 
-# Written by Vinayak Dutt, Dutt.Vinayak@mayo.EDU  3 Jul 95 
+  ## Written by Vinayak Dutt, Dutt.Vinayak@mayo.EDU  3 Jul 95 
 
   if (! gnuplot_has_multiplot)
     error ("plot_border: gnuplot does not appear to support this feature");
@@ -61,8 +61,8 @@ function plot_border (...)
       error ("plot_border: input not a string");
     endif
 
-    # The effect of the arguments in cumulative.  If something is found
-    # after "b", do that and ignore "b".
+    ## The effect of the arguments in cumulative.  If something is found
+    ## after "b", do that and ignore "b".
 
     if (strcmp (arg, "blank") || strcmp (arg, "BLANK")
         || strcmp (arg, "b") || strcmp (arg, "B"))

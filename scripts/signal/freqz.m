@@ -1,30 +1,49 @@
+### Copyright (C) 1996 John W. Eaton
+###
+### This file is part of Octave.
+###
+### Octave is free software; you can redistribute it and/or modify it
+### under the terms of the GNU General Public License as published by
+### the Free Software Foundation; either version 2, or (at your option)
+### any later version.
+###
+### Octave is distributed in the hope that it will be useful, but
+### WITHOUT ANY WARRANTY; without even the implied warranty of
+### MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+### General Public License for more details.
+###
+### You should have received a copy of the GNU General Public License
+### along with Octave; see the file COPYING.  If not, write to the Free
+### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
+### 02111-1307, USA.
+
 function [h, w] = freqz(b,...)
 
-# Compute the frequency response of a filter.
-#
-# [h,w] = resp(b)
-#   returns the complex frequency response h of the FIR filter with
-#   coefficients b. The response is evaluated at 512 angular frequencies
-#   between 0 and pi.  w is a vector containing the 512 frequencies.
-#
-# [h,w] = resp(b,a)
-#   returns the complex frequency response of the rational IIR filter
-#   whose numerator has coefficients b and denominator coefficients a.
-#
-# [h,w] = resp(b,a,n)
-#   returns the response evaluated at n angular frequencies.  For fastest
-#   computation n should factor into a small number of small primes.
-#
-# [h,w] = freqz(b,a,n,"whole")
-#   evaluates the response at n frequencies between 0 and 2*pi.
+  ## Compute the frequency response of a filter.
+  ##
+  ## [h,w] = resp(b)
+  ##   returns the complex frequency response h of the FIR filter with
+  ##   coefficients b. The response is evaluated at 512 angular frequencies
+  ##   between 0 and pi.  w is a vector containing the 512 frequencies.
+  ##
+  ## [h,w] = resp(b,a)
+  ##   returns the complex frequency response of the rational IIR filter
+  ##   whose numerator has coefficients b and denominator coefficients a.
+  ##
+  ## [h,w] = resp(b,a,n)
+  ##   returns the response evaluated at n angular frequencies.  For fastest
+  ##   computation n should factor into a small number of small primes.
+  ##
+  ## [h,w] = freqz(b,a,n,"whole")
+  ##   evaluates the response at n frequencies between 0 and 2*pi.
 
   if (nargin == 1)
-    # Response of an FIR filter.
+    ## Response of an FIR filter.
     a = 1;
     n = 512;
     region = "half";
   elseif (nargin == 2)
-    # Response of an IIR filter
+    ## Response of an IIR filter
     a = va_arg();
     n = 512;
     region = "half";

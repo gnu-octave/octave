@@ -1,37 +1,38 @@
-# Copyright (C) 1996 John W. Eaton
-# 
-# This file is part of Octave.
-# 
-# Octave is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License as published by the
-# Free Software Foundation; either version 2, or (at your option) any
-# later version.
-# 
-# Octave is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-# for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with Octave; see the file COPYING.  If not, write to the Free
-# Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+### Copyright (C) 1996 John W. Eaton
+###
+### This file is part of Octave.
+###
+### Octave is free software; you can redistribute it and/or modify it
+### under the terms of the GNU General Public License as published by
+### the Free Software Foundation; either version 2, or (at your option)
+### any later version.
+###
+### Octave is distributed in the hope that it will be useful, but
+### WITHOUT ANY WARRANTY; without even the implied warranty of
+### MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+### General Public License for more details.
+###
+### You should have received a copy of the GNU General Public License
+### along with Octave; see the file COPYING.  If not, write to the Free
+### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
+### 02111-1307, USA.
 
 function dump_prefs (file)
 
-# usage: dump_prefs (file)
-#
-# Have Octave dump all the current user preference variables to FILE
-# in a format that can be parsed by Octave later.  If FILE is omitted,
-# the listing is printed to stdout.
+  ## usage: dump_prefs (file)
+  ##
+  ## Have Octave dump all the current user preference variables to FILE
+  ## in a format that can be parsed by Octave later.  If FILE is omitted,
+  ## the listing is printed to stdout.
 
   if (nargin == 0)
     file = stdout;
   endif
 
-# XXX FIXME XXX -- vectors of strings would be really useful here...
-# XXX FIXME XXX -- maybe this should be a built-in function so that we
-# wouldn't have to remember to update it each time the list of
-# preference variables changes
+  ## XXX FIXME XXX -- vectors of strings would be really useful here...
+  ## XXX FIXME XXX -- maybe this should be a built-in function so that we
+  ## wouldn't have to remember to update it each time the list of
+  ## preference variables changes
 
   dump_1_pref (file, "EDITOR");
   dump_1_pref (file, "IMAGEPATH");

@@ -1,75 +1,76 @@
-# Copyright (C) 1996 John W. Eaton
-#
-# This file is part of Octave.
-#
-# Octave is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License as published by the
-# Free Software Foundation; either version 2, or (at your option) any
-# later version.
-#
-# Octave is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-# for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with Octave; see the file COPYING.  If not, write to the Free
-# Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+### Copyright (C) 1996 John W. Eaton
+###
+### This file is part of Octave.
+###
+### Octave is free software; you can redistribute it and/or modify it
+### under the terms of the GNU General Public License as published by
+### the Free Software Foundation; either version 2, or (at your option)
+### any later version.
+###
+### Octave is distributed in the hope that it will be useful, but
+### WITHOUT ANY WARRANTY; without even the implied warranty of
+### MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+### General Public License for more details.
+###
+### You should have received a copy of the GNU General Public License
+### along with Octave; see the file COPYING.  If not, write to the Free
+### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
+### 02111-1307, USA.
 
 function saveimage (filename, img, img_form, map)
 
-# Save a matrix to disk in image format.
-#
-# saveimage (filename, x) saves matrix x to file filename in octave's
-# image format.  The current colormap is saved in the file also.
-#
-# saveimage (filename, x, "img") saves the image in the default format
-# and is the same as saveimage (filename, x).
-#
-# saveimage (filename, x, "ppm") saves the image in ppm format instead
-# of the default octave image format.
-#
-# saveimage (filename, x, "ps") saves the image in PostScript format
-# instead of the default octave image format. (Note: images saved in
-# PostScript format can not be read back into octave with loadimage.)
-#
-# saveimage (filename, x, format, map) saves the image along with the
-# specified colormap in the specified format.
-#
-# Note: If the colormap contains only two entries and these entries
-# are black and white, the bitmap ppm and PostScript formats are used.
-# If the image is a gray scale image (the entries within each row of
-# the colormap are equal) the gray scale ppm and PostScript image
-# formats are used, otherwise the full color formats are used.
-#
-# The conversion to PostScript is based on pbmtolps.c, which was
-# written by 
-#
-#   George Phillips <phillips@cs.ubc.ca>
-#   Department of Computer Science
-#   University of British Columbia
-#
-# and is part of the portable bitmap utilities,
-#
-# SEE ALSO: loadimage, save, load, colormap
+  ## Save a matrix to disk in image format.
+  ##
+  ## saveimage (filename, x) saves matrix x to file filename in octave's
+  ## image format.  The current colormap is saved in the file also.
+  ##
+  ## saveimage (filename, x, "img") saves the image in the default format
+  ## and is the same as saveimage (filename, x).
+  ##
+  ## saveimage (filename, x, "ppm") saves the image in ppm format instead
+  ## of the default octave image format.
+  ##
+  ## saveimage (filename, x, "ps") saves the image in PostScript format
+  ## instead of the default octave image format. (Note: images saved in
+  ## PostScript format can not be read back into octave with loadimage.)
+  ##
+  ## saveimage (filename, x, format, map) saves the image along with the
+  ## specified colormap in the specified format.
+  ##
+  ## Note: If the colormap contains only two entries and these entries
+  ## are black and white, the bitmap ppm and PostScript formats are used.
+  ## If the image is a gray scale image (the entries within each row of
+  ## the colormap are equal) the gray scale ppm and PostScript image
+  ## formats are used, otherwise the full color formats are used.
+  ##
+  ## The conversion to PostScript is based on pbmtolps.c, which was
+  ## written by 
+  ##
+  ##   George Phillips <phillips@cs.ubc.ca>
+  ##   Department of Computer Science
+  ##   University of British Columbia
+  ##
+  ## and is part of the portable bitmap utilities,
+  ##
+  ## SEE ALSO: loadimage, save, load, colormap
 
-# Written by Tony Richardson (amr@mpl.ucsd.edu) July 1994.
+  ## Written by Tony Richardson (amr@mpl.ucsd.edu) July 1994.
 
-# Rewritten by jwe to avoid using octoppm and pbm routines so that
-# people who don't have the the pbm stuff installed can still use this
-# function. 
-#
-# The conversion to PostScript is based on pnmtops.c, which is part of
-# the portable bitmap utilties and bears this copyright notice:
-#
-# Copyright (C) 1989 by Jef Poskanzer.
-#
-# Permission to use, copy, modify, and distribute this software and its
-# documentation for any purpose and without fee is hereby granted, provided
-# that the above copyright notice appear in all copies and that both that
-# copyright notice and this permission notice appear in supporting
-# documentation.  This software is provided "as is" without express or
-# implied warranty.
+  ## Rewritten by jwe to avoid using octoppm and pbm routines so that
+  ## people who don't have the the pbm stuff installed can still use this
+  ## function. 
+  ##
+  ## The conversion to PostScript is based on pnmtops.c, which is part of
+  ## the portable bitmap utilties and bears this copyright notice:
+  ##
+  ## Copyright (C) 1989 by Jef Poskanzer.
+  ##
+  ## Permission to use, copy, modify, and distribute this software and its
+  ## documentation for any purpose and without fee is hereby granted, provided
+  ## that the above copyright notice appear in all copies and that both that
+  ## copyright notice and this permission notice appear in supporting
+  ## documentation.  This software is provided "as is" without express or
+  ## implied warranty.
 
   if (nargin < 2 || nargin > 4)
     usage ("saveimage (filename, matrix, [format, [colormap]])");
@@ -103,14 +104,14 @@ function saveimage (filename, img, img_form, map)
     error ("file name must be a string");
   endif
 
-# If we just want Octave image format, save and return.
+  ## If we just want Octave image format, save and return.
 
   if (strcmp (img_form, "img"))
     eval (strcat ("save -ascii ", filename, " map img"));
     return;
   endif
 
-# Convert to another format if requested.
+  ## Convert to another format if requested.
 
   grey = all (map(:,1) == map(:,2) && map(:,1) == map (:,3));
 
@@ -226,8 +227,8 @@ function saveimage (filename, img, img_form, map)
     devpix = dpi / 72.0 + 0.5;
     pixfac = 72.0 / dpi * devpix;
 
-# Compute padding to round cols * bps up to the nearest multiple of 8
-# (nr and nc are switched because we transposed the image above).
+    ## Compute padding to round cols * bps up to the nearest multiple of 8
+    ## (nr and nc are switched because we transposed the image above).
 
     padright = (((img_nr * bps + 7) / 8) * 8 - img_nr * bps) / bps;
 
@@ -279,8 +280,8 @@ function saveimage (filename, img, img_form, map)
 
     img = map(img);
 
-# XXX FIXME XXX -- this would be much faster if fprintf knew about
-# vector arguments.
+    ## XXX FIXME XXX -- this would be much faster if fprintf knew about
+    ## vector arguments.
 
     count = 0;
     for i = 1:img_sz

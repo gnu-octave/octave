@@ -1,37 +1,38 @@
-# Copyright (C) 1996 Kurt Hornik
-# 
-# This file is part of Octave.
-# 
-# Octave is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License as published by the
-# Free Software Foundation; either version 2, or (at your option) any
-# later version.
-# 
-# Octave is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-# for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with Octave; see the file COPYING.  If not, write to the Free
-# Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+### Copyright (C) 1996 Kurt Hornik
+### 
+### This file is part of Octave.
+###
+### Octave is free software; you can redistribute it and/or modify it
+### under the terms of the GNU General Public License as published by
+### the Free Software Foundation; either version 2, or (at your option)
+### any later version.
+###
+### Octave is distributed in the hope that it will be useful, but
+### WITHOUT ANY WARRANTY; without even the implied warranty of
+### MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+### General Public License for more details.
+###
+### You should have received a copy of the GNU General Public License
+### along with Octave; see the file COPYING.  If not, write to the Free
+### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
+### 02111-1307, USA.
 
 function v = findstr (s, t, overlap)
 
-# usage: findstr (s, t [, overlap])
-#
-# Returns the vector of all positions in the longer of the two strings
-# S and T where an occurence of the shorter of the two starts.
-#
-# If the optional argument OVERLAP is nonzero, the returned vector
-# can include overlapping positions (this is the default).
-#
-# For example, 
-#
-#   findstr ("abababa", "aba")     =>  [1, 3, 5]
-#   findstr ("abababa", "aba", 0)  =>  [1, 5]
+  ## usage: findstr (s, t [, overlap])
+  ##
+  ## Returns the vector of all positions in the longer of the two strings
+  ## S and T where an occurence of the shorter of the two starts.
+  ##
+  ## If the optional argument OVERLAP is nonzero, the returned vector
+  ## can include overlapping positions (this is the default).
+  ##
+  ## For example, 
+  ##
+  ##   findstr ("abababa", "aba")     =>  [1, 3, 5]
+  ##   findstr ("abababa", "aba", 0)  =>  [1, 5]
 
-# Original version by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>.
+  ## Original version by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>.
 
   if (nargin < 2 || nargin > 3)
     usage ("findstr (s, t [, overlap])");
@@ -43,7 +44,7 @@ function v = findstr (s, t, overlap)
 
   if (isstr (s) && isstr (t))
 
-    # Make S be the longer string.
+    ## Make S be the longer string.
 
     if (length (s) < length (t))
       tmp = s;

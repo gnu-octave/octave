@@ -1,50 +1,50 @@
-# Copyright (C) 1996 John W. Eaton
-# 
-# This file is part of Octave.
-# 
-# Octave is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License as published by the
-# Free Software Foundation; either version 2, or (at your option) any
-# later version.
-# 
-# Octave is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-# for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with Octave; see the file COPYING.  If not, write to the Free
-# Software Foundation, 59 Temple Place - Suite 330, Boston, MA
-# 02111-1307, USA. 
+### Copyright (C) 1996 John W. Eaton
+###
+### This file is part of Octave.
+###
+### Octave is free software; you can redistribute it and/or modify it
+### under the terms of the GNU General Public License as published by
+### the Free Software Foundation; either version 2, or (at your option)
+### any later version.
+###
+### Octave is distributed in the hope that it will be useful, but
+### WITHOUT ANY WARRANTY; without even the implied warranty of
+### MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+### General Public License for more details.
+###
+### You should have received a copy of the GNU General Public License
+### along with Octave; see the file COPYING.  If not, write to the Free
+### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
+### 02111-1307, USA.
 
 function multiplot (xn, yn)
 
-# usage: multiplot (xn, yn)
-#
-# Sets and resets multiplot mode
-#
-# If multiplot(0,0) then it will close multiplot mode and and if
-# arguments are non-zero, then it will set up multiplot mode with
-# xn,yn subplots along x and y axes. 
-#
-# NOTE: this will work only with gnuplot installed with
-#       multiplot patch
+  ## usage: multiplot (xn, yn)
+  ##
+  ## Sets and resets multiplot mode
+  ##
+  ## If multiplot(0,0) then it will close multiplot mode and and if
+  ## arguments are non-zero, then it will set up multiplot mode with
+  ## xn,yn subplots along x and y axes. 
+  ##
+  ## NOTE: this will work only with gnuplot installed with
+  ##       multiplot patch
 
-# Written by Vinayak Dutt, Dutt.Vinayak@mayo.EDU  3 Jul 95 
+  ## Written by Vinayak Dutt, Dutt.Vinayak@mayo.EDU  3 Jul 95 
 
   if (! gnuplot_has_multiplot)
     error ("multiplot: gnuplot does not appear to support this feature");
   endif
     
-  # global variables to keep track of multiplot options
+  ## global variables to keep track of multiplot options
 
   global multiplot_mode
   global multiplot_xsize multiplot_ysize
   global multiplot_xn multiplot_yn
   global multiplot_xi multiplot_yi
 
-  # This is a real kludge.  We gnuplot should be made so that replot can
-  # be executed while doing multiple plots...
+  ## This is a real kludge.  We gnuplot should be made so that replot can
+  ## be executed while doing multiple plots...
 
   global multiplot_save_auto_replot = automatic_replot
 
@@ -80,7 +80,7 @@ function multiplot (xn, yn)
     multiplot_xi = 1;
     multiplot_yi = 1;
 
-    # Someone may have reset it betweeen calls...
+    ## Someone may have reset it betweeen calls...
 
     if (! isstr (automatic_replot) && ! automatic_replot)
       automatic_replot = multiplot_save_auto_replot;

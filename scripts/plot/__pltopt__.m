@@ -1,65 +1,66 @@
-# Copyright (C) 1996 John W. Eaton
-#
-# This file is part of Octave.
-#
-# Octave is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License as published by the
-# Free Software Foundation; either version 2, or (at your option) any
-# later version.
-#
-# Octave is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-# for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with Octave; see the file COPYING.  If not, write to the Free
-# Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+### Copyright (C) 1996 John W. Eaton
+###
+### This file is part of Octave.
+###
+### Octave is free software; you can redistribute it and/or modify it
+### under the terms of the GNU General Public License as published by
+### the Free Software Foundation; either version 2, or (at your option)
+### any later version.
+###
+### Octave is distributed in the hope that it will be useful, but
+### WITHOUT ANY WARRANTY; without even the implied warranty of
+### MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+### General Public License for more details.
+###
+### You should have received a copy of the GNU General Public License
+### along with Octave; see the file COPYING.  If not, write to the Free
+### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
+### 02111-1307, USA.
 
-# Originally written by Rick Niles <niles@axp745.gsfc.nasa.gov>.
+## Originally written by Rick Niles <niles@axp745.gsfc.nasa.gov>.
 
 function fmt = plot_opt (caller, opt)
 
-# usage: fmt = plot_opt (caller, opt)
-#
-# Decode plot option strings.
-#
-# If OPT is a valid option string, return a string of the form "w l 2"
-# ("with lines 2").  Uses abbreviations for the options to avoid
-# overrunning gnuplot's command line buffer unnecessarily.
-#
-# OPT can currently be some combination of the following:
-#
-#   "-"   for lines plot style (default).
-#   "."   for dots plot style.
-#   "@"   for points plot style.
-#   "-@"  for linespoints plot style.
-#   "^"   for impulses plot style.
-#   "L"   for steps plot style.
-#   "#"   for boxes plot style.
-#   "~"   for errorbars plot style.
-#   "#~"  for boxerrorbars plot style.
-#   "n"   with n in 1-6 (wraps at 8), plot color
-#   "nm"  with m in 1-6 (wraps at 6), point style (only valid with "@" or "-@")
-#   "c"   where c is one of ["r", "g", "b", "m", "c", "w"] colors.
-#
-#   Special points formats:
-#
-#      "+", "*", "o", "x" will display points in that style.
-#
-#   The legend may be fixed to include the name of the variable
-#   plotted in some future version of Octave.
-#
-#   The color line styles have the following meanings on terminals
-#   that support color.
-#
-#     Number  Gnuplot colors     (lines)points style
-#       1       red                 "*"
-#       2       green               "+"
-#       3       blue                "o"
-#       4       magenta             "x"
-#       5       cyan                house
-#       6       brown               there exists
+  ## usage: fmt = plot_opt (caller, opt)
+  ##
+  ## Decode plot option strings.
+  ##
+  ## If OPT is a valid option string, return a string of the form "w l 2"
+  ## ("with lines 2").  Uses abbreviations for the options to avoid
+  ## overrunning gnuplot's command line buffer unnecessarily.
+  ##
+  ## OPT can currently be some combination of the following:
+  ##
+  ##   "-"   for lines plot style (default).
+  ##   "."   for dots plot style.
+  ##   "@"   for points plot style.
+  ##   "-@"  for linespoints plot style.
+  ##   "^"   for impulses plot style.
+  ##   "L"   for steps plot style.
+  ##   "#"   for boxes plot style.
+  ##   "~"   for errorbars plot style.
+  ##   "#~"  for boxerrorbars plot style.
+  ##   "n"   with n in 1-6 (wraps at 8), plot color
+  ##   "nm"  with m in 1-6 (wraps at 6), point style (only valid with "@" or "-@")
+  ##   "c"   where c is one of ["r", "g", "b", "m", "c", "w"] colors.
+  ##
+  ##   Special points formats:
+  ##
+  ##      "+", "*", "o", "x" will display points in that style.
+  ##
+  ##   The legend may be fixed to include the name of the variable
+  ##   plotted in some future version of Octave.
+  ##
+  ##   The color line styles have the following meanings on terminals
+  ##   that support color.
+  ##
+  ##     Number  Gnuplot colors     (lines)points style
+  ##       1       red                 "*"
+  ##       2       green               "+"
+  ##       3       blue                "o"
+  ##       4       magenta             "x"
+  ##       5       cyan                house
+  ##       6       brown               there exists
 
   set_color = 0;
   set_symbol = 0;
@@ -93,7 +94,7 @@ function fmt = plot_opt (caller, opt)
 
   while (more_opts)
 
-# First get next char.
+    ## First get next char.
 
     if (max (size (opt)) > 1)
       [char, opt] = sscanf (opt, "%c %s", "C");
@@ -102,7 +103,7 @@ function fmt = plot_opt (caller, opt)
       more_opts = 0;
     endif
 
-# Now set flags based on char.
+    ## Now set flags based on char.
 
     if (strcmp (char, "-"))
       set_lines = 1;
@@ -170,7 +171,7 @@ function fmt = plot_opt (caller, opt)
     endif
   endwhile
 
-# Now create format string.
+  ## Now create format string.
 
   fmt = WITH;
 

@@ -1,37 +1,38 @@
-# Copyright (C) 1996 John W. Eaton
-# 
-# This file is part of Octave.
-# 
-# Octave is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License as published by the
-# Free Software Foundation; either version 2, or (at your option) any
-# later version.
-# 
-# Octave is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-# for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with Octave; see the file COPYING.  If not, write to the Free
-# Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+### Copyright (C) 1996 John W. Eaton
+###
+### This file is part of Octave.
+###
+### Octave is free software; you can redistribute it and/or modify it
+### under the terms of the GNU General Public License as published by
+### the Free Software Foundation; either version 2, or (at your option)
+### any later version.
+###
+### Octave is distributed in the hope that it will be useful, but
+### WITHOUT ANY WARRANTY; without even the implied warranty of
+### MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+### General Public License for more details.
+###
+### You should have received a copy of the GNU General Public License
+### along with Octave; see the file COPYING.  If not, write to the Free
+### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
+### 02111-1307, USA.
 
 function y = betai (a, b, x)
   
-# usage: betai (a, b, x)
-#
-# Returns the incomplete beta function
-#   betai (a, b, x) = BETA(a,b)^(-1) INT_0^x t^(a-1) (1-t)^(b-1) dt.
-# If x has more than one component, both a and b must be scalars.
-# If x is a scalar, a and b must be of compatible dimensions.
+  ## usage: betai (a, b, x)
+  ##
+  ## Returns the incomplete beta function
+  ##   betai (a, b, x) = BETA(a,b)^(-1) INT_0^x t^(a-1) (1-t)^(b-1) dt.
+  ## If x has more than one component, both a and b must be scalars.
+  ## If x is a scalar, a and b must be of compatible dimensions.
   
-# Written by KH (Kurt.Hornik@ci.tuwien.ac.at) on Aug 2, 1994.
+  ## Written by KH (Kurt.Hornik@ci.tuwien.ac.at) on Aug 2, 1994.
 
-# Computation is based on the series expansion
-#   betai(a, b, x) 
-#     = \frac{1}{B(a, b)} x^a 
-#         \sum_{k=0}^\infty \frac{(1-b)\cdots(k-b)}{a+k} \frac{x^k}{k!}
-# for x <= 1/2.  For x > 1/2, betai(a, b, x) = 1 - betai(b, a, 1-x).
+  ## Computation is based on the series expansion
+  ##   betai(a, b, x) 
+  ##     = \frac{1}{B(a, b)} x^a 
+  ##         \sum_{k=0}^\infty \frac{(1-b)\cdots(k-b)}{a+k} \frac{x^k}{k!}
+  ## for x <= 1/2.  For x > 1/2, betai(a, b, x) = 1 - betai(b, a, 1-x).
 
   if (nargin <> 3)
     usage (" betai (a, b, x)");
@@ -61,8 +62,8 @@ function y = betai (a, b, x)
 
     y (find (x == 1)) = ones (1, sum (x == 1));
 
-# Now do the series computation.  The error when truncating at term K
-# is always less than 2^(-K), hence the following choice of K.
+    ## Now do the series computation.  The error when truncating at term K
+    ## is always less than 2^(-K), hence the following choice of K.
 
     K = ceil (-log (eps) / log (2));
     k = (1:K)';

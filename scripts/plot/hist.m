@@ -1,43 +1,44 @@
-# Copyright (C) 1996 John W. Eaton
-# 
-# This file is part of Octave.
-# 
-# Octave is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License as published by the
-# Free Software Foundation; either version 2, or (at your option) any
-# later version.
-# 
-# Octave is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-# for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with Octave; see the file COPYING.  If not, write to the Free
-# Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+### Copyright (C) 1996 John W. Eaton
+###
+### This file is part of Octave.
+###
+### Octave is free software; you can redistribute it and/or modify it
+### under the terms of the GNU General Public License as published by
+### the Free Software Foundation; either version 2, or (at your option)
+### any later version.
+###
+### Octave is distributed in the hope that it will be useful, but
+### WITHOUT ANY WARRANTY; without even the implied warranty of
+### MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+### General Public License for more details.
+###
+### You should have received a copy of the GNU General Public License
+### along with Octave; see the file COPYING.  If not, write to the Free
+### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
+### 02111-1307, USA.
 
 function [nn, xx] = hist (y, x)
 
-# usage: [NN, XX] = hist (Y, X)  or  hist (Y, X)
-#
-# Produce histogram counts or plots.
-#
-# With one vector input argument, plot a histogram of the values with
-# 10 bins.  The range of the histogram bins is determined by the range
-# of the data.
-#
-# Given a second scalar argument, use that as the number of bins.
-#
-# Given a second vector argument, use that as the centers of the bins,
-# with the width of the bins determened from the adjacent values in
-# the vector.
-#
-# Extreme values are lumped in the first and last bins.
-#
-# With two output arguments, produce the values NN and XX such that
-# bar (XX, NN) will plot the histogram.
-#
-# See also: bar
+  ## usage: [NN, XX] = hist (Y, X)  or  hist (Y, X)
+  ##
+  ## Produce histogram counts or plots.
+  ##
+  ## With one vector input argument, plot a histogram of the values with
+  ## 10 bins.  The range of the histogram bins is determined by the range
+  ## of the data.
+  ##
+  ## Given a second scalar argument, use that as the number of bins.
+  ##
+  ## Given a second vector argument, use that as the centers of the bins,
+  ## with the width of the bins determened from the adjacent values in
+  ## the vector.
+  ##
+  ## Extreme values are lumped in the first and last bins.
+  ##
+  ## With two output arguments, produce the values NN and XX such that
+  ## bar (XX, NN) will plot the histogram.
+  ##
+  ## See also: bar
 
   if (nargin < 1 || nargin > 2)
     usage ("[nn, xx] = hist (y, x)");

@@ -1,30 +1,31 @@
-# Copyright (C) 1996 John W. Eaton
-# 
-# This file is part of Octave.
-# 
-# Octave is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License as published by the
-# Free Software Foundation; either version 2, or (at your option) any
-# later version.
-# 
-# Octave is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-# for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with Octave; see the file COPYING.  If not, write to the Free
-# Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+### Copyright (C) 1996 John W. Eaton
+###
+### This file is part of Octave.
+###
+### Octave is free software; you can redistribute it and/or modify it
+### under the terms of the GNU General Public License as published by
+### the Free Software Foundation; either version 2, or (at your option)
+### any later version.
+###
+### Octave is distributed in the hope that it will be useful, but
+### WITHOUT ANY WARRANTY; without even the implied warranty of
+### MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+### General Public License for more details.
+###
+### You should have received a copy of the GNU General Public License
+### along with Octave; see the file COPYING.  If not, write to the Free
+### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
+### 02111-1307, USA.
 
 function r = roots (v)
 
-# usage: roots (v)
-#
-# For a vector v with n components, return the roots of the
-# polynomial v(1) * z^(n-1) + ... + v(n-1) * z + v(n).
+  ## usage: roots (v)
+  ##
+  ## For a vector v with n components, return the roots of the
+  ## polynomial v(1) * z^(n-1) + ... + v(n-1) * z + v(n).
   
-# Written by KH (Kurt.Hornik@ci.tuwien.ac.at) on Dec 24, 1993
-# Updated by KH on Nov 25, 1994
+  ## Written by KH (Kurt.Hornik@ci.tuwien.ac.at) on Dec 24, 1993
+  ## Updated by KH on Nov 25, 1994
   
   if (min (size (v)) > 1 || nargin != 1)
     usage ("roots (v), where v is a vector");
@@ -33,8 +34,8 @@ function r = roots (v)
   n = length (v);
   v = reshape (v, 1, n);  
 
-  # If v = [ 0 ... 0 v(k+1) ... v(k+l) 0 ... 0 ], we can remove the
-  # leading k zeros and n - k - l roots of the polynomial are zero.  
+  ## If v = [ 0 ... 0 v(k+1) ... v(k+l) 0 ... 0 ], we can remove the
+  ## leading k zeros and n - k - l roots of the polynomial are zero.  
 
   f = find (v);
   m = max (size (f));

@@ -229,9 +229,11 @@ public:
 template <class T>
 class DiagArray : public Array<T>
 {
-#if ! defined (_AIX)
 private:
+  inline T get (int i) { return Array<T>::elem (i); }
+  inline void set (const T& val, int i) { Array<T>::elem (i) = val; }
 
+#if ! defined (_AIX)
   class Proxy
   {
   public:
@@ -350,11 +352,6 @@ public:
 
   void resize (int n, int m);
   void resize (int n, int m, const T& val);
-
-private:
-
-  inline T get (int i) { return Array<T>::elem (i); }
-  inline void set (const T& val, int i) { Array<T>::elem (i) = val; }
 };
 
 #if defined (__GNUG__) && ! defined (USE_EXTERNAL_TEMPLATES)

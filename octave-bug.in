@@ -95,7 +95,7 @@ if [ -z "$DEFPAGER" ] && [ -z "$PAGER" ]; then
     DEFPAGER=pager
   elif [ -x /usr/bin/less ]; then
     DEFPAGER=less
-  elif [ -x /usr/bin/less ]; then
+  elif [ -x /bin/less ]; then
     DEFPAGER=less
   elif [ -x /usr/local/bin/less ]; then
     DEFPAGER=less

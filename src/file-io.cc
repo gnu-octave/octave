@@ -614,7 +614,7 @@ DEFUN (sprintf, args, ,
 		    tmp_args(i-1) = args(i);
 		}
 
-	      retval(2) = os.printf (fmt, tmp_args);
+	      retval(2) = static_cast<double> (os.printf (fmt, tmp_args));
 	      retval(1) = os.error ();
 	      char *tmp = ostr.str ();
 	      retval(0) = tmp;
@@ -1107,7 +1107,9 @@ DEFUN (fwrite, args, ,
 	  octave_value arch = (nargin > 4)
 	    ? args(4) : octave_value ("unknown");
 
-	  retval = do_fwrite (*os, data, prec, skip, arch);
+	  double status = do_fwrite (*os, data, prec, skip, arch);
+
+	  retval = status;
 	}
       else
 	gripe_invalid_file_id ("fwrite");

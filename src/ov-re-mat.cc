@@ -59,8 +59,6 @@ octave_matrix::octave_matrix (const ColumnVector& v, int pcv)
     matrix ((pcv < 0 && Vprefer_column_vectors) || pcv
 	    ? Matrix (v) : Matrix (v.transpose ())) { }
 
-#include <iostream.h>
-
 octave_value *
 octave_matrix::try_narrowing_conversion (void)
 {

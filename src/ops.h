@@ -54,7 +54,7 @@ extern void install_ops (void);
   int nc = x.columns ();
 
 #define BOOL_OP3(test) \
-  Matrix retval (nr, nc); \
+  boolMatrix retval (nr, nc); \
   for (int j = 0; j < nc; j++) \
     for (int i = 0; i < nr; i++) \
       retval (i, j) = test; \
@@ -109,7 +109,7 @@ extern void install_ops (void);
 	    { \
 	      gripe_nonconformant ("operator " op, m1_nr, m1_nc, \
 				   m2_nr, m2_nc); \
-	      return Matrix (); \
+	      return boolMatrix (); \
 	    } \
 	} \
     } \

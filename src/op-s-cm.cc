@@ -28,6 +28,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include "mx-s-cm.h"
+
 #include "gripes.h"
 #include "ov.h"
 #include "ov-scalar.h"
@@ -102,7 +104,7 @@ lt (const octave_value& a1, const octave_value& a2)
 {
   CAST_BINOP_ARGS (const octave_scalar&, const octave_complex_matrix&);
 
-  BOOL_OP (<, Matrix ());
+  BOOL_OP (<, boolMatrix ());
 }
 
 static octave_value
@@ -110,7 +112,7 @@ le (const octave_value& a1, const octave_value& a2)
 {
   CAST_BINOP_ARGS (const octave_scalar&, const octave_complex_matrix&);
 
-  BOOL_OP (<=, Matrix ());
+  BOOL_OP (<=, boolMatrix ());
 }
 
 static octave_value
@@ -128,7 +130,7 @@ ge (const octave_value& a1, const octave_value& a2)
 {
   CAST_BINOP_ARGS (const octave_scalar&, const octave_complex_matrix&);
 
-  BOOL_OP (>=, Matrix ());
+  BOOL_OP (>=, boolMatrix ());
 }
 
 static octave_value
@@ -136,7 +138,7 @@ gt (const octave_value& a1, const octave_value& a2)
 {
   CAST_BINOP_ARGS (const octave_scalar&, const octave_complex_matrix&);
 
-  BOOL_OP (>, Matrix ());
+  BOOL_OP (>, boolMatrix ());
 }
 
 static octave_value
@@ -193,7 +195,7 @@ el_and (const octave_value& a1, const octave_value& a2)
 
   SC_MX_BOOL_OP (double, s, v1.double_value (),
 		 ComplexMatrix, m, v2.complex_matrix_value (),
-		 s && m (i, j) != 0.0, Matrix ());
+		 s && m (i, j) != 0.0, boolMatrix ());
 }
 
 static octave_value
@@ -203,7 +205,7 @@ el_or (const octave_value& a1, const octave_value& a2)
 
   SC_MX_BOOL_OP (double, s, v1.double_value (),
 		 ComplexMatrix, m, v2.complex_matrix_value (),
-		 s || m (i, j) != 0.0, Matrix ());
+		 s || m (i, j) != 0.0, boolMatrix ());
 }
 
 static octave_value *

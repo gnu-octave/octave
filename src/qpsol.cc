@@ -409,7 +409,7 @@ show_qpsol_option (const string& keyword)
 	      if (val < 0)
 		retval = "depends on problem size";
 	      else
-		retval = val;
+		retval = static_cast<double> (val);
 	    }
 
 	  return retval;

@@ -1630,7 +1630,9 @@ __error_text__ is guaranteed to be the empty string.");
   DEFVAR (history_file, default_history_file (), 0, history_file,
     "name of command history file");
 
-  DEFVAR (history_size, default_history_size (), 0, history_size,
+  double tmp_hist_size = default_history_size ();
+
+  DEFVAR (history_size, tmp_hist_size, 0, history_size,
     "number of commands to save in the history list");
 
   DEFVAR (ignore_function_time_stamp, "system", 0, ignore_function_time_stamp,

@@ -1,3 +1,40 @@
+Tue Mar 25 17:17:17 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov.h, ov.cc, ov-base.h, ov-base.cc: Add constructors and
+	extractors for bool and boolMatrix types. 
+	
+	* ov.cc (install_types): Register octave_bool and
+	octave_bool_matrix types.
+
+	* op-cm-cm.cc, op-cm-cs.cc, op-cm-m.cc, op-cm-s.cc, op-cs-cm.cc,
+	op-cs-m.cc, op-m-cm.cc, op-m-cs.cc, op-m-m.cc, op-m-s.cc,
+	op-s-cm.cc, op-s-m.cc, op-s-s.cc, ov-re-mat.cc:
+	Return boolMatrix instead of Matrix object.
+	* ops.h (BOOL_OP3, MX_MX_BOOL_OP): Likewise.
+
+	* op-b-b.h, op-b-b.cc, op-bm-bm.h, op-bm-bm.cc: New files.
+	* Makefile.in: Add them to the lists.
+	* ops.cc: Include header files here.
+	(install_ops): Call install_b_b_ops() and install_bm_bm_ops() here.
+
+	* variables.cc (symbols_of_variables): Don't rely on default
+	conversion from int to double for value returned from
+	default_history_size().
+
+	* pr-output.cc: Include cstdio.
+
+	* parse.y (param_list_end): Fix typo in last change.
+
+	* quad.cc (quad): Cast integer return values to double.
+	* npsol.cc (show_npsol_option): Likewise.
+	* qpsol.cc (show_qpsol_option): Likewise.
+	* file-io.cc (Fsprintf, Ffwrite): Likewise.
+
+Mon Mar 24 13:11:47 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-typeinfo.cc (typeinfo): If invoked with an argument, return
+	the type of the argument as a string.  Fix doc string.
+
 Thu Mar 20 14:47:49 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* mk-oct-links (links_dir): Don't use -h option for grep.  It's

@@ -32,6 +32,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "ov.h"
 #include "ov-base.h"
+#include "ov-bool.h"
+#include "ov-bool-mat.h"
 #include "ov-scalar.h"
 #include "ov-re-mat.h"
 #include "ov-complex.h"
@@ -221,10 +223,16 @@ octave_value::binary_op_as_string (binary_op op)
 }
 
 octave_value::octave_value (void)
-  : rep (new octave_base_value ()) { rep->count = 1; }
+  : rep (new octave_base_value ())
+{
+  rep->count = 1;
+}
 
 octave_value::octave_value (double d)
-  : rep (new octave_scalar (d)) { rep->count = 1; }
+  : rep (new octave_scalar (d))
+{
+  rep->count = 1;
+}
 
 octave_value::octave_value (const Matrix& m)
   : rep (new octave_matrix (m))
@@ -289,6 +297,19 @@ octave_value::octave_value (const ComplexColumnVector& v, int pcv)
   maybe_mutate ();
 }
 
+octave_value::octave_value (bool b)
+  : rep (new octave_bool (b))
+{
+  rep->count = 1;
+}
+
+octave_value::octave_value (const boolMatrix& bm)
+  : rep (new octave_bool_matrix (bm))
+{
+  rep->count = 1;
+  maybe_mutate ();
+}
+
 octave_value::octave_value (const char *s)
   : rep (new octave_char_matrix_str (s))
 {
@@ -337,16 +358,28 @@ octave_value::octave_value (const Range& r)
 }
 
 octave_value::octave_value (const Octave_map& m)
-  : rep (new octave_struct (m)) { rep->count = 1; }
+  : rep (new octave_struct (m))
+{
+  rep->count = 1;
+ }
 
 octave_value::octave_value (octave_value::magic_colon)
-  : rep (new octave_magic_colon ()) { rep->count = 1; }
+  : rep (new octave_magic_colon ())
+{
+  rep->count = 1;
+}
 
 octave_value::octave_value (octave_value::all_va_args)
-  : rep (new octave_all_va_args ()) { rep->count = 1; }
+  : rep (new octave_all_va_args ())
+{
+  rep->count = 1;
+}
 
 octave_value::octave_value (octave_value *new_rep)
-  : rep (new_rep) { rep->count = 1; }
+  : rep (new_rep)
+{
+  rep->count = 1;
+}
 
 octave_value::~octave_value (void)
 {
@@ -761,6 +794,8 @@ install_types (void)
   octave_matrix::register_type ();
   octave_complex_matrix::register_type ();
   octave_range::register_type ();
+  octave_bool::register_type ();
+  octave_bool_matrix::register_type ();
   octave_char_matrix::register_type ();
   octave_char_matrix_str::register_type ();
   octave_struct::register_type ();

@@ -118,6 +118,8 @@ public:
   octave_value (const ComplexDiagMatrix& d);
   octave_value (const ComplexRowVector& v, int pcv = -1);
   octave_value (const ComplexColumnVector& v, int pcv = -1);
+  octave_value (bool b);
+  octave_value (const boolMatrix& bm);
   octave_value (const char *s);
   octave_value (const string& s);
   octave_value (const string_vector& s);
@@ -323,6 +325,12 @@ public:
     { return rep->range_value (); }
 
   virtual Octave_map map_value (void) const;
+
+  virtual bool bool_value (void) const
+    { return rep->bool_value (); }
+
+  virtual boolMatrix bool_matrix_value (void) const
+    { return rep->bool_matrix_value (); }
 
   // Unary ops.
 

@@ -150,6 +150,10 @@ public:
 
   Octave_map map_value (void) const;
 
+  bool bool_value (void) const;
+
+  boolMatrix bool_matrix_value (void) const;
+
   octave_value not (void) const;
 
   octave_value uminus (void) const;

@@ -177,6 +177,23 @@ octave_base_value::map_value (void) const
   return retval;
 }
 
+bool
+octave_base_value::bool_value (void) const
+{
+  bool retval = false;
+  gripe_wrong_type_arg ("octave_base_value::bool_value()", type_name ());
+  return retval;
+}
+
+boolMatrix
+octave_base_value::bool_matrix_value (void) const
+{
+  boolMatrix retval;
+  gripe_wrong_type_arg ("octave_base_value::bool_matrix_value()",
+			type_name ());
+  return retval;
+}
+
 octave_value
 octave_base_value::not (void) const
 {

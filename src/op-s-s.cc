@@ -193,7 +193,9 @@ el_and (const octave_value& a1, const octave_value& a2)
 {
   CAST_BINOP_ARGS (const octave_scalar&, const octave_scalar&);
 
-  return octave_value (v1.double_value () && v2.double_value ());
+  double result = v1.double_value () && v2.double_value ();
+
+  return octave_value (result);
 }
 
 static octave_value
@@ -201,7 +203,9 @@ el_or (const octave_value& a1, const octave_value& a2)
 {
   CAST_BINOP_ARGS (const octave_scalar&, const octave_scalar&);
 
-  return octave_value (v1.double_value () || v2.double_value ());
+  double result = v1.double_value () || v2.double_value ();
+
+  return octave_value (result);
 }
 
 static octave_value *

@@ -28,52 +28,38 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
-#include "ov-base.h"
-
+#include "gripes.h"
+#include "ov.h"
+#include "ov-bool.h"
+#include "ov-typeinfo.h"
 #include "op-b-b.h"
-#include "op-bm-bm.h"
-#include "op-cm-cm.h"
-#include "op-cm-cs.h"
-#include "op-cm-m.h"
-#include "op-cm-s.h"
-#include "op-cs-cm.h"
-#include "op-cs-cs.h"
-#include "op-cs-m.h"
-#include "op-cs-s.h"
-#include "op-m-cm.h"
-#include "op-m-cs.h"
-#include "op-m-m.h"
-#include "op-m-s.h"
-#include "op-s-cm.h"
-#include "op-s-cs.h"
-#include "op-s-m.h"
-#include "op-s-s.h"
-#include "op-str-str.h"
+#include "ops.h"
+#include "xdiv.h"
+#include "xpow.h"
+
+// bool by bool ops.
+
+static octave_value
+eq (const octave_value& a1, const octave_value& a2)
+{
+  CAST_BINOP_ARGS (const octave_bool&, const octave_bool&);
+
+  return octave_value (v1.bool_value () == v2.bool_value ());
+}
+
+static octave_value
+ne (const octave_value& a1, const octave_value& a2)
+{
+  CAST_BINOP_ARGS (const octave_bool&, const octave_bool&);
+
+  return octave_value (v1.bool_value () != v2.bool_value ());
+}
 
 void
-install_ops (void)
+install_b_b_ops (void)
 {
-  install_base_type_conversions ();
-
-  install_b_b_ops ();
-  install_bm_bm_ops ();
-  install_cm_cm_ops ();
-  install_cm_cs_ops ();
-  install_cm_m_ops ();
-  install_cm_s_ops ();
-  install_cs_cm_ops ();
-  install_cs_cs_ops ();
-  install_cs_m_ops ();
-  install_cs_s_ops ();
-  install_m_cm_ops ();
-  install_m_cs_ops ();
-  install_m_m_ops ();
-  install_m_s_ops ();
-  install_s_cm_ops ();
-  install_s_cs_ops ();
-  install_s_m_ops ();
-  install_s_s_ops ();
-  install_str_str_ops ();
+  INSTALL_BINOP (eq, octave_bool, octave_bool, eq);
+  INSTALL_BINOP (ne, octave_bool, octave_bool, ne);
 }
 
 /*

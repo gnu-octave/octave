@@ -1053,7 +1053,7 @@ param_list_beg	: '('
 		;
 
 param_list_end	: ')'
-		  { lexer_flags.looking_at_parameter_list = 1; }
+		  { lexer_flags.looking_at_parameter_list = 0; }
 		;
 
 param_list	: param_list_beg param_list_end

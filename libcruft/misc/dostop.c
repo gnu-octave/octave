@@ -22,33 +22,38 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+#include <config.h>
 #endif
 
-#ifdef OCTAVE_SOURCE
-extern void jump_to_top_level (void);
-#endif
+#include <stdlib.h>
+#include <string.h>
+
+#include "f77-fcn.h"
+#include "lo-error.h"
 
 /* All the STOP statements in the Fortran routines have been replaced
    with a call to XSTOPX, defined in the file libcruft/misc/xstopx.f.
 
-   The XSTOPX function calls this function.  If OCTAVE_SOURCE is
-   defined, this function calls jump_to_top_level(), and the user will
-   end up at the top level instead of the shell prompt.  Otherwise, we
-   just stop. */
+   The XSTOPX function calls this function, which will longjmp back to
+   the entry point for the Fortran function that called us.   Then the
+   calling function should do whatever cleanup is necessary. */
 
 volatile void
 #if defined (F77_APPEND_UNDERSCORE)
-dostop_ (void)
+dostop_ (const char *s, int slen)
 #else
-dostop (void)
+dostop (const char *s, int slen)
 #endif
 {
-#ifdef OCTAVE_SOURCE
-  jump_to_top_level ();
-#else
-  exit (1);
-#endif
+  if (slen > 0)
+    {
+      char *tmp = malloc (slen + 1);
+      strncpy (tmp, s, slen);
+      (*current_liboctave_error_handler) ("%s", tmp);
+      free (tmp);
+    }
+
+  longjmp (f77_context, 1);
 }
 
 /*

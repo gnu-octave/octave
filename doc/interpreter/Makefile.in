@@ -73,7 +73,11 @@ $(TEXINFO): src-DOCSTRINGS scripts-DOCSTRINGS munge-texi$(BUILD_EXEEXT)
 munge-texi$(BUILD_EXEEXT): munge-texi.cc
 	$(BUILD_CXX) $(BUILD_CXXFLAGS) -o $@ $^ $(BUILD_LDFLAGS)
 
-src-DOCSTRINGS:
+liboctave-prereq:
+	$(MAKE) -C ../../liboctave stamp-prereq
+.PHONY: liboctave-prereq
+
+src-DOCSTRINGS: liboctave-prereq
 	$(MAKE) -C ../../src DOCSTRINGS
 .PHONY: src-DOCSTRINGS
 

@@ -164,9 +164,6 @@ dist: dist-info-files
 	mkdir `cat .fname`
 	ln $(DISTFILES) `cat .fname`
 	for dir in $(DISTDIRS); do ln -s ../$$dir `cat .fname`; done
-	for dir in liboctave src; do \
-	  $(MAKE) -C $$dir stamp-prereq; \
-	done
 	for dir in $(DISTSUBDIRS); do \
 	  mkdir `cat .fname`/$$dir; \
 	  $(MAKE) -C $$dir dist; \

@@ -1,3 +1,8 @@
+2000-02-08  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* mkoctfile.in: Fix names in substititions.
+	* octave-bug.in: Likewise.
+
 2000-02-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makeconf.in (do-subst-default-vals, do-subst-config-vals):

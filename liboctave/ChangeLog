@@ -1,3 +1,14 @@
+2003-10-06  Petter Risholm  <risholm@stud.ntnu.no>
+
+	* Array.cc (ArrayN<T>::indexN): New definition.
+	* Array.h (Array<T>::indexN): Provide decl.
+	* Array.cc (ArrayN<T>::index (idx_vector&, int, const T&):
+	Call indexN if more than 2 indices.
+	(ArrayN<T>::index (Array<idx_vector>&, int, const T&)):
+	Make it (mostly) work.
+	* ArrayN-inline.h (number_of_elements, get_ra_idx, short_freeze):
+	New functions.
+
 2003-10-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* cmd-edit.cc (do_readline): Pass eof to octave_fgetl.

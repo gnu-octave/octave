@@ -396,6 +396,117 @@ get_elt_idx (const Array<idx_vector>& ra_idx, const Array<int>& result_idx)
   return retval;
 }
 
+static inline int
+number_of_elements (const dim_vector ra_idx)
+{
+  int retval = 1;
+
+  int n = ra_idx.length ();
+
+  if (n == 0)
+    retval = 0;
+
+  for (int i = 0; i < n; i++)
+    retval *= ra_idx(i);
+
+  return retval;
+}
+
+static inline Array<int>
+get_ra_idx (int idx, const dim_vector& dims)
+{
+  Array<int> retval;
+
+  int n_dims = dims.length ();
+
+  retval.resize (n_dims);
+
+  for (int i = 0; i < n_dims; i++)
+    retval(i) = 0;
+
+  assert (idx > 0 || idx < number_of_elements (dims));
+
+  for (int i = 0; i < idx; i++)
+    increment_index (retval, dims);
+
+  // XXX FIXME XXX -- the solution using increment_index is not
+  // efficient.
+
+#if 0
+  int var = 1;
+  for (int i = 0; i < n_dims; i++)
+    {
+      std::cout << "idx: " << idx << ", var: " << var << ", dims(" << i << "): " << dims(i) <<"\n";
+      retval(i) = ((int)floor(((idx) / (double)var))) % dims(i);
+      idx -= var * retval(i);
+      var = dims(i);
+    }
+#endif
+
+  return retval;
+}
+
+static inline dim_vector
+short_freeze (Array<idx_vector>& ra_idx, const dim_vector& dimensions,
+	      int resize_ok)
+{
+  dim_vector retval;
+
+  int n = ra_idx.length ();
+
+  int n_dims = dimensions.length ();
+
+  if (n == n_dims)
+    {
+      retval = freeze (ra_idx, dimensions, resize_ok);
+    }
+  else if (n < n_dims)
+    {
+      retval.resize (n);
+      
+      for (int i = 0; i < n - 1; i++)
+        retval(i) = ra_idx(i).freeze (dimensions(i), "dimension", resize_ok);
+
+      int size_left = 1;
+
+      for (int i = n - 1; i < n_dims; i++)
+        size_left *= dimensions(i); 
+ 
+      if (ra_idx(n-1).is_colon())
+        {
+	  retval(n-1) = size_left;
+	}
+      else
+	{
+	  int last_ra_idx = ra_idx(n-1)(0);
+
+	  if (last_ra_idx < dimensions(n - 1))
+            {
+              retval(n - 1) = ra_idx(n - 1).freeze (dimensions(n-1),
+						    "dimension", resize_ok);
+            }
+          else
+            {
+              if (size_left <= last_ra_idx)
+                {
+         	  // Make it larger than it should be to get an error
+         	  // later.
+
+                  retval.resize(n_dims + 1);
+
+                  (*current_liboctave_error_handler)
+                    ("index exceeds N-d array dimensions");
+                }
+              else
+                {
+                  retval(n-1) = 1;
+                }
+	    }
+	}
+    }
+
+  return retval;
+}
 #endif
 
 /*

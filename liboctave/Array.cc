@@ -805,7 +805,7 @@ Array<T>::maybe_delete_dims (void)
       else
 	new_dims(i) = dimensions(i);
     }
-    
+
   if (ndims != new_dims.length ())
     dimensions = new_dims;
 }
@@ -1292,7 +1292,7 @@ Array<T>::maybe_delete_elements (Array<idx_vector>& idx, const T& rfv)
 
       if (num_to_delete > 0)
 	{
-	  int temp = num_ones(lhs_dims);
+	  int temp = num_ones (lhs_dims);
 
 	  if (non_col_dim == 1)
 	    temp--;
@@ -1344,7 +1344,7 @@ Array<T>::maybe_delete_elements (Array<idx_vector>& idx, const T& rfv)
 		    }
 
 		  T *new_data = new T [num_new_elem];
-		  
+
 		  Array<int> result_idx (lhs_dims.length (), 0);
 
 		  dim_vector lhs_inc;
@@ -1404,10 +1404,10 @@ Array<T>::maybe_delete_elements (Array<idx_vector>& idx, const T& rfv)
 	    }
 	}
     }
-  else if (num_ones(idx_is_colon) < n_idx)
+  else if (num_ones (idx_is_colon) < n_idx)
     {
       (*current_liboctave_error_handler)
-	("A null assignment can have only one non-colon index.");
+	("A null assignment can have only one non-colon index");
     }
 }
 
@@ -1458,11 +1458,7 @@ Array<T>::index (idx_vector& idx_arg, int resize_ok, const T& rfv) const
       break;
 
     default:
-      {
-	Array<idx_vector> tmp (1, idx_arg);
-
-	retval = index (tmp, resize_ok, rfv);
-      }
+      retval = indexN (idx_arg, resize_ok, rfv);
       break;
     }
 
@@ -1630,6 +1626,184 @@ Array<T>::index2 (idx_vector& idx_arg, int resize_ok, const T& rfv) const
 
 template <class T>
 Array<T>
+Array<T>::indexN (idx_vector& ra_idx, int resize_ok, const T& rfv) const
+{
+  Array<T> retval;
+
+  int n_dims = dims ().length ();
+
+  int orig_len = number_of_elements (dims ());
+
+  Array<int> idx_orig_dimsXXX = ra_idx.orig_dimensions (); 
+
+  dim_vector idx_orig_dims;
+
+  idx_orig_dims.resize(idx_orig_dimsXXX.length());
+
+  for (int i = 0; i < idx_orig_dimsXXX.length(); i++)
+    idx_orig_dims(i) = idx_orig_dimsXXX(i);
+
+
+  if (ra_idx.is_colon ())
+    {
+      dim_vector idx(orig_len);
+
+      retval = Array<T> (*this, idx);
+
+    }
+  else if (length () == 1)
+    {
+      // Only one element in array.
+
+      Array<T> tmp = Array<T>::index (ra_idx, resize_ok);
+
+      if (tmp.length () != 0)
+	retval = Array<T> (tmp, idx_orig_dims);
+      else
+	{
+	  dim_vector d;
+	  retval = Array<T> (tmp, d);
+	}
+    }
+  else if (vector_equivalent (dims ()))
+    { 
+      // We're getting elements from a vector equivalent i.e. (1x4x1).
+
+      Array<T> tmp = Array<T>::index (ra_idx, resize_ok);
+
+      int len = tmp.length ();
+
+      if (len == 0)
+	{
+	  if (any_zero_len (idx_orig_dims))
+	    retval = Array<T> (idx_orig_dims);
+	  else
+	    {
+	      dim_vector new_dims;
+	      new_dims.resize (n_dims);
+
+	      for (int i = 0; i < n_dims; i++)
+	        {
+		  if ((dims ())(i) == 1)
+		    new_dims(i) = 1;
+		}
+
+	      retval = Array<T> (new_dims);
+	    }
+	}
+      else
+	{
+	  if (vector_equivalent(idx_orig_dims))
+	    {
+	      // Array<int> index (n_dims, len);
+	      dim_vector new_dims;
+
+	      new_dims.resize (n_dims);
+
+	      for (int i = 0; i < n_dims; i++)
+	        {
+		  if ((dims ())(i) == 1)
+		    new_dims(i) = 1;
+	        }
+
+	      retval = Array<T> (tmp, new_dims);
+	    }
+	  else
+	    retval = Array<T> (tmp, idx_orig_dims);
+
+	  (*current_liboctave_error_handler)
+	    ("I do not know what to do here yet!");
+	}
+    }
+  else if (liboctave_wfi_flag || 
+	   (ra_idx.one_zero_only () && equal_arrays (idx_orig_dims, dims ())))
+    {
+      // This code is only for indexing nd-arrays.  The vector
+      // cases are handled above.
+
+      ra_idx.freeze (orig_len, "nd-array", resize_ok);
+
+      if (ra_idx)
+	{ 
+	  dim_vector result_dims (idx_orig_dims);
+
+	  if (ra_idx.one_zero_only ())
+	    {
+	      for (int i = 0; i < result_dims.length(); i++)
+	        {
+		  if (i == 0)
+		    result_dims(i) = ra_idx.ones_count ();
+		  else if (result_dims(0) > 0)
+		    result_dims(i) = 1;
+		  else
+		    result_dims(i) = 0;
+		}
+	    }
+
+	  retval.resize (result_dims);
+
+	  int n = number_of_elements (result_dims);
+
+	  int r_dims = result_dims.length ();
+
+	  Array<int> index (r_dims, 0);
+
+	  int k = 0;
+
+	  for (int i = 0; i < n; i++)
+	    {
+	      int ii = ra_idx.elem (k++);
+
+	      if (ii >= orig_len)
+	        retval.elem (index) = rfv;
+	      else
+	        {
+		  Array<int> temp = get_ra_idx (ii, dims ());
+
+		  retval.elem (index) = elem (temp);
+		}
+	      if (i != n - 1)
+		increment_index (index, result_dims);
+	    }
+	}
+    }
+  else if (ra_idx.capacity () == 1)
+    {
+      // i.e. A(8) for A(3x3x3)
+
+      ra_idx.freeze (orig_len, "nd-array", resize_ok);
+
+      if (ra_idx)
+        {
+	  int r_idx = ra_idx(0);
+
+          Array<int> idx = get_ra_idx (r_idx, dims ());
+
+          dim_vector new_dims (1);
+	  new_dims(0)=1;
+
+	  // This shouldn't be needed.
+
+	  Array<int> e (idx.length ());
+
+	  for (int i = 0; i < idx.length();i++)
+	    e(i) = idx(i);
+
+	  // Should be able to call elem (idx).
+
+          retval = Array<T> (new_dims, elem (e));
+	}
+    }
+  else
+    (*current_liboctave_error_handler)
+      ("single index only valid for row or column vector. ra_idx.cap () = &d",
+       ra_idx.capacity ());
+
+  return retval;
+}
+
+template <class T>
+Array<T>
 Array<T>::index (idx_vector& idx_i, idx_vector& idx_j, int resize_ok,
 		 const T& rfv) const
 {
@@ -1681,75 +1855,74 @@ template <class T>
 Array<T>
 Array<T>::index (Array<idx_vector>& ra_idx, int resize_ok, const T& rfv) const
 {
-  Array<T> retval;
+  // This function handles all calls with more than one idx.
+  // For (3x3x3), the call can be A(2,5), A(2,:,:), A(3,2,3) etc.
 
-  int n_idx = ra_idx.length ();
+  Array<T> retval;
 
   int n_dims = dimensions.length ();
 
-  if (n_idx == n_dims)
+  if (n_dims < ra_idx.length ())
     {
-      dim_vector frozen_lengths = freeze (ra_idx, dimensions, resize_ok);
+      (*current_liboctave_error_handler)
+	("index exceeds N-d array dimensions");
 
-      if (frozen_lengths.length () == n_dims)
+      return retval;
+    }
+
+  dim_vector frozen_lengths = short_freeze (ra_idx, dimensions, resize_ok);
+
+  if (frozen_lengths.length () <= n_dims)
+    {
+      if (all_ok (ra_idx))
 	{
-	  if (all_ok (ra_idx))
+	  if (any_orig_empty (ra_idx))
 	    {
-	      if (any_orig_empty (ra_idx))
+	      retval.resize (frozen_lengths);
+	    }
+	  else if (any_zero_len (frozen_lengths))
+	    {
+	      dim_vector new_size = 
+		get_zero_len_size (frozen_lengths, dimensions);
+
+	      retval.resize (new_size);
+	    }
+	  else if (all_colon_equiv (ra_idx, dimensions) 
+		    && frozen_lengths.length () == n_dims)
+	    {
+	      retval = *this;
+	    }
+	  else
+	    {
+	      retval.resize (frozen_lengths);
+
+	      int n = number_of_elements (frozen_lengths);
+
+	      Array<int> result_idx (ra_idx.length (), 0);
+
+	      dim_vector this_dims = dims ();
+	
+	      for (int i = 0; i < n; i++)
 		{
-		  retval.resize (frozen_lengths);
-		}
-	      else if (any_zero_len (frozen_lengths))
-		{
-		  dim_vector new_size = get_zero_len_size (frozen_lengths,
-							   dimensions);
+		  Array<int> elt_idx = get_elt_idx (ra_idx, result_idx); 
+	
+		  int numelem_result = 
+		    get_scalar_idx (result_idx, frozen_lengths);
 
-		  retval.resize (new_size);
-		}
-	      else if (all_colon_equiv (ra_idx, frozen_lengths))
-		{
-		  retval = *this;
-		}
-	      else
-		{
-		  (*current_liboctave_error_handler) ("not implemented");
-#if 0
-		  retval.resize (frozen_lengths);
+		  int numelem_elt = get_scalar_idx (elt_idx, this_dims);
 
-		  int n = Array<T>::get_size (frozen_lengths);
-
-		  dim_vector result_idx (n_dims, 0);
-
-		  for (int i = 0; i < n; i++)
-		    {
-		      dim_vector elt_idx = get_elt_idx (result_idx);
-
-		      if (elt_idx > orig_len)
-			retval.elem (result_idx) = rfv;
-		      else
-			retval.elem (result_idx) = elem (elt_idx);
-
-		      increment_index (result_idx, frozen_lengths);
-		    }
-#endif
+		  if (numelem_result > length () || numelem_result < 0 
+		      || numelem_elt > length () || numelem_elt < 0)
+		    (*current_liboctave_error_handler)
+		      ("attempt to grow array along ambiguous dimension");
+		  else
+		    retval.Array<T>::checkelem (numelem_result) = Array<T>::checkelem (numelem_elt);
+		
+		  increment_index (result_idx, frozen_lengths);
+	
 		}
 	    }
-	  // idx_vector::freeze() printed an error message for us.
 	}
-    }
-  else if (n_idx == 1)
-    {
-      if (ra_idx(0).is_colon ())
-	{
-	  // Fast magic colon processing.
-
-	  int result_nr = Array<int>::get_size (dimensions);
-	  int result_nc = 1;
-
-	  retval = Array<T> (*this, dim_vector (result_nr, result_nc));
-	}
-      else
-	(*current_liboctave_error_handler) ("not implemented");
     }
   else
     (*current_liboctave_error_handler)
@@ -2252,7 +2425,7 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
     {
       if (n_idx == 0)
 	(*current_liboctave_error_handler)
-	  ("number of indices is zero.");
+	  ("number of indices is zero");
 
       else if (n_idx < lhs_dims.length ())
 	{
@@ -2261,7 +2434,7 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 	  if (any_ones (idx_is_colon)|| any_ones (idx_is_colon_equiv))
 	    {
 	      (*current_liboctave_error_handler)
-		("number of indices is less than number of dimensions, one or more indices are colons.");
+		("number of indices is less than number of dimensions, one or more indices are colons");
 	    }
 	  else
 	    {
@@ -2310,7 +2483,7 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 
 	      if (numelem > lhs.length () || numelem < 0)
 		(*current_liboctave_error_handler)
-		  ("attempt to grow array along ambiguous dimension.");
+		  ("attempt to grow array along ambiguous dimension");
 	      else
 		lhs.Array<LT>::checkelem (numelem) = scalar;
 	    }
@@ -2354,14 +2527,15 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
       // Subtracting number of dimensions of length 1 will catch
       // cases where: A(2,1,2)=3  A(:,1,:)=[2,3;4,5]
 
-      if (rhs_dims.length () != num_ones(idx_is_colon_equiv) - num_ones(lhs_dims))
+      if (rhs_dims.length ()
+	  != num_ones (idx_is_colon_equiv) - num_ones (lhs_dims))
 	{
 	  (*current_liboctave_error_handler)
-	    ("dimensions do not match in matrix assignment.");
+	    ("dimensions do not match in matrix assignment");
 	}
       else
 	{
-	  bool dim_ok(true);
+	  bool dim_ok = true;
 
 	  int jj = 0;
 
@@ -2385,7 +2559,7 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 
 	  if (! dim_ok)
 	    (*current_liboctave_error_handler)
-	      ("subscripted assignment dimension mismatch.");
+	      ("subscripted assignment dimension mismatch");
 	  else
 	    {
 	      dim_vector new_dims;

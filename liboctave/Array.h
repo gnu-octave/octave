@@ -495,6 +495,9 @@ public:
   Array<T> index2 (idx_vector& i, int resize_ok = 0,
 		   const T& rfv = resize_fill_value (T ())) const;
 
+  Array<T> indexN (idx_vector& i, int resize_ok = 0,
+		   const T& rfv = resize_fill_value (T ())) const;
+
   Array<T> index (idx_vector& i, idx_vector& j, int resize_ok = 0,
 		  const T& rfv = resize_fill_value (T ())) const;
 

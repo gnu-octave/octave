@@ -316,6 +316,8 @@ public:
       delete list;
     }
 
+  int is_else_clause (void);
+
   int eval (void);
 
   void print_code (ostream& os);

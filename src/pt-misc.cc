@@ -495,6 +495,12 @@ tree_global_init_list::print_code (ostream& os)
 // If.
 
 int
+tree_if_clause::is_else_clause (void)
+{
+  return (! expr);
+}
+
+int
 tree_if_clause::eval (void)
 {
   if (expr)
@@ -554,23 +560,10 @@ void
 tree_if_clause::print_code (ostream& os)
 {
   if (expr)
-    {
-      expr->print_code (os);
+    expr->print_code (os);
 
-      print_code_new_line (os);
-
-      increment_indent_level ();
-    }
-  else
-    {
-      print_code_indent (os);
-
-      os << "else";
-
-      print_code_new_line (os);
-
-      increment_indent_level ();
-    }
+  print_code_new_line (os);
+  increment_indent_level ();
 
   if (list)
     {
@@ -605,21 +598,23 @@ tree_if_command_list::print_code (ostream& os)
     {
       tree_if_clause *elt = this->operator () (p);
 
-      next (p);
-
       if (elt)
 	{
-	  if (p && ! first_elt)
+	  if (! first_elt)
 	    {
 	      print_code_indent (os);
 
-	      os << "elseif ";
+	      if (elt->is_else_clause ())
+		os << "else";
+	      else
+		os << "elseif ";
 	    }
 
 	  elt->print_code (os);
 	}
 
       first_elt = 0;
+      next (p);
     }
 }
 

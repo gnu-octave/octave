@@ -81,6 +81,9 @@ public:
 
   dim_vector dims (void) const { static dim_vector dv (1, 1); return dv; }
 
+  octave_value permute (const Array<int>& vec, bool inv = false) const
+    { return scalar; }
+
   size_t byte_size (void) const { return sizeof (ST); }
 
   octave_value all (int = 0) const { return (scalar != 0.0); }

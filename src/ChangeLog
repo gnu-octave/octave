@@ -1,4 +1,10 @@
-2004-04-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
+2004-04-22  David Bateman  <dbateman@free.fr>
+
+	* ov-base-scalar.h (octave_base_scalar<ST>::permute): New function.
+
+	* ov-base-mat.cc (octave_base_matrix<MT>::is_true): Make N-d aware.
+
+2004-04-22  John W. Eaton  <jwe@octave.org>
 
 	* oct-stream.cc (printf_value_cache::curr_value): Now NDArray.
 	(printf_value_cache::double_value): Extract N-d array, not Matrix.

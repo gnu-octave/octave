@@ -118,6 +118,62 @@ extern void install_ops (void);
 #define CAST_CONV_ARG(t) \
   t v = DYNAMIC_CAST (t, a);
 
+#define ASSIGNOPDECL(name) \
+  static octave_value \
+  name (octave_value& a1, const octave_value_list& idx, const octave_value& a2)
+
+#define DEFASSIGNOP(name, t1, t2) \
+  ASSIGNOPDECL (name)
+
+#define DEFASSIGNOP_FN(name, t1, t2, f) \
+  ASSIGNOPDECL (name) \
+  { \
+    CAST_BINOP_ARGS (octave_ ## t1&, const octave_ ## t2&); \
+ \
+    v1.f (idx, v2.t1 ## _value ()); \
+    return octave_value (); \
+  }
+
+#define CONVDECL(name) \
+  static octave_value * \
+  name (const octave_value& a)
+
+#define DEFCONV(name, from, to) \
+  CONVDECL (name)
+
+#define BINOPDECL(name, a1, a2) \
+  static octave_value \
+  name (const octave_value& a1, const octave_value& a2)
+
+#define DEFBINOPX(name, t1, t2) \
+  BINOPDECL (name, , )
+
+#define DEFBINOP(name, t1, t2) \
+  BINOPDECL (name, a1, a2)
+
+#define DEFBINOP_OP(name, t1, t2, op) \
+  BINOPDECL (name, a1, a2) \
+  { \
+    CAST_BINOP_ARGS (const octave_ ## t1&, const octave_ ## t2&); \
+    return octave_value \
+      (v1.t1 ## _value () op v2.t2 ## _value ()); \
+  }
+
+// XXX FIXME XXX -- in some cases, the constructor isn't necessary.
+
+#define DEFBINOP_FN(name, t1, t2, f) \
+  BINOPDECL (name, a1, a2) \
+  { \
+    CAST_BINOP_ARGS (const octave_ ## t1&, const octave_ ## t2&); \
+    return octave_value (f (v1.t1 ## _value (), v2.t2 ## _value ())); \
+  }
+
+#define BINOP_NONCONFORMANT(msg) \
+  gripe_nonconformant (msg, \
+		       a1.rows (), a1.columns (), \
+		       a2.rows (), a2.columns ()); \
+  return octave_value ()
+
 #endif
 
 /*

@@ -95,7 +95,7 @@ DEFBINOP (el_ldiv, matrix, matrix)
 DEFNDBINOP_FN (el_and, matrix, matrix, array, array, mx_el_and)
 DEFNDBINOP_FN (el_or,  matrix, matrix, array, array, mx_el_or)
 
-DEFASSIGNOP_FN (assign, matrix, matrix, assign)
+DEFNDASSIGNOP_FN (assign, matrix, matrix, array, assign)
 
 void
 install_m_m_ops (void)

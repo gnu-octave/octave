@@ -155,6 +155,15 @@ extern void install_ops (void);
     return octave_value (); \
   }
 
+#define DEFNDASSIGNOP_FN(name, t1, t2, e, f) \
+  ASSIGNOPDECL (name) \
+  { \
+    CAST_BINOP_ARGS (octave_ ## t1&, const octave_ ## t2&); \
+ \
+    v1.f (idx, v2.e ## _value ()); \
+    return octave_value (); \
+  }
+
 #define DEFASSIGNANYOP_FN(name, t1, f) \
   ASSIGNOPDECL (name) \
   { \

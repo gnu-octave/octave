@@ -81,9 +81,9 @@ public:
 
   octave_value *try_narrowing_conversion (void);
 
-  void assign (const octave_value_list& idx, const ComplexMatrix& rhs);
+  void assign (const octave_value_list& idx, const ComplexNDArray& rhs);
 
-  void assign (const octave_value_list& idx, const Matrix& rhs);
+  void assign (const octave_value_list& idx, const NDArray& rhs);
 
   bool is_complex_matrix (void) const { return true; }
 

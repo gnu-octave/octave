@@ -279,6 +279,9 @@ static help_list keywords[] =
   { "if",
     "Begin an if block.", },
 
+  { "persistent",
+    "Declare variables as persistent.", },
+
   { "return",
     "Return from a function.", },
 

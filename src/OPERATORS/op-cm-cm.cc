@@ -108,7 +108,7 @@ DEFBINOP (el_ldiv, complex_matrix, complex_matrix)
 DEFNDBINOP_FN (el_and, complex_matrix, complex_matrix, complex_array, complex_array, mx_el_and)
 DEFNDBINOP_FN (el_or,  complex_matrix, complex_matrix, complex_array, complex_array, mx_el_or)
 
-DEFASSIGNOP_FN (assign, complex_matrix, complex_matrix, assign)
+DEFNDASSIGNOP_FN (assign, complex_matrix, complex_matrix, complex_array, assign)
 
 void
 install_cm_cm_ops (void)

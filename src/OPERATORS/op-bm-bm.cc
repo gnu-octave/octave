@@ -65,7 +65,7 @@ DEFNDBINOP_FN (el_and, bool_matrix, bool_matrix, bool_array, bool_array,
 DEFNDBINOP_FN (el_or,  bool_matrix, bool_matrix, bool_array, bool_array,
 	       mx_el_or)
 
-DEFASSIGNOP_FN (assign, bool_matrix, bool_matrix, assign)
+DEFNDASSIGNOP_FN (assign, bool_matrix, bool_matrix, bool_array, assign)
 
 void
 install_bm_bm_ops (void)

@@ -43,7 +43,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 DEFNDBINOP_FN (el_and, bool_matrix, bool, bool_array, bool, mx_el_and)
 DEFNDBINOP_FN (el_or, bool_matrix, bool, bool_array, bool, mx_el_or)
 
-DEFASSIGNOP_FN (assign, bool_matrix, bool, assign)
+DEFNDASSIGNOP_FN (assign, bool_matrix, bool, bool_array, assign)
 
 void
 install_bm_b_ops (void)

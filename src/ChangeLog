@@ -1,3 +1,14 @@
+2003-12-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-cx-mat.cc (octave_complex_matrix::assign): RHS arg is N-d.
+	* ov-cx-mat.h: Fix decl.
+
+	* ops.h (DEFNDASSIGNOP_FN): New macro.
+	* OPERATORS/op-bm-b.cc, OPERATORS/op-bm-bm.cc,
+	OPERATORS/op-cm-cm.cc, OPERATORS/op-cm-cs.cc,
+	OPERATORS/op-cm-m.cc, OPERATORS/op-cm-s.cc, OPERATORS/op-m-m.cc,
+	OPERATORS/op-m-s.cc: Use it instead of DEFASSIGNOP_FN.
+
 2003-12-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* xpow.cc (xpow (double, double)): Avoid apparent GNU libm bug.

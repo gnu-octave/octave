@@ -55,6 +55,7 @@ before they have been given a value.  Doing so results in an error.
 
 @menu
 * Global Variables::            
+* Persistent Variables::        
 * Status of Variables::         
 * Summary of Built-in Variables::  
 * Defaults from the Environment::  
@@ -153,6 +154,47 @@ but the value of @code{x} at the top level remains unchanged, because
 the function works with a @emph{copy} of its argument.
 
 @DOCSTRING(isglobal)
+
+@node Persistent Variables
+@section Persistent Variables
+@cindex persistent variables
+@cindex @code{persistent} statement
+@cindex variables, persistent
+
+A variable that has been declared @dfn{persistent} within a function
+will retain its contents in memory between subsequent calls to the
+same function. The difference between persistent variables and global
+variables is that persistent variables are local in scope to a
+particular function and are not visible elsewhere.
+
+A variable may be declared persistent using a @code{persistent}
+declaration statement.  The following statements are all persistent
+declarations.
+
+@example
+@group
+persistent a
+persistent a b
+persistent c = 2
+persistent d = 3 e f = 5
+@end group
+@end example
+
+The behavior of persistent variables is equivalent to the behavior of
+static variables in C. The command @code{static} in octave is also
+recognized and is equivalent to @code{persistent}. Unlike global
+variables, every initialization statement will re-initialize the
+variable. For example, after executing the following code
+
+@example
+@group
+persistent pvar = 1
+persistent pvar = 2
+@end group
+@end example
+
+@noindent
+the value of the persistent variable @code{pvar} is 2.
 
 @node Status of Variables
 @section Status of Variables

@@ -48,6 +48,10 @@ extern void install_signal_handlers (void);
 
 extern void catch_interrupts (void);
 
+extern void octave_save_signal_mask (void);
+
+extern void octave_restore_signal_mask (void);
+
 // This is taken directly from Emacs 19:
 
 #ifndef SYS_SIGLIST_DECLARED

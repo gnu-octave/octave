@@ -227,11 +227,15 @@ main_loop (void)
 {
   // Allow the user to interrupt us without exiting.
 
+  octave_save_signal_mask ();
+
   if (setjmp (toplevel) != 0)
     {
       raw_mode (0);
 
       cout << "\n";
+
+      octave_restore_signal_mask ();
     }
 
   can_interrupt = 1;

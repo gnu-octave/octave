@@ -48,6 +48,34 @@ int pipe_handler_error_count = 0;
 // Nonzero means we can be interrupted.
 int can_interrupt = 0;
 
+// Allow us to save the signal mask and then restore it to the most
+// recently saved value.  This is necessary when using the POSIX
+// signal handling interface on some systems calling longjmp out of
+// the signal handler to get to the top level on an interrupt doesn't
+// restore the original signal mask.  Alternatively, we could use
+// sigsetjmp/siglongjmp, but saving and restoring the signal mask
+// ourselves works ok and seems simpler just now.
+
+#if defined (HAVE_POSIX_SIGNALS)
+static sigset_t octave_signal_mask;
+#endif
+
+void
+octave_save_signal_mask (void)
+{
+#if defined (HAVE_POSIX_SIGNALS)
+  sigprocmask (0, 0, &octave_signal_mask);
+#endif
+}
+
+void
+octave_restore_signal_mask (void)
+{
+#if defined (HAVE_POSIX_SIGNALS)
+  sigprocmask (SIG_SETMASK, &octave_signal_mask, 0);
+#endif
+}
+
 static void
 my_friendly_exit (const char *sig_name, int sig_number)
 {

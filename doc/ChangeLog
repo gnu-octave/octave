@@ -1,3 +1,11 @@
+2001-03-27  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* liboctave/Makefile.in (liboctave_toc.html): Use -expand info and
+	-split chapter instead of -expandinfo and -split_chapter options
+	for texi2html.
+	* faq/Makefile.in (Octave-FAQ_toc.html): Likewise.
+	* interpreter/Makefile.in (octave_toc.html): Likewise.
+
 2000-10-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* liboctave/Makefile.in (liboctave_toc.html): Add space after -I

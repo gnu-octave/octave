@@ -41,12 +41,13 @@ copy_f77_context (void *from, void *to, unsigned int size)
 
    XSTOPX jumps back to the entry point for the Fortran function that
    called us.  Then the calling function should do whatever cleanup
-   is necessary. */
+   is necessary.  */
 
 volatile void
 F77_FCN (xstopx, XSTOPX) (const char *s, long int slen)
 {
-  if (s && slen > 0)
+  /* Skip printing message if it is just a single blank character.  */
+  if (s && slen > 0 && ! (slen == 1 && *s == ' '))
     (*current_liboctave_error_handler) ("%.*s", s, slen);
 
   longjmp (f77_context, 1);

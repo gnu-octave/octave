@@ -50,7 +50,7 @@ Octave-FAQ.ps: Octave-FAQ.dvi
 	-dvips -o Octave-FAQ.ps Octave-FAQ.dvi
 
 Octave-FAQ_toc.html:
-	-texi2html -expandinfo -split_chapter $(srcdir)/Octave-FAQ.texi
+	-texi2html -expand info -split chapter $(srcdir)/Octave-FAQ.texi
 
 check install install-strip uninstall:
 .PHONY: check install install-strip uninstall

@@ -60,10 +60,7 @@ Array<T>::value (void)
 {
   Array<T> retval;
 
-  idx_vector *tmp = get_idx ();
-  idx_vector idx = tmp[0];
-
-  retval = index (idx);
+  retval = index (idx[0]);
 
   clear_index ();
 
@@ -72,17 +69,17 @@ Array<T>::value (void)
 
 template <class T>
 Array<T>
-Array<T>::index (idx_vector& idx) const
+Array<T>::index (idx_vector& idx_arg) const
 {
   Array<T> retval;
 
   int len = length ();
 
-  int n = idx.freeze (len, "vector");
+  int n = idx_arg.freeze (len, "vector");
 
-  if (idx)
+  if (idx_arg)
     {
-      if (idx.is_colon_equiv (len))
+      if (idx_arg.is_colon_equiv (len))
 	{
 	  retval = *this;
 	}
@@ -91,8 +88,8 @@ Array<T>::index (idx_vector& idx) const
 	  retval.resize (0);
 	}
       else if (len == 1 && n > 1
-	       && idx.one_zero_only ()
-	       && idx.ones_count () == n)
+	       && idx_arg.one_zero_only ()
+	       && idx_arg.ones_count () == n)
 	{
 	  retval.resize (n, elem (0));
 	}
@@ -102,7 +99,7 @@ Array<T>::index (idx_vector& idx) const
 
 	  for (int i = 0; i < n; i++)
 	    {
-	      int ii = idx.elem (i);
+	      int ii = idx_arg.elem (i);
 	      retval.elem (i) = elem (ii);
 	    }
 	}
@@ -115,18 +112,18 @@ Array<T>::index (idx_vector& idx) const
 
 template <class T>
 void
-Array<T>::maybe_delete_elements (idx_vector& idx)
+Array<T>::maybe_delete_elements (idx_vector& idx_arg)
 {
   int len = length ();
 
   if (len == 0)
     return;
 
-  if (idx.is_colon_equiv (len, 1))
+  if (idx_arg.is_colon_equiv (len, 1))
     resize (0);
   else
     {
-      int num_to_delete = idx.length (len);
+      int num_to_delete = idx_arg.length (len);
 
       if (num_to_delete != 0)
 	{
@@ -135,7 +132,7 @@ Array<T>::maybe_delete_elements (idx_vector& idx)
 	  int iidx = 0;
 
 	  for (int i = 0; i < len; i++)
-	    if (i == idx.elem (iidx))
+	    if (i == idx_arg.elem (iidx))
 	      {
 		iidx++;
 		new_len--;
@@ -152,7 +149,7 @@ Array<T>::maybe_delete_elements (idx_vector& idx)
 	      iidx = 0;
 	      for (int i = 0; i < len; i++)
 		{
-		  if (iidx < num_to_delete && i == idx.elem (iidx))
+		  if (iidx < num_to_delete && i == idx_arg.elem (iidx))
 		    iidx++;
 		  else
 		    {
@@ -186,18 +183,18 @@ assign (Array<LT>& lhs, const Array<RT>& rhs)
 
   idx_vector *tmp = lhs.get_idx ();
 
-  idx_vector idx = tmp[0];
+  idx_vector lhs_idx = tmp[0];
 
   int lhs_len = lhs.length ();
   int rhs_len = rhs.length ();
 
-  int n = idx.freeze (lhs_len, "vector", liboctave_rre_flag);
+  int n = lhs_idx.freeze (lhs_len, "vector", liboctave_rre_flag);
 
   if (n != 0)
     {
       if (liboctave_rre_flag && (rhs_len == n || rhs_len == 1))
 	{
-	  int max_idx = idx.max () + 1;
+	  int max_idx = lhs_idx.max () + 1;
 	  if (max_idx > lhs_len)
 	    lhs.resize (max_idx, 0.0);
 	}
@@ -206,7 +203,7 @@ assign (Array<LT>& lhs, const Array<RT>& rhs)
 	{
 	  for (int i = 0; i < n; i++)
 	    {
-	      int ii = idx.elem (i);
+	      int ii = lhs_idx.elem (i);
 	      lhs.elem (ii) = rhs.elem (i);
 	    }
 	}
@@ -216,7 +213,7 @@ assign (Array<LT>& lhs, const Array<RT>& rhs)
 
 	  for (int i = 0; i < n; i++)
 	    {
-	      int ii = idx.elem (i);
+	      int ii = lhs_idx.elem (i);
 	      lhs.elem (ii) = scalar;
 	    }
 	}
@@ -228,7 +225,7 @@ assign (Array<LT>& lhs, const Array<RT>& rhs)
 	  retval = 0;
 	}
     }
-  else if (idx.is_colon ())
+  else if (lhs_idx.is_colon ())
     {
       if (lhs_len == 0)
 	{

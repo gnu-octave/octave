@@ -2,6 +2,8 @@
 
 	* oct-rl-edit.c (octave_rl_clear_screen): Call rl_clear_screen,
 	not _rl_clear_screen.
+	(octave_rl_clear_screen): Temporarily redefine
+	rl_redisplay_function to do nothing.
 
 2001-10-08  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

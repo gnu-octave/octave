@@ -55,25 +55,33 @@ octave_rl_enable_paren_matching (int val)
   rl_variable_bind ("blink-matching-paren", val ? "1" : "0");
 }
 
+// It would be much simpler if we could just call _rl_clear_screen to
+// only clear the screen, but it is not a public function, and on some
+// systems, it is not exported from shared library versions of
+// readline, so we can't use it.
+//
+// Instead, temporarily redefine the redisplay function to do nothing.
+//
+// XXX FIXME XXX -- It would be safer to do this when protected from
+// interrupts...
+
+static void
+no_redisplay (void)
+{
+}
+
 void
 octave_rl_clear_screen (void)
 {
   int ignore1 = 0;
   int ignore2 = 0;
 
-  // XXX FIXME XXX -- After calling rl_clear_screen, the screen will
-  // not be correct.  If called from clc() for example, it will look
-  // like this:
-  //
-  //  octave:13> clcoctave:14> 
-  //
-  // What is the proper way to remove the clc and the second prompt?
-  // _rl_clear_screen does what we want (just clears the screen) but
-  // it is not a public function, and on some systems, it is not
-  // exported from shared library versions of readline, so we can't
-  // use it.
+  rl_voidfunc_t *saved_redisplay_function = rl_redisplay_function;
+  rl_redisplay_function = no_redisplay;
 
   rl_clear_screen (ignore1, ignore2);
+
+  rl_redisplay_function = saved_redisplay_function;
 }
 
 void

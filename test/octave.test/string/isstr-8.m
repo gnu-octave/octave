@@ -1,0 +1,1 @@
+isstr (["test"; "ing"])

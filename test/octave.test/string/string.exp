@@ -117,19 +117,152 @@ do_test isstr-11.m
 # dec2hex
 # hex2dec
 # str2num
+# undo_string_escapes
+
 # toascii
 # tolower
 # toupper
-# undo_string_escapes
-# isalnum
-# isalpha
-# isascii
-# iscntrl
-# isdigit
-# isgraph
-# islower
-# isprint
-# ispunct
-# isspace
-# isupper
-# isxdigit
+
+set test isalnum-1
+set prog_output "ans = 1"
+do_test isalnum-1.m
+
+set test isalnum-2
+set prog_output "error:.*"
+do_test isalnum-2.m
+
+set test isalnum-3
+set prog_output "error:.*"
+do_test isalnum-3.m
+
+set test isalpha-1
+set prog_output "ans = 1"
+do_test isalpha-1.m
+
+set test isalpha-2
+set prog_output "error:.*"
+do_test isalpha-2.m
+
+set test isalpha-3
+set prog_output "error:.*"
+do_test isalpha-3.m
+
+set test isascii-1
+set prog_output "ans = 1"
+do_test isascii-1.m
+
+set test isascii-2
+set prog_output "error:.*"
+do_test isascii-2.m
+
+set test isascii-3
+set prog_output "error:.*"
+do_test isascii-3.m
+
+set test iscntrl-1
+set prog_output "ans = 1"
+do_test iscntrl-1.m
+
+set test iscntrl-2
+set prog_output "error:.*"
+do_test iscntrl-2.m
+
+set test iscntrl-3
+set prog_output "error:.*"
+do_test iscntrl-3.m
+
+set test isdigit-1
+set prog_output "ans = 1"
+do_test isdigit-1.m
+
+set test isdigit-2
+set prog_output "error:.*"
+do_test isdigit-2.m
+
+set test isdigit-3
+set prog_output "error:.*"
+do_test isdigit-3.m
+
+set test isgraph-1
+set prog_output "ans = 1"
+do_test isgraph-1.m
+
+set test isgraph-2
+set prog_output "error:.*"
+do_test isgraph-2.m
+
+set test isgraph-3
+set prog_output "error:.*"
+do_test isgraph-3.m
+
+set test islower-1
+set prog_output "ans = 1"
+do_test islower-1.m
+
+set test islower-2
+set prog_output "error:.*"
+do_test islower-2.m
+
+set test islower-3
+set prog_output "error:.*"
+do_test islower-3.m
+
+set test isprint-1
+set prog_output "ans = 1"
+do_test isprint-1.m
+
+set test isprint-2
+set prog_output "error:.*"
+do_test isprint-2.m
+
+set test isprint-3
+set prog_output "error:.*"
+do_test isprint-3.m
+
+set test ispunct-1
+set prog_output "ans = 1"
+do_test ispunct-1.m
+
+set test ispunct-2
+set prog_output "error:.*"
+do_test ispunct-2.m
+
+set test ispunct-3
+set prog_output "error:.*"
+do_test ispunct-3.m
+
+set test isspace-1
+set prog_output "ans = 1"
+do_test isspace-1.m
+
+set test isspace-2
+set prog_output "error:.*"
+do_test isspace-2.m
+
+set test isspace-3
+set prog_output "error:.*"
+do_test isspace-3.m
+
+set test isupper-1
+set prog_output "ans = 1"
+do_test isupper-1.m
+
+set test isupper-2
+set prog_output "error:.*"
+do_test isupper-2.m
+
+set test isupper-3
+set prog_output "error:.*"
+do_test isupper-3.m
+
+set test isxdigit-1
+set prog_output ""ans = 1
+do_test isxdigit-1.m
+
+set test isxdigit-2
+set prog_output ""error:.*
+do_test isxdigit-2.m
+
+set test isxdigit-3
+set prog_output ""error:.*
+do_test isxdigit-3.m

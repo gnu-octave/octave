@@ -21,7 +21,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA. 
 
-AC_REVISION($Revision: 1.300 $)
+AC_REVISION($Revision: 1.301 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -104,15 +104,6 @@ OCTAVE_CHECK_EXCLUSIVE_WITH_OPTIONS(g77, f2c,
   use_f2c=false])
 
 ### Allow the user disable support for GNU info.
-
-case "$canonical_host_type" in
-  *-*-cygwin32)
-    USE_GNU_INFO=false
-  ;;
-  *)
-    USE_GNU_INFO=true
-  ;;
-esac
 
 AC_ARG_ENABLE(info,
   [  --enable-info           use GNU info (default is yes)],

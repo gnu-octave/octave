@@ -1,5 +1,7 @@
 Mon Mar  2 00:02:26 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* configure.in: Don't disable GNU Info on cygwin32 systems.
+
 	* install-octave.in: New file.
 	* configure.in: Create install-octave.
 	* octMakefile.in (distclean, maintainer-clean): Delete install-octave.

@@ -790,7 +790,11 @@ specified option.\n\
       if (! error_state)
 	{
 	  Cell c = m.contents (arg.c_str ());
-	  retval = c(0);
+
+	  if (c.is_empty ())
+	    error ("octave_config_info: no info for `%s'", arg.c_str ());
+	  else
+	    retval = c(0);
 	}
     }
   else if (nargin == 0)

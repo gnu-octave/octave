@@ -1,3 +1,7 @@
+2005-03-10  John W. Eaton  <jwe@octave.org>
+
+	* mkoctfile.in: Accept -R DIR.
+
 2005-03-09  John W. Eaton  <jwe@octave.org>
 
 	* examples/Makefile.in (bin-dist): Delete target.

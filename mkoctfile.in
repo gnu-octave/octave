@@ -128,6 +128,10 @@ Options:
   -M, --depend            Generate dependency files (.d) for C and C++
                           source files.
 
+  -RDIR                   Add -RDIR to link command.
+
+  -W                      Pass flags though the compiler like -Wl,-rpath=...
+
   -c, --compile           Compile, but do not link.
 
   -o FILE, --output FILE  Output file name.  Default extension is .oct
@@ -161,8 +165,6 @@ Options:
 
   -v, --verbose           Echo commands as they are executed.
 
-  -W                      Pass flags though the compiler like -Wl,-rpath=...
-
   FILE                    Compile or link FILE.  Recognized file types are:
 
                             .c    C source
@@ -182,7 +184,7 @@ EOF
     -D*)
       defs="$defs $1"
     ;;
-    -[lL]*)
+    -[lLR]*)
       ldflags="$ldflags $1"
     ;;
     -M | --depend)

@@ -1,3 +1,11 @@
+2004-09-08  John W. Eaton  <jwe@octave.org>
+
+	* configure.in (GXX_PICKY_FLAGS): Remove -fno-nonnull-objects.
+	(GCC_PICKY_FLAGS): Remove -Wnested-externs -Wid-clash-31.
+	From Quentin Spencer <qspencer@ieee.org>.
+
+	* configure.in (GCC_PICKY_FLAGS): Remove -Winline.
+
 2004-09-07  John W. Eaton  <jwe@octave.org>
 
 	* configure.in: Check for round.

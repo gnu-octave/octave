@@ -1,3 +1,7 @@
+2004-09-08  John W. Eaton  <jwe@octave.org>
+
+	* misc/machar.c (rmachar): Use modern C declaration.
+
 2004-02-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* misc/f77-fcn.c: Handle Cray, CVF, and f2c calling conventions.

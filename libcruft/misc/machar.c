@@ -36,11 +36,9 @@ August 3, 1988.
 #define ABS(xxx) ((xxx>ZERO)?(xxx):(-xxx))
 
 void
-rmachar(ibeta,it,irnd,ngrd,machep,negep,iexp,minexp,
-        maxexp,eps,epsneg,xmin,xmax)
-
-      int *ibeta,*iexp,*irnd,*it,*machep,*maxexp,*minexp,*negep,*ngrd;
-      REAL *eps,*epsneg,*xmax,*xmin;
+rmachar(int *ibeta, int *it, int *irnd, int *ngrd, int *machep,
+	int *negep, int *iexp, int *minexp, int *maxexp, REAL *eps,
+	REAL *epsneg, REAL *xmin, REAL *xmax)
 
 /*
 

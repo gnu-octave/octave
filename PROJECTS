@@ -384,9 +384,6 @@ Interpreter:
 
   * What should is_global() return when called for built-in variables?
 
-  * Make it possible to have `static' variables inside functions that
-    retain their values across calls.
-
   * Allow local changes to variables to be written more compactly than
     is currently possible with unwind_protect.  For example,
 

@@ -68,7 +68,7 @@ public:
 
   FILE* stdiofile (void) const { return f; }
 
-  c_file_ptr_buf (FILE *f_arg, close_fcn cf_arg = ::fclose)
+  c_file_ptr_buf (FILE *f_arg, close_fcn cf_arg = fclose)
     : 
 #if defined __GNUC__ && __GNUC__ >= 3
     OCTAVE_STD_FILEBUF (f_arg, std::ios::in | std::ios::out),
@@ -107,6 +107,8 @@ public:
 
   int file_number () const { return fd; }
 
+  static int fclose (FILE *f) { return ::fclose (f); }
+
 protected:
 
   FILE *f;
@@ -125,7 +127,8 @@ i_c_file_ptr_stream : public std::istream
 {
 public:
 
-  i_c_file_ptr_stream (FILE* f, c_file_ptr_buf::close_fcn cf = ::fclose)
+  i_c_file_ptr_stream (FILE* f,
+		       c_file_ptr_buf::close_fcn cf = c_file_ptr_buf::fclose)
     : std::istream (0), buf (new c_file_ptr_buf (f, cf)) { init (buf); }
 
   ~i_c_file_ptr_stream (void) { delete buf; buf = 0; }
@@ -144,7 +147,8 @@ o_c_file_ptr_stream : public std::ostream
 {
 public:
 
-  o_c_file_ptr_stream (FILE* f, c_file_ptr_buf::close_fcn cf = ::fclose)
+  o_c_file_ptr_stream (FILE* f,
+		       c_file_ptr_buf::close_fcn cf = c_file_ptr_buf::fclose)
     : std::ostream (0), buf (new c_file_ptr_buf (f, cf)) { init (buf); }
 
   ~o_c_file_ptr_stream (void) { delete buf; buf = 0; }

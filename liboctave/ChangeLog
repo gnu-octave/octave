@@ -1,3 +1,10 @@
+2002-05-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* cmd-edit.cc (gnu_readline::history_search_backward): New function.
+	(gnu_readline::history_search_forward): Likewise.
+	(gnu_readline::gnu_readline): Use them instead of passing pointers
+	to extern "C" functions to octave_rl_ad_defun.
+
 2002-05-22  Mumit Khan <khan@nanotech.wisc.edu>
 
 	* DASPK.cc (ddaspk_psol): Return value.

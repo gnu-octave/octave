@@ -1,5 +1,21 @@
 2002-05-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* c-file-ptr-stream.h (c_file_ptr_buf::fclose): New function.
+	(c_file_ptr_buf::c_file_ptr_buf): Use it as default argument
+	instead of extern "C" fclose function.
+	(i_c_file_ptr_stream::i_c_file_ptr_stream): Likewise.
+	(o_c_file_ptr_stream::o_c_file_ptr_stream): Likewise.
+	* oct-stdstrm.h (octave_istdiostream::octave_istdiostream): Likewise.
+	(octave_istdiostream::create): Likewise.
+	* oct-stdstrm.h (octave_ostdiostream::octave_ostdiostream): Likewise.
+	(octave_ostdiostream::create): Likewise.
+
+	* oct-prcstrm.cc (cxx_pclose): New static function.
+	(octave_iprocstream::octave_iprocstream): Pass it to
+	octave_istdiostream constructor instead of extern "C" pclose function.
+	(octave_oprocstream::octave_oprocstream): Pass it to
+	octave_ostdiostream constructor instead of extern "C" pclose function.
+
 	* debug.cc (Fdbtype): Use C++ strings, not C strings.
 
 2002-05-22  Mumit Khan <khan@nanotech.wisc.edu>

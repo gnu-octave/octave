@@ -74,14 +74,14 @@ octave_istdiostream : public octave_base_stdiostream
 public:
 
   octave_istdiostream (const std::string& n, FILE *f = 0,
-		       c_file_ptr_buf::close_fcn cf = ::fclose,
+		       c_file_ptr_buf::close_fcn cf = c_file_ptr_buf::fclose,
 		       std::ios::openmode arg_md = std::ios::in,
 		       oct_mach_info::float_format flt_fmt =
 		       oct_mach_info::native);
 
   static octave_stream
   create (const std::string& n, FILE *f = 0,
-	  c_file_ptr_buf::close_fcn cf = ::fclose,
+	  c_file_ptr_buf::close_fcn cf = c_file_ptr_buf::fclose,
 	  std::ios::openmode arg_md = std::ios::in,
 	  oct_mach_info::float_format flt_fmt = oct_mach_info::native);
 
@@ -128,14 +128,14 @@ octave_ostdiostream : public octave_base_stdiostream
 public:
 
   octave_ostdiostream (const std::string& n, FILE *f = 0,
-		       c_file_ptr_buf::close_fcn cf = ::fclose,
+		       c_file_ptr_buf::close_fcn cf = c_file_ptr_buf::fclose,
 		       std::ios::openmode arg_md = std::ios::out,
 		       oct_mach_info::float_format flt_fmt =
 		       oct_mach_info::native);
 
   static octave_stream
   create (const std::string& n, FILE *f = 0,
-	  c_file_ptr_buf::close_fcn cf = ::fclose,
+	  c_file_ptr_buf::close_fcn cf = c_file_ptr_buf::fclose,
 	  std::ios::openmode arg_md = std::ios::out,
 	  oct_mach_info::float_format flt_fmt = oct_mach_info::native);
 

@@ -123,6 +123,10 @@ public:
 
   static int operate_and_get_next (int, int);
 
+  static int history_search_backward (int, int);
+
+  static int history_search_forward (int, int);
+
 private:
 
   startup_hook_fcn previous_startup_hook;
@@ -160,11 +164,11 @@ gnu_readline::gnu_readline ()
   /* And the history search functions. */
 
   octave_rl_add_defun ("history-search-backward",
-		       octave_rl_history_search_backward,
+		       gnu_readline::history_search_backward,
 		       octave_rl_meta ('P'));
 
   octave_rl_add_defun ("history-search-forward",
-		       octave_rl_history_search_forward,
+		       gnu_readline::history_search_forward,
 		       octave_rl_meta ('N'));
 }
 
@@ -389,6 +393,18 @@ gnu_readline::operate_and_get_next (int /* count */, int /* c */)
   command_editor::set_startup_hook (command_history::goto_mark);
 
   return 0;
+}
+
+int
+gnu_readline::history_search_backward (int count, int c)
+{
+  return octave_rl_history_search_backward (count, c);
+}
+
+int
+gnu_readline::history_search_forward (int count, int c)
+{
+  return octave_rl_history_search_forward (count, c);
 }
 
 char *

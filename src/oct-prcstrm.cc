@@ -28,6 +28,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "oct-prcstrm.h"
 
+static int
+cxx_pclose (FILE *f)
+{
+  return ::pclose (f);
+}
+
 octave_stream
 octave_iprocstream::create (const std::string& n, std::ios::openmode arg_md,
 			    oct_mach_info::float_format flt_fmt)
@@ -38,7 +44,7 @@ octave_iprocstream::create (const std::string& n, std::ios::openmode arg_md,
 octave_iprocstream::octave_iprocstream (const std::string& n,
 					std::ios::openmode arg_md,
 					oct_mach_info::float_format flt_fmt)
-  : octave_istdiostream (n, ::popen (n.c_str (), "r"), ::pclose,
+  : octave_istdiostream (n, ::popen (n.c_str (), "r"), cxx_pclose,
 			 arg_md, flt_fmt)
 {
 }
@@ -58,7 +64,7 @@ octave_oprocstream::create (const std::string& n, std::ios::openmode arg_md,
 octave_oprocstream::octave_oprocstream (const std::string& n,
 					std::ios::openmode arg_md,
 					oct_mach_info::float_format flt_fmt)
-  : octave_ostdiostream (n, ::popen (n.c_str (), "w"), ::pclose,
+  : octave_ostdiostream (n, ::popen (n.c_str (), "w"), cxx_pclose,
 			 arg_md, flt_fmt)
 {
 }

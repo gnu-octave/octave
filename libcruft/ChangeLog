@@ -1,5 +1,7 @@
 2002-05-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* ordered-qz/dsubsp.f (DSUBSP): Delete decl for unused variable J.
+
 	* misc/f77-fcn.c (xstopx): Return type is void, not volatile void.
 	* misc/f77-fcn.h (xstopx): Provide decl.  Add special gcc noreturn
 	attribute here.

@@ -66,6 +66,7 @@ extern "C"
 #include "octave.h"
 #include "parse.h"
 #include "defaults.h"
+#include "user-prefs.h"
 #include "procstream.h"
 #include "unwind-prot.h"
 #include "octave-hist.h"
@@ -419,28 +420,32 @@ print_version_and_exit (void)
   exit (0);
 }
 
+static void
+initialize_error_handlers ()
+{
+  set_Complex_error_handler (octave_Complex_error_handler);
+
+  set_liboctave_error_handler (error);
+}
+
 // You guessed it.
 
 int
 main (int argc, char **argv)
 {
-// Allow for system dependent initialization.  See sysdep.cc for more
-// details.
+// The order of these calls is important, and initialize globals must
+// come before the options are processed because some command line
+// options override defaults.
+
+  init_user_prefs ();
+
+  initialize_pager ();
+
   sysdep_init ();
 
-// This is not really the right place to do this...
-  set_Complex_error_handler (octave_Complex_error_handler);
+  initialize_error_handlers ();
 
-// Or this, probably...
-  set_liboctave_error_handler (error);
-
-// Do this first, since some command line arguments may override the
-// defaults.
   initialize_globals (argv[0]);
-
-// Initialize dynamic linking.  This might not do anything.  Must
-// happen after initializing raw_prog_name.
-  init_dynamic_linker ();
 
   int optc;
   while ((optc = getopt_long (argc, argv, short_opts, long_opts, 0)) != EOF)
@@ -490,7 +495,8 @@ main (int argc, char **argv)
   atexit (cleanup_tmp_files);
 #endif
 
-  initialize_pager ();
+// These can come after command line args since none of them set any
+// defaults that might be changed by command line options.
 
   install_signal_handlers ();
 
@@ -503,6 +509,8 @@ main (int argc, char **argv)
   install_builtins ();
 
   initialize_readline ();
+
+  init_dynamic_linker ();
 
   if (! inhibit_startup_message)
     cout << "Octave, version " << version_string

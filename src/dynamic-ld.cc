@@ -42,6 +42,7 @@ extern "C"
 #include "user-prefs.h"
 #include "variables.h"
 #include "defaults.h"
+#include "dirfns.h"
 #include "octave.h"
 #include "utils.h"
 #include "error.h"
@@ -103,7 +104,10 @@ octave_dld_init (void)
 
   if (! initialized)
     {
-      char *full_path = dld_find_executable (raw_prog_name);
+      static char *prog = make_absolute (raw_prog_name,
+					 the_current_working_directory);
+
+      char *full_path = dld_find_executable (prog);
 
       if (full_path)
 	{
@@ -115,7 +119,10 @@ octave_dld_init (void)
 	    initialized = 1;
 	}
       else
-	error ("octave_dld_init: can't find full path to `%s'", prog_name);
+	{
+	  error ("octave_dld_init: can't find full path to `%s'",
+		 raw_prog_name);
+	}
     }
 }
 

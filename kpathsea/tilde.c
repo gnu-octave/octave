@@ -94,7 +94,7 @@ test_expand_tilde (const_string filename)
   string answer;
   
   printf ("Tilde expansion of `%s':\t", filename ? filename : "(null)");
-  answer = kpse_expand_tilde (filename);
+  answer = kpse_tilde_expand (filename);
   puts (answer);
 }
 

@@ -613,7 +613,7 @@ octave_read (char *buf, int max_size)
 // warning if the file doesn't exist.
 
 FILE *
-get_input_from_file (char *name, int warn)
+get_input_from_file (const char *name, int warn)
 {
   FILE *instream = 0;
 

@@ -352,7 +352,7 @@ parse_and_execute (FILE *f, int print)
 }
 
 void
-parse_and_execute (char *s, int print, int verbose)
+parse_and_execute (const char *s, int print, int verbose)
 {
   begin_unwind_frame ("parse_and_execute_2");
 
@@ -385,6 +385,28 @@ parse_and_execute (char *s, int print, int verbose)
     }
 
   run_unwind_frame ("parse_and_execute_2");
+}
+
+DEFUN ("source", Fsource, Ssource, 10,
+  "source (FILE)\n\
+\n\
+Parse and execute the contents of FILE.  Like executing commands in a\n\
+script file but without requiring the file to be named `FILE.m'.")
+{
+  Octave_object retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 1)
+    {
+      const char *file = args(0).string_value ();
+
+      parse_and_execute (file, 1);
+    }
+  else
+    print_usage ("source");
+
+  return retval;
 }
 
 // Initialize by reading startup files.

@@ -143,12 +143,12 @@ install: all
 	  rm -f $(infodir)/octave.info* ; \
 	  if test -f octave.info ; then \
 	    for f in octave.info* ; do \
-	      echo "installing $$f in $(infodir)/$$f" ; \
+	      echo "installing $$f in $(infodir)" ; \
 	      $(INSTALL_DATA) $$f $(infodir)/$$f ; \
 	    done ; \
 	  else \
 	    for f in $(srcdir)/octave.info* ; do \
-	      echo "installing $$f in $(infodir)/`basename $$f` ; \
+	      echo "installing $$f in $(infodir)" ; \
 	      $(INSTALL_DATA) $$f $(infodir)/`basename $$f` ; \
 	    done ; \
 	  fi ; \
@@ -162,13 +162,13 @@ install: all
 	    echo "to $(infodir)/dir." ; \
 	    echo "" ; \
 	  else \
-	    echo "installing $(srcdir)/dir in $(infodir)/dir" ; \
+	    echo "installing $(srcdir)/dir in $(infodir)" ; \
 	    $(INSTALL_DATA) $(srcdir)/dir $(infodir)/dir ; \
 	  fi ; \
 	fi
 	@if test -d $(mandir) ; then \
 	  rm -f $(mandir)/octave.$(manext) ; \
-	  echo "installing $(srcdir)/octave.1 in $(mandir)/octave.$(manext) ; \
+	  echo "installing $(srcdir)/octave.1 in $(mandir)" ; \
 	  $(INSTALL_DATA) $(srcdir)/octave.1 $(mandir)/octave.$(manext) ; \
 	fi
 .PHONY: install

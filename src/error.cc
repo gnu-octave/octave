@@ -32,6 +32,9 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "utils.h"
 #include "error.h"
 #include "pager.h"
+#include "oct-obj.h"
+#include "tree-const.h"
+#include "defun.h"
 
 // Current error state.
 int error_state;
@@ -39,7 +42,7 @@ int error_state;
 static void
 verror (const char *name, const char *fmt, va_list args)
 {
-  if (name != (char *) NULL)
+  if (name)
     fprintf (stderr, "%s: ", name);
 
   vfprintf (stderr, fmt, args);
@@ -113,6 +116,38 @@ panic (const char *fmt, ...)
   verror ("panic", fmt, args);
   va_end (args);
   abort ();
+}
+
+DEFUN ("error", Ferror, Serror, 2, 1,
+  "error (MESSAGE): print MESSAGE and set the error state.\n\
+This should eventually take us up to the top level, possibly\n\
+printing traceback messages as we go.\n\
+\n\
+If MESSAGE ends in a newline character, traceback messages are not\n\
+printed.") 
+{
+  Octave_object retval;
+
+  char *msg = "unspecified_error";
+
+  int nargin = args.length ();
+
+  if (nargin == 2 && args(1).is_defined ())
+    {
+      if (args(1).is_string_type ())
+	{
+	  msg = args(1).string_value ();
+
+	  if (! msg || ! *msg)
+	    return retval;
+	}
+      else if (args(1).is_empty ())
+	return retval;
+    }
+
+  error (msg);
+
+  return retval;
 }
 
 /*

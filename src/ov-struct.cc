@@ -42,7 +42,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 DEFINE_OCTAVE_ALLOCATOR(octave_struct);
 
-DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(octave_struct, "struct");
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(octave_struct, "struct", "struct");
 
 Cell
 octave_struct::dotref (const octave_value_list& idx)

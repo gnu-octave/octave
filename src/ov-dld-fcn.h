@@ -84,9 +84,9 @@ private:
   // on the file to see if it has changed.
   bool system_fcn_file;
 
-  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
-
   DECLARE_OCTAVE_ALLOCATOR
+
+  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
 
 #endif

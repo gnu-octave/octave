@@ -258,9 +258,9 @@ private:
   void bind_automatic_vars (const string_vector& arg_names, int nargin,
 			    int nargout, const octave_value_list& va_args);
 
-  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
-
   DECLARE_OCTAVE_ALLOCATOR
+
+  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
 
 #endif

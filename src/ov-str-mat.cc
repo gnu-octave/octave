@@ -43,7 +43,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 DEFINE_OCTAVE_ALLOCATOR (octave_char_matrix_str);
 
-DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_char_matrix_str, "string");
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_char_matrix_str, "string", "char");
 
 static octave_value *
 default_numeric_conversion_function (const octave_value& a)

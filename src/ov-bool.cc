@@ -47,7 +47,7 @@ template class octave_base_scalar<bool>;
 
 DEFINE_OCTAVE_ALLOCATOR (octave_bool);
 
-DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_bool, "bool");
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_bool, "bool", "logical");
 
 static octave_value *
 default_numeric_conversion_function (const octave_value& a)

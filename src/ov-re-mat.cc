@@ -57,7 +57,7 @@ template class octave_base_matrix<NDArray>;
 
 DEFINE_OCTAVE_ALLOCATOR (octave_matrix);
 
-DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_matrix, "matrix");
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_matrix, "matrix", "double");
 
 octave_value *
 octave_matrix::try_narrowing_conversion (void)

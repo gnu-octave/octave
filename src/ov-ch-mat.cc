@@ -44,7 +44,8 @@ template class octave_base_matrix<charNDArray>;
 
 DEFINE_OCTAVE_ALLOCATOR (octave_char_matrix);
 
-DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_char_matrix, "char matrix");
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_char_matrix,
+				     "char matrix", "int8");
 
 bool
 octave_char_matrix::valid_as_scalar_index (void) const

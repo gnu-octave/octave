@@ -40,7 +40,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 DEFINE_OCTAVE_ALLOCATOR (octave_cs_list);
 
-DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_cs_list, "cs-list");
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_cs_list, "cs-list", "cs-list");
 
 octave_cs_list::octave_cs_list (const Cell& c)
 {

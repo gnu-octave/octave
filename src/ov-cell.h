@@ -110,6 +110,7 @@ public:
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
 private:
+
   DECLARE_OCTAVE_ALLOCATOR
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA

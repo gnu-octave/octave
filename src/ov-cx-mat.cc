@@ -49,7 +49,8 @@ template class octave_base_matrix<ComplexNDArray>;
 
 DEFINE_OCTAVE_ALLOCATOR (octave_complex_matrix);
 
-DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_complex_matrix, "complex matrix");
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_complex_matrix,
+				     "complex matrix", "double");
 
 octave_value *
 octave_complex_matrix::try_narrowing_conversion (void)

@@ -59,6 +59,7 @@ static int Vmax_recursion_depth;
 DEFINE_OCTAVE_ALLOCATOR (octave_user_function);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_user_function,
+				     "user-defined function",
 				     "user-defined function");
 
 // Ugh.  This really needs to be simplified (code/data?

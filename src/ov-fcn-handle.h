@@ -84,9 +84,9 @@ private:
   // The name of the handle.
   std::string nm;
 
-  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
-
   DECLARE_OCTAVE_ALLOCATOR
+
+  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
 
 extern octave_value make_fcn_handle (const std::string& nm);

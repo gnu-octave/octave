@@ -39,6 +39,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 DEFINE_OCTAVE_ALLOCATOR (octave_mapper);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_mapper,
+				     "built-in mapper function",
 				     "built-in mapper function");
 
 static bool

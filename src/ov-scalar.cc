@@ -47,7 +47,7 @@ template class octave_base_scalar<double>;
 
 DEFINE_OCTAVE_ALLOCATOR (octave_scalar);
 
-DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_scalar, "scalar");
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_scalar, "scalar", "double");
 
 octave_value
 octave_scalar::do_index_op (const octave_value_list& idx, int resize_ok)

@@ -604,6 +604,8 @@ public:
 
   virtual std::string type_name (void) const { return rep->type_name (); }
 
+  virtual std::string class_name (void) const { return rep->class_name (); }
+
   // Unary and binary operations.
 
   friend octave_value do_unary_op (unary_op op,
@@ -752,17 +754,20 @@ OV_BINOP_FN (op_struct_ref)
   public: \
     int type_id (void) const { return t_id; } \
     std::string type_name (void) const { return t_name; } \
+    std::string class_name (void) const { return c_name; } \
     static int static_type_id (void) { return t_id; } \
     static void register_type (void) \
-      { t_id = octave_value_typeinfo::register_type (t_name); } \
+      { t_id = octave_value_typeinfo::register_type (t_name, c_name); } \
  \
   private: \
     static int t_id; \
-    static const std::string t_name;
+    static const std::string t_name; \
+    static const std::string c_name;
 
-#define DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(t, n) \
+#define DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(t, n, c) \
   int t::t_id (-1); \
-  const std::string t::t_name (n)
+  const std::string t::t_name (n); \
+  const std::string t::c_name (c)
 
 // If TRUE, print a warning for assignments like
 //

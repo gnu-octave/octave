@@ -39,7 +39,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 DEFINE_OCTAVE_ALLOCATOR (octave_fcn_handle);
 
-DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_fcn_handle, "function handle");
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_fcn_handle,
+				     "function handle",
+				     "function handle");
 
 void
 octave_fcn_handle::print (std::ostream& os, bool pr_as_read_syntax) const

@@ -1,3 +1,22 @@
+2003-11-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-typeinfo.cc (octave_value_typeinfo::register_type,
+	octave_value_typeinfo::do_register_type):
+	New arg, c_name for class name.
+	* ov-base.cc, ov-bool-mat.cc, ov-bool.cc, ov-builtin.cc,
+	ov-cell.cc, ov-ch-mat.cc, ov-colon.cc, ov-complex.cc,
+	ov-cs-list.cc, ov-cx-mat.cc, ov-dld-fcn.cc, ov-fcn-handle.cc,
+	ov-file.cc, ov-list.cc, ov-mapper.cc, ov-range.cc, ov-re-mat.cc,
+	ov-scalar.cc, ov-str-mat.cc, ov-struct.cc, ov-usr-fcn.cc,
+	ov-va-args.cc: Pass class name to DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA.
+	* ov.h (octave_value::class_name): New virtual function.
+	(DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA): Define c_name, for class name.
+	Pass c_name to octave_value_typeinfo::register_type.
+	(DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA): Declare static member
+	c_name for class name.  Provide class_name member function.
+
+	* ov-typeinfo.cc (Fclass): New function.
+
 2003-11-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* utils.cc (Fisvarname): Pass correct name to make_argv.
@@ -11,7 +30,7 @@
 	* lex.l (bracket_brace_paren_nesting_level::is_bracket_or_brace):
 	New function.
 	(handle_close_bracket): New arg, bracket_type.  Change all uses.
-	Return bool, not int.  First arg is now bool.
+	First arg is now bool.
 	(<MATRIX_START>{SNLCMT}*\}{S}*): New pattern.
 	(maybe_unput_comma): Handle brace nesting level the same as brackets.
 	(handle_close_brace): Likewise.

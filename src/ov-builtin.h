@@ -79,9 +79,9 @@ private:
 
   octave_builtin (const octave_builtin& m);
 
-  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
-
   DECLARE_OCTAVE_ALLOCATOR
+
+  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
 
 #endif

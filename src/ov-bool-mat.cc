@@ -48,7 +48,8 @@ template class octave_base_matrix<boolNDArray>;
 
 DEFINE_OCTAVE_ALLOCATOR (octave_bool_matrix);
 
-DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_bool_matrix, "bool matrix");
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_bool_matrix,
+				     "bool matrix", "logical");
 
 static octave_value *
 default_numeric_conversion_function (const octave_value& a)

@@ -53,7 +53,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-fcn-handle.h"
 #include "variables.h"
 
-DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_base_value, "<unknown type>");
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_base_value,
+				     "<unknown type>", "unknown");
 
 octave_value
 octave_base_value::squeeze (void) const

@@ -49,7 +49,7 @@ template class octave_base_matrix<Cell>;
 
 DEFINE_OCTAVE_ALLOCATOR (octave_cell);
 
-DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_cell, "cell");
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_cell, "cell", "cell");
 
 octave_value
 octave_cell::subsref (const std::string& type,

@@ -107,9 +107,9 @@ private:
   // The number of the beast.
   int number;
 
-  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
-
   DECLARE_OCTAVE_ALLOCATOR
+
+  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
 
 #endif

@@ -35,7 +35,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-obj.h"
 #include "ov-colon.h"
 
-DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_magic_colon, "magic-colon");
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_magic_colon,
+				     "magic-colon", "magic-colon");
 
 void
 octave_magic_colon::print (std::ostream& os, bool) const

@@ -47,7 +47,8 @@ template class octave_base_scalar<Complex>;
 
 DEFINE_OCTAVE_ALLOCATOR (octave_complex);
 
-DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_complex, "complex scalar");
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_complex,
+				     "complex scalar", "double");
 
 octave_value *
 octave_complex::try_narrowing_conversion (void)

@@ -81,10 +81,11 @@ octave_value_typeinfo::instance_ok (void)
 }
 
 int
-octave_value_typeinfo::register_type (const std::string& name)
+octave_value_typeinfo::register_type (const std::string& t_name,
+				      const std::string& c_name)
 {
   return (instance_ok ())
-    ? instance->do_register_type (name) : -1;
+    ? instance->do_register_type (t_name, c_name) : -1;
 }
 
 bool
@@ -147,12 +148,13 @@ octave_value_typeinfo::register_widening_op (int t, int t_result,
 }
 
 int
-octave_value_typeinfo::do_register_type (const std::string& name)
+octave_value_typeinfo::do_register_type (const std::string& t_name,
+					 const std::string& c_name)
 {
   int i = 0;
 
   for (i = 0; i < num_types; i++)
-    if (name == types (i))
+    if (t_name == types (i))
       return i;
 
   int len = types.length ();
@@ -184,7 +186,7 @@ octave_value_typeinfo::do_register_type (const std::string& name)
       widening_ops.resize (len, len, static_cast<type_conv_fcn> (0));
     }
 
-  types (i) = name;
+  types (i) = t_name;
 
   num_types++;
 
@@ -397,6 +399,25 @@ currently installed data types.\n\
     retval = args(0).type_name ();
   else
     print_usage ("typeinfo");
+
+  return retval;
+}
+
+DEFUN (class, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} class (@var{expr})\n\
+\n\
+Return the class of the expression @var{expr}, as a string.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 1)
+    retval = args(0).class_name ();
+  else
+    print_usage ("class");
 
   return retval;
 }

@@ -44,7 +44,7 @@ public:
 
   static bool instance_ok (void);
 
-  static int register_type (const std::string&);
+  static int register_type (const std::string&, const std::string&);
 
   static bool register_unary_op (octave_value::unary_op, int, unary_op_fcn);
 
@@ -152,7 +152,7 @@ private:
 
   Array2<type_conv_fcn> widening_ops;
 
-  int do_register_type (const std::string&);
+  int do_register_type (const std::string&, const std::string&);
 
   bool do_register_unary_op (octave_value::unary_op, int, unary_op_fcn);
 

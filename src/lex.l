@@ -171,7 +171,7 @@ static bool next_token_is_postfix_unary_op (bool spc_prev);
 static std::string strip_trailing_whitespace (char *s);
 static void handle_number (void);
 static int handle_string (char delim, int text_style = 0);
-static char handle_close_bracket (bool spc_gobbled, char bracket_type);
+static int handle_close_bracket (bool spc_gobbled, int bracket_type);
 static int handle_identifier (void);
 static bool have_continuation (bool trailing_comments_ok = true);
 static bool have_ellipsis_continuation (bool trailing_comments_ok = true);
@@ -2226,10 +2226,10 @@ next_token_is_assign_op (void)
   return retval;
 }
 
-static char
-handle_close_bracket (bool spc_gobbled, char bracket_type)
+static int
+handle_close_bracket (bool spc_gobbled, int bracket_type)
 {
-  char retval = bracket_type;
+  int retval = bracket_type;
 
   if (! nesting_level.none ())
     {

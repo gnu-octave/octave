@@ -32,7 +32,7 @@ function retval = is_leap_year (year)
     year = t (1);
   endif
 
-  retval = ((rem (year, 4) == 0 && rem (year, 100) != 0) ...
-            || rem (year, 400) == 0);
+  retval = ((rem (year, 4) == 0 & rem (year, 100) != 0) ...
+	    | rem (year, 400) == 0);
 
 endfunction

@@ -275,7 +275,7 @@ execute_startup_files (void)
 
       int home_rc_already_executed = 0;
 
-      char *initfile = getenv ("OCTAVE_INITFILE");
+      const char *initfile = getenv ("OCTAVE_INITFILE");
 
       if (! initfile)
 	initfile = ".octaverc";

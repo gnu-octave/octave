@@ -33,8 +33,8 @@ class string_vector;
 
 struct help_list
 {
-  char *name;
-  char *help;
+  const char *name;
+  const char *help;
 };
 
 extern string_vector names (help_list *l, int& count);

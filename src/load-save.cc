@@ -251,7 +251,7 @@ skip_comments (istream& is)
 //  #[ \t]*keyword[ \t]*:[ \t]*string-value[ \t]*\n
 
 static char *
-extract_keyword (istream& is, char *keyword)
+extract_keyword (istream& is, const char *keyword)
 {
   char *retval = 0;
 
@@ -318,7 +318,7 @@ extract_keyword (istream& is, char *keyword)
 //  [ \t]*keyword[ \t]*int-value.*\n
 
 static int
-extract_keyword (istream& is, char *keyword, int& value)
+extract_keyword (istream& is, const char *keyword, int& value)
 {
   int status = 0;
   value = 0;
@@ -1993,7 +1993,7 @@ save_mat_binary_data (ostream& os, const octave_value& tc,
 }
 
 static void
-ascii_save_type (ostream& os, char *type, bool mark_as_global)
+ascii_save_type (ostream& os, const char *type, bool mark_as_global)
 {
   if (mark_as_global)
     os << "# type: global ";

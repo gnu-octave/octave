@@ -609,7 +609,7 @@ int
 help_from_list (ostream& os, const help_list *list,
 		const string& nm, int usage)
 {
-  char *name;
+  const char *name;
   while ((name = list->name) != 0)
     {
       if (strcmp (name, nm.c_str ()) == 0)

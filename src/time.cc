@@ -72,15 +72,15 @@ extract_tm (Octave_map &m, double& fraction)
   static struct tm tm;
 
   fraction = (m ["usec"] . double_value ()) / 1e6;
-  tm.tm_sec = NINT (m ["sec"] . double_value ());
-  tm.tm_min = NINT (m ["min"] . double_value ());
-  tm.tm_hour = NINT (m ["hour"] . double_value ());
-  tm.tm_mday = NINT (m ["mday"] . double_value ());
-  tm.tm_mon = NINT (m ["mon"] . double_value ());
-  tm.tm_year = NINT (m ["year"] . double_value ());
-  tm.tm_wday = NINT (m ["wday"] . double_value ());
-  tm.tm_yday = NINT (m ["yday"] . double_value ());
-  tm.tm_isdst = NINT (m ["isdst"] . double_value ());
+  tm.tm_sec = static_cast<int> (m ["sec"] . double_value ());
+  tm.tm_min = static_cast<int> (m ["min"] . double_value ());
+  tm.tm_hour = static_cast<int> (m ["hour"] . double_value ());
+  tm.tm_mday = static_cast<int> (m ["mday"] . double_value ());
+  tm.tm_mon = static_cast<int> (m ["mon"] . double_value ());
+  tm.tm_year = static_cast<int> (m ["year"] . double_value ());
+  tm.tm_wday = static_cast<int> (m ["wday"] . double_value ());
+  tm.tm_yday = static_cast<int> (m ["yday"] . double_value ());
+  tm.tm_isdst = static_cast<int> (m ["isdst"] . double_value ());
 #ifdef HAVE_TMZONE
   string tstr = m ["zone"] . string_value ();
   tm.tm_zone = tstr.c_str ();
@@ -118,7 +118,7 @@ seconds since the epoch.")
 
 #endif
  
-  return static_cast<double> (now + fraction);
+  return static_cast<double> (now) + fraction;
 }
 
 DEFUN_DLD (gmtime, args, ,
@@ -136,7 +136,7 @@ Coordinated Universal Time (UTC).")
 
       if (! error_state)
 	{
-	  time_t timeval = NINT (tmp);
+	  time_t timeval = static_cast<int> (tmp);
 	  double ip;
 	  double fraction = modf (tmp, &ip); 
 
@@ -175,7 +175,7 @@ the following elements:\n\
 
       if (! error_state)
 	{
-	  time_t timeval = NINT (tmp);
+	  time_t timeval = static_cast<int> (tmp);
 	  double ip;
 	  double fraction = modf (tmp, &ip); 
 
@@ -202,7 +202,7 @@ DEFUN_DLD (mktime, args, ,
       struct tm *tm = extract_tm (map, fraction);
 
       if (! error_state)
-	retval = static_cast<double> (mktime (tm) + fraction);
+	retval = static_cast<double> (mktime (tm)) + fraction;
     }
   else
     print_usage ("mktime");

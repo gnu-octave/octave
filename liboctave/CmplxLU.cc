@@ -31,7 +31,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "CmplxLU.h"
 #include "f77-fcn.h"
 #include "lo-error.h"
-#include "mx-inlines.cc"
 
 // Instantiate the base LU class for the types we need.
 

@@ -174,7 +174,7 @@ static int is_keyword (const string& s);
 static string plot_style_token (const string& s);
 static symbol_record *lookup_identifier (const string& s);
 static void grab_help_text (void);
-static int match_any (char c, char *s);
+static int match_any (char c, const char *s);
 static int next_token_is_bin_op (int spc_prev, char *yytext);
 static int next_token_is_postfix_unary_op (int spc_prev, char *yytext);
 static string strip_trailing_whitespace (char *s);
@@ -855,7 +855,7 @@ plot_style_token (const string& s)
 {
   string retval;
 
-  static char *plot_styles[] = 
+  static const char *plot_styles[] = 
     {
       "boxes",
       "boxerrorbars",
@@ -878,7 +878,7 @@ plot_style_token (const string& s)
       0,
     };
 
-  char **tmp = plot_styles;
+  const char * const *tmp = plot_styles;
   while (*tmp)
     {
       if (almost_match (*tmp, s.c_str ()))
@@ -1160,7 +1160,7 @@ grab_help_text (void)
 // string.
 
 static int
-match_any (char c, char *s)
+match_any (char c, const char *s)
 {
   char tmp;
   while ((tmp = *s++) != '\0')

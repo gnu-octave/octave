@@ -397,7 +397,6 @@ private:
 
   union
     {
-      octave_value *freeptr;  // For custom memory management.
       octave_value *rep;      // The real representation.
       int count;              // A reference count.
     };

@@ -312,7 +312,7 @@ edit_history_add_hist (const string& line)
 
 static string
 mk_tmp_hist_file (int argc, const string_vector& argv,
-		  int insert_curr, char *warn_for) 
+		  int insert_curr, const char *warn_for) 
 {
   string retval;
 

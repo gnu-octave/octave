@@ -1,4 +1,27 @@
+Mon Mar 10 22:34:22 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* CmplxCHOL.cc, CmplxHESS.cc, CmplxLU.cc, CmplxQR.cc,
+	CmplxQRP.cc, CmplxSCHUR.cc, CmplxSVD.cc, EIG.cc, dbleCHOL.cc,
+	dbleHESS.cc, dbleLU.cc, dbleQR.cc, dbleQRP.cc, dbleSCHUR.cc,
+	dbleSVD.cc: Don't include mx-inlines.cc.
+
+	* mx-inlines.cc: Abuse the preprocessor to eliminate lots of
+	duplicate code.
+
 Sun Mar  9 03:44:52 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* dbleQR.h (QR): Delete extra comma at end of list.
+
+	* prog-args.cc (prog_args::getopt): Add missing const in cast.
+
+	* dbleSVD.h (SVD::type): Delete extra comma at end of list.
+
+	* idx-vector.h (idx_vector): Delete unnecessary idx_vector:: and
+	idx_vecotr_rep:: qualifiers.
+
+	* Array.h (class Array): Delete unnecessary Array<T>:: qualifiers.
+
+	* data-conv.h (save_type): Delete extra comma at end of list.
 
 	* CMatrix.cc, FEGrid.cc, Range.cc, dMatrix.cc, data-conv.cc,
 	dir-ops.cc, file-ops.h, idx-vector.cc, idx-vector.h, lo-ieee.cc,

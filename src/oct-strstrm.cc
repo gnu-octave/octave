@@ -60,7 +60,7 @@ octave_base_strstream::tell (void) const
     {
       // XXX FIXME XXX -- shouldn't have to do this!
 
-      streambuf *sb = (static_cast<octave_base_strstream *>(this))->rdbuf ();
+      streambuf *sb = (const_cast<octave_base_strstream *>(this))->rdbuf ();
 
       if (sb)
 	{

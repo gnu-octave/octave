@@ -1,4 +1,3 @@
-// Helper functions for matrix classes.
 /*
 
 Copyright (C) 1996 John W. Eaton
@@ -21,822 +20,177 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
+#if !defined (octave_mx_ops_h)
+#define octave_mx_ops 1
+
+#include <cstddef>
+
 #include "oct-cmplx.h"
 
-// But first, some helper functions...
-
-// XXX FIXME XXX -- these need to be done with templates...
-
-static inline bool
-equal (const char *x, const char *y, int len)
-{
-  for (int i = 0; i < len; i++)
-    if (x[i] != y[i])
-      return false;
-
-  return true;
-}
-
-static inline double *
-add (const double *d, int len, double s)
-{
-  double *result = 0;
-  if (len > 0)
-    {
-      result = new double [len];
-      for (int i = 0; i < len; i++)
-	result[i] = d[i] + s;
-    }
-  return result;
-}
-
-static inline double *
-subtract (const double *d, int len, double s)
-{
-  double *result = 0;
-  if (len > 0)
-    {
-      result = new double [len];
-      for (int i = 0; i < len; i++)
-	result[i] = d[i] - s;
-    }
-  return result;
-}
-
-static inline double *
-subtract (double s, const double *d, int len)
-{
-  double *result = 0;
-  if (len > 0)
-    {
-      result = new double [len];
-      for (int i = 0; i < len; i++)
-	result[i] = s - d[i];
-    }
-  return result;
-}
-
-static inline double *
-multiply (const double *d, int len, double s)
-{
-  double *result = 0;
-  if (len > 0)
-    {
-      result = new double [len];
-      for (int i = 0; i < len; i++)
-	result[i] = d[i] * s;
-    }
-  return result;
-}
-
-static inline double *
-divide (const double *d, int len, double s)
-{
-  double *result = 0;
-  if (len > 0)
-    {
-      result = new double [len];
-      for (int i = 0; i < len; i++)
-	result[i] = d[i] / s;
-    }
-  return result;
-}
-
-static inline double *
-divide (double s, const double *d, int len)
-{
-  double *result = 0;
-  if (len > 0)
-    {
-      result = new double [len];
-      for (int i = 0; i < len; i++)
-	result[i] = s / d[i];
-    }
-  return result;
-}
-
-static inline double *
-add (const double *x, const double *y, int len)
-{
-  double *result = 0;
-  if (len > 0)
-    {
-      result = new double [len];
-      for (int i = 0; i < len; i++)
-	result[i] = x[i] + y[i];
-    }
-  return result;
-}
-
-static inline double *
-subtract (const double *x, const double *y, int len)
-{
-  double *result = 0;
-  if (len > 0)
-    {
-      result = new double [len];
-      for (int i = 0; i < len; i++)
-	result[i] = x[i] - y[i];
-    }
-  return result;
-}
-
-static inline double *
-multiply (const double *x, const double *y, int len)
-{
-  double *result = 0;
-  if (len > 0)
-    {
-      result = new double [len];
-      for (int i = 0; i < len; i++)
-	result[i] = x[i] * y[i];
-    }
-  return result;
-}
-
-static inline double *
-divide (const double *x, const double *y, int len)
-{
-  double *result = 0;
-  if (len > 0)
-    {
-      result = new double [len];
-      for (int i = 0; i < len; i++)
-	result[i] = x[i] / y[i];
-    }
-  return result;
-}
-
-static inline double *
-add2 (double *x, const double *y, int len)
-{
-  for (int i = 0; i < len; i++)
-    x[i] += y[i];
-  return x;
-}
-
-static inline double *
-subtract2 (double *x, const double *y, int len)
-{
-  for (int i = 0; i < len; i++)
-    x[i] -= y[i];
-  return x;
-}
-
-static inline double *
-negate (const double *d, int len)
-{
-  double *result = 0;
-  if (len > 0)
-    {
-      result = new double [len];
-      for (int i = 0; i < len; i++)
-	result[i] = -d[i];
-    }
-  return result;
-}
-
-static inline void
-copy (double *d, int len, double s)
-{
-  for (int i = 0; i < len; i++)
-    d[i] = s;
-}
-
-static inline void
-copy (double *x, const double *y, int len)
-{
-  for (int i = 0; i < len; i++)
-    x[i] = y[i];
-}
-
-static inline double *
-dup (const double *x, int len)
-{
-  double *retval = 0;
-  if (len > 0)
-    {
-      retval = new double [len];
-      for (int i = 0; i < len; i++)
-	retval[i] = x[i];
-    }
-  return retval;
-}
-
-static inline int
-equal (const double *x, const double *y, int len)
-{
-  for (int i = 0; i < len; i++)
-    if (x[i] != y[i])
-      return 0;
-  return 1;
-}
-
-// And some for Complex too...
-
-static inline Complex *
-add (const Complex *d, int len, Complex s)
-{
-  Complex *result = 0;
-  if (len > 0)
-    {
-      result = new Complex [len];
-      for (int i = 0; i < len; i++)
-	result[i] = d[i] + s;
-    }
-  return result;
-}
-
-static inline Complex *
-add (Complex s, const Complex *d, int len)
-{
-  Complex *result = 0;
-  if (len > 0)
-    {
-      result = new Complex [len];
-      for (int i = 0; i < len; i++)
-	result[i] = s + d[i];
-    }
-  return result;
-}
-
-static inline Complex *
-subtract (const Complex *d, int len, Complex s)
-{
-  Complex *result = 0;
-  if (len > 0)
-    {
-      result = new Complex [len];
-      for (int i = 0; i < len; i++)
-	result[i] = d[i] - s;
-    }
-  return result;
-}
-
-static inline Complex *
-subtract (Complex s, const Complex *d, int len)
-{
-  Complex *result = 0;
-  if (len > 0)
-    {
-      result = new Complex [len];
-      for (int i = 0; i < len; i++)
-	result[i] = s - d[i];
-    }
-  return result;
-}
-
-static inline Complex *
-multiply (const Complex *d, int len, Complex s)
-{
-  Complex *result = 0;
-  if (len > 0)
-    {
-      result = new Complex [len];
-      for (int i = 0; i < len; i++)
-	result[i] = d[i] * s;
-    }
-  return result;
-}
-
-static inline Complex *
-multiply (Complex s, const Complex *d, int len)
-{
-  Complex *result = 0;
-  if (len > 0)
-    {
-      result = new Complex [len];
-      for (int i = 0; i < len; i++)
-	result[i] = s * d[i];
-    }
-  return result;
-}
-
-static inline Complex *
-divide (const Complex *d, int len, Complex s)
-{
-  Complex *result = 0;
-  if (len > 0)
-    {
-      result = new Complex [len];
-      for (int i = 0; i < len; i++)
-	result[i] = d[i] / s;
-    }
-  return result;
-}
-
-static inline Complex *
-divide (Complex s, const Complex *d, int len)
-{
-  Complex *result = 0;
-  if (len > 0)
-    {
-      result = new Complex [len];
-      for (int i = 0; i < len; i++)
-	result[i] = s / d[i];
-    }
-  return result;
-}
-
-static inline Complex *
-add (const Complex *x, const Complex *y, int len)
-{
-  Complex *result = 0;
-  if (len > 0)
-    {
-      result = new Complex [len];
-      for (int i = 0; i < len; i++)
-	result[i] = x[i] + y[i];
-    }
-  return result;
-}
-
-static inline Complex *
-subtract (const Complex *x, const Complex *y, int len)
-{
-  Complex *result = 0;
-  if (len > 0)
-    {
-      result = new Complex [len];
-      for (int i = 0; i < len; i++)
-	result[i] = x[i] - y[i];
-    }
-  return result;
-}
-
-static inline Complex *
-multiply (const Complex *x, const Complex *y, int len)
-{
-  Complex *result = 0;
-  if (len > 0)
-    {
-      result = new Complex [len];
-      for (int i = 0; i < len; i++)
-	result[i] = x[i] * y[i];
-    }
-  return result;
-}
-
-static inline Complex *
-divide (const Complex *x, const Complex *y, int len)
-{
-  Complex *result = 0;
-  if (len > 0)
-    {
-      result = new Complex [len];
-      for (int i = 0; i < len; i++)
-	result[i] = x[i] / y[i];
-    }
-  return result;
-}
-
-static inline Complex *
-add2 (Complex *x, const Complex *y, int len)
-{
-  for (int i = 0; i < len; i++)
-    x[i] += y[i];
-  return x;
-}
-
-static inline Complex *
-subtract2 (Complex *x, const Complex *y, int len)
-{
-  for (int i = 0; i < len; i++)
-    x[i] -= y[i];
-  return x;
-}
-
-static inline Complex *
-negate (const Complex *d, int len)
-{
-  Complex *result = 0;
-  if (len > 0)
-    {
-      result = new Complex [len];
-      for (int i = 0; i < len; i++)
-	result[i] = -d[i];
-    }
-  return result;
-}
-
-static inline double *
-not (const Complex *d, int len)
-{
-  double *result = 0;
-  if (len > 0)
-    {
-      result = new double [len];
-      for (int i = 0; i < len; i++)
-	result[i] = (d[i] == 0.0);
-    }
-  return result;
-}
-
-static inline void
-copy (Complex *d, int len, Complex s)
-{
-  for (int i = 0; i < len; i++)
-    d[i] = s;
-}
-
-static inline void
-copy (Complex *x, const Complex *y, int len)
-{
-  for (int i = 0; i < len; i++)
-    x[i] = y[i];
-}
-
-static inline Complex *
-dup (const Complex *x, int len)
-{
-  Complex *retval = 0;
-  if (len > 0)
-    {
-      retval = new Complex [len];
-      for (int i = 0; i < len; i++)
-	retval[i] = x[i];
-    }
-  return retval;
-}
-
-static inline Complex *
-make_complex (const double *x, int len)
-{
-  Complex *retval = 0;
-  if (len > 0)
-    {
-      retval = new Complex [len];
-      for (int i = 0; i < len; i++)
-	retval[i] = x[i];
-    }
-  return retval;
-}
-
-static inline Complex *
-conj_dup (const Complex *x, int len)
-{
-  Complex *retval = 0;
-  if (len > 0)
-    {
-      retval = new Complex [len];
-      for (int i = 0; i < len; i++)
-	retval[i] = conj (x[i]);
-    }
-  return retval;
-}
-
-static inline double *
-real_dup (const Complex *x, int len)
-{
-  double *retval = 0;
-  if (len > 0)
-    {
-      retval = new double [len];
-      for (int i = 0; i < len; i++)
-	retval[i] = real (x[i]);
-    }
-  return retval;
-}
-
-static inline double *
-imag_dup (const Complex *x, int len)
-{
-  double *retval = 0;
-  if (len > 0)
-    {
-      retval = new double [len];
-      for (int i = 0; i < len; i++)
-	retval[i] = imag (x[i]);
-    }
-  return retval;
-}
-
-static inline int
-equal (const Complex *x, const Complex *y, int len)
-{
-  for (int i = 0; i < len; i++)
-    if (x[i] != y[i])
-      return 0;
-  return 1;
-}
-
-// And still some more for mixed Complex/double operations...
-
-static inline Complex *
-add (const Complex *d, int len, double s)
-{
-  Complex *result = 0;
-  if (len > 0)
-    {
-      result = new Complex [len];
-      for (int i = 0; i < len; i++)
-	result[i] = d[i] + s;
-    }
-  return result;
-}
-
-static inline Complex *
-add (const double *d, int len, Complex s)
-{
-  Complex *result = 0;
-  if (len > 0)
-    {
-      result = new Complex [len];
-      for (int i = 0; i < len; i++)
-	result[i] = d[i] + s;
-    }
-  return result;
-}
-
-static inline Complex *
-add (double s, const Complex *d, int len)
-{
-  Complex *result = 0;
-  if (len > 0)
-    {
-      result = new Complex [len];
-      for (int i = 0; i < len; i++)
-	result[i] = s + d[i];
-    }
-  return result;
-}
-
-static inline Complex *
-add (Complex s, const double *d, int len)
-{
-  Complex *result = 0;
-  if (len > 0)
-    {
-      result = new Complex [len];
-      for (int i = 0; i < len; i++)
-	result[i] = s + d[i];
-    }
-  return result;
-}
-
-static inline Complex *
-subtract (const Complex *d, int len, double s)
-{
-  Complex *result = 0;
-  if (len > 0)
-    {
-      result = new Complex [len];
-      for (int i = 0; i < len; i++)
-	result[i] = d[i] - s;
-    }
-  return result;
-}
-
-static inline Complex *
-subtract (const double *d, int len, Complex s)
-{
-  Complex *result = 0;
-  if (len > 0)
-    {
-      result = new Complex [len];
-      for (int i = 0; i < len; i++)
-	result[i] = d[i] - s;
-    }
-  return result;
-}
-
-static inline Complex *
-subtract (double s, const Complex *d, int len)
-{
-  Complex *result = 0;
-  if (len > 0)
-    {
-      result = new Complex [len];
-      for (int i = 0; i < len; i++)
-	result[i] = s - d[i];
-    }
-  return result;
-}
-
-static inline Complex *
-subtract (Complex s, const double *d, int len)
-{
-  Complex *result = 0;
-  if (len > 0)
-    {
-      result = new Complex [len];
-      for (int i = 0; i < len; i++)
-	result[i] = s - d[i];
-    }
-  return result;
-}
-
-static inline Complex *
-multiply (const Complex *d, int len, double s)
-{
-  Complex *result = 0;
-  if (len > 0)
-    {
-      result = new Complex [len];
-      for (int i = 0; i < len; i++)
-	result[i] = d[i] * s;
-    }
-  return result;
-}
-
-static inline Complex *
-multiply (const double *d, int len, Complex s)
-{
-  Complex *result = 0;
-  if (len > 0)
-    {
-      result = new Complex [len];
-      for (int i = 0; i < len; i++)
-	result[i] = d[i] * s;
-    }
-  return result;
-}
-
-static inline Complex *
-divide (const Complex *d, int len, double s)
-{
-  Complex *result = 0;
-  if (len > 0)
-    {
-      result = new Complex [len];
-      for (int i = 0; i < len; i++)
-	result[i] = d[i] / s;
-    }
-  return result;
-}
-
-static inline Complex *
-divide (const double *d, int len, Complex s)
-{
-  Complex *result = 0;
-  if (len > 0)
-    {
-      result = new Complex [len];
-      for (int i = 0; i < len; i++)
-	result[i] = d[i] / s;
-    }
-  return result;
-}
-
-static inline Complex *
-divide (double s, const Complex *d, int len)
-{
-  Complex *result = 0;
-  if (len > 0)
-    {
-      result = new Complex [len];
-      for (int i = 0; i < len; i++)
-	result[i] = s / d[i];
-    }
-  return result;
-}
-
-static inline Complex *
-divide (Complex s, const double *d, int len)
-{
-  Complex *result = 0;
-  if (len > 0)
-    {
-      result = new Complex [len];
-      for (int i = 0; i < len; i++)
-	result[i] = s / d[i];
-    }
-  return result;
-}
-
-static inline Complex *
-add (const Complex *x, const double *y, int len)
-{
-  Complex *result = 0;
-  if (len > 0)
-    {
-      result = new Complex [len];
-      for (int i = 0; i < len; i++)
-	result[i] = x[i] + y[i];
-    }
-  return result;
-}
-
-static inline Complex *
-add (const double *x, const Complex *y, int len)
-{
-  Complex *result = 0;
-  if (len > 0)
-    {
-      result = new Complex [len];
-      for (int i = 0; i < len; i++)
-	result[i] = x[i] + y[i];
-    }
-  return result;
-}
-
-static inline Complex *
-subtract (const Complex *x, const double *y, int len)
-{
-  Complex *result = 0;
-  if (len > 0)
-    {
-      result = new Complex [len];
-      for (int i = 0; i < len; i++)
-	result[i] = x[i] - y[i];
-    }
-  return result;
-}
-
-static inline Complex *
-subtract (const double *x, const Complex *y, int len)
-{
-  Complex *result = 0;
-  if (len > 0)
-    {
-      result = new Complex [len];
-      for (int i = 0; i < len; i++)
-	result[i] = x[i] - y[i];
-    }
-  return result;
-}
-
-static inline Complex *
-multiply (const Complex *x, const double *y, int len)
-{
-  Complex *result = 0;
-  if (len > 0)
-    {
-      result = new Complex [len];
-      for (int i = 0; i < len; i++)
-	result[i] = x[i] * y[i];
-    }
-  return result;
-}
-
-static inline Complex *
-multiply (const double *x, const Complex *y, int len)
-{
-  Complex *result = 0;
-  if (len > 0)
-    {
-      result = new Complex [len];
-      for (int i = 0; i < len; i++)
-	result[i] = x[i] * y[i];
-    }
-  return result;
-}
-
-static inline Complex *
-divide (const Complex *x, const double *y, int len)
-{
-  Complex *result = 0;
-  if (len > 0)
-    {
-      result = new Complex [len];
-      for (int i = 0; i < len; i++)
-	result[i] = x[i] / y[i];
-    }
-  return result;
-}
-
-static inline Complex *
-divide (const double *x, const Complex *y, int len)
-{
-  Complex *result = 0;
-  if (len > 0)
-    {
-      result = new Complex [len];
-      for (int i = 0; i < len; i++)
-	result[i] = x[i] / y[i];
-    }
-  return result;
-}
-
-static inline Complex *
-add2 (Complex *x, const double *y, int len)
-{
-  for (int i = 0; i < len; i++)
-    x[i] += y[i];
-  return x;
-}
-
-static inline Complex *
-subtract2 (Complex *x, const double *y, int len)
-{
-  for (int i = 0; i < len; i++)
-    x[i] -= y[i];
-  return x;
-}
-
-static inline void
-copy (Complex *d, int len, double s)
-{
-  for (int i = 0; i < len; i++)
-    d[i] = s;
-}
-
-static inline void
-copy (Complex *x, const double *y, int len)
-{
-  for (int i = 0; i < len; i++)
-    x[i] = y[i];
-}
+// Before you suggest it:  I tried templates but they didn't work with
+// gcc 2.7.2.
+
+#define VS_OP(F, OP, R, V, S) \
+  static inline R * \
+  F (const V *v, size_t n, S s) \
+  { \
+    R *r = 0; \
+    if (n > 0) \
+      { \
+	r = new R [n]; \
+	for (size_t i = 0; i < n; i++) \
+	  r[i] = v[i] OP s; \
+      } \
+    return r; \
+  }
+
+#define VS_OPS(R, V, S) \
+  VS_OP (add, +, R, S, V) \
+  VS_OP (subtract, -, R, S, V) \
+  VS_OP (multiply, *, R, S, V) \
+  VS_OP (divide, /, R, S, V)
+
+VS_OPS (double,  double,  double)
+VS_OPS (Complex, double,  Complex)
+VS_OPS (Complex, Complex, double)
+VS_OPS (Complex, Complex, Complex)
+
+#define SV_OP(F, OP, R, S, V) \
+  static inline R * \
+  F (S s, const V *v, size_t n) \
+  { \
+    R *r = 0; \
+    if (n > 0) \
+      { \
+	r = new R [n]; \
+	for (size_t i = 0; i < n; i++) \
+	  r[i] = s OP v[i]; \
+      } \
+    return r; \
+  }
+
+#define SV_OPS(R, S, V) \
+  SV_OP (add,      +, R, V, S) \
+  SV_OP (subtract, -, R, V, S) \
+  SV_OP (multiply, *, R, V, S) \
+  SV_OP (divide,   /, R, V, S)
+
+SV_OPS (double,  double,  double)
+SV_OPS (Complex, double,  Complex)
+SV_OPS (Complex, Complex, double)
+SV_OPS (Complex, Complex, Complex)
+
+#define VV_OP(F, OP, R, T1, T2) \
+  static inline R * \
+  F (const T1 *v1, const T2 *v2, size_t n) \
+  { \
+    R *r = 0; \
+    if (n > 0) \
+      { \
+	r = new R [n]; \
+	for (size_t i = 0; i < n; i++) \
+	  r[i] = v1[i] OP v2[i]; \
+      } \
+    return r; \
+  }
+
+#define VV_OPS(R, T1, T2) \
+  VV_OP (add,      +, R, T1, T2) \
+  VV_OP (subtract, -, R, T1, T2) \
+  VV_OP (multiply, *, R, T1, T2) \
+  VV_OP (divide,   /, R, T1, T2)
+
+VV_OPS (double,  double,  double)
+VV_OPS (Complex, double,  Complex)
+VV_OPS (Complex, Complex, double)
+VV_OPS (Complex, Complex, Complex)
+
+#define VS_OP2(F, OP, V, S) \
+  static inline V * \
+  F (V *v, size_t n, S s) \
+  { \
+    for (size_t i = 0; i < n; i++) \
+      v[i] OP s; \
+    return v; \
+  }
+
+#define VS_OP2S(V, S) \
+  VS_OP2 (add2,      +=, V, S) \
+  VS_OP2 (subtract2, -=, V, S) \
+  VS_OP2 (multiply2, *=, V, S) \
+  VS_OP2 (divide2,   /=, V, S) \
+  VS_OP2 (copy,       =, V, S)
+
+VS_OP2S (double,  double)
+VS_OP2S (Complex, double)
+VS_OP2S (Complex, Complex)
+
+#define VV_OP2(F, OP, T1, T2) \
+  static inline T1 * \
+  F (T1 *v1, const T2 *v2, size_t n) \
+  { \
+    for (size_t i = 0; i < n; i++) \
+      v1[i] OP v2[i]; \
+    return v1; \
+  }
+
+#define VV_OP2S(T1, T2) \
+  VV_OP2 (add2,      +=, T1, T2) \
+  VV_OP2 (subtract2, -=, T1, T2) \
+  VV_OP2 (multiply2, *=, T1, T2) \
+  VV_OP2 (divide2,   /=, T1, T2) \
+  VV_OP2 (copy,       =, T1, T2)
+
+VV_OP2S (double,  double)
+VV_OP2S (Complex, double)
+VV_OP2S (Complex, Complex)
+
+#define OP_EQ_FCN(T1, T2) \
+  static inline bool \
+  equal (const T1 *x, const T2 *y, size_t n) \
+  { \
+    for (size_t i = 0; i < n; i++) \
+      if (x[i] != y[i]) \
+	return false; \
+    return true; \
+  }
+
+OP_EQ_FCN (char,    char)
+OP_EQ_FCN (double,  double)
+OP_EQ_FCN (Complex, Complex)
+
+#define OP_DUP_FCN(OP, F, R, T) \
+  static inline R * \
+  F (const T *x, size_t n) \
+  { \
+    R *r = 0; \
+    if (n > 0) \
+      { \
+	r = new R [n]; \
+	for (size_t i = 0; i < n; i++) \
+	  r[i] = OP (x[i]); \
+      } \
+    return r; \
+  }
+
+OP_DUP_FCN (, dup, double,  double)
+OP_DUP_FCN (, dup, Complex, Complex)
+
+// These should really return a bool *.  Also, they should probably be
+// in with a collection of other element-by-element boolean ops.
+OP_DUP_FCN (0.0 ==, not, double, double)
+OP_DUP_FCN (0.0 ==, not, double, Complex)
+
+OP_DUP_FCN (, make_complex, Complex, double)
+
+OP_DUP_FCN (-, negate, double,  double)
+OP_DUP_FCN (-, negate, Complex, Complex)
+
+OP_DUP_FCN (real, real_dup, double,  Complex)
+OP_DUP_FCN (imag, imag_dup, double,  Complex)
+OP_DUP_FCN (conj, conj_dup, Complex, Complex)
+
+#endif
 
 /*
 ;;; Local Variables: ***

@@ -982,7 +982,7 @@ pr_any_float (const char *fmt, ostream& os, double d, int fw = 0)
 	}
       else if (xisinf (d))
 	{
-	  char *s;
+	  const char *s;
 	  if (d < 0.0)
 	    s = "-Inf";
 	  else

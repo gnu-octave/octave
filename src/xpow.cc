@@ -165,7 +165,7 @@ xpow (const Matrix& a, double b)
     {
       if (static_cast<int> (b) == b)
 	{
-	  int btmp = b;
+	  int btmp = static_cast<int> (b);
 	  if (btmp == 0)
 	    {
 	      retval = DiagMatrix (nr, nr, 1.0);
@@ -350,7 +350,7 @@ xpow (const ComplexMatrix& a, double b)
     {
       if (static_cast<int> (b) == b)
 	{
-	  int btmp = b;
+	  int btmp = static_cast<int> (b);
 	  if (btmp == 0)
 	    {
 	      retval = DiagMatrix (nr, nr, 1.0);

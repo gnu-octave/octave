@@ -84,7 +84,7 @@ check:
 .PHONY: check
 
 octave.info:
-	cd doc ; $(MAKE) octave.info
+	cd doc/interpreter ; $(MAKE) octave.info
 .PHONY: octave.info
 
 INSTALL.OCTAVE:

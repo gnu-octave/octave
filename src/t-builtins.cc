@@ -174,10 +174,10 @@ list_in_columns (ostrstream& os, char **list)
   return os;
 }
 
-tree_constant
-builtin_casesen (int argc, char **argv)
+tree_constant *
+builtin_casesen (int argc, char **argv, int nargout)
 {
-  tree_constant retval;
+  tree_constant *retval = NULL_TREE_CONST;
 
   if (argc == 1 || (argc > 1 && strcmp (argv[1], "off") == 0))
     warning ("casesen: sorry, Octave is always case sensitive");
@@ -192,10 +192,10 @@ builtin_casesen (int argc, char **argv)
 /*
  * Change current working directory.
  */
-tree_constant
-builtin_cd (int argc, char **argv)
+tree_constant *
+builtin_cd (int argc, char **argv, int nargout)
 {
-  tree_constant retval;
+  tree_constant *retval = NULL_TREE_CONST;
 
   if (argc > 1)
     {
@@ -251,10 +251,10 @@ in_list (char *s, char **list)
  * Wipe out user-defined variables and functions given a list of
  * globbing patterns.
  */
-tree_constant
-builtin_clear (int argc, char **argv)
+tree_constant *
+builtin_clear (int argc, char **argv, int nargout)
 {
-  tree_constant retval;
+  tree_constant *retval = NULL_TREE_CONST;
 
 // Always clear the local table, but don't clear currently compiled
 // functions unless we are at the top level.  (Allowing that to happen
@@ -328,10 +328,10 @@ builtin_clear (int argc, char **argv)
 /*
  * Associate a cryptic message with a variable name.
  */
-tree_constant
-builtin_document (int argc, char **argv)
+tree_constant *
+builtin_document (int argc, char **argv, int nargout)
 {
-  tree_constant retval;
+  tree_constant *retval = NULL_TREE_CONST;
   if (argc == 3)
     document_symbol (argv[1], argv[2]);
   else
@@ -342,10 +342,10 @@ builtin_document (int argc, char **argv)
 /*
  * Edit commands with your favorite editor.
  */
-tree_constant
-builtin_edit_history (int argc, char **argv)
+tree_constant *
+builtin_edit_history (int argc, char **argv, int nargout)
 {
-  tree_constant retval;
+  tree_constant *retval = NULL_TREE_CONST;
   do_edit_history (argc, argv);
   return retval;
 }
@@ -353,10 +353,10 @@ builtin_edit_history (int argc, char **argv)
 /*
  * Set output format state.
  */
-tree_constant
-builtin_format (int argc, char **argv)
+tree_constant *
+builtin_format (int argc, char **argv, int nargout)
 {
-  tree_constant retval;
+  tree_constant *retval = NULL_TREE_CONST;
   set_format_style (argc, argv);
   return retval;
 }
@@ -488,10 +488,10 @@ try_info (const char *string, int force = 0)
 /*
  * Print cryptic yet witty messages.
  */
-tree_constant
-builtin_help (int argc, char **argv)
+tree_constant *
+builtin_help (int argc, char **argv, int nargout)
 {
-  tree_constant retval;
+  tree_constant *retval = NULL_TREE_CONST;
 
   if (argc == 1)
     {
@@ -623,10 +623,10 @@ builtin_help (int argc, char **argv)
 /*
  * Display, save, or load history.
  */
-tree_constant
-builtin_history (int argc, char **argv)
+tree_constant *
+builtin_history (int argc, char **argv, int nargout)
 {
-  tree_constant retval;
+  tree_constant *retval = NULL_TREE_CONST;
 
   do_history (argc, argv);
 
@@ -637,10 +637,10 @@ builtin_history (int argc, char **argv)
  * Change state flag that determines whether lines are added to plots
  * or drawn on new plots.
  */
-tree_constant
-builtin_hold (int argc, char **argv)
+tree_constant *
+builtin_hold (int argc, char **argv, int nargout)
 {
-  tree_constant retval;
+  tree_constant *retval = NULL_TREE_CONST;
   
   switch (argc)
     {
@@ -809,10 +809,10 @@ load_variable (char *nm, int force, istream& is)
  *
  *  -- This function is not terribly robust.
  */
-tree_constant
-builtin_load (int argc, char **argv)
+tree_constant *
+builtin_load (int argc, char **argv, int nargout)
 {
-  tree_constant retval;
+  tree_constant *retval = NULL_TREE_CONST;
 
   argc--;
   argv++;
@@ -895,10 +895,10 @@ builtin_load (int argc, char **argv)
 /*
  * Get a directory listing.
  */
-tree_constant
-builtin_ls (int argc, char **argv)
+tree_constant *
+builtin_ls (int argc, char **argv, int nargout)
 {
-  tree_constant retval;
+  tree_constant *retval = NULL_TREE_CONST;
 
   ostrstream ls_buf;
 
@@ -929,10 +929,10 @@ builtin_ls (int argc, char **argv)
 /*
  * Run previous commands from the history list.
  */
-tree_constant
-builtin_run_history (int argc, char **argv)
+tree_constant *
+builtin_run_history (int argc, char **argv, int nargout)
 {
-  tree_constant retval;
+  tree_constant *retval = NULL_TREE_CONST;
   do_run_history (argc, argv);
   return retval;
 }
@@ -979,10 +979,10 @@ glob_pattern_p (char *pattern)
 /*
  * Write variables to an output stream.
  */
-tree_constant
-builtin_save (int argc, char **argv)
+tree_constant *
+builtin_save (int argc, char **argv, int nargout)
 {
-  tree_constant retval;
+  tree_constant *retval = NULL_TREE_CONST;
 
   if (argc < 2)
     {
@@ -1082,10 +1082,10 @@ builtin_save (int argc, char **argv)
 /*
  * Set plotting options.
  */
-tree_constant
-builtin_set (int argc, char **argv)
+tree_constant *
+builtin_set (int argc, char **argv, int nargout)
 {
-  tree_constant retval;
+  tree_constant *retval = NULL_TREE_CONST;
 
   ostrstream plot_buf;
 
@@ -1113,10 +1113,10 @@ builtin_set (int argc, char **argv)
 /*
  * Set plotting options.
  */
-tree_constant
-builtin_show (int argc, char **argv)
+tree_constant *
+builtin_show (int argc, char **argv, int nargout)
 {
-  tree_constant retval;
+  tree_constant *retval = NULL_TREE_CONST;
 
   ostrstream plot_buf;
 
@@ -1205,10 +1205,10 @@ maybe_list (const char *header, ostrstream& output_buf,
   return status;
 }
 
-tree_constant
-builtin_who (int argc, char **argv)
+tree_constant *
+builtin_who (int argc, char **argv, int nargout)
 {
-  tree_constant retval;
+  tree_constant *retval = NULL_TREE_CONST;
 
   int show_builtins = 0;
   int show_functions = (curr_sym_tab == top_level_sym_tab);

@@ -34,22 +34,23 @@ struct builtin_text_functions
   char *help_string;
 };
 
-extern tree_constant builtin_casesen (int, char **);
-extern tree_constant builtin_cd (int, char **);
-extern tree_constant builtin_clear (int, char **);
-extern tree_constant builtin_document (int, char **);
-extern tree_constant builtin_edit_history (int, char **);
-extern tree_constant builtin_format (int, char **);
-extern tree_constant builtin_help (int, char **);
-extern tree_constant builtin_history (int, char **);
-extern tree_constant builtin_hold (int, char **);
-extern tree_constant builtin_load (int, char **);
-extern tree_constant builtin_ls (int, char **);
-extern tree_constant builtin_run_history (int, char **);
-extern tree_constant builtin_save (int, char **);
-extern tree_constant builtin_set (int, char **);
-extern tree_constant builtin_show (int, char **);
-extern tree_constant builtin_who (int, char **);
+extern tree_constant *builtin_casesen (int argc, char **argv, int nargout);
+extern tree_constant *builtin_cd (int argc, char **argv, int nargout);
+extern tree_constant *builtin_clear (int argc, char **argv, int nargout);
+extern tree_constant *builtin_document (int argc, char **argv, int nargout);
+extern tree_constant *builtin_edit_history (int argc, char **argv,
+					    int nargout);
+extern tree_constant *builtin_format (int argc, char **argv, int nargout);
+extern tree_constant *builtin_help (int argc, char **argv, int nargout);
+extern tree_constant *builtin_history (int argc, char **argv, int nargout);
+extern tree_constant *builtin_hold (int argc, char **argv, int nargout);
+extern tree_constant *builtin_load (int argc, char **argv, int nargout);
+extern tree_constant *builtin_ls (int argc, char **argv, int nargout);
+extern tree_constant *builtin_run_history (int argc, char **argv, int nargout);
+extern tree_constant *builtin_save (int argc, char **argv, int nargout);
+extern tree_constant *builtin_set (int argc, char **argv, int nargout);
+extern tree_constant *builtin_show (int argc, char **argv, int nargout);
+extern tree_constant *builtin_who (int argc, char **argv, int nargout);
 
 #endif
 

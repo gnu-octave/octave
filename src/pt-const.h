@@ -197,7 +197,7 @@ class tree_constant;
 #ifndef TREE_FCN_TYPEDEFS
 #define TREE_FCN_TYPEDEFS 1
 
-typedef tree_constant (*Text_fcn)(int, char **);
+typedef tree_constant* (*Text_fcn)(int, char **, int);
 typedef tree_constant* (*General_fcn)(tree_constant *, int, int);
 
 #endif
@@ -761,8 +761,6 @@ public:
       retval[0] = *this;
       return retval;
     }
-
-  tree_constant eval (int argc, char **argv, int print);
 
   tree_constant *eval (const tree_constant *args, int n_in, int n_out,
 		       int print)

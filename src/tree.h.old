@@ -78,7 +78,6 @@ class tree_index_expression;
 class tree_argument_list;
 class tree_parameter_list;
 class tree_return_list;
-class tree_word_list;
 class tree_command;
 class tree_command_list;
 class tree_global_command;
@@ -88,7 +87,6 @@ class tree_if_command;
 class tree_break_command;
 class tree_continue_command;
 class tree_return_command;
-class tree_word_list_command;;
 class tree_plot_limits;
 class tree_plot_range;
 class tree_subplot;
@@ -150,10 +148,8 @@ public:
 
   tree_constant *eval (int print, int nargout);
 
-  tree_constant eval (int argc, char **argv, int print);
-
-  tree_constant *eval (const tree_constant *args, int n_in, int n_out,
-		       int print);
+  tree_constant *eval (const tree_constant *args, int nargin,
+		       int nargout, int print);
 
   char *name (void) const;
 
@@ -211,10 +207,8 @@ public:
 
   tree_constant *eval (int print, int nargout);
 
-  tree_constant eval (int argc, char **argv, int print);
-  
-  tree_constant *eval (const tree_constant *args, int n_in, int n_out,
-		       int print);
+  tree_constant *eval (const tree_constant *args, int nargin,
+		       int nargout, int print);
 
   void eval_undefined_error (void);
 
@@ -259,10 +253,8 @@ public:
 
   tree_constant *eval (int print, int nargout);
 
-  tree_constant eval (int argc, char **argv, int print);
-
-  tree_constant *eval (const tree_constant *args, int n_in, int n_out,
-		       int print);
+  tree_constant *eval (const tree_constant *args, int nargin,
+		       int nargout, int print);
 
   int max_expected_args (void);
 
@@ -612,33 +604,6 @@ tree_return_list : public tree
 };
 
 /*
- * Word lists.
- */
-class
-tree_word_list : public tree
-{
- public:
-  tree_word_list (void);
-  tree_word_list (char *s);
-
-  ~tree_word_list (void);
-
-  tree_word_list *chain (char *s);
-  tree_word_list *reverse (void);
-  int length (void);
-
-  char *name (void) const;
-
-  tree_word_list *next_elem (void);
-
-  tree_constant eval (int print);
-
- private:
-  char *word;
-  tree_word_list *next;
-};
-
-/*
  * A base class for commands.
  */
 class
@@ -812,25 +777,6 @@ tree_return_command : public tree_command
   ~tree_return_command (void);
 
   tree_constant eval (int print);
-};
-
-/*
- * Functions that take a list of strings as arguments.
- */
-class
-tree_word_list_command : public tree_command
-{
- public:
-  tree_word_list_command (void);
-  tree_word_list_command (tree_identifier *id, tree_word_list *wl);
-
-  ~tree_word_list_command (void);
-
-  tree_constant eval (int print);
-
- private:
-  tree_identifier *ident;
-  tree_word_list *word_list;
 };
 
 #endif

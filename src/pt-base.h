@@ -144,10 +144,8 @@ public:
 
   virtual tree_constant *eval (int print, int nargout);
 
-  virtual tree_constant eval (int argc, char **argv, int print);
-
-  virtual tree_constant *eval (const tree_constant *args, int n_in, int nout,
-			       int print)
+  virtual tree_constant *eval (const tree_constant *args, int nargin,
+			       int nargout, int print)
     { assert (0); return NULL_TREE_CONST; }
 
   virtual int save (ostream& os, int mark_as_global = 0,

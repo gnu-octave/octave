@@ -2520,13 +2520,6 @@ tree_constant::~tree_constant (void)
     }
 }
 
-tree_constant
-tree_constant::eval (int argc, char **argv, int print)
-{
-  ::error ("first element of word-list command is a constant");
-  return tree_constant ();
-}
-
 #if defined (MDEBUG)
 void *
 tree_constant::operator new (size_t size)

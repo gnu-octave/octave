@@ -151,12 +151,10 @@ static void maybe_warn_assign_as_truth_value (tree *expr);
   tree_colon_expression *tree_colon_expression_type;
   tree_argument_list *tree_argument_list_type;
   tree_parameter_list *tree_parameter_list_type;
-  tree_word_list *tree_word_list_type;
   tree_command *tree_command_type;
   tree_if_command *tree_if_command_type;
   tree_global_command *tree_global_command_type;
   tree_command_list *tree_command_list_type;
-  tree_word_list_command *tree_word_list_command_type;
   tree_plot_command *tree_plot_command_type;
   tree_subplot_list *tree_subplot_list_type;
   tree_plot_limits *tree_plot_limits_type;
@@ -193,16 +191,14 @@ static void maybe_warn_assign_as_truth_value (tree *expr);
 %type <tree_matrix_type> matrix
 %type <tree_identifier_type> identifier
 %type <tree_function_type> func_def func_def1 func_def2 func_def3
-%type <tree_index_expression_type> variable
+%type <tree_index_expression_type> variable word_list_cmd
 %type <tree_colon_expression_type> colon_expr
-%type <tree_argument_list_type> arg_list arg_list1
+%type <tree_argument_list_type> arg_list arg_list1 word_list word_list1
 %type <tree_parameter_list_type> param_list param_list1 func_def1a 
-%type <tree_word_list_type> word_list word_list1
 %type <tree_command_type> statement
 %type <tree_if_command_type> elseif
 %type <tree_global_command_type> global_decl global_decl1
 %type <tree_command_list_type> simple_list simple_list1 list list1 opt_list
-%type <tree_word_list_command_type> word_list_cmd
 %type <tree_plot_command_type> plot_command 
 %type <tree_subplot_list_type> plot_command1 plot_command2 plot_options
 %type <tree_plot_limits_type> ranges
@@ -855,7 +851,10 @@ colon_expr	: simple_expr ':' simple_expr
 		;
 
 word_list_cmd	: identifier word_list
-		  { $$ = new tree_word_list_command ($1, $2); }
+		  {
+		    $$ = new tree_index_expression
+			   ($1, $2, $1->line (), $1->column ());
+		  }
 		;
 
 word_list	: word_list1
@@ -863,9 +862,15 @@ word_list	: word_list1
 		;
 
 word_list1	: TEXT
-		  { $$ = new tree_word_list ($1->string ()); }
+		  {
+		    tree_constant *tmp = new tree_constant ($1->string ());
+		    $$ = new tree_argument_list (tmp);
+		  }
 		| word_list1 TEXT
-		  { $$ = $1->chain ($2->string ()); }
+		  {
+		    tree_constant *tmp = new tree_constant ($2->string ());
+		    $$ = $1->chain (tmp);
+		  }
 		;
 
 // This is truly disgusting.

@@ -19,7 +19,7 @@ DISTFILES = BUGS COPYING INSTALL INSTALL.OCTAVE Makefile.in \
 	SENDING-PATCHES THANKS f2c-compat.sh flibs.sh cxxlibs.sh \
 	configure configure.in config.guess config.sub float-type.c \
 	move-if-change octave.sh octave-bug.in octave-mode.el \
-	install.sh doinstall.sh mkinstalldirs config.h.in acconfig.h \
+	install-sh doinstall.sh mkinstalldirs config.h.in acconfig.h \
 	LIBG++.PATCH MAKEINFO.PATCH ChangeLog ChangeLog.[0-9]
 
 # Complete directory trees to distribute.
@@ -139,7 +139,7 @@ mostlyclean:
 
 distclean: clean
 	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $@; cd ..; done
-	rm -f Makefile config.status
+	rm -f Makefile config.cache config.log config.status
 .PHONY: distclean
 
 realclean:

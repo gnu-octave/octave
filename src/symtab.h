@@ -1,4 +1,4 @@
-// Symbol table classes.                              -*- C++ -*-
+// symtab.h                                             -*- C++ -*-
 /*
 
 Copyright (C) 1992, 1993, 1994 John W. Eaton
@@ -28,14 +28,11 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma interface
 #endif
 
-#include <stdlib.h>
-#include <string.h>
-#include <iostream.h>
-#include <assert.h>
-
 #include "SLStack.h"
 
-#include "builtins.h"
+#include "variables.h"
+
+class ostream;
 
 #define HASH_TABLE_SIZE 1024             /* Must be multiple of 2 */
 #define HASH_MASK (HASH_TABLE_SIZE - 1)
@@ -63,21 +60,23 @@ public:
 
   symbol_def (void);
   symbol_def (tree_constant *t);
-  symbol_def (tree_builtin *t);
-  symbol_def (tree_function *t);
+  symbol_def (tree_builtin *t, unsigned fcn_type = 0);
+  symbol_def (tree_function *t, unsigned fcn_type = 0);
 
   ~symbol_def (void);
 
   int is_variable (void) const;
   int is_function (void) const;
+  int is_text_function (void) const;
+  int is_mapper_function (void) const;
   int is_user_variable (void) const;
   int is_user_function (void) const;
   int is_builtin_variable (void) const;
   int is_builtin_function (void) const;
 
   void define (tree_constant *t);
-  void define (tree_builtin *t);
-  void define (tree_function *t);
+  void define (tree_builtin *t, unsigned fcn_type = 0);
+  void define (tree_function *t, unsigned fcn_type = 0);
 
   void protect (void);
   void unprotect (void);
@@ -95,14 +94,16 @@ public:
       USER_FUNCTION = 1,
       USER_VARIABLE = 2,
       BUILTIN_FUNCTION = 4,
-      BUILTIN_VARIABLE = 8
+      TEXT_FUNCTION = 8,
+      MAPPER_FUNCTION = 16,
+      BUILTIN_VARIABLE = 32
     };
 
   friend maybe_delete (symbol_def *def);
 
 private:
 
-  unsigned type : 4;
+  unsigned type : 6;
   unsigned eternal : 1;
   unsigned read_only : 1;
 
@@ -127,7 +128,7 @@ symbol_record
 
 public:
   symbol_record (void);
-  symbol_record (const char *n, symbol_record *nxt = (symbol_record *) NULL);
+  symbol_record (const char *n, symbol_record *nxt = 0);
 
  ~symbol_record (void);
 
@@ -139,6 +140,8 @@ public:
 
   int is_function (void) const;
   int is_user_function (void) const;
+  int is_text_function (void) const;
+  int is_mapper_function (void) const;
   int is_builtin_function (void) const;
   int is_variable (void) const;
   int is_user_variable (void) const;
@@ -157,8 +160,8 @@ public:
   void set_sv_function (sv_Function f);
 
   int define (tree_constant *t);
-  int define (tree_builtin *t);
-  int define (tree_function *t);
+  int define (tree_builtin *t, int text_fcn = 0);
+  int define (tree_function *t, int text_fcn = 0);
   int define_as_fcn (tree_constant *t);
   int define_builtin_var (tree_constant *t);
 
@@ -283,6 +286,7 @@ private:
 #define SYMTAB_ALL_TYPES (symbol_def::USER_FUNCTION \
 			  | symbol_def::USER_VARIABLE \
 			  | symbol_def::BUILTIN_FUNCTION \
+			  | symbol_def::TEXT_FUNCTION \
 			  | symbol_def::BUILTIN_VARIABLE)
 
 class

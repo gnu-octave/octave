@@ -1,4 +1,4 @@
-// Symbol table classes.                              -*- C++ -*-
+// symtab.cc                                            -*- C++ -*-
 /*
 
 Copyright (C) 1992, 1993, 1994 John W. Eaton
@@ -53,18 +53,18 @@ symbol_def::symbol_def (tree_constant *t)
   type = USER_VARIABLE;
 }
 
-symbol_def::symbol_def (tree_builtin *t)
+symbol_def::symbol_def (tree_builtin *t, unsigned fcn_type)
 {
   init_state ();
   definition = t;
-  type = BUILTIN_FUNCTION;
+  type = BUILTIN_FUNCTION | fcn_type;
 }
 
-symbol_def::symbol_def (tree_function *t)
+symbol_def::symbol_def (tree_function *t, unsigned fcn_type)
 {
   init_state ();
   definition = t;
-  type = USER_FUNCTION;
+  type = USER_FUNCTION | fcn_type;
 }
 
 void
@@ -74,9 +74,9 @@ symbol_def::init_state (void)
   eternal = 0;
   read_only = 0;
 
-  help_string = (char *) NULL;
-  definition = (tree_fvc *) NULL;
-  next_elem = (symbol_def *) NULL;
+  help_string = 0;
+  definition = 0;
+  next_elem = 0;
   count = 0;
 }
 
@@ -89,37 +89,49 @@ symbol_def::~symbol_def (void)
 int
 symbol_def::is_variable (void) const
 {
-  return (type == USER_VARIABLE || type == BUILTIN_VARIABLE);
+  return (type & USER_VARIABLE || type & BUILTIN_VARIABLE);
 }
 
 int
 symbol_def::is_function (void) const
 {
-  return (type == USER_FUNCTION || type == BUILTIN_FUNCTION);
+  return (type & USER_FUNCTION || type & BUILTIN_FUNCTION);
 }
 
 int
 symbol_def::is_user_variable (void) const
 {
-  return (type == USER_VARIABLE);
+  return (type & USER_VARIABLE);
+}
+
+int
+symbol_def::is_text_function (void) const
+{
+  return (type & TEXT_FUNCTION);
+}
+
+int
+symbol_def::is_mapper_function (void) const
+{
+  return (type & MAPPER_FUNCTION);
 }
 
 int
 symbol_def::is_user_function (void) const
 {
-  return (type == USER_FUNCTION);
+  return (type & USER_FUNCTION);
 }
 
 int
 symbol_def::is_builtin_variable (void) const
 {
-  return (type == BUILTIN_VARIABLE);
+  return (type & BUILTIN_VARIABLE);
 }
 
 int
 symbol_def::is_builtin_function (void) const
 {
-  return (type == BUILTIN_FUNCTION);
+  return (type & BUILTIN_FUNCTION);
 }
 
 void
@@ -131,17 +143,17 @@ symbol_def::define (tree_constant *t)
 }
 
 void
-symbol_def::define (tree_builtin *t)
+symbol_def::define (tree_builtin *t, unsigned fcn_type)
 {
   definition = t;
-  type = BUILTIN_FUNCTION;
+  type = BUILTIN_FUNCTION | fcn_type;
 }
 
 void
-symbol_def::define (tree_function *t)
+symbol_def::define (tree_function *t, unsigned fcn_type)
 {
   definition = t;
-  type = USER_FUNCTION;
+  type = USER_FUNCTION | fcn_type;
 }
 
 void
@@ -192,15 +204,12 @@ int
 maybe_delete (symbol_def *def)
 {
   int count = 0;
-  if (def != (symbol_def *) NULL)
+  if (def && def->count > 0)
     {
-      if (def->count > 0)
-	{
-	  def->count--;
-	  count = def->count;
-	  if (def->count == 0)
-	    delete def;
-	}
+      def->count--;
+      count = def->count;
+      if (def->count == 0)
+	delete def;
     }
   return count;
 }
@@ -213,8 +222,7 @@ symbol_record::symbol_record (void)
   init_state ();
 }
 
-symbol_record::symbol_record (const char *n,
-			      symbol_record *nxt = (symbol_record *) NULL)
+symbol_record::symbol_record (const char *n, symbol_record *nxt)
 {
   init_state ();
   nm = strsave (n);
@@ -226,10 +234,10 @@ symbol_record::init_state (void)
 {
   formal_param = 0;
   linked_to_global = 0;
-  nm = (char *) NULL;
-  sv_fcn = (sv_Function) NULL;
-  definition = (symbol_def *) NULL;
-  next_elem = (symbol_record *) NULL;
+  nm = 0;
+  sv_fcn = 0;
+  definition = 0;
+  next_elem = 0;
 }
 
 symbol_record::~symbol_record (void)
@@ -246,10 +254,7 @@ symbol_record::name (void) const
 char *
 symbol_record::help (void) const
 {
-  if (definition != (symbol_def *) NULL)
-    return definition->help ();
-  else
-    return (char *) NULL;
+  return definition ? definition->help () : 0;
 }
 
 void
@@ -262,106 +267,85 @@ symbol_record::rename (const char *n)
 tree_fvc *
 symbol_record::def (void) const
 {
-  if (definition != (symbol_def *) NULL)
-    return definition->def ();
-  else
-    return (tree_fvc *) NULL;
+  return definition ? definition->def () : 0;
 }
 
 int
 symbol_record::is_function (void) const
 {
-  if (definition != (symbol_def *) NULL)
-    return definition->is_function ();
-  else
-    return 0;
+  return definition ? definition->is_function () : 0;
+}
+
+int
+symbol_record::is_text_function (void) const
+{
+  return definition ? definition->is_text_function () : 0;
+}
+
+int
+symbol_record::is_mapper_function (void) const
+{
+  return definition ? definition->is_mapper_function () : 0;
 }
 
 int
 symbol_record::is_user_function (void) const
 {
-  if (definition != (symbol_def *) NULL)
-    return definition->is_user_function ();
-  else
-    return 0;
+  return definition ? definition->is_user_function () : 0;
 }
 
 int
 symbol_record::is_builtin_function (void) const
 {
-  if (definition != (symbol_def *) NULL)
-    return definition->is_builtin_function ();
-  else
-    return 0;
+  return definition ? definition->is_builtin_function () : 0;
 }
 
 int
 symbol_record::is_variable (void) const
 {
-  if (definition != (symbol_def *) NULL)
-    return definition->is_variable ();
-  else
-    return 0;
+  return definition ? definition->is_variable () : 0;
 }
 
 int
 symbol_record::is_user_variable (void) const
 {
-  if (definition != (symbol_def *) NULL)
-    return definition->is_user_variable ();
-  else
-    return 0;
+  return definition ? definition->is_user_variable () : 0;
 }
 
 int
 symbol_record::is_builtin_variable (void) const
 {
-  if (definition != (symbol_def *) NULL)
-    return definition->is_builtin_variable ();
-  else
-    return 0;
+  return definition ? definition->is_builtin_variable () : 0;
 }
 
 unsigned
 symbol_record::type (void) const
 {
-  if (definition != (symbol_def *) NULL)
-    return definition->type;
-  else
-    return 0;
+  return definition ? definition->type : 0;
 }
 
 int
 symbol_record::is_defined (void) const
 {
-  if (definition != (symbol_def *) NULL)
-    return (definition->def () != NULL_TREE);
-  else
-    return 0;
+  return definition ? (definition->def () != 0) : 0;
 }
 
 int
 symbol_record::is_read_only (void) const
 {
-  if (definition != (symbol_def *) NULL)
-    return definition->read_only;
-  else
-    return 0;
+  return definition ? definition->read_only : 0;
 }
 
 int
 symbol_record::is_eternal (void) const
 {
-  if (definition != (symbol_def *) NULL)
-    return definition->eternal;
-  else
-    return 0;
+  return definition ? definition->eternal : 0;
 }
 
 void
 symbol_record::protect (void)
 {
-  if (definition != (symbol_def *) NULL)
+  if (definition)
     {
       definition->protect ();
 
@@ -373,14 +357,14 @@ symbol_record::protect (void)
 void
 symbol_record::unprotect (void)
 {
-  if (definition != (symbol_def *) NULL)
+  if (definition)
     definition->unprotect ();
 }
 
 void
 symbol_record::make_eternal (void)
 {
-  if (definition != (symbol_def *) NULL)
+  if (definition)
     {
       definition->make_eternal ();
 
@@ -401,8 +385,8 @@ symbol_record::define (tree_constant *t)
   if (is_variable () && read_only_error ())
     return 0;
 
-  tree_fvc *saved_def = (tree_fvc *) NULL;
-  if (definition == (symbol_def *) NULL)
+  tree_fvc *saved_def = 0;
+  if (! definition)
     {
       definition = new symbol_def ();
       definition->count = 1;
@@ -420,7 +404,7 @@ symbol_record::define (tree_constant *t)
 
   definition->define (t);
 
-  if (sv_fcn != (sv_Function) NULL && sv_fcn () < 0)
+  if (sv_fcn && sv_fcn () < 0)
     {
 // Would be nice to be able to avoid this cast.  XXX FIXME XXX
       definition->define ((tree_constant *) saved_def);
@@ -434,7 +418,7 @@ symbol_record::define (tree_constant *t)
 }
 
 int
-symbol_record::define (tree_builtin *t)
+symbol_record::define (tree_builtin *t, int text_fcn)
 {
   if (read_only_error ())
     return 0;
@@ -451,7 +435,11 @@ symbol_record::define (tree_builtin *t)
       maybe_delete (old_def);
     }
 
-  symbol_def *new_def = new symbol_def (t);
+  unsigned fcn_type = text_fcn ? symbol_def::TEXT_FUNCTION
+    : ((t && t->is_mapper_function ()) ? symbol_def::MAPPER_FUNCTION
+       : symbol_def::UNKNOWN);
+
+  symbol_def *new_def = new symbol_def (t, fcn_type);
   push_def (new_def);
   definition->count = 1;
 
@@ -459,7 +447,7 @@ symbol_record::define (tree_builtin *t)
 }
 
 int
-symbol_record::define (tree_function *t)
+symbol_record::define (tree_function *t, int text_fcn)
 {
   if (read_only_error ())
     return 0;
@@ -476,7 +464,10 @@ symbol_record::define (tree_function *t)
       maybe_delete (old_def);
     }
 
-  symbol_def *new_def = new symbol_def (t);
+  unsigned fcn_type = text_fcn ? symbol_def::TEXT_FUNCTION
+    : symbol_def::UNKNOWN;
+
+  symbol_def *new_def = new symbol_def (t, fcn_type);
   push_def (new_def);
   definition->count = 1;
 
@@ -515,12 +506,13 @@ symbol_record::define_builtin_var (tree_constant *t)
   define (t);
   if (is_variable ())
     definition->type = symbol_def::BUILTIN_VARIABLE;
+  return 1;
 }
 
 void
 symbol_record::document (const char *h)
 {
-  if (definition != (symbol_def *) NULL)
+  if (definition)
     {
       definition->document (h);
 
@@ -530,8 +522,7 @@ symbol_record::document (const char *h)
 }
 
 int
-symbol_record::save (ostream& os, int mark_as_global = 0,
-		     int precision = 17)
+symbol_record::save (ostream& os, int mark_as_global, int precision)
 {
   int status = -1;
 
@@ -561,7 +552,7 @@ symbol_record::clear (void)
   if (linked_to_global)
     {
       count = maybe_delete (definition);
-      definition = (symbol_def *) NULL;
+      definition = 0;
       linked_to_global = 0;
     }
   else
@@ -573,17 +564,17 @@ symbol_record::clear (void)
 }
 
 void
-symbol_record::alias (symbol_record *s, int force = 0)
+symbol_record::alias (symbol_record *s, int force)
 {
   sv_fcn = s->sv_fcn;
 
-  if (force && s->definition == (symbol_def *) NULL)
+  if (force && ! s->definition)
     {
       s->definition = new symbol_def ();
       definition = s->definition;
       definition->count = 2; // Yes, this is correct.
     }
-  else if (s->definition != (symbol_def *) NULL)
+  else if (s->definition)
     {
       definition = s->definition;
       definition->count++;
@@ -630,7 +621,7 @@ void
 symbol_record::push_context (void)
 {
   context.push (definition);
-  definition = (symbol_def *) NULL;
+  definition = 0;
 
   global_link_context.push ((unsigned) linked_to_global);
   linked_to_global = 0;
@@ -679,7 +670,7 @@ symbol_record::read_only_error (void)
 void
 symbol_record::push_def (symbol_def *sd)
 {
-  if (sd == (symbol_def *) NULL)
+  if (! sd)
     return;
 
   sd->next_elem = definition;
@@ -690,7 +681,7 @@ symbol_def *
 symbol_record::pop_def (void)
 {
   symbol_def *top = definition;
-  if (definition != (symbol_def *) NULL)
+  if (definition)
     definition = definition->next_elem;
   return top;
 }
@@ -743,7 +734,7 @@ symbol_record_info::symbol_record_info (const symbol_record& sr)
 
       symbol_def *sr_def = sr.definition;
       symbol_def *hidden_def = sr_def->next_elem;
-      if (hidden_def != (symbol_def *) NULL)
+      if (hidden_def)
 	{
 	  if (hidden_def->is_user_function ())
 	    hides = SR_INFO_USER_FUNCTION;
@@ -889,7 +880,7 @@ symbol_record_info::init_state (void)
   read_only = 0;
   nr = -1;
   nc = -1;
-  nm = (char *) NULL;
+  nm = 0;
 }
 
 /*
@@ -901,13 +892,13 @@ symbol_table::symbol_table (void)
 }
 
 symbol_record *
-symbol_table::lookup (const char *nm, int insert = 0, int warn = 0)
+symbol_table::lookup (const char *nm, int insert, int warn)
 {
   int index = hash (nm) & HASH_MASK;
 
   symbol_record *ptr = table[index].next ();
 
-  while (ptr != (symbol_record *) NULL)
+  while (ptr)
     {
       if (strcmp (ptr->name (), nm) == 0)
 	return ptr;
@@ -924,17 +915,17 @@ symbol_table::lookup (const char *nm, int insert = 0, int warn = 0)
   else if (warn)
     warning ("lookup: symbol`%s' not found", nm);
 
-  return (symbol_record *) NULL;
+  return 0;
 }
 
 void
-symbol_table::clear (int clear_user_functions = 1)
+symbol_table::clear (int clear_user_functions)
 {
   for (int i = 0; i < HASH_TABLE_SIZE; i++)
     {
       symbol_record *ptr = table[i].next ();
 
-      while (ptr != (symbol_record *) NULL)
+      while (ptr)
 	{
 	  if (ptr->is_user_variable ()
 	      || (clear_user_functions && ptr->is_user_function ()))
@@ -948,13 +939,13 @@ symbol_table::clear (int clear_user_functions = 1)
 }
 
 int
-symbol_table::clear (const char *nm, int clear_user_functions = 1)
+symbol_table::clear (const char *nm, int clear_user_functions)
 {
   int index = hash (nm) & HASH_MASK;
 
   symbol_record *ptr = table[index].next ();
 
-  while (ptr != (symbol_record *) NULL)
+  while (ptr)
     {
       if (strcmp (ptr->name (), nm) == 0
 	  && (ptr->is_user_variable ()
@@ -970,16 +961,15 @@ symbol_table::clear (const char *nm, int clear_user_functions = 1)
 }
 
 int
-symbol_table::save (ostream& os, int mark_as_global = 0,
-		    int precision = 17)
+symbol_table::save (ostream& os, int mark_as_global, int precision)
 {
   int status = 0;
   int count;
   char **names = list (count, 1, symbol_def::USER_VARIABLE);
   char **ptr = names;
-  if (ptr != (char **) NULL)
+  if (ptr)
     {
-      while (*ptr != (char *) NULL)
+      while (*ptr)
 	{
 	  if (save (os, *ptr, mark_as_global, precision))
 	    status++;
@@ -991,12 +981,12 @@ symbol_table::save (ostream& os, int mark_as_global = 0,
 }
 
 int
-symbol_table::save (ostream& os, const char *name,
-		    int mark_as_global = 0, int precision = 17)
+symbol_table::save (ostream& os, const char *name, int mark_as_global,
+		    int precision)
 {
   int status = 0;
   symbol_record *sr = lookup (name, 0, 0);
-  if (sr != (symbol_record *) NULL)
+  if (sr)
     status = sr->save (os, mark_as_global, precision);
   return status;
 }
@@ -1008,7 +998,7 @@ symbol_table::size (void) const
   for (int i = 0; i < HASH_TABLE_SIZE; i++)
     {
       symbol_record *ptr = table[i].next ();
-      while (ptr != (symbol_record *) NULL)
+      while (ptr)
 	{
 	  count++;
 	  ptr = ptr->next ();
@@ -1033,20 +1023,19 @@ symbol_record_info_cmp (symbol_record_info *a, symbol_record_info *b)
 // XXX FIXME XXX
 
 symbol_record_info *
-symbol_table::long_list (int& count, int sort = 0,
-			 unsigned type = SYMTAB_ALL_TYPES,
-			 unsigned scope = SYMTAB_ALL_SCOPES) const
+symbol_table::long_list (int& count, int sort, unsigned type,
+			 unsigned scope) const 
 {
   count = 0;
   int n = size ();
   if (n == 0)
-    return (symbol_record_info *) NULL;
+    return 0;
 
   symbol_record_info *symbols = new symbol_record_info [n+1];
   for (int i = 0; i < HASH_TABLE_SIZE; i++)
     {
       symbol_record *ptr = table[i].next ();
-      while (ptr != (symbol_record *) NULL)
+      while (ptr)
 	{
 	  assert (count < n);
 	  unsigned my_scope = ptr->is_linked_to_global () + 1; // Tricky...
@@ -1060,28 +1049,27 @@ symbol_table::long_list (int& count, int sort = 0,
     }
   symbols[count] = symbol_record_info ();
 
-  if (sort && symbols != (symbol_record_info *) NULL)
+  if (sort && symbols)
     qsort ((void *) symbols, count, sizeof (symbol_record_info),
-	   (int (*)(void*, void*)) symbol_record_info_cmp);
+	   (int (*)(const void*, const void*)) symbol_record_info_cmp);
 
   return symbols;
 }
 
 char **
-symbol_table::list (int& count, int sort = 0,
-		    unsigned type = SYMTAB_ALL_TYPES,
-		    unsigned scope = SYMTAB_ALL_SCOPES) const
+symbol_table::list (int& count, int sort, unsigned type,
+		    unsigned scope) const
 {
   count = 0;
   int n = size ();
   if (n == 0)
-    return (char **) NULL;
+    return 0;
 
   char **symbols = new char * [n+1];
   for (int i = 0; i < HASH_TABLE_SIZE; i++)
     {
       symbol_record *ptr = table[i].next ();
-      while (ptr != (symbol_record *) NULL)
+      while (ptr)
 	{
 	  assert (count < n);
 	  unsigned my_scope = ptr->is_linked_to_global () + 1; // Tricky...
@@ -1091,11 +1079,11 @@ symbol_table::list (int& count, int sort = 0,
 	  ptr = ptr->next ();
 	}
     }
-  symbols[count] = (char *) NULL;
+  symbols[count] = 0;
 
-  if (sort && symbols != (char **) NULL)
+  if (sort && symbols)
     qsort ((void **) symbols, count, sizeof (char *),
-	   (int (*)(void*, void*)) pstrcmp);
+	   (int (*)(const void*, const void*)) pstrcmp);
 
   return symbols;
 }
@@ -1107,7 +1095,7 @@ symbol_table::push_context (void)
     {
       symbol_record *ptr = table[i].next ();
 
-      while (ptr != (symbol_record *) NULL)
+      while (ptr)
 	{
 	  ptr->push_context ();
 	  ptr = ptr->next ();
@@ -1122,7 +1110,7 @@ symbol_table::pop_context (void)
     {
       symbol_record *ptr = table[i].next ();
 
-      while (ptr != (symbol_record *) NULL)
+      while (ptr)
 	{
 	  ptr->pop_context ();
 	  ptr = ptr->next ();

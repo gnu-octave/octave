@@ -109,29 +109,22 @@ symbol_table *curr_sym_tab = 0;
 // Symbol table for global symbols.
 symbol_table *global_sym_tab = 0;
 
-octave_variable_reference::octave_variable_reference (tree_indirect_ref *i)
-  : id (0), indir (i)
-{
-  if (indir->is_identifier_only ())
-    {
-      id = indir->ident ();
-      indir = 0;
-    }
-}
-
 void
 octave_variable_reference::assign (octave_value::assign_op op,
 				   const octave_value& rhs)
 {
-  if (id)
-    id->assign (op, rhs);
-  else if (indir)
-    {
-      octave_value& ult = indir->reference ();
-      ult.assign (op, rhs);
-    }
+  //  octave_value saved_val;
+
+  //  if (chg_fcn)
+  //    octave_value saved_val = *val;
+
+  if (struct_elt_name.empty ())
+    val->assign (op, rhs);
   else
-    panic_impossible ();
+    val->assign_struct_elt (op, struct_elt_name, rhs);
+
+  //  if (chg_fcn && chg_fcn () < 0)
+  //    *val = saved_val;
 }
 
 void
@@ -139,32 +132,20 @@ octave_variable_reference::assign (octave_value::assign_op op,
 				   const octave_value_list& idx,
 				   const octave_value& rhs)
 {
-  if (id)
-    id->assign (op, idx, rhs);
-  else if (indir)
-    {
-      octave_value& ult = indir->reference ();
-      ult.assign (op, idx, rhs);
-    }
+  octave_value saved_val;
+
+  if (chg_fcn)
+    octave_value saved_val = *val;
+
+  if (struct_elt_name.empty ())
+    val->assign (op, idx, rhs);
   else
-    panic_impossible ();
+    val->assign_struct_elt (op, struct_elt_name, idx, rhs);
+
+  if (chg_fcn && chg_fcn () < 0)
+    *val = saved_val;
 }
 
-octave_value
-octave_variable_reference::value (void)
-{
-  octave_value retval;
-
-  if (id)
-    retval = id->value ();
-  else if (indir)
-    retval = indir->value ();
-  else
-    panic_impossible ();
-
-  return retval;
-}
-  
 // Initialization.
 
 // Create the initial symbol tables and set the current scope at the

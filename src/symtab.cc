@@ -356,9 +356,6 @@ symbol_record::define (const octave_value& v, unsigned int sym_type)
 
   if (! (is_variable () && read_only_error ("redefine")))
     {
-      octave_symbol *saved_def = 0;
-      unsigned int saved_type = symbol_def::UNKNOWN;
-
       if (! definition)
 	{
 	  definition = new symbol_def ();
@@ -369,25 +366,11 @@ symbol_record::define (const octave_value& v, unsigned int sym_type)
 	  push_def (new symbol_def ());
 	  definition->count = 1;
 	}
-      else if (is_variable ())
-	{
-	  saved_def = definition->def ();
-	  saved_type = definition->symbol_type ();
-	}
 
-      if (saved_type == symbol_def::BUILTIN_VARIABLE)
-	sym_type = saved_type;
+      if (definition->symbol_type () == symbol_def::BUILTIN_VARIABLE)
+	sym_type = symbol_def::BUILTIN_VARIABLE;
 
       definition->define (new octave_value (v), sym_type);
-
-      if (sv_fcn && sv_fcn () < 0)
-	definition->define (saved_def, saved_type);
-      else
-	{
-	  retval = 1;
-
-	  delete saved_def;
-	}
     }
 
   return retval;
@@ -396,7 +379,12 @@ symbol_record::define (const octave_value& v, unsigned int sym_type)
 int
 symbol_record::define_builtin_var (const octave_value& v)
 {
-  return define (v, symbol_def::BUILTIN_VARIABLE);
+  int retval = define (v, symbol_def::BUILTIN_VARIABLE);
+
+  if (sv_fcn)
+    sv_fcn ();
+
+  return retval;
 }
 
 int
@@ -553,7 +541,7 @@ symbol_record::variable_value (void) const
   return retval;
 }
 
-octave_value&
+octave_variable_reference
 symbol_record::variable_reference (void)
 {
   if (is_function ())
@@ -568,11 +556,8 @@ symbol_record::variable_reference (void)
 	define (octave_value ());
     }
 
-  octave_value *tmp = static_cast<octave_value *> (def ());
-
-  tmp->make_unique ();
-
-  return *tmp;
+  return octave_variable_reference
+    (static_cast<octave_value *> (def ()), sv_fcn);
 }
 
 symbol_record *

@@ -1,3 +1,49 @@
+Fri May  9 07:40:59 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* variables.h (class octave_variable_reference):  Rewrite to work
+	as a proxy class to store a pointer to octave_value and,
+	optionally, the change function to call and the name of the
+	structure element we are referencing.  Handle assignment,
+	increment, decrement, and value operations.
+
+	* ov-re-mat.h, ov-re-mat.cc (struct_elt_ref, struct_elt_val,
+	assign_struct_elt): Provide functions for looking up and setting
+	matrix dimensions.
+
+	* symtab.cc (symbol_record::define): Don't call sv_fcn here.
+	Don't save and restore value here.
+	(symbol_record::define_builtin_var): Do call sv_fcn here.
+	(symbol_record::variable_reference): Don't make value unique here.
+	Return pointer to sv_fcn in octave_variable_reference.
+
+	* pt-misc.cc (tree_parameter_list::initialize_undefined_elements): 
+	Simplify.
+
+	* pt-id.h, pt-id.cc (tree_identifier::reference): Return
+	octave_variable_reference, not octave_value&.
+	* symtab.h, symtab.cc (symbol_record::variable_reference): Ditto.
+	* pt-indir.h, pt-indir.cc (tree_indirect_ref::reference): Ditto.
+	Simplify too.
+
+	* pt-const.h (tree_constant::reference, tree_constant::value,
+	tree_constant::assign):  Delete unnecessary functions.
+	* pt-id.h, pt-id.cc (tree_identifier::assign): Ditto.
+
+	* pt-cmd.cc (tree_for_command::do_for_loop_once): Simplify.
+
+	* ov.h, ov.cc, ov-base.h, ov-base.cc, ov-struct.h, ov-struct.cc
+	(struct_elt_ref): New arg, octave_value* parent.
+	Allow deferred lookup.  Return octave_variable_reference, not
+	octave_value&.
+
+	* ov.h, ov.cc, ov-re-mat.h, ov-re-mat.cc (assign_struct_elt):
+	New virtual functions.
+
+	* ov.h, ov.cc (Vresize_on_range_error): Now static.
+
+	* pt-mvr.cc (tree_index_expression::eval): Delete redundant check
+	of error_state.
+
 Wed May  7 21:17:00 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* input.cc (generate_completion): Rename from command_generator.

@@ -62,30 +62,60 @@ octave_variable_reference
 {
 public:
 
-  octave_variable_reference (tree_identifier *i) : id (i), indir (0) { }
+  octave_variable_reference (octave_value *v = 0, sv_Function f = 0)
+    : val (v), chg_fcn (f), struct_elt_name () { }
 
-  octave_variable_reference (tree_indirect_ref *i);
+  octave_variable_reference (octave_value *v, const string& nm,
+			     sv_Function f = 0)
+    : val (v), chg_fcn (f), struct_elt_name (nm) { }
+
+  octave_variable_reference (const octave_variable_reference& vr)
+    : val (vr.val), chg_fcn (vr.chg_fcn),
+      struct_elt_name (vr.struct_elt_name) { }
+
+  octave_variable_reference& operator = (const octave_variable_reference& vr)
+    {
+      if (this != &vr)
+	{
+	  val = vr.val;
+	  chg_fcn = vr.chg_fcn;
+	  struct_elt_name = vr.struct_elt_name;
+	}
+
+      return *this;
+    }
 
   ~octave_variable_reference (void) { }
+
+  bool is_undefined (void) { return val->is_undefined (); }
+
+  void define (const octave_value& v) { *val = v; }
 
   void assign (octave_value::assign_op, const octave_value&);
 
   void assign (octave_value::assign_op, const octave_value_list&,
 	       const octave_value&);
 
-  octave_value value (void);
+  octave_variable_reference struct_elt_ref (const string& nm)
+    { return val->struct_elt_ref (nm); }
+
+  void increment (void) { val->increment (); }
+
+  void decrement (void) { val->decrement (); }
+
+  octave_value value (void)
+    {
+      return struct_elt_name.empty ()
+	? *val : val->struct_elt_val (struct_elt_name);
+    }
 
 private:
 
-  tree_identifier *id;
+  octave_value *val;
 
-  tree_indirect_ref *indir;
+  sv_Function chg_fcn;
 
-  // No copying!
-
-  octave_variable_reference (const octave_variable_reference&);
-
-  octave_variable_reference& operator = (const octave_variable_reference&);
+  string struct_elt_name;
 };
 
 typedef octave_value_list (*Octave_builtin_fcn)(const octave_value_list&, int);

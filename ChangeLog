@@ -5,6 +5,7 @@ Fri Feb 14 14:07:08 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 	Don't delete config.status or config.h here.
 	(BINDISTFILES): Include config.status and config.h here.
 	(dist): Don't delete Makefile here.
+	(binary-dist): Avoid empty chmod command.
 
 	* Makefile.in (config-check): New target.
 	(all): Depend on config-check.

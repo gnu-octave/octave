@@ -47,34 +47,23 @@ public:
 
   virtual ~tree_expression (void) { }
 
-  virtual bool is_constant (void) const
-    { return false; }
+  virtual bool is_constant (void) const { return false; }
 
-  virtual bool is_matrix_constant (void) const
-    { return false; }
+  virtual bool is_matrix_constant (void) const { return false; }
 
-  virtual bool is_identifier (void) const
-    { return false; }
+  virtual bool is_identifier (void) const { return false; }
 
-  virtual bool is_index_expression (void) const
-    { return false; }
+  virtual bool is_index_expression (void) const { return false; }
 
-  virtual bool is_indirect_ref (void) const
-    { return false; }
+  virtual bool is_assignment_expression (void) const { return false; }
 
-  virtual bool is_assignment_expression (void) const
-    { return false; }
-
-  virtual bool is_prefix_expression (void) const
-    { return false; }
+  virtual bool is_prefix_expression (void) const { return false; }
 
   virtual bool is_logically_true (const char *);
 
-  virtual bool lvalue_ok (void) const
-    { return false; }
+  virtual bool lvalue_ok (void) const { return false; }
 
-  virtual bool rvalue_ok (void) const
-    { return false; }
+  virtual bool rvalue_ok (void) const { return false; }
 
   virtual octave_value rvalue (void);
 
@@ -82,20 +71,15 @@ public:
 
   virtual octave_lvalue lvalue (void);
 
-  int paren_count (void) const
-    { return num_parens; }
+  int paren_count (void) const { return num_parens; }
 
-  bool is_postfix_indexed (void) const
-    { return postfix_indexed; }
+  bool is_postfix_indexed (void) const { return postfix_indexed; }
 
-  bool print_result (void) const
-    { return print_flag; }
+  bool print_result (void) const { return print_flag; }
 
-  virtual std::string oper (void) const
-    { return "<unknown>"; }
+  virtual std::string oper (void) const { return "<unknown>"; }
 
-  virtual std::string name (void) const
-    { return "<unknown>"; }
+  virtual std::string name (void) const { return "<unknown>"; }
 
   virtual std::string original_text (void) const;
 

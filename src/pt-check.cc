@@ -248,10 +248,19 @@ tree_checker::visit_index_expression (tree_index_expression& expr)
   if (e)
     e->accept (*this);
 
-  tree_argument_list *list = expr.arg_list ();
+  SLList<tree_argument_list *> lst = expr.arg_lists ();
 
-  if (list)
-    list->accept (*this);
+  Pix p = lst.first ();
+
+  while (p)
+    {
+      tree_argument_list *elt = lst (p);
+
+      if (elt)
+	elt->accept (*this);
+
+      lst.next (p);
+    }
 }
 
 void

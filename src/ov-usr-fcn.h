@@ -127,9 +127,15 @@ public:
 
   void restore_args_passed (void)
     {
-      if (! saved_args.empty ())
+      if (saved_args.empty ())
+	args_passed = octave_value_list ();
+      else
 	args_passed = saved_args.pop ();
     }
+
+  octave_value_list subsref (const std::string type,
+			     const SLList<octave_value_list>& idx,
+			     int nargout);
 
   octave_value_list
   do_multi_index_op (int nargout, const octave_value_list& args);
@@ -147,6 +153,8 @@ public:
   octave_comment_list *trailing_comment (void) { return trail_comm; }
 
   void accept (tree_walker& tw);
+
+  void print_symtab_info (std::ostream& os) const;
 
 private:
 

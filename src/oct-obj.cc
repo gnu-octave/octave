@@ -34,6 +34,18 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 octave_allocator
 octave_value_list::allocator (sizeof (octave_value_list));
 
+bool
+octave_value_list::valid_scalar_indices (void) const
+{
+  int n = data.length ();
+
+  for (int i = 0; i < n; i++)
+    if (! data(i).valid_as_scalar_index ())
+      return false;
+
+  return true;
+}
+
 octave_value_list&
 octave_value_list::prepend (const octave_value& val)
 {
@@ -137,9 +149,9 @@ octave_value_list::splice (int offset, int rep_length,
 }
 
 octave_value_list
-octave_value_list::index (idx_vector& i) const
+octave_value_list::index (idx_vector& i, int resize_ok) const
 {
-  return octave_value_list (data.index (i));
+  return octave_value_list (data.index (i, resize_ok, octave_value ()));
 }
 
 octave_value_list&

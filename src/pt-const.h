@@ -54,19 +54,15 @@ public:
 
   ~tree_constant (void) { }
 
-  void *operator new (size_t size)
-    { return allocator.alloc (size); }
+  void *operator new (size_t size) { return allocator.alloc (size); }
 
-  void operator delete (void *p, size_t size)
-    { allocator.free (p, size); }
+  void operator delete (void *p, size_t size) { allocator.free (p, size); }
 
   // Type.  It would be nice to eliminate the need for this.
 
-  bool is_constant (void) const
-    { return true; }
+  bool is_constant (void) const { return true; }
 
-  void maybe_mutate (void)
-    { val.maybe_mutate (); }
+  void maybe_mutate (void) { val.maybe_mutate (); }
 
   void print (std::ostream& os, bool pr_as_read_syntax = false,
 	      bool pr_orig_txt = true);
@@ -74,8 +70,7 @@ public:
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false,
 		  bool pr_orig_txt = true);
 
-  bool rvalue_ok (void) const
-    { return true; }
+  bool rvalue_ok (void) const { return true; }
 
   octave_value rvalue (void)
     {
@@ -90,11 +85,9 @@ public:
   // Store the original text corresponding to this constant for later
   // pretty printing.
 
-  void stash_original_text (const std::string& s)
-    { orig_text = s; }
+  void stash_original_text (const std::string& s) { orig_text = s; }
 
-  std::string original_text (void) const
-    { return orig_text; }
+  std::string original_text (void) const { return orig_text; }
 
 private:
 

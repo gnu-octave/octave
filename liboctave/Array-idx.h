@@ -69,13 +69,14 @@ Array<T>::value (void)
 
 template <class T>
 Array<T>
-Array<T>::index (idx_vector& idx_arg) const
+Array<T>::index (idx_vector& idx_arg, int resize_ok,
+		 const T& resize_fill_value) const
 {
   Array<T> retval;
 
   int len = length ();
 
-  int n = idx_arg.freeze (len, "vector");
+  int n = idx_arg.freeze (len, "vector", resize_ok);
 
   if (idx_arg)
     {
@@ -100,7 +101,10 @@ Array<T>::index (idx_vector& idx_arg) const
 	  for (int i = 0; i < n; i++)
 	    {
 	      int ii = idx_arg.elem (i);
-	      retval.elem (i) = elem (ii);
+	      if (ii > len)
+		retval.elem (i) = resize_fill_value;
+	      else
+		retval.elem (i) = elem (ii);
 	    }
 	}
     }

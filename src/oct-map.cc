@@ -35,7 +35,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 
 string_vector
-Octave_map::make_name_list (void)
+Octave_map::keys (void) const
 {
   int len = length ();
 
@@ -85,6 +85,42 @@ Octave_map::assign (const idx_vector& idx, const std::string& key,
     }
 
   return *this;
+}
+
+Octave_map&
+Octave_map::assign (const std::string& key, const octave_value_list& rhs)
+{
+  if (map.empty ())
+    map[key] = rhs;
+  else
+    {
+      octave_value_list tmp = map.contents (map.first ());
+
+      if (tmp.length () == rhs.length ())
+	map[key] = rhs;
+      else
+	error ("invalid structure assignment");
+    }
+
+  return *this;
+}
+
+Octave_map
+Octave_map::index (idx_vector& idx)
+{
+  Octave_map retval;
+
+  for (Pix p = first (); p != 0; next (p))
+    {
+      octave_value_list tmp = contents(p).index (idx);
+
+      if (error_state)
+	break;
+
+      retval[key(p)] = tmp;
+    }
+
+  return error_state ? Octave_map () : retval;
 }
 
 /*

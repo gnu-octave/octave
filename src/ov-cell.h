@@ -66,17 +66,33 @@ public:
 
   void assign (const octave_value_list& idx, const octave_value& rhs);
 
-  octave_value *clone (void) { return new octave_cell (*this); }
+  octave_value *clone (void) const { return new octave_cell (*this); }
+  octave_value *empty_clone (void) const { return new octave_cell (); }
 
 #if 0
   octave_value *try_narrowing_conversion (void);
 #endif
+
+  octave_value subsref (const std::string type,
+			const SLList<octave_value_list>& idx);
+
+  octave_value subsasgn (const std::string type,
+			 const SLList<octave_value_list>& idx,
+			 const octave_value& rhs);
 
   bool is_defined (void) const { return true; }
 
   bool is_cell (void) const { return true; }
 
   Cell cell_value (void) const { return matrix; }
+
+  octave_value_list list_value (void) const;
+
+  void print (std::ostream& os, bool pr_as_read_syntax = false) const;
+
+  void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
+
+  bool print_name_tag (std::ostream& os, const std::string& name) const;
 
 private:
   DECLARE_OCTAVE_ALLOCATOR

@@ -30,14 +30,83 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <iostream>
 
+#include "Cell.h"
 #include "oct-obj.h"
+#include "oct-map.h"
 #include "ov-base.h"
 #include "ov-base-mat.h"
 #include "pr-output.h"
 
 template <class MT>
 octave_value
-octave_base_matrix<MT>::do_index_op (const octave_value_list& idx)
+octave_base_matrix<MT>::subsref (const std::string type,
+				 const SLList<octave_value_list>& idx)
+{
+  octave_value retval;
+
+  switch (type[0])
+    {
+    case '(':
+      retval = do_index_op (idx.front ());
+      break;
+
+    case '{':
+    case '.':
+      {
+	std::string nm = type_name ();
+	error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
+      }
+      break;
+
+    default:
+      panic_impossible ();
+    }
+
+  return retval.next_subsref (type, idx);
+}
+
+template <class MT>
+octave_value
+octave_base_matrix<MT>::subsasgn (const std::string type,
+				  const SLList<octave_value_list>& idx,
+				  const octave_value& rhs)
+{
+  octave_value retval;
+
+  switch (type[0])
+    {
+    case '(':
+      {
+	if (type.length () == 1)
+	  retval = numeric_assign (type, idx, rhs);
+	else
+	  {
+	    std::string nm = type_name ();
+	    error ("in indexed assignment of %s, last rhs index must be ()",
+		   nm.c_str ());
+	  }
+      }
+      break;
+
+    case '{':
+    case '.':
+      {
+	std::string nm = type_name ();
+	error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
+      }
+      break;
+
+    default:
+      panic_impossible ();
+    }
+
+  return retval;
+}
+
+template <class MT>
+octave_value
+octave_base_matrix<MT>::do_index_op (const octave_value_list& idx,
+				     int resize_ok)
 {
   octave_value retval;
 
@@ -50,7 +119,7 @@ octave_base_matrix<MT>::do_index_op (const octave_value_list& idx)
 	idx_vector i = idx (0).index_vector ();
 	idx_vector j = idx (1).index_vector ();
 
-	retval = MT (matrix.index (i, j));
+	retval = MT (matrix.index (i, j, resize_ok, MT::resize_fill_value ()));
       }
       break;
 
@@ -58,7 +127,7 @@ octave_base_matrix<MT>::do_index_op (const octave_value_list& idx)
       {
 	idx_vector i = idx (0).index_vector ();
 
-	retval = MT (matrix.index (i));
+	retval = MT (matrix.index (i, resize_ok, MT::resize_fill_value ()));
       }
       break;
 
@@ -162,7 +231,8 @@ octave_base_matrix<MT>::print (std::ostream& os, bool pr_as_read_syntax) const
 
 template <class MT>
 void
-octave_base_matrix<MT>::print_raw (std::ostream& os, bool pr_as_read_syntax) const
+octave_base_matrix<MT>::print_raw (std::ostream& os,
+				   bool pr_as_read_syntax) const
 {
   octave_print_internal (os, matrix, pr_as_read_syntax,
 			 current_print_indent_level ());
@@ -170,7 +240,8 @@ octave_base_matrix<MT>::print_raw (std::ostream& os, bool pr_as_read_syntax) con
 
 template <class MT>
 bool
-octave_base_matrix<MT>::print_name_tag (std::ostream& os, const std::string& name) const
+octave_base_matrix<MT>::print_name_tag (std::ostream& os,
+					const std::string& name) const
 {
   bool retval = false;
 
@@ -187,6 +258,14 @@ octave_base_matrix<MT>::print_name_tag (std::ostream& os, const std::string& nam
     }
 
   return retval;
+}
+
+template <class MT>
+void
+octave_base_matrix<MT>::print_info (std::ostream& os,
+				    const std::string& prefix) const
+{
+  matrix.print_info (os, prefix);
 }
 
 /*

@@ -75,7 +75,7 @@ public:
   virtual void clear (void);			// delete all items
 	      
   virtual C& operator [] (const std::string& key) = 0;  // access contents by key
-	      
+
   virtual void del (const std::string& key) = 0;	// delete entry
 	      
   virtual Pix first (void) const = 0;		// Pix of first item or 0

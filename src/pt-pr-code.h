@@ -155,14 +155,11 @@ private:
   // TRUE means we are at the beginning of a line.
   bool beginning_of_line;
 
-  void reset_indent_level (void)
-    { curr_print_indent_level = 0; }
+  void reset_indent_level (void) { curr_print_indent_level = 0; }
 
-  void increment_indent_level (void)
-    { curr_print_indent_level += 2; }
+  void increment_indent_level (void) { curr_print_indent_level += 2; }
 
-  void decrement_indent_level (void)
-    { curr_print_indent_level -= 2; }
+  void decrement_indent_level (void) { curr_print_indent_level -= 2; }
 
   void newline (void);
 

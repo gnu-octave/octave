@@ -233,6 +233,8 @@ public:
   int write (std::ostream& os, oct_data_conv::data_type dt, int skip,
 	     oct_mach_info::float_format flt_fmt);
 
+  static double resize_fill_value (void) { return 0; }
+
 private:
 
   Matrix (double *d, int r, int c) : MArray2<double> (d, r, c) { }

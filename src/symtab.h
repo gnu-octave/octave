@@ -201,7 +201,8 @@ private:
     // Reference count.
     int count;
 
-    void dump_symbol_info (void);
+    void print_info (std::ostream& os,
+		     const std::string& prefix = std::string ()) const;
 
     // No copying!
 
@@ -338,9 +339,10 @@ public:
 
   void pop_context (void);
 
-  void print_symbol_info_line (std::ostream& os);
+  void print_symbol_info_line (std::ostream& os) const;
 
-  void dump_symbol_info (void);
+  void print_info (std::ostream& os,
+		   const std::string& prefix = std::string ()) const;
 
 private:
 
@@ -444,7 +446,7 @@ public:
 
   void pop_context (void);
 
-  void print_stats (void);
+  void print_info (ostream& os) const;
 
 private:
 

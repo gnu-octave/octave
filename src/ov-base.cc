@@ -53,7 +53,25 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_base_value, "<unknown type>");
 
 octave_value
-octave_base_value::do_index_op (const octave_value_list&)
+octave_base_value::subsref (const std::string,
+			    const SLList<octave_value_list>&)
+{
+  std::string nm = type_name ();
+  error ("can't perform indexing operations for %s type", nm.c_str ());
+  return octave_value ();
+}
+
+octave_value_list
+octave_base_value::subsref (const std::string,
+			    const SLList<octave_value_list>&, int)
+{
+  std::string nm = type_name ();
+  error ("can't perform indexing operations for %s type", nm.c_str ());
+  return octave_value ();
+}
+
+octave_value
+octave_base_value::do_index_op (const octave_value_list&, int)
 {
   std::string nm = type_name ();
   error ("can't perform indexing operations for %s type", nm.c_str ());
@@ -77,32 +95,28 @@ octave_base_value::index_vector (void) const
 }
 
 octave_value
-octave_base_value::do_struct_elt_index_op (const std::string&,
-					   const octave_value_list&,
-					   bool)
+octave_base_value::subsasgn (const std::string type,
+			     const SLList<octave_value_list>& idx,
+			     const octave_value& rhs)
 {
-  std::string nm = type_name ();
-  error ("can't perform indexed structure reference operations for %s type",
-	 nm.c_str ());
-  return octave_value ();
-}
+  octave_value retval;
 
-octave_value
-octave_base_value::do_struct_elt_index_op (const std::string&, bool)
-{
-  std::string nm = type_name ();
-  error ("can't perform structure reference operations for %s type",
-	 nm.c_str ());
-  return octave_value ();
-}
+  if (is_defined ())
+    {
+      std::string nm = type_name ();
+      error ("can't perform indexed assignment for %s type", nm.c_str ());
+    }
+  else
+    {
+      // Create new object of appropriate type for given index and rhs
+      // types and then call subsasgn again for that object.
 
-octave_lvalue
-octave_base_value::struct_elt_ref (octave_value *, const std::string&)
-{
-  std::string nm = type_name ();
-  error ("can't perform structure reference operations for %s type",
-	 nm.c_str ());
-  return octave_lvalue ();
+      octave_value tmp = octave_value::empty_conv (type, rhs);
+
+      retval = tmp.subsasgn (type, idx, rhs);
+    }
+
+  return retval;
 }
 
 octave_value
@@ -141,6 +155,13 @@ octave_base_value::print_name_tag (std::ostream& os, const std::string& name) co
   newline (os);
   newline (os);
   return true;
+}
+
+void
+octave_base_value::print_info (std::ostream& os,
+			       const std::string& prefix) const
+{
+  os << "no info for type: " << type_name () << "\n";
 }
 
 int
@@ -268,6 +289,14 @@ octave_base_value::map_value (void) const
 {
   Octave_map retval;
   gripe_wrong_type_arg ("octave_base_value::map_value()", type_name ());
+  return retval;
+}
+
+string_vector
+octave_base_value::map_keys (void) const
+{
+  string_vector retval;
+  gripe_wrong_type_arg ("octave_base_value::map_keys()", type_name ());
   return retval;
 }
 

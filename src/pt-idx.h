@@ -31,10 +31,12 @@ class tree_argument_list;
 
 class tree_walker;
 
+class Octave_map;
 class octave_value;
 class octave_value_list;
 class octave_lvalue;
 
+#include "SLList.h"
 #include "str-vec.h"
 
 #include "pt-exp.h"
@@ -46,46 +48,33 @@ tree_index_expression : public tree_expression
 {
 public:
 
-  enum type
-    {
-      unknown,
-      paren,
-      brace,
-      dot
-    };
-
   tree_index_expression (tree_expression *e = 0, tree_argument_list *lst = 0,
-			 int l = -1, int c = -1, type t = paren);
+			 int l = -1, int c = -1, char t = '(');
 
   tree_index_expression (tree_expression *e, const std::string& n,
 			 int l = -1, int c = -1);
 
   ~tree_index_expression (void);
 
-  bool is_index_expression (void) const
-    { return (itype == paren || itype == brace); }
+  void append (tree_argument_list *lst = 0, char t = '(');
 
-  bool is_indirect_ref (void) const
-    { return (itype == dot); }
+  void append (const std::string& n);
+
+  bool is_index_expression (void) const { return true; }
 
   std::string name (void) const;
 
-  std::string struct_elt_name (void) const
-    { return itype == dot ? arg_nm(0) : "<unknown>"; }
+  tree_expression *expression (void) { return expr; }
 
-  type expr_type (void) { return itype; }
+  SLList<tree_argument_list *> arg_lists (void) { return args; }
 
-  tree_expression *expression (void)
-    { return expr; }
+  std::string type_tags (void) { return type; }
 
-  tree_argument_list *arg_list (void)
-    { return list; }
+  SLList<string_vector> arg_names (void) { return arg_nm; }
 
-  bool lvalue_ok (void) const
-    { return (itype == dot || expr->lvalue_ok ()); }
+  bool lvalue_ok (void) const { return expr->lvalue_ok (); }
 
-  bool rvalue_ok (void) const
-    { return true; }
+  bool rvalue_ok (void) const { return true; }
 
   octave_value rvalue (void);
 
@@ -102,14 +91,16 @@ private:
   // The LHS of this index expression.
   tree_expression *expr;
 
-  // The indices (only valid if itype == paren || itype == brace).
-  tree_argument_list *list;
+  // The indices (only valid if type == paren || type == brace).
+  SLList<tree_argument_list *> args;
 
   // The type of this index expression.
-  type itype;
+  std::string type;
 
   // The names of the arguments.
-  string_vector arg_nm;
+  SLList<string_vector> arg_nm;
+
+  Octave_map tree_index_expression::make_arg_struct (void) const;
 
   // No copying!
 

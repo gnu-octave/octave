@@ -52,12 +52,22 @@ public:
   Cell (const Array2<octave_value>& c)
     : Array2<octave_value> (c) { }
 
+  Cell (const Array<octave_value>& c, int nr, int nc)
+    : Array2<octave_value> (c, nr, nc) { }
+
   Cell (const Cell& c)
     : Array2<octave_value> (c) { }
 
-  boolMatrix all(void) const { return boolMatrix();} //FIXME
-  boolMatrix any(void) const {return boolMatrix();}  //FIXME
-  bool is_true(void) const {return false;} //FIXME
+  // XXX FIXME XXX
+  boolMatrix all (void) const { return boolMatrix (); }
+
+  // XXX FIXME XXX
+  boolMatrix any (void) const { return boolMatrix (); }
+
+  // XXX FIXME XXX
+  bool is_true (void) const { return false; }
+
+  static octave_value resize_fill_value (void) { return octave_value (); }
 };
 
 #endif

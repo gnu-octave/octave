@@ -35,6 +35,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "gripes.h"
 #include "ops.h"
+#include "oct-obj.h"
 #include "ov-range.h"
 #include "ov-re-mat.h"
 #include "ov-scalar.h"
@@ -81,7 +82,34 @@ octave_range::try_narrowing_conversion (void)
 }
 
 octave_value
-octave_range::do_index_op (const octave_value_list& idx)
+octave_range::subsref (const std::string type,
+		       const SLList<octave_value_list>& idx)
+{
+  octave_value retval;
+
+  switch (type[0])
+    {
+    case '(':
+      retval = do_index_op (idx.front ());
+      break;
+
+    case '{':
+    case '.':
+      {
+	std::string nm = type_name ();
+	error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
+      }
+      break;
+
+    default:
+      panic_impossible ();
+    }
+
+  return retval.next_subsref (type, idx);
+}
+
+octave_value
+octave_range::do_index_op (const octave_value_list& idx, int resize_ok)
 {
   // XXX FIXME XXX -- this doesn't solve the problem of
   //
@@ -95,7 +123,7 @@ octave_range::do_index_op (const octave_value_list& idx)
 
   octave_value tmp (new octave_matrix (range.matrix_value ()));
 
-  return tmp.do_index_op (idx);
+  return tmp.do_index_op (idx, resize_ok);
 }
 
 double

@@ -174,16 +174,22 @@ public:
   Array2<T> transpose (void) const;
 
 #ifdef HEAVYWEIGHT_INDEXING
+
   void maybe_delete_elements (idx_vector& i);
 
   void maybe_delete_elements (idx_vector& i, idx_vector& j);
 
   Array2<T> value (void);
 
-  Array2<T> index (idx_vector& i) const;
+  Array2<T> index (idx_vector& i, int resize_ok = 0,
+		   const T& rfv = Array<T>::resize_fill_value ()) const;
 
-  Array2<T> index (idx_vector& i, idx_vector& j) const;
+  Array2<T> index (idx_vector& i, idx_vector& j, int resize_ok = 0,
+		   const T& rfv = Array<T>::resize_fill_value ()) const;
+
 #endif
+
+  void print_info (std::ostream& os, const std::string& prefix) const;
 };
 
 template <class LT, class RT>

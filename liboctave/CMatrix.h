@@ -273,6 +273,8 @@ public:
   friend std::ostream& operator << (std::ostream& os, const ComplexMatrix& a);
   friend std::istream& operator >> (std::istream& is, ComplexMatrix& a);
 
+  static Complex resize_fill_value (void) { return Complex (0.0, 0.0); }
+
 private:
 
   ComplexMatrix (Complex *d, int r, int c) : MArray2<Complex> (d, r, c) { }

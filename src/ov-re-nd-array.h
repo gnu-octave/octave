@@ -60,7 +60,8 @@ public:
 
   ~octave_double_nd_array (void) { }
 
-  octave_value *clone (void) { return new octave_double_nd_array (*this); }
+  octave_value *clone (void) const { return new octave_double_nd_array (*this); }
+  octave_value *empty_clone (void) const { return new octave_double_nd_array (); }
 
 #if 0
   octave_value *try_narrowing_conversion (void);

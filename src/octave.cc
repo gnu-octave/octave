@@ -51,6 +51,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "str-vec.h"
 
 #include <defaults.h>
+#include "Cell.h"
 #include "defun.h"
 #include "error.h"
 #include "file-io.h"
@@ -159,14 +160,18 @@ intern_argv (int argc, char **argv)
   bind_builtin_variable ("nargin", static_cast<double> (argc-1),
 			 true, true, 0);
 
-  octave_value_list octave_argv;
+  Cell octave_argv;
 
   if (argc > 1)
     {
-      // Skip program name in argv.
-      while (--argc > 0)
-	octave_argv(argc-1) = octave_value (*(argv+argc));
+      Array<octave_value> tmp (argc-1);
 
+      // Skip program name in argv.
+      int i = argc;
+      while (--i > 0)
+	tmp(i-1) = octave_value (*(argv+i));
+
+      octave_argv = Cell (tmp, argc-1, 1);
     }
 
   bind_builtin_constant ("argv", octave_argv, true, true);

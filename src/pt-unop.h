@@ -94,8 +94,7 @@ public:
 
   ~tree_prefix_expression (void) { }
 
-  bool rvalue_ok (void) const
-    { return true; }
+  bool rvalue_ok (void) const { return true; }
 
   octave_value rvalue (void);
 
@@ -131,8 +130,7 @@ public:
 
   ~tree_postfix_expression (void) { }
 
-  bool rvalue_ok (void) const
-    { return true; }
+  bool rvalue_ok (void) const { return true; }
 
   octave_value rvalue (void);
 

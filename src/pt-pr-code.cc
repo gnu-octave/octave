@@ -484,21 +484,53 @@ tree_print_code::visit_index_expression (tree_index_expression& expr)
       expr_has_parens = e->is_postfix_indexed ();
     }
 
-  tree_argument_list *list = expr.arg_list ();
+  SLList<tree_argument_list *> arg_lists = expr.arg_lists ();
+  std::string type_tags = expr.type_tags ();
+  SLList<string_vector> arg_names = expr.arg_names ();
 
-  if (expr.expr_type () == tree_index_expression::dot)
+  int n = type_tags.length ();
+
+  Pix arg_lists_p = arg_lists.first ();
+  Pix arg_names_p = arg_names.first ();
+
+  for (int i = 0; i < n; i++)
     {
-      os << "." << expr.struct_elt_name ();
-    }
-  else if (list)
-    {
-      os << " (";
-      list->accept (*this);
-      os << ")";
-    }
-  else if (expr_has_parens)
-    {
-      os << " ()";
+      switch (type_tags[i])
+	{
+	case '(':
+	  {
+	    os << " (";
+	    tree_argument_list *l = arg_lists (arg_lists_p);
+	    if (l)
+	      l->accept (*this);
+	    os << ")";
+	  }
+	  break;
+	    
+	case '{':
+	  {
+	    os << " {";
+	    tree_argument_list *l = arg_lists (arg_lists_p);
+	    if (l)
+	      l->accept (*this);
+	    os << "}";
+	  }
+	  break;
+	    
+	case '.':
+	  {
+	    string_vector nm = arg_names (arg_names_p);
+	    assert (nm.length () == 1);
+	    os << "." << nm(0);
+	  }
+	  break;
+
+	default:
+	  panic_impossible ();
+	}
+
+      arg_lists.next (arg_lists_p);
+      arg_names.next (arg_names_p);
     }
 
   print_parens (expr, ")");

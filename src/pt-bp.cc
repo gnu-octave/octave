@@ -345,22 +345,21 @@ tree_breakpoint::visit_index_expression (tree_index_expression& cmd)
   if (found)
     return;
 
-  if (cmd.expr_type () == tree_index_expression::dot)
+  tree_expression *expr = cmd.expression ();
+
+  if (expr && expr->line () >= line)
+    take_action (*expr);
+
+  SLList<tree_argument_list *> lst = cmd.arg_lists ();
+
+  if (! lst.empty ())
     {
-      if (cmd.line () >= line)
-	take_action (cmd);
-    }
-  else
-    {
-      tree_expression *expr = cmd.expression ();
+      for (Pix p = lst.first (); p != 0; lst.next (p))
+	{
+	  tree_argument_list *elt = lst(p);
 
-      if (expr && expr->line () >= line)
-	take_action (*expr);
-
-      tree_argument_list *lst = cmd.arg_list ();
-
-      if (lst)
-	lst->accept (*this);
+	  elt->accept (*this);
+	}
     }
 }
 

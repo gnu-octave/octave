@@ -74,6 +74,8 @@ public:
   friend std::istream& operator >> (std::istream& is, Matrix& a);
 #endif
 
+  static bool resize_fill_value (void) { return false; }
+
 private:
 
   boolMatrix (bool *b, int r, int c) : Array2<bool> (b, r, c) { }

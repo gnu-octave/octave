@@ -42,7 +42,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "error.h"
 #include "oct-lvalue.h"
 #include "ov.h"
-#include "pager.h"
 #include "pt-pr-code.h"
 #include "symtab.h"
 #include "utils.h"
@@ -179,11 +178,11 @@ SYMBOL_DEF::which (std::ostream& os, const std::string& name)
 }
 
 void
-SYMBOL_DEF::dump_symbol_info (void)
+SYMBOL_DEF::print_info (ostream& os, const std::string& prefix) const
 {
-  octave_stdout << "symbol_def::count: " << count << "\n";
-  octave_stdout << "def.type_name():   " << definition.type_name () << "\n";
-  octave_stdout << "def.count():       " << definition.get_count () << "\n";
+  os << prefix << "symbol_def::count: " << count << "\n";
+
+  definition.print_info (os, prefix + "  ");
 }
 
 // Individual records in a symbol table.
@@ -445,7 +444,7 @@ symbol_record::pop_context (void)
 }
 
 void
-symbol_record::print_symbol_info_line (std::ostream& os)
+symbol_record::print_symbol_info_line (std::ostream& os) const
 {
   os << (is_read_only () ? " r-" : " rw")
      << (is_eternal () ? "-" : "d")
@@ -477,12 +476,12 @@ symbol_record::print_symbol_info_line (std::ostream& os)
 }
 
 void
-symbol_record::dump_symbol_info (void)
+symbol_record::print_info (ostream& os, const std::string& prefix) const
 {
   if (definition)
-    definition->dump_symbol_info ();
+    definition->print_info (os, prefix);
   else
-    octave_stdout << "symbol " << name () << " is undefined\n";
+    os << prefix << "symbol " << name () << " is undefined\n";
 }
 
 bool
@@ -875,7 +874,7 @@ symbol_table::pop_context (void)
 }
 
 void
-symbol_table::print_stats (void)
+symbol_table::print_info (ostream& os) const
 {
   int count = 0;
   int empty_chains = 0;
@@ -889,7 +888,7 @@ symbol_table::print_stats (void)
       symbol_record *ptr = table[i].next ();
 
       if (ptr)
-	octave_stdout << "chain number " << i << ":\n";
+	os << "chain number " << i << ":\n";
       else
 	{
 	  empty_chains++;
@@ -900,7 +899,9 @@ symbol_table::print_stats (void)
 	{
 	  num_this_chain++;
 
-	  octave_stdout << "  " << ptr->name () << "\n";
+	  os << "  " << ptr->name () << "\n";
+
+	  ptr->print_info (os, "    ");
 
 	  ptr = ptr->next ();
 	}
@@ -914,14 +915,14 @@ symbol_table::print_stats (void)
 	min_chain_length = num_this_chain;
 
       if (num_this_chain > 0)
-	octave_stdout << "\n";
+	os << "\n";
     }
 
-  octave_stdout << "max chain length: " << max_chain_length << "\n";
-  octave_stdout << "min chain length: " << min_chain_length << "\n";
-  octave_stdout << "empty chains:     " << empty_chains << "\n";
-  octave_stdout << "total chains:     " << table_size << "\n";
-  octave_stdout << "total symbols:    " << count << "\n";
+  os << "max chain length: " << max_chain_length << "\n";
+  os << "min chain length: " << min_chain_length << "\n";
+  os << "empty chains:     " << empty_chains << "\n";
+  os << "total chains:     " << table_size << "\n";
+  os << "total symbols:    " << count << "\n";
 }
 
 // Chris Torek's fave hash function.

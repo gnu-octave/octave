@@ -63,9 +63,10 @@ public:
 
   ~octave_base_nd_array (void) { }
 
-  octave_value *clone (void) { return new octave_base_nd_array (*this); }
+  octave_value *clone (void) const { return new octave_base_nd_array (*this); }
+  octave_value *empty_clone (void) const { return new octave_base_nd_array (); }
 
-  octave_value do_index_op (const octave_value_list& idx);
+  octave_value do_index_op (const octave_value_list& idx, int resize_ok);
 
   bool is_matrix_type (void) const { return false; }
 

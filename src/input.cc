@@ -476,6 +476,15 @@ initialize_command_input (void)
 
   command_editor::set_name ("Octave");
 
+  // XX FIXME XXX -- this needs to include a comma too, but that
+  // causes trouble for the new struct element completion code.
+
+  static char *s = "\t\n !\"\'*+-/:;<=>[\\]^`~";
+
+  command_editor::set_basic_word_break_characters (s);
+
+  command_editor::set_completer_word_break_characters (s);
+
   command_editor::set_basic_quote_characters ("\"");
 
   command_editor::set_completion_function (generate_completion);

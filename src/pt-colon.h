@@ -65,8 +65,7 @@ public:
 
   tree_colon_expression *append (tree_expression *t);
 
-  bool rvalue_ok (void) const
-    { return true; }
+  bool rvalue_ok (void) const { return true; }
 
   octave_value rvalue (void);
 

@@ -66,7 +66,8 @@ public:
 
   ~octave_bool_matrix (void) { }
 
-  octave_value *clone (void) { return new octave_bool_matrix (*this); }
+  octave_value *clone (void) const { return new octave_bool_matrix (*this); }
+  octave_value *empty_clone (void) const { return new octave_bool_matrix (); }
 
   type_conv_fcn numeric_conversion_function (void) const;
 

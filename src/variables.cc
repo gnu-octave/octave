@@ -45,6 +45,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-map.h"
 #include "oct-obj.h"
 #include "ov.h"
+#include "ov-usr-fcn.h"
 #include "pager.h"
 #include "parse.h"
 #include "symtab.h"
@@ -265,22 +266,14 @@ get_struct_elts (const std::string& text)
 }
 
 string_vector
-generate_struct_completions (const std::string& text, std::string& prefix, std::string& hint)
+generate_struct_completions (const std::string& text,
+			     std::string& prefix, std::string& hint)
 {
   string_vector names;
 
   size_t pos = text.rfind ('.');
 
-  std::string id;
-  string_vector elts;
-
-  if (pos == NPOS)
-    {
-      hint = text;
-      prefix = text;
-      elts.resize (1, text);
-    }
-  else
+  if (pos != NPOS)
     {
       if (pos == text.length ())
 	hint = "";
@@ -288,41 +281,14 @@ generate_struct_completions (const std::string& text, std::string& prefix, std::
 	hint = text.substr (pos+1);
 
       prefix = text.substr (0, pos);
-
-      elts = get_struct_elts (prefix);
     }
 
-  id = elts[0];
+  int parse_status;
 
-  symbol_record *sr = curr_sym_tab->lookup (id);
+  octave_value tmp = eval_string (prefix, true, parse_status);
 
-  if (! sr)
-    sr = global_sym_tab->lookup (id);
-
-  if (sr && sr->is_defined ())
-    {
-      octave_value tmp = sr->def ();
-
-      // XXX FIXME XXX -- make this work for all types that can do
-      // structure reference operations.
-      if (tmp.is_map ())
-	{
-	  for (int i = 1; i < elts.length (); i++)
-	    {
-	      tmp = tmp.do_struct_elt_index_op (elts[i], true);
-
-	      if (! tmp.is_map ())
-		break;
-	    }
-
-	  if (tmp.is_map ())
-	    {
-	      Octave_map m = tmp.map_value ();
-
-	      names = m.make_name_list ();
-	    }
-	}
-    }
+  if (tmp.is_defined () && tmp.is_map ())
+    names = tmp.map_keys ();
 
   return names;
 }
@@ -330,44 +296,11 @@ generate_struct_completions (const std::string& text, std::string& prefix, std::
 bool
 looks_like_struct (const std::string& text)
 {
-  bool retval = true;
+  int parse_status;
 
-  string_vector elts = get_struct_elts (text);
+  octave_value tmp = eval_string (text, true, parse_status);
 
-  std::string id = elts[0];
-
-  symbol_record *sr = curr_sym_tab->lookup (id);
-
-  if (! sr)
-    sr = global_sym_tab->lookup (id);
-
-  if (sr && sr->is_defined ())
-    {
-      octave_value tmp = sr->def ();
-
-      // XXX FIXME XXX -- should this work for all types that can do
-      // structure reference operations?
-
-      if (tmp.is_map ())
-	{
-	  for (int i = 1; i < elts.length (); i++)
-	    {
-	      tmp = tmp.do_struct_elt_index_op (elts[i], true);
-
-	      if (! tmp.is_map ())
-		{
-		  retval = false;
-		  break;
-		}
-	    }
-	}
-      else
-	retval = false;
-    }
-  else
-    retval = false;
-
-  return retval;	
+  return (tmp.is_defined () && tmp.is_map ());
 }
 
 DEFUN (is_global, args, ,
@@ -1303,9 +1236,9 @@ This command may not be used within a function body.\n\
   return retval;
 }
 
-DEFUN (__dump_symtab_info__, args, ,
+DEFUN (__print_symtab_info__, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __dump_symtab_info__ ()\n\
+@deftypefn {Built-in Function} {} __print_symtab_info__ ()\n\
 Print raw symbol table statistices.\n\
 @end deftypefn")
 {
@@ -1318,19 +1251,36 @@ Print raw symbol table statistices.\n\
       std::string arg = args(0).string_value ();
 
       if (arg == "global")
-	global_sym_tab->print_stats ();
+	global_sym_tab->print_info (octave_stdout);
+      else if (arg == "top-level")
+	top_level_sym_tab->print_info (octave_stdout);
       else
-	print_usage ("__dump_symtab_info__");
+	{
+	  symbol_record *gsr = global_sym_tab->lookup (arg, true);
+
+	  if (gsr && gsr->is_user_function ())
+	    {
+	      octave_value tmp = gsr->def ();
+	      const octave_value& rep = tmp.get_rep ();
+	      
+	      const octave_user_function& fcn
+		= static_cast<const octave_user_function&> (rep);
+
+	      fcn.print_symtab_info (octave_stdout);
+	    }
+	  else
+	    error ("no user-defined function named %s", arg.c_str ());
+	}
     }
   else if (nargin == 0)
-    curr_sym_tab->print_stats ();
+    curr_sym_tab->print_info (octave_stdout);
   else
-    print_usage ("__dump_symtab_info__");
+    print_usage ("__print_symtab_info__");
 
   return retval;
 }
 
-DEFUN (__dump_symbol_info__, args, ,
+DEFUN (__print_symbol_info__, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __dump_symbol_info__ (@var{name})\n\
 Print symbol table information for the symbol @var{name}.\n\
@@ -1349,16 +1299,16 @@ Print symbol table information for the symbol @var{name}.\n\
 	  symbol_record *sr = curr_sym_tab->lookup (symbol_name);
 
 	  if (sr)
-	    sr->dump_symbol_info ();
+	    sr->print_info (octave_stdout);
 	  else
-	    error ("__dymp_symbol_info__: symbol %s not found",
+	    error ("__print_symbol_info__: symbol %s not found",
 		   symbol_name.c_str ());
 	}
       else
-	print_usage ("__dump_symbol_info__");
+	print_usage ("__print_symbol_info__");
     }
   else
-    print_usage ("__dump_symbol_info__");
+    print_usage ("__print_symbol_info__");
 
   return retval;
 }

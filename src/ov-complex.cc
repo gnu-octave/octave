@@ -60,24 +60,12 @@ octave_complex::try_narrowing_conversion (void)
   return retval;
 }
 
-static inline bool
-valid_scalar_indices (const octave_value_list& args)
-{
-  int nargin = args.length ();
-
-  for (int i = 0; i < nargin; i++)
-    if (! args(i).valid_as_scalar_index ())
-      return false;
-
-  return true;
-}
-
 octave_value
-octave_complex::do_index_op (const octave_value_list& idx)
+octave_complex::do_index_op (const octave_value_list& idx, int resize_ok)
 {
   octave_value retval;
 
-  if (valid_scalar_indices (idx))
+  if (idx.valid_scalar_indices ())
     retval = scalar;
   else
     {
@@ -93,7 +81,7 @@ octave_complex::do_index_op (const octave_value_list& idx)
 
       octave_value tmp (new octave_complex_matrix (complex_matrix_value ()));
 
-      retval = tmp.do_index_op (idx);
+      retval = tmp.do_index_op (idx, resize_ok);
     }
 
   return retval;

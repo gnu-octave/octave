@@ -849,7 +849,7 @@ argument that is not a structure.\n\
       if (args (0).is_map ())
 	{
 	  Octave_map m = args(0).map_value ();
-	  retval(0) = m.make_name_list ();
+	  retval(0) = m.keys ();
 	}
       else
 	gripe_wrong_type_arg ("struct_elements", args (0));
@@ -881,9 +881,11 @@ the second must be a string.\n\
 
       if (args(0).is_map () && args(1).is_string ())
 	{
-	  std::string s = args(1).string_value ();
-	  octave_value tmp = args(0).do_struct_elt_index_op (s, true);
-	  retval = static_cast<double> (tmp.is_defined ());
+	  std::string key = args(1).string_value ();
+
+	  Octave_map m = args(0).map_value ();
+
+	  retval = static_cast<double> (m.contains (key));
 	}
       else
 	print_usage ("struct_contains");

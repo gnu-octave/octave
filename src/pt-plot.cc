@@ -666,7 +666,7 @@ subplot::extract_plot_data (int ndim, octave_value& data)
       args(1) = val;
       args(0) = octave_value::magic_colon_t;
 
-      retval = data.do_index_op (args);
+      retval = data.subsref ("(", args);
 
       if (error_state)
 	return octave_value ();

@@ -32,38 +32,22 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 void
 octave_lvalue::assign (octave_value::assign_op op, const octave_value& rhs)
 {
-  octave_value saved_val;
+  octave_value tmp (idx.empty ()
+		    ? val->assign (op, rhs)
+		    : val->assign (op, type, idx, rhs));
 
-  if (chg_fcn)
-    saved_val = *val;
-
-  if (idx.empty ())
-    {
-      if (struct_elt_name.empty ())
-	val->assign (op, rhs);
-      else
-	val->assign_struct_elt (op, struct_elt_name, rhs);
-    }
-  else
-    {
-      if (struct_elt_name.empty ())
-	val->assign (op, idx, rhs);
-      else
-	val->assign_struct_elt (op, struct_elt_name, idx, rhs);
-    }
-
-  if (chg_fcn && ! error_state && chg_fcn () < 0)
-    *val = saved_val;
+  if (! (error_state || chg_fcn && chg_fcn () < 0))
+    *val = tmp;
 }
 
 void
-octave_lvalue::set_index (const octave_value_list& i,
-			  tree_index_expression::type t)
+octave_lvalue::set_index (const std::string& t,
+			  const SLList<octave_value_list>& i)
 {
   if (! index_set)
     {
+      type = t;
       idx = i;
-      itype = t;
       index_set = true;
     }
   else
@@ -73,18 +57,12 @@ octave_lvalue::set_index (const octave_value_list& i,
 void
 octave_lvalue::do_unary_op (octave_value::unary_op op)
 {
-  octave_value saved_val;
+  octave_value tmp (idx.empty ()
+		    ? val->do_non_const_unary_op (op)
+		    : val->do_non_const_unary_op (op, type, idx));
 
-  if (chg_fcn)
-    saved_val = *val;
-
-  if (idx.empty ())
-    val->do_non_const_unary_op (op);
-  else
-    val->do_non_const_unary_op (op, idx);
-
-  if (chg_fcn && ! error_state && chg_fcn () < 0)
-    *val = saved_val;
+  if (! (error_state || chg_fcn && chg_fcn () < 0))
+    *val = tmp;
 }
 
 /*

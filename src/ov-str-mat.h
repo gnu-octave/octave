@@ -79,11 +79,12 @@ public:
 
   ~octave_char_matrix_str (void) { }
 
-  octave_value *clone (void) { return new octave_char_matrix_str (*this); }
+  octave_value *clone (void) const { return new octave_char_matrix_str (*this); }
+  octave_value *empty_clone (void) const { return new octave_char_matrix_str (); }
 
   type_conv_fcn numeric_conversion_function (void) const;
 
-  octave_value do_index_op (const octave_value_list& idx);
+  octave_value do_index_op (const octave_value_list& idx, int resize_ok);
 
   void assign (const octave_value_list& idx, const charMatrix& rhs);
 

@@ -76,7 +76,8 @@ public:
 
   ~octave_char_matrix (void) { }
 
-  octave_value *clone (void) { return new octave_char_matrix (*this); }
+  octave_value *clone (void) const { return new octave_char_matrix (*this); }
+  octave_value *empty_clone (void) const { return new octave_char_matrix (); }
 
   bool is_char_matrix (void) const { return true; }
   bool is_real_matrix (void) const { return true; }

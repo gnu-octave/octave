@@ -57,17 +57,13 @@ public:
 
   void mark_as_formal_parameters (void);
 
-  void mark_varargs (void)
-    { marked_for_varargs = 1; }
+  void mark_varargs (void) { marked_for_varargs = 1; }
 
-  bool takes_varargs (void) const
-    { return marked_for_varargs != 0; }
+  bool takes_varargs (void) const { return marked_for_varargs != 0; }
 
-  void mark_varargs_only (void)
-    { marked_for_varargs = -1; }
+  void mark_varargs_only (void) { marked_for_varargs = -1; }
 
-  bool varargs_only (void)
-    { return (marked_for_varargs < 0); }
+  bool varargs_only (void) { return (marked_for_varargs < 0); }
 
   void initialize_undefined_elements (octave_value& val);
 

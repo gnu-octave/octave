@@ -126,8 +126,7 @@ tree_statement::eval (bool silent, int nargout, bool in_function_body)
 	      do_bind_ans = id->is_function ();
 	    }
 	  else
-	    do_bind_ans = (! (expr->is_indirect_ref ()
-			      || expr->is_assignment_expression ()));
+	    do_bind_ans = (! expr->is_assignment_expression ());
 
 	  retval = expr->rvalue (nargout);
 

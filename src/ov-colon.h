@@ -55,7 +55,8 @@ public:
 
   ~octave_magic_colon (void) { }
 
-  octave_value *clone (void) { return new octave_magic_colon (*this); }
+  octave_value *clone (void) const { return new octave_magic_colon (*this); }
+  octave_value *empty_clone (void) const { return new octave_magic_colon (); }
 
   idx_vector index_vector (void) const { return idx_vector (':'); }
 

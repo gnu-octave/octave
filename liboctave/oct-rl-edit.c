@@ -33,6 +33,19 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "oct-rl-edit.h"
 
+#define OCTAVE_RL_SAVE_STRING(ss, s) \
+  static char *ss = 0; \
+ \
+  if (ss) \
+    { \
+      free (ss); \
+      ss = 0; \
+    } \
+ \
+  ss = malloc (strlen (s) + 1); \
+ \
+  strcpy (ss, s)
+
 int
 octave_rl_screen_height (void)
 {
@@ -123,17 +136,7 @@ octave_rl_clear_undo_list (void)
 void
 octave_rl_set_name (const char *n)
 {
-  static char *nm = 0;
-
-  if (nm)
-    {
-      free (nm);
-      nm = 0;
-    }
-
-  nm = malloc (strlen (n + 1));
-
-  strcpy (nm, n);
+  OCTAVE_RL_SAVE_STRING (nm, n);
 
   rl_readline_name = nm;
 
@@ -184,19 +187,25 @@ octave_rl_read_init_file (const char *f)
 }
 
 void
+octave_rl_set_basic_word_break_characters (const char *s)
+{
+  OCTAVE_RL_SAVE_STRING (ss, s);
+
+  rl_basic_word_break_characters = ss;
+}
+
+void
+octave_rl_set_completer_word_break_characters (const char *s)
+{
+  OCTAVE_RL_SAVE_STRING (ss, s);
+
+  rl_completer_word_break_characters = ss;
+}
+
+void
 octave_rl_set_basic_quote_characters (const char *s)
 {
-  static char *ss = 0;
-
-  if (ss)
-    {
-      free (ss);
-      ss = 0;
-    }
-
-  ss = malloc (strlen (s) + 1);
-
-  strcpy (ss, s);
+  OCTAVE_RL_SAVE_STRING (ss, s);
 
   rl_basic_quote_characters = ss;
 }

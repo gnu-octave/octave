@@ -49,24 +49,12 @@ DEFINE_OCTAVE_ALLOCATOR (octave_scalar);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_scalar, "scalar");
 
-static inline bool
-valid_scalar_indices (const octave_value_list& args)
-{
-  int nargin = args.length ();
-
-  for (int i = 0; i < nargin; i++)
-    if (! args(i).valid_as_scalar_index ())
-      return false;
-
-  return true;
-}
-
 octave_value
-octave_scalar::do_index_op (const octave_value_list& idx)
+octave_scalar::do_index_op (const octave_value_list& idx, int resize_ok)
 {
   octave_value retval;
 
-  if (valid_scalar_indices (idx))
+  if (idx.valid_scalar_indices ())
     retval = scalar;
   else
     {
@@ -82,7 +70,7 @@ octave_scalar::do_index_op (const octave_value_list& idx)
 
       octave_value tmp (new octave_matrix (matrix_value ()));
 
-      retval = tmp.do_index_op (idx);
+      retval = tmp.do_index_op (idx, resize_ok);
     }
 
   return retval;

@@ -63,9 +63,20 @@ public:
 
   ~octave_base_matrix (void) { }
 
-  octave_value *clone (void) { return new octave_base_matrix (*this); }
+  octave_value *clone (void) const { return new octave_base_matrix (*this); }
+  octave_value *empty_clone (void) const { return new octave_base_matrix (); }
 
-  octave_value do_index_op (const octave_value_list& idx);
+  octave_value subsref (const std::string type,
+			const SLList<octave_value_list>& idx);
+
+  octave_value subsasgn (const std::string type,
+			 const SLList<octave_value_list>& idx,
+			 const octave_value& rhs);
+
+  octave_value do_index_op (const octave_value_list& idx, int resize_ok);
+
+  octave_value do_index_op (const octave_value_list& idx)
+    { return do_index_op (idx, 0); }
 
   void assign (const octave_value_list& idx, const MT& rhs);
 
@@ -100,6 +111,8 @@ public:
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
   bool print_name_tag (std::ostream& os, const std::string& name) const;
+
+  void print_info (std::ostream& os, const std::string& prefix) const;
 
 protected:
 

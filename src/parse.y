@@ -280,8 +280,8 @@ recover_from_parsing_function (void);
 
 // Make an index expression.
 static tree_index_expression *
-make_index_expression (tree_expression *expr, tree_argument_list *args,
-		       tree_index_expression::type);
+make_index_expression (tree_expression *expr,
+		       tree_argument_list *args, char type);
 
 // Make an indirect reference expression.
 static tree_index_expression *
@@ -697,25 +697,13 @@ parsing_indir	: // empty
 postfix_expr	: primary_expr
 		  { $$ = $1; }
 		| postfix_expr '(' ')'
-		  {
-		    $$ = make_index_expression ($1, 0,
-						tree_index_expression::paren);
-		  }
+		  { $$ = make_index_expression ($1, 0, '('); }
 		| postfix_expr '(' arg_list ')'
-		  {
-		    $$ = make_index_expression ($1, $3,
-						tree_index_expression::paren);
-		  }
+		  { $$ = make_index_expression ($1, $3, '('); }
 		| postfix_expr '{' '}'
-		  {
-		    $$ = make_index_expression ($1, 0,
-						tree_index_expression::brace);
-		  }
+		  { $$ = make_index_expression ($1, 0, '{'); }
 		| postfix_expr '{' arg_list '}'
-		  {
-		    $$ = make_index_expression ($1, $3,
-						tree_index_expression::brace);
-		  }
+		  { $$ = make_index_expression ($1, $3, '{'); }
 		| postfix_expr PLUS_PLUS
 		  { $$ = make_postfix_op (PLUS_PLUS, $1, $2); }
 		| postfix_expr MINUS_MINUS
@@ -852,10 +840,7 @@ assign_expr	: assign_lhs '=' expression
 		;
 
 word_list_cmd	: identifier word_list
-		  {
-		    $$ = make_index_expression ($1, $2,
-						tree_index_expression::paren);
-		  }
+		  { $$ = make_index_expression ($1, $2, '('); }
 		;
 
 word_list	: TEXT
@@ -2591,7 +2576,7 @@ recover_from_parsing_function (void)
 
 static tree_index_expression *
 make_index_expression (tree_expression *expr, tree_argument_list *args,
-		       tree_index_expression::type t)
+		       char type)
 {
   tree_index_expression *retval = 0;
 
@@ -2600,7 +2585,16 @@ make_index_expression (tree_expression *expr, tree_argument_list *args,
 
   expr->mark_postfix_indexed ();
 
-  retval =  new tree_index_expression (expr, args, l, c, t);
+  if (expr->is_index_expression ())
+    {
+      tree_index_expression *tmp = static_cast<tree_index_expression *> (expr);
+
+      tmp->append (args, type);
+
+      retval = tmp;
+    }
+  else
+    retval = new tree_index_expression (expr, args, l, c, type);
 
   return retval;
 }
@@ -2615,7 +2609,16 @@ make_indirect_ref (tree_expression *expr, const std::string& elt)
   int l = expr->line ();
   int c = expr->column ();
 
-  retval = new tree_index_expression (expr, elt, l, c);
+  if (expr->is_index_expression ())
+    {
+      tree_index_expression *tmp = static_cast<tree_index_expression *> (expr);
+
+      tmp->append (elt);
+
+      retval = tmp;
+    }
+  else
+    retval = new tree_index_expression (expr, elt, l, c);
 
   lexer_flags.looking_at_indirect_ref = false;
 

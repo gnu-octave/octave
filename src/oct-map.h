@@ -82,12 +82,16 @@ Octave_map
 
   void clear (void) { map.clear (); }
 
-  string_vector make_name_list (void);
+  string_vector keys (void) const;
 
   int array_length () const;
 
   Octave_map& assign (const idx_vector& idx, const std::string& key,
 		      const octave_value_list& rhs);
+
+  Octave_map& assign (const std::string& key, const octave_value_list& rhs);
+
+  Octave_map index (idx_vector& idx);
 
 private:
 

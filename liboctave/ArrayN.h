@@ -179,9 +179,12 @@ public:
 
   ArrayN<T> value (void);
 
-  ArrayN<T> index (idx_vector& idx) const;
+  ArrayN<T> index (idx_vector& idx, int resize_ok = 0,
+		   const T& rfv = Array<T>::resize_fill_value ()) const;
 
-  ArrayN<T> index (Array<idx_vector>& idx) const;
+  ArrayN<T> index (Array<idx_vector>& idx, int resize_ok = 0,
+		   const T& rfv = Array<T>::resize_fill_value ()) const;
+
 #endif
 };
 

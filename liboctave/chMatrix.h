@@ -81,6 +81,8 @@ public:
   friend std::istream& operator >> (std::istream& is, Matrix& a);
 #endif
 
+  static char resize_fill_value (void) { return '\0'; }
+
 private:
 
   charMatrix (char *ch, int r, int c) : MArray2<char> (ch, r, c) { }

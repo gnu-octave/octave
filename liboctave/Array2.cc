@@ -237,6 +237,17 @@ Array2<T>::transpose (void) const
     }
 }
 
+template <class T>
+void
+Array2<T>::print_info (std::ostream& os, const std::string& prefix) const
+{
+  os << "\n"
+     << prefix << "rows: " << rows () << "\n"
+     << prefix << "cols: " << cols () << "\n";
+
+  Array<T>::print_info (os, prefix + "  ");
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

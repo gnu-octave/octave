@@ -38,12 +38,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Range.h"
 #include "cmd-edit.h"
 #include "dMatrix.h"
-#include "Cell.h"
 #include "lo-mappers.h"
 #include "mach-info.h"
 #include "oct-cmplx.h"
 #include "str-vec.h"
 
+#include "Cell.h"
 #include "defun.h"
 #include "error.h"
 #include "gripes.h"
@@ -1755,37 +1755,10 @@ octave_print_internal (std::ostream& os, const charMatrix& chm,
     }
 }
 
-void
-octave_print_internal (std::ostream& os, const Cell& cell_val,
-		       bool pr_as_read_syntax, int extra_indent)
+extern void
+octave_print_internal (std::ostream&, const Cell&, bool, int, bool)
 {
-  int nr = cell_val.rows ();
-  int nc = cell_val.columns();
-
-  if (nr > 0 && nc > 0)
-    {
-      os << "{\n";
-
-      for (int j = 0; j < nc; j++)
-	{
-	  for (int i = 0; i < nr; i++)
-	    {
-	      std::ostrstream buf;
-	      buf << "[" << i+1 << "," << j+1 << "]" << std::ends;
-	      const char *nm = buf.str ();
-
-	      octave_value val = cell_val(i,j);
-
-	      val.print_with_name (os, nm);
-
-	      delete [] nm;
-	    }
-	}
-
-      os << "}";
-    }
-  else
-    os << "{}";
+  panic_impossible ();
 }
 
 DEFUN (disp, args, nargout,

@@ -185,6 +185,16 @@ Array<T>::range_error (const char *fcn, int n)
   return foo;
 }
 
+template <class T>
+void
+Array<T>::print_info (std::ostream& os, const std::string& prefix) const
+{
+  os << prefix << "rep address: " << rep << "\n"
+     << prefix << "rep->len:    " << rep->len << "\n"
+     << prefix << "rep->data:   " << static_cast<void *> (rep->data) << "\n"
+     << prefix << "rep->count:  " << rep->count << "\n";
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

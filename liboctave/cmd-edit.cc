@@ -93,6 +93,10 @@ public:
 
   void do_blink_matching_paren (bool flag);
 
+  void do_set_basic_word_break_characters (const std::string& s);
+
+  void do_set_completer_word_break_characters (const std::string& s);
+
   void do_set_basic_quote_characters (const std::string& s);
 
   void do_set_completion_append_character (char c);
@@ -267,6 +271,18 @@ void
 gnu_readline::do_blink_matching_paren (bool flag)
 {
   ::octave_rl_enable_paren_matching (flag ? 1 : 0);
+}
+
+void
+gnu_readline::do_set_basic_word_break_characters (const std::string& s)
+{
+  ::octave_rl_set_basic_word_break_characters (s.c_str ());
+}
+
+void
+gnu_readline::do_set_completer_word_break_characters (const std::string& s)
+{
+  ::octave_rl_set_completer_word_break_characters (s.c_str ());
 }
 
 void
@@ -632,6 +648,20 @@ command_editor::blink_matching_paren (bool flag)
 {
   if (instance_ok ())
     instance->do_blink_matching_paren (flag);
+}
+
+void
+command_editor::set_basic_word_break_characters (const std::string& s)
+{
+  if (instance_ok ())
+    instance->do_set_basic_word_break_characters (s);
+}
+
+void
+command_editor::set_completer_word_break_characters (const std::string& s)
+{
+  if (instance_ok ())
+    instance->do_set_completer_word_break_characters (s);
 }
 
 void

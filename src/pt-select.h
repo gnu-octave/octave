@@ -181,8 +181,7 @@ public:
 
   ~tree_switch_case (void);
 
-  bool is_default_case (void)
-    { return ! label; }
+  bool is_default_case (void) { return ! label; }
 
   bool label_matches (const octave_value& val);
 

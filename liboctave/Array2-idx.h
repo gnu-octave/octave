@@ -56,12 +56,15 @@ Array2<T>::value (void)
 
 template <class T>
 Array2<T>
-Array2<T>::index (idx_vector& idx_arg) const
+Array2<T>::index (idx_vector& idx_arg, int resize_ok,
+		  const T& resize_fill_value) const
 {
   Array2<T> retval;
 
   int nr = d1;
   int nc = d2;
+
+  int orig_len = nr * nc;
 
   int idx_orig_rows = idx_arg.orig_rows ();
   int idx_orig_columns = idx_arg.orig_columns ();
@@ -77,7 +80,7 @@ Array2<T>::index (idx_vector& idx_arg) const
     }
   else if (nr == 1 && nc == 1)
     {
-      Array<T> tmp = Array<T>::index (idx_arg);
+      Array<T> tmp = Array<T>::index (idx_arg, resize_ok);
 
       if (tmp.length () != 0)
 	retval = Array2<T> (tmp, idx_orig_rows, idx_orig_columns);
@@ -88,7 +91,7 @@ Array2<T>::index (idx_vector& idx_arg) const
     {
       int result_is_column_vector = (nc == 1);
 
-      Array<T> tmp = Array<T>::index (idx_arg);
+      Array<T> tmp = Array<T>::index (idx_arg, resize_ok);
 
       int len = tmp.length ();
 
@@ -110,7 +113,7 @@ Array2<T>::index (idx_vector& idx_arg) const
       // This code is only for indexing matrices.  The vector
       // cases are handled above.
 
-      idx_arg.freeze (nr * nc, "matrix");
+      idx_arg.freeze (nr * nc, "matrix", resize_ok);
 
       if (idx_arg)
 	{
@@ -125,15 +128,22 @@ Array2<T>::index (idx_vector& idx_arg) const
 
 	  retval.resize (result_nr, result_nc);
 
+
+
 	  int k = 0;
 	  for (int j = 0; j < result_nc; j++)
 	    {
 	      for (int i = 0; i < result_nr; i++)
 		{
 		  int ii = idx_arg.elem (k++);
-		  int fr = ii % nr;
-		  int fc = (ii - fr) / nr;
-		  retval.elem (i, j) = elem (fr, fc);
+		  if (ii > orig_len)
+		    retval.elem (i, j) = resize_fill_value;
+		  else
+		    {
+		      int fr = ii % nr;
+		      int fc = (ii - fr) / nr;
+		      retval.elem (i, j) = elem (fr, fc);
+		    }
 		}
 	    }
 	}
@@ -148,15 +158,16 @@ Array2<T>::index (idx_vector& idx_arg) const
 
 template <class T>
 Array2<T>
-Array2<T>::index (idx_vector& idx_i, idx_vector& idx_j) const
+Array2<T>::index (idx_vector& idx_i, idx_vector& idx_j, int resize_ok,
+		  const T& resize_fill_value) const
 {
   Array2<T> retval;
 
   int nr = d1;
   int nc = d2;
 
-  int n = idx_i.freeze (nr, "row");
-  int m = idx_j.freeze (nc, "column");
+  int n = idx_i.freeze (nr, "row", resize_ok);
+  int m = idx_j.freeze (nc, "column", resize_ok);
 
   if (idx_i && idx_j)
     {
@@ -178,7 +189,10 @@ Array2<T>::index (idx_vector& idx_i, idx_vector& idx_j) const
 	      for (int i = 0; i < n; i++)
 		{
 		  int ii = idx_i.elem (i);
-		  retval.elem (i, j) = elem (ii, jj);
+		  if (ii > nr || jj > nc)
+		    retval.elem (i, j) = resize_fill_value;
+		  else
+		    retval.elem (i, j) = elem (ii, jj);
 		}
 	    }
 	}

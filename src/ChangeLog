@@ -1,4 +1,209 @@
+2002-05-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov.h (octave_value::get_count): Now const.
+
+	* ov.h, ov.cc (octave_value::do_non_const_unary_op,
+	octave_value::assign): Idx is now a list of octave_value_list
+	objects.
+
+	* ov-base.cc, ov-base.h	(octave_base_value::do_struct_elt_index_op,
+	octave_base_value::struct_elt_ref): Delete.
+	* ov-struct.cc, ov-struct.h (octave_sruct::do_struct_elt_index_op,
+	octave_struct::struct_elt_ref): Delete.
+	* ov.cc, ov.h (octave_value::do_struct_elt_index_op,
+	octave_value::struct_elt_ref, octave_value::assign_struct_elt,
+	octave_value::convert_and_assign, octave_value::try_assignment,
+	octave_value::try_assignment_with_conversion,
+	octave_value::simple_assign): Delete.
+
+	* parse.y (make_index_expression): Type is now a single
+	character.  Change all callers.  If expr is already an index
+	expression, append index to it.
+	(make_indirect_ref): Likewise.
+
+	* pt-pr-code.cc (octave_print_internal (std::ostream&, const
+	Cell&, bool, int)): Now just a dummy function, panic if called.
+
+	* pt-idx.cc (tree_index_expression::make_arg_struct): New function.
+	(tree_index_expression::type): Delete enum, rename from itype, now
+	a string.
+	(tree_index_expression::arg_nm): Now a list of string_vector objects.
+	(tree_index_expression::idx): Now a list of tree_argument_list*
+	objects.
+	(tree_index_expression::is_index_expression): Always return true.
+	(tree_index_expression::apend, make_value_list, make_subs_cell):
+	New functions.
+	
+	* pt-pr-code.cc (visit_index_expression): Handle new definition of
+	tree_index_expression object.
+	* pt-check.cc (visit_index_expression): Likewise.
+	* pt-bp.cc (visit_index_expression): Likewise.
+
+	* ov-usr-fcn.h (octave_user_function::restore_args_passed):
+	Clear args_passed even if nothing was saved.
+
+	* ov-base.cc (octave_base_value::subsasgn,
+	octave_base_value::map_keys, octave_base_value::print_info):
+	New functions.
+
+	* ov.h, ov.cc (octave_value::map_keys, octave_value::print_info,
+	octave_value::subsref, octave_value::subsasgn,
+	octave_value::numeric_assign, octave_value::next_subsref):
+	New functions.
+	(octave_value::empty_conv): New static function.
+	(octave_value (octave_value *, int)): New arg, count.
+
+	* ov-base-mat.cc (octave_base_matrix<MT>::subsref,
+	octave_base_matrix<MT>::subsasgn): New functions.
+	* ov-base-mat.h: Provide decls.
+
+	* ov-builtin.cc (octave_builtin::subsref): New function.
+	* ov-builtin.h: Provide decl.
+
+	* ov-range.cc (octave_range::subsref): New function.
+	* ov-range.h: Provide decl.
+
+	* ov-cell.cc (octave_cell::subsref, octave_cell::subsasgn,
+	octave_cell::list_value, octave_cell::print,
+	octave_cell::print_raw, octave_cell::print_name_tag): New functions.
+	* ov-cell.h: Provide decls.
+
+	* ov-struct.cc (octave_struct::dotref, octave_struct::subsref,
+	octave_struct::subsasgn, gripe_invalid_index,
+	gripe_invalid_index_for_assignment, grip_invalid_index_type,
+	gripe_failed_assignment): New functions.
+	(octave_struct::numeric_conv): New static function.
+	* ov-struct.h: Provide decls.
+	(octave_struct::is_constant): Return true.
+	(octave_struct::map_keys): New function.
+
+	* ov-list.cc (octave_list::subsref, octave_list::subsasgn):
+	New functions.
+	* ov-list.h: Provide decls.
+
+	* ov-usr-fcn.cc (octave_user_function::subsref,
+	octave_user_function::print_symtab_info): New functions.
+	* ov-usr-fcn.h: Provide decl.
+
+	* ov-mapper.cc (octave_mapper::subsref): New function.
+	* ov-mapper.h: Provide decl.
+
+	* ov-base.cc (octave_base_value::subsref,
+	octave_base_value::subsasgn): New functions.
+	* ov-base.h: Provide decls.
+
+	* ov-base.cc (octave_base_value::do_index_op): New arg, resize_ok.
+	* ov-base-mat.cc (octave_base_matrix<MT>::do_index_op): Likewise.
+	* ov-base-nd-array.cc (octave_base_nd_array<AT>::do_index_op): Ditto.
+	* ov-bool-mat.cc (octave_bool::do_index_op): Ditto.
+	* ov-str-mat.cc (octave_char_matrix_str::do_index_op): Ditto.
+	* ov-range.cc (octave_range::do_index_op): Ditto.
+	* ov-list.cc (octave_list::do_index_op): Ditto.
+	* ov.cc (octave_value::do_index_op): Ditto.
+	
+	* ov-base-mat.cc (octave_base_matrix<MT>::print_info): New function.
+
+	* ov-base-mat.h (octave_base_matrix<MT>::empty_clone): New function.
+	* ov-base-nd-array.h (octave_base_nd_array<AT>::empty_clone): Ditto.
+	* ov-base.h (octave_base_value::empty_clone): Ditto.
+	* ov-bool-mat.h (octave_bool::empty_clone): Ditto.
+	* ov-ch-mat.h (octave_char_matrix::empty_clone): Likewise.
+	* ov-colon.h (octave_magic_colon::empty_clone): Likewise.
+	* ov-complex.h (octave_complex::empty_clone): Likewise.
+	* ov-cx-mat.h (octave_complex_matrix::empty_clone): Likewise.
+	* ov-fcn.cc (octave_function::empty_clone): Likewise.
+	* ov-file.h (octave_file::empty_clone): Likewise.
+	* ov-range.h (octave_range::empty_clone): Likewise.
+	* ov-list.h (octave_list::empty_clone): Likewise.
+	* ov-re-mat.h (octave_matrix::empty_clone): Likewise.
+	* ov-re-nd-array.h (octave_double_nd_array::empty_clone): Likewise.
+	* ov-str-mat.h (octave_char_matrix_str::empty_clone): Likewise.
+	* ov-struct.h (octave_struct::empty_clone): Likewise.
+	* ov-va_args.h (octave_all_va_args::empty_clone): Likewise.
+	* ov.h (octave_value::empty_clone): Likewise.
+
+	* ov-base-mat.h (octave_base_matrix<MT>::clone): Now const.
+	* ov-base-nd-array.h (octave_base_nd_array<AT>::clone): Likewise.
+	* ov-base.h (octave_base_value::clone): Likewise.
+	* ov-bool-mat.h (octave_bool::clone): Likewise.
+	* ov-ch-mat.h (octave_char_matrix::clone): Likewise.
+	* ov-colon.h (octave_magic_colon::clone): Likewise.
+	* ov-complex.h (octave_complex::clone): Likewise.
+	* ov-cx-mat.h (octave_complex_matrix::clone): Likewise.
+	* ov-fcn.h (octave_function::clone): Likewise.
+	* ov-file.h (octave_file::clone): Likewise.
+	* ov-range.h (octave_range::clone): Likewise.
+	* ov-list.h (octave_list::clone): Likewise.
+	* ov-re-mat.h (octave_matrix::clone): Likewise.
+	* ov-re-nd-array.h (octave_double_nd_array::clone): Likewise.
+	* ov-str-mat.h (octave_char_matrix_str::clone): Likewise.
+	* ov-struct.h (octave_struct::clone): Likewise.
+	* ov-va_args.h (octave_all_va_args::clone): Likewise.
+	* ov.h (octave_value::clone): Likewise.
+
+	* oct-lvalue.cc (octave_lvalue::assign, octave_lvalue::set_index,
+	octave_lvalue::do_unary_op): Idx is now a list of indices.  Simplify.
+	* oct-lvalue.h (octave_lvalue::value): Simplify.
+	(octave_lvalue::struct_elt_names): Delete data member.
+	(octave_lvalue::type): Now string
+	Update decls.
+
+	* pt-exp.h (tree_expression::is_indirect_ref):
+	Delete virtual function.
+
+	* pt-plot.cc (subplot::extract_plot_data): Use subsref, instead of
+	do_index_op.
+
+	* pt-stmt.cc (tree_statement::eval): Don't try to avoid binding
+	ans for structure references.
+
+	* symtab.cc (symbol_record::symbol_def::print_info): Rename from
+	symbol_record::symbol_def::dump_symbol_info.
+	(symbol_record::print_info): Rename from
+	symbol_record::dump_symbol_info.  Now const..
+	(symbol_record::print_symbol_info_line): Now const.
+	(symbol_table::print_info): Rename from print_stats.  Accept
+	ostream arg.  Now const.  Print more info.
+	* symtab.h: Update decls.
+
+	* toplev.cc (octave_config_info): Indexing a map now returns a
+	list, but we only want to return the first element.
+
+	* variables.cc (generate_struct_completions, looks_like_struct):
+	Simplify using eval_string.
+	(F__print_symtab_info__): Rename from F__dump_symtab_info__.
+	Handle "top-level" and individual function names in addition to
+	"global".
+	(F__print_symbol_info__): Rename from F___dump_symbol_info__.
+
+	* octave.cc (intern_argv): Built-in variable argv is now a cell array.
+
+	* ov-complex.cc (valid_scalar_indices): Delete.
+	* ov-scalar.cc (valid_scalar_indices): Delete.
+
+	* oct-obj.cc (octave_value_list::valid_scalar_indices): New function.
+	(octave_value_list::index): New arg, resize_ok.
+	* oct-obj.h: Provide decls.
+
+	* oct-map.cc (Octave_map::keys): Rename from make_name_list.
+	Change all uses.
+	(Octave_map::assign, Octave_map::index): New functions.
+	* oct-map.h: Provide decls.
+
+	* data.cc (Fstruct_contains): Use map_value instead of
+	do_struct_elt_index_op.
+
+	* Cell.h (Cell (const Array2<octave_value>&, int, int)):
+	New constructor.
+	(Cell::resize_fill_value): New static function.
+
+	* input.cc (initialize_command_input): Set basic and completer
+	word break characters.
+
 2002-05-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov.h (octave_value::subsref): New function.
+	* ov-base.cc (octave_base_value::subsref): Likewise.
 
 	* ov-struct.cc (octave_struct::print_raw): Print scalar struct
 	arrays more compactly.
@@ -12,7 +217,6 @@
 	(Octave_map::array_length): New fucntion.
 	* oct-obj.cc (octave_value_list::assign): New function.
 	
-
 2002-05-06  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* TEMPLATE-INST/Map-oct-obj.cc: New file.

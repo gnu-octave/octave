@@ -64,11 +64,12 @@ public:
 
   ~octave_complex (void) { }
 
-  octave_value *clone (void) { return new octave_complex (*this); }
+  octave_value *clone (void) const { return new octave_complex (*this); }
+  octave_value *empty_clone (void) const { return new octave_complex (); }
 
   octave_value *try_narrowing_conversion (void);
 
-  octave_value do_index_op (const octave_value_list& idx);
+  octave_value do_index_op (const octave_value_list& idx, int resize_ok);
 
   bool is_complex_scalar (void) const { return true; }
 

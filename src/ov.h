@@ -38,6 +38,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-alloc.h"
 #include "str-vec.h"
 
+#include "SLList.h"
+
 class Cell;
 class Octave_map;
 class octave_stream;
@@ -147,6 +149,9 @@ public:
 
   static std::string assign_op_as_string (assign_op);
 
+  static octave_value empty_conv (const std::string& type,
+				  const octave_value& rhs = octave_value ());
+
   enum magic_colon { magic_colon_t };
   enum all_va_args { all_va_args_t };
 
@@ -178,7 +183,7 @@ public:
   octave_value (octave_value::magic_colon);
   octave_value (octave_value::all_va_args);
 
-  octave_value (octave_value *new_rep);
+  octave_value (octave_value *new_rep, int count = 1);
 
   // Copy constructor.
 
@@ -188,14 +193,17 @@ public:
       rep->count++;
     }
 
+  // This should only be called for derived types.
+
+  virtual octave_value *clone (void) const;
+
+  virtual octave_value *empty_clone (void) const
+    { return rep->empty_clone (); }
+
   // Delete the representation of this constant if the count drops to
   // zero.
 
   virtual ~octave_value (void);
-
-  // This should only be called for derived types.
-
-  virtual octave_value *clone (void);
 
   void make_unique (void)
     {
@@ -223,7 +231,7 @@ public:
       return *this;
     }
 
-  int get_count (void) { return rep->count; }
+  int get_count (void) const { return rep->count; }
 
   virtual type_conv_fcn numeric_conversion_function (void) const
     { return rep->numeric_conversion_function (); }
@@ -233,43 +241,49 @@ public:
   virtual octave_value *try_narrowing_conversion (void)
     { return rep->try_narrowing_conversion (); }
 
-  virtual octave_value do_index_op (const octave_value_list& idx)
-    { return rep->do_index_op (idx); }
+  virtual octave_value subsref (const std::string type,
+				const SLList<octave_value_list>& idx)
+    { return rep->subsref (type, idx); }
+
+  octave_value subsref (const std::string type, const octave_value_list& idx)
+    {
+      SLList<octave_value_list> i;
+
+      i.append (idx);
+
+      return rep->subsref (type, i);
+    }
+
+  virtual octave_value_list subsref (const std::string type,
+				     const SLList<octave_value_list>& idx,
+    				     int nargout);
+
+  octave_value next_subsref (const std::string type, const
+			     SLList<octave_value_list>& idx,
+			     int skip = 1);
+
+  virtual octave_value do_index_op (const octave_value_list& idx,
+				    int resize_ok)
+    { return rep->do_index_op (idx, resize_ok); }
+
+  octave_value do_index_op (const octave_value_list& idx)
+    { return do_index_op (idx, 0); }
 
   virtual octave_value_list
   do_multi_index_op (int nargout, const octave_value_list& idx);
 
-  void assign (assign_op, const octave_value& rhs);
+  virtual octave_value subsasgn (const std::string type,
+				 const SLList<octave_value_list>& idx,
+				 const octave_value& rhs);
 
-  void assign (assign_op, const octave_value_list& idx,
-	       const octave_value& rhs);
+  octave_value assign (assign_op op, const std::string type,
+		       const SLList<octave_value_list>& idx,
+		       const octave_value& rhs);
 
-  virtual void
-  assign_struct_elt (assign_op, const std::string& elt_nm,
-		     const octave_value& rhs);
-
-  virtual void
-  assign_struct_elt (assign_op, const std::string& elt_nm,
-		     const octave_value_list& idx,
-		     const octave_value& rhs);
+  const octave_value& assign (assign_op, const octave_value& rhs);
 
   virtual idx_vector index_vector (void) const
     { return rep->index_vector (); }
-
-  virtual octave_value
-  do_struct_elt_index_op (const std::string& nm, bool silent = false)
-    { return rep->do_struct_elt_index_op (nm, silent); }
-
-  virtual octave_value
-  do_struct_elt_index_op (const std::string& nm,
-			  const octave_value_list& idx,
-			  bool silent = false)
-    { return rep->do_struct_elt_index_op (nm, idx, silent); }
-
-  octave_lvalue struct_elt_ref (const std::string& nm);
-
-  virtual octave_lvalue
-  struct_elt_ref (octave_value *parent, const std::string& nm);
 
   // Size.
 
@@ -433,6 +447,9 @@ public:
 
   virtual Octave_map map_value (void) const;
 
+  virtual string_vector map_keys (void) const
+    { return rep->map_keys (); }
+
   virtual octave_stream stream_value (void) const;
 
   virtual int stream_number (void) const;
@@ -495,23 +512,34 @@ public:
 
   // Unary and binary operations.
 
-  friend octave_value do_unary_op (octave_value::unary_op,
-				   const octave_value&);
+  friend octave_value do_unary_op (unary_op op,
+				   const octave_value& a);
 
-  void do_non_const_unary_op (octave_value::unary_op);
+  const octave_value& do_non_const_unary_op (unary_op op);
 
-  void do_non_const_unary_op (octave_value::unary_op,
-			      const octave_value_list& idx);
+  void do_non_const_unary_op (unary_op op, const octave_value_list& idx);
 
-  friend octave_value do_binary_op (octave_value::binary_op,
-				    const octave_value&,
-				    const octave_value&);
+  octave_value do_non_const_unary_op (unary_op op, const std::string type,
+				      const SLList<octave_value_list>& idx);
+
+  friend octave_value do_binary_op (binary_op op,
+				    const octave_value& a,
+				    const octave_value& b);
 
   const octave_value& get_rep (void) const { return *rep; }
+
+  virtual void print_info (std::ostream& os,
+			   const std::string& prefix = std::string ()) const;
 
 protected:
 
   octave_value (const octave_xvalue&) : rep (0) { }
+
+  // This should only be called for derived types.
+
+  octave_value numeric_assign (const std::string type,
+			       const SLList<octave_value_list>& idx,
+			       const octave_value& rhs);
 
   void reset_indent_level (void) const
     { curr_print_indent_level = 0; }
@@ -531,23 +559,13 @@ protected:
 
   void reset (void) const;
 
-private:
-
   union
     {
       octave_value *rep;      // The real representation.
       int count;              // A reference count.
     };
 
-  bool convert_and_assign (assign_op, const octave_value_list& idx,
-			   const octave_value& rhs);
-
-  bool try_assignment_with_conversion (assign_op,
-				       const octave_value_list& idx,
-				       const octave_value& rhs);
-
-  bool try_assignment (assign_op, const octave_value_list& idx,
-		       const octave_value& rhs);
+private:
 
   static int curr_print_indent_level;
   static bool beginning_of_line;
@@ -555,9 +573,6 @@ private:
   assign_op unary_op_to_assign_op (unary_op op);
 
   binary_op op_eq_to_binary_op (assign_op op);
-
-  void simple_assign (assign_op orig_op, const octave_value_list& idx,
-		      const octave_value& rhs);
 
   DECLARE_OCTAVE_ALLOCATOR
 };

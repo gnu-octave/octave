@@ -43,7 +43,62 @@ DEFINE_OCTAVE_ALLOCATOR (octave_list);
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_list, "list");
 
 octave_value
-octave_list::do_index_op (const octave_value_list& idx)
+octave_list::subsref (const std::string type,
+		      const SLList<octave_value_list>& idx)
+{
+  octave_value retval;
+
+  switch (type[0])
+    {
+    case '(':
+      {
+	octave_value_list tmp_idx = idx.front ();
+
+	if (tmp_idx.length () == 1)
+	  {
+	    idx_vector i = tmp_idx (0).index_vector ();
+
+	    retval = octave_value_list (lst.index (i));
+	  }
+	else
+	  error ("only one index allowed for lists");
+      }
+      break;
+
+    case '{':
+      {
+	octave_value_list tmp_idx = idx.front ();
+
+	if (tmp_idx.length () == 1)
+	  {
+	    idx_vector i = tmp_idx (0).index_vector ();
+
+	    octave_value_list tmp = lst.index (i);
+
+	    if (tmp.length () == 1)
+	      retval = tmp(0);
+	  }
+	else
+	  error ("only one index allowed for lists");
+      }
+      break;
+
+    case '.':
+      {
+	std::string nm = type_name ();
+	error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
+      }
+      break;
+
+    default:
+      panic_impossible ();
+    }
+
+  return retval.next_subsref (type, idx);
+}
+
+octave_value
+octave_list::do_index_op (const octave_value_list& idx, int resize_ok)
 {
   octave_value retval;
 
@@ -51,10 +106,83 @@ octave_list::do_index_op (const octave_value_list& idx)
     {
       idx_vector i = idx (0).index_vector ();
 
-      retval = octave_value_list (lst.index (i));
+      retval = octave_value_list (lst.index (i, resize_ok));
     }
   else
     error ("lists may only be indexed by a single scalar");
+
+  return retval;
+}
+
+octave_value
+octave_list::subsasgn (const std::string type,
+		       const SLList<octave_value_list>& idx,
+		       const octave_value& rhs)
+{
+  octave_value retval;
+
+  int n = type.length ();
+
+  octave_value t_rhs = rhs;
+
+  if (n > 1)
+    {
+      switch (type[0])
+	{
+	case '(':
+	  {
+	    octave_value tmp = do_index_op (idx.front (), true);
+
+	    if (! tmp.is_defined ())
+	      tmp = octave_value::empty_conv (type.substr (1), rhs);
+
+	    if (! error_state)
+	      {
+		SLList<octave_value_list> next_idx (idx);
+
+		next_idx.remove_front ();
+
+		t_rhs = tmp.subsasgn (type.substr (1), next_idx, rhs);
+	      }
+	  }
+	  break;
+
+	case '{':
+	case '.':
+	  {
+	    std::string nm = type_name ();
+	    error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
+	  }
+	  break;
+
+	default:
+	  panic_impossible ();
+	}
+    }
+
+  switch (type[0])
+    {
+    case '(':
+      {
+	octave_value_list i = idx.front ();
+
+	assign (i, t_rhs);
+
+	retval = octave_value (this, count + 1);
+      }
+      break;
+
+    case '{':
+    case '.':
+      {
+	std::string nm = type_name ();
+	error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
+      }
+      break;
+
+    default:
+      panic_impossible ();
+    }
 
   return retval;
 }

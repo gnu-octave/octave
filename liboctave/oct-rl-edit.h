@@ -72,6 +72,10 @@ extern FILE *octave_rl_get_output_stream (void);
 
 extern void octave_rl_read_init_file (const char *);
 
+extern void octave_rl_set_basic_word_break_characters (const char *);
+
+extern void octave_rl_set_completer_word_break_characters (const char *);
+
 extern void octave_rl_set_basic_quote_characters (const char *);
 
 extern void octave_rl_set_completion_append_character (char);

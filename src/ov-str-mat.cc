@@ -62,7 +62,8 @@ octave_char_matrix_str::numeric_conversion_function (void) const
 }
 
 octave_value
-octave_char_matrix_str::do_index_op (const octave_value_list& idx)
+octave_char_matrix_str::do_index_op (const octave_value_list& idx,
+				     int resize_ok)
 {
   octave_value retval;
 
@@ -75,7 +76,8 @@ octave_char_matrix_str::do_index_op (const octave_value_list& idx)
 	idx_vector i = idx (0).index_vector ();
 	idx_vector j = idx (1).index_vector ();
 
-	retval = octave_value (charMatrix (matrix.index (i, j)), true);
+	retval = octave_value (charMatrix (matrix.index (i, j, resize_ok)),
+			       true);
       }
       break;
 
@@ -83,7 +85,7 @@ octave_char_matrix_str::do_index_op (const octave_value_list& idx)
       {
 	idx_vector i = idx (0).index_vector ();
 
-	retval = octave_value (charMatrix (matrix.index (i)), true);
+	retval = octave_value (charMatrix (matrix.index (i, resize_ok)), true);
       }
       break;
 

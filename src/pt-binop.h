@@ -62,8 +62,7 @@ public:
       delete op_rhs;
     }
 
-  bool rvalue_ok (void) const
-    { return true; }
+  bool rvalue_ok (void) const { return true; }
 
   octave_value rvalue (void);
 
@@ -119,8 +118,7 @@ public:
 
   ~tree_boolean_expression (void) { }
 
-  bool rvalue_ok (void) const
-    { return true; }
+  bool rvalue_ok (void) const { return true; }
 
   octave_value rvalue (void);
 

@@ -58,8 +58,7 @@ public:
 
   bool all_elements_are_constant (void) const;
 
-  bool rvalue_ok (void) const
-    { return true; }
+  bool rvalue_ok (void) const { return true; }
 
   octave_value rvalue (void);
 

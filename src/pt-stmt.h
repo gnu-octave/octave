@@ -57,14 +57,11 @@ public:
 
   ~tree_statement (void);
 
-  void set_print_flag (bool print)
-    { print_flag = print; }
+  void set_print_flag (bool print) { print_flag = print; }
 
-  bool is_command (void)
-    { return cmd != 0; }
+  bool is_command (void) { return cmd != 0; }
 
-  bool is_expression (void)
-    { return expr != 0; }
+  bool is_expression (void) { return expr != 0; }
 
   int line (void);
   int column (void);

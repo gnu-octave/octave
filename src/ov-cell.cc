@@ -50,6 +50,160 @@ DEFINE_OCTAVE_ALLOCATOR (octave_cell);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_cell, "cell");
 
+octave_value
+octave_cell::subsref (const std::string type,
+		      const SLList<octave_value_list>& idx)
+{
+  octave_value retval;
+
+  switch (type[0])
+    {
+    case '(':
+      retval = do_index_op (idx.front ());
+      break;
+
+    case '{':
+      {
+	octave_value tmp = do_index_op (idx.front ());
+
+	Cell tcell = tmp.cell_value ();
+
+	if (tcell.length () == 1)
+	  retval = tcell(0,0);
+	else
+	  {
+	    int nr = tcell.rows ();
+	    int nc = tcell.columns ();
+	    octave_value_list lst (nr * nc, octave_value ());
+	    int k = 0;
+	    for (int j = 0; j < nc; j++)
+	      for (int i = 0; i < nr; i++)
+		lst(k++) = tcell(i,j);
+	    retval = lst;
+	  }
+      }
+      break;
+
+    case '.':
+      {
+	std::string nm = type_name ();
+	error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
+      }
+      break;
+
+    default:
+      panic_impossible ();
+    }
+
+  return retval.next_subsref (type, idx);
+}
+
+octave_value
+octave_cell::subsasgn (const std::string type,
+		       const SLList<octave_value_list>& idx,
+		       const octave_value& rhs)
+{
+  octave_value retval;
+
+  int n = type.length ();
+
+  octave_value t_rhs = rhs;
+
+  if (n > 1)
+    {
+      switch (type[0])
+	{
+	case '(':
+	  {
+	    octave_value tmp = do_index_op (idx.front (), true);
+
+	    if (! tmp.is_defined ())
+	      tmp = octave_value::empty_conv (type.substr (1), rhs);
+
+	    if (! error_state)
+	      {
+		SLList<octave_value_list> next_idx (idx);
+
+		next_idx.remove_front ();
+
+		t_rhs = tmp.subsasgn (type.substr (1), next_idx, rhs);
+	      }
+	  }
+	  break;
+
+	case '{':
+	  {
+	    octave_value tmp = do_index_op (idx.front (), true);
+
+	    if (! tmp.is_defined ())
+	      tmp = octave_value::empty_conv (type.substr (1), rhs);
+
+	    Cell tcell = tmp.cell_value ();
+
+	    if (! error_state && tcell.length () == 1)
+	      {
+		tmp = tcell(0,0);
+
+		SLList<octave_value_list> next_idx (idx);
+
+		next_idx.remove_front ();
+
+		t_rhs = tmp.subsasgn (type.substr (1), next_idx, rhs);
+	      }
+	  }
+	  break;
+
+	case '.':
+	  {
+	    std::string nm = type_name ();
+	    error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
+	  }
+	  break;
+
+	default:
+	  panic_impossible ();
+	}
+    }
+
+  switch (type[0])
+    {
+    case '(':
+      {
+	octave_value_list i = idx.front ();
+
+	if (t_rhs.is_cell ())
+	  octave_base_matrix<Cell>::assign (i, t_rhs.cell_value ());
+	else
+	  octave_base_matrix<Cell>::assign (i, Cell (t_rhs));
+
+	retval = octave_value (this, count + 1);
+      }
+      break;
+
+    case '{':
+      {
+	octave_value_list i = idx.front ();
+
+	octave_base_matrix<Cell>::assign (i, Cell (t_rhs));
+
+	retval = octave_value (this, count + 1);
+      }
+      break;
+
+    case '.':
+      {
+	std::string nm = type_name ();
+	error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
+      }
+      break;
+
+    default:
+      panic_impossible ();
+    }
+
+  return retval;
+}
+
 void
 octave_cell::assign (const octave_value_list& idx, const octave_value& rhs)
 {
@@ -57,6 +211,89 @@ octave_cell::assign (const octave_value_list& idx, const octave_value& rhs)
     octave_base_matrix<Cell>::assign (idx, rhs.cell_value ());
   else
     octave_base_matrix<Cell>::assign (idx, Cell (rhs));
+}
+
+octave_value_list
+octave_cell::list_value (void) const
+{
+  octave_value_list retval;
+
+  int nr = rows ();
+  int nc = columns ();
+
+  if (nr == 1 && nc > 0)
+    {
+      retval.resize (nc);
+
+      for (int i = 0; i < nc; i++)
+	retval(i) = matrix(0,i);
+    }
+  else if (nc == 1 && nr > 0)
+    {
+      retval.resize (nr);
+
+      for (int i = 0; i < nr; i++)
+	retval(i) = matrix(i,0);
+    }
+  else
+    error ("invalid conversion from cell array to list");
+
+  return retval;
+}
+
+void
+octave_cell::print (std::ostream& os, bool) const
+{
+  print_raw (os);
+}
+
+void
+octave_cell::print_raw (std::ostream& os, bool) const
+{
+  int nr = rows ();
+  int nc = columns ();
+
+  if (nr > 0 && nc > 0)
+    {
+      indent (os);
+      os << "{";
+      newline (os);
+
+      increment_indent_level ();
+
+      for (int j = 0; j < nc; j++)
+	{
+	  for (int i = 0; i < nr; i++)
+	    {
+	      std::ostrstream buf;
+	      buf << "[" << i+1 << "," << j+1 << "]" << std::ends;
+	      const char *nm = buf.str ();
+
+	      octave_value val = matrix(i,j);
+
+	      val.print_with_name (os, nm);
+
+	      delete [] nm;
+	    }
+	}
+
+      decrement_indent_level ();
+
+      indent (os);
+      os << "}";
+      newline (os);
+    }
+  else
+    os << "{}";
+}
+
+bool
+octave_cell::print_name_tag (std::ostream& os, const std::string& name) const
+{
+  indent (os);
+  os << name << " =";
+  newline (os);
+  return false;
 }
 
 DEFUN (iscell, args, ,

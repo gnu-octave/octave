@@ -762,7 +762,7 @@ specified option.\n\
       std::string arg = args(0).string_value ();
 
       if (! error_state)
-	retval = octave_value (m [arg.c_str ()]);
+	retval = octave_value (m [arg.c_str ()](0));
     }
   else if (nargin == 0)
     retval = octave_value (m);

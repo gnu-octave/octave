@@ -59,15 +59,13 @@ public:
 
   ~tree_simple_assignment (void);
 
-  bool rvalue_ok (void) const
-    { return true; }
+  bool rvalue_ok (void) const { return true; }
 
   octave_value rvalue (void);
 
   octave_value_list rvalue (int nargout);
 
-  bool is_assignment_expression (void) const
-    { return true; }
+  bool is_assignment_expression (void) const { return true; }
 
   void eval_error (void);
 
@@ -127,11 +125,9 @@ public:
 
   ~tree_multi_assignment (void);
 
-  bool is_assignment_expression (void) const
-    { return true; }
+  bool is_assignment_expression (void) const { return true; }
 
-  bool rvalue_ok (void) const
-    { return true; }
+  bool rvalue_ok (void) const { return true; }
 
   octave_value rvalue (void);
 

@@ -257,6 +257,37 @@ unprotect_function (void *sr_arg)
 }
 
 octave_value_list
+octave_user_function::subsref (const std::string type,
+			       const SLList<octave_value_list>& idx,
+			       int nargout)
+{
+  octave_value_list retval;
+
+  switch (type[0])
+    {
+    case '(':
+      retval = do_multi_index_op (nargout, idx.front ());
+      break;
+
+    case '{':
+    case '.':
+      {
+	std::string nm = type_name ();
+	error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
+      }
+      break;
+
+    default:
+      panic_impossible ();
+    }
+
+  return retval;
+
+  // XXX FIXME XXX
+  //  return retval.next_subsref (type, idx);
+}
+
+octave_value_list
 octave_user_function::do_multi_index_op (int nargout,
 					 const octave_value_list& args)
 {
@@ -447,6 +478,15 @@ void
 octave_user_function::accept (tree_walker& tw)
 {
   tw.visit_octave_user_function (*this);
+}
+
+void
+octave_user_function::print_symtab_info (std::ostream& os) const
+{
+  if (sym_tab)
+    sym_tab->print_info (os);
+  else
+    warning ("%s: no symbol table info!", fcn_name.c_str ());
 }
 
 void

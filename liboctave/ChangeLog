@@ -1,3 +1,33 @@
+2002-05-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-rl-edit.c (OCTAVE_RL_SAVE_STRING): New macro.
+	(octave_rl_set_name, octave_rl_set_basic_quote_characters): Use it.
+	(octave_rl_set_basic_word_break_characters,
+	octave_rl_set_completer_word_break_characters): New functions.
+	* oct-rl-edit.h: Provide decls.
+	* cmd-edit.cc (gnu_readline::do_set_basic_word_break_characters,
+	gnu_readline::do_set_completer_word_break_characters): New functions.
+	(command_editor::set_basic_quote_characters,
+	command_editor::set_completion_append_character): New static functions.
+	* cmd-edit.h: Provide decls.
+	(command_editor::do_set_basic_word_break_characters,
+	command_editor::do_set_completer_word_break_characters):
+	New virtual functions.
+
+	* CMatrix.h, boolMatrix.h, chMatrix.h, dMatrix.h
+	(resize_fill_value): New static function.
+
+	* Array-idx.h (Array<T>::index): New args, resize_ok and
+	resize_fill_value.
+	* Array2-idx.h (Array2<T>::index): Likewise.
+	* ArrayN-idx.h (ArrayN<T>::index): Likewise.
+
+	* Array2.cc (Array<T>::print_info): New function.
+	* Array2.h: Provide decl.
+
+	* Array.cc (Array<T>::print_info): New function.
+	* Array.h: Provide decl.
+
 2002-05-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* idx-vector.h (idx_vector::idx_vector (int)): New function.

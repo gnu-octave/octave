@@ -69,9 +69,10 @@ octave_print_internal (std::ostream& os, const charMatrix& chm,
 		       bool pr_as_string = false);
 
 extern void
-octave_print_internal (std::ostream& os, const Cell& c,
+octave_print_internal (std::ostream& os, const Cell& cell,
 		       bool pr_as_read_syntax = false,
-		       int extra_indent = 0);
+		       int extra_indent = 0,
+		       bool pr_as_string = false);
 
 #endif
 

@@ -50,6 +50,10 @@ public:
 
   ~octave_builtin (void) { }
 
+  octave_value_list subsref (const std::string type,
+			     const SLList<octave_value_list>& idx,
+			     int nargout);
+
   octave_function *function_value (bool) { return this; }
 
   bool is_builtin_function (void) const { return true; }

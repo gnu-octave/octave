@@ -56,8 +56,7 @@ public:
 
   ~tree_identifier (void) { }
 
-  bool is_identifier (void) const
-    { return true; }
+  bool is_identifier (void) const { return true; }
 
   std::string name (void) const;
 
@@ -81,8 +80,7 @@ public:
   // We really need to know whether this symbol referst to a variable
   // or a function, but we may not know that yet.
 
-  bool lvalue_ok (void) const
-    { return true; }
+  bool lvalue_ok (void) const { return true; }
 
   octave_value rvalue (void);
 

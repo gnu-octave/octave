@@ -111,6 +111,8 @@ public:
       return *this;
     }
 
+  bool valid_scalar_indices (void) const;
+
   // Assignment will resize on range errors.
 
   octave_value& operator () (int n) { return elem (n); }
@@ -136,7 +138,7 @@ public:
   octave_value_list splice (int offset, int length,
 			    const octave_value_list& lst) const;
 
-  octave_value_list index (idx_vector& i) const;
+  octave_value_list index (idx_vector& i, int resize_ok = 0) const;
 
   octave_value_list& assign (const idx_vector& i,
 			     const octave_value_list& rhs);

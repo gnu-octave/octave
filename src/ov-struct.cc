@@ -30,6 +30,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <iostream>
 
+#include "Cell.h"
 #include "error.h"
 #include "oct-lvalue.h"
 #include "ov-list.h"
@@ -41,35 +42,324 @@ DEFINE_OCTAVE_ALLOCATOR(octave_struct);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(octave_struct, "struct");
 
-octave_value
-octave_struct::do_struct_elt_index_op (const std::string& nm,
-				       const octave_value_list& idx,
-				       bool silent)
+octave_value_list
+octave_struct::dotref (const octave_value_list& idx)
 {
-  // XXX DO_ME XXX
-  return octave_value ();
-}
+  octave_value_list retval;
 
-octave_value
-octave_struct::do_struct_elt_index_op (const std::string& nm, bool silent)
-{
-  octave_value retval;
+  assert (idx.length () == 1);
 
-  Pix idx = map.seek (nm);
+  std::string nm = idx(0).string_value ();
 
-  if (idx)
-    retval = map.contents (idx);
-  else if (! silent)
+  Pix p = map.seek (nm);
+
+  if (p)
+    retval = map.contents (p);
+  else
     error ("structure has no member `%s'", nm.c_str ());
 
   return retval;
 }
 
-octave_lvalue
-octave_struct::struct_elt_ref (octave_value *, const std::string& nm)
+static void
+gripe_invalid_index (void)
 {
-  // XXX FIXME XXX -- struct array
-  return octave_lvalue (&map[nm](0));
+  error ("invalid index for structure array");
+}
+
+static void
+gripe_invalid_index_for_assignment (void)
+{
+  error ("invalid index for structure array assignment");
+}
+
+static void
+gripe_invalid_index_type (const std::string& nm, char t)
+{
+  error ("%s cannot be indexed with %c", nm.c_str (), t);
+}
+
+static void
+gripe_failed_assignment (void)
+{
+  error ("assignment to structure element failed");
+}
+
+octave_value
+octave_struct::subsref (const std::string type,
+			const SLList<octave_value_list>& idx)
+{
+  octave_value retval;
+
+  int skip = 1;
+
+  switch (type[0])
+    {
+    case '(':
+      {
+	if (type.length () > 1 && type[1] == '.')
+	  {
+	    Pix p = idx.first ();
+	    idx.next (p);
+	    octave_value_list key_idx = idx(p);
+
+	    octave_value_list tmp = dotref (key_idx);
+
+	    if (! error_state)
+	      {
+		octave_value_list t_idx = idx.front ();
+
+		if (t_idx.length () == 1)
+		  {
+		    idx_vector i = t_idx(0).index_vector ();
+		    octave_value_list t = tmp.index (i);
+
+		    retval = (t.length () == 1) ? t(0) : octave_value (t);
+
+		    // We handled two index elements, so tell
+		    // next_subsref to skip both of them.
+
+		    skip++;
+		  }
+		else
+		  gripe_invalid_index ();
+	      }
+	  }
+	else
+	  {
+	    octave_value_list t_idx = idx.front ();
+
+	    if (t_idx.length () == 1)
+	      {
+		idx_vector i = t_idx(0).index_vector ();
+		retval = map.index (i);
+	      }
+	    else
+	      gripe_invalid_index ();
+	  }
+      }
+      break;
+
+    case '.':
+      {
+	octave_value_list t = dotref (idx.front ());
+
+	retval = (t.length () == 1) ? t(0) : octave_value (t);
+      }
+      break;
+
+    case '{':
+      gripe_invalid_index_type (type_name (), type[0]);
+      break;
+
+    default:
+      panic_impossible ();
+    }
+
+  if (! error_state)
+    retval = retval.next_subsref (type, idx, skip);
+
+  return retval;
+}
+
+octave_value
+octave_struct::numeric_conv (const octave_value_list& val,
+			     const std::string& type)
+{
+  octave_value retval;
+
+  if (val.length () == 1)
+    {
+      retval = val(0);
+
+      if (type.length () > 0 && type[0] == '.' && ! retval.is_map ())
+	retval = Octave_map ();
+    }
+  else
+    gripe_invalid_index_for_assignment ();
+
+  return retval;
+}
+
+octave_value
+octave_struct::subsasgn (const std::string type,
+			 const SLList<octave_value_list>& idx,
+			 const octave_value& rhs)
+{
+  octave_value retval;
+
+  int n = type.length ();
+
+  octave_value t_rhs = rhs;
+
+  if (n > 1 && ! (type.length () == 2 && type[0] == '(' && type[1] == '.'))
+    {
+      switch (type[0])
+	{
+	case '(':
+	  {
+	    if (type.length () > 1 && type[1] == '.')
+	      {
+		Pix p = idx.first ();
+		octave_value_list t_idx = idx(p);
+
+		if (t_idx.length () == 1)
+		  {
+		    idx.next (p);
+		    octave_value_list key_idx = idx(p);
+
+		    assert (key_idx.length () == 1);
+
+		    std::string key = key_idx(0).string_value ();
+
+		    octave_value u;
+
+		    if (! map.contains (key))
+		      u = octave_value::empty_conv (type.substr (2), rhs);
+		    else
+		      {
+			octave_value_list map_val = map[key];
+
+			octave_value_list t_idx = idx.front ();
+
+			idx_vector i = t_idx(0).index_vector ();
+
+			octave_value_list map_elt = map_val.index (i, true);
+
+			u = numeric_conv (map_elt, type.substr (2));
+		      }
+
+		    if (! error_state)
+		      {
+			SLList<octave_value_list> next_idx (idx);
+
+			// We handled two index elements, so subsasgn to
+			// needs to skip both of them.
+
+			next_idx.remove_front ();
+			next_idx.remove_front ();
+
+			t_rhs = u.subsasgn (type.substr (2), next_idx, rhs);
+		      }
+		  }
+		else
+		  gripe_invalid_index_for_assignment ();
+	      }
+	    else
+	      gripe_invalid_index_for_assignment ();
+	  }
+	  break;
+
+	case '.':
+	  {
+	    octave_value_list key_idx = idx.front ();
+
+	    assert (key_idx.length () == 1);
+
+	    std::string key = key_idx(0).string_value ();
+
+	    octave_value u;
+
+	    if (! map.contains (key))
+	      u = octave_value::empty_conv (type.substr (1), rhs);
+	    else
+	      {
+		octave_value_list map_val = map[key];
+
+		u = numeric_conv (map_val, type.substr (1));
+	      }
+
+	    if (! error_state)
+	      {
+		SLList<octave_value_list> next_idx (idx);
+
+		next_idx.remove_front ();
+
+		t_rhs = u.subsasgn (type.substr (1), next_idx, rhs);
+	      }
+	  }
+	  break;
+
+	case '{':
+	  gripe_invalid_index_type (type_name (), type[0]);
+	  break;
+
+	default:
+	  panic_impossible ();
+	}
+    }
+
+  if (! error_state)
+    {
+      switch (type[0])
+	{
+	case '(':
+	  {
+	    if (n > 1 && type[1] == '.')
+	      {
+		Pix p = idx.first ();
+		idx.next (p);
+		octave_value_list key_idx = idx(p);
+
+		assert (key_idx.length () == 1);
+
+		std::string key = key_idx(0).string_value ();
+
+		if (! error_state)
+		  {
+		    octave_value_list t_idx = idx.front ();
+
+		    if (t_idx.length () == 1)
+		      {
+			idx_vector i = t_idx(0).index_vector ();
+
+			map.assign (i, key, t_rhs);
+
+			if (! error_state)
+			  retval = octave_value (this, count + 1);
+			else
+			  gripe_failed_assignment ();
+		      }
+		    else
+		      gripe_invalid_index_for_assignment ();
+		  }
+		else
+		  gripe_failed_assignment ();
+	      }
+	    else
+	      gripe_invalid_index_for_assignment ();
+	  }
+	  break;
+
+	case '.':
+	  {
+	    octave_value_list key_idx = idx.front ();
+
+	    assert (key_idx.length () == 1);
+
+	    std::string key = key_idx(0).string_value ();
+
+	    map.assign (key, t_rhs);
+
+	    if (! error_state)
+	      retval = octave_value (this, count + 1);
+	    else
+	      gripe_failed_assignment ();
+	  }
+	  break;
+
+	case '{':
+	  gripe_invalid_index_type (type_name (), type[0]);
+	  break;
+
+	default:
+	  panic_impossible ();
+	}
+    }
+  else
+    gripe_failed_assignment ();
+
+  return retval;
 }
 
 void

@@ -73,7 +73,8 @@ public:
 
   ~octave_complex_matrix (void) { }
 
-  octave_value *clone (void) { return new octave_complex_matrix (*this); }
+  octave_value *clone (void) const { return new octave_complex_matrix (*this); }
+  octave_value *empty_clone (void) const { return new octave_complex_matrix (); }
 
   octave_value *try_narrowing_conversion (void);
 

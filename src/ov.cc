@@ -32,7 +32,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "str-vec.h"
 
 #include "oct-obj.h"
-#include "oct-lvalue.h"
 #include "ov.h"
 #include "ov-base.h"
 #include "ov-bool.h"
@@ -508,10 +507,10 @@ octave_value::octave_value (octave_value::all_va_args)
   rep->count = 1;
 }
 
-octave_value::octave_value (octave_value *new_rep)
+octave_value::octave_value (octave_value *new_rep, int count)
   : rep (new_rep)
 {
-  rep->count = 1;
+  rep->count = count;
 }
 
 octave_value::~octave_value (void)
@@ -529,7 +528,7 @@ octave_value::~octave_value (void)
 }
 
 octave_value *
-octave_value::clone (void)
+octave_value::clone (void) const
 {
   panic_impossible ();
   return 0;
@@ -551,34 +550,121 @@ octave_value::maybe_mutate (void)
 }
 
 octave_value_list
+octave_value::subsref (const std::string type,
+		       const SLList<octave_value_list>& idx, int nargout)
+{
+  if (is_constant ())
+    return rep->subsref (type, idx);
+  else
+    return rep->subsref (type, idx, nargout);
+}
+
+octave_value
+octave_value::next_subsref (const std::string type,
+			    const SLList<octave_value_list>& idx,
+			    int skip) 
+{
+  assert (skip > 0);
+
+  if (idx.length () > skip)
+    {
+      SLList<octave_value_list> new_idx (idx);
+      for (int i = 0; i < skip; i++)
+	new_idx.remove_front ();
+      return subsref (type.substr (skip), new_idx);
+    }
+  else
+    return *this;
+}
+
+octave_value_list
 octave_value::do_multi_index_op (int nargout, const octave_value_list& idx)
 {
   return rep->do_multi_index_op (nargout, idx);
 }
 
 static void
-gripe_no_conversion (const std::string& on, const std::string& tn1, const std::string& tn2)
+gripe_no_conversion (const std::string& on, const std::string& tn1,
+		     const std::string& tn2)
 {
   error ("operator %s: no conversion for assignment of `%s' to indexed `%s'",
 	 on.c_str (), tn2.c_str (), tn1.c_str ());
 }
 
+#if 0
 static void
-gripe_assign_failed (const std::string& on, const std::string& tn1, const std::string& tn2)
+gripe_assign_failed (const std::string& on, const std::string& tn1,
+		     const std::string& tn2)
 {
   error ("assignment failed for `%s %s %s'",
 	 tn1.c_str (), on.c_str (), tn2.c_str ());
 }
+#endif
 
 static void
-gripe_assign_failed_or_no_method (const std::string& on, const std::string& tn1,
+gripe_assign_failed_or_no_method (const std::string& on,
+				  const std::string& tn1,
 				  const std::string& tn2)
 {
   error ("assignment failed, or no method for `%s %s %s'",
 	 tn1.c_str (), on.c_str (), tn2.c_str ());
 }
 
-void
+octave_value
+octave_value::subsasgn (const std::string type,
+			const SLList<octave_value_list>& idx,
+			const octave_value& rhs)
+{
+  return rep->subsasgn (type, idx, rhs);
+}
+
+octave_value
+octave_value::assign (assign_op op, const std::string type,
+		      const SLList<octave_value_list>& idx,
+		      const octave_value& rhs)
+{
+  octave_value retval;
+
+  make_unique ();
+
+  octave_value t_rhs = rhs;
+
+  if (op != op_asn_eq)
+    {
+      // XXX FIXME XXX -- only do the following stuff if we can't find
+      // a specific function to call to handle the op= operation for
+      // the types we have.
+
+      octave_value t = subsref (type, idx);
+
+      if (! error_state)
+	{
+	  binary_op binop = op_eq_to_binary_op (op);
+
+	  if (! error_state)
+	    t_rhs = do_binary_op (binop, t, rhs);
+	}
+    }
+
+  if (! error_state)
+    {
+      if (type[0] == '.' && ! is_map ())
+	{
+	  octave_value tmp = Octave_map ();
+	  retval = tmp.subsasgn (type, idx, t_rhs);
+	}
+      else
+	retval = subsasgn (type, idx, t_rhs);
+    }
+
+  if (error_state)
+    gripe_assign_failed_or_no_method (assign_op_as_string (op),
+				      type_name (), rhs.type_name ());
+
+  return retval;
+}
+
+const octave_value&
 octave_value::assign (assign_op op, const octave_value& rhs)
 {
   if (op == op_asn_eq)
@@ -603,119 +689,8 @@ octave_value::assign (assign_op op, const octave_value& rhs)
 	gripe_assign_failed_or_no_method (assign_op_as_string (op),
 					  type_name (), rhs.type_name ());
     }
-}
 
-void
-octave_value::simple_assign (octave_value::assign_op orig_op,
-			     const octave_value_list& idx,
-			     const octave_value& rhs)
-{
-  make_unique ();
-
-  bool assignment_ok = try_assignment (op_asn_eq, idx, rhs);
-
-  if (! (error_state || assignment_ok))
-    {
-      assignment_ok = try_assignment_with_conversion (op_asn_eq, idx, rhs);
-
-      if (! (error_state || assignment_ok))
-	gripe_no_conversion (assign_op_as_string (orig_op),
-			     type_name (), rhs.type_name ());
-    }
-}
-
-void
-octave_value::assign (octave_value::assign_op op,
-		      const octave_value_list& idx,
-		      const octave_value& rhs)
-{
-  if (Vresize_on_range_error || is_defined ())
-    {
-      if (op == op_asn_eq)
-	simple_assign (op, idx, rhs);
-      else
-	{
-	  // XXX FIXME XXX -- only do the following stuff if we can't
-	  // find a specific function to call to handle the op=
-	  // operation for the types we have.
-
-	  octave_value t1 = *this;
-
-	  t1 = t1.do_index_op (idx);
-
-	  if (! error_state)
-	    {
-	      binary_op binop = op_eq_to_binary_op (op);
-
-	      if (! error_state)
-		{
-		  octave_value t2 = do_binary_op (binop, t1, rhs);
-
-		  if (! error_state)
-		    {
-		      simple_assign (op, idx, t2);
-
-		      if (error_state)
-			gripe_assign_failed (assign_op_as_string (op),
-					     type_name (), rhs.type_name ());
-		    }
-		  else
-		    gripe_assign_failed_or_no_method (assign_op_as_string (op),
-						      type_name (),
-						      rhs.type_name ());
-		}
-	      else
-		gripe_assign_failed_or_no_method (assign_op_as_string (op),
-						  type_name (),
-						  rhs.type_name ());
-	    }
-	  else
-	    gripe_assign_failed (assign_op_as_string (op),
-				 type_name (), rhs.type_name ());
-	}
-
-      if (! error_state)
-	maybe_mutate ();
-    }
-  else
-    {
-      error ("indexed assignment to previously undefined variables");
-      error ("is only possible when resize_on_range_error is true");
-    }
-}
-
-void
-octave_value::assign_struct_elt (assign_op op, const std::string& elt_nm,
-				 const octave_value& rhs)
-{
-  make_unique ();
-
-  rep->assign_struct_elt (op, elt_nm, rhs);
-}
-
-
-void
-octave_value::assign_struct_elt (assign_op op, const std::string& elt_nm,
-				 const octave_value_list& idx,
-				 const octave_value& rhs)
-{
-  make_unique ();
-
-  rep->assign_struct_elt (op, elt_nm, idx, rhs);
-}
-
-octave_lvalue
-octave_value::struct_elt_ref (const std::string& nm)
-{
-  return rep->struct_elt_ref (this, nm);
-}
-
-octave_lvalue
-octave_value::struct_elt_ref (octave_value *, const std::string&)
-{
-  panic_impossible ();
-
-  return octave_lvalue ();
+  return *this;
 }
 
 Cell
@@ -980,164 +955,113 @@ gripe_indexed_assignment (const std::string& tn1, const std::string& tn2)
 }
 
 static void
-gripe_assign_conversion_failed (const std::string& tn1, const std::string& tn2)
+gripe_assign_conversion_failed (const std::string& tn1,
+				const std::string& tn2)
 {
   error ("type conversion for assignment of `%s' to indexed `%s' failed",
 	 tn2.c_str (), tn1.c_str ());
 }
 
-bool
-octave_value::convert_and_assign (octave_value::assign_op op,
-				  const octave_value_list& idx,
-				  const octave_value& rhs)
-{
-  bool assignment_ok = false;
-
-  int t_lhs = type_id ();
-  int t_rhs = rhs.type_id ();
-
-  int t_result
-    = octave_value_typeinfo::lookup_pref_assign_conv (t_lhs, t_rhs);
-
-  if (t_result >= 0)
-    {
-      type_conv_fcn cf
-	= octave_value_typeinfo::lookup_widening_op (t_lhs, t_result);
-
-      if (cf)
-	{
-	  octave_value *tmp = cf (*rep);
-
-	  if (tmp)
-	    {
-	      octave_value *old_rep = rep;
-	      rep = tmp;
-	      rep->count = 1;
-
-	      assignment_ok = try_assignment (op, idx, rhs);
-
-	      if (! assignment_ok && old_rep)
-		{
-		  if (--rep->count == 0)
-		    delete rep;
-
-		  rep = old_rep;
-		  old_rep = 0;
-		}
-
-	      if (old_rep && --old_rep->count == 0)
-		delete old_rep;
-	    }
-	  else
-	    gripe_assign_conversion_failed (type_name (), rhs.type_name ());
-	}
-      else
-	gripe_indexed_assignment (type_name (), rhs.type_name ());
-    }
-
-  return (assignment_ok && ! error_state);
-}
-
-bool
-octave_value::try_assignment_with_conversion (octave_value::assign_op op,
-					      const octave_value_list& idx,
-					      const octave_value& rhs)
-{
-  bool assignment_ok = convert_and_assign (op, idx, rhs);
-
-  if (! (error_state || assignment_ok))
-    {
-      octave_value tmp_rhs;
-      type_conv_fcn cf_rhs = rhs.numeric_conversion_function ();
-
-      if (cf_rhs)
-	{
-	  octave_value *tmp = cf_rhs (*rhs.rep);
-
-	  if (tmp)
-	    tmp_rhs = octave_value (tmp);
-	  else
-	    {
-	      gripe_assign_conversion_failed (type_name (), rhs.type_name ());
-	      return false;
-	    }
-	}
-      else
-	tmp_rhs = rhs;
-
-      octave_value *old_rep = 0;
-      type_conv_fcn cf_this = numeric_conversion_function ();
-
-      if (cf_this)
-	{
-	  old_rep = rep;
-
-	  octave_value *tmp = cf_this (*rep);
-
-	  if (tmp)
-	    {
-	      rep = tmp;
-	      rep->count = 1;
-	    }
-	  else
-	    {
-	      gripe_assign_conversion_failed (type_name (), rhs.type_name ());
-	      return false;
-	    }
-	}
-
-      if (cf_this || cf_rhs)
-	{
-	  assignment_ok = try_assignment (op, idx, tmp_rhs);
-
-	  if (! (error_state || assignment_ok))
-	    assignment_ok = convert_and_assign (op, idx, tmp_rhs);
-	}
-
-      if (! assignment_ok && old_rep)
-	{
-	  if (--rep->count == 0)
-	    delete rep;
-
-	  rep = old_rep;
-	  old_rep = 0;
-	}
-
-      if (old_rep && --old_rep->count == 0)
-	delete old_rep;
-    }
-
-  return (assignment_ok && ! error_state);
-}
-
-bool
-octave_value::try_assignment (octave_value::assign_op op,
-			      const octave_value_list& idx,
+octave_value
+octave_value::numeric_assign (const std::string type,
+			      const SLList<octave_value_list>& idx,
 			      const octave_value& rhs)
 {
-  bool retval = false;
+  octave_value retval;
 
   int t_lhs = type_id ();
   int t_rhs = rhs.type_id ();
 
   assign_op_fcn f
-    = octave_value_typeinfo::lookup_assign_op (op, t_lhs, t_rhs);
+    = octave_value_typeinfo::lookup_assign_op (op_asn_eq, t_lhs, t_rhs);
+
+  bool done = false;
 
   if (f)
     {
-      f (*rep, idx, *(rhs.rep));
+      f (*this, idx.front (), rhs.get_rep ());
 
-      retval = (! error_state);
+      done = (! error_state);
     }
+
+  if (done)
+    retval = octave_value (this, count + 1);
   else
     {
-      f = octave_value_typeinfo::lookup_assignany_op (op, t_lhs);
+      int t_result
+	= octave_value_typeinfo::lookup_pref_assign_conv (t_lhs, t_rhs);
 
-      if (f)
+      if (t_result >= 0)
 	{
-	  f (*rep, idx, rhs);
+	  type_conv_fcn cf
+	    = octave_value_typeinfo::lookup_widening_op (t_lhs, t_result);
 
-	  retval = (! error_state);
+	  if (cf)
+	    {
+	      octave_value *tmp (cf (*this));
+
+	      if (tmp)
+		{
+		  retval = tmp->subsasgn (type, idx, rhs);
+
+		  done = (! error_state);
+		}
+	      else
+		gripe_assign_conversion_failed (type_name (),
+						rhs.type_name ());
+	    }
+	  else
+	    gripe_indexed_assignment (type_name (), rhs.type_name ());
+	}
+
+      if (! (done || error_state))
+	{
+	  octave_value tmp_rhs;
+	  type_conv_fcn cf_rhs = rhs.numeric_conversion_function ();
+
+	  if (cf_rhs)
+	    {
+	      octave_value *tmp = cf_rhs (rhs.get_rep ());
+
+	      if (tmp)
+		tmp_rhs = octave_value (tmp);
+	      else
+		{
+		  gripe_assign_conversion_failed (type_name (),
+						  rhs.type_name ());
+		  return octave_value ();
+		}
+	    }
+	  else
+	    tmp_rhs = rhs;
+
+	  type_conv_fcn cf_this = numeric_conversion_function ();
+
+	  octave_value *tmp_lhs = this;
+
+	  if (cf_this)
+	    {
+	      octave_value *tmp = cf_this (*this);
+
+	      if (tmp)
+		tmp_lhs = tmp;
+	      else
+		{
+		  gripe_assign_conversion_failed (type_name (),
+						  rhs.type_name ());
+		  return octave_value ();
+		}
+	    }
+
+	  if (cf_this || cf_rhs)
+	    {
+	      retval = tmp_lhs->subsasgn (type, idx, tmp_rhs);
+
+	      done = (! error_state);
+	    }
+	  else
+	    gripe_no_conversion (assign_op_as_string (op_asn_eq),
+				 type_name (), rhs.type_name ());
 	}
     }
 
@@ -1145,7 +1069,8 @@ octave_value::try_assignment (octave_value::assign_op op,
 }
 
 static void
-gripe_binary_op (const std::string& on, const std::string& tn1, const std::string& tn2)
+gripe_binary_op (const std::string& on, const std::string& tn1,
+		 const std::string& tn2)
 {
   error ("binary operator `%s' not implemented for `%s' by `%s' operations",
 	 on.c_str (), tn1.c_str (), tn2.c_str ());
@@ -1158,8 +1083,8 @@ gripe_binary_op_conv (const std::string& on)
 }
 
 octave_value
-do_binary_op (octave_value::binary_op op, const octave_value& v1,
-	      const octave_value& v2)
+do_binary_op (octave_value::binary_op op,
+	      const octave_value& v1, const octave_value& v2)
 {
   octave_value retval;
 
@@ -1233,6 +1158,16 @@ do_binary_op (octave_value::binary_op op, const octave_value& v1,
   return retval;
 }
 
+void
+octave_value::print_info (std::ostream& os, const std::string& prefix) const
+{
+  os << prefix << "type_name: " << type_name () << "\n"
+     << prefix << "count:     " << get_count () << "\n"
+     << prefix << "rep info:  ";
+
+  rep->print_info (os, prefix + " ");
+}
+
 static void
 gripe_unary_op (const std::string& on, const std::string& tn)
 {
@@ -1291,14 +1226,15 @@ do_unary_op (octave_value::unary_op op, const octave_value& v)
 }
 
 static void
-gripe_unary_op_conversion_failed (const std::string& op, const std::string& tn)
+gripe_unary_op_conversion_failed (const std::string& op,
+				  const std::string& tn)
 {
   error ("operator %s: type conversion for `%s' failed",
 	 op.c_str (), tn.c_str ());
 }
 
-void
-octave_value::do_non_const_unary_op (octave_value::unary_op op)
+const octave_value&
+octave_value::do_non_const_unary_op (unary_op op)
 {
   octave_value retval;
 
@@ -1359,30 +1295,50 @@ octave_value::do_non_const_unary_op (octave_value::unary_op op)
       else
 	gripe_unary_op (octave_value::unary_op_as_string (op), type_name ());
     }
+
+  return *this;
 }
 
+#if 0
 static void
-gripe_unary_op_failed_or_no_method (const std::string& on, const std::string& tn)
+gripe_unary_op_failed_or_no_method (const std::string& on,
+				    const std::string& tn) 
 {
   error ("operator %s: no method, or unable to evaluate for %s operand",
 	 on.c_str (), tn.c_str ());
 }
+#endif
 
 void
-octave_value::do_non_const_unary_op (octave_value::unary_op op,
-				     const octave_value_list& idx)
+octave_value::do_non_const_unary_op (unary_op op, const octave_value_list& idx)
 {
-  // XXX FIXME XXX -- only do the following stuff if we can't find a
-  // specific function to call to handle the op= operation for the
-  // types we have.
+  abort ();
+}
 
-  assign_op assop = unary_op_to_assign_op (op);
+octave_value
+octave_value::do_non_const_unary_op (unary_op op, const std::string type,
+				     const SLList<octave_value_list>& idx)
+{
+  octave_value retval;
 
-  if (! error_state)
-    assign (assop, idx, 1.0);
+  if (idx.empty ())
+    {
+      do_non_const_unary_op (op);
+
+      retval = *this;
+    }
   else
-    gripe_unary_op_failed_or_no_method (unary_op_as_string (op),
-					type_name ());
+    {
+      // XXX FIXME XXX -- only do the following stuff if we can't find a
+      // specific function to call to handle the op= operation for the
+      // types we have.
+
+      assign_op assop = unary_op_to_assign_op (op);
+
+      retval = assign (assop, type, idx, 1.0);
+    }
+
+  return retval;
 }
 
 // Current indentation.
@@ -1519,6 +1475,42 @@ octave_value::op_eq_to_binary_op (assign_op op)
     }
 
   return binop;
+}
+
+octave_value
+octave_value::empty_conv (const std::string& type, const octave_value& rhs)
+{
+  octave_value retval;
+
+  if (type.length () > 0)
+    {
+      switch (type[0])
+	{
+	case '(':
+	  {
+	    if (type.length () > 1 && type[1] == '.')
+	      retval = Octave_map ();
+	    else
+	      retval = octave_value (rhs.empty_clone ());
+	  }
+	  break;
+
+	case '{':
+	  retval = Cell ();
+	  break;
+
+	case '.':
+	  retval = Octave_map ();
+	  break;
+
+	default:
+	  panic_impossible ();
+	}
+    }
+  else
+    retval = octave_value (rhs.empty_clone ());
+
+  return retval;
 }
 
 void

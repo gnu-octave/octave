@@ -65,9 +65,10 @@ public:
 
   ~octave_scalar (void) { }
 
-  octave_value *clone (void) { return new octave_scalar (*this); }
+  octave_value *clone (void) const { return new octave_scalar (*this); }
+  octave_value *empty_clone (void) const { return new octave_scalar (); }
 
-  octave_value do_index_op (const octave_value_list& idx);
+  octave_value do_index_op (const octave_value_list& idx, int resize_ok);
 
   idx_vector index_vector (void) const { return idx_vector (scalar); }
 

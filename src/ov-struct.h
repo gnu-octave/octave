@@ -64,23 +64,30 @@ public:
 
   ~octave_struct (void) { }
 
-  octave_value *clone (void) { return new octave_struct (*this); }
+  octave_value *clone (void) const { return new octave_struct (*this); }
+  octave_value *empty_clone (void) const { return new octave_struct (); }
 
-  octave_value
-  do_struct_elt_index_op (const std::string& nm, const octave_value_list& idx,
-			  bool silent);
+  octave_value_list dotref (const octave_value_list& idx);
 
-  octave_value do_struct_elt_index_op (const std::string& nm, bool silent);
+  octave_value subsref (const std::string type,
+			const SLList<octave_value_list>& idx);
 
-  octave_lvalue struct_elt_ref (octave_value *parent, const std::string& nm);
+  static octave_value numeric_conv (const octave_value_list& val,
+				    const std::string& type);
+
+  octave_value subsasgn (const std::string type,
+			 const SLList<octave_value_list>& idx,
+			 const octave_value& rhs);
 
   bool is_defined (void) const { return true; }
 
-  bool is_constant (void) const { return false; }
+  bool is_constant (void) const { return true; }
 
   bool is_map (void) const { return true; }
 
   Octave_map map_value (void) const { return map; }
+
+  string_vector map_keys (void) const { return map.keys (); }
 
   void print (std::ostream& os, bool pr_as_read_syntax = false) const;
 

@@ -73,6 +73,12 @@ public:
 
   static void blink_matching_paren (bool flag);
 
+  static void command_editor::set_basic_word_break_characters
+    (const std::string& s);
+
+  static void command_editor::set_completer_word_break_characters
+    (const std::string& s);
+
   static void set_basic_quote_characters (const std::string& s);
 
   static void set_completion_append_character (char c);
@@ -158,6 +164,10 @@ protected:
   virtual void do_restore_terminal_state (void) { }
 
   virtual void do_blink_matching_paren (bool) { }
+
+  virtual void do_set_basic_word_break_characters (const std::string&) { }
+
+  virtual void do_set_completer_word_break_characters (const std::string&) { }
 
   virtual void do_set_basic_quote_characters (const std::string&) { }
 

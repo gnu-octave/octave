@@ -28,6 +28,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include "Cell.h"
 #include "error.h"
 #include "oct-map.h"
 #include "oct-obj.h"
@@ -41,24 +42,54 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "variables.h"
 
+#include "SLList.cc"
+
+template class SLNode<string_vector>;
+template class SLList<string_vector>;
+
 // Index expressions.
 
 tree_index_expression::tree_index_expression (tree_expression *e,
 					      tree_argument_list *lst,
-					      int l, int c, type t)
-  : tree_expression (l, c), expr (e), list (lst),
-    itype (t), arg_nm (lst ? lst->get_arg_names () : string_vector ()) { }
+					      int l, int c, char t)
+  : tree_expression (l, c), expr (e), args (), type (), arg_nm ()
+{
+  append (lst, t);
+}
 
 tree_index_expression::tree_index_expression (tree_expression *e,
 					      const std::string& n,
 					      int l = -1, int c = -1)
-  : tree_expression (l, c), expr (e), list (0), itype (dot),
-    arg_nm (n) { }
+  : tree_expression (l, c), expr (e), args (), type (), arg_nm ()
+{
+  append (n);
+}
+
+void
+tree_index_expression::append (tree_argument_list *lst, char t)
+{
+  args.append (lst);
+  type.append (1, t);
+  arg_nm.append (lst ? lst->get_arg_names () : string_vector ());
+}
+
+void
+tree_index_expression::append (const std::string& n)
+{
+  args.append (static_cast<tree_argument_list *> (0));
+  type.append (".");
+  arg_nm.append (n);
+}
 
 tree_index_expression::~tree_index_expression (void)
 {
   delete expr;
-  delete list;
+
+  while (! args.empty ())
+    {
+      tree_argument_list *t = args.remove_front ();
+      delete t;
+    }
 }
 
 // This is useful for printing the name of the variable in an indexed
@@ -70,7 +101,101 @@ tree_index_expression::name (void) const
   // ??? FIXME ???
   std::string xname = expr->name ();
 
-  return (! dot || xname == "<unknown>") ? xname : xname + "." + arg_nm(0);
+  return (type[0] != '.' || xname == "<unknown>")
+    ? xname : xname + "." + arg_nm.front ()(0);
+}
+
+static Cell
+make_subs_cell (tree_argument_list *args, const string_vector& arg_nm)
+{
+  Cell retval;
+
+  octave_value_list arg_values;
+
+  if (args)
+    arg_values = args->convert_to_const_vector ();
+
+  if (! error_state)
+    {
+      int n = arg_values.length ();
+
+      if (n > 0)
+	{
+	  arg_values.stash_name_tags (arg_nm);
+
+	  retval.resize (1, n);
+
+	  for (int i = 0; i < n; i++)
+	    retval(0,i) = arg_values(i);
+	}
+    }
+
+  return retval;
+}
+
+static inline octave_value_list
+make_value_list (tree_argument_list *args, const string_vector& arg_nm)
+{
+  octave_value_list retval;
+
+  if (args)
+    retval = args->convert_to_const_vector ();
+
+  if (! error_state)
+    {
+      int n = retval.length ();
+
+      if (n > 0)
+	retval.stash_name_tags (arg_nm);
+    }
+
+  return retval;
+}
+
+Octave_map
+tree_index_expression::make_arg_struct (void) const
+{
+  int n = args.length ();
+
+  octave_value_list subs_list (n, octave_value ());
+  octave_value_list type_list (n, octave_value ());
+
+  Pix p_args = args.first ();
+  Pix p_arg_nm = arg_nm.first ();
+
+  Octave_map m;
+
+  for (int i = 0; i < n; i++)
+    {
+      switch (type[i])
+	{
+	case '(':
+	  subs_list(i) = make_subs_cell (args(p_args), arg_nm(p_arg_nm));
+	  break;
+
+	case '{':
+	  subs_list(i) = make_subs_cell (args(p_args), arg_nm(p_arg_nm));
+	  break;
+
+	case '.':
+	  subs_list(i) = arg_nm(p_arg_nm)(0);
+	  break;
+
+	default:
+	  panic_impossible ();
+	}
+
+      if (error_state)
+	return m;
+
+      args.next (p_args);
+      arg_nm.next (p_arg_nm);
+    }
+
+  m ["subs"] = subs_list;
+  m ["type"] = type_list;
+
+  return m;
 }
 
 octave_value_list
@@ -85,66 +210,43 @@ tree_index_expression::rvalue (int nargout)
 
   if (! error_state)
     {
-      if (itype == dot)
+      SLList<octave_value_list> idx;
+
+      int n = args.length ();
+
+      Pix p_args = args.first ();
+      Pix p_arg_nm = arg_nm.first ();
+
+      for (int i = 0; i < n; i++)
 	{
-	  MAYBE_DO_BREAKPOINT;
-
-	  if (nargout > 1)
-	    error ("invalid number of output arguments for structure reference");
-	  else
+	  switch (type[i])
 	    {
-	      octave_value_list tmp = expr->rvalue (nargout);
+	    case '(':
+	      idx.append (make_value_list (args(p_args), arg_nm(p_arg_nm)));
+	      break;
 
-	      if (tmp.empty ())
-		eval_error ();
-	      else
-		{
-		  octave_value val = tmp(0).do_struct_elt_index_op (arg_nm(0));
+	    case '{':
+	      idx.append (make_value_list (args(p_args), arg_nm(p_arg_nm)));
+	      break;
 
-		  if (print_result () && nargout == 0 && val.is_defined ())
-		    {
-		      // ??? FIXME ???
+	    case '.':
+	      idx.append (arg_nm(p_arg_nm)(0));
+	      break;
 
-		      std::string xname = name ();
-
-		      if (xname == "<unknown>")
-			bind_ans (val, true);
-		      else
-			val.print_with_name (octave_stdout, xname);
-		    }
-
-		  retval = val;
-		}
+	    default:
+	      panic_impossible ();
 	    }
+
+	  if (error_state)
+	    break;
+
+	  args.next (p_args);
+	  arg_nm.next (p_arg_nm);
 	}
-      else if (itype == paren || itype == brace)
-	{
-	  octave_value_list args;
 
-	  if (list)
-	    args = list->convert_to_const_vector ();
-
-	  if (! error_state)
-	    {
-	      if (! args.empty ())
-		args.stash_name_tags (arg_nm);
-
-	      // XXX FIXME XXX -- is this the right thing to do?
-	      if (tmp.is_constant ())
-		retval = tmp.do_index_op (args);
-	      else
-		retval = tmp.do_multi_index_op (nargout, args);
-	    }
-	  else
-	    eval_error ();
-	}
-#if 0
-      else
-	panic_impossible ();
-#endif
+      if (! error_state)
+	retval = tmp.subsref (type, idx, nargout);
     }
-  else
-    eval_error ();
 
   return retval;
 }
@@ -167,35 +269,46 @@ tree_index_expression::lvalue (void)
 {
   octave_lvalue retval;
 
+  SLList<octave_value_list> idx;
+
+  int n = args.length ();
+
+  Pix p_args = args.first ();
+  Pix p_arg_nm = arg_nm.first ();
+
+  for (int i = 0; i < n; i++)
+    {
+      switch (type[i])
+	{
+	case '(':
+	  idx.append (make_value_list (args(p_args), arg_nm(p_arg_nm)));
+	  break;
+
+	case '{':
+	  idx.append (make_value_list (args(p_args), arg_nm(p_arg_nm)));
+	  break;
+
+	case '.':
+	  idx.append (arg_nm(p_arg_nm)(0));
+	  break;
+
+	default:
+	  panic_impossible ();
+	}
+
+      if (error_state)
+	break;
+
+      args.next (p_args);
+      arg_nm.next (p_arg_nm);
+    }
+
   if (! error_state)
     {
-      if (itype == dot)
-	{
-	  octave_lvalue tmp = expr->lvalue ();
+      retval = expr->lvalue ();
 
-	  if (tmp.is_undefined () || ! tmp.is_map ())
-	    tmp.define (Octave_map ());
-
-	  retval = tmp.struct_elt_ref (arg_nm(0));
-	}
-      else if (itype == paren || itype == brace)
-	{
-	  retval = expr->lvalue ();
-
-	  if (! error_state)
-	    {
-	      octave_value_list args;
-	  
-	      if (list)
-		args = list->convert_to_const_vector ();
-
-	      retval.set_index (args);
-	    }
-#if 0
-	  else
-	    panic_impossible ();
-#endif
-	}
+      if (! error_state)
+	retval.set_index (type, idx);
     }
 
   return retval;
@@ -211,9 +324,9 @@ tree_index_expression::eval_error (void)
 
       const char *type_str;
 
-      if (itype == dot)
+      if (type[0] == '.')
 	type_str = "structure reference operator";
-      else if (list)
+      else if (args.front ())
 	type_str = "index expression";
       else
 	type_str = "expression";

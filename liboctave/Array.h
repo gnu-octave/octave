@@ -30,6 +30,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <cassert>
 
+#include <iostream>
+
 #include "lo-utils.h"
 
 class idx_vector;
@@ -232,6 +234,7 @@ public:
     }
 
 #ifdef HEAVYWEIGHT_INDEXING
+
   void set_max_indices (int mi) { max_indices = mi; }
 
   void clear_index (void);
@@ -246,10 +249,14 @@ public:
 
   Array<T> value (void);
 
-  Array<T> index (idx_vector& i) const;
+  Array<T> index (idx_vector& i, int resize_ok = 0,
+		  const T& rfv = Array<T>::resize_fill_value ()) const;
+
 #endif
 
   static T resize_fill_value (void) { return static_cast<T> (0); }
+
+  void print_info (std::ostream& os, const std::string& prefix) const;
 };
 
 template <class LT, class RT>

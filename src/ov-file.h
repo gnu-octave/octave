@@ -60,7 +60,8 @@ public:
 
   ~octave_file (void) { }
 
-  octave_value *clone (void) { return new octave_file (*this); }
+  octave_value *clone (void) const { return new octave_file (*this); }
+  octave_value *empty_clone (void) const { return new octave_file (); }
 
   type_conv_fcn numeric_conversion_function (void) const;
 

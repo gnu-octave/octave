@@ -28,6 +28,8 @@ class octave_value_list;
 
 #include <string>
 
+#include "SLList.h"
+
 #include "oct-obj.h"
 #include "pt-idx.h"
 #include "symtab.h"
@@ -44,25 +46,20 @@ public:
 
   octave_lvalue (octave_value *v = &dummy_val,
 		 symbol_record::change_function f = 0)
-    : val (v), idx (), chg_fcn (f), struct_elt_name (), index_set (false) { }
-
-  octave_lvalue (octave_value *v, const std::string& nm,
-		 symbol_record::change_function f = 0)
-    : val (v), idx (), chg_fcn (f), struct_elt_name (nm), index_set (false) { }
+    : val (v), type (), idx (), chg_fcn (f), index_set (false) { }
 
   octave_lvalue (const octave_lvalue& vr)
-    : val (vr.val), idx (vr.idx), itype (vr.itype), chg_fcn (vr.chg_fcn),
-      struct_elt_name (vr.struct_elt_name), index_set (vr.index_set) { }
+    : val (vr.val), type (vr.type), idx (vr.idx), chg_fcn (vr.chg_fcn),
+      index_set (vr.index_set) { }
 
   octave_lvalue& operator = (const octave_lvalue& vr)
     {
       if (this != &vr)
 	{
 	  val = vr.val;
+	  type = vr.type;
 	  idx = vr.idx;
-	  itype = vr.itype;
 	  chg_fcn = vr.chg_fcn;
-	  struct_elt_name = vr.struct_elt_name;
 	  index_set = vr.index_set;
 	}
 
@@ -81,42 +78,24 @@ public:
 
   void assign (octave_value::assign_op, const octave_value&);
 
-  octave_lvalue struct_elt_ref (const std::string& nm)
-    {
-      val->make_unique ();
-      return val->struct_elt_ref (nm);
-    }
+  void set_index (const std::string& t, const SLList<octave_value_list>& i);
 
-  void set_index (const octave_value_list& i,
-		  tree_index_expression::type t
-		    = tree_index_expression::unknown);
-
-  void clear_index (void) { idx = octave_value_list (); }
+  void clear_index (void) { type = std::string (); idx.clear (); }
 
   void do_unary_op (octave_value::unary_op op);
 
   octave_value value (void)
-    {
-      return struct_elt_name.empty ()
-	? (idx.empty ()
-	   ? *val
-	   : val->do_index_op (idx))
-	: (idx.empty ()
-	   ? val->do_struct_elt_index_op (struct_elt_name)
-	   : val->do_struct_elt_index_op (struct_elt_name, idx));
-    }
+    { return idx.empty () ? *val : val->subsref (type, idx); }
 
 private:
 
   octave_value *val;
 
-  octave_value_list idx;
+  std::string type;
 
-  tree_index_expression::type itype;
+  SLList<octave_value_list> idx;
 
   symbol_record::change_function chg_fcn;
-
-  std::string struct_elt_name;
 
   bool index_set;
 };

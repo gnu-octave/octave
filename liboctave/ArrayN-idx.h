@@ -70,7 +70,8 @@ ArrayN<T>::value (void)
 
 template <class T>
 ArrayN<T>
-ArrayN<T>::index (idx_vector& idx) const
+ArrayN<T>::index (idx_vector& idx, int resize_ok,
+		  const T& resize_fill_value) const
 {
   ArrayN<T> retval;
   assert (0);
@@ -78,7 +79,7 @@ ArrayN<T>::index (idx_vector& idx) const
 }
 
 static inline Array<int>
-freeze (Array<idx_vector>& idx, const Array<int>& dimensions)
+freeze (Array<idx_vector>& idx, const Array<int>& dimensions, int resize_ok)
 {
   Array<int> retval;
 
@@ -89,7 +90,7 @@ freeze (Array<idx_vector>& idx, const Array<int>& dimensions)
   retval.resize (n);
 
   for (int i = 0; i < n; i++)
-    retval(i) = idx(i).freeze (dimensions(i), "XXX FIXME XXX");
+    retval(i) = idx(i).freeze (dimensions(i), "XXX FIXME XXX", resize_ok);
 
   return retval;
 }
@@ -199,13 +200,14 @@ get_elt_idx (const Array<idx_vector>& idx, const Array<int>& result_idx)
 
 template <class T>
 ArrayN<T>
-ArrayN<T>::index (Array<idx_vector>& arr_idx) const
+ArrayN<T>::index (Array<idx_vector>& arr_idx, int resize_ok,
+		  const T& resize_fill_value) const
 {
   ArrayN<T> retval;
 
   int n_dims = dimensions.length ();
 
-  Array<int> frozen_lengths = freeze (arr_idx, dimensions);
+  Array<int> frozen_lengths = freeze (arr_idx, dimensions, resize_ok);
 
   if (frozen_lengths.length () == n_dims)
     {
@@ -239,7 +241,10 @@ ArrayN<T>::index (Array<idx_vector>& arr_idx) const
 		{
 		  Array<int> elt_idx = get_elt_idx (result_idx);
 
-		  retval.elem (result_idx) = elem (elt_idx);
+		  if (elt_idx > orig_len)
+		    retval.elem (result_idx) = resize_fill_value;
+		  else
+		    retval.elem (result_idx) = elem (elt_idx);
 
 		  increment_index (result_idx, frozen_lengths);
 		}

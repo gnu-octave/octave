@@ -52,6 +52,37 @@ any_arg_is_magic_colon (const octave_value_list& args)
 }
 
 octave_value_list
+octave_builtin::subsref (const std::string type,
+			 const SLList<octave_value_list>& idx,
+			 int nargout)
+{
+  octave_value_list retval;
+
+  switch (type[0])
+    {
+    case '(':
+      retval = do_multi_index_op (nargout, idx.front ());
+      break;
+
+    case '{':
+    case '.':
+      {
+	std::string nm = type_name ();
+	error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
+      }
+      break;
+
+    default:
+      panic_impossible ();
+    }
+
+  return retval;
+
+  // XXX FIXME XXX
+  //  return retval.next_subsref (type, idx);
+}
+
+octave_value_list
 octave_builtin::do_multi_index_op (int nargout, const octave_value_list& args)
 {
   octave_value_list retval;

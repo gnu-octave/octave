@@ -50,7 +50,8 @@ idx_list_to_idx_array (const octave_value_list& idx)
 
 template <class AT>
 octave_value
-octave_base_nd_array<AT>::do_index_op (const octave_value_list& idx)
+octave_base_nd_array<AT>::do_index_op (const octave_value_list& idx,
+				       int resize_ok)
 {
   octave_value retval;
 
@@ -61,14 +62,14 @@ octave_base_nd_array<AT>::do_index_op (const octave_value_list& idx)
       Array<idx_vector> i = idx_list_to_idx_array (idx);
 
       retval
-	= octave_value (new octave_base_nd_array<AT> (AT (array.index (i))));
+	= octave_value (new octave_base_nd_array<AT> (AT (array.index (i, resize_ok))));
     }
   else if (len == 1)
     {
       idx_vector i = idx(0).index_vector ();
 
       retval
-	= octave_value (new octave_base_nd_array<AT> (AT (array.index (i))));
+	= octave_value (new octave_base_nd_array<AT> (AT (array.index (i, resize_ok))));
     }
   else
     {

@@ -50,8 +50,7 @@ public:
 
   ~tree_cell (void) { }
 
-  bool rvalue_ok (void) const
-    { return true; }
+  bool rvalue_ok (void) const { return true; }
 
   octave_value rvalue (void);
 

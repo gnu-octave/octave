@@ -57,15 +57,19 @@ Octave_map::keys (void) const
 }
 
 int
-Octave_map::array_length (void) const
+Octave_map::numel (void) const
 {
-  if (array_len == 0 && length () != 0)
+  int retval;
+
+  if (empty ())
+    retval = 0;
+  else
     {
-      const_iterator p = begin ();
-      array_len = contents(p).length ();
+      Cell tmp = contents (begin ());
+      retval = tmp.numel ();
     }
 
-  return array_len;
+  return retval;
 }
 
 static string_vector
@@ -120,6 +124,40 @@ Octave_map::assign (const octave_value_list& idx, const Octave_map& rhs)
   return *this;
 }
 
+static dim_vector
+common_size (const dim_vector& a, const dim_vector& b)
+{
+  dim_vector retval;
+
+  int a_len = a.length ();
+  int b_len = b.length ();
+
+  int new_len = std::max (a_len, b_len);
+  int min_len = std::min (a_len, b_len);
+
+  retval.resize (new_len);
+
+  for (int i = 0; i < min_len; i++)
+    retval(i) = std::max (a(i), b(i));
+
+  if (a_len < b_len)
+    {
+      for (int i = min_len; i < b_len; i++)
+	retval(i) = b(i);
+    }
+  else if (a_len > b_len)
+    {
+      for (int i = min_len; i < a_len; i++)
+	retval(i) = a(i);
+    }
+
+  std::cerr << a.str () << std::endl;
+  std::cerr << b.str () << std::endl;
+  std::cerr << retval.str () << std::endl;
+
+  return retval;
+}
+
 Octave_map&
 Octave_map::assign (const octave_value_list& idx, const std::string& key,
 		    const Cell& rhs)
@@ -132,21 +170,23 @@ Octave_map::assign (const octave_value_list& idx, const std::string& key,
 
   if (! error_state)
     {
-      int rhs_len = tmp.length ();
+      dim_vector rhs_dims = tmp.dims ();
 
-      int len = array_length ();
+      dim_vector curr_dims = dims ();
 
-      if (rhs_len < len)
+      dim_vector new_dims = common_size (rhs_dims, curr_dims);
+
+      if (new_dims != rhs_dims)
 	{
-	  tmp.resize_and_fill (len, fill_value);
+	  tmp.resize_and_fill (new_dims, fill_value);
 	}
-      else if (rhs_len > len)
+      else if (new_dims != curr_dims)
 	{
 	  for (iterator p = begin (); p != end (); p++)
-	    contents(p).resize_and_fill (rhs_len, fill_value);
-
-	  array_len = rhs_len;
+	    contents(p).resize_and_fill (rhs_dims, fill_value);
 	}
+
+      dimensions = new_dims;
 
       map[key] = tmp;
     }
@@ -161,9 +201,7 @@ Octave_map::assign (const std::string& key, const Cell& rhs)
     map[key] = rhs;
   else
     {
-      Cell tmp = contents (begin ());
-
-      if (tmp.length () == rhs.length ())
+      if (dimensions () == rhs.dims ())
 	map[key] = rhs;
       else
 	error ("invalid structure assignment");

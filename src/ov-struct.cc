@@ -374,7 +374,7 @@ octave_struct::print_raw (std::ostream& os, bool) const
 
       increment_indent_level ();
 
-      int n = map.array_length ();
+      int n = map.numel ();
 
       for (Octave_map::const_iterator p = map.begin (); p != map.end (); p++)
 	{

@@ -1,3 +1,8 @@
+2003-10-28  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* misc/quit.h (octave_interrupt_hook, octave_bad_alloc_hook):
+	Move declarations outside of extern "C" block.
+
 2003-10-27  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* misc/f77-fcn.h: Only use inline if this is C++.

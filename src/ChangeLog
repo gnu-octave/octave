@@ -1,5 +1,19 @@
 2003-10-28  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* load-save.cc (save_mat5_binary_element): Use numel instead of
+	array_length.
+	* ov-struct.cc (octave_struct::print_raw): Likewise.
+	* pt-loop.cc (tree_complex_for_command::eval): Likewise.
+	* oct-map.cc (Octave_map::numel): New function.
+	* oct-map.h: Provide decl.
+
+	* oct-map.cc, oct-map.h (Octave_map::array_length): Delete.
+	(common_size): New static function.
+	(Octave_map::assign): Make resizing work for N-d cell objects.
+
+	* oct-map.cc (Octave_map::dims): New function.
+	* oct-map.h: Provide decl.
+
 	* pr-output.cc 	(print_empty_nd_array): New static function.
 	(PRINT_ND_ARRAY): Use it.
 

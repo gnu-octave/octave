@@ -42,36 +42,30 @@ Octave_map
   typedef std::map<std::string, Cell>::iterator iterator;
   typedef std::map<std::string, Cell>::const_iterator const_iterator;
 
-  Octave_map (void) : map (), array_len (0) { }
+  Octave_map (void) : map (), dimensions (0, 0) { }
 
   Octave_map (const std::string& key, const octave_value& value)
-    : map (), array_len (1)
-      {
-	map[key] = Cell (value);
-      }
+    : map (), dimensions (1, 1)
+    { map[key] = Cell (value); }
 
   Octave_map (const std::string& key, const Cell& vals)
-    : map (), array_len (vals.length ())
-      {
-	map[key] = vals;
-      }
+    : map (), dimensions (vals.dims ())
+    { map[key] = vals; }
 
   Octave_map (const std::string& key, const octave_value_list& val_list)
-    : map (), array_len (val_list.length ())
-      {
-	map[key] = val_list;
-      }
+    : map (), dimensions (1, val_list.length ())
+  { map[key] = val_list; }
 
-  Octave_map (const Octave_map& m)
-    : map (m.map), array_len (m.array_len) { }
+  Octave_map (const Octave_map& m) : map (m.map), dimensions (m.dimensions) { }
 
   Octave_map& operator = (const Octave_map& m)
     {
       if (this != &m)
 	{
 	  map = m.map;
-	  array_len = m.array_len;
+	  dimensions = m.dimensions;
 	}
+
       return *this;
     }
 
@@ -116,11 +110,13 @@ Octave_map
 
   string_vector keys (void) const;
 
-  int rows (void) const { return 1; }
+  int rows (void) const { return dimensions(0); }
 
-  int columns (void) const { return array_length (); }
+  int columns (void) const { return dimensions(1); }
 
-  int array_length (void) const;
+  dim_vector dims (void) const { return dimensions; }
+
+  int numel (void) const;
 
   Octave_map& assign (const octave_value_list& idx, const Octave_map& rhs);
 
@@ -136,8 +132,8 @@ private:
   // The map of names to values.
   std::map<std::string, Cell> map;
 
-  // The current size of this struct array;
-  mutable int array_len;
+  // The current size.
+  mutable dim_vector dimensions;
 };
 
 #endif

@@ -4422,7 +4422,7 @@ save_mat5_binary_element (std::ostream& os,
 	    os.write (buf, 32);
 	  }
 
-	int len = m.array_length ();
+	int len = m.numel ();
 
 	for (Octave_map::iterator i = m.begin (); i != m.end (); i++)
 	  {

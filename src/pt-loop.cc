@@ -492,7 +492,7 @@ tree_complex_for_command::eval (void)
 
 	  Cell val_lst = tmp_val.contents (q);
 
-	  int n = tmp_val.array_length ();
+	  int n = tmp_val.numel ();
 
 	  octave_value val = (n == 1) ? val_lst(0) : octave_value (val_lst);
 

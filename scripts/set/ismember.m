@@ -37,12 +37,33 @@ function c = ismember (a, S)
   if (isempty (a) || isempty (S))
     c = zeros (ra, ca);
   else
+    if (iscell (a) && ! iscell (S))
+      tmp{1} = S;
+      S = tmp;
+    endif
+    if (! iscell (a) && iscell (S))
+      tmp{1} = a;
+      a = tmp;
+    endif
     S = unique (S(:));
     lt = length (S);
     if (lt == 1)
-      c = (a == S);
-    elseif (ra*ca == 1)
-      c = any (a == S);
+      if (iscell (a) || iscell (S))
+        c = cellfun ("length", a) == cellfun ("length", S);
+        idx = find (c);
+        c(idx) = all (char (a(idx)) == repmat (char (S), length (idx), 1), 2);
+      else
+        c = (a == S);
+      endif
+    elseif (prod (size (a)) == 1)
+      if (iscell (a) || iscell (S))
+        c = cellfun ("length", a) == cellfun ("length", S);
+        idx = find (c);
+        c(idx) = all (repmat (char (a), length (idx), 1) == char (S(idx)), 2);
+        c = any(c);
+      else
+        c = any (a == S);
+      endif
     else
       ## Magic:  the following code determines for each a, the index i
       ## such that S(i)<= a < S(i+1).  It does this by sorting the a
@@ -76,7 +97,14 @@ function c = ismember (a, S)
       [v, p] = sort ([S(2:lt); a(:)]);
       idx(p) = cumsum (p <= lt-1) + 1;
       idx = idx(lt:lt+ra*ca-1);
-      c = (a == reshape (S(idx), size (a)));
+      if (iscell (a) || iscell (S))
+        c = (cellfun ("length", a)
+	     == reshape (cellfun ("length", S(idx)), size (a)));
+        idx2 = find (c);
+        c(idx2) = all (char (a(idx2)) == char (S(idx)(idx2)), 2);
+      else
+        c = (a == reshape (S (idx), size (a)));
+      endif
     endif
   endif
 

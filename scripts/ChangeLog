@@ -1,3 +1,7 @@
+2005-03-15  David Bateman  <dbateman@free.fr>
+
+	* set/unique.m, set/ismember.m: Handle cell arrays.
+
 2005-03-09  John W. Eaton  <jwe@octave.org>
 
 	* statistics/Makefile.in (bin-dist): Delete target.

@@ -42,7 +42,7 @@ endif
 OPT_HANDLERS := DASPK-opts.cc DASRT-opts.cc DASSL-opts.cc \
 	LSODE-opts.cc NLEqn-opts.cc Quad-opts.cc
 
-DLD_XSRC := balance.cc besselj.cc betainc.cc chol.cc colamd.cc \
+DLD_XSRC := balance.cc besselj.cc betainc.cc cellfun.cc chol.cc colamd.cc \
 	colloc.cc daspk.cc dasrt.cc dassl.cc det.cc dispatch.cc \
 	eig.cc expm.cc fft.cc fft2.cc fftn.cc fftw_wisdom.cc \
 	filter.cc find.cc fsolve.cc gammainc.cc gcd.cc getgrent.cc \

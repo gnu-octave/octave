@@ -60,7 +60,14 @@ function [y, i, j] = unique (x, r)
 
   if (nargin == 2)
     [y, i] = sortrows (y);
-    match = all ((y(1:n-1,:) == y(2:n,:))');
+    if (iscell (y))
+      match = cellfun ("size", y(1:n-1,:), 1) == cellfun ("size", y(2:n,:), 1);
+      idx = find (match);
+      match(idx) = all (char (y(idx)) == char (y(idx+1)), 2);
+      match = all (match');
+    else
+      match = all ([y(1:n-1,:) == y(2:n,:)]');
+    endif
     idx = find (match);
     y(idx,:) = [];
   else
@@ -68,7 +75,13 @@ function [y, i, j] = unique (x, r)
       y = y(:);
     endif
     [y, i] = sort (y);
-    match = y(1:n-1) == y(2:n);
+    if (iscell (y))
+      match = cellfun ("length", y(1:n-1)) == cellfun ("length", y(2:n));
+      idx = find(match);
+      match(idx) = all (char (y(idx)) == char (y(idx+1)), 2);
+    else
+      match = [y(1:n-1) == y(2:n)];
+    endif
     idx = find (match);
     y(idx) = [];
   endif
@@ -94,3 +107,5 @@ endfunction
 %!assert(unique([1 2]),[1 2])
 %!assert(unique([1;2]),[1;2])
 %!assert(unique([1,NaN,Inf,NaN,Inf]),[1,Inf,NaN,NaN])
+%!assert(unique({'Foo','Bar','Foo'}),{'Bar','Foo'})
+%!assert(unique({'Foo','Bar','FooBar'}),{'Bar','Foo','FooBar'})

@@ -1,3 +1,11 @@
+2004-04-08  John W. Eaton  <jwe@octave.org>
+
+	* ov-base-mat.cc (octave_base_matrix<MT>::do_index_op): Quit early
+	if an error occurs when creating index vector object.
+
+	* ov.cc (octave_value::numeric_assign): Always call maybe_mutate
+	on return value.
+
 2004-04-06  David Bateman  <dbateman@free.fr>
 
   	* DLD_FUNCTIONS/sort.cc: Use the new template sort class, adapt for

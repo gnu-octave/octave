@@ -1367,11 +1367,6 @@ octave_value::numeric_assign (const std::string& type,
 		{
 		  retval = tmp->subsasgn (type, idx, rhs);
 
-		  // The assignment may have converted to a type that
-		  // is wider than necessary.
-
-		  retval.maybe_mutate ();
-
 		  done = (! error_state);
 		}
 	      else
@@ -1432,6 +1427,11 @@ octave_value::numeric_assign (const std::string& type,
 				 type_name (), rhs.type_name ());
 	}
     }
+
+  // The assignment may have converted to a type that is wider than
+  // necessary.
+
+  retval.maybe_mutate ();
 
   return retval;
 }

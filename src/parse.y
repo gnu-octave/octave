@@ -216,6 +216,7 @@ static tree_expression *make_unary_op (int op, tree_expression *op1,
 %token <tok_val> GLOBAL
 
 // Other tokens.
+%token LEXICAL_ERROR
 %token FCN SCREW_TWO
 %token ELLIPSIS
 %token END_OF_INPUT
@@ -240,7 +241,8 @@ static tree_expression *make_unary_op (int op, tree_expression *op1,
 %type <tree_global_init_list_type> global_decl1
 %type <tree_global_command_type> global_decl
 %type <tree_statement_type> statement
-%type <tree_statement_list_type> simple_list simple_list1 list list1 opt_list
+%type <tree_statement_list_type> simple_list simple_list1 list list1
+%type <tree_statement_list_type> opt_list input1
 %type <tree_plot_command_type> plot_command 
 %type <subplot_type> plot_command2 plot_options
 %type <subplot_list_type> plot_command1
@@ -273,9 +275,9 @@ static tree_expression *make_unary_op (int op, tree_expression *op1,
  */
 %%
 
-input		: '\n'
+input		: input1
 		  {
-		    global_command = 0;
+		    global_command = $1;
 		    promptflag = 1;
 		    YYACCEPT;
 		  }
@@ -285,36 +287,24 @@ input		: '\n'
 		    promptflag = 1;
 		    YYABORT;
 		  }
+		| simple_list parse_error
+		  { ABORT_PARSE; }
+		| parse_error
+		  { ABORT_PARSE; }
+		;
+
+input1		: '\n'
+		  { $$ = 0; }
 		| simple_list
-		  {
-		    global_command = $1;
-		    promptflag = 1;
-		    YYACCEPT;
-		  }
+		  { $$ = $1; }
 		| simple_list '\n'
-		  {
-		    global_command = $1;
-		    promptflag = 1;
-		    YYACCEPT;
-		  }
+		  { $$ = $1; }
 		| simple_list END_OF_INPUT
-		  {
-		    global_command = $1;
-		    promptflag = 1;
-		    YYACCEPT;
-		  }
+		  { $$ = $1; }
+		;
+
+parse_error	: LEXICAL_ERROR
 		| error
-		  { ABORT_PARSE; }
-		| error '\n'
-		  { ABORT_PARSE; }
-		| error END_OF_INPUT
-		  { ABORT_PARSE; }
-		| simple_list error
-		  { ABORT_PARSE; }
-		| simple_list error '\n'
-		  { ABORT_PARSE; }
-		| simple_list error END_OF_INPUT
-		  { ABORT_PARSE; }
 		;
 
 simple_list	: semi_comma

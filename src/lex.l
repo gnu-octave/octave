@@ -179,7 +179,7 @@ EXPON	([DdEe][+-]?{D}+)
 			    {
 			      error ("unterminated string constant");
 			      current_input_column = 1;
-			      jump_to_top_level ();
+			      return LEXICAL_ERROR;
 			    }
 			  else
 			    {
@@ -202,7 +202,7 @@ EXPON	([DdEe][+-]?{D}+)
 			    {
 			      error ("unterminated string constant");
 			      current_input_column = 1;
-			      jump_to_top_level ();
+			      return LEXICAL_ERROR;
 			    }
 			  else
 			    {
@@ -232,7 +232,7 @@ EXPON	([DdEe][+-]?{D}+)
 			    {
 			      error ("unterminated string constant");
 			      current_input_column = 1;
-			      jump_to_top_level ();
+			      return LEXICAL_ERROR;
 			    }
 			  else
 			    {
@@ -262,7 +262,7 @@ EXPON	([DdEe][+-]?{D}+)
 			    {
 			      error ("unterminated string constant");
 			      current_input_column = 1;
-			      jump_to_top_level ();
+			      return LEXICAL_ERROR;
 			    }
 			  else
 			    {
@@ -1043,7 +1043,7 @@ is_keyword (char *s)
 	  else
 	    error ("defining new function near line %d", input_line_number);
 
-	  jump_to_top_level ();  // XXX FIXME XXX
+	  return LEXICAL_ERROR;
 	}
       else
 	{

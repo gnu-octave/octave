@@ -271,7 +271,7 @@ get_dimensions (const tree_constant& a, const char *warn_for,
 
       if ((nr == 1 && nc == 2) || (nr == 2 && nc == 1))
 	{
-	  ColumnVector v = tmpa.to_vector ();
+	  ColumnVector v = tmpa.vector_value ();
 
 	  nr = NINT (v.elem (0));
 	  nc = NINT (v.elem (1));

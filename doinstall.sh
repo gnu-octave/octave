@@ -146,7 +146,7 @@ fi
 echo "installing function files in $fcnfiledir"
 ( cd scripts
   ../mkinstalldirs `find . -type d | sed -e 's,^\./,,' -e "s,^,$fcnfiledir/,"`
-  for f in `find . -name '*.m'`
+  for f in `find . -name '*.m' -o name octaverc`
   do
     cp $f $fcnfiledir/$f
     chmod 644 $fcnfiledir/$f

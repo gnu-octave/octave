@@ -36,7 +36,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <strstream.h>
 #include <ctype.h>
 
-#include "Matrix.h"
+#include "dMatrix.h"
 
 #include "statdefs.h"
 #include "file-io.h"

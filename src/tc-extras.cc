@@ -32,6 +32,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <string.h>
 #include <ctype.h>
 
+#include "EIG.h"
+
 #include "unwind-prot.h"
 #include "tree-const.h"
 #include "user-prefs.h"

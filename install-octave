@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# doinstall.sh -- install script for binary distributions.
+# install-octave -- install script for binary distributions.
 #
 # John W. Eaton
 # jwe@bevo.che.wisc.edu
@@ -12,7 +12,7 @@ version=`cat VERSION 2> /dev/null`
 
 if test -z "$version"
 then
-  echo "doinstall.sh: no version number!"
+  echo "install-octave: no version number!"
   exit 1
 fi
 
@@ -21,7 +21,7 @@ target_host_type=`cat ARCH 2> /dev/null`
 
 if test -z "$target_host_type"
 then
-  echo "doinstall.sh: host archetecture not found!"
+  echo "install-octave: host archetecture not found!"
   exit 1
 fi
 
@@ -60,7 +60,7 @@ then
 else
   if test $# -gt 1
   then
-    echo "usage: doinstall.sh [prefix-directory]"
+    echo "usage: install-octave [prefix-directory]"
     exit 1
   fi
 fi
@@ -196,10 +196,9 @@ then
   cp src/octave $bindir/octave
   chmod 755 $bindir/octave
 else
-  echo "installing octave.sh as $bindir/octave"
-  sed "s|@OCTAVE_HOME@|$prefix|; s|@LD_LIBRARY_PATH@|$libdir|" octave.sh \
-    > octave.tmp
-  cp octave.tmp $bindir/octave
+  echo "installing octave-sh as $bindir/octave"
+  sed "s|@OCTAVE_HOME@|$prefix|; s|@LD_LIBRARY_PATH@|$libdir|" octave-sh \
+    > $bindir/octave
   chmod 755 $bindir/octave
 
   echo "installing src/octave as $bindir/octave.bin"

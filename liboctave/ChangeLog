@@ -1,3 +1,9 @@
+2003-08-28  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lo-specfun.cc (zbesj, zbesy, zbesi, zbesk, airy, biry):
+	Also zero imaginary part of result if real part of input value is
+	zero.
+
 2003-07-30  Heine Kolltveit  <kolltvei@idi.ntnu.no>
 
 	* mx-base.h: Include ArrayN.h.

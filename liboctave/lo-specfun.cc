@@ -219,7 +219,7 @@ zbesj (const Complex& z, double alpha, int kode, int& ierr)
 
       F77_FUNC (zbesj, ZBESJ) (zr, zi, alpha, kode, 1, &yr, &yi, nz, ierr);
 
-      if (zi == 0.0 && zr > 0.0)
+      if (zi == 0.0 && zr >= 0.0)
 	yi = 0.0;
 
       retval = bessel_return_value (Complex (yr, yi), ierr);
@@ -272,7 +272,7 @@ zbesy (const Complex& z, double alpha, int kode, int& ierr)
 	  F77_FUNC (zbesy, ZBESY) (zr, zi, alpha, kode, 1, &yr, &yi, nz,
 				  &wr, &wi, ierr);
 
-	  if (zi == 0.0 && zr > 0.0)
+	  if (zi == 0.0 && zr >= 0.0)
 	    yi = 0.0;
 	}
 
@@ -314,7 +314,7 @@ zbesi (const Complex& z, double alpha, int kode, int& ierr)
 
       F77_FUNC (zbesi, ZBESI) (zr, zi, alpha, kode, 1, &yr, &yi, nz, ierr);
 
-      if (zi == 0.0 && zr > 0.0)
+      if (zi == 0.0 && zr >= 0.0)
 	yi = 0.0;
 
       retval = bessel_return_value (Complex (yr, yi), ierr);
@@ -365,7 +365,7 @@ zbesk (const Complex& z, double alpha, int kode, int& ierr)
 	{
 	  F77_FUNC (zbesk, ZBESK) (zr, zi, alpha, kode, 1, &yr, &yi, nz, ierr);
 
-	  if (zi == 0.0 && zr > 0.0)
+	  if (zi == 0.0 && zr >= 0.0)
 	    yi = 0.0;
 	}
 
@@ -616,7 +616,7 @@ airy (const Complex& z, bool deriv, bool scaled, int& ierr)
 
   F77_FUNC (zairy, ZAIRY) (zr, zi, id, kode, ar, ai, nz, ierr);
 
-  if (zi == 0.0 && (! scaled || zr > 0.0))
+  if (zi == 0.0 && (! scaled || zr >= 0.0))
     ai = 0.0;
 
   return bessel_return_value (Complex (ar, ai), ierr);
@@ -637,7 +637,7 @@ biry (const Complex& z, bool deriv, bool scaled, int& ierr)
 
   F77_FUNC (zbiry, ZBIRY) (zr, zi, id, kode, ar, ai, ierr);
 
-  if (zi == 0.0 && (! scaled || zr > 0.0))
+  if (zi == 0.0 && (! scaled || zr >= 0.0))
     ai = 0.0;
 
   return bessel_return_value (Complex (ar, ai), ierr);

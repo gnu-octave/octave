@@ -134,9 +134,6 @@ extern void octave_throw_bad_alloc (void) GCC_ATTR_NORETURN;
 
 #ifdef __cplusplus
 
-extern void (*octave_interrupt_hook) (void);
-extern void (*octave_bad_alloc_hook) (void);
-
 #define BEGIN_INTERRUPT_WITH_EXCEPTIONS \
   sig_atomic_t saved_octave_interrupt_immediately = octave_interrupt_immediately; \
  \
@@ -163,6 +160,13 @@ extern void (*octave_bad_alloc_hook) (void);
 
 #ifdef __cplusplus
 }
+
+// These should only be declared for C++ code, and should also be
+// outside of any extern "C" block.
+
+extern void (*octave_interrupt_hook) (void);
+extern void (*octave_bad_alloc_hook) (void);
+
 #endif
 
 #endif

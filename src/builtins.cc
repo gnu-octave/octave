@@ -1,7 +1,7 @@
 // builtins.cc                                           -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993 John W. Eaton
+Copyright (C) 1992, 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -721,6 +721,9 @@ compiled.  Possible values are \"system\" and \"all\"", },
     "if a function does not return any values explicitly, return the\n\
 last computed value", },
 
+  { "save_precision", "??", set_save_precision,
+    "number of significant figures kept by the ASCII save command", },
+
   { "silent_functions", "false", silent_functions,
     "suppress printing results in called functions", },
 
@@ -844,6 +847,9 @@ install_builtins (void)
 
   tmp =  new tree_constant (4.0 * atan (1.0));
   bind_builtin_variable ("pi", tmp, 1, 1);
+
+  tmp =  new tree_constant (17.0);
+  bind_builtin_variable ("save_precision", tmp, 0, 1);
 
   tmp =  new tree_constant (0.0);
   bind_builtin_variable ("stdin", tmp, 1, 1);

@@ -1,7 +1,7 @@
 // user-prefs.cc                                              -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993 John W. Eaton
+Copyright (C) 1992, 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -394,6 +394,35 @@ set_output_precision (void)
   else
     {
       warning ("invalid value specified for output_precision");
+      status = -1;
+    }
+
+  return status;
+}
+
+int
+set_save_precision (void)
+{
+  int status = 0;
+
+  static int kludge = 0;
+
+  double val;
+  if (builtin_real_scalar_variable ("save_precision", val) == 0)
+    {
+      int ival = NINT (val);
+      if (ival >= 0 && (double) ival == val)
+	{
+	  user_pref.save_precision = ival;
+	  return status;
+	}
+    }
+
+  if (kludge == 0)
+    kludge++;
+  else
+    {
+      warning ("invalid value specified for save_precision");
       status = -1;
     }
 

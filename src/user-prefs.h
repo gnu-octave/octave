@@ -1,7 +1,7 @@
 // user-prefs.h                                              -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993 John W. Eaton
+Copyright (C) 1992, 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -47,6 +47,7 @@ struct user_preferences
   int page_screen_output;
   int output_max_field_width;
   int output_precision;
+  int save_precision;
 
   char *loadpath;
   char *info_file;
@@ -82,6 +83,7 @@ extern int page_screen_output (void);
 
 extern int set_output_max_field_width (void);
 extern int set_output_precision (void);
+extern int set_save_precision (void);
 
 extern int sv_loadpath (void);
 extern int sv_info_file (void);

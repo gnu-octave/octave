@@ -942,11 +942,16 @@ tree_identifier::eval (int print)
 	{
 	  int nargout = maybe_do_ans_assign ? 0 : 1;
 
-	  Octave_object tmp_args;
-	  Octave_object tmp = object_to_eval->eval (0, nargout, tmp_args);
+	  if (nargout)
+	    {
+	      Octave_object tmp_args;
+	      Octave_object tmp = object_to_eval->eval (0, nargout, tmp_args);
 
-	  if (tmp.length () > 0)
-	    retval = tmp(0);
+	      if (tmp.length () > 0)
+		retval = tmp(0);
+	    }
+	  else
+	    retval = object_to_eval->eval (0);
 	}
       else
 	eval_undefined_error ();

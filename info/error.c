@@ -63,7 +63,7 @@ version_string ()
 /*								    */
 /* **************************************************************** */
 
-static char *program_name = (char *)NULL;
+static char *program_name = "info";
 
 /* Non-zero if an error has been signalled. */
 int info_error_was_printed = 0;

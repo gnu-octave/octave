@@ -59,9 +59,9 @@ DLD_OBJ := $(patsubst %.cc, %.o, $(DLD_SRC))
 
 INCLUDES := arith-ops.h builtins.h defaults.h.in defun.h defun-dld.h \
 	defun-int.h dirfns.h dynamic-ld.h error.h file-info.h \
-	file-io.h fnmatch.h \
-	getopt.h gripes.h help.h idx-vector.h input.h lex.h \
-	load-save.h mappers.h missing-math.h octave.h octave-hist.h \
+	file-io.h fnmatch.h getopt.h gripes.h help.h idx-vector.h \
+	input.h lex.h load-save.h mappers.h missing-math.h \
+	oct-gperf.h octave.h octave-hist.h \
 	oct-map.h oct-obj.h oct-str.h pager.h parse.h pathlen.h \
 	pathsearch.h pr-output.h procstream.h sighandlers.h \
 	statdefs.h symtab.h sysdep.h sysdir.h systime.h syswait.h \
@@ -188,19 +188,19 @@ distclean: clean
 
 maintainer-clean: distclean
 	rm -f tags TAGS y.tab.c y.tab.h y.output yy.lex.c \
-	lex.cc parse.cc
+	lex.cc parse.cc oct-gperf.h
 .PHONY: maintainer-clean
 
-local-dist: parse.cc lex.cc
+local-dist: parse.cc lex.cc oct-gperf.h
 	ln $(DISTFILES) ../`cat ../.fname`/src
 	rm -f parse.cc lex.cc y.tab.h y.output yy.lex.c
-	rm -f lex.cc parse.cc defaults.h *.d *.def
+	rm -f oct-gperf.h defaults.h *.d *.def
 .PHONY: local-dist
 
-dist: parse.cc lex.cc
+dist: parse.cc lex.cc oct-gperf.h
 	ln $(DISTFILES) ../`cat ../.fname`/src
 	rm -f parse.cc lex.cc y.tab.h y.output yy.lex.c
-	rm -f lex.cc parse.cc defaults.h *.d *.def builtins.cc
+	rm -f oct-gperf.h defaults.h *.d *.def builtins.cc
 .PHONY: dist
 
 # Special rules -- these files need special things to be defined.
@@ -228,6 +228,11 @@ defaults.h: defaults.h.in ../Makeconf Makefile
 	  -e "s;%FLIB_PATH%;\"${FLIB_PATH}\";" \
 	  -e "s;%CXXLIB_LIST%;\"${CXXLIB_LIST}\";" \
 	  -e "s;%CXXLIB_PATH%;\"${CXXLIB_PATH}\";")
+	@$(top_srcdir)/move-if-change $@.tmp $@
+
+oct-gperf.h: octave.gperf
+	gperf -a -C -E -H octave_kw_hash -g -N octave_kw_lookup -p -t \
+	  $< > $@.tmp
 	@$(top_srcdir)/move-if-change $@.tmp $@
 
 extract_stat = sed 's/@l@//g; s/@L@//g; /@LSTAT_ONLY@/d'

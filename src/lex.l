@@ -37,6 +37,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "SLStack.h"
 
+// These would be alphabetical, but y.tab.h must be included before
+// oct-gperf.h and y.tab.h must be included after token.h and the tree
+// class declarations.  We can't include y.tab.h in oct-gperf.h
+// because it may not be protected to allow it to be included multiple
+// times.
+
 #include "error.h"
 #include "input.h"
 #include "lex.h"
@@ -54,6 +60,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "variables.h"
 #include "y.tab.h"
+#include "oct-gperf.h"
 
 // Stack to hold tokens so that we can delete them when the parser is
 // reset and avoid growing forever just because we are stashing some
@@ -931,195 +938,123 @@ is_keyword (char *s)
   int l = input_line_number;
   int c = current_input_column;
 
-// XXX FIXME XXX -- this has really become too large a list to search
-// like this...
+  int len = strlen (s);
 
-  int end_found = 0;
-  if (strcmp ("break", s) == 0)
+  const octave_kw *kw = octave_kw_lookup (s, len);
+
+  if (kw)
     {
-      yylval.tok_val = new token (l, c);
-      token_stack.push (yylval.tok_val);
-      return BREAK;
-    }
-  else if (strcmp ("continue", s) == 0)
-    {
-      yylval.tok_val = new token (l, c);
-      token_stack.push (yylval.tok_val);
-      return CONTINUE;
-    }
-  else if (strcmp ("else", s) == 0)
-    {
-      yylval.tok_val = new token (l, c);
-      token_stack.push (yylval.tok_val);
-      return ELSE;
-    }
-  else if (strcmp ("elseif", s) == 0)
-    {
-      yylval.tok_val = new token (l, c);
-      token_stack.push (yylval.tok_val);
-      return ELSEIF;
-    }
-  else if (strcmp ("end", s) == 0)
-    {
-      end_found = 1;
-      yylval.tok_val = new token (token::simple_end, l, c);
-      token_stack.push (yylval.tok_val);
-    }
-  else if (strcmp ("endfor", s) == 0)
-    {
-      end_found = 1;
-      yylval.tok_val = new token (token::for_end, l, c);
-      token_stack.push (yylval.tok_val);
-    }
-  else if (strcmp ("endfunction", s) == 0)
-    {
-      end_found = 1;
-      yylval.tok_val = new token (token::function_end, l, c);
-      token_stack.push (yylval.tok_val);
-    }
-  else if (strcmp ("endif", s) == 0)
-    {
-      end_found = 1;
-      yylval.tok_val = new token (token::if_end, l, c);
-      token_stack.push (yylval.tok_val);
-    }
-  else if (strcmp ("endwhile", s) == 0)
-    {
-      end_found = 1;
-      yylval.tok_val = new token (token::while_end, l, c);
-      token_stack.push (yylval.tok_val);
-    }
-  else if (strcmp ("for", s) == 0)
-    {
-      promptflag--;
-      looping++;
-      yylval.tok_val = new token (l, c);
-      token_stack.push (yylval.tok_val);
-      return FOR;
-    }
-  else if (strcmp ("function", s) == 0)
-    {
-      if (defining_func)
+      yylval.tok_val = 0;
+
+      switch (kw->kw_id)
 	{
-	  error ("function keyword invalid within a function body");
+	case all_va_args_kw:
+	case break_kw:
+	case catch_kw:
+	case continue_kw:
+	case else_kw:
+	case elseif_kw:
+	case global_kw:
+	case return_kw:
+	case unwind_protect_cleanup_kw:
+ 	  break;
 
-	  if ((reading_fcn_file || reading_script_file)
-	      && curr_fcn_file_name)
-	    error ("defining new function near line %d of file `%s.m'",
-		   input_line_number, curr_fcn_file_name);
-	  else
-	    error ("defining new function near line %d", input_line_number);
+	case end_kw:
+	  yylval.tok_val = new token (token::simple_end, l, c);
+	  break;
 
-	  return LEXICAL_ERROR;
-	}
-      else
-	{
-	  tmp_local_sym_tab = new symbol_table ();
-	  curr_sym_tab = tmp_local_sym_tab;
-	  defining_func = 1;
+	case end_try_catch_kw:
+	  yylval.tok_val = new token (token::try_catch_end, l, c);
+	  break;
+
+	case end_unwind_protect_kw:
+	  yylval.tok_val = new token (token::unwind_protect_end, l, c);
+	  break;
+
+	case endfor_kw:
+	  yylval.tok_val = new token (token::for_end, l, c);
+	  break;
+
+	case endfunction_kw:
+	  yylval.tok_val = new token (token::function_end, l, c);
+	  break;
+
+	case endif_kw:
+	  yylval.tok_val = new token (token::if_end, l, c);
+	  break;
+
+	case endwhile_kw:
+	  yylval.tok_val = new token (token::while_end, l, c);
+	  break;
+
+	case for_kw:
+	case while_kw:
 	  promptflag--;
-	  beginning_of_function = 1;
-	  if (! (reading_fcn_file || reading_script_file))
-	    input_line_number = 1;
-	  return FCN;
-	}
-    }
-  else if (strcmp ("global", s) == 0)
-    {
-      yylval.tok_val = new token (l, c);
-      token_stack.push (yylval.tok_val);
-      return GLOBAL;
-    }
-  else if (strcmp ("gplot", s) == 0)
-    {
-      plotting = 1;
-      yylval.tok_val = new token (token::two_dee, l, c);
-      token_stack.push (yylval.tok_val);
-      return PLOT;
-    }
-  else if (strcmp ("gsplot", s) == 0)
-    {
-      plotting = 1;
-      yylval.tok_val = new token (token::three_dee, l, c);
-      token_stack.push (yylval.tok_val);
-      return PLOT;
-    }
-  else if (strcmp ("replot", s) == 0)
-    {
-      plotting = 1;
-      yylval.tok_val = new token (token::replot, l, c);
-      token_stack.push (yylval.tok_val);
-      return PLOT;
-    }
-  else if (strcmp ("if", s) == 0)
-    {
-      iffing++;
-      promptflag--;
-      yylval.tok_val = new token (l, c);
-      token_stack.push (yylval.tok_val);
-      return IF;
-    }
-  else if (strcmp ("return", s) == 0)
-    {
-      yylval.tok_val = new token (l, c);
-      token_stack.push (yylval.tok_val);
-      return FUNC_RET;
-    }
-  else if (strcmp ("while", s) == 0)
-    {
-      promptflag--;
-      looping++;
-      yylval.tok_val = new token (l, c);
-      token_stack.push (yylval.tok_val);
-      return WHILE;
-    }
-  else if (strcmp ("unwind_protect", s) == 0)
-    {
-      promptflag--;
-      yylval.tok_val = new token (l, c);
-      token_stack.push (yylval.tok_val);
-      return UNWIND;
-    }
-  else if (strcmp ("unwind_protect_cleanup", s) == 0)
-    {
-      yylval.tok_val = new token (l, c);
-      token_stack.push (yylval.tok_val);
-      return CLEANUP;
-    }
-  else if (strcmp ("end_unwind_protect", s) == 0)
-    {
-      end_found = 1;
-      yylval.tok_val = new token (token::unwind_protect_end, l, c);
-      token_stack.push (yylval.tok_val);
-    }
-  else if (strcmp ("try", s) == 0)
-    {
-      promptflag--;
-      yylval.tok_val = new token (l, c);
-      token_stack.push (yylval.tok_val);
-      return TRY;
-    }
-  else if (strcmp ("catch", s) == 0)
-    {
-      yylval.tok_val = new token (l, c);
-      token_stack.push (yylval.tok_val);
-      return CATCH;
-    }
-  else if (strcmp ("end_try_catch", s) == 0)
-    {
-      end_found = 1;
-      yylval.tok_val = new token (token::try_catch_end, l, c);
-      token_stack.push (yylval.tok_val);
-    }
-  else if (strcmp ("all_va_args", s) == 0)
-    {
-      yylval.tok_val = new token (l, c);
-      token_stack.push (yylval.tok_val);
-      return ALL_VA_ARGS;
-    }
+	  looping++;
+	  break;
 
-  if (end_found)
-    return END;
+	case if_kw:
+	  iffing++;
+	  promptflag--;
+	  break;
+
+	case try_kw:
+	case unwind_protect_kw:
+	  promptflag--;
+	  break;
+
+	case gplot_kw:
+	  plotting = 1;
+	  yylval.tok_val = new token (token::two_dee, l, c);
+	  break;
+
+	case gsplot_kw:
+	  plotting = 1;
+	  yylval.tok_val = new token (token::three_dee, l, c);
+	  break;
+
+	case replot_kw:
+	  plotting = 1;
+	  yylval.tok_val = new token (token::replot, l, c);
+	  break;
+
+	case function_kw:
+	  if (defining_func)
+	    {
+	      error ("function keyword invalid within a function body");
+
+	      if ((reading_fcn_file || reading_script_file)
+		  && curr_fcn_file_name)
+		error ("defining new function near line %d of file `%s.m'",
+		       input_line_number, curr_fcn_file_name);
+	      else
+		error ("defining new function near line %d", input_line_number);
+
+	      return LEXICAL_ERROR;
+	    }
+	  else
+	    {
+	      tmp_local_sym_tab = new symbol_table ();
+	      curr_sym_tab = tmp_local_sym_tab;
+	      defining_func = 1;
+	      promptflag--;
+	      beginning_of_function = 1;
+	      if (! (reading_fcn_file || reading_script_file))
+		input_line_number = 1;
+	    }
+	  break;
+
+	default:
+	  panic_impossible ();
+	}
+
+      if (! yylval.tok_val)
+	yylval.tok_val = new token (l, c);
+
+      token_stack.push (yylval.tok_val);
+
+      return kw->tok;
+    }
 
   return 0;
 }

@@ -1,7 +1,7 @@
 //                                  -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -34,13 +34,12 @@ class ostream;
 
 #include "dMatrix.h"
 
-class AEPBALANCE
+class
+AEPBALANCE
 {
-friend class Matrix;
-
 public:
 
-  AEPBALANCE (void) { }
+  AEPBALANCE (void) : balanced_mat (), balancing_mat () { }
 
   AEPBALANCE (const Matrix& a,const string& balance_job)
     {
@@ -48,16 +47,15 @@ public:
     }
 
   AEPBALANCE (const AEPBALANCE& a)
-    {
-      balanced_mat = a.balanced_mat;
-      balancing_mat = a.balancing_mat;
-    }
+    : balanced_mat (a.balanced_mat), balancing_mat (a.balancing_mat) { }
 
   AEPBALANCE& operator = (const AEPBALANCE& a)
     {
-      balanced_mat = a.balanced_mat;
-      balancing_mat = a.balancing_mat;
-
+      if (this != &a)
+	{
+	  balanced_mat = a.balanced_mat;
+	  balancing_mat = a.balancing_mat;
+	}
       return *this;
     }
 
@@ -69,10 +67,10 @@ public:
 
 private:
 
-  int init (const Matrix& a, const string& balance_job);
-
   Matrix balanced_mat;
   Matrix balancing_mat;
+
+  int init (const Matrix& a, const string& balance_job);
 };
 
 #endif

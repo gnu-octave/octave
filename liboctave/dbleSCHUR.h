@@ -1,7 +1,7 @@
 //                                  -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -34,13 +34,12 @@ class ostream;
 
 #include "dMatrix.h"
 
-class SCHUR
+class
+SCHUR
 {
-friend class Matrix;
-
 public:
 
-  SCHUR (void) { }
+  SCHUR (void) : schur_mat (), unitary_mat () { }
 
   SCHUR (const Matrix& a, const string& ord) { init (a, ord); }
 
@@ -50,16 +49,15 @@ public:
     }
 
   SCHUR (const SCHUR& a)
-    {
-      schur_mat = a.schur_mat;
-      unitary_mat = a.unitary_mat;
-    }
+    : schur_mat (a.schur_mat), unitary_mat (a.unitary_mat) { }
 
   SCHUR& operator = (const SCHUR& a)
     {
-      schur_mat = a.schur_mat;
-      unitary_mat = a.unitary_mat;
-
+      if (this != &a)
+	{
+	  schur_mat = a.schur_mat;
+	  unitary_mat = a.unitary_mat;
+	}
       return *this;
     }
 
@@ -71,10 +69,10 @@ public:
 
 private:
 
-  int init (const Matrix& a, const string& ord);
-
   Matrix schur_mat;
   Matrix unitary_mat;
+
+  int init (const Matrix& a, const string& ord);
 };
 
 #endif

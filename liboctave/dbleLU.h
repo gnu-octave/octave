@@ -1,7 +1,7 @@
 //                                  -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -34,27 +34,22 @@ class ostream;
 
 class LU
 {
-friend class Matrix;
-
 public:
 
-  LU (void) { }
+  LU (void) : l (), u (), p () { }
 
   LU (const Matrix& a);
 
-  LU (const LU& a)
-    {
-      l = a.l;
-      u = a.u;
-      p = a.p;
-    }
+  LU (const LU& a) : l (a.l), u (a.u), p (a.p) { }
 
   LU& operator = (const LU& a)
     {
-      l = a.l;
-      u = a.u;
-      p = a.p;
-
+      if (this != &a)
+	{
+	  l = a.l;
+	  u = a.u;
+	  p = a.p;
+	}
       return *this;
     }
 

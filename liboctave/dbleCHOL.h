@@ -1,7 +1,7 @@
 //                                  -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -32,23 +32,23 @@ class ostream;
 
 #include "dMatrix.h"
 
-class CHOL
+class
+CHOL
 {
-friend class Matrix;
-
 public:
 
-  CHOL (void) { }
+  CHOL (void) : chol_mat () { }
 
   CHOL (const Matrix& a) { init (a); }
 
   CHOL (const Matrix& a, int& info) { info = init (a); }
 
-  CHOL (const CHOL& a) { chol_mat = a.chol_mat; }
+  CHOL (const CHOL& a) : chol_mat (a.chol_mat) { }
 
   CHOL& operator = (const CHOL& a)
     {
-      chol_mat = a.chol_mat;
+      if (this != &a)
+	chol_mat = a.chol_mat;
 
       return *this;
     }
@@ -59,9 +59,9 @@ public:
 
 private:
 
-  int init (const Matrix& a);
-
   Matrix chol_mat;
+
+  int init (const Matrix& a);
 };
 
 #endif

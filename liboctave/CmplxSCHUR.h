@@ -1,7 +1,7 @@
 //                                  -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -34,13 +34,12 @@ class ostream;
 
 #include "CMatrix.h"
 
-class ComplexSCHUR
+class
+ComplexSCHUR
 {
-friend class ComplexMatrix;
-
 public:
 
-  ComplexSCHUR (void) { }
+  ComplexSCHUR (void) : schur_mat (), unitary_mat () { }
 
   ComplexSCHUR (const ComplexMatrix& a, const string& ord)
     {
@@ -53,37 +52,30 @@ public:
     }
 
   ComplexSCHUR (const ComplexSCHUR& a)
-    {
-      schur_mat = a.schur_mat;
-      unitary_mat = a.unitary_mat;
-    }
+    : schur_mat (a.schur_mat), unitary_mat (a.unitary_mat) { }
 
   ComplexSCHUR& operator = (const ComplexSCHUR& a)
     {
-      schur_mat = a.schur_mat;
-      unitary_mat = a.unitary_mat;
-
+      if (this != &a)
+	{
+	  schur_mat = a.schur_mat;
+	  unitary_mat = a.unitary_mat;
+	}
       return *this;
     }
 
-  ComplexMatrix schur_matrix (void) const
-    {
-      return schur_mat;
-    }
+  ComplexMatrix schur_matrix (void) const { return schur_mat; }
 
-  ComplexMatrix unitary_matrix (void) const
-    {
-      return unitary_mat;
-    }
+  ComplexMatrix unitary_matrix (void) const { return unitary_mat; }
 
   friend ostream& operator << (ostream& os, const ComplexSCHUR& a);
 
 private:
 
-  int init (const ComplexMatrix& a, const string& ord);
-
   ComplexMatrix schur_mat;
   ComplexMatrix unitary_mat;
+
+  int init (const ComplexMatrix& a, const string& ord);
 };
 
 #endif

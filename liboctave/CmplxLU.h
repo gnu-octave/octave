@@ -1,7 +1,7 @@
 //                                  -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -33,29 +33,25 @@ class ostream;
 #include "dMatrix.h"
 #include "CMatrix.h"
 
-class ComplexLU
+class
+ComplexLU
 {
-friend class ComplexMatrix;
-
 public:
 
-  ComplexLU (void) { }
+  ComplexLU (void) : l (), u (), p () { }
 
   ComplexLU (const ComplexMatrix& a);
 
-  ComplexLU (const ComplexLU& a)
-    {
-      l = a.l;
-      u = a.u;
-      p = a.p;
-    }
+  ComplexLU (const ComplexLU& a) : l (a.l), u (a.u), p (a.p) { }
 
   ComplexLU& operator = (const ComplexLU& a)
     {
-      l = a.l;
-      u = a.u;
-      p = a.p;
-
+      if (this != &a)
+	{
+	  l = a.l;
+	  u = a.u;
+	  p = a.p;
+	}
       return *this;
     }
 

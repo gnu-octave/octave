@@ -1,7 +1,7 @@
 //                                  -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -32,21 +32,24 @@ class ostream;
 
 #include "CmplxQR.h"
 
-class ComplexQRP : public ComplexQR
+class
+ComplexQRP : public ComplexQR
 {
 public:
 
-  ComplexQRP (void) { }
+  ComplexQRP (void) : ComplexQR (), p () { }
 
   ComplexQRP (const ComplexMatrix& A, QR::type qr_type = QR::std);
 
-  ComplexQRP (const ComplexQRP& a) : ComplexQR (a) { p = a.p; }
+  ComplexQRP (const ComplexQRP& a) : ComplexQR (a), p (a.p) { }
 
   ComplexQRP& operator = (const ComplexQRP& a)
     {
-      ComplexQR::operator = (a);
-      p = a.p;
-
+      if (this != &a)
+	{
+	  ComplexQR::operator = (a);
+	  p = a.p;
+	}
       return *this;
     }
 

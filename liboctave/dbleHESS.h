@@ -1,7 +1,7 @@
 //                                  -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -32,29 +32,27 @@ class ostream;
 
 #include "dMatrix.h"
 
-class HESS
+class
+HESS
 {
-friend class Matrix;
-
 public:
 
-  HESS (void) { }
+  HESS (void) : hess_mat (), unitary_hess_mat () { }
 
   HESS (const Matrix& a) { init (a); }
 
   HESS (const Matrix& a, int& info) { info = init (a); }
 
   HESS (const HESS& a)
-    {
-      hess_mat = a.hess_mat;
-      unitary_hess_mat = a.unitary_hess_mat;
-    }
+    : hess_mat (a.hess_mat), unitary_hess_mat (a.unitary_hess_mat) { }
 
   HESS& operator = (const HESS& a)
     {
-      hess_mat = a.hess_mat;
-      unitary_hess_mat = a.unitary_hess_mat;
-
+      if (this != &a)
+	{
+	  hess_mat = a.hess_mat;
+	  unitary_hess_mat = a.unitary_hess_mat;
+	}
       return *this;
     }
 
@@ -66,10 +64,10 @@ public:
 
 private:
 
-  int init (const Matrix& a);
-
   Matrix hess_mat;
   Matrix unitary_hess_mat;
+
+  int init (const Matrix& a);
 };
 
 #endif

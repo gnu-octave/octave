@@ -1,7 +1,7 @@
 //                                  -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -34,14 +34,12 @@ class ostream;
 #include "CMatrix.h"
 #include "dbleSVD.h"
 
-class ComplexSVD
+class
+ComplexSVD
 {
-friend class ComplexMatrix;
-
 public:
 
   ComplexSVD (void) { }
-
 
   ComplexSVD (const ComplexMatrix& a, SVD::type svd_type = SVD::std)
     {
@@ -55,18 +53,16 @@ public:
     }
 
   ComplexSVD (const ComplexSVD& a)
-    {
-      sigma = a.sigma;
-      left_sm = a.left_sm;
-      right_sm = a.right_sm;
-    }
+    : sigma (a.sigma), left_sm (a.left_sm), right_sm (a.right_sm) { }
 
   ComplexSVD& operator = (const ComplexSVD& a)
     {
-      sigma = a.sigma;
-      left_sm = a.left_sm;
-      right_sm = a.right_sm;
-
+      if (this != &a)
+	{
+	  sigma = a.sigma;
+	  left_sm = a.left_sm;
+	  right_sm = a.right_sm;
+	}
       return *this;
     }
 
@@ -80,13 +76,13 @@ public:
 
 private:
 
-  int init (const ComplexMatrix& a, SVD::type svd_type = SVD::std);
-
   SVD::type type_computed;
 
   DiagMatrix sigma;
   ComplexMatrix left_sm;
   ComplexMatrix right_sm;
+
+  int init (const ComplexMatrix& a, SVD::type svd_type = SVD::std);
 };
 
 #endif

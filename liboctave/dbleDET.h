@@ -1,7 +1,7 @@
 //                                  -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -30,7 +30,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class ostream;
 
-class DET
+class
+DET
 {
 friend class Matrix;
 
@@ -46,9 +47,11 @@ public:
 
   DET& operator = (const DET& a)
     {
-      det[0] = a.det[0];
-      det[1] = a.det[1];
-
+      if (this != &a)
+	{
+	  det[0] = a.det[0];
+	  det[1] = a.det[1];
+	}
       return *this;
     }
 

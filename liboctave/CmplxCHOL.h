@@ -1,7 +1,7 @@
 //                                  -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -32,13 +32,12 @@ class ostream;
 
 #include "CMatrix.h"
 
-class ComplexCHOL
+class
+ComplexCHOL
 {
-friend class ComplexMatrix;
-
 public:
 
-  ComplexCHOL (void) { }
+  ComplexCHOL (void) : chol_mat () { }
 
   ComplexCHOL::ComplexCHOL (const ComplexMatrix& a) { init (a); }
 
@@ -48,13 +47,12 @@ public:
     }
 
   ComplexCHOL::ComplexCHOL (const ComplexCHOL& a)
-    {
-      chol_mat = a.chol_mat;
-    }
+    : chol_mat (a.chol_mat) { }
 
   ComplexCHOL& ComplexCHOL::operator = (const ComplexCHOL& a)
     {
-      chol_mat = a.chol_mat;
+      if (this != &a)
+	chol_mat = a.chol_mat;
 
       return *this;
     }
@@ -68,9 +66,9 @@ public:
 
 private:
 
-  int init (const ComplexMatrix& a);
-
   ComplexMatrix chol_mat;
+
+  int init (const ComplexMatrix& a);
 };
 
 #endif

@@ -1,7 +1,7 @@
 //                                  -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -45,7 +45,7 @@ public:
       sigma_only,
     };
 
-  SVD (void) { }
+  SVD (void) : sigma (), left_sm (), right_sm () { }
 
   SVD (const Matrix& a, type svd_type = SVD::std) { init (a, svd_type); }
 
@@ -55,11 +55,7 @@ public:
     }
 
   SVD (const SVD& a)
-    {
-      sigma = a.sigma;
-      left_sm = a.left_sm;
-      right_sm = a.right_sm;
-    }
+    : sigma (a.sigma), left_sm (a.left_sm), right_sm (a.right_sm) { }
 
   SVD& operator = (const SVD& a)
     {

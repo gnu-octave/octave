@@ -1,7 +1,7 @@
 //                                  -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -32,9 +32,10 @@ class ostream;
 
 #include "oct-cmplx.h"
 
-class ComplexDET
+class
+ComplexDET
 {
-  friend class ComplexMatrix;
+friend class ComplexMatrix;
 
 public:
 
@@ -48,9 +49,11 @@ public:
 
   ComplexDET& operator = (const ComplexDET& a)
     {
-      det[0] = a.det[0];
-      det[1] = a.det[1];
-
+      if (this != &a)
+	{
+	  det[0] = a.det[0];
+	  det[1] = a.det[1];
+	}
       return *this;
     }
 

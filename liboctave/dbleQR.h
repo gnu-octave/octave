@@ -1,7 +1,7 @@
 //                                  -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -32,7 +32,8 @@ class ostream;
 
 #include "dMatrix.h"
 
-class QR
+class
+QR
 {
 public:
 
@@ -43,21 +44,19 @@ public:
       economy,
     };
 
-  QR (void) { }
+  QR (void) : q (), r () { }
 
   QR (const Matrix& A, type qr_type = QR::std);
 
-  QR (const QR& a)
-    {
-      q = a.q;
-      r = a.r;
-    }
+  QR (const QR& a) : q (a.q), r (a.r) { }
 
   QR& operator = (const QR& a)
     {
-      q = a.q;
-      r = a.r;
-
+      if (this != &a)
+	{
+	  q = a.q;
+	  r = a.r;
+	}
       return *this;
     }
 

@@ -1,7 +1,7 @@
 //                                  -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -32,29 +32,27 @@ class ostream;
 
 #include "CMatrix.h"
 
-class ComplexHESS
+class
+ComplexHESS
 {
-friend class ComplexMatrix;
-
 public:
 
-  ComplexHESS (void) { }
+  ComplexHESS (void) : hess_mat (), unitary_hess_mat () { }
 
   ComplexHESS (const ComplexMatrix& a) { init (a); }
 
   ComplexHESS (const ComplexMatrix& a, int& info) { info = init (a); }
 
   ComplexHESS (const ComplexHESS& a)
-    {
-      hess_mat = a.hess_mat;
-      unitary_hess_mat = a.unitary_hess_mat;
-    }
+    : hess_mat (a.hess_mat), unitary_hess_mat (a.unitary_hess_mat) { }
 
   ComplexHESS& operator = (const ComplexHESS& a)
     {
-      hess_mat = a.hess_mat;
-      unitary_hess_mat = a.unitary_hess_mat;
-
+      if (this != &a)
+	{
+	  hess_mat = a.hess_mat;
+	  unitary_hess_mat = a.unitary_hess_mat;
+	}
       return *this;
     }
 
@@ -69,10 +67,10 @@ public:
 
 private:
 
-  int init (const ComplexMatrix& a);
-
   ComplexMatrix hess_mat;
   ComplexMatrix unitary_hess_mat;
+
+  int init (const ComplexMatrix& a);
 };
 
 #endif

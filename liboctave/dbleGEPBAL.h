@@ -1,7 +1,7 @@
 //                                  -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -34,13 +34,14 @@ class ostream;
 
 #include "dMatrix.h"
 
-class GEPBALANCE
+class
+GEPBALANCE
 {
-friend class Matrix;
-
 public:
 
-  GEPBALANCE (void) { }
+  GEPBALANCE (void)
+    : balanced_a_mat (), balanced_b_mat (), left_balancing_mat (),
+      right_balancing_mat () { }
 
   GEPBALANCE (const Matrix& a, const Matrix& b, const string& balance_job)
     {
@@ -48,20 +49,20 @@ public:
     }
 
   GEPBALANCE (const GEPBALANCE& a)
-    {
-      balanced_a_mat = a.balanced_a_mat;
-      balanced_b_mat = a.balanced_b_mat;
-      left_balancing_mat = a.left_balancing_mat;
-      right_balancing_mat = a.right_balancing_mat;
-    }
+    : balanced_a_mat (a.balanced_a_mat),
+      balanced_b_mat (a.balanced_b_mat),
+      left_balancing_mat (a.left_balancing_mat),
+      right_balancing_mat (a.right_balancing_mat) { }
 
   GEPBALANCE& operator = (const GEPBALANCE& a)
     {
-      balanced_a_mat = a.balanced_a_mat;
-      balanced_b_mat = a.balanced_b_mat;
-      left_balancing_mat = a.left_balancing_mat;
-      right_balancing_mat = a.right_balancing_mat;
-
+      if (this != &a)
+	{
+	  balanced_a_mat = a.balanced_a_mat;
+	  balanced_b_mat = a.balanced_b_mat;
+	  left_balancing_mat = a.left_balancing_mat;
+	  right_balancing_mat = a.right_balancing_mat;
+	}
       return *this;
     }
 
@@ -75,12 +76,12 @@ public:
 
 private:
 
-  int init (const Matrix& a, const Matrix& b, const string& balance_job);
-
   Matrix balanced_a_mat;
   Matrix balanced_b_mat;
   Matrix left_balancing_mat;
   Matrix right_balancing_mat;
+
+  int init (const Matrix& a, const Matrix& b, const string& balance_job);
 };
 
 #endif

@@ -1,7 +1,7 @@
 //                                  -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -32,20 +32,24 @@ class ostream;
 
 #include "dbleQR.h"
 
-class QRP : public QR
+class
+QRP : public QR
 {
 public:
 
-  QRP (void) { }
+  QRP (void) : QR (), p () { }
 
   QRP (const Matrix& A, QR::type qr_type = QR::std);
 
-  QRP (const QRP& a) : QR (a) { p = a.p; }
+  QRP (const QRP& a) : QR (a), p (a.p) { }
 
   QRP& operator = (const QRP& a)
     {
-      QR::operator = (a);
-      p = a.p;
+      if (this != &a)
+	{
+	  QR::operator = (a);
+	  p = a.p;
+	}
 
       return *this;
     }

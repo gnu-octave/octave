@@ -1,7 +1,7 @@
 //                                  -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -33,25 +33,24 @@ class ostream;
 #include "CMatrix.h"
 #include "dbleQR.h"
 
-class ComplexQR
+class
+ComplexQR
 {
 public:
 
-  ComplexQR (void) { }
+  ComplexQR (void) : q (), r () { }
 
   ComplexQR (const ComplexMatrix& A, QR::type qr_type = QR::std);
 
-  ComplexQR (const ComplexQR& a)
-    {
-      q = a.q;
-      r = a.r;
-    }
+  ComplexQR (const ComplexQR& a) : q (a.q), r (a.r) { }
 
   ComplexQR& operator = (const ComplexQR& a)
     {
-      q = a.q;
-      r = a.r;
-
+      if (this != &a)
+	{
+	  q = a.q;
+	  r = a.r;
+	}
       return *this;
     }
 

@@ -564,7 +564,7 @@ arguments.
 
 Command descriptions have a format similar to function descriptions,
 except that the word `Function' is replaced by `Command.  Commands are
-functions that are called without surrounding their arguments in
+functions that may called without surrounding their arguments in
 parentheses.  For example, here is the description for Octave's
 @code{cd} command:
 

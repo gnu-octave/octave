@@ -38,8 +38,11 @@ endif                   while
 @end group
 @end example
 
-The following command-like functions are also reserved, and may not be
-used as variable or function names:
+The following command-like functions are also speical.  They may be used
+as simple variable names, but not as formal parameters for functions, or
+as the names of structure variables.  Failed assignments leave them
+undefined (you can recover the orginal definition as a function using
+clear).
 
 @example
 @group

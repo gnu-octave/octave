@@ -66,7 +66,7 @@ function rnd = poisson_rnd (l, r, c)
 
   if (isscalar (l))
 
-    if (!(l > 0) | !(l < Inf))
+    if (!(l >= 0) | !(l < Inf))
       rnd = NaN * ones (sz);
     elseif ((l > 0) & (l < Inf))
       num = zeros (sz);
@@ -87,7 +87,7 @@ function rnd = poisson_rnd (l, r, c)
   else
     rnd = zeros (sz);
 
-    k = find (!(l > 0) | !(l < Inf));
+    k = find (!(l >= 0) | !(l < Inf));
     if (any (k))
       rnd(k) = NaN;
     endif
@@ -101,7 +101,7 @@ function rnd = poisson_rnd (l, r, c)
 	ind = find (sum < 1);
 	if (any (ind))
           sum(ind) = (sum(ind)
-                      - log (1 - rand (length (ind), 1)) ./ l(ind));
+                      - log (1 - rand (size (ind))) ./ l(ind));
           num(ind) = num(ind) + 1;
 	else
           break;

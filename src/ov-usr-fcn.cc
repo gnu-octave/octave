@@ -294,7 +294,11 @@ octave_user_function::subsref (const std::string& type,
   switch (type[0])
     {
     case '(':
-      retval = do_multi_index_op (nargout, idx.front ());
+      {
+	int tmp_nargout = (type.length () > 0 && nargout == 0) ? 1 : nargout;
+
+	retval = do_multi_index_op (tmp_nargout, idx.front ());
+      }
       break;
 
     case '{':

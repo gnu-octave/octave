@@ -1,5 +1,10 @@
 2005-02-21  John W. Eaton  <jwe@octave.org>
 
+	* ov-builtin.cc (octave_builtin::subsref): If nargout is 0 and we
+	have additional indexing to perform, set it to 1 before calling
+	do_multi_index_op.
+	* ov-usr-fcn.cc (octave_user_function::subsref): Likewise.
+
 	* DLD-FUNCTIONS/gplot.l (send_to_plot_stream):
 	Replot with no previous plot is a no-op.
 	(makeplot): Likewise.

@@ -1,3 +1,10 @@
+2005-02-21  David Bateman  <dbateman@free.fr>
+
+	* statistics/distributions/poisson_rnd.m: fix for lambda of zero.
+	From Mark van Rossum <mvanross@inf.ed.ac.uk>.
+	Fix for row vectors with at least one element of lambda not in
+	(0, Inf).
+
 2005-02-21  John W. Eaton  <jwe@octave.org>
 
 	* statistics/base/qqplot.m: Use feval instead of eval.

@@ -1,3 +1,8 @@
+Fri Jul 19 15:24:36 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pt-const.cc: When creating octave_value_reps from ComplexMatrix
+	values, check to see if all the elements are actually real.
+
 Tue Jul 16 10:53:42 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* input.cc (decode_prompt_string): Swap meanings of \h anbd \H.

@@ -154,6 +154,8 @@ decrement_struct_indent (void)
   struct_indent -= 2;
 }
 
+// XXX FIXME XXX -- these should be member functions.
+
 static bool
 any_element_is_complex (const ComplexMatrix& a)
 {
@@ -164,6 +166,42 @@ any_element_is_complex (const ComplexMatrix& a)
     for (int i = 0; i < nr; i++)
       if (imag (a (i, j)) != 0.0)
 	return true;
+
+  return false;
+}
+
+static bool
+any_element_is_complex (const ComplexDiagMatrix& d)
+{
+  int len = d.length ();
+
+  for (int i = 0; i < len; i++)
+    if (imag (d (i, i)) != 0.0)
+      return true;
+
+  return false;
+}
+
+static bool
+any_element_is_complex (const ComplexRowVector& v)
+{
+  int len = v.length ();
+
+  for (int i = 0; i < len; i++)
+    if (imag (v (i)) != 0.0)
+      return true;
+
+  return false;
+}
+
+static bool
+any_element_is_complex (const ComplexColumnVector& v)
+{
+  int len = v.length ();
+
+  for (int i = 0; i < len; i++)
+    if (imag (v (i)) != 0.0)
+      return true;
 
   return false;
 }
@@ -481,6 +519,10 @@ OCT_VAL_REP::octave_value_rep (double d)
   type_tag = scalar_constant;
 }
 
+// XXX FIXME XXX -- perhaps these constructors should just do the
+// obvious thing and then call maybe_mutate() instead of duplicating
+// most of that logic several times here...
+
 OCT_VAL_REP::octave_value_rep (const Matrix& m)
 {
   if (m.rows () == 1 && m.columns () == 1)
@@ -606,6 +648,11 @@ OCT_VAL_REP::octave_value_rep (const ComplexMatrix& m)
 	  type_tag = complex_scalar_constant;
 	}
     }
+  else if (! any_element_is_complex (*complex_matrix))
+    {
+      matrix = new Matrix (::real (m));
+      type_tag = matrix_constant;
+    }
   else
     {
       complex_matrix = new ComplexMatrix (m);
@@ -629,6 +676,11 @@ OCT_VAL_REP::octave_value_rep (const ComplexDiagMatrix& d)
 	  complex_scalar = new Complex (c);
 	  type_tag = complex_scalar_constant;
 	}
+    }
+  else if (! any_element_is_complex (d))
+    {
+      matrix = new Matrix (::real (d));
+      type_tag = matrix_constant;
     }
   else
     {
@@ -664,19 +716,41 @@ OCT_VAL_REP::octave_value_rep (const ComplexRowVector& v,
 
       if (pcv)
 	{
-	  ComplexMatrix m (len, 1);
-	  for (int i = 0; i < len; i++)
-	    m (i, 0) = v (i);
-	  complex_matrix = new ComplexMatrix (m);
-	  type_tag = complex_matrix_constant;
+	  if (! any_element_is_complex (v))
+	    {
+	      Matrix m (len, 1);
+	      for (int i = 0; i < len; i++)
+		m (i, 0) = ::real (v (i));
+	      matrix = new Matrix (m);
+	      type_tag = matrix_constant;
+	    }
+	  else
+	    {
+	      ComplexMatrix m (len, 1);
+	      for (int i = 0; i < len; i++)
+		m (i, 0) = v (i);
+	      complex_matrix = new ComplexMatrix (m);
+	      type_tag = complex_matrix_constant;
+	    }
 	}
       else
 	{
-	  ComplexMatrix m (1, len);
-	  for (int i = 0; i < len; i++)
-	    m (0, i) = v (i);
-	  complex_matrix = new ComplexMatrix (m);
-	  type_tag = complex_matrix_constant;
+	  if (! any_element_is_complex (v))
+	    {
+	      Matrix m (len, 1);
+	      for (int i = 0; i < len; i++)
+		m (0, i) = ::real (v (i));
+	      matrix = new Matrix (m);
+	      type_tag = matrix_constant;
+	    }
+	  else
+	    {
+	      ComplexMatrix m (1, len);
+	      for (int i = 0; i < len; i++)
+		m (0, i) = v (i);
+	      complex_matrix = new ComplexMatrix (m);
+	      type_tag = complex_matrix_constant;
+	    }
 	}
     }
 }
@@ -708,19 +782,41 @@ OCT_VAL_REP::octave_value_rep (const ComplexColumnVector& v, int
 
       if (pcv)
 	{
-	  ComplexMatrix m (len, 1);
-	  for (int i = 0; i < len; i++)
-	    m (i, 0) = v (i);
-	  complex_matrix = new ComplexMatrix (m);
-	  type_tag = complex_matrix_constant;
+	  if (! any_element_is_complex (v))
+	    {
+	      Matrix m (len, 1);
+	      for (int i = 0; i < len; i++)
+		m (i, 0) = ::real (v (i));
+	      matrix = new Matrix (m);
+	      type_tag = matrix_constant;
+	    }
+	  else
+	    {
+	      ComplexMatrix m (len, 1);
+	      for (int i = 0; i < len; i++)
+		m (i, 0) = v (i);
+	      complex_matrix = new ComplexMatrix (m);
+	      type_tag = complex_matrix_constant;
+	    }
 	}
       else
 	{
-	  ComplexMatrix m (1, len);
-	  for (int i = 0; i < len; i++)
-	    m (0, i) = v (i);
-	  complex_matrix = new ComplexMatrix (m);
-	  type_tag = complex_matrix_constant;
+	  if (! any_element_is_complex (v))
+	    {
+	      Matrix m (len, 1);
+	      for (int i = 0; i < len; i++)
+		m (0, i) = ::real (v (i));
+	      matrix = new Matrix (m);
+	      type_tag = matrix_constant;
+	    }
+	  else
+	    {
+	      ComplexMatrix m (1, len);
+	      for (int i = 0; i < len; i++)
+		m (0, i) = v (i);
+	      complex_matrix = new ComplexMatrix (m);
+	      type_tag = complex_matrix_constant;
+	    }
 	}
     }
 }

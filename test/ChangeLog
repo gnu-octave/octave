@@ -1,3 +1,8 @@
+2002-04-24  Bill Lash  <lash@tellabs.com>
+
+	* test/octave.test/signal/signal.exp: Add unwrap test.
+	* test/octave.test/signal/unwrap-1.m: New file.
+
 2002-04-24  David Billinghurst <David.Billinghurst@riotinto.com.au>
 
 	* octave.test/signal/signal.exp: Add tests for fft, ifft

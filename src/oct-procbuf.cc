@@ -119,7 +119,7 @@ octave_procbuf::open (const char *command, int mode)
       return 0;
     }
 
-  f = ::fdopen (parent_end, (mode & std::ios::in) ? "w" : "r");
+  f = ::fdopen (parent_end, (mode & std::ios::in) ? "r" : "w");
 
   open_p = true;
 

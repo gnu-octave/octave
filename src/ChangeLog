@@ -1,3 +1,7 @@
+2002-11-19  test octave  <oktave@mammut.ae.op.dlr.de>
+
+	* oct-obj.h (octave_value_list::~octave_value_list): New function.
+
 2002-11-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* DLD-FUNCTIONS/odessa.cc (odessa_user_j): Put T in args(1), not

@@ -97,6 +97,8 @@ public:
   octave_value_list (const octave_value_list& obj)
     : data (obj.data), names (obj.names) { }
 
+  ~octave_value_list (void) { }
+
   void *operator new (size_t size)
     { return allocator.alloc (size); }
 

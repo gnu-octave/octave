@@ -1,3 +1,14 @@
+2004-09-17 David Bateman <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/sort.cc (ascending_compare, descending_compare):
+	Now templates (avoids g++ 3.4.x compile problems).
+	Fix other uses of these functions to also treat them as templates.
+	(mx_sort): For unsigned EIGHT_BYTE_INT versions correct the test 
+	for the position of NaN.  Problems when mode was DESCENDING or
+	UNDEFINED.  Use static_cast<unsigned int> (dim) rather than 
+	(unsigned int) dim.
+	(IFloatFlip): Now static.
+
 2004-09-17  David Bateman  <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/det.cc (Fdet): Only compute estimate of the

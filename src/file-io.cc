@@ -643,9 +643,11 @@ fseek_internal (const Octave_object& args)
 	  return retval;
 	}
 
-      if (origin == -1)
+      if (origin == 0)
+	origin = SEEK_SET;
+      else if (origin == 1)
 	origin = SEEK_CUR;
-      else if (origin == -2)
+      else if (origin == 2)
 	origin = SEEK_END;
       else
 	{

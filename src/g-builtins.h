@@ -76,6 +76,7 @@ extern tree_constant *builtin_fsolve (tree_constant *, int, int);
 extern tree_constant *builtin_fsqp (tree_constant *, int, int);
 extern tree_constant *builtin_ftell (tree_constant *, int, int);
 extern tree_constant *builtin_getenv (tree_constant *, int, int);
+extern tree_constant *builtin_givens (tree_constant *, int, int);
 extern tree_constant *builtin_hess (tree_constant *, int, int);
 extern tree_constant *builtin_input (tree_constant *, int, int);
 extern tree_constant *builtin_ifft (tree_constant *, int, int);

@@ -81,7 +81,7 @@ else
   DLD_STATIC_OBJ := $(DLD_OBJ)
 endif
 
-INCLUDES := arith-ops.h builtins.h defun.h defun-dld.h \
+INCLUDES := arith-ops.h builtins.h data.h defun.h defun-dld.h \
 	defun-int.h dirfns.h dynamic-ld.h error.h \
 	file-io.h gripes.h help.h input.h lex.h load-save.h \
 	mappers.h oct-fstrm.h oct-hist.h oct-iostrm.h \

@@ -195,25 +195,14 @@ pr_min_internal (const Matrix& m)
   return result;
 }
 
+// XXX FIXME XXX -- it would be nice to share more code among these
+// functions,..
+
 static void
-set_format (double d, int& fw)
+set_real_format (int sign, int digits, int inf_or_nan, int nan_or_int,
+		 int &fw)
 {
-  curr_real_fmt = 0;
-  curr_imag_fmt = 0;
-
-  if (free_format)
-    return;
-
   static char fmt_buf[128];
-
-  int sign = (d < 0.0);
-
-  int inf_or_nan = (xisinf (d) || xisnan (d));
-
-  double d_abs = d < 0.0 ? -d : d;
-
-  int digits = (inf_or_nan || d_abs == 0.0) ? 0
-    : (int) floor (log10 (d_abs) + 1.0);
 
   int prec = user_pref.output_precision;
 
@@ -237,7 +226,7 @@ set_format (double d, int& fw)
       fw = 8 * sizeof (double);
       rd = 0;
     }
-  else if (xisnan (d) || D_NINT (d) == d)
+  else if (nan_or_int)
     {
       fw = digits;
       if (inf_or_nan && fw < 3)
@@ -250,13 +239,13 @@ set_format (double d, int& fw)
       if (digits > 0)
 	{
 	  ld = digits;
-	  rd = prec - digits;
+	  rd = prec > digits ? prec - digits : prec;
 	  digits++;
 	}
       else
 	{
 	  ld = 1;
-	  rd = prec - digits;
+	  rd = prec > digits ? prec - digits : prec;
 	  digits = -digits + 1;
 	}
 
@@ -291,6 +280,29 @@ set_format (double d, int& fw)
   curr_real_fmt = &fmt_buf[0];
 }
 
+static void
+set_format (double d, int& fw)
+{
+  curr_real_fmt = 0;
+  curr_imag_fmt = 0;
+
+  if (free_format)
+    return;
+
+  int sign = (d < 0.0);
+
+  int inf_or_nan = (xisinf (d) || xisnan (d));
+
+  int nan_or_int = (xisnan (d) || D_NINT (d) == d);
+
+  double d_abs = d < 0.0 ? -d : d;
+
+  int digits = (inf_or_nan || d_abs == 0.0) ? 0
+    : (int) floor (log10 (d_abs) + 1.0);
+
+  set_real_format (sign, digits, inf_or_nan, nan_or_int, fw);
+}
+
 static inline void
 set_format (double d)
 {
@@ -299,26 +311,10 @@ set_format (double d)
 }
 
 static void
-set_format (const Matrix& m, int& fw)
+set_real_matrix_format (int sign, int x_max, int x_min,
+			int inf_or_nan, int all_inf_or_nan, int& fw)
 {
-  curr_real_fmt = 0;
-  curr_imag_fmt = 0;
-
-  if (free_format)
-    return;
-
   static char fmt_buf[128];
-
-  int sign = any_element_is_negative (m);
-
-  int inf_or_nan = any_element_is_inf_or_nan (m);
-
-  Matrix m_abs = abs (m);
-  double max_abs = pr_max_internal (m_abs);
-  double min_abs = pr_min_internal (m_abs);
-
-  int x_max = max_abs == 0.0 ? 0 : (int) floor (log10 (max_abs) + 1.0);
-  int x_min = min_abs == 0.0 ? 0 : (int) floor (log10 (min_abs) + 1.0);
 
   int prec = user_pref.output_precision;
 
@@ -343,7 +339,7 @@ set_format (const Matrix& m, int& fw)
       fw = 8 * sizeof (double);
       rd = 0;
     }
-  else if (all_elements_are_int_or_inf_or_nan (m))
+  else if (all_inf_or_nan)
     {
       int digits = x_max > x_min ? x_max : x_min;
       fw = digits <= 0 ? 1 : digits;
@@ -358,13 +354,13 @@ set_format (const Matrix& m, int& fw)
       if (x_max > 0)
 	{
 	  ld_max = x_max;
-	  rd_max = prec - x_max;
+	  rd_max = prec > x_max ? prec - x_max : prec;
 	  x_max++;
 	}
       else
 	{
 	  ld_max = 1;
-	  rd_max = prec - x_max;
+	  rd_max = prec > x_max ? prec - x_max : prec;
 	  x_max = -x_max + 1;
 	}
 
@@ -372,13 +368,13 @@ set_format (const Matrix& m, int& fw)
       if (x_min > 0)
 	{
 	  ld_min = x_min;
-	  rd_min = prec - x_min;
+	  rd_min = prec > x_min ? prec - x_min : prec;
 	  x_min++;
 	}
       else
 	{
 	  ld_min = 1;
-	  rd_min = prec - x_min;
+	  rd_min = prec > x_min ? prec - x_min : prec;
 	  x_min = -x_min + 1;
 	}
 
@@ -391,7 +387,7 @@ set_format (const Matrix& m, int& fw)
       fw += sign;
     }
 
-  if (! (bank_format ||hex_format || bit_format)
+  if (! (bank_format || hex_format || bit_format)
       && (fw > user_pref.output_max_field_width || print_e))
     {
       int exp_field = 4;
@@ -416,6 +412,33 @@ set_format (const Matrix& m, int& fw)
   curr_real_fmt = &fmt_buf[0];
 }
 
+static void
+set_format (const Matrix& m, int& fw)
+{
+  curr_real_fmt = 0;
+  curr_imag_fmt = 0;
+
+  if (free_format)
+    return;
+
+  int sign = any_element_is_negative (m);
+
+  int inf_or_nan = any_element_is_inf_or_nan (m);
+
+  int all_inf_or_nan
+    = inf_or_nan ? all_elements_are_int_or_inf_or_nan (m) : 0;
+
+  Matrix m_abs = abs (m);
+  double max_abs = pr_max_internal (m_abs);
+  double min_abs = pr_min_internal (m_abs);
+
+  int x_max = max_abs == 0.0 ? 0 : (int) floor (log10 (max_abs) + 1.0);
+  int x_min = min_abs == 0.0 ? 0 : (int) floor (log10 (min_abs) + 1.0);
+
+  set_real_matrix_format (sign, x_max, x_min, inf_or_nan,
+			  all_inf_or_nan, fw);
+}
+
 static inline void
 set_format (const Matrix& m)
 {
@@ -424,42 +447,11 @@ set_format (const Matrix& m)
 }
 
 static void
-set_format (const Complex& c, int& r_fw, int& i_fw)
+set_complex_format (int sign, int x_max, int x_min, int r_x,
+		    int inf_or_nan, int int_only, int& r_fw, int& i_fw)
 {
-  curr_real_fmt = 0;
-  curr_imag_fmt = 0;
-
-  if (free_format)
-    return;
-
   static char r_fmt_buf[128];
   static char i_fmt_buf[128];
-
-  double rp = c.real ();
-  double ip = c.imag ();
-
-  int sign = (rp < 0.0);
-
-  int inf_or_nan = (xisinf (c) || xisnan (c));
-
-  double r_abs = rp < 0.0 ? -rp : rp;
-  double i_abs = ip < 0.0 ? -ip : ip;
-
-  int r_x = r_abs == 0.0 ? 0 : (int) floor (log10 (r_abs) + 1.0);
-  int i_x = i_abs == 0.0 ? 0 : (int) floor (log10 (i_abs) + 1.0);
-
-  int x_max, x_min;
-
-  if (r_x > i_x)
-    {
-      x_max = r_x;
-      x_min = i_x;
-    }
-  else
-    {
-      x_max = i_x;
-      x_min = r_x;
-    }
 
   int prec = user_pref.output_precision;
 
@@ -487,7 +479,7 @@ set_format (const Complex& c, int& r_fw, int& i_fw)
       i_fw = 8 * sizeof (double);
       rd = 0;
     }
-  else if (inf_or_nan || (D_NINT (rp) == rp && D_NINT (ip) == ip))
+  else if (inf_or_nan || int_only)
     {
       int digits = x_max > x_min ? x_max : x_min;
       i_fw = r_fw = digits <= 0 ? 1 : digits;
@@ -502,13 +494,13 @@ set_format (const Complex& c, int& r_fw, int& i_fw)
       if (x_max > 0)
 	{
 	  ld_max = x_max;
-	  rd_max = prec - x_max;
+	  rd_max = prec > x_max ? prec - x_max : prec;
 	  x_max++;
 	}
       else
 	{
 	  ld_max = 1;
-	  rd_max = prec - x_max;
+	  rd_max = prec > x_max ? prec - x_max : prec;
 	  x_max = -x_max + 1;
 	}
 
@@ -516,13 +508,13 @@ set_format (const Complex& c, int& r_fw, int& i_fw)
       if (x_min > 0)
 	{
 	  ld_min = x_min;
-	  rd_min = prec - x_min;
+	  rd_min = prec > x_min ? prec - x_min : prec;
 	  x_min++;
 	}
       else
 	{
 	  ld_min = 1;
-	  rd_min = prec - x_min;
+	  rd_min = prec > x_min ? prec - x_min : prec;
 	  x_min = -x_min + 1;
 	}
 
@@ -568,6 +560,47 @@ set_format (const Complex& c, int& r_fw, int& i_fw)
   curr_imag_fmt = &i_fmt_buf[0];
 }
 
+static void
+set_format (const Complex& c, int& r_fw, int& i_fw)
+{
+  curr_real_fmt = 0;
+  curr_imag_fmt = 0;
+
+  if (free_format)
+    return;
+
+  double rp = c.real ();
+  double ip = c.imag ();
+
+  int sign = (rp < 0.0);
+
+  int inf_or_nan = (xisinf (c) || xisnan (c));
+
+  int int_only = (D_NINT (rp) == rp && D_NINT (ip) == ip);
+
+  double r_abs = rp < 0.0 ? -rp : rp;
+  double i_abs = ip < 0.0 ? -ip : ip;
+
+  int r_x = r_abs == 0.0 ? 0 : (int) floor (log10 (r_abs) + 1.0);
+  int i_x = i_abs == 0.0 ? 0 : (int) floor (log10 (i_abs) + 1.0);
+
+  int x_max, x_min;
+
+  if (r_x > i_x)
+    {
+      x_max = r_x;
+      x_min = i_x;
+    }
+  else
+    {
+      x_max = i_x;
+      x_min = r_x;
+    }
+
+  set_complex_format (sign, x_max, x_min, r_x, inf_or_nan, int_only,
+		      r_fw, i_fw);
+}
+
 static inline void
 set_format (const Complex& c)
 {
@@ -576,40 +609,12 @@ set_format (const Complex& c)
 }
 
 static void
-set_format (const ComplexMatrix& cm, int& r_fw, int& i_fw)
+set_complex_matrix_format (int sign, int x_max, int x_min,
+			   int r_x_max, int r_x_min, int inf_or_nan,
+			   int all_inf_or_nan, int& r_fw, int& i_fw)
 {
-  curr_real_fmt = 0;
-  curr_imag_fmt = 0;
-
-  if (free_format)
-    return;
-
   static char r_fmt_buf[128];
   static char i_fmt_buf[128];
-
-  Matrix rp = real (cm);
-  Matrix ip = imag (cm);
-
-  int sign = any_element_is_negative (rp);
-
-  int inf_or_nan = any_element_is_inf_or_nan (cm);
-
-  Matrix r_m_abs = abs (rp);
-  double r_max_abs = pr_max_internal (r_m_abs);
-  double r_min_abs = pr_min_internal (r_m_abs);
-
-  Matrix i_m_abs = abs (ip);
-  double i_max_abs = pr_max_internal (i_m_abs);
-  double i_min_abs = pr_min_internal (i_m_abs);
-
-  int r_x_max = r_max_abs == 0.0 ? 0 : (int) floor (log10 (r_max_abs) + 1.0);
-  int r_x_min = r_min_abs == 0.0 ? 0 : (int) floor (log10 (r_min_abs) + 1.0);
-
-  int i_x_max = i_max_abs == 0.0 ? 0 : (int) floor (log10 (i_max_abs) + 1.0);
-  int i_x_min = i_min_abs == 0.0 ? 0 : (int) floor (log10 (i_min_abs) + 1.0);
-
-  int x_max = r_x_max > i_x_max ? r_x_max : i_x_max;
-  int x_min = r_x_min > i_x_min ? r_x_min : i_x_min;
 
   int prec = user_pref.output_precision;
 
@@ -637,8 +642,7 @@ set_format (const ComplexMatrix& cm, int& r_fw, int& i_fw)
       i_fw = 8 * sizeof (double);
       rd = 0;
     }
-  else if (all_elements_are_int_or_inf_or_nan (rp)
-	   && all_elements_are_int_or_inf_or_nan (ip))
+  else if (all_inf_or_nan)
     {
       int digits = x_max > x_min ? x_max : x_min;
       i_fw = r_fw = digits <= 0 ? 1 : digits;
@@ -653,13 +657,13 @@ set_format (const ComplexMatrix& cm, int& r_fw, int& i_fw)
       if (x_max > 0)
 	{
 	  ld_max = x_max;
-	  rd_max = prec - x_max;
+	  rd_max = prec > x_max ? prec - x_max : prec;
 	  x_max++;
 	}
       else
 	{
 	  ld_max = 1;
-	  rd_max = prec - x_max;
+	  rd_max = prec > x_max ? prec - x_max : prec;
 	  x_max = -x_max + 1;
 	}
 
@@ -667,13 +671,13 @@ set_format (const ComplexMatrix& cm, int& r_fw, int& i_fw)
       if (x_min > 0)
 	{
 	  ld_min = x_min;
-	  rd_min = prec - x_min;
+	  rd_min = prec > x_min ? prec - x_min : prec;
 	  x_min++;
 	}
       else
 	{
 	  ld_min = 1;
-	  rd_min = prec - x_min;
+	  rd_min = prec > x_min ? prec - x_min : prec;
 	  x_min = -x_min + 1;
 	}
 
@@ -719,6 +723,47 @@ set_format (const ComplexMatrix& cm, int& r_fw, int& i_fw)
   curr_imag_fmt = &i_fmt_buf[0];
 }
 
+static void
+set_format (const ComplexMatrix& cm, int& r_fw, int& i_fw)
+{
+  curr_real_fmt = 0;
+  curr_imag_fmt = 0;
+
+  if (free_format)
+    return;
+
+  Matrix rp = real (cm);
+  Matrix ip = imag (cm);
+
+  int sign = any_element_is_negative (rp);
+
+  int inf_or_nan = any_element_is_inf_or_nan (cm);
+
+  int all_inf_or_nan
+    = inf_or_nan ? (all_elements_are_int_or_inf_or_nan (rp)
+		    && all_elements_are_int_or_inf_or_nan (ip)) : 0;
+
+  Matrix r_m_abs = abs (rp);
+  double r_max_abs = pr_max_internal (r_m_abs);
+  double r_min_abs = pr_min_internal (r_m_abs);
+
+  Matrix i_m_abs = abs (ip);
+  double i_max_abs = pr_max_internal (i_m_abs);
+  double i_min_abs = pr_min_internal (i_m_abs);
+
+  int r_x_max = r_max_abs == 0.0 ? 0 : (int) floor (log10 (r_max_abs) + 1.0);
+  int r_x_min = r_min_abs == 0.0 ? 0 : (int) floor (log10 (r_min_abs) + 1.0);
+
+  int i_x_max = i_max_abs == 0.0 ? 0 : (int) floor (log10 (i_max_abs) + 1.0);
+  int i_x_min = i_min_abs == 0.0 ? 0 : (int) floor (log10 (i_min_abs) + 1.0);
+
+  int x_max = r_x_max > i_x_max ? r_x_max : i_x_max;
+  int x_min = r_x_min > i_x_min ? r_x_min : i_x_min;
+
+  set_complex_matrix_format (sign, x_max, x_min, r_x_max, r_x_min,
+			     inf_or_nan, all_inf_or_nan, r_fw, i_fw);
+}
+
 static int
 all_elements_are_ints (const Range& r)
 {
@@ -740,33 +785,9 @@ set_format (const ComplexMatrix& cm)
 }
 
 static void
-set_format (const Range& r, int& fw)
+set_range_format (int sign, int x_max, int x_min, int all_ints, int& fw)
 {
-  curr_real_fmt = 0;
-  curr_imag_fmt = 0;
-
-  if (free_format)
-    return;
-
   static char fmt_buf[128];
-
-  double r_min = r.base ();
-  double r_max = r.limit ();
-
-  if (r_max < r_min)
-    {
-      double tmp = r_max;
-      r_max = r_min;
-      r_min = tmp;
-    }
-
-  int sign = (r_min < 0.0);
-
-  double max_abs = r_max < 0.0 ? -r_max : r_max;
-  double min_abs = r_min < 0.0 ? -r_min : r_min;
-
-  int x_max = max_abs == 0.0 ? 0 : (int) floor (log10 (max_abs) + 1.0);
-  int x_min = min_abs == 0.0 ? 0 : (int) floor (log10 (min_abs) + 1.0);
 
   int prec = user_pref.output_precision;
 
@@ -788,7 +809,7 @@ set_format (const Range& r, int& fw)
       fw = 8 * sizeof (double);
       rd = 0;
     }
-  else if (all_elements_are_ints (r))
+  else if (all_ints)
     {
       int digits = x_max > x_min ? x_max : x_min;
       fw = sign + digits;
@@ -800,13 +821,13 @@ set_format (const Range& r, int& fw)
       if (x_max > 0)
 	{
 	  ld_max = x_max;
-	  rd_max = prec - x_max;
+	  rd_max = prec > x_max ? prec - x_max : prec;
 	  x_max++;
 	}
       else
 	{
 	  ld_max = 1;
-	  rd_max = prec - x_max;
+	  rd_max = prec > x_max ? prec - x_max : prec;
 	  x_max = -x_max + 1;
 	}
 
@@ -814,13 +835,13 @@ set_format (const Range& r, int& fw)
       if (x_min > 0)
 	{
 	  ld_min = x_min;
-	  rd_min = prec - x_min;
+	  rd_min = prec > x_min ? prec - x_min : prec;
 	  x_min++;
 	}
       else
 	{
 	  ld_min = 1;
-	  rd_min = prec - x_min;
+	  rd_min = prec > x_min ? prec - x_min : prec;
 	  x_min = -x_min + 1;
 	}
 
@@ -850,6 +871,38 @@ set_format (const Range& r, int& fw)
     }
 
   curr_real_fmt = &fmt_buf[0];
+}
+
+static void
+set_format (const Range& r, int& fw)
+{
+  curr_real_fmt = 0;
+  curr_imag_fmt = 0;
+
+  if (free_format)
+    return;
+
+  double r_min = r.base ();
+  double r_max = r.limit ();
+
+  if (r_max < r_min)
+    {
+      double tmp = r_max;
+      r_max = r_min;
+      r_min = tmp;
+    }
+
+  int sign = (r_min < 0.0);
+
+  int all_ints = all_elements_are_ints (r);
+
+  double max_abs = r_max < 0.0 ? -r_max : r_max;
+  double min_abs = r_min < 0.0 ? -r_min : r_min;
+
+  int x_max = max_abs == 0.0 ? 0 : (int) floor (log10 (max_abs) + 1.0);
+  int x_min = min_abs == 0.0 ? 0 : (int) floor (log10 (min_abs) + 1.0);
+
+  set_range_format (sign, x_max, x_min, all_ints, fw);
 }
 
 static inline void

@@ -95,7 +95,7 @@ std::string Vsite_defaults_file;
 static void
 maybe_add_or_del_packages (const string_vector& a,
 			   const string_vector& b,
-			   const std::string script_file)
+			   const std::string& script_file)
 {
   if (! octave_interpreter_ready)
     return;

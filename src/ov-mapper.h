@@ -66,7 +66,7 @@ public:
 
   octave_function *function_value (bool) { return this; }
 
-  octave_value_list subsref (const std::string type,
+  octave_value_list subsref (const std::string& type,
 			     const std::list<octave_value_list>& idx,
 			     int nargout);
 

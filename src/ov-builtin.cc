@@ -52,7 +52,7 @@ any_arg_is_magic_colon (const octave_value_list& args)
 }
 
 octave_value_list
-octave_builtin::subsref (const std::string type,
+octave_builtin::subsref (const std::string& type,
 			 const std::list<octave_value_list>& idx,
 			 int nargout)
 {

@@ -50,7 +50,7 @@ public:
 
   ~octave_builtin (void) { }
 
-  octave_value_list subsref (const std::string type,
+  octave_value_list subsref (const std::string& type,
 			     const std::list<octave_value_list>& idx,
 			     int nargout);
 

@@ -73,10 +73,10 @@ public:
   octave_value *try_narrowing_conversion (void);
 #endif
 
-  octave_value subsref (const std::string type,
+  octave_value subsref (const std::string& type,
 			const std::list<octave_value_list>& idx);
 
-  octave_value subsasgn (const std::string type,
+  octave_value subsasgn (const std::string& type,
 			 const std::list<octave_value_list>& idx,
 			 const octave_value& rhs);
 

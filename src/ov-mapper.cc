@@ -244,7 +244,7 @@ octave_mapper::apply (const octave_value& arg) const
 }
 
 octave_value_list
-octave_mapper::subsref (const std::string type,
+octave_mapper::subsref (const std::string& type,
 			const std::list<octave_value_list>& idx,
 			int nargout)
 {

@@ -52,7 +52,7 @@ DEFINE_OCTAVE_ALLOCATOR (octave_cell);
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_cell, "cell");
 
 octave_value
-octave_cell::subsref (const std::string type,
+octave_cell::subsref (const std::string& type,
 		      const std::list<octave_value_list>& idx)
 {
   octave_value retval;
@@ -103,7 +103,7 @@ octave_cell::subsref (const std::string type,
 }
 
 octave_value
-octave_cell::subsasgn (const std::string type,
+octave_cell::subsasgn (const std::string& type,
 		       const std::list<octave_value_list>& idx,
 		       const octave_value& rhs)
 {

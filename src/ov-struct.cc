@@ -86,7 +86,7 @@ gripe_failed_assignment (void)
 }
 
 octave_value
-octave_struct::subsref (const std::string type,
+octave_struct::subsref (const std::string& type,
 			const std::list<octave_value_list>& idx)
 {
   octave_value retval;
@@ -181,7 +181,7 @@ octave_struct::numeric_conv (const octave_value_list& val,
 }
 
 octave_value
-octave_struct::subsasgn (const std::string type,
+octave_struct::subsasgn (const std::string& type,
 			 const std::list<octave_value_list>& idx,
 			 const octave_value& rhs)
 {

@@ -572,8 +572,18 @@ octave_value::maybe_mutate (void)
     }    
 }
 
+octave_value
+octave_value::subsref (const std::string& type, const octave_value_list& idx)
+{
+  std::list<octave_value_list> i;
+
+  i.push_back (idx);
+
+  return rep->subsref (type, i);
+}
+
 octave_value_list
-octave_value::subsref (const std::string type,
+octave_value::subsref (const std::string& type,
 		       const std::list<octave_value_list>& idx, int nargout)
 {
   if (is_constant ())
@@ -583,7 +593,7 @@ octave_value::subsref (const std::string type,
 }
 
 octave_value
-octave_value::next_subsref (const std::string type,
+octave_value::next_subsref (const std::string& type,
 			    const std::list<octave_value_list>& idx,
 			    size_t skip) 
 {
@@ -632,7 +642,7 @@ gripe_assign_failed_or_no_method (const std::string& on,
 }
 
 octave_value
-octave_value::subsasgn (const std::string type,
+octave_value::subsasgn (const std::string& type,
 			const std::list<octave_value_list>& idx,
 			const octave_value& rhs)
 {
@@ -640,7 +650,7 @@ octave_value::subsasgn (const std::string type,
 }
 
 octave_value
-octave_value::assign (assign_op op, const std::string type,
+octave_value::assign (assign_op op, const std::string& type,
 		      const std::list<octave_value_list>& idx,
 		      const octave_value& rhs)
 {
@@ -1083,7 +1093,7 @@ gripe_assign_conversion_failed (const std::string& tn1,
 }
 
 octave_value
-octave_value::numeric_assign (const std::string type,
+octave_value::numeric_assign (const std::string& type,
 			      const std::list<octave_value_list>& idx,
 			      const octave_value& rhs)
 {
@@ -1436,7 +1446,7 @@ octave_value::do_non_const_unary_op (unary_op op, const octave_value_list& idx)
 }
 
 octave_value
-octave_value::do_non_const_unary_op (unary_op op, const std::string type,
+octave_value::do_non_const_unary_op (unary_op op, const std::string& type,
 				     const std::list<octave_value_list>& idx)
 {
   octave_value retval;

@@ -82,7 +82,7 @@ octave_range::try_narrowing_conversion (void)
 }
 
 octave_value
-octave_range::subsref (const std::string type,
+octave_range::subsref (const std::string& type,
 		       const std::list<octave_value_list>& idx)
 {
   octave_value retval;

@@ -45,7 +45,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_cs_list, "cs-list");
 #if 0
 
 octave_value
-octave_list::subsref (const std::string type,
+octave_list::subsref (const std::string& type,
 		      const std::list<octave_value_list>& idx)
 {
   octave_value retval;
@@ -117,7 +117,7 @@ octave_list::do_index_op (const octave_value_list& idx, int resize_ok)
 }
 
 octave_value
-octave_list::subsasgn (const std::string type,
+octave_list::subsasgn (const std::string& type,
 		       const std::list<octave_value_list>& idx,
 		       const octave_value& rhs)
 {

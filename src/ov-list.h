@@ -64,12 +64,12 @@ public:
   octave_value *clone (void) const { return new octave_list (*this); }
   octave_value *empty_clone (void) const { return new octave_list (); }
 
-  octave_value subsref (const std::string type,
+  octave_value subsref (const std::string& type,
 			const std::list<octave_value_list>& idx);
 
   octave_value do_index_op (const octave_value_list& idx, int resize_ok);
 
-  octave_value subsasgn (const std::string type,
+  octave_value subsasgn (const std::string& type,
 			 const std::list<octave_value_list>& idx,
 			 const octave_value& rhs);
 

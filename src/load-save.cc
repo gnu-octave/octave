@@ -1993,11 +1993,11 @@ read_mat_ascii_data (std::istream& is, const std::string& filename,
   for (size_t i = 0; i < len; i++)
     {
       char c = varname[i];
-      if (! (::isalnum (c) || c == '_'))
+      if (! (isalnum (c) || c == '_'))
 	varname[i] = '_';
     }
 
-  if (! ::isalpha (varname[0]))
+  if (! isalpha (varname[0]))
     varname.insert (0, "X");
 
   if (valid_identifier (varname))

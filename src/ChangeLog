@@ -1,3 +1,22 @@
+2002-12-30  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* load-save.cc (read_mat_ascii_data): Use isalpha and isalnum, not
+	::isalpha and ::isalnum.
+
+	* defaults.cc (maybe_add_or_del_packages): SCRIPT_FILE arg is now
+	a const reference type.
+
+	* ov.h (octave_value::subsref, octave_value::subsasgn,
+	octave_value::assign, octave_value::do_non_const_unary_op,
+	octave_value::numeric_assign): TYPE arg is now a const reference
+	type.  Change all derived classes.
+
+	* ov.cc (octave_value::subsref (const std::string&, const
+	octave_value_list&)): Move body here, from ov.h.
+
+	* octave.cc (octave_main): Return 0 at end of function to avoid
+	compiler warnings.
+
 2002-12-30  Paul Kienzle <pkienzle@users.sf.net>
 
 	* parse.y: Fix typo in doc string.

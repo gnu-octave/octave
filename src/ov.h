@@ -243,24 +243,17 @@ public:
   virtual octave_value *try_narrowing_conversion (void)
     { return rep->try_narrowing_conversion (); }
 
-  virtual octave_value subsref (const std::string type,
+  virtual octave_value subsref (const std::string& type,
 				const std::list<octave_value_list>& idx)
     { return rep->subsref (type, idx); }
 
-  octave_value subsref (const std::string type, const octave_value_list& idx)
-    {
-      std::list<octave_value_list> i;
+  octave_value subsref (const std::string& type, const octave_value_list& idx);
 
-      i.push_back (idx);
-
-      return rep->subsref (type, i);
-    }
-
-  virtual octave_value_list subsref (const std::string type,
+  virtual octave_value_list subsref (const std::string& type,
 				     const std::list<octave_value_list>& idx,
     				     int nargout);
 
-  octave_value next_subsref (const std::string type, const
+  octave_value next_subsref (const std::string& type, const
 			     std::list<octave_value_list>& idx,
 			     size_t skip = 1);
 
@@ -274,11 +267,11 @@ public:
   virtual octave_value_list
   do_multi_index_op (int nargout, const octave_value_list& idx);
 
-  virtual octave_value subsasgn (const std::string type,
+  virtual octave_value subsasgn (const std::string& type,
 				 const std::list<octave_value_list>& idx,
 				 const octave_value& rhs);
 
-  octave_value assign (assign_op op, const std::string type,
+  octave_value assign (assign_op op, const std::string& type,
 		       const std::list<octave_value_list>& idx,
 		       const octave_value& rhs);
 
@@ -528,7 +521,7 @@ public:
 
   void do_non_const_unary_op (unary_op op, const octave_value_list& idx);
 
-  octave_value do_non_const_unary_op (unary_op op, const std::string type,
+  octave_value do_non_const_unary_op (unary_op op, const std::string& type,
 				      const std::list<octave_value_list>& idx);
 
   friend octave_value do_binary_op (binary_op op,
@@ -546,7 +539,7 @@ protected:
 
   // This should only be called for derived types.
 
-  octave_value numeric_assign (const std::string type,
+  octave_value numeric_assign (const std::string& type,
 			       const std::list<octave_value_list>& idx,
 			       const octave_value& rhs);
 

@@ -305,7 +305,7 @@ unprotect_function (void *sr_arg)
 }
 
 octave_value_list
-octave_user_function::subsref (const std::string type,
+octave_user_function::subsref (const std::string& type,
 			       const std::list<octave_value_list>& idx,
 			       int nargout)
 {

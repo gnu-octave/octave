@@ -39,7 +39,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 template <class MT>
 octave_value
-octave_base_matrix<MT>::subsref (const std::string type,
+octave_base_matrix<MT>::subsref (const std::string& type,
 				 const std::list<octave_value_list>& idx)
 {
   octave_value retval;
@@ -67,7 +67,7 @@ octave_base_matrix<MT>::subsref (const std::string type,
 
 template <class MT>
 octave_value
-octave_base_matrix<MT>::subsasgn (const std::string type,
+octave_base_matrix<MT>::subsasgn (const std::string& type,
 				  const std::list<octave_value_list>& idx,
 				  const octave_value& rhs)
 {

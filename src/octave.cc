@@ -601,6 +601,8 @@ octave_main (int argc, char **argv)
     retval = 0;
 
   clean_up_and_exit (retval);
+
+  return 0;
 }
 
 /*

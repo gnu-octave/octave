@@ -1,3 +1,10 @@
+1999-10-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* interpreter/*.txi: Rename from *.txi.
+	* interpreter/munge-texi.cc: New file.
+	* interpreter/Makefile.in: Use it to create .texi files from .txi
+	files and DOCSTRING files.
+
 Fri Jun 18 23:17:02 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* interpreter/Makefile.in (octave_toc.html): Add -expandinfo to

@@ -706,7 +706,7 @@ display_help_text (ostream& os, const string& msg)
       ostrstream buf;
       buf << "sed 's/^[#%]+ *//'"
 	  << " | makeinfo --fill-column " << cols
-	  << " --no-warn --no-validate --no-headers --force > "
+	  << " --no-warn --no-validate --no-headers --force --output "
 	  << tmp_file_name
 	  << ends;
 

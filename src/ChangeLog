@@ -1,3 +1,14 @@
+1999-10-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* help.cc (looks_like_texinfo): New function.
+	(display_help_text): Use it to see if the doc string looks like
+	Texinfo source.  If so, use makeinfo to format the text before
+	displaying it.
+
+	* mkgendoc: New script.
+	* Makefile.in: Use it to create gendoc.cc, which is compiled and
+	run to create DOCSTRINGS file from sources.
+
 1999-10-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* help.cc (help_from_info): Print `unable to find info' message if

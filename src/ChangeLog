@@ -1,3 +1,10 @@
+2002-04-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* toplev.cc (octave_config_info): Define struct member EXEEXT, not EXE.
+	* Makefile.in (install-bin): Use $(EXEEXT), not $(EXE).
+	* oct-conf.h.in (OCTAVE_CONF_EXEEXT): Define and substitute
+	OCTAVE_CONF_EXEEXT, not OCTAVE_CONF_EXE.
+
 2002-04-03  Steven G. Johnson <stevenj@alum.mit.edu>
 
 	* DLD-FUNCTIONS/balance.cc: Use F77_FUNC instead of F77_FCN.

@@ -41,3 +41,19 @@
 #  define F77_FUNC(x,X) x ## _
 #  define F77_FUNC_(x,X) x ## __
 #endif
+
+#if !defined(HAVE_DEV_T)
+typedef dev_t short
+#endif
+
+#if !defined(HAVE_INO_T)
+typedef ino_t unsigned long
+#endif
+
+#if !defined(HAVE_NLINK_T)
+typedef nlink_t short
+#endif
+
+#if !defined(HAVE_SIGSET_T)
+typedef sigset_t int
+#endif

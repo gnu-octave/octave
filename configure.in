@@ -22,7 +22,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### 02111-1307, USA. 
 
 AC_INIT
-AC_REVISION($Revision: 1.354 $)
+AC_REVISION($Revision: 1.355 $)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -352,7 +352,7 @@ if test -n "$hdf5_lib"; then
 	WITH_HDF5=true
         HDF5_LIBS="-l$hdf5_lib -lz"
         LIBS="$HDF5_LIBS $LIBS"
-        AC_DEFINE(HAVE_HDF5,1,[Define if HDF5 is available.])])])])
+        AC_DEFINE(HAVE_HDF5, 1, [Define if HDF5 is available.])])])])
 fi
 
 # Checks for FFTW header and library.
@@ -382,7 +382,7 @@ fi
 
 if test "$with_fftw" = yes; then
   FFT_DIR=''
-  AC_DEFINE(HAVE_FFTW,1,[Define if the FFTW library is available.])
+  AC_DEFINE(HAVE_FFTW, 1, [Define if the FFTW library is available.])
 fi
 
 # ----------------------------------------------------------------------
@@ -1014,7 +1014,7 @@ AC_STRUCT_TM
 AC_STRUCT_TIMEZONE
 AC_FUNC_CLOSEDIR_VOID
 
-OCTAVE_STRUCT_GR_PASSWD
+AC_CHECK_MEMBERS(struct group.gr_passwd)
 
 octave_found_termlib=no
 for termlib in ncurses curses termcap terminfo termlib; do
@@ -1063,10 +1063,8 @@ AC_TYPE_OFF_T
 AC_TYPE_PID_T
 AC_TYPE_SIZE_T
 AC_TYPE_UID_T
-AC_CHECK_TYPE(dev_t, short)
-AC_CHECK_TYPE(ino_t, unsigned long)
-AC_CHECK_TYPE(nlink_t, short)
-OCTAVE_CHECK_TYPE(sigset_t, [#include <signal.h>], int)
+AC_CHECK_TYPES([dev_t, ino_t, nlink_t, nlink_t])
+AC_CHECK_TYPES(sigset_t, , , [#include <signal.h>])
 
 ### A system dependent kluge or two.
 
@@ -1121,14 +1119,6 @@ AC_SUBST(INSTALL_SCRIPT)
 OCTAVE_PROG_GNUPLOT
 OCTAVE_PROG_PAGER
 OCTAVE_PROG_GPERF
-
-EXE=
-case "$canonical_host_type" in
-  *-*-cygwin32)
-    EXE=.exe
-  ;;
-esac
-AC_SUBST(EXE)
 
 ### Even though we include config.h, we need to have the preprocessor
 ### defines available in a variable for the octave-bug script.  Use

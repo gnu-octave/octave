@@ -72,18 +72,6 @@ fi
 AC_SUBST(ARFLAGS)
 ])
 dnl
-dnl See if struct group has a gr_passwd field.
-dnl
-AC_DEFUN(OCTAVE_STRUCT_GR_PASSWD,
-[AC_CACHE_CHECK([for gr_passwd in struct group], octave_cv_struct_gr_passwd,
-[AC_TRY_COMPILE([#include <sys/types.h>
-#include <grp.h>], [struct group s; s.gr_passwd;],
-octave_cv_struct_gr_passwd=yes, octave_cv_struct_gr_passwd=no)])
-if test $octave_cv_struct_gr_passwd = yes; then
-  AC_DEFINE(HAVE_GR_PASSWD,1,[Define if your system's struct group has a gr_passwd field.])
-fi
-])
-dnl
 dnl See if the standard string class has npos as a member.
 dnl
 AC_DEFUN(OCTAVE_STRING_NPOS,
@@ -265,31 +253,6 @@ else
 fi
 if test "$octave_cv_must_reinstall_sighandlers" = yes; then
   AC_DEFINE(MUST_REINSTALL_SIGHANDLERS,1,[Define if signal handlers must be reinstalled after they are called.])
-fi
-])
-dnl
-dnl This check originally from bash 2.0.
-dnl
-dnl Check for typedef'd symbols in header files, but allow the caller to
-dnl specify the include files to be checked in addition to the default.
-dnl 
-dnl OCTAVE_CHECK_TYPE(TYPE, HEADERS, DEFAULT[, VALUE-IF-FOUND])
-AC_DEFUN(OCTAVE_CHECK_TYPE,
-[AC_REQUIRE([AC_HEADER_STDC])dnl
-AC_MSG_CHECKING(for $1)
-AC_CACHE_VAL(octave_cv_type_$1,
-[AC_EGREP_CPP($1, [#include <sys/types.h>
-#if STDC_HEADERS
-#include <stdlib.h>
-#endif
-$2
-], octave_cv_type_$1=yes, octave_cv_type_$1=no)])
-AC_MSG_RESULT($octave_cv_type_$1)
-ifelse($#, 4, [if test $octave_cv_type_$1 = yes; then
-	AC_DEFINE($4, 1, [Define if you have typedef $1.])
-	fi])
-if test $octave_cv_type_$1 = no; then
-  AC_DEFINE($1, $3, [Define to typedef for $1.])
 fi
 ])
 dnl

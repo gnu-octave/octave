@@ -326,9 +326,9 @@ install-strip:
 
 install-bin:
 	$(top_srcdir)/mkinstalldirs $(bindir)
-	rm -f $(bindir)/octave$(EXE)
-	$(INSTALL_PROGRAM) octave$(EXE) $(bindir)/octave-$(version)$(EXE)
-	cd $(bindir); $(LN_S) octave-$(version)$(EXE) octave$(EXE)
+	rm -f $(bindir)/octave$(EXEEXT)
+	$(INSTALL_PROGRAM) octave$(EXEEXT) $(bindir)/octave-$(version)$(EXEEXT)
+	cd $(bindir); $(LN_S) octave-$(version)$(EXEEXT) octave$(EXEEXT)
 .PHONY: install-bin
 
 install-oct:
@@ -378,7 +378,7 @@ install-inc:
 .PHONY: install-inc
 
 uninstall:
-	rm -f $(bindir)/octave$(EXE)
+	rm -f $(bindir)/octave$(EXEEXT)
 	rm -f $(octlibdir)/liboctinterp.$(LIBEXT)
 	rm -f $(octlibdir)/liboctinterp.$(SHLEXT)
 	rm -f $(octlibdir)/liboctinterp.$(SHLEXT_VER)

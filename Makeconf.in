@@ -19,7 +19,7 @@ version := $(shell $(getversion) $(version_file))
 
 #### Start of system configuration section. ####
 
-EXE = @EXE@
+EXEEXT = @EXEEXT@
 
 LEX = @LEX@
 LFLAGS = @LFLAGS@
@@ -364,7 +364,7 @@ sed < $< \
   -e "s;%OCTAVE_CONF_DEPEND_FLAGS%;\"${DEPEND_FLAGS}\";" \
   -e "s;%OCTAVE_CONF_DEPEND_EXTRA_SED_PATTERN%;\"${DEPEND_EXTRA_SED_PATTERN}\";" \
   -e "s;%OCTAVE_CONF_DLFCN_INCFLAGS%;\"${DLFCN_INCFLAGS}\";" \
-  -e "s;%OCTAVE_CONF_EXE%;\"${EXE}\";" \
+  -e "s;%OCTAVE_CONF_EXEEXT%;\"${EXEEXT}\";" \
   -e "s;%OCTAVE_CONF_F2C%;\"${F2C}\";" \
   -e "s;%OCTAVE_CONF_F2CFLAGS%;\"${F2CFLAGS}\";" \
   -e "s;%OCTAVE_CONF_F77%;\"${F77}\";" \

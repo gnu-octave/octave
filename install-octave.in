@@ -59,7 +59,7 @@ else
   echo_c='\c'
 fi
 
-EXE=@EXE@
+EXEEXT=@EXEEXT@
 SHLEXT=@SHLEXT@
 SHLEXT_VER=$SHLEXT.$version
 

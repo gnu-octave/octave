@@ -1,3 +1,15 @@
+2002-04-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makeconf.in: Set and substitute EXEEXT, not EXE.
+
+	* configure.in (EXE): Delete check and substitution.
+	* install-octave.in: Use EXEEXT instead of EXE.
+
+	* configure.in: Use AC_CHECK_MEMBERS, not OCTAVE_STRUCT_GR_PASSWD.
+	Use AC_CHECK_TYPES, not AC_CHECK_TYPE or OCTAVE_CHECK_TYPE.
+	* aclocal.m4 (OCTAVE_STRUCT_GR_PASSWD, OCTAVE_CHECK_TYPE): Delete.
+	* acconfig.h (dev_t, ino_t, nlink_t, sigset_t): Typedef if not found.
+
 2002-04-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* aclocal.m4: Replace AC_LANG_SAVE, AC_LANG_C, AC_LANG_CPLUSPLUS,

@@ -632,6 +632,7 @@ void
 reset_parser (void)
 {
   BEGIN 0;
+  error_state = 0;
   promptflag = 1;
   doing_set = 0;
   braceflag = 0;
@@ -1008,21 +1009,21 @@ is_keyword (char *s)
 }
 
 /*
- * Try to find an identifier in one symbol table or another.  Insert
- * it in the local symbol table it is is not already there and it does
- * not already have global scope.
+ * Try to find an identifier in one symbol table or another.
  */
 static symbol_record *
 lookup_identifier (char *name)
 {
-  symbol_record *lsr = curr_sym_tab->lookup (name, 0, 0);
-  if (lsr != (symbol_record *) NULL)
-    return lsr;
+  if (curr_sym_tab == top_level_sym_tab)
+    {
+      symbol_record *lsr = curr_sym_tab->lookup (name, 0, 0);
+      if (lsr != (symbol_record *) NULL)
+	return lsr;
 
-  symbol_record *gsr = global_sym_tab->lookup (name, 0, 0);
-  if (curr_sym_tab == top_level_sym_tab && gsr != (symbol_record *) NULL
-      && ! (looping || iffing))
-    return gsr;
+      symbol_record *gsr = global_sym_tab->lookup (name, 0, 0);
+      if (gsr != (symbol_record *) NULL && ! (looping || iffing))
+	return gsr;
+    }
 
   return curr_sym_tab->lookup (name, 1, 0);
 }

@@ -6,7 +6,7 @@
 # Department of Chemical Engineering
 # The University of Texas at Austin
 
-TOPDIR = ..
+TOPDIR = ../..
 
 script_sub_dir = image
 

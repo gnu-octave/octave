@@ -74,38 +74,18 @@ ComplexNDArray::operator ! (void) const
 
 // XXX FIXME XXX -- this is not quite the right thing.
 
-boolMatrix
+boolNDArray
 ComplexNDArray::all (int dim) const
 {
-  boolMatrix retval;
-
-  if (dimensions.length () == 2)
-    {
-      ComplexMatrix tmp = matrix_value ();
-      retval = tmp.all (dim);
-    }
-  else
-    (*current_liboctave_error_handler)
-      ("all is not yet implemented for N-d Arrays");
-
-  return retval;
+  MX_ND_ALL_ANY (MX_ND_ALL_EVAL (real (elem (iter_idx)) == 0
+				 && imag (elem (iter_idx)) == 0));
 }
 
-boolMatrix
+boolNDArray
 ComplexNDArray::any (int dim) const
 {
-  boolMatrix retval;
-
-  if (dimensions.length () == 2)
-    {
-      ComplexMatrix tmp = matrix_value ();
-      retval = tmp.any (dim);
-    }
-  else
-    (*current_liboctave_error_handler)
-      ("any is not yet implemented for N-d Arrays");
-
-  return retval;
+  MX_ND_ALL_ANY (MX_ND_ANY_EVAL (real (elem (iter_idx))
+				 || imag (elem (iter_idx))));
 }
 
 ComplexMatrix
@@ -141,6 +121,13 @@ ComplexNDArray::increment_index (Array<int>& ra_idx,
 				 int start_dimension)
 {
   ::increment_index (ra_idx, dimensions, start_dimension);
+}
+
+int 
+ComplexNDArray::compute_index (Array<int>& ra_idx,
+			       const dim_vector& dimensions)
+{
+  return ::compute_index (ra_idx, dimensions);
 }
 
 NDS_CMP_OPS(ComplexNDArray, real, Complex, real)

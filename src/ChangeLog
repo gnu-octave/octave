@@ -1,5 +1,9 @@
 2003-10-27  Petter Risholm  <risholm@stud.ntnu.no>
 
+	* ov-base-mat.cc (octave_base_matrix<MT>::is_true):
+	Only work for 2-dimensional objects.
+	* data.cc (ANY_ALL (FCN)): Allow dim to take values large than 2.
+
 	* ov.h (octave_value::ndims): New function.
 	* ov-base.h (octave_base_value::ndims): Likewise.
 	* ov-base-scalar.h (octave_base_scalar<T>::ndims): Likewise.

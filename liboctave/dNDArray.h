@@ -72,8 +72,8 @@ public:
 
   // XXX FIXME XXX -- this is not quite the right thing.
 
-  boolMatrix all (int dim = -1) const;
-  boolMatrix any (int dim = -1) const;
+  boolNDArray all (int dim = -1) const;
+  boolNDArray any (int dim = -1) const;
 
   Matrix matrix_value (void) const;
 
@@ -82,6 +82,9 @@ public:
   static void increment_index (Array<int>& ra_idx,
 			       const dim_vector& dimensions,
 			       int start_dimension = 0);
+
+  static int compute_index (Array<int>& ra_idx,
+			    const dim_vector& dimensions);
 
   // i/o
 

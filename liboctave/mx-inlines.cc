@@ -350,6 +350,105 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
 
 #define MX_ANY_OP(DIM) MX_ANY_ALL_OP (DIM, false, !=, true)
 
+#define MX_ND_ALL_EXPR elem (iter_idx) == 0
+
+#define MX_ND_ANY_EXPR elem (iter_idx)
+
+#define MX_ND_ALL_EVAL(TEST_EXPR) \
+ if (TEST_EXPR) \
+   { \
+     if (dim > -1) \
+       iter_idx (dim) = 0; \
+     retval (iter_idx) = 0; \
+     break; \
+   } \
+   else \
+   { \
+     if (dim > -1) \
+       iter_idx (dim) = 0; \
+     retval (iter_idx) = 1; \
+   } \
+
+#define MX_ND_ANY_EVAL(TEST_EXPR) \
+ if (TEST_EXPR) \
+   { \
+     if (dim > -1) \
+       iter_idx (dim) = 0; \
+     retval (iter_idx) = 1; \
+     break; \
+   } 
+
+#define MX_ND_ALL_ANY(EVAL_EXPR) \
+ \
+  boolNDArray retval; \
+ \
+  dim_vector dv = dims (); \
+ \
+  if (dim == -1)/* We need to find first non-singleton dim */ \
+    { \
+      for (int i = 0; i < dv.length (); i++) \
+	{ \
+          if (dv (i) > 1) \
+	    { \
+	      dim = i; \
+              break; \
+	    } \
+	} \
+      if (dim == -1) \
+        { \
+	  (*current_liboctave_error_handler) \
+	    ("all dimensions are singleton"); \
+          return retval; \
+	} \
+    } \
+ /*  Length of Dimension */\
+  int dim_length = 1; \
+  /* dim = -1 means from here that the user specified a */ \
+  /* dimension which is larger that the number of dimensions */ \
+  /* of the array */ \
+  if (dim >= dv.length ()) \
+    dim = -1; \
+  else \
+    dim_length = dv (dim); \
+  if (dim > -1) \
+    dv (dim) = 1; \
+ \
+ /* We need to find the number of elements we need to */ \
+ /* fill in retval. First we need to get last idx of  */ \
+ /* the dimension vector                              */ \
+  Array<int> temp_dv (dv.length (), 0); \
+  for (int x = 0; x < dv.length (); x++) \
+    temp_dv (x) = dv (x) - 1; \
+ \
+ /* This finds the number of elements in retval */ \
+  int num_iter = compute_index (temp_dv, dv) + 1; \
+ \
+ /* Make sure retval has correct dimensions */ \
+ retval.resize (dv, false); \
+ \
+  Array<int> iter_idx (dv.length (), 0); \
+ \
+ /* Filling in values.         */ \
+ /* First loop finds new index */ \
+  for (int j = 0; j < num_iter; j++) \
+    { \
+      for (int i = 0; i < dim_length; i++) \
+	{ \
+	  if (dim > -1) \
+	     iter_idx (dim) = i; \
+ \
+	  EVAL_EXPR \
+	} \
+ \
+      if (dim > -1) \
+        iter_idx (dim) = 0; \
+ \
+      increment_index (iter_idx, dv); \
+    } \
+ \
+  return retval
+
+
 #endif
 
 /*

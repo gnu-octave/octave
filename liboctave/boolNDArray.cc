@@ -50,38 +50,16 @@ boolNDArray::operator ! (void) const
 
 // XXX FIXME XXX -- this is not quite the right thing.
 
-boolMatrix
+boolNDArray
 boolNDArray::all (int dim) const
 {
-  boolMatrix retval;
-
-  if (dimensions.length () == 2)
-    {
-      boolMatrix tmp = matrix_value ();
-      retval = tmp.all (dim);
-    }
-  else
-    (*current_liboctave_error_handler)
-      ("all is not yet implemented for N-d Arrays");
-
-  return retval;
+  MX_ND_ALL_ANY (MX_ND_ALL_EVAL (MX_ND_ALL_EXPR));
 }
 
-boolMatrix
+boolNDArray
 boolNDArray::any (int dim) const
 {
-  boolMatrix retval;
-
-  if (dimensions.length () == 2)
-    {
-      boolMatrix tmp = matrix_value ();
-      retval = tmp.any (dim);
-    }
-  else
-    (*current_liboctave_error_handler)
-      ("any is not yet implemented for N-d Arrays");
-
-  return retval;
+  MX_ND_ALL_ANY (MX_ND_ANY_EVAL (MX_ND_ANY_EXPR));
 }
 
 boolMatrix
@@ -117,6 +95,13 @@ boolNDArray::increment_index (Array<int>& ra_idx,
 			      int start_dimension)
 {
   ::increment_index (ra_idx, dimensions, start_dimension);
+}
+
+int
+boolNDArray::compute_index (Array<int>& ra_idx,
+			    const dim_vector& dimensions)
+{
+  return ::compute_index (ra_idx, dimensions);
 }
 
 NDND_CMP_OPS (boolNDArray, , boolNDArray, )

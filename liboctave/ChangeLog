@@ -1,3 +1,16 @@
+2003-10-27  Petter Risholm  <risholm@stud.ntnu.no>
+
+	* mx-inlines.cc (MX_ND_ALL_EXPR, MX_ND_ANY_EXPR,
+	MX_ND_ALL_EVAL, MX_ND_ANY_EVAL, MX_ND_ALL_ANY): New macros.
+	* dNDArray.h (NDArray::all, NDArray::any): Return type now boolNDArray.
+	* CNDArray.h (ComplexNDArray::all, ComplexNDArray::any): Likewise.
+	* boolNDArray.h (boolNDArray::all, boolNDArray::any): Likewise.
+	* chNDArray.h (charNDArray::all, charNDArray::any): Likewise.
+	* dNDArray.cc (NDArray::all, NDArray::any): Make them work.
+	* CNDArray.cc (ComplexNDArray::all, ComplexNDArray::any): Likewise.
+	* boolNDArray.cc (boolNDArray::all, boolNDArray::any): Likewise.
+	* chNDArray.cc (charNDArray::all, charNDArray::any): Likewise.
+
 2003-10-27  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Array.cc (Array<T>::resize_and_fill): Allow number of dimensions

@@ -53,7 +53,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  \
       if (! error_state) \
         { \
-          if (dim <= 1 && dim >= -1) \
+          if (dim >= -1) \
 	    retval = args(0).FCN (dim); \
           else \
 	    error (#FCN ": invalid dimension argument = %d", dim + 1); \
@@ -366,7 +366,7 @@ If @var{y} is zero, the result implementation-defined.\n\
  \
       if (! error_state) \
 	{ \
-	  if (dim <= 1 && dim >= -1) \
+	  if (dim >= -1) \
 	    { \
 	      if (arg.is_real_type ()) \
 		{ \

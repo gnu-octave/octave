@@ -176,13 +176,19 @@ octave_base_matrix<MT>::is_true (void) const
 {
   bool retval = false;
 
-  if (rows () > 0 && columns () > 0)
+  if (matrix.dims () . length () == 2)
     {
-      boolMatrix m = (matrix.all () . all ());
-
-      retval = (m.rows () == 1 && m.columns () == 1 && m(0,0));
+      if (rows () > 0 && columns () > 0)
+	{
+	  boolNDArray m = (matrix.all () . all ());
+	  
+	  retval = (m.rows () == 1 && m.columns () == 1 && m(0,0));
+	}
     }
-
+  else
+    (*current_liboctave_error_handler)
+      ("is_true not yet implemented for N-d Arrays");
+  
   return retval;
 }
 
@@ -192,7 +198,7 @@ octave_base_matrix<MT>::length (void) const
 {
   int retval = 0;
 
-  dim_vector dv = dims();
+  dim_vector dv = dims ();
       
   for (int i = 0; i < dv.length (); i++)
     if (dv(i) > retval)

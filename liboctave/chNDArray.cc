@@ -37,38 +37,16 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // XXX FIXME XXX -- this is not quite the right thing.
 
-boolMatrix
+boolNDArray
 charNDArray::all (int dim) const
 {
-  boolMatrix retval;
-
-  if (dimensions.length () == 2)
-    {
-      charMatrix tmp = matrix_value ();
-      retval = tmp.all (dim);
-    }
-  else
-    (*current_liboctave_error_handler)
-      ("all is not yet implemented for N-d Arrays");
-
-  return retval;
+  MX_ND_ALL_ANY (MX_ND_ALL_EVAL (elem (iter_idx) == ' '));
 }
 
-boolMatrix
+boolNDArray
 charNDArray::any (int dim) const
 {
-  boolMatrix retval;
-
-  if (dimensions.length () == 2)
-    {
-      charMatrix tmp = matrix_value ();
-      retval = tmp.any (dim);
-    }
-  else
-    (*current_liboctave_error_handler)
-      ("any is not yet implemented for N-d Arrays");
-
-  return retval;
+  MX_ND_ALL_ANY (MX_ND_ANY_EVAL (elem (iter_idx) != ' '));
 }
 
 charMatrix
@@ -104,6 +82,13 @@ charNDArray::increment_index (Array<int>& ra_idx,
 			      int start_dimension)
 {
   ::increment_index (ra_idx, dimensions, start_dimension);
+}
+
+int 
+charNDArray::compute_index (Array<int>& ra_idx,
+			    const dim_vector& dimensions)
+{
+  return ::compute_index (ra_idx, dimensions);
 }
 
 /*

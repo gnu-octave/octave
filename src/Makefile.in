@@ -88,7 +88,7 @@ INCLUDES := arith-ops.h builtins.h defaults.h.in defun.h defun-dld.h \
 	parse.h pathlen.h pr-output.h procstream.h pt-base.h \
 	pt-cmd.h pt-const.h pt-exp-base.h pt-exp.h pt-fcn.h \
 	pt-fvc-base.h pt-fvc.h pt-mat.h pt-misc.h pt-mvr-base.h \
-	pt-mvr.h pt-plot.h sighandlers.h statdefs.h symtab.h sysdep.h \
+	pt-mvr.h pt-plot.h sighandlers.h symtab.h sysdep.h \
 	systime.h syswait.h token.h toplev.h unwind-prot.h \
 	user-prefs.h utils.h variables.h version.h xdiv.h xpow.h Map.h \
 	SLStack.h Stack.h

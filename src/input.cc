@@ -458,7 +458,7 @@ octave_gets (void)
       const char *ps = (promptflag > 0) ? user_pref.ps1.c_str () :
 	user_pref.ps2.c_str ();
 
-      const char *prompt = decode_prompt_string (ps).c_str ();
+      string prompt = decode_prompt_string (ps);
 
       if (interactive)
 	{
@@ -468,14 +468,12 @@ octave_gets (void)
 
       maybe_write_to_diary_file (prompt);
 
-      octave_gets_line = gnu_readline (prompt);
-
-      delete [] prompt;
+      octave_gets_line = gnu_readline (prompt.c_str ());
     }
   else
     octave_gets_line = gnu_readline ("");
 
-  current_input_line = octave_gets_line;
+  current_input_line = string (octave_gets_line);
 
   if (octave_gets_line && *octave_gets_line)
     {
@@ -994,12 +992,11 @@ get_user_input (const Octave_object& args, int debug = 0)
   if (nargin == 2)
     read_as_string++;
 
-  const char *prompt = "debug> ";
-  string tstr;
+  string prompt ("debug> ");
+
   if (nargin > 0)
    {
-     tstr = args(0).string_value ();
-     prompt = tstr.c_str ();
+     prompt = args(0).string_value ();
 
      if (error_state)
        {
@@ -1012,7 +1009,7 @@ get_user_input (const Octave_object& args, int debug = 0)
 
   flush_output_to_pager ();
 
-  char *input_buf = gnu_readline (prompt);
+  char *input_buf = gnu_readline (prompt.c_str ());
 
   if (input_buf)
     {

@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/sh -e
 
 # Create additional links to .oct files that define more than one
 # function.
@@ -6,6 +6,8 @@
 # The first arg is taken as the directory where the .oct files are
 # installed.  The remaining arguments should be the list of source
 # files that were used to create the .oct files.
+
+LN_S="@LN_S@"
 
 links_dir=$1
 shift
@@ -21,8 +23,10 @@ for f in "$@"; do
         true
       else
 	echo "creating link $n.oct -> $base.oct"
-        ( cd $links_dir; ln $base.oct $n.oct )
+        ( cd $links_dir; $LN $base.oct $n.oct )
       fi
     done
   fi
 done
+
+exit $?

@@ -34,9 +34,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "error.h"
 #include "gripes.h"
 #include "mappers.h"
-#include "pt-const.h"
 #include "unwind-prot.h"
 #include "utils.h"
+#include "ov.h"
+#include "variables.h"
 #include "xdiv.h"
 #include "xpow.h"
 
@@ -66,128 +67,6 @@ Matrix_bool_op
   Matrix_AND,
   Matrix_OR, 
 };
-
-// Check row and column dimensions for binary matrix operations.
-
-static inline int
-m_add_conform (const Matrix& a, const Matrix& b, int warn)
-{
-  int ar = a.rows ();
-  int ac = a.columns ();
-  int br = b.rows ();
-  int bc = b.columns ();
-
-  int ok = (ar == br && ac == bc);
-
-  if (! ok && warn)
-    gripe_nonconformant (ar, ac, br, bc);
-
-  return ok;
-}
-
-static inline int
-m_add_conform (const Matrix& a, const ComplexMatrix& b, int warn)
-{
-  int ar = a.rows ();
-  int ac = a.columns ();
-  int br = b.rows ();
-  int bc = b.columns ();
-
-  int ok = (ar == br && ac == bc);
-
-  if (! ok && warn)
-    gripe_nonconformant (ar, ac, br, bc);
-
-  return ok;
-}
-
-static inline int
-m_add_conform (const ComplexMatrix& a, const Matrix& b, int warn)
-{
-  int ar = a.rows ();
-  int ac = a.columns ();
-  int br = b.rows ();
-  int bc = b.columns ();
-
-  int ok = (ar == br && ac == bc);
-
-  if (! ok && warn)
-    gripe_nonconformant (ar, ac, br, bc);
-
-  return ok;
-}
-
-static inline int
-m_add_conform (const ComplexMatrix& a, const ComplexMatrix& b, int warn)
-{
-  int ar = a.rows ();
-  int ac = a.columns ();
-  int br = b.rows ();
-  int bc = b.columns ();
-
-  int ok = (ar == br && ac == bc);
-
-  if (! ok && warn)
-    gripe_nonconformant (ar, ac, br, bc);
-
-  return ok;
-}
-
-static inline int
-m_mul_conform (const Matrix& a, const Matrix& b, int warn)
-{
-  int ac = a.columns ();
-  int br = b.rows ();
-
-  int ok = (ac == br);
-
-  if (! ok && warn)
-    gripe_nonconformant (a.rows (), ac, br, b.columns ());
-
-  return ok;
-}
-
-static inline int
-m_mul_conform (const Matrix& a, const ComplexMatrix& b, int warn)
-{
-  int ac = a.columns ();
-  int br = b.rows ();
-
-  int ok = (ac == br);
-
-  if (! ok && warn)
-    gripe_nonconformant (a.rows (), ac, br, b.columns ());
-
-  return ok;
-}
-
-static inline int
-m_mul_conform (const ComplexMatrix& a, const Matrix& b, int warn)
-{
-  int ac = a.columns ();
-  int br = b.rows ();
-
-  int ok = (ac == br);
-
-  if (! ok && warn)
-    gripe_nonconformant (a.rows (), ac, br, b.columns ());
-
-  return ok;
-}
-
-static inline int
-m_mul_conform (const ComplexMatrix& a, const ComplexMatrix& b, int warn)
-{
-  int ac = a.columns ();
-  int br = b.rows ();
-
-  int ok = (a.columns () == br);
-
-  if (! ok && warn)
-    gripe_nonconformant (a.rows (), ac, br, b.columns ());
-
-  return ok;
-}
 
 // Stupid binary comparison operations like the ones Matlab provides.
 // One for each type combination, in the order given here:

@@ -53,6 +53,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "sysdep.h"
 #include "syswait.h"
 #include "utils.h"
+#include "variables.h"
 
 static Octave_map
 mk_stat_map (const file_stat& fs)

@@ -45,7 +45,8 @@ Software Foundation, Inc.
 #include "gripes.h"
 #include "help.h"
 #include "oct-map.h"
-#include "pt-const.h"
+#include "ov.h"
+#include "variables.h"
 #include "oct-obj.h"
 #include "utils.h"
 
@@ -794,7 +795,7 @@ return nonzero if S is a structure with element NAME")
       if (args(0).is_map () && args(1).is_string ())
 	{
 	  string s = args(1).string_value ();
-	  octave_value tmp = args(0).lookup_map_element (s, 0, 1);
+	  octave_value tmp = args(0).struct_elt_val (s);
 	  retval = (double) tmp.is_defined ();
 	}
     }

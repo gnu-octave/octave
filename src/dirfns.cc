@@ -345,8 +345,7 @@ users home directory")
     }
 
   string directory = get_working_directory ("cd");
-  octave_value *dir = new octave_value (directory);
-  bind_builtin_variable ("PWD", dir, 1);
+  bind_builtin_variable ("PWD", directory, 1);
 
   return retval;
 }

@@ -2,7 +2,9 @@
 
 	* version.h (OCTAVE_VERSION): Now 2.1.58.
 
-	* Makefile.in (INCLUDES): Add OPERATORS/op-int.h to the list.
+	* Makefile.in (OP_INCLUDES): New variable.
+	Include OPERATORS/op-int.h here.
+	* Makefile.in (dist): Also link $(OP_INCLUDES).
 
 	* Makefile.in (DISTFILES): Include $(EXTRAS) in the list.
 

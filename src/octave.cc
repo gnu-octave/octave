@@ -262,9 +262,9 @@ execute_startup_files (void)
       // (if it exists), then from the file
       // $(prefix)/lib/octave/$(version)/m/octaverc (if it exists).
 
-      parse_and_execute (Vlocal_site_defaults_file, 0, verbose);
+      parse_and_execute (Vlocal_site_defaults_file, verbose);
 
-      parse_and_execute (Vsite_defaults_file, 0, verbose);
+      parse_and_execute (Vsite_defaults_file, verbose);
     }
 
   if (read_init_files)
@@ -285,7 +285,7 @@ execute_startup_files (void)
 
       if (! Vhome_directory.empty ())
 	{
-	  parse_and_execute (home_rc, 0, verbose);
+	  parse_and_execute (home_rc, verbose);
 
 	  // Names alone are not enough.
 
@@ -301,7 +301,7 @@ execute_startup_files (void)
 	}
 
       if (! home_rc_already_executed)
-	parse_and_execute (local_rc, 0, verbose);
+	parse_and_execute (local_rc, verbose);
     }
 
   run_unwind_frame ("execute_startup_files");

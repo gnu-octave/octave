@@ -37,14 +37,14 @@ extern void
 clean_up_and_exit (int) GCC_ATTR_NORETURN;
 
 extern void
-parse_and_execute (FILE *f, bool print = false);
+parse_and_execute (FILE *f);
 
 extern void
-parse_and_execute (const string& s, bool print = false, bool verbose = false,
+parse_and_execute (const string& s, bool verbose = false,
 		   const char *warn_for = 0);
 
 extern octave_value
-eval_string (const string&, bool print, int& parse_status);
+eval_string (const string&, bool silent, int& parse_status);
 
 extern int
 main_loop (void);

@@ -471,7 +471,7 @@ do_edit_history (int argc, const string_vector& argv)
   Vecho_executing_commands = ECHO_CMD_LINE;
   input_from_tmp_history_file = 1;
 
-  parse_and_execute (name, 1);
+  parse_and_execute (name);
 
   run_unwind_frame ("do_edit_history");
 
@@ -498,7 +498,7 @@ do_run_history (int argc, const string_vector& argv)
   Vecho_executing_commands = ECHO_CMD_LINE;
   input_from_tmp_history_file = 1;
 
-  parse_and_execute (name, 1);
+  parse_and_execute (name);
 
   run_unwind_frame ("do_run_history");
 

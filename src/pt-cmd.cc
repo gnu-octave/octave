@@ -198,7 +198,8 @@ tree_while_command::eval (void)
 	{
 	  if (list)
 	    {
-	      list->eval (true);
+	      list->eval ();
+
 	      if (error_state)
 		{
 		  eval_error ();
@@ -256,7 +257,8 @@ tree_for_command::do_for_loop_once (tree_return_list *lst,
 
   if (list)
     {
-      list->eval (true);
+      list->eval ();
+
       if (error_state)
 	{
 	  eval_error ();
@@ -286,7 +288,8 @@ tree_for_command::do_for_loop_once (tree_index_expression *idx_expr,
 
   if (list)
     {
-      list->eval (true);
+      list->eval ();
+
       if (error_state)
 	{
 	  eval_error ();
@@ -316,7 +319,8 @@ tree_for_command::do_for_loop_once (tree_identifier *ident,
 
   if (list)
     {
-      list->eval (true);
+      list->eval ();
+
       if (error_state)
 	{
 	  eval_error ();
@@ -673,7 +677,7 @@ do_catch_code (void *ptr)
   breaking = 0;
 
   if (list)
-    list->eval (true);
+    list->eval ();
 
   // This is the one for breaking.  (The unwind_protects are popped
   // off the stack in the reverse of the order they are pushed on).
@@ -710,7 +714,7 @@ tree_try_catch_command::eval (void)
     }
 
   if (try_code)
-    try_code->eval (true);
+    try_code->eval ();
 
   if (catch_code && error_state)
     {
@@ -763,7 +767,7 @@ do_unwind_protect_cleanup_code (void *ptr)
   breaking = 0;
 
   if (list)
-    list->eval (true);
+    list->eval ();
 
   // This is the one for breaking.  (The unwind_protects are popped
   // off the stack in the reverse of the order they are pushed on).
@@ -799,7 +803,7 @@ tree_unwind_protect_command::eval (void)
   add_unwind_protect (do_unwind_protect_cleanup_code, cleanup_code);
 
   if (unwind_protect_code)
-    unwind_protect_code->eval (true);
+    unwind_protect_code->eval ();
 
   run_unwind_protect ();
 }

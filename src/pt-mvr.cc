@@ -312,7 +312,7 @@ tree_multi_assignment_expression::eval (bool print, int nargout,
 	      // works, but maybe we should have the option of
 	      // skipping the assignment instead.
 
-	      octave_value *tmp = 0;
+	      tree_constant *tmp = 0;
 	      if (results(i).is_undefined ())
 		{
 		  error ("element number %d undefined in return list", i+1);
@@ -320,7 +320,7 @@ tree_multi_assignment_expression::eval (bool print, int nargout,
 		  break;
 		}
 	      else
-		tmp = new octave_value (results(i));
+		tmp = new tree_constant (results(i));
 
 	      tree_simple_assignment_expression tmp_expr
 		(lhs_expr, tmp, 1, 0, ma_line, ma_column);

@@ -41,7 +41,7 @@ class tree_walker;
 
 #include <string>
 
-#include "pt-const.h"
+#include "ov.h"
 #include "pt-mvr-base.h"
 #include "oct-obj.h"
 

@@ -96,28 +96,6 @@ public:
   friend ComplexColumnVector operator * (const ComplexMatrix& a,
 					 const ComplexColumnVector& b);
 
-  // column vector by column vector -> column vector operations
-
-  friend ComplexColumnVector operator + (const ComplexColumnVector& a,
-					 const ColumnVector& b);
-  friend ComplexColumnVector operator - (const ComplexColumnVector& a,
-					 const ColumnVector& b);
-
-  friend ComplexColumnVector operator + (const ColumnVector& a,
-					 const ComplexColumnVector& b);
-  friend ComplexColumnVector operator - (const ColumnVector& a,
-					 const ComplexColumnVector& b); 
-
-  friend ComplexColumnVector product (const ComplexColumnVector& a,
-				      const ColumnVector& b);
-  friend ComplexColumnVector quotient (const ComplexColumnVector& a,
-				       const ColumnVector& b);
-
-  friend ComplexColumnVector product (const ColumnVector& a,
-				      const ComplexColumnVector& b); 
-  friend ComplexColumnVector quotient (const ColumnVector& a,
-				       const ComplexColumnVector& b); 
-
   // matrix by column vector -> column vector operations
 
   friend ComplexColumnVector operator * (const Matrix& a,

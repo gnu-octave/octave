@@ -45,7 +45,7 @@ For details, type `warranty'.\n\
 ***\n\
 *** If you want a stable, well-tested version of Octave, you should be\n\
 *** using one of the stable releases (when this development release\n\
-*** was made, the latest stable version was 2.0.15)."
+*** was made, the latest stable version was 2.0.16)."
 
 #endif
 

@@ -94,28 +94,6 @@ public:
   friend ComplexRowVector operator * (const RowVector& a,
 				      const ComplexMatrix& b);
 
-  // row vector by row vector -> row vector operations
-
-  friend ComplexRowVector operator + (const ComplexRowVector& a,
-				      const RowVector& b);
-  friend ComplexRowVector operator - (const ComplexRowVector& a,
-				      const RowVector& b);
-
-  friend ComplexRowVector operator + (const RowVector& a,
-				      const ComplexRowVector& b);
-  friend ComplexRowVector operator - (const RowVector& a,
-				      const ComplexRowVector& b);
-
-  friend ComplexRowVector product (const ComplexRowVector& a,
-				   const RowVector& b);
-  friend ComplexRowVector quotient (const ComplexRowVector& a,
-				    const RowVector& b);
-
-  friend ComplexRowVector product (const RowVector& a,
-				   const ComplexRowVector& b);
-  friend ComplexRowVector quotient (const RowVector& a,
-				    const ComplexRowVector& b);
-
   // other operations
 
   ComplexRowVector map (c_c_Mapper f) const;

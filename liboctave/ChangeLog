@@ -1,3 +1,8 @@
+2000-02-08  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* CRowVector.cc, CRowVector.h, CColVector.cc, CColVector.h:
+	Delete declarations and definitions of mixed-type vector-vector ops.
+
 2000-02-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* CMatrix.h, CMatrix.cc: Add lssolve methods for real-valued RHS

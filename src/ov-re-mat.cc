@@ -204,6 +204,14 @@ octave_matrix::convert_to_str_internal (bool, bool) const
   return retval;
 }
 
+void
+octave_matrix::print_raw (std::ostream& os,
+			  bool pr_as_read_syntax) const
+{
+  octave_print_internal (os, matrix, pr_as_read_syntax,
+			 current_print_indent_level ());
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

@@ -338,7 +338,7 @@ public:
 
   // Return current stream position.
 
-  virtual long tell (void) const = 0;
+  virtual std::streamoff tell (void) const = 0;
 
   // Return TRUE if EOF has been reached on this stream.
 
@@ -505,7 +505,7 @@ public:
   int seek (std::streamoff offset, std::ios::seekdir origin);
   int seek (const octave_value& offset, const octave_value& origin);
 
-  long tell (void) const;
+  std::streamoff tell (void) const;
 
   int rewind (void);
 

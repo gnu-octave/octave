@@ -45,7 +45,7 @@ public:
 
   // Return current stream position.
 
-  long tell (void) const;
+  std::streamoff tell (void) const;
 
   // The name of the file.
 

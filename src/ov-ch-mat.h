@@ -112,6 +112,8 @@ public:
   octave_value convert_to_str_internal (bool, bool) const
     { return octave_value (matrix.matrix_value (), true); }
 
+  void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
+
 protected:
 
   DECLARE_OCTAVE_ALLOCATOR

@@ -42,8 +42,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "str-vec.h"
 
 class Cell;
+class streamoff_array;
 class Octave_map;
 class octave_stream;
+class octave_streamoff;
 class octave_function;
 class octave_fcn_handle;
 class octave_value_list;
@@ -209,6 +211,7 @@ public:
   octave_value (const Range& r);
   octave_value (const Octave_map& m);
   octave_value (const octave_stream& s, int n);
+  octave_value (const streamoff_array& off);
   octave_value (octave_function *f);
   octave_value (const octave_fcn_handle& fh);
   octave_value (const octave_value_list& m, bool is_cs_list = false);
@@ -387,6 +390,9 @@ public:
   virtual bool is_stream (void) const
     { return rep->is_stream (); }
 
+  virtual bool is_streamoff (void) const
+    { return rep->is_streamoff (); }
+
   virtual bool is_cs_list (void) const
     { return rep->is_cs_list (); }
 
@@ -541,6 +547,8 @@ public:
   virtual octave_stream stream_value (void) const;
 
   virtual int stream_number (void) const;
+
+  virtual streamoff_array streamoff_value (void) const;
 
   virtual octave_function *function_value (bool silent = false);
 

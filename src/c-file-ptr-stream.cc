@@ -132,8 +132,8 @@ std::streampos
 c_file_ptr_buf::seekoff (std::streamoff offset, std::ios::seekdir dir,
 			 std::ios::openmode)
 {
-  // XXX FIXME XXX -- is this the right thing to do?
-
+  // XXX FIXME XXX
+#if 0
   if (f)
     {
       fseek (f, offset, seekdir_to_whence (dir));
@@ -142,13 +142,15 @@ c_file_ptr_buf::seekoff (std::streamoff offset, std::ios::seekdir dir,
     }
   else
     return 0;
+#endif
+  return -1;
 }
 
 std::streampos
 c_file_ptr_buf::seekpos (std::streampos offset, std::ios::openmode)
 {
-  // XXX FIXME XXX -- is this the right thing to do?
-
+  // XXX FIXME XXX
+#if 0  
   if (f)
     {
       fseek (f, offset, SEEK_SET);
@@ -157,6 +159,8 @@ c_file_ptr_buf::seekpos (std::streampos offset, std::ios::openmode)
     }
   else
     return 0;
+#endif
+  return -1;
 }
 
 int

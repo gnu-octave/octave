@@ -172,6 +172,14 @@ octave_complex_matrix::complex_matrix_value (bool) const
   return matrix.matrix_value ();
 }
 
+void
+octave_complex_matrix::print_raw (std::ostream& os,
+				  bool pr_as_read_syntax) const
+{
+  octave_print_internal (os, matrix, pr_as_read_syntax,
+			 current_print_indent_level ());
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

@@ -50,6 +50,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-re-mat.h"
 #include "ov-scalar.h"
 #include "ov-str-mat.h"
+#include "ov-streamoff.h"
 #include "ov-fcn-handle.h"
 #include "variables.h"
 
@@ -462,6 +463,14 @@ octave_base_value::stream_value (void) const
 {
   octave_stream retval;
   gripe_wrong_type_arg ("octave_base_value::stream_value()", type_name ());
+  return retval;
+}
+
+streamoff_array
+octave_base_value::streamoff_value (void) const
+{
+  streamoff_array retval;
+  gripe_wrong_type_arg ("octave_base_value::streamoff_value()", type_name ());
   return retval;
 }
 

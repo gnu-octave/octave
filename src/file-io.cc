@@ -63,6 +63,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-prcstrm.h"
 #include "oct-stream.h"
 #include "oct-strstrm.h"
+#include "ov-streamoff.h"
 #include "pager.h"
 #include "pt-plot.h"
 #include "sysdep.h"
@@ -632,7 +633,7 @@ Return the position of the file pointer as the number of characters\n\
 from the beginning of the file @var{fid}.\n\
 @end deftypefn")
 {
-  octave_value retval = -1;
+  octave_value retval = streamoff_array (dim_vector (1, 1), -1);
 
   int nargin = args.length ();
 
@@ -641,7 +642,7 @@ from the beginning of the file @var{fid}.\n\
       octave_stream os = octave_stream_list::lookup (args(0), "ftell");
 
       if (! error_state)
-	retval = os.tell ();
+	retval = streamoff_array (dim_vector (1, 1), os.tell ());
     }
   else
     print_usage ("ftell");

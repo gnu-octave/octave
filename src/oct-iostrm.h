@@ -44,7 +44,7 @@ public:
 
   // Return current stream position.
 
-  long tell (void) const;
+  std::streamoff tell (void) const;
 
   // Return non-zero if EOF has been reached on this stream.
 

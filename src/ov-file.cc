@@ -87,7 +87,7 @@ octave_file::print_raw (std::ostream& os, bool) const
   newline (os);
 
   indent (os);
-  os << "status = " << stream.is_open () ? "open" : "closed";
+  os << "status = " << (stream.is_open () ? "open" : "closed");
   newline (os);
 
   decrement_indent_level ();

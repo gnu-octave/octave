@@ -53,10 +53,10 @@ octave_stdiostream::seek (std::streamoff offset, std::ios::seekdir origin)
 
 // Return current stream position.
 
-long
+std::streamoff
 octave_stdiostream::tell (void) const
 {
-  long retval = -1;
+  std::streamoff retval = -1;
 
   if (! bad ())
     {
@@ -64,7 +64,7 @@ octave_stdiostream::tell (void) const
 
       if (sb)
 	{
-	  retval = static_cast<long> (sb->pubseekoff (0, std::ios::cur));
+	  retval = std::streamoff (sb->pubseekoff (0, std::ios::cur));
 
 	  if (bad ())
 	    retval = -1;

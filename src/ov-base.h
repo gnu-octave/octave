@@ -126,6 +126,8 @@ public:
 
   bool is_stream (void) const { return false; }
 
+  bool is_streamoff (void) const { return false; }
+
   bool is_cs_list (void) const { return false; }
 
   bool is_list (void) const { return false; }
@@ -223,6 +225,8 @@ public:
   octave_stream stream_value (void) const;
 
   int stream_number (void) const;
+
+  streamoff_array streamoff_value (void) const;
 
   octave_function *function_value (bool silent);
 

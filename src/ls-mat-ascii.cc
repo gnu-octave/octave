@@ -181,7 +181,7 @@ get_lines_and_columns (std::istream& is, const std::string& filename, int& nr, i
     error ("load: file `%s' seems to be empty!", filename.c_str ());
 
   is.clear ();
-  is.seekg (pos, std::ios::beg);
+  is.seekg (pos);
 }
 
 // Extract a matrix from a file of numbers only.

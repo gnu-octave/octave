@@ -27,6 +27,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #pragma interface
 #endif
 
+#include <cstdlib>
+
 #include <string>
 
 #include "oct-time.h"
@@ -44,6 +46,8 @@ class
 octave_function : public octave_base_value
 {
 public:
+
+  octave_function (void) { abort (); }
 
   octave_function (const octave_function& f)
     : octave_base_value (), my_name (f.my_name), doc (f.doc) { }
@@ -93,8 +97,6 @@ protected:
   std::string doc;
 
 private:
-
-  octave_function (void);
 
   DECLARE_OCTAVE_ALLOCATOR
 };

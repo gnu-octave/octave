@@ -88,15 +88,16 @@ octave_fstream::seek (std::streamoff offset, std::ios::seekdir origin)
 
 // Return current stream position.
 
-long
+std::streamoff
 octave_fstream::tell (void) const
 {
-  long retval = -1;
+  std::streamoff retval = -1;
 
   if (fs)
     {
       std::filebuf *fb = fs.rdbuf ();
-      retval = static_cast<long> (fb->pubseekoff (0, std::ios::cur));
+
+      retval = std::streamoff (fb->pubseekoff (0, std::ios::cur));
     }
 
   return retval;

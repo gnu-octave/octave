@@ -38,7 +38,7 @@ octave_base_iostream::seek (std::streamoff, std::ios::seekdir)
 
 // Return current stream position.
 
-long
+std::streamoff
 octave_base_iostream::tell (void) const
 {
   invalid_operation ();

@@ -50,7 +50,7 @@ default_numeric_conversion_function (const octave_value& a)
 {
   CAST_CONV_ARG (const octave_char_matrix_str&);
 
-  Matrix m = v.matrix_value ();
+  Matrix m = v.matrix_value (true);
 
   return error_state ? 0 : new octave_matrix (m);
 }
@@ -131,15 +131,38 @@ octave_char_matrix_str::valid_as_scalar_index (void) const
   return retval;
 }
 
+double
+octave_char_matrix_str::double_value (bool force_string_conv) const
+{
+  double retval = 0;
+
+  if (! force_string_conv)
+    gripe_invalid_conversion ("string", "real scalar");
+  else
+    {
+      if (Vwarn_str_to_num)
+	gripe_implicit_conversion ("string", "real scalar");
+
+      retval = octave_char_matrix::double_value ();
+    }
+
+  return retval;
+}
+
 Matrix
 octave_char_matrix_str::matrix_value (bool force_string_conv) const
 {
   Matrix retval;
 
-  if (! force_string_conv && Vwarn_str_to_num)
-    gripe_implicit_conversion ("string", "real matrix");
+  if (! force_string_conv)
+    gripe_invalid_conversion ("string", "real matrix");
+  else
+    {
+      if (Vwarn_str_to_num)
+	gripe_implicit_conversion ("string", "real matrix");
 
-  retval = Matrix (matrix.matrix_value ());
+      retval = octave_char_matrix::matrix_value ();
+    }
 
   return retval;
 }

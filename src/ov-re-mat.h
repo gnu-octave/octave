@@ -109,6 +109,8 @@ public:
 
   octave_value convert_to_str_internal (bool pad, bool force) const;
 
+  void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
+
 private:
 
   DECLARE_OCTAVE_ALLOCATOR

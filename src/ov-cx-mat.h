@@ -108,6 +108,8 @@ public:
 
   void decrement (void) { matrix -= Complex (1.0); }
 
+  void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
+
 private:
 
   DECLARE_OCTAVE_ALLOCATOR

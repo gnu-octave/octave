@@ -2746,10 +2746,10 @@ octave_stream::seek (const octave_value& tc_offset,
   return retval;
 }
 
-long
+std::streamoff
 octave_stream::tell (void) const
 {
-  long retval = -1;
+  std::streamoff retval = -1;
 
   if (stream_ok ("tell"))
     retval = rep->tell ();

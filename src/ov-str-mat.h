@@ -104,6 +104,8 @@ public:
 
   bool valid_as_scalar_index (void) const;
 
+  double double_value (bool = false) const;
+
   Matrix matrix_value (bool = false) const;
 
   string_vector all_strings (bool pad = false, bool force = false) const;

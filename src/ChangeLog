@@ -1,3 +1,61 @@
+2003-11-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-dld-fcn.h (octave_dld_function::octave_dld_function): 
+	Make public, but abort if called.
+	* ov-builtin.h (octave_builtin::octave_builtin): Likewise.
+	* ov-fcn.h (octave_function::octave_function): Likewise.
+
+	* ov-typeinfo.cc (octave_value_typeinfo::register_type,
+	octave_value_typeinfo::do_register_type): New arg, val.
+	(octave_value_typeinfo::lookup_type,
+	octave_value_typeinfo::do_lookup_type): New functions.
+	* ov-typeinfo.h: Provide decl.
+
+	* ov.h (DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA): Pass
+
+	* ov.h (DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA): Define register_type
+	here.  Also pass an empty object of the to-be-registered type to
+	register_type.
+	(DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA): Declare register type
+	here, but don't define it.
+
+2003-11-21  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-fcn-handle.h (octave_fcn_handle::octave_fcn_handle (void)):
+	New constructor.
+
+	* ov-usr-fcn.h (octave_user_function::octave_user_function):
+	Delete decl for private constructor.
+
+	* ov-str-mat.cc (octave_char_matrix_str::matrix_value):
+	Conversion to matrix is an error unless explicitly forced.
+
+	* ov-str-mat.cc (octave_char_matrix_str::double_value): New function.
+	* ov-str-mat.h: Provide decl.
+
+	* ov-file.cc (print_raw): Use parens around ?: conditional used on
+	RHS of << output operator.
+
+	* c-file-ptr-stream.cc (c_file_ptr_buf::seekoff,
+	c_file_ptr_buf::seekpos): Can't use fseek here, so just fail (by
+	returning -1) until we have a better solution.
+
+	* oct-stream.cc (octave_stream::tell): Return std::streamoff, not long.
+	* oct-iostrm.cc (octave_base_iostream::tell): Likewise.
+	* oct-stdstrm.cc (octave_stdiostream::tell): Likewise.
+	* oct-strstrm.cc (octave_base_strstream::tell): Likewise.
+	* oct-stream.h, oct-iostrm.h, oct-stdstrm.h, oct-strstrm.h:
+	Fix decls to match.
+
+2003-11-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ls-mat-ascii.cc (get_lines_and_columns): Delete second arg in
+	call to istream::seekg.
+
+	* ov-mapper.cc (MAPPER_LOOP_2, any_element_less_than,
+	any_element_greater_than, octave_mapper::apply):
+	Handle N-d arrays.
+
 2003-11-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* ls-mat5.cc (read_mat5_binary_element, save_mat5_binary_element):

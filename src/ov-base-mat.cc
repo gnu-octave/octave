@@ -134,7 +134,8 @@ octave_base_matrix<MT>::do_index_op (const octave_value_list& idx,
 	    idx_vector i = idx (0).index_vector ();
 	    idx_vector j = idx (1).index_vector ();
 
-	    retval = MT (matrix.index (i, j, resize_ok, MT::resize_fill_value ()));
+	    retval = MT (matrix.index (i, j, resize_ok,
+				       MT::resize_fill_value ()));
 	  }
 	else
 	  error ("invalid number of indices (= 2) for %d-dimensional array",
@@ -216,15 +217,6 @@ octave_base_matrix<MT>::print (std::ostream& os, bool pr_as_read_syntax) const
 {
   print_raw (os, pr_as_read_syntax);
   newline (os);
-}
-
-template <class MT>
-void
-octave_base_matrix<MT>::print_raw (std::ostream& os,
-				   bool pr_as_read_syntax) const
-{
-  octave_print_internal (os, matrix, pr_as_read_syntax,
-			 current_print_indent_level ());
 }
 
 template <class MT>

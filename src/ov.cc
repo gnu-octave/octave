@@ -47,6 +47,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-range.h"
 #include "ov-struct.h"
 #include "ov-file.h"
+#include "ov-streamoff.h"
 #include "ov-list.h"
 #include "ov-cs-list.h"
 #include "ov-colon.h"
@@ -592,6 +593,12 @@ octave_value::octave_value (const octave_stream& s, int n)
   rep->count = 1;
 }
 
+octave_value::octave_value (const streamoff_array& off)
+  : rep (new octave_streamoff (off))
+{
+  rep->count = 1;
+}
+
 octave_value::octave_value (octave_function *f)
   : rep (f)
 {
@@ -921,6 +928,12 @@ int
 octave_value::stream_number (void) const
 {
   return rep->stream_number ();
+}
+
+streamoff_array
+octave_value::streamoff_value (void) const
+{
+  return rep->streamoff_value ();
 }
 
 octave_function *
@@ -1879,6 +1892,8 @@ install_types (void)
   octave_builtin::register_type ();
   octave_mapper::register_type ();
   octave_user_function::register_type ();
+  octave_fcn_handle::register_type ();
+  octave_streamoff::register_type ();
 }
 
 static int

@@ -43,42 +43,38 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_mapper,
 				     "built-in mapper function");
 
 static bool
-any_element_less_than (const Matrix& a, double val)
+any_element_less_than (const NDArray& a, double val)
 {
-  int nr = a.rows ();
-  int nc = a.columns ();
+  int len = a.length ();
 
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
-      {
-	OCTAVE_QUIT;
+  for (int i = 0; i < len; i++)
+    {
+      OCTAVE_QUIT;
 
-	if (a (i, j) < val)
-	  return true;
-      }
+      if (a(i) < val)
+	return true;
+    }
 
   return false;
 }
 
 static bool
-any_element_greater_than (const Matrix& a, double val)
+any_element_greater_than (const NDArray& a, double val)
 {
-  int nr = a.rows ();
-  int nc = a.columns ();
+  int len = a.length ();
 
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
-      {
-	OCTAVE_QUIT;
+  for (int i = 0; i < len; i++)
+    {
+      OCTAVE_QUIT;
 
-	if (a (i, j) > val)
-	  return true;
-      }
+      if (a(i) > val)
+	return true;
+    }
 
   return false;
 }
 
-// In most cases, we could use the map member function from the Matrix
+// In most cases, we could use the map member function from the NDArray
 // classes, but as currently implemented, they don't allow us to
 // detect errors and abort properly.  So use these macros to do the
 // looping here instead.
@@ -86,23 +82,20 @@ any_element_greater_than (const Matrix& a, double val)
 #define MAPPER_LOOP_2(T, F, M, CONV, R) \
   do \
     { \
-      int nr = M.rows (); \
-      int nc = M.cols (); \
+      int len = M.length (); \
  \
-      T result (nr, nc); \
+      T result (M.dims ()); \
  \
-      for (int j = 0; j < nc; j++) \
+      for (int i = 0; i < len; i++) \
 	{ \
-	   for (int i = 0; i < nr; i++) \
-	     { \
-                OCTAVE_QUIT; \
+          OCTAVE_QUIT; \
  \
-		result (i, j) = CONV (F (M (i, j))); \
+	  result(i) = CONV (F (M(i))); \
  \
-		if (error_state) \
-		  return retval; \
-	     } \
+	  if (error_state) \
+	    return retval; \
 	} \
+ \
       retval = R; \
     } \
   while (0)
@@ -145,7 +138,7 @@ octave_mapper::apply (const octave_value& arg) const
 	}
       else
 	{
-	  Matrix m = arg.matrix_value ();
+	  NDArray m = arg.array_value ();
 
 	  if (error_state)
 	    return retval;
@@ -155,15 +148,15 @@ octave_mapper::apply (const octave_value& arg) const
 		  || any_element_greater_than (m, upper_limit)))
 	    {
 	      if (c_c_map_fcn)
-		MAPPER_LOOP (ComplexMatrix, c_c_map_fcn, m);
+		MAPPER_LOOP (ComplexNDArray, c_c_map_fcn, m);
 	      else
 		error ("%s: unable to handle real arguments",
 		       name().c_str ());
 	    }
 	  else if (d_d_map_fcn)
-	    MAPPER_LOOP (Matrix, d_d_map_fcn, m);
+	    MAPPER_LOOP (NDArray, d_d_map_fcn, m);
 	  else if (d_b_map_fcn)
-	    MAPPER_LOOP (boolMatrix, d_b_map_fcn, m);
+	    MAPPER_LOOP (boolNDArray, d_b_map_fcn, m);
 	  else
 	    error ("%s: unable to handle real arguments",
 		   name().c_str ());
@@ -187,17 +180,17 @@ octave_mapper::apply (const octave_value& arg) const
 	}
       else
 	{
-	  ComplexMatrix cm = arg.complex_matrix_value ();
+	  ComplexNDArray cm = arg.complex_array_value ();
 
 	  if (error_state)
 	    return retval;
 
 	  if (d_c_map_fcn)
-	    MAPPER_LOOP (Matrix, d_c_map_fcn, cm);
+	    MAPPER_LOOP (NDArray, d_c_map_fcn, cm);
 	  else if (c_c_map_fcn)
-	    MAPPER_LOOP (ComplexMatrix, c_c_map_fcn, cm);
+	    MAPPER_LOOP (ComplexNDArray, c_c_map_fcn, cm);
 	  else if (c_b_map_fcn)
-	    MAPPER_LOOP (boolMatrix, c_b_map_fcn, cm);
+	    MAPPER_LOOP (boolNDArray, c_b_map_fcn, cm);
 	  else
 	    error ("%s: unable to handle complex arguments",
 		   name().c_str ());
@@ -211,22 +204,22 @@ octave_mapper::apply (const octave_value& arg) const
 
       if (! error_state)
 	{
-	  charMatrix chm = tmp.char_matrix_value ();
+	  charNDArray chm = tmp.char_array_value ();
 
 	  if (! error_state)
 	    {
 	      switch (ch_map_flag)
 		{
 		case 0:
-		  MAPPER_LOOP_1 (boolMatrix, ch_map_fcn, chm, bool);
+		  MAPPER_LOOP_1 (boolNDArray, ch_map_fcn, chm, bool);
 		  break;
 
 		case 1:
-		  MAPPER_LOOP (Matrix, ch_map_fcn, chm);
+		  MAPPER_LOOP (NDArray, ch_map_fcn, chm);
 		  break;
 
 		case 2:
-		  MAPPER_LOOP_2 (charMatrix, ch_map_fcn, chm, ,
+		  MAPPER_LOOP_2 (charNDArray, ch_map_fcn, chm, ,
 				 octave_value (result, true));
 		  break;
 

@@ -115,8 +115,6 @@ public:
 
   void print (std::ostream& os, bool pr_as_read_syntax = false) const;
 
-  void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
-
   void print_info (std::ostream& os, const std::string& prefix) const;
 
 protected:

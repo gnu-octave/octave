@@ -228,7 +228,7 @@ tree_unary_expression::eval (bool /* print */)
 
   if (op)
     {
-      octave_value u = op->eval (false);
+      octave_value u = op->eval ();
 
       if (error_state)
 	eval_error ();
@@ -323,13 +323,13 @@ tree_binary_expression::eval (bool /* print */)
 
   if (op_lhs)
     {
-      octave_value a = op_lhs->eval (false);
+      octave_value a = op_lhs->eval ();
 
       if (error_state)
 	eval_error ();
       else if (a.is_defined () && op_rhs)
 	{
-	  octave_value b = op_rhs->eval (false);
+	  octave_value b = op_rhs->eval ();
 
 	  if (error_state)
 	    eval_error ();
@@ -549,7 +549,7 @@ tree_boolean_expression::eval (bool /* print */)
 
   if (op_lhs)
     {
-      octave_value a = op_lhs->eval (false);
+      octave_value a = op_lhs->eval ();
 
       if (error_state)
 	eval_error ();
@@ -577,7 +577,7 @@ tree_boolean_expression::eval (bool /* print */)
 
 	      if (op_rhs)
 		{
-		  octave_value b = op_rhs->eval (false);
+		  octave_value b = op_rhs->eval ();
 
 		  if (error_state)
 		    eval_error ();
@@ -692,7 +692,7 @@ tree_simple_assignment_expression::eval (bool print)
 
   if (rhs)
     {
-      octave_value rhs_val = rhs->eval (false);
+      octave_value rhs_val = rhs->eval ();
 
       if (error_state)
 	{
@@ -813,7 +813,7 @@ tree_colon_expression::eval (bool /* print */)
   if (error_state || ! op_base || ! op_limit)
     return retval;
 
-  octave_value tmp = op_base->eval (false);
+  octave_value tmp = op_base->eval ();
 
   if (tmp.is_undefined ())
     {
@@ -830,7 +830,7 @@ tree_colon_expression::eval (bool /* print */)
       return retval;
     }
 
-  tmp = op_limit->eval (false);
+  tmp = op_limit->eval ();
 
   if (tmp.is_undefined ())
     {
@@ -851,7 +851,7 @@ tree_colon_expression::eval (bool /* print */)
 
   if (op_increment)
     {
-      tmp = op_increment->eval (false);
+      tmp = op_increment->eval ();
 
       if (tmp.is_undefined ())
 	{

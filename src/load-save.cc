@@ -2226,7 +2226,7 @@ do_save (ostream& os, symbol_record *sr, load_save_format fmt,
   string help = sr->help ();
   int global = sr->is_linked_to_global ();
   tree_fvc *tmp = sr->def ();
-  octave_value tc = tmp->eval (0);
+  octave_value tc = tmp->eval ();
 
   if (tc.is_undefined ())
     return;

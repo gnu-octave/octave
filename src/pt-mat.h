@@ -77,7 +77,7 @@ public:
 
   bool all_elements_are_constant (void) const;
 
-  octave_value eval (bool print);
+  octave_value eval (bool print = false);
 
   void accept (tree_walker& tw);
 };

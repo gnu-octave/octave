@@ -329,13 +329,14 @@ tree_identifier::eval (bool print)
 	  if (nargout)
 	    {
 	      octave_value_list tmp_args;
-	      octave_value_list tmp = object_to_eval->eval (0, nargout, tmp_args);
+	      octave_value_list tmp
+		= object_to_eval->eval (false, nargout, tmp_args);
 
 	      if (tmp.length () > 0)
 		retval = tmp(0);
 	    }
 	  else
-	    retval = object_to_eval->eval (false);
+	    retval = object_to_eval->eval ();
 	}
       else
 	eval_undefined_error ();
@@ -381,7 +382,7 @@ tree_identifier::eval (bool print, int nargout, const octave_value_list& args)
 
 	      nargout = 0;
 
-	      retval = object_to_eval->eval (0, nargout, args);
+	      retval = object_to_eval->eval (false, nargout, args);
 
 	      if (retval.length () > 0 && retval(0).is_defined ())
 		bind_ans (retval(0), print);

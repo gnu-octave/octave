@@ -1457,7 +1457,7 @@ fold (tree_binary_expression *e)
 
   if (op1->is_constant () && op2->is_constant ())
     {
-      octave_value tmp = e->eval (0);
+      octave_value tmp = e->eval ();
 
       if (! error_state)
 	{
@@ -1499,7 +1499,7 @@ fold (tree_unary_expression *e)
 
   if (op1->is_constant ())
     {
-      octave_value tmp = e->eval (0);
+      octave_value tmp = e->eval ();
 
       if (! error_state)
 	{
@@ -1546,7 +1546,7 @@ finish_colon_expression (tree_colon_expression *e)
   if (base->is_constant () && limit->is_constant ()
       && (! incr || (incr && incr->is_constant ())))
     {
-      octave_value tmp = e->eval (0);
+      octave_value tmp = e->eval ();
 
       if (! error_state)
 	{
@@ -2311,7 +2311,7 @@ finish_matrix (tree_matrix *m)
 
   if (m->all_elements_are_constant ())
     {
-      octave_value tmp = m->eval (0);
+      octave_value tmp = m->eval ();
 
       if (! error_state)
 	{

@@ -139,7 +139,7 @@ public:
 
   void mark_as_function_body (void) { function_body = true; }
 
-  octave_value eval (bool print);
+  octave_value eval (bool print = false);
 
   octave_value_list eval (bool print, int nargout);
 

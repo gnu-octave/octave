@@ -846,7 +846,7 @@ get_global_value (const string& nm)
       tree_fvc *sr_def = sr->def ();
 
       if (sr_def)
-	retval  = sr_def->eval (1);
+	retval  = sr_def->eval (true);
       else
 	error ("get_global_by_name: undefined symbol `%s'", nm.c_str ());
     }
@@ -909,7 +909,7 @@ builtin_string_variable (const string& name)
 
   if (defn)
     {
-      octave_value val = defn->eval (0);
+      octave_value val = defn->eval ();
 
       if (! error_state && val.is_string ())
 	retval = val.string_value ();
@@ -936,7 +936,7 @@ builtin_real_scalar_variable (const string& name, double& d)
 
   if (defn)
     {
-      octave_value val = defn->eval (0);
+      octave_value val = defn->eval ();
 
       if (! error_state && val.is_scalar_type ())
 	{
@@ -964,7 +964,7 @@ builtin_any_variable (const string& name)
   tree_fvc *defn = sr->def ();
 
   if (defn)
-    retval = defn->eval (0);
+    retval = defn->eval ();
 
   return retval;
 }

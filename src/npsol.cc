@@ -77,7 +77,7 @@ npsol_objective_function (const ColumnVector& x)
   octave_value objective_value;
   if (npsol_objective)
     {
-      octave_value_list tmp = npsol_objective->eval (0, 1, args);
+      octave_value_list tmp = npsol_objective->eval (false, 1, args);
 
       if (error_state)
 	{
@@ -146,7 +146,7 @@ npsol_constraint_function (const ColumnVector& x)
 
   if (npsol_constraints)
     {
-      octave_value_list tmp = npsol_constraints->eval (0, 1, args);
+      octave_value_list tmp = npsol_constraints->eval (false, 1, args);
 
       if (error_state)
 	{

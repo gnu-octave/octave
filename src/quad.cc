@@ -60,7 +60,7 @@ quad_user_function (double x)
 
   if (quad_fcn)
     {
-      octave_value_list tmp = quad_fcn->eval (0, 1, args);
+      octave_value_list tmp = quad_fcn->eval (false, 1, args);
 
       if (error_state)
 	{

@@ -233,7 +233,7 @@ tree_argument_list::convert_to_const_vector (void)
       tree_expression *elt = this->operator () (p);
       if (elt)
 	{
-	  octave_value tmp = elt->eval (false);
+	  octave_value tmp = elt->eval ();
 	  if (error_state)
 	    {
 	      ::error ("evaluating argument list element number %d", k);
@@ -369,7 +369,7 @@ tree_parameter_list::convert_to_const_vector (tree_va_return_list *vr_list)
       tree_identifier *elt = this->operator () (p);
 
       if (elt->is_defined ())
-	retval(i) = elt->eval (false);
+	retval(i) = elt->eval ();
 
       i++;
     }
@@ -523,7 +523,7 @@ tree_switch_case::label_matches (const octave_value& val)
 {
   bool retval = false;
 
-  octave_value label_value = label->eval (false);
+  octave_value label_value = label->eval ();
 
   if (! error_state)
     {

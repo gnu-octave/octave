@@ -140,7 +140,7 @@ int input_from_command_line_file = 1;
 jmp_buf toplevel;
 
 void
-parse_and_execute (FILE *f, int print)
+parse_and_execute (FILE *f, bool print)
 {
   begin_unwind_frame ("parse_and_execute");
   
@@ -208,7 +208,7 @@ safe_fclose (void *f)
 }
 
 void
-parse_and_execute (const string& s, int print, int verbose,
+parse_and_execute (const string& s, bool print, bool verbose,
 		   const char *warn_for)
 {
   begin_unwind_frame ("parse_and_execute_2");
@@ -282,7 +282,7 @@ main_loop (void)
 
       if (retval == 0 && global_command)
 	{
-	  global_command->eval (1);
+	  global_command->eval (true);
 
 	  delete global_command;
 
@@ -504,7 +504,7 @@ feval (const octave_value_list& args, int nargout)
       tmp_args.resize (tmp_nargin);
       for (int i = 0; i < tmp_nargin; i++)
 	tmp_args(i) = args(i+1);
-      retval = fcn->eval (0, nargout, tmp_args);
+      retval = fcn->eval (false, nargout, tmp_args);
     }
 
   return retval;
@@ -528,7 +528,7 @@ evaluate NAME as a function, passing ARGS as its arguments")
 }
 
 static octave_value_list
-eval_string (const string& s, int print, int& parse_status, int nargout)
+eval_string (const string& s, bool print, int& parse_status, int nargout)
 {
   begin_unwind_frame ("eval_string");
 
@@ -575,7 +575,7 @@ eval_string (const string& s, int print, int& parse_status, int nargout)
 }
 
 octave_value
-eval_string (const string& s, int print, int& parse_status)
+eval_string (const string& s, bool print, int& parse_status)
 {
   octave_value retval;
 
@@ -587,7 +587,7 @@ eval_string (const string& s, int print, int& parse_status)
 }
 
 static octave_value_list
-eval_string (const octave_value& arg, int print, int& parse_status,
+eval_string (const octave_value& arg, bool print, int& parse_status,
 	     int nargout)
 {
   string s = arg.string_value ();
@@ -816,7 +816,7 @@ do_octave_atexit (void)
     {
       octave_value_list fcn = octave_atexit_functions.pop ();
 
-      feval (fcn, 0);
+      feval (fcn, false);
     }
 }
 

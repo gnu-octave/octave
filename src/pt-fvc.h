@@ -88,7 +88,7 @@ public:
   void mark_for_possible_ans_assign (void)
     { maybe_do_ans_assign = true; }
 
-  octave_value eval (bool print);
+  octave_value eval (bool print = false);
 
   octave_value_list eval (bool print, int nargout,
 			  const octave_value_list& args); 
@@ -164,7 +164,7 @@ public:
 
   string name (void) const;
 
-  octave_value eval (bool print);
+  octave_value eval (bool print = false);
 
   octave_value_list eval (bool print, int nargout,
 			  const octave_value_list& args);
@@ -221,7 +221,7 @@ public:
   bool is_mapper_function (void) const
     { return is_mapper; }
 
-  octave_value eval (bool print);
+  octave_value eval (bool print = false);
 
   octave_value_list eval (bool print, int nargout, const octave_value_list& args);
 

@@ -288,7 +288,7 @@ tree_multi_assignment_expression::eval (bool print, int nargout,
 
   nargout = lhs->length ();
   octave_value_list tmp_args;
-  octave_value_list results = rhs->eval (0, nargout, tmp_args);
+  octave_value_list results = rhs->eval (false, nargout, tmp_args);
 
   if (error_state)
     eval_error ();
@@ -325,7 +325,7 @@ tree_multi_assignment_expression::eval (bool print, int nargout,
 	      tree_simple_assignment_expression tmp_expr
 		(lhs_expr, tmp, 1, 0, ma_line, ma_column);
 
-	      results(i) = tmp_expr.eval (false); // May change
+	      results(i) = tmp_expr.eval (); // May change
 
 	      if (error_state)
 		break;
@@ -345,7 +345,7 @@ tree_multi_assignment_expression::eval (bool print, int nargout,
 	      tree_simple_assignment_expression tmp_expr
 		(lhs_expr, 0, 1, 0, ma_line, ma_column);
 
-	      tmp_expr.eval (false);
+	      tmp_expr.eval ();
 	    }
 	}
 

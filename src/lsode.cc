@@ -66,7 +66,7 @@ lsode_user_function (const ColumnVector& x, double t)
 
   if (lsode_fcn)
     {
-      octave_value_list tmp = lsode_fcn->eval (0, 1, args);
+      octave_value_list tmp = lsode_fcn->eval (false, 1, args);
 
       if (error_state)
 	{
@@ -106,7 +106,7 @@ lsode_user_jacobian (const ColumnVector& x, double t)
 
   if (lsode_jac)
     {
-      octave_value_list tmp = lsode_jac->eval (0, 1, args);
+      octave_value_list tmp = lsode_jac->eval (false, 1, args);
 
       if (error_state)
 	{

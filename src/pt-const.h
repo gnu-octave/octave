@@ -332,7 +332,7 @@ public:
   void print_with_name (ostream& os, const string& name,
 			bool print_padding = true);
 
-  octave_value eval (bool print_result);
+  octave_value eval (bool print = false);
 
   octave_value_list eval (bool, int, const octave_value_list&);
 

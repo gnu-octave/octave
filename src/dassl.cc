@@ -83,7 +83,7 @@ dassl_user_function (const ColumnVector& x, const ColumnVector& xdot, double t)
 
   if (dassl_fcn)
     {
-      octave_value_list tmp = dassl_fcn->eval (0, 1, args);
+      octave_value_list tmp = dassl_fcn->eval (false, 1, args);
 
       if (error_state)
 	{

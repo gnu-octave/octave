@@ -59,7 +59,7 @@ public:
 
   ~tree_oct_obj (void) { }
 
-  octave_value eval (bool print);
+  octave_value eval (bool print = false);
 
   octave_value_list eval (bool print, int nargout,
 			  const octave_value_list& args);
@@ -108,7 +108,7 @@ public:
 
   void mark_for_possible_ans_assign (void);
 
-  octave_value eval (bool print);
+  octave_value eval (bool print = false);
 
   octave_value_list eval (bool print, int nargout, const octave_value_list& args);
 
@@ -143,7 +143,7 @@ public:
 
   ~tree_multi_assignment_expression (void);
 
-  octave_value eval (bool print);
+  octave_value eval (bool print = false);
 
   octave_value_list eval (bool print, int nargout, const octave_value_list& args);
 

@@ -61,7 +61,7 @@ public:
 
   ~tree_prefix_expression (void);
 
-  octave_value eval (bool print);
+  octave_value eval (bool print = false);
 
   void eval_error (void);
 
@@ -106,7 +106,7 @@ public:
 
   ~tree_postfix_expression (void);
 
-  octave_value eval (bool print);
+  octave_value eval (bool print = false);
 
   void eval_error (void);
 
@@ -151,7 +151,7 @@ public:
   ~tree_unary_expression (void)
     { delete op; }
 
-  octave_value eval (bool print);
+  octave_value eval (bool print = false);
 
   void eval_error (void);
 
@@ -215,7 +215,7 @@ public:
       delete op_rhs;
     }
 
-  octave_value eval (bool print);
+  octave_value eval (bool print = false);
 
   void eval_error (void);
 
@@ -261,7 +261,7 @@ public:
 
   ~tree_boolean_expression (void) { }
 
-  octave_value eval (bool print);
+  octave_value eval (bool print = false);
 
   const char *oper (void) const;
 
@@ -317,7 +317,7 @@ public:
   bool is_ans_assign (void)
     { return ans_ass; }
 
-  octave_value eval (bool print);
+  octave_value eval (bool print = false);
 
   bool is_assignment_expression (void) const
     { return true; }
@@ -392,7 +392,7 @@ public:
 
   tree_colon_expression *chain (tree_expression *t);
 
-  octave_value eval (bool print);
+  octave_value eval (bool print = false);
 
   void eval_error (const char *s);
 

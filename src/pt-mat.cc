@@ -178,7 +178,7 @@ tm_row_const::tm_row_const_rep::init (const tree_matrix_row& mr)
     {
       tree_expression *elt = mr (p);
 
-      octave_value tmp = elt->eval (false);
+      octave_value tmp = elt->eval ();
 
       if (error_state || tmp.is_undefined ())
 	break;

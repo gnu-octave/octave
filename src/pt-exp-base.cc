@@ -45,7 +45,7 @@ tree_expression::is_logically_true (const char *warn_for)
 {
   bool expr_value = false;
 
-  octave_value t1 = eval (false);
+  octave_value t1 = eval ();
 
   if (! error_state)
     {

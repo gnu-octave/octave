@@ -1,5 +1,28 @@
 Mon Mar 31 00:37:48 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* pt-base-exp.h (tree_expression::eval): Give arg a default value.
+	* pt-const.h (tree_constant::eval): Likewise.
+	* pt-exp.h (tree_prefix_expression::eval, tree_colon_expression::eval,
+	tree_postfix_expression::eval, tree_unary_expression::eval,
+	tree_binary_expression::eval, tree_boolean_expression::eval,
+	tree_simple_assignment_expression::eval): Likewise.
+	* pt-fcn.h (tree_function::eval): Likewise.
+	* pt-fvc.h (tree_identifier::eval, tree_indirect_ref::eval,
+	tree_builtin::eval): Likewise.
+	* pt-mat.h (tree_matrix::eval): Likewise.
+	* pt-misc.h (tree_statement_list::eval): Likewise.
+	* pt-mvr-base.h (tree_multi_val_ret::eval): Likewise.
+	* pt-mvr.h (tree_oct_obj::eval, tree_index_expression::eval,
+	tree_multi_assignment_expression::eval): Likewise.
+	* dassl.cc, fsolve.cc, load-save.cc, lsode.cc, npsol.cc, parse.y,
+	pt-cmd.cc, pt-exp-base.cc, pt-exp.cc, pt-fvc.cc, pt-mat.cc,
+	pt-misc.cc, pt-mvr.cc, pt-plot.cc, quad.cc, toplev.cc, variables.cc:
+	Change callers of eval() to use bool instead of int and to make
+	use of default argument value.
+
+	* toplev.h, toplev.cc (parse_and_execute, eval_string): Flag args
+	are now bool instead of int.
+
 	* symtab.h, symtab.cc: Use bool instead of int in more places.
 	* variables.h, variables.cc: Likewise.
 	* lex.h, lex.l: Likewise.

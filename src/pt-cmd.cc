@@ -105,7 +105,7 @@ do_global_init (tree_decl_elt& elt, bool skip_initializer)
 	      id->link_to_global ();
 
 	      if (! (skip_initializer || error_state))
-		expr->eval (false);
+		expr->eval ();
 	    }
 	  else
 	    error ("global: unable to make structure elements global");
@@ -149,7 +149,7 @@ do_static_init (tree_decl_elt& elt, bool)
 	      id->mark_as_static ();
 
 	      if (! error_state)
-		expr->eval (false);
+		expr->eval ();
 	    }
 	  else
 	    error ("global: unable to make structure elements global");
@@ -197,7 +197,7 @@ tree_while_command::eval (void)
 	{
 	  if (list)
 	    {
-	      list->eval (1);
+	      list->eval (true);
 	      if (error_state)
 		{
 		  eval_error ();
@@ -245,7 +245,7 @@ tree_for_command::do_for_loop_once (tree_return_list *lst,
 
   tree_oct_obj *tmp = new tree_oct_obj (rhs);
   tree_multi_assignment_expression tmp_ass (lst, tmp, 1);
-  tmp_ass.eval (false);
+  tmp_ass.eval ();
 
   if (error_state)
     {
@@ -255,7 +255,7 @@ tree_for_command::do_for_loop_once (tree_return_list *lst,
 
   if (list)
     {
-      list->eval (1);
+      list->eval (true);
       if (error_state)
 	{
 	  eval_error ();
@@ -275,7 +275,7 @@ tree_for_command::do_for_loop_once (tree_index_expression *idx_expr,
 
   octave_value *tmp = new octave_value (rhs);
   tree_simple_assignment_expression tmp_ass (idx_expr, tmp, true);
-  tmp_ass.eval (false);
+  tmp_ass.eval ();
 
   if (error_state)
     {
@@ -285,7 +285,7 @@ tree_for_command::do_for_loop_once (tree_index_expression *idx_expr,
 
   if (list)
     {
-      list->eval (1);
+      list->eval (true);
       if (error_state)
 	{
 	  eval_error ();
@@ -315,7 +315,7 @@ tree_for_command::do_for_loop_once (tree_identifier *ident,
 
   if (list)
     {
-      list->eval (1);
+      list->eval (true);
       if (error_state)
 	{
 	  eval_error ();
@@ -366,7 +366,7 @@ tree_for_command::eval (void)
   if (error_state || ! expr)
     return;
 
-  octave_value tmp_expr = expr->eval (false);
+  octave_value tmp_expr = expr->eval ();
 
   if (error_state || tmp_expr.is_undefined ())
     {
@@ -609,7 +609,7 @@ tree_switch_command::eval (void)
 {
   if (expr)
     {
-      octave_value val = expr->eval (0);
+      octave_value val = expr->eval ();
 
       if (! error_state)
 	{

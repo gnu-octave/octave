@@ -406,7 +406,7 @@ plot_range::print (ostrstream& plot_buf)
 
   if (lower)
     {
-      octave_value lower_val = lower->eval (false);
+      octave_value lower_val = lower->eval ();
       if (error_state)
 	{
 	  ::error ("evaluating lower bound of plot range");
@@ -423,7 +423,7 @@ plot_range::print (ostrstream& plot_buf)
 
   if (upper)
     {
-      octave_value upper_val = upper->eval (false);
+      octave_value upper_val = upper->eval ();
       if (error_state)
 	{
 	  ::error ("evaluating upper bound of plot range");
@@ -464,7 +464,7 @@ subplot_using::eval (int ndim, int n_max)
     {
       if (x[i])
 	{
-	  octave_value tmp = x[i]->eval (false);
+	  octave_value tmp = x[i]->eval ();
 	  if (error_state)
 	    {
 	      ::error ("evaluating plot using command");
@@ -561,7 +561,7 @@ subplot_style::print (ostrstream& plot_buf)
 
       if (sp_linetype)
 	{
-	  octave_value tmp = sp_linetype->eval (false);
+	  octave_value tmp = sp_linetype->eval ();
 	  if (! error_state && tmp.is_defined ())
 	    {
 	      double val = tmp.double_value ();
@@ -582,7 +582,7 @@ subplot_style::print (ostrstream& plot_buf)
 
       if (sp_pointtype)
 	{
-	  octave_value tmp = sp_pointtype->eval (false);
+	  octave_value tmp = sp_pointtype->eval ();
 	  if (! error_state && tmp.is_defined ())
 	    {
 	      double val = tmp.double_value ();
@@ -686,7 +686,7 @@ subplot::handle_plot_data (int ndim, ostrstream& plot_buf)
 {
   if (sp_plot_data)
     {
-      octave_value data = sp_plot_data->eval (false);
+      octave_value data = sp_plot_data->eval ();
 
       if (! error_state && data.is_defined ())
 	{
@@ -778,7 +778,7 @@ subplot::print (int ndim, ostrstream& plot_buf)
 
   if (sp_title_clause)
     {
-      octave_value tmp = sp_title_clause->eval (false);
+      octave_value tmp = sp_title_clause->eval ();
       if (! error_state && tmp.is_string ())
 	plot_buf << " " << GPLOT_CMD_TITLE << " "
 	  << '"' << tmp.string_value () << '"';

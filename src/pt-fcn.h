@@ -106,7 +106,7 @@ public:
   string function_name (void)
     { return fcn_name; }
 
-  octave_value eval (bool print);
+  octave_value eval (bool print = false);
 
   octave_value_list eval (bool print, int nargout, const octave_value_list& args);
 

@@ -106,7 +106,7 @@ fsolve_user_function (const ColumnVector& x)
 
   if (fsolve_fcn)
     {
-      octave_value_list tmp = fsolve_fcn->eval (0, 1, args);
+      octave_value_list tmp = fsolve_fcn->eval (false, 1, args);
       if (tmp.length () > 0 && tmp(0).is_defined ())
 	{
 	  retval = tmp(0).vector_value ();

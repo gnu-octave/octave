@@ -49,7 +49,7 @@ public:
   bool is_multi_val_ret_expression (void) const
     { return true; }
 
-  octave_value eval (bool print);
+  octave_value eval (bool print = false);
 
   virtual octave_value_list eval (bool print, int nargout,
 			      const octave_value_list& args) = 0;

@@ -317,7 +317,7 @@ private:
 
   octave_value scanf (const string& fmt, const Matrix& size, int& count);
 
-  octave_value do_oscanf (const scanf_format_elt *elt);
+  bool do_oscanf (const scanf_format_elt *elt, octave_value&);
 
   octave_value_list oscanf (const string& fmt);
 

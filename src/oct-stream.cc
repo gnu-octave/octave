@@ -1224,67 +1224,16 @@ octave_base_stream::scanf (const string& fmt, const Matrix& size,
 	}
     }
   else
-    invalid_operation ("fscanf", "writing");
+    invalid_operation ("fscanf", "reading");
 
   return retval;
 }
 
-template <class T>
-octave_value
-do_oscanf_num_conv (istream& is, const char *fmt, T valptr, bool discard)
+bool
+octave_base_stream::do_oscanf (const scanf_format_elt *elt,
+			       octave_value& retval)
 {
-  octave_value retval;
-
-  is.scan (fmt, valptr);
-
-  if (is)
-    {
-      if (! discard)
-	retval = (double) (*valptr);
-    }
-  else
-    error ("fscanf: conversion failed");
-
-  return retval;
-}
-
-template octave_value
-do_oscanf_num_conv (istream&, const char*, int*, bool);
-
-#if 0
-template octave_value
-do_oscanf_num_conv (istream&, const char*, float*, bool);
-#endif
-
-template octave_value
-do_oscanf_num_conv (istream&, const char*, double*, bool);
-
-static inline octave_value
-do_oscanf_str_conv (istream& is, const char *fmt, char *sptr,
-		    int maxlen, bool discard)
-{
-  octave_value retval;
-
-  is.scan (fmt, sptr);
-
-  if (is)
-    {
-      if (! discard)
-	{
-	  sptr[maxlen] = '\0';
-	  retval = sptr;
-	}
-    }
-  else
-    error ("fscanf: conversion failed");
-
-  return retval;
-}
-
-octave_value
-octave_base_stream::do_oscanf (const scanf_format_elt *elt)
-{
-  octave_value retval;
+  bool quit = false;
 
   istream *isp = input_stream ();
 
@@ -1306,7 +1255,8 @@ octave_base_stream::do_oscanf (const scanf_format_elt *elt)
 	      {
 		int dummy;
 
-		is.scan (fmt, &dummy);
+		if (! is.scan (fmt, &dummy))
+		  quit = true;
 	      }
 	      break;
 
@@ -1314,7 +1264,13 @@ octave_base_stream::do_oscanf (const scanf_format_elt *elt)
 	      {
 		int tmp;
 
-		retval = do_oscanf_num_conv (is, fmt, &tmp, discard);
+		if (is.scan (fmt, &tmp))
+		  {
+		    if (! discard)
+		      retval = (double) tmp;
+		  }
+		else
+		  quit = true;
 	      }
 	      break;
 
@@ -1322,7 +1278,13 @@ octave_base_stream::do_oscanf (const scanf_format_elt *elt)
 	      {
 		double tmp;
 
-		retval = do_oscanf_num_conv (is, fmt, &tmp, discard);
+		if (is.scan (fmt, &tmp))
+		  {
+		    if (! discard)
+		      retval = tmp;
+		  }
+		else
+		  quit = true;
 	      }
 	      break;
 
@@ -1334,7 +1296,16 @@ octave_base_stream::do_oscanf (const scanf_format_elt *elt)
 
 		char *tmp = new char[width + 1];
 
-		retval = do_oscanf_str_conv (is, fmt, tmp, width, discard);
+		if (is.scan (fmt, tmp))
+		  {
+		    if (! discard)
+		      {
+			tmp[width] = '\0';
+			retval = tmp;
+		      }
+		  }
+		else
+		  quit = true;
 
 		is.setf (flags);
 
@@ -1349,7 +1320,16 @@ octave_base_stream::do_oscanf (const scanf_format_elt *elt)
 		int width = elt->width ? elt->width : 65535;
 		char *tmp = new char [width+1];
 
-		retval = do_oscanf_str_conv (is, fmt, tmp, width, discard);
+		if (is.scan (fmt, tmp))
+		  {
+		    if (! discard)
+		      {
+			tmp[width] = '\0';
+			retval = tmp;
+		      }
+		  }
+		else
+		  quit = true;
 
 		delete [] tmp;
 	      }
@@ -1383,7 +1363,7 @@ octave_base_stream::do_oscanf (const scanf_format_elt *elt)
 	}
     }
 
-  return retval;
+  return quit;
 }
 
 octave_value_list
@@ -1451,30 +1431,44 @@ octave_base_stream::oscanf (const string& fmt)
 
 	    int num_values = 0;
 
+	    bool quit = false;
+
 	    for (int i = 0; i < nconv; i++)
 	      {
-		octave_value tmp = do_oscanf (elt);
+		octave_value tmp;
 
-		if (tmp.is_defined ())
-		  retval (num_values++) = tmp;
+		quit = do_oscanf (elt, tmp);
 
-		if (! ok ())
+		if (quit)
 		  break;
+		else
+		  {
+		    if (tmp.is_defined ())
+		      retval (num_values++) = tmp;
 
-		elt = fmt_list.next ();
+		    if (! ok ())
+		      break;
+		    elt = fmt_list.next ();
+		  }
 	      }
 
 	    retval.resize (num_values);
 
-	    // Pick up any trailing stuff.
-	    if (ok () && len > nconv)
-	      do_oscanf (elt);
+	    if (! quit)
+	      {
+		// Pick up any trailing stuff.
+		if (ok () && len > nconv)
+		  {
+		    octave_value tmp;
+		    do_oscanf (elt, tmp);
+		  }
+	      }
 	  }
 	  break;
 	}
     }
   else
-    invalid_operation ("fscanf", "writing");
+    invalid_operation ("fscanf", "reading");
 
   return retval;
 }

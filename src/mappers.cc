@@ -405,6 +405,7 @@ Return 1 for characters that are letters or digits (@code{isalpha\n\
   DEFUN_MAPPER (isalpha, xisalpha, 0, 0, 0, 0, 0, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isalpha (@var{s})\n\
+@deftypefnx {Mapping Function} {} isletter (@var{s})\n\
 Return true for characters that are letters (@code{isupper (@var{s})}\n\
 or @code{islower (@var{s})} is true).\n\
 @end deftypefn");

@@ -1,8 +1,7 @@
 // hello.cc -- example of a dynamically linked function for Octave.
 
 // To use this file, your version of Octave must support dynamic
-// linking.  To find out if your version of Octave supports dynamic
-// linking, type the command
+// linking.  To find out if it does, type the command
 //
 //   octave_config_info
 //

@@ -324,28 +324,28 @@ looks_like_struct (const std::string& text)
   return retval;
 }
 
-DEFUN (is_global, args, ,
+DEFUN (isglobal, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} is_global (@var{name})\n\
+@deftypefn {Built-in Function} {} isglobal (@var{name})\n\
 Return 1 if @var{name} is globally visible.  Otherwise, return 0.  For\n\
 example,\n\
 \n\
 @example\n\
 @group\n\
 global x\n\
-is_global (\"x\")\n\
+isglobal (\"x\")\n\
      @result{} 1\n\
 @end group\n\
 @end example\n\
 @end deftypefn")
 {
-  octave_value_list retval = 0.0;
+  octave_value retval = 0.0;
 
   int nargin = args.length ();
 
   if (nargin != 1)
     {
-      print_usage ("is_global");
+      print_usage ("isglobal");
       return retval;
     }
 
@@ -353,7 +353,7 @@ is_global (\"x\")\n\
 
   if (error_state)
     {
-      error ("is_global: expecting std::string argument");
+      error ("isglobal: expecting std::string argument");
       return retval;
     }
 

@@ -700,9 +700,9 @@ but it uses less memory and avoids calling conj if @var{x} is real.\n\
   DATA_REDUCTION (sumsq);
 }
 
-DEFUN (is_bool, args, ,
+DEFUN (isbool, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Functio} {} is_bool (@var{x})\n\
+@deftypefn {Built-in Functio} {} isbool (@var{x})\n\
 Return true if @var{x} is a boolean object.\n\
 @end deftypefn")
 {
@@ -711,16 +711,16 @@ Return true if @var{x} is a boolean object.\n\
   if (args.length () == 1)
     retval = args(0).is_bool_type ();
   else
-    print_usage ("is_bool");
+    print_usage ("isbool");
 
   return retval;
 }
 
-DEFALIAS (islogical, is_bool);
+DEFALIAS (islogical, isbool);
 
-DEFUN (is_complex, args, ,
+DEFUN (iscomplex, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} is_complex (@var{x})\n\
+@deftypefn {Built-in Function} {} iscomplex (@var{x})\n\
 Return true if @var{x} is a complex-valued numeric object.\n\
 @end deftypefn")
 {
@@ -729,7 +729,7 @@ Return true if @var{x} is a complex-valued numeric object.\n\
   if (args.length () == 1)
     retval = args(0).is_complex_type ();
   else
-    print_usage ("is_complex");
+    print_usage ("iscomplex");
 
   return retval;
 }
@@ -790,9 +790,9 @@ Return nonzero if @var{x} is a numeric object.\n\
   return retval;
 }
 
-DEFUN (is_list, args, ,
+DEFUN (islist, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} is_list (@var{x})\n\
+@deftypefn {Built-in Function} {} islist (@var{x})\n\
 Return nonzero if @var{x} is a list.\n\
 @end deftypefn")
 {
@@ -801,14 +801,14 @@ Return nonzero if @var{x} is a list.\n\
   if (args.length () == 1)
     retval = args(0).is_list ();
   else
-    print_usage ("is_list");
+    print_usage ("islist");
 
   return retval;
 }
 
-DEFUN (is_matrix, args, ,
+DEFUN (ismatrix, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} is_matrix (@var{a})\n\
+@deftypefn {Built-in Function} {} ismatrix (@var{a})\n\
 Return 1 if @var{a} is a matrix.  Otherwise, return 0.\n\
 @end deftypefn")
 {
@@ -824,14 +824,14 @@ Return 1 if @var{a} is a matrix.  Otherwise, return 0.\n\
 	retval = static_cast<double> (arg.rows () >= 1 && arg.columns () >= 1);
     }
   else
-    print_usage ("is_matrix");
+    print_usage ("ismatrix");
 
   return retval;
 }
 
-DEFUN (is_struct, args, ,
+DEFUN (isstruct, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} is_struct (@var{expr})\n\
+@deftypefn {Built-in Function} {} isstruct (@var{expr})\n\
 Return 1 if the value of the expression @var{expr} is a structure.\n\
 @end deftypefn")
 {
@@ -840,7 +840,7 @@ Return 1 if the value of the expression @var{expr} is a structure.\n\
   if (args.length () == 1)
     retval = args(0).is_map ();
   else
-    print_usage ("is_struct");
+    print_usage ("isstruct");
 
   return retval;
 }

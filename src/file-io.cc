@@ -134,9 +134,9 @@ fopen_mode_to_ios_mode (const std::string& mode)
   return retval;
 }
 
-DEFUN (is_stream, args, ,
+DEFUN (isstream, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} is_stream (@var{x})\n\
+@deftypefn {Built-in Function} {} isstream (@var{x})\n\
 Return true if @var{x} is a stream object.  Otherwise, return false.\n\
 @end deftypefn")
 {
@@ -145,7 +145,7 @@ Return true if @var{x} is a stream object.  Otherwise, return false.\n\
   if (args.length () == 1)
     retval = args(0).is_stream ();
   else
-    print_usage ("is_stream");
+    print_usage ("isstream");
 
   return retval;
 }

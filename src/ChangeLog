@@ -1,5 +1,13 @@
 2002-08-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* variables.cc (Fisglobal): Rename from Fis_global.
+	* file-io.cc (Fisstream): Rename from Fis_stream.
+	* data.cc (Fisbool): Rename from Fis_bool.
+	(Fiscomplex): Rename from Fis_complex.
+	(Fislist): Rename from Fis_list.
+	(Fismatrix): Rename from Fis_matrix.
+	(Fisstruct): Rename from Fis_struct.
+
 	* parse.y (switch_case): Make list of command optional.
 
 2002-08-08  John W. Eaton  <jwe@bevo.che.wisc.edu>

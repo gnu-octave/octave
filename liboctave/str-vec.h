@@ -24,6 +24,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_str_vec_h)
 #define octave_str_vec_h 1
 
+class ostream;
+
 #include <string>
 
 #include "Array.h"
@@ -52,7 +54,7 @@ public:
 
   ~string_vector (void) { }
 
-  int empty (void) { return length () == 0; }
+  int empty (void) const { return length () == 0; }
 
   int max_length (void) const
     {
@@ -79,6 +81,8 @@ public:
       Array<string>::qsort (str_vec_compare);
       return *this;
     }
+
+  ostream& list_in_columns (ostream&) const;
 };
 
 #endif

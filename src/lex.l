@@ -46,6 +46,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 // one of the macros defined there uses token_stack.
 static SLStack <token*> token_stack;
 
+#include "user-prefs.h"
 #include "variables.h"
 #include "octave.h"
 #include "symtab.h"
@@ -351,6 +352,9 @@ EXPON	([DdEe][+-]?{D}+)
 <MATRIX>{SN}*\]{S}*	{
 			  fixup_column_count (yytext);
 
+// It's a pain in the ass to decide whether to insert a comma after
+// seeing a ']' character...
+
 			  in_brace_or_paren.pop ();
 			  braceflag--;
 			  if (braceflag == 0)
@@ -359,7 +363,7 @@ EXPON	([DdEe][+-]?{D}+)
 				promptflag++;
 			      BEGIN 0;
 			    }
-			  else
+			  else if (user_pref.commas_in_literal_matrix != 2)
 			    {
 			      int c0 = yytext[yyleng-1];
 			      int spc_prev = (c0 == ' ' || c0 == '\t');
@@ -377,7 +381,7 @@ EXPON	([DdEe][+-]?{D}+)
 				     && in_brace_or_paren.top ()
 				     && convert_spaces_to_comma)
 				{
-				  unput (','); /* XXX */
+				  unput (',');
 				  return ']';
 				}
 			    }
@@ -391,14 +395,20 @@ EXPON	([DdEe][+-]?{D}+)
 <MATRIX>{S}*\,{S}*	{ TOK_RETURN (','); }
 
 <MATRIX>{S}+		{
-			  int bin_op = next_token_is_bin_op (1, yytext);
-			  int postfix_un_op
-			    = next_token_is_postfix_unary_op (1, yytext);
 
- 			  if (! (postfix_un_op || bin_op)
-			      && in_brace_or_paren.top ()
-			      && convert_spaces_to_comma)
-			    TOK_RETURN (','); /* XXX */
+// If commas are required, just eat the spaces.
+
+			  if (user_pref.commas_in_literal_matrix != 2)
+			    {
+			      int bin_op = next_token_is_bin_op (1, yytext);
+			      int postfix_un_op
+				= next_token_is_postfix_unary_op (1, yytext);
+
+			      if (! (postfix_un_op || bin_op)
+				  && in_brace_or_paren.top ()
+				  && convert_spaces_to_comma)
+				TOK_RETURN (',');
+			    }
 			}
 
 <MATRIX>{SN}*\;{SN}*	|
@@ -1444,7 +1454,9 @@ handle_identifier (char *tok, int next_tok_is_eq)
 
 // Check to see if we should insert a comma.
 
-  if (! in_brace_or_paren.empty () && in_brace_or_paren.top ()) 
+  if (user_pref.commas_in_literal_matrix != 2
+      && ! in_brace_or_paren.empty ()
+      && in_brace_or_paren.top ()) 
     {
       int c0 = yytext[yyleng-1];
       int spc_prev = (c0 == ' ' || c0 == '\t');
@@ -1456,11 +1468,12 @@ handle_identifier (char *tok, int next_tok_is_eq)
       int c1 = yyinput ();
       unput (c1);
       int other_op = match_any (c1, ",;\n]");
-
-      int index_op = (! spc_prev && c1 == '(');
+      int index_op = (c1 == '('
+		      && (user_pref.commas_in_literal_matrix == 0
+			  || ! spc_prev));
 
       if (! (postfix_un_op || bin_op || other_op || index_op))
-	unput (','); /* XXX */
+	unput (',');
     }
 
   return NAME;

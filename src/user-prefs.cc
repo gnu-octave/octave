@@ -64,6 +64,57 @@ check_str_pref (char *var)
 }
 
 /*
+ * Should commas be required to separate elements in a literal matrix
+ * list?
+ *
+ *   user specifies   value of pref
+ *   --------------   -------------
+ *   "required"             2
+ *   "traditional"          1
+ *   anything else          0
+ *
+ * Octave will never insert a comma in a literal matrix list if the
+ * user specifies "required".  For example, the statement [1 2] will
+ * result in an error instead of being treated the same as [1, 2].
+ *
+ * Traditional behavior makes Octave convert spaces to a comma between
+ * identifiers and `('.  For example, the statement
+ *
+ *   [eye (2)]
+ *
+ * will be parsed as
+ *
+ *   [eye, (2)]
+ *
+ * and will result in an error since the eye function will be
+ * called with no arguments.  To get around this, you would have to
+ * omit the space between `eye' and the `('.
+ *
+ * The default value is 0, which results in behavior that is the same
+ * as traditional, except that Octave does not convert spaces to a
+ * comma between identifiers and `('.  For example, the statement
+ *
+ *   [eye (2)]
+ *
+ * will result in a call to linspace with the argument `2'. 
+ */
+int
+commas_in_literal_matrix (void)
+{
+  int pref = 0;
+  char *val = builtin_string_variable ("commas_in_literal_matrix");
+  if (val != (char *) NULL)
+    {
+      if (strncmp (val, "required", 8) == 0)
+	pref = 2;
+      else if (strncmp (val, "traditional", 11) == 0)
+	pref = 1;
+    }
+  user_pref.commas_in_literal_matrix = pref;
+  return 0;
+}
+
+/*
  * Should we allow assignments like:
  *
  *   octave> A(1) = 3; A(2) = 5
@@ -88,6 +139,30 @@ empty_list_elements_ok (void)
 {
   user_pref.empty_list_elements_ok =
     check_str_pref ("empty_list_elements_ok");
+
+  return 0;
+}
+
+/*
+ * Should Octave always check to see if function files have changed
+ * since they were last compiled?
+ */
+int
+ignore_function_time_stamp (void)
+{
+  int pref = 0;
+
+  char *val = builtin_string_variable ("ignore_function_time_stamp");
+
+  if (val != (char *) NULL)
+    {
+      if (strncmp (val, "all", 3) == 0)
+	pref = 2;
+      if (strncmp (val, "system", 6) == 0)
+	pref = 1;
+    }
+
+  user_pref.ignore_function_time_stamp = pref;
 
   return 0;
 }
@@ -118,6 +193,18 @@ ok_to_lose_imaginary_part (void)
 {
   user_pref.ok_to_lose_imaginary_part =
     check_str_pref ("ok_to_lose_imaginary_part");
+
+  return 0;
+}
+
+/*
+ * If possible, send all output intended for the screen through the
+ * pager. 
+ */
+int
+page_screen_output (void)
+{
+  user_pref.page_screen_output = check_str_pref ("page_screen_output");
 
   return 0;
 }
@@ -174,6 +261,18 @@ print_answer_id_name (void)
 }
 
 /*
+ * Should we also print the dimensions of empty matrices?
+ */
+int
+print_empty_dimensions (void)
+{
+  user_pref.print_empty_dimensions =
+    check_str_pref ("print_empty_dimensions");
+
+  return 0;
+}
+
+/*
  * Should operations on empty matrices return empty matrices or an
  * error?
  */
@@ -182,18 +281,6 @@ propagate_empty_matrices (void)
 {
   user_pref.propagate_empty_matrices =
     check_str_pref ("propagate_empty_matrices");
-
-  return 0;
-}
-
-/*
- * Should we also print the dimensions of empty matrices?
- */
-int
-print_empty_dimensions (void)
-{
-  user_pref.print_empty_dimensions =
-    check_str_pref ("print_empty_dimensions");
 
   return 0;
 }
@@ -237,30 +324,6 @@ silent_functions (void)
 }
 
 /*
- * Should Octave always check to see if function files have changed
- * since they were last compiled?
- */
-int
-ignore_function_time_stamp (void)
-{
-  int pref = 0;
-
-  char *val = builtin_string_variable ("ignore_function_time_stamp");
-
-  if (val != (char *) NULL)
-    {
-      if (strncmp (val, "all", 3) == 0)
-	pref = 2;
-      if (strncmp (val, "system", 6) == 0)
-	pref = 1;
-    }
-
-  user_pref.ignore_function_time_stamp = pref;
-
-  return 0;
-}
-
-/*
  * Should should big matrices be split into smaller slices for output?
  */
 int
@@ -288,6 +351,24 @@ treat_neg_dim_as_zero (void)
 }
 
 /*
+ * Generate a warning for the assignment in things like
+ *
+ *   octave> if (a = 2 < n)
+ *
+ * but not
+ *
+ *   octave> if ((a = 2) < n)
+ */
+int
+warn_assign_as_truth_value (void)
+{
+  user_pref.warn_assign_as_truth_value =
+    check_str_pref ("warn_assign_as_truth_value");
+
+  return 0;
+}
+
+/*
  * Generate a warning for the comma in things like
  *
  *   octave> global a, b = 2
@@ -308,36 +389,6 @@ int
 warn_divide_by_zero (void)
 {
   user_pref.warn_divide_by_zero = check_str_pref ("warn_divide_by_zero");
-
-  return 0;
-}
-
-/*
- * Generate a warning for the assignment in things like
- *
- *   octave> if (a = 2 < n)
- *
- * but not
- *
- *   octave> if ((a = 2) < n)
- */
-int
-warn_assign_as_truth_value (void)
-{
-  user_pref.warn_assign_as_truth_value =
-    check_str_pref ("warn_assign_as_truth_value");
-
-  return 0;
-}
-
-/*
- * If possible, send all output intended for the screen through the
- * pager. 
- */
-int
-page_screen_output (void)
-{
-  user_pref.page_screen_output = check_str_pref ("page_screen_output");
 
   return 0;
 }
@@ -430,19 +481,39 @@ set_save_precision (void)
 }
 
 int
-sv_loadpath (void)
+sv_editor (void)
 {
   int status = 0;
 
-  char *s = builtin_string_variable ("LOADPATH");
+  char *s = builtin_string_variable ("EDITOR");
   if (s != (char *) NULL)
     {
-      delete [] user_pref.loadpath;
-      user_pref.loadpath = s;
+      delete [] user_pref.editor;
+      user_pref.editor = s;
     }
   else
     {
-      warning ("invalid value specified for LOADPATH");
+      warning ("invalid value specified for EDITOR");
+      status = -1;
+    }
+
+  return status;
+}
+
+int
+sv_gnuplot_binary (void)
+{
+  int status = 0;
+
+  char *s = builtin_string_variable ("gnuplot_binary");
+  if (s != (char *) NULL)
+    {
+      delete [] user_pref.gnuplot_binary;
+      user_pref.gnuplot_binary = s;
+    }
+  else
+    {
+      warning ("invalid value specified for gnuplot_binary");
       status = -1;
     }
 
@@ -470,19 +541,39 @@ sv_info_file (void)
 }
 
 int
-sv_editor (void)
+sv_loadpath (void)
 {
   int status = 0;
 
-  char *s = builtin_string_variable ("EDITOR");
+  char *s = builtin_string_variable ("LOADPATH");
   if (s != (char *) NULL)
     {
-      delete [] user_pref.editor;
-      user_pref.editor = s;
+      delete [] user_pref.loadpath;
+      user_pref.loadpath = s;
     }
   else
     {
-      warning ("invalid value specified for EDITOR");
+      warning ("invalid value specified for LOADPATH");
+      status = -1;
+    }
+
+  return status;
+}
+
+int
+sv_pager_binary (void)
+{
+  int status = 0;
+
+  char *s = builtin_string_variable ("PAGER");
+  if (s != (char *) NULL)
+    {
+      delete [] user_pref.pager_binary;
+      user_pref.pager_binary = s;
+    }
+  else
+    {
+      warning ("invalid value specified for PAGER");
       status = -1;
     }
 
@@ -543,46 +634,6 @@ sv_pwd (void)
   else
     {
       warning ("invalid value specified for PWD");
-      status = -1;
-    }
-
-  return status;
-}
-
-int
-sv_gnuplot_binary (void)
-{
-  int status = 0;
-
-  char *s = builtin_string_variable ("gnuplot_binary");
-  if (s != (char *) NULL)
-    {
-      delete [] user_pref.gnuplot_binary;
-      user_pref.gnuplot_binary = s;
-    }
-  else
-    {
-      warning ("invalid value specified for gnuplot_binary");
-      status = -1;
-    }
-
-  return status;
-}
-
-int
-sv_pager_binary (void)
-{
-  int status = 0;
-
-  char *s = builtin_string_variable ("PAGER");
-  if (s != (char *) NULL)
-    {
-      delete [] user_pref.pager_binary;
-      user_pref.pager_binary = s;
-    }
-  else
-    {
-      warning ("invalid value specified for PAGER");
       status = -1;
     }
 

@@ -63,6 +63,7 @@ sed < $(srcdir)/$@.in > $@.tmp \
   -e "s;%TARGET_HOST_TYPE%;${target_host_type};" \
   -e "s;%F77%;${F77};" \
   -e "s;%FFLAGS%;${FFLAGS};" \
+  -e "s;%FPICFLAG%;${FPICFLAG};" \
   -e "s;%F2C%;${F2C};" \
   -e "s;%F2CFLAGS%;${F2CFLAGS};" \
   -e "s;%FLIBS%;${FLIBS};" \
@@ -71,6 +72,7 @@ sed < $(srcdir)/$@.in > $@.tmp \
   -e "s;%CC%;${CC};" \
   -e "s;%CC_VERSION%;${CC_VERSION};" \
   -e "s;%CFLAGS%;${BUG_CFLAGS};" \
+  -e "s;%CPICFLAG%;${CPICFLAG};" \
   -e "s;%CXX%;${CXX};" \
   -e "s;%CXX_VERSION%;${CXX_VERSION};" \
   -e "s;%CXXFLAGS%;${CXXFLAGS};" \

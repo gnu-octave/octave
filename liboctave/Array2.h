@@ -116,14 +116,47 @@ public:
   int columns (void) const { return d2; }
 
   T& elem (int i, int j) { return Array<T>::elem (d1*j+i); }
-  T& checkelem (int i, int j);
+
+  T& checkelem (int i, int j)
+    {
+      if (i < 0 || j < 0 || i >= d1 || j >= d2)
+	{
+	  (*current_liboctave_error_handler) ("range error");
+	  static T foo;
+	  return foo;
+	}
+      else
+	return elem (i, j);
+    }
+
+#if defined (NO_BOUNDS_CHECKING)
+  T& operator () (int i, int j) { return elem (i, j); }
+#else
   T& operator () (int i, int j) { return checkelem (i, j); }
+#endif
 
-  T elem (int i, int j) const;
-  T checkelem (int i, int j) const;
-  T operator () (int i, int j) const;
+  T elem (int i, int j) const { return Array<T>::elem (d1*j+i); }
 
-  // No checking.
+  T checkelem (int i, int j) const
+    {
+      if (i < 0 || j < 0 || i >= d1 || j >= d2)
+	{
+	  (*current_liboctave_error_handler) ("range error");
+	  T foo;
+	  static T *bar = &foo;
+	  return foo;
+	}
+      else
+	return elem (i, j);
+    }
+
+#if defined (NO_BOUNDS_CHECKING)
+  T operator () (int i, int j) const { return elem (i, j); }
+#else
+  T operator () (int i, int j) const { return checkelem (i, j); }
+#endif
+
+  // No checking of any kind, ever.
 
   T& xelem (int i, int j) { return Array<T>::xelem (d1*j+i); }
   T xelem (int i, int j) const { return Array<T>::xelem (d1*j+i); }

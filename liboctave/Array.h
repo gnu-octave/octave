@@ -82,6 +82,15 @@ private:
       }
   };
 
+  void make_unique (void)
+    {
+      if (rep->count > 1)
+	{
+	  --rep->count;
+	  rep = new ArrayRep (*rep);
+	}
+    }
+
 #ifdef HEAVYWEIGHT_INDEXING
   idx_vector *idx;
   int max_indices;
@@ -148,24 +157,55 @@ public:
   int capacity (void) const { return rep->length (); }
   int length (void) const { return rep->length (); }
 
+  // XXX FIXME XXX -- would be nice to fix this so that we don't
+  // unnecessarily force a copy, but that is not so easy, and I see no
+  // clean way to do it.
+
   T& elem (int n)
     {
-      if (rep->count > 1)
-	{
-	  --rep->count;
-	  rep = new ArrayRep (*rep);
-	}
+      make_unique ();
       return rep->elem (n);
     }
 
-  T& checkelem (int n);
+  T& Array<T>::checkelem (int n)
+    {
+      if (n < 0 || n >= rep->length ())
+	{
+	  (*current_liboctave_error_handler) ("range error");
+	  static T foo;
+	  return foo;
+	}
+      else
+	return elem (n);
+    }
+
+#if defined (NO_BOUNDS_CHECKING)
+  T& operator () (int n) { return elem (n); }
+#else
   T& operator () (int n) { return checkelem (n); }
+#endif
 
-  T elem (int n) const;
-  T checkelem (int n) const;
-  T operator () (int n) const;
+  T Array<T>::elem (int n) const { return rep->elem (n); }
 
-  // No checking.
+  T Array<T>::checkelem (int n) const
+    {
+      if (n < 0 || n >= rep->length ())
+	{
+	  (*current_liboctave_error_handler) ("range error");
+	  T foo;
+	  static T *bar = &foo;
+	  return foo;
+	}
+      return elem (n);
+    }
+
+#if defined (NO_BOUNDS_CHECKING)
+  T Array<T>::operator () (int n) const { return elem (n); }
+#else
+  T Array<T>::operator () (int n) const { return checkelem (n); }
+#endif
+
+  // No checking, even for multiple references, ever.
 
   T& xelem (int n) { return rep->elem (n); }
   T xelem (int n) const { return rep->elem (n); }

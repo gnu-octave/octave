@@ -131,7 +131,7 @@ dir_path::find_all (const string& nm)
       retval.resize (count);
 
       for (int i = 0; i < count; i++)
-	retval[i] = *tmp[i];
+	retval[i] = tmp[i];
     }
 
   return retval;

@@ -45,54 +45,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Two dimensional array class.
 
 template <class T>
-T&
-Array2<T>::checkelem (int i, int j)
-{
-  if (i < 0 || j < 0 || i >= d1 || j >= d2)
-    {
-      (*current_liboctave_error_handler) ("range error");
-      static T foo;
-      return foo;
-    }
-  return Array<T>::elem (d1*j+i);
-}
-
-template <class T>
-T
-Array2<T>::elem (int i, int j) const
-{
-  return Array<T>::elem (d1*j+i);
-}
-
-template <class T>
-T
-Array2<T>::checkelem (int i, int j) const
-{
-  if (i < 0 || j < 0 || i >= d1 || j >= d2)
-    {
-      (*current_liboctave_error_handler) ("range error");
-      T foo;
-      static T *bar = &foo;
-      return foo;
-    }
-  return Array<T>::elem (d1*j+i);
-}
-
-template <class T>
-T
-Array2<T>::operator () (int i, int j) const
-{
-  if (i < 0 || j < 0 || i >= d1 || j >= d2)
-    {
-      (*current_liboctave_error_handler) ("range error");
-      T foo;
-      static T *bar = &foo;
-      return foo;
-    }
-  return Array<T>::elem (d1*j+i);
-}
-
-template <class T>
 void
 Array2<T>::resize (int r, int c)
 {

@@ -94,47 +94,6 @@ Array<T>::operator = (const Array<T>& a)
 }
 
 template <class T>
-T&
-Array<T>::checkelem (int n)
-{
-  if (n < 0 || n >= rep->length ())
-    {
-      (*current_liboctave_error_handler) ("range error");
-      static T foo;
-      return foo;
-    }
-  return elem (n);
-}
-
-template <class T>
-T
-Array<T>::elem (int n) const
-{
-  return rep->elem (n);
-}
-
-template <class T>
-T
-Array<T>::checkelem (int n) const
-{
-  if (n < 0 || n >= rep->length ())
-    {
-      (*current_liboctave_error_handler) ("range error");
-      T foo;
-      static T *bar = &foo;
-      return foo;
-    }
-  return elem (n);
-}
-
-template <class T>
-T
-Array<T>::operator () (int n) const
-{
-  return checkelem (n);
-}
-
-template <class T>
 void
 Array<T>::resize (int n)
 {

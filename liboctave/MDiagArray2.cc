@@ -47,7 +47,8 @@ operator += (MDiagArray2<T>& a, const MDiagArray2<T>& b)
     {
       (*current_liboctave_error_handler)
 	("nonconformant array operator += attempted");
-      return MDiagArray2<T> ();
+      static MDiagArray2<T> foo;
+      return foo;
     }
   else
     {
@@ -67,7 +68,8 @@ operator -= (MDiagArray2<T>& a, const MDiagArray2<T>& b)
     {
       (*current_liboctave_error_handler)
 	("nonconformant array operator -= attempted");
-      return MDiagArray2<T> ();
+      static MDiagArray2<T> foo;
+      return foo;
     }
   else
     {

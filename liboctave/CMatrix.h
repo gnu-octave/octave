@@ -247,7 +247,7 @@ public:
 
   Matrix operator ! (void) const;
 
-  / matrix by scalar -> matrix operations
+  // matrix by scalar -> matrix operations
 
   friend ComplexMatrix operator + (const Matrix& a, const Complex& s);
   friend ComplexMatrix operator - (const Matrix& a, const Complex& s);

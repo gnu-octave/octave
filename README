@@ -68,8 +68,8 @@ notice ommissions or inconsistencies, please report them as bugs to
 bug-octave@bevo.che.wisc.edu.  Specific suggestions for ways to
 improve Octave and its documentation are always welcome.
 
-Implemenation
--------------
+Implementation
+--------------
 
 Octave is being developed with the Free Software Foundation's make,
 bison (a replacement for YACC), flex (a replacement for lex), gcc/g++,

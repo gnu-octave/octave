@@ -19,7 +19,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} deblank (@var{s})
-## Removes the trailing blanks from the string @var{s}.
+## Removes the trailing blanks and nulls from the string @var{s}.
+## If @var{s} is a matrix, @var{deblank} trims each row to the 
+## length of longest string.
 ## @end deftypefn
 
 ## Author: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
@@ -33,17 +35,11 @@ function t = deblank (s)
 
   if (isstr (s))
 
-    [nr, nc] = size (s);
-    len = nr * nc;
-
-    if (len == 0)
-      t = s;
-    elseif (s == " ")
+    k = find (s != " " & s != "\0");
+    if (isempty (s) || isempty (k))
       t = "";
     else
-      s = reshape (s, 1, len);
-      k = ceil (max (find (s != " ")) / nr) * nr;
-      t = reshape (s (1:k), nr, k / nr);
+      t = s(:,1:ceil (max (k) / rows (s)));
     endif
 
   else

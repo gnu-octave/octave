@@ -1,5 +1,7 @@
 2002-04-09  Paul Kienzle <pkienzle@users.sf.net>
 
+	* strings/deblank.m: Trim \0 as well as blank.
+
 	* scripts/freqz.m: Evaluate a specific range of frequencies
 	expressed in radians or Hz relative to a supplied sample rate.
 

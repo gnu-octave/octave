@@ -1,3 +1,7 @@
+2004-10-06  John W. Eaton  <jwe@octave.org>
+
+	* pt-fcn-handle.h (tree_fcn_handle::name): New function.
+
 2004-10-01  John W. Eaton  <jwe@octave.org>
 
 	* ov-range.h (octave_range::valid_as_scalar_index): Ensure int value.

@@ -60,6 +60,8 @@ public:
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false,
 		  bool pr_orig_txt = true);
 
+  std::string name (void) const { return nm; }
+
   bool rvalue_ok (void) const { return true; }
 
   octave_value rvalue (void);

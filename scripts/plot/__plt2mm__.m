@@ -16,10 +16,14 @@
 # along with Octave; see the file COPYING.  If not, write to the Free
 # Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
-function plot_2_m_m (x, y)
+function plot_2_m_m (x, y, fmt)
 
-  if (nargin != 2)
-    usage ("plot_2_m_m (x, y)");
+  if (nargin < 2 || nargin > 3)
+    msg = sprintf ("plot_2_m_m (x, y)\n");
+    msg = sprintf ("%s              plot_2_m_m (x, y, fmt)", msg);
+    usage (msg);
+  elseif (nargin == 2)
+    fmt = "";
   endif
 
   [x_nr, x_nc] = size (x);
@@ -28,11 +32,11 @@ function plot_2_m_m (x, y)
   if (x_nr == y_nr && x_nc == y_nc)
     if (x_nc > 0)
       tmp = [x, y];
-      command = sprintf ("gplot tmp(:,%d:%d:%d)", 1, x_nc, x_nc+1);
+      cmd = sprintf ("gplot tmp(:,%d:%d:%d) %s", 1, x_nc, x_nc+1, fmt);
       for i = 2:x_nc
-        command = sprintf ("%s, tmp(:,%d:%d:%d)", command, i, x_nc, x_nc+i);
+        cmd = sprintf ("%s, tmp(:,%d:%d:%d) %s", cmd, i, x_nc, x_nc+i, fmt);
       endfor
-      eval (command);
+      eval (cmd);
     else
       error ("plot_2_m_m: arguments must be a matrices");
     endif

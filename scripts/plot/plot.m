@@ -16,9 +16,11 @@
 # along with Octave; see the file COPYING.  If not, write to the Free
 # Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
-function plot (x1, x2)
+function plot (...)
 
 # usage: plot (x, y)
+#        plot (x1, y1, x2, y2, ...)
+#        plot (x, y, fmt)
 #
 # If the first argument is a vector and the second is a matrix, the
 # the vector is plotted versus the columns (or rows) of the matrix.
@@ -42,18 +44,27 @@ function plot (x1, x2)
 # coordinates and the x coordinates are taken to be the indices of the
 # elements, starting with 1.
 #
-# See also: semilogx, semilogy, loglog, polar, mesh, contour,
+# To see possible options for FMT please see plot_opt.
+#
+# Examples:
+#
+#   plot (x, y, "@12", x, y2, x, y3, "4", x, y4, "+")
+#
+#     y will be plotted with points of type 2 ("+") and color 1 (red).
+#     y2 will be plotted with lines.
+#     y3 will be plotted with lines of color 4.
+#     y4 will be plotted with points which are "+"s.
+#
+#   plot (b, "*")
+#
+#     b will be plotted with points of type "*".
+#
+# See also: semilogx, semilogy, loglog, polar, mesh, contour, plot_opt
 #           bar, stairs, gplot, gsplot, replot, xlabel, ylabel, title 
 
   set nologscale;
   set nopolar;
 
-  if (nargin == 1)
-    plot_int (x1);
-  elseif (nargin == 2)
-    plot_int (x1, x2);
-  else
-    usage ("plot (x [, y])");
-  endif
+  plot_int ("plot", all_va_args);
 
 endfunction

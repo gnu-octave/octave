@@ -16,7 +16,7 @@
 # along with Octave; see the file COPYING.  If not, write to the Free
 # Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
-function polar_int (theta, rho)
+function polar_int (theta, rho, fmt)
 
   if (nargin == 1)
     [nr, nc] = size (theta);
@@ -27,7 +27,7 @@ function polar_int (theta, rho)
       nc = tmp;
     endif
     theta_i = imag (theta);
-    if (theta_i)
+    if (any (theta_i))
       rho = theta_i;
       theta = real (theta);
     else
@@ -37,17 +37,17 @@ function polar_int (theta, rho)
   endif
 
   if (nargin <= 2)
-    if (imag (theta))
+    if (any (imag (theta)))
       theta = real (theta);
     endif
-    if (imag (rho))
+    if (any (imag (rho)))
       rho = real (rho);
     endif
     if (is_scalar (theta))
       if (is_scalar (rho))
         x = rho * cos (theta);
         y = rho * sin (theta);
-        plot_2_s_s (x, y);
+        plot_2_s_s (x, y, fmt);
       endif
     elseif (is_vector (theta))
       if (is_vector (rho))
@@ -62,7 +62,7 @@ function polar_int (theta, rho)
         endif
         x = rho .* cos (theta);
         y = rho .* sin (theta);
-        plot_2_v_v (x, y);
+        plot_2_v_v (x, y, fmt);
       elseif (is_matrix (rho))
         [t_nr, t_nc] = size (theta);
         if (t_nr == 1)
@@ -83,7 +83,7 @@ function polar_int (theta, rho)
         endif
         x = diag (cos (theta)) * rho;
         y = diag (sin (theta)) * rho;
-        plot_2_v_m (x, y);
+        plot_2_v_m (x, y, fmt);
       endif
     elseif (is_matrix (theta))
       if (is_vector (rho))
@@ -107,14 +107,14 @@ function polar_int (theta, rho)
         diag_r = diag (r);
         x = diag_r * cos (theta);
         y = diag_r * sin (theta);
-        plot_2_m_v (x, y);
+        plot_2_m_v (x, y, fmt);
       elseif (is_matrix (rho))
         if (size (rho) != size (theta))
           error ("polar: matrix dimensions must match");
         endif
         x = rho .* cos (theta);
         y = rho .* sin (theta);
-        plot_2_m_m (x, y);
+        plot_2_m_m (x, y, fmt);
       endif
     endif
   else

@@ -16,52 +16,87 @@
 # along with Octave; see the file COPYING.  If not, write to the Free
 # Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
-function plot_int (x1, x2)
+function plot_int (caller, ...)
 
-  if (nargin == 1)
-    [nr, nc] = size (x1);
-    if (nr == 1)
-      x1 = x1';
-      tmp = nr;
-      nr = nc;
-      nc = tmp;
-    endif
-    x1_i = imag (x1);
-    if (any (any (x1_i)))
-      x2 = x1_i;
-      x1 = real (x1);
-    else
-      x2 = x1;
-      x1 = (1:nr)';
-    endif
-  endif
+  if (nargin == 2)
 
-  if (nargin <= 2)
-    if (any (any (imag (x1))))
-      x1 = real (x1);
-    endif
-    if (any (any (imag (x2))))
-      x2 = real (x2);
-    endif
-    if (is_scalar (x1))
-      if (is_scalar (x2))
-        plot_2_s_s (x1, x2);
+    plot_int_1 (va_arg (), "");
+
+  elseif (nargin > 2)
+
+    first_plot = 1;
+    hold_state = ishold;
+
+    unwind_protect
+
+      x = va_arg ();
+      nargin = nargin - 2;
+      x_set = 1;
+      y_set = 0;
+
+# Gather arguments, decode format, and plot lines.
+
+      while (nargin-- > 0)
+
+	fmt = "";
+	new = va_arg ();
+
+	if (isstr (new))
+	  if (! x_set)
+	    error ("plot: no data to plot");
+	  endif
+	  fmt = plot_opt (caller, new);
+	  if (! y_set)
+	    plot_int_1 (x, fmt)
+	  else
+	    plot_int_2 (x, y, fmt)
+	  endif
+	  hold on
+	  x_set = 0;
+	  y_set = 0;
+	elseif (x_set)
+	  if (y_set)
+	    plot_int_2 (x, y, fmt);
+	    hold on
+	    x = new;
+	    y_set = 0;
+	  else
+	    y = new;
+	    y_set = 1;          
+	  endif
+	else
+	  x = new;
+	  x_set = 1;
+	endif
+
+      endwhile
+
+# Handle last plot.
+
+      if  (x_set)
+	if (y_set)
+	  plot_int_2 (x, y, fmt);
+	else
+	  plot_int_1 (x, fmt);
+	endif
       endif
-    elseif (is_vector (x1))
-      if (is_vector (x2))
-        plot_2_v_v (x1, x2);
-      elseif (is_matrix (x2))
-        plot_2_v_m (x1, x2);
+
+    unwind_protect_cleanup
+
+      if (! hold_state)
+        hold off
       endif
-    elseif (is_matrix (x1))
-      if (is_vector (x2))
-        plot_2_m_v (x1, x2);
-      elseif (is_matrix (x2))
-        plot_2_m_m (x1, x2);
-      endif
-    endif
+
+    end_unwind_protect
+
   else
-    usage ("plot_int (x [, y])");
+
+    msg = sprintf ("%s (x)\n", caller);
+    msg = sprintf ("%s       %s (x, y)\n", msg, caller);
+    msg = sprintf ("%s       %s (x2, y1, x2, y2)\n", msg, caller);
+    msg = sprintf ("%s       %s (x, y, fmt)", msg, caller);
+    usage (msg);
+
   endif
 
 endfunction

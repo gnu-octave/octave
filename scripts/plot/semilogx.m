@@ -16,9 +16,11 @@
 # along with Octave; see the file COPYING.  If not, write to the Free
 # Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
-function semilogx (x1, x2)
+function semilogx (...)
 
 # usage: semilogx (x, y)
+#        semilogx (x1, y1, x2, y2, ...)
+#        semilogx (x, y, fmt)
 #
 # Make a 2D plot of y versus x using a log scale for the x axis. 
 #
@@ -32,12 +34,6 @@ function semilogx (x1, x2)
   set nologscale y;
   set nopolar;
 
-  if (nargin == 1)
-    plot_int (x1);
-  elseif (nargin == 2)
-    plot_int (x1, x2);
-  else
-    usage ("semilogx (x [, y])");
-  endif
+  plot_int ("semilogx", all_va_args);
 
 endfunction

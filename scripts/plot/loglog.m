@@ -16,29 +16,24 @@
 # along with Octave; see the file COPYING.  If not, write to the Free
 # Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
-function loglog (x1, x2)
+function loglog (...)
 
 # usage: loglog (x, y)
+#        loglog (x1, y1, x2, y2, ...)
+#        loglog (x, y, fmt)
 #
-# Make a 2D plot of y versus x using log scales for both axes.
+# Make a 2D plot of y versus x using a log scale for the x axis. 
 #
 # See the help message for the plot command for a description of how
 # the arguments are interpreted. 
 #
-# See also: plot, semilogx, semilogy, polar, mesh, contour, bar, stairs,
+# See also: plot, semilogy, loglog, polar, mesh, contour, bar, stairs,
 #           gplot, gsplot, replot, xlabel, ylabel, title 
-
 
   set logscale x;
   set logscale y;
   set nopolar;
 
-  if (nargin == 1)
-    plot_int (x1);
-  elseif (nargin == 2)
-    plot_int (x1, x2);
-  else
-    usage ("loglog (x [, y])");
-  endif
+  plot_int ("loglog", all_va_args);
 
 endfunction

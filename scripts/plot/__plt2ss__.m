@@ -16,10 +16,14 @@
 # along with Octave; see the file COPYING.  If not, write to the Free
 # Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
-function plot_2_s_s (x, y)
+function plot_2_s_s (x, y, fmt)
 
-  if (nargin != 2)
-    usage ("plot_2_s_s (x, y)");
+  if (nargin < 2 || nargin > 3)
+    msg = sprintf ("plot_2_s_s (x, y)");
+    msg = sprintf ("%s              plot_2_s_s (x, y, fmt)", msg);
+    usage (msg);
+  elseif (nargin == 2)
+    fmt = "";
   endif
 
   [x_nr, x_nc] = size (x);
@@ -27,8 +31,8 @@ function plot_2_s_s (x, y)
 
   if (x_nr == 1 && x_nr == y_nr && x_nc == 1 && x_nc == y_nc)
     tmp = [x, y];
-    command = sprintf ("gplot tmp");
-    eval ("gplot tmp");
+    cmd = sprintf ("gplot tmp %s", fmt);
+    eval (cmd);
   else
     error ("plot_2_s_s: arguments must be scalars");
   endif

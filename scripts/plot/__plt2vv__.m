@@ -16,10 +16,14 @@
 # along with Octave; see the file COPYING.  If not, write to the Free
 # Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
-function plot_2_v_v (x, y)
+function plot_2_v_v (x, y, fmt)
 
-  if (nargin != 2)
-    usage ("plot_2_m_m (x, y)");
+  if (nargin < 2 || nargin > 3)
+    msg = sprintf ("plot_2_v_v (x, y)\n");
+    msg = sprintf ("%s              plot_2_v_v (x, y, fmt)", msg);
+    usage (msg);
+  elseif (nargin == 2)
+    fmt = "";
   endif
 
   [x_nr, x_nc] = size (x);
@@ -44,6 +48,7 @@ function plot_2_v_v (x, y)
   endif
 
   tmp = [x, y];
-  eval ("gplot tmp");
+  cmd = sprintf ("gplot tmp %s", fmt);
+  eval (cmd);
 
 endfunction

@@ -16,11 +16,13 @@
 # along with Octave; see the file COPYING.  If not, write to the Free
 # Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
-function polar (x1, x2)
+function polar (x1, x2, fmt)
 
-# usage: polar (theta, rho)
+# usage: polar (theta, rho, fmt)
 #
 # Make a 2D plot given polar the coordinates theta and rho.
+#
+# The optional third argument specifies the line type.
 #
 # See also: plot, semilogx, semilogy, loglog, mesh, contour, bar,
 #           stairs, gplot, gsplot, replot, xlabel, ylabel, title 
@@ -28,12 +30,26 @@ function polar (x1, x2)
   set nologscale;
   set nopolar;
 
-  if (nargin == 1)
-    polar_int (x1);
+  if (nargin == 3)
+    if (isstr (fmt))
+      fmt = plot_opt ("polar", fmt);
+    else
+      error ("polar: third argument must be a string");
+    endif
+    polar_int_2 (x1, x2, fmt);
   elseif (nargin == 2)
-    polar_int (x1, x2);
+    if (isstr (x2))
+      fmt = plot_opt ("polar", x2);
+      polar_int_1 (x1, fmt);
+    else
+      fmt = "";
+      polar_int_2 (x1, x2, fmt);
+    endif
+  elseif (nargin == 1)
+    fmt = "";
+    polar_int_1 (x1, fmt);
   else
-    usage ("polar (x [, y])");
+    usage ("polar (theta, rho, fmt)");
   endif
 
 endfunction

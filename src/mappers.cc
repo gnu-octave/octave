@@ -128,6 +128,30 @@ xtoupper (int c)
   return toupper (c);
 }
 
+static Complex
+xconj (const Complex& x)
+{
+  return conj (x);
+}
+
+static double
+xconj (double x)
+{
+  return x;
+}
+
+static Complex
+ximag (const Complex& x)
+{
+  return Complex (0.0, x.imag ());
+}
+
+static Complex
+xreal (const Complex& x)
+{
+  return Complex (x.real (), 0.0);
+}
+
 void
 install_mapper_functions (void)
 {
@@ -230,7 +254,7 @@ Return the smallest integer not less than @var{x}.  If @var{x} is\n\
 complex, return @code{ceil (real (@var{x})) + ceil (imag (@var{x})) * I}.\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (conj, 0, 0, 0, conj, 0, conj, 0.0, 0.0, 0,
+  DEFUN_MAPPER (conj, 0, 0, 0, xconj, 0, xconj, 0.0, 0.0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} conj (@var{z})\n\
 Return the complex conjugate of @var{z}, defined as\n\
@@ -357,7 +381,7 @@ gamma (z) = | t^(z-1) exp (-t) dt.\n\
 \n\
 @seealso{gammai and lgamma}");
 
-  DEFUN_MAPPER (imag, 0, 0, 0, imag, imag, 0, 0.0, 0.0, 0,
+  DEFUN_MAPPER (imag, 0, 0, 0, imag, ximag, 0, 0.0, 0.0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} imag (@var{z})\n\
 Return the imaginary part of @var{z} as a real number.\n\
@@ -491,7 +515,7 @@ Compute the base-10 logarithm for each element of @var{x}.\n\
 @end deftypefn\n\
 @seealso{log, log2, logspace, and exp}");
 
-  DEFUN_MAPPER (real, 0, 0, 0, real, real, 0, 0.0, 0.0, 0,
+  DEFUN_MAPPER (real, 0, 0, 0, real, xreal, 0, 0.0, 0.0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} real (@var{z})\n\
 Return the real part of @var{z}.\n\

@@ -1,4 +1,16 @@
+2000-02-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* mappers.cc (xconj, ximag, xreal): New functions.  Use them in
+	DEFUN_MAPPER calls.
+
+	* defun-int.h (DEFUN_MAPPER_INTERNAL): Cast function pointer args
+	to octave_mapper constructor.
+
 2000-02-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* procstream.cc (procstreambase::procstreambase,
+	procstreambase::open, procstreambase::close):
+	Call std::ios::setstate, not set.
 
 	* lex.l (plot_axes_token): Declare plot_axes as const char *.
 	Declare tmp const char **.

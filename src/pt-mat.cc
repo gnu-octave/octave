@@ -31,6 +31,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream.h>
 #include <strstream.h>
 
+#include "defun.h"
 #include "error.h"
 #include "oct-obj.h"
 #include "pt-const.h"
@@ -41,6 +42,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt-mvr.h"
 #include "pt-walk.h"
 #include "user-prefs.h"
+
+// Are empty elements in a matrix list ok?  For example, is the empty
+// matrix in an expression like `[[], 1]' ok?  A positive value means
+// yes.  A negative value means yes, but print a warning message.
+// Zero means it should be considered an error.
+static int Vempty_list_elements_ok;
 
 // General matrices.  This list type is much more work to handle than
 // constant matrices, but it allows us to construct matrices from
@@ -153,8 +160,6 @@ tm_row_const::tm_row_const_rep::init (const tree_matrix_row& mr)
 {
   all_str = true;
 
-  int empties_ok = user_pref.empty_list_elements_ok;
-
   bool first_elem = true;
 
   for (Pix p = mr.first (); p != 0; mr.next (p))
@@ -172,9 +177,9 @@ tm_row_const::tm_row_const_rep::init (const tree_matrix_row& mr)
 
 	  if (this_elt_nr == 0 || this_elt_nc == 0)
 	    {
-	      if (empties_ok < 0)
+	      if (Vempty_list_elements_ok < 0)
 		warning ("empty matrix found in matrix list");
-	      else if (empties_ok == 0)
+	      else if (Vempty_list_elements_ok == 0)
 		{
 		  ::error ("empty matrix found in matrix list");
 		  break;
@@ -257,8 +262,6 @@ tm_const::init (const tree_matrix& tm)
 {
   all_str = true;
 
-  int empties_ok = user_pref.empty_list_elements_ok;
-
   bool first_elem = true;
 
   // Just eval and figure out if what we have is complex or all
@@ -297,9 +300,9 @@ tm_const::init (const tree_matrix& tm)
 
 	  if (this_elt_nr == 0 || this_elt_nc == 0)
 	    {
-	      if (empties_ok < 0)
+	      if (Vempty_list_elements_ok < 0)
 		warning ("empty matrix found in matrix list");
-	      else if (empties_ok == 0)
+	      else if (Vempty_list_elements_ok == 0)
 		{
 		  ::error ("empty matrix found in matrix list");
 		  break;
@@ -523,6 +526,21 @@ void
 tree_matrix::accept (tree_walker& tw)
 {
   tw.visit_matrix (*this);
+}
+
+static int
+empty_list_elements_ok (void)
+{
+  Vempty_list_elements_ok = check_preference ("empty_list_elements_ok");
+
+  return 0;
+}
+
+void
+symbols_of_pt_mat (void)
+{
+  DEFVAR (empty_list_elements_ok, "warn", 0, empty_list_elements_ok,
+    "ignore the empty element in expressions like `a = [[], 1]'");
 }
 
 /*

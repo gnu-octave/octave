@@ -32,7 +32,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #if defined (HAVE_TIMES) && defined (HAVE_SYS_TIMES_H)
 
-#include <sys/types.h>
 #if defined (HAVE_SYS_PARAM_H)
 #include <sys/param.h>
 #endif

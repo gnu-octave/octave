@@ -1233,7 +1233,7 @@ yyerror (char *s)
 
   char *msg = output_buf.str ();
 
-  parse_error (msg);
+  parse_error ("%s", msg);
 
   delete [] msg;
 }

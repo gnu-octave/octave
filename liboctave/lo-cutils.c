@@ -34,12 +34,10 @@ octave_qsort (void *base, size_t n, size_t size,
   qsort (base, n, size, cmp);
 }
 
-extern char *strptime ();
-
 char *
 oct_strptime (const char *buf, const char *format, struct tm *tm)
 {
-  return strptime (buf, format, tm);
+  return (char *) strptime (buf, format, tm);
 }
 
 

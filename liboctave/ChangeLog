@@ -1,3 +1,8 @@
+2001-02-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lo-cutils.c: Don't declare strptime.
+	(oct_strptime): Cast return type of strptime to char*.
+
 2001-02-06  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-rl-edit.c (octave_rl_newline): Call rl_newline with two args.

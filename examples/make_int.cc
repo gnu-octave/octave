@@ -312,17 +312,7 @@ DEFUN_DLD (doit, args, ,
 {
   octave_value_list retval;
 
-  // Might be better to use
-  //
-  //  args(0).type_name () == octave_integer::static_type_id ()
-  //
-  // But there are some problems with doing that if this function is
-  // in the same shared library as the one that defines the class.
-  // In that case, at least some systems will create two static data
-  // members for t_id.  To fix that problem, we need a different way
-  // of loading multiple functions from a single shared library...
-
-  if (args(0).type_name () == "integer")
+  if (args(0).type_id () == octave_integer::static_type_id ())
     {
       // At this point, we know we have a handle for an octave_integer
       // object, so we can peek at the representation and extract the

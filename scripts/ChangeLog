@@ -1,3 +1,8 @@
+2004-04-22  John W. Eaton  <jwe@octave.org>
+
+	* quaternion/qtransvmat.m: Use continuation characters to make
+	sure result is a matrix instead of a vector.  From <aklark@atdot.it>.
+
 2004-04-21  David Bateman  <dbateman@free.fr>
 
 	* scripts/elfun/lcm.m: Make N-d aware.

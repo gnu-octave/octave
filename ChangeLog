@@ -1,5 +1,8 @@
 2004-04-22  John W. Eaton  <jwe@octave.org>
 
+	* configure.in: Add -Wl,-Bsymbolic to SH_LDFLAGS for GNU/Linux
+	systems.  From Fredrik Lingvall <Fredrik.Lingvall@signal.uu.se>.
+
 	* mkoctfile.in: Allow -Wx,option style options to be passed to the
 	compiler.  From Al Niessner <Al.Niessner@jpl.nasa.gov>.
 

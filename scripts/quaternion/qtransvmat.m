@@ -36,14 +36,15 @@ function Aib = qtransvmat (qib)
     error ("qtransvmat: input values must be real");
   endif
 
-  Aib = [(2.*(qib(1)^2 + qib(4)^2) -1.),
-	 (2.*(qib(1)*qib(2)-qib(3)*qib(4))),
+
+  Aib = [(2.*(qib(1)^2 + qib(4)^2) -1.), ...
+	 (2.*(qib(1)*qib(2)-qib(3)*qib(4))), ...
 	 (2.*(qib(1)*qib(3)+qib(2)*qib(4)));
-	 (2.*(qib(1)*qib(2)+qib(3)*qib(4))),
-	 (2.*(qib(2)*qib(2)+qib(4)*qib(4))-1.),
+	 (2.*(qib(1)*qib(2)+qib(3)*qib(4))), ...
+	 (2.*(qib(2)*qib(2)+qib(4)*qib(4))-1.), ...
 	 (2.*(qib(2)*qib(3)-qib(1)*qib(4)));
-	 (2.*(qib(1)*qib(3)-qib(2)*qib(4))),
-	 (2.*(qib(2)*qib(3)+qib(1)*qib(4))),
+	 (2.*(qib(1)*qib(3)-qib(2)*qib(4))), ...
+	 (2.*(qib(2)*qib(3)+qib(1)*qib(4))), ...
 	 (2.*(qib(3)*qib(3)+qib(4)*qib(4))-1.)];
 
 endfunction

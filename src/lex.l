@@ -33,6 +33,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cctype>
 #include <cstring>
 
+#include <string>
+
 #include <strstream.h>
 
 #include "SLStack.h"
@@ -114,19 +116,19 @@ static SLStack <int> nesting_level;
 static void do_string_escapes (char *s);
 static void fixup_column_count (char *s);
 static void do_comma_insert_check (void);
-static int is_plot_keyword (char *s);
-static int is_keyword (char *s);
-static char *plot_style_token (char *s);
-static symbol_record *lookup_identifier (char *s);
+static int is_plot_keyword (const string& s);
+static int is_keyword (const string& s);
+static string plot_style_token (const string& s);
+static symbol_record *lookup_identifier (const string& s);
 static void grab_help_text (void);
 static int match_any (char c, char *s);
 static int next_token_is_bin_op (int spc_prev, char *yytext);
 static int next_token_is_postfix_unary_op (int spc_prev, char *yytext);
-static char *strip_trailing_whitespace (char *s);
+static string strip_trailing_whitespace (char *s);
 static void handle_number (char *yytext);
 static int handle_string (char delim, int text_style = 0);
 static int handle_close_brace (int spc_gobbled);
-static int handle_identifier (char *tok, int spc_gobbled);
+static int handle_identifier (const string& tok, int spc_gobbled);
 static int have_continuation (int trailing_comments_ok = 1);
 static int have_ellipsis_continuation (int trailing_comments_ok = 1);
 static int eat_whitespace (void);
@@ -190,7 +192,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
   }
 
 <TEXT_FCN>[^ \t\n\;\,]*{S}* {
-    char *tok = strip_trailing_whitespace (yytext);
+    string tok = strip_trailing_whitespace (yytext);
     TOK_PUSH_AND_RETURN (tok, TEXT);
   }
 
@@ -405,7 +407,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 %}
 
 {IDENT}{S}* {
-    char *tok = strip_trailing_whitespace (yytext);
+    string tok = strip_trailing_whitespace (yytext);
     int c = yytext[yyleng-1];
     int cont_is_spc = eat_continuation ();
     int spc_gobbled = (cont_is_spc || c == ' ' || c == '\t');
@@ -859,9 +861,11 @@ delete_input_buffer (void *buf)
 // Check to see if a character string matches any of the possible line
 // styles for plots.
 
-static char *
-plot_style_token (char *s)
+static string
+plot_style_token (const string& s)
 {
+  string retval;
+
   static char *plot_styles[] = 
     {
       "boxes",
@@ -879,13 +883,16 @@ plot_style_token (char *s)
   char **tmp = plot_styles;
   while (*tmp)
     {
-      if (almost_match (*tmp, s))
-	return *tmp;
+      if (almost_match (*tmp, s.c_str ()))
+	{
+	  retval = *tmp;
+	  break;
+	}
 
       tmp++;
     }
 
-  return 0;
+  return retval;
 }
 
 // Check to see if a character string matches any one of the plot
@@ -894,23 +901,24 @@ plot_style_token (char *s)
 // to abbreviate actual gnuplot keywords).
 
 static int
-is_plot_keyword (char *s)
+is_plot_keyword (const string& s)
 {
-  if (almost_match ("title", s))
+  const char *t = s.c_str ();
+  if (almost_match ("title", t))
     {
       return TITLE;
     }
-  else if (almost_match ("using", s))
+  else if (almost_match ("using", t))
     {
       in_plot_using = 1;
       return USING;
     }
-  else if (almost_match ("with", s))
+  else if (almost_match ("with", t))
     {
       in_plot_style = 1;
       return WITH;
     }
-  else if (strcmp ("clear", s) == 0)
+  else if (strcmp ("clear", t) == 0)
     {
       return CLEAR;
     }
@@ -923,12 +931,13 @@ is_plot_keyword (char *s)
 // Handle keywords.  Could probably be more efficient...
 
 static int
-is_keyword (char *s)
+is_keyword (const string& s)
 {
   if (plotting && in_plot_style)
     {
-      char *sty = plot_style_token (s);
-      if (sty)
+      string sty = plot_style_token (s);
+
+      if (! sty.empty ())
 	{
 	  in_plot_style = 0;
 	  yylval.tok_val = new token (sty);
@@ -940,9 +949,9 @@ is_keyword (char *s)
   int l = input_line_number;
   int c = current_input_column;
 
-  int len = strlen (s);
+  int len = s.length ();
 
-  const octave_kw *kw = octave_kw_lookup (s, len);
+  const octave_kw *kw = octave_kw_lookup (s.c_str (), len);
 
   if (kw)
     {
@@ -1066,7 +1075,7 @@ is_keyword (char *s)
 // variables occurs when expressions are evaluated.
 
 static symbol_record *
-lookup_identifier (char *name)
+lookup_identifier (const string& name)
 {
   return curr_sym_tab->lookup (name, 1, 0);
 }
@@ -1250,22 +1259,15 @@ next_token_is_bin_op (int spc_prev, char *yytext)
 
 // Used to delete trailing white space from tokens.
 
-static char *
+static string
 strip_trailing_whitespace (char *s)
 {
-  static char *retval = 0;
+  string retval = s;
 
-  delete [] retval;
+  size_t pos = retval.find_first_of (" \t");
 
-  retval = strsave (s);
-
-  char *t = strchr (retval, ' ');
-  if (t)
-    *t = '\0';
-
-  t = strchr (retval, '\t');
-  if (t)
-    *t = '\0';
+  if (pos != NPOS)
+    retval.resize (pos);
 
   return retval;
 }
@@ -1659,7 +1661,7 @@ maybe_unput_comma (int spc_gobbled)
 // an identifier.  Handles keywords.
 
 static int
-handle_identifier (char *tok, int spc_gobbled)
+handle_identifier (const string& tok, int spc_gobbled)
 {
 // It is almost always an error for an identifier to be followed
 // directly by another identifier.  Special cases are handled below.
@@ -1724,7 +1726,7 @@ handle_identifier (char *tok, int spc_gobbled)
     {
       BEGIN TEXT_FCN;
 
-      if (strcmp (tok, "set") == 0)
+      if (tok == "set")
 	doing_set = 1;
     }
 

@@ -1,5 +1,15 @@
 Fri May 16 00:07:11 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* pt-all.h: New file.
+	* parse.y, lex.l, pt-pr-code.cc: Use it.
+
+	* pt.h: Rename from pt-base.h.
+
+	* All parse tree classes: Add private copy constructors and
+	assignment operators to prevent copying.
+
+	* pt-base.cc: Delete.
+
 	* unwind-prot.h, unwind-prot.cc: Make a bit more object-oriented.
 	Change all uses of unwind_protect stuff to match.
 

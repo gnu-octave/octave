@@ -20,8 +20,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-#if !defined (octave_tree_base_h)
-#define octave_tree_base_h 1
+#if !defined (octave_tree_h)
+#define octave_tree_h 1
 
 #if defined (__GNUG__)
 #pragma interface
@@ -42,6 +42,8 @@ public:
       column_num = c;
     }
 
+  virtual ~tree (void) { }
+
   virtual int line (void) const
     { return line_num; }
 
@@ -56,6 +58,12 @@ private:
   // eventually converted to this tree node.
   int line_num;
   int column_num;
+
+  // No copying!
+
+  tree (const tree&);
+
+  tree& operator = (const tree&);
 };
 
 #endif

@@ -924,12 +924,12 @@ pr_any_float (const char *fmt, ostream& os, double d, int fw = 0)
 	      || native_float_format == OCTAVE_CRAY
 	      || native_float_format == OCTAVE_UNKNOWN_FLT_FMT)
 	    {
-	      for (int i = 0; i < sizeof (double); i++)
+	      for (size_t i = 0; i < sizeof (double); i++)
 		os.form ("%02x", (int) tmp.i[i]);
 	    }
 	  else
 	    {
-	      for (int i = sizeof (double) - 1; i >= 0; i--)
+	      for (size_t i = sizeof (double) - 1; i >= 0; i--)
 		os.form ("%02x", (int) tmp.i[i]);
 	    }
 	}
@@ -948,7 +948,7 @@ pr_any_float (const char *fmt, ostream& os, double d, int fw = 0)
 	      || native_float_format == OCTAVE_CRAY
 	      || native_float_format == OCTAVE_UNKNOWN_FLT_FMT)
 	    {
-	      for (int i = 0; i < sizeof (double); i++)
+	      for (size_t i = 0; i < sizeof (double); i++)
 		PRINT_CHAR_BITS (os, tmp.i[i]);
 	    }
 	  else

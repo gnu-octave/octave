@@ -159,8 +159,9 @@ OCTAVE_LFLAGS = -L../liboctave -L../libcruft -L../readline \
 OCTAVE_LIBS = -loctinterp -loctave -ltinst -lcruft \
 	$(LIBPLPLOT) -lreadline -lkpathsea -lglob $(LIBDLFCN)
 
-LIBS_TO_INSTALL = liboctinterp.a libtinst.a \
-	liboctinterp.$(SHLEXT) libtinst.$(SHLEXT)
+LIBS_TO_INSTALL = liboctinterp.a libtinst.a
+
+SH_LIBS_TO_INSTALL = liboctinterp.$(SHLEXT) libtinst.$(SHLEXT)
 
 LIBS = @LIBS@
 
@@ -251,6 +252,9 @@ install-lib:
 	for f in $(LIBS_TO_INSTALL); do \
 	  if [ -f $$f ]; then $(INSTALL_DATA) $$f $(libdir)/$$f; fi; \
 	done
+	for f in $(SH_LIBS_TO_INSTALL); do \
+	  if [ -f $$f ]; then $(INSTALL_PROGRAM) $$f $(libdir)/$$f; fi; \
+	done
 .PHONY: install-lib
 
 install-inc:
@@ -279,6 +283,7 @@ install-inc:
 uninstall:
 	rm -f $(bindir)/octave
 	for f in $(LIBS_TO_INSTALL); do rm -f $(libdir)/$$f; done
+	for f in $(SH_LIBS_TO_INSTALL); do rm -f $(libdir)/$$f; done
 	for f in $(INCLUDES) defaults.h oct-conf.h; do \
 	  rm -f $(octincludedir)/$$f; \
 	done

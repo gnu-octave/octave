@@ -154,7 +154,8 @@ install-lib:
 	$(RANLIB) $(libdir)/liboctave.a
 	if $(SHARED_LIBS); then \
 	  rm -f $(libdir)/liboctave.$(SHLEXT); \
-	  $(INSTALL_DATA) liboctave.$(SHLEXT) $(libdir)/liboctave.$(SHLEXT); \
+	  $(INSTALL_PROGRAM) liboctave.$(SHLEXT) \
+	    $(libdir)/liboctave.$(SHLEXT); \
 	fi
 .PHONY: install-lib
 

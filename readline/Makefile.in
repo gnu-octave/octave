@@ -23,8 +23,9 @@ SHARED_LIBS = @SHARED_LIBS@
 TERMLIBS = @TERMLIBS@
 SH_TERMLIBS = @SH_TERMLIBS@
 
-LIBS_TO_INSTALL = libreadline.a libhistory.a \
-	libreadline.$(SHLEXT) libhistory.$(SHLEXT)
+LIBS_TO_INSTALL = libreadline.a libhistory.a
+
+SH_LIBS_TO_INSTALL = libreadline.$(SHLEXT) libhistory.$(SHLEXT)
 
 RANLIB = @RANLIB@
 AR = ar
@@ -169,6 +170,9 @@ force:
 install:
 	for f in $(LIBS_TO_INSTALL); do \
 	  if [ -f $$f ]; then $(INSTALL_DATA) $$f $(libdir)/$$f; fi; \
+	done
+	for f in $(SH_LIBS_TO_INSTALL); do \
+	  if [ -f $$f ]; then $(INSTALL_PROGRAM) $$f $(libdir)/$$f; fi; \
 	done
 
 uninstall:

@@ -33,7 +33,9 @@ tex-glyph.o tex-make.o tilde.o truncate.o uppercasify.o variable.o       \
 version.o xcalloc.o xfopen.o xmalloc.o xopendir.o xputenv.o xrealloc.o   \
 xstat.o xstrdup.o $(malloc)
 
-LIBS_TO_INSTALL = libkpathsea.a libkpathsea.so
+LIBS_TO_INSTALL = libkpathsea.a
+
+SH_LIBS_TO_INSTALL = libkpathsea.so
 
 default all: stamp-picdir kpsewhich MakeTeXPK kpathsea.info stamp-shared
 
@@ -139,6 +141,9 @@ check:
 install:
 	for f in $(LIBS_TO_INSTALL); do \
 	  if [ -f $$f ]; then $(INSTALL_DATA) $$f $(libdir)/$$f; fi; \
+	done
+	for f in $(SH_LIBS_TO_INSTALL); do \
+	  if [ -f $$f ]; then $(INSTALL_PROGRAM) $$f $(libdir)/$$f; fi; \
 	done
 
 uninstall:

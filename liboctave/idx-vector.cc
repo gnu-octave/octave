@@ -1,7 +1,7 @@
 // Very simple integer vectors for indexing              -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993 John W. Eaton
+Copyright (C) 1992, 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -287,6 +287,30 @@ idx_vector::sort (void)
 {
   qsort ((void *) data, len, sizeof (int),
 	 (int (*)(void*, void*)) intcmp); 
+}
+
+void
+idx_vector::sort_uniq (void)
+{
+  if (len > 0)
+    {
+      sort ();
+
+      int *new_data = new int [len];
+      new_data[0] = data[0];
+      int k = 0;
+      for (int i = 1; i < len; i++)
+	{
+	  if (data[i] != new_data[k])
+	    {
+	      k++;
+	      new_data[k] = data[i];
+	    }
+	}
+      delete [] data;
+      len = k+1;
+      data = new_data;
+    }
 }
 
 ostream&

@@ -114,8 +114,6 @@ private:
 
 extern void flush_octave_stdout (void);
 
-extern pid_t octave_pager_pid;
-
 extern void symbols_of_pager (void);
 
 #endif

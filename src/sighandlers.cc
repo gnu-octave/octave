@@ -133,11 +133,6 @@ generic_sig_handler (int sig)
 
 // Handle SIGCHLD.
 
-// XXX FIXME XXX -- this should probably be implemented by having a
-// global list of pids to check and a corresponding list of functions
-// to call if a pid is recognized.  That way, we just have to register
-// functions elsewhere and this function doesn't have to change.
-
 static RETSIGTYPE
 sigchld_handler (int /* sig */)
 {
@@ -146,22 +141,28 @@ sigchld_handler (int /* sig */)
 
   octave_set_signal_handler (SIGCHLD, sigchld_handler);
 
-  if (octave_pager_pid > 0)
+  int n = octave_child_list::length ();
+
+  for (int i = 0; i < n; i++)
     {
-      int status;
-      pid_t pid = waitpid (octave_pager_pid, &status, 0);
+      octave_child& elt = octave_child_list::elem (i);
+
+      pid_t pid = elt.pid;
 
       if (pid > 0)
 	{
-	  if (WIFEXITED (status) || WIFSIGNALLED (status))
+	  int status;
+
+	  if (waitpid (pid, &status, 0) > 0)
 	    {
-	      octave_pager_pid = -1;
+	      elt.pid = -1;
 
-	      // Don't call error() here because we don't want to set
-	      // the error state.
+	      octave_child::dead_child_handler f = elt.handler;
 
-	      warning ("connection to external pager lost --");
-	      warning ("pending computations and output have been discarded");
+	      if (f)
+		(*f) (pid, status);
+
+	      break;
 	    }
 	}
     }
@@ -440,6 +441,57 @@ char *sys_siglist[NSIG + 1] =
   0
   };
 #endif
+
+octave_child_list *octave_child_list::instance = 0;
+
+void
+octave_child_list::do_insert (pid_t pid, octave_child::dead_child_handler f)
+{
+  // Insert item in first open slot, increasing size of list if
+  // necessary.
+
+  bool enlarge = true;
+
+  for (int i = 0; i < curr_len; i++)
+    {
+      octave_child tmp = list.elem (i);
+
+      if (tmp.pid < 0)
+	{
+	  list.elem (i) = octave_child (pid, f);
+	  enlarge = false;
+	  break;
+	}
+    }
+
+  if (enlarge)
+    {
+      int total_len = list.length ();
+
+      if (curr_len == total_len)
+	{
+	  if (total_len == 0)
+	    list.resize (16);
+	  else
+	    list.resize (total_len * 2);
+	}
+
+      list.elem (curr_len) = octave_child (pid, f);
+      curr_len++;
+    }
+}
+
+void
+octave_child_list::insert (pid_t pid, octave_child::dead_child_handler f)
+{
+  if (! instance)
+    instance = new octave_child_list ();
+
+  if (instance)
+    instance->do_insert (pid, f);
+  else
+    panic_impossible ();
+}
 
 /*
 ;;; Local Variables: ***

@@ -25,6 +25,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_sighandlers_h)
 #define octave_sighandlers_h 1
 
+#include <Array.h>
+
+#include "syswait.h"
+
 // Signal handler return type.
 #ifndef RETSIGTYPE
 #define RETSIGTYPE void
@@ -63,6 +67,81 @@ extern char *sys_siglist[];
 #define HAVE_POSIX_SIGNALS
 #endif
 #endif
+
+// Maybe this should be in a separate file?
+
+class
+octave_child
+{
+public:
+
+  typedef void (*dead_child_handler) (pid_t, int);
+
+  octave_child (pid_t id = -1, dead_child_handler f = 0)
+    : pid (id), handler (f) { }
+
+  octave_child (const octave_child& oc)
+    : pid (oc.pid), handler (oc.handler) { }
+
+  octave_child& operator = (const octave_child& oc)
+    {
+      if (&oc != this)
+	{
+	  pid = oc.pid;
+	  handler = oc.handler;
+	}
+      return *this;
+    }
+
+  ~octave_child (void) { }
+
+  // The process id of this child.
+  pid_t pid;
+
+  // The function we call if this child dies.
+  dead_child_handler handler;
+};
+
+class
+octave_child_list
+{
+protected:
+
+  octave_child_list (void) : list (0), curr_len (0) { }
+
+public:
+
+  ~octave_child_list (void) { }
+
+  static void insert (pid_t pid, octave_child::dead_child_handler f);
+
+  static int length (void) { return instance ? instance->curr_len : 0; }
+
+  static octave_child& elem (int i)
+    {
+      static octave_child foo;
+
+      if (instance)
+	{
+	  int n = length ();
+
+	  if (i >= 0 && i < n)
+	    return instance->list (i);
+	}
+
+      return foo;
+    }
+
+private:
+
+  Array<octave_child> list;
+
+  int curr_len;
+
+  static octave_child_list *instance;
+
+  void do_insert (pid_t pid, octave_child::dead_child_handler f);
+};
 
 #endif
 

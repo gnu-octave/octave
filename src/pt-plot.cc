@@ -58,6 +58,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt-exp.h"
 #include "pt-plot.h"
 #include "pt-walk.h"
+#include "sighandlers.h"
 #include "sysdep.h"
 #include "utils.h"
 
@@ -117,6 +118,17 @@ static oprocstream *plot_stream = 0;
 #endif
 
 static void
+plot_stream_death_handler (pid_t pid, int)
+{
+  close_plot_stream ();
+
+  warning ("connection to external plotter (pid = %d) lost --", pid);
+  warning ("please try your plot command(s) again");
+}
+
+static sig_handler *saved_sigint_handler = 0;
+
+static void
 open_plot_stream (void)
 {
   static bool initialized = false;
@@ -135,45 +147,35 @@ open_plot_stream (void)
 
       string plot_prog = Vgnuplot_binary;
 
-      if (! plot_prog.empty ())
-	{
-	  plot_stream = new oprocstream (plot_prog.c_str ());
+      if (plot_prog.empty ())
+	plot_prog = "gnuplot";
 
-	  if (plot_stream && ! *plot_stream)
+      // XXX FIXME XXX -- I'm not sure this is the right thing to do,
+      // but without it, C-c at the octave prompt will kill gnuplot...
+
+      saved_sigint_handler = octave_set_signal_handler (SIGINT, SIG_IGN);
+
+      plot_stream = new oprocstream (plot_prog.c_str ());
+
+      octave_set_signal_handler (SIGINT, saved_sigint_handler);
+
+      if (plot_stream)
+	{
+	  if (! *plot_stream)
 	    {
 	      delete plot_stream;
 	      plot_stream = 0;
+
+	      error ("plot: unable to open pipe to `%s'", plot_prog.c_str ());
 	    }
-
-	  if (! plot_stream)
+	  else
 	    {
-	      warning ("plot: unable to open pipe to `%s'",
-		       plot_prog.c_str ());
-
-	      if (plot_prog == "gnuplot")
-		{
-		  warning ("having trouble finding plotting program.");
-		  warning ("trying again with `gnuplot'");
-		  goto last_chance;
-		}
+	      pid_t id = plot_stream->pid ();
+    	      octave_child_list::insert (id, plot_stream_death_handler);
 	    }
 	}
       else
-	{
-	last_chance:
-
-	  plot_stream = new oprocstream ("gnuplot");
-
-	  if (plot_stream && ! *plot_stream)
-	    {
-	      delete plot_stream;
-	      plot_stream = 0;
-	    }
-
-	  if (! plot_stream)
-	    error ("plot: unable to open pipe to `%s'",
-		   plot_prog.c_str ());
-	}
+	error ("plot: unable to open pipe to `%s'", plot_prog.c_str ());
     }
 
   if (! error_state && plot_stream && *plot_stream && ! initialized)
@@ -189,10 +191,6 @@ open_plot_stream (void)
 static int
 send_to_plot_stream (const char *cmd)
 {
-  // From sighandlers.cc:
-
-  extern int pipe_handler_error_count;
-
   if (! (plot_stream && *plot_stream))
     {
       open_plot_stream ();
@@ -221,7 +219,6 @@ send_to_plot_stream (const char *cmd)
 	*plot_stream << GNUPLOT_COMMAND_REPLOT << "\n";
 
       plot_stream->flush ();
-      pipe_handler_error_count = 0;
     }
 
   return 0;

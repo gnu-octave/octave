@@ -45,7 +45,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "unwind-prot.h"
 #include "utils.h"
 
-pid_t octave_pager_pid = -1;
+static pid_t octave_pager_pid = -1;
 
 // Our actual connection to the external pager.
 static oprocstream *external_pager = 0;
@@ -93,6 +93,24 @@ clear_external_pager (void)
 }
 
 static void
+pager_death_handler (pid_t pid, int status)
+{
+  if (pid > 0)
+    {
+      if (WIFEXITED (status) || WIFSIGNALLED (status))
+	{
+	  octave_pager_pid = -1;
+
+	  // Don't call error() here because we don't want to set
+	  // the error state.
+
+	  warning ("connection to external pager lost --");
+	  warning ("pending computations and output have been discarded");
+	}
+    }
+}
+
+static void
 do_sync (const char *msg, bool bypass_pager)
 {
   if (msg && *msg)
@@ -113,7 +131,12 @@ do_sync (const char *msg, bool bypass_pager)
 		  external_pager = new oprocstream (pgr.c_str ());
 
 		  if (external_pager)
-		    octave_pager_pid = external_pager->pid ();
+		    {
+		      octave_pager_pid = external_pager->pid ();
+
+		      octave_child_list::insert (octave_pager_pid,
+						 pager_death_handler);
+		    }
 		}
 	    }
 

@@ -1,13 +1,32 @@
+# Copyright (C) 1995 John W. Eaton
+# 
+# This file is part of Octave.
+# 
+# Octave is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the
+# Free Software Foundation; either version 2, or (at your option) any
+# later version.
+# 
+# Octave is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+# for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with Octave; see the file COPYING.  If not, write to the Free
+# Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+
 function [g, v] = gcd (a, ...)
-  
+
+# usage: gcd (a, ...)
+#  
 # [g [, v]] = gcd (a) returns the greatest common divisor g of the
 # entries of the integer vector a, and an integer vector v such that
 # g = v(1) * a(k) + ... + v(k) * a(k).
 #
 # [g [, v]] = gcd (a1, ..., ak) is the same with a = [a1, ..., ak].
   
-# Written by KH (Kurt.Hornik@ci.tuwien.ac.at) on Sep 16, 1994
-# Copyright Dept of Statistics and Probability Theory TU Wien
+# Written by KH (Kurt.Hornik@ci.tuwien.ac.at) on Sep 16, 1994.
 
   if (nargin > 1)
     va_start;
@@ -17,7 +36,7 @@ function [g, v] = gcd (a, ...)
   endif
   
   if (round (a) != a)
-    error ("gcd:  all arguments must be integer");
+    error ("gcd: all arguments must be integer");
   endif
   
   g = abs (a(1));

@@ -22,7 +22,7 @@ function retval = kurtosis (x)
 #
 # If x is a vector of length N, return the kurtosis
 #
-# 	kurtosis(x) = N^(-1) std(x)^(-4) SUM_i (x(i)-mean(x))^4 - 3
+#   kurtosis(x) = N^(-1) std(x)^(-4) SUM_i (x(i)-mean(x))^4 - 3
 #
 # of x.
 #
@@ -30,7 +30,6 @@ function retval = kurtosis (x)
 # column.
 
 # Written by KH (Kurt.Hornik@ci.tuwien.ac.at) on Jul 29, 1994.
-# Copyright Dept of Probability Theory and Statistics TU Wien, Austria.
 
   if (nargin != 1)
     usage ("kurtosis (x)");

@@ -30,7 +30,6 @@ function retval = skewness (x)
 # column.
 
 # Written by KH (Kurt.Hornik@ci.tuwien.ac.at) on Jul 29, 1994.
-# Copyright Dept of Probability Theory and Statistics TU Wien, Austria.
 
   if (nargin != 1)
     usage ("skewness (x)");

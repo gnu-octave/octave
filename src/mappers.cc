@@ -31,6 +31,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "defun.h"
 #include "error.h"
 #include "oct-mapper.h"
+#include "variables.h"
 
 // XXX FIXME XXX -- perhaps this could be avoided by determining
 // whether the is* functions are actually functions or just macros.

@@ -81,7 +81,7 @@ INCLUDES := BaseSLList.h Map.h SLList.h SLStack.h Stack.h defun-dld.h \
 	oct-builtin.h oct-fcn.h oct-fstrm.h oct-hist.h oct-iostrm.h \
 	oct-map.h oct-mapper.h oct-obj.h oct-prcstrm.h oct-procbuf.h \
 	oct-stdstrm.h oct-stream.h oct-strstrm.h oct-sym.h \
-	oct-usr-fcn.h oct.h ops.h pager.h parse.h \
+	oct-usr-fcn.h oct-var-ref.h oct.h ops.h pager.h parse.h \
 	pr-output.h procstream.h sighandlers.h symtab.h sysdep.h \
 	systime.h syswait.h token.h toplev.h unwind-prot.h utils.h \
 	variables.h version.h xdiv.h xpow.h $(OV_INCLUDES) $(PT_INCLUDES)
@@ -119,7 +119,7 @@ SOURCES := BaseSLList.cc Map.cc SLList.cc SLStack.cc Stack.cc \
 	load-save.cc mappers.cc oct-fstrm.cc oct-hist.cc \
 	oct-iostrm.cc oct-map.cc oct-obj.cc oct-prcstrm.cc \
 	oct-procbuf.cc oct-stdstrm.cc oct-stream.cc oct-strstrm.cc \
-	pager.cc parse.y pr-output.cc procstream.cc \
+	oct-var-ref.cc pager.cc parse.y pr-output.cc procstream.cc \
 	sighandlers.cc strcasecmp.c strncase.c strfns.cc \
 	strftime.c symtab.cc syscalls.cc sysdep.cc token.cc \
 	toplev.cc unwind-prot.cc utils.cc variables.cc xdiv.cc \

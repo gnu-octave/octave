@@ -37,6 +37,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "help.h"
 #include "input.h"
 #include "oct-obj.h"
+#include "oct-var-ref.h"
 #include "pager.h"
 #include "ov.h"
 #include "pt-exp.h"
@@ -561,7 +562,9 @@ tree_simple_assignment_expression::eval (bool print)
 
 		      if (nargin > 0)
 			{
-			  ult.assign (etype, args, rhs_val);
+			  ult.index (args);
+
+			  ult.assign (etype, rhs_val);
 
 			  if (error_state)
 			    eval_error ();

@@ -103,7 +103,8 @@ private:
 
     tm_row_const_rep& operator = (const tm_row_const_rep&);
 
-    void eval_error (const char *msg, int l, int c) const;
+    void eval_error (const char *msg, int l, int c,
+		     int x = -1, int y = -1) const;
 
     void eval_warning (const char *msg, int l, int c) const;
   };
@@ -213,7 +214,7 @@ tm_row_const::tm_row_const_rep::init (const tree_argument_list& row)
 	      else if (this_elt_nr != nr)
 		{
 		  eval_error ("number of rows must match",
-			      elt->line (), elt->column ());
+			      elt->line (), elt->column (), this_elt_nr, nr);
 		  break;
 		}
 
@@ -238,12 +239,22 @@ tm_row_const::tm_row_const_rep::init (const tree_argument_list& row)
 
 void
 tm_row_const::tm_row_const_rep::eval_error (const char *msg, int l,
-					    int c) const
+					    int c, int x, int y) const
 {
   if (l == -1 && c == -1)
-    ::error ("%s", msg);
+    {
+      if (x == -1 || y == -1)
+	::error ("%s", msg);
+      else
+	::error ("%s (%d != %d)", msg, x, y);
+    }
   else
-    ::error ("%s near line %d, column %d", msg, l, c);
+    {
+      if (x == -1 || y == -1)
+	::error ("%s near line %d, column %d", msg, l, c);
+      else
+	::error ("%s (%d != %d) near line %d, column %d", msg, x, y, l, c);
+    }
 }
 
 void
@@ -380,7 +391,8 @@ tm_const::init (const tree_matrix& tm)
 		}
 	      else if (this_elt_nc != nc)
 		{
-		  ::error ("number of columns must match");
+		  ::error ("number of columns must match (%d != %d)",
+			   this_elt_nc, nc);
 		  break;
 		}
 

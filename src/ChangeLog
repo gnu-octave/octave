@@ -1,3 +1,10 @@
+2000-04-23  etienne grossmann <etienne@anonimo.isr.ist.utl.pt>
+
+	* pt-mat.cc (tm_row_const::tm_row_const_rep::eval_error):
+	New args x and y, for dimension mismatch info.
+	Change callers where appropriate.
+	(tm_const::init): Report mismatched column dimensions.
+
 2000-04-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* sysdep.cc (kbhit): Also clear cin if at EOF.

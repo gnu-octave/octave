@@ -1,5 +1,12 @@
 Wed Nov 13 11:13:22 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* load-save.cc (read_mat_ascii_matrix, get_lines_and_columns,
+	get_complete_line): New functions, for reading headless text files.
+	(load_save_format): Add LS_MAT_ASCII, for headless text files.
+	(do_load): Handle LS_MAT_ASCII files.
+	Thanks to Mel Melchner <mjm@research.att.com> for initial version
+	of this code.
+
 	* sysdep.cc: Conditionally include ieeefp.h.
 	(BSD_init, SCO_init): New functions.
 	(sysdep_init): Conditionally call them here.

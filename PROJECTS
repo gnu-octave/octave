@@ -164,9 +164,6 @@ Input/Output:
     working on them, it would be good to support other size
     specifications (integer*2, etc.).
 
-  * Make load work to read files that contain numbers only, and put
-    the values in a matrix named after the file.
-
   * Make load and save work for structures.
 
   * Make load and save look for <file>.mat if only given <file>.

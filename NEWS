@@ -24,6 +24,11 @@ Summary of changes for version 2.0:
     available to make them behave in a way that is compatible with
     previous versions of Octave.
 
+  * Octave can now read files that contain columns of numbers only,
+    with no header information.  The name of the loaded variable is
+    constructed from the file name.  Each line in the file must have
+    the same number of elements.
+
   * The interface to the pager has changed.  The new built-in variable
     `page_output_immediately' controls when Octave sends output to the
     pager.  If it is nonzero, Octave sends output to the pager as soon

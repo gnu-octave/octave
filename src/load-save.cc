@@ -73,6 +73,7 @@ enum load_save_format
   {
     LS_ASCII,
     LS_BINARY,
+    LS_MAT_ASCII,
     LS_MAT_BINARY,
     LS_UNKNOWN,
   };
@@ -909,6 +910,152 @@ read_binary_data (istream& is, int swap,
   return name;
 }
 
+// Get a complete line of input.
+
+static string
+get_complete_line (istream& is)
+{
+  string retval;
+
+  ostrstream buf;
+
+  char c;
+
+  while (is.get (c))
+    {
+      if (c == '\n')
+	break;
+
+      buf << c;
+    }
+
+  buf << ends;
+
+  char *tmp = buf.str ();
+
+  retval = tmp;
+
+  delete [] tmp;
+
+  return retval;
+}
+
+static void
+get_lines_and_columns (istream& is, const string& filename, int& nr, int& nc)
+{
+  streampos pos = is.tellg ();
+
+  int file_line_number = 0;
+
+  nr = 0;
+  nc = 0;
+
+  while (! (is.eof () || error_state))
+    {
+      string line = get_complete_line (is);
+
+      file_line_number++;
+
+      size_t beg = line.find_first_not_of (" \t");
+
+      if (beg != NPOS)
+	{
+	  int tmp_nc = 0;
+
+	  while (beg != NPOS)
+	    {
+	      tmp_nc++;
+
+	      size_t end = line.find_first_of (" \t", beg);
+
+	      if (end != NPOS)
+		beg = line.find_first_not_of (" \t", end);
+	      else
+		break;
+	    }
+
+	  if (nc == 0)
+	    {
+	      nc = tmp_nc;
+	      nr++;
+	    }
+	  else if (nc == tmp_nc)
+	    nr++;
+	  else
+	    error ("load: %s: inconsistent number of columns near line %d",
+		   filename.c_str (), file_line_number);
+	}
+    }
+
+  if (nr == 0 || nc == 0)
+    error ("load: file `%s' seems to be empty!", filename.c_str ());
+
+  is.clear ();
+  is.seekg (pos, ios::beg);
+}
+
+// Extract a matrix from a file of numbers only.
+//
+// Comments are not allowed.  The file should only have numeric values.
+//
+// Reads the file twice.  Once to find the number of rows and columns,
+// and once to extract the matrix.
+//
+// FILENAME is used for error messages.
+//
+// This format provides no way to tag the data as global.
+
+static char *
+read_mat_ascii_data (istream& is, const string& filename,
+		     octave_value& tc)
+{
+  char *name = 0;
+
+  string varname;
+
+  size_t pos = filename.find ('.');
+
+  if (pos != NPOS)
+    varname = filename.substr (0, pos);
+  else
+    varname = filename;
+
+  if (valid_identifier (varname.c_str ()))
+    {
+      int nr = 0;
+      int nc = 0;
+
+      get_lines_and_columns (is, filename, nr, nc);
+
+      if (! error_state)
+	{
+	  // NR and NC must be greater than zero if we end up here.
+
+	  Matrix tmp (nr, nc);
+
+	  is >> tmp;
+
+	  if (is)
+	    {
+	      tc = tmp;
+
+	      name = strsave (varname.c_str ());
+	    }
+	  else
+	    error ("load: failed to read matrix from file `%s'",
+		   filename.c_str ());
+	}
+      else
+	error ("load: unable to extract matrix size from file `%s'",
+	       filename.c_str ());
+    }
+  else
+    error ("load: unable to convert filename `%s' to valid identifier",
+	   filename.c_str ());
+
+  return name;
+}
+
 // Read LEN elements of data from IS in the format specified by
 // PRECISION, placing the result in DATA.  If SWAP is nonzero, swap
 // the bytes of each element before copying to DATA.  FLT_FMT
@@ -1287,6 +1434,7 @@ get_file_format (const string& fname, const string& orig_fname)
 	retval = LS_MAT_BINARY;
       else
 	{
+	  file.clear ();
 	  file.seekg (0, ios::beg);
 
 	  char *tmp = extract_keyword (file, "name");
@@ -1294,7 +1442,19 @@ get_file_format (const string& fname, const string& orig_fname)
 	  if (tmp)
 	    {
 	      retval = LS_ASCII;
+
 	      delete [] tmp;
+	    }
+	  else
+	    {
+	      // Try reading the file as numbers only, determining the
+	      // number of rows and columns from the data.  We don't
+	      // even bother to check to see if the first item in the
+	      // file is a number, so that get_complete_line() can
+	      // skip any comments that might appear at the top of the
+	      // file.
+
+	      retval = LS_MAT_ASCII;
 	    }
 	}
     }
@@ -1337,6 +1497,10 @@ do_load (istream& stream, const string& orig_fname, int force,
 				   global, tc, doc);
 	  break;
 
+	case LS_MAT_ASCII:
+	  name = read_mat_ascii_data (stream, orig_fname, tc);
+	  break;
+
 	case LS_MAT_BINARY:
 	  name = read_mat_binary_data (stream, orig_fname, tc);
 	  break;
@@ -1350,6 +1514,7 @@ do_load (istream& stream, const string& orig_fname, int force,
 	{
 	  delete [] name;
 	  delete [] doc;
+
 	  break;
 	}
       else if (! error_state && name)
@@ -1382,6 +1547,14 @@ do_load (istream& stream, const string& orig_fname, int force,
 		      install_loaded_variable (force, name, tc, global, doc);
 		    }
 		}
+
+	      delete [] name;
+	      delete [] doc;
+
+	      // Only attempt to read one item from a headless text file.
+
+	      if (format == LS_MAT_ASCII)
+		break;
 	    }
 	  else
 	    error ("load: unable to load variable `%s'", name);
@@ -1394,11 +1567,9 @@ do_load (istream& stream, const string& orig_fname, int force,
 
 	  delete [] name;
 	  delete [] doc;
+
 	  break;
 	}
-
-      delete [] name;
-      delete [] doc;
     }
 
   if (list_only && count)

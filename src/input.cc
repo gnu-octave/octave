@@ -39,6 +39,8 @@ extern "C"
 #include "readline/readline.h"
 #include "readline/history.h"
 
+extern void free_undo_list ();
+
 extern char *xmalloc ();
 
 /*
@@ -409,7 +411,7 @@ initialize_readline (void)
   rl_readline_name = "Octave";
 
 // Tell the completer that we want to try first.
-  rl_attempted_completion_function = (Function *) command_completer;
+  rl_attempted_completion_function = (CPPFunction *) command_completer;
 
 // Bind operate-and-get-next.
   rl_add_defun ("operate-and-get-next",

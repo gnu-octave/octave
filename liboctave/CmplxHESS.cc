@@ -34,20 +34,20 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 extern "C"
 {
-  int F77_FCN (zgebal, ZGEBAL) (const char*, const int&, Complex*,
+  int F77_FUNC (zgebal, ZGEBAL) (const char*, const int&, Complex*,
 				const int&, int&, int&, double*, int&,
 				long, long);
  
-  int F77_FCN (zgehrd, ZGEHRD) (const int&, const int&, const int&,
+  int F77_FUNC (zgehrd, ZGEHRD) (const int&, const int&, const int&,
 				Complex*, const int&, Complex*,
 				Complex*, const int&, int&, long,
 				long);
  
-  int F77_FCN (zunghr, ZUNGHR) (const int&, const int&, const int&,
+  int F77_FUNC (zunghr, ZUNGHR) (const int&, const int&, const int&,
 				Complex*, const int&, Complex*,
 				Complex*, const int&, int&, long, long);
 
-  int F77_FCN (zgebak, ZGEBAK) (const char*, const char*, const int&,
+  int F77_FUNC (zgebak, ZGEBAK) (const char*, const char*, const int&,
 				const int&, const int&, double*,
 				const int&, Complex*, const int&,
 				int&, long, long);

@@ -34,11 +34,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 extern "C"
 {
-  int F77_FCN (dgeqrf, DGEQRF) (const int&, const int&, double*,
+  int F77_FUNC (dgeqrf, DGEQRF) (const int&, const int&, double*,
 				const int&, double*, double*,
 				const int&, int&); 
 
-  int F77_FCN (dorgqr, DORGQR) (const int&, const int&, const int&,
+  int F77_FUNC (dorgqr, DORGQR) (const int&, const int&, const int&,
 				double*, const int&, double*, double*,
 				const int&, int&);
 }

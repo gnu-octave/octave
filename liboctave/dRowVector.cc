@@ -41,13 +41,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 extern "C"
 {
-  int F77_FCN (dgemv, DGEMV) (const char*, const int&, const int&,
+  int F77_FUNC (dgemv, DGEMV) (const char*, const int&, const int&,
 			      const double&, const double*,
 			      const int&, const double*, const int&,
 			      const double&, double*, const int&,
 			      long);
 
-  double F77_FCN (ddot, DDOT) (const int&, const double*, const int&,
+  double F77_FUNC (ddot, DDOT) (const int&, const double*, const int&,
 			       const double*, const int&);
 }
 
@@ -338,7 +338,7 @@ operator * (const RowVector& v, const ColumnVector& a)
   if (len != a_len)
     gripe_nonconformant ("operator *", len, a_len);
   else if (len != 0)
-    retval = F77_FCN (ddot, DDOT) (len, v.data (), 1, a.data (), 1);
+    retval = F77_FUNC (ddot, DDOT) (len, v.data (), 1, a.data (), 1);
 
   return retval;
 }

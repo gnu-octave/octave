@@ -73,7 +73,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <version.h>
 
 // Kluge.
-extern "C" void F77_FCN (xerbla, XERBLA) (const char *, int);
+extern "C" void F77_FUNC (xerbla, XERBLA) (const char *, int);
 
 extern void install_builtins (void);
 

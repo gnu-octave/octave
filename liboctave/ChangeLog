@@ -1,3 +1,23 @@
+2002-04-03  Steven G. Johnson <stevenj@alum.mit.edu>
+
+	* f2c-main.c (MAIN_, MAIN__): Delete.  Use F77_DUMMY_MAIN instead.
+	* file-stat.cc (file_stat::update_internal, file_stat::copy):
+	Use HAVE_STRUCT_STAT_ST_RDEV instead of HAVE_ST_RDEV.
+	Use HAVE_STRUCT_STAT_ST_BLKSIZE instead of HAVE_ST_BLKSIZE.
+	Use HAVE_STRUCT_STAT_ST_BLOCKS instead of HAVE_ST_BLOCKS.
+	* file-stat.h: Likewise.
+	* oct-time.cc (octave_time::octave_time, octave_base_tm::strftime,
+	octave_base_tm::init, octave_strptime::init): Use HAVE_TM_ZONE
+	instead of HAVE_STRUCT_TM_TM_ZONE.
+	* strftime.c: Likewise.
+	* lo-specfun.cc, mach-info.cc, CColVector.cc, CMatrix.cc,
+	CRowVector.cc, CmplxAEPBAL.cc, CmplxCHOL.cc, CmplxHESS.cc,
+	CmplxLU.cc, CmplxQR.cc, CmplxQRP.cc, CmplxSCHUR.cc, CmplxSVD.cc,
+	CollocWt.cc, DASSL.cc, EIG.cc, LSODE.cc, NLEqn.cc, Quad.cc,
+	dColVector.cc, dMatrix.cc, dRowVector.cc, dbleAEPBAL.cc,
+	dbleCHOL.cc, dbleHESS.cc, dbleLU.cc, dbleQR.cc, dbleQRP.cc,
+	dbleSCHUR.cc, dbleSVD.cc: Use F77_FUNC instead of F77_FCN.
+
 2002-04-02  Paul Kienzle <pkienzle@users.sf.net>
 
         * CmplxQR.cc (ComplexQR::init): Use economy QR decomposition

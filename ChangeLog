@@ -2,6 +2,26 @@
 
 	* configure.in: Correct usage of AC_ARG_WITH for --with-fftw.
 
+	* configure.in: Update for autoconf 2.5x.
+	Minor syntax changes to new recommended syntaxes and macros.
+	Apply changes from autoupdate plus eliminate some warning
+	messages, deprecated uses of changequote, etc.
+	Use autoheader templates to generate config.h.in.
+	Replace most of Octave's Fortran support macros with those in the
+	new autoconf.
+	Eliminate most uses of internal (undocumented) autoconf cache vars.
+	Replace BLAS/LAPACK detection new macros ACX_BLAS/ACX_LAPACK from
+	the autoconf macro repository.
+	* acx_blas.m4, acx_lapack.m4: New files.
+	* acconfig.h: Delete lines that can be automatically generated
+	from new info in configure.in and aclocal.m4.
+	If it is not already defined, define F77_FUNC for use with f2c.
+	* aclocal.m4 (OCTAVE_PROG_G77, OCTAVE_FLIBS, OCTAVE_F77_MAIN_FLAG,
+	OCTAVE_F77_UPPERCASE_NAMES, OCTAVE_F77_APPEND_UNDERSCORE,
+	OCTAVE_F2C_F77_COMPAT): Delete definitions.
+	Use autoheader templates to generate config.h.in.
+	* Makeconf.in, mkoctfile.in (FORTRAN_MAIN_FLAG): Delete all uses.
+
 2001-11-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* octave-bug.in (BLAS_LIBS, FFTW_LIBS, LD_CXX): Substitute and

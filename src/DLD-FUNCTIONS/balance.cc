@@ -42,19 +42,19 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 extern "C"
 {
-  int F77_FCN (dggbal, DGGBAL) (const char* JOB, const int& N,
+  int F77_FUNC (dggbal, DGGBAL) (const char* JOB, const int& N,
 				double* A, const int& LDA, double* B,
 				const int& LDB, int& ILO, int& IHI,
 				double* LSCALE, double* RSCALE,
 				double* WORK, int& INFO, long);
 
-  int F77_FCN (dggbak, DGGBAK) (const char* JOB, const char* SIDE,
+  int F77_FUNC (dggbak, DGGBAK) (const char* JOB, const char* SIDE,
 				const int& N, const int& ILO,
 				const int& IHI, double* LSCALE,
 				double* RSCALE, int& M,	double* V,
 				const int& LDV, int& INFO, long, long);
 
-  int F77_FCN (zggbal, ZGGBAL) (const char* JOB, const int& N,
+  int F77_FUNC (zggbal, ZGGBAL) (const char* JOB, const int& N,
 				Complex* A, const int& LDA, Complex* B,
 				const int& LDB, int& ILO, int& IHI,
 				double* LSCALE, double* RSCALE,

@@ -365,11 +365,7 @@ rmachar(ibeta,it,irnd,ngrd,machep,negep,iexp,minexp,
 }
 
 void
-#if defined (F77_APPEND_UNDERSCORE)
-machar_ (REAL *xmin, REAL *xmax, REAL *epsneg, REAL *eps, REAL *log10_ibeta)
-#else
-machar (REAL *xmin, REAL *xmax, REAL *epsneg, REAL *eps, REAL *log10_ibeta)
-#endif
+F77_FUNC(machar,MACHAR) (REAL *xmin, REAL *xmax, REAL *epsneg, REAL *eps, REAL *log10_ibeta)
 {
   int ibeta, iexp, irnd, it, machep, maxexp, minexp, negep, ngrd;
 

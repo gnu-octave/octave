@@ -1,6 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT(fnmatch.c)		dnl A distinctive file to look for in srcdir.
-AC_PREREQ(2.1)			dnl Minimum Autoconf version required.
+AC_INIT
+AC_CONFIG_SRCDIR([fnmatch.c])		dnl A distinctive file to look for in srcdir.
+AC_PREREQ(2.52)			dnl Minimum Autoconf version required.
 AC_PROG_CC
 AC_CHECK_PROG(AR, ar, ar, ar)
 AC_PROG_RANLIB
@@ -9,11 +10,12 @@ dnl These two want to come early.
 AC_AIX
 AC_MINIX
 AC_ISC_POSIX
-AC_CONST
+AC_C_CONST([])
 AC_HEADER_STDC
 AC_CHECK_HEADERS(memory.h unistd.h string.h)
 AC_HEADER_DIRENT
 AC_FUNC_CLOSEDIR_VOID
 AC_FUNC_ALLOCA
 AC_FUNC_STRCOLL
-AC_OUTPUT(Makefile)
+AC_CONFIG_FILES([Makefile])
+AC_OUTPUT

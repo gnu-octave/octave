@@ -22,24 +22,16 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <assert.h>
 
-/* I think that this is really only needed if linking to Fortran
-   compiled libraries on a Sun.  It also seems to be needed on
-   some Linux/ELF systems with g77.  It should never be called. */
 
-#if defined (sun)
-int
-MAIN_ ()
-{
-  assert (0);
-  return 0;
-}
-#elif defined (__linux__)
-int
-MAIN__ ()
-{
-  assert (0);
-  return 0;
-}
+/* Dummy Fortran main declaration, needed in order to link to some
+   Fortran libraries.  See the AC_F77_DUMMY_MAIN macro documentation. 
+   This function should never be called. */
+
+#ifdef F77_DUMMY_MAIN
+#  ifdef __cplusplus
+extern "C"
+#  endif
+int F77_DUMMY_MAIN() { assert(0); return 1; }
 #endif
 
 /*

@@ -72,348 +72,6 @@ fi
 AC_SUBST(ARFLAGS)
 ])
 dnl
-dnl See if $F77 is the GNU Fortran compiler
-dnl
-AC_DEFUN(OCTAVE_PROG_G77,
-[AC_CACHE_CHECK([whether ${F77-f77} is the GNU Fortran compiler],
-octave_cv_f77_is_g77,
-[if $use_g77; then
-  octave_cv_f77_is_g77=yes
-else
-  echo "      END" > conftest.f
-  foutput=`${F77-f77} -v conftest.f 2>&1 | egrep "GNU F77|FSF-g77"`
-  if test -n "$foutput"; then
-    octave_cv_f77_is_g77=yes
-  else
-    octave_cv_f77_is_g77=no
-  fi
-fi])
-])
-dnl
-dnl See what libraries are used by the Fortran compiler.
-dnl
-dnl Write a minimal program and compile it with -v.  I don't know what
-dnl to do if your compiler doesn't have -v...
-dnl
-dnl OCTAVE_FLIBS()
-AC_DEFUN(OCTAVE_FLIBS,
-[AC_MSG_CHECKING([for Fortran libraries])
-AC_REQUIRE([OCTAVE_HOST_TYPE])
-AC_CACHE_VAL(octave_cv_flibs,
-[[
-echo "      END" > conftest.f
-foutput=`${F77-f77} -v -o conftest conftest.f 2>&1`
-
-### The easiest thing to do for xlf output is to replace all the commas
-### with spaces.  Try to only do that if the output is really from xlf,
-### since doing that causes problems on other systems.
-
-xlf_p=`echo $foutput | grep xlfentry`
-if test -n "$xlf_p"; then
-  foutput=`echo $foutput | sed 's/,/ /g'`
-fi
-
-ld_run_path=`echo $foutput | \
-  sed -n -e 's/^.*LD_RUN_PATH *= *\([^ ]*\).*/\1/p'`
-
-### We are only supposed to find this on Solaris systems...
-### Uh, the run path should be absolute, shouldn't it?
-
-case "$ld_run_path" in
-  /*)
-    if test "$ac_cv_prog_gcc" = yes; then
-      ld_run_path="-Xlinker -R -Xlinker $ld_run_path"
-    else
-      ld_run_path="-R $ld_run_path"
-    fi
-  ;;
-  *)
-    ld_run_path=
-  ;;
-esac
-
-flibs=
-lflags=
-
-### If want_arg is set, we know we want the arg to be added to the list,
-### so we don't have to examine it.
-
-want_arg=
-
-for arg in $foutput; do
-  old_want_arg=$want_arg
-  want_arg=
-
-### None of the options that take arguments expect the argument to
-### start with a -, so pretend we didn't see anything special.
-
-  if test -n "$old_want_arg"; then
-    case "$arg" in
-      -*)
-	old_want_arg=
-      ;;
-    esac
-  fi
-  case "$old_want_arg" in
-    '')
-      case $arg in
-	/*.a)
-	  exists=false
-	  for f in $lflags; do
-	    if test x$arg = x$f; then
-	      exists=true
-	    fi
-	  done
-	  if $exists; then
-	    arg=
-	  else
-	    lflags="$lflags $arg"
-	  fi
-	;;
-	-bI:*)
-	  exists=false
-	  for f in $lflags; do
-	    if test x$arg = x$f; then
-	      exists=true
-	    fi
-	  done
-	  if $exists; then
-	    arg=
-	  else
-	    if test "$ac_cv_prog_gcc" = yes; then
-	      lflags="$lflags -Xlinker $arg"
-	    else
-	      lflags="$lflags $arg"
-	    fi
-	  fi
-	;;
-	-lang* | -lcrt0.o | -lc | -lgcc)
-	  arg=
-	;;
-	-[lLR])
-	  want_arg=$arg
-	  arg=
-	;;
-	-[lLR]*)
-	  exists=false
-	  for f in $lflags; do
-	    if test x$arg = x$f; then
-	      exists=true
-	    fi
-	  done
-	  if $exists; then
-	    arg=
-	  else
-	    case "$arg" in
-	      -lkernel32)
-		case "$canonical_host_type" in
-		  *-*-cygwin32)
-		    arg=
-		  ;;
-		  *)
-		    lflags="$lflags $arg"
-		  ;;
-		esac
-	      ;;
-	      -lm)
-	      ;;
-	      *)
-		lflags="$lflags $arg"
-	      ;;
-	    esac
-	  fi
-	;;
-	-u)
-	  want_arg=$arg
-	  arg=
-	;;
-	-Y)
-	  want_arg=$arg
-	  arg=
-	;;
-	*)
-	  arg=
-	;;
-      esac
-    ;;
-    -[lLR])
-      arg="$old_want_arg $arg"
-    ;;
-    -u)
-      arg="-u $arg"
-    ;;
-    -Y)
-
-### Should probably try to ensure unique directory options here too.
-### This probably only applies to Solaris systems, and then will only
-### work with gcc...
-
-      arg=`echo $arg | sed -e 's%^P,%%'`
-      SAVE_IFS=$IFS
-      IFS=:
-      list=
-      for elt in $arg; do
-	list="$list -L$elt"
-      done
-      IFS=$SAVE_IFS
-      arg="$list"
-    ;;
-  esac
-  if test -n "$arg"; then
-    flibs="$flibs $arg"
-  fi
-done
-if test -n "$ld_run_path"; then
-  flibs_result="$ld_run_path $flibs"
-else
-  flibs_result="$flibs"
-fi
-]
-octave_cv_flibs="$flibs_result"])
-FLIBS="$octave_cv_flibs"
-AC_MSG_RESULT([$FLIBS])])
-dnl
-dnl This is apparently needed on some Linux systems.
-dnl
-AC_DEFUN(OCTAVE_F77_MAIN_FLAG,
-[FORTRAN_MAIN_FLAG=
-case "$canonical_host_type" in
-  *-linux-*)
-    FORTRAN_MAIN_FLAG="-u MAIN__"
-  ;;
-esac
-if test -n "$FORTRAN_MAIN_FLAG"; then
-  AC_MSG_RESULT([defining FORTRAN_MAIN_FLAG to be $FORTRAN_MAIN_FLAG])
-fi
-AC_SUBST(FORTRAN_MAIN_FLAG)
-])
-dnl
-dnl See if the Fortran compiler uses uppercase external names.
-dnl
-dnl OCTAVE_F77_UPPERCASE_NAMES()
-AC_DEFUN(OCTAVE_F77_UPPERCASE_NAMES,
-[AC_MSG_CHECKING([whether ${F77-f77} uses uppercase external names])
-AC_CACHE_VAL(octave_cv_f77_uppercase_names,
-[octave_cv_f77_uppercase_names=no
-cat > conftest.f <<EOF
-      subroutine xxyyzz ()
-      return
-      end
-EOF
-if ${F77-f77} -c conftest.f 1>&AC_FD_CC 2>&AC_FD_CC; then
-  if test "`${NM-nm} conftest.o | grep XXYYZZ`" != ""; then
-    octave_cv_f77_uppercase_names=yes
-  fi
-fi])
-AC_MSG_RESULT([$octave_cv_f77_uppercase_names])
-if test "$octave_cv_f77_uppercase_names" = yes; then
-  AC_DEFINE(F77_UPPERCASE_NAMES, 1)
-fi])
-dnl
-dnl See if the Fortran compiler appends underscores to external names.
-dnl
-dnl OCTAVE_F77_APPEND_UNDERSCORE()
-AC_DEFUN(OCTAVE_F77_APPEND_UNDERSCORE,
-[AC_MSG_CHECKING([whether ${F77-f77} appends underscores to external names])
-AC_REQUIRE([OCTAVE_F77_UPPERCASE_NAMES])
-AC_CACHE_VAL(octave_cv_f77_append_underscore,
-[octave_cv_f77_append_underscore=no
-cat > conftest.f <<EOF
-      subroutine xxyyzz ()
-      return
-      end
-EOF
-if ${F77-f77} -c conftest.f 1>&AC_FD_CC 2>&AC_FD_CC; then
-  if test "$octave_cv_f77_uppercase_names" = yes; then
-    if test "`${NM-nm} conftest.o | grep XXYYZZ_`" != ""; then
-      octave_cv_f77_append_underscore=yes
-    fi
-  else
-    if test "`${NM-nm} conftest.o | grep xxyyzz_`" != ""; then
-      octave_cv_f77_append_underscore=yes
-    fi
-  fi
-fi])
-AC_MSG_RESULT([$octave_cv_f77_append_underscore])
-if test "$octave_cv_f77_append_underscore" = yes; then
-  AC_DEFINE(F77_APPEND_UNDERSCORE, 1)
-fi])
-dnl
-dnl See if the Fortran compiler is compatible with f2c.
-dnl
-dnl Write a minimal program, compile it, and see if it works as
-dnl expected.
-dnl
-dnl OCTAVE_F2C_F77_COMPAT()
-AC_DEFUN(OCTAVE_F2C_F77_COMPAT,
-[AC_REQUIRE([OCTAVE_PROG_G77])
-AC_REQUIRE([OCTAVE_FLIBS])
-AC_REQUIRE([OCTAVE_F77_APPEND_UNDERSCORE])
-if test "$cross_compiling" = yes; then
-  octave_cv_f2c_f77_compat=yes
-  if test "$octave_cv_f77_is_g77" = yes; then
-    AC_MSG_RESULT([assuming ${F77-f77} cross compiler is f2c compatible])
-  else
-    AC_MSG_WARN([assuming ${F77-f77} cross compiler is f2c compatible])
-  fi
-else
-  AC_CACHE_CHECK([${F77-f77}/f2c compatibility], octave_cv_f2c_f77_compat,
-  [trap 'rm -f ftest* ctest* core; exit 1' 1 3 15
-  octave_cv_f2c_f77_compat=no
-  cat > ftest.f <<EOF
-      SUBROUTINE FORSUB (C, I, D)
-      CHARACTER *(*) C
-      INTEGER L, I
-      DOUBLE PRECISION D
-      L = LEN (C)
-      WRITE (*, '(A,1X,I2)') C(1:L), INT (D)
-      I = 0
-      RETURN
-      END
-EOF
-  ${F77-f77} -c ftest.f 1>&AC_FD_CC 2>&AC_FD_CC
-  changequote(, )
-  cat > ctest.c <<EOF
-#include "confdefs.h"
-#ifdef F77_APPEND_UNDERSCORE
-extern int forsub_ (const char*, int*, double*, long int);
-#else
-extern int forsub (const char*, int*, double*, long int);
-#endif
-static char s[14];
-int main ()
-{
-  double d = 10.0;
-  int len, i = 1;
-  strcpy (s, "FOO-I-HITHERE");
-  len = strlen (s);
-#ifdef F77_APPEND_UNDERSCORE
-  forsub_ (s, &i, &d, len);
-#else
-  forsub (s, &i, &d, len);
-#endif
-  return i;
-}
-#if defined (sun)
-int MAIN_ () { return 0; }
-#elif defined (linux) && defined (__ELF__)
-int MAIN__ () { return 0; }
-#endif
-EOF
-  changequote([, ])
-  if ${CC-cc} -c ctest.c 1>&AC_FD_CC 2>&AC_FD_CC; then
-    if ${CC-cc} -o ctest ctest.o ftest.o $FLIBS -lm 1>&AC_FD_CC 2>&AC_FD_CC; then
-      ctest_output=`./ctest 2>&1`
-      status=$?
-      if test $status -eq 0 && test "$ctest_output" = "FOO-I-HITHERE 10"; then
-	octave_cv_f2c_f77_compat=yes
-      fi
-    fi
-  fi])
-fi
-rm -f ftest* ctest* core
-])
-dnl
 dnl See if struct group has a gr_passwd field.
 dnl
 AC_DEFUN(OCTAVE_STRUCT_GR_PASSWD,
@@ -422,7 +80,7 @@ AC_DEFUN(OCTAVE_STRUCT_GR_PASSWD,
 #include <grp.h>], [struct group s; s.gr_passwd;],
 octave_cv_struct_gr_passwd=yes, octave_cv_struct_gr_passwd=no)])
 if test $octave_cv_struct_gr_passwd = yes; then
-  AC_DEFINE(HAVE_GR_PASSWD)
+  AC_DEFINE(HAVE_GR_PASSWD,1,[Define if your system's struct group has a gr_passwd field.])
 fi
 ])
 dnl
@@ -437,7 +95,7 @@ AC_TRY_COMPILE([#include <string>],
 [size_t foo = NPOS],
 octave_cv_string_npos=yes, octave_cv_string_npos=no)])
 if test $octave_cv_string_npos = no; then
-  AC_DEFINE(NPOS, std::string::npos)
+  AC_DEFINE(NPOS, [std::string::npos], [Define (to string::npos) if <string> doesn't])
 fi
 AC_LANG_RESTORE
 ])
@@ -506,7 +164,7 @@ main ()
     octave_cv_func_putenv_malloc=no)])dnl
 AC_MSG_RESULT($octave_cv_func_putenv_malloc)
 if test $octave_cv_func_putenv_malloc = yes; then
-  AC_DEFINE(SMART_PUTENV)
+  AC_DEFINE(SMART_PUTENV,1,[To quiet autoheader.])
 fi])
 dnl
 dnl These two checks for signal functions were originally part of the
@@ -544,11 +202,11 @@ AC_CACHE_VAL(octave_cv_signal_vintage,
 ])
 AC_MSG_RESULT($octave_cv_signal_vintage)
 if test "$octave_cv_signal_vintage" = posix; then
-AC_DEFINE(HAVE_POSIX_SIGNALS)
+AC_DEFINE(HAVE_POSIX_SIGNALS,1,[Define if you have POSIX style signals.])
 elif test "$octave_cv_signal_vintage" = "4.2bsd"; then
-AC_DEFINE(HAVE_BSD_SIGNALS)
+AC_DEFINE(HAVE_BSD_SIGNALS,1,[Define if you have BSD style signals.])
 elif test "$octave_cv_signal_vintage" = svr3; then
-AC_DEFINE(HAVE_USG_SIGHOLD)
+AC_DEFINE(HAVE_USG_SIGHOLD,1,[Define if you have System V Release 3 signals.])
 fi
 ])
 dnl
@@ -607,7 +265,7 @@ else
   AC_MSG_RESULT($octave_cv_must_reinstall_sighandlers)
 fi
 if test "$octave_cv_must_reinstall_sighandlers" = yes; then
-  AC_DEFINE(MUST_REINSTALL_SIGHANDLERS)
+  AC_DEFINE(MUST_REINSTALL_SIGHANDLERS,1,[Define if signal handlers must be reinstalled after they are called.])
 fi
 ])
 dnl
@@ -629,10 +287,10 @@ $2
 ], octave_cv_type_$1=yes, octave_cv_type_$1=no)])
 AC_MSG_RESULT($octave_cv_type_$1)
 ifelse($#, 4, [if test $octave_cv_type_$1 = yes; then
-	AC_DEFINE($4)
+	AC_DEFINE($4, 1, [Define if you have typedef $1.])
 	fi])
 if test $octave_cv_type_$1 = no; then
-  AC_DEFINE($1, $3)
+  AC_DEFINE($1, $3, [Define to typedef for $1.])
 fi
 ])
 dnl
@@ -670,7 +328,7 @@ EOB
   ])
   AC_MSG_RESULT($octave_cv_cxx_new_friend_template_decl)
   if test $octave_cv_cxx_new_friend_template_decl = yes; then
-    AC_DEFINE(CXX_NEW_FRIEND_TEMPLATE_DECL)
+    AC_DEFINE(CXX_NEW_FRIEND_TEMPLATE_DECL,1,[Define if your compiler supports `<>' stuff for template friends.])
   fi
 ])
 dnl
@@ -806,9 +464,9 @@ AC_DEFUN(OCTAVE_PROG_GNUPLOT,
   AC_MSG_RESULT(assuming $GNUPLOT_BINARY exists on $canonical_host_type host)
   AC_SUBST(DEFAULT_PAGER)
   AC_MSG_RESULT(assuming $GNUPLOT_BINARY supports multiplot mode)
-  AC_DEFINE(GNUPLOT_HAS_MULTIPLOT, 1)
+  AC_DEFINE(GNUPLOT_HAS_MULTIPLOT, 1, [Define if gnuplot has multiplot.])
   AC_MSG_RESULT(assuming $GNUPLOT_BINARY supports multiple frams)
-  AC_DEFINE(GNUPLOT_HAS_FRAMES, 1)
+  AC_DEFINE(GNUPLOT_HAS_FRAMES, 1, [Define if gnuplot has frames.])
 else
   AC_CHECK_PROG(GNUPLOT_BINARY, gnuplot, gnuplot, [])
   if test -n "$GNUPLOT_BINARY"; then
@@ -927,7 +585,7 @@ EOF
   ])
   AC_MSG_RESULT($octave_cv_cxx_prepends_underscore)
   if test $octave_cv_cxx_prepends_underscore = yes; then
-    AC_DEFINE(CXX_PREPENDS_UNDERSCORE)
+    AC_DEFINE(CXX_PREPENDS_UNDERSCORE, 1, [Define if your compiler prepends underscores to external names.])
   fi
 ])
 dnl
@@ -964,7 +622,7 @@ AC_DEFUN(OCTAVE_CXX_ISO_COMPLIANT_LIBRARY, [
   ])
   AC_MSG_RESULT($octave_cv_cxx_iso_compliant_library)
   if test $octave_cv_cxx_iso_compliant_library = yes; then
-    AC_DEFINE(CXX_ISO_COMPLIANT_LIBRARY)
+    AC_DEFINE(CXX_ISO_COMPLIANT_LIBRARY, 1, [Define if your C++ runtime library is ISO compliant.])
   fi
 ])
 dnl
@@ -983,7 +641,7 @@ AC_DEFUN(OCTAVE_ENABLE_READLINE, [
   if $USE_READLINE; then
     AC_CHECK_LIB(readline, rl_set_keyboard_input_timeout, [
       LIBS="-lreadline $LIBS"
-      AC_DEFINE(USE_READLINE, 1)
+      AC_DEFINE(USE_READLINE, 1, [Define to use the readline library.])
     ], [
       AC_MSG_WARN([I need GNU Readline 4.2 or later])
       AC_MSG_ERROR([this is fatal unless you specify --disable-readline])
@@ -1025,6 +683,6 @@ EOF
     AC_LANG_RESTORE
   ])
   AC_MSG_RESULT($octave_cv_cxx_abi)
-  AC_DEFINE_UNQUOTED(CXX_ABI, $octave_cv_cxx_abi)
+  AC_DEFINE_UNQUOTED(CXX_ABI, $octave_cv_cxx_abi, [Define to the C++ ABI your compiler uses.])
 ])
 

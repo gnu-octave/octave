@@ -58,33 +58,33 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 extern "C"
 {
-  int F77_FCN (dgebal, DGEBAL) (const char*, const int&, double*,
+  int F77_FUNC (dgebal, DGEBAL) (const char*, const int&, double*,
                                 const int&, int&, int&, double*,
                                 int&, long, long);
 
-  int F77_FCN (dgebak, DGEBAK) (const char*, const char*, const int&,
+  int F77_FUNC (dgebak, DGEBAK) (const char*, const char*, const int&,
                                 const int&, const int&, double*,
                                 const int&, double*, const int&,
                                 int&, long, long);
 
-  int F77_FCN (dgemm, DGEMM) (const char*, const char*, const int&,
+  int F77_FUNC (dgemm, DGEMM) (const char*, const char*, const int&,
 			      const int&, const int&, const double&,
 			      const double*, const int&,
 			      const double*, const int&,
 			      const double&, double*, const int&,
 			      long, long);
 
-  int F77_FCN (dgeco, DGECO) (double*, const int&, const int&, int*,
+  int F77_FUNC (dgeco, DGECO) (double*, const int&, const int&, int*,
 			      double&, double*);
 
-  int F77_FCN (dgesl, DGESL) (const double*, const int&, const int&,
+  int F77_FUNC (dgesl, DGESL) (const double*, const int&, const int&,
 			      const int*, double*, const int&);
 
-  int F77_FCN (dgedi, DGEDI) (double*, const int&, const int&,
+  int F77_FUNC (dgedi, DGEDI) (double*, const int&, const int&,
 			      const int*, double*, double*,
 			      const int&);
 
-  int F77_FCN (dgelss, DGELSS) (const int&, const int&, const int&,
+  int F77_FUNC (dgelss, DGELSS) (const int&, const int&, const int&,
 				double*, const int&, double*,
 				const int&, double*, double&, int&,
 				double*, const int&, int&);
@@ -94,22 +94,22 @@ extern "C"
   // implicit double precision (a-h,o-z) statement at the beginning of
   // each subroutine.
 
-  int F77_FCN (cffti, CFFTI) (const int&, Complex*);
+  int F77_FUNC (cffti, CFFTI) (const int&, Complex*);
 
-  int F77_FCN (cfftf, CFFTF) (const int&, Complex*, Complex*);
+  int F77_FUNC (cfftf, CFFTF) (const int&, Complex*, Complex*);
 
-  int F77_FCN (cfftb, CFFTB) (const int&, Complex*, Complex*);
+  int F77_FUNC (cfftb, CFFTB) (const int&, Complex*, Complex*);
 
-  int F77_FCN (dlartg, DLARTG) (const double&, const double&, double&,
+  int F77_FUNC (dlartg, DLARTG) (const double&, const double&, double&,
 				double&, double&);
 
-  int F77_FCN (dtrsyl, DTRSYL) (const char*, const char*, const int&,
+  int F77_FUNC (dtrsyl, DTRSYL) (const char*, const char*, const int&,
 				const int&, const int&, const double*,
 				const int&, const double*, const int&,
 				const double*, const int&, double&,
 				int&, long, long);
 
-  int F77_FCN (xdlange, XDLANGE) (const char*, const int&,
+  int F77_FUNC (xdlange, XDLANGE) (const char*, const int&,
 				  const int&, const double*,
 				  const int&, double*, double&); 
 }
@@ -779,10 +779,10 @@ Matrix::fourier (void) const
   retval = ComplexMatrix (*this);
   Complex *tmp_data = retval.fortran_vec ();
 
-  F77_FCN (cffti, CFFTI) (npts, pwsave);
+  F77_FUNC (cffti, CFFTI) (npts, pwsave);
 
   for (int j = 0; j < nsamples; j++)
-    F77_FCN (cfftf, CFFTF) (npts, &tmp_data[npts*j], pwsave);
+    F77_FUNC (cfftf, CFFTF) (npts, &tmp_data[npts*j], pwsave);
 
   return retval;
 }
@@ -816,10 +816,10 @@ Matrix::ifourier (void) const
   retval = ComplexMatrix (*this);
   Complex *tmp_data = retval.fortran_vec ();
 
-  F77_FCN (cffti, CFFTI) (npts, pwsave);
+  F77_FUNC (cffti, CFFTI) (npts, pwsave);
 
   for (int j = 0; j < nsamples; j++)
-    F77_FCN (cfftb, CFFTB) (npts, &tmp_data[npts*j], pwsave);
+    F77_FUNC (cfftb, CFFTB) (npts, &tmp_data[npts*j], pwsave);
 
   for (int j = 0; j < npts*nsamples; j++)
     tmp_data[j] = tmp_data[j] / static_cast<double> (npts);
@@ -856,10 +856,10 @@ Matrix::fourier2d (void) const
   retval = ComplexMatrix (*this);
   Complex *tmp_data = retval.fortran_vec ();
 
-  F77_FCN (cffti, CFFTI) (npts, pwsave);
+  F77_FUNC (cffti, CFFTI) (npts, pwsave);
 
   for (int j = 0; j < nsamples; j++)
-    F77_FCN (cfftf, CFFTF) (npts, &tmp_data[npts*j], pwsave);
+    F77_FUNC (cfftf, CFFTF) (npts, &tmp_data[npts*j], pwsave);
 
   npts = nc;
   nsamples = nr;
@@ -871,14 +871,14 @@ Matrix::fourier2d (void) const
   Array<Complex> row (npts);
   Complex *prow = row.fortran_vec ();
 
-  F77_FCN (cffti, CFFTI) (npts, pwsave);
+  F77_FUNC (cffti, CFFTI) (npts, pwsave);
 
   for (int j = 0; j < nsamples; j++)
     {
       for (int i = 0; i < npts; i++)
 	prow[i] = tmp_data[i*nr + j];
 
-      F77_FCN (cfftf, CFFTF) (npts, prow, pwsave);
+      F77_FUNC (cfftf, CFFTF) (npts, prow, pwsave);
 
       for (int i = 0; i < npts; i++)
 	tmp_data[i*nr + j] = prow[i];
@@ -916,10 +916,10 @@ Matrix::ifourier2d (void) const
   retval = ComplexMatrix (*this);
   Complex *tmp_data = retval.fortran_vec ();
 
-  F77_FCN (cffti, CFFTI) (npts, pwsave);
+  F77_FUNC (cffti, CFFTI) (npts, pwsave);
 
   for (int j = 0; j < nsamples; j++)
-    F77_FCN (cfftb, CFFTB) (npts, &tmp_data[npts*j], pwsave);
+    F77_FUNC (cfftb, CFFTB) (npts, &tmp_data[npts*j], pwsave);
 
   for (int j = 0; j < npts*nsamples; j++)
     tmp_data[j] = tmp_data[j] / static_cast<double> (npts);
@@ -934,14 +934,14 @@ Matrix::ifourier2d (void) const
   Array<Complex> row (npts);
   Complex *prow = row.fortran_vec ();
 
-  F77_FCN (cffti, CFFTI) (npts, pwsave);
+  F77_FUNC (cffti, CFFTI) (npts, pwsave);
 
   for (int j = 0; j < nsamples; j++)
     {
       for (int i = 0; i < npts; i++)
 	prow[i] = tmp_data[i*nr + j];
 
-      F77_FCN (cfftb, CFFTB) (npts, prow, pwsave);
+      F77_FUNC (cfftb, CFFTB) (npts, prow, pwsave);
 
       for (int i = 0; i < npts; i++)
 	tmp_data[i*nr + j] = prow[i] / static_cast<double> (npts);
@@ -2848,7 +2848,7 @@ Givens (double x, double y)
 {
   double cc, s, temp_r;
 
-  F77_FCN (dlartg, DLARTG) (x, y, cc, s, temp_r);
+  F77_FUNC (dlartg, DLARTG) (x, y, cc, s, temp_r);
 
   Matrix g (2, 2);
 

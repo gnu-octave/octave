@@ -29,34 +29,16 @@ extern "C" {
 
 #include <setjmp.h>
 
-/* Some Fortran compilers append underscores or generate uppercase
-   external names. */
-
-#if defined (F77_APPEND_UNDERSCORE)
-#if defined (F77_UPPERCASE_NAMES)
-#define F77_FCN(f, F) F##_
-#else
-#define F77_FCN(f, F) f##_
-#endif
-#else
-#if defined (F77_UPPERCASE_NAMES)
-#define F77_FCN(f, F) F
-#else
-#define F77_FCN(f, F) f
-#endif
-#endif
+/* hack to stringize macro results */
+#define xSTRINGIZE(x) #x
+#define STRINGIZE(x) xSTRINGIZE(x)
 
 /* How to print an error for the F77_XFCN macro. */
 
-#if defined (F77_UPPERCASE_NAMES)
 #define F77_XFCN_ERROR(f, F) \
   (*current_liboctave_error_handler) \
-    ("exception encountered in Fortran subroutine %s", #F)
-#else
-#define F77_XFCN_ERROR(f, F) \
-  (*current_liboctave_error_handler) \
-    ("exception encountered in Fortran subroutine %s", #f)
-#endif
+    ("exception encountered in Fortran subroutine %s", \
+     STRINGIZE (F77_FUNC (f, F)))
 
 /* This can be used to call a Fortran subroutine that might call
    XSTOPX.  XSTOPX will call lonjmp with f77_context and we'll return,
@@ -76,7 +58,7 @@ extern "C" {
 	  F77_XFCN_ERROR (f, F); \
 	} \
       else \
-	F77_FCN (f, F) args; \
+	F77_FUNC (f, F) args; \
       copy_f77_context ((char *) saved_f77_context, (char *) f77_context, \
 			sizeof (jmp_buf)); \
     } \

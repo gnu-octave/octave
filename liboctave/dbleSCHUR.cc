@@ -36,7 +36,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 extern "C"
 {
-  int F77_FCN (dgeesx, DGEESX) (const char*, const char*,
+  int F77_FUNC (dgeesx, DGEESX) (const char*, const char*,
 				SCHUR::select_function, const char*,
 				const int&, double*, const int&,
 				int&, double*, double*, double*,

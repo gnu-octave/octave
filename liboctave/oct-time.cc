@@ -52,7 +52,7 @@ octave_time::octave_time (const octave_base_tm& tm)
   t.tm_yday = tm.yday ();
   t.tm_isdst = tm.isdst ();
 
-#if defined (HAVE_TM_ZONE)
+#if defined (HAVE_STRUCT_TM_TM_ZONE)
   std::string s = tm.zone ();
   char *ps = strsave (s.c_str ());
   t.tm_zone = ps;
@@ -60,7 +60,7 @@ octave_time::octave_time (const octave_base_tm& tm)
 
   ot_unix_time = mktime (&t);
 
-#if defined (HAVE_TM_ZONE)
+#if defined (HAVE_STRUCT_TM_TM_ZONE)
   delete [] ps;
 #endif
 
@@ -175,7 +175,7 @@ octave_base_tm::strftime (const std::string& fmt) const
       t.tm_yday = tm_yday;
       t.tm_isdst = tm_isdst;
 
-#if defined (HAVE_TM_ZONE)
+#if defined (HAVE_STRUCT_TM_TM_ZONE)
       char *ps = strsave (tm_zone.c_str ());
       t.tm_zone = ps;
 #endif
@@ -197,7 +197,7 @@ octave_base_tm::strftime (const std::string& fmt) const
 	  bufsize *= 2;
 	}
 
-#if defined (HAVE_TM_ZONE)
+#if defined (HAVE_STRUCT_TM_TM_ZONE)
       delete [] ps;
 #endif
 
@@ -224,7 +224,7 @@ octave_base_tm::init (void *p)
   tm_yday = t->tm_yday;
   tm_isdst = t->tm_isdst;
 
-#if defined (HAVE_TM_ZONE)
+#if defined (HAVE_STRUCT_TM_TM_ZONE)
   tm_zone = t->tm_zone;
 #elif defined (HAVE_TZNAME)
   if (t->tm_isdst == 0 || t->tm_isdst == 1)
@@ -267,7 +267,7 @@ octave_strptime::init (const std::string& str, const std::string& fmt)
   t.tm_yday = 0;
   t.tm_isdst = 0;
 
-#if defined (HAVE_TM_ZONE)
+#if defined (HAVE_STRUCT_TM_TM_ZONE)
   char *ps = strsave ("");
   t.tm_zone = ps;
 #endif
@@ -282,7 +282,7 @@ octave_strptime::init (const std::string& str, const std::string& fmt)
 
   octave_base_tm::init (&t);
 
-#if defined (HAVE_TM_ZONE)
+#if defined (HAVE_STRUCT_TM_TM_ZONE)
   delete ps;
 #endif
 }

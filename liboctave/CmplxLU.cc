@@ -43,7 +43,7 @@ template class base_lu <ComplexMatrix, Complex, Matrix, double>;
 
 extern "C"
 {
-  int F77_FCN (zgetrf, ZGETRF) (const int&, const int&, Complex*,
+  int F77_FUNC (zgetrf, ZGETRF) (const int&, const int&, Complex*,
 				const int&, int*, int&);
 }
 

@@ -29,7 +29,7 @@
 # define HAVE_MBRLEN 1
 # define HAVE_STRUCT_ERA_ENTRY 1
 # define HAVE_TM_GMTOFF 1
-# define HAVE_TM_ZONE 1
+# define HAVE_STRUCT_TM_TM_ZONE 1
 # define MULTIBYTE_IS_FORMAT_SAFE 1
 # define STDC_HEADERS 1
 # include <ansidecl.h>
@@ -290,7 +290,7 @@ strftime (s, maxsize, format, tp)
   register const char *f;
 
   zone = 0;
-#if HAVE_TM_ZONE
+#if HAVE_STRUCT_TM_TM_ZONE
   zone = (const char *) tp->tm_zone;
 #endif
 #if HAVE_TZNAME

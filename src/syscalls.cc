@@ -71,17 +71,17 @@ mk_stat_map (const file_stat& fs)
   m["nlink"] = static_cast<double> (fs.nlink ());
   m["uid"] = static_cast<double> (fs.uid ());
   m["gid"] = static_cast<double> (fs.gid ());
-#if defined (HAVE_ST_RDEV)
+#if defined (HAVE_STRUCT_STAT_ST_RDEV)
   m["rdev"] = static_cast<double> (fs.rdev ());
 #endif
   m["size"] = static_cast<double> (fs.size ());
   m["atime"] = static_cast<double> (fs.atime ());
   m["mtime"] = static_cast<double> (fs.mtime ());
   m["ctime"] = static_cast<double> (fs.ctime ());
-#if defined (HAVE_ST_BLKSIZE)
+#if defined (HAVE_STRUCT_STAT_ST_BLKSIZE)
   m["blksize"] = static_cast<double> (fs.blksize ());
 #endif
-#if defined (HAVE_ST_BLOCKS)
+#if defined (HAVE_STRUCT_STAT_ST_BLOCKS)
   m["blocks"] = static_cast<double> (fs.blocks ());
 #endif
 

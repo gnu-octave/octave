@@ -1,3 +1,7 @@
+2002-04-03  Steven G. Johnson <stevenj@alum.mit.edu>
+
+	* configure.in, c-auto.in: Update for autoconf 2.5x.
+
 2001-11-27  Trond Eivind Glomsrød  <teg@redhat.com>
 
 	* progname.c (kpse_set_program_name): Fix typo.

@@ -1,3 +1,16 @@
+2002-04-03  Steven G. Johnson <stevenj@alum.mit.edu>
+
+	* DLD-FUNCTIONS/balance.cc: Use F77_FUNC instead of F77_FCN.
+	* DLD-FUNCTIONS/qz.cc: Likewise.
+	* DLD-FUNCTIONS/rand.cc: Likewise.
+	* octave.cc: Likewise.
+	* src/toplev.cc (Foctave_config_info): Delete use of FORTRAN_MAIN_FLAG.
+	* oct-conf.h.in: Delete use of OCTAVE_CONF_FORTRAN_MAIN_FLAG.
+	* syscalls.cc (mk_stat_map):
+	Use HAVE_STRUCT_STAT_ST_RDEV instead of HAVE_ST_RDEV.
+	Use HAVE_STRUCT_STAT_ST_BLKSIZE instead of HAVE_ST_BLKSIZE.
+	Use HAVE_STRUCT_STAT_ST_BLOCKS instead of HAVE_ST_BLOCKS.
+
 2002-04-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* lex.l, lex.h (parser_end_of_input): New global variable.

@@ -43,7 +43,7 @@ template class base_lu <Matrix, double, Matrix, double>;
 
 extern "C"
 {
-  int F77_FCN (dgetrf, DGETRF) (const int&, const int&, double*,
+  int F77_FUNC (dgetrf, DGETRF) (const int&, const int&, double*,
 				const int&, int*, int&);
 }
 

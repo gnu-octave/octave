@@ -44,7 +44,7 @@ copy_f77_context (void *from, void *to, unsigned int size)
    is necessary.  */
 
 volatile void
-F77_FCN (xstopx, XSTOPX) (const char *s, long int slen)
+F77_FUNC (xstopx, XSTOPX) (const char *s, long int slen)
 {
   /* Skip printing message if it is just a single blank character.  */
   if (s && slen > 0 && ! (slen == 1 && *s == ' '))

@@ -42,7 +42,7 @@ typedef int (*dassl_jac_ptr) (const double&, double*, double*,
 			      double*, const double&, double*, int*);
 
 extern "C"
-int F77_FCN (ddassl, DDASSL) (dassl_fcn_ptr, const int&, double&,
+int F77_FUNC (ddassl, DDASSL) (dassl_fcn_ptr, const int&, double&,
 			      double*, double*, double&, const int*,
 			      const double&, const double&, int&,
 			      double*, const int&, int*, const int&,

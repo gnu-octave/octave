@@ -30,7 +30,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 extern "C"
 {
-  double F77_FCN (d1mach, D1MACH) (const int&);
+  double F77_FUNC (d1mach, D1MACH) (const int&);
 }
 
 oct_mach_info *oct_mach_info::instance = 0;
@@ -106,10 +106,10 @@ oct_mach_info::init_float_format (void) const
 
   equiv mach_fp_par[4];
 
-  mach_fp_par[0].d = F77_FCN (d1mach, D1MACH) (1);
-  mach_fp_par[1].d = F77_FCN (d1mach, D1MACH) (2);
-  mach_fp_par[2].d = F77_FCN (d1mach, D1MACH) (3);
-  mach_fp_par[3].d = F77_FCN (d1mach, D1MACH) (4);
+  mach_fp_par[0].d = F77_FUNC (d1mach, D1MACH) (1);
+  mach_fp_par[1].d = F77_FUNC (d1mach, D1MACH) (2);
+  mach_fp_par[2].d = F77_FUNC (d1mach, D1MACH) (3);
+  mach_fp_par[3].d = F77_FUNC (d1mach, D1MACH) (4);
 
   int i = 0;
   do

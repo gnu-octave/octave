@@ -35,23 +35,23 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 extern "C"
 {
-  int F77_FCN (dgeev, DGEEV) (const char*, const char*, const int&,
+  int F77_FUNC (dgeev, DGEEV) (const char*, const char*, const int&,
 			      double*, const int&, double*, double*,
 			      double*, const int&, double*,
 			      const int&, double*, const int&, int&,
 			      long, long);
 
-  int F77_FCN (zgeev, ZGEEV) (const char*, const char*, const int&,
+  int F77_FUNC (zgeev, ZGEEV) (const char*, const char*, const int&,
 			      Complex*, const int&, Complex*,
 			      Complex*, const int&, Complex*,
 			      const int&, Complex*, const int&,
 			      double*, int&, long, long);
 
-  int F77_FCN (dsyev, DSYEV) (const char*, const char*, const int&,
+  int F77_FUNC (dsyev, DSYEV) (const char*, const char*, const int&,
 			      double*, const int&, double*, double*,
 			      const int&, int&, long, long);
 
-  int F77_FCN (zheev, ZHEEV) (const char*, const char*, const int&,
+  int F77_FUNC (zheev, ZHEEV) (const char*, const char*, const int&,
 			      Complex*, const int&, double*, Complex*,
 			      const int&, double*, int&, long, long);
 }

@@ -37,53 +37,53 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 extern "C"
 {
-  int F77_FCN (zbesj, ZBESJ) (const double&, const double&,
+  int F77_FUNC (zbesj, ZBESJ) (const double&, const double&,
 			      const double&, const int&, const int&,
 			      double*, double*, int&, int&);
 
-  int F77_FCN (zbesy, ZBESY) (const double&, const double&,
+  int F77_FUNC (zbesy, ZBESY) (const double&, const double&,
 			      const double&, const int&, const int&,
 			      double*, double*, int&,
 			      double*, double*, int&);
 
-  int F77_FCN (zbesi, ZBESI) (const double&, const double&,
+  int F77_FUNC (zbesi, ZBESI) (const double&, const double&,
 			      const double&, const int&, const int&,
 			      double*, double*, int&, int&);
 
-  int F77_FCN (zbesk, ZBESK) (const double&, const double&,
+  int F77_FUNC (zbesk, ZBESK) (const double&, const double&,
 			      const double&, const int&, const int&,
 			      double*, double*, int&, int&);
 
-  int F77_FCN (zbesh, ZBESH) (const double&, const double&,
+  int F77_FUNC (zbesh, ZBESH) (const double&, const double&,
 			      const double&, const int&, const int&,
 			      const int&, double*, double*, int&, int&);
 
-  int F77_FCN (zairy, ZAIRY) (const double&, const double&,
+  int F77_FUNC (zairy, ZAIRY) (const double&, const double&,
 			      const int&, const int&,
 			      double&, double&, int&, int&);
 
-  int F77_FCN (zbiry, ZBIRY) (const double&, const double&,
+  int F77_FUNC (zbiry, ZBIRY) (const double&, const double&,
 			      const int&, const int&,
 			      double&, double&, int&);
 
-  int F77_FCN (xdacosh, XDACOSH) (const double&, double&);
+  int F77_FUNC (xdacosh, XDACOSH) (const double&, double&);
 
-  int F77_FCN (xdasinh, XDASINH) (const double&, double&);
+  int F77_FUNC (xdasinh, XDASINH) (const double&, double&);
 
-  int F77_FCN (xdatanh, XDATANH) (const double&, double&);
+  int F77_FUNC (xdatanh, XDATANH) (const double&, double&);
 
-  int F77_FCN (xderf, XDERF) (const double&, double&);
+  int F77_FUNC (xderf, XDERF) (const double&, double&);
 
-  int F77_FCN (xderfc, XDERFC) (const double&, double&);
+  int F77_FUNC (xderfc, XDERFC) (const double&, double&);
 
-  int F77_FCN (xdbetai, XDBETAI) (const double&, const double&,
+  int F77_FUNC (xdbetai, XDBETAI) (const double&, const double&,
 				  const double&, double&);
 
-  int F77_FCN (xdgamma, XDGAMMA) (const double&, double&);
+  int F77_FUNC (xdgamma, XDGAMMA) (const double&, double&);
 
-  int F77_FCN (xdgamit, XDGAMIT) (const double&, const double&, double&);
+  int F77_FUNC (xdgamit, XDGAMIT) (const double&, const double&, double&);
 
-  int F77_FCN (dlgams, DLGAMS) (const double&, double&, double&);
+  int F77_FUNC (dlgams, DLGAMS) (const double&, double&, double&);
 }
 
 #if !defined (HAVE_ACOSH)
@@ -213,7 +213,7 @@ zbesj (const Complex& z, double alpha, int kode, int& ierr)
       double zr = z.real ();
       double zi = z.imag ();
 
-      F77_FCN (zbesj, ZBESJ) (zr, zi, alpha, kode, 1, &yr, &yi, nz, ierr);
+      F77_FUNC (zbesj, ZBESJ) (zr, zi, alpha, kode, 1, &yr, &yi, nz, ierr);
 
       if (zi == 0.0 && zr > 0.0)
 	yi = 0.0;
@@ -265,7 +265,7 @@ zbesy (const Complex& z, double alpha, int kode, int& ierr)
 	}
       else
 	{
-	  F77_FCN (zbesy, ZBESY) (zr, zi, alpha, kode, 1, &yr, &yi, nz,
+	  F77_FUNC (zbesy, ZBESY) (zr, zi, alpha, kode, 1, &yr, &yi, nz,
 				  &wr, &wi, ierr);
 
 	  if (zi == 0.0 && zr > 0.0)
@@ -308,7 +308,7 @@ zbesi (const Complex& z, double alpha, int kode, int& ierr)
       double zr = z.real ();
       double zi = z.imag ();
 
-      F77_FCN (zbesi, ZBESI) (zr, zi, alpha, kode, 1, &yr, &yi, nz, ierr);
+      F77_FUNC (zbesi, ZBESI) (zr, zi, alpha, kode, 1, &yr, &yi, nz, ierr);
 
       if (zi == 0.0 && zr > 0.0)
 	yi = 0.0;
@@ -359,7 +359,7 @@ zbesk (const Complex& z, double alpha, int kode, int& ierr)
 	}
       else
 	{
-	  F77_FCN (zbesk, ZBESK) (zr, zi, alpha, kode, 1, &yr, &yi, nz, ierr);
+	  F77_FUNC (zbesk, ZBESK) (zr, zi, alpha, kode, 1, &yr, &yi, nz, ierr);
 
 	  if (zi == 0.0 && zr > 0.0)
 	    yi = 0.0;
@@ -392,7 +392,7 @@ zbesh1 (const Complex& z, double alpha, int kode, int& ierr)
       double zr = z.real ();
       double zi = z.imag ();
 
-      F77_FCN (zbesh, ZBESH) (zr, zi, alpha, kode, 1, 1, &yr, &yi, nz, ierr);
+      F77_FUNC (zbesh, ZBESH) (zr, zi, alpha, kode, 1, 1, &yr, &yi, nz, ierr);
 
       retval = bessel_return_value (Complex (yr, yi), ierr);
     }
@@ -425,7 +425,7 @@ zbesh2 (const Complex& z, double alpha, int kode, int& ierr)
       double zr = z.real ();
       double zi = z.imag ();
 
-      F77_FCN (zbesh, ZBESH) (zr, zi, alpha, kode, 2, 1, &yr, &yi, nz, ierr);
+      F77_FUNC (zbesh, ZBESH) (zr, zi, alpha, kode, 2, 1, &yr, &yi, nz, ierr);
 
       retval = bessel_return_value (Complex (yr, yi), ierr);
     }
@@ -610,7 +610,7 @@ airy (const Complex& z, bool deriv, bool scaled, int& ierr)
 
   int kode = scaled ? 2 : 1;
 
-  F77_FCN (zairy, ZAIRY) (zr, zi, id, kode, ar, ai, nz, ierr);
+  F77_FUNC (zairy, ZAIRY) (zr, zi, id, kode, ar, ai, nz, ierr);
 
   if (zi == 0.0 && (! scaled || zr > 0.0))
     ai = 0.0;
@@ -631,7 +631,7 @@ biry (const Complex& z, bool deriv, bool scaled, int& ierr)
 
   int kode = scaled ? 2 : 1;
 
-  F77_FCN (zbiry, ZBIRY) (zr, zi, id, kode, ar, ai, ierr);
+  F77_FUNC (zbiry, ZBIRY) (zr, zi, id, kode, ar, ai, ierr);
 
   if (zi == 0.0 && (! scaled || zr > 0.0))
     ai = 0.0;

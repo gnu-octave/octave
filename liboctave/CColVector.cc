@@ -41,7 +41,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 extern "C"
 {
-  int F77_FCN (zgemv, ZGEMV) (const char*, const int&, const int&,
+  int F77_FUNC (zgemv, ZGEMV) (const char*, const int&, const int&,
 			      const Complex&, const Complex*,
 			      const int&, const Complex*, const int&,
 			      const Complex&, Complex*, const int&,

@@ -1,5 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT(pathsearch.c)
+AC_INIT
+AC_CONFIG_SRCDIR([pathsearch.c])
+AC_PREREQ(2.52)			dnl Minimum Autoconf version required.
 
 KPSEVERSION=3.2
 AC_SUBST(KPSEVERSION)
@@ -7,6 +9,7 @@ AC_DEFINE_UNQUOTED(KPSEVERSION, "kpathsea version $KPSEVERSION")
 
 sinclude(common.ac)
 
-AC_OUTPUT(Makefile)
+AC_CONFIG_FILES([Makefile])
+AC_OUTPUT
 dnl Update stamp-auto, since we just remade `c-auto.h'.
 date >stamp-auto

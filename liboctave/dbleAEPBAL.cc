@@ -35,11 +35,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 extern "C"
 {
-  int F77_FCN (dgebal, DGEBAL) (const char*, const int&, double*,
+  int F77_FUNC (dgebal, DGEBAL) (const char*, const int&, double*,
 				const int&, int&, int&, double*,
 				int&, long, long);
 
-  int F77_FCN (dgebak, DGEBAK) (const char*, const char*, const int&,
+  int F77_FUNC (dgebak, DGEBAK) (const char*, const char*, const int&,
 				const int&, const int&, double*,
 				const int&, double*, const int&,
 				int&, long, long);

@@ -45,7 +45,7 @@ typedef int (*lsode_jac_ptr) (const int&, const double&, double*,
 			      int&);
 
 extern "C"
-int F77_FCN (lsode, LSODE) (lsode_fcn_ptr, int&, double*, double&,
+int F77_FUNC (lsode, LSODE) (lsode_fcn_ptr, int&, double*, double&,
 			    double&, int&, double&, double&, int&,
 			    int&, int&, double*, int&, int*, int&,
 			    lsode_jac_ptr, int&);

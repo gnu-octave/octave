@@ -1,3 +1,13 @@
+2002-04-03  Steven G. Johnson <stevenj@alum.mit.edu>
+
+	* misc/machar.c: Use F77_FUNC instead of checking
+	F77_APPEND_UNDERSCORE.
+	* misc/f77-fcn.h: Don't define F77_FCN.
+	(xSTRINGIZE, STRINGIZE): New macros.
+	(F77_XFCN_ERROR): Simplify by using STRINGIZE and F77_FUNC.
+	(F77_XFCN): Use F77_FUNC instead of F77_FCN.
+	* misc/f77-fcn.c: Use F77_FUNC instead of F77_FCN.
+
 2001-11-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (DISTSUBDIRS): Add fftpack.

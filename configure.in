@@ -21,14 +21,19 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA. 
 
-AC_REVISION($Revision: 1.352 $)
-AC_PREREQ(2.9)
-AC_INIT(src/octave.cc)
+AC_INIT
+AC_REVISION($Revision: 1.353 $)
+AC_PREREQ(2.52)
+AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
 
-AC_DEFINE(OCTAVE_SOURCE, 1)
-
+AC_DEFINE(OCTAVE_SOURCE, 1, [Define if this is Octave.])
+  
 OCTAVE_HOST_TYPE
+
+AC_ISC_POSIX
+AC_MINIX
+AC_AIX
 
 ### some defaults
 
@@ -68,8 +73,8 @@ AC_SUBST(config_opts)
 
 ### Path separator.
 
-AC_DEFINE(SEPCHAR, [':'])
-AC_DEFINE(SEPCHAR_STR, [":"])
+AC_DEFINE(SEPCHAR, [':'], Define this to be the path separator for your system, as a character constant.])
+AC_DEFINE(SEPCHAR_STR, [":"], [Define this to the path separator, as a string.])
 
 ### Allow the user to force us to use f2c.
 
@@ -126,7 +131,7 @@ dnl      LIBPLPLOT="";
 dnl      PLPLOT_DIR="";
 dnl    fi], [])
 dnl if $USE_PLPLOT; then
-dnl   AC_DEFINE(USE_PLPLOT, 1)
+dnl   AC_DEFINE(USE_PLPLOT, 1, [Define to use plplot.])
 dnl fi
 AC_SUBST(LIBPLPLOT)
 AC_SUBST(PLPLOT_DIR)
@@ -143,7 +148,7 @@ AC_ARG_ENABLE(bounds-check,
   [  --enable-bounds-check   for internal array classes (default is no)],
   [if test "$enableval" = yes; then BOUNDS_CHECKING=true; fi], [])
 if $BOUNDS_CHECKING; then
-  AC_DEFINE(BOUNDS_CHECKING, 1)
+  AC_DEFINE(BOUNDS_CHECKING, 1, [Define to use internal bounds checking.])
 fi
 
 ### It seems that there are some broken inline assembly functions in
@@ -151,7 +156,7 @@ fi
 ### GNU libc, just disable them for all platforms.
 
 AC_MSG_RESULT([defining __NO_MATH_INLINES avoids buggy GNU libc exp function])
-AC_DEFINE(__NO_MATH_INLINES, 1)
+AC_DEFINE(__NO_MATH_INLINES, 1, [Define if your version of GNU libc has buggy inline assembly code for math functions like exp.])
 
 ### See which C++ compiler to use (we expect to find g++).
 
@@ -173,14 +178,10 @@ gxx_version=`$CXX -v 2>&1 | grep "^.*g.. version" | \
 #
 cxx_auto_instantiate_templates=yes
 case "$gxx_version" in
-changequote(,)dnl
-  1.* | 2.[0123456].* | 2.7.[01]*)
-changequote([,])dnl
+  1.* | 2.[[0123456]].* | 2.7.[01]*)
     AC_MSG_ERROR([g++ version $gxx_version will not work to compile Octave])
   ;;
-changequote(,)dnl
-  2.8* | 2.9[1-6]*)
-changequote([,])dnl
+  2.8* | 2.9[[1-6]]*)
     cxx_auto_instantiate_templates=no
   ;;
 esac
@@ -255,9 +256,7 @@ AC_SUBST(DEPEND_EXTRA_SED_PATTERN)
 
 ieee_fp_flag=
 case "$canonical_host_type" in
-changequote(,)dnl
-  i[3456789]86-*-*)
-changequote([,])dnl
+  i[[3456789]]86-*-*)
     OCTAVE_CC_FLAG(-mieee-fp, [
       ieee_fp_flag=-mieee-fp
       XTRA_CFLAGS="$XTRA_CFLAGS -mieee-fp"
@@ -353,7 +352,7 @@ if test -n "$hdf5_lib"; then
 	WITH_HDF5=true
         HDF5_LIBS="-l$hdf5_lib -lz"
         LIBS="$HDF5_LIBS $LIBS"
-        AC_DEFINE(HAVE_HDF5)])])])
+        AC_DEFINE(HAVE_HDF5,1,[Define if HDF5 is available.])])])])
 fi
 
 # Checks for FFTW header and library.
@@ -371,9 +370,9 @@ AC_ARG_WITH(fftw,
   with_fftw=$withval, with_fftw=yes)
 
 if test "$with_fftw" = "yes"; then
-  AC_CHECK_HEADERS(dfftw.h fftw.h)
-  if test "$ac_cv_header_dfftw_h" = yes \
-      || test "$ac_cv_header_fftw_h" = yes; then
+  have_fftw_header=no
+  AC_CHECK_HEADERS(dfftw.h fftw.h, [have_fftw_header=yes; break])
+  if test "$have_fftw_header" = yes; then
     AC_CHECK_LIB(dfftw, fftw_create_plan, FFTW_LIBS="-ldfftw",
       [AC_CHECK_LIB(fftw, fftw_create_plan, FFTW_LIBS="-lfftw", with_fftw=no)])
   else
@@ -383,7 +382,7 @@ fi
 
 if test "$with_fftw" = yes; then
   FFT_DIR=''
-  AC_DEFINE(HAVE_FFTW)
+  AC_DEFINE(HAVE_FFTW,1,[Define if the FFTW library is available.])
 fi
 
 # ----------------------------------------------------------------------
@@ -396,20 +395,7 @@ AC_PROG_RANLIB
 
 ### If we haven't been forced to use a particular Fortran compiler,
 ### try to find one using any one of several common Un*x Fortran
-### compiler names.  Put fc last to avoid confusion with some vendor's
-### /bin/sh fc builtin.
-###
-###    f77 : most Unix systems
-###    xlf : IBM / AIX
-###   cf77 : Cray / Unicos
-###    g77 : GNU Fortran
-###     fc : Convex
-###
-### If a compiler is found, check to see if it is compatible with our
-### assumptions.  If it is, use it.  Otherwise, look for f2c.  If we
-### can't find a compatible fortran compiler or f2c, issue a warning.
-###
-### I don't think the Cray compiler will ever work like f2c...
+### compiler names using the AC_PROG_F77 macro.
 ###
 ### The configure options --with-f77, --with-g77, or --with-f2c
 ### force f77, g77 or f2c to be used.  It is also possible to use
@@ -439,9 +425,14 @@ elif $use_f2c; then
     F2C="$with_f2c"
   fi
   AC_MSG_RESULT([defining F2C to be $F2C])
-else
-  AC_CHECK_PROGS(F77, g77 f77 f90 xlf cf77 fc)
 fi
+
+if test "x$FFLAGS" = x; then
+  FFLAGS="-O" # override -g -O default by AC_PROG_F77
+fi
+
+# the F77 variable, if set, overrides AC_PROG_F77 automatically
+AC_PROG_F77
 
 have_fortran_compiler=false
 have_f2c=false
@@ -450,33 +441,24 @@ if $use_f2c; then
   have_f2c=true
 else
   if test -n "$F77"; then
-    OCTAVE_FLIBS
-    OCTAVE_F77_APPEND_UNDERSCORE
-    OCTAVE_F2C_F77_COMPAT
-    if test "$octave_cv_f2c_f77_compat" = no; then
-      F77=
-    else
-      if test -z "$FFLAGS"; then
-        FFLAGS="-O"
-      fi
-      case "$canonical_host_type" in
-        alpha*-*-*)
-          if test "$octave_cv_f77_is_g77" = yes; then
-            FFLAGS="$ieee_fp_flag $FFLAGS"
-	  else
-	    FFLAGS="-fpe1 $FFLAGS"
-	  fi
-        ;;
-	powerpc-apple-machten*)
-	  FFLAGS=
-	;;
-      esac
-      if test -n "$FFLAGS"; then
-        AC_MSG_RESULT([defining FFLAGS to be $FFLAGS])
-      fi
+    AC_F77_LIBRARY_LDFLAGS
+    AC_F77_DUMMY_MAIN
+    AC_F77_WRAPPERS
+    case "$canonical_host_type" in
+      alpha*-*-*)
+        if test "$ac_cv_f77_compiler_gnu" = yes; then
+          FFLAGS="$ieee_fp_flag $FFLAGS"
+	else
+	  FFLAGS="-fpe1 $FFLAGS"
+	fi
+      ;;
+      powerpc-apple-machten*)
+	FFLAGS=
+      ;;
+    esac
+    if test -n "$FFLAGS"; then
+      AC_MSG_RESULT([defining FFLAGS to be $FFLAGS])
     fi
-  fi
-  if test -n "$F77"; then
     have_fortran_compiler=true
   else
     AC_CHECK_PROG(F2C, f2c, f2c, [])
@@ -489,7 +471,6 @@ fi
 f77_rules_frag=/dev/null
 if $have_fortran_compiler; then
   f77_rules_frag=Makefrag.f77
-changequote(,)dnl
   cat << \EOF > $f77_rules_frag
 
 %.c : %.f
@@ -501,17 +482,8 @@ pic/%.o : %.f
 	$(FC) -c $(FPICFLAG) $(ALL_FFLAGS) $< -o $@
 
 EOF
-changequote([,])dnl
 elif $have_f2c; then
-  AC_DEFINE(F77_APPEND_UNDERSCORE, 1)
-  AC_MSG_RESULT([defining F77_APPEND_UNDERSCORE to be 1])
-
-### This seems to be necessary on some Linux system.
-
-  cat > conftest.$ac_ext << EOF
-int MAIN_ () { return 0; }
-int MAIN__ () { return 0; }
-EOF
+  AC_DEFINE(HAVE_F2C, 1, [Define if we are using f2c.])
 
 ### XXX FIMXE XXX -- these shouldn't be fixed names, eh?
 
@@ -519,9 +491,9 @@ EOF
   oct_obj_ext=o
 
   if AC_TRY_EVAL(ac_compile); then
-    $AR $ARFLAGS $oct_conflib conftest.$oct_obj_ext 1>&AC_FD_CC
+    $AR $ARFLAGS $oct_conflib conftest.$oct_obj_ext 1>&AS_MESSAGE_LOG_FD()
     if test -n "$RANLIB"; then
-      $RANLIB $oct_conflib 1>&AC_FD_CC
+      $RANLIB $oct_conflib 1>&AS_MESSAGE_LOG_FD()
     fi
   fi
   rm -f conftest*
@@ -554,8 +526,6 @@ else
   AC_MSG_ERROR([See the file INSTALL for more information.])
 fi
 
-OCTAVE_F77_MAIN_FLAG
-
 FC=$F77
 AC_SUBST(FC)
 AC_SUBST(F77)
@@ -566,124 +536,14 @@ AC_SUBST(F2CFLAGS)
 AC_SUBST_FILE(f77_rules_frag)
 
 ### Checks for BLAS and LAPACK libraries:
+# (Build subdirectories of libcruft if they aren't found on the system.)
 
-### XXX FIXME XXX -- how can user specify a set of libraries here?
-
-### Subdirectories of libcruft to build if they aren't found on the system:
-
-BLAS_DIR="blas"
-LAPACK_DIR="lapack"
+sinclude(acx_blas.m4)
+sinclude(acx_lapack.m4)
+ACX_BLAS([], [BLAS_DIR="blas"])
+ACX_LAPACK([BLAS_LIBS="$LAPACK_LIBS $BLAS_LIBS"], [LAPACK_DIR="lapack"])
 AC_SUBST(BLAS_DIR)
 AC_SUBST(LAPACK_DIR)
-
-### names of Fortran dgemm & cheev functions to check for (depends upon
-### F77 compiler name-mangling scheme):
-
-if test "$octave_cv_f77_uppercase_names" = yes; then
-  if test "$octave_cv_f77_append_underscore" = yes; then
-    dgemm_func=DGEMM_
-    cheev_func=CHEEV_
-  else
-    dgemm_func=DGEMM
-    cheev_func=CHEEV
-  fi
-else
-  if test "$octave_cv_f77_append_underscore" = yes || test -n "${F2C}"; then
-    dgemm_func=dgemm_
-    cheev_func=cheev_
-  else
-    dgemm_func=dgemm
-    cheev_func=cheev
-  fi
-fi
-
-AC_ARG_WITH(fastblas,
-  [  --without-fastblas      use included (generic) BLAS and LAPACK],
-  with_fastblas=$withval, with_fastblas=yes)
-
-if test "$with_fastblas" = no; then
-  BLAS_LIBS=" "
-elif test "$with_fastblas" != yes; then
-  # user specified a BLAS library to try on the command line
-  AC_CHECK_LIB($with_fastblas, $dgemm_func, 
-	       BLAS_LIBS="-l$with_fastblas", , $FLIBS)
-fi
-
-if test "x$BLAS_LIBS" = x; then
-  # Checks for ATLAS BLAS library:
-  AC_CHECK_LIB(atlas, ATL_xerbla, BLAS_LIBS="-latlas")
-  if test "x$BLAS_LIBS" != x; then
-    # check for other atlas libs:
-    AC_CHECK_LIB(cblas, cblas_dgemm,BLAS_LIBS="-lcblas $BLAS_LIBS",,$BLAS_LIBS)
-    AC_CHECK_LIB(f77blas, $dgemm_func, 
-		 BLAS_LIBS="-lf77blas $BLAS_LIBS", , $BLAS_LIBS $FLIBS)
-  fi
-fi
-
-if test "x$BLAS_LIBS" = x; then
-  # BLAS in Alpha CXML library?
-  AC_CHECK_LIB(cxml, $dgemm_func, BLAS_LIBS="-lcxml", , $FLIBS)
-fi
-
-if test "x$BLAS_LIBS" = x; then
-  # BLAS in Alpha DXML library? (now called CXML, see above)
-  AC_CHECK_LIB(dxml, $dgemm_func, BLAS_LIBS="-ldxml", , $FLIBS)
-fi
-
-if test "x$BLAS_LIBS" = x; then
-  # Check for BLAS in Sun Performance library:
-  AC_CHECK_LIB(sunmath, acosp, BLAS_LIBS="-lsunmath")
-  # Don't use AC_CHECK_LIB here.
-  saved_LIBS="$LIBS"
-  LIBS="$LIBS $BLAS_LIBS -xlic_lib=sunperf"
-  AC_CHECK_FUNC($dgemm_func, BLAS_LIBS="-xlic_lib=sunperf $BLAS_LIBS",)
-  LIBS="$saved_LIBS"
-fi
-
-if test "x$BLAS_LIBS" = x; then
-  # Check for BLAS in SCSL and SGIMATH libraries (prefer SCSL):
-  AC_CHECK_LIB(scs, $dgemm_func,
-               BLAS_LIBS="-lscs", 
-	       AC_CHECK_LIB(complib.sgimath, $dgemm_func,
-			    BLAS_LIBS="-lcomplib.sgimath", , $FLIBS), $FLIBS)
-fi
-
-if test "x$BLAS_LIBS" = x; then
-  # Checks for BLAS in IBM ESSL library.  We must also link
-  # with -lblas in this case (ESSL does not include the full BLAS):
-  AC_CHECK_LIB(blas, zherk, 
-	       AC_CHECK_LIB(essl, $dgemm_func, 
-			    BLAS_LIBS="-lessl -lblas", , $FLIBS), , $FLIBS)
-fi
-
-if test "x$BLAS_LIBS" = x; then
-  # Finally, check for the generic BLAS library:
-  AC_CHECK_LIB(blas, $dgemm_func, BLAS_LIBS="-lblas", , $FLIBS)
-fi
-
-if test "$with_fastblas" = no; then
-  # Unset BLAS_LIBS so that we know below that nothing was found.
-  BLAS_LIBS=""
-fi
-
-if test "x$BLAS_LIBS" != x; then
-  BLAS_DIR=""  # don't build our own BLAS
-
-### Check for LAPACK library.  Note that ATLAS has its own liblapack.a,
-### which is designed to be combined with the real LAPACK.  cheev is a
-### function in the real LAPACK but not in ATLAS's version, so this
-### (hopefully) insures that we are getting the real LAPACK.  Note also
-### that on some systems, LAPACK is included in the math library
-### (e.g. DXML) that we already linked to above...we detect this by
-### doing AC_CHECK_FUNC if -llapack isn't found:
-
-  AC_CHECK_LIB(lapack, $cheev_func, 
-	       [BLAS_LIBS="-llapack $BLAS_LIBS"; LAPACK_DIR=""],
-	       [AC_CHECK_FUNC($cheev_func, LAPACK_DIR="")],
-	       [$BLAS_LIBS $FLIBS])
-fi
-
-AC_SUBST(BLAS_LIBS)
 
 ### Handle dynamic linking and shared library options.
 
@@ -783,9 +643,7 @@ case "$canonical_host_type" in
     SONAME_FLAGS='-Xlinker -soname -Xlinker $@'
     RLD_FLAG='-Xlinker -rpath -Xlinker $(octlibdir)'
   ;;
-changequote(,)dnl
-  i[3456]86-*-sco3.2v5*)
-changequote([,])dnl
+  i[[3456]]86-*-sco3.2v5*)
     SONAME_FLAGS='-Xlinker -h -Xlinker $@'
     RLD_FLAG=
     SH_LDFLAGS=-G
@@ -797,7 +655,7 @@ changequote([,])dnl
     DLFCN_DIR=dlfcn
   ;;
   hppa*-hp-hpux*)
-    if test "$octave_cv_f77_is_g77" = yes; then
+    if test "$ac_cv_f77_compiler_gnu" = yes; then
       FPICFLAG=-fPIC
     else
       FPICFLAG=+Z
@@ -813,7 +671,7 @@ changequote([,])dnl
     RLD_FLAG='-L$(octlibdir)'
   ;;
   sparc-sun-sunos4*)
-    if test "$octave_cv_f77_is_g77" = yes; then
+    if test "$ac_cv_f77_compiler_gnu" = yes; then
       FPICFLAG=-fPIC
     else
       FPICFLAG=-PIC
@@ -823,7 +681,7 @@ changequote([,])dnl
     RLD_FLAG='-L$(octlibdir)'
   ;;
   sparc-sun-solaris2* | i386-pc-solaris2*)
-    if test "$octave_cv_f77_is_g77" = yes; then
+    if test "$ac_cv_f77_compiler_gnu" = yes; then
       FPICFLAG=-fPIC
     else
       FPICFLAG=-KPIC
@@ -889,7 +747,7 @@ AC_ARG_ENABLE(lite-kernel,
    else OCTAVE_LITE=true; fi],
   OCTAVE_LITE=false)
 if $OCTAVE_LITE; then
-  AC_DEFINE(OCTAVE_LITE, 1)
+  AC_DEFINE(OCTAVE_LITE, 1, [Define to compile smaller kernel.])
 fi
 AC_SUBST(OCTAVE_LITE)
 
@@ -898,20 +756,8 @@ AC_SUBST(OCTAVE_LITE)
 ### I am told that on some SCO systems, the only place to find some
 ### functions like gethostname and gettimeofday is in libsocket.
 
-AC_ISC_POSIX
-AC_MINIX
-AC_AIX
-AC_CHECK_FUNCS(gethostname getpwnam)
-if test "$ac_cv_func_gethostname" = yes; then
-  true
-else
-  AC_CHECK_LIB(socket, gethostname)
-fi
-if test "$ac_cv_func_getpwnam" = yes; then
-  true
-else
-  AC_CHECK_LIB(sun, getpwnam)
-fi
+AC_CHECK_FUNCS(gethostname, [], [AC_CHECK_LIB(socket, gethostname)])
+AC_CHECK_FUNCS(getpwnam, [], [AC_CHECK_LIB(sun, getpwnam)])
 
 ### How big are ints and how are they oriented?  These could probably
 ### be eliminated in favor of run-time checks.
@@ -923,7 +769,7 @@ AC_CHECK_SIZEOF(long long, 8)
 
 ### Does the C compiler handle alloca() and const correctly?
 
-AC_ALLOCA
+AC_FUNC_ALLOCA([])
 AC_C_CONST
 
 ### See if we should define NPOS.
@@ -938,26 +784,33 @@ AC_HEADER_TIME
 AC_HEADER_SYS_WAIT
 
 AC_CHECK_HEADERS(assert.h curses.h dlfcn.h fcntl.h float.h \
-  floatingpoint.h fnmatch.h glob.h grp.h ieeefp.h limits.h memory.h \
-  nan.h ncurses.h poll.h pwd.h sgtty.h stdlib.h string.h sys/ioctl.h \
+  floatingpoint.h grp.h ieeefp.h limits.h memory.h \
+  nan.h ncurses.h poll.h pwd.h stdlib.h string.h sys/ioctl.h \
   sys/param.h sys/poll.h sys/resource.h sys/select.h sys/stat.h \
   sys/time.h sys/times.h sys/types.h sys/utsname.h termcap.h \
-  termio.h $TERMIOS_H unistd.h varargs.h)
+  unistd.h varargs.h)
+
+have_termios_h=no
+AC_CHECK_HEADERS($TERMIOS_H, have_termios_h=yes)
+AC_CHECK_HEADERS(termio.h, have_termio_h=yes, have_termio_h=no)
+AC_CHECK_HEADERS(sgtty.h, have_sgtty_h=yes, have_sgtty_h=no)
+AC_CHECK_HEADERS(glob.h, have_glob_h=yes, have_glob_h=no)
+AC_CHECK_HEADERS(fnmatch.h, have_fnmatch_h=yes, have_fnmatch_h=no)
 
 ### I'm told that termios.h is broken on NeXT systems.
 
 case "$canonical_host_type" in
   *-*-nextstep*)
-    if test "$ac_cv_header_termios_h" = yes; then
+    if test "$have_termios_h" = yes; then
       AC_MSG_WARN([Ignoring termios.h on NeXT systems.])
-      ac_cv_header_termios_h=no
+      have_termios_h=no
     fi
   ;;
 esac
 
-if test "$ac_cv_header_termios_h" = yes \
-    || test "$ac_cv_header_termio_h" = yes \
-    || test "$ac_cv_header_sgtty_h" = yes; then
+if test "$have_termios_h" = yes \
+    || test "$have_termio_h" = yes \
+    || test "$have_sgtty_h" = yes; then
   true
 else
   AC_MSG_ERROR([I couldn't find termios.h, termio.h, or sgtty.h!])
@@ -970,37 +823,26 @@ fi
 GLOB_DIR=glob
 LIBGLOB='$(TOPDIR)/glob/glob.o $(TOPDIR)/glob/fnmatch.o'
 GLOB_INCFLAGS='-I$(top_srcdir)/glob -I$(TOPDIR)/glob'
-if test "$ac_cv_header_fnmatch_h" = yes \
-  && test "$ac_cv_header_glob_h" = yes; then
-  AC_EGREP_CPP(yes,
-    [#ifdef FNM_NOESCAPE
-     #ifdef FNM_FOOBAR_PATHNAME
-     #ifdef FNM_PERIOD
-       yes
-     #endif
-     #endif
-     #endif
+if test "$have_fnmatch_h" = yes && test "$have_glob_h" = yes; then
+  AC_EGREP_CPP(yes, [#include <fnmatch.h>
+#ifdef FNM_NOESCAPE
+#ifdef FNM_FOOBAR_PATHNAME /* FIXME: delete FOOBAR_ ? */
+#ifdef FNM_PERIOD
+   yes
+#endif
+#endif
+#endif
     ], [
       GLOB_DIR=
       AC_CHECK_LIB(glob, glob)
-      AC_CHECK_FUNCS(fnmatch glob)
-      if test "$ac_cv_func_fnmatch" = yes \
-	&& test "$ac_cv_func_glob" = yes; then
+      AC_CHECK_FUNCS(fnmatch, have_fnmatch=yes, have_fnmatch=no)
+      AC_CHECK_FUNCS(glob, have_glob=yes, have_glob=no)
+      if test "$have_fnmatch" = yes && test "$have_glob" = yes; then
 	GLOB_DIR=
 	LIBGLOB=
 	GLOB_INCFLAGS=
       fi
-    ], [
-### We provide replacements, so we should set these to "yes".
-    AC_CACHE_VAL(ac_cv_func_fnmatch, ac_cv_func_fnmatch=yes)
-    AC_CACHE_VAL(ac_cv_func_glob, ac_cv_func_glob=yes)
     ])
-else
-### We provide replacements, so we should set these to "yes".
-  ac_cv_header_fnmatch_h=yes
-  ac_cv_header_glob_h=yes
-  AC_CACHE_VAL(ac_cv_func_fnmatch, ac_cv_func_fnmatch=yes)
-  AC_CACHE_VAL(ac_cv_func_glob, ac_cv_func_glob=yes)
 fi
 AC_SUBST(GLOB_DIR)
 AC_SUBST(LIBGLOB)
@@ -1031,20 +873,15 @@ if test "$WITH_DL" = yes || test "$WITH_DL" = maybe; then
       DLFCN_INCFLAGS='-I$(top_srcdir)/dlfcn -I$(TOPDIR)/dlfcn'
       WITH_DL=true
     ;;
-changequote(,)dnl
-    i[3456]86-*-sco3.2v5*)
-changequote([,])dnl
+    i[[3456]]86-*-sco3.2v5*)
       LD_CXX='LD_RUN_PATH=$LD_RUN_PATH:$(octlibdir) $(CXX)'
       WITH_DL=true
     ;;
     *)
       AC_CHECK_LIB(dl, dlopen)
-      AC_CHECK_FUNCS(dlopen dlsym dlerror dlclose)
-      if test "$ac_cv_func_dlopen" = yes \
-	 && test "$ac_cv_func_dlsym" = yes \
-	 && test "$ac_cv_func_dlerror" = yes \
-	 && test "$ac_cv_func_dlclose" = yes; then
-	WITH_DL=true
+      AC_CHECK_FUNCS(dlopen dlsym dlerror dlclose, [], [have_dl=false])
+      if test "x$have_dl" != xfalse; then
+        WITH_DL=true
       else
 	if test "$WITH_DL" = yes; then
 	  AC_MSG_ERROR([--enable-dl specified, but functions are missing!])
@@ -1055,7 +892,7 @@ changequote([,])dnl
   esac
   if $WITH_DL; then
     OCTAVE_CXX_FLAG(-rdynamic, [RDYNAMIC_FLAG=-rdynamic])
-    AC_DEFINE(WITH_DL, 1)
+    AC_DEFINE(WITH_DL, 1, [Define if using dlopen/dlsym.])
   fi
 else
   WITH_DL=false
@@ -1068,9 +905,8 @@ AC_SUBST(LD_CXX)
 
 if test "$WITH_SHL" = yes || test "$WITH_SHL" = maybe; then
   AC_CHECK_LIB(dld, shl_load)
-  AC_CHECK_FUNCS(shl_load shl_findsym)
-  if test "$ac_cv_func_shl_load" = yes \
-     && test "$ac_cv_func_shl_findsym" = yes; then
+  AC_CHECK_FUNCS(shl_load shl_findsym, [], [have_shl=false])
+  if test "x$have_shl" != xfalse; then
     WITH_SHL=true
   else
     if test "$WITH_SHL" = yes; then
@@ -1079,7 +915,7 @@ if test "$WITH_SHL" = yes || test "$WITH_SHL" = maybe; then
     WITH_SHL=false
   fi
   if $WITH_SHL; then
-    AC_DEFINE(WITH_SHL, 1)
+    AC_DEFINE(WITH_SHL, 1, [Define if using dld for dynamic linking.])
   fi
 else
   WITH_SHL=false
@@ -1090,7 +926,7 @@ AC_SUBST(WITH_SHL)
 ### has been determined.
 
 if $WITH_DL || $WITH_SHL; then
-  AC_DEFINE(WITH_DYNAMIC_LINKING, 1)
+  AC_DEFINE(WITH_DYNAMIC_LINKING, 1, [Define if using dynamic linking.])
   WITH_DYNAMIC_LINKING=true
 else
   WITH_DYNAMIC_LINKING=false
@@ -1114,7 +950,7 @@ AC_TRY_COMPILE([#ifdef TIME_WITH_SYS_TIME
 #endif], [static struct timeval x; x.tv_sec = x.tv_usec;],
   [AC_MSG_RESULT(yes)
    HAVE_TIMEVAL=yes
-   AC_DEFINE(HAVE_TIMEVAL)],
+   AC_DEFINE(HAVE_TIMEVAL, 1, [Define if struct timeval is defined.])],
   [AC_MSG_RESULT(no)
    HAVE_TIMEVAL=no])
 
@@ -1132,7 +968,7 @@ AC_TRY_LINK([#ifdef TIME_WITH_SYS_TIME
 #endif],[struct timeval time; struct timezone dummy;
   gettimeofday (&time, &dummy);], [AC_MSG_RESULT(no)],
   [AC_MSG_RESULT(yes)
-   AC_DEFINE(GETTIMEOFDAY_NO_TZ)])
+   AC_DEFINE(GETTIMEOFDAY_NO_TZ, 1, [Define if your system has a single-arg prototype for gettimeofday.])])
 fi
 
 dnl Would like to get rid of this cruft, and just have
@@ -1155,11 +991,11 @@ case "$canonical_host_type" in
   ;;
   *-*-sco*)
     AC_MSG_RESULT([defining SCO to be 1])
-    AC_DEFINE(SCO, 1)
+    AC_DEFINE(SCO, 1, [Define if using an SCO system.])
     AC_MSG_RESULT([forcing HAVE_ISINF for SCO])
-    AC_DEFINE(HAVE_ISINF, 1)
+    AC_DEFINE(HAVE_ISINF, 1, [Define if you have isinf().])
     AC_MSG_RESULT([forcing HAVE_ISNAN for SCO])
-    AC_DEFINE(HAVE_ISNAN, 1)
+    AC_DEFINE(HAVE_ISNAN, 1, [Define if you have isnan().])
   ;;
   *)
     AC_CHECK_FUNCS(finite isnan isinf)
@@ -1172,33 +1008,29 @@ AC_CHECK_FUNCS(acosh asinh atanh erf erfc)
 
 ### Checks for OS specific cruft.
 
-AC_STRUCT_ST_BLKSIZE
-AC_STRUCT_ST_BLOCKS
-AC_STRUCT_ST_RDEV
+AC_CHECK_MEMBERS([struct stat.st_blksize, struct stat.st_blocks, struct stat.st_rdev])
+
 AC_STRUCT_TM
 AC_STRUCT_TIMEZONE
 AC_FUNC_CLOSEDIR_VOID
 
 OCTAVE_STRUCT_GR_PASSWD
 
+octave_found_termlib=no
 for termlib in ncurses curses termcap terminfo termlib; do
   AC_CHECK_LIB(${termlib}, tputs, [TERMLIBS="${TERMLIBS} -l${termlib}"])
   case "${TERMLIBS}" in
     *-l${termlib}*)
       LIBS="$TERMLIBS $LIBS"
+      octave_found_termlib=yes
       break
     ;;
   esac
 done
 
-if test "$ac_cv_lib_termcap_tputs" = yes \
-    || test "$ac_cv_lib_terminfo_tputs" = yes \
-    || test "$ac_cv_lib_ncurses_tputs" = yes \
-    || test "$ac_cv_lib_curses_tputs" = yes \
-    || test "$ac_cv_lib_termlib_tputs" = yes; then
-  true
-else
-  warn_termlibs="I couldn't find -ltermcap, -lterminfo, -lncurses, -lcurses, or -ltermlib!"
+if test "$octave_found_termlib" = no; then
+  warn_termlibs="I couldn't find -ltermcap, -lterminfo, -lncurses, -lcurses, o\
+r -ltermlib!"
   AC_MSG_WARN($warn_termlibs)
 fi
 
@@ -1208,7 +1040,7 @@ AC_MSG_CHECKING([for struct exception in math.h])
 AC_TRY_LINK([#include <math.h>],
   [struct exception *x; x->type; x->name;],
   AC_MSG_RESULT(yes)
-  AC_DEFINE(EXCEPTION_IN_MATH, 1),
+  AC_DEFINE(EXCEPTION_IN_MATH, 1, [Define if your math.h declares struct exception for matherr().]),
   AC_MSG_RESULT(no))
 
 ### Signal stuff.
@@ -1219,7 +1051,7 @@ AC_MSG_CHECKING([for sys_siglist variable])
 AC_TRY_LINK([#include <stdio.h>],
   [extern char *sys_siglist[]; printf ("%s\n", sys_siglist[1]);],
   AC_MSG_RESULT(yes)
-  AC_DEFINE(HAVE_SYS_SIGLIST, 1),
+  AC_DEFINE(HAVE_SYS_SIGLIST, 1, [Define if your system has a sys_siglist variable.]),
   AC_MSG_RESULT(no))
 OCTAVE_SIGNAL_CHECK
 OCTAVE_REINSTALL_SIGHANDLERS
@@ -1241,7 +1073,7 @@ OCTAVE_CHECK_TYPE(sigset_t, [#include <signal.h>], int)
 AC_CHECK_FUNCS(getrusage times)
 case "$canonical_host_type" in
   *-*-cygwin32)
-    AC_DEFINE(RUSAGE_TIMES_ONLY, 1)
+    AC_DEFINE(RUSAGE_TIMES_ONLY, 1, [Define if your struct rusage only has time information.])
   ;;
 esac
 
@@ -1349,11 +1181,22 @@ export CC
 export CXX
 export F77
 
-AC_CONFIG_SUBDIRS($GLOB_DIR kpathsea scripts $PLPLOT_DIR)
+AC_CONFIG_SUBDIRS(kpathsea scripts)
+
+# autoconf 2.50 deprecates the use of variables (e.g. $GLOB_DIR)
+# in AC_CONFIG_SUBDIRS; the following form is recommended instead:
+
+if test "x$GLOB_DIR" = xglob; then
+	AC_CONFIG_SUBDIRS(glob)
+fi
+
+if test "x$PLPLOT_DIR" = xplplot; then
+	AC_CONFIG_SUBDIRS(plplot)
+fi
 
 ### Do the substitutions in all the Makefiles.
 
-AC_OUTPUT(Makefile octMakefile Makeconf install-octave \
+AC_CONFIG_FILES([Makefile octMakefile Makeconf install-octave \
   test/Makefile dlfcn/Makefile \
   doc/Makefile doc/faq/Makefile doc/interpreter/Makefile \
   doc/liboctave/Makefile doc/refcard/Makefile emacs/Makefile \
@@ -1367,9 +1210,10 @@ AC_OUTPUT(Makefile octMakefile Makeconf install-octave \
   libcruft/quadpack/Makefile libcruft/ranlib/Makefile \
   libcruft/slatec-fn/Makefile libcruft/slatec-err/Makefile \
   libcruft/villad/Makefile \
-  libcruft/blas-xtra/Makefile libcruft/lapack-xtra/Makefile)
+  libcruft/blas-xtra/Makefile libcruft/lapack-xtra/Makefile])
+AC_OUTPUT
 
-AC_OUTPUT_COMMANDS([chmod +x install-octave])
+AC_CONFIG_COMMANDS([default-1],[[chmod +x install-octave]],[[]])
 
 ### Print a summary so that important information isn't missed.
 

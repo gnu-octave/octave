@@ -98,15 +98,15 @@ public:
   octave_time mtime (void) const { return fs_mtime; }
   octave_time ctime (void) const { return fs_ctime; }
 
-#if defined (HAVE_ST_RDEV)
+#if defined (HAVE_STRUCT_STAT_ST_RDEV)
   dev_t rdev (void) const { return fs_rdev; }
 #endif
 
-#if defined (HAVE_ST_BLKSIZE)
+#if defined (HAVE_STRUCT_STAT_ST_BLKSIZE)
   long blksize (void) const { return fs_blksize; }
 #endif
 
-#if defined (HAVE_ST_BLOCKS)
+#if defined (HAVE_STRUCT_STAT_ST_BLOCKS)
   long blocks (void) const { return fs_blocks; }
 #endif
 
@@ -175,17 +175,17 @@ private:
   // time of last file status change
   octave_time fs_ctime;
 
-#if defined (HAVE_ST_RDEV)
+#if defined (HAVE_STRUCT_STAT_ST_RDEV)
   // device number for special files
   dev_t fs_rdev;
 #endif
 
-#if defined (HAVE_ST_BLKSIZE)
+#if defined (HAVE_STRUCT_STAT_ST_BLKSIZE)
   // best I/O block size
   long fs_blksize;
 #endif
 
-#if defined (HAVE_ST_BLOCKS)
+#if defined (HAVE_STRUCT_STAT_ST_BLOCKS)
   // number of 512-byte blocks allocated
   long fs_blocks;
 #endif

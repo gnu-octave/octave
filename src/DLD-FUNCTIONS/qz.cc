@@ -59,19 +59,19 @@ typedef int (*sort_function) (const int& LSIZE, const double& ALPHA,
 
 extern "C"
 {
-  int F77_FCN (dggbal, DGGBAL) (const char* JOB, const int& N,
+  int F77_FUNC (dggbal, DGGBAL) (const char* JOB, const int& N,
 				double* A, const int& LDA, double* B,
 				const int& LDB, int& ILO, int& IHI,
 				double* LSCALE, double* RSCALE,
 				double* WORK, int& INFO, long);
 
-  int F77_FCN (dggbak, DGGBAK) (const char* JOB, const char* SIDE,
+  int F77_FUNC (dggbak, DGGBAK) (const char* JOB, const char* SIDE,
 				const int& N, const int& ILO,
 				const int& IHI, double* LSCALE,
 				double* RSCALE, int& M, double* V,
 				const int& LDV, int& INFO, long, long);
 
-  int F77_FCN (dgghrd, DGGHRD) (const char* COMPQ, const char* COMPZ,
+  int F77_FUNC (dgghrd, DGGHRD) (const char* COMPQ, const char* COMPZ,
 				const int& N, const int& ILO,
 				const int& IHI, double* A,
 				const int& LDA, double* B,
@@ -79,7 +79,7 @@ extern "C"
 				const int& LDQ, double* Z,
 				const int& LDZ, int& INFO, long, long);
 
-  int F77_FCN (dhgeqz, DHGEQZ) (const char* JOB, const char* COMPQ,
+  int F77_FUNC (dhgeqz, DHGEQZ) (const char* JOB, const char* COMPQ,
 				const char* COMPZ, const int& N,
 				const int& ILO, const int& IHI,
 				double* A, const int& LDA, double* B,
@@ -90,14 +90,14 @@ extern "C"
 				const int& LWORK, int& INFO,
 				long, long, long);
 
-  int F77_FCN (dlag2, DLAG2) (double* A, const int& LDA, double* B,
+  int F77_FUNC (dlag2, DLAG2) (double* A, const int& LDA, double* B,
 			      const int& LDB, const double& SAFMIN,
 			      double& SCALE1, double& SCALE2,
 			      double& WR1, double& WR2, double& WI);
 
   // Van Dooren's code (netlib.org: toms/590) for reordering
   // GEP.  Only processes Z, not Q.
-  int F77_FCN (dsubsp, DSUBSP) (const int& NMAX, const int& N, double* A,
+  int F77_FUNC (dsubsp, DSUBSP) (const int& NMAX, const int& N, double* A,
 				double* B, double* Z, sort_function,
 				const double& EPS, int& NDIM, int& FAIL,
 				int* IND);
@@ -105,7 +105,7 @@ extern "C"
   // documentation for DTGEVC incorrectly states that VR, VL are
   // complex*16; they are declared in DTGEVC as double precision
   // (probably a cut and paste problem fro ZTGEVC)
-  int F77_FCN (dtgevc, DTGEVC) (const char* SIDE, const char* HOWMNY,
+  int F77_FUNC (dtgevc, DTGEVC) (const char* SIDE, const char* HOWMNY,
 				int* SELECT, const int& N, double* A,
 				const int& LDA, double* B,
 				const int& LDB, double* VL,
@@ -114,9 +114,9 @@ extern "C"
 				int& M, double* WORK, int& INFO,
 				long, long);
 
-  int F77_FCN (xdlamch, XDLAMCH) (const char* cmach, double& retval, long);
+  int F77_FUNC (xdlamch, XDLAMCH) (const char* cmach, double& retval, long);
 
-  int F77_FCN (xdlange, XDLANGE) (const char*, const int&,
+  int F77_FUNC (xdlange, XDLANGE) (const char*, const int&,
                                   const int&, const double*,
                                   const int&, double*, double&);
 }
@@ -284,7 +284,7 @@ See also: balance, dare, eig, schur\n\
 	}
 
       // overflow constant required by dlag2
-      F77_FCN (xdlamch, XDLAMCH) ("S", safmin, 1L);
+      F77_FUNC (xdlamch, XDLAMCH) ("S", safmin, 1L);
 
 #ifdef DEBUG_EIG
       std::cout << "qz: initial value of safmin=" << setiosflags (std::ios::scientific)
@@ -299,7 +299,7 @@ See also: balance, dare, eig, schur\n\
 	  std::cout << "qz: DANGER WILL ROBINSON: safmin is 0!" << std::endl;
 #endif
 
-	  F77_FCN (xdlamch, XDLAMCH) ("E", safmin, 1L);
+	  F77_FUNC (xdlamch, XDLAMCH) ("E", safmin, 1L);
 
 #ifdef DEBUG_EIG
 	  std::cout << "qz: safmin set to " << setiosflags (std::ios::scientific)

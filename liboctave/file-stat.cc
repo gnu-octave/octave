@@ -180,15 +180,15 @@ file_stat::update_internal (bool force)
 	  fs_mtime = buf.st_mtime;
 	  fs_ctime = buf.st_ctime;
 
-#if defined (HAVE_ST_RDEV)
+#if defined (HAVE_STRUCT_STAT_ST_RDEV)
 	  fs_rdev = buf.st_rdev;
 #endif
 
-#if defined (HAVE_ST_BLKSIZE)
+#if defined (HAVE_STRUCT_STAT_ST_BLKSIZE)
 	  fs_blksize = buf.st_blksize;
 #endif
 
-#if defined (HAVE_ST_BLOCKS)
+#if defined (HAVE_STRUCT_STAT_ST_BLOCKS)
 	  fs_blocks = buf.st_blocks;
 #endif
 	}
@@ -216,15 +216,15 @@ file_stat::copy (const file_stat& fs)
   fs_mtime = fs.fs_mtime;
   fs_ctime = fs.fs_ctime;
 
-#if defined (HAVE_ST_RDEV)
+#if defined (HAVE_STRUCT_STAT_ST_RDEV)
   fs_rdev = fs.fs_rdev;
 #endif
 
-#if defined (HAVE_ST_BLKSIZE)
+#if defined (HAVE_STRUCT_STAT_ST_BLKSIZE)
   fs_blksize = fs.fs_blksize;
 #endif
 
-#if defined (HAVE_ST_BLOCKS)
+#if defined (HAVE_STRUCT_STAT_ST_BLOCKS)
   fs_blocks = fs.fs_blocks;
 #endif
 }

@@ -184,9 +184,6 @@ private:
 
   void convert_to_row_or_column_vector (void);
 
-  void force_numeric (int force_str_conv = 0);
-  tree_constant make_numeric (int force_str_conv = 0) const;
-
   void bump_value (tree_expression::type);
 
   void resize (int i, int j);
@@ -381,6 +378,14 @@ private:
 // We want to eliminate this.
 
   constant_type const_type (void) const { return type_tag; }
+
+// We want to get rid of these too:
+
+#if defined (__GNUG__) && __GNUC_MINOR__ < 6
+public:
+#endif
+  void force_numeric (int force_str_conv = 0);
+  tree_constant make_numeric (int force_str_conv = 0) const;
 };
 
 #endif

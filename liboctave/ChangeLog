@@ -1,3 +1,8 @@
+2003-07-11  Russell Standish <R.Standish@unsw.edu.au>
+
+	* Array.h (resize_fill_value): Now a top-level template function.
+	Accept object as argument.  Change all uses.
+
 2003-07-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Array-flags.cc, Array-flags.h (liboctave_pcv_flag): Delete.

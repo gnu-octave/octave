@@ -182,10 +182,10 @@ public:
   Array2<T> value (void);
 
   Array2<T> index (idx_vector& i, int resize_ok = 0,
-		   const T& rfv = Array<T>::resize_fill_value ()) const;
+		   const T& rfv = resize_fill_value (T ())) const;
 
   Array2<T> index (idx_vector& i, idx_vector& j, int resize_ok = 0,
-		   const T& rfv = Array<T>::resize_fill_value ()) const;
+		   const T& rfv = resize_fill_value (T ())) const;
 
 #endif
 
@@ -200,7 +200,7 @@ template <class LT, class RT>
 int
 assign (Array2<LT>& lhs, const Array2<RT>& rhs)
 {
-  return assign (lhs, rhs, Array<LT>::resize_fill_value ());
+  return assign (lhs, rhs, resize_fill_value (LT ()));
 }
 
 #endif

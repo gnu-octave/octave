@@ -27,6 +27,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include "Array.h"
+
+
 #include "Array.cc"
 
 #include "Array2.h"
@@ -37,15 +39,15 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "oct-obj.h"
 
-template<>
-octave_value
-Array<octave_value>::resize_fill_value (void)
+octave_value 
+resize_fill_value (const octave_value& x)
 {
   static octave_value retval = octave_value (Matrix ());
   return retval;
 }
 
 template class Array<octave_value>;
+
 
 template int assign (Array<octave_value>&, const Array<octave_value>&);
 

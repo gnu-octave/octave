@@ -48,6 +48,13 @@ class idx_vector;
 // all the derived classes.
 
 template <class T>
+T
+resize_fill_value (const T& x)
+{
+  return x;
+}
+
+template <class T>
 class
 Array
 {
@@ -253,11 +260,11 @@ public:
   Array<T> value (void);
 
   Array<T> index (idx_vector& i, int resize_ok = 0,
-		  const T& rfv = Array<T>::resize_fill_value ()) const;
+		  const T& rfv = resize_fill_value (T ())) const;
 
 #endif
 
-  static T resize_fill_value (void) { return T (); }
+  //  static T resize_fill_value (void) { return T (); }
 
   void print_info (std::ostream& os, const std::string& prefix) const;
 };
@@ -266,11 +273,13 @@ template <class LT, class RT>
 int
 assign (Array<LT>& lhs, const Array<RT>& rhs, const LT& resize_fill_value);
 
+
 template <class LT, class RT>
 int
 assign (Array<LT>& lhs, const Array<RT>& rhs)
 {
-  return assign (lhs, rhs, Array<LT>::resize_fill_value ());
+  //  return assign (lhs, rhs, Array<LT>::resize_fill_value ());
+  return assign (lhs, rhs, resize_fill_value (LT ()));
 }
 
 #endif

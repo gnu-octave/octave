@@ -1,3 +1,8 @@
+2003-07-11  Russell Standish <R.Standish@unsw.edu.au>
+
+	* TEMPLATE-INST/Array-tc.cc (resize_fill_value): Provide
+	specialization.
+
 2003-07-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* strfns.cc (Fchar): Force string conversions without warnings.

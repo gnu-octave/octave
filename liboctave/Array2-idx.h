@@ -56,8 +56,7 @@ Array2<T>::value (void)
 
 template <class T>
 Array2<T>
-Array2<T>::index (idx_vector& idx_arg, int resize_ok,
-		  const T& resize_fill_value) const
+Array2<T>::index (idx_vector& idx_arg, int resize_ok, const T& rfv) const
 {
   Array2<T> retval;
 
@@ -152,7 +151,7 @@ Array2<T>::index (idx_vector& idx_arg, int resize_ok,
 		{
 		  int ii = idx_arg.elem (k++);
 		  if (ii >= orig_len)
-		    retval.elem (i, j) = resize_fill_value;
+		    retval.elem (i, j) = rfv;
 		  else
 		    {
 		      int fr = ii % nr;
@@ -171,7 +170,7 @@ Array2<T>::index (idx_vector& idx_arg, int resize_ok,
 template <class T>
 Array2<T>
 Array2<T>::index (idx_vector& idx_i, idx_vector& idx_j, int resize_ok,
-		  const T& resize_fill_value) const
+		  const T& rfv) const
 {
   Array2<T> retval;
 
@@ -202,7 +201,7 @@ Array2<T>::index (idx_vector& idx_i, idx_vector& idx_j, int resize_ok,
 		{
 		  int ii = idx_i.elem (i);
 		  if (ii >= nr || jj >= nc)
-		    retval.elem (i, j) = resize_fill_value;
+		    retval.elem (i, j) = rfv;
 		  else
 		    retval.elem (i, j) = elem (ii, jj);
 		}
@@ -497,14 +496,14 @@ Array2<T>::maybe_delete_elements (idx_vector& idx_i, idx_vector& idx_j)
 	  int new_nr = max_row_idx > lhs_nr ? max_row_idx : lhs_nr; \
 	  int new_nc = max_col_idx > lhs_nc ? max_col_idx : lhs_nc; \
  \
-	  lhs.resize (new_nr, new_nc, resize_fill_value); \
+	  lhs.resize (new_nr, new_nc, rfv); \
 	} \
     } \
   while (0)
 
 template <class LT, class RT>
 int
-assign (Array2<LT>& lhs, const Array2<RT>& rhs, const LT& resize_fill_value)
+assign (Array2<LT>& lhs, const Array2<RT>& rhs, const LT& rfv)
 {
   int retval = 1;
 

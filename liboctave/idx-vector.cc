@@ -157,6 +157,9 @@ IDX_VEC_REP::idx_vector_rep (const NDArray& nda)
   colon = 0;
   one_zero = 0;
 
+  orig_nr = nda.rows ();
+  orig_nc = nda.cols ();
+
   len = nda.length ();
 
   if (len == 0)
@@ -333,6 +336,9 @@ IDX_VEC_REP::idx_vector_rep (const boolNDArray& bnda)
   colon_equiv = 0;
   colon = 0;
   one_zero = 1;
+
+  orig_nr = bnda.rows ();
+  orig_nc = bnda.cols ();
 
   len = bnda.length ();
 

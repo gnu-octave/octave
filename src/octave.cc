@@ -164,8 +164,10 @@ static struct option long_opts[] =
     { "interactive", 0, 0, 'i' },
     { "info-file", 1, 0, INFO_FILE_OPTION },
     { "norc", 0, 0, 'f' },
+    { "ignore-init-file", 0, 0, 'f' },
     { "path", 1, 0, 'p' },
     { "quiet", 0, 0, 'q' },
+    { "silent", 0, 0, 'q' },
     { "version", 0, 0, 'v' },
     { "echo-commands", 0, 0, 'x' },
     { 0, 0, 0, 0 }

@@ -32,10 +32,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Array.h"
 #include "str-vec.h"
 
-// Including this is all we need because pt-const.h gives us
-// declarations for all the data types Octave knows about.
-
-#include "pt-const.h"
+#include "ov.h"
 
 class
 octave_value_list : public Array<octave_value>

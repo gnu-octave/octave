@@ -1,3 +1,8 @@
+2003-10-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Array.cc (assign2): No error (but don't do anything either) for
+	expressions like x([],j) = scalar.
+
 2003-10-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Array.cc (assignN): Allow lhs(:) = scalar.

@@ -2151,19 +2151,25 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 	    }
 	  else
 	    {
-	      if (rhs_nr == 1 && rhs_nc == 1 && n > 0 && m > 0)
+	      if (rhs_nr == 1 && rhs_nc == 1 && n >= 0 && m >= 0)
 		{
-		  MAYBE_RESIZE_LHS;
+		  // No need to do anything if either of the indices
+		  // are empty.
 
-		  RT scalar = rhs.elem (0, 0);
-
-		  for (int j = 0; j < m; j++)
+		  if (n > 0 && m > 0)
 		    {
-		      int jj = idx_j.elem (j);
-		      for (int i = 0; i < n; i++)
+		      MAYBE_RESIZE_LHS;
+
+		      RT scalar = rhs.elem (0, 0);
+
+		      for (int j = 0; j < m; j++)
 			{
-			  int ii = idx_i.elem (i);
-			  lhs.elem (ii, jj) = scalar;
+			  int jj = idx_j.elem (j);
+			  for (int i = 0; i < n; i++)
+			    {
+			      int ii = idx_i.elem (i);
+			      lhs.elem (ii, jj) = scalar;
+			    }
 			}
 		    }
 		}

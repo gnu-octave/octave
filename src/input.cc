@@ -287,14 +287,14 @@ decode_prompt_string (const string& s)
 		goto add_string;
 	      }
 
-	    case 'h':
+	    case 'H':
 	      {
 		temp = Vhost_name;
 
 		goto add_string;
 	      }
 
-	    case 'H':
+	    case 'h':
 	      {
 		temp = Vhost_name;
 

@@ -114,4 +114,6 @@ dist:
 	ln $(DISTFILES) ../`cat ../.fname`/liboctave
 .PHONY: dist
 
+ifndef $(omit_deps)
 -include $(MAKEDEPS)
+endif

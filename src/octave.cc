@@ -367,7 +367,7 @@ Options:\n\
 \n\
   --debug, -d             Enter parser debugging mode.\n\
   --echo-commands, -x     Echo commands as they are executed.\n\
-  --eval CODE             Evaluate CODE and exit when done unless --persist.\n\
+  --eval CODE             Evaluate CODE.  Exit when done unless --persist.\n\
   --exec-path PATH        Set path for executing subprograms.\n\
   --help, -h, -?          Print short help message and exit.\n\
   --info-file FILE        Use top-level info file FILE.\n\
@@ -386,7 +386,7 @@ Options:\n\
   --version, -v           Print version number and exit.\n\
 \n\
   FILE                    Execute commands from FILE.  Exit when done\n\
-                          unless --persist is also specified\n\.
+                          unless --persist is also specified.\n\
 \n"
 OCTAVE_WWW_STATEMENT "\n\
 \n"

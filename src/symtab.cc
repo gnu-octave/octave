@@ -394,9 +394,11 @@ symbol_record::pop_context (void)
       if (--definition->count <= 0)
 	delete definition;
 
-      definition = context.pop ();
+      definition = context.top ();
+      context.pop ();
 
-      linked_to_global = global_link_context.pop ();
+      linked_to_global = global_link_context.top ();
+      global_link_context.pop ();
     }
 }
 

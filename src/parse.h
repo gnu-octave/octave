@@ -27,8 +27,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <string>
 
-#include "SLStack.h"
-
 extern void reset_parser (void);
 extern int yylex (void);
 extern int yyparse (void);

@@ -30,8 +30,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cassert>
 
 #include <string>
-
-#include "SLStack.h"
+#include <stack>
 
 #include "oct-alloc.h"
 #include "str-vec.h"
@@ -365,8 +364,8 @@ private:
 
   // This should maybe be one stack with a structure containing all the
   // items we need to save for recursive calls...
-  SLStack <symbol_def *> context;
-  SLStack <unsigned int> global_link_context;
+  std::stack <symbol_def *> context;
+  std::stack <unsigned int> global_link_context;
 
   bool read_only_error (const char *action);
 

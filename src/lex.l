@@ -32,6 +32,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cstring>
 
 #include <string>
+#include <stack>
 
 #ifdef HAVE_UNISTD_H
 #ifdef HAVE_SYS_TYPES_H
@@ -39,8 +40,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 #include <unistd.h>
 #endif
-
-#include "SLStack.h"
 
 #include "cmd-edit.h"
 #include "quit.h"
@@ -87,7 +86,7 @@ lexical_feedback lexer_flags;
 //
 // XXX FIXME XXX -- this should really be static, but that causes
 // problems on some systems.
-SLStack <token*> token_stack;
+std::stack <token*> token_stack;
 
 // Did eat_whitespace() eat a space or tab, or a newline, or both?
 
@@ -99,28 +98,35 @@ const yum_yum ATE_NEWLINE = 2;
 
 // Is the closest nesting level a square bracket, squiggly brace or a paren?
 
-class bracket_brace_paren_nesting_level : public SLStack <int>
+class bracket_brace_paren_nesting_level
 {
 public:
 
-  bracket_brace_paren_nesting_level (void) : SLStack<int> () { }
+  bracket_brace_paren_nesting_level (void) : context () { }
 
   ~bracket_brace_paren_nesting_level (void) { }
 
-  void bracket (void) { push (BRACKET); }
-  bool is_bracket (void) { return ! empty () && top () == BRACKET; }
+  void bracket (void) { context.push (BRACKET); }
+  bool is_bracket (void)
+    { return ! context.empty () && context.top () == BRACKET; }
 
-  void brace (void) { push (BRACE); }
-  bool is_brace (void) { return ! empty () && top () == BRACE; }
+  void brace (void) {  context.push (BRACE); }
+  bool is_brace (void)
+    { return ! context.empty () && context.top () == BRACE; }
 
-  void paren (void) { push (PAREN); }
-  bool is_paren (void) { return ! empty () && top () == PAREN; }
+  void paren (void) {  context.push (PAREN); }
+  bool is_paren (void)
+    { return ! context.empty () && context.top () == PAREN; }
 
-  bool none (void) { return empty (); }
+  bool none (void) { return context.empty (); }
 
-  void remove (void) { if (! empty ()) SLStack<int>::pop (); }
+  void remove (void) { if (! context.empty ()) context.pop (); }
+
+  void clear (void) { while (! context.empty ()) context.pop (); }
 
 private:
+
+  std::stack<int> context;
 
   enum { BRACKET = 1, BRACE = 2, PAREN = 3 };
 
@@ -819,7 +825,10 @@ reset_parser (void)
   // Clear out the stack of token info used to track line and column
   // numbers.
   while (! token_stack.empty ())
-    delete token_stack.pop ();
+    {
+      delete token_stack.top ();
+      token_stack.pop ();
+    }
 
   // Can be reset by defining a function.
   if (! (reading_script_file || reading_fcn_file))

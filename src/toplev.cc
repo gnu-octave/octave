@@ -574,7 +574,7 @@ DEFALIAS (shell_cmd, system);
 
 // XXX FIXME XXX -- this should really be static, but that causes
 // problems on some systems.
-SLStack<std::string> octave_atexit_functions;
+std::stack<std::string> octave_atexit_functions;
 
 void
 do_octave_atexit (void)
@@ -583,7 +583,9 @@ do_octave_atexit (void)
 
   while (! octave_atexit_functions.empty ())
     {
-      octave_value_list fcn = octave_atexit_functions.pop ();
+      octave_value_list fcn = octave_atexit_functions.top ();
+
+      octave_atexit_functions.pop ();
 
       feval (fcn, 0);
 

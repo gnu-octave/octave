@@ -1,3 +1,8 @@
+2002-12-03  Nix  <nix@esperi.demon.co.uk>
+
+	* configure.in: Use AC_CHECK_DECL in conjunction with
+        AC_DECL_SYS_SIGLIST to ensure signal.h is searched.
+
 2002-12-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in: Dont't set SONAME_FLAGS for alpha alpha*-dec-osf*

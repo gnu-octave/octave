@@ -1,6 +1,24 @@
 2002-12-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
-	* utils.cc: Don't include SLStack.h.
+	* TEMPLATE-INST/SLStack-i.cc, TEMPLATE-INST/SLStack-ovl.cc,
+	TEMPLATE-INST/SLStack-pc.cc, TEMPLATE-INST/SLStack-str.cc,
+	TEMPLATE-INST/SLStack-sym.cc, TEMPLATE-INST/SLStack-tok.cc,
+	TEMPLATE-INST/SLStack-ue.cc, TEMPLATE-INST/SLStack-ui.cc:
+	Delete unnecessary files.
+	* Makefile.in (TI_XSRC): Delete them from the list.
+
+	* toplev.cc (octave_atexit_functions): Now std::stack, not SLStack.
+	* pt-plot.cc (tmp_files): Likewise. 
+	* lex.l (token_stack): Likewise.
+	(class bracket_brace_paren_nesting_level): Make context a data
+	member instead of deriving from SLStack object.
+	Use std::stack instead of SLStack.
+	* ov-usr-fcn.h (octave_user_function::saved_args): Likewise.
+	* symtab.h (symbol_record::context): Likewise.
+	(symbol_record::global_link_context): Likewise.
+
+	* unwind-prot.h (unwind_protect::elt_list): Rename from list.
+	Now std::stack, not SLStack.
 
 	* pt-stmt.h (tree_statement_list): Make list member data instead
 	of deriving from SLList object.

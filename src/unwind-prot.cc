@@ -30,17 +30,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <cstddef>
 
-#include <string>
-
-#include "SLStack.h"
-
 #include "CMatrix.h"
 
 #include "error.h"
 #include "unwind-prot.h"
 #include "utils.h"
 
-SLStack<unwind_elem> unwind_protect::list;
+std::stack<unwind_elem> unwind_protect::elt_list;
 
 class
 saved_variable
@@ -196,13 +192,15 @@ void
 unwind_protect::add (unwind_elem::cleanup_func fptr, void *ptr)
 {
   unwind_elem el (fptr, ptr);
-  list.push (el);
+  elt_list.push (el);
 }
 
 void
 unwind_protect::run (void)
 {
-  unwind_elem el = list.pop ();
+  unwind_elem el = elt_list.top ();
+
+  elt_list.pop ();
 
   unwind_elem::cleanup_func f = el.fptr ();
 
@@ -213,22 +211,24 @@ unwind_protect::run (void)
 void
 unwind_protect::discard (void)
 {
-  list.pop ();
+  elt_list.pop ();
 }
 
 void
 unwind_protect::begin_frame (const std::string& tag)
 {
   unwind_elem elem (tag);
-  list.push (elem);
+  elt_list.push (elem);
 }
 
 void
 unwind_protect::run_frame (const std::string& tag)
 {
-  while (! list.empty ())
+  while (! elt_list.empty ())
     {
-      unwind_elem el = list.pop ();
+      unwind_elem el = elt_list.top ();
+
+      elt_list.pop ();
 
       unwind_elem::cleanup_func f = el.fptr ();
 
@@ -243,9 +243,11 @@ unwind_protect::run_frame (const std::string& tag)
 void
 unwind_protect::discard_frame (const std::string& tag)
 {
-  while (! list.empty ())
+  while (! elt_list.empty ())
     {
-      unwind_elem el = list.pop ();
+      unwind_elem el = elt_list.top ();
+
+      elt_list.pop ();
 
       if (tag == el.tag ())
 	break;
@@ -255,9 +257,11 @@ unwind_protect::discard_frame (const std::string& tag)
 void
 unwind_protect::run_all (void)
 {
-  while (! list.empty ())
+  while (! elt_list.empty ())
     {
-      unwind_elem el = list.pop ();
+      unwind_elem el = elt_list.top ();
+
+      elt_list.pop ();
 
       unwind_elem::cleanup_func f = el.fptr ();
 
@@ -269,7 +273,8 @@ unwind_protect::run_all (void)
 void
 unwind_protect::discard_all (void)
 {
-  list.clear ();
+  while (! elt_list.empty ())
+    elt_list.pop ();
 }
 
 void

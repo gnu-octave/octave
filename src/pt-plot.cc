@@ -33,6 +33,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <stack>
 
 #ifdef HAVE_UNISTD_H
 #ifdef HAVE_SYS_TYPES_H
@@ -41,7 +42,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <unistd.h>
 #endif
 
-#include "SLStack.h"
 #include "procstream.h"
 
 #include "file-ops.h"
@@ -91,7 +91,7 @@ static bool clear_before_plotting = true;
 //
 // XXX FIXME XXX -- this should really be static, but that causes
 // problems on some systems.
-SLStack <std::string> tmp_files;
+std::stack <std::string> tmp_files;
 
 // Pipe to gnuplot.
 static oprocstream *plot_stream = 0;
@@ -900,7 +900,8 @@ cleanup_tmp_files (void)
 {
   while (! tmp_files.empty ())
     {
-      std::string filename = tmp_files.pop ();
+      std::string filename = tmp_files.top ();
+      tmp_files.pop ();
       unlink (filename.c_str ());
     }
 }

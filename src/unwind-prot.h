@@ -30,8 +30,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cstddef>
 
 #include <string>
-
-#include <SLStack.h>
+#include <stack>
 
 class
 unwind_elem
@@ -111,7 +110,7 @@ public:
 
   static void save_var (void *ptr, void *value, size_t size);
 
-  static SLStack<unwind_elem> list;
+  static std::stack<unwind_elem> elt_list;
 };
 
 // We could get by without these macros, but they are nice to have...

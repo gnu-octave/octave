@@ -30,13 +30,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <ctime>
 
 #include <string>
+#include <stack>
 
 #include "comment-list.h"
 #include "oct-obj.h"
 #include "ov-fcn.h"
 #include "ov-typeinfo.h"
-
-#include "SLStack.h"
 
 class string_vector;
 
@@ -134,7 +133,10 @@ public:
       if (saved_args.empty ())
 	args_passed = octave_value_list ();
       else
-	args_passed = saved_args.pop ();
+	{
+	  args_passed = saved_args.top ();
+	  saved_args.pop ();
+	}
     }
 
   octave_value_list subsref (const std::string type,
@@ -213,7 +215,7 @@ private:
   octave_value_list args_passed;
 
   // A place to store the passed args for recursive calls.
-  SLStack<octave_value_list> saved_args;
+  std::stack<octave_value_list> saved_args;
 
   // The number of arguments passed in.
   int num_args_passed;

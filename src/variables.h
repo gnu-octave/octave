@@ -66,6 +66,12 @@ extern void initialize_symbol_tables (void);
 
 extern int symbol_out_of_date (symbol_record *sr);
 
+extern int load_fcn_from_file (symbol_record *s, int exec_script = 1);
+
+extern int lookup (symbol_record *s, int exec_script = 1);
+
+extern symbol_record *lookup_by_name (const char *nm, int exec_script = 1);
+
 extern void document_symbol (const char *name, const char *help);
 
 extern void install_builtin_mapper (builtin_mapper_function *mf);

@@ -29,6 +29,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma implementation
 #endif
 
+#include <iostream.h>
+
 #include "tree-const.h"
 #include "error.h"
 #include "gripes.h"
@@ -65,10 +67,9 @@ tree_constant::operator delete (void *p, size_t size)
 }
 #endif
 
-/*
- * Construct return vector of empty matrices.  Return empty matrices
- * and/or gripe when appropriate.
- */
+// Construct return vector of empty matrices.  Return empty matrices
+// and/or gripe when appropriate.
+
 Octave_object
 vector_of_empties (int nargout, const char *fcn_name)
 {
@@ -91,6 +92,21 @@ vector_of_empties (int nargout, const char *fcn_name)
     gripe_empty_arg (fcn_name, 1);
 
   return retval;
+}
+
+void
+tree_constant::print_code (ostream& os)
+{
+  print_code_indent (os);
+
+  if (in_parens)
+    os << "(";
+
+  if (rep)
+    rep->print_code (os);
+
+  if (in_parens)
+    os << ")";
 }
 
 /*

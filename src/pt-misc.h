@@ -28,6 +28,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma interface
 #endif
 
+class ostream;
 class Octave_object;
 class tree_constant;
 class tree_command;
@@ -54,7 +55,7 @@ class tree_global_init_list;
 // A list of expressions and commands to be executed.
 
 class
-tree_statement
+tree_statement : public tree_print_code
 {
 friend class tree_statement_list;
 
@@ -85,6 +86,8 @@ public:
   void set_print_flag (int print)
     { print_flag = print; }
 
+  void print_code (ostream& os);
+
 private:
   tree_command *command;	// Command to execute.
   tree_expression *expression;	// Command to execute.
@@ -92,7 +95,7 @@ private:
 };
 
 class
-tree_statement_list : public SLList<tree_statement *>
+tree_statement_list : public SLList<tree_statement *>, public tree_print_code
 {
 public:
   tree_statement_list (void) : SLList<tree_statement *> () { }
@@ -109,13 +112,15 @@ public:
     }
 
   tree_constant eval (int print);
+
+  void print_code (ostream& os);
 };
 
 // Argument lists.  Used to hold the list of expressions that are the
 // arguments in a function call or index expression.
 
 class
-tree_argument_list : public SLList<tree_expression *>
+tree_argument_list : public SLList<tree_expression *>, public tree_print_code
 {
 public:
   tree_argument_list (void) : SLList<tree_expression *> () { }
@@ -132,6 +137,8 @@ public:
     }
 
   Octave_object convert_to_const_vector (void);
+
+  void print_code (ostream& os);
 };
 
 // Parameter lists.  Used to hold the list of input and output
@@ -139,7 +146,7 @@ public:
 // only.
 
 class
-tree_parameter_list : public SLList<tree_identifier *>
+tree_parameter_list : public SLList<tree_identifier *>, public tree_print_code
 {
 public:
   tree_parameter_list (void) : SLList<tree_identifier *> () { }
@@ -177,6 +184,8 @@ public:
 
   Octave_object convert_to_const_vector (void);
 
+  void print_code (ostream& os);
+
 private:
   int marked_for_varargs;
 };
@@ -185,7 +194,8 @@ private:
 // assignment expressions.
 
 class
-tree_return_list : public SLList<tree_index_expression *>
+tree_return_list : public SLList<tree_index_expression *>,
+  public tree_print_code 
 {
 public:
   tree_return_list (void) : SLList<tree_index_expression *> () { }
@@ -201,12 +211,14 @@ public:
 	  delete t;
 	}
     }
+
+  void print_code (ostream& os);
 };
 
 // List of expressions that make up a global statement.
 
 class
-tree_global
+tree_global : public tree_print_code
 {
 public:
   tree_global (void)
@@ -235,13 +247,15 @@ public:
 
   void eval (void);
 
+  void print_code (ostream& os);
+
 private:
   tree_identifier *ident;
   tree_simple_assignment_expression *assign_expr;
 };
 
 class
-tree_global_init_list : public SLList<tree_global *>
+tree_global_init_list : public SLList<tree_global *>, public tree_print_code
 {
 public:
   tree_global_init_list (void) : SLList<tree_global *> () { }
@@ -258,10 +272,12 @@ public:
     }
 
   void eval (void);
+
+  void print_code (ostream& os);
 };
 
 class
-tree_if_clause
+tree_if_clause : public tree_print_code
 {
 public:
   tree_if_clause (void)
@@ -290,13 +306,15 @@ public:
 
   int eval (void);
 
+  void print_code (ostream& os);
+
 private:
   tree_expression *expr;
   tree_statement_list *list;
 };
 
 class
-tree_if_command_list : public SLList<tree_if_clause *>
+tree_if_command_list : public SLList<tree_if_clause *>, public tree_print_code
 {
 public:
   tree_if_command_list (void) : SLList<tree_if_clause *> () { }
@@ -313,6 +331,8 @@ public:
     }
 
   void eval (void);
+
+  void print_code (ostream& os);
 };
 
 #endif

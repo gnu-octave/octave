@@ -36,55 +36,62 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <iostream.h>
 #include <strstream.h>
 
-#include "statdefs.h"
+#include "octave-hist.h"
+#include "unwind-prot.h"
+#include "user-prefs.h"
 #include "tree-const.h"
 #include "variables.h"
-#include "mappers.h"
-#include "user-prefs.h"
-#include "version.h"
-#include "symtab.h"
+#include "statdefs.h"
 #include "defaults.h"
-#include "dirfns.h"
-#include "pager.h"
-#include "sysdep.h"
-#include "octave.h"
+#include "version.h"
+#include "mappers.h"
 #include "oct-obj.h"
+#include "sysdep.h"
+#include "dirfns.h"
+#include "symtab.h"
+#include "octave.h"
 #include "error.h"
+#include "pager.h"
 #include "utils.h"
+#include "defun.h"
+#include "input.h"
+#include "parse.h"
 #include "tree.h"
 #include "help.h"
-#include "defun.h"
+#include "lex.h"
 
 extern "C"
 {
+#include <readline/readline.h>
 #include <readline/tilde.h>
 
 #include "fnmatch.h"
 }
 
 // Symbol table for symbols at the top level.
-symbol_table *top_level_sym_tab;
+symbol_table *top_level_sym_tab = 0;
 
 // Symbol table for the current scope.
-symbol_table *curr_sym_tab;
+symbol_table *curr_sym_tab = 0;
 
 // Symbol table for global symbols.
-symbol_table *global_sym_tab;
+symbol_table *global_sym_tab = 0;
 
 void
 initialize_symbol_tables (void)
 {
-  global_sym_tab = new symbol_table ();
+  if (! global_sym_tab)
+    global_sym_tab = new symbol_table ();
 
-  top_level_sym_tab = new symbol_table ();
+  if (! top_level_sym_tab)
+    top_level_sym_tab = new symbol_table ();
 
   curr_sym_tab = top_level_sym_tab;
 }
 
-/*
- * Is there a corresponding function file that is newer than the
- * symbol definition?
- */
+// Is there a corresponding function file that is newer than the
+// symbol definition?
+
 int
 symbol_out_of_date (symbol_record *sr)
 {
@@ -111,6 +118,227 @@ symbol_out_of_date (symbol_record *sr)
 	}
     }
   return 0;
+}
+
+static void
+gobble_leading_white_space (FILE *ffile)
+{
+  int in_comment = 0;
+  int c;
+  while ((c = getc (ffile)) != EOF)
+    {
+      if (in_comment)
+	{
+	  if (c == '\n')
+	    in_comment = 0;
+	}
+      else
+	{
+	  if (c == ' ' || c == '\t' || c == '\n')
+	    continue;
+	  else if (c == '%' || c == '#')
+	    in_comment = 1;
+	  else
+	    {
+	      ungetc (c, ffile);
+	      break;
+	    }
+	}
+    }
+}
+
+static int
+is_function_file (FILE *ffile)
+{
+  int status = 0;
+
+  gobble_leading_white_space (ffile);
+
+  long pos = ftell (ffile);
+
+  char buf [10];
+  fgets (buf, 10, ffile);
+  int len = strlen (buf);
+  if (len > 8 && strncmp (buf, "function", 8) == 0
+      && ! (isalnum (buf[8]) || buf[8] == '_'))
+    status = 1;
+
+  fseek (ffile, pos, SEEK_SET);
+
+  return status;
+}
+
+static int
+parse_fcn_file (int exec_script, char *ff)
+{
+  begin_unwind_frame ("parse_fcn_file");
+
+  int script_file_executed = 0;
+
+  assert (ff);
+
+// Open function file and parse.
+
+  int old_reading_fcn_file_state = reading_fcn_file;
+
+  unwind_protect_ptr (rl_instream);
+  unwind_protect_ptr (ff_instream);
+
+  unwind_protect_int (using_readline);
+  unwind_protect_int (input_line_number);
+  unwind_protect_int (current_input_column);
+  unwind_protect_int (reading_fcn_file);
+
+  using_readline = 0;
+  reading_fcn_file = 1;
+  input_line_number = 0;
+  current_input_column = 1;
+
+  FILE *ffile = get_input_from_file (ff, 0);
+
+  if (ffile)
+    {
+// Check to see if this file defines a function or is just a list of
+// commands.
+
+      if (is_function_file (ffile))
+	{
+	  unwind_protect_int (echo_input);
+	  unwind_protect_int (saving_history);
+	  unwind_protect_int (reading_fcn_file);
+
+	  echo_input = 0;
+	  saving_history = 0;
+	  reading_fcn_file = 1;
+
+	  YY_BUFFER_STATE old_buf = current_buffer ();
+	  YY_BUFFER_STATE new_buf = create_buffer (ffile);
+
+	  add_unwind_protect (restore_input_buffer, (void *) old_buf);
+	  add_unwind_protect (delete_input_buffer, (void *) new_buf);
+
+	  switch_to_buffer (new_buf);
+
+	  unwind_protect_ptr (curr_sym_tab);
+
+	  reset_parser ();
+
+	  int status = yyparse ();
+
+	  if (status != 0)
+	    {
+	      error ("parse error while reading function file %s", ff);
+	      global_sym_tab->clear (curr_fcn_file_name);
+	    }
+	}
+      else if (exec_script)
+	{
+// The value of `reading_fcn_file' will be restored to the proper value
+// when we unwind from this frame.
+	  reading_fcn_file = old_reading_fcn_file_state;
+
+	  unwind_protect_int (reading_script_file);
+	  reading_script_file = 1;
+
+	  parse_and_execute (ffile, 1);
+
+	  script_file_executed = 1;
+	}
+      fclose (ffile);
+    }
+
+  run_unwind_frame ("parse_fcn_file");
+
+  return script_file_executed;
+}
+
+int
+load_fcn_from_file (symbol_record *sym_rec, int exec_script)
+{
+  int script_file_executed = 0;
+
+  char *nm = sym_rec->name ();
+
+  curr_fcn_file_name = nm;
+
+  char *oct_file = oct_file_in_path (curr_fcn_file_name);
+
+  int loaded_oct_file = 0;
+
+  if (oct_file)
+    {
+      cerr << "found: " << oct_file << "\n";
+
+      delete [] oct_file;
+
+// XXX FIXME XXX -- this is where we try to link to an external
+// object...
+      loaded_oct_file = 1;
+    }
+
+  if (! loaded_oct_file)
+    {
+      char *ff = fcn_file_in_path (curr_fcn_file_name);
+
+      if (ff)
+	{
+	  script_file_executed = parse_fcn_file (exec_script, ff);
+	  delete [] ff;
+	}
+
+      if (! (error_state || script_file_executed))
+	force_link_to_function (nm);
+    }
+
+  return script_file_executed;
+}
+
+int
+lookup (symbol_record *sym_rec, int exec_script)
+{
+  int script_file_executed = 0;
+
+  if (! sym_rec->is_linked_to_global ())
+    {
+      if (sym_rec->is_defined ())
+	{
+	  if (sym_rec->is_function () && symbol_out_of_date (sym_rec))
+	    {
+	      script_file_executed = load_fcn_from_file (sym_rec, exec_script);
+	    }
+	}
+      else if (! sym_rec->is_formal_parameter ())
+	{
+	  link_to_builtin_or_function (sym_rec);
+	  
+	  if (! sym_rec->is_defined ())
+	    {
+	      script_file_executed = load_fcn_from_file (sym_rec, exec_script);
+	    }
+	  else if (sym_rec->is_function () && symbol_out_of_date (sym_rec))
+	    {
+	      script_file_executed = load_fcn_from_file (sym_rec, exec_script);
+	    }
+	}
+    }
+
+  return script_file_executed;
+}
+
+// Get the symbol record for the given name that is visible in the
+// current scope.  Reread any function definitions that appear to be
+// out of date.  If a function is available in a file but is not
+// currently loaded, this will load it and insert the name in the
+// current symbol table.
+
+symbol_record *
+lookup_by_name (const char *nm, int exec_script)
+{
+  symbol_record *sym_rec = curr_sym_tab->lookup (nm, 1, 0);
+
+  lookup (sym_rec, exec_script);
+
+  return sym_rec;
 }
 
 void
@@ -237,10 +465,9 @@ bind_nargin_and_nargout (symbol_table *sym_tab, int nargin, int nargout)
   sr->protect ();
 }
 
-/*
- * Give a global variable a definition.  This will insert the symbol
- * in the global table if necessary.
- */
+// Give a global variable a definition.  This will insert the symbol
+// in the global table if necessary.
+
 void
 bind_builtin_variable (const char *varname, tree_constant *val,
 		       int protect, int eternal, sv_Function sv_fcn,
@@ -274,10 +501,9 @@ bind_builtin_variable (const char *varname, tree_constant *val,
     sr->document (help);    
 }
 
-/*
- * Look for the given name in the global symbol table.  If it refers
- * to a string, return a new copy.  If not, return 0;
- */
+// Look for the given name in the global symbol table.  If it refers
+// to a string, return a new copy.  If not, return 0;
+
 char *
 builtin_string_variable (const char *name)
 {
@@ -306,11 +532,10 @@ builtin_string_variable (const char *name)
   return retval;
 }
 
-/*
- * Look for the given name in the global symbol table.  If it refers
- * to a real scalar, place the value in d and return 0.  Otherwise,
- * return -1. 
- */
+// Look for the given name in the global symbol table.  If it refers
+// to a real scalar, place the value in d and return 0.  Otherwise,
+// return -1. 
+
 int
 builtin_real_scalar_variable (const char *name, double& d)
 {
@@ -338,11 +563,10 @@ builtin_real_scalar_variable (const char *name, double& d)
   return status;
 }
 
-/*
- * Make the definition of the symbol record sr be the same as the
- * definition of the global variable of the same name, creating it if
- * it doesn't already exist. 
- */
+// Make the definition of the symbol record sr be the same as the
+// definition of the global variable of the same name, creating it if
+// it doesn't already exist. 
+
 void
 link_to_global_variable (symbol_record *sr)
 {
@@ -382,10 +606,9 @@ link_to_global_variable (symbol_record *sr)
   sr->mark_as_linked_to_global ();
 }
 
-/*
- * Make the definition of the symbol record sr be the same as the
- * definition of the builtin variable of the same name.
- */
+// Make the definition of the symbol record sr be the same as the
+// definition of the builtin variable of the same name.
+
 void
 link_to_builtin_variable (symbol_record *sr)
 {
@@ -395,12 +618,11 @@ link_to_builtin_variable (symbol_record *sr)
     sr->alias (tmp_sym);
 }
 
-/*
- * Make the definition of the symbol record sr be the same as the
- * definition of the builtin variable or function, or user function of
- * the same name, provided that the name has not been used as a formal
- * parameter.
- */
+// Make the definition of the symbol record sr be the same as the
+// definition of the builtin variable or function, or user function of
+// the same name, provided that the name has not been used as a formal
+// parameter.
+
 void
 link_to_builtin_or_function (symbol_record *sr)
 {
@@ -412,15 +634,14 @@ link_to_builtin_or_function (symbol_record *sr)
     sr->alias (tmp_sym);
 }
 
-/*
- * Force a link to a function in the current symbol table.  This is
- * used just after defining a function to avoid different behavior
- * depending on whether or not the function has been evaluated after
- * being defined.
- *
- * Return without doing anything if there isn't a function with the
- * given name defined in the global symbol table.
- */
+// Force a link to a function in the current symbol table.  This is
+// used just after defining a function to avoid different behavior
+// depending on whether or not the function has been evaluated after
+// being defined.
+//
+// Return without doing anything if there isn't a function with the
+// given name defined in the global symbol table.
+
 void
 force_link_to_function (const char *id_name)
 {
@@ -456,15 +677,14 @@ otherwise, return 0.")
   return retval;
 }
 
-/*
- * Extract a keyword and its value from a file.  Input should look
- * something like:
- *
- *  #[ \t]*keyword[ \t]*:[ \t]*string-value\n
- *
- * Returns a pointer to new storage.  The caller is responsible for
- * deleting it.
- */
+// Extract a keyword and its value from a file.  Input should look
+// something like:
+//
+//  #[ \t]*keyword[ \t]*:[ \t]*string-value\n
+//
+// Returns a pointer to new storage.  The caller is responsible for
+// deleting it.
+
 char *
 extract_keyword (istream& is, char *keyword)
 {
@@ -558,9 +778,8 @@ extract_keyword (istream& is, char *keyword, int& value)
   return status;
 }
 
-/*
- * Skip trailing white space and
- */
+// Skip trailing white space and
+
 void
 skip_comments (istream& is)
 {
@@ -583,9 +802,8 @@ skip_comments (istream& is)
     }
 }
 
-/*
- * Is `s' a valid identifier?
- */
+// Is `s' a valid identifier?
+
 int
 valid_identifier (char *s)
 {
@@ -646,9 +864,8 @@ a function.")
   return retval;
 }
 
-/*
- * Is this variable a builtin?
- */
+// Is this variable a builtin?
+
 int
 is_builtin_variable (const char *name)
 {
@@ -656,9 +873,8 @@ is_builtin_variable (const char *name)
   return (sr && sr->is_builtin_variable ());
 }
 
-/*
- * Is this tree_constant a valid function?
- */
+// Is this tree_constant a valid function?
+
 tree_fvc *
 is_valid_function (const tree_constant& arg, char *warn_for, int warn)
 {
@@ -675,15 +891,11 @@ is_valid_function (const tree_constant& arg, char *warn_for, int warn)
   symbol_record *sr = global_sym_tab->lookup (fcn_name, 0, 0);
 
   if (sr && symbol_out_of_date (sr))
-    {
-      tree_identifier tmp (sr);
-      tmp.load_fcn_from_file (0);
-    }
+    load_fcn_from_file (sr, 0);
   else
     {
       sr = global_sym_tab->lookup (fcn_name, 1, 0);
-      tree_identifier tmp (sr);
-      tmp.load_fcn_from_file (0);
+      load_fcn_from_file (sr, 0);
     }
 
   ans = sr->def ();
@@ -698,9 +910,8 @@ is_valid_function (const tree_constant& arg, char *warn_for, int warn)
   return ans;
 }
 
-/*
- * Does this function take the right number of arguments?
- */
+// Does this function take the right number of arguments?
+
 int
 takes_correct_nargs (tree_fvc *fcn, int expected_nargin, char *warn_for,
 		     int warn)
@@ -972,9 +1183,8 @@ install_builtin_variables (void)
     "on IEEE machines, allow divide by zero errors to be suppressed");
 }
 
-/*
- * List variable names.
- */
+// List variable names.
+
 static void
 print_symbol_info_line (ostrstream& output_buf, const symbol_record_info& s)
 {
@@ -1375,9 +1585,8 @@ load variables from a file")
   return retval;
 }
 
-/*
- * Return nonzero if PATTERN has any special globbing chars in it.
- */
+// Return nonzero if PATTERN has any special globbing chars in it.
+
 static int
 glob_pattern_p (char *pattern)
 {
@@ -1530,15 +1739,10 @@ save variables in a file")
   return retval;
 }
 
-DEFUN_TEXT ("who", Fwho, Swho, -1, 1,
-  "who [-all] [-builtins] [-functions] [-long] [-variables]\n\
-\n\
-List currently defined symbol(s).  Options may be shortened to one\n\
-character, but may not be combined.")
+static Octave_object
+do_who (int argc, char **argv, int nargout)
 {
   Octave_object retval;
-
-  DEFINE_ARGV("who");
 
   int show_builtins = 0;
   int show_functions = (curr_sym_tab == top_level_sym_tab);
@@ -1628,7 +1832,48 @@ character, but may not be combined.")
   output_buf << ends;
   maybe_page_output (output_buf);
 
+  return retval;
+}
+
+DEFUN_TEXT ("who", Fwho, Swho, -1, 1,
+  "who [-all] [-builtins] [-functions] [-long] [-variables]\n\
+\n\
+List currently defined symbol(s).  Options may be shortened to one\n\
+character, but may not be combined.")
+{
+  Octave_object retval;
+
+  DEFINE_ARGV("who");
+
+  retval = do_who (argc, argv, nargout);
+
   DELETE_ARGV;
+
+  return retval;
+}
+
+DEFUN_TEXT ("whos", Fwhos, Swhos, -1, 1,
+  "whos [-all] [-builtins] [-functions] [-long] [-variables]\n\
+\n\
+List currently defined symbol(s).  Options may be shortened to one\n\
+character, but may not be combined.")
+{
+  Octave_object retval;
+
+  Octave_object tmp_args = args;
+  tmp_args(args.length ()) = "-long";
+
+  int argc = tmp_args.length ();
+  char **argv = make_argv (tmp_args, "whos");
+
+  if (error_state)
+    return retval;
+
+  retval = do_who (argc, argv, nargout);
+
+  while (--argc >= 0)
+    delete [] argv[argc];
+  delete [] argv;
 
   return retval;
 }
@@ -1685,15 +1930,14 @@ octave_info_dir (void)
 #endif
 }
 
-/*
- * Handle OCTAVE_PATH from the environment like TeX handles TEXINPUTS.
- * If the path starts with `:', prepend the standard path.  If it ends
- * with `:' append the standard path.  If it begins and ends with
- * `:', do both (which is useless, but the luser asked for it...).
- *
- * This function may eventually be called more than once, so be
- * careful not to create memory leaks. 
- */
+// Handle OCTAVE_PATH from the environment like TeX handles TEXINPUTS.
+// If the path starts with `:', prepend the standard path.  If it ends
+// with `:' append the standard path.  If it begins and ends with
+// `:', do both (which is useless, but the luser asked for it...).
+//
+// This function may eventually be called more than once, so be
+// careful not to create memory leaks. 
+
 char *
 default_path (void)
 {

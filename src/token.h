@@ -62,7 +62,7 @@ public:
 
   token (int l = -1, int c = -1);
   token (char *s, int l = -1, int c = -1);
-  token (double d, int l = -1, int c = -1);
+  token (double d, char *s = 0, int l = -1, int c = -1);
   token (end_tok_type t, int l = -1, int c = -1);
   token (plot_tok_type t, int l = -1, int c = -1);
   token (symbol_record *s, int l = -1, int c = -1);
@@ -78,6 +78,8 @@ public:
   plot_tok_type pttype (void);
   symbol_record *sym_rec (void);
 
+  char *text_rep (void);
+
 private:
   int line_num;
   int column_num;
@@ -90,6 +92,7 @@ private:
       plot_tok_type pt;
       symbol_record *sr;
     };
+  char *orig_text;
 };
 
 #endif

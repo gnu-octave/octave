@@ -171,9 +171,8 @@ static struct option long_opts[] =
     { 0, 0, 0, 0 }
   };
 
-/*
- * Initialize some global variables for later use.
- */
+// Initialize some global variables for later use.
+
 static void
 initialize_globals (char *name)
 {
@@ -281,9 +280,8 @@ parse_and_execute (char *s, int print, int verbose)
   run_unwind_frame ("parse_and_execute_2");
 }
 
-/*
- * Initialize by reading startup files.
- */
+// Initialize by reading startup files.
+
 static void
 execute_startup_files (void)
 {
@@ -324,9 +322,8 @@ execute_startup_files (void)
   run_unwind_frame ("execute_startup_files");
 }
 
-/*
- * Usage message with extra help.
- */
+// Usage message with extra help.
+
 static void
 verbose_usage (void)
 {
@@ -351,9 +348,8 @@ verbose_usage (void)
   exit (1);
 }
 
-/*
- * Terse usage messsage.
- */
+// Terse usage messsage.
+
 static void
 usage (void)
 {
@@ -361,9 +357,8 @@ usage (void)
   exit (1);
 }
 
-/*
- * Fix up things before exiting.
- */
+// Fix up things before exiting.
+
 void
 clean_up_and_exit (int retval)
 {
@@ -372,6 +367,8 @@ clean_up_and_exit (int retval)
   clean_up_history ();
 
   close_plot_stream ();
+
+  close_diary_file ();
 
   close_files ();
 
@@ -398,9 +395,8 @@ print_version_and_exit (void)
   exit (0);
 }
 
-/*
- * You guessed it.
- */
+// You guessed it.
+
 int
 main (int argc, char **argv)
 {
@@ -466,17 +462,17 @@ main (int argc, char **argv)
   atexit (cleanup_tmp_files);
 #endif
 
+  initialize_pager ();
+
   initialize_history ();
 
   initialize_file_io ();
 
-  initialize_symbol_tables ();
+  initialize_symbol_tables ();  
 
   install_builtins ();
 
   initialize_readline ();
-
-  initialize_pager ();
 
   install_signal_handlers ();
 
@@ -768,9 +764,8 @@ DEFUN ("eval", Feval, Seval, 2, 1,
   return retval;
 }
 
-/*
- * Execute a shell command.
- */
+// Execute a shell command.
+
 DEFUN ("shell_cmd", Fshell_cmd, Sshell_cmd, 2, 1,
   "shell_cmd (string [, return_output]): execute shell commands")
 {

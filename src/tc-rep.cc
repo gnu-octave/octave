@@ -51,9 +51,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "tc-inlines.cc"
 
-/*
- * How about a few macros?
- */
+// How about a few macros?
 
 #ifndef MAX
 #define MAX(a,b) ((a) > (b) ? (a) : (b))
@@ -67,14 +65,12 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #define ABS(x) (((x) < 0) ? (-x) : (x))
 #endif
 
-/*
- * The following are used by some of the functions in the
- * tree_constant_rep class that must deal with real and complex
- * matrices.  This was not done with overloaded or virtual functions
- * from the Matrix class because there is no clean way to do that --
- * the necessary functions (like elem) need to return values of
- * different types...
- */
+// The following are used by some of the functions in the
+// tree_constant_rep class that must deal with real and complex
+// matrices.  This was not done with overloaded or virtual functions
+// from the Matrix class because there is no clean way to do that --
+// the necessary functions (like elem) need to return values of
+// different types...
 
 // Given a tree_constant, and the names to be used for the real and
 // complex matrix and their dimensions, declare a real or complex
@@ -231,20 +227,33 @@ any_element_is_complex (const ComplexMatrix& a)
   return 0;
 }
 
+static int
+valid_scalar_indices (const Octave_object& args)
+{
+  int nargin = args.length ();
+
+  return ((nargin == 3
+	   && args(2).valid_as_scalar_index ()
+	   && args(1).valid_as_scalar_index ())
+	  || (nargin == 2
+	      && args(1).valid_as_scalar_index ()));
+}
+
 // Now, the classes.
 
-/*
- * The real representation of constants.
- */
+// The real representation of constants.
+
 tree_constant_rep::tree_constant_rep (void)
 {
   type_tag = unknown_constant;
+  orig_text = 0;
 }
 
 tree_constant_rep::tree_constant_rep (double d)
 {
   scalar = d;
   type_tag = scalar_constant;
+  orig_text = 0;
 }
 
 tree_constant_rep::tree_constant_rep (const Matrix& m)
@@ -259,6 +268,7 @@ tree_constant_rep::tree_constant_rep (const Matrix& m)
       matrix = new Matrix (m);
       type_tag = matrix_constant;
     }
+  orig_text = 0;
 }
 
 tree_constant_rep::tree_constant_rep (const DiagMatrix& d)
@@ -273,6 +283,7 @@ tree_constant_rep::tree_constant_rep (const DiagMatrix& d)
       matrix = new Matrix (d);
       type_tag = matrix_constant;
     }
+  orig_text = 0;
 }
 
 tree_constant_rep::tree_constant_rep (const RowVector& v, int
@@ -307,6 +318,7 @@ tree_constant_rep::tree_constant_rep (const RowVector& v, int
 	  type_tag = matrix_constant;
 	}
     }
+  orig_text = 0;
 }
 
 tree_constant_rep::tree_constant_rep (const ColumnVector& v,
@@ -341,12 +353,14 @@ tree_constant_rep::tree_constant_rep (const ColumnVector& v,
 	  type_tag = matrix_constant;
 	}
     }
+  orig_text = 0;
 }
 
 tree_constant_rep::tree_constant_rep (const Complex& c)
 {
   complex_scalar = new Complex (c);
   type_tag = complex_scalar_constant;
+  orig_text = 0;
 }
 
 tree_constant_rep::tree_constant_rep (const ComplexMatrix& m)
@@ -361,6 +375,7 @@ tree_constant_rep::tree_constant_rep (const ComplexMatrix& m)
       complex_matrix = new ComplexMatrix (m);
       type_tag = complex_matrix_constant;
     }
+  orig_text = 0;
 }
 
 tree_constant_rep::tree_constant_rep (const ComplexDiagMatrix& d)
@@ -375,6 +390,7 @@ tree_constant_rep::tree_constant_rep (const ComplexDiagMatrix& d)
       complex_matrix = new ComplexMatrix (d);
       type_tag = complex_matrix_constant;
     }
+  orig_text = 0;
 }
 
 tree_constant_rep::tree_constant_rep (const ComplexRowVector& v,
@@ -409,6 +425,7 @@ tree_constant_rep::tree_constant_rep (const ComplexRowVector& v,
 	  type_tag = complex_matrix_constant;
 	}
     }
+  orig_text = 0;
 }
 
 tree_constant_rep::tree_constant_rep (const ComplexColumnVector& v,
@@ -443,12 +460,14 @@ tree_constant_rep::tree_constant_rep (const ComplexColumnVector& v,
 	  type_tag = complex_matrix_constant;
 	}
     }
+  orig_text = 0;
 }
 
 tree_constant_rep::tree_constant_rep (const char *s)
 {
   string = strsave (s);
   type_tag = string_constant;
+  orig_text = 0;
 }
 
 tree_constant_rep::tree_constant_rep (double b, double l, double i)
@@ -482,6 +501,7 @@ tree_constant_rep::tree_constant_rep (double b, double l, double i)
       else
 	panic_impossible ();
     }
+  orig_text = 0;
 }
 
 tree_constant_rep::tree_constant_rep (const Range& r)
@@ -503,13 +523,15 @@ tree_constant_rep::tree_constant_rep (const Range& r)
     }
   else
     panic_impossible ();
+
+  orig_text = 0;
 }
 
 tree_constant_rep::tree_constant_rep (tree_constant_rep::constant_type t)
 {
   assert (t == magic_colon);
-
   type_tag = magic_colon;
+  orig_text = 0;
 }
 
 tree_constant_rep::tree_constant_rep (const tree_constant_rep& t)
@@ -544,6 +566,8 @@ tree_constant_rep::tree_constant_rep (const tree_constant_rep& t)
       panic_impossible ();
       break;
     }
+
+  orig_text = strsave (t.orig_text);
 }
 
 tree_constant_rep::~tree_constant_rep (void)
@@ -575,6 +599,8 @@ tree_constant_rep::~tree_constant_rep (void)
       panic_impossible ();
       break;
     }
+
+  delete [] orig_text;
 }
 
 #if defined (MDEBUG)
@@ -813,6 +839,12 @@ tree_constant_rep::to_matrix (void) const
       break;
     }
   return retval;
+}
+
+void
+tree_constant_rep::stash_original_text (char *s)
+{
+  orig_text = strsave (s);
 }
 
 tree_constant_rep::constant_type
@@ -1312,6 +1344,127 @@ tree_constant_rep::print (void)
 
       output_buf << ends;
       maybe_page_output (output_buf);
+    }
+}
+
+static char *
+undo_string_escapes (char c)
+{
+  static char retval[2];
+  retval[1] = '\0';
+
+  if (! c)
+    return 0;
+
+  switch (c)
+    {
+    case '\a':
+      return "\\a";
+    case '\b': // backspace
+      return "\\b";
+    case '\f': // formfeed
+      return "\\f";
+    case '\n': // newline
+      return "\\n";
+    case '\r': // carriage return
+      return "\\r";
+    case '\t': // horizontal tab
+      return "\\t";
+    case '\v': // vertical tab
+      return "\\v";
+    case '\\': // backslash
+      return "\\\\";
+    case '"': // double quote
+      return "\\\"";
+    default:
+      retval[0] = c;
+      return retval;
+    }
+}
+
+void
+tree_constant_rep::print_code (ostream& os)
+{
+  int nr = rows ();
+  int nc = columns ();
+
+  switch (type_tag)
+    {
+    case scalar_constant:
+      if (orig_text)
+	os << orig_text;
+      else
+	os << scalar;
+      break;
+    case matrix_constant:
+      if (nr == 0 || nc == 0)
+	os << "[]";
+      else
+	panic_impossible ();
+      break;
+    case complex_scalar_constant:
+     {
+	double re = complex_scalar->real ();
+	double im = complex_scalar->imag ();
+
+// We don't collapse Re +/- Im into a complex number yet, so if we get
+// here, we had better have a pure imaginary number that's positive...
+
+	assert (re == 0.0 && im > 0.0);
+
+	if (orig_text)
+	  os << orig_text;
+	else
+	  os << im;
+
+#if 0
+	int sign_printed = 0;
+
+	if (re != 0.0)
+	  {
+	    os << re;
+
+	    if (im > 0.0)
+	      {
+		os << " + ";
+		sign_printed = 1;
+	      }
+	    else if (im < 0.0)
+	      {
+		os << " - ";
+		sign_printed = 1;
+	      }
+	  }
+
+	if (im != 0.0)
+	  os << (sign_printed ? (im < 0.0 ? -im : im) : im);
+#endif
+      }
+      break;
+    case complex_matrix_constant:
+      if (nr == 0 || nc == 0)
+	os << "[]";
+      else
+	panic_impossible ();
+      break;
+    case string_constant:
+      {
+	os << "\"";
+	char *s, *t = string;
+	while (s = undo_string_escapes (*t++))
+	  os << s;
+	os << "\"";
+      }
+      break;
+    case range_constant:
+      panic_impossible ();
+      break;
+    case magic_colon:
+      os << ":";
+      break;
+    default:
+      panic_impossible ();
+      break;
     }
 }
 
@@ -1968,7 +2121,7 @@ tree_constant_rep::convert_to_str (void)
       }
       break;
     case string_constant:
-      retval = tree_constant (*this);
+      retval = string;
       break;
     case magic_colon:
     default:
@@ -2653,11 +2806,10 @@ tree_constant_rep::mapper (Mapper_fcn& m_fcn, int print) const
   return retval;
 }
 
-/*
- * Top-level tree-constant function that handles assignments.  Only
- * decide if the left-hand side is currently a scalar or a matrix and
- * hand off to other functions to do the real work.
- */
+// Top-level tree-constant function that handles assignments.  Only
+// decide if the left-hand side is currently a scalar or a matrix and
+// hand off to other functions to do the real work.
+
 void
 tree_constant_rep::assign (const tree_constant& rhs, const Octave_object& args)
 {
@@ -2693,10 +2845,9 @@ tree_constant_rep::assign (const tree_constant& rhs, const Octave_object& args)
     }
 }
 
-/*
- * Assignments to scalars.  If resize_on_range_error is true,
- * this can convert the left-hand side to a matrix.
- */
+// Assignments to scalars.  If resize_on_range_error is true,
+// this can convert the left-hand side to a matrix.
+
 void
 tree_constant_rep::do_scalar_assignment (const tree_constant& rhs,
 					 const Octave_object& args)
@@ -2798,12 +2949,11 @@ tree_constant_rep::do_scalar_assignment (const tree_constant& rhs,
     ::error ("index invalid or out of range for scalar type");
 }
 
-/*
- * Assignments to matrices (and vectors).
- *
- * For compatibility with Matlab, we allow assignment of an empty
- * matrix to an expression with empty indices to do nothing.
- */
+// Assignments to matrices (and vectors).
+//
+// For compatibility with Matlab, we allow assignment of an empty
+// matrix to an expression with empty indices to do nothing.
+
 void
 tree_constant_rep::do_matrix_assignment (const tree_constant& rhs,
 					 const Octave_object& args)
@@ -2874,9 +3024,8 @@ tree_constant_rep::do_matrix_assignment (const tree_constant& rhs,
     }
 }
 
-/*
- * Matrix assignments indexed by a single value.
- */
+// Matrix assignments indexed by a single value.
+
 void
 tree_constant_rep::do_matrix_assignment (const tree_constant& rhs,
 					 const tree_constant& i_arg)
@@ -2918,11 +3067,10 @@ tree_constant_rep::do_matrix_assignment (const tree_constant& rhs,
     ::error ("single index only valid for row or column vector");
 }
 
-/*
- * Fortran-style assignments.  Matrices are assumed to be stored in
- * column-major order and it is ok to use a single index for
- * multi-dimensional matrices.
- */
+// Fortran-style assignments.  Matrices are assumed to be stored in
+// column-major order and it is ok to use a single index for
+// multi-dimensional matrices.
+
 void
 tree_constant_rep::fortran_style_matrix_assignment (const tree_constant& rhs,
 						    const tree_constant& i_arg)
@@ -3083,9 +3231,8 @@ tree_constant_rep::fortran_style_matrix_assignment (const tree_constant& rhs,
     }
 }
 
-/*
- * Fortran-style assignment for vector index.
- */
+// Fortran-style assignment for vector index.
+
 void
 tree_constant_rep::fortran_style_matrix_assignment (const tree_constant& rhs,
 						    idx_vector& i)
@@ -3128,9 +3275,8 @@ tree_constant_rep::fortran_style_matrix_assignment (const tree_constant& rhs,
     ::error ("number of rows and columns must match for indexed assignment");
 }
 
-/*
- * Fortran-style assignment for colon index.
- */
+// Fortran-style assignment for colon index.
+
 void
 tree_constant_rep::fortran_style_matrix_assignment
   (const tree_constant& rhs, tree_constant_rep::constant_type mci)
@@ -3176,11 +3322,10 @@ tree_constant_rep::fortran_style_matrix_assignment
     }
 }
 
-/*
- * Assignments to vectors.  Hand off to other functions once we know
- * what kind of index we have.  For a colon, it is the same as
- * assignment to a matrix indexed by two colons.
- */
+// Assignments to vectors.  Hand off to other functions once we know
+// what kind of index we have.  For a colon, it is the same as
+// assignment to a matrix indexed by two colons.
+
 void
 tree_constant_rep::vector_assignment (const tree_constant& rhs,
 				      const tree_constant& i_arg)
@@ -3260,9 +3405,8 @@ tree_constant_rep::vector_assignment (const tree_constant& rhs,
     }
 }
 
-/*
- * Check whether an indexed assignment to a vector is valid.
- */
+// Check whether an indexed assignment to a vector is valid.
+
 void
 tree_constant_rep::check_vector_assign (int rhs_nr, int rhs_nc,
 					int ilen, const char *rm)
@@ -3298,9 +3442,8 @@ tree_constant_rep::check_vector_assign (int rhs_nr, int rhs_nc,
     panic_impossible ();
 }
 
-/*
- * Assignment to a vector with an integer index.
- */
+// Assignment to a vector with an integer index.
+
 void
 tree_constant_rep::do_vector_assign (const tree_constant& rhs, int i)
 {
@@ -3356,9 +3499,8 @@ tree_constant_rep::do_vector_assign (const tree_constant& rhs, int i)
     }
 }
 
-/*
- * Assignment to a vector with a vector index.
- */
+// Assignment to a vector with a vector index.
+
 void
 tree_constant_rep::do_vector_assign (const tree_constant& rhs,
 				     idx_vector& iv)
@@ -3462,9 +3604,8 @@ tree_constant_rep::do_vector_assign (const tree_constant& rhs,
     panic_impossible ();
 }
 
-/*
- * Assignment to a vector with a range index.
- */
+// Assignment to a vector with a range index.
+
 void
 tree_constant_rep::do_vector_assign (const tree_constant& rhs,
 				     Range& ri)
@@ -3561,20 +3702,19 @@ tree_constant_rep::do_vector_assign (const tree_constant& rhs,
     panic_impossible ();
 }
 
-/*
- * Matrix assignment indexed by two values.  This function determines
- * the type of the first arugment, checks as much as possible, and
- * then calls one of a set of functions to handle the specific cases:
- *
- *   M (integer, arg2) = RHS  (MA1)
- *   M (vector,  arg2) = RHS  (MA2)
- *   M (range,   arg2) = RHS  (MA3)
- *   M (colon,   arg2) = RHS  (MA4)
- *
- * Each of those functions determines the type of the second argument
- * and calls another function to handle the real work of doing the
- * assignment.
- */
+// Matrix assignment indexed by two values.  This function determines
+// the type of the first arugment, checks as much as possible, and
+// then calls one of a set of functions to handle the specific cases:
+//
+//   M (integer, arg2) = RHS  (MA1)
+//   M (vector,  arg2) = RHS  (MA2)
+//   M (range,   arg2) = RHS  (MA3)
+//   M (colon,   arg2) = RHS  (MA4)
+//
+// Each of those functions determines the type of the second argument
+// and calls another function to handle the real work of doing the
+// assignment.
+
 void
 tree_constant_rep::do_matrix_assignment (const tree_constant& rhs,
 					 const tree_constant& i_arg,
@@ -4212,23 +4352,21 @@ tree_constant_rep::do_matrix_assignment (const tree_constant& rhs,
     }
 }
 
-/*
- * Functions that actually handle assignment to a matrix using two
- * index values.
- *
- *                   idx2
- *            +---+---+----+----+
- *   idx1     | i | v |  r | c  |
- *   ---------+---+---+----+----+
- *   integer  | 1 | 5 |  9 | 13 |
- *   ---------+---+---+----+----+
- *   vector   | 2 | 6 | 10 | 14 |
- *   ---------+---+---+----+----+
- *   range    | 3 | 7 | 11 | 15 |
- *   ---------+---+---+----+----+
- *   colon    | 4 | 8 | 12 | 16 |
- *   ---------+---+---+----+----+
- */
+// Functions that actually handle assignment to a matrix using two
+// index values.
+//
+//                   idx2
+//            +---+---+----+----+
+//   idx1     | i | v |  r | c  |
+//   ---------+---+---+----+----+
+//   integer  | 1 | 5 |  9 | 13 |
+//   ---------+---+---+----+----+
+//   vector   | 2 | 6 | 10 | 14 |
+//   ---------+---+---+----+----+
+//   range    | 3 | 7 | 11 | 15 |
+//   ---------+---+---+----+----+
+//   colon    | 4 | 8 | 12 | 16 |
+//   ---------+---+---+----+----+
 
 /* 1 */
 void
@@ -4648,12 +4786,11 @@ tree_constant_rep::do_matrix_assignment (const tree_constant& rhs,
     }
 }
 
-/*
- * Functions for deleting rows or columns of a matrix.  These are used
- * to handle statements like
- *
- *   M (i, j) = []
- */
+// Functions for deleting rows or columns of a matrix.  These are used
+// to handle statements like
+//
+//   M (i, j) = []
+
 void
 tree_constant_rep::delete_row (int idx)
 {
@@ -5006,31 +5143,32 @@ tree_constant_rep::delete_columns (Range& rj)
     panic_impossible ();
 }
 
-/*
- * Indexing functions.
- */
+// Indexing functions.
+
 int
 tree_constant_rep::valid_as_scalar_index (void) const
 {
-  int valid = type_tag == magic_colon
-    || (type_tag == scalar_constant && NINT (scalar) == 1)
-    || (type_tag == range_constant
-	&& range->nelem () == 1 && NINT (range->base ()) == 1);
-
-  return valid;
+  return (type_tag == magic_colon
+	  || (type_tag == scalar_constant && NINT (scalar) == 1)
+	  || (type_tag == range_constant
+	      && range->nelem () == 1 && NINT (range->base ()) == 1));
 }
 
 tree_constant
 tree_constant_rep::do_scalar_index (const Octave_object& args) const
 {
+  tree_constant retval;
+
   if (valid_scalar_indices (args))
     {
       if (type_tag == scalar_constant)
-	return tree_constant (scalar);
+	retval = scalar;
       else if (type_tag == complex_scalar_constant)
-	return tree_constant (*complex_scalar);
+	retval = *complex_scalar;
       else
 	panic_impossible ();
+
+      return retval;
     }
   else
     {
@@ -5049,7 +5187,7 @@ tree_constant_rep::do_scalar_index (const Octave_object& args) const
 
 		idx_vector j (mj, user_pref.do_fortran_indexing, "");
 		if (! j)
-		  return tree_constant ();
+		  return retval;
 
 		int len = j.length ();
 		if (len == j.ones_count ())
@@ -5073,7 +5211,7 @@ tree_constant_rep::do_scalar_index (const Octave_object& args) const
 
 		idx_vector i (mi, user_pref.do_fortran_indexing, "");
 		if (! i)
-		  return tree_constant ();
+		  return retval;
 
 		int len = i.length ();
 		if (len == i.ones_count ())
@@ -5088,8 +5226,7 @@ tree_constant_rep::do_scalar_index (const Octave_object& args) const
 	    else if (args(1).is_scalar_type ()
 		     && NINT (args(1).double_value ()) == 0)
 	      {
-		Matrix m (0, 0);
-		return tree_constant (m);
+		return Matrix ();
 	      }
 	    else
 	      break;
@@ -5107,13 +5244,11 @@ tree_constant_rep::do_scalar_index (const Octave_object& args) const
 
 	    if (type_tag == scalar_constant)
 	      {
-		Matrix m (rows, cols, scalar);
-		return tree_constant (m);
+		return Matrix (rows, cols, scalar);
 	      }
 	    else if (type_tag == complex_scalar_constant)
 	      {
-		ComplexMatrix cm (rows, cols, *complex_scalar);
-		return tree_constant (cm);
+		return ComplexMatrix (rows, cols, *complex_scalar);
 	      }
 	    else
 	      panic_impossible ();
@@ -6239,8 +6374,35 @@ tree_constant_rep::do_matrix_index (tree_constant_rep::constant_type mci,
 				    tree_constant_rep::constant_type mcj) const
 {
   tree_constant retval;
+
   assert (mci == magic_colon && mcj == magic_colon);
-  retval = tree_constant (*this);
+
+  switch (type_tag)
+    {
+    case complex_scalar_constant:
+      retval = *complex_scalar;
+      break;
+    case scalar_constant:
+      retval = scalar;
+      break;
+    case complex_matrix_constant:
+      retval = *complex_matrix;
+      break;
+    case matrix_constant:
+      retval = *matrix;
+      break;
+    case range_constant:
+      retval = *range;
+      break;
+    case string_constant:
+      retval = string;
+      break;
+    case magic_colon:
+    default:
+      panic_impossible ();
+      break;
+    }
+
   return retval;
 }
 

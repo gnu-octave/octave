@@ -114,6 +114,17 @@ tree_global_command::eval (void)
 	     line (), column ());
 }
 
+void
+tree_global_command::print_code (ostream& os)
+{
+  print_code_indent (os);
+
+  os << "global ";
+
+  if (init_list)
+    init_list->print_code (os);
+}
+
 // While.
 
 tree_while_command::~tree_while_command (void)
@@ -193,6 +204,30 @@ tree_while_command::eval_error (void)
   if (error_state > 0)
     ::error ("evaluating while command near line %d, column %d",
 	     line (), column ());
+}
+
+void
+tree_while_command::print_code (ostream& os)
+{
+  print_code_indent (os);
+
+  os << "while ";
+
+  if (expr)
+    expr->print_code (os);
+
+  print_code_new_line (os);
+
+  if (list)
+    {
+      increment_indent_level ();
+      list->print_code (os);
+      decrement_indent_level ();
+    }
+
+  print_code_indent (os);
+
+  os << "endwhile";
 }
 
 // For.
@@ -342,6 +377,35 @@ tree_for_command::do_for_loop_once (tree_constant *rhs, int& quit)
   quit = quit_loop_now ();
 }
 
+void
+tree_for_command::print_code (ostream& os)
+{
+  print_code_indent (os);
+
+  os << "for ";
+
+  if (id)
+    id->print_code (os);
+
+  os << " = ";
+
+  if (expr)
+    expr->print_code (os);
+
+  print_code_new_line (os);
+
+  if (list)
+    {
+      increment_indent_level ();
+      list->print_code (os);
+      decrement_indent_level ();
+    }
+
+  print_code_indent (os);
+
+  os << "endfor";
+}
+
 // If.
 
 tree_if_command::~tree_if_command (void)
@@ -360,6 +424,21 @@ tree_if_command::eval (void)
 	     line (), column ());
 }
 
+void
+tree_if_command::print_code (ostream& os)
+{
+  print_code_indent (os);
+
+  os << "if ";
+
+  if (list)
+    list->print_code (os);
+
+  print_code_indent (os);
+
+  os << "endif";
+}
+
 // Break.
 
 void
@@ -367,6 +446,14 @@ tree_break_command::eval (void)
 {
   if (! error_state)
     breaking = 1;
+}
+
+void
+tree_break_command::print_code (ostream& os)
+{
+  print_code_indent (os);
+
+  os << "break";
 }
 
 // Continue.
@@ -378,6 +465,14 @@ tree_continue_command::eval (void)
     continuing = 1;
 }
 
+void
+tree_continue_command::print_code (ostream& os)
+{
+  print_code_indent (os);
+
+  os << "continue";
+}
+
 // Return.
 
 void
@@ -385,6 +480,14 @@ tree_return_command::eval (void)
 {
   if (! error_state)
     returning = 1;
+}
+
+void
+tree_return_command::print_code (ostream& os)
+{
+  print_code_indent (os);
+
+  os << "return";
 }
 
 /*

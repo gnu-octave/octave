@@ -51,7 +51,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 extern "C"
 {
-  char *tilde_expand (char *s); /* From readline's tilde.c */
+#include <readline/tilde.h>
 }
 
 // The number of lines we\'ve plotted so far.
@@ -69,11 +69,9 @@ static SLStack <char *> tmp_files;
 // Pipe to gnuplot.
 static oprocstream plot_stream;
 
-/*
- * Plotting, eh?
- */
+// Plotting, eh?
 
-tree_plot_command::tree_plot_command (void)
+tree_plot_command::tree_plot_command (void) : tree_command ()
 {
   range = 0;
   plot_list = 0;
@@ -81,6 +79,7 @@ tree_plot_command::tree_plot_command (void)
 }
 
 tree_plot_command::tree_plot_command (subplot_list *plt, int nd)
+  : tree_command ()
 {
   range = 0;
   plot_list = plt;
@@ -89,6 +88,7 @@ tree_plot_command::tree_plot_command (subplot_list *plt, int nd)
 
 tree_plot_command::tree_plot_command (subplot_list *plt,
 				      plot_limits *rng, int nd)
+  : tree_command ()
 {
   range = rng;
   plot_list = plt;
@@ -771,9 +771,6 @@ set plotting options")
   return retval;
 }
 
-/*
- * Set plotting options.
- */
 DEFUN_TEXT ("show", Fshow, Sshow, -1, 1,
   "show [options]\n\
 \n\

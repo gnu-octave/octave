@@ -32,25 +32,28 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "config.h"
 #endif
 
+#include <strstream.h>
+
 #include "SLStack.h"
 
 #include "Matrix.h"
 
-#include "error.h"
-#include "octave.h"
-#include "variables.h"
 #include "octave-hist.h"
 #include "user-prefs.h"
+#include "tree-const.h"
+#include "tree-misc.h"
+#include "variables.h"
+#include "tree-plot.h"
+#include "octave.h"
+#include "symtab.h"
+#include "parse.h"
+#include "token.h"
+#include "error.h"
+#include "pager.h"
 #include "input.h"
 #include "utils.h"
 #include "tree.h"
-#include "tree-misc.h"
-#include "tree-plot.h"
-#include "tree-const.h"
-#include "symtab.h"
-#include "parse.h"
 #include "lex.h"
-#include "token.h"
 
 // Nonzero means we're in the middle of defining a function.
 int defining_func = 0;
@@ -563,7 +566,7 @@ global_decl2	: identifier
 		  {
 		    tree_simple_assignment_expression *tmp_ass;
 		    tmp_ass = new tree_simple_assignment_expression
-		      ($1, $3, 0, $2->line (), $2->column ());
+		      ($1, $3, 0, 0, $2->line (), $2->column ());
 		    $$ = new tree_global (tmp_ass);
 		  }
 		;
@@ -693,7 +696,7 @@ screwed_again	: // empty
 
 expression	: variable '=' expression
 		  { $$ = new tree_simple_assignment_expression
-		      ($1, $3, 0, $2->line (), $2->column ()); }
+		      ($1, $3, 0, 0, $2->line (), $2->column ()); }
 		| '[' screwed_again matrix_row SCREW_TWO '=' expression
 		  {
 
@@ -784,15 +787,23 @@ simple_expr	: simple_expr1
 		;
 
 simple_expr1	: NUM
-		  { $$ = new tree_constant ($1->number ()); }
+		  {
+		    tree_constant *tmp = new tree_constant ($1->number ());
+		    tmp->stash_original_text ($1->text_rep ());
+		    $$ = tmp;
+		  }
 		| IMAG_NUM
-		  { $$ = new tree_constant (Complex (0.0, $1->number ())); }
+		  {
+		    Complex c (0.0, $1->number ());
+		    tree_constant *tmp = new tree_constant (c);
+		    tmp->stash_original_text ($1->text_rep ());
+		    $$ = tmp;
+		  }
 		| TEXT
 		  { $$ = new tree_constant ($1->string ()); }
 		| '(' expression ')'
 		  {
-		    if ($2->is_assignment_expression ())
-		      ((tree_assignment_expression *) $2) -> in_parens++;
+		    $2->in_parens++;
 		    $$ = $2;
 		  }
 		| word_list_cmd
@@ -1129,13 +1140,16 @@ yyerror (char *s)
   if (err_col == 0 && line)
     err_col = strlen (line) + 1;
 
-// Print a message like `parse error'.
-  fprintf (stderr, "\n%s", s);
+// Print a message like `parse error', maybe printing the line number
+// and file name.
 
-// Maybe print the line number and file name.
+  ostrstream output_buf;
+
+  output_buf.form ("\n%s", s);
+
   if (reading_fcn_file || reading_script_file)
-    fprintf (stderr, " near line %d of file %s.m", input_line_number,
-	     curr_fcn_file_name);
+    output_buf.form (" near line %d of file %s.m", input_line_number,
+		     curr_fcn_file_name);
 
   if (line)
     {
@@ -1147,12 +1161,14 @@ yyerror (char *s)
         }
 // Print the line, maybe with a pointer near the error token.
       if (err_col > len)
-        fprintf (stderr, ":\n\n  %s\n\n", line);
+        output_buf.form (":\n\n  %s\n\n", line);
       else
-        fprintf (stderr, ":\n\n  %s\n  %*s\n\n", line, err_col, "^");
+        output_buf.form (":\n\n  %s\n  %*s\n\n", line, err_col, "^");
     }
   else
-    fprintf (stderr, "\n\n");
+    output_buf << "\n\n";
+
+  maybe_page_output (output_buf);
 }
 
 static void
@@ -1252,7 +1268,7 @@ maybe_convert_to_ans_assign (tree_expression *expr)
       
       tree_identifier *ans = new tree_identifier (sr);
 
-      return new tree_simple_assignment_expression (ans, expr);
+      return new tree_simple_assignment_expression (ans, expr, 0, 1);
     }
 }
 
@@ -1261,7 +1277,7 @@ maybe_warn_assign_as_truth_value (tree_expression *expr)
 {
   if (user_pref.warn_assign_as_truth_value
       && expr->is_assignment_expression ()
-      && ((tree_assignment_expression *) expr) -> in_parens < 2)
+      && expr->in_parens < 2)
     {
       warning ("suggest parenthesis around assignment used as truth value");
     }

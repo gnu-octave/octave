@@ -59,11 +59,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "lex.h"
 #include "defun.h"
 
-extern "C"
-{
-#include <readline/readline.h>
-}
-
 // Nonzero means we're returning from a function.
 extern int returning;
 
@@ -136,9 +131,21 @@ any_arg_is_magic_colon (const Octave_object& args)
   return 0;
 }
 
-// NOTE: functions for the tree_constant_rep and tree_constant classes
-// are now defined in tree-const.cc.  This should help speed up
-// compilation when working only on the tree_constant class.
+// Expressions.
+
+tree_constant
+tree_expression::eval (int print)
+{
+  panic ("invalid evaluation of generic expression");
+  return tree_constant ();
+}
+
+Octave_object
+tree_expression::eval (int print, int nargout, const Octave_object& args)
+{
+  panic ("invalid evaluation of generic expression");
+  return Octave_object ();
+}
 
 // General matrices.  This list type is much more work to handle than
 // constant matrices, but it allows us to construct matrices from
@@ -234,7 +241,7 @@ tree_matrix::to_return_list (void)
 
 struct const_matrix_list
 {
-  tree_matrix::dir dir_next;
+  tree_matrix::dir direction;
   tree_constant elem;
   int nr;
   int nc;
@@ -307,7 +314,8 @@ tree_matrix::eval (int print)
 	  goto done;
 	}
 
-      tree_constant tmp = elem->eval (0);
+      Octave_object otmp = elem->eval (0);
+      tree_constant tmp = otmp(0);
       if (error_state || tmp.is_undefined ())
 	{
 	  retval = tree_constant ();
@@ -317,7 +325,7 @@ tree_matrix::eval (int print)
       int nr = tmp.rows ();
       int nc = tmp.columns ();
 
-      dir direct = ptr->dir_next;
+      dir direct = ptr->direction;
 
       if (nr == 0 || nc == 0)
 	{
@@ -339,10 +347,10 @@ tree_matrix::eval (int print)
       if (found_new_row_in_empties)
 	{
 	  found_new_row_in_empties = 0;
-	  list[len].dir_next = md_down;
+	  list[len].direction = md_down;
 	}
       else
-	list[len].dir_next = direct;
+	list[len].direction = direct;
 
       list[len].elem = tmp;
       list[len].nr = nr;
@@ -369,7 +377,7 @@ tree_matrix::eval (int print)
 
   for (i = 0; i < len; i++)
     {
-      dir direct = list[i].dir_next;
+      dir direct = list[i].direction;
 
       int nr = list[i].nr;
       int nc = list[i].nc;
@@ -460,7 +468,7 @@ tree_matrix::eval (int print)
 	}
       else
 	{
-	  switch (list[i].dir_next)
+	  switch (list[i].direction)
 	    {
 	    case md_right:
 	      put_col += prev_nc;
@@ -565,6 +573,48 @@ tree_matrix::eval (int print)
   return retval;
 }
 
+void
+tree_matrix::print_code (ostream& os)
+{
+  print_code_indent (os);
+
+  if (in_parens)
+    os << "(";
+
+  os << "[";
+
+  tree_matrix *list = this;
+
+  while (list)
+    {
+      list->element->print_code (os);
+
+      list = list->next;
+
+      if (list)
+	{
+	  switch (list->direction)
+	    {
+	    case md_right:
+	      os << ", ";
+	      break;
+	    case md_down:
+	      os << "; ";
+	      break;
+	    default:
+	      break;
+	    }
+	}
+    }
+
+  os << "]";
+
+  if (in_parens)
+    os << ")";
+}
+
+// A base class for objects that can be evaluated with argument lists.
+
 tree_constant
 tree_fvc::assign (tree_constant& t, const Octave_object& args)
 {
@@ -572,135 +622,26 @@ tree_fvc::assign (tree_constant& t, const Octave_object& args)
   return tree_constant ();
 }
 
-// Builtin functions.
-
-tree_builtin::tree_builtin (const char *nm)
-{
-  nargin_max = -1;
-  nargout_max = -1;
-  is_mapper = 0;
-  fcn = 0;
-  if (nm)
-    my_name = strsave (nm);
-}
-
-tree_builtin::tree_builtin (int i_max, int o_max, Mapper_fcn& m_fcn,
-			    const char *nm)
-{
-  nargin_max = i_max;
-  nargout_max = o_max;
-  mapper_fcn = m_fcn;
-  is_mapper = 1;
-  fcn = 0;
-  if (nm)
-    my_name = strsave (nm);
-}
-
-tree_builtin::tree_builtin (int i_max, int o_max, Octave_builtin_fcn g_fcn,
-			    const char *nm)
-{
-  nargin_max = i_max;
-  nargout_max = o_max;
-  is_mapper = 0;
-  fcn = g_fcn;
-  if (nm)
-    my_name = strsave (nm);
-}
-
-
-tree_constant
-tree_builtin::eval (int print)
-{
-  tree_constant retval;
-
-  if (error_state)
-    return retval;
-
-  if (fcn)
-    {
-      Octave_object args;
-      args(0) = tree_constant (my_name);
-      Octave_object tmp = (*fcn) (args, 1);
-      if (tmp.length () > 0)
-	retval = tmp(0);
-    }
-  else // Assume mapper function
-    ::error ("%s: argument expected", my_name);
-
-  return retval;
-}
-
-Octave_object
-tree_builtin::eval (int print, int nargout, const Octave_object& args)
-{
-  Octave_object retval;
-
-  if (error_state)
-    return retval;
-
-  int nargin = args.length ();
-
-  if (fcn)
-    {
-      if (any_arg_is_magic_colon (args))
-	::error ("invalid use of colon in function argument list");
-      else
-	retval = (*fcn) (args, nargout);
-    }
-  else if (is_mapper)
-    {
-      if (nargin > nargin_max)
-	::error ("%s: too many arguments", my_name);
-      else if (nargin > 0 && args.length () > 0 && args(1).is_defined ())
-	{
-	  tree_constant tmp = args(1).mapper (mapper_fcn, 0);
-	  retval.resize (1);
-	  retval(0) = tmp;
-	}	
-    }
-  else
-    panic_impossible ();
-
-  return retval;
-}
-
-int
-tree_builtin::max_expected_args (void)
-{
-  int ea = nargin_max;
-  if (nargin_max < 0)
-    ea = INT_MAX;
-  else
-    ea = nargin_max;
-  return ea;
-}
-
 // Symbols from the symbol table.
 
 char *
 tree_identifier::name (void) const
 {
-  return sym->name ();
+  return sym ? sym->name () : 0;
 }
 
 tree_identifier *
 tree_identifier::define (tree_constant *t)
 {
   int status = sym->define (t);
-  if (status)
-    return this;
-  else
-    return 0;
+  return status ? this : 0;
 }
 
 tree_identifier *
 tree_identifier::define (tree_function *t)
 {
   int status = sym->define (t);
-  if (status)
-    return this;
-  else
-    return 0;
+  return status ? this : 0;
 }
 
 void
@@ -806,180 +747,6 @@ tree_identifier::bump_value (tree_expression::type etype)
     }
 }
 
-static void
-gobble_leading_white_space (FILE *ffile)
-{
-  int in_comment = 0;
-  int c;
-  while ((c = getc (ffile)) != EOF)
-    {
-      if (in_comment)
-	{
-	  if (c == '\n')
-	    in_comment = 0;
-	}
-      else
-	{
-	  if (c == ' ' || c == '\t' || c == '\n')
-	    continue;
-	  else if (c == '%' || c == '#')
-	    in_comment = 1;
-	  else
-	    {
-	      ungetc (c, ffile);
-	      break;
-	    }
-	}
-    }
-}
-
-static int
-is_function_file (FILE *ffile)
-{
-  int status = 0;
-
-  gobble_leading_white_space (ffile);
-
-  long pos = ftell (ffile);
-
-  char buf [10];
-  fgets (buf, 10, ffile);
-  int len = strlen (buf);
-  if (len > 8 && strncmp (buf, "function", 8) == 0
-      && ! (isalnum (buf[8]) || buf[8] == '_'))
-    status = 1;
-
-  fseek (ffile, pos, SEEK_SET);
-
-  return status;
-}
-
-int
-tree_identifier::load_fcn_from_file (int exec_script)
-{
-  int script_file_executed = 0;
-
-  curr_fcn_file_name = name ();
-
-  char *oct_file = oct_file_in_path (curr_fcn_file_name);
-
-  int loaded_oct_file = 0;
-
-  if (oct_file)
-    {
-      cerr << "found: " << oct_file << "\n";
-
-      delete [] oct_file;
-
-// XXX FIXME XXX -- this is where we try to link to an external
-// object...
-      loaded_oct_file = 1;
-    }
-
-  if (! loaded_oct_file)
-    {
-      char *ff = fcn_file_in_path (curr_fcn_file_name);
-
-      if (ff)
-	{
-	  script_file_executed = parse_fcn_file (exec_script, ff);
-	  delete [] ff;
-	}
-
-      if (! (error_state || script_file_executed))
-	{
-	  char *foo = name ();
-	  force_link_to_function (foo);
-	}
-    }
-
-  return script_file_executed;
-}
-
-int
-tree_identifier::parse_fcn_file (int exec_script, char *ff)
-{
-  begin_unwind_frame ("parse_fcn_file");
-
-  int script_file_executed = 0;
-
-  assert (ff);
-
-// Open function file and parse.
-
-  int old_reading_fcn_file_state = reading_fcn_file;
-
-  unwind_protect_ptr (rl_instream);
-  unwind_protect_ptr (ff_instream);
-
-  unwind_protect_int (using_readline);
-  unwind_protect_int (input_line_number);
-  unwind_protect_int (current_input_column);
-  unwind_protect_int (reading_fcn_file);
-
-  using_readline = 0;
-  reading_fcn_file = 1;
-  input_line_number = 0;
-  current_input_column = 1;
-
-  FILE *ffile = get_input_from_file (ff, 0);
-
-  if (ffile)
-    {
-// Check to see if this file defines a function or is just a list of
-// commands.
-
-      if (is_function_file (ffile))
-	{
-	  unwind_protect_int (echo_input);
-	  unwind_protect_int (saving_history);
-	  unwind_protect_int (reading_fcn_file);
-
-	  echo_input = 0;
-	  saving_history = 0;
-	  reading_fcn_file = 1;
-
-	  YY_BUFFER_STATE old_buf = current_buffer ();
-	  YY_BUFFER_STATE new_buf = create_buffer (ffile);
-
-	  add_unwind_protect (restore_input_buffer, (void *) old_buf);
-	  add_unwind_protect (delete_input_buffer, (void *) new_buf);
-
-	  switch_to_buffer (new_buf);
-
-	  unwind_protect_ptr (curr_sym_tab);
-
-	  reset_parser ();
-
-	  int status = yyparse ();
-
-	  if (status != 0)
-	    {
-	      ::error ("parse error while reading function file %s", ff);
-	      global_sym_tab->clear (curr_fcn_file_name);
-	    }
-	}
-      else if (exec_script)
-	{
-// The value of `reading_fcn_file' will be restored to the proper value
-// when we unwind from this frame.
-	  reading_fcn_file = old_reading_fcn_file_state;
-
-	  unwind_protect_int (reading_script_file);
-	  reading_script_file = 1;
-
-	  parse_and_execute (ffile, 1);
-
-	  script_file_executed = 1;
-	}
-      fclose (ffile);
-    }
-
-  run_unwind_frame ("parse_fcn_file");
-
-  return script_file_executed;
-}
-
 void
 tree_identifier::eval_undefined_error (void)
 {
@@ -987,7 +754,7 @@ tree_identifier::eval_undefined_error (void)
   int l = line ();
   int c = column ();
   if (l == -1 && c == -1)
-    ::error ("`%s' undefined");
+    ::error ("`%s' undefined", nm);
   else
     ::error ("`%s' undefined near line %d column %d", nm, l, c);
 }
@@ -1012,29 +779,7 @@ tree_identifier::do_lookup (int& script_file_executed)
 {
   script_file_executed = 0;
 
-  if (! sym->is_linked_to_global ())
-    {
-      if (sym->is_defined ())
-	{
-	  if (sym->is_function () && symbol_out_of_date (sym))
-	    {
-	      script_file_executed = load_fcn_from_file ();
-	    }
-	}
-      else if (! sym->is_formal_parameter ())
-	{
-	  link_to_builtin_or_function (sym);
-	  
-	  if (! sym->is_defined ())
-	    {
-	      script_file_executed = load_fcn_from_file ();
-	    }
-	  else if (sym->is_function () && symbol_out_of_date (sym))
-	    {
-	      script_file_executed = load_fcn_from_file ();
-	    }
-	}
-    }
+  int script_file_executed = lookup (sym);
 
   tree_fvc *ans = 0;
 
@@ -1085,6 +830,10 @@ tree_identifier::eval (int print)
     {
       if (maybe_do_ans_assign && ! ans->is_constant ())
 	{
+
+// XXX FIXME XXX -- need a procedure to do this, probably in
+// variables.cc, to isolate the code that does lookups...
+
 	  symbol_record *sr = global_sym_tab->lookup ("ans", 1, 0);
 
 	  assert (sr);
@@ -1093,7 +842,7 @@ tree_identifier::eval (int print)
 
 	  tree_constant *tmp = new tree_constant (retval);
 
-	  tree_simple_assignment_expression tmp_ass (ans_id, tmp);
+	  tree_simple_assignment_expression tmp_ass (ans_id, tmp, 0, 1);
 
 	  tmp_ass.eval (print);
 
@@ -1164,6 +913,10 @@ tree_identifier::eval (int print, int nargout, const Octave_object& args)
 
 	      if (retval.length () > 0 && retval(0).is_defined ())
 		{
+
+// XXX FIXME XXX -- need a procedure to do this, probably in
+// variables.cc, to isolate the code that does lookups...
+
 		  symbol_record *sr = global_sym_tab->lookup ("ans", 1, 0);
 
 		  assert (sr);
@@ -1172,7 +925,8 @@ tree_identifier::eval (int print, int nargout, const Octave_object& args)
 
 		  tree_constant *tmp = new tree_constant (retval(0));
 
-		  tree_simple_assignment_expression tmp_ass (ans_id, tmp);
+		  tree_simple_assignment_expression tmp_ass (ans_id,
+							     tmp, 0, 1);
 
 		  tmp_ass.eval (print);
 
@@ -1187,6 +941,1117 @@ tree_identifier::eval (int print, int nargout, const Octave_object& args)
     }
 
   return retval;
+}
+
+void
+tree_identifier::print_code (ostream& os)
+{
+  print_code_indent (os);
+
+  if (in_parens)
+    os << "(";
+
+  char *nm = name ();
+  os << (nm) ? nm : "(null)";
+
+  if (in_parens)
+    os << ")";
+}
+
+// Index expressions.
+
+tree_index_expression::~tree_index_expression (void)
+{
+  delete id;
+  delete list;
+}
+
+tree_constant
+tree_index_expression::eval (int print)
+{
+  tree_constant retval;
+
+  if (error_state)
+    return retval;
+
+  if (list)
+    {
+// Extract the arguments into a simple vector.
+      Octave_object args = list->convert_to_const_vector ();
+// Don't pass null arguments.
+      int nargin = args.length ();
+      if (error_state)
+	eval_error ();
+      else if (nargin > 1 && all_args_defined (args))
+	{
+	  Octave_object tmp = id->eval (print, 1, args);
+
+	  if (error_state)
+	    eval_error ();
+
+	  if (tmp.length () > 0)
+	    retval = tmp(0);
+	}
+    }
+  else
+    {
+      retval = id->eval (print);
+      if (error_state)
+	eval_error ();
+    }
+
+  return retval;
+}
+
+Octave_object
+tree_index_expression::eval (int print, int nargout, const Octave_object& args)
+{
+  Octave_object retval;
+
+  if (error_state)
+    return retval;
+
+  if (list)
+    {
+// Extract the arguments into a simple vector.
+      Octave_object args = list->convert_to_const_vector ();
+// Don't pass null arguments.
+      if (error_state)
+	eval_error ();
+      else if (args.length () > 1 && all_args_defined (args))
+	{
+	  retval = id->eval (print, nargout, args);
+	  if (error_state)
+	    eval_error ();
+	}
+    }
+  else
+    {
+      Octave_object tmp_args;
+      retval = id->eval (print, nargout, tmp_args);
+      if (error_state)
+	eval_error ();
+    }
+
+  return retval;
+}
+
+void
+tree_index_expression::eval_error (void)
+{
+  if (error_state > 0)
+    {
+      int l = line ();
+      int c = column ();
+      char *fmt;
+      if (l != -1 && c != -1)
+	{
+	  if (list)
+	    fmt = "evaluating index expression near line %d, column %d";
+	  else
+	    fmt = "evaluating expression near line %d, column %d";
+
+	  ::error (fmt, l, c);
+	}
+      else
+	{
+	  if (list)
+	    ::error ("evaluating index expression");
+	  else
+	    ::error ("evaluating expression");
+	}
+    }
+}
+
+void
+tree_index_expression::print_code (ostream& os)
+{
+  print_code_indent (os);
+
+  if (in_parens)
+    os << "(";
+
+  if (id)
+    id->print_code (os);
+
+  if (list)
+    {
+      os << " (";
+      list->print_code (os);
+      os << ")";
+    }
+
+  if (in_parens)
+    os << ")";
+}
+
+// Prefix expressions.
+
+tree_constant
+tree_prefix_expression::eval (int print)
+{
+  tree_constant retval;
+
+  if (error_state)
+    return retval;
+
+  if (id)
+    {
+      id->bump_value (etype);
+      retval = id->eval (print);
+      if (error_state)
+	{
+	  retval = tree_constant ();
+	  if (error_state)
+	    eval_error ();
+	}
+    }
+  return retval;
+}
+
+char *
+tree_prefix_expression::oper (void) const
+{
+  static char *op;
+  switch (etype)
+    {
+    case tree_expression::increment: op = "++";      break;
+    case tree_expression::decrement: op = "--";      break;
+    default:                         op = "unknown"; break;
+    }
+  return op;
+}
+
+void
+tree_prefix_expression::eval_error (void)
+{
+  if (error_state > 0)
+    {
+      char *op = oper ();
+
+      ::error ("evaluating prefix operator `%s' near line %d, column %d",
+	       op, line (), column ());
+    }
+}
+
+void
+tree_prefix_expression::print_code (ostream& os)
+{
+  print_code_indent (os);
+
+  if (in_parens)
+    os << "(";
+
+  os << oper ();
+
+  if (id)
+    id->print_code (os);
+
+  if (in_parens)
+    os << ")";
+}
+
+// Postfix expressions.
+
+tree_constant
+tree_postfix_expression::eval (int print)
+{
+  tree_constant retval;
+
+  if (error_state)
+    return retval;
+
+  if (id)
+    {
+      retval = id->eval (print);
+      id->bump_value (etype);
+      if (error_state)
+	{
+	  retval = tree_constant ();
+	  if (error_state)
+	    eval_error ();
+	}
+    }
+  return retval;
+}
+
+char *
+tree_postfix_expression::oper (void) const
+{
+  static char *op;
+  switch (etype)
+    {
+    case tree_expression::increment: op = "++";      break;
+    case tree_expression::decrement: op = "--";      break;
+    default:                         op = "unknown"; break;
+    }
+  return op;
+}
+
+void
+tree_postfix_expression::eval_error (void)
+{
+  if (error_state > 0)
+    {
+      char *op = oper ();
+
+      ::error ("evaluating postfix operator `%s' near line %d, column %d",
+	       op, line (), column ());
+    }
+}
+
+void
+tree_postfix_expression::print_code (ostream& os)
+{
+  print_code_indent (os);
+
+  if (in_parens)
+    os << "(";
+
+  if (id)
+    id->print_code (os);
+
+  os << oper ();
+
+  if (in_parens)
+    os << ")";
+}
+
+// Unary expressions.
+
+tree_constant
+tree_unary_expression::eval (int print)
+{
+  if (error_state)
+    return tree_constant ();
+
+  tree_constant ans;
+
+  switch (etype)
+    {
+    case tree_expression::not:
+    case tree_expression::uminus:
+    case tree_expression::hermitian:
+    case tree_expression::transpose:
+      if (op)
+	{
+	  Octave_object tmp =  op->eval (0);
+	  tree_constant u = tmp(0);
+	  if (error_state)
+	    eval_error ();
+	  else if (u.is_defined ())
+	    {
+	      ans = do_unary_op (u, etype);
+	      if (error_state)
+		{
+		  ans = tree_constant ();
+		  if (error_state)
+		    eval_error ();
+		}
+	    }
+	}
+      break;
+    default:
+      ::error ("unary operator %d not implemented", etype);
+      break;
+    }
+
+  return ans;
+}
+
+char *
+tree_unary_expression::oper (void) const
+{
+  static char *op;
+  switch (etype)
+    {
+    case tree_expression::not:        op = "!";       break;
+    case tree_expression::uminus:     op = "-";       break;
+    case tree_expression::hermitian:  op = "'";       break;
+    case tree_expression::transpose:  op = ".'";      break;
+    default:                          op = "unknown"; break;
+    }
+  return op;
+}
+
+void
+tree_unary_expression::eval_error (void)
+{
+  if (error_state > 0)
+    {
+      char *op = oper ();
+
+      ::error ("evaluating unary operator `%s' near line %d, column %d",
+	       op, line (), column ());
+    }
+}
+
+void
+tree_unary_expression::print_code (ostream& os)
+{
+  print_code_indent (os);
+
+  if (in_parens)
+    os << "(";
+
+  switch (etype)
+    {
+    case tree_expression::not:
+    case tree_expression::uminus:
+      os << oper ();
+      if (op)
+	op->print_code (os);
+      break;
+    case tree_expression::hermitian:
+    case tree_expression::transpose:
+      if (op)
+	op->print_code (os);
+      os << oper ();
+      break;
+    default:
+      panic_impossible ();
+      break;
+    }
+
+  if (in_parens)
+    os << ")";
+}
+
+// Binary expressions.
+ 
+tree_constant
+tree_binary_expression::eval (int print)
+{
+  if (error_state)
+    return tree_constant ();
+
+  tree_constant ans;
+  switch (etype)
+    {
+    case tree_expression::add:
+    case tree_expression::subtract:
+    case tree_expression::multiply:
+    case tree_expression::el_mul:
+    case tree_expression::divide:
+    case tree_expression::el_div:
+    case tree_expression::leftdiv:
+    case tree_expression::el_leftdiv:
+    case tree_expression::power:
+    case tree_expression::elem_pow:
+    case tree_expression::cmp_lt:
+    case tree_expression::cmp_le:
+    case tree_expression::cmp_eq:
+    case tree_expression::cmp_ge:
+    case tree_expression::cmp_gt:
+    case tree_expression::cmp_ne:
+    case tree_expression::and:
+    case tree_expression::or:
+      if (op1)
+	{
+	  Octave_object tmp = op1->eval (0);
+	  tree_constant a = tmp(0);
+	  if (error_state)
+	    eval_error ();
+	  else if (a.is_defined () && op2)
+	    {
+	      tmp = op2->eval (0);
+	      tree_constant b = tmp (0);
+	      if (error_state)
+		eval_error ();
+	      else if (b.is_defined ())
+		{
+		  ans = do_binary_op (a, b, etype);
+		  if (error_state)
+		    {
+		      ans = tree_constant ();
+		      if (error_state)
+			eval_error ();
+		    }
+		}
+	    }
+	}
+      break;
+    case tree_expression::and_and:
+    case tree_expression::or_or:
+      {
+	int result = 0;
+	if (op1)
+	  {
+	    Octave_object tmp = op1->eval (0);
+	    tree_constant a = tmp(0);
+	    if (error_state)
+	      {
+		eval_error ();
+		break;
+	      }
+
+	    int a_true = a.is_true ();
+	    if (error_state)
+	      {
+		eval_error ();
+		break;
+	      }
+
+	    if (a_true)
+	      {
+		if (etype == tree_expression::or_or)
+		  {
+		    result = 1;
+		    goto done;
+		  }
+	      }
+	    else
+	      {
+		if (etype == tree_expression::and_and)
+		  {
+		    result = 0;
+		    goto done;
+		  }
+	      }
+
+	    if (op2)
+	      {
+		tmp = op2->eval (0);
+		tree_constant b = tmp(0);
+		if (error_state)
+		  {
+		    eval_error ();
+		    break;
+		  }
+
+		result = b.is_true ();
+		if (error_state)
+		  {
+		    eval_error ();
+		    break;
+		  }
+	      }
+	  }
+      done:
+	ans = tree_constant ((double) result);
+      }
+      break;
+    default:
+      ::error ("binary operator %d not implemented", etype);
+      break;
+    }
+
+  return ans;
+}
+
+char *
+tree_binary_expression::oper (void) const
+{
+  static char *op;
+  switch (etype)
+    {
+    case tree_expression::add:        op = "+";       break;
+    case tree_expression::subtract:   op = "-";       break;
+    case tree_expression::multiply:   op = "*";       break;
+    case tree_expression::el_mul:     op = ".*";      break;
+    case tree_expression::divide:     op = "/";       break;
+    case tree_expression::el_div:     op = "./";      break;
+    case tree_expression::leftdiv:    op = "\\";      break;
+    case tree_expression::el_leftdiv: op = ".\\";     break;
+    case tree_expression::power:      op = "^";       break;
+    case tree_expression::elem_pow:   op = ".^";      break;
+    case tree_expression::cmp_lt:     op = "<";       break;
+    case tree_expression::cmp_le:     op = "<=";      break;
+    case tree_expression::cmp_eq:     op = "==";      break;
+    case tree_expression::cmp_ge:     op = ">=";      break;
+    case tree_expression::cmp_gt:     op = ">";       break;
+    case tree_expression::cmp_ne:     op = "!=";      break;
+    case tree_expression::and_and:    op = "&&";      break;
+    case tree_expression::or_or:      op = "||";      break;
+    case tree_expression::and:        op = "&";       break;
+    case tree_expression::or:         op = "|";       break;
+    default:                          op = "unknown"; break;
+    }
+  return op;
+}
+
+void
+tree_binary_expression::eval_error (void)
+{
+  if (error_state > 0)
+    {
+      char *op = oper ();
+
+      ::error ("evaluating binary operator `%s' near line %d, column %d",
+	     op, line (), column ());
+    }
+}
+
+void
+tree_binary_expression::print_code (ostream& os)
+{
+  print_code_indent (os);
+
+  if (in_parens)
+    os << "(";
+
+  if (op1)
+    op1->print_code (os);
+
+  os << " " << oper () << " ";
+
+  if (op2)
+    op2->print_code (os);
+
+  if (in_parens)
+    os << ")";
+}
+
+// Assignment expressions.
+
+tree_constant
+tree_assignment_expression::eval (int print)
+{
+  panic ("invalid evaluation of generic expression");
+  return tree_constant ();
+}
+
+// Simple assignment expressions.
+
+tree_simple_assignment_expression::~tree_simple_assignment_expression (void)
+{
+  if (! preserve)
+    {
+      delete lhs;
+      delete index;
+    }
+  delete rhs;
+}
+
+tree_constant
+tree_simple_assignment_expression::eval (int print)
+{
+  assert (etype == tree_expression::assignment);
+
+  tree_constant ans;
+  tree_constant retval;
+
+  if (error_state)
+    return retval;
+
+  if (rhs)
+    {
+      Octave_object tmp = rhs->eval (0);
+      tree_constant rhs_val = tmp(0);
+      if (error_state)
+	{
+	  if (error_state)
+	    eval_error ();
+	}
+      else if (! index)
+	{
+	  ans = lhs->assign (rhs_val);
+	  if (error_state)
+	    eval_error ();
+	}
+      else
+	{
+// Extract the arguments into a simple vector.
+	  Octave_object args = index->convert_to_const_vector ();
+
+	  int nargin = args.length ();
+
+	  if (error_state)
+	    eval_error ();
+	  else if (nargin > 1)
+	    {
+	      ans = lhs->assign (rhs_val, args);
+	      if (error_state)
+		eval_error ();
+	    }
+	}
+    }
+
+  if (! error_state && ans.is_defined ())
+    {
+      int pad_after = 0;
+      if (print && user_pref.print_answer_id_name)
+	{
+	  if (print_as_scalar (ans))
+	    {
+	      ostrstream output_buf;
+	      output_buf << lhs->name () << " = " << ends;
+	      maybe_page_output (output_buf);
+	    }
+	  else
+	    {
+	      pad_after = 1;
+	      ostrstream output_buf;
+	      output_buf << lhs->name () << " =\n\n" << ends;
+	      maybe_page_output (output_buf);
+	    }
+	}
+
+      retval = ans.eval (print);
+
+      if (print && pad_after)
+	{
+	  ostrstream output_buf;
+	  output_buf << "\n" << ends;
+	  maybe_page_output (output_buf);
+	}
+    }
+
+  return retval;
+}
+
+void
+tree_simple_assignment_expression::eval_error (void)
+{
+  if (error_state > 0)
+    {
+      int l = line ();
+      int c = column ();
+      if (l != -1 && c != -1)
+	::error ("evaluating assignment expression near line %d, column %d",
+		 l, c);
+//      else
+//	error ("evaluating assignment expression");
+    }
+}
+
+void
+tree_simple_assignment_expression::print_code (ostream& os)
+{
+  print_code_indent (os);
+
+  if (in_parens)
+    os << "(";
+
+  if (! is_ans_assign ())
+    {
+      if (lhs)
+	lhs->print_code (os);
+
+      if (index)
+	{
+	  os << " (";
+	  index->print_code (os);
+	  os << ")";
+	}
+
+      os << " = ";
+    }
+
+  if (rhs)
+    rhs->print_code (os);
+
+  if (in_parens)
+    os << ")";
+}
+
+// Multi-valued assignmnt expressions.
+
+tree_multi_assignment_expression::~tree_multi_assignment_expression (void)
+{
+  delete lhs;
+  delete rhs;
+}
+
+tree_constant
+tree_multi_assignment_expression::eval (int print)
+{
+  tree_constant retval;
+
+  if (error_state)
+    return retval;
+
+  Octave_object tmp_args;
+  Octave_object result = eval (print, 1, tmp_args);
+
+  if (result.length () > 0)
+    retval = result(0);
+
+  return retval;
+}
+
+Octave_object
+tree_multi_assignment_expression::eval (int print, int nargout,
+					const Octave_object& args)
+{
+  assert (etype == tree_expression::multi_assignment);
+
+  if (error_state || ! rhs)
+    return Octave_object ();
+
+  nargout = lhs->length ();
+  Octave_object tmp_args;
+  Octave_object results = rhs->eval (0, nargout, tmp_args);
+
+  if (error_state)
+    eval_error ();
+
+  int ma_line = line ();
+  int ma_column = column ();
+
+  if (results.length () > 0)
+    {
+      int i = 0;
+      int pad_after = 0;
+      int last_was_scalar_type = 0;
+      for (Pix p = lhs->first (); p != 0; lhs->next (p))
+	{
+	  tree_index_expression *lhs_expr = (*lhs) (p);
+
+	  if (i < nargout)
+	    {
+// XXX FIXME? XXX -- this is apparently the way Matlab works, but
+// maybe we should have the option of skipping the assignment instead.
+
+	      tree_constant *tmp = 0;
+	      if (results(i).is_undefined ())
+		{
+		  Matrix m;
+		  tmp = new tree_constant (m);
+		}
+	      else
+		tmp = new tree_constant (results(i));
+
+	      tree_simple_assignment_expression tmp_expr
+		(lhs_expr, tmp, 1, 0, ma_line, ma_column);
+
+	      results(i) = tmp_expr.eval (0); // May change
+
+	      if (error_state)
+		break;
+
+	      if (print && pad_after)
+		{
+		  ostrstream output_buf;
+		  output_buf << "\n" << '\0';
+		  maybe_page_output (output_buf);
+		}
+
+	      if (print && user_pref.print_answer_id_name)
+		{
+		  tree_identifier *tmp_id = lhs_expr->ident ();
+		  char *tmp_nm = tmp_id->name ();
+		  
+		  if (print_as_scalar (results(i)))
+		    {
+		      ostrstream output_buf;
+		      output_buf << tmp_nm << " = " << '\0';
+		      maybe_page_output (output_buf);
+		      last_was_scalar_type = 1;
+		    }
+		  else
+		    {
+		      ostrstream output_buf;
+		      output_buf << tmp_nm << " =\n\n" << '\0';
+		      maybe_page_output (output_buf);
+		      last_was_scalar_type = 0;
+		    }
+		}
+
+	      results(i).eval (print);
+
+	      pad_after++;
+	      i++;
+	    }
+	  else
+	    {
+	      tree_simple_assignment_expression tmp_expr
+		(lhs_expr, 0, 1, 0, ma_line, ma_column);
+
+	      tmp_expr.eval (0);
+
+	      if (error_state)
+		break;
+
+	      if (last_was_scalar_type && i == 1)
+		pad_after = 0;
+
+	      break;
+	    }
+	}
+
+      if (print && pad_after)
+	{
+	  ostrstream output_buf;
+	  output_buf << "\n" << '\0';
+	  maybe_page_output (output_buf);
+	}
+    }
+
+  return results;
+}
+
+void
+tree_multi_assignment_expression::eval_error (void)
+{
+  if (error_state > 0)
+    ::error ("evaluating assignment expression near line %d, column %d",
+	     line (), column ());
+}
+
+void
+tree_multi_assignment_expression::print_code (ostream& os)
+{
+  print_code_indent (os);
+
+  if (in_parens)
+    os << "(";
+
+  if (lhs)
+    {
+      int len = lhs->length ();
+
+      if (len > 1)
+	os << "[";
+
+      lhs->print_code (os);
+
+      if (len > 1)
+	os << "]";
+    }
+
+  os << " = ";
+
+  if (rhs)
+    rhs->print_code (os);
+
+  if (in_parens)
+    os << ")";
+}
+
+// Colon expressions.
+
+tree_colon_expression *
+tree_colon_expression::chain (tree_expression *t)
+{
+  tree_colon_expression *retval = 0;
+  if (! op1 || op3)
+    ::error ("invalid colon expression");
+  else
+    {
+      op3 = op2;	// Stupid syntax.
+      op2 = t;
+
+      retval = this;
+    }
+  return retval;
+}
+
+tree_constant
+tree_colon_expression::eval (int print)
+{
+  tree_constant retval;
+
+  if (error_state || ! op1 || ! op2)
+    return retval;
+
+  Octave_object otmp = op1->eval (0);
+  tree_constant tmp = otmp(0);
+
+  if (tmp.is_undefined ())
+    {
+      eval_error ("invalid null value in colon expression");
+      return retval;
+    }
+
+  tmp = tmp.make_numeric ();
+  if (tmp.const_type () != tree_constant_rep::scalar_constant
+      && tmp.const_type () != tree_constant_rep::complex_scalar_constant)
+    {
+      eval_error ("base for colon expression must be a scalar");
+      return retval;
+    }
+  double base = tmp.double_value ();
+
+  otmp = op2->eval (0);
+  tmp = otmp(0);
+
+  if (tmp.is_undefined ())
+    {
+      eval_error ("invalid null value in colon expression");
+      return retval;
+    }
+
+  tmp = tmp.make_numeric ();
+  if (tmp.const_type () != tree_constant_rep::scalar_constant
+      && tmp.const_type () != tree_constant_rep::complex_scalar_constant)
+    {
+      eval_error ("limit for colon expression must be a scalar");
+      return retval;
+    }
+  double limit = tmp.double_value ();
+
+  double inc = 1.0;
+  if (op3)
+    {
+      otmp = op3->eval (0);
+      tmp = otmp(0);
+
+      if (tmp.is_undefined ())
+	{
+	  eval_error ("invalid null value in colon expression");
+	  return retval;
+	}
+
+      tmp = tmp.make_numeric ();
+      if (tmp.const_type () != tree_constant_rep::scalar_constant
+	  && tmp.const_type () != tree_constant_rep::complex_scalar_constant)
+	{
+	  eval_error ("increment for colon expression must be a scalar");
+	  return retval;
+	}
+      else
+	inc = tmp.double_value ();
+    }
+
+  retval = tree_constant (base, limit, inc);
+
+  if (error_state)
+    {
+      if (error_state)
+	eval_error ("evaluating colon expression");
+      return tree_constant ();
+    }
+
+  return retval;
+}
+
+void
+tree_colon_expression::eval_error (const char *s)
+{
+  if (error_state > 0)
+    ::error ("%s near line %d column %d", s, line (), column ());
+}
+
+void
+tree_colon_expression::print_code (ostream& os)
+{
+  print_code_indent (os);
+
+  if (in_parens)
+    os << "(";
+
+  if (op1)
+    op1->print_code (os);
+
+// Stupid syntax.
+
+  if (op3)
+    {
+      os << ":";
+      op3->print_code (os);
+    }
+
+  if (op2)
+    {
+      os << ":";
+      op2->print_code (os);
+    }
+
+  if (in_parens)
+    os << ")";
+}
+
+// Builtin functions.
+
+tree_builtin::tree_builtin (const char *nm)
+{
+  nargin_max = -1;
+  nargout_max = -1;
+  is_mapper = 0;
+  fcn = 0;
+  if (nm)
+    my_name = strsave (nm);
+}
+
+tree_builtin::tree_builtin (int i_max, int o_max, Mapper_fcn& m_fcn,
+			    const char *nm)
+{
+  nargin_max = i_max;
+  nargout_max = o_max;
+  mapper_fcn = m_fcn;
+  is_mapper = 1;
+  fcn = 0;
+  if (nm)
+    my_name = strsave (nm);
+}
+
+tree_builtin::tree_builtin (int i_max, int o_max, Octave_builtin_fcn g_fcn,
+			    const char *nm)
+{
+  nargin_max = i_max;
+  nargout_max = o_max;
+  is_mapper = 0;
+  fcn = g_fcn;
+  if (nm)
+    my_name = strsave (nm);
+}
+
+tree_constant
+tree_builtin::eval (int print)
+{
+  tree_constant retval;
+
+  if (error_state)
+    return retval;
+
+  if (fcn)
+    {
+      Octave_object args;
+      args(0) = tree_constant (my_name);
+      Octave_object tmp = (*fcn) (args, 1);
+      if (tmp.length () > 0)
+	retval = tmp(0);
+    }
+  else // Assume mapper function
+    ::error ("%s: argument expected", my_name);
+
+  return retval;
+}
+
+Octave_object
+tree_builtin::eval (int print, int nargout, const Octave_object& args)
+{
+  Octave_object retval;
+
+  if (error_state)
+    return retval;
+
+  int nargin = args.length ();
+
+  if (fcn)
+    {
+      if (any_arg_is_magic_colon (args))
+	::error ("invalid use of colon in function argument list");
+      else
+	retval = (*fcn) (args, nargout);
+    }
+  else if (is_mapper)
+    {
+      if (nargin > nargin_max)
+	::error ("%s: too many arguments", my_name);
+      else if (nargin > 0 && args.length () > 0 && args(1).is_defined ())
+	{
+	  tree_constant tmp = args(1).mapper (mapper_fcn, 0);
+	  retval.resize (1);
+	  retval(0) = tmp;
+	}	
+    }
+  else
+    panic_impossible ();
+
+  return retval;
+}
+
+int
+tree_builtin::max_expected_args (void)
+{
+  int ea = nargin_max;
+  if (nargin_max < 0)
+    ea = INT_MAX;
+  else
+    ea = nargin_max;
+  return ea;
 }
 
 // User defined functions.
@@ -1447,9 +2312,66 @@ tree_function::traceback_error (void)
     }
 }
 
+void
+tree_function::print_code (ostream& os)
+{
+  print_code_reset ();
+
+  print_code_indent (os);
+
+  os << "function ";
+
+  if (ret_list)
+    {
+      int len = ret_list->length ();
+
+      if (len > 1)
+	os << "[";
+
+      ret_list->print_code (os);
+
+      if (len > 1)
+	os << "]";
+
+      os << " = ";
+    }
+
+  os << (fcn_name ? fcn_name : "(null)") << " ";
+
+  if (param_list)
+    {
+      int len = param_list->length ();
+      if (len > 0)
+	os << "(";
+
+      param_list->print_code (os);
+
+      if (len > 0)
+	{
+	  os << ")";
+	  print_code_new_line (os);
+	}
+    }
+  else
+    {
+      os << "()";
+      print_code_new_line (os);
+    }
+
+  if (cmd_list)
+    {
+      increment_indent_level ();
+      cmd_list->print_code (os);
+    }
+
+  os << "endfunction";
+
+  print_code_new_line (os);
+}
+
 DEFUN ("va_arg", Fva_arg, Sva_arg, 1, 1,
   "va_arg (): return next argument in a function that takes a\n\
-varible number of parameters")
+variable number of parameters")
 {
   Octave_object retval;
 
@@ -1503,785 +2425,6 @@ to the beginning")
     print_usage ("va_start");
 
   return retval;
-}
-
-// Expressions.
-
-tree_constant
-tree_expression::eval (int print)
-{
-  panic ("invalid evaluation of generic expression");
-  return tree_constant ();
-}
-
-Octave_object
-tree_expression::eval (int print, int nargout, const Octave_object& args)
-{
-  panic ("invalid evaluation of generic expression");
-  return Octave_object ();
-}
-
-// Prefix expressions.
-
-tree_constant
-tree_prefix_expression::eval (int print)
-{
-  tree_constant retval;
-
-  if (error_state)
-    return retval;
-
-  if (id)
-    {
-      id->bump_value (etype);
-      retval = id->eval (print);
-      if (error_state)
-	{
-	  retval = tree_constant ();
-	  if (error_state)
-	    eval_error ();
-	}
-    }
-  return retval;
-}
-
-void
-tree_prefix_expression::eval_error (void)
-{
-  if (error_state > 0)
-    {
-      char *op;
-      switch (etype)
-	{
-	case tree_expression::increment: op = "++";      break;
-	case tree_expression::decrement: op = "--";      break;
-	default:                         op = "unknown"; break;
-	}
-
-      ::error ("evaluating prefix operator `%s' near line %d, column %d",
-	       op, line (), column ());
-    }
-}
-
-// Postfix expressions.
-
-tree_constant
-tree_postfix_expression::eval (int print)
-{
-  tree_constant retval;
-
-  if (error_state)
-    return retval;
-
-  if (id)
-    {
-      retval = id->eval (print);
-      id->bump_value (etype);
-      if (error_state)
-	{
-	  retval = tree_constant ();
-	  if (error_state)
-	    eval_error ();
-	}
-    }
-  return retval;
-}
-
-void
-tree_postfix_expression::eval_error (void)
-{
-  if (error_state > 0)
-    {
-      char *op;
-      switch (etype)
-	{
-	case tree_expression::increment: op = "++";      break;
-	case tree_expression::decrement: op = "--";      break;
-	default:                         op = "unknown"; break;
-	}
-
-      ::error ("evaluating postfix operator `%s' near line %d, column %d",
-	       op, line (), column ());
-    }
-}
-
-// Unary expressions.
-
-tree_constant
-tree_unary_expression::eval (int print)
-{
-  if (error_state)
-    return tree_constant ();
-
-  tree_constant ans;
-
-  switch (etype)
-    {
-    case tree_expression::not:
-    case tree_expression::uminus:
-    case tree_expression::hermitian:
-    case tree_expression::transpose:
-      if (op)
-	{
-	  tree_constant u = op->eval (0);
-	  if (error_state)
-	    eval_error ();
-	  else if (u.is_defined ())
-	    {
-	      ans = do_unary_op (u, etype);
-	      if (error_state)
-		{
-		  ans = tree_constant ();
-		  if (error_state)
-		    eval_error ();
-		}
-	    }
-	}
-      break;
-    default:
-      ::error ("unary operator %d not implemented", etype);
-      break;
-    }
-
-  return ans;
-}
-
-void
-tree_unary_expression::eval_error (void)
-{
-  if (error_state > 0)
-    {
-      char *op;
-      switch (etype)
-	{
-	case tree_expression::not:        op = "!";       break;
-	case tree_expression::uminus:     op = "-";       break;
-	case tree_expression::hermitian:  op = "'";       break;
-	case tree_expression::transpose:  op = ".'";      break;
-	default:                          op = "unknown"; break;
-	}
-
-      ::error ("evaluating unary operator `%s' near line %d, column %d",
-	       op, line (), column ());
-    }
-}
-
-// Binary expressions.
- 
-tree_constant
-tree_binary_expression::eval (int print)
-{
-  if (error_state)
-    return tree_constant ();
-
-  tree_constant ans;
-  switch (etype)
-    {
-    case tree_expression::add:
-    case tree_expression::subtract:
-    case tree_expression::multiply:
-    case tree_expression::el_mul:
-    case tree_expression::divide:
-    case tree_expression::el_div:
-    case tree_expression::leftdiv:
-    case tree_expression::el_leftdiv:
-    case tree_expression::power:
-    case tree_expression::elem_pow:
-    case tree_expression::cmp_lt:
-    case tree_expression::cmp_le:
-    case tree_expression::cmp_eq:
-    case tree_expression::cmp_ge:
-    case tree_expression::cmp_gt:
-    case tree_expression::cmp_ne:
-    case tree_expression::and:
-    case tree_expression::or:
-      if (op1)
-	{
-	  tree_constant a = op1->eval (0);
-	  if (error_state)
-	    eval_error ();
-	  else if (a.is_defined () && op2)
-	    {
-	      tree_constant b = op2->eval (0);
-	      if (error_state)
-		eval_error ();
-	      else if (b.is_defined ())
-		{
-		  ans = do_binary_op (a, b, etype);
-		  if (error_state)
-		    {
-		      ans = tree_constant ();
-		      if (error_state)
-			eval_error ();
-		    }
-		}
-	    }
-	}
-      break;
-    case tree_expression::and_and:
-    case tree_expression::or_or:
-      {
-	int result = 0;
-	if (op1)
-	  {
-	    tree_constant a = op1->eval (0);
-	    if (error_state)
-	      {
-		eval_error ();
-		break;
-	      }
-
-	    int a_true = a.is_true ();
-	    if (error_state)
-	      {
-		eval_error ();
-		break;
-	      }
-
-	    if (a_true)
-	      {
-		if (etype == tree_expression::or_or)
-		  {
-		    result = 1;
-		    goto done;
-		  }
-	      }
-	    else
-	      {
-		if (etype == tree_expression::and_and)
-		  {
-		    result = 0;
-		    goto done;
-		  }
-	      }
-
-	    if (op2)
-	      {
-		tree_constant b = op2->eval (0);
-		if (error_state)
-		  {
-		    eval_error ();
-		    break;
-		  }
-
-		result = b.is_true ();
-		if (error_state)
-		  {
-		    eval_error ();
-		    break;
-		  }
-	      }
-	  }
-      done:
-	ans = tree_constant ((double) result);
-      }
-      break;
-    default:
-      ::error ("binary operator %d not implemented", etype);
-      break;
-    }
-
-  return ans;
-}
-
-void
-tree_binary_expression::eval_error (void)
-{
-  if (error_state > 0)
-    {
-      char *op;
-      switch (etype)
-	{
-	case tree_expression::add:        op = "+";       break;
-	case tree_expression::subtract:   op = "-";       break;
-	case tree_expression::multiply:   op = "*";       break;
-	case tree_expression::el_mul:     op = ".*";      break;
-	case tree_expression::divide:     op = "/";       break;
-	case tree_expression::el_div:     op = "./";      break;
-	case tree_expression::leftdiv:    op = "\\";      break;
-	case tree_expression::el_leftdiv: op = ".\\";     break;
-	case tree_expression::power:      op = "^";       break;
-	case tree_expression::elem_pow:   op = ".^";      break;
-	case tree_expression::cmp_lt:     op = "<";       break;
-	case tree_expression::cmp_le:     op = "<=";      break;
-	case tree_expression::cmp_eq:     op = "==";      break;
-	case tree_expression::cmp_ge:     op = ">=";      break;
-	case tree_expression::cmp_gt:     op = ">";       break;
-	case tree_expression::cmp_ne:     op = "!=";      break;
-	case tree_expression::and_and:    op = "&&";      break;
-	case tree_expression::or_or:      op = "||";      break;
-	case tree_expression::and:        op = "&";       break;
-	case tree_expression::or:         op = "|";       break;
-	default:                          op = "unknown"; break;
-	}
-
-      ::error ("evaluating binary operator `%s' near line %d, column %d",
-	     op, line (), column ());
-    }
-}
-
-// Assignment expressions.
-
-tree_constant
-tree_assignment_expression::eval (int print)
-{
-  panic ("invalid evaluation of generic expression");
-  return tree_constant ();
-}
-
-// Simple assignment expressions.
-
-tree_simple_assignment_expression::~tree_simple_assignment_expression (void)
-{
-  if (! preserve)
-    {
-      delete lhs;
-      delete index;
-    }
-  delete rhs;
-}
-
-tree_constant
-tree_simple_assignment_expression::eval (int print)
-{
-  assert (etype == tree_expression::assignment);
-
-  tree_constant ans;
-  tree_constant retval;
-
-  if (error_state)
-    return retval;
-
-  if (rhs)
-    {
-      tree_constant rhs_val = rhs->eval (0);
-      if (error_state)
-	{
-	  if (error_state)
-	    eval_error ();
-	}
-      else if (! index)
-	{
-	  ans = lhs->assign (rhs_val);
-	  if (error_state)
-	    eval_error ();
-	}
-      else
-	{
-// Extract the arguments into a simple vector.
-	  Octave_object args = index->convert_to_const_vector ();
-
-	  int nargin = args.length ();
-
-	  if (error_state)
-	    eval_error ();
-	  else if (nargin > 1)
-	    {
-	      ans = lhs->assign (rhs_val, args);
-	      if (error_state)
-		eval_error ();
-	    }
-	}
-    }
-
-  if (! error_state && ans.is_defined ())
-    {
-      int pad_after = 0;
-      if (print && user_pref.print_answer_id_name)
-	{
-	  if (print_as_scalar (ans))
-	    {
-	      ostrstream output_buf;
-	      output_buf << lhs->name () << " = " << ends;
-	      maybe_page_output (output_buf);
-	    }
-	  else
-	    {
-	      pad_after = 1;
-	      ostrstream output_buf;
-	      output_buf << lhs->name () << " =\n\n" << ends;
-	      maybe_page_output (output_buf);
-	    }
-	}
-
-      retval = ans.eval (print);
-
-      if (print && pad_after)
-	{
-	  ostrstream output_buf;
-	  output_buf << "\n" << ends;
-	  maybe_page_output (output_buf);
-	}
-    }
-
-  return retval;
-}
-
-void
-tree_simple_assignment_expression::eval_error (void)
-{
-  if (error_state > 0)
-    {
-      int l = line ();
-      int c = column ();
-      if (l != -1 && c != -1)
-	::error ("evaluating assignment expression near line %d, column %d",
-		 l, c);
-//      else
-//	error ("evaluating assignment expression");
-    }
-}
-
-// Multi-valued assignmnt expressions.
-
-tree_multi_assignment_expression::~tree_multi_assignment_expression (void)
-{
-  delete lhs;
-  delete rhs;
-}
-
-tree_constant
-tree_multi_assignment_expression::eval (int print)
-{
-  tree_constant retval;
-
-  if (error_state)
-    return retval;
-
-  Octave_object tmp_args;
-  Octave_object result = eval (print, 1, tmp_args);
-
-  if (result.length () > 0)
-    retval = result(0);
-
-  return retval;
-}
-
-Octave_object
-tree_multi_assignment_expression::eval (int print, int nargout,
-					const Octave_object& args)
-{
-  assert (etype == tree_expression::multi_assignment);
-
-  if (error_state || ! rhs)
-    return Octave_object ();
-
-  nargout = lhs->length ();
-  Octave_object tmp_args;
-  Octave_object results = rhs->eval (0, nargout, tmp_args);
-
-  if (error_state)
-    eval_error ();
-
-  int ma_line = line ();
-  int ma_column = column ();
-
-  if (results.length () > 0)
-    {
-      int i = 0;
-      int pad_after = 0;
-      int last_was_scalar_type = 0;
-      for (Pix p = lhs->first (); p != 0; lhs->next (p))
-	{
-	  tree_index_expression *lhs_expr = (*lhs) (p);
-
-	  if (i < nargout)
-	    {
-// XXX FIXME? XXX -- this is apparently the way Matlab works, but
-// maybe we should have the option of skipping the assignment instead.
-
-	      tree_constant *tmp = 0;
-	      if (results(i).is_undefined ())
-		{
-		  Matrix m;
-		  tmp = new tree_constant (m);
-		}
-	      else
-		tmp = new tree_constant (results(i));
-
-	      tree_simple_assignment_expression tmp_expr
-		(lhs_expr, tmp, 1, ma_line, ma_column);
-
-	      results(i) = tmp_expr.eval (0); // May change
-
-	      if (error_state)
-		break;
-
-	      if (print && pad_after)
-		{
-		  ostrstream output_buf;
-		  output_buf << "\n" << '\0';
-		  maybe_page_output (output_buf);
-		}
-
-	      if (print && user_pref.print_answer_id_name)
-		{
-		  tree_identifier *tmp_id = lhs_expr->ident ();
-		  char *tmp_nm = tmp_id->name ();
-		  
-		  if (print_as_scalar (results(i)))
-		    {
-		      ostrstream output_buf;
-		      output_buf << tmp_nm << " = " << '\0';
-		      maybe_page_output (output_buf);
-		      last_was_scalar_type = 1;
-		    }
-		  else
-		    {
-		      ostrstream output_buf;
-		      output_buf << tmp_nm << " =\n\n" << '\0';
-		      maybe_page_output (output_buf);
-		      last_was_scalar_type = 0;
-		    }
-		}
-
-	      results(i).eval (print);
-
-	      pad_after++;
-	      i++;
-	    }
-	  else
-	    {
-	      tree_simple_assignment_expression tmp_expr
-		(lhs_expr, 0, 1, ma_line, ma_column);
-
-	      tmp_expr.eval (0);
-
-	      if (error_state)
-		break;
-
-	      if (last_was_scalar_type && i == 1)
-		pad_after = 0;
-
-	      break;
-	    }
-	}
-
-      if (print && pad_after)
-	{
-	  ostrstream output_buf;
-	  output_buf << "\n" << '\0';
-	  maybe_page_output (output_buf);
-	}
-    }
-
-  return results;
-}
-
-void
-tree_multi_assignment_expression::eval_error (void)
-{
-  if (error_state > 0)
-    ::error ("evaluating assignment expression near line %d, column %d",
-	     line (), column ());
-}
-
-// Colon expressions.
-
-tree_colon_expression *
-tree_colon_expression::chain (tree_expression *t)
-{
-  tree_colon_expression *retval = 0;
-  if (! op1 || op3)
-    ::error ("invalid colon expression");
-  else
-    {
-      op3 = op2;	// Stupid syntax.
-      op2 = t;
-
-      retval = this;
-    }
-  return retval;
-}
-
-tree_constant
-tree_colon_expression::eval (int print)
-{
-  tree_constant retval;
-
-  if (error_state || ! op1 || ! op2)
-    return retval;
-
-  tree_constant tmp;
-
-  tmp = op1->eval (0);
-
-  if (tmp.is_undefined ())
-    {
-      eval_error ("invalid null value in colon expression");
-      return retval;
-    }
-
-  tmp = tmp.make_numeric ();
-  if (tmp.const_type () != tree_constant_rep::scalar_constant
-      && tmp.const_type () != tree_constant_rep::complex_scalar_constant)
-    {
-      eval_error ("base for colon expression must be a scalar");
-      return retval;
-    }
-  double base = tmp.double_value ();
-
-  tmp = op2->eval (0);
-
-  if (tmp.is_undefined ())
-    {
-      eval_error ("invalid null value in colon expression");
-      return retval;
-    }
-
-  tmp = tmp.make_numeric ();
-  if (tmp.const_type () != tree_constant_rep::scalar_constant
-      && tmp.const_type () != tree_constant_rep::complex_scalar_constant)
-    {
-      eval_error ("limit for colon expression must be a scalar");
-      return retval;
-    }
-  double limit = tmp.double_value ();
-
-  double inc = 1.0;
-  if (op3)
-    {
-      tmp = op3->eval (0);
-
-      if (tmp.is_undefined ())
-	{
-	  eval_error ("invalid null value in colon expression");
-	  return retval;
-	}
-
-      tmp = tmp.make_numeric ();
-      if (tmp.const_type () != tree_constant_rep::scalar_constant
-	  && tmp.const_type () != tree_constant_rep::complex_scalar_constant)
-	{
-	  eval_error ("increment for colon expression must be a scalar");
-	  return retval;
-	}
-      else
-	inc = tmp.double_value ();
-    }
-
-  retval = tree_constant (base, limit, inc);
-
-  if (error_state)
-    {
-      if (error_state)
-	eval_error ("evaluating colon expression");
-      return tree_constant ();
-    }
-
-  return retval;
-}
-
-void
-tree_colon_expression::eval_error (const char *s)
-{
-  if (error_state > 0)
-    ::error ("%s near line %d column %d", s, line (), column ());
-}
-
-// Index expressions.
-
-tree_index_expression::~tree_index_expression (void)
-{
-  delete id;
-  delete list;
-}
-
-tree_constant
-tree_index_expression::eval (int print)
-{
-  tree_constant retval;
-
-  if (error_state)
-    return retval;
-
-  if (list)
-    {
-// Extract the arguments into a simple vector.
-      Octave_object args = list->convert_to_const_vector ();
-// Don't pass null arguments.
-      int nargin = args.length ();
-      if (error_state)
-	eval_error ();
-      else if (nargin > 1 && all_args_defined (args))
-	{
-	  Octave_object tmp = id->eval (print, 1, args);
-
-	  if (error_state)
-	    eval_error ();
-
-	  if (tmp.length () > 0)
-	    retval = tmp(0);
-	}
-    }
-  else
-    {
-      retval = id->eval (print);
-      if (error_state)
-	eval_error ();
-    }
-
-  return retval;
-}
-
-Octave_object
-tree_index_expression::eval (int print, int nargout, const Octave_object& args)
-{
-  Octave_object retval;
-
-  if (error_state)
-    return retval;
-
-  if (list)
-    {
-// Extract the arguments into a simple vector.
-      Octave_object args = list->convert_to_const_vector ();
-// Don't pass null arguments.
-      if (error_state)
-	eval_error ();
-      else if (args.length () > 1 && all_args_defined (args))
-	{
-	  retval = id->eval (print, nargout, args);
-	  if (error_state)
-	    eval_error ();
-	}
-    }
-  else
-    {
-      Octave_object tmp_args;
-      retval = id->eval (print, nargout, tmp_args);
-      if (error_state)
-	eval_error ();
-    }
-
-  return retval;
-}
-
-void
-tree_index_expression::eval_error (void)
-{
-  if (error_state > 0)
-    {
-      int l = line ();
-      int c = column ();
-      char *fmt;
-      if (l != -1 && c != -1)
-	{
-	  if (list)
-	    fmt = "evaluating index expression near line %d, column %d";
-	  else
-	    fmt = "evaluating expression near line %d, column %d";
-
-	  ::error (fmt, l, c);
-	}
-      else
-	{
-	  if (list)
-	    ::error ("evaluating index expression");
-	  else
-	    ::error ("evaluating expression");
-	}
-    }
 }
 
 /*

@@ -139,18 +139,6 @@ fortran_column (int i, int nr)
   return c;
 }
 
-static inline int
-valid_scalar_indices (const Octave_object& args)
-{
-  int nargin = args.length ();
-  int valid = ((nargin == 3
-		&& args(2).valid_as_scalar_index ()
-		&& args(1).valid_as_scalar_index ())
-	       || (nargin == 2 && args(1).valid_as_scalar_index ()));
-
-  return valid;
-}
-
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

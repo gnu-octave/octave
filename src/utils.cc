@@ -47,8 +47,6 @@ Free Software Foundation, Inc.
 #include <sys/param.h>
 #include <setjmp.h>
 #include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
 #include <limits.h>
 #include <iostream.h>
 #include <strstream.h>
@@ -75,7 +73,7 @@ extern "C"
 LOSE! LOSE!
 #endif
 
-char *tilde_expand (char *s); /* From readline's tilde.c */
+#include <readline/tilde.h>
 }
 
 // This mess suggested by the autoconf manual.
@@ -118,9 +116,8 @@ char *tilde_expand (char *s); /* From readline's tilde.c */
 // Top level context (?)
 extern jmp_buf toplevel;
 
-/*
- * Save a string.
- */
+// Save a string.
+
 char *
 strsave (const char *s)
 {
@@ -133,9 +130,8 @@ strsave (const char *s)
   return tmp;
 }
 
-/*
- * Concatenate two strings.
- */
+// Concatenate two strings.
+
 char *
 strconcat (const char *s, const char *t)
 {
@@ -145,9 +141,8 @@ strconcat (const char *s, const char *t)
   return strcat (tmp, t);
 }
 
-/*
- * Throw away input until a given character is read.
- */
+// Throw away input until a given character is read.
+
 void
 discard_until (istream& stream, char character)
 {
@@ -211,9 +206,8 @@ pathstring_to_vector (char *pathstring)
   return path;
 }
 
-/*
- * Return to the main command loop in octave.cc.
- */
+// Return to the main command loop in octave.cc.
+
 void
 jump_to_top_level (void)
 {
@@ -236,9 +230,8 @@ almost_match (const char *std, const char *s, int min_match_len,
 	      : (strncasecmp (std, s, slen) == 0)));
 }
 
-/*
- * Ugh.
- */
+// Ugh.
+
 int
 keyword_almost_match (const char **std, int *min_len, const char *s,
 		      int min_toks_to_match, int max_toks)
@@ -473,10 +466,9 @@ make_argv (const Octave_object& args, const char *fcn_name)
   return argv;
 }
 
-/*
- * Format a list in neat columns.  Mostly stolen from GNU ls.  This
- * should maybe be in utils.cc.
- */
+// Format a list in neat columns.  Mostly stolen from GNU ls.  This
+// should maybe be in utils.cc.
+
 ostrstream&
 list_in_columns (ostrstream& os, char **list)
 {
@@ -541,9 +533,8 @@ list_in_columns (ostrstream& os, char **list)
   return os;
 }
 
-/*
- * See if the given file is in the path.
- */
+// See if the given file is in the path.
+
 char *
 file_in_path (const char *name, const char *suffix)
 {
@@ -587,20 +578,18 @@ file_in_path (const char *name, const char *suffix)
   return retval;
 }
 
-/*
- * See if there is an function file in the path.  If so, return the
- * full path to the file.
- */
+// See if there is an function file in the path.  If so, return the
+// full path to the file.
+
 char *
 fcn_file_in_path (const char *name)
 {
   return file_in_path (name, ".m");
 }
 
-/*
- * See if there is an octave file in the path.  If so, return the
- * full path to the file.
- */
+// See if there is an octave file in the path.  If so, return the
+// full path to the file.
+
 char *
 oct_file_in_path (const char *name)
 {

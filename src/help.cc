@@ -30,7 +30,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <iostream.h>
 #include <strstream.h>
 
-#include "tree.h"
+#include "tree-expr.h"
+#include "tree-const.h"
 #include "sighandlers.h"
 #include "user-prefs.h"
 #include "tree-expr.h"
@@ -249,9 +250,8 @@ static help_list keywords[] =
   { 0, 0, },
 };
 
-/*
- * Return a copy of the operator or keyword names.
- */
+// Return a copy of the operator or keyword names.
+
 char **
 names (help_list *lst, int& count)
 {
@@ -556,8 +556,6 @@ print cryptic yet witty messages")
 	{
 	  ostrstream output_buf;
 
-	  char *fcn_file_name = 0;
-	  symbol_record *sym_rec;
 	  help_list *op_help_list = operator_help ();
 	  help_list *kw_help_list = keyword_help ();
 
@@ -574,7 +572,8 @@ print cryptic yet witty messages")
 	      if (help_from_list (output_buf, kw_help_list, *argv, 0))
 		continue;
 
-	      sym_rec = curr_sym_tab->lookup (*argv, 0, 0);
+	      symbol_record *sym_rec = lookup_by_name (*argv);
+
 	      if (sym_rec)
 		{
 		  char *h = sym_rec->help ();
@@ -586,43 +585,8 @@ print cryptic yet witty messages")
 		    }
 		}
 
-	      sym_rec = global_sym_tab->lookup (*argv, 0, 0);
-	      if (sym_rec && ! symbol_out_of_date (sym_rec))
-		{
-		  char *h = sym_rec->help ();
-		  if (h && *h)
-		    {
-		      output_buf << "\n*** " << *argv << ":\n\n"
-				 << h << "\n";
-		      continue;
-		    }
-		}
-
-// Try harder to find function files that might not be defined yet, or
-// that appear to be out of date.  Don\'t execute commands from the
-// file if it turns out to be a script file.
-
-	      fcn_file_name = fcn_file_in_path (*argv);
-	      if (fcn_file_name)
-		{
-		  sym_rec = global_sym_tab->lookup (*argv, 1, 0);
-		  if (sym_rec)
-		    {
-		      tree_identifier tmp (sym_rec);
-		      tmp.load_fcn_from_file (0);
-		      char *h = sym_rec->help ();
-		      if (h && *h)
-			{
-			  output_buf << "\n*** " << *argv << ":\n\n"
-				     << h << "\n"; 
-			  continue;
-			}
-		    }
-		}
-	      delete [] fcn_file_name;
-
 	      output_buf << "\nhelp: sorry, `" << *argv
-			 << "' is not documented\n"; 
+		<< "' is not documented\n"; 
 	    }
 
 	  additional_help_message (output_buf);
@@ -630,6 +594,193 @@ print cryptic yet witty messages")
 	  maybe_page_output (output_buf);
 	}
     }
+
+  DELETE_ARGV;
+
+  return retval;
+}
+
+DEFUN_TEXT ("type", Ftype, Stype, -1, 1,
+  "type NAME ...]\n\
+\n\
+display the definition of each NAME that refers to a function")
+{
+  Octave_object retval;
+
+  DEFINE_ARGV("type");
+
+  if (argc > 1)
+    {
+// XXX FIXME XXX -- we should really use getopt ()
+      int quiet = 0;
+      if (argv[1] && strcmp (argv[1], "-q") == 0)
+	{
+	  quiet = 1;
+	  argc--;
+	  argv++;
+	}
+
+      ostrstream output_buf;
+
+      while (--argc > 0)
+	{
+	  argv++;
+
+	  if (! *argv || ! **argv)
+	    continue;
+
+	  symbol_record *sym_rec = lookup_by_name (*argv);
+
+	  if (sym_rec)
+	    {
+	      if (sym_rec->is_user_function ())
+		{
+		  tree_fvc *defn = sym_rec->def ();
+
+		  if (nargout == 0 && ! quiet)
+		    output_buf << *argv << " is a user-defined function\n";
+
+		  defn->print_code (output_buf);
+		}
+
+// XXX FIXME XXX -- this code should be shared with Fwhich
+
+	      else if (sym_rec->is_text_function ())
+		output_buf << *argv << " is a builtin text-function\n";
+	      else if (sym_rec->is_builtin_function ())
+		output_buf << *argv << " is a builtin function\n";
+	      else if (sym_rec->is_user_variable ())
+		output_buf << *argv << " is a user-defined variable\n";
+	      else if (sym_rec->is_builtin_variable ())
+		output_buf << *argv << " is a builtin variable\n";
+	      else
+		output_buf << "type: `" << *argv << "' has unknown type!\n";
+	    }
+	  else
+	    output_buf << "type: `" << *argv << "' undefined\n";
+	}
+
+      output_buf << ends;
+
+      if (nargout == 0)
+	maybe_page_output (output_buf);
+      else
+	{
+	  char *s = output_buf.str ();
+	  retval = s;
+	  delete s;
+	}
+    }
+  else
+    print_usage ("type");
+
+  DELETE_ARGV;
+
+  return retval;
+}
+
+DEFUN_TEXT ("which", Fwhich, Swhich, -1, 1,
+  "which NAME ...]\n\
+\n\
+display the type of each NAME.  If NAME is defined from an function\n\
+file, print the full name of the file.")
+{
+  Octave_object retval;
+
+  DEFINE_ARGV("which");
+
+  if (argc > 1)
+    {
+      if (nargout > 0)
+	retval.resize (argc-1, Matrix ());
+
+      ostrstream output_buf;
+
+      for (int i = 0; i < argc-1; i++)
+	{
+	  argv++;
+
+	  if (! *argv || ! **argv)
+	    continue;
+
+	  symbol_record *sym_rec = lookup_by_name (*argv);
+
+	  if (sym_rec)
+	    {
+	      if (sym_rec->is_user_function ())
+		{
+		  tree_fvc *defn = sym_rec->def ();
+		  char *fn = defn->fcn_file_name ();
+		  if (fn)
+		    {
+		      char *ff = fcn_file_in_path (fn);
+		      ff = ff ? ff : fn;
+
+		      if (nargout == 0)
+			output_buf << *argv
+			  << " is the function defined from:\n"
+			    << ff << "\n";
+		      else
+			retval(i) = ff;
+		    }
+		  else
+		    {
+		      if (nargout == 0)
+			output_buf << *argv << " is a user-defined function\n";
+		      else
+			retval(i) = "user-defined function";
+		    }
+		}
+	      else if (sym_rec->is_text_function ())
+		{
+		  if (nargout == 0)
+		    output_buf << *argv << " is a builtin text-function\n";
+		  else
+		    retval(i) = "builtin text-function";
+		}
+	      else if (sym_rec->is_builtin_function ())
+		{
+		  if (nargout == 0)
+		    output_buf << *argv << " is a builtin function\n";
+		  else
+		    retval(i) = "builtin function";
+		}
+	      else if (sym_rec->is_user_variable ())
+		{
+		  if (nargout == 0)
+		    output_buf << *argv << " is a user-defined variable\n";
+		  else
+		    retval(i) = "user-defined variable";
+		}
+	      else if (sym_rec->is_builtin_variable ())
+		{
+		  if (nargout == 0)
+		    output_buf << *argv << " is a builtin variable\n";
+		  else
+		    retval(i) = "builtin variable";
+		}
+	      else
+		{
+		  if (nargout == 0)
+		    output_buf << "which: `" << *argv
+		      << "' has unknown type\n";
+		  else
+		    retval(i) = "unknown type";
+		}
+	    }
+	  else
+	    {
+	      if (nargout == 0)
+		output_buf << "which: `" << *argv << "' is undefined\n";
+	      else
+		retval(i) = "undefined";
+	    }
+	}
+      output_buf << ends;
+      maybe_page_output (output_buf);
+    }
+  else
+    print_usage ("which");
 
   DELETE_ARGV;
 

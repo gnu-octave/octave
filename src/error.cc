@@ -25,8 +25,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "config.h"
 #endif
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <strstream.h>
 #include <stdarg.h>
 
 #include "utils.h"
@@ -42,12 +41,21 @@ int error_state;
 static void
 verror (const char *name, const char *fmt, va_list args)
 {
-  if (name)
-    fprintf (stderr, "%s: ", name);
+  cerr << name << ": ";
+  cerr.vform (fmt, args);
+  cerr << endl;
 
-  vfprintf (stderr, fmt, args);
-  fprintf (stderr, "\n");
-  fflush (stderr);
+  ostrstream output_buf;
+
+  output_buf << name << ": ";
+  output_buf.vform (fmt, args);
+  output_buf << endl;
+
+  char *msg = output_buf.str ();
+
+  maybe_write_to_diary_file (msg);
+
+  delete [] msg;
 }
 
 void

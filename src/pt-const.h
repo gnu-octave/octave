@@ -28,6 +28,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma interface
 #endif
 
+#include <iostream.h>
+
 #include <stdlib.h>
 
 #include "mx-base.h"
@@ -42,55 +44,52 @@ class idx_vector;
 
 struct Mapper_fcn;
 
-/*
- * Constants.
- */
+// Constants.
+
 class
 tree_constant : public tree_fvc
 {
 friend class tree_constant_rep;
 
 public:
-  tree_constant (void)
+  tree_constant (void) : tree_fvc ()
     { rep = new tree_constant_rep (); rep->count = 1; }
 
-  tree_constant (double d)
+  tree_constant (double d) : tree_fvc ()
     { rep = new tree_constant_rep (d); rep->count = 1; }
-  tree_constant (const Matrix& m)
+  tree_constant (const Matrix& m) : tree_fvc ()
     { rep = new tree_constant_rep (m); rep->count = 1; }
-  tree_constant (const DiagMatrix& d)
+  tree_constant (const DiagMatrix& d) : tree_fvc ()
     { rep = new tree_constant_rep (d); rep->count = 1; }
-  tree_constant (const RowVector& v, int pcv = -1)
+  tree_constant (const RowVector& v, int pcv = -1) : tree_fvc ()
     { rep = new tree_constant_rep (v, pcv); rep->count = 1; }
-  tree_constant (const ColumnVector& v, int pcv = -1)
+  tree_constant (const ColumnVector& v, int pcv = -1) : tree_fvc ()
     { rep = new tree_constant_rep (v, pcv); rep->count = 1; }
 
-  tree_constant (const Complex& c)
+  tree_constant (const Complex& c) : tree_fvc ()
     { rep = new tree_constant_rep (c); rep->count = 1; }
-  tree_constant (const ComplexMatrix& m)
+  tree_constant (const ComplexMatrix& m) : tree_fvc ()
     { rep = new tree_constant_rep (m); rep->count = 1; }
-  tree_constant (const ComplexDiagMatrix& d)
+  tree_constant (const ComplexDiagMatrix& d) : tree_fvc ()
     { rep = new tree_constant_rep (d); rep->count = 1; }
-  tree_constant (const ComplexRowVector& v, int pcv = -1)
-    { rep = new tree_constant_rep (v, pcv); rep->count = 1; }
-  tree_constant (const ComplexColumnVector& v, int pcv = -1)
-    { rep = new tree_constant_rep (v, pcv); rep->count = 1; }
+  tree_constant (const ComplexRowVector& v, int pcv = -1) : tree_fvc ()
+      { rep = new tree_constant_rep (v, pcv); rep->count = 1; }
+  tree_constant (const ComplexColumnVector& v, int pcv = -1) : tree_fvc () 
+      { rep = new tree_constant_rep (v, pcv); rep->count = 1; }
 
-  tree_constant (const char *s)
+  tree_constant (const char *s) : tree_fvc ()
     { rep = new tree_constant_rep (s); rep->count = 1; }
 
-  tree_constant (double base, double limit, double inc)
+  tree_constant (double base, double limit, double inc) : tree_fvc ()
     { rep = new tree_constant_rep (base, limit, inc); rep->count = 1; }
-  tree_constant (const Range& r)
+  tree_constant (const Range& r) : tree_fvc ()
     { rep = new tree_constant_rep (r); rep->count = 1; }
 
-  tree_constant (tree_constant_rep::constant_type t)
+  tree_constant (tree_constant_rep::constant_type t) : tree_fvc ()
     { rep = new tree_constant_rep (t); rep->count = 1; }
 
-  tree_constant (const tree_constant& a)
+  tree_constant (const tree_constant& a) : tree_fvc ()
     { rep = a.rep; rep->count++; }
-  tree_constant (tree_constant_rep& r)
-    { rep = &r; rep->count++; }
 
   ~tree_constant (void);
 
@@ -133,6 +132,9 @@ public:
   double to_scalar (void) const { return rep->to_scalar (); }
   ColumnVector to_vector (void) const { return rep->to_vector (); }
   Matrix to_matrix (void) const { return rep->to_matrix (); }
+
+  void stash_original_text (char *s)
+    { rep->stash_original_text (s); }
 
   tree_constant_rep::constant_type force_numeric (int force_str_conv = 0)
     { return rep->force_numeric (force_str_conv); }
@@ -282,6 +284,8 @@ public:
 	retval(0).eval (print);
       return retval;
     }
+
+  void print_code (ostream& os);
 
 private:
   tree_constant_rep *rep;

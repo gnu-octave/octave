@@ -39,26 +39,17 @@ class idx_vector;
 
 struct Mapper_fcn;
 
-/*
- * Forward class declarations.
- */
+// Forward class declarations.
+
 class tree;
 class tree_constant;
 
-/*
- * The actual representation of the tree_constant.
- */
+// The actual representation of the tree_constant.
+
 class
 tree_constant_rep
 {
 friend class tree_constant;
-
-  enum force_orient
-    {
-      no_orient,
-      row_orient,
-      column_orient,
-    };
 
 public:
   enum constant_type
@@ -73,6 +64,14 @@ public:
       magic_colon,
     };
 
+  enum force_orient
+    {
+      no_orient,
+      row_orient,
+      column_orient,
+    };
+
+private:
   tree_constant_rep (void);
 
   tree_constant_rep (double d);
@@ -154,6 +153,8 @@ public:
   double to_scalar (void) const;
   ColumnVector to_vector (void) const;
   Matrix to_matrix (void) const;
+
+  void stash_original_text (char *s);
 
   tree_constant_rep::constant_type force_numeric (int force_str_conv = 0);
   tree_constant make_numeric (int force_str_conv = 0) const;
@@ -245,6 +246,8 @@ public:
   void maybe_mutate (void);
   void print (void);
 
+  void print_code (ostream& os);
+
   tree_constant do_index (const Octave_object& args);
 
   tree_constant do_scalar_index (const Octave_object& args) const;
@@ -330,7 +333,6 @@ public:
 
   tree_constant mapper (Mapper_fcn& m_fcn, int print) const;
 
-private:
   int count;
   constant_type type_tag;
   union
@@ -342,6 +344,7 @@ private:
       char *string;			// A character string constant.
       Range *range;			// A set of evenly spaced values.
     };
+  char *orig_text;
 };
 
 extern tree_constant do_binary_op (tree_constant& a, tree_constant& b,

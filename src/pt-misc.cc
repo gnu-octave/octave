@@ -34,6 +34,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <unistd.h>
 #endif
 
+#include <iostream.h>
+
 #include "error.h"
 #include "tree.h"
 #include "tree-misc.h"
@@ -57,6 +59,31 @@ tree_statement::~tree_statement (void)
 {
   delete command;
   delete expression;
+}
+
+void
+tree_statement::print_code (ostream& os)
+{
+  if (command)
+    {
+      command->print_code (os);
+
+      if (! print_flag)
+	os << ";";
+
+      command->print_code_new_line (os);
+    }
+  else if (expression)
+    {
+      expression->print_code (os);
+
+      if (! print_flag)
+	os << ";";
+
+      expression->print_code_new_line (os);
+    }
+
+
 }
 
 tree_constant
@@ -102,6 +129,18 @@ tree_statement_list::eval (int print)
   return retval;
 }
 
+void
+tree_statement_list::print_code (ostream& os)
+{
+  for (Pix p = first (); p != 0; next (p))
+    {
+      tree_statement *elt = this->operator () (p);
+
+      if (elt)
+	elt->print_code (os);
+    }
+}
+
 Octave_object
 tree_argument_list::convert_to_const_vector (void)
 {
@@ -133,6 +172,27 @@ tree_argument_list::convert_to_const_vector (void)
 	}
     }
   return args;
+}
+
+void
+tree_argument_list::print_code (ostream& os)
+{
+  Pix p = first ();
+
+  while (p)
+    {
+      tree_expression *elt = this->operator () (p);
+
+      next (p);
+
+      if (elt)
+	{
+	  elt->print_code (os);
+
+	  if (p)
+	    os << ", ";
+	}
+    }
 }
 
 // Parameter lists.
@@ -225,6 +285,52 @@ tree_parameter_list::is_defined (void)
 }
 
 void
+tree_parameter_list::print_code (ostream& os)
+{
+  Pix p = first ();
+
+  while (p)
+    {
+      tree_identifier *elt = this->operator () (p);
+
+      next (p);
+
+      if (elt)
+	{
+	  elt->print_code (os);
+
+	  if (p)
+	    os << ", ";
+	}
+    }
+}
+
+// Return lists.
+
+void
+tree_return_list::print_code (ostream& os)
+{
+  Pix p = first ();
+
+  while (p)
+    {
+      tree_index_expression *elt = this->operator () (p);
+
+      next (p);
+
+      if (elt)
+	{
+	  elt->print_code (os);
+
+	  if (p)
+	    os << ", ";
+	}
+    }
+}
+
+// Global.
+
+void
 tree_global::eval (void)
 {
   if (ident)
@@ -243,6 +349,18 @@ tree_global::eval (void)
 }
 
 void
+tree_global::print_code (ostream& os)
+{
+  if (ident)
+    ident->print_code (os);
+
+  if (assign_expr)
+    assign_expr->print_code (os);
+}
+
+// Global initializer lists.
+
+void
 tree_global_init_list::eval (void)
 {
   for (Pix p = first (); p != 0; next (p))
@@ -251,6 +369,29 @@ tree_global_init_list::eval (void)
       t->eval ();
     }
 }
+
+void
+tree_global_init_list::print_code (ostream& os)
+{
+  Pix p = first ();
+
+  while (p)
+    {
+      tree_global *elt = this->operator () (p);
+
+      next (p);
+
+      if (elt)
+	{
+	  elt->print_code (os);
+
+	  if (p)
+	    os << ", ";
+	}
+    }
+}
+
+// If.
 
 int
 tree_if_clause::eval (void)
@@ -309,6 +450,38 @@ tree_if_clause::eval (void)
 }
 
 void
+tree_if_clause::print_code (ostream& os)
+{
+  if (expr)
+    {
+      expr->print_code (os);
+
+      print_code_new_line (os);
+
+      increment_indent_level ();
+    }
+  else
+    {
+      print_code_indent (os);
+
+      os << "else";
+
+      print_code_new_line (os);
+
+      increment_indent_level ();
+    }
+
+  if (list)
+    {
+      list->print_code (os);
+
+      decrement_indent_level ();
+    }
+}
+
+// List of if commands.
+
+void
 tree_if_command_list::eval (void)
 {
   for (Pix p = first (); p != 0; next (p))
@@ -317,6 +490,35 @@ tree_if_command_list::eval (void)
 
       if (t->eval () || error_state)
 	break;
+    }
+}
+
+void
+tree_if_command_list::print_code (ostream& os)
+{
+  Pix p = first ();
+
+  int first_elt = 1;
+
+  while (p)
+    {
+      tree_if_clause *elt = this->operator () (p);
+
+      next (p);
+
+      if (elt)
+	{
+	  if (p && ! first_elt)
+	    {
+	      print_code_indent (os);
+
+	      os << "elseif ";
+	    }
+
+	  elt->print_code (os);
+	}
+
+      first_elt = 0;
     }
 }
 

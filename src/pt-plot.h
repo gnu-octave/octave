@@ -28,6 +28,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma interface
 #endif
 
+#include <iostream.h>
+
 class tree_command;
 class tree_plot_command;
 class plot_limits;
@@ -36,8 +38,6 @@ class subplot_using;
 class subplot_style;
 class subplot;
 class subplot_list;
-
-class ostream;
 
 #include <SLList.h>
 
@@ -54,6 +54,11 @@ tree_plot_command : public tree_command
   ~tree_plot_command (void);
 
   void eval (void);
+
+  void print_code (ostream& os)
+    {
+      os << "<plot command printing not implemented yet>";
+    }
 
  private:
   int ndim;

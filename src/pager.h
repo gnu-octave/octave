@@ -33,6 +33,9 @@ extern void initialize_pager (void);
 extern void maybe_page_output (ostrstream& msg_buf);
 extern void flush_output_to_pager (void);
 
+extern void close_diary_file (void);
+extern void maybe_write_to_diary_file (const char *s);
+
 #endif
 
 /*

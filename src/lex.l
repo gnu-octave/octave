@@ -423,7 +423,7 @@ EXPON	([DdEe][+-]?{D}+)
 			  convert_spaces_to_comma = 1;
 			  if (plotting && ! in_plot_range)
 			    past_plot_range = 1;
-			  yylval.tok_val = new token (value,
+			  yylval.tok_val = new token (value, yytext,
 						      input_line_number,
 						      current_input_column);
 			  token_stack.push (yylval.tok_val);
@@ -444,7 +444,7 @@ EXPON	([DdEe][+-]?{D}+)
 			  convert_spaces_to_comma = 1;
 			  if (plotting && ! in_plot_range)
 			    past_plot_range = 1;
-			  yylval.tok_val = new token (value,
+			  yylval.tok_val = new token (value, yytext,
 						      input_line_number,
 						      current_input_column);
 			  token_stack.push (yylval.tok_val);

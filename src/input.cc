@@ -48,10 +48,9 @@ extern void free_undo_list ();
 
 extern char *xmalloc ();
 
-/*
- * Yes, this sucks, but it avoids a conflict with another readline
- * function declared in iostream.h.
- */
+// Yes, this sucks, but it avoids a conflict with another readline
+// function declared in iostream.h.
+
 #if 0
 #define LINE_SIZE 8192
 static int no_line_editing = 0;
@@ -152,12 +151,11 @@ static char *octave_gets_line = 0;
 extern tree_constant eval_string (const char *string, int print,
 				  int ans_assign, int& parse_status);
 
-/*
- * Append SOURCE to TARGET at INDEX.  SIZE is the current amount of
- * space allocated to TARGET.  SOURCE can be NULL, in which case
- * nothing happens.  Gets rid of SOURCE by free ()ing it.  Returns
- * TARGET in case the location has changed.
- */
+// Append SOURCE to TARGET at INDEX.  SIZE is the current amount of
+// space allocated to TARGET.  SOURCE can be NULL, in which case
+// nothing happens.  Gets rid of SOURCE by free ()ing it.  Returns
+// TARGET in case the location has changed.
+
 static char *
 sub_append_string (char *source, char *target, int *index, int *size)
 {
@@ -179,10 +177,9 @@ sub_append_string (char *source, char *target, int *index, int *size)
   return target;
 }
 
-/*
- * Return the octal number parsed from STRING, or -1 to indicate that
- * the string contained a bad number.
- */
+// Return the octal number parsed from STRING, or -1 to indicate that
+// the string contained a bad number.
+
 int
 read_octal (const char *string)
 {
@@ -201,24 +198,23 @@ read_octal (const char *string)
   return result;
 }
 
-/*
- * Return a string which will be printed as a prompt.  The string may
- * contain special characters which are decoded as follows: 
- *   
- *	\t	the time
- *	\d	the date
- *	\n	CRLF
- *	\s	the name of the shell (program)
- *	\w	the current working directory
- *	\W	the last element of PWD
- *	\u	your username
- *	\h	the hostname
- *	\#	the command number of this command
- *	\!	the history number of this command
- *	\$	a $ or a # if you are root
- *	\<octal> character code in octal
- *	\\	a backslash
- */
+// Return a string which will be printed as a prompt.  The string may
+// contain special characters which are decoded as follows: 
+//   
+//	\t	the time
+//	\d	the date
+//	\n	CRLF
+//	\s	the name of the shell (program)
+//	\w	the current working directory
+//	\W	the last element of PWD
+//	\u	your username
+//	\h	the hostname
+//	\#	the command number of this command
+//	\!	the history number of this command
+//	\$	a $ or a # if you are root
+//	\<octal> character code in octal
+//	\\	a backslash
+
 static char *
 decode_prompt_string (const char *string)
 {
@@ -385,7 +381,7 @@ decode_prompt_string (const char *string)
 	      result =
 		(char *)sub_append_string (temp, result,
 					   &result_index, &result_size);
-	      temp = 0; /* Free ()'ed in sub_append_string (). */
+	      temp = 0; // Free ()'ed in sub_append_string ().
 	      result[result_index] = '\0';
 	      break;
 	    }
@@ -405,7 +401,7 @@ decode_prompt_string (const char *string)
     }
 
 #if 0
-  /* I don't really think that this is a good idea.  Do you? */
+// I don't really think that this is a good idea.  Do you?
   if (! find_variable ("NO_PROMPT_VARS"))
     {
       WORD_LIST *expand_string (), *list;
@@ -420,10 +416,10 @@ decode_prompt_string (const char *string)
 
   return result;
 }
-/*
- * Use GNU readline to get an input line and store it in the history
- * list.
- */
+
+// Use GNU readline to get an input line and store it in the history
+// list.
+
 static char *
 octave_gets (void)
 {
@@ -444,7 +440,10 @@ octave_gets (void)
 	  flush_output_to_pager ();
 	}
 
+      maybe_write_to_diary_file (prompt);
+
       octave_gets_line = gnu_readline (prompt);
+
       delete [] prompt;
     }
   else
@@ -456,6 +455,8 @@ octave_gets (void)
     {
       maybe_save_history (octave_gets_line);
 
+      maybe_write_to_diary_file (octave_gets_line);
+
       if (echo_input)
 	{
 	  if (! forced_interactive)
@@ -464,12 +465,14 @@ octave_gets (void)
 	  cout << octave_gets_line << "\n";
 	}
     }
+
+  maybe_write_to_diary_file ("\n");
+  
   return octave_gets_line;
 }
 
-/*
- * Read a line from the input stream.
- */
+// Read a line from the input stream.
+
 int
 octave_read (char *buf, int max_size)
 {
@@ -561,10 +564,9 @@ octave_read (char *buf, int max_size)
   return status;
 }
 
-/*
- * Fix things up so that input can come from file `name', printing a
- * warning if the file doesn't exist.
- */
+// Fix things up so that input can come from file `name', printing a
+// warning if the file doesn't exist.
+
 FILE *
 get_input_from_file (char *name, int warn)
 {
@@ -584,11 +586,10 @@ get_input_from_file (char *name, int warn)
   return instream;
 }
 
-/*
- * Fix things up so that input can come from the standard input.  This
- * may need to become much more complicated, which is why it's in a
- * separate function.
- */
+// Fix things up so that input can come from the standard input.  This
+// may need to become much more complicated, which is why it's in a
+// separate function.
+
 FILE *
 get_input_from_stdin (void)
 {
@@ -643,11 +644,9 @@ command_completer (char *text, int start, int end)
   return matches;
 }
 
-/*
- * The next two functions implement the equivalent of the K*rn shell
- * C-o operate-and-get-next-history-line editing command.  Stolen from
- * the GNU Bourne Again SHell.
- */
+// The next two functions implement the equivalent of the K*rn shell
+// C-o operate-and-get-next-history-line editing command.  Stolen from
+// the GNU Bourne Again SHell.
 
 // ??
 static int saved_history_line_to_use = 0;
@@ -691,10 +690,10 @@ operate_and_get_next (int count, int c)
   int where;
   extern int history_stifled, history_length, max_input_history;
 
-  /* Accept the current line. */
+// Accept the current line.
   rl_newline ();
 
-  /* Find the current line, and find the next line to use. */
+// Find the current line, and find the next line to use.
   where = where_history ();
 
   if (history_stifled && (history_length >= max_input_history))
@@ -735,6 +734,8 @@ match_sans_spaces (const char *standard, const char *test)
 
   return (strncmp (standard, tp, len) == 0);
 }
+
+// If the user simply hits return, this will produce an empty matrix.
 
 static Octave_object
 get_user_input (const Octave_object& args, int nargout, int debug = 0)
@@ -790,8 +791,13 @@ get_user_input (const Octave_object& args, int nargout, int debug = 0)
 	{
 	  int parse_status = 0;
 	  retval = eval_string (input_buf, 0, 0, parse_status);
-	  if (debug && retval.is_defined ())
-	    retval.eval (1);
+	  if (retval.is_defined ())
+	    {
+	      if (debug)
+		retval.eval (1);
+	    }
+	  else
+	    retval = tree_constant (Matrix ());
 	}
     }
   else

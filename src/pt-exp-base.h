@@ -30,6 +30,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <time.h>
 #include <stdio.h>
+#include <iostream.h>
 
 #include "variables.h"
 #include "mappers.h"
@@ -67,6 +68,8 @@ class
 tree_expression : public tree
 {
 public:
+  int in_parens;
+
   enum type
     {
       unknown,
@@ -105,7 +108,10 @@ public:
    };
 
   tree_expression (int l = -1, int c = -1) : tree (l, c)
-    { etype = unknown; }
+    {
+      in_parens = 0;
+      etype = unknown;
+    }
 
   ~tree_expression (void) { }
 
@@ -149,14 +155,14 @@ public:
 
   tree_matrix (void)
     {
-      dir_next = tree_matrix::md_none;
+      direction = tree_matrix::md_none;
       element = 0;
       next = 0;
     }
 
   tree_matrix (tree_expression *e, tree_matrix::dir d)
     {
-      dir_next = d;
+      direction = d;
       element = e;
       next = 0;
     }
@@ -171,8 +177,10 @@ public:
 
   tree_constant eval (int print);
 
+  void print_code (ostream& os);
+
 private:
-  tree_matrix::dir dir_next; // Direction to the next element.
+  tree_matrix::dir direction; // Direction from the previous element.
   tree_expression *element;
   tree_matrix *next;
 };
@@ -224,13 +232,13 @@ tree_identifier : public tree_fvc
   friend class tree_index_expression;
 
 public:
-  tree_identifier (int l = -1, int c = -1)
+  tree_identifier (int l = -1, int c = -1) : tree_fvc (l, c)
     {
       sym = 0;
       maybe_do_ans_assign = 0;
     }
 
-  tree_identifier (symbol_record *s, int l = -1, int c = -1)
+  tree_identifier (symbol_record *s, int l = -1, int c = -1) : tree_fvc (l, c)
     {
       sym = s;
       maybe_do_ans_assign = 0;
@@ -255,10 +263,6 @@ public:
 
   void bump_value (tree_expression::type);
 
-  int load_fcn_from_file (int exec_script = 1);
-
-  int parse_fcn_file (int exec_script = 1, char *ff = 0);
-
   tree_fvc *do_lookup (int& script_file_executed);
 
   void link_to_global (void)
@@ -277,6 +281,8 @@ public:
   Octave_object eval (int print, int nargout, const Octave_object& args);
 
   void eval_undefined_error (void);
+
+  void print_code (ostream& os);
 
 private:
   symbol_record *sym;
@@ -333,6 +339,8 @@ tree_index_expression : public tree_expression
 
   void eval_error (void);
 
+  void print_code (ostream& os);
+
  private:
   tree_identifier *id;
   tree_argument_list *list;
@@ -368,6 +376,10 @@ tree_prefix_expression : public tree_expression
   int is_prefix_expression (void) const
     { return 1; }
 
+  char *oper (void) const;
+
+  void print_code (ostream& os);
+
  private:
   tree_identifier *id;
 };
@@ -399,6 +411,10 @@ tree_postfix_expression : public tree_expression
 
   void eval_error (void);
 
+  char *oper (void) const;
+
+  void print_code (ostream& os);
+
  private:
   tree_identifier *id;
 };
@@ -429,6 +445,10 @@ tree_unary_expression : public tree_expression
   tree_constant eval (int print);
 
   void eval_error (void);
+
+  char *oper (void) const;
+
+  void print_code (ostream& os);
 
  private:
   tree_expression *op;
@@ -466,6 +486,10 @@ tree_binary_expression : public tree_expression
 
   void eval_error (void);
 
+  char *oper (void) const;
+
+  void print_code (ostream& os);
+
  private:
   tree_expression *op1;
   tree_expression *op2;
@@ -477,14 +501,9 @@ class
 tree_assignment_expression : public tree_expression
 {
 public:
-  int in_parens;
-
   tree_assignment_expression (int l = -1, int c = -1)
     : tree_expression (l, c)
-    {
-      in_parens = 0;
-      etype = tree_expression::assignment;
-    }
+    { etype = tree_expression::assignment; }
 
   ~tree_assignment_expression (void) { }
 
@@ -500,38 +519,42 @@ class
 tree_simple_assignment_expression : public tree_assignment_expression
 {
  public:
-  tree_simple_assignment_expression (int plhs = 0, int l = -1, int c = -1)
+  void init (int plhs, int ans_assign)
+    {
+      etype = tree_expression::assignment;
+      lhs = 0;
+      index = 0;
+      rhs = 0;
+      preserve = plhs;
+      ans_ass = ans_assign;
+    }
+
+  tree_simple_assignment_expression (int plhs = 0, int ans_assign = 0,
+				     int l = -1, int c = -1)
     : tree_assignment_expression (l, c)
-      {
-	etype = tree_expression::assignment;
-	lhs = 0;
-	index = 0;
-	rhs = 0;
-	preserve = plhs;
-      }
+      { init (plhs, ans_assign); }
 
   tree_simple_assignment_expression (tree_identifier *i,
 				     tree_expression *r,
-				     int plhs = 0, int l = -1, int c = -1)
+				     int plhs = 0, int ans_assign = 0,
+				     int l = -1, int c = -1)
     : tree_assignment_expression (l, c)
       {
-	etype = tree_expression::assignment;
+	init (plhs, ans_assign);
 	lhs = i;
-	index = 0;
 	rhs = r;
-	preserve = plhs;
       }
 
   tree_simple_assignment_expression (tree_index_expression *idx_expr,
 				     tree_expression *r,
-				     int plhs = 0, int l = -1, int c = -1)
+				     int plhs = 0, int ans_assign = 0,
+				     int l = -1, int c = -1)
     : tree_assignment_expression (l, c)
       {
-	etype = tree_expression::assignment;
+	init (plhs, ans_assign);
 	lhs = idx_expr->ident ();
 	index = idx_expr->arg_list ();
 	rhs = r;
-	preserve = plhs;
       }
 
   ~tree_simple_assignment_expression (void);
@@ -539,15 +562,21 @@ tree_simple_assignment_expression : public tree_assignment_expression
   tree_identifier *left_hand_side (void)
     { return lhs; }
 
+  int is_ans_assign (void)
+    { return ans_ass; }
+
   tree_constant eval (int print);
 
   void eval_error (void);
+
+  void print_code (ostream& os);
 
  private:
   tree_identifier *lhs;
   tree_argument_list *index;
   tree_expression *rhs;
   int preserve;
+  int ans_ass;
 };
 
 // Multi-valued assignment expressions.
@@ -581,6 +610,8 @@ tree_multi_assignment_expression : public tree_assignment_expression
   Octave_object eval (int print, int nargout, const Octave_object& args);
 
   void eval_error (void);
+
+  void print_code (ostream& os);
 
  private:
   tree_return_list *lhs;
@@ -624,6 +655,8 @@ tree_colon_expression : public tree_expression
 
   void eval_error (const char *s);
 
+  void print_code (ostream& os);
+
  private:
   tree_expression *op1;
   tree_expression *op2;
@@ -659,6 +692,11 @@ public:
     { return my_name; }
 
   int max_expected_args (void);
+
+  void print_code (ostream& os)
+    {
+      os << my_name << " can't be printed because it is a builtin function\n";
+    }
 
 private:
   int nargin_max;
@@ -744,6 +782,8 @@ public:
   int max_expected_args (void);
 
   void traceback_error (void);
+
+  void print_code (ostream& os);
 
 private:
   int call_depth;

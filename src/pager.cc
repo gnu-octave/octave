@@ -27,16 +27,31 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <iostream.h>
 #include <strstream.h>
+#include <fstream.h>
 #include <stdlib.h>
 
 #include "procstream.h"
 
 #include "user-prefs.h"
+#include "oct-obj.h"
+#include "error.h"
+#include "defun.h"
 #include "input.h"
 #include "pager.h"
+#include "utils.h"
+#include "help.h"
 
 // Where we stash output headed for the screen.
 static ostrstream *pager_buf = 0;
+
+// Nonzero means we write to the diary file.
+static int write_to_diary_file = 0;
+
+// The name of the current diary file.
+static char *diary_file = "diary";
+
+// The diary file.
+static ofstream diary_stream;
 
 static int
 line_count (char *s)
@@ -52,13 +67,12 @@ line_count (char *s)
   return count;
 }
 
-/*
- * For now, use the variables from readline.  It already handles
- * SIGWINCH, so these values have a good chance of being correct even
- * if the window changes size (they will be wrong if, for example, the
- * luser changes the window size while the pager is running, and the
- * signal is handled by the pager instead of us.
- */
+// For now, use the variables from readline.  It already handles
+// SIGWINCH, so these values have a good chance of being correct even
+// if the window changes size (they will be wrong if, for example, the
+// luser changes the window size while the pager is running, and the
+// signal is handled by the pager instead of us.
+
 int
 terminal_columns (void)
 {
@@ -116,6 +130,8 @@ flush_output_to_pager (void)
       return;
     }
 
+  maybe_write_to_diary_file (message);
+
   int nlines = line_count (message);
 
   if (nlines > terminal_rows () - 2)
@@ -140,6 +156,76 @@ flush_output_to_pager (void)
   cout.flush ();
   delete [] message;
   initialize_pager ();
+}
+
+static void
+open_diary_file (void)
+{
+  if (diary_stream.is_open ())
+    diary_stream.close ();
+
+  diary_stream.open (diary_file, ios::app);
+
+  if (! diary_stream)
+    error ("diary: can't open diary file `%s'", diary_file);
+}
+
+void
+close_diary_file (void)
+{
+  if (diary_stream)
+    diary_stream.close ();
+}
+
+void
+maybe_write_to_diary_file (const char *s)
+{
+  if (write_to_diary_file && diary_stream)
+    diary_stream << s;
+}
+
+DEFUN_TEXT ("diary", Fdiary, Sdiary, -1, 1,
+  "diary [on|off]\n\
+diary [file]\n\
+\n\
+redirect all input and screen output to a file.")
+{
+  Octave_object retval;
+
+  DEFINE_ARGV("diary");
+
+  switch (argc)
+    {
+    case 1:
+      write_to_diary_file = ! write_to_diary_file;
+      open_diary_file ();
+      break;
+    case 2:
+      {
+	char *arg = argv[1];
+	if (strcmp (arg, "on") == 0)
+	  {
+	    write_to_diary_file = 1;
+	    open_diary_file ();
+	  }	
+	else if (strcmp (arg, "off") == 0)
+	  write_to_diary_file = 0;
+	else
+	  {
+	    delete [] diary_file;
+	    diary_file = strsave (arg);
+	    open_diary_file ();
+	  }
+      }
+      break;
+    default:
+      print_usage ("diary");
+      break;
+    }
+
+  DELETE_ARGV;
+
+  return retval;
 }
 
 /*

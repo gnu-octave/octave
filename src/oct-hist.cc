@@ -38,7 +38,6 @@ Software Foundation, Inc.
 #endif
 #include <fcntl.h>
 #include <stdlib.h>
-#include <stdio.h>
 #include <string.h>
 #include <signal.h>
 #include <fstream.h>
@@ -48,6 +47,7 @@ Software Foundation, Inc.
 #include "utils.h"
 #include "error.h"
 #include "input.h"
+#include "pager.h"
 #include "octave.h"
 #include "oct-obj.h"
 #include "user-prefs.h"
@@ -79,10 +79,9 @@ static int history_lines_in_file = 0;
 // The number of history lines we've saved so far.
 static int history_lines_this_session = 0;
 
-/*
- * Get some default values, possibly reading them from the
- * environment.
- */
+// Get some default values, possibly reading them from the
+// environment.
+
 static int
 default_history_size (void)
 {
@@ -119,9 +118,8 @@ default_history_file (void)
   return file;
 }
 
-/*
- * Prime the history list.
- */
+// Prime the history list.
+
 void
 initialize_history (void)
 {
@@ -150,13 +148,12 @@ maybe_save_history (char *s)
     }
 }
 
-/*
- * Display, save, or load history.  Stolen and modified from bash.
- *
- * Arg of -w FILENAME means write file, arg of -r FILENAME
- * means read file, arg of -q means don't number lines.  Arg of N
- * means only display that many items. 
- */
+// Display, save, or load history.  Stolen and modified from bash.
+//
+// Arg of -w FILENAME means write file, arg of -r FILENAME
+// means read file, arg of -q means don't number lines.  Arg of N
+// means only display that many items. 
+
 void
 do_history (int argc, char **argv)
 {
@@ -271,23 +268,28 @@ do_history (int argc, char **argv)
 	if ((i -= limit) < 0)
 	  i = 0;
 
+      ostrstream output_buf;
+
       while (hlist[i])
 	{
 //	  QUIT;  // in bash: (interrupt_state) throw_to_top_level ();
 
 	  if (numbered_output)
-	    cerr.form ("%5d%c", i + history_base, hlist[i]->data ? '*' : ' ');
-	  cerr << hlist[i]->line << "\n";
+	    output_buf.form ("%5d%c", i + history_base,
+			     hlist[i]->data ? '*' : ' '); 
+	  output_buf << hlist[i]->line << "\n";
 	  i++;
 	}
+
+      output_buf << ends;
+      maybe_page_output (output_buf);
     }
 }
 
-/*
- * Read the edited history lines from STREAM and return them
- * one at a time.  This can read unlimited length lines.  The
- *  caller should free the storage.
- */
+// Read the edited history lines from STREAM and return them
+// one at a time.  This can read unlimited length lines.  The
+//  caller should free the storage.
+
 static char *
 edit_history_readline (fstream& stream)
 {
@@ -343,13 +345,12 @@ extern "C"
   HIST_ENTRY *history_get ();
 }
 
-/*
- * Use `command' to replace the last entry in the history list, which,
- * by this time, is `run_history blah...'.  The intent is that the
- * new command become the history entry, and that `fc' should never
- * appear in the history list.  This way you can do `run_history' to
- * your heart's content.
- */ 
+// Use `command' to replace the last entry in the history list, which,
+// by this time, is `run_history blah...'.  The intent is that the
+// new command become the history entry, and that `fc' should never
+// appear in the history list.  This way you can do `run_history' to
+// your heart's content.
+
 static void
 edit_history_repl_hist (char *command)
 {
@@ -365,8 +366,7 @@ edit_history_repl_hist (char *command)
     ; // Count 'em.
   i--;
 
-  /* History_get () takes a parameter that should be
-     offset by history_base. */
+// History_get () takes a parameter that should be offset by history_base.
 
 // Don't free this.
   HIST_ENTRY *histent = history_get (history_base + i);

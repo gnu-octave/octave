@@ -28,6 +28,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma interface
 #endif
 
+#include <iostream.h>
+
 class tree_statement_list;
 class tree_global_init_list;
 class tree_if_command_list;
@@ -73,6 +75,8 @@ tree_global_command : public tree_command
 
   void eval (void);
 
+  void print_code (ostream& os);
+
 private:
   tree_global_init_list *init_list;
 };
@@ -110,6 +114,8 @@ tree_while_command : public tree_command
 
   void eval_error (void);
 
+  void print_code (ostream& os);
+
  private:
   tree_expression *expr;	// Expression to test.
   tree_statement_list *list;	// List of commands to execute.
@@ -143,6 +149,8 @@ tree_for_command : public tree_command
 
   void eval_error (void);
 
+  void print_code (ostream& os);
+
  private:
   void do_for_loop_once (tree_constant *rhs, int& quit);
 
@@ -170,6 +178,8 @@ tree_if_command : public tree_command
 
   void eval_error (void);
 
+  void print_code (ostream& os);
+
  private:
   tree_if_command_list *list;
 };
@@ -185,6 +195,8 @@ tree_break_command : public tree_command
   ~tree_break_command (void) { }
 
   void eval (void);
+
+  void print_code (ostream& os);
 };
 
 // Continue.
@@ -198,6 +210,8 @@ tree_continue_command : public tree_command
   ~tree_continue_command (void) { }
 
   void eval (void);
+
+  void print_code (ostream& os);
 };
 
 // Return.
@@ -211,6 +225,8 @@ public:
   ~tree_return_command (void) { }
 
   void eval (void);
+
+  void print_code (ostream& os);
 };
 
 #endif

@@ -77,8 +77,8 @@ extern string info_prog;
 // Name of the editor to be invoked by the edit_history command.
 extern string editor;
 
-// If nonzero, don't do fancy line editing.
-extern int no_line_editing;
+// Nonzero means we are using readline.
+extern int using_readline;
 
 // If nonzero, print verbose info in some cases.
 extern int verbose_flag;

@@ -23,11 +23,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 /*
 
-The 3 functions listed below were adapted from similar functions
+The 2 functions listed below were adapted from similar functions
 from GNU Bash, the Bourne Again SHell, copyright (C) 1987, 1989, 1991
 Free Software Foundation, Inc.
 
-  read_octal    sub_append_string    decode_prompt_string
+  read_octal    decode_prompt_string
 
 */
 
@@ -60,37 +60,6 @@ Free Software Foundation, Inc.
 #include "readline/readline.h"
 #include "readline/history.h"
 
-// Yes, this sucks, but it avoids a conflict with another readline
-// function declared in iostream.h.
-// (Apparently, there isn't one there now...)
-
-#if 0
-#define LINE_SIZE 8192
-static int no_line_editing = 0;
-#endif
-
-char *
-gnu_readline (const char *s)
-{
-#if 0
-  static int state = 0;
-  static char *line_from_stdin = 0;
-  if (no_line_editing)
-    {
-      if (! state)
-	{
-	  line_from_stdin = (char *) malloc (LINE_SIZE);
-	  state = 1;
-	}
-      fputs ("octave> ", stdout);
-      fgets (line_from_stdin, LINE_SIZE, stdin);
-      return line_from_stdin;
-    }
-  else
-#endif
-    return readline (s);
-}
-
 #include "str-vec.h"
 
 #include "defun.h"
@@ -113,16 +82,6 @@ gnu_readline (const char *s)
 #include "utils.h"
 #include "variables.h"
 
-// The size that strings change by.
-#ifndef DEFAULT_ARRAY_SIZE
-#define DEFAULT_ARRAY_SIZE 512
-#endif
-
-// The growth rate for the prompt string.
-#ifndef PROMPT_GROWTH
-#define PROMPT_GROWTH 50
-#endif
-
 // Global pointer for eval().
 string current_eval_string;
 
@@ -144,9 +103,6 @@ int reading_script_file = 0;
 // If we are reading from an M-file, this is it.
 FILE *ff_instream = 0;
 
-// Nonzero means we are using readline.
-int using_readline = 1;
-
 // Nonzero means this is an interactive shell.
 int interactive = 0;
 
@@ -159,13 +115,10 @@ int promptflag = 1;
 // The current line of input, from wherever.
 string current_input_line;
 
-// A line of input from readline.
-static char *octave_gets_line = 0;
-
 // Return the octal number parsed from STRING, or -1 to indicate that
 // the string contained a bad number.
 
-int
+static int
 read_octal (const string& s)
 {
   int result = 0;
@@ -270,7 +223,7 @@ decode_prompt_string (const string& s)
 
 	    case 'n':
 	      {
-		if (! no_line_editing)
+		if (using_readline)
 		  temp = "\r\n";
 		else
 		  temp = "\n";
@@ -441,19 +394,75 @@ do_input_echo (const string& input_string)
     }
 }
 
-// Use GNU readline to get an input line and store it in the history
-// list.
+char *
+gnu_readline (const char *s)
+{
+  char *retval = 0;
+
+  if (using_readline)
+    {
+      retval = ::readline (s);
+    }
+  else
+    {
+      if (s && *s && (interactive || forced_interactive))
+	fprintf (rl_outstream, s);
+
+      FILE *curr_stream = rl_instream;
+      if (reading_fcn_file || reading_script_file)
+	curr_stream = ff_instream;
+
+      int grow_size = 1024;
+      int max_size = grow_size;
+
+      char *buf = (char *) malloc (max_size);
+      char *bufptr = buf;
+
+      do
+	{
+	  if (fgets (bufptr, grow_size, curr_stream))
+	    {
+	      int len = strlen (bufptr);
+
+	      if (len == grow_size - 1)
+		{
+		  int tmp = bufptr - buf + grow_size - 1;
+		  grow_size *= 2;
+		  max_size += grow_size;
+		  buf = (char *) realloc (buf, max_size);
+		  bufptr = buf + tmp;
+
+		  if (*(bufptr-1) == '\n')
+		    {
+		      *bufptr = '\0';
+		      retval = buf;
+		    }
+		}
+	      else if (bufptr[len-1] != '\n')
+		{
+		  bufptr[len++] = '\n';
+		  bufptr[len] = '\0';
+		  retval = buf;
+		}
+	      else
+		retval = buf;
+	    }
+	  else
+	    break;
+	}
+      while (! retval);
+    }
+
+  return retval;
+}
 
 static char *
 octave_gets (void)
 {
-  if (octave_gets_line)
-    {
-      free (octave_gets_line);
-      octave_gets_line = 0;
-    }
+  char *retval = 0;
 
-  if (interactive || forced_interactive)
+  if ((interactive || forced_interactive)
+      && (! (reading_fcn_file || reading_script_file)))
     {
       const char *ps = (promptflag > 0) ? user_pref.ps1.c_str () :
 	user_pref.ps2.c_str ();
@@ -468,106 +477,113 @@ octave_gets (void)
 
       maybe_write_to_diary_file (prompt);
 
-      octave_gets_line = gnu_readline (prompt.c_str ());
+      retval = gnu_readline (prompt.c_str ());
     }
   else
-    octave_gets_line = gnu_readline ("");
+    retval = gnu_readline ("");
 
-  current_input_line = string (octave_gets_line);
+  if (retval)
+    current_input_line = retval;
+  else
+    current_input_line = "";
 
-  if (octave_gets_line && *octave_gets_line)
+  if (! current_input_line.empty ())
     {
       if (! input_from_startup_file)
-	octave_command_history.add (octave_gets_line);
+	octave_command_history.add (current_input_line);
 
-      maybe_write_to_diary_file (octave_gets_line);
+      maybe_write_to_diary_file (current_input_line);
 
-      do_input_echo (octave_gets_line);
+      do_input_echo (current_input_line);
     }
 
   maybe_write_to_diary_file ("\n");
   
-  return octave_gets_line;
+  return retval;
 }
 
 // Read a line from the input stream.
 
-int
-octave_read (char *buf, unsigned max_size)
+static char *
+get_user_input (void)
 {
-  int status = 0;
+  char *retval = 0;
 
   if (get_input_from_eval_string)
     {
       size_t len = current_eval_string.length ();
 
-      if (len < max_size - 1)
+      retval = (char *) malloc (len + 2);
+
+      strcpy (retval, current_eval_string.c_str ());
+
+      retval[len++] = '\n';
+      retval[len] = '\0';    // Paranoia.
+    }
+  else
+    retval = octave_gets ();
+
+  if (retval)
+    current_input_line = retval;
+
+  input_line_number++;
+
+  return retval;
+}
+
+int
+octave_read (char *buf, unsigned max_size)
+{
+  static char *input_buf = 0;
+  static char *cur_pos = 0;
+  static int chars_left = 0;
+
+  int status = 0;
+
+  if (! input_buf)
+    {
+      cur_pos = input_buf = get_user_input ();
+
+      chars_left = input_buf ? strlen (input_buf) : 0;
+    }
+
+  if (chars_left > 0)
+    {
+      buf[0] = '\0';
+
+      int len = max_size - 2;
+
+      strncpy (buf, cur_pos, len);
+
+      if (chars_left > len)
 	{
-	  strcpy (buf, current_eval_string.c_str ());
-	  buf[len++] = '\n';
-	  buf[len] = '\0';    // Paranoia.
+	  chars_left -= len;
+
+	  cur_pos += len;
+
+	  buf[len] = '\0';
+
 	  status = len;
 	}
       else
-	status = -1;
-
-      current_input_line = buf;
-    }
-  else if (using_readline)
-    {
-      char *cp = octave_gets ();
-      if (cp)
 	{
-	  size_t len = strlen (cp);
+	  free (input_buf);
+	  input_buf = 0;
 
-	  if (len >= max_size)
-	    status = -1;
-	  else
-	    {
-	      strcpy (buf, cp);
-	      buf[len++] = '\n';
-	      buf[len] = '\0';    // Paranoia.
-	      status = len;
-	    }
+	  len = chars_left;
+
+	  if (buf[len-1] != '\n')
+	    buf[len++] = '\n';
+
+	  buf[len] = '\0';
+
+	  status = len;
 	}
-      current_input_line = cp;
     }
-  else
-    {
-      FILE *curr_stream = rl_instream;
-      if (reading_fcn_file || reading_script_file)
-	curr_stream = ff_instream;
-
-      assert (curr_stream);
-
-      // Why is this required?
-      buf[0] = '\0';
-
-      if (fgets (buf, max_size, curr_stream))
-	{
-	  size_t len = strlen (buf);
-
-	  if (len > max_size - 2)
-	    status = -1;
-	  else
-	    {
-	      if (buf[len-1] != '\n')
-		{
-		  buf[len++] = '\n';
-		  buf[len] = '\0';
-		}
-	      status = len;
-	    }
-	}
-      else
-	status = 0; // Tell yylex that we found EOF.
-
-      current_input_line = buf;
-
-      do_input_echo (current_input_line);
-    }
-
-  input_line_number++;
+  else if (chars_left == 0)
+    status = 0;
+  else    
+    status = -1;
 
   return status;
 }

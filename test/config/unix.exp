@@ -1,5 +1,27 @@
 # Some global definitions.
 
+if ![info exists OCTAVE ] then {
+  set OCTAVE [pwd]
+  set tail [string last /test/ $OCTAVE]
+  if { $tail < 0 } {
+    error "run test from in the test directory"
+    exit 1;  
+  }
+  set OCTAVE [string replace $OCTAVE $tail end /src/octave]
+}
+
+if ![info exists OCTAVE_SCRIPT_PATH ] then {
+  set OSPATH "[pwd]"
+  set tail [string last /test/ $OSPATH]
+  if { $tail < 0 } {
+    error "run test from in the test directory"
+    exit 1;
+  }
+  set OSPATH "-p '[string replace $OSPATH $tail end /scripts//]:[string replace $OSPATH $tail end /src]'"
+} else {
+  set OSPATH "-p $OCTAVE_SCRIPT_PATH"
+}
+
 if ![info exists prompt] then {
   set prompt "octave:\[0-9\]*> "
 }
@@ -43,7 +65,7 @@ proc octave_exit { } { }
 
 proc octave_interactive_start { } {
   global OCTAVE
-  global OCTAVE_SCRIPT_PATH
+  global OSPATH
   global prompt
   global nl
   global resync
@@ -59,11 +81,7 @@ proc octave_interactive_start { } {
 # the timeout period at a minute for the real tests.
 
   set timeout 60
-  if [ llength $OCTAVE_SCRIPT_PATH ] {
-    spawn $OCTAVE -f -q -p $OCTAVE_SCRIPT_PATH
-  } else {
-    spawn $OCTAVE -f -q
-  }
+  spawn $OCTAVE -f -q $OSPATH
 
   set timeout 5
   expect {
@@ -109,26 +127,19 @@ proc octave_interactive_stop { } {
 
 proc octave_start { src_file } {
   global OCTAVE
-  global OCTAVE_SCRIPT_PATH
+  global OSPATH
   global oct_output
-
-  set OSPATH $OCTAVE_SCRIPT_PATH
-
-  if ![info exists OSPATH] then {
-    set OSPATH ""
-  }
 
 # Can't seem to get 2>&1 to work without using /bin/sh -c ""...
 
-  send_log "EXEC: $OCTAVE -f -q -p $OSPATH $src_file\n"
-  catch "exec /bin/sh -c \"$OCTAVE -f -q -p $OSPATH $src_file 2>&1\"" oct_output
+  send_log "EXEC: $OCTAVE -f -q $OSPATH $src_file\n"
+  catch "exec /bin/sh -c \"$OCTAVE -f -q $OSPATH $src_file 2>&1\"" oct_output
 }
 
 # do_test -- run a test given by the file $src_code.
 
 proc do_test { src_code } {
   global OCTAVE
-  global OCTAVE_SCRIPT_PATH
   global srcdir
   global subdir
   global spawn_id

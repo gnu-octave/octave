@@ -1,3 +1,8 @@
+2002-04-12  Kienzle <pkienzle@jazz.ncnr.nist.gov>
+
+	* config/unix.exp: Allow running of individual tests with
+	"runtest *.exp" from any of the directories under test/octave.test.
+
 2002-04-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* octave.test/linalg/qr-7.m: New test.

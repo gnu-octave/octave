@@ -198,7 +198,7 @@ linear_constraints_ok (const ColumnVector& x, const ColumnVector& llb,
 
 int
 nonlinear_constraints_ok (const ColumnVector& x, const ColumnVector& nllb,
-			  nonlinear_fcn g, const ColumnVector& nlub,
+			  NLFunc::nonlinear_fcn g, const ColumnVector& nlub,
 			  char *warn_for, int warn)
 {
   int nllb_len = nllb.capacity ();

@@ -105,7 +105,89 @@ octave_mapper::apply (const octave_value& arg) const
 {
   octave_value retval;
 
-  if (ch_map_fcn)
+  if (arg.is_real_type ())
+    {
+      if (arg.is_scalar_type ())
+	{
+	  double d = arg.double_value ();
+
+	  if (can_ret_cmplx_for_real && (d < lower_limit || d > upper_limit))
+	    {
+	      if (c_c_map_fcn)
+		retval = c_c_map_fcn (Complex (d));
+	      else
+		error ("%s: unable to handle real arguments",
+		       name().c_str ());
+	    }
+	  else if (d_d_map_fcn)
+	    retval = d_d_map_fcn (d);
+	  else if (d_b_map_fcn)
+	    retval = d_b_map_fcn (d);
+	  else
+	    error ("%s: unable to handle real arguments",
+		   name().c_str ());
+	}
+      else
+	{
+	  Matrix m = arg.matrix_value ();
+
+	  if (error_state)
+	    return retval;
+
+	  if (can_ret_cmplx_for_real
+	      && (any_element_less_than (m, lower_limit)
+		  || any_element_greater_than (m, upper_limit)))
+	    {
+	      if (c_c_map_fcn)
+		MAPPER_LOOP (ComplexMatrix, c_c_map_fcn, m);
+	      else
+		error ("%s: unable to handle real arguments",
+		       name().c_str ());
+	    }
+	  else if (d_d_map_fcn)
+	    MAPPER_LOOP (Matrix, d_d_map_fcn, m);
+	  else if (d_b_map_fcn)
+	    MAPPER_LOOP (boolMatrix, d_b_map_fcn, m);
+	  else
+	    error ("%s: unable to handle real arguments",
+		   name().c_str ());
+	}
+    }
+  else if (arg.is_complex_type ())
+    {
+      if (arg.is_scalar_type ())
+	{
+	  Complex c = arg.complex_value ();
+
+	  if (d_c_map_fcn)
+	    retval = d_c_map_fcn (c);
+	  else if (c_c_map_fcn)
+	    retval = c_c_map_fcn (c);
+	  else if (c_b_map_fcn)
+	    retval = c_b_map_fcn (c);
+	  else
+	    error ("%s: unable to handle complex arguments",
+		   name().c_str ());
+	}
+      else
+	{
+	  ComplexMatrix cm = arg.complex_matrix_value ();
+
+	  if (error_state)
+	    return retval;
+
+	  if (d_c_map_fcn)
+	    MAPPER_LOOP (Matrix, d_c_map_fcn, cm);
+	  else if (c_c_map_fcn)
+	    MAPPER_LOOP (ComplexMatrix, c_c_map_fcn, cm);
+	  else if (c_b_map_fcn)
+	    MAPPER_LOOP (boolMatrix, c_b_map_fcn, cm);
+	  else
+	    error ("%s: unable to handle complex arguments",
+		   name().c_str ());
+	}
+    }
+  else if (ch_map_fcn)
     {
       // XXX FIXME XXX -- this could be done in a better way...
 
@@ -140,92 +222,7 @@ octave_mapper::apply (const octave_value& arg) const
 	}
     }
   else
-    {
-      if (arg.is_real_type ())
-	{
-	  if (arg.is_scalar_type ())
-	    {
-	      double d = arg.double_value ();
-
-	      if (can_ret_cmplx_for_real && (d < lower_limit || d > upper_limit))
-		{
-		  if (c_c_map_fcn)
-		    retval = c_c_map_fcn (Complex (d));
-		  else
-		    error ("%s: unable to handle real arguments",
-			   name().c_str ());
-		}
-	      else if (d_d_map_fcn)
-		retval = d_d_map_fcn (d);
-	      else if (d_b_map_fcn)
-		retval = d_b_map_fcn (d);
-	      else
-		error ("%s: unable to handle real arguments",
-		       name().c_str ());
-	    }
-	  else
-	    {
-	      Matrix m = arg.matrix_value ();
-
-	      if (error_state)
-		return retval;
-
-	      if (can_ret_cmplx_for_real
-		  && (any_element_less_than (m, lower_limit)
-		      || any_element_greater_than (m, upper_limit)))
-		{
-		  if (c_c_map_fcn)
-		    MAPPER_LOOP (ComplexMatrix, c_c_map_fcn, m);
-		  else
-		    error ("%s: unable to handle real arguments",
-			   name().c_str ());
-		}
-	      else if (d_d_map_fcn)
-		MAPPER_LOOP (Matrix, d_d_map_fcn, m);
-	      else if (d_b_map_fcn)
-		MAPPER_LOOP (boolMatrix, d_b_map_fcn, m);
-	      else
-		error ("%s: unable to handle real arguments",
-		       name().c_str ());
-	    }
-	}
-      else if (arg.is_complex_type ())
-	{
-	  if (arg.is_scalar_type ())
-	    {
-	      Complex c = arg.complex_value ();
-
-	      if (d_c_map_fcn)
-		retval = d_c_map_fcn (c);
-	      else if (c_c_map_fcn)
-		retval = c_c_map_fcn (c);
-	      else if (c_b_map_fcn)
-		retval = c_b_map_fcn (c);
-	      else
-		error ("%s: unable to handle complex arguments",
-		       name().c_str ());
-	    }
-	  else
-	    {
-	      ComplexMatrix cm = arg.complex_matrix_value ();
-
-	      if (error_state)
-		return retval;
-
-	      if (d_c_map_fcn)
-		MAPPER_LOOP (Matrix, d_c_map_fcn, cm);
-	      else if (c_c_map_fcn)
-		MAPPER_LOOP (ComplexMatrix, c_c_map_fcn, cm);
-	      else if (c_b_map_fcn)
-		MAPPER_LOOP (boolMatrix, c_b_map_fcn, cm);
-	      else
-		error ("%s: unable to handle complex arguments",
-		       name().c_str ());
-	    }
-	}
-      else
-	gripe_wrong_type_arg ("mapper", arg);
-    }
+    gripe_wrong_type_arg ("mapper", arg);
 
   return retval;
 }

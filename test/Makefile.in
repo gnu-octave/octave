@@ -26,12 +26,12 @@ OCTAVE_SCRIPT_PATH = .:$(TOPDIR)/src//:$(srcdir)/../scripts//
 
 ifeq ($(SHARED_LIBS), true)
   OCTAVE_LD_LIBRARY_PATH = `pwd`/../src:`pwd`/../liboctave:`pwd`/../libcruft
-  ifeq ($(LD_LIBRARY_PATH),)
+  ifeq ($(@library_path_var@),)
     XLD_LIBRARY_PATH = $(OCTAVE_LD_LIBRARY_PATH)
   else
-    XLD_LIBRARY_PATH = $(OCTAVE_LD_LIBRARY_PATH):$(LD_LIBRARY_PATH)
+    XLD_LIBRARY_PATH = $(OCTAVE_LD_LIBRARY_PATH):$(@library_path_var@)
   endif
-  SET_LD_LIBRARY_PATH = LD_LIBRARY_PATH="$(XLD_LIBRARY_PATH)"
+  SET_LD_LIBRARY_PATH = @library_path_var@="$(XLD_LIBRARY_PATH)"
 endif
 
 # Complete directory trees to distribute.

@@ -23,7 +23,7 @@ LIBOCTAVE_LFLAGS = -L../libcruft -L../kpathsea -L../glob -L. $(RLD_FLAG)
 ifeq ($(INCLUDE_LINK_DEPS), true)
   LINK_DEPS = \
     $(LIBOCTAVE_LFLAGS) \
-    $(LIBCRUFT) $(BLAS_LIBS) $(FFTW_LIBS) $(LIBREADLINE) $(TERMLIBS) -lglob
+    $(LIBCRUFT) $(BLAS_LIBS) $(FFTW_LIBS) $(LIBREADLINE) -lglob
 endif
 
 MATRIX_INC := Array.h Array2.h Array3.h ArrayN.h DiagArray2.h Array-flags.h \

@@ -234,7 +234,9 @@ ifeq ($(SHARED_LIBS), true)
     LIBRARIES = liboctinterp.$(LIBEXT) liboctinterp.$(SHLEXT_VER)
   else
     LIBRARIES = liboctinterp.$(SHLEXT_VER)
-    XERBLA = ../libcruft/blas-xtra/pic/xerbla.o
+    ifdef FPICFLAG
+      XERBLA = ../libcruft/blas-xtra/pic/xerbla.o
+    endif
   endif
 else
   ifeq ($(STATIC_LIBS), true)

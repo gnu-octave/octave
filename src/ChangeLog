@@ -1,3 +1,15 @@
+2002-10-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-mapper.cc (octave_mapper::apply): Handle real and complex
+	types first.  If the arg is something else, try ch_map_fcn if it
+	is defined.
+
+2002-10-15  Paul Kienzle <pkienzle@users.sf.net>
+
+	* Makefile.in: If building shared but not static libs, only set
+	XERBLA to the location of the pic object file if FPICFLAG is
+	defined.
+
 2002-10-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	*  DLD-FUNCTIONS/minmax.cc, DLD-FUNCTIONS/getrusage.cc, data.cc,

@@ -1,8 +1,11 @@
+2002-10-15  Paul Kienzle <pkienzle@users.sf.net>
+
+	* configure.in (library_path_var): New variable.
+
 2002-10-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in (SH_LDFLAGS): Additional options for Cygwin:
-	-Wl,--export-all-symbols -Wl,--enable-auto-import
-	-Wl,--allow-multiple-definition.
+	-Wl,--export-all-symbols -Wl,--enable-auto-import.
 
 	* Makeconf.in (TERMLIBS): Substitute here.
 

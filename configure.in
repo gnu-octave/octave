@@ -22,7 +22,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### 02111-1307, USA. 
 
 AC_INIT
-AC_REVISION($Revision: 1.377 $)
+AC_REVISION($Revision: 1.378 $)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -641,6 +641,7 @@ RLD_FLAG=
 INCLUDE_LINK_DEPS=false
 TEMPLATE_AR="$AR"
 TEMPLATE_ARFLAGS="$ARFLAGS"
+library_path_var=LD_LIBRARY_PATH
 case "$canonical_host_type" in
   *-*-386bsd* | *-*-openbsd* | *-*-netbsd* | *-*-freebsd*)
     SH_LD=ld
@@ -664,10 +665,11 @@ case "$canonical_host_type" in
     SHLEXT=dll
     SHLLIB=dll.a
     SHLBIN=dll
-    SH_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--allow-multiple-definition"
+    SH_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import"
     SHLLINKEXT=.dll
     SONAME_FLAGS='-Wl,--out-implib=$@.a'
     INCLUDE_LINK_DEPS=true
+    library_path_var=PATH
   ;;
   *-*-linux* | *-*-gnu*)
     SONAME_FLAGS='-Xlinker -soname -Xlinker $@'
@@ -757,6 +759,7 @@ AC_MSG_RESULT([defining RLD_FLAG to be $RLD_FLAG])
 AC_MSG_RESULT([defining TEMPLATE_AR to be $TEMPLATE_AR])
 AC_MSG_RESULT([defining TEMPLATE_ARFLAGS to be $TEMPLATE_ARFLAGS])
 AC_MSG_RESULT([defining INCLUDE_LINK_DEPS to be $INCLUDE_LINK_DEPS])
+AC_MSG_RESULT([defining library_path_var to be $library_path_var])
 AC_SUBST(FPICFLAG)
 AC_SUBST(CPICFLAG)
 AC_SUBST(CXXPICFLAG)
@@ -771,6 +774,7 @@ AC_SUBST(RLD_FLAG)
 AC_SUBST(TEMPLATE_AR)
 AC_SUBST(TEMPLATE_ARFLAGS)
 AC_SUBST(INCLUDE_LINK_DEPS)
+AC_SUBST(library_path_var)
 
 if $SHARED_LIBS; then
   LIBOCTINTERP=-loctinterp$SHLLINKEXT

@@ -1101,11 +1101,6 @@ octave_print_internal (ostream& os, const Matrix& m, bool pr_as_read_syntax,
   int nr = m.rows ();
   int nc = m.columns ();
 
-#if 0
-  if (nr == 1 && nc == 1 && ! pr_as_read_syntax)
-    octave_print_internal (os, m (0, 0), pr_as_read_syntax);
-  else
-#endif
   if (nr == 0 || nc == 0)
     print_empty_matrix (os, nr, nc, pr_as_read_syntax);
   else if (plus_format && ! pr_as_read_syntax)
@@ -1258,11 +1253,6 @@ octave_print_internal (ostream& os, const ComplexMatrix& cm,
   int nr = cm.rows ();
   int nc = cm.columns ();
 
-#if 0
-  if (nr == 1 && nc == 1 && ! pr_as_read_syntax)
-    octave_print_internal (os, cm (0, 0), pr_as_read_syntax);
-  else
-#endif
  if (nr == 0 || nc == 0)
     print_empty_matrix (os, nr, nc, pr_as_read_syntax);
   else if (plus_format && ! pr_as_read_syntax)

@@ -1369,25 +1369,6 @@ alias_builtin (const string& alias, const string& name)
 
 // Defining variables.
 
-#if 0
-void
-bind_nargin_and_nargout (symbol_table *sym_tab, int nargin, int nargout)
-{
-  octave_value *tmp;
-  symbol_record *sr;
-
-  sr = sym_tab->lookup ("nargin", 1, 0);
-  sr->unprotect ();
-  tmp = new octave_value (nargin);
-  sr->define (tmp);
-
-  sr = sym_tab->lookup ("nargout", 1, 0);
-  sr->unprotect ();
-  tmp = new octave_value (nargout);
-  sr->define (tmp);
-}
-#endif
-
 void
 bind_ans (const octave_value& val, int print)
 {

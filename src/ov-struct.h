@@ -79,41 +79,7 @@ public:
 
   bool is_map (void) const { return true; }
 
-#if 0
-  double double_value (bool) const
-  Matrix matrix_value (bool frc_str_conv = false) const;
-  Complex complex_value (bool frc_str_conv = false) const;
-  ComplexMatrix complex_matrix_value (bool frc_str_conv = false) const;
-  charMatrix char_matrix_value (bool frc_str_conv = false) const;
-  charMatrix all_strings (void) const;
-  string string_value (void) const;
-  Range range_value (void) const
-#endif
-
   Octave_map map_value (void) const { return map; }
-
-#if 0
-  octave_value& lookup_map_element (const string& name,
-				    bool insert = false,
-				    bool silent = false);
-
-  octave_value& lookup_map_element (SLList<string>& name,
-				    bool insert = false,
-				    bool silent = false);
-
-  ColumnVector vector_value (bool frc_str_conv = false,
-			     bool frc_vec_conv = false) const;
-
-  ComplexColumnVector
-  complex_vector_value (bool frc_str_conv = false,
-			bool frc_vec_conv = false) const;
-
-  octave_value convert_to_str (void) const;
-
-  void convert_to_row_or_column_vector (void);
-
-  void maybe_mutate (void);
-#endif
 
   void print (ostream& os);
 
@@ -126,52 +92,6 @@ public:
   static void register_type (void)
     { t_id = octave_value_typeinfo::register_type (t_name); }
 
-#if 0
-  // Binary and unary operations.
-
-  friend octave_value do_binary_op (octave_value& a, octave_value& b,
-				    tree_expression::type t);
-
-  friend octave_value do_unary_op (octave_value& a,
-				   tree_expression::type t);
-
-  // We want to eliminate this.
-
-  constant_type const_type (void) const { return type_tag; }
-
-  // We want to get rid of these too:
-
-  void force_numeric (bool frc_str_conv = false);
-  octave_value make_numeric (bool frc_str_conv = false) const;
-
-  // But not this.
-
-  void convert_to_matrix_type (bool make_complex);
-
-  // Indexing and assignment.
-
-  void clear_index (void);
-
-  // void set_index (double d);
-  void set_index (const Range& r);
-  void set_index (const ColumnVector& v);
-  void set_index (const Matrix& m);
-  void set_index (char c);
-
-  void set_index (const octave_value_list& args,
-		  bool rhs_is_complex = false);
-
-  octave_value do_index (const octave_value_list& args);
-
-  void maybe_widen (constant_type t);
-
-  void assign (octave_value& rhs, const octave_value_list& args);
-
-  bool print_as_scalar (void);
-
-  bool print_as_structure (void);
-#endif
-
 private:
 
   Octave_map map;
@@ -179,13 +99,6 @@ private:
   static int t_id;
 
   static const string t_name;
-
-#if 0
-  // For custom memory management.
-  // XXX FIXME XXX -- maybe this should be inherited (use void* and cast).
-
-  octave_base_value *freeptr;
-#endif
 };
 
 #endif

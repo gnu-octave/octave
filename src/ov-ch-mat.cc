@@ -58,12 +58,6 @@ octave_char_matrix::is_true (void) const
 {
   // XXX FIXME XXX
   return false;
-
-#if 0
-    Matrix m = (matrix.all ()) . all ();
-
-  return (m.rows () == 1 && m.columns () == 1 && m (0, 0) != 0.0);
-#endif
 }
 
 double

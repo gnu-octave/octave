@@ -71,34 +71,6 @@ quit_loop_now (void)
   return quit;
 }
 
-// But first, some extra functions used by the tree classes.
-
-// We seem to have no use for this now.  Maybe it will be needed at
-// some future date, so here it is.
-#if 0
-
-// Convert a linked list of trees to a vector of pointers to trees.
-
-static tree **
-list_to_vector (tree *list, int& len)
-{
-  len = list->length () + 1;
-
-  tree **args = new tree * [len];
-
-  // args[0] may eventually hold something useful, like the function
-  // name.
-
-  tree *tmp_list = list;
-  for (int k = 1; k < len; k++)
-    {
-      args[k] = tmp_list;
-      tmp_list = tmp_list->next_elem ();
-    }
-  return args;
-}
-#endif
-
 // Global.
 
 tree_global_command::~tree_global_command (void)

@@ -71,12 +71,6 @@ public:
   octave_value assign (const octave_value& t);
   octave_value assign (const octave_value_list& args, const octave_value& t);
 
-#if 0
-  octave_value assign (SLList<string> list, const octave_value& t);
-  octave_value assign (SLList<string> list, const octave_value_list& args,
-		       const octave_value& t);
-#endif
-
   bool is_defined (void);
 
   void increment (void);
@@ -94,7 +88,8 @@ public:
 
   octave_value eval (bool print);
 
-  octave_value_list eval (bool print, int nargout, const octave_value_list& args);
+  octave_value_list eval (bool print, int nargout,
+			  const octave_value_list& args); 
 
   void eval_undefined_error (void);
 
@@ -166,11 +161,6 @@ public:
     }
 
   string name (void) const;
-
-#if 0
-  octave_value& assign (const octave_value& t);
-  octave_value& assign (const octave_value_list& args, const octave_value& t);
-#endif
 
   octave_value eval (bool print);
 

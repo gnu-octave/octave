@@ -124,10 +124,6 @@ curr_rand_dist (void)
 static void
 do_initialization (void)
 {
-#if 0
-  int s0 = 1234567890;
-  int s1 = 123456789;
-#else
   time_t now;
   struct tm *tm;
  
@@ -140,7 +136,6 @@ do_initialization (void)
 
   int s0 = tm->tm_mday * hour * minute * second;
   int s1 = hour * minute * second;
-#endif
 
   s0 = force_to_fit_range (s0, 1, 2147483563);
   s1 = force_to_fit_range (s1, 1, 2147483399);

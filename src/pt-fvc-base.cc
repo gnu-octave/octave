@@ -39,16 +39,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // A base class for objects that can be evaluated with argument lists.
 
-#if 0
-octave_value&
-tree_fvc::assign (const octave_value_list&, const octave_value&)
-{
-  static octave_value foo;
-  panic_impossible ();
-  return foo;
-}
-#endif
-
 string
 tree_fvc::name (void) const
 {
@@ -68,24 +58,6 @@ tree_fvc::decrement (void)
 {
   panic_impossible ();
 }
-
-#if 0
-octave_value
-tree_fvc::lookup_map_element (SLList<string>&, bool, bool)
-{
-  static octave_value retval;
-
-  int l = line ();
-  int c = column ();
-
-  if (l == -1 && c == -1)
-    ::error ("invalid structure reference");
-  else
-    ::error ("invalid structure reference near line %d column %d", l, c);
-
-  return retval;
-}
-#endif
 
 time_t
 tree_fvc::time_parsed (void)

@@ -79,16 +79,6 @@ octave_restore_signal_mask (void)
 #endif
 }
 
-#if 0
-void
-ignore_sigchld (void)
-{
-#if defined (SIGCHLD)
-  octave_set_signal_handler (SIGCHLD, SIG_IGN);
-#endif
-}
-#endif
-
 static void
 my_friendly_exit (const char *sig_name, int sig_number)
 {

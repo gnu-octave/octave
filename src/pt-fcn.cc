@@ -91,15 +91,6 @@ tree_function::~tree_function (void)
   delete vr_list;
 }
 
-#if 0
-tree_function *
-tree_function::define (tree statement_list *t)
-{
-  cmd_list = t;
-  return this;
-}
-#endif
-
 tree_function *
 tree_function::define_param_list (tree_parameter_list *t)
 {

@@ -202,87 +202,6 @@ tree_identifier::assign (const octave_value_list& args,
   return retval;
 }
 
-#if 0
-octave_value
-tree_identifier::assign (SLList<string> list, const octave_value& rhs)
-{
-  octave_value retval;
-
-  if (rhs.is_defined ())
-    {
-      if (sym->is_function ())
-	sym->clear ();
-
-      tree_fvc *curr_val = sym->def ();
-
-      tree_constant *tmp = 0;
-      if (curr_val && curr_val->is_constant ())
-	tmp = (tree_constant *) curr_val;
-      else
-	{
-	  tmp = new tree_constant ();
-	  if (! sym->define (tmp))
-	    {
-	      delete tmp;
-	      tmp = 0;
-	    }
-	}
-
-      if (tmp)
-	retval = tmp->assign_map_element (list, rhs);
-    }
-
-  return retval;
-}
-
-octave_value
-tree_identifier::assign (SLList<string> list, const octave_value_list& args,
-			 const octave_value& rhs)
-{
-  octave_value retval;
-
-  if (rhs.is_defined ())
-    {
-      if (sym->is_function ())
-	sym->clear ();
-
-      if (sym->is_variable () && sym->is_defined ())
-	{
-	  tree_fvc *curr_val = sym->def ();
-
-	  tree_constant *tmp;
-	  if (curr_val && curr_val->is_constant ())
-	    tmp = (tree_constant *) curr_val;
-	  else
-	    panic_impossible ();
-
-	  retval = tmp->assign_map_element (list, args, rhs);
-	}
-      else
-	{
-	  assert (! sym->is_defined ());
-
-	  if (! Vresize_on_range_error)
-	    {
-	      ::error ("indexed assignment to previously undefined variables");
-	      ::error ("is only possible when resize_on_range_error is true");
-	    }
-	  else
-	    {
-	      tree_constant *tmp = new tree_constant ();
-
-	      retval = tmp->assign_map_element (list, args, rhs);
-
-	      if (retval.is_defined ())
-		sym->define (tmp);
-	    }
-	}
-    }
-
-  return retval;
-}
-#endif
-
 bool
 tree_identifier::is_defined (void)
 {
@@ -522,25 +441,6 @@ tree_indirect_ref::name (void) const
   return retval;
 }
 
-#if 0
-octave_value
-tree_indirect_ref::assign (const octave_value& t)
-{
-  octave_value& tmp = reference ();
-
-  return tmp = t;
-}
-
-octave_value
-tree_indirect_ref::assign (const octave_value_list& args,
-			   const octave_value& t)
-{
-  octave_value& tmp = reference ();
-
-  return tmp.assign (args, t);
-}
-#endif
-
 octave_value
 tree_indirect_ref::eval (bool print)
 {
@@ -650,25 +550,6 @@ tree_indirect_ref::reference (void)
 	}
     }
 }
-
-#if 0
- if (indir)
-    {
-      octave_value& retval = indir->reference ();
-
-      if (! error_state)
-	retval = retval.map_elt_reference (nm);
-
-      return retval;
-    }
-  else
-    {
-      static octave_value foo;
-      panic_impossible ();
-      return foo;
-    }
-}
-#endif
 
 // Builtin functions.
 

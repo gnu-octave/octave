@@ -144,11 +144,6 @@ install_builtin_variable_as_function (const string& name,
 
 extern void alias_builtin (const string& alias, const string& name);
 
-#if 0
-extern void bind_nargin_and_nargout (symbol_table *sym_tab,
-				     int nargin, int nargout);
-#endif
-
 extern void bind_ans (const octave_value& val, int print);
 
 extern void bind_global_error_variable (void);

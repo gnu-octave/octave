@@ -52,22 +52,11 @@ public:
 
   ~tree_fvc (void) { }
 
-#if 0
-  virtual octave_value& assign (const octave_value_list& args,
-				const octave_value& t); 
-#endif
-
   virtual string name (void) const;
 
   virtual void increment (void);
 
   virtual void decrement (void);
-
-#if 0
-  virtual octave_value lookup_map_element (SLList<string>& list,
-					    bool insert = false,
-					    bool silent = false);
-#endif
 
   virtual string fcn_file_name (void)
     { return string (); }

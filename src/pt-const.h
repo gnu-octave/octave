@@ -183,19 +183,6 @@ public:
       return val;
     }
 
-#if 0
-  // Simple structure assignment.
-
-  octave_value assign_map_element (SLList<string>& list,
-				   const octave_value& rhs);
-
-  // Indexed structure assignment.
-
-  octave_value assign_map_element (SLList<string>& list,
-				   const octave_value_list& args,
-				   const octave_value& rhs);
-#endif
-
   // Type.  It would be nice to eliminate the need for this.
 
   bool is_constant (void) const { return true; }
@@ -363,15 +350,6 @@ private:
 
   string orig_text;
 
-#if 0
-  octave_value_rep *make_unique_map (void);
-
-  // We want to eliminate this, or at least make it private.
-
-  octave_value_rep::constant_type const_type (void) const
-    { return rep->const_type (); }
-#endif
-
   void convert_to_matrix_type (bool make_complex)
     { val.convert_to_matrix_type (make_complex); }
 
@@ -383,14 +361,6 @@ private:
     { val.force_numeric (frc_str_conv); }
 
   octave_value make_numeric (bool frc_str_conv = false) const;
-#if 0
-    {
-      if (is_numeric_type ())
-	return *this;
-      else
-	return rep->make_numeric (frc_str_conv);
-    }
-#endif
 
   bool print_as_scalar (void) { return val.print_as_scalar (); }
 

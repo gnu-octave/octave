@@ -41,7 +41,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 static Array<int>
 create_index_array (int n)
 {
-  Array<int> l (n+1);
+  Array<int> l (n+2);
 
   l.elem (0) = 1;
 

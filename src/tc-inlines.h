@@ -190,7 +190,7 @@ fortran_column (int i, int nr)
       nc = (m).columns (); \
     } \
   else \
-    abort ();
+    panic_impossible ();
 
 // Assign a real or complex value to a tree_constant.
 //
@@ -205,7 +205,7 @@ fortran_column (int i, int nr)
           if (real_type) \
             matrix->elem ((i), (j)) = (rval); \
           else \
-            abort (); \
+            panic_impossible (); \
         } \
       else \
         { \
@@ -232,7 +232,7 @@ fortran_column (int i, int nr)
   else if (type_tag == complex_matrix_constant) \
     (cm).resize ((nr), (nc)); \
   else \
-    abort (); \
+    panic_impossible (); \
 
 // Assign a real or complex matrix to a tree constant.
 

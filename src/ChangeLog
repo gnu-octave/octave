@@ -1,5 +1,8 @@
 Thu Jul 25 01:42:38 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* input.cc (generate_possible_completions): Force the names to be
+	unique.
+
 	* load-save.cc (read_mat_binary_data): Expect to read terminating
 	NUL character in the variable name.
 	(save_mat_binary_data): Likewise, save it here.

@@ -723,6 +723,29 @@ generate_possible_completions (const char *text, char *& prefix,
   else
     names = make_name_list ();
 
+  names.qsort ();
+
+  // Remove duplicates.
+
+  // XXX FIXME XXX -- maybe this should be defined for all Array objects.
+
+  int k = 0;
+
+  int len = names.length ();
+
+  for (int i = 1; i < len; i++)
+    {
+      if (names[i] != names[k])
+	{
+	  k++;
+
+	  if (k != i)
+	    names[k] = names[i];
+	}
+    }
+
+  names.resize (k+1);
+
   return names;
 }
 

@@ -192,67 +192,7 @@ else
 using the indentation to show how Octave groups the statements.
 @xref{Functions and Scripts}.
 
-@defvr {Built-in Variable} warn_assign_as_truth_value
-If the value of @code{warn_assign_as_truth_value} is nonzero, a
-warning is issued for statements like
-
-@example
-if (s = t)
-  ...
-@end example
-
-@noindent
-since such statements are not common, and it is likely that the intent
-was to write
-
-@example
-if (s == t)
-  ...
-@end example
-
-@noindent
-instead.
-
-There are times when it is useful to write code that contains
-assignments within the condition of a @code{while} or @code{if}
-statement.  For example, statements like
-
-@example
-while (c = getc())
-  ...
-@end example
-
-@noindent
-are common in C programming.
-
-It is possible to avoid all warnings about such statements by setting
-@code{warn_assign_as_truth_value} to 0, but that may also
-let real errors like
-
-@example
-if (x = 1)  # intended to test (x == 1)!
-  ...
-@end example
-
-@noindent
-slip by.
-
-In such cases, it is possible suppress errors for specific statements by
-writing them with an extra set of parentheses.  For example, writing the
-previous example as
-
-@example
-while ((c = getc()))
-  ...
-@end example
-
-@noindent
-will prevent the warning from being printed for this statement, while
-allowing Octave to warn about other assignments used in conditional
-contexts.
-
-The default value of @code{warn_assign_as_truth_value} is 1.
-@end defvr
+@DOCSTRING(warn_assign_as_truth_value)
 
 @node The switch Statement, The while Statement, The if Statement, Statements
 @section The @code{switch} Statement
@@ -351,10 +291,7 @@ could detect all constant integer labels and improve performance by
 using a jump table.
 @end itemize
 
-@defvr {Built-in Variable} warn_variable_switch_label
-If the value of this variable is nonzero, Octave will print a warning if
-a switch label is not a constant or constant expression
-@end defvr
+@DOCSTRING(warn_variable_switch_label)
 
 @node The while Statement, The for Statement, The switch Statement, Statements
 @section The @code{while} Statement

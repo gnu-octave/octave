@@ -3354,7 +3354,68 @@ symbols_of_parse (void)
 results of commands executed by eval() that do not end with semicolons.");
 
   DEFVAR (warn_assign_as_truth_value, 1.0, warn_assign_as_truth_value,
-    "produce warning for assignments used as truth values");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} warn_assign_as_truth_value\n\
+If the value of @code{warn_assign_as_truth_value} is nonzero, a\n\
+warning is issued for statements like\n\
+\n\
+@example\n\
+if (s = t)\n\
+  ...\n\
+@end example\n\
+\n\
+@noindent\n\
+since such statements are not common, and it is likely that the intent\n\
+was to write\n\
+\n\
+@example\n\
+if (s == t)\n\
+  ...\n\
+@end example\n\
+\n\
+@noindent\n\
+instead.\n\
+\n\
+There are times when it is useful to write code that contains\n\
+assignments within the condition of a @code{while} or @code{if}\n\
+statement.  For example, statements like\n\
+\n\
+@example\n\
+while (c = getc())\n\
+  ...\n\
+@end example\n\
+\n\
+@noindent\n\
+are common in C programming.\n\
+\n\
+It is possible to avoid all warnings about such statements by setting\n\
+@code{warn_assign_as_truth_value} to 0, but that may also\n\
+let real errors like\n\
+\n\
+@example\n\
+if (x = 1)  # intended to test (x == 1)!\n\
+  ...\n\
+@end example\n\
+\n\
+@noindent\n\
+slip by.\n\
+\n\
+In such cases, it is possible suppress errors for specific statements by\n\
+writing them with an extra set of parentheses.  For example, writing the\n\
+previous example as\n\
+\n\
+@example\n\
+while ((c = getc()))\n\
+  ...\n\
+@end example\n\
+\n\
+@noindent\n\
+will prevent the warning from being printed for this statement, while\n\
+allowing Octave to warn about other assignments used in conditional\n\
+contexts.\n\
+\n\
+The default value of @code{warn_assign_as_truth_value} is 1.\n\
+@end defvr");
 
   DEFVAR (warn_function_name_clash, 1.0, warn_function_name_clash,
     "produce warning if function name conflicts with file name");
@@ -3367,7 +3428,11 @@ results of commands executed by eval() that do not end with semicolons.");
 terminated with a semicolon");
 
   DEFVAR (warn_variable_switch_label, 0.0, warn_variable_switch_label,
-    "produce warning for variables used as switch labels");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} warn_variable_switch_label\n\
+If the value of this variable is nonzero, Octave will print a warning if\n\
+a switch label is not a constant or constant expression\n\
+@end defvr");
 
 }
 

@@ -1,5 +1,8 @@
 1999-11-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* parse.y (Vwarn_assign_as_truth_value,	Vwarn_variable_switch_label):
+	Texinfoize doc strings.
+
 	* DLD-FUNCTIONS/pinv.cc (Fpinv): Texinfoize doc string.
 
 	* defun-int.h (DEFUN_DLD_INTERNAL): New macro.

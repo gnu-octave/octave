@@ -35,20 +35,19 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "f77-fcn.h"
 #include "lo-error.h"
 
+typedef int (*dassl_fcn_ptr) (const double&, double*, double*,
+			      double*, int&, double*, int*);
+
+typedef int (*dassl_jac_ptr) (const double&, double*, double*,
+			      double*, const double&, double*, int*);
+
 extern "C"
-{
-  int F77_FCN (ddassl, DDASSL) (int (*)(const double&, double*,
-					double*, double*, int&,
-					double*, int*),
-				const int&, double&, double*, double*,
-				double&, const int*, const double&,
-				const double&, int&, double*,
-				const int&, int*, const int&,
-				const double*, const int*, 
-				int (*)(const double&, double*,
-					double*, double*, const
-					double&, double*, int*));
-}
+int F77_FCN (ddassl, DDASSL) (dassl_fcn_ptr, const int&, double&,
+			      double*, double*, double&, const int*,
+			      const double&, const double&, int&,
+			      double*, const int&, int*, const int&,
+			      const double*, const int*,
+			      dassl_jac_ptr);
 
 static DAEFunc::DAERHSFunc user_fun;
 static DAEFunc::DAEJacFunc user_jac;

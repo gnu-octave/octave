@@ -37,18 +37,18 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "f77-fcn.h"
 #include "lo-error.h"
 
-extern "C"
-{
-  int F77_FCN (lsode, LSODE) (int (*)(const int&, const double&,
-				      double*, double*, int&),
-			      int&, double*, double&, double&, int&,
-			      double&, double&, int&, int&, int&,
-			      double*, int&, int*, int&,
-			      int (*)(const int&, const double&,
-				      double*, const int&, const int&,
-				      double*, const int&),
+typedef int (*lsode_fcn_ptr) (const int&, const double&, double*,
+			      double*, int&);
+
+typedef int (*lsode_jac_ptr) (const int&, const double&, double*,
+			      const int&, const int&, double*, const
 			      int&);
-}
+
+extern "C"
+int F77_FCN (lsode, LSODE) (lsode_fcn_ptr, int&, double*, double&,
+			    double&, int&, double&, double&, int&,
+			    int&, int&, double*, int&, int*, int&,
+			    lsode_jac_ptr, int&);
 
 static ODEFunc::ODERHSFunc user_fun;
 static ODEFunc::ODEJacFunc user_jac;

@@ -33,19 +33,19 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "f77-fcn.h"
 #include "lo-error.h"
 
-extern "C"
-{
-  int F77_FCN (hybrd1, HYBRD1) (int (*)(int*, double*, double*, int*),
-				const int&, double*, double*,
-				const double&, int&, double*,
-				const int&);
+typedef int (*hybrd1_fcn_ptr) (int*, double*, double*, int*);
 
-  int F77_FCN (hybrj1, HYBRJ1) (int (*)(int*, double*, double*,
-					double*, int*, int*),
-				const int&, double*, double*, double*,
-				const int&, const double&, int&,
-				double*, const int&);
-}
+extern "C"
+int F77_FCN (hybrd1, HYBRD1) (hybrd1_fcn_ptr, const int&, double*,
+			      double*, const double&, int&, double*,
+			      const int&);
+
+typedef int (*hybrj1_fcn_ptr) (int*, double*, double*, double*, int*, int*);
+
+extern "C"
+int F77_FCN (hybrj1, HYBRJ1) (hybrj1_fcn_ptr, const int&, double*,
+			      double*, double*, const int&, const
+			      double&, int&, double*, const int&);
 
 static NLFunc::nonlinear_fcn user_fun;
 static NLFunc::jacobian_fcn user_jac;

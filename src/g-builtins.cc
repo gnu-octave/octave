@@ -745,11 +745,8 @@ builtin_find (const Octave_object& args, int nargout)
 
   int nargin = args.length ();
 
-  if (nargin == 2)
-    {
-      retval.resize (1);
-      retval(0) = find_nonzero_elem_idx (args(1));
-    }
+  if (nargin == 2 && nargout < 4)
+    retval = find_nonzero_elem_idx (args(1), nargout);
   else
     print_usage ("find");
 

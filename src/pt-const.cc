@@ -339,138 +339,165 @@ identity_matrix (const tree_constant& a, const tree_constant& b)
   return tree_constant (m);
 }
 
-static tree_constant
-find_nonzero_elem_idx (const Matrix& m)
+static Octave_object
+find_to_fortran_idx (const ColumnVector i_idx, const ColumnVector j_idx,
+		     const tree_constant& val, int nr, int nc, int nargout)
+{
+  Octave_object retval (nargout);
+
+  switch (nargout)
+    {
+    case 1:
+      {
+	int count = i_idx.length ();
+	ColumnVector tmp (count);
+	for (int i = 0; i < count; i++)
+	  tmp (i) = nr * (j_idx (i) - 1.0) + i_idx (i);
+	retval(0) = tree_constant (tmp, (nr != 1)); // Blame it on Matlab...
+      }
+      break;
+    case 3:
+      retval(2) = val;
+    case 2:
+      retval(0) = tree_constant (i_idx, (nr != 1)); // Blame it on Matlab...
+      retval(1) = tree_constant (j_idx, 1);
+      break;
+    default:
+      panic_impossible ();
+      break;
+    }
+
+  return retval;
+}
+
+static Octave_object
+find_nonzero_elem_idx (const Matrix& m, int nargout)
 {
   int count = 0;
   int m_nr = m.rows ();
   int m_nc = m.columns ();
 
-  int i;
-  for (int j = 0; j < m_nc; j++)
+  int i, j;
+  for (j = 0; j < m_nc; j++)
     for (i = 0; i < m_nr; i++)
-      if (m.elem (i, j) != 0)
+      if (m.elem (i, j) != 0.0)
 	count++;
 
   Matrix result;
+  Octave_object retval (nargout, result);
 
   if (count == 0)
-    return result;
+    return retval;
 
-  if (m_nr == 1)
-    {
-      result.resize (1, count);
-      count = 0;
-      for (j = 0; j < m_nc; j++)
-	if (m.elem (0, j) != 0)
+  ColumnVector i_idx (count);
+  ColumnVector j_idx (count);
+  ColumnVector v (count);
+
+  count = 0;
+  for (j = 0; j < m_nc; j++)
+    for (i = 0; i < m_nr; i++)
+      {
+	double d = m.elem (i, j);
+	if (d != 0.0)
 	  {
-	    result (0, count) = j + 1;
+	    i_idx (count) = i + 1;
+	    j_idx (count) = j + 1;
+	    v (count) = d;
 	    count++;
 	  }
-      return tree_constant (result);
-    }
-  else
-    {
-      ColumnVector v (count);
-      count = 0;
-      for (j = 0; j < m_nc; j++)
-	for (i = 0; i < m_nr; i++)
-	  if (m.elem (i, j) != 0)
-	    {
-	      v.elem (count) = m_nr * j + i + 1;
-	      count++;
-	    }
-      return tree_constant (v, 1);  // Always make a column vector.
-    }
+      }
+
+  return find_to_fortran_idx (i_idx, j_idx, v, m_nr, m_nc, nargout);
 }
 
-static tree_constant
-find_nonzero_elem_idx (const ComplexMatrix& m)
+static Octave_object
+find_nonzero_elem_idx (const ComplexMatrix& m, int nargout)
 {
   int count = 0;
   int m_nr = m.rows ();
   int m_nc = m.columns ();
 
-  for (int j = 0; j < m_nc; j++)
-    {
-      for (int i = 0; i < m_nr; i++)
-	if (m.elem (i, j) != 0)
-	  count++;
-    }
+  int i, j;
+  for (j = 0; j < m_nc; j++)
+    for (i = 0; i < m_nr; i++)
+      if (m.elem (i, j) != 0.0)
+	count++;
 
   Matrix result;
+  Octave_object retval (nargout, result);
 
   if (count == 0)
-    return result;
+    return retval;
 
-  if (m_nr == 1)
-    {
-      result.resize (1, count);
-      count = 0;
-      for (j = 0; j < m_nc; j++)
-	if (m.elem (0, j) != 0)
+  ColumnVector i_idx (count);
+  ColumnVector j_idx (count);
+  ComplexColumnVector v (count);
+
+  count = 0;
+  for (j = 0; j < m_nc; j++)
+    for (i = 0; i < m_nr; i++)
+      {
+	Complex c = m.elem (i, j);
+	if (c != 0.0)
 	  {
-	    result (0, count) = j + 1;
+	    i_idx (count) = i;
+	    j_idx (count) = j;
+	    v (count) = c;
 	    count++;
 	  }
-      return tree_constant (result);
-    }
-  else
-    {
-      ColumnVector v (count);
-      count = 0;
-      for (j = 0; j < m_nc; j++)
-	{
-	  for (int i = 0; i < m_nr; i++)
-	    if (m.elem (i, j) != 0)
-	      {
-		v.elem (count) = m_nr * j + i + 1;
-		count++;
-	      }
-	}
-      return tree_constant (v, 1);  // Always make a column vector.
-    }
+      }
+
+  return find_to_fortran_idx (i_idx, j_idx, v, m_nr, m_nc, nargout);
 }
 
-tree_constant
-find_nonzero_elem_idx (const tree_constant& a)
+Octave_object
+find_nonzero_elem_idx (const tree_constant& a, int nargout)
 {
-  tree_constant retval;
+  Matrix result;
+
+  nargout = (nargout == 0) ? 1 : nargout;
+  Octave_object retval (nargout, result);
 
   tree_constant tmp = a.make_numeric ();
 
-  Matrix result;
-    
   switch (tmp.const_type ())
     {
     case tree_constant_rep::matrix_constant:
       {
 	Matrix m = tmp.matrix_value ();
-	return find_nonzero_elem_idx (m);
+	return find_nonzero_elem_idx (m, nargout);
       }
       break;
     case tree_constant_rep::scalar_constant:
       {
 	double d = tmp.double_value ();
 	if (d != 0.0)
-	  return tree_constant (1.0);
-	else
-	  return tree_constant (result);
+	  {
+	    retval(0) = 1.0;
+	    if (nargout > 1)
+	      retval(1) = 1.0;
+	    if (nargout > 2)
+	      retval(2) = d;
+	  }
       }
       break;
     case tree_constant_rep::complex_matrix_constant:
       {
 	ComplexMatrix m = tmp.complex_matrix_value ();
-	return find_nonzero_elem_idx (m);
+	return find_nonzero_elem_idx (m, nargout);
       }
       break;
     case tree_constant_rep::complex_scalar_constant:
       {
 	Complex c = tmp.complex_value ();
 	if (c != 0.0)
-	  return tree_constant (1.0);
-	else
-	  return tree_constant (result);
+	  {
+	    retval(0) = 1.0;
+	    if (nargout > 1)
+	      retval(1) = 1.0;
+	    if (nargout > 2)
+	      retval(2) = c;
+	  }
       }
       break;
     default:

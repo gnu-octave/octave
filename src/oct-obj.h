@@ -34,6 +34,9 @@ public:
 
   Octave_object (void) : Array<tree_constant> () { }
   Octave_object (int n) : Array<tree_constant> (n) { }
+  Octave_object (int n, const tree_constant& val)
+    : Array<tree_constant> (n, val) { }
+
   Octave_object (const Octave_object& obj) : Array<tree_constant> (obj) { }
 
   Octave_object& operator = (const Octave_object& obj)

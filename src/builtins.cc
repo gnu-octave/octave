@@ -331,8 +331,8 @@ where x, xdot, and res are vectors, and t is a scalar.", },
   { "fgets",3, 2, builtin_fgets,
     "[string, length] = fgets (\"filename\" or filenum, length): read a string from a file", },
 
-  { "find", -1, 1, builtin_find,
-    "find (x): return vector of indices of nonzero elements", },
+  { "find", 2, 3, builtin_find,
+    "find (x) or [i, j, v] = find (x): Return indices of nonzero elements", },
 
   { "flops", 2, 1, builtin_flops,
     "flops (): count floating point operations", },

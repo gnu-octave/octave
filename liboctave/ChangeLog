@@ -4,6 +4,7 @@
 	if all LHS dimensions are zero.  For one index case, freeze and
 	sort idx_vec before checking length, and do nothing if
 	num_to_delete is zero.
+	(Array<T>::maybe_delete_elements_2): Omit Fortran-indexing warning.
 
 2004-03-04  David Bateman  <dbateman@free.fr>
 

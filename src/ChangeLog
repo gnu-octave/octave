@@ -1,3 +1,8 @@
+2004-03-05  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* version.h (OCTAVE_VERSION): Now 2.1.56.
+	(OCTAVE_API_VERSION): Now api-v7.
+
 2004-03-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* ov-struct.cc (Frmfield): New function

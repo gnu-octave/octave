@@ -1270,14 +1270,6 @@ Array<T>::maybe_delete_elements_2 (idx_vector& idx_arg)
       n = nr * nc;
       nr = 1;
       nc = n;
-
-      if (liboctave_wfi_flag)
-	{
-	  (*current_liboctave_warning_handler)
-	    ("A(idx) = []: expecting A to be row or column vector or scalar");
-
-	  return;
-	}
     }
 
   if (idx_arg.is_colon_equiv (n, 1))

@@ -1,3 +1,8 @@
+2004-10-18  John W. Eaton  <jwe@octave.org>
+
+	* pt-plot.cc (handle_plot_data): If plotting data from file,
+	always use "using" clause.
+
 2004-10-12  David Bateman  <dbateman@free.fr>
 
 	* pt-mat.cc (tm_row_const::tm_row_const_rep::do_init_element,

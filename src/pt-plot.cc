@@ -731,9 +731,6 @@ subplot::handle_plot_data (int ndim, OSSTREAM& plot_buf)
 	    }
 	  else
 	    {
-	      // Eliminate the need for printing a using clause to
-	      // plot_buf.
-
 	      octave_value tmp_data = extract_plot_data (ndim, data);
 
 	      if (tmp_data.is_defined ())
@@ -757,7 +754,13 @@ subplot::handle_plot_data (int ndim, OSSTREAM& plot_buf)
 		  if (file.length () > 0)
 		    {
 		      mark_for_deletion (file);
-		      plot_buf << " '" << file << "'";
+
+		      // Include the using clause so that plotting
+		      // with timefmt will work.
+
+		      plot_buf << " '" << file << "' "
+			       << Vgnuplot_command_using
+			       << (ndim == 2 ? " 1:2" : " 1:2:3");
 		    }
 		}
 	    }

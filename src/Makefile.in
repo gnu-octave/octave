@@ -68,9 +68,9 @@ SOURCES = arith-ops.cc data.cc dirfns.cc dynamic-ld.cc \
 	oct-obj.cc octave-hist.cc pager.cc parse.y pr-output.cc \
 	procstream.cc sighandlers.cc strcasecmp.c strncase.c \
 	symtab.cc sysdep.cc tc-inlines.cc tc-rep.cc timefns.cc \
-	token.cc tree-cmd.cc tree-const.cc tree-expr.cc tree-misc.cc \
-	tree-plot.cc unwind-prot.cc user-prefs.cc utils.cc \
-	variables.cc xdiv.cc xpow.cc SLStack.cc \
+	token.cc tree-base.cc tree-cmd.cc tree-const.cc tree-expr.cc \
+	tree-misc.cc tree-plot.cc unwind-prot.cc user-prefs.cc \
+	utils.cc variables.cc xdiv.cc xpow.cc SLStack.cc \
 	$(DLD_SRC)
 
 # Ugh.
@@ -92,11 +92,11 @@ DEF_FILES = $(patsubst %.cc, %.def, $(DEF_FILES_1))
 OBJECTS = arith-ops.o builtins.o data.o dirfns.o error.o \
 	file-io.o fnmatch.o getopt.o getopt1.o gripes.o help.o \
 	idx-vector.o input.o lex.o mappers.o octave.o octave-hist.o \
-	oct-obj.o pager.o parse.o pr-output.o procstream.o sighandlers.o \
-	strcasecmp.o strncase.o symtab.o sysdep.o tc-rep.o timefns.o \
-	token.o tree-cmd.o tree-const.o tree-expr.o tree-plot.o \
-	tree-misc.o unwind-prot.o user-prefs.o utils.o variables.o \
-	xdiv.o xpow.o SLStack.o \
+	oct-obj.o pager.o parse.o pr-output.o procstream.o \
+	sighandlers.o strcasecmp.o strncase.o symtab.o sysdep.o \
+	tc-rep.o timefns.o token.o tree-base.o tree-cmd.o tree-const.o \
+	tree-expr.o tree-plot.o tree-misc.o unwind-prot.o user-prefs.o \
+	utils.o variables.o xdiv.o xpow.o SLStack.o \
 	@DYNAMIC_LD_OBJ@
 
 OCTAVE_LIBS = @LIBOCTDLD@ ../liboctave.a ../libcruft.a ../libinfo.a \

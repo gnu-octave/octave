@@ -27,44 +27,15 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #pragma interface
 #endif
 
-class ostream;
-
-// How to print the code that the trees represent.
-
-class
-tree_print_code
-{
-public:
-  virtual ~tree_print_code (void) { }
-
-  virtual void print_code (ostream& os) = 0;
-
-  void reset_indent_level (void)
-    { curr_print_indent_level = 0; }
-
-  void increment_indent_level (void)
-    { curr_print_indent_level += 2; }
-
-  void decrement_indent_level (void)
-    { curr_print_indent_level -= 2; }
-
-  void print_code_new_line (ostream& os);
-
-  void print_code_indent (ostream& os);
-
-  void print_code_reset (void);
-
-private:
-  static int curr_print_indent_level;
-  static bool beginning_of_line;
-};
+class tree_walker;
 
 // Base class for the parse tree.
 
 class
-tree : public tree_print_code
+tree
 {
 public:
+
   tree (int l = -1, int c = -1)
     {
       line_num = l;
@@ -77,7 +48,12 @@ public:
   virtual int column (void) const
     { return column_num; }
 
+  virtual void accept (tree_walker& tw) = 0;
+
 private:
+
+  // The input line and column where we found the text that was
+  // eventually converted to this tree node.
   int line_num;
   int column_num;
 };

@@ -37,6 +37,8 @@ class tree_parameter_list;
 class tree_statement_list;
 class tree_va_return_list;
 
+class tree_walker;
+
 #include "oct-obj.h"
 #include "symtab.h"
 #include "pt-fvc.h"
@@ -46,27 +48,8 @@ class tree_va_return_list;
 class
 tree_function : public tree_fvc
 {
-private:
-  void install_nargin_and_nargout (void);
-
-  void bind_nargin_and_nargout (int nargin, int nargout);
-
-  void init (void)
-    {
-      call_depth = 0;
-      param_list = 0;
-      ret_list = 0;
-      sym_tab = 0;
-      cmd_list = 0;
-      t_parsed = 0;
-      system_fcn_file = 0;
-      num_named_args = 0;
-      num_args_passed = 0;
-      curr_va_arg_number = 0;
-      vr_list = 0;
-    }
-
 public:
+
   tree_function (int l = -1, int c = -1) : tree_fvc (l, c)
     { init (); }
 
@@ -126,31 +109,89 @@ public:
 
   void traceback_error (void);
 
-  void print_code (ostream& os);
+  tree_parameter_list *parameter_list (void) { return param_list; }
+
+  tree_parameter_list *return_list (void) { return ret_list; }
+
+  tree_statement_list *body (void) { return cmd_list; }
+
+  void accept (tree_walker& tw);
 
 private:
-  int call_depth;
+
+  // List of arguments for this function.  These are local variables.
   tree_parameter_list *param_list;
+
+  // List of parameters we return.  These are also local variables in
+  // this function.
   tree_parameter_list *ret_list;
-  symbol_table *sym_tab;
+
+  // The list of commands that make up the body of this function.
   tree_statement_list *cmd_list;
+
+  // The local symbol table for this function.
+  symbol_table *sym_tab;
+
+  // Used to keep track of recursion depth.
+  int call_depth;
+
+  // The name of the file we parsed
   string file_name;
+
+  // The name of the function.
   string fcn_name;
+
+  // The time the file was parsed.
   time_t t_parsed;
+
+  // True if this function came from a file that is considered to be a
+  // system function.  This affects whether we check the time stamp
+  // on the file to see if it has changed.
   bool system_fcn_file;
+
+  // The number of arguments that have names.
   int num_named_args;
+
+  // The values that were passed as arguments.
   octave_value_list args_passed;
+
+  // The number of arguments passed in.
   int num_args_passed;
+
+  // Used to keep track of the current offset into the list of va_args.
   int curr_va_arg_number;
+
+  // The list of return values when an unspecified number can be
+  // returned.
   tree_va_return_list *vr_list;
+
+  // The symbol record for nargin in the local symbol table.
   symbol_record *nargin_sr;
+
+  // The symbol record for nargout in the local symbol table.
   symbol_record *nargout_sr;
 
   void print_code_function_header (void);
-  void print_code_function_header (ostream& os);
-
   void print_code_function_trailer (void);
-  void print_code_function_trailer (ostream& os);
+
+  void install_nargin_and_nargout (void);
+
+  void bind_nargin_and_nargout (int nargin, int nargout);
+
+  void init (void)
+    {
+      call_depth = 0;
+      param_list = 0;
+      ret_list = 0;
+      sym_tab = 0;
+      cmd_list = 0;
+      t_parsed = 0;
+      system_fcn_file = 0;
+      num_named_args = 0;
+      num_args_passed = 0;
+      curr_va_arg_number = 0;
+      vr_list = 0;
+    }
 };
 
 #endif

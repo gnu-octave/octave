@@ -46,6 +46,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt-fvc.h"
 #include "pt-misc.h"
 #include "pt-mvr.h"
+#include "pt-walk.h"
+#include "pt-pr-code.h"
 #include "user-prefs.h"
 
 // Nonzero means we're breaking out of a loop or function body.
@@ -61,22 +63,20 @@ extern int returning;
 
 tree_statement::~tree_statement (void)
 {
-  delete command;
-  delete expression;
+  delete cmd;
+  delete expr;
 }
 
 int
 tree_statement::line (void)
 {
-  return command
-    ? command->line () : (expression ? expression->line () : -1);
+  return cmd ? cmd->line () : (expr ? expr->line () : -1);
 }
 
 int
 tree_statement::column (void)
 {
-  return command
-    ? command->column () : (expression ? expression->column () : -1);
+  return cmd ? cmd->column () : (expr ? expr->column () : -1);
 }
 
 void
@@ -84,30 +84,17 @@ tree_statement::maybe_echo_code (bool in_function_body)
 {
   if (in_function_body
       && (user_pref.echo_executing_commands & ECHO_FUNCTIONS))
-    print_code (octave_stdout);
+    {
+      tree_print_code tpc (octave_stdout);
+
+      accept (tpc);
+    }
 }
 
 void
-tree_statement::print_code (ostream& os)
+tree_statement::accept (tree_walker& tw)
 {
-  if (command)
-    {
-      command->print_code (os);
-
-      if (! print_flag)
-	os << ";";
-
-      command->print_code_new_line (os);
-    }
-  else if (expression)
-    {
-      expression->print_code (os);
-
-      if (! print_flag)
-	os << ";";
-
-      expression->print_code_new_line (os);
-    }
+  tw.visit_statement (*this);
 }
 
 octave_value
@@ -128,8 +115,8 @@ tree_statement_list::eval (bool print)
       else
 	pf = elt->print_flag;
 
-      tree_command *cmd = elt->command;
-      tree_expression *expr = elt->expression;
+      tree_command *cmd = elt->command ();
+      tree_expression *expr = elt->expression ();
 
       if (cmd || expr)
 	{
@@ -176,8 +163,8 @@ tree_statement_list::eval (bool print, int nargout)
 	  else
 	    pf = elt->print_flag;
 
-	  tree_command *cmd = elt->command;
-	  tree_expression *expr = elt->expression;
+	  tree_command *cmd = elt->command ();
+	  tree_expression *expr = elt->expression ();
 
 	  if (cmd || expr)
 	    {
@@ -218,15 +205,9 @@ tree_statement_list::eval (bool print, int nargout)
 }
 
 void
-tree_statement_list::print_code (ostream& os)
+tree_statement_list::accept (tree_walker& tw)
 {
-  for (Pix p = first (); p != 0; next (p))
-    {
-      tree_statement *elt = this->operator () (p);
-
-      if (elt)
-	elt->print_code (os);
-    }
+  tw.visit_statement_list (*this);
 }
 
 octave_value_list
@@ -292,24 +273,9 @@ tree_argument_list::convert_to_const_vector (void)
 }
 
 void
-tree_argument_list::print_code (ostream& os)
+tree_argument_list::accept (tree_walker& tw)
 {
-  Pix p = first ();
-
-  while (p)
-    {
-      tree_expression *elt = this->operator () (p);
-
-      next (p);
-
-      if (elt)
-	{
-	  elt->print_code (os);
-
-	  if (p)
-	    os << ", ";
-	}
-    }
+  tw.visit_argument_list (*this);
 }
 
 // Parameter lists.
@@ -433,24 +399,9 @@ tree_parameter_list::is_defined (void)
 }
 
 void
-tree_parameter_list::print_code (ostream& os)
+tree_parameter_list::accept (tree_walker& tw)
 {
-  Pix p = first ();
-
-  while (p)
-    {
-      tree_identifier *elt = this->operator () (p);
-
-      next (p);
-
-      if (elt)
-	{
-	  elt->print_code (os);
-
-	  if (p)
-	    os << ", ";
-	}
-    }
+  tw.visit_parameter_list (*this);
 }
 
 // Return lists.
@@ -465,49 +416,35 @@ tree_return_list::~tree_return_list (void)
 }
 
 void
-tree_return_list::print_code (ostream& os)
+tree_return_list::accept (tree_walker& tw)
 {
-  Pix p = first ();
-
-  while (p)
-    {
-      tree_index_expression *elt = this->operator () (p);
-
-      next (p);
-
-      if (elt)
-	{
-	  elt->print_code (os);
-
-	  if (p)
-	    os << ", ";
-	}
-    }
+  tw.visit_return_list (*this);
 }
 
 // Global.
 
 tree_global::~tree_global (void)
 {
-  delete ident;
-  delete assign_expr;
+  delete id;
+  delete ass_expr;
 }
 
 void
 tree_global::eval (void)
 {
-  if (ident)
+  if (id)
     {
-      ident->link_to_global ();
+      id->link_to_global ();
     }
-  else if (assign_expr)
+  else if (ass_expr)
     {
-      tree_identifier *id = 0;
-      if (assign_expr->left_hand_side_is_identifier_only ()
-	  && (id = assign_expr->left_hand_side_id ()))
+      tree_identifier *idnt = 0;
+
+      if (ass_expr->left_hand_side_is_identifier_only ()
+	  && (idnt = ass_expr->left_hand_side_id ()))
 	{
-	  id->link_to_global ();
-	  assign_expr->eval (false);
+	  idnt->link_to_global ();
+	  ass_expr->eval (false);
 	}
       else
 	error ("global: unable to make individual structure elements global");
@@ -515,13 +452,9 @@ tree_global::eval (void)
 }
 
 void
-tree_global::print_code (ostream& os)
+tree_global::accept (tree_walker& tw)
 {
-  if (ident)
-    ident->print_code (os);
-
-  if (assign_expr)
-    assign_expr->print_code (os);
+  tw.visit_global (*this);
 }
 
 // Global initializer lists.
@@ -537,24 +470,9 @@ tree_global_init_list::eval (void)
 }
 
 void
-tree_global_init_list::print_code (ostream& os)
+tree_global_init_list::accept (tree_walker& tw)
 {
-  Pix p = first ();
-
-  while (p)
-    {
-      tree_global *elt = this->operator () (p);
-
-      next (p);
-
-      if (elt)
-	{
-	  elt->print_code (os);
-
-	  if (p)
-	    os << ", ";
-	}
-    }
+  tw.visit_global_init_list (*this);
 }
 
 // If.
@@ -580,21 +498,9 @@ tree_if_clause::eval (void)
 }
 
 void
-tree_if_clause::print_code (ostream& os)
+tree_if_clause::accept (tree_walker& tw)
 {
-  if (expr)
-    expr->print_code (os);
-
-  print_code_new_line (os);
-
-  increment_indent_level ();
-
-  if (list)
-    {
-      list->print_code (os);
-
-      decrement_indent_level ();
-    }
+  tw.visit_if_clause (*this);
 }
 
 // List of if commands.
@@ -612,34 +518,9 @@ tree_if_command_list::eval (void)
 }
 
 void
-tree_if_command_list::print_code (ostream& os)
+tree_if_command_list::accept (tree_walker& tw)
 {
-  Pix p = first ();
-
-  bool first_elt = true;
-
-  while (p)
-    {
-      tree_if_clause *elt = this->operator () (p);
-
-      if (elt)
-	{
-	  if (! first_elt)
-	    {
-	      print_code_indent (os);
-
-	      if (elt->is_else_clause ())
-		os << "else";
-	      else
-		os << "elseif ";
-	    }
-
-	  elt->print_code (os);
-	}
-
-      first_elt = false;
-      next (p);
-    }
+  tw.visit_if_command_list (*this);
 }
 
 /*

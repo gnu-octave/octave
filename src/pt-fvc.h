@@ -34,6 +34,8 @@ class ostream;
 class symbol_record;
 class tree_function;
 
+class tree_walker;
+
 #include "mappers.h"
 #include "pt-fvc-base.h"
 #include "variables.h"
@@ -46,6 +48,7 @@ tree_identifier : public tree_fvc
   friend class tree_index_expression;
 
 public:
+
   tree_identifier (int l = -1, int c = -1)
     : tree_fvc (l, c), sym (0), maybe_do_ans_assign (false) { }
 
@@ -90,10 +93,15 @@ public:
 
   void eval_undefined_error (void);
 
-  void print_code (ostream& os);
+  void accept (tree_walker& tw);
 
 private:
+
+  // The symbol record that this identifier references.
   symbol_record *sym;
+
+  // True if we should consider assigning the result of evaluating
+  // this identifier to the built-in variable ans.
   bool maybe_do_ans_assign;
 };
 
@@ -103,6 +111,7 @@ class
 tree_indirect_ref : public tree_fvc
 {
 public:
+
   tree_indirect_ref (int l = -1, int c = -1)
     : tree_fvc (l, c), id (0), preserve_ident (false) { }
 
@@ -135,13 +144,24 @@ public:
 
   octave_value eval (bool print);
 
-  octave_value_list eval (bool print, int nargout, const octave_value_list& args);
+  octave_value_list eval (bool print, int nargout,
+			  const octave_value_list& args);
 
-  void print_code (ostream& os);
+  SLList<string> references (void) { return refs; }
+
+  void accept (tree_walker& tw);
 
 private:
+
+  // The identifier for this structure reference.  For example, in
+  // a.b, a is the id.
   tree_identifier *id;
+
+  // The list of sub-element names.  For example, in a.b.c, refs
+  // contains the strings b and c.
   SLList<string> refs;
+
+  // True if we should not delete the identifier.
   bool preserve_ident;
 };
 
@@ -151,6 +171,7 @@ class
 tree_builtin : public tree_fvc
 {
 public:
+
   tree_builtin (const string& nm = string ());
 
   tree_builtin (const builtin_mapper_function& m_fcn,
@@ -172,12 +193,20 @@ public:
   string name (void) const
     { return my_name; }
 
-  void print_code (ostream& os);
+  void accept (tree_walker& tw);
 
 private:
+
+  // True if this is a mapper function.
   bool is_mapper;
+
+  // A structure describing the mapper function.
   builtin_mapper_function mapper_fcn;
+
+  // The actual function, if it is not a mapper.
   Octave_builtin_fcn fcn;
+
+  // The name of this function.
   string my_name;
 };
 

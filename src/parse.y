@@ -763,7 +763,7 @@ simple_expr1	: NUM
 		  { $$ = make_constant (TEXT, $1); }
 		| '(' simple_expr ')'
 		  {
-		    $2->in_parens++;
+		    $2->mark_in_parens ();
 		    $$ = $2;
 		  }
 		| word_list_cmd
@@ -1327,7 +1327,7 @@ maybe_warn_assign_as_truth_value (tree_expression *expr)
 {
   if (user_pref.warn_assign_as_truth_value
       && expr->is_assignment_expression ()
-      && expr->in_parens < 2)
+      && expr->is_in_parens () < 2)
     {
       warning ("suggest parenthesis around assignment used as truth value");
     }

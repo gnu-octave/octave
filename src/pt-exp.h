@@ -34,6 +34,8 @@ class tree_index_expression;
 class tree_indirect_ref;
 class tree_argument_list;
 
+class tree_walker;
+
 #include "pt-exp-base.h"
 
 // Prefix expressions.
@@ -41,7 +43,8 @@ class tree_argument_list;
 class
 tree_prefix_expression : public tree_expression
 {
- public:
+public:
+
   tree_prefix_expression (int l = -1, int c = -1)
     : tree_expression (l, c), id (0) { }
 
@@ -60,9 +63,13 @@ tree_prefix_expression : public tree_expression
 
   char *oper (void) const;
 
-  void print_code (ostream& os);
+  tree_identifier *ident (void) { return id; }
 
- private:
+  void accept (tree_walker& tw);
+
+private:
+
+  // Currently, a prefix expression can only apply to an identifier.
   tree_identifier *id;
 };
 
@@ -71,7 +78,8 @@ tree_prefix_expression : public tree_expression
 class
 tree_postfix_expression : public tree_expression
 {
- public:
+public:
+
   tree_postfix_expression (int l = -1, int c = -1)
     : tree_expression (l, c), id (0) { }
 
@@ -87,9 +95,13 @@ tree_postfix_expression : public tree_expression
 
   char *oper (void) const;
 
-  void print_code (ostream& os);
+  tree_identifier *ident (void) { return id; }
 
- private:
+  void accept (tree_walker& tw);
+
+private:
+
+  // Currently, a prefix expression can only apply to an identifier.
   tree_identifier *id;
 };
 
@@ -98,7 +110,8 @@ tree_postfix_expression : public tree_expression
 class
 tree_unary_expression : public tree_expression
 {
- public:
+public:
+
   tree_unary_expression (int l = -1, int c = -1)
     : tree_expression (l, c), op (0) { }
 
@@ -115,9 +128,13 @@ tree_unary_expression : public tree_expression
 
   char *oper (void) const;
 
-  void print_code (ostream& os);
+  tree_expression *operand (void) { return op; }
 
- private:
+  void accept (tree_walker& tw);
+
+private:
+
+  // The operand for the expression.
   tree_expression *op;
 };
 
@@ -126,18 +143,19 @@ tree_unary_expression : public tree_expression
 class
 tree_binary_expression : public tree_expression
 {
- public:
+public:
+
   tree_binary_expression (int l = -1, int c = -1)
-    : tree_expression (l, c), op1 (0), op2 (0) { }
+    : tree_expression (l, c), op_lhs (0), op_rhs (0) { }
 
   tree_binary_expression (tree_expression *a, tree_expression *b,
 			  tree_expression::type t, int l = -1, int c = -1)
-    : tree_expression (l, c, t), op1 (a), op2 (b) { }
+    : tree_expression (l, c, t), op_lhs (a), op_rhs (b) { }
 
   ~tree_binary_expression (void)
     {
-      delete op1;
-      delete op2;
+      delete op_lhs;
+      delete op_rhs;
     }
 
   octave_value eval (bool print);
@@ -146,11 +164,16 @@ tree_binary_expression : public tree_expression
 
   char *oper (void) const;
 
-  void print_code (ostream& os);
+  tree_expression *lhs (void) { return op_lhs; }
+  tree_expression *rhs (void) { return op_rhs; }
 
- private:
-  tree_expression *op1;
-  tree_expression *op2;
+  void accept (tree_walker& tw);
+
+private:
+
+  // The operands for the expression.
+  tree_expression *op_lhs;
+  tree_expression *op_rhs;
 };
 
 // Simple assignment expressions.
@@ -158,19 +181,8 @@ tree_binary_expression : public tree_expression
 class
 tree_simple_assignment_expression : public tree_expression
 {
-private:
-  void init (bool plhs, bool ans_assign)
-    {
-      etype = tree_expression::assignment;
-      lhs_idx_expr = 0;
-      lhs = 0;
-      index = 0;
-      rhs = 0;
-      preserve = plhs;
-      ans_ass = ans_assign;
-    }
+public:
 
- public:
   tree_simple_assignment_expression (bool plhs = false,
 				     bool ans_assign = false,
 				     int l = -1, int c = -1)
@@ -217,15 +229,48 @@ private:
 
   void eval_error (void);
 
-  void print_code (ostream& os);
+  tree_indirect_ref *left_hand_side (void) { return lhs; }
 
- private:
+  tree_argument_list *lhs_index (void) { return index; }
+
+  tree_expression *right_hand_side (void) { return rhs; }
+
+  void accept (tree_walker& tw);
+
+private:
+
+  // The left hand side of the assignment, as an index expression.  If
+  // the assignment is constructed from an index expression, the index
+  // expression is split into the its components in the constructor.
   tree_index_expression *lhs_idx_expr;
+
+  // The indirect reference (id or structure reference) on the left
+  // hand side of the assignemnt.
   tree_indirect_ref *lhs;
+
+  // The index of the left hand side of the assignment, if any.
   tree_argument_list *index;
+
+  // The right hand side of the assignment.
   tree_expression *rhs;
+
+  // True if we should not delete the lhs.
   bool preserve;
+
+  // True if this is an assignment to the built-in variable ans.
   bool ans_ass;
+
+  void init (bool plhs, bool ans_assign)
+    {
+      etype = tree_expression::assignment;
+      lhs_idx_expr = 0;
+      lhs = 0;
+      index = 0;
+      rhs = 0;
+      preserve = plhs;
+      ans_ass = ans_assign;
+    }
+
 };
 
 // Colon expressions.
@@ -233,21 +278,22 @@ private:
 class
 tree_colon_expression : public tree_expression
 {
- public:
+public:
+
   tree_colon_expression (int l = -1, int c = -1)
     : tree_expression (l, c, tree_expression::colon),
-      op1(0), op2 (0), op3 (0) { }
+      op_base (0), op_limit (0), op_increment (0) { }
 
   tree_colon_expression (tree_expression *a, tree_expression *b,
 			 int l = -1, int c = -1)
     : tree_expression (l, c, tree_expression::colon),
-      op1 (a), op2 (b), op3 (0) { }
+      op_base (a), op_limit (b), op_increment (0) { }
 
   ~tree_colon_expression (void)
     {
-      delete op1;
-      delete op2;
-      delete op3;
+      delete op_base;
+      delete op_limit;
+      delete op_increment;
     }
 
   bool is_range_constant (void) const;
@@ -258,12 +304,18 @@ tree_colon_expression : public tree_expression
 
   void eval_error (const char *s);
 
-  void print_code (ostream& os);
+  tree_expression *base (void) { return op_base; }
+  tree_expression *limit (void) { return op_limit; }
+  tree_expression *increment (void) { return op_increment; }
 
- private:
-  tree_expression *op1;
-  tree_expression *op2;
-  tree_expression *op3;
+  void accept (tree_walker& tw);
+
+private:
+
+  // The components of the expression.
+  tree_expression *op_base;
+  tree_expression *op_limit;
+  tree_expression *op_increment;
 };
 
 #endif

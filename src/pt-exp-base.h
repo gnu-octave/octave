@@ -37,7 +37,6 @@ class
 tree_expression : public tree
 {
 public:
-  int in_parens;
 
   enum type
     {
@@ -110,11 +109,22 @@ public:
 
   virtual bool is_logically_true (const char *);
 
+  virtual void mark_in_parens (void) { in_parens++; }
+
+  virtual bool is_in_parens (void) { return in_parens; }
+
+  virtual type expression_type (void) { return etype; }
+
   virtual void mark_for_possible_ans_assign (void);
 
   virtual octave_value eval (bool print) = 0;
 
 protected:
+
+  // Nonzero if this expression appears inside parentheses.
+  int in_parens;
+
+  // The type of this expression.
   type etype;
 };
 

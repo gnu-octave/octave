@@ -50,6 +50,7 @@ int returning = 0;
 #include "pt-fvc.h"
 #include "pt-misc.h"
 #include "pt-mvr.h"
+#include "pt-walk.h"
 #include "unwind-prot.h"
 #include "user-prefs.h"
 #include "variables.h"
@@ -118,14 +119,9 @@ tree_global_command::eval (void)
 }
 
 void
-tree_global_command::print_code (ostream& os)
+tree_global_command::accept (tree_walker& tw)
 {
-  print_code_indent (os);
-
-  os << "global ";
-
-  if (init_list)
-    init_list->print_code (os);
+  tw.visit_global_command (*this);
 }
 
 // While.
@@ -176,27 +172,9 @@ tree_while_command::eval_error (void)
 }
 
 void
-tree_while_command::print_code (ostream& os)
+tree_while_command::accept (tree_walker& tw)
 {
-  print_code_indent (os);
-
-  os << "while ";
-
-  if (expr)
-    expr->print_code (os);
-
-  print_code_new_line (os);
-
-  if (list)
-    {
-      increment_indent_level ();
-      list->print_code (os);
-      decrement_indent_level ();
-    }
-
-  print_code_indent (os);
-
-  os << "endwhile";
+  tw.visit_while_command (*this);
 }
 
 // For.
@@ -537,32 +515,9 @@ tree_for_command::eval_error (void)
 }
 
 void
-tree_for_command::print_code (ostream& os)
+tree_for_command::accept (tree_walker& tw)
 {
-  print_code_indent (os);
-
-  os << "for ";
-
-  if (id)
-    id->print_code (os);
-
-  os << " = ";
-
-  if (expr)
-    expr->print_code (os);
-
-  print_code_new_line (os);
-
-  if (list)
-    {
-      increment_indent_level ();
-      list->print_code (os);
-      decrement_indent_level ();
-    }
-
-  print_code_indent (os);
-
-  os << "endfor";
+  tw.visit_for_command (*this);
 }
 
 // If.
@@ -584,18 +539,9 @@ tree_if_command::eval (void)
 }
 
 void
-tree_if_command::print_code (ostream& os)
+tree_if_command::accept (tree_walker& tw)
 {
-  print_code_indent (os);
-
-  os << "if ";
-
-  if (list)
-    list->print_code (os);
-
-  print_code_indent (os);
-
-  os << "endif";
+  tw.visit_if_command (*this);
 }
 
 // Simple exception handling.
@@ -682,37 +628,9 @@ tree_try_catch_command::eval (void)
 }
 
 void
-tree_try_catch_command::print_code (ostream& os)
+tree_try_catch_command::accept (tree_walker& tw)
 {
-  print_code_indent (os);
-
-  os << "try_catch";
-
-  print_code_new_line (os);
-
-  if (try_code)
-    {
-      increment_indent_level ();
-      try_code->print_code (os);
-      decrement_indent_level ();
-    }
-
-  print_code_indent (os);
-
-  os << "catch_code";
-
-  print_code_new_line (os);
-
-  if (catch_code)
-    {
-      increment_indent_level ();
-      catch_code->print_code (os);
-      decrement_indent_level ();
-    }
-
-  print_code_indent (os);
-
-  os << "end_try_catch";
+  tw.visit_try_catch_command (*this);
 }
 
 // Simple exception handling.
@@ -790,37 +708,9 @@ tree_unwind_protect_command::eval (void)
 }
 
 void
-tree_unwind_protect_command::print_code (ostream& os)
+tree_unwind_protect_command::accept (tree_walker& tw)
 {
-  print_code_indent (os);
-
-  os << "unwind_protect";
-
-  print_code_new_line (os);
-
-  if (unwind_protect_code)
-    {
-      increment_indent_level ();
-      unwind_protect_code->print_code (os);
-      decrement_indent_level ();
-    }
-
-  print_code_indent (os);
-
-  os << "cleanup_code";
-
-  print_code_new_line (os);
-
-  if (cleanup_code)
-    {
-      increment_indent_level ();
-      cleanup_code->print_code (os);
-      decrement_indent_level ();
-    }
-
-  print_code_indent (os);
-
-  os << "end_unwind_protect";
+  tw.visit_unwind_protect_command (*this);
 }
 
 // Break.
@@ -833,11 +723,9 @@ tree_break_command::eval (void)
 }
 
 void
-tree_break_command::print_code (ostream& os)
+tree_break_command::accept (tree_walker& tw)
 {
-  print_code_indent (os);
-
-  os << "break";
+  tw.visit_break_command (*this);
 }
 
 // Continue.
@@ -850,11 +738,9 @@ tree_continue_command::eval (void)
 }
 
 void
-tree_continue_command::print_code (ostream& os)
+tree_continue_command::accept (tree_walker& tw)
 {
-  print_code_indent (os);
-
-  os << "continue";
+  tw.visit_continue_command (*this);
 }
 
 // Return.
@@ -867,11 +753,9 @@ tree_return_command::eval (void)
 }
 
 void
-tree_return_command::print_code (ostream& os)
+tree_return_command::accept (tree_walker& tw)
 {
-  print_code_indent (os);
-
-  os << "return";
+  tw.visit_return_command (*this);
 }
 
 /*

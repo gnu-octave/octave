@@ -39,6 +39,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt-mat.h"
 #include "pt-misc.h"
 #include "pt-mvr.h"
+#include "pt-walk.h"
 #include "user-prefs.h"
 
 // General matrices.  This list type is much more work to handle than
@@ -393,24 +394,9 @@ tree_matrix_row::to_return_list (void)
 }
 
 void
-tree_matrix_row::print_code (ostream& os)
+tree_matrix_row::accept (tree_walker& tw)
 {
-  Pix p = first ();
-
-  while (p)
-    {
-      tree_expression *elt = this->operator () (p);
-
-      next (p);
-
-      if (elt)
-	{
-	  elt->print_code (os);
-
-	  if (p)
-	    os << ", ";
-	}
-    }
+  tw.visit_matrix_row (*this);
 }
 
 bool
@@ -534,36 +520,9 @@ done:
 }
 
 void
-tree_matrix::print_code (ostream& os)
+tree_matrix::accept (tree_walker& tw)
 {
-  print_code_indent (os);
-
-  if (in_parens)
-    os << "(";
-
-  os << "[";
-
-  Pix p = first ();
-
-  while (p)
-    {
-      tree_matrix_row *elt = this->operator () (p);
-
-      next (p);
-
-      if (elt)
-	{
-	  elt->print_code (os);
-
-	  if (p)
-	    os << "; ";
-	}
-    }
-
-  os << "]";
-
-  if (in_parens)
-    os << ")";
+  tw.visit_matrix (*this);
 }
 
 /*

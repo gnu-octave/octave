@@ -49,6 +49,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pathsearch.h"
 #include "pt-const.h"
 #include "pt-exp.h"
+#include "pt-pr-code.h"
 #include "sighandlers.h"
 #include "symtab.h"
 #include "toplev.h"
@@ -754,7 +755,9 @@ display the definition of each NAME that refers to a function")
 		  if (nargout == 0 && ! quiet)
 		    output_buf << argv[i] << " is a user-defined function\n";
 
-		  defn->print_code (output_buf);
+		  tree_print_code tpc (output_buf);
+
+		  defn->accept (tpc);
 		}
 
 	      // XXX FIXME XXX -- this code should be shared with
@@ -808,7 +811,9 @@ display the definition of each NAME that refers to a function")
 		    }
 		  if (! tmp->is_map ())
 		    {
-		      tmp->print_code (output_buf);
+		      tree_print_code tpc (output_buf);
+
+		      tmp->accept (tpc);
 
 		      if (nargout == 0)
 			output_buf << "\n";

@@ -52,6 +52,8 @@ class tree_break_command;
 class tree_continue_command;
 class tree_return_command;
 
+class tree_walker;
+
 #include "pt-base.h"
 
 // A base class for commands.
@@ -60,6 +62,7 @@ class
 tree_command : public tree
 {
 public:
+
   tree_command (int l = -1, int c = -1) : tree (l, c) { }
 
   virtual ~tree_command (void) { }
@@ -71,6 +74,7 @@ class
 tree_global_command : public tree_command
 {
 public:
+
   tree_global_command (int l = -1, int c = -1)
     : tree_command (l, c), init_list (0) { }
 
@@ -81,9 +85,14 @@ public:
 
   void eval (void);
 
-  void print_code (ostream& os);
+  tree_global_init_list *initializer_list (void) { return init_list; }
+
+  void accept (tree_walker& tw);
 
 private:
+
+  // The list of global variables or initializers in this global
+  // command.
   tree_global_init_list *init_list;
 };
 
@@ -93,6 +102,7 @@ class
 tree_while_command : public tree_command
 {
 public:
+
   tree_while_command (int l = -1, int c = -1)
     : tree_command (l, c), expr (0), list (0) { }
 
@@ -109,11 +119,19 @@ public:
 
   void eval_error (void);
 
-  void print_code (ostream& os);
+  tree_expression *condition (void) { return expr; }
+
+  tree_statement_list *body (void) { return list; }
+
+  void accept (tree_walker& tw);
 
 private:
-  tree_expression *expr;	// Expression to test.
-  tree_statement_list *list;	// List of commands to execute.
+
+  // Expression to test.
+  tree_expression *expr;
+
+  // List of commands to execute.
+  tree_statement_list *list;
 };
 
 // For.
@@ -122,6 +140,7 @@ class
 tree_for_command : public tree_command
 {
 public:
+
   tree_for_command (int l = -1, int c = -1)
     : tree_command (l, c), id (0), id_list (0), expr (0), list (0) { }
 
@@ -141,9 +160,28 @@ public:
 
   void eval_error (void);
 
-  void print_code (ostream& os);
+  tree_index_expression *ident (void) { return id; }
+
+  tree_expression *control_expr (void) { return expr; }
+
+  tree_statement_list *body (void) { return list; }
+
+  void accept (tree_walker& tw);
 
 private:
+
+  // Identifier to modify.
+  tree_index_expression *id;
+
+  // List of identifiers to modify.
+  tree_return_list *id_list;
+
+  // Expression to evaluate.
+  tree_expression *expr;
+
+  // List of commands to execute.
+  tree_statement_list *list;
+
   void do_for_loop_once (tree_return_list *lst,
 			 const octave_value_list& rhs, bool& quit);
 
@@ -152,11 +190,6 @@ private:
 
   void do_for_loop_once (tree_identifier *ident,
 			 octave_value& rhs, bool& quit);
-
-  tree_index_expression *id;	// Identifier to modify.
-  tree_return_list *id_list;	// List of identifiers to modify.
-  tree_expression *expr;	// Expression to evaluate.
-  tree_statement_list *list;	// List of commands to execute.
 };
 
 // If.
@@ -165,6 +198,7 @@ class
 tree_if_command : public tree_command
 {
 public:
+
   tree_if_command (int l = -1, int c = -1)
     : tree_command (l, c), list (0) { }
 
@@ -177,9 +211,13 @@ public:
 
   void eval_error (void);
 
-  void print_code (ostream& os);
+  tree_if_command_list *cmd_list (void) { return list; }
+
+  void accept (tree_walker& tw);
 
 private:
+
+  // List of if commands (if, elseif, elseif, ... else, endif)
   tree_if_command_list *list;
 };
 
@@ -189,6 +227,7 @@ class
 tree_unwind_protect_command : public tree_command
 {
 public:
+
   tree_unwind_protect_command (int l = -1, int c = -1)
     : tree_command (l, c), unwind_protect_code (0), cleanup_code (0) { }
 
@@ -201,10 +240,19 @@ public:
 
   void eval (void);
 
-  void print_code (ostream& os);
+  tree_statement_list *body (void) { return unwind_protect_code; }
+
+  tree_statement_list *cleanup (void) { return cleanup_code; }
+
+  void accept (tree_walker& tw);
 
 private:
+
+  // The first body of code to attempt to execute.
   tree_statement_list *unwind_protect_code;
+
+  // The body of code to execute no matter what happens in the first
+  // body of code.
   tree_statement_list *cleanup_code;
 };
 
@@ -214,6 +262,7 @@ class
 tree_try_catch_command : public tree_command
 {
 public:
+
   tree_try_catch_command (int l = -1, int c = -1)
     : tree_command (l, c), try_code (0), catch_code (0) { }
 
@@ -226,10 +275,18 @@ public:
 
   void eval (void);
 
-  void print_code (ostream& os);
+  tree_statement_list *body (void) { return try_code; }
+
+  tree_statement_list *cleanup (void) { return catch_code; }
+
+  void accept (tree_walker& tw);
 
 private:
+
+  // The first block of code to attempt to execute.
   tree_statement_list *try_code;
+
+  // The code to execute if an error occurs in the first block.
   tree_statement_list *catch_code;
 };
 
@@ -239,13 +296,14 @@ class
 tree_break_command : public tree_command
 {
 public:
+
   tree_break_command (int l = -1, int c = -1) : tree_command (l, c) { }
 
   ~tree_break_command (void) { }
 
   void eval (void);
 
-  void print_code (ostream& os);
+  void accept (tree_walker& tw);
 };
 
 // Continue.
@@ -254,13 +312,14 @@ class
 tree_continue_command : public tree_command
 {
 public:
+
   tree_continue_command (int l = -1, int c = -1) : tree_command (l, c) { }
 
   ~tree_continue_command (void) { }
 
   void eval (void);
 
-  void print_code (ostream& os);
+  void accept (tree_walker& tw);
 };
 
 // Return.
@@ -269,13 +328,14 @@ class
 tree_return_command : public tree_command
 {
 public:
+
   tree_return_command (int l = -1, int c = -1) : tree_command (l, c) { }
 
   ~tree_return_command (void) { }
 
   void eval (void);
 
-  void print_code (ostream& os);
+  void accept (tree_walker& tw);
 };
 
 #endif

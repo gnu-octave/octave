@@ -48,26 +48,30 @@ class tree_va_return_list;
 class tree_global;
 class tree_global_init_list;
 
+class tree_walker;
+
 #include <SLList.h>
 
 #include "pt-base.h"
 
-// A list of expressions and commands to be executed.
+// A statement is either a command to execute or an expression to
+// evaluate.
 
 class
-tree_statement : public tree_print_code
+tree_statement
 {
 friend class tree_statement_list;
 
 public:
+
   tree_statement (void)
-    : tree_print_code (), command (0), expression (0), print_flag (true) { }
+    : cmd (0), expr (0), print_flag (true) { }
 
   tree_statement (tree_command *c)
-    : tree_print_code (), command (c), expression (0), print_flag (true) { }
+    : cmd (c), expr (0), print_flag (true) { }
 
   tree_statement (tree_expression *e)
-    : tree_print_code (), command (0), expression (e), print_flag (true) { }
+    : cmd (0), expr (e), print_flag (true) { }
 
   ~tree_statement (void);
 
@@ -75,35 +79,50 @@ public:
     { print_flag = print; }
 
   bool is_command (void)
-    { return command != 0; }
+    { return cmd != 0; }
 
   bool is_expression (void)
-    { return expression != 0; }
+    { return expr != 0; }
 
   int line (void);
   int column (void);
 
   void maybe_echo_code (bool);
 
-  void print_code (ostream& os);
+  bool print_result (void) { return print_flag; }
+
+  tree_command *command (void) { return cmd; }
+
+  tree_expression *expression (void) { return expr; }
+
+  void accept (tree_walker& tw);
 
 private:
-  tree_command *command;	// Command to execute.
-  tree_expression *expression;	// Command to execute.
-  bool print_flag;		// Print result of eval for this command?
+
+  // Only one of cmd or expr can be valid at once.
+
+  // Command to execute.
+  tree_command *cmd;
+
+  // Expression to evaluate.
+  tree_expression *expr;
+
+  // Print result of eval for this command?
+  bool print_flag;
 };
 
+// A list of statements to evaluate.
+
 class
-tree_statement_list : public SLList<tree_statement *>, public tree_print_code
+tree_statement_list : public SLList<tree_statement *>
 {
 public:
+
   tree_statement_list (void)
-    : SLList<tree_statement *> (), tree_print_code (), function_body (false)
-      { }
+    : SLList<tree_statement *> (), function_body (false) { }
 
   tree_statement_list (tree_statement *s)
-    : SLList<tree_statement *> (), tree_print_code (), function_body (false)
-      { append (s); }
+    : SLList<tree_statement *> (), function_body (false) { append (s); }
 
   ~tree_statement_list (void)
     {
@@ -120,9 +139,11 @@ public:
 
   octave_value_list eval (bool print, int nargout);
 
-  void print_code (ostream& os);
+  void accept (tree_walker& tw);
 
 private:
+
+  // Does this list of statements make up the body of a function?
   bool function_body;
 };
 
@@ -130,15 +151,15 @@ private:
 // arguments in a function call or index expression.
 
 class
-tree_argument_list : public SLList<tree_expression *>, public tree_print_code
+tree_argument_list : public SLList<tree_expression *>
 {
 public:
+
   tree_argument_list (void)
-    : SLList<tree_expression *> (), tree_print_code () { }
+    : SLList<tree_expression *> () { }
 
   tree_argument_list (tree_expression *t)
-    : SLList<tree_expression *> (), tree_print_code ()
-      { append (t); }
+    : SLList<tree_expression *> () { append (t); }
 
   ~tree_argument_list (void)
     {
@@ -151,7 +172,7 @@ public:
 
   octave_value_list convert_to_const_vector (void);
 
-  void print_code (ostream& os);
+  void accept (tree_walker& tw);
 };
 
 // Parameter lists.  Used to hold the list of input and output
@@ -159,21 +180,17 @@ public:
 // only.
 
 class
-tree_parameter_list : public SLList<tree_identifier *>, public tree_print_code
+tree_parameter_list : public SLList<tree_identifier *>
 {
 public:
+
   tree_parameter_list (void)
-    : SLList<tree_identifier *> (), tree_print_code (),
-      marked_for_varargs (0) { }
+    : SLList<tree_identifier *> (), marked_for_varargs (0) { }
 
   tree_parameter_list (tree_identifier *t)
-    : SLList<tree_identifier *> (), tree_print_code (),
-      marked_for_varargs (0)
-      { append (t); }
+    : SLList<tree_identifier *> (), marked_for_varargs (0) { append (t); }
 
   ~tree_parameter_list (void);
-
-//  char *name (void) const;
 
   void mark_as_formal_parameters (void);
 
@@ -197,9 +214,10 @@ public:
 
   octave_value_list convert_to_const_vector (tree_va_return_list *vr_list);
 
-  void print_code (ostream& os);
+  void accept (tree_walker& tw);
 
 private:
+
   int marked_for_varargs;
 };
 
@@ -207,26 +225,26 @@ private:
 // assignment expressions.
 
 class
-tree_return_list : public SLList<tree_index_expression *>,
-  public tree_print_code 
+tree_return_list : public SLList<tree_index_expression *>
 {
 public:
+
   tree_return_list (void)
-    : SLList<tree_index_expression *> (), tree_print_code () { }
+    : SLList<tree_index_expression *> () { }
 
   tree_return_list (tree_index_expression *t)
-    : SLList<tree_index_expression *> (), tree_print_code ()
-      { append (t); }
+    : SLList<tree_index_expression *> () { append (t); }
 
   ~tree_return_list (void);
 
-  void print_code (ostream& os);
+  void accept (tree_walker& tw);
 };
 
 class
 tree_va_return_list : public SLList<octave_value>
 {
 public:
+
   tree_va_return_list (void) : SLList<octave_value> () { }
 
   ~tree_va_return_list (void) { }
@@ -235,38 +253,51 @@ public:
 // List of expressions that make up a global statement.
 
 class
-tree_global : public tree_print_code
+tree_global
 {
 public:
-  tree_global (void) : tree_print_code (), ident (0), assign_expr (0) { }
 
-  tree_global (tree_identifier *id)
-    : tree_print_code (), ident (id), assign_expr (0) { }
+  tree_global (void)
+    : id (0), ass_expr (0) { }
+
+  tree_global (tree_identifier *i)
+    : id (i), ass_expr (0) { }
 
   tree_global (tree_simple_assignment_expression *ass)
-    : tree_print_code (), ident (0), assign_expr (ass) { }
+    : id (0), ass_expr (ass) { }
 
   ~tree_global (void);
 
   void eval (void);
 
-  void print_code (ostream& os);
+  tree_identifier *ident (void) { return id; }
+
+  tree_simple_assignment_expression *assign_expr (void) { return ass_expr; }
+
+  void accept (tree_walker& tw);
 
 private:
-  tree_identifier *ident;
-  tree_simple_assignment_expression *assign_expr;
+
+  // Only one of id or ass_expr can be valid at once.
+
+  // An identifier to make global.
+  tree_identifier *id;
+
+  // An assignemnt expression.  Valid only if the left hand side of
+  // the assignment is a simple identifier.
+  tree_simple_assignment_expression *ass_expr;
 };
 
 class
-tree_global_init_list : public SLList<tree_global *>, public tree_print_code
+tree_global_init_list : public SLList<tree_global *>
 {
 public:
+
   tree_global_init_list (void)
-    : SLList<tree_global *> (), tree_print_code () { }
+    : SLList<tree_global *> () { }
 
   tree_global_init_list (tree_global *t)
-    : SLList<tree_global *> (), tree_print_code ()
-      { append (t); }
+    : SLList<tree_global *> () { append (t); }
 
   ~tree_global_init_list (void)
     {
@@ -279,20 +310,21 @@ public:
 
   void eval (void);
 
-  void print_code (ostream& os);
+  void accept (tree_walker& tw);
 };
 
 class
-tree_if_clause : public tree_print_code
+tree_if_clause
 {
 public:
-  tree_if_clause (void) : tree_print_code (), expr (0), list (0) { }
+
+  tree_if_clause (void) : expr (0), list (0) { }
 
   tree_if_clause (tree_statement_list *l)
-    : tree_print_code (), expr (0), list (l) { }
+    : expr (0), list (l) { }
 
   tree_if_clause (tree_expression *e, tree_statement_list *l)
-    : tree_print_code (), expr (e), list (l) { }
+    : expr (e), list (l) { }
 
   ~tree_if_clause (void);
 
@@ -301,23 +333,31 @@ public:
 
   int eval (void);
 
-  void print_code (ostream& os);
+  tree_expression *condition (void) { return expr; }
+
+  tree_statement_list *commands (void) { return list; }
+
+  void accept (tree_walker& tw);
 
 private:
+
+  // The condition to test.
   tree_expression *expr;
+
+  // The list of statements to evaluate if expr is true.
   tree_statement_list *list;
 };
 
 class
-tree_if_command_list : public SLList<tree_if_clause *>, public tree_print_code
+tree_if_command_list : public SLList<tree_if_clause *>
 {
 public:
+
   tree_if_command_list (void)
-    : SLList<tree_if_clause *> (), tree_print_code () { }
+    : SLList<tree_if_clause *> () { }
 
   tree_if_command_list (tree_if_clause *t)
-    : SLList<tree_if_clause *> (), tree_print_code ()
-      { append (t); }
+    : SLList<tree_if_clause *> () { append (t); }
 
   ~tree_if_command_list (void)
     {
@@ -330,7 +370,7 @@ public:
 
   void eval (void);
 
-  void print_code (ostream& os);
+  void accept (tree_walker& tw);
 };
 
 #endif

@@ -38,6 +38,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt-fvc.h"
 #include "pt-misc.h"
 #include "pt-mvr.h"
+#include "pt-walk.h"
 #include "user-prefs.h"
 
 // But first, some extra functions used by the tree classes.
@@ -69,6 +70,12 @@ tree_oct_obj::eval (bool /* print */, int /* nargout */,
 		    const octave_value_list& /* args */)
 {
   return values;
+}
+
+void
+tree_oct_obj::accept (tree_walker& tw)
+{
+  tw.visit_oct_obj (*this);
 }
 
 // Index expressions.
@@ -239,25 +246,9 @@ tree_index_expression::eval_error (void)
 }
 
 void
-tree_index_expression::print_code (ostream& os)
+tree_index_expression::accept (tree_walker& tw)
 {
-  print_code_indent (os);
-
-  if (in_parens)
-    os << "(";
-
-  if (id)
-    id->print_code (os);
-
-  if (list)
-    {
-      os << " (";
-      list->print_code (os);
-      os << ")";
-    }
-
-  if (in_parens)
-    os << ")";
+  tw.visit_index_expression (*this);
 }
 
 // Multi-valued assignmnt expressions.
@@ -375,33 +366,9 @@ tree_multi_assignment_expression::eval_error (void)
 }
 
 void
-tree_multi_assignment_expression::print_code (ostream& os)
+tree_multi_assignment_expression::accept (tree_walker& tw)
 {
-  print_code_indent (os);
-
-  if (in_parens)
-    os << "(";
-
-  if (lhs)
-    {
-      int len = lhs->length ();
-
-      if (len > 1)
-	os << "[";
-
-      lhs->print_code (os);
-
-      if (len > 1)
-	os << "]";
-    }
-
-  os << " = ";
-
-  if (rhs)
-    rhs->print_code (os);
-
-  if (in_parens)
-    os << ")";
+  tw.visit_multi_assignment_expression (*this);
 }
 
 /*

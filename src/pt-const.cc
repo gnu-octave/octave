@@ -53,6 +53,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pr-output.h"
 #include "sysdep.h"
 #include "pt-const.h"
+#include "pt-walk.h"
 #include "unwind-prot.h"
 #include "user-prefs.h"
 #include "utils.h"
@@ -407,18 +408,9 @@ octave_value::eval (bool print, int, const octave_value_list& args)
 }
 
 void
-octave_value::print_code (ostream& os)
+octave_value::accept (tree_walker& tw)
 {
-  print_code_indent (os);
-
-  if (in_parens)
-    os << "(";
-
-  if (rep)
-    rep->print_code (os);
-
-  if (in_parens)
-    os << ")";
+  tw.visit_octave_value (*this);
 }
 
 // The real representation of constants.
@@ -2314,69 +2306,6 @@ OCT_VAL_REP::print (ostream& output_buf)
     case unknown_constant:
     case magic_colon:
     case all_va_args:
-      panic_impossible ();
-      break;
-    }
-}
-
-void
-OCT_VAL_REP::print_code (ostream& os)
-{
-  switch (type_tag)
-    {
-    case scalar_constant:
-      if (orig_text.empty ())
-	octave_print_internal (os, scalar, 1);
-      else
-	os << orig_text;
-      break;
-
-    case matrix_constant:
-      octave_print_internal (os, *matrix, 1);
-      break;
-
-    case complex_scalar_constant:
-     {
-	double re = complex_scalar->real ();
-	double im = complex_scalar->imag ();
-
-	// If we have the original text and a pure imaginary, just
-	// print the original text, because this must be a constant
-	// that was parsed as part of a function.
-
-	if (! orig_text.empty () && re == 0.0 && im > 0.0)
-	  os << orig_text;
-	else
-	  octave_print_internal (os, *complex_scalar, 1);
-      }
-      break;
-
-    case complex_matrix_constant:
-      octave_print_internal (os, *complex_matrix, 1);
-      break;
-
-    case char_matrix_constant:
-      octave_print_internal (os, *char_matrix, 1);
-      break;
-
-    case char_matrix_constant_str:
-      octave_print_internal (os, *char_matrix, 1, 1);
-      break;
-
-    case range_constant:
-      octave_print_internal (os, *range, 1);
-      break;
-
-    case magic_colon:
-      os << ":";
-      break;
-
-    case all_va_args:
-      os << "all_va_args";
-      break;
-
-    case map_constant:
-    case unknown_constant:
       panic_impossible ();
       break;
     }

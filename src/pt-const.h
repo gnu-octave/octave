@@ -42,6 +42,8 @@ class ostream;
 class Octave_map;
 class octave_value_list;
 
+class tree_walker;
+
 // Constants.
 
 class
@@ -239,12 +241,12 @@ private:
 
     void stash_original_text (const string& s);
 
+    string original_text (void) { return orig_text; }
+
     void maybe_mutate (void);
 
     void print (void);
     void print (ostream& os);
-
-    void print_code (ostream& os);
 
     void gripe_wrong_type_arg (const char *name,
 			       const octave_value_rep& tcr) const;
@@ -493,6 +495,7 @@ public:
   bool is_real_matrix (void) const { return rep->is_real_matrix (); }
   bool is_complex_scalar (void) const { return rep->is_complex_scalar (); }
   bool is_complex_matrix (void) const { return rep->is_complex_matrix (); }
+  bool is_char_matrix (void) const { return rep->is_char_matrix (); }
   bool is_string (void) const { return rep->is_string (); }
   bool is_range (void) const { return rep->is_range (); }
   bool is_map (void) const { return rep->is_map (); }
@@ -645,9 +648,9 @@ public:
   void stash_original_text (const string& s)
     { rep->stash_original_text (s); }
 
-  // Pretty print this constant.
- 
-  void print_code (ostream& os);
+  string original_text (void) { return rep->original_text (); }
+
+  void accept (tree_walker& tw);
 
   char *type_as_string (void) const
     { return rep->type_as_string (); }

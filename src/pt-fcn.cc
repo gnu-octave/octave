@@ -41,6 +41,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt-exp.h"
 #include "pt-fcn.h"
 #include "pt-misc.h"
+#include "pt-pr-code.h"
+#include "pt-walk.h"
 #include "unwind-prot.h"
 #include "user-prefs.h"
 #include "utils.h"
@@ -396,87 +398,25 @@ tree_function::traceback_error (void)
 }
 
 void
-tree_function::print_code (ostream& os)
-{
-  print_code_reset ();
-
-  print_code_function_header (os);
-
-  if (cmd_list)
-    {
-      increment_indent_level ();
-      cmd_list->print_code (os);
-      decrement_indent_level ();
-    }
-
-  print_code_function_trailer (os);
-}
-
-void
 tree_function::print_code_function_header (void)
 {
-  print_code_function_header (octave_stdout);
-}
+  tree_print_code tpc (octave_stdout);
 
-void
-tree_function::print_code_function_header (ostream& os)
-{
-  print_code_indent (os);
-
-  os << "function ";
-
-  if (ret_list)
-    {
-      int len = ret_list->length ();
-
-      if (len > 1)
-	os << "[";
-
-      ret_list->print_code (os);
-
-      if (len > 1)
-	os << "]";
-
-      os << " = ";
-    }
-
-  os << (fcn_name.empty () ? string ("(empty)") : fcn_name) << " ";
-
-  if (param_list)
-    {
-      int len = param_list->length ();
-      if (len > 0)
-	os << "(";
-
-      param_list->print_code (os);
-
-      if (len > 0)
-	{
-	  os << ")";
-	  print_code_new_line (os);
-	}
-    }
-  else
-    {
-      os << "()";
-      print_code_new_line (os);
-    }
+  tpc.visit_function_header (*this);
 }
 
 void
 tree_function::print_code_function_trailer (void)
 {
-  print_code_function_trailer (octave_stdout);
+  tree_print_code tpc (octave_stdout);
+
+  tpc.visit_function_trailer (*this);
 }
 
 void
-tree_function::print_code_function_trailer (ostream& os)
+tree_function::accept (tree_walker& tw)
 {
-  print_code_indent (os);
-
-  os << "endfunction";
-
-  print_code_new_line (os);
+  tw.visit_function (*this);
 }
 
 DEFUN (va_arg, args, ,

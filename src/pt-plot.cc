@@ -57,6 +57,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt-cmd.h"
 #include "pt-exp.h"
 #include "pt-plot.h"
+#include "pt-walk.h"
 #include "sysdep.h"
 #include "user-prefs.h"
 #include "utils.h"
@@ -321,34 +322,9 @@ tree_plot_command::eval (void)
 }
 
 void
-tree_plot_command::print_code (ostream& os)
+tree_plot_command::accept (tree_walker& tw)
 {
-  print_code_indent (os);
-
-  switch (ndim)
-    {
-    case 1:
-      os << "replot";
-      break;
-
-    case 2:
-      os << "gplot";
-      break;
-
-    case 3:
-      os << "gsplot";
-      break;
-
-    default:
-      os << "<unkown plot command>";
-      break;
-    }
-
-  if (range)
-    range->print_code (os);
-
-  if (plot_list)
-    plot_list->print_code (os);
+  tw.visit_plot_command (*this);
 }
 
 plot_limits::~plot_limits (void)
@@ -379,16 +355,9 @@ plot_limits::print (int ndim, ostrstream& plot_buf)
 }
 
 void
-plot_limits::print_code (ostream& os)
+plot_limits::accept (tree_walker& tw)
 {
-  if (x_range)
-    x_range->print_code (os);
-
-  if (y_range)
-    y_range->print_code (os);
-
-  if (z_range)
-    z_range->print_code (os);
+  tw.visit_plot_limits (*this);
 }
 
 plot_range::~plot_range (void)
@@ -438,19 +407,9 @@ plot_range::print (ostrstream& plot_buf)
 }
 
 void
-plot_range::print_code (ostream& os)
+plot_range::accept (tree_walker& tw)
 {
-  os << " [";
-
-  if (lower)
-    lower->print_code (os);
-
-  os << ":";
-
-  if (upper)
-    upper->print_code (os);
-
-  os << "]";
+  tw.visit_plot_range (*this);
 }
 
 subplot_using::~subplot_using (void)
@@ -461,14 +420,14 @@ subplot_using::~subplot_using (void)
 int
 subplot_using::eval (int ndim, int n_max)
 {
-  if ((ndim == 2 && qualifier_count > 4)
-      || (ndim == 3 && qualifier_count > 3))
+  if ((ndim == 2 && qual_count > 4)
+      || (ndim == 3 && qual_count > 3))
     return -1;
 
-  if (qualifier_count > 0)
-    val.resize (qualifier_count);
+  if (qual_count > 0)
+    val.resize (qual_count);
 
-  for (int i = 0; i < qualifier_count; i++)
+  for (int i = 0; i < qual_count; i++)
     {
       if (x[i])
 	{
@@ -535,7 +494,7 @@ subplot_using::print (int ndim, int n_max, ostrstream& plot_buf)
   if (status < 0)
     return -1;
 
-  for (int i = 0; i < qualifier_count; i++)
+  for (int i = 0; i < qual_count; i++)
     {
       if (i == 0)
 	plot_buf << " " << GNUPLOT_COMMAND_USING << " ";
@@ -549,57 +508,27 @@ subplot_using::print (int ndim, int n_max, ostrstream& plot_buf)
 }
 
 void
-subplot_using::print_code (ostream& os)
+subplot_using::accept (tree_walker& tw)
 {
-  os << " using ";
-  for (int i = 0; i < qualifier_count; i++)
-    {
-      if (i > 0)
-	os << ":";
-
-      if (x[i])
-	x[i]->print_code (os);
-    }
-}
-
-subplot_style::subplot_style (const string& s)
-{
-  style = s;
-  linetype = 0;
-  pointtype = 0;
-}
-
-subplot_style::subplot_style (const string& s, tree_expression *lt)
-{
-  style = s;
-  linetype = lt;
-  pointtype = 0;
-}
-
-subplot_style::subplot_style (const string& s, tree_expression *lt,
-			      tree_expression *pt)
-{
-  style = s;
-  linetype = lt;
-  pointtype = pt;
+  tw.visit_subplot_using (*this);
 }
 
 subplot_style::~subplot_style (void)
 {
-  delete linetype;
-  delete pointtype;
+  delete sp_linetype;
+  delete sp_pointtype;
 }
 
 int
 subplot_style::print (ostrstream& plot_buf)
 {
-  if (! style.empty ())
+  if (! sp_style.empty ())
     {
-      plot_buf << " " << GNUPLOT_COMMAND_WITH << " " << style;
+      plot_buf << " " << GNUPLOT_COMMAND_WITH << " " << sp_style;
 
-      if (linetype)
+      if (sp_linetype)
 	{
-	  octave_value tmp = linetype->eval (false);
+	  octave_value tmp = sp_linetype->eval (false);
 	  if (! error_state && tmp.is_defined ())
 	    {
 	      double val = tmp.double_value ();
@@ -618,9 +547,9 @@ subplot_style::print (ostrstream& plot_buf)
 	    }
 	}
 
-      if (pointtype)
+      if (sp_pointtype)
 	{
-	  octave_value tmp = pointtype->eval (false);
+	  octave_value tmp = sp_pointtype->eval (false);
 	  if (! error_state && tmp.is_defined ())
 	    {
 	      double val = tmp.double_value ();
@@ -648,34 +577,22 @@ subplot_style::print (ostrstream& plot_buf)
 int
 subplot_style::errorbars (void)
 {
-  return (almost_match ("errorbars", style, 1, 0)
-	  || almost_match ("boxerrorbars", style, 5, 0));
+  return (almost_match ("errorbars", sp_style, 1, 0)
+	  || almost_match ("boxerrorbars", sp_style, 5, 0));
 }
 
 void
-subplot_style::print_code (ostream& os)
+subplot_style::accept (tree_walker& tw)
 {
-  os << " with " << style;
-
-  if (linetype)
-    {
-      os << " ";
-      linetype->print_code (os);
-    }
-
-  if (pointtype)
-    {
-      os << " ";
-      pointtype->print_code (os);
-    }
+  tw.visit_subplot_style (*this);
 }
 
 subplot::~subplot (void)
 {
-  delete plot_data;
-  delete using_clause;
-  delete title_clause;
-  delete style_clause;
+  delete sp_plot_data;
+  delete sp_using_clause;
+  delete sp_title_clause;
+  delete sp_style_clause;
 }
 
 octave_value
@@ -683,9 +600,9 @@ subplot::extract_plot_data (int ndim, octave_value& data)
 {
   octave_value retval;
 
-  if (using_clause)
+  if (sp_using_clause)
     {
-      ColumnVector val = using_clause->values (ndim);
+      ColumnVector val = sp_using_clause->values (ndim);
 
       octave_value_list args;
       args(1) = val;
@@ -702,7 +619,7 @@ subplot::extract_plot_data (int ndim, octave_value& data)
       retval = data;
     }
 
-  if (ndim == 2 && style_clause && style_clause->errorbars ())
+  if (ndim == 2 && sp_style_clause && sp_style_clause->errorbars ())
     {
       int nc = retval.columns ();
 
@@ -720,9 +637,9 @@ subplot::extract_plot_data (int ndim, octave_value& data)
 int
 subplot::handle_plot_data (int ndim, ostrstream& plot_buf)
 {
-  if (plot_data)
+  if (sp_plot_data)
     {
-      octave_value data = plot_data->eval (false);
+      octave_value data = sp_plot_data->eval (false);
 
       if (! error_state && data.is_defined ())
 	{
@@ -754,9 +671,9 @@ subplot::handle_plot_data (int ndim, ostrstream& plot_buf)
 		  plot_buf << " " << data.string_value ();
 		}
 
-	      if (using_clause)
+	      if (sp_using_clause)
 		{
-		  int status = using_clause->print (ndim, n_max, plot_buf);
+		  int status = sp_using_clause->print (ndim, n_max, plot_buf);
 
 		  if (status < 0)
 		    return -1;
@@ -812,9 +729,9 @@ subplot::print (int ndim, ostrstream& plot_buf)
   if (status < 0)
     return -1;
 
-  if (title_clause)
+  if (sp_title_clause)
     {
-      octave_value tmp = title_clause->eval (false);
+      octave_value tmp = sp_title_clause->eval (false);
       if (! error_state && tmp.is_string ())
 	plot_buf << " " << GNUPLOT_COMMAND_TITLE << " "
 	  << '"' << tmp.string_value () << '"';
@@ -829,9 +746,9 @@ subplot::print (int ndim, ostrstream& plot_buf)
     plot_buf << " " << GNUPLOT_COMMAND_TITLE << " "
       << '"' << "line " << plot_line_count << '"';
 
-  if (style_clause)
+  if (sp_style_clause)
     {
-      int status = style_clause->print (plot_buf);
+      int status = sp_style_clause->print (plot_buf);
       if (status < 0)
 	return -1;
     }
@@ -840,22 +757,9 @@ subplot::print (int ndim, ostrstream& plot_buf)
 }
 
 void
-subplot::print_code (ostream& os)
+subplot::accept (tree_walker& tw)
 {
-  if (plot_data)
-    {
-      os << " ";
-      plot_data->print_code (os);
-    }
-
-  if (using_clause)
-    using_clause->print_code (os);
-
-  if (title_clause)
-    title_clause->print_code (os);
-
-  if (style_clause)
-    style_clause->print_code (os);
+  tw.visit_subplot (*this);
 }
 
 subplot_list::~subplot_list (void)
@@ -891,24 +795,9 @@ subplot_list::print (int ndim, ostrstream& plot_buf)
 }
 
 void
-subplot_list::print_code (ostream& os)
+subplot_list::accept (tree_walker& tw)
 {
-  Pix p = first ();
-
-  while (p)
-    {
-      subplot *elt = this->operator () (p);
-
-      next (p);
-
-      if (elt)
-	{
-	  elt->print_code (os);
-
-	  if (p)
-	    os << ",";
-	}
-    }
+  tw.visit_subplot_list (*this);
 }
 
 string

@@ -32,6 +32,8 @@ class ostream;
 class octave_value;
 class tree_return_list;
 
+class tree_walker;
+
 #include <SLList.h>
 
 #include "pt-exp.h"
@@ -56,7 +58,7 @@ public:
 
   tree_return_list *to_return_list (void);
 
-  void print_code (ostream& os);
+  void accept (tree_walker& tw);
 };
 
 class
@@ -77,7 +79,7 @@ public:
 
   octave_value eval (bool print);
 
-  void print_code (ostream& os);
+  void accept (tree_walker& tw);
 };
 
 #endif

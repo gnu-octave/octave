@@ -43,6 +43,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt-fvc.h"
 #include "pt-misc.h"
 #include "pt-mvr.h"
+#include "pt-walk.h"
 #include "user-prefs.h"
 #include "utils.h"
 
@@ -120,20 +121,9 @@ tree_prefix_expression::eval_error (void)
 }
 
 void
-tree_prefix_expression::print_code (ostream& os)
+tree_prefix_expression::accept (tree_walker& tw)
 {
-  print_code_indent (os);
-
-  if (in_parens)
-    os << "(";
-
-  os << oper ();
-
-  if (id)
-    id->print_code (os);
-
-  if (in_parens)
-    os << ")";
+  tw.visit_prefix_expression (*this);
 }
 
 // Postfix expressions.
@@ -199,20 +189,9 @@ tree_postfix_expression::eval_error (void)
 }
 
 void
-tree_postfix_expression::print_code (ostream& os)
+tree_postfix_expression::accept (tree_walker& tw)
 {
-  print_code_indent (os);
-
-  if (in_parens)
-    os << "(";
-
-  if (id)
-    id->print_code (os);
-
-  os << oper ();
-
-  if (in_parens)
-    os << ")";
+  tw.visit_postfix_expression (*this);
 }
 
 // Unary expressions.
@@ -299,38 +278,9 @@ tree_unary_expression::eval_error (void)
 }
 
 void
-tree_unary_expression::print_code (ostream& os)
+tree_unary_expression::accept (tree_walker& tw)
 {
-  print_code_indent (os);
-
-  if (in_parens)
-    os << "(";
-
-  switch (etype)
-    {
-    case tree_expression::not:
-    case tree_expression::uminus:
-      os << oper ();
-      if (op)
-	op->print_code (os);
-      break;
-
-    case tree_expression::hermitian:
-    case tree_expression::transpose:
-      if (op)
-	op->print_code (os);
-      os << oper ();
-      break;
-
-    default:
-      os << oper ();
-      if (op)
-	op->print_code (os);
-      break;
-    }
-
-  if (in_parens)
-    os << ")";
+  tw.visit_unary_expression (*this);
 }
 
 // Binary expressions.
@@ -363,14 +313,14 @@ tree_binary_expression::eval (bool /* print */)
     case tree_expression::cmp_ne:
     case tree_expression::and:
     case tree_expression::or:
-      if (op1)
+      if (op_lhs)
 	{
-	  octave_value a = op1->eval (false);
+	  octave_value a = op_lhs->eval (false);
 	  if (error_state)
 	    eval_error ();
-	  else if (a.is_defined () && op2)
+	  else if (a.is_defined () && op_rhs)
 	    {
-	      octave_value b = op2->eval (false);
+	      octave_value b = op_rhs->eval (false);
 	      if (error_state)
 		eval_error ();
 	      else if (b.is_defined ())
@@ -391,9 +341,9 @@ tree_binary_expression::eval (bool /* print */)
     case tree_expression::or_or:
       {
 	bool result = false;
-	if (op1)
+	if (op_lhs)
 	  {
-	    octave_value a = op1->eval (false);
+	    octave_value a = op_lhs->eval (false);
 	    if (error_state)
 	      {
 		eval_error ();
@@ -424,9 +374,9 @@ tree_binary_expression::eval (bool /* print */)
 		  }
 	      }
 
-	    if (op2)
+	    if (op_rhs)
 	      {
-		octave_value b = op2->eval (false);
+		octave_value b = op_rhs->eval (false);
 		if (error_state)
 		  {
 		    eval_error ();
@@ -560,23 +510,9 @@ tree_binary_expression::eval_error (void)
 }
 
 void
-tree_binary_expression::print_code (ostream& os)
+tree_binary_expression::accept (tree_walker& tw)
 {
-  print_code_indent (os);
-
-  if (in_parens)
-    os << "(";
-
-  if (op1)
-    op1->print_code (os);
-
-  os << " " << oper () << " ";
-
-  if (op2)
-    op2->print_code (os);
-
-  if (in_parens)
-    os << ")";
+  tw.visit_binary_expression (*this);
 }
 
 // Simple assignment expressions.
@@ -701,33 +637,9 @@ tree_simple_assignment_expression::eval_error (void)
 }
 
 void
-tree_simple_assignment_expression::print_code (ostream& os)
+tree_simple_assignment_expression::accept (tree_walker& tw)
 {
-  print_code_indent (os);
-
-  if (in_parens)
-    os << "(";
-
-  if (! is_ans_assign ())
-    {
-      if (lhs)
-	lhs->print_code (os);
-
-      if (index)
-	{
-	  os << " (";
-	  index->print_code (os);
-	  os << ")";
-	}
-
-      os << " = ";
-    }
-
-  if (rhs)
-    rhs->print_code (os);
-
-  if (in_parens)
-    os << ")";
+  tw.visit_simple_assignment_expression (*this);
 }
 
 // Colon expressions.
@@ -735,22 +647,27 @@ tree_simple_assignment_expression::print_code (ostream& os)
 bool
 tree_colon_expression::is_range_constant (void) const
 {
-  bool tmp = (op1 && op1->is_constant ()
-	      && op2 && op2->is_constant ());
+  bool tmp = (op_base && op_base->is_constant ()
+	      && op_limit && op_limit->is_constant ());
 
-  return op3 ? (tmp && op3->is_constant ()) : tmp;
+  return op_increment ? (tmp && op_increment->is_constant ()) : tmp;
 }
 
 tree_colon_expression *
 tree_colon_expression::chain (tree_expression *t)
 {
   tree_colon_expression *retval = 0;
-  if (! op1 || op3)
+  if (! op_base || op_increment)
     ::error ("invalid colon expression");
   else
     {
-      op3 = op2;	// Stupid syntax.
-      op2 = t;
+      // Stupid syntax:
+      //
+      // base : limit
+      // base : increment : limit
+
+      op_increment = op_limit;
+      op_limit = t;
 
       retval = this;
     }
@@ -762,10 +679,10 @@ tree_colon_expression::eval (bool /* print */)
 {
   octave_value retval;
 
-  if (error_state || ! op1 || ! op2)
+  if (error_state || ! op_base || ! op_limit)
     return retval;
 
-  octave_value tmp = op1->eval (false);
+  octave_value tmp = op_base->eval (false);
 
   if (tmp.is_undefined ())
     {
@@ -782,7 +699,7 @@ tree_colon_expression::eval (bool /* print */)
       return retval;
     }
 
-  tmp = op2->eval (false);
+  tmp = op_limit->eval (false);
 
   if (tmp.is_undefined ())
     {
@@ -800,9 +717,10 @@ tree_colon_expression::eval (bool /* print */)
     }
 
   double inc = 1.0;
-  if (op3)
+
+  if (op_increment)
     {
-      tmp = op3->eval (false);
+      tmp = op_increment->eval (false);
 
       if (tmp.is_undefined ())
 	{
@@ -840,34 +758,10 @@ tree_colon_expression::eval_error (const char *s)
 }
 
 void
-tree_colon_expression::print_code (ostream& os)
+tree_colon_expression::accept (tree_walker& tw)
 {
-  print_code_indent (os);
-
-  if (in_parens)
-    os << "(";
-
-  if (op1)
-    op1->print_code (os);
-
-  // Stupid syntax.
-
-  if (op3)
-    {
-      os << ":";
-      op3->print_code (os);
-    }
-
-  if (op2)
-    {
-      os << ":";
-      op2->print_code (os);
-    }
-
-  if (in_parens)
-    os << ")";
+  tw.visit_colon_expression (*this);
 }
-
 
 /*
 ;;; Local Variables: ***

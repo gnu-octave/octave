@@ -41,6 +41,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "symtab.h"
 #include "pt-const.h"
 #include "pt-fvc.h"
+#include "pt-walk.h"
 #include "user-prefs.h"
 #include "utils.h"
 
@@ -443,18 +444,9 @@ tree_identifier::eval (bool print, int nargout, const octave_value_list& args)
 }
 
 void
-tree_identifier::print_code (ostream& os)
+tree_identifier::accept (tree_walker& tw)
 {
-  print_code_indent (os);
-
-  if (in_parens)
-    os << "(";
-
-  string nm = name ();
-  os << (nm.empty () ? string ("(empty)") : nm);
-
-  if (in_parens)
-    os << ")";
+  tw.visit_identifier (*this);
 }
 
 // Indirect references to values (structure elements).
@@ -591,21 +583,9 @@ tree_indirect_ref::eval (bool print, int nargout, const octave_value_list& args)
 }
 
 void
-tree_indirect_ref::print_code (ostream& os)
+tree_indirect_ref::accept (tree_walker& tw)
 {
-  print_code_indent (os);
-
-  if (in_parens)
-    os << "(";
-
-  string nm = id ? id->name () : string ("(null)");
-  os << (nm.empty () ? string ("(empty)") : nm);
-
-  for (Pix p = refs.first (); p != 0; refs.next (p))
-    os << "." << refs (p);
-
-  if (in_parens)
-    os << ")";
+  tw.visit_indirect_ref (*this);
 }
 
 // Builtin functions.
@@ -818,9 +798,9 @@ tree_builtin::eval (bool /* print */, int nargout, const octave_value_list& args
 }
 
 void
-tree_builtin::print_code (ostream& os)
+tree_builtin::accept (tree_walker& tw)
 {
-  os << my_name << " can't be printed because it is a builtin function\n";
+  tw.visit_builtin (*this);
 }
 
 /*

@@ -37,6 +37,8 @@ class tree_index_expression;
 class tree_indirect_ref;
 class tree_return_list;
 
+class tree_walker;
+
 #include <string>
 
 #include "pt-const.h"
@@ -49,6 +51,7 @@ class
 tree_oct_obj : public tree_multi_val_ret
 {
 public:
+
   tree_oct_obj (int l = -1, int c = -1) : tree_multi_val_ret (l, c) { }
 
   tree_oct_obj (const octave_value_list& v, int l = -1, int c = -1)
@@ -58,11 +61,13 @@ public:
 
   octave_value eval (bool print);
 
-  octave_value_list eval (bool print, int nargout, const octave_value_list& args);
+  octave_value_list eval (bool print, int nargout,
+			  const octave_value_list& args);
 
-  void print_code (ostream&) { }
+  void accept (tree_walker& tw);
 
 private:
+
   const octave_value_list values;
 };
 
@@ -72,6 +77,7 @@ class
 tree_index_expression : public tree_multi_val_ret
 {
 public:
+
   tree_index_expression (int l = -1, int c = -1)
     : tree_multi_val_ret (l, c), id (0), list (0) { }
 
@@ -108,10 +114,12 @@ public:
 
   void eval_error (void);
 
-  void print_code (ostream& os);
+  void accept (tree_walker& tw);
 
- private:
+private:
+
   tree_indirect_ref *id;
+
   tree_argument_list *list;
 };
 
@@ -120,7 +128,8 @@ public:
 class
 tree_multi_assignment_expression : public tree_multi_val_ret
 {
- public:
+public:
+
   tree_multi_assignment_expression (bool plhs = false, int l = -1, int c = -1)
     : tree_multi_val_ret (l, c, tree_expression::multi_assignment),
       preserve (plhs), lhs (0), rhs (0) { }
@@ -143,9 +152,14 @@ tree_multi_assignment_expression : public tree_multi_val_ret
 
   void eval_error (void);
 
-  void print_code (ostream& os);
+  tree_return_list *left_hand_side (void) { return lhs; }
 
- private:
+  tree_multi_val_ret *right_hand_side (void) { return rhs; }
+
+  void accept (tree_walker& tw);
+
+private:
+
   bool preserve;
   tree_return_list *lhs;
   tree_multi_val_ret *rhs;

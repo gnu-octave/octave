@@ -1090,7 +1090,7 @@ pr_complex (ostream& os, const Complex& c, int r_fw = 0, int i_fw = 0)
 }
 
 static void
-print_empty_matrix (ostream& os, int nr, int nc, int pr_as_read_syntax)
+print_empty_matrix (ostream& os, int nr, int nc, bool pr_as_read_syntax)
 {
   assert (nr == 0 || nc == 0);
 
@@ -1112,7 +1112,7 @@ print_empty_matrix (ostream& os, int nr, int nc, int pr_as_read_syntax)
 
 static void
 pr_col_num_header (ostream& os, int total_width, int max_width,
-		   int lim, int col)
+		   int lim, int col, int extra_indent)
 {
   if (total_width > max_width && user_pref.split_long_rows)
     {
@@ -1120,6 +1120,8 @@ pr_col_num_header (ostream& os, int total_width, int max_width,
 	os << "\n";
 
       int num_cols = lim - col;
+
+      os.form ("%*s", extra_indent, "");
 
       if (num_cols == 1)
 	os << " Column " << col + 1 << ":\n";
@@ -1134,7 +1136,7 @@ pr_col_num_header (ostream& os, int total_width, int max_width,
 }
 
 void
-octave_print_internal (ostream& os, double d, int pr_as_read_syntax)
+octave_print_internal (ostream& os, double d, bool pr_as_read_syntax)
 {
   if (plus_format)
     {
@@ -1157,7 +1159,8 @@ octave_print_internal (ostream& os, double d, int pr_as_read_syntax)
 }
 
 void
-octave_print_internal (ostream& os, const Matrix& m, int pr_as_read_syntax)
+octave_print_internal (ostream& os, const Matrix& m, bool pr_as_read_syntax,
+		       int extra_indent)
 {
   int nr = m.rows ();
   int nc = m.columns ();
@@ -1191,6 +1194,11 @@ octave_print_internal (ostream& os, const Matrix& m, int pr_as_read_syntax)
 
       if (pr_as_read_syntax)
 	max_width -= 4;
+      else
+	max_width -= extra_indent;
+
+      if (max_width < 0)
+	max_width = 0;
 
       if (free_format)
 	{
@@ -1257,10 +1265,13 @@ octave_print_internal (ostream& os, const Matrix& m, int pr_as_read_syntax)
 	    {
 	      int lim = col + inc < nc ? col + inc : nc;
 
-	      pr_col_num_header (os, total_width, max_width, lim, col);
+	      pr_col_num_header (os, total_width, max_width, lim, col,
+				 extra_indent);
 
 	      for (int i = 0; i < nr; i++)
 		{
+		  os.form ("%*s", extra_indent, "");
+
 		  for (int j = col; j < lim; j++)
 		    {
 		      os << "  ";
@@ -1277,7 +1288,7 @@ octave_print_internal (ostream& os, const Matrix& m, int pr_as_read_syntax)
 
 void
 octave_print_internal (ostream& os, const Complex& c,
-		       int pr_as_read_syntax)
+		       bool pr_as_read_syntax)
 {
   if (plus_format)
     {
@@ -1301,7 +1312,7 @@ octave_print_internal (ostream& os, const Complex& c,
 
 void
 octave_print_internal (ostream& os, const ComplexMatrix& cm,
-		       int pr_as_read_syntax)
+		       bool pr_as_read_syntax, int extra_indent)
 {
   int nr = cm.rows ();
   int nc = cm.columns ();
@@ -1336,6 +1347,11 @@ octave_print_internal (ostream& os, const ComplexMatrix& cm,
 
       if (pr_as_read_syntax)
 	max_width -= 4;
+      else
+	max_width -= extra_indent;
+
+      if (max_width < 0)
+	max_width = 0;
 
       if (free_format)
 	{
@@ -1402,10 +1418,13 @@ octave_print_internal (ostream& os, const ComplexMatrix& cm,
 	    {
 	      int lim = col + inc < nc ? col + inc : nc;
 
-	      pr_col_num_header (os, total_width, max_width, lim, col);
+	      pr_col_num_header (os, total_width, max_width, lim, col,
+				 extra_indent);
 
 	      for (int i = 0; i < nr; i++)
 		{
+		  os.form ("%*s", extra_indent, "");
+
 		  for (int j = col; j < lim; j++)
 		    {
 		      os << "  ";
@@ -1421,7 +1440,7 @@ octave_print_internal (ostream& os, const ComplexMatrix& cm,
 
 void
 octave_print_internal (ostream& os, const Range& r,
-		       int pr_as_read_syntax)
+		       bool pr_as_read_syntax, int extra_indent)
 {
   double base = r.base ();
   double increment = r.inc ();
@@ -1486,12 +1505,20 @@ octave_print_internal (ostream& os, const Range& r,
 		inc++;
 	    }
 
+	  max_width -= extra_indent;
+
+	  if (max_width < 0)
+	    max_width = 0;
+
 	  int col = 0;
 	  while (col < num_elem)
 	    {
 	      int lim = col + inc < num_elem ? col + inc : num_elem;
 
-	      pr_col_num_header (os, total_width, max_width, lim, col);
+	      pr_col_num_header (os, total_width, max_width, lim, col,
+				 extra_indent);
+
+	      os.form ("%*s", extra_indent, "");
 
 	      for (int i = col; i < lim; i++)
 		{
@@ -1510,7 +1537,8 @@ octave_print_internal (ostream& os, const Range& r,
 
 void
 octave_print_internal (ostream& os, const charMatrix& chm,
-		       int pr_as_read_syntax, int pr_as_string)
+		       bool pr_as_read_syntax, bool pr_as_string,
+		       int extra_indent)
 {
   if (pr_as_string)
     {

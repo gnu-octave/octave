@@ -1,3 +1,8 @@
+Fri Mar 28 16:53:08 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* aclocal.m4 (OCTAVE_FLIBS): Require OCTAVE_HOST_TYPE.
+	Skip -lkernel32 on cygwin32 systems.
+
 Wed Mar 26 17:04:11 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* COPYING: Update to latest version that includes correct address

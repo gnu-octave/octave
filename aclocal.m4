@@ -67,6 +67,7 @@ dnl
 dnl OCTAVE_FLIBS()
 AC_DEFUN(OCTAVE_FLIBS,
 [AC_MSG_CHECKING([for Fortran libraries])
+AC_REQUIRE([OCTAVE_HOST_TYPE])
 AC_CACHE_VAL(octave_cv_flibs,
 [changequote(, )dnl
 echo "      END" > conftest.f
@@ -154,10 +155,25 @@ for arg in $foutput; do
 	      exists=true
 	    fi
 	  done
-	  if $exists || test x$arg = x-lm -o x$arg = x-lc; then
+	  if $exists
 	    arg=
 	  else
-	    lflags="$lflags $arg"
+	    case "$arg" in
+	      -lkernel32)
+		case "$canonical_host_type" in
+		  *-*-cygwin32)
+		  ;;
+		  *)
+		    lflags="$lflags $arg"
+		  ;;
+		esac
+	      ;;
+	      -lm | -lc)
+	      ;;
+	      *)
+		lflags="$lflags $arg"
+	      ;;
+	    esac
 	  fi
 	;;
 	-u)

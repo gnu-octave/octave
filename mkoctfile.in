@@ -83,7 +83,7 @@ Options:
 
   -h, -? --help           Print this message.
   -v, --verbose           Echo commands as they are executed.
-  -o FILE, --ouput FILE   Output file name.  Default extension is .oct.
+  -o FILE, --output FILE  Output file name.  Default extension is .oct.
   -lLIB                   Add library LIB to link command.
 
   FILE                    Compile or link FILE.  Recognized file types are:

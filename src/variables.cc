@@ -36,6 +36,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "str-vec.h"
 
 #include <defaults.h>
+#include "Cell.h"
 #include "defun.h"
 #include "dirfns.h"
 #include "error.h"
@@ -1059,10 +1060,10 @@ Set the documentation string for @var{symbol} to @var{text}.\n\
   return retval;
 }
 
-static octave_value_list
-do_who (int argc, const string_vector& argv)
+static octave_value
+do_who (int argc, const string_vector& argv, int return_list)
 {
-  octave_value_list retval;
+  octave_value retval;
 
   bool show_builtins = false;
   bool show_functions = false;
@@ -1118,55 +1119,113 @@ do_who (int argc, const string_vector& argv)
       show_variables = 1;
     }
 
-  int pad_after = 0;
-
-  if (show_builtins)
+  if (return_list)
     {
-      pad_after += fbi_sym_tab->maybe_list
-	("*** built-in constants:", pats, octave_stdout,
-	 show_verbose, symbol_record::BUILTIN_CONSTANT, SYMTAB_ALL_SCOPES);
+      string_vector names;
 
-      pad_after += fbi_sym_tab->maybe_list
-	("*** built-in variables:", pats, octave_stdout,
-	 show_verbose, symbol_record::BUILTIN_VARIABLE, SYMTAB_ALL_SCOPES);
+      if (show_builtins)
+	{
+	  names.append (fbi_sym_tab->name_list
+			(pats, true, symbol_record::BUILTIN_CONSTANT,
+			 SYMTAB_ALL_SCOPES));
 
-      pad_after += fbi_sym_tab->maybe_list
-	("*** built-in functions:", pats, octave_stdout,
-	 show_verbose, symbol_record::BUILTIN_FUNCTION, SYMTAB_ALL_SCOPES);
+	  names.append (fbi_sym_tab->name_list
+			(pats, true, symbol_record::BUILTIN_VARIABLE,
+			 SYMTAB_ALL_SCOPES));
+
+	  names.append (fbi_sym_tab->name_list
+			(pats, true, symbol_record::BUILTIN_FUNCTION,
+			 SYMTAB_ALL_SCOPES));
+	}
+
+      if (show_functions)
+	{
+	  names.append (fbi_sym_tab->name_list
+			(pats, true, symbol_record::DLD_FUNCTION,
+			 SYMTAB_ALL_SCOPES));
+
+	  names.append (fbi_sym_tab->name_list
+			(pats, true, symbol_record::USER_FUNCTION,
+			 SYMTAB_ALL_SCOPES));
+	}
+
+      if (show_variables)
+	{
+	  names.append (curr_sym_tab->name_list
+			(pats, true, symbol_record::USER_VARIABLE,
+			 SYMTAB_LOCAL_SCOPE));
+
+	  names.append (curr_sym_tab->name_list
+			(pats, true, symbol_record::USER_VARIABLE,
+			 SYMTAB_GLOBAL_SCOPE));
+	}
+
+      if (show_verbose)
+	{
+	  int len = names.length ();
+
+	  octave_value_list ovl (len, octave_value ());
+
+	  for (int i = 0; i < len; i++)
+	    ovl(i) = names(i);
+
+	  retval = Octave_map ("name", ovl);
+	}
+      else
+	retval = Cell (names);
     }
-
-  if (show_functions)
+  else
     {
-      pad_after += fbi_sym_tab->maybe_list
-	("*** dynamically linked functions:", pats,
-	 octave_stdout, show_verbose, symbol_record::DLD_FUNCTION,
-	 SYMTAB_ALL_SCOPES);
+      int pad_after = 0;
 
-      pad_after += fbi_sym_tab->maybe_list
-	("*** currently compiled functions:", pats,
-	 octave_stdout, show_verbose, symbol_record::USER_FUNCTION,
-	 SYMTAB_ALL_SCOPES);
+      if (show_builtins)
+	{
+	  pad_after += fbi_sym_tab->maybe_list
+	    ("*** built-in constants:", pats, octave_stdout,
+	     show_verbose, symbol_record::BUILTIN_CONSTANT, SYMTAB_ALL_SCOPES);
+
+	  pad_after += fbi_sym_tab->maybe_list
+	    ("*** built-in variables:", pats, octave_stdout,
+	     show_verbose, symbol_record::BUILTIN_VARIABLE, SYMTAB_ALL_SCOPES);
+
+	  pad_after += fbi_sym_tab->maybe_list
+	    ("*** built-in functions:", pats, octave_stdout,
+	     show_verbose, symbol_record::BUILTIN_FUNCTION, SYMTAB_ALL_SCOPES);
+	}
+
+      if (show_functions)
+	{
+	  pad_after += fbi_sym_tab->maybe_list
+	    ("*** dynamically linked functions:", pats,
+	     octave_stdout, show_verbose, symbol_record::DLD_FUNCTION,
+	     SYMTAB_ALL_SCOPES);
+
+	  pad_after += fbi_sym_tab->maybe_list
+	    ("*** currently compiled functions:", pats,
+	     octave_stdout, show_verbose, symbol_record::USER_FUNCTION,
+	     SYMTAB_ALL_SCOPES);
+	}
+
+      if (show_variables)
+	{
+	  pad_after += curr_sym_tab->maybe_list
+	    ("*** local user variables:", pats, octave_stdout,
+	     show_verbose, symbol_record::USER_VARIABLE, SYMTAB_LOCAL_SCOPE);
+
+	  pad_after += curr_sym_tab->maybe_list
+	    ("*** globally visible user variables:", pats,
+	     octave_stdout, show_verbose, symbol_record::USER_VARIABLE,
+	     SYMTAB_GLOBAL_SCOPE);
+	}
+
+      if (pad_after)
+	octave_stdout << "\n";
     }
-
-  if (show_variables)
-    {
-      pad_after += curr_sym_tab->maybe_list
-	("*** local user variables:", pats, octave_stdout,
-	 show_verbose, symbol_record::USER_VARIABLE, SYMTAB_LOCAL_SCOPE);
-
-      pad_after += curr_sym_tab->maybe_list
-	("*** globally visible user variables:", pats,
-	 octave_stdout, show_verbose, symbol_record::USER_VARIABLE,
-	 SYMTAB_GLOBAL_SCOPE);
-    }
-
-  if (pad_after)
-    octave_stdout << "\n";
 
   return retval;
 }
 
-DEFCMD (who, args, ,
+DEFCMD (who, args, nargout,
   "-*- texinfo -*-\n\
 @deffn {Command} who options pattern @dots{}\n\
 @deffnx {Command} whos options pattern @dots{}\n\
@@ -1204,43 +1263,55 @@ visible in the local scope are displayed.\n\
 The command @kbd{whos} is equivalent to @kbd{who -long}.\n\
 @end deffn")
 {
-  octave_value_list retval;
+  octave_value retval;
 
-  int argc = args.length () + 1;
+  if (nargout < 2)
+    {
+      int argc = args.length () + 1;
 
-  string_vector argv = args.make_argv ("who");
+      string_vector argv = args.make_argv ("who");
 
-  if (error_state)
-    return retval;
+      if (error_state)
+	return retval;
 
-  retval = do_who (argc, argv);
+      retval = do_who (argc, argv, nargout == 1);
+    }
+  else
+    print_usage ("who");
 
   return retval;
 }
 
-DEFCMD (whos, args, ,
+DEFCMD (whos, args, nargout,
   "-*- texinfo -*-\n\
 @deffn {Command} whos options pattern @dots{}\n\
 See who.\n\
 @end deffn")
 {
-  octave_value_list retval;
+  octave_value retval;
 
-  int nargin = args.length ();
+  if (nargout < 2)
+    {
+      int nargin = args.length ();
 
-  octave_value_list tmp_args;
-  for (int i = nargin; i > 0; i--)
-    tmp_args(i) = args(i-1);
-  tmp_args(0) = "-long";
+      octave_value_list tmp_args;
 
-  int argc = tmp_args.length () + 1;
+      for (int i = nargin; i > 0; i--)
+	tmp_args(i) = args(i-1);
 
-  string_vector argv = tmp_args.make_argv ("whos");
+      tmp_args(0) = "-long";
 
-  if (error_state)
-    return retval;
+      int argc = tmp_args.length () + 1;
 
-  retval = do_who (argc, argv);
+      string_vector argv = tmp_args.make_argv ("whos");
+
+      if (error_state)
+	return retval;
+
+      retval = do_who (argc, argv, nargout == 1);
+    }
+  else
+    print_usage ("whos");
 
   return retval;
 }

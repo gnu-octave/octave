@@ -49,6 +49,12 @@ Octave_map
 	map[key] = octave_value_list (value);
       }
 
+  Octave_map (const std::string& key, const octave_value_list& val_list)
+    : map (), array_len (val_list.length ())
+      {
+	map[key] = val_list;
+      }
+
   Octave_map (const Octave_map& m)
     : map (m.map), array_len (m.array_len) { }
 

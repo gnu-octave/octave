@@ -1,3 +1,11 @@
+2003-06-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* variables.cc (do_who): New arg, return_list.  If return_list is
+	true, return values in cell or struct arrays instead of printing.
+	(Fwho, Fwhos): If nargout is 1, ask do_who to return lists of values.
+	* oct-map.h (Octave_map (const std::string&, const octave_value_list&):
+	New constructor.
+
 2003-06-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pt-idx.cc (tree_index_expression::rvalue):

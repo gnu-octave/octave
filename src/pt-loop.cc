@@ -486,7 +486,7 @@ tree_complex_for_command::eval (void)
 
       Octave_map tmp_val (rhs.map_value ());
 
-      for (Octave_map::iterator q = tmp_val.begin (); q != tmp_val.end (); p++)
+      for (Octave_map::iterator q = tmp_val.begin (); q != tmp_val.end (); q++)
 	{
 	  octave_value key = tmp_val.key (q);
 

@@ -1,3 +1,7 @@
+2003-01-21  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pt-loop.cc (tree_complex_for_command::eval): Fix typo.
+
 2003-01-16  Mumit Khan  <khan@nanotech.wisc.edu>
 
 	* mk-oct-links: Use $SED if set.

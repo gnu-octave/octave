@@ -232,7 +232,7 @@ operator * (const RowVector& v, const Matrix& a)
 
   double *y = new double [a_nc];
 
-  F77_FCN (dgemv, DGEMV) ("T", a_nc, a_nr, 1.0, a.data (), ld,
+  F77_FCN (dgemv, DGEMV) ("T", a_nr, a_nc, 1.0, a.data (), ld,
 			  v.data (), 1, 0.0, y, 1, 1L);
 
   return RowVector (y, a_nc);

@@ -448,7 +448,7 @@ operator * (const ComplexRowVector& v, const ComplexMatrix& a)
 
   Complex *y = new Complex [a_nc];
 
-  F77_FCN (zgemv, ZGEMV) ("T", a_nc, a_nr, 1.0, a.data (), ld,
+  F77_FCN (zgemv, ZGEMV) ("T", a_nr, a_nc, 1.0, a.data (), ld,
 			  v.data (), 1, 0.0, y, 1, 1L); 
 
   return ComplexRowVector (y, a_nc);

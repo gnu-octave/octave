@@ -22,7 +22,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### 02111-1307, USA. 
 
 AC_INIT
-AC_REVISION($Revision: 1.404 $)
+AC_REVISION($Revision: 1.405 $)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -646,8 +646,8 @@ case "$canonical_host_type" in
     CPICFLAG=
     CXXPICFLAG=
     FPICFLAG=
-    SH_LDFLAGS="-shared -Xlinker -expect_unresolved -Xlinker '*'"
-    RLD_FLAG='-Xlinker -rpath -Xlinker $(octlibdir)'
+    SH_LDFLAGS="-shared -Wl,-expect_unresolved -Wl,'*'"
+    RLD_FLAG='-Wl,-rpath -Wl,$(octlibdir)'
   ;;
   *-*-darwin*)
     SH_LDFLAGS='-bundle -bundle_loader $(TOPDIR)/src/octave'
@@ -672,11 +672,11 @@ case "$canonical_host_type" in
     library_path_var=PATH
   ;;
   *-*-linux* | *-*-gnu*)
-    SONAME_FLAGS='-Xlinker -soname -Xlinker $@'
-    RLD_FLAG='-Xlinker -rpath -Xlinker $(octlibdir)'
+    SONAME_FLAGS='-Wl,-soname -Wl,$@'
+    RLD_FLAG='-Wl,-rpath -Wl,$(octlibdir)'
   ;;
   i[[3456]]86-*-sco3.2v5*)
-    SONAME_FLAGS='-Xlinker -h -Xlinker $@'
+    SONAME_FLAGS='-Wl,-h -Wl,$@'
     RLD_FLAG=
     SH_LDFLAGS=-G
   ;;
@@ -694,7 +694,7 @@ case "$canonical_host_type" in
     fi
     SHLEXT=sl
     SH_LDFLAGS="-shared -fPIC"
-    RLD_FLAG='-Xlinker +b -Xlinker $(octlibdir)'
+    RLD_FLAG='-Wl,+b -Wl,$(octlibdir)'
   ;;
   *-sgi-*)
     CPICFLAG=

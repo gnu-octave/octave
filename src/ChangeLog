@@ -1,3 +1,8 @@
+2002-09-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* load-save.cc: Use % instead of # as comment character in ascii
+	data files.
+
 2002-08-17  Mumit Khan  <khan@nanotech.wisc.edu>
 
 	* c-file-ptr-stream.h (c_file_ptr_buf::c_file_ptr_buf): Add Intel

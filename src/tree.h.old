@@ -734,6 +734,8 @@ tree_for_command : public tree_command
   void eval_error (void);
 
  private:
+  tree_constant do_for_loop_once (tree_constant *rhs, int& quit);
+
   tree_index_expression *id;	// Identifier to modify.
   tree *expr;			// Expression to evaluate.
   tree *list;			// List of commands to execute.

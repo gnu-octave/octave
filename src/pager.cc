@@ -107,17 +107,22 @@ maybe_page_output (ostrstream& msg_buf)
 
   char *message = msg_buf.str ();
 
-  if (interactive
-      && user_pref.page_screen_output
-      && user_pref.pager_binary)
+  if (message)
     {
-      *pager_buf << message;
-      delete [] message;
-    }
-  else
-    {
-      cout << message;
-      cout.flush ();
+      maybe_write_to_diary_file (message);
+
+      if (interactive
+	  && user_pref.page_screen_output
+	  && user_pref.pager_binary)
+	{
+	  *pager_buf << message;
+	}
+      else
+	{
+	  cout << message;
+	  cout.flush ();
+	}
+
       delete [] message;
     }
 }
@@ -137,8 +142,6 @@ flush_output_to_pager (void)
       delete [] message;
       return;
     }
-
-  maybe_write_to_diary_file (message);
 
   int nlines = line_count (message);
 

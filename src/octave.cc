@@ -353,7 +353,7 @@ verbose_usage (void)
 static void
 usage (void)
 {
-  cerr << "usage: " << usage_string << "\n";
+  cout << "usage: " << usage_string << "\n";
   exit (1);
 }
 

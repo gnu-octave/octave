@@ -1,3 +1,13 @@
+2003-05-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Array-idx.h (Array<T>::index): Fix off-by-one error.
+
+2003-05-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* kpse.cc (kpse_absolute_p): Fix typo in translation.
+	(find_first_of): Also do an absolute search on each
+	name before looking in the path.
+
 2003-05-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* kpse.cc (dir_list_add): Ensure that directory ends with a

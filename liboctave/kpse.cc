@@ -705,16 +705,17 @@ kpse_absolute_p (const std::string& filename, int relative_ok)
 {
   size_t len = filename.length ();
 
-  int absolute = IS_DIR_SEP (len > 0 && filename[0])
+  int absolute = (len > 0 && IS_DIR_SEP (filename[0]))
 #ifdef DOSISH
                      /* Novell allows non-alphanumeric drive letters. */
-                     || (len > 0 && IS_DEVICE_SEP (filename[1]))
+    || (len > 0 && IS_DEVICE_SEP (filename[1]))
 #endif /* DOSISH */
 #ifdef WIN32
                      /* UNC names */
-                     || (len > 1 && filename[0] == '\\' && filename[1] == '\\')
+    || (len > 1 && filename[0] == '\\' && filename[1] == '\\')
 #endif
-		      ;
+    ;
+
   int explicit_relative
     = relative_ok
       && (len > 1
@@ -1146,6 +1147,23 @@ find_first_of (const std::string& path, const string_vector& names,
 
       fprintf (stderr, "), path=%s, must_exist=%d).\n",
 	       path.c_str (), must_exist);
+    }
+
+  for (int i = 0; i < names.length (); i++)
+    {
+      std::string name = names[i];
+
+      if (kpse_absolute_p (name, true))
+	{
+	  /* If the name is absolute or explicitly relative, no need
+	     to consider PATH at all.  If we find something, then we
+	     are done.  */
+
+	  ret_list = absolute_search (name);
+
+	  if (! ret_list.empty ())
+	    return ret_list;
+	}
     }
 
   /* Find the file. */

@@ -101,7 +101,7 @@ Array<T>::index (idx_vector& idx_arg, int resize_ok,
 	  for (int i = 0; i < n; i++)
 	    {
 	      int ii = idx_arg.elem (i);
-	      if (ii > len)
+	      if (ii >= len)
 		retval.elem (i) = resize_fill_value;
 	      else
 		retval.elem (i) = elem (ii);

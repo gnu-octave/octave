@@ -172,7 +172,7 @@ int
 tree_colon_expression::line (void) const
 {
   return (op_base ? op_base->line ()
-	  : (op_inc ? op_inc->line ()
+	  : (op_increment ? op_increment->line ()
 	     : (op_limit ? op_limit->line ()
 		: -1)));
 }
@@ -181,7 +181,7 @@ int
 tree_colon_expression::column (void) const
 {
   return (op_base ? op_base->column ()
-	  : (op_inc ? op_inc->column ()
+	  : (op_increment ? op_increment->column ()
 	     : (op_limit ? op_limit->column ()
 		: -1)));
 }

@@ -28,15 +28,16 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #ifdef YY_INPUT
 #undef YY_INPUT
+#endif
 #define YY_INPUT(buf,result,max_size) \
   if ((result = octave_read (buf, max_size)) < 0) \
     YY_FATAL_ERROR ("octave_read () in flex scanner failed");
-#endif
 
 // Try to avoid crashing out completely on fatal scanner errors.
 
 #ifdef YY_FATAL_ERROR
 #undef YY_FATAL_ERROR
+#endif
 #define YY_FATAL_ERROR(msg) \
   do \
     { \
@@ -44,7 +45,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
       jump_to_top_level (); \
     } \
   while (0)
-#endif
 
 #define TOK_RETURN(tok) \
   do \

@@ -124,6 +124,9 @@ static bool Vprefer_column_vectors;
 // would be returned if prefer_zero_one_indxing were FALSE).
 static bool Vprefer_zero_one_indexing;
 
+// If TRUE, print the name along with the value.
+static bool Vprint_answer_id_name;
+
 // Should operations on empty matrices return empty matrices or an
 // error?  A positive value means yes.  A negative value means yes,
 // but print a warning message.  Zero means it should be considered an
@@ -320,7 +323,7 @@ octave_value::print_with_name (ostream& output_buf, const string& name,
 {
   bool pad_after = false;
 
-  if (user_pref.print_answer_id_name)
+  if (Vprint_answer_id_name)
     {
       if (print_as_scalar ())
 	output_buf << name << " = ";
@@ -3208,6 +3211,14 @@ prefer_zero_one_indexing (void)
 }
 
 static int
+print_answer_id_name (void)
+{
+  Vprint_answer_id_name = check_preference ("print_answer_id_name");
+
+  return 0;
+}
+
+static int
 propagate_empty_matrices (void)
 {
   Vpropagate_empty_matrices = check_preference ("propagate_empty_matrices");
@@ -3260,6 +3271,9 @@ symbols_of_pt_const (void)
 
   DEFVAR (prefer_zero_one_indexing, 0.0, 0, prefer_zero_one_indexing,
     "when there is a conflict, prefer zero-one style indexing");
+
+  DEFVAR (print_answer_id_name, 1.0, 0, print_answer_id_name,
+    "set output style to print `var_name = ...'");
 
   DEFVAR (propagate_empty_matrices, 1.0, 0, propagate_empty_matrices,
     "operations on empty matrices return an empty matrix, not an error");

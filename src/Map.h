@@ -151,6 +151,8 @@ public:
 
   void clear (void);
   int  OK (void) const;
+
+  unsigned int hash (const std::string& str) const;
 };
 
 #endif

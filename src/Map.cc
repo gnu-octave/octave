@@ -45,8 +45,9 @@ License as published by the Free Software Foundation.
 
 #include "Map.h"
 
-static unsigned int
-hash (const std::string& str)
+template <class C>
+unsigned int
+CHMap<C>::hash (const std::string& str) const
 {
   unsigned h = 0;
   for (unsigned i = 0; i < str.length (); i++)

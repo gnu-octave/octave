@@ -144,7 +144,7 @@ printed.")
 {
   Octave_object retval;
 
-  char *msg = "unspecified_error";
+  char *msg = "unspecified error";
 
   int nargin = args.length ();
 
@@ -173,7 +173,7 @@ See also: error")
 {
   Octave_object retval;
 
-  char *msg = "unspecified_error";
+  char *msg = "unspecified warning";
 
   int nargin = args.length ();
 
@@ -191,6 +191,35 @@ See also: error")
     }
 
   warning (msg);
+
+  return retval;
+}
+
+DEFUN ("usage", Fusage, Susage, 1, 1,
+  "usage (MESSAGE): print a usage MESSAGE.\n\
+\n\
+See also: error")
+{
+  Octave_object retval;
+
+  char *msg = "unknown";
+
+  int nargin = args.length ();
+
+  if (nargin == 1 && args(0).is_defined ())
+    {
+      if (args(0).is_string ())
+	{
+	  msg = args(0).string_value ();
+
+	  if (! msg || ! *msg)
+	    return retval;
+	}
+      else if (args(0).is_empty ())
+	return retval;
+    }
+
+  usage (msg);
 
   return retval;
 }

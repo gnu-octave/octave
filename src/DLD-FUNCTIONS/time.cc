@@ -60,17 +60,17 @@ extract_tm (Octave_map &m)
 {
   octave_base_tm tm;
 
-  tm.usec (static_cast<int> (m ["usec"] . double_value ()));
-  tm.sec (static_cast<int> (m ["sec"] . double_value ()));
-  tm.min (static_cast<int> (m ["min"] . double_value ()));
-  tm.hour (static_cast<int> (m ["hour"] . double_value ()));
-  tm.mday (static_cast<int> (m ["mday"] . double_value ()));
-  tm.mon (static_cast<int> (m ["mon"] . double_value ()));
-  tm.year (static_cast<int> (m ["year"] . double_value ()));
-  tm.wday (static_cast<int> (m ["wday"] . double_value ()));
-  tm.yday (static_cast<int> (m ["yday"] . double_value ()));
-  tm.isdst (static_cast<int> (m ["isdst"] . double_value ()));
-  tm.zone (m ["zone"] . string_value ());
+  tm.usec (static_cast<int> (m ["usec"](0) . double_value ()));
+  tm.sec (static_cast<int> (m ["sec"](0) . double_value ()));
+  tm.min (static_cast<int> (m ["min"](0) . double_value ()));
+  tm.hour (static_cast<int> (m ["hour"](0) . double_value ()));
+  tm.mday (static_cast<int> (m ["mday"](0) . double_value ()));
+  tm.mon (static_cast<int> (m ["mon"](0) . double_value ()));
+  tm.year (static_cast<int> (m ["year"](0) . double_value ()));
+  tm.wday (static_cast<int> (m ["wday"](0) . double_value ()));
+  tm.yday (static_cast<int> (m ["yday"](0) . double_value ()));
+  tm.isdst (static_cast<int> (m ["isdst"](0) . double_value ()));
+  tm.zone (m ["zone"](0) . string_value ());
 
   return tm;
 }

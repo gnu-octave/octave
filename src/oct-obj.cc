@@ -142,6 +142,15 @@ octave_value_list::index (idx_vector& i) const
   return octave_value_list (data.index (i));
 }
 
+octave_value_list&
+octave_value_list::assign (const idx_vector& i,
+			   const octave_value_list& rhs)
+{
+  data.set_index (i);
+  ::assign (data, rhs.data);
+  return *this;
+}
+
 bool
 octave_value_list::all_strings_p (void) const
 {

@@ -28,6 +28,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include "error.h"
 #include "str-vec.h"
 
 #include "oct-map.h"
@@ -45,6 +46,45 @@ Octave_map::make_name_list (void)
     names[i++] = key (p);
 
   return names;
+}
+
+int
+Octave_map::array_length (void) const
+{
+  if (array_len == 0 && length () != 0)
+    {
+      Pix p = first ();
+      array_len = contents(p).length ();
+    }
+  return array_len;
+}
+
+Octave_map&
+Octave_map::assign (const idx_vector& idx, const std::string& key,
+		    const octave_value_list& rhs)
+{
+  octave_value_list tmp = map[key];
+
+  tmp.assign (idx, rhs);
+
+  if (! error_state)
+    {
+      int n = tmp.length ();
+
+      if (n > array_length ())
+	{
+	  octave_value fill_value = Matrix ();
+
+	  for (Pix p = first (); p != 0; next (p))
+	    contents(p).resize (n, fill_value);
+
+	  array_len = n;
+	}
+
+      map[key] = tmp;
+    }
+
+  return *this;
 }
 
 /*

@@ -1,3 +1,18 @@
+2002-05-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-struct.cc (octave_struct::print_raw): Print scalar struct
+	arrays more compactly.
+
+	* DLD-FUNCTIONS/time.cc (extract_tm): Handle new struct array def.
+
+	* oct-map.cc (Octave_map::array_len): New data member.
+	(Octave_map::operator[], Octave_map::contsnts): Return
+	octave_value_list, not Octave_value.  Change callers as necessary.
+	(Octave_map::assign): New function.
+	(Octave_map::array_length): New fucntion.
+	* oct-obj.cc (octave_value_list::assign): New function.
+	
+
 2002-05-06  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* TEMPLATE-INST/Map-oct-obj.cc: New file.

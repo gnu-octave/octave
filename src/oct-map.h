@@ -37,31 +37,35 @@ class
 Octave_map
 {
  public:
-  Octave_map (void) : map (octave_value_list ()) { }
+  Octave_map (void) : map (octave_value_list ()), array_len (0) { }
 
   Octave_map (const std::string& key, const octave_value& value)
-    : map (octave_value_list ())
+    : map (octave_value_list ()), array_len (1)
       {
 	map[key] = octave_value_list (value);
       }
 
-  Octave_map (const Octave_map& m) : map (m.map) { }
+  Octave_map (const Octave_map& m)
+    : map (m.map), array_len (m.array_len) { }
 
   Octave_map& operator = (const Octave_map& m)
     {
       if (this != &m)
-	map = m.map;
-
+	{
+	  map = m.map;
+	  array_len = m.array_len;
+	}
       return *this;
     }
 
   ~Octave_map (void) { }
 
+  // This is the number of keys.
   int length (void) const { return map.length (); }
 
   int empty (void) const { return map.empty (); }
 
-  octave_value& operator [] (const std::string& key) { return map[key](0); }
+  octave_value_list& operator [] (const std::string& key) { return map[key]; }
 
   void del (const std::string& key) { map.del (key); }
 
@@ -70,7 +74,7 @@ Octave_map
 
   std::string key (Pix p) const { return map.key (p); }
 
-  octave_value& contents (Pix p) const { return map.contents (p)(0); }
+  octave_value_list& contents (Pix p) const { return map.contents (p); }
 
   Pix seek (const std::string& key) const { return map.seek (key); }
 
@@ -80,10 +84,18 @@ Octave_map
 
   string_vector make_name_list (void);
 
+  int array_length () const;
+
+  Octave_map& assign (const idx_vector& idx, const std::string& key,
+		      const octave_value_list& rhs);
+
 private:
 
   // The map of names to values.
   CHMap<octave_value_list> map;
+
+  // The current size of this struct array;
+  mutable int array_len;
 };
 
 #endif

@@ -138,6 +138,9 @@ public:
 
   octave_value_list index (idx_vector& i) const;
 
+  octave_value_list& assign (const idx_vector& i,
+			     const octave_value_list& rhs);
+
   bool all_strings_p (void) const;
 
   string_vector make_argv (const std::string&) const;

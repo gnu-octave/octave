@@ -32,6 +32,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "error.h"
 #include "oct-lvalue.h"
+#include "ov-list.h"
 #include "ov-struct.h"
 #include "unwind-prot.h"
 #include "variables.h"
@@ -67,7 +68,8 @@ octave_struct::do_struct_elt_index_op (const std::string& nm, bool silent)
 octave_lvalue
 octave_struct::struct_elt_ref (octave_value *, const std::string& nm)
 {
-  return octave_lvalue (&map [nm]);
+  // XXX FIXME XXX -- struct array
+  return octave_lvalue (&map[nm](0));
 }
 
 void
@@ -95,12 +97,20 @@ octave_struct::print_raw (std::ostream& os, bool) const
 
       increment_indent_level ();
 
+      int n = map.array_length ();
+
       for (Pix p = map.first (); p; map.next (p))
 	{
 	  std::string key = map.key (p);
-	  octave_value val = map.contents (p);
+	  octave_value_list val = map.contents (p);
 
-	  val.print_with_name (os, key);
+	  if (n == 1)
+	    val(0).print_with_name (os, key);
+	  else
+	    {
+	      octave_list tmp (val);
+	      tmp.print_with_name (os, key);
+	    }
 	}
 
       decrement_indent_level ();

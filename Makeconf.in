@@ -27,8 +27,6 @@ RUNTEST = @RUNTEST@
 
 DEFAULT_PAGER = @DEFAULT_PAGER@
 
-DEFAULT_INFO_FILE = $(infodir)/octave.info
-
 # Fortran to C translator and associated flags.
 
 F2C = @F2C@

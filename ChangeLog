@@ -1,3 +1,8 @@
+2004-03-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: No longer accept --with-g77 (it is still possible
+	to use --with-f77=g77).
+
 2004-03-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in: Check for -mieee instead of -mieee-with-inexact.

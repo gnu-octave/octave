@@ -75,7 +75,7 @@ NDArray::fourier (int dim) const
 }
 
 ComplexNDArray
-NDArray::ifourier (const int dim) const
+NDArray::ifourier (int dim) const
 {
   dim_vector dv = dims ();
 

@@ -117,7 +117,7 @@ ComplexNDArray::fourier (int dim) const
 }
 
 ComplexNDArray
-ComplexNDArray::ifourier (const int dim) const
+ComplexNDArray::ifourier (int dim) const
 {
   dim_vector dv = dims ();
 

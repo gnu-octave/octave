@@ -1,3 +1,8 @@
+2004-03-04  David Bateman  <dbateman@free.fr>
+
+	* dNDArray.cc (NDArray::ifourier): Arg is int, not const int.
+	* CNDArray.cc (ComplexNDArray::ifourier): Likewise.
+
 2004-03-03  Hans Ekkehard Plesser  <hans.ekkehard.plesser@nlh.no>
 
 	* base-lu.cc (base_lu<>::L): Check bounds before setting diagonal

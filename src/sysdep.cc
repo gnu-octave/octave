@@ -68,6 +68,7 @@ LOSE! LOSE!
 #endif
 
 #include <readline/readline.h>
+#include <readline/tilde.h>
 
 extern char *term_clrpag;
 extern "C" void _rl_output_character_function ();
@@ -679,6 +680,43 @@ gethostname (char *name, int namelen)
   return 0;
 }
 #endif
+
+// The check for error state allows us to do this:
+//
+//   string foo = oct_tilde_expand (args(0).string_value ());
+//
+// without having to use a temporary and check error_state before
+// calling oct_tilde_expand.
+
+string
+oct_tilde_expand (const string& name)
+{
+  string retval;
+
+  if (! error_state)
+    {
+      char *tmp = tilde_expand (name.c_str ());
+      retval = tmp;
+      delete [] tmp;
+    }
+
+  return retval;
+}
+
+DEFUN ("tilde_expand", Ftilde_expand, Stilde_expand, 10,
+  "tilde_expand (STRING): perform tilde expansion on STRING")
+{
+  Octave_object retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 1)
+    retval = oct_tilde_expand (args(0).string_value ());
+  else
+    print_usage ("tilde_expand");
+
+  return retval;
+}
 
 /*
 ;;; Local Variables: ***

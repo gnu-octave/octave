@@ -36,6 +36,8 @@ Software Foundation, Inc.
 #include <cstdlib>
 #include <cstring>
 
+#include <string>
+
 #include <fstream.h>
 #include <strstream.h>
 
@@ -52,13 +54,12 @@ Software Foundation, Inc.
 #include "error.h"
 #include "input.h"
 #include "oct-hist.h"
-#include "toplev.h"
+#include "oct-obj.h"
 #include "pager.h"
 #include "sighandlers.h"
 #include "statdefs.h"
 #include "sysdep.h"
-#include "pt-const.h"
-#include "oct-obj.h"
+#include "toplev.h"
 #include "unwind-prot.h"
 #include "user-prefs.h"
 #include "utils.h"
@@ -116,14 +117,9 @@ default_history_file (void)
 void
 initialize_history (void)
 {
-  static char *file = 0;
+  string file = oct_tilde_expand (user_pref.history_file);
 
-  if (file)
-    free (file);
-
-  file = tilde_expand (user_pref.history_file);
-
-  read_history (file);
+  read_history (file.c_str ());
 
   using_history ();
 
@@ -133,17 +129,12 @@ initialize_history (void)
 void
 clean_up_history (void)
 {
-  static char *file = 0;
-
-  if (file)
-    free (file);
-
   stifle_history (user_pref.history_size);
 
-  file = tilde_expand (user_pref.history_file);
+  string file = oct_tilde_expand (user_pref.history_file);
 
   if (user_pref.saving_history)
-    write_history (file);
+    write_history (file.c_str ());
 }
 
 void
@@ -177,16 +168,14 @@ do_history (int argc, char **argv)
 	  && ((*argv)[1] == 'r' || (*argv)[1] == 'w'
 	      || (*argv)[1] == 'a' || (*argv)[1] == 'n'))
 	{
-	  static char *file = 0;
 	  int result = 0;
 
-	  if (file)
-	    free (file);
+	  string file;
 
 	  if (argc > 1)
-	    file = tilde_expand (*(argv+1));
+	    file = oct_tilde_expand (*(argv+1));
 	  else
-	    file = tilde_expand (user_pref.history_file);
+	    file = oct_tilde_expand (user_pref.history_file);
 
 	  switch ((*argv)[1])
 	    {
@@ -196,24 +185,22 @@ do_history (int argc, char **argv)
 		  {
 		    if (history_lines_this_session < where_history ())
 		      {
-			// If the filename was supplied, then create
-			// it if it doesn't already exist.
+			// Create file if it doesn't already exist.
 
-			if (file)
+			struct stat buf;
+
+			if (stat (file.c_str (), &buf) == -1)
 			  {
-			    struct stat buf;
+			    int tem;
 
-			    if (stat (file, &buf) == -1)
-			      {
-				int tem;
-
-				tem = open (file, O_CREAT, 0666);
-				close (tem);
-			      }
+			    tem = open (file.c_str (), O_CREAT, 0666);
+			    close (tem);
 			  }
 
-			result =
-			  append_history (history_lines_this_session, file);
+			result
+			  = append_history (history_lines_this_session,
+					    file.c_str ());
+
 			history_lines_in_file += history_lines_this_session;
 			history_lines_this_session = 0;
 		      }
@@ -222,11 +209,11 @@ do_history (int argc, char **argv)
 	      break;
 
 	    case 'w':		// Write entire history.
-	      result = write_history (file);
+	      result = write_history (file.c_str ());
 	      break;
 
 	    case 'r':		// Read entire file.
-	      result = read_history (file);
+	      result = read_history (file.c_str ());
 	      break;
 
 	    case 'n':		// Read `new' history from file.
@@ -235,7 +222,8 @@ do_history (int argc, char **argv)
 	      // already read.
 
 	      using_history ();
-	      result = read_history_range (file, history_lines_in_file, -1);
+	      result = read_history_range (file.c_str (),
+					   history_lines_in_file, -1);
 	      using_history ();
 	      history_lines_in_file = where_history ();
 	      break;

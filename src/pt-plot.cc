@@ -52,11 +52,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "load-save.h"
 #include "mappers.h"
 #include "oct-obj.h"
-#include "sysdep.h"
 #include "pt-cmd.h"
-#include "pt-const.h"
 #include "pt-exp.h"
 #include "pt-plot.h"
+#include "sysdep.h"
 #include "user-prefs.h"
 #include "utils.h"
 
@@ -73,7 +72,7 @@ static char *gnuplot_terminal_type = 0;
 static int clear_before_plotting = 1;
 
 // List of files to delete when we exit or crash.
-static SLStack <char *> tmp_files;
+static SLStack <string> tmp_files;
 
 // Pipe to gnuplot.
 static oprocstream *plot_stream = 0;
@@ -725,7 +724,8 @@ subplot::handle_plot_data (int ndim, ostrstream& plot_buf)
 
       if (! error_state && data.is_defined ())
 	{
-	  char *file = 0;
+	  string file;
+
 	  if (data.is_string ())
 	    {
 	      // Should really try to look at data file to determine
@@ -734,19 +734,17 @@ subplot::handle_plot_data (int ndim, ostrstream& plot_buf)
 
 	      int n_max = 0;
 
-	      string tstr = data.string_value ();
+	      file = oct_tilde_expand (data.string_value ());
 
-	      file = tilde_expand (tstr.c_str ());
-	      ifstream ftmp (file);
+	      ifstream ftmp (file.c_str ());
+
 	      if (ftmp)
 		{
 		  plot_buf << " \"" << file << '"';
-		  free (file);
 		}
 	      else
 		{
-		  free (file);
-		  file = 0;
+		  file = "";
 
 		  // Opening as a file failed.  Let's try passing it
 		  // along as a plot command.
@@ -757,6 +755,7 @@ subplot::handle_plot_data (int ndim, ostrstream& plot_buf)
 	      if (using_clause)
 		{
 		  int status = using_clause->print (ndim, n_max, plot_buf);
+
 		  if (status < 0)
 		    return -1;
 		}
@@ -786,7 +785,7 @@ subplot::handle_plot_data (int ndim, ostrstream& plot_buf)
 		      break;
 		    }
 
-		  if (file)
+		  if (file.length () > 0)
 		    {
 		      mark_for_deletion (file);
 		      plot_buf << " \"" << file << '"';
@@ -944,10 +943,9 @@ save_in_tmp_file (tree_constant& t, int ndim, int parametric)
 }
 
 void
-mark_for_deletion (const char *filename)
+mark_for_deletion (const string& file)
 {
-  char *tmp = strsave (filename);
-  tmp_files.push (tmp);
+  tmp_files.push (file);
 }
 
 void
@@ -955,9 +953,8 @@ cleanup_tmp_files (void)
 {
   while (! tmp_files.empty ())
     {
-      char *filename = tmp_files.pop ();
-      unlink (filename);
-      delete [] filename;
+      string filename = tmp_files.pop ();
+      unlink (filename.c_str ());
     }
 }
 

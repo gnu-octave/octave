@@ -618,15 +618,15 @@ octave_read (char *buf, int max_size)
 // warning if the file doesn't exist.
 
 FILE *
-get_input_from_file (const char *name, int warn)
+get_input_from_file (const string& name, int warn)
 {
   FILE *instream = 0;
 
-  if (name && *name)
-    instream = fopen (name, "r");
+  if (name.length () > 0)
+    instream = fopen (name.c_str (), "r");
 
   if (! instream && warn)
-    warning ("%s: no such file or directory", name);
+    warning ("%s: no such file or directory", name.c_str ());
 
   if (reading_fcn_file || reading_script_file)
     ff_instream = instream;

@@ -28,8 +28,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <cstdio>
 
+#include <string>
+
 extern int octave_read (char *buf, int max_size);
-extern FILE *get_input_from_file (const char *name, int warn = 1);
+extern FILE *get_input_from_file (const string& name, int warn = 1);
 extern FILE *get_input_from_stdin (void);
 extern void initialize_readline (void);
 

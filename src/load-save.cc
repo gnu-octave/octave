@@ -44,12 +44,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "help.h"
 #include "load-save.h"
 #include "mappers.h"
+#include "oct-obj.h"
 #include "pager.h"
+#include "pt-exp.h"
 #include "symtab.h"
 #include "sysdep.h"
-#include "pt-const.h"
-#include "oct-obj.h"
-#include "pt-exp.h"
 #include "unwind-prot.h"
 #include "user-prefs.h"
 #include "utils.h"
@@ -2024,15 +2023,15 @@ read_binary_file_header (istream& is, int& swap,
 }
 
 static load_save_format
-get_file_format (const char *fname, const char *orig_fname)
+get_file_format (const string& fname, const string& orig_fname)
 {
   load_save_format retval = LS_UNKNOWN;
 
-  ifstream file (fname);
+  ifstream file (fname.c_str ());
 
   if (! file)
     {
-      error ("load: couldn't open input file `%s'", orig_fname);
+      error ("load: couldn't open input file `%s'", orig_fname.c_str ());
       return retval;
     }
 
@@ -2068,7 +2067,8 @@ get_file_format (const char *fname, const char *orig_fname)
   file.close ();
 
   if (retval == LS_UNKNOWN)
-    error ("load: unable to determine file format for `%s'", orig_fname);
+    error ("load: unable to determine file format for `%s'",
+	   orig_fname.c_str ());
 
   return retval;
 }
@@ -2286,12 +2286,7 @@ found in the file will be replaced with the values read from the file.")
     }
   else
     {
-      static char *fname = 0;
-
-      if (fname)
-	free (fname);
-
-      fname = tilde_expand (*argv);
+      string fname = oct_tilde_expand (*argv);
 
       if (format == LS_UNKNOWN)
 	format = get_file_format (fname, orig_fname);
@@ -2305,7 +2300,7 @@ found in the file will be replaced with the values read from the file.")
 	  if (format == LS_BINARY || format == LS_MAT_BINARY)
 	    mode |= ios::bin;
 
-	  ifstream file (fname, mode);
+	  ifstream file (fname.c_str (), mode);
 
 	  if (file)
 	    {
@@ -3111,12 +3106,7 @@ save variables in a file")
     }
   else
     {
-      static char *fname = 0;
-
-      if (fname)
-	free (fname);
-
-      fname = tilde_expand (*argv);
+      string fname = oct_tilde_expand (*argv);
 
       argc--;
       argv++;
@@ -3125,7 +3115,7 @@ save variables in a file")
       if (format == LS_BINARY || format == LS_MAT_BINARY)
 	mode |= ios::bin;
 
-      ofstream file (fname, mode);
+      ofstream file (fname.c_str (), mode);
 
       if (file)
 	{

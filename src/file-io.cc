@@ -64,12 +64,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "mappers.h"
 #include "oct-map.h"
 #include "oct-hist.h"
+#include "oct-obj.h"
 #include "pager.h"
 #include "statdefs.h"
 #include "sysdep.h"
 #include "syswait.h"
-#include "pt-const.h"
-#include "oct-obj.h"
 #include "utils.h"
 #include "variables.h"
 
@@ -2486,21 +2485,13 @@ DEFUN ("stat", Fstat, Sstat, 10,
 
   if (args.length () == 1)
     {
-      string tstr = args(0).string_value ();
-      const char *name = tstr.c_str ();
-
-      static char *fname = 0;
-
-      if (fname)
-	free (fname);
-
-      fname = tilde_expand (name);
+      string fname = oct_tilde_expand (args(0).string_value ());
 
       if (! error_state)
 	{
 	  struct stat buf;
 
-	  if (stat (fname, &buf) < 0)
+	  if (stat (fname.c_str (), &buf) < 0)
 	    retval = -1.0;
 	  else
 	    retval = tree_constant (mk_stat_map (buf));
@@ -2522,21 +2513,13 @@ DEFUN ("lstat", Flstat, Slstat, 10,
 
   if (args.length () == 1)
     {
-      string tstr = args(0).string_value ();
-      const char *name = tstr.c_str ();
-
-      static char *fname = 0;
-
-      if (fname)
-	free (fname);
-
-      fname = tilde_expand (name);
+      string fname = oct_tilde_expand (args(0).string_value ());
 
       if (! error_state)
 	{
 	  struct stat buf;
 
-	  if (lstat (fname, &buf) < 0)
+	  if (lstat (fname.c_str (), &buf) < 0)
 	    retval = -1.0;
 	  else
 	    retval = tree_constant (mk_stat_map (buf));

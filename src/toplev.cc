@@ -55,17 +55,17 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "input.h"
 #include "lex.h"
 #include "oct-hist.h"
-#include "toplev.h"
 #include "pager.h"
 #include "parse.h"
 #include "pathsearch.h"
 #include "procstream.h"
-#include "sighandlers.h"
-#include "statdefs.h"
-#include "sysdep.h"
 #include "pt-const.h"
 #include "pt-misc.h"
 #include "pt-plot.h"
+#include "sighandlers.h"
+#include "statdefs.h"
+#include "sysdep.h"
+#include "toplev.h"
 #include "unwind-prot.h"
 #include "user-prefs.h"
 #include "utils.h"
@@ -181,7 +181,7 @@ parse_and_execute (FILE *f, int print)
 }
 
 void
-parse_and_execute (const char *s, int print, int verbose,
+parse_and_execute (const string& s, int print, int verbose,
 		   const char *warn_for)
 {
   begin_unwind_frame ("parse_and_execute_2");
@@ -190,9 +190,10 @@ parse_and_execute (const char *s, int print, int verbose,
   unwind_protect_ptr (curr_fcn_file_full_name);
 
   reading_script_file = 1;
-  curr_fcn_file_full_name = s;
+  curr_fcn_file_full_name = s.c_str ();
 
   FILE *f = get_input_from_file (s, 0);
+
   if (f)
     {
       unwind_protect_int (input_line_number);
@@ -216,7 +217,7 @@ parse_and_execute (const char *s, int print, int verbose,
 	cout << "done." << endl;
     }
   else if (warn_for)
-    error ("%s: unable to open file `%s'", warn_for, s);
+    error ("%s: unable to open file `%s'", warn_for, s.c_str ());
 
   run_unwind_frame ("parse_and_execute_2");
 }
@@ -233,19 +234,16 @@ script file but without requiring the file to be named `FILE.m'.")
 
   if (nargin == 1)
     {
-      string tstr = args(0).string_value ();
-      const char *file = tstr.c_str ();
+      string file = args(0).string_value ();
 
       if (! error_state)
 	{
-	  file = tilde_expand (file);
+	  file = oct_tilde_expand (file);
 
 	  parse_and_execute (file, 1, 0, "source");
 
 	  if (error_state)
 	    error ("source: error sourcing file `%s'", file);
-
-	  delete [] file;
 	}
       else
 	error ("source: expecting file name as argument");

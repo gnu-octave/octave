@@ -24,7 +24,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_sysdep_h)
 #define octave_sysdep_h 1
 
-#include <readline/tilde.h>
+#include <string>
 
 extern void sysdep_init (void);
 
@@ -59,6 +59,8 @@ extern floating_point_format native_float_format;
 
 // Nonzero if the machine we are running on is big-endian.
 extern int octave_words_big_endian;
+
+extern string oct_tilde_expand (const string&);
 
 #endif
 

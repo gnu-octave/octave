@@ -66,13 +66,12 @@ extern "C" int strncasecmp (const char*, const char*, size_t);
 #include "input.h"
 #include "mappers.h"
 #include "oct-hist.h"
-#include "toplev.h"
+#include "oct-obj.h"
 #include "pager.h"
 #include "pathsearch.h"
 #include "sysdep.h"
 #include "sysdir.h"
-#include "pt-const.h"
-#include "oct-obj.h"
+#include "toplev.h"
 #include "unwind-prot.h"
 #include "user-prefs.h"
 #include "utils.h"
@@ -231,9 +230,8 @@ pathstring_to_vector (char *pathstring)
 	  char *end = strchr (ptr, SEPCHAR);
 	  if (end)
 	    *end = '\0';
-	  char *result = tilde_expand (ptr);
-	  path[i] = strsave (result);
-	  free (result);
+	  string result = oct_tilde_expand (ptr);
+	  path[i] = strsave (result.c_str ());
 	  ptr = end + 1;
 	  i++;
 	}

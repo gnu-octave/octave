@@ -53,16 +53,15 @@ Free Software Foundation, Inc.
 #include "error.h"
 #include "gripes.h"
 #include "help.h"
-#include "toplev.h"
+#include "oct-obj.h"
 #include "pager.h"
 #include "pathlen.h"
 #include "procstream.h"
+#include "pt-plot.h"
 #include "statdefs.h"
 #include "sysdep.h"
 #include "sysdir.h"
-#include "pt-const.h"
-#include "oct-obj.h"
-#include "pt-plot.h"
+#include "toplev.h"
 #include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
@@ -369,14 +368,10 @@ users home directory")
 
   if (argc > 1)
     {
-      static char *dirname = 0;
+      string dirname = oct_tilde_expand (argv[1]);
 
-      if (dirname)
-	free (dirname);
-
-      dirname = tilde_expand (argv[1]);
-
-      if (dirname && ! octave_change_to_directory (dirname))
+      if (dirname.length () > 0
+	  && ! octave_change_to_directory (dirname.c_str ()))
 	{
 	  DELETE_ARGV;
 	  return retval;
@@ -417,11 +412,7 @@ print a directory listing")
 
   ls_buf << "ls -C ";
   for (int i = 1; i < argc; i++)
-    {
-      char *tmp = tilde_expand (argv[i]);
-      ls_buf << tmp << " ";
-      free (tmp);
-    }
+    ls_buf << oct_tilde_expand (argv[i]) << " ";
 
   ls_buf << ends;
   char *ls_command = ls_buf.str ();
@@ -514,11 +505,9 @@ is printed.")
 	}
       else
 	{
-	  char *tmp = tilde_expand (dirname);
+	  string tmp = oct_tilde_expand (dirname);
 
-	  DIR *dir = opendir (tmp);
-
-	  free (tmp);
+	  DIR *dir = opendir (tmp.c_str ());
 
 	  if (dir)
 	    {
@@ -601,11 +590,9 @@ otherwise prints an error message.")
 	gripe_wrong_type_arg ("mkdir", args(0));
       else
 	{
-	  char *tmp = tilde_expand (dirname);
+	  string tmp = oct_tilde_expand (dirname);
 
-	  int mkdir_retval = mkdir (tmp, 0777);
-
-	  free (tmp);
+	  int mkdir_retval = mkdir (tmp.c_str (), 0777);
 
 	  if (mkdir_retval < 0)
 	    {
@@ -642,11 +629,9 @@ otherwise prints an error message.")
 	gripe_wrong_type_arg ("rmdir", args(0));
       else
 	{
-	  char *tmp = tilde_expand (dirname);
+	  string tmp = oct_tilde_expand (dirname);
 
-	  int rmdir_retval = rmdir (tmp);
-
-	  free (tmp);
+	  int rmdir_retval = rmdir (tmp.c_str ());
 
 	  if (rmdir_retval < 0)
 	    {

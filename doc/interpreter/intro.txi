@@ -311,7 +311,7 @@ line, @kbd{C-f} will move the cursor forward on the line, etc.
 A complete description of the command line editing capability is given
 in this manual in @ref{Command Line Editing}.
 
-@unnumberedsubsec Getting Help
+@unnumberedsubsec Help and Documentation
 
 Octave has an extensive help facility.  The same documentation that is
 available in printed form is also available from the Octave prompt,

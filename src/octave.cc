@@ -989,6 +989,44 @@ DEFUN ("system", Fsystem, Ssystem, 2, 1,
 
 DEFALIAS (shell_cmd, system);
 
+#if defined (__GNUG__) && defined (DEBUG_NEW_DELETE)
+int debug_new_delete = 0;
+
+typedef void (*vfp)(void);
+extern vfp __new_handler;
+
+void *
+__builtin_new (size_t sz)
+{
+  void *p;
+
+  /* malloc (0) is unpredictable; avoid it.  */
+  if (sz == 0)
+    sz = 1;
+  p = (void *) malloc (sz);
+  while (p == 0)
+    {
+      (*__new_handler) ();
+      p = (void *) malloc (sz);
+    }
+
+  if (debug_new_delete)
+    cout << "__builtin_new: " << p << endl;
+
+  return p;
+}
+
+void
+__builtin_delete (void *ptr)
+{
+  if (debug_new_delete)
+    cout << "__builtin_delete: " << ptr << endl;
+
+  if (ptr)
+    free (ptr);
+}
+#endif
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

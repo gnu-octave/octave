@@ -1339,7 +1339,11 @@ next_token_is_bin_op (int spc_prev, char *yytext)
 static char *
 strip_trailing_whitespace (char *s)
 {
-  char *retval = strsave (s);
+  static char *retval = 0;
+
+  delete [] retval;
+
+  retval = strsave (s);
 
   char *t = strchr (retval, ' ');
   if (t)

@@ -65,6 +65,10 @@ verror (const char *name, const char *fmt, va_list args)
   delete [] msg;
 }
 
+// Note that we don't actually print any message if the error string
+// is just "" or "\n".  This allows error ("") and error ("\n") to
+// just set the error state.
+
 static void
 error_1 (const char *name, const char *fmt, va_list args)
 {
@@ -75,17 +79,29 @@ error_1 (const char *name, const char *fmt, va_list args)
 
       if (! suppress_octave_error_messages)
 	{
-	  int len = 0;
-	  if (fmt && *fmt && fmt[(len = strlen (fmt)) - 1] == '\n')
+	  if (fmt)
 	    {
-	      error_state = -2;
-	      char *tmp_fmt = strsave (fmt);
-	      tmp_fmt[len - 1] = '\0';
-	      verror (name, tmp_fmt, args);
-	      delete [] tmp_fmt;
+	      if (*fmt)
+		{
+		  int len = strlen (fmt);
+		  if (fmt[len - 1] == '\n')
+		    {
+		      error_state = -2;
+
+		      if (len > 1)
+			{
+			  char *tmp_fmt = strsave (fmt);
+			  tmp_fmt[len - 1] = '\0';
+			  verror (name, tmp_fmt, args);
+			  delete [] tmp_fmt;
+			}
+		    }
+		  else
+		    verror (name, fmt, args);
+		}
 	    }
 	  else
-	    verror (name, fmt, args);
+	    panic ("error_1: invalid format");
 	}
     }
 }
@@ -168,7 +184,7 @@ printed.")
 	{
 	  msg = args(0).string_value ();
 
-	  if (! msg || ! *msg)
+	  if (! msg)
 	    return retval;
 	}
       else if (args(0).is_empty ())

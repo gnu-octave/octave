@@ -124,7 +124,8 @@ strconcat (const char *s, const char *t)
   int len = strlen (s) + strlen (t);
   char *tmp = new char [len+1];
   strcpy (tmp, s);
-  return strcat (tmp, t);
+  strcat (tmp, t);
+  return tmp;
 }
 
 // Throw away input until a given character is read.
@@ -694,14 +695,12 @@ file_in_path (const char *name, const char *suffix)
 {
   char *retval = 0;
 
-  char *nm = strsave (name);
+  char *nm = 0;
 
   if (suffix)
-    {
-      char *tmp = nm;
-      nm = strconcat (tmp, suffix);
-      delete [] tmp;
-    }
+    nm = strconcat (name, suffix);
+  else
+    nm = strsave (name);
 
   if (! the_current_working_directory)
     get_working_directory ("file_in_path");

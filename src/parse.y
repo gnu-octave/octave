@@ -1353,10 +1353,14 @@ maybe_convert_to_ans_assign (tree_expression *expr)
     }
   else
     {
-      static symbol_record *sr = global_sym_tab->lookup ("ans", 1, 0);
-      static tree_identifier ans_id (sr);
+      // XXX FIXME XXX -- making ans_id static, passing its address to
+      // tree_simple_assignment_expression along with a flag to not
+      // delete it seems to create a memory leak.  Hmm.
 
-      return new tree_simple_assignment_expression (&ans_id, expr, 1, 1);
+      static symbol_record *sr = global_sym_tab->lookup ("ans", 1, 0);
+      tree_identifier *ans_id = new tree_identifier (sr);
+
+      return new tree_simple_assignment_expression (ans_id, expr, 0, 1);
     }
 }
 

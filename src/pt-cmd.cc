@@ -651,11 +651,39 @@ do_unwind_protect_cleanup_code (void *ptr)
   // ignored.
 
   unwind_protect_int (error_state);
-
   error_state = 0;
+
+  // Similarly, if we have seen a return or break statement, allow all
+  // the cleanup code to run before returning or handling the break.
+  // We don't have to worry about continue statements because they can
+  // only occur in loops.
+
+  unwind_protect_int (returning);
+  returning = 0;
+
+  unwind_protect_int (breaking);
+  breaking = 0;
 
   if (list)
     list->eval (1);
+
+  // This is the one for breaking.  (The unwind_protects are popped
+  // off the stack in the reverse of the order they are pushed on).
+
+  // XXX FIXME XXX -- inside an unwind_protect, should break work like
+  // a return, or just jump to the end of the unwind_protect block?
+  // The following code makes it just jump to the end of the block.
+
+  run_unwind_protect ();
+  if (breaking)
+    breaking--;
+
+  // This is the one for returning.
+
+  if (returning)
+    discard_unwind_protect ();
+  else
+    run_unwind_protect ();
 
   // We don't want to ignore errors that occur in the cleanup code, so
   // if an error is encountered there, leave error_state alone.

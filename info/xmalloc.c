@@ -43,6 +43,11 @@ static void memory_error_and_abort ();
 /* Return a pointer to free()able block of memory large enough
    to hold BYTES number of bytes.  If the memory cannot be allocated,
    print an error message and abort. */
+
+#if defined (DEBUG_MALLOC_FREE)
+int debug_malloc_free = 0;
+#endif
+
 void *
 xmalloc (bytes)
      int bytes;
@@ -51,6 +56,12 @@ xmalloc (bytes)
 
   if (!temp)
     memory_error_and_abort ("xmalloc");
+
+#if defined (DEBUG_MALLOC_FREE)
+  if (debug_malloc_free)
+    printf ("%x\n", temp);
+#endif
+
   return (temp);
 }
 
@@ -68,6 +79,11 @@ xrealloc (pointer, bytes)
 
   if (!temp)
     memory_error_and_abort ("xrealloc");
+
+#if defined (DEBUG_MALLOC_FREE)
+  if (debug_malloc_free)
+    printf ("%x\n", temp);
+#endif
 
   return (temp);
 }

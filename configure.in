@@ -21,7 +21,7 @@ dnl Copyright (C) 1992, 1993, 1994 John W. Eaton
 ### along with Octave; see the file COPYING.  If not, write to the Free
 ### Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
-AC_REVISION($Revision: 1.73 $)
+AC_REVISION($Revision: 1.74 $)
 AC_PREREQ(2.0)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h kpathsea/c-auto.h)
@@ -784,6 +784,7 @@ define([tmpSE], [scripts/polynomial/Makefile scripts/set/Makefile])dnl
 define([tmpSF], [scripts/signal/Makefile scripts/special-matrix/Makefile])dnl
 define([tmpSG], [scripts/startup/Makefile scripts/statistics/Makefile])dnl
 define([tmpSH], [scripts/elfun/Makefile scripts/specfun/Makefile])dnl
-define([scriptdirs], [tmpSA tmpSB tmpSC tmpSD tmpSE tmpSF tmpSG tmpSH])dnl
+define([tmpSI], [scripts/strings/Makefile])dnl
+define([mdirs], [tmpSA tmpSB tmpSC tmpSD tmpSE tmpSF tmpSG tmpSH tmpSI])dnl
 
-AC_OUTPUT([srcdirs cruftdirs scriptdirs])
+AC_OUTPUT([srcdirs cruftdirs mdirs])

@@ -19,7 +19,7 @@
 
 ## Load an image file.
 ##
-## [X, map] = loadimage (img_file) loads an image and it's associated
+## [img, map] = loadimage (img_file) loads an image and it's associated
 ## color map from file img_file.  The image must be in stored in
 ## octave's image format.
 ##
@@ -29,10 +29,10 @@
 ## Created: July 1994
 ## Adapted-By: jwe
 
-function [X, map] = loadimage (filename)
+function [img_retval, map_retval] = loadimage (filename)
 
   if (nargin != 1)
-    usage ("loadimage (filename)");
+    usage ("[img, map] = loadimage (filename)");
   elseif (! isstr (filename))
     error ("loadimage: expecting filename as a string");
   endif
@@ -43,8 +43,22 @@ function [X, map] = loadimage (filename)
     error ("loadimage: unable to find image file");
   endif
 
-  ## XXX FIXME XXX -- file is assumed to have variables X and map.
+  ## The file is assumed to have variables img and map, or X and map.
 
   eval (['load ', file]);
+
+  if (exist ("img"))
+    img_retval = img;
+  elseif (exist ("X"))
+    img_retval = X;
+  else
+    error ("loadimage: invalid image file found");
+  endif
+
+  if (exist ("map"))
+    map_retval = map;
+  else
+    error ("loadimage: invalid image file found");
+  endif
 
 endfunction

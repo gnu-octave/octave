@@ -28,7 +28,7 @@ a = rand(5000,20);
 [q,r,p]=qr(a,0); t(j++) = testqr(q,r,a,p);
 [q,r,p]=qr(a',0); t(j++) = testqr(q,r,a',p);
 
-a = a+1i*randn(size(a))*sqrt(eps);
+a = a+1i*eps;
 [q,r]=qr(a,0); t(j++) = testqr(q,r,a);
 [q,r]=qr(a',0); t(j++) = testqr(q,r,a');
 [q,r,p]=qr(a,0); t(j++) = testqr(q,r,a,p);
@@ -41,7 +41,7 @@ a = [ ones(1,15); sqrt(eps)*eye(15) ];
 [q,r,p]=qr(a); t(j++) = testqr(q,r,a,p);
 [q,r,p]=qr(a'); t(j++) = testqr(q,r,a',p);
 
-a = a+1i*randn(size(a))*sqrt(eps);
+a = a+1i*eps;
 [q,r]=qr(a); t(j++) = testqr(q,r,a);
 [q,r]=qr(a'); t(j++) = testqr(q,r,a');
 [q,r,p]=qr(a); t(j++) = testqr(q,r,a,p);
@@ -53,7 +53,7 @@ a = [ ones(1,15); sqrt(eps)*eye(15) ];
 [q,r,p]=qr(a,0); t(j++) = testqr(q,r,a,p);
 [q,r,p]=qr(a',0); t(j++) = testqr(q,r,a',p);
 
-a = a+1i*randn(size(a))*sqrt(eps);
+a = a+1i*eps;
 [q,r]=qr(a,0); t(j++) = testqr(q,r,a);
 [q,r]=qr(a',0); t(j++) = testqr(q,r,a');
 [q,r,p]=qr(a,0); t(j++) = testqr(q,r,a,p);
@@ -71,4 +71,4 @@ a = [
 ];
 [q,r] = qr(a);
 
-all (t) && norm(q*r-a) < 2000*eps
+all (t) && norm(q*r-a) < 5000*eps

@@ -1,4 +1,4 @@
-# Copyright (C) 1993 John W. Eaton
+# Copyright (C) 1993, 1994 John W. Eaton
 # 
 # This file is part of Octave.
 # 
@@ -26,8 +26,8 @@ function retval = rem (x, y)
     error ("usage: rem (x, y)");
   endif
 
-  if (any (size (x) != size (y)))
-    error ("rem: argument sizes must agree")
+  if (any (size (x) != size (y)) && ! (is_scalar (x) || is_scalar (y)))
+    error ("rem: argument sizes must agree");
   endif
 
 # Matlab allows complex arguments, but as far as I can tell, that's a

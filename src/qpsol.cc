@@ -1,4 +1,4 @@
-// tc-qpsol.cc                                           -*- C++ -*-
+// f-qpsol.cc                                           -*- C++ -*-
 /*
 
 Copyright (C) 1993 John W. Eaton
@@ -34,6 +34,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "gripes.h"
 #include "error.h"
 #include "utils.h"
+#include "f-qpsol.h"
 
 // This should probably be defined in some shared file and declared in
 // a header file...

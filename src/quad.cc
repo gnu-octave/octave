@@ -1,4 +1,4 @@
-// tc-quad.cc                                           -*- C++ -*-
+// f-quad.cc                                           -*- C++ -*-
 /*
 
 Copyright (C) 1993 John W. Eaton
@@ -33,6 +33,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "gripes.h"
 #include "error.h"
 #include "utils.h"
+#include "f-quad.h"
 
 // Global pointer for user defined function required by quadrature functions.
 static tree *quad_fcn;

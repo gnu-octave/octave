@@ -1,4 +1,4 @@
-// tc-fsolve.cc                                           -*- C++ -*-
+// f-fsolve.cc                                           -*- C++ -*-
 /*
 
 Copyright (C) 1993 John W. Eaton
@@ -32,6 +32,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "gripes.h"
 #include "error.h"
 #include "utils.h"
+#include "f-fsolve.h"
 
 // Global pointer for user defined function required by hybrd1.
 static tree *fsolve_fcn;

@@ -1,4 +1,4 @@
-// tc-svd.cc                                           -*- C++ -*-
+// f-svd.cc                                           -*- C++ -*-
 /*
 
 Copyright (C) 1993 John W. Eaton
@@ -31,6 +31,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "user-prefs.h"
 #include "gripes.h"
 #include "error.h"
+#include "f-svd.h"
 
 #ifdef WITH_DLD
 tree_constant *

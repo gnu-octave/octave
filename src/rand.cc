@@ -1,4 +1,4 @@
-// tc-rand.cc                                           -*- C++ -*-
+// f-rand.cc                                           -*- C++ -*-
 /*
 
 Copyright (C) 1993 John W. Eaton
@@ -29,6 +29,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "f77-uscore.h"
 #include "error.h"
 #include "utils.h"
+#include "f-rand.h"
 
 // Possible distributions of random numbers.
 enum rand_dist { uniform, normal };

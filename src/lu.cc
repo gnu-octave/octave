@@ -1,4 +1,4 @@
-// tc-lu.cc                                           -*- C++ -*-
+// f-lu.cc                                           -*- C++ -*-
 /*
 
 Copyright (C) 1993 John W. Eaton
@@ -30,6 +30,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "tree-const.h"
 #include "user-prefs.h"
 #include "gripes.h"
+#include "f-lu.h"
 
 #ifdef WITH_DLD
 tree_constant *

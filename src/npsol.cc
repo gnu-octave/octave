@@ -1,4 +1,4 @@
-// tc-npsol.cc                                           -*- C++ -*-
+// f-npsol.cc                                           -*- C++ -*-
 /*
 
 Copyright (C) 1993 John W. Eaton
@@ -34,6 +34,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "gripes.h"
 #include "error.h"
 #include "utils.h"
+#include "f-npsol.h"
 
 // Global pointers for user defined functions required by npsol.
 static tree *npsol_objective;

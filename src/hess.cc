@@ -1,4 +1,4 @@
-// tc-hess.cc                                           -*- C++ -*-
+// f-hess.cc                                           -*- C++ -*-
 /*
 
 Copyright (C) 1993 John W. Eaton
@@ -31,6 +31,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "user-prefs.h"
 #include "error.h"
 #include "gripes.h"
+#include "f-hess.h"
 
 #ifdef WITH_DLD
 tree_constant *

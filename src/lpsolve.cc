@@ -1,4 +1,4 @@
-// tc-lpsolve.cc                                          -*- C++ -*-
+// f-lpsolve.cc                                          -*- C++ -*-
 /*
 
 Copyright (C) 1993 John W. Eaton
@@ -29,6 +29,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "tree-const.h"
 #include "error.h"
+#include "f-lpsolve.h"
 
 #ifdef WITH_DLD
 tree_constant *

@@ -1,4 +1,4 @@
-// tc-fsqp.cc                                           -*- C++ -*-
+// f-fsqp.cc                                           -*- C++ -*-
 /*
 
 Copyright (C) 1993 John W. Eaton
@@ -31,6 +31,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "tree-const.h"
 #include "error.h"
+#include "f-fsqp.h"
 
 // Global pointers for user defined functions required by fsqp.
 static tree *fsqp_objective;

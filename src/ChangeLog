@@ -1,5 +1,9 @@
 2003-03-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* version.h (OCTAVE_VERSION): Now 2.1.46.
+
+	* oct-conf.h.in: Undo previous change.
+
 	* load-save.cc (read_mat5_binary_element): Handle structure arrays.
 	(save_mat5_binary_element): Likewise.
 

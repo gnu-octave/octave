@@ -1,3 +1,7 @@
+2002-02-22  Paul Kienzle <pkienzle@jazz.ncnr.nist.gov>
+
+	* lo-mappers.cc (arg): Simply call atan2 (0.0, x).
+
 2001-12-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* data-conv.cc (LS_DO_READ): Don't do anything unless len > 0.

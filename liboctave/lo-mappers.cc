@@ -62,14 +62,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 double
 arg (double x)
 {
-  if (x < 0.0)
-    return M_PI;
-  else
-#if defined (HAVE_ISNAN)
-    return xisnan (x) ? octave_NaN : 0.0;
-#else
-    return 0.0;
-#endif
+  return atan2 (0.0, x);
 }
 
 double

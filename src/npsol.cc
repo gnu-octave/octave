@@ -85,7 +85,7 @@ npsol_objective_function (ColumnVector& x)
       else
 	{
 	  delete [] tmp;
-	  message ("npsol", "error evaluating objective function");
+	  error ("npsol: error evaluating objective function");
 	  jump_to_top_level ();
 	}
     }
@@ -153,7 +153,7 @@ npsol_constraint_function (ColumnVector& x)
       else
 	{
 	  delete [] tmp;
-	  message ("npsol", "error evaluating constraints");
+	  error ("npsol: error evaluating constraints");
 	  jump_to_top_level ();
 	}
     }
@@ -178,14 +178,14 @@ linear_constraints_ok (const ColumnVector& x, const ColumnVector& llb,
       if (c_rows == 0 || c_cols == 0 || llb_len == 0 || lub_len == 0)
 	{
 	  ok = 0;
-	  message (warn_for,
-		   "linear constraints must have nonzero dimensions");
+	  error ("%s: linear constraints must have nonzero dimensions",
+		 warn_for);
 	}
       else if (x_len != c_cols || llb_len != lub_len || llb_len != c_rows)
 	{
 	  ok = 0;
-	  message (warn_for,
-		   "linear constraints have inconsistent dimensions");
+	  error ("%s: linear constraints have inconsistent dimensions",
+		 warn_for);
 	}
     }
 
@@ -208,14 +208,14 @@ nonlinear_constraints_ok (const ColumnVector& x, const ColumnVector& nllb,
       if (nllb_len == 0 || nlub_len == 0 || c_len == 0)
 	{
 	  ok = 0;
-	  message (warn_for,
-		   "nonlinear constraints have nonzero dimensions");
+	  error ("%s: nonlinear constraints have nonzero dimensions",
+		 warn_for);
 	}
       else if (nllb_len != nlub_len || nllb_len != c_len)
 	{
 	  ok = 0;
-	  message (warn_for,
-		   "nonlinear constraints have inconsistent dimensions");
+	  error ("%s: nonlinear constraints have inconsistent dimensions"
+		 warn_for,);
 	}
     }
   return ok;
@@ -247,7 +247,7 @@ Handle all of the following:
 
   if (x.capacity () == 0)
     {
-      message ("npsol", "expecting vector as first argument");
+      error ("npsol: expecting vector as first argument");
       return retval;
     }
 
@@ -270,7 +270,7 @@ Handle all of the following:
       int ub_len = ub.capacity ();
       if (lb_len != ub_len || lb_len != x.capacity ())
 	{
-	  message ("npsol", "lower and upper bounds and decision variable\n\
+	  error ("npsol: lower and upper bounds and decision variable\n\
        vector must all have the same number of elements");
 	  return retval;
 	}

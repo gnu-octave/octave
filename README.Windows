@@ -55,7 +55,7 @@ functions (.oct files).
 
       Archive: unzip
       Devel:   autoconf, binutils, bison, cvs, dejagnu, flex, gcc,
-               gperf, make
+               g++, g77, gperf, make
       Text:    less, tetex, tetex-base
       Utils:   diff, patch
 

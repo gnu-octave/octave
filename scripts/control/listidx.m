@@ -1,4 +1,4 @@
-## Copyright (C) 1996, 1998 Auburn University.  All rights reserved.
+## Copyright (C) 2000 Auburn University.  All rights reserved.
 ##
 ## This file is part of Octave.
 ##
@@ -16,31 +16,24 @@
 ## along with Octave; see the file COPYING.  If not, write to the Free
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
-## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{idxvec}, @var{errmsg}] =} listidx(@var{listvar}, @var{strlist})
+## [idxvec, errmsg] = listidx(listvar, strlist)
 ## return indices of string entries in listvar that match strings in strlist
-## @strong{Inputs}
-## @table @var
-## @item listvar
-##   list of strings to be searched
-## @item strlist
-##   list of strings to be located in listvar.
-## @end table
-## @strong{Note} @var{listvar}, @var{strlist} may be passed as strings or 
-##    string matrices; in this case, each entry is processed by deblank() 
-##    prior to searching for the entries of @var{strlist} in @var{listvar}.
-## @strong{Outputs}
-## @table @var
-## @item idxvec
-##    vector of indices in @var{listvar};
-##    @var{listvar}(@var{idxvec}(@var{k})) == @var{strlist}(@var{kk}).
-## @item errmsg
-##    if strlist contains a string not in @var{listvar}, then
-##    an error message is returned in @var{errmsg}.  If only one output
-##    argument is requested, e.g., @code{idxvec = listidex(listvar, strlist)},
-##    then @var{listidx} prints @var{errmsg} to the screen and exits with 
+## Inputs:
+##   listvar: list of strings to be searched
+##   strlist: list of strings to be located in listvar.
+## Note: listvar, strlist may be passed as strings or string matrices; 
+##    in this case, each entry is processed by deblank() prior to searching 
+##    for the entries of strlist in listvar.
+## Outputs:
+## idxvec
+##    vector of indices in listvar;
+##    listvar(idxvec(k)) == strlist(kk).
+## errmsg
+##    if strlist contains a string not in listvar, then
+##    an error message is returned in errmsg.  If only one output
+##    argument is requested, e.g., idxvec = listidx(listvar, strlist),
+##    then listidx prints errmsg to the screen and exits with 
 ##    an error.
-## @end table
 ##
 
 function [idxvec,errmsg]  = listidx(listvar,strlist)
@@ -55,7 +48,6 @@ if(isstr(strlist))
   for kk=1:rows(tmp)
     strlist(kk) = deblank(tmp(kk,:));
   endfor
-  strlist
 endif
 
 if(isstr(listvar))
@@ -66,12 +58,23 @@ if(isstr(listvar))
   endfor
 endif
 
-if(!is_signal_list(listvar))     error("listvar must be a list of strings");
-elseif(!is_signal_list(strlist)) error("strlist must be a list of strings");
+## initialize size of idxvec (for premature return)
+idxvec = zeros(length(strlist),1);
+
+errmsg = "";
+if(!is_signal_list(listvar))
+  errmsg = "listvar must be a list of strings";
+elseif(!is_signal_list(strlist))
+  errmsg = "strlist must be a list of strings";
+endif
+
+if(length(errmsg))
+  if(nargout < 2) error(errmsg); 
+  else return;
+  endif
 endif
 
 nsigs = length(listvar);
-idxvec = zeros(length(strlist),1);
 for idx = 1:length(strlist)
   signame = nth(strlist,idx);
   for jdx = 1:nsigs

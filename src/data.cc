@@ -840,7 +840,7 @@ cat (4, ones(2, 2), zeros (2, 2))\n\
 
       int curr_add_dims = 0;
 
-      // Tells us wether the array we concatenated had less dimensions
+      // Tells us wether the array we concatenated had fewer dimensions
       // than dim, such that we only add one dimension to
       // curr_add_dims.
 

@@ -36,6 +36,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "defun-dld.h"
 #include "error.h"
+#include "gripes.h"
 #include "help.h"
 #include "oct-map.h"
 #include "ov.h"
@@ -69,16 +70,6 @@ mk_pw_map (struct passwd *pw)
   return retval;
 }
 
-#if ! (defined (HAVE_GETPWENT) || defined (HAVE_GETPWUID) \
-       || defined (HAVE_GETPWNAM) || defined (HAVE_SETPWENT) \
-       || defined (HAVE_ENDPWENT))
-static void
-gripe_not_implemented (const char *nm)
-{
-  error ("%s: not implemented on this system", nm);
-}
-#endif
-
 DEFUN_DLD (getpwent, , ,
  "getpwent ()\n\
 \n\
@@ -87,9 +78,14 @@ Read an entry from the password-file stream, opening it if necessary.")
   octave_value retval;
 
 #ifdef HAVE_GETPWENT
-  retval = mk_pw_map (getpwent ());
+  int nargin = args.length ();
+
+  if (nargin == 0)
+    retval = mk_pw_map (getpwent ());
+  else
+    print_usage ("getpwent");
 #else
-  gripe_not_implemented ("getpwent");
+  gripe_not_supported ("getpwent");
 #endif
 
   return retval;
@@ -124,7 +120,7 @@ Search for a password entry with a matching user ID.")
   else
     print_usage ("getpwuid");
 #else
-  gripe_not_implemented ("getpwuid");
+  gripe_not_supported ("getpwuid");
 #endif
 
   return retval;
@@ -150,7 +146,7 @@ Search for password entry with a matching username.")
   else
     print_usage ("getpwnam");
 #else
-  gripe_not_implemented ("getpwnam");
+  gripe_not_supported ("getpwnam");
 #endif
 
   return retval;
@@ -164,9 +160,14 @@ Rewind the password-file stream.")
   octave_value retval;
 
 #ifdef HAVE_SETPWENT
-  setpwent ();
+  int nargin = args.length ();
+
+  if (nargin == 0)
+    setpwent ();
+  else
+    print_usage ("setpwent");
 #else
-  gripe_not_implemented ("setpwent");
+  gripe_not_supported ("setpwent");
 #endif
 
   return retval;
@@ -180,9 +181,14 @@ Close the password-file stream.")
   octave_value retval;
 
 #ifdef HAVE_ENDPWENT
-  endpwent ();
+  int nargin = args.length ();
+
+  if (nargin == 0)
+    endpwent ();
+  else
+    print_usage ("endpwent");
 #else
-  gripe_not_implemented ("endpwent");
+  gripe_not_supported ("endpwent");
 #endif
 
   return retval;

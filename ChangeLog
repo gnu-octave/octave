@@ -1,5 +1,7 @@
 Tue Nov  5 12:32:30 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* configure.in: Add checks for geteuid, getuid.
+
 	* configure.in: Comment out code to handle --enable-readline since
 	it doesn't work yet.
 

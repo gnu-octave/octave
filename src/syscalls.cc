@@ -309,6 +309,40 @@ DEFUN (getppid, args, ,
   return retval;
 }
 
+DEFUN (geteuid, , ,
+  "uid = geteuid (): return the effective user id of the current process")
+{
+  double retval = -1.0;
+
+#if defined (HAVE_GETEUID)
+  int nargin = args.length ();
+
+  if (nargin == 0)
+    retval = geteuid ();
+  else
+    print_usage ("geteuid");
+#else
+  gripe_not_supported ("geteuid");
+#endif
+}
+
+DEFUN (getuid, , ,
+  "uid = getuid (): return the real user id of the current process")
+{
+  double retval = -1.0;
+
+#if defined (HAVE_GETUID)
+  int nargin = args.length ();
+
+  if (nargin == 0)
+    retval = getuid ();
+  else
+    print_usage ("getuid");
+#else
+  gripe_not_supported ("getuid");
+#endif
+}
+
 DEFUN (lstat, args, ,
   "[S, ERR, MSG] = lstat (NAME)\n\
 \n\

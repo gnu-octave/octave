@@ -1,5 +1,10 @@
 Tue Nov  5 13:00:35 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* syscalls.cc (Fgeteuid, Fgetuid): New functions.
+
+	* getpwent.cc: Use gripe_not_supported from gripes.cc, instead of
+	local gripe_not_implemented function.
+
 	* input.cc, sysdep.cc, variables.cc: Only include readline.h and
 	history.h if USE_READLINE is defined.
 

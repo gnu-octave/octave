@@ -56,7 +56,11 @@ oct_strptime (const char *buf, const char *format, struct tm *tm)
   return (char *) strptime (buf, format, tm);
 }
 
-#if ! defined (HAVE_GETHOSTNAME) && defined (HAVE_SYS_UTSNAME_H)
+#if defined (__WIN32__) && ! defined (_POSIX_VERSION)
+
+#include <winsock.h>
+
+#elif ! defined (HAVE_GETHOSTNAME) && defined (HAVE_SYS_UTSNAME_H)
 
 #include <sys/utsname.h>
 

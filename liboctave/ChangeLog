@@ -1,3 +1,16 @@
+2002-10-07  Paul Kienzle <pkienzle@users.sf.net>
+
+	* lo-cutils.c: On non-Posix Windows systems, include winsock.h.
+
+2002-10-07  Paul Kienzle <pkienzle@users.sf.net>
+
+	* oct-env.cc (octave_env::do_absolute_pathname): Recognize
+	absolute path names under MinGW as well.
+
+2002-10-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-env.cc: Include <cctype> too.
+
 2002-10-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-env.cc (octave_env::do_absolute_pathname): Handle Windows

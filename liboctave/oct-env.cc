@@ -40,7 +40,9 @@ Free Software Foundation, Inc.
 #include <config.h>
 #endif
 
+#include <cctype>
 #include <cstdlib>
+
 #include <string>
 
 #ifdef HAVE_UNISTD_H
@@ -249,7 +251,7 @@ octave_env::do_absolute_pathname (const std::string& s) const
   if (s[0] == '/')
     return true;
 
-#if defined (__CYGWIN__)
+#if defined (__WIN32__)
   if ((len == 2 && isalpha (s[0]) && s[1] == ':')
       || (len > 2 && isalpha (s[0]) && s[1] == ':' && is_dir_sep (s[2])))
     return true;

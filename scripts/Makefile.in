@@ -52,6 +52,9 @@ DOCSTRINGS: gethelp mkdoc $(ALL_M_FILES)
 	$(srcdir)/mkdoc $(srcdir) > $@.t
 	mv $@.t $@
 
+gethelp: gethelp.cc
+	$(BUILD_CXX) -o $@ $^
+
 install install-strip uninstall clean mostlyclean distclean maintainer-clean::
 	@$(subdir-for-command)
 .PHONY: install install-strip uninstall

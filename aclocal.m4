@@ -510,21 +510,16 @@ dnl Find nm.
 dnl
 dnl OCTAVE_PROG_NM
 AC_DEFUN(OCTAVE_PROG_NM,
-[if test "$cross_compiling" = yes; then
-  NM=nm
-  AC_MSG_RESULT(assuming $NM exists on $canonical_host_type host)
+[AC_CHECK_PROG(NM, ${ac_tool_prefix}nm, ${ac_tool_prefix}nm, [])
   AC_SUBST(NM)
-else
-  AC_CHECK_PROG(NM, nm, nm, [])
-  AC_SUBST(NM)
-fi
 ])
 dnl
 dnl See if the C++ compiler prepends an underscore to external names.
 dnl
 dnl OCTAVE_CXX_PREPENDS_UNDERSCORE
-AC_DEFUN(OCTAVE_CXX_PREPENDS_UNDERSCORE,
-[AC_MSG_CHECKING([whether ${CXX-g++} prepends an underscore to external names])
+AC_DEFUN(OCTAVE_CXX_PREPENDS_UNDERSCORE, [
+  AC_REQUIRE([OCTAVE_PROG_NM])
+  AC_MSG_CHECKING([whether ${CXX-g++} prepends an underscore to external names])
   AC_CACHE_VAL(octave_cv_cxx_prepends_underscore,
     [octave_cv_cxx_prepends_underscore=no
     AC_LANG_PUSH(C++)
@@ -616,8 +611,9 @@ dnl Set to "unknown" is when we don't know enough about the ABI, which
 dnl will happen when using an unsupported C++ compiler. 
 dnl
 dnl OCTAVE_CXX_ABI
-AC_DEFUN(OCTAVE_CXX_ABI,
-[AC_MSG_CHECKING([C++ ABI version used by ${CXX}])
+AC_DEFUN(OCTAVE_CXX_ABI, [
+  AC_REQUIRE([OCTAVE_PROG_NM])
+  AC_MSG_CHECKING([C++ ABI version used by ${CXX}])
   AC_CACHE_VAL(octave_cv_cxx_abi,
     [octave_cv_cxx_abi='unknown'
     AC_LANG_PUSH(C++)

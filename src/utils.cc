@@ -756,9 +756,11 @@ octave_sleep (double seconds)
     {
       double t;
 
-      unsigned int usec = modf (seconds, &t) * 1000000;
+      unsigned int usec
+	= static_cast <unsigned int> (modf (seconds, &t) * 1000000);
 
-      unsigned int sec = (t > UINT_MAX) ? UINT_MAX : (unsigned int) t;
+      unsigned int sec
+	= (t > UINT_MAX) ? UINT_MAX : static_cast <unsigned int> (t);
 
       octave_sleep (sec);
       octave_usleep (usec);

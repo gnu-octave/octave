@@ -62,16 +62,21 @@ SPELL = $(patsubst %.texi, %.spell, $(TEXINFO))
 all: octave.info octave.dvi octave.ps octave_toc.html
 .PHONY: all
 
-DOCSTRINGS = $(TOPDIR)/src/DOCSTRINGS $(TOPDIR)/scripts/DOCSTRINGS
+$(TEXINFO): src-DOCSTRINGS scripts-DOCSTRINGS munge-texi
 
-$(TEXINFO): $(DOCSTRINGS) munge-texi
+%.o : %.cc
+	$(BUILD_CXX) -c $(INCFLAGS) -DHAVE_CONFIG_H $< -o $@
 
 munge-texi: munge-texi.o Map-s.o
-	$(CXX) $(CPPFLAGS) $(ALL_CXXFLAGS) $(ALL_LDFLAGS) -o $@ $^
+	$(BUILD_CXX) -o $@ $^
 
-# Kluge: if the DOCSTRING files are present, assume they are current.
-$(DOCSTRINGS):
-	$(MAKE) -C $(dir $@) $(notdir $@)
+src-DOCSTRINGS:
+	$(MAKE) -C ../../src DOCSTRINGS
+.PHONY: src-DOCSTRINGS
+
+scripts-DOCSTRINGS:
+	$(MAKE) -C ../../scripts DOCSTRINGS
+.PHONY: scripts-DOCSTRINGS
 
 %.texi : %.txi
 	@echo making $@ from $<

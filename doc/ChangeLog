@@ -1,3 +1,11 @@
+2002-10-08  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* interpreter/Makefile.in (munge-texi, %.o : %.cc):
+	Use $(BUILD_CXX), not $(CXX).
+	(src-DOCSTRINGS, scripts-DOCSTRINGS): New targets.
+	($(TEXIFNO)): Depend on them.
+	(DOCSTRINGS): Delete variable.
+
 2002-10-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* interpreter/Makefile.in (%.spell): Use $(SED), not sed.

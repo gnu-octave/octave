@@ -53,7 +53,7 @@ extern char *default_editor (void);
 extern char *get_site_defaults (void);
 extern char *default_pager (void);
 extern char *file_in_path (const char *, const char *);
-extern char *m_file_in_path (const char *);
+extern char *fcn_file_in_path (const char *);
 extern char *polite_directory_format (const char *);
 extern int absolute_pathname (const char *);
 extern int absolute_program (const char *);
@@ -79,8 +79,8 @@ extern int almost_match (const char *std, const char *s,
 extern int keyword_almost_match (const char **std, int *min_len,
 				 const char *s, int min_toks_to_match,
 				 int max_toks);
-extern char **get_m_file_names (int& mfl_len, const char *dir, int no_suffix);
-extern char **get_m_file_names (int& mfl_len, int no_suffix);
+extern char **get_fcn_file_names (int& mfl_len, const char *dir, int no_suffix);
+extern char **get_fcn_file_names (int& mfl_len, int no_suffix);
 extern int NINT (double x);
 extern double D_NINT (double x);
 extern void delete_ppchar (char **);

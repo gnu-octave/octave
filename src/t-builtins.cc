@@ -404,8 +404,8 @@ simple_help (void)
       while (*ptr != (char *) NULL)
 	{
 	  int count;
-	  char **names = get_m_file_names (count, *ptr, 0);
-	  output_buf << "\n*** M-files in "
+	  char **names = get_fcn_file_names (count, *ptr, 0);
+	  output_buf << "\n*** function files in "
 		     << make_absolute (*ptr, the_current_working_directory)
 		     << ":\n\n";
 	  if (names != (char **) NULL && count > 0)
@@ -538,7 +538,7 @@ builtin_help (int argc, char **argv)
 	{
 	  ostrstream output_buf;
 
-	  char *m_file_name = (char *) NULL;
+	  char *fcn_file_name = (char *) NULL;
 	  symbol_record *sym_rec;
 	  help_list *op_help_list = operator_help ();
 	  help_list *kw_help_list = keyword_help ();
@@ -581,18 +581,18 @@ builtin_help (int argc, char **argv)
 		    }
 		}
 
-// Try harder to find M-files that might not be defined yet, or that
-// appear to be out of date.  Don\'t execute commands from the file if
-// it turns out to be a script file.
+// Try harder to find function files that might not be defined yet, or
+// that appear to be out of date.  Don\'t execute commands from the
+// file if it turns out to be a script file.
 
-	      m_file_name = m_file_in_path (*argv);
-	      if (m_file_name != (char *) NULL)
+	      fcn_file_name = fcn_file_in_path (*argv);
+	      if (fcn_file_name != (char *) NULL)
 		{
 		  sym_rec = global_sym_tab->lookup (*argv, 1, 0);
 		  if (sym_rec != (symbol_record *) NULL)
 		    {
 		      tree_identifier tmp (sym_rec);
-		      tmp.parse_m_file (0);
+		      tmp.parse_fcn_file (0);
 		      char *h = sym_rec->help ();
 		      if (h != (char *) NULL && *h != '\0')
 			{
@@ -602,7 +602,7 @@ builtin_help (int argc, char **argv)
 			}
 		    }
 		}
-	      delete [] m_file_name;
+	      delete [] fcn_file_name;
 
 	      output_buf << "\nhelp: sorry, `" << *argv
 			 << "' is not documented\n"; 

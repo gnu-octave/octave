@@ -691,7 +691,7 @@ reset_parser (void)
 
 // Only ask for input from stdin if we are expecting interactive
 // input.
-  if (interactive && ! (reading_m_file || get_input_from_eval_string))
+  if (interactive && ! (reading_fcn_file || get_input_from_eval_string))
     yyrestart (stdin);
 }
 
@@ -1020,11 +1020,11 @@ is_keyword (char *s)
 	{
 	  error ("function keyword invalid within a function body");
 
-	  if ((reading_m_file || reading_script_file)
-	      && curr_m_file_name != (char *) NULL)
+	  if ((reading_fcn_file || reading_script_file)
+	      && curr_fcn_file_name != (char *) NULL)
 	    error ("defining new function near line %d of file `%s'",
 		   input_line_number,
-		   curr_m_file_name);
+		   curr_fcn_file_name);
 	  else
 	    error ("defining new function near line %d", input_line_number);
 
@@ -1103,7 +1103,7 @@ lookup_identifier (char *name)
 }
 
 /*
- * Grab the help text from an M-file.
+ * Grab the help text from an function file.
  */
 static void
 grab_help_text (void)
@@ -1462,9 +1462,9 @@ handle_identifier (char *tok, int next_tok_is_eq)
 }
 
 /*
- * Print a warning if an M-file that defines a function has anything
- * other than comments and whitespace following the END token that
- * matches the FUNCTION statement.
+ * Print a warning if a function file that defines a function has
+ * anything other than comments and whitespace following the END token
+ * that matches the FUNCTION statement.
  */
 void
 check_for_garbage_after_fcn_def (void)
@@ -1499,7 +1499,7 @@ check_for_garbage_after_fcn_def (void)
 	  else
 	    {
 	      warning ("ignoring trailing garbage after end of function\n\
-         near line %d of file `%s.m'", lineno, curr_m_file_name);
+         near line %d of file `%s.m'", lineno, curr_fcn_file_name);
 	      
 	      yyunput ('\n', yytext);
 	      return;

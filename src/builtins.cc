@@ -424,7 +424,7 @@ where y and x are vectors.", },
     "isstr (X): return 1 if X is a string", },
 
   { "keyboard", 2, 1, builtin_keyboard,
-    "keyboard (\"prompt\"): maybe help in debugging M-files", },
+    "keyboard (\"prompt\"): maybe help in debugging function files", },
 
   { "logm", 2, 1, builtin_logm,
     "logm (x): matrix logarithm", },
@@ -702,8 +702,8 @@ static builtin_string_variables string_variables[] =
     "sqrt (-1)", },
 
   { "ignore_function_time_stamp", "system", ignore_function_time_stamp,
-    "don't check to see if M-files have changed since they were last\n\
-compiled.  Possible values are \"system\" and \"all\"", },
+    "don't check to see if function files have changed since they were\n\
+last compiled.  Possible values are \"system\" and \"all\"", },
 
   { "implicit_str_to_num_ok", "false", implicit_str_to_num_ok,
     "allow implicit string to number conversion", },

@@ -129,13 +129,13 @@ public:
   virtual void bump_value (tree::expression_type)
     { assert (0); }
 
-  virtual char *m_file_name (void)
+  virtual char *fcn_file_name (void)
     { return (char *) NULL; }
 
   virtual time_t time_parsed (void)
     { assert (0); return 0; }
 
-  virtual int is_system_m_file (void) const
+  virtual int is_system_fcn_file (void) const
     { return 0; }
 
   virtual tree_constant eval (int print) = 0;

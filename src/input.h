@@ -39,11 +39,11 @@ extern const char *current_eval_string;
 // Nonzero means get input from current_eval_string.
 extern int get_input_from_eval_string;
 
-// Nonzero means we're parsing an M-file.
-extern int reading_m_file;
+// Nonzero means we're parsing a function file.
+extern int reading_fcn_file;
 
 // Simple name of M-file we are reading.
-extern char *curr_m_file_name;
+extern char *curr_fcn_file_name;
 
 // Nonzero means we're parsing a script file.
 extern int reading_script_file;

@@ -93,11 +93,11 @@ const char *current_eval_string = (char *) NULL;
 // Nonzero means get input from current_eval_string.
 int get_input_from_eval_string = 0;
 
-// Nonzero means we're parsing an M-file.
-int reading_m_file = 0;
+// Nonzero means we're parsing a function file.
+int reading_fcn_file = 0;
 
-// Simple name of M-file we are reading.
-char *curr_m_file_name = (char *) NULL;
+// Simple name of function file we are reading.
+char *curr_fcn_file_name = (char *) NULL;
 
 // Nonzero means we're parsing a script file.
 int reading_script_file = 0;
@@ -223,7 +223,7 @@ octave_read (char *buf, int max_size)
   else
     {
       FILE *curr_stream = rl_instream;
-      if (reading_m_file || reading_script_file)
+      if (reading_fcn_file || reading_script_file)
 	curr_stream = mf_instream;
 
       assert (curr_stream != (FILE *) NULL);
@@ -282,7 +282,7 @@ get_input_from_file (char *name, int warn = 1)
   if (instream == (FILE *) NULL && warn)
     warning ("%s: no such file or directory", name);
 
-  if (reading_m_file || reading_script_file)
+  if (reading_fcn_file || reading_script_file)
     mf_instream = instream;
   else
     rl_instream = instream;

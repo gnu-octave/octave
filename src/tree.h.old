@@ -1,7 +1,7 @@
 // Tree classes.                                      -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993 John W. Eaton
+Copyright (C) 1992, 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -193,9 +193,9 @@ public:
 
   void bump_value (tree::expression_type);
 
-  int parse_m_file (int exec_script = 1);
-  int parse_m_file (char *mf, int exec_script = 1);
-  void parse_m_file (FILE *mfile, char *mf);
+  int parse_fcn_file (int exec_script = 1);
+  int parse_fcn_file (char *mf, int exec_script = 1);
+  void parse_fcn_file (FILE *mfile, char *mf);
 
   tree *do_lookup (int& script_file_executed);
 
@@ -235,14 +235,14 @@ public:
   tree_function *define_param_list (tree_parameter_list *t);
   tree_function *define_ret_list (tree_parameter_list *t);
 
-  void stash_m_file_name (char * s);
-  void stash_m_file_time (time_t t);
+  void stash_fcn_file_name (char * s);
+  void stash_fcn_file_time (time_t t);
 
-  char *m_file_name (void);
+  char *fcn_file_name (void);
   time_t time_parsed (void);
 
-  void mark_as_system_m_file (void);
-  int is_system_m_file (void) const;
+  void mark_as_system_fcn_file (void);
+  int is_system_fcn_file (void) const;
 
   int takes_varargs (void) const;
   void va_start (void);
@@ -273,7 +273,7 @@ private:
   char *file_name;
   char *fcn_name;
   time_t t_parsed;
-  int system_m_file;
+  int system_fcn_file;
   int varargs_ok;
   int num_named_args;
   const tree_constant *args_passed;

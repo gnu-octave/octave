@@ -1243,7 +1243,7 @@ eval_string (const char *string, int print, int ans_assign,
 
 // Important to reset the idea of where input is coming from before
 // trying to eval the command we just parsed -- it might contain the
-// name of an m-file that still needs to be parsed!
+// name of an function file that still needs to be parsed!
 
   tree *command = global_command;
 

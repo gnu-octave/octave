@@ -84,7 +84,7 @@ int input_line_number = 0;
 // The column of the current token.
 int current_input_column = 1;
 
-// Buffer for help text snagged from M-files.
+// Buffer for help text snagged from function files.
 // Probably shouldn't be a fixed size...
 char help_buf [HELP_BUF_LENGTH];
 
@@ -902,28 +902,28 @@ func_def2	: identifier safe local_symtab func_def3
 // file does not match the name of the function stated in the file.
 // Matlab doesn't provide a diagnostic (it ignores the stated name).
 
-		    if (reading_m_file)
+		    if (reading_fcn_file)
 		      {
-			if (strcmp (curr_m_file_name, id_name) != 0)
+			if (strcmp (curr_fcn_file_name, id_name) != 0)
 			  {
 			    warning ("function name `%s' does not agree\
- with M-file name `%s.m'", id_name, curr_m_file_name);
+ with function file name `%s'", id_name, curr_fcn_file_name);
 
-			    $1->rename (curr_m_file_name);
+			    $1->rename (curr_fcn_file_name);
 			    id_name = $1->name ();
 			  }
 
-			$4->stash_m_file_name (curr_m_file_name);
-			$4->stash_m_file_time (time ((time_t *) NULL));
-			$4->mark_as_system_m_file ();
+			$4->stash_fcn_file_name (curr_fcn_file_name);
+			$4->stash_fcn_file_time (time ((time_t *) NULL));
+			$4->mark_as_system_fcn_file ();
 		      }
 		    else if (! (input_from_tmp_history_file
 				|| input_from_startup_file)
 			     && reading_script_file
-			     && strcmp (curr_m_file_name, id_name) == 0)
+			     && strcmp (curr_fcn_file_name, id_name) == 0)
 		      {
 			warning ("function `%s' defined within\
- script file `%s.m'", id_name, curr_m_file_name);
+ script file `%s.m'", id_name, curr_fcn_file_name);
 		      }
 
 		    top_level_sym_tab->clear (id_name);
@@ -951,12 +951,12 @@ fcn_end_or_eof	: END
 		    if (check_end ($1, token::function_end))
 			ABORT_PARSE;
 
-		    if (reading_m_file)
+		    if (reading_fcn_file)
 		      check_for_garbage_after_fcn_def ();
 		  }
 		| END_OF_INPUT
 		  {
-		    if (! (reading_m_file || reading_script_file))
+		    if (! (reading_fcn_file || reading_script_file))
 		      YYABORT;
 		  }
 		;
@@ -1117,9 +1117,9 @@ yyerror (char *s)
   fprintf (stderr, "\n%s", s);
 
 // Maybe print the line number and file name.
-  if (reading_m_file || reading_script_file)
+  if (reading_fcn_file || reading_script_file)
     fprintf (stderr, " near line %d of file %s.m", input_line_number,
-	     curr_m_file_name);
+	     curr_fcn_file_name);
 
   if (line != (char *) NULL)
     {

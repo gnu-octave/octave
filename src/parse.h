@@ -1,7 +1,7 @@
 // parse.h                                                 -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993 John W. Eaton
+Copyright (C) 1992, 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -75,7 +75,7 @@ extern int current_input_column;
 
 #define HELP_BUF_LENGTH 8192
 
-// Buffer for help text snagged from M-files.
+// Buffer for help text snagged from function files.
 extern char help_buf [HELP_BUF_LENGTH];
 
 // Nonzero means we're working on a plot command.

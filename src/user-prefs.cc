@@ -237,8 +237,8 @@ silent_functions (void)
 }
 
 /*
- * Should Octave always check to see if M-files have changed since
- * they were last compiled?
+ * Should Octave always check to see if function files have changed
+ * since they were last compiled?
  */
 int
 ignore_function_time_stamp (void)

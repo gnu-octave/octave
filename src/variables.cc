@@ -66,8 +66,8 @@ initialize_symbol_tables (void)
 }
 
 /*
- * Is there a corresponding M-file that is newer than the symbol
- * definition?
+ * Is there a corresponding function file that is newer than the
+ * symbol definition?
  */
 int
 symbol_out_of_date (symbol_record *sr)
@@ -82,12 +82,12 @@ symbol_out_of_date (symbol_record *sr)
       tree *ans = sr->def ();
       if (ans != NULL_TREE)
 	{
-	  char *mf = ans->m_file_name ();
+	  char *mf = ans->fcn_file_name ();
 	  if (! (mf == (char *) NULL
-		 || (ignore && ans->is_system_m_file ())))
+		 || (ignore && ans->is_system_fcn_file ())))
 	    {
 	      time_t tp = ans->time_parsed ();
-	      char *fname = m_file_in_path (mf);
+	      char *fname = fcn_file_in_path (mf);
 	      int status = is_newer (fname, tp);
 	      delete [] fname;
 	      if (status > 0)
@@ -602,7 +602,7 @@ identifier_exists (char *name)
     return 2;
   else
     {
-      char *path = m_file_in_path (name);
+      char *path = fcn_file_in_path (name);
       if (path != (char *) NULL)
 	{
 	  delete [] path;
@@ -650,12 +650,12 @@ is_valid_function (tree_constant& arg, char *warn_for, int warn = 0)
     {
       sr = global_sym_tab->lookup (fcn_name, 1, 0);
       tree_identifier tmp (sr);
-      tmp.parse_m_file (0);
+      tmp.parse_fcn_file (0);
     }
   else if (symbol_out_of_date (sr))
     {
       tree_identifier tmp (sr);
-      tmp.parse_m_file (0);
+      tmp.parse_fcn_file (0);
     }
 
   ans = sr->def ();
@@ -714,7 +714,7 @@ make_name_list (void)
   top = top_level_sym_tab->list (top_len);
   if (top_level_sym_tab != curr_sym_tab)
     lcl = curr_sym_tab->list (lcl_len);
-  mfl = get_m_file_names (mfl_len, 1);
+  mfl = get_fcn_file_names (mfl_len, 1);
 
   int total_len = key_len + glb_len + top_len + lcl_len + mfl_len;
 

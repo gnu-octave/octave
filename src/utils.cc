@@ -592,13 +592,14 @@ file_in_path (const char *name, const char *suffix)
 }
 
 /*
- * See if there is an M-file in the path.  If so, return the full path
- * to the file.
+ * See if there is an function file in the path.  If so, return the
+ * full path to the file.
  */
 char *
-m_file_in_path (const char *name)
+fcn_file_in_path (const char *name)
 {
-  return file_in_path (name, ".m");
+  char *fcn_file = file_in_path (name, (char *) NULL);
+  return (fcn_file) ? fcn_file : file_in_path (name, ".m");
 }
 
 /*
@@ -1411,7 +1412,7 @@ keyword_almost_match (const char **std, int *min_len, const char *s,
 }
 
 char **
-get_m_file_names (int& num, const char *dir, int no_suffix)
+get_fcn_file_names (int& num, const char *dir, int no_suffix)
 {
   static int num_max = 256;
   char **retval = new char * [num_max];
@@ -1461,7 +1462,7 @@ get_m_file_names (int& num, const char *dir, int no_suffix)
 }
 
 char **
-get_m_file_names (int& num, int no_suffix)
+get_fcn_file_names (int& num, int no_suffix)
 {
   static int num_max = 1024;
   char **retval = new char * [num_max];
@@ -1475,7 +1476,7 @@ get_m_file_names (int& num, int no_suffix)
       while (*ptr != (char *) NULL)
 	{
 	  int tmp_num;
-	  char **names = get_m_file_names (tmp_num, *ptr, no_suffix);
+	  char **names = get_fcn_file_names (tmp_num, *ptr, no_suffix);
 
 	  if (i + tmp_num >= num_max - 1)
 	    {

@@ -88,6 +88,7 @@ force_global (char *name)
       if (sr == (symbol_record *) NULL)
 	{
 	  retval = global_sym_tab->lookup (name, 1, 0);
+	  retval->mark_as_forced_global ();
 	}
       else if (sr->is_formal_parameter ())
 	{
@@ -96,6 +97,7 @@ force_global (char *name)
       else
 	{
 	  retval = global_sym_tab->lookup (name, 1, 0);
+	  retval->mark_as_forced_global ();
 	  retval->alias (sr);
 	  curr_sym_tab->clear (name);
 	}

@@ -1,6 +1,4 @@
-// Nothing like a little CPP abuse to brighten everyone's day.  Would
-// have been nice to do this with template functions but as of 2.5.x,
-// g++ seems to fail to resolve them properly.
+// Nothing like a little CPP abuse to brighten everyone's day.
 
 #define DO_VS_OP(r, l, v, OP, s) \
   if (l > 0) \

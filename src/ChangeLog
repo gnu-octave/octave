@@ -1,3 +1,8 @@
+2000-03-30  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-procbuf.cc (octave_procbuf::open): Make output streams line
+	buffered.
+
 2000-03-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* sighandlers.cc (my_friendly_exit): Prefix failure messages with

@@ -128,6 +128,9 @@ octave_procbuf::open (const char *command, int mode)
 
   f = ::fdopen (parent_end, (mode & std::ios::in) ? "r" : "w");
 
+  if (mode & std::ios::out)
+    ::setvbuf (f, 0, _IOLBF, 0);
+
   open_p = true;
 
   next = octave_procbuf_list;

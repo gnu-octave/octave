@@ -65,8 +65,8 @@ CLEANSUBDIRS = $(DISTSUBDIRS) @READLINE_DIR@ @GLOB_DIR@ kpathsea
 
 DIRS_TO_MAKE = $(bindir) $(libdir) $(octincludedir) $(fcnfiledir) \
   $(octfiledir) $(archlibdir) $(localarchlibdir) \
-  `echo $(localfcnfilepath) | awk -F: '{for (i=1; i<=NF; i++) print $i}'` \
-  `echo $(localoctfilepath) | awk -F: '{for (i=1; i<=NF; i++) print $i}'`
+  `echo $(localfcnfilepath) | awk -F: '{for (i=1; i<=NF; i++) print $$i}'` \
+  `echo $(localoctfilepath) | awk -F: '{for (i=1; i<=NF; i++) print $$i}'`
 
 all: octave-bug mkoctfile src
 .PHONY: all

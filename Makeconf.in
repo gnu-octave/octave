@@ -159,6 +159,9 @@ localoctfilepath = @localoctfilepath@
 # should be a colon-separated list of directories.
 fcnfilepath = @fcnfilepath@
 
+# Where Octave will search to find image files.es.
+imagepath = @imagepath@
+
 # The type of computer we are running on.
 target_host_type = @target_host_type@
 

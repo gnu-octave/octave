@@ -1,6 +1,6 @@
 
 #if defined (__GNUC__)
-#define UNUSED __attribute__ ((__unused__))
+#define UNUSED
 #else
 #define UNUSED
 #endif

@@ -35,9 +35,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "mx-base.h"
 #include "str-vec.h"
 
+#include "Cell.h"
 #include "error.h"
 #include "oct-alloc.h"
-#include "oct-obj.h"
 #include "ov-base.h"
 #include "ov-typeinfo.h"
 
@@ -54,12 +54,12 @@ public:
     : octave_base_value () { }
 
   octave_list (const octave_value_list& l)
-    : octave_base_value (), lst (l) { }
+    : octave_base_value (), data (l) { }
 
   octave_list (const Cell& c);
 
   octave_list (const octave_list& l)
-    : octave_base_value (), lst (l.lst) { }
+    : octave_base_value (), data (l.data) { }
 
   ~octave_list (void) { }
 
@@ -85,7 +85,7 @@ public:
 
   void assign (const octave_value_list& idx, const octave_value& rhs);
 
-  dim_vector dims (void) const { return dim_vector (1, lst.length ()); }
+  dim_vector dims (void) const { return dim_vector (1, data.length ()); }
 
   bool is_defined (void) const { return true; }
 
@@ -93,7 +93,7 @@ public:
 
   bool is_list (void) const { return true; }
 
-  octave_value_list list_value (void) const { return lst; }
+  octave_value_list list_value (void) const;
 
   void print (std::ostream& os, bool pr_as_read_syntax = false) const;
 
@@ -104,7 +104,7 @@ public:
 protected:
 
   // The list of Octave values.
-  octave_value_list lst;
+  Cell data;
 
 private:
 

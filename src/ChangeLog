@@ -1,5 +1,23 @@
 2003-11-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* oct-obj.h (octave_value_list): Internal representation is now
+	std::vector instead of Array.
+
+	* ov-list.h, ov-list.cc: Internal representation is now Cell, not
+	octave_value_list.
+	(Flist): Print one-time warning.
+
+	* ov.cc (octave_value::octave_value (const octave_value_list&, bool)):
+	Cope with octave_cs_list not being derived from octave_list.
+
+	* ov-cs-list.cc (octave_cs_list): Handle conversion of Cell array
+	to octave_value_list here.
+
+	* ov-cs-list.h (class octave_cs_list): Derive from
+	octave_base_value, not octave_list.
+
+	* ov-cs-list.h, ov-cs-list.cc: Remove commented-out code.
+
 	* TEMPLATE-INST/Array-tc.cc (resize_fill_value): Use modern
 	specialization syntax.
 

@@ -28,8 +28,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include <string>
+#include <vector>
 
-#include "Array.h"
 #include "oct-alloc.h"
 #include "str-vec.h"
 
@@ -93,13 +93,13 @@ public:
 
   octave_value operator () (int n) const { return elem (n); }
 
-  int length (void) const { return data.length (); }
+  int length (void) const { return data.size (); }
 
   bool empty (void) const { return length () == 0; }
 
   void resize (int n) { data.resize (n); }
 
-  void resize (int n, const octave_value& val) { data.resize_and_fill (n, val); }
+  void resize (int n, const octave_value& val);
 
   octave_value_list& prepend (const octave_value& val);
 
@@ -111,12 +111,6 @@ public:
 
   octave_value_list splice (int offset, int length,
 			    const octave_value_list& lst) const;
-
-  octave_value_list index (idx_vector& i, int resize_ok = 0) const;
-
-  octave_value_list& assign (const idx_vector& i,
-			     const octave_value_list& rhs,
-			     const octave_value& fill_val = octave_value ());
 
   bool all_strings_p (void) const;
 
@@ -130,7 +124,7 @@ private:
 
   static octave_allocator allocator;
 
-  Array<octave_value> data;
+  std::vector<octave_value> data;
 
   // This list of strings can be used to tag each element of data with
   // a name.  By default, it is empty.
@@ -152,24 +146,25 @@ private:
 
   octave_value_list (int n);
 
-  octave_value_list (const Array<octave_value>& d)
-    : data (d) { }
-
-  void maybe_resize (int n)
-    {
-      if (n >= length ())
-	data.resize_and_fill (n + 1, Matrix ());
-    }
+  octave_value_list (const Array<octave_value>& d);
 
   octave_value& elem (int n)
     {
-      maybe_resize (n);
-      return data.elem (n);
+      static Matrix empty_matrix;
+
+      if (n >= length ())
+	resize (n+1, empty_matrix);
+
+      return data[n];
     }
 
   octave_value elem (int n) const
     {
-      return data.elem (n);
+#if defined (BOUNDS_CHECKING)
+      return data.at (n);
+#else
+      return data[n];
+#endif
     }
 };
 

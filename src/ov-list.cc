@@ -44,14 +44,14 @@ DEFINE_OCTAVE_ALLOCATOR (octave_list);
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_list, "list");
 
 octave_list::octave_list (const Cell& c)
-  : octave_base_value (), lst ()
+  : octave_base_value (), data ()
 {
   int n = c.length ();
 
-  lst.resize (n);
+  data.resize (dim_vector (1, n));
 
   for (int i = 0; i < n; i++)
-    lst(i) = c(i);
+    data(i) = c(i);
 }
 
 octave_value
@@ -70,7 +70,7 @@ octave_list::subsref (const std::string& type,
 	  {
 	    idx_vector i = tmp_idx (0).index_vector ();
 
-	    retval = octave_value (octave_value_list (lst.index (i)));
+	    retval = octave_list (data.index (i));
 	  }
 	else
 	  error ("only one index allowed for lists");
@@ -85,7 +85,7 @@ octave_list::subsref (const std::string& type,
 	  {
 	    idx_vector i = tmp_idx (0).index_vector ();
 
-	    octave_value_list tmp = lst.index (i);
+	    Cell tmp = data.index (i);
 
 	    if (tmp.length () == 1)
 	      retval = tmp(0);
@@ -118,7 +118,7 @@ octave_list::do_index_op (const octave_value_list& idx, int resize_ok)
     {
       idx_vector i = idx (0).index_vector ();
 
-      retval = octave_value (octave_value_list (lst.index (i, resize_ok)));
+      retval = octave_list (data.index (i, resize_ok));
     }
   else
     error ("lists may only be indexed by a single scalar");
@@ -211,14 +211,14 @@ octave_list::assign (const octave_value_list& idx, const octave_value& rhs)
 
       if (! error_state)
 	{
-	  int n = lst.length ();
+	  int n = data.length ();
 
 	  if (i > 0)
 	    {
 	      if (Vwarn_resize_on_range_error && i > n)
 		warning ("list index = %d out of range", i);
 
-	      lst(i-1) = rhs;
+	      data(i-1) = rhs;
 	    }
 	  else
 	    error ("list index = %d out of range", i);
@@ -228,6 +228,21 @@ octave_list::assign (const octave_value_list& idx, const octave_value& rhs)
     }
   else
     error ("lists may only be indexed by a single scalar");
+}
+
+octave_value_list
+octave_list::list_value (void) const
+{
+  octave_value_list retval;
+
+  int n = data.length ();
+
+  retval.resize (n);
+  
+  for (int i = 0; i < n; i++)
+    retval(i) = data(i);
+
+  return retval;
 }
 
 void
@@ -241,7 +256,7 @@ octave_list::print_raw (std::ostream& os, bool) const
 {
   unwind_protect::begin_frame ("octave_list_print");
 
-  int n = lst.length ();
+  int n = data.length ();
 
   if (n > 0)
     {
@@ -257,7 +272,7 @@ octave_list::print_raw (std::ostream& os, bool) const
 
 	  buf << "[" << i+1 << "]" << OSSTREAM_ENDS;
 
-	  octave_value val = lst(i);
+	  octave_value val = data(i);
 
 	  val.print_with_name (os, OSSTREAM_STR (buf));
 
@@ -281,7 +296,7 @@ bool
 octave_list::print_name_tag (std::ostream& os, const std::string& name) const
 {
   indent (os);
-  if (lst.length () == 0)
+  if (data.length () == 0)
     os << name << " = ";
   else
     {
@@ -298,6 +313,14 @@ Create a new list with elements given by the arguments @var{a1},\n\
 @var{a2}, @dots{}.\n\
 @end deftypefn")
 {
+  static bool warned = false;
+
+  if (! warned)
+    {
+      warning ("list objects are deprecated; use cell arrays instead");
+      warned = true;
+    }
+
   return octave_value (args);
 }
 

@@ -35,6 +35,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "mx-base.h"
 #include "str-vec.h"
 
+#include "Cell.h"
 #include "error.h"
 #include "oct-alloc.h"
 #include "oct-obj.h"
@@ -46,66 +47,42 @@ class tree_walker;
 // Lists.
 
 class
-octave_cs_list : public octave_list
+octave_cs_list : public octave_base_value
 {
 public:
 
   octave_cs_list (void)
-    : octave_list () { }
+    : lst () { }
 
   octave_cs_list (const octave_value_list& l)
-    : octave_list (l) { }
+    : lst (l) { }
 
-  octave_cs_list (const Cell& c)
-    : octave_list (c) { }
+  octave_cs_list (const Cell& c);
 
   octave_cs_list (const octave_cs_list& l)
-    : octave_list (l) { }
+    : lst (l) { }
 
   ~octave_cs_list (void) { }
 
   octave_value *clone (void) const { return new octave_cs_list (*this); }
   octave_value *empty_clone (void) const { return new octave_cs_list (); }
 
-#if 0
-  octave_value subsref (const std::string& type,
-			const std::list<octave_value_list>& idx);
-
-  octave_value do_index_op (const octave_value_list& idx, int resize_ok);
-
-  octave_value subsasgn (const std::string& type,
-			 const std::list<octave_value_list>& idx,
-			 const octave_value& rhs);
-
-  void assign (const octave_value_list& idx, const octave_value& rhs);
+  dim_vector dims (void) const { return dim_vector (1, lst.length ()); }
 
   bool is_defined (void) const { return true; }
 
   bool is_constant (void) const { return true; }
 
-#endif
-
   bool is_cs_list (void) const { return true; }
-
-#if 0
-
-  bool is_list (void) const { return true; }
 
   octave_value_list list_value (void) const { return lst; }
 
-  void print (std::ostream& os, bool pr_as_read_syntax = false) const;
-
-#endif
-
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
-#if 0
-
-  bool print_name_tag (std::ostream& os, const std::string& name) const;
-
-#endif
-
 private:
+
+  // The list of Octave values.
+  octave_value_list lst;
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 

@@ -37,13 +37,29 @@ octave_value_list::allocator (sizeof (octave_value_list));
 bool
 octave_value_list::valid_scalar_indices (void) const
 {
-  int n = data.length ();
+  int n = length ();
 
   for (int i = 0; i < n; i++)
-    if (! data(i).valid_as_scalar_index ())
+    if (! data[i].valid_as_scalar_index ())
       return false;
 
   return true;
+}
+
+void
+octave_value_list::resize (int n, const octave_value& val)
+{
+  int len = length ();
+
+  if (n > len)
+    {
+      data.resize (n);
+
+      for (int i = len; i < n; i++)
+	data[i] = val;
+    }
+  else if (n < len)
+    data.resize (n);
 }
 
 octave_value_list&
@@ -146,22 +162,6 @@ octave_value_list::splice (int offset, int rep_length,
     retval(k++) = elem (i);
 
   return retval;
-}
-
-octave_value_list
-octave_value_list::index (idx_vector& i, int resize_ok) const
-{
-  return octave_value_list (data.index (i, resize_ok, octave_value ()));
-}
-
-octave_value_list&
-octave_value_list::assign (const idx_vector& i,
-			   const octave_value_list& rhs,
-			   const octave_value& fill_val)
-{
-  data.set_index (i);
-  ::assign (data, rhs.data, fill_val);
-  return *this;
 }
 
 bool

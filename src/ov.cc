@@ -605,8 +605,13 @@ octave_value::octave_value (const octave_fcn_handle& fh)
 }
 
 octave_value::octave_value (const octave_value_list& l, bool is_csl)
-  : rep (is_csl ? new octave_cs_list (l) : new octave_list (l))
+  : rep (0)
 {
+  if (is_csl)
+    rep = new octave_cs_list (l);
+  else
+    rep = new octave_list (l);
+
   rep->count = 1;
 }
 

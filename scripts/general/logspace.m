@@ -40,7 +40,7 @@ function retval = logspace (x1, x2, n)
     npoints = 50;
   elseif (nargin == 3)
     if (length (n) == 1)
-      npoints = n;
+      npoints = fix (n);
     else
       error ("logspace: arguments must be scalars");
     endif  

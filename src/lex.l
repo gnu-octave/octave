@@ -1138,8 +1138,9 @@ grab_help_text (void)
 	      in_comment = 1;
 	    case ' ':
 	    case '\t':
-	    default:
 	      break;
+	    default:
+	      goto done;
 	    }
 	}
 
@@ -1150,6 +1151,8 @@ grab_help_text (void)
 	  break;
 	}
     }
+
+ done:
 
   help_buf[len] =  '\0';
 }

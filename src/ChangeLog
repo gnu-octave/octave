@@ -1,3 +1,9 @@
+2003-03-09  Duncan Temple Lang <duncan@research.bell-labs.com>
+
+	* octave.cc (octave_main): New arg, embedded.
+	* octave.h: Fix decl.
+	* main.c: Pass 0 for embedded here.
+
 2003-03-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* version.h (OCTAVE_VERSION): Now 2.1.46.

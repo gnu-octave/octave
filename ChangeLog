@@ -1,3 +1,8 @@
+2003-03-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: Only complain for g++ earlier than 2.95.
+	Try harder to get version number only.
+
 2003-03-05  Paul Kienzle <pkienzle@users.sf.net>
 
 	* aclocal.m4 (OCTAVE_DYNAMIC_AUTO_ARRAYS): New macro.

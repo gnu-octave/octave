@@ -22,7 +22,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### 02111-1307, USA. 
 
 AC_INIT
-AC_REVISION($Revision: 1.421 $)
+AC_REVISION($Revision: 1.422 $)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -171,10 +171,10 @@ AC_PROG_CXXCPP
 ### Do special things for g++.
 
 gxx_version=`$CXX -v 2>&1 | grep "^.*g.. version" | \
-  sed -e 's/^.*g.. version *//' -e 's/cygnus-//' -e 's/egcs-//'`
+  sed -e 's/^.*g.. version *//' -e 's/cygnus-//' -e 's/egcs-//' -e 's/ .*//'`
 
 case "$gxx_version" in
-  1.* | 2.[[0123456789]].* | 3.0.*)
+  1.* | 2.[[012345678]].*)
     AC_MSG_ERROR([g++ version $gxx_version will probably fail to compile Octave])
   ;;
 esac

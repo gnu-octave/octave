@@ -371,7 +371,7 @@ maximum_braindamage (void)
 // You guessed it.
 
 int
-octave_main (int argc, char **argv)
+octave_main (int argc, char **argv, int embedded)
 {
   octave_env::set_program_name (argv[0]);
 
@@ -400,7 +400,8 @@ octave_main (int argc, char **argv)
 
   initialize_pathsearch ();
 
-  install_signal_handlers ();
+  if (! embedded)
+    install_signal_handlers ();
 
   initialize_file_io ();
 
@@ -587,11 +588,13 @@ octave_main (int argc, char **argv)
       // Is input coming from a terminal?  If so, we are probably
       // interactive.
 
-      interactive = (isatty (fileno (stdin)) && isatty (fileno (stdout)));
+      interactive = (! embedded
+		     && isatty (fileno (stdin)) && isatty (fileno (stdout)));
 
       intern_argv (argc, argv);
 
-      switch_to_buffer (create_buffer (get_input_from_stdin ()));
+      if (! embedded)
+	switch_to_buffer (create_buffer (get_input_from_stdin ()));
     }
 
   // Force input to be echoed if not really interactive, but the user
@@ -608,6 +611,9 @@ octave_main (int argc, char **argv)
 
   if (! interactive)
     line_editing = false;
+
+  if (embedded)
+    return 1;
 
   int retval = main_loop (fun_to_call);
 

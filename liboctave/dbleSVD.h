@@ -43,6 +43,7 @@ public:
     {
       std,
       economy,
+      sigma_only,
     };
 
   SVD (void) { }

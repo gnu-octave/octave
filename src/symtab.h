@@ -281,6 +281,9 @@ private:
 			  | symbol_def::MAPPER_FUNCTION \
 			  | symbol_def::BUILTIN_VARIABLE)
 
+#define SYMTAB_VARIABLES (symbol_def::USER_VARIABLE \
+			  | symbol_def::BUILTIN_VARIABLE)
+
 class
 symbol_table
 {

@@ -26,7 +26,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <string>
 
-class ostream;
+#include <ostream>
 
 #include <octave/lo-mappers.h>
 #include <octave/lo-utils.h>
@@ -113,7 +113,7 @@ public:
   ComplexMatrix complex_matrix_value (bool = false) const
     { return  ComplexMatrix (1, 1, Complex (scalar)); }
 
-  octave_value not (void) const { return octave_value ((double) ! scalar); }
+  octave_value gnot (void) const { return octave_value ((double) ! scalar); }
 
   octave_value uminus (void) const { return new octave_integer (- scalar); }
 
@@ -125,7 +125,7 @@ public:
 
   void decrement (void) { --scalar; }
 
-  void print (ostream& os, bool pr_as_read_syntax = false) const;
+  void print (std::ostream& os, bool pr_as_read_syntax = false) const;
 
 private:
 
@@ -137,9 +137,10 @@ private:
 };
 
 void
-octave_integer::print (ostream& os, bool pr_as_read_syntax) const
+octave_integer::print (std::ostream& os, bool pr_as_read_syntax) const
 {
-  octave_print_internal (os, scalar, pr_as_read_syntax);
+  os << scalar;
+  // octave_print_internal (os, scalar, pr_as_read_syntax);
 }
 
 #ifdef DEFUNOP_OP
@@ -153,7 +154,7 @@ octave_integer::print (ostream& os, bool pr_as_read_syntax) const
     return octave_value (new octave_integer (op v.t ## _value ())); \
   }
 
-DEFUNOP_OP (not, integer, !)
+DEFUNOP_OP (gnot, integer, !)
 DEFUNOP_OP (uminus, integer, -)
 DEFUNOP_OP (transpose, integer, /* no-op */)
 DEFUNOP_OP (hermitian, integer, /* no-op */)
@@ -262,11 +263,12 @@ Creates an integer variable from VAL.")
   if (! type_loaded)
     {
       octave_integer::register_type ();
+      mlock ("make_int");
 
-      cerr << "installing integer type at type-id = "
+      octave_stdout << "installing integer type at type-id = "
 	   << octave_integer::static_type_id () << "\n";
 
-      INSTALL_UNOP (op_not, octave_integer, not);
+      INSTALL_UNOP (op_not, octave_integer, gnot);
       INSTALL_UNOP (op_uminus, octave_integer, uminus);
       INSTALL_UNOP (op_transpose, octave_integer, transpose);
       INSTALL_UNOP (op_hermitian, octave_integer, hermitian);

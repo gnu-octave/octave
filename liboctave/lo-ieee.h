@@ -74,7 +74,7 @@ extern double lo_ieee_nan_value (void);
 #define lo_ieee_signbit(x) signbit (x)
 #elif defined (HAVE_SIGNBIT)
 #if defined (__MINGW32__)
-extern "C" int signbit (double);
+extern int signbit (double);
 #endif
 #define lo_ieee_signbit(x) (x < 0 || signbit (x))
 #elif defined (copysign)

@@ -1,3 +1,9 @@
+2003-06-21  Paul Kienzle <pkienzle@users.sf.net>
+
+	* kpse-xfns.h (NAME_BEGINS_WITH_DEVICE): Arg is std::string, not char*.
+
+	* lo-ieee.h (signbit): Eliminate redundant extern "C" decl.
+
 2003-06-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* dMatrix.cc (any_element_is_negative): If new optional arg

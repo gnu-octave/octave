@@ -55,6 +55,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-mapper.h"
 #include "ov-usr-fcn.h"
 #include "ov-fcn-handle.h"
+#include "ov-re-nd-array.h"
 #include "ov-typeinfo.h"
 
 #include "defun.h"
@@ -1734,6 +1735,7 @@ install_types (void)
   octave_bool_matrix::register_type ();
   octave_char_matrix::register_type ();
   octave_char_matrix_str::register_type ();
+  octave_re_nd_array::register_type ();
   octave_struct::register_type ();
   octave_file::register_type ();
   octave_list::register_type ();

@@ -27,6 +27,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 struct user_preferences
 {
   int automatic_replot;
+  int beep_on_error;
   int define_all_return_values;
   int do_fortran_indexing;
   int empty_list_elements_ok;
@@ -74,6 +75,7 @@ extern user_preferences user_pref;
 extern void init_user_prefs (void);
 
 extern int automatic_replot (void);
+extern int beep_on_error (void);
 extern int define_all_return_values (void);
 extern int do_fortran_indexing (void);
 extern int empty_list_elements_ok (void);

@@ -1609,6 +1609,10 @@ install_builtin_variables (void)
 	  0, automatic_replot,
     "if true, auto-insert a replot command when a plot changes");
 
+  DEFVAR ("beep_on_error", SBV_beep_on_error, "false", 0,
+	  beep_on_error,
+    "if true, beep before printing error messages");
+
   DEFVAR ("default_return_value", SBV_default_return_value, Matrix (),
 	  0, 0,
     "the default for value for unitialized variables returned from\n\

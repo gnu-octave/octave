@@ -45,6 +45,7 @@ void
 init_user_prefs (void)
 {
   user_pref.automatic_replot = 0;
+  user_pref.beep_on_error = 0;
   user_pref.define_all_return_values = 0;
   user_pref.do_fortran_indexing = 0;
   user_pref.empty_list_elements_ok = 0;
@@ -125,6 +126,17 @@ int
 automatic_replot (void)
 {
   user_pref.automatic_replot = check_str_pref ("automatic_replot");
+
+  return 0;
+}
+
+
+// Should we beep obnoxiously before printing error messages?
+
+int
+beep_on_error (void)
+{
+  user_pref.beep_on_error = check_str_pref ("beep_on_error");
 
   return 0;
 }

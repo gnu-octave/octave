@@ -34,6 +34,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-obj.h"
 #include "pager.h"
 #include "tree-const.h"
+#include "user-prefs.h"
 #include "utils.h"
 
 // Current error state.
@@ -47,6 +48,10 @@ verror (const char *name, const char *fmt, va_list args)
 {
   flush_output_to_pager ();
 
+  int to_beep_or_not_to_beep = user_pref.beep_on_error && ! error_state;
+
+  if (to_beep_or_not_to_beep)
+    cerr << "\a";
   if (name)
     cerr << name << ": ";
   cerr.vform (fmt, args);
@@ -54,6 +59,8 @@ verror (const char *name, const char *fmt, va_list args)
 
   ostrstream output_buf;
 
+  if (to_beep_or_not_to_beep)
+    output_buf << "\a";
   if (name)
     output_buf << name << ": ";
   output_buf.vform (fmt, args);
@@ -75,9 +82,6 @@ error_1 (const char *name, const char *fmt, va_list args)
 {
   if (error_state != -2)
     {
-      if (! error_state)
-	error_state = 1;
-
       if (! suppress_octave_error_messages)
 	{
 	  if (fmt)
@@ -87,8 +91,6 @@ error_1 (const char *name, const char *fmt, va_list args)
 		  int len = strlen (fmt);
 		  if (fmt[len - 1] == '\n')
 		    {
-		      error_state = -2;
-
 		      if (len > 1)
 			{
 			  char *tmp_fmt = strsave (fmt);
@@ -96,6 +98,8 @@ error_1 (const char *name, const char *fmt, va_list args)
 			  verror (name, tmp_fmt, args);
 			  delete [] tmp_fmt;
 			}
+
+		      error_state = -2;
 		    }
 		  else
 		    verror (name, fmt, args);
@@ -104,6 +108,9 @@ error_1 (const char *name, const char *fmt, va_list args)
 	  else
 	    panic ("error_1: invalid format");
 	}
+
+      if (! error_state)
+	error_state = 1;
     }
 }
 

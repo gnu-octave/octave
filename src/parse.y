@@ -3060,6 +3060,27 @@ looks_like_octave_copyright (const std::string& s)
   return retval;
 }
 
+static int
+text_getc (FILE *f)
+{
+  int c = getc (f);
+
+  // Convert CRLF into just LF.
+
+  if (c == '\r')
+    {
+      c = getc (f);
+
+      if (c != '\n')
+	{
+	  ungetc (c, f);
+	  c = '\r';
+	}
+    }
+
+  return c;
+}
+
 // Eat whitespace and comments from FFILE, returning the text of the
 // comments read if it doesn't look like a copyright notice.  If
 // IN_PARTS, consider each block of comments separately; otherwise,
@@ -3095,7 +3116,7 @@ gobble_leading_white_space (FILE *ffile, bool in_parts,
 
   int c;
 
-  while ((c = getc (ffile)) != EOF)
+  while ((c = text_getc (ffile)) != EOF)
     {
       if (update_pos)
 	current_input_column++;
@@ -3134,7 +3155,7 @@ gobble_leading_white_space (FILE *ffile, bool in_parts,
 
 	      if (in_parts)
 		{
-		  if ((c = getc (ffile)) != EOF)
+		  if ((c = text_getc (ffile)) != EOF)
 		    {
 		      if (update_pos)
 			current_input_column--;
@@ -3172,26 +3193,6 @@ gobble_leading_white_space (FILE *ffile, bool in_parts,
 		  current_input_column = 0;
 		}
 	      continue;
-
-	    case '\r':
-	      c = getc (ffile);
-	      if (update_pos)
-		current_input_column++;
-	      if (c == EOF)
-		goto done;
-	      else if (c == '\n')
-		{
-		  if (first_comments_seen)
-		    have_help_text = true;
-		  if (update_pos)
-		    {
-		      input_line_number++;
-		      current_input_column = 0;
-		    } 
-		  continue;
-		}
-
-	      // Fall through...
 
 	    default:
 	      if (update_pos)

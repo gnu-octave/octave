@@ -2675,7 +2675,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
     name[len] = '\0';
     retval = name;
-  }  
+  }
 
   if (dimension_length != 8)
     {
@@ -2773,19 +2773,25 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	    goto data_read_error;
 	  }
 
-	octave_value_list field_elts (n, Matrix ());
+	Cell field_elts (n_fields, n);
 
 	// fields subelements
-	for (i = 0; i < n_fields; i++)
+	for (int j = 0; j < n; j++)
 	  {
-	    for (int j = 0; j < n; j++)
+	    for (i = 0; i < n_fields; i++)
 	      {
 		octave_value fieldtc;
 		read_mat5_binary_element (is, filename, swap, global, fieldtc);
-		field_elts(j) = fieldtc;
+		field_elts(i,j) = fieldtc;
 	      }
+	  }
 
-	    m.assign (elname + i*field_name_length, field_elts);
+	for (int i = n_fields-1; i >= 0; i--)
+	  {
+	    const char *key = elname + i*field_name_length;
+
+	    for (int j = n-1; j >=0; j--)
+	      m[key](j) = field_elts(i,j);
 	  }
 
 	tc = m;

@@ -1,5 +1,8 @@
 2003-07-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* load-save.cc (read_mat5_binary_element): Correctly read struct
+	arrays.
+
 	* pt-misc.cc (tree_parameter_list::initialize_undefined_elements):
 	New args, warnfor and nargout.  Change all callers.
 	(symbols_of_pt_misc): New function.

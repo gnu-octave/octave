@@ -130,16 +130,16 @@ public:
 
   bool valid_as_scalar_index (void) const
     {
+      double b = range.base ();
       return (range.nelem () == 1
-	      && ! xisnan (range.base ())
-	      && NINT (range.base ()) == 1);
+	      && ! xisnan (b) && D_NINT (b) == b && NINT (b) == 1);
     }
 
   bool valid_as_zero_index (void) const
     {
+      double b = range.base ();
       return (range.nelem () == 1
-	      && ! xisnan (range.base ())
-	      && NINT (range.base ()) == 0);
+	      && ! xisnan (b) && D_NINT (b) == b && NINT (b) == 0);
     }
 
   bool is_numeric_type (void) const { return true; }

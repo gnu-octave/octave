@@ -1,3 +1,11 @@
+2004-10-01  John W. Eaton  <jwe@octave.org>
+
+	* ov-range.h (octave_range::valid_as_scalar_index): Ensure int value.
+	(octave_range::valid_as_zero_index): Likewise.
+
+	* ov-scalar.h (octave_scalar::valid_as_scalar_index): Ensure int value.
+	(octave_scalar::valid_as_zero_index): Likewise.
+
 2004-09-24  John W. Eaton  <jwe@octave.org>
 
 	* version.h (OCTAVE_VERSION): Now 2.1.60.

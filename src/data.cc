@@ -688,7 +688,13 @@ DEFUN (sum, args, ,
 }
 
 DEFUN (sumsq, args, ,
-  "sumsq (X): sum of squares of elements")
+  "sumsq (X): sum of squares of elements.\n\
+\n\
+This function is equivalent to computing\n\
+\n\
+  sum (X .* conj (X))\n\
+\n\
+but it uses less memory and avoids calling conj if X is real.")
 {
   octave_value_list retval;
 

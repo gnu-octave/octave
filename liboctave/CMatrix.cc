@@ -2366,7 +2366,7 @@ ComplexMatrix::sumsq (void) const
 	  for (int j = 0; j < nc; j++)
 	    {
 	      Complex d = elem (0, j);
-	      retval.elem (0, 0) += d * d;
+	      retval.elem (0, 0) += d * conj (d);
 	    }
 	}
       else if (nc == 1)
@@ -2376,7 +2376,7 @@ ComplexMatrix::sumsq (void) const
 	  for (int i = 0; i < nr; i++)
 	    {
 	      Complex d = elem (i, 0);
-	      retval.elem (0, 0) += d * d;
+	      retval.elem (0, 0) += d * conj (d);
 	    }
 	}
       else
@@ -2388,7 +2388,7 @@ ComplexMatrix::sumsq (void) const
 	      for (int i = 0; i < nr; i++)
 		{
 		  Complex d = elem (i, j);
-		  retval.elem (0, j) += d * d;
+		  retval.elem (0, j) += d * conj (d);
 		}
 	    }
 	}

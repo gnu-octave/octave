@@ -2873,7 +2873,7 @@ script file but without requiring the file to be named `FILE.m'.")
 	{
 	  file = file_ops::tilde_expand (file);
 
-	  parse_and_execute (file, false, "source");
+	  parse_fcn_file (true, file);
 
 	  if (error_state)
 	    error ("source: error sourcing file `%s'", file.c_str ());

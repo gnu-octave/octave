@@ -1,3 +1,7 @@
+Thu Nov 13 21:57:16 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* CMatrix.cc (sumsq): Compute equivalent of sum (x .* conj (x))
+
 Thu Oct  2 17:13:02 1997  Mumit Khan  <khan@dhaka.xraylith.wisc.edu>
 
 	* CRowVector.cc (linspace): Removed attempt for implicit conversion 

@@ -1,3 +1,9 @@
+Thu Nov 13 16:20:40 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* data.cc (sumsq): Fix doc string.
+
+	* parse.y (Fsource): Call parse_fcn_file, not parse_and_execute.
+
 Tue Oct  7 16:51:01 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* defun-int.h (DEFINE_FUN_INSTALLER_FUN): Set installed to true

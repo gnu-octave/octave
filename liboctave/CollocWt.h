@@ -160,7 +160,7 @@ public:
 
   Matrix second (void) { if (!initialized) init (); return B; }
 
-  friend ostream& operator << (ostream&, const CollocWt&);
+  friend std::ostream& operator << (std::ostream&, const CollocWt&);
 
 protected:
 

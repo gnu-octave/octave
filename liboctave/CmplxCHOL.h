@@ -61,7 +61,7 @@ public:
       return chol_mat;
     }
 
-  friend ostream& operator << (ostream& os, const ComplexCHOL& a);
+  friend std::ostream& operator << (std::ostream& os, const ComplexCHOL& a);
 
 private:
 

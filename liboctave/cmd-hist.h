@@ -40,9 +40,9 @@ public:
 
   virtual ~command_history (void) { }
 
-  static void set_file (const string&);
+  static void set_file (const std::string&);
 
-  static string file (void);
+  static std::string file (void);
 
   static void set_size (int);
 
@@ -52,7 +52,7 @@ public:
 
   static bool ignoring_entries (void);
 
-  static void add (const string&);
+  static void add (const std::string&);
 
   static void remove (int);
 
@@ -81,26 +81,26 @@ public:
 
   static void read (bool = true);
 
-  static void read (const string&, bool = true);
+  static void read (const std::string&, bool = true);
 
   static void read_range (int = -1, int = -1, bool = true);
 
-  static void read_range (const string&, int = -1, int = -1,
+  static void read_range (const std::string&, int = -1, int = -1,
 			  bool = true);
 
-  static void write (const string& = string ());
+  static void write (const std::string& = std::string ());
 
-  static void append (const string& = string ());
+  static void append (const std::string& = std::string ());
 
-  static void truncate_file (const string& = string (), int = -1);
+  static void truncate_file (const std::string& = std::string (), int = -1);
 
   static string_vector list (int = -1, bool = false);
 
-  static string get_entry (int);
+  static std::string get_entry (int);
 
-  static void replace_entry (int, const string&);
+  static void replace_entry (int, const std::string&);
 
-  static void clean_up_and_save (const string& = string (), int = -1);
+  static void clean_up_and_save (const std::string& = std::string (), int = -1);
 
 private:
 
@@ -123,9 +123,9 @@ protected:
   // class from command_history, overload these functions as
   // necessary, and make instance point to the new class.
 
-  virtual void do_set_file (const string&);
+  virtual void do_set_file (const std::string&);
 
-  virtual string do_file (void);
+  virtual std::string do_file (void);
 
   virtual void do_set_size (int);
 
@@ -135,7 +135,7 @@ protected:
 
   virtual bool do_ignoring_entries (void);
 
-  virtual void do_add (const string&);
+  virtual void do_add (const std::string&);
 
   virtual void do_remove (int);
 
@@ -161,29 +161,29 @@ protected:
 
   virtual void do_read (bool);
 
-  virtual void do_read (const string&, bool);
+  virtual void do_read (const std::string&, bool);
 
   virtual void do_read_range (int, int, bool);
 
-  virtual void do_read_range (const string&, int, int, bool);
+  virtual void do_read_range (const std::string&, int, int, bool);
 
-  virtual void do_write (const string&);
+  virtual void do_write (const std::string&);
 
-  virtual void do_append (const string&);
+  virtual void do_append (const std::string&);
 
-  virtual void do_truncate_file (const string&, int);
+  virtual void do_truncate_file (const std::string&, int);
 
   virtual string_vector do_list (int, bool);
 
-  virtual string do_get_entry (int);
+  virtual std::string do_get_entry (int);
 
-  virtual void do_replace_entry (int, const string&);
+  virtual void do_replace_entry (int, const std::string&);
 
-  virtual void do_clean_up_and_save (const string&, int);
+  virtual void do_clean_up_and_save (const std::string&, int);
 
   void error (int);
 
-  void error (const string&);
+  void error (const std::string&);
 
   // TRUE means we are ignoring new additions.
   bool ignoring_additions;
@@ -195,7 +195,7 @@ protected:
   int lines_this_session;
 
   // The default history file.
-  string xfile;
+  std::string xfile;
 
   // The number of lines of history to save.
   int xsize;

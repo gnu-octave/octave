@@ -84,8 +84,8 @@ Bounds::set_upper_bounds (const ColumnVector u)
   return *this;
 }
 
-ostream&
-operator << (ostream& os, const Bounds& b)
+std::ostream&
+operator << (std::ostream& os, const Bounds& b)
 {
   for (int i = 0; i < b.size (); i++)
     os << b.lower_bound (i) << " " << b.upper_bound (i) << "\n";

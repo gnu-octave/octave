@@ -26,6 +26,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <cstring>
 
+#include <iostream>
+#include <strstream>
 #include <string>
 
 #include "cmd-edit.h"
@@ -66,7 +68,7 @@ public:
 
   ~gnu_history (void) { }
 
-  void do_add (const string&);
+  void do_add (const std::string&);
 
   void do_remove (int);
 
@@ -90,23 +92,23 @@ public:
 
   void do_goto_mark (void);
 
-  void do_read (const string&, bool);
+  void do_read (const std::string&, bool);
 
-  void do_read_range (const string&, int, int, bool);
+  void do_read_range (const std::string&, int, int, bool);
 
-  void do_write (const string&);
+  void do_write (const std::string&);
 
-  void do_append (const string&);
+  void do_append (const std::string&);
 
-  void do_truncate_file (const string&, int);
+  void do_truncate_file (const std::string&, int);
 
   string_vector do_list (int, bool);
 
-  string do_get_entry (int);
+  std::string do_get_entry (int);
 
-  void do_replace_entry (int, const string&);
+  void do_replace_entry (int, const std::string&);
 
-  void do_clean_up_and_save (const string&, int);
+  void do_clean_up_and_save (const std::string&, int);
 
 private:
 
@@ -114,7 +116,7 @@ private:
 };
 
 void
-gnu_history::do_add (const string& s)
+gnu_history::do_add (const std::string& s)
 {
   if (! do_ignoring_entries ())
     {
@@ -223,7 +225,7 @@ gnu_history::do_goto_mark (void)
 }
 
 void
-gnu_history::do_read (const string& f, bool must_exist)
+gnu_history::do_read (const std::string& f, bool must_exist)
 {
   if (! f.empty ())
     {
@@ -243,7 +245,7 @@ gnu_history::do_read (const string& f, bool must_exist)
 }
 
 void
-gnu_history::do_read_range (const string& f, int from, int to,
+gnu_history::do_read_range (const std::string& f, int from, int to,
 			    bool must_exist)
 {
   if (from < 0)
@@ -267,9 +269,9 @@ gnu_history::do_read_range (const string& f, int from, int to,
 }
 
 void
-gnu_history::do_write (const string& f_arg)
+gnu_history::do_write (const std::string& f_arg)
 {
-  string f = f_arg;
+  std::string f = f_arg;
 
   if (f.empty ())
     f = xfile;
@@ -286,7 +288,7 @@ gnu_history::do_write (const string& f_arg)
 }
 
 void
-gnu_history::do_append (const string& f_arg)
+gnu_history::do_append (const std::string& f_arg)
 {
   if (lines_this_session)
     {
@@ -294,7 +296,7 @@ gnu_history::do_append (const string& f_arg)
 	{
 	  // Create file if it doesn't already exist.
 
-	  string f = f_arg;
+	  std::string f = f_arg;
 
 	  if (f.empty ())
 	    f = xfile;
@@ -327,9 +329,9 @@ gnu_history::do_append (const string& f_arg)
 }
 
 void
-gnu_history::do_truncate_file (const string& f_arg, int n)
+gnu_history::do_truncate_file (const std::string& f_arg, int n)
 {
-  string f = f_arg;
+  std::string f = f_arg;
 
   if (f.empty ())
     f = xfile;
@@ -362,13 +364,13 @@ gnu_history::do_list (int limit, bool number_lines)
 	  int k = 0;
 	  for (int i = beg; i < end; i++)
 	    {
-	      ostrstream output_buf;
+	      std::ostrstream output_buf;
 
 	      if (number_lines)
 		output_buf.form ("%5d%c", i + do_base (),
 				 hlist[i]->data ? '*' : ' '); 
 
-	      output_buf << hlist[i]->line << ends;
+	      output_buf << hlist[i]->line << std::ends;
 
 	      const char *tmp = output_buf.str ();
 
@@ -382,10 +384,10 @@ gnu_history::do_list (int limit, bool number_lines)
   return retval;
 }
 
-string
+std::string
 gnu_history::do_get_entry (int n)
 {
-  string retval;
+  std::string retval;
 
   HIST_ENTRY *entry = ::history_get (do_base () + n);
 
@@ -396,7 +398,7 @@ gnu_history::do_get_entry (int n)
 }
 
 void
-gnu_history::do_replace_entry (int which, const string& line)
+gnu_history::do_replace_entry (int which, const std::string& line)
 {
   HIST_ENTRY *discard = ::replace_history_entry (which, line.c_str (), 0);
 
@@ -410,9 +412,9 @@ gnu_history::do_replace_entry (int which, const string& line)
 }
 
 void
-gnu_history::do_clean_up_and_save (const string& f_arg, int n)
+gnu_history::do_clean_up_and_save (const std::string& f_arg, int n)
 {
-  string f = f_arg;
+  std::string f = f_arg;
 
   if (f.empty ())
     f = xfile;
@@ -462,17 +464,17 @@ command_history::make_command_history (void)
 }
 
 void
-command_history::set_file (const string& f)
+command_history::set_file (const std::string& f)
 {
   if (instance_ok ())
     instance->do_set_file (f);
 }
 
-string
+std::string
 command_history::file (void)
 {
   return (instance_ok ())
-    ? instance->do_file () : string ();
+    ? instance->do_file () : std::string ();
 }
 
 void
@@ -504,7 +506,7 @@ command_history::ignoring_entries (void)
 }
 
 void
-command_history::add (const string& s)
+command_history::add (const std::string& s)
 {
   if (instance_ok ())
     instance->do_add (s);
@@ -597,7 +599,7 @@ command_history::read (bool must_exist)
 }
 
 void
-command_history::read (const string& f, bool must_exist)
+command_history::read (const std::string& f, bool must_exist)
 {
   if (instance_ok ())
     instance->do_read (f, must_exist);
@@ -611,7 +613,7 @@ command_history::read_range (int from, int to, bool must_exist)
 }
 
 void
-command_history::read_range (const string& f, int from, int to,
+command_history::read_range (const std::string& f, int from, int to,
 			     bool must_exist) 
 {
   if (instance_ok ())
@@ -619,21 +621,21 @@ command_history::read_range (const string& f, int from, int to,
 }
 
 void
-command_history::write (const string& f)
+command_history::write (const std::string& f)
 {
   if (instance_ok ())
     instance->do_write (f);
 }
 
 void
-command_history::append (const string& f)
+command_history::append (const std::string& f)
 {
   if (instance_ok ())
     instance->do_append (f);
 }
 
 void
-command_history::truncate_file (const string& f, int n)
+command_history::truncate_file (const std::string& f, int n)
 {
   if (instance_ok ())
     instance->do_truncate_file (f, n);
@@ -646,34 +648,34 @@ command_history::list (int limit, bool number_lines)
     ? instance->do_list (limit, number_lines) : string_vector ();
 }
 
-string
+std::string
 command_history::get_entry (int n)
 {
   return (instance_ok ())
-    ? instance->do_get_entry (n) : string ();
+    ? instance->do_get_entry (n) : std::string ();
 }
 
 void
-command_history::replace_entry (int which, const string& line)
+command_history::replace_entry (int which, const std::string& line)
 {
   if (instance_ok ())
     instance->do_replace_entry (which, line);
 }
 
 void
-command_history::clean_up_and_save (const string& f, int n)
+command_history::clean_up_and_save (const std::string& f, int n)
 {
   if (instance_ok ())
     instance->do_clean_up_and_save (f, n);
 }
 
 void
-command_history::do_set_file (const string& f)
+command_history::do_set_file (const std::string& f)
 {
   xfile = f;
 }
 
-string
+std::string
 command_history::do_file (void)
 {
   return xfile;
@@ -704,7 +706,7 @@ command_history::do_ignoring_entries (void)
 }
 
 void
-command_history::do_add (const string&)
+command_history::do_add (const std::string&)
 {
 }
 
@@ -777,7 +779,7 @@ command_history::do_read (bool must_exist)
 }
 
 void
-command_history::do_read (const string& f, bool)
+command_history::do_read (const std::string& f, bool)
 {
   if (f.empty ())
     error ("command_history::read: missing file name");
@@ -790,16 +792,16 @@ command_history::do_read_range (int from, int to, bool must_exist)
 }
 
 void
-command_history::do_read_range (const string& f, int, int, bool)
+command_history::do_read_range (const std::string& f, int, int, bool)
 {
   if (f.empty ())
     error ("command_history::read_range: missing file name");
 }
 
 void
-command_history::do_write (const string& f_arg)
+command_history::do_write (const std::string& f_arg)
 {
-  string f = f_arg;
+  std::string f = f_arg;
 
   if (f.empty ())
     f = xfile;
@@ -809,7 +811,7 @@ command_history::do_write (const string& f_arg)
 }
 
 void
-command_history::do_append (const string& f_arg)
+command_history::do_append (const std::string& f_arg)
 {
   if (lines_this_session)
     {
@@ -817,7 +819,7 @@ command_history::do_append (const string& f_arg)
 	{
 	  // Create file if it doesn't already exist.
 
-	  string f = f_arg;
+	  std::string f = f_arg;
 
 	  if (f.empty ())
 	    f = xfile;
@@ -829,9 +831,9 @@ command_history::do_append (const string& f_arg)
 }
 
 void
-command_history::do_truncate_file (const string& f_arg, int)
+command_history::do_truncate_file (const std::string& f_arg, int)
 {
-  string f = f_arg;
+  std::string f = f_arg;
 
   if (f.empty ())
     f = xfile;
@@ -846,21 +848,21 @@ command_history::do_list (int, bool)
   return string_vector ();
 }
 
-string
+std::string
 command_history::do_get_entry (int)
 {
-  return string ();
+  return std::string ();
 }
 
 void
-command_history::do_replace_entry (int, const string&)
+command_history::do_replace_entry (int, const std::string&)
 {
 }
 
 void
-command_history::do_clean_up_and_save (const string& f_arg, int)
+command_history::do_clean_up_and_save (const std::string& f_arg, int)
 {
-  string f = f_arg;
+  std::string f = f_arg;
 
   if (f.empty ())
     f = xfile;
@@ -876,7 +878,7 @@ command_history::error (int err_num)
 }
 
 void
-command_history::error (const string& s)
+command_history::error (const std::string& s)
 {
   (*current_liboctave_error_handler) ("%s", s.c_str ());
 }

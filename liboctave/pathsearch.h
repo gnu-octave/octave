@@ -32,7 +32,8 @@ dir_path
 {
 public:
 
-  dir_path (const string& s = string (), const string& d = string ())
+  dir_path (const std::string& s = std::string (),
+	    const std::string& d = std::string ())
     : p_orig (s), p_default (d), initialized (false)
     {
       if (! p_orig.empty ())
@@ -56,7 +57,7 @@ public:
 
   ~dir_path (void) { }
 
-  void set (const string& s)
+  void set (const std::string& s)
     {
       initialized = false;
       p_orig = s;
@@ -66,12 +67,12 @@ public:
   string_vector elements (void);
   string_vector all_directories (void);
 
-  string find_first (const string&);
-  string find (const string& nm) { return find_first (nm); }
+  std::string find_first (const std::string&);
+  std::string find (const std::string& nm) { return find_first (nm); }
 
-  string_vector find_all (const string&);
+  string_vector find_all (const std::string&);
 
-  static void set_program_name (const string&);
+  static void set_program_name (const std::string&);
 
   void rehash (void)
     {
@@ -82,18 +83,18 @@ public:
 private:
 
   // The colon separated list that we were given.
-  string p_orig;
+  std::string p_orig;
 
   // The default path.  If specified, replaces leading, trailing, or
   // doubled colons in p_orig.
-  string p_default;
+  std::string p_default;
 
   // TRUE means we've unpacked p.
   bool initialized;
 
   // A version of the colon separate list on which we have performed
   // tilde, variable, and possibly default path expansion.
-  string p;
+  std::string p;
 
   // The elements of the list.
   string_vector pv;

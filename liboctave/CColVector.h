@@ -182,8 +182,8 @@ public:
 
   // i/o
 
-  friend ostream& operator << (ostream& os, const ComplexColumnVector& a);
-  friend istream& operator >> (istream& is, ComplexColumnVector& a);
+  friend std::ostream& operator << (std::ostream& os, const ComplexColumnVector& a);
+  friend std::istream& operator >> (std::istream& is, ComplexColumnVector& a);
 
 private:
 

@@ -149,8 +149,8 @@ public:
 
   // i/o
 
-  friend ostream& operator << (ostream& os, const ComplexRowVector& a);
-  friend istream& operator >> (istream& is, ComplexRowVector& a);
+  friend std::ostream& operator << (std::ostream& os, const ComplexRowVector& a);
+  friend std::istream& operator >> (std::istream& is, ComplexRowVector& a);
 
 private:
 

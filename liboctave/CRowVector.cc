@@ -712,8 +712,8 @@ ComplexRowVector::max (void) const
 
 // i/o
 
-ostream&
-operator << (ostream& os, const ComplexRowVector& a)
+std::ostream&
+operator << (std::ostream& os, const ComplexRowVector& a)
 {
 //  int field_width = os.precision () + 7;
   for (int i = 0; i < a.length (); i++)
@@ -721,13 +721,13 @@ operator << (ostream& os, const ComplexRowVector& a)
   return os;
 }
 
-istream&
-operator >> (istream& is, ComplexRowVector& a)
+std::istream&
+operator >> (std::istream& is, ComplexRowVector& a)
 {
   int len = a.length();
 
   if (len < 1)
-    is.clear (ios::badbit);
+    is.clear (std::ios::badbit);
   else
     {
       Complex tmp;

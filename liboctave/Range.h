@@ -69,8 +69,8 @@ Range
   void set_limit (double l) { rng_limit = l; }
   void set_inc (double i) { rng_inc = i;   }
 
-  friend ostream& operator << (ostream& os, const Range& r);
-  friend istream& operator >> (istream& is, Range& r);
+  friend std::ostream& operator << (std::ostream& os, const Range& r);
+  friend std::istream& operator >> (std::istream& is, Range& r);
 
   void print_range (void);
 

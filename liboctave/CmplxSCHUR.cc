@@ -56,7 +56,7 @@ select_dig (const Complex& a)
 }
 
 int
-ComplexSCHUR::init (const ComplexMatrix& a, const string& ord)
+ComplexSCHUR::init (const ComplexMatrix& a, const std::string& ord)
 {
   int a_nr = a.rows ();
   int a_nc = a.cols ();

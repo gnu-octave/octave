@@ -90,11 +90,6 @@ public:
   DiagMatrix& operator += (const DiagMatrix& a);
   DiagMatrix& operator -= (const DiagMatrix& a);
 
-  // diagonal matrix by diagonal matrix -> diagonal matrix operations
-
-  friend DiagMatrix operator * (const DiagMatrix& a,
-				const DiagMatrix& b);
-
   // other operations
 
   ColumnVector diag (void) const;
@@ -102,12 +97,17 @@ public:
 
   // i/o
 
-  friend ostream& operator << (ostream& os, const DiagMatrix& a);
+  friend std::ostream& operator << (std::ostream& os, const DiagMatrix& a);
 
 private:
 
   DiagMatrix (double *d, int nr, int nc) : MDiagArray2<double> (d, nr, nc) { }
 };
+
+// diagonal matrix by diagonal matrix -> diagonal matrix operations
+
+DiagMatrix
+operator * (const DiagMatrix& a, const DiagMatrix& b);
 
 #endif
 

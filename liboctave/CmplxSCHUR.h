@@ -40,13 +40,13 @@ public:
   ComplexSCHUR (void)
     : schur_mat (), unitary_mat () { }
 
-  ComplexSCHUR (const ComplexMatrix& a, const string& ord)
+  ComplexSCHUR (const ComplexMatrix& a, const std::string& ord)
     : schur_mat (), unitary_mat ()
       {
         init (a, ord);
       }
 
-  ComplexSCHUR (const ComplexMatrix& a, const string& ord, int& info)
+  ComplexSCHUR (const ComplexMatrix& a, const std::string& ord, int& info)
     : schur_mat (), unitary_mat ()
       {
         info = init (a,ord);
@@ -71,7 +71,7 @@ public:
 
   ComplexMatrix unitary_matrix (void) const { return unitary_mat; }
 
-  friend ostream& operator << (ostream& os, const ComplexSCHUR& a);
+  friend std::ostream& operator << (std::ostream& os, const ComplexSCHUR& a);
 
   typedef int (*select_function) (const Complex&);
 
@@ -82,7 +82,7 @@ private:
 
   select_function selector;
 
-  int init (const ComplexMatrix& a, const string& ord);
+  int init (const ComplexMatrix& a, const std::string& ord);
 };
 
 #endif

@@ -72,7 +72,7 @@ public:
       dt_double_complex
     };
 
-  static data_type string_to_data_type (const string& s);
+  static data_type string_to_data_type (const std::string& s);
 };
 
 enum save_type
@@ -96,10 +96,10 @@ do_float_format_conversion (float *data, int len,
 			    oct_mach_info::float_format fmt);
 
 extern void
-read_doubles (istream& is, double *data, save_type type, int len,
+read_doubles (std::istream& is, double *data, save_type type, int len,
 	      int swap, oct_mach_info::float_format fmt);
 extern void
-write_doubles (ostream& os, const double *data, save_type type, int len);
+write_doubles (std::ostream& os, const double *data, save_type type, int len);
 
 #endif
 

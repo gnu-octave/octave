@@ -51,7 +51,7 @@ octave_time::octave_time (const octave_base_tm& tm)
   t.tm_isdst = tm.isdst ();
 
 #if defined (HAVE_TM_ZONE)
-  string s = tm.zone ();
+  std::string s = tm.zone ();
   char *ps = strsave (s.c_str ());
   t.tm_zone = ps;
 #endif
@@ -65,7 +65,7 @@ octave_time::octave_time (const octave_base_tm& tm)
   ot_usec = tm.usec ();
 }
 
-string
+std::string
 octave_time::ctime (void) const
 {
   return octave_localtime (*this) . asctime ();
@@ -120,7 +120,7 @@ DEFINE_SET_INT_FIELD_FCN (yday, 0, 365)
 DEFINE_SET_INT_FIELD_FCN (isdst, 0, 1)
 
 octave_base_tm&
-octave_base_tm::zone (const string& s)
+octave_base_tm::zone (const std::string& s)
 {
   tm_zone = s;
   return *this;
@@ -130,10 +130,10 @@ octave_base_tm::zone (const string& s)
 #define STRFTIME_BUF_INITIAL_SIZE 128
 #endif
 
-string
-octave_base_tm::strftime (const string& fmt) const
+std::string
+octave_base_tm::strftime (const std::string& fmt) const
 {
-  string retval;
+  std::string retval;
 
   struct tm t;
   
@@ -224,7 +224,7 @@ octave_gmtime::init (const octave_time& ot)
 }
 
 void
-octave_strptime::init (const string& str, const string& fmt)
+octave_strptime::init (const std::string& str, const std::string& fmt)
 {
   struct tm t;
 

@@ -307,7 +307,7 @@ LSODE::do_integrate (double tout)
 
 #if 0
 void
-LSODE::integrate (int nsteps, double tstep, ostream& s)
+LSODE::integrate (int nsteps, double tstep, std::ostream& s)
 {
   int time_to_quit = 0;
   double tout = t;

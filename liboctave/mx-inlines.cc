@@ -215,8 +215,8 @@ OP_DUP_FCN (, dup, Complex, Complex)
 
 // These should really return a bool *.  Also, they should probably be
 // in with a collection of other element-by-element boolean ops.
-OP_DUP_FCN (0.0 ==, not, double, double)
-OP_DUP_FCN (0.0 ==, not, double, Complex)
+OP_DUP_FCN (0.0 ==, xnot, double, double)
+OP_DUP_FCN (0.0 ==, xnot, double, Complex)
 
 OP_DUP_FCN (, make_complex, Complex, double)
 

@@ -79,7 +79,7 @@ public:
       return *this;
     }
 
-  friend ostream& operator << (ostream& os, const LinConst& b);
+  friend std::ostream& operator << (std::ostream& os, const LinConst& b);
 
 protected:
 

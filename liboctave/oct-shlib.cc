@@ -65,20 +65,20 @@ public:
       tm_loaded (static_cast<time_t> (0))
   { count = 1; }
 
-  octave_base_shlib (const string& f)
+  octave_base_shlib (const std::string& f)
     : octave_shlib (octave_xshlib ()), file (f), fcn_names (),
       tm_loaded (static_cast<time_t> (0))
   { count = 1; }
 
   ~octave_base_shlib (void) { }
 
-  void open (const string&, bool = false) { }
+  void open (const std::string&, bool = false) { }
 
-  void *search (const string&, name_mangler = 0) { return 0; }
+  void *search (const std::string&, name_mangler = 0) { return 0; }
 
   void close (octave_shlib::close_hook = 0) { }
 
-  bool remove (const string& fcn_name);
+  bool remove (const std::string& fcn_name);
 
   bool is_open (void) const { return false; }
 
@@ -86,13 +86,13 @@ public:
 
   int number_of_functions_loaded (void) const { return fcn_names.length (); }
 
-  string file_name (void) const { return file; }
+  std::string file_name (void) const { return file; }
 
   octave_time time_loaded (void) const { return tm_loaded; }
 
 protected:
 
-  string file;
+  std::string file;
 
   string_vector fcn_names;
 
@@ -100,7 +100,7 @@ protected:
 
   void stamp_time (bool warn_future = false);
 
-  void add_to_fcn_names (const string& name);
+  void add_to_fcn_names (const std::string& name);
 
   void do_close_hook (octave_shlib::close_hook = 0);
 
@@ -114,7 +114,7 @@ protected:
 };
 
 bool
-octave_base_shlib::remove (const string& fcn_name)
+octave_base_shlib::remove (const std::string& fcn_name)
 {
   bool retval = false;
 
@@ -163,7 +163,7 @@ octave_base_shlib::stamp_time (bool warn_future)
 }
 
 void
-octave_base_shlib::add_to_fcn_names (const string& name)
+octave_base_shlib::add_to_fcn_names (const std::string& name)
 {
   int n = number_of_functions_loaded ();
 
@@ -206,9 +206,9 @@ public:
 
   ~octave_dlopen_shlib (void);
 
-  void open (const string& f, bool warn_future = false);
+  void open (const std::string& f, bool warn_future = false);
 
-  void *search (const string& name, name_mangler mangler = 0);
+  void *search (const std::string& name, name_mangler mangler = 0);
 
   void close (octave_shlib::close_hook cl_hook = 0);
 
@@ -236,7 +236,7 @@ octave_dlopen_shlib::~octave_dlopen_shlib (void)
 }
 
 void
-octave_dlopen_shlib::open (const string& f, bool warn_future)
+octave_dlopen_shlib::open (const std::string& f, bool warn_future)
 {
   if (! is_open ())
     {
@@ -260,14 +260,14 @@ octave_dlopen_shlib::open (const string& f, bool warn_future)
 }
 
 void *
-octave_dlopen_shlib::search (const string& name,
+octave_dlopen_shlib::search (const std::string& name,
 			     octave_shlib::name_mangler mangler)
 {
   void *function = 0;
 
   if (is_open ())
     {
-      string sym_name = name;
+      std::string sym_name = name;
 
       if (mangler)
 	sym_name = mangler (name);
@@ -310,9 +310,9 @@ public:
 
   ~octave_shl_load_shlib (void);
 
-  void open (const string& f, bool warn_future = false);
+  void open (const std::string& f, bool warn_future = false);
 
-  void *search (const string& name, name_mangler mangler = 0);
+  void *search (const std::string& name, name_mangler mangler = 0);
 
   void close (octave_shlib::close_hook cl_hook = 0);
 
@@ -340,7 +340,7 @@ octave_shl_load_shlib::~octave_shl_load_shlib (void)
 }
 
 void
-octave_shl_load_shlib::open (const string& f, bool warn_future)
+octave_shl_load_shlib::open (const std::string& f, bool warn_future)
 {
   if (! is_open ())
     {
@@ -351,7 +351,10 @@ octave_shl_load_shlib::open (const string& f, bool warn_future)
       if (library)
 	stamp_time (warn_future);
       else
-	(*current_liboctave_error_handler) ("%s", strerror (errno));
+	{
+	  using namespace std;
+	  (*current_liboctave_error_handler) ("%s", strerror (errno));
+	}
     }
   else
     (*current_liboctave_error_handler)
@@ -359,14 +362,14 @@ octave_shl_load_shlib::open (const string& f, bool warn_future)
 }
 
 void *
-octave_shl_load_shlib::search (const string& name,
+octave_shl_load_shlib::search (const std::string& name,
 			       octave_shlib::name_mangler mangler)
 {
   void *function = 0;
 
   if (is_open ())
     {
-      string sym_name = name;
+      std::string s ym_name = name;
 
       if (mangler)
 	sym_name = mangler (name);

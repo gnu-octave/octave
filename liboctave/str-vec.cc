@@ -42,7 +42,7 @@ function distributed in the GNU file utilities, copyright (C) 85, 88,
 // Create a string vector from a NULL terminated list of C strings.
 
 string_vector::string_vector (const char * const *s)
-  : Array<string> ()
+  : Array<std::string> ()
 {
   int n = 0;
 
@@ -61,7 +61,7 @@ string_vector::string_vector (const char * const *s)
 // nonnegative.
 
 string_vector::string_vector (const char * const *s, int n)
-  : Array<string> (n)
+  : Array<std::string> (n)
 {
   for (int i = 0; i < n; i++)
     elem (i) = s[i];
@@ -114,8 +114,8 @@ string_vector::delete_c_str_vec (const char * const *v)
 
 // Format a list in neat columns.
 
-ostream&
-string_vector::list_in_columns (ostream& os) const
+std::ostream&
+string_vector::list_in_columns (std::ostream& os) const
 {
   // Compute the maximum name length.
 
@@ -159,7 +159,7 @@ string_vector::list_in_columns (ostream& os) const
 
       while (1)
 	{
-	  string nm = elem (count);
+	  std::string nm = elem (count);
 
 	  os << nm;
 	  int name_length = nm.length ();

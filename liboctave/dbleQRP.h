@@ -59,7 +59,7 @@ public:
 
   Matrix P (void) const { return p; }
 
-  friend ostream&  operator << (ostream&, const QRP&);
+  friend std::ostream&  operator << (std::ostream&, const QRP&);
 
 protected:
 

@@ -186,7 +186,7 @@ oct_mach_info::words_little_endian (void)
 }
 
 oct_mach_info::float_format
-oct_mach_info::string_to_float_format (const string& s)
+oct_mach_info::string_to_float_format (const std::string& s)
 {
   oct_mach_info::float_format retval = oct_mach_info::unknown;
 
@@ -211,10 +211,10 @@ oct_mach_info::string_to_float_format (const string& s)
   return retval;
 }
 
-string
+std::string
 oct_mach_info::float_format_as_string (float_format flt_fmt)
 {
-  string retval = "unknown";
+  std::string retval = "unknown";
 
   switch (flt_fmt)
     {

@@ -102,10 +102,10 @@ dir_path::all_directories (void)
   return retval;
 }
 
-string
-dir_path::find_first (const string& nm)
+std::string
+dir_path::find_first (const std::string& nm)
 {
-  string retval;
+  std::string retval;
 
   if (initialized)
     {
@@ -121,7 +121,7 @@ dir_path::find_first (const string& nm)
 }
 
 string_vector
-dir_path::find_all (const string& nm)
+dir_path::find_all (const std::string& nm)
 {
   string_vector retval;
 
@@ -147,7 +147,7 @@ dir_path::find_all (const string& nm)
 }
 
 void
-dir_path::set_program_name (const string& nm)
+dir_path::set_program_name (const std::string& nm)
 {
   kpse_set_progname (nm.c_str ());
 }
@@ -187,7 +187,7 @@ dir_path::init (void)
       free (t1);
     }
   else
-    p = string ();
+    p = std::string ();
 
   int count = 0;
   char *path_elt = kpse_path_element (p.c_str ());

@@ -113,7 +113,7 @@ private:
 
     // i/o
 
-    ostream& print (ostream& os) const;
+    std::ostream& print (std::ostream& os) const;
 
     int *data;
     int len;
@@ -252,9 +252,9 @@ public:
   int freeze (int z_len, const char *tag, int resize_ok = 0)
     { return rep->freeze (z_len, tag, resize_ok); }
 
-  ostream& print (ostream& os) const { return rep->print (os); }
+  std::ostream& print (std::ostream& os) const { return rep->print (os); }
 
-  friend ostream& operator << (ostream& os, const idx_vector& a)
+  friend std::ostream& operator << (std::ostream& os, const idx_vector& a)
     { return a.print (os); }
 
   void maybe_convert_one_zero_to_idx (int z_len)

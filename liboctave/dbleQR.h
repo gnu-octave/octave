@@ -67,7 +67,7 @@ public:
 
   Matrix R (void) const { return r; }
 
-  friend ostream&  operator << (ostream&, const QR&);
+  friend std::ostream&  operator << (std::ostream&, const QR&);
 
 protected:
 

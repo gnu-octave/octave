@@ -49,10 +49,10 @@ Software Foundation, Inc.
 #include "lo-error.h"
 #include "pathlen.h"
 
-string
+std::string
 octave_getcwd (void)
 {
-  string retval;
+  std::string retval;
 
   char buf[MAXPATHLEN];
 
@@ -75,7 +75,7 @@ octave_getcwd (void)
 }
 
 int
-octave_chdir (const string& path)
+octave_chdir (const std::string& path)
 {
 #if defined (__EMX__)
   int retval = -1;

@@ -73,9 +73,9 @@ public:
 
   ~gnu_readline (void) { }
 
-  void do_set_name (const string& n);
+  void do_set_name (const std::string& n);
 
-  string do_readline (const string& prompt, bool& eof);
+  std::string do_readline (const std::string& prompt, bool& eof);
 
   void do_set_input_stream (FILE *f);
 
@@ -93,13 +93,13 @@ public:
 
   void do_resize_terminal (void);
 
-  string newline_chars (void);
+  std::string newline_chars (void);
 
   void do_restore_terminal_state (void);
 
   void do_blink_matching_paren (bool flag);
 
-  void do_set_basic_quote_characters (const string& s);
+  void do_set_basic_quote_characters (const std::string& s);
 
   void do_set_completion_append_character (char c);
 
@@ -107,7 +107,7 @@ public:
 
   completion_fcn do_get_completion_function (void) const;
 
-  void do_insert_text (const string& text);
+  void do_insert_text (const std::string& text);
 
   void do_newline (void);
 
@@ -121,7 +121,7 @@ public:
 
   void do_restore_event_hook (void);
 
-  void do_read_init_file (const string& file);
+  void do_read_init_file (const std::string& file);
 
   static void operate_and_get_next (int, int);
 
@@ -163,7 +163,7 @@ gnu_readline::gnu_readline ()
 }
 
 void
-gnu_readline::do_set_name (const string& n)
+gnu_readline::do_set_name (const std::string& n)
 {
   static char *nm = 0;
 
@@ -180,10 +180,10 @@ gnu_readline::do_set_name (const string& n)
   rl_re_read_init_file ();
 }
 
-string
-gnu_readline::do_readline (const string& prompt, bool& eof)
+std::string
+gnu_readline::do_readline (const std::string& prompt, bool& eof)
 {
-  string retval;
+  std::string retval;
 
   eof = false;
 
@@ -255,7 +255,7 @@ gnu_readline::do_resize_terminal (void)
   rl_resize_terminal ();
 }
 
-string
+std::string
 gnu_readline::newline_chars (void)
 {
   return "\r\n";
@@ -275,7 +275,7 @@ gnu_readline::do_blink_matching_paren (bool flag)
 }
 
 void
-gnu_readline::do_set_basic_quote_characters (const string& s)
+gnu_readline::do_set_basic_quote_characters (const std::string& s)
 {
   static char *ss = 0;
 
@@ -311,7 +311,7 @@ gnu_readline::do_get_completion_function (void) const
 }
 
 void
-gnu_readline::do_insert_text (const string& text)
+gnu_readline::do_insert_text (const std::string& text)
 {
   rl_insert_text (text.c_str ());
 }
@@ -362,7 +362,7 @@ gnu_readline::do_restore_event_hook (void)
 }
 
 void
-gnu_readline::do_read_init_file (const string& file)
+gnu_readline::do_read_init_file (const std::string& file)
 {
   if (file.empty ())
     rl_re_read_init_file ();
@@ -400,7 +400,7 @@ gnu_readline::command_generator (const char *text, int state)
 
   completion_fcn f = command_editor::get_completion_function ();
 
-  string tmp = f (text, state);
+  std::string tmp = f (text, state);
 
   size_t len = tmp.length ();
 
@@ -434,7 +434,7 @@ public:
 
   ~default_command_editor (void) { }
 
-  string do_readline (const string& prompt, bool& eof);
+  std::string do_readline (const std::string& prompt, bool& eof);
 
   void do_set_input_stream (FILE *f);
 
@@ -444,7 +444,7 @@ public:
 
   FILE *do_get_output_stream (void);
 
-  void do_insert_text (const string&);
+  void do_insert_text (const std::string&);
 
   void do_newline (void);
 
@@ -455,8 +455,8 @@ private:
   FILE *output_stream;
 };
 
-string
-default_command_editor::do_readline (const string& prompt, bool& eof)
+std::string
+default_command_editor::do_readline (const std::string& prompt, bool& eof)
 {
   eof = false;
 
@@ -491,7 +491,7 @@ default_command_editor::do_get_output_stream (void)
 }
 
 void
-default_command_editor::do_insert_text (const string&)
+default_command_editor::do_insert_text (const std::string&)
 {
   // XXX FIXME XXX
 }
@@ -532,25 +532,25 @@ command_editor::make_command_editor (void)
 }
 
 void
-command_editor::set_name (const string& n)
+command_editor::set_name (const std::string& n)
 {
   if (instance_ok ())
     instance->do_set_name (n);
 }
 
-string
-command_editor::readline (const string& prompt)
+std::string
+command_editor::readline (const std::string& prompt)
 {
   bool eof;
 
   return readline (prompt, eof);
 }
 
-string
-command_editor::readline (const string& prompt, bool& eof)
+std::string
+command_editor::readline (const std::string& prompt, bool& eof)
 {
   return (instance_ok ())
-    ? instance->do_readline (prompt, eof) : string ();
+    ? instance->do_readline (prompt, eof) : std::string ();
 }
 
 void
@@ -609,11 +609,11 @@ command_editor::resize_terminal (void)
     instance->do_resize_terminal ();
 }
 
-string
-command_editor::decode_prompt_string (const string& s)
+std::string
+command_editor::decode_prompt_string (const std::string& s)
 {
   return (instance_ok ())
-    ? instance->do_decode_prompt_string (s) : string ();
+    ? instance->do_decode_prompt_string (s) : std::string ();
 }
 
 int
@@ -652,7 +652,7 @@ command_editor::blink_matching_paren (bool flag)
 }
 
 void
-command_editor::set_basic_quote_characters (const string& s)
+command_editor::set_basic_quote_characters (const std::string& s)
 {
   if (instance_ok ())
     instance->do_set_basic_quote_characters (s);
@@ -680,7 +680,7 @@ command_editor::get_completion_function (void)
 }
 
 void
-command_editor::insert_text (const string& text)
+command_editor::insert_text (const std::string& text)
 {
   if (instance_ok ())
     instance->do_insert_text (text);
@@ -729,7 +729,7 @@ command_editor::restore_event_hook (void)
 }
 
 void
-command_editor::read_init_file (const string& file)
+command_editor::read_init_file (const std::string& file)
 {
   if (instance_ok ())
     instance->do_read_init_file (file);
@@ -752,11 +752,11 @@ command_editor::read_init_file (const string& file)
 //	\<octal> character code in octal
 //	\\	a backslash
 
-string
-command_editor::do_decode_prompt_string (const string& s)
+std::string
+command_editor::do_decode_prompt_string (const std::string& s)
 {
-  string result;
-  string temp;
+  std::string result;
+  std::string temp;
   size_t i = 0;
   size_t slen = s.length ();
   int c;
@@ -956,7 +956,7 @@ command_editor::do_decode_prompt_string (const string& s)
 // the string contained a bad number.
 
 int
-command_editor::read_octal (const string& s)
+command_editor::read_octal (const std::string& s)
 {
   int result = 0;
   int digits = 0;
@@ -984,7 +984,7 @@ command_editor::error (int err_num)
 }
 
 void
-command_editor::error (const string& s)
+command_editor::error (const std::string& s)
 {
   current_liboctave_error_handler ("%s", s.c_str ());
 }

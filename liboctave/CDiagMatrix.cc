@@ -282,16 +282,16 @@ ComplexDiagMatrix::extract (int r1, int c1, int r2, int c2) const
 ComplexRowVector
 ComplexDiagMatrix::row (int i) const
 {
-  int nr = rows ();
-  int nc = cols ();
-  if (i < 0 || i >= nr)
+  int r = rows ();
+  int c = cols ();
+  if (i < 0 || i >= r)
     {
       (*current_liboctave_error_handler) ("invalid row selection");
       return RowVector (); 
     }
 
-  ComplexRowVector retval (nc, 0.0);
-  if (nr <= nc || (nr > nc && i < nc))
+  ComplexRowVector retval (c, 0.0);
+  if (r <= c || (r > c && i < c))
     retval.elem (i) = elem (i, i);
 
   return retval;
@@ -321,16 +321,16 @@ ComplexDiagMatrix::row (char *s) const
 ComplexColumnVector
 ComplexDiagMatrix::column (int i) const
 {
-  int nr = rows ();
-  int nc = cols ();
-  if (i < 0 || i >= nc)
+  int r = rows ();
+  int c = cols ();
+  if (i < 0 || i >= c)
     {
       (*current_liboctave_error_handler) ("invalid column selection");
       return ColumnVector (); 
     }
 
-  ComplexColumnVector retval (nr, 0.0);
-  if (nr >= nc || (nr < nc && i < nr))
+  ComplexColumnVector retval (r, 0.0);
+  if (r >= c || (r < c && i < r))
     retval.elem (i) = elem (i, i);
 
   return retval;
@@ -367,15 +367,15 @@ ComplexDiagMatrix::inverse (void) const
 ComplexDiagMatrix
 ComplexDiagMatrix::inverse (int& info) const
 {
-  int nr = rows ();
-  int nc = cols ();
-  if (nr != nc)
+  int r = rows ();
+  int c = cols ();
+  if (r != c)
     {
       (*current_liboctave_error_handler) ("inverse requires square matrix");
       return DiagMatrix ();
     }
 
-  ComplexDiagMatrix retval (nr, nc);
+  ComplexDiagMatrix retval (r, c);
 
   info = 0;
   for (int i = 0; i < length (); i++)
@@ -397,19 +397,19 @@ ComplexDiagMatrix::inverse (int& info) const
 ComplexDiagMatrix&
 ComplexDiagMatrix::operator += (const DiagMatrix& a)
 {
-  int nr = rows ();
-  int nc = cols ();
+  int r = rows ();
+  int c = cols ();
 
   int a_nr = a.rows ();
   int a_nc = a.cols ();
 
-  if (nr != a_nr || nc != a_nc)
+  if (r != a_nr || c != a_nc)
     {
-      gripe_nonconformant ("operator +=", nr, nc, a_nr, a_nc);
+      gripe_nonconformant ("operator +=", r, c, a_nr, a_nc);
       return *this;
     }
 
-  if (nr == 0 || nc == 0)
+  if (r == 0 || c == 0)
     return *this;
 
   Complex *d = fortran_vec (); // Ensures only one reference to my privates!
@@ -421,19 +421,19 @@ ComplexDiagMatrix::operator += (const DiagMatrix& a)
 ComplexDiagMatrix&
 ComplexDiagMatrix::operator -= (const DiagMatrix& a)
 {
-  int nr = rows ();
-  int nc = cols ();
+  int r = rows ();
+  int c = cols ();
 
   int a_nr = a.rows ();
   int a_nc = a.cols ();
 
-  if (nr != a_nr || nc != a_nc)
+  if (r != a_nr || c != a_nc)
     {
-      gripe_nonconformant ("operator -=", nr, nc, a_nr, a_nc);
+      gripe_nonconformant ("operator -=", r, c, a_nr, a_nc);
       return *this;
     }
 
-  if (nr == 0 || nc == 0)
+  if (r == 0 || c == 0)
     return *this;
 
   Complex *d = fortran_vec (); // Ensures only one reference to my privates!
@@ -445,19 +445,19 @@ ComplexDiagMatrix::operator -= (const DiagMatrix& a)
 ComplexDiagMatrix&
 ComplexDiagMatrix::operator += (const ComplexDiagMatrix& a)
 {
-  int nr = rows ();
-  int nc = cols ();
+  int r = rows ();
+  int c = cols ();
 
   int a_nr = a.rows ();
   int a_nc = a.cols ();
 
-  if (nr != a_nr || nc != a_nc)
+  if (r != a_nr || c != a_nc)
     {
-      gripe_nonconformant ("operator +=", nr, nc, a_nr, a_nc);
+      gripe_nonconformant ("operator +=", r, c, a_nr, a_nc);
       return *this;
     }
 
-  if (nr == 0 || nc == 0)
+  if (r == 0 || c == 0)
     return *this;
 
   Complex *d = fortran_vec (); // Ensures only one reference to my privates!
@@ -469,19 +469,19 @@ ComplexDiagMatrix::operator += (const ComplexDiagMatrix& a)
 ComplexDiagMatrix&
 ComplexDiagMatrix::operator -= (const ComplexDiagMatrix& a)
 {
-  int nr = rows ();
-  int nc = cols ();
+  int r = rows ();
+  int c = cols ();
 
   int a_nr = a.rows ();
   int a_nc = a.cols ();
 
-  if (nr != a_nr || nc != a_nc)
+  if (r != a_nr || c != a_nc)
     {
-      gripe_nonconformant ("operator -=", nr, nc, a_nr, a_nc);
+      gripe_nonconformant ("operator -=", r, c, a_nr, a_nc);
       return *this;
     }
 
-  if (nr == 0 || nc == 0)
+  if (r == 0 || c == 0)
     return *this;
 
   Complex *d = fortran_vec (); // Ensures only one reference to my privates!
@@ -490,75 +490,29 @@ ComplexDiagMatrix::operator -= (const ComplexDiagMatrix& a)
   return *this;
 }
 
-// diagonal matrix by scalar -> diagonal matrix operations
-
-ComplexDiagMatrix
-operator * (const ComplexDiagMatrix& a, double s)
-{
-  return ComplexDiagMatrix (multiply (a.data (), a.length (), s),
-			    a.rows (), a.cols ());
-}
-
-ComplexDiagMatrix
-operator / (const ComplexDiagMatrix& a, double s)
-{
-  return ComplexDiagMatrix (divide (a.data (), a.length (), s),
-			    a.rows (), a.cols ());
-}
-
-ComplexDiagMatrix
-operator * (const DiagMatrix& a, const Complex& s)
-{
-  return ComplexDiagMatrix (multiply (a.data (), a.length (), s),
-			    a.rows (), a.cols ());
-}
-
-ComplexDiagMatrix
-operator / (const DiagMatrix& a, const Complex& s)
-{
-  return ComplexDiagMatrix (divide (a.data (), a.length (), s),
-			    a.rows (), a.cols ());
-}
-
-// scalar by diagonal matrix -> diagonal matrix operations
-
-ComplexDiagMatrix
-operator * (double s, const ComplexDiagMatrix& a)
-{
-  return ComplexDiagMatrix (multiply (a.data (), a.length (), s),
-			    a.rows (), a.cols ());
-}
-
-ComplexDiagMatrix
-operator * (const Complex& s, const DiagMatrix& a)
-{
-  return ComplexDiagMatrix (multiply (a.data (), a.length (), s),
-			    a.rows (), a.cols ());
-}
-
 // diagonal matrix by diagonal matrix -> diagonal matrix operations
 
 ComplexDiagMatrix
 operator * (const ComplexDiagMatrix& a, const ComplexDiagMatrix& b)
 {
-  int nr_a = a.rows ();
-  int nc_a = a.cols ();
+  int a_nr = a.rows ();
+  int a_nc = a.cols ();
 
-  int nr_b = b.rows ();
-  int nc_b = b.cols ();
+  int b_nr = b.rows ();
+  int b_nc = b.cols ();
 
-  if (nc_a != nr_b)
+  if (a_nc != b_nr)
     {
-      gripe_nonconformant ("operator *", nr_a, nc_a, nr_b, nc_b);
+      gripe_nonconformant ("operator *", a_nr, a_nc, b_nr, b_nc);
       return ComplexDiagMatrix ();
     }
 
-  if (nr_a == 0 || nc_a == 0 || nc_b == 0)
-    return ComplexDiagMatrix (nr_a, nc_a, 0.0);
+  if (a_nr == 0 || a_nc == 0 || b_nc == 0)
+    return ComplexDiagMatrix (a_nr, a_nc, 0.0);
 
-  ComplexDiagMatrix c (nr_a, nc_b);
+  ComplexDiagMatrix c (a_nr, b_nc);
 
-  int len = nr_a < nc_b ? nr_a : nc_b;
+  int len = a_nr < b_nc ? a_nr : b_nc;
 
   for (int i = 0; i < len; i++)
     {
@@ -581,24 +535,24 @@ operator * (const ComplexDiagMatrix& a, const ComplexDiagMatrix& b)
 ComplexDiagMatrix
 operator * (const ComplexDiagMatrix& a, const DiagMatrix& b)
 {
-  int nr_a = a.rows ();
-  int nc_a = a.cols ();
+  int a_nr = a.rows ();
+  int a_nc = a.cols ();
 
-  int nr_b = b.rows ();
-  int nc_b = b.cols ();
+  int b_nr = b.rows ();
+  int b_nc = b.cols ();
 
-  if (nc_a != nr_b)
+  if (a_nc != b_nr)
     {
-      gripe_nonconformant ("operator *", nr_a, nc_a, nr_b, nc_b);
+      gripe_nonconformant ("operator *", a_nr, a_nc, b_nr, b_nc);
       return ComplexDiagMatrix ();
     }
 
-  if (nr_a == 0 || nc_a == 0 || nc_b == 0)
-    return ComplexDiagMatrix (nr_a, nc_a, 0.0);
+  if (a_nr == 0 || a_nc == 0 || b_nc == 0)
+    return ComplexDiagMatrix (a_nr, a_nc, 0.0);
 
-  ComplexDiagMatrix c (nr_a, nc_b);
+  ComplexDiagMatrix c (a_nr, b_nc);
 
-  int len = nr_a < nc_b ? nr_a : nc_b;
+  int len = a_nr < b_nc ? a_nr : b_nc;
 
   for (int i = 0; i < len; i++)
     {
@@ -621,24 +575,24 @@ operator * (const ComplexDiagMatrix& a, const DiagMatrix& b)
 ComplexDiagMatrix
 operator * (const DiagMatrix& a, const ComplexDiagMatrix& b)
 {
-  int nr_a = a.rows ();
-  int nc_a = a.cols ();
+  int a_nr = a.rows ();
+  int a_nc = a.cols ();
 
-  int nr_b = b.rows ();
-  int nc_b = b.cols ();
+  int b_nr = b.rows ();
+  int b_nc = b.cols ();
 
-  if (nc_a != nr_b)
+  if (a_nc != b_nr)
     {
-      gripe_nonconformant ("operator *", nr_a, nc_a, nr_b, nc_b);
+      gripe_nonconformant ("operator *", a_nr, a_nc, b_nr, b_nc);
       return ComplexDiagMatrix ();
     }
 
-  if (nr_a == 0 || nc_a == 0 || nc_b == 0)
-    return ComplexDiagMatrix (nr_a, nc_a, 0.0);
+  if (a_nr == 0 || a_nc == 0 || b_nc == 0)
+    return ComplexDiagMatrix (a_nr, a_nc, 0.0);
 
-  ComplexDiagMatrix c (nr_a, nc_b);
+  ComplexDiagMatrix c (a_nr, b_nc);
 
-  int len = nr_a < nc_b ? nr_a : nc_b;
+  int len = a_nr < b_nc ? a_nr : b_nc;
 
   for (int i = 0; i < len; i++)
     {
@@ -703,15 +657,15 @@ ComplexDiagMatrix::diag (int k) const
 	}
     }
   else
-    cerr << "diag: requested diagonal out of range\n";
+    std::cerr << "diag: requested diagonal out of range\n";
 
   return d;
 }
 
 // i/o
 
-ostream&
-operator << (ostream& os, const ComplexDiagMatrix& a)
+std::ostream&
+operator << (std::ostream& os, const ComplexDiagMatrix& a)
 {
   Complex ZERO (0.0);
 //  int field_width = os.precision () + 7;

@@ -86,7 +86,7 @@ strsave (const char *s)
 // SMART_PUTENV.
 
 void
-octave_putenv (const string& name, const string& value)
+octave_putenv (const std::string& name, const std::string& value)
 {
   int new_len = name.length () + value.length () + 2;
 
@@ -101,10 +101,10 @@ octave_putenv (const string& name, const string& value)
     (*current_liboctave_error_handler) ("putenv (%s) failed", new_item);
 }
 
-string
+std::string
 octave_fgets (FILE *f)
 {
-  string retval;
+  std::string retval;
 
   int grow_size = 1024;
   int max_size = grow_size;

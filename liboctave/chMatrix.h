@@ -48,7 +48,7 @@ public:
   charMatrix (const charMatrix& a) : MArray2<char> (a) { }
   charMatrix (char c);
   charMatrix (const char *s);
-  charMatrix (const string& s);
+  charMatrix (const std::string& s);
   charMatrix (const string_vector& s);
 
   charMatrix& operator = (const charMatrix& a)
@@ -65,7 +65,7 @@ public:
   charMatrix& insert (const char *s, int r, int c);
   charMatrix& insert (const charMatrix& a, int r, int c);
 
-  string row_as_string (int r, bool strip_trailing_whitespace = false) const;
+  std::string row_as_string (int, bool = false) const;
 
   // resize is the destructive equivalent for this one
 
@@ -77,8 +77,8 @@ public:
 #if 0
   // i/o
 
-  friend ostream& operator << (ostream& os, const Matrix& a);
-  friend istream& operator >> (istream& is, Matrix& a);
+  friend std::ostream& operator << (std::ostream& os, const Matrix& a);
+  friend std::istream& operator >> (std::istream& is, Matrix& a);
 #endif
 
 private:

@@ -112,14 +112,14 @@ Range::sort (void)
 void
 Range::print_range (void)
 {
-  cerr << "Range: rng_base = " << rng_base
-       << " rng_limit " << rng_limit
-       << " rng_inc " << rng_inc
-       << " rng_nelem " << rng_nelem << "\n";
+  std::cerr << "Range: rng_base = " << rng_base
+	    << " rng_limit " << rng_limit
+	    << " rng_inc " << rng_inc
+	    << " rng_nelem " << rng_nelem << "\n";
 }
 
-ostream&
-operator << (ostream& os, const Range& a)
+std::ostream&
+operator << (std::ostream& os, const Range& a)
 {
   double b = a.base ();
   double increment = a.inc ();
@@ -133,8 +133,8 @@ operator << (ostream& os, const Range& a)
   return os;
 }
 
-istream&
-operator >> (istream& is, Range& a)
+std::istream&
+operator >> (std::istream& is, Range& a)
 {
   is >> a.rng_base;
   if (is)

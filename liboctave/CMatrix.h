@@ -36,15 +36,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class ComplexMatrix : public MArray2<Complex>
 {
-friend class Matrix;
-friend class ComplexCHOL;
-friend class ComplexHESS;
-friend class ComplexLU;
-friend class ComplexQR;
-friend class ComplexQRP;
-friend class ComplexSCHUR;
-friend class ComplexSVD;
-
 public:
  
   typedef void (*solve_singularity_handler) (double rcond);
@@ -254,8 +245,8 @@ public:
 
   // i/o
 
-  friend ostream& operator << (ostream& os, const ComplexMatrix& a);
-  friend istream& operator >> (istream& is, ComplexMatrix& a);
+  friend std::ostream& operator << (std::ostream& os, const ComplexMatrix& a);
+  friend std::istream& operator >> (std::istream& is, ComplexMatrix& a);
 
 private:
 

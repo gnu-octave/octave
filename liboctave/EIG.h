@@ -71,7 +71,7 @@ public:
 
   ComplexMatrix eigenvectors (void) const { return v; }
 
-  friend ostream&  operator << (ostream& os, const EIG& a);
+  friend std::ostream&  operator << (std::ostream& os, const EIG& a);
 
 private:
 

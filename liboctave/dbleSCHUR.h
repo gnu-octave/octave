@@ -40,13 +40,13 @@ public:
   SCHUR (void)
     : schur_mat (), unitary_mat () { }
 
-  SCHUR (const Matrix& a, const string& ord)
+  SCHUR (const Matrix& a, const std::string& ord)
     : schur_mat (), unitary_mat ()
       {
         init (a, ord);
       }
 
-  SCHUR (const Matrix& a, const string& ord, int& info)
+  SCHUR (const Matrix& a, const std::string& ord, int& info)
     : schur_mat (), unitary_mat ()
       {
         info = init (a, ord);
@@ -71,7 +71,7 @@ public:
 
   Matrix unitary_matrix (void) const { return unitary_mat; }
 
-  friend ostream& operator << (ostream& os, const SCHUR& a);
+  friend std::ostream& operator << (std::ostream& os, const SCHUR& a);
 
   typedef int (*select_function) (const double&, const double&);
 
@@ -82,7 +82,7 @@ private:
 
   select_function selector;
 
-  int init (const Matrix& a, const string& ord);
+  int init (const Matrix& a, const std::string& ord);
 };
 
 #endif

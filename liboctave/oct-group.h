@@ -59,9 +59,9 @@ public:
     return *this;
   }
 
-  string name (void) const;
+  std::string name (void) const;
 
-  string passwd (void) const;
+  std::string passwd (void) const;
 
   gid_t gid (void) const;
 
@@ -72,27 +72,27 @@ public:
   operator bool () const { return ok (); }
 
   static octave_group getgrent (void);
-  static octave_group getgrent (string& msg);
+  static octave_group getgrent (std::string& msg);
 
   static octave_group getgrgid (gid_t gid);
-  static octave_group getgrgid (gid_t gid, string& msg);
+  static octave_group getgrgid (gid_t gid, std::string& msg);
 
-  static octave_group getgrnam (const string& nm);
-  static octave_group getgrnam (const string& nm, string& msg);
+  static octave_group getgrnam (const std::string& nm);
+  static octave_group getgrnam (const std::string& nm, std::string& msg);
 
   static int setgrent (void);
-  static int setgrent (string& msg);
+  static int setgrent (std::string& msg);
 
   static int endgrent (void);
-  static int endgrent (string& msg);
+  static int endgrent (std::string& msg);
 
 private:
 
   // The group name.
-  string gr_name;
+  std::string gr_name;
 
   // The group password.
-  string gr_passwd;
+  std::string gr_passwd;
 
   // The numeric group id.
   gid_t gr_gid;
@@ -105,7 +105,7 @@ private:
 
   // This is how we will create an octave_group object from a pointer
   // to a struct group.
-  octave_group (void *p, string& msg);
+  octave_group (void *p, std::string& msg);
 
   void gripe_invalid (void) const;
 };

@@ -38,17 +38,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class Matrix : public MArray2<double>
 {
-friend class ComplexMatrix;
-friend class AEPBAL;
-friend class CHOL;
-friend class GEPBAL;
-friend class HESS;
-friend class LU;
-friend class QR;
-friend class QRP;
-friend class SCHUR;
-friend class SVD;
-
 public:
 
   typedef void (*solve_singularity_handler) (double rcond);
@@ -230,13 +219,13 @@ public:
 
   // i/o
 
-  friend ostream& operator << (ostream& os, const Matrix& a);
-  friend istream& operator >> (istream& is, Matrix& a);
+  friend std::ostream& operator << (std::ostream& os, const Matrix& a);
+  friend std::istream& operator >> (std::istream& is, Matrix& a);
 
-  int read (istream& is, int nr, int nc, oct_data_conv::data_type dt,
+  int read (std::istream& is, int nr, int nc, oct_data_conv::data_type dt,
 	    int skip, oct_mach_info::float_format flt_fmt);
 
-  int write (ostream& os, oct_data_conv::data_type dt, int skip,
+  int write (std::ostream& os, oct_data_conv::data_type dt, int skip,
 	     oct_mach_info::float_format flt_fmt);
 
 private:

@@ -64,46 +64,46 @@ public:
 
   ~octave_passwd (void) { }
 
-  string name (void) const;
+  std::string name (void) const;
 
-  string passwd (void) const;
+  std::string passwd (void) const;
 
   uid_t uid (void) const;
 
   gid_t gid (void) const;
 
-  string gecos (void) const;
+  std::string gecos (void) const;
 
-  string dir (void) const;
+  std::string dir (void) const;
 
-  string shell (void) const;
+  std::string shell (void) const;
 
   bool ok (void) const { return valid; }
 
   operator bool () const { return ok (); }
 
   static octave_passwd getpwent (void);
-  static octave_passwd getpwent (string& msg);
+  static octave_passwd getpwent (std::string& msg);
 
   static octave_passwd getpwuid (uid_t uid);
-  static octave_passwd getpwuid (uid_t uid, string& msg);
+  static octave_passwd getpwuid (uid_t uid, std::string& msg);
 
-  static octave_passwd getpwnam (const string& nm);
-  static octave_passwd getpwnam (const string& nm, string& msg);
+  static octave_passwd getpwnam (const std::string& nm);
+  static octave_passwd getpwnam (const std::string& nm, std::string& msg);
 
   static int setpwent (void);
-  static int setpwent (string& msg);
+  static int setpwent (std::string& msg);
 
   static int endpwent (void);
-  static int endpwent (string& msg);
+  static int endpwent (std::string& msg);
 
 private:
 
   // User name.
-  string pw_name;
+  std::string pw_name;
 
   // Encrypted password.
-  string pw_passwd;
+  std::string pw_passwd;
 
   // Numeric user id.
   uid_t pw_uid;
@@ -112,20 +112,20 @@ private:
   gid_t pw_gid;
 
   // Miscellaneous junk.
-  string pw_gecos;
+  std::string pw_gecos;
 
   // Home directory.
-  string pw_dir;
+  std::string pw_dir;
 
   // Login shell.
-  string pw_shell;
+  std::string pw_shell;
 
   // Flag that says whether we have been properly initialized.
   bool valid;
 
   // This is how we will create an octave_passwd object from a pointer
   // to a struct passwd.
-  octave_passwd (void *p, string& msg);
+  octave_passwd (void *p, std::string& msg);
 
   void gripe_invalid (void) const;
 };

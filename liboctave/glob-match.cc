@@ -35,7 +35,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "str-vec.h"
 
 bool
-glob_match::match (const string& s)
+glob_match::match (const std::string& s)
 {
   int npat = pat.length ();
 
@@ -73,7 +73,7 @@ glob_match::match (const string_vector& s)
 }
 
 static bool
-single_match_exists (const string& file)
+single_match_exists (const std::string& file)
 {
   file_stat s (file);
 
@@ -91,7 +91,7 @@ glob_match::glob (void)
 
   for (int i = 0; i < npat; i++)
     {
-      string xpat = pat(i);
+      std::string xpat = pat(i);
 
       if (! xpat.empty ())
 	{
@@ -111,7 +111,8 @@ glob_match::glob (void)
 	      // characters.  Hmm.
 
 	      if (n > 1
-		  || (n == 1 && single_match_exists (string (matches[0]))))
+		  || (n == 1
+		      && single_match_exists (std::string (matches[0]))))
 		{
 		  retval.resize (k+n);
 

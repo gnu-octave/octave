@@ -43,13 +43,13 @@ octave_shlib
 {
 public:
 
-  typedef string (*name_mangler) (const string&);
+  typedef std::string (*name_mangler) (const std::string&);
 
-  typedef void (*close_hook) (const string&);
+  typedef void (*close_hook) (const std::string&);
 
   octave_shlib (void) : rep (make_shlib ()) { }
 
-  octave_shlib::octave_shlib (const string& f, bool warn_future)
+  octave_shlib::octave_shlib (const std::string& f, bool warn_future)
     : rep (make_shlib ())
   {
     open (f, warn_future);
@@ -89,16 +89,16 @@ public:
 
   operator bool () const { return is_open (); }
 
-  virtual void open (const string& f, bool warn_future = false)
+  virtual void open (const std::string& f, bool warn_future = false)
     { rep->open (f, warn_future); }
   
-  virtual void *search (const string& nm, name_mangler mangler = 0)
+  virtual void *search (const std::string& nm, name_mangler mangler = 0)
     { return rep->search (nm, mangler); }
 
   virtual void close (close_hook cl_hook = 0)
     { rep->close (cl_hook); }
 
-  virtual bool remove (const string& fcn_name)
+  virtual bool remove (const std::string& fcn_name)
     { return rep->remove (fcn_name); }
 
   virtual bool is_out_of_date (void) const
@@ -107,7 +107,7 @@ public:
   virtual int number_of_functions_loaded (void) const
     { return rep->number_of_functions_loaded (); }
 
-  virtual string file_name (void) const
+  virtual std::string file_name (void) const
     { return rep->file_name (); }
 
   virtual octave_time time_loaded (void) const

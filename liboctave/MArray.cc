@@ -94,8 +94,12 @@ operator -= (MArray<T>& a, const MArray<T>& b)
   MArray<T> \
   operator OP (const MArray<T>& a, const T& s) \
   { \
-    DO_VS_OP (OP); \
-    return MArray<T> (result, l); \
+    MArray<T> result (a.length ()); \
+    T *r = result.fortran_vec (); \
+    int l = a.length (); \
+    const T *v = a.data (); \
+    DO_VS_OP (r, l, v, OP, s); \
+    return result; \
   }
 
 MARRAY_AS_OP (+)
@@ -110,9 +114,13 @@ MARRAY_AS_OP (/)
   MArray<T> \
   operator OP (const T& s, const MArray<T>& a) \
   { \
-    DO_SV_OP (OP); \
-    return MArray<T> (result, l); \
- }
+    MArray<T> result (a.length ()); \
+    T *r = result.fortran_vec (); \
+    int l = a.length (); \
+    const T *v = a.data (); \
+    DO_SV_OP (r, l, s, OP, v); \
+    return result; \
+  }
 
 MARRAY_SA_OP(+)
 MARRAY_SA_OP(-)
@@ -135,8 +143,12 @@ MARRAY_SA_OP(/)
       } \
     if (l == 0) \
       return MArray<T> (); \
-    DO_VV_OP (OP); \
-    return MArray<T> (result, l); \
+    MArray<T> result (l); \
+    T *r = result.fortran_vec (); \
+    const T *x = a.data (); \
+    const T *y = b.data (); \
+    DO_VV_OP (r, l, x, OP, y); \
+    return result; \
   }
 
 MARRAY_AA_OP (operator +, +)
@@ -150,8 +162,12 @@ template <class T>
 MArray<T>
 operator - (const MArray<T>& a)
 {
-  NEG_V;
-  return MArray<T> (result, l);
+  int l = a.length ();
+  MArray<T> result (l);
+  T *r = result.fortran_vec ();
+  const T *x = a.data ();
+  NEG_V (r, l, x);
+  return result;
 }
 
 /*

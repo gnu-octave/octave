@@ -39,7 +39,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define NOT_SUPPORTED(nm) \
   nm ## ": not supported on this system"
 
-string
+std::string
 octave_group::name (void) const
 {
   if (! ok ())
@@ -48,7 +48,7 @@ octave_group::name (void) const
   return gr_name;
 }
 
-string
+std::string
 octave_group::passwd (void) const
 {
   if (! ok ())
@@ -78,15 +78,15 @@ octave_group::mem (void) const
 octave_group
 octave_group::getgrent (void)
 {
-  string msg;
+  std::string msg;
   return getgrent (msg);
 }
 
 octave_group
-octave_group::getgrent (string& msg)
+octave_group::getgrent (std::string& msg)
 {
 #if defined (HAVE_GETGRENT)
-  msg = string ();
+  msg = std::string ();
   return octave_group (::getgrent (), msg);
 #else
   msg = NOT_SUPPORTED ("getgrent");
@@ -97,15 +97,15 @@ octave_group::getgrent (string& msg)
 octave_group
 octave_group::getgrgid (gid_t gid)
 {
-  string msg;
+  std::string msg;
   return getgrgid (gid, msg);
 }
 
 octave_group
-octave_group::getgrgid (gid_t gid, string& msg)
+octave_group::getgrgid (gid_t gid, std::string& msg)
 {
 #if defined (HAVE_GETGRGID)
-  msg = string ();
+  msg = std::string ();
   return octave_group (::getgrgid (gid), msg);
 #else
   msg = NOT_SUPPORTED ("getgruid");
@@ -114,17 +114,17 @@ octave_group::getgrgid (gid_t gid, string& msg)
 }
 
 octave_group
-octave_group::getgrnam (const string& nm)
+octave_group::getgrnam (const std::string& nm)
 {
-  string msg;
+  std::string msg;
   return getgrnam (msg);
 }
 
 octave_group
-octave_group::getgrnam (const string& nm, string& msg)
+octave_group::getgrnam (const std::string& nm, std::string& msg)
 {
 #if defined (HAVE_GETGRNAM)
-  msg = string ();
+  msg = std::string ();
   return octave_group (::getgrnam (nm.c_str ()), msg);
 #else
   msg = NOT_SUPPORTED ("getgrnam");
@@ -135,15 +135,15 @@ octave_group::getgrnam (const string& nm, string& msg)
 int
 octave_group::setgrent (void)
 {
-  string msg;
+  std::string msg;
   return setgrent (msg);
 }
 
 int
-octave_group::setgrent (string& msg)
+octave_group::setgrent (std::string& msg)
 {
 #if defined (HAVE_SETGRENT)
-  msg = string ();
+  msg = std::string ();
   ::setgrent ();
   return 0;
 #else
@@ -155,15 +155,15 @@ octave_group::setgrent (string& msg)
 int
 octave_group::endgrent (void)
 {
-  string msg;
+  std::string msg;
   return endgrent (msg);
 }
 
 int
-octave_group::endgrent (string& msg)
+octave_group::endgrent (std::string& msg)
 {
 #if defined (HAVE_ENDGRENT)
-  msg = string ();
+  msg = std::string ();
   ::endgrent ();
   return 0;
 #else
@@ -172,11 +172,11 @@ octave_group::endgrent (string& msg)
 #endif
 }
 
-octave_group::octave_group (void *p, string& msg)
+octave_group::octave_group (void *p, std::string& msg)
   : gr_name (), gr_passwd (), gr_gid (0), gr_mem (), valid (false)
 {
 #if defined (HAVE_GRP_H)
-  msg = string ();
+  msg = std::string ();
 
   if (p)
     {

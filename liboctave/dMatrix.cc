@@ -1462,8 +1462,8 @@ Matrix::expm (void) const
   int minus_one_j = -1;
   for (int j = 7; j >= 0; j--)
     {
-      npp = m * npp + m * padec[j];
-      dpp = m * dpp + m * (minus_one_j * padec[j]);
+      npp = (m * npp) + (m * padec[j]);
+      dpp = (m * dpp) + (m * (minus_one_j * padec[j]));
       minus_one_j *= -1;
     }
   
@@ -2218,7 +2218,7 @@ Matrix::diag (int k) const
 	}
     }
   else
-    cerr << "diag: requested diagonal out of range\n";
+    std::cerr << "diag: requested diagonal out of range\n";
 
   return d;
 }
@@ -2245,12 +2245,12 @@ Matrix::row_min (Array<int>& index) const
 
       for (int i = 0; i < nr; i++)
         {
-	  int idx = 0;
+	  int idx_j = 0;
 
-	  double tmp_min = elem (i, idx);
+	  double tmp_min = elem (i, idx_j);
 
 	  if (xisnan (tmp_min))
-	    idx = -1;
+	    idx_j = -1;
 	  else
 	    {
 	      for (int j = 1; j < nc; j++)
@@ -2259,19 +2259,19 @@ Matrix::row_min (Array<int>& index) const
 
 		  if (xisnan (tmp))
 		    {
-		      idx = -1;
+		      idx_j = -1;
 		      break;
 		    }
 		  else if (tmp < tmp_min)
 		    {
-		      idx = j;
+		      idx_j = j;
 		      tmp_min = tmp;
 		    }
 		}
 	    }
 
-	  result.elem (i) = (idx < 0) ? octave_NaN : tmp_min;
-	  index.elem (i) = idx;
+	  result.elem (i) = (idx_j < 0) ? octave_NaN : tmp_min;
+	  index.elem (i) = idx_j;
         }
     }
 
@@ -2300,12 +2300,12 @@ Matrix::row_max (Array<int>& index) const
 
       for (int i = 0; i < nr; i++)
         {
-	  int idx = 0;
+	  int idx_j = 0;
 
-	  double tmp_max = elem (i, idx);
+	  double tmp_max = elem (i, idx_j);
 
 	  if (xisnan (tmp_max))
-	    idx = -1;
+	    idx_j = -1;
 	  else
 	    {
 	      for (int j = 1; j < nc; j++)
@@ -2314,19 +2314,19 @@ Matrix::row_max (Array<int>& index) const
 
 		  if (xisnan (tmp))
 		    {
-		      idx = -1;
+		      idx_j = -1;
 		      break;
 		    }
 		  else if (tmp > tmp_max)
 		    {
-		      idx = j;
+		      idx_j = j;
 		      tmp_max = tmp;
 		    }
 		}
 	    }
 
-	  result.elem (i) = (idx < 0) ? octave_NaN : tmp_max;
-	  index.elem (i) = idx;
+	  result.elem (i) = (idx_j < 0) ? octave_NaN : tmp_max;
+	  index.elem (i) = idx_j;
         }
     }
 
@@ -2355,12 +2355,12 @@ Matrix::column_min (Array<int>& index) const
 
       for (int j = 0; j < nc; j++)
         {
-	  int idx = 0;
+	  int idx_i = 0;
 
-	  double tmp_min = elem (idx, j);
+	  double tmp_min = elem (idx_i, j);
 
 	  if (xisnan (tmp_min))
-	    idx = -1;
+	    idx_i = -1;
 	  else
 	    {
 	      for (int i = 1; i < nr; i++)
@@ -2369,19 +2369,19 @@ Matrix::column_min (Array<int>& index) const
 
 		  if (xisnan (tmp))
 		    {
-		      idx = -1;
+		      idx_i = -1;
 		      break;
 		    }
 		  else if (tmp < tmp_min)
 		    {
-		      idx = i;
+		      idx_i = i;
 		      tmp_min = tmp;
 		    }
 		}
 	    }
 
-	  result.elem (j) = (idx < 0) ? octave_NaN : tmp_min;
-	  index.elem (j) = idx;
+	  result.elem (j) = (idx_i < 0) ? octave_NaN : tmp_min;
+	  index.elem (j) = idx_i;
         }
     }
 
@@ -2410,12 +2410,12 @@ Matrix::column_max (Array<int>& index) const
 
       for (int j = 0; j < nc; j++)
         {
-	  int idx = 0;
+	  int idx_i = 0;
 
-	  double tmp_max = elem (idx, j);
+	  double tmp_max = elem (idx_i, j);
 
 	  if (xisnan (tmp_max))
-	    idx = -1;
+	    idx_i = -1;
 	  else
 	    {
 	      for (int i = 1; i < nr; i++)
@@ -2424,27 +2424,27 @@ Matrix::column_max (Array<int>& index) const
 
 		  if (xisnan (tmp))
 		    {
-		      idx = -1;
+		      idx_i = -1;
 		      break;
 		    }
 		  else if (tmp > tmp_max)
 		    {
-		      idx = i;
+		      idx_i = i;
 		      tmp_max = tmp;
 		    }
 		}
 	    }
 
-	  result.elem (j) = (idx < 0) ? octave_NaN : tmp_max;
-	  index.elem (j) = idx;
+	  result.elem (j) = (idx_i < 0) ? octave_NaN : tmp_max;
+	  index.elem (j) = idx_i;
         }
     }
 
   return result;
 }
 
-ostream&
-operator << (ostream& os, const Matrix& a)
+std::ostream&
+operator << (std::ostream& os, const Matrix& a)
 {
 //  int field_width = os.precision () + 7;
 
@@ -2457,14 +2457,14 @@ operator << (ostream& os, const Matrix& a)
   return os;
 }
 
-istream&
-operator >> (istream& is, Matrix& a)
+std::istream&
+operator >> (std::istream& is, Matrix& a)
 {
   int nr = a.rows ();
   int nc = a.cols ();
 
   if (nr < 1 || nc < 1)
-    is.clear (ios::badbit);
+    is.clear (std::ios::badbit);
   else
     {
       double tmp;
@@ -2485,8 +2485,8 @@ operator >> (istream& is, Matrix& a)
 }
 
 template <class T>
-static void
-read_int (istream& is, bool swap_bytes, T& val)
+void
+read_int (std::istream& is, bool swap_bytes, T& val)
 {
   is.read (X_CAST (char *, &val), sizeof (T));
 
@@ -2516,18 +2516,18 @@ read_int (istream& is, bool swap_bytes, T& val)
     }
 }
 
-template void read_int (istream&, bool, char&);
-template void read_int (istream&, bool, signed char&);
-template void read_int (istream&, bool, unsigned char&);
-template void read_int (istream&, bool, short&);
-template void read_int (istream&, bool, unsigned short&);
-template void read_int (istream&, bool, int&);
-template void read_int (istream&, bool, unsigned int&);
-template void read_int (istream&, bool, long&);
-template void read_int (istream&, bool, unsigned long&);
+template void read_int (std::istream&, bool, char&);
+template void read_int (std::istream&, bool, signed char&);
+template void read_int (std::istream&, bool, unsigned char&);
+template void read_int (std::istream&, bool, short&);
+template void read_int (std::istream&, bool, unsigned short&);
+template void read_int (std::istream&, bool, int&);
+template void read_int (std::istream&, bool, unsigned int&);
+template void read_int (std::istream&, bool, long&);
+template void read_int (std::istream&, bool, unsigned long&);
 
 static inline bool
-do_read (istream& is, oct_data_conv::data_type dt, 
+do_read (std::istream& is, oct_data_conv::data_type dt, 
 	 oct_mach_info::float_format flt_fmt, bool swap_bytes,
 	 bool do_float_conversion, double& val)
 {
@@ -2640,7 +2640,7 @@ do_read (istream& is, oct_data_conv::data_type dt,
 }
 
 int
-Matrix::read (istream& is, int nr, int nc,
+Matrix::read (std::istream& is, int nr, int nc,
 	      oct_data_conv::data_type dt, int skip,
 	      oct_mach_info::float_format flt_fmt)
 {
@@ -2736,7 +2736,7 @@ Matrix::read (istream& is, int nr, int nc,
 		    }
 
 		  if (ok && skip != 0)
-		    is.seekg (skip, ios::cur);
+		    is.seekg (skip, std::ios::cur);
 
 		  if (! ok || is.eof ())
 		    {
@@ -2792,8 +2792,8 @@ Matrix::read (istream& is, int nr, int nc,
 }
 
 template <class T>
-static void
-write_int (ostream& os, bool swap_bytes, T val)
+void
+write_int (std::ostream& os, bool swap_bytes, T val)
 {
   if (swap_bytes)
     {
@@ -2823,18 +2823,18 @@ write_int (ostream& os, bool swap_bytes, T val)
   os.write (X_CAST (char *, &val), sizeof (T));
 }
 
-template void write_int (ostream&, bool, char);
-template void write_int (ostream&, bool, signed char);
-template void write_int (ostream&, bool, unsigned char);
-template void write_int (ostream&, bool, short);
-template void write_int (ostream&, bool, unsigned short);
-template void write_int (ostream&, bool, int);
-template void write_int (ostream&, bool, unsigned int);
-template void write_int (ostream&, bool, long);
-template void write_int (ostream&, bool, unsigned long);
+template void write_int (std::ostream&, bool, char);
+template void write_int (std::ostream&, bool, signed char);
+template void write_int (std::ostream&, bool, unsigned char);
+template void write_int (std::ostream&, bool, short);
+template void write_int (std::ostream&, bool, unsigned short);
+template void write_int (std::ostream&, bool, int);
+template void write_int (std::ostream&, bool, unsigned int);
+template void write_int (std::ostream&, bool, long);
+template void write_int (std::ostream&, bool, unsigned long);
 
 static inline bool
-do_write (ostream& os, double d, oct_data_conv::data_type dt,
+do_write (std::ostream& os, double d, oct_data_conv::data_type dt,
 	  oct_mach_info::float_format flt_fmt, bool swap_bytes,
 	  bool do_float_conversion)
 {
@@ -2909,7 +2909,7 @@ do_write (ostream& os, double d, oct_data_conv::data_type dt,
 }
 
 int
-Matrix::write (ostream& os, oct_data_conv::data_type dt, int skip,
+Matrix::write (std::ostream& os, oct_data_conv::data_type dt, int skip,
 	       oct_mach_info::float_format flt_fmt)
 {
   int retval = -1;
@@ -2943,7 +2943,7 @@ Matrix::write (ostream& os, oct_data_conv::data_type dt, int skip,
       if (os)
 	{
 	  if (skip != 0)
-	    os.seekp (skip, ios::cur);
+	    os.seekp (skip, std::ios::cur);
 
 	  if (os)
 	    {
@@ -3086,13 +3086,13 @@ operator * (const Matrix& m, const Matrix& a)
 }
 
 MS_CMP_OPS(Matrix, , double, )
-MS_BOOL_OPS(Matrix, double)
+MS_BOOL_OPS(Matrix, double, 0.0)
 
 SM_CMP_OPS(double, , Matrix, )
-SM_BOOL_OPS(double, Matrix)
+SM_BOOL_OPS(double, Matrix, 0.0)
 
 MM_CMP_OPS(Matrix, , Matrix, )
-MM_BOOL_OPS(Matrix, Matrix)
+MM_BOOL_OPS(Matrix, Matrix, 0.0)
 
 /*
 ;;; Local Variables: ***

@@ -32,9 +32,9 @@ extern double D_NINT (double x);
 
 extern char *strsave (const char *);
 
-extern void octave_putenv (const string&, const string&);
+extern void octave_putenv (const std::string&, const std::string&);
 
-extern string octave_fgets (FILE *);
+extern std::string octave_fgets (std::FILE *);
 
 #endif
 

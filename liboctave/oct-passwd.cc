@@ -38,7 +38,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define NOT_SUPPORTED(nm) \
   nm ## ": not supported on this system"
 
-string
+std::string
 octave_passwd::name (void) const
 {
   if (! ok ())
@@ -47,7 +47,7 @@ octave_passwd::name (void) const
   return pw_name;
 }
 
-string
+std::string
 octave_passwd::passwd (void) const
 {
   if (! ok ())
@@ -74,7 +74,7 @@ octave_passwd::gid (void) const
   return pw_gid;
 }
 
-string
+std::string
 octave_passwd::gecos (void) const
 {
   if (! ok ())
@@ -83,7 +83,7 @@ octave_passwd::gecos (void) const
   return pw_gecos;
 }
 
-string
+std::string
 octave_passwd::dir (void) const
 {
   if (! ok ())
@@ -92,7 +92,7 @@ octave_passwd::dir (void) const
   return pw_dir;
 }
 
-string
+std::string
 octave_passwd::shell (void) const
 {
   if (! ok ())
@@ -104,15 +104,15 @@ octave_passwd::shell (void) const
 octave_passwd
 octave_passwd::getpwent (void)
 {
-  string msg;
+  std::string msg;
   return getpwent (msg);
 }
 
 octave_passwd
-octave_passwd::getpwent (string& msg)
+octave_passwd::getpwent (std::string& msg)
 {
 #if defined HAVE_GETPWENT
-  msg = string ();
+  msg = std::string ();
   return octave_passwd (::getpwent (), msg);
 #else
   msg = NOT_SUPPORTED ("getpwent");
@@ -123,15 +123,15 @@ octave_passwd::getpwent (string& msg)
 octave_passwd
 octave_passwd::getpwuid (uid_t uid)
 {
-  string msg;
+  std::string msg;
   return getpwuid (uid, msg);
 }
 
 octave_passwd
-octave_passwd::getpwuid (uid_t uid, string& msg)
+octave_passwd::getpwuid (uid_t uid, std::string& msg)
 {
 #if defined (HAVE_GETPWUID)
-  msg = string ();
+  msg = std::string ();
   return octave_passwd (::getpwuid (uid), msg);
 #else
   msg = NOT_SUPPORTED ("getpwuid");
@@ -140,17 +140,17 @@ octave_passwd::getpwuid (uid_t uid, string& msg)
 }
 
 octave_passwd
-octave_passwd::getpwnam (const string& nm)
+octave_passwd::getpwnam (const std::string& nm)
 {
-  string msg;
+  std::string msg;
   return getpwnam (nm, msg);
 }
 
 octave_passwd
-octave_passwd::getpwnam (const string& nm, string& msg)
+octave_passwd::getpwnam (const std::string& nm, std::string& msg)
 {
 #if defined (HAVE_GETPWNAM)
-  msg = string ();
+  msg = std::string ();
   return octave_passwd (::getpwnam (nm.c_str ()), msg);
 #else
   msg = NOT_SUPPORTED ("getpwnam");
@@ -161,15 +161,15 @@ octave_passwd::getpwnam (const string& nm, string& msg)
 int
 octave_passwd::setpwent (void)
 {
-  string msg;
+  std::string msg;
   return setpwent (msg);
 }
 
 int
-octave_passwd::setpwent (string& msg)
+octave_passwd::setpwent (std::string& msg)
 {
 #if defined (HAVE_SETPWENT)
-  msg = string ();
+  msg = std::string ();
   ::setpwent ();
   return 0;
 #else
@@ -181,15 +181,15 @@ octave_passwd::setpwent (string& msg)
 int
 octave_passwd::endpwent (void)
 {
-  string msg;
+  std::string msg;
   return endpwent (msg);
 }
 
 int
-octave_passwd::endpwent (string& msg)
+octave_passwd::endpwent (std::string& msg)
 {
 #if defined (HAVE_ENDPWENT)
-  msg = string ();
+  msg = std::string ();
   ::endpwent ();
   return 0;
 #else
@@ -198,12 +198,12 @@ octave_passwd::endpwent (string& msg)
 #endif
 }
 
-octave_passwd::octave_passwd (void *p, string& msg)
+octave_passwd::octave_passwd (void *p, std::string& msg)
   : pw_name (), pw_passwd (), pw_uid (0), pw_gid (0), pw_gecos (),
     pw_dir (), pw_shell (), valid (false)
 {
 #if defined (HAVE_PWD_H)
-  msg = string ();
+  msg = std::string ();
 
   if (p)
     {

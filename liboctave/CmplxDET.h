@@ -65,7 +65,7 @@ public:
 
   Complex value (void) const;
 
-  friend ostream&  operator << (ostream& os, const ComplexDET& a);
+  friend std::ostream&  operator << (std::ostream& os, const ComplexDET& a);
 
 private:
 

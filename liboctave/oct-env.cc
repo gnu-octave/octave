@@ -41,6 +41,7 @@ Free Software Foundation, Inc.
 #endif
 
 #include <cstdlib>
+#include <string>
 
 #ifdef HAVE_UNISTD_H
 #ifdef HAVE_SYS_TYPES_H
@@ -91,109 +92,109 @@ octave_env::instance_ok (void)
   return retval;
 }
 
-string
-octave_env::polite_directory_format (const string& name)
+std::string
+octave_env::polite_directory_format (const std::string& name)
 {
   return (instance_ok ())
-    ? instance->do_polite_directory_format (name) : string ();
+    ? instance->do_polite_directory_format (name) : std::string ();
 }
 
 bool
-octave_env::absolute_pathname (const string& s)
+octave_env::absolute_pathname (const std::string& s)
 {
   return (instance_ok ())
     ? instance->do_absolute_pathname (s) : false;
 }
 
-string
-octave_env::base_pathname (const string& s)
+std::string
+octave_env::base_pathname (const std::string& s)
 {
   return (instance_ok ())
-    ? instance->do_base_pathname (s) : string ();
+    ? instance->do_base_pathname (s) : std::string ();
 }
 
-string
-octave_env::make_absolute (const string& s, const string& dot_path)
+std::string
+octave_env::make_absolute (const std::string& s, const std::string& dot_path)
 {
   return (instance_ok ())
-    ? instance->do_make_absolute (s, dot_path) : string ();
+    ? instance->do_make_absolute (s, dot_path) : std::string ();
 }
 
-string
+std::string
 octave_env::getcwd ()
 {
   return (instance_ok ())
-    ? instance->do_getcwd () : string ();
+    ? instance->do_getcwd () : std::string ();
 }
 
-string
+std::string
 octave_env::get_home_directory ()
 {
   return (instance_ok ())
-    ? instance->do_get_home_directory () : string ();
+    ? instance->do_get_home_directory () : std::string ();
 }
 
-string
+std::string
 octave_env::get_program_name (void)
 {
   return (instance_ok ())
-    ? instance->program_name : string ();
+    ? instance->program_name : std::string ();
 }
 
-string
+std::string
 octave_env::get_program_invocation_name (void)
 {
   return (instance_ok ())
-    ? instance->program_invocation_name : string ();
+    ? instance->program_invocation_name : std::string ();
 }
 
 void
-octave_env::set_program_name (const string& s)
+octave_env::set_program_name (const std::string& s)
 {
   if (instance_ok ())
     instance->do_set_program_name (s);
 }
 
-string
+std::string
 octave_env::get_user_name (void)
 {
   return (instance_ok ())
-    ? instance->do_get_user_name () : string ();
+    ? instance->do_get_user_name () : std::string ();
 }
 
-string
+std::string
 octave_env::get_host_name (void)
 {
   return (instance_ok ())
-    ? instance->do_get_host_name () : string ();
+    ? instance->do_get_host_name () : std::string ();
 }
 
 // XXX FIXME XXX -- this leaves no way to distinguish between a
 // variable that is not set and one that is set to the empty string.
 // Is this a problem?
 
-string
-octave_env::getenv (const string& name)
+std::string
+octave_env::getenv (const std::string& name)
 {
   return (instance_ok ())
-    ? instance->do_getenv (name) : string ();
+    ? instance->do_getenv (name) : std::string ();
 }
 
 void
-octave_env::putenv (const string& name, const string& value)
+octave_env::putenv (const std::string& name, const std::string& value)
 {
   octave_putenv (name, value);
 }
 
 bool
-octave_env::chdir (const string& newdir)
+octave_env::chdir (const std::string& newdir)
 {
   return (instance_ok ())
     ? instance->do_chdir (newdir) : false;
 }
 
 void
-octave_env::do_set_program_name (const string& s) const
+octave_env::do_set_program_name (const std::string& s) const
 {
   program_invocation_name = s;
 
@@ -206,12 +207,12 @@ octave_env::do_set_program_name (const string& s) const
 // Return a pretty pathname.  If the first part of the pathname is the
 // same as $HOME, then replace that with `~'.
 
-string
-octave_env::do_polite_directory_format (const string& name) const
+std::string
+octave_env::do_polite_directory_format (const std::string& name) const
 {
-  string retval;
+  std::string retval;
 
-  string home_dir = do_get_home_directory ();
+  std::string home_dir = do_get_home_directory ();
 
   size_t len = home_dir.length ();
 
@@ -230,7 +231,7 @@ octave_env::do_polite_directory_format (const string& name) const
 // Return 1 if STRING contains an absolute pathname, else 0.
 
 bool
-octave_env::do_absolute_pathname (const string& s) const
+octave_env::do_absolute_pathname (const std::string& s) const
 {
   if (s.empty ())
     return 0;
@@ -254,8 +255,8 @@ octave_env::do_absolute_pathname (const string& s) const
 // Return the `basename' of the pathname in STRING (the stuff after
 // the last '/').  If STRING is not a full pathname, simply return it.
 
-string
-octave_env::do_base_pathname (const string& s) const
+std::string
+octave_env::do_base_pathname (const std::string& s) const
 {
   if (! do_absolute_pathname (s))
     return s;
@@ -271,8 +272,9 @@ octave_env::do_base_pathname (const string& s) const
 // Turn STRING (a pathname) into an absolute pathname, assuming that
 // DOT_PATH contains the symbolic location of '.'.
 
-string
-octave_env::do_make_absolute (const string& s, const string& dot_path) const
+std::string
+octave_env::do_make_absolute (const std::string& s,
+			      const std::string& dot_path) const
 {
 #if defined (__EMX__)
   if (s.length () > 1 && s[1] == ':')
@@ -282,7 +284,7 @@ octave_env::do_make_absolute (const string& s, const string& dot_path) const
   if (dot_path.empty () || s[0] == '/' || s.empty ())
     return s;
 
-  string current_path = dot_path;
+  std::string current_path = dot_path;
 
   if (current_path.empty ())
     current_path = "./";
@@ -340,7 +342,7 @@ octave_env::do_make_absolute (const string& s, const string& dot_path) const
 
 // Return a consed string which is the current working directory.
 
-string
+std::string
 octave_env::do_getcwd ()
 {
   if (! follow_symbolic_links)
@@ -355,22 +357,22 @@ octave_env::do_getcwd ()
 // This value is not cached because it can change while Octave is
 // running.
 
-string
+std::string
 octave_env::do_get_home_directory (void) const
 {
-  string hd = do_getenv ("HOME");
+  std::string hd = do_getenv ("HOME");
 
   if (hd.empty ())
     {
       octave_passwd pw = octave_passwd::getpwuid (octave_syscalls::getuid ());
 
-      hd = pw ? pw.dir () : string ("/");
+      hd = pw ? pw.dir () : std::string ("/");
     }
 
   return hd;
 }
 
-string
+std::string
 octave_env::do_get_user_name (void) const
 {
   // XXX FIXME XXX -- is it possible for this to change while Octave
@@ -380,13 +382,13 @@ octave_env::do_get_user_name (void) const
     {
       octave_passwd pw = octave_passwd::getpwuid (octave_syscalls::getuid ());
 
-      user_name = pw ? pw.name () : string ("unknown");
+      user_name = pw ? pw.name () : std::string ("unknown");
     }
 
   return user_name;
 }
 
-string
+std::string
 octave_env::do_get_host_name (void) const
 {
   // XXX FIXME XXX -- is it possible for this to change while Octave
@@ -404,8 +406,8 @@ octave_env::do_get_host_name (void) const
   return host_name;
 }
 
-string
-octave_env::do_getenv (const string& name) const
+std::string
+octave_env::do_getenv (const std::string& name) const
 {
   char *value = ::getenv (name.c_str ());
 
@@ -416,11 +418,11 @@ octave_env::do_getenv (const string& name) const
 // link following, etc.
 
 bool
-octave_env::do_chdir (const string& newdir)
+octave_env::do_chdir (const std::string& newdir)
 {
   bool retval = false;
 
-  string tmp;
+  std::string tmp;
 
   if (follow_symbolic_links)
     {
@@ -457,7 +459,7 @@ octave_env::do_chdir (const string& newdir)
 // Remove the last N directories from PATH.
 
 void
-octave_env::pathname_backup (string& path, int n) const
+octave_env::pathname_backup (std::string& path, int n) const
 {
   if (path.empty ())
     return;
@@ -485,7 +487,7 @@ octave_env::error (int err_num) const
 }
 
 void
-octave_env::error (const string& s) const
+octave_env::error (const std::string& s) const
 {
   (*current_liboctave_error_handler) ("%s", s.c_str ());
 }

@@ -73,7 +73,7 @@ public:
 
   ComplexMatrix right_singular_matrix (void) const;
 
-  friend ostream&  operator << (ostream& os, const ComplexSVD& a);
+  friend std::ostream&  operator << (std::ostream& os, const ComplexSVD& a);
 
 private:
 

@@ -63,7 +63,7 @@ public:
 
   double value (void) const;
 
-  friend ostream&  operator << (ostream& os, const DET& a);
+  friend std::ostream&  operator << (std::ostream& os, const DET& a);
 
 private:
 

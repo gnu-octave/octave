@@ -304,8 +304,8 @@ RowVector::max (void) const
   return res;
 }
 
-ostream&
-operator << (ostream& os, const RowVector& a)
+std::ostream&
+operator << (std::ostream& os, const RowVector& a)
 {
 //  int field_width = os.precision () + 7;
 
@@ -314,13 +314,13 @@ operator << (ostream& os, const RowVector& a)
   return os;
 }
 
-istream&
-operator >> (istream& is, RowVector& a)
+std::istream&
+operator >> (std::istream& is, RowVector& a)
 {
   int len = a.length();
 
   if (len < 1)
-    is.clear (ios::badbit);
+    is.clear (std::ios::badbit);
   else
     {
       double tmp;

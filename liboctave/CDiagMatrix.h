@@ -106,31 +106,6 @@ public:
   ComplexDiagMatrix& operator += (const ComplexDiagMatrix& a);
   ComplexDiagMatrix& operator -= (const ComplexDiagMatrix& a);
 
-  // diagonal matrix by scalar -> diagonal matrix operations
-
-  friend ComplexDiagMatrix operator * (const ComplexDiagMatrix& a, double s);
-  friend ComplexDiagMatrix operator / (const ComplexDiagMatrix& a, double s);
-
-  friend ComplexDiagMatrix operator * (const DiagMatrix& a, const Complex& s);
-  friend ComplexDiagMatrix operator / (const DiagMatrix& a, const Complex& s);
-
-  // scalar by diagonal matrix -> diagonal matrix operations
-
-  friend ComplexDiagMatrix operator * (double s, const ComplexDiagMatrix& a);
-
-  friend ComplexDiagMatrix operator * (const Complex& s, const DiagMatrix& a);
-
-  // diagonal matrix by diagonal matrix -> diagonal matrix operations
-
-  friend ComplexDiagMatrix operator * (const ComplexDiagMatrix& a,
-				       const ComplexDiagMatrix& b);
-
-  friend ComplexDiagMatrix operator * (const ComplexDiagMatrix& a,
-				       const DiagMatrix& b);
-
-  friend ComplexDiagMatrix operator * (const DiagMatrix& a,
-				       const ComplexDiagMatrix& b);
-
   // other operations
 
   ComplexColumnVector diag (void) const;
@@ -138,13 +113,24 @@ public:
 
   // i/o
 
-  friend ostream& operator << (ostream& os, const ComplexDiagMatrix& a);
+  friend std::ostream& operator << (std::ostream& os, const ComplexDiagMatrix& a);
 
 private:
 
   ComplexDiagMatrix (Complex *d, int nr, int nc)
     : MDiagArray2<Complex> (d, nr, nc) { }
 };
+
+// diagonal matrix by diagonal matrix -> diagonal matrix operations
+
+ComplexDiagMatrix
+operator * (const ComplexDiagMatrix& a, const ComplexDiagMatrix& b);
+
+ComplexDiagMatrix
+operator * (const ComplexDiagMatrix& a, const DiagMatrix& b);
+
+ComplexDiagMatrix
+operator * (const DiagMatrix& a, const ComplexDiagMatrix& b);
 
 #endif
 

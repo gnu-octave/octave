@@ -69,8 +69,8 @@ public:
 #if 0
   // i/o
 
-  friend ostream& operator << (ostream& os, const Matrix& a);
-  friend istream& operator >> (istream& is, Matrix& a);
+  friend std::ostream& operator << (std::ostream& os, const Matrix& a);
+  friend std::istream& operator >> (std::istream& is, Matrix& a);
 #endif
 
 private:

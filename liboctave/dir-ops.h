@@ -32,7 +32,7 @@ dir_entry
 {
 public:
 
-  dir_entry (const string& n = string ()) : name (n), dir (0)
+  dir_entry (const std::string& n = std::string ()) : name (n), dir (0)
     {
       if (! name.empty ())
         open ();
@@ -50,7 +50,7 @@ public:
 
   ~dir_entry (void) { close (); }
 
-  bool open (const string& = string ());
+  bool open (const std::string& = std::string ());
 
   string_vector read (void);
 
@@ -60,12 +60,12 @@ public:
 
   operator bool () const { return ok (); }
 
-  string error (void) const { return ok () ? string () : errmsg; }
+  std::string error (void) const { return ok () ? std::string () : errmsg; }
 
 private:
 
   // Name of the directory.
-  string name;
+  std::string name;
 
   // A pointer to the contents of the directory.  We use void here to
   // avoid possible conflicts with the way some systems declare the
@@ -76,7 +76,7 @@ private:
   bool fail;
 
   // If a failure occurs, this contains the system error text.
-  string errmsg;
+  std::string errmsg;
 
   void copy (const dir_entry&);
 };

@@ -2,48 +2,32 @@
 // have been nice to do this with template functions but as of 2.5.x,
 // g++ seems to fail to resolve them properly.
 
-#define DO_VS_OP(OP) \
-  int l = a.length (); \
-  T *result = 0; \
+#define DO_VS_OP(r, l, v, OP, s) \
   if (l > 0) \
     { \
-      result = new T [l]; \
-      const T *x = a.data (); \
       for (int i = 0; i < l; i++) \
-	result[i] = x[i] OP s; \
+	r[i] = v[i] OP s; \
     }
 
-#define DO_SV_OP(OP) \
-  int l = a.length (); \
-  T *result = 0; \
+#define DO_SV_OP(r, l, s, OP, v) \
   if (l > 0) \
     { \
-      result = new T [l]; \
-      const T *x = a.data (); \
       for (int i = 0; i < l; i++) \
-	result[i] = s OP x[i]; \
+	r[i] = s OP v[i]; \
     }
 
-#define DO_VV_OP(OP) \
-  T *result = 0; \
+#define DO_VV_OP(r, l, x, OP, y) \
   if (l > 0) \
     { \
-      result = new T [l]; \
-      const T *x = a.data (); \
-      const T *y = b.data (); \
       for (int i = 0; i < l; i++) \
-	result[i] = x[i] OP y[i]; \
+	r[i] = x[i] OP y[i]; \
     }
 
-#define NEG_V \
-  int l = a.length (); \
-  T *result = 0; \
+#define NEG_V(r, l, x) \
   if (l > 0) \
     { \
-      result = new T [l]; \
-      const T *x = a.data (); \
       for (int i = 0; i < l; i++) \
-	result[i] = -x[i]; \
+	r[i] = -x[i]; \
     }
 
 #define DO_VS_OP2(OP) \

@@ -31,26 +31,26 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 static int
 str_vec_compare (const void *a_arg, const void *b_arg)
 {
-  const string *a = (const string *) a_arg;
-  const string *b = (const string *) b_arg;
+  const std::string *a = (const std::string *) a_arg;
+  const std::string *b = (const std::string *) b_arg;
 
   return a->compare (*b);
 }
 
 class
-string_vector : public Array<string>
+string_vector : public Array<std::string>
 {
 public:
 
-  string_vector (void) : Array<string> () { }
+  string_vector (void) : Array<std::string> () { }
 
-  string_vector (int n) : Array<string> (n) { }
+  string_vector (int n) : Array<std::string> (n) { }
 
-  string_vector (const char *s) : Array<string> (1, s) { }
+  string_vector (const char *s) : Array<std::string> (1, s) { }
 
-  string_vector (const string& s) : Array<string> (1, s) { }
+  string_vector (const std::string& s) : Array<std::string> (1, s) { }
 
-  string_vector (const string_vector& s) : Array<string> (s) { }
+  string_vector (const string_vector& s) : Array<std::string> (s) { }
 
   string_vector (const char * const *s);
 
@@ -59,7 +59,7 @@ public:
   string_vector& operator = (const string_vector& s)
   {
     if (this != &s)
-      Array<string>::operator = (s);
+      Array<std::string>::operator = (s);
 
     return *this;
   }
@@ -84,13 +84,13 @@ public:
     return longest;
   }
 
-  string& operator[] (int i) { return Array<string>::elem (i); }
+  std::string& operator[] (int i) { return Array<std::string>::elem (i); }
 
-  string operator[] (int i) const { return Array<string>::elem (i); }
+  std::string operator[] (int i) const { return Array<std::string>::elem (i); }
 
   string_vector& qsort (bool make_unique = false)
   {
-    Array<string>::qsort (str_vec_compare);
+    Array<std::string>::qsort (str_vec_compare);
 
     if (make_unique)
       uniq ();
@@ -104,7 +104,7 @@ public:
 
   static void delete_c_str_vec (const char * const*);
 
-  ostream& list_in_columns (ostream&) const;
+  std::ostream& list_in_columns (std::ostream&) const;
 };
 
 #endif

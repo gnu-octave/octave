@@ -39,15 +39,15 @@ public:
 
   typedef int (*fcn) (...);
 
-  typedef string (*completion_fcn) (const string&, int);
+  typedef std::string (*completion_fcn) (const std::string&, int);
 
   virtual ~command_editor (void) { }
 
-  static void set_name (const string& n);
+  static void set_name (const std::string& n);
 
-  static string readline (const string& prompt);
+  static std::string readline (const std::string& prompt);
 
-  static string readline (const string& prompt, bool& eof);
+  static std::string readline (const std::string& prompt, bool& eof);
 
   static void set_input_stream (FILE *f);
 
@@ -65,13 +65,13 @@ public:
 
   static void resize_terminal (void);
 
-  static string decode_prompt_string (const string& s);
+  static std::string decode_prompt_string (const std::string& s);
 
   static void restore_terminal_state (void);
 
   static void blink_matching_paren (bool flag);
 
-  static void set_basic_quote_characters (const string& s);
+  static void set_basic_quote_characters (const std::string& s);
 
   static void set_completion_append_character (char c);
 
@@ -79,7 +79,7 @@ public:
 
   static completion_fcn get_completion_function (void);
 
-  static void insert_text (const string& text);
+  static void insert_text (const std::string& text);
 
   static void newline (void);
 
@@ -93,7 +93,7 @@ public:
 
   static void restore_event_hook (void);
 
-  static void read_init_file (const string& file = string ());
+  static void read_init_file (const std::string& file = std::string ());
 
   static int current_command_number (void);
 
@@ -122,16 +122,16 @@ protected:
   // class from command_editor, overload these functions as
   // necessary, and make instance point to the new class.
 
-  virtual void do_set_name (const string&) { }
+  virtual void do_set_name (const std::string&) { }
 
-  string do_readline (const string& prompt)
+  std::string do_readline (const std::string& prompt)
     {
       bool eof;
 
       return do_readline (prompt, eof);
     }
 
-  virtual string do_readline (const string&, bool&) = 0;
+  virtual std::string do_readline (const std::string&, bool&) = 0;
 
   virtual void do_set_input_stream (FILE *) = 0;
 
@@ -149,15 +149,15 @@ protected:
 
   virtual void do_resize_terminal (void) { }
 
-  virtual string do_decode_prompt_string (const string&);
+  virtual std::string do_decode_prompt_string (const std::string&);
 
-  virtual string newline_chars (void) { return "\n"; } 
+  virtual std::string newline_chars (void) { return "\n"; } 
 
   virtual void do_restore_terminal_state (void) { }
 
   virtual void do_blink_matching_paren (bool) { }
 
-  virtual void do_set_basic_quote_characters (const string&) { }
+  virtual void do_set_basic_quote_characters (const std::string&) { }
 
   virtual void do_set_completion_append_character (char) { }
 
@@ -165,7 +165,7 @@ protected:
 
   virtual completion_fcn do_get_completion_function (void) const { return 0; }
 
-  virtual void do_insert_text (const string&) = 0;
+  virtual void do_insert_text (const std::string&) = 0;
 
   virtual void do_newline (void) = 0;
 
@@ -179,13 +179,13 @@ protected:
 
   virtual void do_restore_event_hook (void) { }
 
-  virtual void do_read_init_file (const string&) { }
+  virtual void do_read_init_file (const std::string&) { }
 
-  int read_octal (const string& s);
+  int read_octal (const std::string& s);
 
   void error (int);
 
-  void error (const string&);
+  void error (const std::string&);
 
   // The current command number.
   int command_number;

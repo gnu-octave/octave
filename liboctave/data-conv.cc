@@ -102,7 +102,7 @@ init_sized_type_lookup_table (oct_data_conv::data_type table[3][4])
 }
 
 oct_data_conv::data_type
-oct_data_conv::string_to_data_type (const string& str)
+oct_data_conv::string_to_data_type (const std::string& str)
 {
   data_type retval = dt_unknown;
 
@@ -123,7 +123,7 @@ oct_data_conv::string_to_data_type (const string& str)
 
   int k = 0;
 
-  string s (n, ' ');
+  std::string s (n, ' ');
 
   for (int i = 0; i < n; i++)
     if (! isspace (str[i]))
@@ -685,7 +685,7 @@ do_float_format_conversion (float *data, int len,
 }
 
 void
-read_doubles (istream& is, double *data, save_type type, int len,
+read_doubles (std::istream& is, double *data, save_type type, int len,
 	      int swap, oct_mach_info::float_format fmt)
 {
   switch (type)
@@ -732,13 +732,13 @@ read_doubles (istream& is, double *data, save_type type, int len,
       break;
 
     default:
-      is.clear (ios::failbit|is.rdstate ());
+      is.clear (std::ios::failbit|is.rdstate ());
       break;
     }
 }
 
 void
-write_doubles (ostream& os, const double *data, save_type type, int len)
+write_doubles (std::ostream& os, const double *data, save_type type, int len)
 {
   switch (type)
     {

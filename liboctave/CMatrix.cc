@@ -2551,7 +2551,7 @@ ComplexMatrix::diag (int k) const
 	}
     }
   else
-    cerr << "diag: requested diagonal out of range\n";
+    std::cerr << "diag: requested diagonal out of range\n";
 
   return d;
 }
@@ -2616,16 +2616,16 @@ ComplexMatrix::row_min (Array<int>& index) const
 
       for (int i = 0; i < nr; i++)
         {
-	  int idx = 0;
+	  int idx_j = 0;
 
-	  Complex tmp_min = elem (i, idx);
+	  Complex tmp_min = elem (i, idx_j);
 
 	  bool real_only = row_is_real_only (i);
 
 	  double abs_min = real_only ? real (tmp_min) : abs (tmp_min);
 
 	  if (xisnan (tmp_min))
-	    idx = -1;
+	    idx_j = -1;
 	  else
 	    {
 	      for (int j = 1; j < nc; j++)
@@ -2636,19 +2636,19 @@ ComplexMatrix::row_min (Array<int>& index) const
 
 		  if (xisnan (tmp))
 		    {
-		      idx = -1;
+		      idx_j = -1;
 		      break;
 		    }
 		  else if (abs_tmp < abs_min)
 		    {
-		      idx = j;
+		      idx_j = j;
 		      tmp_min = tmp;
 		      abs_min = abs_tmp;
 		    }
 		}
 
-	      result.elem (i) = (idx < 0) ? Complex_NaN_result : tmp_min;
-	      index.elem (i) = idx;
+	      result.elem (i) = (idx_j < 0) ? Complex_NaN_result : tmp_min;
+	      index.elem (i) = idx_j;
 	    }
         }
     }
@@ -2678,16 +2678,16 @@ ComplexMatrix::row_max (Array<int>& index) const
 
       for (int i = 0; i < nr; i++)
         {
-	  int idx = 0;
+	  int idx_j = 0;
 
-	  Complex tmp_max = elem (i, idx);
+	  Complex tmp_max = elem (i, idx_j);
 
 	  bool real_only = row_is_real_only (i);
 
 	  double abs_max = real_only ? real (tmp_max) : abs (tmp_max);
 
 	  if (xisnan (tmp_max))
-	    idx = -1;
+	    idx_j = -1;
 	  else
 	    {
 	      for (int j = 1; j < nc; j++)
@@ -2698,19 +2698,19 @@ ComplexMatrix::row_max (Array<int>& index) const
 
 		  if (xisnan (tmp))
 		    {
-		      idx = -1;
+		      idx_j = -1;
 		      break;
 		    }
 		  else if (abs_tmp > abs_max)
 		    {
-		      idx = j;
+		      idx_j = j;
 		      tmp_max = tmp;
 		      abs_max = abs_tmp;
 		    }
 		}
 
-	      result.elem (i) = (idx < 0) ? Complex_NaN_result : tmp_max;
-	      index.elem (i) = idx;
+	      result.elem (i) = (idx_j < 0) ? Complex_NaN_result : tmp_max;
+	      index.elem (i) = idx_j;
 	    }
         }
     }
@@ -2740,16 +2740,16 @@ ComplexMatrix::column_min (Array<int>& index) const
 
       for (int j = 0; j < nc; j++)
         {
-	  int idx = 0;
+	  int idx_i = 0;
 
-	  Complex tmp_min = elem (idx, j);
+	  Complex tmp_min = elem (idx_i, j);
 
 	  bool real_only = column_is_real_only (j);
 
 	  double abs_min = real_only ? real (tmp_min) : abs (tmp_min);
 
 	  if (xisnan (tmp_min))
-	    idx = -1;
+	    idx_i = -1;
 	  else
 	    {
 	      for (int i = 1; i < nr; i++)
@@ -2760,19 +2760,19 @@ ComplexMatrix::column_min (Array<int>& index) const
 
 		  if (xisnan (tmp))
 		    {
-		      idx = -1;
+		      idx_i = -1;
 		      break;
 		    }
 		  else if (abs_tmp < abs_min)
 		    {
-		      idx = i;
+		      idx_i = i;
 		      tmp_min = tmp;
 		      abs_min = abs_tmp;
 		    }
 		}
 
-	      result.elem (j) = (idx < 0) ? Complex_NaN_result : tmp_min;
-	      index.elem (j) = idx;
+	      result.elem (j) = (idx_i < 0) ? Complex_NaN_result : tmp_min;
+	      index.elem (j) = idx_i;
 	    }
         }
     }
@@ -2802,16 +2802,16 @@ ComplexMatrix::column_max (Array<int>& index) const
 
       for (int j = 0; j < nc; j++)
         {
-	  int idx = 0;
+	  int idx_i = 0;
 
-	  Complex tmp_max = elem (idx, j);
+	  Complex tmp_max = elem (idx_i, j);
 
 	  bool real_only = column_is_real_only (j);
 
 	  double abs_max = real_only ? real (tmp_max) : abs (tmp_max);
 
 	  if (xisnan (tmp_max))
-	    idx = -1;
+	    idx_i = -1;
 	  else
 	    {
 	      for (int i = 1; i < nr; i++)
@@ -2822,19 +2822,19 @@ ComplexMatrix::column_max (Array<int>& index) const
 
 		  if (xisnan (tmp))
 		    {
-		      idx = -1;
+		      idx_i = -1;
 		      break;
 		    }
 		  else if (abs_tmp > abs_max)
 		    {
-		      idx = i;
+		      idx_i = i;
 		      tmp_max = tmp;
 		      abs_max = abs_tmp;
 		    }
 		}
 
-	      result.elem (j) = (idx < 0) ? Complex_NaN_result : tmp_max;
-	      index.elem (j) = idx;
+	      result.elem (j) = (idx_i < 0) ? Complex_NaN_result : tmp_max;
+	      index.elem (j) = idx_i;
 	    }
         }
     }
@@ -2844,8 +2844,8 @@ ComplexMatrix::column_max (Array<int>& index) const
 
 // i/o
 
-ostream&
-operator << (ostream& os, const ComplexMatrix& a)
+std::ostream&
+operator << (std::ostream& os, const ComplexMatrix& a)
 {
 //  int field_width = os.precision () + 7;
   for (int i = 0; i < a.rows (); i++)
@@ -2857,14 +2857,14 @@ operator << (ostream& os, const ComplexMatrix& a)
   return os;
 }
 
-istream&
-operator >> (istream& is, ComplexMatrix& a)
+std::istream&
+operator >> (std::istream& is, ComplexMatrix& a)
 {
   int nr = a.rows ();
   int nc = a.cols ();
 
   if (nr < 1 || nc < 1)
-    is.clear (ios::badbit);
+    is.clear (std::ios::badbit);
   else
     {
       Complex tmp;
@@ -3008,13 +3008,13 @@ operator * (const ComplexMatrix& m, const ComplexMatrix& a)
 }
 
 MS_CMP_OPS(ComplexMatrix, real, Complex, real)
-MS_BOOL_OPS(ComplexMatrix, Complex)
+MS_BOOL_OPS(ComplexMatrix, Complex, 0.0)
 
 SM_CMP_OPS(Complex, real, ComplexMatrix, real)
-SM_BOOL_OPS(Complex, ComplexMatrix)
+SM_BOOL_OPS(Complex, ComplexMatrix, 0.0)
 
 MM_CMP_OPS(ComplexMatrix, real, ComplexMatrix, real)
-MM_BOOL_OPS(ComplexMatrix, ComplexMatrix)
+MM_BOOL_OPS(ComplexMatrix, ComplexMatrix, 0.0)
 
 /*
 ;;; Local Variables: ***

@@ -34,67 +34,67 @@ protected:
 
 public:
 
-  static string polite_directory_format (const string& name);
+  static std::string polite_directory_format (const std::string& name);
 
-  static bool absolute_pathname (const string& s);
+  static bool absolute_pathname (const std::string& s);
 
-  static string base_pathname (const string& s);
+  static std::string base_pathname (const std::string& s);
 
-  static string make_absolute (const string& s, const string& dot_path);
+  static std::string make_absolute (const std::string& s, const std::string& dot_path);
 
-  static string getcwd (void);
+  static std::string getcwd (void);
 
-  static string get_home_directory (void);
+  static std::string get_home_directory (void);
 
-  static string get_program_name (void);
+  static std::string get_program_name (void);
 
-  static string get_program_invocation_name (void);
+  static std::string get_program_invocation_name (void);
 
-  static string get_user_name (void);
+  static std::string get_user_name (void);
 
-  static string get_host_name (void);
+  static std::string get_host_name (void);
 
-  static string getenv (const string& name);
+  static std::string getenv (const std::string& name);
 
-  static void putenv (const string& name, const string& value);
+  static void putenv (const std::string& name, const std::string& value);
 
-  static bool chdir (const string& newdir);
+  static bool chdir (const std::string& newdir);
 
-  static void set_program_name (const string& s);
+  static void set_program_name (const std::string& s);
 
 private:
 
   static bool instance_ok (void);
 
-  string do_polite_directory_format (const string& name) const;
+  std::string do_polite_directory_format (const std::string& name) const;
 
-  bool do_absolute_pathname (const string& s) const;
+  bool do_absolute_pathname (const std::string& s) const;
 
-  string do_base_pathname (const string& s) const;
+  std::string do_base_pathname (const std::string& s) const;
 
-  string do_make_absolute (const string& s, const string& dot_path) const;
+  std::string do_make_absolute (const std::string& s, const std::string& dot_path) const;
 
-  string do_getcwd (void);
+  std::string do_getcwd (void);
 
-  string do_get_home_directory (void) const;
+  std::string do_get_home_directory (void) const;
 
-  string do_get_user_name (void) const;
+  std::string do_get_user_name (void) const;
 
-  string do_get_host_name (void) const;
+  std::string do_get_host_name (void) const;
 
-  string do_getenv (const string& name) const;
+  std::string do_getenv (const std::string& name) const;
 
-  void do_putenv (const string& name, const string& value) const;
+  void do_putenv (const std::string& name, const std::string& value) const;
 
-  bool do_chdir (const string& newdir);
+  bool do_chdir (const std::string& newdir);
 
-  void do_set_program_name (const string& s) const;
+  void do_set_program_name (const std::string& s) const;
 
-  void pathname_backup (string& path, int n) const;
+  void pathname_backup (std::string& path, int n) const;
 
   void error (int) const;
 
-  void error (const string&) const;
+  void error (const std::string&) const;
 
   // No copying!
 
@@ -114,16 +114,16 @@ private:
   bool verbatim_pwd;
 
   // Where are we?
-  string current_directory;
+  std::string current_directory;
 
   // Etc.
-  mutable string program_name;
+  mutable std::string program_name;
 
-  mutable string program_invocation_name;
+  mutable std::string program_invocation_name;
 
-  mutable string user_name;
+  mutable std::string user_name;
 
-  mutable string host_name;
+  mutable std::string host_name;
 };
 
 #endif

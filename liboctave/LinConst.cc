@@ -41,8 +41,8 @@ LinConst::error (const char* msg)
   (*current_liboctave_error_handler) ("fatal LinConst error: %s", msg);
 }
 
-ostream&
-operator << (ostream& os, const LinConst& c)
+std::ostream&
+operator << (std::ostream& os, const LinConst& c)
 {
   for (int i = 0; i < c.size (); i++)
     os << c.lower_bound (i) << " " << c.upper_bound (i) << "\n";

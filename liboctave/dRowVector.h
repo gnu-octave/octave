@@ -33,8 +33,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class RowVector : public MArray<double>
 {
-friend class ColumnVector;
-
 public:
 
   RowVector (void) : MArray<double> () { }
@@ -90,8 +88,8 @@ public:
 
   // i/o
 
-  friend ostream& operator << (ostream& os, const RowVector& a);
-  friend istream& operator >> (istream& is, RowVector& a);
+  friend std::ostream& operator << (std::ostream& os, const RowVector& a);
+  friend std::istream& operator >> (std::istream& is, RowVector& a);
 
 private:
 

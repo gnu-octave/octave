@@ -62,7 +62,7 @@ charMatrix::charMatrix (const char *s)
     elem (0, i) = s[i];
 }
 
-charMatrix::charMatrix (const string& s)
+charMatrix::charMatrix (const std::string& s)
   : MArray2<char> ()
 {
   int nc = s.length ();
@@ -128,10 +128,10 @@ charMatrix::insert (const charMatrix& a, int r, int c)
   return *this;
 }
 
-string
-charMatrix::row_as_string (int r, bool strip_ws = false) const 
+std::string
+charMatrix::row_as_string (int r, bool strip_ws) const 
 {
-  string retval;
+  std::string retval;
 
   int nr = rows ();
   int nc = cols ();

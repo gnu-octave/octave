@@ -46,7 +46,7 @@ extern "C"
 }
 
 int
-AEPBALANCE::init (const Matrix& a, const string& balance_job)
+AEPBALANCE::init (const Matrix& a, const std::string& balance_job)
 {
   int n = a.cols ();
 

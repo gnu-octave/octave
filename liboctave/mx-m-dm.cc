@@ -29,7 +29,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "dMatrix.h"
 #include "dDiagMatrix.h"
 
-MDM_BIN_OPS (Matrix, Matrix, DiagMatrix)
+MDM_BIN_OPS (Matrix, Matrix, DiagMatrix, 0.0)
 
 /*
 ;;; Local Variables: ***

@@ -51,16 +51,16 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // We provide a replacement for mkdir().
 
 int
-file_ops::mkdir (const string& name, mode_t mode)
+file_ops::mkdir (const std::string& name, mode_t mode)
 {
-  string msg;
+  std::string msg;
   return mkdir (name, mode, msg);
 }
 
 int
-file_ops::mkdir (const string& name, mode_t mode, string& msg)
+file_ops::mkdir (const std::string& name, mode_t mode, std::string& msg)
 {
-  msg = string ();
+  msg = std::string ();
 
   int status = -1;
 
@@ -68,7 +68,10 @@ file_ops::mkdir (const string& name, mode_t mode, string& msg)
   status = ::mkdir (name.c_str (), mode);
 
   if (status < 0)
-    msg = ::strerror (errno);
+    {
+      using namespace std;
+      msg = ::strerror (errno);
+    }
 #else
   msg = NOT_SUPPORTED ("mkdir");
 #endif
@@ -79,16 +82,16 @@ file_ops::mkdir (const string& name, mode_t mode, string& msg)
 // I don't know how to emulate this on systems that don't provide it.
 
 int
-file_ops::mkfifo (const string& name, mode_t mode)
+file_ops::mkfifo (const std::string& name, mode_t mode)
 {
-  string msg;
+  std::string msg;
   return mkfifo (name, mode, msg);
 }
 
 int
-file_ops::mkfifo (const string& name, mode_t mode, string& msg)
+file_ops::mkfifo (const std::string& name, mode_t mode, std::string& msg)
 {
-  msg = string ();
+  msg = std::string ();
 
   int status = -1;
 
@@ -96,7 +99,10 @@ file_ops::mkfifo (const string& name, mode_t mode, string& msg)
   status = ::mkfifo (name.c_str (), mode);
 
   if (status < 0)
-    msg = ::strerror (errno);
+    {
+      using namespace std;
+      msg = ::strerror (errno);
+    }
 #else
   msg = NOT_SUPPORTED ("mkfifo");
 #endif
@@ -107,24 +113,28 @@ file_ops::mkfifo (const string& name, mode_t mode, string& msg)
 // We provide a replacement for rename().
 
 int
-file_ops::rename (const string& from, const string& to)
+file_ops::rename (const std::string& from, const std::string& to)
 {
-  string msg;
+  std::string msg;
   return rename (from, to, msg);
 }
 
 int
-file_ops::rename (const string& from, const string& to, string& msg)
+file_ops::rename (const std::string& from, const std::string& to,
+		  std::string& msg)
 {
   int status = -1;
 
-  msg = string ();
+  msg = std::string ();
 
 #if defined (HAVE_RENAME)
   status = ::rename (from.c_str (), to.c_str ());
 
   if (status < 0)
-    msg = ::strerror (errno);
+    {
+      using namespace std;
+      msg = ::strerror (errno);
+    }
 #else
   msg = NOT_SUPPORTED ("rename");
 #endif
@@ -135,16 +145,16 @@ file_ops::rename (const string& from, const string& to, string& msg)
 // We provide a replacement for rmdir().
 
 int
-file_ops::rmdir (const string& name)
+file_ops::rmdir (const std::string& name)
 {
-  string msg;
+  std::string msg;
   return rmdir (name, msg);
 }
 
 int
-file_ops::rmdir (const string& name, string& msg)
+file_ops::rmdir (const std::string& name, std::string& msg)
 {
-  msg = string ();
+  msg = std::string ();
 
   int status = -1;
 
@@ -152,7 +162,10 @@ file_ops::rmdir (const string& name, string& msg)
   status = ::rmdir (name.c_str ());
 
   if (status < 0)
-    msg = ::strerror (errno);
+    {
+      using namespace std;
+      msg = ::strerror (errno);
+    }
 #else
   msg = NOT_SUPPORTED ("rmdir");
 #endif
@@ -162,19 +175,20 @@ file_ops::rmdir (const string& name, string& msg)
 
 // We provide a replacement for tempnam().
 
-string
-file_ops::tempnam (const string& dir, const string& pfx)
+std::string
+file_ops::tempnam (const std::string& dir, const std::string& pfx)
 {
-  string msg;
+  std::string msg;
   return tempnam (dir, pfx, msg);
 }
 
-string
-file_ops::tempnam (const string& dir, const string& pfx, string& msg)
+std::string
+file_ops::tempnam (const std::string& dir, const std::string& pfx,
+		   std::string& msg)
 {
-  msg = string ();
+  msg = std::string ();
 
-  string retval;
+  std::string retval;
   
   const char *pdir = dir.empty () ? 0 : dir.c_str ();
 
@@ -189,7 +203,10 @@ file_ops::tempnam (const string& dir, const string& pfx, string& msg)
       ::free (tmp);
     }
   else
-    msg = ::strerror (errno);
+    {
+      using namespace std;
+      msg = ::strerror (errno);
+    }
 
   return retval;
 }
@@ -240,7 +257,7 @@ string_vector file_ops::tilde_additional_suffixes = default_suffixes;
 // tilde itself.
 
 static size_t
-tilde_find_prefix (const string& s, size_t& len)
+tilde_find_prefix (const std::string& s, size_t& len)
 {
   len = 0;
 
@@ -275,7 +292,7 @@ tilde_find_prefix (const string& s, size_t& len)
 // of the character which ends the tilde definition.
 
 static size_t
-tilde_find_suffix (const string& s)
+tilde_find_suffix (const std::string& s)
 {
   size_t s_len = s.length ();
 
@@ -305,8 +322,8 @@ tilde_find_suffix (const string& s)
 
 // Take FNAME and return the tilde prefix we want expanded.
 
-static string
-isolate_tilde_prefix (const string& fname)
+static std::string
+isolate_tilde_prefix (const std::string& fname)
 {
   size_t f_len = fname.length ();
 
@@ -321,8 +338,8 @@ isolate_tilde_prefix (const string& fname)
 // Do the work of tilde expansion on FILENAME.  FILENAME starts with a
 // tilde.
 
-static string
-tilde_expand_word (const string& filename)
+static std::string
+tilde_expand_word (const std::string& filename)
 {
   size_t f_len = filename.length ();
 
@@ -336,15 +353,15 @@ tilde_expand_word (const string& filename)
   if (f_len == 1 || filename[1] == DIR_SEP_CHAR)
     return octave_env::get_home_directory () + filename.substr (1);
 
-  string username = isolate_tilde_prefix (filename);
+  std::string username = isolate_tilde_prefix (filename);
 
   size_t user_len = username.length ();
 
-  string dirname;
+  std::string dirname;
 
   if (file_ops::tilde_expansion_preexpansion_hook)
     {
-      string expansion
+      std::string expansion
 	= file_ops::tilde_expansion_preexpansion_hook (username);
 
       if (! expansion.empty ())
@@ -363,7 +380,7 @@ tilde_expand_word (const string& filename)
 
       if (file_ops::tilde_expansion_failure_hook)
 	{
-	  string expansion
+	  std::string expansion
 	    = file_ops::tilde_expansion_failure_hook (username);
 
 	  if (! expansion.empty ())
@@ -385,10 +402,10 @@ tilde_expand_word (const string& filename)
 // If NAME has a leading ~ or ~user, Unix-style, expand it to the
 // user's home directory.  If no ~, or no <pwd.h>, just return NAME.
 
-string
-file_ops::tilde_expand (const string& name)
+std::string
+file_ops::tilde_expand (const std::string& name)
 {
-  string result;
+  std::string result;
 
   size_t name_len = name.length ();
 
@@ -425,11 +442,11 @@ file_ops::tilde_expand (const string& name)
 
       // Expand the entire tilde word, and copy it into RESULT.
 
-      string tilde_word = name.substr (pos, fini);
+      std::string tilde_word = name.substr (pos, fini);
 
       pos += fini;
 
-      string expansion = tilde_expand_word (tilde_word);
+      std::string expansion = tilde_expand_word (tilde_word);
 
       result.append (expansion);
     }
@@ -465,16 +482,16 @@ file_ops::umask (mode_t mode)
 }
 
 int
-file_ops::unlink (const string& name)
+file_ops::unlink (const std::string& name)
 {
-  string msg;
+  std::string msg;
   return unlink (name, msg);
 }
 
 int
-file_ops::unlink (const string& name, string& msg)
+file_ops::unlink (const std::string& name, std::string& msg)
 {
-  msg = string ();
+  msg = std::string ();
 
   int status = -1;
 
@@ -482,7 +499,10 @@ file_ops::unlink (const string& name, string& msg)
   status = ::unlink (name.c_str ());
 
   if (status < 0)
-    msg = ::strerror (errno);
+    {
+      using namespace std;
+      msg = ::strerror (errno);
+    }
 #else
   msg = NOT_SUPPORTED ("unlink");
 #endif

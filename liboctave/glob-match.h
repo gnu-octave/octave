@@ -40,7 +40,7 @@ public:
       period = 4     // Leading `.' is matched only explicitly.
    };
 
-  glob_match (const string& p = string (),
+  glob_match (const std::string& p = std::string (),
 	      unsigned int f = pathname|noescape|period)
     : pat (p), flags (f) { }
 
@@ -62,11 +62,11 @@ public:
 
   ~glob_match (void) { }
 
-  void set_pattern (const string& p) { pat = p; }
+  void set_pattern (const std::string& p) { pat = p; }
 
   void set_pattern (const string_vector& p) { pat = p; }
 
-  bool match (const string&);
+  bool match (const std::string&);
 
   Array<bool> match (const string_vector&);
 

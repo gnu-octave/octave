@@ -30,7 +30,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "CMatrix.h"
 #include "CDiagMatrix.h"
 
-MDM_BIN_OPS (ComplexMatrix, Matrix, ComplexDiagMatrix)
+MDM_BIN_OPS (ComplexMatrix, Matrix, ComplexDiagMatrix, 0.0)
 
 /*
 ;;; Local Variables: ***

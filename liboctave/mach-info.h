@@ -53,9 +53,9 @@ public:
 
   static bool words_little_endian (void);
 
-  static float_format string_to_float_format (const string&);
+  static float_format string_to_float_format (const std::string&);
 
-  static string float_format_as_string (float_format);
+  static std::string float_format_as_string (float_format);
 
 private:
 

@@ -64,7 +64,7 @@ public:
       return unitary_hess_mat;
     }
 
-  friend ostream& operator << (ostream& os, const ComplexHESS& a);
+  friend std::ostream& operator << (std::ostream& os, const ComplexHESS& a);
 
 private:
 

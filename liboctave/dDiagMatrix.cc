@@ -191,16 +191,16 @@ DiagMatrix::extract (int r1, int c1, int r2, int c2) const
 RowVector
 DiagMatrix::row (int i) const
 {
-  int nr = rows ();
-  int nc = cols ();
-  if (i < 0 || i >= nr)
+  int r = rows ();
+  int c = cols ();
+  if (i < 0 || i >= r)
     {
       (*current_liboctave_error_handler) ("invalid row selection");
       return RowVector (); 
     }
 
-  RowVector retval (nc, 0.0);
-  if (nr <= nc || (nr > nc && i < nc))
+  RowVector retval (c, 0.0);
+  if (r <= c || (r > c && i < c))
     retval.elem (i) = elem (i, i);
 
   return retval;
@@ -230,16 +230,16 @@ DiagMatrix::row (char *s) const
 ColumnVector
 DiagMatrix::column (int i) const
 {
-  int nr = rows ();
-  int nc = cols ();
-  if (i < 0 || i >= nc)
+  int r = rows ();
+  int c = cols ();
+  if (i < 0 || i >= c)
     {
       (*current_liboctave_error_handler) ("invalid column selection");
       return ColumnVector (); 
     }
 
-  ColumnVector retval (nr, 0.0);
-  if (nr >= nc || (nr < nc && i < nr))
+  ColumnVector retval (r, 0.0);
+  if (r >= c || (r < c && i < r))
     retval.elem (i) = elem (i, i);
 
   return retval;
@@ -276,16 +276,16 @@ DiagMatrix::inverse (void) const
 DiagMatrix
 DiagMatrix::inverse (int &info) const
 {
-  int nr = rows ();
-  int nc = cols ();
+  int r = rows ();
+  int c = cols ();
   int len = length ();
-  if (nr != nc)
+  if (r != c)
     {
       (*current_liboctave_error_handler) ("inverse requires square matrix");
       return DiagMatrix ();
     }
 
-  DiagMatrix retval (nr, nc);
+  DiagMatrix retval (r, c);
 
   info = 0;
   for (int i = 0; i < len; i++)
@@ -307,19 +307,19 @@ DiagMatrix::inverse (int &info) const
 DiagMatrix&
 DiagMatrix::operator += (const DiagMatrix& a)
 {
-  int nr = rows ();
-  int nc = cols ();
+  int r = rows ();
+  int c = cols ();
 
   int a_nr = a.rows ();
   int a_nc = a.cols ();
 
-  if (nr != a_nr || nc != a_nc)
+  if (r != a_nr || c != a_nc)
     {
-      gripe_nonconformant ("operator +=", nr, nc, a_nr, a_nc);
+      gripe_nonconformant ("operator +=", r, c, a_nr, a_nc);
       return *this;
     }
 
-  if (nc == 0 || nr == 0)
+  if (c == 0 || r == 0)
     return *this;
 
   double *d = fortran_vec (); // Ensures only one reference to my privates!
@@ -331,19 +331,19 @@ DiagMatrix::operator += (const DiagMatrix& a)
 DiagMatrix&
 DiagMatrix::operator -= (const DiagMatrix& a)
 {
-  int nr = rows ();
-  int nc = cols ();
+  int r = rows ();
+  int c = cols ();
 
   int a_nr = a.rows ();
   int a_nc = a.cols ();
 
-  if (nr != a_nr || nc != a_nc)
+  if (r != a_nr || c != a_nc)
     {
-      gripe_nonconformant ("operator -=", nr, nc, a_nr, a_nc);
+      gripe_nonconformant ("operator -=", r, c, a_nr, a_nc);
       return *this;
     }
 
-  if (nr == 0 || nc == 0)
+  if (r == 0 || c == 0)
     return *this;
 
   double *d = fortran_vec (); // Ensures only one reference to my privates!
@@ -357,24 +357,24 @@ DiagMatrix::operator -= (const DiagMatrix& a)
 DiagMatrix
 operator * (const DiagMatrix& a, const DiagMatrix& b)
 {
-  int nr_a = a.rows ();
-  int nc_a = a.cols ();
+  int a_nr = a.rows ();
+  int a_nc = a.cols ();
 
-  int nr_b = b.rows ();
-  int nc_b = b.cols ();
+  int b_nr = b.rows ();
+  int b_nc = b.cols ();
 
-  if (nc_a != nr_b)
+  if (a_nc != b_nr)
     {
-      gripe_nonconformant ("operaotr *", nr_a, nc_a, nr_b, nc_b);
+      gripe_nonconformant ("operaotr *", a_nr, a_nc, b_nr, b_nc);
       return DiagMatrix ();
     }
 
-  if (nr_a == 0 || nc_a == 0 || nc_b == 0)
-    return DiagMatrix (nr_a, nc_a, 0.0);
+  if (a_nr == 0 || a_nc == 0 || b_nc == 0)
+    return DiagMatrix (a_nr, a_nc, 0.0);
 
-  DiagMatrix c (nr_a, nc_b);
+  DiagMatrix c (a_nr, b_nc);
 
-  int len = nr_a < nc_b ? nr_a : nc_b;
+  int len = a_nr < b_nc ? a_nr : b_nc;
 
   for (int i = 0; i < len; i++)
     {
@@ -439,13 +439,13 @@ DiagMatrix::diag (int k) const
 	}
     }
   else
-    cerr << "diag: requested diagonal out of range\n";
+    std::cerr << "diag: requested diagonal out of range\n";
 
   return d;
 }
 
-ostream&
-operator << (ostream& os, const DiagMatrix& a)
+std::ostream&
+operator << (std::ostream& os, const DiagMatrix& a)
 {
 //  int field_width = os.precision () + 7;
 

@@ -573,8 +573,8 @@ IDX_VEC_REP::shorten (int n)
       ("idx_vector::shorten: internal error!");
 }
 
-ostream&
-IDX_VEC_REP::print (ostream& os) const
+std::ostream&
+IDX_VEC_REP::print (std::ostream& os) const
 {
   for (int ii = 0; ii < len; ii++)
     os << data[ii] << "\n";

@@ -34,22 +34,22 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 struct
 file_ops
 {
-  static int mkdir (const string&, mode_t);
-  static int mkdir (const string&, mode_t, string&);
+  static int mkdir (const std::string&, mode_t);
+  static int mkdir (const std::string&, mode_t, std::string&);
 
-  static int mkfifo (const string&, mode_t);
-  static int mkfifo (const string&, mode_t, string&);
+  static int mkfifo (const std::string&, mode_t);
+  static int mkfifo (const std::string&, mode_t, std::string&);
 
-  static int rename (const string&, const string&);
-  static int rename (const string&, const string&, string&);
+  static int rename (const std::string&, const std::string&);
+  static int rename (const std::string&, const std::string&, std::string&);
 
-  static int rmdir (const string&);
-  static int rmdir (const string&, string&);
+  static int rmdir (const std::string&);
+  static int rmdir (const std::string&, std::string&);
 
-  static string tempnam (const string&, const string&);
-  static string tempnam (const string&, const string&, string&);
+  static std::string tempnam (const std::string&, const std::string&);
+  static std::string tempnam (const std::string&, const std::string&, std::string&);
 
-  typedef string (*tilde_expansion_hook) (const string&);
+  typedef std::string (*tilde_expansion_hook) (const std::string&);
 
   static tilde_expansion_hook tilde_expansion_preexpansion_hook;
 
@@ -59,13 +59,13 @@ file_ops
 
   static string_vector tilde_additional_suffixes;
 
-  static string tilde_expand (const string&);
+  static std::string tilde_expand (const std::string&);
   static string_vector tilde_expand (const string_vector&);
 
   static int umask (mode_t);
 
-  static int unlink (const string&);
-  static int unlink (const string&, string&);
+  static int unlink (const std::string&);
+  static int unlink (const std::string&, std::string&);
 };
 
 #endif

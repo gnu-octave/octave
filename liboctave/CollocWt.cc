@@ -163,8 +163,8 @@ CollocWt::init (void)
   initialized = 1;
 }
 
-ostream&
-operator << (ostream& os, const CollocWt& a)
+std::ostream&
+operator << (std::ostream& os, const CollocWt& a)
 {
   if (a.left_included ())
     os << "left  boundary is included\n";

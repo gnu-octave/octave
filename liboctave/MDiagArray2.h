@@ -109,36 +109,6 @@ public:
 
       return retval;
     }
-
-  // element by element MDiagArray2 by MDiagArray2 ops
-
-  friend MDiagArray2<T>&
-  operator += LTGT (MDiagArray2<T>& a, const MDiagArray2<T>& b);
-
-  friend MDiagArray2<T>&
-  operator -= LTGT (MDiagArray2<T>& a, const MDiagArray2<T>& b);
-
-  // element by element MDiagArray2 by scalar ops
-
-  friend MDiagArray2<T> operator * LTGT (const MDiagArray2<T>& a, const T& s);
-  friend MDiagArray2<T> operator / LTGT (const MDiagArray2<T>& a, const T& s);
-
-  // element by element scalar by MDiagArray2 ops
-
-  friend MDiagArray2<T> operator * LTGT (const T& s, const MDiagArray2<T>& a);
-
-  // element by element MDiagArray2 by MDiagArray2 ops
-
-  friend MDiagArray2<T>
-  operator + LTGT (const MDiagArray2<T>& a, const MDiagArray2<T>& b); 
-
-  friend MDiagArray2<T>
-  operator - LTGT (const MDiagArray2<T>& a, const MDiagArray2<T>& b);
-
-  friend MDiagArray2<T>
-  product LTGT (const MDiagArray2<T>& a, const MDiagArray2<T>& b);
-
-  friend MDiagArray2<T> operator - LTGT (const MDiagArray2<T>& a);
 };
 
 #undef LTGT

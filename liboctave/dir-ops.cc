@@ -36,7 +36,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "str-vec.h"
 
 bool
-dir_entry::open (const string& n)
+dir_entry::open (const std::string& n)
 {
   fail = true;
 
@@ -52,7 +52,10 @@ dir_entry::open (const string& n)
       if (dir)
 	fail = false;
       else
-	errmsg = strerror (errno);
+	{
+	  using namespace std;
+	  errmsg = strerror (errno);
+	}
     }
   else
     errmsg = "dir_entry::open: empty file name";

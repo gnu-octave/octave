@@ -50,14 +50,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 int
 octave_syscalls::dup2 (int old_fd, int new_fd)
 {
-  string msg;
+  std::string msg;
   return dup2 (old_fd, new_fd, msg);
 }
 
 int
-octave_syscalls::dup2 (int old_fd, int new_fd, string& msg)
+octave_syscalls::dup2 (int old_fd, int new_fd, std::string& msg)
 {
-  msg = string ();
+  msg = std::string ();
 
   int status = -1;
 
@@ -65,7 +65,10 @@ octave_syscalls::dup2 (int old_fd, int new_fd, string& msg)
   status = ::dup2 (old_fd, new_fd);
 
   if (status < 0)
-    msg = ::strerror (errno);
+    {
+      using namespace std;
+      msg = ::strerror (errno);
+    }
 #else
   msg = NOT_SUPPORTED ("dup2");
 #endif
@@ -74,17 +77,17 @@ octave_syscalls::dup2 (int old_fd, int new_fd, string& msg)
 }
 
 int
-octave_syscalls::execvp (const string& file, const string_vector& argv)
+octave_syscalls::execvp (const std::string& file, const string_vector& argv)
 {
-  string msg;
+  std::string msg;
   return execvp (file, argv, msg);
 }
 
 int
-octave_syscalls::execvp (const string& file, const string_vector& args,
-			 string& msg)
+octave_syscalls::execvp (const std::string& file, const string_vector& args,
+			 std::string& msg)
 {
-  msg = string ();
+  msg = std::string ();
 
   int status = -1;
 
@@ -96,7 +99,10 @@ octave_syscalls::execvp (const string& file, const string_vector& args,
   string_vector::delete_c_str_vec (argv);
 
   if (status < 0)
-    msg = ::strerror (errno);
+    {
+      using namespace std;
+      msg = ::strerror (errno);
+    }
 #else
   msg = NOT_SUPPORTED ("execvp");
 #endif
@@ -107,14 +113,14 @@ octave_syscalls::execvp (const string& file, const string_vector& args,
 int
 octave_syscalls::fcntl (int fd, int cmd, long arg)
 {
-  string msg;
+  std::string msg;
   return fcntl (fd, cmd, arg, msg);
 }
 
 int
-octave_syscalls::fcntl (int fd, int cmd, long arg, string& msg)
+octave_syscalls::fcntl (int fd, int cmd, long arg, std::string& msg)
 {
-  msg = string ();
+  msg = std::string ();
 
   int status = -1;
 
@@ -122,7 +128,10 @@ octave_syscalls::fcntl (int fd, int cmd, long arg, string& msg)
   status = ::fcntl (fd, cmd, arg);
 
   if (status < 0)
-    msg = ::strerror (errno);
+    {
+      using namespace std;
+      msg = ::strerror (errno);
+    }
 #else
   msg = NOT_SUPPORTED ("fcntl");
 #endif
@@ -131,7 +140,7 @@ octave_syscalls::fcntl (int fd, int cmd, long arg, string& msg)
 }
 
 pid_t
-octave_syscalls::fork (string& msg)
+octave_syscalls::fork (std::string& msg)
 {
   pid_t status = -1;
 
@@ -139,7 +148,10 @@ octave_syscalls::fork (string& msg)
   status = ::fork ();
 
   if (status < 0)
-    msg = ::strerror (errno);
+    {
+      using namespace std;
+      msg = ::strerror (errno);
+    }
 #else
   msg = NOT_SUPPORTED ("fork");
 #endif
@@ -148,7 +160,7 @@ octave_syscalls::fork (string& msg)
 }
 
 pid_t
-octave_syscalls::vfork (string& msg)
+octave_syscalls::vfork (std::string& msg)
 {
   pid_t status = -1;
 
@@ -160,7 +172,10 @@ octave_syscalls::vfork (string& msg)
 #endif
 
   if (status < 0)
-    msg = ::strerror (errno);
+    {
+      using namespace std;
+      msg = ::strerror (errno);
+    }
 #else
   msg = NOT_SUPPORTED ("vfork");
 #endif
@@ -169,7 +184,7 @@ octave_syscalls::vfork (string& msg)
 }
 
 pid_t
-octave_syscalls::getpgrp (string& msg)
+octave_syscalls::getpgrp (std::string& msg)
 {
   pid_t status = -1;
 
@@ -177,7 +192,10 @@ octave_syscalls::getpgrp (string& msg)
   status = ::getpgrp ();
 
   if (status < 0)
-    msg = ::strerror (errno);
+    {
+      using namespace std;
+      msg = ::strerror (errno);
+    }
 #else
   msg = NOT_SUPPORTED ("getpgrp");
 #endif
@@ -248,14 +266,14 @@ octave_syscalls::geteuid (void)
 int
 octave_syscalls::pipe (int *fildes)
 {
-  string msg;
+  std::string msg;
   return pipe (fildes);
 }
 
 int
-octave_syscalls::pipe (int *fildes, string& msg)
+octave_syscalls::pipe (int *fildes, std::string& msg)
 {
-  msg = string ();
+  msg = std::string ();
 
   int status = -1;
 
@@ -263,7 +281,10 @@ octave_syscalls::pipe (int *fildes, string& msg)
   status = ::pipe (fildes);
 
   if (status < 0)
-    msg = ::strerror (errno);
+    {
+      using namespace std;
+      msg = ::strerror (errno);
+    }
 #else
   msg = NOT_SUPPORTED ("pipe");
 #endif
@@ -274,14 +295,14 @@ octave_syscalls::pipe (int *fildes, string& msg)
 pid_t
 octave_syscalls::waitpid (pid_t pid, int options)
 {
-  string msg;
+  std::string msg;
   return waitpid (pid, options, msg);
 }
 
 pid_t
-octave_syscalls::waitpid (pid_t pid, int options, string& msg)
+octave_syscalls::waitpid (pid_t pid, int options, std::string& msg)
 {
-  msg = string ();
+  msg = std::string ();
 
   int status = -1;
 
@@ -289,7 +310,10 @@ octave_syscalls::waitpid (pid_t pid, int options, string& msg)
   status = ::waitpid (pid, 0, options);
 
   if (status < 0)
-    msg = ::strerror (errno);
+    {
+      using namespace std;
+      msg = ::strerror (errno);
+    }
 #else
   msg = NOT_SUPPORTED ("waitpid");
 #endif

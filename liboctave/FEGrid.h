@@ -69,7 +69,7 @@ public:
 
   ColumnVector element_boundaries (void) const { return elem; }
 
-  friend ostream& operator << (ostream&, const FEGrid&);
+  friend std::ostream& operator << (std::ostream&, const FEGrid&);
 
 protected:
 

@@ -46,7 +46,7 @@ public:
     : ot_unix_time (static_cast<time_t> (d)), ot_usec (0)
   {
     double ip;
-    ot_usec = static_cast<int> (modf (d, &ip) * 1e6);
+    ot_usec = static_cast<int> (std::modf (d, &ip) * 1e6);
   }
 
   octave_time (const octave_base_tm& tm);
@@ -77,7 +77,7 @@ public:
 
   int usec (void) const { return ot_usec; }
 
-  string ctime (void) const;
+  std::string ctime (void) const;
 
 private:
 
@@ -188,7 +188,7 @@ public:
   int wday (void) const { return tm_wday; }
   int yday (void) const { return tm_yday; }
   int isdst (void) const { return tm_isdst; }
-  string zone (void) const { return tm_zone; }
+  std::string zone (void) const { return tm_zone; }
 
   octave_base_tm& usec (int v);
   octave_base_tm& sec (int v);
@@ -200,11 +200,12 @@ public:
   octave_base_tm& wday (int v);
   octave_base_tm& yday (int v);
   octave_base_tm& isdst (int v);
-  octave_base_tm& zone (const string& s);
+  octave_base_tm& zone (const std::string& s);
 
-  string strftime (const string& fmt) const;
+  std::string strftime (const std::string& fmt) const;
 
-  string asctime (void) const { return strftime ("%a %b %d %H:%M:%S %Y\n"); }
+  std::string asctime (void) const
+    { return strftime ("%a %b %d %H:%M:%S %Y\n"); }
 
 protected:
 
@@ -239,7 +240,7 @@ protected:
   int tm_isdst;
 
   // Time zone.
-  string tm_zone;
+  std::string tm_zone;
 
   void init (void *p);
 };
@@ -300,7 +301,7 @@ octave_strptime : public octave_base_tm
 {
 public:
 
-  octave_strptime (const string& str, const string& fmt)
+  octave_strptime (const std::string& str, const std::string& fmt)
     : octave_base_tm () { init (str, fmt); }
 
   octave_strptime (const octave_strptime& s)
@@ -321,7 +322,7 @@ private:
 
   int nchars;
 
-  void init (const string& str, const string& fmt);
+  void init (const std::string& str, const std::string& fmt);
 };
 
 #endif

@@ -36,7 +36,7 @@ file_stat
 {
 public:
 
-  file_stat (const string& n = string (), bool fl = true)
+  file_stat (const std::string& n = std::string (), bool fl = true)
     : file_name (n), follow_links (fl), initialized (false)
       {
 	if (! file_name.empty ())
@@ -61,7 +61,7 @@ public:
         update_internal (force);
     }
 
-  void get_stats (const string& n, bool force = false)
+  void get_stats (const std::string& n, bool force = false)
     {
       if (n != file_name || ! initialized  || force)
 	{
@@ -110,7 +110,7 @@ public:
   long blocks (void) const { return fs_blocks; }
 #endif
 
-  string mode_as_string (void) const;
+  std::string mode_as_string (void) const;
 
   bool ok (void) const { return initialized && ! fail; }
 
@@ -118,19 +118,19 @@ public:
 
   bool exists (void) const { return ok (); }
 
-  string error (void) const { return ok () ? string () : errmsg; }
+  std::string error (void) const { return ok () ? std::string () : errmsg; }
 
   // Has the file referenced by this object been modified since TIME?
   bool is_newer (const octave_time& time) const { return fs_mtime > time; }
 
   // It's nice to be able to hide the file_stat object if we don't
   // really care about it.
-  static int is_newer (const string&, const octave_time&);
+  static int is_newer (const std::string&, const octave_time&);
 
 private:
 
   // Name of the file.
-  string file_name;
+  std::string file_name;
 
   // TRUE means follow symbolic links to the ultimate file (stat).
   // FALSE means get information about the link itself (lstat).
@@ -143,7 +143,7 @@ private:
   bool fail;
 
   // If a failure occurs, this contains the system error text.
-  string errmsg;
+  std::string errmsg;
 
   // file type and permissions
   mode_t fs_mode;

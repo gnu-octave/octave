@@ -127,40 +127,6 @@ public:
   }
 
   MArray2<T> transpose (void) const { return Array2<T>::transpose (); }
-
-  // element by element MArray2 by scalar ops
-
-  friend MArray2<T>& operator += LTGT (MArray2<T>& a, const T& s);
-  friend MArray2<T>& operator -= LTGT (MArray2<T>& a, const T& s);
-
-  // element by element MArray2 by MArray2 ops
-
-  friend MArray2<T>& operator += LTGT (MArray2<T>& a, const MArray2<T>& b);
-  friend MArray2<T>& operator -= LTGT (MArray2<T>& a, const MArray2<T>& b);
-
-  // element by element MArray2 by scalar ops
-
-  friend MArray2<T> operator + LTGT (const MArray2<T>& a, const T& s);
-  friend MArray2<T> operator - LTGT (const MArray2<T>& a, const T& s);
-  friend MArray2<T> operator * LTGT (const MArray2<T>& a, const T& s);
-  friend MArray2<T> operator / LTGT (const MArray2<T>& a, const T& s);
-
-  // element by element scalar by MArray2 ops
-
-  friend MArray2<T> operator + LTGT (const T& s, const MArray2<T>& a);
-  friend MArray2<T> operator - LTGT (const T& s, const MArray2<T>& a);
-  friend MArray2<T> operator * LTGT (const T& s, const MArray2<T>& a);
-  friend MArray2<T> operator / LTGT (const T& s, const MArray2<T>& a);
-
-  // element by element MArray2 by MArray2 ops
-
-  friend MArray2<T> operator + LTGT (const MArray2<T>& a, const MArray2<T>& b);
-  friend MArray2<T> operator - LTGT (const MArray2<T>& a, const MArray2<T>& b);
-
-  friend MArray2<T> product LTGT (const MArray2<T>& a, const MArray2<T>& b);
-  friend MArray2<T> quotient LTGT (const MArray2<T>& a, const MArray2<T>& b);
-
-  friend MArray2<T> operator - LTGT (const MArray2<T>& a);
 };
 
 #undef LTGT

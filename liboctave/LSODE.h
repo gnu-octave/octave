@@ -150,7 +150,7 @@ public:
   Matrix do_integrate (const ColumnVector& tout);
 
 #if 0
-  void integrate (int nsteps, double tstep, ostream& s);
+  void integrate (int nsteps, double tstep, std::ostream& s);
 #endif
 
   Matrix integrate (const ColumnVector& tout)

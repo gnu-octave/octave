@@ -33,7 +33,7 @@ SM_BIN_OPS (ComplexMatrix, double, ComplexMatrix)
 
 SM_CMP_OPS (double, , ComplexMatrix, real)
 
-SM_BOOL_OPS (double, ComplexMatrix)
+SM_BOOL_OPS (double, ComplexMatrix, 0.0)
 
 /*
 ;;; Local Variables: ***

@@ -47,7 +47,8 @@ extern "C"
 }
 
 int
-ComplexAEPBALANCE::init (const ComplexMatrix& a, const string& balance_job)
+ComplexAEPBALANCE::init (const ComplexMatrix& a,
+			 const std::string& balance_job)
 {
   int n = a.cols ();
 

@@ -206,7 +206,7 @@ class boolMatrix;
   BOOL_OP_DECL (mx_el_and, M, S); \
   BOOL_OP_DECL (mx_el_or,  M, S); \
 
-#define MS_BOOL_OP(F, OP, M, S) \
+#define MS_BOOL_OP(F, OP, M, S, ZERO) \
   boolMatrix \
   F (const M& m, const S& s) \
   { \
@@ -221,15 +221,15 @@ class boolMatrix;
  \
         for (int j = 0; j < nc; j++) \
           for (int i = 0; i < nr; i++) \
-	    r.elem(i, j) = (m.elem(i, j) != 0) OP (s != 0); \
+	    r.elem(i, j) = (m.elem(i, j) != ZERO) OP (s != ZERO); \
       } \
  \
     return r; \
   }
 
-#define MS_BOOL_OPS(M, S) \
-  MS_BOOL_OP (mx_el_and, &&, M, S) \
-  MS_BOOL_OP (mx_el_or,  ||, M, S)
+#define MS_BOOL_OPS(M, S, ZERO) \
+  MS_BOOL_OP (mx_el_and, &&, M, S, ZERO) \
+  MS_BOOL_OP (mx_el_or,  ||, M, S, ZERO)
 
 #define MS_OP_DECLS(R, M, S) \
   MS_BIN_OP_DECLS (R, M, S) \
@@ -308,7 +308,7 @@ class boolMatrix;
   BOOL_OP_DECL (mx_el_and, S, M); \
   BOOL_OP_DECL (mx_el_or,  S, M); \
 
-#define SM_BOOL_OP(F, OP, S, M) \
+#define SM_BOOL_OP(F, OP, S, M, ZERO) \
   boolMatrix \
   F (const S& s, const M& m) \
   { \
@@ -323,15 +323,15 @@ class boolMatrix;
  \
         for (int j = 0; j < nc; j++) \
           for (int i = 0; i < nr; i++) \
-	    r.elem(i, j) = (s != 0) OP (m.elem(i, j) != 0); \
+	    r.elem(i, j) = (s != ZERO) OP (m.elem(i, j) != ZERO); \
       } \
  \
     return r; \
   }
 
-#define SM_BOOL_OPS(S, M) \
-  SM_BOOL_OP (mx_el_and, &&, S, M) \
-  SM_BOOL_OP (mx_el_or,  ||, S, M)
+#define SM_BOOL_OPS(S, M, ZERO) \
+  SM_BOOL_OP (mx_el_and, &&, S, M, ZERO) \
+  SM_BOOL_OP (mx_el_or,  ||, S, M, ZERO)
 
 #define SM_OP_DECLS(R, S, M) \
   SM_BIN_OP_DECLS (R, S, M) \
@@ -433,7 +433,7 @@ class boolMatrix;
   BOOL_OP_DECL (mx_el_and, M1, M2); \
   BOOL_OP_DECL (mx_el_or,  M1, M2);
 
-#define MM_BOOL_OP(F, OP, M1, M2) \
+#define MM_BOOL_OP(F, OP, M1, M2, ZERO) \
   boolMatrix \
   F (const M1& m1, const M2& m2) \
   { \
@@ -453,7 +453,8 @@ class boolMatrix;
  \
 	    for (int j = 0; j < m1_nc; j++) \
 	      for (int i = 0; i < m1_nr; i++) \
-		r.elem(i, j) = (m1.elem(i, j) != 0) OP (m2.elem(i, j) != 0); \
+		r.elem(i, j) = (m1.elem(i, j) != ZERO) \
+                                OP (m2.elem(i, j) != ZERO); \
 	  } \
       } \
     else \
@@ -465,9 +466,9 @@ class boolMatrix;
     return r; \
   }
 
-#define MM_BOOL_OPS(M1, M2) \
-  MM_BOOL_OP (mx_el_and, &&, M1, M2) \
-  MM_BOOL_OP (mx_el_or,  ||, M1, M2)
+#define MM_BOOL_OPS(M1, M2, ZERO) \
+  MM_BOOL_OP (mx_el_and, &&, M1, M2, ZERO) \
+  MM_BOOL_OP (mx_el_or,  ||, M1, M2, ZERO)
 
 #define MM_OP_DECLS(R, M1, M2) \
   MM_BIN_OP_DECLS (R, M1, M2) \
@@ -573,7 +574,7 @@ OP (const M& m, const DM& dm) \
   return r; \
 }
 
-#define MDM_MULTIPLY_OP(R, M, DM) \
+#define MDM_MULTIPLY_OP(R, M, DM, ZERO) \
 R \
 operator * (const M& m, const DM& dm) \
 { \
@@ -589,7 +590,7 @@ operator * (const M& m, const DM& dm) \
     gripe_nonconformant ("operator *", m_nr, m_nc, dm_nr, dm_nc); \
   else \
     { \
-      r.resize (m_nr, dm_nc, 0.0); \
+      r.resize (m_nr, dm_nc, ZERO); \
  \
       if (m_nr > 0 && m_nc > 0 && dm_nc > 0) \
 	{ \
@@ -600,7 +601,7 @@ operator * (const M& m, const DM& dm) \
 		  for (int i = 0; i < m_nr; i++) \
 		    r.elem(i, j) = m.elem(i, j); \
 		} \
-	      else if (dm.elem(j, j) != 0.0) \
+	      else if (dm.elem(j, j) != ZERO) \
 		{ \
 		  for (int i = 0; i < m_nr; i++) \
 		    r.elem(i, j) = dm.elem(j, j) * m.elem(i, j); \
@@ -612,10 +613,10 @@ operator * (const M& m, const DM& dm) \
   return r; \
 }
 
-#define MDM_BIN_OPS(R, M, DM) \
+#define MDM_BIN_OPS(R, M, DM, ZERO) \
   MDM_BIN_OP (R, operator +, M, DM, +=) \
   MDM_BIN_OP (R, operator -, M, DM, -=) \
-  MDM_MULTIPLY_OP (R, M, DM)
+  MDM_MULTIPLY_OP (R, M, DM, ZERO)
 
 #define MDM_OP_DECLS(R, M, DM) \
   MDM_BIN_OP_DECLS(R, M, DM)
@@ -661,7 +662,7 @@ OP (const DM& dm, const M& m) \
   return r; \
 }
 
-#define DMM_MULTIPLY_OP(R, DM, M) \
+#define DMM_MULTIPLY_OP(R, DM, M, ZERO) \
 R \
 operator * (const DM& dm, const M& m) \
 { \
@@ -677,7 +678,7 @@ operator * (const DM& dm, const M& m) \
     gripe_nonconformant ("operator *", dm_nr, dm_nc, m_nr, m_nc); \
   else \
     { \
-      r.resize (dm_nr, m_nc, 0.0); \
+      r.resize (dm_nr, m_nc, ZERO); \
  \
       if (dm_nr > 0 && dm_nc > 0 && m_nc > 0) \
 	{ \
@@ -688,7 +689,7 @@ operator * (const DM& dm, const M& m) \
 		  for (int j = 0; j < m_nc; j++) \
 		    r.elem(i, j) = m.elem(i, j); \
 		} \
-	      else if (dm.elem(i, i) != 0.0) \
+	      else if (dm.elem(i, i) != ZERO) \
 		{ \
 		  for (int j = 0; j < m_nc; j++) \
 		    r.elem(i, j) = dm.elem(i, i) * m.elem(i, j); \
@@ -700,10 +701,10 @@ operator * (const DM& dm, const M& m) \
   return r; \
 }
 
-#define DMM_BIN_OPS(R, DM, M) \
+#define DMM_BIN_OPS(R, DM, M, ZERO) \
   DMM_BIN_OP (R, operator +, DM, M, +=) \
   DMM_BIN_OP (R, operator -, DM, M, -=) \
-  DMM_MULTIPLY_OP(R, DM, M)
+  DMM_MULTIPLY_OP(R, DM, M, ZERO)
 
 #define DMM_OP_DECLS(R, DM, M) \
   DMM_BIN_OP_DECLS(R, DM, M)

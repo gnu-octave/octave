@@ -119,9 +119,9 @@ file_stat::is_sock (void) const
 #endif
 }
 
-extern "C" void mode_string ();
+extern "C" void mode_string (unsigned short, char *);
 
-string
+std::string
 file_stat::mode_as_string (void) const
 {
   char buf[11];
@@ -130,14 +130,14 @@ file_stat::mode_as_string (void) const
 
   buf[10] = '\0';
 
-  return string (buf);
+  return std::string (buf);
 }
 
 // Has FILE been modified since TIME?  Returns 1 for yes, 0 for no,
 // and -1 for any error.
 
 int
-file_stat::is_newer (const string& file, const octave_time& time)
+file_stat::is_newer (const std::string& file, const octave_time& time)
 {
   file_stat fs (file);
 
@@ -162,6 +162,8 @@ file_stat::update_internal (bool force)
 
       if (status < 0)
 	{
+	  using namespace std;
+
 	  fail = true;
 	  errmsg = strerror (errno);
 	}

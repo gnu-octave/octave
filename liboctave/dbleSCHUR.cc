@@ -58,7 +58,7 @@ select_dig (const double& a, const double& b)
 }
 
 int
-SCHUR::init (const Matrix& a, const string& ord)
+SCHUR::init (const Matrix& a, const std::string& ord)
 {
   int a_nr = a.rows ();
   int a_nc = a.cols ();
@@ -129,8 +129,8 @@ SCHUR::init (const Matrix& a, const string& ord)
   return info;
 }
 
-ostream&
-operator << (ostream& os, const SCHUR& a)
+std::ostream&
+operator << (std::ostream& os, const SCHUR& a)
 {
   os << a.schur_matrix () << "\n";
   os << a.unitary_matrix () << "\n";

@@ -46,7 +46,7 @@ class idx_vector;
 template <class T>
 class Array
 {
-private:
+protected:
 
 // The real representation of all arrays.
 

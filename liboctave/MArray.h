@@ -119,41 +119,6 @@ public:
       Array<T>::operator = (a);
       return *this;
     }
-
-  // element by element MArray by scalar ops
-
-  friend MArray<T>& operator += LTGT (MArray<T>& a, const T& s);
-  friend MArray<T>& operator -= LTGT (MArray<T>& a, const T& s);
-
-  // element by element MArray by MArray ops
-
-  friend MArray<T>& operator += LTGT (MArray<T>& a, const MArray<T>& b);
-  friend MArray<T>& operator -= LTGT (MArray<T>& a, const MArray<T>& b);
-
-  // element by element MArray by scalar ops
-
-  friend MArray<T> operator + LTGT (const MArray<T>& a, const T& s);
-  friend MArray<T> operator - LTGT (const MArray<T>& a, const T& s);
-  friend MArray<T> operator * LTGT (const MArray<T>& a, const T& s);
-  friend MArray<T> operator / LTGT (const MArray<T>& a, const T& s);
-
-  // element by element scalar by MArray ops
-
-  friend MArray<T> operator + LTGT (const T& s, const MArray<T>& a);
-  friend MArray<T> operator - LTGT (const T& s, const MArray<T>& a);
-  friend MArray<T> operator * LTGT (const T& s, const MArray<T>& a);
-  friend MArray<T> operator / LTGT (const T& s, const MArray<T>& a);
-
-  // element by element MArray by MArray ops
-
-  friend MArray<T> operator + LTGT (const MArray<T>& a, const MArray<T>& b);
-
-  friend MArray<T> operator - LTGT (const MArray<T>& a, const MArray<T>& b);
-
-  friend MArray<T> product LTGT (const MArray<T>& a, const MArray<T>& b);
-  friend MArray<T> quotient LTGT (const MArray<T>& a, const MArray<T>& b);
-
-  friend MArray<T> operator - LTGT (const MArray<T>& a);
 };
 
 #undef LTGT

@@ -76,7 +76,7 @@ public:
 
   Matrix right_singular_matrix (void) const;
 
-  friend ostream&  operator << (ostream& os, const SVD& a);
+  friend std::ostream&  operator << (std::ostream& os, const SVD& a);
 
 private:
 

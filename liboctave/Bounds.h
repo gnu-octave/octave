@@ -126,7 +126,7 @@ public:
   Bounds& set_lower_bounds (const ColumnVector lb);
   Bounds& set_upper_bounds (const ColumnVector ub);
 
-  friend ostream& operator << (ostream& os, const Bounds& b);
+  friend std::ostream& operator << (std::ostream& os, const Bounds& b);
 
 protected:
 

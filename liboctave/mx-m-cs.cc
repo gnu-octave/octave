@@ -34,7 +34,7 @@ MS_BIN_OPS (ComplexMatrix, Matrix, Complex)
 
 MS_CMP_OPS (Matrix, , Complex, real)
 
-MS_BOOL_OPS (Matrix, Complex)
+MS_BOOL_OPS (Matrix, Complex, 0.0)
 
 /*
 ;;; Local Variables: ***

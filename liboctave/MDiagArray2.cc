@@ -92,8 +92,12 @@ operator -= (MDiagArray2<T>& a, const MDiagArray2<T>& b)
   MDiagArray2<T> \
   operator OP (const MDiagArray2<T>& a, const T& s) \
   { \
-    DO_VS_OP (OP); \
-    return MDiagArray2<T> (result, a.rows (), a.cols ()); \
+    MDiagArray2<T> result (a.rows (), a.cols ()); \
+    T *r = result.fortran_vec (); \
+    int l = a.length (); \
+    const T *v = a.data (); \
+    DO_VS_OP (r, l, v, OP, s); \
+    return result; \
   }
 
 MARRAY_DAS_OP (*)
@@ -105,8 +109,12 @@ template <class T>
 MDiagArray2<T>
 operator * (const T& s, const MDiagArray2<T>& a)
 {
-  DO_SV_OP (*);
-  return MDiagArray2<T> (result, a.rows (), a.cols ());
+  MDiagArray2<T> result (a.rows (), a.cols ()); \
+  T *r = result.fortran_vec (); \
+  int l = a.length (); \
+  const T *v = a.data (); \
+  DO_SV_OP (r, l, s, *, v); \
+  return result; \
 }
 
 // Element by element MDiagArray2 by MDiagArray2 ops.
@@ -116,20 +124,24 @@ operator * (const T& s, const MDiagArray2<T>& a)
   MDiagArray2<T> \
   FCN (const MDiagArray2<T>& a, const MDiagArray2<T>& b) \
   { \
-    int r = a.rows (); \
-    int c = a.cols (); \
+    int a_nr = a.rows (); \
+    int a_nc = a.cols (); \
     int b_nr = b.rows (); \
     int b_nc = b.cols (); \
-    if (r != b_nr || c != b_nc) \
+    if (a_nr != b_nr || a_nc != b_nc) \
       { \
-        gripe_nonconformant (#FCN, r, c, b_nr, b_nc); \
+        gripe_nonconformant (#FCN, a_nr, a_nc, b_nr, b_nc); \
 	return MDiagArray2<T> (); \
       } \
-    if (c == 0 || r == 0) \
+    if (a_nc == 0 || a_nr == 0) \
       return MDiagArray2<T> (); \
     int l = a.length (); \
-    DO_VV_OP (OP); \
-    return MDiagArray2<T> (result, r, c); \
+    MDiagArray2<T> result (a_nr, a_nc); \
+    T *r = result.fortran_vec (); \
+    const T *x = a.data (); \
+    const T *y = b.data (); \
+    DO_VV_OP (r, l, x, OP, y); \
+    return result; \
   }
 
 MARRAY_DADA_OP (operator +, +)
@@ -142,8 +154,12 @@ template <class T>
 MDiagArray2<T>
 operator - (const MDiagArray2<T>& a)
 {
-  NEG_V;
-  return MDiagArray2<T> (result, a.rows (), a.cols ());
+  int l = a.length ();
+  MDiagArray2<T> result (a.rows (), a.cols ());
+  T *r = result.fortran_vec ();
+  const T *x = a.data ();
+  NEG_V (r, l, x);
+  return result;
 }
 
 /*

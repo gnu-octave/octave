@@ -39,7 +39,7 @@ public:
 
   ComplexAEPBALANCE (void) : balanced_mat (), balancing_mat () { }
 
-  ComplexAEPBALANCE (const ComplexMatrix& a, const string& balance_job)
+  ComplexAEPBALANCE (const ComplexMatrix& a, const std::string& balance_job)
     {
       init (a, balance_job); 
     }
@@ -63,14 +63,14 @@ public:
 
   ComplexMatrix balancing_matrix (void) const { return balancing_mat; }
 
-  friend ostream& operator << (ostream& os, const ComplexAEPBALANCE& a);
+  friend std::ostream& operator << (std::ostream& os, const ComplexAEPBALANCE& a);
 
 private:
 
   ComplexMatrix balanced_mat;
   ComplexMatrix balancing_mat;
 
-  int init (const ComplexMatrix& a, const string& balance_job);
+  int init (const ComplexMatrix& a, const std::string& balance_job);
 };
 
 #endif

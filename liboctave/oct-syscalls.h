@@ -35,18 +35,18 @@ struct
 octave_syscalls
 {
   static int dup2 (int, int);
-  static int dup2 (int, int, string&);
+  static int dup2 (int, int, std::string&);
 
-  static int execvp (const string&, const string_vector&);
-  static int execvp (const string&, const string_vector&, string&);
+  static int execvp (const std::string&, const string_vector&);
+  static int execvp (const std::string&, const string_vector&, std::string&);
 
   static int fcntl (int, int, long);
-  static int fcntl (int, int, long, string&);
+  static int fcntl (int, int, long, std::string&);
 
-  static pid_t fork (string&);
-  static pid_t vfork (string&);
+  static pid_t fork (std::string&);
+  static pid_t vfork (std::string&);
 
-  static pid_t getpgrp (string&);
+  static pid_t getpgrp (std::string&);
 
   static pid_t getpid (void);
   static pid_t getppid (void);
@@ -58,10 +58,10 @@ octave_syscalls
   static uid_t geteuid (void);
 
   static int pipe (int *);
-  static int pipe (int *, string&);
+  static int pipe (int *, std::string&);
 
   static pid_t waitpid (pid_t, int);
-  static pid_t waitpid (pid_t, int, string&);
+  static pid_t waitpid (pid_t, int, std::string&);
 };
 
 #endif

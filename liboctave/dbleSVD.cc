@@ -164,8 +164,8 @@ SVD::init (const Matrix& a, SVD::type svd_type)
   return info;
 }
 
-ostream&
-operator << (ostream& os, const SVD& a)
+std::ostream&
+operator << (std::ostream& os, const SVD& a)
 {
   os << a.left_singular_matrix () << "\n";
   os << a.singular_values () << "\n";

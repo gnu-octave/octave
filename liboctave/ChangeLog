@@ -1,11 +1,45 @@
+2000-02-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* dMatrix.cc (write_int, read_int): No longer declared static.
+
+	* CDiagMatrix.h: Delete decls for friend operators that are
+	handled by MDiagArray2 class.  Move others outside class decl and
+	strip friend status.
+	* dDiagMatrix.h: Likewise.
+
+	* MArray.h: Delete decls for friend operators inside class decl.
+	* MArray2.h: Ditto.
+	* MDiagArray2.h: Ditto.
+
+	* MArray-defs.h (DO_VS_OP,, DO_SV_OP, DO_VV_OP, NEGV): Pass all
+	necessary parameters.  Don't allocate memory in the macro.  Change
+	all uses.
+
+	* dMatrix.h (class Matrix): Delete `friend class' decls.
+	* CMatrix.h (class ComplexMatrix): Ditto.
+
+	* mx-op-defs (MS_BOOL_OP, MS_BOOL_OPS, SM_BOOL_OP, SM_BOOL_OPS,
+	MM_BOOL_OP, MM_BOOL_OPS, MDM_MULTIPLY_OP, MDM_BIN_OPS,
+	DMM_MULTIPLY_OP, DMM_BIN_OPS): Pass zero constant as final arg, to
+	avoid type conflicts.  Change all uses.
+
+	* strptime.c (__mon_yday): Fix size of array decl.
+
+	* mx-inlines.cc: Use `xnot' instead of `not' for function name.
+
+	* chMatrix.cc (charMatrix::row_as_string): Delete extraneous
+	default value for second arg.
+
+	* Array2.cc (Array2<T>::resize): Add Array<T>:: qulaifier to
+	references to ArrayRep.
+
 2000-01-31  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
-	* oct-alloc.cc (octave_allocator::grow): Add std:: qualifier for
-	set_net_handler.
+	* Array.h (Array::ArrayRep): Now protected, not private.
 
 	* All source files: Include iostream, fstream, strstream,
 	etc. as needed instead of using forward declarations for these
-	classes.
+	classes.  Add std:: qualifier as needed.
 
 2000-01-30  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

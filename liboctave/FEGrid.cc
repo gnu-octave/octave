@@ -126,8 +126,8 @@ FEGrid::check_grid (void) const
     }
 }
 
-ostream&
-operator << (ostream& s, const FEGrid& g)
+std::ostream&
+operator << (std::ostream& s, const FEGrid& g)
 {
   s << g.element_boundaries ();
   return s;

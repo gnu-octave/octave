@@ -104,8 +104,12 @@ operator -= (MArray2<T>& a, const MArray2<T>& b)
   MArray2<T> \
   operator OP (const MArray2<T>& a, const T& s) \
   { \
-    DO_VS_OP (OP); \
-    return MArray2<T> (result, a.rows (), a.cols ()); \
+    MArray2<T> result (a.rows (), a.cols ()); \
+    T *r = result.fortran_vec (); \
+    int l = a.length (); \
+    const T *v = a.data (); \
+    DO_VS_OP (r, l, v, OP, s); \
+    return result; \
   }
 
 MARRAY_A2S_OP (+)
@@ -120,8 +124,12 @@ MARRAY_A2S_OP (/)
   MArray2<T> \
   operator OP (const T& s, const MArray2<T>& a) \
   { \
-    DO_SV_OP (OP); \
-    return MArray2<T> (result, a.rows (), a.cols ()); \
+    MArray2<T> result (a.rows (), a.cols ()); \
+    T *r = result.fortran_vec (); \
+    int l = a.length (); \
+    const T *v = a.data (); \
+    DO_SV_OP (r, l, s, OP, v); \
+    return result; \
   }
 
 MARRAY_SA2_OP (+)
@@ -136,20 +144,24 @@ MARRAY_SA2_OP (/)
   MArray2<T> \
   FCN (const MArray2<T>& a, const MArray2<T>& b) \
   { \
-    int r = a.rows (); \
-    int c = a.cols (); \
-    int br = b.rows (); \
-    int bc = b.cols (); \
-    if (r != br || c != bc) \
+    int a_nr = a.rows (); \
+    int a_nc = a.cols (); \
+    int b_nr = b.rows (); \
+    int b_nc = b.cols (); \
+    if (a_nr != b_nr || a_nc != b_nc) \
       { \
-        gripe_nonconformant (#FCN, r, c, br, bc); \
+        gripe_nonconformant (#FCN, a_nr, a_nc, b_nr, b_nc); \
 	return MArray2<T> (); \
       } \
-    if (r == 0 || c == 0) \
-      return MArray2<T> (r, c); \
+    if (a_nr == 0 || a_nc == 0) \
+      return MArray2<T> (a_nr, a_nc); \
     int l = a.length (); \
-    DO_VV_OP (OP); \
-    return MArray2<T> (result, r, c); \
+    MArray2<T> result (a_nr, a_nc); \
+    T *r = result.fortran_vec (); \
+    const T *x = a.data (); \
+    const T *y = b.data (); \
+    DO_VV_OP (r, l, x, OP, y); \
+    return result; \
   }
 
 MARRAY_A2A2_OP (operator +, +)
@@ -163,8 +175,12 @@ template <class T>
 MArray2<T>
 operator - (const MArray2<T>& a)
 {
-  NEG_V;
-  return MArray2<T> (result, a.rows (), a.cols ());
+  int l = a.length ();
+  MArray2<T> result (a.rows (), a.cols ());
+  T *r = result.fortran_vec ();
+  const T *x = a.data ();
+  NEG_V (r, l, x);
+  return result;
 }
 
 /*

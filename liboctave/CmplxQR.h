@@ -61,7 +61,7 @@ public:
 
   ComplexMatrix R (void) const { return r; }
 
-  friend ostream&  operator << (ostream&, const ComplexQR&);
+  friend std::ostream&  operator << (std::ostream&, const ComplexQR&);
 
 protected:
 

@@ -331,8 +331,8 @@ ColumnVector::max (void) const
   return res;
 }
 
-ostream&
-operator << (ostream& os, const ColumnVector& a)
+std::ostream&
+operator << (std::ostream& os, const ColumnVector& a)
 {
 //  int field_width = os.precision () + 7;
   for (int i = 0; i < a.length (); i++)
@@ -340,13 +340,13 @@ operator << (ostream& os, const ColumnVector& a)
   return os;
 }
 
-istream&
-operator >> (istream& is, ColumnVector& a)
+std::istream&
+operator >> (std::istream& is, ColumnVector& a)
 {
   int len = a.length();
 
   if (len < 1)
-    is.clear (ios::badbit);
+    is.clear (std::ios::badbit);
   else
     {
       double tmp;

@@ -61,7 +61,7 @@ public:
 
   Matrix unitary_hess_matrix (void) const { return unitary_hess_mat; }
 
-  friend ostream& operator << (ostream& os, const HESS& a);
+  friend std::ostream& operator << (std::ostream& os, const HESS& a);
 
 private:
 

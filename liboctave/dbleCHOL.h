@@ -54,7 +54,7 @@ public:
 
   Matrix chol_matrix (void) const { return chol_mat; }
 
-  friend ostream& operator << (ostream& os, const CHOL& a);
+  friend std::ostream& operator << (std::ostream& os, const CHOL& a);
 
 private:
 

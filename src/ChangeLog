@@ -1,5 +1,8 @@
 2003-11-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* version.h (OCTAVE_VERSION): Now 2.1.52.
+	(OCTAVE_API_VERSION): Now api-v3.
+
 	* pr-output.h (octave_fcn_handle::print_as_scalar): Delete.
 
 	* pr-output.cc (octave_print_internal): New version for

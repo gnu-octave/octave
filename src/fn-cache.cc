@@ -58,7 +58,7 @@ octave_fcn_file_name_cache::update (const std::string& path)
     {
       std::string d = dirs[i];
 
-      if (cache.contains (d))
+      if (cache.find (d) != cache.end ())
 	{
 	  if (cache[d].update (d))
 	    something_changed = true;

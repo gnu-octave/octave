@@ -90,9 +90,8 @@ INCLUDES := BaseSLList.h Cell.h DLList.h Map.h Pix.h SLList.h \
 	siglist.h symtab.h sysdep.h token.h toplev.h unwind-prot.h utils.h \
 	variables.h version.h xdiv.h xpow.h $(OV_INCLUDES) $(PT_INCLUDES)
 
-TI_XSRC := Array-oc.cc Array-os.cc Array-sym.cc Array-tc.cc Map-fnc.cc \
-	Map-oct-obj.cc Map-tc.cc SLList-expr.cc SLList-misc.cc \
-	SLList-plot.cc SLList-tc.cc SLList-tm.cc
+TI_XSRC := Array-oc.cc Array-os.cc Array-sym.cc Array-tc.cc Map-oct-obj.cc \
+	SLList-expr.cc SLList-misc.cc SLList-plot.cc SLList-tc.cc SLList-tm.cc
 
 TI_SRC := $(addprefix TEMPLATE-INST/, $(TI_XSRC))
 

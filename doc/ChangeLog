@@ -1,3 +1,16 @@
+2002-12-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* interpreter/Makefile.in (%.o : %.c): No longer need
+	-DNO_PRAGMA_INTERFACE_IMPLEMENTATION=1 compiler option.
+	(munge-texi#(BUILD_EXEEXT)): Likewise.
+	Don't link to Map-s.o.
+
+	* interpreter/Map-s.cc: Delete.
+	* interpreter/Makefile.in (DISTFILES): Delete it from the list.
+	(mostlyclean, clean): Don't delete Map-s.o.
+
+	* interpreter/munge-texi.cc: Require working STL.
+
 2002-11-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* interpreter/Makefile.in (maintainer-clean): Depend on

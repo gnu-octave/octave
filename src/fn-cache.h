@@ -24,8 +24,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define octave_fn_cache_h 1
 
 #include <string>
-
-#include "Map.h"
+#include <map>
 
 #include "oct-time.h"
 
@@ -89,9 +88,7 @@ octave_fcn_file_name_cache
 {
 protected:
 
-  octave_fcn_file_name_cache (void)
-    : cache (file_name_cache_elt ())
-  { update (std::string ()); }
+  octave_fcn_file_name_cache (void) : cache () { update (std::string ()); }
 
 public:
 
@@ -116,7 +113,7 @@ private:
 
   // An associative array of all the directory names in the load path
   // and the corresponding cache elements.
-  CHMap<file_name_cache_elt> cache;
+  std::map<std::string, file_name_cache_elt> cache;
 
   string_vector do_list (const std::string& path, bool no_suffix);
 };

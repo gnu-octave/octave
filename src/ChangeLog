@@ -1,5 +1,11 @@
 2002-12-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* TEMPLATE-INST/Map-tc.cc, TEMPLATE-INST/Map-fnc.cc: Delete.
+	* Makefile.in (TI_XSRC): Delete them from the list.
+
+	* fn-cache.h (octave_fcn_file_name_cache::cache): Now std::map,
+	not CHMap.
+
 	* TEMPLATE-INST/SLStack-i.cc, TEMPLATE-INST/SLStack-ovl.cc,
 	TEMPLATE-INST/SLStack-pc.cc, TEMPLATE-INST/SLStack-str.cc,
 	TEMPLATE-INST/SLStack-sym.cc, TEMPLATE-INST/SLStack-tok.cc,

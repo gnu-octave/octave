@@ -42,7 +42,7 @@ FORMATTED = octave.dvi octave.ps octave.info octave.info-[0-9]* octave_*.html
 MAN_BASE := mkoctfile octave octave-bug
 MAN_SRC := $(addsuffix .1, $(MAN_BASE))
 
-DISTFILES = Makefile.in dir munge-texi.cc Map-s.cc $(MAN_SRC) \
+DISTFILES = Makefile.in dir munge-texi.cc $(MAN_SRC) \
   $(SOURCES) $(TEXINFO) $(FORMATTED)
 
 ifeq ($(wildcard octave.info), )
@@ -69,10 +69,10 @@ all: octave.info octave.dvi octave.ps octave_toc.html
 $(TEXINFO): src-DOCSTRINGS scripts-DOCSTRINGS munge-texi$(BUILD_EXEEXT)
 
 %.o : %.cc
-	$(BUILD_CXX) -DNO_PRAGMA_INTERFACE_IMPLEMENTATION=1 -c $(INCFLAGS) -DHAVE_CONFIG_H $< -o $@
+	$(BUILD_CXX) -c $(INCFLAGS) -DHAVE_CONFIG_H $< -o $@
 
-munge-texi$(BUILD_EXEEXT): munge-texi.o Map-s.o
-	$(BUILD_CXX) -DNO_PRAGMA_INTERFACE_IMPLEMENTATION=1 -o $@ $^
+munge-texi$(BUILD_EXEEXT): munge-texi.o
+	$(BUILD_CXX) -o $@ $^
 
 src-DOCSTRINGS:
 	$(MAKE) -C ../../src DOCSTRINGS
@@ -183,7 +183,7 @@ mostlyclean clean:
 	octave.cps octave.fns octave.ins octave.kys octave.ops \
 	octave.pgs octave.rds octave.tps octave.vrs octave.aux \
 	octave.log octave.toc \
-	munge-texi$(BUILD_EXEEXT) munge-texi.o Map-s.o
+	munge-texi$(BUILD_EXEEXT) munge-texi.o
 .PHONY: mostlyclean clean
 
 distclean: clean

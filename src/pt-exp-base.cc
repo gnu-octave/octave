@@ -680,6 +680,15 @@ tree_constant
 tree_fvc::lookup_map_element (SLList<char*>& list, int insert, int silent)
 {
   static tree_constant retval;
+
+  int l = line ();
+  int c = column ();
+
+  if (l == -1 && c == -1)
+    ::error ("invalid structure reference");
+  else
+    ::error ("invalid structure reference near line %d column %d", l, c);
+
   return retval;
 }
 

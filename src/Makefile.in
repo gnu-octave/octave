@@ -229,6 +229,6 @@ defaults.h: defaults.h.in ../Makeconf Makefile
 check: all
 .PHONY: check
 
-ifndef $(omit_deps)
+ifndef omit_deps
 -include $(MAKEDEPS)
 endif

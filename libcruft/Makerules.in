@@ -42,9 +42,9 @@ mostlyclean:
 	rm -f *.o
 .PHONY: mostlyclean
 
-realclean: clean
+maintainer-clean: clean
 	rm -f tags TAGS Makefile
-.PHONY: realclean
+.PHONY: maintainer-clean
 
 local-dist:
 	ln $(DISTFILES) ../../`cat ../../.fname`/libcruft/$(THISDIR)

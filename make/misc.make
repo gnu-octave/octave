@@ -15,7 +15,7 @@ distclean:: clean
 
 # Although we can remake configure and c-auto.h.in, we don't remove
 # them, since many people may lack Autoconf.  Use configclean for that.
-realclean:: distclean
+maintainer-clean:: distclean
 	rm -f TAGS *.info*
 
 extraclean::

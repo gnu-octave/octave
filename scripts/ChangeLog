@@ -1,3 +1,11 @@
+2004-09-10  David Bateman  <dbateman@free.fr>
+
+	* statistics/distributions/binomial_rnd.m: Fix error for scalar n
+	and p with n > 1, and fix for matrix n and p with n == 1.
+
+	* statistics/distributions/poisson_rnd.m: Fix for matrix length,
+	due to row vs. column vector operations.
+
 2004-09-03  David Bateman  <dbateman@free.fr>
 
 	* general/repmat.m: Fix to allow logical classes.

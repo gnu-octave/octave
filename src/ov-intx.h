@@ -51,12 +51,10 @@ public:
 
   ~OCTAVE_VALUE_INT_MATRIX_T (void) { }
 
-  octave_value *
-  clone (void) const
+  octave_value *clone (void) const
     { return new OCTAVE_VALUE_INT_MATRIX_T (*this); }
 
-  octave_value *
-  empty_clone (void) const
+  octave_value *empty_clone (void) const
     { return new OCTAVE_VALUE_INT_MATRIX_T (); }
 
   OCTAVE_INT_NDARRAY_T
@@ -83,11 +81,7 @@ public:
       
     }
 
-  double
-  scalar_value (bool = false) const
-    {
-      return double_value ();
-    }
+  double scalar_value (bool = false) const { return double_value (); }
 
   NDArray
   array_value (bool = false) const
@@ -137,39 +131,39 @@ public:
 
   ~OCTAVE_VALUE_INT_SCALAR_T (void) { }
 
-  octave_value *
-  clone (void) const
+  octave_value *clone (void) const
     { return new OCTAVE_VALUE_INT_SCALAR_T (*this); }
 
-  octave_value *
-  empty_clone (void) const
+  octave_value *empty_clone (void) const
     { return new OCTAVE_VALUE_INT_SCALAR_T (); }
 
   octave_value do_index_op (const octave_value_list& idx, int resize_ok)
-  {
-    octave_value retval;
+    {
+      octave_value retval;
 
-    if (idx.valid_scalar_indices ())
-      retval = scalar;
-    else
-      {
-	// XXX FIXME XXX -- this doesn't solve the problem of
-	//
-	//   a = 1; a([1,1], [1,1], [1,1])
-	//
-	// and similar constructions.  Hmm...
+      if (idx.valid_scalar_indices ())
+	retval = scalar;
+      else
+	{
+	  // XXX FIXME XXX -- this doesn't solve the problem of
+	  //
+	  //   a = 1; a([1,1], [1,1], [1,1])
+	  //
+	  // and similar constructions.  Hmm...
 
-	// XXX FIXME XXX -- using this constructor avoids narrowing the
-	// 1x1 matrix back to a scalar value.  Need a better solution
-	// to this problem.
+	  // XXX FIXME XXX -- using this constructor avoids narrowing the
+	  // 1x1 matrix back to a scalar value.  Need a better solution
+	  // to this problem.
 
-	octave_value tmp (new OCTAVE_VALUE_INT_MATRIX_T (
-			     OCTAVE_VALUE_INT_NDARRAY_EXTRACTOR_FUNCTION ())); 
-	retval = tmp.do_index_op (idx, resize_ok);
-      }
+	  octave_value tmp
+	    (new OCTAVE_VALUE_INT_MATRIX_T
+	     (OCTAVE_VALUE_INT_NDARRAY_EXTRACTOR_FUNCTION ())); 
 
-    return retval;
-  }
+	  retval = tmp.do_index_op (idx, resize_ok);
+	}
+
+      return retval;
+    }
 
   OCTAVE_INT_T
   OCTAVE_VALUE_INT_SCALAR_EXTRACTOR_FUNCTION (void) const
@@ -180,19 +174,16 @@ public:
     { return OCTAVE_INT_NDARRAY_T (dim_vector (1, 1), scalar); }
 
   octave_value resize (const dim_vector& dv) const
-    { OCTAVE_INT_NDARRAY_T retval (dv); if (dv.numel()) retval(0) = scalar; return retval; }
-
-  double
-  double_value (bool = false) const
     {
-      return double (scalar);
+      OCTAVE_INT_NDARRAY_T retval (dv);
+      if (dv.numel())
+	retval(0) = scalar;
+      return retval;
     }
 
-  double
-  scalar_value (bool = false) const
-    {
-      return double (scalar);
-    }
+  double double_value (bool = false) const { return double (scalar); }
+
+  double scalar_value (bool = false) const { return double (scalar); }
 
   NDArray
   array_value (bool = false) const

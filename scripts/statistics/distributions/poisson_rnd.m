@@ -101,7 +101,7 @@ function rnd = poisson_rnd (l, r, c)
 	ind = find (sum < 1);
 	if (any (ind))
           sum(ind) = (sum(ind)
-                      - log (1 - rand (1, length (ind))) ./ l(ind));
+                      - log (1 - rand (length (ind), 1)) ./ l(ind));
           num(ind) = num(ind) + 1;
 	else
           break;

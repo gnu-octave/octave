@@ -82,7 +82,7 @@ function rnd = binomial_rnd (n, p, r, c)
     else
       nel = prod (sz);
       tmp = rand (n, nel);
-      rnd = tmp < ones (n, nel) * p;
+      rnd = sum(tmp < ones (n, nel) * p, 1);
       rnd = reshape(rnd, sz);
     endif
   else
@@ -101,7 +101,7 @@ function rnd = binomial_rnd (n, p, r, c)
       tmp = rand (N, L);
       ind = (1 : N)' * ones (1, L);
       rnd(k) = sum ((tmp < ones (N, 1) * p(k)(:)') &
-                    (ind <= ones (N, 1) * n(k)(:)'));
+                    (ind <= ones (N, 1) * n(k)(:)'),1);
     endif
   endif
 

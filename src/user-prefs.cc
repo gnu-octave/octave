@@ -377,10 +377,6 @@ split_long_rows (void)
 int
 struct_levels_to_print (void)
 {
-  int status = 0;
-
-  static int kludge = 0;
-
   double val;
   if (builtin_real_scalar_variable ("struct_levels_to_print", val) == 0
       && ! xisnan (val))
@@ -389,19 +385,11 @@ struct_levels_to_print (void)
       if (ival >= 0 && (double) ival == val)
 	{
 	  user_pref.struct_levels_to_print = ival;
-	  return status;
+	  return 0;
 	}
     }
-
-  if (kludge == 0)
-    kludge++;
-  else
-    {
-      gripe_invalid_value_specified ("struct_levels_to_print");
-      status = -1;
-    }
-
-  return status;
+  gripe_invalid_value_specified ("struct_levels_to_print");
+  return -1;
 }
 
 
@@ -549,10 +537,6 @@ whitespace_in_literal_matrix (void)
 int
 set_output_max_field_width (void)
 {
-  int status = 0;
-
-  static int kludge = 0;
-
   double val;
   if (builtin_real_scalar_variable ("output_max_field_width", val) == 0
       && ! xisnan (val))
@@ -561,28 +545,16 @@ set_output_max_field_width (void)
       if (ival > 0 && (double) ival == val)
 	{
 	  user_pref.output_max_field_width = ival;
-	  return status;
+	  return 0;
 	}
     }
-
-  if (kludge == 0)
-    kludge++;
-  else
-    {
-      gripe_invalid_value_specified ("output_max_field_width");
-      status = -1;
-    }
-
-  return status;
+  gripe_invalid_value_specified ("output_max_field_width");
+  return -1;
 }
 
 int
 set_output_precision (void)
 {
-  int status = 0;
-
-  static int kludge = 0;
-
   double val;
   if (builtin_real_scalar_variable ("output_precision", val) == 0
       && ! xisnan (val))
@@ -591,28 +563,16 @@ set_output_precision (void)
       if (ival >= 0 && (double) ival == val)
 	{
 	  user_pref.output_precision = ival;
-	  return status;
+	  return 0;
 	}
     }
-
-  if (kludge == 0)
-    kludge++;
-  else
-    {
-      gripe_invalid_value_specified ("output_precision");
-      status = -1;
-    }
-
-  return status;
+  gripe_invalid_value_specified ("output_precision");
+  return -1;
 }
 
 int
 set_save_precision (void)
 {
-  int status = 0;
-
-  static int kludge = 0;
-
   double val;
   if (builtin_real_scalar_variable ("save_precision", val) == 0
       && ! xisnan (val))
@@ -621,19 +581,11 @@ set_save_precision (void)
       if (ival >= 0 && (double) ival == val)
 	{
 	  user_pref.save_precision = ival;
-	  return status;
+	  return 0;
 	}
     }
-
-  if (kludge == 0)
-    kludge++;
-  else
-    {
-      gripe_invalid_value_specified ("save_precision");
-      status = -1;
-    }
-
-  return status;
+  gripe_invalid_value_specified ("save_precision");
+  return -1;
 }
 
 int

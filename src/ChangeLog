@@ -1,3 +1,8 @@
+2004-09-10  John W. Eaton  <jwe@octave.org>
+
+	* ov-base-scalar.h (octave_base_scalar::clone,
+	octave_base_scalar::empty_clone): New functions.
+
 2004-09-09  John W. Eaton  <jwe@octave.org>
 
 	* pt-pr-code.h (tree_print_code::newline): New optional arg, alt_nl.

@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{K}, @var{Q}, @var{P}, @var{Ee}, @var{Er}] =} lqg(@var{sys}, @var{Sigw}, @var{Sigv}, @var{Q}, @var{R}, @var{in_idx})
+## @deftypefn {Function File} {[@var{K}, @var{Q}, @var{P}, @var{Ee}, @var{Er}] =} lqg (@var{sys}, @var{Sigw}, @var{Sigv}, @var{Q}, @var{R}, @var{in_idx})
 ## Design a linear-quadratic-gaussian optimal controller for the system
 ## @example
 ## dx/dt = A x + B u + G w       [w]=N(0,[Sigw 0    ])

@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} hinf_ctr(@var{dgs}, @var{F}, @var{H}, @var{Z}, @var{g})
+## @deftypefn {Function File} {} hinf_ctr (@var{dgs}, @var{F}, @var{H}, @var{Z}, @var{g})
 ## Called by @code{hinfsyn} to compute the H_inf optimal controller.
 ##
 ## @strong{Inputs}

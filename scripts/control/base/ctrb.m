@@ -17,8 +17,8 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} ctrb(@var{sys}, @var{b})
-## @deftypefnx {Function File} {} ctrb(@var{A}, @var{B})
+## @deftypefn {Function File} {} ctrb (@var{sys}, @var{b})
+## @deftypefnx {Function File} {} ctrb (@var{A}, @var{B})
 ## Build controllability matrix
 ## @example
 ##              2       n-1

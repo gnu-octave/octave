@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{retval}, @var{Pc}, @var{Pf}] =} hinfsyn_chk(@var{A}, @var{B1}, @var{B2}, @var{C1}, @var{C2}, @var{D12}, @var{D21}, @var{g}, @var{ptol})
+## @deftypefn {Function File} {[@var{retval}, @var{Pc}, @var{Pf}] =} hinfsyn_chk (@var{A}, @var{B1}, @var{B2}, @var{C1}, @var{C2}, @var{D12}, @var{D21}, @var{g}, @var{ptol})
 ## Called by @code{hinfsyn} to see if gain @var{g} satisfies conditions in
 ## Theorem 3 of
 ## Doyle, Glover, Khargonekar, Francis, "State Space Solutions to Standard

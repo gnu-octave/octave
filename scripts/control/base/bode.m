@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{mag}, @var{phase}, @var{w}] =} bode(@var{sys}, @var{w}, @var{out_idx}, @var{in_idx})
+## @deftypefn {Function File} {[@var{mag}, @var{phase}, @var{w}] =} bode (@var{sys}, @var{w}, @var{out_idx}, @var{in_idx})
 ## If no output arguments are given: produce Bode plots of a system; otherwise,
 ## compute the frequency response of a system data structure
 ##

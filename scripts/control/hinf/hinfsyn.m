@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{K}, @var{g}, @var{GW}, @var{Xinf}, @var{Yinf}] =} hinfsyn(@var{Asys}, @var{nu}, @var{ny}, @var{gmin}, @var{gmax}, @var{gtol}, @var{ptol}, @var{tol})
+## @deftypefn {Function File} {[@var{K}, @var{g}, @var{GW}, @var{Xinf}, @var{Yinf}] =} hinfsyn (@var{Asys}, @var{nu}, @var{ny}, @var{gmin}, @var{gmax}, @var{gtol}, @var{ptol}, @var{tol})
 ##
 ## @strong{Inputs} input system is passed as either
 ## @table @var

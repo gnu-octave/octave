@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function Fil} {} h2norm(@var{sys})
+## @deftypefn {Function Fil} {} h2norm (@var{sys})
 ## Computes the H2 norm of a system data structure (continuous time only)
 ##
 ## Reference:

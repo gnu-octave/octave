@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} damp(@var{p}, @var{tsam})
+## @deftypefn {Function File} {} damp (@var{p}, @var{tsam})
 ## Displays eigenvalues, natural frequencies and damping ratios
 ## of the eigenvalues of a matrix @var{p} or the @var{A}-matrix of a
 ## system @var{p}, respectively.

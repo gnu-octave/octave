@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[K}, @var{gain}, @var{Kc}, @var{Kf}, @var{Pc}, @var{Pf}] = h2syn(@var{Asys}, @var{nu}, @var{ny}, @var{tol})
+## @deftypefn {Function File} {[K}, @var{gain}, @var{Kc}, @var{Kf}, @var{Pc}, @var{Pf}] = h2syn (@var{Asys}, @var{nu}, @var{ny}, @var{tol})
 ## Design H2 optimal controller per procedure in
 ## Doyle, Glover, Khargonekar, Francis, "State Space Solutions to Standard
 ## H2 and Hinf Control Problems", IEEE TAC August 1989

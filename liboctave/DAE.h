@@ -31,7 +31,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "DAEFunc.h"
 #include "base-de.h"
 
-class DAE : public base_diff_eqn, public DAEFunc
+class
+DAE : public base_diff_eqn, public DAEFunc
 {
 public:
 

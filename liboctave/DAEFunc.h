@@ -1,7 +1,7 @@
 // DAEFunc.h                                             -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -36,7 +36,8 @@ class ColumnVector;
 
 #endif
 
-class DAEFunc
+class
+DAEFunc
 {
 public:
 
@@ -53,36 +54,28 @@ public:
 				const ColumnVector& xdot, double);
 
   DAEFunc (void)
-    {
-      fun = 0;
-      jac = 0;
-    }
+    : fun (0), jac (0) { }
 
   DAEFunc (DAERHSFunc f)
-    {
-      fun = f;
-      jac = 0;
-    }
+    : fun (f), jac (0) { }
 
   DAEFunc (DAERHSFunc f, DAEJacFunc j)
-    {
-      fun = f;
-      jac = j;
-    }
+    : fun (f), jac (j) { }
 
   DAEFunc (const DAEFunc& a)
-    {
-      fun = a.fun;
-      jac = a.jac;
-    }
+    : fun (a.fun), jac (a.jac) { }
 
   DAEFunc& operator = (const DAEFunc& a)
     {
-      fun = a.fun;
-      jac = a.jac;
-
+      if (this != &a)
+	{
+	  fun = a.fun;
+	  jac = a.jac;
+	}
       return *this;
     }
+
+  ~DAEFunc (void) { }
 
   DAERHSFunc function (void) const { return fun; }
 

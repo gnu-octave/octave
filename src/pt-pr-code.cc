@@ -1055,7 +1055,7 @@ tree_print_code::visit_unwind_protect_command
 
   indent ();
 
-  os << "cleanup_code";
+  os << "unwind_protect_cleanup";
 
   newline ();
 

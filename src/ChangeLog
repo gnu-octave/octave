@@ -1,5 +1,8 @@
 2000-01-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* pt-pr-code.cc (tree_print_code::visit_unwind_protect_command): 
+	Print `unwind_protect_cleanup', not `cleanup_code'.
+
 	* pager.cc (octave_pager_buf::flush_current_contents_to_diary):
 	New function.
 	(octave_pager_stream::flush_current_contents_to_diary):

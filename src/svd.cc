@@ -30,6 +30,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "tree-const.h"
 #include "user-prefs.h"
+#include "pr-output.h"
+#include "mappers.h"
 #include "gripes.h"
 #include "error.h"
 #include "utils.h"
@@ -41,7 +43,9 @@ DEFUN_DLD_BUILTIN ("svd", Fsvd, Ssvd, 2, 3,
 \n\
 Compute the singular value decomposition of X.  Given a second input\n\
 argument, an `economy' sized factorization is computed that omits\n\
-unnecessary rows and columns of U and V")
+unnecessary rows and columns of U and V.\n\
+\n\
+X may not contain any Inf or NaN values.")
 {
   Octave_object retval;
 
@@ -70,6 +74,13 @@ unnecessary rows and columns of U and V")
 
       if (! error_state)
 	{
+	  if (any_element_is_inf_or_nan (tmp))
+	    {
+	      error ("svd: cannot take SVD of matrix containing Inf or\
+ NaN values"); 
+	      return retval;
+	    }
+
 	  SVD result (tmp, type);
 
 	  DiagMatrix sigma = result.singular_values ();
@@ -92,6 +103,13 @@ unnecessary rows and columns of U and V")
 
       if (! error_state)
 	{
+	  if (any_element_is_inf_or_nan (ctmp))
+	    {
+	      error ("svd: cannot take SVD of matrix containing Inf or\
+ NaN values"); 
+	      return retval;
+	    }
+
 	  ComplexSVD result (ctmp, type);
 
 	  DiagMatrix sigma = result.singular_values ();

@@ -53,11 +53,11 @@ octave_ieee_init (void)
 {
   oct_mach_info::float_format ff = oct_mach_info::native_float_format ();
 
-  if (ff == octave_mach_info::flt_fmt_vax_d
-      || ff == octave_mach_info::flt_fmt_vax_g
-      || ff == octave_mach_info::flt_fmt_cray)
+  if (ff == oct_mach_info::flt_fmt_vax_d
+      || ff == oct_mach_info::flt_fmt_vax_g
+      || ff == oct_mach_info::flt_fmt_cray)
     {
-      octave_Inf = octave_NaN = octaveNA = DBL_MAX;
+      octave_Inf = octave_NaN = octave_NA = DBL_MAX;
     }
   else
     {

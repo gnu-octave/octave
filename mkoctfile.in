@@ -67,6 +67,7 @@ f77files=
 objfiles=
 octfiles=
 octfile=
+outputfile=
 incflags=
 defs=
 ldflags=
@@ -187,7 +188,7 @@ EOF
     -o | --output)
       shift
       if [ $# -gt 0 ]; then
-        octfile="$1"
+        outputfile="$1"
       else
         echo "mkoctfile: output file name missing" 1>&2
       fi
@@ -225,9 +226,15 @@ EOF
 done
 
 if $link_stand_alone; then
-  true
+  if [ -n "$outputfile" ]; then
+    output_option="-o $outputfile"
+  fi
 else
-  octfile=`echo $octfile | sed 's,\.[^.]*$,,'`.oct
+  if [ -n "$outputfile" ]; then
+    octfile="$outputfile"
+  else
+    octfile=`echo $octfile | sed 's,\.[^.]*$,,'`.oct
+  fi
 fi
 
 # Generate dependency files for C and C++ files.
@@ -363,7 +370,7 @@ fi
 if $link; then
   if $link_stand_alone; then
     if [ -n "$LD_CXX" ]; then
-      cmd="$LD_CXX $CPPFLAGS $ALL_CXXFLAGS $RDYNAMIC_FLAG $ALL_LDFLAGS $objfiles $ldflags $LFLAGS $RLD_FLAG $OCTAVE_LIBS $BLAS_LIBS $FFTW_LIBS $LIBS $FLIBS"
+      cmd="$LD_CXX $CPPFLAGS $ALL_CXXFLAGS $RDYNAMIC_FLAG $ALL_LDFLAGS $output_option $objfiles $ldflags $LFLAGS $RLD_FLAG $OCTAVE_LIBS $BLAS_LIBS $FFTW_LIBS $LIBS $FLIBS"
       $dbg $cmd
       eval $cmd
     else

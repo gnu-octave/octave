@@ -164,7 +164,14 @@ mx_sort (const Matrix& m)
   Matrix ms (nr, nc);
   Matrix idx (nr, nc);
 
-  if (nr > 0 && nc > 0)
+  if (nr == 1 && nc > 0)
+    {
+      retval (1) = Matrix (nr, nc, 1.0);
+      retval (0) = m;
+
+      return retval;
+    }
+  else if (nr > 1 && nc > 0)
     {
       for (int j = 0; j < nc; j++)
 	{
@@ -192,7 +199,14 @@ mx_sort (const RowVector& v)
   RowVector vs (n);
   RowVector idx (n);
 
-  if (n > 0)
+  if (n == 1)
+    {
+      retval (1) = RowVector (n, 1.0);
+      retval (0) = v;
+
+      return retval;
+    }
+  else if (n > 1)
     {
       Array<int> l = create_index_array (n);
 
@@ -218,7 +232,14 @@ mx_sort (const ComplexMatrix& cm)
   ComplexMatrix cms (nr, nc);
   Matrix idx (nr, nc);
 
-  if (nr > 0 && nc > 0)
+  if (nr == 1 && nc > 0)
+    {
+      retval (1) = Matrix (nr, nc, 1.0);
+      retval (0) = cm;
+
+      return retval;
+    }
+  else if (nr > 1 && nc > 0)
     {
       for (int j = 0; j < nc; j++)
 	{
@@ -256,7 +277,14 @@ mx_sort (ComplexRowVector& cv)
   ComplexRowVector cvs (n);
   RowVector idx (n);
 
-  if (n > 0)
+  if (n == 1)
+    {
+      retval (1) = RowVector (n, 1.0);
+      retval (0) = cv;
+
+      return retval;
+    }
+  else if (n > 1)
     {
       Array<int> l = create_index_array (n);
 

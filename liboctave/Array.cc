@@ -91,8 +91,6 @@ Array<T>::Array (int n, const T& val)
 {
   rep = new ArrayRep<T> (n);
 
-  rep->count = 1;
-
   for (int i = 0; i < n; i++)
     rep->data[i] = val;
 
@@ -195,7 +193,6 @@ Array<T>::resize (int n)
   int old_len = length ();
 
   rep = new ArrayRep<T> (n);
-  rep->count = 1;
 
   if (old_data && old_len > 0)
     {
@@ -227,7 +224,6 @@ Array<T>::resize (int n, const T& val)
   int old_len = length ();
 
   rep = new ArrayRep<T> (n);
-  rep->count = 1;
 
   int min_len = old_len < n ? old_len : n;
 
@@ -252,7 +248,6 @@ Array<T>::fortran_vec (void)
     {
       --rep->count;
       rep = new ArrayRep<T> (*rep);
-      rep->count = 1;
     }
   return rep->data;
 }
@@ -328,7 +323,6 @@ Array2<T>::resize (int r, int c)
   int old_len = length ();
 
   rep = new ArrayRep<T> (r*c);
-  rep->count = 1;
 
   d1 = r;
   d2 = c;
@@ -367,7 +361,6 @@ Array2<T>::resize (int r, int c, const T& val)
   int old_len = length ();
 
   rep = new ArrayRep<T> (r*c);
-  rep->count = 1;
 
   d1 = r;
   d2 = c;
@@ -580,7 +573,6 @@ DiagArray<T>::resize (int r, int c)
   int new_len = r < c ? r : c;
 
   rep = new ArrayRep<T> (new_len);
-  rep->count = 1;
 
   nr = r;
   nc = c;
@@ -617,7 +609,6 @@ DiagArray<T>::resize (int r, int c, const T& val)
   int new_len = r < c ? r : c;
 
   rep = new ArrayRep<T> (new_len);
-  rep->count = 1;
 
   nr = r;
   nc = c;

@@ -64,8 +64,15 @@ my_friendly_exit (const char *sig_name, int sig_number)
 static void
 octave_new_handler (void)
 {
-  error ("new: virtual memory exhausted -- stopping myself");
-  clean_up_and_exit (1);
+  error ("memory exhausted -- trying to return to prompt");
+
+  if (can_interrupt)
+    {
+      jump_to_top_level ();
+      panic_impossible ();
+    }
+  else
+    clean_up_and_exit (1);
 }
 
 static RETSIGTYPE
@@ -130,7 +137,7 @@ sigfpe_handler (int i)
 
   signal (SIGFPE, sigfpe_handler);
 
-  error ("floating point exception -- trying to continue");
+  error ("floating point exception -- trying to return to prompt");
 
   if (can_interrupt)
     {

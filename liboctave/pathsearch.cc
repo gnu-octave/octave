@@ -140,10 +140,7 @@ dir_path::init (void)
   kpse_path_iterator pi (p);
 
   for (int i = 0; i < count; i++)
-    {
-      pv[i] = *pi++;
-      std::cout << pv[i] << std::endl;
-    }
+    pv[i] = *pi++;
 
   initialized = true;
 }

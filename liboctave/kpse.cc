@@ -229,10 +229,6 @@ extern "C" char *xbasename (const char *name);
 static void xclosedir (DIR *d);
 #endif
 
-#ifndef WIN32
-int dir_links (const char *fn);
-#endif
-
 static void str_llist_add (str_llist_type *l, const std::string& str);
 
 static void str_llist_float (str_llist_type *l, str_llist_elt_type *mover);
@@ -254,7 +250,7 @@ xmalloc (unsigned size)
 {
   void *new_mem = (void *) malloc (size);
 
-  if (new_mem == NULL)
+  if (! new_mem)
     {
       fprintf (stderr, "fatal: memory exhausted (xmalloc of %u bytes).\n",
                size);
@@ -272,12 +268,13 @@ xrealloc (void *old_ptr, unsigned size)
 {
   void *new_mem;
 
-  if (old_ptr == NULL)
+  if (! old_ptr)
     new_mem = xmalloc (size);
   else
     {
       new_mem = (void *) realloc (old_ptr, size);
-      if (new_mem == NULL)
+
+      if (! new_mem)
         {
           /* We used to print OLD_PTR here using %x, and casting its
              value to unsigned, but that lost on the Alpha, where
@@ -372,7 +369,7 @@ hash_create (unsigned size)
 
   /* calloc's zeroes aren't necessarily NULL, so be safe.  */
   for (b = 0; b <ret.size; b++)
-    ret.buckets[b] = NULL;
+    ret.buckets[b] = 0;
 
   return ret;
 }
@@ -388,7 +385,7 @@ hash_insert (hash_table_type *table, const std::string& key,
 
   new_elt->key = key;
   new_elt->value = value;
-  new_elt->next = NULL;
+  new_elt->next = 0;
 
   /* Insert the new element at the end of the list.  */
   if (! table->buckets[n])
@@ -414,7 +411,7 @@ hash_lookup (hash_table_type table, const std::string& key)
   unsigned n = hash (table, key);
 
   /* Look at everything in this bucket.  */
-  for (p = table.buckets[n]; p != NULL; p = p->next)
+  for (p = table.buckets[n]; p; p = p->next)
     if (key == p->key)
       ret.append (p->value);
 
@@ -462,7 +459,7 @@ hash_print (hash_table_type table, int summary_only)
 	  if (! summary_only)
 	    fprintf (stderr, "%4d ", b);
 
-	  for (tb = bucket->next; tb != NULL; tb = tb->next)
+	  for (tb = bucket->next; tb; tb = tb->next)
 	    len++;
 
 	  if (! summary_only)
@@ -472,7 +469,7 @@ hash_print (hash_table_type table, int summary_only)
 
 	  if (! summary_only)
 	    {
-	      for (tb = bucket; tb != NULL; tb = tb->next)
+	      for (tb = bucket; tb; tb = tb->next)
 		fprintf (stderr, " %s=>%s", tb->key.c_str (),
 			 tb->value.c_str ());
 
@@ -661,7 +658,7 @@ static bool first_search = true;
 static void
 log_search (const string_vector& filenames)
 {
-  static FILE *log_file = NULL;
+  static FILE *log_file = 0;
   static bool first_time = true; /* Need to open the log file?  */
 
   if (first_time)
@@ -689,7 +686,7 @@ log_search (const string_vector& filenames)
 
 	  /* Only record absolute filenames, for privacy.  */
 	  if (log_file && kpse_absolute_p (filename.c_str (), false))
-	    fprintf (log_file, "%lu %s\n", (long unsigned) time (NULL),
+	    fprintf (log_file, "%lu %s\n", (long unsigned) time (0),
 		     filename.c_str ());
 
 	  /* And show them online, if debugging.  We've already started
@@ -997,7 +994,7 @@ path_find_first_of (const std::string& path, const string_vector& names,
 		  if (! tmp)
 		    {
 		      tmp = new str_llist_type;
-		      *tmp = NULL;
+		      *tmp = 0;
 		      str_llist_add (tmp, "");
 		    }
 
@@ -1683,7 +1680,7 @@ init_path (kpse_format_info_type& info, const char *default_path, ...)
 
   std::string var;
 
-  while ((env_name = va_arg (ap, char *)) != NULL)
+  while ((env_name = va_arg (ap, char *)))
     {
       /* Since sh doesn't like envvar names with `.', check PATH_prog
 	 rather than PATH.prog.  */
@@ -1763,7 +1760,7 @@ kpse_init_format (void)
     return kpse_format_info.path;
 
   kpse_format_info.type = "ls-R";
-  init_path (kpse_format_info, DEFAULT_TEXMFDBS, DB_ENVS, NULL);
+  init_path (kpse_format_info, DEFAULT_TEXMFDBS, DB_ENVS, 0);
   kpse_format_info.suffix.append (std::string ("ls-R"));
   kpse_format_info.path = remove_dbonly (kpse_format_info.path);
 
@@ -1973,7 +1970,7 @@ db_build (hash_table_type *table, const std::string& db_filename)
 	  (*current_liboctave_warning_handler)
 	    ("kpathsea: See the manual for how to generate ls-R");
 
-	  db_file = NULL;
+	  db_file = 0;
 	}
       else
 	db_dir_list.append (top_dir);
@@ -1998,7 +1995,7 @@ db_build (hash_table_type *table, const std::string& db_filename)
 #endif /* KPSE_DEBUG */
     }
 
-  return db_file != NULL;
+  return db_file != 0;
 }
 
 /* Insert FNAME into the hash table.  This is for files that get built
@@ -2205,7 +2202,7 @@ alias_build (hash_table_type *table, const std::string& alias_filename)
       xfclose (alias_file, alias_filename);
     }
 
-  return alias_file != NULL;
+  return alias_file != 0;
 }
 
 /* Initialize the path for ls-R files, and read them all into the hash
@@ -2237,7 +2234,7 @@ kpse_init_db (void)
       /* If db can't be built, leave `size' nonzero (so we don't
 	 rebuild it), but clear `buckets' (so we don't look in it).  */
       free (db.buckets);
-      db.buckets = NULL;
+      db.buckets = 0;
     }
 
   /* Add the content of any alias databases.  There may exist more than
@@ -2261,7 +2258,7 @@ kpse_init_db (void)
   if (! ok)
     {
       free (alias_db.buckets);
-      alias_db.buckets = NULL;
+      alias_db.buckets = 0;
     }
 }
 
@@ -2280,7 +2277,7 @@ kpse_db_search (const std::string& name_arg,
 
   /* If we failed to build the database (or if this is the recursive
      call to build the db path), quit.  */
-  if (db.buckets == NULL)
+  if (! db.buckets)
     return ret;
 
   /* When tex-glyph.c calls us looking for, e.g., dpi600/cmr10.pk, we
@@ -2494,13 +2491,13 @@ checked_dir_list_add (str_llist_type *l, const std::string& dir)
    the dir_links call, that's not enough -- without this path element
    caching as well, the execution time doubles.  */
 
-typedef struct
+struct cache_entry
 {
-  const char *key;
+  std::string key;
   str_llist_type *value;
-} cache_entry;
+};
 
-static cache_entry *the_cache = NULL;
+static cache_entry *the_cache = 0;
 static unsigned cache_length = 0;
 
 /* Associate KEY with VALUE.  We implement the cache as a simple linear
@@ -2510,37 +2507,46 @@ static unsigned cache_length = 0;
    that's right, but it seems to be all that's needed.  */
 
 static void
-cache (const char *key, str_llist_type *value)
+cache (const std::string key, str_llist_type *value)
 {
+  cache_entry *new_cache = new cache_entry [cache_length+1];
+
+  for (int i = 0; i < cache_length; i++)
+    {
+      new_cache[i].key = the_cache[i].key;
+      new_cache[i].value = the_cache[i].value;
+    }
+
+  delete [] the_cache;
+
+  the_cache = new_cache;
+
+  the_cache[cache_length].key = key;
+  the_cache[cache_length].value = value;
+
   cache_length++;
-
-  the_cache = (cache_entry *) xrealloc (the_cache,
-					cache_length * sizeof (cache_entry));
-
-  the_cache[cache_length - 1].key = xstrdup (key);
-  the_cache[cache_length - 1].value = value;
 }
 
 /* To retrieve, just check the list in order.  */
 
 static str_llist_type *
-cached (const char *key)
+cached (const std::string& key)
 {
   unsigned p;
 
   for (p = 0; p < cache_length; p++)
     {
-      if (! strcmp (the_cache[p].key, key))
+      if (key == the_cache[p].key)
         return the_cache[p].value;
     }
 
-  return NULL;
+  return 0;
 }
 
 /* Handle the magic path constructs.  */
 
 /* Declare recursively called routine.  */
-static void expand_elt (str_llist_type *, const char *, unsigned);
+static void expand_elt (str_llist_type *, const std::string&, unsigned);
 
 /* POST is a pointer into the original element (which may no longer be
    ELT) to just after the doubled DIR_SEP, perhaps to the null.  Append
@@ -2548,13 +2554,48 @@ static void expand_elt (str_llist_type *, const char *, unsigned);
    STR_LIST_PTR.  */
 
 #ifdef WIN32
+
 /* Shared across recursive calls, it acts like a stack. */
-static char dirname[MAX_PATH];
+static std::string dirname;
+
+#else /* WIN32 */
+
+/* Return -1 if FN isn't a directory, else its number of links.
+   Duplicate the call to stat; no need to incur overhead of a function
+   call for that little bit of cleanliness. */
+
+static int
+dir_links (const std::string& fn)
+{
+  std::map<std::string, long> link_table;
+
+  long ret;
+
+  if (link_table.find (fn) != link_table.end ())
+    ret = link_table[fn];
+  else
+    {
+      struct stat stats;
+
+      ret = stat (fn.c_str (), &stats) == 0 && S_ISDIR (stats.st_mode)
+            ? stats.st_nlink : (unsigned) -1;
+
+      link_table[fn] = ret;
+
+#ifdef KPSE_DEBUG
+      if (KPSE_DEBUG_P (KPSE_DEBUG_STAT))
+        DEBUGF2 ("dir_links (%s) => %ld\n", fn.c_str (), ret);
 #endif
+    }
+
+  return ret;
+}
+
+#endif /* WIN32 */
 
 static void
-do_subdir (str_llist_type *str_list_ptr, const char *elt,
-	   unsigned elt_length, const char *post)
+do_subdir (str_llist_type *str_list_ptr, const std::string& elt,
+	   unsigned elt_length, const std::string& post)
 {
 #ifdef WIN32
   WIN32_FIND_DATA find_file_data;
@@ -2565,73 +2606,84 @@ do_subdir (str_llist_type *str_list_ptr, const char *elt,
   struct dirent *e;
 #endif /* not WIN32 */
 
-  std::string name (elt, elt_length);
+  std::string name = elt.substr (0, elt_length);
 
   assert (IS_DIR_SEP (elt[elt_length - 1])
           || IS_DEVICE_SEP (elt[elt_length - 1]));
 
 #if defined (WIN32)
-  strcpy (dirname, name.c_str ());
-  strcat (dirname, "/*.*");         /* "*.*" or "*" -- seems equivalent. */
-  hnd = FindFirstFile (dirname, &find_file_data);
+
+  dirname = name + "/*.*";         /* "*.*" or "*" -- seems equivalent. */
+
+  hnd = FindFirstFile (dirname.c_str (), &find_file_data);
 
   if (hnd == INVALID_HANDLE_VALUE)
     return;
 
   /* Include top level before subdirectories, if nothing to match.  */
-  if (*post == 0)
+  if (post.empty ())
     dir_list_add (str_list_ptr, name);
-  else {
-    /* If we do have something to match, see if it exists.  For
-       example, POST might be `pk/ljfour', and they might have a
-       directory `$TEXMF/fonts/pk/ljfour' that we should find.  */
-    name += post;
-    expand_elt (str_list_ptr, name.c_str (), elt_length);
-    name.resize (elt_length);
-  }
+  else
+    {
+      /* If we do have something to match, see if it exists.  For
+	 example, POST might be `pk/ljfour', and they might have a
+	 directory `$TEXMF/fonts/pk/ljfour' that we should find.  */
+      name += post;
+      expand_elt (str_list_ptr, name, elt_length);
+      name.resize (elt_length);
+    }
+
   proceed = 1;
+
   while (proceed)
     {
       if (find_file_data.cFileName[0] != '.')
 	{
 	  /* Construct the potential subdirectory name.  */
 	  name += find_file_data.cFileName;
+
 	  if (find_file_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
 	    {
 	      /* It's a directory, so append the separator.  */
 	      name += DIR_SEP_STRING;
 	      unsigned potential_len = name.length ();
-	      do_subdir (str_list_ptr, name.c_str (),
-			 potential_len, post);
+
+	      do_subdir (str_list_ptr, name, potential_len, post);
 	    }
 	  name.resize (elt_length);
 	}
+
       proceed = FindNextFile (hnd, &find_file_data);
     }
+
   FindClose (hnd);
 
 #else /* not WIN32 */
 
   /* If we can't open it, quit.  */
   dir = opendir (name.c_str ());
-  if (dir == NULL)
+
+  if (! dir)
     return;
 
   /* Include top level before subdirectories, if nothing to match.  */
-  if (*post == 0)
+  if (post.empty ())
     dir_list_add (str_list_ptr, name);
   else
-    { /* If we do have something to match, see if it exists.  For
+    {
+      /* If we do have something to match, see if it exists.  For
          example, POST might be `pk/ljfour', and they might have a
          directory `$TEXMF/fonts/pk/ljfour' that we should find.  */
       name += post;
-      expand_elt (str_list_ptr, name.c_str (), elt_length);
+      expand_elt (str_list_ptr, name, elt_length);
       name.resize (elt_length);
     }
 
-  while ((e = readdir (dir)) != NULL)
-    { /* If it begins with a `.', never mind.  (This allows ``hidden''
+  while ((e = readdir (dir)))
+    {
+      /* If it begins with a `.', never mind.  (This allows ``hidden''
          directories that the algorithm won't find.)  */
+
       if (e->d_name[0] != '.')
         {
           int links;
@@ -2640,7 +2692,7 @@ do_subdir (str_llist_type *str_list_ptr, const char *elt,
           name += e->d_name;
 
           /* If we can't stat it, or if it isn't a directory, continue.  */
-          links = dir_links (name.c_str ());
+          links = dir_links (name);
 
           if (links >= 0)
             {
@@ -2663,10 +2715,9 @@ do_subdir (str_llist_type *str_list_ptr, const char *elt,
               if (links > 2)
 #endif /* not ST_NLINK_TRICK */
                 /* All criteria are met; find subdirectories.  */
-                do_subdir (str_list_ptr, name.c_str (),
-                           potential_len, post);
+                do_subdir (str_list_ptr, name, potential_len, post);
 #ifdef ST_NLINK_TRICK
-              else if (*post == 0)
+              else if (post.empty ())
                 /* Nothing to match, no recursive subdirectories to
                    look for: we're done with this branch.  Add it.  */
                 dir_list_add (str_list_ptr, name);
@@ -2687,27 +2738,36 @@ do_subdir (str_llist_type *str_list_ptr, const char *elt,
    looking for magic constructs at START.  */
 
 static void
-expand_elt (str_llist_type *str_list_ptr, const char *elt, unsigned start)
+expand_elt (str_llist_type *str_list_ptr, const std::string& elt,
+	    unsigned start)
 {
-  const char *dir = elt + start;
-  const char *post;
+  size_t elt_len = elt.length ();
 
-  while (*dir != 0)
+  size_t dir = start;
+
+
+  while (dir < elt_len)
     {
-      if (IS_DIR_SEP (*dir))
+      if (IS_DIR_SEP (elt[dir]))
         {
           /* If two or more consecutive /'s, find subdirectories.  */
-          if (IS_DIR_SEP (dir[1]))
+          if (++dir < elt_len && IS_DIR_SEP (elt[dir]))
             {
-	      for (post = dir + 1; IS_DIR_SEP (*post); post++) ;
-              do_subdir (str_list_ptr, elt, dir - elt + 1, post);
+	      size_t i = dir;
+	      while (i < elt_len && IS_DIR_SEP (elt[i]))
+		i++;
+
+	      std::string post = elt.substr (i);
+
+              do_subdir (str_list_ptr, elt, dir, post);
+
 	      return;
             }
 
           /* No special stuff at this slash.  Keep going.  */
         }
-
-      dir++;
+      else
+	dir++;
     }
 
   /* When we reach the end of ELT, it will be a normal filename.  */
@@ -2717,15 +2777,13 @@ expand_elt (str_llist_type *str_list_ptr, const char *elt, unsigned start)
 /* Here is the entry point.  Returns directory list for ELT.  */
 
 str_llist_type *
-kpse_element_dirs (const std::string& elt_arg)
+kpse_element_dirs (const std::string& elt)
 {
-  const char *elt = elt_arg.c_str ();
-
   str_llist_type *ret;
 
   /* If given nothing, return nothing.  */
-  if (! elt || !*elt)
-    return NULL;
+  if (elt.empty ())
+    return 0;
 
   /* If we've already cached the answer for ELT, return it.  */
   ret = cached (elt);
@@ -2734,7 +2792,7 @@ kpse_element_dirs (const std::string& elt_arg)
 
   /* We're going to have a real directory list to return.  */
   ret = new str_llist_type;
-  *ret = NULL;
+  *ret = 0;
 
   /* We handle the hard case in a subroutine.  */
   expand_elt (ret, elt, 0);
@@ -2746,7 +2804,7 @@ kpse_element_dirs (const std::string& elt_arg)
 #ifdef KPSE_DEBUG
   if (KPSE_DEBUG_P (KPSE_DEBUG_EXPAND))
     {
-      DEBUGF1 ("path element %s =>", elt);
+      DEBUGF1 ("path element %s =>", elt.c_str ());
       if (ret)
         {
           str_llist_elt_type *e;
@@ -2775,43 +2833,6 @@ xclosedir (DIR *d)
 #endif
 }
 #endif
-
-/* dir.c: directory operations.  */
-
-#ifndef WIN32
-
-/* Return -1 if FN isn't a directory, else its number of links.
-   Duplicate the call to stat; no need to incur overhead of a function
-   call for that little bit of cleanliness. */
-
-int
-dir_links (const char *fn)
-{
-  std::map<std::string, long> link_table;
-
-  long ret;
-
-  if (link_table.find (fn) != link_table.end ())
-    ret = link_table[fn];
-  else
-    {
-      struct stat stats;
-
-      ret = stat (fn, &stats) == 0 && S_ISDIR (stats.st_mode)
-            ? stats.st_nlink : (unsigned) -1;
-
-      link_table[fn] = ret;
-
-#ifdef KPSE_DEBUG
-      if (KPSE_DEBUG_P (KPSE_DEBUG_STAT))
-        DEBUGF2 ("dir_links (%s) => %ld\n", fn, ret);
-#endif
-    }
-
-  return ret;
-}
-
-#endif /* !WIN32 */
 
 /* debug.c: Help the user discover what's going on.  */
 
@@ -2861,7 +2882,7 @@ str_llist_add (str_llist_type *l, const std::string& str)
   /* The new element will be at the end of the list.  */
   STR_LLIST (*new_elt) = str;
   STR_LLIST_MOVED (*new_elt) = 0;
-  STR_LLIST_NEXT (*new_elt) = NULL;
+  STR_LLIST_NEXT (*new_elt) = 0;
 
   /* Find the current end of the list.  */
   for (e = *l; e && STR_LLIST_NEXT (*e); e = STR_LLIST_NEXT (*e))
@@ -2890,7 +2911,7 @@ str_llist_float (str_llist_type *l, str_llist_elt_type *mover)
   /* Find the first unmoved element (to insert before).  We're
      guaranteed this will terminate, since MOVER itself is currently
      unmoved, and it must be in L (by hypothesis).  */
-  for (last_moved = NULL, unmoved = *l; STR_LLIST_MOVED (*unmoved);
+  for (last_moved = 0, unmoved = *l; STR_LLIST_MOVED (*unmoved);
        last_moved = unmoved, unmoved = STR_LLIST_NEXT (*unmoved))
     ;
 

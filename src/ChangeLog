@@ -1,3 +1,8 @@
+2000-08-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-stream.cc (printf_value_cache::double_value): Also set
+	curr_stat to conversion_error if there are no values at all.
+
 2000-08-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* dirfns.cc (Flink, Fsymlink, Freadlink): New functions.

@@ -2037,7 +2037,10 @@ printf_value_cache::double_value (void)
 {
   double retval = 0.0;
 
-  while (val_idx < n_vals)
+  if (exhausted ())
+    curr_state = conversion_error;
+
+  while (! exhausted ())
     {
       if (! data)
 	{

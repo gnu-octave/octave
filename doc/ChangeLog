@@ -1,6 +1,8 @@
-Wed Feb 19 10:30:14 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+Wed Feb 19 22:58:20 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Version 2.0.4 released.
+
+Wed Feb 19 10:30:14 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (DISTFILES): Distribute conf.texi, not conf.texi.in.
 

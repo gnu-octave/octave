@@ -45,7 +45,7 @@ check:
 	  $(SET_LD_LIBRARY_PATH) $(RUNTEST) \
 	    OCTAVE="$(OCTAVE_BINARY)" \
 	    OCTAVE_SCRIPT_PATH="$(OCTAVE_SCRIPT_PATH)" \
-	    --tool octave --srcdir $(srcdir) $(RUNTEST_FLAGS); \
+	    --tool octave --srcdir $(srcdir) $(RUNTEST_FLAGS) $(testsuite); \
 	else \
 	  echo "***"; \
 	  echo "*** Sorry, I can't run tests without DejaGnu"; \

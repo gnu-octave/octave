@@ -1,3 +1,9 @@
+2001-04-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: Only check for libz if checking for HDF5 libraries.
+	Allow user to specify HDF5 library name on command line, same as
+	for BLAS libraries.  Include BLAS and HDF5 libs in summary output.
+
 2001-04-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* octMakefile.in (CONF_DISTFILES): Remove config.h.bot from the list.

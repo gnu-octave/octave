@@ -476,3 +476,23 @@ $(SED) < $< > $@-t \
   -e "s;%OCTAVE_VERSION%;\"${version}\";"
 $(top_srcdir)/move-if-change $@-t $@
 endef
+
+define do-script-install
+$(top_srcdir)/mkinstalldirs $(fcnfiledir)/$(script_sub_dir)
+for f in $(FCN_FILES_NO_DIR); do \
+  rm -f $(fcnfiledir)/$(script_sub_dir)/$$f; \
+  $(INSTALL_DATA) $(srcdir)/$$f $(fcnfiledir)/$(script_sub_dir)/$$f; \
+done
+$(top_srcdir)/mkpkgadd $(fcnfiledir)/$(script_sub_dir) > $(fcnfiledir)/$(script_sub_dir)/PKG_ADD.t
+if [ -n "`cat $(fcnfiledir)/$(script_sub_dir)/PKG_ADD.t`" ]; then \
+  mv $(fcnfiledir)/$(script_sub_dir)/PKG_ADD.t $(fcnfiledir)/$(script_sub_dir)/PKG_ADD ; \
+else \
+  rm -f $(fcnfiledir)/$(script_sub_dir)/PKG_ADD.t ; \
+fi
+endef
+
+define do-script-uninstall
+for f in $(FCN_FILES_NO_DIR); \
+  do rm -f $(fcnfiledir)/$(script_sub_dir)/$$f; \
+done
+endef

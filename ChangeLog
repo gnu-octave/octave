@@ -1,3 +1,10 @@
+2002-12-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makeconf.in (do-script-install, do-script-uninstall):
+	New macros, used in Makefiles in scripts subdirectory.
+	(do-script-install): Use new scripts/mkpkgadd script to construct
+	PKG_ADD files.
+
 2002-12-03  Nix  <nix@esperi.demon.co.uk>
 
 	* configure.in: Use AC_CHECK_DECL in conjunction with

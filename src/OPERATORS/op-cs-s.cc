@@ -133,12 +133,12 @@ DEFBINOP (el_ldiv, complex, scalar)
 {
   CAST_BINOP_ARGS (const octave_complex&, const octave_scalar&);
 
-  double d = v1.double_value ();
+  Complex d = v1.complex_value ();
 
   if (d == 0.0)
     gripe_divide_by_zero ();
 
-  return octave_value (v2.complex_value () / d);
+  return octave_value (v2.double_value () / d);
 }
 
 DEFBINOP (el_and, complex, scalar)

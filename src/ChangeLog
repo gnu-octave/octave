@@ -1,3 +1,8 @@
+2003-09-08  D.  <dbateman@free.fr>
+
+	* OPERATORS/op-cs-s.cc (DEFBINOP): First arg is complex, second is
+	double.
+
 2003-09-05  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pt-cell.cc (tree_cell::rvalue): Don't assume that the number of

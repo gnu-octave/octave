@@ -26,7 +26,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #ifndef HAVE_ERFC
 
-#include "f77-uscore.h"
+#include "f77-fcn.h"
 
 extern double F77_FCN (derfc, DERFC) (const double*);
 

@@ -33,7 +33,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <unistd.h>
 #endif
 
-#include "f77-uscore.h"
+#include "f77-fcn.h"
 
 // All the STOP statements in the Fortran routines have been replaced
 // with a call to XSTOPX, defined in the file libcruft/misc/xstopx.f.

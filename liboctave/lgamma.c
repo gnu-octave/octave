@@ -26,7 +26,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #ifndef HAVE_LGAMMA
 
-#include "f77-uscore.h"
+#include "f77-fcn.h"
 
 /* If the system doesn't have lgamma, assume that it doesn't have
    signgam either */

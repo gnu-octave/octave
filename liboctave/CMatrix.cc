@@ -39,7 +39,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "CmplxDET.h"
 #include "CmplxSCHUR.h"
 #include "CmplxSVD.h"
-#include "f77-uscore.h"
+#include "f77-fcn.h"
 #include "lo-error.h"
 #include "mx-base.h"
 #include "mx-inlines.cc"

@@ -76,7 +76,7 @@ extern "C" void _rl_output_character_function ();
 
 #include "defun.h"
 #include "error.h"
-#include "f77-uscore.h"
+#include "f77-fcn.h"
 #include "help.h"
 #include "input.h"
 #include "mappers.h"

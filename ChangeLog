@@ -1,5 +1,8 @@
 2005-03-17  John W. Eaton  <jwe@octave.org>
 
+	* configure.in: If first check for -lumfpack fails try again with
+	-lcblas as an additional library.
+
 	* configure.in: Change defaults to enable shared libraries and
 	dynamic linking and disable static libraries.
 
@@ -31,7 +34,7 @@
 2005-03-10  John W. Eaton  <jwe@octave.org>
 
 	* mkoctfile.in: Accept -R DIR.
-p
+
 2005-03-09  John W. Eaton  <jwe@octave.org>
 
 	* examples/Makefile.in (bin-dist): Delete target.

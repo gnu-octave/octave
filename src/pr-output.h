@@ -34,23 +34,27 @@ class Range;
 class charMatrix;
 
 extern void octave_print_internal (ostream& os, double d,
-				   int pr_as_read_syntax = 0);
+				   bool pr_as_read_syntax = false);
 
 extern void octave_print_internal (ostream& os, const Matrix& m,
-				   int pr_as_read_syntax = 0);
+				   bool pr_as_read_syntax = false,
+				   int extra_indent = 0);
 
 extern void octave_print_internal (ostream& os, const Complex& c,
-				   int pr_as_read_syntax = 0);
+				   bool pr_as_read_syntax = false);
 
 extern void octave_print_internal (ostream& os, const ComplexMatrix& cm,
-				   int pr_as_read_syntax = 0);
+				   bool pr_as_read_syntax = false,
+				   int extra_indent = 0);
 
 extern void octave_print_internal (ostream& os, const Range& r,
-				   int pr_as_read_syntax = 0);
+				   bool pr_as_read_syntax = false,
+				   int extra_indent = 0);
 
 extern void octave_print_internal (ostream& os, const charMatrix& chm,
-				   int pr_as_read_syntax = 0,
-				   int pr_as_string = 0);
+				   bool pr_as_read_syntax = false,
+				   bool pr_as_string = false,
+				   int extra_indent = 0);
 
 // XXX FIXME XXX -- these should probably be somewhere else.
 

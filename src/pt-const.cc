@@ -86,18 +86,18 @@ static TC_REP *tc_rep_newlist = 0;
 static const int tc_rep_newlist_grow_size = 128;
 
 // Indentation level for structures.
-static int structure_indent_level = 0;
+static int struct_indent = 0;
 
 static void
-increment_structure_indent_level (void)
+increment_struct_indent (void)
 {
-  structure_indent_level += 2;
+  struct_indent += 2;
 }
 
 static void
-decrement_structure_indent_level (void)
+decrement_struct_indent (void)
 {
-  structure_indent_level -= 2;
+  struct_indent -= 2;
 }
 
 static bool
@@ -276,8 +276,13 @@ tree_constant::print_with_name (ostream& output_buf, const string& name,
 
   if (user_pref.print_answer_id_name)
     {
-      if (print_as_scalar () || print_as_structure ())
+      if (print_as_scalar ())
 	output_buf << name << " = ";
+      else if (print_as_structure ())
+	{
+	  pad_after = true;
+	  output_buf << name << " =";
+	}
       else
 	{
 	  pad_after = true;
@@ -2218,31 +2223,35 @@ TC_REP::print (ostream& output_buf)
   switch (type_tag)
     {
     case scalar_constant:
-      octave_print_internal (output_buf, scalar);
+      octave_print_internal (output_buf, scalar, false);
       break;
 
     case matrix_constant:
-      octave_print_internal (output_buf, *matrix);
+      octave_print_internal (output_buf, *matrix, false,
+			     struct_indent);
       break;
 
     case complex_scalar_constant:
-      octave_print_internal (output_buf, *complex_scalar);
+      octave_print_internal (output_buf, *complex_scalar, false);
       break;
 
     case complex_matrix_constant:
-      octave_print_internal (output_buf, *complex_matrix);
+      octave_print_internal (output_buf, *complex_matrix, false,
+			     struct_indent);
       break;
 
     case char_matrix_constant:
-      octave_print_internal (output_buf, *char_matrix);
+      octave_print_internal (output_buf, *char_matrix, false,
+			     struct_indent);
       break;
 
     case char_matrix_constant_str:
-      octave_print_internal (output_buf, *char_matrix, 0, 1);
+      octave_print_internal (output_buf, *char_matrix, false, true,
+			     struct_indent);
       break;
 
     case range_constant:
-      octave_print_internal (output_buf, *range);
+      octave_print_internal (output_buf, *range, false, struct_indent);
       break;
 
     case map_constant:
@@ -2253,35 +2262,56 @@ TC_REP::print (ostream& output_buf)
 
 	begin_unwind_frame ("TC_REP_print");
 
-	unwind_protect_int (structure_indent_level);
+	unwind_protect_int (struct_indent);
 	unwind_protect_int (user_pref.struct_levels_to_print);
 
 	if (user_pref.struct_levels_to_print-- > 0)
 	  {
-	    output_buf << "{\n";
+	    output_buf.form ("\n%*s{\n", struct_indent, "");
 
-	    increment_structure_indent_level ();
+	    increment_struct_indent ();
 
-	    for (Pix p = a_map->first (); p != 0; a_map->next (p))
+	    Pix p = a_map->first ();
+
+	    while (p)
 	      {
+		bool pad_after = false;
+
 		string key = a_map->key (p);
 		tree_constant val = a_map->contents (p);
 
-		output_buf.form ("%*s%s = ", structure_indent_level,
+		a_map->next (p);
+
+		output_buf.form ("%*s%s =", struct_indent,
 				 "", key.c_str ());
 
-		if (! (print_as_scalar () || print_as_structure ())) 
-		  output_buf << "\n";
+		if (val.print_as_scalar ())
+		  output_buf << " ";
+		else if (val.print_as_structure ())
+		  {
+		    if (p)
+		      pad_after = true;
+		  }
+		else
+		  {
+		    if (p)
+		      pad_after = true;
+
+		    output_buf << "\n\n";
+		  }
 
 		val.print (output_buf);
+
+		if (pad_after)
+		  output_buf << "\n";
 	      }
 
-	    decrement_structure_indent_level ();
+	    decrement_struct_indent ();
 
-	    output_buf.form ("%*s%s", structure_indent_level, "", "}\n");
+	    output_buf.form ("%*s%s", struct_indent, "", "}\n");
 	  }
 	else
-	  output_buf << "<structure>\n";
+	  output_buf << " <structure>\n";
 
 	run_unwind_frame ("TC_REP_print");
       }

@@ -23,9 +23,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_octave_stdiostream_h)
 #define octave_octave_stdiostream_h 1
 
-#include <stdiostream.h>
-
 #include "oct-stream.h"
+#include "c_file_ptr_stream.h"
 
 class
 octave_base_stdiostream : public octave_base_stream
@@ -50,7 +49,7 @@ public:
 
   std::string name (void) const { return nm; }
 
-  virtual stdiobuf *rdbuf (void) const = 0;
+  virtual c_file_ptr_buf *rdbuf (void) const = 0;
 
   virtual bool bad (void) const = 0;
 
@@ -95,8 +94,7 @@ public:
   std::ostream *output_stream (void) { return 0; }
 
   // XXX FIXME XXX -- should not have to cast away const here.
-  stdiobuf *rdbuf (void) const
-    { return is ? (const_cast<std::istdiostream *> (is))->rdbuf () : 0; }
+  c_file_ptr_buf *rdbuf (void) const { return is ? is->rdbuf () : 0; }
 
   bool bad (void) const { return is ? is->bad () : true; }
 
@@ -108,7 +106,7 @@ public:
 
 protected:
 
-  std::istdiostream *is;
+  i_c_file_ptr_stream *is;
 
   ~octave_istdiostream (void);
 
@@ -145,8 +143,8 @@ public:
   std::ostream *output_stream (void) { return os; }
 
   // XXX FIXME XXX -- should not have to cast away const here.
-  stdiobuf *rdbuf (void) const
-    { return os ? (const_cast<std::ostdiostream *> (os))->rdbuf () : 0; }
+  c_file_ptr_buf *rdbuf (void) const
+    { return os ? (const_cast<o_c_file_ptr_stream *> (os))->rdbuf () : 0; }
 
   bool bad (void) const { return os ? os->bad () : true; }
 
@@ -158,7 +156,7 @@ public:
 
 protected:
 
-  std::ostdiostream *os;
+  o_c_file_ptr_stream *os;
 
   ~octave_ostdiostream (void);
 

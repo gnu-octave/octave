@@ -46,13 +46,13 @@ octave_base_stdiostream::seek (std::streamoff offset, std::ios::seek_dir origin)
 
   if (! bad ())
     {
-      stdiobuf *sb = rdbuf ();
+      c_file_ptr_buf *sb = rdbuf ();
 
       if (sb)
 	{
 	  clear ();
 
-	  sb->seekoff (offset, origin);
+	  sb->pubseekoff (offset, origin);
 	  retval = bad () ? -1 : 0;
 	}
     }
@@ -69,11 +69,11 @@ octave_base_stdiostream::tell (void) const
 
   if (! bad ())
     {
-      stdiobuf *sb = rdbuf ();
+      c_file_ptr_buf *sb = rdbuf ();
 
       if (sb)
 	{
-	  retval = static_cast<long> (sb->seekoff (0, ios::cur));
+	  retval = static_cast<long> (sb->pubseekoff (0, std::ios::cur));
 
 	  if (bad ())
 	    retval = -1;
@@ -97,7 +97,7 @@ octave_istdiostream::octave_istdiostream (const std::string& n, FILE *f,
   : octave_base_stdiostream (n, f, arg_md, flt_fmt), is (0)
 {
   if (f)
-    is = new std::istdiostream (f);
+    is = new i_c_file_ptr_stream (f);
 }
 
 octave_istdiostream::~octave_istdiostream (void)
@@ -119,7 +119,7 @@ octave_ostdiostream::octave_ostdiostream (const std::string& n, FILE *f,
   : octave_base_stdiostream (n, f, arg_md, flt_fmt), os (0)
 {
   if (f)
-    os = new std::ostdiostream (f);
+    os = new o_c_file_ptr_stream (f);
 }
 
 octave_ostdiostream::~octave_ostdiostream (void)

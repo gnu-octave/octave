@@ -45,7 +45,7 @@ octave_iprocstream::octave_iprocstream (const std::string& n,
   if (fp)
     {
       delete is;
-      is = new std::istdiostream (fp);
+      is = new i_c_file_ptr_stream (fp);
     }
 }
 
@@ -75,7 +75,7 @@ octave_oprocstream::octave_oprocstream (const std::string& n,
   if (fp)
     {
       delete os;
-      os = new std::ostdiostream (fp);
+      os = new o_c_file_ptr_stream (fp);
     }
 }
 

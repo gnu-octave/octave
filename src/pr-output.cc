@@ -247,7 +247,7 @@ pr_min_internal (const Matrix& m)
 // functions,..
 
 static void
-set_real_format (bool sign, int digits, bool inf_or_nan, bool nan_or_int,
+set_real_format (bool sign, int digits, bool inf_or_nan, bool int_only,
 		 int &fw)
 {
   static float_format fmt;
@@ -274,7 +274,7 @@ set_real_format (bool sign, int digits, bool inf_or_nan, bool nan_or_int,
       fw = 8 * sizeof (double);
       rd = 0;
     }
-  else if (nan_or_int)
+  else if (inf_or_nan || int_only)
     {
       fw = digits;
       if (inf_or_nan && fw < 3)
@@ -320,6 +320,8 @@ set_real_format (bool sign, int digits, bool inf_or_nan, bool nan_or_int,
       if (print_big_e)
 	fmt.uppercase ();
     }
+  else if (inf_or_nan || int_only)
+    fmt = float_format (fw, rd);
   else
     fmt = float_format (fw, rd, std::ios::fixed);
 
@@ -339,14 +341,14 @@ set_format (double d, int& fw)
 
   bool inf_or_nan = (xisinf (d) || xisnan (d));
 
-  bool nan_or_int = (xisnan (d) || D_NINT (d) == d);
+  bool int_only = (! inf_or_nan && D_NINT (d) == d);
 
   double d_abs = d < 0.0 ? -d : d;
 
   int digits = (inf_or_nan || d_abs == 0.0)
     ? 0 : static_cast<int> (floor (log10 (d_abs) + 1.0));
 
-  set_real_format (sign, digits, inf_or_nan, nan_or_int, fw);
+  set_real_format (sign, digits, inf_or_nan, int_only, fw);
 }
 
 static inline void
@@ -459,6 +461,8 @@ set_real_matrix_format (bool sign, int x_max, int x_min,
       if (print_big_e)
 	fmt.uppercase ();
     }
+  else if (int_or_inf_or_nan)
+    fmt = float_format (fw, rd);
   else
     fmt = float_format (fw, rd, std::ios::fixed);
 
@@ -605,6 +609,11 @@ set_complex_format (bool sign, int x_max, int x_min, int r_x,
 	  r_fmt.uppercase ();
 	  i_fmt.uppercase ();
 	}
+    }
+  else if (inf_or_nan || int_only)
+    {
+      r_fmt = float_format (r_fw, rd);
+      i_fmt = float_format (i_fw, rd);
     }
   else
     {
@@ -779,6 +788,11 @@ set_complex_matrix_format (bool sign, int x_max, int x_min,
 	  i_fmt.uppercase ();
 	}
     }
+  else if (int_or_inf_or_nan)
+    {
+      r_fmt = float_format (r_fw, rd);
+      i_fmt = float_format (i_fw, rd);
+    }
   else
     {
       r_fmt = float_format (r_fw, rd, std::ios::fixed);
@@ -932,6 +946,8 @@ set_range_format (bool sign, int x_max, int x_min, int all_ints, int& fw)
       if (print_big_e)
 	fmt.uppercase ();
     }
+  else if (all_ints)
+    fmt = float_format (fw, rd);
   else
     fmt = float_format (fw, rd, std::ios::fixed);
 

@@ -2420,6 +2420,10 @@ lexical_feedback::init (void)
   looking_at_return_list = false;
   looking_at_parameter_list = false;
 
+  // Not parsing a matrix or the left hand side of multi-value
+  // assignment statement.
+  looking_at_matrix_or_assign_lhs = false;
+
   // Next token can be identifier.
   cant_be_identifier = false;
 

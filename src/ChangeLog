@@ -1,3 +1,8 @@
+2001-02-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lex.l (lexical_feedbac::init):
+	Initialize looking_at_matrix_or_assign_lhs too.
+
 2001-02-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* data.cc (DATA_REDUCTION): Allow FCN(x,0) to be equivalent to FCN(x).

@@ -94,9 +94,15 @@ compute the value of the integrand.  It must have the form\n\
 where y and x are scalars.\n\
 \n\
 The second and third arguments are limits of integration.  Either or\n\
-both may be infinite.  The optional argument TOL specifies the desired\n\
-accuracy of the result.  The optional argument SING is a vector of\n\
-at which the integrand is singular.")
+both may be infinite.\n\
+\n\
+The optional argument tol is a vector that specifies the desired\n\
+accuracy of the result.  The first element of the vector is the desired\n\
+absolute tolerance, and the second element is the desired relative\n\
+tolerance.\n\
+\n\
+The optional argument @var{sing} is a vector of values at which the\n\
+integrand is singular.")
 {
   Octave_object retval;
 

@@ -23,10 +23,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_version_h)
 #define octave_version_h 1
 
-#define OCTAVE_VERSION "2.1.23"
+#define OCTAVE_VERSION "2.1.24"
 
 #define OCTAVE_COPYRIGHT \
-  "Copyright (C) 1996, 1997, 1998 John W. Eaton."
+  "Copyright (C) 1996, 1997, 1998, 1999, 2000 John W. Eaton."
 
 #define OCTAVE_NAME_AND_VERSION \
   "GNU Octave, version " OCTAVE_VERSION " (" CANONICAL_HOST_TYPE ")"
@@ -45,7 +45,7 @@ For details, type `warranty'.\n\
 ***\n\
 *** If you want a stable, well-tested version of Octave, you should be\n\
 *** using one of the stable releases (when this development release\n\
-*** was made, the latest stable version was 2.0.14)."
+*** was made, the latest stable version was 2.0.15)."
 
 #endif
 

@@ -89,6 +89,9 @@ double octave_NaN;
 // The floating point format on this system.
 floating_point_format native_float_format = OCTAVE_UNKNOWN_FLT_FMT;
 
+// Nonzero if the machine we are running on is big-endian.
+int octave_words_big_endian;
+
 #if defined (HAVE_FLOATINGPOINT_H)
 #include <floatingpoint.h>
 #endif
@@ -249,6 +252,22 @@ octave_ieee_init (void)
     panic ("unrecognized floating point format!");
 }
 
+static void
+ten_little_endians (void)
+{
+  // Are we little or big endian?  From Harbison & Steele.
+
+  union
+  {
+    long l;
+    char c[sizeof (long)];
+  } u;
+
+  u.l = 1;
+
+  octave_words_big_endian = (u.c[sizeof (long) - 1] == 1);
+}
+
 #if defined (EXCEPTION_IN_MATH)
 extern "C"
 {
@@ -292,6 +311,8 @@ sysdep_init (void)
 #endif
 
   octave_ieee_init ();
+
+  ten_little_endians ();
 }
 
 // Set terminal in raw mode.  From less-177.

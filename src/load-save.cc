@@ -1698,10 +1698,8 @@ read_mat_file_header (istream& is, int& swap, FOUR_BYTE_INT& mopt,
 //
 // Gag me.
 
-#if defined (WORDS_BIGENDIAN)
-  if (mopt == 0)
+  if (octave_words_big_endian && mopt == 0)
     swap = 1;
-#endif
 
   // mopt is signed, therefore byte swap may result in negative value.
 
@@ -1903,21 +1901,9 @@ read_binary_file_header (istream& is, int& swap,
   is.read (magic, magic_len);
   magic[magic_len] = '\0';
   if (strncmp (magic, "Octave-1-L", magic_len) == 0)
-    {
-#if defined (WORDS_BIGENDIAN)
-      swap = 1;
-#else
-      swap = 0;
-#endif
-    }
+    swap = octave_words_big_endian;
   else if (strncmp (magic, "Octave-1-B", magic_len) == 0)
-    {
-#if defined (WORDS_BIGENDIAN)
-      swap = 0;
-#else
-      swap = 1;
-#endif
-    }
+    swap = ! octave_words_big_endian;
   else
     {
       if (! quiet)
@@ -2859,11 +2845,7 @@ write_binary_header (ostream& stream, load_save_format format)
 {
   if (format == LS_BINARY)
     {
-#if defined (WORDS_BIGENDIAN)
-      stream << "Octave-1-B";
-#else
-      stream << "Octave-1-L";
-#endif
+      stream << (octave_words_big_endian ? "Octave-1-B" : "Octave-1-L");
 
       char tmp = (char) native_float_format;
       stream.write (&tmp, 1);

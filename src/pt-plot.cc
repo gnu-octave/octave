@@ -1023,6 +1023,34 @@ DEFUN (purge_tmp_files, , ,
   return retval;
 }
 
+
+DEFUN (graw, args, ,
+  "graw (string)\n\
+\n\
+Send STRING directly to gnuplot subprocess.")
+{
+  octave_value_list retval;
+
+  if (args.length () == 1 && args(0).is_string ())
+    {
+      string cmd = args(0).string_value ();
+
+      if (! (plot_stream && *plot_stream))
+	open_plot_stream ();
+
+      if (! error_state)
+	{
+	  *plot_stream << cmd;
+
+	  plot_stream->flush ();
+	}
+    }
+  else
+    print_usage ("graw");
+
+  return retval;
+}
+
 DEFUN_TEXT (gset, args, ,
   "gset [options]\n\
 \n\

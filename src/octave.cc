@@ -104,15 +104,16 @@ static bool verbose_flag = false;
 
 // Usage message
 static const char *usage_string = 
-  "octave [-?Vdfhiqvx] [--debug] [--echo-commands] [--exec-path path]\n\
+  "octave [-?HVdfhiqvx] [--debug] [--echo-commands] [--exec-path path]\n\
        [--help] [--info-file file] [--info-program prog] [--interactive]\n\
-       [--no-init-file] [--no-line-editing] [--no-site-file] [-p path]\n\
-       [--path path] [--silent] [--traditional] [--verbose] [--version] [file]";
+       [--no-history] [--no-init-file] [--no-line-editing] [--no-site-file]\n\
+       [-p path] [--path path] [--silent] [--traditional] [--verbose]\n\
+       [--version] [file]";
 
 // This is here so that it's more likely that the usage message and
 // the real set of options will agree.  Note: the `+' must come first
 // to prevent getopt from permuting arguments!
-static const char *short_opts = "+?Vdfhip:qvx";
+static const char *short_opts = "+?HVdfhip:qvx";
 
 // Long options.  See the comments in getopt.h for the meanings of the
 // fields in this structure.
@@ -133,6 +134,7 @@ long_options long_opts[] =
     { "info-file",        prog_args::required_arg, 0, INFO_FILE_OPTION },
     { "info-program",     prog_args::required_arg, 0, INFO_PROG_OPTION },
     { "interactive",      prog_args::no_arg,       0, 'i' },
+    { "no-history",       prog_args::no_arg,       0, 'H' },
     { "no-init-file",     prog_args::no_arg,       0, NO_INIT_FILE_OPTION },
     { "no-line-editing",  prog_args::no_arg,       0, NO_LINE_EDITING_OPTION },
     { "no-site-file",     prog_args::no_arg,       0, NO_SITE_FILE_OPTION },
@@ -264,22 +266,23 @@ Usage: octave [options]\n\
 \n\
 Options:\n\
 \n\
-  -d, --debug             Enter parser debugging mode.\n\
-  -x, --echo-commands     Echo commands as they are executed.\n\
+  --debug, -d             Enter parser debugging mode.\n\
+  --echo-commands, -x     Echo commands as they are executed.\n\
   --exec-path PATH        Set path for executing subprograms.\n\
-  -h, -?, --help          Print short help message and exit.\n\
-  -f, --norc              Don't read any initialization files.\n\
+  --help, -h, -?          Print short help message and exit.\n\
+  --norc, -f              Don't read any initialization files.\n\
   --info-file FILE        Use top-level info file FILE.\n\
   --info-program PROGRAM  Use PROGRAM for reading info files.\n\
-  -i, --interactive       Force interactive behavior.\n\
+  --interactive, -i       Force interactive behavior.\n\
+  --no-history, -H        Don't save commands to the history list\n\
   --no-init-file          Don't read the ~/.octaverc or .octaverc files.\n\
   --no-line-editing       Don't use readline for command-line editing.\n\
   --no-site-file          Don't read the site-wide octaverc file.\n\
-  -p PATH, --path PATH    Set initial LOADPATH to PATH.\n\
-  -q, --silent            Don't print message at startup.\n\
+  --path PATH, -p PATH    Set initial LOADPATH to PATH.\n\
+  --silent, -q            Don't print message at startup.\n\
   --traditional           Set compatibility variables.\n\
-  -V, --verbose           Enable verbose output in some cases.\n\
-  -v, --version           Print version number and exit.\n\
+  --verbose, -V           Enable verbose output in some cases.\n\
+  --version, -v           Print version number and exit.\n\
 \n\
   FILE                    Execute commands from FILE.\n\
 \n\
@@ -383,6 +386,10 @@ main (int argc, char **argv)
     {
       switch (optc)
 	{
+	case 'H':
+	  bind_builtin_variable ("saving_history", 0.0);
+	  break;
+
 	case 'V':
 	  verbose_flag = true;
 	  break;

@@ -1,3 +1,18 @@
+Thu Sep  3 12:40:47 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* strings/str2num.m: If eval returns a string, return an empty matrix.
+
+	* strings/strrep.m: Don't convert args to numeric values.
+	Prevent warnings for empty string args.
+	From Georg Thimm <thimm@idiap.ch>.
+
+	* strings/strcat.m: Prevent warnings for empty string args.
+
+Wed Sep  2 17:20:24 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* miscellaneous/menu.m: Remove special case for empty string
+	returned from input().  Add second arg to eval() to catch errors.
+
 Thu Jun 18 16:32:15 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* plot/__plt__.m: Don't call usleep.

@@ -944,7 +944,7 @@ Reads data in binary form of type PRECISION from a file.\n\
    int16, integer*2               --  two byte integer\n\
    int32, integer*4               --  four byte integer\n\
 \n\
-  SKIP      : number of bytes to skip before each element is read\n\
+  SKIP      : number of bytes to skip after each element is read\n\
               (default is 0)\n\
 \n\
   ARCH      : string specifying the data format for the file.  Valid\n\
@@ -1065,7 +1065,7 @@ DEFUN (fwrite, args, ,
 \n\
   DATA      : matrix of elements to be written\n\
 \n\
-  PRECISION : string specifying type of data to read, valid types are\n\
+  PRECISION : string specifying type of data to write, valid types are\n\
 \n\
    char, char*1, integer*1, int8  --  character\n\
    schar, signed char             --  signed character\n\
@@ -1081,7 +1081,7 @@ DEFUN (fwrite, args, ,
    int16, integer*2               --  two byte integer\n\
    int32, integer*4               --  four byte integer\n\
 \n\
-  SKIP      : number of bytes to skip before each element is read\n\
+  SKIP      : number of bytes to skip before each element is written\n\
               (the default is 0)\n\
 \n\
   ARCH      : string specifying the data format for the file.  Valid\n\

@@ -821,7 +821,7 @@ octave_base_stream::do_gets (int max_len, bool& err,
 	  msg.append (": read error");
 	  error (msg);
 	}
-      else if (is.eof ())
+      else if (count == 0 && is.eof ())
 	{
 	  err = true;
 	  string msg = fcn;

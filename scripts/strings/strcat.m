@@ -26,20 +26,26 @@
 function st = strcat (s, t, ...)
 
   if (nargin > 1)
-    if (isstr (s) && isstr (t))
-      tmpst = [s, t];
-    else
-      error ("strcat: all arguments must be strings");
-    endif
-    n = nargin - 2;
-    while (n--)
-      tmp = va_arg ();
-      if (isstr (tmp))
-        tmpst = [tmpst, tmp];
+    save_empty_list_elements_ok = empty_list_elements_ok;
+    unwind_protect
+      empty_list_elements_ok = 1;
+      if (isstr (s) && isstr (t))
+      	tmpst = [s, t];
       else
-        error ("strcat: all arguments must be strings");
+      	error ("strcat: all arguments must be strings");
       endif
-    endwhile
+      n = nargin - 2;
+      while (n--)
+      	tmp = va_arg ();
+      	if (isstr (tmp))
+          tmpst = [tmpst, tmp];
+      	else
+          error ("strcat: all arguments must be strings");
+      	endif
+      endwhile
+    unwind_protect_cleanup
+      empty_list_elements_ok = save_empty_list_elements_ok;
+    end_unwind_protect
   else
     usage ("strcat (s, t, ...)");
   endif

@@ -732,7 +732,7 @@ environment variable @code{OCTAVE_HISTSIZE}.
 @end defvr
 
 @defvr {Built-in Variable} saving_history
-If the value of @code{saving_history} is @code{"true"}, command entered
+If the value of @code{saving_history} is nonzero, command entered
 on the command line are saved in the file specified by the variable
 @code{history_file}.
 @end defvr

@@ -31,6 +31,9 @@ function m = str2num (s)
     sep = sep (ones (nr, 1), 1);
     s = sprintf ("m = [%s];", reshape ([s, sep]', 1, nr * (nc + 1)));
     eval (s, "m = [];");
+    if (isstr (m))
+      m = [];
+    endif
   else
     usage ("str2num (s)");
   endif

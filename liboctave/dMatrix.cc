@@ -2599,9 +2599,6 @@ Matrix::read (istream& is, int nr, int nc,
 	      break;
 	    }
 
-	  if (skip != 0)
-	    is.seekg (skip, ios::cur);
-
 	  if (is)
 	    {
 	      double tmp = 0.0;
@@ -2627,7 +2624,11 @@ Matrix::read (istream& is, int nr, int nc,
 
 		      data[count++] = tmp;
 		    }
-		  else
+
+		  if (ok && skip != 0)
+		    is.seekg (skip, ios::cur);
+
+		  if (! ok)
 		    {
 		      if (is.eof ())
 			{

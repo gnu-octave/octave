@@ -56,13 +56,8 @@ function num = menu (t, ...)
 	disp (va_arg ());
       endfor
       printf ("\n");
-      s = "";
       s = input ("pick a number, any number: ", "s");
-      if (strcmp (s, ""))
-	printf ("\n");
-	continue;
-      endif
-      eval (sprintf ("num = %s;", s));
+      eval (sprintf ("num = %s;", s), "num = [];");
       if (! is_scalar (num) || num < 1 || num > nopt)
 	printf ("\nerror: input invalid or out of range\n\n");
       else

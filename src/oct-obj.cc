@@ -112,12 +112,32 @@ octave_value_list::make_argv (const string& fcn_name) const
 
   if (all_strings_p ())
     {
-      int n = length ();
-      argv.resize (n+1);
+      int len = length ();
+
+      int total_nr = 0;
+
+      for (int i = 0; i < len; i++)
+	total_nr += elem(i).rows ();
+
+      argv.resize (total_nr+1);
+
       argv[0] = fcn_name;
 
-      for (int i = 0; i < n; i++)
-	argv[i+1] = elem(i).string_value ();
+      int k = 1;
+      for (int i = 0; i < len; i++)
+	{
+	  int nr = elem(i).rows ();
+
+	  if (nr == 1)
+	    argv[k++] = elem(i).string_value ();
+	  else
+	    {
+	      string_vector tmp = elem(i).all_strings ();
+
+	      for (int j = 0; j < nr; j++)
+		argv[k++] = tmp[j];
+	    }
+	}
     }
   else
     error ("%s: expecting all arguments to be strings", fcn_name.c_str ());

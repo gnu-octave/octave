@@ -1134,7 +1134,17 @@ function_end	: END
 // Plotting
 // ========
 
-plot_command	: PLOT plot_command1
+plot_command	: PLOT
+		  {
+		    if (! ($$ = make_plot_command ($1, 0, 0)))
+		      ABORT_PARSE;
+		  }
+		| PLOT ranges
+		  {
+		    if (! ($$ = make_plot_command ($1, $2, 0)))
+		      ABORT_PARSE;
+		  }
+		| PLOT plot_command1
 		  {
 		    if (! ($$ = make_plot_command ($1, 0, $2)))
 		      ABORT_PARSE;
@@ -1166,9 +1176,7 @@ ranges1		: OPEN_BRACE expression COLON expression CLOSE_BRACE
 		  { $$ = new plot_range (); }
 		;
 
-plot_command1	: // empty
-		  { $$ = 0; }
-		| plot_command2
+plot_command1	: plot_command2
 		  { $$ = new subplot_list ($1); }
 		| plot_command1 ',' plot_command2
 		  {
@@ -2781,6 +2789,12 @@ restore_input_stream (void *f)
   command_editor::set_input_stream (static_cast<FILE *> (f));
 }
 
+static void
+clear_current_script_file_name (void *)
+{
+  bind_builtin_variable ("current_script_file_name", octave_value ());
+}
+
 static bool
 parse_fcn_file (const string& ff, bool exec_script, bool force_script = false)
 {
@@ -2880,6 +2894,10 @@ parse_fcn_file (const string& ff, bool exec_script, bool force_script = false)
 
 	  Vsaving_history = false;
 	  reading_script_file = true;
+
+	  unwind_protect::add (clear_current_script_file_name, 0);
+
+	  bind_builtin_variable ("current_script_file_name", ff);
 
 	  parse_and_execute (ffile);
 

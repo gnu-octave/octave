@@ -70,10 +70,10 @@ mx_leftdiv_conform (T1 a, T2 b)
   return true;
 }
 
-template bool mx_leftdiv_conform (const Matrix&, const Matrix&);
-template bool mx_leftdiv_conform (const Matrix&, const ComplexMatrix&);
-template bool mx_leftdiv_conform (const ComplexMatrix&, const ComplexMatrix&);
-template bool mx_leftdiv_conform (const ComplexMatrix&, const Matrix&);
+template bool mx_leftdiv_conform (Matrix&, Matrix&);
+template bool mx_leftdiv_conform (Matrix&, ComplexMatrix&);
+template bool mx_leftdiv_conform (ComplexMatrix&, ComplexMatrix&);
+template bool mx_leftdiv_conform (ComplexMatrix&, Matrix&);
 
 template <class T1, class T2>
 bool
@@ -94,10 +94,10 @@ mx_div_conform (T1 a, T2 b)
   return true;
 }
 
-template bool mx_div_conform (const Matrix&, const Matrix&);
-template bool mx_div_conform (const Matrix&, const ComplexMatrix&);
-template bool mx_div_conform (const ComplexMatrix&, const ComplexMatrix&);
-template bool mx_div_conform (const ComplexMatrix&, const Matrix&);
+template bool mx_div_conform (Matrix&, Matrix&);
+template bool mx_div_conform (Matrix&, ComplexMatrix&);
+template bool mx_div_conform (ComplexMatrix&, ComplexMatrix&);
+template bool mx_div_conform (ComplexMatrix&, Matrix&);
 
 // Right division functions.
 //

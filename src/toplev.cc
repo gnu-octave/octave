@@ -243,30 +243,33 @@ Have Octave ask the system, \"What kind of computer are you?\"")
   return retval;
 }
 
-DEFUN (quit, args, ,
+DEFUN (quit, args, nargout,
   "quit (STATUS): exit Octave gracefully, returning STATUS to the system.\n\
 \n\
 STATUS should be an integer value.  If STATUS is missing, 0 is assumed.")
 {
   octave_value_list retval;
 
-  int exit_status = 0;
-
-  quitting_gracefully = true;
-
-  int nargin = args.length ();
-
-  if (nargin > 0)
+  if (nargout == 0)
     {
-      // XXX FIXME XXX -- need a safe uniform way to do this.
+      int exit_status = 0;
 
-      double tmp = args(0).double_value ();
+      quitting_gracefully = true;
 
-      if (! error_state && ! xisnan (tmp))
-	exit_status = NINT (tmp);
+      if (args.length () > 0)
+	{
+	  // XXX FIXME XXX -- need a safe uniform way to do this.
+
+	  double tmp = args(0).double_value ();
+
+	  if (! error_state && ! xisnan (tmp))
+	    exit_status = NINT (tmp);
+	}
+
+      clean_up_and_exit (exit_status);
     }
-
-  clean_up_and_exit (exit_status);
+  else
+    error ("quit: invalid number of output arguments");
 
   return retval;
 }

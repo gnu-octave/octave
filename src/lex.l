@@ -332,7 +332,8 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 // semicolons.
 %}
 
-<MATRIX>{SNLCMT}*\n{SNLCMT}* {
+<MATRIX>{S}*{COMMENT}{SNLCMT}* |
+<MATRIX>{S}*{NL}{SNLCMT}* {
     fixup_column_count (yytext);
     eat_whitespace ();
     if (Vwhitespace_in_literal_matrix != 2)

@@ -1,3 +1,12 @@
+Thu Sep 24 11:59:02 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lapack/xdlamch.f: New file.
+
+	* ordered-qz: New directory.
+	* Makefile.in (CRUFT_DIRS): Add it to the list.
+
+	* lapack/dggbak.f, lapack/dtgevc.f, lapack/zggbal.f: New files.
+
 Tue Jun  2 09:57:52 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* specfun/rybesl.f (rybesl): Don't access by(2) unless nb .gt. 1.

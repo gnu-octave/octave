@@ -105,7 +105,7 @@ Return the coefficients of the derivative of the polynomial whose
 coefficients are given by vector @var{c}.
 @end deftypefn
 
-@deftypefn {Function File} {} polyfit (@var{n}, @var{y}, @var{n})
+@deftypefn {Function File} {[@var{p}, @var{yf}] =} polyfit (@var{x}, @var{y}, @var{n})
 Return the coefficients of a polynomial @var{p}(@var{x}) of degree
 @var{n} that minimizes 
 @iftex
@@ -121,9 +121,12 @@ $$
  to best fit the data in the least squares sense.
 @end deftypefn
 
+If two output arguments are requested, the second contains the values of
+the polynomial for each value of @var{x}.
+
 @deftypefn {Function File} {} polyinteg (@var{c})
-Return the coefficients of the integral the polynomial whose coefficients
-are represented by the vector @var{c}.
+Return the coefficients of the integral of the polynomial whose
+coefficients are represented by the vector @var{c}.
 
 The constant of integration is set to zero.
 @end deftypefn

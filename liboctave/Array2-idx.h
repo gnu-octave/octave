@@ -628,7 +628,14 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs)
 
 	  if (idx)
 	    {
-	      if (len == rhs_nr * rhs_nc)
+	      if (len == 0)
+		{
+		  if (! ((rhs_nr == 1 && rhs_nc == 1)
+			 || (rhs_nr == 0 && rhs_nc == 0)))
+		    (*current_liboctave_error_handler)
+		      ("A([]) = X: X must be an empty matrix or scalar");
+		}
+	      else if (len == rhs_nr * rhs_nc)
 		{
 		  int k = 0;
 		  for (int j = 0; j < rhs_nc; j++)
@@ -642,12 +649,17 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs)
 			}
 		    }
 		}
-	      else if (len == 0)
+	      else if (rhs_nr == 1 && rhs_nc == 1 && len <= lhs_nr * lhs_nc)
 		{
-		  if (! ((rhs_nr == 1 && rhs_nc == 1)
-			 || (rhs_nr == 0 && rhs_nc == 0)))
-		    (*current_liboctave_error_handler)
-		      ("A([]) = X: X must be an empty matrix or scalar");
+		  RT scalar = rhs.elem (0, 0);
+
+		  for (int i = 0; i < len; i++)
+		    {
+		      int ii = idx.elem (i);
+		      int fr = ii % lhs_nr;
+		      int fc = (ii - fr) / lhs_nr;
+		      lhs.elem (fr, fc) = scalar;
+		    }
 		}
 	      else
 		{

@@ -187,7 +187,29 @@ tree_simple_for_command::eval (void)
       return;
     }
 
-  if (rhs.is_scalar_type ())
+  if (rhs.is_range ())
+    {
+      Range rng = rhs.range_value ();
+
+      int steps = rng.nelem ();
+      double b = rng.base ();
+      double increment = rng.inc ();
+
+      for (int i = 0; i < steps; i++)
+	{
+	  double tmp_val = b + i * increment;
+
+	  octave_value val (tmp_val);
+
+	  bool quit = false;
+
+	  do_for_loop_once (ult, val, quit);
+
+	  if (quit)
+	    break;
+	}
+    }
+  else if (rhs.is_scalar_type ())
     {
       bool quit = false;
 
@@ -214,6 +236,9 @@ tree_simple_for_command::eval (void)
 	  steps = cm_tmp.columns ();
 	}
 
+      if (error_state)
+	return;
+
       if (rhs.is_real_matrix ())
 	{
 	  if (nr == 1)
@@ -227,32 +252,6 @@ tree_simple_for_command::eval (void)
 	    DO_LOOP (cm_tmp (0, i));
 	  else
 	    DO_LOOP (cm_tmp.extract (0, i, nr-1, i));
-	}
-    }
-  else if (rhs.is_string ())
-    {
-      gripe_string_invalid ();
-    }
-  else if (rhs.is_range ())
-    {
-      Range rng = rhs.range_value ();
-
-      int steps = rng.nelem ();
-      double b = rng.base ();
-      double increment = rng.inc ();
-
-      for (int i = 0; i < steps; i++)
-	{
-	  double tmp_val = b + i * increment;
-
-	  octave_value val (tmp_val);
-
-	  bool quit = false;
-
-	  do_for_loop_once (ult, val, quit);
-
-	  if (quit)
-	    break;
 	}
     }
   else if (rhs.is_map ())

@@ -1,6 +1,9 @@
 Summary of changes for version 2.1.x:
 ------------------------------------
 
+  * If fread is given a skip parameter, the skip is performed after
+    the read instead of before (for compatibility with Matlab).
+
   * Running `make check' should work now before you run `make install', 
     even if you build a copy of Octave that depends on shared versions
     of the Octave libraries.

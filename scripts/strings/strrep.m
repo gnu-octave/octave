@@ -46,20 +46,21 @@ function t = strrep (s, x, y)
   if (len == 0)
     t = s;
   else
-    s = toascii (s);
-    x = toascii (x);
-    y = toascii (y);
-
-    l_x = length (x);
-    tmp = s (1 : ind (1) - 1);
-    t = [tmp, y];
-    for k = 1 : len - 1
-      tmp = s (ind (k) + l_x : ind (k+1) - 1);
-      t = [t, tmp, y];
-    endfor
-    tmp = s (ind(len) + l_x : length (s));
-    t = [t, tmp];
-    t = setstr (t);
+    save_empty_list_elements_ok = empty_list_elements_ok;
+    unwind_protect
+      empty_list_elements_ok = 1;
+      l_x = length (x);
+      tmp = s (1 : ind (1) - 1);
+      t = strcat (tmp, y);
+      for k = 1 : len - 1
+      	tmp = s (ind (k) + l_x : ind (k+1) - 1);
+      	t = strcat (t, tmp, y);
+      endfor
+      tmp = s (ind(len) + l_x : length (s));
+      t = [t, tmp];
+    unwind_protect_cleanup
+      empty_list_elements_ok = save_empty_list_elements_ok;
+    end_unwind_protect
   endif
 
 endfunction

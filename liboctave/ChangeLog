@@ -1,3 +1,29 @@
+Thu Sep 24 13:23:25 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lo-ieee.cc (octave_ieee_init): For now, use X_CAST instead of
+	static_cast.
+
+Fri Sep  4 10:58:22 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* dMatrix.cc (Matrix::read): Skip after reading, not before.
+	From: Dr.-Ing. Torsten Finke <fi@igh-essen.com>.
+
+Wed Sep  2 09:50:21 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lo-ieee.cc (octave_ieee_init): For Linux on arm, don't rely on
+	HUGE_VAL and NAN.
+
+Wed Aug 26 15:04:57 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Array2-idx.h (assign (Array2<LT>& lhs, const Array2<RT>& rhs)):
+	Handle x(i) = scalar for do_fortran_indexing == 1.
+
+Thu Jul 30 00:34:10 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* CMatrix.cc (ComplexMatrix::ComplexMatrix (const charMatrix&)):
+	Alloctate space before attempting to use it.
+	(ComplexMatrix::ComplexMatrix (const boolMatrix&)): Likewise.
+
 Mon Jun 22 17:04:27 1998  Tomislav Goles <tom@ait-tech.com>
 
 	* EIG.cc (EIG::init): Move invariant code outside loop.

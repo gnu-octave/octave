@@ -164,6 +164,7 @@ ComplexMatrix::ComplexMatrix (const ComplexDiagMatrix& a)
 // here?
 
 ComplexMatrix::ComplexMatrix (const boolMatrix& a)
+  : MArray2<Complex> (a.rows (), a.cols (), 0.0)
 {
   for (int i = 0; i < a.cols (); i++)
     for (int j = 0; j < a.rows (); j++)
@@ -171,6 +172,7 @@ ComplexMatrix::ComplexMatrix (const boolMatrix& a)
 }
 
 ComplexMatrix::ComplexMatrix (const charMatrix& a)
+  : MArray2<Complex> (a.rows (), a.cols (), 0.0)
 {
   for (int i = 0; i < a.cols (); i++)
     for (int j = 0; j < a.rows (); j++)

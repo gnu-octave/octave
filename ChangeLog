@@ -1,3 +1,15 @@
+Thu Sep 24 13:51:03 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in (AC_OUTPUT): Add libcruft/ordered-qz to the list.
+
+Mon Aug 31 12:07:02 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* config.sub: Accept armv4 everywhere arm is allowed.
+
+Tue Aug 18 17:02:25 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* mkoctfile.in: Allow -DDEF on command line.
+
 Thu Jun 18 20:24:40 1998  Roman Hodek <Roman.Hodek@informatik.uni-erlangen.de>
 
 	* configure.in (RLD_FLAG): Set correctly for Linux on all

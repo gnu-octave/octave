@@ -1,3 +1,7 @@
+Mon Aug 31 12:07:02 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* config.sub: Accept armv4 everywhere arm is allowed.
+
 Wed Mar  4 14:59:11 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* parens.c (rl_insert_close): Make time delay for showing matching

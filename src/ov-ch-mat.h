@@ -89,6 +89,7 @@ public:
   bool is_defined (void) const { return true; }
 
   bool is_char_matrix (void) const { return true; }
+  bool is_real_matrix (void) const { return true; }
 
   octave_value all (void) const { return matrix.all (); }
   octave_value any (void) const { return matrix.any (); }

@@ -686,7 +686,7 @@ even if an error occurs while performing the indexing operation.
 @group
 save_do_fortran_indexing = do_fortran_indexing;
 unwind_protect
-  do_fortran_indexing = "true";
+  do_fortran_indexing = 1;
   elt = a (idx)
 unwind_protect_cleanup
   do_fortran_indexing = save_do_fortran_indexing;

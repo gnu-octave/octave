@@ -473,13 +473,18 @@ initialize_command_input (void)
 static bool
 match_sans_spaces (const string& standard, const string& test)
 {
-  string tmp = test;
-
   size_t beg = test.find_first_not_of (" \t");
-  size_t end = test.find_last_not_of (" \t");
-  size_t len = beg - end + 1;
 
-  return test.compare (standard, beg, len) == 0;
+  if (beg != NPOS)
+    {
+      size_t end = test.find_last_not_of (" \t");
+
+      size_t len = end == NPOS ? NPOS : end - beg + 1;
+
+      return test.compare (standard, beg, len) == 0;
+    }
+
+  return false;
 }
 
 // If the user simply hits return, this will produce an empty matrix.
@@ -535,9 +540,10 @@ get_user_input (const octave_value_list& args, bool debug, int nargout)
 	    }
 	}
 
-      if (match_sans_spaces ("exit", input_buf)
-	  || match_sans_spaces ("quit", input_buf)
-	  || match_sans_spaces ("return", input_buf))
+      if (debug
+	  && (match_sans_spaces ("exit", input_buf)
+	      || match_sans_spaces ("quit", input_buf)
+	      || match_sans_spaces ("return", input_buf)))
 	{
 	  return retval;
 	}

@@ -36,6 +36,9 @@ INSTALL_DATA = @INSTALL_DATA@
 
 common = @srcdir@/../liboctave
 
+.c.o:
+	$(CC) -c $(CPPFLAGS) $(ALL_CFLAGS) $<
+
 MAKEINFO = makeinfo
 
 LDEFS = -DNAMED_FUNCTIONS=1 -DDEFAULT_INFOPATH='"$(DEFAULT_INFOPATH)"'

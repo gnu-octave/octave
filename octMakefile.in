@@ -259,11 +259,6 @@ conf-dist:
 	rm -f .fname
 .PHONY: conf-dist
 
-dist-tar: links-for-dist
-	tar chf `cat .fname`.tar `cat .fname`
-	rm -rf `cat .fname`
-.PHONY: dist-tar
-
 # Rules for making a snapshot.
 
 snapshot-z: snapshot-version

@@ -305,34 +305,6 @@ LSODE::do_integrate (double tout)
   return retval;
 }
 
-#if 0
-void
-LSODE::integrate (int nsteps, double tstep, std::ostream& s)
-{
-  int time_to_quit = 0;
-  double tout = t;
-
-  s << t << " " << x << "\n";
-
-  for (int i = 0; i < nsteps; i++)
-    {
-      tout += tstep;
-      if (stop_time_set && tout > stop_time)
-	{
-	  tout = stop_time;
-	  time_to_quit = 1;
-	}
-
-      x = integrate (tout);
-
-      s << t << " " << x << "\n";
-
-      if (time_to_quit)
-	return;
-    }
-}
-#endif
-
 Matrix
 LSODE::do_integrate (const ColumnVector& tout)
 {
@@ -362,7 +334,7 @@ LSODE::do_integrate (const ColumnVector& tout)
 }
 
 Matrix
-LSODE::integrate (const ColumnVector& tout, const ColumnVector& tcrit)
+LSODE::do_integrate (const ColumnVector& tout, const ColumnVector& tcrit)
 {
   Matrix retval;
   int n_out = tout.capacity ();

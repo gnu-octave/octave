@@ -82,7 +82,7 @@ user_function (double *x, int& ierr, double *result)
 }
 
 double
-DefQuad::integrate (int& ier, int& neval, double& abserr)
+DefQuad::do_integrate (int& ier, int& neval, double& abserr)
 {
   int npts = singularities.capacity () + 2;
   double *points = singularities.fortran_vec ();
@@ -114,7 +114,7 @@ DefQuad::integrate (int& ier, int& neval, double& abserr)
 }
 
 double
-IndefQuad::integrate (int& ier, int& neval, double& abserr)
+IndefQuad::do_integrate (int& ier, int& neval, double& abserr)
 {
   double result = 0.0;
 

@@ -1,6 +1,10 @@
 2000-02-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Quad.h: Use do_integrate as name of pure virtual function.
+
 	* base-de.h: Use tt instead of t as arg names.
+	Add method with tcrit arg.
+
 	* DAE.h, DAE.cc: Likewise, also xx for x.
 
 	* DASSL.cc (dassl_fcn_ptr, dassl_jac_ptr): New typedefs.

@@ -60,6 +60,9 @@ public:
   // output time.
   virtual Matrix do_integrate (const ColumnVector& tt) = 0;
 
+  virtual Matrix do_integrate (const ColumnVector& tt,
+			       const ColumnVector& ttcrit) = 0;
+
   // There must also be a way for us to force the integration to
   // restart.
   virtual void force_restart (void) = 0;
@@ -86,10 +89,26 @@ public:
   // Set new x0, t0 and integrate to return output at all points
   // specified by t.
   virtual Matrix integrate (const ColumnVector& x0, double t0,
-			    const ColumnVector tt)
+			    const ColumnVector& tt)
     {
       initialize (x0, t0);
       return do_integrate (tt);
+    }
+
+  // Integrate from current point and return output at all points
+  // specified by t.
+  virtual Matrix integrate (const ColumnVector& tt,
+			    const ColumnVector& ttcrit)
+    { return do_integrate (tt, ttcrit); }
+
+  // Set new x0, t0 and integrate to return output at all points
+  // specified by t.
+  virtual Matrix integrate (const ColumnVector& x0, double t0,
+			    const ColumnVector& tt,
+			    const ColumnVector& ttcrit)
+    {
+      initialize (x0, t0);
+      return do_integrate (tt, ttcrit);
     }
 
   virtual void initialize (const ColumnVector& x0, double t0)

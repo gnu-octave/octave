@@ -116,23 +116,28 @@ Quad : public Quad_options
     {
       int ier, neval;
       double abserr;
-      return integrate (ier, neval, abserr);
+      return do_integrate (ier, neval, abserr);
     }
 
   virtual double integrate (int& ier)
     {
       int neval;
       double abserr;
-      return integrate (ier, neval, abserr);
+      return do_integrate (ier, neval, abserr);
     }
 
   virtual double integrate (int& ier, int& neval)
     {
       double abserr;
-      return integrate (ier, neval, abserr);
+      return do_integrate (ier, neval, abserr);
     }
 
-  virtual double integrate (int& ier, int& neval, double& abserr) = 0;
+  virtual double integrate (int& ier, int& neval, double& abserr)
+    {
+      return do_integrate (ier, neval, abserr);
+    }
+
+  virtual double do_integrate (int& ier, int& neval, double& abserr) = 0;
 
  protected:
 
@@ -176,7 +181,7 @@ DefQuad : public Quad
 
   ~DefQuad (void) { }
 
-  double integrate (int& ier, int& neval, double& abserr);
+  double do_integrate (int& ier, int& neval, double& abserr);
 
  private:
 
@@ -208,7 +213,7 @@ IndefQuad : public Quad
 
   ~IndefQuad (void) { }
 
-  double integrate (int& ier, int& neval, double& abserr);
+  double do_integrate (int& ier, int& neval, double& abserr);
 
  private:
 

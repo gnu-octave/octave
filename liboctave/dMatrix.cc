@@ -3228,10 +3228,10 @@ Qzval (const Matrix& a, const Matrix& b)
 	      double *palfr = alfr.fortran_vec ();
 
 	      ColumnVector alfi (a_nr);
-	      double *palfi = alfr.fortran_vec ();
+	      double *palfi = alfi.fortran_vec ();
 
 	      ColumnVector beta (a_nr);
-	      double *pbeta = alfr.fortran_vec ();
+	      double *pbeta = beta.fortran_vec ();
 
 	      Matrix atmp = a;
 	      double *pa = atmp.fortran_vec ();
@@ -3259,22 +3259,20 @@ Qzval (const Matrix& a, const Matrix& b)
 		  int cnt = 0;
 
 		  for (int i = 0; i < a_nr; i++)
-		    if (beta.elem (i) != 0)
+		    if (beta(i) != 0)
 		      cnt++;
 
-		  ComplexColumnVector cx (cnt, 0.0);
+		  ComplexColumnVector cx (cnt);
 
-		  Complex Im (0, 1);
+		  cnt = 0;
 
 		  for (int i = 0; i < a_nr; i++)
 		    {
-		      if (beta.elem (i) != 0)
+		      if (beta(i) != 0)
 			{
 			  // Finite generalized eigenvalue.
 
-			  cnt--;
-			  cx.elem (cnt) = (alfr.elem (i) + Im * alfi.elem (i))
-			    / beta.elem (i);
+			  cx(cnt++) = Complex (alfr(i), alfi(i)) / beta(i);
 			}
 		    }
 

@@ -51,14 +51,22 @@ print_usage (const std::string& nm, bool just_usage)
 
       if (h.length () > 0)
 	{
-	  octave_stdout << "\n*** " << nm << ":\n\n";
+	  OSSTREAM buf;
 
-	  display_help_text (octave_stdout, h);
+	  buf << "\n*** " << nm << ":\n\n";
 
-	  octave_stdout << "\n";
+	  display_help_text (buf, h);
+
+	  buf << "\n";
 
 	  if (! just_usage)
-	    additional_help_message (octave_stdout);
+	    additional_help_message (buf);
+
+	  buf << OSSTREAM_ENDS;
+
+	  defun_usage_message (OSSTREAM_STR (buf));
+
+	  OSSTREAM_FREEZE (buf);
 	}
     }
   else

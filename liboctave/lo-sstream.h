@@ -37,6 +37,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #define OSSTREAM std::ostringstream
 #define OSSTREAM_STR(os) (os).str ()
+// XXX FIXME XXX -- how long is the temporary created by the str()
+// method guaranteed to exist?
 #define OSSTREAM_C_STR(os) (os).str () . c_str ()
 #define OSSTREAM_ENDS ""
 #define OSSTREAM_FREEZE(os) do { } while (0)

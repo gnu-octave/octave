@@ -567,7 +567,7 @@ make_diag (const octave_value& a, const octave_value& b)
 {
   octave_value retval;
 
-  int k = b.nint_value ();
+  int k = b.int_value ();
 
   if (error_state)
     {
@@ -846,7 +846,7 @@ returns the number of columns in the given matrix.\n\
     }
   else if (nargin == 2 && nargout < 2)
     {
-      int nd = args(1).nint_value ();
+      int nd = args(1).int_value (true);
 
       if (error_state)
 	error ("size: expecting scalar as second argument");
@@ -1060,11 +1060,11 @@ fill_matrix (const octave_value_list& args, double val, const char *fcn)
 
 	for (int i = 0; i < nargin; i++)
 	  {
-	    dims(i) = args(i).is_empty () ? 0 : args(i).nint_value ();
+	    dims(i) = args(i).is_empty () ? 0 : args(i).int_value ();
 
 	    if (error_state)
 	      {
-		error ("%s: expecting scalar arguments", fcn);
+		error ("%s: expecting scalar integer arguments", fcn);
 		break;
 	      }
 	  }
@@ -1247,7 +1247,7 @@ The @code{linspace} function always returns a row vector.\n\
     }
 
   if (nargin == 3)
-    npoints = args(2).nint_value ();
+    npoints = args(2).int_value ();
 
   if (! error_state)
     {
@@ -1281,6 +1281,8 @@ The @code{linspace} function always returns a row vector.\n\
 	    }
 	}
     }
+  else
+    error ("linspace: expecting third argument to be an integer");
 
   return retval;
 }

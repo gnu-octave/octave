@@ -1,3 +1,10 @@
+2004-02-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* idx-vector.cc (tree_to_mat_idx): New arg, conversion_error.
+	Call error handler and return conversion_error == true if arg is
+	not integer.
+	(IDX_VEC_REP::idx_vector_rep): Exit early if conversion_error.
+
 2004-02-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* boolNDArray.h (boolNDArray::boolNDArray): Declare dim_vector

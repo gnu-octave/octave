@@ -49,6 +49,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "dir-ops.h"
 #include "file-ops.h"
 #include "file-stat.h"
+#include "lo-mappers.h"
 #include "lo-sstream.h"
 #include "oct-cmplx.h"
 #include "oct-env.h"
@@ -791,7 +792,7 @@ get_dimensions (const octave_value& a, const char *warn_for,
   if (a.is_scalar_type ())
     {
       dim.resize (2);
-      dim(0) = a.nint_value ();
+      dim(0) = a.int_value ();
       dim(1) = dim(0);
     }
   else
@@ -809,7 +810,7 @@ get_dimensions (const octave_value& a, const char *warn_for,
           int n = v.length ();
           dim.resize (n);
           for (int i = 0; i < n; i++)
-            dim(i) = NINT (v(i));
+            dim(i) = fix (v(i));
         }
       else
         warning ("%s (A): use %s (size (A)) instead", warn_for, warn_for);
@@ -825,7 +826,7 @@ get_dimensions (const octave_value& a, const char *warn_for,
 {
   if (a.is_scalar_type ())
     {
-      nr = nc = a.nint_value ();
+      nr = nc = a.int_value ();
     }
   else
     {
@@ -839,8 +840,8 @@ get_dimensions (const octave_value& a, const char *warn_for,
 	  if (error_state)
 	    return;
 
-	  nr = NINT (v (0));
-	  nc = NINT (v (1));
+	  nr = fix (v (0));
+	  nc = fix (v (1));
 	}
       else
 	warning ("%s (A): use %s (size (A)) instead", warn_for, warn_for);
@@ -853,8 +854,8 @@ void
 get_dimensions (const octave_value& a, const octave_value& b,
 		const char *warn_for, int& nr, int& nc)
 {
-  nr = a.is_empty () ? 0 : a.nint_value ();
-  nc = b.is_empty () ? 0 : b.nint_value ();
+  nr = a.is_empty () ? 0 : a.int_value ();
+  nc = b.is_empty () ? 0 : b.int_value ();
 
   if (error_state)
     error ("%s: expecting two scalar arguments", warn_for);

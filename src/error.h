@@ -38,6 +38,9 @@ extern void error (const char *fmt, ...);
 extern void parse_error (const char *fmt, ...);
 extern void panic (const char *fmt, ...) GCC_ATTR_NORETURN;
 
+// Helper function for print_usage defined in defun.cc.
+extern void defun_usage_message (const std::string& msg);
+
 // Current error state.
 extern int error_state;
 

@@ -33,6 +33,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream>
 
 #include "lo-ieee.h"
+#include "lo-mappers.h"
 #include "so-array.h"
 
 #include "gripes.h"
@@ -260,7 +261,7 @@ octave_base_value::print_info (std::ostream& os,
 	  error ("conversion of %g to short int out of range (%d, %d)", \
 		 d, MIN_LIMIT, MAX_LIMIT); \
 	else \
-	  retval = static_cast<T> (d); \
+	  retval = static_cast<T> (fix (d)); \
       } \
     else \
       gripe_wrong_type_arg ("octave_base_value::" #F "_value ()", \
@@ -293,7 +294,7 @@ octave_base_value::nint_value (bool frc_str_conv) const
 	  return retval;
 	}
 
-      retval = NINT (d);
+      retval = static_cast<int> (fix (d));
     }
   else
     gripe_wrong_type_arg ("octave_base_value::nint_value ()", type_name ());

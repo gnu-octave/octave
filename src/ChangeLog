@@ -1,4 +1,29 @@
+2004-02-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* error.cc (defun_usage_message): Only accept one arg, a const
+	std::string& object.  Change all uses.  Pass nul-terminated string
+	to defun_message_1.
+	(defun_usage_message_1): New function, equivalent to old
+	defun_usage_message.
+
+	* ov-base.cc (nint_value): Use fix, not NINT.
+	(INT_CONV_METHOD): Likewise, use fix instead of just casting.
+
+	* data.cc (make_diag): Use int_value instead of nint_value to
+	extract k for Matlab compatibility.
+	(Flinspace): Likewise, for npoints.
+	(fill_matrix): Likewise, for extracting dims.
+	(Fsize): Likewise, for extracting dim argument.  Require int value.
+	* utils.cc (get_dimensions): Likewise.  Use fix, not NINT.
+
 2004-02-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* error.cc (verror, error_1): New arg, os.  Use this instead
+	of always printing to std:cerr.  Change all callers.
+
+	* error.cc (defun_usage_message): New function.
+	* error.h: Provide decl.
+	* defun.cc (print_usage): Use it to display error message.
 
 	* error.cc (verror): New arg, save_last_error.  Change all callers.
 	(usage): Set error_state after calling verror.

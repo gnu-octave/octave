@@ -60,11 +60,23 @@ IDX_VEC_REP::idx_vector_rep (const IDX_VEC_REP& a)
 }
 
 static inline int
-tree_to_mat_idx (double x)
+tree_to_mat_idx (double x, bool& conversion_error)
 {
-  return (x > 0)
-    ? (static_cast<int> (x + 0.5) - 1)
-    : (static_cast<int> (x - 0.5) - 1);
+  int retval = -1;
+
+  conversion_error = false;
+
+  if (D_NINT (x) != x)
+    {
+      (*current_liboctave_error_handler)
+	("expecting integer index, found %f", x);
+
+      conversion_error = true;
+    }
+  else
+    retval = static_cast<int> (x - 1);
+
+  return retval;
 }
 
 static inline int
@@ -107,6 +119,8 @@ IDX_VEC_REP::idx_vector_rep (const ColumnVector& v)
     {
       data = new int [len];
 
+      bool conversion_error = false;
+
       for (int i = 0; i < len; i++)
 	{
 	  double d = v.elem (i);
@@ -114,7 +128,10 @@ IDX_VEC_REP::idx_vector_rep (const ColumnVector& v)
 	  if (idx_is_inf_or_nan (d))
 	    return;
 	  else
-	    data[i] = tree_to_mat_idx (d);
+	    data[i] = tree_to_mat_idx (d, conversion_error);
+
+	  if (conversion_error)
+	    return;
 	}
     }
 
@@ -138,6 +155,8 @@ IDX_VEC_REP::idx_vector_rep (const NDArray& nda)
       int k = 0;
       data = new int [len];
 
+      bool conversion_error = false;
+
       for (int i = 0; i < len; i++)
 	{
 	  double d = nda.elem (i);
@@ -145,7 +164,10 @@ IDX_VEC_REP::idx_vector_rep (const NDArray& nda)
 	  if (idx_is_inf_or_nan (d))
 	    return;
 	  else
-	    data[k++] = tree_to_mat_idx (d);
+	    data[k++] = tree_to_mat_idx (d, conversion_error);
+
+	  if (conversion_error)
+	    return;
 	}
     }
 
@@ -175,6 +197,8 @@ IDX_VEC_REP::idx_vector_rep (const Range& r)
 
   data = new int [len];
 
+  bool conversion_error = false;
+
   for (int i = 0; i < len; i++)
     {
       double val = b + i * step;
@@ -182,7 +206,10 @@ IDX_VEC_REP::idx_vector_rep (const Range& r)
       if (idx_is_inf_or_nan (val))
 	return;
       else
-	data[i] = tree_to_mat_idx (val);
+	data[i] = tree_to_mat_idx (val, conversion_error);
+
+      if (conversion_error)
+	return;
     }
 
   init_state ();
@@ -201,7 +228,12 @@ IDX_VEC_REP::idx_vector_rep (double d)
     {
       data = new int [len];
 
-      data[0] = tree_to_mat_idx (d);
+      bool conversion_error = false;
+
+      data[0] = tree_to_mat_idx (d, conversion_error);
+
+      if (conversion_error)
+	return;
     }
 
   init_state ();

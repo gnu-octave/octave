@@ -154,7 +154,8 @@ vwarning (const char *name, const char *fmt, va_list args)
 }
 
 static void
-verror (bool save_last_error, const char *name, const char *fmt, va_list args)
+verror (bool save_last_error, std::ostream& os,
+	const char *name, const char *fmt, va_list args)
 {
   if (discard_error_messages)
     return;
@@ -216,7 +217,7 @@ verror (bool save_last_error, const char *name, const char *fmt, va_list args)
   else
     {
       octave_diary << msg_string;
-      std::cerr << msg_string;
+      os << msg_string;
     }
 }
 
@@ -225,7 +226,7 @@ verror (bool save_last_error, const char *name, const char *fmt, va_list args)
 // just set the error state.
 
 static void
-error_1 (const char *name, const char *fmt, va_list args)
+error_1 (std::ostream& os, const char *name, const char *fmt, va_list args)
 {
   if (error_state != -2)
     {
@@ -240,14 +241,14 @@ error_1 (const char *name, const char *fmt, va_list args)
 		    {
 		      char *tmp_fmt = strsave (fmt);
 		      tmp_fmt[len - 1] = '\0';
-		      verror (true, name, tmp_fmt, args);
+		      verror (true, os, name, tmp_fmt, args);
 		      delete [] tmp_fmt;
 		    }
 
 		  error_state = -2;
 		}
 	      else
-		verror (true, name, fmt, args);
+		verror (true, os, name, fmt, args);
 	    }
 	}
       else
@@ -263,7 +264,7 @@ message (const char *name, const char *fmt, ...)
 {
   va_list args;
   va_start (args, fmt);
-  verror (false, name, fmt, args);
+  verror (false, std::cerr, name, fmt, args);
   va_end (args);
 }
 
@@ -272,7 +273,7 @@ usage (const char *fmt, ...)
 {
   va_list args;
   va_start (args, fmt);
-  verror (true, "usage", fmt, args);
+  verror (true, std::cerr, "usage", fmt, args);
   error_state = -1;
   va_end (args);
 }
@@ -291,12 +292,12 @@ pr_where_2 (const char *fmt, va_list args)
 		{
 		  char *tmp_fmt = strsave (fmt);
 		  tmp_fmt[len - 1] = '\0';
-		  verror (false, 0, tmp_fmt, args);
+		  verror (false, std::cerr, 0, tmp_fmt, args);
 		  delete [] tmp_fmt;
 		}
 	    }
 	  else
-	    verror (false, 0, fmt, args);
+	    verror (false, std::cerr, 0, fmt, args);
 	}
     }
   else
@@ -398,7 +399,7 @@ error (const char *fmt, ...)
 
   va_list args;
   va_start (args, fmt);
-  error_1 ("error", fmt, args);
+  error_1 (std::cerr, "error", fmt, args);
   va_end (args);
 
   if ((interactive || forced_interactive)
@@ -422,7 +423,7 @@ parse_error (const char *fmt, ...)
 {
   va_list args;
   va_start (args, fmt);
-  error_1 (0, fmt, args);
+  error_1 (std::cerr, 0, fmt, args);
   va_end (args);
 }
 
@@ -433,9 +434,24 @@ panic (const char *fmt, ...)
   va_start (args, fmt);
   buffer_error_messages = 0;
   discard_error_messages = false;
-  verror (false, "panic", fmt, args);
+  verror (false, std::cerr, "panic", fmt, args);
   va_end (args);
   abort ();
+}
+
+static void
+defun_usage_message_1 (const char *fmt, ...)
+{
+  va_list args;
+  va_start (args, fmt);
+  error_1 (octave_stdout, 0, fmt, args);
+  va_end (args);
+}
+
+void
+defun_usage_message (const std::string& msg)
+{
+  defun_usage_message_1 ("%s", msg.c_str ());
 }
 
 typedef void (*error_fun)(const char *, ...);

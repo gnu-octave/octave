@@ -353,23 +353,6 @@ octave_bin_dir (void)
 }
 
 string
-default_pager (void)
-{
-  string pager_binary;
-
-  char *pgr = getenv ("PAGER");
-
-  if (pgr)
-    pager_binary = string (pgr);
-#ifdef DEFAULT_PAGER
-  else
-    pager_binary = string (DEFAULT_PAGER);
-#endif
-
-  return pager_binary;
-}
-
-string
 maybe_add_default_load_path (const string& pathstring)
 {
   string std_path = subst_octave_home (OCTAVE_FCNFILEPATH);
@@ -1614,9 +1597,6 @@ install_builtin_variables_2 (void)
   DEFCONSTX ("OCTAVE_VERSION", SBV_OCTAVE_VERSION, OCTAVE_VERSION, 0, 0,
     "Octave version");
 
-  DEFVAR (PAGER, default_pager (), 0, sv_pager_binary,
-    "path to pager binary");
-
   DEFVAR (PS1, "\\s:\\#> ", 0, sv_ps1,
     "primary prompt string");
 
@@ -1748,9 +1728,6 @@ install_builtin_variables_5 (void)
   DEFVAR (output_precision, 5.0, 0, set_output_precision,
     "number of significant figures to display for numeric output");
 
-  DEFVAR (page_screen_output, 1.0, 0, page_screen_output,
-    "if possible, send output intended for the screen through the pager");
-
   DEFCONST (pi, 4.0 * atan (1.0), 0, 0,
     "ratio of the circumference of a circle to its diameter");
 
@@ -1871,6 +1848,7 @@ install_builtin_variables (void)
   install_builtin_variables_7 ();
   install_builtin_variables_8 ();
 
+  symbols_of_pager ();
   symbols_of_syscalls ();
 }
 

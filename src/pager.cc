@@ -309,6 +309,44 @@ Turn output pagination on or off.")
   return retval;
 }
 
+static string
+default_pager (void)
+{
+  string pager_binary;
+
+  char *pgr = getenv ("PAGER");
+
+  if (pgr)
+    pager_binary = string (pgr);
+#ifdef DEFAULT_PAGER
+  else
+    {
+      pager_binary = string (DEFAULT_PAGER);
+
+      if (pager_binary == "less")
+	{
+	  pager_binary.append (" -e");
+
+	  if (! getenv ("LESS"))
+	    pager_binary.append
+	      (" -P-- less ?pB(%pB\%):--. (f)orward, (b)ack, (q)uit$");
+	}
+    }
+#endif
+
+  return pager_binary;
+}
+
+void
+symbols_of_pager (void)
+{
+  DEFVAR (PAGER, default_pager (), 0, sv_pager_binary,
+    "path to pager binary");
+
+  DEFVAR (page_screen_output, 1.0, 0, page_screen_output,
+    "if possible, send output intended for the screen through the pager");
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

@@ -106,13 +106,13 @@ maintainer-clean: distclean
 .PHONY: maintainer-clean
 
 local-dist: all
-	ln $(DISTFILES) ../`cat ../.fname`/doc/liboctave
+	ln $(DISTFILES) ../../`cat ../../.fname`/doc/liboctave
 .PHONY: local-dist
 
 dist: all
-	ln $(DISTFILES) ../`cat ../.fname`/doc/liboctave
+	ln $(DISTFILES) ../../`cat ../../.fname`/doc/liboctave
 .PHONY: dist
 
 doc-dist: all
-	ln $(FORMATTED) ../`cat ../.fname`/doc/liboctave
+	ln $(FORMATTED) ../../`cat ../../.fname`/doc/liboctave
 .PHONY: doc-dist

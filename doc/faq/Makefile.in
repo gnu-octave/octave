@@ -68,13 +68,13 @@ maintainer-clean: distclean
 .PHONY: maintainer-clean
 
 local-dist: all
-	ln $(DISTFILES) ../`cat ../.fname`/doc/faq
+	ln $(DISTFILES) ../../`cat ../../.fname`/doc/faq
 .PHONY: local-dist
 
 dist: all
-	ln $(DISTFILES) ../`cat ../.fname`/doc/faq
+	ln $(DISTFILES) ../../`cat ../../.fname`/doc/faq
 .PHONY: dist
 
 doc-dist: all
-	ln $(FORMATTED) ../`cat ../.fname`/doc/faq
+	ln $(FORMATTED) ../../`cat ../../.fname`/doc/faq
 .PHONY: doc-dist

@@ -213,6 +213,105 @@ Array2<T>::index (idx_vector& idx_i, idx_vector& idx_j) const
 
 template <class T>
 void
+Array2<T>::maybe_delete_elements (idx_vector& idx_i)
+{
+  int nr = d1;
+  int nc = d2;
+
+  if (nr == 0 && nc == 0)
+    return;
+
+  int n;
+  if (nr == 1)
+    n = nc;
+  else if (nc == 1)
+    n = nr;
+  else
+    {
+      (*current_liboctave_error_handler)
+	("A(idx) = []: expecting A to be row or column vector or scalar");
+
+      return;
+    }
+
+  if (idx_i.is_colon_equiv (n, 1))
+    {
+      // Either A(:) = [] or A(idx) = [] with idx enumerating all
+      // elements, so we delete all elements and return [](0x0).  To
+      // preserve the orientation of the vector, you have to use
+      // A(idx,:) = [] (delete rows) or A(:,idx) (delete columns).
+
+      resize (0, 0);
+      return;
+    }
+
+  idx_i.sort (true);
+
+  int num_to_delete = idx_i.length (n);
+
+  if (num_to_delete != 0)
+    {
+      int new_n = n;
+
+      int idx = 0;
+
+      for (int i = 0; i < n; i++)
+	if (i == idx_i.elem (idx))
+	  {
+	    idx++;
+	    new_n--;
+
+	    if (idx == num_to_delete)
+	      break;
+	  }
+
+      if (new_n > 0)
+	{
+	  T *new_data = new T [new_n];
+
+	  int ii = 0;
+	  idx = 0;
+	  for (int i = 0; i < n; i++)
+	    {
+	      if (idx < num_to_delete && i == idx_i.elem (idx))
+		idx++;
+	      else
+		{
+		  if (nr == 1)
+		    new_data[ii] = elem (0, i);
+		  else
+		    new_data[ii] = elem (i, 0);
+
+		  ii++;
+		}
+	    }
+
+	  if (--rep->count <= 0)
+	    delete rep;
+
+	  rep = new ArrayRep (new_data, new_n);
+
+	  if (nr == 1)
+	    {
+	      d1 = 1;
+	      d2 = new_n;
+	    }
+	  else
+	    {
+	      d1 = new_n;
+	      d2 = 1;
+	    }
+
+	  set_max_indices (2);
+	}
+      else
+	(*current_liboctave_error_handler)
+	  ("A(idx) = []: index out of range");
+    }
+}
+
+template <class T>
+void
 Array2<T>::maybe_delete_elements (idx_vector& idx_i, idx_vector& idx_j)
 {
   int nr = d1;
@@ -220,6 +319,38 @@ Array2<T>::maybe_delete_elements (idx_vector& idx_i, idx_vector& idx_j)
 
   if (nr == 0 && nc == 0)
     return;
+
+  if (idx_i.is_colon ())
+    {
+      if (idx_j.is_colon ())
+	{
+	  // A(:,:) -- We are deleting columns and rows, so the result
+	  // is [](0x0).
+
+	  resize (0, 0);
+	  return;
+	}
+
+      if (idx_j.is_colon_equiv (nc, 1))
+	{
+	  // A(:,j) -- We are deleting columns by enumerating them,
+	  // If we enumerate all of them, we should have zero columns
+	  // with the same number of rows that we started with.
+
+	  resize (nr, 0);
+	  return;
+	}
+    }
+
+  if (idx_j.is_colon () && idx_i.is_colon_equiv (nr, 1))
+    {
+      // A(i,:) -- We are deleting rows by enumerating them.  If we
+      // enumerate all of them, we should have zero rows with the
+      // same number of columns that we started with.
+
+      resize (0, nc);
+      return;
+    }
 
   if (idx_i.is_colon_equiv (nr, 1))
     {
@@ -484,10 +615,7 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs)
 	      if (rhs_nr == 0 && rhs_nc == 0)
 		{
 		  if (n != 0 && (lhs_nr != 0 || lhs_nc != 0))
-		    {
-		      idx_vector tmp (':');
-		      lhs.maybe_delete_elements (idx, tmp);
-		    }
+		    lhs.maybe_delete_elements (idx);
 		}
 	      else if (! liboctave_dfi_flag && lhs_is_empty
 		       && idx.is_colon ()
@@ -577,10 +705,7 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs)
 	  if (idx)
 	    {
 	      if (rhs_nr == 0 && rhs_nc == 0)
-		{
-		  idx_vector tmp (':');
-		  lhs.maybe_delete_elements (tmp, idx);
-		}
+		lhs.maybe_delete_elements (idx);
 	      else
 		{
 		  if (assign ((Array<LT>&) lhs, (Array<RT>&) rhs))
@@ -602,10 +727,7 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs)
 	  if (idx)
 	    {
 	      if (rhs_nr == 0 && rhs_nc == 0)
-		{
-		  idx_vector tmp (':');
-		  lhs.maybe_delete_elements (idx, tmp);
-		}
+		lhs.maybe_delete_elements (idx);
 	      else
 		{
 		  if (assign ((Array<LT>&) lhs, (Array<RT>&) rhs))

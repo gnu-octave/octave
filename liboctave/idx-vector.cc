@@ -507,9 +507,13 @@ IDX_VEC_REP::is_colon_equiv (int n, int sort_uniq)
 	{
 	  colon_equiv = 1;
 	}
-      else if (len > 1 && ! one_zero)
+      else if (len > 1)
 	{
-	  if (sort_uniq)
+	  if (one_zero)
+	    {
+	      colon_equiv = (len == n && ones_count () == n);
+	    }
+	  else if (sort_uniq)
 	    {
 	      int *tmp_data = copy_data (data, len);
 

@@ -76,7 +76,7 @@ public:
     int r = rows ();
     int c = columns ();
 
-    return r > c ? r : c;
+    return (r == 0 || c == 0) ? 0 : ((r > c) ? r : c);
   }
 
   octave_value all (void) const { return matrix.all (); }

@@ -1,3 +1,18 @@
+2000-01-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Array2-idx.h (Array2<T>::maybe_delete_elements (idx_vector&)):
+	New function.
+	(assign (Array2<LT>& lhs, const Array2<RT>& rhs)):
+	Use it when indexing with one arg instead of faking a second one.
+	(Array2<T>::maybe_delete_elements (idx_vector&, idx_vector&)):
+	Return empty matrices with the correct dimensions for A(:,:) = []
+	and also A(:,idx) = [], and A(idx,:) = [] when idx enumerates all
+	rows or columns.
+
+	* idx-vector.cc (IDX_VEC_REP::is_colon_equiv): Recognize a bool
+	vector that is all true values with a length equal to n as colon
+	equivalent.
+
 2000-01-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* strptime.c: Only include langinfo.h if _LIBC is defined.

@@ -1,3 +1,8 @@
+2000-01-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-base-mat.h (octave_base_matrix::length): Return 0 for empty
+	arrays.
+
 2000-01-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* DLD-FUNCTIONS/time.cc (Fstrptime): New function.

@@ -60,7 +60,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #define TOK_PUSH_AND_RETURN(name,tok) \
   do \
     { \
-      yylval.tok_val = new token (input_line_number, current_input_column); \
+      yylval.tok_val = new token (name, input_line_number, \
+				  current_input_column); \
       token_stack.push (yylval.tok_val); \
       TOK_RETURN (tok); \
     } \

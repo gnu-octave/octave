@@ -37,8 +37,9 @@ volatile v_fcn_i clean_up_and_exit;
 #endif
 
 extern void clean_up_and_exit (int);
-extern void parse_and_execute (char*, int);
-extern void parse_and_execute (FILE*, int);
+
+extern void parse_and_execute (FILE *f, int print = 0);
+extern void parse_and_execute (char *s, int print = 0, int verbose = 0);
 
 // argv[0] for this program.
 extern char *raw_prog_name;

@@ -98,7 +98,7 @@ private:
 //
 // and supply a default value to create a vector-valued Octave_object.
 
-  Octave_object (int n) : Array<tree_constant> (n);
+  Octave_object (int n);
 
   void maybe_resize (int n);
 

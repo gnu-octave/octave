@@ -1,3 +1,8 @@
+2003-07-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pt-misc.cc (tree_parameter_list::convert_to_const_vector):
+	Don't skip undefined elements.
+
 2003-07-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* octave.cc (maximum_braindamage): Don't set

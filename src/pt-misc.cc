@@ -141,8 +141,7 @@ tree_parameter_list::convert_to_const_vector (tree_va_return_list *vr_list)
     {
       tree_identifier *elt = *p;
 
-      if (elt->is_defined ())
-	retval(i++) = elt->rvalue ();
+      retval(i++) = elt->is_defined () ? elt->rvalue () : octave_value ();
     }
 
   if (vr_list)

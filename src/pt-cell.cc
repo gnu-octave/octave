@@ -85,6 +85,19 @@ tree_cell::rvalue (void)
   return retval;
 }
 
+octave_value_list
+tree_cell::rvalue (int nargout)
+{
+  octave_value_list retval;
+
+  if (nargout > 1)
+    error ("invalid number of output arguments for cell array");
+  else
+    retval = rvalue ();
+
+  return retval;
+}
+
 void
 tree_cell::accept (tree_walker& tw)
 {

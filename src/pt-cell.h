@@ -55,6 +55,8 @@ public:
 
   octave_value rvalue (void);
 
+  octave_value_list rvalue (int);
+
   void accept (tree_walker& tw);
 
 private:

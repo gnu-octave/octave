@@ -1,5 +1,10 @@
 2002-10-31  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* ODESFunc.h (ODESFunc::ODES_fsub, ODESFunc::ODES_bsub,
+	ODESFunc::ODES_jsub): Reorder args for consistency with other
+	solvers.
+	* ODESSA.cc: Fix all callers.
+
 	* mx-inlines.cc (MX_BASE_REDUCTION_OP): Also return scalar
 	MT_RESULT if nr == 1 && nc == 0 && dim == -1 (i.e.,
 	sum(zeros(1,0)) returns 0, not [](1x0)).

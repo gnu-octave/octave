@@ -82,7 +82,7 @@ odessa_f (int* neq, const double& t, double *state,
   for (int i = 0; i < n_par; i++)
     tmp_param(i) = par[i];
 
-  ColumnVector tmp_fval = user_fsub (t, tmp_state, tmp_param);
+  ColumnVector tmp_fval = user_fsub (tmp_state, t, tmp_param);
 
   // Return the function value as a C array object
 
@@ -111,7 +111,7 @@ odessa_j (int* neq, const double& t, double *state,
   for (int i = 0; i < n_par; i++)
     tmp_param(i) = par[i];
 
-  Matrix tmp_fval = user_jsub (t, tmp_state, tmp_param);
+  Matrix tmp_fval = user_jsub (tmp_state, t, tmp_param);
 
   for (int j = 0; j < n; j++)
     for (int i = 0; i < nrowpd; i++)
@@ -137,7 +137,7 @@ odessa_b (int* neq, const double& t, double *state,
   for (int i = 0; i < n_par; i++)
     tmp_param(i) = par[i];
 
-  ColumnVector tmp_fval = user_bsub (t, tmp_state, tmp_param, jpar);
+  ColumnVector tmp_fval = user_bsub (tmp_state, t, tmp_param, jpar);
 
   for (int i = 0; i < n; i++)
     dfdp[i] = tmp_fval(i);
@@ -320,7 +320,7 @@ ODESSA::integrate (double tout)
 
   if (! sanity_checked)
     {
-      ColumnVector fval = user_fsub (t, x, theta);
+      ColumnVector fval = user_fsub (x, t, theta);
       
       if (fval.length () != x.length ())
 	{

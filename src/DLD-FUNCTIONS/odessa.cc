@@ -60,7 +60,7 @@ static bool warned_b_imaginary = false;
 static int call_depth = 0;
 
 static ColumnVector
-odessa_user_f (double t, const ColumnVector& x, const ColumnVector& theta)
+odessa_user_f (const ColumnVector& x, double t, const ColumnVector& theta)
 {
   ColumnVector retval;
 
@@ -76,14 +76,14 @@ odessa_user_f (double t, const ColumnVector& x, const ColumnVector& theta)
   else
     args(2) = Matrix ();
 
-  if (n > 1)
-    args(1) = x;
-  else if (n == 1)
-    args(1) = x(0);
-  else
-    args(1) = Matrix ();
+  args(1) = t;
 
-  args(0) = t;
+  if (n > 1)
+    args(0) = x;
+  else if (n == 1)
+    args(0) = x(0);
+  else
+    args(0) = Matrix ();
 
   if (odessa_f)
     {
@@ -116,12 +116,11 @@ odessa_user_f (double t, const ColumnVector& x, const ColumnVector& theta)
 }
 
 static Matrix
-odessa_user_mf (double t, const ColumnVector& x, const ColumnVector& theta,
-		octave_function *mf)
+odessa_user_j (const ColumnVector& x, double t, const ColumnVector& theta)
 {
   Matrix retval;
 
-  if (mf)
+  if (odessa_j)
     {
       octave_value_list args;
 
@@ -135,16 +134,16 @@ odessa_user_mf (double t, const ColumnVector& x, const ColumnVector& theta,
       else
 	args(2) = Matrix ();
 
-      if (n > 1)
-	args(1) = x;
-      else if (n == 1)
-	args(1) = x(0);
-      else
-	args(1) = Matrix ();
-
       args(0) = t;
 
-      octave_value_list tmp = mf->do_multi_index_op (1, args);
+      if (n > 1)
+	args(0) = x;
+      else if (n == 1)
+	args(0) = x(0);
+      else
+	args(0) = Matrix ();
+
+      octave_value_list tmp = odessa_j->do_multi_index_op (1, args);
 
       if (error_state)
 	{
@@ -172,14 +171,8 @@ odessa_user_mf (double t, const ColumnVector& x, const ColumnVector& theta,
   return retval;
 }
 
-static Matrix
-odessa_user_j (double t, const ColumnVector& x, const ColumnVector& theta)
-{
-  return odessa_user_mf (t, x, theta, odessa_j);
-}
-
 static ColumnVector
-odessa_user_b (double t, const ColumnVector& x,
+odessa_user_b (const ColumnVector& x, double t, 
 	       const ColumnVector& theta, int column)
 {
   ColumnVector retval;
@@ -200,14 +193,14 @@ odessa_user_b (double t, const ColumnVector& x,
       else
 	args(2) = Matrix ();
 
-      if (n > 1)
-	args(1) = x;
-      else if (n == 1)
-	args(1) = x(0);
-      else
-	args(1) = Matrix ();
+      args(1) = t;
 
-      args(0) = t;
+      if (n > 1)
+	args(0) = x;
+      else if (n == 1)
+	args(0) = x(0);
+      else
+	args(0) = Matrix ();
 
       octave_value_list tmp = odessa_b->do_multi_index_op (1, args);
 
@@ -331,11 +324,13 @@ call to compute the vector of right hand sides for the set of equations.\n\
 The function must have the form\n\
 \n\
 @example\n\
-@var{xdot} = f (@var{x}, @var{t})\n\
+@var{xdot} = f (@var{x}, @var{t}, @var{p})\n\
 @end example\n\
 \n\
 @noindent\n\
 in which @var{xdot} and @var{x} are vectors and @var{t} is a scalar.\n\
+\n\
+The variable @var{p} is a vector of parameters.\n\
 \n\
 The @var{fcn} argument may also be an array of strings\n\
 \n\
@@ -351,10 +346,12 @@ inhomogeneity matrix.\n\
 The Jacobian function must have the form\n\
 \n\
 @example\n\
-@var{jac} = j (@var{x}, @var{t})\n\
+@var{jac} = j (@var{x}, @var{t}, @var{p})\n\
 @end example\n\
 \n\
-in which @var{jac} is the matrix of partial derivatives\n\
+in which @var{x}, @var{t}, and @var{p} have the same meanings as\n\
+above for the function @var{f}, and  @var{jac} is the matrix of\n\
+partial derivatives\n\
 @tex\n\
 $$ J = {\\partial f_i \\over \\partial x_j} $$\n\
 @end tex\n\
@@ -371,7 +368,18 @@ jac = ----\n\
 The function @var{b} must have the form\n\
 \n\
 @example\n\
-@var{dfdp} = b (@var{t}, @var{x}, @var{p})\n\
+@var{dfdp} = b (@var{x}, @var{t}, @var{p}, @var{c})\n\
+@end example\n\
+\n\
+in which @var{x}, @var{t}, and @var{p} have the same meanings as\n\
+above for the function @var{f}, @var{c} indicates which partial\n\
+derivatives to return in @var{dfdp}.  For example, if @var{c} is 2,\n\
+you should return the vector\n\
+\n\
+@example\n\
+       df_i\n\
+dfdp = ----,    i = 1:length(x)\n\
+       dp_2\n\
 @end example\n\
 \n\
 The second argument, @var{x_0}, specifies the intial state of the system.\n\
@@ -426,47 +434,54 @@ parameters for @code{lsode}.\n\
 
   octave_value f_arg = args(0);
 
-  if (f_arg.is_string ())
+  int nr = f_arg.rows ();
+
+  if (nr == 1)
     {
-      string_vector f_str_arg = f_arg.all_strings ();
-      
-      int len = f_str_arg.length ();
-      
-      if (len > 2)
-	{
-	  std::string t = f_str_arg(2);
-
-	  if (t.length () > 0)
-	    {
-	      odessa_b = is_valid_function (t, "odessa", true);
-	      
-	      if (! odessa_b)
-		ODESSA_ABORT1
-		  ("expecting b function name as argument 1");
-	    }
-	}
-
-      if (len > 1)
-	{
-	  std::string t = f_str_arg(1);
-	  
-	  if (t.length () > 0)
-	    {
-	      odessa_j = is_valid_function (t, "odessa", true);
-	      
-	      if (! odessa_j)
-		ODESSA_ABORT1
-		  ("expecting function name as argument 1");
-	    }
-	}
-      
-      if (len > 0)
-	odessa_f = is_valid_function (f_str_arg(0), "odessa", true);
-      
-      if (! odessa_f)
-	ODESSA_ABORT1 ("expecting function name as argument 1");
+      odessa_f = extract_function
+	(f_arg, "odessa", "__odessa_fcn__",
+	 "function xdot = __odessa_fcn__ (x, t, p) xdot = ",
+	 "; endfunction");
     }
-  
+  else if (nr == 2 || nr == 3)
+    {
+      string_vector tmp = f_arg.all_strings ();
+
+      if (! error_state)
+	{
+	  odessa_f = extract_function
+	    (tmp(0), "odessa", "__odessa_fcn__",
+	     "function xdot = __odessa_fcn__ (x, t, p) xdot = ",
+	     "; endfunction");
+
+	  if (odessa_f)
+	    {
+	      odessa_j = extract_function
+		(tmp(1), "odessa", "__odessa_jac__",
+		 "function xdot = __odessa_jac__ (x, t, p) jac = ",
+		 "; endfunction");
+
+	      if (odessa_j && nr == 3)
+		{
+		  odessa_b = extract_function
+		    (tmp(1), "odessa", "__odessa_b__",
+		     "function dfdp = __odessa_b__ (x, t, p, c) dfdp = ",
+		     "; endfunction");
+
+		  if (! odessa_b)
+		    odessa_j = 0;
+		}
+
+	      if (! odessa_j)
+		odessa_f = 0;
+	    }
+	}
+    }
+
+  if (error_state || ! odessa_f)
+    ODESSA_ABORT1
+      ("expecting function name as argument 1");
+      
   ColumnVector state (args(1).vector_value ());
 
   if (error_state)

@@ -36,13 +36,13 @@ public:
       Matrix *dfdx;
     };
 
-  typedef ColumnVector (*ODES_fsub) (double, const ColumnVector& x,
+  typedef ColumnVector (*ODES_fsub) (const ColumnVector& x, double,
 				     const ColumnVector& theta); 
 
-  typedef ColumnVector (*ODES_bsub) (double, const ColumnVector& x,
+  typedef ColumnVector (*ODES_bsub) (const ColumnVector& x, double,
 				     const ColumnVector& theta, int column);
 
-  typedef Matrix (*ODES_jsub) (double, const ColumnVector& x,
+  typedef Matrix (*ODES_jsub) (const ColumnVector& x, double,
 			       const ColumnVector& theta);
 
   ODESFunc (void)

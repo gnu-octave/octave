@@ -1,5 +1,10 @@
 2002-10-31  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* DLD-FUNCTIONS/odessa.cc (odessa_user_f, odessa_user_j,
+	odessa_user_b): Reorder args for consistency with other solvers.
+	(Fodessa): Use extract_function to set args.
+	(odessa_user_j): Rename from odessa_user_mf.
+
 	* DLD-FUNCTIONS/fsolve.cc (fsolve_user_function, fsolve_user_jacobian):
 	Print warning if user returns complex value.
 	* DLD-FUNCTIONS/quad.cc (quad_user_function): Likewise.

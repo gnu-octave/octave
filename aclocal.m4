@@ -109,7 +109,7 @@ dnl to do if your compiler doesn't have -v...
 dnl
 dnl OCTAVE_FLIBS()
 AC_DEFUN(OCTAVE_FLIBS,
-[AC_MSG_CHECKING([for Fortran librarires])
+[AC_MSG_CHECKING([for Fortran libraries])
 AC_CACHE_VAL(octave_cv_flibs,
 [changequote(, )dnl
 echo "      END" > conftest.f

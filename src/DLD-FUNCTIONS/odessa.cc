@@ -134,7 +134,7 @@ odessa_user_j (const ColumnVector& x, double t, const ColumnVector& theta)
       else
 	args(2) = Matrix ();
 
-      args(0) = t;
+      args(1) = t;
 
       if (n > 1)
 	args(0) = x;

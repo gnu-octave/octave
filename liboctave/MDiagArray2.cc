@@ -33,6 +33,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "MArray-defs.h"
 
+// Some functions return a reference to this object after a failure.
+template <class T> MDiagArray2<T> MDiagArray2<T>::nil_array;
+
 // Two dimensional diagonal array with math ops.
 
 // Element by element MDiagArray2 by MDiagArray2 ops.
@@ -50,8 +53,7 @@ operator += (MDiagArray2<T>& a, const MDiagArray2<T>& b)
   if (r != b_nr || c != b_nc)
     {
       gripe_nonconformant ("operator +=", r, c, b_nr, b_nc);
-      static MDiagArray2<T> foo;
-      return foo;
+      return MDiagArray2<T>::nil_array;
     }
   else
     {
@@ -74,8 +76,7 @@ operator -= (MDiagArray2<T>& a, const MDiagArray2<T>& b)
   if (r != b_nr || c != b_nc)
     {
       gripe_nonconformant ("operator -=", r, c, b_nr, b_nc);
-      static MDiagArray2<T> foo;
-      return foo;
+      return MDiagArray2<T>::nil_array;
     }
   else
     {

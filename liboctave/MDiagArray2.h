@@ -81,6 +81,8 @@ public:
       return retval;
     }
 
+  static MDiagArray2<T> nil_array;
+
   // Currently, the OPS functions don't need to be friends, but that
   // may change.
 

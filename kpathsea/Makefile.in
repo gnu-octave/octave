@@ -5,7 +5,7 @@ ac_include ../make/paths.make
 ac_include ../make/makevars.make
 
 # Add -DNO_DEBUG to disable debugging, for unnoticeably better performance.
-DEFS = $(XDEFS)
+DEFS = @DEFS@ $(XDEFS)
 
 ac_include ../make/common.make
 ac_include ../make/library.make

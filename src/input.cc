@@ -156,7 +156,7 @@ do_input_echo (const std::string& input_string)
     }
 }
 
-string
+std:string
 gnu_readline (const std::string& s, bool force_readline)
 {
   std::string retval;

@@ -182,7 +182,7 @@ octave_char_matrix_str::all_strings (void) const
   return retval;
 }
 
-string
+std:string
 octave_char_matrix_str::string_value (void) const
 {
   return matrix.row_as_string (0);  // XXX FIXME??? XXX

@@ -233,7 +233,7 @@ set_site_defaults_file (void)
   Vsite_defaults_file.append ("/octaverc");
 }
 
-string
+std::string
 maybe_add_default_load_path (const std::string& pathstring)
 {
   std::string retval;

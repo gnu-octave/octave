@@ -38,7 +38,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Hide the details of the string buffer so that we are less likely to
 // create a memory leak.
 
-string
+std:string
 tree::str_print_code (void)
 {
   std::ostrstream buf;

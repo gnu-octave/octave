@@ -121,7 +121,7 @@ bool Vresize_on_range_error;
 
 // Octave's value type.
 
-string
+std:string
 octave_value::unary_op_as_string (unary_op op)
 {
   std::string retval;
@@ -159,7 +159,7 @@ octave_value::unary_op_as_string (unary_op op)
   return retval;
 }
 
-string
+std:string
 octave_value::binary_op_as_string (binary_op op)
 {
   std::string retval;
@@ -257,7 +257,7 @@ octave_value::binary_op_as_string (binary_op op)
   return retval;
 }
 
-string
+std:string
 octave_value::assign_op_as_string (assign_op op)
 {
   std::string retval;

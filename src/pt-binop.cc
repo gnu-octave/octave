@@ -100,7 +100,7 @@ tree_binary_expression::eval_error (void)
 	     oper () . c_str (), line (), column ());
 }
 
-string
+std:string
 tree_binary_expression::oper (void) const
 {
   return octave_value::binary_op_as_string (etype);
@@ -196,7 +196,7 @@ tree_boolean_expression::rvalue (void)
   return retval;
 }
 
-string
+std:string
 tree_boolean_expression::oper (void) const
 {
   std::string retval = "<unknown>";

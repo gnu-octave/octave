@@ -46,7 +46,7 @@ tree_indirect_ref::~tree_indirect_ref (void)
   delete expr;
 }
 
-string
+std:string
 tree_indirect_ref::name (void) const
 {
   // ??? FIXME ???

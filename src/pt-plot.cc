@@ -855,7 +855,7 @@ subplot_list::accept (tree_walker& tw)
   tw.visit_subplot_list (*this);
 }
 
-string
+std:string
 save_in_tmp_file (octave_value& t, int ndim, bool parametric)
 {
   std::string name = file_ops::tempnam ("", "oct-");

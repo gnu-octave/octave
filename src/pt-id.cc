@@ -41,7 +41,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // Symbols from the symbol table.
 
-string
+std:string
 tree_identifier::name (void) const
 {
   std::string retval;

@@ -105,7 +105,7 @@ default_history_size (void)
   return size;
 }
 
-string
+std:string
 default_history_file (void)
 {
   std::string file;

@@ -82,7 +82,7 @@ tree_expression::lvalue (void)
   return octave_lvalue ();
 }
 
-string
+std:string
 tree_expression::original_text (void) const
 {
   return std::string ();

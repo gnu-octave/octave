@@ -2903,7 +2903,7 @@ gobble_leading_white_space (FILE *ffile, bool in_parts, bool update_pos)
   return help_txt;
 }
 
-string
+std:string
 get_help_from_file (const std::string& path)
 {
   std::string retval;

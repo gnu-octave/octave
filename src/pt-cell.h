@@ -35,8 +35,6 @@ class tree_argument_list;
 
 class tree_walker;
 
-#include <SLList.h>
-
 #include "pt-mat.h"
 
 // General cells.

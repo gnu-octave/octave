@@ -46,7 +46,7 @@ public:
   Cell (const octave_value& val)
     : Array2<octave_value> (1, 1, val) { }
 
-  Cell (int n, int m, const octave_value& val = octave_value ())
+  Cell (int n, int m, const octave_value& val = resize_fill_value ())
     : Array2<octave_value> (n, m, val) { }
 
   Cell (const Array2<octave_value>& c)
@@ -69,7 +69,7 @@ public:
   // XXX FIXME XXX
   bool is_true (void) const { return false; }
 
-  static octave_value resize_fill_value (void) { return octave_value (); }
+  static octave_value resize_fill_value (void) { return Matrix (); }
 };
 
 #endif

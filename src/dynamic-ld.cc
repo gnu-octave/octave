@@ -24,10 +24,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include <list>
+
 #include "oct-time.h"
 #include "file-stat.h"
-
-#include "DLList.h"
 
 #include <defaults.h>
 
@@ -41,9 +41,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // TRUE means we print a warning if reloading a .oct file forces other
 // functions to be cleared.
 static bool Vwarn_reload_forces_clear;
-
-template class DLNode<octave_shlib>;
-template class DLList<octave_shlib>;
 
 class
 octave_shlib_list
@@ -75,7 +72,7 @@ private:
   static bool instance_ok (void);
 
   // List of libraries we have loaded.
-  DLList<octave_shlib> lib_list;
+  std::list<octave_shlib> lib_list;
 
   // No copying!
 
@@ -89,19 +86,22 @@ octave_shlib_list *octave_shlib_list::instance = 0;
 void
 octave_shlib_list::do_append (const octave_shlib& shl)
 {
-  lib_list.append (shl);
+  lib_list.push_back (shl);
 }
 
 void
 octave_shlib_list::do_remove (octave_shlib& shl)
 {
-  for (Pix p = lib_list.first (); p != 0; lib_list.next (p))
+  
+  for (std::list<octave_shlib>::iterator p = lib_list.begin ();
+       p != lib_list.end ();
+       p++)
     {
-      if (lib_list(p) == shl)
+      if (*p == shl)
 	{
 	  shl.close ();
 
-	  lib_list.del (p);
+	  lib_list.erase (p);
 
 	  break;
 	}
@@ -116,13 +116,15 @@ octave_shlib_list::do_search (const std::string& fcn_name, octave_shlib& shl,
 
   shl = octave_shlib ();
 
-  for (Pix p = lib_list.first (); p != 0; lib_list.next (p))
+  for (std::list<octave_shlib>::iterator p = lib_list.begin ();
+       p != lib_list.end ();
+       p++)
     {
-      function = lib_list(p).search (fcn_name, mangler);
+      function = p->search (fcn_name, mangler);
 
       if (function)
 	{
-	  shl = lib_list(p);
+	  shl = *p;
 
 	  break;
 	}

@@ -53,7 +53,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_cell, "cell");
 
 octave_value
 octave_cell::subsref (const std::string type,
-		      const SLList<octave_value_list>& idx)
+		      const std::list<octave_value_list>& idx)
 {
   octave_value retval;
 
@@ -104,7 +104,7 @@ octave_cell::subsref (const std::string type,
 
 octave_value
 octave_cell::subsasgn (const std::string type,
-		       const SLList<octave_value_list>& idx,
+		       const std::list<octave_value_list>& idx,
 		       const octave_value& rhs)
 {
   octave_value retval;
@@ -126,9 +126,9 @@ octave_cell::subsasgn (const std::string type,
 
 	    if (! error_state)
 	      {
-		SLList<octave_value_list> next_idx (idx);
+		std::list<octave_value_list> next_idx (idx);
 
-		next_idx.remove_front ();
+		next_idx.erase (next_idx.begin ());
 
 		t_rhs = tmp.subsasgn (type.substr (1), next_idx, rhs);
 	      }
@@ -148,9 +148,9 @@ octave_cell::subsasgn (const std::string type,
 	      {
 		tmp = tcell(0,0);
 
-		SLList<octave_value_list> next_idx (idx);
+		std::list<octave_value_list> next_idx (idx);
 
-		next_idx.remove_front ();
+		next_idx.erase (next_idx.begin ());
 
 		t_rhs = tmp.subsasgn (type.substr (1), next_idx, rhs);
 	      }

@@ -53,7 +53,7 @@ any_arg_is_magic_colon (const octave_value_list& args)
 
 octave_value_list
 octave_builtin::subsref (const std::string type,
-			 const SLList<octave_value_list>& idx,
+			 const std::list<octave_value_list>& idx,
 			 int nargout)
 {
   octave_value_list retval;
@@ -86,7 +86,7 @@ octave_builtin::subsref (const std::string type,
   // do?  If it is not, then what should happen for stat("file").size,
   // for exmaple?
 
-  if (idx.length () > 1)
+  if (idx.size () > 1)
     retval = retval(0).next_subsref (type, idx);
 
   return retval;

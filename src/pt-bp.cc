@@ -114,9 +114,9 @@ tree_breakpoint::visit_argument_list (tree_argument_list& lst)
   if (found)
     return;
 
-  for (Pix p = lst.first (); p != 0; lst.next (p))
+  for (tree_argument_list::iterator p = lst.begin (); p != lst.end (); p++)
     {
-      tree_expression *elt = lst(p);
+      tree_expression *elt = *p;
 
       if (elt)
 	elt->accept (*this);
@@ -220,9 +220,9 @@ tree_breakpoint::visit_decl_init_list (tree_decl_init_list& lst)
   if (found)
     return;
 
-  for (Pix p = lst.first (); p != 0; lst.next (p))
+  for (tree_decl_init_list::iterator p = lst.begin (); p != lst.end (); p++)
     {
-      tree_decl_elt *elt = lst(p);
+      tree_decl_elt *elt = *p;
 
       if (elt)
 	elt->accept (*this);
@@ -334,9 +334,9 @@ tree_breakpoint::visit_if_command_list (tree_if_command_list& lst)
   if (found)
     return;
 
-  for (Pix p = lst.first (); p != 0; lst.next (p))
+  for (tree_if_command_list::iterator p = lst.begin (); p != lst.end (); p++)
     {
-      tree_if_clause *elt = lst(p);
+      tree_if_clause *elt = *p;
 
       if (elt)
 	elt->accept (*this);
@@ -354,13 +354,16 @@ tree_breakpoint::visit_index_expression (tree_index_expression& cmd)
   if (expr && expr->line () >= line)
     take_action (*expr);
 
-  SLList<tree_argument_list *> lst = cmd.arg_lists ();
+  std::list<tree_argument_list *> lst = cmd.arg_lists ();
+
 
   if (! lst.empty ())
     {
-      for (Pix p = lst.first (); p != 0; lst.next (p))
+      for (std::list<tree_argument_list *>::iterator p = lst.begin ();
+	   p != lst.end ();
+	   p++)
 	{
-	  tree_argument_list *elt = lst(p);
+	  tree_argument_list *elt = *p;
 
 	  elt->accept (*this);
 	}
@@ -373,12 +376,11 @@ tree_breakpoint::visit_matrix (tree_matrix& mat)
   if (found)
     return;
 
-  Pix p = mat.first ();
+  tree_matrix::iterator p = mat.begin ();
 
-  while (p)
+  while (p != mat.end ())
     {
-      tree_argument_list *elt = mat(p);
-      mat.next (p);
+      tree_argument_list *elt = *p++;
 
       if (elt)
 	elt->accept (*this);
@@ -391,12 +393,11 @@ tree_breakpoint::visit_cell (tree_cell& cell)
   if (found)
     return;
 
-  Pix p = cell.first ();
+  tree_cell::iterator p = cell.begin ();
 
-  while (p)
+  while (p != cell.end ())
     {
-      tree_argument_list *elt = cell (p);
-      cell.next (p);
+      tree_argument_list *elt = *p++;
 
       if (elt)
 	elt->accept (*this);
@@ -446,12 +447,11 @@ tree_breakpoint::visit_parameter_list (tree_parameter_list& lst)
   if (found)
     return;
 
-  Pix p = lst.first ();
+  tree_parameter_list::iterator p = lst.begin ();
 
-  while (p)
+  while (p != lst.end ())
     {
-      tree_identifier *elt = lst(p);
-      lst.next (p);
+      tree_identifier *elt = *p++;
 
       if (elt)
 	elt->accept (*this);
@@ -529,12 +529,11 @@ tree_breakpoint::visit_return_list (tree_return_list& lst)
   if (found)
     return;
 
-  Pix p = lst.first ();
+  tree_return_list::iterator p = lst.begin ();
 
-  while (p)
+  while (p != lst.end ())
     {
-      tree_index_expression *elt = lst(p);
-      lst.next (p);
+      tree_index_expression *elt = *p++;
 
       if (elt)
 	elt->accept (*this);
@@ -577,9 +576,9 @@ tree_breakpoint::visit_statement_list (tree_statement_list& lst)
   if (found)
     return;
 
-  for (Pix p = lst.first (); p != 0; lst.next (p))
+  for (tree_statement_list::iterator p = lst.begin (); p != lst.end (); p++)
     {
-      tree_statement *elt = lst(p);
+      tree_statement *elt = *p;
 
       if (elt)
 	elt->accept (*this);
@@ -636,16 +635,14 @@ tree_breakpoint::visit_switch_case_list (tree_switch_case_list& lst)
   if (found)
     return;
 
-  Pix p = lst.first ();
+  tree_switch_case_list::iterator p = lst.begin ();
 
-  while (p)
+  while (p != lst.end ())
     {
-      tree_switch_case *elt = lst(p);
+      tree_switch_case *elt = *p++;
 
       if (elt)
 	elt->accept (*this);
-
-      lst.next (p);
     }
 }
 

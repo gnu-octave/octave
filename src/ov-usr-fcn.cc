@@ -284,7 +284,7 @@ clear_param_list (void *lst)
   tree_parameter_list *tmp = static_cast<tree_parameter_list *> (lst);
 
   if (tmp)
-    tmp->clear ();
+    tmp->undefine ();
 }
 
 static void
@@ -305,7 +305,7 @@ unprotect_function (void *sr_arg)
 
 octave_value_list
 octave_user_function::subsref (const std::string type,
-			       const SLList<octave_value_list>& idx,
+			       const std::list<octave_value_list>& idx,
 			       int nargout)
 {
   octave_value_list retval;
@@ -332,7 +332,7 @@ octave_user_function::subsref (const std::string type,
   // octave_value_list::next_subsref member function?  See also
   // octave_builtin::subsref.
 
-  if (idx.length () > 1)
+  if (idx.size () > 1)
     retval = retval(0).next_subsref (type, idx);
 
   return retval;

@@ -27,7 +27,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #pragma interface
 #endif
 
-#include "Map.h"
+#include <map>
 
 #include "oct-obj.h"
 
@@ -37,10 +37,14 @@ class
 Octave_map
 {
  public:
-  Octave_map (void) : map (octave_value_list ()), array_len (0) { }
+
+  typedef std::map<std::string, octave_value_list>::iterator iterator;
+  typedef std::map<std::string, octave_value_list>::const_iterator const_iterator;
+
+  Octave_map (void) : map (), array_len (0) { }
 
   Octave_map (const std::string& key, const octave_value& value)
-    : map (octave_value_list ()), array_len (1)
+    : map (), array_len (1)
       {
 	map[key] = octave_value_list (value);
       }
@@ -61,7 +65,7 @@ Octave_map
   ~Octave_map (void) { }
 
   // This is the number of keys.
-  int length (void) const { return map.length (); }
+  int length (void) const { return map.size (); }
 
   int empty (void) const { return map.empty (); }
 
@@ -69,18 +73,31 @@ Octave_map
 
   octave_value_list operator [] (const std::string& key) const;
 
-  void del (const std::string& key) { map.del (key); }
+  void del (const std::string& key)
+    {
+      iterator p = map.find (key);
+      if (p != map.end ())
+	map.erase (p);
+    }
 
-  Pix first (void) const { return map.first (); }
-  void next (Pix& i) const { map.next (i); }
+  iterator begin (void) { return iterator (map.begin ()); }
+  const_iterator begin (void) const { return const_iterator (map.begin ()); }
 
-  std::string key (Pix p) const { return map.key (p); }
+  iterator end (void) { return iterator (map.end ()); }
+  const_iterator end (void) const { return const_iterator (map.end ()); }
 
-  octave_value_list& contents (Pix p) const { return map.contents (p); }
+  std::string key (const_iterator p) const { return p->first; }
 
-  Pix seek (const std::string& key) const { return map.seek (key); }
+  octave_value_list& contents (const_iterator p)
+    { return operator [] (key(p)); }
 
-  int contains (const std::string& key) const { return map.contains (key); }
+  octave_value_list contents (const_iterator p) const
+    { return operator [] (key(p)); }
+
+  const_iterator seek (const std::string& key) const { return map.find (key); }
+
+  int contains (const std::string& key) const
+    { return (seek (key) != map.end ()); }
 
   void clear (void) { map.clear (); }
 
@@ -104,7 +121,7 @@ Octave_map
 private:
 
   // The map of names to values.
-  CHMap<octave_value_list> map;
+  std::map<std::string, octave_value_list> map;
 
   // The current size of this struct array;
   mutable int array_len;

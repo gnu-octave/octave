@@ -1,3 +1,73 @@
+2002-12-06  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pt-mat.cc (class tm_row_const::tm_row_const_rep): Derive from
+	octave_base_list instead of SLList.  Fix tm_row_const member
+	functions as needed, change all uses.
+	(class tm_const): Derive from octave_base_list, not SLList.  Fix
+	member functions as needed, change all uses.
+	* pt-mat.h (class tree_matrix): Derive from octave_base_list
+	instead of including SLList object as data member.  Fix member
+	functions as needed, change all uses.
+
+	* pt-idx.h (tree_index_expression::args,
+	tree_index_expression::arg_nm, tree_index_expression::dyn_field):
+	Now std::list, not SLList.  Fix member functions as needed, change
+	all uses.
+
+	* oct-map.h (Octave_map::map): Now std::map instead of CHMap.
+	Fix member functions as needed, change all uses.
+
+	* oct-lvalue.h (octave_lvalue::idx): Now std::list instead of
+	SLList object.  Fix member functions as needed, change all uses.
+
+	* dynamic-ld.cc (octave_shlib_list::lib_list): Now std::list
+	instead of DLList object.  Fix member functions as needed, change
+	all uses.
+
+	* ov.h (octave_value::subsref, octave_value::subsasgn):
+	Index arg is not std::list, not SLList.  Change all derived
+	classes, all uses.
+
+	* pt-stmt.h (tree_statement_list): Derive from base_octave_list
+	object instead of including SLList object as data member.  Fix
+	member functions as needed, change all uses.
+	* pt-select.h (tree_switch_case_list): Likewise.
+	(tree_if_command_list): Likewise.
+	* pt-misc.h (tree_parameter_list, tree_return_list,
+	tree_va_return_list): Likewise.
+	* pt-plot.h (subplot_list): Likewise.
+	* pt-mat.h (tree_matrix): Likewise.
+	* pt-decl.h (tree_decl_init_list): Likewise.
+	* pt-arg-list.h (tree_argument_list): Likewise.
+	* comment-list.h (octave_comment_list): Likewise.
+
+	* BaseSLList.cc, DLList.cc, Map.cc, SLList.cc, SLStack.cc,
+	Stack.cc: Delete.
+	* Makefile.in (DIST_SRC): Delete them from the list.
+
+	* BaseSLList.h, DLList.h, Map.h, Pix.h, SLList.h, SLStack.h,
+	Stack.h: Delete
+	* Makefile.in (INCLUDES): Delete them from the list.
+
+	* Map-oct-obj.cc, SLList-expr.cc, SLList-misc.cc, SLList-plot.cc,
+	SLList-tc.cc, SLList-tm.cc: Delete.
+	* Makefile.in (TI_XSRC): Delete them from the list.
+
+	* ov-base-mat.cc (octave_base_matrix::assign): Pass
+	MT::resize_fill_value () as third arg for ::assign.	
+
+	* Cell.h (Cell::resize_fill_value): Use empty Matrix object, not
+	undefined octave_value object.
+	(Cell::Cell (int, int, const octave_value&)): Use
+	resize_fill_value () as default value, not undefined octave_value
+	object.
+
+2002-12-05  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (DEFUN_PATTERN): Make it work for DEFCMD too.
+
+	* base-list.h: New file.
+
 2002-12-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* toplev.cc (octave_interpreter_ready): New global variable.

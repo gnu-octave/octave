@@ -27,8 +27,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #pragma interface
 #endif
 
-#include <SLList.h>
-
 class octave_value;
 class octave_value_list;
 
@@ -38,35 +36,24 @@ class tree_va_return_list;
 
 class tree_walker;
 
+#include "base-list.h"
+
 // Parameter lists.  Used to hold the list of input and output
 // parameters in a function definition.  Elements are identifiers
 // only.
 
 class
-tree_parameter_list
+tree_parameter_list : public octave_base_list<tree_identifier *>
 {
 public:
 
   tree_parameter_list (void)
-    : lst (), marked_for_varargs (0) { }
+    : marked_for_varargs (0) { }
 
   tree_parameter_list (tree_identifier *t)
-    : lst (), marked_for_varargs (0) { lst.append (t); }
+    : marked_for_varargs (0) { append (t); }
 
   ~tree_parameter_list (void);
-
-  int length (void) const { return lst.length (); }
-
-  void append (tree_identifier *&s) { lst.append (s); }
-  void append (tree_identifier * const &s) { lst.append (s); }
-
-  tree_identifier *&operator () (Pix p) { return lst (p); }
-
-  tree_identifier * const &operator () (Pix p) const { return lst (p); }
-
-  Pix first (void) const { return lst.first (); }
-
-  void next (Pix& p) const { return lst.next (p); }
 
   void mark_as_formal_parameters (void);
 
@@ -82,7 +69,7 @@ public:
 
   void define_from_arg_vector (const octave_value_list& args);
 
-  void clear (void);
+  void undefine (void);
 
   bool is_defined (void);
 
@@ -91,9 +78,6 @@ public:
   void accept (tree_walker& tw);
 
 private:
-
-  // The list of identifiers in the parameter list.
-  SLList<tree_identifier *> lst;
 
   int marked_for_varargs;
 
@@ -108,35 +92,19 @@ private:
 // assignment expressions.
 
 class
-tree_return_list
+tree_return_list : public octave_base_list<tree_index_expression *>
 {
 public:
 
-  tree_return_list (void)
-    : lst () { }
+  tree_return_list (void) { }
 
-  tree_return_list (tree_index_expression *t)
-    : lst () { lst.append (t); }
+  tree_return_list (tree_index_expression *t) { append (t); }
 
   ~tree_return_list (void);
-
-  void append (tree_index_expression *&s) { lst.append (s); }
-  void append (tree_index_expression * const &s) { lst.append (s); }
-
-  tree_index_expression *&operator () (Pix p) { return lst (p); }
-
-  tree_index_expression * const &operator () (Pix p) const { return lst (p); }
-
-  Pix first (void) const { return lst.first (); }
-
-  void next (Pix& p) const { return lst.next (p); }
 
   void accept (tree_walker& tw);
 
 private:
-
-  // The list of expressions in the return list.
-  SLList<tree_index_expression *> lst;
 
   // No copying!
 
@@ -146,35 +114,15 @@ private:
 };
 
 class
-tree_va_return_list
+tree_va_return_list : public octave_base_list<octave_value>
 {
 public:
 
-  tree_va_return_list (void) : lst () { }
+  tree_va_return_list (void) { }
 
   ~tree_va_return_list (void) { }
 
-  int length (void) const { return lst.length (); }
-
-  void clear (void) { lst.clear (); }
-
-  int empty (void) const { return lst.empty (); }
-
-  void append (octave_value& s) { lst.append (s); }
-  void append (const octave_value& s) { lst.append (s); }
-
-  octave_value& operator () (Pix p) { return lst (p); }
-
-  const octave_value& operator () (Pix p) const { return lst (p); }
-
-  Pix first (void) const { return lst.first (); }
-
-  void next (Pix& p) const { return lst.next (p); }
-
 private:
-
-  // The list of values in the va return list.
-  SLList<octave_value> lst;
 
   // No copying!
 

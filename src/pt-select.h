@@ -27,13 +27,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #pragma interface
 #endif
 
-#include <SLList.h>
-
 class expression;
 class tree_statement_list;
 
 class tree_walker;
 
+#include "base-list.h"
 #include "comment-list.h"
 #include "pt-cmd.h"
 
@@ -88,44 +87,29 @@ private:
 };
 
 class
-tree_if_command_list
+tree_if_command_list : public octave_base_list<tree_if_clause *>
 {
 public:
 
-  tree_if_command_list (void)
-    : lst () { }
+  tree_if_command_list (void) { }
 
-  tree_if_command_list (tree_if_clause *t)
-    : lst () { lst.append (t); }
+  tree_if_command_list (tree_if_clause *t) { append (t); }
 
   ~tree_if_command_list (void)
     {
-      while (! lst.empty ())
+      while (! empty ())
 	{
-	  tree_if_clause *t = lst.remove_front ();
-	  delete t;
+	  iterator p = begin ();
+	  delete *p;
+	  erase (p);
 	}
     }
-
-  void append (tree_if_clause *&s) { lst.append (s); }
-  void append (tree_if_clause * const &s) { lst.append (s); }
-
-  tree_if_clause *&operator () (Pix p) { return lst (p); }
-
-  tree_if_clause * const &operator () (Pix p) const { return lst (p); }
-
-  Pix first (void) const { return lst.first (); }
-
-  void next (Pix& p) const { return lst.next (p); }
 
   void eval (void);
 
   void accept (tree_walker& tw);
 
 private:
-
-  // The list of if/elseif clauses.
-  SLList<tree_if_clause *> lst;
 
   // No copying!
 
@@ -230,44 +214,29 @@ private:
 };
 
 class
-tree_switch_case_list
+tree_switch_case_list : public octave_base_list<tree_switch_case *>
 {
 public:
 
-  tree_switch_case_list (void)
-    : lst () { }
+  tree_switch_case_list (void) { }
 
-  tree_switch_case_list (tree_switch_case *t)
-    : lst () { lst.append (t); }
+  tree_switch_case_list (tree_switch_case *t) { append (t); }
 
   ~tree_switch_case_list (void)
     {
-      while (! lst.empty ())
+      while (! empty ())
 	{
-	  tree_switch_case *t = lst.remove_front ();
-	  delete t;
+	  iterator p = begin ();
+	  delete *p;
+	  erase (p);
 	}
     }
-
-  void append (tree_switch_case *&s) { lst.append (s); }
-  void append (tree_switch_case * const &s) { lst.append (s); }
-
-  tree_switch_case *&operator () (Pix p) { return lst (p); }
-
-  tree_switch_case * const &operator () (Pix p) const { return lst (p); }
-
-  Pix first (void) const { return lst.first (); }
-
-  void next (Pix& p) const { return lst.next (p); }
 
   void eval (const octave_value& val);
 
   void accept (tree_walker& tw);
 
 private:
-
-  // The list of switch cases.
-  SLList<tree_switch_case *> lst;
 
   // No copying!
 

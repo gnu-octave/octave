@@ -63,9 +63,11 @@ tree_decl_elt::accept (tree_walker& tw)
 void
 tree_decl_init_list::eval (tree_decl_elt::eval_fcn f)
 {
-  for (Pix p = first (); p != 0; next (p))
+  for (iterator p = begin (); p != end (); p++)
     {
-      f (*(this->operator () (p)));
+      tree_decl_elt *elt = *p;
+
+      f (*elt);
 
       if (error_state)
 	break;

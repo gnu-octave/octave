@@ -27,8 +27,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #pragma interface
 #endif
 
-#include <SLList.h>
-
 class tree_expression;
 class tree_identifier;
 
@@ -36,6 +34,7 @@ class tree_walker;
 
 #include <string>
 
+#include "base-list.h"
 #include "pt-cmd.h"
 
 // List of expressions that make up a declaration statement.
@@ -76,44 +75,29 @@ private:
 };
 
 class
-tree_decl_init_list
+tree_decl_init_list : public octave_base_list<tree_decl_elt *>
 {
 public:
 
-  tree_decl_init_list (void)
-    : lst () { }
+  tree_decl_init_list (void) { }
 
-  tree_decl_init_list (tree_decl_elt *t)
-    : lst () { lst.append (t); }
+  tree_decl_init_list (tree_decl_elt *t) { append (t); }
 
   ~tree_decl_init_list (void)
     {
-      while (! lst.empty ())
+      while (! empty ())
 	{
-	  tree_decl_elt *t = lst.remove_front ();
-	  delete t;
+	  iterator p = begin ();
+	  delete *p;
+	  erase (p);
 	}
     }
-
-  void append (tree_decl_elt *&s) { lst.append (s); }
-  void append (tree_decl_elt * const &s) { lst.append (s); }
-
-  tree_decl_elt *&operator () (Pix p) { return lst (p); }
-
-  tree_decl_elt * const &operator () (Pix p) const { return lst (p); }
-
-  Pix first (void) const { return lst.first (); }
-
-  void next (Pix& p) const { return lst.next (p); }
 
   void eval (tree_decl_elt::eval_fcn);
 
   void accept (tree_walker& tw);
 
 private:
-
-  // The list of variables/initializers.
-  SLList<tree_decl_elt *> lst;
 
   // No copying!
 

@@ -51,9 +51,9 @@ octave_struct::dotref (const octave_value_list& idx)
 
   std::string nm = idx(0).string_value ();
 
-  Pix p = map.seek (nm);
+  Octave_map::const_iterator p = map.seek (nm);
 
-  if (p)
+  if (p != map.end ())
     retval = map.contents (p);
   else
     error ("structure has no member `%s'", nm.c_str ());
@@ -87,7 +87,7 @@ gripe_failed_assignment (void)
 
 octave_value
 octave_struct::subsref (const std::string type,
-			const SLList<octave_value_list>& idx)
+			const std::list<octave_value_list>& idx)
 {
   octave_value retval;
 
@@ -99,9 +99,8 @@ octave_struct::subsref (const std::string type,
       {
 	if (type.length () > 1 && type[1] == '.')
 	  {
-	    Pix p = idx.first ();
-	    idx.next (p);
-	    octave_value_list key_idx = idx(p);
+	    std::list<octave_value_list>::const_iterator p = idx.begin ();
+	    octave_value_list key_idx = *++p;
 
 	    octave_value_list tmp = dotref (key_idx);
 
@@ -183,7 +182,7 @@ octave_struct::numeric_conv (const octave_value_list& val,
 
 octave_value
 octave_struct::subsasgn (const std::string type,
-			 const SLList<octave_value_list>& idx,
+			 const std::list<octave_value_list>& idx,
 			 const octave_value& rhs)
 {
   octave_value retval;
@@ -200,13 +199,12 @@ octave_struct::subsasgn (const std::string type,
 	  {
 	    if (type.length () > 1 && type[1] == '.')
 	      {
-		Pix p = idx.first ();
-		octave_value_list t_idx = idx(p);
+		std::list<octave_value_list>::const_iterator p = idx.begin ();
+		octave_value_list t_idx = *p;
 
 		if (t_idx.length () == 1)
 		  {
-		    idx.next (p);
-		    octave_value_list key_idx = idx(p);
+		    octave_value_list key_idx = *++p;
 
 		    assert (key_idx.length () == 1);
 
@@ -231,13 +229,13 @@ octave_struct::subsasgn (const std::string type,
 
 		    if (! error_state)
 		      {
-			SLList<octave_value_list> next_idx (idx);
+			std::list<octave_value_list> next_idx (idx);
 
 			// We handled two index elements, so subsasgn to
 			// needs to skip both of them.
 
-			next_idx.remove_front ();
-			next_idx.remove_front ();
+			next_idx.erase (next_idx.begin ());
+			next_idx.erase (next_idx.begin ());
 
 			u.make_unique ();
 
@@ -273,9 +271,9 @@ octave_struct::subsasgn (const std::string type,
 
 	    if (! error_state)
 	      {
-		SLList<octave_value_list> next_idx (idx);
+		std::list<octave_value_list> next_idx (idx);
 
-		next_idx.remove_front ();
+		next_idx.erase (next_idx.begin ());
 
 		u.make_unique ();
 
@@ -301,9 +299,8 @@ octave_struct::subsasgn (const std::string type,
 	  {
 	    if (n > 1 && type[1] == '.')
 	      {
-		Pix p = idx.first ();
-		idx.next (p);
-		octave_value_list key_idx = idx(p);
+		std::list<octave_value_list>::const_iterator p = idx.begin ();
+		octave_value_list key_idx = *++p;
 
 		assert (key_idx.length () == 1);
 
@@ -418,7 +415,7 @@ octave_struct::print_raw (std::ostream& os, bool) const
 
       int n = map.array_length ();
 
-      for (Pix p = map.first (); p; map.next (p))
+      for (Octave_map::const_iterator p = map.begin (); p != map.end (); p++)
 	{
 	  std::string key = map.key (p);
 	  octave_value_list val = map.contents (p);

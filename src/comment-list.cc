@@ -33,11 +33,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "comment-list.h"
 #include "error.h"
 
-#include "SLList.h"
-#include "SLList.cc"
-
-template class SLList<octave_comment_elt>;
-
 octave_comment_buffer *octave_comment_buffer::instance = 0;
 
 bool

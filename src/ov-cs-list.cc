@@ -46,7 +46,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_cs_list, "cs-list");
 
 octave_value
 octave_list::subsref (const std::string type,
-		      const SLList<octave_value_list>& idx)
+		      const std::list<octave_value_list>& idx)
 {
   octave_value retval;
 
@@ -118,7 +118,7 @@ octave_list::do_index_op (const octave_value_list& idx, int resize_ok)
 
 octave_value
 octave_list::subsasgn (const std::string type,
-		       const SLList<octave_value_list>& idx,
+		       const std::list<octave_value_list>& idx,
 		       const octave_value& rhs)
 {
   octave_value retval;
@@ -140,9 +140,9 @@ octave_list::subsasgn (const std::string type,
 
 	    if (! error_state)
 	      {
-		SLList<octave_value_list> next_idx (idx);
+		std::list<octave_value_list> next_idx (idx);
 
-		next_idx.remove_front ();
+		next_idx.erase (next_idx.begin ());
 
 		t_rhs = tmp.subsasgn (type.substr (1), next_idx, rhs);
 	      }

@@ -45,10 +45,9 @@ class tree_walker;
 
 #include <string>
 
-#include <SLList.h>
-
 #include "dColVector.h"
 
+#include "base-list.h"
 #include "pt-cmd.h"
 
 class
@@ -396,37 +395,29 @@ private:
 };
 
 class
-subplot_list
+subplot_list : public octave_base_list<subplot *>
 {
 public:
 
-  subplot_list (void)
-    : lst () { }
+  subplot_list (void) { }
 
-  subplot_list (subplot *t)
-    : lst () { lst.append (t); }
+  subplot_list (subplot *t) { append (t); }
 
-  ~subplot_list (void);
-
-  void append (subplot *&s) { lst.append (s); }
-  void append (subplot * const &s) { lst.append (s); }
-
-  subplot *&operator () (Pix p) { return lst (p); }
-
-  subplot * const &operator () (Pix p) const { return lst (p); }
-
-  Pix first (void) const { return lst.first (); }
-
-  void next (Pix& p) const { return lst.next (p); }
+  ~subplot_list (void)
+    {
+      while (! empty ())
+	{
+	  iterator p = begin ();
+	  delete *p;
+	  erase (p);
+	}
+    }
 
   int print (int ndim, OSSTREAM& plot_buf);
 
   void accept (tree_walker& tw);
 
 private:
-
-  // The list of subplot commands.
-  SLList<subplot *> lst;
 
   // No copying!
 

@@ -53,9 +53,9 @@ tree_cell::rvalue (void)
   int nr = length ();
   int nc = -1;
 
-  for (Pix p = first (); p != 0; next (p))
+  for (iterator p = begin (); p != end (); p++)
     {
-      tree_argument_list *elt = this->operator () (p);
+      tree_argument_list *elt = *p;
 
       if (nc < 0)
 	nc = elt->length ();
@@ -70,9 +70,9 @@ tree_cell::rvalue (void)
 
   int i = 0;
 
-  for (Pix p = first (); p != 0; next (p))
+  for (iterator p = begin (); p != end (); p++)
     {
-      tree_argument_list *elt = this->operator () (p);
+      tree_argument_list *elt = *p;
 
       octave_value_list row = elt->convert_to_const_vector ();
       

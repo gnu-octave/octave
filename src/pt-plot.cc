@@ -815,27 +815,18 @@ subplot::accept (tree_walker& tw)
   tw.visit_subplot (*this);
 }
 
-subplot_list::~subplot_list (void)
-{
-  while (! lst.empty ())
-    {
-      subplot *t = lst.remove_front ();
-      delete t;
-    }
-}
-
 int
 subplot_list::print (int ndim, OSSTREAM& plot_buf)
 {
   int status = 0;
 
-  for (Pix p = lst.first (); p != 0; lst.next (p))
+  for (iterator p = begin (); p != end (); p++)
     {
-      subplot *elt = lst (p);
+      subplot *elt = *p;
 
       plot_line_count++;
 
-      if (p != first ())
+      if (p != begin ())
 	plot_buf << ",\\\n  ";
 
       status = elt->print (ndim, plot_buf);

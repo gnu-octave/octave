@@ -3855,8 +3855,8 @@ add_hdf5_data (hid_t loc_id, const octave_value& tc,
 
       // recursively add each element of the structure to this group
       Octave_map m = tc.map_value ();
-      Pix i = m.first ();
-      while (i)
+      Octave_map::iterator i = m.begin ();
+      while (i != m.end ())
 	{
 	  bool retval2 = add_hdf5_data (data_id, 
 					m.contents (i), m.key (i), "",
@@ -3864,8 +3864,7 @@ add_hdf5_data (hid_t loc_id, const octave_value& tc,
 	  if (! retval2)
 	    goto error_cleanup;
 
-	  // advance i to next element, or 0
-	  m.next (i);
+	  i++;
 	}
     }
   else
@@ -4196,21 +4195,20 @@ save_mat5_binary_element (std::ostream& os,
       // an Octave structure */
       // recursively write each element of the structure
       Octave_map m = tc.map_value ();
-      Pix i;
 
       {
 	char buf[32];
 	FOUR_BYTE_INT maxfieldnamelength = 32;
 	int fieldcnt = 0;
 
-	for (i = m.first (); i; m.next (i))
+	for (Octave_map::iterator i = m.begin (); i != m.end (); i++)
 	  fieldcnt++;
 
 	write_mat5_tag (os, miINT32, 4);
 	os.write ((char *)&maxfieldnamelength, 4);
 	write_mat5_tag (os, miINT8, fieldcnt*32);
-	 
-	for (i = m.first (); i; m.next (i))
+
+	for (Octave_map::iterator i = m.begin (); i != m.end (); i++)
 	  {
 	    // write the name of each element
 	    std::string tstr = m.key (i);
@@ -4219,7 +4217,7 @@ save_mat5_binary_element (std::ostream& os,
 	    os.write (buf, 32);
 	  }
 
-	for (i = m.first (); i; m.next (i))
+	for (Octave_map::iterator i = m.begin (); i != m.end (); i++)
 	  {
 	    // write the data of each element
 	    bool retval2 = save_mat5_binary_element (os, m.contents (i), "",

@@ -70,13 +70,13 @@ public:
   octave_value_list dotref (const octave_value_list& idx);
 
   octave_value subsref (const std::string type,
-			const SLList<octave_value_list>& idx);
+			const std::list<octave_value_list>& idx);
 
   static octave_value numeric_conv (const octave_value_list& val,
 				    const std::string& type);
 
   octave_value subsasgn (const std::string type,
-			 const SLList<octave_value_list>& idx,
+			 const std::list<octave_value_list>& idx,
 			 const octave_value& rhs);
 
   int rows (void) const { return map.rows (); }

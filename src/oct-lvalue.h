@@ -28,8 +28,6 @@ class octave_value_list;
 
 #include <string>
 
-#include "SLList.h"
-
 #include "oct-obj.h"
 #include "pt-idx.h"
 #include "symtab.h"
@@ -78,7 +76,7 @@ public:
 
   void assign (octave_value::assign_op, const octave_value&);
 
-  void set_index (const std::string& t, const SLList<octave_value_list>& i);
+  void set_index (const std::string& t, const std::list<octave_value_list>& i);
 
   void clear_index (void) { type = std::string (); idx.clear (); }
 
@@ -93,7 +91,7 @@ private:
 
   std::string type;
 
-  SLList<octave_value_list> idx;
+  std::list<octave_value_list> idx;
 
   symbol_record::change_function chg_fcn;
 

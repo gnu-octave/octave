@@ -568,7 +568,7 @@ octave_value::maybe_mutate (void)
 
 octave_value_list
 octave_value::subsref (const std::string type,
-		       const SLList<octave_value_list>& idx, int nargout)
+		       const std::list<octave_value_list>& idx, int nargout)
 {
   if (is_constant ())
     return rep->subsref (type, idx);
@@ -578,16 +578,16 @@ octave_value::subsref (const std::string type,
 
 octave_value
 octave_value::next_subsref (const std::string type,
-			    const SLList<octave_value_list>& idx,
+			    const std::list<octave_value_list>& idx,
 			    int skip) 
 {
   assert (skip > 0);
 
-  if (idx.length () > skip)
+  if (idx.size () > skip)
     {
-      SLList<octave_value_list> new_idx (idx);
+      std::list<octave_value_list> new_idx (idx);
       for (int i = 0; i < skip; i++)
-	new_idx.remove_front ();
+	new_idx.erase (new_idx.begin ());
       return subsref (type.substr (skip), new_idx);
     }
   else
@@ -629,7 +629,7 @@ gripe_assign_failed_or_no_method (const std::string& on,
 
 octave_value
 octave_value::subsasgn (const std::string type,
-			const SLList<octave_value_list>& idx,
+			const std::list<octave_value_list>& idx,
 			const octave_value& rhs)
 {
   return rep->subsasgn (type, idx, rhs);
@@ -637,7 +637,7 @@ octave_value::subsasgn (const std::string type,
 
 octave_value
 octave_value::assign (assign_op op, const std::string type,
-		      const SLList<octave_value_list>& idx,
+		      const std::list<octave_value_list>& idx,
 		      const octave_value& rhs)
 {
   octave_value retval;
@@ -1080,7 +1080,7 @@ gripe_assign_conversion_failed (const std::string& tn1,
 
 octave_value
 octave_value::numeric_assign (const std::string type,
-			      const SLList<octave_value_list>& idx,
+			      const std::list<octave_value_list>& idx,
 			      const octave_value& rhs)
 {
   octave_value retval;
@@ -1433,7 +1433,7 @@ octave_value::do_non_const_unary_op (unary_op op, const octave_value_list& idx)
 
 octave_value
 octave_value::do_non_const_unary_op (unary_op op, const std::string type,
-				     const SLList<octave_value_list>& idx)
+				     const std::list<octave_value_list>& idx)
 {
   octave_value retval;
 

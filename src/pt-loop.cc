@@ -373,7 +373,9 @@ tree_simple_for_command::eval (void)
       {
 	Octave_map tmp_val (rhs.map_value ());
 
-	for (Pix p = tmp_val.first (); p != 0; tmp_val.next (p))
+	for (Octave_map::iterator p = tmp_val.begin ();
+	     p != tmp_val.end ();
+	     p++)
 	  {
 	    MAYBE_DO_BREAKPOINT;
 
@@ -476,21 +478,19 @@ tree_complex_for_command::eval (void)
       // is set to value and the second is set to the name of the
       // structure element.
 
-      Pix p = lhs->first ();
-      tree_expression *elt = lhs->operator () (p);
+      tree_argument_list::iterator p = lhs->begin ();
+      tree_expression *elt = *p++;
       octave_lvalue val_ref = elt->lvalue ();
-
-      lhs->next (p);
-      elt = lhs->operator () (p);
+      elt = *p;
       octave_lvalue key_ref = elt->lvalue ();
 
       Octave_map tmp_val (rhs.map_value ());
 
-      for (p = tmp_val.first (); p != 0; tmp_val.next (p))
+      for (Octave_map::iterator q = tmp_val.begin (); q != tmp_val.end (); p++)
 	{
-	  octave_value key = tmp_val.key (p);
+	  octave_value key = tmp_val.key (q);
 
-	  octave_value_list val_lst = tmp_val.contents (p);
+	  octave_value_list val_lst = tmp_val.contents (q);
 
 	  int n = tmp_val.array_length ();
 

@@ -1,3 +1,8 @@
+2002-12-06  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-alloc.h (DECLARE_OCTAVE_ALLOCATOR): Also declare and define
+	a placement operator new.
+
 2002-12-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Matrix.h: Include mx-ops.h too.

@@ -2786,7 +2786,7 @@ maybe_warn_missing_semi (tree_statement_list *t)
 {
   if (lexer_flags.defining_func && Vwarn_missing_semicolon)
     {
-      tree_statement *tmp = t->rear();
+      tree_statement *tmp = t->back();
 
       if (tmp->is_expression ())
 	warning ("missing semicolon near line %d, column %d in file `%s'",
@@ -2803,7 +2803,7 @@ set_stmt_print_flag (tree_statement_list *list, char sep,
     {
     case ';':
       {
-	tree_statement *tmp = list->rear ();
+	tree_statement *tmp = list->back ();
 	tmp->set_print_flag (0);
       }
       break;

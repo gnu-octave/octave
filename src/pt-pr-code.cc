@@ -41,19 +41,17 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 void
 tree_print_code::visit_argument_list (tree_argument_list& lst)
 {
-  Pix p = lst.first ();
+  tree_argument_list::iterator p = lst.begin ();
 
-  while (p)
+  while (p != lst.end ())
     {
-      tree_expression *elt = lst (p);
-
-      lst.next (p);
+      tree_expression *elt = *p++;
 
       if (elt)
 	{
 	  elt->accept (*this);
 
-	  if (p)
+	  if (p != lst.end ())
 	    os << ", ";
 	}
     }
@@ -164,19 +162,17 @@ tree_print_code::visit_decl_elt (tree_decl_elt& cmd)
 void
 tree_print_code::visit_decl_init_list (tree_decl_init_list& lst)
 {
-  Pix p = lst.first ();
+  tree_decl_init_list::iterator p = lst.begin ();
 
-  while (p)
+  while (p != lst.end ())
     {
-      tree_decl_elt *elt = lst (p);
-
-      lst.next (p);
+      tree_decl_elt *elt = *p++;
 
       if (elt)
 	{
 	  elt->accept (*this);
 
-	  if (p)
+	  if (p != lst.end ())
 	    os << ", ";
 	}
     }
@@ -436,13 +432,13 @@ tree_print_code::visit_if_command (tree_if_command& cmd)
 void
 tree_print_code::visit_if_command_list (tree_if_command_list& lst)
 {
-  Pix p = lst.first ();
+  tree_if_command_list::iterator p = lst.begin ();
 
   bool first_elt = true;
 
-  while (p)
+  while (p != lst.end ())
     {
-      tree_if_clause *elt = lst (p);
+      tree_if_clause *elt = *p++;
 
       if (elt)
 	{
@@ -462,7 +458,6 @@ tree_print_code::visit_if_command_list (tree_if_command_list& lst)
 	}
 
       first_elt = false;
-      lst.next (p);
     }
 }
 
@@ -484,14 +479,14 @@ tree_print_code::visit_index_expression (tree_index_expression& expr)
       expr_has_parens = e->is_postfix_indexed ();
     }
 
-  SLList<tree_argument_list *> arg_lists = expr.arg_lists ();
+  std::list<tree_argument_list *> arg_lists = expr.arg_lists ();
   std::string type_tags = expr.type_tags ();
-  SLList<string_vector> arg_names = expr.arg_names ();
+  std::list<string_vector> arg_names = expr.arg_names ();
 
   int n = type_tags.length ();
 
-  Pix arg_lists_p = arg_lists.first ();
-  Pix arg_names_p = arg_names.first ();
+  std::list<tree_argument_list *>::iterator p_arg_lists = arg_lists.begin ();
+  std::list<string_vector>::iterator p_arg_names = arg_names.begin ();
 
   for (int i = 0; i < n; i++)
     {
@@ -500,7 +495,7 @@ tree_print_code::visit_index_expression (tree_index_expression& expr)
 	case '(':
 	  {
 	    os << " (";
-	    tree_argument_list *l = arg_lists (arg_lists_p);
+	    tree_argument_list *l = *p_arg_lists;
 	    if (l)
 	      l->accept (*this);
 	    os << ")";
@@ -510,7 +505,7 @@ tree_print_code::visit_index_expression (tree_index_expression& expr)
 	case '{':
 	  {
 	    os << " {";
-	    tree_argument_list *l = arg_lists (arg_lists_p);
+	    tree_argument_list *l = *p_arg_lists;
 	    if (l)
 	      l->accept (*this);
 	    os << "}";
@@ -519,7 +514,7 @@ tree_print_code::visit_index_expression (tree_index_expression& expr)
 	    
 	case '.':
 	  {
-	    string_vector nm = arg_names (arg_names_p);
+	    string_vector nm = *p_arg_names;
 	    assert (nm.length () == 1);
 	    os << "." << nm(0);
 	  }
@@ -529,8 +524,8 @@ tree_print_code::visit_index_expression (tree_index_expression& expr)
 	  panic_impossible ();
 	}
 
-      arg_lists.next (arg_lists_p);
-      arg_names.next (arg_names_p);
+      p_arg_lists++;
+      p_arg_names++;
     }
 
   print_parens (expr, ")");
@@ -545,19 +540,17 @@ tree_print_code::visit_matrix (tree_matrix& lst)
 
   os << "[";
 
-  Pix p = lst.first ();
+  tree_matrix::iterator p = lst.begin ();
 
-  while (p)
+  while (p != lst.end ())
     {
-      tree_argument_list *elt = lst (p);
-
-      lst.next (p);
+      tree_argument_list *elt = *p++;
 
       if (elt)
 	{
 	  elt->accept (*this);
 
-	  if (p)
+	  if (p != lst.end ())
 	    os << "; ";
 	}
     }
@@ -576,19 +569,17 @@ tree_print_code::visit_cell (tree_cell& lst)
 
   os << "{";
 
-  Pix p = lst.first ();
+  tree_cell::iterator p = lst.begin ();
 
-  while (p)
+  while (p != lst.end ())
     {
-      tree_argument_list *elt = lst (p);
-
-      lst.next (p);
+      tree_argument_list *elt = *p++;
 
       if (elt)
 	{
 	  elt->accept (*this);
 
-	  if (p)
+	  if (p != lst.end ())
 	    os << "; ";
 	}
     }
@@ -653,19 +644,17 @@ tree_print_code::visit_constant (tree_constant& val)
 void
 tree_print_code::visit_parameter_list (tree_parameter_list& lst)
 {
-  Pix p = lst.first ();
+  tree_parameter_list::iterator p = lst.begin ();
 
-  while (p)
+  while (p != lst.end ())
     {
-      tree_identifier *elt = lst (p);
-
-      lst.next (p);
+      tree_identifier *elt = *p++;
 
       if (elt)
 	{
 	  elt->accept (*this);
 
-	  if (p)
+	  if (p != lst.end ())
 	    os << ", ";
 	}
     }
@@ -792,19 +781,17 @@ tree_print_code::visit_return_command (tree_return_command&)
 void
 tree_print_code::visit_return_list (tree_return_list& lst)
 {
-  Pix p = lst.first ();
+  tree_return_list::iterator p = lst.begin ();
 
-  while (p)
+  while (p != lst.end ())
     {
-      tree_index_expression *elt = lst (p);
-
-      lst.next (p);
+      tree_index_expression *elt = *p++;
 
       if (elt)
 	{
 	  elt->accept (*this);
 
-	  if (p)
+	  if (p != lst.end ())
 	    os << ", ";
 	}
     }
@@ -867,9 +854,9 @@ tree_print_code::visit_statement (tree_statement& stmt)
 void
 tree_print_code::visit_statement_list (tree_statement_list& lst)
 {
-  for (Pix p = lst.first (); p != 0; lst.next (p))
+  for (tree_statement_list::iterator p = lst.begin (); p != lst.end (); p++)
     {
-      tree_statement *elt = lst (p);
+      tree_statement *elt = *p;
 
       if (elt)
 	elt->accept (*this);
@@ -918,19 +905,17 @@ tree_print_code::visit_subplot_axes (subplot_axes& cmd)
 void
 tree_print_code::visit_subplot_list (subplot_list& lst)
 {
-  Pix p = lst.first ();
+  subplot_list::iterator p = lst.begin ();
 
-  while (p)
+  while (p != lst.end ())
     {
-      subplot *elt = lst (p);
-
-      lst.next (p);
+      subplot *elt = *p++;
 
       if (elt)
 	{
 	  elt->accept (*this);
 
-	  if (p)
+	  if (p != lst.end ())
 	    os << ",";
 	}
     }
@@ -1025,16 +1010,14 @@ tree_print_code::visit_switch_case (tree_switch_case& cs)
 void
 tree_print_code::visit_switch_case_list (tree_switch_case_list& lst)
 {
-  Pix p = lst.first ();
+  tree_switch_case_list::iterator p = lst.begin ();
 
-  while (p)
+  while (p != lst.end ())
     {
-      tree_switch_case *elt = lst (p);
+      tree_switch_case *elt = *p++;
 
       if (elt)
 	elt->accept (*this);
-
-      lst.next (p);
     }
 }
 
@@ -1347,17 +1330,15 @@ tree_print_code::print_comment_list (octave_comment_list *comment_list)
 {
   if (comment_list)
     {
-      Pix p = comment_list->first ();
+      octave_comment_list::iterator p = comment_list->begin ();
 
-      while (p)
+      while (p != comment_list->end ())
 	{
-	  octave_comment_elt elt = comment_list->operator () (p);
+	  octave_comment_elt elt = *p++;
 
 	  print_comment_elt (elt);
 
-	  comment_list->next (p);
-
-	  if (p)
+	  if (p != comment_list->end ())
 	    newline ();
 	}
     }

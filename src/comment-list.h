@@ -29,7 +29,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <string>
 
-#include <SLList.h>
+#include <base-list.h>
 
 extern std::string get_comment_text (void);
 
@@ -85,43 +85,16 @@ private:
 };
 
 class
-octave_comment_list
+octave_comment_list : public octave_base_list<octave_comment_elt>
 {
 public:
 
-  octave_comment_list (void) : lst () { }
-
-  ~octave_comment_list (void) { }
+  void append (const octave_comment_elt& elt)
+    { octave_base_list<octave_comment_elt>::append (elt); }
 
   void append (const std::string& s,
 	       octave_comment_elt::comment_type t = octave_comment_elt::unknown)
-    { lst.append (octave_comment_elt (s, t)); }
-
-  octave_comment_list (const octave_comment_list& ocb)
-    : lst (ocb.lst) { }
-
-  octave_comment_list& operator = (const octave_comment_list& ocb)
-    {
-      if (this != &ocb)
-	lst = ocb.lst;
-
-      return *this;
-    }
-
-  int length (void) const { return lst.length (); }
-
-  octave_comment_elt& operator () (Pix p) { return lst (p); }
-
-  const octave_comment_elt& operator () (Pix p) const { return lst (p); }
-
-  Pix first (void) const { return lst.first (); }
-
-  void next (Pix& p) const { return lst.next (p); }
-
-private:
-
-  // The list of comments.
-  SLList<octave_comment_elt> lst;
+    { append (octave_comment_elt (s, t)); }
 };
 
 class

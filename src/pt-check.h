@@ -75,6 +75,8 @@ public:
 
   void visit_matrix (tree_matrix&);
 
+  void visit_cell (tree_cell&);
+
   void visit_multi_assignment (tree_multi_assignment&);
 
   void visit_no_op_command (tree_no_op_command&);

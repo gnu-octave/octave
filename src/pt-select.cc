@@ -73,9 +73,9 @@ tree_if_clause::accept (tree_walker& tw)
 void
 tree_if_command_list::eval (void)
 {
-  for (Pix p = lst.first (); p != 0; lst.next (p))
+  for (iterator p = begin (); p != end (); p++)
     {
-      tree_if_clause *t = lst (p);
+      tree_if_clause *t = *p;
 
       if (t->eval () || error_state)
 	break;
@@ -230,9 +230,9 @@ tree_switch_case::accept (tree_walker& tw)
 void
 tree_switch_case_list::eval (const octave_value& val)
 {
-  for (Pix p = lst.first (); p != 0; lst.next (p))
+  for (iterator p = begin (); p != end (); p++)
     {
-      tree_switch_case *t = lst (p);
+      tree_switch_case *t = *p;
 
       if (t->eval (val) || error_state)
 	break;

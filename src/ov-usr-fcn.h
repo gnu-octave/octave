@@ -140,7 +140,7 @@ public:
     }
 
   octave_value_list subsref (const std::string type,
-			     const SLList<octave_value_list>& idx,
+			     const std::list<octave_value_list>& idx,
 			     int nargout);
 
   octave_value_list

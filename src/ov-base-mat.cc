@@ -40,7 +40,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 template <class MT>
 octave_value
 octave_base_matrix<MT>::subsref (const std::string type,
-				 const SLList<octave_value_list>& idx)
+				 const std::list<octave_value_list>& idx)
 {
   octave_value retval;
 
@@ -68,7 +68,7 @@ octave_base_matrix<MT>::subsref (const std::string type,
 template <class MT>
 octave_value
 octave_base_matrix<MT>::subsasgn (const std::string type,
-				  const SLList<octave_value_list>& idx,
+				  const std::list<octave_value_list>& idx,
 				  const octave_value& rhs)
 {
   octave_value retval;
@@ -144,11 +144,6 @@ octave_base_matrix<MT>::do_index_op (const octave_value_list& idx,
   return retval;
 }
 
-#if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
-template <class MT>
-extern void assign (MT&, const MT&);
-#endif
-
 template <class MT>
 void
 octave_base_matrix<MT>::assign (const octave_value_list& idx, const MT& rhs)
@@ -165,7 +160,7 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx, const MT& rhs)
 	matrix.set_index (i);
 	matrix.set_index (j);
 
-	::assign (matrix, rhs);
+	::assign (matrix, rhs, MT::resize_fill_value ());
       }
       break;
 
@@ -175,7 +170,7 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx, const MT& rhs)
 
 	matrix.set_index (i);
 
-	::assign (matrix, rhs);
+	::assign (matrix, rhs, MT::resize_fill_value ());
       }
       break;
 

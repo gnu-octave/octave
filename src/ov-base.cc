@@ -54,7 +54,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_base_value, "<unknown type>");
 
 octave_value
 octave_base_value::subsref (const std::string,
-			    const SLList<octave_value_list>&)
+			    const std::list<octave_value_list>&)
 {
   std::string nm = type_name ();
   error ("can't perform indexing operations for %s type", nm.c_str ());
@@ -63,7 +63,7 @@ octave_base_value::subsref (const std::string,
 
 octave_value_list
 octave_base_value::subsref (const std::string,
-			    const SLList<octave_value_list>&, int)
+			    const std::list<octave_value_list>&, int)
 {
   std::string nm = type_name ();
   error ("can't perform indexing operations for %s type", nm.c_str ());
@@ -96,7 +96,7 @@ octave_base_value::index_vector (void) const
 
 octave_value
 octave_base_value::subsasgn (const std::string type,
-			     const SLList<octave_value_list>& idx,
+			     const std::list<octave_value_list>& idx,
 			     const octave_value& rhs)
 {
   octave_value retval;

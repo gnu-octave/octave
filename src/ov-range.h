@@ -40,7 +40,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-alloc.h"
 #include "str-vec.h"
 
-#include "SLList.h"
 #include "error.h"
 #include "ov-base.h"
 #include "ov-typeinfo.h"
@@ -87,7 +86,7 @@ public:
   octave_value *try_narrowing_conversion (void);
 
   octave_value subsref (const std::string type,
-			const SLList<octave_value_list>& idx);
+			const std::list<octave_value_list>& idx);
 
   octave_value do_index_op (const octave_value_list& idx, int resize_ok);
 

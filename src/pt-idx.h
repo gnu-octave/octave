@@ -27,6 +27,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #pragma interface
 #endif
 
+#include <list>
+
 class tree_argument_list;
 
 class tree_walker;
@@ -36,7 +38,6 @@ class octave_value;
 class octave_value_list;
 class octave_lvalue;
 
-#include "SLList.h"
 #include "str-vec.h"
 
 #include "pt-exp.h"
@@ -71,11 +72,11 @@ public:
 
   tree_expression *expression (void) { return expr; }
 
-  SLList<tree_argument_list *> arg_lists (void) { return args; }
+  std::list<tree_argument_list *> arg_lists (void) { return args; }
 
   std::string type_tags (void) { return type; }
 
-  SLList<string_vector> arg_names (void) { return arg_nm; }
+  std::list<string_vector> arg_names (void) { return arg_nm; }
 
   bool lvalue_ok (void) const { return expr->lvalue_ok (); }
 
@@ -97,21 +98,24 @@ private:
   tree_expression *expr;
 
   // The indices (only valid if type == paren || type == brace).
-  SLList<tree_argument_list *> args;
+  std::list<tree_argument_list *> args;
 
   // The type of this index expression.
   std::string type;
 
   // The names of the arguments.  Used for constant struct element
   // references.
-  SLList<string_vector> arg_nm;
+  std::list<string_vector> arg_nm;
 
   // The list of dynamic field names, if any.
-  SLList<tree_expression *> dyn_field;
+  std::list<tree_expression *> dyn_field;
 
   Octave_map make_arg_struct (void) const;
 
-  std::string get_struct_index (Pix p_arg_nm, Pix p_dyn_field) const;
+  std::string
+  get_struct_index
+    (std::list<string_vector>::const_iterator p_arg_nm,
+     std::list<tree_expression *>::const_iterator p_dyn_field) const; 
 
   // No copying!
 

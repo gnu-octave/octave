@@ -230,9 +230,11 @@ tree_multi_assignment::rvalue (int)
 
 	  retval.resize (n, octave_value ());
 
-	  for (Pix p = lhs->first (); p != 0; lhs->next (p))
+	  for (tree_argument_list::iterator p = lhs->begin ();
+	       p != lhs->end ();
+	       p++)
 	    {
-	      tree_expression *lhs_elt = lhs->operator () (p);
+	      tree_expression *lhs_elt = *p;
 
 	      if (lhs_elt)
 		{

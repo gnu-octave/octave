@@ -31,14 +31,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <iostream>
 #include <string>
+#include <list>
 
 #include "Range.h"
 #include "idx-vector.h"
 #include "mx-base.h"
 #include "oct-alloc.h"
 #include "str-vec.h"
-
-#include "SLList.h"
 
 class Cell;
 class Octave_map;
@@ -244,24 +243,24 @@ public:
     { return rep->try_narrowing_conversion (); }
 
   virtual octave_value subsref (const std::string type,
-				const SLList<octave_value_list>& idx)
+				const std::list<octave_value_list>& idx)
     { return rep->subsref (type, idx); }
 
   octave_value subsref (const std::string type, const octave_value_list& idx)
     {
-      SLList<octave_value_list> i;
+      std::list<octave_value_list> i;
 
-      i.append (idx);
+      i.push_back (idx);
 
       return rep->subsref (type, i);
     }
 
   virtual octave_value_list subsref (const std::string type,
-				     const SLList<octave_value_list>& idx,
+				     const std::list<octave_value_list>& idx,
     				     int nargout);
 
   octave_value next_subsref (const std::string type, const
-			     SLList<octave_value_list>& idx,
+			     std::list<octave_value_list>& idx,
 			     int skip = 1);
 
   virtual octave_value do_index_op (const octave_value_list& idx,
@@ -275,11 +274,11 @@ public:
   do_multi_index_op (int nargout, const octave_value_list& idx);
 
   virtual octave_value subsasgn (const std::string type,
-				 const SLList<octave_value_list>& idx,
+				 const std::list<octave_value_list>& idx,
 				 const octave_value& rhs);
 
   octave_value assign (assign_op op, const std::string type,
-		       const SLList<octave_value_list>& idx,
+		       const std::list<octave_value_list>& idx,
 		       const octave_value& rhs);
 
   const octave_value& assign (assign_op, const octave_value& rhs);
@@ -529,7 +528,7 @@ public:
   void do_non_const_unary_op (unary_op op, const octave_value_list& idx);
 
   octave_value do_non_const_unary_op (unary_op op, const std::string type,
-				      const SLList<octave_value_list>& idx);
+				      const std::list<octave_value_list>& idx);
 
   friend octave_value do_binary_op (binary_op op,
 				    const octave_value& a,
@@ -547,7 +546,7 @@ protected:
   // This should only be called for derived types.
 
   octave_value numeric_assign (const std::string type,
-			       const SLList<octave_value_list>& idx,
+			       const std::list<octave_value_list>& idx,
 			       const octave_value& rhs);
 
   void reset_indent_level (void) const

@@ -28,8 +28,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
-#include <SLList.h>
-
 #include "quit.h"
 
 #include "defun.h"
@@ -159,9 +157,9 @@ tree_statement_list::eval (bool silent, int nargout)
   if (error_state)
     return retval;
 
-  for (Pix p = lst.first (); p != 0; lst.next (p))
+  for (iterator p = begin (); p != end (); p++)
     {
-      tree_statement *elt = lst (p);
+      tree_statement *elt = *p;
 
       if (elt)
 	{

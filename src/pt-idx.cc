@@ -42,11 +42,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "variables.h"
 
-#include "SLList.cc"
-
-template class SLNode<string_vector>;
-template class SLList<string_vector>;
-
 // Index expressions.
 
 tree_index_expression::tree_index_expression (tree_expression *e,
@@ -79,28 +74,28 @@ tree_index_expression::tree_index_expression (tree_expression *e,
 void
 tree_index_expression::append (tree_argument_list *lst, char t)
 {
-  args.append (lst);
+  args.push_back (lst);
   type.append (1, t);
-  arg_nm.append (lst ? lst->get_arg_names () : string_vector ());
-  dyn_field.append (static_cast<tree_expression *> (0));
+  arg_nm.push_back (lst ? lst->get_arg_names () : string_vector ());
+  dyn_field.push_back (static_cast<tree_expression *> (0));
 }
 
 void
 tree_index_expression::append (const std::string& n)
 {
-  args.append (static_cast<tree_argument_list *> (0));
+  args.push_back (static_cast<tree_argument_list *> (0));
   type.append (".");
-  arg_nm.append (n);
-  dyn_field.append (static_cast<tree_expression *> (0));
+  arg_nm.push_back (n);
+  dyn_field.push_back (static_cast<tree_expression *> (0));
 }
 
 void
 tree_index_expression::append (tree_expression *df)
 {
-  args.append (static_cast<tree_argument_list *> (0));
+  args.push_back (static_cast<tree_argument_list *> (0));
   type.append (".");
-  arg_nm.append ("");
-  dyn_field.append (df);
+  arg_nm.push_back ("");
+  dyn_field.push_back (df);
 }
 
 tree_index_expression::~tree_index_expression (void)
@@ -109,8 +104,9 @@ tree_index_expression::~tree_index_expression (void)
 
   while (! args.empty ())
     {
-      tree_argument_list *t = args.remove_front ();
-      delete t;
+      std::list<tree_argument_list *>::iterator p = args.begin ();
+      delete *p;
+      args.erase (p);
     }
 }
 
@@ -171,13 +167,15 @@ make_value_list (tree_argument_list *args, const string_vector& arg_nm)
 }
 
 std::string
-tree_index_expression::get_struct_index (Pix p_arg_nm, Pix p_dyn_field) const
+tree_index_expression::get_struct_index
+  (std::list<string_vector>::const_iterator p_arg_nm,
+   std::list<tree_expression *>::const_iterator p_dyn_field) const
 {
-  std::string fn = arg_nm(p_arg_nm)(0);
+  std::string fn = (*p_arg_nm)(0);
 
   if (fn.empty ())
     {
-      tree_expression *df = dyn_field (p_dyn_field);
+      tree_expression *df = *p_dyn_field;
 
       if (df)
 	{
@@ -201,14 +199,14 @@ tree_index_expression::get_struct_index (Pix p_arg_nm, Pix p_dyn_field) const
 Octave_map
 tree_index_expression::make_arg_struct (void) const
 {
-  int n = args.length ();
+  int n = args.size ();
 
   octave_value_list subs_list (n, octave_value ());
   octave_value_list type_list (n, octave_value ());
 
-  Pix p_args = args.first ();
-  Pix p_arg_nm = arg_nm.first ();
-  Pix p_dyn_field = dyn_field.first ();
+  std::list<tree_argument_list *>::const_iterator p_args = args.begin ();
+  std::list<string_vector>::const_iterator p_arg_nm = arg_nm.begin ();
+  std::list<tree_expression *>::const_iterator p_dyn_field = dyn_field.begin ();
 
   Octave_map m;
 
@@ -217,11 +215,11 @@ tree_index_expression::make_arg_struct (void) const
       switch (type[i])
 	{
 	case '(':
-	  subs_list(i) = make_subs_cell (args(p_args), arg_nm(p_arg_nm));
+	  subs_list(i) = make_subs_cell (*p_args, *p_arg_nm);
 	  break;
 
 	case '{':
-	  subs_list(i) = make_subs_cell (args(p_args), arg_nm(p_arg_nm));
+	  subs_list(i) = make_subs_cell (*p_args, *p_arg_nm);
 	  break;
 
 	case '.':
@@ -240,9 +238,9 @@ tree_index_expression::make_arg_struct (void) const
       if (error_state)
 	return m;
 
-      args.next (p_args);
-      arg_nm.next (p_arg_nm);
-      dyn_field.next (p_dyn_field);
+      p_args++;
+      p_arg_nm++;
+      p_dyn_field++;
     }
 
   m ["subs"] = subs_list;
@@ -263,29 +261,29 @@ tree_index_expression::rvalue (int nargout)
 
   if (! error_state)
     {
-      SLList<octave_value_list> idx;
+      std::list<octave_value_list> idx;
 
-      int n = args.length ();
+      int n = args.size ();
 
-      Pix p_args = args.first ();
-      Pix p_arg_nm = arg_nm.first ();
-      Pix p_dyn_field = dyn_field.first ();
+      std::list<tree_argument_list *>::iterator p_args = args.begin ();
+      std::list<string_vector>::iterator p_arg_nm = arg_nm.begin ();
+      std::list<tree_expression *>::iterator p_dyn_field = dyn_field.begin ();
 
       for (int i = 0; i < n; i++)
 	{
 	  switch (type[i])
 	    {
 	    case '(':
-	      idx.append (make_value_list (args(p_args), arg_nm(p_arg_nm)));
+	      idx.push_back (make_value_list (*p_args, *p_arg_nm));
 	      break;
 
 	    case '{':
-	      idx.append (make_value_list (args(p_args), arg_nm(p_arg_nm)));
+	      idx.push_back (make_value_list (*p_args, *p_arg_nm));
 	      break;
 
 	    case '.':
 	      {
-		idx.append (get_struct_index (p_arg_nm, p_dyn_field));
+		idx.push_back (get_struct_index (p_arg_nm, p_dyn_field));
 
 		if (error_state)
 		  eval_error ();
@@ -299,9 +297,9 @@ tree_index_expression::rvalue (int nargout)
 	  if (error_state)
 	    break;
 
-	  args.next (p_args);
-	  arg_nm.next (p_arg_nm);
-	  dyn_field.next (p_dyn_field);
+	  p_args++;
+	  p_arg_nm++;
+	  p_dyn_field++;
 	}
 
       if (! error_state)
@@ -329,29 +327,29 @@ tree_index_expression::lvalue (void)
 {
   octave_lvalue retval;
 
-  SLList<octave_value_list> idx;
+  std::list<octave_value_list> idx;
 
-  int n = args.length ();
+  int n = args.size ();
 
-  Pix p_args = args.first ();
-  Pix p_arg_nm = arg_nm.first ();
-  Pix p_dyn_field = dyn_field.first ();
+  std::list<tree_argument_list *>::iterator p_args = args.begin ();
+  std::list<string_vector>::iterator p_arg_nm = arg_nm.begin ();
+  std::list<tree_expression *>::iterator p_dyn_field = dyn_field.begin ();
 
   for (int i = 0; i < n; i++)
     {
       switch (type[i])
 	{
 	case '(':
-	  idx.append (make_value_list (args(p_args), arg_nm(p_arg_nm)));
+	  idx.push_back (make_value_list (*p_args, *p_arg_nm));
 	  break;
 
 	case '{':
-	  idx.append (make_value_list (args(p_args), arg_nm(p_arg_nm)));
+	  idx.push_back (make_value_list (*p_args, *p_arg_nm));
 	  break;
 
 	case '.':
 	  {
-	    idx.append (get_struct_index (p_arg_nm, p_dyn_field));
+	    idx.push_back (get_struct_index (p_arg_nm, p_dyn_field));
 
 	    if (error_state)
 	      eval_error ();
@@ -365,9 +363,9 @@ tree_index_expression::lvalue (void)
       if (error_state)
 	break;
 
-      args.next (p_args);
-      arg_nm.next (p_arg_nm);
-      dyn_field.next (p_dyn_field);
+      p_args++;
+      p_arg_nm++;
+      p_dyn_field++;
     }
 
   if (! error_state)

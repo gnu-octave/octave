@@ -37,9 +37,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 octave_value_list
 Octave_map::operator [] (const std::string& key) const
 {
-  Pix p = map.seek (key);
+  const_iterator p = seek (key);
 
-  return p ? map.contents (p) : octave_value_list ();
+  return p != end () ? p->second : octave_value_list ();
 }
 
 string_vector
@@ -50,7 +50,7 @@ Octave_map::keys (void) const
   string_vector names (len);
 
   int i = 0;
-  for (Pix p = first (); p != 0; next (p))
+  for (const_iterator p = begin (); p != end (); p++)
     names[i++] = key (p);
 
   return names;
@@ -61,7 +61,7 @@ Octave_map::array_length (void) const
 {
   if (array_len == 0 && length () != 0)
     {
-      Pix p = first ();
+      const_iterator p = begin ();
       array_len = contents(p).length ();
     }
 
@@ -142,7 +142,7 @@ Octave_map::assign (const idx_vector& idx, const std::string& key,
 	}
       else if (rhs_len > len)
 	{
-	  for (Pix p = first (); p != 0; next (p))
+	  for (iterator p = begin (); p != end (); p++)
 	    contents(p).resize (rhs_len, fill_value);
 
 	  array_len = rhs_len;
@@ -157,11 +157,11 @@ Octave_map::assign (const idx_vector& idx, const std::string& key,
 Octave_map&
 Octave_map::assign (const std::string& key, const octave_value_list& rhs)
 {
-  if (map.empty ())
+  if (empty ())
     map[key] = rhs;
   else
     {
-      octave_value_list tmp = map.contents (map.first ());
+      octave_value_list tmp = contents (begin ());
 
       if (tmp.length () == rhs.length ())
 	map[key] = rhs;
@@ -177,7 +177,7 @@ Octave_map::index (idx_vector& idx)
 {
   Octave_map retval;
 
-  for (Pix p = first (); p != 0; next (p))
+  for (iterator p = begin (); p != end (); p++)
     {
       octave_value_list tmp = contents(p).index (idx);
 

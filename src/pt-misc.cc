@@ -28,8 +28,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
-#include <SLList.h>
-
 #include "error.h"
 #include "ov.h"
 #include "oct-lvalue.h"
@@ -42,19 +40,20 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 tree_parameter_list::~tree_parameter_list (void)
 {
-  while (! lst.empty ())
+  while (! empty ())
     {
-      tree_identifier *t = lst.remove_front ();
-      delete t;
+      iterator p = begin ();
+      delete *p;
+      erase (p);
     }
 }
 
 void
 tree_parameter_list::mark_as_formal_parameters (void)
 {
-  for (Pix p = lst.first (); p != 0; lst.next (p))
+  for (iterator p = begin (); p != end (); p++)
     {
-      tree_identifier *elt = lst (p);
+      tree_identifier *elt = *p;
       elt->mark_as_formal_parameter ();
     }
 }
@@ -62,9 +61,9 @@ tree_parameter_list::mark_as_formal_parameters (void)
 void
 tree_parameter_list::initialize_undefined_elements (octave_value& val)
 {
-  for (Pix p = lst.first (); p != 0; lst.next (p))
+  for (iterator p = begin (); p != end (); p++)
     {
-      tree_identifier *elt = lst (p);
+      tree_identifier *elt = *p;
 
       if (! elt->is_defined ())
 	{
@@ -85,11 +84,11 @@ tree_parameter_list::define_from_arg_vector (const octave_value_list& args)
 
   int expected_nargin = length ();
 
-  Pix p = lst.first ();
+  iterator p = begin ();
 
   for (int i = 0; i < expected_nargin; i++)
     {
-      tree_identifier *elt = lst (p);
+      tree_identifier *elt = *p++;
 
       octave_lvalue ref = elt->lvalue ();
 
@@ -105,27 +104,23 @@ tree_parameter_list::define_from_arg_vector (const octave_value_list& args)
 	}
       else
 	ref.assign (octave_value::op_asn_eq, octave_value ());
-
-      lst.next (p);
     }
 }
 
 void
-tree_parameter_list::clear (void)
+tree_parameter_list::undefine (void)
 {
   int len = length ();
 
-  Pix p = lst.first ();
+  iterator p = begin ();
 
   for (int i = 0; i < len; i++)
     {
-      tree_identifier *elt = lst (p);
+      tree_identifier *elt = *p++;
 
       octave_lvalue ref = elt->lvalue ();
 
       ref.assign (octave_value::op_asn_eq, octave_value ());
-
-      lst.next (p);
     }
 }
 
@@ -142,22 +137,21 @@ tree_parameter_list::convert_to_const_vector (tree_va_return_list *vr_list)
 
   int i = 0;
 
-  for (Pix p = lst.first (); p != 0; lst.next (p))
+  for (iterator p = begin (); p != end (); p++)
     {
-      tree_identifier *elt = this->operator () (p);
+      tree_identifier *elt = *p;
 
       if (elt->is_defined ())
-	retval(i) = elt->rvalue ();
-
-      i++;
+	retval(i++) = elt->rvalue ();
     }
 
   if (vr_list)
     {
-      for (Pix p = vr_list->first (); p != 0; vr_list->next (p))
+      for (tree_va_return_list::iterator p = vr_list->begin ();
+	   p != vr_list->end ();
+	   p++)
 	{
-	  retval(i) = vr_list->operator () (p);
-	  i++;
+	  retval(i++) = *p;
 	}
     }
 
@@ -169,9 +163,9 @@ tree_parameter_list::is_defined (void)
 {
   bool status = true;
 
-  for (Pix p = lst.first (); p != 0; lst.next (p))
+  for (iterator p = begin (); p != end (); p++)
     {
-      tree_identifier *elt = lst (p);
+      tree_identifier *elt = *p;
 
       if (! elt->is_defined ())
 	{
@@ -193,10 +187,11 @@ tree_parameter_list::accept (tree_walker& tw)
 
 tree_return_list::~tree_return_list (void)
 {
-  while (! lst.empty ())
+  while (! empty ())
     {
-      tree_index_expression *t = lst.remove_front ();
-      delete t;
+      iterator p = begin ();
+      delete *p;
+      erase (p);
     }
 }
 

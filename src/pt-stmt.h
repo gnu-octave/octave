@@ -27,8 +27,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #pragma interface
 #endif
 
-#include <SLList.h>
-
 class octave_value_list;
 
 class tree_command;
@@ -36,6 +34,7 @@ class tree_expression;
 
 class tree_walker;
 
+#include "base-list.h"
 #include "comment-list.h"
 
 // A statement is either a command to execute or an expression to
@@ -105,41 +104,25 @@ private:
 // A list of statements to evaluate.
 
 class
-tree_statement_list
+tree_statement_list : public octave_base_list<tree_statement *>
 {
 public:
 
   tree_statement_list (void)
-    : lst (), function_body (false) { }
+    : function_body (false) { }
 
   tree_statement_list (tree_statement *s)
-    : lst (), function_body (false) { lst.append (s); }
+    : function_body (false) { append (s); }
 
   ~tree_statement_list (void)
     {
-      while (! lst.empty ())
+      while (! empty ())
 	{
-	  tree_statement *t = lst.remove_front ();
-	  delete t;
+	  iterator p = begin ();
+	  delete *p;
+	  erase (p);
 	}
     }
-
-  void append (tree_statement *&s) { lst.append (s); }
-  void append (tree_statement * const &s) { lst.append (s); }
-
-  tree_statement *&operator () (Pix p) { return lst (p); }
-
-  tree_statement * const &operator () (Pix p) const { return lst (p); }
-
-  Pix first (void) const { return lst.first (); }
-
-  void next (Pix& p) const { return lst.next (p); }
-
-  tree_statement *front (void) { return lst.front (); }
-  tree_statement *rear (void) { return lst.rear (); }
-
-  const tree_statement *front (void) const { return lst.front (); }
-  const tree_statement *rear (void) const { return lst.rear (); }
 
   void mark_as_function_body (void) { function_body = true; }
 
@@ -154,9 +137,6 @@ public:
   void accept (tree_walker& tw);
 
 private:
-
-  // List of statements to evaluate.
-  SLList<tree_statement *> lst;
 
   // Does this list of statements make up the body of a function?
   bool function_body;

@@ -66,12 +66,12 @@ public:
 
 #if 0
   octave_value subsref (const std::string type,
-			const SLList<octave_value_list>& idx);
+			const std::list<octave_value_list>& idx);
 
   octave_value do_index_op (const octave_value_list& idx, int resize_ok);
 
   octave_value subsasgn (const std::string type,
-			 const SLList<octave_value_list>& idx,
+			 const std::list<octave_value_list>& idx,
 			 const octave_value& rhs);
 
   void assign (const octave_value_list& idx, const octave_value& rhs);

@@ -35,39 +35,26 @@ class tree_argument_list;
 
 class tree_walker;
 
-#include <SLList.h>
-
+#include "base-list.h"
 #include "pt-exp.h"
 
 // General matrices.  This allows us to construct matrices from
 // other matrices, variables, and functions.
 
 class
-tree_matrix : public tree_expression
+tree_matrix : public tree_expression,
+	      public octave_base_list<tree_argument_list *>
 {
 public:
 
   tree_matrix (tree_argument_list *row = 0, int line = -1, int column = -1)
-    : tree_expression (line, column), lst ()
+    : tree_expression (line, column)
   {
     if (row)
-      lst.append (row);
+      append (row);
   }
 
   ~tree_matrix (void);
-
-  int length (void) const { return lst.length (); }
-
-  void append (tree_argument_list *&s) { lst.append (s); }
-  void append (tree_argument_list * const &s) { lst.append (s); }
-
-  tree_argument_list *&operator () (Pix p) { return lst (p); }
-
-  tree_argument_list * const &operator () (Pix p) const { return lst (p); }
-
-  Pix first (void) const { return lst.first (); }
-
-  void next (Pix& p) const { return lst.next (p); }
 
   bool all_elements_are_constant (void) const;
 
@@ -80,9 +67,6 @@ public:
   void accept (tree_walker& tw);
 
 private:
-
-  // The list matrix elements for this row.
-  SLList<tree_argument_list *> lst;
 
   // No copying!
 

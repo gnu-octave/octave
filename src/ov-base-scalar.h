@@ -60,10 +60,10 @@ public:
   ~octave_base_scalar (void) { }
 
   octave_value subsref (const std::string type,
-			const SLList<octave_value_list>& idx);
+			const std::list<octave_value_list>& idx);
 
   octave_value subsasgn (const std::string type,
-			 const SLList<octave_value_list>& idx,
+			 const std::list<octave_value_list>& idx,
 			 const octave_value& rhs);
 
   int rows (void) const { return 1; }

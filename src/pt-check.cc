@@ -36,13 +36,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 void
 tree_checker::visit_argument_list (tree_argument_list& lst)
 {
-  Pix p = lst.first ();
+  tree_argument_list::iterator p = lst.begin ();
 
-  while (p)
+  while (p != lst.end ())
     {
-      tree_expression *elt = lst (p);
-
-      lst.next (p);
+      tree_expression *elt = *p++;
 
       if (elt)
 	{
@@ -121,13 +119,11 @@ tree_checker::visit_decl_elt (tree_decl_elt& cmd)
 void
 tree_checker::visit_decl_init_list (tree_decl_init_list& lst)
 {
-  Pix p = lst.first ();
+  tree_decl_init_list::iterator p = lst.begin ();
 
-  while (p)
+  while (p != lst.end ())
     {
-      tree_decl_elt *elt = lst (p);
-
-      lst.next (p);
+      tree_decl_elt *elt = *p++;
 
       if (elt)
 	elt->accept (*this);
@@ -227,16 +223,14 @@ tree_checker::visit_if_command (tree_if_command& cmd)
 void
 tree_checker::visit_if_command_list (tree_if_command_list& lst)
 {
-  Pix p = lst.first ();
+  tree_if_command_list::iterator p = lst.begin ();
 
-  while (p)
+  while (p != lst.end ())
     {
-      tree_if_clause *elt = lst (p);
+      tree_if_clause *elt = *p++;
 
       if (elt)
 	elt->accept (*this);
-
-      lst.next (p);
     }
 }
 
@@ -248,31 +242,41 @@ tree_checker::visit_index_expression (tree_index_expression& expr)
   if (e)
     e->accept (*this);
 
-  SLList<tree_argument_list *> lst = expr.arg_lists ();
+  std::list<tree_argument_list *> lst = expr.arg_lists ();
 
-  Pix p = lst.first ();
+  std::list<tree_argument_list *>::iterator p = lst.begin ();
 
-  while (p)
+  while (p != lst.end ())
     {
-      tree_argument_list *elt = lst (p);
+      tree_argument_list *elt = *p++;
 
       if (elt)
 	elt->accept (*this);
-
-      lst.next (p);
     }
 }
 
 void
 tree_checker::visit_matrix (tree_matrix& lst)
 {
-  Pix p = lst.first ();
+  tree_matrix::iterator p = lst.begin ();
 
-  while (p)
+  while (p != lst.end ())
     {
-      tree_argument_list *elt = lst (p);
+      tree_argument_list *elt = *p++;
 
-      lst.next (p);
+      if (elt)
+	elt->accept (*this);
+    }
+}
+
+void
+tree_checker::visit_cell (tree_cell& lst)
+{
+  tree_matrix::iterator p = lst.begin ();
+
+  while (p != lst.end ())
+    {
+      tree_argument_list *elt = *p++;
 
       if (elt)
 	elt->accept (*this);
@@ -312,13 +316,11 @@ tree_checker::visit_constant (tree_constant& /* val */)
 void
 tree_checker::visit_parameter_list (tree_parameter_list& lst)
 {
-  Pix p = lst.first ();
+  tree_parameter_list::iterator p = lst.begin ();
 
-  while (p)
+  while (p != lst.end ())
     {
-      tree_identifier *elt = lst (p);
-
-      lst.next (p);
+      tree_identifier *elt = *p++;
 
       if (elt)
 	elt->accept (*this);
@@ -398,13 +400,11 @@ tree_checker::visit_return_command (tree_return_command&)
 void
 tree_checker::visit_return_list (tree_return_list& lst)
 {
-  Pix p = lst.first ();
+  tree_return_list::iterator p = lst.begin ();
 
-  while (p)
+  while (p != lst.end ())
     {
-      tree_index_expression *elt = lst (p);
-
-      lst.next (p);
+      tree_index_expression *elt = *p++;
 
       if (elt)
 	elt->accept (*this);
@@ -447,9 +447,9 @@ tree_checker::visit_statement (tree_statement& stmt)
 void
 tree_checker::visit_statement_list (tree_statement_list& lst)
 {
-  for (Pix p = lst.first (); p != 0; lst.next (p))
+  for (tree_statement_list::iterator p = lst.begin (); p != lst.end (); p++)
     {
-      tree_statement *elt = lst (p);
+      tree_statement *elt = *p;
 
       if (elt)
 	elt->accept (*this);
@@ -483,13 +483,11 @@ tree_checker::visit_subplot (subplot& cmd)
 void
 tree_checker::visit_subplot_list (subplot_list& lst)
 {
-  Pix p = lst.first ();
+  subplot_list::iterator p = lst.begin ();
 
-  while (p)
+  while (p != lst.end ())
     {
-      subplot *elt = lst (p);
-
-      lst.next (p);
+      subplot *elt = *p++;
 
       if (elt)
 	elt->accept (*this);
@@ -551,16 +549,14 @@ tree_checker::visit_switch_case (tree_switch_case& cs)
 void
 tree_checker::visit_switch_case_list (tree_switch_case_list& lst)
 {
-  Pix p = lst.first ();
+  tree_switch_case_list::iterator p = lst.begin ();
 
-  while (p)
+  while (p != lst.end ())
     {
-      tree_switch_case *elt = lst (p);
+      tree_switch_case *elt = *p++;
 
       if (elt)
 	elt->accept (*this);
-
-      lst.next (p);
     }
 }
 

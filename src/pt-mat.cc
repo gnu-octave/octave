@@ -66,17 +66,17 @@ tm_row_const
 private:
 
   class
-  tm_row_const_rep : public SLList<octave_value>
+  tm_row_const_rep : public octave_base_list<octave_value>
   {
   public:
 
     tm_row_const_rep (void)
-      : SLList<octave_value> (), count (1), nr (0), nc (0),
+      : count (1), nr (0), nc (0),
 	all_str (false), some_str (false), is_cmplx (false),
 	all_mt (true), ok (false) { }
 
     tm_row_const_rep (const tree_argument_list& row)
-      : SLList<octave_value> (), count (1), nr (0), nc (0),
+      : count (1), nr (0), nc (0),
 	all_str (false), some_str (false), is_cmplx (false),
 	all_mt (true), ok (false)
     { init (row); }
@@ -110,6 +110,9 @@ private:
   };
 
 public:
+
+  typedef tm_row_const_rep::iterator iterator;
+  typedef tm_row_const_rep::const_iterator const_iterator;
 
   tm_row_const (void)
     : rep (0) { }
@@ -154,15 +157,13 @@ public:
   bool complex_p (void) const { return rep->is_cmplx; }
   bool all_empty_p (void) const { return rep->all_mt; }
 
-  octave_value& operator () (Pix p) { return rep->operator () (p); }
-
-  const octave_value& operator () (Pix p) const
-    { return rep->operator () (p); }
-
-  Pix first (void) const { return rep->first (); }
-  void next (Pix& p) const { rep->next (p); }
-  
   operator bool () const { return (rep && rep->ok); }
+
+  iterator begin (void) { return rep->begin (); }
+  const_iterator begin (void) const { return rep->begin (); }
+
+  iterator end (void) { return rep->end (); }
+  const_iterator end (void) const { return rep->end (); }
 
 private:
 
@@ -176,9 +177,11 @@ tm_row_const::tm_row_const_rep::init (const tree_argument_list& row)
 
   bool first_elem = true;
 
-  for (Pix p = row.first (); p != 0; row.next (p))
+  for (tree_argument_list::const_iterator p = row.begin ();
+       p != row.end ();
+       p++)
     {
-      tree_expression *elt = row (p);
+      tree_expression *elt = *p;
 
       octave_value tmp = elt->rvalue ();
 
@@ -267,19 +270,13 @@ tm_row_const::tm_row_const_rep::eval_warning (const char *msg, int l,
     ::warning ("%s near line %d, column %d", msg, l, c);
 }
 
-#include "SLList.h"
-#include "SLList.cc"
-
-template class SLNode<tm_row_const>;
-template class SLList<tm_row_const>;
-
 class
-tm_const : public SLList<tm_row_const>
+tm_const : public octave_base_list<tm_row_const>
 {
 public:
 
   tm_const (const tree_matrix& tm)
-    : SLList<tm_row_const> (), nr (0), nc (0),
+    : nr (0), nc (0),
       all_str (false), some_str (false), is_cmplx (false),
       all_mt (true), ok (false)
       { init (tm); }
@@ -329,9 +326,9 @@ tm_const::init (const tree_matrix& tm)
   // numeric matrix -- collections of strings can have elements of
   // different lengths.
 
-  for (Pix p = tm.first (); p != 0; tm.next (p))
+  for (tree_matrix::const_iterator p = tm.begin (); p != tm.end (); p++)
     {
-      tree_argument_list *elt = tm (p);
+      tree_argument_list *elt = *p;
 
       tm_row_const tmp (*elt);
 
@@ -357,9 +354,9 @@ tm_const::init (const tree_matrix& tm)
 
   if (! error_state)
     {
-      for (Pix p = first (); p != 0; next (p))
+      for (iterator p = begin (); p != end (); p++)
 	{
-	  tm_row_const elt = this->operator () (p);
+	  tm_row_const elt = *p;
 
 	  int this_elt_nr = elt.rows ();
 	  int this_elt_nc = elt.cols ();
@@ -406,19 +403,20 @@ tm_const::init (const tree_matrix& tm)
 
 tree_matrix::~tree_matrix (void)
 {
-  while (! lst.empty ())
+  while (! empty ())
     {
-      tree_argument_list *t = lst.remove_front ();
-      delete t;
+      iterator p = begin ();
+      delete *p;
+      erase (p);
     }
 }
 
 bool
 tree_matrix::all_elements_are_constant (void) const
 {
-  for (Pix p = lst.first (); p != 0; lst.next (p))
+  for (const_iterator p = begin (); p != end (); p++)
     {
-      tree_argument_list *elt = lst (p);
+      tree_argument_list *elt = *p;
 
       if (! elt->all_elements_are_constant ())
 	return false;
@@ -488,15 +486,15 @@ tree_matrix::rvalue (void)
 
       int put_row = 0;
 
-      for (Pix p = tmp.first (); p != 0; tmp.next (p))
+      for (tm_const::iterator p = tmp.begin (); p != tmp.end (); p++)
 	{
 	  int put_col = 0;
 
-	  tm_row_const row = tmp (p);
+	  tm_row_const row = *p;
 
-	  for (Pix q = row.first (); q != 0; row.next (q))
+	  for (tm_row_const::iterator q = row.begin (); q != row.end (); q++)
 	    {
-	      octave_value elt = row (q);
+	      octave_value elt = *q;
 
 	      if (found_complex)
 		{

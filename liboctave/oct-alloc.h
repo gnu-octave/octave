@@ -61,6 +61,8 @@ private:
 
 #define DECLARE_OCTAVE_ALLOCATOR \
   public: \
+    void *operator new (size_t size, void *p) \
+      { return ::operator new (size, p); } \
     void *operator new (size_t size) { return allocator.alloc (size); } \
     void operator delete (void *p, size_t size) { allocator.free (p, size); } \
   private: \

@@ -81,13 +81,15 @@ MAKEDOC_SOURCE = makedoc.c xmalloc.c
 
 ALL_CFLAGS = $(INCFLAGS) $(LDEFS) $(DEFS) $(CFLAGS)
 
-all: libinfo.a # info.info info-stnd.info
+all: info # libinfo.a # info.info info-stnd.info
 .PHONY: all
 
 sub-all: all
 .PHONY: sub-all
 
 install: all
+	$(top_srcdir)/mkinstalldirs $(archlibdir)
+	$(INSTALL_PROGRAM) info $(archlibdir)/info
 #	$(INSTALL_PROGRAM) info $(datadir)/info
 #	-d=$(srcdir); test -f ./info.info && d=.; \
 #	    $(INSTALL_DATA) $$d/info.info $(infodir)/info.info
@@ -97,6 +99,7 @@ install: all
 .PHONY: install
 
 uninstall:
+	rm -f $(archlibdir)/info
 #	rm -f $(datadir)/info
 #	rm -f $(infodir)/info.info
 #	rm -f $(infodir)/info-stnd.info

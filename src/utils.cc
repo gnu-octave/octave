@@ -215,9 +215,10 @@ raw_mode (int on)
   static int curr_on = 0;
 
   int tty_fd = STDIN_FILENO;
-  if ((interactive || forced_interactive) && ! isatty (tty_fd))
+  if (! isatty (tty_fd))
     {
-      error ("stdin is not a tty!");
+      if (interactive || forced_interactive)
+	error ("stdin is not a tty!");
       return;
     }
 

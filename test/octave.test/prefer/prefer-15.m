@@ -1,2 +1,2 @@
-ok_to_lose_imaginary_part = 0;
+warn_imag_to_real = 1;
 eye (1+i)

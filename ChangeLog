@@ -1,3 +1,8 @@
+Wed Mar 26 17:04:11 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* COPYING: Update to latest version that includes correct address
+	for the FSF.
+
 Tue Mar 25 21:46:49 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* aclocal.m4 (OCTAVE_CXXLIBS): Delete macro definition.

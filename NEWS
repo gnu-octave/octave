@@ -1,5 +1,13 @@
-Summary of changes for version 2.0.6:
-------------------------------------
+Summary of changes for version 2.1:
+----------------------------------
+
+  * It is now possible to declare static variables that retain their
+    values across function calls.  For example,
+
+      function ncall = f () static n = 0; ncall = ++n; endfunction
+
+    defines a function that returns the number of times that it has
+    been called.
 
   * Functions like quad, fsolve, and lsode can take either a function
     name or a simple function body as a string.  For example,

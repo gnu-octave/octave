@@ -1,3 +1,15 @@
+Sat Mar  8 02:35:13 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* load-save.cc (save_ascii_data, save_three_d): Where appropriate,
+	use bool instead of int.
+	(save_binary_data, save_mat_binary_data, save_ascii_data):
+	Print warning instead of error for wrong type arg.
+
+	* gripes.cc (gripe_wrong_type_arg): New arg, is_error.
+
+	* pt-plot.cc (save_in_tmp_file): Call save_ascii_data with bool
+	arg, not int.
+
 Fri Mar  7 00:56:16 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* dassl.cc (show_dassl_option): For values that are determined

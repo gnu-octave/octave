@@ -126,6 +126,11 @@ value to be returned by the function.  This variable must be defined
 before the end of the function body in order for the function to return
 a value.
 
+Variables used in the body of a function are local to the
+function.  Variables named in @var{arg-list} and @var{ret-var} are also
+local to the function.  @xref{Global Variables}, for information about
+how to access global variables inside a function.
+
 For example, here is a function that computes the average of the
 elements of a vector:
 

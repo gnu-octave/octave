@@ -29,13 +29,14 @@ class octave_value;
 
 #include <string>
 
-extern int save_ascii_data (ostream& os, const octave_value& t,
-			    const string& name = string (),
-			    int strip_nan_and_inf = 0,
-			    int mark_as_global = 0, int precision = 0);
+extern bool save_ascii_data (ostream& os, const octave_value& t,
+			     const string& name = string (),
+			     bool strip_nan_and_inf = false,
+			     bool mark_as_global = false,
+			     int precision = 0);
 
-extern int save_three_d (ostream& os, const octave_value& t,
-			 int parametric = 0);
+extern bool save_three_d (ostream& os, const octave_value& t,
+			  bool parametric = false);
 
 extern void save_user_variables (void);
 

@@ -52,6 +52,13 @@ Use @code{f2c} even if a Fortran compiler is available.
 @item --with-g77
 Use @code{g77} to compile Fortran code.
 
+@item --enable-shared
+Create shared libraries.  If you are planning to use
+@code{--enable-lite-kernelel} or the dynamic loading features, you will
+probably want to use this option.  It will make your @file{.oct} files
+much smaller.  You may also want to build a shared version of
+@code{libg++}, if your system doesn't already have one.
+
 @item --enable-dl
 Use @code{dlopen} and friends to make Octave capable of dynamically
 linking externally compiled functions.  This only works on systems that
@@ -181,13 +188,30 @@ Image files that are distributed with Octave.
 @end itemize
 
 @menu
+* Notes::                       
 * Installation Problems::       
 * Binary Distributions::        
 @end menu
 
-@node Installation Problems, Binary Distributions, Installation, Installation
+@node Notes, Installation Problems, Installation, Installation
+@appendixsec Notes
+
+@itemize @bullet
+@item
+You must use the version of GNU Info distributed with Octave, because it
+includes some changes to allow Octave to search the indices of the info
+files.  If you would like, you should be able to replace other copies of
+the Info browser that you have with the one distributed with Octave.
+Patches relative to a recent release of the GNU Info browser are
+included in the file @file{INFO.PATCH} in the Octave source
+distribution.  This modification has been submitted to the GNU Info
+maintainer, and should appear in some future release.  Once that
+happens, the GNU Info browser will no longer be distributed with Octave.
+@end itemize
+
+@node Installation Problems, Binary Distributions, Notes, Installation
 @appendixsec Installation Problems
-	
+
 This section contains a list of problems (and some apparent problems
 that don't really mean anything is wrong) that may show up during
 installation of Octave.

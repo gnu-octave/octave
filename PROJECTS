@@ -81,10 +81,6 @@ Numerical:
     user-supplied function for Matlab compatibility.  Don't place an
     upper limit on the number of arguments.
 
-  * If possible, make economy QR factorization actually take advantage
-    of the form of the result instead of just dropping columns.
-    Lapack doesn't appear to do this yet.
-
   * Check matrices for symmetry before computing eigenvalues, etc.,
     and then use the routines for symmetric matrices for improved
     performance.
@@ -99,10 +95,14 @@ Numerical:
     compatibility with Matlab (but only if Matlab 5 still does things
     this way). For example:  [1, 2] * [] ==> [].
 
+  * Should any ([]) return [] or 0?  What about all ([])?
+
   * Improve design of ODE, DAE, classes.
 
   * Make it possible to specify a time which dassl and lsode should
     not integrate past.
+
+  * Add interface to daspk (new version of dassl).
 
   * Extend meaning of .* to include v .* M or M .* v (where v is a
     column vector with the same number of rows as M) to scale rows of
@@ -118,14 +118,20 @@ Numerical:
     Should probably work for any vectors, not just if x is a column
     vector and y is a row vector.
 
-  * On systems that support matherr(), make it possible for users to
-    enable the printing of warning messages.
-
   * Make it possible to solve b = L \ x efficiently, either by
     providing an explicit function call, or by automatically
     determining that L is triangular.  If it is done automatically,
     provide some means for determining whether Octave has actually
     detected that the matrix is triangular.
+
+  * The polyfit function uses the economy QR factorization, but even
+    that can take a lot of time for large datasets.  Consider an
+    option to compute the result with inv (A' * A) * A' * y or some
+    other faster method.d  Possibly just switch to this method if the
+    dataset is larger than some value.
+
+  * Consider making the behavior of the / and \ operators for
+    non-square systems compatible with Matlab.
 
 --------
 Graphics:
@@ -155,6 +161,9 @@ Graphics:
   * If using temporary files, delete them when gnuplot exits.
 
   * If possible, pass binary data to gnuplot to speed things up.
+
+  * If using gnuplot, consider setting a smaller default for the
+    `zero' value (e.g., set zero sqrt (realmin) or something).
 
 -------
 Strings:
@@ -213,6 +222,20 @@ Input/Output:
   * Make load and save work for structures.
 
   * Make load and save look for <file>.mat if only given <file>.
+
+    Potential sticky points:
+
+      - For load, if both foo and foo.mat exist, should it prefer foo
+        or foo.mat?  Should the preference depend on the arguments to
+        load?  I think it should only prefer .mat files if the
+        -mat-binary option is supplied, or if the file foo.mat exists
+        but the file foo does not.
+
+      - For save, should it prefer to create foo or foo.mat?  Should
+        the preference depend on the arguments to save?  Should the
+        default_save_format imply a default preference?  I think it
+        should only create .mat files if it is writing Matlab
+        compatible files.
 
   * Move some pr-output stuff to liboctave.
 
@@ -424,7 +447,7 @@ Interpreter:
   * Eliminate force_numeric and make_numeric functions.
 
   * Is Matrix::fortran_vec() really necessary?
-
+b
   * print_usage() should set error_state in most cases?
 
   * Make statements like this
@@ -446,6 +469,9 @@ Interpreter:
 
   * Clean up eye, eval, feval, keyboard, input, ones, zeros.
 
+  * Turn off printing when evaluating expressions in an eval()
+    statement, for compatibility with Matlab.
+
   * It would be nice to have an interactive debugger.
 
   * Make whos report total memory used by variables (and functions?).
@@ -453,6 +479,9 @@ Interpreter:
   * Rewrite whos and the symbol_record_info class.  Write a built-in
     function that gives all the basic information, then write who and
     whos as M-files.
+
+  * On systems that support matherr(), make it possible for users to
+    enable the printing of warning messages.
 
 -------
 History:
@@ -532,8 +561,6 @@ Documentation and On-Line Help:
 
   * Should info/terminal.c include definitions for PC, BC, UP, and
     ospeed on all systems?
-
-  * Clean up help stuff.
 
   * Demo files.
 

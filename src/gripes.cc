@@ -60,7 +60,7 @@ gripe_nonconformant (int r1, int c1, int r2, int c2)
 }
 
 void
-gripe_empty_arg (const char *name, int is_error)
+gripe_empty_arg (const char *name, bool is_error)
 {
   if (is_error)
     error ("%s: empty matrix is invalid as an argument", name);
@@ -123,16 +123,24 @@ gripe_data_conversion (const char *from, const char *to)
 }
 
 void
-gripe_wrong_type_arg (const char *name, const string& s)
+gripe_wrong_type_arg (const char *name, const string& s, bool is_error)
 {
-  error ("%s: wrong type argument `%s'", name, s.c_str ());
+  if (is_error)
+    error ("%s: wrong type argument `%s'", name, s.c_str ());
+  else
+    warning ("%s: wrong type argument `%s'", name, s.c_str ());
 }
 
 void
-gripe_wrong_type_arg (const char *name, const octave_value& tc)
+gripe_wrong_type_arg (const char *name, const octave_value& tc,
+		      bool is_error)
 {
   string type = tc.type_name ();
-  error ("%s: wrong type argument `%s'", name, type.c_str ());
+
+  if (is_error)
+    error ("%s: wrong type argument `%s'", name, type.c_str ());
+  else
+    warning ("%s: wrong type argument `%s'", name, type.c_str ());
 }
 
 void

@@ -861,7 +861,7 @@ save_in_tmp_file (octave_value& t, int ndim, bool parametric)
 	  switch (ndim)
 	    {
 	    case 2:
-	      save_ascii_data (file, t, name, 1);
+	      save_ascii_data (file, t, name, true);
 	      break;
 
 	    case 3:

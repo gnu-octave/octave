@@ -374,9 +374,21 @@ $AXA^T - X + B B^T = 0$ or $A^TXA - X + B^TB = 0$,
 @end ifinfo
 whichever is appropriate.
 
-Uses Schur decomposition method as in Kitagawa, International Journal of
-Control (1977); column-by-column solution method as suggested in
-Hammarling, IMA Journal of Numerical Analysis, (1982).
+Uses Schur decomposition method as in Kitagawa 
+@iftex
+@tex
+@cite{An Algorithm for Solving the Matrix Equation $X = F X F^\prime + S$},
+@end tex
+@end iftex
+@ifinfo
+@cite{An Algorithm for Solving the Matrix Equation @var{X} =
+@var{F}@var{X}@var{F}' + @var{S}},
+@end ifinfo
+International Journal of Control, Volume 25, Number 5, pages 745--753
+(1977); column-by-column solution method as suggested in
+Hammerling, @cite{Numerical Solution of the Stable, Non-Negative
+Definite Lyapunov Equation}, IMA Journal of Numerical Analysis, Volume
+2, pages 303--323 (1982).
 @end deftypefn
 
 @deftypefn {Function File} {} is_controllable (@var{a}, @var{b}, @var{tol})

@@ -1770,13 +1770,11 @@ get_save_type (double max_val, double min_val)
 // string DOC, and global flag MARK_AS_GLOBAL on stream OS in the
 // binary format described above for read_binary_data.
 
-static int
+static bool
 save_binary_data (ostream& os, const octave_value& tc,
 		  const string& name, const string& doc,
 		  int mark_as_global, int save_as_floats) 
 {
-  int fail = 0;
-
   FOUR_BYTE_INT name_len = name.length ();
 
   os.write (&name_len, 4);
@@ -1901,23 +1899,18 @@ save_binary_data (ostream& os, const octave_value& tc,
       os.write (&inc, 8);
     }
   else
-    {
-      gripe_wrong_type_arg ("save", tc);
-      fail = 1;
-    }
+    gripe_wrong_type_arg ("save", tc, false);
 
-  return (os && ! fail);
+  return os;
 }
 
 // Save the data from TC along with the corresponding NAME on stream OS 
 // in the MatLab binary format.
 
-static int
+static bool
 save_mat_binary_data (ostream& os, const octave_value& tc,
 		      const string& name) 
 {
-  int fail = 0;
-
   FOUR_BYTE_INT mopt = 0;
 
   mopt += tc.is_string () ? 1 : 0;
@@ -1993,16 +1986,13 @@ save_mat_binary_data (ostream& os, const octave_value& tc,
 	}
     }
   else
-    {
-      gripe_wrong_type_arg ("save", tc);
-      fail = 1;
-    }
+    gripe_wrong_type_arg ("save", tc, false);
 
-  return (os && ! fail);
+  return os;
 }
 
 static void
-ascii_save_type (ostream& os, char *type, int mark_as_global)
+ascii_save_type (ostream& os, char *type, bool mark_as_global)
 {
   if (mark_as_global)
     os << "# type: global ";
@@ -2097,12 +2087,12 @@ strip_infnan (const ComplexMatrix& m)
 
 // XXX FIXME XXX -- should probably write the help string here too.
 
-int
+bool
 save_ascii_data (ostream& os, const octave_value& tc,
-		 const string& name, int strip_nan_and_inf,
-		 int mark_as_global, int precision) 
+		 const string& name, bool strip_nan_and_inf,
+		 bool mark_as_global, int precision) 
 {
-  int success = 1;
+  bool success = true;
 
   if (! precision)
     precision = Vsave_precision;
@@ -2123,7 +2113,7 @@ save_ascii_data (ostream& os, const octave_value& tc,
 	  if (xisnan (d))
 	    {
 	      error ("only value to plot is NaN");
-	      success = 0;
+	      success = false;
 	    }
 	  else
 	    {
@@ -2156,7 +2146,7 @@ save_ascii_data (ostream& os, const octave_value& tc,
 	  if (xisnan (c))
 	    {
 	      error ("only value to plot is NaN");
-	      success = 0;
+	      success = false;
 	    }
 	  else
 	    {
@@ -2212,10 +2202,7 @@ save_ascii_data (ostream& os, const octave_value& tc,
 	 << tmp.inc () << "\n";
     }
   else
-    {
-      gripe_wrong_type_arg ("save", tc);
-      success = 0;
-    }
+    gripe_wrong_type_arg ("save", tc, false);
 
   os.precision (old_precision);
 
@@ -2246,7 +2233,7 @@ do_save (ostream& os, symbol_record *sr, load_save_format fmt,
   switch (fmt)
     {
     case LS_ASCII:
-      save_ascii_data (os, tc, name, 0, global);
+      save_ascii_data (os, tc, name, false, global);
       break;
 
     case LS_BINARY:
@@ -2507,8 +2494,8 @@ save variables in a file")
 // making a 3-dimensional plot with gnuplot.  If PARAMETRIC is
 // nonzero, assume a parametric 3-dimensional plot will be generated.
 
-int
-save_three_d (ostream& os, const octave_value& tc, int parametric)
+bool
+save_three_d (ostream& os, const octave_value& tc, bool parametric)
 {
   int fail = 0;
 

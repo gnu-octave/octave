@@ -160,28 +160,31 @@ octave_list::subsasgn (const std::string type,
 	}
     }
 
-  switch (type[0])
+  if (! error_state)
     {
-    case '(':
-      {
-	octave_value_list i = idx.front ();
+      switch (type[0])
+	{
+	case '(':
+	  {
+	    octave_value_list i = idx.front ();
 
-	assign (i, t_rhs);
+	    assign (i, t_rhs);
 
-	retval = octave_value (this, count + 1);
-      }
-      break;
+	    retval = octave_value (this, count + 1);
+	  }
+	  break;
 
-    case '{':
-    case '.':
-      {
-	std::string nm = type_name ();
-	error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
-      }
-      break;
+	case '{':
+	case '.':
+	  {
+	    std::string nm = type_name ();
+	    error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
+	  }
+	  break;
 
-    default:
-      panic_impossible ();
+	default:
+	  panic_impossible ();
+	}
     }
 
   return retval;

@@ -1,5 +1,11 @@
 2002-05-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* ov-cell.cc (octave_cell::subsasgn): If an error has occurred,
+	skip final assignment step.
+	* ov-list.cc (octave_list::subsasgn): Likewise.
+	* oct-lvalue.cc (octave_lvalue::assign): Add parens to clarify intent.
+	(octave_lvalue::do_unary_op): Likewise.
+
 	* parse.y (function_end): Also accept end of input as end of
 	function if input is coming from an eval string.
 

@@ -165,40 +165,43 @@ octave_cell::subsasgn (const std::string type,
 	}
     }
 
-  switch (type[0])
+  if (! error_state)
     {
-    case '(':
-      {
-	octave_value_list i = idx.front ();
+      switch (type[0])
+	{
+	case '(':
+	  {
+	    octave_value_list i = idx.front ();
 
-	if (t_rhs.is_cell ())
-	  octave_base_matrix<Cell>::assign (i, t_rhs.cell_value ());
-	else
-	  octave_base_matrix<Cell>::assign (i, Cell (t_rhs));
+	    if (t_rhs.is_cell ())
+	      octave_base_matrix<Cell>::assign (i, t_rhs.cell_value ());
+	    else
+	      octave_base_matrix<Cell>::assign (i, Cell (t_rhs));
 
-	retval = octave_value (this, count + 1);
-      }
-      break;
+	    retval = octave_value (this, count + 1);
+	  }
+	  break;
 
-    case '{':
-      {
-	octave_value_list i = idx.front ();
+	case '{':
+	  {
+	    octave_value_list i = idx.front ();
 
-	octave_base_matrix<Cell>::assign (i, Cell (t_rhs));
+	    octave_base_matrix<Cell>::assign (i, Cell (t_rhs));
 
-	retval = octave_value (this, count + 1);
-      }
-      break;
+	    retval = octave_value (this, count + 1);
+	  }
+	  break;
 
-    case '.':
-      {
-	std::string nm = type_name ();
-	error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
-      }
-      break;
+	case '.':
+	  {
+	    std::string nm = type_name ();
+	    error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
+	  }
+	  break;
 
-    default:
-      panic_impossible ();
+	default:
+	  panic_impossible ();
+	}
     }
 
   return retval;

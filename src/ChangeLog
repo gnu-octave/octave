@@ -1,5 +1,14 @@
 2004-09-23  John W. Eaton  <jwe@octave.org>
 
+	* ops.h	(DEFSTRDBLCONVFN): New macro.
+	* OPERATORS/op-double-conv.cc: Use it to define new conversion op.
+	Define new range to double matrix conversion.
+	(install_int_conv_ops): Install new ops.	
+
+	* ops.h	(DEFSTRINTCONVFN): New macro.
+	* OPERATORS/op-int-conv.cc: Use it to define new conversion ops.
+	(install_int_conv_ops): Install them.
+
 	* (OCTAVE_SS_INT_OPS2, OCTAVE_SM_INT_OPS2, OCTAVE_MM_INT_OPS2,
 	OCTAVE_INSTALL_SS_INT_OPS2, OCTAVE_INSTALL_SM_INT_OPS2,
 	OCTAVE_INSTALL_MS_INT_OPS2, OCTAVE_INSTALL_MM_INT_OPS2):

@@ -41,8 +41,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-uint64.h"
 #include "ov-bool.h"
 #include "ov-bool-mat.h"
+#include "ov-range.h"
 #include "ov-scalar.h"
 #include "ov-re-mat.h"
+#include "ov-str-mat.h"
 #include "ov-typeinfo.h"
 #include "ops.h"
 
@@ -71,6 +73,10 @@ DEFDBLCONVFN (uint64_scalar_to_double_matrix, uint64_scalar, uint64_array)
 DEFDBLCONVFN (bool_matrix_to_double_matrix, bool_matrix, bool_array)
 DEFDBLCONVFN (bool_scalar_to_double_matrix, bool, bool_array)
 
+DEFDBLCONVFN (range_to_double_matrix, range, array)
+
+DEFSTRDBLCONVFN(char_matrix_str_to_double_matrix)
+
 DEFDBLCONVFN (double_scalar_to_double_matrix, scalar, array)
 
 void
@@ -98,6 +104,10 @@ install_double_conv_ops (void)
 
   INSTALL_CONVOP (octave_bool_matrix, octave_matrix, bool_matrix_to_double_matrix);
   INSTALL_CONVOP (octave_bool, octave_matrix, bool_scalar_to_double_matrix);
+
+  INSTALL_CONVOP (octave_range, octave_matrix, range_to_double_matrix);
+
+  INSTALL_CONVOP (octave_char_matrix_str, octave_matrix, char_matrix_str_to_double_matrix);
 
   INSTALL_CONVOP (octave_scalar, octave_matrix, double_scalar_to_double_matrix);
 }

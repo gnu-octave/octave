@@ -44,6 +44,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-bool-mat.h"
 #include "ov-scalar.h"
 #include "ov-re-mat.h"
+#include "ov-str-mat.h"
 #include "ov-typeinfo.h"
 #include "ops.h"
 
@@ -88,6 +89,16 @@ DEFCONVFN (bool_matrix_to_uint8, bool_matrix, uint8)
 DEFCONVFN (bool_matrix_to_uint16, bool_matrix, uint16)
 DEFCONVFN (bool_matrix_to_uint32, bool_matrix, uint32)
 DEFCONVFN (bool_matrix_to_uint64, bool_matrix, uint64)
+
+DEFSTRINTCONVFN (char_matrix_str_to_int8, int8)
+DEFSTRINTCONVFN (char_matrix_str_to_int16, int16)
+DEFSTRINTCONVFN (char_matrix_str_to_int32, int32)
+DEFSTRINTCONVFN (char_matrix_str_to_int64, int64)
+
+DEFSTRINTCONVFN (char_matrix_str_to_uint8, uint8)
+DEFSTRINTCONVFN (char_matrix_str_to_uint16, uint16)
+DEFSTRINTCONVFN (char_matrix_str_to_uint32, uint32)
+DEFSTRINTCONVFN (char_matrix_str_to_uint64, uint64)
 
 DEFCONVFN (range_to_int8, range, int8)
 DEFCONVFN (range_to_int16, range, int16)
@@ -170,6 +181,7 @@ install_int_conv_ops (void)
   INSTALL_CONVOPS (bool)
   INSTALL_CONVOPS (bool_matrix)
   INSTALL_CONVOPS (range)
+  INSTALL_CONVOPS (char_matrix_str)
 
   INSTALL_INT_CONV_FUNCTIONS (int8)
   INSTALL_INT_CONV_FUNCTIONS (int16)

@@ -1,5 +1,7 @@
 2002-07-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* general/rem.m: Delete redundant call to usage.
+
 	* general/mod.m: Additional error checks, Texinfoize doc string.
 
 2002-04-29  Paul Kienzle <pkienzle@users.sf.net>

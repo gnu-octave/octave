@@ -2664,16 +2664,22 @@ Sylvester (const Matrix& a, const Matrix& b, const Matrix& c)
   double scale;
   int info;
 
-  F77_FCN (dtrsyl, DTRSYL) ("N", "N", 1, a_nr, b_nr,
-			    sch_a.fortran_vec (), a_nr, 
-			    sch_b.fortran_vec (), b_nr,
-			    cx.fortran_vec (), a_nr, scale,
-			    info, 1L, 1L);
+  double *pa = sch_a.fortran_vec ();
+  double *pb = sch_b.fortran_vec ();
+  double *px = cx.fortran_vec ();
+
+  F77_XFCN (dtrsyl, DTRSYL, ("N", "N", 1, a_nr, b_nr, pa, a_nr, pb,
+			     b_nr, px, a_nr, scale, info, 1L, 1L));
 
 
-  // XXX FIXME XXX -- check info?
+  if (f77_exception_encountered)
+    (*current_liboctave_error_handler) ("unrecoverable error in dtrsyl");
+  else
+    {
+      // XXX FIXME XXX -- check info?
   
-  retval = -ua*cx*ub.transpose ();
+      retval = -ua*cx*ub.transpose ();
+    }
 
   return retval;
 }

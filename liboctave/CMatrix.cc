@@ -3685,16 +3685,23 @@ Sylvester (const ComplexMatrix& a, const ComplexMatrix& b,
 
   double scale;
   int info;
+
+  Complex *pa = sch_a.fortran_vec ();
+  Complex *pb = sch_b.fortran_vec ();
+  Complex *px = cx.fortran_vec ();
   
-  F77_FCN (ztrsyl, ZTRSYL) ("N", "N", 1, a_nr, b_nr,
-			    sch_a.fortran_vec (), a_nr,
-			    sch_b.fortran_vec (), b_nr,
-			    cx.fortran_vec (), a_nr, scale,
-			    info, 1L, 1L);
+  F77_XFCN (ztrsyl, ZTRSYL, ("N", "N", 1, a_nr, b_nr, pa, a_nr, pb,
+			     b_nr, px, a_nr, scale,
+			     info, 1L, 1L));
 
-  // XXX FIXME XXX -- check info?
+  if (f77_exception_encountered)
+    (*current_liboctave_error_handler) ("unrecoverable error in ztrsyl");
+  else
+    {
+      // XXX FIXME XXX -- check info?
 
-  retval = -ua * cx * ub.hermitian ();
+      retval = -ua * cx * ub.hermitian ();
+    }
 
   return retval;
 }

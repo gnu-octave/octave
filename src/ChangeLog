@@ -1,3 +1,11 @@
+Mon May  5 00:54:03 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DLD-FUNCTIONS, OPERATORS, and	TEMPLATE-INST: New subdirectories.
+	Move appropriate files to new directories.
+	* Makefile.in: Add DLD-FUNCTIONS, OPERATORS, and TEMPLATE-INST
+	directories to VPATH.  Fix rules to work with new directory
+	structure.
+
 Sun May  4 22:40:45 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	*  input.cc (initialize_command_input): Rename from

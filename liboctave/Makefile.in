@@ -27,8 +27,8 @@ include $(TOPDIR)/Makeconf
 	    mv $@.tmp $@ ; \
 	fi
 
-INCLUDES = Bounds.h CollocWt.h DAE.h DAEFunc.h FEGrid.h FSQP.h \
-	LinConst.h LP.h LPsolve.h Matrix.h NLConst.h NLEqn.h \
+INCLUDES = Array.h Bounds.h CollocWt.h DAE.h DAEFunc.h FEGrid.h \
+	FSQP.h LinConst.h LP.h LPsolve.h Matrix.h NLConst.h NLEqn.h \
 	NLFunc.h NLP.h NPSOL.h ODE.h ODEFunc.h Objective.h QLD.h \
 	QP.h QPSOL.h Quad.h Range.h f77-uscore.h sun-utils.h \
 	lo-error.h
@@ -39,7 +39,7 @@ SOURCES = Bounds.cc ColVector.cc CollocWt.cc DAE.cc DAEFunc.cc \
 	Objective.cc ODE.cc ODEFunc.cc QLD.cc QP.cc QPSOL.cc Quad.cc \
 	Range.cc RowVector.cc sun-utils.cc lo-error.cc
 
-EXTRAS = mx-inlines.cc
+EXTRAS = mx-inlines.cc Array.cc
 
 DISTFILES = Makefile.in $(SOURCES) $(INCLUDES) $(EXTRAS)
 

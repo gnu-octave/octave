@@ -522,7 +522,7 @@ print cryptic yet witty messages")
 	  if (argc == 1)
 	    {
 	      volatile sig_handler *old_sigint_handler;
-	      old_sigtstp_handler = signal (SIGTSTP, SIG_IGN);
+	      old_sigint_handler = signal (SIGINT, SIG_IGN);
 
 	      try_info (0, 1);
 

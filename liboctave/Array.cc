@@ -1441,13 +1441,13 @@ Array<T>::maybe_delete_elements (Array<idx_vector>& ra_idx, const T& rfv)
   dim_vector lhs_dims = dims ();
 
   int n_lhs_dims = lhs_dims.length ();
-  
+
   Array<int> idx_is_colon (n_idx, 0);
 
   Array<int> idx_is_colon_equiv (n_idx, 0);
 
   // Initialization of colon arrays.
-  
+
   for (int i = 0; i < n_idx; i++)
     {
       idx_is_colon_equiv(i) = ra_idx(i).is_colon_equiv (lhs_dims(i), 1);
@@ -1464,12 +1464,12 @@ Array<T>::maybe_delete_elements (Array<idx_vector>& ra_idx, const T& rfv)
       if (! (idx_is_colon(i) || idx_is_colon_equiv(i)))
 	{
 	  ra_idx(i).sort (true);
-	  
+
 	  if (ra_idx(i).max () > lhs_dims(i))
 	    {
 	      (*current_liboctave_error_handler)
 		("index exceeds array dimensions");
-	     
+
 	      idx_ok = false;
 	      break;
 	    }
@@ -1483,13 +1483,13 @@ Array<T>::maybe_delete_elements (Array<idx_vector>& ra_idx, const T& rfv)
 	    }
 	}
     }
-  
+
   if (n_idx <= n_lhs_dims)
     {
       int last_idx = ra_idx(n_idx-1).max ();
-      
+
       int sum_el = lhs_dims(n_idx-1);
-      
+
       for (int i = n_idx; i < n_lhs_dims; i++)
 	  sum_el *= lhs_dims(i);
 
@@ -1500,7 +1500,7 @@ Array<T>::maybe_delete_elements (Array<idx_vector>& ra_idx, const T& rfv)
 
 	  idx_ok = false;
 	}
-    }  
+    }
 
   if (idx_ok)
     {
@@ -1701,19 +1701,19 @@ Array<T>::maybe_delete_elements (Array<idx_vector>& ra_idx, const T& rfv)
 	  // A(3:5) = []; A(6)=[]
 	  //
 	  idx_vector idx_vec = ra_idx(0);
-	    
+
 	  int num_to_delete = idx_vec.capacity ();
-	  
+
 	  int lhs_numel = numel ();
-	  
-	  int new_numel = lhs_numel - num_to_delete;  
+
+	  int new_numel = lhs_numel - num_to_delete;
 
 	  T *new_data = new T[new_numel];
-	  
+
 	  Array<int> lhs_ra_idx (ndims (), 0);
-	  
+
 	  int ii = 0;
-	  int iidx = 0;	  
+	  int iidx = 0;
 
 	  for (int i = 0; i < lhs_numel; i++)
 	    {
@@ -1735,7 +1735,7 @@ Array<T>::maybe_delete_elements (Array<idx_vector>& ra_idx, const T& rfv)
 	  Array<T>::rep = new typename Array<T>::ArrayRep (new_data, new_numel);
 
 	  dimensions.resize (2);
-	  
+
 	  if (lhs_dims.length () == 2 && lhs_dims(1) == 1)
 	    {
 	      dimensions(0) = new_numel;
@@ -1981,7 +1981,7 @@ Array<T>::indexN (idx_vector& ra_idx, int resize_ok, const T& rfv) const
 
   int orig_len = dims().numel ();
 
-  dim_vector idx_orig_dims = ra_idx.orig_dimensions (); 
+  dim_vector idx_orig_dims = ra_idx.orig_dimensions ();
 
   if (ra_idx.is_colon ())
     {
@@ -2001,7 +2001,7 @@ Array<T>::indexN (idx_vector& ra_idx, int resize_ok, const T& rfv) const
 	retval = Array<T> (tmp, dim_vector (0, 0));
     }
   else if (vector_equivalent (dims ()))
-    { 
+    {
       // We're getting elements from a vector equivalent i.e. (1x4x1).
 
       Array<T> tmp = Array<T>::index (ra_idx, resize_ok);
@@ -2066,7 +2066,7 @@ Array<T>::indexN (idx_vector& ra_idx, int resize_ok, const T& rfv) const
       ra_idx.freeze (orig_len, "nd-array", resize_ok);
 
       if (ra_idx)
-	{ 
+	{
 	  dim_vector result_dims (idx_orig_dims);
 
 	  if (ra_idx.one_zero_only ())
@@ -2228,7 +2228,7 @@ Array<T>::index (Array<idx_vector>& ra_idx, int resize_ok, const T&) const
 
 	      for (int i = 0; i < n; i++)
 		{
-		  elt_idx = get_elt_idx (ra_idx, result_idx); 
+		  elt_idx = get_elt_idx (ra_idx, result_idx);
 
 		  int numelem_elt = get_scalar_idx (elt_idx, this_dims);
 
@@ -2402,7 +2402,7 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 
   int rhs_nr = rhs.rows ();
   int rhs_nc = rhs.cols ();
-  
+
   if (rhs.length () > 2)
     {
       dim_vector dv_tmp = rhs.squeeze().dims ();
@@ -2967,7 +2967,7 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
     }
 
   lhs.chop_trailing_singletons ();
-  
+
   lhs.clear_index ();
 
   return retval;

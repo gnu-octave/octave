@@ -114,7 +114,7 @@ octave.ps: octave.dvi
 # These option forms are supported by texi2html 1.65 and probably also
 # more recent versions.
 octave_toc.html: $(MAIN_TEXINFO) $(SUB_TEXINFO)
-	-texi2html -expandinfo -split_chapter -I $(srcdir)/.. $<
+	-texi2html -expandinfo -split_chapter -I . -I $(srcdir)/.. $<
 
 check: all
 .PHONY: check

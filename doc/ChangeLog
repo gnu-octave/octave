@@ -1,3 +1,8 @@
+2003-08-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* interpreter/Makefile.in (octave_toc.html): Add "-I ." to texinfo
+	command line args.
+
 2003-07-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* faq/Makefile.in (FORMATTED): Include all Octave-FAQ_*.html files

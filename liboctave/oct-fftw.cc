@@ -27,8 +27,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream>
 #include <vector>
 
-#include "oct-fftw.h"
 #include "lo-error.h"
+#include "oct-fftw.h"
+#include "quit.h"
 
 // Helper class to create and cache fftw plans for both 1d and 2d. This
 // implementation uses FFTW_ESTIMATE to create the plans, which in theory

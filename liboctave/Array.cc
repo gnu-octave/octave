@@ -931,6 +931,39 @@ template <class T>
 Array<T>&
 Array<T>::insert (const Array<T>& a, int r, int c)
 {
+  if (ndims () == 2 && a.ndims () == 2)
+    insert2 (a, r, c);
+  else
+    insertN (a, r, c);
+
+  return *this;
+}
+
+
+template <class T>
+Array<T>&
+Array<T>::insert2 (const Array<T>& a, int r, int c)
+{
+  int a_rows = a.rows ();
+  int a_cols = a.cols ();
+
+  if (r < 0 || r + a_rows > rows () || c < 0 || c + a_cols > cols ())
+    {
+      (*current_liboctave_error_handler) ("range error for insert");
+      return *this;
+    }
+
+  for (int j = 0; j < a_cols; j++)
+    for (int i = 0; i < a_rows; i++)
+      elem (r+i, c+j) = a.elem (i, j);
+
+  return *this;
+}
+
+template <class T>
+Array<T>&
+Array<T>::insertN (const Array<T>& a, int r, int c)
+{
   dim_vector a_dv = a.dims ();
 
   int n = a_dv.length ();

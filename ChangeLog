@@ -1,3 +1,7 @@
+2004-02-18  Per Persson  <persquare@mac.com>
+
+	* configure.in (*-*-darwin*): Define SONAME_FLAGS.
+
 2004-02-16  David Bateman  <dbateman@free.fr>
 
 	* configure.in: Test for the presence of FFTW 3.x and use it in

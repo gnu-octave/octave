@@ -1,3 +1,12 @@
+2004-02-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Array.cc (Array<T>::insertN (const Array<T>&, int, int)):
+	Rename from Array<T>::insert.
+	(Array<T>::insert2 (const Array<T>&, int, int)):
+	Reinstate old Array<T>::insert function under this name.
+	(Array<T>::insert (const Array<T>&, int, int)):
+	New function.  Dispatch to insert2 or insertN as appropriate.
+
 2004-02-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-fftw.cc (convert_packcomplex_1d, convert_packcomplex_Nd): 

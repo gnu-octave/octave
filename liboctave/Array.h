@@ -446,8 +446,10 @@ public:
     { resize_and_fill (dv, val); }
 
   Array<T>& insert (const Array<T>& a, int r, int c);
+  Array<T>& insert2 (const Array<T>& a, int r, int c);
+  Array<T>& insertN (const Array<T>& a, int r, int c);
 
-  Array<T>& insert (const Array<T>& a, const Array<int>& dv);
+  Array<T>& insert (const Array<T>& a, const Array<int>& idx);
 
   bool is_square (void) const { return (dim1 () == dim2 ()); }
 

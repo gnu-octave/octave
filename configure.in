@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.446 $)
+AC_REVISION($Revision: 1.447 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -700,6 +700,7 @@ case "$canonical_host_type" in
     SHLEXT_VER='$(version).$(SHLEXT)'
     SHLLIB_VER='$(version).$(SHLLIB)'
     NO_OCT_FILE_STRIP=true
+    SONAME_FLAGS='-install_name $(octlibdir)/$@'
     library_path_var=DYLD_LIBRARY_PATH	
   ;;
   *-*-cygwin* | *-*-mingw*)

@@ -1,3 +1,7 @@
+2005-01-21  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/filter.cc (filter): Avoid slow Marray indexing ops.
+
 2005-01-20  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in (EXTRAS): Move ov-base-mat.cc ov-base-scalar.cc here.

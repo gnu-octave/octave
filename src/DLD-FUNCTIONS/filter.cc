@@ -146,35 +146,51 @@ filter (MArray<T>& b, MArray<T>& a, MArrayN<T>& x, MArrayN<T>& si,
 
       if (a_len > 1)
 	{
-	  for (int i = 0; i < x_len; i++)
-	    {
-	      int idx = i * x_stride + x_offset; 
-	      y (idx) = si (si_offset) + b (0) * x (idx);
+	  T *py = y.fortran_vec ();
+	  T *psi = si.fortran_vec ();
 
-	      if (si_len > 1)
+	  const T *pa = a.data ();
+	  const T *pb = b.data ();
+	  const T *px = x.data ();
+
+	  psi += si_offset;
+
+	  for (int i = 0, idx = x_offset; i < x_len; i++, idx += x_stride)
+	    {
+	      py[idx] = psi[0] + pb[0] * px[idx];
+
+	      if (si_len > 0)
 		{
 		  for (int j = 0; j < si_len - 1; j++)
 		    {
 		      OCTAVE_QUIT;
 
-		      si (j + si_offset) =  si (j + 1 + si_offset) - 
-			a (j+1) * y (idx) + b (j+1) * x (idx);
+		      psi[j] = psi[j+1] - pa[j+1] * py[idx] + pb[j+1] * px[idx];
 		    }
 
-		  si (si_len - 1 + si_offset) = b (si_len) * x (idx)
-		    - a (si_len) * y (idx);
+		  psi[si_len-1] = pb[si_len] * px[idx] - pa[si_len] * py[idx];
 		}
 	      else
-		si (si_offset) = b (si_len) * x (idx)
-		  - a (si_len) * y (idx);
+		{
+		  OCTAVE_QUIT;
+
+		  psi[0] = pb[si_len] * px[idx] - pa[si_len] * py[idx];
+		}
 	    }
 	}
       else if (si_len > 0)
 	{
-	  for (int i = 0; i < x_len; i++)
+	  T *py = y.fortran_vec ();
+	  T *psi = si.fortran_vec ();
+
+	  const T *pb = b.data ();
+	  const T *px = x.data ();
+
+	  psi += si_offset;
+
+	  for (int i = 0, idx = x_offset; i < x_len; i++, idx += x_stride)
 	    {
-	      int idx = i * x_stride + x_offset; 
-	      y (idx) = si (si_offset) + b (0) * x (idx);
+	      py[idx] = psi[0] + pb[0] * px[idx];
 
 	      if (si_len > 1)
 		{
@@ -182,14 +198,17 @@ filter (MArray<T>& b, MArray<T>& a, MArrayN<T>& x, MArrayN<T>& si,
 		    {
 		      OCTAVE_QUIT;
 
-		      si (j + si_offset) = si (j + 1 + si_offset) + 
-			b (j+1) * x (idx);
+		      psi[j] = psi[j+1] + pb[j+1] * px[idx];
 		    }
 
-		  si (si_len - 1 + si_offset) = b (si_len) * x (idx);
+		  psi[si_len-1] = pb[si_len] * px[idx];
 		}
 	      else
-		si (si_offset) = b (1) * x (idx);
+		{
+		  OCTAVE_QUIT;
+
+		  psi[0] = pb[1] * px[idx];
+		}
 	    }
 	}
     }

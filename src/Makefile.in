@@ -31,10 +31,10 @@ CXXFLAGS_NO_PT_FLAGS = $(filter-out $(PT_FLAGS), $(ALL_CXXFLAGS))
 
 ifeq ($(ENABLE_DYNAMIC_LINKING), true)
   ifdef CXXPICFLAG
-    %.oct : pic/%.o
+    %.oct : pic/%.o octave$(EXEEXT)
 	  $(SH_LD) $(SH_LDFLAGS) -o $@ $< $(OCT_LINK_DEPS)
   else
-    %.oct : %.o
+    %.oct : %.o octave$(EXEEXT)
 	  $(SH_LD) $(SH_LDFLAGS) -o $@ $< $(OCT_LINK_DEPS)
   endif
 endif
@@ -220,7 +220,7 @@ else
   BINDISTFILES = octave $(OCT_FILES)
 endif
 
-all: octave$(EXEEXT) DOCSTRINGS
+all: octave$(EXEEXT) stamp-oct-links DOCSTRINGS
 .PHONY: all
 
 objects: $(OBJECTS)
@@ -271,8 +271,7 @@ stamp-oct-links: $(OCT_FILES)
 stamp-prereq: defaults.h oct-conf.h $(OPT_HANDLERS)
 	touch stamp-prereq
 
-octave$(EXEEXT): stamp-prereq $(LIBRARIES) stamp-oct-links \
-	main.o $(DLD_STATIC_OBJ)
+octave$(EXEEXT): stamp-prereq $(LIBRARIES) main.o $(DLD_STATIC_OBJ)
 	$(LD_CXX) $(CPPFLAGS) $(ALL_CXXFLAGS) $(RDYNAMIC_FLAG) \
 	$(ALL_LDFLAGS) -o $@ \
 	main.o $(XERBLA) $(DLD_STATIC_OBJ) \

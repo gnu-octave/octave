@@ -1,3 +1,16 @@
+2002-10-31  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DLD-FUNCTIONS/fsolve.cc (fsolve_user_function): Print warning if
+
+	* Makefile.in (%.oct): Depend on octave$(EXEEXT) so that octave
+	will be built before any .oct files.
+	(all): Depend on stamp-oct-links.
+	(octave$(EXEEXT)): Don't depend on stamp-oct-links.
+
+	* ov-base.cc (octave_base_value::subsasgn): Handle default numeric
+	case here.
+	* ov-base-mat.cc (octave_base_matrix<MT>::subsasgn): Delete.
+
 2002-10-30  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (OCT_LINK_DEPS): Add $(BLAS_LIBS), $(FFTW_LIBS), and

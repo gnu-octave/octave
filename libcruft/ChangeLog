@@ -1,3 +1,8 @@
+2002-10-31  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* odessa/odessa.f (ODESSA): Second arg of xerrwd is string length.
+	* odessa/odessa_intdy.f (ODESSA_INTDY): Likewise.
+
 2002-10-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* dasrt/ddasrt.f (DDASRT): Fix computation of LENRW.

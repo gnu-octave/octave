@@ -46,6 +46,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Global pointer for user defined function required by hybrd1.
 static octave_function *fsolve_fcn;
 
+// Have we warned about imaginary values returned from user function?
+static bool warned_imaginary = false;
+
 // Is this a recursive call?
 static int call_depth = 0;
 
@@ -111,8 +114,15 @@ fsolve_user_function (const ColumnVector& x)
   if (fsolve_fcn)
     {
       octave_value_list tmp = fsolve_fcn->do_multi_index_op (1, args);
+
       if (tmp.length () > 0 && tmp(0).is_defined ())
 	{
+	  if (! warned_imaginary && tmp(0).is_complex_type ())
+	    {
+	      warning ("fsolve: ignoring imaginary part returned from user-supplied function");
+	      warned_imaginary = true;
+	    }
+
 	  retval = ColumnVector (tmp(0).vector_value ());
 
 	  if (error_state || retval.length () <= 0)
@@ -161,6 +171,8 @@ parameters for @code{fsolve}.\n\
 @end deftypefn")
 {
   octave_value_list retval;
+
+  warned_imaginary = false;
 
   unwind_protect::begin_frame ("Ffsolve");
 

@@ -1618,17 +1618,17 @@ C-----------------------------------------------------------------------
       NHNIL = NHNIL + 1
       IF (NHNIL .GT. MXHNIL) GO TO 290
       CALL XERRWD ('ODESSA - WARNING..INTERNAL T (=R1) AND H (=R2) ARE',
-     1   101, 1, 0, 0, 0, 0, ZERO, ZERO)
+     1  50, 101, 1, 0, 0, 0, 0, ZERO, ZERO)
       CALL XERRWD
      1 ('SUCH THAT IN THE MACHINE, T + H = T ON THE NEXT STEP',
-     1   101, 1, 0, 0, 0, 0, ZERO, ZERO)
+     1  52, 101, 1, 0, 0, 0, 0, ZERO, ZERO)
       CALL XERRWD ('(H = STEP SIZE). SOLVER WILL CONTINUE ANYWAY',
-     1   101, 1, 0, 0, 0, 2, TN, H)
+     1  44, 101, 1, 0, 0, 0, 2, TN, H)
       IF (NHNIL .LT. MXHNIL) GO TO 290
       CALL XERRWD ('ODESSA - ABOVE WARNING HAS BEEN ISSUED I1 TIMES.',
-     1   102, 1, 0, 0, 0, 0, ZERO, ZERO)
+     1  48, 102, 1, 0, 0, 0, 0, ZERO, ZERO)
       CALL XERRWD ('IT WILL NOT BE ISSUED AGAIN FOR THIS PROBLEM',
-     1   102, 1, 1, MXHNIL, 0, 0, ZERO,ZERO)
+     1  44, 102, 1, 1, MXHNIL, 0, 0, ZERO,ZERO)
  290   CONTINUE
 C-----------------------------------------------------------------------
 C     CALL ODESSA_STODE(NEQ,Y,YH,NYH,YH,WM,IWM,EWT,SAVF,ACOR,PAR,NRS,
@@ -1702,7 +1702,7 @@ C-----------------------------------------------------------------------
  430   NTREP = NTREP + 1
       IF (NTREP .LT. 5) RETURN
       CALL XERRWD ('ODESSA -- REPEATED CALLS WITH ISTATE = 1 AND
-     1TOUT = T (=R1)', 301, 1, 0, 0, 0, 1, T, ZERO)
+     1 TOUT = T (=R1)', 59, 301, 1, 0, 0, 0, 1, T, ZERO)
       GO TO 800
 C-----------------------------------------------------------------------
 C BLOCK H.
@@ -1715,39 +1715,39 @@ C THE WORK ARRAYS BEFORE RETURNING.
 C-----------------------------------------------------------------------
 C THE MAXIMUM NUMBER OF STEPS WAS TAKEN BEFORE REACHING TOUT. ----------
  500  CALL XERRWD ('ODESSA - AT CURRENT T (=R1), MXSTEP (=I1) STEPS',
-     1   201, 1, 0, 0, 0, 0, ZERO,ZERO)
+     1  47, 201, 1, 0, 0, 0, 0, ZERO,ZERO)
       CALL XERRWD ('TAKEN ON THIS CALL BEFORE REACHING TOUT',
-     1   201, 1, 1, MXSTEP, 0, 1, TN, ZERO)
+     1  39, 201, 1, 1, MXSTEP, 0, 1, TN, ZERO)
       ISTATE = -1
       GO TO 580
 C EWT(I) .LE. 0.0 FOR SOME I (NOT AT START OF PROBLEM). ----------------
  510   EWTI = RWORK(LEWT+I-1)
       CALL XERRWD ('ODESSA - AT T (=R1), EWT(I1) HAS BECOME R2 .LE. 0.',
-     1   202, 1, 1, I, 0, 2, TN, EWTI)
+     1  50, 202, 1, 1, I, 0, 2, TN, EWTI)
       ISTATE = -6
       GO TO 580
 C TOO MUCH ACCURACY REQUESTED FOR MACHINE PRECISION. -------------------
  520  CALL XERRWD ('ODESSA - AT T (=R1), TOO MUCH ACCURACY REQUESTED',
-     1  203, 1, 0, 0, 0, 0, ZERO,ZERO)
+     1  48, 203, 1, 0, 0, 0, 0, ZERO,ZERO)
       CALL XERRWD ('FOR PRECISION OF MACHINE..  SEE TOLSF (=R2)',
-     1  203, 1, 0, 0, 0, 2, TN, TOLSF)
+     1  43, 203, 1, 0, 0, 0, 2, TN, TOLSF)
       RWORK(14) = TOLSF
       ISTATE = -2
       GO TO 580
 C KFLAG = -1.  ERROR TEST FAILED REPEATEDLY OR WITH ABS(H) = HMIN. -----
  530  CALL XERRWD ('ODESSA - AT T(=R1) AND STEP SIZE H(=R2), THE ERROR',
-     1  204, 1, 0, 0, 0, 0, ZERO, ZERO)
+     1  50, 204, 1, 0, 0, 0, 0, ZERO, ZERO)
       CALL XERRWD ('TEST FAILED REPEATEDLY OR WITH ABS(H) = HMIN',
-     1  204, 1, 0, 0, 0, 2, TN, H)
+     1  44, 204, 1, 0, 0, 0, 2, TN, H)
       ISTATE = -4
       GO TO 560
 C KFLAG = -2.  CONVERGENCE FAILED REPEATEDLY OR WITH ABS(H) = HMIN. ----
  540  CALL XERRWD ('ODESSA - AT T (=R1) AND STEP SIZE H (=R2), THE',
-     1  205, 1, 0, 0, 0, 0, ZERO,ZERO)
+     1  46, 205, 1, 0, 0, 0, 0, ZERO,ZERO)
       CALL XERRWD ('CORRECTOR CONVERGENCE FAILED REPEATEDLY',
-     1   205, 1, 0, 0, 0, 0, ZERO,ZERO)
+     1  39, 205, 1, 0, 0, 0, 0, ZERO,ZERO)
       CALL XERRWD ('OR WITH ABS(H) = HMIN',
-     1   205, 1, 0, 0, 0, 2, TN, H)
+     1  21, 0, 1, 0, 0, 0, 2, TN, H)
       ISTATE = -5
 C COMPUTE IMXER IF RELEVANT. -------------------------------------------
  560   BIG = ZERO
@@ -1785,126 +1785,126 @@ C 5 CONSECUTIVE SUCH RETURNS JUST BEFORE THIS CALL TO THE SOLVER,
 C THE RUN IS HALTED.
 C-----------------------------------------------------------------------
  601   CALL XERRWD ('ODESSA - ISTATE (=I1) ILLEGAL',
-     1  1, 1, 1, ISTATE, 0, 0, ZERO,ZERO)
+     1  29, 1, 1, 1, ISTATE, 0, 0, ZERO,ZERO)
       GO TO 700
  602   CALL XERRWD ('ODESSA - ITASK (=I1) ILLEGAL',
-     1  2, 1, 1, ITASK, 0, 0, ZERO,ZERO)
+     1  28, 2, 1, 1, ITASK, 0, 0, ZERO,ZERO)
       GO TO 700
  603  CALL XERRWD ('ODESSA - ISTATE .GT. 1 BUT ODESSA NOT INITIALIZED',
-     1  3, 1, 0, 0, 0, 0, ZERO,ZERO)
+     1  49, 3, 1, 0, 0, 0, 0, ZERO,ZERO)
       GO TO 700
  604   CALL XERRWD ('ODESSA - NEQ (=I1) .LT. 1',
-     1  4, 1, 1, NEQ(1), 0, 0, ZERO,ZERO)
+     1  25, 4, 1, 1, NEQ(1), 0, 0, ZERO,ZERO)
       GO TO 700
  605  CALL XERRWD ('ODESSA - ISTATE = 3 AND NEQ CHANGED.  (I1 TO I2)',
-     1  5, 1, 2, N, NEQ(1), 0, ZERO,ZERO)
+     1  48, 5, 1, 2, N, NEQ(1), 0, ZERO,ZERO)
       GO TO 700
  606   CALL XERRWD ('ODESSA - ITOL (=I1) ILLEGAL',
-     1  6, 1, 1, ITOL, 0, 0, ZERO,ZERO)
+     1  27, 6, 1, 1, ITOL, 0, 0, ZERO,ZERO)
       GO TO 700
- 607   CALL XERRWD ('ODESSA - IOPT (=I1) ILLEGAL',
-     1   7, 1, 1, IOPT, 0, 0, ZERO,ZERO)
+ 607  CALL XERRWD ('ODESSA - IOPT (=I1) ILLEGAL',
+     1  27, 7, 1, 1, IOPT, 0, 0, ZERO,ZERO)
       GO TO 700
- 608   CALL XERRWD('ODESSA - MF (=I1) ILLEGAL',
-     1   8, 1, 1, MF, 0, 0, ZERO,ZERO)
+ 608  CALL XERRWD('ODESSA - MF (=I1) ILLEGAL',
+     1  25, 8, 1, 1, MF, 0, 0, ZERO,ZERO)
       GO TO 700
  609  CALL XERRWD('ODESSA - ML (=I1) ILLEGAL.. .LT.0 OR .GE.NEQ (=I2)',
-     1   9, 1, 2, ML, NEQ(1), 0, ZERO,ZERO)
+     1  50, 9, 1, 2, ML, NEQ(1), 0, ZERO,ZERO)
       GO TO 700
  610  CALL XERRWD('ODESSA - MU (=I1) ILLEGAL.. .LT.0 OR .GE.NEQ (=I2)',
-     1   10, 1, 2, MU, NEQ(1), 0, ZERO,ZERO)
+     1  50, 10, 1, 2, MU, NEQ(1), 0, ZERO,ZERO)
       GO TO 700
- 611   CALL XERRWD('ODESSA - MAXORD (=I1) .LT. 0',
-     1   11, 1, 1, MAXORD, 0, 0, ZERO,ZERO)
+ 611  CALL XERRWD('ODESSA - MAXORD (=I1) .LT. 0',
+     1  28, 11, 1, 1, MAXORD, 0, 0, ZERO,ZERO)
       GO TO 700
- 612   CALL XERRWD('ODESSA - MXSTEP (=I1) .LT. 0',
-     1   12, 1, 1, MXSTEP, 0, 0, ZERO,ZERO)
+ 612  CALL XERRWD('ODESSA - MXSTEP (=I1) .LT. 0',
+     1  28, 12, 1, 1, MXSTEP, 0, 0, ZERO,ZERO)
       GO TO 700
- 613   CALL XERRWD('ODESSA - MXHNIL (=I1) .LT. 0',
-     1   13, 1, 1, MXHNIL, 0, 0, ZERO,ZERO)
+ 613  CALL XERRWD('ODESSA - MXHNIL (=I1) .LT. 0',
+     1  28, 13, 1, 1, MXHNIL, 0, 0, ZERO,ZERO)
       GO TO 700
- 614   CALL XERRWD('ODESSA - TOUT (=R1) BEHIND T (=R2)',
-     1   14, 1, 0, 0, 0, 2, TOUT, T)
+ 614  CALL XERRWD('ODESSA - TOUT (=R1) BEHIND T (=R2)',
+     1  34, 14, 1, 0, 0, 0, 2, TOUT, T)
       CALL XERRWD('INTEGRATION DIRECTION IS GIVEN BY H0 (=R1)',
-     1   14, 1, 0, 0, 0, 1, H0, ZERO)
+     1  42, 14, 1, 0, 0, 0, 1, H0, ZERO)
       GO TO 700
- 615   CALL XERRWD('ODESSA - HMAX (=R1) .LT. 0.0',
-     1   15, 1, 0, 0, 0, 1, HMAX, ZERO)
+ 615  CALL XERRWD('ODESSA - HMAX (=R1) .LT. 0.0',
+     1  28, 15, 1, 0, 0, 0, 1, HMAX, ZERO)
       GO TO 700
- 616   CALL XERRWD('ODESSA - HMIN (=R1) .LT. 0.0',
-     1   16, 1, 0, 0, 0, 1, HMIN, ZERO)
+ 616  CALL XERRWD('ODESSA - HMIN (=R1) .LT. 0.0',
+     1  28, 16, 1, 0, 0, 0, 1, HMIN, ZERO)
       GO TO 700
  617  CALL XERRWD('ODESSA - RWORK LENGTH NEEDED, LENRW (=I1), EXCEEDS
-     1 LRW (=I2)', 17, 1, 2, LENRW, LRW, 0, ZERO,ZERO)
+     1 LRW (=I2)', 60, 17, 1, 2, LENRW, LRW, 0, ZERO,ZERO)
       GO TO 700
  618  CALL XERRWD('ODESSA - IWORK LENGTH NEEDED, LENIW (=I1), EXCEEDS
-     1 LIW (=I2)', 18, 1, 2, LENIW, LIW, 0, ZERO,ZERO)
+     1 LIW (=I2)', 60, 18, 1, 2, LENIW, LIW, 0, ZERO,ZERO)
       GO TO 700
- 619   CALL XERRWD('ODESSA - RTOL(I1) IS R1 .LT. 0.0',
-     1   19, 1, 1, I, 0, 1, RTOLI, ZREO)
+ 619  CALL XERRWD('ODESSA - RTOL(I1) IS R1 .LT. 0.0',
+     1  32, 19, 1, 1, I, 0, 1, RTOLI, ZREO)
       GO TO 700
- 620   CALL XERRWD('ODESSA - ATOL(I1) IS R1 .LT. 0.0',
-     1   20, 1, 1, I, 0, 1, ATOLI, ZERO)
+ 620  CALL XERRWD('ODESSA - ATOL(I1) IS R1 .LT. 0.0',
+     1  32, 20, 1, 1, I, 0, 1, ATOLI, ZERO)
       GO TO 700
 *
- 621   EWTI = RWORK(LEWT+I-1)
+ 621  EWTI = RWORK(LEWT+I-1)
       CALL XERRWD('ODESSA - EWT(I1) IS R1 .LE. 0.0',
-     1   21, 1, 1, I, 0, 1, EWTI, ZERO)
+     1  31, 21, 1, 1, I, 0, 1, EWTI, ZERO)
       GO TO 700
  622  CALL XERRWD('ODESSA - TOUT (=R1) TOO CLOSE TO T(=R2) TO START
-     1 INTEGRATION', 22, 1, 0, 0, 0, 2, TOUT, T)
+     1 INTEGRATION', 60, 22, 1, 0, 0, 0, 2, TOUT, T)
       GO TO 700
  623  CALL XERRWD('ODESSA - ITASK = I1 AND TOUT (=R1) BEHIND TCUR - HU
-     1 (= R2)', 23, 1, 1, ITASK, 0, 2, TOUT, TP)
+     1 (= R2)', 58, 23, 1, 1, ITASK, 0, 2, TOUT, TP)
       GO TO 700
  624  CALL XERRWD('ODESSA - ITASK = 4 OR 5 AND TCRIT (=R1) BEHIND TCUR
-     1 (=R2)', 24, 1, 0, 0, 0, 2, TCRIT, TN)
+     1 (=R2)', 57, 24, 1, 0, 0, 0, 2, TCRIT, TN)
       GO TO 700
  625   CALL XERRWD('ODESSA - ITASK = 4 OR 5 AND TCRIT (=R1) BEHIND TOUT
-     1 (=R2)', 25, 1, 0, 0, 0, 2, TCRIT, TOUT)
+     1 (=R2)', 57, 25, 1, 0, 0, 0, 2, TCRIT, TOUT)
       GO TO 700
  626  CALL XERRWD('ODESSA - AT START OF PROBLEM, TOO MUCH ACCURACY',
-     1   26, 1, 0, 0, 0, 0, ZERO,ZERO)
+     1  47, 26, 1, 0, 0, 0, 0, ZERO,ZERO)
       CALL XERRWD('REQUESTED FOR PRECISION OF MACHINE. SEE TOLSF (=R1)',
-     1   26, 1, 0, 0, 0, 1, TOLSF, ZERO)
+     1  51, 26, 1, 0, 0, 0, 1, TOLSF, ZERO)
       RWORK(14) = TOLSF
       GO TO 700
  627  CALL XERRWD
      1 ('ODESSA - TROUBLE FROM ODESSA_INTDY. ITASK = I1, TOUT = R1',
-     1    27, 1, 1, ITASK, 0, 1, TOUT, ZERO)
+     1  57, 27, 1, 1, ITASK, 0, 1, TOUT, ZERO)
       GO TO 700
 C ERROR STATEMENTS ASSOCIATED WITH SENSITIVITY ANALYSIS.
  628  CALL XERRWD('ODESSA - NPAR (=I1) .LT. 1',
-     1   28, 1, 1, NPAR, 0, 0, ZERO,ZERO)
+     1  26, 28, 1, 1, NPAR, 0, 0, ZERO,ZERO)
       GO TO 700
  629  CALL XERRWD('ODESSA - ISTATE = 3 AND NPAR CHANGED (I1 TO I2)',
-     1   29, 1, 2, NP, NPAR, 0, ZERO,ZERO)
+     1  47, 29, 1, 2, NP, NPAR, 0, ZERO,ZERO)
       GO TO 700
  630  CALL XERRWD('ODESSA - MITER (=I1) ILLEGAL',
-     1   30, 1, 1, MITER, 0, 0, ZERO,ZERO)
+     1  28, 30, 1, 1, MITER, 0, 0, ZERO,ZERO)
       GO TO 700
  631  CALL XERRWD('ODESSA - TROUBLE IN ODESSA_SPRIME (IERPJ)',
-     1   31, 1, 0, 0, 0, 0, ZERO,ZERO)
+     1  41, 31, 1, 0, 0, 0, 0, ZERO,ZERO)
       GO TO 700
  632  CALL XERRWD('ODESSA - TROUBLE IN ODESSA_SPRIME (MITER)',
-     1   32, 1, 0, 0, 0, 0, ZERO,ZERO)
+     1  41, 32, 1, 0, 0, 0, 0, ZERO,ZERO)
       GO TO 700
  633  CALL XERRWD('ODESSA - FATAL ERROR IN ODESSA_STODE (KFLAG = -3)',
-     1   33, 2, 0, 0, 0, 0, ZERO,ZERO)
+     1  49, 33, 2, 0, 0, 0, 0, ZERO,ZERO)
       GO TO 801
 C
- 700   IF (ILLIN .EQ. 5) GO TO 710
+ 700  IF (ILLIN .EQ. 5) GO TO 710
       ILLIN = ILLIN + 1
       ISTATE = -3
       RETURN
  710  CALL XERRWD('ODESSA - REPEATED OCCURRENCES OF ILLEGAL INPUT',
-     1   302, 1, 0, 0, 0, 0, ZERO,ZERO)
+     1  46, 302, 1, 0, 0, 0, 0, ZERO,ZERO)
 C
  800  CALL XERRWD('ODESSA - RUN ABORTED.. APPARENT INFINITE LOOP',
-     1   303, 2, 0, 0, 0, 0, ZERO,ZERO)
+     1  45, 303, 2, 0, 0, 0, 0, ZERO,ZERO)
       RETURN
  801  CALL XERRWD('ODESSA - RUN ABORTED',
-     1   304, 2, 0, 0, 0, 0, ZERO,ZERO)
+     1  20, 304, 2, 0, 0, 0, 0, ZERO,ZERO)
       RETURN
 C-------------------- END OF SUBROUTINE ODESSA -------------------------
       END

@@ -1,3 +1,8 @@
+2002-10-31  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* octave.test/arith/prod-4.m, octave.test/arith/sum-4.m:
+	Cover more cases for empty matrices.
+
 2002-10-15  Paul Kienzle <pkienzle@users.sf.net>
 
 	* Makefile.in: Use @library_path_var@ instead of LD_LIBRARY_PATH.

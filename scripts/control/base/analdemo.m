@@ -71,7 +71,7 @@ function analdemo ()
       clc
 
       disp("Example #2, consider the continuous state space system:\n");
-      a=[1, 3, -10.2; 3.7, -2, 9; n1, 3, 7]
+      a=[1, 3, -10.2; 3.7, -2, 9; 1, 3, 7]
       b=[1, 12; 6, 2; -3.8, 7]
       c=[1, -1.1, 7; 3, -9.8, 2]
       d=0

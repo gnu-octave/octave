@@ -61,13 +61,13 @@ C
       RETURN
 C
  80   CALL XERRWD('ODESSA_INTDY--  K (=I1) ILLEGAL',
-     1  51, 1, 1, K, 0, 0, ZERO,ZERO)
+     1  31, 51, 1, 1, K, 0, 0, ZERO,ZERO)
       IFLAG = -1
       RETURN
  90   CALL XERRWD ('ODESSA_INTDY--  T (=R1) ILLEGAL',
-     1   52, 1, 0, 0, 0, 1, T, ZERO)
+     1  31, 52, 1, 0, 0, 0, 1, T, ZERO)
       CALL XERRWD('T NOT IN INTERVAL TCUR - HU (= R1) TO TCUR (=R2)',
-     1   52, 1, 0, 0, 0, 2, TP, TN)
+     1  48, 52, 1, 0, 0, 0, 2, TP, TN)
       IFLAG = -2
       RETURN
 C------------------ END OF SUBROUTINE ODESSA_INTDY -----------------------

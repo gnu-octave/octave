@@ -1,3 +1,7 @@
+2002-10-31  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* control/base/analdemo.m: Fix typo.
+
 2002-10-31  Francesco Potorti` <pot@gnu.org>
 
 	* statistics/distributions/discrete_pdf.m: Fix typo.

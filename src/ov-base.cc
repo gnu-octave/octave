@@ -103,8 +103,40 @@ octave_base_value::subsasgn (const std::string type,
 
   if (is_defined ())
     {
-      std::string nm = type_name ();
-      error ("can't perform indexed assignment for %s type", nm.c_str ());
+      if (is_numeric_type ())
+	{
+	  switch (type[0])
+	    {
+	    case '(':
+	      {
+		if (type.length () == 1)
+		  retval = numeric_assign (type, idx, rhs);
+		else
+		  {
+		    std::string nm = type_name ();
+		    error ("in indexed assignment of %s, last rhs index must be ()",
+			   nm.c_str ());
+		  }
+	      }
+	      break;
+
+	    case '{':
+	    case '.':
+	      {
+		std::string nm = type_name ();
+		error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
+	      }
+	      break;
+
+	    default:
+	      panic_impossible ();
+	    }
+	}
+      else
+	{
+	  std::string nm = type_name ();
+	  error ("can't perform indexed assignment for %s type", nm.c_str ());
+	}
     }
   else
     {

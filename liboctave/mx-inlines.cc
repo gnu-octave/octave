@@ -303,17 +303,14 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
 	    } \
 	} \
     } \
-  else if (nr == 0 && nc == 0) \
-    { \
-      retval.resize (1, 1); \
-      retval.elem (0, 0) = MT_RESULT; \
-    } \
+  else if (nc == 0 && (nr == 0 || (nr == 1 && dim == -1))) \
+    retval.resize (1, 1, MT_RESULT); \
   else if (nr == 0 && (dim == 0 || dim == -1)) \
     retval.resize (1, nc, MT_RESULT); \
   else if (nc == 0 && dim == 1) \
     retval.resize (nr, 1, MT_RESULT); \
   else \
-    retval.resize (nr, nc); \
+    retval.resize (nr > 0, nc > 0); \
  \
   return retval
 

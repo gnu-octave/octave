@@ -44,9 +44,6 @@ extern const char *dlerror (void);
 extern void *dlsym (void *, const char *);
 extern int dlclose (void *);
 #endif
-#ifndef RTLD_LAZY
-#define RTLD_LAZY 1
-#endif
 #elif defined (HAVE_SHL_LOAD_API)
 #include <dl.h>
 #endif
@@ -244,7 +241,17 @@ octave_dlopen_shlib::open (const std::string& f, bool warn_future)
     {
       file = f;
 
-      library = dlopen (file.c_str (), RTLD_LAZY);
+      int flags = 0;
+
+#if defined (RTLD_LAZY)
+      flags |= RTLD_LAZY
+#endif
+
+#if defined (RTLD_GLOBAL)
+      flags |= RTLD_GLOBAL
+#endif
+      
+      library = dlopen (file.c_str (), flags);
 
       if (library)
 	stamp_time (warn_future);

@@ -73,7 +73,7 @@ function image (x, y, A, zoom)
 
   ## Start the viewer.  Try display, xv, then xloadimage.
 
-  xv = sprintf ("xv -expand %f %s", zoom, ppm_name);
+  xv = sprintf ("xv -raw -expand %f %s", zoom, ppm_name);
 
   xloadimage = sprintf ("xloadimage -zoom %f %s", zoom*100, ppm_name);
 

@@ -1,3 +1,8 @@
+2002-11-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* image/image.m: Use -raw option for xv.
+	From Remy Bruno <remy.bruno@libertysurf.fr>
+
 2002-11-12  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* control/base/lsim.m: Use approximate test for step size change.

@@ -1,3 +1,16 @@
+Mon Jun  7 09:54:51 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lex.l (next_token_is_bin_op, next_token_is_postfix_unary_op,
+	handle_number): Delete yytext arg.  Change all callers.
+	(next_token_is_postfix_unary_op): Check the first character
+	obtained from yyinput before calling it again.
+	(next_token_is_bin_op): Do a more thorough check.
+	(handle_identifier): Also enter token in local symbol table if the
+	following token is a dot and it looks like a binary operator.
+	(whitespace_in_literal_matrix): Now static.
+
+	* lex.l: Always use unput, not yyunput.
+
 Fri May 28 11:02:37 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* DLD-FUNCTIONS/chol.cc (Fchol): If two output arguments, never

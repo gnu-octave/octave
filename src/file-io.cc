@@ -946,14 +946,14 @@ Reads data in binary form of type PRECISION from a file.\n\
               values are\n\
 \n\
     native   --  the format of the current machine (default)\n\
-    ieee-le  --  IEEE big endian\n\
-    ieee-be  --  IEEE little endian\n\
+    ieee-be  --  IEEE big endian\n\
+    ieee-le  --  IEEE little endian\n\
     vaxd     --  VAX D floating format\n\
     vaxg     --  VAX G floating format\n\
     cray     --  Cray floating format\n\
 \n\
               however, conversions are currently only supported for\n\
-              ieee-be, and ieee-le formats.\n\
+              ieee-be and ieee-le formats.\n\
 \n\
 \n\
   DATA      : matrix in which the data is stored\n\

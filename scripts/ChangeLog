@@ -1,3 +1,7 @@
+Fri Jun 18 12:19:22 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* polynomial/polyfit.m: Correct previous change.
+
 Wed Apr  7 13:57:26 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* linear-algebra/qrhouse.m, linear-algebra/krygetq.m: Delete.

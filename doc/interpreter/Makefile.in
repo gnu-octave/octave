@@ -81,7 +81,8 @@ octave.ps: octave.dvi
 	mv BUGS ../../BUGS
 
 octave_toc.html:
-	-texi2html -split_chapter -I$(srcdir)/.. $(srcdir)/octave.texi
+	-texi2html -expandinfo -split_chapter -I$(srcdir)/.. \
+	  $(srcdir)/octave.texi
 
 check: all
 .PHONY: check

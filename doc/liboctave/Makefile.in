@@ -54,7 +54,8 @@ liboctave.ps: liboctave.dvi
 	-dvips -o liboctave.ps liboctave.dvi
 
 liboctave_toc.html:
-	-texi2html -split_chapter -I$(srcdir)/.. $(srcdir)/liboctave.texi
+	-texi2html -expandinfo -split_chapter -I$(srcdir)/.. \
+	  $(srcdir)/liboctave.texi
 
 check:
 .PHONY: check

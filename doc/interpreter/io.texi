@@ -1165,7 +1165,7 @@ An optional @dfn{flag character} @samp{*}, which says to ignore the text
 read for this specification.  When @code{scanf} finds a conversion
 specification that uses this flag, it reads input as directed by the
 rest of the conversion specification, but it discards this input, does
-not use a pointer argument, and does not increment the count of
+not return any value, and does not increment the count of
 successful assignments.
 @cindex flag character (@code{scanf})
 
@@ -1174,8 +1174,9 @@ An optional decimal integer that specifies the @dfn{maximum field
 width}.  Reading of characters from the input stream stops either when
 this maximum is reached or when a non-matching character is found,
 whichever happens first.  Most conversions discard initial whitespace
-characters (those that don't are explicitly documented), and these
-discarded characters don't count towards the maximum field width.
+characters, and these discarded characters don't count towards the
+maximum field width.  Conversions that do not discard initial whitespace
+are explicitly documented.
 @cindex maximum field width (@code{scanf})
 
 @item

@@ -170,10 +170,10 @@ static string plot_style_token (const string& s);
 static symbol_record *lookup_identifier (const string& s);
 static void grab_help_text (void);
 static bool match_any (char c, const char *s);
-static bool next_token_is_bin_op (int spc_prev, char *yytext);
-static bool next_token_is_postfix_unary_op (int spc_prev, char *yytext);
+static bool next_token_is_bin_op (bool spc_prev);
+static bool next_token_is_postfix_unary_op (bool spc_prev);
 static string strip_trailing_whitespace (char *s);
-static void handle_number (char *yytext);
+static void handle_number (void);
 static int handle_string (char delim, int text_style = 0);
 static int handle_close_brace (int spc_gobbled);
 static int handle_identifier (const string& tok, int spc_gobbled);
@@ -236,7 +236,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
 <TEXT_FCN>[\"\'] {
     current_input_column++;
-    return handle_string (yytext[0], 1);
+    return handle_string (yytext[0], true);
   }
 
 <TEXT_FCN>[^ \t\n\;\,\"\'][^ \t\n\;\,]*{S}* {
@@ -294,8 +294,8 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     if (Vwhitespace_in_literal_matrix != 2)
       {
 	int tmp = eat_continuation ();
-	int bin_op = next_token_is_bin_op (1, yytext);
-	int postfix_un_op = next_token_is_postfix_unary_op (1, yytext);
+	int bin_op = next_token_is_bin_op (true);
+	int postfix_un_op = next_token_is_postfix_unary_op (true);
 
 	if (! (postfix_un_op || bin_op)
 	    && nesting_level.is_brace ()
@@ -397,7 +397,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %}
 
 {NUMBER}{Im} {
-    handle_number (yytext);
+    handle_number ();
     return IMAG_NUM;
   }
 
@@ -408,7 +408,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
 {D}+/\.[\*/\\^'] |
 {NUMBER} {
-    handle_number (yytext);
+    handle_number ();
     return NUM;
   }
 
@@ -668,10 +668,10 @@ do_comma_insert_check (void)
 
   int c = yyinput ();
 
-  yyunput (c, yytext);
+  unput (c);
 
   if (spc_gobbled)
-    yyunput (' ', yytext);
+    unput (' ');
 
   lexer_flags.do_comma_insert = (lexer_flags.braceflag && c == '[');
 }
@@ -1172,7 +1172,7 @@ grab_help_text (void)
  done:
 
   if (c)
-    yyunput (c, yytext);
+    unput (c);
 }
 
 // Return 1 if the given character matches any character in the given
@@ -1197,8 +1197,10 @@ match_any (char c, const char *s)
 //   [ 1 + 2 ]  or  [ 1+ 2]  or  [ 1+2 ]  ==> binary
 
 static bool
-looks_like_bin_op (int spc_prev, int spc_next)
+looks_like_bin_op (bool spc_prev, int next_char)
 {
+  bool spc_next = (next_char == ' ' || next_char == '\t');
+
   return ((spc_prev && spc_next) || ! spc_prev);
 }
 
@@ -1206,47 +1208,39 @@ looks_like_bin_op (int spc_prev, int spc_next)
 // unary operator.  This is ugly, but it seems to do the right thing.
 
 static bool
-next_token_is_postfix_unary_op (int spc_prev, char *yytext)
+next_token_is_postfix_unary_op (bool spc_prev)
 {
   bool un_op = false;
 
   int c0 = yyinput ();
-  int c1 = yyinput ();
 
-  yyunput (c1, yytext);
-  yyunput (c0, yytext);
+  if (c0 == '\'' && ! spc_prev)
+    {
+      un_op = true;
+    }
+  else if (c0 == '.')
+    {
+      int c1 = yyinput ();
+      un_op = (c1 == '\'');
+      unput (c1);
+    }
 
-  int transpose = (c0 == '.' && c1 == '\'');
-  int hermitian = (c0 == '\'');
-
-  un_op = (transpose || (hermitian && ! spc_prev));
+  unput (c0);
 
   return un_op;
 }
 
 // Try to determine if the next token should be treated as a binary
-// operator.  This is even uglier, but it also seems to do the right
-// thing.  Note that it is only necessary to check the spacing for `+'
-// and `-', since those are the only tokens that can appear as unary
-// ops too.
+// operator.
 //
-// Note that this never returns true for `.', even though it can be a
-// binary operator (the structure reference thing).  The only time
-// this appears to matter is for things like
+// This kluge exists because whitespace is not always ignored inside
+// the square brackets that are used to create matrix objects.
 //
-//   [ a . b ]
-//
-// which probably doesn't occur that often, can be worked around by
-// eliminating the whitespace, putting the expression in parentheses,
-// or using `whitespace_in_literal_matrix = "ignored"', so I think it
-// is an acceptable change.  It would be quite a bit harder to `fix'
-// this.  (Well, maybe not.  the best fix would be to do away with the
-// specialness of whitespace inside of `[ ... ]').
-//
-// However, we still do check for `.+', `.*', etc.
+// Line continuations directly after the operator will cause this
+// function to return FALSE.
 
 static bool
-next_token_is_bin_op (int spc_prev, char *yytext)
+next_token_is_bin_op (bool spc_prev)
 {
   bool bin_op = false;
 
@@ -1254,44 +1248,101 @@ next_token_is_bin_op (int spc_prev, char *yytext)
 
   switch (c0)
     {
+    case ':':
     case '+':
     case '-':
+    case '/':
+    case '\\':
+    case '^':
       {
 	int c1 = yyinput ();
-	yyunput (c1, yytext);
-	int spc_next = (c1 == ' ' || c1 == '\t');
-	bin_op = looks_like_bin_op (spc_prev, spc_next);
+	bin_op = looks_like_bin_op (spc_prev, c1);
+	unput (c1);
       }
       break;
 
+    // .+ .- ./ .\ .^ .* .**
     case '.':
       {
 	int c1 = yyinput ();
-	yyunput (c1, yytext);
-	bin_op = match_any (c1, "+-*/\\^");
+
+	if (match_any (c1, "+-/\\^"))
+	  {
+	    int c2 = yyinput ();
+	    bin_op = looks_like_bin_op (spc_prev, c2);
+	    unput (c2);
+	  }
+	else if (c1 == '*')
+	  {
+	    int c2 = yyinput ();
+
+	    if (c2 == '*')
+	      {
+		int c3 = yyinput ();
+		bin_op = looks_like_bin_op (spc_prev, c3);
+		unput (c3);
+	      }
+	    else
+	      bin_op = looks_like_bin_op (spc_prev, c2);
+
+	    unput (c2);
+	  }
+	else if (! isdigit (c1) && c1 != ' ' && c1 != '\t')
+	  {
+	    bin_op = true;
+	  }
+
+	unput (c1);
       }
       break;
 
-    case '/':
-    case ':':
-    case '\\':
-    case '^':
+    // = == & && | || * **
+    case '=':
     case '&':
-    case '*':
     case '|':
+    case '*':
+      {
+	int c1 = yyinput ();
+
+	if (c1 == c0)
+	  {
+	    int c2 = yyinput ();
+	    bin_op = looks_like_bin_op (spc_prev, c2);
+	    unput (c2);
+	  }
+	else
+	  bin_op = looks_like_bin_op (spc_prev, c1);
+
+	unput (c1);
+      }
+      break;
+
+    // <= >= <> ~= != < >
     case '<':
     case '>':
     case '~':
     case '!':
-    case '=':
-      bin_op = true;
+      {
+	int c1 = yyinput ();
+
+	if ((c1 == '=') || (c1 == '<' && c1 == '>'))
+	  {
+	    int c2 = yyinput ();
+	    bin_op = looks_like_bin_op (spc_prev, c2);
+	    unput (c2);
+	  }
+	else if (c1 != '~' && c1 != '!')
+	  bin_op = looks_like_bin_op (spc_prev, c1);
+
+	unput (c1);
+      }
       break;
 
     default:
       break;
     }
 
-  yyunput (c0, yytext);
+  unput (c0);
 
   return bin_op;
 }
@@ -1378,7 +1429,7 @@ eat_whitespace (void)
     }
 
  done:
-  yyunput (c, yytext);
+  unput (c);
   current_input_column--;
   return retval;
 }
@@ -1390,7 +1441,7 @@ looks_like_hex (const char *s, int len)
 }
 
 static void
-handle_number (char *yytext)
+handle_number (void)
 {
   char *tmp = strsave (yytext);
 
@@ -1480,7 +1531,7 @@ have_continuation (bool trailing_comments_ok)
 	}
     }
 
-  yyunput (c, yytext);
+  unput (c);
   return false;
 
 cleanup:
@@ -1490,7 +1541,7 @@ cleanup:
     {
       int len = strlen (s);
       while (len--)
-	yyunput (s[len], yytext);
+	unput (s[len]);
     }
   delete [] s;
 
@@ -1512,12 +1563,12 @@ have_ellipsis_continuation (bool trailing_comments_ok)
 	return true;
       else
 	{
-	  yyunput (c2, yytext);
-	  yyunput (c1, yytext);
+	  unput (c2);
+	  unput (c1);
 	}
     }
   else
-    yyunput (c1, yytext);
+    unput (c1);
 
   return false;
 }
@@ -1536,7 +1587,7 @@ eat_continuation (void)
       || (c == '\\' && have_continuation ()))
     retval = eat_whitespace ();
   else
-    yyunput (c, yytext);
+    unput (c);
 
   return retval;
 }
@@ -1593,7 +1644,7 @@ handle_string (char delim, int text_style)
 		buf << (char) c;
 	      else
 		{
-		  yyunput (c, yytext);
+		  unput (c);
 		  buf << ends;
 		  char *t = buf.str ();
 		  string s = do_string_escapes (t);
@@ -1736,9 +1787,8 @@ handle_close_brace (int spc_gobbled)
 
       if (lexer_flags.braceflag && Vwhitespace_in_literal_matrix != 2)
 	{
-	  int bin_op = next_token_is_bin_op (spc_gobbled, yytext);
-	  int postfix_un_op = next_token_is_postfix_unary_op
-	    (spc_gobbled, yytext);
+	  int bin_op = next_token_is_bin_op (spc_gobbled);
+	  int postfix_un_op = next_token_is_postfix_unary_op (spc_gobbled);
 
 	  int other_op = match_any (c1, ",;\n]");
 
@@ -1764,10 +1814,9 @@ maybe_unput_comma (int spc_gobbled)
 {
   if (Vwhitespace_in_literal_matrix != 2 && nesting_level.is_brace ())
     {
-      int bin_op = next_token_is_bin_op (spc_gobbled, yytext);
+      int bin_op = next_token_is_bin_op (spc_gobbled);
 
-      int postfix_un_op
-	= next_token_is_postfix_unary_op (spc_gobbled, yytext);
+      int postfix_un_op = next_token_is_postfix_unary_op (spc_gobbled);
 
       int c1 = yyinput ();
       int c2 = yyinput ();
@@ -1869,8 +1918,9 @@ handle_identifier (const string& tok, int spc_gobbled)
     }
 
   int c = yyinput ();
-  yyunput (c, yytext);
+  unput (c);
   bool next_tok_is_eq = (c == '=');
+  bool next_tok_is_dot = (c == '.');
   bool next_tok_is_paren = (c == '(');
 
   // Make sure we put the return values of a function in the symbol
@@ -1901,7 +1951,8 @@ handle_identifier (const string& tok, int spc_gobbled)
       if (next_tok_is_eq
 	  || lexer_flags.looking_at_return_list
 	  || lexer_flags.looking_at_parameter_list
-	  || lexer_flags.looking_at_matrix_or_assign_lhs)
+	  || lexer_flags.looking_at_matrix_or_assign_lhs
+	  || (next_tok_is_dot && next_token_is_bin_op (spc_gobbled)))
 	{
 	  force_local_variable (tok);
 	}
@@ -1950,7 +2001,7 @@ check_for_garbage_after_fcn_def (void)
 {
   // By making a newline be the next character to be read, we will
   // force the parser to return after reading the function.  Calling
-  // yyunput with EOF seems not to work...
+  // unput with EOF does not work.
 
   bool in_comment = false;
   int lineno = input_line_number;
@@ -1983,12 +2034,12 @@ check_for_garbage_after_fcn_def (void)
 	      warning ("ignoring trailing garbage after end of function\n\
          near line %d of file `%s.m'", lineno, curr_fcn_file_name.c_str ());
 	      
-	      yyunput ('\n', yytext);
+	      unput ('\n');
 	      return;
 	    }
 	}
     }
-  yyunput ('\n', yytext);
+  unput ('\n');
 }
 
 void
@@ -2033,7 +2084,7 @@ lexical_feedback::init (void)
   quote_is_transpose = false;
 }
 
-int
+static int
 whitespace_in_literal_matrix (void)
 {
   int pref = 0;

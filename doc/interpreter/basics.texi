@@ -217,7 +217,7 @@ typed at the shell prompt to run Octave, and the value of
 @code{"@value{OCTAVEHOME}/bin/octave"}, and @code{program_name} would
 have the value @code{"octave"}.
 
-If executing a script from the command line (e.g., @code{octave foo.m}
+If executing a script from the command line (e.g., @code{octave foo.m})
 or using an executable Octave script, the program name is set to the
 name of the script.  @xref{Executable Octave Programs} for an example of
 how to create an executable Octave script.

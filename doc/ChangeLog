@@ -1,3 +1,10 @@
+Fri Jun 18 23:17:02 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* interpreter/Makefile.in (octave_toc.html): Add -expandinfo to
+	tex12html options.
+	* liboctave/Makefile.in (liboctave_toc.html): Likewise.
+	* faq/Makefile.in (Octave-FAQ_toc.html): Likewise.
+
 Fri Oct  9 00:27:33 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* faq/Makefile.in, interpreter/Makefile.in, liboctave/Makefile.in:

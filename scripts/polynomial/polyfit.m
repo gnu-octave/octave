@@ -59,7 +59,7 @@ function [p, yf] = polyfit (x, y, n)
     yf = X * p;
 
     if (y_is_row_vector)
-      yf = yf';
+      yf = yf.';
     endif
   endif
 

@@ -865,15 +865,13 @@ display the definition of each NAME that refers to a function")
 		{
 		  octave_value defn = sym_rec->def ();
 
-		  assert (defn.is_constant ());
-
 		  int var_ok = 1;
 
 		  // XXX FIXME XXX -- need to handle structure
 		  // references correctly.
 
-		  if (defn.is_map ())
-		    error ("type: operations on structs not implemented");
+		  //if (defn.is_map ())
+		  //  error ("type: operations on structs not implemented");
 
 		  if (! error_state)
 		    {

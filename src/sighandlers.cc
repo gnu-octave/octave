@@ -36,9 +36,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "error.h"
 #include "load-save.h"
-#include "toplev.h"
+#include "pager.h"
 #include "sighandlers.h"
 #include "syswait.h"
+#include "toplev.h"
 #include "utils.h"
 
 // Nonzero means we have already printed a message for this series of
@@ -130,12 +131,13 @@ generic_sig_handler (int sig)
 #endif
 }
 
-// Handle SIGCHLD.  Should use waitpid and ignore stopped jobs.
-// Needs to restore state of plotter such that it will be restarted
-// again when needed.  Needs to close file descriptors corresponding
-// to processes started with execute().
+// Handle SIGCHLD.
 
-#if 0
+// XXX FIXME XXX -- this should probably be implemented by having a
+// global list of pids to check and a corresponding list of functions
+// to call if a pid is recognized.  That way, we just have to register
+// functions elsewhere and this function doesn't have to change.
+
 static RETSIGTYPE
 sigchld_handler (int sig)
 {
@@ -143,33 +145,21 @@ sigchld_handler (int sig)
   pid_t pid = wait (&status);
 
   if (pid < 0)
-    cerr << "wait error\n";
+    error ("sigchld_handler: internal error: wait failed");
   else
     {
-      cerr << "sigchld caught, PID = " << pid << "; status: ";
-
-      int lo_byte = (status & 0xff);
-      int hi_byte = ((status >> 8) & 0xff);
-      if (lo_byte == 0177)
+      if (WIFEXITED (status) || WIFSIGNALLED (status))
 	{
-	  cerr << "stopped with signal = " << hi_byte << "\n";
-	}
-      else if (lo_byte)
-	{
-	  int sig_num = (lo_byte & 0x7f);
-	  cerr << "stopped with signal = " << sig_num << "\n";
-	  if (lo_byte & 0200)
-	    cerr << "child dumped core\n";
-	}
-      else
-	{
-	  cerr << "exited with status = " << hi_byte << "\n";
+	  if (pid == octave_pager_pid)
+	    {
+	      error ("connection to external pager lost --");
+	      error ("pending computations have been discarded");
+	    }
 	}
     }
 
   octave_set_signal_handler (SIGCHLD, sigchld_handler);
 }
-#endif
 
 #if defined (__alpha__)
 static RETSIGTYPE
@@ -267,10 +257,8 @@ install_signal_handlers (void)
   octave_set_signal_handler (SIGBUS, generic_sig_handler);
 #endif
 
-#if 0
 #ifdef SIGCHLD
   octave_set_signal_handler (SIGCHLD, sigchld_handler);
-#endif
 #endif
 
 #ifdef SIGEMT

@@ -1,3 +1,7 @@
+2001-04-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* octMakefile.in (CONF_DISTFILES): Remove config.h.bot from the list.
+
 2001-04-19  David Livings <david.livings@asa.co.uk>
 
 	* Makeconf.in (mk-libdir-link): Omit check for $(octlibdir)/octave

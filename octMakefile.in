@@ -21,7 +21,7 @@ INSTALL_DATA = @INSTALL_DATA@
 
 CONF_DISTFILES = Makefile Makefile.in octMakefile.in Makeconf.in configure \
 	configure.in config.guess config.sub aclocal.m4 config.h.in \
-	acconfig.h config.h.bot install-sh
+	acconfig.h install-sh
 
 DISTFILES = $(CONF_DISTFILES) \
 	BUGS COPYING FLEX.patch INSTALL INSTALL.OCTAVE NEWS NEWS.[0-9] \

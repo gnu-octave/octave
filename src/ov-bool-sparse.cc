@@ -180,13 +180,13 @@ octave_sparse_bool_matrix::bool_array_value (void) const
 
 
 SparseMatrix 
-octave_sparse_bool_matrix::sparse_matrix_value (void) const
+octave_sparse_bool_matrix::sparse_matrix_value (bool) const
 {
   return SparseMatrix (this->matrix);
 }
 
 SparseComplexMatrix 
-octave_sparse_bool_matrix::sparse_complex_matrix_value (void) const
+octave_sparse_bool_matrix::sparse_complex_matrix_value (bool) const
 {
   return SparseComplexMatrix (this->matrix);
 }

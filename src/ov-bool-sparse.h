@@ -113,9 +113,9 @@ public:
 
   boolNDArray bool_array_value (void) const;
 
-  SparseMatrix sparse_matrix_value (void) const;
+  SparseMatrix sparse_matrix_value (bool = false) const;
 
-  SparseComplexMatrix sparse_complex_matrix_value (void) const;
+  SparseComplexMatrix sparse_complex_matrix_value (bool = false) const;
 
   SparseBoolMatrix sparse_bool_matrix_value (void) const
     { return matrix; }

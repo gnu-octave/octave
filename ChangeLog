@@ -1,3 +1,9 @@
+2005-03-22  John W. Eaton  <jwe@octave.org>
+
+	* emacs/octave-mod.el (octave-abbrev-table): Omit fifth and sixth
+	arguments from define-abbrev for compatibility with some older
+	versions of Emacs.
+
 2005-03-21  John W. Eaton  <jwe@octave.org>
 
 	* octave-bug.in: Try harder to find default pager (use code

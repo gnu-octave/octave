@@ -233,6 +233,7 @@ private:
   inline T get (int i) { return Array<T>::elem (i); }
   inline void set (const T& val, int i) { Array<T>::elem (i) = val; }
 
+#if 0
 #if ! (defined (_AIX) && defined (__GNUG__) && __GNUC__ > 1 && __GNUC_MINOR__ < 6)
   class Proxy
   {
@@ -283,6 +284,7 @@ private:
 
 friend class Proxy;
 #endif
+#endif
 
 protected:
 
@@ -310,11 +312,7 @@ public:
   int cols (void) const;
   int columns (void) const;
 
-#if defined (_AIX) && defined (__GNUG__) && __GNUC__ > 1 && __GNUC_MINOR__ < 6
-  T& elem (int r, int c);
-  T& checkelem (int r, int c);
-  T& operator () (int r, int c);
-#else
+#if 0
   inline Proxy elem (int r, int c)
   {
     return Proxy (this, r, c);
@@ -341,6 +339,10 @@ public:
     else
       return Proxy (this, r, c);
   }
+#else
+  T& elem (int r, int c);
+  T& checkelem (int r, int c);
+  T& operator () (int r, int c);
 #endif
 
 // No checking.

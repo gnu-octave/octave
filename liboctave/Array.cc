@@ -846,7 +846,7 @@ DiagArray<T>::columns (void) const
   return nc;
 }
 
-#if defined (_AIX) && defined (__GNUG__) && __GNUC__ > 1 && __GNUC_MINOR__ < 6
+#if 1
 template <class T>
 T&
 DiagArray<T>::elem (int r, int c)

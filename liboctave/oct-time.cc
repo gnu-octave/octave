@@ -97,6 +97,20 @@ octave_time::stamp (void)
 #endif
 }
 
+// From the mktime() manual page:
+//
+//     The  mktime()  function converts a broken-down time structure,
+//     expressed as local time, to calendar time representation.
+//
+//     <snip>
+//
+//     If structure members are outside  their	legal interval, they
+//     will be normalized (so that, e.g., 40 October is changed into
+//     9 November).
+//
+// So, we no longer check limits here.
+
+#if 0
 #define DEFINE_SET_INT_FIELD_FCN(f, lo, hi) \
   octave_base_tm& \
   octave_base_tm::f (int v) \
@@ -109,6 +123,16 @@ octave_time::stamp (void)
  \
     return *this; \
   }
+#else
+#define DEFINE_SET_INT_FIELD_FCN(f, lo, hi) \
+  octave_base_tm& \
+  octave_base_tm::f (int v) \
+  { \
+    tm_ ## f = v; \
+ \
+    return *this; \
+  }
+#endif
 
 DEFINE_SET_INT_FIELD_FCN (usec, 0, 1000000)
 DEFINE_SET_INT_FIELD_FCN (sec, 0, 61)

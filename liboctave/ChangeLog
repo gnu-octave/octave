@@ -1,3 +1,8 @@
+2000-11-16  Paul Kienzle  <pkienzle@kienzle.powernet.co.uk>
+
+	* oct-time.cc (DEFINE_SET_INT_FIELD_FCN): Don't check limits here,
+	since mktime is supposed to `normalize' the results for us.
+
 2000-10-31  Paul Kienzle  <pkienzle@kienzle.powernet.co.uk>
 
 	* Array2.cc (Array2<T>::transpose): Avoid copy for empty matrices

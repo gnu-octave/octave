@@ -157,7 +157,8 @@ more_than_a_screenful (const char *s)
 int
 octave_pager_buf::sync (void)
 {
-  if (really_flush_to_pager
+  if (! interactive
+      || really_flush_to_pager
       || (Vpage_screen_output && Vpage_output_immediately)
       || ! Vpage_screen_output)
     {
@@ -206,7 +207,6 @@ octave_pager_stream::octave_pager_stream (void) : ostream (), pb (0)
 
 octave_pager_stream::~octave_pager_stream (void)
 {
-  really_flush_to_pager = 1;
   flush ();
   delete pb;
 }

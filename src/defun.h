@@ -59,8 +59,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
 //   doc is the simple help text for this variable.
 
-#define DEFVAR(name, sname, defn, inst_as_fcn, protect, \
-	       eternal, sv_fcn, doc) \
+#define DEFVAR_INT(name, sname, defn, inst_as_fcn, protect, \
+		   sv_fcn, doc) \
   do \
     { \
       builtin_variable sname = \
@@ -69,13 +69,25 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 	  new tree_constant (defn), \
 	  inst_as_fcn, \
 	  protect, \
-	  eternal, \
+	  (sv_fcn ? 1 : 0), \
 	  sv_fcn, \
 	  doc, \
 	}; \
       install_builtin_variable (&sname); \
     } \
   while (0)
+
+#define DEFVAR(name, sname, defn, inst_as_fcn, sv_fcn, doc) \
+  DEFVAR_INT (name, sname, defn, inst_as_fcn, 0, sv_fcn, doc)
+
+// Define a builtin-constant, and a corresponding variable that can be
+// redefined.  This is just the same as DEFVAR, except that it defines
+// `name' as a variable, and `__name__' as a constant that cannot be
+// redefined.
+
+#define DEFCONST(name, sname, defn, inst_as_fcn, sv_fcn, doc) \
+  DEFVAR_INT (name, sname, defn, inst_as_fcn, 0, sv_fcn, doc); \
+  DEFVAR_INT ("__" ## name ## "__", sname, defn, 0, 1, sv_fcn, doc)
 
 // Define a builtin function.
 //
@@ -94,7 +106,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //     accept. XXX FIXME XXX -- is this really used now?
 //
 //   nargout_max is the maximum number of outputs this function can
-//   produce.  XXX FIXME XXX -- is this really used now?
+//     produce.  XXX FIXME XXX -- is this really used now?
 //
 //   doc is the simple help text for the function.
 

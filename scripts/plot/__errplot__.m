@@ -1,4 +1,4 @@
-## Copyright (C) 2000, Teemu Ikonen
+## Copyright (C) 2000-2002 Teemu Ikonen
 ##
 ## This file is part of Octave.
 ##
@@ -20,7 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} __errplot__ (@var{args})
 ## Really plot errorbar plots. User interface in function errorbar.
-##
+## 
 ## @example
 ## __errplot__ (@var{arg1}, @var{arg2}, ..., @var{fmt})
 ## @end example
@@ -52,23 +52,23 @@ function __errplot__ (varargin)
       fstr = a;
     endif
   endwhile
-
+  
   fmt = __pltopt__ ("__errplot__", fstr);
-
+  
   nplots = size (arg1, 2);
   len = size (arg1, 1);
-
+  
   if (ndata == 2)
     for i = 1:nplots,
       tmp = [(1:len)', arg1(:,i), arg2(:,i)];
       cmd = sprintf ("gplot tmp %s", fmt(min(i, rows(fmt)), :) );
       eval (cmd);
-    end
+    endfor
   elseif (ndata == 3)
     for i = 1:nplots,
       tstr = "tmp =[arg1(:,i)";
       for j = 2:ndata,
-	tstr = [tstr, sprintf(", arg%d(:,i)", j)];
+       tstr = [tstr, sprintf(", arg%d(:,i)", j)];
       endfor
       tstr = [tstr, "];"];
       eval (tstr);
@@ -78,11 +78,11 @@ function __errplot__ (varargin)
   elseif (ndata == 4)
     for i = 1:nplots, # this is getting ugly
       if (index (fmt, "boxxy") || index (fmt, "xyerr"))
-	tstr = "tmp = [arg1(:,i), arg2(:,i), arg3(:,i), arg4(:,i)];";
+       tstr = "tmp = [arg1(:,i), arg2(:,i), arg3(:,i), arg4(:,i)];";
       elseif (index (fmt, "xerr"))
-	tstr = "tmp = [arg1(:,i), arg2(:,i), arg1(:,i)-arg3(:,i), arg1(:,i)+arg4(:,i)];";
+       tstr = "tmp = [arg1(:,i), arg2(:,i), arg1(:,i)-arg3(:,i), arg1(:,i)+arg4(:,i)];";
       else
-	tstr = "tmp = [arg1(:,i), arg2(:,i), arg2(:,i)-arg3(:,i), arg2(:,i)+arg4(:,i)];";
+       tstr = "tmp = [arg1(:,i), arg2(:,i), arg2(:,i)-arg3(:,i), arg2(:,i)+arg4(:,i)];";
       endif
       eval (tstr);
       cmd = sprintf ("gplot tmp %s", fmt(min(i, rows(fmt)), :) );
@@ -94,12 +94,12 @@ function __errplot__ (varargin)
       eval (tstr);
       cmd = sprintf ("gplot tmp %s", fmt(min(i, rows(fmt)), :) );
       eval (cmd);
-    endfor
-  else
+    endfor    
+  else 
     for i = 1:nplots,
       tstr = "tmp = [arg1(:,i)";
       for j = 2:ndata,
-	tstr = [tstr, sprintf(", arg%d(:,i)", j)];
+       tstr = [tstr, sprintf(", arg%d(:,i)", j)];
       endfor
       tstr = [tstr, "];"];
       eval (tstr);
@@ -107,24 +107,9 @@ function __errplot__ (varargin)
       eval (cmd);
     endfor
   endif
+    
+endfunction    
+    
 
-  ## if (ndata == 2)
-  ##   for i = 1:nplots,
-  ##     tmp = [(1:len)', arg1(:,i), arg2(:,i)];
-  ##     cmd = sprintf ("gplot tmp %s", fmt(min(i, rows(fmt)), :) );
-  ##     eval (cmd);
-  ##   endfor
-  ## else
-  ##   for i = 1:nplots,
-  ##     tstr = "tmp =[arg1(:,i)";
-  ##     for j = 2:ndata,
-  ##       tstr = [tstr, sprintf(", arg%d(:,i)", j)];
-  ##     endif
-  ##     tstr = [tstr, "];"];
-  ##     eval (tstr);
-  ##     cmd = sprintf ("gplot tmp %s", fmt(min(i, rows(fmt)), :) );
-  ##     eval (cmd);
-  ##   endfor
-  ## endif
 
-endfunction
+

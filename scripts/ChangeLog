@@ -1,3 +1,15 @@
+2002-07-25  Teemu Ikonen <tpikonen@pcu.helsinki.fi>
+
+	* plot/__errcomm__.m: New file.  Common functionality for error plots.
+	* plot/loglogerr.m: New file.  Double logarithm plots with errorbars.
+	* plot/semilogxerr.m: New file.  Semilogarithm plots with errorbars.
+	* plot/semilogyerr.m: New file.  Semilogarithm plots with errorbars
+
+	* plot/errorbar.m: Use __errcomm__.m.
+	* plot/__errplot__.m: Minor cleanups.
+	* plot/__pltopt__.m: Handle boxxyerrorbars plot style. 
+	* plot/__pltopt1__.m: Likewise.
+
 2002-07-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* general/rem.m: Delete redundant call to usage.

@@ -49,6 +49,7 @@ function fmt = __pltopt1__ (caller, opt)
   LINESPOINTS = "linesp";
   BOXERRORBARS = "boxer";
   BOXES = "boxes";
+  BOXXY = "boxxy";
   POINTS = "p";
   DOTS = "d";
   IMPULSES = "i";
@@ -167,7 +168,7 @@ function fmt = __pltopt1__ (caller, opt)
           char = opt;
           if (! strcmp (char, ";"))
             error ("%s: unfinished key label", caller);
-          end
+          endif
           more_opts = 0;
           working = 0;
         endif
@@ -182,6 +183,7 @@ function fmt = __pltopt1__ (caller, opt)
         endif
       endwhile
     elseif (strcmp (char, " "))
+    elseif (isempty(char))
       ## whitespace -- do nothing.
     else
       error ("%s: unrecognized format character: '%s'", caller, char);
@@ -199,7 +201,9 @@ function fmt = __pltopt1__ (caller, opt)
       fmt = strcat (fmt, " ", LINES);
     endif
   elseif (set_boxes)
-    if (set_yerrbars)
+    if (set_yerrbars && set_xerrbars)
+      fmt = strcat (fmt, " ", BOXXY);
+    elseif (set_yerrbars )
       fmt = strcat (fmt, " ", BOXERRORBARS);
     else
       fmt = strcat (fmt, " ", BOXES);
@@ -223,7 +227,11 @@ function fmt = __pltopt1__ (caller, opt)
   endif
 
   if (strcmp (fmt, WITH))
-    fmt = strcat (fmt, " ", LINES);
+      if(strcmp (caller, "__errplot"))
+          fmt = strcat (fmt, " ", YERRORBARS);
+      else
+          fmt = strcat (fmt, " ", LINES);
+      endif      
   endif
 
   if (set_color)

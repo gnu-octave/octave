@@ -1,4 +1,4 @@
-## Copyright (C) 2000, Teemu Ikonen
+## Copyright (C) 2000-2002 Teemu Ikonen
 ##
 ## This file is part of Octave.
 ##
@@ -116,70 +116,10 @@ function errorbar (varargin)
     usage ("errorbar (...)");
   endif
 
-  save_hold = ishold;
-  unwind_protect
-    if (! ishold)
-      clg ()
-    endif
-    hold ("on");
-    k = 1;
-    while (nargin)
-      a = varargin{k++};
-      nargin--;
-      if (is_vector (a))
-	a = a(:);
-      elseif (is_matrix (a));
-	;
-      else
-	usage ("errorbar (...)");
-      endif
-      sz = size (a);
-      ndata = 1;
-      arg1 = a;
-      fmt = " ";
-      while (nargin)
-	nargin--;
-	a = varargin{k++};
-	if (isstr (a))
-	  fmt = a;
-	  cmd = "__errplot__ (arg1";
-	  for i = 2:ndata,
-	    cmd = [cmd, sprintf(", arg%d",i)];
-	  endfor
-	  cmd = [cmd, ", fmt);"];
-	  eval (cmd);
-	  break;
-	elseif (is_vector (a))
-	  a = a(:);
-	elseif (is_matrix (a))
-	  ;
-	else
-	  error ("wrong argument types");
-	endif
-	if (size (a) != sz)
-	  error ("argument sizes do not match");
-	endif
-	ndata++;
-	eval (sprintf ("arg%d = a;", ndata));
-	if (ndata > 6)
-	  error ("too many arguments to a plot");
-	endif
-      endwhile
-    endwhile
-
-    if (! isstr (a))
-      fmt = " ";
-      cmd = "__errplot__(arg1";
-      for i = 2:ndata,
-	cmd = [cmd, sprintf(", arg%d",i)];
-      endfor
-      cmd = [cmd, ", fmt);"];
-      eval (cmd);
-    endif
-  unwind_protect_cleanup
-    if (! save_hold)
-      hold ("off");
-    endif
-  end_unwind_protect
+  gset nologscale x;
+  gset nologscale y;
+  gset nopolar;
+    
+  __errcomm__ ("errorbar", varargin);
 
 endfunction

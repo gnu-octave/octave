@@ -61,6 +61,9 @@
 ## @item "#~"
 ## For boxerrorbars plot style.
 ##
+## @item "#~>"
+## For boxxyerrorbars plot style.
+##
 ## @item "n"
 ## With @code{n} in 1-6 (wraps at 8), plot color
 ##

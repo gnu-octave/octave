@@ -94,21 +94,6 @@
 ## @item L
 ## Set steps plot style.
 ##
-## @item "#"
-## For boxes plot style.
-##
-## @item "~"
-## For yerrorbars plot style.
-##
-## @item ">"
-## For xerrorbars plot style.
-##
-## @item "~>"
-## For xyerrorbars plot style.
-##
-## @item "#~"
-## For boxerrorbars plot style.
-##
 ## @item @var{n}
 ## Interpreted as the plot color if @var{n} is an integer in the range 1 to
 ## 6.

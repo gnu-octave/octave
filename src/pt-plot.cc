@@ -59,13 +59,13 @@ extern "C"
 }
 
 // The number of lines we\'ve plotted so far.
-int plot_line_count = 0;
+static int plot_line_count = 0;
 
 // Is this a parametric plot?  Makes a difference for 3D plotting.
-int parametric_plot = 0;
+static int parametric_plot = 0;
 
 // Should the graph window be cleared before plotting the next line?
-int clear_before_plotting = 1;
+static int clear_before_plotting = 1;
 
 // List of files to delete when we exit or crash.
 static SLStack <char *> tmp_files;
@@ -900,6 +900,14 @@ drawn.  With no argument, toggle the current state.")
   DELETE_ARGV;
 
   return retval;
+}
+
+DEFUN ("ishold", Fishold, Sishold, 0, 1,
+  "ishold\n\
+\n\
+Return 1 if hold is on, otherwise return 0.")
+{
+  return (double) (! clear_before_plotting);
 }
 
 DEFUN ("purge_tmp_files", Fpurge_tmp_files, Spurge_tmp_files, 5, 1,

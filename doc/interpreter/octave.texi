@@ -5,6 +5,14 @@
 \input texinfo
 @setfilename octave.info
 
+@ifinfo
+@format
+START-INFO-DIR-ENTRY
+* Octave: (octave).	Interactive language for numerical computations.
+END-INFO-DIR-ENTRY
+@end format
+@end ifinfo
+
 @c Settings for printing on 8-1/2 by 11 inch paper:
 @c -----------------------------------------------
 

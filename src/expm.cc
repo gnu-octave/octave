@@ -46,11 +46,13 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 extern "C"
 {
-  double F77_FCN (dlange) (const char*, const int&, const int&,
-			   const double*, const int&, double*);
+  double F77_FCN (dlange, DLANGE) (const char*, const int&,
+				   const int&, const double*,
+				   const int&, double*); 
 
-  double F77_FCN (zlange) (const char*, const int&, const int&,
-			   const Complex*, const int&, double*);
+  double F77_FCN (zlange, ZLANGE) (const char*, const int&,
+				   const int&, const Complex*,
+				   const int&, double*); 
 }
 
 DEFUN_DLD_BUILTIN ("expm", Fexpm, Sexpm, 2, 1,
@@ -135,8 +137,9 @@ DEFUN_DLD_BUILTIN ("expm", Fexpm, Sexpm, 2, 1,
 // Preconditioning step 3: scaling.
 
       ColumnVector work(nc);
-      inf_norm = F77_FCN (dlange) ("I", nc, nc, m.fortran_vec (), nc,
-				   work.fortran_vec ());
+      inf_norm = F77_FCN (dlange, DLANGE) ("I", nc, nc,
+					   m.fortran_vec (), nc,
+					   work.fortran_vec ());
 
       sqpow = (int) (1.0 + log (inf_norm) / log (2.0));
 
@@ -227,8 +230,9 @@ DEFUN_DLD_BUILTIN ("expm", Fexpm, Sexpm, 2, 1,
 // Preconditioning step 3: scaling.
 
       ColumnVector work (nc);
-      inf_norm = F77_FCN (zlange) ("I", nc, nc, m.fortran_vec (), nc,
-				   work.fortran_vec ());
+      inf_norm = F77_FCN (zlange, ZLANGE) ("I", nc, nc,
+					   m.fortran_vec (), nc,
+					   work.fortran_vec ());
 
       sqpow = (int) (1.0 + log (inf_norm) / log (2.0));
 

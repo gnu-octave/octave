@@ -40,11 +40,11 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 extern "C"
 {
-  int F77_FCN (dlartg) (const double&, const double&, double&, double&,
-			double&);
+  int F77_FCN (dlartg, DLARTG) (const double&, const double&, double&,
+				double&, double&);
 
-  int F77_FCN (zlartg) (const Complex&, const Complex&, double&,
-			Complex&, Complex&);
+  int F77_FCN (zlartg, ZLARTG) (const Complex&, const Complex&,
+				double&, Complex&, Complex&);
 }
 
 DEFUN_DLD_BUILTIN ("givens", Fgivens, Sgivens, 3, 2,
@@ -118,7 +118,7 @@ such that G [x; y] = [*; 0]  (x, y scalars)\n\
     {
       Complex cs, temp_r;
  
-      F77_FCN (zlartg) (cx, cy, cc, cs, temp_r);
+      F77_FCN (zlartg, ZLARTG) (cx, cy, cc, cs, temp_r);
 
       switch (nargout)
 	{
@@ -149,7 +149,7 @@ such that G [x; y] = [*; 0]  (x, y scalars)\n\
     {
       double s, temp_r;
 
-      F77_FCN (dlartg) (x, y, cc, s, temp_r);
+      F77_FCN (dlartg, DLARTG) (x, y, cc, s, temp_r);
 
       switch (nargout)
 	{

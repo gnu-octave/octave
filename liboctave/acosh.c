@@ -28,12 +28,12 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "f77-uscore.h"
 
-extern double F77_FCN (dacosh) (const double&);
+extern double F77_FCN (dacosh, DACOSH) (const double&);
 
 double
 acosh (double x)
 {
-  return F77_FCN (dacosh) (x);
+  return F77_FCN (dacosh, DACOSH) (x);
 }
 
 #endif

@@ -43,17 +43,18 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 extern "C"
 {
-  int F77_FCN (dtrsyl) (const char*, const char*, const int&,
-			const int&, const int&, const double*,
-			const int&, const double*, const int&,
-			const double*, const int&, double&, int&,
-			long, long);
+  int F77_FCN (dtrsyl, DTRSYL) (const char*, const char*, const int&,
+				const int&, const int&, const double*,
+				const int&, const double*, const int&,
+				const double*, const int&, double&,
+				int&, long, long);
  
-  int F77_FCN (ztrsyl) (const char*, const char*, const int&,
-			const int&, const int&, const Complex*,
-			const int&, const Complex*, const int&,
-			const Complex*, const int&, double&, int&,
-			long, long);
+  int F77_FCN (ztrsyl, ZTRSYL) (const char*, const char*, const int&,
+				const int&, const int&,
+				const Complex*, const int&,
+				const Complex*, const int&, 
+				const Complex*, const int&, double&,
+				int&, long, long);
 }
 
 DEFUN_DLD_BUILTIN ("syl", Fsyl, Ssyl, 4, 1,
@@ -147,11 +148,11 @@ DEFUN_DLD_BUILTIN ("syl", Fsyl, Ssyl, 4, 1,
 	double scale;
 	int info;
   
-	F77_FCN (ztrsyl) ("N", "N", 1, a_nr, b_nr,
-			  sch_a.fortran_vec (), a_nr,
-			  sch_b.fortran_vec (), b_nr,
-			  cx.fortran_vec (), a_nr, scale, info,
-			  1L, 1L);
+	F77_FCN (ztrsyl, ZTRSYL) ("N", "N", 1, a_nr, b_nr,
+				  sch_a.fortran_vec (), a_nr,
+				  sch_b.fortran_vec (), b_nr,
+				  cx.fortran_vec (), a_nr, scale,
+				  info, 1L, 1L);
 
 	cx = -ua * cx * ub.hermitian ();
   
@@ -196,11 +197,11 @@ DEFUN_DLD_BUILTIN ("syl", Fsyl, Ssyl, 4, 1,
 	double scale;
 	int info;
 
-	F77_FCN (dtrsyl) ("N", "N", 1, a_nr, b_nr,
-			  sch_a.fortran_vec (), a_nr, 
-			  sch_b.fortran_vec (), b_nr,
-			  cx.fortran_vec (), a_nr, scale, info,
-			  1L, 1L);
+	F77_FCN (dtrsyl, DTRSYL) ("N", "N", 1, a_nr, b_nr,
+				  sch_a.fortran_vec (), a_nr, 
+				  sch_b.fortran_vec (), b_nr,
+				  cx.fortran_vec (), a_nr, scale,
+				  info, 1L, 1L);
 
 	if (info)
 	  error ("syl: trouble in dtrsyl info = %d", info);

@@ -71,7 +71,7 @@ extern void _rl_output_character_function ();
 LOSE! LOSE!
 #endif
 
-extern double F77_FCN (d1mach) (const int&);
+extern double F77_FCN (d1mach, D1MACH) (const int&);
 }
 
 #ifndef STDIN_FILENO
@@ -231,10 +231,10 @@ octave_ieee_init (void)
 
   equiv mach_fp_par[4];
 
-  mach_fp_par[0].d = F77_FCN (d1mach) (1);
-  mach_fp_par[1].d = F77_FCN (d1mach) (2);
-  mach_fp_par[2].d = F77_FCN (d1mach) (3);
-  mach_fp_par[3].d = F77_FCN (d1mach) (4);
+  mach_fp_par[0].d = F77_FCN (d1mach, D1MACH) (1);
+  mach_fp_par[1].d = F77_FCN (d1mach, D1MACH) (2);
+  mach_fp_par[2].d = F77_FCN (d1mach, D1MACH) (3);
+  mach_fp_par[3].d = F77_FCN (d1mach, D1MACH) (4);
 
   int i = 0;
   do

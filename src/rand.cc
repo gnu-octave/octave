@@ -43,10 +43,15 @@ static rand_dist current_distribution = uniform;
 
 extern "C"
 {
-  int *F77_FCN (dgennor) (const double&, const double&, double&);
-  int *F77_FCN (dgenunf) (const double&, const double&, double&);
-  int *F77_FCN (setall) (const int&, const int&);
-  int *F77_FCN (getsd) (int&, int&);
+  int *F77_FCN (dgennor, DGENNOR) (const double&, const double&,
+				   double&);
+
+  int *F77_FCN (dgenunf, DGENUNF) (const double&, const double&,
+				   double&);
+
+  int *F77_FCN (setall, SETALL) (const int&, const int&);
+
+  int *F77_FCN (getsd, GETSD) (int&, int&);
 }
 
 static double
@@ -54,7 +59,7 @@ curr_rand_seed (void)
 {
   union d2i { double d; int i[2]; };
   union d2i u;
-  F77_FCN (getsd) (u.i[0], u.i[1]);
+  F77_FCN (getsd, GETSD) (u.i[0], u.i[1]);
   return u.d;
 }
 
@@ -81,7 +86,7 @@ set_rand_seed (double val)
   u.d = val;
   int i0 = force_to_fit_range (u.i[0], 1, 2147483563);
   int i1 = force_to_fit_range (u.i[1], 1, 2147483399);
-  F77_FCN (setall) (i0, i1);
+  F77_FCN (setall, SETALL) (i0, i1);
 }
 
 static char *
@@ -147,7 +152,7 @@ rand (SEED, N)        -- set seed")
       s0 = force_to_fit_range (s0, 1, 2147483563);
       s1 = force_to_fit_range (s1, 1, 2147483399);
 
-      F77_FCN (setall) (s0, s1);
+      F77_FCN (setall, SETALL) (s0, s1);
       initialized = 1;
     }
 
@@ -270,12 +275,12 @@ rand (SEED, N)        -- set seed")
 	    switch (current_distribution)
 	      {
 	      case uniform:
-		F77_FCN (dgenunf) (0.0, 1.0, val);
+		F77_FCN (dgenunf, DGENUNF) (0.0, 1.0, val);
 		rand_mat.elem (i, j) = val;
 		break;
 
 	      case normal:
-		F77_FCN (dgennor) (0.0, 1.0, val);
+		F77_FCN (dgennor, DGENNOR) (0.0, 1.0, val);
 		rand_mat.elem (i, j) = val;
 		break;
 

@@ -3,7 +3,8 @@ Summary of changes for version 2.1:
 
   * Commas in global statements are no longer special.  They are now
     treated as command separators.  This removes a conflict in the
-    grammar and is consistent with the way Matlab behaves.
+    grammar and is consistent with the way Matlab behaves.  The
+    variable `warn_comma_in_global_decl' has been eliminated.
 
   * It is now possible to declare static variables that retain their
     values across function calls.  For example,
@@ -33,8 +34,9 @@ Summary of changes for version 2.1:
     use zero-one style indexing must now use logical values.  You can
     use the new function logical() to convert a numeric value to a
     logical value.  This avoids the need for the built-in variable
-    prefer_zero_one_indexing, so it has been removed.  Logical values
-    are automatically converted to numeric values where appropriate.
+    `prefer_zero_one_indexing', so it has been removed.  Logical
+    values are automatically converted to numeric values where
+    appropriate.
 
   * If the argument to lsode that names the user-supplied function is
     a 2-element string array, the second element is taken as the name

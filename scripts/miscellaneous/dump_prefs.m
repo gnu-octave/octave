@@ -68,7 +68,6 @@ function dump_prefs (file)
   dump_1_pref (file, "split_long_rows");
   dump_1_pref (file, "treat_neg_dim_as_zero");
   dump_1_pref (file, "warn_assign_as_truth_value");
-  dump_1_pref (file, "warn_comma_in_global_decl");
   dump_1_pref (file, "warn_divide_by_zero");
 
 endfunction

@@ -1,3 +1,8 @@
+Fri Mar 28 16:19:53 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* miscellaneous/dump_prefs.m: Delete call to dump_1_pref for
+	warn_comma_in_global_decl.
+
 Tue Mar 25 22:00:49 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* miscellaneous/bug_report.m: Use __OCTAVE_HOME__ to find

@@ -75,6 +75,25 @@ boolMatrix::transpose (void) const
   return result;
 }
 
+// unary operations
+
+boolMatrix
+boolMatrix::operator ! (void) const
+{
+  int nr = rows ();
+  int nc = cols ();
+
+  boolMatrix b (nr, nc);
+
+  for (int j = 0; j < nc; j++)
+    for (int i = 0; i < nr; i++)
+      b.elem (i, j) = ! elem (i, j);
+
+  return b;
+}
+
+// other operations
+
 boolMatrix
 boolMatrix::all (void) const
 {

@@ -119,14 +119,6 @@ public:
   boolMatrix bool_matrix_value (void) const
     { return boolMatrix (1, 1, scalar); }
 
-  octave_value not (void) const { return octave_value (! scalar); }
-
-  octave_value uminus (void) const { return octave_value (- (double) scalar); }
-
-  octave_value transpose (void) const { return octave_value (scalar); }
-
-  octave_value hermitian (void) const { return octave_value (scalar); }
-
   octave_value convert_to_str (void) const;
 
   void print (ostream& os, bool pr_as_read_syntax = false) const;

@@ -115,14 +115,6 @@ public:
   ComplexMatrix complex_matrix_value (bool = false) const
     { return  ComplexMatrix (1, 1, Complex (scalar)); }
 
-  octave_value not (void) const { return octave_value (! scalar); }
-
-  octave_value uminus (void) const { return octave_value (- scalar); }
-
-  octave_value transpose (void) const { return octave_value (scalar); }
-
-  octave_value hermitian (void) const { return octave_value (scalar); }
-
   void increment (void) { ++scalar; }
 
   void decrement (void) { --scalar; }

@@ -131,12 +131,6 @@ public:
   octave_value convert_to_str (void) const
     { return octave_value (matrix); }
 
-  octave_value transpose (void) const
-    { return octave_value (matrix.transpose ()); }
-
-  octave_value hermitian (void) const
-    { return octave_value (matrix.transpose ()); }
-
   void print (ostream& os, bool pr_as_read_syntax = false) const;
 
   void print_raw (ostream& os, bool pr_as_read_syntax = false) const;

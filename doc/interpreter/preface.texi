@@ -132,7 +132,7 @@ implementation of @code{fread}, @code{fwrite}, @code{feof}, and
 @code{ferror}.
 
 @item
-Tony Richardson @email{arichard@stark.cc.oh.us} wrote Octave's
+Tony Richardson @email{arichard@@stark.cc.oh.us} wrote Octave's
 image processing functions as well as most of the original polynomial
 functions.
 

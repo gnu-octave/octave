@@ -36,6 +36,17 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "xdiv.h"
 #include "xpow.h"
 
+// unary bool matrix ops.
+
+DEFUNOP_OP (not, bool_matrix, !)
+
+DEFUNOP (transpose, bool_matrix)
+{
+  CAST_UNOP_ARG (const octave_bool_matrix&);
+
+  return octave_value (v.bool_matrix_value().transpose ());
+}
+
 // bool matrix by bool matrix ops.
 
 DEFBINOP_OP (eq, bool_matrix, bool_matrix, ==)
@@ -44,6 +55,10 @@ DEFBINOP_OP (ne, bool_matrix, bool_matrix, !=)
 void
 install_bm_bm_ops (void)
 {
+  INSTALL_UNOP (not, octave_bool_matrix, not);
+  INSTALL_UNOP (transpose, octave_bool_matrix, transpose);
+  INSTALL_UNOP (hermitian, octave_bool_matrix, transpose);
+
   INSTALL_BINOP (eq, octave_bool_matrix, octave_bool_matrix, eq);
   INSTALL_BINOP (ne, octave_bool_matrix, octave_bool_matrix, ne);
 }

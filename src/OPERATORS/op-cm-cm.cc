@@ -36,6 +36,28 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "xdiv.h"
 #include "xpow.h"
 
+// unary complex matrix ops.
+
+DEFUNOP_OP (not, complex_matrix, !)
+DEFUNOP_OP (uminus, complex_matrix, -)
+
+DEFUNOP (transpose, complex_matrix)
+{
+  CAST_UNOP_ARG (const octave_complex_matrix&);
+
+  return octave_value (v.complex_matrix_value().transpose ());
+}
+
+DEFUNOP (hermitian, complex_matrix)
+{
+  CAST_UNOP_ARG (const octave_complex_matrix&);
+
+  return octave_value (v.complex_matrix_value().hermitian ());
+}
+
+DEFNCUNOP_METHOD (incr, complex_matrix, increment)
+DEFNCUNOP_METHOD (decr, complex_matrix, decrement)
+
 // complex matrix by complex matrix ops.
 
 DEFBINOP_OP (add, complex_matrix, complex_matrix, +)
@@ -78,6 +100,14 @@ DEFASSIGNOP_FN (assign, complex_matrix, complex_matrix, assign)
 void
 install_cm_cm_ops (void)
 {
+  INSTALL_UNOP (not, octave_complex_matrix, not);
+  INSTALL_UNOP (uminus, octave_complex_matrix, uminus);
+  INSTALL_UNOP (transpose, octave_complex_matrix, transpose);
+  INSTALL_UNOP (hermitian, octave_complex_matrix, hermitian);
+
+  INSTALL_NCUNOP (incr, octave_complex_matrix, incr);
+  INSTALL_NCUNOP (decr, octave_complex_matrix, decr);
+
   INSTALL_BINOP (add, octave_complex_matrix, octave_complex_matrix, add);
   INSTALL_BINOP (sub, octave_complex_matrix, octave_complex_matrix, sub);
   INSTALL_BINOP (mul, octave_complex_matrix, octave_complex_matrix, mul);

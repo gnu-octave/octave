@@ -37,6 +37,16 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "xdiv.h"
 #include "xpow.h"
 
+// scalar unary ops.
+
+DEFUNOP_OP (not, scalar, !)
+DEFUNOP_OP (uminus, scalar, -)
+DEFUNOP_OP (transpose, scalar, /* no-op */)
+DEFUNOP_OP (hermitian, scalar, /* no-op */)
+
+DEFNCUNOP_METHOD (incr, scalar, increment)
+DEFNCUNOP_METHOD (decr, scalar, decrement)
+
 // scalar by scalar ops.
 
 DEFBINOP_OP (add, scalar, scalar, +)
@@ -132,6 +142,14 @@ DEFCONV (matrix_conv, scalar, matrix)
 void
 install_s_s_ops (void)
 {
+  INSTALL_UNOP (not, octave_scalar, not);
+  INSTALL_UNOP (uminus, octave_scalar, uminus);
+  INSTALL_UNOP (transpose, octave_scalar, transpose);
+  INSTALL_UNOP (hermitian, octave_scalar, hermitian);
+
+  INSTALL_NCUNOP (incr, octave_scalar, incr);
+  INSTALL_NCUNOP (decr, octave_scalar, decr);
+
   INSTALL_BINOP (add, octave_scalar, octave_scalar, add);
   INSTALL_BINOP (sub, octave_scalar, octave_scalar, sub);
   INSTALL_BINOP (mul, octave_scalar, octave_scalar, mul);

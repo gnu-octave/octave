@@ -46,6 +46,11 @@ public:
 
   static int register_type (const string&);
 
+  static bool register_unary_op (octave_value::unary_op, int, unary_op_fcn);
+
+  static bool register_non_const_unary_op (octave_value::unary_op, int,
+					   non_const_unary_op_fcn);
+
   static bool register_binary_op (octave_value::binary_op, int, int,
 				  binary_op_fcn);
 
@@ -58,6 +63,18 @@ public:
   static bool register_pref_assign_conv (int, int, int);
 
   static bool register_widening_op (int, int, type_conv_fcn);
+
+  static unary_op_fcn
+  lookup_unary_op (octave_value::unary_op op, int t)
+  {
+    return instance->do_lookup_unary_op (op, t);
+  }
+
+  static non_const_unary_op_fcn
+  lookup_non_const_unary_op (octave_value::unary_op op, int t)
+  {
+    return instance->do_lookup_non_const_unary_op (op, t);
+  }
 
   static binary_op_fcn
   lookup_binary_op (octave_value::binary_op op, int t1, int t2)
@@ -98,6 +115,10 @@ protected:
 
   octave_value_typeinfo (void)
     : num_types (0), types (init_tab_sz, string ()),
+      unary_ops (octave_value::num_unary_ops, init_tab_sz,
+		 (unary_op_fcn) 0),
+      non_const_unary_ops (octave_value::num_unary_ops, init_tab_sz,
+			   (non_const_unary_op_fcn) 0),
       binary_ops (octave_value::num_binary_ops, init_tab_sz,
 		  init_tab_sz, (binary_op_fcn) 0),
       assign_ops (octave_value::num_assign_ops, init_tab_sz,
@@ -117,6 +138,10 @@ private:
 
   Array<string> types;
 
+  Array2<unary_op_fcn> unary_ops;
+
+  Array2<non_const_unary_op_fcn> non_const_unary_ops;
+
   Array3<binary_op_fcn> binary_ops;
 
   Array3<assign_op_fcn> assign_ops;
@@ -128,6 +153,11 @@ private:
   Array2<type_conv_fcn> widening_ops;
 
   int do_register_type (const string&);
+
+  bool do_register_unary_op (octave_value::unary_op, int, unary_op_fcn);
+
+  bool do_register_non_const_unary_op (octave_value::unary_op, int,
+				       non_const_unary_op_fcn);
 
   bool do_register_binary_op (octave_value::binary_op, int, int,
 			      binary_op_fcn);
@@ -142,14 +172,16 @@ private:
 
   bool do_register_widening_op (int, int, type_conv_fcn);
 
-  binary_op_fcn
-  do_lookup_binary_op (octave_value::binary_op, int, int);
+  unary_op_fcn do_lookup_unary_op (octave_value::unary_op, int);
 
-  assign_op_fcn
-  do_lookup_assign_op (octave_value::assign_op, int, int);
+  non_const_unary_op_fcn do_lookup_non_const_unary_op
+    (octave_value::unary_op, int);
 
-  assign_op_fcn
-  do_lookup_assignany_op (octave_value::assign_op, int);
+  binary_op_fcn do_lookup_binary_op (octave_value::binary_op, int, int);
+
+  assign_op_fcn do_lookup_assign_op (octave_value::assign_op, int, int);
+
+  assign_op_fcn do_lookup_assignany_op (octave_value::assign_op, int);
 
   int do_lookup_pref_assign_conv (int, int);
 

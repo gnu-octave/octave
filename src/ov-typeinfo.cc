@@ -44,6 +44,12 @@ octave_value_typeinfo::instance (0);
 #include <Array2.cc>
 #include <Array3.cc>
 
+template class Array<unary_op_fcn>;
+template class Array2<unary_op_fcn>;
+
+template class Array<non_const_unary_op_fcn>;
+template class Array2<non_const_unary_op_fcn>;
+
 template class Array<binary_op_fcn>;
 template class Array2<binary_op_fcn>;
 template class Array3<binary_op_fcn>;
@@ -77,6 +83,23 @@ octave_value_typeinfo::register_type (const string& name)
 {
   return (instance_ok ())
     ? instance->do_register_type (name) : -1;
+}
+
+bool
+octave_value_typeinfo::register_unary_op (octave_value::unary_op op,
+					   int t, unary_op_fcn f)
+{
+  return (instance_ok ())
+    ? instance->do_register_unary_op (op, t, f) : false;
+}
+
+bool
+octave_value_typeinfo::register_non_const_unary_op (octave_value::unary_op op,
+						    int t,
+						    non_const_unary_op_fcn f)
+{
+  return (instance_ok ())
+    ? instance->do_register_non_const_unary_op (op, t, f) : false;
 }
 
 bool
@@ -138,6 +161,13 @@ octave_value_typeinfo::do_register_type (const string& name)
 
       types.resize (len, string ());
 
+      unary_ops.resize (static_cast<int> (octave_value::num_unary_ops),
+			len, static_cast<unary_op_fcn> (0));
+
+      non_const_unary_ops.resize
+	(static_cast<int> (octave_value::num_unary_ops),
+	 len, static_cast<non_const_unary_op_fcn> (0));
+
       binary_ops.resize (static_cast<int> (octave_value::num_binary_ops),
 			 len, len, static_cast<binary_op_fcn> (0));
 
@@ -157,6 +187,24 @@ octave_value_typeinfo::do_register_type (const string& name)
   num_types++;
 
   return i;
+}
+
+bool
+octave_value_typeinfo::do_register_unary_op (octave_value::unary_op op,
+					     int t, unary_op_fcn f)
+{
+  unary_ops.checkelem (static_cast<int> (op), t) = f;
+
+  return false;
+}
+
+bool
+octave_value_typeinfo::do_register_non_const_unary_op
+  (octave_value::unary_op op, int t, non_const_unary_op_fcn f)
+{
+  non_const_unary_ops.checkelem (static_cast<int> (op), t) = f;
+
+  return false;
 }
 
 bool
@@ -207,6 +255,19 @@ octave_value_typeinfo::do_register_widening_op
 }
 
 #include <iostream.h>
+
+unary_op_fcn
+octave_value_typeinfo::do_lookup_unary_op (octave_value::unary_op op, int t)
+{
+  return unary_ops.checkelem (static_cast<int> (op), t);
+}
+
+non_const_unary_op_fcn
+octave_value_typeinfo::do_lookup_non_const_unary_op
+  (octave_value::unary_op op, int t)
+{
+  return non_const_unary_ops.checkelem (static_cast<int> (op), t);
+}
 
 binary_op_fcn
 octave_value_typeinfo::do_lookup_binary_op (octave_value::binary_op op,

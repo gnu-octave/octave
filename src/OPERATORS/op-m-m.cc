@@ -36,6 +36,21 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "xdiv.h"
 #include "xpow.h"
 
+// matrix unary ops.
+
+DEFUNOP_OP (not, matrix, !)
+DEFUNOP_OP (uminus, matrix, -)
+
+DEFUNOP (transpose, matrix)
+{
+  CAST_UNOP_ARG (const octave_matrix&);
+
+  return octave_value (v.matrix_value().transpose ());
+}
+
+DEFNCUNOP_METHOD (incr, matrix, increment)
+DEFNCUNOP_METHOD (decr, matrix, decrement)
+
 // matrix by matrix ops.
 
 DEFBINOP_OP (add, matrix, matrix, +)
@@ -83,6 +98,14 @@ DEFASSIGNOP_FN (assign, matrix, matrix, assign)
 void
 install_m_m_ops (void)
 {
+  INSTALL_UNOP (not, octave_matrix, not);
+  INSTALL_UNOP (uminus, octave_matrix, uminus);
+  INSTALL_UNOP (transpose, octave_matrix, transpose);
+  INSTALL_UNOP (hermitian, octave_matrix, transpose);
+
+  INSTALL_NCUNOP (incr, octave_matrix, incr);
+  INSTALL_NCUNOP (decr, octave_matrix, decr);
+
   INSTALL_BINOP (add, octave_matrix, octave_matrix, add);
   INSTALL_BINOP (sub, octave_matrix, octave_matrix, sub);
   INSTALL_BINOP (mul, octave_matrix, octave_matrix, mul);

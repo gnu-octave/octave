@@ -62,7 +62,13 @@ class octave_value;
 
 // XXX FIXME XXX -- these should probably really be inside the scope
 // of the octave_value class, but the cygwin32 beta16 version of g++
-// can't handlt that.
+// can't handle that.
+
+typedef octave_value (*unary_op_fcn)
+  (const octave_value&);
+
+typedef void (*non_const_unary_op_fcn)
+  (octave_value&);
 
 typedef octave_value (*binary_op_fcn)
   (const octave_value&, const octave_value&);
@@ -76,6 +82,18 @@ class
 octave_value
 {
 public:
+
+  enum unary_op
+  {
+    not,
+    uminus,
+    transpose,
+    hermitian,
+    incr,
+    decr,
+    num_unary_ops,
+    unknown_unary_op
+  };
 
   enum binary_op
   {
@@ -120,6 +138,8 @@ public:
     num_assign_ops,
     unknown_assign_op
   };
+
+  static string unary_op_as_string (unary_op);
 
   static string binary_op_as_string (binary_op);
 
@@ -409,28 +429,6 @@ public:
   virtual boolMatrix bool_matrix_value (void) const
     { return rep->bool_matrix_value (); }
 
-  // Unary ops.
-
-  virtual octave_value not (void) const { return rep->not (); }
-
-  virtual octave_value uminus (void) const { return rep->uminus (); }
-
-  virtual octave_value transpose (void) const { return rep->transpose (); }
-
-  virtual octave_value hermitian (void) const { return rep->hermitian (); }
-
-  virtual void increment (void)
-    {
-      make_unique ();
-      rep->increment ();
-    }
-
-  virtual void decrement (void)
-    {
-      make_unique ();
-      rep->decrement ();
-    }
-
   ColumnVector vector_value (bool frc_str_conv = false,
 			     bool frc_vec_conv = false) const;
 
@@ -464,7 +462,12 @@ public:
 
   virtual string type_name (void) const { return rep->type_name (); }
 
-  // Binary and unary operations.
+  // Unary and binary operations.
+
+  friend octave_value do_unary_op (octave_value::unary_op,
+				   const octave_value&);
+
+  void do_non_const_unary_op (octave_value::unary_op);
 
   friend octave_value do_binary_op (octave_value::binary_op,
 				    const octave_value&,
@@ -515,6 +518,79 @@ private:
   static int curr_print_indent_level;
   static bool beginning_of_line;
 };
+
+#define OV_UNOP_FN(name) \
+  inline octave_value \
+  name (const octave_value& a) \
+  { \
+    return do_unary_op (octave_value::name, a); \
+  }
+
+#define OV_UNOP_OP(name, op) \
+  inline octave_value \
+  operator op (const octave_value& a) \
+  { \
+    return name (a); \
+  }
+
+#define OV_UNOP_FN_OP(name, op) \
+  OV_UNOP_FN (name) \
+  OV_UNOP_OP (name, op)
+
+OV_UNOP_FN_OP (not, !)
+OV_UNOP_FN_OP (uminus, -)
+
+OV_UNOP_FN (transpose)
+OV_UNOP_FN (hermitian)
+
+// No simple way to define these for prefix and suffix ops?
+//
+//   incr
+//   decr
+
+#define OV_BINOP_FN(name) \
+  inline octave_value \
+  name (const octave_value& a1, const octave_value& a2) \
+  { \
+    return do_binary_op (octave_value::name, a1, a2); \
+  }
+
+#define OV_BINOP_OP(name, op) \
+  inline octave_value \
+  operator op (const octave_value& a1, const octave_value& a2) \
+  { \
+    return name (a1, a2); \
+  }
+
+#define OV_BINOP_FN_OP(name, op) \
+  OV_BINOP_FN (name) \
+  OV_BINOP_OP (name, op)
+
+OV_BINOP_FN_OP (add, +)
+OV_BINOP_FN_OP (sub, -)
+OV_BINOP_FN_OP (mul, *)
+OV_BINOP_FN_OP (div, /)
+
+OV_BINOP_FN (pow)
+OV_BINOP_FN (ldiv)
+OV_BINOP_FN (lshift)
+OV_BINOP_FN (rshift)
+
+OV_BINOP_FN_OP (lt, <)
+OV_BINOP_FN_OP (le, <=)
+OV_BINOP_FN_OP (eq, ==)
+OV_BINOP_FN_OP (ge, >=)
+OV_BINOP_FN_OP (gt, >)
+OV_BINOP_FN_OP (ne, !=)
+
+OV_BINOP_FN (el_mul)
+OV_BINOP_FN (el_div)
+OV_BINOP_FN (el_pow)
+OV_BINOP_FN (el_ldiv)
+OV_BINOP_FN (el_and)
+OV_BINOP_FN (el_or)
+
+OV_BINOP_FN (struct_ref)
 
 // If TRUE, allow assignments like
 //

@@ -57,6 +57,12 @@ public:
 
   boolMatrix transpose (void) const;
 
+  // unary operations
+
+  boolMatrix operator ! (void) const;
+
+  // other operations
+
   boolMatrix all (void) const;
   boolMatrix any (void) const;
 

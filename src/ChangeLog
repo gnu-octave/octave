@@ -1,4 +1,143 @@
+Fri Oct 30 08:39:30 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* parse.y (matrix): Dont' forget to reset
+	lexer_flags.looking_at_matrix_or_assign_lhs.
+
+	* oct-lvalue.cc (octave_lvalue::assign): Don't call change
+	function if error occurs.
+	(octave_lvalue::do_unary_op): If we have an index, fail with message.
+
 Thu Oct 29 09:27:04 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov.cc (do_binary_op): Protect against invalid type conversions.
+	(try_assignment_with_conversion): Likewise.
+	(do_unary_op): Likewise.
+
+	* ov.h (OV_UNOP_FN, OV_UNOP_OP, OV_UNOP_FN_OP): New macros.
+	Use them to define not, uminus, transpose, hermitian functions
+	and operators ! and -.
+	(OV_BINOP_FN, OV_BINOP_OP, OV_BINOP_FN_OP): New macros.
+	Use them to define add, sub, mul, div, pow, ldiv, lshift, rshift,
+	lt, le, eq, ge, gt, ne, el_mul, el_div, el_pow, el_ldiv, el_and,
+	el_or, struct_ref, functions and operators <, <=, ==, >=, >, !=,
+	+, -, *, and /.
+
+	* ops.h (CONVDECLX): New macro.
+	* ov-base.cc (matrix_conv, complex_matrix_conv, string_conv):
+	Use it to declare these functions.
+
+	* ops.h (CONVDECL, INSTALL_WIDENOP):
+	Prefix function name with `oct_conv_'.
+	(INSTALL_BINOP, BINOPDECL): Prefix function name with `oct_binop_'.
+	(INSTALL_ASSIGNOP, INSTALL_ASSIGNANYOP, ASSIGNOPDECL):
+	Prefix function name with `oct_assignop_'.
+	(UNOPDECL, DEFNCUNOP_METHOD, INSTALL_UNOP, INSTALL_NCUNOP):
+	Prefix function name with `oct_unop_'.
+
+	* ov-str-mat.cc (default_numeric_conversion_function):
+	Return 0 if conversion fails.
+
+	* parse.y (make_prefix_op, make_postfix_op): Use
+	octave_value::unary_op enum.
+	
+	* pt-unop.cc (tree_prefix_expression::rvalue): Use new unary_op
+	functions from octave_value and octave_lvalue classes.
+	(tree_prefix_expression::rvalue): Likewise.
+
+	* pt-unop.cc (tree_unary_expression::oper): Move here.
+	(tree_prefix_expression::oper, tree_postfix_expression): From here.
+
+	* pt-unop.h (tree_prefix_expression, tree_postfix_expression):
+	Delete enums.
+	(tree_unary_expression): Use octave_value::unary_op enum.
+	* parse.y (make_prefix_op, make_postfix_op): Likewise.
+	
+	* oct-lvalue.h (octave_lvalue::do_unary_op): New function.
+	(octave_lvalue::increment, octave_lvalue::decrement): Delete.
+
+	* ov-typeinfo.h (octave_value_typeinfo::non_const_unary_ops):
+	New data member.
+	* ov-typeinfo.h (octave_value_typeinfo::lookup_non_const_unary_op):
+	New function.
+	* ov-typeinfo.cc (octave_value_typeinfo::register_non_const_unary_op):
+	New function.
+	(octave_value_typeinfo::do_register_non_const_unary_op): Ditto.
+	(octave_value_typeinfo::do_lookup_non_const_unary_op): Ditto.
+
+	* ov.cc (octave_value::do_non_const_unary_op): New function.
+
+	* Makefile.in (OP_XSRC): Add op-chm.cc and op-range.cc to the list.
+
+	* OPERATORS/op-str-str.cc: Define string matrix unary operators here.
+	(install_str_str_ops): Install them here.
+	* ov-bool-mat.h (octave_bool_matrix::transpose,
+	octave_bool_matrix_value::hermitian): Delete.
+
+	* OPERATORS/op-chm.cc: New file.  Define char matrix unary operators.
+	(install_chm_ops): Install them here.
+	* ov-ch-mat.h (octave_char_matrix::transpose,
+	octave_char_matrix_value::hermitian): Delete.
+	* ops.cc (install_ops): Call install_chm_ops.
+
+	* OPERATORS/op-bm-bm.cc: Define bool matrix unary operators here.
+	(install_bm_bm_ops): Install them here.
+	* ov-bool-mat.h (octave_bool_matrix::transpose,
+	octave_bool_matrix_value::hermitian): Delete.
+
+	* ov-bool.h (octave_bool::not, octave_bool::uminus,
+	octave_bool::transpose, octave_bool::hermitian): Delete.
+
+	* OPERATORS/op-cs-cs.cc: Define complex scalar unary operators here.
+	(install_cs_cs_ops): Install them here.
+	* ov-complex.h (octave_complex::not, octave_complex::uminus,
+	octave_complex::transpose, octave_complex::hermitian): Delete.
+
+	* OPERATORS/op-cm-cm.cc: Define complex matrix unary operators here.
+	(install_cm_cm_ops): Install them here.
+	* ov-cx-mat.h (octave_complex_matrix::not,
+	octave_complex_matrix::uminus, octave_complex_matrix::transpose,
+ 	octave_complex_matrix::hermitian): Delete.
+
+	* OPERATORS/op-m-m.cc: Define matrix unary operators here.
+	(install_m_m_ops): Install them here.
+	* ov-re-mat.h (octave_matrix::not, octave_matrix::uminus,
+	octave_matrix::transpose, octave_matrix::hermitian): Delete.
+
+	* OPERATORS/op-range.cc: New file.  Define range unary operators.
+	(install_range_ops): Install them here.
+	* ov-range.h (octave_range::not, octave_range::uminus,
+	octave_range::transpose, octave_range::hermitian): Delete.
+	* ops.cc (install_ops): Call install_range_ops.
+
+	* OPERATORS/op-s-s.cc: Define scalar unary operators here.
+	(install_s_s_ops): Install them here.
+	* ov-scalar.h (octave_scalar::not, octave_scalar::uminus,
+	octave_scalar::transpose, octave_scalar::hermitian): Delete.
+
+	* ops.h (INSTALL_UNOP, CAST_UNOP_ARG, UNOPDECL, DEFUNOPX, DEFUNOP,
+	DEFUNOP_OP, DEFUNOP_FN): New macros.
+
+	* ov.h (unary_op_fcn): New typedef.
+	(octave_value::unary_op): New enum.
+	* ov.cc (octave_value::octave_value): New function.
+
+	* ov.h (octave_value::not, octave_value::uminus,
+	octave_value::transpose, octave_value::hermitian,
+	octave_value::increment, octave_value::decrement): Delete.
+
+	* ov-base.cc (octave_base_value::not, octave_base_value::uminus,
+	octave_base_value::transpose, octave_base_value::hermitian,
+	octave_base_value::increment, octave_base_value::decrement): Delete.
+	
+	* ov.cc (gripe_unary_op): New function.
+	(do_unary_op): New function.
+	* ov-typeinfo.h (octave_value_typeinfo::unary_ops):
+	New data member.
+	* ov-typeinfo.cc (octave_value_info::register_unary_op,
+	octave_value_info::do_register_unary_op,
+	octave_value_info::lookup_unary_op,
+	octave_value_info::do_lookup_unary_op):
+	New functions.
 
 	* ov-list.cc (Fsplice): Use new octave_value::int_value function here.
 	(octave_list::do_index_op): Likewise.

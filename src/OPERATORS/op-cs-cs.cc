@@ -37,6 +37,28 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "xdiv.h"
 #include "xpow.h"
 
+// unary complex scalar ops.
+
+DEFUNOP (not, complex)
+{
+  CAST_UNOP_ARG (const octave_complex&);
+
+  return octave_value (v.complex_value () == 0.0);
+}
+
+DEFUNOP_OP (uminus, complex, -)
+DEFUNOP_OP (transpose, complex, /* no-op */)
+
+DEFUNOP (hermitian, complex)
+{
+  CAST_UNOP_ARG (const octave_complex&);
+
+  return octave_value (conj (v.complex_value ()));
+}
+
+DEFNCUNOP_METHOD (incr, complex, increment)
+DEFNCUNOP_METHOD (decr, complex, decrement)
+
 // complex scalar by complex scalar ops.
 
 DEFBINOP_OP (add, complex, complex, +)
@@ -163,6 +185,14 @@ DEFCONV (complex_matrix_conv, complex, complex_matrix)
 void
 install_cs_cs_ops (void)
 {
+  INSTALL_UNOP (not, octave_complex, not);
+  INSTALL_UNOP (uminus, octave_complex, uminus);
+  INSTALL_UNOP (transpose, octave_complex, transpose);
+  INSTALL_UNOP (hermitian, octave_complex, hermitian);
+
+  INSTALL_NCUNOP (incr, octave_complex, incr);
+  INSTALL_NCUNOP (decr, octave_complex, decr);
+
   INSTALL_BINOP (add, octave_complex, octave_complex, add);
   INSTALL_BINOP (sub, octave_complex, octave_complex, sub);
   INSTALL_BINOP (mul, octave_complex, octave_complex, mul);

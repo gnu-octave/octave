@@ -25,17 +25,27 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 extern void install_ops (void);
 
+#define INSTALL_UNOP(op, t, f) \
+  octave_value_typeinfo::register_unary_op \
+    (octave_value::op, t::static_type_id (), oct_unop_ ## f);
+
+#define INSTALL_NCUNOP(op, t, f) \
+  octave_value_typeinfo::register_non_const_unary_op \
+    (octave_value::op, t::static_type_id (), oct_unop_ ## f);
+
 #define INSTALL_BINOP(op, t1, t2, f) \
   octave_value_typeinfo::register_binary_op \
-    (octave_value::op, t1::static_type_id (), t2::static_type_id (), f);
+    (octave_value::op, t1::static_type_id (), t2::static_type_id (), \
+     oct_binop_ ## f);
 
 #define INSTALL_ASSIGNOP(op, t1, t2, f) \
   octave_value_typeinfo::register_assign_op \
-    (octave_value::op, t1::static_type_id (), t2::static_type_id (), f);
+    (octave_value::op, t1::static_type_id (), t2::static_type_id (), \
+     oct_assignop_ ## f);
 
 #define INSTALL_ASSIGNANYOP(op, t1, f) \
   octave_value_typeinfo::register_assignany_op \
-    (octave_value::op, t1::static_type_id (), f);
+    (octave_value::op, t1::static_type_id (), oct_assignop_ ## f);
 
 #define INSTALL_ASSIGNCONV(t1, t2, tr) \
   octave_value_typeinfo::register_pref_assign_conv \
@@ -43,7 +53,7 @@ extern void install_ops (void);
 
 #define INSTALL_WIDENOP(t1, t2, f) \
   octave_value_typeinfo::register_widening_op \
-    (t1::static_type_id (), t2::static_type_id (), f);
+    (t1::static_type_id (), t2::static_type_id (), oct_conv_ ## f);
 
 #define BOOL_OP1(xt, xn, get_x, yt, yn, get_y) \
   xt xn = get_x; \
@@ -115,6 +125,9 @@ extern void install_ops (void);
     } \
   while (0)
 
+#define CAST_UNOP_ARG(t) \
+  t v = DYNAMIC_CAST (t, a);
+
 #define CAST_BINOP_ARGS(t1, t2) \
   t1 v1 = DYNAMIC_CAST (t1, a1); \
   t2 v2 = DYNAMIC_CAST (t2, a2);
@@ -124,7 +137,9 @@ extern void install_ops (void);
 
 #define ASSIGNOPDECL(name) \
   static octave_value \
-  name (octave_value& a1, const octave_value_list& idx, const octave_value& a2)
+  oct_assignop_ ## name (octave_value& a1, \
+			 const octave_value_list& idx, \
+			 const octave_value& a2)
 
 #define DEFASSIGNOP(name, t1, t2) \
   ASSIGNOPDECL (name)
@@ -149,14 +164,52 @@ extern void install_ops (void);
 
 #define CONVDECL(name) \
   static octave_value * \
-  name (const octave_value& a)
+  oct_conv_ ## name (const octave_value& a)
+
+#define CONVDECLX(name) \
+  static octave_value * \
+  oct_conv_ ## name (const octave_value&)
 
 #define DEFCONV(name, from, to) \
   CONVDECL (name)
 
+#define UNOPDECL(name, a) \
+  static octave_value \
+  oct_unop_ ## name (const octave_value& a)
+
+#define DEFUNOPX(name, t) \
+  UNOPDECL (name, , )
+
+#define DEFUNOP(name, t) \
+  UNOPDECL (name, a)
+
+#define DEFUNOP_OP(name, t, op) \
+  UNOPDECL (name, a) \
+  { \
+    CAST_UNOP_ARG (const octave_ ## t&); \
+    return octave_value (op v.t ## _value ()); \
+  }
+
+// XXX FIXME XXX -- in some cases, the constructor isn't necessary.
+
+#define DEFUNOP_FN(name, t, f) \
+  UNOPDECL (name, a) \
+  { \
+    CAST_UNOP_ARG (const octave_ ## t&); \
+    return octave_value (f (v.t ## _value ())); \
+  }
+
+#define DEFNCUNOP_METHOD(name, t, method) \
+  static void \
+  oct_unop_ ## name (octave_value& a) \
+  { \
+    CAST_UNOP_ARG (octave_ ## t&); \
+    v.method (); \
+  }
+
 #define BINOPDECL(name, a1, a2) \
   static octave_value \
-  name (const octave_value& a1, const octave_value& a2)
+  oct_binop_ ## name (const octave_value& a1, const octave_value& a2)
 
 #define DEFBINOPX(name, t1, t2) \
   BINOPDECL (name, , )

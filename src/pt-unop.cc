@@ -35,6 +35,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt-unop.h"
 #include "pt-walk.h"
 
+// Unary expressions.
+
+string
+tree_unary_expression::oper (void) const
+{
+  return octave_value::unary_op_as_string (etype);
+}
+
 // Prefix expressions.
 
 octave_value_list
@@ -61,46 +69,40 @@ tree_prefix_expression::rvalue (void)
 
   if (op)
     {
-      if (etype == unot || etype == uminus)
-	{
-	  octave_value val = op->rvalue ();
-
-	  if (! error_state)
-	    {
-	      if (val.is_defined ())
-		{
-		  if (etype == unot)
-		    retval = val.not ();
-		  else
-		    retval = val.uminus ();
-		}
-	      else
-		error ("argument to prefix operator `%s' undefined",
-		       oper () . c_str ());
-	    }
-	}
-      else if (etype == increment || etype == decrement)
+      if (etype == octave_value::incr || etype == octave_value::decr)
 	{
 	  octave_lvalue ref = op->lvalue ();
 
-	  if (! error_state)
+	  if (error_state)
+	    eval_error ();
+	  else if (ref.is_defined ())
 	    {
-	      if (ref.is_defined ())
-		{
-		  if (etype == increment)
-		    ref.increment ();
-		  else
-		    ref.decrement ();
+	      ref.do_unary_op (etype);
 
-		  retval = ref.value ();
-		}
-	      else
-		error ("argument to prefix operator `%s' undefined",
-		       oper () . c_str ());
+	      retval = ref.value ();
 	    }
+	  else
+	    eval_error ();
 	}
       else
-	error ("prefix operator %d not implemented", etype);
+	{
+	  octave_value val = op->rvalue ();
+
+	  if (error_state)
+	    eval_error ();
+	  else if (val.is_defined ())
+	    {
+	      retval = ::do_unary_op (etype, val);
+
+	      if (error_state)
+		{
+		  retval = octave_value ();
+		  eval_error ();
+		}
+	    }
+	  else
+	    eval_error ();
+	}
     }
 
   return retval;
@@ -112,36 +114,6 @@ tree_prefix_expression::eval_error (void)
   if (error_state > 0)
     ::error ("evaluating prefix operator `%s' near line %d, column %d",
 	     oper () . c_str (), line (), column ());
-}
-
-string
-tree_prefix_expression::oper (void) const
-{
-  string retval = "<unknown>";
-
-  switch (etype)
-    {
-    case unot:
-      retval = "!";
-      break;
-
-    case uminus:
-      retval = "-";
-      break;
-
-    case increment:
-      retval = "++";
-      break;
-
-    case decrement:
-      retval = "--";
-      break;
-
-    default:
-      break;
-    }
-
-  return retval;
 }
 
 void
@@ -176,47 +148,43 @@ tree_postfix_expression::rvalue (void)
 
   if (op)
     {
-      if (etype == transpose || etype == hermitian)
-	{
-	  octave_value val = op->rvalue ();
-
-	  if (! error_state)
-	    {
-	      if (val.is_defined ())
-		{
-		  if (etype == transpose)
-		    retval = val.transpose ();
-		  else
-		    retval = val.hermitian ();
-		}
-	      else
-		error ("argument to postfix operator `%s' undefined",
-		       oper () . c_str ());
-	    }
-	}
-      else if (etype == increment || etype == decrement)
+      if (etype == octave_value::incr || etype == octave_value::decr)
 	{
 	  octave_lvalue ref = op->lvalue ();
 
-	  if (! error_state)
+	  if (error_state)
+	    eval_error ();
+	  else if (ref.is_defined ())
 	    {
-	      if (ref.is_defined ())
-		{
-		  retval = ref.value ();
+	      retval = ref.value ();
 
-		  if (etype == increment)
-		    ref.increment ();
-		  else
-		    ref.decrement ();
-		}
-	      else
-		error ("argument to postfix operator `%s' undefined",
-		       oper () . c_str ());
+	      ref.do_unary_op (etype);
 	    }
+	  else
+	    eval_error ();
 	}
       else
-	error ("postfix operator %d not implemented", etype);
+	{
+	  octave_value val = op->rvalue ();
+
+	  if (error_state)
+	    eval_error ();
+	  else if (val.is_defined ())
+	    {
+	      retval = ::do_unary_op (etype, val);
+
+	      if (error_state)
+		{
+		  retval = octave_value ();
+		  eval_error ();
+		}
+	    }
+	  else
+	    eval_error ();
+	}
     }
+  else
+    eval_error ();
 
   return retval;
 }
@@ -227,36 +195,6 @@ tree_postfix_expression::eval_error (void)
   if (error_state > 0)
     ::error ("evaluating postfix operator `%s' near line %d, column %d",
 	     oper () . c_str (), line (), column ());
-}
-
-string
-tree_postfix_expression::oper (void) const
-{
-  string retval = "<unknown>";
-
-  switch (etype)
-    {
-    case transpose:
-      retval = ".'";
-      break;
-
-    case hermitian:
-      retval = "'";
-      break;
-
-    case increment:
-      retval = "++";
-      break;
-
-    case decrement:
-      retval = "--";
-      break;
-
-    default:
-      break;
-    }
-
-  return retval;
 }
 
 void

@@ -51,7 +51,9 @@ default_numeric_conversion_function (const octave_value& a)
 {
   CAST_CONV_ARG (const octave_char_matrix_str&);
 
-  return new octave_matrix (v.matrix_value ());
+  Matrix m = v.matrix_value ();
+
+  return error_state ? 0 : new octave_matrix (m);
 }
 
 type_conv_fcn

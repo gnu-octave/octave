@@ -532,7 +532,10 @@ matrix		: '[' ']'
 		| '[' ';' ']'
 		  { $$ = new tree_constant (octave_value (Matrix ())); }
 		| '[' in_matrix_or_assign_lhs rows ']'
-		  { $$ = finish_matrix ($3); }
+		  {
+		    $$ = finish_matrix ($3);
+		    lexer_flags.looking_at_matrix_or_assign_lhs = false;
+		  }
 		;
 
 rows		: rows1
@@ -1842,24 +1845,24 @@ make_boolean_op (int op, tree_expression *op1, token *tok_val,
 static tree_expression *
 make_prefix_op (int op, tree_expression *op1, token *tok_val)
 {
-  tree_prefix_expression::type t;
+  octave_value::unary_op t = octave_value::unknown_unary_op;
 
   switch (op)
     {
     case EXPR_NOT:
-      t = tree_prefix_expression::unot;
+      t = octave_value::not;
       break;
 
     case '-':
-      t = tree_prefix_expression::uminus;
+      t = octave_value::uminus;
       break;
 
     case PLUS_PLUS:
-      t = tree_prefix_expression::increment;
+      t = octave_value::incr;
       break;
 
     case MINUS_MINUS:
-      t = tree_prefix_expression::decrement;
+      t = octave_value::decr;
       break;
 
     default:
@@ -1880,24 +1883,24 @@ make_prefix_op (int op, tree_expression *op1, token *tok_val)
 static tree_expression *
 make_postfix_op (int op, tree_expression *op1, token *tok_val)
 {
-  tree_postfix_expression::type t;
+  octave_value::unary_op t = octave_value::unknown_unary_op;
 
   switch (op)
     {
     case QUOTE:
-      t = tree_postfix_expression::hermitian;
+      t = octave_value::hermitian;
       break;
 
     case TRANSPOSE:
-      t = tree_postfix_expression::transpose;
+      t = octave_value::transpose;
       break;
 
     case PLUS_PLUS:
-      t = tree_postfix_expression::increment;
+      t = octave_value::incr;
       break;
 
     case MINUS_MINUS:
-      t = tree_postfix_expression::decrement;
+      t = octave_value::decr;
       break;
 
     default:

@@ -144,14 +144,6 @@ public:
 
   Range range_value (void) const { return range; }
 
-  octave_value not (void) const;
-
-  octave_value uminus (void) const { return octave_value (- range); }
-
-  octave_value transpose (void) const;
-
-  octave_value hermitian (void) const;
-
   octave_value convert_to_str (void) const;
 
   void print (ostream& os, bool pr_as_read_syntax = false) const;

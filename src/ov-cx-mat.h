@@ -131,16 +131,6 @@ public:
 
   ComplexMatrix complex_matrix_value (bool = false) const;
 
-  octave_value not (void) const { return octave_value (! matrix); }
-
-  octave_value uminus (void) const { return octave_value (- matrix); }
-
-  octave_value transpose (void) const
-    { return octave_value (matrix.transpose ()); }
-
-  octave_value hermitian (void) const
-    { return octave_value (matrix.hermitian ()); }
-
   void increment (void) { matrix += Complex (1.0); }
 
   void decrement (void) { matrix -= Complex (1.0); }

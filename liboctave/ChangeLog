@@ -1,3 +1,7 @@
+Thu Oct 29 18:57:50 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* boolMatrix.cc (boolMatrix::operator !): New function.
+
 Fri Oct 23 21:46:20 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pathsearch.h (dir_path::default_path): New data member.

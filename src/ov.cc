@@ -122,6 +122,44 @@ bool Vresize_on_range_error;
 // Octave's value type.
 
 string
+octave_value::unary_op_as_string (unary_op op)
+{
+  string retval;
+
+  switch (op)
+    {
+    case not:
+      retval = "!";
+      break;
+
+    case uminus:
+      retval = "-";
+      break;
+
+    case transpose:
+      retval = ".'";
+      break;
+
+    case hermitian:
+      retval = "'";
+      break;
+
+    case incr:
+      retval = "++";
+      break;
+
+    case decr:
+      retval = "--";
+      break;
+
+    default:
+      retval = "<unknown>";
+    }
+
+  return retval;
+}
+
+string
 octave_value::binary_op_as_string (binary_op op)
 {
   string retval;
@@ -503,18 +541,24 @@ octave_value::do_index_op (int nargout, const octave_value_list& idx)
 }
 
 static void
-gripe_no_conversion (const string& tn1, const string& tn2)
+gripe_no_conversion (const string& on, const string& tn1, const string& tn2)
 {
-  error ("no suitable conversion found for assignment of `%s' to indexed `%s'",
-	 tn2.c_str (), tn1.c_str ());
+  error ("operator %s: no conversion for assignment of `%s' to indexed `%s'",
+	 on.c_str (), tn2.c_str (), tn1.c_str ());
 }
 
 void
-octave_value::assign (assign_op, const octave_value& rhs)
+octave_value::assign (assign_op op, const octave_value& rhs)
 {
   // XXX FIXME XXX -- make this work for ops other than `='.
 
-  operator = (rhs);
+  if (op == asn_eq)
+    operator = (rhs);
+  else
+    {
+      string on = assign_op_as_string (op);
+      error ("operator `%s' not supported yet", on.c_str ());
+    }
 }
 
 void
@@ -530,10 +574,11 @@ octave_value::assign (octave_value::assign_op op,
 
       if (! (error_state || assignment_ok))
 	{
-	  assignment_ok = try_assignment_with_conversion (op,idx, rhs);
+	  assignment_ok = try_assignment_with_conversion (op, idx, rhs);
 
 	  if (! (error_state || assignment_ok))
-	    gripe_no_conversion (type_name (), rhs.type_name ());
+	    gripe_no_conversion (assign_op_as_string (op),
+				 type_name (), rhs.type_name ());
 	}
 
       if (! error_state)
@@ -718,7 +763,7 @@ gripe_indexed_assignment (const string& tn1, const string& tn2)
 }
 
 static void
-gripe_conversion_failed (const string& tn1, const string& tn2)
+gripe_assign_conversion_failed (const string& tn1, const string& tn2)
 {
   error ("type conversion for assignment of `%s' to indexed `%s' failed",
 	 tn2.c_str (), tn1.c_str ());
@@ -767,7 +812,7 @@ octave_value::convert_and_assign (octave_value::assign_op op,
 		delete old_rep;
 	    }
 	  else
-	    gripe_conversion_failed (type_name (), rhs.type_name ());
+	    gripe_assign_conversion_failed (type_name (), rhs.type_name ());
 	}
       else
 	gripe_indexed_assignment (type_name (), rhs.type_name ());
@@ -789,7 +834,17 @@ octave_value::try_assignment_with_conversion (octave_value::assign_op op,
       type_conv_fcn cf_rhs = rhs.numeric_conversion_function ();
 
       if (cf_rhs)
-	tmp_rhs = octave_value (cf_rhs (*rhs.rep));
+	{
+	  octave_value *tmp = cf_rhs (*rhs.rep);
+
+	  if (tmp)
+	    tmp_rhs = octave_value (tmp);
+	  else
+	    {
+	      gripe_assign_conversion_failed (type_name (), rhs.type_name ());
+	      return false;
+	    }
+	}
       else
 	tmp_rhs = rhs;
 
@@ -799,8 +854,19 @@ octave_value::try_assignment_with_conversion (octave_value::assign_op op,
       if (cf_this)
 	{
 	  old_rep = rep;
-	  rep = cf_this (*rep);
-	  rep->count = 1;
+
+	  octave_value *tmp = cf_this (*rep);
+
+	  if (tmp)
+	    {
+	      rep = tmp;
+	      rep->count = 1;
+	    }
+	  else
+	    {
+	      gripe_assign_conversion_failed (type_name (), rhs.type_name ());
+	      return false;
+	    }
 	}
 
       if (cf_this || cf_rhs)
@@ -868,6 +934,12 @@ gripe_binary_op (const string& on, const string& tn1, const string& tn2)
 	 on.c_str (), tn1.c_str (), tn2.c_str ());
 }
 
+static void
+gripe_binary_op_conv (const string& on)
+{
+  error ("type conversion failed for binary operator `%s'", on.c_str ());
+}
+
 octave_value
 do_binary_op (octave_value::binary_op op, const octave_value& v1,
 	      const octave_value& v2)
@@ -888,8 +960,18 @@ do_binary_op (octave_value::binary_op op, const octave_value& v1,
 
       if (cf1)
 	{
-	  tv1 = octave_value (cf1 (*v1.rep));
-	  t1 = tv1.type_id ();
+	  octave_value *tmp = cf1 (*v1.rep);
+
+	  if (tmp)
+	    {
+	      tv1 = octave_value (tmp);
+	      t1 = tv1.type_id ();
+	    }
+	  else
+	    {
+	      gripe_binary_op_conv (octave_value::binary_op_as_string (op));
+	      return retval;
+	    }
 	}
       else
 	tv1 = v1;
@@ -899,8 +981,18 @@ do_binary_op (octave_value::binary_op op, const octave_value& v1,
 
       if (cf2)
 	{
-	  tv2 = octave_value (cf2 (*v2.rep));
-	  t2 = tv2.type_id ();
+	  octave_value *tmp = cf2 (*v2.rep);
+
+	  if (tmp)
+	    {
+	      tv2 = octave_value (tmp);
+	      t2 = tv2.type_id ();
+	    }
+	  else
+	    {
+	      gripe_binary_op_conv (octave_value::binary_op_as_string (op));
+	      return retval;
+	    }
 	}
       else
 	tv2 = v2;
@@ -922,6 +1014,134 @@ do_binary_op (octave_value::binary_op op, const octave_value& v1,
     }
 
   return retval;
+}
+
+static void
+gripe_unary_op (const string& on, const string& tn)
+{
+  error ("unary operator `%s' not implemented for `%s' operands",
+	 on.c_str (), tn.c_str ());
+}
+
+static void
+gripe_unary_op_conv (const string& on)
+{
+  error ("type conversion failed for unary operator `%s'", on.c_str ());
+}
+
+octave_value
+do_unary_op (octave_value::unary_op op, const octave_value& v)
+{
+  octave_value retval;
+
+  int t = v.type_id ();
+
+  unary_op_fcn f = octave_value_typeinfo::lookup_unary_op (op, t);
+
+  if (f)
+    retval = f (*v.rep);
+  else
+    {
+      octave_value tv;
+      type_conv_fcn cf = v.numeric_conversion_function ();
+
+      if (cf)
+	{
+	  octave_value *tmp = cf (*v.rep);
+
+	  if (tmp)
+	    {
+	      tv = octave_value (tmp);
+	      t = tv.type_id ();
+
+	      unary_op_fcn f = octave_value_typeinfo::lookup_unary_op (op, t);
+
+	      if (f)
+		retval = f (*tv.rep);
+	      else
+		gripe_unary_op (octave_value::unary_op_as_string (op),
+				v.type_name ());
+	    }
+	  else
+	    gripe_unary_op_conv (octave_value::unary_op_as_string (op));
+	}
+      else
+	gripe_unary_op (octave_value::unary_op_as_string (op),
+			v.type_name ());
+    }
+
+  return retval;
+}
+
+static void
+gripe_unary_op_conversion_failed (const string& op, const string& tn)
+{
+  error ("operator %s: type conversion for `%s' failed",
+	 op.c_str (), tn.c_str ());
+}
+
+void
+octave_value::do_non_const_unary_op (octave_value::unary_op op)
+{
+  octave_value retval;
+
+  int t = type_id ();
+
+  non_const_unary_op_fcn f
+    = octave_value_typeinfo::lookup_non_const_unary_op (op, t);
+
+  if (f)
+    {
+      make_unique ();
+
+      f (*rep);
+    }
+  else
+    {
+      type_conv_fcn cf = numeric_conversion_function ();
+
+      if (cf)
+	{
+	  octave_value *tmp = cf (*rep);
+
+	  if (tmp)
+	    {
+	      octave_value *old_rep = rep;
+	      rep = tmp;
+	      rep->count = 1;
+
+	      t = type_id ();
+
+	      f = octave_value_typeinfo::lookup_non_const_unary_op (op, t);
+
+	      if (f)
+		{
+		  f (*rep);
+
+		  if (old_rep && --old_rep->count == 0)
+		    delete old_rep;
+		}
+	      else
+		{
+		  if (old_rep)
+		    {
+		      if (--rep->count == 0)
+			delete rep;
+
+		      rep = old_rep;
+		    }
+
+		  gripe_unary_op (octave_value::unary_op_as_string (op),
+				  type_name ());
+		}
+	    }
+	  else
+	    gripe_unary_op_conversion_failed
+	      (octave_value::unary_op_as_string (op), type_name ());
+	}
+      else
+	gripe_unary_op (octave_value::unary_op_as_string (op), type_name ());
+    }
 }
 
 // Current indentation.

@@ -36,6 +36,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "xdiv.h"
 #include "xpow.h"
 
+// bool unary ops.
+
+// scalar unary ops.
+
+DEFUNOP_OP (not, bool, !)
+DEFUNOP_OP (transpose, bool, /* no-op */)
+DEFUNOP_OP (hermitian, bool, /* no-op */)
+
 // bool by bool ops.
 
 DEFBINOP_OP (eq, bool, bool, ==)
@@ -44,6 +52,10 @@ DEFBINOP_OP (ne, bool, bool, !=)
 void
 install_b_b_ops (void)
 {
+  INSTALL_UNOP (not, octave_bool, not);
+  INSTALL_UNOP (transpose, octave_bool, transpose);
+  INSTALL_UNOP (hermitian, octave_bool, hermitian);
+
   INSTALL_BINOP (eq, octave_bool, octave_bool, eq);
   INSTALL_BINOP (ne, octave_bool, octave_bool, ne);
 }

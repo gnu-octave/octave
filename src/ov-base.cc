@@ -339,64 +339,17 @@ octave_base_value::bool_matrix_value (void) const
   return retval;
 }
 
-octave_value
-octave_base_value::not (void) const
-{
-  octave_value retval;
-  gripe_wrong_type_arg ("octave_base_value::not()", type_name ());
-  return retval;
-}
-
-octave_value
-octave_base_value::uminus (void) const
-{
-  octave_value retval;
-  gripe_wrong_type_arg ("octave_base_value::uminus()", type_name ());
-  return retval;
-}
-
-octave_value
-octave_base_value::transpose (void) const
-{
-  octave_value retval;
-  gripe_wrong_type_arg ("octave_base_value::transpose()", type_name ());
-  return retval;
-}
-
-octave_value
-octave_base_value::hermitian (void) const
-{
-  octave_value retval;
-  gripe_wrong_type_arg ("octave_base_value::hermitian()", type_name ());
-  return retval;
-}
-
-void
-octave_base_value::increment (void)
-{
-  gripe_wrong_type_arg ("octave_base_value::increment()", type_name ());
-}
-
-void
-octave_base_value::decrement (void)
-{
-  gripe_wrong_type_arg ("octave_base_value::decrement()", type_name ());
-}
-
-static octave_value *
-matrix_conv (const octave_value&)
+CONVDECLX (matrix_conv)
 {
   return new octave_matrix ();
 }
 
-static octave_value *
-complex_matrix_conv (const octave_value&)
+CONVDECLX (complex_matrix_conv)
 {
   return new octave_complex_matrix ();
 }
 
-static octave_value *
-string_conv (const octave_value&)
+CONVDECLX (string_conv)
 {
   return new octave_char_matrix_str ();
 }

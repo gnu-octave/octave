@@ -24,6 +24,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include "error.h"
 #include "oct-obj.h"
 #include "oct-lvalue.h"
 #include "ov.h"
@@ -34,7 +35,7 @@ octave_lvalue::assign (octave_value::assign_op op, const octave_value& rhs)
   octave_value saved_val;
 
   if (chg_fcn)
-    octave_value saved_val = *val;
+    saved_val = *val;
 
   if (idx.empty ())
     {
@@ -51,7 +52,28 @@ octave_lvalue::assign (octave_value::assign_op op, const octave_value& rhs)
 	val->assign_struct_elt (op, struct_elt_name, idx, rhs);
     }
 
-  if (chg_fcn && chg_fcn () < 0)
+  if (chg_fcn && ! error_state && chg_fcn () < 0)
+    *val = saved_val;
+}
+
+void
+octave_lvalue::do_unary_op (octave_value::unary_op op)
+{
+  octave_value saved_val;
+
+  if (chg_fcn)
+    saved_val = *val;
+
+  if (idx.empty ())
+    val->do_non_const_unary_op (op);
+  else
+    {
+      string on = octave_value::unary_op_as_string (op);
+      error ("indexed operations not implemented yet for operator `%s'",
+	     on.c_str ());
+    }
+
+  if (chg_fcn && ! error_state && chg_fcn () < 0)
     *val = saved_val;
 }
 

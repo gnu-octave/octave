@@ -34,6 +34,15 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-typeinfo.h"
 #include "ops.h"
 
+// string unary ops.
+
+DEFUNOP (transpose, matrix)
+{
+  CAST_UNOP_ARG (const octave_char_matrix_str&);
+
+  return octave_value (v.char_matrix_value().transpose (), true);
+}
+
 // string by string ops.
 
 DEFBINOP (eq, char_matrix_str, char_matrix_str)
@@ -104,6 +113,9 @@ DEFASSIGNOP (assign, char_matrix_str, char_matrix_str)
 void
 install_str_str_ops (void)
 {
+  INSTALL_UNOP (transpose, octave_char_matrix_str, transpose);
+  INSTALL_UNOP (hermitian, octave_char_matrix_str, transpose);
+
   INSTALL_BINOP (eq, octave_char_matrix_str, octave_char_matrix_str, eq);
   INSTALL_BINOP (ne, octave_char_matrix_str, octave_char_matrix_str, ne);
 

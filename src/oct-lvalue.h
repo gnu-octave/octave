@@ -82,11 +82,7 @@ public:
 
   void clear_index (void) { idx = octave_value_list (); }
 
-  // XXX FIXME XXX -- need to handle index increment and decrement too.
-
-  void increment (void) { val->increment (); }
-
-  void decrement (void) { val->decrement (); }
+  void do_unary_op (octave_value::unary_op op);
 
   octave_value value (void)
     {

@@ -184,18 +184,6 @@ public:
 
   boolMatrix bool_matrix_value (void) const;
 
-  octave_value not (void) const;
-
-  octave_value uminus (void) const;
-
-  octave_value transpose (void) const;
-
-  octave_value hermitian (void) const;
-
-  void increment (void);
-
-  void decrement (void);
-
   octave_value convert_to_str (void) const;
 
   void convert_to_row_or_column_vector (void);

@@ -37,7 +37,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "error.h"
 #include "utils.h"
 #include "pager.h"
-#include "f-qpsol.h"
+#include "defun-dld.h"
 
 // This should probably be defined in some shared file and declared in
 // a header file...
@@ -46,24 +46,20 @@ extern int linear_constraints_ok (const ColumnVector& x,
 				  const ColumnVector& lub, char *warn_for,
 				  int warn);
 
-#ifdef WITH_DLD
-Octave_object
-builtin_qpsol_2 (const Octave_object& args, int nargout)
-{
-  return qpsol (args, nargout);
-}
-
-Octave_object
-builtin_qpsol_options_2 (const Octave_object& args, int nargout)
-{
-  return qpsol_options (args, nargout);
-}
-#endif
-
 static QPSOL_options qpsol_opts;
 
-Octave_object
-qpsol (const Octave_object& args, int nargout)
+#if defined (QPSOL_MISSING)
+DEFUN_DLD ("qpsol", Fqpsol, Sqpsol, 9, 3,
+  "This function requires QPSOL, which is not freely\n\
+redistributable.  For more information, read the file\n\
+libcruft/qpsol/README.MISSING in the source distribution.")
+#else
+DEFUN_DLD ("qpsol", Fqpsol, Sqpsol, 9, 3,
+  "[X, OBJ, INFO, LAMBDA] = qpsol (X, H, C [, LB, UB] [, LB, A, UB])\n\
+\n\
+Groups of arguments surrounded in `[]' are optional, but\n\
+must appear in the same relative order shown above.")
+#endif
 {
 /*
 
@@ -76,11 +72,28 @@ Handle all of the following:
 
 */
 
-// Assumes that we have been given the correct number of arguments.
-
   Octave_object retval;
 
+#if defined (QPSOL_MISSING)
+
+// Force a bad value of inform, and empty matrices for x, phi, and lambda.
+
+  retval.resize (4, Matrix ());
+
+  retval(2) = -1.0;
+
+  print_usage ("qpsol");
+
+#else
+
   int nargin = args.length ();
+
+  if (nargin < 4 || nargin == 5 || nargin == 8 || nargin > 9
+      || nargout > 4)
+    {
+      print_usage ("qpsol");
+      return retval;
+    }
 
   ColumnVector x = args(1).to_vector ();
   if (x.capacity () == 0)
@@ -199,6 +212,8 @@ Handle all of the following:
   if (nargout > 3)
     retval(3) = lambda;
 
+#endif
+
   return retval;
 }
 
@@ -224,33 +239,33 @@ struct QPSOL_OPTIONS
 static QPSOL_OPTIONS qpsol_option_table [] =
 {
   { "feasibility tolerance",
-    { "feasibility", "tolerance", NULL, },
+    { "feasibility", "tolerance", 0, },
     { 1, 0, 0, }, 1,
-    QPSOL_options::set_feasibility_tolerance, NULL,
-    QPSOL_options::feasibility_tolerance, NULL, },
+    QPSOL_options::set_feasibility_tolerance, 0,
+    QPSOL_options::feasibility_tolerance, 0, },
 
   { "infinite bound",
-    { "infinite", "bound", NULL, },
+    { "infinite", "bound", 0, },
     { 2, 0, 0, }, 1,
-    QPSOL_options::set_infinite_bound, NULL,
-    QPSOL_options::infinite_bound, NULL, },
+    QPSOL_options::set_infinite_bound, 0,
+    QPSOL_options::infinite_bound, 0, },
 
   { "iteration limit",
-    { "iteration", "limit", NULL, },
+    { "iteration", "limit", 0, },
     { 2, 0, 0, }, 1,
-    NULL, QPSOL_options::set_iteration_limit,
-    NULL, QPSOL_options::iteration_limit, },
+    0, QPSOL_options::set_iteration_limit,
+    0, QPSOL_options::iteration_limit, },
 
   { "print level",
-    { "print", "level", NULL, },
+    { "print", "level", 0, },
     { 1, 0, 0, }, 1,
-    NULL, QPSOL_options::set_print_level,
-    NULL, QPSOL_options::print_level, },
+    0, QPSOL_options::set_print_level,
+    0, QPSOL_options::print_level, },
 
-  { NULL,
-    { NULL, NULL, NULL, },
+  { 0,
+    { 0, 0, 0, },
     { 0, 0, 0, }, 0,
-    NULL, NULL, NULL, NULL, },
+    0, 0, 0, 0, },
 };
 
 static void
@@ -268,7 +283,7 @@ print_qpsol_option_list (void)
   QPSOL_OPTIONS *list = qpsol_option_table;
 
   char *keyword;
-  while ((keyword = list->keyword) != (char *) NULL)
+  while ((keyword = list->keyword) != 0)
     {
       output_buf.form ("  %-40s ", keyword);
       if (list->d_get_fcn)
@@ -300,7 +315,7 @@ do_qpsol_option (char *keyword, double val)
 {
   QPSOL_OPTIONS *list = qpsol_option_table;
 
-  while (list->keyword != (char *) NULL)
+  while (list->keyword != 0)
     {
       if (keyword_almost_match (list->kw_tok, list->min_len, keyword,
 				list->min_toks_to_match, MAX_TOKENS))
@@ -318,10 +333,26 @@ do_qpsol_option (char *keyword, double val)
   warning ("qpsol_options: no match for `%s'", keyword);
 }
 
-Octave_object
-qpsol_options (const Octave_object& args, int nargout)
+#if defined (QPSOL_MISSING)
+DEFUN_DLD ("qpsol_options", Fqpsol_options, Sqpsol_options, -1, 1,
+  "This function requires QPSOL, which is not freely\n\
+redistributable.  For more information, read the file\n\
+libcruft/qpsol/README.MISSING in the source distribution.")
+#else
+DEFUN_DLD ("qpsol_options", Fqpsol_options, Sqpsol_options, -1, 1,
+  "qpsol_options (KEYWORD, VALUE)\n
+\n\
+Set or show options for qpsol.  Keywords may be abbreviated\n\
+to the shortest match.")
+#endif
 {
   Octave_object retval;
+
+#if defined (QPSOL_MISSING)
+
+  print_usage ("qpsol");
+
+#else
 
   int nargin = args.length ();
 
@@ -344,6 +375,8 @@ qpsol_options (const Octave_object& args, int nargout)
     {
       print_usage ("qpsol_options");
     }
+
+#endif
 
   return retval;
 }

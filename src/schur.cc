@@ -32,22 +32,30 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "user-prefs.h"
 #include "error.h"
 #include "gripes.h"
-#include "f-schur.h"
+#include "defun-dld.h"
 
-#ifdef WITH_DLD
-Octave_object
-builtin_schur_2 (const Octave_object& args, int nargout)
-{
-  return schur (args, nargout);
-}
-#endif
-
-Octave_object
-schur (const Octave_object& args, int nargout)
+DEFUN_DLD ("schur", Fschur, Sschur, 3, 2,
+  "[U, S] = schur (A) or S = schur (A)\n\
+\n\
+or, for ordered Schur:\n\
+\n\
+  [U, S] = schur (A, TYPE) or S = schur (A, TYPE)\n\
+where TYPE is a string that begins with one of the following\n\
+characters:\n\
+\n\
+  A = continuous time poles\n\
+  D = discrete time poles\n\
+  U = unordered schur (default)")
 {
   Octave_object retval;
 
   int nargin = args.length ();
+
+  if (nargin == 1 || nargin > 3 || nargout > 2)
+    {
+      print_usage ("schur");
+      return retval;
+    }
 
   tree_constant arg = args(1).make_numeric ();
 

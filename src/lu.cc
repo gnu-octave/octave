@@ -31,22 +31,22 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "tree-const.h"
 #include "user-prefs.h"
 #include "gripes.h"
-#include "f-lu.h"
+#include "defun-dld.h"
 
-#ifdef WITH_DLD
-Octave_object
-builtin_lu_2 (const Octave_object& args, int nargout)
+DEFUN_DLD ("lu", Flu, Slu, 2, 3,
+  "[L, U, P] = lu (A): LU factorization")
 {
-  return lu (args(1), nargout);
-}
-#endif
+  Octave_object retval;
 
-Octave_object
-lu (const tree_constant& a, int nargout)
-{
-  Octave_object retval (3);
+  int nargin = args.length ();
 
-  tree_constant tmp = a.make_numeric ();;
+  if (nargin != 2 || nargout > 3)
+    {
+      print_usage ("lu");
+      return retval;
+    }
+
+  tree_constant tmp = args(1).make_numeric ();;
     
   if (tmp.rows () == 0 || tmp.columns () == 0)
     {
@@ -56,10 +56,7 @@ lu (const tree_constant& a, int nargout)
 	  if (flag < 0)
 	    gripe_empty_arg ("lu", 0);
 
-	  Matrix m;
-	  retval(0) = m;
-	  retval(1) = m;
-	  retval(2) = m;
+	  retval.resize (3, Matrix ());
 	  return retval;
 	}
       else
@@ -81,15 +78,15 @@ lu (const tree_constant& a, int nargout)
 		{
 		  Matrix P = fact.P ();
 		  Matrix L = P.transpose () * fact.L ();
-		  retval(0) = L;
 		  retval(1) = fact.U ();
+		  retval(0) = L;
 		}
 		break;
 	      case 3:
 	      default:
-		retval(0) = fact.L ();
-		retval(1) = fact.U ();
 		retval(2) = fact.P ();
+		retval(1) = fact.U ();
+		retval(0) = fact.L ();
 		break;
 	      }
 	  }
@@ -110,15 +107,15 @@ lu (const tree_constant& a, int nargout)
 		{
 		  ComplexMatrix P = fact.P ();
 		  ComplexMatrix L = P.transpose () * fact.L ();
-		  retval(0) = L;
 		  retval(1) = fact.U ();
+		  retval(0) = L;
 		}
 		break;
 	      case 3:
 	      default:
-		retval(0) = fact.L ();
-		retval(1) = fact.U ();
 		retval(2) = fact.P ();
+		retval(1) = fact.U ();
+		retval(0) = fact.L ();
 		break;
 	      }
 	  }
@@ -129,17 +126,17 @@ lu (const tree_constant& a, int nargout)
     case tree_constant_rep::scalar_constant:
       {
 	double d = tmp.double_value ();
-	retval(0) = 1.0;
-	retval(1) = d;
 	retval(2) = 1.0;
+	retval(1) = d;
+	retval(0) = 1.0;
       }
       break;
     case tree_constant_rep::complex_scalar_constant:
       {
 	Complex c = tmp.complex_value ();
-	retval(0) = 1.0;
-	retval(1) = c;
 	retval(2) = 1.0;
+	retval(1) = c;
+	retval(0) = 1.0;
       }
       break;
     default:

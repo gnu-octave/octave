@@ -26,7 +26,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #endif
 
 #include "tree-const.h"
-#include "f-sort.h"
+#include "defun-dld.h"
 
 static void
 mx_sort (Matrix& m, Matrix& idx, int return_idx)
@@ -162,12 +162,20 @@ mx_sort (ComplexRowVector& cv, RowVector& idx, int return_idx)
 	}
 }
 
-Octave_object
-sort (const Octave_object& args, int nargout)
+DEFUN_DLD ("sort", Fsort, Ssort, 2, 2,
+  "[S, I] = sort (X)\n\
+\n\
+sort the columns of X, optionally return sort index")
 {
-// Assumes that we have been given the correct number of arguments.
-
   Octave_object retval;
+
+  int nargin = args.length ();
+
+  if (nargin != 2)
+    {
+      print_usage ("sort");
+      return retval;
+    }
 
   int return_idx = nargout > 1;
   if (return_idx)

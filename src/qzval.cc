@@ -1,4 +1,4 @@
-// tc-qzval.cc                                           -*- C++ -*-
+// f-qzval.cc                                           -*- C++ -*-
 /*
 
 Copyright (C) 1993, 1994 John W. Eaton
@@ -38,7 +38,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "user-prefs.h"
 #include "gripes.h"
 #include "error.h"
-#include "f-qzval.h"
+#include "defun-dld.h"
 
 extern "C"
 {
@@ -52,18 +52,21 @@ extern "C"
 		       double*, double*, double*, const long*, double*);
 }
 
-#ifdef WITH_DLD
-Octave_object
-builtin_qzvalue_2 (const Octave_object& args, int nargout)
-{
-  return qzvalue (args, nargout);
-}
-#endif
-
-Octave_object
-qzvalue (const Octave_object& args, int nargout)
+DEFUN_DLD ("qzvalue", Fqzvalue, Sqzvalue, 3, 1,
+  "X = qzval (A, B)\n\
+\n\
+compute generalized eigenvalues of the matrix pencil (A - lambda B).\n\
+A and B must be real matrices.")
 {
   Octave_object retval;
+
+  int nargin = args.length ();
+
+  if (nargin != 3 || nargout > 1)
+    {
+      print_usage ("qzvalue");
+      return retval;
+    }
 
   tree_constant arga = args(1).make_numeric ();
   tree_constant argb = args(2).make_numeric();

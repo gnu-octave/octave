@@ -29,7 +29,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "tree-const.h"
 #include "error.h"
-#include "f-minmax.h"
+#include "defun-dld.h"
 
 #ifndef MAX
 #define MAX(a,b) ((a) > (b) ? (a) : (b))
@@ -141,10 +141,19 @@ max (const ComplexMatrix& a, const ComplexMatrix& b)
   return result;
 }
 
-Octave_object
-column_min (const Octave_object& args, int nargout)
+
+DEFUN_DLD ("min", Fmin, Smin, 3, 2,
+  "min (X): minimum value(s) of a vector (matrix)")
 {
   Octave_object retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 1 || nargin > 3 || nargout > 2)
+    {
+      print_usage ("min");
+      return retval;
+    }
 
   tree_constant arg1;
   tree_constant arg2;
@@ -152,8 +161,6 @@ column_min (const Octave_object& args, int nargout)
     tree_constant_rep::unknown_constant;
   tree_constant_rep::constant_type arg2_type =
     tree_constant_rep::unknown_constant;
-
-  int nargin = args.length ();
 
   switch (nargin)
     {
@@ -314,10 +321,18 @@ column_min (const Octave_object& args, int nargout)
   return retval;
 }
 
-Octave_object
-column_max (const Octave_object& args, int nargout)
+DEFUN_DLD ("max", Fmax, Smax, 3, 2,
+  "max (X): maximum value(s) of a vector (matrix)")
 {
   Octave_object retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 1 || nargin > 3 || nargout > 2)
+    {
+      print_usage ("max");
+      return retval;
+    }
 
   tree_constant arg1;
   tree_constant arg2;
@@ -325,8 +340,6 @@ column_max (const Octave_object& args, int nargout)
     tree_constant_rep::unknown_constant;
   tree_constant_rep::constant_type arg2_type =
     tree_constant_rep::unknown_constant;
-
-  int nargin = args.length ();
 
   switch (nargin)
     {

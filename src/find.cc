@@ -27,7 +27,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "tree-const.h"
 #include "error.h"
-#include "f-find.h"
+#include "defun-dld.h"
 
 static Octave_object
 find_to_fortran_idx (const ColumnVector i_idx, const ColumnVector j_idx,
@@ -148,15 +148,24 @@ find_nonzero_elem_idx (const ComplexMatrix& m, int nargout)
   return find_to_fortran_idx (i_idx, j_idx, tmp, m_nr, m_nc, nargout);
 }
 
-Octave_object
-find_nonzero_elem_idx (const tree_constant& a, int nargout)
+DEFUN_DLD ("find", Ffind, Sfind, 2, 3,
+  "find (X) or [I, J, V] = find (X): Return indices of nonzero elements")
 {
-  Matrix result;
+  Octave_object retval;
+
+  int nargin = args.length ();
+
+  if (nargin != 2 || nargout > 3)
+    {
+      print_usage ("find");
+      return retval;
+    }
 
   nargout = (nargout == 0) ? 1 : nargout;
-  Octave_object retval (nargout, result);
 
-  tree_constant tmp = a.make_numeric ();
+  retval.resize (nargout, Matrix ());
+
+  tree_constant tmp = args(1).make_numeric ();
 
   switch (tmp.const_type ())
     {

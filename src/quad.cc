@@ -36,24 +36,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "error.h"
 #include "utils.h"
 #include "pager.h"
-#include "f-quad.h"
+#include "defun-dld.h"
 
 // Global pointer for user defined function required by quadrature functions.
 static tree_fvc *quad_fcn;
-
-#ifdef WITH_DLD
-Octave_object
-builtin_quad_2 (const Octave_object& args, int nargout)
-{
-  return do_quad (args, nargout);
-}
-
-Octave_object
-builtin_quad_options_2 (const Octave_object& args, int nargout)
-{
-  return quad_options (args, nargout);
-}
-#endif
 
 static Quad_options quad_opts;
 
@@ -67,7 +53,7 @@ quad_user_function (double x)
 //  args(0) = name;
   args(1) = x;
 
-  if (quad_fcn != (tree_fvc *) NULL)
+  if (quad_fcn)
     {
       Octave_object tmp = quad_fcn->eval (0, 1, args);
 
@@ -90,18 +76,33 @@ quad_user_function (double x)
   return retval;
 }
 
-Octave_object
-do_quad (const Octave_object& args, int nargout)
+DEFUN_DLD ("quad", Fquad, Squad, 6, 3,
+  "[V, IER, NFUN] = quad (F, A, B [, TOL] [, SING])\n\
+\n\
+Where the first argument is the name of the  function to call to\n\
+compute the value of the integrand.  It must have the form\n\
+\n\
+  y = f (x)
+\n\
+where y and x are scalars.\n\
+\n\
+The second and third arguments are limits of integration.  Either or\n\
+both may be infinite.  The optional argument TOL specifies the desired\n\
+accuracy of the result.  The optional argument SING is a vector of\n\
+at which the integrand is singular.")
 {
-// Assumes that we have been given the correct number of arguments.
-
   Octave_object retval;
 
   int nargin = args.length ();
 
+  if (nargin < 4 || nargin > 6 || nargout > 4)
+    {
+      print_usage ("quad");
+      return retval;
+    }
+
   quad_fcn = is_valid_function (args(1), "fsolve", 1);
-  if (quad_fcn == (tree_fvc *) NULL
-      || takes_correct_nargs (quad_fcn, 2, "fsolve", 1) != 1)
+  if (! quad_fcn || takes_correct_nargs (quad_fcn, 2, "fsolve", 1) != 1)
     return retval;
 
   double a = args(2).to_scalar ();
@@ -216,21 +217,21 @@ struct QUAD_OPTIONS
 static QUAD_OPTIONS quad_option_table [] =
 {
   { "absolute tolerance",
-    { "absolute", "tolerance", NULL, },
+    { "absolute", "tolerance", 0, },
     { 1, 0, 0, }, 1,
     Quad_options::set_absolute_tolerance,
     Quad_options::absolute_tolerance, },
 
   { "relative tolerance",
-    { "relative", "tolerance", NULL, },
+    { "relative", "tolerance", 0, },
     { 1, 0, 0, }, 1,
     Quad_options::set_relative_tolerance,
     Quad_options::relative_tolerance, },
 
-  { NULL,
-    { NULL, NULL, NULL, },
+  { 0,
+    { 0, 0, 0, },
     { 0, 0, 0, }, 0,
-    NULL, NULL, },
+    0, 0, },
 };
 
 static void
@@ -248,7 +249,7 @@ print_quad_option_list (void)
   QUAD_OPTIONS *list = quad_option_table;
 
   char *keyword;
-  while ((keyword = list->keyword) != (char *) NULL)
+  while ((keyword = list->keyword) != 0)
     {
       output_buf.form ("  %-40s ", keyword);
 
@@ -271,7 +272,7 @@ do_quad_option (char *keyword, double val)
 {
   QUAD_OPTIONS *list = quad_option_table;
 
-  while (list->keyword != (char *) NULL)
+  while (list->keyword != 0)
     {
       if (keyword_almost_match (list->kw_tok, list->min_len, keyword,
 				list->min_toks_to_match, MAX_TOKENS))
@@ -286,8 +287,11 @@ do_quad_option (char *keyword, double val)
   warning ("quad_options: no match for `%s'", keyword);
 }
 
-Octave_object
-quad_options (const Octave_object& args, int nargout)
+DEFUN_DLD ("quad_options", Fquad_options, Squad_options, -1, 1,
+  "quad_options (KEYWORD, VALUE)\n\
+\n\
+Set or show options for quad.  Keywords may be abbreviated\n\
+to the shortest match.")
 {
   Octave_object retval;
 

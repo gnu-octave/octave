@@ -31,17 +31,24 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "user-prefs.h"
 #include "error.h"
 #include "gripes.h"
-#include "f-log.h"
+#include "defun-dld.h"
 
-// XXX FIXME XXX -- the next two functions (and expm) should really be just
-// one...
+// XXX FIXME XXX -- the next two functions should really be just one...
 
-Octave_object
-matrix_log (const tree_constant& a)
+DEFUN_DLD ("logm", Flogm, Slogm, 2, 1,
+  "logm (X): matrix logarithm")
 {
-  Octave_object retval (1);
+  Octave_object retval;
 
-  tree_constant tmp = a.make_numeric ();;
+  int nargin = args.length ();
+
+  if (nargin != 2)
+    {
+      print_usage ("logm");
+      return retval;
+    }
+
+  tree_constant tmp = args(1).make_numeric ();;
     
   if (tmp.rows () == 0 || tmp.columns () == 0)
     {
@@ -50,8 +57,8 @@ matrix_log (const tree_constant& a)
 	{
 	  if (flag < 0)
 	    gripe_empty_arg ("logm", 0);
-	  Matrix m;
-	  retval(0) = m;
+
+	  retval.resize (1, Matrix ());
 	  return retval;
 	}
       else
@@ -146,12 +153,20 @@ matrix_log (const tree_constant& a)
   return retval;
 }
 
-Octave_object
-matrix_sqrt (const tree_constant& a)
+DEFUN_DLD ("sqrtm", Fsqrtm, Ssqrtm, 2, 1,
+ "sqrtm (X): matrix sqrt")
 {
-  Octave_object retval (1);
+  Octave_object retval;
 
-  tree_constant tmp = a.make_numeric ();;
+  int nargin = args.length ();
+
+  if (nargin != 2)
+    {
+      print_usage ("sqrtm");
+      return retval;
+    }
+
+  tree_constant tmp = args(1).make_numeric ();;
     
   if (tmp.rows () == 0 || tmp.columns () == 0)
     {
@@ -160,8 +175,8 @@ matrix_sqrt (const tree_constant& a)
 	{
 	  if (flag < 0)
 	    gripe_empty_arg ("sqrtm", 0);
-	  Matrix m;
-	  retval(0) = m;
+
+	  retval.resize (1, Matrix ());
 	  return retval;
 	}
       else

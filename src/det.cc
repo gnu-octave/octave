@@ -32,24 +32,22 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "user-prefs.h"
 #include "gripes.h"
 #include "error.h"
-#include "f-det.h"
+#include "defun-dld.h"
 
-#ifdef WITH_DLD
-Octave_object
-builtin_det_2 (const Octave_object& args, int nargout)
+DEFUN_DLD ("det", Fdet, Sdet, 2, 1,
+  "det (X): determinant of a square matrix")
 {
-  Octave_object retval (1);
-  retval(0) = determinant (args(1));
-  return retval;
-}
-#endif
+  Octave_object retval;
 
-tree_constant
-determinant (const tree_constant& a)
-{
-  tree_constant retval;
+  int nargin = args.length ();
 
-  tree_constant tmp = a.make_numeric ();;
+  if (nargin != 2)
+    {
+      print_usage ("det");
+      return retval;
+    }
+
+  tree_constant tmp = args(1).make_numeric ();;
     
   int nr = tmp.rows ();
   int nc = tmp.columns ();

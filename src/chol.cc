@@ -32,24 +32,22 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "user-prefs.h"
 #include "gripes.h"
 #include "error.h"
-#include "f-chol.h"
+#include "defun-dld.h"
 
-#ifdef WITH_DLD
-Octave_object*
-builtin_chol_2 (const Octave_object& args, int nargout)
+DEFUN_DLD ("chol", Fchol, Schol, 2, 1,
+  "R = chol (X): cholesky factorization")
 {
-  Octave_object retval (1);
-  retval(0) = chol (args(1));
-  return retval;
-}
-#endif
+  Octave_object retval;
 
-tree_constant
-chol (const tree_constant& a)
-{
-  tree_constant retval;
+  int nargin = args.length ();
 
-  tree_constant tmp = a.make_numeric ();;
+  if (nargin != 2 || nargout > 1)
+    {
+      print_usage ("chol");
+      return retval;
+    }
+
+  tree_constant tmp = args(1).make_numeric ();
     
   int nr = tmp.rows ();
   int nc = tmp.columns ();
@@ -61,8 +59,8 @@ chol (const tree_constant& a)
 	{
 	  if (flag < 0)
 	    gripe_empty_arg ("chol", 0);
-	  Matrix m;
-	  retval = m;
+
+	  retval.resize (1, Matrix ());
 	}
       else
 	gripe_empty_arg ("chol", 1);

@@ -1,4 +1,4 @@
-// tc-balance.cc                                           -*- C++ -*-
+// f-balance.cc                                           -*- C++ -*-
 /*
 
 Copyright (C) 1993, 1994 John W. Eaton
@@ -39,24 +39,39 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "user-prefs.h"
 #include "gripes.h"
 #include "error.h"
-#include "f-balance.h"
+#include "defun-dld.h"
 
-#ifdef WITH_DLD
-Octave_object
-builtin_balance_2 (const Octave_object& args, int nargout)
+DEFUN_DLD ("balance", Fbalance, Sbalance, 4, 4,
+  "AA = balance (A [, OPT]) or [[DD,] AA] =  balance (A [, OPT])\n\
+\n\
+generalized eigenvalue problem:\n\
+\n\
+  [cc, dd, aa, bb] = balance (a, b [, opt])\n\
+\n\
+where OPT is an optional single character argument as follows: \n\
+\n\
+  N: no balancing; arguments copied, transformation(s) set to identity\n\
+  P: permute argument(s) to isolate eigenvalues where possible\n\
+  S: scale to improve accuracy of computed eigenvalues\n\
+  B: (default) permute and scale, in that order.  Rows/columns\n\
+     of a (and b) that are isolated by permutation are not scaled\n\
+\n\
+[DD, AA] = balance (A, OPT) returns aa = dd\a*dd,\n\
+\n\
+[CC, DD, AA, BB] = balance (A, B, OPT) returns AA (BB) = CC*A*DD (CC*B*DD)")
 {
-  return balance (args, nargout);
-}
-#endif
-
-Octave_object
-balance (const Octave_object& args, int nargout)
-{
-  char *bal_job;
-  int my_nargin;		// # args w/o optional string arg
   Octave_object retval;
 
   int nargin = args.length ();
+
+  if (nargin < 2 || nargin > 4 || nargout < 0 || nargout > 4)
+    {
+      print_usage ("balance");
+      return retval;
+    }
+
+  char *bal_job;
+  int my_nargin;		// # args w/o optional string arg
 
   // determine if balancing option is listed
   // set my_nargin to the number of matrix inputs

@@ -35,24 +35,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "error.h"
 #include "utils.h"
 #include "pager.h"
-#include "f-fsolve.h"
+#include "defun-dld.h"
 
 // Global pointer for user defined function required by hybrd1.
 static tree_fvc *fsolve_fcn;
-
-#ifdef WITH_DLD
-Octave_object
-builtin_fsolve_2 (const Octave_object& args, int nargout)
-{
-  return fsolve (args, nargout);
-}
-
-Octave_object
-builtin_fsolve_options (const Octave_object& args, int nargout)
-{
-  return fsolve_options (args, nargout);
-}
-#endif
 
 static NLEqn_options fsolve_opts;
 
@@ -110,7 +96,7 @@ fsolve_user_function (const ColumnVector& x)
       args(1) = vars;
     }
 
-  if (fsolve_fcn != (tree_fvc *) NULL)
+  if (fsolve_fcn)
     {
       Octave_object tmp = fsolve_fcn->eval (0, 1, args);
       if (tmp.length () > 0 && tmp(0).is_defined ())
@@ -127,18 +113,30 @@ fsolve_user_function (const ColumnVector& x)
   return retval;
 }
 
-Octave_object
-fsolve (const Octave_object& args, int nargout)
+DEFUN_DLD ("fsolve", Ffsolve, Sfsolve, 5, 1,
+  "Solve nonlinear equations using Minpack.  Usage:\n\
+\n\
+  [X, INFO] = fsolve (F, X0)\n\
+\n\
+Where the first argument is the name of the  function to call to\n\
+compute the vector of function values.  It must have the form\n\
+\n\
+  y = f (x)
+\n\
+where y and x are vectors.")
 {
-// Assumes that we have been given the correct number of arguments.
-
   Octave_object retval;
 
   int nargin = args.length ();
 
+  if (nargin < 3 || nargin > 7 || nargout > 3)
+    {
+      print_usage ("fsolve");
+      return retval;
+    }
+
   fsolve_fcn = is_valid_function (args(1), "fsolve", 1);
-  if (fsolve_fcn == (tree_fvc *) NULL
-      || takes_correct_nargs (fsolve_fcn, 2, "fsolve", 1) != 1)
+  if (! fsolve_fcn || takes_correct_nargs (fsolve_fcn, 2, "fsolve", 1) != 1)
     return retval;
 
   ColumnVector x = args(2).to_vector ();
@@ -185,15 +183,15 @@ struct NLEQN_OPTIONS
 static NLEQN_OPTIONS fsolve_option_table [] =
 {
   { "tolerance",
-    { "tolerance", NULL, },
+    { "tolerance", 0, },
     { 1, 0, }, 1,
     NLEqn_options::set_tolerance,
     NLEqn_options::tolerance, },
 
-  { NULL,
-    { NULL, NULL, },
+  { 0,
+    { 0, 0, },
     { 0, 0, }, 0,
-    NULL, NULL, },
+    0, 0, },
 };
 
 static void
@@ -211,7 +209,7 @@ print_fsolve_option_list (void)
   NLEQN_OPTIONS *list = fsolve_option_table;
 
   char *keyword;
-  while ((keyword = list->keyword) != (char *) NULL)
+  while ((keyword = list->keyword) != 0)
     {
       output_buf.form ("  %-40s ", keyword);
 
@@ -234,7 +232,7 @@ do_fsolve_option (char *keyword, double val)
 {
   NLEQN_OPTIONS *list = fsolve_option_table;
 
-  while (list->keyword != (char *) NULL)
+  while (list->keyword != 0)
     {
       if (keyword_almost_match (list->kw_tok, list->min_len, keyword,
 				list->min_toks_to_match, MAX_TOKENS))
@@ -249,15 +247,20 @@ do_fsolve_option (char *keyword, double val)
   warning ("fsolve_options: no match for `%s'", keyword);
 }
 
-Octave_object
-fsolve_options (const Octave_object& args, int nargout)
+DEFUN_DLD ("fsolve_options", Ffsolve_options, Sfsolve_options, -1, 1,
+  "fsolve_options (KEYWORD, VALUE)\n\
+\n\
+Set or show options for fsolve.  Keywords may be abbreviated\n\
+to the shortest match.")
 {
   Octave_object retval;
 
   int nargin = args.length ();
 
   if (nargin == 1)
-    print_fsolve_option_list ();
+    {
+      print_fsolve_option_list ();
+    }
   else if (nargin == 3)
     {
       if (args(1).is_string_type ())

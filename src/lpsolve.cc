@@ -29,39 +29,34 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "tree-const.h"
 #include "error.h"
-#include "f-lpsolve.h"
+#include "defun-dld.h"
 
-#ifdef WITH_DLD
-Octave_object
-builtin_lpsolve_2 (const Octave_object& args, int nargout)
+DEFUN_DLD ("lpsolve", Flpsolve, Slpsolve, 11, 3,
+  "lp_solve (): solve linear programs using lp_solve.")
 {
-  return lpsolve (args, nargout);
-}
-
-Octave_object
-builtin_lpsolve_options_2 (const Octave_object& args, int nargout) 
-{
-  return lpsolve_options (args, nargout);
-}
-#endif
-
-Octave_object
-lpsolve (const Octave_object& args, int nargout)
-{
-// Assumes that we have been given the correct number of arguments.
-
   Octave_object retval;
+
+// Force a bad value of inform, and empty matrices for x and phi.
+  Matrix m;
+  retval(2) = -1.0;
+  retval(1) = m;
+  retval(0) = m;
+
   error ("lpsolve: not implemented yet");
+
   return retval;
 }
 
-Octave_object
-lpsolve_options (const Octave_object& args, int nargout)
+DEFUN_DLD ("lpsolve_options", Flpsolve_options, Slpsolve_options, -1, 1,
+  "lp_solve_options (KEYWORD, VALUE)\n\
+\n\
+Set or show options for lp_solve.  Keywords may be abbreviated\n\
+to the shortest match.")
 {
-// Assumes that we have been given the correct number of arguments.
-
   Octave_object retval;
+
   error ("lpsolve_options: not implemented yet");
+
   return retval;
 }
 

@@ -1,4 +1,4 @@
-// Template stack class                                  -*- C++ -*-
+// Stack.cc                                             -*- C++ -*-
 /*
 
 Copyright (C) 1993, 1994 John W. Eaton

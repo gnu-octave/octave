@@ -1,4 +1,4 @@
-// tc-syl.cc                                           -*- C++ -*-
+// f-syl.cc                                           -*- C++ -*-
 /*
 
 Copyright (C) 1993, 1994 John W. Eaton
@@ -37,7 +37,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "user-prefs.h"
 #include "gripes.h"
 #include "error.h"
-#include "f-syl.h"
+#include "defun-dld.h"
 
 extern "C"
 {
@@ -54,18 +54,18 @@ extern "C"
 			long, long);
 }
 
-#ifdef WITH_DLD
-Octave_object
-builtin_syl_2 (const Octave_object& args, int nargout)
-{
-  return syl (args, nargout);
-}
-#endif
-
-Octave_object
-syl (const Octave_object& args, int nargout)
+DEFUN_DLD ("syl", Fsyl, Ssyl, 4, 1,
+  "X = syl (A, B, C): solve the Sylvester equation A X + X B + C = 0")
 {
   Octave_object retval;
+
+  int nargin = args.length ();
+
+  if (nargin != 4 || nargout > 1)
+    {
+      print_usage ("syl");
+      return retval;
+    }
 
   tree_constant arga = args(1).make_numeric ();
   tree_constant argb = args(2).make_numeric ();

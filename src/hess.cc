@@ -32,20 +32,20 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "user-prefs.h"
 #include "error.h"
 #include "gripes.h"
-#include "f-hess.h"
+#include "defun-dld.h"
 
-#ifdef WITH_DLD
-Octave_object
-builtin_hess_2 (const Octave_object& args, int nargout)
-{
-  return hess (args, nargout);
-}
-#endif
-
-Octave_object
-hess (const Octave_object& args, int nargout)
+DEFUN_DLD ("hess", Fhess, Shess, 2, 2,
+  "[P, H] = hess (A) or H = hess (A): Hessenberg decomposition")
 {
   Octave_object retval;
+
+  int nargin = args.length ();
+
+  if (nargin != 2 || nargout > 2)
+    {
+      print_usage ("hess");
+      return retval;
+    }
 
   tree_constant arg = args(1).make_numeric ();
 

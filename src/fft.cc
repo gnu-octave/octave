@@ -32,24 +32,22 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "user-prefs.h"
 #include "gripes.h"
 #include "error.h"
-#include "f-fft.h"
+#include "defun-dld.h"
 
-#ifdef WITH_DLD
-Octave_object
-builtin_fft_2 (const Octave_object& args, int nargout)
+DEFUN_DLD ("fft", Ffft, Sfft, 2, 1,
+  "fft (X): fast fourier transform of a vector")
 {
-  Octave_object retval (1);
-  retval(0) = fft (args(1));
-  return retval;
-}
-#endif
+  Octave_object retval;
 
-tree_constant
-fft (const tree_constant& a)
-{
-  tree_constant retval;
+  int nargin = args.length ();
 
-  tree_constant tmp = a.make_numeric ();;
+  if (nargin != 2)
+    {
+      print_usage ("fft");
+      return retval;
+    }
+
+  tree_constant tmp = args(1).make_numeric ();;
     
   if (tmp.rows () == 0 || tmp.columns () == 0)
     {
@@ -58,8 +56,8 @@ fft (const tree_constant& a)
 	{
 	  if (flag < 0)
 	    gripe_empty_arg ("fft", 0);
-	  Matrix m;
-	  retval = m;
+
+	  retval.resize (1, Matrix ());
 	}
       else
 	gripe_empty_arg ("fft", 1);

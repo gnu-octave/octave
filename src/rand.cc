@@ -25,11 +25,13 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "config.h"
 #endif
 
+#include <time.h>
+
 #include "tree-const.h"
 #include "f77-uscore.h"
 #include "error.h"
 #include "utils.h"
-#include "f-rand.h"
+#include "defun-dld.h"
 
 // Possible distributions of random numbers.
 enum rand_dist { uniform, normal };
@@ -44,14 +46,6 @@ extern "C"
   int *F77_FCN (setall) (int*, int*);
   int *F77_FCN (getsd) (int*, int*);
 }
-
-#ifdef WITH_DLD
-Octave_object
-builtin_rand_2 (const Octave_object& args, int nargout)
-{
-  return rand_internal (args, nargout);
-}
-#endif
 
 static double
 curr_rand_seed (void)
@@ -98,18 +92,30 @@ curr_rand_dist (void)
   else
     {
       panic_impossible ();
-      return (char *) NULL;
+      return 0;
     }
 }
 
-Octave_object
-rand_internal (const Octave_object& args, int nargout)
+DEFUN_DLD ("rand", Frand, Srand, 2, 1,
+  "rand                  -- generate a random value\n\
+\n\
+rand (N)              -- generate N x N matrix\n\
+rand (A)              -- generate matrix the size of A\n\
+rand (N, M)           -- generate N x M matrix\n\
+rand (\"dist\")         -- get current distribution\n\
+rand (DISTRIBUTION)   -- set distribution type (\"normal\" or \"uniform\"\n\
+rand (SEED)           -- get current seed\n\
+rand (SEED, N)        -- set seed")
 {
-// Assumes that we have been given the correct number of arguments.
-
   Octave_object retval;
 
   int nargin = args.length ();
+
+  if (nargin > 3 || nargout > 1)
+    {
+      print_usage ("rand");
+      return retval;
+    }
 
   static int initialized = 0;
   if (! initialized)

@@ -33,30 +33,15 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "tree-const.h"
 #include "variables.h"
-#include "builtins.h"
 #include "gripes.h"
 #include "error.h"
 #include "pager.h"
 #include "utils.h"
-#include "f-npsol.h"
+#include "defun-dld.h"
 
 // Global pointers for user defined functions required by npsol.
 static tree_fvc *npsol_objective;
 static tree_fvc *npsol_constraints;
-
-#ifdef WITH_DLD
-Octave_object
-builtin_npsol_2 (const Octave_object& args, int nargout)
-{
-  return npsol (args, nargout);
-}
-
-Octave_object
-builtin_npsol_options_2 (const Octave_object& args, int nargout)
-{
-  return npsol_options (args, nargout);
-}
-#endif
 
 static NPSOL_options npsol_opts;
 
@@ -88,7 +73,7 @@ npsol_objective_function (const ColumnVector& x)
   retval = 0.0;
 
   tree_constant objective_value;
-  if (npsol_objective != (tree_fvc *) NULL)
+  if (npsol_objective)
     {
       Octave_object tmp = npsol_objective->eval (0, 1, args);
 
@@ -161,7 +146,7 @@ npsol_constraint_function (const ColumnVector& x)
 //  args(0) = name;
   args(1) = decision_vars;
 
-  if (npsol_constraints != (tree_fvc *)NULL)
+  if (npsol_constraints)
     {
       Octave_object tmp = npsol_constraints->eval (0, 1, args);
 
@@ -245,8 +230,32 @@ nonlinear_constraints_ok (const ColumnVector& x, const ColumnVector& nllb,
   return ok;
 }
 
-Octave_object
-npsol (const Octave_object& args, int nargout)
+#if defined (NPSOL_MISSING)
+DEFUN_DLD ("npsol", Fnpsol, Snpsol, 11, 3,
+  "This function requires NPSOL, which is not freely\n\
+redistributable.  For more information, read the file\n\
+libcruft/npsol/README.MISSING in the source distribution.")
+#else
+DEFUN_DLD ("npsol", Fnpsol, Snpsol, 11, 3,
+  "[X, OBJ, INFO, LAMBDA] = npsol (X, PHI [, LB, UB] [, LB, A, UB] [, LB, G, UB])\n\
+\n\
+Groups of arguments surrounded in `[]' are optional, but\n\
+must appear in the same relative order shown above.\n\
+\n\
+The second argument is a string containing the name of the objective\n\
+function to call.  The objective function must be of the form\n\
+\n\
+  y = phi (x)\n\
+\n\
+where x is a vector and y is a scalar.\n\
+\n\
+The argument G is a string containing the name of the function that
+defines the nonlinear constraints.  It must be of the form\n\
+\n\
+  y = g (x)\n\
+\n\
+where x is a vector and y is a vector.")
+#endif
 {
 /*
 
@@ -263,11 +272,28 @@ Handle all of the following:
 
 */
 
-// Assumes that we have been given the correct number of arguments.
-
   Octave_object retval;
 
+#if defined (NPSOL_MISSING)
+
+// Force a bad value of inform, and empty matrices for x, phi, and lambda.
+
+  retval.resize (4, Matrix ());
+
+  retval(2) = -1.0;
+
+  print_usage ("npsol");
+
+#else
+
   int nargin = args.length ();
+
+  if (nargin < 3 || nargin == 4 || nargin == 7 || nargin == 10
+      || nargin > 11 || nargout > 4)
+    {
+      print_usage ("npsol");
+      return retval;
+    }
 
   ColumnVector x = args(1).to_vector ();
 
@@ -278,7 +304,7 @@ Handle all of the following:
     }
 
   npsol_objective = is_valid_function (args(2), "npsol", 1);
-  if (npsol_objective == (tree_fvc *) NULL
+  if (! npsol_objective
       || takes_correct_nargs (npsol_objective, 2, "npsol", 1) != 1)
     return retval;
 
@@ -332,13 +358,13 @@ Handle all of the following:
       goto solved;
     }
 
-  npsol_constraints = (tree_fvc *) NULL;
+  npsol_constraints = 0;
   if (nargin == 6 || nargin == 8 || nargin == 9 || nargin == 11)
     npsol_constraints = is_valid_function (args(nargin-2), "npsol", 0);
 
   if (nargin == 8 || nargin == 6)
     {
-      if (npsol_constraints == (tree_fvc *) NULL)
+      if (! npsol_constraints)
 	{
 	  ColumnVector lub = args(nargin-1).to_vector ();
 	  Matrix c = args(nargin-2).to_matrix ();
@@ -411,7 +437,7 @@ Handle all of the following:
 
   if (nargin == 9 || nargin == 11)
     {
-      if (npsol_constraints == (tree_fvc *) NULL)
+      if (! npsol_constraints)
 	{
 	  // Produce error message.
 	  is_valid_function (args(nargin-2), "npsol", 1);
@@ -482,6 +508,8 @@ Handle all of the following:
   if (nargout > 3)
     retval(3) = lambda;
 
+#endif
+
   return retval;
 }
 
@@ -507,129 +535,129 @@ struct NPSOL_OPTIONS
 static NPSOL_OPTIONS npsol_option_table [] =
 {
   { "central difference interval",
-    { "central", "difference", "interval", NULL, NULL, NULL, },
+    { "central", "difference", "interval", 0, 0, 0, },
     { 2, 0, 0, 0, 0, 0, }, 1,
-    NPSOL_options::set_central_difference_interval, NULL,
-    NPSOL_options::central_difference_interval, NULL, },
+    NPSOL_options::set_central_difference_interval, 0,
+    NPSOL_options::central_difference_interval, 0, },
 
   { "crash tolerance",
-    { "crash", "tolerance", NULL, NULL, NULL, NULL, },
+    { "crash", "tolerance", 0, 0, 0, 0, },
     { 2, 0, 0, 0, 0, 0, }, 1,
-    NPSOL_options::set_crash_tolerance, NULL,
-    NPSOL_options::crash_tolerance, NULL, },
+    NPSOL_options::set_crash_tolerance, 0,
+    NPSOL_options::crash_tolerance, 0, },
 
   { "derivative level",
-    { "derivative", "level", NULL, NULL, NULL, NULL, },
+    { "derivative", "level", 0, 0, 0, 0, },
     { 1, 0, 0, 0, 0, 0, }, 1,
-    NULL, NPSOL_options::set_derivative_level,
-    NULL, NPSOL_options::derivative_level, },
+    0, NPSOL_options::set_derivative_level,
+    0, NPSOL_options::derivative_level, },
 
   { "difference interval",
-    { "difference", "interval", NULL, NULL, NULL, NULL, },
+    { "difference", "interval", 0, 0, 0, 0, },
     { 3, 0, 0, 0, 0, 0, }, 1,
-    NPSOL_options::set_difference_interval, NULL,
-    NPSOL_options::difference_interval, NULL, },
+    NPSOL_options::set_difference_interval, 0,
+    NPSOL_options::difference_interval, 0, },
 
   { "function precision",
-    { "function", "precision", NULL, NULL, NULL, NULL, },
+    { "function", "precision", 0, 0, 0, 0, },
     { 2, 0, 0, 0, 0, 0, }, 1,
-    NPSOL_options::set_function_precision, NULL,
-    NPSOL_options::function_precision, NULL, },
+    NPSOL_options::set_function_precision, 0,
+    NPSOL_options::function_precision, 0, },
 
   { "infinite bound size",
-    { "infinite", "bound", "size", NULL, NULL, NULL, },
+    { "infinite", "bound", "size", 0, 0, 0, },
     { 1, 1, 0, 0, 0, 0, }, 2,
-    NPSOL_options::set_infinite_bound, NULL,
-    NPSOL_options::infinite_bound, NULL, },
+    NPSOL_options::set_infinite_bound, 0,
+    NPSOL_options::infinite_bound, 0, },
 
   { "infinite step size",
-    { "infinite", "step", "size", NULL, NULL, NULL, },
+    { "infinite", "step", "size", 0, 0, 0, },
     { 1, 1, 0, 0, 0, 0, }, 2,
-    NPSOL_options::set_infinite_step, NULL,
-    NPSOL_options::infinite_step, NULL, },
+    NPSOL_options::set_infinite_step, 0,
+    NPSOL_options::infinite_step, 0, },
 
   { "linear feasibility tolerance",
-    { "linear", "feasibility", "tolerance", NULL, NULL, NULL, },
+    { "linear", "feasibility", "tolerance", 0, 0, 0, },
     { 5, 0, 0, 0, 0, 0, }, 1,
-    NPSOL_options::set_linear_feasibility_tolerance, NULL,
-    NPSOL_options::linear_feasibility_tolerance, NULL, },
+    NPSOL_options::set_linear_feasibility_tolerance, 0,
+    NPSOL_options::linear_feasibility_tolerance, 0, },
 
   { "linesearch tolerance",
-    { "linesearch", "tolerance", NULL, NULL, NULL, NULL, },
+    { "linesearch", "tolerance", 0, 0, 0, 0, },
     { 5, 0, 0, 0, 0, 0, }, 1,
-    NPSOL_options::set_linesearch_tolerance, NULL,
-    NPSOL_options::linesearch_tolerance, NULL, },
+    NPSOL_options::set_linesearch_tolerance, 0,
+    NPSOL_options::linesearch_tolerance, 0, },
 
   { "major iteration limit",
-    { "major", "iteration", "limit", NULL, NULL, NULL, },
+    { "major", "iteration", "limit", 0, 0, 0, },
     { 2, 1, 0, 0, 0, 0, }, 2,
-    NULL, NPSOL_options::set_major_iteration_limit,
-    NULL, NPSOL_options::major_iteration_limit, },
+    0, NPSOL_options::set_major_iteration_limit,
+    0, NPSOL_options::major_iteration_limit, },
 
   { "minor iteration limit",
-    { "minor", "iteration", "limit", NULL, NULL, NULL, },
+    { "minor", "iteration", "limit", 0, 0, 0, },
     { 2, 1, 0, 0, 0, 0, }, 2,
-    NULL, NPSOL_options::set_minor_iteration_limit,
-    NULL, NPSOL_options::minor_iteration_limit, },
+    0, NPSOL_options::set_minor_iteration_limit,
+    0, NPSOL_options::minor_iteration_limit, },
 
   { "major print level",
-    { "major", "print", "level", NULL, NULL, NULL, },
+    { "major", "print", "level", 0, 0, 0, },
     { 2, 1, 0, 0, 0, 0, }, 2,
-    NULL, NPSOL_options::set_major_print_level,
-    NULL, NPSOL_options::major_print_level, },
+    0, NPSOL_options::set_major_print_level,
+    0, NPSOL_options::major_print_level, },
 
   { "minor print level",
-    { "minor", "print", "level", NULL, NULL, NULL, },
+    { "minor", "print", "level", 0, 0, 0, },
     { 2, 1, 0, 0, 0, 0, }, 2,
-    NULL, NPSOL_options::set_minor_print_level,
-    NULL, NPSOL_options::minor_print_level, },
+    0, NPSOL_options::set_minor_print_level,
+    0, NPSOL_options::minor_print_level, },
 
   { "nonlinear feasibility tolerance",
-    { "nonlinear", "feasibility", "tolerance", NULL, NULL, },
+    { "nonlinear", "feasibility", "tolerance", 0, 0, },
     { 1, 0, 0, 0, 0, 0, }, 1,
-    NPSOL_options::set_nonlinear_feasibility_tolerance, NULL,
-    NPSOL_options::nonlinear_feasibility_tolerance, NULL, },
+    NPSOL_options::set_nonlinear_feasibility_tolerance, 0,
+    NPSOL_options::nonlinear_feasibility_tolerance, 0, },
 
   { "optimality tolerance",
-    { "optimality", "tolerance", NULL, NULL, NULL, NULL, },
+    { "optimality", "tolerance", 0, 0, 0, 0, },
     { 1, 0, 0, 0, 0, 0, }, 1,
-    NPSOL_options::set_optimality_tolerance, NULL,
-    NPSOL_options::optimality_tolerance, NULL, },
+    NPSOL_options::set_optimality_tolerance, 0,
+    NPSOL_options::optimality_tolerance, 0, },
 
   { "start objective check at variable",
-    { "start", "objective", "check", "at", "variable", NULL, },
+    { "start", "objective", "check", "at", "variable", 0, },
     { 3, 1, 0, 0, 0, 0, }, 2,
-    NULL, NPSOL_options::set_start_objective_check,
-    NULL, NPSOL_options::start_objective_check, },
+    0, NPSOL_options::set_start_objective_check,
+    0, NPSOL_options::start_objective_check, },
 
   { "start constraint check at variable",
-    { "start", "constraint", "check", "at", "variable", NULL, },
+    { "start", "constraint", "check", "at", "variable", 0, },
     { 3, 1, 0, 0, 0, 0, }, 2,
-    NULL, NPSOL_options::set_start_constraint_check,
-    NULL, NPSOL_options::start_constraint_check, },
+    0, NPSOL_options::set_start_constraint_check,
+    0, NPSOL_options::start_constraint_check, },
 
   { "stop objective check at variable",
-    { "stop", "objective", "check", "at", "variable", NULL, },
+    { "stop", "objective", "check", "at", "variable", 0, },
     { 3, 1, 0, 0, 0, 0, }, 2,
-    NULL, NPSOL_options::set_stop_objective_check,
-    NULL, NPSOL_options::stop_objective_check, },
+    0, NPSOL_options::set_stop_objective_check,
+    0, NPSOL_options::stop_objective_check, },
 
   { "stop constraint check at variable",
-    { "stop", "constraint", "check", "at", "variable", NULL, },
+    { "stop", "constraint", "check", "at", "variable", 0, },
     { 3, 1, 0, 0, 0, 0, }, 2,
-    NULL, NPSOL_options::set_stop_constraint_check,
-    NULL, NPSOL_options::stop_constraint_check, },
+    0, NPSOL_options::set_stop_constraint_check,
+    0, NPSOL_options::stop_constraint_check, },
 
   { "verify level",
-    { "verify", "level", NULL, NULL, NULL, NULL, },
+    { "verify", "level", 0, 0, 0, 0, },
     { 1, 0, 0, 0, 0, 0, }, 1,
-    NULL, NPSOL_options::set_verify_level,
-    NULL, NPSOL_options::verify_level, },
+    0, NPSOL_options::set_verify_level,
+    0, NPSOL_options::verify_level, },
 
-  { NULL,
-    { NULL, NULL, NULL, NULL, NULL, NULL, },
+  { 0,
+    { 0, 0, 0, 0, 0, 0, },
     { 0, 0, 0, 0, 0, 0, }, 0,
-    NULL, NULL, NULL, NULL, },
+    0, 0, 0, 0, },
 };
 
 static void
@@ -647,7 +675,7 @@ print_npsol_option_list (void)
   NPSOL_OPTIONS *list = npsol_option_table;
 
   char *keyword;
-  while ((keyword = list->keyword) != (char *) NULL)
+  while ((keyword = list->keyword) != 0)
     {
       output_buf.form ("  %-40s ", keyword);
       if (list->d_get_fcn)
@@ -679,7 +707,7 @@ do_npsol_option (char *keyword, double val)
 {
   NPSOL_OPTIONS *list = npsol_option_table;
 
-  while (list->keyword != (char *) NULL)
+  while (list->keyword != 0)
     {
       if (keyword_almost_match (list->kw_tok, list->min_len, keyword,
 				list->min_toks_to_match, MAX_TOKENS))
@@ -697,10 +725,26 @@ do_npsol_option (char *keyword, double val)
   warning ("npsol_options: no match for `%s'", keyword);
 }
 
-Octave_object
-npsol_options (const Octave_object& args, int nargout)
+#if defined (NPSOL_MISSING)
+DEFUN_DLD ("npsol_options", Fnpsol_options, Snpsol_options, -1, 1,
+  "This function requires NPSOL, which is not freely\n\
+redistributable.  For more information, read the file\n\
+libcruft/npsol/README.MISSING in the source distribution.")
+#else
+DEFUN_DLD ("npsol_options", Fnpsol_options, Snpsol_options, -1, 1,
+  "npsol_options (KEYWORD, VALUE)\n\
+\n\
+Set or show options for npsol.  Keywords may be abbreviated\n\
+to the shortest match.")
+#endif
 {
   Octave_object retval;
+
+#if defined (NPSOL_MISSING)
+
+  print_usage ("npsol_options");
+
+#else
 
   int nargin = args.length ();
 
@@ -723,6 +767,8 @@ npsol_options (const Octave_object& args, int nargout)
     {
       print_usage ("npsol_options");
     }
+
+#endif
 
   return retval;
 }

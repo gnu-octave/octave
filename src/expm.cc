@@ -1,4 +1,4 @@
-// tc-expm.cc                                           -*- C++ -*-
+// f-expm.cc                                           -*- C++ -*-
 /*
 
 Copyright (C) 1993, 1994 John W. Eaton
@@ -40,17 +40,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "user-prefs.h"
 #include "gripes.h"
 #include "error.h"
-#include "f-expm.h"
-
-#ifdef WITH_DLD
-Octave_object
-builtin_matrix_exp_2 (const Octave_object& args, int nargout)
-{
-  Octave_object retval (1);
-  retval(0) = matrix_exp (args(1));
-  return retval;
-}
-#endif
+#include "defun-dld.h"
 
 extern "C"
 {
@@ -61,11 +51,20 @@ extern "C"
 			   const Complex*, const int*, double*);
 }
 
-tree_constant
-matrix_exp (const tree_constant& a)
+DEFUN_DLD ("expm", Fexpm, Sexpm, 2, 1,
+  "expm (X): matrix exponential, e^A")
 {
-  tree_constant retval;
-  tree_constant tmp = a.make_numeric ();
+  Octave_object retval;
+
+  int nargin = args.length ();
+
+  if (nargin != 2)
+    {
+      print_usage ("expm");
+      return retval;
+    }
+
+  tree_constant tmp = args(1).make_numeric ();
 
 // Constants for matrix exponential calculation.
 
@@ -88,8 +87,8 @@ matrix_exp (const tree_constant& a)
 	{
 	  if (flag < 0)
 	    gripe_empty_arg ("expm", 0);
-	  Matrix m;
-	  retval = m;
+
+	  retval.resize (1, Matrix ());
 	}
       else gripe_empty_arg ("expm", 1);
     }

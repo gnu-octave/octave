@@ -1,4 +1,4 @@
-// tc-givens.cc                                           -*- C++ -*-
+// f-givens.cc                                           -*- C++ -*-
 /*
 
 Copyright (C) 1993, 1994 John W. Eaton
@@ -35,7 +35,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "user-prefs.h"
 #include "error.h"
 #include "gripes.h"
-#include "f-givens.h"
+#include "defun-dld.h"
 
 extern "C"
 {
@@ -56,19 +56,23 @@ int F77_FCN (zunghr) (const int*, const int*, const int*, Complex*,
 		      int*, long, long);
 #endif
 
-#ifdef WITH_DLD
-Octave_object
-builtin_givens_2 (const Octave_object& args int nargout)
+DEFUN_DLD ("givens", Fgivens, Sgivens, 3, 2,
+  "G = givens (X, Y)\n\
+\n\
+compute orthogonal matrix G = [c s; -conj (s) c]\n\
+such that G [x; y] = [*; 0]  (x, y scalars)\n\
+\n\
+[c, s] = givens (x, y) returns the (c, s) values themselves.")
 {
-  return givens (args, nargout);
-}
-#endif
-
-Octave_object
-givens (const Octave_object& args, int nargout)
-{
-
   Octave_object retval;
+
+  int nargin = args.length ();
+
+  if (nargin != 3 || nargout > 2)
+    {
+      print_usage ("givens");
+      return retval;
+    }
 
   tree_constant arga = args(1).make_numeric ();
   tree_constant argb = args(2).make_numeric ();

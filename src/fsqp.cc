@@ -31,25 +31,11 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "tree-const.h"
 #include "error.h"
-#include "f-fsqp.h"
+#include "defun-dld.h"
 
 // Global pointers for user defined functions required by fsqp.
 // static tree *fsqp_objective;
 // static tree *fsqp_constraints;
-
-#ifdef WITH_DLD
-Octave_object
-builtin_fsqp_2 (const Octave_object& args, int nargout)
-{
-  return fsqp (args nargout);
-}
-
-Octave_object
-builtin_fsqp_options_2 (const Octave_object& args, int nargout)
-{
-  return fsqp_options (args, nargout);
-}
-#endif
 
 double
 fsqp_objective_function (const ColumnVector& x)
@@ -64,8 +50,18 @@ fsqp_constraint_function (const ColumnVector& x)
   return retval;
 }
 
-Octave_object
-fsqp (const Octave_object& args, int nargout)
+#if defined (FSQP_MISSING)
+DEFUN_DLD ("fsqp", Ffsqp, Sfsqp, 11, 3,
+  "This function requires FSQP, which is not freely\n\
+redistributable.  For more information, read the file\n\
+libcruft/fsqp/README.MISSING in the source distribution.")
+#else
+DEFUN_DLD ("fsqp", Ffsqp, Sfsqp, 11, 3,
+  "[X, PHI] = fsqp (X, PHI [, LB, UB] [, LB, A, UB] [, LB, G, UB])\n\
+\n\
+Groups of arguments surrounded in `[]' are optional, but\n\
+must appear in the same relative order shown above.")
+#endif
 {
 /*
 
@@ -82,20 +78,30 @@ Handle all of the following:
 
 */
 
-// Assumes that we have been given the correct number of arguments.
-
   Octave_object retval;
+
   error ("fsqp: not implemented yet");
+
   return retval;
 }
 
-Octave_object
-fsqp_options (const Octave_object& args, int nargout)
+#if defined (FSQP_MISSING)
+DEFUN_DLD ("fsqp_options", Ffsqp_options, Sfsqp_options, -1, 1,
+  "This function requires FSQP, which is not freely\n\
+redistributable.  For more information, read the file\n\
+libcruft/fsqp/README.MISSING in the source distribution.")
+#else
+DEFUN_DLD ("fsqp_options", Ffsqp_options, Sfsqp_options, -1, 1,
+  "fsqp_options (KEYWORD, VALUE)\n\
+\n\
+Set or show options for fsqp.  Keywords may be abbreviated\n\
+to the shortest match.")
+#endif
 {
-// Assumes that we have been given the correct number of arguments.
-
   Octave_object retval;
+
   error ("fsqp_options: not implemented yet");
+
   return retval;
 }
 

@@ -31,22 +31,22 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "tree-const.h"
 #include "user-prefs.h"
 #include "gripes.h"
-#include "f-qr.h"
+#include "defun-dld.h"
 
-#ifdef WITH_DLD
-Octave_object
-builtin_qr_2 (const Octave_object& args, int nargout)
+DEFUN_DLD ("qr", Fqr, Sqr, 2, 2,
+  "[Q, R] = qr (X): form QR factorization of X")
 {
-  return qr (args(1), nargout);
-}
-#endif
+  Octave_object retval;
 
-Octave_object
-qr (const tree_constant& a, int nargout)
-{
-  Octave_object retval (2);
+  int nargin = args.length ();
 
-  tree_constant tmp = a.make_numeric ();;
+  if (nargin != 2 || nargout > 2)
+    {
+      print_usage ("qr");
+      return retval;
+    }
+
+  tree_constant tmp = args(1).make_numeric ();
     
   int nr = tmp.rows ();
   int nc = tmp.columns ();
@@ -59,8 +59,8 @@ qr (const tree_constant& a, int nargout)
 	  if (flag < 0)
 	    gripe_empty_arg ("qr", 0);
 	  Matrix m;
-	  retval(0) = m;
 	  retval(1) = m;
+	  retval(0) = m;
 	}
       else
 	gripe_empty_arg ("qr", 1);
@@ -74,30 +74,30 @@ qr (const tree_constant& a, int nargout)
       {
 	Matrix m = tmp.matrix_value ();
 	QR fact (m);
-	retval(0) = fact.Q ();
 	retval(1) = fact.R ();
+	retval(0) = fact.Q ();
       }
       break;
     case tree_constant_rep::complex_matrix_constant:
       {
 	ComplexMatrix m = tmp.complex_matrix_value ();
 	ComplexQR fact (m);
-	retval(0) = fact.Q ();
 	retval(1) = fact.R ();
+	retval(0) = fact.Q ();
       }
       break;
     case tree_constant_rep::scalar_constant:
       {
 	double d = tmp.double_value ();
-	retval(0) = 1.0;
 	retval(1) = d;
+	retval(0) = 1.0;
       }
       break;
     case tree_constant_rep::complex_scalar_constant:
       {
 	Complex c = tmp.complex_value ();
-	retval(0) = 1.0;
 	retval(1) = c;
+	retval(0) = 1.0;
       }
       break;
     default:

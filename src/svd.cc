@@ -32,20 +32,22 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "user-prefs.h"
 #include "gripes.h"
 #include "error.h"
-#include "f-svd.h"
+#include "defun-dld.h"
 
-#ifdef WITH_DLD
-Octave_object
-builtin_svd_2 (const Octave_object& args, int nargout)
-{
-  return svd (args, nargout);
-}
-#endif
-
-Octave_object
-svd (const Octave_object& args, int nargout)
+DEFUN_DLD ("svd", Fsvd, Ssvd, 2, 3,
+  "S = svd (X) or [U, S, V] = svd (X)\n\
+\n\
+compute the singular value decomposition of X")
 {
   Octave_object retval;
+
+  int nargin = args.length ();
+
+  if (nargin != 2 || nargout == 2 || nargout > 3)
+    {
+      print_usage ("svd");
+      return retval;
+    }
 
   tree_constant arg = args(1).make_numeric ();
 

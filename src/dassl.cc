@@ -35,24 +35,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "error.h"
 #include "utils.h"
 #include "pager.h"
-#include "f-dassl.h"
+#include "defun-dld.h"
 
 // Global pointer for user defined function required by dassl.
 static tree_fvc *dassl_fcn;
-
-#ifdef WITH_DLD
-Octave_object
-builtin_dassl_2 (const Octave_object& args, int nargout)
-{
-  return dassl (args, nargout);
-}
-
-Octave_object
-builtin_dassl_options_2 (const Octave_object& args, int nargout)
-{
-  return dassl_options (args, nargout);
-}
-#endif
 
 static ODE_options dassl_opts;
 
@@ -94,7 +80,7 @@ dassl_user_function (const ColumnVector& x, const ColumnVector& xdot, double t)
       args(2) = deriv;
     }
 
-  if (dassl_fcn != (tree_fvc *) NULL)
+  if (dassl_fcn)
     {
       Octave_object tmp = dassl_fcn->eval (0, 1, args);
 
@@ -118,18 +104,29 @@ dassl_user_function (const ColumnVector& x, const ColumnVector& xdot, double t)
   return retval;
 }
 
-Octave_object
-dassl (const Octave_object& args, int nargout)
+DEFUN_DLD ("dassl", Fdassl, Sdassl, 5, 1,
+  "dassl (\"function_name\", x_0, xdot_0, t_out)\n\
+dassl (F, X_0, XDOT_0, T_OUT, T_CRIT)\n\
+\n\
+The first argument is the name of the function to call to\n\
+compute the vector of residuals.  It must have the form\n\
+\n\
+  res = f (x, xdot, t)\n\
+\n\
+where x, xdot, and res are vectors, and t is a scalar.")
 {
-// Assumes that we have been given the correct number of arguments.
-
   Octave_object retval;
 
   int nargin = args.length ();
 
+  if (nargin < 5 || nargin > 6)
+    {
+      print_usage ("dassl");
+      return retval;
+    }
+
   dassl_fcn = is_valid_function (args(1), "dassl", 1);
-  if (dassl_fcn == (tree_fvc *) NULL
-      || takes_correct_nargs (dassl_fcn, 4, "dassl", 1) != 1)
+  if (! dassl_fcn || takes_correct_nargs (dassl_fcn, 4, "dassl", 1) != 1)
     return retval;
 
   ColumnVector state = args(2).to_vector ();
@@ -187,33 +184,33 @@ struct DAE_OPTIONS
 static DAE_OPTIONS dassl_option_table [] =
 {
   { "absolute tolerance",
-    { "absolute", "tolerance", NULL, NULL, },
+    { "absolute", "tolerance", 0, 0, },
     { 1, 0, 0, 0, }, 1,
     ODE_options::set_absolute_tolerance,
     ODE_options::absolute_tolerance, },
 
   { "initial step size",
-    { "initial", "step", "size", NULL, },
+    { "initial", "step", "size", 0, },
     { 1, 0, 0, 0, }, 1,
     ODE_options::set_initial_step_size,
     ODE_options::initial_step_size, },
 
   { "maximum step size",
-    { "maximum", "step", "size", NULL, },
+    { "maximum", "step", "size", 0, },
     { 2, 0, 0, 0, }, 1,
     ODE_options::set_maximum_step_size,
     ODE_options::maximum_step_size, },
 
   { "relative tolerance",
-    { "relative", "tolerance", NULL, NULL, },
+    { "relative", "tolerance", 0, 0, },
     { 1, 0, 0, 0, }, 1,
     ODE_options::set_relative_tolerance,
     ODE_options::relative_tolerance, },
 
-  { NULL,
-    { NULL, NULL, NULL, NULL, },
+  { 0,
+    { 0, 0, 0, 0, },
     { 0, 0, 0, 0, }, 0,
-    NULL, NULL, },
+    0, 0, },
 };
 
 static void
@@ -231,7 +228,7 @@ print_dassl_option_list (void)
   DAE_OPTIONS *list = dassl_option_table;
 
   char *keyword;
-  while ((keyword = list->keyword) != (char *) NULL)
+  while ((keyword = list->keyword) != 0)
     {
       output_buf.form ("  %-40s ", keyword);
 
@@ -254,7 +251,7 @@ do_dassl_option (char *keyword, double val)
 {
   DAE_OPTIONS *list = dassl_option_table;
 
-  while (list->keyword != (char *) NULL)
+  while (list->keyword != 0)
     {
       if (keyword_almost_match (list->kw_tok, list->min_len, keyword,
 				list->min_toks_to_match, MAX_TOKENS))
@@ -269,15 +266,20 @@ do_dassl_option (char *keyword, double val)
   warning ("dassl_options: no match for `%s'", keyword);
 }
 
-Octave_object
-dassl_options (const Octave_object& args, int nargout)
+DEFUN_DLD ("dassl_options", Fdassl_options, Sdassl_options, -1, 1,
+  "dassl_options (KEYWORD, VALUE)\n\
+\n\
+Set or show options for dassl.  Keywords may be abbreviated\n\
+to the shortest match.")
 {
   Octave_object retval;
 
   int nargin = args.length ();
 
   if (nargin == 1)
-    print_dassl_option_list ();
+    {
+      print_dassl_option_list ();
+    }
   else if (nargin == 3)
     {
       if (args(1).is_string_type ())

@@ -31,20 +31,20 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "user-prefs.h"
 #include "gripes.h"
 #include "error.h"
-#include "f-eig.h"
+#include "defun-dld.h"
 
-#ifdef WITH_DLD
-Octave_object
-builtin_eig_2 (const Octave_object& args, int nargout)
-{
-  return eig (args, nargout);
-}
-#endif
-
-Octave_object
-eig (const Octave_object& args, int nargout)
+DEFUN_DLD ("eig", Feig, Seig, 2, 1,
+  "eig (X) or [V, D] = eig (X): compute eigenvalues and eigenvectors of X")
 {
   Octave_object retval;
+
+  int nargin = args.length ();
+
+  if (nargin != 2 || nargout > 2)
+    {
+      print_usage ("eig");
+      return retval;
+    }
 
   tree_constant arg = args(1).make_numeric ();
 

@@ -30,22 +30,20 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "tree-const.h"
 #include "error.h"
 #include "utils.h"
-#include "f-colloc.h"
+#include "defun-dld.h"
 
-#ifdef WITH_DLD
-Octave_object
-builtin_colloc_2 (const Octave_object& args, int nargout)
-{
-  return collocation_weights (args);
-}
-#endif
-
-Octave_object
-collocation_weights (const Octave_object& args)
+DEFUN_DLD ("colloc", Fcolloc, Scolloc, 7, 4,
+  "[R, A, B, Q] = colloc (N [, \"left\"] [, \"right\"]): collocation weights")
 {
   Octave_object retval;
 
   int nargin = args.length ();
+
+  if (nargin < 2 || nargin > 4)
+    {
+      print_usage ("colloc");
+      return retval;
+    }
 
   if (args(1).const_type () != tree_constant_rep::complex_scalar_constant
       && args(1).const_type () != tree_constant_rep::scalar_constant)
@@ -76,15 +74,13 @@ collocation_weights (const Octave_object& args)
 	    }
 
 	  char *s = args(i).string_value ();
-	  if (s != (char *) NULL
-	      && (((*s == 'R' || *s == 'r') && strlen (s) == 1)
-		  || strcmp (s, "right") == 0))
+	  if (s && (((*s == 'R' || *s == 'r') && strlen (s) == 1)
+		    || strcmp (s, "right") == 0))
 	    {
 	      right = 1;
 	    }
-	  else if (s != (char *) NULL
-		   && (((*s == 'L' || *s == 'l') && strlen (s) == 1)
-		       || strcmp (s, "left") == 0))
+	  else if (s && (((*s == 'L' || *s == 'l') && strlen (s) == 1)
+			 || strcmp (s, "left") == 0))
 	    {
 	      left = 1;
 	    }

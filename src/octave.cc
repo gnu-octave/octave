@@ -63,7 +63,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "file-io.h"
 #include "sysdep.h"
 
-#ifdef sun
+#if !defined (HAVE_ATEXIT) && defined (HAVE_ON_EXIT)
 extern "C" { int on_exit (); }
 #define atexit on_exit
 #endif
@@ -354,6 +354,8 @@ clean_up_and_exit (int retval)
 
   close_files ();
 
+  cleanup_tmp_files ();
+
   if (!quitting_gracefully && (interactive || forced_interactive))
     cout << "\n";
 
@@ -436,8 +438,12 @@ main (int argc, char **argv)
 	}
     }
 
-// Make sure we clean up when we exit.
+#if defined (HAVE_ATEXIT) || (HAVE_ON_EXIT)
+// Make sure we clean up when we exit.  If we don't have atexit or
+// on_exit, we're going to leave some junk files around if we exit
+// abnormally.
   atexit (cleanup_tmp_files);
+#endif
 
   initialize_history ();
 

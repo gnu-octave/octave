@@ -51,24 +51,27 @@ LIBOBJS = @LIBOBJS@
 	    mv $@.tmp $@ ; \
 	fi
 
-INCLUDES = arith-ops.h builtins.h dynamic-ld.h error.h file-io.h \
-	g-builtins.h gripes.h help.h idx-vector.h input.h lex.h \
-	mappers.h missing-math.h octave.h octave-hist.h pager.h parse.h \
-	pr-output.h procstream.h sighandlers.h statdefs.h symtab.h \
-	sysdep.h t-builtins.h tree-base.h tree-const.h tree.h \
-	unwind-prot.h user-prefs.h utils.h variables.h version.h \
-	xdiv.h xpow.h SLStack.h Stack.h
+INCLUDES = arith-ops.h builtins.h dynamic-ld.h error.h f-colloc.h \
+	f-dassl.h f-det.h f-eig.h f-fft.h f-fsolve.h f-fsqp.h \
+	f-hess.h f-ifft.h f-inv.h f-lpsolve.h f-lsode.h f-lu.h \
+	f-npsol.h f-qpsol.h f-qr.h f-quad.h f-rand.h f-schur.h \
+	f-svd.h file-io.h g-builtins.h gripes.h help.h idx-vector.h \
+	input.h lex.h mappers.h missing-math.h octave.h \
+	octave-hist.h pager.h parse.h pr-output.h procstream.h \
+	sighandlers.h statdefs.h symtab.h sysdep.h t-builtins.h \
+	tree-base.h tree-const.h tree.h unwind-prot.h user-prefs.h \
+	utils.h variables.h version.h xdiv.h xpow.h SLStack.h Stack.h
 
 SOURCES = arith-ops.cc builtins.cc dynamic-ld.cc error.cc file-io.cc \
 	g-builtins.cc gripes.cc help.cc idx-vector.cc input.cc lex.l \
 	mappers.cc octave.cc octave-hist.cc pager.cc parse.y \
 	pr-output.cc procstream.cc sighandlers.cc symtab.cc \
-	sysdep.cc t-builtins.cc tc-assign.cc tc-colloc.cc \
-	tc-dassl.cc tc-det.cc tc-eig.cc tc-extras.cc tc-fft.cc \
-	tc-fsolve.cc tc-fsqp.cc tc-hess.cc tc-ifft.cc tc-index.cc \
-	tc-inlines.cc tc-inv.cc tc-lpsolve.cc tc-lsode.cc tc-lu.cc \
-	tc-npsol.cc tc-qpsol.cc tc-qr.cc tc-quad.cc tc-rand.cc \
-	tc-schur.cc tc-svd.cc tree.cc tree-const.cc tree-plot.cc \
+	sysdep.cc t-builtins.cc tc-assign.cc f-colloc.cc \
+	f-dassl.cc f-det.cc f-eig.cc tc-extras.cc f-fft.cc \
+	f-fsolve.cc f-fsqp.cc f-hess.cc f-ifft.cc tc-index.cc \
+	tc-inlines.cc f-inv.cc f-lpsolve.cc f-lsode.cc f-lu.cc \
+	f-npsol.cc f-qpsol.cc f-qr.cc f-quad.cc f-rand.cc \
+	f-schur.cc f-svd.cc tree.cc tree-const.cc tree-plot.cc \
 	unwind-prot.cc user-prefs.cc utils.cc variables.cc xdiv.cc \
 	xpow.cc
 
@@ -76,10 +79,10 @@ DEP_SOURCES_1 = $(patsubst %.l, %.cc, $(SOURCES))
 DEP_SOURCES = $(patsubst %.y, %.cc, $(DEP_SOURCES_1))
 MAKEDEPS = $(patsubst %.cc, %.d, $(DEP_SOURCES))
 
-DLD_OBJECTS = tc-colloc.o tc-dassl.o tc-det.o tc-eig.o \
-	tc-fft.o tc-fsolve.o tc-fsqp.o tc-hess.o tc-ifft.o tc-inv.o \
-	tc-lpsolve.o tc-lsode.o tc-lu.o tc-npsol.o tc-qpsol.o tc-qr.o \
-	tc-quad.o tc-rand.o tc-schur.o tc-svd.o
+DLD_OBJECTS = f-colloc.o f-dassl.o f-det.o f-eig.o \
+	f-fft.o f-fsolve.o f-fsqp.o f-hess.o f-ifft.o f-inv.o \
+	f-lpsolve.o f-lsode.o f-lu.o f-npsol.o f-qpsol.o f-qr.o \
+	f-quad.o f-rand.o f-schur.o f-svd.o
 
 OBJECTS = arith-ops.o builtins.o error.o file-io.o g-builtins.o \
 	gripes.o help.o idx-vector.o input.o lex.o mappers.o \

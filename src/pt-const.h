@@ -466,9 +466,6 @@ public:
   tree_constant diag (void);
   tree_constant diag (tree_constant& a);
 
-  friend tree_constant fft (tree_constant& a);
-  friend tree_constant ifft (tree_constant& a);
-
   friend tree_constant fill_matrix (tree_constant& a, double d,
 				    char *warn_for);
   friend tree_constant fill_matrix (tree_constant& a, tree_constant& b,
@@ -477,20 +474,11 @@ public:
   friend tree_constant identity_matrix (tree_constant& a);
   friend tree_constant identity_matrix (tree_constant& a, tree_constant& b);
 
-  friend tree_constant inverse (tree_constant& a);
-  friend tree_constant determinant (tree_constant& a);
-
   friend tree_constant find_nonzero_elem_idx (tree_constant& a);
-
-  friend tree_constant *lu (tree_constant& a, int nargout);
-  friend tree_constant *qr (tree_constant& a, int nargout);
 
   friend tree_constant *matrix_exp (tree_constant& a);
   friend tree_constant *matrix_log (tree_constant& a);
   friend tree_constant *matrix_sqrt (tree_constant& a);
-
-  friend tree_constant *collocation_weights (tree_constant *args,
-					     int nargin);
 
   friend tree_constant *column_max (tree_constant *args, int nargin,
 				    int nargout);
@@ -498,34 +486,6 @@ public:
   friend tree_constant *column_min (tree_constant *args, int nargin,
 				    int nargout);
   
-  friend tree_constant *hess (tree_constant *args, int nargin, int nargout);
-  friend tree_constant *eig (tree_constant *args, int nargin, int nargout);
-  friend tree_constant *schur (tree_constant *args, int nargin, int nargout);
-  friend tree_constant *svd (tree_constant *args, int nargin, int nargout);
-  friend tree_constant *lsode (tree_constant *args, int nargin, int nargout);
-  friend tree_constant *dassl (tree_constant *args, int nargin, int nargout);
-
-#ifndef NPSOL_MISSING
-  friend tree_constant *npsol (tree_constant *args, int nargin, int nargout);
-#endif
-
-#ifndef QPSOL_MISSING
-  friend tree_constant *qpsol (tree_constant *args, int nargin, int nargout);
-#endif
-
-#ifndef FSQP_MISSING
-  friend tree_constant *fsqp (tree_constant *args, int nargin, int nargout);
-#endif
-
-  friend tree_constant *lpsolve (tree_constant *args, int nargin, int nargout);
-
-  friend tree_constant *fsolve (tree_constant *args, int nargin, int nargout);
-
-  friend tree_constant *do_quad (tree_constant *args, int nargin, int nargout);
- 
-  friend tree_constant *rand_internal (tree_constant *args, int nargin,
-				       int nargout);
-
   friend tree_constant *sort (tree_constant *args, int nargin, int nargout);
  
   friend tree_constant *feval (tree_constant *args, int nargin, int nargout);

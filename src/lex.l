@@ -571,15 +571,23 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
     return ')';
   }
 
+"." {
+    TOK_RETURN ('.');
+  }
+
 %{
-// We return everything else as single character tokens, which should
-// eventually result in a parse error.
+// Unrecognized input is a lexical error.
 %}
 
 . {
-    error ("invalid character `%s' on input", undo_string_escape (yytext[0]));
-    TOK_RETURN (yytext[0]);
-}
+    current_input_column++;
+
+    error ("invalid character `%s' near line %d, column %d",
+	   undo_string_escape (yytext[0]), input_line_number,
+	   current_input_column);
+
+    return LEXICAL_ERROR;
+  }
 
 %%
 

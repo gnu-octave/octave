@@ -1,34 +1,32 @@
-Subject: ANNOUNCE: Octave Version 2.0.4 released
+Subject: ANNOUNCE: Octave Version 2.0.5 released
 
-Octave version 2.0.4 is now available for ftp from ftp.che.wisc.edu
+Octave version 2.0.5 is now available for ftp from ftp.che.wisc.edu
 in the directory /pub/octave.  Diffs from the previous release are
 also available in the same directory.
 
-  -rw-r--r--   1 jwe  3315120 Feb 20 04:06 octave-2.0.4.tar.gz
-  -rw-r--r--   1 jwe    29456 Feb 20 04:07 octave-2.0.3-2.0.4.patch.gz
+  -rw-r--r--   1 jwe  3313485 Mar  1 17:57 octave-2.0.5.tar.gz
+  -rw-r--r--   1 jwe   101846 Mar  1 17:57 octave-2.0.4-2.0.5.patch.gz
 
-Version 2.0.4 fixes some problems with the configure scripts and
-Makefiles that were present in 2.0.3.  It will probably be the last
-2.0.x release unless some serious new bugs are found and reported.
+Most bugs reported since the release of version 2.0 have been fixed
+and this will probably be the last in the series of 2.0.x releases
+unless some serious new bugs are found and reported.
 
-There are also two new features (what would be the fun of making a
-release just to fix bugs? :-) both of which are kluges to allow a bit
-more compatibility with Matlab:
+There are two new features:
 
-  * It is now possible to use commands like ls, save, and cd as simple
-    variable names.  They still cannot be used as formal parameters
-    for functions, or as the names of structure variables.  Failed
-    assignments leave them undefined (you can recover the orginal
-    function definition using clear).
+  * A `switch' statement is now available for compatibility with
+    MATLAB 5.  See the Statements chapter in the manual for details.
 
-  * Is is now possible to invoke commands like ls, save, and cd as
-    normal functions (for example, load ("foo", "x", "y", "z")).
+  * Commands like ls, save, and cd may now also be used as formal
+    parameters for functions.
 
-You can help make Octave more reliable by reporting any bugs you find
+Version 2.0.5 also includes about 1400 tests (up from about 560) but
+more are needed.  If you would like to help improve Octave by writing
+additional tests, please contact bug-octave@bevo.che.wisc.edu.  You
+can also help make Octave more reliable by reporting any bugs you find
 to bug-octave@bevo.che.wisc.edu.
 
 Octave is a high-level interactive language primarily intended for
-numerical computations.  It is mostly compatible with Matlab.
+numerical computations.  It is mostly compatible with MATLAB.
 
 Additional information is available on the WWW at
 

@@ -54,6 +54,9 @@
 /* Define if your system has a sys_siglist variable. */
 #undef HAVE_SYS_SIGLIST
 
+/* Define if your system defines struct timeval. */
+#undef HAVE_TIMEVAL
+
 /* Define if you have System V Release 3 style signals. */
 #undef HAVE_USG_SIGHOLD
 

@@ -22,7 +22,7 @@ INSTALL_DATA = @INSTALL_DATA@
 
 SOURCES = # *.m
 
-DISTFILES = Makefile.in $(SOURCES)
+DISTFILES = Makefile.in $(SOURCES) configure.in configure
 
 SUBDIRS = control elfun general image linear-algebra miscellaneous \
 	plot polynomial set signal specfun special-matrix startup \

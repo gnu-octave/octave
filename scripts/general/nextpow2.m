@@ -31,10 +31,13 @@ function n = nextpow2 (x)
     usage ("nextpow2 (x)");
   endif
 
-  if (is_vector (x))
-    x = length (x);
-  elseif (! is_scalar (x))
+  if (! (is_scalar (x) || is_vector (x)))
     error ("nextpow2: x must be a scalar or a vector");
+  endif
+
+  t = length (x);
+  if (t > 1)
+    x = t;
   endif
   
   [f, n] = log2 (abs (x));

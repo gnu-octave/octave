@@ -1,3 +1,8 @@
+Sat Mar 15 15:07:30 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* general/nextpow2.m: Correctly handle new meaning of is_scalar()
+	and is_vector().
+
 Thu Mar 13 16:36:35 1997  Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
 
 	* specfun/erfinv.m: Scale update by sqrt (pi) / 2.

@@ -863,7 +863,7 @@ display the definition of each NAME that refers to a function")
 }
 
 DEFUN_TEXT ("which", Fwhich, Swhich, 11,
-  "which NAME ...]\n\
+  "which NAME ...\n\
 \n\
 display the type of each NAME.  If NAME is defined from an function\n\
 file, print the full name of the file.")

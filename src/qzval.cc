@@ -54,7 +54,7 @@ extern "C"
 		       double*, double*, double*, const long*, double*);
 }
 
-DEFUN_DLD_BUILTIN ("qzvalue", Fqzvalue, Sqzvalue, 3, 1,
+DEFUN_DLD_BUILTIN ("qzval", Fqzval, Sqzval, 3, 1,
   "X = qzval (A, B)\n\
 \n\
 compute generalized eigenvalues of the matrix pencil (A - lambda B).\n\
@@ -66,7 +66,7 @@ A and B must be real matrices.")
 
   if (nargin != 2 || nargout > 1)
     {
-      print_usage ("qzvalue");
+      print_usage ("qzval");
       return retval;
     }
 
@@ -79,8 +79,8 @@ A and B must be real matrices.")
   int b_nr = arg_b.rows();
   int b_nc = arg_b.columns();
 
-  int arg_a_is_empty = empty_arg ("qzvalue", a_nr, a_nc);
-  int arg_b_is_empty = empty_arg ("qzvalue", b_nr, b_nc);
+  int arg_a_is_empty = empty_arg ("qzval", a_nr, a_nc);
+  int arg_b_is_empty = empty_arg ("qzval", b_nr, b_nc);
 
   if (arg_a_is_empty > 0 && arg_b_is_empty > 0)
     return Matrix ();
@@ -91,7 +91,7 @@ A and B must be real matrices.")
 
   if (a_nr != a_nc || b_nr != b_nc)
     {
-      gripe_square_matrix_required ("qzvalue: first two parameters:");
+      gripe_square_matrix_required ("qzval: first two parameters:");
       return retval;
     }
 
@@ -105,7 +105,7 @@ A and B must be real matrices.")
 
   if (arg_a.is_complex_type () || arg_b.is_complex_type ())
     {
-      error ("qzvalue: cannot yet do complex matrix arguments\n");
+      error ("qzval: cannot yet do complex matrix arguments\n");
       return retval;
     }
 
@@ -143,7 +143,7 @@ A and B must be real matrices.")
 		  jnk.fortran_vec (), &info);  
 
   if (info)
-    error ("qzvalue: trouble in qzit, info = %d", info);
+    error ("qzval: trouble in qzit, info = %d", info);
 
   F77_FCN (qzval) (&a_nr, &a_nr, ca.fortran_vec (),
 		   cb.fortran_vec (), alfr.fortran_vec (),

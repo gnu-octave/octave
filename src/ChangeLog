@@ -3,6 +3,11 @@
 	* version.h (OCTAVE_VERSION): Now 2.1.51.
 	(OCTAVE_API_VERSION): Now api-v2.
 
+	* parse.y (cancel_obj_idx): New rule.
+	(postfix_expr, prefix_expr): Use begin_obj_idx after every
+	postfix_expr on RHS.  Use cancel_obj_idx as soon as possible for
+	cases where we are not working on an index expression.
+
 	* lex.l (maybe_unput_comma, handle_close_bracket):
 	Don't insert comma if we are looking at an object index and the
 	closest nesting level is a brace.

@@ -210,10 +210,9 @@ intern_argv (int argc, char **argv)
       octave_argv.resize (argc-1);
       for (int i = 1; i < argc; i++)
 	octave_argv.elem (i-1) = argv[i];
-    }
 
-  tree_constant *tmp = new tree_constant (octave_argv);
-  bind_builtin_variable ("argv", tmp, 1, 1, 0);
+      bind_builtin_variable ("argv", octave_argv, 1, 1, 0);
+    }
 }
 
 // Initialize some global variables for later use.
@@ -651,16 +650,23 @@ main (int argc, char **argv)
   int remaining_args = argc - optind;
   if (remaining_args > 0)
     {
-      if (remaining_args == 1)
-	intern_argv (argc, argv);
-      else
-	intern_argv (remaining_args, argv+optind);
-
       reading_script_file = 1;
       curr_fcn_file_name = argv[optind];
+
       FILE *infile = get_input_from_file (curr_fcn_file_name);
+
       if (infile)
 	{
+	  bind_builtin_variable ("program_invocation_name",
+				 curr_fcn_file_name);
+
+	  char *tmp = strrchr (curr_fcn_file_name, '/');
+	  tmp = tmp ? tmp+1 : curr_fcn_file_name;
+
+	  bind_builtin_variable ("program_name", tmp);
+
+	  intern_argv (remaining_args, argv+optind);
+
 	  rl_blink_matching_paren = 0;
 	  switch_to_buffer (create_buffer (infile));
 	}

@@ -29,7 +29,7 @@ LIB_TEXINFO = liboctave.texi
 
 ALL_TEXINFO = $(TEXINFO) $(LIB_TEXINFO)
 
-REFCARD = refcard.tex refcard.dvi refcard.ps
+REFCARD = refcard.tex.in refcard.tex refcard.dvi refcard.ps
 
 FORMATTED =  octave.dvi octave.ps octave.info octave.info-[0-9]*
 #	liboctave.info liboctave.info-[0-9]*
@@ -66,11 +66,27 @@ liboctave.dvi: $(LIB_TEXINFO) conf.texi
 liboctave.ps: liboctave.dvi
 	dvips -o liboctave.ps liboctave.dvi
 
+refcard.tex: refcard.tex.in
+	sed 's/@LOCAL@.*$//' refcard.tex.in > refcard.tex.tmp
+	mv refcard.tex.tmp refcard.tex
+	rm -f refcard.tex.tmp
+
+refcard-local.tex: refcard.tex.in
+	sed 's/@LOCAL@//' refcard.tex.in > refcard-local.tex.tmp
+	mv refcard-local.tex.tmp refcard.tex
+	rm -f refcard-local.tex.tmp
+
 refcard.dvi: refcard.tex
-	tex $(srcdir)/refcard.tex
+	tex refcard.tex
+
+refcard-local.dvi: refcard-local.tex
+	tex refcard-local.tex
 
 refcard.ps: refcard.dvi
-	dvips -t landscape -o refcard.ps refcard.dvi
+	dvips -o refcard.ps refcard.dvi
+
+refcard-local.ps: refcard-local.dvi
+	dvips -o refcard-local.ps refcard-local.dvi
 
 ../INSTALL.OCTAVE: install1.texi install.texi
 	-makeinfo --no-header -I$(srcdir)/doc install1.texi

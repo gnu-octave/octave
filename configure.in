@@ -22,7 +22,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### 02111-1307, USA. 
 
 AC_INIT
-AC_REVISION($Revision: 1.359 $)
+AC_REVISION($Revision: 1.360 $)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -898,13 +898,7 @@ if test "$WITH_DL" = yes || test "$WITH_DL" = maybe; then
     ;;
   esac
   if $WITH_DL; then
-    case "$canonical_host_type" in
-      *-*-darwin*)
-      ;;
-      *)
-        OCTAVE_CXX_FLAG(-rdynamic, [RDYNAMIC_FLAG=-rdynamic])
-      ;;
-    esac
+    OCTAVE_CXX_FLAG(-rdynamic, [RDYNAMIC_FLAG=-rdynamic])
     AC_DEFINE(WITH_DL, 1, [Define if using dlopen/dlsym.])
   fi
 else

@@ -286,23 +286,21 @@ DiagMatrix::inverse (int &info) const
       return DiagMatrix ();
     }
 
+  DiagMatrix retval (nr, nc);
+
   info = 0;
-  double *tmp_data = dup (data (), len);
   for (int i = 0; i < len; i++)
     {
       if (elem (i, i) == 0.0)
 	{
 	  info = -1;
-	  copy (tmp_data, data (), len); // Restore contents.
-	  break;
+	  return *this;
 	}
       else
-	{
-	  tmp_data[i] = 1.0 / elem (i, i);
-	}
+	retval.elem (i, i) = 1.0 / elem (i, i);
     }
 
-  return DiagMatrix (tmp_data, nr, nc);
+  return retval;
 }
 
 // diagonal matrix by diagonal matrix -> diagonal matrix operations

@@ -404,7 +404,7 @@ ComplexDiagMatrix::inverse (int& info) const
 	retval.elem (i, i) = 1.0 / elem (i, i);
     }
 
-  return *this;
+  return retval;
 }
 
 // diagonal matrix by diagonal matrix -> diagonal matrix operations

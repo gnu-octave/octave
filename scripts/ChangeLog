@@ -1,3 +1,8 @@
+2001-02-07  David Livings <david.livings@asa.co.uk>
+
+	* statistics/base/ppplot.m: Use gset, not set.
+	* statistics/base/qqplot.m: Likewise.
+
 2001-02-05  Ondrej Popp <ondrej@geocities.com>
 
 	* control/system/c2d.m: Add missing endif.

@@ -66,7 +66,7 @@ function [p, y] = ppplot (x, dist, ...)
 
   if (nargout == 0)
     axis ([0, 1, 0, 1]);
-    set nokey;
+    gset nokey;
     plot (p, y);
   endif
 

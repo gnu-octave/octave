@@ -75,7 +75,7 @@ function [q, s] = qqplot (x, dist, ...)
   if (nargout == 0)
     xlabel (q_label);
     ylabel ("sample points");
-    set nokey;
+    gset nokey;
     plot (q, s);
   endif
 

@@ -584,7 +584,7 @@ cleanup_iprocstream (void *p)
 }
 
 static octave_value_list
-do_system (const string& cmd_str, bool return_output)
+run_command_and_return_output (const string& cmd_str)
 {
   octave_value_list retval;
 
@@ -600,12 +600,7 @@ do_system (const string& cmd_str, bool return_output)
 
       char ch;
       while (cmd->get (ch))
-	{
-	  if (return_output)
-	    output_buf.put (ch);
-	  else
-	    octave_stdout.put (ch);
-	}
+	output_buf.put (ch);
 
       status = cmd->close ();
 
@@ -616,17 +611,14 @@ do_system (const string& cmd_str, bool return_output)
       if ((status & 0xff) == 0)
 	status = (status & 0xff00) >> 8;
 
-      if (return_output)
-	{
-	  output_buf << ends;
+      output_buf << ends;
 
-	  char *msg = output_buf.str ();
+      char *msg = output_buf.str ();
 
-	  retval(1) = (double) status;
-	  retval(0) = msg;
+      retval(1) = (double) status;
+      retval(0) = msg;
 
-	  delete [] msg;
-	}
+      delete [] msg;
     }
   else
     error ("unable to start subprocess for `%s'", cmd_str.c_str ());
@@ -650,8 +642,14 @@ If NARGIN == 2 (the actual value of RETURN_OUTPUT is irrelevant) and\n\
 the subprocess is started synchronously, or if system() is called with\n\
 NARGIN == 1 and NARGOUT > 0, the output from the command is returned.\n\
 Otherwise, if the subprocess is executed synchronously, it's output is\n\
-sent to Octave's standard output (possibly being passed through the\n\
-pager).")
+sent to the standard output.  To send the output of a command executed\n\
+with system() through the pager, use a command like\n\
+\n\
+   disp (system (CMD, 1));\n\
+\n\
+or\n\
+\n\
+   printf ("%s\n", system (CMD, 1));")
 {
   octave_value_list retval;
 
@@ -706,8 +704,22 @@ pager).")
 	      else
 		retval(0) = (double) pid;
 	    }
+	  else if (return_output)
+	    retval = run_command_and_return_output (cmd_str);
 	  else
-	    retval = do_system (cmd_str, return_output);
+	    {
+	      int status = system (cmd_str.c_str ());
+
+	      // The value in status is as returned by waitpid.  If
+	      // the process exited normally, extract the actual exit
+	      // status of the command.  Otherwise, return 127 as a
+	      // failure code.
+
+	      if ((status & 0xff) == 0)
+		status = (status & 0xff00) >> 8;
+
+	      retval = (double) status;
+	    }
 	}
     }
   else

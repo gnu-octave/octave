@@ -83,7 +83,7 @@ protected:
 
     void qsort (int (*compare) (const void *, const void *))
       {
-	::qsort (data, len, sizeof (T), compare);
+	::qsort (data, static_cast<size_t> (len), sizeof (T), compare);
       }
   };
 

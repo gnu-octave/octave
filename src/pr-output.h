@@ -98,6 +98,11 @@ octave_print_internal (std::ostream& os, const charNDArray& nda,
 		       bool pr_as_string = false);
 
 extern void
+octave_print_internal (std::ostream& os, const std::string& s,
+		       bool pr_as_read_syntax = false,
+		       int extra_indent = 0);
+
+extern void
 octave_print_internal (std::ostream& os, const ArrayN<std::string>& sa,
 		       bool pr_as_read_syntax = false,
 		       int extra_indent = 0);

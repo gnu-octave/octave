@@ -45,7 +45,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "str-vec.h"
 
 class Cell;
-class fcn_handle_array;
 class streamoff_array;
 class Octave_map;
 class octave_stream;
@@ -238,7 +237,6 @@ public:
   octave_value (const octave_stream& s, int n);
   octave_value (const streamoff_array& off);
   octave_value (octave_function *f);
-  octave_value (const fcn_handle_array& fha);
   octave_value (octave_function *f, const std::string &nm); // function handle
   octave_value (const octave_value_list& m, bool is_cs_list = false);
   octave_value (octave_value::magic_colon);

@@ -1,6 +1,14 @@
 2004-08-02  John W. Eaton  <jwe@octave.org>
 
+	* OPERATORS/op-fcn-handle.cc: Delete.
+	* Makefile.in (OP_XSRC): Delete it from the list.
+	* pr-output.cc (octave_print_internal (std::ostream&, const
+	std::string&, bool, int): New function.
 	* ov-fcn-handle.cc (octave_value::subsref): New function.
+	* ov-fcn-handle.h (class fcn_handle_elt, class fcn_handle_array):
+	Delete.
+	(class octave_fcn_handle): Derive from octave_base_value, not
+	octave_base_matrix<fcn_handle_array>.
 
 	* ov-cx-mat.cc (try_narrowing_conversion): Also allow complex to
 	real conversion for N-d arrays.

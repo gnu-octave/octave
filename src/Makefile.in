@@ -112,7 +112,7 @@ OP_XSRC := op-b-b.cc op-b-bm.cc op-bm-b.cc op-bm-bm.cc \
 	op-fil-rec.cc op-fil-str.cc op-list.cc op-m-cm.cc \
 	op-m-cs.cc op-m-m.cc op-m-s.cc op-range.cc op-s-cm.cc \
 	op-s-cs.cc op-s-m.cc op-s-s.cc op-str-m.cc \
-	op-str-s.cc op-str-str.cc op-streamoff.cc op-fcn-handle.cc \
+	op-str-s.cc op-str-str.cc op-streamoff.cc \
 	$(INTTYPE_OP_XSRC)
 
 OP_SRC := $(addprefix OPERATORS/, $(OP_XSRC))

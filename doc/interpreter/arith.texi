@@ -155,6 +155,20 @@ for each element of @var{x}.  With two arguments, returns
 @end ifinfo
 @end deftypefn
 
+@deftypefn {Function File} {} nextpow2 (@var{x})
+If @var{x} is a scalar, returns the first integer @var{n} such that
+@iftex
+@tex
+ $2^n \ge |x|$.
+@end tex
+@end iftex
+@ifinfo
+ 2^n >= abs (x).
+@end ifinfo
+
+If @var{x} is a vector, return @code{nextpow2 (length (@var{x}))}.
+@end deftypefn
+
 @deftypefn {Mapping Function} {} sqrt (@var{x})
 Compute the square root of @var{x}.  To compute the matrix square root,
 see @ref{Linear Algebra}.
@@ -466,6 +480,124 @@ If neither @var{a} nor @var{x} is scalar, the sizes of @var{a} and
 
 @deftypefn {Mapping Function} {} lgamma (@var{a}, @var{x})
 Returns the natural logarithm of the gamma function.
+@end deftypefn
+
+@deftypefn {Function File} {} cross (@var{x}, @var{y})
+Computes the vector cross product of the two 3-dimensional vectors
+@var{x} and @var{y}.
+@end deftypefn
+
+@deftypefn {Function File} {} commutation_matrix (@var{m}, @var{n})
+Returns the commutation matrix
+@iftex
+ $K_{m,n}$
+@tex
+@end tex
+@end iftex
+@ifinfo
+ K(m,n)
+@end ifinfo
+ which is the unique
+@iftex
+@tex
+ $m n \times m n$
+@end tex
+@end iftex
+@ifinfo
+ @var{m}*@var{n} by @var{m}*@var{n}
+@end ifinfo
+ matrix such that
+@iftex
+@tex
+ $K_{m,n} * {\rm vec} (A) = {\rm vec} (A^T)$
+@end tex
+@end iftex
+@ifinfo
+ @var{K}(@var{m},@var{n}) * vec (@var{A}) = vec (@var{A}')
+@end ifinfo
+ for all
+@iftex
+@tex
+ $m\times n$
+@end tex
+@end iftex
+@ifinfo
+ @var{m} by @var{n}
+@end ifinfo
+ matrices
+@iftex
+@tex
+ $A$.
+@end tex
+@end iftex
+@ifinfo
+ @var{A}.
+@end ifinfo
+
+If only one argument @var{m} is given,
+@iftex
+@tex
+ $K_{m,m}$
+@end tex
+@end iftex
+@ifinfo
+ K(m,m)
+@end ifinfo
+ is returned.
+
+See Magnus and Neudecker (1988), Matrix differential calculus with
+applications in statistics and econometrics.
+@end deftypefn
+
+@deftypefn {Function File} {} duplication_matrix (@var{n})
+Returns the duplication matrix
+@iftex
+@tex
+ $D_n$
+@end tex
+@end iftex
+@ifinfo
+ @var{D}_@var{n}
+@end ifinfo
+ which is the unique
+@iftex
+@tex
+ $n^2 \times n(n+1)/2$
+@end tex
+@end iftex
+@ifinfo
+ @var{n}^2 by @var{n}*(@var{n}+1)/2
+@end ifinfo
+ matrix such that
+@iftex
+@tex
+ $D_n * {\rm vech} (A) = {\rm vec} (A)$
+@end tex
+@end iftex
+@ifinfo
+ @var{D}_@var{n} * vech (@var{A}) = vec (@var{A})
+@end ifinfo
+ for all symmetric
+@iftex
+@tex
+@end tex
+ $n \times n$
+@end iftex
+@ifinfo
+ @var{n} by @var{n}
+@end ifinfo
+ matrices
+@iftex
+@tex
+ $A$.
+@end tex
+@end iftex
+@ifinfo
+ @var{A}.
+@end ifinfo
+
+See Magnus and Neudecker (1988), Matrix differential calculus with
+applications in statistics and econometrics.
 @end deftypefn
 
 @node Mathematical Constants,  , Special Functions, Arithmetic

@@ -75,6 +75,47 @@ Note that in conditional contexts (like the test clause of @code{if} and
 @code{while} statements) Octave treats the test as if you had typed
 @code{all (all (condition))}.
 
+@deftypefn {Function File} {[@var{errorcode}, @var{y_1}, ...] =} common_size (@var{x_1}, ...)
+Determine if all input arguments are either scalar or of common
+size.  If so, errorcode is zero, and @var{y_i} is a matrix of the
+common size with all entries equal to @var{x_i} if this is a scalar or
+@var{x_i} otherwise.  If the inputs cannot be brought to a common size,
+errorcode is 1, and @var{y_i} is @var{x_i}.  For example,
+
+@example
+@group
+[errorcode, a, b] = common_size ([1 2; 3 4], 5)
+     @result{} errorcode = 0
+     @result{} a = [1 2, 3 4]
+     @result{} b = [5 5; 5 5]
+@end group
+@end example
+
+@noindent
+This is useful for implementing functions where arguments can either
+be scalars or of common size.
+@end deftypefn
+
+@deftypefn {Function File} {} diff (@var{x}, @var{k})
+If @var{x} is a vector of length @var{n}, @code{diff (@var{x})} is the
+vector of first differences
+@iftex
+@tex
+ $x_2 - x_1, \ldots{}, x_n - x_{n-1}$.
+@end tex
+@end iftex
+@ifinfo
+ @var{x}(2) - @var{x}(1), @dots{}, @var{x}(n) - @var{x}(n-1).
+@end ifinfo
+
+If @var{x} is a matrix, @code{diff (@var{x})} is the matrix of column
+differences.
+
+The second argument is optional.  If supplied, @code{diff (@var{x},
+@var{k})}, where @var{k} is a nonnegative integer, returns the
+@var{k}-th differences.
+@end deftypefn
+
 @deftypefn {Mapping Function} {} isinf (@var{x})
 Return 1 for elements of @var{x} that are infinite and zero
 otherwise. For example,
@@ -250,6 +291,13 @@ colon operator.  Note that the total number of elements in the original
 matrix must match the total number of elements in the new matrix.
 @end deftypefn
 
+@deftypefn {Function File} {} shift (@var{x}, @var{b})
+If @var{x} is a vector, perform a circular shift of length @var{b} of
+the elements of @var{x}.
+
+If @var{x} is a matrix, do the same for each column of @var{x}.
+@end deftypefn
+
 @deftypefn {Loadable Function} {[s, i] =} sort (@var{x})
 Returns a copy of @var{x} with the elements elements arranged in
 increasing order.  For matrices, @code{sort} orders the elements in each
@@ -351,4 +399,21 @@ tril (ones (3), 1)
          1  1  1
 @end group
 @end example
+@end deftypefn
+
+@deftypefn {Function File} {} vec (@var{x})
+For a matrix @var{x}, returns the vector obtained by stacking the
+columns of @var{x} one above the other.
+
+See Magnus and Neudecker (1988), Matrix differential calculus with
+applications in statistics and econometrics.
+@end deftypefn
+
+@deftypefn {Function File} {} vech (@var{x})
+For a square matrix @var{x}, returns the vector obtained from @var{x}
+by eliminating all supradiagonal elements and stacking the result
+one column above the other.
+
+See Magnus and Neudecker (1988), Matrix differential calculus with
+applications in statistics and econometrics.
 @end deftypefn

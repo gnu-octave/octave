@@ -366,13 +366,12 @@ $U$
  is a unitary matrix
 @iftex
 @tex
-($U' U$
+($U^T U$ is identity)
 @end tex
 @end iftex
 @ifinfo
-(@code{u'* u}
+(@code{u'* u} is identity)
 @end ifinfo
- is identity)
 and
 @iftex
 @tex

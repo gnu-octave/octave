@@ -1,7 +1,7 @@
 // Template array classes                              -*- C++ -*-
 /*
 
-Copyright (C) 1993 John W. Eaton
+Copyright (C) 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -985,8 +985,8 @@ DiagArray<T>::resize (int r, int c, const T& val)
     delete old_rep;
 }
 
-#ifdef __GNUG__
-#if defined (OCTAVE_SOURCE) && defined (USE_EXTERNAL_TEMPLATES)
+#if defined (__GNUG__) && defined (USE_EXTERNAL_TEMPLATES)
+#if defined (OCTAVE_SOURCE)
 
 typedef Array<double> array_type_double;
 typedef Array2<double> array2_type_double;
@@ -996,6 +996,20 @@ typedef DiagArray<double> diag_array_type_double;
 typedef Array<Complex> array_type_complex;
 typedef Array2<Complex> array2_type_complex;
 typedef DiagArray<Complex> diag_array_type_complex;
+
+#elif defined (USER_TYPEDEFS)
+
+// Users can generate their own .o files with their own types, as many
+// times as they like.  USER_TYPEDEFS should be defined to be the name
+// of an include file that contains typdefs for the desired types.
+//
+// For example, if my-types.h contains typedefs for the Array types
+// you are interested in, you might compile this file with the command
+//
+//   g++ -fexternal-templates -DUSER_EXTERNAL_TEMPLATES \
+//       -DUSER_TYPEDEFS=\"my-types.h\"
+
+#include USER_TYPEDEFS
 
 #endif
 #endif

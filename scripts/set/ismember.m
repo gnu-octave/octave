@@ -1,18 +1,21 @@
 ## Copyright (C) 2000 Paul Kienzle
 ##
-## This program is free software; you can redistribute it and/or modify
-## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2 of the License, or
-## (at your option) any later version.
+## This file is part of Octave.
 ##
-## This program is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-## GNU General Public License for more details.
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2, or (at your option)
+## any later version.
+##
+## Octave is distributed in the hope that it will be useful, but
+## WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+## General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
-## along with this program; if not, write to the Free Software
-## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
+## 02111-1307, USA.
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} ismember(@var{A}, @var{S})
@@ -23,23 +26,27 @@
 ## @end deftypefn
 ## @seealso{unique, union, intersect, setxor, setdiff}
 
-function c = ismember(a,S)
-  if nargin != 2
-    usage("ismember(A,S)");
+## Author: Paul Kienzle
+## Adapted-by: jwe
+
+function c = ismember (a, S)
+
+  if (nargin != 2)
+    usage ("ismember (A, S)");
   endif
 
-  [ra, ca] = size(a);
-  if isempty(a) || isempty(S)
-    c = zeros(ra, ca);
+  [ra, ca] = size (a);
+  if (isempty (a) || isempty (S))
+    c = zeros (ra, ca);
   else
-    S = unique(S(:));
-    lt = length(S);
-    if lt == 1
-      c = ( a == S );
-    elseif ra*ca == 1
+    S = unique (S(:));
+    lt = length (S);
+    if (lt == 1)
+      c = (a == S);
+    elseif (ra*ca == 1)
       c = any (a == S);
     else
-      ## Magic : the following code determines for each a, the index i
+      ## Magic:  the following code determines for each a, the index i
       ## such that S(i)<= a < S(i+1).  It does this by sorting the a
       ## into S and remembering the source index where each element came
       ## from.  Since all the a's originally came after all the S's, if 
@@ -68,11 +75,12 @@ function c = ismember(a,S)
       ## easy to now check membership by comparing S(a_idx) == a.  This
       ## magic works because S starts out sorted, and because sort
       ## preserves the relative order of identical elements.
-      [v, p] = sort ( [ S(2:lt) ; a(:) ] );
+      [v, p] = sort ([S(2:lt); a(:)]);
       idx(p) = cumsum (p <= lt-1) + 1;
-      idx = idx (lt : lt+ra*ca-1);
-      c = ( a == reshape (S (idx), size (a)) );
+      idx = idx(lt:lt+ra*ca-1);
+      c = (a == reshape (S(idx), size (a)));
     endif
   endif
+
 endfunction
   

@@ -1,3 +1,8 @@
+2005-03-03  Paul Kienzle  <pkienzle@users.sf.net>
+
+	* statistics/distributions/binomial_pdf.m: Extend the feasible
+	computation range.
+
 2005-02-25  John W. Eaton  <jwe@octave.org>
 
 	Sparse merge.

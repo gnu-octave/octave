@@ -44,35 +44,8 @@ public:
       assignment,
       simple_assignment,
       multi_assignment,
-      add,
-      subtract,
-      multiply,
-      el_mul,
-      divide,
-      el_div,
-      leftdiv,
-      el_leftdiv,
-      power,
-      elem_pow,
-      cmp_lt,
-      cmp_le,
-      cmp_eq,
-      cmp_ge,
-      cmp_gt,
-      cmp_ne,
-      and_and,
-      or_or,
-      and,
-      or,
-      not,
-      unot,
-      uminus,
-      hermitian,
-      transpose,
       colon,
       index,
-      increment,
-      decrement,
    };
 
   tree_expression (int l = -1, int c = -1, type et = unknown)
@@ -112,8 +85,6 @@ public:
   virtual void mark_in_parens (void) { in_parens++; }
 
   virtual bool is_in_parens (void) { return in_parens; }
-
-  virtual type expression_type (void) { return etype; }
 
   virtual void mark_for_possible_ans_assign (void);
 

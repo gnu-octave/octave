@@ -33,7 +33,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "error.h"
 #include "pager.h"
-#include "pt-const.h"
+#include "ov.h"
 #include "pt-exp-base.h"
 
 // Expressions.
@@ -48,40 +48,7 @@ tree_expression::is_logically_true (const char *warn_for)
   if (! error_state)
     {
       if (t1.is_defined ())
-	{
-	  if (t1.rows () == 0 || t1.columns () == 0)
-	    {
-	      t1 = 0.0;
-	      int flag = Vpropagate_empty_matrices;
-	      if (flag < 0)
-		warning ("%s: empty matrix used in conditional expression",
-			 warn_for);
-	      else if (flag == 0)
-		{
-		  ::error ("%s: empty matrix used in conditional expression",
-			   warn_for);
-		  return expr_value;
-		}
-	    }
-	  else if (! t1.is_scalar_type ())
-	    {
-	      octave_value t2 = t1.all ();
-	      if (! error_state)
-		t1 = t2.all ();
-	    }
-
-	  if (! error_state)
-	    {
-	      if (t1.is_real_scalar ())
-		expr_value = t1.double_value () != 0.0;
-	      else if (t1.is_complex_scalar ())
-		expr_value = t1.complex_value () != 0.0;
-	      else
-		panic_impossible ();
-	    }
-	  else
-	    ::error ("%s: invalid type in conditional expression", warn_for);
-	}
+	return t1.is_true ();
       else
 	::error ("%s: undefined value used in conditional expression",
 		 warn_for);

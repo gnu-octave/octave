@@ -38,11 +38,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "input.h"
 #include "oct-obj.h"
 #include "pager.h"
-#include "pt-const.h"
+#include "ov.h"
 #include "pt-exp.h"
 #include "pt-fvc.h"
 #include "pt-misc.h"
 #include "pt-mvr.h"
+#include "pt-pr-code.h"
 #include "pt-walk.h"
 #include "utils.h"
 
@@ -69,7 +70,22 @@ tree_prefix_expression::eval (bool print)
 
   if (id)
     {
-      id->bump_value (etype);
+      switch (etype)
+	{
+	case increment:
+	  id->increment ();
+	  break;
+
+	case decrement:
+	  id->decrement ();
+	  break;
+
+	default:
+	  error ("prefix operator %d not implemented", etype);
+	  break;
+	}
+
+
       if (error_state)
 	eval_error ();
       else
@@ -92,11 +108,11 @@ tree_prefix_expression::oper (void) const
   static char *op;
   switch (etype)
     {
-    case tree_expression::increment:
+    case increment:
       op = "++";
       break;
 
-    case tree_expression::decrement:
+    case decrement:
       op = "--";
       break;
 
@@ -143,7 +159,22 @@ tree_postfix_expression::eval (bool print)
   if (id)
     {
       retval = id->eval (print);
-      id->bump_value (etype);
+
+      switch (etype)
+	{
+	case increment:
+	  id->increment ();
+	  break;
+
+	case decrement:
+	  id->decrement ();
+	  break;
+
+	default:
+	  error ("postfix operator %d not implemented", etype);
+	  break;
+	}
+
       if (error_state)
 	{
 	  retval = octave_value ();
@@ -160,11 +191,11 @@ tree_postfix_expression::oper (void) const
   static char *op;
   switch (etype)
     {
-    case tree_expression::increment:
+    case increment:
       op = "++";
       break;
 
-    case tree_expression::decrement:
+    case decrement:
       op = "--";
       break;
 
@@ -198,38 +229,48 @@ tree_postfix_expression::accept (tree_walker& tw)
 octave_value
 tree_unary_expression::eval (bool /* print */)
 {
-  if (error_state)
-    return octave_value ();
-
   octave_value retval;
 
-  switch (etype)
+  if (error_state)
+    return retval;
+
+  if (op)
     {
-    case tree_expression::not:
-    case tree_expression::uminus:
-    case tree_expression::hermitian:
-    case tree_expression::transpose:
-      if (op)
+      octave_value u = op->eval (false);
+
+      if (error_state)
+	eval_error ();
+      else if (u.is_defined ())
 	{
-	  octave_value u = op->eval (false);
-	  if (error_state)
-	    eval_error ();
-	  else if (u.is_defined ())
+	  switch (etype)
 	    {
-	      retval = do_unary_op (u, etype);
-	      if (error_state)
-		{
-		  retval = octave_value ();
-		  if (error_state)
-		    eval_error ();
-		}
+	    case not:
+	      retval = u.not ();
+	      break;
+
+	    case uminus:
+	      retval = u.uminus ();
+	      break;
+
+	    case transpose:
+	      retval = u.transpose ();
+	      break;
+
+	    case hermitian:
+	      retval = u.hermitian ();
+	      break;
+
+	    default:
+	      ::error ("unary operator %d not implemented", etype);
+	      break;
+	    }
+
+	  if (error_state)
+	    {
+	      retval = octave_value ();
+	      eval_error ();
 	    }
 	}
-      break;
-
-    default:
-      ::error ("unary operator %d not implemented", etype);
-      break;
     }
 
   return retval;
@@ -241,20 +282,20 @@ tree_unary_expression::oper (void) const
   static char *op;
   switch (etype)
     {
-    case tree_expression::not:
+    case not:
       op = "!";
       break;
 
-    case tree_expression::uminus:
+    case uminus:
       op = "-";
       break;
 
-    case tree_expression::hermitian:
-      op = "'";
+    case transpose:
+      op = ".'";
       break;
 
-    case tree_expression::transpose:
-      op = ".'";
+    case hermitian:
+      op = "'";
       break;
 
     default:
@@ -287,118 +328,122 @@ tree_unary_expression::accept (tree_walker& tw)
 octave_value
 tree_binary_expression::eval (bool /* print */)
 {
-  if (error_state)
-    return octave_value ();
-
   octave_value retval;
 
-  switch (etype)
+  if (error_state)
+    return retval;
+
+  if (op_lhs)
     {
-    case tree_expression::add:
-    case tree_expression::subtract:
-    case tree_expression::multiply:
-    case tree_expression::el_mul:
-    case tree_expression::divide:
-    case tree_expression::el_div:
-    case tree_expression::leftdiv:
-    case tree_expression::el_leftdiv:
-    case tree_expression::power:
-    case tree_expression::elem_pow:
-    case tree_expression::cmp_lt:
-    case tree_expression::cmp_le:
-    case tree_expression::cmp_eq:
-    case tree_expression::cmp_ge:
-    case tree_expression::cmp_gt:
-    case tree_expression::cmp_ne:
-    case tree_expression::and:
-    case tree_expression::or:
-      if (op_lhs)
+      octave_value a = op_lhs->eval (false);
+
+      if (error_state)
+	eval_error ();
+      else if (a.is_defined () && op_rhs)
 	{
-	  octave_value a = op_lhs->eval (false);
+	  octave_value b = op_rhs->eval (false);
+
 	  if (error_state)
 	    eval_error ();
-	  else if (a.is_defined () && op_rhs)
+	  else if (b.is_defined ())
 	    {
-	      octave_value b = op_rhs->eval (false);
-	      if (error_state)
-		eval_error ();
-	      else if (b.is_defined ())
+	      octave_value::binary_op op = octave_value::unknown_binary_op;
+
+	      switch (etype)
 		{
-		  retval = do_binary_op (a, b, etype);
-		  if (error_state)
-		    {
-		      retval = octave_value ();
-		      if (error_state)
-			eval_error ();
-		    }
+		case add:
+		  op = octave_value::add;
+		  break;
+
+		case subtract:
+		  op = octave_value::sub;
+		  break;
+
+		case multiply:
+		  op = octave_value::mul;
+		  break;
+
+		case el_mul:
+		  op = octave_value::el_mul;
+		  break;
+
+		case divide:
+		  op = octave_value::div;
+		  break;
+
+		case el_div:
+		  op = octave_value::el_div;
+		  break;
+
+		case leftdiv:
+		  op = octave_value::ldiv;
+		  break;
+
+		case el_leftdiv:
+		  op = octave_value::el_ldiv;
+		  break;
+
+		case power:
+		  op = octave_value::pow;
+		  break;
+
+		case elem_pow:
+		  op = octave_value::el_pow;
+		  break;
+
+		case cmp_lt:
+		  op = octave_value::lt;
+		  break;
+
+		case cmp_le:
+		  op = octave_value::le;
+		  break;
+
+		case cmp_eq:
+		  op = octave_value::eq;
+		  break;
+
+		case cmp_ge:
+		  op = octave_value::ge;
+		  break;
+
+		case cmp_gt:
+		  op = octave_value::gt;
+		  break;
+
+		case cmp_ne:
+		  op = octave_value::ne;
+		  break;
+
+		case and:
+		  op = octave_value::el_and;
+		  break;
+
+		case or:
+		  op = octave_value::el_or;
+		  break;
+
+		default:
+		  ::error ("binary operator %d not implemented", etype);
+		  break;
+		}
+
+	      if (! error_state)
+		retval = ::do_binary_op (op, a, b);
+	      else
+		{
+		  retval = octave_value ();
+		  eval_error ();
 		}
 	    }
+	  else
+	    eval_error ();
 	}
-      break;
-
-    case tree_expression::and_and:
-    case tree_expression::or_or:
-      {
-	bool result = false;
-	if (op_lhs)
-	  {
-	    octave_value a = op_lhs->eval (false);
-	    if (error_state)
-	      {
-		eval_error ();
-		break;
-	      }
-
-	    bool a_true = a.is_true ();
-	    if (error_state)
-	      {
-		eval_error ();
-		break;
-	      }
-
-	    if (a_true)
-	      {
-		if (etype == tree_expression::or_or)
-		  {
-		    result = true;
-		    goto done;
-		  }
-	      }
-	    else
-	      {
-		if (etype == tree_expression::and_and)
-		  {
-		    result = false;
-		    goto done;
-		  }
-	      }
-
-	    if (op_rhs)
-	      {
-		octave_value b = op_rhs->eval (false);
-		if (error_state)
-		  {
-		    eval_error ();
-		    break;
-		  }
-
-		result = b.is_true ();
-		if (error_state)
-		  {
-		    eval_error ();
-		    break;
-		  }
-	      }
-	  }
-      done:
-	retval = octave_value ((double) result);
-      }
-      break;
-
-    default:
-      ::error ("binary operator %d not implemented", etype);
-      break;
+      else
+	eval_error ();
     }
+  else
+    eval_error ();
 
   return retval;
 }
@@ -409,83 +454,75 @@ tree_binary_expression::oper (void) const
   static char *op;
   switch (etype)
     {
-    case tree_expression::add:
+    case add:
       op = "+";
       break;
 
-    case tree_expression::subtract:
+    case subtract:
       op = "-";
       break;
 
-    case tree_expression::multiply:
+    case multiply:
       op = "*";
       break;
 
-    case tree_expression::el_mul:
+    case el_mul:
       op = ".*";
       break;
 
-    case tree_expression::divide:
+    case divide:
       op = "/";
       break;
 
-    case tree_expression::el_div:
+    case el_div:
       op = "./";
       break;
 
-    case tree_expression::leftdiv:
+    case leftdiv:
       op = "\\";
       break;
 
-    case tree_expression::el_leftdiv:
+    case el_leftdiv:
       op = ".\\";
       break;
 
-    case tree_expression::power:
+    case power:
       op = "^";
       break;
 
-    case tree_expression::elem_pow:
+    case elem_pow:
       op = ".^";
       break;
 
-    case tree_expression::cmp_lt:
+    case cmp_lt:
       op = "<";
       break;
 
-    case tree_expression::cmp_le:
+    case cmp_le:
       op = "<=";
       break;
 
-    case tree_expression::cmp_eq:
+    case cmp_eq:
       op = "==";
       break;
 
-    case tree_expression::cmp_ge:
+    case cmp_ge:
       op = ">=";
       break;
 
-    case tree_expression::cmp_gt:
+    case cmp_gt:
       op = ">";
       break;
 
-    case tree_expression::cmp_ne:
+    case cmp_ne:
       op = "!=";
       break;
 
-    case tree_expression::and_and:
-      op = "&&";
-      break;
-
-    case tree_expression::or_or:
-      op = "||";
-      break;
-
-    case tree_expression::and:
+    case and:
       op = "&";
       break;
 
-    case tree_expression::or:
+    case or:
       op = "|";
       break;
 
@@ -504,7 +541,7 @@ tree_binary_expression::eval_error (void)
       char *op = oper ();
 
       ::error ("evaluating binary operator `%s' near line %d, column %d",
-	     op, line (), column ());
+	       op, line (), column ());
     }
 }
 
@@ -512,6 +549,97 @@ void
 tree_binary_expression::accept (tree_walker& tw)
 {
   tw.visit_binary_expression (*this);
+}
+
+// Boolean expressions.
+ 
+octave_value
+tree_boolean_expression::eval (bool /* print */)
+{
+  octave_value retval;
+
+  if (error_state)
+    return retval;
+
+  bool result = false;
+
+  if (op_lhs)
+    {
+      octave_value a = op_lhs->eval (false);
+
+      if (error_state)
+	eval_error ();
+      else
+	{
+	  bool a_true = a.is_true ();
+
+	  if (error_state)
+	    eval_error ();
+	  else
+	    {
+	      if (a_true)
+		{
+		  if (etype == or)
+		    {
+		      result = true;
+		      goto done;
+		    }
+		}
+	      else
+		{
+		  if (etype == and)
+		    goto done;
+		}
+
+	      if (op_rhs)
+		{
+		  octave_value b = op_rhs->eval (false);
+
+		  if (error_state)
+		    eval_error ();
+		  else
+		    {
+		      result = b.is_true ();
+
+		      if (error_state)
+			eval_error ();
+		    }
+		}
+	      else
+		eval_error ();
+
+	    done:
+
+	      if (! error_state)
+		retval = octave_value ((double) result);
+	    }
+	}
+    }
+  else
+    eval_error ();
+
+  return retval;
+}
+
+char *
+tree_boolean_expression::oper (void) const
+{
+  static char *op;
+  switch (etype)
+    {
+    case and:
+      op = "&&";
+      break;
+
+    case or:
+      op = "||";
+      break;
+
+    default:
+      op = "<unknown>";
+      break;
+    }
+  return op;
 }
 
 // Simple assignment expressions.
@@ -563,6 +691,11 @@ tree_simple_assignment_expression::left_hand_side_id (void)
   return lhs->ident ();
 }
 
+// ??? FIXME ??? -- should this return the value of the RHS instead?
+
+// ??? FIXME ??? -- should octave_variable_reference::assign return
+// the right thing for us to return?
+
 octave_value
 tree_simple_assignment_expression::eval (bool print)
 {
@@ -585,31 +718,43 @@ tree_simple_assignment_expression::eval (bool print)
 	  error ("value on right hand side of assignment is undefined");
 	  eval_error ();
 	}
-      else if (! index)
-	{
-	  retval = lhs->assign (rhs_val);
-	  if (error_state)
-	    eval_error ();
-	}
       else
 	{
-	  // Extract the arguments into a simple vector.
-
-	  octave_value_list args = index->convert_to_const_vector ();
+	  octave_variable_reference ult (lhs);
 
 	  if (error_state)
 	    eval_error ();
 	  else
 	    {
-	      int nargin = args.length ();
-
-	      if (error_state)
-		eval_error ();
-	      else if (nargin > 0)
+	      if (index)
 		{
-		  retval = lhs->assign (rhs_val, args);
+		  // Extract the arguments into a simple vector.
+
+		  octave_value_list args = index->convert_to_const_vector ();
+
 		  if (error_state)
 		    eval_error ();
+		  else
+		    {
+		      int nargin = args.length ();
+
+		      if (nargin > 0)
+			{
+			  ult.assign (args, rhs_val);
+
+			  if (error_state)
+			    eval_error ();
+			  else
+			    retval = ult.value ();
+			}
+		      else
+			error ("??? invalid index list ???");
+		    }
+		}
+	      else
+		{
+		  ult.assign (rhs_val);
+		  retval = ult.value ();
 		}
 	    }
 	}

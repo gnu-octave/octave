@@ -45,12 +45,19 @@ tree_prefix_expression : public tree_expression
 {
 public:
 
-  tree_prefix_expression (int l = -1, int c = -1)
-    : tree_expression (l, c), id (0) { }
+  enum type
+    {
+      unknown,
+      increment,
+      decrement
+    };
 
-  tree_prefix_expression (tree_identifier *t, tree_expression::type et,
-			  int l = -1, int c = -1)
-    : tree_expression (l, c, et), id (t) { }
+  tree_prefix_expression (int l = -1, int c = -1, type t = unknown)
+    : tree_expression (l, c), id (0), etype (t) { }
+
+  tree_prefix_expression (tree_identifier *i, int l = -1, int c = -1,
+			  type t = unknown)
+    : tree_expression (l, c), id (i), etype (t) { }
 
   ~tree_prefix_expression (void);
 
@@ -71,6 +78,9 @@ private:
 
   // Currently, a prefix expression can only apply to an identifier.
   tree_identifier *id;
+
+  // The type of the expression.
+  type etype;
 };
 
 // Postfix expressions.
@@ -80,12 +90,19 @@ tree_postfix_expression : public tree_expression
 {
 public:
 
-  tree_postfix_expression (int l = -1, int c = -1)
-    : tree_expression (l, c), id (0) { }
+  enum type
+    {
+      unknown,
+      increment,
+      decrement
+    };
 
-  tree_postfix_expression (tree_identifier *t, tree_expression::type et,
-			   int l = -1, int c = -1)
-    : tree_expression (l, c, et), id (t) { }
+  tree_postfix_expression (int l = -1, int c = -1, type t = unknown)
+    : tree_expression (l, c), id (0), etype (t) { }
+
+  tree_postfix_expression (tree_identifier *i, int l = -1, int c = -1,
+			   type t = unknown)
+    : tree_expression (l, c), id (i), etype (t) { }
 
   ~tree_postfix_expression (void);
 
@@ -103,6 +120,9 @@ private:
 
   // Currently, a prefix expression can only apply to an identifier.
   tree_identifier *id;
+
+  // The type of the expression.
+  type etype;
 };
 
 // Unary expressions.
@@ -112,12 +132,22 @@ tree_unary_expression : public tree_expression
 {
 public:
 
-  tree_unary_expression (int l = -1, int c = -1)
-    : tree_expression (l, c), op (0) { }
+  enum type
+    {
+      unknown,
+      not,
+      unot,
+      uminus,
+      hermitian,
+      transpose
+    };
 
-  tree_unary_expression (tree_expression *a, tree_expression::type t,
-			 int l = -1, int c = -1)
-    : tree_expression (l, c, t), op (a) { }
+  tree_unary_expression (int l = -1, int c = -1, type t = unknown)
+    : tree_expression (l, c), op (0), etype (t) { }
+
+  tree_unary_expression (tree_expression *a, int l = -1, int c = -1,
+			 type t = unknown)
+    : tree_expression (l, c), op (a), etype (t) { }
 
   ~tree_unary_expression (void)
     { delete op; }
@@ -128,6 +158,8 @@ public:
 
   char *oper (void) const;
 
+  bool is_prefix_op (void) { return (etype == not || etype == uminus); }
+
   tree_expression *operand (void) { return op; }
 
   void accept (tree_walker& tw);
@@ -136,6 +168,9 @@ private:
 
   // The operand for the expression.
   tree_expression *op;
+
+  // The type of the expression.
+  type etype;
 };
 
 // Binary expressions.
@@ -145,12 +180,35 @@ tree_binary_expression : public tree_expression
 {
 public:
 
-  tree_binary_expression (int l = -1, int c = -1)
-    : tree_expression (l, c), op_lhs (0), op_rhs (0) { }
+  enum type
+    {
+      unknown,
+      add,
+      subtract,
+      multiply,
+      el_mul,
+      divide,
+      el_div,
+      leftdiv,
+      el_leftdiv,
+      power,
+      elem_pow,
+      cmp_lt,
+      cmp_le,
+      cmp_eq,
+      cmp_ge,
+      cmp_gt,
+      cmp_ne,
+      and,
+      or
+    };
+
+  tree_binary_expression (int l = -1, int c = -1, type t = unknown)
+    : tree_expression (l, c), op_lhs (0), op_rhs (0), etype (t) { }
 
   tree_binary_expression (tree_expression *a, tree_expression *b,
-			  tree_expression::type t, int l = -1, int c = -1)
-    : tree_expression (l, c, t), op_lhs (a), op_rhs (b) { }
+			  int l = -1, int c = -1, type t = unknown)
+    : tree_expression (l, c), op_lhs (a), op_rhs (b), etype (t) { }
 
   ~tree_binary_expression (void)
     {
@@ -169,11 +227,49 @@ public:
 
   void accept (tree_walker& tw);
 
-private:
+protected:
 
   // The operands for the expression.
   tree_expression *op_lhs;
   tree_expression *op_rhs;
+
+private:
+
+  // The type of the expression.
+  type etype;
+};
+
+// Boolean expressions.
+
+class
+tree_boolean_expression : public tree_binary_expression
+{
+public:
+
+  enum type
+    {
+      unknown,
+      and,
+      or
+    };
+
+  tree_boolean_expression (int l = -1, int c = -1, type t)
+    : tree_binary_expression (l, c), etype (t) { }
+
+  tree_boolean_expression (tree_expression *a, tree_expression *b,
+			   int l = -1, int c = -1, type t = unknown)
+    : tree_binary_expression (a, b, l, c), etype (t) { }
+
+  ~tree_boolean_expression (void) { }
+
+  octave_value eval (bool print);
+
+  char *oper (void) const;
+
+private:
+
+  // The type of the expression.
+  type etype;
 };
 
 // Simple assignment expressions.
@@ -270,7 +366,6 @@ private:
       preserve = plhs;
       ans_ass = ans_assign;
     }
-
 };
 
 // Colon expressions.

@@ -140,6 +140,25 @@ octave_integer::print (ostream& os, bool pr_as_read_syntax) const
   octave_print_internal (os, scalar, pr_as_read_syntax);
 }
 
+#ifdef DEFUNOP_OP
+#undef DEFUNOP_OP
+#endif
+
+#define DEFUNOP_OP(name, t, op) \
+  UNOPDECL (name, a) \
+  { \
+    CAST_UNOP_ARG (const octave_ ## t&); \
+    return octave_value (new octave_integer (op v.t ## _value ())); \
+  }
+
+DEFUNOP_OP (not, integer, !)
+DEFUNOP_OP (uminus, integer, -)
+DEFUNOP_OP (transpose, integer, /* no-op */)
+DEFUNOP_OP (hermitian, integer, /* no-op */)
+
+DEFNCUNOP_METHOD (incr, integer, increment)
+DEFNCUNOP_METHOD (decr, integer, decrement)
+
 #ifdef DEFBINOP_OP
 #undef DEFBINOP_OP
 #endif
@@ -244,6 +263,14 @@ Creates an integer variable from VAL.")
 
       cerr << "installing integer type at type-id = "
 	   << octave_integer::static_type_id () << "\n";
+
+      INSTALL_UNOP (not, octave_integer, not);
+      INSTALL_UNOP (uminus, octave_integer, uminus);
+      INSTALL_UNOP (transpose, octave_integer, transpose);
+      INSTALL_UNOP (hermitian, octave_integer, hermitian);
+
+      INSTALL_NCUNOP (incr, octave_integer, incr);
+      INSTALL_NCUNOP (decr, octave_integer, decr);
 
       INSTALL_BINOP (add, octave_integer, octave_integer, add);
       INSTALL_BINOP (sub, octave_integer, octave_integer, sub);

@@ -25,6 +25,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "config.h"
 #endif
 
+#include <signal.h>
 #include <iostream.h>
 #include <strstream.h>
 #include <fstream.h>
@@ -32,6 +33,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "procstream.h"
 
+#include "sighandlers.h"
 #include "user-prefs.h"
 #include "oct-obj.h"
 #include "error.h"
@@ -144,9 +146,15 @@ flush_output_to_pager (void)
 	  oprocstream pager_stream (pgr);
 	  if (pager_stream)
 	    {
+	      volatile sig_handler *old_sigint_handler;
+	      old_sigint_handler = signal (SIGINT, SIG_IGN);
+
 	      pager_stream << message;
 	      delete [] message;
 	      pager_stream.flush ();
+
+	      signal (SIGINT, old_sigint_handler);
+
 	      return;
 	    }
 	}

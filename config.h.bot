@@ -4,3 +4,5 @@
 #else
 #define NORETURN
 #endif
+
+#define HEAVYWEIGHT_INDEXING 1

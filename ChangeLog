@@ -1,3 +1,8 @@
+2004-04-22  John W. Eaton  <jwe@octave.org>
+
+	* mkoctfile.in: Allow -Wx,option style options to be passed to the
+	compiler.  From Al Niessner <Al.Niessner@jpl.nasa.gov>.
+
 2004-04-06  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in: Delete code for --with-ieee754.

@@ -58,9 +58,8 @@ function [nn, xx] = hist (y, x, norm)
 
   if (nargin == 1)
     n = 10;
-    delta = (max_val - min_val) / n / 2;
-    x = linspace (min_val+delta, max_val-delta, n);
-    cutoff = x + delta;
+    delta = (max_val - min_val) / (n-1) / 2;
+    cutoff = linspace (min_val+delta, max_val-delta, n-1);
   else
     ## nargin is either 2 or 3
     if (isscalar (x))
@@ -68,9 +67,8 @@ function [nn, xx] = hist (y, x, norm)
       if (n <= 0)
         error ("hist: number of bins must be positive");
       endif
-      delta = (max_val - min_val) / n / 2;
-      x = linspace (min_val+delta, max_val-delta, n);
-      cutoff = x + delta;
+      delta = (max_val - min_val) / (n-1) / 2;
+      cutoff = linspace (min_val+delta, max_val-delta, n-1);
     elseif (isvector (x))
       tmp = sort (x);
       if (any (tmp != x))

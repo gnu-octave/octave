@@ -36,10 +36,12 @@ FAQ_TEXINFO = FAQ.texi
 
 ALL_TEXINFO = $(TEXINFO) $(LIB_TEXINFO) $(FAQ_TEXINFO)
 
-REFCARD = refcard.tex
+REFCARD = refcard.tex refcard-a4.tex refcard-legal.tex refcard-letter.tex 
 
 FORMATTED =  octave.dvi octave.ps octave.info octave.info-[0-9]* \
-	FAQ.info FAQ.dvi FAQ.ps refcard.dvi refcard.ps
+	FAQ.info FAQ.dvi FAQ.ps refcard-a4.dvi refcard-a4.ps \
+	refcard-legal.dvi refcard-legal.ps \
+	refcard-letter.dvi refcard-letter.ps
 #	liboctave.dvi liboctave.ps liboctave.info liboctave.info-[0-9]*
 
 DISTFILES = Makefile.in conf.texi.in conf.texi texinfo.tex dir \
@@ -52,8 +54,9 @@ SPELL = $(patsubst %.texi, %.spell, $(ALL_TEXINFO))
 	sed -e 's/@@/ at /g' -e 's/@[a-zA-Z]*//g' $< | spell > $@.tmp
 	mv $@.tmp $@
 
-all: octave.info octave.dvi octave.ps refcard.dvi refcard.ps \
-	FAQ.info FAQ.dvi FAQ.ps
+all: octave.info octave.dvi octave.ps FAQ.info FAQ.dvi FAQ.ps \
+	refcard-a4.dvi refcard-a4.ps refcard-legal.dvi refcard-legal.ps \
+	refcard-letter.dvi refcard-letter.ps
 #	liboctave.info liboctave.dvi liboctave.ps
 .PHONY: all
 
@@ -84,11 +87,26 @@ liboctave.dvi: $(LIB_TEXINFO) conf.texi
 liboctave.ps: liboctave.dvi
 	dvips -o liboctave.ps liboctave.dvi
 
-refcard.dvi: refcard.tex
-	tex $(srcdir)/refcard.tex
+refcard-a4.dvi: refcard-a4.tex refcard.tex
+	TEXINPUTS="$(TEXINPUTS):$(srcdir)" ; export TEXINPUTS ; \
+	  tex $(srcdir)/refcard-a4.tex
 
-refcard.ps: refcard.dvi
-	dvips -o refcard.ps refcard.dvi
+refcard-a4.ps: refcard-a4.dvi
+	dvips -o refcard-a4.ps refcard-a4.dvi
+
+refcard-legal.dvi: refcard-legal.tex refcard.tex
+	TEXINPUTS="$(TEXINPUTS):$(srcdir)" ; export TEXINPUTS ; \
+	  tex $(srcdir)/refcard-legal.tex
+
+refcard-legal.ps: refcard-legal.dvi
+	dvips -o refcard-legal.ps refcard-legal.dvi
+
+refcard-letter.dvi: refcard-letter.tex refcard.tex
+	TEXINPUTS="$(TEXINPUTS):$(srcdir)" ; export TEXINPUTS ; \
+	  tex $(srcdir)/refcard-letter.tex
+
+refcard-letter.ps: refcard-letter.dvi
+	dvips -o refcard-letter.ps refcard-letter.dvi
 
 ../INSTALL.OCTAVE: install1.texi install.texi
 	-makeinfo --no-header -I$(srcdir)/doc install1.texi
@@ -183,7 +201,7 @@ clean:
 	liboctave.fn liboctave.pg liboctave.tp liboctave.cps \
 	liboctave.fns liboctave.pgs liboctave.tps liboctave.aux \
 	liboctave.log liboctave.toc liboctave.dvi liboctave.ps \
-	refcard.dvi refcard.ps
+	refcard-*.dvi refcard-*.ps
 .PHONY: clean
 
 mostlyclean:
@@ -195,7 +213,7 @@ distclean: clean
 .PHONY: distclean
 
 realclean: distclean
-	rm -f tags TAGS refcard.tex
+	rm -f tags TAGS
 .PHONY: realclean
 
 local-dist: all

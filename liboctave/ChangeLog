@@ -1,5 +1,8 @@
 2000-01-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* lo-ieee.cc (octave_ieee_init): Don't include sunmath.h.
+	No longer bother with infinity or quiet_nan.
+
 	* Array2.cc (Array2<T>::get_size): New function.
 	(Array2<T>::Array2, Array2<T>::resize): Use it.
 

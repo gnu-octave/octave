@@ -21,7 +21,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA. 
 
-AC_REVISION($Revision: 1.321 $)
+AC_REVISION($Revision: 1.322 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -908,14 +908,6 @@ dnl and isnan on Linux systems, so we use AC_CHECK_FUNC, and if that
 dnl fails, we try again by including math.h and invoking the function
 dnl with an argument. 
 
-### Check to see if we have IEEE math functions, and if so, which ones.
-###
-### Also check for some additional trig functions that aren't ANSI but
-### are often available.  If they are missing, we try to replace them
-### with functions from the BSD/NET2 math library.
-
-AC_CHECK_LIB(sunmath, quiet_nan)
-
 ### I am told that Inf and NaN don't work on m68k HP sytems, and that
 ### on SCO systems, isnan and isinf don't work, but they can be
 ### replaced by something that does.
@@ -932,7 +924,7 @@ case "$canonical_host_type" in
     AC_DEFINE(HAVE_ISNAN, 1)
   ;;
   *)
-    AC_CHECK_FUNCS(finite isnan isinf infinity quiet_nan)
+    AC_CHECK_FUNCS(finite isnan isinf)
   ;;
 esac
 

@@ -279,6 +279,15 @@ parenthetical grouping.")
 	["Lookup Octave Index"		octave-help t])
   "Menu for Octave mode.")
 
+;; XXX FIXME XXX -- the syntax mode for `%' is punctuation instead of
+;; begin-comment because if it is begin-comment, then typing M-;
+;; (octave-indent-for-comment) on lines like
+;;
+;;  sprintf ("%d", foobar);
+;;
+;; causes them to be improperly indented (the `%' is moved over to the
+;; comment-column).
+
 (defvar octave-mode-syntax-table nil
   "Syntax table in use in octave-mode buffers.")
 (if octave-mode-syntax-table
@@ -301,7 +310,7 @@ parenthetical grouping.")
     (modify-syntax-entry ?\" "\"" table)
     (modify-syntax-entry ?. "w"   table)
     (modify-syntax-entry ?_ "w"   table)
-    (modify-syntax-entry ?\% "<"  table)
+    (modify-syntax-entry ?\% "."  table) ; see above
     (modify-syntax-entry ?\# "<"  table)
     (modify-syntax-entry ?\n ">"  table)
     (setq octave-mode-syntax-table table)))

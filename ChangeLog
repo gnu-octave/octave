@@ -1,5 +1,11 @@
 2000-01-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* configure.in: Don't look for the sunmath library.
+	Don't check for infinity or quiet_nan.
+
+	* emacs/octave-mod.el (octave-mode-syntax-table):
+	Undo previous change, but add a comment explaining why.
+
 	* install-octave.in: Exit on any error instead of continuing.
 	Install Octave binary last.
 

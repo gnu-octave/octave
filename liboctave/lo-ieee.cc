@@ -35,10 +35,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <ieeefp.h>
 #endif
 
-#if defined (HAVE_SUNMATH_H)
-#include <sunmath.h>
-#endif
-
 #if defined (HAVE_NAN_H)
 #if defined (SCO)
 #define _IEEE 1
@@ -71,8 +67,6 @@ octave_ieee_init (void)
 #elif defined (__alpha__) && ! defined (linux)
   extern unsigned int DINFINITY[2];
   octave_Inf =  (*(X_CAST(double *, DINFINITY)));
-#elif defined (HAVE_INFINITY)
-  octave_Inf = infinity ();
 #else
   double tmp = 1e+10;
   octave_Inf = tmp;
@@ -92,8 +86,6 @@ octave_ieee_init (void)
 #if defined (__alpha__) && ! defined (linux)
   extern unsigned int DQNAN[2];
   octave_NaN = (*(X_CAST(double *, DQNAN)));
-#elif defined (HAVE_QUIET_NAN)
-  octave_NaN = quiet_nan (0L);
 #else
   octave_NaN = octave_Inf / octave_Inf;
 #endif

@@ -47,16 +47,16 @@ extern "C"
 			  int&, int*, int&);
 }
 
-Vector
+ColumnVector
 QLD::minimize (double& objf, int& inform)
 {
   int n = x.capacity ();
 
   Matrix A1 = lc.eq_constraint_matrix ();
-  Vector b1 = lc.eq_constraint_vector ();
+  ColumnVector b1 = lc.eq_constraint_vector ();
 
   Matrix A2 = lc.ineq_constraint_matrix ();
-  Vector b2 = lc.ineq_constraint_vector ();
+  ColumnVector b2 = lc.ineq_constraint_vector ();
 
   int me = A1.rows ();
   int m = me + A2.rows ();
@@ -99,8 +99,8 @@ QLD::minimize (double& objf, int& inform)
   if (b1.capacity () > 0)
     pb = b1.fortran_vec ();
 
-  Vector xlb = bnds.lower_bounds ();
-  Vector xub = bnds.upper_bounds ();
+  ColumnVector xlb = bnds.lower_bounds ();
+  ColumnVector xub = bnds.upper_bounds ();
   if (xlb.capacity () <= 0)
     {
       xlb.resize (n, -1.0e30);

@@ -161,8 +161,8 @@ integrand is singular.")
   double val = 0.0;
   double abstol = 1e-6;
   double reltol = 1e-6;
-  Vector tol (2);
-  Vector sing;
+  ColumnVector tol (2);
+  ColumnVector sing;
   int have_sing = 0;
   switch (nargin)
     {

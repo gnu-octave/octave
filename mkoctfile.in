@@ -48,6 +48,7 @@ defs=
 ldflags=
 dbg=:
 strip=false
+link=true
 
 if [ $# -eq 0 ]; then
   echo $usage_msg
@@ -91,6 +92,8 @@ Options:
   -lLIB                   Add library LIB to link command.
 
   -LDIR                   Add -LDIR to link command.
+
+  -c                      Compile, but do not link.
 
   -o FILE, --output FILE  Output file name.  Default extension is .oct.
 
@@ -152,6 +155,9 @@ EOF
     ;;
     -s | --strip)
       strip=true
+    ;;
+    -c)
+      link=false
     ;;
     *)
       echo "mkoctfile: unrecognized argument $1"
@@ -231,14 +237,16 @@ fi
 
 # Link all the object files.
 
-$dbg $SH_LD $SH_LDFLAGS -o $octfile $objfiles $ldflags
-eval $SH_LD $SH_LDFLAGS -o $octfile $objfiles $ldflags
+if $link; then
+  $dbg $SH_LD $SH_LDFLAGS -o $octfile $objfiles $ldflags
+  eval $SH_LD $SH_LDFLAGS -o $octfile $objfiles $ldflags
 
 # Maybe strip it.
 
 if $strip; then
   $dbg strip $octfile
   eval strip $octfile
+fi
 fi
 
 exit 0

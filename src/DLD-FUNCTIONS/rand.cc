@@ -295,13 +295,10 @@ do_rand (const octave_value_list& args, int nargin)
     }
   else if (n > 0 && m > 0)
     {
-      volatile int i;
-      volatile int j;
-
       Matrix rand_mat (n, m);
 
-      for (j = 0; j < m; j++)
-	for (i = 0; i < n; i++)
+      for (volatile int j = 0; j < m; j++)
+	for (volatile i = 0; i < n; i++)
 	  {
 	    double val;
 	    switch (current_distribution)

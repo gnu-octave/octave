@@ -37,7 +37,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
       T tmp (count); \
  \
       for (int i = 0; i < count; i++) \
-	tmp (i) = nr * (j_idx (i) - 1.0) + i_idx (i); \
+	tmp (i) = nr * (j_idx(i) - 1.0) + i_idx(i); \
  \
       retval(0) = tmp; \
     } \
@@ -61,9 +61,9 @@ find_to_fortran_idx (const ColumnVector i_idx, const ColumnVector j_idx,
 	int count = i_idx.length ();
 
 	if (nr == 1)
-	  DO_FIND_OP(RowVector);
+	  DO_FIND_OP (RowVector);
 	else
-	  DO_FIND_OP(ColumnVector);
+	  DO_FIND_OP (ColumnVector);
       }
       break;
 

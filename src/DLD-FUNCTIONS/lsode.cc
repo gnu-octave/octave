@@ -67,12 +67,7 @@ lsode_user_function (const ColumnVector& x, double t)
 
   octave_value_list args;
   args(1) = t;
-
-  Matrix m (nstates, 1);
-  for (int i = 0; i < nstates; i++)
-    m (i, 0) = x (i);
-  octave_value state (m);
-  args(0) = state;
+  args(0) = x;
 
   if (lsode_fcn)
     {
@@ -113,12 +108,7 @@ lsode_user_jacobian (const ColumnVector& x, double t)
 
   octave_value_list args;
   args(1) = t;
-
-  Matrix m (nstates, 1);
-  for (int i = 0; i < nstates; i++)
-    m (i, 0) = x (i);
-  octave_value state (m);
-  args(0) = state;
+  args(0) = x;
 
   if (lsode_jac)
     {

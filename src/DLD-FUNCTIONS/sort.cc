@@ -378,7 +378,7 @@ matrix.  For example,\n\
 
   if (arg.is_real_type ())
     {
-      Matrix m = arg.matrix_value ();
+      const Matrix m = arg.matrix_value ();
 
       if (! error_state)
 	{
@@ -387,7 +387,7 @@ matrix.  For example,\n\
 	      int nc = m.columns ();
 	      RowVector v (nc);
 	      for (int i = 0; i < nc; i++)
-		v (i) = m (0, i);
+		v(i) = m(0,i);
 
 	      retval = mx_sort (v);
 	    }
@@ -397,7 +397,7 @@ matrix.  For example,\n\
     }
   else if (arg.is_complex_type ())
     {
-      ComplexMatrix cm = arg.complex_matrix_value ();
+      const ComplexMatrix cm = arg.complex_matrix_value ();
 
       if (! error_state)
 	{
@@ -406,7 +406,7 @@ matrix.  For example,\n\
 	      int nc = cm.columns ();
 	      ComplexRowVector cv (nc);
 	      for (int i = 0; i < nc; i++)
-		cv (i) = cm (0, i);
+		cv(i) = cm(0,i);
 
 	      retval = mx_sort (cv);
 	    }

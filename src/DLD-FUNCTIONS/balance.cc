@@ -294,8 +294,8 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
       F77_XFCN (dggbak, DGGBAK,
 		(F77_CONST_CHAR_ARG2 (&job, 1),
 		 F77_CONST_CHAR_ARG2 ("L", 1),
-		 nn, ilo, ihi, lscale.fortran_vec (),
-		 rscale.fortran_vec(), nn, Pl.fortran_vec (), nn, info
+		 nn, ilo, ihi, lscale.data (), rscale.data (),
+		 nn, Pl.fortran_vec (), nn, info
 		 F77_CHAR_ARG_LEN (1)
 		 F77_CHAR_ARG_LEN (1)));
       
@@ -309,8 +309,8 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
       F77_XFCN (dggbak, DGGBAK,
 		(F77_CONST_CHAR_ARG2 (&job, 1),
 		 F77_CONST_CHAR_ARG2 ("R", 1),
-		 nn, ilo, ihi, lscale.fortran_vec (),
-		 rscale.fortran_vec (), nn, Pr.fortran_vec (), nn, info
+		 nn, ilo, ihi, lscale.data (), rscale.data (),
+		 nn, Pr.fortran_vec (), nn, info
 		 F77_CHAR_ARG_LEN (1)
 		 F77_CHAR_ARG_LEN (1)));
 

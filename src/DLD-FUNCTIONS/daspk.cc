@@ -62,36 +62,13 @@ daspk_user_function (const ColumnVector& x, const ColumnVector& xdot,
 {
   ColumnVector retval;
 
-  int nstates = x.capacity ();
-
-  assert (nstates == xdot.capacity ());
+  assert (x.capacity () == xdot.capacity ());
 
   octave_value_list args;
-  args(2) = t;
 
-  if (nstates > 1)
-    {
-      Matrix m1 (nstates, 1);
-      Matrix m2 (nstates, 1);
-      for (int i = 0; i < nstates; i++)
-	{
-	  m1 (i, 0) = x (i);
-	  m2 (i, 0) = xdot (i);
-	}
-      octave_value state (m1);
-      octave_value deriv (m2);
-      args(1) = deriv;
-      args(0) = state;
-    }
-  else
-    {
-      double d1 = x (0);
-      double d2 = xdot (0);
-      octave_value state (d1);
-      octave_value deriv (d2);
-      args(1) = deriv;
-      args(0) = state;
-    }
+  args(2) = t;
+  args(1) = xdot;
+  args(0) = x;
 
   if (daspk_fcn)
     {
@@ -133,38 +110,14 @@ daspk_user_jacobian (const ColumnVector& x, const ColumnVector& xdot,
 {
   Matrix retval;
 
-  int nstates = x.capacity ();
-
-  assert (nstates == xdot.capacity ());
+  assert (x.capacity () == xdot.capacity ());
 
   octave_value_list args;
 
   args(3) = cj;
   args(2) = t;
-
-  if (nstates > 1)
-    {
-      Matrix m1 (nstates, 1);
-      Matrix m2 (nstates, 1);
-      for (int i = 0; i < nstates; i++)
-	{
-	  m1 (i, 0) = x (i);
-	  m2 (i, 0) = xdot (i);
-	}
-      octave_value state (m1);
-      octave_value deriv (m2);
-      args(1) = deriv;
-      args(0) = state;
-    }
-  else
-    {
-      double d1 = x (0);
-      double d2 = xdot (0);
-      octave_value state (d1);
-      octave_value deriv (d2);
-      args(1) = deriv;
-      args(0) = state;
-    }
+  args(1) = xdot;
+  args(0) = x;
 
   if (daspk_jac)
     {

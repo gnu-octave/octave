@@ -532,7 +532,7 @@ parameters for @code{lsode}.\n\
 
       bool crit_times_set = false;
 
-      if (nargin==6)
+      if (nargin == 6)
 	{
 	  crit_times = ColumnVector (args(5).vector_value ());
 

@@ -1,3 +1,21 @@
+2003-11-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DLD-FUNCTIONS/sort.cc (Fsort): Use const qualifier as appropriate.
+
+	* DLD-FUNCTIONS/balance.cc (balance): Use data() instead of
+	fortran_vec where appropriate in call to dggbak.
+
+	* DLD-FUNCTIONS/dasrt.cc (dasrt_user_j): Simplify inserting x and
+	xdot in arg vector.
+	(dasrt_user_f): Likewise.
+	(dasrt_user_cf): Likewise.
+	* DLD-FUNCTIONS/dassl.cc (dassl_user_function): Likewise.
+	(dassl_user_jacobian): Likewise.
+	* DLD-FUNCTIONS/lsode.cc (lsode_user_function): Likewise.
+	(lsode_user_jacobian): Likewise.
+	* DLD-FUNCTIONS/daspk.cc (daspk_user_function): Likewise.
+	(daspk_user_jacobian): Likewise.
+
 2003-11-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* ov-range.h (octave_range::reshape): New function.

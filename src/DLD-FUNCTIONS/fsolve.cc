@@ -153,13 +153,13 @@ fsolve_user_jacobian (const ColumnVector& x)
     {
       Matrix m (n, 1);
       for (int i = 0; i < n; i++)
-	m (i, 0) = x (i);
+	m(i,0) = x(i);
       octave_value vars (m);
       args(0) = vars;
     }
   else
     {
-      double d = x (0);
+      double d = x(0);
       octave_value vars (d);
       args(0) = vars;
     }

@@ -1,4 +1,4 @@
-## Copyright (C) 1993, 1994, 1995 Auburn University.  All Rights Reserved.
+## Copyright (C) 1993, 1994, 1995 Auburn University.  All rights reserved.
 ## 
 ## This file is part of Octave.
 ## 
@@ -113,36 +113,35 @@ function [k, p, e] = dlqr (a, b, q, r, s)
     error ("dlqr: invalid number of arguments");
   endif
 
-## Check a.
+  ## Check a.
   if ((n = is_square (a)) == 0)
     error ("dlqr: requires 1st parameter(a) to be square");
   endif
 
-## Check b.
+  ## Check b.
   [n1, m] = size (b);
   if (n1 != n)
     error ("dlqr: a,b not conformal");
   endif
 
-## Check q.
-  
+  ## Check q.
   if ((n1 = is_square (q)) == 0 || n1 != n)
     error ("dlqr: q must be square and conformal with a");
   endif
 
-## Check r.
+  ## Check r.
   if((m1 = is_square(r)) == 0 || m1 != m)
     error ("dlqr: r must be square and conformal with column dimension of b");
   endif
 
-## Check if n is there.
+  ## Check if n is there.
   if (nargin == 5)
     [n1, m1] = size (s);
     if (n1 != n || m1 != m)
       error ("dlqr: z must be identically dimensioned with b");
     endif
 
-## Incorporate cross term into a and q.
+    ## Incorporate cross term into a and q.
 
     ao = a - (b/r)*s';
     qo = q - (s/r)*s';
@@ -152,8 +151,7 @@ function [k, p, e] = dlqr (a, b, q, r, s)
     qo = q;
   endif
 
-## Check that q, (r) are symmetric, positive (semi)definite
-
+  ## Check that q, (r) are symmetric, positive (semi)definite
   if (is_symmetric (q) && is_symmetric (r) ...
       && all (eig (q) >= 0) && all (eig (r) > 0))
     p = dare (ao, b, qo, r);

@@ -1,4 +1,4 @@
-## Copyright (C) 1996,1998 Auburn University.  All Rights Reserved.
+## Copyright (C) 1996, 1998 Auburn University.  All rights reserved.
 ##
 ## This file is part of Octave. 
 ##
@@ -187,7 +187,7 @@
 ## 
 ## @end deftypefn
 
-function  retsys = ss2sys (a, b, c, d, tsam, n, nz, stname, inname, outname, outlist)
+function retsys = ss2sys (a, b, c, d, tsam, n, nz, stname, inname, outname, outlist)
 
   ## Written by John Ingram (ingraje@eng.auburn.edu)  July 20, 1996
 

@@ -1,4 +1,4 @@
-## Copyright (C) 1996 Auburn University.  All Rights Reserved
+## Copyright (C) 1996 Auburn University.  All rights reserved.
 ##
 ## This file is part of Octave. 
 ##
@@ -16,10 +16,10 @@
 ## along with Octave; see the file COPYING.  If not, write to the Free 
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
  
-function [a, b, c, d] = unpacksys (syst)
+## [a,b,c,d] = unpacksys(sys)
+## Obsolete.  Use sys2ss instead.
 
-  ## [a,b,c,d] = unpacksys(sys)
-  ## Obsolete.  Use sys2ss instead.
+function [a, b, c, d] = unpacksys (syst)
 
   ## Written by David Clem August 19, 1994
 

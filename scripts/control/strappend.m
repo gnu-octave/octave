@@ -1,4 +1,4 @@
-## Copyright (C) 1998 Auburn University.  All Rights Reserved.
+## Copyright (C) 1998 Auburn University.  All rights reserved.
 ##
 ## This file is part of Octave. 
 ##
@@ -16,11 +16,11 @@
 ## along with Octave; see the file COPYING.  If not, write to the Free 
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
  
+## retval = strappend(strlist,suffix);
+## append string suffix to each string in the list of strings strlist
+  
 function retval = strappend (strlist, suffix);
 
-  ## retval = strappend(strlist,suffix);
-  ## append string suffix to each string in the list of strings strlist
-  
   if(nargin != 2 | nargout > 1)
     usage(" retval = strappend(strlist,suffix)");
   elseif(!is_signal_list(strlist))

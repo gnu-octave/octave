@@ -1,4 +1,4 @@
-## Copyright (C) 1996 Auburn University.  All Rights Reserved.
+## Copyright (C) 1996 Auburn University.  All rights reserved.
 ##
 ## This file is part of Octave. 
 ##
@@ -29,7 +29,6 @@
 
 function Asys = packsys (a, b, c, d, dflg)
 
-  
   ## Written by R. Bruce Tenison  July 29, 1994
   ## Modified by David Clem November 13, 1994
   ## Modified by A. S. Hodel April 1995

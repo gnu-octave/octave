@@ -1,4 +1,4 @@
-## Copyright (C) 1996 Auburn University.  All Rights Reserved.
+## Copyright (C) 1996 Auburn University.  All rights reserved.
 ##
 ## This file is part of Octave. 
 ##
@@ -28,34 +28,6 @@
 ## @end deftypefn
  
 function old_names = syschnamesl (olist, old_names, inames, listname)
-  ## $Revision: 2.1.14.5 $
-  ## $Log: syschnamesl.m,v $
-  ## Revision 2.1.14.5  1999/09/22  21:55:46  scotte
-  ## Auburn copyright fixed; krylov.m patched to fix bug
-  ##
-  ## Revision 2.1.14.4  1999/07/21  19:49:21  scotte
-  ## sysgroup, sysadd, sysmult, syssub accept variable # of input args
-  ##
-  ## Revision 1.3  1998/07/17 15:08:50  hodelas
-  ## use isempty instead of max(size(...))
-  ## 
-  ## Revision 1.2  1998/07/01 16:23:39  hodelas
-  ## Updated c2d, d2c to perform bilinear transforms.
-  ## Updated several files per bug updates from users.
-  ## 
-  ## Revision 1.5  1997/02/28 23:47:26  hodel
-  ## fixed bug in checking parameters; (inames dimension not checked against olist)
-  ## a.s.hodel@eng.auburn.edu
-  ## 
-  ## Revision 1.4  1997/02/13 15:56:37  hodel
-  ## added code to convert zeros in the name matrix to blanks
-  ## a.s.hodel@eng.auburn.edu
-  ## 
-  ## Revision 1.3  1997/02/13 15:11:17  hodel
-  ## fixed bug when len_my < len_out a.s.hodel@eng.auburn.edu
-  ## 
-  ## Revision 1.2  1997/02/12 22:54:50  hodel
-  ## fixed string matrix <-> numerical matrix problem
   
   probstr = [];
   if( max(olist) > rows(old_names) )

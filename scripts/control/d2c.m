@@ -1,4 +1,4 @@
-## Copyright (C) 1996,1998 Auburn University.  All Rights Reserved
+## Copyright (C) 1996, 1998 Auburn University.  All rights reserved.
 ##
 ## This file is part of Octave. 
 ##
@@ -53,8 +53,6 @@
 ## @strong{Outputs} @var{csys} continuous time system (same dimensions and
 ## signal names as in @var{sys}).
 ## @end deftypefn
-## 
-
  
 function csys = d2c (sys, opt)
 

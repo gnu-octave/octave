@@ -1,4 +1,4 @@
-## Copyright (C) 1999 Auburn University. All rights reserved.
+## Copyright (C) 1999 Auburn University.  All rights reserved.
 ##
 ## This file is part of Octave.
 ##
@@ -15,20 +15,19 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, write to the Free
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
-##
+
+## idxvec = sysidx(sys,sigtype,signamelist)
+## return indices of signals with specified signal names
+## inputs:
+##   sys:         OCST system data structure
+##   sigtype:     signal type to be selected: "in", "out", "st"
+##   signamelist: list of desired signal names
+## outputs:
+##   idxvec: vector of signal indices (appropriate for use with sysprune)
+
 ## Written by A. S. Hodel, a.s.hodel@eng.auburn.edu
 
-
 function idxvec = sysidx (sys, sigtype, signamelist)
-
-  ## idxvec = sysidx(sys,sigtype,signamelist)
-  ## return indices of signals with specified signal names
-  ## inputs:
-  ##   sys:         OCST system data structure
-  ##   sigtype:     signal type to be selected: "in", "out", "st"
-  ##   signamelist: list of desired signal names
-  ## outputs:
-  ##   idxvec: vector of signal indices (appropriate for use with sysprune)
 
   if(nargin != 3)         usage("idxvec = sysidx(sys,sigtype,signamelist)");
   elseif(!is_struct(sys)) error("sys must be a system data structure");

@@ -1,4 +1,4 @@
-## Copyright (C) 1996 Auburn University.  All Rights Reserved.
+## Copyright (C) 1996 Auburn University.  All rights reserved.
 ##
 ## This file is part of Octave. 
 ##
@@ -21,9 +21,10 @@
 ##Octave Controls toolbox demo: Root Locus demo
 ##@end deftypefn
  
-function rldemo ()
 ## Written by David Clem August 15, 1994
 ## Updated by John Ingram December 1996
+
+function rldemo ()
 
   while (1)
     clc

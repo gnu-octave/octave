@@ -1,4 +1,4 @@
-## Copyright (C) 1996 Auburn University.  All Rights Reserved.
+## Copyright (C) 1996 Auburn University.  All rights reserved.
 ##
 ## This file is part of Octave. 
 ##
@@ -17,10 +17,10 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
 
 ## -*- texinfo -*-
-## @deftypefn {Function File } {[@var{y}, @var{t}] =} impulse (@var{sys}@{, @var{inp},@var{tstop}, @var{n}@})
+## @deftypefn {Function File } {[@var{y}, @var{t}] =} step (@var{sys}@{, @var{inp},@var{tstop}, @var{n}@})
 ## Step response for a linear system.
 ##        The system can be discrete or multivariable (or both).
-## If no output arguments are specified, @code{impulse}
+## If no output arguments are specified, @code{step}
 ##  produces a plot or the step response data for system @var{sys}.
 ## 
 ## @strong{Inputs}
@@ -46,26 +46,10 @@
  
 ## See also:  impulse, stepimp
 
-## step: Step response for a linear system.
-##       The system can be discrete or multivariable (or both).
-##
-## [y, t] = step(sys[, inp, tstop, n])
-## Produces a plot or the step response data for system sys.
-##
-## The argument tstop (scalar value) denotes the time when the
-## simulation should end. The Parameter n is the number of data values.
-## Both parameters tstop and n can be ommitted and will be
-## computed from the eigenvalues of the A-Matrix.
-##
-## When the step function is invoked with the output parameter y
-## a plot is not displayed.
-##
-## See also: impulse, stepimp
-
 function [y, t] = step (sys, inp, tstop, n)
+
 ## Written by Kai P. Mueller September 30, 1997
 ## based on lsim.m of Scottedward Hodel
-## modified by
 
   if((nargin < 1) || (nargin > 4))
     usage("[y, u] = step(sys[, inp, tstop, n])");

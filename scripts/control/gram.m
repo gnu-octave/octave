@@ -1,4 +1,4 @@
-## Copyright (C) 1996 Auburn University.  All Rights Reserved
+## Copyright (C) 1996 Auburn University.  All rights reserved.
 ##
 ## This file is part of Octave. 
 ##
@@ -24,10 +24,11 @@
 ## @var{m} satisfies @math{ a m + m a' + b b' = 0 }.
 ## @end deftypefn
 
-function m = gram (a, b)
+## Written by A. S. Hodel 
 
-  ## Written by A. S. Hodel 
+function m = gram (a, b)
 
   ## let lyap do the error checking...
   m = lyap(a,b*b');
+
 endfunction

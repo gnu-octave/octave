@@ -1,4 +1,4 @@
-## Copyright (C) 1996 Auburn University.  All Rights Reserved
+## Copyright (C) 1996 Auburn University.  All rights reserved.
 ##
 ## This file is part of Octave. 
 ##
@@ -22,11 +22,9 @@
 ## @var{sys} is single-input, single-output.
 ## @end deftypefn
  
-function  SISO = is_siso (sys)
-## function SISO = is_siso(sys)
-## return nonzero if the system sys is single-input, single-output.
-
 ## a s hodel July 1996, 1998
+
+function  SISO = is_siso (sys)
 
   if(nargin != 1)
     usage("SISO = is_siso(sys)");

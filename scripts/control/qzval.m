@@ -1,4 +1,4 @@
-## Copyright (C) 1998 Auburn University.  All Rights Reserved.
+## Copyright (C) 1998 Auburn University.  All rights reserved.
 ##
 ## This file is part of Octave. 
 ##
@@ -35,8 +35,9 @@
 ## @strong{Note} @code{qzval} is obsolete; use @code{qz} instead.
 ## @end deftypefn
  
-function lam = qzval (A, B)
 ## A. S. Hodel July 1998
+
+function lam = qzval (A, B)
 
   warning("qzval is obsolete; calling qz instead")
   lam = qz(A,B);

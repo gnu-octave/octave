@@ -24,8 +24,9 @@
 ##       number of @var{A}-Matrix in @var{sys} (default @var{tol} = 1.0e-10)
 ## @end deftypefn
 
-function gm = dcgain (sys, tol)
 ## Written by Kai P Mueller (mueller@ifr.ing.tu-bs.de) October 1, 1997
+
+function gm = dcgain (sys, tol)
 
   if((nargin < 1) || (nargin > 2) || (nargout > 1))
     usage("[gm, ok] = dcgain(sys[, tol])");
@@ -48,4 +49,5 @@ function gm = dcgain (sys, tol)
     warning("dcgain: unstable system; dimensions [nc=%d,nz=%d,mm=%d,pp=%d]", ...
       nn,nz,mm,pp);
   endif
+
 endfunction

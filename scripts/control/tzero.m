@@ -1,4 +1,4 @@
-## Copyright (C) 1996 Auburn University.  All Rights Reserved
+## Copyright (C) 1996 Auburn University.  All rights reserved.
 ##
 ## This file is part of Octave. 
 ##
@@ -45,7 +45,6 @@
 ## @item Hodel, "Computation of Zeros with Balancing," 1992 Lin. Alg. Appl.
 ## @end enumerate
 ## @end deftypefn
-
 
 function [zer, gain] = tzero (A, B, C, D)
 

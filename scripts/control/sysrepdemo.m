@@ -1,4 +1,4 @@
-## Copyright (C) 1996,1998 Auburn University.  All Rights Reserved
+## Copyright (C) 1996, 1998 Auburn University.  All rights reserved.
 ##
 ## This file is part of Octave. 
 ##
@@ -24,9 +24,8 @@
 ## Octave Controls toolbox demo: System representation
 ## Written by A. S. Hodel June 1995
 ## Revised Aug 1995 for system data structure format
+
 function sysrepdemo ()
-
-
 
   save_val = page_screen_output;
   page_screen_output = 1;

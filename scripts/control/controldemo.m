@@ -1,4 +1,4 @@
-## Copyright (C) 1996 Auburn University.  All Rights Reserved
+## Copyright (C) 1996 Auburn University.  All rights reserved.
 ##
 ## This file is part of Octave. 
 ##
@@ -16,11 +16,12 @@
 ## along with Octave; see the file COPYING.  If not, write to the Free
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
-function DEMOcontrol ()
 ## Controls toolbox demo.
 ## Demo programs: bddemo.m, frdemo.m, analdemo.m, moddmeo.m, rldemo.m
 ##  
 ## Written by David Clem August 15, 1994
+
+function DEMOcontrol ()
 
   disp(' O C T A V E    C O N T R O L   S Y S T E M S   T O O L B O X')
 

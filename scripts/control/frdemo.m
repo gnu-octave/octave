@@ -1,4 +1,4 @@
-## Copyright (C) 1996,1998 Auburn University.  All Rights Reserved
+## Copyright (C) 1996, 1998 Auburn University.  All rights reserved.
 ##
 ## This file is part of Octave. 
 ##
@@ -597,4 +597,5 @@ function frdemo ()
       prompt
     endif
   endwhile
+
 endfunction

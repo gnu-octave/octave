@@ -1,4 +1,4 @@
-## Copyright (C) 1996 Auburn University.  All Rights Reserved
+## Copyright (C) 1996 Auburn University.  All rights reserved.
 ##
 ## This file is part of Octave. 
 ##
@@ -21,8 +21,9 @@
 ## Octave Controls toolbox demo: H2/Hinfinity options demos
 ##@end deftypefn
  
-function dgkfdemo ()
 ## Written by A. S. Hodel June 1995
+
+function dgkfdemo ()
  
   save_val = page_screen_output;
   page_screen_output = 1;
@@ -348,5 +349,5 @@ function dgkfdemo ()
     prompt
   endwhile  
   page_screen_output = save_val;
-endfunction
 
+endfunction

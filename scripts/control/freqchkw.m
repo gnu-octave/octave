@@ -1,4 +1,4 @@
-## Copyright (C) 1996 Auburn University.  All Rights Reserved
+## Copyright (C) 1996 Auburn University.  All rights reserved.
 ##
 ## This file is part of Octave. 
 ##
@@ -37,4 +37,5 @@ function USEW = freqchkw (w)
     w = sort(w);
     USEW = 1;   # vector provided (check values later)
   endif
+
 endfunction

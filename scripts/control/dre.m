@@ -1,4 +1,4 @@
-## Copyright (C) 1998 Auburn University.  All Rights Reserved
+## Copyright (C) 1998 Auburn University.  All rights reserved.
 ##
 ## This file is part of Octave.
 ##
@@ -122,4 +122,5 @@ function [tvals, Plist] = dre (sys, Q, R, Qf, t0, tf, Ptol, maxits)
 	  tvlen,maxerr,Ptol);
     tvals = tvals(1:length(Plist));
   endif
+
 endfunction

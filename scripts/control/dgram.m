@@ -1,4 +1,4 @@
-## Copyright (C) 1996 Auburn University.  All Rights Reserved
+## Copyright (C) 1996 Auburn University.  All rights reserved.
 ##
 ## This file is part of Octave. 
 ##
@@ -45,4 +45,5 @@ function m = dgram (a, b)
 
   ## let dlyap do the error checking...
   m = dlyap(a,b*b');
+
 endfunction

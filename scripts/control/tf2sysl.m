@@ -1,4 +1,4 @@
-## Copyright (C) 1996 Auburn University.  All Rights Reserved
+## Copyright (C) 1996 Auburn University.  All rights reserved.
 ##
 ## This file is part of Octave. 
 ##
@@ -23,17 +23,13 @@
 ## @end deftypefn
 
 function vec = tf2sysl (vec)
-## vec = tf2sysl(vec)
-##
-## used internally in tf2sys
-## strip leading zero coefficients to get the true polynomial length
 
+  while( (length(vec) > 1) & (vec(1) == 0) )
+    vec = vec(2:length(vec));
+  endwhile
 
-while( (length(vec) > 1) & (vec(1) == 0) )
-  vec = vec(2:length(vec));
-endwhile
-if(vec(1) == 0)
-  warning("tf2sys: polynomial has no nonzero coefficients!")
-endif
+  if(vec(1) == 0)
+    warning("tf2sys: polynomial has no nonzero coefficients!")
+  endif
 
 endfunction

@@ -1,4 +1,4 @@
-## Copyright (C) 1993, 1994, 1995 Auburn University.  All Rights Reserved.
+## Copyright (C) 1993, 1994, 1995 Auburn University.  All rights reserved.
 ## 
 ## This file is part of Octave.
 ## 
@@ -104,7 +104,7 @@ function [l, m, p, e] = dlqe (a, g, c, sigw, sigv, s)
     error ("dlqe: invalid number of arguments");
   endif
 
-## The problem is dual to the regulator design, so transform to dlqr call.
+  ## The problem is dual to the regulator design, so transform to dlqr call.
 
   if (nargin == 5)
     [k, p, e] = dlqr (a', c', g*sigw*g', sigv);

@@ -1,4 +1,4 @@
-## Copyright (C) 1996,1998 Auburn University.  All Rights Reserved
+## Copyright (C) 1996, 1998 Auburn University.  All rights reserved.
 ##
 ## This file is part of Octave.
 ##
@@ -23,13 +23,14 @@
 ## @end deftypefn
 
 function flg = is_signal_list (mylist)
-flg = is_list(mylist);
-if(flg)
-  for ii=1:length(mylist)
-    if(!(isstr(nth(mylist,ii)) & rows(nth(mylist,ii)) ==1) )
-      flg = 0;
-    endif
-  endfor
-endif
+
+  flg = is_list(mylist);
+  if(flg)
+    for ii=1:length(mylist)
+      if(!(isstr(nth(mylist,ii)) & rows(nth(mylist,ii)) ==1) )
+	flg = 0;
+      endif
+    endfor
+  endif
 
 endfunction

@@ -1,4 +1,4 @@
-## Copyright (C) 1996 Auburn University.  All Rights Reserved
+## Copyright (C) 1996 Auburn University.  All rights reserved.
 ##
 ## This file is part of Octave. 
 ##
@@ -70,4 +70,5 @@ function [wmin, wmax] = bode_bounds (zer, pol, DIGITAL, tsam)
 
   ## run digital frequency all the way to pi
   if (DIGITAL) wmax = log10(pi/tsam); endif
+
 endfunction

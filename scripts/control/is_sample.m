@@ -1,4 +1,4 @@
-## Copyright (C) 1996 Auburn University.  All Rights Reserved
+## Copyright (C) 1996 Auburn University.  All rights reserved.
 ##
 ## This file is part of Octave. 
 ##
@@ -22,9 +22,10 @@
 ##  (real,scalar, > 0)
 ## @end deftypefn
  
-function out = is_sample (Ts)
 ## A. S. Hodel July 1995
 
-out = (is_scalar(Ts) && (Ts == abs(Ts)) && (Ts != 0) );
+function out = is_sample (Ts)
+
+  out = (is_scalar(Ts) && (Ts == abs(Ts)) && (Ts != 0) );
 
 endfunction

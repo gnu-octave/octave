@@ -1,4 +1,4 @@
-## Copyright (C) 1996,1998 Auburn University.  All Rights Reserved.
+## Copyright (C) 1996, 1998 Auburn University.  All rights reserved.
 ##
 ## This file is part of Octave.
 ##
@@ -16,14 +16,15 @@
 ## along with Octave; see the file COPYING.  If not, write to the Free
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
-function T = sysgettsam (sys)
 ## T = sysgettsam(sys)
 ## return the sampling time of the system
 
-if(!is_struct(sys))
-  usage("T = sysgettsam(sys)");
-endif
+function T = sysgettsam (sys)
 
-T = sys.tsam;
+  if(!is_struct(sys))
+    usage("T = sysgettsam(sys)");
+  endif
+
+  T = sys.tsam;
 
 endfunction

@@ -1,4 +1,4 @@
-## Copyright (C) 1996 Auburn University. All rights reserved.
+## Copyright (C) 1996 Auburn University.  All rights reserved.
 ##
 ## This file is part of Octave.
 ##
@@ -15,26 +15,26 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Octave; see the file COPYING.  If not, write to the Free
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
-##
+
+## [retsys,nc,no] = sysmin(sys{,flg});
+## return a minimal (or reduced order) system
+## inputs:
+##   sys: system data structure
+##   flg: 0 [default] return minimal system; state names lost
+##      : 1           return system with physical states removed that
+##                    are either uncontrollable or unobservable
+##                    (cannot reduce further without discarding physical
+##                    meaning of states)
+## outputs:
+##   retsys: returned system
+##   nc: number of controllable states in the returned system
+##   no: number of observable states in the returned system
+##   cflg: is_controllable(retsys)
+##   oflg: is_observable(retsys)
+
 ## Written by A. S. Hodel a.s.hodel@eng.auburn.edu
 
 function [retsys, nc, no, cflg, oflg] = sysmin (sys, flg);
-
-  ## [retsys,nc,no] = sysmin(sys{,flg});
-  ## return a minimal (or reduced order) system
-  ## inputs:
-  ##   sys: system data structure
-  ##   flg: 0 [default] return minimal system; state names lost
-  ##      : 1           return system with physical states removed that
-  ##                    are either uncontrollable or unobservable
-  ##                    (cannot reduce further without discarding physical
-  ##                    meaning of states)
-  ## outputs:
-  ##   retsys: returned system
-  ##   nc: number of controllable states in the returned system
-  ##   no: number of observable states in the returned system
-  ##   cflg: is_controllable(retsys)
-  ##   oflg: is_observable(retsys)
   
   switch(nargin)
   case(1), flg = 0;

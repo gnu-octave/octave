@@ -338,6 +338,23 @@ Array<T>::range_error (const char *fcn, const Array<int>& ra_idx)
 }
 
 template <class T>
+Array<T>
+Array<T>::reshape (const dim_vector& new_dims) const
+{
+  Array<T> retval;
+
+  if (dimensions != new_dims)
+    {
+      if (dimensions.numel () == new_dims.numel ())
+	retval = Array<T> (*this, new_dims);
+      else
+	(*current_liboctave_error_handler) ("reshape: size mismatch");
+    }
+
+  return retval;
+}
+
+template <class T>
 void
 Array<T>::resize_no_fill (int n)
 {

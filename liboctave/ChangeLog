@@ -1,5 +1,10 @@
 2003-10-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Array.cc (Array<T>::reshape): New function.
+	* Array.h: Provide decl.
+
+	* dim-vector.h (dim_vector::numel): New function.
+
 	* dim-vector.h (dim_vector_rep::dim_vector_rep (int, const
 	dim_vector&)): Correctly handle case of n < dv->ndims.
 

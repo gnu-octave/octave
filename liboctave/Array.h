@@ -405,6 +405,8 @@ public:
   T operator () (const Array<int>& ra_idx) const { return elem (ra_idx); }
 #endif
 
+  Array<T> reshape (const dim_vector& new_dims) const;
+
   void resize_no_fill (int n);
   void resize_and_fill (int n, const T& val);
 

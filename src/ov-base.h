@@ -96,6 +96,8 @@ public:
 
   dim_vector dims (void) const { return dim_vector (-1, -1); }
 
+  octave_value reshape (const dim_vector&) const;
+
   bool is_defined (void) const { return false; }
 
   bool is_cell (void) const { return false; }

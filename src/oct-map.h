@@ -46,7 +46,7 @@ Octave_map
 
   Octave_map (const std::string& key, const octave_value& value)
     : map (), dimensions (1, 1)
-    { map[key] = Cell (value); }
+    { map[key] = value; }
 
   Octave_map (const std::string& key, const Cell& vals)
     : map (), dimensions (vals.dims ())
@@ -115,6 +115,8 @@ Octave_map
   int columns (void) const { return dimensions(1); }
 
   dim_vector dims (void) const { return dimensions; }
+
+  Octave_map reshape (const dim_vector& new_dims) const;
 
   int numel (void) const;
 

@@ -885,14 +885,7 @@ octave_value::numel (void) const
 {
   dim_vector dv = dims ();
 
-  int n_dims = dv.length ();
-
-  int retval = n_dims > 0 ? dv(0) : 0;
-
-  for (int i = 1; i < n_dims; i++)
-    retval *= dv(i);
-
-  return retval;    
+  return dv.numel ();
 }
 
 Cell

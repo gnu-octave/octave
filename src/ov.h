@@ -329,6 +329,9 @@ public:
 
   int numel (void) const;
 
+  virtual octave_value reshape (const dim_vector& dims) const
+    { return rep->reshape (dims); }
+
   // Does this constant have a type?  Both of these are provided since
   // it is sometimes more natural to write is_undefined() instead of
   // ! is_defined().

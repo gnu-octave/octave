@@ -1,5 +1,18 @@
 2003-10-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* oct-map.cc (Octave_map::reshape): New function.
+	* oct-map.h: Provide decl.
+
+	* ov-struct.h (octave_struct::reshape): New function.
+
+	* Cell.h (Cell:Cell (const Array<octave_value>&): New constructor.
+
+	* data.cc (Freshape): New function.
+	* ov.h (octave_value::reshape): New function.
+	* ov-base-mat.h (octave_base_matrix::reshape): New function.
+	* ov-base.cc (octave_base_value::reshape): New function.
+	* ov-base.h: Provide decl.
+
 	* DLD-FUNCTIONS/balance.cc: lscale and rscale args for dggbak are
 	const.  Use data() instead of fortran_vec where possible.
 	* DLD-FUNCTIONS/qz.cc: Likewise.

@@ -1236,6 +1236,86 @@ The @code{linspace} function always returns a row vector.\n\
   return retval;
 }
 
+DEFUN (reshape, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Function File} {} reshape (@var{a}, @var{m}, @var{n}, @dots{})\n\
+@deftypefnx {Function File} {} reshape (@var{a}, @var{siz})\n\
+Return a matrix with the given dimensions whose elements are taken\n\
+from the matrix @var{a}.  The elements of the matrix are access in\n\
+column-major order (like Fortran arrays are stored).\n\
+\n\
+For example,\n\
+\n\
+@example\n\
+@group\n\
+reshape ([1, 2, 3, 4], 2, 2)\n\
+     @result{}  1  3\n\
+         2  4\n\
+@end group\n\
+@end example\n\
+\n\
+@noindent\n\
+Note that the total number of elements in the original\n\
+matrix must match the total number of elements in the new matrix.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  Array<int> new_size;
+
+  if (nargin == 2)
+    new_size = args(1).int_vector_value ();
+  else if (nargin > 2)
+    {
+      new_size.resize (nargin-1);
+
+      for (int i = 1; i < nargin; i++)
+	{
+	  new_size(i-1) = args(i).int_value ();
+
+	  if (error_state)
+	    break;
+	}
+    }
+  else
+    {
+      print_usage ("reshape");
+      return retval;
+    }
+
+  if (error_state)
+    {
+      error ("reshape: invalid arguments");
+      return retval;
+    }
+
+  int n = new_size.length ();
+
+  if (n < 2)
+    {
+      error ("reshape: expecting size to be vector with at least 2 elements");
+      return retval;
+    }
+
+  dim_vector new_dims;
+
+  new_dims.resize (n);
+
+  for (int i = 0; i < n; i++)
+    new_dims(i) = new_size(i);
+
+  octave_value arg = args(0);
+
+  if (new_dims.numel () == arg.numel ())
+    retval = (new_dims == arg.dims ()) ? arg : arg.reshape (new_dims);
+  else
+    error ("reshape: size mismatch");
+
+  return retval;
+}
+
 DEFUN (squeeze, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} squeeze (@var{x})\n\

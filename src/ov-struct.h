@@ -89,6 +89,9 @@ public:
 
   dim_vector dims (void) const { return map.dims (); }
 
+  octave_value reshape (const dim_vector& new_dims) const
+    { return map.reshape (new_dims); }
+
   bool is_defined (void) const { return true; }
 
   bool is_constant (void) const { return true; }

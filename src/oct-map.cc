@@ -56,6 +56,22 @@ Octave_map::keys (void) const
   return names;
 }
 
+Octave_map
+Octave_map::reshape (const dim_vector& new_dims) const
+{
+  Octave_map retval;
+
+  if (new_dims != dims ())
+    {
+      for (const_iterator p = begin (); p != end (); p++)
+	retval[key(p)] = contents(p).reshape (new_dims);
+
+      dimensions = new_dims;
+    }
+
+  return retval;
+}
+
 int
 Octave_map::numel (void) const
 {

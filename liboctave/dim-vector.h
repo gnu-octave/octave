@@ -253,6 +253,22 @@ public:
 
     return retval;
   }
+
+  // This is the number of elements that a matrix with this dimension
+  // vector would have, NOT the number of dimensions (elements in the
+  // dimension vector).
+
+  int numel (void) const
+  {
+    int n_dims = length ();
+
+    int retval = n_dims > 0 ? elem (0) : 0;
+
+    for (int i = 1; i < n_dims; i++)
+      retval *= elem (i);
+
+    return retval;
+  }
 };
 
 static inline bool

@@ -56,10 +56,14 @@ public:
   Cell (int n, int m, const octave_value& val = resize_fill_value ())
     : ArrayN<octave_value> (dim_vector (n, m), val) { }
 
-  Cell (const dim_vector& dims, const octave_value& val = resize_fill_value ())
+  Cell (const dim_vector& dims,
+		 const octave_value& val = resize_fill_value ())
     : ArrayN<octave_value> (dims, val) { }
 
   Cell (const ArrayN<octave_value>& c)
+    : ArrayN<octave_value> (c) { }
+
+  Cell (const Array<octave_value>& c)
     : ArrayN<octave_value> (c) { }
 
   Cell (const Array<octave_value>& c, int nr, int nc)
@@ -74,15 +78,15 @@ public:
 
   Cell index (idx_vector& i, int resize_ok = 0,
 	      const octave_value& rfv = resize_fill_value ()) const
-    { return ArrayN<octave_value>::index (i, resize_ok, rfv); }
+    { return Cell (ArrayN<octave_value>::index (i, resize_ok, rfv)); }
 
   Cell index (idx_vector& i, idx_vector& j, int resize_ok = 0,
 	      const octave_value& rfv = resize_fill_value ()) const
-    { return ArrayN<octave_value>::index (i, j, resize_ok, rfv); }
+    { return Cell (ArrayN<octave_value>::index (i, j, resize_ok, rfv)); }
 
   Cell index (Array<idx_vector>& ra_idx, int resize_ok = 0,
 	      const octave_value& rfv = resize_fill_value ()) const
-    { return ArrayN<octave_value>::index (ra_idx, resize_ok, rfv); }
+    { return Cell (ArrayN<octave_value>::index (ra_idx, resize_ok, rfv)); }
 
   Cell& assign (const octave_value_list& idx, const Cell& rhs,
 		const octave_value& fill_val = octave_value ());

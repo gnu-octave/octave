@@ -174,6 +174,13 @@ octave_base_value::subsasgn (const std::string& type,
 }
 
 octave_value
+octave_base_value::reshape (const dim_vector&) const
+{
+  gripe_wrong_type_arg ("octave_base_value::reshape ()", type_name ());
+  return octave_value ();
+}
+
+octave_value
 octave_base_value::convert_to_str_internal (bool, bool) const
 {
   gripe_wrong_type_arg ("octave_base_value::convert_to_str_internal ()",

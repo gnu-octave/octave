@@ -1,3 +1,21 @@
+Fri Aug 20 08:17:52 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DLD-FUNCTIONS/quad.cc (quad): Delete unused label.
+
+	* unwind-prot.cc (saved_variable::~saved_variable): Don't try to
+	delete gen_ptr_value here.
+
+Mon Aug 16 21:34:33 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lex.l (next_token_is_sep_op): New function.
+	(handle_close_brace, maybe_unput_comma): Use it.
+	(have_continuation): Also handle CRLF here.
+
+Wed Aug 11 16:06:57 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* file-io.cc (Ffopen): Make fopen ("filename") work and imply that
+	MODE = "r".
+
 Wed Jul 21 15:38:52 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* help.cc (display_names_from_help_list): Sort names before

@@ -1,3 +1,17 @@
+Tue Aug 17 11:11:27 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* miscellaneous/pack.m: New function.
+
+Mon Aug 16 07:46:57 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* plot/figure.m: Always return figure number.  With no args,
+ 	figure now creates a new figure window and returns its number.
+	Accept figure (property, value) syntax, but do nothing.
+
+Thu Aug 12 09:28:01 PDT 1999  Tom Poage <tfpoage@ucdavis.edu>
+
+	* general/shift.m: Avoid printing temporary value for backward shift.
+
 Mon Aug  2 16:39:04 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* plot/bar.m: Compute bar widths correctly when x-values are not

@@ -52,7 +52,7 @@ function y = shift (x, b)
     y = [t1; t2];
   elseif (b < 0)
     b = rem (abs (b), nr);
-    t1 = x (b+1:nr, :)
+    t1 = x (b+1:nr, :);
     t2 = x (1:b, :);
     y = [t1; t2];
   endif

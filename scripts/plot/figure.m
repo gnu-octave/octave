@@ -24,20 +24,36 @@
 
 ## Author: jwe
 
-function figure (n)
+function f = figure (n)
 
-  if (nargin == 1)
+  static figure_list = create_set (0);
+  static figure_called = 0;
+
+  if (nargin == 0)
+    f = max (figure_list) + 1;
+  else
+    f = n;
+  endif
+
+  if (nargin < 2)
     if (gnuplot_has_frames)
       if (! isempty (getenv ("DISPLAY")))
 	oneplot ();
-	eval (sprintf ("gset term x11 %d\n", n));
+	figure_list = union (figure_list, f);
+	eval (sprintf ("gset term x11 %d\n", f));
       else
 	error ("figure: requires X11 and valid DISPLAY");
       endif
     else
       error ("figure: gnuplot doesn't appear to support this feature");
     endif
+  elseif (rem (nargin, 2) == 0)
+    if (! figure_called)
+      figure_called = 1;
+      warning ("figure: setting figure properties is unsupported");
+    endif
   else
     usage ("figure (n)");
   endif
+
 endfunction

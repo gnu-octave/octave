@@ -170,6 +170,7 @@ static string plot_style_token (const string& s);
 static symbol_record *lookup_identifier (const string& s);
 static void grab_help_text (void);
 static bool match_any (char c, const char *s);
+static bool next_token_is_sep_op (void);
 static bool next_token_is_bin_op (bool spc_prev);
 static bool next_token_is_postfix_unary_op (bool spc_prev);
 static string strip_trailing_whitespace (char *s);
@@ -1204,6 +1205,37 @@ looks_like_bin_op (bool spc_prev, int next_char)
   return ((spc_prev && spc_next) || ! spc_prev);
 }
 
+// Recognize separators.  If the separator is a CRLF pair, it is
+// replaced by a single LF.
+
+static bool
+next_token_is_sep_op (void)
+{
+  bool retval = false;
+
+  int c1 = yyinput ();
+
+  if (c1 == '\r')
+    {
+      int c2 = yyinput ();
+
+      if (c2 == '\n')
+	{
+	  c1 = '\n';
+
+	  retval = true;
+	}
+      else
+	unput (c2);
+    }
+  else
+    retval = match_any (c1, ",;\n]");
+
+  unput (c1);
+
+  return retval;
+}
+
 // Try to determine if the next token should be treated as a postfix
 // unary operator.  This is ugly, but it seems to do the right thing.
 
@@ -1524,6 +1556,17 @@ have_continuation (bool trailing_comments_ok)
 	  promptflag--;
 	  return true;
 
+	case '\r':
+	  c = yyinput ();
+	  if (c == EOF)
+	    break;
+	  else if (c == '\n')
+	    {
+	      current_input_column = 0;
+	      promptflag--;
+	      return true;
+	    }	  
+
 	default:
 	  if (! in_comment)
 	    goto cleanup;
@@ -1788,11 +1831,12 @@ handle_close_brace (int spc_gobbled)
       if (lexer_flags.braceflag && Vwhitespace_in_literal_matrix != 2)
 	{
 	  int bin_op = next_token_is_bin_op (spc_gobbled);
+
 	  int postfix_un_op = next_token_is_postfix_unary_op (spc_gobbled);
 
-	  int other_op = match_any (c1, ",;\n]");
+	  int sep_op = next_token_is_sep_op ();
 
-	  if (! (postfix_un_op || bin_op || other_op)
+	  if (! (postfix_un_op || bin_op || sep_op)
 	      && nesting_level.is_brace ()
 	      && lexer_flags.convert_spaces_to_comma)
 	    {
@@ -1824,7 +1868,7 @@ maybe_unput_comma (int spc_gobbled)
       unput (c2);
       unput (c1);
 
-      int sep_op = match_any (c1, ",;\n]");
+      int sep_op = next_token_is_sep_op ();
 
       int dot_op = (c1 == '.'
 		    && (isalpha (c2) || isspace (c2) || c2 == '_'));

@@ -264,7 +264,6 @@ integrand is singular.")
       return retval;
     }
 
- abort:
   unwind_protect::run_frame ("Fquad");
 
   return retval;

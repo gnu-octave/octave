@@ -144,7 +144,8 @@ saved_variable::~saved_variable (void)
       break;
 
     case generic:
-      delete [] gen_ptr_value;  // Can this be right?
+      // XXX FIXME XXX
+      // delete [] gen_ptr_value;
       break;
 
     default:

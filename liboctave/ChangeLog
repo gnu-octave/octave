@@ -1,5 +1,9 @@
 Fri Aug 20 07:58:00 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* mx-inlines.cc (VS_OP, SV_OP, VV_OP): Delete `extern template' decls.
+	(VS_OP_FCN, SV_OP_FCN, VV_OP_FCN): Declare template functions
+	`inline', not `static inline'.
+
 	* idx-vector.cc (intcmp): Declare args as const void *, not int *,
 	then cast to const int * to compare.
 

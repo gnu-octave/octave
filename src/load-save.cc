@@ -1071,7 +1071,7 @@ read_mat_ascii_data (istream& is, const string& filename,
   if (pos != NPOS)
     varname = varname.substr (0, pos);
 
-  if (valid_identifier (varname.c_str ()))
+  if (valid_identifier (varname))
     {
       int nr = 0;
       int nc = 0;

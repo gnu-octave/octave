@@ -348,6 +348,8 @@ DEFUN (fopen, args, ,
 \n\
   Update mode permits reading from and writing to the same file.\n\
 \n\
+  If MODE is missing, a value of \"r\" is assumed.\n\
+\n\
   ARCH is a string specifying the default data format for the file.\n\
   Valid values for ARCH are:\n\
 \n\
@@ -374,8 +376,16 @@ DEFUN (fopen, args, ,
 
   if (nargin == 1)
     {
-      if (args(0).is_string () && args(0).string_value () == "all")
-	retval(0) = octave_stream_list::open_file_numbers ();
+      if (args(0).is_string ())
+	{
+	  // If there is only one argument and it is a string but it
+	  // is not the string "all", we assume it is a file to open
+	  // with MODE = "r".  To open a file called "all", you have
+	  // to supply more than one argument.
+
+	  if (args(0).string_value () == "all")
+	    return octave_stream_list::open_file_numbers ();
+	}
       else
 	{
 	  string_vector tmp = octave_stream_list::get_info (args(0));
@@ -386,9 +396,9 @@ DEFUN (fopen, args, ,
 	      retval(1) = tmp(1);
 	      retval(0) = tmp(0);
 	    }
-	}
 
-      return retval;
+	  return retval;
+	}
     }
 
   if (nargin > 0 && nargin < 4)

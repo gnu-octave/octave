@@ -143,7 +143,7 @@ max (const ComplexMatrix& a, const ComplexMatrix& b)
 }
 
 
-DEFUN_DLD ("min", Fmin, Smin, 3, 2,
+DEFUN_DLD_BUILTIN ("min", Fmin, Smin, 3, 2,
   "min (X): minimum value(s) of a vector (matrix)")
 {
   Octave_object retval;
@@ -318,7 +318,7 @@ DEFUN_DLD ("min", Fmin, Smin, 3, 2,
   return retval;
 }
 
-DEFUN_DLD ("max", Fmax, Smax, 3, 2,
+DEFUN_DLD_BUILTIN ("max", Fmax, Smax, 3, 2,
   "max (X): maximum value(s) of a vector (matrix)")
 {
   Octave_object retval;

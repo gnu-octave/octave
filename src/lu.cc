@@ -35,7 +35,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "help.h"
 #include "defun-dld.h"
 
-DEFUN_DLD ("lu", Flu, Slu, 2, 3,
+DEFUN_DLD_BUILTIN ("lu", Flu, Slu, 2, 3,
   "[L, U, P] = lu (A): LU factorization")
 {
   Octave_object retval;

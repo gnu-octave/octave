@@ -36,7 +36,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "help.h"
 #include "defun-dld.h"
 
-DEFUN_DLD ("hess", Fhess, Shess, 2, 2,
+DEFUN_DLD_BUILTIN ("hess", Fhess, Shess, 2, 2,
   "[P, H] = hess (A) or H = hess (A): Hessenberg decomposition")
 {
   Octave_object retval;

@@ -35,7 +35,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "help.h"
 #include "defun-dld.h"
 
-DEFUN_DLD ("eig", Feig, Seig, 2, 1,
+DEFUN_DLD_BUILTIN ("eig", Feig, Seig, 2, 1,
   "eig (X) or [V, D] = eig (X): compute eigenvalues and eigenvectors of X")
 {
   Octave_object retval;

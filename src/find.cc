@@ -152,7 +152,7 @@ find_nonzero_elem_idx (const ComplexMatrix& m, int nargout)
   return find_to_fortran_idx (i_idx, j_idx, tmp, m_nr, m_nc, nargout);
 }
 
-DEFUN_DLD ("find", Ffind, Sfind, 2, 3,
+DEFUN_DLD_BUILTIN ("find", Ffind, Sfind, 2, 3,
   "find (X) or [I, J, V] = find (X): Return indices of nonzero elements")
 {
   Octave_object retval;

@@ -94,7 +94,7 @@ lsode_user_function (const ColumnVector& x, double t)
   return retval;
 }
 
-DEFUN_DLD ("lsode", Flsode, Slsode, 6, 1,
+DEFUN_DLD_BUILTIN ("lsode", Flsode, Slsode, 6, 1,
   "lsode (F, X0, T_OUT, T_CRIT)\n\
 \n\
 The first argument is the name of the function to call to\n\
@@ -276,7 +276,7 @@ do_lsode_option (char *keyword, double val)
   warning ("lsode_options: no match for `%s'", keyword);
 }
 
-DEFUN_DLD ("lsode_options", Flsode_options, Slsode_options, -1, 1,
+DEFUN_DLD_BUILTIN ("lsode_options", Flsode_options, Slsode_options, -1, 1,
   "lsode_options (KEYWORD, VALUE)\n\
 \n\
 Set or show options for lsode.  Keywords may be abbreviated\n\

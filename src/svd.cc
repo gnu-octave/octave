@@ -36,7 +36,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "help.h"
 #include "defun-dld.h"
 
-DEFUN_DLD ("svd", Fsvd, Ssvd, 2, 3,
+DEFUN_DLD_BUILTIN ("svd", Fsvd, Ssvd, 2, 3,
   "S = svd (X) or [U, S, V] = svd (X [, 0])\n\
 \n\
 Compute the singular value decomposition of X.  Given a second input\n\

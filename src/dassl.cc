@@ -105,7 +105,7 @@ dassl_user_function (const ColumnVector& x, const ColumnVector& xdot, double t)
   return retval;
 }
 
-DEFUN_DLD ("dassl", Fdassl, Sdassl, 5, 1,
+DEFUN_DLD_BUILTIN ("dassl", Fdassl, Sdassl, 5, 1,
   "dassl (\"function_name\", x_0, xdot_0, t_out)\n\
 dassl (F, X_0, XDOT_0, T_OUT, T_CRIT)\n\
 \n\
@@ -295,7 +295,7 @@ do_dassl_option (char *keyword, double val)
   warning ("dassl_options: no match for `%s'", keyword);
 }
 
-DEFUN_DLD ("dassl_options", Fdassl_options, Sdassl_options, -1, 1,
+DEFUN_DLD_BUILTIN ("dassl_options", Fdassl_options, Sdassl_options, -1, 1,
   "dassl_options (KEYWORD, VALUE)\n\
 \n\
 Set or show options for dassl.  Keywords may be abbreviated\n\

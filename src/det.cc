@@ -36,7 +36,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "help.h"
 #include "defun-dld.h"
 
-DEFUN_DLD ("det", Fdet, Sdet, 2, 1,
+DEFUN_DLD_BUILTIN ("det", Fdet, Sdet, 2, 1,
   "det (X): determinant of a square matrix")
 {
   Octave_object retval;

@@ -97,7 +97,7 @@ curr_rand_dist (void)
     }
 }
 
-DEFUN_DLD ("rand", Frand, Srand, 2, 1,
+DEFUN_DLD_BUILTIN ("rand", Frand, Srand, 2, 1,
   "rand                  -- generate a random value\n\
 \n\
 rand (N)              -- generate N x N matrix\n\

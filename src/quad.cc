@@ -85,7 +85,7 @@ quad_user_function (double x)
   return retval;
 }
 
-DEFUN_DLD ("quad", Fquad, Squad, 6, 3,
+DEFUN_DLD_BUILTIN ("quad", Fquad, Squad, 6, 3,
   "[V, IER, NFUN] = quad (F, A, B [, TOL] [, SING])\n\
 \n\
 Where the first argument is the name of the  function to call to\n\
@@ -327,7 +327,7 @@ do_quad_option (char *keyword, double val)
   warning ("quad_options: no match for `%s'", keyword);
 }
 
-DEFUN_DLD ("quad_options", Fquad_options, Squad_options, -1, 1,
+DEFUN_DLD_BUILTIN ("quad_options", Fquad_options, Squad_options, -1, 1,
   "quad_options (KEYWORD, VALUE)\n\
 \n\
 Set or show options for quad.  Keywords may be abbreviated\n\

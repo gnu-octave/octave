@@ -38,7 +38,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "help.h"
 #include "defun-dld.h"
 
-DEFUN_DLD ("qr", Fqr, Sqr, 2, 2,
+DEFUN_DLD_BUILTIN ("qr", Fqr, Sqr, 2, 2,
   "[Q, R] = qr (X):      form Q unitary and R upper triangular such\n\
                        that Q * R = X\n\
 \n\

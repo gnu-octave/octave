@@ -32,7 +32,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "help.h"
 #include "defun-dld.h"
 
-DEFUN_DLD ("lpsolve", Flpsolve, Slpsolve, 11, 3,
+DEFUN_DLD_BUILTIN ("lpsolve", Flpsolve, Slpsolve, 11, 3,
   "lp_solve (): solve linear programs using lp_solve.")
 {
   Octave_object retval;
@@ -48,7 +48,7 @@ DEFUN_DLD ("lpsolve", Flpsolve, Slpsolve, 11, 3,
   return retval;
 }
 
-DEFUN_DLD ("lpsolve_options", Flpsolve_options, Slpsolve_options, -1, 1,
+DEFUN_DLD_BUILTIN ("lpsolve_options", Flpsolve_options, Slpsolve_options, -1, 1,
   "lp_solve_options (KEYWORD, VALUE)\n\
 \n\
 Set or show options for lp_solve.  Keywords may be abbreviated\n\

@@ -36,7 +36,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "help.h"
 #include "defun-dld.h"
 
-DEFUN_DLD ("chol", Fchol, Schol, 2, 1,
+DEFUN_DLD_BUILTIN ("chol", Fchol, Schol, 2, 1,
   "R = chol (X): cholesky factorization")
 {
   Octave_object retval;

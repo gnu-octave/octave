@@ -33,7 +33,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "help.h"
 #include "defun-dld.h"
 
-DEFUN_DLD ("colloc", Fcolloc, Scolloc, 7, 4,
+DEFUN_DLD_BUILTIN ("colloc", Fcolloc, Scolloc, 7, 4,
   "[R, A, B, Q] = colloc (N [, \"left\"] [, \"right\"]): collocation weights")
 {
   Octave_object retval;

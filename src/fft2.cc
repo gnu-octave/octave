@@ -38,7 +38,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 // This function should be merged with Fifft2.
 
-DEFUN_DLD ("fft2", Ffft2, Sfft2, 3, 1,
+DEFUN_DLD_BUILTIN ("fft2", Ffft2, Sfft2, 3, 1,
   "fft2 (X [, N] [, M])\n\
 \n\
 two dimensional fast fourier transform of a vector")

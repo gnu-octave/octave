@@ -56,7 +56,7 @@ extern "C"
 			long, long);
 }
 
-DEFUN_DLD ("syl", Fsyl, Ssyl, 4, 1,
+DEFUN_DLD_BUILTIN ("syl", Fsyl, Ssyl, 4, 1,
   "X = syl (A, B, C): solve the Sylvester equation A X + X B + C = 0")
 {
   Octave_object retval;

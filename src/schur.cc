@@ -36,7 +36,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "help.h"
 #include "defun-dld.h"
 
-DEFUN_DLD ("schur", Fschur, Sschur, 3, 2,
+DEFUN_DLD_BUILTIN ("schur", Fschur, Sschur, 3, 2,
   "[U, S] = schur (A) or S = schur (A)\n\
 \n\
 or, for ordered Schur:\n\

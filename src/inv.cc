@@ -36,7 +36,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "help.h"
 #include "defun-dld.h"
 
-DEFUN_DLD ("inv", Finv, Sinv, 2, 1,
+DEFUN_DLD_BUILTIN ("inv", Finv, Sinv, 2, 1,
   "inv (X): inverse of a square matrix")
 {
   Octave_object retval;

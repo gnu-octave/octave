@@ -43,7 +43,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "help.h"
 #include "defun-dld.h"
 
-DEFUN_DLD ("balance", Fbalance, Sbalance, 4, 4,
+DEFUN_DLD_BUILTIN ("balance", Fbalance, Sbalance, 4, 4,
   "AA = balance (A [, OPT]) or [[DD,] AA] =  balance (A [, OPT])\n\
 \n\
 generalized eigenvalue problem:\n\

@@ -54,7 +54,7 @@ extern "C"
 		       double*, double*, double*, const long*, double*);
 }
 
-DEFUN_DLD ("qzvalue", Fqzvalue, Sqzvalue, 3, 1,
+DEFUN_DLD_BUILTIN ("qzvalue", Fqzvalue, Sqzvalue, 3, 1,
   "X = qzval (A, B)\n\
 \n\
 compute generalized eigenvalues of the matrix pencil (A - lambda B).\n\

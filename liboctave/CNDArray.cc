@@ -487,7 +487,7 @@ ComplexNDArray::operator ! (void) const
   boolNDArray b (dims ());
 
   for (int i = 0; i < length (); i++)
-    b.elem (i) = elem (i) != 0.0;
+    b.elem (i) = elem (i) == 0.0;
 
   return b;
 }

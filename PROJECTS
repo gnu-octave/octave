@@ -429,6 +429,10 @@ Interpreter:
   * Make the type command handle script files too, by just reading and
     printing them.
 
+  * The wich and type commands should distinguish between dynamically
+    linked functions and built-in functions.  For dynamically linked
+    functions, the location of the .oct file should be displayed.
+
   * Clean up eye, eval, feval, keyboard, input, ones, zeros.
 
   * Turn off printing when evaluating expressions in an eval()

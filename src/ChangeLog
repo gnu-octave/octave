@@ -1,3 +1,18 @@
+2000-07-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (octave): Link to ../libcruft/blas-xtra/xerbla.o here.
+
+	* octave.cc (main): Remove kluge to attempt linking our version of
+	xerbla.
+
+2000-07-07  Steven G. Johnson  <stevenj@alum.mit.edu>
+
+	* load-save.cc (have_h5giterate_bug): New file-scope variable.
+	(hdf5_read_next_data): Only increment current_item if
+	have_h5giterate_bug is true.
+	(read_hdf5_data): Set have_h5giterate_bug here.
+	Only increment hs.current_item if have_h5giterate_bug is true.
+
 2000-07-05  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* c-file-ptr-stream.cc (c_file_ptr_buf::close):

@@ -36,9 +36,9 @@ function status = strcmp (s1, s2)
 
   status = 0;
   if (isstr (s1) && isstr(s2))
-    c1 = columns (s1);
-    c2 = columns (s2);
-    if (c1 == c2)
+    [r1, c1] = size (s1);
+    [r2, c2] = size (s2);
+    if (r1 == r2 && c1 == c2)
       if (c1 == 0)
         status = 1;
       else

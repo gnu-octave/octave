@@ -211,17 +211,22 @@ all: octave DOCSTRINGS
 
 objects: $(OBJECTS)
 
+XERBLA = ../libcruft/blas-xtra/xerbla.o
+
 ifeq ($(SHARED_LIBS), true)
   ifeq ($(STATIC_LIBS), true)
     LIBRARIES = liboctinterp.$(LIBEXT) liboctinterp.$(SHLEXT)
   else
     LIBRARIES = liboctinterp.$(SHLEXT)
+    XERBLA = ../libcruft/blas-xtra/pic/xerbla.o
   endif
 else
   ifeq ($(STATIC_LIBS), true)
     LIBRARIES = liboctinterp.$(LIBEXT)
   else
+    ## This is not going to work, but hey, you asked for it...
     LIBRARIES =
+    XERBLA =
   endif
 endif
 
@@ -254,7 +259,7 @@ octave: stamp-prereq $(LIBRARIES) stamp-oct-links \
 	octave.o builtins.o ops.o $(DLD_STATIC_OBJ)
 	$(CXX) $(CPPFLAGS) $(ALL_CXXFLAGS) $(RDYNAMIC_FLAG) \
 	$(ALL_LDFLAGS) -o octave \
-	octave.o builtins.o ops.o $(DLD_STATIC_OBJ) \
+	octave.o builtins.o ops.o $(XERBLA) $(DLD_STATIC_OBJ) \
 	$(OCTAVE_LFLAGS) \
 	$(OCTAVE_LIBS) \
 	$(LEXLIB) $(TERMLIBS) $(BLAS_LIBS) $(LIBS) $(FLIBS)

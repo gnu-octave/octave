@@ -582,17 +582,6 @@ main (int argc, char **argv)
     retval = 0;
 
   clean_up_and_exit (retval);
-
-  // The following code should never be reached.  It is a hack to make
-  // sure that the xerbla.f from libcruft/blas-xtra is linked with
-  // octave, in preference to the xerbla function from any standard
-  // BLAS that we link to.
-
-  // XXX FIXME XXX -- this may not work on some systems if libcruft
-  // and the external blas libraries are both shared libraries.
-
-  if (retval < 0)
-    F77_FCN (xerbla, XERBLA) ("foobar", 0);
 }
 
 /*

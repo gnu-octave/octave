@@ -1307,6 +1307,11 @@ struct hdf5_callback_data
   bool import;
 };
 
+// This variable, set in read_hdf5_data(), tells whether we are using
+// a version of HDF5 with a buggy H5Giterate (i.e. which neglects to
+// increment the index parameter to the next unread item).
+static bool have_h5giterate_bug = false;
+
 // This function is designed to be passed to H5Giterate, which calls it
 // on each data item in an HDF5 file.  For the item whose name is NAME in
 // the group GROUP_ID, this function sets dv->tc to an Octave representation
@@ -1688,7 +1693,8 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
 	  if (dsub.doc)
 	    delete [] dsub.doc;
 
-	  current_item++;  // H5Giterate returned the last index processed
+	  if (have_h5giterate_bug)
+	    current_item++;  // H5Giterate returned the last index processed
 	}
 
       if (retval2 < 0)
@@ -1799,12 +1805,30 @@ read_hdf5_data (std::istream& is,
   d.range_type = hdf5_make_range_type (H5T_NATIVE_DOUBLE);
   d.import = import;
 
+  // Versions of HDF5 prior to 1.2.2 had a bug in H5Giterate where it
+  // would return the index of the last item processed instead of the
+  // next item to be processed, forcing us to increment the index manually.
+
+  unsigned int vers_major, vers_minor, vers_release;
+
+  H5get_libversion (&vers_major, &vers_minor, &vers_release);
+
+  // XXX FIXME XXX -- this test looks wrong.
+  have_h5giterate_bug
+    = (vers_major < 1
+       || (vers_major == 1 && (vers_minor < 2
+			       || (vers_minor == 2 && vers_release < 2))));
+
   herr_t retval = H5Giterate (hs.file_id, "/", &hs.current_item,
 			      hdf5_read_next_data, &d);
 
-  // H5Giterate sets current_item to the last item processed; we want
-  // the index of the next item (for the next call to read_hdf5_data)
-  hs.current_item++;
+  if (have_h5giterate_bug)
+    {
+      // H5Giterate sets current_item to the last item processed; we want
+      // the index of the next item (for the next call to read_hdf5_data)
+
+      hs.current_item++;
+    }
 
   if (retval > 0)
     {

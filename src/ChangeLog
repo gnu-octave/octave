@@ -1,3 +1,10 @@
+2004-09-10  David Bateman  <dbateman@free.fr>
+
+	* ov-intx.h (OCTAVE_VALUE_INT_MATRIX_T::double_value,
+	OCTAVE_VALUE_INT_MATRIX_T::scalar_value,
+	OCTAVE_VALUE_INT_SCALAR_T::double_value,
+	OCTAVE_VALUE_INT_SCALAR_T::scalar_value): New functions.
+
 2004-09-10  John W. Eaton  <jwe@octave.org>
 
 	* ov-base-scalar.h (octave_base_scalar::clone,

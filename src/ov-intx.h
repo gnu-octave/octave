@@ -35,6 +35,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-base.h"
 #include "ov-base-int.h"
 #include "ov-typeinfo.h"
+#include "gripes.h"
 
 class
 OCTAVE_VALUE_INT_MATRIX_T
@@ -61,6 +62,32 @@ public:
   OCTAVE_INT_NDARRAY_T
   OCTAVE_VALUE_INT_NDARRAY_EXTRACTOR_FUNCTION (void) const
     { return matrix; }
+
+  double
+  double_value (bool = false) const
+    {
+      double retval = lo_ieee_nan_value ();
+
+      if (numel () > 0)
+	{
+	  // XXX FIXME XXX -- is warn_fortran_indexing the right variable here?
+	  if (Vwarn_fortran_indexing)
+	    gripe_implicit_conversion (type_name (), "real scalar");
+
+	  retval = double (matrix (0, 0));
+	}
+      else
+	gripe_invalid_conversion (type_name (), "real scalar");
+
+      return retval;
+      
+    }
+
+  double
+  scalar_value (bool = false) const
+    {
+      return double_value ();
+    }
 
   NDArray
   array_value (bool = false) const
@@ -154,6 +181,18 @@ public:
 
   octave_value resize (const dim_vector& dv) const
     { OCTAVE_INT_NDARRAY_T retval (dv); if (dv.numel()) retval(0) = scalar; return retval; }
+
+  double
+  double_value (bool = false) const
+    {
+      return double (scalar);
+    }
+
+  double
+  scalar_value (bool = false) const
+    {
+      return double (scalar);
+    }
 
   NDArray
   array_value (bool = false) const

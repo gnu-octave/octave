@@ -102,8 +102,10 @@ BUGS:
 
 install install-strip ::
 	$(top_srcdir)/mkinstalldirs $(DIRS_TO_MAKE)
-	$(INSTALL_SCRIPT) octave-bug $(bindir)/octave-bug
-	$(INSTALL_SCRIPT) mkoctfile $(bindir)/mkoctfile
+	$(INSTALL_SCRIPT) octave-bug $(bindir)/octave-bug-$(version)
+	cd $(bindir) ; $(LN_S) octave-bug-$(version) octave-bug
+	$(INSTALL_SCRIPT) mkoctfile $(bindir)/mkoctfile-$(version)
+	cd $(bindir) ; $(LN_S) mkoctfile-$(version) mkoctfile
 	$(INSTALL_DATA) config.h $(octincludedir)/config.h
 
 maintainer-clean::

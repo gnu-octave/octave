@@ -1,3 +1,8 @@
+Wed May 21 16:30:25 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (install-in): Use new mk-includedir-link macro.
+	(install-lib): Install in $octlibdir.  Use new mk-libdir-link macro.
+
 Thu May 15 11:46:42 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* cmd-edit.cc (command_editor::increment_current_command_number):

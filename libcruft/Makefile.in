@@ -85,20 +85,22 @@ install install-strip uninstall clean mostlyclean distclean maintainer-clean::
 	@$(subdir-for-command)
 
 install::
-	$(top_srcdir)/mkinstalldirs $(libdir)
-	rm -f $(libdir)/libcruft.a
-	$(INSTALL_DATA) libcruft.a $(libdir)/libcruft.a
-	$(RANLIB) $(libdir)/libcruft.a
+	$(top_srcdir)/mkinstalldirs $(octlibdir)
+	rm -f $(octlibdir)/libcruft.a
+	$(INSTALL_DATA) libcruft.a $(octlibdir)/libcruft.a
+	$(RANLIB) $(octlibdir)/libcruft.a
 	if $(SHARED_LIBS); then \
-	  rm -f $(libdir)/libcruft.$(SHLEXT); \
-	  $(INSTALL_PROGRAM) libcruft.$(SHLEXT) $(libdir)/libcruft.$(SHLEXT); \
+	  rm -f $(octlibdir)/libcruft.$(SHLEXT); \
+	  $(INSTALL_PROGRAM) \
+	    libcruft.$(SHLEXT) $(octlibdir)/libcruft.$(SHLEXT); \
 	fi
+	$(mk-libdir-link)
 
 install-strip::
 	$(MAKE) INSTALL_PROGRAM="$(INSTALL_PROGRAM) -s" install
 
 uninstall::
-	rm -f $(libdir)/libcruft.a
+	rm -f $(octlibdir)/libcruft.a
 
 tags TAGS:: $(SOURCES)
 	$(SUBDIR_FOR_COMMAND)

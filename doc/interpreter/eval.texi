@@ -25,9 +25,7 @@ evaluated in the current context, so any results remain available after
 @example
 @group
 eval ("a = 13")
-
      @print{} a = 13
-
      @result{} 13
 @end group
 @end example
@@ -43,8 +41,16 @@ eval ("a = 13;")
 @end example
 
 In this example, the variable @code{a} has been given the value 13, but
-the value of the expression is not printed.
+the value of the expression is not printed.  You can also turn off
+automatic printing for all expressions executed by @code{eval} using the
+variable @code{default_eval_print_flag}.
 @end deftypefn
+
+@defvr {Built-in Variable} default_eval_print_flag
+If the value of this variable is nonzero, Octave prints the results of
+commands executed by @code{eval} that do not end with semicolons.  If it
+is zero, automatic printing is suppressed.  The default value is 1.
+@end defvr
 
 @deftypefn {Built-in Function} {} feval (@var{name}, @dots{})
 Evaluate the function named @var{name}.  Any arguments after the first

@@ -95,13 +95,9 @@ Then we simply call quad:
 @example
 @group
 [v, ier, nfun, err] = quad ("f", 0, 3)
-
      @result{} 1.9819
-
      @result{} 1
-
      @result{} 5061
-
      @result{} 1.1522e-07
 @end group
 @end example

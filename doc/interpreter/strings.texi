@@ -151,9 +151,8 @@ Return a string containing all the arguments concatenated.  For example,
 
 @example
 @group
-s = [ "ab"; "cde" ]
+s = [ "ab"; "cde" ];
 strcat (s, s, s)
-
      @result{} "ab ab ab "
         "cdecdecde"
 @end group

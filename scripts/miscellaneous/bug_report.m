@@ -42,9 +42,11 @@ function bug_report ()
     prefs = tmpnam ();
 
     if (! isempty (prefs))
-      fopen (prefs, "w");
-      dump_prefs (prefs);
-      fclose (prefs);
+      fid = fopen (prefs, "w");
+      if (fid > 0)
+        dump_prefs (fid);
+        fclose (fid);
+      endif
     endif
 
     cmd = strcat (OCTAVE_HOME, "/bin/octave-bug");

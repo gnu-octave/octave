@@ -5,9 +5,8 @@
 @node Image Processing, Audio Processing, Signal Processing, Top
 @chapter Image Processing
 
-To display images using these functions, you must be using Octave with
-the X Window System, and you must have either @code{xloadimage} or
-@code{xv} installed.  You do not need to be running X in order to
+Octave can display images with the X Window System using the
+@code{xloadimage} program.  You do not need to be running X in order to
 manipulate images, however, so some of these functions may be useful
 even if you are not able to view the results.
 

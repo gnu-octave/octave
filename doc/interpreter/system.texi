@@ -576,7 +576,6 @@ For example,
 @example
 @group
 [s, err, msg] = stat ("/vmlinuz")
-
      @result{} s =
         @{
           atime = 855399756
@@ -593,11 +592,8 @@ For example,
           ino = 9316
           dev = 2049
         @}
-
      @result{} err = 0
-
      @result{} msg = 
-
 @end group
 @end example
 @end deftypefn
@@ -794,13 +790,13 @@ begins (ends) with a colon, the directories
 
 @example
 @group
-@var{OCTAVE_HOME}/libexec/octave/site/exec/@var{ARCH}
-@var{OCTAVE_HOME}/libexec/octave/@var{VERSION}/exec/@var{ARCH}
+@var{octave-home}/libexec/octave/site/exec/@var{arch}
+@var{octave-home}/libexec/octave/@var{version}/exec/@var{arch}
 @end group
 @end example
 
 @noindent
-are prepended (appended) to @code{EXEC_PATH}, where @var{OCTAVE_HOME}
+are prepended (appended) to @code{EXEC_PATH}, where @var{octave-home}
 is the top-level directory where all of Octave is installed
 (the default value is @file{@value{OCTAVEHOME}}).  If you don't specify
 a value for @code{EXEC_PATH} explicitly, these special directories are
@@ -878,7 +874,7 @@ Wait for any child process whose process group ID is equal to that of
 the Octave interpreter process.
 
 @item > 0
-Wait for termination of the child process with ID @var{PID}.
+Wait for termination of the child process with ID @var{pid}.
 @end table
 
 The @var{options} argument can be:

@@ -130,8 +130,8 @@ octave_list::print_name_tag (ostream& os, const string& name) const
   return false;
 }
 
-DEFUN (make_list, args, ,
-  "make_list (ARGS)\n\
+DEFUN (list, args, ,
+  "list (ARGS)\n\
 \n\
 Create a new list from ARGS.")
 {

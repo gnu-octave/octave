@@ -38,7 +38,7 @@ END-INFO-DIR-ENTRY
 
 @include conf.texi
 
-@settitle Octave
+@settitle GNU Octave
 
 @ifinfo
 
@@ -66,7 +66,7 @@ modified versions.
 @end ifinfo
 
 @titlepage
-@title Octave
+@title GNU Octave
 @subtitle A high-level interactive language for numerical computations
 @subtitle Edition 3 for Octave version @value{VERSION}
 @subtitle February 1997
@@ -100,9 +100,9 @@ Software Foundation, 59 Temple Place---Suite 330, Boston, MA
 @node Top, Preface, (dir), (dir)
 @top
 
-This manual documents how to run, install and port Octave, as well as
-its new features and incompatibilities, and how to report bugs.
-It corresponds to Octave version @value{VERSION}.
+This manual documents how to run, install and port GNU Octave, as well
+as its new features and incompatibilities, and how to report bugs.
+It corresponds to GNU Octave version @value{VERSION}.
 @end ifinfo
 
 @menu

@@ -488,9 +488,7 @@ function [...] = f (n, x)
 endfunction
 
 [dos, quatro] = f (2, 2)
-
      @result{} dos = 2
-
      @result{} quatro = 4
 @end group
 @end example
@@ -617,7 +615,7 @@ has to be done to ensure that the correct function definition is used.
 To avoid degrading performance unnecessarily by checking the time stamps
 on functions that are not likely to change, Octave assumes that function
 files in the directory tree
-@file{@var{OCTAVE_HOME}/share/octave/@var{VERSION}/m}
+@file{@var{octave-home}/share/octave/@var{version}/m}
 will not change, so it doesn't have to check their time stamps every time the
 functions defined in those files are used.  This is normally a very good
 assumption and provides a significant improvement in performance for the
@@ -663,7 +661,7 @@ This variable can be used to prevent Octave from making the system call
 @code{stat} each time it looks up functions defined in function files.
 If @code{ignore_function_time_stamp} to @code{"system"}, Octave will not
 automatically recompile function files in subdirectories of
-@file{@var{OCTAVE_HOME}/lib/@var{VERSION}} if they have changed since
+@file{@var{octave-home}/lib/@var{version}} if they have changed since
 they were last compiled, but will recompile other function files in the
 @code{LOADPATH} if they change.  If set to @code{"all"}, Octave will not
 recompile any function files unless their definitions are removed with
@@ -924,7 +922,7 @@ To find out if it does, type the command
 @kbd{octave_config_info ("dld")} at the Octave prompt.  Support for
 dynamic linking is included if this command returns 1.
 
-To compile the example file, type the command @kbd{mkoctfile
+To compile the example file, type the command @samp{mkoctfile
 oregonator.cc} at the shell prompt.  The script @code{mkoctfile} should
 have been installed along with Octave.  Running it will create a file
 called @file{oregonator.oct} that can be loaded by Octave.  To test the
@@ -963,13 +961,14 @@ files
 
 @example
 @group
-balance.cc  fft.cc      hess.cc     lu.cc       schur.cc
-chol.cc     fft2.cc     ifft.cc     minmax.cc   sort.cc
-colloc.cc   filter.cc   ifft2.cc    pinv.cc     svd.cc
-dassl.cc    find.cc     inv.cc      qr.cc       syl.cc
-det.cc      fsolve.cc   log.cc      quad.cc
-eig.cc      fsqp.cc     lsode.cc    qzval.cc
-expm.cc     givens.cc   lu.cc       rand.cc
+balance.cc   fft2.cc      inv.cc       qzval.cc
+chol.cc      filter.cc    log.cc       schur.cc
+colloc.cc    find.cc      lsode.cc     sort.cc 
+dassl.cc     fsolve.cc    lu.cc        svd.cc
+det.cc       givens.cc    minmax.cc    syl.cc
+eig.cc       hess.cc      pinv.cc      
+expm.cc      ifft.cc      qr.cc     
+fft.cc       ifft2.cc     quad.cc
 @end group
 @end example
 
@@ -990,7 +989,7 @@ read the source code for Octave.
 
 Many of Octave's standard functions are distributed as function files.
 They are loosely organized by topic, in subdirectories of
-@file{@var{OCTAVE_HOME}/lib/octave/@var{VERSION}/m}, to make it easier
+@file{@var{octave-home}/lib/octave/@var{version}/m}, to make it easier
 to find them.
 
 The following is a list of all the function file subdirectories, and the

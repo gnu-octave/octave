@@ -82,8 +82,14 @@ extract_tm (Octave_map &m, double& fraction)
   tm.tm_isdst = static_cast<int> (m ["isdst"] . double_value ());
 
 #if defined (HAVE_TM_ZONE)
+  static char *tm_zone = 0;
+
   string tstr = m ["zone"] . string_value ();
-  tm.tm_zone = tstr.c_str ();
+
+  delete [] tm_zone;
+  tm_zone = strsave (tstr.c_str ());
+
+  tm.tm_zone = tm_zone;
 #endif
 
   return &tm;

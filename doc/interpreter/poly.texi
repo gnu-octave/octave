@@ -208,17 +208,11 @@ imaginary part is discarded.  If two poles are farther apart than
 @example
 @group
  b = [1, 1, 1];
-
  a = [1, -5, 8, -4];
-
  [r, p, k, e] = residue (b, a);
-
      @result{} r = [-2, 7, 3]
-
      @result{} p = [2, 2, 1]
-
      @result{} k = [](0x0)
-
      @result{} e = [1, 2, 1]
 @end group
 @end example

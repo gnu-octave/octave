@@ -1,3 +1,19 @@
+Summary of changes for version 2.0.6:
+------------------------------------
+
+  This is primarily a bug-fixing release.  There are only a few new
+  user-visible features.
+
+  * The new built-in variable default_eval_print_flag controls whether
+    Octave prints the results of commands executed by eval() that do
+    not end with semicolons.  The default is 1.
+
+  * The new built-in constant OCTAVE_HOME specifies the top-level
+    directory where Octave is installed.
+
+  * Octave no longer includes functions to work with NPSOL or QPSOL,
+    because they are not free software.
+
 Summary of changes since version 2.0.5:
 --------------------------------------
 
@@ -74,7 +90,7 @@ Summary of changes since version 2.0.5:
       A list is an array of Octave objects.  It can be indexed using
       the normal indexing operator.  For example,
 
-        x = make_list ([1,2;3,4], 1, "foo");
+        x = list ([1,2;3,4], 1, "foo");
         stdout << x(2) << "\n"
         1
         stdout << x;
@@ -89,7 +105,7 @@ Summary of changes since version 2.0.5:
         )
 
       There is currently no special syntax for creating lists; you
-      must use the make_list function.
+      must use the list function.
 
   * Commas in global statements are no longer special.  They are now
     treated as command separators.  This removes a conflict in the

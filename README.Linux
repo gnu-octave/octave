@@ -151,6 +151,14 @@ If you decide to install versions of the libraries that are older (or
 newer) than the ones you already have, you should follow the
 directions in the release notes very carefully.
 
+I/O in dynamically loaded .oct files doesn't work
+-------------------------------------------------
+
+If Octave prints things like `%.-1e' instead of numbers when you use a
+dynamically linked .oct file, you probably need to create shared
+versions of the Octave libraries.  To do that, configure Octave with
+--enable-shared.
+
 
 If you have comments or suggestions for this document, please contact
 bug-octave@bevo.che.wisc.edu.
@@ -160,4 +168,4 @@ jwe@bevo.che.wisc.edu
 University of Wisconsin-Madison
 Department of Chemical Engineering
 
-Wed Jan 29 13:39:02 1997
+Mon May 19 23:13:35 1997

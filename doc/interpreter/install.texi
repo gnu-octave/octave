@@ -158,7 +158,7 @@ This will install a copy of octave, its libraries, and its documentation
 in the destination directory.  As distributed, Octave is installed in
 the following directories.  In the table below, @var{prefix} defaults to
 @file{/usr/local}, @var{version} stands for the current version number
-of the interpreter, and @var{host_type} is the type of computer on which
+of the interpreter, and @var{arch} is the type of computer on which
 Octave is installed (for example, @samp{i586-unknown-gnu}).
 
 @table @file
@@ -185,10 +185,10 @@ Function files distributed with Octave.  This includes the Octave
 version, so that multiple versions of Octave may be installed at the
 same time.
 
-@item @var{prefix}/lib/octave/@var{version}/exec/@var{host_type}
+@item @var{prefix}/lib/octave/@var{version}/exec/@var{arch}
 Executables to be run by Octave rather than the user.
 
-@item @var{prefix}/lib/octave/@var{version}/oct/@var{host_type}
+@item @var{prefix}/lib/octave/@var{version}/oct/@var{arch}
 Object files that will be dynamically loaded.
 
 @item @var{prefix}/share/octave/@var{version}/imagelib
@@ -405,28 +405,6 @@ problem by editing the file @file{config.h} to not define
 In any case, please report this as a bug since it might be possible to
 modify Octave's configuration script to automatically determine the
 proper thing to do.
-
-@item
-If you don't have @sc{Npsol} but you still want to be able to solve
-NLPs, or if you don't have @sc{Qpsol} but you still want to solve QPs,
-you'll need to find replacements or order them from Stanford.  If you
-know of a freely redistributable replacement, please let us know---we
-might be interested in distributing it with Octave.
-
-You can get more information about @sc{Npsol} and @sc{Qpsol} from
-
-@quotation
-Stanford Business Sofrtware, Inc.@*
-2680 Bayshore Parkway, Suite 304@*
-Mountain View, CA 94043@*
-Tel: (415) 962-8719@*
-Fax: (415) 962-1869
-@end quotation
-
-Octave may soon support @sc{Fsqp}, an NLP solver from Andre Tits
-@email{andre@@src.umd.edu} of the University of Maryland.  @sc{Fsqp} is
-available free of charge to academic sites, but can not be redistributed
-to third parties.
 @end itemize
 
 @node Binary Distributions,  , Installation Problems, Installation
@@ -495,10 +473,10 @@ Function files distributed with Octave.  This includes the Octave
 version, so that multiple versions of Octave may be installed at the
 same time.
 
-@item libexec/octave/@var{version}/exec/@var{host_type}
+@item libexec/octave/@var{version}/exec/@var{arch}
 Executables to be run by Octave rather than the user.
 
-@item libexec/octave/@var{version}/oct/@var{host_type}
+@item libexec/octave/@var{version}/oct/@var{arch}
 Object files that will be dynamically loaded.
 
 @item share/octave/@var{version}/imagelib
@@ -507,7 +485,7 @@ Image files that are distributed with Octave.
 
 @noindent
 where @var{version} stands for the current version number of the
-interpreter, and @var{host_type} is the type of computer on which Octave
+interpreter, and @var{arch} is the type of computer on which Octave
 is installed (for example, @samp{@value{TARGETHOSTTYPE}}).
 
 If these directories don't exist, the script @code{install-octave} will
@@ -519,11 +497,11 @@ installed functions:
 @item share/octave/site/m
 Locally installed M-files.
 
-@item libexec/octave/site/exec/@var{host_type}
+@item libexec/octave/site/exec/@var{arch}
 Locally installed binaries intended to be run by Octave rather than by
 the user.
 
-@item libexec/octave/site/octave/@var{host_type}
+@item libexec/octave/site/octave/@var{arch}
 Local object files that will be dynamically linked.
 @end table
 

@@ -22,63 +22,8 @@
 @node Quadratic Programming, Nonlinear Programming, Optimization, Optimization
 @section Quadratic Programming
 
-@deftypefn {Loadable Function} {[@var{x}, @var{obj}, @var{info}, @var{lambda}] =} qpsol (@var{x}, @var{H}, @var{c}, @var{lb}, @var{ub}, @var{lb}, @var{A}, @var{ub})
-Solve quadratic programs using Gill and Murray's @sc{Qpsol}.  Because
-@sc{Qpsol} is not freely redistributable, this function is only
-available if you have obtained your own copy of @sc{Qpsol}.
-@xref{Installation}.
-@end deftypefn
-
-@deftypefn {Loadable Function} {} qpsol_options (@var{opt}, @var{val})
-When called with two arguments, this function allows you set options
-parameters for the function @code{qpsol}.  Given one argument,
-@code{qpsol_options} returns the value of the corresponding option.  If
-no arguments are supplied, the names of all the available options and
-their current values are displayed.
-@end deftypefn
-
 @node Nonlinear Programming, Linear Least Squares, Quadratic Programming, Optimization
 @section Nonlinear Programming
-
-@ignore
-@deftypefn {Loadable Function} {} fsqp ()
-@end deftypefn
-
-@deftypefn {Loadable Function} {} fsqp_options (@var{opt}, @var{val})
-When called with two arguments, this function allows you set options
-parameters for the function @code{fsqp}.  Given one argument,
-@code{fsqp_options} returns the value of the corresponding option.  If
-no arguments are supplied, the names of all the available options and
-their current values are displayed.
-@end deftypefn
-
-Sorry, this hasn't been implemented yet.
-@end ignore
-
-@deftypefn {Loadable Function} {[@var{x}, @var{obj}, @var{info}, @var{lambda}] =} npsol (@var{x}, @var{phi}, @var{lb}, @var{ub}, @var{lb}, @var{A}, @var{ub}, @var{lb}, @var{g}, @var{ub})
-Solve nonlinear programs using Gill and Murray's @sc{Npsol}.  Because
-@sc{Npsol} is not freely redistributable, this function is only
-available if you have obtained your own copy of @sc{Npsol}.
-@xref{Installation}.
-
-The second argument is a string containing the name of the objective
-function to call.  The objective function must be of the form
-
-@example
-y = phi (x)
-@end example
-
-@noindent
-where x is a vector and y is a scalar.
-@end deftypefn
-
-@deftypefn {Loadable Function} {} npsol_options (@var{opt}, @var{val})
-When called with two arguments, this function allows you set options
-parameters for the function @code{npsol}.  Given one argument,
-@code{npsol_options} returns the value of the corresponding option.  If
-no arguments are supplied, the names of all the available options and
-their current values are displayed.
-@end deftypefn
 
 @node Linear Least Squares,  , Nonlinear Programming, Optimization
 @section Linear Least Squares

@@ -1,3 +1,15 @@
+Wed May 21 16:33:33 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* octMakefile.in (install, install-strip): Append version
+	information to octave-bug and mkoctfile.
+
+	* configure.in (octlibdir): New variable.
+	* Makeconf.in: Substitute it here.	
+	(do-subst-config-vals): Add -I${octincludedir} to INCFLAGS.
+	Add -L${octlibdir} to LIBFLAGS.
+
+	* Makeconf.in (mk-includedir-link, mk-libdir-link): New macros.
+
 Mon May  5 00:58:00 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in: Make --enable-readline work again.

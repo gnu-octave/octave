@@ -2757,9 +2757,11 @@ operator >> (istream& is, ComplexMatrix& a)
 	    if (is)
 	      a.elem (i, j) = tmp;
 	    else
-	      return is;
+	      goto done;
 	  }
     }
+
+done:
 
   return is;
 }

@@ -150,9 +150,7 @@ size ([1, 2; 3, 4; 5, 6])
      @result{} [ 3, 2 ]
 
 [nr, nc] = size ([1, 2; 3, 4; 5, 6])
-
      @result{} nr = 3
-
      @result{} nc = 2
 @end group
 @end example

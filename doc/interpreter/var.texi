@@ -281,17 +281,17 @@ function file, the full name of the file is also displayed.
 
 Here is a summary of all of Octave's built-in variables along with
 cross references to additional information and their default values.  In
-the following table @code{OCT_HOME} stands for the root directory where
-all of Octave is installed (the default is @file{@value{OCTAVEHOME}},
-@code{VERSION} stands for the Octave version number (for example,
-@value{VERSION}, and @code{SYS} stands for the type of system for which
+the following table @var{octave-home} stands for the root directory
+where all of Octave is installed (the default is @file{@value{OCTAVEHOME}},
+@var{version} stands for the Octave version number (for example,
+@value{VERSION}) and @var{arch} stands for the type of system for which
 Octave was compiled (for example, @code{@value{TARGETHOSTTYPE}}).
 
 @vtable @code
 @item EDITOR
 @xref{Commands For History}.
 
-Default value: @code{"vi"}.
+Default value: @code{"emacs"}.
 
 @item EXEC_PATH
 @xref{Controlling Subprocesses}.
@@ -301,17 +301,21 @@ Default value: @code{":$PATH"}.
 @item INFO_FILE
 @xref{Getting Help}.
 
-Default value: @code{"OCT_HOME/info/octave.info"}.
+Default value: @code{"@var{octave-home}/info/octave.info"}.
 
 @item INFO_PROGRAM
 @xref{Getting Help}.
 
-Default value: @code{"OCT_HOME/libexec/octave/VERSION/exec/SYS/info"}.
+Default value: @code{"@var{octave-home}/libexec/octave/@var{version}/exec/@var{arch}/info"}.
 
 @item LOADPATH
 @xref{Function Files}.
 
-Default value: @code{".:OCT_HOME/lib/VERSION"}.
+Default value: @code{".:@var{octave-home}/lib/@var{version}"}.
+
+@item OCTAVE_HOME
+
+Default value: @code{"@value{OCTAVEHOME}"}.
 
 @item PAGER
 @xref{Input and Output}.
@@ -347,6 +351,11 @@ Default value: 0.
 @xref{Commands For Completion}.
 
 Default value: @code{" "}.
+
+@item default_eval_print_flag
+@xref{Evaluation}.
+
+Default value: 1.
 
 @item default_return_value
 @xref{Multiple Return Values}.

@@ -187,15 +187,16 @@ install-strip:
 .PHONY: install-strip
 
 install-lib:
-	$(top_srcdir)/mkinstalldirs $(libdir)
-	rm -f $(libdir)/liboctave.a
-	$(INSTALL_DATA) liboctave.a $(libdir)/liboctave.a
-	$(RANLIB) $(libdir)/liboctave.a
+	$(top_srcdir)/mkinstalldirs $(octlibdir)
+	rm -f $(octlibdir)/liboctave.a
+	$(INSTALL_DATA) liboctave.a $(octlibdir)/liboctave.a
+	$(RANLIB) $(octlibdir)/liboctave.a
 	if $(SHARED_LIBS); then \
-	  rm -f $(libdir)/liboctave.$(SHLEXT); \
-	  $(INSTALL_PROGRAM) liboctave.$(SHLEXT) \
-	    $(libdir)/liboctave.$(SHLEXT); \
+	  rm -f $(octlibdir)/liboctave.$(SHLEXT); \
+	  $(INSTALL_PROGRAM) \
+	    liboctave.$(SHLEXT) $(octlibdir)/liboctave.$(SHLEXT); \
 	fi
+	$(mk-libdir-link)
 .PHONY: install-lib
 
 install-inc:
@@ -204,23 +205,11 @@ install-inc:
 	  rm -f $(octincludedir)/$$f ; \
 	  $(INSTALL_DATA) $(srcdir)/$$f $(octincludedir)/$$f ; \
 	done
-	tmp=`echo $(octincludedir) | sed 's|/*$$||'` ; \
-	dir=`echo $$tmp | sed 's|[^/]*$$||'` ; \
-	src=`echo $$tmp | sed 's|^.*/||'` ; \
-	dest=`echo $$src | sed 's|-$(version)$$||'` ; \
-	if [ "$$src" = "$$dest" ] ; then \
-	  true ; \
-	else \
-	  if [ -d $$dir/$$dest ] ; then \
-	    true ; \
-	  else \
-	    cd $$dir ; rm -f $$dest && $(LN_S) $$src $$dest ; \
-	  fi ; \
-	fi
+	$(mk-includedir-link)
 .PHONY: install-inc
 
 uninstall:
-	rm -f $(libdir)/liboctave.a $(libdir)/liboctave.$(SHLEXT)
+	rm -f $(octlibdir)/liboctave.a $(octlibdir)/liboctave.$(SHLEXT)
 	for f in $(INCLUDES) ; do rm -f $(octincludedir)/$$f ; done
 .PHONY: uninstall
 

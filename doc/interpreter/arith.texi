@@ -344,7 +344,6 @@ they work on an element by element basis.  For example,
 @example
 @group
 sin ([1, 2; 3, 4])
-
      @result{}  0.84147   0.90930
          0.14112  -0.75680
 @end group
@@ -386,7 +385,6 @@ Return the cumulative sum of each column of @var{x}.  For example,
 @example
 @group
 cumsum ([1, 2; 3, 4])
-
      @result{}  1  2
          4  6
 @end group
@@ -399,7 +397,6 @@ Return the cumulative product of each column of @var{x}.  For example,
 @example
 @group
 cumprod ([1, 2; 3, 4])
-
      @result{}  1  2
          3  8
 @end group

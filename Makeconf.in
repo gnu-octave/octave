@@ -169,10 +169,6 @@ libexecdir = @libexecdir@
 # ${prefix}/include
 includedir = @includedir@
 
-# Where to install Octave's include files.  The default is
-# ${includedir}/octave-${version}
-octincludedir = @octincludedir@
-
 # Where to install Octave's man pages, and what extension they should
 # have.  The default is ${prefix}/man/man1
 mandir = @mandir@
@@ -187,8 +183,16 @@ infofile = @infofile@
 
 # ==================== Octave-specific directories ====================
 
-# These variables hold the values Octave will actually use.  They are
+# These variables hold the values specific to Octave.  They are
 # based on the values of the standard Make variables above.
+
+# Where to install Octave's library files.  The default is
+# ${libdir}/octave-${version}
+octlibdir = @octlibdir@
+
+# Where to install Octave's include files.  The default is
+# ${includedir}/octave-${version}
+octincludedir = @octincludedir@
 
 # Where to install the function file distributed with
 # Octave.  This includes the Octave version, so that the
@@ -320,11 +324,11 @@ sed < $< \
   -e "s;%FPICFLAG%;\"${FPICFLAG}\";" \
   -e "s;%GCC_IEEE_FP_FLAG%;\"${GCC_IEEE_FP_FLAG}\";" \
   -e "s;%HOST_CXXFLAGS%;\"${HOST_CXXFLAGS}\";" \
-  -e "s;%INCFLAGS%;\"-I${includedir} -I${octincludedir}\";" \
+  -e "s;%INCFLAGS%;\"-I${octincludedir} -I${includedir}\";" \
   -e "s;%LDFLAGS%;\"${LDFLAGS}\";" \
   -e "s;%LEXLIB%;\"${LEXLIB}\";" \
   -e "s;%LIBDLFCN%;\"${LIBDLFCN}\";" \
-  -e "s;%LIBFLAGS%;\"-L${libdir}\";" \
+  -e "s;%LIBFLAGS%;\"-L${octlibdir} -L${libdir}\";" \
   -e "s;%LIBPLPLOT%;\"${LIBPLPLOT}\";" \
   -e "s;%LIBS%;\"${LIBS}\";" \
   -e "s;%NO_IMPLICIT_TEMPLATES%;\"${NO_IMPLICIT_TEMPLATES}\";" \
@@ -361,4 +365,39 @@ sed < $< > $@.tmp \
   -e "s;%OCTAVE_PREFIX%;\"${prefix}\";" \
   -e "s;%TARGET_HOST_TYPE%;\"${target_host_type}\";"
 $(top_srcdir)/move-if-change $@.tmp $@
+endef
+
+# Make a relative symbolic link from $includedir/octave to $octincludedir. 
+
+# XXX FIXME XXX -- this assumes that $octincludedir is a subdirectory
+# of $includedir.
+
+define mk-includedir-link
+src=`echo $(octincludedir) | sed 's|^$(includedir)/*||'` ; \
+if [ "$$src" = "octave" ] ; then \
+  true ; \
+else \
+  if [ -d $(includedir)/octave ] ; then \
+    true ; \
+  else \
+    cd $(includedir) ; rm -f octave && $(LN_S) $$src octave ; \
+  fi ; \
+fi
+endef
+
+# Make a relative symbolic link from $libdir/octave to $octlibdir. 
+
+# XXX FIXME XXX -- this assumes that $octlibdir is a subdirectory of $libdir.
+
+define mk-libdir-link
+src=`echo $(octlibdir) | sed 's|^$(libdir)/*||'` ; \
+if [ "$$src" = "octave" ] ; then \
+  true ; \
+else \
+  if [ -d $(libdir)/octave ] ; then \
+    true ; \
+  else \
+    cd $(libdir) ; rm -f octave && $(LN_S) $$src octave ; \
+  fi ; \
+fi
 endef

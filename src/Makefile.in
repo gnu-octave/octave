@@ -70,8 +70,8 @@ OV_INCLUDES := ov-re-mat.h ov-cx-mat.h ov-ch-mat.h \
 	ov-str-mat.h ov-bool-mat.h ov-bool.h ov-file.h ov.h \
 	ov-fcn.h ov-builtin.h ov-mapper.h ov-usr-fcn.h ov-typeinfo.h
 
-PT_INCLUDES := pt.h pt-all.h pt-arg-list.h pt-assign.h \
-	pt-binop.h pt-cmd.h pt-colon.h pt-const.h pt-decl.h \
+PT_INCLUDES := pt.h pt-all.h pt-arg-list.h pt-assign.h pt-binop.h \
+	pt-check.h pt-cmd.h pt-colon.h pt-const.h pt-decl.h \
 	pt-except.h pt-exp.h pt-id.h pt-idx.h pt-indir.h \
 	pt-jump.h pt-loop.h pt-mat.h pt-misc.h pt-plot.h \
 	pt-pr-code.h pt-select.h pt-stmt.h pt-unop.h pt-walk.h
@@ -111,7 +111,7 @@ OV_SRC := ov-base.cc ov-ch-mat.cc ov-list.cc ov-re-mat.cc \
 	ov-bool-mat.cc ov-bool.cc ov-file.cc ov.cc ov-fcn.cc \
 	ov-builtin.cc ov-mapper.cc ov-usr-fcn.cc ov-typeinfo.cc
 
-PT_SRC := pt.cc pt-arg-list.cc pt-assign.cc pt-binop.cc \
+PT_SRC := pt.cc pt-arg-list.cc pt-assign.cc pt-binop.cc pt-check.cc \
 	pt-cmd.cc pt-colon.cc pt-const.cc pt-decl.cc pt-except.cc \
 	pt-exp.cc pt-id.cc pt-idx.cc pt-indir.cc pt-jump.cc \
 	pt-loop.cc pt-mat.cc pt-misc.cc pt-plot.cc pt-pr-code.cc \
@@ -289,13 +289,14 @@ install-oct:
 .PHONY: install-oct
 
 install-lib:
-	$(top_srcdir)/mkinstalldirs $(libdir)
+	$(top_srcdir)/mkinstalldirs $(octlibdir)
 	for f in $(LIBS_TO_INSTALL); do \
-	  if [ -f $$f ]; then $(INSTALL_DATA) $$f $(libdir)/$$f; fi; \
+	  if [ -f $$f ]; then $(INSTALL_DATA) $$f $(octlibdir)/$$f; fi; \
 	done
 	for f in $(SH_LIBS_TO_INSTALL); do \
-	  if [ -f $$f ]; then $(INSTALL_PROGRAM) $$f $(libdir)/$$f; fi; \
+	  if [ -f $$f ]; then $(INSTALL_PROGRAM) $$f $(octlibdir)/$$f; fi; \
 	done
+	$(mk-libdir-link)
 .PHONY: install-lib
 
 install-inc:
@@ -308,25 +309,13 @@ install-inc:
 	  rm -f $(octincludedir)/$$f ; \
 	  $(INSTALL_DATA) $$f $(octincludedir)/$$f ; \
 	done
-	tmp=`echo $(octincludedir) | sed 's|/*$$||'` ; \
-	dir=`echo $$tmp | sed 's|[^/]*$$||'` ; \
-	src=`echo $$tmp | sed 's|^.*/||'` ; \
-	dest=`echo $$src | sed 's|-$(version)$$||'` ; \
-	if [ "$$src" = "$$dest" ] ; then \
-	  true ; \
-	else \
-	  if [ -d $$dir/$$dest ] ; then \
-	    true ; \
-	  else \
-	    cd $$dir ; rm -f $$dest && $(LN_S) $$src $$dest ; \
-	  fi ; \
-	fi
+	$(mk-includedir-link)
 .PHONY: install-inc
 
 uninstall:
 	rm -f $(bindir)/octave$(EXE)
-	for f in $(LIBS_TO_INSTALL); do rm -f $(libdir)/$$f; done
-	for f in $(SH_LIBS_TO_INSTALL); do rm -f $(libdir)/$$f; done
+	for f in $(LIBS_TO_INSTALL); do rm -f $(octlibdir)/$$f; done
+	for f in $(SH_LIBS_TO_INSTALL); do rm -f $(octlibdir)/$$f; done
 	for f in $(INCLUDES) defaults.h oct-conf.h; do \
 	  rm -f $(octincludedir)/$$f; \
 	done

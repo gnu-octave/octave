@@ -94,12 +94,12 @@ addition to the standard Emacs commands.
 @item C-h m
 Describe the features of Octave mode.
 
-@item LFD
+@item @key{LFD}
 Reindent the current Octave line, insert a newline and indent the new
 line (@code{octave-reindent-then-newline-and-indent}).  An abbrev before
 point is expanded if @code{abbrev-mode} is non-@code{nil}.
 
-@item TAB
+@item @key{TAB}
 Indents current Octave line based on its contents and on previous
 lines (@code{indent-according-to-mode}). 
 
@@ -115,11 +115,11 @@ mode is turned on, typing @kbd{`C-h} or @kbd{`?} lists all abbrevs.
 Any other key combination is executed normally.  Note that all Octave
 abbrevs start with a grave accent.
 
-@item M-LFD
+@item M-@key{LFD}
 Break line at point and insert continuation marker and alignment
 (@code{octave-split-line}).
 
-@item M-TAB
+@item M-@key{TAB}
 Perform completion on Octave symbol preceding point, comparing that
 symbol against Octave's reserved words and builtin variables
 (@code{octave-complete-symbol}). 
@@ -272,10 +272,11 @@ solution is
 @noindent
 (this works for all modes by adding to the startup hooks, without having
 to know the particular binding of @key{RET} in that mode!).  Similar
-considerations apply for using @kbd{M-RET} as @kbd{M-LFD}.  As Barry
-A. Warsaw <bwarsaw@@cnri.reston.va.us> says in the documentation for his
-@code{cc-mode}, ``This is a very common question. @code{:-)} If you want
-this to be the default behavior, don't lobby me, lobby RMS!''
+considerations apply for using @kbd{M-@key{RET}} as @kbd{M-@key{LFD}}.
+As Barry A. Warsaw <bwarsaw@@cnri.reston.va.us> says in the
+documentation for his @code{cc-mode}, ``This is a very common
+question. @code{:-)} If you want this to be the default behavior, don't
+lobby me, lobby RMS!''
 
 The following variables can be used to customize Octave mode.
 

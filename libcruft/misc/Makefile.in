@@ -25,6 +25,8 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
+INCLUDES := f77-fcn.h lo-error.h
+
 ifeq ($(SHARED_LIBS), true)
   ifdef CPICFLAG
     CPICDEP := pic/machar.o pic/dostop.o pic/f77-fcn.o
@@ -39,11 +41,14 @@ include ../Makerules
 
 install install-strip::
 	$(top_srcdir)/mkinstalldirs $(octincludedir)
-	$(INSTALL_DATA) $(srcdir)/f77-fcn.h $(octincludedir)/f77-fcn.h
-	$(INSTALL_DATA) $(srcdir)/lo-error.h $(octincludedir)/lo-error.h
+	for f in $(INCLUDES) ; do \
+	  rm -f $(octincludedir)/$$f ; \
+	  $(INSTALL_DATA) $(srcdir)/$$f $(octincludedir)/$$f ; \
+	done
+	$(mk-includedir-link)
 
 uninstall::
-	rm -f $(octincludedir)/f77-fcn.h
+	for f in $(INCLUDES) ; do rm -f $(octincludedir)/$$f ; done
 
 # Don't optimize.
 

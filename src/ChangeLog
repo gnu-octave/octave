@@ -1,3 +1,23 @@
+Wed May 21 16:30:25 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DLD-FUNCTIONS/time.cc (extract_tm): Avoid memory leak in dealing
+	with time zone.
+
+	* Makefile.in (install-in): Use new mk-includedir-link macro.
+	(install-lib): Install in $octlibdir.  Use new mk-libdir-link macro.
+
+Tue May 20 01:24:11 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-list.cc (Flist): Rename from Fmake_list.
+
+Mon May 19 14:45:58 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* octave.cc (maximum_braindamage): Set default_eval_print_flag to 0.
+
+Sat May 17 16:32:23 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* defaults.cc (set_default_editor): Default is now Emacs, not vi.
+
 Fri May 16 00:07:11 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pt-idx.cc (tree_index_expression::name): New function.

@@ -6,19 +6,19 @@
 @chapter A Brief Introduction to Octave
 @cindex introduction
 
-This manual documents how to run, install and port Octave, and how to
-report bugs.
+This manual documents how to run, install and port GNU Octave, and how
+to report bugs.
 
-Octave is a high-level language, primarily intended for numerical
+GNU Octave is a high-level language, primarily intended for numerical
 computations.  It provides a convenient command line interface for
 solving linear and nonlinear problems numerically, and for performing
 other numerical experiments.  It may also be used as a batch-oriented
 language.
 
-Octave is also freely redistributable software.  You may redistribute it
-and/or modify it under the terms of the GNU General Public License as
-published by the Free Software Foundation.  The GPL is included in this
-manual in @ref{Copying}.
+GNU Octave is also freely redistributable software.  You may
+redistribute it and/or modify it under the terms of the GNU General
+Public License as published by the Free Software Foundation.  The GPL is
+included in this manual in @ref{Copying}.
 
 This document corresponds to Octave version @value{VERSION}.
 
@@ -37,7 +37,7 @@ This document corresponds to Octave version @value{VERSION}.
 @section Running Octave
 
 On most systems, the way to invoke Octave is with the shell command
-@kbd{octave}.  Octave displays an initial message and then a prompt
+@samp{octave}.  Octave displays an initial message and then a prompt
 indicating it is ready to accept input.  You can begin typing Octave
 commands immediately afterward.
 
@@ -363,9 +363,11 @@ manual.  You may want to skip this section and refer back to it later.
 
 Examples of Octave code appear in this font or form: @code{svd (a)}.
 Names that represent arguments or metasyntactic variables appear
-in this font or form: @var{first-number}.  Commands that you type
-sometimes appear in this font or form: @kbd{foo --bar --baz}.  Specific
-keys on your keyboard appear in this font or form: @key{ANY}.
+in this font or form: @var{first-number}.  Commands that you type at the
+shell prompt sometimes appear in this font or form:
+@samp{octave --no-init-file}.  Commands that you type at the Octave
+prompt sometimes appear in this font or form: @kbd{foo --bar --baz}.
+Specific keys on your keyboard appear in this font or form: @key{ANY}.
 @cindex any key
 
 @node Evaluation Notation, Printing Notation, Fonts, Conventions
@@ -379,7 +381,6 @@ evaluate are indicated with @samp{@result{}}.  For example,
 @example
 @group
 sqrt (2)
-
      @result{} 1.4142
 @end group
 @end example
@@ -393,7 +394,6 @@ displayed like this
 @example
 @group
 [1, 2; 3, 4] == [1, 3; 2, 4]
-
      @result{} [ 1, 0; 0, 1 ]
 @end group
 @end example
@@ -404,7 +404,6 @@ and in other cases, they are displayed like this
 @example
 @group
 eye (3)
-
      @result{}  1  0  0
          0  1  0
          0  0  1
@@ -441,9 +440,7 @@ follows on a separate line.
 @example
 @group
 printf ("foo %s\n", "bar")
-
      @print{} foo bar
-
      @result{} 1
 @end group
 @end example
@@ -505,11 +502,8 @@ number 19 is used by default.
 @example
 @group
 foo (1, [3, 5], 3, 9)
-
      @result{} [ 14, 16 ]
-
 foo (5)
-
      @result{} 14
 @end group
 @end example

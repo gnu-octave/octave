@@ -1,3 +1,8 @@
+Wed May 21 11:45:31 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* miscellaneous/bug_report.m: Pass file id to dump_prefs, not file
+	name.
+
 Mon May 12 02:04:01 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* specfun/erfinv.m: Add missing semicolon.

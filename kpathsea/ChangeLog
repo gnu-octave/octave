@@ -1,3 +1,7 @@
+Tue May 20 14:34:34 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in: Turn off optimization for hash.c.
+
 Thu Mar 13 13:08:05 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in: Don't set special PIC options on SGI systems,

@@ -1,25 +1,25 @@
-Octave -- a high-level language for numerical computations.
+GNU Octave -- a high-level language for numerical computations.
 
 Copyright (C) 1996, 1997 John W. Eaton
 
-Last updated: Tue Dec 10 01:41:30 1996
+Last updated: Tue May 20 14:16:45 1997
 
 Overview
 --------
 
-Octave is a high-level language, primarily intended for numerical
+GNU Octave is a high-level language, primarily intended for numerical
 computations.  It provides a convenient command line interface for
 solving linear and nonlinear problems numerically.
 
-Octave is free software; you can redistribute it and/or modify it
+GNU Octave is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
 Free Software Foundation; either version 2, or (at your option) any
 later version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the file COPYING for more
-details.
+GNU Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the file
+COPYING for more details.
 
 Availability
 ------------
@@ -27,7 +27,9 @@ Availability
 The latest released version of Octave is always available via
 anonymous ftp from ftp.che.wisc.edu in the directory /pub/octave.
 Complete source and binaries for several popular systems are
-available.
+available.  Source distributions of Octave are also available from
+prep.ai.mit.edu in the directory /pub/gnu, as well as many mirror
+sites around the world.
 
 Installation and Bugs
 ---------------------

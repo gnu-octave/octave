@@ -147,6 +147,17 @@ pic/tex-file.o:
 	  -DDEFAULT_FONT_SIZES='"$(default_texsizes)"'\
 	  -c $(srcdir)/tex-file.c -o $@
 
+# Don't optimize.
+
+XCC = $(patsubst -O%, , $(CC))
+XCFLAGS = $(patsubst -O%, , $(ALL_CFLAGS))
+
+hash.o:
+	$(XCC) $(CPPFLAGS) $(XCFLAGS) -c $(srcdir)/hash.c
+
+pic/hash.o:
+	$(XCC) $(CPPFLAGS) $(CPICFLAG) $(XCFLAGS) -c $(srcdir)/hash.c -o $@
+
 # Need the -DHAVE_CONFIG_H.
 gmalloc.o:
 	$(CC) $(CPPFLAGS) @DEFS@ $(CFLAGS) -c $(srcdir)/gmalloc.c

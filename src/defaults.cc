@@ -202,7 +202,7 @@ set_default_info_prog (void)
 static void
 set_default_editor (void)
 {
-  Veditor = "vi";
+  Veditor = "emacs";
 
   string env_editor = octave_env::getenv ("EDITOR");
 

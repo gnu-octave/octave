@@ -63,9 +63,11 @@ public:
   octave_complex_matrix (const ComplexDiagMatrix& d)
     : octave_base_matrix<ComplexMatrix> (d) { }
 
-  octave_complex_matrix (const ComplexRowVector& v, int pcv = -1);
+  octave_complex_matrix (const ComplexRowVector& v)
+    : octave_base_matrix<ComplexMatrix> (ComplexMatrix (v)) { }
 
-  octave_complex_matrix (const ComplexColumnVector& v, int pcv = -1);
+  octave_complex_matrix (const ComplexColumnVector& v)
+    : octave_base_matrix<ComplexMatrix> (ComplexMatrix (v)) { }
 
   octave_complex_matrix (const octave_complex_matrix& cm)
     : octave_base_matrix<ComplexMatrix> (cm) { }

@@ -52,14 +52,6 @@ DEFINE_OCTAVE_ALLOCATOR (octave_matrix);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_matrix, "matrix");
 
-octave_matrix::octave_matrix (const RowVector& v, int pcv)
-  : octave_base_matrix<Matrix> ((pcv < 0 && Vprefer_column_vectors) || pcv
-				? Matrix (v.transpose ()) : Matrix (v)) { }
-
-octave_matrix::octave_matrix (const ColumnVector& v, int pcv)
-  : octave_base_matrix<Matrix> ((pcv < 0 && Vprefer_column_vectors) || pcv
-				? Matrix (v) : Matrix (v.transpose ())) { }
-
 octave_value *
 octave_matrix::try_narrowing_conversion (void)
 {

@@ -96,7 +96,7 @@ int Vok_to_lose_imaginary_part;
 //
 // (for A undefined).  Only matters when resize_on_range_error is also
 // TRUE.
-bool Vprefer_column_vectors;
+static bool Vprefer_column_vectors;
 
 // If TRUE, print the name along with the value.
 bool Vprint_answer_id_name;
@@ -356,15 +356,15 @@ octave_value::octave_value (const DiagMatrix& d)
   maybe_mutate ();
 }
 
-octave_value::octave_value (const RowVector& v, int pcv)
-  : rep (new octave_matrix (v, pcv))
+octave_value::octave_value (const RowVector& v)
+  : rep (new octave_matrix (v))
 {
   rep->count = 1;
   maybe_mutate ();
 }
 
-octave_value::octave_value (const ColumnVector& v, int pcv)
-  : rep (new octave_matrix (v, pcv))
+octave_value::octave_value (const ColumnVector& v)
+  : rep (new octave_matrix (v))
 {
   rep->count = 1;
   maybe_mutate ();
@@ -391,15 +391,15 @@ octave_value::octave_value (const ComplexDiagMatrix& d)
   maybe_mutate ();
 }
 
-octave_value::octave_value (const ComplexRowVector& v, int pcv)
-  : rep (new octave_complex_matrix (v, pcv))
+octave_value::octave_value (const ComplexRowVector& v)
+  : rep (new octave_complex_matrix (v))
 {
   rep->count = 1;
   maybe_mutate ();
 }
 
-octave_value::octave_value (const ComplexColumnVector& v, int pcv)
-  : rep (new octave_complex_matrix (v, pcv))
+octave_value::octave_value (const ComplexColumnVector& v)
+  : rep (new octave_complex_matrix (v))
 {
   rep->count = 1;
   maybe_mutate ();

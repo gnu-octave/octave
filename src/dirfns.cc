@@ -491,7 +491,7 @@ fnmatch (\"a*b\", [\"ab\"; \"axyzb\"; \"xyzab\"])\n\
 	  for (int i = 0; i < n; i++)
 	    result(i) = tmp(i);
 
-	  retval = octave_value (result, true);
+	  retval = result;
 	}
     }
   else

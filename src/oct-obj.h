@@ -58,11 +58,11 @@ public:
   octave_value_list (const DiagMatrix& d)
     : data (1, octave_value (d)) { }
 
-  octave_value_list (const RowVector& v, int pcv)
-    : data (1, octave_value (v, pcv)) { }
+  octave_value_list (const RowVector& v)
+    : data (1, octave_value (v)) { }
 
-  octave_value_list (const ColumnVector& v, int pcv)
-    : data (1, octave_value (v, pcv)) { }
+  octave_value_list (const ColumnVector& v)
+    : data (1, octave_value (v)) { }
 
   octave_value_list (const Complex& c)
     : data (1, octave_value (c)) { }
@@ -73,11 +73,11 @@ public:
   octave_value_list (const ComplexDiagMatrix& d)
     : data (1, octave_value (d)) { }
 
-  octave_value_list (const ComplexRowVector& v, int pcv)
-    : data (1, octave_value (v, pcv)) { }
+  octave_value_list (const ComplexRowVector& v)
+    : data (1, octave_value (v)) { }
 
-  octave_value_list (const ComplexColumnVector& v, int pcv)
-    : data (1, octave_value (v, pcv)) { }
+  octave_value_list (const ComplexColumnVector& v)
+    : data (1, octave_value (v)) { }
 
   octave_value_list (const char *s)
     : data (1, octave_value (s)) { }

@@ -16,8 +16,9 @@
 
 ## usage:  discrete_rnd (N, V, P)
 ##
-## Generate a random sample of size N from the univariate distribution
-## which assumes the values in V with probabilities P.
+## Generate a row vector containing a random sample of size N from the
+## univariate distribution which assumes the values in V with
+## probabilities P.
 ##
 ## Currently, N must be a scalar.
 
@@ -30,7 +31,7 @@ function rnd = discrete_rnd (N, V, P)
     usage ("discrete_rnd (N, V, P)");
   endif
 
-  if !is_scalar (N)
+  if (! is_scalar (N))
     error ("discrete_rnd:  N must be a scalar");
   endif
 
@@ -47,9 +48,5 @@ function rnd = discrete_rnd (N, V, P)
   s = reshape (cumsum (P / sum (P)), m, 1);
 
   rnd = V (1 + sum ((s * ones (1, N)) <= ((ones (m, 1) * u))));
-
-  if (prefer_column_vectors)
-    rnd = rnd';
-  endif
   
 endfunction

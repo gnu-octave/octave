@@ -315,7 +315,7 @@ DEFUN_DLD (min, args, nargout,
 	      if (m.rows () == 1)
 		retval(0) = m.row_min ();
 	      else
-		retval(0) = octave_value (m.column_min (), 0);
+		retval(0) = m.column_min ();
 	    }
 	}
       else if (arg1.is_complex_type ())
@@ -327,7 +327,7 @@ DEFUN_DLD (min, args, nargout,
 	      if (m.rows () == 1)
 		retval(0) = m.row_min ();
 	      else
-		retval(0) = octave_value (m.column_min (), 0);
+		retval(0) = m.column_min ();
 	    }
 	}
       else
@@ -348,7 +348,7 @@ DEFUN_DLD (min, args, nargout,
 	      if (m.rows () == 1)
 		retval(0) = m.row_min (index);
 	      else
-		retval(0) = octave_value (m.column_min (index), 0);
+		retval(0) = m.column_min (index);
 	    }
 	}
       else if (arg1.is_complex_type ())
@@ -362,7 +362,7 @@ DEFUN_DLD (min, args, nargout,
 	      if (m.rows () == 1)
 		retval(0) = m.row_min (index);
 	      else
-		retval(0) = octave_value (m.column_min (index), 0);
+		retval(0) = m.column_min (index);
 	    }
 	}
       else
@@ -381,7 +381,7 @@ DEFUN_DLD (min, args, nargout,
 		? octave_NaN : static_cast<double> (tmp);
 	    }
 
-	  retval(1) = octave_value (idx, 0);
+	  retval(1) = idx;
 	}
     }
   else if (nargin == 2)
@@ -529,7 +529,7 @@ DEFUN_DLD (max, args, nargout,
 	      if (m.rows () == 1)
 		retval(0) = m.row_max ();
 	      else
-		retval(0) = octave_value (m.column_max (), 0);
+		retval(0) = m.column_max ();
 	    }
 	}
       else if (arg1.is_complex_type ())
@@ -541,7 +541,7 @@ DEFUN_DLD (max, args, nargout,
 	      if (m.rows () == 1)
 		retval(0) = m.row_max ();
 	      else
-		retval(0) = octave_value (m.column_max (), 0);
+		retval(0) = m.column_max ();
 	    }
 	}
       else
@@ -562,7 +562,7 @@ DEFUN_DLD (max, args, nargout,
 	      if (m.rows () == 1)
 		retval(0) = m.row_max (index);
 	      else
-		retval(0) = octave_value (m.column_max (index), 0);
+		retval(0) = m.column_max (index);
 	    }
 	}
       else if (arg1.is_complex_type ())
@@ -576,7 +576,7 @@ DEFUN_DLD (max, args, nargout,
 	      if (m.rows () == 1)
 		retval(0) = m.row_max (index);
 	      else
-		retval(0) = octave_value (m.column_max (index), 0);
+		retval(0) = m.column_max (index);
 	    }
 	}
       else
@@ -595,7 +595,7 @@ DEFUN_DLD (max, args, nargout,
 		? octave_NaN : static_cast<double> (tmp);
 	    }
 
-	  retval(1) = octave_value (idx, 0);
+	  retval(1) = idx;
 	}
     }
   else if (nargin == 2)

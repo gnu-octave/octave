@@ -51,20 +51,6 @@ DEFINE_OCTAVE_ALLOCATOR (octave_complex_matrix);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_complex_matrix, "complex matrix");
 
-octave_complex_matrix::octave_complex_matrix (const ComplexRowVector& v,
-					      int pcv)
-  : octave_base_matrix<ComplexMatrix> (((pcv < 0 && Vprefer_column_vectors)
-					|| pcv)
-				       ? ComplexMatrix (v.transpose ())
-				       : ComplexMatrix (v)) { }
-
-octave_complex_matrix::octave_complex_matrix (const ComplexColumnVector& v,
-					      int pcv)
-  : octave_base_matrix<ComplexMatrix> (((pcv < 0 && Vprefer_column_vectors)
-					|| pcv)
-				       ? ComplexMatrix (v)
-				       : ComplexMatrix (v.transpose ())) { }
-
 octave_value *
 octave_complex_matrix::try_narrowing_conversion (void)
 {

@@ -1,3 +1,15 @@
+2000-01-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* linear-algebra/cross.m: Only return a row vector if both args
+	are row vectors.
+	* polynomial/polyfit.m: Likewise.
+
+	* signal/autocov.m: Don't reset prefer_column_vectors.
+
+	* statistics/distributions/discrete_rnd.m:
+	Always generate a row vector.
+	* statistics/distributions/hypergeometric_rnd.m: Likewise.
+
 2000-01-11  Ben Sapp <bsapp@nua.lampf.lanl.gov>
 
 	* strings/upper.m: Add missing `-*- texinfo -*-' tag to doc string.

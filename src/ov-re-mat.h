@@ -63,9 +63,11 @@ public:
   octave_matrix (const DiagMatrix& d)
     : octave_base_matrix<Matrix> (d) { }
 
-  octave_matrix (const RowVector& v, int pcv = -1);
+  octave_matrix (const RowVector& v)
+    : octave_base_matrix<Matrix> (Matrix (v)) { }
 
-  octave_matrix (const ColumnVector& v, int pcv = -1);
+  octave_matrix (const ColumnVector& v)
+    : octave_base_matrix<Matrix> (Matrix (v)) { }
 
   octave_matrix (const octave_matrix& m)
     : octave_base_matrix<Matrix> (m) { }

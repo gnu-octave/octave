@@ -1136,7 +1136,7 @@ The @code{linspace} function always returns a row vector, regardless of\n\
 the value of @code{prefer_column_vectors}.\n\
 @end deftypefn")
 {
-  octave_value_list retval;
+  octave_value retval;
 
   int nargin = args.length ();
 
@@ -1166,7 +1166,7 @@ the value of @code{prefer_column_vectors}.\n\
 	      ComplexRowVector rv = linspace (x1, x2, npoints);
 
 	      if (! error_state)
-		retval (0) = octave_value (rv, 0);
+		retval = rv;
 	    }
 	}
       else
@@ -1179,7 +1179,7 @@ the value of @code{prefer_column_vectors}.\n\
 	      RowVector rv = linspace (x1, x2, npoints);
 
 	      if (! error_state)
-		retval (0) = octave_value (rv, 0);
+		retval = rv;
 	    }
 	}
     }

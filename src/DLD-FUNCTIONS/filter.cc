@@ -257,10 +257,9 @@ $$\n\
 
   const char *errmsg = "filter: arguments must be vectors";
 
-  int x_is_vector = (args(2).rows () == 1 || args(2).columns () == 1);
+  bool x_is_row_vector = (args(2).rows () == 1);
 
-  int si_is_vector = (nargin == 4
-		      && (args(3).rows () == 1 || args(3).columns () == 1));
+  bool si_is_row_vector = (nargin == 4 && args(3).rows () == 1);
 
   if (args(0).is_complex_type ()
       || args(1).is_complex_type ()
@@ -293,16 +292,16 @@ $$\n\
 
 	      if (nargout == 2)
 		{
-		  if (si_is_vector)
-		    retval (1) = octave_value (si, (args(3).columns () == 1));
+		  if (si_is_row_vector)
+		    retval(1) = si.transpose ();
 		  else
-		    retval (1) = si;
+		    retval(1) = si;
 		}
 
-	      if (x_is_vector)
-		retval (0) = octave_value (y, (args(2).columns () == 1));
+	      if (x_is_row_vector)
+		retval(0) = y.transpose ();
 	      else
-		retval (0) = y;
+		retval(0) = y;
 	    }
 	  else
 	    error (errmsg);
@@ -338,16 +337,16 @@ $$\n\
 
 	      if (nargout == 2)
 		{
-		  if (si_is_vector)
-		    retval (1) = octave_value (si, (args(3).columns () == 1));
+		  if (si_is_row_vector)
+		    retval(1) = si.transpose ();
 		  else
-		    retval (1) = si;
+		    retval(1) = si;
 		}
 
-	      if (x_is_vector)
-		retval (0) = octave_value (y, (args(2).columns () == 1));
+	      if (x_is_row_vector)
+		retval(0) = y.transpose ();
 	      else
-		retval (0) = y;
+		retval(0) = y;
 	    }
 	  else
 	    error (errmsg);

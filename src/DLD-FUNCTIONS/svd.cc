@@ -158,7 +158,7 @@ decomposition, eliminating the unnecessary rows or columns of @var{u} or\n\
 
 	  if (nargout == 0 || nargout == 1)
 	    {
-	      retval(0) = octave_value (sigma.diag (), 1);
+	      retval(0) = sigma.diag ();
 	    }
 	  else
 	    {
@@ -187,7 +187,7 @@ decomposition, eliminating the unnecessary rows or columns of @var{u} or\n\
 
 	  if (nargout == 0 || nargout == 1)
 	    {
-	      retval(0) = octave_value (sigma.diag (), 1);
+	      retval(0) = sigma.diag ();
 	    }
 	  else
 	    {

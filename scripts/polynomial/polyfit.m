@@ -32,6 +32,10 @@
 ## @code{sumsq (p(x(i)) - y(i))},
 ## @end ifinfo
 ##  to best fit the data in the least squares sense.
+##
+## The polynomial coefficients are returned in a row vector if @var{x}
+## and @var{y} are both row vectors; otherwise, they are returned in a
+## column vector.
 ## 
 ## If two output arguments are requested, the second contains the values of
 ## the polynomial for each value of @var{x}.
@@ -76,8 +80,8 @@ function [p, yf] = polyfit (x, y, n)
 
   p = flipud (p);
 
-  if (! prefer_column_vectors)
-    p = p.';
+  if (y_is_row_vector && rows (x) == 1)
+    p = p';
   endif
 
 endfunction

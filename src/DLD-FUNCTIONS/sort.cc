@@ -164,8 +164,8 @@ mx_sort (const Matrix& m)
 
   if (nr == 1 && nc > 0)
     {
-      retval (1) = Matrix (nr, nc, 1.0);
-      retval (0) = m;
+      retval(1) = Matrix (nr, nc, 1.0);
+      retval(0) = m;
 
       return retval;
     }
@@ -181,8 +181,8 @@ mx_sort (const Matrix& m)
 	}
     }
 
-  retval (1) = idx;
-  retval (0) = ms;
+  retval(1) = idx;
+  retval(0) = ms;
 
   return retval;
 }
@@ -199,8 +199,8 @@ mx_sort (const RowVector& v)
 
   if (n == 1)
     {
-      retval (1) = RowVector (n, 1.0);
-      retval (0) = v;
+      retval(1) = RowVector (n, 1.0);
+      retval(0) = v;
 
       return retval;
     }
@@ -213,8 +213,8 @@ mx_sort (const RowVector& v)
       VECTOR_CREATE_RETURN_VALUES (vs, v);
     }
 
-  retval (1) = octave_value (idx, 0);
-  retval (0) = octave_value (vs, 0);
+  retval(1) = idx;
+  retval(0) = vs;
 
   return retval;
 }
@@ -232,8 +232,8 @@ mx_sort (const ComplexMatrix& cm)
 
   if (nr == 1 && nc > 0)
     {
-      retval (1) = Matrix (nr, nc, 1.0);
-      retval (0) = cm;
+      retval(1) = Matrix (nr, nc, 1.0);
+      retval(0) = cm;
 
       return retval;
     }
@@ -259,8 +259,8 @@ mx_sort (const ComplexMatrix& cm)
 	}
     }
 
-  retval (1) = idx;
-  retval (0) = cms;
+  retval(1) = idx;
+  retval(0) = cms;
 
   return retval;
 }
@@ -277,8 +277,8 @@ mx_sort (ComplexRowVector& cv)
 
   if (n == 1)
     {
-      retval (1) = RowVector (n, 1.0);
-      retval (0) = cv;
+      retval(1) = RowVector (n, 1.0);
+      retval(0) = cv;
 
       return retval;
     }
@@ -301,8 +301,8 @@ mx_sort (ComplexRowVector& cv)
       VECTOR_CREATE_RETURN_VALUES (cvs, cv);
     }
 
-  retval (1) = octave_value (idx, 0);
-  retval (0) = octave_value (cvs, 0);
+  retval(1) = idx;
+  retval(0) = cvs;
 
   return retval;
 }

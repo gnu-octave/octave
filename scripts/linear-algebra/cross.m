@@ -17,7 +17,10 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} cross (@var{x}, @var{y})
 ## Computes the vector cross product of the two 3-dimensional vectors
-## @var{x} and @var{y}.  For example,
+## @var{x} and @var{y}.
+##
+## A row vector is returned if @var{x} and @var{y} are both row vectors;
+## otherwise, a column vector is returned.
 ## 
 ## @example
 ## @group
@@ -44,8 +47,7 @@ function z = cross (x, y)
     x_nr = rows (x);
     y_nr = rows (y);
 
-    if ((x_nr == y_nr && x_nr == 1)
- 	|| (x_nr != y_nr && ! prefer_column_vectors))
+    if (x_nr == y_nr && x_nr == 1)
       z = z.';
     endif
 

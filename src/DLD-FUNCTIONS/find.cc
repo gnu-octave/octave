@@ -29,6 +29,19 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gripes.h"
 #include "oct-obj.h"
 
+#define DO_FIND_OP(T) \
+  do \
+    { \
+      T tmp (count); \
+ \
+      for (int i = 0; i < count; i++) \
+	tmp (i) = nr * (j_idx (i) - 1.0) + i_idx (i); \
+ \
+      retval(0) = tmp; \
+    } \
+  while (0)
+
+
 static octave_value_list
 find_to_fortran_idx (const ColumnVector i_idx, const ColumnVector j_idx,
 		     const octave_value& val, int nr, int nargout)
@@ -40,15 +53,15 @@ find_to_fortran_idx (const ColumnVector i_idx, const ColumnVector j_idx,
     case 0:
     case 1:
       {
-	int count = i_idx.length ();
-	ColumnVector tmp (count);
-	for (int i = 0; i < count; i++)
-	  tmp (i) = nr * (j_idx (i) - 1.0) + i_idx (i);
-
 	// If the original argument was a row vector, force a row
 	// vector of indices to be returned.
 
-	retval(0) = octave_value (tmp, (nr != 1));
+	int count = i_idx.length ();
+
+	if (nr == 1)
+	  DO_FIND_OP(RowVector);
+	else
+	  DO_FIND_OP(ColumnVector);
       }
       break;
 
@@ -57,15 +70,8 @@ find_to_fortran_idx (const ColumnVector i_idx, const ColumnVector j_idx,
       // Fall through!
 
     case 2:
-      retval(1) = octave_value (j_idx, 1);
-      retval(0) = octave_value (i_idx, 1);
-
-      // If you want this to work more like Matlab, use
-      //
-      //    retval(0) = octave_value (i_idx, (nr != 1));
-      //
-      // instead of the previous statement.
-
+      retval(1) = j_idx;
+      retval(0) = i_idx;
       break;
 
     default:
@@ -112,8 +118,7 @@ find_nonzero_elem_idx (const Matrix& m, int nargout)
 	  }
       }
 
-  octave_value tmp (v, 1);
-  return find_to_fortran_idx (i_idx, j_idx, tmp, m_nr, nargout);
+  return find_to_fortran_idx (i_idx, j_idx, octave_value (v), m_nr, nargout);
 }
 
 static octave_value_list
@@ -152,8 +157,7 @@ find_nonzero_elem_idx (const ComplexMatrix& m, int nargout)
 	  }
       }
 
-  octave_value tmp (v, 1);
-  return find_to_fortran_idx (i_idx, j_idx, tmp, m_nr, nargout);
+  return find_to_fortran_idx (i_idx, j_idx, octave_value (v), m_nr, nargout);
 }
 
 DEFUN_DLD (find, args, nargout,

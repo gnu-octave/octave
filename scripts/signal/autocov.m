@@ -42,19 +42,8 @@ function retval = autocov (X, h)
   
   retval = zeros (h + 1, c);
   
-  unwind_protect
-
-    oldpcv = prefer_column_vectors;
-    prefer_column_vectors = "false";
-
-    for i = 0 : h
-      retval(i+1, :) = diag (X(i+1:n, :).' * conj (X(1:n-i, :))) / n;
-    endfor
-
-  unwind_protect_cleanup
-    
-    prefer_column_vectors = oldpcv;
-    
-  end_unwind_protect
+  for i = 0 : h
+    retval(i+1, :) = diag (X(i+1:n, :).' * conj (X(1:n-i, :))) / n;
+  endfor
   
 endfunction

@@ -1885,9 +1885,12 @@ tree_simple_assignment_expression::~tree_simple_assignment_expression (void)
 {
   if (! preserve)
     {
-      delete lhs;
-      delete index;
+      if (lhs_idx_expr)
+	delete lhs_idx_expr;
+      else
+	delete lhs;
     }
+
   delete rhs;
 }
 
@@ -2495,6 +2498,17 @@ tree_function::bind_nargin_and_nargout (int nargin, int nargout)
 
   tmp = new tree_constant (nargout);
   nargout_sr->define (tmp);
+}
+
+tree_function::~tree_function (void)
+{
+  delete param_list;
+  delete ret_list;
+  delete sym_tab;
+  delete cmd_list;
+  delete [] file_name;
+  delete [] fcn_name;
+  delete vr_list;
 }
 
 #if 0

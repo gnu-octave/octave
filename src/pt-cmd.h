@@ -58,6 +58,8 @@ tree_command : public tree
 public:
   tree_command (int l = -1, int c = -1) : tree (l, c) { }
 
+  virtual ~tree_command (void) { }
+
   virtual void eval (void) = 0;
 };
 

@@ -196,6 +196,8 @@ tree_multi_val_ret : public tree_expression
 public:
   tree_multi_val_ret (int l = -1, int c = -1) : tree_expression (l, c) { }
 
+  ~tree_multi_val_ret (void) { }
+
   int is_multi_val_ret_expression (void) const
     { return 1; }
 
@@ -219,6 +221,8 @@ public:
 	values = v;
       }
 
+  ~tree_oct_obj (void) { }
+
   tree_constant eval (int print);
 
   Octave_object eval (int print, int nargout, const Octave_object& args);
@@ -236,6 +240,8 @@ tree_fvc : public tree_multi_val_ret
 {
 public:
   tree_fvc (int l = -1, int c = -1) : tree_multi_val_ret (l, c) { }
+
+  ~tree_fvc (void) { }
 
   virtual int is_constant (void) const
     { return 0; }
@@ -287,6 +293,8 @@ public:
       sym = s;
       maybe_do_ans_assign = 0;
     }
+
+  ~tree_identifier (void) { }
 
   int is_identifier (void) const
     { return 1; }
@@ -619,6 +627,7 @@ private:
   void init (int plhs, int ans_assign)
     {
       etype = tree_expression::assignment;
+      lhs_idx_expr = 0;
       lhs = 0;
       index = 0;
       rhs = 0;
@@ -661,6 +670,7 @@ private:
     : tree_expression (l, c)
       {
 	init (plhs, ans_assign);
+	lhs_idx_expr = idx_expr; // cache this -- we may need to delete it.
 	lhs = idx_expr->ident ();
 	index = idx_expr->arg_list ();
 	rhs = r;
@@ -687,6 +697,7 @@ private:
   void print_code (ostream& os);
 
  private:
+  tree_index_expression *lhs_idx_expr;
   tree_indirect_ref *lhs;
   tree_argument_list *index;
   tree_expression *rhs;
@@ -799,6 +810,8 @@ public:
   tree_builtin (int i_max, int o_max, Octave_builtin_fcn f,
 		const char *nm = 0);
 
+  ~tree_builtin (void) { }  // XXX ?? XXX
+
 //  int is_builtin (void) const;
 
   int is_mapper_function (void) const
@@ -867,6 +880,8 @@ public:
 	 cmd_list = cl;
 	 install_nargin_and_nargout ();
        }
+
+  ~tree_function (void);
 
 //  tree_function *define (tree_statement_list *t);
   tree_function *define_param_list (tree_parameter_list *t);

@@ -32,6 +32,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #endif
 
 #include <strstream.h>
+#include <ctype.h>
 #include <string.h>
 
 #include "input.h"
@@ -1668,6 +1669,34 @@ handle_close_brace (int spc_gobbled)
   return ']';
 }
 
+static void
+maybe_unput_comma (int spc_gobbled)
+{
+  if (user_pref.whitespace_in_literal_matrix != 2
+      && ! nesting_level.empty ()
+      && nesting_level.top () == BRACE) 
+    {
+      int bin_op = next_token_is_bin_op (spc_gobbled, yytext);
+
+      int postfix_un_op = next_token_is_postfix_unary_op (spc_gobbled,
+							  yytext);
+
+      int c1 = yyinput ();
+      int c2 = yyinput ();
+      unput (c2);
+      unput (c1);
+      int sep_op = match_any (c1, ",;\n]");
+      int dot_op = (c1 == '.'
+		    && (isalpha (c2) || isspace (c2) || c2 == '_'));
+      int index_op = (c1 == '('
+		      && (user_pref.whitespace_in_literal_matrix == 0
+			  || ! spc_gobbled));
+
+      if (! (postfix_un_op || bin_op || sep_op || dot_op || index_op))
+	unput (',');
+    }
+}
+
 // Figure out exactly what kind of token to return when we have seen
 // an identifier.  Handles keywords.
 
@@ -1680,10 +1709,14 @@ handle_identifier (char *tok, int spc_gobbled)
   cant_be_identifier = 1;
 
 // If we are expecting a structure element, we just want to return
-// TEXT_ID, which is a string that is also a valid identifier.
+// TEXT_ID, which is a string that is also a valid identifier.  But
+// first, we have to decide whether to insert a comma.
 
   if (looking_at_indirect_ref)
-    TOK_PUSH_AND_RETURN (tok, TEXT_ID);
+    {
+      maybe_unput_comma (spc_gobbled);
+      TOK_PUSH_AND_RETURN (tok, TEXT_ID);
+    }
 
 // If we have a regular keyword, or a plot STYLE, return it.  Keywords
 // can be followed by identifiers (TOK_RETURN handles that).
@@ -1784,27 +1817,7 @@ handle_identifier (char *tok, int spc_gobbled)
   quote_is_transpose = 1;
   do_comma_insert_check ();
 
-// Check to see if we should insert a comma.
-
-  if (user_pref.whitespace_in_literal_matrix != 2
-      && ! nesting_level.empty ()
-      && nesting_level.top () == BRACE) 
-    {
-      int bin_op = next_token_is_bin_op (spc_gobbled, yytext);
-
-      int postfix_un_op = next_token_is_postfix_unary_op (spc_gobbled,
-							  yytext);
-
-      int c1 = yyinput ();
-      unput (c1);
-      int other_op = match_any (c1, ".,;\n]");
-      int index_op = (c1 == '('
-		      && (user_pref.whitespace_in_literal_matrix == 0
-			  || ! spc_gobbled));
-
-      if (! (postfix_un_op || bin_op || other_op || index_op))
-	unput (',');
-    }
+  maybe_unput_comma (spc_gobbled);
 
   current_input_column += yyleng;
   return NAME;

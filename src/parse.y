@@ -56,6 +56,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt-exp.h"
 #include "pt-misc.h"
 #include "pt-plot.h"
+#include "pt-pr-code.h"
 #include "symtab.h"
 #include "token.h"
 #include "utils.h"
@@ -707,8 +708,6 @@ screwed_again	: // empty
 
 expression	: simple_expr
 		  { $$ = $1; }
-		| colon_expr
-		  { $$ = finish_colon_expression ($1); }
 		| NUM '=' expression
 		  {
 		    yyerror ("invalid assignment to a number");
@@ -742,6 +741,8 @@ simple_expr1	: NUM
 		  { $$ = $1; }
 		| variable
 		  { $$ = $1; }
+		| colon_expr
+		  { $$ = finish_colon_expression ($1); }
 		| matrix
 		  { $$ = $1; }
 		| '[' ']'
@@ -1363,6 +1364,91 @@ make_plot_command (token *tok, plot_limits *range, subplot_list *list)
   return new tree_plot_command (list, range, tok->pttype ());
 }
 
+static tree_expression *
+fold (tree_binary_expression *e)
+{
+  tree_expression *retval = 0;
+
+  tree_expression *op1 = e->lhs ();
+  tree_expression *op2 = e->rhs ();
+
+  if (op1->is_constant () && op2->is_constant ())
+    {
+      octave_value tmp = e->eval (0);
+
+      if (! error_state)
+	{
+	  tree_constant *tc_retval = new tree_constant (tmp);
+
+	  ostrstream buf;
+
+	  tree_print_code tpc (buf);
+
+	  e->accept (tpc);
+
+	  buf << ends;
+
+	  char *s = buf.str ();
+
+	  tc_retval->stash_original_text (s);
+
+	  delete [] s;
+
+	  delete e;
+
+	  retval = tc_retval;
+	}
+      else
+	delete e;
+    }
+  else
+    retval = e;
+
+  return retval;
+}
+
+static tree_expression *
+fold (tree_unary_expression *e)
+{
+  tree_expression *retval = 0;
+
+  tree_expression *op1 = e->operand ();
+
+  if (op1->is_constant ())
+    {
+      octave_value tmp = e->eval (0);
+
+      if (! error_state)
+	{
+	  tree_constant *tc_retval = new tree_constant (tmp);
+
+	  ostrstream buf;
+
+	  tree_print_code tpc (buf);
+
+	  e->accept (tpc);
+
+	  buf << ends;
+
+	  char *s = buf.str ();
+
+	  tc_retval->stash_original_text (s);
+
+	  delete [] s;
+
+	  delete e;
+
+	  retval = tc_retval;
+	}
+      else
+	delete e;
+    }
+  else
+    retval = e;
+
+  return retval;
+}
+
 // Finish building a range.
 
 static tree_expression *
@@ -1370,14 +1456,39 @@ finish_colon_expression (tree_colon_expression *e)
 {
   tree_expression *retval = 0;
 
-  if (e->is_range_constant ())
+  tree_expression *base = e->base ();
+  tree_expression *limit = e->limit ();
+  tree_expression *incr = e->increment ();
+
+  if (base->is_constant () && limit->is_constant ()
+      && (! incr || (incr && incr->is_constant ())))
     {
       octave_value tmp = e->eval (0);
 
-      delete e;
-
       if (! error_state)
-	retval = new tree_constant (tmp);
+	{
+	  tree_constant *tc_retval = new tree_constant (tmp);
+
+	  ostrstream buf;
+
+	  tree_print_code tpc (buf);
+
+	  e->accept (tpc);
+
+	  buf << ends;
+
+	  char *s = buf.str ();
+
+	  tc_retval->stash_original_text (s);
+
+	  delete [] s;
+
+	  delete e;
+
+	  retval = tc_retval;
+	}
+      else
+	delete e;
     }
   else
     retval = e;
@@ -1398,8 +1509,10 @@ make_constant (int op, token *tok_val)
   switch (op)
     {
     case NUM:
-      retval = new tree_constant (tok_val->number (), l, c);
-      retval->stash_original_text (tok_val->text_rep ());
+      {
+	retval = new tree_constant (tok_val->number (), l, c);
+	retval->stash_original_text (tok_val->text_rep ());
+      }
       break;
 
     case IMAG_NUM:
@@ -1428,8 +1541,6 @@ static tree_expression *
 make_binary_op (int op, tree_expression *op1, token *tok_val,
 		tree_expression *op2)
 {
-  tree_expression *retval = 0;
-
   tree_binary_expression::type t;
 
   switch (op)
@@ -1514,20 +1625,10 @@ make_binary_op (int op, tree_expression *op1, token *tok_val,
   int l = tok_val->line ();
   int c = tok_val->column ();
 
-  retval = new tree_binary_expression (op1, op2, l, c, t);
+  tree_binary_expression *e
+    = new tree_binary_expression (op1, op2, l, c, t);
 
-  if (op1->is_constant () && op2->is_constant ())
-    {
-      octave_value tmp = retval->eval (0);
-
-      delete retval;
-      retval = 0;
-
-      if (! error_state)
-	retval = new tree_constant (tmp);
-    }
-
-  return retval;
+  return fold (e);
 }
 
 // Build a boolean expression.
@@ -1536,8 +1637,6 @@ static tree_expression *
 make_boolean_op (int op, tree_expression *op1, token *tok_val,
 		 tree_expression *op2)
 {
-  tree_expression *retval = 0;
-
   tree_boolean_expression::type t;
 
   switch (op)
@@ -1558,20 +1657,10 @@ make_boolean_op (int op, tree_expression *op1, token *tok_val,
   int l = tok_val->line ();
   int c = tok_val->column ();
 
-  retval = new tree_boolean_expression (op1, op2, l, c, t);
+  tree_boolean_expression *e
+    = new tree_boolean_expression (op1, op2, l, c, t);
 
-  if (op1->is_constant () && op2->is_constant ())
-    {
-      octave_value tmp = retval->eval (0);
-
-      delete retval;
-      retval = 0;
-
-      if (! error_state)
-	retval = new tree_constant (tmp);
-    }
-
-  return retval;
+  return fold (e);
 }
 
 // Build a prefix expression.
@@ -1635,8 +1724,6 @@ make_postfix_op (int op, tree_identifier *op1, token *tok_val)
 static tree_expression *
 make_unary_op (int op, tree_expression *op1, token *tok_val)
 {
-  tree_expression *retval = 0;
-
   tree_unary_expression::type t;
 
   switch (op)
@@ -1665,20 +1752,10 @@ make_unary_op (int op, tree_expression *op1, token *tok_val)
   int l = tok_val->line ();
   int c = tok_val->column ();
 
-  retval = new tree_unary_expression (op1, l, c, t);
+  tree_unary_expression *e
+    = new tree_unary_expression (op1, l, c, t);
 
-  if (op1->is_constant ())
-    {
-      octave_value tmp = retval->eval (0);
-
-      delete retval;
-      retval = 0;
-
-      if (! error_state)
-	retval = new tree_constant (tmp);
-    }
-
-  return retval;
+  return fold (e);
 }
 
 // Build an unwind-protect command.
@@ -2080,14 +2157,34 @@ finish_matrix (tree_matrix *m)
 
   lexer_flags.maybe_screwed_again--;
 
-  if (m->is_matrix_constant ())
+  if (m->all_elements_are_constant ())
     {
       octave_value tmp = m->eval (0);
 
-      delete m;
-
       if (! error_state)
-	retval = new tree_constant (tmp);
+	{
+	  tree_constant *tc_retval = new tree_constant (tmp);
+
+	  ostrstream buf;
+
+	  tree_print_code tpc (buf);
+
+	  m->accept (tpc);
+
+	  buf << ends;
+
+	  char *s = buf.str ();
+
+	  tc_retval->stash_original_text (s);
+
+	  delete [] s;
+
+	  delete m;
+
+	  retval = tc_retval;
+	}
+      else
+	delete m;
     }
   else
     retval = m;

@@ -1,3 +1,45 @@
+Tue Nov 19 12:01:13 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* parse.y (fold): New functions for constant folding for binary
+	and unary expressions.  Keep track of original text even when
+	transformations occur.
+	(make_binary_op, make_boolean_op, make_unary_op): Use them.
+	(finish_colon_expression, finish_matrix): Keep track of original
+	text even when transformations occur.
+
+	* help.cc (Ftype): Don't mess with Vps4.
+	Handle new option `-transformed'.
+
+	* pt-const.h, pt-const.cc (tree_constant::print):
+	New arg, pr_orig_text.
+
+	* pt-exp.h, pt-exp.cc (tree_colon_expression::is_range_constant):
+	Delete.
+
+	* pt-exp-base.h (tree_expression::original_text): New virtual function.
+	pt-exp-base.cc (tree_expression::original_text): Default version.
+
+	* pt-pr-code.h (tree_print_code::print_original_text,
+	tree_print_code::prefix): New fields.
+	* pt-pr-code.cc (tree_print_code::visit_constant): Pass
+	print_original_text to tree_constant::print().
+	(tree_print_code::indent): Use prefix instead of Vps4.
+	* pt-fcn.cc (tree_function::print_function_header,
+	tree_function::print_function_trailer): Pass Vps4 to
+	tree_print_code_constructor for prefix.
+	* pt-misc.cc (tree_statement::maybe_echo_code): Pass Vps4 to
+	tree_print_code_constructor for prefix.
+
+	* pt-mat.h, pt-mat.cc (tree_matrix::all_elements_are_constant):
+	Rename from is_matrix_constant.
+	(tree_matrix_row::all_elements_are_constant): Likewise.
+	Change all callers.
+
+Mon Nov 18 14:13:32 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (install-inc): Try harder to create the link from
+	include/octave to include/octave-VERSION.
+
 Sun Nov 17 14:14:48 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (parse.cc): Expect 13 shift/reduce conflicts.

@@ -1,3 +1,8 @@
+2003-10-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* input.cc (input_event_hook): Clear the event hook if hook_fcn
+	does not name a valid function.
+
 2003-10-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* mappers.cc (xabs): New function.

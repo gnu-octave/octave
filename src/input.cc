@@ -941,10 +941,20 @@ static octave_value user_data;
 static void
 input_event_hook (void)
 {
-  if (user_data.is_defined ())
-    feval (hook_fcn, user_data, 0);
+  if (is_valid_function (hook_fcn))
+    {
+      if (user_data.is_defined ())
+	feval (hook_fcn, user_data, 0);
+      else
+	feval (hook_fcn, octave_value_list (), 0);
+    }
   else
-    feval (hook_fcn, octave_value_list (), 0);
+    {
+      hook_fcn = std::string ();
+      user_data = octave_value ();
+
+      command_editor::set_event_hook (0);
+    }      
 }
 
 DEFUN (input_event_hook, args, ,

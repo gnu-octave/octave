@@ -1435,7 +1435,7 @@ mislocked (const std::string& nm)
 
 DEFCMD (mlock, args, ,
   "-*- texinfo -*-\n\
-@deftypefnx {Built-in Function} {} mlock (@var{name})\n\
+@deftypefn {Built-in Function} {} mlock (@var{name})\n\
 Lock the named function into memory.  If no function is named\n\
 then lock in the current function.\n\
 @end deftypefn\n\

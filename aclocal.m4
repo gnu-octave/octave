@@ -531,7 +531,9 @@ AC_DEFUN(OCTAVE_PROG_GPERF, [
   AC_CHECK_PROG(GPERF, gperf, gperf, [])
   if test -n "$GPERF"; then
     if echo "%{
+enum octave_kw_id { a_kw };
 %}
+struct octave_kw { const char *name; int tok; octave_kw_id kw_id; };
 %%
 foo" | $GPERF -t -C -D -E -G -L ANSI-C -H octave_kw_hash -N octave_kw_lookup > /dev/null 2>&1; then
       true

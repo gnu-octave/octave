@@ -1,4 +1,14 @@
+Sun Jan 26 19:39:51 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* emacs/Makefile.in: New file.
+	* configure.in: create emacs/Makefile.
+	* octMakefile.in: Move/add emacs dir to the appropriate lists.
+
 Sat Jan 25 22:27:14 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* aclocal.m4 (OCTAVE_CHECK_TYPE): New macro, stolen from bash.
+	* configure.in: Use it.
+	* acconfig.h: Add #undef for sigset_t.
 
 	* configure.in (RLD_FLAG): Delete.
 	* mkoctfile.in (RLD_FLAG): Delete.

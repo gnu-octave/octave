@@ -565,3 +565,28 @@ if test "$octave_cv_must_reinstall_sighandlers" = yes; then
 AC_DEFINE(MUST_REINSTALL_SIGHANDLERS)
 fi
 ])
+dnl
+dnl This check originally from bash 2.0.
+dnl
+dnl Check for typedef'd symbols in header files, but allow the caller to
+dnl specify the include files to be checked in addition to the default.
+dnl 
+dnl OCTAVE_CHECK_TYPE(TYPE, HEADERS, DEFAULT[, VALUE-IF-FOUND])
+AC_DEFUN(OCTAVE_CHECK_TYPE,
+[AC_REQUIRE([AC_HEADER_STDC])dnl
+AC_MSG_CHECKING(for $1)
+AC_CACHE_VAL(octave_cv_type_$1,
+[AC_EGREP_CPP($1, [#include <sys/types.h>
+#if STDC_HEADERS
+#include <stdlib.h>
+#endif
+$2
+], octave_cv_type_$1=yes, octave_cv_type_$1=no)])
+AC_MSG_RESULT($octave_cv_type_$1)
+ifelse($#, 4, [if test $octave_cv_type_$1 = yes; then
+	AC_DEFINE($4)
+	fi])
+if test $octave_cv_type_$1 = no; then
+  AC_DEFINE($1, $3)
+fi
+])

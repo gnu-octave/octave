@@ -1,3 +1,8 @@
+Sun Jan 26 19:41:48 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* sighandlers.cc (sigchld_handler): Block SIGCHLD while
+	sigchld_hander is running.
+
 Sat Jan 25 22:36:39 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (bin-dist): Update for 2.x.

@@ -21,7 +21,7 @@ dnl Copyright (C) 1996 John W. Eaton
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA. 
 
-AC_REVISION($Revision: 1.247 $)
+AC_REVISION($Revision: 1.248 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -928,6 +928,7 @@ AC_TYPE_UID_T
 AC_CHECK_TYPE(dev_t, short)
 AC_CHECK_TYPE(ino_t, unsigned long)
 AC_CHECK_TYPE(nlink_t, short)
+OCTAVE_CHECK_TYPE(sigset_t, [#include <signal.h>], int)
 
 ### Define VOID_SIGHANDLER for readline.
 
@@ -1117,8 +1118,8 @@ AC_CONFIG_SUBDIRS(glob kpathsea scripts $INFO_DIR $PLPLOT_DIR $READLINE_DIR)
 
 AC_OUTPUT(Makefile octMakefile Makeconf test/Makefile dlfcn/Makefile
   doc/Makefile doc/faq/Makefile doc/interpreter/Makefile
-  doc/liboctave/Makefile doc/refcard/Makefile examples/Makefile
-  liboctave/Makefile src/Makefile libcruft/Makefile
+  doc/liboctave/Makefile doc/refcard/Makefile emacs/Makefile
+  examples/Makefile liboctave/Makefile src/Makefile libcruft/Makefile
   libcruft/Makerules libcruft/blas/Makefile libcruft/balgen/Makefile
   libcruft/dassl/Makefile libcruft/eispack/Makefile
   libcruft/fftpack/Makefile libcruft/fsqp/Makefile

@@ -122,6 +122,9 @@
 /* Define to `short' if <sys/types.h> doesn't define. */
 #undef nlink_t
 
+/* Define to `int' if <signal.h> doesn't define. */
+#undef sigset_t
+
 
 /* Leave that blank line there!!  Autoheader needs it.
    If you're adding to this file, keep in mind:

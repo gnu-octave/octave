@@ -30,7 +30,7 @@ DISTFILES = $(CONF_DISTFILES) \
 	MAKEINFO.PATCH ChangeLog ChangeLog.[0-9]
 
 # Complete directory trees to distribute.
-DISTDIRS = emacs glob kpathsea make # plplot
+DISTDIRS = glob kpathsea make # plplot
 
 # Subdirectories in which to run `make all'.
 SUBDIRS = @INFO_DIR@ @PLPLOT_DIR@ @READLINE_DIR@ @DLFCN_DIR@ glob \
@@ -52,8 +52,8 @@ BINDISTFILES = $(addprefix $(srcdir)/, $(XBINDISTFILES)) \
 	octave-bug VERSION ARCH
 
 # Subdirectories in which to run `make bin-dist'.
-BINDISTSUBDIRS = libcruft liboctave src info kpathsea readline \
-	scripts doc examples
+BINDISTSUBDIRS = libcruft liboctave src kpathsea readline info \
+	scripts doc emacs examples
 
 # Complete directories trees to distribute with binary distributions.
 BINDISTDIRS = emacs

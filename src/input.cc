@@ -319,11 +319,11 @@ decode_prompt_string (const char *string)
 		temp = user_pref.pwd;
 
 		if (! temp)
-		  getcwd (t_string, MAXPATHLEN);
+		  octave_getcwd (t_string, MAXPATHLEN);
 		else
 		  strcpy (t_string, temp);
 #else
-		getcwd (t_string, MAXPATHLEN);
+		octave_getcwd (t_string, MAXPATHLEN);
 #endif	/* EFFICIENT */
 
 		if (c == 'W')

@@ -1,3 +1,10 @@
+2003-11-26  Cyril Humbert  <Cyril.Humbert@univ-mlv.fr>
+
+	* octave-config.in (--m-site-dir): Echo $LOCALVERFCNFILEDIR, not
+	$OCTAVE_LOCALVERFCNFILEDIR.
+	(--oct-site-dir): Echo $LOCALVEROCTFILEDIR, not
+	$OCTAVE_LOCALVEROCTFILEDIR.
+
 2003-11-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in: Also maybe add -W to WARN_CFLAGS and WARN_CXXFLAGS.

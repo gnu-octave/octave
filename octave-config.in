@@ -96,10 +96,10 @@ EOF
       exit 0
     ;;
     --m-site-dir)
-      echo $OCTAVE_LOCALVERFCNFILEDIR
+      echo $LOCALVERFCNFILEDIR
     ;;
     --oct-site-dir)
-      echo $OCTAVE_LOCALVEROCTFILEDIR
+      echo $LOCALVEROCTFILEDIR
     ;;
     -v | --version)
       echo $VERSION

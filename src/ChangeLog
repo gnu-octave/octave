@@ -1,6 +1,12 @@
 2005-03-22  John W. Eaton  <jwe@octave.org>
+	
+	* DLD-FUNCTIONS/__glpk__.cc (F__glpk__, glpk):
+	Adapt to Octave coding style.
+	(glpk): Move decls closer to first use.
+	(F__glpk__): Eliminate unnecessary loop seting inf values.
 
 	* DLD-FUNCTIONS/__glpk__.cc: New file.
+
 	* Makefile.in (DLD_XSRC): Add it to the list.
 
 2005-03-21  John W. Eaton  <jwe@octave.org>

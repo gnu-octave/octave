@@ -1,3 +1,11 @@
+2001-04-26  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (OCTAVE_LIBS): Delete $(LIBREADLINE) from the list.
+	(octave): Delete TERMLIBS from link command.
+	* oct-conf.h.in: Delete references to LIBREADLINE, TERMLIBS.
+	* toplev.cc (octave_config_info): Delete entries for LIBREADLINE,
+	TERMLIBS.
+
 2001-04-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (install-lib): Don't use mk-libdir-link.

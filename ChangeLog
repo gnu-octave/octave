@@ -1,3 +1,16 @@
+2001-04-26  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: Don't define TERMLIBS.  Do add terminal lib(s) to LIBS.
+	* octave-bug.in: Delete references to TERMLIBS.
+	* Makeconf.in: Likewise.
+
+	* Makeconf.in (LIBREADLINE): Delete substitution.
+	(do-subst-config-vals): Likewise.
+	* octMakefile.in (SUBDIRS): Delete @READLINE_DIR@ from the list.
+	* configure.in (AC_CONFIG_SUBDIRS): Delete $READLINE_DIR from the list.
+
+	* configure.in (VOID_SIGHANDLER): Don't check or substitute here.
+
 2001-04-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* octMakefile.in (install, install-strip): Don't use mk-includedir-link

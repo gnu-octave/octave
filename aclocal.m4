@@ -968,3 +968,26 @@ AC_DEFUN(OCTAVE_CXX_ISO_COMPLIANT_LIBRARY, [
     AC_DEFINE(CXX_ISO_COMPLIANT_LIBRARY)
   fi
 ])
+dnl
+dnl Allow the user disable support for command line editing using GNU
+dnl readline.
+dnl
+dnl OCTAVE_ENABLE_READLINE
+AC_DEFUN(OCTAVE_ENABLE_READLINE, [
+  USE_READLINE=true
+  AC_ARG_ENABLE(readline,
+    [  --enable-readline       use readline library (default is yes)],
+    [if test "$enableval" = no; then
+       USE_READLINE=false;
+     fi], [])
+  if $USE_READLINE; then
+    AC_CHECK_LIB(readline, rl_set_keyboard_input_timeout, [
+      LIBS="-lreadline $LIBS"
+      AC_DEFINE(USE_READLINE, 1)
+    ], [
+      USE_READLINE=false
+      warn_readline="To use GNU Readline, I need version 4.2 or later"
+      AC_MSG_WARN($warn_readline)
+    ])
+  fi
+])

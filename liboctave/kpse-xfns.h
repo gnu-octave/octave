@@ -732,13 +732,6 @@ extern char *kpse_var_expand (const char *src);
 
 /* lib.h: other stuff.  */
 
-#ifndef WIN32
-/* `popen' and `pclose' are part of POSIX.2, not POSIX.1.  So
-   STDC_HEADERS isn't enough.  */
-extern FILE *popen ();
-extern int pclose ();
-#endif /* not WIN32 */
-
 /* Define common sorts of messages.  */
 
 /* This should be called only after a system call fails.  Don't exit

@@ -40,12 +40,12 @@ elements of a matrix or vector.
 Indices may be scalars, vectors, ranges, or the special operator
 @samp{:}, which may be used to select entire rows or columns.
 
-Vectors are indexed using a single expression.  Matrices require two
-indices unless the value of the built-in variable
-@code{do_fortran_indexing} is nonzero, in which case matrices may
-also be indexed by a single expression.
+Vectors are indexed using a single expression.  Matrices may be
+indexed using one or two indices (a warning is issued if a single
+index is used unless the value of the built-in variable
+@code{warn_fortran_indexing} is zero).
 
-@DOCSTRING(do_fortran_indexing)
+@DOCSTRING(warn_fortran_indexing)
 
 Given the matrix
 
@@ -166,8 +166,6 @@ This is an obscure notation and should be avoided.  It is better to
 use the function @code{ones} to generate a matrix of the appropriate
 size whose elements are all one, and then to scale it to produce the
 desired result.  @xref{Special Utility Matrices}.
-
-@DOCSTRING(prefer_column_vectors)
 
 @DOCSTRING(resize_on_range_error)
 

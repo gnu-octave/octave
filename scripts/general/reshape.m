@@ -34,8 +34,7 @@
 ## @end group
 ## @end example
 ##
-## If the variable @code{do_fortran_indexing} is nonzero, the
-## @code{reshape} function is equivalent to
+## The @code{reshape} function is equivalent to
 ##
 ## @example
 ## @group
@@ -49,7 +48,7 @@
 ## colon operator.  Note that the total number of elements in the original
 ## matrix must match the total number of elements in the new matrix.
 ## @end deftypefn
-## @seealso{`:' and do_fortran_indexing}
+## @seealso{`:'}
 
 ## Author: jwe
 

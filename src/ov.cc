@@ -75,12 +75,12 @@ DEFINE_OCTAVE_ALLOCATOR2(octave_value, 1024);
 // semicolon has been appended to each statement).
 static bool Vsilent_functions;
 
-// If TRUE, allow assignments like
+// If TRUE, print a warning for assignments like
 //
 //   octave> A(1) = 3; A(2) = 5
 //
 // for A already defined and a matrix type.
-bool Vdo_fortran_indexing;
+bool Vwarn_fortran_indexing;
 
 // Should we warn about conversions from complex to real?
 int Vwarn_imag_to_real;
@@ -95,14 +95,6 @@ bool Vwarn_num_to_str;
 //   97 98 99
 //
 int Vwarn_str_to_num;
-
-// If TRUE, create column vectors when doing assignments like:
-//
-//   octave> A(1) = 3; A(2) = 5
-//
-// (for A undefined).  Only matters when resize_on_range_error is also
-// TRUE.
-static bool Vprefer_column_vectors;
 
 // If TRUE, print the name along with the value.
 bool Vprint_answer_id_name;
@@ -969,9 +961,12 @@ octave_value::vector_value (bool force_string_conv,
       for (int i = 0; i < nr; i++)
 	retval (i) = m (i, 0);
     }
-  else if (nr > 0 && nc > 0
-	   && (Vdo_fortran_indexing || force_vector_conversion))
+  else if (nr > 0 && nc > 0)
     {
+      // XXX FIXME XXX -- is warn_fortran_indexing the right variable here?
+      if (! force_vector_conversion && Vwarn_fortran_indexing)
+	gripe_implicit_conversion (type_name (), "real vector");
+
       retval.resize (nr * nc);
       int k = 0;
       for (int j = 0; j < nc; j++)
@@ -1041,9 +1036,12 @@ octave_value::int_vector_value (bool force_string_conv, bool require_int,
 	  retval (i) = static_cast<int> (d);
 	}
     }
-  else if (nr > 0 && nc > 0
-	   && (Vdo_fortran_indexing || force_vector_conversion))
+  else if (nr > 0 && nc > 0)
     {
+      // XXX FIXME XXX -- is warn_fortran_indexing the right variable here?
+      if (! force_vector_conversion && Vwarn_fortran_indexing)
+	gripe_implicit_conversion (type_name (), "real vector");
+
       retval.resize (nr * nc);
       int k = 0;
       for (int j = 0; j < nc; j++)
@@ -1105,9 +1103,12 @@ octave_value::complex_vector_value (bool force_string_conv,
 	  retval (i) = m (i, 0);
 	}
     }
-  else if (nr > 0 && nc > 0
-	   && (Vdo_fortran_indexing || force_vector_conversion))
+  else if (nr > 0 && nc > 0)
     {
+      // XXX FIXME XXX -- is warn_fortran_indexing the right variable here?
+      if (! force_vector_conversion && Vwarn_fortran_indexing)
+	gripe_implicit_conversion (type_name (), "complex vector");
+
       retval.resize (nr * nc);
       int k = 0;
       for (int j = 0; j < nc; j++)
@@ -1753,11 +1754,11 @@ install_types (void)
 }
 
 static int
-do_fortran_indexing (void)
+warn_fortran_indexing (void)
 {
-  Vdo_fortran_indexing = check_preference ("do_fortran_indexing");
+  Vwarn_fortran_indexing = check_preference ("warn_fortran_indexing");
 
-  liboctave_dfi_flag = Vdo_fortran_indexing;
+  liboctave_wfi_flag = Vwarn_fortran_indexing;
 
   return 0;
 }
@@ -1782,17 +1783,6 @@ static int
 warn_str_to_num (void)
 {
   Vwarn_str_to_num = check_preference ("warn_str_to_num");
-
-  return 0;
-}
-
-static int
-prefer_column_vectors (void)
-{
-  Vprefer_column_vectors
-    = check_preference ("prefer_column_vectors");
-
-  liboctave_pcv_flag = Vprefer_column_vectors;
 
   return 0;
 }
@@ -1860,35 +1850,6 @@ warn_divide_by_zero (void)
 void
 symbols_of_ov (void)
 {
-  DEFVAR (do_fortran_indexing, false, do_fortran_indexing,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} do_fortran_indexing\n\
-If the value of @code{do_fortran_indexing} is nonzero, Octave allows \n\
-you to select elements of a two-dimensional matrix using a single index\n\
-by treating the matrix as a single vector created from the columns of\n\
-the matrix.  The default value is 0. \n\
-@end defvr");
-
-  DEFVAR (prefer_column_vectors, true, prefer_column_vectors,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} prefer_column_vectors\n\
-If @code{prefer_column_vectors} is nonzero, operations like\n\
-\n\
-@example\n\
-for i = 1:10\n\
-  a (i) = i;\n\
-endfor\n\
-@end example\n\
-\n\
-@noindent\n\
-(for @code{a} previously  undefined) produce column vectors.  Otherwise, row\n\
-vectors are preferred.  The default value is 1.\n\
-\n\
-If a variable is already defined to be a vector (a matrix with a single\n\
-row or column), the original orientation is respected, regardless of the\n\
-value of @code{prefer_column_vectors}.\n\
-@end defvr");
-
   DEFVAR (print_answer_id_name, true, print_answer_id_name,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} print_answer_id_name\n\
@@ -1959,6 +1920,14 @@ built-in variable @code{struct_levels_to_print}.  The default value is 2.\n\
 If the value of @code{warn_divide_by_zero} is nonzero, a warning\n\
 is issued when Octave encounters a division by zero.  If the value is\n\
 0, the warning is omitted.  The default value is 1.\n\
+@end defvr");
+
+  DEFVAR (warn_fortran_indexing, false, warn_fortran_indexing,
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} warn_fortran_indexing\n\
+If the value of @code{warn_fortran_indexing} is nonzero, a warning is\n\
+printed for expressions which select elements of a two-dimensional matrix\n\
+using a single index.  The default value is 0.\n\
 @end defvr");
 
   DEFVAR (warn_imag_to_real, false, warn_imag_to_real,

@@ -37,9 +37,9 @@ function x = strjust (x, just)
 
   just = tolower (just);
 
-  dfi = do_fortran_indexing;
+  wfi = warn_fortran_indexing;
   unwind_protect
-    do_fortran_indexing = 1;
+    warn_fortran_indexing = 0;
 
     ## convert nulls to blanks
     idx = find (toascii (x) == 0);
@@ -68,7 +68,7 @@ function x = strjust (x, just)
     x = x (idx*nr + [1:nr]'*ones(1,nc));
 
   unwind_protect_cleanup
-    do_fortran_indexing = dfi;
+    warn_fortran_indexing = wfi;
   end_unwind_protect
 
 endfunction

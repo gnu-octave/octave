@@ -350,11 +350,9 @@ maximum_braindamage (void)
   bind_builtin_variable ("default_global_variable_value", Matrix ());
   bind_builtin_variable ("default_save_format", "mat-binary");
   bind_builtin_variable ("define_all_return_values", true);
-  bind_builtin_variable ("do_fortran_indexing", true);
   bind_builtin_variable ("fixed_point_format", true);
   bind_builtin_variable ("initialize_global_variables", true);
   bind_builtin_variable ("page_screen_output", false);
-  bind_builtin_variable ("prefer_column_vectors", false);
   bind_builtin_variable ("print_empty_dimensions", false);
   bind_builtin_variable ("treat_neg_dim_as_zero", true);
   bind_builtin_variable ("warn_function_name_clash", false);

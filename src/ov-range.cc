@@ -133,8 +133,14 @@ octave_range::double_value (bool) const
 
   int nel = range.nelem ();
 
-  if (nel == 1 || (nel > 1 && Vdo_fortran_indexing))
-    retval = range.base ();
+  if (nel > 0)
+    {
+      // XXX FIXME XXX -- is warn_fortran_indexing the right variable here?
+      if (Vwarn_fortran_indexing)
+	gripe_implicit_conversion ("range", "real scalar");
+
+      retval = range.base ();
+    }
   else
     gripe_invalid_conversion ("range", "real scalar");
 
@@ -196,8 +202,14 @@ octave_range::complex_value (bool) const
 
   int nel = range.nelem ();
 
-  if (nel == 1 || (nel > 1 && Vdo_fortran_indexing))
-    retval = range.base ();
+  if (nel > 0)
+    {
+      // XXX FIXME XXX -- is warn_fortran_indexing the right variable here?
+      if (Vwarn_fortran_indexing)
+	gripe_implicit_conversion ("range", "complex scalar");
+
+      retval = range.base ();
+    }
   else
     gripe_invalid_conversion ("range", "complex scalar");
 

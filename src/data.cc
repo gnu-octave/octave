@@ -1098,8 +1098,7 @@ the range.  If @var{base} is greater than @var{limit}, the elements are\n\
 stored in decreasing order.  If the number of points is not specified, a\n\
 value of 100 is used.\n\
 \n\
-The @code{linspace} function always returns a row vector, regardless of\n\
-the value of @code{prefer_column_vectors}.\n\
+The @code{linspace} function always returns a row vector.\n\
 @end deftypefn")
 {
   octave_value retval;

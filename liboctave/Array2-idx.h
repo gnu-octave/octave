@@ -119,11 +119,14 @@ Array2<T>::index (idx_vector& idx_arg, int resize_ok,
 	    retval = Array2<T> (tmp, idx_orig_rows, idx_orig_columns);
 	}
     }
-  else if (liboctave_dfi_flag
-	   || (idx_arg.one_zero_only ()
-	       && idx_orig_rows == nr
-	       && idx_orig_columns == nc))
+  else
     {
+      if (liboctave_wfi_flag
+	  && ! (idx_arg.one_zero_only ()
+		&& idx_orig_rows == nr
+		&& idx_orig_columns == nc))
+	(*current_liboctave_warning_handler) ("single index used for matrix");
+
       // This code is only for indexing matrices.  The vector
       // cases are handled above.
 
@@ -161,9 +164,6 @@ Array2<T>::index (idx_vector& idx_arg, int resize_ok,
 	}
       // idx_vector::freeze() printed an error message for us.
     }
-  else
-    (*current_liboctave_error_handler)
-      ("single index only valid for row or column vector");
 
   return retval;
 }
@@ -626,75 +626,40 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs, const LT& resize_fill_value)
 		  if (n != 0 && (lhs_nr != 0 || lhs_nc != 0))
 		    lhs.maybe_delete_elements (idx_i);
 		}
-	      else if (! liboctave_dfi_flag && lhs_is_empty
-		       && idx_i.is_colon ()
-		       && ! (rhs_nr == 1 || rhs_nc == 1))
-		{
-		  (*current_liboctave_error_handler)
-		    ("A(:) = X: X must be a vector");
-		}
 	      else
 		{
+		  if (liboctave_wfi_flag)
+		    {
+		      if (lhs_is_empty
+			  && idx_i.is_colon ()
+			  && ! (rhs_nr == 1 || rhs_nc == 1))
+			{
+			  (*current_liboctave_warning_handler)
+			    ("A(:) = X: X is not a vector or scalar");
+			}
+		      else
+			{
+			  int idx_nr = idx_i.orig_rows ();
+			  int idx_nc = idx_i.orig_columns ();
+
+			  if (! (rhs_nr == idx_nr && rhs_nc == idx_nc))
+			    (*current_liboctave_warning_handler)
+			      ("A(I) = X: X does not have same shape as I");
+			}
+		    }
+
 		  if (assign ((Array<LT>&) lhs, (Array<RT>&) rhs))
 		    {
 		      int len = lhs.length ();
 
 		      if (len > 0)
 			{
-			  int idx_nr = idx_i.orig_rows ();
-			  int idx_nc = idx_i.orig_columns ();
+			  // The following behavior is much simplified
+			  // over previous versions of Octave.  It
+			  // seems to be compatible with Matlab.
 
-			  // lhs_is_empty now means that lhs was
-			  // *originally* empty, and lhs_len is the
-			  // *original* length of the lhs.
-
-			  if (liboctave_dfi_flag
-			      || (idx_nr == 1 && idx_nc == 1)
-			      || (rhs_nr == 1 && rhs_nc == 1 && lhs_len == 1))
-			    {
-			      if (liboctave_pcv_flag)
-				{
-				  lhs.d1 = lhs.length ();
-				  lhs.d2 = 1;
-				}
-			      else
-				{
-				  lhs.d1 = 1;
-				  lhs.d2 = lhs.length ();
-				}
-			    }
-			  else if (lhs_is_empty && idx_i.is_colon ())
-			    {
-			      lhs.d1 = rhs.d1;
-			      lhs.d2 = rhs.d2;
-			    }
-			  else if (lhs_is_empty && idx_i.one_zero_only ())
-			    {
-			      lhs.d1 = idx_nr;
-			      lhs.d2 = idx_nc;
-			    }
-			  else if (rhs_nr == 1
-				   && (idx_nr == 1 || lhs_len == 1))
-			    {
-			      lhs.d1 = 1;
-			      lhs.d2 = lhs.length ();
-			    }
-			  else if (rhs_nc == 1
-				   && (idx_nc == 1 || lhs_len == 1))
-			    {
-			      lhs.d1 = lhs.length ();
-			      lhs.d2 = 1;
-			    }
-			  else if (idx_nr == 0 && idx_nc == 0)
-			    {
-			      if (! ((rhs.d1 == 1 && rhs.d2 == 1)
-				     || (rhs.d1 == 0 && rhs.d2 == 0)))
-				(*current_liboctave_error_handler)
-			  ("A([]) = X: X must be an empty matrix or scalar");
-			    }
-			  else
-			    (*current_liboctave_error_handler)
-      ("A(I) = X: X must be a scalar or a matrix with the same size as I");
+			  lhs.d1 = 1;
+			  lhs.d2 = lhs.length ();
 			}
 		      else
 			{
@@ -744,12 +709,16 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs, const LT& resize_fill_value)
 	    }
 	  // idx_vector::freeze() printed an error message for us.
 	}
-      else if (liboctave_dfi_flag
-	       || idx_i.is_colon ()
-	       || (idx_i.one_zero_only ()
-		   && idx_i.orig_rows () == lhs_nr
-		   && idx_i.orig_columns () == lhs_nc))
+      else
 	{
+	  if (liboctave_wfi_flag
+	      && ! (idx_i.is_colon ()
+		    || (idx_i.one_zero_only ()
+			&& idx_i.orig_rows () == lhs_nr
+			&& idx_i.orig_columns () == lhs_nc)))
+	    (*current_liboctave_warning_handler)
+	      ("single index used for matrix");
+
 	  int len = idx_i.freeze (lhs_nr * lhs_nc, "matrix");
 
 	  if (idx_i)
@@ -796,13 +765,6 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs, const LT& resize_fill_value)
 		}
 	    }
 	  // idx_vector::freeze() printed an error message for us.
-	}
-      else
-	{
-	  (*current_liboctave_error_handler)
-	    ("single index only valid for row or column vector");
-
-	  retval = 0;
 	}
     }
   else

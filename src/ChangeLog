@@ -1,5 +1,39 @@
 2003-07-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* octave.cc (maximum_braindamage): Don't set prefer_column_vectors.
+
+	* ov.cc (Vprefer_column_vectors): Delete.
+	(prefer_column_vectors): Delete.
+	(symbols_of_ov): Delete DEFVAR for prefer_column_vectors.
+
+	* octave.cc (maximum_braindamage): Don't set do_fortran_indexing.
+
+	* ov-re-mat.cc (octave_matrix::double_value,
+	octave_matrix::complex_value): Use Vwarn_fortran_indexing, not
+	Vdo_fortran_indexing.
+	* ov-range.cc (octave_range::double_value,
+	octave_range::complex_value): Likewise.
+	* ov-cx-mat.cc (octave_complex_matrix::double_value,
+	octave_complex_matrix::complex_value): Likewise.
+	* ov-ch-mat.cc (octave_char_matrix::double_value,
+	octave_char_matrix::complex_value): Likewise.
+	* ov-bool-mat.cc (octave_bool_matrix::double_value,
+	octave_bool_matrix::complex_value): Likewise.
+
+	* ov.cc (Vwarn_fortran_indexing): New variable.
+	(warn_fortran_indexing): New function.
+	(symbols_of_ov): Add DEFVAR for warn_fortran_indexing.
+	(octave_value::vector_value, octave_value::int_vector_value,
+	(octave_value::complex_vector_value): Check
+	Vwarn_fortran_indexing, not Vdo_fortran_indexing.
+
+	* ov.h (Vwarn_fortran_indexing): Provide decl.
+
+	* ov.cc (Vdo_fortran_indexing): Delete unused variable.
+	(do_fortran_indexing): Delete unused function.
+	(symbols_of_ov): Delete DEFVAR for do_fortran_indexing.
+	* ov.h (Vdo_fortran_indexing): Delete decl.
+
 	* ov.cc (octave_value::convert_to_str): Call convert_to_str_internal.
 	(octave_value::convert_to_str_internal): New virtual function.
 	Rename all derived class convert_to_str functions to match.	

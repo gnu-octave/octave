@@ -667,22 +667,22 @@ guaranteed to be executed regardless of how control exits @var{body}.
 
 This is useful to protect temporary changes to global variables from
 possible errors.  For example, the following code will always restore
-the original value of the built-in variable @code{do_fortran_indexing}
+the original value of the built-in variable @code{warn_fortran_indexing}
 even if an error occurs while performing the indexing operation.
 
 @example
 @group
-save_do_fortran_indexing = do_fortran_indexing;
+save_warn_fortran_indexing = warn_fortran_indexing;
 unwind_protect
-  do_fortran_indexing = 1;
+  warn_fortran_indexing = 1;
   elt = a (idx)
 unwind_protect_cleanup
-  do_fortran_indexing = save_do_fortran_indexing;
+  warn_fortran_indexing = save_warn_fortran_indexing;
 end_unwind_protect
 @end group
 @end example
 
-Without @code{unwind_protect}, the value of @var{do_fortran_indexing}
+Without @code{unwind_protect}, the value of @var{warn_fortran_indexing}
 would not be restored if an error occurs while performing the indexing
 operation because evaluation would stop at the point of the error and
 the statement to restore the value would not be executed.

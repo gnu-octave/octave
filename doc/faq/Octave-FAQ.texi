@@ -716,22 +716,21 @@ variables may have been introduced since this document was last updated.
 
 @example
 @group
-  PS1 = ">> "
-  PS2 = ""
-  beep_on_error = 1.0
-  default_eval_print_flag = 0.0
-  default_save_format = "mat-binary"
-  define_all_return_values = 1.0
-  do_fortran_indexing = 1.0
-  empty_list_elements_ok = 1.0
-  fixed_point_format = 1.0
-  page_screen_output = 0.0
-  prefer_column_vectors = 0.0
-  prefer_zero_one_indexing = 1.0
-  print_empty_dimensions = 0.0
-  treat_neg_dim_as_zero = 1.0
-  warn_function_name_clash = 0.0
-  whitespace_in_literal_matrix = "traditional"
+  PS1                           = ">> "
+  PS2                           = ""
+  beep_on_error                 = true
+  crash_dumps_octave_core       = false
+  default_eval_print_flag       = false
+  default_global_variable_value = []
+  default_save_format           = "mat-binary"
+  define_all_return_values      = true
+  fixed_point_format            = true
+  initialize_global_variables   = true
+  page_screen_output            = false
+  print_empty_dimensions        = false
+  treat_neg_dim_as_zero         = true
+  warn_function_name_clash      = false
+  whitespace_in_literal_matrix  = "traditional"
 @end group
 @end example
 

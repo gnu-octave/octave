@@ -718,12 +718,12 @@ OV_BINOP_FN (op_struct_ref)
   int t::t_id (-1); \
   const std::string t::t_name (n)
 
-// If TRUE, allow assignments like
+// If TRUE, print a warning for assignments like
 //
 //   octave> A(1) = 3; A(2) = 5
 //
 // for A already defined and a matrix type.
-extern bool Vdo_fortran_indexing;
+extern bool Vwarn_fortran_indexing;
 
 // Should we print a warning when converting `[97, 98, 99, "123"]'
 // to a character string?

@@ -1,15 +1,22 @@
 2003-07-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* general/reshape.m: Omit do_fortran_indexing from doc string (it
+	was not used in the code in any case).
+
+	* strings/strjust.m: Temporarily set warn_fortran_indexing, not
+	do_fortran_indexing.
+
 	* statistics/base/moment.m: Temporarily set warn_str_to_num, not
 	implict_str_to_num_ok.  Use unwind_protect block to do it.
 
 	* miscellaneous/dump_prefs.m: Include DEFAULT_EXEC_PATH,
 	DEFAULT_LOAD_PATH, crash_dumps_octave_core,
 	sighup_dumps_octave_core, sigterm_dumps_octave_core,
-	warn_imag_to_real, warn_num_to_str, and warn_str_to_num in the
-	list.
-	Delete ok_to_lose_imaginary_part, implicit_num_to_str_ok, and
-	implicit_str_to_num_ok from list.
+	warn_imag_to_real, warn_num_to_str, warn_str_to_num, and
+	warn_fortran_indexing in the list.
+	Delete ok_to_lose_imaginary_part, implicit_num_to_str_ok,
+	implicit_str_to_num_ok, do_fortran_indexing, and
+	prefer_column_vectors from list.
 
 2003-07-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

@@ -58,7 +58,6 @@ function dump_prefs (file)
               "default_return_value";
               "default_save_format";
               "define_all_return_values";
-              "do_fortran_indexing";
               "echo_executing_commands";
               "empty_list_elements_ok";
               "fixed_point_format";
@@ -80,7 +79,6 @@ function dump_prefs (file)
               "output_precision";
               "page_output_immediately";
               "page_screen_output";
-              "prefer_column_vectors";
               "print_answer_id_name";
               "print_empty_dimensions";
               "print_rhs_assign_val";
@@ -99,6 +97,7 @@ function dump_prefs (file)
               "treat_neg_dim_as_zero";
               "warn_assign_as_truth_value";
               "warn_divide_by_zero";
+              "warn_fortran_indexing";
               "warn_function_name_clash";
               "warn_future_time_stamp";
               "warn_imag_to_real";

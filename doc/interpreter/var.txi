@@ -256,11 +256,6 @@ Default value: @code{[]}.
 
 Default value: @code{"ascii"}.
 
-@item do_fortran_indexing
-@xref{Index Expressions}.
-
-Default value: 0.
-
 @item crash_dumps_octave_core
 @xref{Simple File I/O}.
 
@@ -318,11 +313,6 @@ Default value: 5.
 
 @item page_screen_output
 @xref{Input and Output}.
-
-Default value: 1.
-
-@item prefer_column_vectors
-@xref{Index Expressions}.
 
 Default value: 1.
 
@@ -405,6 +395,11 @@ Default value: 1.
 @xref{Arithmetic Ops}.
 
 Default value: 1.
+
+@item warn_fortran_indexing
+@xref{Index Expressions}.
+
+Default value: 0.
 
 @item warn_function_name_clash
 @xref{Function Files}.

@@ -327,7 +327,7 @@ using @code{font-lock-keyword-face}
 the builtin operators (@samp{&&}, @samp{<>}, @dots{}) using
 @code{font-lock-reference-face}
 @item
-the builtin variables (such as @samp{prefer_column_vectors}, @samp{NaN}
+the builtin variables (such as @samp{warn_fortran_indexing}, @samp{NaN}
 or @samp{LOADPATH}) in @code{font-lock-variable-name-face}
 @item
 and the function names in function declarations in

@@ -21,7 +21,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA. 
 
-AC_REVISION($Revision: 1.323 $)
+AC_REVISION($Revision: 1.324 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -624,7 +624,7 @@ changequote([,])dnl
     SH_LDFLAGS="-assert nodefinitions"
     RLD_FLAG='-L$(octlibdir)'
   ;;
-  sparc-sun-solaris2*)
+  sparc-sun-solaris2* | i386-pc-solaris2*)
     if test "$octave_cv_f77_is_g77" = yes; then
       FPICFLAG=-fPIC
     else

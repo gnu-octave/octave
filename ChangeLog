@@ -1,3 +1,8 @@
+2000-03-08  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: For building shared libaries, handle
+	i386-pc-solaris2* the same as sparc-sun-solaris2*.
+
 2000-02-29  Ben Sapp <bsapp@nua.lampf.lanl.gov>
 
 	* examples/make_int.cc (make_int): Handle new operator names.

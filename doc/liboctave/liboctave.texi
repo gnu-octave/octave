@@ -82,6 +82,8 @@ Permission is granted to copy and distribute translations of this manual
 into another language, under the same conditions as for modified versions.
 @end titlepage
 
+@contents
+
 @ifinfo
 @node Top, Acknowledgements, (dir), (dir)
 @top
@@ -155,7 +157,5 @@ Quadrature
 @include bugs.texi
 @include cp-idx.texi
 @include fn-idx.texi
-
-@contents
 
 @bye

@@ -104,6 +104,8 @@ Software Foundation, 59 Temple Place---Suite 330, Boston, MA
 02111--1307, USA.
 @end titlepage
 
+@contents
+
 @ifinfo
 @node Top, Preface, (dir), (dir)
 @top
@@ -158,9 +160,6 @@ It corresponds to GNU Octave version @value{VERSION}.
 * Variable Index::              An item for each documented variable.
 * Function Index::              An item for each documented function.
 * Operator Index::              An item for each documented operator.
-
-
-
 
 @detailmenu
  --- The Detailed Node Listing ---
@@ -543,7 +542,5 @@ Grammar
 @include vr-idx.texi
 @include fn-idx.texi
 @include op-idx.texi
-
-@contents
 
 @bye

@@ -27,7 +27,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream>
 #include <string>
 
-#include "defun-int.h"
+#include "defun.h"
 #include "dynamic-ld.h"
 #include "error.h"
 #include "help.h"
@@ -35,6 +35,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-builtin.h"
 #include "ov-dld-fcn.h"
 #include "ov-mapper.h"
+#include "oct-obj.h"
 #include "pager.h"
 #include "symtab.h"
 #include "variables.h"
@@ -158,6 +159,47 @@ alias_builtin (const std::string& alias, const std::string& name)
     panic ("can't find symbol record for builtin function `%s'",
 	   alias.c_str ());
 }
+
+#if 0
+// This is insufficient to really make it possible to define an alias
+// for function.  There are a number of subtle problems related to
+// automatically reloading functions.
+DEFUN (alias, args, ,
+  "alias (alias, name)")
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 2)
+    {
+      string alias = args(0).string_value ();
+      string name = args(1).string_value ();
+
+      if (! error_state)
+	{
+	  symbol_record *sr_name = lookup_by_name (name, false);
+
+	  if (sr_name && sr_name->is_function ())
+	    {
+	      symbol_record *sr_alias = global_sym_tab->lookup (alias, true);
+
+	      if (sr_alias)
+		sr_alias->alias (sr_name);
+	      else
+		error ("alias: unable to insert `%s' in symbol table",
+		       alias.c_str ());
+	    }
+	  else
+	    error ("alias: function `%s' does not exist", name.c_str ());
+	}
+    }
+  else
+    print_usage ("alias");
+
+  return retval;
+}
+#endif
 
 /*
 ;;; Local Variables: ***

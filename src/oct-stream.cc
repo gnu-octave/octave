@@ -44,23 +44,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-obj.h"
 #include "utils.h"
 
-std::istream&
-octave_scan (std::istream& is, const char *fmt, ...)
-{
-#if defined (__GNUG__)
-
-  va_list args;
-  va_start (args, fmt);
-
-  is.vscan (fmt, args);
-
-  va_end (args);
-
-#endif
-
-  return is;
-}
-
 // Possible values for conv_err:
 //
 //   1 : not a real scalar
@@ -1024,13 +1007,68 @@ octave_base_stream::read (const Matrix& size,
   return retval;
 }
 
+#if defined (__GNUG__)
+
+#define OCTAVE_SCAN_0(is, fmt) is.scan ((fmt).text)
+
+#define OCTAVE_SCAN_1(is, fmt, arg) is.scan ((fmt).text, arg)
+
+#else
+
+#define OCTAVE_SCAN_0(is, fmt) octave_scan (is, fmt)
+
+#define OCTAVE_SCAN_1(is, fmt, arg) octave_scan (is, fmt, arg)
+
+std::istream&
+octave_scan (std::istream& is, const scanf_format_elt& fmt)
+{
+  return is;
+}
+
+template <class T>
+std::istream&
+octave_scan (std::istream& is, const scanf_format_elt& fmt, T valptr)
+{
+  is >> std::ios::skipws;
+
+  if (fmt.width > 0)
+    is >> width (elt.width);
+
+  is >> valptr;
+
+  return is;
+}
+
+template std::istream&
+octave_scan (std::istream&, const scanf_format_elt&, char*);
+
+template std::istream&
+octave_scan (std::istream&, const scanf_format_elt&, int*);
+
+template std::istream&
+octave_scan (std::istream&, const scanf_format_elt&, long int*);
+
+template std::istream&
+octave_scan (std::istream&, const scanf_format_elt&, short int*);
+
+#if 0
+template std::istream&
+octave_scan (std::istream&, const scanf_format_elt&, float*);
+#endif
+
+template std::istream&
+octave_scan (std::istream&, const scanf_format_elt&, double*);
+
+#endif
+
 template <class T>
 void
-do_scanf_conv (std::istream& is, const char *fmt, T valptr, Matrix& mval,
-	       double *data, int& idx, int& conversion_count, int nr,
-	       int max_size, bool discard) 
+do_scanf_conv (std::istream& is, const scanf_format_elt& fmt,
+	       T valptr, Matrix& mval, double *data, int& idx,
+	       int& conversion_count, int nr, int max_size,
+	       bool discard) 
 {
-  octave_scan (is, fmt, valptr);
+  OCTAVE_SCAN_1 (is, fmt, valptr);
 
   if (is)
     {
@@ -1055,26 +1093,26 @@ do_scanf_conv (std::istream& is, const char *fmt, T valptr, Matrix& mval,
 }
 
 template void
-do_scanf_conv (std::istream&, const char*, int*, Matrix&, double*, int&,
-	       int&, int, int, bool);
+do_scanf_conv (std::istream&, const scanf_format_elt&, int*, Matrix&,
+	       double*, int&, int&, int, int, bool);
 
 template void
-do_scanf_conv (std::istream&, const char*, long int*, Matrix&, double*, int&,
-	       int&, int, int, bool);
+do_scanf_conv (std::istream&, const scanf_format_elt&, long int*,
+	       Matrix&, double*, int&, int&, int, int, bool);
 
 template void
-do_scanf_conv (std::istream&, const char*, short int*, Matrix&, double*, int&,
-	       int&, int, int, bool);
+do_scanf_conv (std::istream&, const scanf_format_elt&, short int*,
+	       Matrix&, double*, int&, int&, int, int, bool);
 
 #if 0
 template void
-do_scanf_conv (std::istream&, const char*, float*, Matrix&, double*, int&,
-	       int&, int, int, bool);
+do_scanf_conv (std::istream&, const scanf_format_elt&, float*,
+	       Matrix&, double*, int&, int&, int, int, bool);
 #endif
 
 template void
-do_scanf_conv (std::istream&, const char*, double*, Matrix&, double*, int&,
-	       int&, int, int, bool);
+do_scanf_conv (std::istream&, const scanf_format_elt&, double*,
+	       Matrix&, double*, int&, int&, int, int, bool);
 
 #define DO_WHITESPACE_CONVERSION() \
   do \
@@ -1144,7 +1182,7 @@ do_scanf_conv (std::istream&, const char*, double*, Matrix&, double*, int&,
 	{ \
 	  tmp = new char [width+1]; \
  \
-	  octave_scan (is, fmt, tmp); \
+	  OCTAVE_SCAN_1 (is, *elt, tmp); \
  \
 	  tmp[width] = '\0'; \
 	} \
@@ -1185,7 +1223,7 @@ do_scanf_conv (std::istream&, const char*, double*, Matrix&, double*, int&,
 	{ \
 	  tmp = new char[width+1]; \
  \
-	  octave_scan (is, fmt, tmp); \
+	  OCTAVE_SCAN_1 (is, *elt, tmp); \
  \
 	  tmp[width] = '\0'; \
 	} \
@@ -1399,7 +1437,7 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 		  {
 		    int dummy;
 
-		    octave_scan (is, fmt, &dummy);
+		    OCTAVE_SCAN_1 (is, *elt, &dummy);
 		  }
 		  break;
 
@@ -1599,7 +1637,7 @@ octave_base_stream::scanf (const std::string& fmt, const Matrix& size,
 	      {
 		is.clear ();
 
-		octave_scan (is, elt->text);
+		OCTAVE_SCAN_0 (is, *elt);
 
 		if (! is)
 		  {
@@ -1683,7 +1721,7 @@ octave_base_stream::do_oscanf (const scanf_format_elt *elt,
 	      {
 		int dummy;
 
-		if (! octave_scan (is, fmt, &dummy))
+		if (! OCTAVE_SCAN_1 (is, *elt, &dummy))
 		  quit = true;
 	      }
 	      break;
@@ -1692,7 +1730,7 @@ octave_base_stream::do_oscanf (const scanf_format_elt *elt,
 	      {
 		int tmp;
 
-		if (octave_scan (is, fmt, &tmp))
+		if (OCTAVE_SCAN_1 (is, *elt, &tmp))
 		  {
 		    if (! discard)
 		      retval = static_cast<double> (tmp);
@@ -1706,7 +1744,7 @@ octave_base_stream::do_oscanf (const scanf_format_elt *elt,
 	      {
 		double tmp;
 
-		if (octave_scan (is, fmt, &tmp))
+		if (OCTAVE_SCAN_1 (is, *elt, &tmp))
 		  {
 		    if (! discard)
 		      retval = tmp;
@@ -1818,7 +1856,7 @@ octave_base_stream::oscanf (const std::string& fmt)
 	      {
 		is.clear ();
 
-		octave_scan (is, elt->text);
+		OCTAVE_SCAN_0 (is, *elt);
 
 		if (! is)
 		  {

@@ -17,9 +17,9 @@ include $(TOPDIR)/Makeconf
 DISTFILES = BUGS COPYING INSTALL INSTALL.OCTAVE Makefile.in \
 	Makeconf.in NEWS PROJECTS README README.NLP SENDING-PATCHES \
 	THANKS f2c-compat.sh flibs.sh configure configure.in \
-	config.guess config.sub octave.sh octave-mode.el \
-	doinstall.sh mkpath.c config.h.in acconfig.h MAKEINFO.PATCH \
-	ChangeLog ChangeLog.[0-9]
+	config.guess config.sub move-if-change octave.sh \
+	octave-mode.el doinstall.sh mkpath.c config.h.in acconfig.h \
+	MAKEINFO.PATCH ChangeLog ChangeLog.[0-9]
 
 # Complete directory trees to distribute.
 DISTDIRS = bsd-math dld

@@ -65,6 +65,7 @@ ALL_CFLAGS = $(INCFLAGS) $(DEFS) $(GCC_IEEE_FP_FLAG) $(CFLAGS)
 UGLY_ALL_CFLAGS = $(INCFLAGS) $(UGLY_DEFS) $(GCC_IEEE_FP_FLAG) $(CFLAGS)
 
 CXX = @CXX@
+CXXCPP = @CXXCPP@
 CXXFLAGS = @CXXFLAGS@
 EXTERNAL_TEMPLATES = @EXTERNAL_TEMPLATES@
 ALL_CXXFLAGS = $(INCFLAGS) $(DEFS) $(EXTERNAL_TEMPLATES) \
@@ -143,27 +144,27 @@ OCTAVE_LIB_DIR = @OCTAVE_LIB_DIR@
 # Here is a rule for generating dependencies for .cc files:
 
 %.d: %.cc
-	rm -f $@
-	-if test "$(srcdir)" = "." ; then \
+	@echo making $@ from $<
+	@rm -f $@
+	@-if test "$(srcdir)" = "." ; then \
 	  $(CXX) -MM $(CPPFLAGS) $(ALL_CXXFLAGS) $< | \
-	    sed -e 's/$*\.o/& $@/g' > $@.tmp && \
-	    mv $@.tmp $@ ; \
+	    sed -e 's/$*\.o/& $@/g' > $@.tmp ; \
 	else \
 	  $(CXX) -MM $(CPPFLAGS) $(ALL_CXXFLAGS) $< | \
-	    sed -e 's/$*\.o/& $@/g' -e 's,$(srcdir)/,,g' > $@.tmp && \
-	    mv $@.tmp $@ ; \
+	    sed -e 's/$*\.o/& $@/g' -e 's,$(srcdir)/,,g' > $@.tmp ; \
 	fi
+	@mv $@.tmp $@
 
 # And one for .c files.too:
 
 %.d: %.c
-	rm -f $@
-	-if test "$(srcdir)" = "." ; then \
+	@echo making $@ from $<
+	@rm -f $@
+	@-if test "$(srcdir)" = "." ; then \
 	  $(CC) -MM $(CPPFLAGS) $(ALL_CFLAGS) $< | \
-	    sed -e 's/$*\.o/& $@/g' > $@.tmp && \
-	    mv $@.tmp $@ ; \
+	    sed -e 's/$*\.o/& $@/g' > $@.tmp ; \
 	else \
 	  $(CC) -MM $(CPPFLAGS) $(ALL_CFLAGS) $< | \
-	    sed -e 's/$*\.o/& $@/g' -e 's,$(srcdir)/,,g' > $@.tmp && \
-	    mv $@.tmp $@ ; \
+	    sed -e 's/$*\.o/& $@/g' -e 's,$(srcdir)/,,g' > $@.tmp ; \
 	fi
+	@mv $@.tmp $@

@@ -1,3 +1,7 @@
+2003-01-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* miscellaneous/fullfile.m: New file.
+
 2003-01-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* miscellaneous/fileparts.m: New file.

@@ -62,8 +62,14 @@ tree_argument_list::append (const element_type& s)
 {
   octave_base_list<tree_expression *>::append (s);
 
-  if (s && s->is_identifier () && s->name () == "__end__")
-    list_includes_magic_end = true;
+  // XXX FIXME XXX -- wait, it's not that simple!  The argument list
+  // may include expressions, so we will have to do some more work
+  // here.  We need a new function for all expression types that can
+  // tell us whether the expression includes the magic end token!
+
+  //  if (s && s->is_identifier () && s->name () == "__end__")
+
+  list_includes_magic_end = true;
 }
 
 int

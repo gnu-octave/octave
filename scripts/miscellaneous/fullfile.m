@@ -23,21 +23,25 @@
 ## @var{filename}.
 ## @end deftypefn
 
-function [directory, name, extension, version] = fileparts (filename)
+function filename = fullfile (varargin)
 
-  if (nargin == 1)
-    if (isstr (filename))
-      ds = rindex (filename, filesep);
-      es = rindex (filename, ".");
-      directory = filename(1:ds-1);
-      name = filename(ds+1:es-1);
-      extension = filename(es+1:end);
-      version = "";
-    else
-      error ("filesep: expecting filename argument to be a string");
+  if (nargin > 0)
+    filename = varargin{1};
+    if (strcmp (filename(end), "/"))
+      filename(end) = "";
     endif
+    for i = 2:nargin
+      tmp = varargin{i};
+      if (strcmp (tmp(1), "/"))
+	tmp(1) = "";
+      endif
+      if (i < nargin && strcmp (tmp(end), "/"))
+	tmp(end) = "";
+      endif
+      filename = strcat (filename, filesep, tmp);
+    endfor
   else
-    usage ("filesep (filename)");
+    usage ("fullfile (dir1, dir2, ..., file)");
   endif
 
 endfunction

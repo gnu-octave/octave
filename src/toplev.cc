@@ -243,7 +243,7 @@ script file but without requiring the file to be named `FILE.m'.")
 	  parse_and_execute (file, 1, 0, "source");
 
 	  if (error_state)
-	    error ("source: error sourcing file `%s'", file);
+	    error ("source: error sourcing file `%s'", file.c_str ());
 	}
       else
 	error ("source: expecting file name as argument");

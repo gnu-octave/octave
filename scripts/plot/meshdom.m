@@ -19,13 +19,8 @@
 
 ## usage: [xx, yy] = meshdom (x, y)
 ##
-## Given vectors of x and y coordinates, return two matrices
-## corresponding to the x and y coordinates of the mesh.
-##
-## See the file sombrero.m for an example of using mesh and meshdom.
-##
-## See also: plot, semilogx, semilogy, loglog, polar, mesh, contour,
-##           bar, stairs, gplot, gsplot, replot, xlabel, ylabel, title
+## Note: this function is provided for compatibility with older versions
+## of Matlab.  You should use meshgrid() instead.
 
 ## Author: jwe
 

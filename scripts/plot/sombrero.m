@@ -32,11 +32,15 @@ function sombrero (n)
     usage ("sombrero (n)");
   endif
 
-  x = y = linspace (-8, 8, n)';
-  [xx, yy] = meshdom (x, y);
-  r = sqrt (xx .^ 2 + yy .^ 2) + eps;
-  z = sin (r) ./ r;
+  if (n > 1)
+    x = y = linspace (-8, 8, n)';
+    [xx, yy] = meshgrid (x, y);
+    r = sqrt (xx .^ 2 + yy .^ 2) + eps;
+    z = sin (r) ./ r;
 
-  mesh (x, y, z);
+    mesh (x, y, z);
+  else
+    error ("sombrero: number of grid lines must be greater than 1");
+  endif
 
 endfunction

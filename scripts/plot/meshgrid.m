@@ -25,6 +25,8 @@
 ##
 ## [xx, yy] = meshgrid (x) is an abbreviation for [xx, yy] = meshgrid (x, x).
 ##
+## See sombrero.m for an example of using meshgrid.
+##
 ## See also: plot, semilogx, semilogy, loglog, polar, mesh, meshdom, contour,
 ##           bar, stairs, gplot, gsplot, replot, xlabel, ylabel, title
 

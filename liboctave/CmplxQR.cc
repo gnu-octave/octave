@@ -47,10 +47,6 @@ extern "C"
 
 ComplexQR::ComplexQR (const ComplexMatrix& a, QR::type qr_type)
 {
-  tau = 0;
-  work = 0;
-  tmp_data = 0;
-
   int m = a.rows ();
   int n = a.cols ();
 
@@ -62,25 +58,28 @@ ComplexQR::ComplexQR (const ComplexMatrix& a, QR::type qr_type)
     }
 
   int min_mn = m < n ? m : n;
-  tau = new Complex[min_mn];
+
+  Array<Complex> tau (min_mn);
+  Complex *ptau = tau.fortran_vec ();
 
   int lwork = 32*n;
-  work = new Complex[lwork];
+  Array<Complex> work (lwork);
+  Complex *pwork = work.fortran_vec ();
 
   int info = 0;
 
+  ComplexMatrix A_fact;
   if (m > n)
     {
-      tmp_data = new Complex [m*m];
-      copy (tmp_data, a.data (), a.length ());
+      A_fact.resize (m, m);
+      A_fact.insert (a, 0, 0);
     }
   else
-    tmp_data = dup (a.data (), a.length ());
+    A_fact = a;
 
-  F77_XFCN (zgeqrf, ZGEQRF, (m, n, tmp_data, m, tau, work, lwork, info));
+  Complex *tmp_data = A_fact.fortran_vec ();
 
-  delete [] work;
-  work = 0;
+  F77_XFCN (zgeqrf, ZGEQRF, (m, n, tmp_data, m, ptau, pwork, lwork, info));
 
   if (f77_exception_encountered)
     (*current_liboctave_error_handler) ("unrecoverable error in zgeqrf");
@@ -92,7 +91,7 @@ ComplexQR::ComplexQR (const ComplexMatrix& a, QR::type qr_type)
 	    {
 	      int limit = j < min_mn - 1 ? j : min_mn - 1;
 	      for (int i = limit + 1; i < m; i++)
-		tmp_data[m*j+i] *= tau[j];
+		A_fact.elem (i, j) *= tau.elem (j);
 	    }
 	}
       else
@@ -114,17 +113,15 @@ ComplexQR::ComplexQR (const ComplexMatrix& a, QR::type qr_type)
 	    {
 	      int limit = j < min_mn-1 ? j : min_mn-1;
 	      for (int i = 0; i <= limit; i++)
-		r.elem (i, j) = tmp_data[m*j+i];
+		r.elem (i, j) = A_fact.elem (i, j);
 	    }
 
 	  lwork = 32*m;
-	  work = new Complex[lwork];
+	  work.resize (lwork);
+	  Complex *pwork = work.fortran_vec ();
 
-	  F77_XFCN (zungqr, ZUNGQR, (m, m, min_mn, tmp_data, m, tau, work,
-				     lwork, info));
-
-	  delete [] work;
-	  work = 0;
+	  F77_XFCN (zungqr, ZUNGQR, (m, m, min_mn, tmp_data, m, ptau,
+				     pwork, lwork, info));
 
 	  if (f77_exception_encountered)
 	    (*current_liboctave_error_handler)
@@ -132,17 +129,10 @@ ComplexQR::ComplexQR (const ComplexMatrix& a, QR::type qr_type)
 	  else
 	    {
 	      q = ComplexMatrix (tmp_data, m, m);
-	      tmp_data = 0;
 	      q.resize (m, n2);
 	    }
 	}
     }
-
-  delete [] tau;
-  tau = 0;
-
-  delete [] tmp_data;
-  tmp_data = 0;
 }
 
 /*

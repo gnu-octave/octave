@@ -47,10 +47,6 @@ extern "C"
 
 QR::QR (const Matrix& a, QR::type qr_type)
 {
-  tau = 0;
-  work = 0;
-  tmp_data = 0;
-
   int m = a.rows ();
   int n = a.cols ();
 
@@ -61,25 +57,27 @@ QR::QR (const Matrix& a, QR::type qr_type)
     }
 
   int min_mn = m < n ? m : n;
-  tau = new double[min_mn];
+  Array<double> tau (min_mn);
+  double *ptau = tau.fortran_vec ();
 
   int lwork = 32*n;
-  work = new double[lwork];
+  Array<double> work (lwork);
+  double *pwork = work.fortran_vec ();
 
   int info = 0;
 
+  Matrix A_fact;
   if (m > n)
     {
-      tmp_data = new double [m*m];
-      copy (tmp_data, a.data (), a.length ());
+      A_fact.resize (m, m);
+      A_fact.insert (a, 0, 0);
     }
   else
-    tmp_data = dup (a.data (), a.length ());
+    A_fact = a;
 
-  F77_XFCN (dgeqrf, DGEQRF, (m, n, tmp_data, m, tau, work, lwork, info));
+  double *tmp_data = A_fact.fortran_vec ();
 
-  delete [] work;
-  work = 0;
+  F77_XFCN (dgeqrf, DGEQRF, (m, n, tmp_data, m, ptau, pwork, lwork, info));
 
   if (f77_exception_encountered)
     (*current_liboctave_error_handler) ("unrecoverable error in dgeqrf");
@@ -91,7 +89,7 @@ QR::QR (const Matrix& a, QR::type qr_type)
 	    {
 	      int limit = j < min_mn - 1 ? j : min_mn - 1;
 	      for (int i = limit + 1; i < m; i++)
-		tmp_data[m*j+i] *= tau[j];
+		A_fact.elem (i, j) *= tau.elem (j);
 	    }
 	}
       else
@@ -117,13 +115,11 @@ QR::QR (const Matrix& a, QR::type qr_type)
 	    }
 
 	  lwork = 32*m;
-	  work = new double[lwork];
+	  work.resize (lwork);
+	  double *pwork = work.fortran_vec ();
 
-	  F77_XFCN (dorgqr, DORGQR, (m, m, min_mn, tmp_data, m, tau, work,
-				     lwork, info));
-
-	  delete [] work;
-	  work = 0;
+	  F77_XFCN (dorgqr, DORGQR, (m, m, min_mn, tmp_data, m, ptau,
+				     pwork, lwork, info));
 
 	  if (f77_exception_encountered)
 	    (*current_liboctave_error_handler)
@@ -131,17 +127,10 @@ QR::QR (const Matrix& a, QR::type qr_type)
 	  else
 	    {
 	      q = Matrix (tmp_data, m, m);
-	      tmp_data = 0;
 	      q.resize (m, n2);
 	    }
 	}
     }
-
-  delete [] tau;
-  tau = 0;
-
-  delete [] tmp_data;
-  tmp_data = 0;
 }
 
 /*

@@ -82,12 +82,12 @@ symbol_out_of_date (symbol_record *sr)
       tree *ans = sr->def ();
       if (ans != NULL_TREE)
 	{
-	  char *mf = ans->fcn_file_name ();
-	  if (! (mf == (char *) NULL
+	  char *ff = ans->fcn_file_name ();
+	  if (! (ff == (char *) NULL
 		 || (ignore && ans->is_system_fcn_file ())))
 	    {
 	      time_t tp = ans->time_parsed ();
-	      char *fname = fcn_file_in_path (mf);
+	      char *fname = fcn_file_in_path (ff);
 	      int status = is_newer (fname, tp);
 	      delete [] fname;
 	      if (status > 0)
@@ -698,13 +698,13 @@ make_name_list (void)
   int glb_len = 0;
   int top_len = 0;
   int lcl_len = 0;
-  int mfl_len = 0;
+  int ffl_len = 0;
 
   char **key = (char **) NULL;
   char **glb = (char **) NULL;
   char **top = (char **) NULL;
   char **lcl = (char **) NULL;
-  char **mfl = (char **) NULL;
+  char **ffl = (char **) NULL;
 
 // Each of these functions returns a new vector of pointers to new
 // strings.
@@ -714,9 +714,9 @@ make_name_list (void)
   top = top_level_sym_tab->list (top_len);
   if (top_level_sym_tab != curr_sym_tab)
     lcl = curr_sym_tab->list (lcl_len);
-  mfl = get_fcn_file_names (mfl_len, 1);
+  ffl = get_fcn_file_names (ffl_len, 1);
 
-  int total_len = key_len + glb_len + top_len + lcl_len + mfl_len;
+  int total_len = key_len + glb_len + top_len + lcl_len + ffl_len;
 
   char **list = new char * [total_len+1];
   
@@ -738,8 +738,8 @@ make_name_list (void)
   for (i = 0; i < lcl_len; i++)
     list[j++] = lcl[i];
 
-  for (i = 0; i < mfl_len; i++)
-    list[j++] = mfl[i];
+  for (i = 0; i < ffl_len; i++)
+    list[j++] = ffl[i];
 
   list[j] = (char *) NULL;
 
@@ -747,7 +747,7 @@ make_name_list (void)
   delete [] glb;
   delete [] top;
   delete [] lcl;
-  delete [] mfl;
+  delete [] ffl;
 
   return list;
 }

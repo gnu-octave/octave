@@ -103,7 +103,7 @@ char *curr_fcn_file_name = (char *) NULL;
 int reading_script_file = 0;
 
 // If we are reading from an M-file, this is it.
-FILE *mf_instream = (FILE *) NULL;
+FILE *ff_instream = (FILE *) NULL;
 
 // Nonzero means we are using readline.
 int using_readline = 1;
@@ -224,7 +224,7 @@ octave_read (char *buf, int max_size)
     {
       FILE *curr_stream = rl_instream;
       if (reading_fcn_file || reading_script_file)
-	curr_stream = mf_instream;
+	curr_stream = ff_instream;
 
       assert (curr_stream != (FILE *) NULL);
 
@@ -283,7 +283,7 @@ get_input_from_file (char *name, int warn = 1)
     warning ("%s: no such file or directory", name);
 
   if (reading_fcn_file || reading_script_file)
-    mf_instream = instream;
+    ff_instream = instream;
   else
     rl_instream = instream;
 

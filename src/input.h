@@ -49,7 +49,7 @@ extern char *curr_fcn_file_name;
 extern int reading_script_file;
 
 // If we are reading from an M-file, this is it.
-extern FILE *mf_instream;
+extern FILE *ff_instream;
 
 // Nonzero means we are using readline.
 extern int using_readline;

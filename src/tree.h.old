@@ -194,8 +194,8 @@ public:
   void bump_value (tree::expression_type);
 
   int parse_fcn_file (int exec_script = 1);
-  int parse_fcn_file (char *mf, int exec_script = 1);
-  void parse_fcn_file (FILE *mfile, char *mf);
+  int parse_fcn_file (char *ff, int exec_script = 1);
+  void parse_fcn_file (FILE *ffile, char *ff);
 
   tree *do_lookup (int& script_file_executed);
 

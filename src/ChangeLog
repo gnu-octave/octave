@@ -1,5 +1,8 @@
 2004-02-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* version.h (OCTAVE_VERSION): Now 2.1.55.
+	(OCTAVE_API_VERSION): Now api-v6.
+
 	* sighandlers.cc (sigfpe_handler, sigpipe_handler):
 	Don't increment	octave_interrupt_state if it is less than 0.
 	(sigint_handler): If octave_interrupt_state is less than zero,

@@ -59,9 +59,9 @@ function [l, m, p, e] = dlqe (a, g, c, sigw, sigv, zz)
   else
     [k, p, e] = dlqr (a', c', g*sigw*g', sigv, g*zz);
     m = p';
-    l = (m*c'+a\g*t)/(c*m*c'+sigv);
+    l = (m*c'+a\g)/(c*m*c'+sigv);
     a = a-g*t/sigv*c;
-    sigw = sigw-t/sigv*t';
+    sigw = sigw-t/sigv;
   endif
 
   p = a\(m-g*sigw*g')/a';

@@ -32,7 +32,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "data-conv.h"
 #include "lo-error.h"
 
-#define CHECK_SIZED_INT_TYPE(VAL, BITS, TQ, Q) \
+#define FIND_SIZED_INT_TYPE(VAL, BITS, TQ, Q) \
   do \
     { \
       int sz = BITS / CHAR_BIT; \
@@ -49,7 +49,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
     } \
   while (0)
 
-#define CHECK_SIZED_FLOAT_TYPE(VAL, BITS) \
+#define FIND_SIZED_FLOAT_TYPE(VAL, BITS) \
   do \
     { \
       int sz = BITS / CHAR_BIT; \
@@ -91,11 +91,11 @@ init_sized_type_lookup_table (oct_data_conv::data_type table[3][4])
 
   for (int i = 0; i < 4; i++)
     {
-      CHECK_SIZED_INT_TYPE (table[0][i], bits, , );
+      FIND_SIZED_INT_TYPE (table[0][i], bits, , );
 
-      CHECK_SIZED_INT_TYPE (table[1][i], bits, unsigned, u);
+      FIND_SIZED_INT_TYPE (table[1][i], bits, unsigned, u);
 
-      CHECK_SIZED_FLOAT_TYPE (table[2][i], bits);
+      FIND_SIZED_FLOAT_TYPE (table[2][i], bits);
 
       bits *= 2;
     }
@@ -185,7 +185,7 @@ oct_data_conv::string_to_data_type (const string& str)
 
 #define swap_1_bytes(x, y)
 
-#define LS_DO_READ(TYPE,swap,data,size,len,stream) \
+#define LS_DO_READ(TYPE, swap, data, size, len, stream) \
   do \
     { \
       volatile TYPE *ptr = X_CAST (volatile TYPE *, data); \
@@ -202,7 +202,7 @@ oct_data_conv::string_to_data_type (const string& str)
 // Have to use copy here to avoid writing over data accessed via
 // Matrix::data().
 
-#define LS_DO_WRITE(TYPE,data,size,len,stream) \
+#define LS_DO_WRITE(TYPE, data, size, len, stream) \
   do \
     { \
       char tmp_type = static_cast<char> (type); \
@@ -726,7 +726,7 @@ read_doubles (istream& is, double *data, save_type type, int len,
       }
       break;
 
-    case LS_DOUBLE:
+    case LS_DOUBLE: // No conversion necessary.
       is.read (data, 8 * len);
       do_double_format_conversion (data, len, fmt);
       break;
@@ -770,7 +770,7 @@ write_doubles (ostream& os, const double *data, save_type type, int len)
       LS_DO_WRITE (float, data, 4, len, os);
       break;
 
-    case LS_DOUBLE:
+    case LS_DOUBLE: // No conversion necessary.
       {
 	char tmp_type = X_CAST (char, type);
 	os.write (&tmp_type, 1);

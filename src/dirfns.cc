@@ -425,9 +425,10 @@ print a directory listing")
 
   ls_buf << ends;
   char *ls_command = ls_buf.str ();
-  delete [] ls_command;
 
   iprocstream *cmd = new iprocstream (ls_command);
+
+  delete [] ls_command;
 
   add_unwind_protect (cleanup_iprocstream, cmd);
 

@@ -78,6 +78,13 @@ octave_complex_matrix::try_narrowing_conversion (void)
 
 void
 octave_complex_matrix::assign (const octave_value_list& idx,
+			       const ComplexMatrix& rhs)
+{
+  octave_base_matrix<ComplexMatrix>::assign (idx, rhs);
+}
+
+void
+octave_complex_matrix::assign (const octave_value_list& idx,
 			       const Matrix& rhs)
 {
   int len = idx.length ();

@@ -70,7 +70,10 @@ lexical_feedback lexer_flags;
 // reset and avoid growing forever just because we are stashing some
 // information.  This has to appear before lex.h is included, because
 // one of the macros defined there uses token_stack.
-static SLStack <token*> token_stack;
+//
+// XXX FIXME XXX -- this should really be static, but that causes
+// problems on some systems.
+SLStack <token*> token_stack;
 
 // Did eat_whitespace() eat a space or tab, or a newline, or both?
 

@@ -40,7 +40,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "unwind-prot.h"
 #include "utils.h"
 
-static SLStack <unwind_elem> unwind_protect_list;
+// XXX FIXME XXX -- this should really be static, but that causes
+// problems on some systems.
+SLStack <unwind_elem> unwind_protect_list;
 
 void
 add_unwind_protect (cleanup_func fptr, void *ptr)

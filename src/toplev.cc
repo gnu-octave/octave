@@ -750,7 +750,9 @@ or\n\
 
 DEFALIAS (shell_cmd, system);
 
-static SLStack<string> octave_atexit_functions;
+// XXX FIXME XXX -- this should really be static, but that causes
+// problems on some systems.
+SLStack<string> octave_atexit_functions;
 
 void
 do_octave_atexit (void)

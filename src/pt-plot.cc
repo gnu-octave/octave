@@ -91,7 +91,10 @@ static char *gnuplot_terminal_type = 0;
 static bool clear_before_plotting = true;
 
 // List of files to delete when we exit or crash.
-static SLStack <string> tmp_files;
+//
+// XXX FIXME XXX -- this should really be static, but that causes
+// problems on some systems.
+SLStack <string> tmp_files;
 
 // Pipe to gnuplot.
 static oprocstream *plot_stream = 0;

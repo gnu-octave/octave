@@ -1,5 +1,10 @@
 Mon Jan 20 11:11:12 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* lex.l (token_stack): Don't declare static.
+	* pt-plot.cc (tmp_files): Likewise.
+	* toplev.cc (octave_atexit_functions): Likewise.
+	* unwind-prot.cc (unwind_protect_list): Likewise.
+
 	* ops.h (MX_MX_BOOL_OP): Correctly handle case of one or both
 	arguments being empty.  Change all callers.
 

@@ -1105,7 +1105,8 @@ read_mat_binary_data (istream& is, const string& filename,
       return 0;
     }
 
-  name = new char [len];
+  name = new char [len+1];
+  name[len] = '\0';
   if (! is.read (name, len))
     goto data_read_error;
 

@@ -105,21 +105,12 @@ pager_death_handler (pid_t pid, int status)
     {
       if (WIFEXITED (status) || WIFSIGNALLED (status))
 	{
-	  if (external_pager)
-	    clear_external_pager ();
+	  // Avoid warning() or error(), since that will put us back in
+	  // the pager, which would be bad news.
 
-	  // Don't call error() here because we don't want to set
-	  // the error state.
-
-	  // XXX FIXME XXX -- something is wrong with the way that
-	  // we are cleaning up the pager in the event of a SIGCHLD.
-	  // If this message is printed with warning(), we eventually
-	  // crash.
-
-	  cout << "warning: connection to external pager (pid = "
-	       << pid << ") lost --" << endl
-	       << "warning: pending computations and output may be lost"
-	       << endl;
+	  cerr << "warning: connection to external pager (pid = "
+	       << pid << ") lost --\n"
+	       << "warning: attempting to finish pending computations...\n";
 	}
     }
 }
@@ -171,6 +162,18 @@ do_sync (const char *msg, bool bypass_pager)
 		      && external_pager
 		      && external_pager->good ())
 		    external_pager->flush ();
+		}
+	      else
+		{
+		  // We had a pager, but it must have died.  Restore
+		  // the interrupt state so we can escape back to the
+		  // prompt if there are lots of computations pending.
+
+		  if (interrupt_handler_saved)
+		    {
+		      octave_set_interrupt_handler (saved_interrupt_handler);
+		      interrupt_handler_saved = false;
+		    }
 		}
 	    }
 	  else

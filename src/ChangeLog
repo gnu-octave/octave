@@ -1,3 +1,18 @@
+Thu Mar  6 20:07:24 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* sighandlers.cc (my_friendly_exit, octave_new_handler,
+	sigfpe_handler, sigpipe_handler): Don't all error() or warning().
+
+	* pager.cc (pager_death_handler): Don't try to clear pager, just
+	print message to cerr.
+	(do_sync): If the status of the pager is bad or it looks like it
+	is dead, restore the interrupt handler.
+
+	* load-save.cc (extract_keyword (istream&, char*, int&)):
+	Move declaration of buf inside loop, to avoid deleting its guts
+	and then trying to reuse it.
+	(extract_keyword (istream&, char*)): Likewise.
+
 Tue Mar  4 20:36:53 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pt-fcn.cc (tree_function::eval): Protect function from being

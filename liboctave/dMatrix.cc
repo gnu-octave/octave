@@ -2626,9 +2626,11 @@ operator >> (istream& is, Matrix& a)
 	    if (is)
 	      a.elem (i, j) = tmp;
 	    else
-	      break;
+	      goto done;
 	  }
     }
+
+ done:
 
   return is;
 }

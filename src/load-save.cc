@@ -253,8 +253,6 @@ skip_comments (istream& is)
 static char *
 extract_keyword (istream& is, char *keyword)
 {
-  ostrstream buf;
-
   char *retval = 0;
 
   char c;
@@ -262,6 +260,8 @@ extract_keyword (istream& is, char *keyword)
     {
       if (c == '#')
 	{
+	  ostrstream buf;
+	
 	  while (is.get (c) && (c == ' ' || c == '\t' || c == '#'))
 	    ; // Skip whitespace and comment characters.
 
@@ -320,8 +320,6 @@ extract_keyword (istream& is, char *keyword)
 static int
 extract_keyword (istream& is, char *keyword, int& value)
 {
-  ostrstream buf;
-
   int status = 0;
   value = 0;
 
@@ -330,6 +328,8 @@ extract_keyword (istream& is, char *keyword, int& value)
     {
       if (c == '#')
 	{
+	  ostrstream buf;
+
 	  while (is.get (c) && (c == ' ' || c == '\t' || c == '#'))
 	    ; // Skip whitespace and comment characters.
 
@@ -910,36 +910,6 @@ read_binary_data (istream& is, int swap,
   return name;
 }
 
-// Get a complete line of input.
-
-static string
-get_complete_line (istream& is)
-{
-  string retval;
-
-  ostrstream buf;
-
-  char c;
-
-  while (is.get (c))
-    {
-      if (c == '\n')
-	break;
-
-      buf << c;
-    }
-
-  buf << ends;
-
-  char *tmp = buf.str ();
-
-  retval = tmp;
-
-  delete [] tmp;
-
-  return retval;
-}
-
 static void
 get_lines_and_columns (istream& is, const string& filename, int& nr, int& nc)
 {
@@ -950,30 +920,39 @@ get_lines_and_columns (istream& is, const string& filename, int& nr, int& nc)
   nr = 0;
   nc = 0;
 
-  while (! (is.eof () || error_state))
+  while (is && ! error_state)
     {
-      string line = get_complete_line (is);
+      string buf;
+
+      char c;
+      while (is.get (c))
+	{
+	  if (c == '\n')
+	    break;
+
+	  buf += c;
+	}
 
       file_line_number++;
 
-      size_t beg = line.find_first_not_of (" \t");
+      size_t beg = buf.find_first_not_of (" \t");
 
-      if (beg != NPOS)
+      int tmp_nc = 0;
+
+      while (beg != NPOS)
 	{
-	  int tmp_nc = 0;
+	  tmp_nc++;
 
-	  while (beg != NPOS)
-	    {
-	      tmp_nc++;
+	  size_t end = buf.find_first_of (" \t", beg);
 
-	      size_t end = line.find_first_of (" \t", beg);
+	  if (end != NPOS)
+	    beg = buf.find_first_not_of (" \t", end);
+	  else
+	    break;
+	}
 
-	      if (end != NPOS)
-		beg = line.find_first_not_of (" \t", end);
-	      else
-		break;
-	    }
-
+      if (tmp_nc > 0)
+	{
 	  if (nc == 0)
 	    {
 	      nc = tmp_nc;
@@ -1027,10 +1006,8 @@ read_mat_ascii_data (istream& is, const string& filename,
 
       get_lines_and_columns (is, filename, nr, nc);
 
-      if (! error_state)
+      if (! error_state && nr > 0 && nc > 0)
 	{
-	  // NR and NC must be greater than zero if we end up here.
-
 	  Matrix tmp (nr, nc);
 
 	  is >> tmp;

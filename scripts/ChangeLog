@@ -1,3 +1,7 @@
+Thu Mar  6 12:36:30 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* statistics/corrcoef.m: Don't fail if single argument is a vector.
+
 Sat Mar  1 15:23:14 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Version 2.0.5 released.

@@ -30,6 +30,7 @@
 ##
 ##
 ## @end deftypefn
+##
 ## @seealso{is_stabilizable, size, rows, columns, length, ismatrix,
 ## isscalar, and isvector}
 

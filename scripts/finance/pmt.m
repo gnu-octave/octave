@@ -29,6 +29,7 @@
 ## payments are made at the end (@var{"e"}, default) or at the beginning
 ## (@var{"b"}) of each period.
 ## @end deftypefn
+##
 ## @seealso{pv, nper, and rate}
 
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>

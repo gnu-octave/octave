@@ -21,6 +21,7 @@
 ## @deftypefn {Function File} {[@var{x}, @var{map}] =} rgb2ind (@var{r}, @var{g}, @var{b})
 ## Convert and RGB image to an Octave indexed image.
 ## @end deftypefn
+##
 ## @seealso{ind2rgb and rgb2ntsc}
 
 ## Bugs: The color map may have duplicate entries.

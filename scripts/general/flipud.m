@@ -34,6 +34,7 @@
 ## matrix @code{flipud} only work with 2-d arrays.  To flip N-d arrays
 ## use @code{flipdim} instead.
 ## @end deftypefn
+##
 ## @seealso{fliplr, flipdim, rot90 and rotdim}
 
 ## Author: jwe

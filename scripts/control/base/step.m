@@ -48,6 +48,7 @@
 ##
 ## When invoked with the output parameter @var{y} the plot is not displayed.
 ## @end deftypefn
+##
 ## @seealso{impulse and __stepimp__}
 
 ## Author: Kai P. Mueller <mueller@ifr.ing.tu-bs.de>

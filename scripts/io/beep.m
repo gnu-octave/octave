@@ -21,6 +21,7 @@
 ## @deftypefn {Function File} {} puts (@var{string})
 ## Produce a beep from the speaker (or visual bell).
 ## @end deftypefn
+##
 ## @seealso{puts, fputs, printf and fprintf}
 
 ## Author: jwe

@@ -35,6 +35,7 @@
 ## values for the respective axes, or as values for each row and column
 ## of the matrix @var{A}.  At present they are ignored.
 ## @end deftypefn
+##
 ## @seealso{image and imshow}
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>

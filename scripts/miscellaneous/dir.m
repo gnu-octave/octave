@@ -40,6 +40,7 @@
 ## named file.
 ## @var{filename}.
 ## @end deftypefn
+##
 ## @seealso{stat}
 
 ## Author: jwe

@@ -52,6 +52,7 @@
 ## @end group
 ## @end example
 ## @end deftypefn
+##
 ## @seealso{rot90, flipud, fliplr and flipdim}
 
 function y = rotdim (x, k, plane)

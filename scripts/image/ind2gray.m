@@ -23,6 +23,7 @@
 ## If @var{map} is omitted, the current colormap is used to determine the
 ## intensities.
 ## @end deftypefn
+##
 ## @seealso{gray2ind, rgb2ntsc, image, and colormap}
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>

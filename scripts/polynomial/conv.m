@@ -26,6 +26,7 @@
 ## If @var{a} and @var{b} are polynomial coefficient vectors, @code{conv}
 ## returns the coefficients of the product polynomial.
 ## @end deftypefn
+##
 ## @seealso{deconv, poly, roots, residue, polyval, polyderiv, and polyinteg}
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>

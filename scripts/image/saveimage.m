@@ -43,6 +43,8 @@
 ## are equal) the gray scale ppm and PostScript image formats are used,
 ## otherwise the full color formats are used.
 ## @end deftypefn
+##
+## @seealso{loadimage, save, load, and colormap}
 
 ## The conversion to PostScript is based on pbmtolps.c, which was
 ## written by
@@ -52,7 +54,6 @@
 ##   University of British Columbia
 ##
 ## and is part of the portable bitmap utilities,
-## @seealso{loadimage, save, load, and colormap}
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>
 ## Created: July 1994

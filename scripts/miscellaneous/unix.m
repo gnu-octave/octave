@@ -26,6 +26,7 @@
 ## @var{text}.  If the optional second argument @code{"-echo"} is given,
 ## then also send the output from the command to the standard output.
 ## @end deftypefn
+##
 ## @seealso{isunix, ispc, system}
 
 ## Author: octave-forge ???

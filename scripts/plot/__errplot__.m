@@ -26,6 +26,7 @@
 ## @end example
 ##
 ## @end deftypefn
+##
 ## @seealso{semilogx, semilogy, loglog, polar, mesh, contour, __pltopt__
 ## bar, stairs, errorbar, gplot, gsplot, replot, xlabel, ylabel, and title}
 

@@ -24,6 +24,7 @@
 ## to the @var{x} and @var{y} coordinates of a mesh.  The rows of @var{xx} are copies of @var{x},
 ## and the columns of @var{yy} are copies of @var{y}.
 ## @end deftypefn
+##
 ## @seealso{sombrero, plot, semilogx, semilogy, loglog, polar, mesh, meshdom, contour,
 ## bar, stairs, gplot, gsplot, replot, xlabel, ylabel, and title}
 

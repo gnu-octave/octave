@@ -34,6 +34,7 @@
 ## additional information.
 ##
 ## @end deftypefn
+##
 ## @seealso{errorbar, loglogerr semilogxerr, polar, mesh, contour, __pltopt__, 
 ## bar, stairs, gplot, gsplot, replot, xlabel, ylabel, and title}
 

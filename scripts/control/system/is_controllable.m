@@ -53,6 +53,7 @@
 ## has a single input; otherwise a block Arnoldi iteration is performed
 ## with @code{krylovb}.
 ## @end deftypefn
+##
 ## @seealso{size, rows, columns, length, ismatrix, isscalar, isvector
 ## is_observable, is_stabilizable, is_detectable, krylov, and krylovb}
 

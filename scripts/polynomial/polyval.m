@@ -27,6 +27,7 @@
 ## If @var{x} is a vector or matrix, the polynomial is evaluated at each of
 ## the elements of @var{x}.
 ## @end deftypefn
+##
 ## @seealso{polyvalm, poly, roots, conv, deconv, residue, filter,
 ## polyderiv, and polyinteg}
 

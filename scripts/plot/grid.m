@@ -23,6 +23,7 @@
 ## The argument may be either @code{"on"} or @code{"off"}.  If it is
 ## omitted, @code{"on"} is assumed.
 ## @end deftypefn
+##
 ## @seealso{plot, semilogx, semilogy, loglog, polar, mesh, contour,
 ## bar, stairs, gplot, gsplot, replot, xlabel, ylabel, and title}
 

@@ -38,6 +38,7 @@
 ## Command examples are interactively run for users to observe the use
 ## of @acronym{OCST} functions.
 ## @end deftypefn
+##
 ## @seealso{Demo Programs: bddemo.m, frdemo.m, analdemo.m,
 ## moddmeo.m, rldemo.m}
 

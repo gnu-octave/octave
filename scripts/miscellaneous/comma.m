@@ -21,4 +21,5 @@
 ## @deffn {Operator} ,
 ## Array index, function argument, or command separator.
 ## @end deffn
+##
 ## @seealso{semicolon}

@@ -23,6 +23,7 @@
 ## description of @code{plot} for a description of the arguments that
 ## @code{loglog} will accept.
 ## @end deftypefn
+##
 ## @seealso{plot, semilogy, loglog, polar, mesh, contour, bar, stairs,
 ## gplot, gsplot, replot, xlabel, ylabel, and title}
 

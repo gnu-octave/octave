@@ -21,6 +21,7 @@
 ## @deftypefn {Function File} {} __pltopt1__ (@var{caller}, @var{opt})
 ## Really decode plot option strings.
 ## @end deftypefn
+##
 ## @seealso{__pltopt__}
 
 ## Author: Rick Niles <niles@axp745.gsfc.nasa.gov>

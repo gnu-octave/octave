@@ -39,6 +39,7 @@
 ##  f .* (2 .^ e).
 ## @end ifinfo
 ## @end deftypefn
+##
 ## @seealso{nextpow2}
 
 ## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>

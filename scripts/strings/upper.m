@@ -21,6 +21,7 @@
 ## @deftypefn {Function File} {} upper (@var{s})
 ## Transform all letters in the string @var{s} to upper case.
 ## @end deftypefn
+##
 ## @seealso{toupper}
 
 ## Author: jwe

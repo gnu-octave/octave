@@ -28,6 +28,7 @@
 ## contain the coefficients of the polynomial quotient and @var{r} will be
 ## a remander polynomial of lowest order.
 ## @end deftypefn
+##
 ## @seealso{conv, poly, roots, residue, polyval, polyderiv, and polyinteg}
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>

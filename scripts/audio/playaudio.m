@@ -23,6 +23,7 @@
 ## Plays the audio file @file{@var{name}.@var{ext}} or the audio data
 ## stored in the vector @var{x}.
 ## @end deftypefn
+##
 ## @seealso{lin2mu, mu2lin, loadaudio, saveaudio, setaudio, and record}
 
 ## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>

@@ -24,6 +24,7 @@
 ## Watch out if you are forming sampled systems since @command{ugain}
 ## does not contain a sampling period.
 ## @end deftypefn
+##
 ## @seealso{hinfdemo and jet707}
 
 ## Author: Kai P. Mueller <mueller@ifr.ing.tu-bs.de>

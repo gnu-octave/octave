@@ -25,6 +25,7 @@
 ## @var{phi} is the angle relative to the xy - plane.
 ## @var{r} is the distance to the origin (0, 0, 0).
 ## @end deftypefn
+##
 ## @seealso{pol2cart, cart2pol, sph2cart}
 
 ## Author: Kai Habel <kai.habel@gmx.de>

@@ -59,6 +59,7 @@
 ## Note: n = 0 (pure gain block) is returned without warning.
 ##
 ## @end deftypefn
+##
 ## @seealso{is_abcd}
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>

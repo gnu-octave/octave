@@ -104,6 +104,7 @@
 ##   6    brown     yellow      dot short dash  "*"         "o"
 ## @end example
 ## @end deftypefn
+##
 ## @seealso{__pltopt1__}
 
 ## Author: jwe

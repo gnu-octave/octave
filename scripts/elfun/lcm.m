@@ -32,9 +32,10 @@
 ## @example
 ## lcm ([a1, ..., ak]).
 ## @end example
-## @end deftypefn
 ##
 ## All elements must be the same size or scalar.
+## @end deftypefn
+##
 ## @seealso{gcd, min, max, ceil, and floor}
 
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>

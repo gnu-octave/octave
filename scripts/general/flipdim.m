@@ -30,6 +30,7 @@
 ## @end group
 ## @end example
 ## @end deftypefn
+##
 ## @seealso{fliplr, flipud, rot90 and rotdim}
 
 ## Author: David Bateman

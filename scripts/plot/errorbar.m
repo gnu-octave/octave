@@ -103,6 +103,7 @@
 ## from @var{y}-@var{ly} to @var{y}+@var{uy}.
 ##
 ## @end deftypefn
+##
 ## @seealso{semilogx, semilogy, loglog, polar, mesh, contour, __pltopt__,
 ## bar, stairs, gplot, gsplot, replot, xlabel, ylabel, and title}
 

@@ -61,6 +61,7 @@
 ## Controller poles.
 ## @end table
 ## @end deftypefn
+##
 ## @seealso{h2syn, lqe, and lqr}
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>

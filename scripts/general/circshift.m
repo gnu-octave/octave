@@ -44,6 +44,7 @@
 ## @end group
 ## @end example
 ## @end deftypefn
+##
 ## @seealso {permute, ipermute, shiftdim}
 
 function y = circshift (x, n)

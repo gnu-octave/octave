@@ -71,6 +71,7 @@
 ##  Systems, Vol 5, no 2 (1992), pp 165--194.
 ##
 ## @end deftypefn
+##
 ## @seealso{balance and are}
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>

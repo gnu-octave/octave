@@ -53,6 +53,7 @@
 ## p-norm of @var{a}, @code{(sum (abs (@var{a}) .^ @var{p})) ^ (1/@var{p})}.
 ## @end table
 ## @end deftypefn
+##
 ## @seealso{cond and svd}
 
 ## Author: jwe

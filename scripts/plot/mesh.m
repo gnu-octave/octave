@@ -26,6 +26,7 @@
 ## correspond to different @var{x} values and rows of @var{z} correspond
 ## to different @var{y} values.
 ## @end deftypefn
+##
 ## @seealso{plot, semilogx, semilogy, loglog, polar, meshgrid, meshdom,
 ## contour, bar, stairs, gplot, gsplot, replot, xlabel, ylabel, and title}
 

@@ -32,6 +32,7 @@
 ## An error message is printed if the dimensions of the arguments do not
 ## agree, or if either of the arguments is complex.
 ## @end deftypefn
+##
 ## @seealso{rem, round}
 
 ## Author: Paul Kienzle <pkienzle@kienzle.powernet.co.uk>

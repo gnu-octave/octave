@@ -23,8 +23,9 @@
 ## bitget (100, 8:-1:1)
 ## @result{} 0  1  1  0  0  1  0  0 
 ## @end example
-## @seealso{bitand, bitor, bitxor, bitset, bitcmp, bitshift, bitmax}
 ## @end deftypefn
+##
+## @seealso{bitand, bitor, bitxor, bitset, bitcmp, bitshift, bitmax}
 
 ## Liberally based of the version by Kai Habel from octave-forge
 

@@ -63,6 +63,7 @@
 ## finite precision of your computer's floating point arithmetic.
 ##
 ## @end deftypefn
+##
 ## @seealso{hankel, vander, sylvester_matrix, hilb, and toeplitz}
 
 ## Author: Dirk Laurie <dirk@siegfried.wisk.sun.ac.za>

@@ -29,6 +29,7 @@
 ## @end group
 ## @end example
 ## @end deftypefn
+##
 ## @seealso{create_set, union, and complement}
 
 ## Author: jwe

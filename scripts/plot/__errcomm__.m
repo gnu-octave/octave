@@ -23,6 +23,7 @@
 ## semilogyerr, semilogxerr).
 ##
 ## @end deftypefn
+##
 ## @seealso{errorbar, semilogxerr, semilogyerr, loglogerr, __pltopt__}
 
 ## Created: 20.02.2001

@@ -25,6 +25,7 @@
 ## If @var{p} is a matrix and @var{tsam} is specified, eigenvalues
 ## of @var{p} are assumed to be in @var{z}-domain.
 ## @end deftypefn
+##
 ## @seealso{eig}
 
 ## Author: Kai P. Mueller <mueller@ifr.ing.tu-bs.de>

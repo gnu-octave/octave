@@ -100,6 +100,7 @@
 ## @end example
 ## @end ifinfo
 ## @end deftypefn
+##
 ## @seealso{poly, roots, conv, deconv, polyval, polyderiv, and polyinteg}
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>

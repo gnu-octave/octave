@@ -21,6 +21,7 @@
 ## @deftypefn {Function File} {} isletter (@var{s})
 ## Returns true if @var{s} is a letter false otherwise.
 ## @end deftypefn
+##
 ## @seealso{isalpha}
 
 ## Author: jwe

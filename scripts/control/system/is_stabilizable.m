@@ -35,6 +35,7 @@
 ## @end ifinfo
 ## assume that discrete-time matrices (a,b) are supplied.
 ## @end deftypefn
+##
 ## @seealso{size, rows, columns, length, ismatrix, isscalar, isvector
 ## is_observable, is_stabilizable, is_detectable}
 

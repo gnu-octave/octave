@@ -29,6 +29,7 @@
 ## whether payments are made at the end (@code{"e"}, default) or at the
 ## beginning (@code{"b"}) of each period.
 ## @end deftypefn
+##
 ## @seealso{pv, pmt, nper, and npv}
 
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>

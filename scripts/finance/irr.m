@@ -24,6 +24,7 @@
 ## @code{npv (r, p) = i}.  If the second argument is omitted, a value of
 ## 0 is used.
 ## @end deftypefn
+##
 ## @seealso{npv, pv, and rate}
 
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>

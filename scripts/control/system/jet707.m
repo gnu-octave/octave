@@ -35,6 +35,7 @@
 ##
 ## @strong{Reference}: R. Brockhaus: @cite{Flugregelung} (Flight Control), Springer, 1994.
 ## @end deftypefn
+##
 ## @seealso{ord2}
 
 ## Author: Kai P. Mueller <mueller@ifr.ing.tu-bs.de>

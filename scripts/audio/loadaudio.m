@@ -30,6 +30,7 @@
 ## The argument @var{bps} can be either 8 (default) or 16, and specifies
 ## the number of bits per sample used in the audio file.
 ## @end deftypefn
+##
 ## @seealso{lin2mu, mu2lin, saveaudio, playaudio, setaudio, and record}
 
 ## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>

@@ -22,6 +22,7 @@
 ## Convert an indexed image to red, green, and blue color components.
 ## If @var{map} is omitted, the current colormap is used for the conversion.
 ## @end deftypefn
+##
 ## @seealso{rgb2ind, image, imshow, ind2gray, and gray2ind}
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>

@@ -24,6 +24,7 @@
 ## 8kHz.  The program waits until the user types @key{RET} and then
 ## immediately starts to record.
 ## @end deftypefn
+##
 ## @seealso{lin2mu, mu2lin, loadaudio, saveaudio, playaudio, and setaudio}
 
 ## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>

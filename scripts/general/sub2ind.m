@@ -22,6 +22,7 @@
 ## @deftypefnx {Function File} {@var{ind} =} sub2ind (@var{dims}, @var{s1}, @var{s2}, @dots{}, @var{sN})
 ## Convert subscripts into a linear index.
 ## @end deftypefn
+##
 ## @seealso{ind2sub}
 
 ## Author: Paul Kienzle <pkienzle@kienzle.powernet.co.uk>

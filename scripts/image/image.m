@@ -31,6 +31,7 @@
 ## The axis values corresponding to the matrix elements are specified in
 ## @var{x} and @var{y}. At present they are ignored.
 ## @end deftypefn
+##
 ## @seealso{imshow, imagesc, and colormap}
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>

@@ -27,6 +27,7 @@
 ##
 ## The argument @var{x} must be a square matrix.
 ## @end deftypefn
+##
 ## @seealso{polyval, poly, roots, conv, deconv, residue, filter,
 ## polyderiv, and polyinteg}
 

@@ -28,6 +28,7 @@
 ## Used internally in @command{impulse}, @command{step}. Use @command{step}
 ## or @command{impulse} instead.
 ## @end deftypefn
+##
 ## @seealso{step, impulse}
 
 ## Author: Kai P. Mueller <mueller@ifr.ing.tu-bs.de>

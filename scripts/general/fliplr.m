@@ -29,11 +29,11 @@
 ##          4  3
 ## @end group
 ## @end example
+##
+## Note that @code{fliplr} only workw with 2-D arrays.  To flip N-d arrays
+## use @code{flipdim} instead.
 ## @end deftypefn
 ##
-## Due to the difficult of define which axis about which to flip the 
-## matrix @code{fliplr} only work with 2-D arrays. To flip N-D arrays
-## use @code{flipdim} instead.
 ## @seealso{flipud, flipdim, rot90 and rotdim}
 
 ## Author: jwe

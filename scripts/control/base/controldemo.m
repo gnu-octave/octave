@@ -20,6 +20,7 @@
 ## @deftypefn {Function File} {} controldemo ()
 ## Control Systems Toolbox demo.
 ## @end deftypefn
+##
 ## @seealso{Demo programs: bddemo, frdemo, analdemo, moddmeo, rldemo}
 
 ## Author: David Clem

@@ -24,6 +24,7 @@
 ## @var{z}.  Someone needs to improve @code{gnuplot}'s contour routines
 ## before this will be very useful.
 ## @end deftypefn
+##
 ## @seealso{plot, semilogx, semilogy, loglog, polar, mesh, contour,
 ## bar, stairs, gplot, gsplot, replot, xlabel, ylabel, and title}
 

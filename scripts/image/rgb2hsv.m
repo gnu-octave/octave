@@ -28,6 +28,7 @@
 ## Hue describes the dominant wavelegth. 
 ## Saturation is the amount of Hue mixed into the color. 
 ## @end deftypefn
+##
 ## @seealso{hsv2rgb}
 
 ## Author: Kai Habel <kai.habel@gmx.de>

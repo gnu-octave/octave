@@ -56,6 +56,7 @@
 ## The third argument @var{dim} determines the dimension along which the standard
 ## deviation is calculated.
 ## @end deftypefn
+##
 ## @seealso{mean and median}
 
 ## Author: jwe

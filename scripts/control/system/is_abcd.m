@@ -23,6 +23,7 @@
 ##  appropriate diagnostic message printed to the screen.  The matrices
 ##  @var{b}, @var{c}, or @var{d} may be omitted.
 ## @end deftypefn
+##
 ## @seealso{abcddim}
 
 ## Author: Kai P. Mueller <mueller@ifr.ing.tu-bs.de>

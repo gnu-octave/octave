@@ -29,6 +29,7 @@
 ## @end group
 ## @end example
 ## @end deftypefn
+##
 ## @seealso{union, intersection, and complement}
 
 ## Author: jwe

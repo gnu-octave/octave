@@ -37,6 +37,7 @@
 ## @end table
 ## @end table
 ## @end deftypefn
+##
 ## @seealso{size, rows, columns, length, ismatrix, isscalar, isvector
 ## is_observable, is_stabilizable, is_detectable, krylov, and krylovb}
 

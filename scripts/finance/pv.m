@@ -32,6 +32,7 @@
 ## Note that the rate @var{r} is specified as a fraction (i.e., 0.05,
 ## not 5 percent).
 ## @end deftypefn
+##
 ## @seealso{pmt, nper, rate, and npv}
 
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>

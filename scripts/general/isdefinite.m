@@ -24,6 +24,7 @@
 ## positive semidefinite.  Otherwise, return -1.  If @var{tol}
 ## is omitted, use a tolerance equal to 100 times the machine precision.  
 ## @end deftypefn
+##
 ## @seealso{issymmetric}
 
 ## Author: Gabriele Pannocchia <g.pannocchia@ing.unipi.it>

@@ -27,9 +27,9 @@
 ## dec2bin(bitcmp(11))
 ## @result{} 11111111111111111111111111110100
 ## @end example
+## @end deftypefn
 ##
 ## @seealso{bitand,bitor,bitxor,bitset,bitget,bitcmp,bitshift,bitmax}
-## @end deftypefn
 
 ## Liberally based of the version by Kai Habel from octave-forge
 

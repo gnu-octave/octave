@@ -24,6 +24,7 @@
 ## replot without any arguments.
 ##
 ## @end deftypefn
+##
 ## @seealso{plot, semilogx, semilogy, loglog, polar, mesh, contour,
 ## bar, stairs, gplot, gsplot, replot, xlabel, and ylabel}
 

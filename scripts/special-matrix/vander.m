@@ -46,6 +46,7 @@
 ## @end example
 ## @end ifinfo
 ## @end deftypefn
+##
 ## @seealso{hankel, sylvester_matrix, hilb, invhilb, and toeplitz}
 
 ## Author: jwe

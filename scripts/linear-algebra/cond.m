@@ -23,6 +23,7 @@
 ## defined as @code{norm (a) * norm (inv (a))}, and is computed via a
 ## singular value decomposition.
 ## @end deftypefn
+##
 ## @seealso{norm, svd, and rank}
 
 ## Author: jwe

@@ -42,6 +42,7 @@
 ## @end example
 ##
 ## @end deftypefn
+##
 ## @seealso{dec2base, dec2bin, bin2dec, hex2dec, dec2hex}
 
 ## Author: Daniel Calvelo <dcalvelo@yahoo.com>

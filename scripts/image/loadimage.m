@@ -22,6 +22,7 @@
 ## Load an image file and it's associated color map from the specified
 ## @var{file}.  The image must be stored in Octave's image format.
 ## @end deftypefn
+##
 ## @seealso{saveimage, load, and save}
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>

@@ -25,6 +25,7 @@
 ## in the audio file (see @code{loadaudio});  defaults are @file{lin} and
 ## 8, respectively.
 ## @end deftypefn
+##
 ## @seealso{lin2mu, mu2lin, loadaudio, playaudio, setaudio, and record}
 
 ## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>

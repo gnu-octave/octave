@@ -22,6 +22,7 @@
 ## If @var{x} is a square matrix, then return the dimension of @var{x}.
 ## Otherwise, return 0.
 ## @end deftypefn
+##
 ## @seealso{size, rows, columns, length, ismatrix, isscalar, and isvector}
 
 ## Author: A. S. Hodel <scotte@eng.auburn.edu>

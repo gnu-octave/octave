@@ -27,7 +27,27 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "systime.h"
 
 #ifdef HAVE_SYS_RESOURCE_H
+
 #include <sys/resource.h>
+
+#elif defined (HAVE_TIMES) && defined (HAVE_SYS_TIMES_H)
+
+#include <sys/types.h>
+#if defined (HAVE_SYS_PARAM_H)
+#include <sys/param.h>
+#endif
+#include <sys/times.h>
+
+#if !defined (HZ)
+#if defined (CLK_TCK)
+#define HZ CLK_TCK
+#elif defined (USG)
+#define HZ 100
+#else
+#define HZ 60
+#endif
+#endif
+
 #endif
 
 #include "defun.h"
@@ -44,43 +64,81 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // System resource functions.
 
-static Octave_map
-mk_ru_map (struct rusage *ru)
+DEFUN (getrusage, , ,
+  "getrusage ()\n\
+\n\
+Return system resource statistics.")
 {
   Octave_map m;
   Octave_map tv_tmp;
 
 #if defined (HAVE_GETRUSAGE)
-  tv_tmp ["sec"] = (double) ru->ru_utime.tv_sec;
-  tv_tmp ["usec"] = (double) ru->ru_utime.tv_usec;
+
+  struct rusage ru;
+
+  getrusage (RUSAGE_SELF, &ru);
+
+  tv_tmp ["sec"] = (double) ru.ru_utime.tv_sec;
+  tv_tmp ["usec"] = (double) ru.ru_utime.tv_usec;
   m ["utime"] = tree_constant (tv_tmp);
 
-  tv_tmp ["sec"] = (double) ru->ru_stime.tv_sec;
-  tv_tmp ["usec"] = (double) ru->ru_stime.tv_usec;
+  tv_tmp ["sec"] = (double) ru.ru_stime.tv_sec;
+  tv_tmp ["usec"] = (double) ru.ru_stime.tv_usec;
   m ["stime"] = tree_constant (tv_tmp);
 
-  m ["maxrss"] = (double) ru->ru_maxrss;
-  m ["ixrss"] = (double) ru->ru_ixrss;
-  m ["idrss"] = (double) ru->ru_idrss;
-  m ["isrss"] = (double) ru->ru_isrss;
-  m ["minflt"] = (double) ru->ru_minflt;
-  m ["majflt"] = (double) ru->ru_majflt;
-  m ["nswap"] = (double) ru->ru_nswap;
-  m ["inblock"] = (double) ru->ru_inblock;
-  m ["oublock"] = (double) ru->ru_oublock;
-  m ["msgsnd"] = (double) ru->ru_msgsnd;
-  m ["msgrcv"] = (double) ru->ru_msgrcv;
-  m ["nsignals"] = (double) ru->ru_nsignals;
-  m ["nvcsw"] = (double) ru->ru_nvcsw;
-  m ["nivcsw"] = (double) ru->ru_nivcsw;
+  m ["maxrss"] = (double) ru.ru_maxrss;
+  m ["ixrss"] = (double) ru.ru_ixrss;
+  m ["idrss"] = (double) ru.ru_idrss;
+  m ["isrss"] = (double) ru.ru_isrss;
+  m ["minflt"] = (double) ru.ru_minflt;
+  m ["majflt"] = (double) ru.ru_majflt;
+  m ["nswap"] = (double) ru.ru_nswap;
+  m ["inblock"] = (double) ru.ru_inblock;
+  m ["oublock"] = (double) ru.ru_oublock;
+  m ["msgsnd"] = (double) ru.ru_msgsnd;
+  m ["msgrcv"] = (double) ru.ru_msgrcv;
+  m ["nsignals"] = (double) ru.ru_nsignals;
+  m ["nvcsw"] = (double) ru.ru_nvcsw;
+  m ["nivcsw"] = (double) ru.ru_nivcsw;
+
 #else
-  tv_tmp ["sec"] = octave_NaN;
-  tv_tmp ["usec"] = octave_NaN;
+#if defined (HAVE_TIMES) && defined (HAVE_SYS_TIMES_H)
+
+  struct tms t;
+
+  times (&t);
+
+  unsigned long ticks;
+  unsigned long seconds;
+  unsigned long fraction;
+
+  ticks = t.tms_utime + t.tms_cutime;
+  fraction = ticks % HZ;
+  seconds = ticks / HZ;
+
+  tv_tmp ["sec"] = (double) seconds;
+  tv_tmp ["usec"] = (double) (fraction * 1e6 / HZ);
   m ["utime"] = tree_constant (tv_tmp);
 
-  tv_tmp ["sec"] = octave_NaN;
-  tv_tmp ["usec"] = octave_NaN;
+  ticks = t.tms_stime + t.tms_cstime;
+  fraction = ticks % HZ;
+  seconds = ticks / HZ;
+
+  tv_tmp ["sec"] = (double) seconds;
+  tv_tmp ["usec"] = (double) (fraction * 1e6 / HZ);
   m ["stime"] = tree_constant (tv_tmp);
+
+#else
+
+  tv_tmp ["sec"] = 0.0;
+  tv_tmp ["usec"] = 0.0;
+  m ["utime"] = tree_constant (tv_tmp);
+
+  tv_tmp ["sec"] = 0.0;
+  tv_tmp ["usec"] = 0.0;
+  m ["stime"] = tree_constant (tv_tmp);
+
+#endif
 
   m ["maxrss"] = octave_NaN;
   m ["ixrss"] = octave_NaN;
@@ -96,29 +154,10 @@ mk_ru_map (struct rusage *ru)
   m ["nsignals"] = octave_NaN;
   m ["nvcsw"] = octave_NaN;
   m ["nivcsw"] = octave_NaN;
-#endif
-
-  return m;
-}
-
-DEFUN (getrusage, , ,
-  "getrusage ()\n\
-\n\
-Return system resource statistics.")
-{
-  Octave_object retval;
-
-#if defined (HAVE_GETRUSAGE)
-
-  struct rusage resource_stats;
-
-  getrusage (RUSAGE_SELF, &resource_stats);
-
-  retval = tree_constant (mk_ru_map (&resource_stats));
 
 #endif
 
-  return retval;
+  return tree_constant (m);
 }
 
 /*

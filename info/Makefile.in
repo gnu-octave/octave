@@ -82,7 +82,7 @@ MAKEDOC_SOURCE = makedoc.c xmalloc.c
 .c.o:
 	$(CC) -c $(CPPFLAGS) $(LDEFS) -I$(common) $(UGLY_ALL_CFLAGS) $<
 
-all: ../libinfo.a # info.info info-stnd.info
+all: libinfo.a # info.info info-stnd.info
 .PHONY: all
 
 sub-all: all
@@ -104,9 +104,9 @@ uninstall:
 #	rm -f $(mandir)/info.$(manext)
 .PHONY: uninstall
 
-../libinfo.a: $(LIBOBJS)
-	$(AR) $(ARFLAGS) ../libinfo.a $(LIBOBJS)
-	$(RANLIB) ../libinfo.a
+libinfo.a: $(LIBOBJS)
+	$(AR) $(ARFLAGS) libinfo.a $(LIBOBJS)
+	$(RANLIB) libinfo.a
 
 info: $(OBJECTS)
 	$(CC) $(LDFLAGS) -o info $(OBJECTS) $(LOADLIBES)

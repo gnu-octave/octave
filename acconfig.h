@@ -74,9 +74,6 @@
 /* To quiet autoheader. */
 #undef SMART_PUTENV
 
-/* Define if using -fexternal-templates with g++. */
-#undef USE_EXTERNAL_TEMPLATES
-
 /* Define if using dld for dynamic linking of object files. */
 #undef WITH_DLD
 

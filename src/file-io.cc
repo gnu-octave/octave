@@ -58,31 +58,8 @@ static int file_count = 0;
 // keeps a count of args sent to printf or scanf
 static int fmt_arg_count = 0;
 
-class file_info
-{
- public:
-  file_info (void);
-  file_info (int num, const char *nm, FILE *t, const char *md);
-  file_info (const file_info& f);
-
-  file_info& operator = (const file_info& f);
-
-  ~file_info (void);
-
-  int number (void) const;
-  const char *name (void) const;
-  FILE *fptr (void) const;
-  const char *mode (void) const;
-
-  int eof (void) const;
-  int error (void) const;
-
- private:
-  int file_number;
-  char *file_name;
-  FILE *file_fptr;
-  char *file_mode;
-};
+// double linked list containing relevant information about open files
+static DLList <file_info> file_list;
 
 file_info::file_info (void)
 {
@@ -152,9 +129,6 @@ file_info::mode (void) const
 {
   return file_mode;
 }
-
-// double linked list containing relevant information about open files
-static DLList <file_info> file_list;
 
 void
 initialize_file_io (void)

@@ -47,7 +47,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "idx-vector.h"
 #include "oct-map.h"
 
-#include "tc-inlines.cc"
+#include "tc-inlines.h"
 
 // Top-level tree-constant function that handle assignments.  Only
 // decide if the left-hand side is currently a scalar or a matrix and

@@ -34,6 +34,8 @@ INCLUDES = Bounds.h CollocWt.h DAE.h DAEFunc.h FEGrid.h	FSQP.h \
 
 TEMPLATE_SRC = Array.cc
 
+TI_SRC = Array-C.cc Array-d.cc
+
 MATRIX_SRC = CColVector.cc CDiagMatrix.cc CMatrix.cc CRowVector.cc \
 	CmplxAEPBAL.cc CmplxCHOL.cc CmplxDET.cc CmplxHESS.cc CmplxLU.cc \
 	CmplxQR.cc CmplxQRP.cc CmplxSCHUR.cc CmplxSVD.cc EIG.cc \
@@ -45,7 +47,7 @@ SOURCES = Bounds.cc CollocWt.cc DAE.cc DAEFunc.cc FEGrid.cc FSQP.cc \
 	LinConst.cc LP.cc LPsolve.cc NLConst.cc NLEqn.cc NLFunc.cc \
 	NPSOL.cc Objective.cc ODE.cc ODEFunc.cc QLD.cc QP.cc QPSOL.cc \
 	Quad.cc Range.cc lo-error.cc sun-utils.cc $(TEMPLATE_SRC) \
-	$(MATRIX_SRC)
+	$(TI_SRC) $(MATRIX_SRC)
 
 EXTRAS = MArray.cc mx-kludge.cc mx-inlines.cc
 
@@ -55,14 +57,14 @@ MAKEDEPS = $(patsubst %.cc, %.d, $(SOURCES))
 
 OBJECTS = $(patsubst %.cc, %.o, $(SOURCES))
 
-LIBOCTAVE_DEPEND := $(patsubst %, ../liboctave.a(%), $(OBJECTS))
+LIBOCTAVE_DEPEND := $(patsubst %, liboctave.a(%), $(OBJECTS))
 
-all: ../liboctave.a
+all: liboctave.a
 .PHONY: all
 
-../liboctave.a: $(OBJECTS)
-	$(AR) $(ARFLAGS) ../liboctave.a $(OBJECTS)
-	$(RANLIB) ../liboctave.a
+liboctave.a: $(OBJECTS)
+	$(AR) $(ARFLAGS) liboctave.a $(OBJECTS)
+	$(RANLIB) liboctave.a
 
 check: all
 .PHONY: check
@@ -70,7 +72,7 @@ check: all
 install: all
 	if test -d $(libdir) ; then true ; else $(TOPDIR)/mkpath $(libdir) ; fi
 	rm -f $(libdir)/liboctave.a
-	$(INSTALL_DATA) ../liboctave.a $(libdir)/liboctave.a
+	$(INSTALL_DATA) liboctave.a $(libdir)/liboctave.a
 	$(RANLIB) $(libdir)/liboctave.a
 	if test -d $(includedir) ; then true ; \
 	else $(TOPDIR)/mkpath $(includedir) ; fi
@@ -99,7 +101,7 @@ mostlyclean: clean
 .PHONY: mostlyclean
 
 distclean: clean
-	rm -f Makefile  ../liboctave.a $(TMPSRC) $(TMPINC) *.d
+	rm -f Makefile  *.a $(TMPSRC) $(TMPINC) *.d
 .PHONY: distclean
 
 realclean: distclean

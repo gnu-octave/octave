@@ -55,6 +55,33 @@ extern Octave_object do_printf (const char *type, const Octave_object& args,
 extern Octave_object do_scanf (const char *type, const Octave_object& args,
 			       int nargout);
 
+class
+file_info
+{
+public:
+  file_info (void);
+  file_info (int num, const char *nm, FILE *t, const char *md);
+  file_info (const file_info& f);
+
+  file_info& operator = (const file_info& f);
+
+  ~file_info (void);
+
+  int number (void) const;
+  const char *name (void) const;
+  FILE *fptr (void) const;
+  const char *mode (void) const;
+
+  int eof (void) const;
+  int error (void) const;
+
+private:
+  int file_number;
+  char *file_name;
+  FILE *file_fptr;
+  char *file_mode;
+};
+
 #endif
 
 /*

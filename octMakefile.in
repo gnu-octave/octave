@@ -129,12 +129,12 @@ mostlyclean:
 
 distclean: clean
 	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $@; cd ..; done
-	rm -f *.a Makefile config.status
+	rm -f Makefile config.status
 .PHONY: distclean
 
 realclean:
 	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $@; cd ..; done
-	rm -f *.a Makefile config.status
+	rm -f Makefile config.status
 .PHONY: realclean
 
 # Now that things are under RCS control, we need to do the recursive

@@ -47,7 +47,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "idx-vector.h"
 #include "oct-map.h"
 
-#include "tc-inlines.cc"
+#include "tc-inlines.h"
 
 // And still some more handy helper functions.
 

@@ -242,9 +242,6 @@ private:
 
 // We want to get rid of these too:
 
-#if defined (__GNUG__) && __GNUC_MINOR__ < 6
-public:
-#endif
   void force_numeric (int force_str_conv = 0);
   tree_constant make_numeric (int force_str_conv = 0) const;
 

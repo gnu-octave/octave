@@ -37,7 +37,7 @@ public:
     : x (xx) { }
 
   base_minimizer (const base_minimizer& a)
-    : x (a.x), t (a.t) { }
+    : x (a.x) { }
 
   virtual ~base_minimizer (void) { }
 

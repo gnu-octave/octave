@@ -122,7 +122,7 @@ Array2<T>::resize (int r, int c)
   if (r == dim1 () && c == dim2 ())
     return;
 
-  Array<T>::ArrayRep *old_rep = rep;
+  typename Array<T>::ArrayRep *old_rep = rep;
   const T *old_data = data ();
 
   int old_d1 = dim1 ();
@@ -162,7 +162,7 @@ Array2<T>::resize (int r, int c, const T& val)
   if (r == dim1 () && c == dim2 ())
     return;
 
-  Array<T>::ArrayRep *old_rep = rep;
+  typename Array<T>::ArrayRep *old_rep = rep;
   const T *old_data = data ();
 
   int old_d1 = dim1 ();

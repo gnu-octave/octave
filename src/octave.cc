@@ -58,6 +58,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "input.h"
 #include "lex.h"
 #include "oct-hist.h"
+#include "oct-obj.h"
 #include "ops.h"
 #include "toplev.h"
 #include "parse.h"
@@ -153,17 +154,20 @@ long_options long_opts[] =
 static void
 intern_argv (int argc, char **argv)
 {
+  bind_builtin_variable ("nargin", static_cast<double> (argc-1), 1, 1, 0);
+
+  octave_value_list octave_argv;
+
   if (argc > 1)
     {
       // Skip program name in argv.
+      while (--argc > 0)
+	octave_argv(argc-1) = octave_value (*(argv+argc));
 
-      octave_argv = string_vector (argv+1, argc-1);
-
-      bind_builtin_variable ("argv", octave_argv, 1, 1, 0);
-      bind_builtin_variable ("__argv__", octave_argv, 1, 1, 0);
     }
 
-  bind_builtin_variable ("nargin", static_cast<double> (argc-1), 1, 1, 0);
+  bind_builtin_variable ("argv", octave_argv, 1, 1, 0);
+  bind_builtin_variable ("__argv__", octave_argv, 1, 1, 0);
 }
 
 static void

@@ -133,6 +133,9 @@ public:
 
   octave_value_list& reverse (void);
 
+  octave_value_list splice (int offset, int length,
+			    const octave_value_list& lst) const;
+
   bool all_strings_p (void) const;
 
   string_vector make_argv (const string&) const;

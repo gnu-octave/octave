@@ -124,13 +124,13 @@ octave_base_value::convert_to_row_or_column_vector (void)
 void
 octave_base_value::print (ostream&, bool) const
 {
-  gripe_wrong_type_arg ("octave_base_value::print()", type_name ());
+  gripe_wrong_type_arg ("octave_base_value::print ()", type_name ());
 }
 
 void
 octave_base_value::print_raw (ostream&, bool) const
 {
-  gripe_wrong_type_arg ("octave_base_value::print_raw()", type_name ());
+  gripe_wrong_type_arg ("octave_base_value::print_raw ()", type_name ());
 }
 
 bool
@@ -141,6 +141,30 @@ octave_base_value::print_name_tag (ostream& os, const string& name) const
   newline (os);
   newline (os);
   return true;
+}
+
+int
+octave_base_value::rows (void) const
+{
+  int retval = -1;
+  gripe_wrong_type_arg ("octave_base_value::rows ()", type_name ());
+  return retval;
+}
+
+int
+octave_base_value::columns (void) const
+{
+  int retval = -1;
+  gripe_wrong_type_arg ("octave_base_value::columns ()", type_name ());
+  return retval;
+}
+
+int
+octave_base_value::length (void) const
+{
+  int retval = -1;
+  gripe_wrong_type_arg ("octave_base_value::length ()", type_name ());
+  return retval;
 }
 
 double

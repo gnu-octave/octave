@@ -235,6 +235,29 @@ search_path_for_file (const string& path, const string& name)
   return octave_env::make_absolute (p.find (name), octave_env::getcwd ());
 }
 
+DEFUN (file_in_loadpath, args, ,
+  "file_in_loadpath (NAME)\n\
+\n\
+Look up NAME in LOADPATH.  See also file_in_path")
+{
+  octave_value_list retval;
+
+  int argc = args.length () + 1;
+
+  string_vector argv = args.make_argv ("file_in_loadpath");
+
+  if (error_state)
+    return retval;
+
+  if (argc == 3)
+    retval = octave_env::make_absolute (Vload_path_dir_path.find (argv[1]),
+					octave_env::getcwd ());
+  else
+    print_usage ("file_in_loadpath");
+
+  return retval;
+}
+
 DEFUN (file_in_path, args, ,
   "file_in_path (PATH, NAME)")
 {
@@ -249,9 +272,7 @@ DEFUN (file_in_path, args, ,
 
   if (argc == 3)
     {
-      string path = maybe_add_default_load_path (argv[1]);
-
-      string fname = search_path_for_file (path, argv[2]);
+      string fname = search_path_for_file (argv[1], argv[2]);
 
       if (fname.empty ())
 	retval = Matrix ();

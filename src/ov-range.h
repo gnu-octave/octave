@@ -98,6 +98,8 @@ public:
   int rows (void) const { return (columns () > 0); }
   int columns (void) const { return range.nelem (); }
 
+  int length (void) const { return range.nelem (); }
+
   bool is_defined (void) const { return true; }
 
   bool is_constant (void) const { return true; }

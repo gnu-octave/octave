@@ -79,6 +79,14 @@ public:
   int rows (void) const { return 1; }
   int columns (void) const { return 1; }
 
+  int length (void) const
+  {
+    int r = rows ();
+    int c = columns ();
+
+    return r > c ? r : c;
+  }
+
   bool is_defined (void) const { return true; }
 
   bool is_constant (void) const { return true; }

@@ -93,6 +93,46 @@ octave_value_list::reverse (void)
   return *this;
 }
 
+octave_value_list
+octave_value_list::splice (int offset, int rep_length,
+			   const octave_value_list& lst) const
+{ 
+  octave_value_list retval;
+
+  int len = length ();
+
+  if (offset < 0 || offset >= len)
+    {
+      error ("octave_value_list::splice: invalid OFFSET");
+      return retval;
+    }
+
+  if (rep_length < 0 || rep_length + offset > len)
+    {
+      error ("octave_value_list::splice: invalid LENGTH");
+      return retval;
+    }
+
+  int lst_len = lst.length ();
+
+  int new_len = len - rep_length + lst_len;
+
+  retval.resize (new_len);
+
+  int k = 0;
+
+  for (int i = 0; i < offset; i++)
+    retval(k++) = elem (i);
+
+  for (int i = 0; i < lst_len; i++)
+    retval(k++) = lst(i);
+
+  for (int i = offset + rep_length; i < len; i++)
+    retval(k++) = elem (i);
+
+  return retval;
+}
+
 bool
 octave_value_list::all_strings_p (void) const
 {

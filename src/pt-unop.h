@@ -85,8 +85,8 @@ public:
   tree_prefix_expression (int l = -1, int c = -1)
     : tree_unary_expression (l, c), etype (unknown) { }
 
-  tree_prefix_expression (type t = unknown, tree_expression *e,
-			  int l = -1, int c = -1)
+  tree_prefix_expression (tree_expression *e, int l = -1, int c = -1,
+			  type t = unknown)
     : tree_unary_expression (e, l, c), etype (t) { }
 
   ~tree_prefix_expression (void) { }
@@ -135,8 +135,8 @@ public:
   tree_postfix_expression (int l = -1, int c = -1)
     : tree_unary_expression (l, c), etype (unknown) { }
 
-  tree_postfix_expression (type t = unknown, tree_expression *e,
-			   int l = -1, int c = -1)
+  tree_postfix_expression (tree_expression *e, int l = -1, int c = -1,
+			   type t = unknown)
     : tree_unary_expression (e, l, c), etype (t) { }
 
   ~tree_postfix_expression (void) { }

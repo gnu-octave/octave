@@ -33,6 +33,10 @@ extern void install_ops (void);
   octave_value_typeinfo::register_assign_op \
     (octave_value::op, t1::static_type_id (), t2::static_type_id (), f);
 
+#define INSTALL_ASSIGNANYOP(op, t1, f) \
+  octave_value_typeinfo::register_assignany_op \
+    (octave_value::op, t1::static_type_id (), f);
+
 #define INSTALL_ASSIGNCONV(t1, t2, tr) \
   octave_value_typeinfo::register_pref_assign_conv \
     (t1::static_type_id (), t2::static_type_id (), tr::static_type_id ());
@@ -131,6 +135,15 @@ extern void install_ops (void);
     CAST_BINOP_ARGS (octave_ ## t1&, const octave_ ## t2&); \
  \
     v1.f (idx, v2.t1 ## _value ()); \
+    return octave_value (); \
+  }
+
+#define DEFASSIGNANYOP_FN(name, t1, f) \
+  ASSIGNOPDECL (name) \
+  { \
+    octave_ ## t1& v1 = DYNAMIC_CAST (octave_ ## t1&, a1); \
+ \
+    v1.f (idx, a2); \
     return octave_value (); \
   }
 

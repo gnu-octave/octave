@@ -68,7 +68,7 @@ string Vexec_path;
 
 // Load path specified on command line.
 // (--path path; -p path)
-string Vload_path;
+static string Vload_path;
 
 // The default load path with OCTAVE_HOME appropriately substituted.
 static string Vdefault_load_path;
@@ -176,11 +176,6 @@ set_default_exec_path (void)
     Vexec_path = string (octave_exec_path);
 }
 
-// Handle OCTAVE_PATH from the environment like TeX handles TEXINPUTS.
-// If the path starts with `:', prepend the standard path.  If it ends
-// with `:' append the standard path.  If it begins and ends with
-// `:', do both (which is useless, but the luser asked for it...).
-
 static void
 set_default_path (void)
 {
@@ -188,10 +183,9 @@ set_default_path (void)
 
   string oct_path = octave_env::getenv ("OCTAVE_PATH");
 
-  Vload_path = oct_path.empty ()
-    ? Vdefault_load_path : maybe_add_default_path (oct_path);
+  Vload_path = oct_path.empty () ? string (":") : oct_path;
 
-  Vload_path_dir_path = dir_path (Vload_path);
+  Vload_path_dir_path = dir_path (Vload_path, Vdefault_load_path);
 }
 
 static void
@@ -410,9 +404,9 @@ loadpath (void)
     }
   else
     {
-      Vload_path = maybe_add_default_load_path (s);
+      Vload_path = s;
 
-      Vload_path_dir_path = dir_path (Vload_path);
+      Vload_path_dir_path = dir_path (Vload_path, Vdefault_load_path);
     }
 
   return status;
@@ -427,7 +421,7 @@ symbols_of_defaults (void)
   DEFVAR (EXEC_PATH, Vexec_path, 0, exec_path,
     "colon separated list of directories to search for programs to run");
 
-  DEFVAR (LOADPATH, ":", 0, octave_loadpath,
+  DEFVAR (LOADPATH, ":", 0, loadpath,
     "colon separated list of directories to search for scripts.\n\
 The default value is \":\", which means to search the default list\n\
 of directories.  The default list of directories may be found in\n\

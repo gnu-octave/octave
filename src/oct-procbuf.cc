@@ -202,7 +202,7 @@ kluge_procbuf_delay (void)
   return -1;
 }
 
-static void
+void
 symbols_of_oct_procbuf (void)
 {
   DEFVAR (kluge_procbuf_delay, static_cast<double> (Vkluge_procbuf_delay),

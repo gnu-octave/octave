@@ -598,6 +598,30 @@ DEFUN (prod, args, ,
   return retval;
 }
 
+DEFUN (length, args, ,
+  "length (x): return the `length' of the object X\n\
+\n\
+For matrix objects, the length is the number of rows or columns,\n\
+whichever is greater (this odd definition is used for compatibility\n\
+with Matlab).\n\
+\n\
+See also: size, rows, columns, is_scalar, is_vector, is_matrix")
+{
+  octave_value retval;
+
+  if (args.length () == 1)
+    {
+      int len = args(0).length ();
+
+      if (! error_state)
+	retval = static_cast<double> (len);
+    }
+  else
+    print_usage ("length");
+
+  return retval;
+}
+
 DEFUN (size, args, nargout,
   "[m, n] = size (x): return rows and columns of X\n\
 \n\

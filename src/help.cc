@@ -552,9 +552,7 @@ simple_help (void)
 
   // Also need to search octave_path for script files.
 
-  dir_path p (Vload_path);
-
-  string_vector dirs = p.all_directories ();
+  string_vector dirs = Vload_path_dir_path.all_directories ();
 
   int len = dirs.length ();
 

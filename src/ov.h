@@ -258,6 +258,9 @@ public:
   virtual int columns (void) const
     { return rep->columns (); }
 
+  virtual int length (void) const
+    { return rep->length (); }
+
   // Does this constant have a type?  Both of these are provided since
   // it is sometimes more natural to write is_undefined() instead of
   // ! is_defined().
@@ -552,6 +555,10 @@ extern int Vstruct_levels_to_print;
 
 // Allow divide by zero errors to be suppressed.
 extern bool Vwarn_divide_by_zero;
+
+// If TRUE, resize matrices when performing and indexed assignment and
+// the indices are outside the current bounds.
+extern bool Vresize_on_range_error;
 
 // Indentation level for structures.
 extern int struct_indent;

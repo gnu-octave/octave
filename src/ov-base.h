@@ -84,9 +84,10 @@ public:
 
   octave_lvalue struct_elt_ref (octave_value *parent, const string& nm);
 
-  int rows (void) const { return -1; }
+  int rows (void) const;
+  int columns (void) const;
 
-  int columns (void) const { return -1; }
+  int length (void) const;
 
   bool is_defined (void) const { return false; }
 

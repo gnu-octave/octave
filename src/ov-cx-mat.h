@@ -90,6 +90,14 @@ public:
   int rows (void) const { return matrix.rows (); }
   int columns (void) const { return matrix.columns (); }
 
+  int length (void) const
+  {
+    int r = rows ();
+    int c = columns ();
+
+    return r > c ? r : c;
+  }
+
   bool is_defined (void) const { return true; }
 
   bool is_constant (void) const { return true; }

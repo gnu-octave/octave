@@ -53,7 +53,7 @@ result_ok (int info, double rcond, int warn = 1)
 
 template <class T1, class T2>
 bool
-mx_leftdiv_conform (T1 a, T2 b)
+mx_leftdiv_conform (const T1& a, const T2& b)
 {
   int a_nr = a.rows ();
   int b_nr = b.rows ();
@@ -70,14 +70,17 @@ mx_leftdiv_conform (T1 a, T2 b)
   return true;
 }
 
-template bool mx_leftdiv_conform (Matrix&, Matrix&);
-template bool mx_leftdiv_conform (Matrix&, ComplexMatrix&);
-template bool mx_leftdiv_conform (ComplexMatrix&, ComplexMatrix&);
-template bool mx_leftdiv_conform (ComplexMatrix&, Matrix&);
+#define INSTANTIATE_MX_LEFTDIV_CONFORM(T1, T2) \
+  template bool mx_leftdiv_conform (const T1&, const T2&)
+
+INSTANTIATE_MX_LEFTDIV_CONFORM (Matrix, Matrix);
+INSTANTIATE_MX_LEFTDIV_CONFORM (Matrix, ComplexMatrix);
+INSTANTIATE_MX_LEFTDIV_CONFORM (ComplexMatrix, Matrix);
+INSTANTIATE_MX_LEFTDIV_CONFORM (ComplexMatrix, ComplexMatrix);
 
 template <class T1, class T2>
 bool
-mx_div_conform (T1 a, T2 b)
+mx_div_conform (const T1& a, const T2& b)
 {
   int a_nc = a.cols ();
   int b_nc = b.cols ();
@@ -94,10 +97,13 @@ mx_div_conform (T1 a, T2 b)
   return true;
 }
 
-template bool mx_div_conform (Matrix&, Matrix&);
-template bool mx_div_conform (Matrix&, ComplexMatrix&);
-template bool mx_div_conform (ComplexMatrix&, ComplexMatrix&);
-template bool mx_div_conform (ComplexMatrix&, Matrix&);
+#define INSTANTIATE_MX_DIV_CONFORM(T1, T2) \
+  template bool mx_div_conform (const T1&, const T2&)
+
+INSTANTIATE_MX_DIV_CONFORM (Matrix, Matrix);
+INSTANTIATE_MX_DIV_CONFORM (Matrix, ComplexMatrix);
+INSTANTIATE_MX_DIV_CONFORM (ComplexMatrix, Matrix);
+INSTANTIATE_MX_DIV_CONFORM (ComplexMatrix, ComplexMatrix);
 
 // Right division functions.
 //

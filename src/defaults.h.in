@@ -130,10 +130,6 @@ extern string Vfcn_file_dir;
 // (--exec-path path)
 extern string Vexec_path;
 
-// Load path specified on command line.
-// (--path path; -p path)
-extern string Vload_path;
-
 // And the cached directory path corresponding to Vload_path.
 extern dir_path Vload_path_dir_path;
 

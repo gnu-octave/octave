@@ -48,7 +48,7 @@ octave_fcn_file_name_cache::update (const string& path)
 {
   bool something_changed = false;
 
-  dir_path p = path.empty () ? dir_path (Vload_path) : dir_path (path);
+  dir_path p = path.empty () ? Vload_path_dir_path : dir_path (path);
 
   string_vector dirs = p.all_directories ();
 
@@ -111,7 +111,7 @@ octave_fcn_file_name_cache::do_list (const string& path, bool no_suffix)
 
   int total_len = 0;
 
-  dir_path p = path.empty () ? dir_path (Vload_path) : dir_path (path);
+  dir_path p = path.empty () ? Vload_path_dir_path : dir_path (path);
 
   string_vector dirs = p.all_directories ();
 

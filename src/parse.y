@@ -1872,7 +1872,7 @@ make_prefix_op (int op, tree_expression *op1, token *tok_val)
 
   // XXX FIXME XXX -- what about constant folding here?
 
-  return new tree_prefix_expression (t, op1, l, c);
+  return new tree_prefix_expression (op1, l, c, t);
 }
 
 // Build a postfix expression.
@@ -1910,7 +1910,7 @@ make_postfix_op (int op, tree_expression *op1, token *tok_val)
 
   // XXX FIXME XXX -- what about constant folding here?
 
-  return new tree_postfix_expression (t, op1, l, c);
+  return new tree_postfix_expression (op1, l, c, t);
 }
 
 // Build an unwind-protect command.

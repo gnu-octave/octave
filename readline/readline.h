@@ -350,8 +350,9 @@ extern int rl_message (const char *, ...);
 extern int rl_message ();
 #endif
 
-/* Undocumented in texinfo manual. */
 extern int rl_show_char __P((int));
+
+/* Undocumented in texinfo manual. */
 extern int rl_character_len __P((int, int));
 
 /* Save and restore internal prompt redisplay information. */

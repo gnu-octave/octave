@@ -67,7 +67,7 @@
 #include "xmalloc.h"
 
 #ifndef RL_LIBRARY_VERSION
-#  define RL_LIBRARY_VERSION "4.2-beta"
+#  define RL_LIBRARY_VERSION "4.2"
 #endif
 
 /* Evaluates its arguments multiple times. */

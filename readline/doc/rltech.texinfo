@@ -505,7 +505,7 @@ command function.
 
 @deftypevar {int} rl_editing_mode
 Set to a value denoting Readline's current editing mode.  A value of
-@var{emacs_mode} means Readline is currently in emacs mode; @var{vi_mode}
+@var{1} means Readline is currently in emacs mode; @var{0}
 means that vi mode is active.
 @end deftypevar
 
@@ -527,6 +527,7 @@ means that vi mode is active.
 * Utility Functions::	Generally useful functions and hooks.
 * Miscellaneous Functions::	Functions that don't fall into any category.
 * Alternate Interface::	Using Readline in a `callback' fashion.
+* A Readline Example::		An example Readline function.
 @end menu
 
 @node Function Naming
@@ -916,6 +917,8 @@ Return the next character available from Readline's current input stream.
 This handles input inserted into
 the input stream via @var{rl_pending_input} (@pxref{Readline Variables})
 and @code{rl_stuff_char()}, macros, and characters read from the keyboard.
+While waiting for input, this function will call any function assigned to
+the @code{rl_event_hook} variable.
 @end deftypefun
 
 @deftypefun int rl_getc (FILE *stream)
@@ -938,6 +941,13 @@ is called.  This sets @var{rl_pending_input}.
 Unset @var{rl_pending_input}, effectively negating the effect of any
 previous call to @code{rl_execute_next()}.  This works only if the
 pending input has not already been read with @code{rl_read_key()}.
+@end deftypefun
+
+@deftypefun int rl_set_keyboard_input_timeout (int u)
+While waiting for keyboard input in @code{rl_read_key()}, Readline will
+wait for @var{u} microseconds for input before calling any function
+assigned to @code{rl_event_hook}.  The default waiting period is
+one-tenth of a second.  Returns the old timeout value.
 @end deftypefun
 
 @node Terminal Management
@@ -1061,6 +1071,11 @@ If @var{readable} is non-zero, the list is formatted in such a way
 that it can be made part of an @code{inputrc} file and re-read.
 @end deftypefun
 
+@deftypefun int rl_set_paren_blink_timeout (int u)
+Set the time interval (in microseconds) that Readline waits when showing
+a balancing character when @code{blink-matching-paren} has been enabled.
+@end deftypefun
+
 @node Alternate Interface
 @subsection Alternate Interface
 
@@ -1093,7 +1108,8 @@ Restore the terminal to its initial state and remove the line handler.
 This may be called from within a callback as well as independently.
 @end deftypefun
 
-@subsection An Example
+@node A Readline Example
+@subsection A Readline Example
 
 Here is a function which changes lowercase characters to their uppercase
 equivalents, and uppercase characters to lowercase.  If

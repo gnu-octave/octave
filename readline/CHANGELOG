@@ -454,3 +454,12 @@ doc/history.{0,3}, doc/history_3.ps
 doc/Makefile.in
 	- rules to install and uninstall history.3 in ${man3dir}
 	- rules to build history.0 and history_3.ps
+
+				    4/2
+				    ---
+configure.in
+	- changed LIBVERSION to `4.2'
+
+				    4/5
+				    ---
+[readline-4.2 frozen]

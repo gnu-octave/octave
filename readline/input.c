@@ -366,6 +366,8 @@ rl_read_key ()
 	  while (rl_event_hook && rl_get_char (&c) == 0)
 	    {
 	      (*rl_event_hook) ();
+	      if (rl_done)		/* XXX - experimental */
+		return ('\n');
 	      rl_gather_tyi ();
 	    }
 	}

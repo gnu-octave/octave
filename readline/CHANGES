@@ -95,9 +95,14 @@ cc. The history file writing and truncation functions now return a useful
 dd. Fixed a bug that could cause applications to dereference a NULL pointer
     if a NULL second argument was passed to history_expand().
 
+ee. If a hook function assigned to rl_event_hook sets rl_done to a non-zero
+    value, rl_read_key() now immediately returns '\n' (which is assumed to   
+    be bound to accept-line).
+
 2.  New Features in Readline
 
-a.  The blink timeout for paren matching is now settable by applications.
+a.  The blink timeout for paren matching is now settable by applications,
+    via the rl_set_paren_blink_timeout() function.
 
 b.  _rl_executing_macro has been renamed to rl_executing_macro, which means
     it's now part of the public interface.

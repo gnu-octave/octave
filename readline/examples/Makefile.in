@@ -70,6 +70,7 @@ histexamp: histexamp.o $(HISTORY_LIB)
 clean mostlyclean:
 	$(RM) $(OBJECTS)
 	$(RM) $(EXECUTABLES) *.exe
+	$(RM) rlfe.o rlfe
 
 distclean maintainer-clean: clean
 	$(RM) Makefile

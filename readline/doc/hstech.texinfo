@@ -423,7 +423,7 @@ This is disabled by default.
 
 @deftypevar {char *} history_word_delimiters
 The characters that separate tokens for \fBhistory_tokenize()\fP.
-The default value is @code{" \t\n()<>;&|$"}.
+The default value is @code{" \t\n()<>;&|"}.
 @end deftypevar
 
 @deftypevar {char *} history_no_expand_chars

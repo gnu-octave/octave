@@ -793,11 +793,55 @@ NDArray::min (ArrayN<int>& idx_arg, int dim) const
 }
 
 NDArray
-concat (const NDArray& ra, const NDArray& rb, const Array<int>& ra_idx)
+NDArray::concat (const NDArray& rb, const Array<int>& ra_idx)
 {
-  NDArray retval (ra);
+  if (rb.numel () > 0)
+    insert (rb, ra_idx);
+  return *this;
+}
+
+ComplexNDArray
+NDArray::concat (const ComplexNDArray& rb, const Array<int>& ra_idx)
+{
+  ComplexNDArray retval (*this);
   if (rb.numel () > 0)
     retval.insert (rb, ra_idx);
+  return retval;
+}
+
+charNDArray
+NDArray::concat (const charNDArray& rb, const Array<int>& ra_idx)
+{
+  charNDArray retval (dims ());
+  int nel = numel ();
+
+  for (int i = 0; i < nel; i++)
+    {
+      double d = elem (i);
+
+      if (xisnan (d))
+	{
+	  (*current_liboctave_error_handler)
+	    ("invalid conversion from NaN to character");
+	  return retval;
+	}
+      else
+	{
+	  int ival = NINT (d);
+
+	  if (ival < 0 || ival > UCHAR_MAX)
+	    // XXX FIXME XXX -- is there something
+	    // better we could do? Should we warn the user?
+	    ival = 0;
+
+	  retval.elem (i) = static_cast<char>(ival);
+	}
+    }
+
+  if (rb.numel () == 0)
+    return retval;
+
+  retval.insert (rb, ra_idx);
   return retval;
 }
 

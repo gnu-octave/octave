@@ -81,8 +81,9 @@ public:
   NDArray prod (int dim = -1) const;
   NDArray sum (int dim = -1) const;  
   NDArray sumsq (int dim = -1) const;
-  friend NDArray concat (const NDArray& ra, const NDArray& rb, 
-			 const Array<int>& ra_idx);
+  NDArray concat (const NDArray& rb, const Array<int>& ra_idx);
+  ComplexNDArray concat (const ComplexNDArray& rb, const Array<int>& ra_idx);
+  charNDArray concat (const charNDArray& rb, const Array<int>& ra_idx);
 
   NDArray max (int dim = 0) const;
   NDArray max (ArrayN<int>& index, int dim = 0) const;

@@ -76,6 +76,8 @@ public:
   intNDArray transpose (void) const
     { return intNDArray<T> (MArrayN<T>::transpose ()); }
 
+  intNDArray concat (const intNDArray<T>& rb, const Array<int>& ra_idx);
+
   intNDArray& insert (const intNDArray<T>& a, int r, int c);
   intNDArray& insert (const intNDArray<T>& a, const Array<int>& ra_idx);
 

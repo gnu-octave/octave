@@ -68,12 +68,8 @@ public:
 
   boolNDArray all (int dim = -1) const;
   boolNDArray any (int dim = -1) const;
-  friend charNDArray concat (const charNDArray& ra, const charNDArray& rb, 
-			     const Array<int>& ra_idx);
-  friend charNDArray concat (const charNDArray& ra, const NDArray& rb,
-			     const Array<int>& ra_idx);
-  friend charNDArray concat (const NDArray& ra, const charNDArray& rb,
-			     const Array<int>& ra_idx);
+  charNDArray concat (const charNDArray& rb, const Array<int>& ra_idx);
+  charNDArray concat (const NDArray& rb, const Array<int>& ra_idx);
 
   charNDArray& insert (const charNDArray& a, int r, int c);
   charNDArray& insert (const charNDArray& a, const Array<int>& ra_idx);

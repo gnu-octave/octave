@@ -620,21 +620,6 @@ OCTAVE_TYPE1_CMP_OP_DECLS (octave_uint64_t, octave_int64_t)
 
 OCTAVE_TYPE2_CMP_OP_DECLS (octave_uint32_t, octave_int64_t)
 
-#define OCTAVE_INT_CONCAT_FN(TYPE) \
-intNDArray< TYPE > \
-concat (const intNDArray< TYPE >& ra, const intNDArray< TYPE >& rb, \
-	const Array<int>& ra_idx) \
-{ \
-  intNDArray< TYPE > retval (ra); \
-  retval.insert (rb, ra_idx); \
-  return retval; \
-}
-
-#define OCTAVE_INT_CONCAT_DECL(TYPE) \
-intNDArray< TYPE > \
-concat (const intNDArray< TYPE >& ra, const intNDArray< TYPE >& rb, \
-	const Array<int>& ra_idx);
-
 #undef OCTAVE_INT_BINOP_TRAIT
 #undef OCTAVE_US_S_FTR
 #undef OCTAVE_US_S_FTR_FCNS

@@ -654,27 +654,24 @@ ComplexNDArray::sum (int dim) const
 }
 
 ComplexNDArray
-concat (const ComplexNDArray& ra, const ComplexNDArray& rb, 
-	const Array<int>& ra_idx)
+ComplexNDArray::concat (const ComplexNDArray& rb, const Array<int>& ra_idx)
 {
-  ComplexNDArray retval (ra);
   if (rb.numel () > 0)
-    retval.insert (rb, ra_idx);
-  return retval;
+    insert (rb, ra_idx);
+  return *this;
 }
 
 ComplexNDArray
-concat (const ComplexNDArray& ra, const NDArray& rb, const Array<int>& ra_idx)
+ComplexNDArray::concat (const NDArray& rb, const Array<int>& ra_idx)
 {
-  ComplexNDArray retval (ra);
   ComplexNDArray tmp (rb);
   if (rb.numel () > 0)
-    retval.insert (tmp, ra_idx);
-  return retval;
+    insert (tmp, ra_idx);
+  return *this;
 }
 
 ComplexNDArray
-concat (const NDArray& ra, const ComplexNDArray& rb, const Array<int>& ra_idx)
+concat (NDArray& ra, ComplexNDArray& rb, const Array<int>& ra_idx)
 {
   ComplexNDArray retval (ra);
   if (rb.numel () > 0)

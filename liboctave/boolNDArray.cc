@@ -62,12 +62,11 @@ boolNDArray::any (int dim) const
 }
 
 boolNDArray
-concat (const boolNDArray& ra, const boolNDArray& rb, const Array<int>& ra_idx)
+boolNDArray::concat (const boolNDArray& rb, const Array<int>& ra_idx)
 {
-  boolNDArray retval (ra);
   if (rb.numel () > 0)
-    retval.insert (rb, ra_idx);
-  return retval;
+    insert (rb, ra_idx);
+  return *this;
 }
 
 boolNDArray&

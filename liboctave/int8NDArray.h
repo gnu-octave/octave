@@ -33,8 +33,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 typedef intNDArray<octave_int8> int8NDArray;
 
-OCTAVE_INT_CONCAT_DECL (octave_int8)
-
 NDS_CMP_OP_DECLS (int8NDArray, octave_int8)
 NDS_BOOL_OP_DECLS (int8NDArray, octave_int8)
 

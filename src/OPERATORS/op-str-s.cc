@@ -50,25 +50,23 @@ DEFASSIGNOP (assign, char_matrix_str, octave_scalar)
 
 DEFCATOP (str_s, char_matrix_str, scalar)
 {
-  CAST_BINOP_ARGS (const octave_char_matrix_str&,
-		   const octave_scalar&);
+  CAST_BINOP_ARGS (octave_char_matrix_str&, const octave_scalar&);
 
   if (Vwarn_num_to_str)
     gripe_implicit_conversion (v2.type_name (), v1.type_name ());
 
-  return octave_value (concat (v1.char_array_value (), v2.array_value (), 
+  return octave_value (v1.char_array_value (). concat (v2.array_value (), 
 			       ra_idx), true);
 }
 
 DEFCATOP (s_str, scalar, char_matrix_str)
 {
-  CAST_BINOP_ARGS (const octave_scalar&,
-		   const octave_char_matrix_str&);
+  CAST_BINOP_ARGS (octave_scalar&, const octave_char_matrix_str&);
 
   if (Vwarn_num_to_str)
     gripe_implicit_conversion (v1.type_name (), v2.type_name ());
 
-  return octave_value (concat (v1.array_value (), v2.char_array_value (), 
+  return octave_value (v1.array_value (). concat (v2.char_array_value (), 
 			       ra_idx), true);
 }
 

@@ -81,6 +81,15 @@ intNDArray<T>::compute_index (Array<int>& ra_idx,
 }
 
 template <class T>
+intNDArray<T>
+intNDArray<T>::concat (const intNDArray<T>& rb, const Array<int>& ra_idx)
+{
+  if (rb.numel () > 0);
+    insert (rb, ra_idx);
+  return *this;
+}
+
+template <class T>
 intNDArray<T>&
 intNDArray<T>::insert (const intNDArray<T>& a, int r, int c)
 {

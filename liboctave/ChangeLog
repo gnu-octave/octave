@@ -1,3 +1,35 @@
+2004-11-09  David Bateman  <dbateman@free.fr>
+
+	* dNDArray.cc (concat): Delete.
+	(NDArray::concat): New methods.
+	* dNDArray.h: Provide decls.
+
+	* CNDArray.cc (concat): Delete.
+	(ComplexNDArray::concat): New methods.
+	* CNDArray.h: Provide decls.
+
+	* boolNDArray.cc (concat): Delete.
+	(boolNDArray::concat): New methods.
+	* boolNDArray.h: Provide decls.
+
+	* chNDArray.cc (concat): Delete.
+	(charNDArray::concat): New methods.
+	* chNDArray.h: Provide decls.
+
+	* oct-inttypes.h (OCTAVE_INT_CONCAT_FN, OCTAVE_INT_CONCAT_DECL):
+	Delete macros.
+
+	* int8NDArray.h, int16NDArray.h, int32NDArray.h, int64NDArray.h,
+	uint8NDArray.h, uint16NDArray.h, uint32NDArray.h, uint64NDArray.h
+	(OCTAVE_INT_CONCAT_DECL): Delete use of macro.
+
+	* int8NDArray.cc, int16NDArray.cc, int32NDArray.cc, int64NDArray.cc,
+	uint8NDArray.cc, uint16NDArray.cc, uint32NDArray.cc, uint64NDArray.cc
+	(OCTAVE_INT_CONCAT_FN): Delete use of macro.
+
+	* intNDArray.cc (intNDArray<T>::concat): New method.
+	* intNDArray.h: Provide decl.
+
 2004-11-08  John W. Eaton  <jwe@octave.org>
 
 	* oct-inttypes.cc: New file.

@@ -45,8 +45,6 @@ template
 std::istream&
 operator >> (std::istream& is, intNDArray<octave_uint32>& a);
 
-OCTAVE_INT_CONCAT_FN (octave_uint32)
-
 NDS_CMP_OPS (uint32NDArray, , octave_uint32, )
 NDS_BOOL_OPS (uint32NDArray, octave_uint32, octave_uint32 (0))
 

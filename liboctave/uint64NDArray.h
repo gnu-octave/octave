@@ -33,8 +33,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 typedef intNDArray<octave_uint64> uint64NDArray;
 
-OCTAVE_INT_CONCAT_DECL (octave_uint64)
-
 NDS_CMP_OP_DECLS (uint64NDArray, octave_uint64)
 NDS_BOOL_OP_DECLS (uint64NDArray, octave_uint64)
 

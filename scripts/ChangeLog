@@ -1,3 +1,8 @@
+2004-11-09  John W. Eaton  <jwe@octave.org>
+
+	* miscellaneous/fileparts.m: Allow filenames with no extension.
+	From Julius Smith <jos@ccrma.stanford.edu>.
+ 
 2004-11-08  John W. Eaton  <jwe@octave.org>
 
 	* plot/__plt2vm__.m: Delete debugging statement.

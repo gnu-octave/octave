@@ -318,7 +318,7 @@ extern void install_ops (void);
 
 #define CATOPDECL(name, a1, a2)	\
   static octave_value \
-  oct_catop_ ## name (const octave_value& a1, const octave_value& a2, \
+  oct_catop_ ## name (octave_value& a1, const octave_value& a2, \
 		      const Array<int>& ra_idx)
 
 #define DEFCATOPX(name, t1, t2)	\
@@ -332,15 +332,15 @@ extern void install_ops (void);
 #define DEFCATOP_FN(name, t1, t2, f) \
   CATOPDECL (name, a1, a2)	     \
   { \
-    CAST_BINOP_ARGS (const octave_ ## t1&, const octave_ ## t2&); \
-    return octave_value (f (v1.t1 ## _value (), v2.t2 ## _value (), ra_idx));	\
+    CAST_BINOP_ARGS (octave_ ## t1&, const octave_ ## t2&); \
+    return octave_value (v1.t1 ## _value (). f (v2.t2 ## _value (), ra_idx)); \
   }
 
 #define DEFNDCATOP_FN(name, t1, t2, e1, e2, f)	\
   CATOPDECL (name, a1, a2)			\
   { \
-    CAST_BINOP_ARGS (const octave_ ## t1&, const octave_ ## t2&); \
-    return octave_value (f (v1.e1 ## _value (), v2.e2 ## _value (), ra_idx));	\
+    CAST_BINOP_ARGS (octave_ ## t1&, const octave_ ## t2&); \
+    return octave_value (v1.e1 ## _value (). f (v2.e2 ## _value (), ra_idx)); \
   }
 
 #define CATOP_NONCONFORMANT(msg) \

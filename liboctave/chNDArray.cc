@@ -50,23 +50,21 @@ charNDArray::any (int dim) const
 }
 
 charNDArray
-concat (const charNDArray& ra, const charNDArray& rb, const Array<int>& ra_idx)
+charNDArray::concat (const charNDArray& rb, const Array<int>& ra_idx)
 {
-  charNDArray retval (ra);
   if (rb.numel () > 0)
-    retval.insert (rb, ra_idx);
-  return retval;
+    insert (rb, ra_idx);
+  return *this;
 }
 
 charNDArray
-concat (const charNDArray& ra, const NDArray& rb, const Array<int>& ra_idx)
+charNDArray::concat (const NDArray& rb, const Array<int>& ra_idx)
 {
-  charNDArray retval (ra);
   charNDArray tmp (rb.dims ());
   int nel = rb.numel ();
 
   if (rb.numel () == 0)
-    return retval;
+    return *this;
 
   for (int i = 0; i < nel; i++)
     {
@@ -76,7 +74,7 @@ concat (const charNDArray& ra, const NDArray& rb, const Array<int>& ra_idx)
 	{
 	  (*current_liboctave_error_handler)
 	    ("invalid conversion from NaN to character");
-	  return retval;
+	  return *this;
 	}
       else
 	{
@@ -91,44 +89,8 @@ concat (const charNDArray& ra, const NDArray& rb, const Array<int>& ra_idx)
 	}
     }
 
-  retval.insert (tmp, ra_idx);
-  return retval;
-}
-
-charNDArray
-concat (const NDArray& ra, const charNDArray& rb, const Array<int>& ra_idx)
-{
-  charNDArray retval (ra.dims ());
-  int nel = ra.numel ();
-
-  for (int i = 0; i < nel; i++)
-    {
-      double d = ra.elem (i);
-
-      if (xisnan (d))
-	{
-	  (*current_liboctave_error_handler)
-	    ("invalid conversion from NaN to character");
-	  return retval;
-	}
-      else
-	{
-	  int ival = NINT (d);
-
-	  if (ival < 0 || ival > UCHAR_MAX)
-	    // XXX FIXME XXX -- is there something
-	    // better we could do? Should we warn the user?
-	    ival = 0;
-
-	  retval.elem (i) = static_cast<char>(ival);
-	}
-    }
-
-  if (rb.numel () == 0)
-    return retval;
-
-  retval.insert (rb, ra_idx);
-  return retval;
+  insert (tmp, ra_idx);
+  return *this;
 }
 
 charNDArray&

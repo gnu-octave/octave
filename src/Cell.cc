@@ -114,11 +114,9 @@ Cell::assign (const octave_value_list& idx_arg, const Cell& rhs,
 }
 
 Cell
-concat (const Cell& ra, const Cell& rb, const Array<int>& ra_idx)
+Cell::concat (const Cell& rb, const Array<int>& ra_idx)
 {
-  Cell retval (ra);
-  retval.insert (rb, ra_idx);
-  return retval;
+  return insert (rb, ra_idx);
 }
 
 Cell&

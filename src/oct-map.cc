@@ -114,15 +114,15 @@ Octave_map::resize (const dim_vector& dv) const
 }
 
 Octave_map
-concat (const Octave_map& ra, const Octave_map& rb, const Array<int>& ra_idx)
+Octave_map::concat (const Octave_map& rb, const Array<int>& ra_idx)
 {
   Octave_map retval;
 
-  if (ra.length() == rb.length())
+  if (length() == rb.length())
     {
-      for (Octave_map::const_iterator pa = ra.begin (); pa != ra.end (); pa++)
+      for (Octave_map::const_iterator pa = begin (); pa != end (); pa++)
 	{
-	  Octave_map::const_iterator pb = rb.seek (ra.key(pa));
+	  Octave_map::const_iterator pb = rb.seek (key(pa));
 
 	  if (pb == rb.end ())
 	    {
@@ -130,8 +130,8 @@ concat (const Octave_map& ra, const Octave_map& rb, const Array<int>& ra_idx)
 	      break;
 	    }
 	
-	  retval.assign (ra.key(pa),
-			 ra.contents(pa).insert (rb.contents(pb), ra_idx));
+	  retval.assign (key(pa),
+			 contents(pa).insert (rb.contents(pb), ra_idx));
 	}
     }
   else

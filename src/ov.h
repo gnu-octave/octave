@@ -85,7 +85,7 @@ typedef octave_value (*binary_op_fcn)
   (const octave_value&, const octave_value&);
 
 typedef octave_value (*cat_op_fcn)
-  (const octave_value&, const octave_value&, const Array<int>& ra_idx);
+  (octave_value&, const octave_value&, const Array<int>& ra_idx);
 
 typedef octave_value (*assign_op_fcn)
   (octave_value&, const octave_value_list&, const octave_value&);

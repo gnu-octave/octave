@@ -1,3 +1,24 @@
+2004-11-09  David Bateman  <dbateman@free.fr>
+
+	* Cell.cc (concat): Delete.
+	(Cell::concat): New method.
+	* Cell.h: Provide decls.
+	
+	* oct-map.cc (concat): Delete
+	(Octave_map::concat): New method.
+	* oct-map.h: Provide decls.
+	
+	* ov.h (typedef octave_value (*cat_op_fcn) (octave_value&, 
+	const octave_value&, const Array<int>&): Change definition of 
+	cat_op_fcn so first argument is not constant.
+
+	* ops.h (CATOPDECL): First arg is no longer constant.
+	(DEFCATOP_FN, DEFNDCATOP_FN): Change to use new concat methods.
+
+	* OPERATORS/op-chm.cc, OPERATORS/op-str-m.cc, OPERATORS/op-str-s.cc, 
+	OPERATORS/op-str-str.cc (DEFCATOP): Change explicit concat functions
+	to use new concatenation methods.
+
 2004-11-05  John W. Eaton  <jwe@octave.org>
 
 	* version.h (OCTAVE_VERSION): Now 2.1.61.

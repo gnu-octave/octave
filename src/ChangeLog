@@ -1,5 +1,8 @@
 Mon Oct 14 11:05:24 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* pt-fvc.cc (tree_identifier::eval): If retval is undefined, print
+	error message.
+
 	* Makefile (distclean): Remove *.oct too.
 
 	* defun-int.h: Include variables.h here.

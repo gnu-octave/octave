@@ -415,12 +415,17 @@ tree_identifier::eval (bool print)
 	eval_undefined_error ();
     }
 
-  if (! error_state && retval.is_defined ())
+  if (! error_state)
     {
-      if (maybe_do_ans_assign && ! object_to_eval->is_constant ())
-	bind_ans (retval, print);
-      else if (print)
-	retval.print_with_name (name ());
+      if (retval.is_defined ())
+	{
+	  if (maybe_do_ans_assign && ! object_to_eval->is_constant ())
+	    bind_ans (retval, print);
+	  else if (print)
+	    retval.print_with_name (name ());
+	}
+      else
+	eval_undefined_error ();
     }
 
   return retval;

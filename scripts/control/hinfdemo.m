@@ -30,7 +30,7 @@
 ##           The discrete system is a stable and second order.
 ##
 ## 
-## @table
+## @table @asis
 ## @item SISO plant
 ## @example
 ## @group

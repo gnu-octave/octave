@@ -55,7 +55,7 @@ SOURCES := Bounds.cc CollocWt.cc DAE.cc FEGrid.cc FSQP.cc LinConst.cc \
 	acosh.c asinh.c atanh.c cmd-hist.cc dir-ops.cc erf.c erfc.c \
 	file-ops.cc filemode.c gamma.c idx-vector.cc lo-error.cc \
 	lgamma.c mkdir.c oct-glob.cc pathsearch.cc rename.c \
-	rmdir.c sun-utils.cc \
+	rmdir.c sun-utils.cc tempname.c tempnam.c \
 	$(TEMPLATE_SRC) \
 	$(TI_SRC) \
 	$(MATRIX_SRC)

@@ -115,7 +115,7 @@ SOURCES := arith-ops.cc data.cc dirfns.cc dynamic-ld.cc error.cc \
 	pt-fvc.cc pt-mat.cc pt-misc.cc pt-mvr-base.cc pt-mvr.cc \
 	pt-plot.cc resource.cc sighandlers.cc \
 	strcasecmp.c strncase.c strfns.cc strftime.c symtab.cc \
-	sysdep.cc tempname.c timefns.cc tempnam.c token.cc toplev.cc \
+	sysdep.cc timefns.cc token.cc toplev.cc \
 	unwind-prot.cc user-prefs.cc utils.cc variables.cc xdiv.cc \
 	xpow.cc
 

@@ -190,6 +190,7 @@ extern int oct_mkdir (const string&, mode_t);
 extern int oct_mkfifo (const string&, mode_t);
 extern int oct_rename (const string&, const string&);
 extern int oct_rmdir (const string&);
+extern string oct_tempnam (void);
 extern int oct_umask (mode_t);
 extern int oct_unlink (const string&);
 

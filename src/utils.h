@@ -49,8 +49,6 @@ extern string file_in_path (const string&, const string&);
 extern string fcn_file_in_path (const string&);
 extern string oct_file_in_path (const string&);
 
-extern string octave_tmp_file_name (void);
-
 extern "C" void jump_to_top_level (void) NORETURN;
 
 extern int almost_match (const string& std, const string& s,

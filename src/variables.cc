@@ -813,16 +813,11 @@ load_fcn_from_file (symbol_record *sym_rec, int exec_script)
 
   char *nm = sym_rec->name ();
 
-#ifdef WITH_DLD
-
   if (load_octave_oct_file (nm))
     {
       force_link_to_function (nm);
     }
   else
-
-#endif
-
     {
       char *ff = fcn_file_in_path (nm);
 

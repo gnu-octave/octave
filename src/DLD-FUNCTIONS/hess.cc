@@ -42,7 +42,7 @@ Compute the Hessenberg decomposition of the matrix @var{a}.\n\
 \n\
 The Hessenberg decomposition is usually used as the first step in an\n\
 eigenvalue computation, but has other applications as well (see Golub,\n\
-Nash, and Van Loan, IEEE Transactions on Automatic Control, 1979.  The\n\
+Nash, and Van Loan, IEEE Transactions on Automatic Control, 1979).  The\n\
 Hessenberg decomposition is\n\
 @iftex\n\
 @tex\n\

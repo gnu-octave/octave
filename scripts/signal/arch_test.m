@@ -15,7 +15,7 @@
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} {[@var{pval}, @var{lm}] =} arch_test (@var{y}, @var{x}, @var{p})
+## @deftypefn {Function File} {[@var{pval}, @var{lm}] =} arch_test (@var{y}, @var{x}, @var{p})
 ## For a linear regression model
 ##
 ## @example

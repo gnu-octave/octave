@@ -63,7 +63,7 @@
 ## @var{Fs}.  If you are evaluating the response at specific frequencies 
 ## @var{w}, those frequencies should be requested in Hz rather than radians.
 ##
-## @deftypefnx {Function File} freqz(@dots{})
+## @deftypefnx {Function File} {} freqz(@dots{})
 ## Plot the pass band, stop band and phase response of @var{h} rather
 ## than returning them.
 ## @end deftypefn

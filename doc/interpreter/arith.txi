@@ -18,7 +18,7 @@ will work for real and complex scalar or matrix arguments.
 * Mathematical Constants::      
 @end menu
 
-@node Utility Functions, Complex Arithmetic, Arithmetic, Arithmetic
+@node Utility Functions
 @section Utility Functions
 
 The following functions are available for working with complex numbers.
@@ -62,7 +62,7 @@ each element of the matrix.
 
 @DOCSTRING(sqrt)
 
-@node Complex Arithmetic, Trigonometry, Utility Functions, Arithmetic
+@node Complex Arithmetic
 @section Complex Arithmetic
 
 The following functions are available for working with complex
@@ -90,7 +90,7 @@ defined as @code{sqrt (-1)}.
 
 @DOCSTRING(real)
 
-@node Trigonometry, Sums and Products, Complex Arithmetic, Arithmetic
+@node Trigonometry
 @section Trigonometry
 
 Octave provides the following trigonometric functions.  Angles are
@@ -147,7 +147,7 @@ sin ([1, 2; 3, 4])
 @DOCSTRING(atan2)
 
 
-@node Sums and Products, Special Functions, Trigonometry, Arithmetic
+@node Sums and Products
 @section Sums and Products
 
 @DOCSTRING(sum)
@@ -160,7 +160,7 @@ sin ([1, 2; 3, 4])
 
 @DOCSTRING(sumsq)
 
-@node Special Functions, Coordinate Transformations, Sums and Products, Arithmetic
+@node Special Functions
 @section Special Functions
 
 @DOCSTRING(besselj)
@@ -191,7 +191,7 @@ sin ([1, 2; 3, 4])
 
 @DOCSTRING(duplication_matrix)
 
-@node Coordinate Transformations, Mathematical Constants, Special Functions, Arithmetic
+@node Coordinate Transformations
 @section Coordinate Transformations
 
 @DOCSTRING(cart2pol)
@@ -202,7 +202,7 @@ sin ([1, 2; 3, 4])
 
 @DOCSTRING(sph2cart)
 
-@node Mathematical Constants,  , Coordinate Transformations, Arithmetic
+@node Mathematical Constants
 @section Mathematical Constants
 
 @DOCSTRING(I)

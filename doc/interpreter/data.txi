@@ -40,6 +40,7 @@ type and contribute it for distribution in a future release of Octave.
 
 @menu
 * Numeric Objects::             
+* Missing Data::                
 * String Objects::              
 * Data Structure Objects::      
 @end menu
@@ -78,6 +79,16 @@ resized.  It is easy to extract individual rows, columns, or submatrices
 using a variety of powerful indexing features.  @xref{Index Expressions}.
 
 @xref{Numeric Data Types}, for more information.
+
+@node Missing Data
+@subsection Missing Data
+@cindex missing data
+
+@DOCSTRING(NA)
+
+@DOCSTRING(isna)
+
+@DOCSTRING(is_nan_or_na)
 
 @node String Objects
 @subsection String Objects

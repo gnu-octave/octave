@@ -215,6 +215,14 @@ The @sc{Matlab}-style two-dimensional plotting commands are:
 
 @DOCSTRING(stairs)
 
+@DOCSTRING(errorbar)
+
+@DOCSTRING(loglogerr)
+
+@DOCSTRING(semilogxerr)
+
+@DOCSTRING(semilogyerr)
+
 @node Three-Dimensional Plotting
 @section Three-Dimensional Plotting
 

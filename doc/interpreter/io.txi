@@ -2,7 +2,7 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Input and Output, Plotting, Error Handling, Top
+@node Input and Output
 @chapter Input and Output
 
 There are two distinct classes of input and output functions.  The first

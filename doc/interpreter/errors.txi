@@ -20,6 +20,10 @@ messages using the functions described in this chapter.
 
 @DOCSTRING(usage)
 
+@DOCSTRING(lasterr)
+
+@DOCSTRING(lastwarn)
+
 The following pair of functions are of limited usefulness, and may be
 removed from future versions of Octave.
 

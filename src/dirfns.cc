@@ -459,7 +459,7 @@ system-dependent error message.\n\
 
 DEFUN (readlink, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{result}, @var{err}, @var{msg}] =} symlink (@var{symlink})\n\
+@deftypefn {Built-in Function} {[@var{result}, @var{err}, @var{msg}] =} readlink (@var{symlink})\n\
 Read the value of the symbolic link @var{symlink}.\n\
 \n\
 If successful, @var{result} contains the contents of the symbolic link\n\

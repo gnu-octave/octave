@@ -1,6 +1,58 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(readline.c)
 
+AC_CANONICAL_HOST
+if test -z "$host"; then
+  host=unknown
+fi
+target_host_type=$host
+canonical_host_type=$host
+
+
+### some defaults
+
+AC_PREFIX_DEFAULT(/usr/local)
+
+exec_prefix='$(prefix)'
+bindir='$(exec_prefix)/bin'
+datadir='$(prefix)/lib'
+libdir='$(exec_prefix)/lib'
+includedir='$(prefix)/include/octave'
+mandir='$(prefix)/man/man1'
+infodir='$(prefix)/info'
+
+### Enable creation of shared libraries.  Currently only works with
+### gcc on some systems.
+
+AC_ARG_ENABLE(shared,
+  [  --shared                create shared libraries (not all systems)],
+  [if test $enableval = no; then SHARED_LIBS=false; else SHARED_LIBS=true; fi],
+  SHARED_LIBS=false)
+AC_SUBST(SHARED_LIBS)
+
+if $SHARED_LIBS; then
+  CPICFLAG=-fPIC
+  SHLEXT=so
+  case "$canonical_host_type" in
+    alpha-dec-osf*)
+      CPICFLAG=
+    ;;
+    rs6000-ibm-aix*)
+      CPICFLAG=
+    ;;
+    hppa*-hp-hpux*)
+      SHLEXT=sl
+    ;;
+  esac
+else
+  CPICFLAG=
+  SHLEXT=
+fi
+AC_MSG_RESULT([defining CPICFLAG to be $CPICFLAG])
+AC_MSG_RESULT([defining SHLEXT to be $SHLEXT])
+AC_SUBST(CPICFLAG)
+AC_SUBST(SHLEXT)
+
 AC_CONFIG_HEADER(config.h)
 
 AC_PROG_CC

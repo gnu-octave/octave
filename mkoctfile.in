@@ -24,6 +24,9 @@ set -e
 : ${XTRA_CFLAGS=%OCTAVE_CONF_XTRA_CFLAGS%}
 : ${XTRA_CXXFLAGS=%OCTAVE_CONF_XTRA_CXXFLAGS%}
 
+: ${DEPEND_FLAGS=%OCTAVE_CONF_DEPEND_FLAGS%}
+: ${DEPEND_EXTRA_SED_PATTERN=%OCTAVE_CONF_DEPEND_EXTRA_SED_PATTERN%}
+
 : ${SH_LD=%OCTAVE_CONF_SH_LD%}
 : ${SH_LDFLAGS=%OCTAVE_CONF_SH_LDFLAGS%}
 
@@ -49,10 +52,12 @@ ldflags=
 dbg=:
 strip=false
 link=true
+depend=false
+compile=true
 
 if [ $# -eq 0 ]; then
   echo $usage_msg
-  exit 1;
+  exit 1
 fi
 
 while [ $# -gt 0 ]; do
@@ -92,6 +97,9 @@ Options:
   -lLIB                   Add library LIB to link command.
 
   -LDIR                   Add -LDIR to link command.
+
+  -M, --depend            Generate dependency files (.d) for C and C++
+                          source files.
 
   -c                      Compile, but do not link.
 
@@ -135,6 +143,10 @@ EOF
     -[lL]*)
       ldflags="$ldflags $1"
     ;;
+    -M | --depend)
+      depend=true
+      compile=false
+    ;;
     -o | --output)
       shift
       if [ $# -gt 0 ]; then
@@ -171,6 +183,47 @@ EOF
   fi
   shift
 done
+
+# Generate dependency files for C and C++ files.
+
+if $depend; then
+  if [ -n "$cfiles" ]; then
+    for f in $cfiles; do
+      b=`echo $f | sed 's,\.c$,,'`
+      d=$b.d
+
+      $dbg rm -f $d
+      eval rm -f $d
+      cmd="$CC $DEPEND_FLAGS $CPPFLAGS $ALL_CFLAGS $f | sed $DEPEND_EXTRA_SED_PATTERN -e 's,^[^:]*/\(.*\.o\):,\1:,' -e 's,$b\.o,pic/& & $d,g' > $d-t && mv $d-t $d"
+      $dbg $cmd
+      eval $cmd
+    done
+  fi
+
+  if [ -n "$ccfiles" ]; then
+    for f in $ccfiles; do
+      case $f in
+	*.cc)
+	  b=`echo $f | sed 's,\.cc$,,'`
+	;;
+	*.C)
+	  b=`echo $f | sed 's,\.C$,,'`
+	;;
+	*.cpp)
+	  b=`echo $f | sed 's,\.cpp$,,'`
+	;;
+      esac
+      d=$b.d
+      $dbg rm -f $d
+      eval rm -f $d
+      cmd="$CXX $DEPEND_FLAGS $CPPFLAGS $ALL_CXXFLAGS $f | sed $DEPEND_EXTRA_SED_PATTERN -e 's,^[^:]*/\(.*\.o\):,\1:,' -e 's,$b\.o,pic/& & $d,g' > $d-t && mv $d-t $d"
+      $dbg $cmd
+      eval $cmd
+    done
+  fi
+  # If generating dependencies, that's all we do.
+  exit 0
+fi
 
 # Compile Fortran, C, and C++ files.  Add the name of each object file
 # that is produced to the overall list of object files.

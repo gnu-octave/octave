@@ -1,3 +1,9 @@
+2001-07-27  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makeconf.in (do-subst-config-vals): Substitute DEPEND_FLAGS and
+	DEPEND_EXTRA_SED_PATTERN.
+	* mkoctfile.in: Handle --depend.
+
 2001-07-25  Rafael Laboissiere  <rafael@laboissiere.net>
 
        * octave-config.in: New file.

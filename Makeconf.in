@@ -147,7 +147,9 @@ LIBKPATHSEA = @LIBKPATHSEA@
 LIBOCTINTERP = @LIBOCTINTERP@
 LIBOCTAVE = @LIBOCTAVE@
 LIBCRUFT = @LIBCRUFT@
-SPECIAL_MATH_LIB = @SPECIAL_MATH_LIB@
+
+BLAS_LIBS = @BLAS_LIBS@
+LIBS = @LIBS@
 
 # The arguments passed to configure.
 config_opts = @config_opts@
@@ -332,6 +334,7 @@ sed < $< \
   -e "s;%OCTAVE_CONF_ALL_LDFLAGS%;\"${ALL_LDFLAGS}\";" \
   -e "s;%OCTAVE_CONF_AR%;\"${AR}\";" \
   -e "s;%OCTAVE_CONF_ARFLAGS%;\"${ARFLAGS}\";" \
+  -e "s;%OCTAVE_CONF_BLAS_LIBS%;\"${BLAS_LIBS}\";" \
   -e "s;%OCTAVE_CONF_CC%;\"${CC}\";" \
   -e "s;%OCTAVE_CONF_CC_VERSION%;\"${CC_VERSION}\";" \
   -e "s;%OCTAVE_CONF_CFLAGS%;\"${CFLAGS}\";" \
@@ -384,7 +387,6 @@ sed < $< \
   -e "s;%OCTAVE_CONF_SH_LD%;\"${SH_LD}\";" \
   -e "s;%OCTAVE_CONF_SH_LDFLAGS%;\"${SH_LDFLAGS}\";" \
   -e "s;%OCTAVE_CONF_SONAME_FLAGS%;\"${SONAME_FLAGS}\";" \
-  -e "s;%OCTAVE_CONF_SPECIAL_MATH_LIB%;\"${SPECIAL_MATH_LIB}\";" \
   -e "s;%OCTAVE_CONF_STATIC_LIBS%;\"${STATIC_LIBS}\";" \
   -e "s;%OCTAVE_CONF_TERMLIBS%;\"${TERMLIBS}\";" \
   -e "s;%OCTAVE_CONF_UGLY_DEFS%;\"${UGLY_DEFS}\";" \

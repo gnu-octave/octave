@@ -190,9 +190,6 @@ OCTAVE_LFLAGS = -L$(TOPDIR)/liboctave -L$(TOPDIR)/libcruft \
 OCTAVE_LIBS = $(LIBOCTINTERP) $(LIBOCTAVE) $(SPECIAL_MATH_LIB) $(LIBCRUFT) \
   $(LIBPLPLOT) $(LIBREADLINE) $(LIBKPATHSEA) $(LIBGLOB) $(LIBDLFCN)
 
-BLAS_LIBS = @BLAS_LIBS@
-LIBS = @LIBS@
-
 DISTFILES = Makefile.in ChangeLog mkdefs mkops mkgendoc \
 	DOCSTRINGS mkbuiltins mk-oct-links \
 	defaults.h.in oct-conf.h.in octave.gperf oct-gperf.h \

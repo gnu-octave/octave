@@ -1,3 +1,12 @@
+2000-10-27  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* autogen.sh: Don't run configure.
+
+	* configure.in (SPECIAL_MATH_LIB): Delete code related to this var.
+	* Makeconf.in: Ditto.
+	(BLAS_LIBS, LIBS): Substitute here.
+	(do-subst-config-vals): Put BLAS_LIBS in oct-conf.h.
+
 2000-07-20  Joao Cardoso  <jcardoso@inescn.pt>
 
 	* configure.in: (LD_CXX): Define and substitute.

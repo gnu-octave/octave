@@ -1888,7 +1888,7 @@ Matrix::cumprod (int dim) const
 	      double prod = elem (i, 0);
 	      for (int j = 0; j < nc; j++)
 		{
-		  retval.elem (0, j) = prod;
+		  retval.elem (i, j) = prod;
 		  if (j < nc - 1)
 		    prod *= elem (i, j+1);
 		}

@@ -1,3 +1,9 @@
+2000-10-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* CMatrix.cc (ComplexMatrix::cumsum, ComplexMatrix::cumprod):
+	Correct indexing for operation across rows.
+	* dMatrix.cc (Matrix::cumsum, Matrix::cumprod): Likewise.
+
 2000-10-12  Paul Kienzle  <pkienzle@kienzle.powernet.co.uk>
 
 	* Array2-idx.h (Array2<T>::index (idx_vector&)): Avoid copying

@@ -3253,6 +3253,11 @@ be named @file{@var{file}.m}.\n\
   return retval;
 }
 
+// Evaluate an Octave function (built-in or interpreted) and return
+// the list of result values.  the results.  NAME is the name of the
+// function to call.  ARGS are the arguments to the function.  NARGOUT
+// is the number of output arguments expected.
+
 octave_value_list
 feval (const std::string& name, const octave_value_list& args, int nargout)
 {
@@ -3265,6 +3270,12 @@ feval (const std::string& name, const octave_value_list& args, int nargout)
 
   return retval;
 }
+
+// Evaluate an Octave function (built-in or interpreted) and return
+// the list of result values.  The first element of ARGS should be a
+// string containing the name of the function to call, then the rest
+// are the actual arguments to the function.  NARGOUT is the number of
+// output arguments expected.
 
 octave_value_list
 feval (const octave_value_list& args, int nargout)
@@ -3288,11 +3299,16 @@ feval (const octave_value_list& args, int nargout)
 
 	  if (! arg_names.empty ())
 	    {
-	      assert (arg_names.length () == tmp_nargin + 1);
+	      // tmp_nargin and arg_names.length () - 1 may differ if
+	      // we are passed all_va_args.
 
-	      string_vector tmp_arg_names (tmp_nargin);
+	      int n = arg_names.length () - 1;
 
-	      for (int i = 0; i < tmp_nargin; i++)
+	      int len = n > tmp_nargin ? tmp_nargin : n;
+
+	      string_vector tmp_arg_names (len);
+
+	      for (int i = 0; i < len; i++)
 		tmp_arg_names(i) = arg_names(i+1);
 
 	      tmp_args.stash_name_tags (tmp_arg_names);

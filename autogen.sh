@@ -29,9 +29,7 @@ for i in `find . -name configure.in -print`; do (
     autoheader
 ); done
 
-echo Done.cc
-
-./configure "$@"
+echo done
 
 if [ -f cvs.motd ]; then
   echo "ATTENTION CVS Users!"

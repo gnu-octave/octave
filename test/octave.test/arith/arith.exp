@@ -717,7 +717,7 @@ set prog_output "\n... sum:.*"
 do_test sum-3.m
 
 set test sum-4
-set prog_output "\n... sum:.*"
+set prog_output "ans = 1"
 do_test sum-4.m
 
 set test prod-1
@@ -733,7 +733,7 @@ set prog_output "\n... prod:.*"
 do_test prod-3.m
 
 set test prod-4
-set prog_output "\n... prod:.*"
+set prog_output "ans = 1"
 do_test prod-4.m
 
 set test cumsum-1
@@ -749,7 +749,7 @@ set prog_output "\n... cumsum:.*"
 do_test cumsum-3.m
 
 set test cumsum-4
-set prog_output "\n... cumsum:.*"
+set prog_output "ans = 1"
 do_test cumsum-4.m
 
 set test cumprod-1
@@ -765,7 +765,7 @@ set prog_output "\n... cumprod:.*"
 do_test cumprod-3.m
 
 set test cumprod-4
-set prog_output "\n... cumprod:.*"
+set prog_output "ans = 1"
 do_test cumprod-4.m
 
 set test sumsq-1
@@ -781,7 +781,7 @@ set prog_output "\n... sumsq:.*"
 do_test sumsq-3.m
 
 set test sumsq-4
-set prog_output "\n... sumsq:.*"
+set prog_output "ans = 1"
 do_test sumsq-4.m
 
 set test bincoeff-1

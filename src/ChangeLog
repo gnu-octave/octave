@@ -1,3 +1,16 @@
+2000-10-27  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (ops.cc): Don't substitute BLAS_LIBS and LIBS here.
+
+	* oct-conf.h.in (OCTAVE_CONF_SPECIAL_MATH_LIB): Delete.
+	(OCTAVE_CONF_BLAS_LIBS): Add.
+	* toplev.cc (octave_config_info): Likewise, add BLAS_LIBS and
+	remove SPECIAL_MATH_LIB from the struct.
+
+	* parse.y (feval (const octave_value_list&, int)): Don't panic
+	while processing arg names if arg.length() and arg_names.length()
+	differ.
+
 2000-10-12  Paul Kienzle  <pkienzle@kienzle.powernet.co.uk>
 
 	* ov-cell.h (octave_cell::is_cell): New function.

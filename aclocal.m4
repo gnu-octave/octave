@@ -225,11 +225,34 @@ octave_cv_flibs="$ld_run_path $flibs"])
 FLIBS="$octave_cv_flibs"
 AC_MSG_RESULT([$FLIBS])])
 
+dnl See if the Fortran compiler uses uppercase external names.
+dnl
+dnl OCTAVE_F77_UPPERCASE_NAMES()
+AC_DEFUN(OCTAVE_F77_UPPERCASE_NAMES,
+[AC_MSG_CHECKING([whether $F77 uses uppercase external names])
+AC_CACHE_VAL(octave_cv_f77_uppercase_names,
+[octave_cv_f77_uppercase_names=no
+cat > conftest.f <<EOF
+      subroutine xxyyzz ()
+      return
+      end
+EOF
+if ${F77-f77} -c conftest.f 1>&AC_FD_CC 2>&AC_FD_CC; then
+  if test "`${NM-nm} conftest.o | grep XXYYZZ`" != ""; then
+    octave_cv_f77_uppercase_names=yes
+  fi
+fi])
+AC_MSG_RESULT([$octave_cv_f77_uppercase_names])
+if test "$octave_cv_f77_uppercase_names" = yes; then
+  AC_DEFINE(F77_UPPERCASE_NAMES, 1)
+fi])
+
 dnl See if the Fortran compiler appends underscores to external names.
 dnl
 dnl OCTAVE_F77_APPEND_UNDERSCORE()
 AC_DEFUN(OCTAVE_F77_APPEND_UNDERSCORE,
 [AC_MSG_CHECKING([whether $F77 appends underscores to external names])
+AC_REQUIRE([OCTAVE_F77_UPPERCASE_NAMES])
 AC_CACHE_VAL(octave_cv_f77_append_underscore,
 [octave_cv_f77_append_underscore=no
 cat > conftest.f <<EOF
@@ -238,10 +261,14 @@ cat > conftest.f <<EOF
       end
 EOF
 if ${F77-f77} -c conftest.f 1>&AC_FD_CC 2>&AC_FD_CC; then
-  if test "`${NM-nm} conftest.o | grep xxyyzz_`" != ""; then
-    octave_cv_f77_append_underscore=yes
-  elif test "`${NM-nm} conftest.o | grep XXYYZZ_`" != ""; then
-    octave_cv_f77_append_underscore=yes
+  if test "$octave_cv_f77_uppercase_names" = yes; then
+    if test "`${NM-nm} conftest.o | grep XXYYZZ_`" != ""; then
+      octave_cv_f77_append_underscore=yes
+    fi
+  else
+    if test "`${NM-nm} conftest.o | grep xxyyzz_`" != ""; then
+      octave_cv_f77_append_underscore=yes
+    fi
   fi
 fi])
 AC_MSG_RESULT([$octave_cv_f77_append_underscore])

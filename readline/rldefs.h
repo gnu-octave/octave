@@ -26,6 +26,10 @@
 #if !defined (_RLDEFS_H)
 #define _RLDEFS_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
@@ -208,5 +212,9 @@ extern char *xmalloc ();
 
 /* CONFIGURATION SECTION */
 #include "rlconf.h"
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* !_RLDEFS_H */

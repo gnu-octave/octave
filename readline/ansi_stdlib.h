@@ -23,6 +23,10 @@
 #if !defined (_STDLIB_H_)
 #define	_STDLIB_H_ 1
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* String conversion functions. */
 extern int atoi ();
 extern long int atol ();
@@ -37,5 +41,9 @@ extern void abort ();
 extern void exit ();
 extern char *getenv ();
 extern void qsort ();
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _STDLIB_H  */

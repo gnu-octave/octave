@@ -3,6 +3,10 @@
 #if !defined (__TILDE_H__)
 #  define __TILDE_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* Function pointers can be declared as (Function *)foo. */
 #if !defined (__FUNCTION_DEF)
 #  define __FUNCTION_DEF
@@ -34,5 +38,9 @@ extern char *tilde_expand ();
 /* Do the work of tilde expansion on FILENAME.  FILENAME starts with a
    tilde.  If there is no expansion, call tilde_expansion_failure_hook. */
 extern char *tilde_expand_word ();
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* __TILDE_H__ */

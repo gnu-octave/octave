@@ -23,6 +23,10 @@
 #ifndef _KEYMAPS_H_
 #define _KEYMAPS_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #if defined (READLINE_LIBRARY)
 #  include "chardefs.h"
 #else
@@ -91,5 +95,9 @@ extern Keymap rl_get_keymap ();
 
 /* Set the current keymap to MAP. */
 extern void rl_set_keymap ();
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _KEYMAPS_H_ */

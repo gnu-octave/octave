@@ -24,6 +24,10 @@
 #if !defined (_RLCONF_H_)
 #define _RLCONF_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* Define this if you want the vi-mode editing available. */
 #define VI_MODE
 
@@ -53,5 +57,9 @@
 
 /* The string inserted by the vi-mode `insert comment' command. */
 #define VI_COMMENT_BEGIN_DEFAULT "#"
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _RLCONF_H_ */

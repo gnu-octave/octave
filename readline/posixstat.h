@@ -24,6 +24,10 @@
 #if !defined (_POSIXSTAT_H)
 #define _POSIXSTAT_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <sys/stat.h>
 
 #if defined (isc386)
@@ -145,5 +149,9 @@
 #define S_IRUGO		(S_IRUSR | S_IRGRP | S_IROTH)
 #define S_IWUGO		(S_IWUSR | S_IWGRP | S_IWOTH)
 #define S_IXUGO		(S_IXUSR | S_IXGRP | S_IXOTH)
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _POSIXSTAT_H */

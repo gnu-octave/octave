@@ -22,6 +22,10 @@
 #if !defined (__MEMALLOC_H__)
 #  define __MEMALLOC_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #if defined (sparc) && defined (sun) && !defined (HAVE_ALLOCA_H)
 #  define HAVE_ALLOCA_H
 #endif
@@ -52,5 +56,9 @@ extern char *alloca ();
 #endif /* !__GNUC__ */
 
 #endif /* !BUILDING_MAKEFILE */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* __MEMALLOC_H__ */

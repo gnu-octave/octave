@@ -23,6 +23,10 @@
 #ifndef _CHARDEFS_H
 #define _CHARDEFS_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <ctype.h>
 
 #if defined (HAVE_STRING_H)
@@ -118,5 +122,9 @@
 #endif
 
 #define ESC CTRL('[')
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif  /* _CHARDEFS_H */

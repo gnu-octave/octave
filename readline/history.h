@@ -1,5 +1,9 @@
 /* History.h -- the names of functions that you can call in history. */
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* The structure used to store a history entry. */
 typedef struct _hist_entry {
   char *line;
@@ -179,3 +183,7 @@ extern char history_expansion_char;
 extern char history_subst_char;
 extern char history_comment_char;
 extern char *history_no_expand_chars;
+
+#ifdef __cplusplus
+}
+#endif

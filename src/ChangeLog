@@ -3,6 +3,10 @@
 	* pt-plot.cc (send_to_plot_stream): Skip automatic replot if in
 	multiplot mode.
 
+	* variables.cc (get_global_value): New arg, silent.
+	* variables.h (get_global_value): Default value for silent arg is
+	false.
+
 2004-09-22  David Bateman  <dbateman@free.fr>
 
 	* ov-fcn-inline.cc (Finline): When called with a single arg, derive

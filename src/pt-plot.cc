@@ -217,7 +217,7 @@ send_to_plot_stream (const std::string& cmd)
     {
       *plot_stream << cmd;
 
-      octave_value mm = get_global_value ("__multiplot_mode__");
+      octave_value mm = get_global_value ("__multiplot_mode__", true);
 
       bool is_multiplot_mode = mm.is_true ();
 

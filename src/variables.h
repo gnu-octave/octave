@@ -91,7 +91,8 @@ extern octave_value lookup_user_function (const std::string& nm);
 
 extern octave_value lookup_function_handle (const std::string& nm);
 
-extern octave_value get_global_value (const std::string& nm);
+extern octave_value
+get_global_value (const std::string& nm, bool silent = false);
 
 extern void set_global_value (const std::string& nm, const octave_value& val);
 

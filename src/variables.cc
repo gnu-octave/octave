@@ -919,7 +919,7 @@ lookup_function_handle (const std::string& nm)
 }
 
 octave_value
-get_global_value (const std::string& nm)
+get_global_value (const std::string& nm, bool silent)
 {
   octave_value retval;
 
@@ -929,12 +929,12 @@ get_global_value (const std::string& nm)
     {
       octave_value sr_def = sr->def ();
 
-      if (sr_def.is_undefined ())
-	error ("get_global_by_name: undefined symbol `%s'", nm.c_str ());
-      else
+      if (sr_def.is_defined ())
 	retval = sr_def;
+      else if (! silent)
+	error ("get_global_by_name: undefined symbol `%s'", nm.c_str ());
     }
-  else
+  else if (! silent)
     error ("get_global_by_name: unknown symbol `%s'", nm.c_str ());
 
   return retval;

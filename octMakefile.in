@@ -132,7 +132,7 @@ local-dist: octave.info INSTALL.info BUGS.info
 	tar chf `cat .fname`.tar `cat .fname`
 	rm -rf `cat .fname`
 	tar xf `cat .fname`.tar
-	chmod a+rwX `cat .fname`
+	chmod -R a+rwX `cat .fname`
 	tar cf `cat .fname`.tar `cat .fname`
 .PHONY: local-dist
 

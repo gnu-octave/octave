@@ -318,23 +318,48 @@ pr_where (const char *name, bool print_code = true)
 {
   if (curr_statement)
     {
-      const char *f_nm = 0;
+      std::string nm;
 
-      if (curr_function)
+      int l = -1;
+      int c = -1;
+
+      octave_function *fcn = curr_function;
+
+      if (fcn)
 	{
-	  std::string fcn_name = curr_function->name ();
-	  std::string file_name = curr_function->fcn_file_name ();
+	  nm = fcn->name ();
 
-	  f_nm = file_name.empty () ? fcn_name.c_str () : file_name.c_str ();
+	  if (nm == "error" || nm == "warning")
+	    fcn = curr_caller_function;
+
+	  if (fcn)
+	    {
+	      nm = fcn->fcn_file_name ();
+
+	      if (nm.empty ())
+		nm = fcn->name ();
+
+	      if (curr_statement)
+		{
+		  l = curr_statement->line ();
+		  c = curr_statement->column ();
+		}
+	    }
 	}
 
-      int l = curr_statement->line ();
-      int c = curr_statement->column ();
-
-      if (f_nm)
-	pr_where_1 ("%s: in %s near line %d, column %d:", name, f_nm, l, c);
+      if (nm.empty ())
+	{
+	  if (l > 0 && c > 0)
+	    pr_where_1 ("%s: near line %d, column %d:", name, l, c);
+	}
       else
-	pr_where_1 ("%s: near line %d, column %d:", name, l, c);
+	{
+	  if (l > 0 && c > 0)
+	    pr_where_1 ("%s: in %s near line %d, column %d:",
+			name, nm.c_str (), l, c);
+	  else
+	    pr_where_1 ("%s: in %s", name, nm.c_str ());
+	}
 
       if (print_code)
 	{

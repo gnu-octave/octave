@@ -33,6 +33,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <iostream.h>
 #include <assert.h>
 
+#include "SLStack.h"
+
 #ifndef SV_FUNCTION_TYPEDEFS
 #define SV_FUNCTION_TYPEDEFS 1
 
@@ -182,6 +184,9 @@ public:
 
   void chain (symbol_record *s);
 
+  void push_context (void);
+  void pop_context (void);
+
 private:
 
   unsigned formal_param : 1;
@@ -191,6 +196,7 @@ private:
   sv_Function sv_fcn;
   symbol_def *definition;
   symbol_record *next_elem;
+  SLStack <symbol_def *> context;
 
   void init_state (void);
 
@@ -303,6 +309,9 @@ public:
   char **list (int& count, int sort = 0,
 	       unsigned type = SYMTAB_ALL_TYPES,
 	       unsigned scope = SYMTAB_ALL_SCOPES) const;  
+
+  void push_context (void);
+  void pop_context (void);
 
 private:
 

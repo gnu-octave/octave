@@ -628,6 +628,33 @@ symbol_record::chain (symbol_record *s)
   next_elem = s;
 }
 
+void
+symbol_record::push_context (void)
+{
+  context.push (definition);
+  definition = (symbol_def *) NULL;
+}
+
+void
+symbol_record::pop_context (void)
+{
+  assert (! context.empty ());
+
+  if (is_variable ())
+    {
+      symbol_def *old_def = pop_def ();
+      maybe_delete (old_def);
+    }
+
+  if (is_function ())
+    {
+      symbol_def *old_def = pop_def ();
+      maybe_delete (old_def);
+    }
+
+  definition = context.pop ();
+}
+
 int
 symbol_record::read_only_error (void)
 {
@@ -1068,6 +1095,36 @@ symbol_table::list (int& count, int sort = 0,
 	   (int (*)(void*, void*)) pstrcmp);
 
   return symbols;
+}
+
+void
+symbol_table::push_context (void)
+{
+  for (int i = 0; i < HASH_TABLE_SIZE; i++)
+    {
+      symbol_record *ptr = table[i].next ();
+
+      while (ptr != (symbol_record *) NULL)
+	{
+	  ptr->push_context ();
+	  ptr = ptr->next ();
+	}
+    }
+}
+
+void
+symbol_table::pop_context (void)
+{
+  for (int i = 0; i < HASH_TABLE_SIZE; i++)
+    {
+      symbol_record *ptr = table[i].next ();
+
+      while (ptr != (symbol_record *) NULL)
+	{
+	  ptr->pop_context ();
+	  ptr = ptr->next ();
+	}
+    }
 }
 
 // Chris Torek's fave hash function.

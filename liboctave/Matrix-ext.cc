@@ -28,6 +28,129 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "Matrix.h"
 #include "mx-inlines.cc"
 #include "lo-error.h"
+#include "f77-uscore.h"
+
+// Fortran functions we call.
+
+extern "C"
+{
+  int F77_FCN (dgesv) (const int*, const int*, double*, const int*,
+		       int*, double*, const int*, int*);
+
+  int F77_FCN (dgeqrf) (const int*, const int*, double*, const int*,
+			double*, double*, const int*, int*);
+
+  int F77_FCN (dorgqr) (const int*, const int*, const int*, double*,
+			const int*, double*, double*, const int*, int*);
+
+  int F77_FCN (dgeev) (const char*, const char*, const int*, double*,
+		       const int*, double*, double*, double*,
+		       const int*, double*, const int*, double*,
+		       const int*, int*, long, long);
+
+  int F77_FCN (dgeesx) (const char*, const char*, int (*)(), const char*,
+			const int*, double*, const int*, int*, double*,
+			double*, double*, const int*, double*, double*, 
+			double*, const int*, int*, const int*, int*,
+			int*, long, long);
+
+  int F77_FCN (dgebal) (const char*, const int*, double*,
+                        const int*, int*, int*, double*,
+                        int*, long, long);
+
+  int F77_FCN (dgebak) (const char*, const char*, const int*, const int*,
+			const int*, double*, const int*, double*, const int*,
+			int*, long, long);
+
+  int F77_FCN (dgehrd) (const int*, const int*, const int*,
+                        double*, const int*, double*, double*,
+                        const int*, int*, long, long);
+
+  int F77_FCN (dorghr) (const int*, const int*, const int*,
+                        double*, const int*, double*, double*,
+                        const int*, int*, long, long);
+
+  int F77_FCN (dgesvd) (const char*, const char*, const int*,
+			const int*, double*, const int*, double*,
+			double*, const int*, double*, const int*,
+			double*, const int*, int*, long, long);
+
+  int F77_FCN (dpotrf) (const char*, const int*, double*, const int*,
+			int*, long);
+
+//
+// fortran functions for generalized eigenvalue problems
+//
+  int F77_FCN (reduce) (const int*, const int*, double*,
+	   	        const int*, double*,
+			int*, int*, double*, double*);
+
+  int F77_FCN (scaleg) (const int*, const int*, double*,
+	   	        const int*, double*,
+			const int*, const int*, double*, double*, double*);
+
+  int F77_FCN (gradeq) (const int*, const int*, double*,
+	   	        const int*, double*,
+			int*, int*, double*, double*);
+
+/*
+ * f2c translates complex*16 as
+ *
+ *   typedef struct { doublereal re, im; } doublecomplex;
+ *
+ * and Complex.h from libg++ uses
+ *
+ *   protected:
+ *     double re;
+ *     double im;
+ *
+ * as the only data members, so this should work (fingers crossed that
+ * things don't change).
+ */
+
+  int F77_FCN (zgesv) (const int*, const int*, Complex*, const int*,
+		       int*, Complex*, const int*, int*);
+
+  int F77_FCN (zgeqrf) (const int*, const int*, Complex*, const int*,
+			Complex*, Complex*, const int*, int*);
+
+  int F77_FCN (zgeesx) (const char*, const char*, int (*)(), const char*,
+			const int*, Complex*, const int*, int*,
+			Complex*, Complex*, const int*, double*, double*,
+			Complex*, const int*, double*, int*, int*,
+			long, long);
+
+  int F77_FCN (zgebal) (const char*, const int*, Complex*, const int*,
+                        int*, int*, double*, int*, long, long);
+ 
+  int F77_FCN (zgebak) (const char*, const char*, const int*, const int*,
+			const int*, double*, const int*, Complex*, 
+			const int*, int*, long, long);
+
+  int F77_FCN (zgehrd) (const int*, const int*, const int*, Complex*,
+                        const int*, Complex*, Complex*, const int*,
+                        int*, long, long);
+ 
+  int F77_FCN (zunghr) (const int*, const int*, const int*, Complex*,
+                        const int*, Complex*, Complex*, const int*,
+                        int*, long, long);
+
+  int F77_FCN (zungqr) (const int*, const int*, const int*, Complex*,
+			const int*, Complex*, Complex*, const int*, int*);
+
+  int F77_FCN (zgeev) (const char*, const char*, const int*, Complex*,
+		       const int*, Complex*, Complex*, const int*,
+		       Complex*, const int*, Complex*, const int*,
+		       double*, int*, long, long);
+
+  int F77_FCN (zgesvd) (const char*, const char*, const int*,
+			const int*, Complex*, const int*, double*,
+			Complex*, const int*, Complex*, const int*,
+			Complex*, const int*, double*, int*, long, long);
+
+  int F77_FCN (zpotrf) (const char*, const int*, Complex*, const int*,
+			int*, long);
+}
 
 /*
  * AEPBALANCE operations
@@ -163,9 +286,9 @@ GEPBALANCE::init (const Matrix& a, const Matrix& b, const char *balance_job)
 
   if (*balance_job == 'P' || *balance_job == 'B')
     {
-      F77_FCN(reduce)(&n, &n, balanced_a_mat.fortran_vec (),
-		      &n, balanced_b_mat.fortran_vec (), &ilo, &ihi,
-		      cscale, wk.fortran_vec ());
+      F77_FCN (reduce) (&n, &n, balanced_a_mat.fortran_vec (),
+			&n, balanced_b_mat.fortran_vec (), &ilo, &ihi,
+			cscale, wk.fortran_vec ());
     }
   else
     {
@@ -180,9 +303,9 @@ GEPBALANCE::init (const Matrix& a, const Matrix& b, const char *balance_job)
 
   if ((*balance_job == 'S' || *balance_job == 'B') && ilo != ihi)
     {
-      F77_FCN(scaleg)(&n, &n, balanced_a_mat.fortran_vec (), 
-		      &n, balanced_b_mat.fortran_vec (), &ilo, &ihi,
-		      cscale, cperm, wk.fortran_vec ());
+      F77_FCN (scaleg) (&n, &n, balanced_a_mat.fortran_vec (), 
+			&n, balanced_b_mat.fortran_vec (), &ilo, &ihi,
+			cscale, cperm, wk.fortran_vec ());
     }
   else
     {
@@ -400,15 +523,15 @@ ComplexHESS::init (const ComplexMatrix& a)
    F77_FCN (zgebal) (&job, &n, h, &n, &ilo, &ihi, scale, &info, 1L, 1L);
 
    F77_FCN (zgehrd) (&n, &ilo, &ihi, h, &n, tau, work, &lwork, &info, 1L,
-                   1L);
+		     1L);
 
    copy(z,h,n*n);
 
    F77_FCN (zunghr) (&n, &ilo, &ihi, z, &n, tau, work, &lwork, &info, 1L,
-                   1L);
+		     1L);
 
    F77_FCN (zgebak) (&job, &side, &n, &ilo, &ihi, scale, &n, z, &n, &info,
-		   1L, 1L); 
+		     1L, 1L); 
 
    hess_mat = ComplexMatrix (h,n,n);
    unitary_hess_mat = ComplexMatrix (z,n,n);

@@ -72,14 +72,14 @@ Handle all of the following:
   ColumnVector x = args[1].to_vector ();
   if (x.capacity () == 0)
     {
-      message ("qpsol", "expecting vector as first argument");
+      error ("qpsol: expecting vector as first argument");
       return retval;
     }
 
   Matrix H = args[2].to_matrix ();
   if (H.rows () != H.columns () || H.rows () != x.capacity ())
     {
-      message ("qpsol", "H must be a square matrix consistent with the\
+      error ("qpsol: H must be a square matrix consistent with the\
  size of x");
       return retval;
     }
@@ -87,7 +87,7 @@ Handle all of the following:
   ColumnVector c = args[3].to_vector ();
   if (c.capacity () != x.capacity ())
     {
-      message ("qpsol", "c must be a vector the same size as x");
+      error ("qpsol: c must be a vector the same size as x");
       return retval;
     }
 
@@ -101,7 +101,7 @@ Handle all of the following:
       int ub_len = ub.capacity ();
       if (lb_len != ub_len || lb_len != x.capacity ())
 	{
-	  message ("qpsol", "lower and upper bounds and decision variable\n\
+	  error ("qpsol: lower and upper bounds and decision variable\n\
        vector must all have the same number of elements");
 	  return retval;
 	}
@@ -141,6 +141,12 @@ Handle all of the following:
       ColumnVector lub = args[nargin-1].to_vector ();
       Matrix A = args[nargin-2].to_matrix ();
       ColumnVector llb = args[nargin-3].to_vector ();
+
+      if (llb.capacity () == 0 || lub.capacity () == 0)
+	{
+	  error ("qpsol: bounds for linear constraints must be vectors");
+	  return retval;
+	}
 
       if (! linear_constraints_ok (x, llb, A, lub, "qpsol", 1))
 	return retval;

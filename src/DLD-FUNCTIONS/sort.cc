@@ -24,6 +24,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include "lo-mappers.h"
+
 #include "defun-dld.h"
 #include "error.h"
 #include "gripes.h"
@@ -175,7 +177,7 @@ mx_sort (const Matrix& m)
 	{
 	  Array<int> l = create_index_array (nr);
 
-	  DO_SORT (nr, (m (p-1, j) > m (q-1, j)));
+	  DO_SORT (nr, (xisnan (m (p-1, j)) || m (p-1, j) > m (q-1, j)));
 
 	  MATRIX_CREATE_RETURN_VALUES (ms, m);
 	}
@@ -208,7 +210,7 @@ mx_sort (const RowVector& v)
     {
       Array<int> l = create_index_array (n);
 
-      DO_SORT (n, (v (p-1) > v (q-1)));
+      DO_SORT (n, (xisnan (v (p-1)) || v (p-1) > v (q-1)));
 
       VECTOR_CREATE_RETURN_VALUES (vs, v);
     }
@@ -243,16 +245,18 @@ mx_sort (const ComplexMatrix& cm)
 	{
 	  Array<int> l = create_index_array (nr);
 
-	  int all_elts_real = 1;
+	  bool all_elts_real = true;
 	  for (int i = 0; i < nr; i++)
 	    if (imag (cm (i, j)) != 0.0)
 	      {
-		all_elts_real = 0;
+		all_elts_real = false;
 		break;
 	      }
 
 	  DO_SORT (nr, ((all_elts_real
-			 && real (cm (p-1, j)) > real (cm (q-1, j)))
+			 && (xisnan (real (cm (p-1, j)))
+			     || real (cm (p-1, j)) > real (cm (q-1, j))))
+			|| xisnan (cm (p-1, j))
 			|| abs (cm (p-1, j)) > abs (cm (q-1, j))));
 
 	  MATRIX_CREATE_RETURN_VALUES (cms, cm);
@@ -286,16 +290,18 @@ mx_sort (ComplexRowVector& cv)
     {
       Array<int> l = create_index_array (n);
 
-      int all_elts_real = 1;
+      bool all_elts_real = true;
       for (int i = 0; i < n; i++)
 	if (imag (cv (i)) != 0.0)
 	  {
-	    all_elts_real = 0;
+	    all_elts_real = false;
 	    break;
 	  }
 
       DO_SORT (n, ((all_elts_real
-		    && real (cv (p-1)) > real (cv (q-1)))
+		    && (xisnan (real (cv (p-1)))
+			|| real (cv (p-1)) > real (cv (q-1))))
+		   || xisnan (cv (p-1))
 		   || abs (cv (p-1)) > abs (cv (q-1))));
 
       VECTOR_CREATE_RETURN_VALUES (cvs, cv);

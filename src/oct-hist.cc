@@ -440,8 +440,9 @@ do_edit_history (int argc, const string_vector& argv)
   // Call up our favorite editor on the file of commands.
 
   std::string cmd = Veditor;
-  cmd.append (" ");
+  cmd.append (" \"");
   cmd.append (name);
+  cmd.append ("\"");
 
   // Ignore interrupts while we are off editing commands.  Should we
   // maybe avoid using system()?

@@ -47,7 +47,7 @@ function retval = autocov (X, h)
   retval = zeros (h + 1, c);
 
   for i = 0 : h
-    retval(i+1, :) = diag (X(i+1:n, :).' * conj (X(1:n-i, :))) / n;
+    retval(i+1, :) = diag (X(i+1:n, :).' * conj (X(1:n-i, :))).' / n;
   endfor
 
 endfunction

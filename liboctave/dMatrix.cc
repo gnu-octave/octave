@@ -2235,33 +2235,33 @@ Matrix::row_min (Array<int>& index) const
 
       for (int i = 0; i < nr; i++)
         {
-	  int idx_j = 0;
+	  int idx_j;
 
-	  double tmp_min = elem (i, idx_j);
+	  double tmp_min = octave_NaN;
 
-	  if (xisnan (tmp_min))
-	    idx_j = -1;
-	  else
+	  for (idx_j = 0; idx_j < nc; idx_j++)
 	    {
-	      for (int j = 1; j < nc; j++)
-		{
-		  double tmp = elem (i, j);
+	      tmp_min = elem (i, idx_j);
 
-		  if (xisnan (tmp))
-		    {
-		      idx_j = -1;
-		      break;
-		    }
-		  else if (tmp < tmp_min)
-		    {
-		      idx_j = j;
-		      tmp_min = tmp;
-		    }
+	      if (! octave_is_NaN_or_NA (tmp_min))
+		break;
+	    }
+
+	  for (int j = idx_j+1; j < nc; j++)
+	    {
+	      double tmp = elem (i, j);
+
+	      if (octave_is_NaN_or_NA (tmp))
+		continue;
+	      else if (tmp < tmp_min)
+		{
+		  idx_j = j;
+		  tmp_min = tmp;
 		}
 	    }
 
-	  result.elem (i) = (idx_j < 0) ? octave_NaN : tmp_min;
-	  index.elem (i) = idx_j;
+	  result.elem (i) = tmp_min;
+	  index.elem (i) = octave_is_NaN_or_NA (tmp_min) ? 0 : idx_j;
         }
     }
 
@@ -2290,33 +2290,33 @@ Matrix::row_max (Array<int>& index) const
 
       for (int i = 0; i < nr; i++)
         {
-	  int idx_j = 0;
+	  int idx_j;
 
-	  double tmp_max = elem (i, idx_j);
+	  double tmp_max = octave_NaN;
 
-	  if (xisnan (tmp_max))
-	    idx_j = -1;
-	  else
+	  for (idx_j = 0; idx_j < nc; idx_j++)
 	    {
-	      for (int j = 1; j < nc; j++)
-		{
-		  double tmp = elem (i, j);
+	      tmp_max = elem (i, idx_j);
 
-		  if (xisnan (tmp))
-		    {
-		      idx_j = -1;
-		      break;
-		    }
-		  else if (tmp > tmp_max)
-		    {
-		      idx_j = j;
-		      tmp_max = tmp;
-		    }
+	      if (! octave_is_NaN_or_NA (tmp_max))
+		break;
+	    }
+
+	  for (int j = idx_j+1; j < nc; j++)
+	    {
+	      double tmp = elem (i, j);
+
+	      if (octave_is_NaN_or_NA (tmp))
+		continue;
+	      else if (tmp > tmp_max)
+		{
+		  idx_j = j;
+		  tmp_max = tmp;
 		}
 	    }
 
-	  result.elem (i) = (idx_j < 0) ? octave_NaN : tmp_max;
-	  index.elem (i) = idx_j;
+	  result.elem (i) = tmp_max;
+	  index.elem (i) = octave_is_NaN_or_NA (tmp_max) ? 0 : idx_j;
         }
     }
 
@@ -2345,33 +2345,33 @@ Matrix::column_min (Array<int>& index) const
 
       for (int j = 0; j < nc; j++)
         {
-	  int idx_i = 0;
+	  int idx_i;
 
-	  double tmp_min = elem (idx_i, j);
+	  double tmp_min = octave_NaN;
 
-	  if (xisnan (tmp_min))
-	    idx_i = -1;
-	  else
+	  for (idx_i = 0; idx_i < nr; idx_i++)
 	    {
-	      for (int i = 1; i < nr; i++)
-		{
-		  double tmp = elem (i, j);
+	      tmp_min = elem (idx_i, j);
 
-		  if (xisnan (tmp))
-		    {
-		      idx_i = -1;
-		      break;
-		    }
-		  else if (tmp < tmp_min)
-		    {
-		      idx_i = i;
-		      tmp_min = tmp;
-		    }
+	      if (! octave_is_NaN_or_NA (tmp_min))
+		break;
+	    }
+
+	  for (int i = idx_i+1; i < nr; i++)
+	    {
+	      double tmp = elem (i, j);
+
+	      if (octave_is_NaN_or_NA (tmp))
+		continue;
+	      else if (tmp < tmp_min)
+		{
+		  idx_i = i;
+		  tmp_min = tmp;
 		}
 	    }
 
-	  result.elem (j) = (idx_i < 0) ? octave_NaN : tmp_min;
-	  index.elem (j) = idx_i;
+	  result.elem (j) = tmp_min;
+	  index.elem (j) = octave_is_NaN_or_NA (tmp_min) ? 0 : idx_i;
         }
     }
 
@@ -2400,33 +2400,33 @@ Matrix::column_max (Array<int>& index) const
 
       for (int j = 0; j < nc; j++)
         {
-	  int idx_i = 0;
+	  int idx_i;
 
-	  double tmp_max = elem (idx_i, j);
+	  double tmp_max = octave_NaN;
 
-	  if (xisnan (tmp_max))
-	    idx_i = -1;
-	  else
+	  for (idx_i = 0; idx_i < nr; idx_i++)
 	    {
-	      for (int i = 1; i < nr; i++)
-		{
-		  double tmp = elem (i, j);
+	      tmp_max = elem (idx_i, j);
 
-		  if (xisnan (tmp))
-		    {
-		      idx_i = -1;
-		      break;
-		    }
-		  else if (tmp > tmp_max)
-		    {
-		      idx_i = i;
-		      tmp_max = tmp;
-		    }
+	      if (! octave_is_NaN_or_NA (tmp_max))
+		break;
+	    }
+
+	  for (int i = idx_i+1; i < nr; i++)
+	    {
+	      double tmp = elem (i, j);
+
+	      if (octave_is_NaN_or_NA (tmp))
+		continue;
+	      else if (tmp > tmp_max)
+		{
+		  idx_i = i;
+		  tmp_max = tmp;
 		}
 	    }
 
-	  result.elem (j) = (idx_i < 0) ? octave_NaN : tmp_max;
-	  index.elem (j) = idx_i;
+	  result.elem (j) = tmp_max;
+	  index.elem (j) = octave_is_NaN_or_NA (tmp_max) ? 0 : idx_i;
         }
     }
 

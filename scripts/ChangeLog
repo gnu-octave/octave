@@ -1,3 +1,12 @@
+2003-07-25  Paul Kienzle <pkienzle@users.sf.net>
+
+	* signal/autocov.m: Transpose result of conj because diag returns
+	a column vector, not a row vector.
+
+	* audio/playaudio.m, audio/record.m, image/image.m,
+	miscellaneous/bug_report.m: Protect spaces in filenames
+	with quotes.
+
 2003-07-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* io/printf.m, io/puts.m: Delete.

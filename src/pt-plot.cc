@@ -132,10 +132,12 @@ open_plot_stream (void)
 
       plot_line_count = 0;
 
-      std::string plot_prog = Vgnuplot_binary;
+      std::string plot_prog;
 
-      if (plot_prog.empty ())
+      if (Vgnuplot_binary.empty ())
 	plot_prog = "gnuplot";
+      else
+        plot_prog = "\"" + Vgnuplot_binary + "\"";
 
       // XXX FIXME XXX -- I'm not sure this is the right thing to do,
       // but without it, C-c at the octave prompt will kill gnuplot...

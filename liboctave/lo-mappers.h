@@ -66,6 +66,9 @@ extern bool xisnan (const Complex& x);
 extern bool xfinite (const Complex& x);
 extern bool xisinf (const Complex& x);
 
+extern bool octave_is_NA (const Complex& x);
+extern bool octave_is_NaN_or_NA (const Complex& x);
+
 extern Complex xmin (const Complex& x, const Complex& y);
 extern Complex xmax (const Complex& x, const Complex& y);
 

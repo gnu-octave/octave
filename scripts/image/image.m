@@ -73,14 +73,14 @@ function image (x, y, A, zoom)
 
   ## Start the viewer.  Try display, xv, then xloadimage.
 
-  xv = sprintf ("xv -raw -expand %f %s", zoom, ppm_name);
+  xv = sprintf ("xv -raw -expand %f \"%s\"", zoom, ppm_name);
 
-  xloadimage = sprintf ("xloadimage -zoom %f %s", zoom*100, ppm_name);
+  xloadimage = sprintf ("xloadimage -zoom %f \"%s\"", zoom*100, ppm_name);
 
   ## ImageMagick:
-  im_display = sprintf ("display -geometry %f%% %s", zoom*100, ppm_name);
+  im_display = sprintf ("display -geometry %f%% \"%s\"", zoom*100, ppm_name);
   
-  rm = sprintf ("rm -f %s", ppm_name);
+  rm = sprintf ("rm -f \"%s\"", ppm_name);
 
   ## Need to let the shell clean up the tmp file because we are putting
   ## the viewer in the background.

@@ -1,3 +1,10 @@
+2003-07-25  Paul Kienzle <pkienzle@users.sf.net>
+
+	* help.cc (try_info, display_help_text):
+	Protect spaces in filenames with quotes.
+	* oct-hist.cc (do_edit_history): Likewise.
+	* pt-plot.cc (open_plot_stream): Likewise.
+
 2003-07-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-stream.cc (get_size, octave_base_stream::error,

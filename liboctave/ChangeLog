@@ -1,3 +1,19 @@
+2003-07-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lo-mappers.cc (xmin, xmax): Handle NaN in a Matlab-compatible
+	way.  Handle NA in an R-compatible way.
+
+	* lo-cieee.c (lo_ieee_is_NaN_or_NA): Also check for lo_ieee_is_NA.
+	(lo_ieee_is_NA): Don't call isnan unless HAVE_ISNAN is defined.
+
+	* lo-mappers.h (octave_is_NA (const Complex&)): Provide decl.
+	(octave_is_NaN_or_NA (const Complex&)): Likewise.
+
+	* dMatrix.cc (Matrix::row_min, Matrix::row_max,
+	Matrix::column_min, Matrix::column_max): Ignore NaNs.
+	* CMatrix.cc (ComplexMatrix::row_min, ComplexMatrix::row_max,
+	ComplexMatrix::column_min, ComplexMatrix::column_max): Likewise.
+
 2003-07-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Array2-idx.h (assign (Array2<LT>&, const Array2<RT>&, const LT&)):

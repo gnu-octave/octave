@@ -22,7 +22,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### 02111-1307, USA. 
 
 AC_INIT
-AC_REVISION($Revision: 1.430 $)
+AC_REVISION($Revision: 1.431 $)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -1470,6 +1470,16 @@ Octave is now configured for $canonical_host_type
 ])
 
 warn_msg_printed=false
+
+if $ENABLE_DYNAMIC_LINKING; then
+  if $SHARED_LIBS; then
+    true
+  else
+    AC_MSG_WARN([You used --enable-dl but not --enable-shared.])
+    AC_MSG_WARN([Are you sure that is what you want to do?])
+    warn_msg_printed=true
+  fi
+fi
 
 if test -n "$warn_f77_and_g77"; then
   AC_MSG_WARN($warn_f77_and_g77)

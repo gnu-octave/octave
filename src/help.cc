@@ -508,7 +508,7 @@ try_info (const std::string& nm)
 
   OSSTREAM cmd_buf;
 
-  cmd_buf << Vinfo_prog << " --file " << Vinfo_file;
+  cmd_buf << "\"" << Vinfo_prog << "\" --file \"" << Vinfo_file << "\"";
 
   std::string directory_name = Vinfo_file;
   size_t pos = directory_name.rfind ('/');
@@ -516,7 +516,7 @@ try_info (const std::string& nm)
   if (pos != NPOS)
     {
       directory_name.resize (pos + 1);
-      cmd_buf << " --directory " << directory_name;
+      cmd_buf << " --directory \"" << directory_name << "\"";
     }
 
   if (nm.length () > 0)
@@ -613,7 +613,7 @@ display_help_text (std::ostream& os, const std::string& msg)
       OSSTREAM buf;
 
       buf << "sed -e 's/^[#%][#%]* *//' -e 's/^ *@/@/' | "
-	  << Vmakeinfo_prog
+	  << "\"" << Vmakeinfo_prog << "\""
 	  << " -D \"VERSION " << OCTAVE_VERSION << "\""
 	  << " -D \"OCTAVEHOME " << OCTAVE_PREFIX << "\""
 	  << " -D \"TARGETHOSTTYPE " << OCTAVE_CANONICAL_HOST_TYPE << "\""

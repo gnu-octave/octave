@@ -57,7 +57,7 @@ function bug_report ()
     endif
 
     if (! isempty (prefs))
-      cmd = sprintf ("%s %s", cmd, prefs);
+      cmd = sprintf ("%s \"%s\"", cmd, prefs);
     endif
 
     system (cmd);

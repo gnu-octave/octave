@@ -1,8 +1,9 @@
 2004-04-02  David Bateman  <dbateman@free.fr>
 
 	* statistics/base/std.m: Allow optional args for type and dim.
-	* statistics/base/center.m statistics/base/meansq.m
-	statistics/base/moment.m statistics/base/range.m: Update for NDArrays.
+	* statistics/base/center.m, statistics/base/meansq.m,
+	statistics/base/moment.m, statistics/base/range.m:
+	Update for NDArrays.
 	* signal/fftshift.m: Fix dimensioning error.
 	
 	* statistics/base/std.m: Use repmat not ones(nr,1)*mean to allow

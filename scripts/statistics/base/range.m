@@ -19,21 +19,25 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} range (@var{x})
+## @deftypefn {Function File} {} range (@var{x},@var{dim})
 ## If @var{x} is a vector, return the range, i.e., the difference
 ## between the maximum and the minimum, of the input data.
 ##
 ## If @var{x} is a matrix, do the above for each column of @var{x}.
+##
+## If the optional argument @var{dim} is supplied, work along dimension
+## @var{dim}.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: Compute range
 
-function y = range (x)
+function y = range (x, varargin{:})
 
-  if (nargin != 1)
-    usage ("range (x)");
+  if (nargin != 1 && nargin != 2)
+    usage ("range (x, dim)");
   endif
 
-  y = max (x) - min (x);
+  y = max (x, varargin{:}) - min (x, varargin{:});
 
 endfunction

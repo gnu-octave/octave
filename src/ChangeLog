@@ -1,5 +1,7 @@
 2004-04-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* ov-bool.h (octave_bool::bool_array_value): New function.
+
 	* ov-base-mat.cc (octave_base_matrix<MT>::subsasgn): Don't allow
 	expressions like x(i)(j) or x(i){j} when x is empty.
 

@@ -26,6 +26,29 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #include <kpathsea/c-std.h>
 #include <kpathsea/types.h>
 
+#if defined(WIN32)
+#if defined(_DEBUG)
+/* This was needed at some time for catching errors in pdftex. */
+#include <crtdbg.h>
+#define  SET_CRT_DEBUG_FIELD(a) \
+            _CrtSetDbgFlag((a) | _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG))
+#define  CLEAR_CRT_DEBUG_FIELD(a) \
+            _CrtSetDbgFlag(~(a) & _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG))
+#define  SETUP_CRTDBG \
+   { _CrtSetReportMode( _CRT_WARN, _CRTDBG_MODE_FILE );    \
+     _CrtSetReportFile( _CRT_WARN, _CRTDBG_FILE_STDOUT );  \
+     _CrtSetReportMode( _CRT_ERROR, _CRTDBG_MODE_FILE );   \
+     _CrtSetReportFile( _CRT_ERROR, _CRTDBG_FILE_STDOUT ); \
+     _CrtSetReportMode( _CRT_ASSERT, _CRTDBG_MODE_FILE );  \
+     _CrtSetReportFile( _CRT_ASSERT, _CRTDBG_FILE_STDOUT );\
+   }
+#else /* ! _DEBUG */
+#define SET_CRT_DEBUG_FIELD(a) 
+#define CLEAR_CRT_DEBUG_FIELD(a)
+#define SETUP_CRTDBG
+#endif /* _DEBUG */
+#endif /* WIN32 */
+
 /* OK, we'll have tracing support.  */
 #define KPSE_DEBUG
 
@@ -44,7 +67,8 @@ extern DllImport unsigned kpathsea_debug;
 #define KPSE_DEBUG_PATHS 3		/* search path initializations */
 #define KPSE_DEBUG_EXPAND 4		/* path element expansion */
 #define KPSE_DEBUG_SEARCH 5		/* searches */
-#define KPSE_LAST_DEBUG KPSE_DEBUG_SEARCH
+#define KPSE_DEBUG_VARS 6		/* variable values */
+#define KPSE_LAST_DEBUG KPSE_DEBUG_VARS
 
 /* A printf for the debugging.  */
 #define DEBUGF_START() do { fputs ("kdebug:", stderr)

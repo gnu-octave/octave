@@ -2,11 +2,15 @@ dnl Common Autoconf sinclude file for kpathsea-using programs.  (Have to
 dnl use the m4 `sinclude' builtin instead of `include', since Autoconf
 dnl disables `include'.)
 
+dnl These configure scripts won't work with anything else.
+AC_PREREQ(2.12)
+
 dnl Write output here, instead of putting a zillion -D's on the command line.
-AC_CONFIG_HEADER(c-auto.h)
+AC_CONFIG_HEADER(c-auto.h:c-auto.in)
 
 AC_PROG_CC
 AC_PROG_INSTALL
+AC_PROG_LN_S
 AC_PROG_MAKE_SET
 
 AC_HEADER_DIRENT
@@ -28,9 +32,19 @@ kb_AC_PROG_LIBTOOL
 dnl If the list of functions here changes, also change acconfig.h.  */
 kb_AC_KLIBTOOL_REPLACE_FUNCS(basename putenv strcasecmp strtol strstr)
 
-AC_CHECK_FUNCS(bcopy getwd)
+AC_CHECK_FUNCS(bcopy getcwd getwd)
 
 AC_C_CONST
+
+# Check whether prototypes work.
+AC_MSG_CHECKING(whether the compiler accepts prototypes)
+AC_CACHE_VAL(kb_cv_c_prototypes,
+[AC_TRY_COMPILE([#include <stdarg.h>], [extern void foo(int i,...);],
+  kb_cv_c_prototypes=yes, kb_cv_c_prototypes=no)])dnl
+AC_MSG_RESULT($kb_cv_c_prototypes)
+if test "$kb_cv_c_prototypes" = yes; then
+  AC_DEFINE(HAVE_PROTOTYPES)
+fi
 
 # This is a GNU libc invention.
 AC_MSG_CHECKING(whether program_invocation_name is predefined)
@@ -105,5 +119,25 @@ if test $kb_cv_func_putenv_malloc = yes; then
   AC_DEFINE(SMART_PUTENV)
 fi
 
+if test $ac_cv_func_getcwd = yes; then
+# We only need to run this if we have getcwd.
+AC_MSG_CHECKING(whether getcwd uses fork or vfork)
+AC_CACHE_VAL(kb_cv_func_getcwd_forks,
+[AC_TRY_RUN([
+int fork() { exit(1); }
+int vfork() { exit(1); }
+extern char *getcwd();
+char path[100];
+int main() {
+getcwd(path,100);
+return 0;
+}], kb_cv_func_getcwd_forks=no, kb_cv_func_getcwd_forks=yes,
+    kb_cv_func_getcwd_forks=no)])dnl
+AC_MSG_RESULT($kb_cv_func_getcwd_forks)
+if test $kb_cv_func_getcwd_forks = yes; then
+  AC_DEFINE(GETCWD_FORKS)
+fi
+fi
+
 # Common --with and --enable options.
-sinclude(../kpathsea/withenable.ac)
+sinclude(withenable.ac)

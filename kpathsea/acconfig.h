@@ -1,8 +1,13 @@
-/* acconfig.h -- used by autoheader when generating c-auto.h.in.
+/* acconfig.h -- used by autoheader when generating c-auto.in.
 
    If you're thinking of editing acconfig.h to fix a configuration
    problem, don't. Edit the c-auto.h file created by configure,
    instead.  Even better, fix configure to give the right answer.  */
+
+/* kpathsea: the version string. */
+#define KPSEVERSION "REPLACE-WITH-KPSEVERSION"
+/* web2c: the version string. */
+#define WEB2CVERSION "REPLACE-WITH-WEB2CVERSION"
 
 /* kpathsea/configure.in tests for these functions with
    kb_AC_KLIBTOOL_REPLACE_FUNCS, and naturally Autoheader doesn't know
@@ -17,11 +22,19 @@
 
 @TOP@
 
+/* Define if your compiler understands prototypes.  */
+#undef HAVE_PROTOTYPES
+
 /* Define if your putenv doesn't waste space when the same environment
    variable is assigned more than once, with different (malloced)
    values.  This is true only on NetBSD/FreeBSD, as far as I know. See
    xputenv.c.  */
 #undef SMART_PUTENV
+
+/* Define if getcwd if implemented using fork or vfork.  Let me know
+   if you have to add this by hand because configure failed to detect
+   it. */
+#undef GETCWD_FORKS
 
 /* Define if you are using GNU libc or otherwise have global variables
    `program_invocation_name' and `program_invocation_short_name'.  */
@@ -59,6 +72,7 @@
 #define EDITOR "vi +%d %s"
 
 /* web2c: Window system support for Metafont. */
+#undef EPSFWIN
 #undef HP2627WIN
 #undef MFTALKWIN
 #undef NEXTWIN

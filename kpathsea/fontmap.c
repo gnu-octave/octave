@@ -1,6 +1,6 @@
 /* fontmap.c: read files for additional font names.
 
-Copyright (C) 1993, 94, 95, 96 Free Software Foundation, Inc.
+Copyright (C) 1993, 94, 95, 96, 97 Free Software Foundation, Inc.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Library General Public
@@ -69,9 +69,8 @@ token P1C(const_string, str)
    filename (e.g., `ptmr'), the second word is the alias (e.g.,
    `Times-Roman'), and any subsequent words are ignored.  .tfm is added
    if either the filename or the alias have no extension.  This is the
-   same order as in Dvips' psfonts.map; unfortunately, we can't have TeX
-   read that same file, since most of the real filenames start with an
-   `r', because of the virtual fonts Dvips uses.  */
+   same order as in Dvips' psfonts.map.  Perhaps someday the programs
+   will both read the same file.  */
 
 static void
 map_file_parse P1C(const_string, map_filename)

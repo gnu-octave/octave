@@ -1,5 +1,5 @@
+#include <kpathsea/config.h>
 #include <kpathsea/absolute.h>
-#include <kpathsea/c-auto.h>
 #include <kpathsea/c-ctype.h>
 #include <kpathsea/c-dir.h>
 #include <kpathsea/c-errno.h>
@@ -17,7 +17,6 @@
 #include <kpathsea/c-vararg.h>
 #include <kpathsea/cnf.h>
 #include <kpathsea/concatn.h>
-#include <kpathsea/config.h>
 #include <kpathsea/db.h>
 #include <kpathsea/debug.h>
 #include <kpathsea/default.h>

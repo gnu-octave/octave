@@ -30,6 +30,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 
 #include <time.h> /* for `time' */
 
+#ifdef __DJGPP__
+#include <sys/stat.h>	/* for stat bits */
+#endif
+
 /* The very first search is for texmf.cnf, called when someone tries to
    initialize the TFM path or whatever.  init_path calls kpse_cnf_get
    which calls kpse_all_path_search to find all the texmf.cnf's.  We
@@ -51,9 +55,9 @@ log_search P1C(str_list_type, filenames)
   static boolean first_time = true; /* Need to open the log file?  */
   
   if (first_time) {
+    /* Get name from either envvar or config file.  */
     string log_name = kpse_var_value ("TEXMFLOG");
     first_time = false;
-    /* Get name from either envvar or config file.  */
     if (log_name) {
       log_file = fopen (log_name, FOPEN_A_MODE);
       if (!log_file)
@@ -264,13 +268,38 @@ search P4C(const_string, path,  const_string, original_name,
            boolean, must_exist,  boolean, all)
 {
   str_list_type ret_list;
+  string name;
+  boolean absolute_p;
+
+#ifdef __DJGPP__
+  /* We will use `stat' heavily, so let's request for
+     the fastest possible version of `stat', by telling
+     it what members of struct stat do we really need.
+
+     We need to set this on each call because this is a
+     library function; the caller might need other options
+     from `stat'.  Thus save the flags and restore them
+     before exit.
+
+     This call tells `stat' that we do NOT need to recognize
+     executable files (neither by an extension nor by a magic
+     signature); that we do NOT need time stamp of root directories;
+     and that we do NOT need the write access bit in st_mode.
+
+     Note that `kpse_set_progname' needs the EXEC bits,
+     but it was already called by the time we get here.  */
+  unsigned short save_djgpp_flags  = _djstat_flags;
+
+  _djstat_flags = _STAT_EXEC_MAGIC | _STAT_EXEC_EXT
+		  | _STAT_ROOT_TIME | _STAT_WRITEBIT;
+#endif
 
   /* Make a leading ~ count as an absolute filename, and expand $FOO's.  */
-  string name = kpse_expand (original_name);
+  name = kpse_expand (original_name);
   
   /* If the first name is absolute or explicitly relative, no need to
      consider PATH at all.  */
-  boolean absolute_p = kpse_absolute_p (name, true);
+  absolute_p = kpse_absolute_p (name, true);
   
   if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
     DEBUGF4 ("start search(file=%s, must_exist=%d, find_all=%d, path=%s).\n",
@@ -299,7 +328,12 @@ search P4C(const_string, path,  const_string, original_name,
     if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
       putc ('\n', stderr);
   }  
-  
+
+#ifdef __DJGPP__
+  /* Undo any side effects.  */
+  _djstat_flags = save_djgpp_flags;
+#endif
+
   return STR_LIST (ret_list);
 }
 
@@ -309,8 +343,17 @@ string
 kpse_path_search P3C(const_string, path,  const_string, name,
                      boolean, must_exist)
 {
-  string *ret_list = search (path, name, must_exist, false);
-  return *ret_list;
+  static string *ret_list = 0;
+
+  if (ret_list)
+    {
+      free (ret_list);
+      ret_list = 0;  /* Don't let an interrupt in search() cause trouble */
+    }
+
+  ret_list = search (path, name, must_exist, false);
+
+  return *ret_list;  /* Freeing this is caller's responsibility */
 }
 
 
@@ -355,12 +398,13 @@ main ()
   /* All lists end with NULL.  */
   test_path_search (".", "nonexistent");
   test_path_search (".", "/nonexistent");
-  test_path_search ("/k:.", "kpathsea.texi");
-  test_path_search ("/k:.", "/etc/fstab");
-  test_path_search (".:" TEXFONTS "//", "cmr10.tfm");
-  test_path_search (".:" TEXFONTS "//", "logo10.tfm");
-  test_path_search (TEXFONTS "//times:.::", "ptmr.vf");
-  test_path_search (TEXFONTS "/adobe//:"
+  test_path_search ("/k" ENV_SEP_STRING ".", "kpathsea.texi");
+  test_path_search ("/k" ENV_SEP_STRING ".", "/etc/fstab");
+  test_path_search ("." ENV_SEP_STRING TEXFONTS "//", "cmr10.tfm");
+  test_path_search ("." ENV_SEP_STRING TEXFONTS "//", "logo10.tfm");
+  test_path_search (TEXFONTS "//times" ENV_SEP_STRING "."
+                    ENV_SEP_STRING ENV_SEP_STRING, "ptmr.vf");
+  test_path_search (TEXFONTS "/adobe//" ENV_SEP_STRING
                     "/usr/local/src/TeX+MF/typefaces//", "plcr.pfa");
   
   test_path_search ("~karl", ".bashrc");
@@ -369,10 +413,10 @@ main ()
   xputenv ("NONEXIST", "nonexistent");
   test_path_search (".", "$NONEXISTENT");
   xputenv ("KPATHSEA", "kpathsea");
-  test_path_search ("/k:.", "$KPATHSEA.texi");  
-  test_path_search ("/k:.", "${KPATHSEA}.texi");  
-  test_path_search ("$KPATHSEA:.", "README");  
-  test_path_search (".:$KPATHSEA", "README");  
+  test_path_search ("/k" ENV_SEP_STRING ".", "$KPATHSEA.texi");  
+  test_path_search ("/k" ENV_SEP_STRING ".", "${KPATHSEA}.texi");  
+  test_path_search ("$KPATHSEA" ENV_SEP_STRING ".", "README");  
+  test_path_search ("." ENV_SEP_STRING "$KPATHSEA", "README");  
   
   return 0;
 }

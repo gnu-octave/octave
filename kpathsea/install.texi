@@ -16,8 +16,8 @@
 @end ifset
 
 The procedure for Kpathsea (and Web2c, etc.) configuration and
-installation follows.  If trouble, @pxref{Common problems}, a copy of
-which is in the file @file{kpathsea/BUGS}.
+installation follows.  If you encounter trouble, see @ref{Common
+problems}, a copy of which is in the file @file{kpathsea/BUGS}.
 
 @menu
 * Simple installation::      If you just want to do it.
@@ -39,13 +39,17 @@ which is in the file @file{kpathsea/BUGS}.
 @cindex installation, getting executables instead of
 Installing @TeX{} and friends for the first time can be a daunting
 experience.  Thus, you may prefer to skip this whole thing and just get
-precompiled executables: @pxref{unixtex.ftp}.
+precompiled executables: see @ref{unixtex.ftp}.
 
 This section explains what to do if you wish to take the defaults for
-everything (installing under @file{/usr/local}), and generally to
-install in the simplest possible way.  Most steps here refer to
-corresponding subsection in the next section which explains how to
-override defaults and generally gives more details.
+everything, and generally to install in the simplest possible way.  Most
+steps here refer to corresponding subsection in the next section which
+explains how to override defaults and generally gives more details.
+
+By default everything will be installed under @file{/usr/local} and the
+following discussion assumes this.  However, if you already have @TeX{}
+installed, its location is used to derive the directory under which
+everything is to be installed.
 
 @enumerate
 @item
@@ -78,7 +82,12 @@ have the GNU Bash shell installed, run @samp{bash configure}.)
 @xref{Running configure}.
 
 @item
-@samp{make}. @xref{Running make}.
+@samp{make}. @xref{Running make}.  If you are using a BSD 4.4 system
+such as FreeBSD or NetBSD, use GNU make (often installed in
+@file{/usr/local/bin}), not the BSD make.
+
+If you are using a HP-UX 10 system and the native compiler, specify the
+@samp{+u} flag in @code{XCFLAGS}.
 
 @item 
 @samp{make install}. @xref{Installing files}.
@@ -90,7 +99,7 @@ have the GNU Bash shell installed, run @samp{bash configure}.)
 Set up a cron job to rebuild the filename database that makes searching
 faster.  This line will rebuild it every midnight:
 @example
-0 0 * * * cd /usr/local/share/texmf && @var{/bindir}/MakeTeXls-R
+0 0 * * * cd /usr/local/share/texmf && @var{/bindir}/mktexlsr
 @end example
 @xref{Filename database generation}, and @ref{Filename database}.
 
@@ -101,26 +110,27 @@ faster.  This line will rebuild it every midnight:
 If you're installing Dvips, you also need to set up configuration files
 for your printers and make any additional PostScript fonts available.
 @xref{Installation,,, dvips, Dvips}.  If you have any color printers,
-@pxref{Color device configuration,,, dvips, Dvips}.
+see @ref{Color device configuration,,, dvips, Dvips}.
 
 @item
 The first time you run a DVI driver, a bunch of PK fonts will be built
-by Metafont via @code{MakeTeXPK} (and added to the filename database).
+by Metafont via @code{mktexpk} (and added to the filename database).
 This will take some time.  Don't be alarmed; they will created only this
 first time (unless something is wrong with your path definitions).
 
-By default, @code{MakeTeXPK} assumes @file{/usr/local/share/texmf/fonts}
-is globally writable.  If you need a different arrangement, 
-@pxref{MakeTeX configuration}.
+By default, @code{mktexpk} will create these fonts in a hierarchy
+under @file{/var/tmp/texfonts}; it simply assumes that @file{/var/tmp}
+exists and is globally writable.  If you need a different arrangement,
+see @ref{mktex configuration}.
 
-@xref{MakeTeX scripts}.
+@xref{mktex scripts}.
 
 @item
 @cindex fonts, being created
-@pindex MakeTeXPK @r{, initial runs}
+@pindex mktexpk @r{, initial runs}
 @cindex tests, simple
 For some simple tests, try @samp{tex story \\bye} and @samp{latex
-simple}.  Then run @file{xdvi story} or @file{dvips simple} on the
+sample2e}.  Then run @file{xdvi story} or @file{dvips sample2e} on the
 resulting DVI files to preview/print the documents.  @xref{Installation
 testing}.
 @end enumerate
@@ -166,7 +176,7 @@ the simplest installation), but with much more detail.
 * Installing files::                    
 * Cleaning up::                         
 * Filename database generation::        
-* MakeTeX scripts::                     
+* mktex scripts::                     
 * Installation testing::               
 @end menu
 
@@ -184,6 +194,7 @@ distributions don't enter into it.  Sizes are in megabytes.  All numbers
 are approximate.
 
 @multitable {distribution} {.tar.gz} {unpacked} {compiled} {installed}
+@item Distribution @tab .tar.gz @tab Unpacked @tab Compiled @tab Installed
 @item dviljk   @tab   .9 @tab  3.8 @tab
 @item dvipsk   @tab   .9 @tab  3.2 @tab
 @item xdvik    @tab   .7 @tab  2.5 @tab
@@ -248,22 +259,22 @@ typesetting, you may need to retrieve additional files.  See the file
 
 @cindex search paths, changing default
 @cindex paths, changing default
-@flindex texmf.cnf.in@r{, editing}
+@flindex texmf.in@r{, editing}
 If the search paths for your installation differ from the standard
 @TeX{} directory structure (@pxref{Top,, Introduction, tds, A Directory
-Structure for @TeX{} files}), edit the file @file{kpathsea/texmf.cnf.in}
+Structure for @TeX{} files}), edit the file @file{kpathsea/texmf.in}
 as desired, before running @code{configure}.  For example, if you have
 all your fonts or macros in one big directory.
 
-You may also wish to edit the file @file{MakeTeXnames.cnf}, either
-before or after installation, to control various aspects of
-@code{MakeTeXPK} and friends.  @xref{MakeTeX configuration}.
+You may also wish to edit the file @file{mktex.cnf}, either before or
+after installation, to control various aspects of @code{mktexpk} and
+friends.  @xref{mktex configuration}.
 
-You do not need to edit @file{texmf.cnf.in} to change the default
+You do not need to edit @file{texmf.in} to change the default
 top-level or other installation @emph{directories} (only the paths).
 You can and should do that when you run @code{configure} (next step).
 
-You also do not need to edit @file{texmf.cnf.in} if you are willing to
+You also do not need to edit @file{texmf.in} if you are willing to
 rely on @file{texmf.cnf} at runtime to define the paths, and let the
 compile-time default paths be incorrect.  Usually there is no harm in
 doing this.
@@ -286,7 +297,7 @@ The purpose of having all the different files described in the section
 above is to avoid having the same information in more than one place. If
 you change the installation directories or top-level prefix at
 @code{configure}-time, those changes will propagate through the whole
-sequence.  And if you change the default paths in @file{texmf.cnf.in},
+sequence.  And if you change the default paths in @file{texmf.in},
 those changes are propagated to the compile-time defaults.
 
 The Make definitions are all repeated in several @t{Makefile}'s; but
@@ -316,10 +327,10 @@ because your site has only one printer, for example) or if the program
 is mode-independent (e.g., @code{pktype}).
 
 To make the paths independent of the mode, simply edit
-@file{texmf.cnf.in} before installation, or the installed
+@file{texmf.in} before installation, or the installed
 @file{texmf.cnf}, and remove the @samp{$MAKETEX_MODE}.
 
-@xref{MakeTeX script arguments}, for how this interacts with @code{MakeTeXPK}.
+@xref{mktex script arguments}, for how this interacts with @code{mktexpk}.
 
 @flindex HIER
 @flindex kpathsea/HIER
@@ -358,10 +369,10 @@ string @code{@@var@@}.  The variables in question are the one that
 define the installation directories.
 
 @item
-@flindex texmf.cnf.in
+@flindex texmf.in
 @flindex texmf.cnf@r{, generated}
 @file{texmf.sed} (together with a little extra magic---see
-@file{kpathsea/Makefile}) is applied to @file{texmf.cnf.in} to generate
+@file{kpathsea/Makefile}) is applied to @file{texmf.in} to generate
 @file{texmf.cnf}.  This is the file that will eventually be installed
 and used.
 
@@ -381,7 +392,7 @@ are not used at runtime unless no @file{texmf.cnf} file can be found.
 @subsection Running @code{configure}
 
 @flindex configure@r{, running}
-@flindex c-auto.h.in
+@flindex c-auto.in
 @flindex Makefile.in
 @findex ac_include@r{, Autoconf extension}
 @cindex @@@var{var}@@ substitutions
@@ -392,17 +403,17 @@ one containing @file{kpathsea/}), possibly using a shell other than
 
 @code{configure} adapts the source distribution to the present system
 via @code{#define}'s in @file{*/c-auto.h}, which are created from the
-corresponding @file{c-auto.h.in}.  It also creates a @file{Makefile} from
+corresponding @file{c-auto.in}.  It also creates a @file{Makefile} from
 the corresponding @file{Makefile.in}, doing @samp{@@@var{var}@@} and
 @samp{ac_include} substitutions).
 
-@flindex CONFIGURE
-@flindex kpathsea/CONFIGURE
+@flindex README.CONFIGURE
+@flindex kpathsea/README.CONFIGURE
 @code{configure} is the best place to control the configuration,
 compilation, and installed location of the software, either via
 command-line options, or by setting environment variables before
-invoking it.  For example, you can disable @code{MakeTeXPK} by default
-with the option @samp{--disable-maketexpk}.
+invoking it.  For example, you can disable @code{mktexpk} by default
+with the option @samp{--disable-mktexpk}.
 @xref{configure options}.
 
 @menu
@@ -458,14 +469,14 @@ deficient in many ways.  @file{/bin/sh5} may be necessary.
 @cindex @code{configure} options
 
 For a complete list of all @code{configure} options, run @samp{configure
---help} or @pxref{Invoking configure,, Running @code{configure} scripts,
-autoconf, Autoconf} (a copy is in the file @file{kpathsea/CONFIGURE}).
+--help} or see @ref{Invoking configure,, Running @code{configure} scripts,
+autoconf, Autoconf}, (a copy is in the file @file{kpathsea/README.CONFIGURE}).
 The generic options are listed first in the @samp{--help} output, and
 the package-specific options come last.  The environment variables
 @code{configure} pays attention to are listed below.
 
 Options particularly likely to be useful are @samp{--prefix},
-@samp{--datadir}, and the like; @pxref{configure scenarios}.
+@samp{--datadir}, and the like; see @ref{configure scenarios}.
 
 @opindex --with @r{options}
 @opindex --enable @r{options}
@@ -476,21 +487,28 @@ This section gives pointers to descriptions of the @samp{--with} and
 accept.
 
 @table @samp
-@item --without-maketexmf-default
-@itemx --without-maketexpk-default
-@itemx --without-maketextfm-default
-@itemx --with-maketextex-default
-Enable or disable the dynamic generation programs.  @xref{MakeTeX
+@item --without-mktexmf-default
+@itemx --without-mktexpk-default
+@itemx --without-mktextfm-default
+@itemx --with-mktextex-default
+Enable or disable the dynamic generation programs.  @xref{mktex
 configuration}.
 
 @item --enable-shared
+@opindex --enable-shared
 Build Kpathsea as a shared library, and link against it.  Also build the
 usual static library.  @xref{Shared library}.
 
 @item --disable-static
-Build only the shared library.
-@end table
+@opindex --disable-static
+Build only the shared library.   Implies @samp{--enable-shared}.
 
+@item --enable-maintainer-mode
+@opindex --enable-maintainer-mode
+Enables make targets that are useful for the maintainer and likely to be
+a pain for anyone else; the makefiles created when this option is
+enabled may not work at all for you.  You have been warned.
+@end table
 
 @node configure environment                           
 @subsubsection @code{configure} environment
@@ -561,11 +579,11 @@ configure --with-x-toolkit
 @item
 @cindex @TeX{} hierarchy, one
 Putting the binaries, @TeX{} files, GNU info files, etc.@: into a single
-@TeX{} hierarchy, say @var{texmf}, requires overriding defaults in both
+@TeX{} hierarchy, say @file{/texmf}, requires overriding defaults in both
 @code{configure} and @code{make}:
 @example
-configure --prefix=@var{texmf} --datadir=@var{texmf}
-make texmf=@var{texmf}
+configure --prefix=@file{/texmf} --datadir=@file{/texmf}
+make texmf=@file{/texmf}
 @end example
 
 @item
@@ -631,15 +649,16 @@ individual users do not need to set their system's environment variable
 (e.g., @code{LD_LIBRARY_PATH}) to find shared libraries.  If you want to
 do this, you will need to add the necessary options to @code{LDFLAGS}
 yourself; for example, on Solaris, include something like
-@samp{-R$@{prefix@}/lib}.  (Unfortunately, making this happen by default
-is very difficult, because of interactions with an existing installed
-shared library.)
+@samp{-R$@{prefix@}/lib}, on IRIX or Linux, use
+@samp{-rpath$@{prefix@}/lib}.  (Unfortunately, making this happen by
+default is very difficult, because of interactions with an existing
+installed shared library.)
 
-Currently, shared library support is implemented only on SunOS 4
-(Solaris 1) and SunOS 5 (Solaris 2).  If you're interested and willing
-in adding support for other systems, please see the @samp{configure}
-mode in the @file{klibtool} script, especially the host-specific case
-statement around line 250.
+Currently, shared library support is implemented only on Linux, SunOS 4
+(Solaris 1), SunOS 5 (Solaris 2), IRIX 5, and IRIX 6.  If you're
+interested and willing in adding support for other systems, please see
+the @samp{configure} mode in the @file{klibtool} script, especially the
+host-specific case statement around line 250.
 
 
 @node Running make
@@ -787,7 +806,7 @@ Alternatively,
 @item
 @findex mostlyclean @r{Make target}
 @code{make mostlyclean} if you intend to compile on another
-architecture.  For Web2c, since the generated C files are portable,
+architecture.  For Web2C, since the generated C files are portable,
 they are not removed.  If the @code{lex} vs.@: @code{flex} situation
 is going to be different on the next machine, @code{rm
 web2c/lex.yy.c}.
@@ -821,30 +840,30 @@ targets.
 You will probably want to set up a @code{cron} entry on the appropriate
 machine(s) to rebuild the filename database nightly or so, as in:
 @example
-0 0 * * * cd @var{texmf} && @var{/bindir}/MakeTeXls-R
+0 0 * * * cd @var{texmf} && @var{/bindir}/mktexlsr
 @end example
 @noindent @xref{Filename database}.
 
-Although the @code{MakeTeX@dots{}} scripts make every effort to add
+Although the @code{mktex@dots{}} scripts make every effort to add
 newly-created files on the fly, it can't hurt to make sure you get a
 fresh version every so often.
 
 
-@node MakeTeX scripts
-@subsection @file{MakeTeX} scripts
+@node mktex scripts
+@subsection @file{mktex} scripts
 
-@cindex @file{MakeTeX} scripts
+@cindex @file{mktex} scripts
 @cindex scripts for file creation
 
 @cindex font set, infinite
 @cindex dynamic creation of files
 @cindex Sauter fonts, and dynamic source creation
-@cindex DC fonts, and dynamic source creation
+@cindex EC fonts, and dynamic source creation
 If Kpathsea cannot otherwise find a file, for some file types it is
 configured by default to invoke an external program to create it
-dynamically (@pxref{MakeTeX configuration}).  This is most useful for
+dynamically (@pxref{mktex configuration}).  This is most useful for
 fonts (bitmaps, TFM's, and arbitrarily-sizable Metafont sources such as
-the Sauter and DC fonts), since any given document can use fonts never
+the Sauter and EC fonts), since any given document can use fonts never
 before referenced.  Trying to build all fonts in advance is therefore
 impractical, if not impossible.
 
@@ -854,69 +873,68 @@ file it created (and nothing else) to standard output; it can write
 diagnostics to standard error.
 
 @menu
-* MakeTeX configuration::
-* MakeTeX script names::
-* MakeTeX script arguments::
+* mktex configuration::
+* mktex script names::
+* mktex script arguments::
 @end menu
 
 
-@node MakeTeX configuration
-@subsubsection @file{MakeTeX} configuration
+@node mktex configuration
+@subsubsection @file{mktex} configuration
 
-@cindex @file{MakeTeX} script configuration
-@cindex configuration of @file{MakeTeX} scripts
-@cindex enabling @file{MakeTeX} scripts
-@cindex disabling @file{MakeTeX} scripts
+@cindex @file{mktex} script configuration
+@cindex configuration of @file{mktex} scripts
+@cindex enabling @file{mktex} scripts
+@cindex disabling @file{mktex} scripts
 
 The following file types can run an external program to create missing
 files: @file{pk}, @file{tfm}, @file{mf}, @file{tex}; the scripts are
-named @file{MakeTeXPK}, @file{MakeTeXTFM}, @file{MakeTeXMF}, and
-@file{MakeTeXTeX}.
+named @file{mktexpk}, @file{mktextfm}, @file{mktexmf}, and
+@file{mktextex}.
 
 In the absence of @code{configure} options specifying otherwise,
-everything but @file{MakeTeXTeX} will be enabled by default. The
+everything but @file{mktextex} will be enabled by default. The
 @code{configure} options to change the defaults are:
 
-@cindex @code{configure} options for @file{MakeTeX} scripts
-@opindex --without-maketexmf-default
-@opindex --without-maketexpk-default
-@opindex --without-maketextfm-default
-@opindex --with-maketextex-default
+@cindex @code{configure} options for @file{mktex} scripts
+@opindex --without-mktexmf-default
+@opindex --without-mktexpk-default
+@opindex --without-mktextfm-default
+@opindex --with-mktextex-default
 @example
---without-maketexmf-default
---without-maketexpk-default
---without-maketextfm-default
---with-maketextex-default
+--without-mktexmf-default
+--without-mktexpk-default
+--without-mktextfm-default
+--with-mktextex-default
 @end example
 
 The @code{configure} setting is overridden if the environment variable
 or configuration file value named for the script is set; e.g.,
-@file{MAKETEXPK} (@pxref{MakeTeX script arguments}).
+@file{MKTEXPK} (@pxref{mktex script arguments}).
 
-@flindex MakeTeX.site
-@cindex site overrides for @code{MakeTeX@dots{}}
+@flindex mktex.cnf
+@cindex site overrides for @code{mktex@dots{}}
 As distributed, all the scripts source a file
-@file{texmf/web2c/MakeTeX.site} if it exists, so you can override
-various defaults.  See @file{MakeTeXcommon}, for instance, which defines
-the default mode, resolution, directory permissions, some special
-directory names, etc.  If you prefer not to change the distributed
-scripts, you can simply create @file{MakeTeX.site} with the appropriate
-definitions (you do not need to create it if you have nothing to put in
-it).  @file{MakeTeX.site} has no special syntax; it's an arbitrary
-Bourne shell script.  The distribution contains a sample
-@file{MakeTeX.site} for you to copy and modify as you please (it is not
-installed anywhere).
+@file{texmf/web2c/mktex.cnf} if it exists, so you can override
+various defaults.  See @file{mktex.opt}, for instance, which defines
+the default mode, resolution, some special directory names, etc.  If you
+prefer not to change the distributed scripts, you can simply create
+@file{mktex.cnf} with the appropriate definitions (you do not need to
+create it if you have nothing to put in it).  @file{mktex.cnf} has no
+special syntax; it's an arbitrary Bourne shell script.  The distribution
+contains a sample @file{mktex.cnf} for you to copy and modify as you
+please (it is not installed anywhere).
 
-@flindex MakeTeXnames.cnf
+@flindex mktex.opt
 @vindex MT_FEATURES
 In addition, you can configure a number of features with the
 @code{MT_FEATURES} variable, which you can define:
 @itemize @bullet
 @item
-in @file{MakeTeX.site}, as just mentioned;
+in @file{mktex.opt}, as just mentioned;
 
 @item
-by editing the file @file{MakeTeXnames.cnf}, either before @samp{make
+by editing the file @file{mktex.opt}, either before @samp{make
 install} (in the source hierarchy) or after (in the installed
 hierarchy);
 
@@ -924,46 +942,86 @@ hierarchy);
 or in the environment.
 @end itemize
 
-By default, @code{MakeTeXPK} installs fonts into the standard @TeX{}
-directory structure (@pxref{TeX directory structure,, @TeX{} directory
-structure}).  It uses aliases and directory names from the Fontname
-distribution (@pxref{Top,, Introduction, fontname, Fontname}). Most of
-the options here change that.
+If none of the options below are enabled, @code{mktexpk},
+@code{mktextfm}, and @code{mktexmf} follow the following procedure to
+decide where fonts should be installed.  Find the tree where the font's
+sources are, and test the permissions of the @samp{fonts} directory of
+that tree to determine whether it is writable.  If it is, put the files
+in the tree in appropriate locations.  If it isn't writable, see whether
+the tree is a system tree (named in @code{SYSTEXMF}).  If so, the
+@code{VARTEXFONTS} tree is used.  In all other cases the working
+directory is used.
+
+The @samp{appendonlydir} option is enabled by default.
 
 @vtable @samp
 @item appendonlydir
 @cindex directories, making append-only
-@flindex MakeTeXmkdir
-Tell @code{MakeTeXmkdir} to create directories append-only, i.e., set
+@flindex mktexdir
+Tell @code{mktexdir} to create directories append-only, i.e., set
 their sticky bit (@pxref{Mode Structure,,, fileutils, GNU File
-Utilities}).
+Utilities}).  This feature is silently ignored on non-Unix platforms
+(e.g. Windows/NT and MS-DOS) which don't support similar functionality.
+This feature is enabled by default.
 
 @item dosnames
 @cindex 8.3 filenames, using
 @cindex DOS compatible names
 @flindex dpi@var{nnn} directories
 Use 8.3 names; e.g., @file{dpi600/cmr10.pk} instead of
-@file{cmr10.600pk}.
+@file{cmr10.600pk}.  Note that this feature only affects filenames that
+would otherwise clash with other TeX-related filenames; @file{mktex}
+scripts do nothing about filenames which exceed the 8+3 MS-DOS limits
+but remain unique when truncated (by the OS) to these limits, and nether
+do the scripts care about possible clashes with files which aren't
+related with TeX.  For example, @file{cmr10.600pk} would clash with
+@file{cmr10.600gf} and is therefore changed when @samp{dosnames} is in
+effect, but @file{mf.pool} and @file{mp.base} don't clash with any
+TeX-related files and are therefore unchanged.
+
+This feature is turned on by default on MS-DOS.  If you do not wish
+@samp{dosnames} to be set on an MS-DOS platform, you need to set the
+@code{MT_FEATURES} environment variable to a value that doesn't include
+@samp{dosnames}.  You can also change the default setting by editing
+@file{mktex.opt}, but only if you use the @file{mktex} shell scripts;
+the emulation programs don't consult @file{mktex.opt}.
+
+@item fontmaps
+@cindex fontmaps
+@cindex fontname
+Instead of deriving the location of a font in the destination tree from
+the location of the sources, the aliases and directory names from the
+Fontname distribution are used. (@pxref{Top,, Introduction, fontname,
+Fontname}).
 
 @item nomode
 @cindex mode directory, omitting
 Omit the directory level for the mode name; this is fine as long as
 you generate fonts for only one mode.
 
+@item stripsupplier
+@cindex supplier directory, omitting
+Omit the font supplier name directory level.
+
+@item striptypeface
+@cindex typeface directory, omitting
+Omit the font typeface name directory level.
+
 @item strip
 @cindex supplier directory, omitting
 @cindex typeface directory, omitting
-Omit the font supplier and typeface name directory levels.
+Omit the font supplier and typeface name directory levels.  This feature
+is deprecated in favour of @samp{stripsupplier} and @samp{striptypeface}.
 
 @item varfonts
-@flindex /var/tex/fonts
+@flindex /var/tmp/texfonts
 @vindex VARTEXFONTS
 @cindex Linux File System Standard
-Put @code{MakeTeXPK}-generated fonts under the directory named
-by @code{VARTEXFONTS}; the default value in @file{kpathsea/texmf.cnf.in}
-is @file{/var/tex/fonts}, as recommended by the @cite{Linux File System
-Standard} (but unless @samp{varfonts} is enabled, nothing cares about
-that value).
+When this option is enabled, fonts that would otherwise be written in
+system texmf tree go to the @code{VARTEXFONTS} tree instead.  The
+default value in @file{kpathsea/Makefile.in} is
+@file{/var/tmp/texfonts}.  The @cite{Linux File System Standard}
+recommends @file{/var/tex/fonts}.
 
 @vindex USE_VARTEXFONTS
 The @samp{varfonts} setting in @code{MT_FEATURES} is overridden by the
@@ -972,11 +1030,11 @@ feature is enabled, and if set to @samp{0}, the feature is disabled.
 @end vtable
 
 
-@node MakeTeX script names
-@subsubsection @file{MakeTeX} script names
+@node mktex script names
+@subsubsection @file{mktex} script names
 
-@cindex @file{MakeTeX} script names
-@cindex names for @file{MakeTeX} scripts
+@cindex @file{mktex} script names
+@cindex names for @file{mktex} scripts
 
 @flindex tex-make.c
 @vindex kpse_make_specs
@@ -985,20 +1043,20 @@ possible file types.  (The source is the variable @code{kpse_make_specs}
 in @file{kpathsea/tex-make.c}.)
 
 @table @file
-@item MakeTeXPK
-@pindex MakeTeXPK
+@item mktexpk
+@pindex mktexpk
 Glyph fonts.
 
-@item MakeTeXTeX
-@pindex MakeTeXTeX
+@item mktextex
+@pindex mktextex
 @TeX{} input files.
 
-@item MakeTeXMF
-@pindex MakeTeXMF
+@item mktexmf
+@pindex mktexmf
 Metafont input files.
 
-@item MakeTeXTFM
-@pindex MakeTeXTFM
+@item mktextfm
+@pindex mktextfm
 TFM files.
 @end table
 
@@ -1010,8 +1068,8 @@ to the program---for example, @code{DVIPSMAKEPK} for Dvipsk.
 
 @comment next two paragraphs are repeated in dvips.texi
 @flindex missfont.log
-@cindex failed @code{MakeTeX@dots{}} script invocation
-If a @code{MakeTeX@dots{}} script fails, the invocation is appended to a
+@cindex failed @code{mktex@dots{}} script invocation
+If a @code{mktex@dots{}} script fails, the invocation is appended to a
 file @file{missfont.log} (by default) in the current directory.  You can
 then execute the log file to create the missing files after fixing the
 problem.
@@ -1025,75 +1083,56 @@ overridden by the @code{MISSFONT_LOG} environment variable or
 configuration file value.
 
 
-@node MakeTeX script arguments
-@subsubsection @file{MakeTeX} script arguments
+@node mktex script arguments
+@subsubsection @file{mktex} script arguments
 
-@cindex arguments to @file{MakeTeX}
+@cindex arguments to @file{mktex}
 
-The first argument to a @file{MakeTeX} script is always the name
+The first argument to a @file{mktex} script is always the name
 of the file to be created.
 
-In the default @file{MakeTeXPK} implementation, from three to five
-additional arguments may also passed, via environment variables:
+In the default @file{mktexpk} implementation, additional arguments may
+also be passed:
 
-@enumerate
-@item
-@vindex KPATHSEA_DPI
-The resolution to make the font at (@code{KPATHSEA_DPI}).
+@table @samp
+@item --dpi @var{num}
+Sets the resolution of the generated font to @var{num}.
+@item --mfmode @var{name}
+Sets the Metafont mode to @var{name}.
+@item --bdpi @var{num}
+Sets the the ``base dpi'' for the font.  This must match the mode being
+used.
+@item --mag @var{string}
+A ``magstep'' string suitable for the Metafont @code{mag} variable.
+This must match the combination of @var{bdpi} and @var{dpi} being used.
+@item --destdir @var{string}
+A directory name. If the directory is absolute, it is used as-is.
+Otherwise, it is appended to the root destination directory set in the
+script.
+@end table
 
-@item
-@vindex MAKETEX_BASE_DPI
-@cindex base dpi
-The ``base dpi'' the program is operating at (@code{MAKETEX_BASE_DPI}),
-i.e., the assumed resolution of the output device.
-
-@item
-@vindex MAKETEX_MAG
-@vindex mag @r{Metafont variable}
-@cindex magstep for @code{MakeTeXPK}
-A ``magstep'' string suitable for the Metafont @code{mag} variable
-(@code{MAKETEX_MAG}).
-
-@item
-@vindex MAKETEX_MODE
-@vindex mode @r{Metafont variable}
-@cindex Metafont mode name for @code{MakeTeXPK}
-Optionally, a Metafont mode name to assign to the Metafont @code{mode}
-variable (@code{MAKETEX_MODE}).  Otherwise, (the default)
-@code{MakeTeXPK} guesses the mode from the resolution.  @xref{TeX
-directory structure,, @TeX{} directory structure}.
-
-@item
-@vindex mtp_destdir
-@cindex destination directory for @code{MakeTeXPK}
-Optionally, a directory name. If the directory is absolute, it is used
-as-is. Otherwise, it is appended to the root destination directory set
-in the script (from environment variables @code{DESTDIR} or
-@code{MTP_DESTDIR} or a compile-time default). If this argument is not
-supplied, the mode name is appended to the root destination directory.
-@end enumerate
-
-@noindent Kpathsea sets @code{KPATHSEA_DPI} appropriately for each
-attempt at building a font.  It's up to the program using Kpathsea to
-set the others. (@xref{Calling sequence}.)
-
-@vindex MAKETEXPK @r{environment variable}
-@cindex specification for @code{MakeTeXPK}
-You can change the specification for the arguments passed to the
-external script by setting the environment variable named as the script
-name, but all capitals---@code{MAKETEXPK}, for example.  If you've
-changed the script name by setting (say) @code{DVIPSMAKEPK} to
-@samp{foo}, then the spec is taken from the environment variable
-@code{FOO}.
-
-The spec can contain any variable references, to the above variables or
-any others.  As an example, the default spec for @code{MakeTeXPK} is:
-@example
-$KPATHSEA_DPI $MAKETEX_BASE_DPI $MAKETEX_MAG $MAKETEX_MODE
-@end example
-
-@noindent The convention of passing the name of the file to be created
-as the first argument cannot be changed.
+@c  The feature mentioned here doesn't seem to be implemented.
+@c  Worse, the variable name clashed with the "switch" used to select
+@c  whether a mktex program is run at all.  However, a dearth of
+@c  complains suggests that no-one was using it anyway.
+@c
+@c @vindex MKTEXPK @r{environment variable}
+@c @cindex specification for @code{mktexpk}
+@c You can change the specification for the arguments passed to the
+@c external script by setting the environment variable named as the script
+@c name, but all capitals---@code{MKTEXPK}, for example.  If you've
+@c changed the script name by setting (say) @code{DVIPSMAKEPK} to
+@c @samp{foo}, then the spec is taken from the environment variable
+@c @code{FOO}.
+@c
+@c The spec can contain any variable references, to the above variables or
+@c any others.  As an example, the default spec for @code{mktexpk} is:
+@c @example
+@c $KPATHSEA_DPI $MAKETEX_BASE_DPI $MAKETEX_MAG $MAKETEX_MODE
+@c @end example
+@c
+@c @noindent The convention of passing the name of the file to be created
+@c as the first argument cannot be changed.
 
 
 @node Installation testing 
@@ -1104,7 +1143,7 @@ as the first argument cannot be changed.
 
 Besides the tests listed in @ref{Simple installation}, you can try
 running @samp{make check}.  This includes the torture tests (trip, trap,
-and mptrap) that come with Web2c (@pxref{Torture tests,,, web2c, Web2c}).
+and mptrap) that come with Web2c (@pxref{Triptrap,,, web2c, Web2c}).
 
 
 @node Security
@@ -1130,33 +1169,46 @@ circumstances.  To disable this, see the @samp{-R} option in @ref{Option
 details,,, dvips, Dvips}, the xdvi man page, and @ref{tex
 invocation,,, web2c, Web2c}, respectively.
 
-@cindex globally writable directories
+@cindex local cache of fonts
+@cindex cache of fonts, local
 Another security issue arises because it's very useful---almost
-necessary---to make arbitrary fonts on user demand with @code{MakeTeXPK}
+necessary---to make arbitrary fonts on user demand with @code{mktexpk}
 and friends.  Where do these files get installed?  By default, the
-@code{MakeTeXPK} distributed with Kpathsea assumes a globally writable
-@file{texmf} tree; this is the simplest and most convenient approach,
-but it may not suit your situation.
+@code{mktexpk} distributed with Kpathsea assumes a world-writable
+@file{/var/tmp} directory; this is a simple and convenient approach, but
+it may not suit your situation because it means that a local cache of
+fonts is created on every machine.
 
-@cindex append-only directories and @code{MakeTeXPK}
+@cindex globally writable directories
+To avoid this duplication, many people consider a shared, globally
+writable font tree desirable, in spite of the potential security
+problems.  To do this you should change the value of @code{VARTEXFONTS}
+in @file{texmf.cnf} to refer to some globally known directory.
+@xref{mktex configuration}.
+
+@cindex append-only directories and @code{mktexpk}
 The first restriction you can apply is to make newly-created directories
-under @file{texmf} be append-only with an option in
-@file{MakeTeXnames.cnf}.  @xref{MakeTeX configuration}.
+under @file{texmf} be append-only with an option in @file{mktex.cnf}.
+@xref{mktex configuration}.
 
 @cindex group-writable directories
 @cindex setgid scripts
 Another approach is to establish a group (or user) for @TeX{} files,
 make the @file{texmf} tree writable only to that group (or user), and
-make @code{MakeTeXPK} et al.@: setgid to that group (or setuid to that
+make @code{mktexpk} et al.@: setgid to that group (or setuid to that
 user).  Then users must invoke the scripts to install things.  (If
 you're worried about the inevitable security holes in scripts, then you
 could write a C wrapper to exec the script.)
 
-@cindex local cache of fonts
-@cindex cache of fonts, loca
-Finally, using a central writable @file{texmf} tree may be completely
-impossible, because it's on an NFS filesystem that you cannot export
-read/write, or AFS is in use, or simply because ``it's policy''.  Then
-you must resort to each user's machine having its own local directory of
-dynamically-created fonts; again, @file{MakeTeXnames.cnf} has an option
-to do this, and again, @pxref{MakeTeX configuration}.
+@cindex file permissions
+@cindex permissions, file
+The @file{mktex@dots{}} scripts install files with the same read and
+write permissions as the directory they are installed in.  The
+executable, sgid, suid, and sticky bits are always cleared.
+
+@cindex directory permissions
+@cindex permissions, directory
+Any directories created by the @file{mktex@dots{}} scripts have the
+same permissions as their parent directory, unless the
+@code{appendonlydir} feature is used, in which case the sticky bit is
+always set.

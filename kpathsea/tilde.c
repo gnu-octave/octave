@@ -112,7 +112,7 @@ test_expand_tilde (const_string filename)
 {
   string answer;
   
-  printf ("Tilde expansion of `%s':\t", filename ? filename : "(null)");
+  printf ("Tilde expansion of `%s':\t", filename ? filename : "(nil)");
   answer = kpse_tilde_expand (filename);
   puts (answer);
 }

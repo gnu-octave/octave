@@ -94,8 +94,8 @@ do_line P1C(string, line)
     prog[len] = 0;
 
     /* If we are running `prog', fine; otherwise, we're done.  */
-    assert (program_invocation_short_name);
-    if (!FILESTRCASEEQ (prog, program_invocation_short_name)) {
+    assert (kpse_program_name);
+    if (!FILESTRCASEEQ (prog, kpse_program_name)) {
       free (prog);
       free (var);
       return;
@@ -143,7 +143,9 @@ do_line P1C(string, line)
 #endif
 #endif
 
-#if !defined (ALLOW_SEMICOLON_IN_FILENAMES) && defined (unix) 
+/* DJGPP defines `unix' (for portability), but generates MSDOS programs.  */
+#ifndef __DJGPP__
+#if !defined (ALLOW_SEMICOLON_IN_FILENAMES) && defined (unix)
   {
     string loc;
     for (loc = value; *loc; loc++) {
@@ -151,6 +153,7 @@ do_line P1C(string, line)
         *loc = ':';
     }
   }
+#endif
 #endif
 
   /* We want TEXINPUTS.prog to override plain TEXINPUTS.  The simplest
@@ -238,9 +241,9 @@ kpse_cnf_get P1C(const_string, name)
     kpse_init_db ();
   }
   
-  /* First look up NAME.`program_invocation_short_name', then NAME.  */
-  assert (program_invocation_short_name);
-  try = concat3 (name, ".", program_invocation_short_name);
+  /* First look up NAME.`kpse_program_name', then NAME.  */
+  assert (kpse_program_name);
+  try = concat3 (name, ".", kpse_program_name);
   ret_list = hash_lookup (cnf_hash, try);
   if (ret_list) {
     ret = *ret_list;

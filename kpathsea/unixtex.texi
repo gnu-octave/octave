@@ -10,20 +10,19 @@
 @cindex retrieving @TeX{}
 
 @flindex unixtex.ftp
-@flindex tug.cs.umb.edu
+@flindex tug.org
 @flindex www.tug.org
 @flindex ftp.tug.org
 This
 @iftex
 chapter
 @end iftex
-is @url{ftp://ftp.tug.org/tex/unixtex.ftp}, last updated 1 February
-1997.  Also available as @url{http://www.tug.org/unixtex.ftp}.  The IP
-address is currently [158.121.106.10], and the canonical host name is
-currently @samp{tug.cs.umb.edu}.  It is also in Kpathsea source
-distributions as @file{etc/unixtex.ftp} (although the network version is
-usually newer).  Mail @email{kb@@mail.tug.org} with comments or
-questions.
+is @url{ftp://ftp.tug.org/tex/unixtex.ftp}, last updated 18 March 1998.
+Also available as @url{http://www.tug.org/unixtex.ftp}.  The IP address
+is currently @code{[158.121.106.10]}, and the canonical host name is
+currently @samp{tug.org}.  It is also in Kpathsea source distributions
+as @file{etc/unixtex.ftp} (although the network version is usually
+newer).  Mail @email{kb@@mail.tug.org} with comments or questions.
 
 Following are general instructions for Unix or other sites who wish to
 acquire the Web2c distribution, (plain) @TeX{}, La@TeX{} (2e),
@@ -40,7 +39,7 @@ maintenance and development of the programs you retrieve.  Email
 a membership form.
 
 For actual installation instructions after obtaining the necessary
-sources, @pxref{Installation}.  A copy is in the distribution file
+sources, see @ref{Installation}.  A copy is in the distribution file
 @file{kpathsea/INSTALL}.
 
 @menu
@@ -64,7 +63,7 @@ In many places we refer to @var{CTAN:}.  This is @emph{both} a host name
 and a directory name.  Here are some primary locations:
 
 @example
-@url{ftp://ftp.cdrom.com/pub/tex/ctan}  @r{(California, USA)}
+@url{ftp://ctan.tug.org/tex-archive}    @r{(California, USA)}
 @url{ftp://ftp.dante.de/tex-archive}    @r{(Germany)}
 @url{ftp://ftp.tex.ac.uk/tex-archive}   @r{(England)}
 @end example
@@ -92,13 +91,16 @@ depending on your needs (don't forget to set binary mode for file
 transfers):
 
 @table @asis
-@item @file{@var{CTAN:}/systems/web2c/lib.tar.gz}
+@item @file{@var{CTAN:}/systems/web2c/texmflib.tar.gz}
 A basic collection of fonts (TFM files only) and macro packages
 (including Texinfo and La@TeX{} 2e).  It unpacks into @file{texmf/}; if
 you change the structure of this hierarchy, you will also have to change
 the default search paths (@pxref{Changing search paths}).  It is
 required unless you already have these files, in which case you should
-change the default paths as necessary to find them.
+change the default paths as necessary to find them.  There are other
+packages of library files, @file{etexlib.tar.gz},
+@file{omegalib.tar.gz}, and @file{pdftexlib.tar.gz}, that are required
+as well if you install e-@TeX{}, Omega, or pdf@TeX{} respectively.
 
 @item @file{@var{CTAN:}/systems/web2c/web.tar.gz}
 @cindex Knuth, Donald E., original author
@@ -111,6 +113,24 @@ change irregularly with respect to Web2c itself.)  Unpacks into
 The Web2c system.  Required.  Also unpacks into
 @file{web2c-@var{version}}.
 
+@item @file{@var{CTAN:}/systems/web2c/web2c-etex.tar.gz}
+Additions to the Web2c system for building e-@TeX{}.  Optional.  Also
+unpacks into @file{web2c-@var{version}}.
+
+@item @file{@var{CTAN:}/systems/web2c/web2c-omega.tar.gz}
+Additions to the Web2c system for building Omega.  Optional.  Also
+unpacks into @file{web2c-@var{version}}.
+
+@item @file{@var{CTAN:}/systems/web2c/web2c-pdftex.tar.gz}
+Additions to the Web2c system for building pdf@TeX{}.  Optional.  Also
+unpacks into @file{web2c-@var{version}}.
+
+@item @file{@var{CTAN:}/systems/web2c/texk.tar.gz}
+The web and web2c sources, plus the additions for web2c, plus the dvi
+drivers mentioned below, plus extra dvi drivers and tools not packaged
+separately.  Recommended if you want to build a complete system.
+Unpacks into @file{texk-@var{version}}.
+
 @c @item @file{@var{CTAN:}/systems/web2c/psfonts.tar.gz}
 @c Metrics, outlines, and bitmaps (for previewing) for the 35 de facto
 @c standard fonts donated by URW and the additional high-quality freely
@@ -119,15 +139,15 @@ The Web2c system.  Required.  Also unpacks into
 @c caps.  Unpacks into @file{texmf}.  Necessary for PostScript printing or
 @c previewing support.
 
-@item @file{@var{CTAN:}/dviware/dvipsk.tar.gz}
+@item @file{@var{CTAN:}/dviware/dvipsk/dvipsk.tar.gz}
 DVI-to-PostScript translator.  Unpacks into @file{dvipsk-@var{version}}.
 Optional.
 
-@item @file{@var{CTAN:}/dviware/xdvik.tar.gz}
+@item @file{@var{CTAN:}/dviware/xdvik/xdvik.tar.gz}
 X window system DVI previewer.  Unpacks into @file{xdvik-@var{version}}.
 Optional.
 
-@item @file{@var{CTAN:}/dviware/dviljk.tar.gz}
+@item @file{@var{CTAN:}/dviware/dviljk/dviljk.tar.gz}
 DVI-to-PCL (HP LaserJet) translator.  Unpacks into
 @file{dviljk-@var{version}}.  Optional.
 @end table
@@ -159,11 +179,12 @@ te@TeX{}, which in turn is based on Web2c; email
 @url{http://www.tug.org/tex-live.html}.
 
 @item
-@cindex 4all@TeX{} Live CD-ROM
-@cindex NTG
-NTG (Dutch-speaking @TeX{} user group) produced the 4all@TeX{} CD-ROM;
-email @email{ntg@@nic.surfnet.nl}, or see
-@url{http://ei0.ei.ele.tue.nl/ntg/}.  This is a runnable system.
+@cindex Dante @TeX{} CD-ROM
+@cindex German @TeX{} CD info
+Dante (the German-speaking @TeX{} user group) has produced a CD-ROM.
+See @url{http://www.dante.de/dante/DANTE-CTAN-CD-ROM.html}, and
+@url{http://www.dante.de/tex-informationen/CD-ROMs.html} for
+information about @TeX{} CD's in general.  Both are in German.
 
 @item
 @cindex Free Software Foundation
@@ -171,17 +192,27 @@ email @email{ntg@@nic.surfnet.nl}, or see
 The Free Software Foundation's @cite{Source Code CD-ROM} contains the
 minimal @TeX{} source distribution described in the previous section
 (i.e., enough to print GNU documentation); email
-@email{gnu@@prep.ai.mit.edu} or finger @email{fsf@@prep.ai.mit.edu}.
+@email{gnu@@prep.ai.mit.edu}.
 
 @item
 The Gateway@! CD-ROM set contains a runnable NetBSD/Amiga distribution
 and sources; see @url{http://www.netbsd.org/Sites/cdroms.html}.
 
 @item
+The InfoMagic CD-ROM is a copy of CTAN (see previous section); see
+@url{http://www.infomagic.com}.
+
+@item
+@cindex 4all@TeX{} Live CD-ROM
+@cindex NTG
+NTG (Dutch-speaking @TeX{} user group) produced the 4all@TeX{} CD-ROM;
+email @email{ntg@@nic.surfnet.nl}, or see
+@url{http://www.ntg.nl/4allcd/}.  This is a runnable system.
+
+@item
 @cindex Prime Time @TeX{}cetera CD-ROM
-The Prime Time @TeX{}cetera CD-ROM is a copy of CTAN (see the previous
-section); email @email{ptf@@ctcl.com} or see
-@url{http://www.ptf.com/ptf/}.
+The Prime Time @TeX{}cetera CD-ROM is also a copy of CTAN; email
+@email{ptf@@ctcl.com} or see @url{http://www.ptf.com/ptf/}.
 
 @item
 @cindex Walnut Creek @TeX{} CD-ROM

@@ -23,8 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #include <sys/stat.h>
 
 #ifdef WIN32
-#include <io.h>
-#define stat _stat
+#include <kpathsea/win32lib.h>
 #endif /* WIN32 */
 
 /* POSIX predicates for testing file attributes.  */

@@ -24,14 +24,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #include <kpathsea/types.h>
 
 
-/* If true, throw away standard error from the MakeTeX... scripts.
+/* If true, throw away standard error from the mktex... scripts.
    (Standard output is the filename, so we never throw that away.)  */
 extern DllImport boolean kpse_make_tex_discard_errors;
 
 
 /* Run a program to create a file named by BASE_FILE in format FORMAT.
    Return the full filename to it, or NULL.  Any other information about
-   the file is passed through environment variables.  See the MakeTeXPK
+   the file is passed through environment variables.  See the mktexpk
    stuff in `tex-make.c' for an example. */
 extern string kpse_make_tex P2H(kpse_file_format_type format,
                                 const_string base_file);

@@ -155,9 +155,8 @@ do_subdir P4C(str_llist_type *, str_list_ptr,  const_string, elt,
        example, POST might be `pk/ljfour', and they might have a
        directory `$TEXMF/fonts/pk/ljfour' that we should find.  */
     fn_str_grow (&name, post);
-    if (dir_p (FN_STRING (name)))
-      dir_list_add (str_list_ptr, FN_STRING (name));
-      fn_shrink_to (&name, elt_length);
+    expand_elt (str_list_ptr, FN_STRING (name), elt_length);
+    fn_shrink_to (&name, elt_length);
   }
   proceed = 1;
   while (proceed) {
@@ -170,16 +169,6 @@ do_subdir P4C(str_llist_type *, str_list_ptr,  const_string, elt,
 	/* It's a directory, so append the separator.  */
 	fn_str_grow (&name, DIR_SEP_STRING);
 
-	if (*post != 0) { 
-	  fn_str_grow (&name, post);
-	  /* Unfortunately we can't check if the new element is
-	     a leaf directory, because we don't have a directory
-	     name here, we just have a path spec. This means we
-	     may descend into a leaf directory cm/pk, if the
-	     spec is ...fonts//pk//.  */
-	  expand_elt (str_list_ptr, FN_STRING (name), potential_len);
-	  fn_shrink_to (&name, potential_len);
-	}
 	do_subdir (str_list_ptr, FN_STRING (name),
 		   potential_len, post);
       }
@@ -208,8 +197,7 @@ do_subdir P4C(str_llist_type *, str_list_ptr,  const_string, elt,
          example, POST might be `pk/ljfour', and they might have a
          directory `$TEXMF/fonts/pk/ljfour' that we should find.  */
       fn_str_grow (&name, post);
-      if (dir_p (FN_STRING (name)))
-        dir_list_add (str_list_ptr, FN_STRING (name));
+      expand_elt (str_list_ptr, FN_STRING (name), elt_length);
       fn_shrink_to (&name, elt_length);
     }
 
@@ -232,18 +220,6 @@ do_subdir P4C(str_llist_type *, str_list_ptr,  const_string, elt,
               
               /* It's a directory, so append the separator.  */
               fn_str_grow (&name, DIR_SEP_STRING);
-              
-              if (*post != 0)
-                { 
-                  fn_str_grow (&name, post);
-                  /* Unfortunately we can't check if the new element is
-                     a leaf directory, because we don't have a directory
-                     name here, we just have a path spec. This means we
-                     may descend into a leaf directory cm/pk, if the
-                     spec is ...fonts//pk//.  */
-                  expand_elt (str_list_ptr, FN_STRING (name), potential_len);
-                  fn_shrink_to (&name, potential_len);
-                }
               
               /* Should we recurse?  To see if the subdirectory is a
                  leaf, check if it has two links (one for . and one for
@@ -295,8 +271,7 @@ static void
 expand_elt P3C(str_llist_type *, str_list_ptr,  const_string, elt,
                unsigned, start)
 {
-  boolean found_special = false;
-  const_string dir = elt + start;
+  const_string dir = elt + start, post;
   
   while (*dir != 0)
     {
@@ -305,13 +280,9 @@ expand_elt P3C(str_llist_type *, str_list_ptr,  const_string, elt,
           /* If two or more consecutive /'s, find subdirectories.  */
           if (IS_DIR_SEP (dir[1]))
             {
-              unsigned slash_count;
-              for (slash_count = 1; IS_DIR_SEP (dir[slash_count + 1]);
-                   slash_count++) ;
-              do_subdir (str_list_ptr, elt, dir - elt + 1,
-                         dir + 1 + slash_count);
-              found_special = true;
-              dir += slash_count; /* Don't find this // again.  */
+	      for (post = dir + 1; IS_DIR_SEP (*post); post++) ;
+              do_subdir (str_list_ptr, elt, dir - elt + 1, post);
+	      return;
             }
 
           /* No special stuff at this slash.  Keep going.  */
@@ -320,9 +291,8 @@ expand_elt P3C(str_llist_type *, str_list_ptr,  const_string, elt,
       dir++;
     }
   
-  if (!found_special)
-    /* When we reach the end of ELT, it will be a normal filename.  */
-    checked_dir_list_add (str_list_ptr, elt);
+  /* When we reach the end of ELT, it will be a normal filename.  */
+  checked_dir_list_add (str_list_ptr, elt);
 }
 
 /* Here is the entry point.  Returns directory list for ELT.  */
@@ -333,7 +303,7 @@ kpse_element_dirs P1C(const_string, elt)
   str_llist_type *ret;
 
   /* If given nothing, return nothing.  */
-  if (!elt)
+  if (!elt || !*elt)
     return NULL;
 
   /* If we've already cached the answer for ELT, return it.  */
@@ -344,22 +314,9 @@ kpse_element_dirs P1C(const_string, elt)
   /* We're going to have a real directory list to return.  */
   ret = XTALLOC1 (str_llist_type);
   *ret = NULL;
-  
-  /* If ELT is the empty string, just return cwd.  */
-  if (*elt == 0)
-    { /* Some old compilers do not support aggregate initialization.  */
-      char cwd[3];
-      cwd[0] = '.';
-      cwd[1] = DIR_SEP;
-      cwd[2] = 0;
-      
-      checked_dir_list_add (ret, cwd);
-    }
 
-  /* OK, so much for the trivial cases.  We handle the hard case in
-     a subroutine.  */
-  else
-    expand_elt (ret, elt, 0);
+  /* We handle the hard case in a subroutine.  */
+  expand_elt (ret, elt, 0);
 
   /* Remember the directory list we just found, in case future calls are
      made with the same ELT.  */
@@ -396,7 +353,7 @@ print_element_dirs (const_string elt)
   dirs = kpse_element_dirs (elt);
   
   if (!dirs)
-    printf ("(null)");
+    printf ("(nil)");
   else
     {
       str_llist_elt_type *dir;
@@ -414,24 +371,19 @@ int
 main ()
 {
   /* DEBUG_SET (DEBUG_STAT); */
-#ifdef AMIGA
-  print_element_dirs (NULL);		/* */
-  print_element_dirs ("");		/* ./ */
-  print_element_dirs ("/kpathsea");	/* /kpathsea/ */
-  print_element_dirs (".//");		/* ./ */
-  print_element_dirs (":fonts//");	/* lots */
-  print_element_dirs (":fonts//public/ascii//"); /* several */
-  print_element_dirs (":fonts//");	/* lots again [cache] */
-  print_element_dirs ("texmf:");	/* texmf: */
-  print_element_dirs ("texmf:/");	/* texmf: and all subdirs */
-  print_element_dirs ("${LOGNAME}");	/* ??? */  
-#else /* not AMIGA */
   /* All lists end with NULL.  */
   print_element_dirs (NULL);	/* */
   print_element_dirs ("");	/* ./ */
   print_element_dirs ("/k");	/* */
   print_element_dirs (".//");	/* ./ ./archive/ */
   print_element_dirs (".//archive");	/* ./ ./archive/ */
+#ifdef AMIGA
+  print_element_dirs ("TeXMF:AmiWeb2c/texmf/fonts//"); /* lots */
+  print_element_dirs ("TeXMF:AmiWeb2c/share/texmf/fonts//bakoma"); /* just one */
+  print_element_dirs ("TeXMF:AmiWeb2c/texmf/fonts//"); /* lots again [cache] */
+  print_element_dirs ("TeXMF:");	/* TeXMF: */
+  print_element_dirs ("TeXMF:/");	/* TeXMF: and all subdirs */
+#else /* not AMIGA */
   print_element_dirs ("/tmp/fonts//");	/* no need to stat anything */
   print_element_dirs ("/usr/local/lib/tex/fonts//");      /* lots */
   print_element_dirs ("/usr/local/lib/tex/fonts//times"); /* just one */

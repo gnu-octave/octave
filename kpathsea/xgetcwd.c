@@ -19,9 +19,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 
 #include <kpathsea/config.h>
 
-#ifdef HAVE_GETWD
+#if defined (HAVE_GETCWD) || defined (HAVE_GETWD)
 #include <kpathsea/c-pathmx.h>
-#else /* not HAVE_GETWD */
+#else /* not HAVE_GETCWD && not HAVE_GETWD*/
 #include <kpathsea/c-dir.h>
 #include <kpathsea/xopendir.h>
 #include <kpathsea/xstat.h>
@@ -34,7 +34,7 @@ xchdir P1C(string, dirname)
     FATAL_PERROR (dirname);
 }
 
-#endif /* not HAVE_GETWD */
+#endif /* not HAVE_GETCWD && not HAVE_GETWD */
 
 
 /* Return the pathname of the current directory, or give a fatal error.  */
@@ -42,10 +42,23 @@ xchdir P1C(string, dirname)
 string
 xgetcwd P1H(void)
 {
-  /* If the system provides getwd, use it.  But don't use getcwd; that
-     forks a process on some systems, which is far more expensive than
-     all the stat calls we make figuring out the cwd.  */
-#ifdef HAVE_GETWD
+  /* If the system provides getcwd, use it.  If not, use getwd if
+     available.  But provide a way not to use getcwd: on some systems
+     getcwd forks, which is expensive and may in fact be impossible for
+     large programs like tex.  If your system needs this define and it
+     is not detected by configure, let me know.
+                                       -- Olaf Weber <infovore@xs4all.nl */
+#if defined (HAVE_GETCWD) && !defined (GETCWD_FORKS)
+  string path = xmalloc (PATH_MAX + 1);
+  
+  if (getcwd (path, PATH_MAX + 1) == 0)
+    {
+      fprintf (stderr, "getcwd: %s", path);
+      exit (1);
+    }
+  
+  return path;
+#elif defined (HAVE_GETWD)
   string path = xmalloc (PATH_MAX + 1);
   
   if (getwd (path) == 0)
@@ -55,7 +68,7 @@ xgetcwd P1H(void)
     }
   
   return path;
-#else /* not HAVE_GETWD */
+#else /* not HAVE_GETCWD && not HAVE_GETWD */
   struct stat root_stat, cwd_stat;
   string cwd_path = xmalloc (2); /* In case we assign "/" below.  */
   
@@ -112,6 +125,29 @@ xgetcwd P1H(void)
     /* Go back to where we were.  */
     xchdir (cwd_path);
 
+#ifdef DOSISH
+  /* Prepend the drive letter to CWD_PATH, since this technique
+     never tells us what the drive is.
+ 
+     Note that on MS-DOS/MS-Windows, the branch that works around
+     missing `getwd' will probably only work for DJGPP (which does
+     have `getwd'), because only DJGPP reports meaningful
+     st_ino numbers.  But someday, somebody might need this...  */
+  {
+    char drive[3];
+    string temp = cwd_path;
+
+    /* Make the drive letter lower-case, unless it is beyond Z: (yes,
+       there ARE such drives, in case of Novell Netware on MS-DOS).  */
+    drive[0] = root_stat.st_dev + (root_stat.st_dev < 26 ? 'a' : 'A');
+    drive[1] = ':';
+    drive[2] = '\0';
+
+    cwd_path = concat (drive, cwd_path);
+    free (temp);
+  }
+#endif
+
   return cwd_path;
-#endif /* not HAVE_GETWD */
+#endif /* not HAVE_GETCWD && not HAVE_GETWD */
 }

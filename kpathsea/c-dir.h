@@ -19,6 +19,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #ifndef KPATHSEA_C_DIR_H
 #define KPATHSEA_C_DIR_H
 
+#ifdef WIN32
+
+#include <direct.h>
+
+#else /* not WIN32 */
+
 /* Use struct dirent instead of struct direct.  */
 #ifdef HAVE_DIRENT_H
 #include <dirent.h>
@@ -40,5 +46,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #endif
 
 #endif /* not DIRENT */
+
+#endif /* not WIN32 */
 
 #endif /* not KPATHSEA_C_DIR_H */

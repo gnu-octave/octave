@@ -1,6 +1,6 @@
 /* xputenv.c: set an environment variable without return.
 
-Copyright (C) 1993, 94, 95, 96 Karl Berry.
+Copyright (C) 1993, 94, 95, 96, 97, 98 Karl Berry.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Library General Public
@@ -41,13 +41,16 @@ extern int putenv ();
 void
 xputenv P2C(const_string, var_name,  const_string, value)
 {
-  static const_string *saved_env_items = NULL;
-  static unsigned saved_len;
   string old_item = NULL;
   string new_item = concat3 (var_name, "=", value);
-  boolean found = false;
+  unsigned name_len = strlen (var_name);
 
 #ifndef SMART_PUTENV
+
+  static const_string *saved_env_items = NULL;
+  static unsigned saved_len;
+  boolean found = false;
+
   /* Check if we have saved anything yet.  */
   if (!saved_env_items)
     {
@@ -59,7 +62,6 @@ xputenv P2C(const_string, var_name,  const_string, value)
     {
       /* Check if we've assigned VAR_NAME before.  */
       unsigned i;
-      unsigned len = strlen (var_name);
       for (i = 0; i < saved_len && !found; i++)
         {
           if (STREQ (saved_env_items[i], var_name))
@@ -72,16 +74,16 @@ xputenv P2C(const_string, var_name,  const_string, value)
 		 is not made between the value being "" or the variable
 		 not set. */
 	      if (old_item)
-		old_item -= (len + 1);
+		old_item -= (name_len + 1);
 #else
               assert (old_item);
               /* Back up to the `NAME=' in the environment before the
                  value that getenv returns.  */
-              old_item -= (len + 1);
+              old_item -= (name_len + 1);
 #endif
             }
         }
-      
+
       if (!found)
         {
           /* If we haven't seen VAR_NAME before, save it.  Assume it is
@@ -93,17 +95,35 @@ xputenv P2C(const_string, var_name,  const_string, value)
     }
 #endif /* not SMART_PUTENV */
 
-  /* As far as I can see there's no way to distinguish between the
-     various errors; putenv doesn't have errno values.  */
-  if (putenv (new_item) < 0)
-    FATAL1 ("putenv (%s) failed", new_item);
-  
+  /* If the old and the new values are identical, don't do anything.
+     This is both more memory-efficient and safer as far as our
+     assumptions (about how putenv is implemented in libc) go.  */
+  if (!old_item || !STREQ (old_item, new_item))
+    {
+      char *new_val;
+      /* As far as I can see there's no way to distinguish between the
+         various errors; putenv doesn't have errno values.  */
+      if (putenv (new_item) < 0)
+        FATAL1 ("putenv (%s) failed", new_item);
+
+      /* If their putenv copied `new_item', we can free it.  */
+      new_val = getenv (var_name);
+      if (new_val && new_val - name_len - 1 != new_item)
+        free (new_item);
+
 #ifndef SMART_PUTENV
-  /* Can't free `new_item' because its contained value is now in
-     `environ', but we can free `old_item', since it's been replaced.  */
-  if (old_item)
-    free (old_item);
+      /* Can't free `new_item' because its contained value is now in
+         `environ', but we can free `old_item', since it's been replaced.  */
+#ifdef WIN32
+      /* ... except on Win32, where old_item points to garbage if we set the
+         variable to "".  So we recognize this special case.  */
+      if (old_item && value && *value)
+#else
+      if (old_item)
+#endif
+        free (old_item);
 #endif /* not SMART_PUTENV */
+    }
 }
 
 

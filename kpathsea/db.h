@@ -36,7 +36,7 @@ extern str_list_type *kpse_db_search P3H(const_string name,
                                          const_string path_elt, boolean all);
 
 /* Insert the filename FNAME into the database.
-   Called by MakeTeXPK et al.  */
+   Called by mktexpk et al.  */
 extern void kpse_db_insert P1H(const_string fname);
 
 #endif /* not KPATHSEA_DB_H */

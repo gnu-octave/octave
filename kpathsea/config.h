@@ -1,7 +1,7 @@
 /* config.h: master configuration file, included first by all compilable
    source files (not headers).
 
-Copyright (C) 1993, 95, 96 Free Software Foundation, Inc.
+Copyright (C) 1993, 95, 96, 97 Free Software Foundation, Inc.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Library General Public
@@ -20,15 +20,40 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #ifndef KPATHSEA_CONFIG_H
 #define KPATHSEA_CONFIG_H
 
+/* System defines are for non-Unix systems only.  (Testing for all Unix
+   variations should be done in configure.)  Presently the defines used
+   are: AMIGA DOS OS2 VMCMS VMS WIN32.  I do not use any of these systems
+   myself; if you do, I'd be grateful for any changes. --kb@mail.tug.org */
+
+/* If we have either DOS or OS2, we are DOSISH.  */
+#if defined (DOS) || defined (OS2) || defined (WIN32) || defined(__MSDOS__)
+#define DOSISH
+#endif
+
+#if defined (DOSISH)
+#define MONOCASE_FILENAMES	/* case-insensitive filename comparisons */
+#endif
+
 #ifdef WIN32
 #define __STDC__ 1
-#include "../win32/win32-compat.h"
+#include <kpathsea/win32lib.h>
 #endif /* not WIN32 */
 
+#ifdef __DJGPP__
+#include <fcntl.h>	/* for long filenames' stuff */
+#include <dir.h>	/* for `getdisk' */
+#include <io.h>		/* for `setmode' */
+#endif
+
+/* Some drivers have partially integrated kpathsea changes.  */
+#ifndef KPATHSEA
+#define KPATHSEA 32
+#endif
+ 
 /* System dependencies that are figured out by `configure'.  If we are
    compiling standalone, we get our c-auto.h.  Otherwise, the package
    containing us must provide this (unless it can somehow generate ours
-   from c-auto.h.in).  We use <...> instead of "..." so that the current
+   from c-auto.in).  We use <...> instead of "..." so that the current
    cpp directory (i.e., kpathsea/) won't be searched. */
 #include <c-auto.h>
 
@@ -41,21 +66,15 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #include <kpathsea/types.h>    /* <sys/types.h>, boolean, string, etc. */
 #include <kpathsea/progname.h> /* for program_invocation_*name */
 
-/* System defines are for non-Unix systems only.  (Testing for all Unix
-   variations should be done in configure.)  Presently the defines used
-   are: AMIGA DOS OS2 VMCMS VMS WIN32.  I do not use any of these systems
-   myself; if you do, I'd be grateful for any changes. --kb@mail.tug.org */
    
-/* If we have either DOS or OS2, we are DOSISH.  */
-#if defined (DOS) || defined (OS2) || defined (WIN32)
-#define DOSISH
-#endif
-
 /* If you want to find subdirectories in a directory with non-Unix
    semantics (specifically, if a directory with no subdirectories does
    not have exactly two links), define this.  */
-#if !defined (DOSISH) && !defined (VMS) && !defined (VMCMS)
+#if !defined (VMS) && !defined (VMCMS)
+#if !defined (DOSISH) || defined(__DJGPP__)
+/* Surprise!  DJGPP returns st_nlink exactly like on Unix.  */
 #define ST_NLINK_TRICK
+#endif /* either not DOSISH or __DJGPP__ */
 #endif /* not DOS and not VMS and not VMCMS */
 
 #ifdef AMIGA

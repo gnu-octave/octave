@@ -37,6 +37,11 @@ kpse_var_value P1C(const_string, var)
   if (ret)
     ret = kpse_var_expand (ret);
 
+#ifdef KPSE_DEBUG
+  if (KPSE_DEBUG_P (KPSE_DEBUG_VARS))
+    DEBUGF2("variable: %s = %s\n", var, ret ? ret : "(nil)");
+#endif
+
   return ret;
 }
 

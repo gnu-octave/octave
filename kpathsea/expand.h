@@ -31,6 +31,12 @@ extern string kpse_expand P1H(const_string s);
    no expansions were done).  We don't call `kpse_expand_default'
    because there is a whole sequence of defaults to run through; see
    `kpse_init_format'.  */
+extern string kpse_brace_expand P1H(const_string path);
+
+/* Do brace expansion and call `kpse_expand' on each argument of the
+   result, then expand any `//' constructs.  The final expansion (always
+   in fresh memory) is a path of all the existing directories that match
+   the pattern. */
 extern string kpse_path_expand P1H(const_string path);
 
 #endif /* not KPATHSEA_EXPAND_H */

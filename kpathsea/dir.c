@@ -29,10 +29,16 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 boolean
 dir_p P1C(const_string, fn)
 {
+#ifdef WIN32
+  int fa = GetFileAttributes(fn);
+  return (fa != 0xFFFFFFFF && (fa & FILE_ATTRIBUTE_DIRECTORY));
+#else
   struct stat stats;
   return stat (fn, &stats) == 0 && S_ISDIR (stats.st_mode);
+#endif
 }
 
+#ifndef WIN32
 
 /* Return -1 if FN isn't a directory, else its number of links.
    Duplicate the call to stat; no need to incur overhead of a function
@@ -83,3 +89,5 @@ dir_links P1C(const_string, fn)
 
   return ret;
 }
+
+#endif /* !WIN32 */

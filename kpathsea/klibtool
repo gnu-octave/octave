@@ -16,7 +16,7 @@
 # the binary, etc.)  See the configure mode.  I can send you the
 # hello,world Makefile I used for testing if you want it.
 # 
-rcs_version='$Id: klibtool,v 1.1 1997-05-23 03:09:13 jwe Exp $'
+rcs_version='$Id: klibtool,v 1.2 1998-04-24 04:24:36 jwe Exp $'
 version=0.1
 maint=tex-k@mail.tug.org
 help="Usage: $0 [OPTION]... MODE [ARG]...
@@ -32,6 +32,7 @@ install-prog DIR PROGNAME...           INSTALL_PROGRAM
 version
 
 Options:
+    --source-dir DIR
     --config-dir DIR
 -n, --dry-run
     --help
@@ -53,6 +54,7 @@ verbose=:
 chicken=
 show=echo
 config_dir=
+source_dir=
 
 # Yes, this option parsing is imperfect, e.g., -xcruddy will be
 # recognized as --config-dir.  I don't think it's worth the trouble to
@@ -61,6 +63,8 @@ while test $# -gt 0; do
   case "$1" in
     configure|compile|archive|link|install-lib|install-prog|version)
       mode=$1; break;;
+    --source-dir) # --source-dir
+      shift; source_dir=$1;;
     -*c*)         # --config-dir
       shift; config_dir=$1;;
     -n|-*d*)      # -n, --dry-run
@@ -92,18 +96,25 @@ if test $mode != configure; then
   # the user told us where it is, great.  More likely, though, it's only
   # in the directory with the library that we're eventually going to
   # link with.  We have no way of knowing what that is, so let's use the
-  # location of this script itself as the default.
+  # location of this script itself as the default if not in `.', `..',
+  # or `../..'.
+  test -z "$config_dir" && config_dir=$KLIBTOOL_CONFIG_DIR
   if test -z "$config_dir"; then
     if test -r ./klibtool.config; then
       config_dir=.
+    elif test -r ../klibtool.config; then
+      config_dir=..
+    elif test -r ../../klibtool.config; then
+      config_dir=../..
     else
       dir=`echo $0 | sed 's,/[^/]*$,,'`
       test -r $dir/klibtool.config && config_dir=$dir
     fi
   fi
   if test -z "$config_dir"; then
-    echo "$0: Cannot find klibtool.config in . or $dir," >&2
-    echo "$0: and no --config-dir option specified." >&2
+    echo "$0: Cannot find klibtool.config in . or .. or $dir," >&2
+    echo "$0: and no --config-dir option specified" >&2
+    echo "$0: or KLIBTOOL_CONFIG_DIR environment variable set." >&2
     exit 1
   fi
   # Read the file.
@@ -165,14 +176,18 @@ case $mode in
         config_dir=.  # $0 is just the script name, no directory part.
       fi
     fi
+    if test -z "$source_dir"; then
+      source_dir=$config_dir
+    fi
     config_file=$config_dir/klibtool.config
+    config_tmp=$config_dir/klt$$.tmp
     $verbose "$0: writing to config_file = $config_file."
     
     # If no specified HOSTTYPE, guess it.
     if test $# -eq 0; then
-      config_guess=$config_dir/config.guess
+      config_guess=$source_dir/config.guess
       if test ! -r $config_guess; then
-        echo "$0: config.guess not in $config_dir." >&2
+        echo "$0: config.guess not in $source_dir." >&2
         echo "$0: Either specify a host type or get the scripts." >&2
         exit 1
       fi
@@ -184,9 +199,9 @@ case $mode in
     fi
     
     # Convert the original host type to canonical form.
-    config_sub=$config_dir/config.sub
+    config_sub=$source_dir/config.sub
     if test ! -r $config_sub; then
-      echo "$0: config.sub missing from $config_dir; it's required." >&2
+      echo "$0: config.sub missing from $source_dir; it's required." >&2
       exit 1
     fi
     host_type=`$config_sub $host_alias`
@@ -194,9 +209,6 @@ case $mode in
       echo "$0: $host_alias not a recognizable host type." >&2
       exit 1
     fi
-    
-    # Finally, we'll be creating something.
-    rm -f $config_file
     
     # Define defaults, to be overridden in the system-specific cases.
     config_vars="LIBTOOL_OBJTYPES shared_support shared_ext libpath_var CC
@@ -224,6 +236,9 @@ case $mode in
         if test -f $dir/gcc; then
           CC=gcc
           break
+        elif test -f $dir/gcc.exe; then
+       	  CC=gcc
+	  break
         fi
       done
     fi
@@ -275,17 +290,39 @@ case $mode in
         fi
         ;;
 
+      *-*-irix5*|*-*-irix6*)
+        shared_support=true
+        args_SHARED_compile=
+        ;;
+
+      *-*-*djgpp* | *-*-*go32* | *-*-msdos*)
+        shared_support=false
+	libpath_var=LIBRARY_PATH
+	;;
+
       *)
         echo "$0: $host_type not explicitly supported, using defaults." >&2
         ;;
     esac
 
+    # Finally, we'll be creating something.
+    rm -f $config_tmp    
+
     # Output values.  
     for v in $config_vars; do
       config_line=$v=\'`eval echo '$'$v`\'
       $verbose "$0: writing config line $config_line."
-      echo $config_line >>$config_file
+      echo $config_line >>$config_tmp
     done
+
+    # Check if this changed anything.
+    if cmp -s $config_file $config_tmp 2>/dev/null; then
+      $verbose "$0: $config_file is unchanged"
+      rm -f $config_tmp
+    else
+      rm -f $config_file
+      mv $config_tmp $config_file
+    fi
     ;;
 
 
@@ -312,7 +349,7 @@ case $mode in
       # Construct and run the cmd.
       cmd="$compiler ""$@"" $ot_args $output_arg"
       $show $cmd
-      $chicken $cmd
+      $chicken eval "$cmd"
       status=$?
       test $status -eq 0 || break
     done # end of objtypes loop for compile mode
@@ -368,7 +405,7 @@ case $mode in
                 # If it supports shared libraries, it supports symlinks.
                 # Although this is unnecessary on (e.g.) SunOS, it
                 # doesn't hurt, and it is necessary on (e.g.) Solaris.
-                post="&& ln -s $lib_basename $lib_base"
+                post="&& rm -f $lib_base && ln -s $lib_basename $lib_base"
               elif test $ot = STATIC; then
                 ranlib=`eval echo '$'${ot}_ranlib`
                 $verbose "${ot}_ranlib = $ranlib."
@@ -392,8 +429,10 @@ case $mode in
       fi
       
       # Remove old archive file because we recommend `ar q', not `r',
-      # and the user can't necessarily know the library name.
-      cmd="cd $lib_dir/$ot && rm -f $lib_base* && $cmdname $args $post"
+      # and the user can't necessarily know the library name.  We remove
+      # both $lib_base and $lib_base* because on MS-DOS the latter may not
+      # match the former.
+      cmd="cd $lib_dir/$ot && rm -f $lib_base $lib_base* && $cmdname $args $post"
       $show $cmd
       $chicken eval "($cmd)"
       status=$?
@@ -491,7 +530,7 @@ case $mode in
     # Do the link.
     cmd="$cmdname $args"
     $show $cmd
-    $chicken $cmd
+    $chicken eval "$cmd"
     
     status=$?
     if test $status -eq 0 && test -n "$real_output_name"; then
@@ -566,7 +605,7 @@ case $mode in
           # Link libfoo.so to libfoo.so.1.2.3.
           lib_base=`echo $lib_basename | sed 's/[.0-9]*$//'`          
           $verbose "$0: linking $libdir/$lib_base to $lib_basename"
-          (cd $libdir && ln -s $lib_basename $lib_base)
+          (cd $libdir && rm -f $lib_base && ln -s $lib_basename $lib_base)
         fi
         #
         # Run ldconfig, etc.
@@ -608,7 +647,7 @@ case $mode in
       # FIXME: On SunOS, AIX, and HP-UX, relink to avoid hardwired libdirs.
       cmd="${INSTALL_PROGRAM-cp} $arg$suffix $dir/$arg"
       $show $cmd
-      $chicken $cmd
+      $chicken eval "$cmd"
     done
     ;;
 

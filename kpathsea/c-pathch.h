@@ -34,8 +34,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #define DIR_SEP '/'
 #define DIR_SEP_STRING "/"
 #define IS_DEVICE_SEP(ch) ((ch) == ':')
-#define NAME_BEGINS_WITH_DEVICE(name) \
-  (ISALPHA(*(name)) && IS_DEVICE_SEP((name)[1]))
+#define NAME_BEGINS_WITH_DEVICE(name) (*(name) && IS_DEVICE_SEP((name)[1]))
 /* On DOS, it's good to allow both \ and / between directories.  */
 #define IS_DIR_SEP(ch) ((ch) == '/' || (ch) == '\\')
 #else

@@ -211,9 +211,9 @@ program-specific debugging options as well.
 @vindex KPATHSEA_DEBUG
 @vindex kpathsea_debug
 You can also set the environment variable @code{KPATHSEA_DEBUG}; in this
-case, you should use the numbers below.  Also, if you run the program
-under a debugger and set the variable @code{kpathsea_debug}, Also use
-the numbers below
+case, you should use the numbers below.  If you run the program under a
+debugger and set the variable @code{kpathsea_debug}, also use the numbers
+below.
 
 @kindex -1 @r{debugging value}
 In any case, by far the simplest value to use is @samp{-1}, which will
@@ -283,6 +283,26 @@ collecting all occurrences of the file in the path (as with, e.g.,
 @file{texmf.cnf} and @file{texfonts.map}), or just the first (as with
 most lookups).  This can help you correlate what Kpathsea is doing with
 what is in your input file.
+
+@item KPSE_DEBUG_VARS @r{(64)}
+Report the value of each variable Kpathsea looks up.  This is useful for
+verifying that variables do indeed obtain their correct values.
+
+@item GSFTOPK_DEBUG @r{(128)}
+Activates debugging printout specific to @code{gsftopk} program.
+
+@item MAKETEX_DEBUG @r{(512)}
+If you use the optional @code{mktex} programs instead of the
+traditional shell scripts, this will report the name of the site file
+(@file{mktex.cnf} by default) which is read, directories created by
+@code{mktexdir}, the full path of the @file{ls-R} database built by
+@code{mktexlsr}, font map searches, @code{MT_FEATURES} in effect,
+parameters from @code{mktexnam}, filenames added by
+@code{mktexupd}, and some subsidiary commands run by the programs.
+
+@item MAKETEX_FINE_DEBUG @r{(1024)}
+When the optional @code{mktex} programs are used, this will print
+additional debugging info from functions internal to these programs.
 @end vtable
 
 @cindex @samp{kdebug:}
@@ -354,9 +374,10 @@ execution, @dots{}
 @menu
 * Unable to find files::        If your program can't find fonts (or whatever).
 * Slow path searching::         If it takes forever to find anything.
-* Unable to generate fonts::    If MakeTeXPK fails.
+* Unable to generate fonts::    If mktexpk fails.
 * TeX or Metafont failing::     Likely compiler bugs.
 
+* Empty Makefiles::            	When configure produces empty makefiles.
 * XtStrings::                   When _XtStrings is undefined.
 * dlopen::                      When dlopen is undefined.
 * ShellWidgetClass::            For dynamic linking troubles under OpenWindows.
@@ -411,12 +432,12 @@ it is a leaf.  Presumably you would not have asked for the directory to
 be searched for subdirectories if you didn't want it to be.
 
 @item
-If the fonts (or whatever) don't already exist, @code{MakeTeXPK} (or
-@code{MakeTeXMF} or @code{MakeTeXTFM}) will try to create them.  If
+If the fonts (or whatever) don't already exist, @code{mktexpk} (or
+@code{mktexmf} or @code{mktextfm}) will try to create them.  If
 these rather complicated shell scripts fail, you'll eventually get an
 error message saying something like @samp{Can't find font
 @var{fontname}}. The best solution is to fix (or at least report) the
-bug in @code{MakeTeXPK}; the workaround is to generate the necessary
+bug in @code{mktexpk}; the workaround is to generate the necessary
 fonts by hand with Metafont, or to grab them from a CTAN site
 (@pxref{unixtex.ftp}).
 
@@ -466,11 +487,11 @@ precisely when the disk or network is being pounded.  @xref{Debugging}.
 @cindex unable to generate fonts
 @cindex font generation failures
 
-This can happen if either @code{MakeTeXPK} hasn't been installed
+This can happen if either @code{mktexpk} hasn't been installed
 properly, or if the local installation of Metafont isn't correct.
 
 @cindex Metafont installation
-If @code{mf} is a command not found by @code{MakeTeXPK}, then you need
+If @code{mf} is a command not found by @code{mktexpk}, then you need
 to install Metafont (@pxref{unixtex.ftp}).
 
 @cindex Metafont using the wrong resolution
@@ -478,7 +499,7 @@ to install Metafont (@pxref{unixtex.ftp}).
 If Metafont runs, but generates fonts at the wrong resolution, you need
 to be sure the @samp{M} and @samp{D} lines in your Dvips configuration
 file match (@pxref{Config files,,, dvips, Dvips}).  For example, if
-@code{MakeTeXPK} is generating 300@dmn{dpi} fonts, but you need
+@code{mktexpk} is generating 300@dmn{dpi} fonts, but you need
 600@dmn{dpi} fonts, you should have:
 @example
 M ljfour
@@ -536,7 +557,7 @@ to run the program under the debugger and see where it's failing.
 @cindex system C compiler bugs
 Also, if you have trouble with a system C compiler, I advise trying the
 GNU C compiler. And vice versa, unfortunately; but in that case I also
-recommend reporting a bug to the GCC mailing list; @pxref{Bugs,,, gcc,
+recommend reporting a bug to the GCC mailing list; see @ref{Bugs,,, gcc,
 Using and Porting GNU CC}.
 
 @cindex compiler bugs, finding
@@ -546,8 +567,17 @@ involves delving backwards in time from the point of error, checking
 through @TeX{}'s (or whatever program's) data structures.  Things are
 not helped by all-too-common bugs in the debugger itself.  Good luck.
 
+@cindex ANSI C
+@cindex HP-UX, compiling on
+@cindex compiling on HP-UX
+One known cause of trouble is the way arrays are handled.  Some of the
+Pascal arrays have a lower index other than 0, and the C code will take
+the pointer to the allocated memory, subtract the lower index, and use
+the resulting pointer for the array.  While this trick often works, ANSI
+C doesn't guarantee that it will.  It it known to fail on HP-UX 10
+mchines when the native compiler is used, unless the @samp{+u} compiler
+switch was specified.  Using GCC will work on this platform as well.
 
-@ignore
 @node Empty Makefiles
 @subsubsection Empty Makefiles
 
@@ -558,10 +588,11 @@ not helped by all-too-common bugs in the debugger itself.  Good luck.
 @cindex FreeBSD @code{configure} error
 @cindex Mach10 @code{configure} error
 @cindex AIX 4.1 @code{configure} error
+@cindex NeXT @code{sed} error
 
 On some systems (NetBSD, FreeBSD, AIX 4.1, and Mach10), @code{configure}
-cannot properly create the Makefiles. Instead, you get an error
-something like this:
+may fail to properly create the Makefiles. Instead, you get an error
+which looks something like this:
 
 @example
 prompt$ ./configure
@@ -580,7 +611,17 @@ It should work to run @code{bash configure}, instead of using
 @code{/bin/sh}. You can get Bash from
 @url{ftp://prep.ai.mit.edu/pub/gnu} and mirrors.
 
+Another possible cause (reported for NeXT) is a bug in the @code{sed}
+command.  In that case the error may look like this:
 
+@example
+Unrecognized command: \@@^ac_include make/paths.make@@r make/paths.make
+@end example
+
+In this case, installing GNU @code{sed} should solve the problem.  You
+can get GNU @code{sed} from the same places as Bash.
+
+@ignore
 @node wchar_t
 @subsubsection @code{wchar_t}
 
@@ -718,7 +759,7 @@ There are several fixes:
 @item Statically link the @code{Xmu} library into the executable.
 
 @item Avoid using @code{Xmu} at all. If you are compiling
-Metafont, @pxref{Online Metafont graphics,,, web2c, Web2c}. If you are
+Metafont, see @ref{Online Metafont graphics,,, web2c, Web2c}. If you are
 compiling Xdvi, see the @code{-DNOTOOL} option in @file{xdvik/INSTALL}.
 
 @item Ignore the errors. The binary runs fine regardless.

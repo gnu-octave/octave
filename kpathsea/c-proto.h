@@ -19,7 +19,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #ifndef KPATHSEA_C_PROTO_H
 #define KPATHSEA_C_PROTO_H
 
-#if !defined(WIN32) || (defined(_DLL) && !defined(_IMPORT))
+#if !defined(WIN32)
+#define DllImport
+#define __cdecl
+#elif (defined(_DLL) && !defined(_IMPORT)) || !defined(_DLL)
 #define DllImport
 #else
 #define DllImport __declspec(dllimport)
@@ -30,7 +33,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
    definitions.  Cf. <ansidecl.h> from the GNU C library.  P1H(void)
    also works for definitions of routines which take no args.  */
 
-#if __STDC__
+#ifdef HAVE_PROTOTYPES
 
 #define AA(args) args /* For an arbitrary number; ARGS must be in parens.  */
 
@@ -40,6 +43,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #define P4H(p1,p2,p3,p4) (p1, p2, p3, p4)
 #define P5H(p1,p2,p3,p4,p5) (p1, p2, p3, p4, p5)
 #define P6H(p1,p2,p3,p4,p5,p6) (p1, p2, p3, p4, p5, p6)
+#define P7H(p1,p2,p3,p4,p5,p6,p7) (p1, p2, p3, p4, p5, p6, p7)
 
 #define P1C(t1,n1)(t1 n1)
 #define P2C(t1,n1, t2,n2)(t1 n1, t2 n2)
@@ -49,17 +53,20 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
   (t1 n1, t2 n2, t3 n3, t4 n4, t5 n5)
 #define P6C(t1,n1, t2,n2, t3,n3, t4,n4, t5,n5, t6,n6) \
   (t1 n1, t2 n2, t3 n3, t4 n4, t5 n5, t6 n6)
+#define P7C(t1,n1, t2,n2, t3,n3, t4,n4, t5,n5, t6,n6, t7,n7) \
+  (t1 n1, t2 n2, t3 n3, t4 n4, t5 n5, t6 n6, t7 n7)
 
-#else /* not __STDC__ */
+#else /* not HAVE_PROTOTYPES */
 
 #define AA(args) ()
-
+    
 #define P1H(p1) ()
 #define P2H(p1, p2) ()
 #define P3H(p1, p2, p3) ()
 #define P4H(p1, p2, p3, p4) ()
 #define P5H(p1, p2, p3, p4, p5) ()
 #define P6H(p1, p2, p3, p4, p5, p6) ()
+#define P7H(p1, p2, p3, p4, p5, p6, p7) ()
 
 #define P1C(t1,n1) (n1) t1 n1;
 #define P2C(t1,n1, t2,n2) (n1,n2) t1 n1; t2 n2;
@@ -70,7 +77,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
   t1 n1; t2 n2; t3 n3; t4 n4; t5 n5;
 #define P6C(t1,n1, t2,n2, t3,n3, t4,n4, t5,n5, t6,n6) (n1,n2,n3,n4,n5,n6) \
   t1 n1; t2 n2; t3 n3; t4 n4; t5 n5; t6 n6;
+#define P7C(t1,n1, t2,n2, t3,n3, t4,n4, t5,n5, t6,n6, t7,n7) \
+  (n1,n2,n3,n4,n5,n6,n7) \
+  t1 n1; t2 n2; t3 n3; t4 n4; t5 n5; t6 n6; t7 n7;
 
-#endif /* not __STDC__ */
+#endif /* not HAVE_PROTOTYPES */
 
 #endif /* not KPATHSEA_C_PROTO_H */

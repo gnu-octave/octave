@@ -4,7 +4,7 @@ generic path searching, configuration, and TeX-specific file searching.
 See `NEWS' for changes by release, `ChangeLog` for all changes.
 See `INSTALL' for installation instructions.
 See `BUGS' for bug reporting details.
-See `CONFIGURE' for details on running Autoconf-generated configure scripts.
+See `README.CONFIGURE' for details on running the configure scripts.
 See `PROJECTS' for future improvements you might like to work on.
 
 Suggestions for improvements in either the library or the documentation,

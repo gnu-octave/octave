@@ -54,7 +54,6 @@ set_maketex_mag P1H(void)
      up DPI, but may as well be safe, and also get the magstep number.  */
   (void) kpse_magstep_fix (dpi, bdpi, &m);
   
-  /* Have to do something different for DOS?  */
   if (m == 0)
     sprintf (q, "%d+%d/%d", dpi / bdpi, dpi % bdpi, bdpi);
   else
@@ -73,7 +72,7 @@ set_maketex_mag P1H(void)
   xputenv ("MAKETEX_MAG", q);
 }
 
-/* This MakeTeX... program was disabled, or the script failed.  If this
+/* This mktex... program was disabled, or the script failed.  If this
    was a font creation (according to FORMAT), append CMD
    to a file missfont.log in the current directory.  */
 
@@ -129,7 +128,16 @@ maketex P2C(kpse_file_format_type, format,  const_string, passed_cmd)
   unsigned i;
   FILE *f;
   string cmd = xstrdup (passed_cmd);
-  
+
+#if defined (MSDOS) || defined (WIN32)
+  /* For discarding stderr.  This is so we don't require an MSDOS user
+     to istall a unixy shell (see kpse_make_tex below): they might
+     devise their own ingenious ways of running mktex... even though
+     they don't have such a shell.  */
+  int temp_stderr = -1;
+  int save_stderr = -1;
+#endif
+
   /* If the user snuck `backquotes` or $(command) substitutions into the
      name, foil them.  */
   for (i = 0; i < strlen (cmd); i++) {
@@ -144,12 +152,36 @@ maketex P2C(kpse_file_format_type, format,  const_string, passed_cmd)
   if (!kpse_make_tex_discard_errors) {
     fprintf (stderr, "kpathsea: Running %s\n", cmd);
   }
+#if defined (MSDOS) || defined (WIN32)
+  else {
+    temp_stderr = open ("NUL", O_WRONLY);
+    if (temp_stderr >= 0) {
+      save_stderr = dup (2);
+      if (save_stderr >= 0)
+        dup2 (temp_stderr, 2);
+    }
+    /* Else they lose: the errors WILL be shown.  However, open/dup
+       aren't supposed to fail in this case, it's just my paranoia. */
+  }
+#endif
   
   /* Run the script.  The Amiga has a different interface.  */
 #ifdef AMIGA
   ret = system (cmd) == 0 ? getenv ("LAST_FONT_CREATED") : NULL;
 #else /* not AMIGA */
   f = popen (cmd, FOPEN_R_MODE);
+
+#if defined (MSDOS) || defined (WIN32)
+  if (kpse_make_tex_discard_errors) {
+    /* Close /dev/null and revert stderr.  */
+    if (save_stderr >= 0) {
+      dup2 (save_stderr, 2);
+      close (save_stderr);
+    }
+    if (temp_stderr >= 0)
+      close (temp_stderr);
+  }
+#endif
 
   if (f) {
     int c;
@@ -168,7 +200,7 @@ maketex P2C(kpse_file_format_type, format,  const_string, passed_cmd)
        with ECHILD (No child processes), maybe only if we're being run
        by lpd.  So don't make this a fatal error.  */
     if (pclose (f) == -1) {
-      perror ("pclose(MakeTeXPK)");
+      perror ("pclose(mktexpk)");
       WARNING ("kpathsea: This is probably the Linux pclose bug; continuing");
     }
 
@@ -185,7 +217,7 @@ maketex P2C(kpse_file_format_type, format,  const_string, passed_cmd)
        what it output.  */
     ret = len == 1 ? NULL : kpse_readable_file (fn);
     if (!ret && len > 1) {
-      WARNING1 ("kpathsea: MakeTeXPK output `%s' instead of a filename", fn);
+      WARNING1 ("kpathsea: mktexpk output `%s' instead of a filename", fn);
     }
 
     /* Free the name if we're not returning it.  */
@@ -227,40 +259,35 @@ kpse_make_tex P2C(kpse_file_format_type, format,  const_string, base)
     string args, cmd;
     const_string prog = spec.program;
     const_string arg_spec = spec.program_args;
-    string mode = getenv ("MAKETEX_MODE");
-    boolean unset_mode = false;
 
     if (format <= kpse_any_glyph_format)
       set_maketex_mag ();
 
-    /* Here's an awful kludge: if the mode is `/', unset it for the call
-       and then reset it.  We could ignore a mode of / in MakeTeXPK, but
-       then everyone's MakeTeXPK would have to handle that special case,
-       which seems too onerous.  `kpse_prog_init' sets it to this in the
-       first place when no mode is otherwise specified; this is so when
-       the user defines a resolution, they don't also have to specify a
-       mode; instead, MakeTeXPK's guesses will take over.  They use /
-       for the value because then when it is expanded as part of the
-       PKFONTS et al. path values, we'll wind up searching all the pk
-       directories.  We put $MAKETEX_MODE in the path values in the
-       first place so that sites with two different devices with the
-       same resolution can find the right fonts; but such sites are
-       uncommon, so they shouldn't make things harder for everyone else.  */
-    if (mode && STREQ (mode, DIR_SEP_STRING)) {
-      xputenv ("MAKETEX_MODE", "");
-      unset_mode = true;
-    }
+    /* Here's an awful kludge: if the mode is `/', mktexpk recognizes
+       it as a special case.  `kpse_prog_init' sets it to this in the
+       first place when no mode is otherwise specified; this is so
+       when the user defines a resolution, they don't also have to
+       specify a mode; instead, mktexpk's guesses will take over.
+       They use / for the value because then when it is expanded as
+       part of the PKFONTS et al. path values, we'll wind up searching
+       all the pk directories.  We put $MAKETEX_MODE in the path
+       values in the first place so that sites with two different
+       devices with the same resolution can find the right fonts; but
+       such sites are uncommon, so they shouldn't make things harder
+       for everyone else.  */
     args = arg_spec ? kpse_var_expand (arg_spec) : (string) "";
-    if (unset_mode)
-      xputenv ("MAKETEX_MODE", DIR_SEP_STRING);
 
     /* The command is the program name plus the arguments.  */
-    cmd = concatn (prog, " ", base, " ", args, NULL);
+    cmd = concatn (prog, " ", args, " ", base, NULL);
 
     /* Only way to discard errors is redirect stderr inside another
-       shell; otherwise, if the MakeTeX... script doesn't exist, we
-       will see the `sh: MakeTeX...: not found' error.  No point in
+       shell; otherwise, if the mktex... script doesn't exist, we
+       will see the `sh: mktex...: not found' error.  No point in
        doing this if we're not actually going to run anything.  */
+#if !defined(MSDOS) && !defined(WIN32) && !defined(AMIGA)
+    /* We don't want to require that a Unix-like shell be installed
+       on MS-DOS or WIN32 systems, so we will redirect stderr by hand
+       (in maketex).  */
     if (kpse_make_tex_discard_errors) {
       string old_cmd = cmd;
 #ifdef OS2
@@ -270,13 +297,14 @@ kpse_make_tex P2C(kpse_file_format_type, format,  const_string, base)
 #endif
       free (old_cmd);
     }
-
+#endif
+    
     ret = maketex (format, cmd);
 
     free (cmd);
     if (*args)
       free (args);
-  }  
+  }
 
   return ret;
 }
@@ -298,12 +326,12 @@ test_make_tex (kpse_file_format_type fmt, const_string base)
 int
 main ()
 {
-  xputenv ("KPATHSEA_DPI", "781"); /* call MakeTeXPK */
-  xputenv ("MAKETEX_BASE_DPI", "300"); /* call MakeTeXPK */
+  xputenv ("KPATHSEA_DPI", "781"); /* call mktexpk */
+  xputenv ("MAKETEX_BASE_DPI", "300"); /* call mktexpk */
   KPSE_MAKE_SPEC_ENABLED (kpse_make_specs[kpse_pk_format]) = true;
   test_make_tex (kpse_pk_format, "cmr10");
 
-  /* Fail with MakeTeXTFM.  */
+  /* Fail with mktextfm.  */
   KPSE_MAKE_SPEC_ENABLED (kpse_make_specs[kpse_tfm_format]) = true;
   test_make_tex (kpse_tfm_format, "foozler99");
   

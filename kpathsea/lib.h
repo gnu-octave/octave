@@ -67,14 +67,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 
 /* I find this easier to read.  */
 #define STREQ(s1, s2) (strcmp (s1, s2) == 0)
-
+#define STRNEQ(s1, s2, n) (strncmp (s1, s2, n) == 0)
+      
 /* Support for FAT/ISO-9660 filesystems.  Theoretically this should be
    done at runtime, per filesystem, but that's painful to program.  */
 #ifdef MONOCASE_FILENAMES
 #define FILESTRCASEEQ(s1, s2) (strcasecmp (s1, s2) == 0)
+#define FILESTRNCASEEQ(s1, s2, l) (strncasecmp (s1, s2, l) == 0)
 #define FILECHARCASEEQ(c1, c2) (toupper (c1) == toupper (c2))
 #else
 #define FILESTRCASEEQ STREQ
+#define FILESTRNCASEEQ STRNEQ
 #define FILECHARCASEEQ(c1, c2) ((c1) == (c2))
 #endif
 

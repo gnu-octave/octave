@@ -13,7 +13,8 @@ mirrors.  The TDS document is available from `CTAN:/tex-archive/tds'
 paths::.).  One common desire is to put everything (binaries and all)
 under a single top-level directory such as `/usr/local/texmf' or
 `/opt/texmf'--in the terms used below, make PREFIX and TEXMF the same.
-For specific instructions on doing that, *note configure scenarios::..
+For specific instructions on doing that, see *Note configure
+scenarios::.
 
   Here is a skeleton of the default directory structure, extracted from
 the TDS document:

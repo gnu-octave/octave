@@ -1,4 +1,6 @@
-char *kpathsea_version_string = (char *) "kpathsea version 3.0";
+#include "c-auto.h"
+
+char *kpathsea_version_string = (char *) KPSEVERSION;
 
 /* If you are redistributing a modified version of my original
    distribution, please change this address.

@@ -21,6 +21,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #include <kpathsea/c-pathch.h>
 #include <kpathsea/c-stat.h>
 #include <kpathsea/pathsearch.h>
+/* For kpse_reset_progname */
+#include <kpathsea/tex-file.h>
 
 #ifdef WIN32
 #include <kpathsea/c-pathmx.h>
@@ -47,9 +49,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 
 #ifndef HAVE_PROGRAM_INVOCATION_NAME
 /* Don't redefine the variables if glibc already has.  */
-string program_invocation_name;
-string program_invocation_short_name;
+string program_invocation_name = NULL;
+string program_invocation_short_name = NULL;
 #endif
+/* And the variable for the program we pretend to be. */
+string kpse_program_name = NULL;
 
 /* Return directory for NAME.  This is "." if NAME contains no directory
    separators (should never happen for selfdir), else whatever precedes
@@ -207,7 +211,7 @@ expand_symlinks (s)
       perror (s);
       return NULL;
     }
-    fclose (f);
+    if (f) fclose (f);
   }
 
   strcpy (post, s);
@@ -376,8 +380,12 @@ selfdir P1C(const_string, argv0)
     self = xmalloc (BUFSIZ);
     lock = findpath (argv0);
     if (lock != ((BPTR) -1)) {
-      if (getpath (lock, self) == -1)
+      if (getpath (lock, self) == -1) {
         *self = '\0';
+      } else {
+        strcat (self,DIR_SEP_STRING);
+        strcat (self,argv0); 
+      }
       UnLock (lock);
     }
     CloseLibrary((struct Library *) DOSBase);
@@ -399,7 +407,9 @@ selfdir P1C(const_string, argv0)
          `file_status' function in execute_cmd.c in bash for what's
          necessary if we were to do it right.  */
       if (stat (name, &s) == 0 && s.st_mode & (S_IXUSR|S_IXGRP|S_IXOTH)) {
-        self = name;
+        /* Do not stop at directories. */
+        if (!S_ISDIR(s.st_mode)) 
+          self = name;
       }
     }
 #endif /* not AMIGA */
@@ -418,10 +428,14 @@ selfdir P1C(const_string, argv0)
 #endif /* not WIN32 */
 
 void
-kpse_set_progname P1C(const_string, progname)
+kpse_set_program_name P2C(const_string, argv0, const_string, progname)
 {
   string ext, sdir, sdir_parent, sdir_grandparent;
   string s = getenv ("KPATHSEA_DEBUG");
+#ifdef WIN32
+  string debug_output = getenv("KPATHSEA_DEBUG_OUTPUT");
+  int err, olderr;
+#endif
   
   /* Set debugging stuff first, in case we end up doing debuggable stuff
      during this initialization.  */
@@ -429,56 +443,119 @@ kpse_set_progname P1C(const_string, progname)
     kpathsea_debug |= atoi (s);
   }
 
-#ifdef WIN32
+#ifndef HAVE_PROGRAM_INVOCATION_NAME
+#if defined(WIN32)
+  /* redirect stderr to debug_output. Easier to send logfiles. */
+  if (debug_output) {
+    if ((err = _open(debug_output, _O_CREAT | _O_TRUNC | _O_RDWR,
+                     _S_IREAD | _S_IWRITE)) == -1) {
+      WARNING1("Can't open %s for stderr redirection!\n", debug_output);
+      perror(debug_output);
+    } else if ((olderr = _dup(fileno(stderr))) == -1) {
+      WARNING("Can't dup() stderr!\n");
+      close(err);
+    } else if (_dup2(err, fileno(stderr)) == -1) {
+      WARNING1("Can't redirect stderr to %s!\n", debug_output);
+      close(olderr);
+      close(err);
+    } else {
+      close(err);
+    }
+  }
   /* Win95 always gives the short filename for argv0, not the long one.
      There is only this way to catch it. It makes all the selfdir stuff
      useless for win32. */
-  char path[PATH_MAX], *fp;
-  HANDLE hnd;
-  WIN32_FIND_DATA ffd;
+  {
+    char path[PATH_MAX], *fp;
+    HANDLE hnd;
+    WIN32_FIND_DATA ffd;
 
-  /* SearchPath() always give back an absolute directory */
-  if (SearchPath(NULL, progname, ".exe", PATH_MAX, path, 
-		 &fp) == 0)
-    FATAL1("Can't determine where is the executable %s.\n", progname);
-  if ((hnd = FindFirstFile(path, &ffd)) == NULL)
-    FATAL1("The following path points to an invalid file : %s\n", path);
-  progname = ffd.cFileName;
-  /* slashify the dirname */
-  assert(fp != NULL);
-  *fp = '\0';
-  for (fp = path; fp && *fp; fp++)
-    if (IS_DIR_SEP(*fp)) *fp = DIR_SEP;
-  /* sdir will be the directory where the executable resides, ie: c:/TeX/bin */
-  sdir = my_dirname(path);
-#endif /* WIN32 */
-
-#ifndef HAVE_PROGRAM_INVOCATION_NAME
-  program_invocation_name = xstrdup (progname);
-#endif
-
-  /* If configured --enable-shared and running from the build directory
-     with the wrapper scripts (e.g., for make check), the binaries will
-     be named foo.exe instead of foo.  Or possibly if we're running on a
-     DOSISH system.  Although it's theoretically wrong to make
-     `program_invocation_name' be anything but the real name, as a
-     practical matter it seems simpler to strip off the .exe here.  Both
-     cnf.c and texmfmp.c (and who knows what else in the future) would
-     have to check for it otherwise.  */
-  ext = find_suffix (program_invocation_name);
-  if (ext && FILESTRCASEEQ (ext, "exe")) {
-    program_invocation_name = remove_suffix (program_invocation_name);
+    /* SearchPath() always gives back an absolute directory */
+    if (SearchPath(NULL, argv0, ".exe", PATH_MAX, path, &fp) == 0)
+        FATAL1("Can't determine where the executable %s is.\n", argv0);
+    if ((hnd = FindFirstFile(path, &ffd)) == NULL)
+        FATAL1("The following path points to an invalid file : %s\n", path);
+    /* slashify the dirname */
+    for (fp = path; fp && *fp; fp++)
+        if (IS_DIR_SEP(*fp)) *fp = DIR_SEP;
+    /* sdir will be the directory where the executable resides, ie: c:/TeX/bin */
+    sdir = my_dirname(path);
+    program_invocation_name = xstrdup(ffd.cFileName);
   }
 
-#ifndef HAVE_PROGRAM_INVOCATION_NAME
-  program_invocation_short_name = (string) basename (program_invocation_name);
-#endif
+#elif defined(__DJGPP__)
 
-  /* SELFAUTODIR is actually the parent of the invocation directory,
-     and SELFAUTOPARENT the grandparent.  This is how teTeX did it.  */
+  /* DJGPP programs support long filenames on Windows 95, but ARGV0 there
+     is always made with the short 8+3 aliases of all the pathname elements.
+     If long names are supported, we need to convert that to a long name.
+
+     All we really need is to call `_truename', but most of the code
+     below is required to deal with the special case of networked drives.  */
+  if (pathconf (argv0, _PC_NAME_MAX) > 12) {
+    char long_progname[PATH_MAX];
+
+    if (_truename (argv0, long_progname)) {
+      char *fp;
+
+      if (long_progname[1] != ':') {
+	/* A complication: `_truename' returns network-specific string at
+	   the beginning of `long_progname' when the program resides on a
+	   networked drive, and DOS calls cannot grok such pathnames.  We
+	   need to convert the filesystem name back to a drive letter.  */
+	char rootname[PATH_MAX], rootdir[4];
+
+	if (argv0[0] && argv0[1] == ':')
+	  rootdir[0] = argv0[0]; /* explicit drive in `argv0' */
+	else
+	  rootdir[0] = getdisk () + 'A';
+	rootdir[1] = ':';
+	rootdir[2] = '\\';
+	rootdir[3] = '\0';
+	if (_truename (rootdir, rootname)) {
+	  /* Find out where `rootname' ends in `long_progname' and replace
+	     it with the drive letter.  */
+	  int root_len = strlen (rootname);
+
+ 	  if (IS_DIR_SEP (rootname[root_len - 1]))
+            root_len--;	/* keep the trailing slash */
+	  long_progname[0] = rootdir[0];
+	  long_progname[1] = ':';
+	  memmove (long_progname + 2, long_progname + root_len,
+		   strlen (long_progname + root_len) + 1);
+	}
+      }
+
+      /* Convert everything to canonical form.  */
+      if (long_progname[0] >= 'A' && long_progname[0] <= 'Z')
+	long_progname[0] += 'a' - 'A'; /* make drive lower case, for beauty */
+      for (fp = long_progname; *fp; fp++)
+	if (IS_DIR_SEP (*fp))
+	  *fp = DIR_SEP;
+
+      program_invocation_name = xstrdup (long_progname);
+    }
+    else
+      /* If `_truename' failed, God help them, because we won't...  */
+      program_invocation_name = xstrdup (argv0);
+  }
+  else
+    program_invocation_name = xstrdup (argv0);
+
+#else /* !WIN32 && !__DJGPP__ */
+
+  program_invocation_name = xstrdup (argv0);
+
+#endif
+#endif /* not HAVE_PROGRAM_INVOCATION_NAME */
+
+  /* We need to find SELFAUTOLOC *before* removing the ".exe" suffix from
+     the program_name, otherwise the PATH search inside selfdir will fail,
+     since `prog' doesn't exists as a file, there's `prog.exe' instead.  */
 #ifndef WIN32
   sdir = selfdir (program_invocation_name);
 #endif
+  /* SELFAUTODIR is actually the parent of the invocation directory,
+     and SELFAUTOPARENT the grandparent.  This is how teTeX did it.  */
   xputenv ("SELFAUTOLOC", sdir);
   sdir_parent = my_dirname (sdir);
   xputenv ("SELFAUTODIR", sdir_parent);
@@ -488,8 +565,36 @@ kpse_set_progname P1C(const_string, progname)
   free (sdir);
   free (sdir_parent);
   free (sdir_grandparent);
+
+#ifndef PROGRAM_INVOCATION_NAME
+  program_invocation_short_name = (string)basename (program_invocation_name);
+#endif
+
+  if (progname) {
+    kpse_program_name = xstrdup (progname);
+  } else {
+    /* If configured --enable-shared and running from the build directory
+       with the wrapper scripts (e.g., for make check), the binaries will
+       be named foo.exe instead of foo.  Or possibly if we're running on a
+       DOSISH system.  */
+    ext = find_suffix (program_invocation_short_name);
+    if (ext && FILESTRCASEEQ (ext, "exe")) {
+      kpse_program_name = remove_suffix (program_invocation_short_name);
+    } else {
+      kpse_program_name = xstrdup (program_invocation_short_name);
+    }
+  }
 }
 
+/* This function is deprecated, because when we pretend to have a different
+   name it will look for _that_ name in the PATH if program_invocation_name
+   is not defined.  */
+void
+kpse_set_progname P1C(const_string, argv0)
+{
+  kpse_set_program_name (argv0, NULL);
+}
+
 #ifdef TEST
 void
 main (int argc, char **argv)

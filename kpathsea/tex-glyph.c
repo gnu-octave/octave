@@ -47,11 +47,14 @@ try_format P3C(const_string, fontname,  unsigned, dpi,
   boolean must_exist;
   string ret = NULL;
   const_string path = kpse_format_info[format].path;
+  const_string *sfx;
   if (!path)
     path = kpse_init_format (format);
   
   /* Set the suffix on the name we'll be searching for.  */
-  xputenv ("KPATHSEA_FORMAT", kpse_format_info[format].suffix);
+  sfx = kpse_format_info[format].suffix;
+  if (sfx && *sfx) 
+    xputenv ("KPATHSEA_FORMAT", *sfx);
 
   /* OK, the limits on this for loop are a little hokey, but it saves
      having to repeat the body.  We want to do it once with `must_exist'
@@ -143,7 +146,7 @@ try_resolution P4C(const_string, fontname,  unsigned, dpi,
    that we can find, returning the filename found and GLYPH_FILE.  Also
    set *FONTNAME_PTR to the real name corresponding to the alias found
    or the first alias, if that is not an alias itself.  (This allows
-   MakeTeXPK to only deal with real names.)  */
+   mktexpk to only deal with real names.)  */
 
 static string
 try_fontmap P4C(string *, fontname_ptr,  unsigned, dpi,
@@ -267,7 +270,7 @@ kpse_find_glyph P4C(const_string, passed_fontname,  unsigned, dpi,
     source = kpse_glyph_source_alias;
     ret = try_fontmap (&fontname, dpi, format, glyph_file);
 
-    /* If not an alias, try creating it on the fly with MakeTeXPK,
+    /* If not an alias, try creating it on the fly with mktexpk,
        unless FONTNAME is absolute or explicitly relative.  */
     if (!ret && !kpse_absolute_p (fontname, true)) {
       source = kpse_glyph_source_maketex;
@@ -276,7 +279,7 @@ kpse_find_glyph P4C(const_string, passed_fontname,  unsigned, dpi,
       ret = kpse_make_tex (format, fontname);
     }
 
-    /* If MakeTeX... succeeded, set return struct.  Doesn't make sense for
+    /* If mktex... succeeded, set return struct.  Doesn't make sense for
        `kpse_make_tex' to set it, since it can only succeed or fail,
        unlike the other routines.  */
     if (ret) {
@@ -284,7 +287,7 @@ kpse_find_glyph P4C(const_string, passed_fontname,  unsigned, dpi,
       KPSE_GLYPH_FILE_NAME (*glyph_file) = fontname;
     }
 
-    /* If MakeTeX... failed, try any fallback resolutions.  */
+    /* If mktex... failed, try any fallback resolutions.  */
     else {
       if (kpse_fallback_resolutions)
         ret = try_fallback_resolutions (fontname, dpi, format, glyph_file);

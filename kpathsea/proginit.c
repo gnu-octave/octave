@@ -36,10 +36,10 @@ kpse_init_prog P4C(const_string, prefix,  unsigned, dpi,  const_string, mode,
   string size_var = concat (prefix, "SIZES");
   
   /* Do both `pk_format' and `any_glyph_format' for the sake of xdvi; in
-     general, MakeTeXPK might apply to either, and the program will ask
+     general, mktexpk might apply to either, and the program will ask
      for the one it wants.  */
      
-  /* Might have a program-specific name for MakeTeXPK itself.  */
+  /* Might have a program-specific name for mktexpk itself.  */
   if (getenv (makepk_var)) {
   /* If we did, we want to enable the program, I think.  */
     kpse_set_program_enabled (kpse_pk_format, 1, kpse_src_env);

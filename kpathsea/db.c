@@ -30,8 +30,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #include <kpathsea/variable.h>
 
 static hash_table_type db; /* The hash table for all the ls-R's.  */
+/* SMALL: The old size of the hash table was 7603, with the assumption
+   that a minimal ls-R bas about 3500 entries.  But a typical ls-R will
+   be more like double that size.  */
 #ifndef DB_HASH_SIZE
-#define DB_HASH_SIZE 7603  /* A minimal ls-R has about 3500 entries.  */
+#define DB_HASH_SIZE 15991
 #endif
 #ifndef DB_NAME
 #define DB_NAME "ls-R"
@@ -166,7 +169,7 @@ kpse_db_insert P1C(const_string, passed_fname)
   if (db.buckets) {
     const_string dir_part;
     string fname = xstrdup (passed_fname);
-    string baseptr = (string) basename (fname);
+    string baseptr = (string)basename (fname);
     const_string file_part = xstrdup (baseptr);
 
     *baseptr = '\0';  /* Chop off the filename.  */
@@ -185,9 +188,8 @@ match P2C(const_string, filename,  const_string, path_elt)
 {
   const_string original_filename = filename;
   boolean matched = false;
-  boolean done = false;
   
-  for (; !done && *filename && *path_elt; filename++, path_elt++) {
+  for (; *filename && *path_elt; filename++, path_elt++) {
     if (FILECHARCASEEQ (*filename, *path_elt)) /* normal character match */
       ;
 
@@ -199,7 +201,7 @@ match P2C(const_string, filename,  const_string, path_elt)
         /* Trailing //, matches anything. We could make this part of the
            other case, but it seems pointless to do the extra work.  */
         matched = true;
-        done = true;
+        break;
       } else {
         /* Intermediate //, have to match rest of PATH_ELT.  */
         for (; !matched && *filename; filename++) {
@@ -208,11 +210,13 @@ match P2C(const_string, filename,  const_string, path_elt)
               && FILECHARCASEEQ (*filename, *path_elt))
             matched = match (filename, path_elt);
         }
+        /* Prevent filename++ when *filename='\0'. */
+        break;
       }
     }
 
     else /* normal character nonmatch, quit */
-      done = true;
+      break;
   }
   
   /* If we've reached the end of PATH_ELT, check that we're at the last
@@ -457,10 +461,10 @@ kpse_db_search P3C(const_string, name,  const_string, orig_path_elt,
       string db_file = concat (*db_dirs, try);
       boolean matched = match (db_file, path_elt);
 
-  #ifdef KPSE_DEBUG
+#ifdef KPSE_DEBUG
       if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
         DEBUGF3 ("db:match(%s,%s) = %d\n", db_file, path_elt, matched);
-  #endif
+#endif
 
       /* We got a hit in the database.  Now see if the file actually
          exists, possibly under an alias.  */

@@ -21,11 +21,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #include <kpathsea/absolute.h>
 #include <kpathsea/c-pathch.h>
 
-#ifdef DOSISH
-#include <kpathsea/c-ctype.h> /* for ISALPHA */
-#endif /* DOS */
-
-
 /* Sorry this is such a system-dependent mess, but I can't see any way
    to usefully generalize.  */
 
@@ -38,8 +33,13 @@ kpse_absolute_p P2C(const_string, filename,  boolean, relative_ok)
 #else /* not VMS */
   boolean absolute = IS_DIR_SEP (*filename)
 #ifdef DOSISH
-                     || ISALPHA (*filename) && IS_DEVICE_SEP (filename[1])
+                     /* Novell allows non-alphanumeric drive letters. */
+                     || (*filename && IS_DEVICE_SEP (filename[1]))
 #endif /* DOSISH */
+#ifdef WIN32
+                     /* UNC names */
+                     || (*filename == '\\' && filename[1] == '\\')
+#endif
 #ifdef AMIGA
 		     /* Colon anywhere means a device.  */
 		     || strchr (filename, ':')

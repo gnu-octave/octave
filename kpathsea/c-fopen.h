@@ -34,23 +34,16 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 
 /* How to open a binary file for reading:  */
 #ifndef FOPEN_RBIN_MODE
-#ifdef DOS
-#define FOPEN_RBIN_MODE "r+b"
-#else
-#if defined (VMS) || defined (VMCMS) || defined (OS2) || defined (WIN32)
+#if defined (VMS) || defined (VMCMS) || defined(DOS) || defined (OS2) || defined (WIN32) || defined (__DJGPP__) || defined (__CYGWIN32__)
 #define	FOPEN_RBIN_MODE	"rb"
 #else
 #define	FOPEN_RBIN_MODE	"r"
-#endif /* not (VM/CMS or VMS or OS2 or WIN32) */
-#endif /* not DOS */
+#endif /* not (VM/CMS or VMS or DOS or OS2 or WIN32 or __DJGPP__ or __CYGWIN32__) */
 #endif /* not FOPEN_RBIN_MODE */
 
 /* How to open a binary file for writing:  */
 #ifndef FOPEN_WBIN_MODE
-#ifdef DOS
-#define FOPEN_WBIN_MODE "w+b"
-#else
-#if defined (OS2) || defined (WIN32)
+#if defined (DOS) || defined (OS2) || defined (WIN32) || defined (__DJGPP__) || defined (__CYGWIN32__)
 #define FOPEN_WBIN_MODE "wb"
 #else
 #ifdef VMCMS
@@ -58,8 +51,37 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #else
 #define	FOPEN_WBIN_MODE	"w"
 #endif /* not VM/CMS */
-#endif /* not (OS2 or WIN32) */
-#endif /* not DOS */
+#endif /* not (DOS or OS2 or WIN32 or DJGPP or CYGWIN32) */
 #endif /* not FOPEN_WBIN_MODE */
+
+/* How to open a binary file for appending:  */
+#ifndef FOPEN_ABIN_MODE
+#if defined (DOS) || defined (OS2) || defined (WIN32) || defined (__DJGPP__) || defined (__CYGWIN32__)
+#define FOPEN_ABIN_MODE "ab"
+#else
+#define FOPEN_ABIN_MODE "a"
+#endif /* not (DOS or OS2 or WIN32 or DJGPP or CYGWIN32) */
+#endif /* not FOPEN_ABIN_MODE */
+
+/* How to switch an already open file handle to binary mode.
+   Used on DOSISH systems when we need to switch a standard
+   stream, such as stdin or stdout, to binary mode.  */
+#include <fcntl.h>
+#ifdef DOSISH
+#include <io.h>
+#ifndef O_BINARY
+#ifdef _O_BINARY
+#define O_BINARY _O_BINARY
+#endif
+#endif
+#if defined (__DJGPP__) || defined (WIN32) || defined (__CYGWIN32__)
+#define SET_BINARY(f) setmode((f), O_BINARY)
+#endif
+#else  /* not DOSISH */
+#ifndef O_BINARY
+#define O_BINARY 0
+#endif
+#define SET_BINARY(f) 0
+#endif /* not DOSISH */
 
 #endif /* not C_FOPEN_H */

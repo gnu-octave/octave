@@ -49,6 +49,7 @@ typedef enum
   kpse_gf_format,
   kpse_pk_format,
   kpse_any_glyph_format,	/* ``any'' meaning anything above */
+  kpse_tfm_format, 
   kpse_afm_format, 
   kpse_base_format, 
   kpse_bib_format, 
@@ -77,11 +78,15 @@ typedef enum
   kpse_texsource_format,
   kpse_tex_ps_header_format,
   kpse_troff_font_format,
-  kpse_tfm_format, 
   kpse_type1_format, 
   kpse_vf_format,
   kpse_dvips_config_format,
   kpse_ist_format,
+  kpse_truetype_format,
+  kpse_type42_format,
+  kpse_web2c_format,
+  kpse_program_text_format,
+  kpse_program_binary_format,
   kpse_last_format /* one past last index */
 } kpse_file_format_type;
 
@@ -96,7 +101,7 @@ typedef enum
   kpse_src_client_cnf, /* application config file, e.g., config.ps */
   kpse_src_env,        /* environment variable */
   kpse_src_x,          /* X Window System resource */
-  kpse_src_cmdline,    /* command-line option */
+  kpse_src_cmdline     /* command-line option */
 } kpse_src_type;
 
 
@@ -117,13 +122,14 @@ typedef struct
   const_string client_path;	/* E.g., from dvips's config.ps.  */
   const_string cnf_path;	/* From texmf.cnf.  */
   const_string default_path;	/* If all else fails.  */
-  const_string suffix;		/* For kpse_find_file to check for/append.  */
+  const_string *suffix;		/* For kpse_find_file to check for/append.  */
   const_string *alt_suffix;	/* More suffixes to check for.  */
   boolean suffix_search_only;	/* Only search with a suffix?  */
-  const_string program;		/* ``MakeTeXPK'', etc.  */
+  const_string program;		/* ``mktexpk'', etc.  */
   const_string program_args;	/* Args to `program'.  */
   boolean program_enabled_p;	/* Invoke `program'?  */
   kpse_src_type program_enable_level; /* Who said to invoke `program'.  */
+  boolean binmode;              /* The files must be opened in binary mode. */
 } kpse_format_info_type;
 
 /* The sole variable of that type, indexed by `kpse_file_format_type'.
@@ -156,13 +162,21 @@ extern string kpse_find_file P3H(const_string name,
 #define kpse_find_pict(name) kpse_find_file (name, kpse_pict_format, true)
 #define kpse_find_tex(name)  kpse_find_file (name, kpse_tex_format, true)
 #define kpse_find_tfm(name)  kpse_find_file (name, kpse_tfm_format, true)
+#define kpse_find_ofm(name)  kpse_find_file (name, kpse_ofm_format, true)
 
 /* The `false' is correct for DVI translators, which should clearly not
    require vf files for every font (e.g., cmr10.vf).  But it's wrong for
    VF translators, such as vftovp.  */
 #define kpse_find_vf(name) kpse_find_file (name, kpse_vf_format, false)
+#define kpse_find_ovf(name) kpse_find_file (name, kpse_ovf_format, false)
 
 /* Don't just look up the name, actually open the file.  */
 extern FILE *kpse_open_file P2H(const_string, kpse_file_format_type);
+
+/* This function is used to set kpse_program_name (from progname.c) to
+   a different value.  It will clear the path searching information, to
+   ensure that the search paths are appropriate to the new name. */
+
+extern void kpse_reset_program_name P1H(const_string progname);
 
 #endif /* not KPATHSEA_TEX_FILE_H */

@@ -2,8 +2,8 @@
 @setfilename kpathsea.info
 @settitle Kpathsea: A library for path searching
 
-@set version 3.0
-@set month-year February 1997
+@set version 3.2
+@set month-year October 1997
 
 @c Define new indices for commands, filenames, and options.
 @defcodeindex cm
@@ -22,19 +22,19 @@
 
 @dircategory TeX
 @direntry
-* Kpathsea: (kpathsea).              File lookup along search paths.
-* kpsewhich: (kpathsea)Invoking kpsewhich.      TeX file searching.
-* MakeTeXMF: (kpathsea)MakeTeX scripts.         MF source generation.
-* MakeTeXPK: (kpathsea)MakeTeX scripts.         PK bitmap generation.
-* MakeTeXTeX: (kpathsea)MakeTeX scripts.        TeX source generation.
-* MakeTeXTFM: (kpathsea)MakeTeX scripts.        TeX font metric generation.
-* MakeTeXls-R: (kpathsea)Filename database.     Update ls-R.
+* Kpathsea: (kpathsea).                       File lookup along search paths.
+* kpsewhich: (kpathsea)Invoking kpsewhich.    TeX file searching.
+* mktexmf: (kpathsea)mktex scripts.           MF source generation.
+* mktexpk: (kpathsea)mktex scripts.           PK bitmap generation.
+* mktextex: (kpathsea)mktex scripts.          TeX source generation.
+* mktextfm: (kpathsea)mktex scripts.          TeX font metric generation.
+* mktexlsr: (kpathsea)Filename database.      Update ls-R.
 @end direntry
 
 @ifinfo
 This file documents the Kpathsea library for path searching.
 
-Copyright (C) 1993, 94, 95, 96, 97 K. Berry.
+Copyright (C) 1993, 94, 95, 96, 97 K. Berry & O. Weber.
 
 Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -65,11 +65,12 @@ approved by the Free Software Foundation.
 @subtitle for version @value{version}
 @subtitle @value{month-year}
 @author K. Berry (@email{kb@@mail.tug.org})
+@author O. Weber (@email{infovore@@xs4all.nl})
 
 @page
 
 @vskip 0pt plus 1filll
-Copyright @copyright{} 1993, 94, 95, 96, 97 K. Berry.
+Copyright @copyright{} 1993, 94, 95, 96, 97 K. Berry & O. Weber.
 
 Permission is granted to make and distribute verbatim copies of this
 manual provided the copyright notice and this permission notice are
@@ -123,7 +124,7 @@ directories specified by the user, similar to what shells do when
 looking up program names to execute.
 
 @cindex programs using the library
-The following software, all of which I maintain, uses this library:
+The following software, all of which we maintain, uses this library:
 
 @itemize @bullet
 @item Dviljk (see the @samp{dvilj} man page)
@@ -135,31 +136,31 @@ implementation})
 @item Xdvik (see the @samp{xdvi} man page)
 @end itemize
 
-@noindent Other software that I do not maintain also uses it.
+@noindent Other software that we do not maintain also uses it.
 
 @cindex interface, not frozen
 @cindex comments, making
 @cindex suggestions, making
-I am still actively maintaining the library (and probably always will
-be, despite my hopes).  If you have comments or suggestions, please send
-them to me (@pxref{Reporting bugs}).
+We are still actively maintaining the library (and probably always will
+be, despite our hopes).  If you have comments or suggestions, please send
+them to us (@pxref{Reporting bugs}).
 
 @cindex conditions for use
 @cindex license for using the library
 @cindex GNU General Public License
-I distribute the library under the GNU Library General Public License
+We distribute the library under the GNU Library General Public License
 (LGPL), with one exception (see below).  In short, this means if you
 write a program using the library, you must (offer to) distribute the
 source to the library, along with any changes you have made, and allow
 anyone to modify the library source and distribute their modifications.
 It does not mean you have to distribute the source to your program,
-although I hope you will.
+although we hope you will.
 
 The exception is the part of the file @file{expand.c} which implements
-brace expansion.  I took this from Bash, which is covered by the GNU
+brace expansion.  We took this from Bash, which is covered by the GNU
 General Public License (GPL).  Therefore, if you wish to redistribute
 the library under the LGPL, you must remove this code.  (If you write a
-replacement I can distribute, I hope you'll share it with me.)  See the
+replacement we can distribute, we hope you'll share it with us.)  See the
 files @file{COPYING} and @file{COPYING.LIB} for the text of the GNU licenses.
 
 @cindex @TeX{} Users Group
@@ -173,10 +174,11 @@ throughout the world.  Anyway, here is the address:
 @flindex tug@@tug.org
 @display
 @TeX{} Users Group
-870 Market St. #801
-San Francisco, CA 94102  USA
-phone: +1 (415) 982-8449
-fax:   +1 (415) 982-8559
+P.O. Box 1239
+Three Rivers, CA 93271-1239
+USA
+phone: 1 209 561 0112
+fax: 1 209 561 4584
 email: @email{tug@@tug.org}
 @end display
 
@@ -192,24 +194,25 @@ email: @email{tug@@tug.org}
 
 @cindex Knuth, Donald E.
 (This section is for those people who are curious about how the library
-came about.)  (If you like to read historical accounts of software, I
+came about.)  (If you like to read historical accounts of software, we
 urge you to seek out the GNU Autoconf manual and the ``Errors of
 @TeX{}'' paper by Don Knuth, published in @cite{Software---Practice and
 Experience} 19(7), July 1989.)
 
 @cindex Morgan, Tim
 @cindex Rokicki, Tom
+@cindex Berry, Karl
 @cindex VAX 11/750
 @cindex Sun 2
 @pindex pxp @r{Pascal preprocessor}
 @pindex pc @r{Pascal compiler}
-My first ChangeLog entry for Web2c seems to be February 1990, but I may
-have done some work before then.  In any case, Tim Morgan and I were
-jointly maintaining it for a time.  (I should mention here that Tim had
-made Web2c into a real distribution long before I had ever used it or
-even heard of it, and Tom Rokicki did the original implementation.  I
-was using @code{pxp} and @code{pc} on VAX 11/750's and the hot new Sun 2
-machines.)
+[Karl writes.]  My first ChangeLog entry for Web2c seems to be February
+1990, but I may have done some work before then.  In any case, Tim
+Morgan and I were jointly maintaining it for a time.  (I should mention
+here that Tim had made Web2c into a real distribution long before I had
+ever used it or even heard of it, and Tom Rokicki did the original
+implementation.  I was using @code{pxp} and @code{pc} on VAX 11/750's
+and the hot new Sun 2 machines.)
 
 It must have been later in 1990 and 1991 that I started working on
 @cite{@TeX{} for the Impatient}. Dvips, Xdvi, Web2c, and the GNU
@@ -268,6 +271,13 @@ or that software patents haven't stopped software development by anybody
 smaller than a company with a million-dollar-a-year legal budget.  Which
 is actually what I think is likely to happen, but that's another
 story@dots{})
+
+@cindex Weber, Olaf
+[Olaf writes.]  At the end of 1997, UNIX is still alive and kicking,
+individuals still develop software, and Web2c development still
+continues.  Karl had been looking for some time for someone to take up
+part of the burden, and I volunteered.
+
 
 @include install.texi
 @include hier.texi
@@ -356,7 +366,7 @@ Although the simplest and most common path element is a directory name,
 Kpathsea supports additional features in search paths: layered default
 values, environment variable names, config file values, users' home
 directories, and recursive subdirectory searching.  Thus, we say that
-Kpathsea @dfn{expands} a path element, meaning transforming all thel
+Kpathsea @dfn{expands} a path element, meaning transforming all the
 magic specifications into the basic directory name or names.  This
 process is described in the sections below.  It happens in the same
 order as the sections.
@@ -450,7 +460,7 @@ them.
 
 Kpathsea reads @emph{all} @file{texmf.cnf} files in the search path, not
 just the first one found; definitions in earlier files override those in
-later files.  Thus, with the search path of @samp{.:$TEXMF}, values from
+later files.  Thus, if the search path is @samp{.:$TEXMF}, values from
 @file{./texmf.cnf} override those from @file{$TEXMF/texmf.cnf}.
 
 While (or instead of) reading this description, you may find it helpful
@@ -557,6 +567,7 @@ in the sections below.
 * Variable expansion::          $foo and $@{foo@} expand to environment values.
 * Tilde expansion::             ~ and ~user expand to home directories.
 * Brace expansion::             a@{foo,bar@}b expands to afoob abarb.
+* KPSE_DOT expansion::          . is replaced with $KPSE_DOT if it is defined.
 * Subdirectory expansion::      a// and a//b recursively expand to subdirs.
 @end menu
 
@@ -609,9 +620,9 @@ colon should expand seemed truly baroque.
 
 Technicality: Since it would be useless to insert the default value in
 more than one place, Kpathsea changes only one extra @samp{:} and leaves
-any others in place (where they will eventually be equivalent to
-@samp{.}, i.e., the current directory).  Kpathsea checks first for a
-leading @samp{:}, then a trailing @samp{:}, then a doubled @samp{:}.
+any others in place (they will eventually be ignored).  Kpathsea checks
+first for a leading @samp{:}, then a trailing @samp{:}, then a doubled
+@samp{:}.
 
 @flindex kdefault.c
 You can trace this by debugging ``paths'' (@pxref{Debugging}).
@@ -635,9 +646,9 @@ of @samp{foo} from @file{texmf.cnf} (if defined); (3) the empty string.
 If the character after the @samp{$} is alphanumeric or @samp{_}, the
 variable name consists of all consecutive such characters. If the
 character after the @samp{$} is a @samp{@{}, the variable name consists
-of everything up to the next @samp{@}} (braces may not be nested).
-Otherwise, Kpathsea gives a warning and ignores the @samp{$} and its
-following character.
+of everything up to the next @samp{@}} (braces may not be nested around
+variable names).  Otherwise, Kpathsea gives a warning and ignores the
+@samp{$} and its following character.
 
 @cindex quoting variable values
 @cindex shell variables
@@ -708,29 +719,50 @@ Tilde expansion is implemented in the source file @file{kpathsea/tilde.c}.
 @kindex @{ @r{expansion}
 @cindex brace expansion
 
-@samp{x@{@var{a},@var{b}@}y} expands to @samp{x@var{a}y:x@var{b}y}.
+@samp{x@{@var{a}:@var{b}@}y} expands to @samp{x@var{a}y:x@var{b}y}.
 For example:
 
 @example
-foo/@{1,2@}/baz
+foo/@{1:2@}/baz
 @end example
 
-@noindent expands to @samp{foo1baz:foo2baz}.  @samp{:} is the path
+@noindent expands to @samp{foo/1/baz:foo/2/baz}.  @samp{:} is the path
 separator on the current system; e.g., on a DOS system, it's @samp{;}.
 
-Braces can be nested; for example, @samp{x@{a,b@{1,2@}@}y} expands to
-@samp{xay:xb1y:xb2y}.
+Braces can be nested; for example, @samp{x@{A:B@{1:2@}@}y} expands to
+@samp{xAy:xB1y:xB2y}.
+
+Multiple non-nested braces are expanded from right to left; for example,
+@samp{x@{A:B@}@{1:2@}y} expands to @samp{x@{A:B@}1y:x@{A:B@}2y}, which
+expands to @samp{xA1y:xB1y:xA2y:xB2:y}.
 
 @cindex multiple @TeX{} hierarchies
 This feature can be used to implement multiple @TeX{} hierarchies, by
 assigning a brace list to @code{$TEXMF}, as mentioned in
-@file{texmf.cnf.in}.
+@file{texmf.in}.
+
+In old versions of the library you had to use a comma.  While this usage
+is deprecated, it is still supported for backwards compatibility with
+old configurations.  The last example could have been written
+@samp{x@{A,B@}@{1,2@}y}.
 
 @flindex expand.c
 Brace expansion is implemented in the source file
-@file{kpathsea/expand.c}.  It is taken from Bash, and is thus covered
-by the GNU General Public License, rather than the Library General
-Public License that covers the rest of Kpathsea.
+@file{kpathsea/expand.c}.  It is a modification of the Bash sources, and
+is thus covered by the GNU General Public License, rather than the
+Library General Public License that covers the rest of Kpathsea.
+
+
+@node KPSE_DOT expansion
+@subsection @code{KPSE_DOT} expansion
+
+@kindex KPSE_DOT @r{expansion}
+
+When @code{KPSE_DOT} is defined in the environment, it names a directory
+that should be considered the current directory for the purpose of
+looking up files in the search paths.  This feature is needed by the
+@samp{mktex@dots{}} scripts @ref{mktex scripts}, because these
+change the working directory.  You should not ever define it yourself.
 
 
 @node Subdirectory expansion
@@ -844,10 +876,10 @@ only one hierarchy.  Kpathsea looks for @file{ls-R} files along the
 hierarchies.
 
 The recommended way to create and maintain @samp{ls-R} is to run the
-@code{MakeTeXls-R} script, which is installed in @samp{$(bindir)}
+@code{mktexlsr} script, which is installed in @samp{$(bindir)}
 (@file{/usr/local/bin} by default).  That script goes to some trouble to
 follow symbolic links as necessary, etc.  It's also invoked by the
-distributed @samp{MakeTeX@dots{}} scripts.
+distributed @samp{mktex@dots{}} scripts.
 
 @flindex ls-R@r{, simplest build}
 At its simplest, though, you can build @file{ls-R} with the command
@@ -864,7 +896,7 @@ Also presuming your @code{ls} hasn't been aliased in a system file
 (e.g., @file{/etc/profile}) to something problematic, e.g., @samp{ls
 --color=tty}.  In that case, you will have to disable the alias before
 generating @file{ls-R}.  For the precise definition of the file format,
-@pxref{Database format}.
+see @ref{Database format}.
 
 Regardless of whether you use the supplied script or your own, you will
 almost certainly want to invoke it via @code{cron}, so when you make
@@ -1011,7 +1043,7 @@ The Kpsewhich program exercises the path searching functionality
 independent of any particular application.  This can also be useful as a
 sort of @code{find} program to locate files in your @TeX{} hierarchies,
 perhaps in administrative scripts.  It is used heavily in the
-distributed @samp{MakeTeX@dots{}} scripts.
+distributed @samp{mktex@dots{}} scripts.
 
 Synopsis:
 @example
@@ -1054,55 +1086,59 @@ Dvips.  Default is 600.
 @item --format=@var{name}
 @opindex --format=@var{name}
 Set the format for lookup to @var{name}.  By default, the format is
-guessed from the filename.  In fact, the recognized filename extensions
-and the allowable @var{name}s (including any leading @samp{.}) are the
-same.
+guessed from the filename, with @samp{tex} being used if nothing else
+fits.  The recognized filename extensions (including any leading
+@samp{.}) are also allowable @var{name}s.
 
-You can also specify an integer for @var{name}; this is the only way to
-specify formats that don't have an associated suffix, such as MetaPost
-support files and Dvips configuration files.  It's also somewhat faster,
-since no unused formats need to be initialized.  The integers appear in
-the output of @samp{--help}, and are of course subject to change.
+All formats also have a name, which is the only way to specify formats
+with no associated suffix.  For example, for Dvips configuration files
+you can use @samp{--format="dvips config"}.  (The quotes are for the
+sake of the shell.)
 
-Here's the current list of recognized names and numbers.
+Here's the current list of recognized names and the associated suffixes.
 @xref{Supported file formats}, for more information on each of these.
 @example
-gf(0)
-pk(1)
-bitmap font (2)
-.afm(3)
-.base(4)
-.bib(5)
-.bst(6)
-.cnf(7)
-ls-R(8)
-.fmt(9)
-.map(10)
-.mem(11)
-.mf(12)
-.pool(13)
-.mft(14)
-.mp(15)
-.pool(16)
-MetaPost support (17)
-.ocp(18)
-.ofm(19)
-.opl(20)
-.otp(21)
-.ovf(22)
-.ovp(23)
-graphic/figure (24) .eps .epsi
-.tex(25) .ltx .dtx .texi .texinfo .txi .eps .epsi
-TeX documentation (26)
-.pool(27)
-TeX sources (28)
-PostScript header/font (29) .pro
-Troff fonts (30)
-.tfm(31)
-.pfa(32) .pfb
-.vf(33)
-dvips config (34)
-.ist(35)
+gf: gf
+pk: pk
+bitmap font
+afm: .afm
+base: .base
+bib: .bib
+bst: .bst
+cnf: .cnf
+ls-R: ls-R
+fmt: .fmt
+map: .map
+mem: .mem
+mf: .mf
+mfpool: .pool
+mft: .mft
+mp: .mp
+mppool: .pool
+MetaPost support
+ocp: .ocp
+ofm: .ofm .tfm
+opl: .opl
+otp: .otp
+ovf: .ovf
+ovp: .ovp
+graphic/figure: .eps .epsi
+tex: .tex
+TeX system documentation
+texpool: .pool
+TeX system sources
+PostScript header/font: .pro
+Troff fonts
+tfm: .tfm
+type1 fonts: .pfa .pfb
+vf: .vf
+dvips config
+ist: .ist
+truetype fonts: .ttf .ttc
+type42 fonts
+web2c files
+other text files
+other binary files
 @end example
 
 This option and @samp{--path} are mutually exclusive.
@@ -1113,19 +1149,19 @@ This option and @samp{--path} are mutually exclusive.
 After processing the command line, read additional filenames to look up
 from standard input.
 
-@item -maketex=@var{filetype}
-@itemx -no-maketex=@var{filetype}
-@opindex -maketex=@var{filetype}
-@opindex -no-maketex=@var{filetype}
-Turn on or off the @samp{MakeTeX} script associated with @var{filetype}.
+@item -mktex=@var{filetype}
+@itemx -no-mktex=@var{filetype}
+@opindex -mktex=@var{filetype}
+@opindex -no-mktex=@var{filetype}
+Turn on or off the @samp{mktex} script associated with @var{filetype}.
 The only values that make sense for @var{filetype} are @samp{pk},
 @samp{mf}, @samp{tex}, and @samp{tfm}. By default, all are off in
-Kpsewhich.  @xref{MakeTeX scripts}.
+Kpsewhich.  @xref{mktex scripts}.
 
 @item --mode=@var{string}
 @opindex --mode=@var{string}
 Set the mode name to @var{string}; this also only affects @samp{gf} and
-@samp{pk} lookups.  No default: any mode will be found.  @xref{MakeTeX
+@samp{pk} lookups.  No default: any mode will be found.  @xref{mktex
 script arguments}.
 
 @item --must-exist
@@ -1141,7 +1177,7 @@ of guessing the search path from the filename.  @samp{//} and all the
 usual expansions are supported (@pxref{Path expansion}).  This option
 and @samp{--format} are mutually exclusive.  To output the complete
 directory expansion of a path, instead of doing a one-shot lookup, see
-@samp{--path-expand} in the following section.
+@samp{--expand-path} in the following section.
 
 @item --progname=@var{name}
 @opindex --progname=@var{name}
@@ -1166,20 +1202,23 @@ lookup:
 @xref{Debugging}.
 
 @item
+@opindex --expand-braces=@var{string}
+@samp{--expand-braces=@var{string}} outputs the variable and brace
+expansion of @var{string}.  @xref{Path expansion}.
+
+@item
 @opindex --expand-var=@var{string}
 @samp{--expand-var=@var{string}} outputs the variable expansion of
-@var{string}.  For example, the @samp{MakeTeX@dots{}} scripts run
+@var{string}.  For example, the @samp{mktex@dots{}} scripts run
 @samp{kpsewhich --expand-var='$TEXMF'} to find the root of the @TeX{} system
 hierarchy.  @xref{Path expansion}.
 
 @item
 @opindex --expand-path=@var{string}
-@opindex --separator=@var{string}
 @samp{--expand-path=@var{string}} outputs the complete expansion of
 @var{string} as a colon-separated path.  This is useful to construct a
 search path for a program that doesn't accept recursive subdirectory
-specifications.  The option @samp{--separator=@var{string}} changes the
-separator in the output from @samp{:} to @var{string}.
+specifications.
 
 For one-shot uses of an arbitrary (not built in to Kpathsea) path, see
 @samp{--path} in the previous section.
@@ -1265,38 +1304,84 @@ for environment variables with an underscore, e.g.,
 The following table lists the above information.
 
 @table @samp
-@item .afm
+@item afm
 @flindex .afm
 @vindex AFMFONTS
 (Adobe font metrics, @pxref{Metric files,,, dvips, Dvips})
-@code{AFMFONTS}.
+@code{AFMFONTS};
+suffix @samp{.afm}.
 
-@item .base
+@item base
 @flindex .base
 @vindex MFBASES
 @vindex TEXMFINI
 (Metafont memory dump, @pxref{Memory dumps,,, web2c, Web2c})
-@code{MFBASES}, @code{TEXMFINI}.
+@code{MFBASES}, @code{TEXMFINI};
+suffix @samp{.base}.
 
-@item .bib
+@item bib
 @flindex .bib
 @vindex BIBINPUTS
 @vindex TEXBIB
 (Bib@TeX{} bibliography source, @pxref{bibtex invocation,,, web2c, Web2c})
-@code{BIBINPUTS}, @code{TEXBIB}.
+@code{BIBINPUTS}, @code{TEXBIB};
+suffix @samp{.bib}.
 
-@item .bst
+@item bst
 @flindex .bst
 @vindex BSTINPUTS
 (Bib@TeX{} style file, @pxref{Basic BibTeX style files,, Basic Bib@TeX{}
 style files, web2c, Web2c})
-@code{BSTINPUTS}.
+@code{BSTINPUTS};
+suffix @samp{.bst}.
 
-@item .cnf
+@item cnf
 @flindex .cnf
 @vindex TEXMFCNF
 (Runtime configuration files, @pxref{Config files})
-@code{TEXMFCNF}.
+@code{TEXMFCNF};
+suffix @samp{.cnf}.
+
+@item dvips config
+@vindex TEXCONFIG
+@flindex config.ps@r{, search path for}
+(Dvips @samp{config.*} files, such as @file{config.ps}, @pxref{Config
+files,,, dvips, Dvips})
+@code{TEXCONFIG}.
+
+@item fmt
+@flindex .fmt
+@vindex TEXFORMATS
+@vindex TEXMFINI
+(@TeX{} memory dump, @pxref{Memory dumps,,, web2c, Web2c})
+@code{TEXFORMATS}, @code{TEXMFINI};
+suffix @samp{.fmt}.
+
+@item gf
+@flindex gf
+@vindex GFFONTS
+@vindex GLYPHFONTS
+@vindex TEXFONTS
+(generic font bitmap, @pxref{Glyph files,,, dvips, Dvips})
+@code{@var{program}FONTS}, @code{GFFONTS}, @code{GLYPHFONTS}, @code{TEXFONTS};
+suffix @samp{gf}.
+
+@item graphic/figure
+@flindex .eps
+@flindex .epsi
+@vindex TEXPICTS
+@vindex TEXINPUTS
+(Encapsulated PostScript figures, @pxref{PostScript figures,,, dvips, Dvips})
+@code{TEXPICTS}, @code{TEXINPUTS};
+additional suffixes: @samp{.eps}, @samp{.epsi}.
+
+@item ist
+@flindex .ist
+@vindex TEXINDEXSTYLE
+@vindex INDEXSTYLE
+(makeindex style files)
+@code{TEXINDEXSTYLE}, @code{INDEXSTYLE};
+suffix @samp{.ist}.
 
 @item ls-R
 @flindex ls-R
@@ -1304,122 +1389,104 @@ style files, web2c, Web2c})
 (Filename databases, @pxref{Filename database})
 @code{TEXMFDBS}.
 
-@item .fmt
-@flindex .fmt
-@vindex TEXFORMATS
-@vindex TEXMFINI
-(@TeX{} memory dump, @pxref{Memory dumps,,, web2c, Web2c})
-@code{TEXFORMATS}, @code{TEXMFINI}.
-
-@item gf
-@flindex .gf
-@vindex GFFONTS
-@vindex GLYPHFONTS
-@vindex TEXFONTS
-(generic font bitmap, @pxref{Glyph files,,, dvips, Dvips})
-@code{@var{program}FONTS}, @code{GFFONTS}, @code{GLYPHFONTS}, @code{TEXFONTS}.
-
-@item .map
+@item map
 @flindex .map
 @vindex TEXFONTMAPS
 (Fontmaps, @pxref{Fontmap})
-@code{TEXFONTMAPS}.
+@code{TEXFONTMAPS};
+suffix @samp{.map}.
 
-@item .ist
-@flindex .ist
-@vindex TEXINDEXSTYLE
-@vindex INDEXSTYLE
-(makeindex style files)
-@code{TEXINDEXSTYLE}, @code{INDEXSTYLE}.
-
-@item .mem
+@item mem
 @flindex .mem
 @vindex MPMEMS
 @vindex TEXMFINI
 (MetaPost memory dump, @pxref{Memory dumps,,, web2c, Web2c})
-@code{MPMEMS}, @code{TEXMFINI}.
+@code{MPMEMS}, @code{TEXMFINI};
+suffix @samp{.mem}.
 
-@item .mf
-@flindex .mf
-@vindex MFINPUTS
-(Metafont source, @pxref{mf invocation,,, web2c, Web2c})
-@code{MFINPUTS};
-dynamic creation program: @code{MakeTeXMF}.
-
-@item .mft
-@flindex .mft
-@vindex MFTINPUTS
-(@code{MFT} style file, @pxref{mft invocation,,, web2c, Web2c})
-@code{MFTINPUTS}.
-
-@item mf.pool
-@flindex .pool
-@vindex MFPOOL
-(Metafont program strings, @pxref{pooltype invocation,,, web2c, Web2c})
-@code{MFPOOL}, @code{TEXMFINI}.
-
-@item .mp
-@flindex .mp
-@vindex MPINPUTS
-(MetaPost source, @pxref{mpost invocation,,, web2c, Web2c})
-@code{MPINPUTS}.
-
-@item mp.pool
-@flindex .pool
-@vindex MPPOOL
-(MetaPost program strings, @pxref{pooltype invocation,,, web2c, Web2c})
-@code{MPPOOL}, @code{TEXMFINI}.
-
-@item @r{(none)}
+@item @r{MetaPost support}
 @vindex MPSUPPORT
 (MetaPost support files, used by DMP; @pxref{dmp invocation,,, web2c, Web2c}) 
 @code{MPSUPPORT}.
 
-@item .ocp
+@item mf
+@flindex .mf
+@vindex MFINPUTS
+(Metafont source, @pxref{mf invocation,,, web2c, Web2c})
+@code{MFINPUTS};
+suffix @samp{.mf};
+dynamic creation program: @code{mktexmf}.
+
+@item mfpool
+@flindex .pool
+@vindex MFPOOL
+(Metafont program strings, @pxref{pooltype invocation,,, web2c, Web2c})
+@code{MFPOOL}, @code{TEXMFINI};
+suffix @samp{.pool}.
+
+@item mft
+@flindex .mft
+@vindex MFTINPUTS
+(@code{MFT} style file, @pxref{mft invocation,,, web2c, Web2c})
+@code{MFTINPUTS};
+suffix @samp{.mft}.
+
+@item mp
+@flindex .mp
+@vindex MPINPUTS
+(MetaPost source, @pxref{mpost invocation,,, web2c, Web2c})
+@code{MPINPUTS};
+suffix @samp{.mp}.
+
+@item mppool
+@flindex .pool
+@vindex MPPOOL
+(MetaPost program strings, @pxref{pooltype invocation,,, web2c, Web2c})
+@code{MPPOOL}, @code{TEXMFINI};
+suffix @samp{.pool}.
+
+@item ocp
 @flindex .ocp
 @vindex OCPINPUTS
 (Omega compiled process files)
 @code{OCPINPUTS}; @*
+suffix @samp{.ocp};
 dynamic creation program: @code{MakeOmegaOCP}.
 
-@item .ofm
+@item ofm
 @flindex .ofm
 @vindex OFMFONTS
 (Omega font metrics)
 @code{OFMFONTS}, @code{TEXFONTS}; @*
+suffixes @samp{.ofm}, @samp{.tfm};
 dynamic creation program: @code{MakeOmegaOFM}.
 
-@item .opl
+@item opl
 @flindex .opl
 (Omega property lists)
-@code{OPLFONTS}, @code{TEXFONTS}.
+@code{OPLFONTS}, @code{TEXFONTS};
+suffix @samp{.opl}.
 
-@item .otp
+@item otp
 @flindex .otp
 @vindex OTPINPUTS
 (Omega translation process files)
-@code{OTPINPUTS}.
+@code{OTPINPUTS};
+suffix @samp{.otp}.
 
-@item .ovf
+@item ovf
 @flindex .ovf
 @vindex OVFFONTS
 (Omega virtual fonts)
-@code{OVFFONTS}, @code{TEXFONTS}.
+@code{OVFFONTS}, @code{TEXFONTS};
+suffix @samp{.ovf}.
 
-@item .ovp
+@item ovp
 @flindex .ovp
 @vindex OVPFONTS
 (Omega virtual property lists)
-@code{OVPFONTS}, @code{TEXFONTS}.
-
-@item .eps
-@flindex .eps
-@flindex .epsi
-@vindex TEXPICTS
-@vindex TEXINPUTS
-(Encapsulated PostScript figures, @pxref{PostScript figures,,, dvips, Dvips})
-@code{TEXPICTS}, @code{TEXINPUTS};
-additional suffixes: @samp{.epsi}.
+@code{OVPFONTS}, @code{TEXFONTS};
+suffix @samp{.ovp}.
 
 @item pk
 @flindex .pk
@@ -1430,63 +1497,67 @@ additional suffixes: @samp{.epsi}.
 (packed bitmap fonts, @pxref{Glyph files,,, dvips, Dvips})
 @code{@var{PROGRAM}FONTS} (@var{program} being @samp{XDVI}, etc.),
 @code{PKFONTS}, @code{TEXPKS}, @code{GLYPHFONTS}, @code{TEXFONTS};
-dynamic creation program: @code{MakeTeXPK}.
+suffix @samp{pk};
+dynamic creation program: @code{mktexpk}.
 
-@item .pro
+@item PostScript header
 @flindex .pro
 @vindex TEXPSHEADERS
 @vindex PSHEADERS
 (downloadable PostScript, @pxref{Header files,,, dvips, Dvips})
-@code{TEXPSHEADERS}, @code{PSHEADERS}.
+@code{TEXPSHEADERS}, @code{PSHEADERS};
+additional suffix @samp{.pro}.
 
-@item .tex
+@item tex
 @flindex .tex
-@flindex .ltx
-@flindex .dtx
-@flindex .texi
-@flindex .texinfo
-@flindex .txi
-@flindex .eps
-@flindex .epsi
 @vindex TEXINPUTS
 (@TeX{} source, @pxref{tex invocation,,, web2c, Web2c})
 @code{TEXINPUTS};
-additional suffixes: @samp{.ltx} @samp{.dtx} @samp{.texi} @samp{.texinfo}
-@samp{.txi} @samp{.eps} @samp{.epsi};
-dynamic creation program: @code{MakeTeXTeX}.
+suffix @samp{.tex};
+additional suffixes: none, because such a list cannot be complete;
+dynamic creation program: @code{mktextex}.
 
-@item @r{(none)}
+@item TeX system documentation
 @flindex doc files
 @vindex TEXDOCS
 (Documentation files for the @TeX{} system)
 @code{TEXDOCS}.
 
-@item tex.pool
-@flindex .pool
-@vindex TEXPOOL
-(@TeX{} program strings, @pxref{pooltype invocation,,, web2c, Web2c})
-@code{TEXPOOL}, @code{TEXMFINI}.
-
-@item @r{(none)}
+@item TeX system sources
 @flindex source files
 @vindex TEXSOURCES
 (Source files for the @TeX{} system)
 @code{TEXSOURCES}.
 
-@item .tfm
+@item texpool
+@flindex .pool
+@vindex TEXPOOL
+(@TeX{} program strings, @pxref{pooltype invocation,,, web2c, Web2c})
+@code{TEXPOOL}, @code{TEXMFINI};
+suffix @samp{.pool}.
+
+@item tfm
 @flindex .tfm
 @vindex TFMFONTS
 @vindex TEXFONTS
 (@TeX{} font metrics, @pxref{Metric files,,, dvips, Dvips})
 @code{TFMFONTS}, @code{TEXFONTS};
-dynamic creation program: @code{MakeTeXTFM}.
+suffix @samp{.tfm};
+dynamic creation program: @code{mktextfm}.
 
-@item @r{(none)}
+@item Troff fonts
 @vindex TRFONTS
 (Troff fonts, used by DMP; @pxref{DMP invocation,,, web2c, Web2c}) 
 @code{TRFONTS}.
 
-@item .pfa
+@item truetype fonts
+@flindex .ttf
+@flindex .ttc
+@vindex TTFONTS
+(TrueType outline fonts) @code{TTFONTS}; suffixes @samp{.ttf},
+@samp{.ttc}.
+
+@item type1 fonts
 @flindex .pfa
 @flindex .pfb
 @vindex T1FONTS
@@ -1494,22 +1565,38 @@ dynamic creation program: @code{MakeTeXTFM}.
 @vindex TEXPSHEADERS
 @vindex DVIPSHEADERS
 (Type 1 PostScript outline fonts, @pxref{Glyph files,,, dvips, Dvips})
-@code{T1FONTS}, @code{T1INPUTS}, @code{TEXPSHEADERS}, @code{DVIPSHEADERS}; additional suffix:
-@samp{.pfb}.
+@code{T1FONTS}, @code{T1INPUTS}, @code{TEXPSHEADERS}, @code{DVIPSHEADERS};
+suffixes @samp{.pfa}, @samp{.pfb}.
 
-@item .vf
+@item type42 fonts
+@vindex T42FONTS
+(Type 42 PostScript outline fonts) @code{T42FONTS}.
+
+@item vf
 @flindex .vf
 @vindex VFFONTS
 @vindex TEXFONTS
 (virtual fonts, @pxref{Virtual fonts,,, dvips, Dvips})
-@code{VFFONTS}, @code{TEXFONTS}.
+@code{VFFONTS}, @code{TEXFONTS};
+suffix @samp{.vf}.
+@end table
 
-@item @r{(none)}
-@vindex TEXCONFIG
-@flindex config.ps@r{, search path for}
-(Dvips @samp{config.*} files, such as @file{config.ps}, @pxref{Config
-files,,, dvips, Dvips})
-@code{TEXCONFIG}.
+There are two special cases, because the paths and environment variables
+always depend on the name of the program: the variable name is
+constructed by converting the program name to upper case, and then
+appending @samp{INPUTS}.  Assuming the program is called @samp{foo},
+this gives us the following table.
+
+@table @samp
+@item other text files
+@vindex FOOINPUTS
+(text files used by @samp{foo})
+@code{FOOINPUTS}.
+
+@item other binary files
+@vindex FOOINPUTS
+(binary files used by @samp{foo})
+@code{FOOINPUTS}.
 @end table
 
 If an environment variable by these names are set, the corresponding
@@ -1551,29 +1638,23 @@ searches are the exception, as described in the next section).
 Here is the search strategy for a file @var{name}:
 @enumerate
 @item
-If @var{name} has a suffix, search for exactly @var{name} along the
-appropriate path.  Example: given @samp{foo.sty}, look for
-@samp{foo.sty} before @samp{foo.sty.tex}, even though it's a @TeX{}
-input file.
+If the file format defines default suffixes, and the suffix of
+@var{name} name is not already a known suffix for that format, try the
+name with each default appended, and use alternative names found in the
+fontmaps if necessary.  We postpone searching the disk as long as
+possible.  Example: given @samp{foo.sty}, look for @samp{foo.sty.tex}
+before @samp{foo.sty}.  This is unfortunate, but allows us to find
+@samp{foo.bar.tex} before @samp{foo.bar} if both exist and we were given
+@samp{foo.bar}.
 
 @item
-If the file format defines a default suffix, and the suffix of
-@var{name} is not already that default, try appending the default.
-Example: given @samp{foo.bar}, search for @samp{foo.bar.tex}.  But if
-given @samp{foo.tex}, don't bother to search for @samp{foo.tex.tex}.
-
-@item
-If we're searching for a TFM, PK, or GF file, look for aliases of
-@var{name} in @file{texfonts.map} files (@pxref{Fontmap}).  Example:
-given @samp{Times-Roman}, find @samp{ptmr}.
+Search for @var{name}, and if necssary for alternative names found in
+the fontmaps.  Again we avoid searching the disk if possible.  Example:
+given @samp{foo}, we look for @samp{foo}.
 
 @item
 If the file format defines a program to invoke to create missing files,
-run it (@pxref{MakeTeX scripts}).
-
-@item
-Search for @var{name} itself, if we haven't done so already.  Example:
-given @samp{foo}, search for @samp{foo}.
+run it (@pxref{mktex scripts}).
 @end enumerate
 
 @flindex tex-file.c
@@ -1606,8 +1687,8 @@ specified format(s).
 @item If @var{name} is an alias for a file @var{f} in the fontmap
 file @file{texfonts.map}, look for @var{f}.@var{dpi}.
 
-@item Run an external program (typically named @samp{MakeTeXPK}) to
-generate the font (@pxref{MakeTeX scripts})
+@item Run an external program (typically named @samp{mktexpk}) to
+generate the font (@pxref{mktex scripts})
 
 @item Look for @var{fallback}.@var{dpi}, where @var{fallback} is some
 last-resort font (typically @samp{cmr10}).
@@ -1819,6 +1900,7 @@ This chapter is for programmers who wish to use Kpathsea.
 @menu
 * Overview: Programming overview.         Introduction.
 * Calling sequence::                      Specifics of what to call.
+* Program-specific files::                How to handle these.
 * Config: Programming with config files.  Getting info from texmf.cnf.
 @end menu
 
@@ -1878,15 +1960,19 @@ The typical way to use Kpathsea in your program goes something like this:
 @enumerate
 
 @item
-@findex kpse_set_progname
+@findex kpse_set_program_name
 @vindex argv[0]
-Call @code{kpse_set_progname} with @code{argv[0]}; This is the only
-initialization that is mandatory to take full advantage of
-Kpathsea---specifically, for the @code{.@var{program}} feature of config
-files (@pxref{Config files}).
+Call @code{kpse_set_program_name} with @code{argv[0]} as the first
+argument; the second argument is a string or @code{NULL}.  The second
+argument is used by Kpathsea as the program name for the
+@code{.@var{program}} feature of config files (@pxref{Config files}).
+If the second argument is @code{NULL}, the value of the first argument
+is used.  This function must be called before any other use of the
+Kpathsea library.
 
 @vindex program_invocation_name
 @vindex program_invocation_short_name
+@vindex kpse_program_name
 @vindex KPATHSEA_DEBUG
 @cindex SELFAUTOLOC
 @cindex SELFAUTODIR
@@ -1894,18 +1980,29 @@ files (@pxref{Config files}).
 @cindex error message macros
 @cindex symlinks, resolving
 @cindex expanding symlinks
-If necessary, @code{kpse_set_progname} sets the global variables
+If necessary, @code{kpse_set_program_name} sets the global variables
 @code{program_invocation_name} and @code{program_invocation_short_name}.
 These variables are used in the error message macros defined in
-@file{kpathsea/lib.h}.  It also initializes debugging options based on
-the environment variable @code{KPATHSEA_DEBUG} (if that is set).
-Finally, it sets the variables @code{SELFAUTOLOC}, @code{SELFAUTODIR}
-and @code{SELFAUTOPARENT} to the location, parent and grandparent
-directory of the executable, removing @file{.} and @file{..} path
-elements and resolving symbolic links.  These are used in the default
-configuration file to allow people to invoke TeX from anywhere,
-specifically from a mounted CD-ROM.  (You can use
-@samp{--expand-var=\$SELFAUTOLOC}, etc., to see the values finds.)
+@file{kpathsea/lib.h}.  It sets the global variable
+@code{kpse_program_name} to the program name it uses.  It also
+initializes debugging options based on the environment variable
+@code{KPATHSEA_DEBUG} (if that is set).  Finally, it sets the variables
+@code{SELFAUTOLOC}, @code{SELFAUTODIR} and @code{SELFAUTOPARENT} to the
+location, parent and grandparent directory of the executable, removing
+@file{.} and @file{..} path elements and resolving symbolic links.
+These are used in the default configuration file to allow people to
+invoke TeX from anywhere, specifically from a mounted CD-ROM.  (You can
+use @samp{--expand-var=\$SELFAUTOLOC}, etc., to see the values finds.)
+
+@item
+@findex kpse_set_progname
+@vindex argv[0]
+The @code{kpse_set_progname} is deprecated.  A call to
+@code{kpse_set_progname} with @code{argv[0]} is equivalent to a call of
+@code{kpse_set_program_name} with first argument @code{argv[0]} and
+second argument @code{NULL}.  The function is deprecated because it
+cannot ensure that the @code{.@var{program}} feature of config files
+will always work (@pxref{Config files}).
 
 @item
 @vindex kpathsea_debug @r{variable}
@@ -1941,6 +2038,7 @@ work, e.g., initializing the Bib@TeX{} search paths in a DVI driver.)
 
 @item
 @findex kpse_find_*
+@findex kpse_find_file
 The routine to actually find a file of type @var{format} is
 @code{kpse_find_@var{format}}, defined in @file{tex-file.h}. These are
 macros that expand to a call to @file{kpse_find_file}.  You can call,
@@ -1990,6 +2088,29 @@ using Autoconf regardless.  It is available from
 @url{ftp://prep.ai.mit.edu/pub/gnu/}.
 
 
+@node Program-specific files
+@section Program-specific files
+
+Many programs will need to find some configuration files.  Kpathsea
+contains some support to make it easy to place them in their own
+directories.  The Standard @TeX{} directory structure (@pxref{Top,,
+Introduction, tds, A Directory Structure for @TeX{} files}), specifies
+that such files should go into a subdirectory named after the program,
+like @samp{texmf/ttf2pk}.
+
+Two special formats, @samp{kpse_program_text_format} and
+@samp{kpse_program_binary_format} exist, which use
+@code{.:$TEXMF/@var{program}//} as their compiled-in search path.  To
+override this default, you can use the variable
+@code{@var{PROGRAM}INPUTS} in the environment and/or @samp{texmf.cnf}.
+That is to say, the name of the variable is constructed by converting
+the name of the program to upper case, and appending @code{INPUTS}.
+
+The only difference between these two formats is whether
+@code{kpse_open_file} will open the files it finds in text or binary
+mode.
+
+
 @node Programming with config files
 @section Programming with config files
 
@@ -2000,7 +2121,7 @@ You can (and probably should) use the same @code{texmf.cnf}
 configuration file that Kpathsea uses for your program.  This helps
 installers by keeping all configuration in one place.
 
-@findex kpse_var_expand
+@findex kpse_var_value
 @flindex variable.h
 @vindex shell_escape@r{, example for code}
 To retrieve a value @var{var} from config files, the best way is to call

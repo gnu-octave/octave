@@ -16,19 +16,13 @@ You should have received a copy of the GNU Library General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 
-/* Don't include config.h or all our other usual includes, since
-   it's useful to just throw this file into other programs.  */
-
 #include <stdio.h>
-extern char *realloc ();
+#include <kpathsea/config.h>
 
-
-extern void *xmalloc ();
+extern void *xmalloc P1H(unsigned);
 
 void *
-xrealloc (old_ptr, size)
-    void *old_ptr;
-    unsigned size;
+xrealloc P2C(void *, old_ptr, unsigned, size)
 {
   void *new_mem;
 

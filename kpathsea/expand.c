@@ -3,7 +3,7 @@
    code in kpathsea.  The part of the file that I wrote (the first
    couple of functions) is covered by the LGPL.
 
-Copyright (C) 1993, 94, 95, 96, 97 Karl Berry.
+Copyright (C) 1993, 94, 95, 96, 97 Karl Berry & O. Weber.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Library General Public
@@ -26,6 +26,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #include <kpathsea/pathsearch.h>
 #include <kpathsea/tilde.h>
 #include <kpathsea/variable.h>
+#include <kpathsea/concatn.h>
+#include <kpathsea/absolute.h>
 
 
 /* Do variable expansion first so ~${USER} works.  (Besides, it's what the
@@ -47,8 +49,66 @@ kpse_expand P1C(const_string, s)
 }
 
 
+/* Forward declarations of functions from the original expand.c  */
 static char **brace_expand P1H(const_string);
 static void free_array P1H(char **);
+
+/* If $KPSE_DOT is defined in the environment, prepend it to any relative
+   path components. */
+
+static string
+kpse_expand_kpse_dot P1C(string, path)
+{
+  string ret, elt;
+  string kpse_dot = getenv("KPSE_DOT");
+#ifdef MSDOS
+  boolean malloced_kpse_dot = false;
+#endif
+  
+  if (kpse_dot == NULL)
+    return path;
+  ret = xmalloc(1);
+  *ret = 0;
+
+#ifdef MSDOS
+  /* Some setups of ported Bash force $KPSE_DOT to have the //d/foo/bar
+     form (when `pwd' is used), which is not understood by libc and the OS.
+     Convert them back to the usual d:/foo/bar form.  */
+  if (kpse_dot[0] == '/' && kpse_dot[1] == '/'
+      && kpse_dot[2] >= 'A' && kpse_dot[2] <= 'z' && kpse_dot[3] == '/') {
+    kpse_dot++;
+    kpse_dot = xstrdup (kpse_dot);
+    kpse_dot[0] = kpse_dot[1];  /* drive letter */
+    kpse_dot[1] = ':';
+    malloced_kpse_dot = true;
+  }
+#endif
+
+  for (elt = kpse_path_element (path); elt; elt = kpse_path_element (NULL)) {
+    string save_ret = ret;
+    /* We assume that the !! magic is only used on absolute components.
+       Single "." get special treatment, as does "./" or its equivalent. */
+    if (kpse_absolute_p (elt, false) || (elt[0] == '!' && elt[1] == '!')) {
+      ret = concat3(ret, elt, ENV_SEP_STRING);
+    } else if (elt[0] == '.' && elt[1] == 0) {
+      ret = concat3 (ret, kpse_dot, ENV_SEP_STRING);
+#ifndef VMS
+    } else if (elt[0] == '.' && IS_DIR_SEP(elt[1])) {
+      ret = concatn (ret, kpse_dot, elt + 1, ENV_SEP_STRING, NULL);
+    } else {
+      ret = concatn (ret, kpse_dot, DIR_SEP_STRING, elt, ENV_SEP_STRING, NULL);
+#endif
+    }
+    free (save_ret);
+  }
+
+#ifdef MSDOS
+  if (malloced_kpse_dot) free (kpse_dot);
+#endif
+
+  ret[strlen (ret) - 1] = 0;
+  return ret;
+}
 
 /* Do brace expansion on ELT; then do variable and ~ expansion on each
    element of the result; then do brace expansion again, in case a
@@ -56,13 +116,13 @@ static void free_array P1H(char **);
    string comprising all of the results separated by ENV_SEP_STRING.  */
 
 static string
-kpse_brace_expand P1C(const_string, elt)
+kpse_brace_expand_element P1C(const_string, elt)
 {
   unsigned i;
   string *expansions = brace_expand (elt);
   string ret = xmalloc (1);
   *ret = 0;
-  
+
   for (i = 0; expansions[i]; i++) {
     /* Do $ and ~ expansion on each element.  */
     string x = kpse_expand (expansions[i]);
@@ -73,26 +133,27 @@ kpse_brace_expand P1C(const_string, elt)
          must terminate.  (In practice, it's unlikely there will ever be
          more than one level of recursion.)  */
       string save_x = x;
-      x = kpse_brace_expand (x);
+      x = kpse_brace_expand_element (x);
       free (save_x);
     }
     ret = concat3 (ret, x, ENV_SEP_STRING);
     free (save_ret);
     free (x);
   }
-  
+
   free_array (expansions);
   ret[strlen (ret) - 1] = 0; /* waste the trailing null */
   return ret;
 }
 
-
 /* Be careful to not waste all the memory we allocate for each element.  */
 
 string
-kpse_path_expand P1C(const_string, path)
+kpse_brace_expand P1C(const_string, path)
 {
+  string kpse_dot_expansion;
   string elt;
+  unsigned len;
   /* Must do variable expansion first because if we have
        foo = .:~
        TEXINPUTS = $foo
@@ -102,25 +163,101 @@ kpse_path_expand P1C(const_string, path)
   string xpath = kpse_var_expand (path);
   string ret = xmalloc (1);
   *ret = 0;
-  
+
   for (elt = kpse_path_element (xpath); elt; elt = kpse_path_element (NULL)) {
     string save_ret = ret;
     /* Do brace expansion first, so tilde expansion happens in {~ka,~kb}.  */
-    string expansion = kpse_brace_expand (elt);
+    string expansion = kpse_brace_expand_element (elt);
     ret = concat3 (ret, expansion, ENV_SEP_STRING);
     free (expansion);
     free (save_ret);
   }
-    
+
   /* Waste the last byte by overwriting the trailing env_sep with a null.  */
-  ret[strlen (ret) - 1] = 0;
+  len = strlen (ret);
+  if (len != 0)
+    ret[len - 1] = 0;
   free (xpath);
+
+  kpse_dot_expansion = kpse_expand_kpse_dot (ret);
+  if (kpse_dot_expansion != ret)
+    free (ret);
+
+  return kpse_dot_expansion;
+}
+
+/* Expand all special constructs in a path, and include only the actually
+   existing directories in the result. */
+string
+kpse_path_expand P1C(const_string, path)
+{
+  string ret;
+  string xpath;
+  string elt;
+  unsigned len;
+
+  /* Initialise ret to the empty string. */
+  ret = xmalloc (1);
+  *ret = 0;
+  len = 0;
   
+  /* Expand variables and braces first.  */
+  xpath = kpse_brace_expand (path);
+
+  /* Now expand each of the path elements, printing the results */
+  for (elt = kpse_path_element (xpath); elt; elt = kpse_path_element (NULL)) {
+    str_llist_type *dirs;
+
+    /* Skip and ignore magic leading chars.  */
+    if (*elt == '!' && *(elt + 1) == '!')
+      elt += 2;
+
+    /* Do not touch the device if present */
+    if (NAME_BEGINS_WITH_DEVICE (elt)) {
+      while (IS_DIR_SEP (*(elt + 2)) && IS_DIR_SEP (*(elt + 3))) {
+        *(elt + 2) = *(elt + 1);
+        *(elt + 1) = *elt;
+        elt++;
+      }
+    } else {
+      /* We never want to search the whole disk.  */
+      while (IS_DIR_SEP (*elt) && IS_DIR_SEP (*(elt + 1)))
+        elt++;
+    }
+
+    /* Search the disk for all dirs in the component specified.
+       Be faster to check the database, but this is more reliable.  */
+    dirs = kpse_element_dirs (elt); 
+    if (dirs && *dirs) {
+      str_llist_elt_type *dir;
+
+      for (dir = *dirs; dir; dir = STR_LLIST_NEXT (*dir)) {
+        string thedir = STR_LLIST (*dir);
+        unsigned dirlen = strlen (thedir);
+        string save_ret = ret;
+        /* Retain trailing slash if that's the root directory.  */
+        if (dirlen == 1 || (dirlen == 3 && NAME_BEGINS_WITH_DEVICE (thedir)
+                            && IS_DIR_SEP (thedir[2]))) {
+          ret = concat3 (ret, thedir, ENV_SEP_STRING);
+          len += dirlen + 1;
+          ret[len - 1] = ENV_SEP;
+        } else {
+          ret = concat (ret, thedir);
+          len += dirlen;
+          ret [len - 1] = ENV_SEP;
+        }
+        free (save_ret);
+      }
+    }
+  }
+  /* Get rid of trailing ':', if any. */
+  if (len != 0)
+    ret[len - 1] = 0;
   return ret;
 }
 
 /* braces.c -- code for doing word expansion in curly braces. Taken from
-   bash 1.14.5.
+   bash 1.14.5.  [Ans subsequently modified for kpatshea.]
 
    Copyright (C) 1987,1991 Free Software Foundation, Inc.
 
@@ -274,7 +411,15 @@ expand_amble P1C(const_string, text)
 
   for (start = 0, i = 0, c = 1; c; start = ++i)
     {
-      c = brace_gobbler (text, &i, brace_arg_separator);
+      int c0, c1;
+      int i0, i1;
+      i0 = i;
+      c0 = brace_gobbler (text, &i0, brace_arg_separator);
+      i1 = i;
+      c1 = brace_gobbler (text, &i1, ENV_SEP);
+      c = c0 | c1;
+      i = (i0 < i1 ? i0 : i1);
+
       tem = xmalloc (1 + (i - start));
       strncpy (tem, &text[start], (i - start));
       tem[i- start] = 0;
@@ -325,21 +470,22 @@ array_concat P2C(string *, arr1,  string *, arr2)
   result = xmalloc ((1 + (len1 * len2)) * sizeof (char *));
 
   len = 0;
-  for (i = 0; i < len1; i++)
+  for (i = 0; i < len2; i++)
     {
-      int strlen_1 = strlen (arr1[i]);
+      int strlen_2 = strlen (arr2[i]);
 
-      for (j = 0; j < len2; j++)
+      for (j = 0; j < len1; j++)
 	{
+	  int strlen_1 = strlen (arr1[j]);
+
 	  result[len] =
-	    xmalloc (1 + strlen_1 + strlen (arr2[j]));
-	  strcpy (result[len], arr1[i]);
-	  strcpy (result[len] + strlen_1, arr2[j]);
+	    xmalloc (1 + strlen_1 + strlen_2);
+	  strcpy (result[len], arr1[j]);
+	  strcpy (result[len] + strlen_1, arr2[i]);
 	  len++;
 	}
-      free (arr1[i]);
     }
-  free (arr1);
+  free_array (arr1);
 
   result[len] = NULL;
   return (result);

@@ -24,11 +24,28 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 
 extern DllImport string program_invocation_name;
 extern DllImport string program_invocation_short_name;
+extern DllImport string kpse_program_name;
 
+/* Set the first two variables above (if they're not predefined) to a copy
+   of ARGV0 and everything in ARGV0 after the last directory separator,
+   respectively.  Set kpse_program_name to a copy of PROGNAME or the
+   or the value of program_invocation_short_name if PROGNAME is NULL.
+   This function also determines the AUTO* variables. */
 
-/* Set the two variables above (if they're not predefined) to a copy of
+extern void kpse_set_program_name P2H(const_string argv0,
+                                      const_string progname);
+
+/* See also `kpse_reset_program_name' which is defined in tex-file.c
+
+   That function is to be used to set kpse_program_name to a different
+   value.  It clears the path searching information, to ensure that
+   the search paths are appropriate to the new name. */
+
+/* DEPRECATED
+   Set first two variables above (if they're not predefined) to a copy of
    ARGV0 and everything in ARGV0 after the last directory separator,
-   respectively.  */
+   respectively.  kpse_program_name is _always_ set to a copy of everything
+   in ARGV0 after the last directory separator. */
 
 extern void kpse_set_progname P1H(const_string argv0);
 

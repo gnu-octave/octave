@@ -18,10 +18,10 @@ Installation
     Installing files
     Cleaning up
     Filename database generation
-    `MakeTeX' scripts
-      `MakeTeX' configuration
-      `MakeTeX' script names
-      `MakeTeX' script arguments
+    `mktex' scripts
+      `mktex' configuration
+      `mktex' script names
+      `mktex' script arguments
     Installation testing
   Security
 
@@ -30,21 +30,25 @@ Installation
 ************
 
   The procedure for Kpathsea (and Web2c, etc.) configuration and
-installation follows.  If trouble, *note Common problems::., a copy of
-which is in the file `kpathsea/BUGS'.
+installation follows.  If you encounter trouble, see *Note Common
+problems::, a copy of which is in the file `kpathsea/BUGS'.
 
 Simple installation
 ===================
 
   Installing TeX and friends for the first time can be a daunting
 experience.  Thus, you may prefer to skip this whole thing and just get
-precompiled executables: *note unixtex.ftp::..
+precompiled executables: see *Note unixtex.ftp::.
 
   This section explains what to do if you wish to take the defaults for
-everything (installing under `/usr/local'), and generally to install in
-the simplest possible way.  Most steps here refer to corresponding
-subsection in the next section which explains how to override defaults
-and generally gives more details.
+everything, and generally to install in the simplest possible way.  Most
+steps here refer to corresponding subsection in the next section which
+explains how to override defaults and generally gives more details.
+
+  By default everything will be installed under `/usr/local' and the
+following discussion assumes this.  However, if you already have TeX
+installed, its location is used to derive the directory under which
+everything is to be installed.
 
   1. Be sure you have enough disk space: approximately 8 megabytes for
      the compressed archives, 15MB for sources, 45MB for compilation,
@@ -66,10 +70,15 @@ and generally gives more details.
      distribution files. *Note Changing search paths::.
 
   4. At the top level of the distribution, run `sh configure'.  (If you
-     have the GNU Bash shell installed, run `bash configure'.) *Note
+     have the GNU Bash shell installed, run `bash configure'.)  *Note
      Running configure::.
 
-  5. `make'. *Note Running make::.
+  5. `make'. *Note Running make::.  If you are using a BSD 4.4 system
+     such as FreeBSD or NetBSD, use GNU make (often installed in
+     `/usr/local/bin'), not the BSD make.
+
+     If you are using a HP-UX 10 system and the native compiler,
+     specify the `+u' flag in `XCFLAGS'.
 
   6. `make install'. *Note Installing files::.
 
@@ -77,31 +86,33 @@ and generally gives more details.
 
   8. Set up a cron job to rebuild the filename database that makes
      searching faster.  This line will rebuild it every midnight:
-          0 0 * * * cd /usr/local/share/texmf && /BINDIR/MakeTeXls-R
+          0 0 * * * cd /usr/local/share/texmf && /BINDIR/mktexlsr
      *Note Filename database generation::, and *Note Filename
      database::.
 
   9. If you're installing Dvips, you also need to set up configuration
      files for your printers and make any additional PostScript fonts
      available.  *Note Installation: (dvips)Installation.  If you have
-     any color printers, *note Color device configuration: (dvips)Color
-     device configuration..
+     any color printers, see *Note Color device configuration:
+     (dvips)Color device configuration.
 
  10. The first time you run a DVI driver, a bunch of PK fonts will be
-     built by Metafont via `MakeTeXPK' (and added to the filename
+     built by Metafont via `mktexpk' (and added to the filename
      database).  This will take some time.  Don't be alarmed; they will
      created only this first time (unless something is wrong with your
      path definitions).
 
-     By default, `MakeTeXPK' assumes `/usr/local/share/texmf/fonts' is
-     globally writable.  If you need a different arrangement, *note
-     MakeTeX configuration::..
+     By default, `mktexpk' will create these fonts in a hierarchy under
+     `/var/tmp/texfonts'; it simply assumes that `/var/tmp' exists and
+     is globally writable.  If you need a different arrangement, see
+     *Note mktex configuration::.
 
-     *Note MakeTeX scripts::.
+     *Note mktex scripts::.
 
- 11. For some simple tests, try `tex story \\bye' and `latex simple'.
-     Then run `xdvi story' or `dvips simple' on the resulting DVI files
-     to preview/print the documents.  *Note Installation testing::.
+ 11. For some simple tests, try `tex story \\bye' and `latex sample2e'.
+     Then run `xdvi story' or `dvips sample2e' on the resulting DVI
+     files to preview/print the documents.  *Note Installation
+     testing::.
 
 Custom installation
 ===================
@@ -135,6 +146,7 @@ Disk space
 don't enter into it.  Sizes are in megabytes.  All numbers are
 approximate.
 
+Distribution  .tar.gz  Unpacked  Compiled  Installed  
 dviljk        .9       3.8                            
 dvipsk        .9       3.2                            
 xdvik         .7       2.5                            
@@ -177,21 +189,20 @@ Changing search paths
 
   If the search paths for your installation differ from the standard
 TeX directory structure (*note Introduction: (tds)Top.), edit the file
-`kpathsea/texmf.cnf.in' as desired, before running `configure'.  For
+`kpathsea/texmf.in' as desired, before running `configure'.  For
 example, if you have all your fonts or macros in one big directory.
 
-  You may also wish to edit the file `MakeTeXnames.cnf', either before
-or after installation, to control various aspects of `MakeTeXPK' and
-friends.  *Note MakeTeX configuration::.
+  You may also wish to edit the file `mktex.cnf', either before or
+after installation, to control various aspects of `mktexpk' and
+friends.  *Note mktex configuration::.
 
-  You do not need to edit `texmf.cnf.in' to change the default
-top-level or other installation *directories* (only the paths).  You
-can and should do that when you run `configure' (next step).
+  You do not need to edit `texmf.in' to change the default top-level or
+other installation *directories* (only the paths).  You can and should
+do that when you run `configure' (next step).
 
-  You also do not need to edit `texmf.cnf.in' if you are willing to
-rely on `texmf.cnf' at runtime to define the paths, and let the
-compile-time default paths be incorrect.  Usually there is no harm in
-doing this.
+  You also do not need to edit `texmf.in' if you are willing to rely on
+`texmf.cnf' at runtime to define the paths, and let the compile-time
+default paths be incorrect.  Usually there is no harm in doing this.
 
   The section below explains default generation in more detail.
 
@@ -202,7 +213,7 @@ Default path features
 above is to avoid having the same information in more than one place. If
 you change the installation directories or top-level prefix at
 `configure'-time, those changes will propagate through the whole
-sequence.  And if you change the default paths in `texmf.cnf.in', those
+sequence.  And if you change the default paths in `texmf.in', those
 changes are propagated to the compile-time defaults.
 
   The Make definitions are all repeated in several Makefile's; but
@@ -226,12 +237,11 @@ fonts will be found even if there is no subdirectory for the mode (if
 you arranged things that way because your site has only one printer,
 for example) or if the program is mode-independent (e.g., `pktype').
 
-  To make the paths independent of the mode, simply edit `texmf.cnf.in'
+  To make the paths independent of the mode, simply edit `texmf.in'
 before installation, or the installed `texmf.cnf', and remove the
 `$MAKETEX_MODE'.
 
-  *Note MakeTeX script arguments::, for how this interacts with
-`MakeTeXPK'.
+  *Note mktex script arguments::, for how this interacts with `mktexpk'.
 
   *Note TeX directory structure: TeX directory structure, for a
 description of the default arrangement of the input files that comprise
@@ -257,7 +267,7 @@ paths:
      the installation directories.
 
   3. `texmf.sed' (together with a little extra magic--see
-     `kpathsea/Makefile') is applied to `texmf.cnf.in' to generate
+     `kpathsea/Makefile') is applied to `texmf.in' to generate
      `texmf.cnf'.  This is the file that will eventually be installed
      and used.
 
@@ -278,14 +288,14 @@ configure shells::.).
 
   `configure' adapts the source distribution to the present system via
 `#define''s in `*/c-auto.h', which are created from the corresponding
-`c-auto.h.in'.  It also creates a `Makefile' from the corresponding
+`c-auto.in'.  It also creates a `Makefile' from the corresponding
 `Makefile.in', doing `@VAR@' and `ac_include' substitutions).
 
   `configure' is the best place to control the configuration,
 compilation, and installed location of the software, either via
 command-line options, or by setting environment variables before
-invoking it.  For example, you can disable `MakeTeXPK' by default with
-the option `--disable-maketexpk'.  *Note configure options::.
+invoking it.  For example, you can disable `mktexpk' by default with
+the option `--disable-mktexpk'.  *Note configure options::.
 
 `configure' shells
 ..................
@@ -312,23 +322,23 @@ scripts as generated by GNU Autoconf (*note Introduction:
 ...................
 
   For a complete list of all `configure' options, run `configure
---help' or *note Running `configure' scripts: (autoconf)Invoking
-configure. (a copy is in the file `kpathsea/CONFIGURE').  The generic
-options are listed first in the `--help' output, and the
+--help' or see *Note Running `configure' scripts: (autoconf)Invoking
+configure, (a copy is in the file `kpathsea/README.CONFIGURE').  The
+generic options are listed first in the `--help' output, and the
 package-specific options come last.  The environment variables
 `configure' pays attention to are listed below.
 
   Options particularly likely to be useful are `--prefix', `--datadir',
-and the like; *note configure scenarios::..
+and the like; see *Note configure scenarios::.
 
   This section gives pointers to descriptions of the `--with' and
 `--enable' options to `configure' that Kpathsea-using programs accept.
 
-`--without-maketexmf-default'
-`--without-maketexpk-default'
-`--without-maketextfm-default'
-`--with-maketextex-default'
-     Enable or disable the dynamic generation programs.  *Note MakeTeX
+`--without-mktexmf-default'
+`--without-mktexpk-default'
+`--without-mktextfm-default'
+`--with-mktextex-default'
+     Enable or disable the dynamic generation programs.  *Note mktex
      configuration::.
 
 `--enable-shared'
@@ -336,7 +346,13 @@ and the like; *note configure scenarios::..
      build the usual static library.  *Note Shared library::.
 
 `--disable-static'
-     Build only the shared library.
+     Build only the shared library.   Implies `--enable-shared'.
+
+`--enable-maintainer-mode'
+     Enables make targets that are useful for the maintainer and likely
+     to be a pain for anyone else; the makefiles created when this
+     option is enabled may not work at all for you.  You have been
+     warned.
 
 `configure' environment
 .......................
@@ -391,10 +407,10 @@ Makefile's:
           configure --with-x-toolkit
 
    * Putting the binaries, TeX files, GNU info files, etc. into a single
-     TeX hierarchy, say TEXMF, requires overriding defaults in both
+     TeX hierarchy, say `/texmf', requires overriding defaults in both
      `configure' and `make':
-          configure --prefix=TEXMF --datadir=TEXMF
-          make texmf=TEXMF
+          configure --prefix=`/texmf' --datadir=`/texmf'
+          make texmf=`/texmf'
 
    * You can compile on multiple architectures simultaneously either by
      building symbolic link trees with the `lndir' script from the X11
@@ -430,15 +446,16 @@ binary, usually by giving certain options to the linker.  Then
 individual users do not need to set their system's environment variable
 (e.g., `LD_LIBRARY_PATH') to find shared libraries.  If you want to do
 this, you will need to add the necessary options to `LDFLAGS' yourself;
-for example, on Solaris, include something like `-R${prefix}/lib'.
-(Unfortunately, making this happen by default is very difficult,
-because of interactions with an existing installed shared library.)
+for example, on Solaris, include something like `-R${prefix}/lib', on
+IRIX or Linux, use `-rpath${prefix}/lib'.  (Unfortunately, making this
+happen by default is very difficult, because of interactions with an
+existing installed shared library.)
 
-  Currently, shared library support is implemented only on SunOS 4
-(Solaris 1) and SunOS 5 (Solaris 2).  If you're interested and willing
-in adding support for other systems, please see the `configure' mode in
-the `klibtool' script, especially the host-specific case statement
-around line 250.
+  Currently, shared library support is implemented only on Linux, SunOS
+4 (Solaris 1), SunOS 5 (Solaris 2), IRIX 5, and IRIX 6.  If you're
+interested and willing in adding support for other systems, please see
+the `configure' mode in the `klibtool' script, especially the
+host-specific case statement around line 250.
 
 Running `make'
 --------------
@@ -541,7 +558,7 @@ by the build.
 
   Alternatively,
    * `make mostlyclean' if you intend to compile on another
-     architecture.  For Web2c, since the generated C files are portable,
+     architecture.  For Web2C, since the generated C files are portable,
      they are not removed.  If the `lex' vs. `flex' situation is going
      to be different on the next machine, `rm web2c/lex.yy.c'.
 
@@ -562,21 +579,21 @@ Filename database generation
 
   You will probably want to set up a `cron' entry on the appropriate
 machine(s) to rebuild the filename database nightly or so, as in:
-     0 0 * * * cd TEXMF && /BINDIR/MakeTeXls-R
+     0 0 * * * cd TEXMF && /BINDIR/mktexlsr
    *Note Filename database::.
 
-Although the `MakeTeX...' scripts make every effort to add
-newly-created files on the fly, it can't hurt to make sure you get a
-fresh version every so often.
+Although the `mktex...' scripts make every effort to add newly-created
+files on the fly, it can't hurt to make sure you get a fresh version
+every so often.
 
-`MakeTeX' scripts
------------------
+`mktex' scripts
+---------------
 
   If Kpathsea cannot otherwise find a file, for some file types it is
 configured by default to invoke an external program to create it
-dynamically (*note MakeTeX configuration::.).  This is most useful for
+dynamically (*note mktex configuration::.).  This is most useful for
 fonts (bitmaps, TFM's, and arbitrarily-sizable Metafont sources such as
-the Sauter and DC fonts), since any given document can use fonts never
+the Sauter and EC fonts), since any given document can use fonts never
 before referenced.  Trying to build all fonts in advance is therefore
 impractical, if not impossible.
 
@@ -585,102 +602,136 @@ arguments, as explained below.  It must echo the full pathname of the
 file it created (and nothing else) to standard output; it can write
 diagnostics to standard error.
 
-`MakeTeX' configuration
-.......................
+`mktex' configuration
+.....................
 
   The following file types can run an external program to create missing
-files: `pk', `tfm', `mf', `tex'; the scripts are named `MakeTeXPK',
-`MakeTeXTFM', `MakeTeXMF', and `MakeTeXTeX'.
+files: `pk', `tfm', `mf', `tex'; the scripts are named `mktexpk',
+`mktextfm', `mktexmf', and `mktextex'.
 
   In the absence of `configure' options specifying otherwise,
-everything but `MakeTeXTeX' will be enabled by default. The `configure'
+everything but `mktextex' will be enabled by default. The `configure'
 options to change the defaults are:
 
-     --without-maketexmf-default
-     --without-maketexpk-default
-     --without-maketextfm-default
-     --with-maketextex-default
+     --without-mktexmf-default
+     --without-mktexpk-default
+     --without-mktextfm-default
+     --with-mktextex-default
 
   The `configure' setting is overridden if the environment variable or
-configuration file value named for the script is set; e.g., `MAKETEXPK'
-(*note MakeTeX script arguments::.).
+configuration file value named for the script is set; e.g., `MKTEXPK'
+(*note mktex script arguments::.).
 
-  As distributed, all the scripts source a file
-`texmf/web2c/MakeTeX.site' if it exists, so you can override various
-defaults.  See `MakeTeXcommon', for instance, which defines the default
-mode, resolution, directory permissions, some special directory names,
-etc.  If you prefer not to change the distributed scripts, you can
-simply create `MakeTeX.site' with the appropriate definitions (you do
-not need to create it if you have nothing to put in it).
-`MakeTeX.site' has no special syntax; it's an arbitrary Bourne shell
-script.  The distribution contains a sample `MakeTeX.site' for you to
-copy and modify as you please (it is not installed anywhere).
+  As distributed, all the scripts source a file `texmf/web2c/mktex.cnf'
+if it exists, so you can override various defaults.  See `mktex.opt',
+for instance, which defines the default mode, resolution, some special
+directory names, etc.  If you prefer not to change the distributed
+scripts, you can simply create `mktex.cnf' with the appropriate
+definitions (you do not need to create it if you have nothing to put in
+it).  `mktex.cnf' has no special syntax; it's an arbitrary Bourne shell
+script.  The distribution contains a sample `mktex.cnf' for you to copy
+and modify as you please (it is not installed anywhere).
 
   In addition, you can configure a number of features with the
 `MT_FEATURES' variable, which you can define:
-   * in `MakeTeX.site', as just mentioned;
+   * in `mktex.opt', as just mentioned;
 
-   * by editing the file `MakeTeXnames.cnf', either before `make
-     install' (in the source hierarchy) or after (in the installed
-     hierarchy);
+   * by editing the file `mktex.opt', either before `make install' (in
+     the source hierarchy) or after (in the installed hierarchy);
 
    * or in the environment.
 
-  By default, `MakeTeXPK' installs fonts into the standard TeX
-directory structure (*note TeX directory structure: TeX directory
-structure.).  It uses aliases and directory names from the Fontname
-distribution (*note Introduction: (fontname)Top.). Most of the options
-here change that.
+  If none of the options below are enabled, `mktexpk', `mktextfm', and
+`mktexmf' follow the following procedure to decide where fonts should
+be installed.  Find the tree where the font's sources are, and test the
+permissions of the `fonts' directory of that tree to determine whether
+it is writable.  If it is, put the files in the tree in appropriate
+locations.  If it isn't writable, see whether the tree is a system tree
+(named in `SYSTEXMF').  If so, the `VARTEXFONTS' tree is used.  In all
+other cases the working directory is used.
+
+  The `appendonlydir' option is enabled by default.
 
 `appendonlydir'
-     Tell `MakeTeXmkdir' to create directories append-only, i.e., set
-     their sticky bit (*note Mode Structure: (fileutils)Mode
-     Structure.).
+     Tell `mktexdir' to create directories append-only, i.e., set their
+     sticky bit (*note Mode Structure: (fileutils)Mode Structure.).
+     This feature is silently ignored on non-Unix platforms (e.g.
+     Windows/NT and MS-DOS) which don't support similar functionality.
+     This feature is enabled by default.
 
 `dosnames'
      Use 8.3 names; e.g., `dpi600/cmr10.pk' instead of `cmr10.600pk'.
+     Note that this feature only affects filenames that would otherwise
+     clash with other TeX-related filenames; `mktex' scripts do nothing
+     about filenames which exceed the 8+3 MS-DOS limits but remain
+     unique when truncated (by the OS) to these limits, and nether do
+     the scripts care about possible clashes with files which aren't
+     related with TeX.  For example, `cmr10.600pk' would clash with
+     `cmr10.600gf' and is therefore changed when `dosnames' is in
+     effect, but `mf.pool' and `mp.base' don't clash with any
+     TeX-related files and are therefore unchanged.
+
+     This feature is turned on by default on MS-DOS.  If you do not wish
+     `dosnames' to be set on an MS-DOS platform, you need to set the
+     `MT_FEATURES' environment variable to a value that doesn't include
+     `dosnames'.  You can also change the default setting by editing
+     `mktex.opt', but only if you use the `mktex' shell scripts; the
+     emulation programs don't consult `mktex.opt'.
+
+`fontmaps'
+     Instead of deriving the location of a font in the destination tree
+     from the location of the sources, the aliases and directory names
+     from the Fontname distribution are used. (*note Introduction:
+     (fontname)Top.).
 
 `nomode'
      Omit the directory level for the mode name; this is fine as long as
      you generate fonts for only one mode.
 
+`stripsupplier'
+     Omit the font supplier name directory level.
+
+`striptypeface'
+     Omit the font typeface name directory level.
+
 `strip'
-     Omit the font supplier and typeface name directory levels.
+     Omit the font supplier and typeface name directory levels.  This
+     feature is deprecated in favour of `stripsupplier' and
+     `striptypeface'.
 
 `varfonts'
-     Put `MakeTeXPK'-generated fonts under the directory named by
-     `VARTEXFONTS'; the default value in `kpathsea/texmf.cnf.in' is
-     `/var/tex/fonts', as recommended by the `Linux File System
-     Standard' (but unless `varfonts' is enabled, nothing cares about
-     that value).
+     When this option is enabled, fonts that would otherwise be written
+     in system texmf tree go to the `VARTEXFONTS' tree instead.  The
+     default value in `kpathsea/Makefile.in' is `/var/tmp/texfonts'.
+     The `Linux File System Standard' recommends `/var/tex/fonts'.
 
      The `varfonts' setting in `MT_FEATURES' is overridden by the
      `USE_VARTEXFONTS' environment variable: if set to `1', the feature
      is enabled, and if set to `0', the feature is disabled.
 
-`MakeTeX' script names
-......................
+`mktex' script names
+....................
 
   The following table shows the default name of the script for each
 possible file types.  (The source is the variable `kpse_make_specs' in
 `kpathsea/tex-make.c'.)
 
-`MakeTeXPK'
+`mktexpk'
      Glyph fonts.
 
-`MakeTeXTeX'
+`mktextex'
      TeX input files.
 
-`MakeTeXMF'
+`mktexmf'
      Metafont input files.
 
-`MakeTeXTFM'
+`mktextfm'
      TFM files.
 
 These names are overridden by an environment variable specific to the
 program--for example, `DVIPSMAKEPK' for Dvipsk.
 
-  If a `MakeTeX...' script fails, the invocation is appended to a file
+  If a `mktex...' script fails, the invocation is appended to a file
 `missfont.log' (by default) in the current directory.  You can then
 execute the log file to create the missing files after fixing the
 problem.
@@ -690,59 +741,40 @@ or configuration file value `TEXMFOUTPUT' is set, its value is used.
 Otherwise, nothing is written.  The name `missfont.log' is overridden
 by the `MISSFONT_LOG' environment variable or configuration file value.
 
-`MakeTeX' script arguments
-..........................
+`mktex' script arguments
+........................
 
-  The first argument to a `MakeTeX' script is always the name of the
-file to be created.
+  The first argument to a `mktex' script is always the name of the file
+to be created.
 
-  In the default `MakeTeXPK' implementation, from three to five
-additional arguments may also passed, via environment variables:
+  In the default `mktexpk' implementation, additional arguments may
+also be passed:
 
-  1. The resolution to make the font at (`KPATHSEA_DPI').
+`--dpi NUM'
+     Sets the resolution of the generated font to NUM.
 
-  2. The "base dpi" the program is operating at (`MAKETEX_BASE_DPI'),
-     i.e., the assumed resolution of the output device.
+`--mfmode NAME'
+     Sets the Metafont mode to NAME.
 
-  3. A "magstep" string suitable for the Metafont `mag' variable
-     (`MAKETEX_MAG').
+`--bdpi NUM'
+     Sets the the "base dpi" for the font.  This must match the mode
+     being used.
 
-  4. Optionally, a Metafont mode name to assign to the Metafont `mode'
-     variable (`MAKETEX_MODE').  Otherwise, (the default) `MakeTeXPK'
-     guesses the mode from the resolution.  *Note TeX directory
-     structure: TeX directory structure.
+`--mag STRING'
+     A "magstep" string suitable for the Metafont `mag' variable.  This
+     must match the combination of BDPI and DPI being used.
 
-  5. Optionally, a directory name. If the directory is absolute, it is
-     used as-is. Otherwise, it is appended to the root destination
-     directory set in the script (from environment variables `DESTDIR'
-     or `MTP_DESTDIR' or a compile-time default). If this argument is
-     not supplied, the mode name is appended to the root destination
-     directory.
-
-Kpathsea sets `KPATHSEA_DPI' appropriately for each attempt at building
-a font.  It's up to the program using Kpathsea to set the others.
-(*Note Calling sequence::.)
-
-  You can change the specification for the arguments passed to the
-external script by setting the environment variable named as the script
-name, but all capitals--`MAKETEXPK', for example.  If you've changed
-the script name by setting (say) `DVIPSMAKEPK' to `foo', then the spec
-is taken from the environment variable `FOO'.
-
-  The spec can contain any variable references, to the above variables
-or any others.  As an example, the default spec for `MakeTeXPK' is:
-     $KPATHSEA_DPI $MAKETEX_BASE_DPI $MAKETEX_MAG $MAKETEX_MODE
-
-The convention of passing the name of the file to be created as the
-first argument cannot be changed.
+`--destdir STRING'
+     A directory name. If the directory is absolute, it is used as-is.
+     Otherwise, it is appended to the root destination directory set in
+     the script.
 
 Installation testing
 --------------------
 
   Besides the tests listed in *Note Simple installation::, you can try
 running `make check'.  This includes the torture tests (trip, trap, and
-mptrap) that come with Web2c (*note Torture tests: (web2c)Torture
-tests.).
+mptrap) that come with Web2c (*note Triptrap: (web2c)Triptrap.).
 
 Security
 ========
@@ -764,27 +796,35 @@ details: (dvips)Option details, the xdvi man page, and *Note tex
 invocation: (web2c)tex invocation, respectively.
 
   Another security issue arises because it's very useful--almost
-necessary--to make arbitrary fonts on user demand with `MakeTeXPK' and
+necessary--to make arbitrary fonts on user demand with `mktexpk' and
 friends.  Where do these files get installed?  By default, the
-`MakeTeXPK' distributed with Kpathsea assumes a globally writable
-`texmf' tree; this is the simplest and most convenient approach, but it
-may not suit your situation.
+`mktexpk' distributed with Kpathsea assumes a world-writable `/var/tmp'
+directory; this is a simple and convenient approach, but it may not
+suit your situation because it means that a local cache of fonts is
+created on every machine.
+
+  To avoid this duplication, many people consider a shared, globally
+writable font tree desirable, in spite of the potential security
+problems.  To do this you should change the value of `VARTEXFONTS' in
+`texmf.cnf' to refer to some globally known directory.  *Note mktex
+configuration::.
 
   The first restriction you can apply is to make newly-created
-directories under `texmf' be append-only with an option in
-`MakeTeXnames.cnf'.  *Note MakeTeX configuration::.
+directories under `texmf' be append-only with an option in `mktex.cnf'.
+*Note mktex configuration::.
 
   Another approach is to establish a group (or user) for TeX files,
 make the `texmf' tree writable only to that group (or user), and make
-`MakeTeXPK' et al. setgid to that group (or setuid to that user).  Then
+`mktexpk' et al. setgid to that group (or setuid to that user).  Then
 users must invoke the scripts to install things.  (If you're worried
 about the inevitable security holes in scripts, then you could write a
 C wrapper to exec the script.)
 
-  Finally, using a central writable `texmf' tree may be completely
-impossible, because it's on an NFS filesystem that you cannot export
-read/write, or AFS is in use, or simply because "it's policy".  Then
-you must resort to each user's machine having its own local directory of
-dynamically-created fonts; again, `MakeTeXnames.cnf' has an option to
-do this, and again, *note MakeTeX configuration::..
+  The `mktex...' scripts install files with the same read and write
+permissions as the directory they are installed in.  The executable,
+sgid, suid, and sticky bits are always cleared.
+
+  Any directories created by the `mktex...' scripts have the same
+permissions as their parent directory, unless the `appendonlydir'
+feature is used, in which case the sticky bit is always set.
 

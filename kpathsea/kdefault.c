@@ -102,10 +102,10 @@ main ()
   test_expand_default (NULL, default_path);
   test_expand_default ("", default_path);
   test_expand_default ("none", default_path);
-  test_expand_default (":", default_path);
-  test_expand_default (":first", default_path);
-  test_expand_default ("last:", default_path);
-  test_expand_default ("middle::elddim", default_path);
+  test_expand_default (ENV_SEP_STRING, default_path);
+  test_expand_default (ENV_SEP_STRING "first", default_path);
+  test_expand_default ("last" ENV_SEP_STRING, default_path);
+  test_expand_default ("middle" ENV_SEP_STRING ENV_SEP_STRING "elddim", default_path);
   
   return 0;
 }

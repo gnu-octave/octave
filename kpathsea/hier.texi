@@ -25,7 +25,7 @@ paths}).  One common desire is to put everything (binaries and all)
 under a single top-level directory such as @file{/usr/local/texmf} or
 @file{/opt/texmf}---in the terms used below, make @var{prefix} and
 @var{texmf} the same.  For specific instructions on doing that,
-@pxref{configure scenarios}.
+see @ref{configure scenarios}.
 
 Here is a skeleton of the default directory structure, extracted from
 the TDS document:

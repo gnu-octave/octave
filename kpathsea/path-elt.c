@@ -44,10 +44,11 @@ element P2C(const_string, passed_path,  boolean, env_p)
 {
   const_string p;
   string ret;
+  int brace_level;
+  unsigned len;
   
   if (passed_path)
     path = passed_path;
-  
   /* Check if called with NULL, and no previous path (perhaps we reached
      the end).  */
   else if (!path)
@@ -57,36 +58,34 @@ element P2C(const_string, passed_path,  boolean, env_p)
   assert (path);
   p = path;
   
-  /* Find the next colon (or the end of the path).  */
-  while (*p != 0 && (env_p ? !IS_ENV_SEP (*p) : !IS_DIR_SEP (*p)))
-    p++;
-  
-  /* If there were no separators, return the whole thing this time, and
-     return NULL next time.  */
-  if (*p == 0)
-    {
-      ret = (string) path;
-      path = NULL;
-    }
-  
-  /* Otherwise, return the substring starting at `path'.  */
-  else
-    {
-      unsigned len = p - path;
-      
-      /* Make sure we have enough space (including the null byte).  */
-      if (len + 1 > elt_alloc)
-        {
-          elt_alloc = len + 1;
-          elt = xrealloc (elt, elt_alloc);
-        }
+  /* Find the next colon not enclosed by braces (or the end of the path).  */
+  brace_level = 0;
+  while (*p != 0  && !(brace_level == 0
+                       && (env_p ? IS_ENV_SEP (*p) : IS_DIR_SEP (*p)))) {
+    if (*p == '{') ++brace_level;
+    else if (*p == '}') --brace_level;
+    ++p;
+  }
+   
+  /* Return the substring starting at `path'.  */
+  len = p - path;
 
-      strncpy (elt, path, len);
-      elt[len] = 0;
-      ret = elt;
-      
-      path += len + 1;
+  /* Make sure we have enough space (including the null byte).  */
+  if (len + 1 > elt_alloc)
+    {
+      elt_alloc = len + 1;
+      elt = xrealloc (elt, elt_alloc);
     }
+
+  strncpy (elt, path, len);
+  elt[len] = 0;
+  ret = elt;
+
+  /* If we are at the end, return NULL next time.  */
+  if (path[len] == 0)
+    path = NULL;
+  else
+    path += len + 1;
 
   return ret;
 }
@@ -127,11 +126,11 @@ main ()
   print_path_elements (NULL);	/* */
   print_path_elements ("");	/* "" */
   print_path_elements ("a");	/* a */
-  print_path_elements (":");	/* "", "" */
-  print_path_elements ("::");	/* "", "", "" */
-  print_path_elements ("a:");	/* a, "" */ 
-  print_path_elements (":b");	/* "", b */ 
-  print_path_elements ("a:b");	/* a, b */ 
+  print_path_elements (ENV_SEP_STRING);	/* "", "" */
+  print_path_elements (ENV_SEP_STRING ENV_SEP_STRING);	/* "", "", "" */
+  print_path_elements ("a" ENV_SEP_STRING);	/* a, "" */ 
+  print_path_elements (ENV_SEP_STRING "b");	/* "", b */ 
+  print_path_elements ("a" ENV_SEP_STRING "b");	/* a, b */ 
   
   return 0;
 }

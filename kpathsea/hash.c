@@ -1,6 +1,6 @@
 /* hash.c: hash table operations.
 
-Copyright (C) 1994, 95, 96 Karl Berry.
+Copyright (C) 1994, 95, 96, 97 Karl Berry & Olaf Weber.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Library General Public
@@ -47,13 +47,14 @@ hash P2C(hash_table_type, table,  const_string, key)
 hash_table_type
 hash_create P1C(unsigned, size) 
 {
+  /* hash_table_type ret; changed into "static ..." to work around gcc
+     optimizer bug for Alpha.  */
+  static hash_table_type ret;
   unsigned b;
-  hash_table_type ret;
   ret.buckets = XTALLOC (size, hash_element_type *);
   ret.size = size;
   
-  /* calloc's zeroes aren't necessarily NULL, according to ANSI, so be
-     safe.  (Not that I know of any exceptions in reality.)  */
+  /* calloc's zeroes aren't necessarily NULL, so be safe.  */
   for (b = 0; b <ret.size; b++)
     ret.buckets[b] = NULL;
     
@@ -85,6 +86,28 @@ hash_insert P3C(hash_table_type *, table,  const_string, key,
         loc = loc->next;
       loc->next = new_elt;	/* Insert the new one after.  */
     }
+}
+
+/* Remove a (KEY, VALUE) pair.  */
+
+void
+hash_remove P3C(hash_table_type *, table,  const_string, key,
+                const_string, value)
+{
+  hash_element_type *p;
+  hash_element_type *q;
+  unsigned n = hash (*table, key);
+
+  /* Find pair.  */
+  for (q = NULL, p = table->buckets[n]; p != NULL; q = p, p = p->next)
+    if (FILESTRCASEEQ (key, p->key) && STREQ (value, p->value))
+      break;
+  if (p) {
+    /* We found something, remove it from the chain.  */
+    if (q) q->next = p->next; else table->buckets[n] = p->next;
+    /* We cannot dispose of the contents.  */
+    free (p);
+  }
 }
 
 /* Look up STR in MAP.  Return a (dynamically-allocated) list of the

@@ -28,9 +28,18 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
    regular file, as it is potentially useful to read fifo's or some
    kinds of devices.  */
 
+#ifdef __DJGPP__
+/* `stat' is way too expensive for such a simple job.  */
+#define READABLE(fn, st) \
+  (access (fn, R_OK) == 0 && access (fn, D_OK) == -1)
+#elif WIN32
+#define READABLE(fn, st) \
+  (GetFileAttributes(fn) != 0xFFFFFFFF && \
+   !(GetFileAttributes(fn) & FILE_ATTRIBUTE_DIRECTORY))
+#else
 #define READABLE(fn, st) \
   (access (fn, R_OK) == 0 && stat (fn, &(st)) == 0 && !S_ISDIR (st.st_mode))
-
+#endif
 
 /* POSIX invented the brain-damage of not necessarily truncating
    filename components; the system's behavior is defined by the value of

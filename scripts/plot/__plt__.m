@@ -27,69 +27,72 @@ function __plt__ (caller, varargin)
 
   nargs = nargin ();
 
-  if (nargs >= 2)
+  if (nargs > 1)
 
     k = 1;
     j = 1;
-    nargs -= 1;
-    x_set = 0;
-    y_set = 0;
-    gp_cmd = "gplot";
+
+    x_set = false;
+    y_set = false;
     have_gp_cmd = false;
+
+    gp_cmd = "gplot";
     sep = "";
 
     ## Gather arguments, decode format, gather plot strings, and plot lines.
 
-    while ((nargs-- > 0) || x_set)
+    while (--nargs > 0 || x_set)
 
-      if (k < nargin())
-	new = varargin{k++};
+      if (nargs == 0)
+	## Force the last plot when input variables run out.
+	next_arg = "";
       else
-	new = ""; ## Force the last plot when input variables run out.
+	next_arg = varargin{k++};
       endif
 
-      queue_plot = false;
+      have_data = false;
 
-      if (isstr (new))
-	if (! x_set)
+      if (isstr (next_arg))
+	if (x_set)
+	  fmt = __pltopt__ (caller, next_arg);
+	  if (y_set)
+	    [data{j}, fmtstr] = __plt2__ (x, y, fmt);
+	  else
+	    [data{j}, fmtstr] = __plt1__ (x, fmt);
+	  endif
+	  have_data = true;
+	  x_set = false;
+	  y_set = false;
+	else
 	  error ("plot: no data to plot");
 	endif
-	fmt = __pltopt__ (caller, new);
-	if (! y_set)
-	  [data{j}, fmtstr] = __plt1__ (x, fmt);
-	else
-	  [data{j}, fmtstr] = __plt2__ (x, y, fmt);
-	endif
-	queue_plot = true;
-	x_set = 0;
-	y_set = 0;
       elseif (x_set)
 	if (y_set)
 	  [data{j}, fmtstr] = __plt2__ (x, y, "");
-	  queue_plot = true;
-	  x = new;
-	  y_set = 0;
+	  have_data = true;
+	  x = next_arg;
+	  y_set = false;
 	else
-	  y = new;
-	  y_set = 1;
+	  y = next_arg;
+	  y_set = true;
 	endif
       else
-	x = new;
-	x_set = 1;
+	x = next_arg;
+	x_set = true;
       endif
 
-      if (queue_plot)
+      if (have_data)
 	if (iscell (data{j}))
 	  for i = 1:length (data{j})
 	    gp_cmd = sprintf ("%s%s data{%d}{%d} %s", gp_cmd, sep,
 			      j, i, fmtstr{i});
 	    sep = ",\\\n";
 	  endfor
-	  j++;
 	else
-	  gp_cmd = sprintf ("%s%s data{%d} %s", gp_cmd, sep, j++, fmtstr);
+	  gp_cmd = sprintf ("%s%s data{%d} %s", gp_cmd, sep, j, fmtstr);
 	  sep = ",\\\n";
 	endif
+	j++;
 	have_gp_cmd = true;
       endif
 
@@ -100,10 +103,9 @@ function __plt__ (caller, varargin)
     endif
 
   else
-    msg = sprintf ("%s (x)\n", caller);
-    msg = sprintf ("%s       %s (x, y)\n", msg, caller);
-    msg = sprintf ("%s       %s (x2, y1, x2, y2)\n", msg, caller);
-    msg = sprintf ("%s       %s (x, y, fmt)", msg, caller);
+    msg = sprintf ("%s (y)\n", caller);
+    msg = sprintf ("%s       %s (x, y, ...)\n", msg, caller);
+    msg = sprintf ("%s       %s (x, y, fmt, ...)", msg, caller);
     usage (msg);
   endif
 

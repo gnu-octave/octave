@@ -27,7 +27,7 @@ function retval = spencer (X)
     usage ("spencer (X)");
   endif
 
-  [xr xc] = size(X);
+  [xr, xc] = size(X);
   
   n = xr;
   c = xc;
@@ -38,7 +38,7 @@ function retval = spencer (X)
    X = reshape(X, n, 1);
   endif
    
-  W = [ -3 -6 -5 3 21 46 67 74 67 46 21 3 -5 -6 -3 ] / 320;
+  W = [-3, -6, -5, 3, 21, 46, 67, 74, 67, 46, 21, 3, -5, -6, -3] / 320;
 
   retval = fftfilt (W, X);
   retval = [zeros(7,c); retval(15:n,:); zeros(7,c);];

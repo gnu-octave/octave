@@ -1601,8 +1601,7 @@ handle_string (char delim, int text_style)
 
 		  if (text_style && lexer_flags.doing_set)
 		    {
-		      if (! s.empty ())
-			s = string (1, delim) + s + string (1, delim);
+		      s = string (1, delim) + s + string (1, delim);
 		    }
 		  else
 		    {

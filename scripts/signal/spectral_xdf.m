@@ -52,7 +52,7 @@ function retval = spectral_xdf (X, win, b)
   retval = (abs (fft (X)) / xr).^2;
   retval = real (ifft (fft(retval) .* fft(w)));
   
-  retval = [zeros (xr, 1) retval];
+  retval = [(zeros (xr, 1)), retval];
   retval(:, 1) = (0 : xr-1)' / xr;
   
 endfunction

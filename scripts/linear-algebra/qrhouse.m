@@ -17,7 +17,7 @@
 # Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 function [hv,alph,kb] = qrhouse(VV,eps1)
-# function [hv,alph,kb] = qrhouse(VV,eps1)
+# function [hv,alph,kb] = qrhouse(VV{,eps1})
 # construct orthogonal basis of span(VV) with Householder vectors
 # Q R = VV; Q may be obtained via routine krygetq; R is upper triangular
 #   if all rows of VV are nonzero; otherwise it's a permuted uppert
@@ -37,8 +37,10 @@ function [hv,alph,kb] = qrhouse(VV,eps1)
 
 # Written by A. S. Hodel, 1992
 
-if(nargin < 2)
-  usage("[hv,alph,kb] = qrhouse(VV,eps1)");
+if(nargin < 1 | nargin > 2)
+  usage("[hv,alph,kb] = qrhouse(VV{,eps1})");
+elseif(nargin == 1)     # default value for eps set to 0
+  eps1 = 0;
 endif
 
 

@@ -442,7 +442,8 @@ and stat instead.")
     }
 
   symbol_record *sr = curr_sym_tab->lookup (symbol_name);
-  if (! (sr && sr->is_defined ()))
+  if (! (sr && (sr->is_defined ()
+		|| (curr_sym_tab != top_level_sym_tab))))
     sr = global_sym_tab->lookup (symbol_name);
 
   retval = 0.0;

@@ -43,11 +43,11 @@ function [zer,pol]=pzmap(sys)
   zerdata = poldata = [];
   if(length(zer))
     zer = reshape(zer,length(zer),1);
-    zerdata = [real(zer(:,1)) imag(zer(:,1))];
+    zerdata = [real(zer(:,1)), imag(zer(:,1))];
   endif
   if(length(pol))
     pol = reshape(pol,length(pol),1);
-    poldata = [real(pol(:,1)) imag(pol(:,1))];
+    poldata = [real(pol(:,1)), imag(pol(:,1))];
   endif
 
   # determine continuous or discrete plane

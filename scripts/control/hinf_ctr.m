@@ -110,9 +110,9 @@ function K = hinf_ctr(dgs,F,H,Z,g)
   # rescale controller by Ru and Ry
   b1hat = b1hat/Ry;
   c1hat = Ru\c1hat;
-  bhat  = [b1hat b2hat];
+  bhat  = [b1hat, b2hat];
   chat  = [c1hat; c2hat];
-  dhat  = [Ru\d11hat/Ry Ru\d12hat; d21hat/Ry 0*d11hat'];
+  dhat  = [Ru\d11hat/Ry, Ru\d12hat; d21hat/Ry, 0*d11hat'];
 
   # non-zero D22 is a special case
   if (d22nz)
@@ -120,7 +120,7 @@ function K = hinf_ctr(dgs,F,H,Z,g)
       error(" *** cannot compute controller for D22 non-zero.");
     endif
 
-    d22new = [D22 zeros(ny,ny); zeros(nu,nu) 0*D22'];
+    d22new = [D22, zeros(ny,ny); zeros(nu,nu), 0*D22'];
     xx = inv(eye(nu+ny) + d22new*dhat);
     mhat = inv(eye(nu+ny) + dhat*d22new);
     ahat = ahat - bhat*((eye(nu+ny)-xx)/dhat)*chat;

@@ -65,10 +65,10 @@ function [K,gain, Kc, Kf, Pc,  Pf] = h2syn(Asys,nu,ny,tol)
   d22nz = dgs.Dyu_nz;
   dflg = dgs.dflg;
 
-  if(norm(Dzw,Inf) > norm([Dzw Dzu ; Dyw Dyu],Inf)*1e-12)
+  if(norm(Dzw,Inf) > norm([Dzw, Dzu ; Dyw, Dyu],Inf)*1e-12)
     warning("h2syn: Dzw nonzero; feedforward not implemented")
     Dzw
-    D = [Dzw Dzu ; Dyw Dyu]
+    D = [Dzw, Dzu ; Dyw, Dyu]
   endif
 
   # recover i/o transformations

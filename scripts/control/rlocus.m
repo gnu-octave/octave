@@ -52,7 +52,7 @@ function [rldata,k_break,rlpol,gvec,real_ax_pts] = rlocus(sys,increment,min_k,ma
   if(lden < 2)
     error(sprintf("length of derivative=%d, doesn't make sense",lden));
   elseif(lnum == 1)
-    num = [0 num];     # so that derivative is shortened by one
+    num = [0, num];     # so that derivative is shortened by one
   endif
 
   # root locus plot axis limits
@@ -180,7 +180,7 @@ function [rldata,k_break,rlpol,gvec,real_ax_pts] = rlocus(sys,increment,min_k,ma
     idx = find(real(rlpolv) >= xmin & real(rlpolv) <= xmax);
     axdata = [real(rlpolv(idx)),imag(rlpolv(idx))];
     axlim = axis2dlim(axdata);
-    axlim(1:2) = [xmin xmax];
+    axlim(1:2) = [xmin, xmax];
     gset nologscale xy;
     grid("on");
     rldata = [real(rlpolv), imag(rlpolv) ];

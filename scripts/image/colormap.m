@@ -42,20 +42,35 @@ function cmap = colormap (map)
   endif
 
   if (nargin == 1)
+
     if (isstr (map))
       if (strcmp (map, "default"))
-        __current_color_map__ = gray ();
+        map = gray ();
       else
-        error ("invalid argument");
+	unwind_protect
+	  save_default_eval_print_flag = default_eval_print_flag;
+	  default_eval_print_flag = 0;
+	  map = eval (map);
+	unwind_protect_cleanup
+	  default_eval_print_flag = save_default_eval_print_flag;
+	end_unwind_protect
       endif
-    else
+    endif
+
+    if (! isempty (map))
+      if (columns (map) != 3)
+	error( "colormap: map must have 3 columns: [R,G,B]." );
+      endif
+      if (min (min (map)) < 0 || max (max (map)) > 1)
+        error( "colormap: map must have values in [0,1]." );
+      endif
       ## Set the new color map
       __current_color_map__ = map;
     endif
+
   endif
 
   ## Return current color map.
-
   cmap = __current_color_map__;
 
 endfunction

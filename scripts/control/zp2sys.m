@@ -65,7 +65,7 @@ function  outsys = zp2sys (zer,pol,k,tsam,inname,outname)
   outsys.k = k;
 
   #  Set the system vector:  active = 1, updated = [0 1 0];
-  outsys.sys = [1 0 1 0];
+  outsys.sys = [1, 0, 1, 0];
 
   #  Set defaults
   outsys.tsam = 0;

@@ -809,7 +809,7 @@ DEFUN (isnumeric, args, ,
   if (args.length () == 1)
     retval = args(0).is_numeric_type () ? 1.0 : 0.0;
   else
-    print_usage ("is_list");
+    print_usage ("isnumeric");
 
   return retval;
 }

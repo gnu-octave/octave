@@ -112,8 +112,8 @@ endif
 
 # now we can just do the design; call dlqr and dlqe, since all matrices
 # are not given in Cholesky factor form (as in h2syn case)
-[Ks P Er] = dlqr(A,B,Q,R);
-[Ke Q jnk Ee] = dlqe(A,G,C,Sigw,Sigv);
+[Ks, P, Er] = dlqr(A,B,Q,R);
+[Ke, Q, jnk, Ee] = dlqe(A,G,C,Sigw,Sigv);
 Ac = A - Ke*C - B*Ks;
 Bc = Ke;
 Cc = -Ks;

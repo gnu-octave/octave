@@ -16,7 +16,7 @@
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA. 
  
-function [g gmin gmax] = hinfnorm(sys,tol,gmin,gmax,ptol)
+function [g, gmin, gmax] = hinfnorm(sys,tol,gmin,gmax,ptol)
   # Usage: [g gmin gmax] = hinfnorm(sys[,tol,gmin,gmax,ptol])
   #
   # Computes the H infinity norm of a system data structure
@@ -108,7 +108,7 @@ function [g gmin gmax] = hinfnorm(sys,tol,gmin,gmax,ptol)
       [qza,qzb,zz,pls] = qz(s1,s2,"S");	# ordered qz decomposition
       eigerr = abs(abs(pls)-1);
       normH = norm([s1,s2]);
-      Hb = [s1 s2];
+      Hb = [s1, s2];
 
       # check R - B' X B condition (Iglesias and Glover's paper)
       X = zz((nz+1):(2*nz),1:nz)/zz(1:nz,1:nz);

@@ -29,31 +29,16 @@ THISDIR = $(notdir $(CWD))
 
 LIBCRUFT := ../libcruft.$(LIBEXT)
 
-ifeq ($(STATIC_LIBS), true)
-  LIBCRUFT_DEPEND := $(LIBCRUFT)
-endif
-
 LIBCRUFT_OBJS = $(CRUFT_OBJ) $(SPECIAL_DEPEND)
 
 LIBCRUFT_DEPS = $(LIBCRUFT)($(LIBCRUFT_OBJS))
 
+ifeq ($(STATIC_LIBS), true)
+  LIBCRUFT_DEPEND := $(LIBCRUFT_DEPS)
+endif
+
 all: pic $(LIBCRUFT_DEPEND) $(CRUFT_PICOBJ) $(SPECIAL_PICDEPEND)
 .PHONY: all
-
-# Cancel the default action for when an archive member is out of
-# date.  Instead of inserting the out of date members individually, we
-# will insert them in batches, even if some of them are up to date.
-# This is much faster for a large archive like libcruft.a.
-
-(%) : %
-	@true
-
-$(LIBCRUFT): $(LIBCRUFT_DEPS)
-	$(AR) $(ARFLAGS) $@ $^
-	$(RANLIB) $@
-
-# This is necessary, otherwise we won't have any .o files left when it
-# comes time to insert them in the archive.
 
 .PRECIOUS: $(LIBCRUFT_OBJS)
 

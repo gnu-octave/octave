@@ -67,8 +67,8 @@ function [sys] = starp(P, K, ny, nu);
   nu_sign = 1;
   if (nargin == 2)
     # perform a LFT of P and K (upper or lower)
-    ny = min([pp mk]);
-    nu = min([pk mp]);
+    ny = min([pp, mk]);
+    nu = min([pk, mp]);
   else
     if (ny < 0)
       ny = -ny;
@@ -104,15 +104,15 @@ function [sys] = starp(P, K, ny, nu);
 
   # checks done, form sys
   if (nzp)  Olst = [1:nzp];  endif
-  if (nzk)  Olst = [Olst pp+nu+1:pp+pk];  endif
+  if (nzk)  Olst = [Olst, pp+nu+1:pp+pk];  endif
   if (nwp)  Ilst = [1:nwp];  endif
-  if (nwk)  Ilst = [Ilst mp+ny+1:mp+mk];  endif
+  if (nwk)  Ilst = [Ilst, mp+ny+1:mp+mk];  endif
   Clst = zeros(ny+nu,2);
   for ii = 1:nu
-    Clst(ii,:) = [nwp+ii nu_sign*(pp+ii)];
+    Clst(ii,:) = [nwp+ii, nu_sign*(pp+ii)];
   endfor
   for ii = 1:ny
-    Clst(nu+ii,:) = [mp+ii ny_sign*(nzp+ii)];
+    Clst(nu+ii,:) = [mp+ii, ny_sign*(nzp+ii)];
   endfor
   sys = buildssic(Clst,[],Olst,Ilst,P,K);
 

@@ -66,7 +66,7 @@ function outsys = tf2sys(num,den,tsam,inname,outname)
   outsys.den = den;
 
   #  Set the system vector:  active = 0(tf), updated = [1 0 0];
-  outsys.sys = [0 1 0 0];
+  outsys.sys = [0, 1, 0, 0];
 
   #  Set defaults
   outsys.tsam = tsam;

@@ -70,11 +70,11 @@ nn = sysdimensions(sys,"cst");
 mm = sysdimensions(sys,"in");
 pp = sysdimensions(sys,"out");
 
-if(size(Q) != [nn nn])
+if(size(Q) != [nn, nn])
   error("Q(%dx%d); sys has %d states",rows(Q),columns(Q),nn);
-elseif(size(Qf) != [nn nn])
+elseif(size(Qf) != [nn, nn])
   error("Qf(%dx%d); sys has %d states",rows(Qf),columns(Qf),nn);
-elseif(size(R) != [mm mm])
+elseif(size(R) != [mm, mm])
   error("R(%dx%d); sys has %d inputs",rows(R),columns(R),mm);
 endif
 
@@ -109,7 +109,7 @@ while(!done)
     maxerr = max(maxerr,Perr);
     if(Perr > Ptol)
       new_t = mean(tvals([ii,ii-1]));
-      tvals = [tvals new_t];
+      tvals = [tvals, new_t];
       done = 0;
     endif
   endfor

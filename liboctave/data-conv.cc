@@ -95,6 +95,26 @@ oct_data_conv::string_to_data_type (const string& str)
 	(*current_liboctave_error_handler)
 	  ("unable to find matching native data type for %s", s.c_str ());
     }
+  else if (s == "uint16")
+    {
+      if (sizeof (unsigned short) == 2)
+        retval = dt_ushort;
+      else if (sizeof (unsigned int) == 2)
+        retval = dt_uint;
+      else
+       (*current_liboctave_error_handler)
+         ("unable to find matching native data type for %s", s.c_str ());
+    }
+  else if (s == "uint32")
+    {
+      if (sizeof (unsigned int) == 4)
+        retval = dt_uint;
+      else if (sizeof (unsigned long) == 4)
+        retval = dt_ulong;
+      else
+       (*current_liboctave_error_handler)
+         ("unable to find matching native data type for %s", s.c_str ());
+    }
   else
     (*current_liboctave_error_handler) ("invalid data type specified");
 

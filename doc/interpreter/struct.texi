@@ -137,7 +137,7 @@ function argument.
 
 @example
 @group
-octave:2> f (rand (3) + rand (3) * I);
+octave:2> f (rand (2) + rand (2) * I);
 ans =
 @{
   im =

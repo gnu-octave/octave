@@ -42,5 +42,5 @@ function retval = wiener_rnd (t, d, n)
   retval = randn (n * t, d);
   retval = cumsum (retval) / sqrt (n);
 
-  retval = [(1: n*t)' / n retval];
+  retval = [((1: n*t)' / n), retval];
 endfunction

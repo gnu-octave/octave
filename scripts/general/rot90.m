@@ -45,11 +45,11 @@ function y = rot90 (x, k)
     if (k == 0)
       y = x;
     elseif (k == 1)
-      y = flipud (x');
+      y = flipud (x.');
     elseif (k == 2)
       y = flipud (fliplr (x));
     elseif (k == 3)
-      y = (flipud (x))';
+      y = (flipud (x)).';
     else
       error ("rot90: internal error!");
     endif

@@ -1,3 +1,59 @@
+Wed Mar 24 20:34:48 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* linear-algebra/norm.m: Do the right thing for 1- and
+	infinity-norms of complex matrices.  From Sven Khatri
+	<khatri@saturn.vocalpoint.com>.
+
+Tue Mar 16 13:36:36 1999  A. Scottedward Hodel" <scotte@eng.auburn.edu>
+
+	* linear-algebra/qrhouse.m: Handle default args correctly.
+
+Thu Mar 11 12:52:34 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* strings/split.m: Avoid problems when splitting strings that have
+	\ in them.
+
+Thu Mar 11 12:36:13 1999  Massimo Lorenzin <maxlorenzin@tin.it>
+
+	* image/colormap.m: Do better arg checking, handle string args
+	that name the colormap function to call (e.g., colormap ("ocean")).
+
+Mon Mar  8 22:23:24 1999  Rolf Fabian <fabian@TU-Cottbus.De>
+
+	* polynomial/polyfit.m: Use .' transpose operator, not '.
+	* linear-algebra/dot.m: Likewise.
+	* linear-algebra/cross.m: Likewise.
+	* general/rot90.m: Likewise.
+
+Sat Mar  6 01:45:00 1999  A Scott Hodel <hodel@edalf1.msfc.nasa.gov>
+
+	* linear-algebra/qrhouse.m: Permute columns at each iteration so
+	that the leading column is not all zeros.
+
+Fri Mar  5 00:37:47 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* general/shift.m: Fix potential problems with
+	whitespace_in_literal_matrix.
+	* signal/arch_rnd.m: Ditto.
+	* signal/autocov.m: Ditto.
+	* signal/diffpara.m: Ditto.
+	* signal/hurst.m: Ditto.
+	* signal/periodogram.m: Ditto.
+	* signal/spectral_adf.m: Ditto.
+	* signal/spectral_xdf.m: Ditto.
+	* signal/spencer.m: Ditto.
+	* signal/synthesis.m: Ditto.
+	* statistics/distributions/wiener_rnd.m: Ditto.
+	* statistics/models/logistic_regression_likelihood.m: Ditto.
+	* statistics/models/logistic_regression.m: Ditto.
+	* statistics/models/logistic_regression_derivatives.m: Ditto.
+	* statistics/tests/run_test.m: Ditto.
+	* statistics/tests/chisquare_test_independence.m: Ditto.
+
+Wed Mar  3 02:25:00 1999  Joao Cardoso <jcardoso@inescn.pt>
+
+	* plot/__plr2__.m: Fix typo.
+
 Tue Jan 12 10:31:15 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* plot/__pltopt1__.m: Accept "k" to mean black.

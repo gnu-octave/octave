@@ -113,8 +113,6 @@ ifeq ($(SHARED_LIBS), true)
   endif
 endif
 
-LIBOCTAVE_DEPEND := $(patsubst %, liboctave.$(LIBEXT)(%), $(OBJECTS))
-
 all: libraries
 .PHONY: all
 
@@ -136,22 +134,18 @@ pic:
 
 ifeq ($(SHARED_LIBS), true)
   ifeq ($(STATIC_LIBS), true)
-    libraries: liboctave.$(LIBEXT) liboctave.$(SHLEXT)
+    libraries: liboctave.$(LIBEXT)($(OBJECTS)) liboctave.$(SHLEXT)
   else
     libraries: liboctave.$(SHLEXT)
   endif
 else
   ifeq ($(STATIC_LIBS), true)
-    libraries: liboctave.$(LIBEXT)
+    libraries: liboctave.$(LIBEXT)($(OBJECTS))
   else
     libraries:
   endif
 endif
 .PHONY: libraries
-
-liboctave.$(LIBEXT): $(OBJECTS)
-	$(AR) $(ARFLAGS) $@ $^
-	$(RANLIB) $@
 
 liboctave.$(SHLEXT): liboctave.$(SHLEXT_VER)
 	rm -f $@

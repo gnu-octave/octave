@@ -66,7 +66,7 @@ function [p, yf] = polyfit (x, y, n)
   p = flipud (p);
 
   if (! prefer_column_vectors)
-    p = p';
+    p = p.';
   endif
 
 endfunction

@@ -935,7 +935,9 @@ Reads data in binary form of type PRECISION from a file.\n\
    float, float32, real*4         --  single precision float\n\
    double, float64, real*8        --  double precision float\n\
    int16, integer*2               --  two byte integer\n\
+   uint16                         --  two byte unsigned integer\n\
    int32, integer*4               --  four byte integer\n\
+   uint32                         --  four byte unsigned integer\n\
 \n\
   SKIP      : number of bytes to skip after each element is read\n\
               (default is 0)\n\
@@ -1067,7 +1069,9 @@ DEFUN (fwrite, args, ,
    float, float32, real*4         --  single precision float\n\
    double, float64, real*8        --  double precision float\n\
    int16, integer*2               --  two byte integer\n\
+   uint16                         --  two byte unsigned integer\n\
    int32, integer*4               --  four byte integer\n\
+   uint32                         --  four byte unsigned integer\n\
 \n\
   SKIP      : number of bytes to skip before each element is written\n\
               (the default is 0)\n\

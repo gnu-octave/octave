@@ -97,7 +97,7 @@ function dsys = c2d (sys, opt, T)
     [ sys_a,  sys_b,  sys_c,  sys_d] = sys2ss( sys);
     if(isempty(Acd))                Bmat = sys_b;
     elseif(isempty(csys_b))         Bmat = Acd;
-    else                            Bmat = [Acd csys_b];     endif
+    else                            Bmat = [Acd, csys_b];     endif
     
     row_zer = columns(Bmat);
     csysn = sysdimensions(csys);
@@ -108,7 +108,7 @@ function dsys = c2d (sys, opt, T)
       warning("c2d: no inputs to continuous subsystem.");
       mat = csysa;
     else
-      mat = [csysa Bmat ; zeros( row_zer,col_zer) ];
+      mat = [csysa, Bmat ; zeros( row_zer,col_zer) ];
     endif
 
     matexp = expm(mat * T);

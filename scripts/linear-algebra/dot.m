@@ -31,7 +31,7 @@ function z = dot (x, y)
     [y_nr, y_nc] = size (y);
     if (x_nr == 1)
       if (y_nr == 1)
-	z = x * y';
+	z = x * y.';
       else
 	z = x * y;
       endif
@@ -39,7 +39,7 @@ function z = dot (x, y)
       if (y_nr == 1)
 	z = y * x;
       else
-	z = y' * x;
+	z = y.' * x;
       endif
     endif
   else

@@ -38,8 +38,8 @@ n = is_square(A);
 nw = is_square(R);
 if(rank(R) != nw)    x_ha_err = 6;
 else                 # build hamiltonian Ha for X_inf
-  xx = ([BB; -C1'*d1dot]/R) * [d1dot'*C1 BB'];
-  Ha = [A 0*A; -C1'*C1 -A'] - xx;
+  xx = ([BB; -C1'*d1dot]/R) * [d1dot'*C1, BB'];
+  Ha = [A, 0*A; -C1'*C1, -A'] - xx;
   x_ha_err = 0;
   [d, Ha] = balance(Ha);
   [u, s] = schur(Ha, "A");

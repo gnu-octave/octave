@@ -92,6 +92,6 @@ function sys = sysadd(Gsys,Hsys)
   eyin = eye(mg);
   eyout = eye(pg);
 
-  sys = sysscale(sys,[eyout eyout],[eyin;eyin],Gout,Gin);
+  sys = sysscale(sys,[eyout, eyout],[eyin;eyin],Gout,Gin);
 
 endfunction

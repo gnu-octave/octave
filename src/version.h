@@ -29,7 +29,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   "Copyright (C) 1996, 1997, 1998 John W. Eaton."
 
 #define OCTAVE_NAME_AND_VERSION \
-  "Octave, version " OCTAVE_VERSION " (" CANONICAL_HOST_TYPE ")"
+  "GNU Octave, version " OCTAVE_VERSION " (" CANONICAL_HOST_TYPE ")"
 
 #define OCTAVE_NAME_VERSION_AND_COPYRIGHT \
   OCTAVE_NAME_AND_VERSION ".\n" OCTAVE_COPYRIGHT "\n\

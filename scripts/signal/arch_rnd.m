@@ -56,7 +56,7 @@ function y = arch_rnd (a, b, T)
     b  = [b, 0];
     lb = lb + 1;
   endif
-  M  = max([la lb]);
+  M  = max([la, lb]);
   
   e  = zeros (T, 1);
   h  = zeros (T, 1);
@@ -67,10 +67,10 @@ function y = arch_rnd (a, b, T)
   y(1) = b(1) + e(1);
   
   for t= 2 : M;
-    ta   = min ([t la]);
+    ta   = min ([t, la]);
     h(t) = a(1) + a(2:ta) * e(t-1:t-ta+1).^2;
     e(t) = sqrt (h(t)) * randn;
-    tb   = min ([t lb]);
+    tb   = min ([t, lb]);
     y(t) = b(1) + b(2:tb) * y(t-1:t-tb+1) + e(t);
   endfor
   if (T > M)

@@ -31,7 +31,7 @@ function y = shift (x, b)
     error ("usage: shift (X, b)");
   endif
 
-  [nr nc] = size (x);
+  [nr, nc] = size (x);
   
   if (nr == 0 || nc == 0)
     error ("shift: x must not be empty");
@@ -47,10 +47,14 @@ function y = shift (x, b)
 
   if (b >= 0)
     b = rem (b, nr);
-    y = [x (nr - b + 1 : nr, :); x (1 : nr - b, :)];
+    t1 = x (nr-b+1:nr, :);
+    t2 = x (1:nr-b, :);
+    y = [t1; t2];
   elseif (b < 0)
     b = rem (abs (b), nr);
-    y = [x (b + 1 : nr, :); x (1 : b, :)];
+    t1 = x (b+1:nr, :)
+    t2 = x (1:b, :);
+    y = [t1; t2];
   endif
 
   if (nc == 0)

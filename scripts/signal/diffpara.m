@@ -44,7 +44,7 @@ function [d, D] = diffpara (X, a, b)
       k = 1;
       X = reshape (X, n, 1);
     else
-      [n k] = size(X);
+      [n, k] = size(X);
     endif
     if (nargin == 1)
       a = 0.5 * sqrt (n);

@@ -50,7 +50,7 @@ function retval = spectral_adf (c, win, b)
   c = c .* w;
   
   retval = 2 * real (fft (c)) - c(1);
-  retval = [zeros (cr, 1) retval];
+  retval = [(zeros (cr, 1)), retval];
   retval(:, 1) = (0 : xr-1)' / xr;
   
 endfunction

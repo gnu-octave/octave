@@ -274,7 +274,6 @@ Options:\n\
   --echo-commands, -x     Echo commands as they are executed.\n\
   --exec-path PATH        Set path for executing subprograms.\n\
   --help, -h, -?          Print short help message and exit.\n\
-  --norc, -f              Don't read any initialization files.\n\
   --info-file FILE        Use top-level info file FILE.\n\
   --info-program PROGRAM  Use PROGRAM for reading info files.\n\
   --interactive, -i       Force interactive behavior.\n\
@@ -282,6 +281,7 @@ Options:\n\
   --no-init-file          Don't read the ~/.octaverc or .octaverc files.\n\
   --no-line-editing       Don't use readline for command-line editing.\n\
   --no-site-file          Don't read the site-wide octaverc file.\n\
+  --norc, -f              Don't read any initialization files.\n\
   --path PATH, -p PATH    Set initial LOADPATH to PATH.\n\
   --silent, -q            Don't print message at startup.\n\
   --traditional           Set compatibility variables.\n\

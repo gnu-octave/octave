@@ -225,13 +225,13 @@ pic:
 
 ifeq ($(SHARED_LIBS), true)
   ifeq ($(STATIC_LIBS), true)
-    libraries: liboctinterp.$(LIBEXT) liboctinterp.$(SHLEXT)
+    libraries: liboctinterp.$(LIBEXT)($(OBJECTS)) liboctinterp.$(SHLEXT)
   else
     libraries: liboctinterp.$(SHLEXT)
   endif
 else
   ifeq ($(STATIC_LIBS), true)
-    libraries: liboctinterp.$(LIBEXT)
+    libraries: liboctinterp.$(LIBEXT)($(OBJECTS))
   else
     libraries:
   endif

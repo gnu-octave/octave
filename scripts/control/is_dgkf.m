@@ -141,7 +141,7 @@ function [retval,dgkf_struct] = is_dgkf(Asys,nu,ny,tol)
   endif
 
   # 12 - rank condition at w = 0
-  xx =[A Bu; Cz Dzu];
+  xx =[A, Bu; Cz, Dzu];
   [nr, nc] = size(xx);
   irank = rank(xx);
   if (irank != nc)
@@ -152,7 +152,7 @@ function [retval,dgkf_struct] = is_dgkf(Asys,nu,ny,tol)
   endif
 
   # 21 - rank condition at w = 0
-  xx =[A Bw; Cy Dyw];
+  xx =[A, Bw; Cy, Dyw];
   [nr, nc] = size(xx);
   irank = rank(xx);
   if (irank != nr)
@@ -174,7 +174,7 @@ function [retval,dgkf_struct] = is_dgkf(Asys,nu,ny,tol)
   if (nu >= nz)
     Qz = Qz(:,1:nu)';
   else
-    Qz = [Qz(:,(nu+1):nz) Qz(:,1:nu)]';
+    Qz = [Qz(:,(nu+1):nz), Qz(:,1:nu)]';
   endif
   Ru = Ru(1:nu,:);
 
@@ -191,14 +191,14 @@ function [retval,dgkf_struct] = is_dgkf(Asys,nu,ny,tol)
   if (ny >= nw)
     Qw = Qw(:,1:ny);
   else
-    Qw = [Qw(:,(ny+1):nw) Qw(:,1:ny)];
+    Qw = [Qw(:,(ny+1):nw), Qw(:,1:ny)];
   endif
   Ry = Ry(1:ny,:)';
 
   # transform P by Qz/Ru and Qw/Ry
   Bw  = Bw*Qw;
   Bu  = Bu/Ru;
-  B   = [Bw Bu];
+  B   = [Bw, Bu];
   Cz  = Qz*Cz;
   Cy  = Ry\Cy;
   C   = [Cz; Cy];

@@ -24,7 +24,7 @@
 function [g, g1, p, dev] ...
       = logistic_regression_likelihood (y, x, beta, z, z1)
   
-  e = exp ([z x] * beta); e1 = exp ([z1 x] * beta);
+  e = exp ([z, x] * beta); e1 = exp ([z1, x] * beta);
   g = e ./ (1 + e); g1 = e1 ./ (1 + e1);
   g = max (y == max (y), g); g1 = min (y > min(y), g1);
   

@@ -1,3 +1,18 @@
+Fri Mar 26 11:26:32 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (libraries): Use the libfoo.a(objects) method of
+	creating static libs.
+
+Thu Mar  4 02:17:04 1999  James Macnicol <jamesm@evans.ee.adfa.oz.au>
+
+	* data-conv.cc (oct_data_conv::string_to_data_type): Handle uint16
+	and uint32 data types.
+
+Thu Mar  4 01:51:37 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lo-ieee.cc (octave_ieee_init): Don't use __alpha__-specific code
+	for Linux.  Remove old Linux-specific code.
+
 Tue Jan 19 09:34:55 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* dMatrix.cc (operator * (const ColumnVector& v, const RowVector& a)):

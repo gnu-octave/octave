@@ -66,11 +66,11 @@ function [theta, beta, dev, dl, d2l, p] ...
   
   ## check input
   y = round (vec (y)); 
-  [my ny] = size (y);   
+  [my, ny] = size (y);   
   if (nargin < 2)
     x = zeros (my, 0); 
   endif;
-  [mx nx] = size (x);
+  [mx, nx] = size (x);
   if (mx != my)
     error ("x and y must have the same number of observations");
   endif
@@ -83,7 +83,7 @@ function [theta, beta, dev, dl, d2l, p] ...
   z1 = (y * ones (1, yrange)) == ((y * 0 + 1) * ((ymin + 1) : ymax));
   z  = z(:, any (z)); 
   z1 = z1 (:, any(z1)); 
-  [mz nz] = size (z);
+  [mz, nz] = size (z);
   
   ## starting values
   if (nargin < 3)
@@ -164,7 +164,7 @@ function [theta, beta, dev, dl, d2l, p] ...
     else
       e = (y * 0 + 1) * theta';
     endif
-    gamma = diff ([(y * 0) exp (e) ./ (1 + exp (e)) (y * 0 + 1)]')';
+    gamma = diff ([(y * 0), (exp (e) ./ (1 + exp (e))), (y * 0 + 1)]')';
   endif
   
 endfunction

@@ -129,7 +129,7 @@ function [sys] = buildssic(Clst,Ulst,Olst,Ilst,s1,s2,s3,s4,s5,s6,s7,s8)
     nt = n + nz;
   endif
   for ii = 6:nargin
-    eval(["ss = s" num2str(ii-4) ";"]);
+    eval(["ss = s", num2str(ii-4), ";"]);
     if (!is_struct(ss))
       error("---> Parameter must be a structed system.");
     endif
@@ -150,14 +150,14 @@ function [sys] = buildssic(Clst,Ulst,Olst,Ilst,s1,s2,s3,s4,s5,s6,s7,s8)
     nt1 = n1 + nz1;
     if (!nt1)
       # pure gain (pad B, C with zeros)
-      B = [B  zeros(nt,m1)];
+      B = [B, zeros(nt,m1)];
       C = [C; zeros(p1,nt)];
     else
-      A = [A  zeros(nt,nt1); zeros(nt1,nt) as];
-      B = [B  zeros(nt,m1);  zeros(nt1,m)  bs];
-      C = [C  zeros(p,nt1);  zeros(p1,nt)  cs];
+      A = [A, zeros(nt,nt1); zeros(nt1,nt), as];
+      B = [B, zeros(nt,m1);  zeros(nt1,m),  bs];
+      C = [C, zeros(p,nt1);  zeros(p1,nt),  cs];
     endif
-    D = [D  zeros(p,m1); zeros(p1,m) ds];
+    D = [D, zeros(p,m1); zeros(p1,m), ds];
     n = n + n1;
     nz = nz + nz1;
     nt = nt + nt1;

@@ -1,3 +1,35 @@
+Fri Mar 26 00:51:53 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (libraries): Use the libfoo.a(objects) method of
+	creating static libs.
+
+	* defaults.cc (symbols_of_defaults): Initialize LOADPATH to
+	Vload_path, not ":".
+
+Thu Mar 18 12:09:23 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* data.cc (Fisnumeric): Fix typo.
+
+Thu Mar  4 02:17:04 1999  James Macnicol <jamesm@evans.ee.adfa.oz.au>
+
+	* file-io.cc (Ffread, Ffwrite): Add uint16 and uint32 data types
+	to doc string.
+
+Wed Mar  3 11:55:17 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lex.l (handle_string): Allow "" to pass through unchanged if
+	working on a gset command.
+
+Tue Mar  2 01:36:29 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* variables.cc (Fexist): If a variable isn't defined, only go on
+	to look for a global by the same name if we are at the top level.
+
+Fri Jan 29 02:18:36 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* version.h (OCTAVE_NAME_AND_VERSION): Say `GNU Octave', not just
+	Octave.
+
 Thu Jan 28 21:29:16 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* toplev.cc (Fcomputer): Use CANONICAL_HOST_TYPE, not TARGET_HOST_TYPE.

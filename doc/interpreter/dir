@@ -9,4 +9,6 @@ File: dir	Node: Top	This is the top of the INFO tree
   gives a primer for first-timers, "mItem<Return>" visits the menu
   item named `Item', etc.
 
+* Menu: The list of major topics begins on the next line.
+
 * Octave: (octave).	Interactive language for numerical computations.

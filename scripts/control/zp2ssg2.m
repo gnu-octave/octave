@@ -58,7 +58,7 @@ else
 endif
 
 # remove roots used
-idx = complement([r1i r2i],1:length(rvals));
+idx = complement([r1i, r2i],1:length(rvals));
 rvals = rvals(idx);
 
 endfunction

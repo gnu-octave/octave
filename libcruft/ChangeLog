@@ -1,3 +1,9 @@
+Fri Mar 26 01:19:04 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makerules.in (all): Don't try to use a special rule for making
+	the archive.  The default rules may be slower, but they are also
+	correct.
+
 Wed Nov 11 17:27:35 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (CRUFT_DIRS): Add amos.  Delete specfun.

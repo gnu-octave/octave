@@ -68,13 +68,7 @@ octave_ieee_init (void)
 #if defined (SCO)
   double tmp = 1.0;
   octave_Inf = 1.0 / (tmp - tmp);
-#elif defined (linux)
-#if defined (HUGE_VAL) && ! defined (arm)
-  octave_Inf = HUGE_VAL;
-#else
-  octave_Inf = 1.0/0.0;
-#endif
-#elif defined (__alpha__)
+#elif defined (__alpha__) && ! defined (linux)
   extern unsigned int DINFINITY[2];
   octave_Inf =  (*(X_CAST(double *, DINFINITY)));
 #elif defined (HAVE_INFINITY)
@@ -95,13 +89,7 @@ octave_ieee_init (void)
 
 #if defined (HAVE_ISNAN)
 
-#if defined (linux)
-#if defined (NAN) && ! defined (arm)
-  octave_NaN = NAN;
-#else
-  octave_NaN = 0.0/0.0;
-#endif
-#elif defined (__alpha__)
+#if defined (__alpha__) && ! defined (linux)
   extern unsigned int DQNAN[2];
   octave_NaN = (*(X_CAST(double *, DQNAN)));
 #elif defined (HAVE_QUIET_NAN)

@@ -205,7 +205,7 @@ function sys = sysconnect(sys,output_list,input_list,order,tol)
 
   # construct system data structure
   if(m1 > 0)
-   Bc = [B1c B2c];
+   Bc = [B1c, B2c];
   else
    Bc = B2c;
   endif

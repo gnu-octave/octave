@@ -89,20 +89,18 @@ function retval = norm (x, p)
         if (strcmp (p, "fro"))
           retval = sqrt (sum (diag (x' * x)));
         elseif (strcmp (p, "inf"))
-          xp = x';
-          retval = max (sum (abs (real (xp)) + abs (imag (xp))));
+          retval = max (sum (abs (x')));
         else
           error ("norm: unrecognized norm");
         endif
       else
         if (p == 1)
-          retval = max (sum (abs (real (x)) + abs (imag (x))));
+          retval = max (sum (abs (x)));
         elseif (p == 2)
           s = svd (x);
           retval = s (1);
         elseif (p == Inf)
-          xp = x';
-          retval = max (sum (abs (real (xp)) + abs (imag (xp))));
+          retval = max (sum (abs (x')));
         endif
       endif
     elseif (nargin == 1)

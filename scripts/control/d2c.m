@@ -123,7 +123,7 @@ function csys = d2c(sys,opt)
       warning("d2c: empty b matrix");
       Amat = a;
     else
-      Amat = [a, b; zeros(nb, na) eye(nb)];
+      Amat = [a, b; zeros(nb,na), eye(nb)];
     endif
   
     poles = eig(a);
@@ -160,8 +160,8 @@ function csys = d2c(sys,opt)
         Mall = Mtop;
         DMall = DMtop;
       else
-        Mall = [Mtop; zeros(nb, na+nb)];
-        DMall = [DMtop; zeros(nb, na+nb) ];
+        Mall = [Mtop; zeros(nb,na+nb)];
+        DMall = [DMtop; zeros(nb,na+nb) ];
       endif
   
       if(newgrad)

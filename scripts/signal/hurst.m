@@ -35,7 +35,7 @@ function H = hurst (x)
     x = reshape (x, length (x), 1);
   end
     
-  [xr xc] = size (x);
+  [xr, xc] = size (x);
 
   s = std (x);
   w = cumsum (x - mean (x));

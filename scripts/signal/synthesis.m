@@ -30,7 +30,7 @@ function X = synthesis (Y, c)
     usage ("X = synthesis (Y, c)");
   endif
   
-  [nr nc] = size (c);
+  [nr, nc] = size (c);
   if (nr * nc != 3)
     error ("synthesis:  c must contain exactly 3 elements");
   endif

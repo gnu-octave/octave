@@ -421,7 +421,7 @@ symbols_of_defaults (void)
   DEFVAR (EXEC_PATH, Vexec_path, 0, exec_path,
     "colon separated list of directories to search for programs to run");
 
-  DEFVAR (LOADPATH, ":", 0, loadpath,
+  DEFVAR (LOADPATH, Vload_path, 0, loadpath,
     "colon separated list of directories to search for scripts.\n\
 The default value is \":\", which means to search the default list\n\
 of directories.  The default list of directories may be found in\n\

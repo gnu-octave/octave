@@ -103,9 +103,9 @@ function [K,g,GW,Xinf,Yinf] = hinfsyn(Asys,nu,ny,gmin,gmax,gtol,ptol,tol)
   Atsam = sysgettsam(Asys);
   [Ast, Ain, Aout] = sysgetsignals(Asys);
 
-  BB = [B1 B2];
+  BB = [B1, B2];
   CC = [C1 ; C2];
-  DD = [D11 D12 ; D21  D22];
+  DD = [D11, D12 ; D21,  D22];
 
   if (dflg == 0)
     n = ncstates;
@@ -182,7 +182,7 @@ function [K,g,GW,Xinf,Yinf] = hinfsyn(Asys,nu,ny,gmin,gmax,gtol,ptol,tol)
       printf("%10.4f ", g);
 
       # computing R and R~
-      d1dot = [D11 D12];
+      d1dot = [D11, D12];
       R = zeros(nin, nin);
       R(1:nw,1:nw) = -g*g*eye(nw);
       R = R + d1dot' * d1dot;

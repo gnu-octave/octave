@@ -34,11 +34,11 @@ function [pval, chisq, df] = chisquare_test_independence (X)
     usage ("chisquare_test_independence (X)");
   endif
   
-  [r s] = size (X);
-  df    = (r - 1) * (s - 1);
-  n     = sum (sum (X));
-  Y     = sum (X')' * sum (X) / n;
-  X     = (X - Y) .^2 ./ Y;
+  [r, s] = size (X);
+  df = (r - 1) * (s - 1);
+  n = sum (sum (X));
+  Y = sum (X')' * sum (X) / n;
+  X = (X - Y) .^2 ./ Y;
   chisq = sum (sum (X));
   pval  = 1 - chisquare_cdf (chisq, df);
   

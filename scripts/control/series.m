@@ -79,9 +79,9 @@ function [a,b,c,d] = series(a1,b1,c1,d1,a2,b2,c2,d2)
 
 # put the two state space systems in series
 
-    a = [a1 zeros(rows(a1),columns(a2));b2*c1 a2];
+    a = [a1, zeros(rows(a1),columns(a2));b2*c1, a2];
     b = [b1;b2*d1];
-    c = [d2*c1 c2];
+    c = [d2*c1, c2];
     d = [d2*d1];
 
 # take care of mu output

@@ -104,11 +104,11 @@ B = B(:,m2:nin);
 # now we can just do the design; call dlqr and dlqe, since all matrices
 # are not given in Cholesky factor form (as in h2syn case)
 if(DIG)
-  [Ks P1 Er] = dlqr(A,B,Q,R);
-  [Ke Q1 jnk Ee] = dlqe(A,G,C,Sigw,Sigv);
+  [Ks, P1, Er] = dlqr(A,B,Q,R);
+  [Ke, Q1, jnk, Ee] = dlqe(A,G,C,Sigw,Sigv);
 else
-  [Ks P1 Er] = lqr(A,B,Q,R);
-  [Ke Q1 Ee] = lqe(A,G,C,Sigw,Sigv);
+  [Ks, P1, Er] = lqr(A,B,Q,R);
+  [Ke, Q1, Ee] = lqe(A,G,C,Sigw,Sigv);
 endif
 Ac = A - Ke*C - B*Ks;
 Bc = Ke;

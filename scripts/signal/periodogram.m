@@ -23,7 +23,7 @@
 
 function retval = periodogram (x)
 
-  [r c] = size(x);
+  [r, c] = size(x);
 
   if (r == 1)
     r = c;

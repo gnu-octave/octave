@@ -67,7 +67,7 @@ function [zer, gain] = tzero(A,B,C,D)
   # problem balancing method (Hodel and Tiller, Linear Alg. Appl., 1992)
 
   Asys = zgpbal(Asys); [A,B,C,D] = sys2ss(Asys);   # balance coefficients
-  meps = 2*eps*norm([A B; C D],'fro');
+  meps = 2*eps*norm([A, B; C, D],'fro');
   Asys = zgreduce(Asys,meps);  [A, B, C, D] = sys2ss(Asys); # ENVD algorithm
   if(!isempty(A))
     # repeat with dual system
@@ -80,13 +80,13 @@ function [zer, gain] = tzero(A,B,C,D)
   zer = [];			# assume none
   [A,B,C,D] = sys2ss(Asys);
   if( !isempty(C) )
-    [W,r,Pi] = qr([C D]');
+    [W,r,Pi] = qr([C, D]');
     [nonz,ztmp] = zgrownorm(r,meps);
     if(nonz)
       # We can now solve the generalized eigenvalue problem.
       [pp,mm] = size(D);
       nn = rows(A);
-      Afm = [A , B ; C D] * W';
+      Afm = [A , B ; C, D] * W';
       Bfm = [eye(nn), zeros(nn,mm); zeros(pp,nn+mm)]*W';
 
       jdx = (mm+1):(mm+nn);

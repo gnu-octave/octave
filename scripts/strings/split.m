@@ -61,9 +61,9 @@ function m = split (s, t)
     range = (ind (k) + l_t) : ind (k + 1) - 1;
 
     if (k != limit)
-      cmd = sprintf ("%s\"%s\", ", cmd, s (range));
+      cmd = sprintf ("%s\"%s\", ", cmd, undo_string_escapes (s (range)));
     else
-      cmd = sprintf ("%s\"%s\"", cmd, s (range));
+      cmd = sprintf ("%s\"%s\"", cmd, undo_string_escapes (s (range)));
     endif
 
   endfor

@@ -94,7 +94,7 @@ function __plr2__ (theta, rho, fmt)
       if (r_nr != t_nr)
 	error ("polar: vector and matrix sizes must match");
       endif
-      diag_r = diag (r);
+      diag_r = diag (rho);
       x = diag_r * cos (theta);
       y = diag_r * sin (theta);
       __plt2mv__ (x, y, fmt);

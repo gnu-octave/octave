@@ -74,7 +74,7 @@ function zz = zginit(a,b,c,d)
   endfor
 
   # zz part 3:
-  cd = [c d];
+  cd = [c, d];
   for i=1:pp
     i1 = i+nn+mm;
     cdidx = find(cd(i,:) != 0);

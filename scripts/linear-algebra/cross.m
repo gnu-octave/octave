@@ -38,7 +38,7 @@ function z = cross (x, y)
 
     if ((x_nr == y_nr && x_nr == 1)
  	|| (x_nr != y_nr && ! prefer_column_vectors))
-      z = z';
+      z = z.';
     endif
 
   else

@@ -26,7 +26,7 @@
   
 function retval = autocov (X, h)
   
-  [n c] = size (X);
+  [n, c] = size (X);
   
   if (is_vector (X))
     n = length (X);

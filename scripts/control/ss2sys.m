@@ -141,7 +141,7 @@ function  retsys = ss2sys  (a,b,c,d,tsam,n,nz,stname,inname,outname,outlist)
   retsys.yd = zeros(1,p);     # default value entered below
 
   #  Set the system vector:  active = 2(ss), updated = [0 0 1];
-  retsys.sys = [2 0 0 1]; 
+  retsys.sys = [2, 0, 0, 1]; 
 
   retsys.stname = sysdefstname(n,nz);
   retsys.inname = sysdefioname(m,"u");

@@ -902,7 +902,7 @@ eval_string (const char *string, int print, int ans_assign,
 static Octave_object
 eval_string (const tree_constant& arg, int& parse_status, int nargout)
 {
-  char *string = arg.string_value ();
+  const char *string = arg.string_value ();
 
   if (error_state)
     {
@@ -971,7 +971,7 @@ DEFUN ("system", Fsystem, Ssystem, 2, 1,
 
   tree_constant tc_command = args(0);
 
-  char *tmp_str = tc_command.string_value ();
+  const char *tmp_str = tc_command.string_value ();
 
   if (error_state)
     {

@@ -167,7 +167,7 @@ return_valid_file (const tree_constant& arg)
       int file_count = file_list.length ();
       for (int i = 0; i < file_count; i++)
 	{
-	  char *file_name = arg.string_value ();
+	  const char *file_name = arg.string_value ();
 	  file = file_list (p);
 	  if (strcmp (file.name (), file_name) == 0)
 	    return p;
@@ -243,7 +243,7 @@ file_io_get_file (const tree_constant& arg, const char *mode,
     {
       if (arg.is_string ())
 	{
-	  char *name = arg.string_value ();
+	  const char *name = arg.string_value ();
 
 	  struct stat buffer;
 	  int status = stat (name, &buffer);
@@ -532,8 +532,8 @@ fopen_internal (const Octave_object& args)
       return retval;
     }
 
-  char *name = args(0).string_value ();
-  char *mode = args(1).string_value ();
+  const char *name = args(0).string_value ();
+  const char *mode = args(1).string_value ();
 
   if (! valid_mode (mode))
     {
@@ -985,7 +985,7 @@ process_printf_format (const char *s, const Octave_object& args,
 
     case 's':
       {
-	char *val = args(fmt_arg_count++).string_value ();
+	const char *val = args(fmt_arg_count++).string_value ();
 
 	if (error_state)
 	  goto invalid_conversion;
@@ -1002,7 +1002,7 @@ process_printf_format (const char *s, const Octave_object& args,
 
     case 'c':
       {
-	char *val = args(fmt_arg_count++).string_value ();
+	const char *val = args(fmt_arg_count++).string_value ();
 
 	if (error_state || strlen (val) != 1)
 	  goto invalid_conversion;
@@ -1037,7 +1037,7 @@ do_printf (const char *type, const Octave_object& args, int nargout)
 {
   Octave_object retval;
   fmt_arg_count = 0;
-  char *fmt;
+  const char *fmt;
   file_info file;
 
   if (strcmp (type, "fprintf") == 0)
@@ -1082,7 +1082,7 @@ do_printf (const char *type, const Octave_object& args, int nargout)
 
   ostrstream output_buf;
 
-  char *ptr = fmt;
+  const char *ptr = fmt;
 
   for (;;)
     {
@@ -1357,7 +1357,7 @@ static Octave_object
 do_scanf (const char *type, const Octave_object& args, int nargout)
 {
   Octave_object retval;
-  char *scanf_fmt = 0;
+  const char *scanf_fmt = 0;
   char *tmp_file = 0;
   int tmp_file_open = 0;
   FILE *fptr = 0;
@@ -1399,7 +1399,7 @@ do_scanf (const char *type, const Octave_object& args, int nargout)
   if ((! fptr && args(0).is_string ())
       || (doing_fscanf && file.number () == 0))
     {
-      char *string;
+      const char *string;
 
       if (strcmp (type, "scanf") == 0)
 	scanf_fmt = args(0).string_value ();
@@ -1460,7 +1460,7 @@ do_scanf (const char *type, const Octave_object& args, int nargout)
 
   retval.resize (nargout);
 
-  char *ptr = scanf_fmt;
+  const char *ptr = scanf_fmt;
 
   for (;;)
     {
@@ -1553,7 +1553,7 @@ DEFUN ("sscanf", Fsscanf, Ssscanf, 2, -1,
 // Find out how many elements are left to read.
 
 static long
-num_items_remaining (FILE *fptr, char *type)
+num_items_remaining (FILE *fptr, const char *type)
 {
   size_t size;
 
@@ -1628,7 +1628,7 @@ fread_internal (const Octave_object& args, int nargout)
 
   // Get type and number of bytes per element to read.
 
-  char *prec = "uchar";
+  const char *prec = "uchar";
   if (nargin > 2)
     {
       prec = args(2).string_value ();
@@ -1815,7 +1815,7 @@ fwrite_internal (const Octave_object& args, int nargout)
 
   // Get type and number of bytes per element to read.
 
-  char *prec = "uchar";
+  const char *prec = "uchar";
   if (nargin > 2)
     {
       prec = args(2).string_value ();
@@ -1968,9 +1968,7 @@ popen_internal (const Octave_object& args)
       return retval;
     }
 
-  char *name = args(0).string_value ();
-
-  Pix p = return_valid_file (name);
+  Pix p = return_valid_file (args(0));
 
   if (p)
     {
@@ -1987,7 +1985,8 @@ popen_internal (const Octave_object& args)
       return retval;
     }
 
-  char *mode = args(1).string_value ();
+  const char *name = args(0).string_value ();
+  const char *mode = args(1).string_value ();
 
   if (mode[1] || (mode[0] != 'w' && mode[0] != 'r'))
     {
@@ -2108,7 +2107,7 @@ execute_internal (const Octave_object& args, int nargout)
       return retval;
     }
 
-  char *name = args(0).string_value ();
+  const char *name = args(0).string_value ();
 
   if (pipe (stdin_pipe) || pipe (stdout_pipe)) 
     {
@@ -2200,7 +2199,7 @@ sync_system_internal (const Octave_object& args)
       return retval;
     }
 
-  char *name = args(0).string_value ();
+  const char *name = args(0).string_value ();
 
   retval (0) = (double) system (name);
   return retval;
@@ -2235,7 +2234,7 @@ async_system_internal (const Octave_object& args)
       return retval;
     }
 
-  char *name = args(0).string_value ();
+  const char *name = args(0).string_value ();
 
   pid = fork ();
 
@@ -2368,7 +2367,7 @@ mkfifo_internal (const Octave_object& args)
       return retval;
     }
 
-  char *name = args(0).string_value ();
+  const char *name = args(0).string_value ();
 
   if (! args(1).is_scalar_type ())
     {
@@ -2417,7 +2416,7 @@ unlink_internal (const Octave_object& args)
       return retval;
     }
 
-  char *name = args(0).string_value ();
+  const char *name = args(0).string_value ();
 
   retval (0) = (double) unlink (name);
 

@@ -129,7 +129,7 @@ is_valid_function (const tree_constant& arg, char *warn_for, int warn)
 {
   tree_fvc *ans = 0;
 
-  char *fcn_name = arg.string_value ();
+  const char *fcn_name = arg.string_value ();
 
   if (error_state)
     {
@@ -188,7 +188,7 @@ otherwise, return 0.")
       return retval;
     }
 
-  char *name = args(0).string_value ();
+  const char *name = args(0).string_value ();
 
   if (error_state)
     {
@@ -847,7 +847,7 @@ builtin_string_variable (const char *name)
 
       if (! error_state && val.is_string ())
 	{
-	  char *s = val.string_value ();
+	  const char *s = val.string_value ();
 
 	  if (s)
 	    retval = strsave (s);

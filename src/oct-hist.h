@@ -26,7 +26,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 extern void initialize_history (void);
 extern void clean_up_history (void);
-extern void maybe_save_history (char*);
+extern void maybe_save_history (const char*);
 extern void do_history (int, char**);
 extern void do_edit_history (int, char**);
 extern void do_run_history (int, char**);

@@ -272,7 +272,7 @@ DEFUN ("strftime", Fstrftime, Sstrftime, 1, 2,
 
   if (args.length () == 2 && args(0).is_string () && args(1).is_map ()) 
     {
-      char *fmt = args(0).string_value ();
+      const char *fmt = args(0).string_value ();
       Octave_map map = args(1).map_value ();
 
       double fraction;

@@ -72,7 +72,7 @@ where OPT is an optional single character argument as follows: \n\
       return retval;
     }
 
-  char *bal_job;
+  const char *bal_job;
   int my_nargin;		// # args w/o optional string arg
 
   // Determine if balancing option is listed.  Set my_nargin to the

@@ -142,7 +142,7 @@ clean_up_history (void)
 }
 
 void
-maybe_save_history (char *s)
+maybe_save_history (const char *s)
 {
   if (saving_history)
     {

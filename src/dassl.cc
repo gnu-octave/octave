@@ -274,7 +274,7 @@ print_dassl_option_list (void)
 }
 
 static void
-set_dassl_option (char *keyword, double val)
+set_dassl_option (const char *keyword, double val)
 {
   DAE_OPTIONS *list = dassl_option_table;
 
@@ -294,7 +294,7 @@ set_dassl_option (char *keyword, double val)
 }
 
 static Octave_object
-show_dassl_option (char *keyword)
+show_dassl_option (const char *keyword)
 {
   Octave_object retval;
 
@@ -332,7 +332,7 @@ to the shortest match.")
     }
   else if (nargin == 1 || nargin == 2)
     {
-      char *keyword = args(0).string_value ();
+      const char *keyword = args(0).string_value ();
 
       if (! error_state)
 	{

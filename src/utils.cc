@@ -781,7 +781,7 @@ undo_string_escape (char c)
 }
 
 char *
-undo_string_escapes (char *s)
+undo_string_escapes (const char *s)
 {
   ostrstream buf;
 

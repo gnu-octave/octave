@@ -61,7 +61,7 @@ characters:\n\
 
   tree_constant arg = args(0);
 
-  char *ord = "U";
+  const char *ord = "U";
   if (nargin == 2)
     {
       ord = args(1).string_value ();

@@ -2428,7 +2428,7 @@ save_binary_data (ostream& os, const tree_constant& tc, char *name,
       int nc = tc.columns ();
       FOUR_BYTE_INT len = nr * nc;
       os.write (&len, 4);
-      char *s = tc.string_value ();
+      const char *s = tc.string_value ();
       os.write (s, len);
     }
   else if (tc.is_range ())
@@ -2726,7 +2726,7 @@ save_ascii_data (ostream& os, const tree_constant& tc,
   else if (tc.is_string ())
     {
       ascii_save_type (os, "string", mark_as_global);
-      char *tmp = tc.string_value ();
+      const char *tmp = tc.string_value ();
       os << "# length: " << strlen (tmp) << "\n"
 	 << tmp << "\n";
     }

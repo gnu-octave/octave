@@ -525,7 +525,7 @@ DEFUN ("getenv", Fgetenv, Sgetenv, 1, 1,
 
   if (nargin == 1)
     {
-      char *name = args(0).string_value ();
+      const char *name = args(0).string_value ();
 
       if (! error_state)
 	{

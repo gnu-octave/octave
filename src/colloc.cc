@@ -84,7 +84,7 @@ DEFUN_DLD_BUILTIN ("colloc", Fcolloc, Scolloc, 7, 4,
 	      return retval;
 	    }
 
-	  char *s = args(i).string_value ();
+	  const char *s = args(i).string_value ();
 
 	  if (s && (((*s == 'R' || *s == 'r') && strlen (s) == 1)
 		    || strcmp (s, "right") == 0))

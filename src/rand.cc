@@ -172,7 +172,8 @@ rand (SEED, N)        -- set seed")
 
       if (tmp.is_string ())
 	{
-	  char *s_arg = tmp.string_value ();
+	  const char *s_arg = tmp.string_value ();
+
 	  if (strcmp (s_arg, "dist") == 0)
 	    {
 	      char *s = curr_rand_dist ();

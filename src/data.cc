@@ -755,7 +755,7 @@ return nonzero if S is a structure with element NAME")
       retval = 0.0;
       if (args(0).is_map () && args(1).is_string ())
 	{
-	  char *s = args(1).string_value ();
+	  const char *s = args(1).string_value ();
 	  tree_constant tmp = args(0).lookup_map_element (s, 0, 1);
 	  retval = (double) tmp.is_defined ();
 	}

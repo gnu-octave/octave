@@ -719,7 +719,7 @@ print_npsol_option_list (void)
 }
 
 static void
-set_npsol_option (char *keyword, double val)
+set_npsol_option (const char *keyword, double val)
 {
   NPSOL_OPTIONS *list = npsol_option_table;
 
@@ -749,7 +749,7 @@ set_npsol_option (char *keyword, double val)
 }
 
 static Octave_object
-show_npsol_option (char *keyword)
+show_npsol_option (const char *keyword)
 {
   Octave_object retval;
 
@@ -805,7 +805,7 @@ to the shortest match.")
     }
   else if (nargin == 1 || nargin == 2)
     {
-      char *keyword = args(0).string_value ();
+      const char *keyword = args(0).string_value ();
 
       if (! error_state)
 	{

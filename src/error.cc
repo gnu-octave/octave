@@ -175,7 +175,7 @@ printed.")
 {
   Octave_object retval;
 
-  char *msg = "unspecified error";
+  const char *msg = "unspecified error";
 
   int nargin = args.length ();
 
@@ -204,7 +204,7 @@ See also: error")
 {
   Octave_object retval;
 
-  char *msg = "unspecified warning";
+  const char *msg = "unspecified warning";
 
   int nargin = args.length ();
 
@@ -233,7 +233,7 @@ See also: error")
 {
   Octave_object retval;
 
-  char *msg = "unknown";
+  const char *msg = "unknown";
 
   int nargin = args.length ();
 

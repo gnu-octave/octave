@@ -255,7 +255,7 @@ print_lsode_option_list (void)
 }
 
 static void
-set_lsode_option (char *keyword, double val)
+set_lsode_option (const char *keyword, double val)
 {
   ODE_OPTIONS *list = lsode_option_table;
 
@@ -275,7 +275,7 @@ set_lsode_option (char *keyword, double val)
 }
 
 static Octave_object
-show_lsode_option (char *keyword)
+show_lsode_option (const char *keyword)
 {
   Octave_object retval;
 
@@ -313,7 +313,7 @@ to the shortest match.")
     }
   else if (nargin == 1 || nargin == 2)
     {
-      char *keyword = args(0).string_value ();
+      const char *keyword = args(0).string_value ();
 
       if (! error_state)
 	{

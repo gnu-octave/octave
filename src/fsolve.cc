@@ -240,7 +240,7 @@ print_fsolve_option_list (void)
 }
 
 static void
-set_fsolve_option (char *keyword, double val)
+set_fsolve_option (const char *keyword, double val)
 {
   NLEQN_OPTIONS *list = fsolve_option_table;
 
@@ -260,7 +260,7 @@ set_fsolve_option (char *keyword, double val)
 }
 
 static Octave_object
-show_fsolve_option (char *keyword)
+show_fsolve_option (const char *keyword)
 {
   Octave_object retval;
 
@@ -298,7 +298,7 @@ to the shortest match.")
     }
   else if (nargin == 1 || nargin == 2)
     {
-      char *keyword = args(0).string_value ();
+      const char *keyword = args(0).string_value ();
 
       if (! error_state)
 	{

@@ -73,7 +73,7 @@ static int no_line_editing = 0;
 #endif
 
 char *
-gnu_readline (char *s)
+gnu_readline (const char *s)
 {
 #if 0
   static int state = 0;
@@ -977,7 +977,7 @@ get_user_input (const Octave_object& args, int nargout, int debug = 0)
   if (nargin == 2)
     read_as_string++;
 
-  char *prompt = "debug> ";
+  const char *prompt = "debug> ";
   if (nargin > 0)
    {
      prompt = args(0).string_value ();

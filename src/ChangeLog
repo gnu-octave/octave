@@ -1,5 +1,22 @@
 Thu Apr 24 03:58:16 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* lex.h (class lexical_feedback): Delete maybe_screwed field.
+	New field, parsed_function name.
+	* lex.l (lexical_feedback::init): Initialize it.
+	(handle_identifier): Don't return SCREW.  Handle switching
+	symbol table context properly for `function f ()' vs `function x ='.
+	(is_keyword): If looking at function keyword, don't set current
+	symbol table to point to the local table.
+	* parse.y (recover_from_parsing_function): New function.
+	(finish_function_def): Use identifier, not token.
+	Simplify parsing of functions.
+
+	* ov-list.h, ov-list.cc: New files to implement generic list type.
+	* ov.cc (list_indent): New global variable.
+	(increment_list_indent, decrement_list_indent): New functions.
+	(install_types): Register octave_list type.
+	* ov-base.cc (octave_base_value::is_list): New function.
+
 	* oct-sym.h: New file.
 	* ov.h (class octave_value): Derive from octave_symbol class.
 
@@ -14,6 +31,9 @@ Thu Apr 24 03:58:16 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 	function.
 
 	* lex.l: Handle +=, -=, *=, /=, .+=, .-=, .*=, ./=, &=, and |= ops.
+	* parse.y (make_assign_op): Rename from make_simple_assignment and
+	handle different op types.
+	(simple_expr1): Do new ops.
 	* pt-misc.cc (initialize_undefined_elements): Pass op to assign.
 	* pt-cmd.cc (tree_for_command::do_for_command_once): Likewise.
 	* pt-fvc.cc (tree_identifier::assign): Pass op.
@@ -29,16 +49,10 @@ Thu Apr 24 03:58:16 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 	* op-cm-cm.cc, op-cm-cs.cc, op-cm-m.cc, op-cm-s.cc, op-m-m.cc,
 	op-m-s.cc, op-str-str.cc: Pass op to INSTALL_ASSIGNOP.
 	* ops.h (INSTALL_ASSIGNOP): Pass op.
+	* ov-typeinfo.cc (do_register_assign_op): Include op type in table.
+	(do_lookup_assign_op): Use op in lookup.
 
 	* ops.h (INSTALL_UNOP): Delete.
-
-	* lex.h (class lexical_feedback): Delete maybe_screwed field.
-	New field, parsed_function name.
-	* lex.l (lexical_feedback::init): Initialize it.
-	(handle_identifier): Don't return SCREW.  Handle switching
-	symbol table context properly for `function f ()' vs `function x ='.
-	(is_keyword): If looking at function keyword, don't set current
-	symbol table to point to the local table.
 
 	* input.cc (generate_struct_completions, looks_like_struct):
 	Disable, since they don't work now anyway.

@@ -207,8 +207,9 @@ static tree_switch_case *make_switch_case
 	 (tree_expression *expr, tree_statement_list *list);
 
 // Build an assignment to a variable.
-static tree_expression *make_simple_assignment
-	 (tree_index_expression *var, token *eq_tok, tree_expression *expr);
+static tree_expression *make_assign_op
+	 (int op, tree_index_expression *var, token *eq_tok,
+	  tree_expression *expr);
 
 // Make an expression that handles assignment of multiple values.
 static tree_expression *make_multi_val_ret
@@ -223,11 +224,15 @@ static tree_function *frob_function_def
 	 (tree_identifier *id, tree_function *fcn);
 
 // Finish defining a function.
-static tree_function *finish_function_def (token *var, tree_function *fcn);
+static tree_function *finish_function_def
+	(tree_identifier *id, tree_function *fcn);
 
 // Finish defining a function a different way.
 static tree_function *finish_function_def
 	 (tree_parameter_list *ret_list, tree_function *fcn);
+
+// Reset state after parsing function.
+static void recover_from_parsing_function (void);
 
 // Make an index expression.
 static tree_index_expression *make_index_expression
@@ -304,6 +309,7 @@ static void set_stmt_print_flag (tree_statement_list *, char, bool);
 
 // Tokens with line and column information.
 %token <tok_val> '=' ':' '-' '+' '*' '/'
+%token <tok_val> ADD_EQ SUB_EQ MUL_EQ DIV_EQ EMUL_EQ EDIV_EQ AND_EQ OR_EQ
 %token <tok_val> EXPR_AND_AND EXPR_OR_OR
 %token <tok_val> EXPR_AND EXPR_OR EXPR_NOT
 %token <tok_val> EXPR_LT EXPR_LE EXPR_EQ EXPR_NE EXPR_GE EXPR_GT
@@ -311,7 +317,7 @@ static void set_stmt_print_flag (tree_statement_list *, char, bool);
 %token <tok_val> QUOTE TRANSPOSE
 %token <tok_val> PLUS_PLUS MINUS_MINUS POW EPOW
 %token <tok_val> NUM IMAG_NUM
-%token <tok_val> NAME SCREW
+%token <tok_val> NAME
 %token <tok_val> END
 %token <tok_val> PLOT
 %token <tok_val> TEXT STYLE
@@ -359,7 +365,7 @@ static void set_stmt_print_flag (tree_statement_list *, char, bool);
 %type <tree_decl_command_type> declaration
 %type <tree_statement_type> statement
 %type <tree_statement_list_type> simple_list simple_list1 list list1
-%type <tree_statement_list_type> opt_list input1
+%type <tree_statement_list_type> opt_list input1 func_def4
 %type <tree_plot_command_type> plot_command 
 %type <subplot_type> plot_command2 plot_options
 %type <subplot_list_type> plot_command1
@@ -370,7 +376,7 @@ static void set_stmt_print_flag (tree_statement_list *, char, bool);
 
 // Precedence and associativity.
 %left ';' ',' '\n'
-%right '='
+%right '=' ADD_EQ SUB_EQ MUL_EQ DIV_EQ EMUL_EQ EDIV_EQ OR_EQ AND_EQ
 %left EXPR_AND_AND EXPR_OR_OR
 %left EXPR_AND EXPR_OR
 %left EXPR_LT EXPR_LE EXPR_EQ EXPR_NE EXPR_GE EXPR_GT
@@ -783,9 +789,9 @@ simple_expr1	: NUM
 		| matrix
 		  { $$ = $1; }
 		| '[' ']'
-		  { $$ = new tree_constant (Matrix ()); }
+		  { $$ = new tree_constant (octave_value (Matrix ())); }
 		| '[' ';' ']'
-		  { $$ = new tree_constant (Matrix ()); }
+		  { $$ = new tree_constant (octave_value (Matrix ())); }
 		| PLUS_PLUS identifier %prec UNARY
 		  { $$ = make_prefix_op (PLUS_PLUS, $2, $1); }
 		| MINUS_MINUS identifier %prec UNARY
@@ -797,7 +803,23 @@ simple_expr1	: NUM
 		| '-' simple_expr %prec UNARY
 		  { $$ = make_unary_op ('-', $2, $1); }
 		| variable '=' simple_expr
-		  { $$ = make_simple_assignment ($1, $2, $3); }
+		  { $$ = make_assign_op ('=', $1, $2, $3); }
+		| variable ADD_EQ simple_expr
+		  { $$ = make_assign_op (ADD_EQ, $1, $2, $3); }
+		| variable SUB_EQ simple_expr
+		  { $$ = make_assign_op (SUB_EQ, $1, $2, $3); }
+		| variable MUL_EQ simple_expr
+		  { $$ = make_assign_op (MUL_EQ, $1, $2, $3); }
+		| variable DIV_EQ simple_expr
+		  { $$ = make_assign_op (DIV_EQ, $1, $2, $3); }
+		| variable EMUL_EQ simple_expr
+		  { $$ = make_assign_op (EMUL_EQ, $1, $2, $3); }
+		| variable EDIV_EQ simple_expr
+		  { $$ = make_assign_op (EDIV_EQ, $1, $2, $3); }
+		| variable AND_EQ simple_expr
+		  { $$ = make_assign_op (AND_EQ, $1, $2, $3); }
+		| variable OR_EQ simple_expr
+		  { $$ = make_assign_op (OR_EQ, $1, $2, $3); }
 		| '[' screwed_again matrix_row SCREW_TWO '=' simple_expr
 		  {
 		    if (! ($$ = make_multi_val_ret ($3, $6, $5)))
@@ -891,82 +913,54 @@ word_list	: TEXT
 
 // This is truly disgusting.
 
-g_symtab	: // empty
+global_symtab	: // empty
 		  { curr_sym_tab = global_sym_tab; }
-		;
-
-in_return_list	: // empty
-		  { lexer_flags.looking_at_return_list = true; }
 		;
 
 local_symtab	: // empty
 		  { curr_sym_tab = tmp_local_sym_tab; }
 		;
 
-safe		: // empty
-		  { lexer_flags.maybe_screwed = false; }
+in_return_list	: // empty
+		  { lexer_flags.looking_at_return_list = true; }
 		;
 
-are_we_screwed	: // empty
-		  { lexer_flags.maybe_screwed = true; }
+parsed_fcn_name	: // empty
+		  { lexer_flags.parsed_function_name = true; }
+
+return_list_beg	: '[' local_symtab in_return_list
 		;
 
-func_def	: FCN g_symtab are_we_screwed func_def1
-		  {
-		    curr_sym_tab = top_level_sym_tab;
-		    lexer_flags.defining_func = false;
-		    $$ = 0;
-		  }
-		| FCN g_symtab are_we_screwed func_def2
-		  {
-		    curr_sym_tab = top_level_sym_tab;
-		    lexer_flags.defining_func = false;
-		    $$ = 0;
-		  }
+return_list_end	: global_symtab ']'
 		;
 
-func_def1	: SCREW safe g_symtab '=' func_def2
-		  { $$ = finish_function_def ($1, $5); }
-		| return_list g_symtab '=' func_def2
-		  { $$ = finish_function_def ($1, $4); }
-		;
-
-return_list_x	: '[' safe local_symtab in_return_list
-		;
-
-return_list	: return_list_x ']'
+return_list	: return_list_beg return_list_end
 		  {
 		    lexer_flags.looking_at_return_list = false;
 		    $$ = new tree_parameter_list ();
 		  }
-		| return_list_x ELLIPSIS ']'
+		| return_list_beg ELLIPSIS return_list_end
 		  {
 		    lexer_flags.looking_at_return_list = false;
 		    tree_parameter_list *tmp = new tree_parameter_list ();
 		    tmp->mark_varargs_only ();
 		    $$ = tmp;
 		  }
-		| return_list1 ']'
+		| return_list_beg return_list1 return_list_end
 		  {
 		    lexer_flags.looking_at_return_list = false;
-		    $$ = $1;
+		    $$ = $2;
 		  }
-		| return_list1 ',' ELLIPSIS ']'
+		| return_list_beg return_list1 ',' ELLIPSIS return_list_end
 		  {
 		    lexer_flags.looking_at_return_list = false;
-		    $1->mark_varargs ();
-		    $$ = $1;
+		    $2->mark_varargs ();
+		    $$ = $2;
 		  }
 		;
 
-return_list1	: return_list_x identifier
-		  { $$ = new tree_parameter_list ($2); }
-		| return_list_x error
-		  {
-		    yyerror ("invalid function return list");
-		    $$ = 0;
-		    ABORT_PARSE;
-		  }
+return_list1	: identifier
+		  { $$ = new tree_parameter_list ($1); }
 		| return_list1 ',' identifier
 		  {
 		    $1->append ($3);
@@ -974,17 +968,47 @@ return_list1	: return_list_x identifier
 		  }
 		;
 
-func_def2	: identifier safe local_symtab func_def3
+func_begin	: FCN global_symtab
+		;
+
+func_def	: func_begin func_def2
+		  {
+		    recover_from_parsing_function ();
+		    $$ = 0;
+		  }
+		| func_begin identifier func_def1
+		  {
+		    finish_function_def ($2, $3);
+		    recover_from_parsing_function ();
+		    $$ = 0;
+		  }
+		| func_begin return_list func_def1
+		  {
+		    finish_function_def ($2, $3);
+		    recover_from_parsing_function ();
+		    $$ = 0;
+		  }
+		;
+
+func_def1	: global_symtab '=' func_def2
+		  { $$ = $3; }
+		;
+
+func_def2	: identifier local_symtab parsed_fcn_name func_def3
 		  {
 		    if (! ($$ = frob_function_def ($1, $4)))
 		      ABORT_PARSE;
 		  }
 		;
 
-func_def3	: param_list opt_sep opt_list fcn_end_or_eof
-		  { $$ = start_function_def ($1, $3); }
-		| opt_sep opt_list fcn_end_or_eof
-		  { $$ = start_function_def (0, $2); }
+func_def3	: param_list func_def4
+		  { $$ = start_function_def ($1, $2); }
+		| func_def4
+		  { $$ = start_function_def (0, $1); }
+		;
+
+func_def4	: opt_sep opt_list fcn_end_or_eof
+		  { $$ = $2; }
 		;
 
 fcn_end_or_eof	: END
@@ -1100,22 +1124,22 @@ identifier	: NAME
 
 arg_list	: ':'
 		  {
-		    tree_constant *colon =
-		      new tree_constant (tree_constant::magic_colon_t);
+		    octave_value tmp (octave_value::magic_colon_t);
+		    tree_constant *colon = new tree_constant (tmp);
 		    $$ = new tree_argument_list (colon);
 		  }
 		| expression
 		  { $$ = new tree_argument_list ($1); }
 		| ALL_VA_ARGS
 		  {
-		    tree_constant *all_va_args =
-		      new tree_constant (tree_constant::all_va_args_t);
+		    octave_value tmp (octave_value::all_va_args_t);
+		    tree_constant *all_va_args = new tree_constant (tmp);
 		    $$ = new tree_argument_list (all_va_args);
 		  }
 		| arg_list ',' ':'
 		  {
-		    tree_constant *colon =
-		      new tree_constant (tree_constant::magic_colon_t);
+		    octave_value tmp (octave_value::magic_colon_t);
+		    tree_constant *colon = new tree_constant (tmp);
 		    $1->append (colon);
 		    $$ = $1;
 		  }
@@ -1126,8 +1150,8 @@ arg_list	: ':'
 		  }
 		| arg_list ',' ALL_VA_ARGS
 		  {
-		    tree_constant *all_va_args =
-		      new tree_constant (tree_constant::all_va_args_t);
+		    octave_value tmp (octave_value::all_va_args_t);
+		    tree_constant *all_va_args = new tree_constant (tmp);
 		    $1->append (all_va_args);
 		    $$ = $1;
 		  }
@@ -1589,21 +1613,25 @@ make_constant (int op, token *tok_val)
     {
     case NUM:
       {
-	retval = new tree_constant (tok_val->number (), l, c);
+	octave_value tmp (tok_val->number ());
+	retval = new tree_constant (tmp, l, c);
 	retval->stash_original_text (tok_val->text_rep ());
       }
       break;
 
     case IMAG_NUM:
       {
-	Complex C (0.0, tok_val->number ());
-	retval = new tree_constant (C, l, c);
+	octave_value tmp (Complex (0.0, tok_val->number ()));
+	retval = new tree_constant (tmp, l, c);
 	retval->stash_original_text (tok_val->text_rep ());
       }
       break;
 
     case TEXT:
-      retval = new tree_constant (tok_val->text (), l, c);
+      {
+	octave_value tmp (tok_val->text ());
+	retval = new tree_constant (tmp, l, c);
+      }
       break;
 
     default:
@@ -1620,80 +1648,80 @@ static tree_expression *
 make_binary_op (int op, tree_expression *op1, token *tok_val,
 		tree_expression *op2)
 {
-  tree_binary_expression::type t;
+  octave_value::binary_op t = octave_value::unknown_binary_op;
 
   switch (op)
     {
     case POW:
-      t = tree_binary_expression::power;
+      t = octave_value::pow;
       break;
 
     case EPOW:
-      t = tree_binary_expression::elem_pow;
+      t = octave_value::el_pow;
       break;
 
     case '+':
-      t = tree_binary_expression::add;
+      t = octave_value::add;
       break;
 
     case '-':
-      t = tree_binary_expression::subtract;
+      t = octave_value::sub;
       break;
 
     case '*':
-      t = tree_binary_expression::multiply;
+      t = octave_value::mul;
       break;
 
     case '/':
-      t = tree_binary_expression::divide;
+      t = octave_value::div;
       break;
 
     case EMUL:
-      t = tree_binary_expression::el_mul;
+      t = octave_value::el_mul;
       break;
 
     case EDIV:
-      t = tree_binary_expression::el_div;
+      t = octave_value::el_div;
       break;
 
     case LEFTDIV:
-      t = tree_binary_expression::leftdiv;
+      t = octave_value::ldiv;
       break;
 
     case ELEFTDIV:
-      t = tree_binary_expression::el_leftdiv;
+      t = octave_value::el_ldiv;
       break;
 
     case EXPR_LT:
-      t = tree_binary_expression::cmp_lt;
+      t = octave_value::lt;
       break;
 
     case EXPR_LE:
-      t = tree_binary_expression::cmp_le;
+      t = octave_value::le;
       break;
 
     case EXPR_EQ:
-      t = tree_binary_expression::cmp_eq;
+      t = octave_value::eq;
       break;
 
     case EXPR_GE:
-      t = tree_binary_expression::cmp_ge;
+      t = octave_value::ge;
       break;
 
     case EXPR_GT:
-      t = tree_binary_expression::cmp_gt;
+      t = octave_value::gt;
       break;
 
     case EXPR_NE:
-      t = tree_binary_expression::cmp_ne;
+      t = octave_value::ne;
       break;
 
     case EXPR_AND:
-      t = tree_binary_expression::el_and;
+      t = octave_value::el_and;
       break;
 
     case EXPR_OR:
-      t = tree_binary_expression::el_or;
+      t = octave_value::el_or;
       break;
 
     default:
@@ -2071,13 +2099,58 @@ make_switch_case (tree_expression *expr, tree_statement_list *list)
 // Build an assignment to a variable.
 
 static tree_expression *
-make_simple_assignment (tree_index_expression *var, token *eq_tok,
-			tree_expression *expr)
+make_assign_op (int op, tree_index_expression *var, token *eq_tok,
+		tree_expression *expr)
 {
+  octave_value::assign_op t = octave_value::unknown_assign_op;
+
+  switch (op)
+    {
+    case '=':
+      t = octave_value::asn_eq;
+      break;
+
+    case ADD_EQ:
+      t = octave_value::add_eq;
+      break;
+
+    case SUB_EQ:
+      t = octave_value::sub_eq;
+      break;
+
+    case MUL_EQ:
+      t = octave_value::mul_eq;
+      break;
+
+    case DIV_EQ:
+      t = octave_value::div_eq;
+      break;
+
+    case EMUL_EQ:
+      t = octave_value::el_mul_eq;
+      break;
+
+    case EDIV_EQ:
+      t = octave_value::el_div_eq;
+      break;
+
+    case AND_EQ:
+      t = octave_value::el_and_eq;
+      break;
+
+    case OR_EQ:
+      t = octave_value::el_or_eq;
+      break;
+
+    default:
+      panic_impossible ();
+      break;
+    }
+
   int l = eq_tok->line ();
   int c = eq_tok->column ();
 
-  return new tree_simple_assignment_expression (var, expr, 0, 0, l, c);
+  return new tree_simple_assignment_expression (var, expr, 0, 0, l, c, t);
 }
 
 // Make an expression that handles assignment of multiple values.
@@ -2211,16 +2284,9 @@ frob_function_def (tree_identifier *id, tree_function *fcn)
 // Finish defining a function.
 
 static tree_function *
-finish_function_def (token *var, tree_function *fcn)
+finish_function_def (tree_identifier *id, tree_function *fcn)
 {
-  symbol_record *sr = var->sym_rec ();
-
-  int l = var->line ();
-  int c = var->column ();
-
-  tree_identifier *tmp = new tree_identifier (sr, l, c);
-
-  tree_parameter_list *tpl = new tree_parameter_list (tmp);
+  tree_parameter_list *tpl = new tree_parameter_list (id);
 
   tpl->mark_as_formal_parameters ();
 
@@ -2235,6 +2301,18 @@ finish_function_def (tree_parameter_list *ret_list, tree_function *fcn)
   ret_list->mark_as_formal_parameters ();
 
   return fcn->define_ret_list (ret_list);
+}
+
+static void
+recover_from_parsing_function (void)
+{
+  curr_sym_tab = top_level_sym_tab;
+
+  lexer_flags.defining_func = false;
+  lexer_flags.beginning_of_function = false;
+  lexer_flags.parsed_function_name = false;
+  lexer_flags.looking_at_return_list = false;
+  lexer_flags.looking_at_parameter_list = false;
 }
 
 // Make an index expression.

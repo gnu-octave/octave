@@ -34,6 +34,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include "file-ops.h"
+#include "safe-lstat.h"
+#include "safe-stat.h"
 #include "statdefs.h"
 
 // XXX FIXME XXX -- the is_* and mode_as_string functions are only valid
@@ -111,7 +113,7 @@ file_stat::update_internal (bool force)
       struct stat buf;
 
       int status = follow_links
-	? stat (cname, &buf) : lstat (cname, &buf);
+	? safe_stat (cname, &buf) : safe_lstat (cname, &buf);
 
       if (status < 0)
 	{
@@ -167,9 +169,9 @@ oct_mkdir (const string& name, mode_t mode)
 }
 
 int
-oct_rmdir (const string& name)
+oct_mkfifo (const string& name, mode_t mode)
 {
-  return rmdir (name.c_str ());
+  return mkfifo (name.c_str (), mode);
 }
 
 int
@@ -179,9 +181,9 @@ oct_rename (const string& from, const string& to)
 }
 
 int
-oct_mkfifo (const string& name, mode_t mode)
+oct_rmdir (const string& name)
 {
-  return mkfifo (name.c_str (), mode);
+  return rmdir (name.c_str ());
 }
 
 int
@@ -192,6 +194,12 @@ oct_umask (mode_t mode)
 #else
   return 0;
 #endif
+}
+
+int
+oct_unlink (const string& name)
+{
+  return unlink (name.c_str ());
 }
 
 /*

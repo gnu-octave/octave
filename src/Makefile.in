@@ -83,15 +83,16 @@ endif
 
 INCLUDES := arith-ops.h builtins.h defaults.h.in defun.h defun-dld.h \
 	defun-int.h dirfns.h dynamic-ld.h error.h file-info.h \
-	file-io.h fnmatch.h getopt.h gripes.h help.h input.h lex.h \
-	load-save.h mappers.h missing-math.h oct-gperf.h \
-	oct-hist.h oct-map.h oct-obj.h pager.h parse.h pathlen.h \
-	pathsearch.h pr-output.h procstream.h pt-base.h pt-cmd.h \
-	pt-const.h pt-exp-base.h pt-exp.h pt-fcn.h pt-fvc-base.h \
-	pt-fvc.h pt-mat.h pt-misc.h pt-mvr-base.h pt-mvr.h pt-plot.h \
-	sighandlers.h statdefs.h symtab.h sysdep.h sysdir.h systime.h \
-	syswait.h token.h toplev.h unwind-prot.h user-prefs.h utils.h \
-	variables.h version.h xdiv.h xpow.h Map.h SLStack.h Stack.h
+	file-io.h fnmatch.h getopt.h gripes.h help.h \
+	input.h lex.h load-save.h mappers.h \
+	oct-gperf.h oct-hist.h oct-map.h oct-obj.h pager.h parse.h \
+	pathlen.h pathsearch.h pr-output.h procstream.h pt-base.h \
+	pt-cmd.h pt-const.h pt-exp-base.h pt-exp.h pt-fcn.h \
+	pt-fvc-base.h pt-fvc.h pt-mat.h pt-misc.h pt-mvr-base.h \
+	pt-mvr.h pt-plot.h sighandlers.h statdefs.h symtab.h sysdep.h \
+	sysdir.h systime.h syswait.h token.h toplev.h unwind-prot.h \
+	user-prefs.h utils.h variables.h version.h xdiv.h xpow.h Map.h \
+	SLStack.h Stack.h
 
 TI_SRC := Array-tc.cc Map-tc.cc DLList-fi.cc \
 	SLList-expr.cc SLList-misc.cc SLList-plot.cc SLList-str.cc \
@@ -106,17 +107,17 @@ ifdef CXXPICFLAG
   TI_PICOBJ := $(addprefix pic/, $(TI_OBJ))
 endif
 
-SOURCES := acosh.c arith-ops.cc asinh.c atanh.c data.cc dirfns.cc \
-	dynamic-ld.cc erf.c erfc.c error.cc file-info.cc file-io.cc \
-	filemode.c fnmatch.c getopt.c getopt1.c gripes.cc help.cc \
-	input.cc lex.l load-save.cc mappers.cc mkdir.c oct-hist.cc \
-	oct-map.cc oct-obj.cc pager.cc parse.y pathsearch.cc \
-	pr-output.cc procstream.cc pt-base.cc pt-cmd.cc pt-const.cc \
-	pt-exp-base.cc pt-exp.cc pt-fcn.cc pt-fvc-base.cc pt-fvc.cc \
-	pt-mat.cc pt-misc.cc pt-mvr-base.cc pt-mvr.cc pt-plot.cc \
-	rename.c resource.cc rmdir.c sighandlers.cc strcasecmp.c \
-	strncase.c strfns.cc strftime.c symtab.cc sysdep.cc \
-	tempname.c timefns.cc tempnam.c token.cc toplev.cc \
+SOURCES := arith-ops.cc data.cc dirfns.cc \
+	dynamic-ld.cc error.cc file-info.cc file-io.cc \
+	fnmatch.c getopt.c getopt1.c \
+	gripes.cc help.cc input.cc lex.l load-save.cc mappers.cc \
+	oct-hist.cc oct-map.cc oct-obj.cc pager.cc parse.y \
+	pathsearch.cc pr-output.cc procstream.cc pt-base.cc pt-cmd.cc \
+	pt-const.cc pt-exp-base.cc pt-exp.cc pt-fcn.cc pt-fvc-base.cc \
+	pt-fvc.cc pt-mat.cc pt-misc.cc pt-mvr-base.cc pt-mvr.cc \
+	pt-plot.cc resource.cc sighandlers.cc \
+	strcasecmp.c strncase.c strfns.cc strftime.c symtab.cc \
+	sysdep.cc tempname.c timefns.cc tempnam.c token.cc toplev.cc \
 	unwind-prot.cc user-prefs.cc utils.cc variables.cc xdiv.cc \
 	xpow.cc
 
@@ -165,10 +166,10 @@ TERMLIBS = @TERMLIBS@
 LIBS = @LIBS@
 
 DISTFILES = Makefile.in mkdefs mkbuiltins octave.gperf octave.cc \
-	parse.cc lex.cc y.tab.h safe-xstat.cin safe-xstat.hin \
+	parse.cc lex.cc y.tab.h \
 	$(INCLUDES) $(DLD_SRC) $(SOURCES) $(TEMPLATE_SRC) $(TI_SRC)
 
-all: defaults.h safe-stat.h safe-lstat.h stamp-picdir libraries \
+all: defaults.h stamp-picdir libraries \
 	$(OCT_FILES) octave
 .PHONY: all
 
@@ -261,7 +262,7 @@ TAGS: $(SOURCES) $(DLD_SRC) $(TI_SRC)
 	etags $(SOURCES) $(DLD_SRC) $(TI_SRC)
 
 clean:
-	rm -f *.a *.o builtins.cc safe-stat.h safe-lstat.h \
+	rm -f *.a *.o builtins.cc \
 	defaults.h *.d *.def
 	if $(SHARED_LIBS); then rm -f *.$(SHLEXT); fi
 .PHONY: clean
@@ -322,32 +323,6 @@ oct-gperf.h: octave.gperf
 	gperf -a -C -E -H octave_kw_hash -g -N octave_kw_lookup -p -t \
 	  $< > $@.tmp
 	@$(top_srcdir)/move-if-change $@.tmp $@
-
-extract_stat = sed 's/@l@//g; s/@L@//g; /@LSTAT_ONLY@/d'
-extract_lstat = sed 's/@l@/l/g; s/@L@/L/g; s/	*@LSTAT_ONLY@//'
-
-safe-lstat.c: safe-xstat.cin
-	@echo "making $@ from $<"
-	@$(extract_lstat) $< > $@.tmp
-	@$(top_srcdir)/move-if-change $@.tmp $@
-
-safe-lstat.h: safe-xstat.hin
-	@echo "making $@ from $<"
-	@$(extract_lstat) $< > $@.tmp
-	@$(top_srcdir)/move-if-change $@.tmp $@
-
-safe-stat.c: safe-xstat.cin
-	@echo "making $@ from $<"
-	@$(extract_stat) $< > $@.tmp
-	@$(top_srcdir)/move-if-change $@.tmp $@
-
-safe-stat.h: safe-xstat.hin
-	@echo "making $@ from $<"
-	@$(extract_stat) $< > $@.tmp
-	@$(top_srcdir)/move-if-change $@.tmp $@
-
-safe-stat.o: safe-stat.h
-safe-lstat.o: safe-lstat.h safe-stat.h
 
 check: all
 .PHONY: check

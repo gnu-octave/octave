@@ -2345,7 +2345,7 @@ mkfifo_internal (const Octave_object& args)
 
   long mode = (long) args(1).double_value ();
 
-  retval (0) = (double) xmkfifo (name, mode);
+  retval (0) = (double) oct_mkfifo (name, mode);
 
   return retval;
 }
@@ -2386,7 +2386,7 @@ unlink_internal (const Octave_object& args)
 
   string name = args(0).string_value ();
 
-  retval (0) = (double) unlink (name.c_str ());
+  retval (0) = (double) oct_unlink (name);
 
   return retval;
 }
@@ -2578,7 +2578,7 @@ printed.")
 	      int oct_mask = convert (mask, 8, 10);
 
 	      if (! error_state)
-		status = convert (xumask (oct_mask), 10, 8);
+		status = convert (oct_umask (oct_mask), 10, 8);
 	    }
 	}
     }

@@ -544,7 +544,7 @@ otherwise prints an error message.")
 	gripe_wrong_type_arg ("mkdir", args(0));
       else
 	{
-	  int mkdir_retval = xmkdir (oct_tilde_expand (dirname), 0777);
+	  int mkdir_retval = oct_mkdir (oct_tilde_expand (dirname), 0777);
 
 	  if (mkdir_retval < 0)
 	    {
@@ -580,7 +580,7 @@ otherwise prints an error message.")
 	gripe_wrong_type_arg ("rmdir", args(0));
       else
 	{
-	  int rmdir_retval = xrmdir (oct_tilde_expand (dirname));
+	  int rmdir_retval = oct_rmdir (oct_tilde_expand (dirname));
 
 	  if (rmdir_retval < 0)
 	    {
@@ -620,7 +620,7 @@ otherwise prints an error message and returns -1.")
 
 	  if (error_state)
 	    gripe_wrong_type_arg ("rename", args(1));
-	  else if (xrename (from, to) < 0)
+	  else if (oct_rename (from, to) < 0)
 	    {
 	      status = -1;
 	      error ("%s", strerror (errno));

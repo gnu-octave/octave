@@ -29,9 +29,10 @@ MATRIX_INC := Array.h Array-idx.h MArray.h Matrix.h mx-base.h \
 
 INCLUDES := Bounds.h CollocWt.h DAE.h DAEFunc.h FEGrid.h FSQP.h \
 	LinConst.h LP.h LPsolve.h NLConst.h NLEqn.h NLFunc.h NLP.h \
-	NPSOL.h ODE.h ODEFunc.h Objective.h QP.h QPSOL.h \
-	Quad.h Range.h base-min.h f77-uscore.h idx-vector.h \
-	lo-error.h oct-cmplx.h oct-math.h str-vec.h sun-utils.h \
+	NPSOL.h ODE.h ODEFunc.h Objective.h QP.h QPSOL.h Quad.h \
+	Range.h base-min.h file-ops.h f77-uscore.h idx-vector.h \
+	lo-error.h oct-cmplx.h oct-math.h statdefs.h str-vec.h \
+	sun-utils.h \
 	$(MATRIX_INC)
 
 TEMPLATE_SRC := Array.cc MArray.cc
@@ -50,15 +51,17 @@ MATRIX_SRC := Array-ext.cc CColVector.cc CDiagMatrix.cc CMatrix.cc \
 
 SOURCES := Bounds.cc CollocWt.cc DAE.cc FEGrid.cc FSQP.cc LinConst.cc \
 	LPsolve.cc NLEqn.cc NPSOL.cc ODE.cc QPSOL.cc Quad.cc \
-	Range.cc acosh.c asinh.c atanh.c erf.c erfc.c gamma.c \
-	idx-vector.cc lo-error.cc lgamma.c sun-utils.cc \
+	Range.cc acosh.c asinh.c atanh.c erf.c erfc.c file-ops.cc \
+	filemode.c gamma.c idx-vector.cc lo-error.cc lgamma.c mkdir.c \
+	rename.c rmdir.c sun-utils.cc \
 	$(TEMPLATE_SRC) \
 	$(TI_SRC) \
 	$(MATRIX_SRC)
 
 EXTRAS := mx-inlines.cc
 
-DISTFILES := Makefile.in $(SOURCES) $(INCLUDES) $(EXTRAS)
+DISTFILES := Makefile.in safe-xstat.cin safe-xstat.hin \
+	$(SOURCES) $(INCLUDES) $(EXTRAS)
 
 MAKEDEPS_1 := $(patsubst %.cc, %.d, $(SOURCES))
 MAKEDEPS := $(patsubst %.c, %.d, $(MAKEDEPS_1))
@@ -76,7 +79,7 @@ endif
 
 LIBOCTAVE_DEPEND := $(patsubst %, liboctave.a(%), $(OBJECTS))
 
-all: stamp-picdir liboctave.a stamp-shared
+all: safe-stat.h safe-lstat.h stamp-picdir liboctave.a stamp-shared
 .PHONY: all
 
 stamp-picdir:
@@ -95,6 +98,32 @@ stamp-shared:
 	  -L../libcruft -lcruft; \
 	else true; fi
 	touch stamp-shared
+
+extract_stat = sed 's/@l@//g; s/@L@//g; /@LSTAT_ONLY@/d'
+extract_lstat = sed 's/@l@/l/g; s/@L@/L/g; s/	*@LSTAT_ONLY@//'
+
+safe-lstat.c: safe-xstat.cin
+	@echo "making $@ from $<"
+	@$(extract_lstat) $< > $@.tmp
+	@$(top_srcdir)/move-if-change $@.tmp $@
+
+safe-lstat.h: safe-xstat.hin
+	@echo "making $@ from $<"
+	@$(extract_lstat) $< > $@.tmp
+	@$(top_srcdir)/move-if-change $@.tmp $@
+
+safe-stat.c: safe-xstat.cin
+	@echo "making $@ from $<"
+	@$(extract_stat) $< > $@.tmp
+	@$(top_srcdir)/move-if-change $@.tmp $@
+
+safe-stat.h: safe-xstat.hin
+	@echo "making $@ from $<"
+	@$(extract_stat) $< > $@.tmp
+	@$(top_srcdir)/move-if-change $@.tmp $@
+
+safe-stat.o: safe-stat.h
+safe-lstat.o: safe-lstat.h safe-stat.h
 
 check: all
 .PHONY: check
@@ -126,7 +155,7 @@ TAGS: $(SOURCES)
 	etags $(SOURCES)
 
 clean:
-	rm -f *.a *.o *.d pic/*.o
+	rm -f safe-stat.h safe-lstat.h *.a *.o *.d pic/*.o
 	if $(SHARED_LIBS); then rm -f *.$(SHLEXT); fi
 .PHONY: clean
 

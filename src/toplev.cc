@@ -649,7 +649,7 @@ with system() through the pager, use a command like\n\
 \n\
 or\n\
 \n\
-   printf ("%s\n", system (CMD, 1));")
+   printf (\"%s\\n\", system (CMD, 1));")
 {
   octave_value_list retval;
 

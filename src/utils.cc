@@ -32,7 +32,7 @@ Free Software Foundation, Inc.
   read_octal               sub_append_string
   decode_prompt_string     pathname_backup
   make_absolute            get_working_directory
-  change_to_directory
+  change_to_directory      gethostname
 
 */
 
@@ -1116,6 +1116,28 @@ change_to_directory (const char *newdir)
 	return 1;
     }
 }
+
+#if !defined (HAVE_GETHOSTNAME) && defined (HAVE_SYS_UTSNAME_H)
+extern "C"
+{
+#include <sys/utsname.h>
+int
+gethostname (char *name, int namelen)
+{
+  int i;
+  struct utsname ut;
+
+  --namelen;
+
+  uname (&ut);
+  i = strlen (ut.nodename) + 1;
+  strncpy (name, ut.nodename, i < namelen ? i : namelen);
+  name[namelen] = '\0';
+
+  return 0;
+}
+}
+#endif
 
 /*
  * Has file `A' been modified after time `T'?

@@ -85,6 +85,11 @@ extern int NINT (double x);
 extern double D_NINT (double x);
 extern void delete_ppchar (char **);
 
+extern "C"
+{
+extern int gethostname ();
+}
+
 #endif
 
 /*

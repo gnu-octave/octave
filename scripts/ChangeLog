@@ -1,3 +1,8 @@
+2003-12-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* general/ind2sub.m: New file.
+	* general/sub2ind.m: New file.
+
 2003-12-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* control/system/zp2ss.m: Don't save and restore

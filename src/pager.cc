@@ -38,6 +38,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-obj.h"
 #include "pager.h"
 #include "sighandlers.h"
+#include "unwind-prot.h"
 #include "user-prefs.h"
 
 pid_t octave_pager_pid = -1;
@@ -55,6 +56,8 @@ static string diary_file;
 static ofstream external_diary_file;
 
 static sig_handler *saved_sigint_handler = 0;
+
+static int really_flush_to_pager = 0;
 
 static void
 do_sync (const char *msg)
@@ -108,15 +111,20 @@ do_sync (const char *msg)
 int
 octave_pager_buf::sync (void)
 {
-  sputc ('\0');
+  if (really_flush_to_pager
+      || (user_pref.page_screen_output && user_pref.page_output_immediately)
+      || ! user_pref.page_screen_output)
+    {
+      sputc ('\0');
 
-  char *buf = eback ();
+      char *buf = eback ();
 
-  do_sync (buf);
+      do_sync (buf);
 
-  octave_diary << buf;
+      octave_diary << buf;
 
-  seekoff (0, ios::beg);
+      seekoff (0, ios::beg);
+    }
 
   return 0;
 }
@@ -185,6 +193,12 @@ octave_diary_stream::stream (void)
 void
 flush_octave_stdout (void)
 {
+  begin_unwind_frame ("flush_octave_stdout");
+
+  unwind_protect_int (really_flush_to_pager);
+  
+  really_flush_to_pager = 1;
+
   octave_stdout.flush ();
 
   if (external_pager)
@@ -200,6 +214,8 @@ flush_octave_stdout (void)
 	  saved_sigint_handler = 0;
 	}
     }
+
+  run_unwind_frame ("flush_octave_stdout");
 }
 
 static void
@@ -343,6 +359,9 @@ symbols_of_pager (void)
 {
   DEFVAR (PAGER, default_pager (), 0, sv_pager_binary,
     "path to pager binary");
+
+  DEFVAR (page_output_immediately, 1.0, 0, page_output_immediately,
+    "if possible, send output intended for the screen through the pager");
 
   DEFVAR (page_screen_output, 1.0, 0, page_screen_output,
     "if possible, send output intended for the screen through the pager");

@@ -40,6 +40,7 @@ struct user_preferences
   int ok_to_lose_imaginary_part;
   int output_max_field_width;
   int output_precision;
+  int page_output_immediately;
   int page_screen_output;
   int prefer_column_vectors;
   int prefer_zero_one_indexing;
@@ -96,6 +97,7 @@ extern int history_size (void);
 extern int ignore_function_time_stamp (void);
 extern int implicit_str_to_num_ok (void);
 extern int ok_to_lose_imaginary_part (void);
+extern int page_output_immediately (void);
 extern int page_screen_output (void);
 extern int prefer_column_vectors (void);
 extern int prefer_zero_one_indexing (void);

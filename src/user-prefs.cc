@@ -61,6 +61,7 @@ init_user_prefs (void)
   user_pref.ok_to_lose_imaginary_part = 0;
   user_pref.output_max_field_width = 0;
   user_pref.output_precision = 0;
+  user_pref.page_output_immediately = 0;
   user_pref.page_screen_output = 0;
   user_pref.prefer_column_vectors = 0;
   user_pref.prefer_zero_one_indexing = 0;
@@ -170,8 +171,8 @@ beep_on_error (void)
 int
 define_all_return_values (void)
 {
-  user_pref.define_all_return_values =
-    check_preference ("define_all_return_values");
+  user_pref.define_all_return_values
+    = check_preference ("define_all_return_values");
 
   return 0;
 }
@@ -186,8 +187,7 @@ define_all_return_values (void)
 int
 do_fortran_indexing (void)
 {
-  user_pref.do_fortran_indexing =
-    check_preference ("do_fortran_indexing"); 
+  user_pref.do_fortran_indexing = check_preference ("do_fortran_indexing");
 
   liboctave_dfi_flag = user_pref.do_fortran_indexing;
 
@@ -206,8 +206,8 @@ do_fortran_indexing (void)
 int
 echo_executing_commands (void)
 {
-  user_pref.echo_executing_commands =
-    check_preference ("echo_executing_commands"); 
+  user_pref.echo_executing_commands
+    = check_preference ("echo_executing_commands"); 
 
   return 0;
 }
@@ -219,8 +219,8 @@ echo_executing_commands (void)
 int
 empty_list_elements_ok (void)
 {
-  user_pref.empty_list_elements_ok =
-    check_preference ("empty_list_elements_ok");
+  user_pref.empty_list_elements_ok
+    = check_preference ("empty_list_elements_ok");
 
   return 0;
 }
@@ -231,8 +231,8 @@ empty_list_elements_ok (void)
 int
 gnuplot_has_multiplot (void)
 {
-  user_pref.gnuplot_has_multiplot =
-    check_preference ("gnuplot_has_multiplot");
+  user_pref.gnuplot_has_multiplot
+    = check_preference ("gnuplot_has_multiplot");
 
   return 0;
 }
@@ -294,8 +294,8 @@ ignore_function_time_stamp (void)
 int
 implicit_str_to_num_ok (void)
 {
-  user_pref.implicit_str_to_num_ok =
-    check_preference ("implicit_str_to_num_ok");
+  user_pref.implicit_str_to_num_ok
+    = check_preference ("implicit_str_to_num_ok");
 
   return 0;
 }
@@ -307,8 +307,21 @@ implicit_str_to_num_ok (void)
 int
 ok_to_lose_imaginary_part (void)
 {
-  user_pref.ok_to_lose_imaginary_part =
-    check_preference ("ok_to_lose_imaginary_part");
+  user_pref.ok_to_lose_imaginary_part
+    = check_preference ("ok_to_lose_imaginary_part");
+
+  return 0;
+}
+
+
+// If output is going to the pager, should we send it as soon as it is
+// available, or wait until we are ready to prompt for input?
+
+int
+page_output_immediately (void)
+{
+  user_pref.page_output_immediately
+    = check_preference ("page_output_immediately");
 
   return 0;
 }
@@ -336,8 +349,8 @@ page_screen_output (void)
 int
 prefer_column_vectors (void)
 {
-  user_pref.prefer_column_vectors =
-    check_preference ("prefer_column_vectors");
+  user_pref.prefer_column_vectors
+    = check_preference ("prefer_column_vectors");
 
   liboctave_pcv_flag = user_pref.prefer_column_vectors;
 
@@ -354,8 +367,8 @@ prefer_column_vectors (void)
 int
 prefer_zero_one_indexing (void)
 {
-  user_pref.prefer_zero_one_indexing =
-    check_preference ("prefer_zero_one_indexing");
+  user_pref.prefer_zero_one_indexing
+    = check_preference ("prefer_zero_one_indexing");
 
   liboctave_pzo_flag = user_pref.prefer_zero_one_indexing;
 
@@ -374,8 +387,7 @@ prefer_zero_one_indexing (void)
 int
 print_answer_id_name (void)
 {
-  user_pref.print_answer_id_name =
-    check_preference ("print_answer_id_name");
+  user_pref.print_answer_id_name = check_preference ("print_answer_id_name");
 
   return 0;
 }
@@ -386,8 +398,8 @@ print_answer_id_name (void)
 int
 print_empty_dimensions (void)
 {
-  user_pref.print_empty_dimensions =
-    check_preference ("print_empty_dimensions");
+  user_pref.print_empty_dimensions
+    = check_preference ("print_empty_dimensions");
 
   return 0;
 }
@@ -399,8 +411,8 @@ print_empty_dimensions (void)
 int
 propagate_empty_matrices (void)
 {
-  user_pref.propagate_empty_matrices =
-    check_preference ("propagate_empty_matrices");
+  user_pref.propagate_empty_matrices
+    = check_preference ("propagate_empty_matrices");
 
   return 0;
 }
@@ -421,8 +433,8 @@ read_only_constants (void)
 int
 resize_on_range_error (void)
 {
-  user_pref.resize_on_range_error =
-    check_preference ("resize_on_range_error");
+  user_pref.resize_on_range_error
+    = check_preference ("resize_on_range_error");
 
   liboctave_rre_flag = user_pref.resize_on_range_error;
 
@@ -436,8 +448,8 @@ resize_on_range_error (void)
 int
 return_last_computed_value (void)
 {
-  user_pref.return_last_computed_value =
-    check_preference ("return_last_computed_value");
+  user_pref.return_last_computed_value
+    = check_preference ("return_last_computed_value");
 
   return 0;
 }
@@ -459,8 +471,7 @@ saving_history (void)
 int
 silent_functions (void)
 {
-  user_pref.silent_functions =
-    check_preference ("silent_functions");
+  user_pref.silent_functions = check_preference ("silent_functions");
 
   return 0;
 }
@@ -520,8 +531,8 @@ suppress_verbose_help_message (void)
 int
 treat_neg_dim_as_zero (void)
 {
-  user_pref.treat_neg_dim_as_zero =
-    check_preference ("treat_neg_dim_as_zero");
+  user_pref.treat_neg_dim_as_zero
+    = check_preference ("treat_neg_dim_as_zero");
 
   return 0;
 }
@@ -538,8 +549,8 @@ treat_neg_dim_as_zero (void)
 int
 warn_assign_as_truth_value (void)
 {
-  user_pref.warn_assign_as_truth_value =
-    check_preference ("warn_assign_as_truth_value");
+  user_pref.warn_assign_as_truth_value
+    = check_preference ("warn_assign_as_truth_value");
 
   return 0;
 }
@@ -552,8 +563,8 @@ warn_assign_as_truth_value (void)
 int
 warn_comma_in_global_decl (void)
 {
-  user_pref.warn_comma_in_global_decl =
-    check_preference ("warn_comma_in_global_decl");
+  user_pref.warn_comma_in_global_decl
+    = check_preference ("warn_comma_in_global_decl");
 
   return 0;
 }
@@ -575,8 +586,8 @@ warn_divide_by_zero (void)
 int
 warn_function_name_clash (void)
 {
-  user_pref.warn_function_name_clash =
-    check_preference ("warn_function_name_clash");
+  user_pref.warn_function_name_clash
+    = check_preference ("warn_function_name_clash");
 
   return 0;
 }
@@ -589,8 +600,8 @@ warn_function_name_clash (void)
 int
 warn_missing_semicolon (void)
 {
-  user_pref.warn_missing_semicolon = 
-    check_preference ("warn_missing_semicolon");
+  user_pref.warn_missing_semicolon
+    = check_preference ("warn_missing_semicolon");
 
   return 0;
 }

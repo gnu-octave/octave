@@ -1,3 +1,11 @@
+Wed Jul 14 17:38:07 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-time.h, oct-time.cc: New files.
+	* Makefile.in (INCLUDES, SOURCES): Add them to the lists.
+
+	* systime.h: Move here from src directory.
+	* Makefile.in (INCLUDES): Add it to the list.
+
 Mon Jul 12 22:34:34 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* mx-defs.h (b_d_Mapper, b_c_Mapper): New typedefs.

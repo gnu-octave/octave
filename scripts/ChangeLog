@@ -1,3 +1,11 @@
+2004-09-21  David Bateman  <dbateman@free.fr>
+
+	* general/rotdim.m: New function for rotation of an N-d array in an
+	arbitrary plane.
+
+	* general/flipdim.m: New function to flip an N-d array about an 
+	arbitrary axis.
+
 2004-09-15  David Bateman  <dbateman@free.fr>
 
 	* general/bitget.m: Replace Bmax, which is undefined with bitmax
@@ -162,12 +170,6 @@
 	optional argument to define the dimension along which to perform
 	the differences and allow the order of the differences to be larger
 	than the dimension itself.
-
-	* general/rotdim.m: New function for rotation of an N-d array in an
-	arbitrary plane.
-
-	* general/flipdim.m: New function to flip an N-d array about an 
-	arbitrary axis.
 
 	* general/rot90.m, general/fliplr.m, general/flipud.m: Limit the
 	use of these functions to 1- and 2-d arrays.

@@ -309,7 +309,7 @@ DEFUN (getppid, args, ,
   return retval;
 }
 
-DEFUN (geteuid, , ,
+DEFUN (geteuid, args, ,
   "uid = geteuid (): return the effective user id of the current process")
 {
   double retval = -1.0;
@@ -324,9 +324,11 @@ DEFUN (geteuid, , ,
 #else
   gripe_not_supported ("geteuid");
 #endif
+
+  return retval;
 }
 
-DEFUN (getuid, , ,
+DEFUN (getuid, args, ,
   "uid = getuid (): return the real user id of the current process")
 {
   double retval = -1.0;
@@ -341,6 +343,8 @@ DEFUN (getuid, , ,
 #else
   gripe_not_supported ("getuid");
 #endif
+
+  return retval;
 }
 
 DEFUN (lstat, args, ,

@@ -388,18 +388,19 @@ History:
 Configuration and Installation:
 ------------------------------
 
-  * Handle USE_READLINE.
+  * Handle USE_READLINE so that --enable-readline will work.
 
   * Make Octave as independent of the particular readline version as
     possible.
+
+  * Add an --enable-pathsearch option to configure to make it possible
+    to configure and run without kpathsea. 
 
   * Make configure take more defaults from the environment.
 
   * Should --enable-lite-kernel imply --enable-shared?
 
   * Make it possible to configure without readline.
-
-  * Make it possible to configure without kpathsea.
 
   * Makefile changes:
       -- eliminate for loops

@@ -70,7 +70,7 @@ mk_pw_map (struct passwd *pw)
   return retval;
 }
 
-DEFUN_DLD (getpwent, , ,
+DEFUN_DLD (getpwent, args, ,
  "getpwent ()\n\
 \n\
 Read an entry from the password-file stream, opening it if necessary.")
@@ -152,7 +152,7 @@ Search for password entry with a matching username.")
   return retval;
 }
 
-DEFUN_DLD (setpwent, , ,
+DEFUN_DLD (setpwent, args, ,
   "setpwent ()\n\
 \n\
 Rewind the password-file stream.")
@@ -173,7 +173,7 @@ Rewind the password-file stream.")
   return retval;
 }
 
-DEFUN_DLD (endpwent, , ,
+DEFUN_DLD (endpwent, args, ,
   "endpwent ()\n\
 \n\
 Close the password-file stream.")

@@ -306,6 +306,8 @@ Summary of changes for version 2.0:
       getpgrp  -- return the process group id of the current process
       getpid   -- return the process id of the current process
       getppid  -- return the process id of the parent process
+      geteuid  -- return the effective uid of the current process
+      getuid   -- return the uid of the current process
       pipe     -- create an interprocess channel
 
   * Other new functions:

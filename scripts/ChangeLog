@@ -1,3 +1,10 @@
+2005-02-22  John W. Eaton  <jwe@octave.org>
+
+	* polynomial/residue.m: Force prepad to always create row vectors.
+
+	* polynomial/poly.m: Quick return if m is 0.
+	From Carmen Navarrete <carmen.navarrete@uam.es>.
+
 2005-02-21  David Bateman  <dbateman@free.fr>
 
 	* statistics/distributions/poisson_rnd.m: fix for lambda of zero.

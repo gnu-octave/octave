@@ -294,7 +294,7 @@ function [r, p, k, e] = residue (b, a, toler)
       else
         cp = p (1:mpi-1);
       endif
-      rhs (1, rhi:rhi+lp-1) = prepad (poly (cp), lp);
+      rhs (1, rhi:rhi+lp-1) = prepad (poly (cp), lp, 0, 2);
       rhi = rhi + lp;
     endfor
     mpi = mpi + M (dpi);
@@ -302,11 +302,11 @@ function [r, p, k, e] = residue (b, a, toler)
   endwhile
   if (MM > 1)
     for index = 2:MM
-      lhs (index, :) = prepad (polyderiv (lhs (index-1, :)), lb);
+      lhs (index, :) = prepad (polyderiv (lhs (index-1, :)), lb, 0, 2);
       ind = 1;
       for rhi = 1:lp
         cp = rhs (index-1, ind:ind+lp-1);
-        rhs (index, ind:ind+lp-1) = prepad (polyderiv (cp), lp);
+        rhs (index, ind:ind+lp-1) = prepad (polyderiv (cp), lp, 0, 2);
         ind = ind + lp;
       endfor
     endfor

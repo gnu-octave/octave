@@ -40,6 +40,7 @@ function y = poly (x)
   n = max (size (x));
   if (m == 0)
     y = 1;
+    return;
   elseif (m == 1)
     v = x;
   elseif (m == n)

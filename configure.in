@@ -20,7 +20,7 @@ dnl Copyright (C) 1996 John W. Eaton
 ### along with Octave; see the file COPYING.  If not, write to the Free
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-AC_REVISION($Revision: 1.209 $)
+AC_REVISION($Revision: 1.210 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -478,7 +478,7 @@ OCTAVE_CXXLIBS
 ### f2c.
 
 if $use_g77; then
-  if test "$with_g77" = "yes"; then
+  if test "$with_g77" = yes; then
     F77=g77
   else
     F77="$with_g77"
@@ -486,7 +486,7 @@ if $use_g77; then
   AC_MSG_RESULT([defining F77 to be $F77])
 elif $use_f2c; then
   F77=
-  if test "$with_f2c" = "yes"; then
+  if test "$with_f2c" = yes; then
     F2C=f2c
   else
     F2C="$with_f2c"
@@ -522,7 +522,12 @@ else
       fi
       case "$canonical_host_type" in
         alpha-dec-osf*)
-          FFLAGS="-fpe1 $FFLAGS"
+          case "$F77" in
+            g77*)
+            ;;
+            *)
+              FFLAGS="-fpe1 $FFLAGS"
+            ;;
         ;;
       esac
       if test -n "$FFLAGS"; then

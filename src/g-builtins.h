@@ -41,6 +41,7 @@ struct builtin_general_functions
 
 extern tree_constant *builtin_all (tree_constant *, int, int);
 extern tree_constant *builtin_any (tree_constant *, int, int);
+extern tree_constant *builtin_balance (tree_constant *, int, int);
 extern tree_constant *builtin_clc (tree_constant *, int, int);
 extern tree_constant *builtin_clock (tree_constant *, int, int);
 extern tree_constant *builtin_closeplot (tree_constant *, int, int);

@@ -163,6 +163,15 @@ class NPSOL : public NLP, public NPSOL_options
   NPSOL (const NPSOL& a)
     : NLP (a), NPSOL_options () { }
 
+  NPSOL& operator = (const NPSOL& a)
+    {
+      NLP::operator = (a);
+      NPSOL_options::operator = (a);
+      return *this;
+    }
+
+  ~NPSOL (void) { }
+
   ColumnVector do_minimize (double& objf, int& inform, ColumnVector& lambda);
 };
 

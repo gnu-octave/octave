@@ -1,14 +1,14 @@
 #!/bin/sh
 # info-emacs-octave-help
 # Written by KH <Kurt.Hornik@ci.tuwien.ac.at> on 1996/07/01
-# Updated by KH on 1997/01/30
+# Updated by KH on 1997/03/04
 # Make Octave's `help -i' use Emacs octave-help.
 # Requires a running Emacs and gnuserv.
-cmd="(load \"octave-hlp\")"
+cmd="(require 'octave-hlp)"
 if [ $3 = "--directory" ];
 then
-	cmd="$cmd (add-to-list 'Info-directory-list \"$4\")"
-	shift 2
+    cmd="$cmd (add-to-list 'Info-directory-list \"$4\")"
+    shift 2
 fi
 cmd="$cmd (octave-help \"$4\")"
 gnudoit -q $cmd

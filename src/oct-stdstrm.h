@@ -68,7 +68,7 @@ public:
 
   std::istream *input_stream (void) { return (md & std::ios::in) ? s : 0; }
 
-  std::ostream *output_stream (void) { return (md & std::ios::in) ? s : 0; }
+  std::ostream *output_stream (void) { return (md & std::ios::out) ? s : 0; }
 
   // XXX FIXME XXX -- should not have to cast away const here.
   c_file_ptr_buf *rdbuf (void) const

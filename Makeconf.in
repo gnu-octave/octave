@@ -85,6 +85,7 @@ ALL_FFLAGS = $(FFLAGS)
 
 DLFCN_INCFLAGS = @DLFCN_INCFLAGS@
 GLOB_INCFLAGS = @GLOB_INCFLAGS@
+KPATHSEA_INCFLAGS = @KPATHSEA_INCFLAGS@
 
 # Clean up INCFLAGS a bit if we are not compiling in a separate
 # directory.
@@ -102,7 +103,8 @@ else
 	-I$(top_srcdir)/liboctave -I$(top_srcdir)/src \
 	-I$(top_srcdir)/libcruft/misc
 endif
-INCFLAGS = $(TMP_IF_1) $(TMP_IF_2) $(DLFCN_INCFLAGS) $(GLOB_INCFLAGS)
+INCFLAGS = $(TMP_IF_1) $(TMP_IF_2) $(DLFCN_INCFLAGS) \
+  $(GLOB_INCFLAGS) $(KPATHSEA_INCFLAGS)
 
 LIBFLAGS = -L$(TOPDIR)
 
@@ -402,6 +404,7 @@ $(SED) < $< \
   -e "s;%OCTAVE_CONF_GLOB_INCFLAGS%;\"${GLOB_INCFLAGS}\";" \
   -e "s;%OCTAVE_CONF_INCFLAGS%;\"${INCFLAGS}\";" \
   -e "s;%OCTAVE_CONF_INCLUDE_LINK_DEPS%;\"${INCLUDE_LINK_DEPS}\";"\
+  -e "s;%OCTAVE_CONF_KPATHSEA_INCFLAGS%;\"${KPATHSEA_INCFLAGS}\";" \
   -e "s;%OCTAVE_CONF_LD_CXX%;\"${LD_CXX}\";" \
   -e "s;%OCTAVE_CONF_LDFLAGS%;\"${LDFLAGS}\";" \
   -e "s;%OCTAVE_CONF_LD_STATIC_FLAG%;\"${LD_STATIC_FLAG}\";" \

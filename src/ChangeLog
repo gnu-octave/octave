@@ -1,3 +1,10 @@
+2003-03-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-conf.h.in: Substitute OCTAVE_CONF_KPATHSEA_INCFLAGS.
+
+	* oct-stdstrm.h (octave_stdiostream::output_stream): Return stream
+	if mode is out, not in.
+
 2003-02-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* strfns.cc (Fchar): New function.

@@ -66,7 +66,8 @@
 ## @end table
 ## @strong{Outputs}
 ## @table @var
-## @item    realp, imagp
+## @item    realp
+## @itemx   imagp
 ## the real and imaginary parts of the frequency response
 ##        @math{G(jw)} or @math{G(exp(jwT))} at the selected frequency values.
 ## @item    w

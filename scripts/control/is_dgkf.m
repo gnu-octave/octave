@@ -50,7 +50,8 @@
 ## @item    dgkf_struct
 ##  data structure of @code{is_dgkf} results.  Entries:
 ## @table @var
-## @item      nw, nz
+## @item      nw
+## @itemx     nz
 ##  dimensions of @var{w}, @var{z}
 ## @item      A
 ##  system @var{A} matrix
@@ -66,7 +67,8 @@
 ##  (@var{ny} x @var{n}) @var{Ry}-transformed measured output matrix 
 ## 
 ##           @strong{Note} @math{C = [Cz; Cy] }
-## @item      Dzu, Dyw
+## @item      Dzu
+## @item      Dyw
 ##  off-diagonal blocks of transformed @var{D} matrix that enter 
 ## @var{z}, @var{y} from @var{u}, @var{w} respectively
 ## @item      Ru

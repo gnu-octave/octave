@@ -59,7 +59,7 @@ OCST also keeps a record of which system outputs are sampled.
 Octave structures are accessed with a syntax much like that used
 by the C programming language.  For consistency in
 use of the data structure used in the OCST, it is recommended that
-the system structure access m-files be used (@xref{sysinterface}).
+the system structure access m-files be used (@pxref{sysinterface}).
 Some elements of the data structure are absent depending on the internal
 system representation(s) used.  More than one system representation
 can be used for SISO systems; the OCST m-files ensure that all representations
@@ -75,11 +75,13 @@ representations are listed below; examples of the initialization
 and use of the system data structures are given in subsequent sections and
 in the online demo @code{DEMOcontrol}.
 @table @var
-@item n,nz
+@item n
+@itemx nz
 The respective number of continuous and discrete states
 in the system (scalar)
 
-@item inname, outname
+@item inname
+@itemx outname
 list of name(s) of the system input, output signal(s). (list of strings)
 
 @item sys
@@ -88,25 +90,26 @@ System status vector.  (vector)
 This vector indicates both what representation was used to initialize
 the system data structure (called the primary system type) and which
 other representations are currently up-to-date with the primary system
-type (@xref{structaccess}).
+type (@pxref{structaccess}).
 
-@table @var
+The value of the first element of the vector indicates the primary
+system type.
 
-@item sys(0)
-primary system type
+@table @asis
+@item 0
+for tf form (initialized with @code{tf2sys} or @code{fir2sys})
 
-           =0 for tf form (initialized with @code{tf2sys} or @code{fir2sys})
+@item 1
+for zp form (initialized with @code{zp2sys})
 
-           =1 for zp form (initialized with @code{zp2sys})
-
-           =2 for ss form (initialized with @code{ss2sys})
-
-@item sys(1:3)
- boolean flags to indicate whether tf, zp, or ss, respectively,
-        are ``up to date" (whether it is safe to use the variables
-          associated with these representations).
-These flags are changed when calls are made to the @code{sysupdate} command.
+@item 2
+for ss form (initialized with @code{ss2sys})
 @end table
+
+The next three elements are boolean flags that indicate whether tf, zp,
+or ss, respectively, are ``up to date" (whether it is safe to use the
+variables associated with these representations).  These flags are
+changed when calls are made to the @code{sysupdate} command.
 
 @item tsam
  Discrete time sampling period  (nonnegative scalar).
@@ -127,7 +130,6 @@ if the corresponding entry of the @code{sys} vector is true (=1).
 @subsection @code{tf} format variables
 
 @table @var
-
 @item num
  numerator coefficients   (vector)
 
@@ -155,7 +157,10 @@ if the corresponding entry of the @code{sys} vector is true (=1).
 @subsection @code{ss} format variables
 
 @table @var
-@item a,b,c,d
+@item a
+@itemx b
+@itemx c
+@itemx d
 The usual state-space matrices. If a system has both
         continuous and discrete states, they are sorted so that
         continuous states come first, then discrete states
@@ -172,7 +177,7 @@ names of system states   (list of strings)
 @section System Construction and Interface Functions
 
 Construction and manipulations of the OCST system data structure
-(@xref{sysstruct}) requires attention to many details in order
+(@pxref{sysstruct}) requires attention to many details in order
 to ensure that data structure contents remain consistent.  Users
 are strongly encouraged to use the system interface functions
 in this section.  Functions for the formatted display in of system
@@ -259,7 +264,7 @@ data structures are given in @ref{sysdisp}.
 @node blockdiag, numerical, sysdisp, Control Theory
 @section Block Diagram Manipulations
 
-@xref{systime}
+@xref{systime}.
 
 Unless otherwise noted, all parameters (input,output) are
 system data structures.
@@ -318,8 +323,6 @@ system data structures.
 @DOCSTRING(gram)
 
 @DOCSTRING(lyap)
-
-@DOCSTRING(pinv)
 
 @DOCSTRING(qzval)
 

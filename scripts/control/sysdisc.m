@@ -27,7 +27,8 @@
 ## @item dsys
 ##  purely discrete portion of sys (returned empty if there is
 ##           no purely discrete path from inputs to outputs)
-## @item    Adc, Cdc
+## @item    Adc
+## @itemx   Cdc
 ##  connections from continuous states to discrete states and discrete
 ##     outputs, respectively.
 ## @end table

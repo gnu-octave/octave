@@ -30,7 +30,8 @@
 ##  scalar leading coefficient
 ## @item   tsam
 ##  sampling period. default: 0 (continuous system)
-## @item   inname, outname
+## @item   inname
+## @itemx  outname
 ##  input/output signal names (lists of strings)
 ## @end table
 ## 

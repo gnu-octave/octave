@@ -17,6 +17,8 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
+## usage: function __plr2__ (theta, rho, fmt)
+
 ## Author: jwe
 
 function __plr2__ (theta, rho, fmt)

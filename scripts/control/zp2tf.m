@@ -21,7 +21,8 @@
 ##  Converts zeros / poles to a transfer function.
 ## @strong{Inputs}
 ## @table @var
-## @item zer, pol
+## @item zer
+## @itemx pol
 ## vectors of (possibly complex) poles and zeros of a transfer
 ## function.  Complex values should appear in conjugate pairs
 ## @item k

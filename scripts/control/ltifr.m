@@ -15,14 +15,15 @@
 ## You should have received a copy of the GNU General Public License 
 ## along with Octave; see the file COPYING.  If not, write to the Free 
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
- 
+
 ## -*- texinfo -*-
 ## @deftypefn {Function File } {@var{out} =} ltifr (@var{A}, @var{B}, @var{w})
 ## @deftypefnx {Function File } {@var{out} =} ltifr (@var{sys}, @var{w})
 ## Linear time invariant frequency response of single input systems
 ## @strong{Inputs}
 ## @table @var
-## @item A, B
+## @item A
+## @itemx B
 ## coefficient matrices of @math{dx/dt = A x + B u}
 ## @item sys
 ##  system data structure

@@ -471,5 +471,5 @@ mailing list, or other administrative trivia to the list itself.
 
 If you think you have found a bug in the installation procedure,
 however, you should send a complete bug report for the problem to
-@email{bug-octave@@bevo.che.wisc.edu}.  @xref{Bug Reporting} for
+@email{bug-octave@@bevo.che.wisc.edu}.  @xref{Bug Reporting}, for
 information that will help you to submit a useful report.

@@ -24,7 +24,8 @@
 ## @table @var
 ## @item   Asys
 ## system data structure
-## @item out_idx,in_idx
+## @item out_idx
+## @itemx in_idx
 ##  list of connections indices; the new
 ##        system has outputs y(out_idx(ii)) and inputs u(in_idx(ii)).
 ##        May select as [] (empty matrix) to specify all outputs/inputs.

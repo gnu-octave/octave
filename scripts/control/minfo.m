@@ -15,7 +15,7 @@
 ## You should have received a copy of the GNU General Public License 
 ## along with Octave; see the file COPYING.  If not, write to the Free 
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
- 
+
 ##  function [systype, nout, nin, ncstates, ndstates] = minfo(inmat)
 ##
 ## MINFO:  Determines the type of system matrix.  INMAT can be

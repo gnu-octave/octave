@@ -21,7 +21,8 @@
 ## Conversion from zero / pole to state space.
 ## @strong{Inputs}
 ## @table @var
-## @item zer, pol
+## @item zer
+## @itemx pol
 ## vectors of (possibly) complex poles and zeros of a transfer
 ## function.  Complex values must come in conjugate pairs
 ## (i.e., x+jy in zer means that x-jy is also in zer)

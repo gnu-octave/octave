@@ -23,7 +23,10 @@
 ## 
 ## @strong{Inputs}
 ## @table @var
-## @item   a, b, c, d
+## @item a
+## @itemx b
+## @itemx c
+## @itemx d
 ##  usual state space matrices.
 ## 
 ##                default: @var{d} = zero matrix
@@ -31,21 +34,17 @@
 ## @item   tsam
 ##  sampling rate.  Default: @math{tsam = 0} (continuous system)
 ## 
-## @item  n, nz
+## @item n
+## @itemx nz
 ##  number of continuous, discrete states in the system
 ## 
-##         default:
-## @table @var
-## @item tsam = 0
-## @math{n = @code{rows}(@var{a})}, @math{nz = 0}
+## If @var{tsam} is 0, @math{n = @code{rows}(@var{a})}, @math{nz = 0}.
 ## 
-## @item tsam > 0
-## @math{ n = 0},       @math{nz = @code{rows}(@var{a})}
+## If @var{tsam} is greater than zero, @math{n = 0},
+## @math{nz = @code{rows}(@var{a})} 
 ## 
 ##         see below for system partitioning
-## 
-## @end table
-## 
+##
 ## @item  stname
 ##  list of strings of state signal names
 ## 
@@ -66,20 +65,15 @@
 ## 
 ##  list of indices of outputs y that are sampled
 ## 
-##            default: 
-## @table @var
-## @item tsam = 0  
-## @math{outlist = []}
-## @item tsam > 0  
-## @math{outlist = 1:@code{rows}(@var{c})}
+## If @var{tsam} is 0, @math{outlist = []}.
+##
+## If @var{tsam} is greater than 0, @math{outlist = 1:@code{rows}(@var{c})}.
 ## @end table
 ## 
 ## Unlike states, discrete/continous outputs may appear in any order.
 ## 
 ## @strong{Note} @code{sys2ss} returns a vector @var{yd} where
 ## @var{yd}(@var{outlist}) = 1; all other entries of @var{yd} are 0.
-## 
-## @end table
 ## 
 ## @strong{Outputs}
 ## @var{outsys} = system data structure

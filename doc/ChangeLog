@@ -1,5 +1,7 @@
 2000-01-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* texinfo.tex: Update to version from texinfo-4.0.
+
 	* interpreter/munge-texi.cc (process_texi_input_file): For Texinfo
 	doc strings, automatically insert an @anchor{doc-SYMBOL} command
 	just before the docstring for SYMBOL.

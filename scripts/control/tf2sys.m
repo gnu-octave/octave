@@ -22,11 +22,13 @@
 ## 
 ## @strong{Inputs}
 ## @table @var
-## @item  num, den
+## @item  num
+## @itemx den
 ##  coefficients of numerator/denominator polynomials
 ## @item tsam
 ##  sampling interval. default: 0 (continuous time)
-## @item inname, outname
+## @item inname
+## @itemx outname
 ##  input/output signal names; may be a string or list with a single string
 ## entry.
 ## @end table

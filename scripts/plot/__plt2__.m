@@ -17,6 +17,8 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
+## usage: function __plt2__ (x1, x2, fmt)
+
 ## Author: jwe
 
 function __plt2__ (x1, x2, fmt)

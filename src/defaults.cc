@@ -475,7 +475,7 @@ each directory that is to be searched recursively to contain\n\
 @emph{either} additional subdirectories @emph{or} function files, but\n\
 not a mixture of both.\n\
 \n\
-@xref{Organization of Functions} for a description of the function file\n\
+@xref{Organization of Functions}, for a description of the function file\n\
 directories that are distributed with Octave.\n\
 @end defvr");
 

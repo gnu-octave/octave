@@ -50,7 +50,8 @@
 ## @item g
 ## Computed gain, within @var{tol} of actual gain.  @var{g} is returned as Inf 
 ## if the system is unstable.
-## @item gmin, gmax
+## @item gmin
+## @itemx gmax
 ## Actual system gain lies in the interval [@var{gmin}, @var{gmax}]
 ## @end table
 ## 

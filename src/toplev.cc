@@ -720,7 +720,8 @@ octave --no-line-editing --silent\n\
 @code{--no-line-editing} and @code{--silent}.\n\
 \n\
 If you write an executable Octave script, @code{argv} will contain the\n\
-list of arguments passed to the script.  @pxref{Executable Octave Programs}.\n\
+list of arguments passed to the script.  @xref{Executable Octave Programs},\n\
+for an example of how to create an executable Octave script.\n\
 @end defvr");
 
   DEFCONST (program_invocation_name,
@@ -740,7 +741,7 @@ have the value @code{\"octave\"}.\n\
 \n\
 If executing a script from the command line (e.g., @code{octave foo.m})\n\
 or using an executable Octave script, the program name is set to the\n\
-name of the script.  @xref{Executable Octave Programs} for an example of\n\
+name of the script.  @xref{Executable Octave Programs}, for an example of\n\
 how to create an executable Octave script.\n\
 @end defvr");
 
@@ -760,7 +761,7 @@ have the value @code{\"octave\"}.\n\
 \n\
 If executing a script from the command line (e.g., @code{octave foo.m})\n\
 or using an executable Octave script, the program name is set to the\n\
-name of the script.  @xref{Executable Octave Programs} for an example of\n\
+name of the script.  @xref{Executable Octave Programs}, for an example of\n\
 how to create an executable Octave script.\n\
 @end defvr");
 

@@ -15,7 +15,7 @@
 ## You should have received a copy of the GNU General Public License 
 ## along with Octave; see the file COPYING.  If not, write to the Free 
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
- 
+
 ## -*- texinfo -*-
 ## @deftypefn {Function File } { @var{retsys} =} sysdup (@var{Asys}, @var{out_idx}, @var{in_idx})
 ##  Duplicate specified input/output connections of a system
@@ -23,10 +23,11 @@
 ## @strong{Inputs}
 ## @table @var
 ## @item Asys
-##  system data structure (@xref{ss2sys})
-## @item out_idx,in_idx
+##  system data structure (@pxref{ss2sys})
+## @item out_idx
+## @itemx in_idx
 ##  list of connections indices; 
-##        duplicates are made of @var{y(out_idx(ii))} and @var{u(in_idx(ii))}.
+##  duplicates are made of @code{y(out_idx(ii))} and @code{u(in_idx(ii))}.
 ## @end table
 ## 
 ## @strong{Outputs}

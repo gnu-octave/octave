@@ -24,7 +24,8 @@
 ## @table @var
 ## @item   sys
 ## system data structure
-## @item   out_idx, in_idx
+## @item   out_idx
+## @itemx  in_idx
 ## list of connections indices; @math{y(out_idx(ii))}
 ## is connected to @math{u(in_idx(ii))}.
 ## @item   order

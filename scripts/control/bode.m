@@ -59,13 +59,15 @@
 ##               points (e.g., crossovers from +/- 180) are accurately shown.
 ## 
 ## @end enumerate
-## @item out_idx, in_idx
+## @item out_idx
+## @itemx in_idx
 ##  the indices of the output(s) and input(s) to be used in
 ##      the frequency response; see @code{sysprune}.
 ## @end table
 ## @strong{Outputs}
 ## @table @var
-## @item  mag, phase
+## @item mag
+## @itemx phase
 ##  the magnitude and phase of the frequency response
 ##        @math{G(jw)} or @math{G(@code{exp}(jwT))} at the selected frequency values.
 ## @item w

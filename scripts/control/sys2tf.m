@@ -15,7 +15,7 @@
 ## You should have received a copy of the GNU General Public License 
 ## along with Octave; see the file COPYING.  If not, write to the Free 
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
- 
+
 ## -*- texinfo -*-
 ## @deftypefn {Function File } {[@var{num},@var{den},@var{tsam},@var{inname},@var{outname}] =} sys2tf (@var{sys})
 ## Extract transfer function data from a system data structure

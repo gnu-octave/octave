@@ -15,7 +15,7 @@
 ## You should have received a copy of the GNU General Public License 
 ## along with Octave; see the file COPYING.  If not, write to the Free 
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
- 
+
 ## -*- texinfo -*-
 ## @deftypefn {Function File } { @var{x} =} zgshsr( @var{y})
 ## apply householder vector based on @math{e^(m)} to 

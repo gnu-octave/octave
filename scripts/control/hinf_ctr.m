@@ -24,7 +24,8 @@
 ## @table @var
 ## @item dgs
 ## data structure returned by @code{is_dgkf}
-## @item F, H
+## @item F
+## @itemx H
 ## feedback and filter gain (not partitioned)
 ## @item g
 ## final gamma value

@@ -59,7 +59,9 @@
 ## @table @bullet
 ## @item If @var{sigid} is not specified
 ## @table @var
-## @item stname, inname, outname
+## @item stname
+## @itemx inname
+## @itemx outname
 ## 	 signal names (lists of strings);  names of states,
 ##           inputs, and outputs, respectively
 ## @item yd

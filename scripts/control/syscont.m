@@ -27,7 +27,8 @@
 ## @table @var
 ## @item csys
 ##  is the purely continuous input/output connections of @var{sys}
-## @item Acd, Ccd:
+## @item Acd
+## @itemx Ccd
 ##  connections from discrete states to continuous states,
 ##                discrete states to continuous outputs, respectively.
 ## 

@@ -25,7 +25,8 @@
 ## @table @var
 ## @item sys
 ## system data structure
-## @item a, b
+## @item a
+## @itemx b
 ## @var{n} by @var{n}, @var{n} by @var{m} matrices, respectively
 ## @item tol
 ## optional roundoff paramter.  default value: @code{10*eps}

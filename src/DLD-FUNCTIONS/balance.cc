@@ -65,7 +65,7 @@ DEFUN_DLD (balance, args, nargout,
   "-*- texinfo -*-
 @deftypefn {Loadable Function} {@var{aa} =} balance (@var{a}, @var{opt})\n\
 @deftypefnx {Loadable Function} {[@var{dd}, @var{aa}] =} balance (@var{a}, @var{opt})\n\
-@deftypefnx {Loadable Function} {[@var{cc}, @var{dd}, @var{aa}, @var{bb]} =} balance (@var{a}, @var{b}, @var{opt})\n\
+@deftypefnx {Loadable Function} {[@var{cc}, @var{dd}, @var{aa}, @var{bb}] =} balance (@var{a}, @var{b}, @var{opt})\n\
 \n\
 @code{[dd, aa] = balance (a)} returns @code{aa = dd \\ a * dd}.\n\
 @code{aa} is a matrix whose row and column norms are roughly equal in\n\

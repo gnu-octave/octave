@@ -205,8 +205,8 @@ printf ("\n");
 @end example
 
 @noindent
-@xref{Index Expressions} for an explanation of how to properly index
-arrays of strings and substrings in Octave, and @xref{Defining Functions} 
+@xref{Index Expressions}, for an explanation of how to properly index
+arrays of strings and substrings in Octave, and @xref{Defining Functions},
 for information about the variable @code{nargin}.
 
 @node Startup Files,  , Command Line Options, Invoking Octave

@@ -21,21 +21,27 @@
 ## Extract state space representation from system data structure.  
 ## 
 ## @strong{Inputs}
-## @var{sys} system data structure (@xref{sysstruct})
+## @var{sys} system data structure (@pxref{sysstruct})
 ## 
 ## @strong{Outputs}
 ## @table @var
-## @item a,b,c,d
+## @item a
+## @itemx b
+## @itemx c
+## @itemx d
 ##  state space matrices for sys
 ## 
 ## @item tsam
 ##  sampling time of sys (0 if continuous)
 ## 
-## @item n, nz
+## @item n
+## @itemx nz
 ##  number of continuous, discrete states (discrete states come
 ##           last in state vector @var{x})
 ## 
-## @item stname, inname, outname
+## @item stname
+## @itemx inname
+## @itemx outname
 ##  signal names (lists of strings);  names of states,
 ##           inputs, and outputs, respectively
 ## 

@@ -428,7 +428,7 @@ so that it may easily be passed to the @code{error} function without\n\
 additional processing@footnote{Yes, it's a kluge, but it seems to be a\n\
 reasonably useful one.}.\n\
 \n\
-@xref{The try Statement} and @ref{The unwind_protect Statement}.\n\
+@xref{The try Statement}, and @ref{The unwind_protect Statement}.\n\
 @end defvr");
 }
 

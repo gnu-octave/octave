@@ -830,7 +830,7 @@ You can now use the @file{oregonator.oct} file just as you would the
 @code{oregonator.m} file to solve the set of differential equations.
 
 On a 133 MHz Pentium running Linux, Octave can solve the problem shown
-in @ref{Ordinary Differential Equations} in about 1.4 second using the
+in @ref{Ordinary Differential Equations}, in about 1.4 seconds using the
 dynamically linked function, compared to about 19 seconds using the
 M-file.  Similar decreases in execution time can be expected for other
 functions, particularly those that rely on functions like @code{lsode}

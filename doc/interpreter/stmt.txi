@@ -362,7 +362,7 @@ A newline is not required between the condition and the
 body; but using one makes the program clearer unless the body is very
 simple.
 
-@xref{The if Statement} for a description of the variable
+@xref{The if Statement}, for a description of the variable
 @code{warn_assign_as_truth_value}.
 
 @node The for Statement, The break Statement, The while Statement, Statements

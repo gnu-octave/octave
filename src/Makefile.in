@@ -262,6 +262,11 @@ check: all
 install: install-bin install-oct install-lib install-inc
 .PHONY: install
 
+mk-oct-links: mk-oct-links.in
+	sed < $< > $@.tmp \
+	  -e "s;%LN_S%;${LN_S};"
+	$(top_srcdir)/move-if-change $@.tmp $@
+
 install-bin:
 	$(top_srcdir)/mkinstalldirs $(bindir)
 	rm -f $(bindir)/octave
@@ -269,7 +274,7 @@ install-bin:
 	$(LN_S) $(bindir)/octave-$(version) $(bindir)/octave
 .PHONY: install-bin
 
-install-oct:
+install-oct: mk-oct-links
 	if [ -n "$(OCT_FILES)" ]; then \
 	  $(top_srcdir)/mkinstalldirs $(octfiledir) ; \
 	  chmod a+rx mk-oct-links ; \

@@ -1,5 +1,8 @@
 Thu Nov 14 00:06:19 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Makefile.in (install-oct): Depend on mk-oct-links.
+	(mk-oct-links): New target.
+
 	* Version 1.92.
 
 Wed Nov 13 11:13:22 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>

@@ -1849,7 +1849,9 @@ read_mat_binary_data (istream& is, const char *filename,
   else
     tc = re;
 
-  if (type == 1)
+// XXX FIXME XXX -- this needs to change once strings really work.
+
+  if (type == 1 && nr == 1)
     tc = tc.convert_to_str ();
 
   return name;

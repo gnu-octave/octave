@@ -3,6 +3,8 @@
 	* version.h (OCTAVE_API_VERSION): Now 2.9.0.
 	(OCTAVE_API_VERSION): Now api-v14.
 
+	* Makefile.in (INCLUDES): Delete sparse-ops.h from the list.
+
 	* cellfun.cc: New function from Octave-forge.  Adapt to Octave
 	coding standards.
 	* Makefile.in (DLD_XSRC): Add it to the list.

@@ -48,8 +48,8 @@ function r = roots (v)
       A = diag (ones (1, l-2), -1);
       A (1, :) = -v (2:l) ./ v (1);
       r = eig (A);    
-      if (f(m) < n)
-	r = [r; zeros (n - f (m), 1)];
+      if (f (m) < n)
+	r = [r; zeros(n - f(m), 1)];
       endif
     else
       r = zeros (n - f(m), 1);

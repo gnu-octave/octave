@@ -579,15 +579,16 @@ DEFUN (usleep, args, ,
 	    warning ("usleep: NaN is an invalid delay");
 	  else
 	    {
-	      int delay = NINT (dval);
 #if defined (HAVE_USLEEP)
+	      int delay = NINT (dval);
+
 	      if (delay > 0)
 		usleep (delay);
 #else
-	      // Kluge alert.
+	      int delay = NINT (dval / 1e6);
 
-	      if (delay > 500000)
-		sleep (delay / 1000000);
+	      if (delay > 0)
+		sleep (delay);
 #endif
 	    }
 	}

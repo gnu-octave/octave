@@ -1,3 +1,20 @@
+2004-01-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* dirfns.cc (Fglob): Always return list of files as a cell array.
+	(Freaddir): Likewise.
+
+	* dirfns.cc (Fls): If nargout > 0, return ls output.
+
+2004-01-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* load-save.cc (Fload): Assume -force by default.
+
+	* oct-stream.cc (octave_base_stream::write):
+	Allow fwrite (fid, "some string") to work.
+
+	* toplev.cc (Fcomputer): Delete.
+	(octave_config_info): Add unix and windows fields to the struct.
+
 2004-01-06  David Bateman  <dbateman@free.fr>
 
 	* ls-hdf5.cc: Fix handle of old versus new format files.

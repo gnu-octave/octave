@@ -2058,19 +2058,28 @@ octave_base_stream::write (const octave_value& data,
     {
       std::ostream& os = *osp;
 
-      Matrix mval = data.matrix_value ();
+      int status = 0;
+
+      // XXX FIXME XXX -- the octave_value class should probably have
+      // a write method that would handle the dispatch for us?
+      //
+      // If DATA is a character matrix, then it is a bit of a kluge to
+      // force it to be a double matrix and then write it out as uchar
+      // data, but this is the quick fix...
+
+      Matrix mval = data.matrix_value (true);
 
       if (! error_state)
 	{
 	  if (ffmt == oct_mach_info::flt_fmt_unknown)
 	    ffmt = float_format ();
 
-	  int tmp = mval.write (os, dt, skip, ffmt);
+	  status = mval.write (os, dt, skip, ffmt);
 
-	  if (tmp < 0)
+	  if (status < 0)
 	    error ("fwrite: write error");
 	  else
-	    retval = tmp;
+	    retval = status;
 	}
     }
   else

@@ -39,13 +39,17 @@ function retval = num2str (x, arg)
 	fmt = sprintf ("%%.%dg", arg);
       endif
     else
-      if (isscalar (x))
+      if (isnumeric (x) && round (x) == x && abs (x) < 1e10)
+	fmt = "%d";
+      elseif (isscalar (x))
 	fmt = "%.4g";
       else
 	fmt = "%11.4g";
       endif
     endif
-    if (iscomplex (x))
+    if (isstr (x))
+      retval = x;
+    elseif (iscomplex (x))
       error ("num2str: sorry, can't handle complex numbers yet");
     else
       fmt = strcat (repmat (fmt, 1, columns (x)), "\n");

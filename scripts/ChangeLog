@@ -1,3 +1,25 @@
+2004-01-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* miscellaneous/dir.m: New file.
+
+	* general/num2str.m: Use "%d" as format if values are ints with
+	magnitude less than 1e10.
+
+2004-01-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* general/num2str.m: If single arg is string, return it.
+
+	* miscellaneous/not.m: New file.
+
+	* miscellaneous/unix.m: New file.
+
+	* miscellaneous/isunix.m: New file.
+	* miscellaneous/ispc.m: New file.
+
+	* miscellaneous/computer.m: New file.
+
+	* miscellaneous/delete.m: New file.
+
 2004-01-08  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* statistics/tests/kolmogorov_smirnov_test_2.m: Fix test for ties.

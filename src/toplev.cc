@@ -251,47 +251,6 @@ Provided for compatibility with Matlab, but does nothing.\n\
   return retval;
 }
 
-DEFUN (computer, args, nargout,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} computer ()\n\
-Print or return a string of the form @var{cpu}-@var{vendor}-@var{os}\n\
-that identifies the kind of computer Octave is running on.  If invoked\n\
-with an output argument, the value is returned instead of printed.  For\n\
-example,\n\
-\n\
-@example\n\
-@group\n\
-computer ()\n\
-     @print{} i586-pc-linux-gnu\n\
-\n\
-x = computer ()\n\
-     @result{} x = \"i586-pc-linux-gnu\"\n\
-@end group\n\
-@end example\n\
-@end deftypefn")
-{
-  octave_value retval;
-
-  int nargin = args.length ();
-
-  if (nargin != 0)
-    warning ("computer: ignoring extra arguments");
-
-  std::string msg;
-
-  if (strcmp (OCTAVE_CANONICAL_HOST_TYPE, "unknown") == 0)
-    msg = "Hi Dave, I'm a HAL-9000";
-  else
-    msg = OCTAVE_CANONICAL_HOST_TYPE;
-
-  if (nargout == 0)
-    octave_stdout << msg << "\n";
-  else
-    retval = msg;
-
-  return retval;
-}
-
 DEFUN (quit, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} exit (@var{status})\n\
@@ -795,6 +754,19 @@ specified option.\n\
 	  else
 	    break;
 	}
+
+      bool unix_system = true;
+      bool windows_system = false;
+
+#if defined (WIN32)
+      windows_system = true;
+#if !defined (__CYGWIN__)
+      unix_system = false;
+#endif
+#endif
+
+      m.assign ("unix", octave_value (unix_system));
+      m.assign ("windows", octave_value (windows_system));
 
       initialized = true;
     }

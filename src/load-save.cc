@@ -613,7 +613,7 @@ variable names if they are invalid Octave identifiers.\n\
 
   load_save_format format = LS_UNKNOWN;
 
-  bool force = false;
+  bool force = true;
   bool list_only = false;
   bool verbose = false;
 

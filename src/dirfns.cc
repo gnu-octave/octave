@@ -140,10 +140,9 @@ cleanup_iprocstream (void *p)
   delete static_cast <iprocstream *> (p);
 }
 
-DEFCMD (ls, args, ,
+DEFCMD (ls, args, nargout,
   "-*- texinfo -*-\n\
 @deffn {Command} ls options\n\
-@deffnx {Command} dir options\n\
 List directory contents.  For example,\n\
 \n\
 @example\n\
@@ -158,7 +157,7 @@ system's directory listing command, so the available options may vary\n\
 from system to system.\n\
 @end deffn")
 {
-  octave_value_list retval;
+  octave_value retval;
 
   int argc = args.length () + 1;
 
@@ -193,10 +192,15 @@ from system to system.\n\
 
       char ch;
 
+      OSSTREAM output_buf;
+
       for (;;)
 	{
 	  if (cmd->get (ch))
-	    octave_stdout << ch;
+	    {
+	      octave_stdout << ch;
+	      output_buf << ch;
+	    }
 	  else
 	    {
 	      if (! cmd->eof () && errno == EAGAIN)
@@ -209,6 +213,13 @@ from system to system.\n\
 		break;
 	    }
 	}
+
+      output_buf << OSSTREAM_ENDS;
+
+      if (nargout > 0)
+	retval = OSSTREAM_STR (output_buf);
+
+      OSSTREAM_FREEZE (output_buf);
     }
   else
     error ("couldn't start process for ls!");
@@ -217,8 +228,6 @@ from system to system.\n\
 
   return retval;
 }
-
-DEFALIAS (dir, ls);
 
 DEFUN (pwd, , nargout,
   "-*- texinfo -*-\n\
@@ -246,8 +255,8 @@ Return the current working directory.\n\
 DEFUN (readdir, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{files}, @var{err}, @var{msg}] =} readdir (@var{dir})\n\
-Return names of the files in the directory @var{dir} as an array of\n\
-strings.  If an error occurs, return an empty matrix in @var{files}.\n\
+Return names of the files in the directory @var{dir} as a cell array of\n\
+strings.  If an error occurs, return an empty cell array in @var{files}.\n\
 \n\
 If successful, @var{err} is 0 and @var{msg} is an empty string.\n\
 Otherwise, @var{err} is nonzero and @var{msg} contains a\n\
@@ -258,7 +267,7 @@ system-dependent error message.\n\
 
   retval(2) = std::string ();
   retval(1) = -1.0;
-  retval(0) = Matrix ();
+  retval(0) = Cell ();
 
   if (args.length () == 1)
     {
@@ -273,7 +282,7 @@ system-dependent error message.\n\
 	  if (dir)
 	    {
 	      string_vector dirlist = dir.read ();
-	      retval(0) = dirlist.qsort ();
+	      retval(0) = Cell (dirlist.qsort ());
 	      retval(1) = 0.0;
 	    }
 	  else
@@ -555,8 +564,8 @@ system-dependent error message.\n\
 DEFUN (glob, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} glob (@var{pattern})\n\
-Given an array of strings in @var{pattern}, return the list of file\n\
-names that match any of them, or an empty string if no patterns match.\n\
+Given an array of strings in @var{pattern}, return a cell array of file\n\
+names that match any of them, or an empty cell array if no patterns match.\n\
 Tilde expansion is performed on each of the patterns before looking for\n\
 matching file names.  For example,\n\
 \n\
@@ -566,9 +575,6 @@ glob (\"/vm*\")\n\
      @result{} \"/vmlinuz\"\n\
 @end group\n\
 @end example\n\
-\n\
-Note that multiple values are returned in a string matrix with the fill\n\
-character set to ASCII NUL.\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -583,12 +589,7 @@ character set to ASCII NUL.\n\
 	{
 	  glob_match pattern (file_ops::tilde_expand (pat));
 
-	  string_vector list = pattern.glob ();
-
-	  if (list.empty ())
-	    retval = "";
-	  else
-	    retval = list;
+	  retval = Cell (pattern.glob ());
 	}
     }
   else

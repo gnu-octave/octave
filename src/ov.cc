@@ -517,8 +517,8 @@ octave_value::octave_value (octave_value *new_rep)
 octave_value::~octave_value (void)
 {
 #if defined (MDEBUG)
-  cerr << "~octave_value: rep: " << rep
-       << " rep->count: " << rep->count << "\n";
+  std::cerr << "~octave_value: rep: " << rep
+	    << " rep->count: " << rep->count << "\n";
 #endif
 
   if (rep && --rep->count == 0)

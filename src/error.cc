@@ -69,14 +69,14 @@ vwarning (const char *name, const char *fmt, va_list args)
   if (name)
     {
       octave_diary << name << ": ";
-      cerr << name << ": ";
+      std::cerr << name << ": ";
     }
 
   octave_diary.vform (fmt, args);
-  cerr.vform (fmt, args);
+  std::cerr.vform (fmt, args);
 
   octave_diary << endl;
-  cerr << endl;
+  std::cerr << endl;
 }
 
 static void
@@ -128,7 +128,7 @@ verror (const char *name, const char *fmt, va_list args)
   else
     {
       octave_diary << msg;
-      cerr << msg;
+      std::cerr << msg;
     }
 
   delete [] msg;

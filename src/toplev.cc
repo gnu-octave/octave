@@ -99,7 +99,7 @@ main_loop (void)
     {
       raw_mode (0);
 
-      cout << "\n";
+      std::cout << "\n";
 
       octave_restore_signal_mask ();
     }
@@ -536,7 +536,7 @@ do_octave_atexit (void)
       flush_octave_stdout ();
 
       if (!quitting_gracefully && (interactive || forced_interactive))
-	cout << "\n";
+	std::cout << "\n";
     }
 }
 
@@ -690,7 +690,7 @@ __builtin_new (size_t sz)
     }
 
   if (debug_new_delete)
-    cout << "__builtin_new: " << p << endl;
+    std::cout << "__builtin_new: " << p << endl;
 
   return p;
 }
@@ -699,7 +699,7 @@ void
 __builtin_delete (void *ptr)
 {
   if (debug_new_delete)
-    cout << "__builtin_delete: " << ptr << endl;
+    std::cout << "__builtin_delete: " << ptr << endl;
 
   if (ptr)
     free (ptr);

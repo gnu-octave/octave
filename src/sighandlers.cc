@@ -123,7 +123,7 @@ my_friendly_exit (const char *sig_name, int sig_number)
       octave_set_signal_handler (SIGABRT, SIG_DFL);
 #endif
 
-      cerr << "error: attempted clean up apparently failed -- aborting...\n";
+      std::cerr << "error: attempted clean up apparently failed -- aborting...\n";
 
       abort ();
     }
@@ -131,7 +131,7 @@ my_friendly_exit (const char *sig_name, int sig_number)
     {
       been_there_done_that = true;
 
-      cerr << "error: " << sig_name << " -- stopping myself...\n";
+      std::cerr << "error: " << sig_name << " -- stopping myself...\n";
 
       save_user_variables ();
 
@@ -151,7 +151,7 @@ my_friendly_exit (const char *sig_name, int sig_number)
 static void
 octave_new_handler (void)
 {
-  cerr << "error: memory exhausted -- trying to return to prompt\n";
+  std::cerr << "error: memory exhausted -- trying to return to prompt\n";
 
   if (can_interrupt)
     {
@@ -256,7 +256,7 @@ sigfpe_handler (int /* sig */)
 
   MAYBE_REINSTALL_SIGHANDLER (SIGFPE, sigfpe_handler);
 
-  cerr << "error: floating point exception -- trying to return to prompt\n";
+  std::cerr << "error: floating point exception -- trying to return to prompt\n";
 
   if (can_interrupt)
     {
@@ -318,7 +318,7 @@ sigpipe_handler (int /* sig */)
   MAYBE_REINSTALL_SIGHANDLER (SIGPIPE, sigpipe_handler);
 
   if (pipe_handler_error_count++ == 0)
-    cerr << "warning: broken pipe\n";
+    std::cerr << "warning: broken pipe\n";
 
   // Don't loop forever on account of this.
 

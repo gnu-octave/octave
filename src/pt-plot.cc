@@ -313,7 +313,7 @@ tree_plot_command::eval (void)
 
   // Just testing...
   //  char *message = plot_buf.str ();
-  //  cout << "[*]" << message << "[*]\n";
+  //  std::cout << "[*]" << message << "[*]\n";
 
   if (parametric_plot && ndim == 2)
     {

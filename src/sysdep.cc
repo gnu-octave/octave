@@ -313,7 +313,7 @@ kbhit (void)
 {
   int c;
   raw_mode (1);
-  c = cin.get ();
+  c = std::cin.get ();
   raw_mode (0);
   return c;
 }

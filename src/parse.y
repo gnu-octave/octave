@@ -2734,15 +2734,15 @@ parse_and_execute (const std::string& s, bool verbose, const char *warn_for)
 
       if (verbose)
 	{
-	  cout << "reading commands from " << s << " ... ";
+	  std::cout << "reading commands from " << s << " ... ";
 	  reading_startup_message_printed = true;
-	  cout.flush ();
+	  std::cout.flush ();
 	}
 
       parse_and_execute (f);
 
       if (verbose)
-	cout << "done." << endl;
+	std::cout << "done." << endl;
     }
   else if (warn_for)
     error ("%s: unable to open file `%s'", warn_for, s.c_str ());

@@ -36,7 +36,7 @@ template <class T>
 void
 Stack<T>::error (const char *msg)
 {
-  cerr << msg;
+  std::cerr << msg;
 }
 
 /*

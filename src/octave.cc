@@ -264,7 +264,7 @@ execute_startup_files (void)
 static void
 verbose_usage (void)
 {
-  cout << OCTAVE_NAME_VERSION_AND_COPYRIGHT "\n\
+  std::cout << OCTAVE_NAME_VERSION_AND_COPYRIGHT "\n\
 \n\
 Usage: octave [options]\n\
 \n\
@@ -303,14 +303,14 @@ Please report bugs to the mailing list `bug-octave@bevo.che.wisc.edu'.\n";
 static void
 usage (void)
 {
-  cerr << "usage: " << usage_string << "\n";
+  std::cerr << "usage: " << usage_string << "\n";
   exit (1);
 }
 
 static void
 print_version_and_exit (void)
 {
-  cout << OCTAVE_NAME_AND_VERSION << "\n";
+  std::cout << OCTAVE_NAME_AND_VERSION << "\n";
   exit (0);
 }
 
@@ -489,7 +489,7 @@ main (int argc, char **argv)
   initialize_command_input ();
 
   if (! inhibit_startup_message)
-    cout << OCTAVE_STARTUP_MESSAGE "\n" << endl;
+    std::cout << OCTAVE_STARTUP_MESSAGE "\n" << endl;
 
   if (traditional)
     maximum_braindamage ();
@@ -499,7 +499,7 @@ main (int argc, char **argv)
   command_history::read (false);
 
   if (! inhibit_startup_message && reading_startup_message_printed)
-    cout << endl;
+    std::cout << endl;
 
   // Avoid counting commands executed from startup files.
 

@@ -73,15 +73,15 @@ static octave_value stderr_file;
 void
 initialize_file_io (void)
 {
-  octave_stream stdin_stream = octave_istream::create (&cin, "stdin");
+  octave_stream stdin_stream = octave_istream::create (&std::cin, "stdin");
 
-  // This uses octave_stdout (see pager.h), not cout so that Octave's
+  // This uses octave_stdout (see pager.h), not std::cout so that Octave's
   // standard output stream will pass through the pager.
 
   octave_stream stdout_stream
     = octave_ostream::create (&octave_stdout, "stdout");
 
-  octave_stream stderr_stream = octave_ostream::create (&cerr, "stderr");
+  octave_stream stderr_stream = octave_ostream::create (&std::cerr, "stderr");
 
   stdin_file = octave_stream_list::insert (stdin_stream);
   stdout_file = octave_stream_list::insert (stdout_stream);

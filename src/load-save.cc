@@ -1803,11 +1803,11 @@ Force Octave to assume the file is in @sc{Matlab}'s binary format.\n\
       if (format != LS_UNKNOWN)
 	{
 	  // XXX FIXME XXX -- if we have already seen EOF on a
-	  // previous call, how do we fix up the state of cin so that
-	  // we can get additional input?  I'm afraid that we can't
-	  // fix this using cin only.
+	  // previous call, how do we fix up the state of std::cin so
+	  // that we can get additional input?  I'm afraid that we
+	  // can't fix this using std::cin only.
 
-	  retval = do_load (cin, orig_fname, force, format, flt_fmt,
+	  retval = do_load (std::cin, orig_fname, force, format, flt_fmt,
 			    list_only, swap, verbose, argv, i, argc,
 			    nargout);
 	}

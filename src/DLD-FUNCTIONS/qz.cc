@@ -151,7 +151,7 @@ fin (const int& lsize, const double& alpha,
     retval = (fabs (p) < 1 ? 1 : -1);
 
 #ifdef DEBUG
-  cout << "qz: fin: retval=" << retval << endl;
+  std::cout << "qz: fin: retval=" << retval << endl;
 #endif
 
   return retval;
@@ -240,7 +240,7 @@ See also: balance, dare, eig, schur\n\
   int nargin = args.length ();
 
 #ifdef DEBUG
-  cout << "qz: nargin = " << nargin << ", nargout = " << nargout << endl;
+  std::cout << "qz: nargin = " << nargin << ", nargout = " << nargout << endl;
 #endif
 
   if (nargin < 2 || nargin > 3 || nargout > 7)
@@ -255,7 +255,7 @@ See also: balance, dare, eig, schur\n\
     }
 
 #ifdef DEBUG
-  cout << "qz: determine ordering option" << endl;
+  std::cout << "qz: determine ordering option" << endl;
 #endif
 
   // Determine ordering option
@@ -287,7 +287,7 @@ See also: balance, dare, eig, schur\n\
       F77_FCN (xdlamch, XDLAMCH) ("S", safmin, 1L);
 
 #ifdef DEBUG_EIG
-      cout << "qz: initial value of safmin=" << setiosflags (ios::scientific)
+      std::cout << "qz: initial value of safmin=" << setiosflags (ios::scientific)
 	   << safmin << endl;
 #endif
 
@@ -296,27 +296,27 @@ See also: balance, dare, eig, schur\n\
       if (safmin == 0)
 	{
 #ifdef DEBUG_EIG
-	  cout << "qz: DANGER WILL ROBINSON: safmin is 0!" << endl;
+	  std::cout << "qz: DANGER WILL ROBINSON: safmin is 0!" << endl;
 #endif
 
 	  F77_FCN (xdlamch, XDLAMCH) ("E", safmin, 1L);
 
 #ifdef DEBUG_EIG
-	  cout << "qz: safmin set to " << setiosflags (ios::scientific)
+	  std::cout << "qz: safmin set to " << setiosflags (ios::scientific)
 	       << safmin << endl;
 #endif
 	}
     }
 
 #ifdef DEBUG
-  cout << "qz: check argument 1" << endl;
+  std::cout << "qz: check argument 1" << endl;
 #endif
 
   // Argument 1: check if it's o.k. dimensioned
   int nn = args(0).rows ();
 
 #ifdef DEBUG
-  cout << "argument 1 dimensions: (" << nn << "," << args(0).columns () << ")"
+  std::cout << "argument 1 dimensions: (" << nn << "," << args(0).columns () << ")"
        << endl;
 #endif
 
@@ -351,7 +351,7 @@ See also: balance, dare, eig, schur\n\
     return retval;
 
 #ifdef DEBUG
-  cout << "qz: check argument 2" << endl;
+  std::cout << "qz: check argument 2" << endl;
 #endif
 
   // Extract argument 2 (bb, or cbb if complex)
@@ -412,7 +412,7 @@ See also: balance, dare, eig, schur\n\
     {
 #ifdef DEBUG
       if (compq == 'V')
-	cout << "qz: performing balancing; QQ=" << endl << QQ << endl;
+	std::cout << "qz: performing balancing; QQ=" << endl << QQ << endl;
 #endif
 
       F77_XFCN (dggbal, DGGBAL,
@@ -440,7 +440,7 @@ See also: balance, dare, eig, schur\n\
 
 #ifdef DEBUG
       if (compq == 'V')
-	cout << "qz: balancing done; QQ=" << endl << QQ << endl;
+	std::cout << "qz: balancing done; QQ=" << endl << QQ << endl;
 #endif
 
     if (f77_exception_encountered)
@@ -460,7 +460,7 @@ See also: balance, dare, eig, schur\n\
 
 #ifdef DEBUG
       if (compz == 'V')
-	cout << "qz: balancing done; ZZ=" << endl << ZZ << endl;
+	std::cout << "qz: balancing done; ZZ=" << endl << ZZ << endl;
 #endif
 
       if (f77_exception_encountered)
@@ -494,41 +494,41 @@ See also: balance, dare, eig, schur\n\
   else  	// real matrices case
     {
 #ifdef DEBUG
-      cout << "qz: peforming qr decomposition of bb" << endl;
+      std::cout << "qz: peforming qr decomposition of bb" << endl;
 #endif
 
       // compute the QR factorization of bb
       QR bqr (bb);
 
 #ifdef DEBUG
-      cout << "qz: qr (bb) done; now peforming qz decomposition" << endl;
+      std::cout << "qz: qr (bb) done; now peforming qz decomposition" << endl;
 #endif
 
       bb = bqr.R ();
 
 #ifdef DEBUG
-      cout << "qz: extracted bb" << endl;
+      std::cout << "qz: extracted bb" << endl;
 #endif
 
       aa = (bqr.Q ()).transpose ()*aa;
 
 #ifdef DEBUG
-      cout << "qz: updated aa " << endl;
-      cout << "bqr.Q () = " << endl << bqr.Q () << endl;
+      std::cout << "qz: updated aa " << endl;
+      std::cout << "bqr.Q () = " << endl << bqr.Q () << endl;
 
       if (compq == 'V')
-	cout << "QQ =" << QQ << endl;
+	std::cout << "QQ =" << QQ << endl;
 #endif
 
       if (compq == 'V')
 	QQ = QQ*bqr.Q ();
 
 #ifdef DEBUG
-      cout << "qz: precursors done..." << endl;
+      std::cout << "qz: precursors done..." << endl;
 #endif
 
 #ifdef DEBUG
-      cout << "qz: compq = " << compq << ", compz = " << compz << endl;
+      std::cout << "qz: compq = " << compq << ", compz = " << compz << endl;
 #endif
 
       // reduce  to generalized hessenberg form
@@ -574,7 +574,7 @@ See also: balance, dare, eig, schur\n\
       else
 	{
 #ifdef DEBUG_SORT
-	  cout << "qz: ordering eigenvalues: ord_job = " << ord_job[0] << endl;
+	  std::cout << "qz: ordering eigenvalues: ord_job = " << ord_job[0] << endl;
 #endif
 
 	  // declared static to avoid vfork/long jump compiler complaints
@@ -616,23 +616,23 @@ See also: balance, dare, eig, schur\n\
 	  double eps = DBL_EPSILON*inf_norm*nn;
 
 #ifdef DEBUG_SORT
-	  cout << "qz: calling dsubsp: aa=" << endl;
-	  octave_print_internal (cout, aa, 0);
-	  cout << endl << "bb="  << endl;
-	  octave_print_internal (cout, bb, 0);
+	  std::cout << "qz: calling dsubsp: aa=" << endl;
+	  octave_print_internal (std::cout, aa, 0);
+	  std::cout << endl << "bb="  << endl;
+	  octave_print_internal (std::cout, bb, 0);
 	  if (compz == 'V')
 	    {
-	      cout << endl << "ZZ="  << endl;
-	      octave_print_internal (cout, ZZ, 0);
+	      std::cout << endl << "ZZ="  << endl;
+	      octave_print_internal (std::cout, ZZ, 0);
 	    }
-	  cout << endl;
-	  cout << "alphar = " << endl;
-	  octave_print_internal (cout, (Matrix) alphar, 0);
-	  cout << endl << "alphai = " << endl;
-	  octave_print_internal (cout, (Matrix) alphai, 0);
-	  cout << endl << "beta = " << endl;
-	  octave_print_internal (cout, (Matrix) betar, 0);
-	  cout << endl;
+	  std::cout << endl;
+	  std::cout << "alphar = " << endl;
+	  octave_print_internal (std::cout, (Matrix) alphar, 0);
+	  std::cout << endl << "alphai = " << endl;
+	  octave_print_internal (std::cout, (Matrix) alphai, 0);
+	  std::cout << endl << "beta = " << endl;
+	  octave_print_internal (std::cout, (Matrix) betar, 0);
+	  std::cout << endl;
 #endif
 
 	  F77_XFCN (dsubsp, DSUBSP,
@@ -640,16 +640,16 @@ See also: balance, dare, eig, schur\n\
 		     ZZ.fortran_vec(), sort_test, eps, ndim, fail, ind));
 
 #ifdef DEBUG
-	  cout << "qz: back from dsubsp: aa=" << endl;
-	  octave_print_internal (cout, aa, 0);
-	  cout << endl << "bb="  << endl;
-	  octave_print_internal (cout, bb, 0);
+	  std::cout << "qz: back from dsubsp: aa=" << endl;
+	  octave_print_internal (std::cout, aa, 0);
+	  std::cout << endl << "bb="  << endl;
+	  octave_print_internal (std::cout, bb, 0);
 	  if (compz == 'V')
 	    {
-	      cout << endl << "ZZ="  << endl;
-	      octave_print_internal (cout, ZZ, 0);
+	      std::cout << endl << "ZZ="  << endl;
+	      octave_print_internal (std::cout, ZZ, 0);
 	    }
-	  cout << endl;
+	  std::cout << endl;
 #endif
 
 	  // manually update alphar, alphai, betar
@@ -659,7 +659,7 @@ See also: balance, dare, eig, schur\n\
 	  while (jj < nn)
 	    {
 #ifdef DEBUG_EIG
-	      cout << "computing gen eig #" << jj << endl;
+	      std::cout << "computing gen eig #" << jj << endl;
 #endif
 
 	      static int zcnt;	// number of zeros in this block
@@ -673,10 +673,10 @@ See also: balance, dare, eig, schur\n\
 	      if (zcnt == 1)  // real zero
 		{
 #ifdef DEBUG_EIG
-		  cout << "  single gen eig:" << endl;
-		  cout << "  alphar(" << jj << ") = " << aa(jj,jj) << endl;
-		  cout << "  betar( " << jj << ") = " << bb(jj,jj) << endl;
-		  cout << "  alphai(" << jj << ") = 0" << endl;
+		  std::cout << "  single gen eig:" << endl;
+		  std::cout << "  alphar(" << jj << ") = " << aa(jj,jj) << endl;
+		  std::cout << "  betar( " << jj << ") = " << bb(jj,jj) << endl;
+		  std::cout << "  alphai(" << jj << ") = 0" << endl;
 #endif
 
 		  alphar(jj) = aa(jj,jj);
@@ -687,17 +687,17 @@ See also: balance, dare, eig, schur\n\
 		{
 		  // complex conjugate pair
 #ifdef DEBUG_EIG
-		  cout << "qz: calling dlag2:" << endl;
-		  cout << "safmin="
+		  std::cout << "qz: calling dlag2:" << endl;
+		  std::cout << "safmin="
 		       << setiosflags (ios::scientific) << safmin << endl;
 
 		  for (int idr = jj; idr <= jj+1; idr++)
 		    {
 		      for (int idc = jj; idc <= jj+1; idc++)
 			{
-			  cout << "aa(" << idr << "," << idc << ")="
+			  std::cout << "aa(" << idr << "," << idc << ")="
 			       << aa(idr,idc) << endl;
-			  cout << "bb(" << idr << "," << idc << ")="
+			  std::cout << "bb(" << idr << "," << idc << ")="
 			       << bb(idr,idc) << endl;
 			}
 		    }
@@ -709,7 +709,7 @@ See also: balance, dare, eig, schur\n\
 			     scale1, scale2, wr1, wr2, wi));
 
 #ifdef DEBUG_EIG
-		  cout << "dlag2 returns: scale1=" << scale1
+		  std::cout << "dlag2 returns: scale1=" << scale1
 		       << "\tscale2=" << scale2 << endl
 		       << "\twr1=" << wr1 << "\twr2=" << wr2
 		       << "\twi=" << wi << endl;
@@ -738,25 +738,25 @@ See also: balance, dare, eig, schur\n\
 	    }
 
 #ifdef DEBUG_SORT
-	  cout << "qz: back from dsubsp: aa=" << endl;
-	  octave_print_internal (cout, aa, 0);
-	  cout << endl << "bb="  << endl;
-	  octave_print_internal (cout, bb, 0);
+	  std::cout << "qz: back from dsubsp: aa=" << endl;
+	  octave_print_internal (std::cout, aa, 0);
+	  std::cout << endl << "bb="  << endl;
+	  octave_print_internal (std::cout, bb, 0);
 
 	  if (compz == 'V')
 	    {
-	      cout << endl << "ZZ="  << endl;
-	      octave_print_internal (cout, ZZ, 0);
+	      std::cout << endl << "ZZ="  << endl;
+	      octave_print_internal (std::cout, ZZ, 0);
 	    }
-	  cout << endl << "qz: ndim=" << ndim << endl
+	  std::cout << endl << "qz: ndim=" << ndim << endl
 	       << "fail=" << fail << endl;
-	  cout << "alphar = " << endl;
-	  octave_print_internal (cout, (Matrix) alphar, 0);
-	  cout << endl << "alphai = " << endl;
-	  octave_print_internal (cout, (Matrix) alphai, 0);
-	  cout << endl << "beta = " << endl;
-	  octave_print_internal (cout, (Matrix) betar, 0);
-	  cout << endl;
+	  std::cout << "alphar = " << endl;
+	  octave_print_internal (std::cout, (Matrix) alphar, 0);
+	  std::cout << endl << "alphai = " << endl;
+	  octave_print_internal (std::cout, (Matrix) alphai, 0);
+	  std::cout << endl << "beta = " << endl;
+	  octave_print_internal (std::cout, (Matrix) betar, 0);
+	  std::cout << endl;
 #endif
 	}
     }
@@ -774,7 +774,7 @@ See also: balance, dare, eig, schur\n\
       else
 	{
 #ifdef DEBUG
-	  cout << "qz: computing generalized eigenvalues" << endl;
+	  std::cout << "qz: computing generalized eigenvalues" << endl;
 #endif
 
 	  // return finite generalized eigenvalues
@@ -809,7 +809,7 @@ See also: balance, dare, eig, schur\n\
       else
 	{
 #ifdef DEBUG
-	  cout << "qz: computing  generalized eigenvectors" << endl;
+	  std::cout << "qz: computing  generalized eigenvectors" << endl;
 #endif
 
 	  VL = QQ;
@@ -889,9 +889,9 @@ See also: balance, dare, eig, schur\n\
       if (nargin == 3)
 	{
 #ifdef DEBUG
-	  cout << "qz: sort: retval(3) = gev = " << endl;
-	  octave_print_internal (cout, gev);
-	  cout << endl;
+	  std::cout << "qz: sort: retval(3) = gev = " << endl;
+	  octave_print_internal (std::cout, gev);
+	  std::cout << endl;
 #endif
 	  retval(3) = gev;
 	}
@@ -906,11 +906,11 @@ See also: balance, dare, eig, schur\n\
 
     case 2:
 #ifdef DEBUG
-      cout << "qz: retval (1) = bb = " << endl;
-      octave_print_internal (cout, bb, 0);
-      cout << endl << "qz: retval(0) = aa = " <<endl;
-      octave_print_internal (cout, aa, 0);
-      cout << endl;
+      std::cout << "qz: retval (1) = bb = " << endl;
+      octave_print_internal (std::cout, bb, 0);
+      std::cout << endl << "qz: retval(0) = aa = " <<endl;
+      octave_print_internal (std::cout, aa, 0);
+      std::cout << endl;
 #endif
       retval(1) = bb;
       retval(0) = aa;
@@ -919,7 +919,7 @@ See also: balance, dare, eig, schur\n\
     case 1:
     case 0:
 #ifdef DEBUG
-      cout << "qz: retval(0) = gev = " << gev << endl;
+      std::cout << "qz: retval(0) = gev = " << gev << endl;
 #endif
       retval(0) = gev;
       break;
@@ -930,7 +930,7 @@ See also: balance, dare, eig, schur\n\
   }
 
 #ifdef DEBUG
-  cout << "qz: exiting (at long last)" << endl;
+  std::cout << "qz: exiting (at long last)" << endl;
 #endif
 
   return retval;

@@ -494,20 +494,22 @@ scanf_format_list::printme (void) const
     {
       scanf_format_elt *elt = list(i);
 
-      cerr << "width:      " << elt->width << "\n"
-	   << "discard:    " << elt->discard << "\n"
-	   << "type:       ";
+      std::cerr
+	<< "width:      " << elt->width << "\n"
+	<< "discard:    " << elt->discard << "\n"
+	<< "type:       ";
 
       if (elt->type == scanf_format_elt::literal_conversion)
-	cerr << "literal text\n";
+	std::cerr << "literal text\n";
       else if (elt->type == scanf_format_elt::whitespace_conversion)
-	cerr << "whitespace\n";
+	std::cerr << "whitespace\n";
       else
-	cerr << elt->type << "\n";
+	std::cerr << elt->type << "\n";
 
-      cerr << "modifier:   " << elt->modifier << "\n"
-	   << "char_class: `" << undo_string_escapes (elt->char_class) << "'\n"
-	   << "text:       `" << undo_string_escapes (elt->text) << "'\n\n";
+      std::cerr
+	<< "modifier:   " << elt->modifier << "\n"
+	<< "char_class: `" << undo_string_escapes (elt->char_class) << "'\n"
+	<< "text:       `" << undo_string_escapes (elt->text) << "'\n\n";
     }
 }
 
@@ -816,10 +818,10 @@ printf_format_list::printme (void) const
     {
       printf_format_elt *elt = list(i);
 
-      cerr << elt->args<< "\t"
-	   << elt->type << "\t"
-	   << elt->modifier << "\t"
-	   << undo_string_escapes (elt->text) << "\n";
+      std::cerr << elt->args<< "\t"
+		<< elt->type << "\t"
+		<< elt->modifier << "\t"
+		<< undo_string_escapes (elt->text) << "\n";
     }
 }
 
@@ -2990,7 +2992,8 @@ octave_stream_list::do_remove (int fid, const std::string& who)
 {
   int retval = -1;
 
-  // Can't remove stdin (cin), stdout (cout), or stderr (cerr).
+  // Can't remove stdin (std::cin), stdout (std::cout), or stderr
+  // (std::cerr).
 
   if (fid > 2 && fid < curr_len)
     {
@@ -3152,7 +3155,8 @@ octave_stream_list::do_get_file_number (const octave_value& fid) const
     {
       std::string nm = fid.string_value ();
 
-      // stdin (cin), stdout (cout), and stderr (cerr) are unnamed.
+      // stdin (std::cin), stdout (std::cout), and stderr (std::cerr)
+      // are unnamed.
 
       for (int i = 3; i < curr_len; i++)
 	{

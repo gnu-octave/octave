@@ -162,11 +162,15 @@ octave_procbuf::sys_close (void)
   if (status < 0 || ::close (fd ()) < 0)
     return -1;
 
-  do
-    {
-      wait_pid = ::waitpid (proc_pid, &wstatus, 0);
-    }
-  while (wait_pid == -1 && errno == EINTR);
+  {
+    using namespace std;
+
+    do
+      {
+	wait_pid = ::waitpid (proc_pid, &wstatus, 0);
+      }
+    while (wait_pid == -1 && errno == EINTR);
+  }
 
   if (wait_pid == -1)
     return -1;

@@ -48,7 +48,11 @@ octave_fstream::octave_fstream (const std::string& nm_arg,
   fs.open (nm.c_str (), md, 0666);
 
   if (! fs)
-    error (strerror (errno));
+    {
+      using namespace std;
+
+      error (strerror (errno));
+    }
 }
 
 // Position a stream at OFFSET relative to ORIGIN.

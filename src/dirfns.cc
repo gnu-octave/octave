@@ -73,7 +73,11 @@ octave_change_to_directory (const std::string& newdir)
   if (cd_ok)
     do_external_plotter_cd (newdir);
   else
-    error ("%s: %s", newdir.c_str (), strerror (errno));
+    {
+      using namespace std;
+
+      error ("%s: %s", newdir.c_str (), strerror (errno));
+    }
 
   return cd_ok;
 }

@@ -108,7 +108,7 @@ pager_death_handler (pid_t pid, int status)
 	  // Avoid warning() or error(), since that will put us back in
 	  // the pager, which would be bad news.
 
-	  cerr << "warning: connection to external pager (pid = "
+	  std::cerr << "warning: connection to external pager (pid = "
 	       << pid << ") lost --\n"
 	       << "warning: attempting to finish pending computations...\n";
 	}
@@ -122,8 +122,8 @@ do_sync (const char *msg, int len, bool bypass_pager)
     {
       if (bypass_pager)
 	{
-	  cout.write (msg, len);
-	  cout.flush ();
+	  std::cout.write (msg, len);
+	  std::cout.flush ();
 	}
       else
 	{
@@ -178,8 +178,8 @@ do_sync (const char *msg, int len, bool bypass_pager)
 	    }
 	  else
 	    {
-	      cout.write (msg, len);
-	      cout.flush ();
+	      std::cout.write (msg, len);
+	      std::cout.flush ();
 	    }
 	}
     }

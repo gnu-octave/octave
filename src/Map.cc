@@ -104,7 +104,7 @@ template <class C>
 void
 Map<C>::error (const std::string& msg) const
 {
-  cerr << "Map: " << msg << "\n";
+  std::cerr << "Map: " << msg << "\n";
 }
 
 // CHMap class.

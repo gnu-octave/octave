@@ -101,25 +101,24 @@ extern int f77_exception_encountered;
 // XXX FIXME XXX -- these should work for SV1 or Y-MP systems but will
 // need to be changed for others.
 
-union octave_cray_descriptor
+typedef union
 {
-  union
-  {
-    const char *const_ptr;
-    const char *ptr;
-  };
+  const char *const_ptr;
+  char *ptr;
   struct
   {
     unsigned off : 6;
     unsigned len : 26;
     unsigned add : 32;
   } mask;
-};
+} octave_cray_descriptor;
 
 typedef void *octave_cray_ftn_ch_dsc;
 
 #ifdef __cplusplus
 #define OCTAVE_F77_FCN_INLINE inline
+#else
+#define OCTAVE_F77_FCN_INLINE
 #endif
 
 static OCTAVE_F77_FCN_INLINE octave_cray_ftn_ch_dsc
@@ -128,7 +127,7 @@ octave_make_cray_ftn_ch_dsc (char *ptr_arg, unsigned long len_arg)
   octave_cray_descriptor desc;
   desc.ptr = ptr_arg;
   desc.mask.len = len_arg << 3;
-  return *((octave_cray_fortran_character_descriptor *) &f);
+  return *((octave_cray_ftn_ch_dsc *) &desc);
 }
 
 static OCTAVE_F77_FCN_INLINE octave_cray_ftn_ch_dsc
@@ -137,7 +136,7 @@ octave_make_cray_const_ftn_ch_dsc (const char *ptr_arg, unsigned long len_arg)
   octave_cray_descriptor desc;
   desc.const_ptr = ptr_arg;
   desc.mask.len = len_arg << 3;
-  return *((octave_cray_fcd *) &f);
+  return *((octave_cray_ftn_ch_dsc *) &desc);
 }
 
 #ifdef __cplusplus

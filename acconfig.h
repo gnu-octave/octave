@@ -43,6 +43,14 @@
 /* Define if you have termio.h. */
 #undef HAVE_TERMIO_H
 
+/* Define if your system stores doubles in IEEE format with the most
+   significant byte first. */
+#undef IEEE_BIG_ENDIAN
+
+/* Define if your system stores doubles in IEEE format with the least
+   significant byte first. */
+#undef IEEE_LITTLE_ENDIAN
+
 /* Define if you don't have NPSOL. */
 #undef NPSOL_MISSING
 
@@ -61,6 +69,12 @@
 
 /* Define if using dld for dynamic linking of object files. */
 #undef WITH_DLD
+
+/* Define if your system stores doubles in the VAX D format. */
+#undef VAX_D_FLOAT
+
+/* Define if your system stores doubles in the VAX G format. */
+#undef VAX_G_FLOAT
 
 
 /* Leave that blank line there!!  Autoheader needs it.

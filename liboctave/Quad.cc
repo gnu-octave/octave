@@ -66,6 +66,7 @@ Quad::Quad (integrand_fcn fcn)
 }
 
 Quad::Quad (integrand_fcn fcn, double abs, double rel)
+  : Quad_options (abs, rel)
 {
   f = fcn;
 }
@@ -266,6 +267,12 @@ IndefQuad::integrate (int& ier, int& neval, double& abserr)
 Quad_options::Quad_options (void)
 {
   init ();
+}
+
+Quad_options::Quad_options (double abs, double rel)
+{
+  x_absolute_tolerance = abs;
+  x_relative_tolerance = rel;
 }
 
 Quad_options::Quad_options (const Quad_options& opt)

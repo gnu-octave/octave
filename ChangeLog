@@ -1,3 +1,12 @@
+Fri Nov 28 23:21:17 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in (AC_OUTPUT): Include libcruft/specfun/Makefile.
+
+Fri Nov 28 13:32:26 1997  Kurt Hornik  <Kurt.Hornik@ci.tuwien.ac.at>
+
+	* octave-inf.el (inferior-octave-directory-tracker):  Anchor
+	regexp match to beginning of command string.
+
 Wed Nov 26 00:38:31 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in (SPECIAL_MATH_LIB): If libdxml exists on DU

@@ -118,18 +118,6 @@ private:
   tree_constant all (void) const;
   tree_constant any (void) const;
 
-  int is_scalar_type (void) const
-    {
-      return (type_tag == scalar_constant
-	      || type_tag == complex_scalar_constant);
-    }
-
-  int is_matrix_type (void) const
-    {
-      return (type_tag == matrix_constant
-	      || type_tag == complex_matrix_constant);
-    }
-
   int is_real_type (void) const
     {
       return (type_tag == scalar_constant
@@ -142,6 +130,20 @@ private:
     {
       return (type_tag == complex_matrix_constant
 	      || type_tag == complex_scalar_constant);
+    }
+
+// Would be nice to get rid of the next four functions:
+
+  int is_scalar_type (void) const
+    {
+      return (type_tag == scalar_constant
+	      || type_tag == complex_scalar_constant);
+    }
+
+  int is_matrix_type (void) const
+    {
+      return (type_tag == matrix_constant
+	      || type_tag == complex_matrix_constant);
     }
 
   int is_numeric_type (void) const

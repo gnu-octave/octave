@@ -34,7 +34,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <sys/stat.h>
 #include <time.h>
 #include <pwd.h>
-#include <setjmp.h>
 #include <stdlib.h>
 #include <string.h>
 #include <signal.h>
@@ -42,6 +41,11 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <iostream.h>
 #include <strstream.h>
 #include <fstream.h>
+
+extern "C"
+{
+#include <setjmp.h>
+}
 
 #include "getopt.h"
 
@@ -469,6 +473,8 @@ main (int argc, char **argv)
 
   initialize_pager ();
 
+  install_signal_handlers ();
+
   initialize_history ();
 
   initialize_file_io ();
@@ -478,8 +484,6 @@ main (int argc, char **argv)
   install_builtins ();
 
   initialize_readline ();
-
-  install_signal_handlers ();
 
   if (! inhibit_startup_message)
     cout << "Octave, version " << version_string
@@ -738,13 +742,13 @@ eval_string (const char *string, int print, int ans_assign,
 tree_constant
 eval_string (const tree_constant& arg, int& parse_status)
 {
-  if (! arg.is_string ())
+  char *string = arg.string_value ();
+
+  if (error_state)
     {
       error ("eval: expecting string argument");
       return -1;
     }
-
-  char *string = arg.string_value ();
 
 // Yes Virginia, we always print here...
 
@@ -786,9 +790,15 @@ DEFUN ("shell_cmd", Fshell_cmd, Sshell_cmd, 2, 1,
 
   tree_constant tc_command = args(1);
 
-  if (tc_command.is_string ())
+  char *tmp_str = tc_command.string_value ();
+
+  if (error_state)
     {
-      iprocstream cmd (tc_command.string_value ());
+      error ("shell_cmd: expecting string as first argument");
+    }
+  else
+    {
+      iprocstream cmd (tmp_str);
 
       ostrstream output_buf;
 
@@ -812,8 +822,6 @@ DEFUN ("shell_cmd", Fshell_cmd, Sshell_cmd, 2, 1,
       else
 	maybe_page_output (output_buf);
     }
-  else
-    error ("shell_cmd: expecting string as first argument");
 
   return retval;
 }

@@ -31,6 +31,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "user-prefs.h"
 #include "error.h"
 #include "gripes.h"
+#include "utils.h"
 #include "help.h"
 #include "defun-dld.h"
 
@@ -41,94 +42,20 @@ DEFUN_DLD ("logm", Flogm, Slogm, 2, 1,
 {
   Octave_object retval;
 
-  int nargin = args.length ();
-
-  if (nargin != 2)
+  if (args.length () != 2)
     {
       print_usage ("logm");
       return retval;
     }
 
-  tree_constant tmp = args(1).make_numeric ();;
+  tree_constant arg = args(1);
     
-  if (tmp.rows () == 0 || tmp.columns () == 0)
+  if (empty_arg ("logm", arg.rows (), arg.columns ()) < 0)
+    return retval;
+
+  if (arg.is_real_scalar ())
     {
-      int flag = user_pref.propagate_empty_matrices;
-      if (flag != 0)
-	{
-	  if (flag < 0)
-	    gripe_empty_arg ("logm", 0);
-
-	  retval.resize (1, Matrix ());
-	  return retval;
-	}
-      else
-	gripe_empty_arg ("logm", 1);
-    }
-
-  if (tmp.is_real_matrix ())
-    {
-      Matrix m = tmp.matrix_value ();
-
-      int nr = m.rows ();
-      int nc = m.columns ();
-
-      if (nr == 0 || nc == 0 || nr != nc)
-	gripe_square_matrix_required ("logm");
-      else
-	{
-	  EIG m_eig (m);
-	  ComplexColumnVector lambda (m_eig.eigenvalues ());
-	  ComplexMatrix Q (m_eig.eigenvectors ());
-
-	  for (int i = 0; i < nr; i++)
-	    {
-	      Complex elt = lambda.elem (i);
-	      if (imag (elt) == 0.0 && real (elt) > 0.0)
-		lambda.elem (i) = log (real (elt));
-	      else
-		lambda.elem (i) = log (elt);
-	    }
-
-	  ComplexDiagMatrix D (lambda);
-	  ComplexMatrix result = Q * D * Q.inverse ();
-
-	  retval(0) = result;
-	}
-    }
-  else if (tmp.is_complex_matrix ())
-    {
-      ComplexMatrix m = tmp.complex_matrix_value ();
-
-      int nr = m.rows ();
-      int nc = m.columns ();
-
-      if (nr == 0 || nc == 0 || nr != nc)
-	gripe_square_matrix_required ("logm");
-      else
-	{
-	  EIG m_eig (m);
-	  ComplexColumnVector lambda (m_eig.eigenvalues ());
-	  ComplexMatrix Q (m_eig.eigenvectors ());
-
-	  for (int i = 0; i < nr; i++)
-	    {
-	      Complex elt = lambda.elem (i);
-	      if (imag (elt) == 0.0 && real (elt) > 0.0)
-		lambda.elem (i) = log (real (elt));
-	      else
-		lambda.elem (i) = log (elt);
-	    }
-
-	  ComplexDiagMatrix D (lambda);
-	  ComplexMatrix result = Q * D * Q.inverse ();
-
-	  retval(0) = result;
-	}
-    }
-  else if (tmp.is_real_scalar ())
-    {
-      double d = tmp.double_value ();
+      double d = arg.double_value ();
       if (d > 0.0)
 	retval(0) = log (d);
       else
@@ -137,14 +64,80 @@ DEFUN_DLD ("logm", Flogm, Slogm, 2, 1,
 	  retval(0) = log (dtmp);
 	}
     }
-  else if (tmp.is_complex_scalar ())
+  else if (arg.is_complex_scalar ())
     {
-      Complex c = tmp.complex_value ();
+      Complex c = arg.complex_value ();
       retval(0) = log (c);
+    }
+  else if (arg.is_real_type ())
+    {
+      Matrix m = arg.matrix_value ();
+
+      if (! error_state)
+	{
+	  int nr = m.rows ();
+	  int nc = m.columns ();
+
+	  if (nr == 0 || nc == 0 || nr != nc)
+	    gripe_square_matrix_required ("logm");
+	  else
+	    {
+	      EIG m_eig (m);
+	      ComplexColumnVector lambda (m_eig.eigenvalues ());
+	      ComplexMatrix Q (m_eig.eigenvectors ());
+
+	      for (int i = 0; i < nr; i++)
+		{
+		  Complex elt = lambda.elem (i);
+		  if (imag (elt) == 0.0 && real (elt) > 0.0)
+		    lambda.elem (i) = log (real (elt));
+		  else
+		    lambda.elem (i) = log (elt);
+		}
+
+	      ComplexDiagMatrix D (lambda);
+	      ComplexMatrix result = Q * D * Q.inverse ();
+
+	      retval(0) = result;
+	    }
+	}
+    }
+  else if (arg.is_complex_type ())
+    {
+      ComplexMatrix m = arg.complex_matrix_value ();
+
+      if (! error_state)
+	{
+	  int nr = m.rows ();
+	  int nc = m.columns ();
+
+	  if (nr == 0 || nc == 0 || nr != nc)
+	    gripe_square_matrix_required ("logm");
+	  else
+	    {
+	      EIG m_eig (m);
+	      ComplexColumnVector lambda (m_eig.eigenvalues ());
+	      ComplexMatrix Q (m_eig.eigenvectors ());
+
+	      for (int i = 0; i < nr; i++)
+		{
+		  Complex elt = lambda.elem (i);
+		  if (imag (elt) == 0.0 && real (elt) > 0.0)
+		    lambda.elem (i) = log (real (elt));
+		  else
+		    lambda.elem (i) = log (elt);
+		}
+
+	      ComplexDiagMatrix D (lambda);
+	      ComplexMatrix result = Q * D * Q.inverse ();
+
+	      retval(0) = result;
+	    }
+	}
     }
   else
     {
-      gripe_wrong_type_arg ("logm", tmp);
+      gripe_wrong_type_arg ("logm", arg);
     }
 
   return retval;
@@ -155,94 +148,20 @@ DEFUN_DLD ("sqrtm", Fsqrtm, Ssqrtm, 2, 1,
 {
   Octave_object retval;
 
-  int nargin = args.length ();
-
-  if (nargin != 2)
+  if (args.length () != 2)
     {
       print_usage ("sqrtm");
       return retval;
     }
 
-  tree_constant tmp = args(1).make_numeric ();;
+  tree_constant arg = args(1);
     
-  if (tmp.rows () == 0 || tmp.columns () == 0)
+  if (empty_arg ("sqrtm", arg.rows (), arg.columns ()))
+    return retval;
+
+  if (arg.is_real_scalar ())
     {
-      int flag = user_pref.propagate_empty_matrices;
-      if (flag != 0)
-	{
-	  if (flag < 0)
-	    gripe_empty_arg ("sqrtm", 0);
-
-	  retval.resize (1, Matrix ());
-	  return retval;
-	}
-      else
-	gripe_empty_arg ("sqrtm", 1);
-    }
-
-  if (tmp.is_real_matrix ())
-    {
-      Matrix m = tmp.matrix_value ();
-
-      int nr = m.rows ();
-      int nc = m.columns ();
-
-      if (nr == 0 || nc == 0 || nr != nc)
-	gripe_square_matrix_required ("sqrtm");
-      else
-	{
-	  EIG m_eig (m);
-	  ComplexColumnVector lambda (m_eig.eigenvalues ());
-	  ComplexMatrix Q (m_eig.eigenvectors ());
-
-	  for (int i = 0; i < nr; i++)
-	    {
-	      Complex elt = lambda.elem (i);
-	      if (imag (elt) == 0.0 && real (elt) > 0.0)
-		lambda.elem (i) = sqrt (real (elt));
-	      else
-		lambda.elem (i) = sqrt (elt);
-	    }
-
-	  ComplexDiagMatrix D (lambda);
-	  ComplexMatrix result = Q * D * Q.inverse ();
-
-	  retval(0) = result;
-	}
-    }
-  else if (tmp.is_complex_matrix ())
-    {
-      ComplexMatrix m = tmp.complex_matrix_value ();
-
-      int nr = m.rows ();
-      int nc = m.columns ();
-
-      if (nr == 0 || nc == 0 || nr != nc)
-	gripe_square_matrix_required ("sqrtm");
-      else
-	{
-	  EIG m_eig (m);
-	  ComplexColumnVector lambda (m_eig.eigenvalues ());
-	  ComplexMatrix Q (m_eig.eigenvectors ());
-
-	  for (int i = 0; i < nr; i++)
-	    {
-	      Complex elt = lambda.elem (i);
-	      if (imag (elt) == 0.0 && real (elt) > 0.0)
-		lambda.elem (i) = sqrt (real (elt));
-	      else
-		lambda.elem (i) = sqrt (elt);
-	    }
-
-	  ComplexDiagMatrix D (lambda);
-	  ComplexMatrix result = Q * D * Q.inverse ();
-
-	  retval(0) = result;
-	}
-    }
-  else if (tmp.is_real_scalar ())
-    {
-      double d = tmp.double_value ();
+      double d = arg.double_value ();
       if (d > 0.0)
 	retval(0) = sqrt (d);
       else
@@ -251,14 +170,80 @@ DEFUN_DLD ("sqrtm", Fsqrtm, Ssqrtm, 2, 1,
 	  retval(0) = sqrt (dtmp);
 	}
     }
-  else if (tmp.is_complex_scalar ())
+  else if (arg.is_complex_scalar ())
     {
-      Complex c = tmp.complex_value ();
+      Complex c = arg.complex_value ();
       retval(0) = log (c);
+    }
+  else if (arg.is_real_type ())
+    {
+      Matrix m = arg.matrix_value ();
+
+      if (! error_state)
+	{
+	  int nr = m.rows ();
+	  int nc = m.columns ();
+
+	  if (nr == 0 || nc == 0 || nr != nc)
+	    gripe_square_matrix_required ("sqrtm");
+	  else
+	    {
+	      EIG m_eig (m);
+	      ComplexColumnVector lambda (m_eig.eigenvalues ());
+	      ComplexMatrix Q (m_eig.eigenvectors ());
+
+	      for (int i = 0; i < nr; i++)
+		{
+		  Complex elt = lambda.elem (i);
+		  if (imag (elt) == 0.0 && real (elt) > 0.0)
+		    lambda.elem (i) = sqrt (real (elt));
+		  else
+		    lambda.elem (i) = sqrt (elt);
+		}
+
+	      ComplexDiagMatrix D (lambda);
+	      ComplexMatrix result = Q * D * Q.inverse ();
+
+	      retval(0) = result;
+	    }
+	}
+    }
+  else if (arg.is_complex_type ())
+    {
+      ComplexMatrix m = arg.complex_matrix_value ();
+
+      if (! error_state)
+	{
+	  int nr = m.rows ();
+	  int nc = m.columns ();
+
+	  if (nr == 0 || nc == 0 || nr != nc)
+	    gripe_square_matrix_required ("sqrtm");
+	  else
+	    {
+	      EIG m_eig (m);
+	      ComplexColumnVector lambda (m_eig.eigenvalues ());
+	      ComplexMatrix Q (m_eig.eigenvectors ());
+
+	      for (int i = 0; i < nr; i++)
+		{
+		  Complex elt = lambda.elem (i);
+		  if (imag (elt) == 0.0 && real (elt) > 0.0)
+		    lambda.elem (i) = sqrt (real (elt));
+		  else
+		    lambda.elem (i) = sqrt (elt);
+		}
+
+	      ComplexDiagMatrix D (lambda);
+	      ComplexMatrix result = Q * D * Q.inverse ();
+
+	      retval(0) = result;
+	    }
+	}
     }
   else
     {
-      gripe_wrong_type_arg ("sqrtm", tmp);
+      gripe_wrong_type_arg ("sqrtm", arg);
     }
 
   return retval;

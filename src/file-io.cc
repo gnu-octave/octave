@@ -190,41 +190,43 @@ return_valid_file (const tree_constant& arg)
 	  file_list.next (p);
 	}
     }
-  else if (arg.is_scalar_type ())
+  else
     {
       double file_num = arg.double_value ();
-      if ((double) NINT (file_num) != file_num)
-	error ("file number not an integer value");
-      else
+
+      if (! error_state)
 	{
-	  Pix p = file_list.first ();
-	  file_info file;
-	  for (int i = 0; i < file_count; i++)
+	  if ((double) NINT (file_num) != file_num)
+	    error ("file number not an integer value");
+	  else
 	    {
-	      file = file_list (p);
-	      if (file.number () == file_num)
-		return p;
-	      file_list.next (p);
+	      Pix p = file_list.first ();
+	      file_info file;
+	      for (int i = 0; i < file_count; i++)
+		{
+		  file = file_list (p);
+		  if (file.number () == file_num)
+		    return p;
+		  file_list.next (p);
+		}
+	      error ("no file with that number");
 	    }
-	  error ("no file with that number");
 	}
-      }
-    else
-      error ("inapproriate file specifier");
+      else
+	error ("inapproriate file specifier");
+    }
 
   return 0;
 }
 
 static Pix 
-fopen_file_for_user (const tree_constant& arg, const char *mode,
+fopen_file_for_user (const char *name, const char *mode,
 		     const char *warn_for)
 {
-  char *file_name = arg.string_value ();
-
-  FILE *file_ptr = fopen (file_name, mode);
+  FILE *file_ptr = fopen (name, mode);
   if (file_ptr)
     {
-      file_info file (++file_count, file_name, file_ptr, mode);
+      file_info file (++file_count, name, file_ptr, mode);
       file_list.append (file);
       
       Pix p = file_list.first ();
@@ -233,19 +235,19 @@ fopen_file_for_user (const tree_constant& arg, const char *mode,
       for (int i = 0; i < file_count; i++)
 	{
 	  file_from_list = file_list (p);
-	  if (strcmp (file_from_list.name (), file_name) == 0)
+	  if (strcmp (file_from_list.name (), name) == 0)
 	    return p;
 	  file_list.next (p);
 	}
     }
 
-  error ("%s: unable to open file `%s'", warn_for, file_name);
+  error ("%s: unable to open file `%s'", warn_for, name);
 
   return 0;
 }
 
 static Pix
-file_io_get_file (const tree_constant arg, const char *mode,
+file_io_get_file (const tree_constant& arg, const char *mode,
 		  const char *warn_for)
 {
   Pix p = return_valid_file (arg);
@@ -262,12 +264,12 @@ file_io_get_file (const tree_constant arg, const char *mode,
 	  if (status == 0)
 	    {
 	      if ((buffer.st_mode & S_IFREG) == S_IFREG)
-		p = fopen_file_for_user (arg, mode, warn_for);
+		p = fopen_file_for_user (name, mode, warn_for);
 	      else
 		error ("%s: invalid file type", warn_for);
 	    }
 	  else if (status < 0 && *mode != 'r')
-	    p = fopen_file_for_user (arg, mode, warn_for);
+	    p = fopen_file_for_user (name, mode, warn_for);
 	  else
 	    error ("%s: can't stat file `%s'", warn_for, name);
 	}
@@ -315,13 +317,12 @@ fclose_internal (const Octave_object& args)
   file_list.del (p);
   file_count--;
 
-  retval.resize (1);
   if (success == 0)
-    retval(0) = tree_constant (1.0); // succeeded
+    retval(0) = 1.0; // succeeded
   else
     {
       error ("fclose: error on closing file");
-      retval(0) = tree_constant (0.0); // failed
+      retval(0) = 0.0; // failed
     }
 
   return retval;
@@ -367,13 +368,12 @@ fflush_internal (const Octave_object& args)
   else
     success = fflush (file.fptr ());
 
-  retval.resize (1);
   if (success == 0)
-    retval(0) = tree_constant (1.0); // succeeded
+    retval(0) = 1.0; // succeeded
   else
     {
       error ("fflush: write error");
-      retval(0) = tree_constant (0.0); // failed
+      retval(0) = 0.0; // failed
     }
 
   return retval;
@@ -421,38 +421,35 @@ fgets_internal (const Octave_object& args, int nargout)
   if (! p)
     return retval;
 
-  int length = 0;
-  if (args(2).is_scalar_type ())
+
+  double dlen = args(2).double_value ();
+
+  if (error_state)
+    return retval;
+
+  int length = NINT (dlen);
+
+  if ((double) length != dlen)
     {
-      length = (int) args(2).double_value ();
-      if ((double) NINT (length) != length)
-	{
-	  error ("fgets: length not an integer value");
-	  return retval;
-	}
+      error ("fgets: length not an integer value");
+      return retval;
     }
 
   file_info file = file_list (p);
 
-  char string[length+1];
+  char string [length+1];
   char *success = fgets (string, length+1, file.fptr ());
 
   if (! success)
     {
-      retval.resize (1);
-      retval(0) = tree_constant (-1.0);
+      retval(0) = -1.0;
       return retval;
     }
 
   if (nargout == 2)
-    {
-      retval.resize (2);
-      retval(1) = tree_constant ((double) strlen (string));
-    }
-  else
-    retval.resize (1);
+    retval(1) = (double) strlen (string);
 
-  retval(0) = tree_constant (string);
+  retval(0) = string;
 
   return retval;
 }
@@ -500,8 +497,7 @@ fopen_internal (const Octave_object& args)
     {
       file_info file = file_list (p);
 
-      retval.resize (1);
-      retval(0) = tree_constant ((double) file.number ());
+      retval(0) = (double) file.number ();
 
       return retval;
     }
@@ -541,8 +537,7 @@ fopen_internal (const Octave_object& args)
   file_info file (number, name, file_ptr, mode);
   file_list.append (file);
 
-  retval.resize (1);
-  retval(0) = tree_constant ((double) number);
+  retval(0) = (double) number;
 
   return retval;
 }
@@ -646,44 +641,55 @@ fseek_internal (const Octave_object& args)
     return retval;
 
   long origin = SEEK_SET;
-  long offset = 0;
-  if (args(2).is_scalar_type ())
+
+  double doff = args(2).double_value ();
+
+  if (error_state)
+    return retval;
+
+  long offset = NINT (doff);
+
+  if ((double) offset != doff)
     {
-      offset = (long) args(2).double_value ();
-      if ((double) NINT (offset) != offset)
-	{
-	  error ("fseek: offset not an integer value");
-	  return retval;
-	}
+      error ("fseek: offset not an integer value");
+      return retval;
     }
 
-  if (nargin == 4 && args(3).is_scalar_type ())
+  if (nargin == 4)
     {
-      origin = (long) args(3).double_value ();
+      double dorig = args(3).double_value ();
+
+      if (error_state)
+	return retval;
+
+      origin = NINT (dorig);
+
+      if ((double) dorig != origin)
+	{
+	  error ("fseek: origin not an integer value");
+	  return retval;
+	}
+
       if (origin == -1)
 	origin = SEEK_CUR;
       else if (origin == -2)
 	origin = SEEK_END;
       else
 	{
-	  if ((double) NINT (origin) != origin)
-	    {
-	      error ("fseek: origin not an integer value");
-	      return retval;
-	    }
+	  error ("fseek: invalid value for origin");
+	  return retval;
 	}
     }
 
   file_info file = file_list (p);
   int success = fseek (file.fptr (), offset, origin);
-  retval.resize (1);
 
   if (success == 0)
-    retval(0) = tree_constant (1.0); // succeeded
+    retval(0) = 1.0; // succeeded
   else
     {
       error ("fseek: file error");
-      retval(0) = tree_constant (0.0); // failed
+      retval(0) = 0.0; // failed
     }
 
   return retval;
@@ -718,8 +724,8 @@ ftell_internal (const Octave_object& args)
     {
       file_info file = file_list (p);
       long offset = ftell (file.fptr ());
-      retval.resize (1);
-      retval(0) = tree_constant ((double) offset);
+
+      retval(0) = (double) offset;
 
       if (offset == -1L)
 	error ("ftell: write error");
@@ -781,13 +787,15 @@ process_printf_format (const char *s, const Octave_object& args,
 	  return -1;
 	}
 
-      if (! args(fmt_arg_count).is_scalar_type ())
+      double tmp_len = args(fmt_arg_count++).double_value ();
+
+      if (error_state)
 	{
 	  error ("%s: `*' must be replaced by an integer", type);
 	  return -1;
 	}
 
-      fmt << NINT (args(fmt_arg_count++).double_value ());
+      fmt << NINT (tmp_len);
       s++;
       chars_from_fmt_str++;
     }
@@ -820,13 +828,15 @@ process_printf_format (const char *s, const Octave_object& args,
 	  return -1;
 	}
 
-      if (! args(fmt_arg_count).is_scalar_type ())
+      double tmp_len = args(fmt_arg_count++).double_value ();
+
+      if (error_state)
 	{
 	  error ("%s: `*' must be replaced by an integer", type);
 	  return -1;
 	}
 
-      fmt << NINT (args(fmt_arg_count++).double_value ());
+      fmt << NINT (tmp_len);
       s++;
       chars_from_fmt_str++;
     }
@@ -860,72 +870,74 @@ process_printf_format (const char *s, const Octave_object& args,
   switch (*s)
     {
     case 'd': case 'i': case 'o': case 'u': case 'x': case 'X':
+      {
+	double d = args(fmt_arg_count++).double_value ();
 
-      if (! args(fmt_arg_count).is_scalar_type ())
-	goto invalid_conversion;
-      else
-	{
-	  chars_from_fmt_str++;
-	  fmt << *s << ends;
-	  double d = args(fmt_arg_count++).double_value ();
-	  if ((int) d != d)
-	    goto invalid_conversion;
-	  else
-	    {
-	      char *s = fmt.str ();
-	      sb.form (s, (int) d);
-	      delete [] s;
-	      return chars_from_fmt_str;
-	    }
-	}
+	int val = NINT (d);
+
+	if (error_state || (double) val != d)
+	  goto invalid_conversion;
+	else
+	  {
+	    chars_from_fmt_str++;
+	    fmt << *s << ends;
+	    char *tmp_fmt = fmt.str ();
+	    sb.form (tmp_fmt, val);
+	    delete [] tmp_fmt;
+	    return chars_from_fmt_str;
+	  }
+      }
 
     case 'e': case 'E': case 'f': case 'g': case 'G':
+      {
+	double val = args(fmt_arg_count++).double_value ();
 
-      if (! args(fmt_arg_count).is_scalar_type ())
-	goto invalid_conversion;
-      else
-	{
-	  chars_from_fmt_str++;
-	  fmt << *s << ends;
-	  char *s = fmt.str ();
-	  sb.form (s, args(fmt_arg_count++).double_value ());
-	  delete [] s;
-	  return chars_from_fmt_str;
-	}
+	if (error_state)
+	  goto invalid_conversion;
+	else
+	  {
+	    chars_from_fmt_str++;
+	    fmt << *s << ends;
+	    char *tmp_fmt = fmt.str ();
+	    sb.form (tmp_fmt, val);
+	    delete [] tmp_fmt;
+	    return chars_from_fmt_str;
+	  }
+      }
 
     case 's':
+      {
+	char *val = args(fmt_arg_count++).string_value ();
 
-      if (! args(fmt_arg_count).is_string ())
-	goto invalid_conversion;
-      else
-	{
-	  chars_from_fmt_str++;
-	  fmt << *s << ends;
-	  char *s = fmt.str ();
-	  sb.form (s, args(fmt_arg_count++).string_value ());
-	  delete [] s;
-	  return chars_from_fmt_str;
-	}
+	if (error_state)
+	  goto invalid_conversion;
+	else
+	  {
+	    chars_from_fmt_str++;
+	    fmt << *s << ends;
+	    char *tmp_fmt = fmt.str ();
+	    sb.form (tmp_fmt, val);
+	    delete [] tmp_fmt;
+	    return chars_from_fmt_str;
+	  }
+      }
 
     case 'c':
+      {
+	char *val = args(fmt_arg_count++).string_value ();
 
-      if (! args(fmt_arg_count).is_string ())
-	goto invalid_conversion;
-      else
-	{
-	  chars_from_fmt_str++;
-	  fmt << *s << ends;
-	  char *str = args(fmt_arg_count++).string_value ();
-	  if (strlen (str) != 1)
-	    goto invalid_conversion;
-	  else
-	    {
-	      char *s = fmt.str ();
-	      sb.form (s, *str);
-	      delete [] s;
-	      return chars_from_fmt_str;
-	    }
-	}
+	if (error_state || strlen (val) != 1)
+	  goto invalid_conversion;
+	else
+	  {
+	    chars_from_fmt_str++;
+	    fmt << *s << ends;
+	    char *tmp_fmt = fmt.str ();
+	    sb.form (tmp_fmt, *val);
+	    delete [] tmp_fmt;
+	    return chars_from_fmt_str;
+	  }
+      }
 
     default:
       goto invalid_format;
@@ -1005,17 +1017,6 @@ do_printf (const char *type, const Octave_object& args, int nargout)
 
   if (strcmp (type, "fprintf") == 0)
     {
-      if (args(2).is_string ())
-	{
-	  fmt = args(2).string_value ();
-	  fmt_arg_count++;
-	}
-      else
-	{
-	  error ("%s: format must be a string", type);
-	  return retval;
-	}
-
       Pix p = file_io_get_file (args(1), "a+", type);
 
       if (! p)
@@ -1031,17 +1032,25 @@ do_printf (const char *type, const Octave_object& args, int nargout)
 
       fmt = args(2).string_value ();
 
-      fmt_arg_count++;
-    }
-  else if (args(1).is_string ())
-    {
-      fmt = args(1).string_value ();
-      fmt_arg_count++;
+      if (error_state)
+	{
+	  error ("%s: format must be a string", type);
+	  return retval;
+	}
+
+      fmt_arg_count += 2;
     }
   else
     {
-      error ("%s: invalid format string", type);
-      return retval;
+      fmt = args(1).string_value ();
+
+      if (error_state)
+	{
+	  error ("%s: invalid format string", type);
+	  return retval;
+	}
+
+      fmt_arg_count++;
     }
 
 // Scan fmt for % escapes and print out the arguments.
@@ -1093,9 +1102,8 @@ do_printf (const char *type, const Octave_object& args, int nargout)
     }
   else if (strcmp (type, "sprintf") == 0)
     {
-      retval.resize (1);
       char *msg = output_buf.str ();
-      retval(0) = tree_constant (msg);
+      retval(0) = msg;
       delete [] msg;
     }
 
@@ -1165,7 +1173,7 @@ process_scanf_format (const char *s, ostrstream& fmt,
 	success = fscanf (fptr, str, &temp);
 	delete [] str;
 	if (success > 0 && store_value)
-	  values(fmt_arg_count++) = tree_constant ((double) temp);
+	  values(fmt_arg_count++) = (double) temp;
       }
       break;
 
@@ -1178,7 +1186,7 @@ process_scanf_format (const char *s, ostrstream& fmt,
 	success = fscanf (fptr, str, &temp);
 	delete [] str;
 	if (success > 0 && store_value)
-	  values(fmt_arg_count++) = tree_constant (temp);
+	  values(fmt_arg_count++) = temp;
       }
       break;
 
@@ -1197,8 +1205,7 @@ process_scanf_format (const char *s, ostrstream& fmt,
 
 	    int c;
 
-	    while ((c = getc (fptr)) != EOF
-		   && (c == ' ' || c == '\n' || c != '\t'))
+	    while ((c = getc (fptr)) != EOF && isspace (c))
 	      ; // Don't count leading whitespace.
 
 	    if (c != EOF)
@@ -1207,7 +1214,7 @@ process_scanf_format (const char *s, ostrstream& fmt,
 	    for (;;)
 	      {
 		c = getc (fptr);
-		if (c != EOF && c != ' ' && c != '\n' && c != '\t')
+		if (c != EOF && ! isspace (c))
 		  string_width++;
 		else
 		  break;
@@ -1216,13 +1223,14 @@ process_scanf_format (const char *s, ostrstream& fmt,
 	    fseek (fptr, original_position, SEEK_SET);
 	  }
 	chars_from_fmt_str++;
-	char temp[string_width+1];
+	char temp [string_width+1];
 	fmt << *s << ends;
 	char *str = fmt.str ();
 	success = fscanf (fptr, str, temp);
 	delete [] str;
+	temp[string_width] = '\0';
 	if (success > 0 && store_value)
-	  values(fmt_arg_count++) = tree_constant (temp);
+	  values(fmt_arg_count++) = temp;
       }
       break;
 
@@ -1231,7 +1239,7 @@ process_scanf_format (const char *s, ostrstream& fmt,
 	if (string_width < 1)
 	  string_width = 1;
 	chars_from_fmt_str++;
-	char temp[string_width+1];
+	char temp [string_width+1];
 	memset (temp, '\0', string_width+1);
 	fmt << *s << ends;
 	char *str = fmt.str ();
@@ -1239,7 +1247,7 @@ process_scanf_format (const char *s, ostrstream& fmt,
 	delete [] str;
 	temp[string_width] = '\0';
 	if (success > 0 && store_value)
-	  values(fmt_arg_count++) = tree_constant (temp);
+	  values(fmt_arg_count++) = temp;
       }
       break;
 
@@ -1337,9 +1345,9 @@ do_scanf (const char *type, const Octave_object& args, int nargout)
 
   if (strcmp (type, "scanf") != 0)
     {
-      if (args(2).is_string ())
-	scanf_fmt = args(2).string_value ();
-      else
+      scanf_fmt = args(2).string_value ();
+
+      if (error_state)
 	{
 	  error ("%s: format must be a string", type);
 	  return retval;
@@ -1417,7 +1425,7 @@ do_scanf (const char *type, const Octave_object& args, int nargout)
 
 // Scan scanf_fmt for % escapes and assign the arguments.
 
-  retval.resize (nargout ? nargout : 1);
+  retval.resize (nargout);
 
   char *ptr = scanf_fmt;
 
@@ -1568,9 +1576,9 @@ fread_internal (const Octave_object& args, int nargout)
   char *prec = "uchar";
   if (nargin > 3)
     {
-      if (args(3).is_string ())
-	prec = args(3).string_value ();
-      else
+      prec = args(3).string_value ();
+
+      if (error_state)
 	{
 	  error ("fread: precision must be a specified as a string");
 	  return retval;
@@ -1595,24 +1603,25 @@ fread_internal (const Octave_object& args, int nargout)
     {
       if (args(2).is_scalar_type ())
 	{
-	  tree_constant tmpa = args(2).make_numeric ();
-	  dnr = tmpa.double_value ();
+	  dnr = args(2).double_value ();
+
+	  if (error_state)
+	    return retval;
+
 	  dnc = 1.0;
 	}
-      else if (args(2).is_matrix_type ())
+      else
 	{
 	  ColumnVector tmp = args(2).vector_value ();
 
-	  if (tmp.length () == 2)
-	    {
-	      dnr = tmp.elem (0);
-	      dnc = tmp.elem (1);
-	    }
-	  else
+	  if (error_state || tmp.length () != 2)
 	    {
 	      error ("fread: invalid size specification\n");
 	      return retval;
 	    }
+
+	  dnr = tmp.elem (0);
+	  dnc = tmp.elem (1);
 	}
 
       if ((xisinf (dnr)) && (xisinf (dnc)))
@@ -1660,14 +1669,9 @@ fread_internal (const Octave_object& args, int nargout)
   int count = m.read (fptr, prec);
 
   if (nargout > 1)
-    {
-      retval.resize (2);
-      retval(1) = tree_constant ((double) count);
-    }
-  else
-    retval.resize (1);
+    retval(1) = (double) count;
 
-  retval(0) = tree_constant (m);
+  retval(0) = m;
 
   return retval;
 }
@@ -1730,9 +1734,9 @@ fwrite_internal (const Octave_object& args, int nargout)
   char *prec = "uchar";
   if (nargin > 3)
     {
-      if (args(3).is_string ())
-	prec = args(3).string_value ();
-      else
+      prec = args(3).string_value ();
+
+      if (error_state)
 	{
 	  error ("fwrite: precision must be a specified as a string");
 	  return retval;
@@ -1743,10 +1747,12 @@ fwrite_internal (const Octave_object& args, int nargout)
 
   Matrix m = args(2).matrix_value ();
 
-  int count = m.write (file.fptr (), prec);
+  if (! error_state)
+    {
+      int count = m.write (file.fptr (), prec);
 
-  retval.resize (1);
-  retval(0) = tree_constant ((double) count);
+      retval(0) = (double) count;
+    }
 
   return retval;
 }
@@ -1790,7 +1796,6 @@ feof_internal (const Octave_object& args, int nargout)
 
   file_info file = file_list (p);
 
-  retval.resize (1);
   retval(0) = (double) feof (file.fptr ());
 
   return retval;
@@ -1839,14 +1844,9 @@ ferror_internal (const Octave_object& args, int nargout)
   int ierr = ferror (file.fptr ());
 
   if (nargout > 1)
-    {
-      retval.resize (2);
-      retval(1) = tree_constant ((double) ierr);
-    }
-  else
-    retval.resize (1);
+    retval(1) = (double) ierr;
 
-  retval(0) = tree_constant (strsave (strerror (ierr)));
+  retval(0) = strsave (strerror (ierr));
 
   return retval;
 }

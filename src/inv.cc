@@ -32,6 +32,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "user-prefs.h"
 #include "gripes.h"
 #include "error.h"
+#include "utils.h"
 #include "help.h"
 #include "defun-dld.h"
 
@@ -48,70 +49,59 @@ DEFUN_DLD ("inv", Finv, Sinv, 2, 1,
       return retval;
     }
 
-  tree_constant tmp = args(1).make_numeric ();
+  tree_constant arg = args(1);
 
-  int nr = tmp.rows ();
-  int nc = tmp.columns ();
-  if (nr == 0 || nc == 0)
+  int nr = arg.rows ();
+  int nc = arg.columns ();
+
+  if (empty_arg ("inverse", nr, nc) < 0)
+    return retval;
+
+  if (nr != nc)
     {
-      int flag = user_pref.propagate_empty_matrices;
-      if (flag < 0)
-	gripe_empty_arg ("inverse", 0);
-      else if (flag == 0)
-	gripe_empty_arg ("inverse", 1);
+      gripe_square_matrix_required ("inverse");
+      return retval;
     }
 
-  Matrix mtmp;
-  if (nr == 0 && nc == 0)
-    return mtmp;
-
-  if (tmp.is_real_matrix ())
+  if (arg.is_real_type ())
     {
-      Matrix m = tmp.matrix_value ();
-      if (m.rows () == m.columns ())
+      Matrix m = arg.matrix_value ();
+
+      if (! error_state)
 	{
 	  int info;
 	  double rcond = 0.0;
+
 	  Matrix minv = m.inverse (info, rcond);
+
 	  if (info == -1)
 	    warning ("inverse: matrix singular to machine precision,\
  rcond = %g", rcond);
 	  else
 	    retval = minv;
 	}
-      else
-	gripe_square_matrix_required ("inverse");
     }
-  else if (tmp.is_real_scalar ())
+  else if (arg.is_complex_type ())
     {
-      double d = 1.0 / tmp.double_value ();
-      retval = d;
-    }
-  else if (tmp.is_complex_matrix ())
-    {
-      ComplexMatrix m = tmp.complex_matrix_value ();
-      if (m.rows () == m.columns ())
+      ComplexMatrix m = arg.complex_matrix_value ();
+
+      if (! error_state)
 	{
 	  int info;
 	  double rcond = 0.0;
+
 	  ComplexMatrix minv = m.inverse (info, rcond);
+
 	  if (info == -1)
 	    warning ("inverse: matrix singular to machine precision,\
  rcond = %g", rcond);
 	  else
 	    retval = minv;
 	}
-      else
-	gripe_square_matrix_required ("inverse");
-    }
-  else if (tmp.is_complex_scalar ())
-    {
-      Complex c = 1.0 / tmp.complex_value ();
-      retval = c;
     }
   else
     {
-      gripe_wrong_type_arg ("inv", tmp);
+      gripe_wrong_type_arg ("inv", arg);
     }
 
   return retval;

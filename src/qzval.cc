@@ -38,6 +38,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "user-prefs.h"
 #include "gripes.h"
 #include "error.h"
+#include "utils.h"
 #include "help.h"
 #include "defun-dld.h"
 
@@ -61,107 +62,115 @@ A and B must be real matrices.")
 {
   Octave_object retval;
 
-  int nargin = args.length ();
-
-  if (nargin != 3 || nargout > 1)
+  if (args.length () != 3 || nargout > 1)
     {
       print_usage ("qzvalue");
       return retval;
     }
 
-  tree_constant arga = args(1).make_numeric ();
-  tree_constant argb = args(2).make_numeric();
+  tree_constant arg_a = args(1);
+  tree_constant arg_b = args(2);
 
-  if (arga.is_empty () || argb.is_empty ())
-    retval = vector_of_empties (nargout, "qzvalue");
-  else
-    {
+  int a_nr = arg_a.rows();
+  int a_nc = arg_a.columns();
+
+  int b_nr = arg_b.rows();
+  int b_nc = arg_b.columns();
+  
+  if (empty_arg ("qzvalue", a_nr, a_nc) < 0
+      || empty_arg ("qzvalue", b_nr, b_nc) < 0)
+    return retval;
 
 // Arguments are not empty, so check for correct dimensions.
 
-      int a_rows = arga.rows();
-      int a_cols = arga.columns();
-      int b_rows = argb.rows();
-      int b_cols = argb.columns();
-  
-      if ((a_rows != a_cols) || (b_rows != b_cols))
-	{
-	  gripe_square_matrix_required ("qzvalue: first two parameters:");
-	  return retval;
-	}
-      else if (a_rows != b_rows)
-	{
-	  gripe_nonconformant ();
-	  return retval;
-	}
+  if (a_nr != a_nc || b_nr != b_nc)
+    {
+      gripe_square_matrix_required ("qzvalue: first two parameters:");
+      return retval;
+    }
+
+  if (a_nr != b_nr)
+    {
+      gripe_nonconformant ();
+      return retval;
+    }
   
 // Dimensions look o.k., let's solve the problem.
 
-      retval.resize (nargout ? nargout : 1);
-
-      if (arga.is_complex_type () || argb.is_complex_type ())
-	error ("qzvalue: cannot yet do complex matrix arguments\n");
-      else
-	{
+  if (arg_a.is_complex_type () || arg_b.is_complex_type ())
+    {
+      error ("qzvalue: cannot yet do complex matrix arguments\n");
+      return retval;
+    }
 
 // Do everything in real arithmetic.
 
-	  Matrix jnk (a_rows, a_rows, 0.0);
+  Matrix jnk (a_nr, a_nr, 0.0);
 
-	  ColumnVector alfr (a_rows);
-	  ColumnVector alfi (a_rows);
-	  ColumnVector beta (a_rows);
+  ColumnVector alfr (a_nr);
+  ColumnVector alfi (a_nr);
+  ColumnVector beta (a_nr);
 
-	  long matz = 0;
-	  int info;
+  long matz = 0;
+  int info;
 
 // XXX FIXME ??? XXX
-	  double eps = DBL_EPSILON;
+  double eps = DBL_EPSILON;
 
-	  Matrix ca = arga.matrix_value ();
-	  Matrix cb = argb.matrix_value ();
+  Matrix ca = arg_a.matrix_value ();
+
+  if (error_state)
+    return retval;
+
+  Matrix cb = arg_b.matrix_value ();
+
+  if (error_state)
+    return retval;
 
 // Use EISPACK qz functions.
 
-	  F77_FCN (qzhes) (&a_rows, &a_rows, ca.fortran_vec (),
-			   cb.fortran_vec (), &matz, jnk.fortran_vec ());
+  F77_FCN (qzhes) (&a_nr, &a_nr, ca.fortran_vec (),
+		   cb.fortran_vec (), &matz, jnk.fortran_vec ());
 
-	  F77_FCN (qzit) (&a_rows, &a_rows, ca.fortran_vec (),
-			  cb.fortran_vec (), &eps, &matz,
-			  jnk.fortran_vec (), &info);  
+  F77_FCN (qzit) (&a_nr, &a_nr, ca.fortran_vec (),
+		  cb.fortran_vec (), &eps, &matz,
+		  jnk.fortran_vec (), &info);  
 
-	  if (info)
-	    error ("qzvalue: trouble in qzit, info = %d", info);
+  if (info)
+    error ("qzvalue: trouble in qzit, info = %d", info);
 
-	  F77_FCN (qzval) (&a_rows, &a_rows, ca.fortran_vec (),
-			   cb.fortran_vec (), alfr.fortran_vec (),
-			   alfi.fortran_vec (), beta.fortran_vec (),
-			   &matz, jnk.fortran_vec ());
+  F77_FCN (qzval) (&a_nr, &a_nr, ca.fortran_vec (),
+		   cb.fortran_vec (), alfr.fortran_vec (),
+		   alfi.fortran_vec (), beta.fortran_vec (),
+		   &matz, jnk.fortran_vec ());
 
 // Count and extract finite generalized eigenvalues.
 
-	  int i, cnt;
-	  Complex Im (0, 1);
-	  for (i = 0, cnt = 0; i < a_rows; i++)
-	    if (beta (i) != 0)
-	      cnt++;
+  int i;
+  int cnt = 0;
 
-	  ComplexColumnVector cx (cnt, 0.0);
+  Complex Im (0, 1);
 
-	  for (i = 0; i < a_rows; i++)
-	    {
-	      if (beta (i) != 0)
-		{
+  for (i = 0; i < a_nr; i++)
+    if (beta (i) != 0)
+      cnt++;
+
+  ComplexColumnVector cx (cnt, 0.0);
+
+  for (i = 0; i < a_nr; i++)
+    {
+      if (beta (i) != 0)
+	{
 
 // Finite generalized eigenvalue.
 
-		  cnt--;
-		  cx (cnt) = (alfr (i) + Im * alfi (i)) / beta (i);
-		}
-	    }
-	  retval(0) = cx;
+	  cnt--;
+	  cx (cnt) = (alfr (i) + Im * alfi (i)) / beta (i);
 	}
     }
+
+  retval = cx;
+
   return retval;
 }
 

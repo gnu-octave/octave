@@ -32,6 +32,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "user-prefs.h"
 #include "gripes.h"
 #include "error.h"
+#include "utils.h"
 #include "help.h"
 #include "defun-dld.h"
 
@@ -40,51 +41,40 @@ DEFUN_DLD ("fft", Ffft, Sfft, 2, 1,
 {
   Octave_object retval;
 
-  int nargin = args.length ();
-
-  if (nargin != 2)
+  if (args.length () != 2)
     {
       print_usage ("fft");
       return retval;
     }
 
-  tree_constant tmp = args(1).make_numeric ();;
-    
-  if (tmp.rows () == 0 || tmp.columns () == 0)
+  tree_constant arg = args(1);
+
+  if (empty_arg ("fft", arg.rows (), arg.columns ()) < 0)
+    return retval;
+
+  if (arg.is_real_type ())
     {
-      int flag = user_pref.propagate_empty_matrices;
-      if (flag != 0)
+      Matrix m = arg.matrix_value ();
+
+      if (! error_state)
 	{
-	  if (flag < 0)
-	    gripe_empty_arg ("fft", 0);
-
-	  retval.resize (1, Matrix ());
+	  ComplexMatrix mfft = m.fourier ();
+	  retval = mfft;
 	}
-      else
-	gripe_empty_arg ("fft", 1);
+    }
+  else if (arg.is_complex_type ())
+    {
+      ComplexMatrix m = arg.complex_matrix_value ();
 
-      return retval;
-    }
-
-  if (tmp.is_real_matrix ())
-    {
-      Matrix m = tmp.matrix_value ();
-      ComplexMatrix mfft = m.fourier ();
-      retval = mfft;
-    }
-  else if (tmp.is_complex_matrix ())
-    {
-      ComplexMatrix m = tmp.complex_matrix_value ();
-      ComplexMatrix mfft = m.fourier ();
-      retval = mfft;
-    }
-  else if (tmp.is_scalar_type ())
-    {
-      error ("fft: invalid scalar argument");
+      if (! error_state)
+	{
+	  ComplexMatrix mfft = m.fourier ();
+	  retval = mfft;
+	}
     }
   else
     {
-      gripe_wrong_type_arg ("fft", tmp);
+      gripe_wrong_type_arg ("fft", arg);
     }
 
   return retval;

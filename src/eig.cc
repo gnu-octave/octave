@@ -31,6 +31,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "user-prefs.h"
 #include "gripes.h"
 #include "error.h"
+#include "utils.h"
 #include "help.h"
 #include "defun-dld.h"
 
@@ -39,37 +40,21 @@ DEFUN_DLD ("eig", Feig, Seig, 2, 1,
 {
   Octave_object retval;
 
-  int nargin = args.length ();
-
-  if (nargin != 2 || nargout > 2)
+  if (args.length () != 2 || nargout > 2)
     {
       print_usage ("eig");
       return retval;
     }
 
-  tree_constant arg = args(1).make_numeric ();
+  tree_constant arg = args(1);
 
-  int a_nr = arg.rows ();
-  int a_nc = arg.columns ();
+  int nr = arg.rows ();
+  int nc = arg.columns ();
 
-  if (a_nr == 0 || a_nc == 0)
-    {
-      int flag = user_pref.propagate_empty_matrices;
-      if (flag != 0)
-	{
-	  if (flag < 0)
-	    gripe_empty_arg ("eig", 0);
-	  Matrix m;
-	  retval(1) = m;
-	  retval(0) = m;
-	}
-      else
-	gripe_empty_arg ("eig", 1);
+  if (empty_arg ("eig", nr, nc) < 0)
+    return retval;
 
-      return retval;
-    }
-
-  if (a_nr != a_nc)
+  if (nr != nc)
     {
       gripe_square_matrix_required ("eig");
       return retval;
@@ -78,27 +63,24 @@ DEFUN_DLD ("eig", Feig, Seig, 2, 1,
   Matrix tmp;
   ComplexMatrix ctmp;
   EIG result;
-  if (arg.is_real_scalar ())
-    {
-      tmp.resize (1, 1);
-      tmp.elem (0, 0) = arg.double_value ();
-      result = EIG (tmp);
-    }
-  else if (arg.is_real_matrix ())
+
+  if (arg.is_real_type ())
     {
       tmp = arg.matrix_value ();
-      result = EIG (tmp);
+
+      if (error_state)
+	return retval;
+      else
+	result = EIG (tmp);
     }
-  else if (arg.is_complex_scalar ())
-    {
-      ctmp.resize (1, 1);
-      ctmp.elem (0, 0) = arg.complex_value ();
-      result = EIG (ctmp);
-    }
-  else if (arg.is_complex_matrix ())
+  else if (arg.is_complex_type ())
     {
       ctmp = arg.complex_matrix_value ();
-      result = EIG (ctmp);
+
+      if (error_state)
+	return retval;
+      else
+	result = EIG (ctmp);
     }
   else
     {

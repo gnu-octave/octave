@@ -162,10 +162,10 @@ DEFUN_DLD ("min", Fmin, Smin, 3, 2,
   switch (nargin)
     {
     case 3:
-      arg2 = args(2).make_numeric ();
+      arg2 = args(2);
 // Fall through...
     case 2:
-      arg1 = args(1).make_numeric ();
+      arg1 = args(1);
       break;
     default:
       panic_impossible ();
@@ -182,21 +182,29 @@ DEFUN_DLD ("min", Fmin, Smin, 3, 2,
 	{
           retval(0) = arg1.complex_value ();
 	}
-      else if (arg1.is_real_matrix ())
+      else if (arg1.is_real_type ())
 	{
 	  Matrix m = arg1.matrix_value ();
-	  if (m.rows () == 1)
-	    retval(0) = m.row_min ();
-	  else
-	    retval(0) = tree_constant (m.column_min (), 0);
+
+	  if (! error_state)
+	    {
+	      if (m.rows () == 1)
+		retval(0) = m.row_min ();
+	      else
+		retval(0) = tree_constant (m.column_min (), 0);
+	    }
 	}
-      else if (arg1.is_complex_matrix ())
+      else if (arg1.is_complex_type ())
 	{
 	  ComplexMatrix m = arg1.complex_matrix_value ();
-	  if (m.rows () == 1)
-	    retval(0) = m.row_min ();
-	  else
-	    retval(0) = tree_constant (m.column_min (), 0);
+
+	  if (! error_state)
+	    {
+	      if (m.rows () == 1)
+		retval(0) = m.row_min ();
+	      else
+		retval(0) = tree_constant (m.column_min (), 0);
+	    }
 	}
       else
 	{
@@ -216,32 +224,40 @@ DEFUN_DLD ("min", Fmin, Smin, 3, 2,
 	  retval(1) = 1;
 	  retval(0) = arg1.complex_value ();
 	}
-      else if (arg1.is_real_matrix ())
+      else if (arg1.is_real_type ())
 	{
 	  Matrix m = arg1.matrix_value ();
-	  if (m.rows () == 1)
+
+	  if (! error_state)
 	    {
-	      retval(1) = m.row_min_loc ();
-	      retval(0) = m.row_min ();
-	    }
-	  else
-	    {
-	      retval(1) = tree_constant (m.column_min_loc (), 0);
-	      retval(0) = tree_constant (m.column_min (), 0);
+	      if (m.rows () == 1)
+		{
+		  retval(1) = m.row_min_loc ();
+		  retval(0) = m.row_min ();
+		}
+	      else
+		{
+		  retval(1) = tree_constant (m.column_min_loc (), 0);
+		  retval(0) = tree_constant (m.column_min (), 0);
+		}
 	    }
 	}
-      else if (arg1.is_complex_matrix ())
+      else if (arg1.is_complex_type ())
 	{
 	  ComplexMatrix m = arg1.complex_matrix_value ();
-	  if (m.rows () == 1)
+
+	  if (! error_state)
 	    {
-	      retval(1) = m.row_min_loc ();
-	      retval(0) = m.row_min ();
-	    }
-	  else
-	    {
-	      retval(1) = tree_constant (m.column_min_loc (), 0);
-	      retval(0) = tree_constant (m.column_min (), 0);
+	      if (m.rows () == 1)
+		{
+		  retval(1) = m.row_min_loc ();
+		  retval(0) = m.row_min ();
+		}
+	      else
+		{
+		  retval(1) = tree_constant (m.column_min_loc (), 0);
+		  retval(0) = tree_constant (m.column_min (), 0);
+		}
 	    }
 	}
       else
@@ -255,38 +271,37 @@ DEFUN_DLD ("min", Fmin, Smin, 3, 2,
       if (arg1.rows () == arg2.rows ()
 	  && arg1.columns () == arg2.columns ())
 	{
-// XXX FIXME XXX -- I don't think this is quite right.
-	  if (arg1.is_real_scalar ())
-            {
-	      double result;
-	      double a_elem = arg1.double_value ();
-	      double b_elem = arg2.double_value ();
-	      result = MIN (a_elem, b_elem);
-	      retval(0) = result;
-	    }
-	  else if (arg1.is_complex_scalar ())
+	  if (arg1.is_real_type () && arg2.is_real_type ())
 	    {
-	      Complex result;
-	      Complex a_elem = arg1.complex_value ();
-	      Complex b_elem = arg2.complex_value ();
-	      if (abs (a_elem) < abs (b_elem))
-		result = a_elem;
-	      else
-		result = b_elem;
-	      retval(0) = result;
+	      Matrix m1 = arg1.matrix_value ();
+
+	      if (! error_state)
+		{
+		  Matrix m2 = arg2.matrix_value ();
+
+		  if (! error_state)
+		    {
+		      Matrix result = min (m1, m2);
+		      if (! error_state)
+			retval(0) = result;
+		    }
+		}
 	    }
-	  else if (arg1.is_real_matrix ())
+	  else if (arg1.is_complex_matrix () || arg2.is_complex_type ())
 	    {
-	      Matrix result;
-	      result = min (arg1.matrix_value (), arg2.matrix_value ());
-	      retval(0) = result;
-	    }
-	  else if (arg1.is_complex_matrix ())
-	    {
-	      ComplexMatrix result;
-	      result = min (arg1.complex_matrix_value (),
-			    arg2.complex_matrix_value ());
-	      retval(0) = result;
+	      ComplexMatrix m1 = arg1.complex_matrix_value ();
+
+	      if (! error_state)
+		{
+		  ComplexMatrix m2 = arg2.complex_matrix_value ();
+
+		  if (! error_state)
+		    {
+		      ComplexMatrix result = min (m1, m2);
+		      if (! error_state)
+			retval(0) = result;
+		    }
+		}
 	    }
 	  else
 	    {
@@ -322,10 +337,10 @@ DEFUN_DLD ("max", Fmax, Smax, 3, 2,
   switch (nargin)
     {
     case 3:
-      arg2 = args(2).make_numeric ();
+      arg2 = args(2);
 // Fall through...
     case 2:
-      arg1 = args(1).make_numeric ();
+      arg1 = args(1);
       break;
     default:
       panic_impossible ();

@@ -52,7 +52,12 @@ DEFUN_DLD ("colloc", Fcolloc, Scolloc, 7, 4,
       return retval;
     }
 
-  int ncol = NINT (args(1).double_value ());
+  double tmp = args(1).double_value ();
+
+  if (error_state)
+    return retval;
+
+  int ncol = NINT (tmp);
   if (ncol < 0)
     {
       error ("colloc: first argument must be non-negative");
@@ -74,6 +79,7 @@ DEFUN_DLD ("colloc", Fcolloc, Scolloc, 7, 4,
 	    }
 
 	  char *s = args(i).string_value ();
+
 	  if (s && (((*s == 'R' || *s == 'r') && strlen (s) == 1)
 		    || strcmp (s, "right") == 0))
 	    {
@@ -111,12 +117,10 @@ DEFUN_DLD ("colloc", Fcolloc, Scolloc, 7, 4,
   Matrix B = wts.second ();
   ColumnVector q = wts.quad_weights ();
 
-  retval.resize (4);
-
-  retval(0) = r;
-  retval(1) = A;
-  retval(2) = B;
   retval(3) = q;
+  retval(2) = B;
+  retval(1) = A;
+  retval(0) = r;
 
   return retval;
 }

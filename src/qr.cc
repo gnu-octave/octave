@@ -34,6 +34,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "tree-const.h"
 #include "user-prefs.h"
 #include "gripes.h"
+#include "utils.h"
 #include "help.h"
 #include "defun-dld.h"
 
@@ -65,90 +66,59 @@ that R = triu (qr (X))")
       return retval;
     }
 
-  tree_constant tmp = args(1).make_numeric ();
+  tree_constant arg = args(1);
     
-  if (tmp.rows () == 0 || tmp.columns () == 0)
-    {
-      int flag = user_pref.propagate_empty_matrices;
-      if (flag != 0)
-	{
-	  if (flag < 0)
-	    gripe_empty_arg ("qr", 0);
-	  Matrix m;
-	  retval(2) = m;
-	  retval(1) = m;
-	  retval(0) = m;
-	}
-      else
-	gripe_empty_arg ("qr", 1);
-
-      return retval;
-    }
+  if (empty_arg ("qr", arg.rows (), arg.columns ()) < 0)
+    return retval;
 
   QR::type type = nargout == 1 ? QR::raw
     : (nargin == 3 ? QR::economy : QR::std);
 
-  if (tmp.is_real_matrix ())
+  if (arg.is_real_type ())
     {
-      Matrix m = tmp.matrix_value ();
-      if (nargout < 3)
+      Matrix m = arg.matrix_value ();
+
+      if (! error_state)
 	{
-	  QR fact (m, type);
-	  retval(1) = fact.R ();
-	  retval(0) = fact.Q ();
-	}
-      else
-	{
-	  QRP fact (m, type);
-	  retval(2) = fact.P ();
-	  retval(1) = fact.R ();
-	  retval(0) = fact.Q ();
+	  if (nargout < 3)
+	    {
+	      QR fact (m, type);
+	      retval(1) = fact.R ();
+	      retval(0) = fact.Q ();
+	    }
+	  else
+	    {
+	      QRP fact (m, type);
+	      retval(2) = fact.P ();
+	      retval(1) = fact.R ();
+	      retval(0) = fact.Q ();
+	    }
 	}
     }
-  else if (tmp.is_complex_matrix ())
+  else if (arg.is_complex_type ())
     {
-      ComplexMatrix m = tmp.complex_matrix_value ();
-      if (nargout < 3)
+      ComplexMatrix m = arg.complex_matrix_value ();
+
+      if (! error_state)
 	{
-	  ComplexQR fact (m, type);
-	  retval(1) = fact.R ();
-	  retval(0) = fact.Q ();
-	}
-      else
-	{
-	  ComplexQRP fact (m, type);
-	  retval(2) = fact.P ();
-	  retval(1) = fact.R ();
-	  retval(0) = fact.Q ();
-	}
-    }
-  else if (tmp.is_real_scalar ())
-    {
-      double d = tmp.double_value ();
-      if (nargout == 1)
-	retval(0) = d;
-      else
-	{
-	  retval(2) = 1.0;
-	  retval(1) = d;
-	  retval(0) = 1.0;
-	}
-    }
-  else if (tmp.is_complex_scalar ())
-    {
-      Complex c = tmp.complex_value ();
-      if (nargout == 1)
-	retval(0) = c;
-      else
-	{
-	  retval(2) = 1.0;
-	  retval(1) = c;
-	  retval(0) = 1.0;
+	  if (nargout < 3)
+	    {
+	      ComplexQR fact (m, type);
+	      retval(1) = fact.R ();
+	      retval(0) = fact.Q ();
+	    }
+	  else
+	    {
+	      ComplexQRP fact (m, type);
+	      retval(2) = fact.P ();
+	      retval(1) = fact.R ();
+	      retval(0) = fact.Q ();
+	    }
 	}
     }
   else
     {
-      gripe_wrong_type_arg ("qr", tmp);
+      gripe_wrong_type_arg ("qr", arg);
     }
 
   return retval;

@@ -32,6 +32,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "user-prefs.h"
 #include "gripes.h"
 #include "error.h"
+#include "utils.h"
 #include "help.h"
 #include "defun-dld.h"
 
@@ -40,68 +41,51 @@ DEFUN_DLD ("chol", Fchol, Schol, 2, 1,
 {
   Octave_object retval;
 
-  int nargin = args.length ();
-
-  if (nargin != 2 || nargout > 1)
+  if (args.length () != 2 || nargout > 1)
     {
       print_usage ("chol");
       return retval;
     }
 
-  tree_constant tmp = args(1).make_numeric ();
+  tree_constant arg = args(1);
     
-  int nr = tmp.rows ();
-  int nc = tmp.columns ();
+  int nr = arg.rows ();
+  int nc = arg.columns ();
 
-  if (nr == 0 || nc == 0)
+  if (empty_arg ("chol", nr, nc) < 0)
+    return retval;
+
+  if (arg.is_real_type ())
     {
-      int flag = user_pref.propagate_empty_matrices;
-      if (flag != 0)
+      Matrix m = arg.matrix_value ();
+
+      if (! error_state)
 	{
-	  if (flag < 0)
-	    gripe_empty_arg ("chol", 0);
-
-	  retval.resize (1, Matrix ());
+	  int info;
+	  CHOL fact (m, info);
+	  if (info != 0)
+	    error ("chol: matrix not positive definite");
+	  else
+	    retval = fact.chol_matrix ();
 	}
-      else
-	gripe_empty_arg ("chol", 1);
+    }
+  else if (arg.is_complex_type ())
+    {
+      ComplexMatrix m = arg.complex_matrix_value ();
 
-      return retval;
-    }
-
-  if (tmp.is_real_matrix ())
-    {
-      Matrix m = tmp.matrix_value ();
-      int info;
-      CHOL fact (m, info);
-      if (info != 0)
-	error ("chol: matrix not positive definite");
-      else
-	retval = fact.chol_matrix ();
-    }
-  else if (tmp.is_complex_matrix ())
-    {
-      ComplexMatrix m = tmp.complex_matrix_value ();
-      int info;
-      ComplexCHOL fact (m, info);
-      if (info != 0)
-	error ("chol: matrix not positive definite");
-      else
-	retval = fact.chol_matrix ();
-    }
-  else if (tmp.is_real_scalar ())
-    {
-      double d = tmp.double_value ();
-      retval = d;
-    }
-  else if (tmp.is_complex_scalar ())
-    {
-      Complex c = tmp.complex_value ();
-      retval = c;
+      if (! error_state)
+	{
+	  int info;
+	  ComplexCHOL fact (m, info);
+	  if (info != 0)
+	    error ("chol: matrix not positive definite");
+	  else
+	    retval = fact.chol_matrix ();
+	}
     }
   else
     {
-      gripe_wrong_type_arg ("chol", tmp);
+      gripe_wrong_type_arg ("chol", arg);
     }
 
   return retval;

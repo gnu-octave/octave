@@ -45,7 +45,6 @@ Free Software Foundation, Inc.
 #include <unistd.h>
 #endif
 #include <sys/param.h>
-#include <setjmp.h>
 #include <string.h>
 #include <limits.h>
 #include <iostream.h>
@@ -54,12 +53,14 @@ Free Software Foundation, Inc.
 
 #include <Complex.h>
 
-#ifndef HAVE_STRNCASECMP
 extern "C"
 {
+#include <setjmp.h>
+
+#ifndef HAVE_STRNCASECMP
 extern int strncasecmp (const char*, const char*, size_t);
-}
 #endif
+}
 
 extern "C"
 {
@@ -514,14 +515,18 @@ empty_arg (const char *name, int nr, int nc)
 
   if (nr == 0 || nc == 0)
     {
-      is_empty = 0;
-
       int flag = user_pref.propagate_empty_matrices;
 
       if (flag < 0)
-	gripe_empty_arg (name, 0);
-      else if (flag > 0)
-	gripe_empty_arg (name, 1);
+	{
+	  gripe_empty_arg (name, 0);
+	  is_empty = 1;
+	}
+      else if (is_empty > 0)
+	{
+	  gripe_empty_arg (name, 1);
+	  is_empty = -1;
+	}
     }
 
   return is_empty;

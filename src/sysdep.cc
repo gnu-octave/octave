@@ -396,13 +396,18 @@ DEFUN ("getenv", Fgetenv, Sgetenv, 2, 1,
 
   int nargin = args.length ();
 
-  if (nargin == 2 && args(1).is_string ())
+  if (nargin == 2)
     {
-      char *value = getenv (args(1).string_value ());
-      if (value)
-	retval = value;
-      else
-	retval = "";
+      char *name = args(1).string_value ();
+
+      if (! error_state)
+	{
+	  char *value = getenv (name);
+	  if (value)
+	    retval = value;
+	  else
+	    retval = "";
+	}
     }
   else
     print_usage ("getenv");
@@ -448,13 +453,17 @@ DEFUN ("pause", Fpause, Spause, 1, 1,
 	{
 	case 2:
 	  {
-	    int delay = NINT (args(1).double_value ());
-	    if (delay > 0)
+	    double dval = args(1).double_value ();
+
+	    if (! error_state)
 	      {
-		sleep (delay);
-		break;
+		int delay = NINT (dval);
+		if (delay > 0)
+		  sleep (delay);
 	      }
 	  }
+	  break;
+
 	default:
 	  if (kbhit () == EOF)
 	    clean_up_and_exit (0);

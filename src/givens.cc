@@ -47,16 +47,6 @@ extern "C"
 			Complex*, Complex*);
 }
 
-// These aren't used?
-#if 0
-int F77_FCN (dorgqr) (const int*, const int*, const int*, double*,
-		      const int*, double*, double*, const int*, int*);
-  
-int F77_FCN (zunghr) (const int*, const int*, const int*, Complex*,
-		      const int*, Complex*, Complex*, const int*,
-		      int*, long, long);
-#endif
-
 DEFUN_DLD ("givens", Fgivens, Sgivens, 3, 2,
   "G = givens (X, Y)\n\
 \n\
@@ -67,108 +57,121 @@ such that G [x; y] = [*; 0]  (x, y scalars)\n\
 {
   Octave_object retval;
 
-  int nargin = args.length ();
-
-  if (nargin != 3 || nargout > 2)
+  if (args.length () != 3 || nargout > 2)
     {
       print_usage ("givens");
       return retval;
     }
 
-  tree_constant arga = args(1).make_numeric ();
-  tree_constant argb = args(2).make_numeric ();
+  tree_constant arg_a = args(1);
+  tree_constant arg_b = args(2);
 
-  if (! arga.is_scalar_type () && argb.is_scalar_type ())
+  if (! arg_a.is_scalar_type () && arg_b.is_scalar_type ())
     {
-      error("givens: requires two scalar arguments"); 
+      error("givens: requires two scalar arguments");
+      return retval;
+    }
+
+  Complex cx, cy;
+  double x, y;
+
+  if (arg_a.is_complex_type ())
+    {
+      cx = arg_a.complex_value ();
+
+      if (error_state)
+	return retval;
+    }
+  else 
+    {
+      x = arg_a.double_value ();
+
+      if (error_state)
+	return retval;
+
+      cx = x;			// copy to complex just in case
+    }
+
+  if (arg_b.is_complex_type ())
+    {
+      cy = arg_b.complex_value ();
+
+      if (error_state)
+	return retval;
     }
   else
     {
-      retval.resize (nargout ? nargout : 1);
+      y = arg_b.double_value ();
 
-      Complex cx, cy;
-      double x, y;
+      if (error_state)
+	return retval;
 
-      if (arga.is_complex_type ())
-	cx = arga.complex_value ();
-      else 
-	{
-	  x = arga.double_value ();
-	  cx = x;			// copy to complex just in case
-	}
-
-      if (argb.is_complex_type ())
-	cy = argb.complex_value ();
-      else
-	{
-	  y = argb.double_value ();
-	  cy = y;			// copy to complex just in case
-	}
+      cy = y;			// copy to complex just in case
+    }
 
 // Now compute the rotation.
 
-      double cc;
-      if (arga.is_complex_type () || argb.is_complex_type ())
-	{
-	  Complex cs, temp_r;
+  double cc;
+  if (arg_a.is_complex_type () || arg_b.is_complex_type ())
+    {
+      Complex cs, temp_r;
  
-	  F77_FCN (zlartg) (&cx, &cy, &cc, &cs, &temp_r);
+      F77_FCN (zlartg) (&cx, &cy, &cc, &cs, &temp_r);
 
-	  switch (nargout)
-	    {
-	    case 0:		// output a matrix
-	    case 1:
-	      {
-		ComplexMatrix g (2, 2);
-		g.elem (0, 0) = cc;
-		g.elem (1, 1) = cc;
-		g.elem (0, 1) = cs;
-		g.elem (1, 0) = -conj (cs);
+      switch (nargout)
+	{
+	case 0:		// output a matrix
+	case 1:
+	  {
+	    ComplexMatrix g (2, 2);
+	    g.elem (0, 0) = cc;
+	    g.elem (1, 1) = cc;
+	    g.elem (0, 1) = cs;
+	    g.elem (1, 0) = -conj (cs);
 
-		retval(0) = g;
-	      }
-	      break;
+	    retval(0) = g;
+	  }
+	  break;
    
-	    case 2:		// output scalar values
-	      retval(0) = tree_constant(cc);
-	      retval(1) = tree_constant(cs);
-	      break;
+	case 2:		// output scalar values
+	  retval(0) = cc;
+	  retval(1) = cs;
+	  break;
 
-	    default:  
-	      error ("givens: invalid number of output arguments");
-	      break;
-	    }
+	default:  
+	  error ("givens: invalid number of output arguments");
+	  break;
 	}
-      else
+    }
+  else
+    {
+      double s, temp_r;
+
+      F77_FCN (dlartg) (&x, &y, &cc, &s, &temp_r);
+
+      switch (nargout)
 	{
-	  double s, temp_r;
- 
-	  F77_FCN (dlartg) (&x, &y, &cc, &s, &temp_r);
+	case 0:		// output a matrix
+	case 1:
+	  {
+	    Matrix g (2, 2);
+	    g.elem (0, 0) = cc;
+	    g.elem (1, 1) = cc;
+	    g.elem (0, 1) = s;
+	    g.elem (1, 0) = -s;
 
-	  switch (nargout)
-	    {
-	    case 0:		// output a matrix
-	    case 1:
-	      {
-		Matrix g (2, 2);
-		g.elem (0, 0) = cc;
-		g.elem (1, 1) = cc;
-		g.elem (0, 1) = s;
-		g.elem (1, 0) = -s;
-
-		retval(0) = g;
-	      }
-	      break;
+	    retval(0) = g;
+	  }
+	  break;
    
-	    case 2:		// output scalar values
-	      retval(0) = cc;
-	      retval(1) = s;
-	      break;
+	case 2:		// output scalar values
+	  retval(0) = cc;
+	  retval(1) = s;
+	  break;
    
-	    default:
-	      error ("givens: invalid number of output arguments");
-	      break;
-	    }
+	default:
+	  error ("givens: invalid number of output arguments");
+	  break;
 	}
     }
 

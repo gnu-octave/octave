@@ -51,23 +51,29 @@ hybrd_info_to_fsolve_info (int info)
     case -1:
       info = -2;
       break;
+
     case 0:
       info = -1;
       break;
+
     case 1:
       break;
+
     case 2:
       info = 4;
       break;
+
     case 3:
     case 4:
     case 5:
       info = 3;
       break;
+
     default:
       panic_impossible ();
       break;
     }
+
   return info;
 }
 
@@ -105,7 +111,7 @@ fsolve_user_function (const ColumnVector& x)
 	{
 	  retval = tmp(0).vector_value ();
 
-	  if (retval.length () <= 0)
+	  if (error_state || retval.length () <= 0)
 	    gripe_user_supplied_eval ("fsolve");
 	}
       else
@@ -142,6 +148,12 @@ where y and x are vectors.")
     return retval;
 
   ColumnVector x = args(2).vector_value ();
+
+  if (error_state)
+    {
+      error ("fsolve: expecting vector as second argument");
+      return retval;
+    }
 
   if (nargin > 3)
     warning ("fsolve: ignoring extra arguments");
@@ -262,20 +274,25 @@ to the shortest match.")
   if (nargin == 1)
     {
       print_fsolve_option_list ();
+      return retval;
     }
   else if (nargin == 3)
     {
-      if (args(1).is_string ())
+      char *keyword = args(1).string_value ();
+
+      if (! error_state)
 	{
-	  char *keyword = args(1).string_value ();
 	  double val = args(2).double_value ();
-	  do_fsolve_option (keyword, val);
+
+	  if (! error_state)
+	    {
+	      do_fsolve_option (keyword, val);
+	      return retval;
+	    }
 	}
-      else
-	print_usage ("fsolve_options");
     }
-  else
-    print_usage ("fsolve_options");
+
+  print_usage ("fsolve_options");
 
   return retval;
 }

@@ -31,6 +31,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "tree-const.h"
 #include "user-prefs.h"
 #include "gripes.h"
+#include "utils.h"
 #include "help.h"
 #include "defun-dld.h"
 
@@ -39,37 +40,34 @@ DEFUN_DLD ("lu", Flu, Slu, 2, 3,
 {
   Octave_object retval;
 
-  int nargin = args.length ();
-
-  if (nargin != 2 || nargout > 3)
+  if (args.length () != 2 || nargout > 3)
     {
       print_usage ("lu");
       return retval;
     }
 
-  tree_constant tmp = args(1).make_numeric ();;
-    
-  if (tmp.rows () == 0 || tmp.columns () == 0)
-    {
-      int flag = user_pref.propagate_empty_matrices;
-      if (flag != 0)
-	{
-	  if (flag < 0)
-	    gripe_empty_arg ("lu", 0);
+  tree_constant arg = args(1);
 
-	  retval.resize (3, Matrix ());
-	  return retval;
-	}
-      else
-	gripe_empty_arg ("lu", 1);
+  int nr = arg.rows ();
+  int nc = arg.columns ();
+
+  if (empty_arg ("lu", nr, nc) < 0)
+    return retval;
+
+  if (nr != nc)
+    {
+      gripe_square_matrix_required ("lu");
+      return retval;
     }
 
-  if (tmp.is_real_matrix ())
+  if (arg.is_real_type ())
     {
-      Matrix m = tmp.matrix_value ();
-      if (m.rows () == m.columns ())
+      Matrix m = arg.matrix_value ();
+
+      if (! error_state)
 	{
 	  LU fact (m);
+
 	  switch (nargout)
 	    {
 	    case 0:
@@ -82,6 +80,7 @@ DEFUN_DLD ("lu", Flu, Slu, 2, 3,
 		retval(0) = L;
 	      }
 	      break;
+
 	    case 3:
 	    default:
 	      retval(2) = fact.P ();
@@ -90,15 +89,15 @@ DEFUN_DLD ("lu", Flu, Slu, 2, 3,
 	      break;
 	    }
 	}
-      else
-	gripe_square_matrix_required ("lu");
     }
-  else if (tmp.is_complex_matrix ())
+  else if (arg.is_complex_matrix ())
     {
-      ComplexMatrix m = tmp.complex_matrix_value ();
-      if (m.rows () == m.columns ())
+      ComplexMatrix m = arg.complex_matrix_value ();
+
+      if (! error_state)
 	{
 	  ComplexLU fact (m);
+
 	  switch (nargout)
 	    {
 	    case 0:
@@ -111,6 +110,7 @@ DEFUN_DLD ("lu", Flu, Slu, 2, 3,
 		retval(0) = L;
 	      }
 	      break;
+
 	    case 3:
 	    default:
 	      retval(2) = fact.P ();
@@ -119,26 +119,10 @@ DEFUN_DLD ("lu", Flu, Slu, 2, 3,
 	      break;
 	    }
 	}
-      else
-	gripe_square_matrix_required ("lu");
-    }
-  else if (tmp.is_real_scalar ())
-    {
-      double d = tmp.double_value ();
-      retval(2) = 1.0;
-      retval(1) = d;
-      retval(0) = 1.0;
-    }
-  else if (tmp.is_complex_scalar ())
-    {
-      Complex c = tmp.complex_value ();
-      retval(2) = 1.0;
-      retval(1) = c;
-      retval(0) = 1.0;
     }
   else
     {
-      gripe_wrong_type_arg ("lu", tmp);
+      gripe_wrong_type_arg ("lu", arg);
     }
 
   return retval;

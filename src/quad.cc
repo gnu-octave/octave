@@ -66,7 +66,15 @@ quad_user_function (double x)
 	}
 
       if (tmp.length () && tmp(0).is_defined ())
-	retval = tmp(0).double_value ();
+	{
+	  retval = tmp(0).double_value ();
+
+	  if (error_state)
+	    {
+	      quad_integration_error = 1;  // XXX FIXME XXX
+	      gripe_user_supplied_eval ("quad");
+	    }
+	}
       else
 	{
 	  quad_integration_error = 1;  // XXX FIXME XXX
@@ -107,7 +115,20 @@ at which the integrand is singular.")
     return retval;
 
   double a = args(2).double_value ();
+
+  if (error_state)
+    {
+      error ("quad: expecting second argument to be a scalar");
+      return retval;
+    }
+
   double b = args(3).double_value ();
+
+  if (error_state)
+    {
+      error ("quad: expecting third argument to be a scalar");
+      return retval;
+    }
 
   int indefinite = 0;
   IndefQuad::IntegralType indef_type = IndefQuad::doubly_infinite;
@@ -147,21 +168,40 @@ at which the integrand is singular.")
 	  error("quad: singularities not allowed on infinite intervals");
 	  return retval;
 	}
+
       have_sing = 1;
+
       sing = args(5).vector_value ();
+
+      if (error_state)
+	{
+	  error ("quad: expecting vector of singularities as fourth argument");
+	  return retval;
+	}
+
     case 5:
       tol = args(4).vector_value ();
+
+      if (error_state)
+	{
+	  error ("quad: expecting vector of tolerances as fifth argument");
+	  return retval;
+	}
+
       switch (tol.capacity ())
 	{
 	case 2:
 	  reltol = tol.elem (1);
+
 	case 1:
 	  abstol = tol.elem (0);
 	  break;
+
 	default:
 	  error ("quad: expecting tol to contain no more than two values");
 	  return retval;
 	}
+
     case 4:
       if (indefinite)
 	{
@@ -185,17 +225,16 @@ at which the integrand is singular.")
 	    }
 	}
       break;
+
     default:
       panic_impossible ();
       break;
     }
 
-  retval.resize (4);
-
-  retval(0) = val;
-  retval(1) = ier;
-  retval(2) = nfun;
   retval(3) = abserr;
+  retval(2) = nfun;
+  retval(1) = ier;
+  retval(0) = val;
 
   return retval;
 }
@@ -299,20 +338,27 @@ to the shortest match.")
   int nargin = args.length ();
 
   if (nargin == 1)
-    print_quad_option_list ();
+    {
+      print_quad_option_list ();
+      return retval;
+    }
   else if (nargin == 3)
     {
-      if (args(1).is_string ())
+      char *keyword = args(1).string_value ();
+
+      if (! error_state)
 	{
-	  char *keyword = args(1).string_value ();
 	  double val = args(2).double_value ();
-	  do_quad_option (keyword, val);
+
+	  if (! error_state)
+	    {
+	      do_quad_option (keyword, val);
+	      return retval;
+	    }
 	}
-      else
-	print_usage ("quad_options");
     }
-  else
-    print_usage ("quad_options");
+
+  print_usage ("quad_options");
 
   return retval;
 }

@@ -37,6 +37,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "user-prefs.h"
 #include "gripes.h"
 #include "error.h"
+#include "utils.h"
 #include "help.h"
 #include "defun-dld.h"
 
@@ -60,57 +61,67 @@ DEFUN_DLD ("syl", Fsyl, Ssyl, 4, 1,
 {
   Octave_object retval;
 
-  int nargin = args.length ();
-
-  if (nargin != 4 || nargout > 1)
+  if (args.length () != 4 || nargout > 1)
     {
       print_usage ("syl");
       return retval;
     }
 
-  tree_constant arga = args(1).make_numeric ();
-  tree_constant argb = args(2).make_numeric ();
-  tree_constant argc = args(3).make_numeric ();
+  tree_constant arg_a = args(1);
+  tree_constant arg_b = args(2);
+  tree_constant arg_c = args(3);
 
-  if (arga.is_empty () || argb.is_empty () || argc.is_empty ())
-    retval = vector_of_empties (nargout, "syl");
-  else
-    {
+  int a_nr = arg_a.rows ();
+  int a_nc = arg_a.columns ();
+
+  int b_nr = arg_b.rows ();
+  int b_nc = arg_b.columns ();
+
+  int c_nr = arg_c.rows ();
+  int c_nc = arg_c.columns ();
+  
+  if (empty_arg ("syl", a_nr, a_nc) < 0
+      || empty_arg ("syl", b_nr, b_nc) < 0
+      || empty_arg ("syl", c_nr, c_nc) < 0)
+    return retval;
 
 // Arguments are not empty, so check for correct dimensions.
 
-      int a_rows = arga.rows ();
-      int a_cols = arga.columns ();
-      int b_rows = argb.rows ();
-      int b_cols = argb.columns ();
-      int c_rows = argc.rows ();
-      int c_cols = argc.columns ();
-  
-      if ((a_rows != a_cols) || (b_rows != b_cols))
-	{
-	  gripe_square_matrix_required ("syl: first two parameters:");
-	  return retval;
-	}
-      else if ((a_rows != c_rows) || (b_rows != c_cols))
-	{
-	  gripe_nonconformant ();
-	  return retval;
-	}
+  if (a_nr != a_nc || b_nr != b_nc)
+    {
+      gripe_square_matrix_required ("syl: first two parameters:");
+      return retval;
+    }
+  else if (a_nr != c_nr || b_nr != c_nc)
+    {
+      gripe_nonconformant ();
+      return retval;
+    }
   
 // Dimensions look o.k., let's solve the problem.
 
-    retval.resize (nargout ? nargout : 1);
-
-    if (arga.is_complex_type () || argb.is_complex_type ()
-	|| argc.is_complex_type ())
+    if (arg_a.is_complex_type ()
+	|| arg_b.is_complex_type ()
+	|| arg_c.is_complex_type ())
       {
 
 // Do everything in complex arithmetic;
 
-	ComplexMatrix ca = arga.complex_matrix_value ();
-	ComplexMatrix cb = argb.complex_matrix_value ();
-	ComplexMatrix cc = argc.complex_matrix_value ();
-  
+	ComplexMatrix ca = arg_a.complex_matrix_value ();
+
+	if (error_state)
+	  return retval;
+
+	ComplexMatrix cb = arg_b.complex_matrix_value ();
+
+	if (error_state)
+	  return retval;
+
+	ComplexMatrix cc = arg_c.complex_matrix_value ();
+
+	if (error_state)
+	  return retval;
+
 // Compute Schur decompositions
 
 	ComplexSCHUR as (ca, "U");
@@ -131,25 +142,36 @@ DEFUN_DLD ("syl", Fsyl, Ssyl, 4, 1,
 	int info;
 	int one = 1;
   
-	F77_FCN (ztrsyl) ("N", "N", &one, &a_rows, &b_rows,
-			  sch_a.fortran_vec (), &a_rows,
-			  sch_b.fortran_vec (), &b_rows,
-			  cx.fortran_vec (), &a_rows, &scale, &info,
+	F77_FCN (ztrsyl) ("N", "N", &one, &a_nr, &b_nr,
+			  sch_a.fortran_vec (), &a_nr,
+			  sch_b.fortran_vec (), &b_nr,
+			  cx.fortran_vec (), &a_nr, &scale, &info,
 			  1L, 1L);
 
 	cx = -ua * cx * ub.hermitian ();
   
-	retval(0) = cx;
+	retval = cx;
       }
     else
       {
 
 // Do everything in real arithmetic;
 
-	Matrix ca = arga.matrix_value ();
-	Matrix cb = argb.matrix_value ();
-	Matrix cc = argc.matrix_value ();
-  
+	Matrix ca = arg_a.matrix_value ();
+
+	if (error_state)
+	  return retval;
+
+	Matrix cb = arg_b.matrix_value ();
+
+	if (error_state)
+	  return retval;
+
+	Matrix cc = arg_c.matrix_value ();
+
+	if (error_state)
+	  return retval;
+
 // Compute Schur decompositions.
 
 	SCHUR as (ca, "U");
@@ -170,10 +192,10 @@ DEFUN_DLD ("syl", Fsyl, Ssyl, 4, 1,
 	int info;
 	int one = 1;
 
-	F77_FCN (dtrsyl) ("N", "N", &one, &a_rows, &b_rows,
-			  sch_a.fortran_vec (), &a_rows, 
-			  sch_b.fortran_vec (), &b_rows,
-			  cx.fortran_vec (), &a_rows, &scale, &info,
+	F77_FCN (dtrsyl) ("N", "N", &one, &a_nr, &b_nr,
+			  sch_a.fortran_vec (), &a_nr, 
+			  sch_b.fortran_vec (), &b_nr,
+			  cx.fortran_vec (), &a_nr, &scale, &info,
 			  1L, 1L);
 
 	if (info)
@@ -181,9 +203,9 @@ DEFUN_DLD ("syl", Fsyl, Ssyl, 4, 1,
   
 	cx = -ua*cx*ub.transpose ();
   
-	retval(0) = cx;
+	retval = cx;
       }
-    }
+
   return retval;
 }
 

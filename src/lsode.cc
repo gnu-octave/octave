@@ -84,7 +84,7 @@ lsode_user_function (const ColumnVector& x, double t)
 	{
 	  retval = tmp(0).vector_value ();
 
-	  if (retval.length () == 0)
+	  if (error_state || retval.length () == 0)
 	    gripe_user_supplied_eval ("lsode");
 	}
       else
@@ -119,12 +119,34 @@ where xdot and x are vectors and t is a scalar.\n")
     return retval;
 
   ColumnVector state = args(2).vector_value ();
+
+  if (error_state)
+    {
+      error ("lsode: expecting state vector as second argument");
+      return retval;
+    }
+
   ColumnVector out_times = args(3).vector_value ();
+
+  if (error_state)
+    {
+      error ("lsode: expecting output time vector as third argument");
+      return retval;
+    }
+
   ColumnVector crit_times;
+
   int crit_times_set = 0;
   if (nargin > 4)
     {
       crit_times = args(4).vector_value ();
+
+      if (error_state)
+	{
+	  error ("lsode: expecting critical time vector as fourth argument");
+	  return retval;
+	}
+
       crit_times_set = 1;
     }
 
@@ -267,20 +289,25 @@ to the shortest match.")
   if (nargin == 1)
     {
       print_lsode_option_list ();
+      return retval;
     }
   else if (nargin == 3)
     {
-      if (args(1).is_string ())
+      char *keyword = args(1).string_value ();
+
+      if (! error_state)
 	{
-	  char *keyword = args(1).string_value ();
 	  double val = args(2).double_value ();
-	  do_lsode_option (keyword, val);
+
+	  if (! error_state)
+	    {
+	      do_lsode_option (keyword, val);
+	      return retval;
+	    }
 	}
-      else
-	print_usage ("lsode_options");
     }
-  else
-    print_usage ("lsode_options");
+
+  print_usage ("lsode_options");
 
   return retval;
 }

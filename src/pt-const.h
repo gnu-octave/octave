@@ -204,16 +204,14 @@ public:
   tree_constant all (void) const { return rep->all (); }
   tree_constant any (void) const { return rep->any (); }
 
-// Broader classifications.
-
-  int is_scalar_type (void) const { return rep->is_scalar_type (); }
-  int is_matrix_type (void) const { return rep->is_matrix_type (); }
-
   int is_real_type (void) const { return rep->is_real_type (); }
 
   int is_complex_type (void) const { return rep->is_complex_type (); }
 
-// These need better names, since a range really is a numeric type.
+// Would be nice to get rid of the next four functions:
+
+  int is_scalar_type (void) const { return rep->is_scalar_type (); }
+  int is_matrix_type (void) const { return rep->is_matrix_type (); }
 
   int is_numeric_type (void) const
     { return rep->is_numeric_type (); }
@@ -283,43 +281,6 @@ public:
 
   void convert_to_row_or_column_vector (void)
     { rep->convert_to_row_or_column_vector (); }
-
-// These need better names, since a range really is a numeric type.
-
-  void force_numeric (int force_str_conv = 0)
-    { rep->force_numeric (force_str_conv); }
-
-  tree_constant make_numeric (int force_str_conv = 0) const
-    {
-      if (is_numeric_type ())
-	return *this;
-      else
-	return rep->make_numeric (force_str_conv);
-    }
-
-  tree_constant make_numeric_or_range (void) const
-    {
-      if (is_numeric_type () || is_range ())
-	return *this;
-      else
-	return rep->make_numeric ();
-    }
-
-  tree_constant make_numeric_or_magic (void) const
-    {
-      if (is_numeric_type () || is_magic_colon ())
-	return *this;
-      else
-	return rep->make_numeric ();
-    }
-
-  tree_constant make_numeric_or_range_or_magic (void) const
-    {
-      if (is_numeric_type () || is_range () || is_magic_colon ())
-	return *this;
-      else
-	return rep->make_numeric ();
-    }
 
 // Increment or decrement this constant.
 
@@ -402,6 +363,49 @@ public:
     { return rep->const_type (); }
 
 // -------------------------------------------------------------------
+
+private:
+
+// Can we make these go away?
+
+// These need better names, since a range really is a numeric type.
+
+  void force_numeric (int force_str_conv = 0)
+    { rep->force_numeric (force_str_conv); }
+
+  tree_constant make_numeric (int force_str_conv = 0) const
+    {
+      if (is_numeric_type ())
+	return *this;
+      else
+	return rep->make_numeric (force_str_conv);
+    }
+
+#if 0
+  tree_constant make_numeric_or_range (void) const
+    {
+      if (is_numeric_type () || is_range ())
+	return *this;
+      else
+	return rep->make_numeric ();
+    }
+#endif
+
+  tree_constant make_numeric_or_magic (void) const
+    {
+      if (is_numeric_type () || is_magic_colon ())
+	return *this;
+      else
+	return rep->make_numeric ();
+    }
+
+  tree_constant make_numeric_or_range_or_magic (void) const
+    {
+      if (is_numeric_type () || is_range () || is_magic_colon ())
+	return *this;
+      else
+	return rep->make_numeric ();
+    }
 };
 
 // XXX FIXME XXX -- this is not used very much now.  Perhaps it can be

@@ -133,14 +133,14 @@ is_valid_function (const tree_constant& arg, char *warn_for, int warn)
 {
   tree_fvc *ans = 0;
 
-  if (! arg.is_string ())
+  char *fcn_name = arg.string_value ();
+
+  if (error_state)
     {
       if (warn)
 	error ("%s: expecting function name as argument", warn_for);
       return ans;
     }
-
-  char *fcn_name = arg.string_value ();
 
   symbol_record *sr = 0;
   if (fcn_name)
@@ -184,15 +184,19 @@ otherwise, return 0.")
 {
   Octave_object retval = 0.0;
 
-  int nargin = args.length ();
-
-  if (nargin != 2 || ! args(1).is_string ())
+  if (args.length () != 2)
     {
       print_usage ("is_global");
       return retval;
     }
 
   char *name = args(1).string_value ();
+
+  if (error_state)
+    {
+      error ("is_global: expecting string argument");
+      return retval;
+    }
 
   symbol_record *sr = curr_sym_tab->lookup (name, 0, 0);
 
@@ -209,15 +213,19 @@ a function.")
 {
   Octave_object retval;
 
-  int nargin = args.length ();
-
-  if (nargin != 2 || ! args(1).is_string ())
+  if (args.length () != 2)
     {
       print_usage ("exist");
       return retval;
     }
 
   char *name = args(1).string_value ();
+
+  if (error_state)
+    {
+      error ("exist: expecting string argument");
+      return retval;
+    }
 
   symbol_record *sr = curr_sym_tab->lookup (name, 0, 0);
   if (! sr)
@@ -678,6 +686,7 @@ builtin_string_variable (const char *name)
       if (! error_state && val.is_string ())
 	{
 	  char *s = val.string_value ();
+
 	  if (s)
 	    retval = strsave (s);
 	}

@@ -184,77 +184,73 @@ sort the columns of X, optionally return sort index")
   else
     retval.resize (1);
 
-  tree_constant tmp = args(1);
+  tree_constant arg = args(1);
 
-  if (tmp.is_real_scalar ())
+  if (arg.is_real_type ())
     {
-      retval(0) = tmp.double_value ();
-      if (return_idx)
-	retval(1) = 1.0;
-    }
-  else if (tmp.is_complex_scalar ())
-    {
-      retval(0) = tmp.complex_value ();
-      if (return_idx)
-	retval(1) = 1.0;
-    }
-  else if (tmp.is_real_matrix () || tmp.is_string () || tmp.is_range ())
-    {
-      Matrix m = tmp.matrix_value ();
-      if (m.rows () == 1)
-	{
-	  int nc = m.columns ();
-	  RowVector v (nc);
-	  for (int i = 0; i < nc; i++)
-	    v.elem (i) = m.elem (0, i);
-	  RowVector idx;
-	  mx_sort (v, idx, return_idx);
+      Matrix m = arg.matrix_value ();
 
-	  retval(0) = tree_constant (v, 0);
-	  if (return_idx)
-	    retval(1) = tree_constant (idx, 0);
-	}
-      else
+      if (! error_state)
 	{
+	  if (m.rows () == 1)
+	    {
+	      int nc = m.columns ();
+	      RowVector v (nc);
+	      for (int i = 0; i < nc; i++)
+		v.elem (i) = m.elem (0, i);
+	      RowVector idx;
+	      mx_sort (v, idx, return_idx);
+
+	      retval(0) = tree_constant (v, 0);
+	      if (return_idx)
+		retval(1) = tree_constant (idx, 0);
+	    }
+	  else
+	    {
 // Sorts m in place, optionally computes index Matrix.
-	  Matrix idx;
-	  mx_sort (m, idx, return_idx);
+	      Matrix idx;
+	      mx_sort (m, idx, return_idx);
 
-	  retval(0) = m;
-	  if (return_idx)
-	    retval(1) = idx;
+	      retval(0) = m;
+	      if (return_idx)
+		retval(1) = idx;
+	    }
 	}
     }
-  else if (tmp.is_complex_matrix ())
+  else if (arg.is_complex_type ())
     {
-      ComplexMatrix cm = tmp.complex_matrix_value ();
-      if (cm.rows () == 1)
-	{
-	  int nc = cm.columns ();
-	  ComplexRowVector cv (nc);
-	  for (int i = 0; i < nc; i++)
-	    cv.elem (i) = cm.elem (0, i);
-	  RowVector idx;
-	  mx_sort (cv, idx, return_idx);
+      ComplexMatrix cm = arg.complex_matrix_value ();
 
-	  retval(0) = tree_constant (cv, 0);
-	  if (return_idx)
-	    retval(1) = tree_constant (idx, 0);
-	}
-      else
+      if (! error_state)
 	{
+	  if (cm.rows () == 1)
+	    {
+	      int nc = cm.columns ();
+	      ComplexRowVector cv (nc);
+	      for (int i = 0; i < nc; i++)
+		cv.elem (i) = cm.elem (0, i);
+	      RowVector idx;
+	      mx_sort (cv, idx, return_idx);
+
+	      retval(0) = tree_constant (cv, 0);
+	      if (return_idx)
+		retval(1) = tree_constant (idx, 0);
+	    }
+	  else
+	    {
 // Sorts cm in place, optionally computes index Matrix.
-	  Matrix idx;
-	  mx_sort (cm, idx, return_idx);
+	      Matrix idx;
+	      mx_sort (cm, idx, return_idx);
 
-	  retval(0) = cm;
-	  if (return_idx)
-	    retval(1) = idx;
+	      retval(0) = cm;
+	      if (return_idx)
+		retval(1) = idx;
+	    }
 	}
     }
   else
     {
-      gripe_wrong_type_arg ("sort", tmp);
+      gripe_wrong_type_arg ("sort", arg);
     }
 
   return retval;

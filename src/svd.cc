@@ -43,7 +43,7 @@ Compute the singular value decomposition of X.  Given a second input\n\
 argument, an `economy' sized factorization is computed that omits\n\
 unnecessary rows and columns of U and V")
 {
-  Octave_object retval (3, Matrix ());
+  Octave_object retval;
 
   int nargin = args.length ();
 
@@ -53,52 +53,55 @@ unnecessary rows and columns of U and V")
       return retval;
     }
 
-  SVD::type type = (nargin == 3) ? SVD::economy : SVD::std;
-
   tree_constant arg = args(1);
+
+  if (empty_arg ("svd", arg.rows (), arg.columns ()) < 0)
+    return retval;
+
+  SVD::type type = (nargin == 3) ? SVD::economy : SVD::std;
 
   if (arg.is_real_type ())
     {
       Matrix tmp = arg.matrix_value ();
 
-      if (error_state || empty_arg ("svd", tmp.rows (), tmp.columns ()))
-	return retval;
-
-      SVD result (tmp, type);
-
-      DiagMatrix sigma = result.singular_values ();
-
-      if (nargout == 0 || nargout == 1)
+      if (! error_state)
 	{
-	  retval(0) = tree_constant (sigma.diag (), 1);
-	}
-      else
-	{
-	  retval(2) = result.right_singular_matrix ();
-	  retval(1) = sigma;
-	  retval(0) = result.left_singular_matrix ();
+	  SVD result (tmp, type);
+
+	  DiagMatrix sigma = result.singular_values ();
+
+	  if (nargout == 0 || nargout == 1)
+	    {
+	      retval(0) = tree_constant (sigma.diag (), 1);
+	    }
+	  else
+	    {
+	      retval(2) = result.right_singular_matrix ();
+	      retval(1) = sigma;
+	      retval(0) = result.left_singular_matrix ();
+	    }
 	}
     }
   else if (arg.is_complex_type ())
     {
       ComplexMatrix ctmp = arg.complex_matrix_value ();
 
-      if (error_state || empty_arg ("svd", ctmp.rows (), ctmp.columns ()))
-	return retval;
-
-      ComplexSVD result (ctmp, type);
-
-      DiagMatrix sigma = result.singular_values ();
-
-      if (nargout == 0 || nargout == 1)
+      if (! error_state)
 	{
-	  retval(0) = tree_constant (sigma.diag (), 1);
-	}
-      else
-	{
-	  retval(2) = result.right_singular_matrix ();
-	  retval(1) = sigma;
-	  retval(0) = result.left_singular_matrix ();
+	  ComplexSVD result (ctmp, type);
+
+	  DiagMatrix sigma = result.singular_values ();
+
+	  if (nargout == 0 || nargout == 1)
+	    {
+	      retval(0) = tree_constant (sigma.diag (), 1);
+	    }
+	  else
+	    {
+	      retval(2) = result.right_singular_matrix ();
+	      retval(1) = sigma;
+	      retval(0) = result.left_singular_matrix ();
+	    }
 	}
     }
   else

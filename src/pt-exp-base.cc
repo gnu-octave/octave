@@ -314,8 +314,7 @@ tree_matrix::eval (int print)
 	  goto done;
 	}
 
-      Octave_object otmp = elem->eval (0);
-      tree_constant tmp = otmp(0);
+      tree_constant tmp = elem->eval (0);
       if (error_state || tmp.is_undefined ())
 	{
 	  retval = tree_constant ();
@@ -496,17 +495,7 @@ tree_matrix::eval (int print)
 		  str_ptr += nc;
 		}
 	    }
-	  else if (tmp.is_range ())
-	    {
-	      tmp.force_numeric (1);
-	      if (tmp.is_real_scalar ())
-		m (put_row, put_col) = tmp.double_value ();
-	      else if (tmp.is_real_matrix ())
-		m.insert (tmp.matrix_value (), put_row, put_col);
-	      else
-		panic_impossible ();
-	    }
-	  else if (tmp.is_real_matrix ())
+	  else if (tmp.is_real_matrix () || tmp.is_range ())
 	    {
 	      cm.insert (tmp.matrix_value (), put_row, put_col);
 	    }
@@ -537,17 +526,7 @@ tree_matrix::eval (int print)
 		  str_ptr += nc;
 		}
 	    }
-	  else if (tmp.is_range ())
-	    {
-	      tmp.force_numeric (1);
-	      if (tmp.is_real_scalar ())
-		m (put_row, put_col) = tmp.double_value ();
-	      else if (tmp.is_real_matrix ())
-		m.insert (tmp.matrix_value (), put_row, put_col);
-	      else
-		panic_impossible ();
-	    }
-	  else if (tmp.is_real_matrix ())
+	  else if (tmp.is_real_matrix () || tmp.is_range ())
 	    {
 	      m.insert (tmp.matrix_value (), put_row, put_col);
 	    }
@@ -1234,8 +1213,7 @@ tree_unary_expression::eval (int print)
     case tree_expression::transpose:
       if (op)
 	{
-	  Octave_object tmp =  op->eval (0);
-	  tree_constant u = tmp(0);
+	  tree_constant u = op->eval (0);
 	  if (error_state)
 	    eval_error ();
 	  else if (u.is_defined ())
@@ -1347,14 +1325,12 @@ tree_binary_expression::eval (int print)
     case tree_expression::or:
       if (op1)
 	{
-	  Octave_object tmp = op1->eval (0);
-	  tree_constant a = tmp(0);
+	  tree_constant a = op1->eval (0);
 	  if (error_state)
 	    eval_error ();
 	  else if (a.is_defined () && op2)
 	    {
-	      tmp = op2->eval (0);
-	      tree_constant b = tmp (0);
+	      tree_constant b = op2->eval (0);
 	      if (error_state)
 		eval_error ();
 	      else if (b.is_defined ())
@@ -1376,8 +1352,7 @@ tree_binary_expression::eval (int print)
 	int result = 0;
 	if (op1)
 	  {
-	    Octave_object tmp = op1->eval (0);
-	    tree_constant a = tmp(0);
+	    tree_constant a = op1->eval (0);
 	    if (error_state)
 	      {
 		eval_error ();
@@ -1410,8 +1385,7 @@ tree_binary_expression::eval (int print)
 
 	    if (op2)
 	      {
-		tmp = op2->eval (0);
-		tree_constant b = tmp(0);
+		tree_constant b = op2->eval (0);
 		if (error_state)
 		  {
 		    eval_error ();
@@ -1535,8 +1509,7 @@ tree_simple_assignment_expression::eval (int print)
 
   if (rhs)
     {
-      Octave_object tmp = rhs->eval (0);
-      tree_constant rhs_val = tmp(0);
+      tree_constant rhs_val = rhs->eval (0);
       if (error_state)
 	{
 	  if (error_state)
@@ -1844,8 +1817,7 @@ tree_colon_expression::eval (int print)
   if (error_state || ! op1 || ! op2)
     return retval;
 
-  Octave_object otmp = op1->eval (0);
-  tree_constant tmp = otmp(0);
+  tree_constant tmp = op1->eval (0);
 
   if (tmp.is_undefined ())
     {
@@ -1853,16 +1825,15 @@ tree_colon_expression::eval (int print)
       return retval;
     }
 
-  tmp = tmp.make_numeric ();
-  if (! tmp.is_scalar_type ())
-    {
-      eval_error ("base for colon expression must be a scalar");
-      return retval;
-    }
   double base = tmp.double_value ();
 
-  otmp = op2->eval (0);
-  tmp = otmp(0);
+  if (error_state)
+    {
+      eval_error ("evaluating colon expression");
+      return retval;
+    }
+
+  tmp = op2->eval (0);
 
   if (tmp.is_undefined ())
     {
@@ -1870,19 +1841,18 @@ tree_colon_expression::eval (int print)
       return retval;
     }
 
-  tmp = tmp.make_numeric ();
-  if (! tmp.is_scalar_type ())
+  double limit = tmp.double_value ();
+
+  if (error_state)
     {
-      eval_error ("limit for colon expression must be a scalar");
+      eval_error ("evaluating colon expression");
       return retval;
     }
-  double limit = tmp.double_value ();
 
   double inc = 1.0;
   if (op3)
     {
-      otmp = op3->eval (0);
-      tmp = otmp(0);
+      tmp = op3->eval (0);
 
       if (tmp.is_undefined ())
 	{
@@ -1890,14 +1860,13 @@ tree_colon_expression::eval (int print)
 	  return retval;
 	}
 
-      tmp = tmp.make_numeric ();
-      if (! tmp.is_scalar_type ())
+      inc = tmp.double_value ();
+
+      if (error_state)
 	{
-	  eval_error ("increment for colon expression must be a scalar");
+	  eval_error ("evaluating colon expression");
 	  return retval;
 	}
-      else
-	inc = tmp.double_value ();
     }
 
   retval = tree_constant (base, limit, inc);

@@ -32,6 +32,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "user-prefs.h"
 #include "gripes.h"
 #include "error.h"
+#include "utils.h"
 #include "help.h"
 #include "defun-dld.h"
 
@@ -48,31 +49,39 @@ DEFUN_DLD ("det", Fdet, Sdet, 2, 1,
       return retval;
     }
 
-  tree_constant tmp = args(1).make_numeric ();;
+  tree_constant arg = args(1);
     
-  int nr = tmp.rows ();
-  int nc = tmp.columns ();
-  if (nr == 0 || nc == 0)
-    {
-      int flag = user_pref.propagate_empty_matrices;
-      if (flag < 0)
-	gripe_empty_arg ("det", 0);
-      else if (flag == 0)
-	gripe_empty_arg ("det", 1);
-    }
+  int nr = arg.rows ();
+  int nc = arg.columns ();
 
   if (nr == 0 && nc == 0)
-    return 1.0;
-
-  if (tmp.is_real_matrix ())
     {
-      Matrix m = tmp.matrix_value ();
-      if (m.rows () == m.columns ())
+      retval = 1.0;
+      return retval;
+    }
+
+  if (empty_arg ("det", nr, nc) < 0)
+    return retval;
+
+  if (nr != nc)
+    {
+      gripe_square_matrix_required ("det");
+      return retval;
+    }
+
+  if (arg.is_real_type ())
+    {
+      Matrix m = arg.matrix_value ();
+
+      if (! error_state)
 	{
 	  int info;
 	  double rcond = 0.0;
+
 	  DET det = m.determinant (info, rcond);
+
 	  double d = 0.0;
+
 	  if (info == -1)
 	    warning ("det: matrix singular to machine precision, rcond = %g",
 		     rcond);
@@ -81,18 +90,20 @@ DEFUN_DLD ("det", Fdet, Sdet, 2, 1,
 
 	  retval = d;
 	}
-      else
-	gripe_square_matrix_required ("det");
     }
-  else if (tmp.is_complex_matrix ())
+  else if (arg.is_complex_matrix ())
     {
-      ComplexMatrix m = tmp.complex_matrix_value ();
-      if (m.rows () == m.columns ())
+      ComplexMatrix m = arg.complex_matrix_value ();
+
+      if (! error_state)
 	{
 	  int info;
 	  double rcond = 0.0;
+
 	  ComplexDET det = m.determinant (info, rcond);
+
 	  Complex c = 0.0;
+
 	  if (info == -1)
 	    warning ("det: matrix singular to machine precision, rcond = %g",
 		     rcond);
@@ -101,22 +112,10 @@ DEFUN_DLD ("det", Fdet, Sdet, 2, 1,
 
 	  retval = c;
 	}
-      else
-	gripe_square_matrix_required ("det");
-    }
-  else if (tmp.is_real_scalar ())
-    {
-      double d = tmp.double_value ();
-      retval = d;
-    }
-  else if (tmp.is_complex_scalar ())
-    {
-      Complex c = tmp.complex_value ();
-      retval = c;
     }
   else
     {
-      gripe_wrong_type_arg ("det", tmp);
+      gripe_wrong_type_arg ("det", arg);
     }
 
   return retval;

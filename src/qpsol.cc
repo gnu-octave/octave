@@ -97,21 +97,24 @@ Handle all of the following:
     }
 
   ColumnVector x = args(1).vector_value ();
-  if (x.capacity () == 0)
+
+  if (error_state || x.capacity () == 0)
     {
       error ("qpsol: expecting vector as first argument");
       return retval;
     }
 
   Matrix H = args(2).matrix_value ();
-  if (H.rows () != H.columns () || H.rows () != x.capacity ())
+
+  if (error_state || H.rows () != H.columns () || H.rows () != x.capacity ())
     {
       error ("qpsol: H must be a square matrix consistent with the size of x");
       return retval;
     }
 
   ColumnVector c = args(3).vector_value ();
-  if (c.capacity () != x.capacity ())
+
+  if (error_state || c.capacity () != x.capacity ())
     {
       error ("qpsol: c must be a vector the same size as x");
       return retval;
@@ -125,7 +128,8 @@ Handle all of the following:
 
       int lb_len = lb.capacity ();
       int ub_len = ub.capacity ();
-      if (lb_len != ub_len || lb_len != x.capacity ())
+
+      if (error_state || lb_len != ub_len || lb_len != x.capacity ())
 	{
 	  error ("qpsol: lower and upper bounds and decision variable vector");
 	  error ("must all have the same number of elements");
@@ -167,12 +171,19 @@ Handle all of the following:
   if (nargin == 7 || nargin == 9)
     {
       ColumnVector lub = args(nargin-1).vector_value ();
-      Matrix A = args(nargin-2).matrix_value ();
       ColumnVector llb = args(nargin-3).vector_value ();
 
-      if (llb.capacity () == 0 || lub.capacity () == 0)
+      if (error_state || llb.capacity () == 0 || lub.capacity () == 0)
 	{
 	  error ("qpsol: bounds for linear constraints must be vectors");
+	  return retval;
+	}
+
+      Matrix A = args(nargin-2).matrix_value ();
+
+      if (error_state)
+	{
+	  error ("qpsol: invalid linear constraint matrix");
 	  return retval;
 	}
 
@@ -360,22 +371,25 @@ to the shortest match.")
   if (nargin == 1)
     {
       print_qpsol_option_list ();
+      return retval;
     }
   else if (nargin == 3)
     {
-      if (args(1).is_string ())
+      char *keyword = args(1).string_value ();
+
+      if (! error_state)
 	{
-	  char *keyword = args(1).string_value ();
 	  double val = args(2).double_value ();
-	  do_qpsol_option (keyword, val);
+
+	  if (! error_state)
+	    {
+	      do_qpsol_option (keyword, val);
+	      return retval;
+	    }
 	}
-      else
-	print_usage ("qpsol_options");
     }
-  else
-    {
-      print_usage ("qpsol_options");
-    }
+
+  print_usage ("qpsol_options");
 
 #endif
 

@@ -177,9 +177,10 @@ rand (SEED, N)        -- set seed")
 	}
       else if (tmp.is_scalar_type ())
 	{
-	  n = NINT (tmp.double_value ());
-	  m = n;
-	  goto gen_matrix;
+	  m = n = NINT (tmp.double_value ());
+
+	  if (! error_state)
+	    goto gen_matrix;
 	}
       else if (tmp.is_range ())
 	{
@@ -206,13 +207,21 @@ rand (SEED, N)        -- set seed")
 	  && strcmp (args(1).string_value (), "seed") == 0)
 	{
 	  double d = args(2).double_value ();
-	  set_rand_seed (d);
+
+	  if (! error_state)
+	    set_rand_seed (d);
 	}
       else
 	{
 	  n = NINT (args(1).double_value ());
-	  m = NINT (args(2).double_value ());
-	  goto gen_matrix;
+
+	  if (! error_state)
+	    {
+	      m = NINT (args(2).double_value ());
+
+	      if (! error_state)
+		goto gen_matrix;
+	    }
 	}
     }
 

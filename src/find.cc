@@ -35,10 +35,10 @@ find_to_fortran_idx (const ColumnVector i_idx, const ColumnVector j_idx,
 		     const tree_constant& val, int nr, int nc, int nargout)
 {
   Octave_object retval;
-  retval.resize (nargout);
 
   switch (nargout)
     {
+    case 0:
     case 1:
       {
 	int count = i_idx.length ();
@@ -51,15 +51,19 @@ find_to_fortran_idx (const ColumnVector i_idx, const ColumnVector j_idx,
 //	retval(0) = tree_constant (tmp, (nr != 1));
       }
       break;
+
     case 3:
       retval(2) = val;
+// Fall through!
+
     case 2:
+      retval(1) = tree_constant (j_idx, 1);
       retval(0) = tree_constant (i_idx, 1);
 // If you want this to work more like Matlab, use the following line
 // instead of the previous one.
 //    retval(0) = tree_constant (i_idx, (nr != 1));
-      retval(1) = tree_constant (j_idx, 1);
       break;
+
     default:
       panic_impossible ();
       break;
@@ -81,8 +85,7 @@ find_nonzero_elem_idx (const Matrix& m, int nargout)
       if (m.elem (i, j) != 0.0)
 	count++;
 
-  Matrix result;
-  Octave_object retval (nargout, result);
+  Octave_object retval (((nargout == 0) ? 1 : nargout), Matrix ());
 
   if (count == 0)
     return retval;
@@ -122,8 +125,7 @@ find_nonzero_elem_idx (const ComplexMatrix& m, int nargout)
       if (m.elem (i, j) != 0.0)
 	count++;
 
-  Matrix result;
-  Octave_object retval (nargout, result);
+  Octave_object retval (((nargout == 0) ? 1 : nargout), Matrix ());
 
   if (count == 0)
     return retval;
@@ -163,49 +165,25 @@ DEFUN_DLD ("find", Ffind, Sfind, 2, 3,
       return retval;
     }
 
-  nargout = (nargout == 0) ? 1 : nargout;
+  tree_constant arg = args(1);
 
-  retval.resize (nargout, Matrix ());
+  if (arg.is_real_type ())
+    {
+      Matrix m = arg.matrix_value ();
 
-  tree_constant tmp = args(1).make_numeric ();
+      if (! error_state)
+	retval = find_nonzero_elem_idx (m, nargout);
+    }
+  else if (arg.is_complex_type ())
+    {
+      ComplexMatrix m = arg.complex_matrix_value ();
 
-  if (tmp.is_real_matrix ())
-    {
-      Matrix m = tmp.matrix_value ();
-      return find_nonzero_elem_idx (m, nargout);
-    }
-  else if (tmp.is_real_scalar ())
-    {
-      double d = tmp.double_value ();
-      if (d != 0.0)
-	{
-	  retval(0) = 1.0;
-	  if (nargout > 1)
-	    retval(1) = 1.0;
-	  if (nargout > 2)
-	    retval(2) = d;
-	}
-    }
-  else if (tmp.is_complex_matrix ())
-    {
-      ComplexMatrix m = tmp.complex_matrix_value ();
-      return find_nonzero_elem_idx (m, nargout);
-    }
-  else if (tmp.is_complex_scalar ())
-    {
-      Complex c = tmp.complex_value ();
-      if (c != 0.0)
-	{
-	  retval(0) = 1.0;
-	  if (nargout > 1)
-	    retval(1) = 1.0;
-	  if (nargout > 2)
-	    retval(2) = c;
-	}
+      if (! error_state)
+	retval = find_nonzero_elem_idx (m, nargout);
     }
   else
     {
-      gripe_wrong_type_arg ("find", tmp);
+      gripe_wrong_type_arg ("find", arg);
     }
 
   return retval;

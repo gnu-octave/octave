@@ -159,7 +159,7 @@ npsol_constraint_function (const ColumnVector& x)
 	{
 	  retval = tmp(0).vector_value ();
 
-	  if (retval.length () <= 0)
+	  if (error_state || retval.length () <= 0)
 	    error ("npsol: error evaluating constraints");
 	}
       else
@@ -296,7 +296,7 @@ Handle all of the following:
 
   ColumnVector x = args(1).vector_value ();
 
-  if (x.capacity () == 0)
+  if (error_state || x.capacity () == 0)
     {
       error ("npsol: expecting vector as first argument");
       return retval;
@@ -319,7 +319,8 @@ Handle all of the following:
 
       int lb_len = lb.capacity ();
       int ub_len = ub.capacity ();
-      if (lb_len != ub_len || lb_len != x.capacity ())
+
+      if (error_state || lb_len != ub_len || lb_len != x.capacity ())
 	{
 	  error ("npsol: lower and upper bounds and decision variable vector");
 	  error ("must all have the same number of elements");
@@ -366,12 +367,19 @@ Handle all of the following:
       if (! npsol_constraints)
 	{
 	  ColumnVector lub = args(nargin-1).vector_value ();
-	  Matrix c = args(nargin-2).matrix_value ();
 	  ColumnVector llb = args(nargin-3).vector_value ();
 
-	  if (llb.capacity () == 0 || lub.capacity () == 0)
+	  if (error_state || llb.capacity () == 0 || lub.capacity () == 0)
 	    {
 	      error ("npsol: bounds for linear constraints must be vectors");
+	      return retval;
+	    }
+
+	  Matrix c = args(nargin-2).matrix_value ();
+
+	  if (error_state)
+	    {
+	      error ("npsol: invalid linear constraint matrix");
 	      return retval;
 	    }
 
@@ -405,12 +413,12 @@ Handle all of the following:
 	      ColumnVector nlub = args(nargin-1).vector_value ();
 	      ColumnVector nllb = args(nargin-3).vector_value ();
 
-	      NLFunc const_func (npsol_constraint_function);
-
-	      if (! nonlinear_constraints_ok
-		  (x, nllb, npsol_constraint_function, nlub, "npsol", 1))
+	      if (error_state
+		  || (! nonlinear_constraints_ok
+		      (x, nllb, npsol_constraint_function, nlub, "npsol", 1)))
 		return retval;
 
+	      NLFunc const_func (npsol_constraint_function);
 	      NLConst nonlinear_constraints (nllb, const_func, nlub);
 
 	      if (nargin == 6)
@@ -448,21 +456,28 @@ Handle all of the following:
 	      ColumnVector nlub = args(nargin-1).vector_value ();
 	      ColumnVector nllb = args(nargin-3).vector_value ();
 
-	      NLFunc const_func (npsol_constraint_function);
-
-	      if (! nonlinear_constraints_ok
-		  (x, nllb, npsol_constraint_function, nlub, "npsol", 1))
+	      if (error_state
+		  || (! nonlinear_constraints_ok
+		      (x, nllb, npsol_constraint_function, nlub, "npsol", 1)))
 		return retval;
 
+	      NLFunc const_func (npsol_constraint_function);
 	      NLConst nonlinear_constraints (nllb, const_func, nlub);
 
 	      ColumnVector lub = args(nargin-4).vector_value ();
-	      Matrix c = args(nargin-5).matrix_value ();
 	      ColumnVector llb = args(nargin-6).vector_value ();
 
-	      if (llb.capacity () == 0 || lub.capacity () == 0)
+	      if (error_state || llb.capacity () == 0 || lub.capacity () == 0)
 		{
 		  error ("npsol: bounds for linear constraints must be vectors");
+		  return retval;
+		}
+	      
+	      Matrix c = args(nargin-5).matrix_value ();
+
+	      if (error_state)
+		{
+		  error ("npsol: invalid linear constraint matrix");
 		  return retval;
 		}
 
@@ -750,22 +765,25 @@ to the shortest match.")
   if (nargin == 1)
     {
       print_npsol_option_list ();
+      return retval;
     }
   else if (nargin == 3)
     {
-      if (args(1).is_string ())
+      char *keyword = args(1).string_value ();
+
+      if (! error_state)
 	{
-	  char *keyword = args(1).string_value ();
 	  double val = args(2).double_value ();
-	  do_npsol_option (keyword, val);
+
+	  if (! error_state)
+	    {
+	      do_npsol_option (keyword, val);
+	      return retval;
+	    }
 	}
-      else
-	print_usage ("npsol_options");
     }
-  else
-    {
-      print_usage ("npsol_options");
-    }
+
+  print_usage ("npsol_options");
 
 #endif
 

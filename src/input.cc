@@ -753,13 +753,13 @@ get_user_input (const Octave_object& args, int nargout, int debug = 0)
   char *prompt = "debug> ";
   if (nargin > 1)
    {
-      if (args(1).is_string ())
-	prompt = args(1).string_value ();
-      else
-	{
-	  error ("input: unrecognized argument");
-	  return retval;
-	}
+     prompt = args(1).string_value ();
+
+     if (error_state)
+       {
+	 error ("input: unrecognized argument");
+	 return retval;
+       }
     }
 
  again:

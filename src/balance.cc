@@ -39,6 +39,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "user-prefs.h"
 #include "gripes.h"
 #include "error.h"
+#include "utils.h"
 #include "help.h"
 #include "defun-dld.h"
 
@@ -74,8 +75,9 @@ where OPT is an optional single character argument as follows: \n\
   char *bal_job;
   int my_nargin;		// # args w/o optional string arg
 
-  // determine if balancing option is listed
-  // set my_nargin to the number of matrix inputs
+// Determine if balancing option is listed.  Set my_nargin to the
+// number of matrix inputs.
+
   if (args(nargin-1).is_string ())
     {
       bal_job = args(nargin-1).string_value ();
@@ -87,30 +89,15 @@ where OPT is an optional single character argument as follows: \n\
       my_nargin = nargin-1;
     }
 
-  tree_constant arg = args(1).make_numeric ();
-  int a_nr = arg.rows ();
-  int a_nc = arg.columns ();
+  tree_constant arg_a = args(1);
+
+  int a_nr = arg_a.rows ();
+  int a_nc = arg_a.columns ();
 
 // Check argument 1 dimensions.
 
-  if (a_nr == 0 || a_nc == 0)
-    {
-      int flag = user_pref.propagate_empty_matrices;
-      if (flag != 0)
-	{
-	  if (flag < 0)
-	    warning ("balance: argument is empty matrix");
-
-	  Matrix m;
-	  retval.resize (2);
-	  retval(0) = m;
-	  retval(1) = m;
-	}
-      else
-	error ("balance: empty matrix is invalid as argument");
-
-      return retval;
-    }
+  if (empty_arg ("balance", a_nr, a_nc) < 0)
+    return retval;
 
   if (a_nr != a_nc)
     {
@@ -122,38 +109,23 @@ where OPT is an optional single character argument as follows: \n\
 
   Matrix aa;
   ComplexMatrix caa;
-  if (arg.is_complex_type ())
-    {
-      if (arg.is_matrix_type ())
-	caa=arg.complex_matrix_value ();
-      else
-	{
-	  caa.resize (1, 1);
-	  caa.elem (0, 0) = arg.complex_value ();
-	}
-    }
+  if (arg_a.is_complex_type ())
+    caa = arg_a.complex_matrix_value ();
   else
-    {
-      if (arg.is_matrix_type ())
-	aa = arg.matrix_value ();
-      else
-	{
-	  double d = arg.double_value ();
-	  aa.resize (1, 1);
-	  aa.elem (0, 0) = d;
-	}
-    }
+    aa = arg_a.matrix_value ();
+
+  if (error_state)
+    return retval;
 
 // Treat AEP/ GEP cases.
 
   switch (my_nargin)
     {
     case 1:
-
+      
 // Algebraic eigenvalue problem.
 
-      retval.resize (nargout ? nargout : 1);
-      if (arg.is_complex_type ())
+      if (arg_a.is_complex_type ())
 	{
 	  ComplexAEPBALANCE result (caa, bal_job);
 
@@ -161,8 +133,8 @@ where OPT is an optional single character argument as follows: \n\
 	    retval(0) = result.balanced_matrix ();
 	  else
 	    {
-	      retval(0) = result.balancing_matrix ();
 	      retval(1) = result.balanced_matrix ();
+	      retval(0) = result.balancing_matrix ();
 	    }
 	}
       else
@@ -173,27 +145,26 @@ where OPT is an optional single character argument as follows: \n\
 	    retval(0) = result.balanced_matrix ();
 	  else
 	    {
-	      retval(0) = result.balancing_matrix ();
 	      retval(1) = result.balanced_matrix ();
+	      retval(0) = result.balancing_matrix ();
 	    }
 	}
       break;
-    case 2:
 
+    case 2:
+      {
 // Generalized eigenvalue problem.
 
-      {
-	retval.resize (nargout ? nargout : 1);
-      
 // 1st we have to check argument 2 dimensions and type...
 
-	tree_constant brg = args(2).make_numeric ();
-	int b_nr = brg.rows ();
-	int b_nc = brg.columns ();
+	tree_constant arg_b = args(2);
+
+	int b_nr = arg_b.rows ();
+	int b_nc = arg_b.columns ();
       
 // Check argument 2 dimensions -- must match arg 1.
 
-	if ((b_nr != b_nc) || (b_nr != a_nr))
+	if (b_nr != b_nc || b_nr != a_nr)
 	  {
 	    gripe_nonconformant ();
 	    return retval;
@@ -204,42 +175,29 @@ where OPT is an optional single character argument as follows: \n\
 
 	Matrix bb;
 	ComplexMatrix cbb;
-	if (brg.is_complex_type ())
-	  {
-	    if (brg.is_matrix_type ())
-	      cbb = brg.complex_matrix_value ();
-	    else
-	      {
-		cbb.resize (1, 1);
-		cbb.elem (0, 0) = brg.complex_value ();
-	      }
-	  }
+	if (arg_b.is_complex_type ())
+	  cbb = arg_b.complex_matrix_value ();
 	else
-	  {
-	    if (brg.is_matrix_type ())
-	      bb = brg.matrix_value ();
-	    else
-	      {
-		double d = brg.double_value ();
-		bb.resize (1, 1);
-		bb.elem (0, 0) = d;
-	      }
-	  }
-  
+	  bb = arg_b.matrix_value ();
+
+	if (error_state)
+	  return retval;
+
 // Both matrices loaded, now let's check what kind of arithmetic:
 
-	if (arg.is_complex_type () || brg.is_complex_type ())
+	if (arg_a.is_complex_type () || arg_b.is_complex_type ())
 	  {
-	    if (arg.is_real_type ())
+	    if (arg_a.is_real_type ())
 	      caa = aa;
-	    else if (brg.is_real_type ())
+
+	    if (arg_b.is_real_type ())
 	      cbb = bb;
 
 // Compute magnitudes of elements for balancing purposes.
 // Surely there's a function I can call someplace!
 
 	    for (int i = 0; i < a_nr; i++)
-	      for (int j = 0; j < a_nr; j++)
+	      for (int j = 0; j < a_nc; j++)
 		{
 		  aa.elem (i, j) = abs (caa.elem (i, j));
 		  bb.elem (i, j) = abs (cbb.elem (i, j));
@@ -248,7 +206,7 @@ where OPT is an optional single character argument as follows: \n\
 
 	GEPBALANCE result (aa, bb, bal_job);
 
-	if (arg.is_complex_type () || brg.is_complex_type ())
+	if (arg_a.is_complex_type () || arg_b.is_complex_type ())
 	  {
 	    caa = result.left_balancing_matrix () * caa
 	      * result.right_balancing_matrix ();
@@ -263,16 +221,19 @@ where OPT is an optional single character argument as follows: \n\
 		warning ("balance: should use two output arguments");
 		retval(0) = caa;
 		break;
+
 	      case 2:
-		retval(0) = caa;
 		retval(1) = cbb;
+		retval(0) = caa;
 		break;
+
 	      case 4:
-		retval(0) = result.left_balancing_matrix ();
-		retval(1) = result.right_balancing_matrix ();
-		retval(2) = caa;
 		retval(3) = cbb;
+		retval(2) = caa;
+		retval(1) = result.right_balancing_matrix ();
+		retval(0) = result.left_balancing_matrix ();
 		break;
+
 	      default:
 		error ("balance: invalid number of output arguments");
 		break;
@@ -287,16 +248,19 @@ where OPT is an optional single character argument as follows: \n\
 		warning ("balance: should use two output arguments");
 		retval(0) = result.balanced_a_matrix ();
 		break;
+
 	      case 2:
-		retval(0) = result.balanced_a_matrix ();
 		retval(1) = result.balanced_b_matrix ();
+		retval(0) = result.balanced_a_matrix ();
 		break;
+
 	      case 4:
-		retval(0) = result.left_balancing_matrix ();
-		retval(1) = result.right_balancing_matrix ();
-		retval(2) = result.balanced_a_matrix ();
 		retval(3) = result.balanced_b_matrix ();
+		retval(2) = result.balanced_a_matrix ();
+		retval(1) = result.right_balancing_matrix ();
+		retval(0) = result.left_balancing_matrix ();
 		break;
+
 	      default:
 		error ("balance: invalid number of output arguments");
 		break;
@@ -304,10 +268,12 @@ where OPT is an optional single character argument as follows: \n\
 	  }
       }
       break;
+
     default:
       error ("balance requires one (AEP) or two (GEP) numeric arguments");
       break;
     }
+
   return retval;
 }
 

@@ -904,8 +904,6 @@ TC_REP::double_value (int force_string_conversion) const
 	  retval = matrix->elem (0, 0);
 	else
 	  gripe_invalid_conversion ("real matrix", "real scalar");
-
-	retval = octave_NaN;
       }
       break;
 
@@ -1053,7 +1051,7 @@ TC_REP::matrix_value (int force_string_conversion) const
 Complex
 TC_REP::complex_value (int force_string_conversion) const
 {
-  Complex retval;
+  Complex retval (octave_NaN, octave_NaN);
 
   switch (type_tag)
     {
@@ -1077,8 +1075,6 @@ TC_REP::complex_value (int force_string_conversion) const
 	  }
 	else
 	  gripe_invalid_conversion ("real matrix", "real scalar");
-
-	retval = octave_NaN;
       }
       break;
 
@@ -1185,8 +1181,13 @@ TC_REP::complex_matrix_value (int force_string_conversion) const
 char *
 TC_REP::string_value (void) const
 {
-  assert (type_tag == string_constant);
-  return string;
+  if (type_tag == string_constant)
+    return string;
+  else
+    {
+      gripe_invalid_conversion (type_as_string (), "string");
+      return 0;
+    }
 }
 
 Range

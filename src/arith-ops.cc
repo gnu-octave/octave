@@ -26,7 +26,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #endif
 
 #include <ctype.h>
-#include <setjmp.h>
 #include <math.h>
 #include <Complex.h>
 

@@ -1,3 +1,7 @@
+Tue Jun  3 12:16:00 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* miscellaneous/path.m: New file.
+
 Wed May 21 11:45:31 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* miscellaneous/bug_report.m: Pass file id to dump_prefs, not file

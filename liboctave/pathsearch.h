@@ -66,6 +66,8 @@ public:
 
   string_vector find_all (const string&);
 
+  static void set_program_name (const char *);
+
 private:
 
   // The colon separated list.

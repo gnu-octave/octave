@@ -1,3 +1,8 @@
+Wed Jun  4 00:08:55 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pathsearch.h, pathsearch.cc (dir_pat::set_program_name):
+	New static function.
+
 Mon Jun  2 12:44:14 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* lo-mappers.cc (fix): Use floor and ceil instead of casting to int.

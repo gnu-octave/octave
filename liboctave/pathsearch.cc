@@ -28,25 +28,22 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <string>
 
+#include "lo-utils.h"
 #include "pathsearch.h"
+#include "str-vec.h"
 #include "str-vec.h"
 
 extern "C"
 {
 // Have to redefine these because they conflict with new C++ keywords
 // or otherwise cause trouble...
-#define boolean kpse_boolean
-#define true kpse_true
-#define false kpse_false
 #define string kpse_string
 
 #include <kpathsea/pathsearch.h>
+#include <kpathsea/progname.h>
 
 extern unsigned int kpathsea_debug;
 
-#undef true
-#undef false
-#undef boolean
 #undef string
 }
 
@@ -106,8 +103,7 @@ dir_path::find_first (const string& nm)
 
   if (initialized)
     {
-      char *tmp = kpse_path_search (p.c_str (), nm.c_str (),
-				    kpse_true);
+      char *tmp = kpse_path_search (p.c_str (), nm.c_str (), true);
       if (tmp)
 	{
 	  retval = tmp;
@@ -139,6 +135,12 @@ dir_path::find_all (const string& nm)
     }
 
   return retval;
+}
+
+void
+dir_path::set_program_name (const char *nm)
+{
+  kpse_set_progname (nm);
 }
 
 void

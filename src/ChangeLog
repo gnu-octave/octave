@@ -1,3 +1,7 @@
+Wed Jun  4 00:09:42 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* octave.cc (main): Call dir_path::set_program_name here.
+
 Tue Jun  3 16:47:34 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* variables.cc (symbol_out_of_date): Make it work again.

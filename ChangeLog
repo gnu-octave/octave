@@ -1,3 +1,8 @@
+Wed Jun  4 00:07:29 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in (OCTAVE_PROGRAM_INVOCATION_NAME): Delete check.
+	* aclocal.m4 (OCTAVE_PROGRAM_INVOCATION_NAME): Delete macro.
+
 Mon Jun  2 13:56:26 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in: Move checks for RANLIB, AR, and ARFLAGS before

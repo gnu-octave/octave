@@ -63,8 +63,8 @@ function v = findstr (s, t, overlap)
   l_t = length (t);
   
   if (l_t == 0)
-    ## zero length target: return all indices
-    v = 1:l_s;
+    ## zero length target: return empty set
+    v = [];
     
   elseif (l_t == 1)
     ## length one target: simple find

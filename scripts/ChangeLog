@@ -1,3 +1,7 @@
+2003-02-13  Schloegl Alois <alois.schloegl@tugraz.at>
+
+	* strings/findstr.m: Return empty set for zero-length target.
+
 2003-02-11  Paul Kienzle <pkienzle@users.sf.net>
 
 	* set/union.m: Preserve the orientation of inputs.

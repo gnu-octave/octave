@@ -49,20 +49,7 @@ function dsys = c2d (sys, opt, T)
 # Written by R.B. Tenison (btenison@eng.auburn.edu)
 # October 1993
 # Updated by John Ingram for system data structure August 1996
-# SYS_INTERNAL accesses members of system data structure
-# $Log: c2d.m,v $
-# Revision 1.13  1998-11-06 16:15:36  jwe
-# *** empty log message ***
-#
-# Revision 1.3  1998/07/21 14:53:08  hodelas
-# use isempty instead of size tests; use sys calls to reduce direct
-# access to system structure elements
-#
-# Revision 1.2  1998/07/01 16:23:35  hodelas
-# Updated c2d, d2c to perform bilinear transforms.
-# Updated several files per bug updates from users.
-#
-# $Revision: 1.13 $
+# $Revision: 1.14 $
 
   save_val = implicit_str_to_num_ok;	# save for later
   implicit_str_to_num_ok = 1;
@@ -103,51 +90,42 @@ function dsys = c2d (sys, opt, T)
 
   if (n == 0)
     warning("c2d: sys has no continuous states; setting outputs to discrete");
-    dsys = syschnames(sys,"yd",1:p,ones(1:p));
+    dsys = syssetsignals(sys,"yd",ones(1:p));
   elseif(strcmp(opt,"ex"))
     # construct new state-space (a,b,c,d) for continuous subsystem
     [csys,Acd] = syscont(sys);   	# extract continuous subsystem
     [csys_a, csys_b, csys_c, csys_d] = sys2ss(csys);
     [ sys_a,  sys_b,  sys_c,  sys_d] = sys2ss( sys);
-    if(isempty(Acd))
-      Bmat = sys_b;
-    elseif(isempty(csys_b))
-      Bmat = Acd;
-    else
-      Bmat = [Acd csys_b];
-    endif
+    if(isempty(Acd))                Bmat = sys_b;
+    elseif(isempty(csys_b))         Bmat = Acd;
+    else                            Bmat = [Acd csys_b];     endif
     
     row_zer = columns(Bmat);
-    col_zer = csys.n + row_zer;
+    csysn = sysdimensions(csys);
+    col_zer = csysn + row_zer;
 
+    [csysa,csysb,csysc,csysd] = sys2ss(csys);
     if(isempty(Bmat) )
       warning("c2d: no inputs to continuous subsystem.");
-      mat = csys.a;
+      mat = csysa;
     else
-      mat = [csys.a Bmat ; zeros( row_zer,col_zer) ];
+      mat = [csysa Bmat ; zeros( row_zer,col_zer) ];
     endif
 
     matexp = expm(mat * T);
   
-    Abar = matexp( 1:csys.n , 1:(csys.n + columns(Acd)) );  
-    Bbar = matexp( 1:csys.n , (columns(Abar) + 1):columns(matexp) );
+    Abar = matexp( 1:csysn , 1:(csysn + columns(Acd)) );  
+    Bbar = matexp( 1:csysn , (columns(Abar) + 1):columns(matexp) );
 
-    dsys = sys;
-
-    dsys.a(1:csys.n , : ) = Abar;
-    dsys.b(1:csys.n , : ) = Bbar;
-
-    dsys.sys = [2 0 0 1];
-
-    dsys.tsam = T;
-    dsys.n = 0;
-    dsys.nz = rows(dsys.a);
-
-    dsys.yd = ones(1,rows(dsys.c));
-
-    for ii = 1:csys.n
-      strval = [dezero((dsys.stname(ii,:))),"_d"];
-      dsys.stname(ii,(1:length(strval))) = [strval];
+    newnz = rows(Abar);
+    outlist = ones(1,rows(csysc));
+    [stnames,innames,outnames] = sysgetsignals(csys);
+    dsys = ss2sys(Abar,Bbar,csysc,csysd,T,0,newnz,stnames,innames, ...
+	outnames,outlist);
+    # rename states
+    for ii=1:newnz
+      strval = sprintf("%s_d",sysgetsignals(dsys,"st",ii,1));
+      dsys = syssetsignals(dsys,"st",strval,ii);
     endfor
 
   elseif(strcmp(opt,"bi"))
@@ -163,11 +141,7 @@ function dsys = c2d (sys, opt, T)
       B = tk*iab;
       C = tk*(c/(IT-a));
       D = d + (c*iab);
-      stnamed="";
-      for kk=1:rows(stname)
-        tmp =  [dezero(stname(kk,:)),"_d"];
-        stnamed(kk,1:length(tmp)) = tmp;
-      endfor
+      stnamed = strappend(stname,"_d");
       dsys = ss2sys(A,B,C,D,T,0,rows(A),stnamed,inname,outname);
     endif
   else

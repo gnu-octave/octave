@@ -23,7 +23,7 @@ function [a,b] = zgsgiv(c,s,a,b)
   
   # A. S. Hodel July 29, 1992
   # Convertion to Octave by R. Bruce Tenison July 3, 1994
-  # $Revision: 1.1.1.1 $
+  # $Revision: 2.0.0.0 $
 
   t1 = c*a + s*b;
   t2 = -s*a + c*b;

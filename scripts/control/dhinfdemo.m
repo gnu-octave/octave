@@ -40,7 +40,7 @@
 
 # K. Mueller, <mueller@ifr.ing.tu-bs.de>
 # Technical University of Braunschweig, IfR
-# $Revision: 1.2 $  $Date: 1998/10/12 10:11:13 $
+# $Revision: 2.0.0.0 $  $Date: 1998/12/08 21:36:55 $
 #
 
 echo off

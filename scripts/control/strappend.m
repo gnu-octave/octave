@@ -16,19 +16,21 @@
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA. 
  
-function retval = strappend(str,suffix);
-  # retval = strappend(str,suffix);
-  # append string suffix to each string in the string matrix str
+function retval = strappend(strlist,suffix);
+  # retval = strappend(strlist,suffix);
+  # append string suffix to each string in the list of strings strlist
   
   if(nargin != 2 | nargout > 1)
-    usage(" retval = strappend(str,suffix)");
-  elseif(!isstr(str) | !isstr(suffix))
-    error("Both arguments must be strings")
+    usage(" retval = strappend(strlist,suffix)");
+  elseif(!is_signal_list(strlist))
+    error("strlist must be a list of strings (see is_signal_list)");
+  elseif(!(isstr(suffix) & is_vector(suffix)))
+    error("suffix must be a single string");
   endif
 
-  for ii=1:rows(str)
-    newst = [dezero(str(ii,:)),suffix];
-    retval(ii,1:length(newst)) = (newst);
+  retval = list();
+  for ii=1:length(strlist)
+    retval(ii) = sprintf("%s%s",nth(strlist,ii),suffix);
   endfor
 
 endfunction

@@ -20,7 +20,7 @@ function moddemo()
 # Octave Controls toolbox demo: Model Manipulations demo
 # Written by David Clem August 15, 1994
 
-# $Revision: 1.1 $
+# $Revision: 2.0.0.0 $
 # a s hodel: updated to reflect updated output order in ss2zp
 
   while (1)

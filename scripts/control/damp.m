@@ -29,16 +29,7 @@ function damp(p, tsam)
 
 # Written by Kai P. Mueller September 29, 1997.
 # Update
-# $Revision: 1.1.1.1 $
-# $Log: damp.m,v $
-# Revision 1.1.1.1  1998/05/19 20:24:06  jwe
-#
-# Revision 1.3  1997/12/01 16:51:50  scotte
-# updated by Mueller 27 Nov 97
-#
-# Revision 1.1  1997/11/11  17:32:13  mueller
-# Initial revision
-#
+# $Revision: 2.0.0.0 $
 
   # assume a continuous system
   DIGITAL = 0;

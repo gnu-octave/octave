@@ -1,4 +1,4 @@
-# Copyright (C) 1996 A. Scottedward Hodel 
+# Copyright (C) 1996,1998 A. Scottedward Hodel 
 #
 # This file is part of Octave. 
 #
@@ -22,7 +22,7 @@ function sys = sysscale(sys,outscale,inscale,outname,inname)
 # scale inputs/outputs of a system.
 #
 # inputs:
-#   sys: structured system
+#   sys: system data structure
 #   outscale, inscale: constant matrices of appropriate dimension
 # output: sys: resulting open loop system:
 #
@@ -39,93 +39,95 @@ function sys = sysscale(sys,outscale,inscale,outname,inname)
 
 # A. S. Hodel August 1995
 # modified by John Ingram 7-15-96
-# $Revision: 1.1.1.1 $
+# $Revision: 2.0.0.0 $
 
   if( (nargin < 3) || (nargin > 5)  )
     usage("retsys = sysscale(Asys,output_list,input_list{,inname,outname})");
   elseif (!is_struct(sys))
     error("sys must be a structured system");
   endif
+
+  [nn,nz,mm,pp] = sysdimensions(sys);
  
   # check for omitted scales
-  if(isempty(outscale))
-    outscale = eye(rows(sys.outname)); 
-  endif 
-  if(isempty(inscale))
-    inscale = eye(rows(sys.inname));
-  endif 
+  if(isempty(outscale))    outscale = eye(pp);     endif 
+  if(isempty(inscale))     inscale = eye(mm);      endif 
 
   # check dimensions of scaling matrices
-  if((columns(sys.b)!=rows(inscale)) & (columns(sys.d)!=rows(inscale)))
-    error('inscale is not compatible with the system inputs');
-  elseif( (columns(outscale)!=rows(sys.c)) & ...
-	(columns(outscale)!=rows(sys.d)))
-    error("outscale is not compatible with the system outputs");
+  if(mm!=rows(inscale))
+    error("inscale(%dx%d) should have %d rows(# system inputs)", ...
+      rows(inscale),columns(inscale),mm);
+  elseif( pp != columns(outscale) )
+    error("outscale(%dx%d) should have %d columns(# system outputs)", ...
+      rows(outscale), columns(outscale),pp);
   endif
-  
-  outc = find(sys.yd==0);
-  outd = find(sys.yd==1);
 
-  #disp("sysscale: outc,outd=")
-  #disp(outc)
-  #disp(outd)
-  #disp("sysscale")
+  sysyd = sysgetsignals(sys,"yd");
+  outc = find(sysyd==0);
+  outd = find(sysyd==1);
 
   if(length(outc) & length(outd))
     for ii = 1:rows(outscale)
       nci = norm(outscale(ii,outc));
       ndi = norm(outscale(ii,outd));
 
-      #disp(["sysscale: ii=",num2str(ii),", nci, ndi="])
-      #disp(nci)
-      #disp(ndi)
-      #disp("syscale")
-
       if( nci & ndi)
-        warning(["sysscale: outscale(",num2str(ii), ...
-	  ",:) sums continuous and discrete outputs; setting output to cont"])
-        yd(ii) = 0;
+        warning("sysscale: outscale(%d,:) sums continuous and discrete outputs; setting output to cont",ii)
+        sysyd(ii) = 0;
       else
-        yd(ii) = (ndi != 0);
+        sysyd(ii) = (ndi != 0);
       endif
-  
-      #disp(["sysscale: yd(,",num2str(ii),"=",num2str(yd(ii)),": press a key"]);
-      #kbhit
     endfor
   else
-    yd = ones(1,rows(outscale))*( length(outd) > 0);
+    sysyd = ones(1,rows(outscale))*( length(outd) > 0);
   endif
-  sys.yd = yd;
 
-  sys.b = (sys.b)*inscale;
-  sys.d = (sys.d)*inscale;
-  sys.c = outscale*(sys.c);
-  sys.d = outscale*(sys.d);
+  # check for SISO system type
+  if strcmp(sysgettype(sys),"tf")
+    [num,den,tsam,innam,outnam] = sys2tf(sys);
+    num = num*inscale*outscale;
+    sys = tf2sys(num,den,tsam,innam,outnam,find(sysyd));
+    return
+  elseif strcmp(sysgettype(sys),"zp")
+    [zer,pol,kk,tsam,innam,outnam] = sys2zp(sys);
+    kk = kk*inscale*outscale;
+    sys = zp2sys(zer,pol,k,tsam,innam,outnam,find(sysyd));
+    return
+  endif
+
+  # it's a state space system...
+
+  [sysa,sysb,sysc,sysd,systsam, ...
+    sysn,sysnz,sysstname,sysinname,sysoutname,oldyd] = sys2ss(sys);
+
+  sysb = sysb*inscale;
+  sysc = outscale*sysc;
+  sysd = outscale*sysd*inscale;
 
   if( !is_square(outscale) )
     # strip extra output names (if any)
-    sys.outname = sys.outname(1:min(rows(outscale),columns(outscale)),:);
+    sysoutname = sysoutname(1:min(rows(outscale),columns(outscale)));
     if( nargin < 4)
       warning("sysscale: outscale not square, outname not specified");
       warning("sysscale:  using default output names");
-      outname = sysdefioname(rows(sys.c),"y");
+      outname = sysdefioname(rows(sysc),"y");
     endif
   else
-    outname = sys.outname;
+    outname = sysoutname;
   endif
   if( !is_square(inscale) )
     # strip extra output names (if any)
-    sys.inname = sys.inname(1:min(rows(inscale),columns(inscale)),:);
+    sysinname = sysinname(1:min(rows(inscale),columns(inscale)));
     if(nargin < 5)
       warning("sysscale: inscale not square, inname not specified");
       warning("sysscale:  using default input names");
-      inname = sysdefioname(columns(sys.b),"u");
+      inname = sysdefioname(columns(sysb),"u");
     endif
   else
-    inname = sys.inname;
+    inname = sysgetsignals(sys,"in");
   endif
 
-  sys = syschnames(sys,"out",1:rows(outname),outname);
-  sys = syschnames(sys,"in",1:rows(inname),inname);
+  sys = ss2sys(sysa,sysb,sysc,sysd,systsam,nn,nz,sysstname, ...
+	inname,outname,find(sysyd==1));
 
 endfunction

@@ -28,7 +28,7 @@ function retsys = sysout(sys,opt)
 #      "all": all of the above
 
 # Written by A S Hodel: 1995-1996
-# $Revision: 1.2 $
+# $Revision: 2.0.0.0 $
 
 # save for restoring at end of routine
 save_val = implicit_str_to_num_ok;
@@ -49,10 +49,8 @@ if(! is_struct(sys))
 endif
 
 # set up output type array
-farray = ["tf";"zp";"ss"];
-
 if( nargin == 1 )
-  opt = farray(sys.sys(1)+1,:);
+  opt = sysgettype(sys);
 else
   if( ! (strcmp(opt,"ss") + strcmp(opt,"tf") + ...
     strcmp(opt,"zp") + strcmp(opt,"all") ) )
@@ -61,20 +59,22 @@ else
 endif
 
 # now check output for each form:
-if( !isempty(sys.inname) )
+[nn,nz,mm,pp] = sysdimensions(sys);
+if( mm > 0)
   disp("Input(s)")
-  outlist(sys.inname,"	")
+  disp(outlist(sysgetsignals(sys,"in"),"	"));
 else
   disp("Input(s): none");
 endif
-if ( ! isempty(sys.outname) )
+if (pp > 0)
   disp("Output(s):")
-  outlist(sys.outname,"	",sys.yd)
+  disp(outlist(sysgetsignals(sys,"out"), ...
+	"	",sysgetsignals(sys,"yd")) );
 else
   disp("Output(s): none");
 endif
-if(sys.tsam > 0)
-  disp(["Sampling interval: ",num2str(sys.tsam)]);
+if(sysgettsam(sys) > 0)
+  disp(["Sampling interval: ",num2str(sysgettsam(sys))]);
   str = "z";
 else
   str = "s";
@@ -84,53 +84,48 @@ endif
 if( strcmp(opt,"tf") + strcmp(opt,"all") )
   sys = sysupdate(sys,"tf");		#make sure tf is up to date
   disp("transfer function form:")
-  tfout(sys.num,sys.den,str);
+  [num,den] = sys2tf(sys);
+  tfout(num,den,str);
 endif
 
 if( strcmp(opt,"zp") + strcmp(opt,"all") )
   sys = sysupdate(sys,"zp");		#make sure zp is up to date
   disp("zero-pole form:")
-  zpout(sys.zer, sys.pol,sys.k,str)
+  [zer,pol,kk] = sys2zp(sys);
+  zpout(zer, pol, kk,str)
 endif
 
 if( strcmp(opt,"ss") + strcmp(opt,"all") )
   sys = sysupdate(sys,"ss");
   disp("state-space form:");
-  disp([num2str(sys.n)," continuous states, ",  ...
-    num2str(sys.nz)," discrete states"]);
-  if( !isempty(sys.stname) )
+  disp([num2str(nn)," continuous states, ", num2str(nz)," discrete states"]);
+  if( nn+nz > 0)
     disp("State(s):")
-    xi = (sys.n+1):(sys.n+sys.nz);
-    xd = zeros(1,rows(sys.a));
+    xi = (nn+1):(nn+nz);
+    xd = zeros(1,nn+nz);
     if(!isempty(xi))
       xd(xi) = 1;
     endif
-    outlist(sys.stname,"	",xd);
+    disp(outlist(sysgetsignals(sys,"st"),"	",xd));
   else
     disp("State(s): none");
   endif
 
   # display matrix values?
-  dmat = (max( [ size(sys.a) size(sys.b) size(sys.c) size(sys.d) ] ) <= 32);
+  dmat = (max( [ (nn+nz), mm, pp ] ) <= 32);
 
-  disp(sprintf("A matrix: %d x %d",rows(sys.a),columns(sys.a)))
-  if(dmat)
-    disp(sys.a)
-  endif
+  printf("A matrix: %d x %d\n",nn,nn);
+  [aa,bb,cc,dd] = sys2ss(sys);
+  if(dmat) 	disp(aa); 	endif
 
-  disp(sprintf("B matrix: %d x %d",rows(sys.b),columns(sys.b)))
-  if(dmat)
-    disp(sys.b)
-  endif
+  printf("B matrix: %d x %d\n",nn,mm);
+  if(dmat)     disp(bb);              endif
 
-  disp(sprintf("C matrix: %d x %d",rows(sys.c),columns(sys.c)))
-  if(dmat)
-    disp(sys.c)
-  endif
-  disp(sprintf("D matrix: %d x %d",rows(sys.d),columns(sys.d)))
-  if(dmat)
-    disp(sys.d)
-  endif
+  printf("C matrix: %d x %d\n",pp,nn);
+  if(dmat) disp(cc);		endif
+
+  printf("D matrix: %d x %d\n",pp,nn);
+  if(dmat)       disp(dd);         endif
 endif
 
 if(nargout >= 1)

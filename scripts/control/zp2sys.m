@@ -1,4 +1,4 @@
-# Copyright (C) 1996 A. Scottedward Hodel 
+# Copyright (C) 1996,1998 A. Scottedward Hodel 
 #
 # This file is part of Octave. 
 #
@@ -28,7 +28,7 @@ function  outsys = zp2sys (zer,pol,k,tsam,inname,outname)
   # outputs: sys: system data structure
 
   #  Modified by John Ingram  July 20, 1996  
-  # $Revision: 1.2 $
+  # $Revision: 2.0.0.0 $
 
   save_val = implicit_str_to_num_ok;	# save for restoring later
   implicit_str_to_num_ok = 1;
@@ -95,21 +95,25 @@ function  outsys = zp2sys (zer,pol,k,tsam,inname,outname)
 
   #  Set name of input
   if (nargin > 4)
-    if (rows(inname) > 1)
-      warning("zp2sys: ",num2str(rows(inname))," input names given, 1st used");
-      inname = inname(1,:);
+    # make sure its a string
+    if(!isempty(inname))
+      if(!is_list(inname))  inname = list(inname); endif
+      if(!is_signal_list(inname))
+        error("inname must be a single signal name");
+      endif
+      outsys.inname = inname(1);
     endif
-    outsys.inname(1,1:length(inname)) = inname;
   endif
 
   #  Set name of output
   if (nargin > 5)
-    if (rows(outname) > 1)
-      warning("zp2sys: ",num2str(rows(outname)), ...
-	" output names given, 1st used");
-      outname = outname(1,:);  
+    if(!isempty(outname))
+      if(!is_list(outname))        outname = list(outname);    endif
+      if(!is_signal_list(outname))
+        error("outname must be a single signal name");
+      endif
+      outsys.outname = outname(1);
     endif
-    outsys.outname(1,1:length(outname)) = outname;  
   endif 
 
   implicit_str_to_num_ok = save_val;

@@ -1,4 +1,4 @@
-# Copyright (C) 1996 A. Scottedward Hodel 
+# Copyright (C) 1996,1998 A. Scottedward Hodel 
 #
 # This file is part of Octave. 
 #
@@ -48,155 +48,120 @@ function retsys = sysappend(sys,b,c,d,outname,inname,yd)
   #     sys = discrete:            yd = ones(1,rows(c))
   
   # written by John Ingram August 1996
-  # $Revision: 1.2 $
-  # $Log: sysappend.m,v $
-  # Revision 1.2  1998/07/21 14:53:09  hodelas
-  # use isempty instead of size tests; use sys calls to reduce direct
-  # access to system structure elements
-  #
-  # Revision 1.1.1.1  1998/05/19 20:24:09  jwe
-  #
-  # Revision 1.2  1997/04/09 04:36:21  scotte
-  # Fixed to properly handle new names (syschnames does not let you
-  # change the number of names any more.)  a.s.hodel@eng.auburn.edu
-  #
+  # $Revision: 2.0.0.0 $
   
-  save_val = implicit_str_to_num_ok;	# save for later
-  implicit_str_to_num_ok = 1;
+  sav_implicit_str_to_num_ok = implicit_str_to_num_ok;	# save for later
+  sav_empty_list_elements_ok = empty_list_elements_ok;
+
+  empty_list_elements_ok = 1;                implicit_str_to_num_ok = 1;
   
   # check input arguments
   if ( (nargin < 2) | (nargin > 7) | (!is_struct(sys)))
     usage("retsys = sysappend(sys,b,c[,d,outname,inname,yd]) ");
+  elseif(!is_struct(sys))
+    error("sys must be a system data structure");
   endif
   
-  # update system
-  sys = sysupdate(sys,"ss");
-  sys.sys = [2 0 0 1];
-  
+  # default system type must be state space form
+  [Aa,Ab,Ac,Ad,Ats,Ann,Anz,Ast,Ain,Aout,Ayd] = sys2ss(sys);
+  [Ann,Anz,Am,Ap] = sysdimensions(sys);
+
   #default c
-  if(nargin < 3)
-    c = [];
-  endif
+  if(nargin < 3)      c = [];                                endif
   
   #default d
-  if(nargin < 4)
-    make_d = 1;
-  elseif(isempty(d))
-    make_d = 1;
-  else
-    make_d = 0;
-  endif
-  if(make_d)
-    d = zeros(rows(c)+rows(sys.c),columns(b) + rows(sys.inname));
-    #disp("sysappend: default d=")
-    #disp(d)
-    #disp("/sysappend: default d=")
-  endif
+  if(nargin < 4)     make_d = 1;
+  elseif(isempty(d)) make_d = 1;
+  else               make_d = 0;                             endif
+  if(make_d)         d = zeros(rows(c)+Ap,columns(b) + Am);  endif
 
-  # add default input names for new inputs (if any)
-  old_m = rows(sys.inname);
-  new_m = max(columns(d),columns(b)+old_m);
-  old_inname = sys.inname;
-  if(new_m)
-    sys.inname = sysdefioname(new_m,"u");
-    if(old_m)
-      sys = syschnames(sys,"in",1:old_m,old_inname);
-    endif
-    if(nargin >= 6)
-      # input names were specified, check dimensions
-      if(rows(inname) != new_m - old_m)
-        inname
-        new_m
-        old_m
-        b
-        d
-        error(["inname has ",num2str(rows(inname))," entries, should have ", ...
-	  num2str( new_m - old_m )]);
+  #
+  # Append new input(s) if any
+  Bm = max(columns(d),columns(b)+Am);
+  if(Bm != Am)    
+    # construct new signal names
+    if(nargin >= 6)   # new names were passed
+      if(!isstr(inname))
+        error("inname must be a string");
+      elseif(rows(inname) != (Bm - Am))
+        error(sprintf("%d new inputs requested; inname(%dx%d)", ...
+	  (Bm-Am),rows(inname),columns(inname)));
       endif
-      sys = syschnames(sys,"in",(old_m+1):new_m,inname);
-    endif
-  endif
-
-  #add default output names for new outputs (if any)
-  old_p = rows(sys.outname);
-  new_p = max(rows(d),rows(c)+old_p);
-
-  # default yd
-  if (nargin < 7)
-    # discrete if positive sampling time, no continuous states/outputs
-    yd = ones(1,new_p)*( ...
-         (sys.tsam > 0) & (sys.n == 0)  & isempty(find(sys.yd == 0)) ) ;
-  elseif ( (rows(c) != length(yd)) & (rows(d)) != yd)
-    error(["rows(c)=",num2str(rows(c)),", length(yd)=",num2str(length(yd))])
-  endif
-  
-  old_outname = sys.outname;
-  if(new_p)
-    sys.outname = sysdefioname(new_p,"y");
-    if(old_p)
-      sys = syschnames(sys,"out",1:old_p,old_outname); 
-    endif
-    if(nargin >= 5)
-      # output names were specified, check dimensions
-      if(rows(outname) != new_p - old_p)
-        outname
-        new_p
-        old_p
-        c
-        d
-        error(["outname has ",num2str(rows(outname)), ...
-          " entries, should have ", num2str(new_p-old_p)]);
-      endif
-      sys = syschnames(sys,"out",(old_p+1):new_p,outname);
-    endif
-  endif
-
-  sys = syschnames(sys,"yd",(old_p+1):new_p,yd);
-
-  # append new b matrix (if any)
-  if( max(size(b)) )
-    if(rows(b) != sys.n + sys.nz)
-      error(["sys has ",num2str(sys.n + sys.nz)," states; b has ", ...
-  	num2str(rows(b))," rows"]);
     else
-      if(old_m)
-        sys.b = [sys.b,b];
-      else
-        sys.b = b;
-      endif
+      inname = sysdefioname(Bm,"u",(Am+1));
     endif
-  endif
-  
-  # append new c matrix (if any)
-  if(max(size(c)))
-    if(columns(c) != sys.n + sys.nz)
-      error(["sys has ",num2str(sys.n + sys.nz)," states; c has ", ...
-  	num2str(columns(c))," columns"]);
-    else
-      if(old_p)
-        sys.c = [sys.c;c];
-      else
-        sys.c = c;
-      endif
-    endif
-  endif
-  
-  if(max(size(d)))
-    if( (rows(d) != new_p) | (columns(d) != new_m) )
-      error(["d = (",num2str(rows(d)),"x",num2str(columns(d)), ...
-  	") should be (",num2str(new_p),"x",num2str(new_m),")"]);
-    else
-      if(old_m & old_p)
-        d(1:old_p, 1:old_m) = sys.d;
-      endif
-      sys.d = d;
-    endif
-  endif
-  
-  # append new input names
+    if(Am)   Ain = append(Ain,inname);
+    else     Ain = inname;		endif
 
-  retsys = sys;
+    # default b matrix
+    if(isempty(b))     b  = zeros(Ann+Anz,(Bm-Am));          
+    elseif(rows(b) != Ann+Anz | columns(b) != (Bm-Am))
+        error(sprintf("b(%dx%d); should be (%dx%d)", rows(b), columns(b), ...
+          (Ann+Anz), (Bm-Am)));
+    endif
+
+    # append new b matrix
+    Ab = [Ab,b];    # empty_list_elements_ok=1 makes this ok
+  endif
+
+  #
+  # Append new output(s) if any
+  Bp = max(rows(d),rows(c)+Ap);
+  if(Bp != Ap)  
+
+    # construct new signal names, output classification
+    if(nargin >= 5)  # new names were passed
+      if(!isstr(outname))
+        error("outname must be a string");
+      elseif(rows(outname) != (Bp - Ap))
+        error(sprintf("%d new outputs requested; outname(%dx%d)", ...
+          (Bp-Ap),rows(outname),columns(outname)));
+      endif
+    else
+      outname = sysdefioname(Bp,"y",(Ap+1));
+    endif
+    if(Ap)   Aout = append(Aout,outname);
+    else     Aout = outname;                endif
+
+    # construct new yd entries
+    if(nargin == 7)
+      if(!is_vector(yd))
+        error(sprintf("yd(%dx%d) must be a vector",rows(yd),columns(yd)))
+      elseif(rows(c) != length(yd) & rows(d) != length(yd))
+        error(sprintf("length(yd) = %d; c(%dx%d), d(%dx%d); mismatch", ...
+	  length(yd), rows(c), columns(c),rows(d),columns(d)));
+      endif
+    else
+      # default yd values
+      yd = ones(1,Bp)*( (Ats > 0) & (Ann == 0)  & isempty(find(Ayd == 0)) ) ;
+    endif
+    Ayd = [vec(Ayd);vec(yd)];
+
+    # default c matrix
+    if(isempty(c))      c = zeros((Bp-Ap),Ann+Anz);          
+    elseif(columns(c) != Ann+Anz | rows(c) != (Bp-Ap))
+        error(sprintf("c(%dx%d); should be (%dx%d)", rows(c), columns(c), ...
+          (Bp-Ap), (Ann+Anz) ));
+    endif
+
+    # append new c matrix
+    Ac = [Ac;c];    # empty_list_elements_ok=1 makes this ok
+  endif
+
+  # check d matrix
+  if(isempty(d)) d = zeros(Bp,Bm);
+  elseif(rows(d) != Bp | columns(d) != Bm)
+    error(sprintf("d(%dx%d) should be (%dx%d)",rows(d), columns(d), Bp, Bp));
+  endif
+
+  # Splice in original D matrix  
+  if(Am & Ap)          d(1:Ap, 1:Am) = Ad;       endif
+  Ad = d;
   
-  implicit_str_to_num_ok = save_val;	# restore value
+  # construct return system
+  retsys = ss2sys(Aa,Ab,Ac,Ad,Ats,Ann,Anz,Ast,Ain,Aout,find(Ayd == 1));
+  
+  implicit_str_to_num_ok = sav_implicit_str_to_num_ok;	# restore value
+  empty_list_elements_ok = sav_empty_list_elements_ok;
 
 endfunction

@@ -28,7 +28,7 @@ function pv = sysreorder(vlen,list)
 # to use this at home!
 
 # A. S. Hodel, Aug 1995
-# $Revision: 1.1.1.1 $
+# $Revision: 2.0.0.0 $
   
   #disp('sysreorder: entry')
   

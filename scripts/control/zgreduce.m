@@ -23,7 +23,7 @@ function retsys = zgreduce(Asys,meps)
 #
 # used internally in tzero; minimal argument checking performed
 
-#$Revision: 1.1.1.1 $
+#$Revision: 2.0.0.0 $
 # SYS_INTERNAL accesses members of system data structure
 
 is_digital(Asys);		# make sure it's pure digital/continuous

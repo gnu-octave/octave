@@ -41,7 +41,7 @@ function [a,b,c,d,tsam,n,nz,stname,inname,outname,yd] = sys2ss(sys)
 
   # Written by David Clem August 19, 1994
   # Updates by John Ingram July 14, 1996
-  # $Revision: 1.4 $
+  # $Revision: 2.0.0.0 $
 
   if(nargin != 1)
     usage("[a,b,c,d,tsam,n,nz,stname,inname,outname,yd] = sys2ss(sys)")
@@ -56,10 +56,13 @@ function [a,b,c,d,tsam,n,nz,stname,inname,outname,yd] = sys2ss(sys)
     error("input argument must be a system data structure");
   endif
 
-  sys = sysupdate(sys,"ss");		#make sure ss is up to date
+  sys = sysupdate(sys,"ss");        # make sure state space data is there
+  [n,nz,m,p] = sysdimensions(sys);
+  [stname,inname,outname,yd] = sysgetsignals(sys);
+  tsam = sysgettsam(sys);
 
-  cont = sum(sys.yd == 0) + sys.n;
-  dig = sum(sys.yd != 0) + sys.nz + sys.tsam;
+  cont = sum(yd == 0) + n;
+  dig = sum(yd != 0) + nz + tsam;
   if(cont*dig)
     warning("sys2ss: input system is mixed continuous/discrete");
   endif
@@ -68,9 +71,6 @@ function [a,b,c,d,tsam,n,nz,stname,inname,outname,yd] = sys2ss(sys)
   b = sys.b;
   c = sys.c;
   d = sys.d;
-  [n,nz,m,p] = sysdimensions(sys);
-  [stname,inname,outname,yd] = sysgetsignals(sys);
-  tsam = sysgettsam(sys);
 
 endfunction
 

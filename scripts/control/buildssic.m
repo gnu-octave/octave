@@ -108,26 +108,7 @@ function [sys] = buildssic(Clst,Ulst,Olst,Ilst,s1,s2,s3,s4,s5,s6,s7,s8)
 #
 
 # Written by Kai Mueller April 1998
-# $Revision: 1.2 $
-# $Log: buildssic.m,v $
-# Revision 1.2  1998/10/12  10:04:14  mueller
-# bugfix: build of discrete systems corrected.
-# The previous version did not sum up the discrete states.
-#
-# Revision 1.1  1998/10/12  08:51:49  mueller
-# Initial revision
-#
-# Revision 1.1.1.1  1998/05/19 20:24:05  jwe
-#
-# Revision 1.1  1998/05/05 17:02:56  scotte
-# Initial revision
-#
-# Revision 1.2  1998/05/05  08:19:59  mueller
-# minor corrections
-#
-# Revision 1.1  1998/05/04  15:09:32  mueller
-# Initial revision
-#
+# $Revision: 2.0.0.0 $
 
   if((nargin < 5) || (nargin > 12))
     usage("[sys] = buildssic(Clst,Ulst,Olst,Ilst,s1,s2,s3,s4,s5,s6,s7,s8)");

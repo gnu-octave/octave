@@ -1,4 +1,4 @@
-# Copyright (C) 1996 A. Scottedward Hodel 
+# Copyright (C) 1996,1998 A. Scottedward Hodel 
 #
 # This file is part of Octave. 
 #
@@ -39,7 +39,7 @@ function [g gmin gmax] = hinfnorm(sys,tol,gmin,gmax,ptol)
   # Iglesias and Glover, "State-Space approach to discrete-time Hinf control,"
   #    Int. J. Control, vol 54, #5, 1991
   # Zhou, Doyle, Glover, "Robust and Optimal Control," Prentice-Hall, 1996
-  # $Revision: 1.6 $
+  # $Revision: 2.0.0.0 $
 
   if((nargin == 0) || (nargin > 4))
     usage("[g gmin gmax] = hinfnorm(sys[,tol,gmin,gmax,ptol])");
@@ -64,6 +64,7 @@ function [g gmin gmax] = hinfnorm(sys,tol,gmin,gmax,ptol)
   if(!is_stable(sys))
     warning(["hinfnorm: unstable system (is_stable, ptol=",num2str(ptol), ...
       "), returning Inf"]);
+    g = Inf;
   endif
 
   Dnrm = norm(D);

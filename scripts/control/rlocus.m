@@ -42,7 +42,7 @@ function [rldata,k_break,rlpol,gvec,real_ax_pts] = rlocus(sys,increment,min_k,ma
   # Written by Clem and Tenison
   # Updated by Kristi McGowan July 1996 for intelligent gain selection
   # Updated by John Ingram July 1996 for systems
-  # $Revision: 1.7 $
+  # $Revision: 2.0.0.0 $
   
   if (nargin < 1) | (nargin > 4)
     usage("rlocus(sys[,inc,mink,maxk])");
@@ -188,7 +188,7 @@ function [rldata,k_break,rlpol,gvec,real_ax_pts] = rlocus(sys,increment,min_k,ma
     axis(axlim);
     [stn,inname,outname] = sysgetsignals(sys);
     xlabel(sprintf("Root locus from %s to %s, gain=[%f,%f]: Real axis", ...
-	dezero(inname),dezero(outname),gvec(1),gvec(ngain)));
+	nth(inname,1),nth(outname,1),gvec(1),gvec(ngain)));
     ylabel("Imag. axis");
 	
     plot(real(rlpolv),imag(rlpolv),".1;locus points;", ...

@@ -37,13 +37,12 @@ function [retval,U] = is_controllable (a, b, tol)
 # Written by A. S. Hodel (scotte@eng.auburn.edu) August, 1993.
 # Updated by A. S. Hodel (scotte@eng.auburn.edu) Aubust, 1995 to use krylovb 
 # Updated by John Ingram (ingraje@eng.auburn.edu) July, 1996 for packed systems
-# SYS_INTERNAL accesses members of packed system structure
-# $Revision: 1.14 $
+# $Revision: 1.15 $
 
   deftol = 1;    # assume default tolerance
   if(nargin < 1 | nargin > 3)
-    usage(sprintf("[retval,U] = %s\n\t%s", "is_controllable(a {, b ,tol})", ...
-	"is_controllable(sys{,tol})"));
+    usage("[retval,U] = %s\n\t%s", "is_controllable(a {, b ,tol})", ...
+	"is_controllable(sys{,tol})");
   elseif(is_struct(a))
     # system structure passed.
     sys = sysupdate(a,"ss");
@@ -68,8 +67,11 @@ function [retval,U] = is_controllable (a, b, tol)
   if(deftol) tol = 1000*eps; endif
 
   # check tol dimensions
-  if( !is_sample(tol) )
-    error("is_controllable: tol must be a positive scalar!");
+  if( !is_scalar(tol) )
+    error("is_controllable: tol(%dx%d) must be a scalar", ...
+	rows(tol),columns(tol));
+  elseif( !is_sample(tol) )
+    error("is_controllable: tol=%e must be positive",tol);
   endif
 
   # check dimensions compatibility
@@ -77,14 +79,13 @@ function [retval,U] = is_controllable (a, b, tol)
   [nr, nc] = size (b);
 
   if (n == 0 | n != nr | nc == 0)
-    warning(["is_controllable: a=(",num2str(rows(a)),"x", ...
-      num2str(columns(a)),"), b=(",num2str(nr),"x",num2str(nc),")"])
+    warning("is_controllable: a=(%dx%d), b(%dx%d)",rows(a),columns(a),nr,nc);
     retval = 0;
   else
     # call block-krylov subspace routine to get an orthogonal basis
     # of the controllable subspace.
     if(nc == 1)
-      [U,H,Ucols] = krylov(a,b,n,tol);
+      [U,H,Ucols] = krylov(a,b,n,tol,1);
       U = U(:,1:Ucols);
     else
       [U,Ucols] = krylovb(a,b,n,tol);

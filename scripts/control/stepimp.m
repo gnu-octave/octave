@@ -1,4 +1,4 @@
-# Copyright (C) 1996 A. Scottedward Hodel
+# Copyright (C) 1996,1998 A. Scottedward Hodel
 #
 # This file is part of Octave. 
 #
@@ -31,38 +31,11 @@ function [y, t] = stepimp(sitype, sys, inp, tstop, n)
 
 # Written by Kai P. Mueller October 2, 1997
 # based on lsim.m of Scottedward Hodel
-# $Revision: 1.1.1.1 $
-# $Log: stepimp.m,v $
-# Revision 1.1.1.1  1998/05/19 20:24:08  jwe
-#
-# Revision 1.4  1998/05/05 17:04:35  scotte
-# minor corrections by Kai Mueller 5 May 1998
-#
-# Revision 1.1  1998/05/04  15:12:42  mueller
-# Initial revision
-#
-# Revision 1.3  1997/12/01 16:51:50  scotte
-# updated by Mueller 27 Nov 97
-#
-# Revision 1.4  1997/11/26  17:41:18  mueller
-# impulse gives now expected results for continuous and discrete systems
-#
-# Revision 1.3  1997/11/24  18:57:57  mueller
-# gset autoscale for proper scaling
-#
-# Revision 1.2  1997/11/24  17:23:38  mueller
-# call to oneplot() and gset nokey added
-#
-# Revision 1.1  1997/11/11  17:34:50  mueller
-# Initial revision
-#
+# $Revision: 2.0.0.0 $
 
-  if (sitype == 1)
-    IMPULSE = 0;
-  elseif (sitype == 2)
-    IMPULSE = 1;
-  else
-    error("stepimp: illegal sitype argument.")
+  if (sitype == 1)         IMPULSE = 0;
+  elseif (sitype == 2)     IMPULSE = 1;
+  else		   	   error("stepimp: illegal sitype argument.")
   endif
   sys = sysupdate(sys,"ss");
 
@@ -70,31 +43,29 @@ function [y, t] = stepimp(sitype, sys, inp, tstop, n)
   N_MIN = 50;    # minimum number of points
   N_MAX = 2000;  # maximum number of points
   T_DEF = 10.0;  # default simulation time
+
   # collect useful information about the system
-  NOUT = rows(sys.c);
-  NIN = columns(sys.b);
-  if (nargin < 3)
-    inp = 1;
-  elseif ((inp < 1) || (inp > NIN))
-    error("Argument inp out of range")
+  [ncstates,ndstates,NIN,NOUT] = sysdimensions(sys);
+  TSAMPLE = sysgettsam(sys);
+
+  if (nargin < 3)                      inp = 1;
+  elseif (inp < 1 | inp > NIN)         error("Argument inp out of range")
   endif
+
   DIGITAL = is_digital(sys);
   if (DIGITAL)
-    NSTATES = sys.nz;
-    TSAMPLE = sys.tsam;
+    NSTATES = ndstates;
     if (TSAMPLE < eps)
       error("stepimp: sampling time of discrete system too small.")
     endif
-  else
-    NSTATES = sys.n;
-  endif
+  else        NSTATES = ncstates;       endif
   if (NSTATES < 1)
-    error("step: n < 1, step response is trivial")
+    error("step: pure gain block (n_states < 1), step response is trivial");
   endif
   if (nargin < 5)
     # we have to compute the time when the system reaches steady state
     # and the step size
-    ev = eig(sys.a);
+    ev = eig(sys2ss(sys));
     if (DIGITAL)
       # perform bilinear transformation on poles in z
       for i = 1:NSTATES
@@ -199,7 +170,8 @@ function [y, t] = stepimp(sitype, sys, inp, tstop, n)
       endif
     endif
     tstop = (n - 1) * t_step;
-    B = sys.b(:,inp);
+    [jnk,B] = sys2ss(sys);
+    B = B(:,inp);
     sys = c2d(sys, t_step);
   endif
   #printf("##STEPIMP-DEBUG: t_step=%f n=%d  tstop=%f\n", t_step, n, tstop);
@@ -256,7 +228,8 @@ function [y, t] = stepimp(sitype, sys, inp, tstop, n)
       nrows = ceil(NOUT / ncols);
       for i = 1:NOUT
         subplot(nrows, ncols, i);
-	title([tt, ": | ", sys.inname(inp,:), " -> ", sys.outname(i,:)]);
+	title(sprintf("%s: | %s -> %s", tt,sysgetsignals(sys,"in",inp,1), ...
+	  sysgetsignals(sys,"out",i,1)));
 	if (DIGITAL)
 	  [ts, ys] = stairs(t, y(i,:));
 	  ts = ts(1:2*n-2)';  ys = ys(1:2*n-2)';
@@ -285,7 +258,8 @@ function [y, t] = stepimp(sitype, sys, inp, tstop, n)
       oneplot();
     else
       # plot everything in one diagram
-      title([tt, " response | ", sys.inname(inp,:), " -> all outputs"]);
+      title([tt, " response | ", sysgetsignals(sys,"in",inp,1), ...
+	" -> all outputs"]);
       if (DIGITAL)
         stairs(t, y(i,:));
       else

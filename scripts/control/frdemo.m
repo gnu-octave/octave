@@ -1,4 +1,4 @@
-# Copyright (C) 1996 A. Scottedward Hodel 
+# Copyright (C) 1996,1998 A. Scottedward Hodel 
 #
 # This file is part of Octave. 
 #
@@ -20,18 +20,19 @@ function frdemo()
 # Octave Controls toolbox demo: Frequency Response demo
 # Written by David Clem August 15, 1994 
 
-# $Revision: 1.3 $
+# $Revision: 2.0.0.0 $
 # a s hodel: updated to match new order of ss2zp outputs
 # J Ingram:  updated for system data structure format August 1996
 
   disp("")
   clc
   j = 0;
-  while (j != 3)
+  while (j != 4)
     disp("");
     j = menu("Octave Controls Systems Toolbox Frequency Response Demo",...
              'Bode analysis (bode)',...
              'Nyquist analysis (nyquist)',...
+	     "Nichols analysis (nichols)", ...
              'Return to main demo menu');
    
     if (j == 1)
@@ -122,15 +123,20 @@ function frdemo()
           clc
       	  disp("\nExample #4, The state-space system from example 3 will be");
           disp("grouped with the system from example 2 to form a MIMO system");
-          disp("The commands to do this grouping are as follows:");
-          sys2=sysupdate(sys2,"ss");
-          [nn,nz,mm,pp] = sysdimensions(sys2);
-          sys2 = syschnames(sys2,"out",1:pp,"y_sys2");
-          sys2 = syschnames(sys2,"in",1:mm,"u_sys2");
-          sys2 = syschnames(sys2,"st",1:nn,sysdefioname(nn+nz,"x_sys2"));
+          disp("The commands to do this grouping are as follows (changing signal");
+          disp("names for clarity):");
+          cmd = "sys2 = syssetsignals(sys2,\"out\",\"y_sys2\");";
+          disp(cmd);  eval(cmd);
+          cmd = "sys2 = syssetsignals(sys2,\"in\",\"u_sys2\");";
+          disp(cmd);  eval(cmd);
+          cmd = "nn = sysdimensions(sys2);";
+          disp(cmd);  eval(cmd);
+          cmd = "[nn,nz] = sysdimensions(sys2);";
+          disp(cmd);  eval(cmd);
+          cmd = "sys2 = syssetsignals(sys2,\"st\",sysdefioname(nn+nz,\"x_sys2\"));";
+          disp(cmd);  eval(cmd);
           cmd = "sys_mimo = sysgroup(sys2,sys3);";
-          disp(cmd); 
-          eval(cmd);
+          disp(cmd); eval(cmd);
           disp("The resulting state-space system (after changing signal names");
           disp("in sys2) is");
           cmd = "sysout(sys_mimo)";
@@ -252,14 +258,16 @@ function frdemo()
           clc
           disp("\nExample #4, We will now examine a MIMO state-space system.  Systems");
           disp("two and three will be grouped.");
-          sys2=sysupdate(sys2,"ss");
-          [nn,nz,mm,pp] = sysdimensions(sys2);
-          sys2 = syschnames(sys2,"out",1:pp,"y_sys2");
-          sys2 = syschnames(sys2,"in",1:mm,"u_sys2");
-          sys2 = syschnames(sys2,"st",1:nn,sysdefioname(nn+nz,"x_sys2"));
+          cmd = "[nn,nz] = sysdimensions(sys2);";
+          disp(cmd); eval(cmd);
+          cmd = "sys2 = syssetsignals(sys2,\"out\",\"y_sys2\");";
+          disp(cmd); eval(cmd);
+          cmd = "sys2 = syssetsignals(sys2,\"in\",\"u_sys2\");";
+          disp(cmd); eval(cmd);
+          cmd = "sys2 = syssetsignals(sys2,\"st\",sysdefioname(nn+nz,\"x_sys2\"));";
+          disp(cmd); eval(cmd);
           cmd = "sys_mimo = sysgroup(sys2,sys3);";
-          disp(cmd);
-          eval(cmd);
+          disp(cmd); eval(cmd);
           cmd = "sysout(sys_mimo);";
           disp(cmd);
           eval(cmd);
@@ -401,14 +409,16 @@ function frdemo()
           disp("Example #4,  Nyquist can be used for MIMO systems if the system has");
           disp("an equal number of inputs and outputs.  Otherwise, nyquist returns");
           disp("an error.  To examine a MIMO system, systems 2 and 3 will be grouped");
-          sys2=sysupdate(sys2,"ss");
-          [nn,nz,mm,pp] = sysdimensions(sys2);
-          sys2 = syschnames(sys2,"out",1:pp,"y_sys2");
-          sys2 = syschnames(sys2,"in",1:mm,"u_sys2");
-          sys2 = syschnames(sys2,"st",1:nn,sysdefioname(nn+nz,"x_sys2"));
+          cmd = "[nn,nz] = sysdimensions(sys2);";
+          disp(cmd); eval(cmd);
+          cmd = "sys2 = syssetsignals(sys2,\"out\",\"y_sys2\");";
+          disp(cmd); eval(cmd);
+          cmd = "sys2 = syssetsignals(sys2,\"in\",\"u_sys2\");";
+          disp(cmd); eval(cmd);
+          cmd = "sys2 = syssetsignals(sys2,\"st\",sysdefioname(nn+nz,\"x_sys2\"));";
+          disp(cmd); eval(cmd);
           cmd = "sys_mimo = sysgroup(sys2,sys3);";
-          disp(cmd);
-          eval(cmd);
+          disp(cmd); eval(cmd);
           cmd = "sysout(sys_mimo);";
           disp(cmd);
           eval(cmd);
@@ -578,6 +588,9 @@ function frdemo()
           disp("convert the system to either pure digital or pure continuous form");
         endif
       endwhile 
+    elseif (j == 3)
+      help nichols
+      prompt
     endif
   endwhile
 endfunction

@@ -32,7 +32,7 @@ function [num,den] = zp2tf(zer,pol,k)
 # convert to a column vector if necessary
 # Written by A. S. Hodel with help from students Ingram, McGowan.
 # a.s.hodel@eng.auburn.edu
-# $Revision: 1.2 $
+# $Revision: 2.0.0.0 $
 #
 
   [rp,cp] = size(pol);

@@ -46,7 +46,7 @@ function [k, p, e] = dlqr (a, b, q, r, s)
 # Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
 # Converted to discrete time by R. B. Tenison
 # (btenison@eng.auburn.edu) October 1993
-# $Revision: 1.15 $
+# $Revision: 1.16 $
 
   if (nargin != 4 && nargin != 5)
     error ("dlqr: invalid number of arguments");

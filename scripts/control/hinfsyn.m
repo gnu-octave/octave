@@ -56,32 +56,12 @@ function [K,g,GW,Xinf,Yinf] = hinfsyn(Asys,nu,ny,gmin,gmax,gtol,ptol,tol)
 
   # A. S. Hodel August 1995
   # Updated for Packed system structures December 1996 by John Ingram
-  # $Revision: 1.5 $
+  # $Revision: 2.0.0.0 $
   #
   # Revised by Kai P Mueller April 1998 to solve the general H_infinity
   # problem using unitary transformations Q (on w and z)
   # and non-singular transformations R (on u and y).
-  # $Revision: 1.5 $
-  # $Log: hinfsyn.m,v $
-  # Revision 1.5  1998/08/24 15:50:10  hodelas
-  # updated documentation
-  #
-  # Revision 1.3  1998/07/01 16:23:37  hodelas
-  # Updated c2d, d2c to perform bilinear transforms.
-  # Updated several files per bug updates from users.
-  #
-  # Revision 1.2  1998/06/25 12:35:38  hodelas
-  # fixed controller input/output signal name code
-  #
-  # Revision 1.4  1998/06/25 12:40:35  hodel
-  # fixed error in input/output names in the controller
-  #
-  # Revision 1.3  1998/05/05 17:03:59  scotte
-  # update 5 May 1998 by Kai Mueller
-  #
-# Revision 1.2  1998/05/05  08:57:16  mueller
-# comments added
-#
+  # $Revision: 2.0.0.0 $
 
   old_page_val = page_screen_output;
   page_screen_output = 0;
@@ -370,8 +350,8 @@ function [K,g,GW,Xinf,Yinf] = hinfsyn(Asys,nu,ny,gmin,gmax,gtol,ptol,tol)
       K = hinf_ctr(dgs,F,H,Z,g);
 
       Kst = strappend(Ast,"_K");
-      Kin = strappend(Aout((nout-ny+1):(nout),:),"_K");
-      Kout = strappend(Ain((nin-nu+1):(nin),:),"_K");
+      Kin = strappend(Aout((nout-ny+1):(nout)),"_K");
+      Kout = strappend(Ain((nin-nu+1):(nin)),"_K");
       [Ac, Bc, Cc, Dc] = sys2ss(K);
       K = ss2sys(Ac,Bc,Cc,Dc,Atsam,ncstates,ndstates,Kst,Kin,Kout);
       if (nargout >= 3)

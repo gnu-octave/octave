@@ -1,4 +1,4 @@
-# Copyright (C) 1996 A. Scottedward Hodel 
+# Copyright (C) 1996,1998 A. Scottedward Hodel 
 #
 # This file is part of Octave. 
 #
@@ -50,17 +50,7 @@ function sys = sysconnect(sys,output_list,input_list,order,tol)
 
 # A. S. Hodel August 1995
 # modified by John Ingram July 1996
-# $Revision: 1.1.1.1 $
-# $Log: sysconnect.m,v $
-# Revision 1.1.1.1  1998/05/19 20:24:09  jwe
-#
-# Revision 1.3  1997/03/03 19:21:06  hodel
-# removed calls to packsys: a.s.hodel@eng.auburn.edu
-#
-# Revision 1.2  1997/02/13 14:23:18  hodel
-# fixed bug in continuous<->discrete loop connection check.
-# a.s.hodel@eng.auburn.edu
-#
+# $Revision: 2.0.0.0 $
 
   save_val = implicit_str_to_num_ok;	# save for later
   implicit_str_to_num_ok = 1;
@@ -100,9 +90,8 @@ function sys = sysconnect(sys,output_list,input_list,order,tol)
     endif
   endif
   
-  mm = rows(sys.inname);
-  pp = rows(sys.outname);
-  nn = rows(sys.stname);
+  [nc,nz,mm,pp] = sysdimensions(sys);
+  nn = nc+nz;
 
   if( !is_struct(sys))
     error("sys must be in structured system form")
@@ -130,10 +119,13 @@ function sys = sysconnect(sys,output_list,input_list,order,tol)
   all_inputs = sysreorder(mm,input_list);
   all_outputs = sysreorder(pp,output_list);
 
-  sys.b = sys.b(:,all_inputs);
-  sys.c = sys.c(all_outputs,:);
-  sys.d = sys.d(all_outputs,all_inputs);
-  sys.yd = sys.yd(all_outputs);
+  [aa,bb,cc,dd] = sys2ss(sys);
+  bb = bb(:,all_inputs);
+  cc = cc(all_outputs,:);
+  dd = dd(all_outputs,all_inputs);
+
+  yd = sysgetsignals(sys,"yd");
+  yd = yd(all_outputs);
 
   # m1, p1 = number of inputs, outputs that are not being connected
   m1 = mm-li;
@@ -146,19 +138,19 @@ function sys = sysconnect(sys,output_list,input_list,order,tol)
   # partition system into a DGKF-like form; the loop is closed around
   # B2, C2
   if(m1 > 0)
-    B1 = sys.b(:,1:m1);
-    D21= sys.d(p2:pp,1:m1);
+    B1 = bb(:,1:m1);
+    D21= dd(p2:pp,1:m1);
   endif
-  B2 = sys.b(:,m2:mm);
+  B2 = bb(:,m2:mm);
   if(p1 > 0)
-    C1 = sys.c(1:p1,:);
-    D12= sys.d(1:p1,m2:mm);
+    C1 = cc(1:p1,:);
+    D12= dd(1:p1,m2:mm);
   endif
-  C2 = sys.c(p2:pp,:);
+  C2 = cc(p2:pp,:);
   if(m1*p1 > 0)
-    D11= sys.d(1:p1,1:m1);
+    D11= dd(1:p1,1:m1);
   endif
-  D22= sys.d(p2:pp,m2:mm);
+  D22= dd(p2:pp,m2:mm);
 
   if(norm(D22))
     warning("sysconnect: possible algebraic loop, D22 non-zero");
@@ -178,16 +170,16 @@ function sys = sysconnect(sys,output_list,input_list,order,tol)
   endif
 
   # check cont state -> disc output -> cont state
-  dyi = find(sys.yd(p2:pp));
+  dyi = find(yd(p2:pp));
 
   #disp("sysconnect: dyi=")
   #dyi
-  #sys.n
+  #nc
   #disp("/sysconnect");
 
-  if( (sys.n > 0) & find(dyi > 0) )
-    B2con = B2(1:sys.n,dyi);	# connection to cont states
-    C2hd = C2h(dyi,1:sys.n);	# cont states -> outputs
+  if( (nc > 0) & find(dyi > 0) )
+    B2con = B2(1:nc,dyi);	# connection to cont states
+    C2hd = C2h(dyi,1:nc);	# cont states -> outputs
   else
     B2con = C2hd = [];
   endif
@@ -199,7 +191,7 @@ function sys = sysconnect(sys,output_list,input_list,order,tol)
     endif
   endif
 
-  Ac = sys.a+B2*C2h;
+  Ac = aa+B2*C2h;
   if(m1 > 0)
     B1c = B1 + B2*D21h;
   endif
@@ -247,22 +239,23 @@ function sys = sysconnect(sys,output_list,input_list,order,tol)
   Bc = Bc(:,back_inputs);
   Cc = Cc(back_outputs,:);
   Dc = Dc(back_outputs,back_inputs);
-  sys.yd = sys.yd(back_outputs);
+  yd = yd(back_outputs);
 
-  sys.a = Ac;
-  sys.b = Bc;
-  sys.c = Cc;
-  sys.d = Dc;
+  # rebuild system
+  Ts = sysgettsam(sys);
+  [stnam,innam,outnam] = sysgetsignals(sys);
+  sys = ss2sys(Ac,Bc,Cc,Dc,Ts,nc,nz,stnam,innam,outnam,find(yd));
 
+  # update connected input names
   for ii = 1:length(input_list)
-    strval = [dezero(sys.inname(input_list(ii),:)),"*"];
-    sys.inname(input_list(ii),(1:length(strval))) = [strval];
+    idx = input_list(ii);
+    strval = sprintf("%s*",nth(sysgetsignals(sys,"in",idx),1) );
+    sys = syssetsignals(sys,"in",strval,idx);
   endfor
   
-  if (sys.sys(1) == 0)
-    sysupdate(sys,'tf');
-  elseif (sys.sys(1) == 1)
-    sysupdate(sys,'zp');
+  # maintain original system type if it was SISO
+  if    (strcmp(sysgettype(sys),"tf") )       sysupdate(sys,'tf');
+  elseif(strcmp(sysgettype(sys),"zp") )       sysupdate(sys,'zp');
   endif
 
   implicit_str_to_num_ok = save_val;	# restore value  

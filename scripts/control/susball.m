@@ -25,7 +25,8 @@
     disp("add noise inputs to system...")
  
     disp("discrete system:")
-    cmd = "ballsys = sysappend(ballsys,eye(ballsys.nz));";
+    [nn,nz,mm,pp] = sysdimensions(ballsys);
+    cmd = "ballsys = sysappend(ballsys,nz);";
     run_cmd 
 
     cmd = "sysout(ballsys)";
@@ -44,7 +45,7 @@
     disp("Now design an LQG controller: Sigw: input noise")
     Sigw = eye(2)
     disp("Now design an LQG controller: Sigv: measurement noise")
-    Sigv = eye(rows(ballsys.c))
+    Sigv = eye(pp);
 
     disp("State and input penalties:")
     Q = eye(2)

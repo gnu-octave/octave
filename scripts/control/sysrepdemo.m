@@ -1,4 +1,4 @@
-# Copyright (C) 1996 A. Scottedward Hodel 
+# Copyright (C) 1996,1998 A. Scottedward Hodel 
 #
 # This file is part of Octave. 
 #
@@ -23,22 +23,7 @@ function sysrepdemo()
 # Written by A. S. Hodel June 1995
 # Revised Aug 1995 for system data structure format
 
-# $Revision: 1.1.1.1 $
-# $Log: sysrepdemo.m,v $
-# Revision 1.1.1.1  1998/05/19 20:24:09  jwe
-#
-# Revision 1.4  1997/02/13 15:38:26  hodel
-# fixed misprint in zp2sys demo (needed empty zeros vector in option 3)
-#
-# Revision 1.3  1997/02/13 15:22:32  hodel
-# fixed typo in menu option
-#
-# Revision 1.2  1997/02/12 11:53:22  hodel
-# *** empty log message ***
-#
-# Revision 1.1  1997/02/12 11:35:14  hodel
-# Initial revision
-#
+# $Revision: 2.0.0.0 $
 
   save_val = page_screen_output;
   page_screen_output = 1;
@@ -59,7 +44,7 @@ function sysrepdemo()
     syschoice = menu('Octave System Representation Menu', ...
       "General overview of system representation (DO THIS FIRST)", ...
       "Initialize a system (ss2sys, tf2sys, zp2sys)", ...
-      "Extract data from a system(sys2ss, sys2tf, sys2zp)", ...
+      "Extract data from a system(sys2ss, sys2tf, sys2zp, etc.)", ...
       "Update internal representation (sysupdate)", ...
       "View the internal contents of a system (sysout)", ...
       "Details of internal representation", ...
@@ -214,7 +199,7 @@ function sysrepdemo()
               run_cmd
               disp("ss2sys allows the initialization of signal and state names")
               disp("(see option 4), so we initialize these as follows:")
-              cmd = "inname =  [\"r(t)\";\"y(t)\"];";
+              cmd = "inname = list(\"r(t)\",\"y(t)\");";
               run_cmd;
               cmd = "outname = \"e(t)\";";
 	      run_cmd
@@ -414,11 +399,15 @@ function sysrepdemo()
       disp("respective functions sys2ss, sys2tf, and sys2zp.  The latter two");
       disp("functions are applicable only to SISO systems.")
       formopt = 0;
-      while(formopt != 4)
+      while(formopt != 8)
         formopt = menu("Extract system information", ...
 		"in state space form       (sys2ss)", ...
 		"in transfer function form (sys2tf)", ...
 		"in zero pole form         (sys2zp)", ...
+		"signal names       (sysgetsignals,syssetsignals)", ...
+		"sampling time         (sysgettsam)", ...
+		"signal dimensions  (sysdimensions)", ...
+		"primary system type   (sysgettype)", ...
 		"Return to system representation menu");
         if(formopt == 1)
 	  help sys2ss
@@ -426,6 +415,37 @@ function sysrepdemo()
 	  help sys2tf
 	elseif(formopt == 3)
 	  help sys2zp
+        elseif(formopt == 4)
+          help sysgetsignals
+          cmd="sys=ss2sys(rand(4),rand(4,2),rand(3,4));";
+          run_cmd
+          printf("Example: All signals names can be extracted by\n");
+          cmd = "[Ast,Ain,Aout,Ayd] = sysgetsignals(sys)";
+          run_cmd
+          printf("Example: Input signal names can be extracted as\n");
+          cmd = "Ain = sysgetsignals(sys,\"in\")";
+          run_cmd
+          printf("Example: The name of output signal 2 can be extracted as\n");
+          cmd = "Aout = sysgetsignals(sys,\"out\",2)";
+          run_cmd
+          printf("\nNotice that Aout is returned as a list; the signal name\n");
+          printf("itself is obtained by specifying the input parameter strflg\n");
+          cmd = "Aout = sysgetsignals(sys,\"out\",2,1)";
+	  run_cmd
+          prompt
+          cmd = "help syssetsignals";
+          run_cmd
+          printf("Example: set input 2 name to \"motor voltage\"\n");
+          cmd = "sys = syssetsignals(sys,\"in\",\"motor voltage\",2); sysout(sys)";
+          run_cmd
+          
+          printf("Other syssetsignals demos are in the Block diagram demo program bddemo\n");
+        elseif(formopt == 5)
+          help sysgettsam
+        elseif(formopt == 6)
+          help sysdimensions
+        elseif(formopt == 7)
+          help sysgettype
 	endif
 	prompt
       endwhile

@@ -1,4 +1,4 @@
-# Copyright (C) 1996 A. Scottedward Hodel 
+# Copyright (C) 1996,1998 A. Scottedward Hodel 
 #
 # This file is part of Octave. 
 #
@@ -19,39 +19,36 @@
 function names = sysgroupn(names,kind)
 # names = sysgroupn(names)
 # locate and mark duplicate names
+# inputs:
+#   names: list of signal names
+#   kind: kind of signal name (used for diagnostic message purposes only)
+# outputs:
+#   returns names with unique suffixes added; diagnostic warning
+#      message is printed to inform the user of the new signal name
 #
 #  used internally in sysgroup
 
-# $Revision: 1.1 $
-
-  #disp("sysgroupn: entry")
-  #names
-  #[lmatrws,lmatcls] = size(names)
-  #disp("/sysgroupn")
+# $Revision: 2.0.0.0 $
 
   # check for duplicate names
-  l = rows(names);
-  if(l > 1)
-    for ii = 1:(l-1);
-      #disp(["sysgroupn: ii=",num2str(ii)])
-      #names
-      #[lmatrws,lmatcls] = size(names)
-      #disp("/sysgroupn")
-      st1 = dezero(names(ii,:));
-      for jj = (ii+1):l
-	st2 = dezero(names(jj,:));
-        if(strcmp(st1,st2))
-          suffix = ["_",num2str(jj)];
-          warning(["sysgroup: Appending ",suffix," to duplicate ",kind,...
-		" name '",st2,"'."]);
-          strval = [st2,suffix];
-
-          #disp(["sysgroupn: length(strval)=",num2str(length(strval))]);
-	  #disp(["sysgroupn: length(st2)=",num2str(length(st2))]);
-
-	  names(jj,(1:length(strval))) = strval;
-        endif
-      endfor
-    endfor
-  endif
+  l = length(names);
+  ii = 1;
+  while(ii < l-1)
+    st1 = nth(names,ii);
+    jj = ii+1;
+    while ( jj < l)
+      st2 = nth(names,jj);
+      if(strcmp(st1,st2))
+        suffix = ["_",num2str(jj)];
+        warning("sysgroup: %s name(%d) = %s name(%d); appending suffix %s to %d", ...
+		kind,ii,kind,jj,suffix,jj);
+        strval = sprintf("%s%s",st2,suffix);
+        names(jj) = strval;
+        # restart the check (just to be sure there's no further duplications)
+        ii = 0; jj = l;
+      endif
+      jj = jj+1;
+    endwhile
+    ii = ii+1;
+  endwhile
 endfunction

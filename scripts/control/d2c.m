@@ -53,22 +53,7 @@ function csys = d2c(sys,opt)
 # Written by R. Bruce Tenison August 23, 1994
 # Updated by John Ingram for system data structure  August 1996
 # SYS_INTERNAL accesses members of system data structure
-# $Revision: 1.3 $ 
-# $Log: d2c.m,v $
-# Revision 1.3  1998/08/13 16:27:21  hodelas
-# Fixed warning message
-#
-# Revision 1.2  1998/07/01 16:23:36  hodelas
-# Updated c2d, d2c to perform bilinear transforms.
-# Updated several files per bug updates from users.
-#
-# Revision 1.4  1997/02/20 16:18:52  hodel
-# added warning about poles near 1.
-#
-# Revision 1.3  1997/02/20 16:07:26  hodel
-# Added gradient descent code so that d2c returns the same function
-# as c2d started with		a.s.hodel@eng.auburn.edu
-#
+# $Revision: 2.0.0.0 $ 
 
   save_val = implicit_str_to_num_ok;	# save for later
   implicit_str_to_num_ok = 1;
@@ -94,9 +79,9 @@ function csys = d2c(sys,opt)
     tol = opt;
     opt = "log";
   endif
-  T = sys.tsam;
+  T = sysgettsam(sys);
 
-  if(opt == "bi")
+  if(strcmp(opt,"bi"))
     # bilinear transform
     # convert with bilinear transform
     if (! is_digital(sys) )
@@ -116,19 +101,15 @@ function csys = d2c(sys,opt)
     B = tk*iab;
     C = tk*(c/(I+a));
     D = d- (c*iab);
-    stnamed="";
-    for kk=1:rows(stname)
-      tmp =  [dezero(stname(kk,:)),"_c"];
-      stnamec(kk,1:length(tmp)) = tmp;
-    endfor
+    stnamec = strappend(stname,"_c");
     csys = ss2sys(A,B,C,D,0,rows(A),0,stnamec,inname,outname);
-  elseif(opt == "log")
+  elseif(strcmp(opt,"log"))
     sys = sysupdate(sys,"ss");
     [n,nz,m,p] = sysdimensions(sys);
   
     if(nz == 0)
       warning("d2c: all states continuous; setting outputs to agree");
-      csys = syschnames(sys,"yd",1:p,zeros(1,1:p));
+      csys = syssetsignals(sys,"yd",zeros(1,1:p));
       return;
     elseif(n != 0)
       warning(["d2c: n=",num2str(n),">0; performing c2d first"]);
@@ -219,24 +200,19 @@ function csys = d2c(sys,opt)
       
     endwhile
   
-    csys = sys;
-    csys.a = Mall(1:na,1:na);
+    [aa,bb,cc,dd,tsam,nn,nz,stnam,innam,outnam,yd] = sys2ss(sys);
+    aa = Mall(1:na,1:na);
     if(!isempty(b))
-      csys.b = Mall(1:na,(na+1):(na+nb));
+      bb = Mall(1:na,(na+1):(na+nb));
     endif
+    csys = ss2sys(aa,bb,cc,dd,0,na,0,stnam,innam,outnam);
     
-    csys.n = na;
-    csys.nz = 0;
-  
-    csys.sys = [2 0 0 1];
-  
-    csys.yd = zeros(1,rows(csys.c));
-    
-    for ii = (sys.n + 1):rows(sys.stname)
-      strval = [(csys.stname(ii,:)),"_c"];
-      csys.stname(ii,(1:length(strval))) = [strval];
+    # update names
+    nn = sysdimensions(sys);
+    for ii = (nn+1):na
+      strval = sprintf("%s_c",sysgetsignals(csys,"st",ii,1));
+      csys = syssetsignals(csys,"st",strval,ii);
     endfor
-    csys = syschtsam(csys,0);
   endif
 
   implicit_str_to_num_ok = save_val;	# restore value

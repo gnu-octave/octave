@@ -34,7 +34,7 @@ function sys = sysupdate(sys,opt)
 # see also: tf2sys, ss2sys, zp2sys, sysout, sys2ss, sys2tf, sys2zp
 
 # Written by John Ingram  7-9-96
-# $Revision: 1.1.1.1 $
+# $Revision: 2.0.0.0 $
 
   # check for correct number of inputs 
   if (nargin != 2)
@@ -48,7 +48,7 @@ function sys = sysupdate(sys,opt)
 
   # check to make sure not trying to make a SISO system out of a MIMO sys
   if ( (strcmp(opt,"tf") + strcmp(opt,"zp") + strcmp(opt,"all")) ...
-	& (sys.sys(1) == 2) &  (! is_siso(sys) ) )
+	& strcmp(sysgettype(sys),"ss") &  (! is_siso(sys) ) )
     error("MIMO -> SISO update requested");
   endif
 
@@ -58,7 +58,7 @@ function sys = sysupdate(sys,opt)
     is_digital(sys);
 
     # if original system zero-pole
-    if (sys.sys(1) == 1)
+    if strcmp(sysgettype(sys),"zp")
       [sys.num,sys.den] = zp2tf(sys.zer,sys.pol,sys.k);
       sys.sys(2) = 1;
     # if original system is state-space

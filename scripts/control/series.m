@@ -38,7 +38,7 @@ function [a,b,c,d] = series(a1,b1,c1,d1,a2,b2,c2,d2)
 # Written by David Clem August 15, 1994
 
 # If two arguments input, take care of mu system case
-# $Revision: 1.1.1.1 $
+# $Revision: 2.0.0.0 $
 
   warning("series is superseded by sysmult; use sysmult instead.")
 

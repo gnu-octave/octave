@@ -22,7 +22,7 @@ function vec = tf2sysl(vec)
 # used internally in tf2sys
 # strip leading zero coefficients to get the true polynomial length
 
-# $Revision: 1.1 $
+# $Revision: 2.0.0.0 $
 
 while( (length(vec) > 1) & (vec(1) == 0) )
   vec = vec(2:length(vec));

@@ -47,7 +47,7 @@ function [K,Q,P,Ee,Er] = dlqg(A,B,C,G,Sigw, Sigv,Q,R)
 # See also: lqg, dlqe, dlqr
 
 # Written by A. S. Hodel August 1995
-# $Revision: 1.2 $
+# $Revision: 2.0.0.0 $
 
 warning("dlqg: obsolete. use lqg instead (system data structure format)");
 
@@ -60,14 +60,14 @@ if (nargin == 5)
   endif
 
   sys = sysupdate(sys,"ss");    # make sure in proper form
-  [ndstates,nin,nout] = abcddim(sys.a, sys.b, sys.c, sys.d);
+  [ncstates,ndstates,nin,nout] = sysdimensions(sys);
   if(ndstates == -1)
     error("this message should never appear: bad system dimensions");
   endif
 
-  if(sys.n)
+  if(ncstates)
     error("dlqg: system has continuous-time states (try lqg?)")
-  elseif(sys.nz < 1)
+  elseif(ndstates < 1)
     error("dlqg: system has no discrete time states")
   elseif(nin <= columns(Sigw))
     error(["dlqg: ",num2str(nin)," inputs provided, noise dimension is ", ...

@@ -17,7 +17,15 @@
 # Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA. 
  
 function [a,b,c,d] = zp2ss(zer,pol,k)
+# [A,B,C,D] = zp2ss(zer,pol,k)
 # Conversion from zero / pole to state space.
+# Inputs: 
+#   zer,  pol: vectors of (possibly) complex poles and zeros of a transfer
+#              function.  Complex values must come in conjugate pairs
+#              (i.e., x+jy in zer means that x-jy is also in zer)
+#   k:  real scalar (leading coefficient)
+# Outputs:
+#  A, B, C, D:
 # The state space system
 #      .
 #      x = Ax + Bu
@@ -31,13 +39,7 @@ function [a,b,c,d] = zp2ss(zer,pol,k)
 # k is a gain that is associated with the zero vector.
 
 # Written by David Clem August 15, 1994
-# $Revision: 1.4 $
-# $Log: zp2ss.m,v $
-# Revision 1.4  1998/07/10 17:51:29  hodelas
-# Fixed bug in zp2ss system construction; overhauled zp2ssg2
-#
-#
-# calls: tf2sys, sysmult
+# $Revision: 2.0.0.0 $
 
   sav_val = empty_list_elements_ok;
   empty_list_elements_ok = 1;
@@ -124,10 +126,12 @@ function [a,b,c,d] = zp2ss(zer,pol,k)
     zpsys1 = tf2sys(num,den,0,"u","yy");
 
     # change names to avoid warning messages from sysgroup
-    zpsys = syschnames(zpsys,"in",1,"u1");
+    zpsys  = syssetsignals(zpsys,"in","u1",1);
     zpsys1 = sysupdate(zpsys1,"ss");
-    zpsys = syschnames(zpsys,"st",(1:zpsys.n),sysdefioname(zpsys.n,"x"));
-    zpsys1 = syschnames(zpsys1,"st",(1:zpsys1.n),sysdefioname(zpsys1.n,"xx"));
+    nn     = sysdimensions(zpsys);        # working with continuous system
+    zpsys  = syssetsignals(zpsys,"st", sysdefioname(nn,"x"));
+    nn1    = sysdimensions(zpsys1);
+    zpsys1 = syssetsignals(zpsys1,"st",sysdefioname(nn1,"xx"));
 
     zpsys = sysmult(zpsys,zpsys1);
 

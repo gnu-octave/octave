@@ -21,30 +21,20 @@ function stname = sysdefstname(n,nz)
 # return default state names given n, nz
 # used internally, minimal argument checking
 
-# $Revision: 1.2 $
+# $Revision: 2.0.0.0 $
 
-  sav_val = implicit_str_to_num_ok;
-  implicit_str_to_num_ok = 1;
-
-  stname = [];
+  stname = list();
   if(n > 0)
     for ii = 1:n
-      strval = ["x_",num2str(ii)];
-      stname(ii,1:length(strval)) = strval;
+      stname(ii) = sprintf("x_%d",ii);
     endfor
   endif
  
   # Set default names for discrete states
   if(nz > 0)
     for ii = (n+1):(n+nz)
-      strval = ["xd_",num2str(ii)];
-      stname(ii,1:length(strval)) = strval;
+      stname(ii) = sprintf("xd_%d",ii);
     endfor
   endif
 
-  if( !(isstr(stname) | (rows(stname) == 0) ) )
-    stname = setstr(stname);
-  endif
-
-  implicit_str_to_num_ok = sav_val;
 endfunction

@@ -29,8 +29,7 @@ function zz = zginit(a,b,c,d)
   
   # A. S. Hodel July 24 1992
   # Conversion to Octave by R. Bruce Tenison, July 3, 1994
-  # $Revision: 1.1 $
-  # $Log: zginit.m,v $
+  # $Revision: 2.0.0.0 $
 
   [nn,mm] = size(b);
   [pp,mm] = size(d);
@@ -43,9 +42,13 @@ function zz = zginit(a,b,c,d)
   # zz part 1:
   for i=1:nn
     # nonzero off diagonal entries of a
-    nidx = complement(i,1:nn);
-    a_row_i = a(i,nidx);                 a_col_i = a(nidx,i);
-    arnz = a_row_i(find(a_row_i != 0));  acnz = a_col_i(find(a_col_i != 0));
+    if(nn > 1)
+      nidx = complement(i,1:nn);
+      a_row_i = a(i,nidx);                 a_col_i = a(nidx,i);
+      arnz = a_row_i(find(a_row_i != 0));  acnz = a_col_i(find(a_col_i != 0));
+    else
+      arnz = acnz = [];
+    endif
 
     # row of b
     bidx = find(b(i,:) != 0);

@@ -31,8 +31,7 @@ function [retval,U] = is_detectable (a,c,tol)
 
 # Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
 # Updated by John Ingram (ingraje@eng.auburn.edu) July 1996.
-# SYS_INTERNAL accesses members of system structure
-# $Revision: 1.1.1.1 $ 
+# $Revision: 2.0.0.0 $ 
 
   if( nargin < 1) 
     usage("[retval,U] = is_detectable(a , c {, tol})");
@@ -43,9 +42,7 @@ function [retval,U] = is_detectable (a,c,tol)
     elseif(nargin > 2)
       usage("[retval,U] = is_detectable(sys {, tol})");
     endif
-    a = sysupdate(a,"ss");
-    c = a.c;
-    a = a.a;
+    [a,b,c] = sys2ss(a);
   elseif(nargin > 3)
     usage("[retval,U] = is_detectable(a , c {, tol})");
   endif

@@ -36,7 +36,7 @@ function [sys] = sysmult(Asys,Bsys)
 # does not recognize discrete inputs)
 
 # Written by John Ingram July 1996
-# $Revision: 1.2 $
+# $Revision: 2.0.0.0 $
 
   save_val = implicit_str_to_num_ok;	# save for later
   implicit_str_to_num_ok = 1;

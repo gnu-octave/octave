@@ -22,7 +22,7 @@ function out = is_sample(Ts)
 # (real,scalar, > 0)
 
 # A. S. Hodel July 1995
-# $Revision: 1.1 $
+# $Revision: 2.0.0.0 $
 
 out = (is_scalar(Ts) && (Ts == abs(Ts)) && (Ts != 0) );
 

@@ -31,7 +31,7 @@ function [num,den,tsam,inname,outname] = sys2tf(Asys)
 # Written by R. Bruce Tenison (June 24, 1994) btenison@eng.auburn.edu
 # modified to make sys2tf by A. S. Hodel Aug 1995
 # modified again for updated system format by John Ingram July 1996
-# $Revision: 1.2 $
+# $Revision: 2.0.0.0 $
 
   if(nargin != 1)
     usage("[num,den,tsam,inname,outname] = sys2tf(Asys)");
@@ -50,9 +50,9 @@ function [num,den,tsam,inname,outname] = sys2tf(Asys)
   num = Asys.num;
   den = Asys.den;
   
-  tsam = Asys.tsam;
-  inname = Asys.inname;
-  outname = Asys.outname;
+  tsam = sysgettsam(Asys);
+  inname = sysgetsignals(Asys,"in");
+  outname = sysgetsignals(Asys,"out");
 
 endfunction
 

@@ -31,8 +31,7 @@ function [retval,U] = is_observable (a,c,tol)
 
 # Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
 # Updated by John Ingram (ingraje@eng.auburn.edu) July 1996.
-# SYS_INTERNAL accesses members of system structure
-# $Revision: 1.14 $ 
+# $Revision: 1.15 $ 
 
   if( nargin < 1) 
     usage("[retval,U] = is_observable(a , c {, tol})");
@@ -43,9 +42,7 @@ function [retval,U] = is_observable (a,c,tol)
     elseif(nargin > 2)
       usage("[retval,U] = is_observable(sys {, tol})");
     endif
-    a = sysupdate(a,"ss");
-    c = a.c;
-    a = a.a;
+    [a,b,c] = sys2ss(a);
   elseif(nargin > 3)
     usage("[retval,U] = is_observable(a , c {, tol})");
   endif

@@ -23,7 +23,7 @@ function retsys = syschtsam(sys,tsam)
 # This function changes the sampling time (tsam) of the system.
 
 # Written by John Ingram August 1996
-# $Revision: 1.1.1.1 $
+# $Revision: 2.0.0.0 $
 
   if (nargin != 2)
     usage("retsys = syschtsam(sys,tsam)");
@@ -35,8 +35,11 @@ function retsys = syschtsam(sys,tsam)
     error("tsam must be a scalar")
   elseif ( ! (is_sample(tsam) | (tsam == 0) ) )
     error("tsam must be real, scalar, and greater than zero");
-  elseif (sys.tsam == 0)
-    error("The system is continuous, use c2d to make the system discrete");
+  elseif (sysgettsam(sys) == 0)
+    [nc,nz,mm,pp] = sysdimensions(sys);
+    warning("syschtsam: continuous system (nc=%d, nz=%d, mm=%d, pp=%d)", ...
+      nc,nz,mm,pp);
+    warning("syschtsam: The system is continuous, use c2d to make the system discrete");
   endif
 
   retsys = sys;  

@@ -29,7 +29,7 @@ function [zer,pol,k,tsam,inname,outname] = sys2zp(sys)
 #   inname, outname: input/output signal names (strings)
 
 # Created by John Ingram July 15 1996
-# $Revision: 1.2 $
+# $Revision: 2.0.0.0 $
 
   if(nargin != 1)
     usage("[zer,pol,k,tsam,inname,outname] = sys2zp(sys)");
@@ -47,9 +47,9 @@ function [zer,pol,k,tsam,inname,outname] = sys2zp(sys)
   zer = sys.zer;
   pol = sys.pol;
   k = sys.k;
-  tsam = sys.tsam;
-  inname = sys.inname;
-  outname = sys.outname;
+  tsam    = sysgettsam(sys);
+  inname  = sysgetsignals(sys,"in");
+  outname = sysgetsignals(sys,"out");
 
 endfunction
 

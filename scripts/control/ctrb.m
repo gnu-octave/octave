@@ -35,23 +35,13 @@ function Qs = ctrb(sys, b)
   # Written by Kai P. Mueller November 4, 1997
   # based on is_controllable.m of Scottedward Hodel
   # modified by
-  # $Revision: 1.1.1.1 $
-  # $Log: ctrb.m,v $
-  # Revision 1.1.1.1  1998/05/19 20:24:06  jwe
-  #
-  # Revision 1.2  1997/12/01 16:51:50  scotte
-  # updated by Mueller 27 Nov 97
-  #
-# Revision 1.2  1997/11/25  11:15:54  mueller
-# name confict with function mb removed
-#
+  # $Revision: 2.0.0.0 $
 
   if (nargin == 2)
     a = sys;
   elseif (nargin == 1 && is_struct(sys))
     sysupdate(sys,"ss");
-    a = sys.a;
-    b = sys.b;
+    [a,b] = sys2ss(sys);
   else
     usage("ctrb(sys [, b])")
   endif

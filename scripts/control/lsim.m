@@ -35,16 +35,8 @@ function [y,x] = lsim(sys,u,t,x0)
 
 # Written by David Clem, A. S. Hodel July 1995
 # modified by John Ingram for system format August 1996
-# $Revision: 1.1.1.1 $
-# $Log: lsim.m,v $
-# Revision 1.1.1.1  1998/05/19 20:24:07  jwe
-#
-# Revision 1.3  1997/12/01 16:51:50  scotte
-# updated by Mueller 27 Nov 97
-#
-# Revision 1.2  1997/11/24  16:13:39  mueller
-# old style c2d call fixed
-#
+# $Revision: 2.0.0.0 $
+
 
   if((nargin < 3)||(nargin > 4))
     usage("[y,x] = lsim(sys,u,t[,x0])");
@@ -56,19 +48,10 @@ function [y,x] = lsim(sys,u,t,x0)
 
   sys = sysupdate(sys,"ss");
 
-  nout = rows(sys.c);
-  nin = columns(sys.b);
-  ncstates = sys.n;
-  ndstates = sys.nz;
+  [ncstates, ndstates, nin, nout] = sysdimensions(sys);
+  [a,b,c,d] = sys2ss(sys);
   
-  a = sys.a;
-  b = sys.b;
-  c = sys.c;
-  d = sys.d;
-  
-  if (nargin == 3)
-    x0 = zeros(columns(a),1);
-  endif
+  if (nargin == 3)     x0 = zeros(columns(a),1);        endif
 
   if(rows(u) ~= length(t))
     error("lsim: There should be an input value (row) for each time instant");
@@ -94,8 +77,7 @@ function [y,x] = lsim(sys,u,t,x0)
       Ts = t(ii+1) - t(ii);
       # [F,G] = c2d(a,b,Ts);
       dsys = c2d(sys, Ts);
-      F = dsys.a;
-      G = dsys.b;
+      [F,G] = sys2ss(dsys);
     endif
 
     x(:,ii) = x0;

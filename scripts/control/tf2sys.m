@@ -1,4 +1,4 @@
-# Copyright (C) 1996 A. Scottedward Hodel 
+# Copyright (C) 1996,1998 A. Scottedward Hodel 
 #
 # This file is part of Octave. 
 #
@@ -29,18 +29,7 @@ function outsys = tf2sys(num,den,tsam,inname,outname)
   #  Written by R. Bruce Tenison  July 29, 1994
   #  Name changed to TF2SYS July 1995
   #  updated for new system data structure format July 1996
-  # $Revision: 1.4 $
-  # $Log: tf2sys.m,v $
-  # Revision 1.4  1998/08/24 15:50:30  hodelas
-  # updated documentation
-  #
-  # Revision 1.2  1998/07/01 16:23:39  hodelas
-  # Updated c2d, d2c to perform bilinear transforms.
-  # Updated several files per bug updates from users.
-  #
-  # Revision 1.2  1997/02/12 22:45:57  hodel
-  # added debugging code (commented out)
-  #
+  # $Revision: 2.0.0.0 $
 
   save_val = implicit_str_to_num_ok;
   implicit_str_to_num_ok = 1;
@@ -64,16 +53,12 @@ function outsys = tf2sys(num,den,tsam,inname,outname)
   den = tf2sysl(den);
 
   if (length(num) >  length(den))
-    error([ 'number of poles (', num2str(length(den)-1), ...
-	') < number of zeros (', num2str(length(num)-1),')']);
+    error("# of poles (%d) < # of zeros (%d)",length(den)-1, length(num)-1);
   endif
 
   # check sampling interval (if any)
-  if(nargin <= 2)
-    tsam = 0;		# default
-  elseif (isempty(tsam))
-    tsam = 0;
-  endif
+  if(nargin <= 2)           tsam = 0;		# default
+  elseif (isempty(tsam))    tsam = 0;           endif
   if ( (! (is_scalar(tsam) && (imag(tsam) == 0) )) || (tsam < 0) )
     error('tsam must be a positive real scalar')
   endif
@@ -95,32 +80,40 @@ function outsys = tf2sys(num,den,tsam,inname,outname)
     outsys.yd = 1;
   endif
 
-  outsys.inname = sysdefioname(1,"u");
+  outsys.inname  = sysdefioname(1,"u");
   outsys.outname = sysdefioname(1,"y");
-  outsys.stname = sysdefstname(outsys.n,outsys.nz);
+  outsys.stname  = sysdefstname(outsys.n,outsys.nz);
 
   #  Set name of input
   if (nargin > 3)
-    if (rows(inname) > 1)
-      warning(["tf2sys: ",num2str(rows(inname))," input names given, 1st used"]);
-      inname = inname(1,:);
+    # make sure its a list of a single string
+    if(!isempty(inname))
+      if(!is_list(inname))  inname = list(inname);  endif
+      if( !is_signal_list(inname) )
+        error("inname must be a string or list of strings");
+      endif
+      if(length(inname) > 1)
+        warning("tf2sys: %d input names provided; first used",length(inname));
+        inname = inname(1);
+      endif
+      outsys = syssetsignals(outsys,"in",inname);
     endif
-    outsys.inname(1,1:length(inname)) = inname;
   endif
 
   #  Set name of output
   if (nargin > 4)
-    if (rows(outname) > 1)
-      warning(["tf2sys: ",num2str(rows(outname)), ...
-	" output names given, 1st used"]);
-      outname = outname(1,:);  
+    if(!isempty(outname))
+      if(!is_list(outname))  outname = list(outname);  endif
+      if(!is_signal_list(outname))
+        error("outname must be a string or a list of strings");
+      endif
+      if(length(outname) > 1)
+        warning("tf2sys: %d output names provided; first used",length(outname));
+        outname = outname(1);
+      endif
+      outsys = syssetsignals(outsys,"out",outname);
     endif
-    outsys.outname(1,1:length(outname)) = outname;  
   endif 
 
-  #disp("tf2sys: returning")
-  #outsys
-  #disp("/tf2sys")
-  
   implicit_str_to_num_ok = save_val;
 endfunction

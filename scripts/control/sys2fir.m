@@ -16,20 +16,23 @@
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA. 
  
-function [c,tsam,input,output] = sys2fir(sys)
-# function [c,tsam,input,output] = sys2fir(sys)
+function [c,tsam,inname,outname] = sys2fir(sys)
+# function [c,tsam,inname,outname] = sys2fir(sys)
 # extract fir system from system data structure
 
-# $Revision: 1.1.1.1 $
+# $Revision: 2.0.0.0 $
 # a s hodel July 1996
 
-  sys=sysupdate(sys,"tf");		# make sure it's SISO
-  alph = sys.den(1);			# scale to get monic denominator
-  sys.den = sys.den/alph;
-  sys.num = sys.num/alph;
-  l = length(sys.den);
-  m = length(sys.num);
-  if( norm(sys.den(2:l)) )
+  # let sys2tf do most of the work
+
+  [num,den,tsam,inname,outname] = sys2tf(sys);
+
+  alph = den(1);			# scale to get monic denominator
+  den = den/alph;
+  num = num/alph;
+  l = length(den);
+  m = length(num);
+  if( norm(den(2:l)) )
     sysout(sys,"tf");
     error("denominator has poles away from origin");
   elseif( !is_digital(sys) )
@@ -38,9 +41,6 @@ function [c,tsam,input,output] = sys2fir(sys)
     warning(["sys2fir: deg(num) - deg(den) = ",num2str(m-l), ...
 	"; coefficients must be shifted"]);
   endif
-  c = sys.num;
-  tsam = sys.tsam;
-  input = sys.inname;
-  output = sys.outname;
+  c = num;
 endfunction
 

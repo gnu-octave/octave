@@ -36,16 +36,7 @@ function [y, t] = step(sys, inp, tstop, n)
 # Written by Kai P. Mueller September 30, 1997
 # based on lsim.m of Scottedward Hodel
 # modified by
-# $Revision: 1.1.1.1 $
-# $Log: step.m,v $
-# Revision 1.1.1.1  1998/05/19 20:24:08  jwe
-#
-# Revision 1.3  1997/12/01 16:51:50  scotte
-# updated by Mueller 27 Nov 97
-#
-# Revision 1.1  1997/11/11  17:34:34  mueller
-# Initial revision
-#
+# $Revision: 2.0.0.0 $
 
   if((nargin < 1) || (nargin > 4))
     usage("[y, u] = step(sys[, inp, tstop, n])");

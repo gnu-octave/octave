@@ -36,7 +36,7 @@ function sys = sysadd(Gsys,Hsys)
 #                  --------
 
 # Written by John Ingram July 1996
-# $Revision: 1.2 $
+# $Revision: 2.0.0.0 $
 
   save_val = implicit_str_to_num_ok;	# save for later
   implicit_str_to_num_ok = 1;
@@ -67,16 +67,15 @@ function sys = sysadd(Gsys,Hsys)
     error("can not add a discrete output to a continuous output");
   endif
 
-  if( (Gsys.sys(1) == 0) | (Hsys.sys(1) == 0) )
+  if( strcmp(sysgettype(Gsys),"tf") | strcmp(sysgettype(Hsys),"tf") )
     # see if adding  transfer functions with identical denominators
-    Gsys = sysupdate(Gsys,"tf");
-    Hsys = sysupdate(Hsys,"tf");
-    if(Hsys.den == Gsys.den)
-      sys = Gsys;
-      sys.sys(1) = 0;
-      sys.num = sys.num + Hsys.num;
+    [Gnum,Gden,GT,Gin,Gout] = sys2tf(Gsys);
+    [Hnum,Hden,HT,Hin,Hout] = sys2tf(Hsys);
+    if( (Hden == Gden) & (HT == GT) )
+      sys = tf2sys(Gnum+Hnum,Gden,GT,Gin,Gout);
       return
     endif
+    # if not, we go on and do the usual thing...
   endif
 
   # make sure in ss form

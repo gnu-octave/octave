@@ -22,21 +22,11 @@ function gm = dcgain(sys, tol)
 #      an empty matrix is returned.
 #      The argument tol is an optional tolerance for the condition
 #      number of A-Matrix in sys (default tol = 1.0e-10)
+#      Prints a warning message of the system is unstable.
 #
-# See also: (nothing)
 
 # Written by Kai P Mueller (mueller@ifr.ing.tu-bs.de) October 1, 1997
-# Updated
-# $Revision: 1.1.1.1 $
-# $Log: dcgain.m,v $
-# Revision 1.1.1.1  1998/05/19 20:24:06  jwe
-#
-# Revision 1.3  1997/12/01 16:51:50  scotte
-# updated by Mueller 27 Nov 97
-#
-# Revision 1.1  1997/11/11  17:32:46  mueller
-# Initial revision
-#
+# $Revision: 2.0.0.0 $
 
   if((nargin < 1) || (nargin > 2) || (nargout > 1))
     usage("[gm, ok] = dcgain(sys[, tol])");
@@ -45,13 +35,18 @@ function gm = dcgain(sys, tol)
     error("dcgain: first argument is not a system data structure.")
   endif
   sys = sysupdate(sys, "ss");
-  aa = sys.a;
+  [aa,bb,cc,dd] = sys2ss(sys);
   if (is_digital(sys))  aa = aa - eye(size(aa));  endif
   if (nargin == 1)  tol = 1.0e-10;  endif
   r = rank(aa, tol);
   if (r < rows(aa))
     gm = [];
   else
-    gm = -sys.c / aa * sys.b + sys.d;
+    gm = -cc / aa * bb + dd;
+  endif
+  if(!is_stable(sys))
+    [nn,nz,mm,pp] = sysdimensions(sys);
+    warning("dcgain: unstable system; dimensions [nc=%d,nz=%d,mm=%d,pp=%d]", ...
+      nn,nz,mm,pp);
   endif
 endfunction

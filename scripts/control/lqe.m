@@ -40,20 +40,7 @@ function [k, p, e] = lqe (a, g, c, sigw, sigv, zz)
 #   e = closed loop poles of (A - K C)
 
 # Written by A. S. Hodel (scotte@eng.auburn.edu) August, 1993.
-# $Revision: 1.14 $
-# $Log: lqe.m,v $
-# Revision 1.14  1998-11-06 16:15:36  jwe
-# *** empty log message ***
-#
-# Revision 1.1.1.1  1998/05/19 20:24:07  jwe
-#
-# Revision 1.3  1997/09/19 21:36:54  scotte
-# *** empty log message ***
-#
-# Revision 1.2  1997/02/28 23:03:45  hodel
-# added parenthesis in if command (just in case)
-# a.s.hodel@eng.auburn.edu
-#
+# $Revision: 1.15 $
 
   if ( (nargin != 5) && (nargin != 6))
     error ("lqe: invalid number of arguments");

@@ -1,4 +1,4 @@
-# Copyright (C) 1996 A. Scottedward Hodel 
+# Copyright (C) 1996,1998 A. Scottedward Hodel 
 #
 # This file is part of Octave. 
 #
@@ -39,103 +39,9 @@ function retsys = syschnames(sys,opt,list,names)
 #    retsys=sys with appropriate signal names changed 
 #            (or yd values, where appropriate)
 
-# Written by John Ingram August 1996
-# $Revision: 1.3 $
-# $Log: syschnames.m,v $
-# Revision 1.3  1998/07/17 15:31:06  hodelas
-# use is_empty instead of max(size(...))
-#
+# Written by John Ingram August 1996; updated by A. S. Hodel 1998
+# $Revision: 2.0.0.0 $
 
-  save_val = implicit_str_to_num_ok;	# save for later
-  implicit_str_to_num_ok = 1;
-
-  if (nargin != 4)
-    usage("retsys=syschnames(sys,opt,list[,names])");
-  elseif (!is_struct(sys))
-    error("sys must be a system data structure");
-  elseif (isempty(opt))
-    opt = "out";
-  elseif( ! isstr(opt) )
-    error("opt must be a string");
-  elseif( ! (strcmp(opt,"out") + strcmp(opt,"yd") + ...
-    strcmp(opt,"in") + strcmp(opt,"st") ) )
-    error("opt must be one of [], ""out"", ""yd"", ""in"", or ""st""");
-  elseif(min(size(list)) > 1)
-    disp("syschnames: list=")
-    disp(list);
-    error("list must be a vector")
-  endif
-
-  if (strcmp(opt,"out"))
-    # update output names
-    sys.outname = syschnamesl(list,sys.outname,names,"outlist");
-  elseif (strcmp(opt,"in"))
-    sys.inname = syschnamesl(list,sys.inname,names, "inlist");
-  elseif (strcmp(opt,"st"))
-    sys.stname = syschnamesl(list,sys.stname,names,"stlist");
-  else
-    # it's yd
-    ym = max(size(list));
-    ys = min(size(list));
-    maxn = rows(sys.outname);
-
-    if(ym != 0)
-      if( (ym  > maxn) | (ys != 1) )
-        error(["system has ",num2str(maxn)," outputs, ", ...
-	  "list=(",num2str(rows(list)),"x",num2str(columns(list)),")"]);
-      endif
-
-      if( ym != length(names))
-        error(["list has ",num2str(ym)," entries, and names has ",...
-		num2str(length(names))," entries."]);
-      endif
-
-      if (min((names == 1) | (names == 0)) == 0)
-        error("yd must be either zero or one");
-      endif
-
-      if (max(list) > maxn)
-        error(["The largest entry in the list is ",num2str(max(list)),...
-		" exceeds number of outputs=",num2str(maxn)])
-      endif      
-
-      if (max(names) && (sys.tsam == 0) )
-        warning("syschnames: discrete outputs with tsam=0; setting tsam=1");
-        disp("	effected outputs are:")
-        if(is_siso(sys))
-          outlist(sys.outname,"	",[],list);
-        else
-          outlist(sys.outname(list,:),"	",[],list);
-        endif
-        sys.tsam = 1;
-      endif
-
-      # reshape everything as a column vector
-      sys.yd = reshape(sys.yd,length(sys.yd),1);
-      names  = reshape(names,length(names),1);
-
-	#disp("syschnames: list=")
-	#disp(list)
-	#disp("syschnames: names=")
-	#disp(names)
-	#disp("syschnames: sys.yd=")
-	#disp(sys.yd)
-
-      sys.yd(list) = names;
-    
-      if ((min(sys.yd) == 0) && (max(sys.yd) == 0) && (sys.tsam > 0) )
-        warning("discrete states but no discrete outputs selected");
-      endif
-
-    endif
-    
-  endif
-
-  retsys = sys;
-  implicit_str_to_num_ok = save_val;	# restore value
-
-  #disp("syschnames: exiting with")
-  #retsys
-  #disp("/syschnames")
+  retsys = syssetsignals(sys,opt,names,list);
 
 endfunction

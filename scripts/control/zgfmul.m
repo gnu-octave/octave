@@ -30,11 +30,7 @@ function y = zgfmul(a,b,c,d,x)
   
   # A. S. Hodel July 24 1992
   # Conversion to Octave July 3, 1994
-  # $Revision: 1.1 $
-  # $Log: zgfmul.m,v $
-# Revision 1.1  1998/11/04  14:35:42  hodel
-# Initial revision
-#
+  # $Revision: 2.0.0.0 $
   
   [n,m] = size(b);
   [p,m1] = size(c);

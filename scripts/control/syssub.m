@@ -36,7 +36,7 @@ function sys = syssub(Gsys,Hsys)
 #                  --------
 
 # Written by John Ingram July 1996
-# $Revision: 1.1.1.1 $
+# $Revision: 2.0.0.0 $
 
   save_val = implicit_str_to_num_ok;	# save for later
   implicit_str_to_num_ok = 1;
@@ -51,54 +51,44 @@ function sys = syssub(Gsys,Hsys)
   endif
 
   # check for compatibility
-  if(rows(Gsys.inname) != rows(Hsys.inname))
-    error("Gsys and Hsys must have the same number of inputs");
-  elseif(rows(Gsys.outname) != rows(Hsys.outname))
-    error("Gsys and Hsys must have the same number of outputs");
+  [n,nz,mg,pg] = sysdimensions(Gsys);
+  [n,nz,mh,ph] = sysdimensions(Hsys);
+  if(mg != mh)
+    error(sprintf("Gsys inputs(%d) != Hsys inputs (%d)",mg,mh));
+  elseif(pg != ph)
+    error(sprintf("Gsys outputs(%d) != Hsys outputs (%d)",pg,ph));
   endif
 
+  [Gst, Gin, Gout, Gyd] = sysgetsignals(Gsys);
+  [Hst, Hin, Hout, Hyd] = sysgetsignals(Hsys);
+
   # check for digital to continuous addition
-  if (Gsys.yd != Hsys.yd)
+  if (Gyd != Hyd)
     error("can not add a discrete output to a continuous output");
   endif
 
-  if( (Gsys.sys(1) == 0) | (Hsys.sys(1) == 0) )
+  if( strcmp(sysgettype(Gsys),"tf") | strcmp(sysgettype(Hsys),"tf") )
     # see if adding  transfer functions with identical denominators
-    Gsys = sysupdate(Gsys,"tf");
-    Hsys = sysupdate(Hsys,"tf");
-    if(Hsys.den == Gsys.den)
-      sys = Gsys;
-      sys.sys(1) = 0;
-      sys.num = sys.num - Hsys.num;
+    [Gnum,Gden,GT,Gin,Gout] = sys2tf(Gsys);
+    [Hnum,Hden,HT,Hin,Hout] = sys2tf(Hsys);
+    if( (Hden == Gden) & (HT == GT) )
+      sys = tf2sys(Gnum-Hnum,Gden,GT,Gin,Gout);
       return
     endif
+    # if not, we go on and do the usual thing...
   endif
 
   # make sure in ss form
   Gsys = sysupdate(Gsys,"ss");
   Hsys = sysupdate(Hsys,"ss");
 
-  #disp("syssub: Gsys=")
-  #sysout(Gsys,"ss");
-  #disp("syssub: Hsys=")
-  #sysout(Hsys,"ss")
-
   sys = sysgroup(Gsys,Hsys);
 
-  eyin = eye(columns(Gsys.b));
-  eyout = eye(rows(Gsys.c));
+  eyin = eye(mg); eyout = eye(pg);
 
-  inname = sys.inname(1:rows(Gsys.inname) , :);
-  outname = sys.outname(1:rows(Gsys.outname) , :);
-
-  #disp("syssub: before sysscale: sys.yd=")
-  #disp(sys.yd)
-  #disp("syssub:")
+  inname = Gin;
+  outname = Gout;
 
   sys = sysscale(sys,[eyout -eyout],[eyin;eyin],outname,inname);
-
-  #disp("syssub: sys.yd=")
-  #disp(sys.yd)
-  #disp("syssub: exiting")
 
 endfunction

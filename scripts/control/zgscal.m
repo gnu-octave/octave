@@ -28,7 +28,7 @@ function x = zgscal(a,b,c,d,z,n,m,p)
   
   # A. S. Hodel July 24 1992
   # Conversion to Octave R. Bruce Tenison July 3, 1994
-  # $Revision: 1.2 $
+  # $Revision: 2.0.0.0 $
 
   #**************************************************************************
   #initialize parameters:

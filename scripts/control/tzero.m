@@ -39,23 +39,7 @@ function [zer, gain] = tzero(A,B,C,D)
   
   # R. Bruce Tenison July 4, 1994
   # A. S. Hodel Aug 1995: allow for MIMO and system data structures
-  # $Revision: 1.16 $ 
-  # $Log: tzero.m,v $
-  # Revision 1.16  1998-11-06 16:15:37  jwe
-  # *** empty log message ***
-  #
-  # Revision 1.7  1998/08/24 15:50:30  hodelas
-  # updated documentation
-  #
-  # Revision 1.4  1998/08/12 20:34:36  hodelas
-  # Updated to use system access calls instead of direct structure access
-  #
-  # Revision 1.3  1998/07/21 14:53:11  hodelas
-  # use isempty instead of size tests; use sys calls to reduce direct
-  # access to system structure elements
-  #
-  # Revision 1.2  1997/02/13 11:58:05  hodel
-  # tracked down error in zgfslv; added Log message
+  # $Revision: 1.17 $ 
 
   # get A,B,C,D and Asys variables, regardless of initial form
   if(nargin == 4)

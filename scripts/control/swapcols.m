@@ -22,7 +22,7 @@ function B = swapcols(A)
   
   # A. S. Hodel July 23, 1992
   # Conversion to Octave R. Bruce Tenison July 4, 1994
-  # $Revision: 1.1 $
+  # $Revision: 2.0.0.0 $
 
   m = length(A(1,:));
   idx = m:-1:1;

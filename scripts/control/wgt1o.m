@@ -30,20 +30,7 @@ function wsys = wgt1o(vl, vh, fc)
 # fc = Corner frequency (in Hz, *not* in rad/sec)
 
 # Written by Kai P. Mueller September 30, 1997
-# $Revision: 1.1.1.1 $
-# $Log: wgt1o.m,v $
-# Revision 1.1.1.1  1998/05/19 20:24:10  jwe
-#
-# Revision 1.1  1998/05/05 17:04:56  scotte
-# Initial revision
-#
-# Revision 1.2  1998/05/05  09:01:22  mueller
-# comments added
-#
-# Revision 1.1  1998/05/04  15:08:46  mueller
-# Initial revision
-#
-#
+# $Revision: 2.0.0.0 $
 
   if (nargin != 3)
     usage("wsys = wgt1o(vl, vh, fc)");

@@ -45,7 +45,7 @@ function [l, m, p, e] = dlqe (a, g, c, sigw, sigv, s)
 # Modified for discrete time by R. Bruce Tenison (btenison@eng.auburn.edu)
 # October, 1993
 
-# $Revision: 1.14 $
+# $Revision: 1.15 $
 
   if (nargin != 5 && nargin != 6)
     error ("dlqe: invalid number of arguments");

@@ -1,4 +1,4 @@
-# Copyright (C) 1996 A. Scottedward Hodel 
+# Copyright (C) 1996,1998 A. Scottedward Hodel 
 #
 # This file is part of Octave. 
 #
@@ -16,12 +16,12 @@
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA. 
  
-function out = h2norm(sys)
-  # Usage: out = h2norm(sys)
+function h2gain = h2norm(sys)
+  # Usage: h2gain = h2norm(sys)
   #
   # Computes the H2 norm system data structure (continuous time only)
   # sys = system data structure [see ss2sys()]
-  # returns out = Inf if system is unstable
+  # returns h2gain = Inf if system is unstable
   #
   # Reference:
   # Doyle, Glover, Khargonekar, Francis, "State Space Solutions to Standard
@@ -30,10 +30,10 @@ function out = h2norm(sys)
 
   # A. S. Hodel Aug 1995
   # updated for system data structure by John Ingram November 1996
-  # $Revision: 1.2 $
+  # $Revision: 2.0.0.0 $
 
   if((nargin != 1))
-    usage("out = h2norm(sys)");
+    usage("h2gain = h2norm(sys)");
   elseif(!is_struct(sys))
     error("Sys must be in system data structure");
   end
@@ -41,7 +41,7 @@ function out = h2norm(sys)
 
   if(!is_stable(sys))
     warning("h2norm: unstable input system; returning Inf");
-    out = Inf;
+    h2gain = Inf;
   else
     # compute gain
     [a,b,c,d] = sys2ss(sys);
@@ -53,6 +53,7 @@ function out = h2norm(sys)
     if( min(real(eig(M))) < 0)
       error("h2norm: grammian not >= 0 (lightly damped modes?)")
     endif
-    out = sqrt(d'*d + trace(c*M*c'));
+
+    h2gain = sqrt(trace(d'*d + c*M*c'));
   endif
 endfunction

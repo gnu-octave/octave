@@ -16,12 +16,18 @@
 # along with Octave; see the file COPYING.  If not, write to the Free
 # Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
-function [n,nz,m,p,yd] = sysdimensions(sys)
-# [n,nz,m,p[,yd]] = sysdimensions(sys)
-# return the number of states, inputs, and outputs in the system sys.
+function [n,nz,m,p,yd] = sysdimensions(sys,opt)
+# [n,nz,m,p,yd] = sysdimensions(sys{,opt})
+# return the number of states, inputs, and/or outputs in the system sys.
 # inputs: sys: system data structure
+#         opt: string
+#              "all" (default): return all output arguments (see below)
+#              "cst": return n=number of continuous states
+#              "dst": return n=number of discrete states
+#              "in":  return n=number of inputs
+#              "out": return n = number of outputs
 # outputs:
-#  n: number of continuous states
+#  n: number of continuous states (or the specified dimension as shown above)
 #  nz: number of discrete states
 #  m: number of system inputs
 #  p: number of system outputs
@@ -30,16 +36,29 @@ function [n,nz,m,p,yd] = sysdimensions(sys)
 #
 # see also: sysgetsignals, sysgettsam
 
-if(nargout > 5 | nargin != 1)
-  usage("[n,nz,m,p[,yd]] = sysdimensions(sys)");
+if(nargout > 5 | nargin < 1 | nargin > 2)
+  usage("[n,nz,m,p[,yd]] = sysdimensions(sys{,opt})");
 elseif(!is_struct(sys))
   usage("[n,nz,m,p] = sysdimensions(sys)");
+elseif(nargin == 1)
+  opt = "all";
 endif
 
 n = sys.n;
 nz = sys.nz;
-m = rows(sys.inname);
-p = rows(sys.outname);
+m = length(sysgetsignals(sys,"in"));
+p = length(sysgetsignals(sys,"out"));
 yd = sys.yd;
+legal_options = list("all","cst","dst","in","out");
+legal_values = list(n,n,nz,m,p);
+
+for ii=1:length(legal_options)
+  if(strcmp(nth(legal_options,ii),opt))
+    n = nth(legal_values,ii);
+    if(ii > 1 & nargout > 1)
+      warning("opt=%s, %d output arguments requested",opt,nargout);
+    endif
+  endif
+endfor
 
 endfunction

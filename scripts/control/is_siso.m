@@ -21,7 +21,7 @@ function  SISO = is_siso(sys)
 # return nonzero if the system sys is single-input, single-output.
 
 # a s hodel July 1996, 1998
-# $Revision: 1.2 $
+# $Revision: 2.0.0.0 $
 # SYS_INTERNAL accesses members of system structure
 
   if(nargin != 1)

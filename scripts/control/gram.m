@@ -25,7 +25,7 @@ function m = gram(a,b)
   # a m + a' + b*b' = 0 
 
   # Written by A. S. Hodel 
-  # $Revision: 1.2 $
+  # $Revision: 2.0.0.0 $
 
   # let lyap do the error checking...
   m = lyap(a,b*b');

@@ -1,4 +1,7 @@
-# $Revision: 1.1 $
+# I think that this m-file can be deleted
+# a.s.hodel@eng.auburn.edu - 4 Dec. 1998
+
+# $Revision: 2.0.0.0 $
 
 Ap = [0 1;1960 0];
 Bp = [0;-6261];
@@ -6,8 +9,8 @@ Cp = [1 0];
 Dp = 0;
 
 Gp = ss2sys(Ap,Bp,Cp,Dp,0,2,0,[],"delta_i","delta_y");
-Gp = syschnames(Gp,"st",1,"delta_x1");
-Gp = syschnames(Gp,"st",2,"delta_x2");
+Gp = syssetsignals(Gp,"st","delta_x1",1);
+Gp = syssetsignals(Gp,"st","delta_x2",2);
 
 Ak = [-20 1;-22160 -200];
 Bk = [-20;-2160];
@@ -15,8 +18,8 @@ Ck = [-3.5074 -0.0319];
 Dk = 0;
 
 Gk = ss2sys(Ak,Bk,Ck,Dk,0,2,0,[],"y","i");
-Gk = syschnames(Gk,"st",1,"x1");
-Gk = syschnames(Gk,"st",2,"x2");
+Gk = syssetsignals(Gk,"st","x1",1);
+Gk = syssetsignals(Gk,"st","x2",2);
 
 Gc = sysgroup(Gp,Gk);
 
@@ -34,7 +37,10 @@ sysout(Gc)
 # Gc = sysprune(Gc,1,1);
 
 is_stable(Gc)
-eig(Gc.a)
+Gca = sys2ss(Gc);
+eig(Gca)
 
-Acl = [Gp.a, -Gp.b*Gk.c; Gk.b*Gp.c, Gk.a]
+[Gpa,Gpb,Gpc,Gpd] = sys2ss(Gp);
+[Gka,Gkb,Gkc,Gkd] = sys2ss(Gk);
+Acl = [Gpa, -Gpb*Gkc; Gkb*Gpc, Gka]
 eig(Acl)

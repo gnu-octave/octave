@@ -29,7 +29,7 @@ function [csys,Acd,Ccd] = syscont(sys)
 # returns csys empty if no continuous/continous path exists
 
 # Written by John Ingram August 1996
-# $Revision: 1.2 $
+# $Revision: 2.0.0.0 $
 
   save_val = implicit_str_to_num_ok;	# save for later
   save_empty = empty_list_elements_ok;
@@ -60,14 +60,14 @@ function [csys,Acd,Ccd] = syscont(sys)
   [sys_n, sys_nz, sys_m, sys_p] = sysdimensions(sys);
   if(!isempty(st_c))
     Acc = sys_a(st_c,st_c);
-    stname = sys_stname(st_c, :);
+    stname = sys_stname(st_c);
     Bcc = sys_b(st_c,:);
     Ccc = sys_c(y_c,st_c);
     Acd = sys_a(st_c,st_d);
   else
     stname=[];
   endif
-  outname = sys_outname(y_c,:);
+  outname = sys_outname(y_c);
   Dcc = sys_d(y_c,:);
   Ccd = sys_c(y_c,st_d);
   inname = sys_inname;

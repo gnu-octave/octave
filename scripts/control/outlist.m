@@ -1,4 +1,4 @@
-# Copyright (C) 1996 A. Scottedward Hodel 
+# Copyright (C) 1996, 1998 A. Scottedward Hodel 
 #
 # This file is part of Octave. 
 #
@@ -16,62 +16,54 @@
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA. 
  
-function outlist(lmat,tabchar,yd,ilist)
-# function outlist(lmat[,tabchar,yd,ilist])
+function str_val = outlist(name_list,tabchar,yd,ilist)
+# function str_val = outlist(name_list[,tabchar,yd,ilist])
 #
 # internal use only; minimal argument checking performed
 #
 # print an enumerated list of strings
 # inputs:
-#	lmat: matrix of strings (one per row)
+#	name_list: list of strings (one per entry)
 #	tabchar: tab character (default: none)
-#       yd: indices of strings to append with the string "(discrete)"
+#       yd: indices of entries to append with the string "(discrete)"
 #           (used by sysout; minimal checking of this argument)
 #	   yd = [] => all continuous
 #       ilist: index numbers to print with names
-#	  default: 1:rows(lmat)
+#	  default: 1:length(name_list)
 # outputs:
 #   prints the list to the screen, numbering each string in order.
 
-# A. S. Hodel Dec. 1995
-# $Revision: 1.1.1.1 $
-
-save_val = implicit_str_to_num_ok;	# save for later
-implicit_str_to_num_ok = 1;
+# A. S. Hodel Dec. 1995, 1998
+# $Revision: 2.0.0.0 $
 
 #save for restore later
 save_empty = empty_list_elements_ok;
 empty_list_elements_ok = 1;
 
-if( (nargin < 1) || (nargin > 4) )
-  usage("outlist(x[,tabchar,yd,ilist])");
+if( nargin < 1 | nargin > 4 )
+  usage("str_val = outlist(x[,tabchar,yd,ilist])");
 endif
 
-[m,n] = size(lmat);
-if(nargin < 4)
-  ilist = 1:m;
-endif
+m = length(name_list);
+if(nargin < 4)           ilist = 1:m;          endif
 if(nargin ==1)
   empty_list_elements_ok = 1;
   tabchar = "";
 endif
 
-if(nargin < 3)
-  yd = zeros(1,m);
-elseif(isempty(yd))
-  yd = zeros(1,m);
-endif
+if(nargin < 3)             yd = zeros(1,m);
+elseif(isempty(yd))        yd = zeros(1,m);          endif
 
-if((m >= 1) && (isstr(lmat)))
+str_val = "";
+dstr = list(""," (discrete)");
+if((m >= 1) && (is_list(name_list)))
   for ii=1:m
-    str = dezero([lmat(ii,:),setstr((yd(ii)*" (discrete)"))]);
-    #disp(["length(str)=",num2str(length(str))])
-    disp([tabchar,num2str(ilist(ii)),": ",str])
+    str_val = sprintf("%s%s%d: %s%s\n",str_val,tabchar, ii, ...
+	nth(name_list,ii),nth(dstr,yd(ii)+1));
   endfor
 else
-  disp([tabchar,"None"])
+  str_val = sprintf("%sNone",tabchar);
 endif
 
 empty_list_elements_ok = save_empty;
-implicit_str_to_num_ok = save_val;	# restore value
 endfunction

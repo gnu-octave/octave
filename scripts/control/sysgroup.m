@@ -40,7 +40,7 @@ function sys = sysgroup(Asys,Bsys)
 
 # A. S. Hodel August 1995
 # modified by John Ingram July 1996
-# $Revision: 1.3 $
+# $Revision: 2.0.0.0 $
 
   save_val = implicit_str_to_num_ok;	# save for later
   implicit_str_to_num_ok = 1;
@@ -71,9 +71,7 @@ function sys = sysgroup(Asys,Bsys)
     warning("sysgroup: creating combination of continuous and discrete systems")
 
   elseif(Atsam != Btsam)
-    error(["sysgroup: Asys.tsam=", ...
-       num2str(Atsam),", Bsys.tsam=",num2str(Btsam)]);
-
+    error("sysgroup: Asys.tsam=%e, Bsys.tsam =%e", Atsam, Btsam);
   endif
 
   A = [Aa,zeros(nA,nB); zeros(nB,nA),Ba];
@@ -88,10 +86,10 @@ function sys = sysgroup(Asys,Bsys)
   elseif(isempty(Bst))
     stname = Ast;
   else
-    stname  = str2mat(Ast, Bst);
+    stname  = append(Ast, Bst);
   endif
-  inname  = str2mat(Ain, Bin);
-  outname = str2mat(Aout,Bout);
+  inname  = append(Ain, Bin);
+  outname = append(Aout,Bout);
 
   # Sort states into continous first, then discrete
   dstates = ones(1,(nA+nB));
@@ -105,7 +103,7 @@ function sys = sysgroup(Asys,Bsys)
   A = A(pv,pv);
   B = B(pv,:);
   C = C(:,pv);
-  stname = stname(pv,:);
+  stname = stname(pv);
 
   # check for duplicate signal names
   inname = sysgroupn(inname,"input");

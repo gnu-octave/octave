@@ -22,18 +22,21 @@ function DIGITAL = is_digital(sys)
 # exits with an error of sys is a mixed (continuous and discrete) system
 
 # a s hodel July 1996
-# $Revision: 1.1.1.1 $
+# $Revision: 2.0.0.0 $
 # SYS_INTERNAL accesses members of system structure
 
   # checked for sampled data system (mixed)
   # discrete system
-  cont = sum(sys.yd == 0) + sys.n;
-  dig = sum(sys.yd != 0) + sys.nz + sys.tsam;
+  sysyd = sysgetsignals(sys,"yd");
+  [nn,nz] = sysdimensions(sys);
+  cont = sum(sysyd == 0) + nn;
+  tsam = sysgettsam(sys);
+  dig = sum(sysyd != 0) + nz + tsam;
   if( cont*dig != 0)
    sysout(sys);
    error("continuous/discrete system; use syscont, sysdisc, or c2d first");
   else
-    DIGITAL = (sys.tsam > 0);
+    DIGITAL = (tsam > 0);
   endif
  
 endfunction

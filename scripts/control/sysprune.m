@@ -38,18 +38,19 @@ function sys = sysprune(sys,output_list,input_list)
 
 # A. S. Hodel August 1995
 # Updated by John Ingram 7-15-96
-# $Revision: 1.2 $
+# $Revision: 2.0.0.0 $
 
   if( nargin != 3  )
     usage("retsys = sysprune(sys,output_list,input_list)");
   endif
 
   # default: no action
+  [nn,nz,mm,pp] = sysdimensions(sys);
   if(isempty(output_list))
-    outputlist = 1:rows(sys.outname);
+    outputlist = 1:pp;
   endif
   if(isempty(input_list))
-    input_list = 1:rows(sys.inname);
+    input_list = 1:mm;
   endif
 
   # check dimensions
@@ -67,8 +68,8 @@ function sys = sysprune(sys,output_list,input_list)
     endif
   endif
   
-  m = rows(sys.inname);
-  p = rows(sys.outname);
+  m = mm;
+  p = pp;
 
   if( !is_struct(sys))
     error("Asys must be a system data structure (see ss2sys, tf2sys, or zp2sys)")
@@ -80,14 +81,15 @@ function sys = sysprune(sys,output_list,input_list)
 	num2str(m)," inputs"]);
   endif
 
-  sys = sysupdate(sys,"ss");
+  [aa,bb,cc,dd,tsam,nn,nz,stnam,innam,outnam,yd] = sys2ss(sys);
+  bb = bb(:,input_list);
+  cc = cc(output_list,:);
+  dd = dd(output_list,input_list);
+  yd = yd(output_list); 
 
-  sys.b = sys.b(:,input_list);
-  sys.c = sys.c(output_list,:);
-  sys.d = sys.d(output_list,input_list);
-
-  sys.inname = sys.inname(input_list,:);
-  sys.outname = sys.outname(output_list,:); 
-  sys.yd = sys.yd(output_list); 
+  # this part needs rewritten for the list structure of signal names
+  innam  = innam(input_list);
+  outnam = outnam(output_list); 
   
+  sys = ss2sys(aa,bb,cc,dd,tsam,nn,nz,stnam,innam,outnam,find(yd));
 endfunction

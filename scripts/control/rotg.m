@@ -22,7 +22,7 @@ function [c,s] = rotg(a,b)
   #
   # NOTE: Use [c,s] = givens(a,b) instead.
 
-  # $Revision: 1.1 $
+  # $Revision: 2.0.0.0 $
 
   [c,s] = givens(a,b);
 endfunction

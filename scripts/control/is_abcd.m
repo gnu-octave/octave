@@ -29,16 +29,7 @@ function retval = is_abcd(a, b, c, d)
   # Written by Kai P. Mueller November 4, 1997
   # based on is_controllable.m of Scottedward Hodel
   # modified by
-  # $Revision: 1.1.1.1 $
-  # $Log: is_abcd.m,v $
-  # Revision 1.1.1.1  1998/05/19 20:24:07  jwe
-  #
-  # Revision 1.1  1997/12/01 16:51:50  scotte
-  # Initial revision
-  #
-# Revision 1.1  1997/11/25  11:17:41  mueller
-# Initial revision
-#
+  # $Revision: 2.0.0.0 $
 
   retval = 0;
   switch (nargin)

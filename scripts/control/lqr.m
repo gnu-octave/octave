@@ -47,23 +47,9 @@ function [k, p, e] = lqr (a, b, q, r, s)
 # reference: Anderson and Moore, OPTIMAL CONTROL: LINEAR QUADRATIC METHODS,
 # Prentice-Hall, 1990, pp. 56-58
 
-# $Revision: 1.13 $
+# $Revision: 1.14 $
 
 # Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
-# $Log: lqr.m,v $
-# Revision 1.13  1998-11-06 16:15:36  jwe
-# *** empty log message ***
-#
-# Revision 1.1.1.1  1998/05/19 20:24:07  jwe
-#
-# Revision 1.4  1997/09/19 21:37:24  scotte
-# added references for feedback matrices
-# ,
-#
-#
-# Revision 1.2  1997/02/28 23:02:14  hodel
-# added parenthesis around if commands (just to be sure)
-# a.s.hodel@eng.auburn.edu
 
   # disp("lqr: entry");
 

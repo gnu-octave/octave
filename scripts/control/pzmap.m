@@ -1,4 +1,4 @@
-# Copyright (C) 1996 A. Scottedward Hodel 
+# Copyright (C) 1996,1998 A. Scottedward Hodel 
 #
 # This file is part of Octave. 
 #
@@ -24,12 +24,6 @@ function [zer,pol]=pzmap(sys)
 # outputs: if omitted, the poles and zeros are plotted on the screen.
 #          otherwise, pol, zer are returned as the system poles and zeros.
 #          (see sys2zp for a preferable function call)
-
-# $Log: pzmap.m,v $
-# Revision 1.2  1998/07/14 22:01:28  hodelas
-# Changed to use axis2dlim (new function) to getplot limits;
-# Changed gnuplot plotting commands
-#
 
   save_val = implicit_str_to_num_ok;	# save for later
   save_emp = empty_list_elements_ok;
@@ -63,7 +57,8 @@ function [zer,pol]=pzmap(sys)
   # Plot the data
   gset nologscale xy;
   if(is_siso(sys))
-    title(["Pole-zero map from ",sys.inname," to ", sys.outname]);
+    title(sprintf("Pole-zero map from %s to %s", ...
+       sysgetsignals(sys,"in",1,1), sysgetsignals(sys,"out",1,1) ));
   endif
   xlabel(["Re(",varstr,")"]);
   ylabel(["Im(",varstr,")"]);

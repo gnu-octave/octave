@@ -1,4 +1,4 @@
-# Copyright (C) 1996 A. Scottedward Hodel 
+# Copyright (C) 1996,1998 A. Scottedward Hodel 
 #
 # This file is part of Octave. 
 #
@@ -16,8 +16,8 @@
 # along with Octave; see the file COPYING.  If not, write to the Free 
 # Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA. 
  
-function  outsys = ss2sys  (a,b,c,d,tsam,n,nz,stname,inname,outname,outlist)
-  # outsys = ss2sys  (a,b,c{,d,tsam,n,nz,stname,inname,outname,outlist})
+function  retsys = ss2sys  (a,b,c,d,tsam,n,nz,stname,inname,outname,outlist)
+  # retsys = ss2sys  (a,b,c{,d,tsam,n,nz,stname,inname,outname,outlist})
   # Create system structure from state-space data.   May be continous,
   # discrete, or mixed (sampeld-data)
   # inputs:
@@ -28,12 +28,12 @@ function  outsys = ss2sys  (a,b,c,d,tsam,n,nz,stname,inname,outname,outlist)
   #        default: tsam = 0: n = rows(a), nz = 0
   #                 tsam > 0: n = 0,       nz = rows(a), n 
   #        see below for system partitioning
-  #   stname: string matrix of state signal names
+  #   stname: list of strings of state signal names
   #           default (stname=[] on input): x_n for continuous states,
   #                    xd_n for discrete states
-  #   inname: string matrix of input signal names
+  #   inname: list of strings of input signal names
   #           default (inname = [] on input): u_n
-  #   outname: string matrix of input signal names
+  #   outname: list of strings of output signal names
   #           default (outname = [] on input): y_n
   #   outlist: list of indices of outputs y that are sampled
   #           default: (tsam = 0)  outlist = []
@@ -72,65 +72,49 @@ function  outsys = ss2sys  (a,b,c,d,tsam,n,nz,stname,inname,outname,outlist)
   #
 
   #  Written by John Ingram (ingraje@eng.auburn.edu)  July 20, 1996
-  # $Revision: 1.3 $
-  # $Log: ss2sys.m,v $
-  # Revision 1.3  1998/07/01 20:55:08  hodelas
-  # Updated sysgroup, sys2ss, ss2sys to use system structure interface
-  #
-  # Revision 1.4  1997/03/11 15:19:27  scotte
-  # fixed warning message about inname dimensions a.s.hodel@eng.auburn.edu
-  #
+  # $Revision: 2.0.0.0 $
 
   save_val = implicit_str_to_num_ok;	# save for later
   implicit_str_to_num_ok = 1;
 
   #  Test for correct number of inputs
   if ((nargin < 3) | (nargin > 11))
-    error("Incorrect number of arguments");
+    usage("retsys = ss2sys  (a,b,c{,d,tsam,n,nz,stname,inname,outname,outlist})");
   endif
 
   # verify A, B, C, D arguments
   #  If D is not specified, set it to a zero matrix of appriate dimension.
-  if (nargin == 3) 
-    d = zeros(rows(c) , columns(b));
-  elseif (isempty(d))
-    d = zeros(rows(c) , columns(b));
-  endif
+  if (nargin == 3)          d = zeros(rows(c) , columns(b));
+  elseif (isempty(d))       d = zeros(rows(c) , columns(b));      endif
 
   #  Check the dimensions
   [na,m,p] = abcddim(a,b,c,d);
 
   #  If dimensions are wrong, exit function
   if (m == -1)
-    error("a,b,c,d matrix dimensions are not compatible");
+    error("a(%dx%d), b(%dx%d), c(%dx%d), d(%dx%d); incompatible", ...
+      rows(a), columns(a), rows(b), columns(b), rows(c), columns(c), ...
+      rows(d), columns(d));
   endif
 
   # check for tsam input
-  if(nargin < 5)
-    tsam = 0;
+  if(nargin < 5) tsam = 0;
   elseif( !( is_sample(tsam) | (tsam == 0) ) )
     error("tsam must be a nonnegative real scalar");
   endif
 
   # check for continuous states
-  if( (nargin < 6) & (tsam == 0) )
-    n = na;
-  elseif(nargin < 6)
-    n = 0;
+  if( (nargin < 6) & (tsam == 0) )               n = na;
+  elseif(nargin < 6)                             n = 0;
   elseif( (!is_scalar(n)) | (n < 0 ) | (n != round(n)) )
-    if(is_scalar(n))
-      error(["illegal value of n=",num2str(n)]);
-    else
-      error(["illegal value of n=(",num2str(rows(n)),"x", ...
-	num2str(columns(n)),")"]);
-    endif
+    if(is_scalar(n))     error("illegal value of n=%d,%e",n,n);
+    else                 error("illegal value of n=(%dx%d)", ...
+			   rows(n), columns(n));		endif
   endif
 
   # check for num discrete states
-  if( (nargin < 7) & (tsam == 0))
-    nz = 0;
-  elseif(nargin < 7)
-    nz = na - n;
+  if( (nargin < 7) & (tsam == 0)) 		nz = 0;
+  elseif(nargin < 7)				nz = na - n;
   elseif( (!is_scalar(nz)) | (nz < 0 ) | (nz != round(nz)) )
     if(is_scalar(nz))
       error(["illegal value of nz=",num2str(nz)]);
@@ -146,74 +130,47 @@ function  outsys = ss2sys  (a,b,c,d,tsam,n,nz,stname,inname,outname,outlist)
 	num2str(n),", nz=",num2str(nz)]);
   endif
 
+  # construct system with default names
+  retsys.a = a;
+  retsys.b = b; 
+  retsys.c = c; 
+  retsys.d = d;
+
+  retsys.n = n;
+  retsys.nz = nz;
+  retsys.tsam = tsam;
+  retsys.yd = zeros(1,p);     # default value entered below
+
+  #  Set the system vector:  active = 2(ss), updated = [0 0 1];
+  retsys.sys = [2 0 0 1]; 
+
+  retsys.stname = sysdefstname(n,nz);
+  retsys.inname = sysdefioname(m,"u");
+  retsys.outname = sysdefioname(p,"y");
+
   # check for state names
-  if(nargin < 8)
-    stname = sysdefstname(n,nz);
-  else
-    nr = rows(stname);
-    if(na != nr)
-      error(["ss2sys: ",num2str(na),"system states,", ...
-	num2str(nr)," state names provided"]);
-    endif
+  if(nargin >= 8)
+    if(!isempty(stname)) retsys = syssetsignals(retsys,"st",stname); endif
   endif
 
   #check for input names
-  if(nargin < 9)
-    inname = sysdefioname(m,"u");
-  elseif( !isstr(inname) )
-    warning("ss2sys: inname=")
-    disp(inname);
-    error("inname must be a string or string matrix.");
-  elseif(rows(inname) != m )
-    warning("ss2sys: inname=")
-    disp(inname);
-    error(["inname has ",num2str(rows(inname))," rows, sys has ", ...
-      num2str(m)," inputs."]);
+  if(nargin >= 9)
+    if(!isempty(inname)) restys = syssetsignals(retsys,"in",inname); endif
   endif
 
   #check for output names
-  if(nargin < 10)
-    outname = sysdefioname(p,"y");
-  elseif( !isstr(outname) )
-    warning("ss2sys: outname=")
-    disp(outname);
-    error("outname must be a string or string matrix.");
-  elseif(rows(outname) != p )
-    warning("ss2sys: outname=")
-    disp(outname);
-    error(["outname has ",num2str(rows(outname))," rows, sys has ", ...
-      num2str(p)," outputs."]);
+  if(nargin >= 10)
+    if(!isempty(outname)) retsys = syssetsignals(retsys,"out",outname); endif
   endif
 
   # set up yd
   if(nargin < 11)
-    yd = ones(1,p)*(tsam > 0);
+    retsys = syssetsignals(retsys,"yd",ones(1,p)*(tsam > 0));
   else
-    yd = zeros(1,p);
-    yd(outlist) = ones(1,length(outlist));
-    if(max(outlist) > p)
-      error(["max outlist index=",num2str(max(outlist)), ...
-	" exceeds number of outputs=",num2str(p)]);
+    if(!isempty(outlist)) 
+      retsys = syssetsignals(retsys,"yd",outlist,ones(size(outlist)));
     endif
   endif
-
-  # Construct the state space system
-  outsys.a = a; 
-  outsys.b = b; 
-  outsys.c = c; 
-  outsys.d = d;
-
-  outsys.n = n;
-  outsys.nz = nz;
-  outsys.tsam = tsam;
-  outsys.yd = yd;
-
-  outsys.stname = stname;
-  outsys.inname = inname;
-  outsys.outname = outname;
-
-  #  Set the system vector:  active = 2(ss), updated = [0 0 1];
-  outsys.sys = [2 0 0 1]; 
 
   implicit_str_to_num_ok = save_val;	# restore value
 endfunction

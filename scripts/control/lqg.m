@@ -48,13 +48,7 @@ function [K,Q1,P1,Ee,Er] = lqg(sys,Sigw,Sigv,Q,R,input_list)
 
 # Written by A. S. Hodel August 1995; revised for new system format
 # August 1996
-# $Revision: 1.1.1.1 $
-# $Log: lqg.m,v $
-# Revision 1.1.1.1  1998/05/19 20:24:07  jwe
-#
-# Revision 1.2  1997/03/01 00:21:33  hodel
-# fixed some string manipulation problems.
-#
+# $Revision: 2.0.0.0 $
 
 sav_val = implicit_str_to_num_ok;
 implicit_str_to_num_ok = 1;
@@ -68,8 +62,7 @@ endif
 
 DIG = is_digital(sys);
 [A,B,C,D,tsam,n,nz,stname,inname,outname] = sys2ss(sys);
-nout = rows(outname);
-nin = rows(inname);
+[n,nz,nin,nout] = sysdimensions(sys);
 if(nargin == 5)
   #construct default input_list
   input_list = (columns(Sigw)+1):nin;
@@ -90,21 +83,17 @@ elseif(length(input_list) != columns(R))
 	", columns(R)=", num2str(columns(R))]);
 endif
 
-varname = ["Sigw";"Sigv";"Q   ";"R   "];
-for kk=1:rows(varname);
-  stval = dezero(varname(kk,:));
-  cmd = ["chk = is_square(",stval,");"];
-  eval(cmd);
-  if(! chk )
-    error(["lqg: ",stval," is not square"]);
-  endif
+varname = list("Sigw","Sigv","Q","R");
+for kk=1:length(varname);
+  eval(sprintf("chk = is_square(%s);",nth(varname,kk)));
+  if(! chk ) error("lqg: %s is not square",nth(varname,kk)); endif
 endfor
 
 # permute (if need be)
 if(nargin == 6)
   all_inputs = sysreorder(nin,input_list);
   B = B(:,all_inputs);
-  inname = inname(all_inputs,:);
+  inname = inname(all_inputs);
 endif
 
 # put parameters into correct variables
@@ -128,23 +117,13 @@ Cc = -Ks;
 Dc = zeros(rows(Cc),columns(Bc));
 
 # fix state names
-for ii=1:rows(stname)
-  newst = [dezero(stname(ii,:)),"\\e"];
-  stname1(ii,1:length(newst)) = newst;
-endfor
+stname1 = strappend(stname,"_e");
 
 # fix controller output names
-inname = inname(m2:nin,:);
-for ii=1:rows(inname)
-  newst = [dezero(inname(ii,:)),"\\K"];
-  outname1(ii,1:length(newst)) = newst;
-endfor
+outname1 = strappend(inname(m2:nin),"_K");
 
 # fix controller input names
-for ii=1:rows(outname)
-  newst = [dezero(outname(ii,:)),"\\K"];
-  inname1(ii,1:length(newst)) = newst;
-endfor
+inname1 = strappend(outname,"_K");
 
 if(DIG)
   K = ss2sys(Ac,Bc,Cc,Dc,tsam,n,nz,stname1,inname1,outname1,1:rows(Cc));

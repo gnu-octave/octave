@@ -24,22 +24,7 @@ function [wmin,wmax] = bode_bounds(zer,pol,DIGITAL,tsam)
 #
 # used internally in freqresp
 
-# $Revision: 1.4 $
-# $Log: bode_bounds.m,v $
-# Revision 1.4  1998/10/05 17:12:56  hodelas
-# various bug changes
-#
-# Revision 1.2  1998/08/18 21:21:19  hodelas
-# updated for simpler interface
-#
-#
-# Revision 1.2  1997/11/24  15:39:38  mueller
-# floating overflow on digital systems fixed
-# The overflow occurs if the system has poles or zeros at 0 (log(0)/tsamp)
-#
-# Revision 1.1  1997/11/24  15:36:31  mueller
-# Initial revision
-#
+# $Revision: 2.0.0.0 $
 
   # make sure zer,pol are row vectors
   if(!isempty(pol)) pol = reshape(pol,1,length(pol)); endif

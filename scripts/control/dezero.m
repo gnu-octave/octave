@@ -26,25 +26,12 @@
 ## Adapted from deblank by A. S. Hodel (a.s.hodel@eng.auburn.edu)
 ## 	(the name dezero is a reference to the Fermilab D0 experiment,
 ##      where my sister did her PhD research) 
-## $Revision: 1.1.1.1 $
-## $Log: dezero.m,v $
-## Revision 1.1.1.1  1998/05/19 20:24:13  jwe
-##
-## Revision 1.3  1997/03/11 14:42:41  scotte
-## fixed implicit_str_to_num_ok bug a.s.hodel@eng.auburn.edu
-##
-## Revision 1.2  1997/03/03 22:52:20  hodel
-## fixed problem with conversion to/from numerical value
-## a.s.hodel@eng.auburn.edu
-##
-## Revision 1.1  1997/02/12 11:34:56  hodel
-## Initial revision
-##
-## Revision 1.3  1997/02/07 15:24:35  scotte
-## fixed to remove all null characters, then call deblank
-##
+## $Revision: 2.0.0.0 $
 
 function t = dezero (s)
+
+  # delete the next line if you're stubbornly going to use dezero.
+  error("dezero is no longer supported.");
 
   if (nargin != 1)
     usage ("dezero (s)");
@@ -53,10 +40,6 @@ function t = dezero (s)
     save_val = implicit_str_to_num_ok;
     implicit_str_to_num_ok = 1;
 
-    #disp("dezero: entry, s=")
-    #s
-    #disp("/dezero")
-
     [nr, nc] = size (s);
     len = nr * nc;
 
@@ -64,15 +47,7 @@ function t = dezero (s)
       t = s;
     else
 
-      #disp("dezero: 1, s=")
-      #s
-      #disp("/dezero")
-
       s = reshape (s, 1, len);
-
-      #disp("dezero: 2, s=")
-      #s
-      #disp("/dezero")
 
       # need to remove zeros first, then call deblank
       s = 1*s;

@@ -39,23 +39,13 @@ function Qb = obsv(sys, c)
 
   # Written by Kai P. Mueller November 4, 1997
   # modified by
-  # $Revision: 1.1.1.1 $
-  # $Log: obsv.m,v $
-  # Revision 1.1.1.1  1998/05/19 20:24:07  jwe
-  #
-  # Revision 1.2  1997/12/01 16:51:50  scotte
-  # updated by Mueller 27 Nov 97
-  #
-# Revision 1.1  1997/11/25  11:17:05  mueller
-# Initial revision
-#
+  # $Revision: 2.0.0.0 $
 
   if (nargin == 2)
     a = sys;
   elseif (nargin == 1 && is_struct(sys))
     sysupdate(sys,"ss");
-    a = sys.a;
-    c = sys.c;
+    [a,b,c] = sys2ss(sys);
   else
     usage("obsv(sys [, c])")
   endif

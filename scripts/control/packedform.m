@@ -1,4 +1,4 @@
-# Copyright (C) 1996 A. Scottedward Hodel 
+# Copyright (C) 1996,1998 A. Scottedward Hodel 
 #
 # This file is part of Octave. 
 #
@@ -25,11 +25,11 @@ disp("ss (state space), tf (transfer function),  and/or zp (zero-pole-gain)")
 disp("form.")
 disp(" ")
 disp("variables in all representations:")
-disp("inname: string or a matrix of strings containing name(s) of system ")
-disp("        inputs");
+disp("inname: list of signal names (strings) containing name(s) of system ")
+disp("        inputs; see is_signal_list");
 disp("n: number of continuous states")
 disp("nz: number of discrete states")
-disp("outname: string or a matrix of strings containing name(s) of system ")
+disp("outname: list of signal names (strings) containing name(s) of system ")
 disp("        outputs");
 disp(" ")
 disp("variables in all representations:(cont'd)")
@@ -82,17 +82,15 @@ disp("        continuous states come first, then discrete states")
 disp(" ")
 disp("WARNING: some functions (e.g., bode) will not accept systems")
 disp("with both discrete and continuous states/outputs")
-disp("stname: string or matrix of strings containing name(s) of system")
+disp("stname: list of signal names (strings) containing name(s) of system ")
 disp("        states");
 disp("===============================")
 disp("Object oriented programming:")
 disp("It is recommended that users do not directly access the internal")
 disp("variables themselves, but use the interface functions")
-disp("        ss2sys        sys2ss      syschnames")
-disp("        tf2sys        sys2tf")
-disp("        zp2sys        sys2zp")
-disp("to create/access internal variables.  For developmental purposes,")
-disp("routines that directly access the internal structure of a system data")
-disp("structure either have the string \"sys\" in their name or else")
-disp("have the word SYS_INTERNAL in their revision comment block");
+disp("  fir2sys         ss2sys          tf2sys          sys2fir")
+disp("  sys2ss          sys2tf          sys2zp          syschtsam")
+disp("  sysdimensions   sysgetsignals   syssetsignals   sysgettype")
+disp("  zp2sys")
+disp("to create/access internal variables.  ");
 page_screen_output = save_var;

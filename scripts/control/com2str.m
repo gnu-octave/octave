@@ -25,7 +25,7 @@ function retval = com2str(zz,flg)
 #      0 (default):            -1, 0, 1,   1i,   1 + 0.5i
 #      1 (for use with zpout): -1, 0, + 1, + 1i, + 1 + 0.5i
 #
-# $Revision: 1.1 $
+# $Revision: 2.0.0.0 $
 
   if (nargin < 1 | nargin > 2)
     usage("com2str(zz{,flg})");

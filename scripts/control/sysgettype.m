@@ -25,13 +25,11 @@ function systype = sysgettype(sys)
 #   systype: string indicating how the structure was initially 
 #            constructed:
 #      values: "ss", "zp", or "tf"
-#
-# $Log$
 
   if(!is_struct(sys))
     error("sysgettype: input sys is not a structure");
   endif
 
-  typestr = ["tf";"zp";"ss"];
-  systype = typestr(sys.sys(1) + 1, :);
+  typestr = list("tf","zp","ss");
+  systype = nth(typestr,sys.sys(1) + 1);
 endfunction

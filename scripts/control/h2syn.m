@@ -42,18 +42,7 @@ function [K,gain, Kc, Kf, Pc,  Pf] = h2syn(Asys,nu,ny,tol)
   #    Pf: ARE solution matrix for filter subproblem
 
   # Updated for System structure December 1996 by John Ingram
-  # $Revision: 1.2 $
-  # $Log: h2syn.m,v $
-  # Revision 1.2  1998/07/01 16:23:36  hodelas
-  # Updated c2d, d2c to perform bilinear transforms.
-  # Updated several files per bug updates from users.
-  #
-  # Revision 1.4  1997/03/11 15:24:28  scotte
-  # fixed bugs in return system data structure signal names a.s.hodel@eng.auburn.edu
-  #
-  # Revision 1.3  1997/03/03 22:54:42  hodel
-  # fixed details for update to octave 2.0.x
-  # a.s.hodel@eng.auburn.edu
+  # $Revision: 2.0.0.0 $
 
   if ((nargin < 3) | (nargin > 4))
     usage("[K,gain, Kc, Kf, Pc, Pf] = h2syn(Asys,nu,ny[,tol])");
@@ -121,8 +110,8 @@ function [K,gain, Kc, Kf, Pc,  Pf] = h2syn(Asys,nu,ny,tol)
 
   if(nargout)
     Kst = strappend(Ast,"_K");
-    Kin = strappend(Aout((nout-ny+1):(nout),:),"_K");
-    Kout = strappend(Ain((nin-nu+1):(nin),:),"_K");
+    Kin = strappend(Aout((nout-ny+1):(nout)),"_K");
+    Kout = strappend(Ain((nin-nu+1):(nin)),"_K");
 
     # compute systems for return
     K = ss2sys(KA,-L2/Ru,Ry\F2,zeros(nu,ny),Atsam,ncstates,ndstates,Kst,Kin,Kout);
@@ -130,22 +119,13 @@ function [K,gain, Kc, Kf, Pc,  Pf] = h2syn(Asys,nu,ny,tol)
 
   if (nargout > 2)
     #system full information control state names
-    for ii=1:rows(Ast)
-      tmp = [dezero(Ast(ii,:)),"_FI"];
-      stname2(ii,1:length(tmp)) = tmp;
-    endfor
+    stname2 = strappend(Ast,"_FI");
 
    #system full information control input names
-    for ii=1:rows(Ast)
-      tmp = [dezero(Ast(ii,:)),"_FI_in"];
-      inname2(ii,1:length(tmp)) = tmp;
-    endfor
+   inname2 = strappend(Ast,"_FI_in");
  
     #system full information control output names
-    for ii=1:(rows(Aout)-ny)
-      tmp = [dezero(Aout(ii,:)),"_FI_out"];
-      outname2(ii,1:length(tmp)) = tmp;
-    endfor
+    outname2 = strappend(Aout(1:(nout-ny)),"_FI_out");
 
     nz = rows (Cz);
     nw = columns (Bw);
@@ -156,24 +136,16 @@ function [K,gain, Kc, Kf, Pc,  Pf] = h2syn(Asys,nu,ny,tol)
 
   if (nargout >3)
     #fix system state estimator state names
-    for ii=1:rows(Ast)
-      tmp = [dezero(Ast(ii,:)),"_Kf"];
-      stname3(ii,1:length(tmp)) = tmp;
-    endfor
+    stname3 = strappend(Ast,"_Kf");
 
     #fix system state estimator input names
-    for ii=1:rows(Ast)
-      tmp = [dezero(Ast(ii,:)),"_Kf_noise"];
-      inname3(ii,1:length(tmp)) = tmp;
-    endfor
+    inname3 = strappend(Ast,"_Kf_noise");
 
     #fix system state estimator output names
-    for ii=1:rows(Ast)
-      tmp = [dezero(Ast(ii,:)),"_est"];
-      outname3(ii,1:length(tmp)) = tmp;
-    endfor
+    outname3 = strappend(Ast,"_est");
 
     Kf = ss2sys(AL2, BwL2, In, zeros(nn,nw),Atsam,  ...
       ncstates, ndstates, stname3, inname3,outname3);
   endif
+
 endfunction

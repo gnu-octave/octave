@@ -44,7 +44,7 @@ function bddemo()
       k = menu("Octave Block Diagram Manipulations Demo", ...
   	"sysadd/syssub: F(s) = G(s) +/- H(s)", ...
  	"sysappend: add new inputs/outputs", ...
-	"syschnames: change names of inputs, outputs, and/or states", ...
+	"syssetsignals: change names of inputs, outputs, and/or states", ...
 	"sysconnect: connect specified system inputs/outputs", ...
 	"syscont/sysdisc: extract the continuous (discrete) part of a system", ...
 	"sysdup: duplicate specified inputs/outputs", ...
@@ -120,8 +120,8 @@ function bddemo()
       sysout(sys1);
       prompt
     elseif (k == 3)
-      disp("syschnames:")
-      help syschnames
+      disp("syssetsignals:")
+      help syssetsignals
       disp("Example system");
       a = rand(3,3);
       b = rand(3,2);
@@ -130,11 +130,13 @@ function bddemo()
       sysout(sys);
       prompt
       disp("Change state names to larry, moe, and curly as follows:")
-      sys = syschnames(sys,"st",1:3,["larry";"moe  " ; "curly"]);
-      cmd = "sys = syschnames(sys,\"st\",1:3,[\"larry\";\"moe  \" ; \"curly\"]);";
+      cmd = "sys = syssetsignals(sys,\"st\",list(\"larry\",\"moe  \" , \"curly\"));";
       run_cmd
       disp("Indicate that output 2 is discrete-time:")
-      cmd = "sys = syschnames(sys,\"yd\",2,1);";
+      cmd = "sys = syssetsignals(sys,\"yd\",1,2);";
+      run_cmd
+      disp("Change output 2 name to \"Vir\"");
+      cmd = "sys = syssetsignals(sys,\"out\",\"Vir\",2);";
       run_cmd
       disp("Resulting system is:")
       sysout(sys);
@@ -292,19 +294,19 @@ function bddemo()
       prompt
       disp("parallel can be used for multiple input systems as well:")
 
-      in1 = ["u1.1";"u1.2"];
-      in2 = ["u2.1";"u2.2"];
-      out1 = ["y1.1";"y1.2"];
-      out2 = ["y2.1";"y2.2"];
+      in1 = list("u1.1","u1.2");
+      in2 = list("u2.1","u2.2");
+      out1 = list("y1.1","y1.2");
+      out2 = list("y2.1","y2.2");
 
       sys1 = ss2sys([-1,0;0 -2],eye(2),eye(2),[]);
       sys2 = ss2sys([-2,0;0 -4],eye(2),eye(2),[]);
 
-      sys1 = syschnames(sys1,"in",1:2,in1);
-      sys1 = syschnames(sys1,"out",1:2,out1);
+      sys1 = syssetsignals(sys1,"in",in1);
+      sys1 = syssetsignals(sys1,"out",out1);
 
-      sys2 = syschnames(sys2,"in",1:2,in2);
-      sys2 = syschnames(sys2,"out",1:2,out2);
+      sys2 = syssetsignals(sys2,"in",in2);
+      sys2 = syssetsignals(sys2,"out",out2);
      
       disp("sys1=")
       sysout(sys1);
@@ -543,7 +545,7 @@ function bddemo()
       disp("Step 1: We've already created systems P and K.  Create a sum ")
       disp("block as follows:")
       implicit_str_to_num_ok = "warn";
-      cmd = "S = ss2sys([],[],[],[1 -1],0,0,0,[],[""r(t)"";""y(t)""],""e(t)"");";
+      cmd = "S = ss2sys([],[],[],[1 -1],0,0,0,[],list(""r(t)"",""y(t)""),""e(t)"");";
       run_cmd
       implicit_str_to_num_ok = 1;
       disp("You may avoid the string conversion warning by setting the ")

@@ -47,11 +47,7 @@
 ## Author: A. S. Hodel <scotte@eng.auburn.edu>
 ## Created: August 1993
 ## Adapted-By: jwe
-## $Revision: 1.15 $
-## $Log: dare.m,v $
-## Revision 1.15  1998-11-06 16:15:36  jwe
-## *** empty log message ***
-##
+## $Revision: 1.16 $
 
 function x = dare (a, b, c, r, opt)
 

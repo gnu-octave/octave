@@ -51,8 +51,6 @@ function [mag,phase,w] = nichols(sys,w,outputs,inputs)
 # Note: if the requested plot is for an MIMO system, mag is set to
 # ||G(jw)|| or ||G(exp(jwT))|| and phase information is not computed.
 
-# $Log$
-
   # check number of input arguments given
   if (nargin < 1 | nargin > 4)
     usage("[mag,phase,w] = nichols(sys[,w,outputs,inputs])");

@@ -65,15 +65,6 @@ function [realp,imagp,w] = nyquist(sys,w,outputs,inputs,atol)
   #     remove acura parameter, etc.)
   # Revised by John Ingram July 1996 for system format
   #
-  # Revision 1.6  1998/02/09 13:03:37  scotte
-  # fixed oneplot/gset nokey to function only if gnuplot_has_multiplot
-  #
-# Revision 1.2  1997/11/24  17:27:58  mueller
-# call to oneplot() and gset nokey added
-#
-# Revision 1.1  1997/11/11  17:33:41  mueller
-# Initial revision
-#
 
   # Both bode and nyquist share the same introduction, so the common parts are 
   # in a file called bodquist.m.  It contains the part that finds the 
@@ -134,7 +125,7 @@ function [realp,imagp,w] = nyquist(sys,w,outputs,inputs,atol)
       [stn, inn, outn] = sysgetsignals(sys);
       if(is_siso(sys))
         title(sprintf("Nyquist plot from %s to %s, w (rad/s) in [%e, %e]", ...
-	  inn, outn, w(1), w(length(w))) )
+	  nth(inn,1), nth(outn,1), w(1), w(length(w))) )
       endif
   
       gset nologscale xy;

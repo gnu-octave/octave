@@ -33,7 +33,7 @@ function [systype, nout, nin, ncstates, ndstates] = minfo(inmat)
   # Written by R. Bruce Tenison July 29, 1994
   # Modified by David Clem November 13, 1994
   # Modified by A. S. Hodel July 1995
-  # $Revision: 1.1.1.1 $
+  # $Revision: 2.0.0.0 $
 
   warning("minfo: obsolete.  Use sys2ss, sys2tf, or sys2zp.");
     

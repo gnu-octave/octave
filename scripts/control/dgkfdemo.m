@@ -19,22 +19,7 @@
 function dgkfdemo()
 # Octave Controls toolbox demo: H2/Hinfinity options demos
 # Written by A. S. Hodel June 1995
-# $Revision: 1.2 $
-# $Log: dgkfdemo.m,v $
-# Revision 1.2  1998/08/24 15:50:06  hodelas
-# updated documentation
-#
-# Revision 1.1.1.1  1998/05/19 20:24:06  jwe
-#
-# Revision 1.5  1998/05/05 17:03:18  scotte
-# update 5 May 1998 by Kai Mueller
-#
-# Revision 1.2  1998/05/05  10:02:46  mueller
-# new H_inf demo (jet707 MIMO design)
-#
-# Revision 1.1  1998/05/05  09:59:28  mueller
-# Initial revision
-#
+# $Revision: 2.0.0.0 $
  
   save_val = page_screen_output;
   page_screen_output = 1;
@@ -108,7 +93,7 @@ function dgkfdemo()
       G = eye(2)
       C = [1 1];
       sys = ss2sys(A,[B G],C);
-      sys = syschnames(sys,"in",1:3, \
+      sys = syssetsignals(sys,"in", ...
 		       ["control input"; "disturbance 1"; "disturbance 2"]);
       sysout(sys)
       prompt
@@ -209,13 +194,13 @@ function dgkfdemo()
       disp("w enters the system through B1, u through B2")
       disp("z = [y1 ; y2] is obtained through C1, y=y1 through C2");
       disp(" ")
-      cmd = "A = [0 1; 0 0]; B1 = [0 0;1 0]; B2 = [0;1];";
+      cmd = "A = [0 1; 0 0];  B1 = [0 0;1 0]; B2 = [0;1];";
       disp(cmd)
       eval(cmd);
-      cmd = "C1 = [1 0; 0 0]; C2 = [1 0]; D11 = zeros(2);";
+      cmd = "C1 = [1 0; 0 0]; C2 = [1 0];    D11 = zeros(2);";
       disp(cmd)
       eval(cmd);
-      cmd = "D12 = [0;1]; D21 = [0 1]; D22 = 0; D = [D11 D12; D21 D22];";
+      cmd = "D12 = [0;1];    D21 = [0 1];    D22 = 0; D = [D11 D12; D21 D22];";
       disp(cmd)
       eval(cmd);
       disp("Design objective: compute U(s)=K(s)Y1(s) to minimize the closed")
@@ -268,13 +253,14 @@ function dgkfdemo()
       disp('Search quits when upper bound <= (1+tol)*lower bound.')
       cmd = "tol = 0.01; gmin = 1e-2; gmax = 1e+4;";
       run_cmd
-      cmd = "AsysH2 = hinfnorm(Asys,tol,gmin,gmax)"
+      cmd = "[AsysHinf,gmin,gmax] = hinfnorm(Asys,tol,gmin,gmax)"
       run_cmd
       disp("Check: look at max value of magntude Bode plot of Asys:");
       [M,P,w] = bode(Asys);
-      loglog(w,M);
       xlabel('Omega')
-      ylabel('|Asys(j omega)|')
+      ylabel('|Asys(j omega)| ')
+      grid();
+      semilogx(w,M);
       disp(["Max magnitude is ",num2str(max(M)), ...
 	", compared with gmin=",num2str(gmin)," and gmax=", ...
         num2str(gmax),"."])
@@ -310,7 +296,7 @@ function dgkfdemo()
       D = [D11 D12; D21 D22]
       prompt
       disp("First: pack system:")
-      cmd="Asys = ss2sys(A,[B1 B2], [C1;C2] , D)";
+      cmd="Asys = ss2sys(A,[B1 B2], [C1;C2] , D);";
       run_cmd
       prompt
       disp("Open loop multivariable Bode plot: (will take a moment)")
@@ -321,7 +307,7 @@ function dgkfdemo()
       gmax = 1000
       gmin = 0.1
       gtol = 0.01
-      cmd="[K,gain] = hinfsyn(Asys,1,1,gmin,gmax,gtol)";
+      cmd="[K,gain] = hinfsyn(Asys,1,1,gmin,gmax,gtol);";
       run_cmd
       disp("Check: close the loop and then compute h2norm:")
       prompt

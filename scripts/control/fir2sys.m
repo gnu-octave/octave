@@ -1,4 +1,4 @@
-# Copyright (C) 1996 A. Scottedward Hodel 
+# Copyright (C) 1996,1998 A. Scottedward Hodel 
 #
 # This file is part of Octave. 
 #
@@ -32,71 +32,30 @@ function sys = fir2sys (num,tsam,inname,outname)
   #  Name changed to TF2SYS July 1995
   #  updated for new system data structure format July 1996
   # adapted from tf2sys july 1996
-  # $Revision: 1.1.1.1 $
+  # $Revision: 2.0.0.0 $
 
   save_val = implicit_str_to_num_ok;
   implicit_str_to_num_ok = 1;
 
   #  Test for the correct number of input arguments
-  if ((nargin < 2) || (nargin > 4))
+  if (nargin < 1 | nargin > 4)
     usage('sys=fir2sys(num[,tsam,inname,outname])');
-    return
   endif
 
-  # check input format 
-  if( !is_vector(num) )
-    error(['num (',num2str(rows(num)),'x',num2str(columns(num)), ...
-	') must be a vector'])
-  endif
-
+  # let tf2sys do the argument checking
   den = [1,zeros(1,length(num)-1)];
 
   # check sampling interval (if any)
-  if(nargin <= 1)
-    tsam = 1;		# default
-  elseif (isempty(tsam))
-    tsam = 1;
-  endif
-  if ( (! (is_scalar(tsam) && (imag(tsam) == 0) )) || (tsam <= 0) )
-    error('fir tsam must be a positive real scalar')
-  endif
+  if(nargin <= 1)               tsam = 1;		# default 
+  elseif (isempty(tsam))        tsam = 1;		endif
 
   #  Set name of input
-  if(nargin < 3)
-    inname = "u";
-  elseif(isempty(inname))
-    inname = "u";
-  endif
-  if (rows(inname) > 1)
-    warning(['fir2sys:,' num2str(rows(inname)),' input names given, 1st used.'])
-    inname = (inname(1,:));
-  endif
+  if(nargin < 3)  inname = sysdefioname(1,"u");        endif
 
   #  Set name of output
-  if(nargin < 4)
-    outname = "y";
-  elseif(isempty(outname))
-    outname = "y";
-  endif
-  if (rows(outname) > 1)
-    warning(['fir2sys: ',num2str(rows(outname)),...
-      ' output names given, 1st used.'])
-    outname = (outname(1,:));
-  endif
+  if(nargin < 4)  outname = sysdefioname(1,"y"); 	endif
+
+  sys = tf2sys(num,den,tsam,inname,outname);
   
-  sys.num = num;
-  sys.den = den;
-
-  #  Set the system vector:  active = 0(tf), updated = [1 0 0];
-  sys.sys = [0 1 0 0];
-
-  #  Set defaults
-  sys.tsam = tsam;
-  sys.inname = inname;
-  sys.outname = outname;
-  sys.nz = length(den)-1;
-  sys.n = 0;
-  sys.yd = 1;
-
   implicit_str_to_num_ok = save_val;
 endfunction

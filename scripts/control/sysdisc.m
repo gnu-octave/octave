@@ -26,7 +26,7 @@ function [dsys,Adc,Cdc] = sysdisc(sys)
 #    outputs, respectively.
 #
 
-# $Revision: 1.1.1.1 $
+# $Revision: 2.0.0.0 $
 
   save_val = implicit_str_to_num_ok;	# save for later
   save_empty = empty_list_elements_ok;
@@ -53,34 +53,36 @@ function [dsys,Adc,Cdc] = sysdisc(sys)
     warning("sysdisc: no discrete outputs");
   endif
 
+  [aa,bb,cc,dd] = sys2ss(sys);
   if(!isempty(st_d) )
-    Add = sys.a( st_d , st_d);
-    stname = sys.stname(st_d , :);
-    Bdd = sys.b( st_d , :);
+    Add = aa( st_d , st_d);
+    stname = sysgetsignals(sys,"st",st_d);
+    Bdd = bb( st_d , :);
     if(!isempty(st_c))
-      Adc = sys.a( st_d , st_c);
+      Adc = aa( st_d , st_c);
     endif
     if(!isempty(y_d))
-      Cdd = sys.c(y_d , st_d);
+      Cdd = cc(y_d , st_d);
     endif
   else
     stname = [];
   endif
   if(!isempty(y_d))
-    Ddd = sys.d(y_d , :);
-    outname = sys.outname(y_d , :);
+    Ddd = dd(y_d , :);
+    outname = sysgetsignals(sys,"out",y_d);
     if(!isempty(st_c))
-      Cdc = sys.c(y_d , st_c);
+      Cdc = cc(y_d , st_c);
     endif
   else
     outname=[];
   endif
-  inname = sys.inname;
+  inname = sysgetsignals(sys,"in");
   outlist = 1:rows(outname);
 
   if(!isempty(outname))
-    dsys = ss2sys(Add,Bdd,Cdd,Ddd,sys.tsam,0,sys.nz,stname, ...
-	inname,outname,outlist);
+    tsam = sysgettsam(sys);
+    [nc,nz] = sysdimensions(sys);
+    dsys = ss2sys(Add,Bdd,Cdd,Ddd,tsam,0,nz,stname,inname,outname,outlist);
   else
     dsys=[];
   endif

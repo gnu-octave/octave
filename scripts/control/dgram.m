@@ -25,7 +25,7 @@ function m = dgram(a,b)
   # a m a' - m + b*b' = 0 
 
   # Written by A. S. Hodel July 1995
-  # $Revision: 1.11 $
+  # $Revision: 1.12 $
 
   # let dlyap do the error checking...
   m = dlyap(a,b*b');

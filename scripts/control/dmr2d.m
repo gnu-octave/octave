@@ -26,7 +26,8 @@ function [dsys,fidx] = dmr2d (sys, idx, sprefix, Ts2,cuflg)
 #   sys: discrete time system;
 #        dmr2d exits with an error if sys is not discrete
 #   idx: list of states with sampling time sys.tsam (may be empty)
-#   sprefix: string prefix of states with sampling time sys.tsam (may be empty)
+#   sprefix: list of string prefixes of states with sampling time 
+#    sys.tsam (may be empty)
 #   Ts2: sampling time of states not specified by idx, sprefix
 #        must be an integer multiple of sys.tsam
 #   cuflg: "constant u flag" if cuflg is nonzero then the system inputs are 
@@ -57,17 +58,7 @@ function [dsys,fidx] = dmr2d (sys, idx, sprefix, Ts2,cuflg)
 #  WARNING: Not thoroughly tested yet; especially when cuflg == 0.
 
 # Adapted from c2d by a.s.hodel@eng.auburn.edu
-# $Log: dmr2d.m,v $
-# Revision 1.1  1998/07/21 14:40:55  hodelas
-# First attempt at multirate systems analysis
-#
-# Revision 1.2  1998/07/21 14:13:44  hodel
-# squaring A  to get a11^nstp
-#
-# Revision 1.1  1998/07/21 12:41:46  hodel
-# Initial revision
-#
-#
+
   save_val = implicit_str_to_num_ok;	# save for later
   implicit_str_to_num_ok = 1;
 
@@ -91,8 +82,8 @@ function [dsys,fidx] = dmr2d (sys, idx, sprefix, Ts2,cuflg)
     error(["idx(",num2str(ii),")=",num2str(idx(ii)), ...
       "; entries of idx must be positive"]);
 
-  elseif(!(isstr(sprefix) | isempty(sprefix)))
-    error("sprefix must be a string or empty");
+  elseif(!(is_signal_list(sprefix) | isempty(sprefix)))
+    error("sprefix must be a signal list (see is_signal_list) or empty");
 
   elseif(!is_sample(Ts2))
     error(["Ts2=",num2str(Ts2),"; invalid sampling time"]);
@@ -131,14 +122,14 @@ function [dsys,fidx] = dmr2d (sys, idx, sprefix, Ts2,cuflg)
   else
     fidx = reshape(idx,1,length(idx));
     # find states whose name begins with any strings in sprefix.
-    ns = rows(sprefix);
+    ns = length(sprefix);
     for kk=1:ns
-      spk = dezero(sprefix(kk,:));  # get next prefix and length
+      spk = nth(sprefix,kk);  # get next prefix and length
       spl = length(spk);
 
       # check each state name
       for ii=1:nz
-        sti = dezero(stname(ii,:));  # compare spk with this state name
+        sti = nth(stname,ii);  # compare spk with this state name
         if(length(sti) >= spl)
           # if the prefix matches and ii isn't already in the list, add ii
           if(strcmp(sti(1:spl),spk) & !any(fidx == ii) ) 
@@ -237,7 +228,7 @@ function [dsys,fidx] = dmr2d (sys, idx, sprefix, Ts2,cuflg)
     else
       b1b = [b1b, b1w];       # append new inputs
       newin = strappend(innamenz,["_d",num2str(kk-1)]);
-      inname = str2mat(inname,newin);
+      inname = append(inname,newin);
     endif
   endfor
 

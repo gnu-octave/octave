@@ -28,11 +28,6 @@ function [n_tot,st_c,st_d,y_c,y_d] = syscont_disc(sys)
 #	   y_d: vector of discrete output indices
 
 # Written by A. S. Hodel (a.s.hodel@eng.auburn.edu) Feb 1997
-# $Log: syscont_disc.m,v $
-# Revision 1.2  1998/07/15 12:29:13  hodelas
-# Updated to use sysdimensions.  Removed extraneous if commands (find now
-# returns empty matrix if none found)
-#
 
   # get ranges for discrete/continuous states and outputs
   [nn,nz,mm,pp,yd] = sysdimensions(sys);

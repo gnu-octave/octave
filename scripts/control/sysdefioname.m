@@ -1,4 +1,4 @@
-# Copyright (C) 1996 A. Scottedward Hodel 
+# Copyright (C) 1996,1998 A. Scottedward Hodel 
 #
 # This file is part of Octave. 
 #
@@ -18,46 +18,32 @@
  
 function ioname = sysdefioname(n,str,m)
 # function ioname = sysdefioname(n,str[,m])
-# return default input or output names given n, str, m
+# return list of default input or output names given n, str, m
 # n is the final value, str is the string prefix, and m is start value
 # ex: ioname = sysdefioname(5,"u",3)
 #
-# returns: 	ioname = 	u_3
-#				u_4
-#				u_5
+# returns: 	ioname =
+#               (
+#                 [1] = u_3
+#                 [2] = u_4
+#                 [3] = u_5
+#               )
 # used internally, minimal argument checking
-
-# $Log: sysdefioname.m,v $
-
-  save_val = implicit_str_to_num_ok;	# save for later
-  implicit_str_to_num_ok = 1;
 
   if (nargin < 2 | nargin > 3)
     usage("ioname = sysdefioname(n,str[,m])");
   endif
 
-  if (nargin == 2)
-    m = 1;
-  endif
+  if (nargin == 2)           m = min(1,n);            endif
 
+  ioname = list();
   jj = 1;
-
   if(n > 0 & m > 0 & m <= n)
     for ii = m:n
-      strval = [str,"_",num2str(ii)];
-      ioname(jj,1:length(strval)) = strval;
-      jj = jj+1;
+      ioname(ii+1-m) = sprintf("%s_%d",str,ii);
     endfor
-  elseif(n == 0)
-    ioname = "";
   elseif(m > n)
-    error(["start value m=",num2str(m)," > final value n=",num2str(n),"; bad!"])
+    error("str=%s; start value m=%d > final value n=%d",str,m,n);
   endif
 
-  if( !isstr(ioname) )
-    ioname = setstr(ioname);
-  endif
-
-  implicit_str_to_num_ok = save_val;	# restore value
- 
 endfunction

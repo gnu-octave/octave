@@ -99,35 +99,7 @@
 
 
 # Kai P. Mueller 30-APR-1998 <mueller@ifr.ing.tu-bs.de
-# $Revision: 1.3 $
-# $Log: hinfdemo.m,v $
-# Revision 1.3  1998/10/12  13:59:16  mueller
-# discrete examples added
-#
-# Revision 1.2  1998/10/12  10:09:40  mueller
-# SISO example added, the augmented plant has one input
-# and two output.
-#
-# Revision 1.1  1998/10/12  08:52:21  mueller
-# Initial revision
-#
-# Revision 1.1.1.1  1998/05/19 20:24:06  jwe
-#
-# Revision 1.1  1998/05/05 17:03:42  scotte
-# Initial revision
-#
-# Revision 1.4  1998/05/05  09:49:19  mueller
-# comment corrections
-#
-# Revision 1.3  1998/05/05  08:46:27  mueller
-# comments added
-#
-# Revision 1.2  1998/05/04  17:49:56  mueller
-# miscellaneous cleanup
-#
-# Revision 1.1  1998/05/04  15:10:34  mueller
-# Initial revision
-#
+# $Revision: 2.0.0.0 $
 
 yn = [];
 while (length(yn) < 1)

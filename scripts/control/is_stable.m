@@ -31,43 +31,34 @@ function retval = is_stable (a, tol, disc)
 #     is_observable, is_stabilizable, is_detectable, krylov, krylovb
 
 # Written by A. S. Hodel (scotte@eng.auburn.edu) August, 1993.
-# Updated by A. S. Hodel (scotte@eng.auburn.edu) Aubust, 1995 to use krylovb 
 # Updated by John Ingram (ingraje@eng.auburn.edu) July, 1996 for systems
-# SYS_INTERNAL accesses members of system structure
-# $Revision: 1.1.1.1 $
+# Updated to simpler form by a.s.hodel 1998
+# $Revision: 2.0.0.0 $
 
-  if( (nargin < 1) | (nargin > 3) )
-    usage("is_stable(a {,tol,disc})");
+  if( (nargin < 1) | (nargin > 3) )   usage("is_stable(a {,tol,disc})");
   elseif(is_struct(a))
     # system was passed
-    if(nargin < 3)
-      disc = is_digital(a);
+    if(nargin < 3)			disc = is_digital(a);
     elseif(disc != is_digital(a))
-      warning(["is_stable: disc =",num2str(disc),", does not match system"])
+      warning("is_stable: disc =%d does not match system",disc)
     endif
     sys = sysupdate(a,"ss");
-    a = sys.a;
+    a = sys2ss(sys);
   else
-    if(nargin < 3)
-      disc = 0;
-    endif
+    if(nargin < 3)		disc = 0;		endif
     if(is_square(a) == 0)
-      error("non-square a matrix passed.")
+      error("A(%dx%d) must be square",rows(A), columns(A));
     endif
   endif
 
-  if( nargin < 2)
-    tol = 200*eps;
+  if(nargin < 2)		tol = 200*eps;
   elseif( !is_scalar(tol) )
-    error("is_stable: tol must be a scalar!");
+    error("is_stable: tol(%dx%d) must be a scalar",rows(tol),columns(tol));
   endif
  
   l = eig(a);
-  if(disc)
-    nbad = sum(abs(l)*(1+tol) > 1);
-  else
-    nbad = sum(real(l)+tol > 0);
-  endif
+  if(disc)	nbad = sum(abs(l)*(1+tol) > 1);
+  else		nbad = sum(real(l)+tol > 0);		endif
   retval = (nbad == 0);   
 
 endfunction

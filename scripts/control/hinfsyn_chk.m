@@ -35,7 +35,7 @@ function [retval,Pc,Pf] = hinfsyn_chk(A,B1,B2,C1,C2,D12,D21,g,ptol)
   # Do not attempt to use this at home; no argument checking performed.
 
   # A. S. Hodel August 1995
-  # $Revision: 1.1 $
+  # $Revision: 2.0.0.0 $
 
   Pc = Pf = [];
 

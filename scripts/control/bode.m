@@ -57,8 +57,27 @@ function [mag,phase,w] = bode(sys,w,outputs,inputs)
 # Modified by David Clem November 13, 1994
 # again by A. S. Hodel July 1995 (smart plot range, etc.)
 # Modified by Kai P. Mueller September 28, 1997 (multiplot mode)
-# $Revision: 1.6 $
+# $Revision: 2.0.0.0 $
 # $Log: bode.m,v $
+# Revision 2.0.0.0  1998/12/08  21:36:52  hodel
+# Branch for beta release patches
+#
+# Revision 2.0  1998/12/08  21:34:57  hodel
+# Initial beta release of signals-as-lists rewrite;
+# sysdimensions now takes opt as an argument
+#
+# Revision 2.0.0.1  1998/12/08  20:54:19  hodel
+# sysdimensions takes opt parameter now
+#
+# Revision 2.0.0.0  1998/12/08  20:30:09  hodel
+# beta release revision
+#
+# Revision 2.0  1998/12/08  20:27:56  hodel
+# Initial list rewrite of OCST
+#
+# Revision 1.7  1998/10/21 12:46:59  hodelas
+# moved grid command so that grid appears in plots
+#
 # Revision 1.6  1998/09/04 20:57:18  hodelas
 # fixed bodquist bug (use reshape instead of  transpose); removed extraneous
 # output from bode.
@@ -138,14 +157,13 @@ function [mag,phase,w] = bode(sys,w,outputs,inputs)
       if (gnuplot_has_multiplot)
         subplot(2,1,1);
       endif
-      title(["|[Y/U]",tistr,"|, u=", inname, ...
-	", y=",outname]);
+      title(["|[Y/U]",tistr,"|, u=", nth(inname,1),", y=",nth(outname,1)]);
     else
       title([ "||Y(", tistr, ")/U(", tistr, ")||"]);
       disp("MIMO plot from")
-      outlist(inname,"	");
+      disp(outlist(inname,"	"));
       disp("to")
-      outlist(outname,"	");
+      disp(outlist(outname,"	"));
     endif
     wv = [min(w), max(w)];
     md = 20*log10(mag);
@@ -167,7 +185,7 @@ function [mag,phase,w] = bode(sys,w,outputs,inputs)
       xlabel(xlstr);
       ylabel("Phase in deg");
       title([ "phase([Y/U]", tistr, ...
-	 "), u=", (inname),", y=",(outname)]);
+	 "), u=", nth(inname,1),", y=",nth(outname,1)]);
       grid("on");
       semilogx(w,phase);
       # This should be the default for subsequent plot commands.

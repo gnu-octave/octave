@@ -33,16 +33,14 @@ function [retval,U] = is_stabilizable (a, b, tol)
 # tol is a roundoff paramter, set to 200*eps if omitted.
 #
 # See also: size, rows, columns, length, is_matrix, is_scalar, is_vector
-#     is_observable, is_stabilizable, is_detectable, krylov, krylovb
+#     is_observable, is_stabilizable, is_detectable
 
 # Written by A. S. Hodel (scotte@eng.auburn.edu) August, 1993.
 # Updated by A. S. Hodel (scotte@eng.auburn.edu) Aubust, 1995 to use krylovb 
 # Updated by John Ingram (ingraje@eng.auburn.edu) July, 1996 to accept systems
-# SYS_INTERNAL accesses members of system structure
-# $Revision: 1.1.1.1 $
+# $Revision: 2.0.0.0 $
 
-  if(nargin < 1)
-    usage("[retval,U] = is_stabilizable(a {, b ,tol})");
+  if(nargin < 1)        usage("[retval,U] = is_stabilizable(a {, b ,tol})");
   elseif(is_struct(a))
     # sustem passed.
     if(nargin == 2)
@@ -50,9 +48,7 @@ function [retval,U] = is_stabilizable (a, b, tol)
     elseif(nargin > 2)
       usage("[retval,U] = is_stabilizable(sys{,tol})");
     endif
-    sys = sysupdate(a,"ss");
-    a = sys.a;
-    b = sys.b;
+    [a,b] = sys2ss(sys);
   else
     # a,b arguments sent directly.
     if(nargin > 3)
@@ -67,11 +63,6 @@ function [retval,U] = is_stabilizable (a, b, tol)
     tol = 1e2*rows(b)*eps;
   endif
   
-  #disp("is_stabilzable: is_controllable returns")
-  #retval
-  #U
-  #disp("/is_stabilzable: is_controllable returns")
-
   if( !retval & columns(U) > 0)
     # now use an ordered Schur decomposition to get an orthogonal
     # basis of the unstable subspace...
@@ -79,11 +70,6 @@ function [retval,U] = is_stabilizable (a, b, tol)
     [ua,s] = schur(-(a+eye(n)*tol),'A');
     k = sum( real(eig(a)) >= 0 );	# count unstable poles 
 
-    #disp("is_stabilizable: unstable poles found:")
-    #k
-    #s
-    #disp("/is_stabilizable: unstable poles found:")
-    
     if( k > 0 )
       ua = ua(:,1:k);
       # now see if span(ua) is contained in span(U)

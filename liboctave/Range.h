@@ -28,8 +28,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include <iostream>
-
-class Matrix;
+#include "dMatrix.h"
 
 class
 Range
@@ -65,9 +64,9 @@ Range
 
   void sort (void);
 
-  void set_base (double b) { rng_base = b;  }
-  void set_limit (double l) { rng_limit = l; }
-  void set_inc (double i) { rng_inc = i;   }
+  void set_base (double b) { rng_base = b; cache.resize (0,0); }
+  void set_limit (double l) { rng_limit = l; cache.resize (0,0); }
+  void set_inc (double i) { rng_inc = i; cache.resize (0,0); }
 
   friend std::ostream& operator << (std::ostream& os, const Range& r);
   friend std::istream& operator >> (std::istream& is, Range& r);
@@ -76,6 +75,7 @@ Range
 
  private:
 
+  mutable Matrix cache;
   double rng_base;
   double rng_limit;
   double rng_inc;

@@ -35,7 +35,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream>
 
 #include "Range.h"
-#include "dMatrix.h"
 #include "lo-mappers.h"
 #include "lo-utils.h"
 
@@ -53,15 +52,13 @@ Range::all_elements_are_ints (void) const
 Matrix
 Range::matrix_value (void) const
 {
-  Matrix retval;
-
-  if (rng_nelem > 0)
+  if (rng_nelem > 0 && cache.rows() == 0)
     {
-      retval.resize (1, rng_nelem);
+      cache.resize (1, rng_nelem);
       double b = rng_base;
       double increment = rng_inc;
       for (int i = 0; i < rng_nelem; i++)
-	retval(i) = b + i * increment;
+	cache(i) = b + i * increment;
 
       // On some machines (x86 with extended precision floating point
       // arithmetic, for example) it is possible that we can overshoot
@@ -69,13 +66,14 @@ Range::matrix_value (void) const
       // we were very careful in our calculation of the number of
       // elements.
 
-      if ((rng_inc > 0 && retval(rng_nelem-1) > rng_limit)
-	  || (rng_inc < 0 && retval(rng_nelem-1) < rng_limit))
-	retval(rng_nelem-1) = rng_limit;
+      if ((rng_inc > 0 && cache(rng_nelem-1) > rng_limit)
+	  || (rng_inc < 0 && cache(rng_nelem-1) < rng_limit))
+	cache(rng_nelem-1) = rng_limit;
     }
 
-  return retval;
+  return cache;
 }
+
 
 // NOTE: max and min only return useful values if nelem > 0.
 
@@ -131,16 +129,8 @@ Range::sort (void)
       rng_base = min ();
       rng_limit = tmp;
       rng_inc = -rng_inc;
+      cache.resize (0,0);
     }
-}
-
-void
-Range::print_range (void)
-{
-  std::cerr << "Range: rng_base = " << rng_base
-	    << " rng_limit " << rng_limit
-	    << " rng_inc " << rng_inc
-	    << " rng_nelem " << rng_nelem << "\n";
 }
 
 std::ostream&

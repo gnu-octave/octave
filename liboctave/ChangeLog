@@ -1,4 +1,10 @@
-2004-03-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
+2004-03-02  Paul Kienzle  <pkienzle@users.sf.net>
+
+	* Range.cc (Range::matrix_value): Cache result.
+	(Range::sort): Clear cache.
+	* Range.h (Range::cache): New data member.
+	(Range::set_base, Range::set_limit, Range::set_inc): Clear cache.
+	(Range::print_range): Delete.
 
 2004-03-02  David Bateman  <dbateman@free.fr>
  

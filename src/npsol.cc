@@ -270,8 +270,8 @@ Handle all of the following:
       int ub_len = ub.capacity ();
       if (lb_len != ub_len || lb_len != x.capacity ())
 	{
-	  error ("npsol: lower and upper bounds and decision variable\n\
-       vector must all have the same number of elements");
+	  error ("npsol: lower and upper bounds and decision variable vector");
+	  error ("must all have the same number of elements");
 	  return retval;
 	}
 

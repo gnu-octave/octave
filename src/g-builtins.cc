@@ -1675,8 +1675,10 @@ builtin_va_arg (const tree_constant *args, int nargin, int nargout)
 	      retval[0] = curr_function->va_arg ();
 	    }
 	  else
-	    error ("va_arg only valid within function taking\
- variable number of arguments");
+	    {
+	      error ("va_arg only valid within function taking variable");
+	      error ("number of arguments");
+	    }
 	}
       else
 	error ("va_arg only valid within function body");
@@ -1698,8 +1700,10 @@ builtin_va_start (const tree_constant *args, int nargin, int nargout)
 	  if (curr_function->takes_varargs ())
 	    curr_function->va_start ();
 	  else
-	    error ("va_start only valid within function taking\
- variable number of arguments");
+	    {
+	      error ("va_start only valid within function taking variable");
+	      error ("number of arguments");
+	    }
 	}
       else
 	error ("va_start only valid within function body");

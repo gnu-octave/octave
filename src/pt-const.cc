@@ -757,8 +757,8 @@ tree_constant_rep::force_numeric (int force_str_conv = 0)
       {
 	if (! force_str_conv && ! user_pref.implicit_str_to_num_ok)
 	  {
-	    error ("failed to convert `%s' to a numeric type -- default\
- conversion turned off", string);
+	    error ("failed to convert `%s' to a numeric type --", string);
+	    error ("default conversion turned off");
 // Abort!
 	    jump_to_top_level ();
 	  }

@@ -639,8 +639,8 @@ load_variable (char *nm, int force, istream& is)
       && ((gsr != (symbol_record *) NULL && gsr->is_variable ())
 	  || lsr != (symbol_record *) NULL))
     {
-      warning ("load: variable name `%s' exists.  Use `load -force'\
- to overwrite", nm);
+      warning ("load: variable name `%s' exists.", nm);
+      warning ("Use `load -force' to overwrite");
       return -1;
     }
 
@@ -656,8 +656,8 @@ load_variable (char *nm, int force, istream& is)
 	{
 	  if (lsr != (symbol_record *) NULL)
 	    {
-	      warning ("load: replacing local symbol `%s' with global\
- value from file", nm);
+	      warning ("load: replacing local symbol `%s' with", nm);
+	      warning ("global value from file");
 	      curr_sym_tab->clear (nm);
 	    }
 	  sr = global_sym_tab->lookup (nm, 1, 0);
@@ -741,8 +741,10 @@ builtin_load (int argc, char **argv)
       if (extract_keyword (stream, "name", nm) == 0 || nm == (char *) NULL)
 	{
 	  if (count == 0)
-	    error ("load: no name keywords found in file.\
-  Are you sure this is an octave data file?");
+	    {
+	      error ("load: no name keywords found in file `%s'", *argv);
+	      error ("Are you sure this is an octave data file?");
+	    }
 	  break;
 	}
 

@@ -293,8 +293,8 @@ tree_constant_rep::fortran_style_matrix_assignment (tree_constant& rhs,
 
 	if (ii.capacity () != rhs_nr * rhs_nc)
 	  {
-	    error ("A(matrix) = X: X and matrix must have the same\
- number of elements"); 
+	    error ("A(matrix) = X: X and matrix must have the same number");
+	    error ("of elements"); 
 	    return;
 	  }
 	fortran_style_matrix_assignment (rhs, ii);
@@ -813,8 +813,8 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, int i,
 
 	if (! indexed_assign_conforms (1, jv.capacity (), rhs_nr, rhs_nc))
 	  {
-	    error ("A(int,matrix) = X: X must be a row vector with the\
- same number of elements as matrix"); 
+	    error ("A(int,matrix) = X: X must be a row vector with the same");
+	    error ("number of elements as matrix"); 
 	    return;
 	  }
 	maybe_resize (i, jv.max ());
@@ -832,8 +832,8 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, int i,
 	Range rj = tmp_j.range_value ();
 	if (! indexed_assign_conforms (1, rj.nelem (), rhs_nr, rhs_nc))
 	  {
-	    error ("A(int,range) = X: X must be a row vector with the\
- same number of elements as range"); 
+	    error ("A(int,range) = X: X must be a row vector with the same");
+	    error ("number of elements as range"); 
 	    return;
 	  }
 
@@ -894,8 +894,8 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, int i,
 	  }
 	else
 	  {
-	    error ("A(int,:) = X: X must be a row vector with the\
- same number of columns as A"); 
+	    error ("A(int,:) = X: X must be a row vector with the same");
+	    error ("number of columns as A"); 
 	    return;
 	  }
 
@@ -929,8 +929,8 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, idx_vector& iv,
 	  return;
 	if (! indexed_assign_conforms (iv.capacity (), 1, rhs_nr, rhs_nc))
 	  {
-	    error ("A(matrix,int) = X: X must be a column vector with\
- the same number of elements as matrix");  
+	    error ("A(matrix,int) = X: X must be a column vector with the");
+	    error ("same number of elements as matrix");  
 	    return;
 	  }
 	maybe_resize (iv.max (), j);
@@ -952,9 +952,9 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, idx_vector& iv,
 	if (! indexed_assign_conforms (iv.capacity (), jv.capacity (),
 				       rhs_nr, rhs_nc))
 	  {
-	    error ("A(r_matrix,c_matrix) = X: the number of rows in X\
- must match the number of elements in r_matrix and the number of\
- columns in X must match the number of elements in c_matrix");  
+	    error ("A(r_mat,c_mat) = X: the number of rows in X must match");
+	    error ("the number of elements in r_mat and the number of");
+	    error ("columns in X must match the number of elements in c_mat");
 	    return;
 	  }
 	maybe_resize (iv.max (), jv.max ());
@@ -973,9 +973,9 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, idx_vector& iv,
 	if (! indexed_assign_conforms (iv.capacity (), rj.nelem (),
 				       rhs_nr, rhs_nc))
 	  {
-	    error ("A(matrix,range) = X: the number of rows in X must\
- match the number of elements in matrix and the number of columns in X\
- must match the number of elements in range");  
+	    error ("A(matrix,range) = X: the number of rows in X must match");
+	    error ("the number of elements in matrix and the number of");
+	    error ("columns in X must match the number of elements in range");
 	    return;
 	  }
 
@@ -1024,9 +1024,9 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs, idx_vector& iv,
 	  }
 	else
 	  {
-	    error ("A(matrix,:) = X: the number of rows in X must\
- match the number of elements in matrix, and the number of columns in\
- X must match the number of columns in A");
+	    error ("A(matrix,:) = X: the number of rows in X must match the");
+	    error ("number of elements in matrix, and the number of columns");
+	    error ("in X must match the number of columns in A");
 	    return;
 	  }
 
@@ -1060,8 +1060,8 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 	  return;
 	if (! indexed_assign_conforms (ri.nelem (), 1, rhs_nr, rhs_nc))
 	  {
-	    error ("A(range,int) = X: X must be a column vector with\
- the same number of elements as range");
+	    error ("A(range,int) = X: X must be a column vector with the");
+	    error ("same number of elements as range");
 	    return;
 	  }
 	maybe_resize (tree_to_mat_idx (ri.max ()), j);
@@ -1083,9 +1083,9 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 	if (! indexed_assign_conforms (ri.nelem (), jv.capacity (),
 				       rhs_nr, rhs_nc))
 	  {
-	    error ("A(range,matrix) = X: the number of rows in X must\
- match the number of elements in range and the number of columns in X\
- must match the number of elements in matrix");
+	    error ("A(range,matrix) = X: the number of rows in X must match");
+	    error ("the number of elements in range and the number of");
+	    error ("columns in X must match the number of elements in matrix");
 	    return;
 	  }
 	maybe_resize (tree_to_mat_idx (ri.max ()), jv.max ());
@@ -1104,9 +1104,10 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 	if (! indexed_assign_conforms (ri.nelem (), rj.nelem (),
 				       rhs_nr, rhs_nc))
 	  {
-	    error ("A(r_range,c_range) = X: the number of rows in X\
- must match the number of elements in r_range and the number of\
- columns in X must match the number of elements in c_range\n");
+	    error ("A(r_range,c_range) = X: the number of rows in X must");
+	    error ("match the number of elements in r_range and the number");
+	    error ("of columns in X must match the number of elements in");
+	    error ("c_range");
 	    return;
 	  }
 
@@ -1159,9 +1160,9 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 	  }
 	else
 	  {
-	    error ("A(range,:) = X: the number of rows in X must match\
- the number of elements in range, and the number of columns in X must\
- match the number of columns in A");  
+	    error ("A(range,:) = X: the number of rows in X must match the");
+	    error ("number of elements in range, and the number of columns");
+	    error ("in X must match the number of columns in A");  
 	    return;
 	  }
 
@@ -1228,8 +1229,8 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 	  }
 	else
 	  {
-	    error ("A(:,int) = X: X must be a column vector with the\
- same number of rows as A"); 
+	    error ("A(:,int) = X: X must be a column vector with the same");
+	    error ("number of rows as A"); 
 	    return;
 	  }
 
@@ -1267,9 +1268,9 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 	  }
 	else
 	  {
-	    error ("A(:,matrix) = X: the number of rows in X must\
- match the number of rows in A, and the number of columns in X must\
- match the number of elements in matrix");   
+	    error ("A(:,matrix) = X: the number of rows in X must match the");
+	    error ("number of rows in A, and the number of columns in X must");
+	    error ("match the number of elements in matrix");   
 	    return;
 	  }
 
@@ -1319,9 +1320,9 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 	  }
 	else
 	  {
-	    error ("A(:,range) = X: the number of rows in X must match\
- the number of rows in A, and the number of columns in X must match\
- the number of elements in range");
+	    error ("A(:,range) = X: the number of rows in X must match the");
+	    error ("number of rows in A, and the number of columns in X");
+	    error ("must match the number of elements in range");
 	    return;
 	  }
 

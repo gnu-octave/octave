@@ -24,7 +24,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_Array2_h)
 #define octave_Array2_h 1
 
-#if defined (__GNUG__)
+#if defined (USE_PRAGMA_INTERFACE_IMPLEMENTATION)
 #pragma interface
 #endif
 

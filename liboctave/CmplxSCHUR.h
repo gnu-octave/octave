@@ -23,7 +23,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_ComplexSCHUR_h)
 #define octave_ComplexSCHUR_h 1
 
-#if defined (__GNUG__)
+#if defined (USE_PRAGMA_INTERFACE_IMPLEMENTATION)
 #pragma interface
 #endif
 

@@ -1,3 +1,30 @@
+2002-09-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Array.cc, Array.h, Array2.cc, Array2.h, Array3.cc, Array3.h,
+	ArrayN.cc, ArrayN.h, Bounds.cc, Bounds.h, CColVector.cc,
+	CColVector.h, CDiagMatrix.cc, CDiagMatrix.h, CMatrix.cc,
+	CMatrix.h, CRowVector.cc, CRowVector.h, CmplxAEPBAL.cc,
+	CmplxAEPBAL.h, CmplxCHOL.cc, CmplxCHOL.h, CmplxDET.cc, CmplxDET.h,
+	CmplxHESS.cc, CmplxHESS.h, CmplxLU.cc, CmplxLU.h, CmplxQR.cc,
+	CmplxQR.h, CmplxQRP.cc, CmplxQRP.h, CmplxSCHUR.cc, CmplxSCHUR.h,
+	CmplxSVD.cc, CmplxSVD.h, CollocWt.cc, CollocWt.h, DAE.cc,
+	DASPK.cc, DASPK.h, DASRT.cc, DASRT.h, DASSL.cc, DASSL.h,
+	DiagArray2.cc, DiagArray2.h, EIG.cc, EIG.h, FEGrid.cc, FEGrid.h,
+	LPsolve.cc, LPsolve.h, LSODE.cc, LSODE.h, LinConst.cc, LinConst.h,
+	MArray.cc, MArray.h, MArray2.cc, MArray2.h, MDiagArray2.cc,
+	MDiagArray2.h, NLConst.h, NLEqn.cc, NLEqn.h, ODES.cc, ODES.h,
+	ODESSA.cc, ODESSA.h, Quad.cc, Quad.h, Range.cc, Range.h,
+	base-lu.cc, base-lu.h, boolMatrix.cc, boolMatrix.h, chMatrix.cc,
+	chMatrix.h, dColVector.cc, dColVector.h, dDiagMatrix.cc,
+	dDiagMatrix.h, dMatrix.cc, dMatrix.h, dRowVector.cc, dRowVector.h,
+	dbleAEPBAL.cc, dbleAEPBAL.h, dbleCHOL.cc, dbleCHOL.h, dbleDET.cc,
+	dbleDET.h, dbleHESS.cc, dbleHESS.h, dbleLU.cc, dbleLU.h,
+	dbleQR.cc, dbleQR.h, dbleQRP.cc, dbleQRP.h, dbleSCHUR.cc,
+	dbleSCHUR.h, dbleSVD.cc, dbleSVD.h, idx-vector.cc, idx-vector.h,
+	oct-alloc.cc:
+	Use USE_PRAGMA_INTERFACE_IMPLEMENTATION instead of __GNUG__
+	to decide whether to use the interface/implementation pragmas.
+
 2002-09-08  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (INCLUDES): Add lo-sstream.h to the list.

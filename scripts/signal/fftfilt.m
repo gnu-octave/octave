@@ -25,9 +25,11 @@
 ##
 ## Given the optional third argument, @var{n}, @code{fftfilt} uses the
 ## overlap-add method to filter @var{x} with @var{b} using an N-point FFT.
+##
+## If @var{x} is a matrix, filter each column of the matrix.
 ## @end deftypefn
 
-## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Author: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
 ## Created: 3 September 1994
 ## Adapted-By: jwe
 
@@ -43,56 +45,64 @@ function y = fftfilt (b, x, N)
     usage (" fftfilt (b, x, N)");
   endif
 
+  transpose = (rows (x) == 1);
+
+  if (transpose)
+    x = x.';
+  endif
+
   [r_x, c_x] = size (x);
   [r_b, c_b] = size (b);
-  if (! (min ([r_x, c_x]) == 1 || min ([r_b, c_b]) == 1))
-    error ("fftfilt: both x and b should be vectors");
-  endif
-  l_x  = r_x * c_x;
-  l_b  = r_b * c_b;
 
-  if ((l_x == 1) && (l_b == 1))
-    y = b * x;
-    return;
+  if min ([r_b, c_b]) != 1
+    error ("fftfilt: b should be a vector");
   endif
 
-  x = reshape (x, 1, l_x);
-  b = reshape (b, 1, l_b);
+  l_b = r_b * c_b;
+  b = reshape (b, l_b, 1);
 
   if (nargin == 2)
     ## Use FFT with the smallest power of 2 which is >= length (x) +
     ## length (b) - 1 as number of points ...
-    N    = 2^(ceil (log (l_x + l_b - 1) / log(2)));
-    y    = ifft (fft (x, N) .* fft(b, N));
+    N = 2 ^ (ceil (log (r_x + l_b - 1) / log (2)));
+    B = fft (b, N);
+    y = ifft (fft (x, N) .* B(:,ones (1, c_x)));
   else
     ## Use overlap-add method ...
     if (! (is_scalar (N)))
       error ("fftfilt: N has to be a scalar");
     endif
-    N = 2^(ceil (log (max ([N, l_b])) / log(2)));
+    N = 2 ^ (ceil (log (max ([N, l_b])) / log (2)));
     L = N - l_b + 1;
     B = fft (b, N);
-    R = ceil (l_x / L);
-    y = zeros (1, l_x);
+    B = B(:,ones (c_x,1));
+    R = ceil (r_x / L);
+    y = zeros (r_x, c_x);
     for r = 1:R;
-      lo  = (r - 1) * L + 1;
-      hi  = min (r * L, l_x);
-      tmp = ifft (fft (x(lo:hi), N) .* B);
-      hi  = min (lo+N-1, l_x);
-      y(lo:hi) = y(lo:hi) + tmp(1:(hi-lo+1));
+      lo = (r - 1) * L + 1;
+      hi = min (r * L, r_x);
+      tmp = zeros (N, c_x);
+      tmp(1:(hi-lo+1),:) = x(lo:hi,:);
+      tmp = ifft (fft (tmp) .* B);
+      hi  = min (lo+N-1, r_x);
+      y(lo:hi,:) = y(lo:hi,:) + tmp(1:(hi-lo+1),:);
     endfor
   endif
 
-  y = reshape (y(1:l_x), r_x, c_x);
+  y = y(1:r_x,:);
+  if (transpose)
+    y = y.';
+  endif
 
   ## Final cleanups: if both x and b are real respectively integer, y
   ## should also be
 
-  if (! (any (imag (x)) || any (imag (b))))
+  if (isreal (b) && isreal (x))
     y = real (y);
   endif
-  if (! (any (x - round (x)) || any (b - round (b))))
-    y = round (y);
+  if (! any (b - round (b)))
+    idx = !any (x - round (x));
+    y(:,idx) = round (y(:,idx));
   endif
 
 endfunction

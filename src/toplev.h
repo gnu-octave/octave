@@ -1,7 +1,7 @@
 // octave.h                                              -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993 John W. Eaton
+Copyright (C) 1992, 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -81,6 +81,9 @@ extern tree *global_command;
 
 // Pointer to function that is currently being evaluated.
 extern tree_function *curr_function;
+
+// Nonzero means input is coming from startup file.
+extern int input_from_startup_file;
 
 #endif
 

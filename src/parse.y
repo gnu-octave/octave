@@ -1,6 +1,6 @@
 /* parse.y						-*- text -*-
 
-Copyright (C) 1992, 1993 John W. Eaton
+Copyright (C) 1992, 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -909,7 +909,8 @@ func_def2	: identifier safe local_symtab func_def3
 			$4->stash_m_file_time (time ((time_t *) NULL));
 			$4->mark_as_system_m_file ();
 		      }
-		    else if (! input_from_tmp_history_file
+		    else if (! (input_from_tmp_history_file
+				|| input_from_startup_file)
 			     && reading_script_file
 			     && strcmp (curr_m_file_name, id_name) == 0)
 		      {

@@ -110,6 +110,9 @@ tree *global_command = (tree *) NULL;
 // Pointer to function that is currently being evaluated.
 tree_function *curr_function = (tree_function *) NULL;
 
+// Nonzero means input is coming from startup file.
+int input_from_startup_file = 0;
+
 // Top level context (?)
 jmp_buf toplevel;
 
@@ -265,6 +268,11 @@ parse_and_execute (char *s, int print)
 static void
 execute_startup_files (void)
 {
+  begin_unwind_frame ("execute_startup_files");
+
+  unwind_protect_int (input_from_startup_file);
+  input_from_startup_file = 1;
+
 // Execute commands from the site-wide configuration file.
 
   char *sd = get_site_defaults ();
@@ -291,6 +299,8 @@ execute_startup_files (void)
 
   if (home_rc_statbuf.st_ino != dot_rc_statbuf.st_ino)
     parse_and_execute ("./.octaverc", 0);
+
+  run_unwind_frame ("execute_startup_files");
 }
 
 /*
@@ -437,16 +447,18 @@ main (int argc, char **argv)
 
   install_builtins ();
 
+  initialize_readline ();
+
+  initialize_pager ();
+
+  install_signal_handlers ();
+
   if (read_init_files)
     {
       saving_history = 0;
       execute_startup_files ();
       saving_history = 1;
     }
-
-  initialize_readline ();
-
-  initialize_pager ();
 
 // Avoid counting commands executed from startup files.
   current_command_number = 1;
@@ -490,8 +502,6 @@ main (int argc, char **argv)
 
   if (! (interactive || forced_interactive))
     using_readline = 0;
-
-  install_signal_handlers ();
 
   if (! inhibit_startup_message)
     {

@@ -38,7 +38,7 @@
 ## @end table
 ## @iftex
 ## @tex
-## $$ G(j\omega) = (j\omegaI-A)^{-1}B $$
+## $$ G(j\omega) = (j\omega I-A)^{-1}B $$
 ## @end tex
 ## @end iftex
 ## @ifinfo

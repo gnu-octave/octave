@@ -1,5 +1,7 @@
 2004-09-21  John W. Eaton  <jwe@octave.org>
 
+	* version.h (OCTAVE_VERSION): Now 2.1.59.
+
 	* oct-fstrm.h (octave_fstream::octave_fstream,
 	octave_fstream::create): Set default float format to actual native
 	format, not flt_fmt_native.

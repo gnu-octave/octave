@@ -273,7 +273,7 @@ complex.\n\
 \n\
 If requested, @var{ierr} contains the following status information\n\
 and is the same size as the result.\n\
-\n
+\n\
 @enumerate 0\n\
 @item\n\
 Normal return.\n\
@@ -390,7 +390,7 @@ The result is the same size as @var{z}.
 \n\
 If requested, @var{ierr} contains the following status information and\n\
 is the same size as the result.\n\
-\n
+\n\
 @enumerate 0\n\
 @item\n\
 Normal return.\n\

@@ -34,7 +34,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 
 DEFUN_DLD (lu, args, nargout,
-  "-*- texinfo -*-
+  "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[@var{l}, @var{u}, @var{p}] =} lu (@var{a})\n\
 @cindex LU decomposition\n\
 Compute the LU decomposition of @var{a}, using subroutines from\n\

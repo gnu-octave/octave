@@ -36,7 +36,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // one...
 
 DEFUN_DLD (logm, args, ,
-  "-*- texinfo -*-
+  "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} logm (@var{a})\n\
 Compute the matrix logarithm of the square matrix @var{a}.  Note that\n\
 this is currently implemented in terms of an eigenvalue expansion and\n\

@@ -33,7 +33,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 
 DEFUN_DLD (eig, args, nargout,
-  "-*- texinfo -*-
+  "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{lambda} =} eig (@var{a})\n\
 @deftypefnx {Loadable Function} {[@var{v}, @var{lambda}] =} eig (@var{a})\n\
 The eigenvalues (and eigenvectors) of a matrix are computed in a several\n\

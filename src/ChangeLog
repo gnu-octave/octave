@@ -1,5 +1,26 @@
 2000-02-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* variables.cc (F__dump_symbol_info__): Fix continuation char.
+	* DLD-FUNCTIONS/besselj.cc (Fairy, Fbesselj): Likewise.
+	* DLD-FUNCTIONS/chol.cc (Fchol): Likewise.
+	* DLD-FUNCTIONS/det.cc (Fdet): Likewise.
+	* DLD-FUNCTIONS/eig.cc (Feig): Likewise.
+	* DLD-FUNCTIONS/gammainc.cc (gammainc): Likewise.
+	* DLD-FUNCTIONS/givens.cc (givens): Likewise.
+	* DLD-FUNCTIONS/hess.cc (hess): Likewise.
+	* DLD-FUNCTIONS/inv.cc (inv): Likewise.
+	* DLD-FUNCTIONS/log.cc (logm): Likewise.
+	* DLD-FUNCTIONS/lu.cc (lu): Likewise.
+	* DLD-FUNCTIONS/qr.cc (qr): Likewise.
+	* DLD-FUNCTIONS/schur.cc (schur): Likewise.
+	* DLD-FUNCTIONS/balance.cc (balance): Likewise.
+	* DLD-FUNCTIONS/svd.cc (svd): Likewise.
+	* DLD-FUNCTIONS/syl.cc (syl): Likewise.
+	* DLD-FUNCTIONS/expm.cc (Fexpm): Likewise.
+
+	* token.h (token::token_type, token::end_tok_type,
+	token::plot_tok_type): Delete extraneous comma from enum decls.
+
 	* pt-idx.cc (tree_index_expression::tree_index_expression):
 	Delete default arg values.
 

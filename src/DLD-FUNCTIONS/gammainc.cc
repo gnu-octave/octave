@@ -33,7 +33,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 
 DEFUN_DLD (gammainc, args, ,
-  "-*- texinfo -*-
+  "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} gammainc (@var{x}, @var{a})\n\
 Computes the incomplete gamma function,\n\
 @iftex\n\

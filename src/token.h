@@ -35,6 +35,7 @@ class
 token
 {
 public:
+
   enum token_type
     {
       generic_token,
@@ -42,7 +43,7 @@ public:
       double_token,
       ettype_token,
       pttype_token,
-      sym_rec_token,
+      sym_rec_token
     };
 
   enum end_tok_type
@@ -54,14 +55,14 @@ public:
       switch_end,
       while_end,
       try_catch_end,
-      unwind_protect_end,
+      unwind_protect_end
     };
 
   enum plot_tok_type
     {
       replot = 1,
       two_dee = 2,
-      three_dee = 3,
+      three_dee = 3
     };
 
   token (int l = -1, int c = -1);

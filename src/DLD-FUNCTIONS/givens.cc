@@ -31,7 +31,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-obj.h"
 
 DEFUN_DLD (givens, args, nargout,
-  "-*- texinfo -*-
+  "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{g} =} givens (@var{x}, @var{y})\n\
 @deftypefnx {Loadable Function} {[@var{c}, @var{s}] =} givens (@var{x}, @var{y})\n\
 @iftex\n\

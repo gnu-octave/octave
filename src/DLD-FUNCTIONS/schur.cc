@@ -36,7 +36,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 
 DEFUN_DLD (schur, args, nargout,
-  "-*- texinfo -*-
+  "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{s} =} schur (@var{a})\n\
 @deftypefnx {Loadable Function} {[@var{u}, @var{s}] =} schur (@var{a}, @var{opt})\n\
 @cindex Schur decomposition\n\

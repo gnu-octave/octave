@@ -1256,7 +1256,7 @@ Print raw symbol table statistices.\n\
 DEFUN (__dump_symbol_info__, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __dump_symbol_info__ (@var{name})\n\
-Print symbol table information for the symbol @var{name}.
+Print symbol table information for the symbol @var{name}.\n\
 @end deftypefn")
 {
   octave_value_list retval;

@@ -46,6 +46,7 @@ octave_struct::do_struct_elt_index_op (const std::string& nm,
 				       bool silent)
 {
   // XXX DO_ME XXX
+  return octave_value ();
 }
 
 octave_value

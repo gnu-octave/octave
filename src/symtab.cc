@@ -453,9 +453,10 @@ symbol_record::print_symbol_info_line (std::ostream& os)
      << (hides_fcn () ? "f" : (hides_builtin () ? "F" : "-"))
 #endif
      << "  "
-     << setiosflags (std::ios::left) << setw (24) << type_name () . c_str ();
+     << std::setiosflags (std::ios::left) << std::setw (24)
+     << type_name () . c_str ();
 
-  os << resetiosflags (std::ios::left);
+  os << std::resetiosflags (std::ios::left);
 
   int nr = rows ();
   int nc = columns ();
@@ -463,14 +464,14 @@ symbol_record::print_symbol_info_line (std::ostream& os)
   if (nr < 0)
     os << "      -";
   else
-    os << setiosflags (std::ios::right) << setw (7) << nr;
+    os << std::setiosflags (std::ios::right) << std::setw (7) << nr;
 
   if (nc < 0)
     os << "      -";
   else
-    os << setiosflags (std::ios::right) << setw (7) << nc;
+    os << std::setiosflags (std::ios::right) << std::setw (7) << nc;
 
-  os << resetiosflags (std::ios::right);
+  os << std::resetiosflags (std::ios::right);
 
   os << "  " << name () << "\n";
 }

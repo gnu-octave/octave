@@ -53,7 +53,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // that R = triu (qr (X))
 
 DEFUN_DLD (qr, args, nargout,
-  "-*- texinfo -*-
+  "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[@var{q}, @var{r}, @var{p}] =} qr (@var{a})\n\
 @cindex QR factorization\n\
 Compute the QR factorization of @var{a}, using standard @sc{Lapack}\n\

@@ -1130,7 +1130,7 @@ do_scanf_conv (std::istream&, const char*, double*, Matrix&, double*, int&,
 	} \
       else \
 	{ \
-	  ostrstream buf; \
+	  std::ostrstream buf; \
  \
 	  int c = EOF; \
  \
@@ -1171,7 +1171,7 @@ do_scanf_conv (std::istream&, const char*, double*, Matrix&, double*, int&,
 	} \
       else \
 	{ \
-	  ostrstream buf; \
+	  std::ostrstream buf; \
  \
 	  std::string char_class = elt->char_class; \
  \

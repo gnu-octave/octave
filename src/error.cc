@@ -103,7 +103,7 @@ verror (const char *name, const char *fmt, va_list args)
 
       if (! error_message_buffer)
 	{
-	  error_message_buffer = new ostrstream;
+	  error_message_buffer = new std::ostrstream;
 
 	  // XXX FIXME XXX -- this is ugly, but it prevents
 	  //

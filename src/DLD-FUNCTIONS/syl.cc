@@ -33,7 +33,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 
 DEFUN_DLD (syl, args, nargout,
-  "-*- texinfo -*-
+  "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{x} =} syl (@var{a}, @var{b}, @var{c})\n\
 Solve the Sylvester equation\n\
 @iftex\n\

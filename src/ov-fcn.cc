@@ -37,6 +37,7 @@ octave_function *
 octave_function::clone (void)
 {
   panic_impossible ();
+  return 0;
 }
 
 /*

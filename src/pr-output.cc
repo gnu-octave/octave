@@ -984,12 +984,12 @@ pr_any_float (const char *fmt, std::ostream& os, double d, int fw = 0)
 	      || flt_fmt == oct_mach_info::unknown)
 	    {
 	      for (size_t i = 0; i < sizeof (double); i++)
-		os << setw (2) << static_cast<int> (tmp.i[i]);
+		os << std::setw (2) << static_cast<int> (tmp.i[i]);
 	    }
 	  else
 	    {
 	      for (int i = sizeof (double) - 1; i >= 0; i--)
-		os << setw (2) << static_cast<int> (tmp.i[i]);
+		os << std::setw (2) << static_cast<int> (tmp.i[i]);
 	    }
 
 	  os.fill (ofill);
@@ -1039,14 +1039,14 @@ pr_any_float (const char *fmt, std::ostream& os, double d, int fw = 0)
 	    s = "Inf";
 
 	  if (fw > 0)
-	    os << setw (fw) << s;
+	    os << std::setw (fw) << s;
 	  else
 	    os << s;
 	}
       else if (xisnan (d))
 	{
 	  if (fw > 0)
-	    os << setw (fw) << "NaN";
+	    os << std::setw (fw) << "NaN";
 	  else
 	    os << "NaN";
 	}
@@ -1139,7 +1139,7 @@ pr_col_num_header (std::ostream& os, int total_width, int max_width,
 
       int num_cols = lim - col;
 
-      os << setw (extra_indent) << "";
+      os << std::setw (extra_indent) << "";
 
       if (num_cols == 1)
 	os << " Column " << col + 1 << ":\n";
@@ -1295,7 +1295,7 @@ octave_print_internal (std::ostream& os, const Matrix& m, bool pr_as_read_syntax
 
 	      for (int i = 0; i < nr; i++)
 		{
-		  os << setw (extra_indent) << "";
+		  os << std::setw (extra_indent) << "";
 
 		  for (int j = col; j < lim; j++)
 		    {
@@ -1467,7 +1467,7 @@ octave_print_internal (std::ostream& os, const ComplexMatrix& cm,
 
 	      for (int i = 0; i < nr; i++)
 		{
-		  os << setw (extra_indent) << "";
+		  os << std::setw (extra_indent) << "";
 
 		  for (int j = col; j < lim; j++)
 		    {
@@ -1570,7 +1570,7 @@ octave_print_internal (std::ostream& os, const Range& r,
 	      pr_col_num_header (os, total_width, max_width, lim, col,
 				 extra_indent);
 
-	      os << setw (extra_indent) << "";
+	      os << std::setw (extra_indent) << "";
 
 	      for (int i = col; i < lim; i++)
 		{

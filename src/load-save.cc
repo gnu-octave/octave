@@ -1631,11 +1631,11 @@ do_load (std::istream& stream, const std::string& orig_fname, bool force,
 			      << "====               ====   ====   ====\n";
 
 			  output_buf
-			    << setiosflags (std::ios::left)
-			    << setw (16) << tc.type_name () . c_str ()
-			    << setiosflags (std::ios::right)
-			    << setw (7) << tc.rows ()
-			    << setw (7) << tc.columns ()
+			    << std::setiosflags (std::ios::left)
+			    << std::setw (16) << tc.type_name () . c_str ()
+			    << std::setiosflags (std::ios::right)
+			    << std::setw (7) << tc.rows ()
+			    << std::setw (7) << tc.columns ()
 			    << "   ";
 			}
 		      output_buf << name << "\n";

@@ -34,7 +34,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 
 DEFUN_DLD (chol, args, nargout,
-  "-*- texinfo -*-
+  "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} chol (@var{a})\n\
 @cindex Cholesky factorization\n\
 Compute the Cholesky factor, @var{r}, of the symmetric positive definite\n\

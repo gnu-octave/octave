@@ -101,7 +101,7 @@ determinant (const tree_constant& a)
 	      warning ("det: matrix singular to machine precision, rcond = %g",
 		       rcond);
 	    else
-	      Complex c = det.value ();
+	      c = det.value ();
 
 	    retval = tree_constant (c);
 	  }

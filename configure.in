@@ -21,7 +21,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA. 
 
-AC_REVISION($Revision: 1.317 $)
+AC_REVISION($Revision: 1.318 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -706,11 +706,12 @@ AC_HEADER_DIRENT
 AC_HEADER_TIME
 AC_HEADER_SYS_WAIT
 
-AC_CHECK_HEADERS(assert.h curses.h dlfcn.h fcntl.h float.h floatingpoint.h \
-  fnmatch.h glob.h grp.h ieeefp.h limits.h memory.h nan.h ncurses.h \
-  pwd.h sgtty.h stdlib.h string.h sys/ioctl.h sys/param.h sys/resource.h \
-  sys/select.h sys/stat.h sys/time.h sys/times.h sys/types.h \
-  sys/utsname.h termcap.h termio.h $TERMIOS_H unistd.h varargs.h)
+AC_CHECK_HEADERS(assert.h curses.h dlfcn.h fcntl.h float.h \
+  floatingpoint.h fnmatch.h glob.h grp.h ieeefp.h limits.h memory.h \
+  nan.h ncurses.h poll.h pwd.h sgtty.h stdlib.h string.h sys/ioctl.h \
+  sys/param.h sys/poll.h sys/resource.h sys/select.h sys/stat.h \
+  sys/time.h sys/times.h sys/types.h sys/utsname.h termcap.h \
+  termio.h $TERMIOS_H unistd.h varargs.h)
 
 ### I'm told that termios.h is broken on NeXT systems.
 
@@ -776,11 +777,11 @@ AC_SUBST(GLOB_INCFLAGS)
 AC_CHECK_FUNCS(atexit bcopy bzero dup2 endgrent endpwent execvp fcntl \
   fork getcwd getegid geteuid getgid getgrent getgrgid getgrnam \
   gethostname getpgrp getpid getppid getpwent getpwnam getpwuid \
-  gettimeofday getuid getwd lstat memmove mkdir mkfifo on_exit pipe \
-  putenv rename rindex rmdir setgrent setpwent setvbuf sigaction \
-  sigpending sigprocmask sigsuspend stat strcasecmp strdup strerror \
-  strftime stricmp strncasecmp strnicmp tempnam umask unlink usleep \
-  vfprintf vsprintf waitpid)
+  gettimeofday getuid getwd lstat memmove mkdir mkfifo on_exit pipe
+  poll putenv rename rindex rmdir select setgrent setpwent setvbuf \
+  sigaction sigpending sigprocmask sigsuspend stat strcasecmp strdup \
+  strerror strftime stricmp strncasecmp strnicmp tempnam umask unlink \
+  usleep vfprintf vsprintf waitpid)
 
 OCTAVE_SMART_PUTENV
 

@@ -519,17 +519,10 @@ of time less than one second, @code{usleep} will pause the execution for\n\
 	    warning ("usleep: NaN is an invalid delay");
 	  else
 	    {
-#if defined (HAVE_USLEEP)
 	      int delay = NINT (dval);
 
 	      if (delay > 0)
-		usleep (delay);
-#else
-	      int delay = NINT (dval / 1e6);
-
-	      if (delay > 0)
-		sleep (delay);
-#endif
+		octave_usleep (delay);
 	    }
 	}
     }

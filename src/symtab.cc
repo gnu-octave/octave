@@ -37,6 +37,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "glob-match.h"
 #include "str-vec.h"
 
+#include "defun.h"
 #include "error.h"
 #include "oct-lvalue.h"
 #include "ov.h"
@@ -44,6 +45,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "symtab.h"
 #include "utils.h"
 #include "variables.h"
+
+// Should variables be allowed to hide functions of the same name?  A
+// positive value means yes.  A negative value means yes, but print a
+// warning message.  Zero means it should be considered an error.
+static int Vvariables_can_hide_functions;
 
 octave_allocator
 symbol_record::symbol_def::allocator (sizeof (symbol_record::symbol_def));
@@ -74,7 +80,17 @@ symbol_record::define (const octave_value& v, unsigned int sym_type)
   if (! (is_variable () && read_only_error ("redefine")))
     {
       if (is_function () || is_constant ())
-	push_def (new symbol_def ());
+	{
+	  if (Vvariables_can_hide_functions)
+	    {
+	      push_def (new symbol_def ());
+
+	      if (Vvariables_can_hide_functions < 0)
+		warning ("variable `%s' hides function", nm.c_str ());
+	    }
+	  else
+	    error ("variable `%s' hides function", nm.c_str ());
+	}
 
       if (definition->type () == symbol_record::BUILTIN_VARIABLE)
 	sym_type = symbol_record::BUILTIN_VARIABLE;
@@ -243,6 +259,19 @@ symbol_record::link_to_builtin_variable (void)
 octave_lvalue
 symbol_record::variable_reference (void)
 {
+  if (Vvariables_can_hide_functions <= 0
+      && (is_function ()
+	  || (! is_defined () && is_valid_function (nm))))
+    {
+      if (Vvariables_can_hide_functions < 0)
+	warning ("variable `%s' hides function", nm.c_str ());
+      else
+	{
+	  error ("variable `%s' hides function", nm.c_str ());
+	  return octave_lvalue ();
+	}
+    }
+
   if (is_function () || is_constant ())
     clear ();
 
@@ -777,6 +806,24 @@ symbol_table::hash (const string& str)
 
   return h & (table_size - 1);
 }
+
+
+static int
+variables_can_hide_functions (void)
+{
+  Vvariables_can_hide_functions
+    = check_preference ("variables_can_hide_functions");
+
+  return 0;
+}
+
+void
+symbols_of_symtab (void)
+{
+  DEFVAR (variables_can_hide_functions, 1.0, variables_can_hide_functions,
+    "Should variables be allowed to hide functions of the same name?");
+}
+
 
 /*
 ;;; Local Variables: ***

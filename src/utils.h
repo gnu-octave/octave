@@ -58,6 +58,8 @@ extern string undo_string_escapes (const string& s);
 
 extern int check_preference (const string& var);
 
+extern "C" void octave_usleep (unsigned int useconds);
+
 #endif
 
 /*

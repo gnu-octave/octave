@@ -1,3 +1,8 @@
+1999-10-21  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: Check for select and poll.  Also check for poll.h
+	and sys/poll.h.
+
 1999-10-19  Geoff Jacobsen <geoffj@casquet.inet.net.nz>
 
 	* autogen.sh: New file.

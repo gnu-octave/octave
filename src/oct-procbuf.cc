@@ -43,6 +43,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "defun.h"
 #include "gripes.h"
+#include "utils.h"
 
 // Number of microseconds to delay in the parent after forking.
 #if defined (__CYGWIN32__)
@@ -112,13 +113,8 @@ octave_procbuf::open (const char *command, int mode)
       exit (127);
     }
 
-#if defined (HAVE_USLEEP)
   if (Vkluge_procbuf_delay > 0)
-    usleep (Vkluge_procbuf_delay);
-#else
-  if (Vkluge_procbuf_delay > 499999)
-    sleep ((Vkluge_procbuf_delay + 500000) / 1000000);
-#endif
+    octave_usleep (Vkluge_procbuf_delay);
 
   ::close (child_end);
 

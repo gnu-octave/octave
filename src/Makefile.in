@@ -123,7 +123,7 @@ PT_SRC := pt.cc pt-arg-list.cc pt-assign.cc pt-binop.cc pt-check.cc \
 	pt-select.cc pt-stmt.cc pt-unop.cc
 
 DIST_SRC := BaseSLList.cc Map.cc SLList.cc SLStack.cc Stack.cc \
-	data.cc defaults.cc defun.cc dirfns.cc dynamic-ld.cc \
+	cutils.c data.cc defaults.cc defun.cc dirfns.cc dynamic-ld.cc \
 	error.cc file-io.cc fn-cache.cc gripes.cc help.cc input.cc \
 	lex.l load-save.cc mappers.cc matherr.c oct-fstrm.cc \
 	oct-hist.cc oct-iostrm.cc oct-map.cc oct-obj.cc oct-prcstrm.cc \

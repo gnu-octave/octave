@@ -335,11 +335,7 @@ run_command_and_return_output (const string& cmd_str)
 	    {
 	      cmd->clear ();
 
-#if defined (HAVE_USLEEP)
-	      usleep (100);
-#else
-	      sleep (1);
-#endif
+	      octave_usleep (100);
 	    }
 
 	  while (cmd->get (ch))

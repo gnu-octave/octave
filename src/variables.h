@@ -50,10 +50,12 @@ extern bool is_builtin_function_name (const string&);
 extern bool is_globally_visible (const string&);
 
 extern octave_function *
-is_valid_function (const octave_value&, const string&, bool warn = false); 
+is_valid_function (const octave_value&, const string& = string (),
+		   bool warn = false); 
 
 extern octave_function *
-is_valid_function (const string&, const string&, bool warn = false); 
+is_valid_function (const string&, const string& = string (),
+		   bool warn = false); 
 
 extern octave_function *
 extract_function (const octave_value& arg, const string& warn_for,

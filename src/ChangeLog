@@ -1,3 +1,22 @@
+1999-10-21  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* variables.h (is_valid_function): Provide default values for the
+	string argument.
+
+	* symtab.cc (variable_reference): Maybe print warning (or error)
+	about variables that hide functions of the same name.
+	(symbol_record::define (const octave_value&, unsigned int)): Ditto.
+	(Vvariables_can_hide_functions): New static variable.
+	(variables_can_hide_functions, symbols_of_symtab): New functions.
+
+	* cutils.c: New file.
+	* Makefile.in (SOURCES): Add it to the list.
+	* utils.h: Declare octave_usleep here.
+	* dirfns.cc (Fls): Simply all octave_usleep.
+	* oct-procbuf.cc (octave_procbuf::open): Ditto.
+	* sysdep.cc (Fusleep): Ditto.
+	* toplev.cc (run_command_and_return_output): Ditto.
+
 1999-10-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* data.cc (make_diag (const octave_value&, const octave_value&)):

@@ -66,7 +66,7 @@ install install-strip: all
 .PHONY: install install-strip
 
 uninstall:
-	rm -f $(infodir)/liboctave.info*
+	rm -f $(DESTDIR)$(infodir)/liboctave.info*
 .PHONY: uninstall
 
 tags: $(SOURCES)

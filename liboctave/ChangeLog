@@ -1,5 +1,7 @@
 2003-05-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Makefile.in: Handle DESTDIR.
+
 	* kpse.cc (kpse_path_iterator::next): Skip consecutive colons here.
 	(kpse_path_iterator::set_end): Don't miss last element when not
 	followed by a colon.

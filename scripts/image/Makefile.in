@@ -38,18 +38,18 @@ all:
 
 install install-strip:
 	$(do-script-install)
-	$(top_srcdir)/mkinstalldirs $(imagedir)
+	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(imagedir)
 	for f in $(IMAGE_FILES_NO_DIR); do \
-	  rm -f $(imagedir)/$$f; \
-	  $(INSTALL_DATA) $(srcdir)/$$f $(imagedir)/$$f; \
+	  rm -f $(DESTDIR)$(imagedir)/$$f; \
+	  $(INSTALL_DATA) $(srcdir)/$$f $(DESTDIR)$(imagedir)/$$f; \
 	done
-	$(top_srcdir)/mkinstalldirs $(archlibdir)
+	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(archlibdir)
 .PHONY: install install-strip
 
 uninstall:
 	$(do-script-uninstall)
 	for f in $(IMAGE_FILES_NO_DIR); \
-	  do rm -f $(imagedir)/$$f; \
+	  do rm -f $(DESTDIR)$(imagedir)/$$f; \
 	done
 .PHONY: uninstall
 

@@ -120,28 +120,28 @@ check: all
 .PHONY: check
 
 install install-strip: all
-	$(top_srcdir)/mkinstalldirs $(man1dir) $(infodir)
-	@if test -d $(man1dir); then \
+	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(man1dir) $(DESTDIR)$(infodir)
+	@if test -d $(DESTDIR)$(man1dir); then \
 	  for f in $(MAN_BASE); do \
-	    rm -f $(man1dir)/$$f$(man1ext); \
-	    echo "installing $(srcdir)/$$f.1 in $(man1dir)"; \
-	    $(INSTALL_DATA) $(srcdir)/$$f.1 $(man1dir)/$$f$(man1ext); \
+	    rm -f $(DESTDIR)$(man1dir)/$$f$(man1ext); \
+	    echo "installing $(srcdir)/$$f.1 in $(DESTDIR)$(man1dir)"; \
+	    $(INSTALL_DATA) $(srcdir)/$$f.1 $(DESTDIR)$(man1dir)/$$f$(man1ext); \
 	  done ; \
 	fi
-	@if test -d $(infodir); then \
-	  rm -f $(infodir)/octave.info*; \
-	  echo "installing info files in $(infodir)"; \
+	@if test -d $(DESTDIR)$(infodir); then \
+	  rm -f $(DESTDIR)$(infodir)/octave.info*; \
+	  echo "installing info files in $(DESTDIR)$(infodir)"; \
 	  if test -f octave.info; then \
 	    for f in octave.info*; do \
-	      $(INSTALL_DATA) $$f $(infodir)/$$f; \
+	      $(INSTALL_DATA) $$f $(DESTDIR)$(infodir)/$$f; \
 	    done; \
 	  else \
 	    for f in $(srcdir)/octave.info*; do \
-	      $(INSTALL_DATA) $$f $(infodir)/`basename $$f`; \
+	      $(INSTALL_DATA) $$f $(DESTDIR)$(infodir)/`basename $$f`; \
 	    done; \
 	  fi; \
-	  if test -f $(infodir)/dir; then \
-	    if grep "^\* Octave: (octave)." $(infodir)/dir > /dev/null; then \
+	  if test -f $(DESTDIR)$(infodir)/dir; then \
+	    if grep "^\* Octave: (octave)." $(DESTDIR)$(infodir)/dir > /dev/null; then \
 	      true; \
 	    else \
 	      echo ""; \
@@ -150,19 +150,19 @@ install install-strip: all
 	      echo "* Octave: (octave)."; \
 	      echo "	Interactive language for numerical computations."; \
 	      echo ""; \
-	      echo "to $(infodir)/dir."; \
+	      echo "to $(DESTDIR)$(infodir)/dir."; \
 	      echo ""; \
 	    fi; \
 	  else \
-	    echo "installing $(srcdir)/dir in $(infodir)"; \
-	    $(INSTALL_DATA) $(srcdir)/dir $(infodir)/dir; \
+	    echo "installing $(srcdir)/dir in $(DESTDIR)$(infodir)"; \
+	    $(INSTALL_DATA) $(srcdir)/dir $(DESTDIR)$(infodir)/dir; \
 	  fi; \
 	fi
 .PHONY: install install-strip
 
 uninstall:
 	rm -f $(infodir)/octave.info*
-	for f in $(MAN_BASE); do rm -f $(man1dir)/$$f$(man1ext); done
+	for f in $(MAN_BASE); do rm -f $(DESTDIR)$(man1dir)/$$f$(man1ext); done
 .PHONY: uninstall
 
 tags: $(SOURCES)

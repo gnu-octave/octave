@@ -46,15 +46,15 @@ endif
 include ../Makerules
 
 install install-strip::
-	$(top_srcdir)/mkinstalldirs $(octincludedir)/octave
+	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(octincludedir)/octave
 	for f in $(INCLUDES); do \
-	  rm -f $(octincludedir)/octave/$$f; \
-	  $(INSTALL_DATA) $(srcdir)/$$f $(octincludedir)/octave/$$f; \
+	  rm -f $(DESTDIR)$(octincludedir)/octave/$$f; \
+	  $(INSTALL_DATA) $(srcdir)/$$f $(DESTDIR)$(octincludedir)/octave/$$f; \
 	done
 	$(mk-includedir-link)
 
 uninstall::
-	for f in $(INCLUDES); do rm -f $(octincludedir)/octave/$$f; done
+	for f in $(INCLUDES); do rm -f $(DESTDIR)$(octincludedir)/octave/$$f; done
 
 # Don't optimize.
 

@@ -1,3 +1,7 @@
+2003-05-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* interpreter/Makefile.in, doc/liboctave/Makefile.in: Handle DESTDIR.
+
 2003-02-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* interpreter/Makefile.in (MAN_BASE): Add octave-config.1 to the list.

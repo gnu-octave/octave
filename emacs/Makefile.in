@@ -31,11 +31,11 @@ all:
 .PHONY: all
 
 install install-strip:
-	$(INSTALL_SCRIPT) otags $(bindir)/otags
+	$(INSTALL_SCRIPT) otags $(DESTDIR)$(bindir)/otags
 .PHONY: install install-strip
 
 uninstall:
-	rm -f $(bindir)/otags
+	rm -f $(DESTDIR)$(bindir)/otags
 .PHONY: uninstall
 
 tags:

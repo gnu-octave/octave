@@ -238,48 +238,48 @@ install-strip:
 .PHONY: install-strip
 
 install-lib:
-	$(top_srcdir)/mkinstalldirs $(octlibdir)
+	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(octlibdir)
 	if $(STATIC_LIBS); then \
-	  rm -f $(octlibdir)/liboctave.$(LIBEXT); \
+	  rm -f $(DESTDIR)$(octlibdir)/liboctave.$(LIBEXT); \
 	  $(INSTALL_DATA) liboctave.$(LIBEXT) \
-	    $(octlibdir)/liboctave.$(LIBEXT); \
-	  $(RANLIB) $(octlibdir)/liboctave.$(LIBEXT); \
+	    $(DESTDIR)$(octlibdir)/liboctave.$(LIBEXT); \
+	  $(RANLIB) $(DESTDIR)$(octlibdir)/liboctave.$(LIBEXT); \
 	fi
 	if $(SHARED_LIBS); then \
-	  rm -f $(octlibdir)/liboctave.$(SHLLIB_VER); \
+	  rm -f $(DESTDIR)$(octlibdir)/liboctave.$(SHLLIB_VER); \
 	  $(INSTALL_PROGRAM) \
-	    liboctave.$(SHLLIB) $(octlibdir)/liboctave.$(SHLLIB_VER); \
-	  rm -f $(octlibdir)/liboctave.$(SHLLIB); \
-	  $(LN_S) liboctave.$(SHLLIB_VER) $(octlibdir)/liboctave.$(SHLLIB); \
+	    liboctave.$(SHLLIB) $(DESTDIR)$(octlibdir)/liboctave.$(SHLLIB_VER); \
+	  rm -f $(DESTDIR)$(octlibdir)/liboctave.$(SHLLIB); \
+	  $(LN_S) liboctave.$(SHLLIB_VER) $(DESTDIR)$(octlibdir)/liboctave.$(SHLLIB); \
 	  if  test x$(SHLBIN) != x ; then \
-	    rm -f $(bindir)/liboctave.$(SHLBIN); \
+	    rm -f $(DESTDIR)$(bindir)/liboctave.$(SHLBIN); \
 	    $(INSTALL_PROGRAM) \
-	      liboctave.$(SHLBIN) $(bindir)/liboctave.$(SHLBIN); \
+	      liboctave.$(SHLBIN) $(DESTDIR)$(bindir)/liboctave.$(SHLBIN); \
 	  fi; \
 	fi
 .PHONY: install-lib
 
 install-inc:
-	$(top_srcdir)/mkinstalldirs $(octincludedir)/octave
+	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(octincludedir)/octave
 	for f in $(INCLUDES_FOR_INSTALL); do \
-	  rm -f $(octincludedir)/octave/$$f; \
+	  rm -f $(DESTDIR)$(octincludedir)/octave/$$f; \
 	  if [ -f $$f ]; then \
-	    $(INSTALL_DATA) $$f $(octincludedir)/octave/$$f; \
+	    $(INSTALL_DATA) $$f $(DESTDIR)$(octincludedir)/octave/$$f; \
 	  else \
-	    $(INSTALL_DATA) $(srcdir)/$$f $(octincludedir)/octave/$$f; \
+	    $(INSTALL_DATA) $(srcdir)/$$f $(DESTDIR)$(octincludedir)/octave/$$f; \
 	  fi ; \
 	done
 .PHONY: install-inc
 
 uninstall:
-	rm -f $(octlibdir)/liboctave.$(LIBEXT)
-	rm -f $(octlibdir)/liboctave.$(SHLLIB)
-	rm -f $(octlibdir)/liboctave.$(SHLLIB_VER)
+	rm -f $(DESTDIR)$(octlibdir)/liboctave.$(LIBEXT)
+	rm -f $(DESTDIR)$(octlibdir)/liboctave.$(SHLLIB)
+	rm -f $(DESTDIR)$(octlibdir)/liboctave.$(SHLLIB_VER)
 	if test x$(SHLBIN) != x; then \
-	  rm -f $(bindir)/liboctave.$(SHLBIN); \
-	  rm -f $(bindir)/liboctave.$(SHLBIN_VER); \
+	  rm -f $(DESTDIR)$(bindir)/liboctave.$(SHLBIN); \
+	  rm -f $(DESTDIR)$(bindir)/liboctave.$(SHLBIN_VER); \
 	fi
-	for f in $(INCLUDES); do rm -f $(octincludedir)/octave/$$f; done
+	for f in $(INCLUDES); do rm -f $(DESTDIR)$(octincludedir)/octave/$$f; done
 .PHONY: uninstall
 
 tags: $(SOURCES)

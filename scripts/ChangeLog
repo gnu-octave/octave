@@ -1,3 +1,7 @@
+2003-05-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in, image/Makefile.in, startup/Makefile.in: Handle DESTDIR.
+
 2003-05-05  Andy Adler <adler@site.uottawa.ca>
 
 	* plot/hist.m: Improve performance by using different algorithms

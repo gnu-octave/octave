@@ -118,23 +118,23 @@ install install-strip uninstall clean mostlyclean distclean maintainer-clean::
 	@$(subdir-for-command)
 
 install::
-	$(top_srcdir)/mkinstalldirs $(octlibdir)
+	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(octlibdir)
 	if $(STATIC_LIBS); then \
-	  rm -f $(octlibdir)/libcruft.$(LIBEXT) ; \
+	  rm -f $(DESTDIR)$(octlibdir)/libcruft.$(LIBEXT) ; \
 	  $(INSTALL_DATA) libcruft.$(LIBEXT) \
-	    $(octlibdir)/libcruft.$(LIBEXT) ; \
-	  $(RANLIB) $(octlibdir)/libcruft.$(LIBEXT) ; \
+	    $(DESTDIR)$(octlibdir)/libcruft.$(LIBEXT) ; \
+	  $(RANLIB) $(DESTDIR)$(octlibdir)/libcruft.$(LIBEXT) ; \
 	fi
 	if $(SHARED_LIBS); then \
-	  rm -f $(octlibdir)/libcruft.$(SHLLIB_VER); \
+	  rm -f $(DESTDIR)$(octlibdir)/libcruft.$(SHLLIB_VER); \
 	  $(INSTALL_PROGRAM) \
-	    libcruft.$(SHLLIB) $(octlibdir)/libcruft.$(SHLLIB_VER); \
-	  rm -f $(octlibdir)/libcruft.$(SHLLIB); \
-	  $(LN_S) libcruft.$(SHLLIB_VER) $(octlibdir)/libcruft.$(SHLLIB); \
+	    libcruft.$(SHLLIB) $(DESTDIR)$(octlibdir)/libcruft.$(SHLLIB_VER); \
+	  rm -f $(DESTDIR)$(octlibdir)/libcruft.$(SHLLIB); \
+	  $(LN_S) libcruft.$(SHLLIB_VER) $(DESTDIR)$(octlibdir)/libcruft.$(SHLLIB); \
 	  if  test x$(SHLBIN) != x ; then \
-	    rm -f $(bindir)/libcruft.$(SHLBIN); \
+	    rm -f $(DESTDIR)$(bindir)/libcruft.$(SHLBIN); \
 	    $(INSTALL_PROGRAM) \
-	      libcruft.$(SHLBIN) $(bindir)/libcruft.$(SHLBIN); \
+	      libcruft.$(SHLBIN) $(DESTDIR)$(bindir)/libcruft.$(SHLBIN); \
 	  fi; \
 	fi
 
@@ -142,12 +142,12 @@ install-strip::
 	$(MAKE) INSTALL_PROGRAM="$(INSTALL_PROGRAM) -s" install
 
 uninstall::
-	rm -f $(octlibdir)/libcruft.$(LIBEXT)
-	rm -f $(octlibdir)/libcruft.$(SHLLIB)
-	rm -f $(octlibdir)/libcruft.$(SHLLIB_VER)
+	rm -f $(DESTDIR)$(octlibdir)/libcruft.$(LIBEXT)
+	rm -f $(DESTDIR)$(octlibdir)/libcruft.$(SHLLIB)
+	rm -f $(DESTDIR)$(octlibdir)/libcruft.$(SHLLIB_VER)
 	if test x$(SHLBIN) != x; then \
-	  rm -f $(bindir)/libcruft.$(SHLBIN); \
-	  rm -f $(bindir)/libcruft.$(SHLBIN_VER); \
+	  rm -f $(DESTDIR)$(bindir)/libcruft.$(SHLBIN); \
+	  rm -f $(DESTDIR)$(bindir)/libcruft.$(SHLBIN_VER); \
 	fi
 
 tags TAGS:: $(SOURCES)

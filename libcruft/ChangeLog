@@ -1,3 +1,7 @@
+2003-05-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in, misc/Makefile.in: Handle DESTDIR.
+
 2003-02-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* blas/sgemm.f, blas/strsm.f, blas/ssyrk.f, blas/sscal.f,

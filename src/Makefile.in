@@ -339,72 +339,72 @@ install-strip:
 .PHONY: install-strip
 
 install-bin:
-	$(top_srcdir)/mkinstalldirs $(bindir)
-	rm -f $(bindir)/octave$(EXEEXT)
-	$(INSTALL_PROGRAM) octave$(EXEEXT) $(bindir)/octave-$(version)$(EXEEXT)
-	cd $(bindir); $(LN_S) octave-$(version)$(EXEEXT) octave$(EXEEXT)
+	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(bindir)
+	rm -f $(DESTDIR)$(bindir)/octave$(EXEEXT)
+	$(INSTALL_PROGRAM) octave$(EXEEXT) $(DESTDIR)$(bindir)/octave-$(version)$(EXEEXT)
+	$(LN_S) octave-$(version)$(EXEEXT) $(DESTDIR)$(bindir)/octave$(EXEEXT)
 .PHONY: install-bin
 
 install-oct:
 	if [ -n "$(OCT_FILES)" ]; then \
-	  $(top_srcdir)/mkinstalldirs $(octfiledir); \
+	  $(top_srcdir)/mkinstalldirs $(DESTDIR)$(octfiledir); \
 	  xfiles="$(OCT_FILES)"; \
 	  for f in $$xfiles; do \
-	    $(INSTALL_PROGRAM) $$f $(octfiledir)/$$f; \
+	    $(INSTALL_PROGRAM) $$f $(DESTDIR)$(octfiledir)/$$f; \
 	  done; \
-	  $(srcdir)/mk-oct-links $(octfiledir) $(DLD_DEF_FILES); \
+	  $(srcdir)/mk-oct-links $(DESTDIR)$(octfiledir) $(DLD_DEF_FILES); \
 	fi
 .PHONY: install-oct
 
 install-lib:
-	$(top_srcdir)/mkinstalldirs $(octlibdir)
+	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(octlibdir)
 	if $(STATIC_LIBS); then \
-	  rm -f $(octlibdir)/liboctinterp.$(LIBEXT); \
+	  rm -f $(DESTDIR)$(octlibdir)/liboctinterp.$(LIBEXT); \
 	  $(INSTALL_DATA) liboctinterp.$(LIBEXT) \
-	    $(octlibdir)/liboctinterp.$(LIBEXT); \
-	  $(RANLIB) $(octlibdir)/liboctinterp.$(LIBEXT); \
+	    $(DESTDIR)$(octlibdir)/liboctinterp.$(LIBEXT); \
+	  $(RANLIB) $(DESTDIR)$(octlibdir)/liboctinterp.$(LIBEXT); \
 	fi
 	if $(SHARED_LIBS); then \
-	  rm -f $(octlibdir)/liboctinterp.$(SHLEXT_VER); \
+	  rm -f $(DESTDIR)$(octlibdir)/liboctinterp.$(SHLEXT_VER); \
 	  $(INSTALL_PROGRAM) liboctinterp.$(SHLLIB) \
-	    $(octlibdir)/liboctinterp.$(SHLLIB_VER); \
-	  rm -f $(octlibdir)/liboctinterp.$(SHLLIB); \
-	  $(LN_S) liboctinterp.$(SHLLIB_VER) $(octlibdir)/liboctinterp.$(SHLLIB); \
+	    $(DESTDIR)$(octlibdir)/liboctinterp.$(SHLLIB_VER); \
+	  rm -f $(DESTDIR)$(octlibdir)/liboctinterp.$(SHLLIB); \
+	  $(LN_S) liboctinterp.$(SHLLIB_VER) $(DESTDIR)$(octlibdir)/liboctinterp.$(SHLLIB); \
 	  if  test x$(SHLBIN) != x ; then \
-	    rm -f $(bindir)/liboctinterp.$(SHLBIN); \
+	    rm -f $(DESTDIR)$(bindir)/liboctinterp.$(SHLBIN); \
 	    $(INSTALL_PROGRAM) \
-	      liboctinterp.$(SHLBIN) $(bindir)/liboctinterp.$(SHLBIN); \
+	      liboctinterp.$(SHLBIN) $(DESTDIR)$(bindir)/liboctinterp.$(SHLBIN); \
 	  fi; \
 	fi
 .PHONY: install-lib
 
 install-inc:
-	$(top_srcdir)/mkinstalldirs $(octincludedir)/octave
+	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(octincludedir)/octave
 	for f in $(INCLUDES); do \
-	  rm -f $(octincludedir)/octave/$$f; \
-	  $(INSTALL_DATA) $(srcdir)/$$f $(octincludedir)/octave/$$f; \
+	  rm -f $(DESTDIR)$(octincludedir)/octave/$$f; \
+	  $(INSTALL_DATA) $(srcdir)/$$f $(DESTDIR)$(octincludedir)/octave/$$f; \
 	done
 	for f in defaults.h oct-conf.h oct-gperf.h; do \
-	  rm -f $(octincludedir)/octave/$$f; \
+	  rm -f $(DESTDIR)$(octincludedir)/octave/$$f; \
 	  if [ -f $$f ]; then \
-	    $(INSTALL_DATA) $$f $(octincludedir)/octave/$$f ; \
+	    $(INSTALL_DATA) $$f $(DESTDIR)$(octincludedir)/octave/$$f ; \
 	  else \
-	    $(INSTALL_DATA) $(srcdir)/$$f $(octincludedir)/octave/$$f ; \
+	    $(INSTALL_DATA) $(srcdir)/$$f $(DESTDIR)$(octincludedir)/octave/$$f ; \
 	  fi ; \
 	done
 .PHONY: install-inc
 
 uninstall:
-	rm -f $(bindir)/octave$(EXEEXT)
-	rm -f $(octlibdir)/liboctinterp.$(LIBEXT)
-	rm -f $(octlibdir)/liboctinterp.$(SHLLIB)
-	rm -f $(octlibdir)/liboctinterp.$(SHLLIB_VER)
+	rm -f $(DESTDIR)$(bindir)/octave$(EXEEXT)
+	rm -f $(DESTDIR)$(octlibdir)/liboctinterp.$(LIBEXT)
+	rm -f $(DESTDIR)$(octlibdir)/liboctinterp.$(SHLLIB)
+	rm -f $(DESTDIR)$(octlibdir)/liboctinterp.$(SHLLIB_VER)
 	if test x$(SHLBIN) != x ; then \
-	  rm -f $(bindir)/liboctinterp.$(SHLBIN); \
-	  rm -f $(bindir)/liboctinterp.$(SHLBIN_VER); \
+	  rm -f $(DESTDIR)$(bindir)/liboctinterp.$(SHLBIN); \
+	  rm -f $(DESTDIR)$(bindir)/liboctinterp.$(SHLBIN_VER); \
 	fi
 	for f in $(INCLUDES) defaults.h oct-conf.h; do \
-	  rm -f $(octincludedir)/octave/$$f; \
+	  rm -f $(DESTDIR)$(octincludedir)/octave/$$f; \
 	done
 .PHONY: uninstall
 

@@ -1,3 +1,8 @@
+2003-05-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makeconf.in, octMakefile.in, emacs/Makefile.in,
+	examples/Makefile.in: Handle DESTDIR.
+
 2003-05-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makeconf.in (sbindir): New variable substitution.

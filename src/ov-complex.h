@@ -39,6 +39,7 @@ class ostream;
 
 #include "error.h"
 #include "ov-base.h"
+#include "ov-base-scalar.h"
 #include "ov-typeinfo.h"
 
 class Octave_map;
@@ -49,18 +50,18 @@ class tree_walker;
 // Complex scalar values.
 
 class
-octave_complex : public octave_base_value
+octave_complex : public octave_base_scalar<Complex>
 {
 public:
 
   octave_complex (void)
-    : octave_base_value () { }
+    : octave_base_scalar<Complex> () { }
 
   octave_complex (const Complex& c)
-    : octave_base_value (), scalar (c) { }
+    : octave_base_scalar<Complex> (c) { }
 
   octave_complex (const octave_complex& c)
-    : octave_base_value (), scalar (c.scalar) { }
+    : octave_base_scalar<Complex> (c) { }
 
   ~octave_complex (void) { }
 
@@ -70,37 +71,13 @@ public:
 
   octave_value do_index_op (const octave_value_list& idx);
 
-  int rows (void) const { return 1; }
-  int columns (void) const { return 1; }
-
-  int length (void) const
-  {
-    int r = rows ();
-    int c = columns ();
-
-    return r > c ? r : c;
-  }
-
-  bool is_defined (void) const { return true; }
-
-  bool is_constant (void) const { return true; }
-
   bool is_complex_scalar (void) const { return true; }
 
-  octave_value all (void) const { return (scalar != 0.0); }
-  octave_value any (void) const { return (scalar != 0.0); }
-
   bool is_complex_type (void) const { return true; }
-
-  bool is_scalar_type (void) const { return true; }
-
-  bool is_numeric_type (void) const { return true; }
 
   // XXX FIXME XXX ???
   bool valid_as_scalar_index (void) const { return false; }
   bool valid_as_zero_index (void) const { return false; }
-
-  bool is_true (void) const { return (scalar != 0.0); }
 
   double double_value (bool = false) const;
 
@@ -117,15 +94,7 @@ public:
 
   void decrement (void) { scalar -= 1.0; }
 
-  void print (ostream& os, bool pr_as_read_syntax = false) const;
-
-  void print_raw (ostream& os, bool pr_as_read_syntax = false) const;
-
-  bool print_name_tag (ostream& os, const string& name) const;
-
 private:
-
-  Complex scalar;
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 

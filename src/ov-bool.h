@@ -39,6 +39,7 @@ class ostream;
 #include "str-vec.h"
 
 #include "ov-base.h"
+#include "ov-base-scalar.h"
 #include "ov-typeinfo.h"
 
 class Octave_map;
@@ -49,18 +50,18 @@ class tree_walker;
 // Real scalar values.
 
 class
-octave_bool : public octave_base_value
+octave_bool : public octave_base_scalar<bool>
 {
 public:
 
   octave_bool (void)
-    : octave_base_value (), scalar (false) { }
+    : octave_base_scalar<bool> (false) { }
 
   octave_bool (bool b)
-    : octave_base_value (), scalar (b) { }
+    : octave_base_scalar<bool> (b) { }
 
   octave_bool (const octave_bool& s)
-    : octave_base_value (), scalar (s.scalar) { }
+    : octave_base_scalar<bool> (s) { }
 
   ~octave_bool (void) { }
 
@@ -72,27 +73,11 @@ public:
 
   idx_vector index_vector (void) const { return idx_vector (scalar); }
 
-  int rows (void) const { return 1; }
-  int columns (void) const { return 1; }
-
-  int length (void) const { return 1; }
-
-  bool is_defined (void) const { return true; }
-
-  bool is_constant (void) const { return true; }
-
   bool is_real_scalar (void) const { return true; }
-
-  octave_value all (void) const { return scalar; }
-  octave_value any (void) const { return scalar; }
 
   bool is_bool_type (void) const { return true; }
 
   bool is_real_type (void) const { return true; }
-
-  bool is_scalar_type (void) const { return true; }
-
-  bool is_numeric_type (void) const { return true; }
 
   bool valid_as_scalar_index (void) const { return scalar; }
 
@@ -119,16 +104,7 @@ public:
 
   octave_value convert_to_str (void) const;
 
-  void print (ostream& os, bool pr_as_read_syntax = false) const;
-
-  void print_raw (ostream& os, bool pr_as_read_syntax = false) const;
-
-  bool print_name_tag (ostream& os, const string& name) const;
-
 private:
-
-  // The value of this scalar.
-  bool scalar;
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 

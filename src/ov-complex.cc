@@ -35,10 +35,15 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-obj.h"
 #include "ops.h"
 #include "ov-complex.h"
+#include "ov-base.h"
+#include "ov-base-scalar.h"
+#include "ov-base-scalar.cc"
 #include "ov-cx-mat.h"
 #include "ov-scalar.h"
 #include "gripes.h"
 #include "pr-output.h"
+
+template class octave_base_scalar<Complex>;
 
 DEFINE_OCTAVE_ALLOCATOR (octave_complex);
 
@@ -147,28 +152,6 @@ ComplexMatrix
 octave_complex::complex_matrix_value (bool) const
 {
   return ComplexMatrix (1, 1, scalar);
-}
-
-void
-octave_complex::print (ostream& os, bool pr_as_read_syntax) const
-{
-  print_raw (os, pr_as_read_syntax);
-  newline (os);
-}
-
-void
-octave_complex::print_raw (ostream& os, bool pr_as_read_syntax) const
-{
-  indent (os);
-  octave_print_internal (os, scalar, pr_as_read_syntax);
-}
-
-bool
-octave_complex::print_name_tag (ostream& os, const string& name) const
-{
-  indent (os);
-  os << name << " = ";
-  return false;    
 }
 
 /*

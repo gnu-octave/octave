@@ -34,11 +34,16 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gripes.h"
 #include "oct-obj.h"
 #include "ov-scalar.h"
+#include "ov-base.h"
+#include "ov-base-scalar.h"
+#include "ov-base-scalar.cc"
 #include "ov-re-mat.h"
 #include "ov-typeinfo.h"
 #include "pr-output.h"
 #include "xdiv.h"
 #include "xpow.h"
+
+template class octave_base_scalar<double>;
 
 DEFINE_OCTAVE_ALLOCATOR (octave_scalar);
 
@@ -102,28 +107,6 @@ octave_scalar::convert_to_str (void) const
     }
 
   return retval;
-}
-
-void
-octave_scalar::print (ostream& os, bool pr_as_read_syntax) const
-{
-  print_raw (os, pr_as_read_syntax);
-  newline (os);
-}
-
-void
-octave_scalar::print_raw (ostream& os, bool pr_as_read_syntax) const
-{
-  indent (os);
-  octave_print_internal (os, scalar, pr_as_read_syntax);
-}
-
-bool
-octave_scalar::print_name_tag (ostream& os, const string& name) const
-{
-  indent (os);
-  os << name << " = ";
-  return false;    
 }
 
 /*

@@ -40,6 +40,7 @@ class ostream;
 #include "str-vec.h"
 
 #include "ov-base.h"
+#include "ov-base-scalar.h"
 #include "ov-typeinfo.h"
 
 class Octave_map;
@@ -50,18 +51,18 @@ class tree_walker;
 // Real scalar values.
 
 class
-octave_scalar : public octave_base_value
+octave_scalar : public octave_base_scalar<double>
 {
 public:
 
   octave_scalar (void)
-    : octave_base_value (), scalar (0.0) { }
+    : octave_base_scalar<double> (0.0) { }
 
   octave_scalar (double d)
-    : octave_base_value (), scalar (d) { }
+    : octave_base_scalar<double> (d) { }
 
   octave_scalar (const octave_scalar& s)
-    : octave_base_value (), scalar (s.scalar) { }
+    : octave_base_scalar<double> (s) { }
 
   ~octave_scalar (void) { }
 
@@ -71,31 +72,15 @@ public:
 
   idx_vector index_vector (void) const { return idx_vector (scalar); }
 
-  int rows (void) const { return 1; }
-  int columns (void) const { return 1; }
-
-  int length (void) const { return 1; }
-
-  bool is_constant (void) const { return true; }
-
-  bool is_defined (void) const { return true; }
-
   bool is_real_scalar (void) const { return true; }
 
-  octave_value all (void) const { return (scalar != 0.0); }
-  octave_value any (void) const { return (scalar != 0.0); }
-
   bool is_real_type (void) const { return true; }
-  bool is_scalar_type (void) const { return true; }
-  bool is_numeric_type (void) const { return true; }
 
   bool valid_as_scalar_index (void) const
     { return (! xisnan (scalar) && NINT (scalar) == 1); }
 
   bool valid_as_zero_index (void) const
     { return (! xisnan (scalar) && NINT (scalar) == 0); }
-
-  bool is_true (void) const { return (scalar != 0.0); }
 
   double double_value (bool = false) const { return scalar; }
 
@@ -109,22 +94,13 @@ public:
   ComplexMatrix complex_matrix_value (bool = false) const
     { return  ComplexMatrix (1, 1, Complex (scalar)); }
 
+  octave_value convert_to_str (void) const;
+
   void increment (void) { ++scalar; }
 
   void decrement (void) { --scalar; }
 
-  octave_value convert_to_str (void) const;
-
-  void print (ostream& os, bool pr_as_read_syntax = false) const;
-
-  void print_raw (ostream& os, bool pr_as_read_syntax = false) const;
-
-  bool print_name_tag (ostream& os, const string& name) const;
-
 private:
-
-  // The value of this scalar.
-  double scalar;
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 

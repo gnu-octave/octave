@@ -24,8 +24,9 @@ MATRIX_INC = CColVector.h CDiagMatrix.h CMatrix.h CRowVector.h \
 INCLUDES = Array.h Bounds.h CollocWt.h DAE.h DAEFunc.h FEGrid.h \
 	FSQP.h LinConst.h LP.h LPsolve.h MArray.h Matrix.h NLConst.h \
 	NLEqn.h NLFunc.h NLP.h NPSOL.h ODE.h ODEFunc.h Objective.h \
-	QLD.h QP.h QPSOL.h Quad.h Range.h mx-kludge.h lo-error.h \
-	f77-uscore.h sun-utils.h $(MATRIX_INC) 
+	QLD.h QP.h QPSOL.h Quad.h Range.h mx-base.h mx-kludge.h \
+	lo-error.h f77-uscore.h sun-utils.h \
+	$(MATRIX_INC)
 
 TEMPLATE_SRC = Array.cc
 

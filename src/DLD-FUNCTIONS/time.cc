@@ -398,7 +398,7 @@ Year (1970-).\n\
 
 DEFUN_DLD (strptime, args, ,
  "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {[@var{tm_struct}, @var{nchars}] =} stpftime (@var{str}, @var{fmt})\n\
+@deftypefn {Loadable Function} {[@var{tm_struct}, @var{nchars}] =} strptime (@var{str}, @var{fmt})\n\
 Convert the string @var{str} to a time structure under the control of\n\
 the format @var{fmt}.\n\
 @end deftypefn")

@@ -376,7 +376,8 @@ valid_mode (const char *mode)
 }
 
 static Octave_object
-fgets_internal (const Octave_object& args, int nargin, int nargout)
+fgets_internal (const Octave_object& args, int nargin, int nargout,
+		int strip_final_newline = 0)
 {
   Octave_object retval;
 
@@ -385,12 +386,7 @@ fgets_internal (const Octave_object& args, int nargin, int nargout)
   if (! p)
     return retval;
 
-  file_info file = file_list (p);
-
-  FILE *fileptr = file.fptr ();
-
-  char *string = 0;
-  char *success = 0;
+  int length = 0;
 
   if (nargin == 2)
     {
@@ -405,7 +401,7 @@ fgets_internal (const Octave_object& args, int nargin, int nargout)
 	  return retval;
 	}
 
-      int length = NINT (dlen);
+      length = NINT (dlen);
 
       if ((double) length != dlen)
 	{
@@ -413,32 +409,50 @@ fgets_internal (const Octave_object& args, int nargin, int nargout)
 	  return retval;
 	}
 
-      char *string = new char[length+1];
-      char *success = fgets (string, length+1, fileptr);
-    }
-  else
-    {
-      ostrstream buf;
-      int c;
-      while ((c = fgetc (fileptr)))
+      if (length < 0)
 	{
-	  buf << (char) c;
+	  error ("fgets: length must be a nonnegative integer");
+	  return retval;
+	}
+    }
+
+  file_info file = file_list (p);
+  FILE *fileptr = file.fptr ();
+
+  ostrstream buf;
+  int c;
+  int count = 0;
+  int newline_stripped = 0;
+
+  if (nargin == 1 || length > 0)
+    {
+      while ((c = fgetc (fileptr)) != EOF)
+	{
+	  count++;
 	  if (c == '\n')
 	    {
-	      buf << ends;
-	      string = buf.str ();
+	      if (! strip_final_newline)
+		buf << (char) c;
+	      else
+		newline_stripped = 1;
+
 	      break;
 	    }
-	}
+	  else
+	    buf << (char) c;
 
-      if (string && strlen (string) > 0)
-	success = string;
+	  if (nargin == 2 && count == length)
+	    break;
+	}
     }
-  
-  if (success)
+
+  buf << ends;
+  char *string = buf.str ();
+
+  if (count)
     {
       if (nargout == 2)
-	retval(1) = (double) strlen (string);
+	retval(1) = (double) (count - newline_stripped);
 
       retval(0) = string;
     }
@@ -450,8 +464,25 @@ fgets_internal (const Octave_object& args, int nargin, int nargout)
   return retval;
 }
 
+DEFUN ("fgetl", Ffgetl, Sfgetl, 2, 2,
+  "[STRING, LENGTH] = fgetl (FILENAME or FILENUM [, LENGTH])\n\
+\n\
+read a string from a file")
+{
+  Octave_object retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 1 || nargin == 2)
+    retval = fgets_internal (args, nargin, nargout, 1);
+  else
+    print_usage ("fgetl");
+
+  return retval;
+}
+
 DEFUN ("fgets", Ffgets, Sfgets, 2, 2,
-  "[STRING, LENGTH] = fgets (FILENAME or FILENUM, LENGTH)\n\
+  "[STRING, LENGTH] = fgets (FILENAME or FILENUM [, LENGTH])\n\
 \n\
 read a string from a file")
 {

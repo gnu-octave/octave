@@ -1169,7 +1169,7 @@ Without any arguments, toggle the current echo state.")
 DEFUN (completion_matches, args, nargout,
   "completion_matches (HINT): generate possible completions given HINT")
 {
-  string_vector retval;
+  octave_value retval;
 
   int nargin = args.length ();
 
@@ -1212,7 +1212,10 @@ DEFUN (completion_matches, args, nargout,
 	    }
 
 	  if (nargout > 0)
-	    retval = list;
+	    {
+	      if (! list.empty ())
+		retval = list;
+	    }
 	  else
 	    {
 	      // We don't use string_vector::list_in_columns here

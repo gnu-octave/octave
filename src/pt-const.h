@@ -1,4 +1,4 @@
-// tree-const.h                                        -*- C++ -*-
+// pt-const.h                                        -*- C++ -*-
 /*
 
 Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
@@ -32,19 +32,15 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <string>
 
-#include <iostream.h>
+class ostream;
 
 #include "Range.h"
 #include "mx-base.h"
 
-#include "oct-obj.h"
-#include "tree-base.h"
-#include "tree-expr.h"
+#include "pt-fvc.h"
 
-class idx_vector;
 class Octave_map;
-
-struct Mapper_fcn;
+class Octave_object;
 
 // Constants.
 
@@ -624,20 +620,7 @@ public:
       return *this;
     }
 
-  Octave_object eval (int print, int /* nargout */, const Octave_object& args)
-    {
-      Octave_object retval;
-
-      if (args.length () > 0)
-	retval(0) = rep->do_index (args);
-      else
-	retval(0) = *this;
-
-      if (retval(0).is_defined ())
-	retval(0).eval (print);
-
-      return retval;
-    }
+  Octave_object eval (int, int, const Octave_object&);
 
   // Store the original text corresponding to this constant for later
   // pretty printing.

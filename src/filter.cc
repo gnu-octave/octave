@@ -33,13 +33,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
-#include "Array.h"
-#include "CColVector.h"
-#include "dColVector.h"
-
 #include "defun-dld.h"
 #include "error.h"
-#include "tree-const.h"
+#include "oct-obj.h"
 #include "help.h"
 
 extern Array<double>

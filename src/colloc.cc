@@ -32,7 +32,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "defun-dld.h"
 #include "error.h"
 #include "help.h"
-#include "tree-const.h"
+#include "mappers.h"
+#include "oct-obj.h"
 #include "utils.h"
 
 DEFUN_DLD_BUILTIN ("colloc", Fcolloc, Scolloc, FScolloc, 10,

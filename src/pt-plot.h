@@ -1,4 +1,4 @@
-// tree-plot.h                                         -*- C++ -*-
+// pt-plot.h                                         -*- C++ -*-
 /*
 
 Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
@@ -28,7 +28,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #pragma interface
 #endif
 
-#include <iostream.h>
+class ostream;
+class ostrstream;
 
 class tree_command;
 class tree_plot_command;
@@ -44,27 +45,15 @@ class subplot_list;
 #include "dColVector.h"
 
 #include "idx-vector.h"
-#include "tree-cmd.h"
-#include "tree-expr.h"
+#include "pt-cmd.h"
+#include "pt-exp.h"
 
 class
 tree_plot_command : public tree_command
 {
 public:
-  tree_plot_command (void) : tree_command ()
-    {
-      range = 0;
-      plot_list = 0;
-      ndim = 0;
-    }
-
-  tree_plot_command (subplot_list *plt, plot_limits *rng, int nd)
-    : tree_command ()
-      {
-	range = rng;
-	plot_list = plt;
-	ndim = nd;
-      }
+  tree_plot_command (subplot_list *plt = 0, plot_limits *rng = 0, int nd = 0)
+    : tree_command (), ndim (nd), range (rng), plot_list (plt) { }
 
   ~tree_plot_command (void);
 
@@ -82,33 +71,9 @@ class
 plot_limits : public tree_print_code
 {
 public:
-  plot_limits (void)
-    {
-      x_range = 0;
-      y_range = 0;
-      z_range = 0;
-    }
-
-  plot_limits (plot_range *xlim)
-    {
-      x_range = xlim;
-      y_range = 0;
-      z_range = 0;
-    }
-
-  plot_limits (plot_range *xlim, plot_range *ylim)
-    {
-      x_range = xlim;
-      y_range = ylim;
-      z_range = 0;
-    }
-
-  plot_limits (plot_range *xlim, plot_range *ylim, plot_range *zlim)
-    {
-      x_range = xlim;
-      y_range = ylim;
-      z_range = zlim;
-    }
+  plot_limits (plot_range *xlim = 0, plot_range *ylim = 0,
+	       plot_range *zlim = 0)
+    : tree_print_code (), x_range (xlim), y_range (ylim), z_range (zlim) { }
 
   ~plot_limits (void);
 
@@ -126,17 +91,8 @@ class
 plot_range : public tree_print_code
 {
 public:
-  plot_range (void)
-    {
-      lower = 0;
-      upper = 0;
-    }
-
-  plot_range (tree_expression *l, tree_expression *u)
-    {
-      lower = l;
-      upper = u;
-    }
+  plot_range (tree_expression *l = 0, tree_expression *u = 0)
+    : tree_print_code (), lower (l), upper (u) { }
 
   ~plot_range (void);
 
@@ -205,11 +161,7 @@ subplot_style : public tree_print_code
 {
 public:
   subplot_style (void)
-    {
-      style = 0;
-      linetype = 0;
-      pointtype = 0;
-    }
+    : tree_print_code (), style (0), linetype (0), pointtype (0) { }
 
   subplot_style (char *s);
   subplot_style (char *s, tree_expression *lt);
@@ -233,29 +185,13 @@ class
 subplot : public tree_print_code
 {
 public:
-  subplot (void)
-    {
-      plot_data = 0;
-      using_clause = 0;
-      title_clause = 0;
-      style_clause = 0;
-    }
-
-  subplot (tree_expression *data)
-    {
-      plot_data = data;
-      using_clause = 0;
-      title_clause = 0;
-      style_clause = 0;
-    }
+  subplot (tree_expression *data = 0)
+    : tree_print_code (), plot_data (data), using_clause (0),
+      title_clause (0), style_clause (0) { }
 
   subplot (subplot_using *u, tree_expression *t, subplot_style *s)
-    {
-      plot_data = 0;
-      using_clause = u;
-      title_clause = t;
-      style_clause = s;
-    }
+    : tree_print_code (), plot_data (0), using_clause (u),
+      title_clause (t), style_clause (s) { }
 
   ~subplot (void);
 
@@ -283,7 +219,7 @@ private:
 class
 subplot_list : public SLList<subplot *>, public tree_print_code
 {
- public:
+public:
   subplot_list (void) : SLList<subplot *> (), tree_print_code () { }
 
   subplot_list (subplot *t) : SLList<subplot *> (), tree_print_code ()

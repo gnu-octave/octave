@@ -1,4 +1,4 @@
-// tree-misc.h                                      -*- C++ -*-
+// pt-misc.h                                      -*- C++ -*-
 /*
 
 Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
@@ -29,11 +29,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 class ostream;
+
 class Octave_object;
 class tree_constant;
 class tree_command;
 class tree_expression;
 class tree_simple_assignment_expression;
+class tree_index_expression;
 class tree_identifier;
 class symbol_record;
 class symbol_table;
@@ -49,10 +51,7 @@ class tree_global_init_list;
 
 #include <SLList.h>
 
-#include "tree-base.h"
-#include "tree-cmd.h"
-#include "tree-const.h"
-#include "tree-expr.h"
+#include "pt-base.h"
 
 // A list of expressions and commands to be executed.
 
@@ -63,25 +62,13 @@ friend class tree_statement_list;
 
 public:
   tree_statement (void)
-    {
-      command = 0;
-      expression = 0;
-      print_flag = 1;
-    }
+    : tree_print_code (), command (0), expression (0), print_flag (1) { }
 
   tree_statement (tree_command *c)
-    {
-      command = c;
-      expression = 0;
-      print_flag = 1;
-    }
+    : tree_print_code (), command (c), expression (0), print_flag (1) { }
 
   tree_statement (tree_expression *e)
-    {
-      command = 0;
-      expression = e;
-      print_flag = 1;
-    }
+    : tree_print_code (), command (0), expression (e), print_flag (1) { }
 
   ~tree_statement (void);
 
@@ -94,19 +81,8 @@ public:
   int is_expression (void)
     { return expression != 0; }
 
-  int line (void)
-    {
-      return command
-	? command->line ()
-	  : (expression ? expression->line () : -1);
-    }
-
-  int column (void)
-    {
-      return command
-	? command->column ()
-	  : (expression ? expression->column () : -1);
-    }
+  int line (void);
+  int column (void);
 
   void maybe_echo_code (int);
 
@@ -127,11 +103,8 @@ public:
       { function_body = 0; }
 
   tree_statement_list (tree_statement *s)
-    : SLList<tree_statement *> (), tree_print_code ()
-      {
-	function_body = 0;
-	append (s);
-      }
+    : SLList<tree_statement *> (), tree_print_code (), function_body (0)
+      { append (s); }
 
   ~tree_statement_list (void)
     {
@@ -191,24 +164,15 @@ tree_parameter_list : public SLList<tree_identifier *>, public tree_print_code
 {
 public:
   tree_parameter_list (void)
-    : SLList<tree_identifier *> (), tree_print_code ()
-      { marked_for_varargs = 0; }
+    : SLList<tree_identifier *> (), tree_print_code (),
+      marked_for_varargs (0) { }
 
   tree_parameter_list (tree_identifier *t)
-    : SLList<tree_identifier *> (), tree_print_code ()
-      {
-	marked_for_varargs = 0;
-	append (t);
-      }
+    : SLList<tree_identifier *> (), tree_print_code (),
+      marked_for_varargs (0)
+      { append (t); }
 
-  ~tree_parameter_list (void)
-    {
-      while (! empty ())
-	{
-	  tree_identifier *t = remove_front ();
-	  delete t;
-	}
-    }
+  ~tree_parameter_list (void);
 
 //  char *name (void) const;
 
@@ -255,14 +219,7 @@ public:
     : SLList<tree_index_expression *> (), tree_print_code ()
       { append (t); }
 
-  ~tree_return_list (void)
-    {
-      while (! empty ())
-	{
-	  tree_index_expression *t = remove_front ();
-	  delete t;
-	}
-    }
+  ~tree_return_list (void);
 
   void print_code (ostream& os);
 };
@@ -282,29 +239,15 @@ class
 tree_global : public tree_print_code
 {
 public:
-  tree_global (void)
-    {
-      ident = 0;
-      assign_expr = 0;
-    }
+  tree_global (void) : tree_print_code (), ident (0), assign_expr (0) { }
 
   tree_global (tree_identifier *id)
-    {
-      ident = id;
-      assign_expr = 0;
-    }
+    : tree_print_code (), ident (id), assign_expr (0) { }
 
   tree_global (tree_simple_assignment_expression *ass)
-    {
-      ident = 0;
-      assign_expr = ass;
-    }
+    : tree_print_code (), ident (0), assign_expr (ass) { }
 
-  ~tree_global (void)
-    {
-      delete ident;
-      delete assign_expr;
-    }
+  ~tree_global (void);
 
   void eval (void);
 
@@ -344,30 +287,15 @@ class
 tree_if_clause : public tree_print_code
 {
 public:
-  tree_if_clause (void) : tree_print_code ()
-    {
-      expr = 0;
-      list = 0;
-    }
+  tree_if_clause (void) : tree_print_code (), expr (0), list (0) { }
 
-  tree_if_clause (tree_statement_list *l) : tree_print_code ()
-      {
-	expr = 0;
-	list = l;
-      }
+  tree_if_clause (tree_statement_list *l)
+    : tree_print_code (), expr (0), list (l) { }
 
   tree_if_clause (tree_expression *e, tree_statement_list *l)
-    : tree_print_code ()
-      {
-	expr = e;
-	list = l;
-      }
+    : tree_print_code (), expr (e), list (l) { }
 
-  ~tree_if_clause (void)
-    {
-      delete expr;
-      delete list;
-    }
+  ~tree_if_clause (void);
 
   int is_else_clause (void)
     {

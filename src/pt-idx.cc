@@ -258,7 +258,8 @@ tree_index_expression::rvalue (int nargout)
   if (error_state)
     return retval;
 
-  octave_value tmp = expr->rvalue ();
+  octave_value first_expr_val = expr->rvalue ();
+  octave_value tmp = first_expr_val;
 
   if (! error_state)
     {
@@ -272,6 +273,32 @@ tree_index_expression::rvalue (int nargout)
 
       for (int i = 0; i < n; i++)
 	{
+	  if (i > 0)
+	    {
+	      tree_argument_list *al = *p_args;
+
+	      if (al && al->has_magic_end ())
+		{
+		  // We have an expression like
+		  //
+		  //   x{end}.a(end)
+		  //
+		  // and we are looking at the argument list that
+		  // contains the second (or third, etc.) "end" token,
+		  // so we must evaluate everything up to the point of
+		  // that argument list so we pass the appropiate
+		  // value to the built-in __end__ function.
+
+		  octave_value_list tmp_list
+		    = first_expr_val.subsref (type, idx, nargout);
+
+		  tmp = tmp_list(0);
+
+		  if (error_state)
+		    break;
+		}
+	    }
+
 	  switch (type[i])
 	    {
 	    case '(':
@@ -304,7 +331,7 @@ tree_index_expression::rvalue (int nargout)
 	}
 
       if (! error_state)
-	retval = tmp.subsref (type, idx, nargout);
+	retval = first_expr_val.subsref (type, idx, nargout);
     }
 
   return retval;
@@ -340,18 +367,53 @@ tree_index_expression::lvalue (void)
 
   if (! error_state)
     {
-      const octave_value *tmp = retval.object ();
+      // I think it is OK to have a copy here.
+
+      const octave_value *tro = retval.object ();
+
+      octave_value first_retval_object;
+
+      if (tro)
+	first_retval_object = *tro;
+
+      octave_value tmp = first_retval_object;
 
       for (int i = 0; i < n; i++)
 	{
+	  if (i > 0)
+	    {
+	      tree_argument_list *al = *p_args;
+
+	      if (al && al->has_magic_end ())
+		{
+		  // We have an expression like
+		  //
+		  //   x{end}.a(end)
+		  //
+		  // and we are looking at the argument list that
+		  // contains the second (or third, etc.) "end" token,
+		  // so we must evaluate everything up to the point of
+		  // that argument list so we pass the appropiate
+		  // value to the built-in __end__ function.
+
+		  octave_value_list tmp_list
+		    = first_retval_object.subsref (type, idx, 1);
+
+		  tmp = tmp_list(0);
+
+		  if (error_state)
+		    break;
+		}
+	    }
+
 	  switch (type[i])
 	    {
 	    case '(':
-	      idx.push_back (make_value_list (*p_args, *p_arg_nm, tmp));
+	      idx.push_back (make_value_list (*p_args, *p_arg_nm, &tmp));
 	      break;
 
 	    case '{':
-	      idx.push_back (make_value_list (*p_args, *p_arg_nm, tmp));
+	      idx.push_back (make_value_list (*p_args, *p_arg_nm, &tmp));
 	      break;
 
 	    case '.':

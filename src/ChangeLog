@@ -1,3 +1,11 @@
+2003-06-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pt-idx.cc (tree_index_expression::rvalue):
+	Correctly handle index expressions like x(end).f(end).
+	(tree_index_expression::lvalue): Likewise.
+
+	* pt-arg-list.cc (F__end__): Add nr, nc info to error messages.
+
 2003-06-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pr-output.cc (set_format (const Matrix&, int&, double&)): Ask

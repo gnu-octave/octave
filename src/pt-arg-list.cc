@@ -132,7 +132,7 @@ DEFCONSTFUN (__end__, , ,
 	    int nc = indexed_object->columns ();
 
 	    if (nr < 0 || nc < 0)
-	      ::error ("invalid use of end");
+	      ::error ("invalid use of end: (nr=%d, nc=%d)", nr, nc);
 	    else
 	      retval = nr * nc;
 	  }
@@ -143,7 +143,7 @@ DEFCONSTFUN (__end__, , ,
 	    int nr = indexed_object->rows ();
 
 	    if (nr < 0)
-	      ::error ("invalid use of end");
+	      ::error ("invalid use of end: (nr=%d)", nr);
 	    else
 	      retval = nr;
 	  }
@@ -154,7 +154,7 @@ DEFCONSTFUN (__end__, , ,
 	    int nc = indexed_object->columns ();
 
 	    if (nc < 0)
-	      ::error ("invalid use of end");
+	      ::error ("invalid use of end: (nc=%d)", nc);
 	    else
 	      retval = nc;
 	  }

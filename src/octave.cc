@@ -339,23 +339,23 @@ maximum_braindamage (void)
 {
   bind_builtin_variable ("PS1", ">> ");
   bind_builtin_variable ("PS2", "");
-  bind_builtin_variable ("beep_on_error", 1.0);
-  bind_builtin_variable ("crash_dumps_octave_core", 0.0);
-  bind_builtin_variable ("default_eval_print_flag", 0.0);
+  bind_builtin_variable ("beep_on_error", true);
+  bind_builtin_variable ("crash_dumps_octave_core", false);
+  bind_builtin_variable ("default_eval_print_flag", false);
   bind_builtin_variable ("default_global_variable_value", Matrix ());
   bind_builtin_variable ("default_save_format", "mat-binary");
-  bind_builtin_variable ("define_all_return_values", 1.0);
-  bind_builtin_variable ("do_fortran_indexing", 1.0);
-  bind_builtin_variable ("fixed_point_format", 1.0);
-  bind_builtin_variable ("implicit_num_to_str_ok", 1.0);
-  bind_builtin_variable ("implicit_str_to_num_ok", 1.0);
-  bind_builtin_variable ("initialize_global_variables", 1.0);
-  bind_builtin_variable ("ok_to_lose_imaginary_part", 1.0);
-  bind_builtin_variable ("page_screen_output", 0.0);
-  bind_builtin_variable ("prefer_column_vectors", 0.0);
-  bind_builtin_variable ("print_empty_dimensions", 0.0);
-  bind_builtin_variable ("treat_neg_dim_as_zero", 1.0);
-  bind_builtin_variable ("warn_function_name_clash", 0.0);
+  bind_builtin_variable ("define_all_return_values", true);
+  bind_builtin_variable ("do_fortran_indexing", true);
+  bind_builtin_variable ("fixed_point_format", true);
+  bind_builtin_variable ("implicit_num_to_str_ok", true);
+  bind_builtin_variable ("implicit_str_to_num_ok", true);
+  bind_builtin_variable ("initialize_global_variables", true);
+  bind_builtin_variable ("ok_to_lose_imaginary_part", true);
+  bind_builtin_variable ("page_screen_output", false);
+  bind_builtin_variable ("prefer_column_vectors", false);
+  bind_builtin_variable ("print_empty_dimensions", false);
+  bind_builtin_variable ("treat_neg_dim_as_zero", true);
+  bind_builtin_variable ("warn_function_name_clash", false);
   bind_builtin_variable ("whitespace_in_literal_matrix", "traditional");
 }
 
@@ -411,7 +411,7 @@ octave_main (int argc, char **argv)
       switch (optc)
 	{
 	case 'H':
-	  bind_builtin_variable ("saving_history", 0.0);
+	  bind_builtin_variable ("saving_history", false);
 	  break;
 
 	case 'V':

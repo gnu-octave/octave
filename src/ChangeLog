@@ -1,5 +1,12 @@
 2003-02-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* octave.cc (maximum_braindamage): Set boolean built-in variables
+	to true and false instead of 1.0 and 0.0.
+	(octave_main): Likewise.
+	* error.cc (Fwarning): Likewise.
+
+	* pager.cc (Fmore): Make the no-arg case work too.
+
 	* ov-str-mat.h (octave_char_matrix_str::is_real_type, 
 	octave_char_matrix_str::is_matrix_type,
 	octave_char_matrix_str::is_numeric_type): Always return false.

@@ -616,7 +616,7 @@ to go on.\n\
 		}
 	      else if (arg == "debug")
 		{
-		  bind_builtin_variable ("debug_on_warning", 1.0);
+		  bind_builtin_variable ("debug_on_warning", true);
 		  retval = set_warning_option ("", "", nargout);
 		  done = true;
 		}

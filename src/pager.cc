@@ -501,11 +501,18 @@ toggles the current state.\n\
       std::string arg = argv[1];
 
       if (arg == "on")
-	bind_builtin_variable ("page_screen_output", 1.0);
+	bind_builtin_variable ("page_screen_output", true);
       else if (arg == "off")
-	bind_builtin_variable ("page_screen_output", 0.0);
+	bind_builtin_variable ("page_screen_output", false);
       else
 	error ("more: unrecognized argument `%s'", arg.c_str ());
+    }
+  else if (argc == 1)
+    {
+      octave_value tmp = builtin_any_variable ("page_screen_output");
+
+      if (! error_state)
+	bind_builtin_variable ("page_screen_output", ! tmp.is_true ());
     }
   else
     print_usage ("more");

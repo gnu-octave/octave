@@ -23,7 +23,7 @@ all: stamp-picdir $(CRUFT_OBJ) $(SPECIAL_DEPEND)
 .PHONY: all
 
 stamp-picdir:
-	if [ -n "$(FPICFLAG)" ] || [ -n "$(CPICFLAG)" ] || [ -n "$(CXXPICFLAG)" ]; then \
+	if $(SHARED_LIBS); then \
 	  if [ -d pic ]; then true; else mkdir pic ; fi ; \
 	else true; fi
 	touch stamp-picdir

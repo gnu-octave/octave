@@ -635,13 +635,11 @@ get_input_from_stdin (void)
   return rl_instream;
 }
 
-// XXX FIXME XXX -- this should return a string_vector.
-
-static const char **
+static string_vector
 generate_struct_completions (const char *text, char *& prefix,
 			     char *& hint)
 {
-  const char **names = 0;
+  string_vector names;
 
   assert (text);
 
@@ -677,8 +675,6 @@ generate_struct_completions (const char *text, char *& prefix,
 
       if (def && def->is_map ())
 	{
-	  string_vector tmp_names;
-
 	  if (elts && *elts)
 	    {
 	      octave_value ult = def->lookup_map_element (elts, 0, 1);
@@ -686,23 +682,13 @@ generate_struct_completions (const char *text, char *& prefix,
 	      if (ult.is_map ())
 		{
 		  Octave_map m = ult.map_value ();
-		  tmp_names = m.make_name_list ();
+		  names = m.make_name_list ();
 		}
 	    }
 	  else
 	    {
 	      Octave_map m = def->map_value ();
-	      tmp_names = m.make_name_list ();
-	    }
-
-	  int n = tmp_names.length ();
-
-	  if (n > 0)
-	    {
-	      names = new const char * [n+1];
-	      for (int i = 0; i < n; i++)
-		names[i] = strsave (tmp_names[i].c_str ());
-	      names[n] = 0;
+	      names = m.make_name_list ();
 	    }
 	}
     }
@@ -713,32 +699,19 @@ generate_struct_completions (const char *text, char *& prefix,
 }
 
 // XXX FIXME XXX -- make this generate file names when appropriate.
-// XXX FIXME XXX -- this should return a string_vector.
 
-static const char **
+static string_vector
 generate_possible_completions (const char *text, char *& prefix,
 			       char *& hint)
 {
-  const char **names = 0;
+  string_vector names;
 
   prefix = 0;
 
   if (text && *text && *text != '.' && strrchr (text, '.'))
     names = generate_struct_completions (text, prefix, hint);
   else
-    {
-      string_vector tmp_names = make_name_list ();
-
-      int n = tmp_names.length ();
-
-      if (n > 0)
-	{
-	  names = new const char * [n+1];
-	  for (int i = 0; i < n; i++)
-	    names[i] = strsave (tmp_names[i].c_str ());
-	  names[n] = 0;
-	}
-    }
+    names = make_name_list ();
 
   return names;
 }
@@ -804,25 +777,14 @@ command_generator (const char *text, int state)
   static int hint_len = 0;
 
   static int list_index = 0;
-  static const char **name_list = 0;
+  static int list_length = 0;
+  static string_vector name_list;
 
   static int matches = 0;
 
   if (state == 0)
     {
       list_index = 0;
-
-      if (name_list)
-	{
-	  const char **ptr = name_list;
-
-	  while (ptr && *ptr)
-	    delete [] *ptr++;
-
-	  delete [] name_list;
-
-	  name_list = 0;
-	}
 
       delete [] prefix;
       prefix = 0;
@@ -840,22 +802,24 @@ command_generator (const char *text, int state)
       hint_len = strlen (hint);
 
       matches = 0;
-      if (name_list)
-	{
-	  int i = 0;
-	  while (name_list[i])
-	    if (strncmp (name_list[i++], hint, hint_len) == 0)
-	      matches++;
-	}
+
+      list_length = name_list.length ();
+
+      for (int i = 0; i < list_length; i++)
+	if (name_list[i].compare (hint, 0, hint_len))
+	  matches++;
     }
 
-  if (name_list && matches)
+  if (list_length > 0 && matches > 0)
     {
       const char *name;
 
-      while ((name = name_list[list_index]) != 0)
+      while (list_index < list_length)
 	{
+	  name = name_list[list_index].c_str ();
+
 	  list_index++;
+
 	  if (strncmp (name, hint, hint_len) == 0)
 	    {
 	      int len = 2 + prefix_len + strlen (name);
@@ -873,8 +837,7 @@ command_generator (const char *text, int state)
 	      if (matches == 1 && looks_like_struct (buf))
 		rl_completion_append_character = '.';
 	      else
-		rl_completion_append_character
-		  = Vcompletion_append_char;
+		rl_completion_append_character = Vcompletion_append_char;
 
 	      return buf;
 	    }

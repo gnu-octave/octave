@@ -302,11 +302,20 @@ generate_struct_completions (const std::string& text,
 bool
 looks_like_struct (const std::string& text)
 {
-  int parse_status;
+  bool retval = false;
 
-  octave_value tmp = eval_string (text, true, parse_status);
+  symbol_record *sr = curr_sym_tab->lookup (text);
 
-  return (tmp.is_defined () && tmp.is_map ());
+  if (sr && ! sr->is_function ())
+    {
+      int parse_status;
+
+      octave_value tmp = eval_string (text, true, parse_status);
+
+      retval = (tmp.is_defined () && tmp.is_map ());
+    }
+
+  return retval;
 }
 
 DEFUN (is_global, args, ,

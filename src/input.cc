@@ -483,7 +483,7 @@ initialize_command_input (void)
   // XX FIXME XXX -- this needs to include a comma too, but that
   // causes trouble for the new struct element completion code.
 
-  static char *s = "\t\n !\"\'*+-/:;<=>[\\]^`~";
+  static char *s = "\t\n !\"\'*+-/:;<=>(){}[\\]^`~";
 
   command_editor::set_basic_word_break_characters (s);
 

@@ -1,3 +1,14 @@
+2002-07-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* input.cc (initialize_command_input): Include (, ), {, and } as
+	word break characters.
+
+	* variables.cc (looks_like_struct): Don't evaluate text if it is a
+	function.
+
+	* symtab.h (symbol_record::is_function): Also return true if
+	symbol is a text function or a mapper function.
+
 2002-06-28  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* defaults.cc (loadpath): Warn if loadpath doesn't contain

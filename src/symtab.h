@@ -92,6 +92,10 @@ private:
 		|| symbol_type & symbol_record::BUILTIN_VARIABLE);
       }
 
+    // It's not necessary to check for TEXT_FUNCTION and MAPPER_FUNCTION
+    // here.  Those tags are just used as additional qualifiers for
+    // the other types of functions.
+
     bool is_function (void) const
       {
 	return (symbol_type & symbol_record::USER_FUNCTION

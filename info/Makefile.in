@@ -1,5 +1,5 @@
 # Makefile for texinfo/info.	-*- Indented-Text -*-
-# $Id: Makefile.in,v 1.42 1997-03-12 23:06:16 jwe Exp $
+# $Id: Makefile.in,v 1.43 1997-06-05 06:35:11 jwe Exp $
 # 
 # Copyright (C) 1993,96 Free Software Foundation, Inc.
 
@@ -167,7 +167,7 @@ dist: all-info all-dvi
 
 bin-dist:
 	if [ -n "$(BINDISTFILES)" ]; then \
-	  ln $(BINDISTFILES) ../`cat ../.fname`/info ; \
+	  ln $(BINDISTFILES) ../`cat ../.fname`/info; \
 	fi
 .PHONY: bin-dist
 

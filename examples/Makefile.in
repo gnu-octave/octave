@@ -36,7 +36,7 @@ all:
 
 install install-strip:
 	for f in $(SCRIPTS); do \
-	  $(INSTALL_SCRIPT) $(srcdir)/$$f $(archlibdir)/$$f ; \
+	  $(INSTALL_SCRIPT) $(srcdir)/$$f $(archlibdir)/$$f; \
 	done
 .PHONY: install install-strip
 
@@ -63,6 +63,6 @@ dist:
 
 bin-dist:
 	if [ -n "$(BINDISTFILES)" ]; then \
-	  ln $(BINDISTFILES) ../`cat ../.fname`/examples ; \
+	  ln $(BINDISTFILES) ../`cat ../.fname`/examples; \
 	fi
 .PHONY: bin-dist

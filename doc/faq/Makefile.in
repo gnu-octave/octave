@@ -42,8 +42,8 @@ Octave-FAQ.info: Octave-FAQ.texi
 	-makeinfo -I$(srcdir) $(srcdir)/Octave-FAQ.texi
 
 Octave-FAQ.dvi: Octave-FAQ.texi
-	-TEXINPUTS="$(srcdir):$(srcdir)/..:$(TEXINPUTS):" ; \
-	  export TEXINPUTS ; \
+	-TEXINPUTS="$(srcdir):$(srcdir)/..:$(TEXINPUTS):"; \
+	  export TEXINPUTS; \
 	  $(TEXI2DVI) $(srcdir)/Octave-FAQ.texi
 
 Octave-FAQ.ps: Octave-FAQ.dvi
@@ -83,6 +83,6 @@ dist: all
 
 bin-dist:
 	if [ -n "$(BINDISTFILES)" ]; then \
-	  ln $(BINDISTFILES) ../../`cat ../../.fname`/doc/faq ; \
+	  ln $(BINDISTFILES) ../../`cat ../../.fname`/doc/faq; \
 	fi
 .PHONY: bin-dist

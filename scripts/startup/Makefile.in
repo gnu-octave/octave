@@ -34,27 +34,27 @@ all:
 
 install install-strip:
 	$(top_srcdir)/mkinstalldirs $(fcnfiledir)/$(script_sub_dir)
-	if test -f $(fcnfiledir)/$(script_sub_dir)/octaverc ; then true ; \
+	if test -f $(fcnfiledir)/$(script_sub_dir)/octaverc; then true; \
 	else \
 	  $(INSTALL_DATA) $(srcdir)/octaverc \
-	    $(fcnfiledir)/$(script_sub_dir)/octaverc ; \
+	    $(fcnfiledir)/$(script_sub_dir)/octaverc; \
 	fi
 	$(top_srcdir)/mkinstalldirs $(localfcnfiledir)/$(script_sub_dir)
-	if test -f $(localfcnfiledir)/$(script_sub_dir)/octaverc ; \
-	then true ; \
+	if test -f $(localfcnfiledir)/$(script_sub_dir)/octaverc; \
+	then true; \
 	else \
 	  $(INSTALL_DATA) $(srcdir)/octaverc \
-	    $(localfcnfiledir)/$(script_sub_dir)/octaverc ; \
+	    $(localfcnfiledir)/$(script_sub_dir)/octaverc; \
 	fi
-#	for f in $(FCN_FILES_NO_DIR) ; do \
-#	  rm -f $(fcnfiledir)/$(script_sub_dir)/$$f ; \
-#	  $(INSTALL_DATA) $(srcdir)/$$f $(fcnfiledir)/$(script_sub_dir)/$$f ; \
+#	for f in $(FCN_FILES_NO_DIR); do \
+#	  rm -f $(fcnfiledir)/$(script_sub_dir)/$$f; \
+#	  $(INSTALL_DATA) $(srcdir)/$$f $(fcnfiledir)/$(script_sub_dir)/$$f; \
 #	done
 .PHONY: install install-strip
 
 uninstall:
-#	for f in $(FCN_FILES_NO_DIR) ; \
-#	  do rm -f $(fcnfiledir)/$(script_sub_dir)/$$f ; \
+#	for f in $(FCN_FILES_NO_DIR); \
+#	  do rm -f $(fcnfiledir)/$(script_sub_dir)/$$f; \
 #	done
 .PHONY: uninstall
 

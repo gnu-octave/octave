@@ -41,7 +41,7 @@ all: $(SUBDIRS)
 
 $(SUBDIRS):
 	echo making all in $@
-	cd $@ ; $(MAKE) all
+	cd $@; $(MAKE) all
 .PHONY: $(SUBDIRS)
 
 install install-strip uninstall clean mostlyclean distclean maintainer-clean::

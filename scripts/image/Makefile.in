@@ -38,24 +38,24 @@ all:
 
 install install-strip:
 	$(top_srcdir)/mkinstalldirs $(fcnfiledir)/$(script_sub_dir)
-	for f in $(FCN_FILES_NO_DIR) ; do \
-	  rm -f $(fcnfiledir)/$(script_sub_dir)/$$f ; \
-	  $(INSTALL_DATA) $(srcdir)/$$f $(fcnfiledir)/$(script_sub_dir)/$$f ; \
+	for f in $(FCN_FILES_NO_DIR); do \
+	  rm -f $(fcnfiledir)/$(script_sub_dir)/$$f; \
+	  $(INSTALL_DATA) $(srcdir)/$$f $(fcnfiledir)/$(script_sub_dir)/$$f; \
 	done
 	$(top_srcdir)/mkinstalldirs $(imagedir)
-	for f in $(IMAGE_FILES_NO_DIR) ; do \
-	  rm -f $(imagedir)/$$f ; \
-	  $(INSTALL_DATA) $(srcdir)/$$f $(imagedir)/$$f ; \
+	for f in $(IMAGE_FILES_NO_DIR); do \
+	  rm -f $(imagedir)/$$f; \
+	  $(INSTALL_DATA) $(srcdir)/$$f $(imagedir)/$$f; \
 	done
 	$(top_srcdir)/mkinstalldirs $(archlibdir)
 .PHONY: install install-strip
 
 uninstall:
-	for f in $(FCN_FILES_NO_DIR) ; \
-	  do rm -f $(fcnfiledir)/$(script_sub_dir)/$$f ; \
+	for f in $(FCN_FILES_NO_DIR); \
+	  do rm -f $(fcnfiledir)/$(script_sub_dir)/$$f; \
 	done
-	for f in $(IMAGE_FILES_NO_DIR) ; \
-	  do rm -f $(imagedir)/$$f ; \
+	for f in $(IMAGE_FILES_NO_DIR); \
+	  do rm -f $(imagedir)/$$f; \
 	done
 .PHONY: uninstall
 

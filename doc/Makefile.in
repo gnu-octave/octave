@@ -32,16 +32,16 @@ all: $(SUBDIRS)
 .PHONY: all
 
 ../INSTALL.OCTAVE:
-	cd interpreter ; $(MAKE) ../../INSTALL.OCTAVE
+	cd interpreter; $(MAKE) ../../INSTALL.OCTAVE
 .PHONY: ../INSTALL.OCTAVE
 
 ../BUGS:
-	cd interpreter ; $(MAKE) ../../BUGS
+	cd interpreter; $(MAKE) ../../BUGS
 .PHONY: ../BUGS
 
 $(SUBDIRS):
 	echo making all in $@
-	cd $@ ; $(MAKE) all
+	cd $@; $(MAKE) all
 .PHONY: $(SUBDIRS)
 
 install install-strip uninstall clean mostlyclean distclean maintainer-clean::

@@ -31,21 +31,21 @@ BINDISTFILES = $(addprefix $(srcdir)/, $(TEX) $(FORMATTED))
 all: $(FORMATTED)
 
 refcard-a4.dvi: refcard-a4.tex refcard.tex
-	-TEXINPUTS="$(srcdir):$(TEXINPUTS):" ; export TEXINPUTS ; \
+	-TEXINPUTS="$(srcdir):$(TEXINPUTS):"; export TEXINPUTS; \
 	  tex $(srcdir)/refcard-a4.tex
 
 refcard-a4.ps: refcard-a4.dvi
 	-dvips -T 297mm,210mm -o refcard-a4.ps refcard-a4.dvi
 
 refcard-legal.dvi: refcard-legal.tex refcard.tex
-	-TEXINPUTS="$(srcdir):$(TEXINPUTS):" ; export TEXINPUTS ; \
+	-TEXINPUTS="$(srcdir):$(TEXINPUTS):"; export TEXINPUTS; \
 	  tex $(srcdir)/refcard-legal.tex
 
 refcard-legal.ps: refcard-legal.dvi
 	-dvips -T 14in,8.5in -o refcard-legal.ps refcard-legal.dvi
 
 refcard-letter.dvi: refcard-letter.tex refcard.tex
-	-TEXINPUTS="$(srcdir):$(TEXINPUTS):" ; export TEXINPUTS ; \
+	-TEXINPUTS="$(srcdir):$(TEXINPUTS):"; export TEXINPUTS; \
 	  tex $(srcdir)/refcard-letter.tex
 
 refcard-letter.ps: refcard-letter.dvi
@@ -78,6 +78,6 @@ dist: all
 
 bin-dist:
 	if [ -n "$(BINDISTFILES)" ]; then \
-	  ln $(BINDISTFILES) ../../`cat ../../.fname`/doc/refcard ; \
+	  ln $(BINDISTFILES) ../../`cat ../../.fname`/doc/refcard; \
 	fi
 .PHONY: bin-dist

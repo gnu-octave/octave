@@ -45,8 +45,8 @@ liboctave.info: $(TEXINFO) ../conf.texi
 	-makeinfo -I$(srcdir) -I$(srcdir)/.. $(srcdir)/liboctave.texi
 
 liboctave.dvi: $(TEXINFO) ../conf.texi
-	-TEXINPUTS="$(srcdir):$(srcdir)/..:$(TEXINPUTS):" ; \
-	  export TEXINPUTS ; \
+	-TEXINPUTS="$(srcdir):$(srcdir)/..:$(TEXINPUTS):"; \
+	  export TEXINPUTS; \
 	  $(TEXI2DVI) $(srcdir)/liboctave.texi
 
 liboctave.ps: liboctave.dvi
@@ -94,6 +94,6 @@ dist: all
 
 bin-dist:
 	if [ -n "$(BINDISTFILES)" ]; then \
-	  ln $(BINDISTFILES) ../../`cat ../../.fname`/doc/liboctave ; \
+	  ln $(BINDISTFILES) ../../`cat ../../.fname`/doc/liboctave; \
 	fi
 .PHONY: bin-dist

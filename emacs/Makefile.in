@@ -57,6 +57,6 @@ dist:
 
 bin-dist:
 	if [ -n "$(BINDISTFILES)" ]; then \
-	  ln $(BINDISTFILES) ../`cat ../.fname`/emacs ; \
+	  ln $(BINDISTFILES) ../`cat ../.fname`/emacs; \
 	fi
 .PHONY: bin-dist

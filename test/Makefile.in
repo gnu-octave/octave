@@ -31,15 +31,15 @@ all: check
 .PHONY: all
 
 check:
-	@if test -n "$(RUNTEST)" ; then \
+	@if test -n "$(RUNTEST)"; then \
 	  $(RUNTEST) \
 	    OCTAVE="$(OCTAVE_BINARY)" \
 	    OCTAVE_SCRIPT_PATH="$(OCTAVE_SCRIPT_PATH)" \
-	    --tool octave --srcdir $(srcdir) $(RUNTEST_FLAGS) ; \
+	    --tool octave --srcdir $(srcdir) $(RUNTEST_FLAGS); \
 	else \
-	  echo "***" ; \
-	  echo "*** Sorry, I can't run tests without DejaGnu" ; \
-	  echo "***" ; \
+	  echo "***"; \
+	  echo "*** Sorry, I can't run tests without DejaGnu"; \
+	  echo "***"; \
 	fi
 
 .PHONY: check

@@ -60,8 +60,8 @@ octave.info: $(TEXINFO) ../conf.texi
 	-makeinfo -I$(srcdir) -I$(srcdir)/.. $(srcdir)/octave.texi
 
 octave.dvi: $(TEXINFO) ../conf.texi
-	-TEXINPUTS="$(srcdir):$(srcdir)/..:$(TEXINPUTS):" ; \
-	  export TEXINPUTS ; \
+	-TEXINPUTS="$(srcdir):$(srcdir)/..:$(TEXINPUTS):"; \
+	  export TEXINPUTS; \
 	  $(TEXI2DVI) $(srcdir)/octave.texi
 
 octave.ps: octave.dvi
@@ -82,40 +82,40 @@ check: all
 
 install install-strip: all
 	$(top_srcdir)/mkinstalldirs $(man1dir) $(infodir)
-	@if test -d $(man1dir) ; then \
-	  rm -f $(man1dir)/octave$(man1ext) ; \
-	  echo "installing $(srcdir)/octave.1 in $(man1dir)" ; \
-	  $(INSTALL_DATA) $(srcdir)/octave.1 $(man1dir)/octave$(man1ext) ; \
+	@if test -d $(man1dir); then \
+	  rm -f $(man1dir)/octave$(man1ext); \
+	  echo "installing $(srcdir)/octave.1 in $(man1dir)"; \
+	  $(INSTALL_DATA) $(srcdir)/octave.1 $(man1dir)/octave$(man1ext); \
 	fi
-	@if test -d $(infodir) ; then \
-	  rm -f $(infodir)/octave.info* ; \
-	  echo "installing info files in $(infodir)" ; \
-	  if test -f octave.info ; then \
-	    for f in octave.info* ; do \
-	      $(INSTALL_DATA) $$f $(infodir)/$$f ; \
-	    done ; \
+	@if test -d $(infodir); then \
+	  rm -f $(infodir)/octave.info*; \
+	  echo "installing info files in $(infodir)"; \
+	  if test -f octave.info; then \
+	    for f in octave.info*; do \
+	      $(INSTALL_DATA) $$f $(infodir)/$$f; \
+	    done; \
 	  else \
-	    for f in $(srcdir)/octave.info* ; do \
-	      $(INSTALL_DATA) $$f $(infodir)/`basename $$f` ; \
-	    done ; \
-	  fi ; \
-	  if test -f $(infodir)/dir ; then \
-	    if grep "^\* Octave: (octave)." $(infodir)/dir > /dev/null ; then \
-	      true ; \
+	    for f in $(srcdir)/octave.info*; do \
+	      $(INSTALL_DATA) $$f $(infodir)/`basename $$f`; \
+	    done; \
+	  fi; \
+	  if test -f $(infodir)/dir; then \
+	    if grep "^\* Octave: (octave)." $(infodir)/dir > /dev/null; then \
+	      true; \
 	    else \
-	      echo "" ; \
-	      echo "You should add the following entry" ; \
-	      echo "" ; \
-	      echo "* Octave: (octave)." ; \
-	      echo "	Interactive language for numerical computations." ; \
-	      echo "" ; \
-	      echo "to $(infodir)/dir." ; \
-	      echo "" ; \
-	    fi ; \
+	      echo ""; \
+	      echo "You should add the following entry"; \
+	      echo ""; \
+	      echo "* Octave: (octave)."; \
+	      echo "	Interactive language for numerical computations."; \
+	      echo ""; \
+	      echo "to $(infodir)/dir."; \
+	      echo ""; \
+	    fi; \
 	  else \
-	    echo "installing $(srcdir)/dir in $(infodir)" ; \
-	    $(INSTALL_DATA) $(srcdir)/dir $(infodir)/dir ; \
-	  fi ; \
+	    echo "installing $(srcdir)/dir in $(infodir)"; \
+	    $(INSTALL_DATA) $(srcdir)/dir $(infodir)/dir; \
+	  fi; \
 	fi
 .PHONY: install install-strip
 
@@ -154,6 +154,6 @@ dist: all
 
 bin-dist:
 	if [ -n "$(BINDISTFILES)" ]; then \
-	  ln $(BINDISTFILES) ../../`cat ../../.fname`/doc/interpreter ; \
+	  ln $(BINDISTFILES) ../../`cat ../../.fname`/doc/interpreter; \
 	fi
 .PHONY: bin-dist

@@ -110,6 +110,18 @@ set test blanks-3
 set prog_output "usage:.*"
 do_test blanks-3.m
 
+set test char-1
+set prog_output "ans = 1"
+do_test char-1.m
+
+set test char-2
+set prog_output "\n... char:.*"
+do_test char-2.m
+
+set test char-3
+set prog_output "ans = 1"
+do_test char-3.m
+
 set test int2str-1
 set prog_output "ans = 1"
 do_test int2str-1.m
@@ -134,21 +146,9 @@ set test num2str-3
 set prog_output "usage:.*"
 do_test num2str-3.m
 
-set test setstr-1
+set test strcat-1.m
 set prog_output "ans = 1"
-do_test setstr-1.m
-
-set test setstr-2
-set prog_output "\n... setstr:.*"
-do_test setstr-2.m
-
-set test setstr-3
-set prog_output "\n... setstr:.*"
-do_test setstr-3.m
-
-set test strcat-
-set prog_output ""
-do_test strcat-.m
+do_test strcat-1.m
 
 set test strcat-2
 set prog_output "usage:.*"

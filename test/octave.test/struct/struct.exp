@@ -1,3 +1,47 @@
+set test fieldnames-1
+set prog_output "ans = 1"
+do_test fieldnames-1.m
+
+set test fieldnames-2
+set prog_output "ans = 1"
+do_test fieldnames-2.m
+
+set test fieldnames-3
+set prog_output "\n... fieldnames:.*"
+do_test fieldnames-3.m
+
+set test fieldnames-4
+set prog_output "\n... fieldnames:.*"
+do_test fieldnames-4.m
+
+set test fieldnames-5
+set prog_output "error:.*"
+do_test fieldnames-5.m
+
+set test isfield-1
+set prog_output "ans = 1"
+do_test isfield-1.m
+
+set test isfield-2
+set prog_output "ans = 0"
+do_test isfield-2.m
+
+set test isfield-3
+set prog_output "\n... isfield:.*"
+do_test isfield-3.m
+
+set test isfield-4
+set prog_output "\n... isfield:.*"
+do_test isfield-4.m
+
+set test isfield-5
+set prog_output "\n... isfield:.*"
+do_test isfield-5.m
+
+set test isfield-6
+set prog_output "\n... isfield:.*"
+do_test isfield-6.m
+
 set test isstruct-1
 set prog_output "ans = 0"
 do_test isstruct-1.m
@@ -41,47 +85,3 @@ do_test isstruct-10.m
 set test isstruct-11
 set prog_output "\n... isstruct:.*"
 do_test isstruct-11.m
-
-set test struct_contains-1
-set prog_output "ans = 1"
-do_test struct_contains-1.m
-
-set test struct_contains-2
-set prog_output "ans = 0"
-do_test struct_contains-2.m
-
-set test struct_contains-3
-set prog_output "\n... struct_contains:.*"
-do_test struct_contains-3.m
-
-set test struct_contains-4
-set prog_output "\n... struct_contains:.*"
-do_test struct_contains-4.m
-
-set test struct_contains-5
-set prog_output "\n... struct_contains:.*"
-do_test struct_contains-5.m
-
-set test struct_contains-6
-set prog_output "\n... struct_contains:.*"
-do_test struct_contains-6.m
-
-set test struct_elements-1
-set prog_output "ans = 1"
-do_test struct_elements-1.m
-
-set test struct_elements-2
-set prog_output "ans = 1"
-do_test struct_elements-2.m
-
-set test struct_elements-3
-set prog_output "\n... struct_elements:.*"
-do_test struct_elements-3.m
-
-set test struct_elements-4
-set prog_output "\n... struct_elements:.*"
-do_test struct_elements-4.m
-
-set test struct_elements-5
-set prog_output "error:.*"
-do_test struct_elements-5.m

@@ -39,17 +39,18 @@ function t = studentize (x, dim)
   nd = ndims (x);
   sz = size (x);
   if (nargin != 2)
-    %% Find the first non-singleton dimension
+    ## Find the first non-singleton dimension.
     dim  = 1;
-    while (dim < nd + 1 && sz (dim) == 1)
+    while (dim < nd + 1 && sz(dim) == 1)
       dim = dim + 1;
     endwhile
     if (dim > nd)
       dim = 1;
     endif
   else
-    if (! (isscalar (dim) && dim == round (dim)) && dim > 0 && 
-	dim < (nd + 1))
+    if (! (isscalar (dim) && dim == round (dim))
+	&& dim > 0
+	&& dim < (nd + 1))
       error ("studentize: dim must be an integer and valid dimension");
     endif
   endif
@@ -58,9 +59,9 @@ function t = studentize (x, dim)
     error ("studentize: x must be a vector or a matrix");
   endif
 
-  c = sz (dim);
+  c = sz(dim);
   idx = ones (1, nd);
-  idx (dim) = c;
+  idx(dim) = c;
   t = x - repmat (mean (x, dim), idx);
   t = t ./ repmat (max (cat (dim, std(t, [], dim), ! any (t, dim)), [], dim), idx);
 

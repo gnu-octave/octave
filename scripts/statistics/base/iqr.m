@@ -40,27 +40,28 @@ function y = iqr (x, dim)
   sz = size (x);
   nel = numel (x);
   if (nargin != 2)
-    %% Find the first non-singleton dimension
+    ## Find the first non-singleton dimension.
     dim  = 1;
-    while (dim < nd + 1 && sz (dim) == 1)
+    while (dim < nd + 1 && sz(dim) == 1)
       dim = dim + 1;
     endwhile
     if (dim > nd)
       dim = 1;
     endif
   else
-    if (! (isscalar (dim) && dim == round (dim)) && dim > 0 && 
-	dim < (nd + 1))
+    if (! (isscalar (dim) && dim == round (dim))
+	&& dim > 0
+	&& dim < (nd + 1))
       error ("iqr: dim must be an integer and valid dimension");
     endif
   endif
 
   ## This code is a bit heavy, but is needed until empirical_inv 
   ## takes other than vector arguments.
-  c = sz (dim);
-  sz (dim) = 1;
+  c = sz(dim);
+  sz(dim) = 1;
   y = zeros (sz);
-  stride = prod (sz (1:dim-1));
+  stride = prod (sz(1:dim-1));
   for i = 1 : nel / c;
     offset = i;
     offset2 = 0;

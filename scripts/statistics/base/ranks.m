@@ -43,32 +43,33 @@ function y = ranks (x, dim)
   nd = ndims (x);
   sz = size (x);
   if (nargin != 2)
-    %% Find the first non-singleton dimension
+    ## Find the first non-singleton dimension.
     dim  = 1;
-    while (dim < nd + 1 && sz (dim) == 1)
+    while (dim < nd + 1 && sz(dim) == 1)
       dim = dim + 1;
     endwhile
     if (dim > nd)
       dim = 1;
     endif
   else
-    if (! (isscalar (dim) && dim == round (dim)) && dim > 0 && 
-	dim < (nd + 1))
+    if (! (isscalar (dim) && dim == round (dim))
+	&& dim > 0
+	&& dim < (nd + 1))
       error ("ranks: dim must be an integer and valid dimension");
     endif
   endif
 
-  if (sz (dim) == 1)
+  if (sz(dim) == 1)
     y = ones(sz);
   else
     ## The algorithm works only on dim=1, so permute if necesary
     if (dim != 1)
       perm = [1 : nd];
-      perm (1) = dim;
-      perm (dim) = 1;
+      perm(1) = dim;
+      perm(dim) = 1;
       x = permute (x, perm);
     endif
-    sz  = size (x);
+    sz = size (x);
     infvec = -Inf * ones ([1, sz(2 : end)]);
     [xs, y] = sort (x);
     eq_el = find (diff ([xs; infvec]) == 0);
@@ -76,14 +77,13 @@ function y = ranks (x, dim)
       [eq_el, y] = sort (y);  
     else
       runs = complement (eq_el+1, eq_el);
-      runs = reshape (y (runs), size (runs)) + 
-             floor (runs ./ sz (1)) * sz(1);
+      runs = reshape (y (runs), size (runs)) + floor (runs ./ sz(1)) * sz(1);
       len = diff (find (diff ([Inf; eq_el; -Inf]) != 1)) + 1;
-      [eq_el, y] = sort (y);  
+      [eq_el, y] = sort (y);
       for i = 1 : length(runs)
-	p = y (runs (i)) + (len (i) - 1) / 2;
-	for j = 0 : len (i) - 1
-	  y (runs (i) + j) = p;
+	p = y(runs(i)) + (len(i) - 1) / 2;
+	for j = 0 : len(i) - 1
+	  y(runs(i) + j) = p;
 	endfor
       endfor
     endif  

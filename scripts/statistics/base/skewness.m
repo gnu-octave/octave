@@ -53,17 +53,18 @@ function retval = skewness (x, dim)
   nd = ndims (x);
   sz = size (x);
   if (nargin != 2)
-    %% Find the first non-singleton dimension
+    ## Find the first non-singleton dimension.
     dim  = 1;
-    while (dim < nd + 1 && sz (dim) == 1)
+    while (dim < nd + 1 && sz(dim) == 1)
       dim = dim + 1;
     endwhile
     if (dim > nd)
       dim = 1;
     endif
   else
-    if (! (isscalar (dim) && dim == round (dim)) && dim > 0 && 
-	dim < (nd + 1))
+    if (! (isscalar (dim) && dim == round (dim))
+	&& dim > 0
+	&& dim < (nd + 1))
       error ("skewness: dim must be an integer and valid dimension");
     endif
   endif
@@ -72,15 +73,15 @@ function retval = skewness (x, dim)
     error ("skewness: x has to be a matrix or a vector");
   endif
 
-  c = sz (dim);
+  c = sz(dim);
   idx = ones (1, nd);
   idx (dim) = c;
   x = x - repmat (mean (x, dim), idx);
-  sz (dim) = 1;
+  sz(dim) = 1;
   retval = zeros (sz);
   s = std (x, [], dim);
   ind = find (s > 0);
   x = sum (x .^ 3, dim);
-  retval (ind) = x (ind) ./ (c * s (ind) .^ 3);
+  retval(ind) = x(ind) ./ (c * s(ind) .^ 3);
   
 endfunction

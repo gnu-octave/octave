@@ -39,30 +39,31 @@ function S = statistics (X, dim)
   sz = size (X);
   nel = numel (X);
   if (nargin != 2)
-    %% Find the first non-singleton dimension
+    ## Find the first non-singleton dimension.
     dim  = 1;
-    while (dim < nd + 1 && sz (dim) == 1)
+    while (dim < nd + 1 && sz(dim) == 1)
       dim = dim + 1;
     endwhile
     if (dim > nd)
       dim = 1;
     endif
   else
-    if (! (isscalar (dim) && dim == round (dim)) && dim > 0 && 
-	dim < (nd + 1))
+    if (! (isscalar (dim) && dim == round (dim))
+	&& dim > 0
+	&& dim < (nd + 1))
       error ("statistics: dim must be an integer and valid dimension");
     endif
   endif
   
-  if (! ismatrix (X) || sz (dim) < 2)
+  if (! ismatrix (X) || sz(dim) < 2)
     error ("statistics: invalid argument");
   endif    
 
   ## This code is a bit heavy, but is needed until empirical_inv 
   ## takes other than vector arguments.
-  c = sz (dim);
-  stride = prod (sz (1:dim-1));
-  sz (dim) = 3;
+  c = sz(dim);
+  stride = prod (sz(1:dim-1));
+  sz(dim) = 3;
   emp_inv = zeros (sz);
   for i = 1 : nel / c;
     offset = i;

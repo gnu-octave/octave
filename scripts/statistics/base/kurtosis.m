@@ -54,17 +54,18 @@ function retval = kurtosis (x, dim)
   nd = ndims (x);
   sz = size (x);
   if (nargin != 2)
-    %% Find the first non-singleton dimension
+    ## Find the first non-singleton dimension.
     dim  = 1;
-    while (dim < nd + 1 && sz (dim) == 1)
+    while (dim < nd + 1 && sz(dim) == 1)
       dim = dim + 1;
     endwhile
     if (dim > nd)
       dim = 1;
     endif
   else
-    if (! (isscalar (dim) && dim == round (dim)) && dim > 0 && 
-	dim < (nd + 1))
+    if (! (isscalar (dim) && dim == round (dim))
+	&& dim > 0
+	&& dim < (nd + 1))
       error ("kurtosis: dim must be an integer and valid dimension");
     endif
   endif
@@ -73,15 +74,15 @@ function retval = kurtosis (x, dim)
     error ("kurtosis: x has to be a matrix or a vector");
   endif
 
-  c = sz (dim);
-  sz (dim) = 1;
+  c = sz(dim);
+  sz(dim) = 1;
   idx = ones (1, nd);
-  idx (dim) = c;
+  idx(dim) = c;
   x = x - repmat (mean (x, dim), idx);
   retval = zeros (sz);
   s = std (x, [], dim);
   x = sum(x.^4, dim);
   ind = find (s > 0);
-  retval (ind) = x (ind) ./ (c * s (ind) .^ 4) - 3;
+  retval(ind) = x(ind) ./ (c * s(ind) .^ 4) - 3;
 
 endfunction

@@ -1,3 +1,10 @@
+2002-10-16  Paul Kienzle <pkienzle@users.sf.net>
+
+	* aclocal.m4: Both Cygwin and MinGW don't prepend underscores.
+	* configure.in: MinGW builds shared libraries the same as Cygwin.
+	MinGW must link to winsock explicitly.
+	* install-octave.in: MinGW and Cygwin both need OCTAVE_HOME.
+
 2002-10-15  Paul Kienzle <pkienzle@users.sf.net>
 
 	* configure.in (library_path_var): New variable.

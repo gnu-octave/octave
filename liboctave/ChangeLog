@@ -1,3 +1,7 @@
+2002-10-16  Paul Kienzle <pkienzle@users.sf.net>
+
+	* Makefile.in (LIB_DEPS): Include $(LIBS).
+
 2002-10-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* lo-cieee.c: Move everything but lo_ieee_init here.

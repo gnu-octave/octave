@@ -307,7 +307,7 @@ else
 fi
 
 case "$canonical_host_type" in
-  *-*-cygwin*)
+  *-*-cygwin* | *-*-mingw*)
     if $alt_dir; then
       echo "*** You have specified an installation directory different"
       echo "*** from the default.  For Octave to run properly, you must"

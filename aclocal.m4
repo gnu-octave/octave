@@ -601,12 +601,12 @@ EOF
       cat conftest.$ac_ext >&AS_MESSAGE_LOG_FD
     fi
     AC_LANG_POP(C++)
-### XXX FIXME XXX -- Ignore test result for cygwin.  Yes it prepends
-### underscore, but dlsym dnl seems to add it automatically.  The
+### XXX FIXME XXX -- Ignore test result on Windows.  Yes it prepends
+### underscore, but LoadLibrary ignores it automatically.  The
 ### correct test is to build the shared library then try to grab the
 ### symbol from it with and without underscore.
     case "$canonical_host_type" in
-      *-*-cygwin*)
+      *-*-cygwin* | *-*-mingw*)
         octave_cv_cxx_prepends_underscore=no
       ;;
     esac

@@ -856,30 +856,45 @@ octave_base_stream::read (const Matrix& size,
   return retval;
 }
 
-#define do_scanf_conv(is, fmt, valptr, mval, data, idx, max_size, discard) \
-  do \
-    { \
-      is.scan (fmt, valptr); \
- \
-      if (is) \
-	{ \
-	  if (idx == max_size && ! discard) \
-	    { \
-	      max_size *= 2; \
- \
-	      if (nr > 0) \
-		mval.resize (nr, max_size / nr, 0.0); \
-	      else \
-		mval.resize (max_size, 1, 0.0); \
- \
-	      data = mval.fortran_vec (); \
-	    } \
- \
-	  if (! discard) \
-	    data[idx++] = *(valptr); \
-	} \
-    } \
-  while (0)
+template <class T>
+void
+do_scanf_conv (istream& is, const char *fmt, T valptr, Matrix& mval,
+	       double *data, int& idx, int nr, int max_size,
+	       bool discard) 
+{
+  is.scan (fmt, valptr);
+
+  if (is)
+    {
+      if (idx == max_size && ! discard)
+	{
+	  max_size *= 2;
+
+	  if (nr > 0)
+	    mval.resize (nr, max_size / nr, 0.0);
+	  else
+	    mval.resize (max_size, 1, 0.0);
+
+	  data = mval.fortran_vec ();
+	}
+
+      if (! discard)
+	data[idx++] = *(valptr);
+    }
+}
+
+template void
+do_scanf_conv (istream&, const char*, int*, Matrix&, double*, int&,
+	       int, int, bool);
+
+template void
+do_scanf_conv (istream&, const char*, float*, Matrix&, double*, int&,
+	       int, int, bool);
+
+template void
+do_scanf_conv (istream&, const char*, double*, Matrix&, double*, int&,
+	       int, int, bool);
+
 
 octave_value
 octave_base_stream::do_scanf (scanf_format_list& fmt_list,
@@ -961,7 +976,7 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 		    int tmp;
 
 		    do_scanf_conv (is, fmt, &tmp, mval, data, count,
-				   max_size, discard);
+				   nr, max_size, discard);
 		  }
 		  break;
 
@@ -972,14 +987,14 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 			double tmp;
 
 			do_scanf_conv (is, fmt, &tmp, mval, data,
-				       count, max_size, discard); 
+				       count, nr, max_size, discard); 
 		      }
 		    else
 		      {
 			float tmp;
 
 			do_scanf_conv (is, fmt, &tmp, mval, data,
-				       count, max_size, discard); 
+				       count, nr, max_size, discard); 
 		      }
 		  }
 		  break;
@@ -1194,43 +1209,60 @@ octave_base_stream::scanf (const string& fmt, const Matrix& size,
   return retval;
 }
 
-#define do_oscanf_num_conv(is, fmt, valptr) \
-  do \
-    { \
-      streambuf *isb = is.rdbuf (); \
- \
-      if (isb->scan (fmt, valptr) > 0) \
-	{ \
-	  if (! discard && is) \
-	    retval = (double) (*valptr); \
-	} \
-      else \
-	error ("fscanf: conversion failed"); \
-    } \
-  while (0)
+template <class T>
+octave_value
+do_oscanf_num_conv (istream& is, const char *fmt, T valptr, bool discard)
+{
+  octave_value retval;
 
-#define do_oscanf_str_conv(is, fmt, sptr, maxlen) \
-  do \
-    { \
-      streambuf *isb = is.rdbuf (); \
- \
-      if (isb->scan (fmt, sptr) > 0) \
-	{ \
-	  if (! discard && is) \
-	    { \
-	      sptr[maxlen] = '\0'; \
-	      retval = sptr; \
-	    } \
-	} \
-      else \
-	error ("fscanf: conversion failed"); \
-    } \
-  while (0)
+  is.scan (fmt, valptr);
+
+  if (is)
+    {
+      if (! discard)
+	retval = (double) (*valptr);
+    }
+  else
+    error ("fscanf: conversion failed");
+
+  return retval;
+}
+
+template octave_value
+do_oscanf_num_conv (istream&, const char*, int*, bool);
+
+template octave_value
+do_oscanf_num_conv (istream&, const char*, float*, bool);
+
+template octave_value
+do_oscanf_num_conv (istream&, const char*, double*, bool);
+
+static inline octave_value
+do_oscanf_str_conv (istream& is, const char *fmt, char *sptr,
+		    int maxlen, bool discard)
+{
+  octave_value retval;
+
+  is.scan (fmt, sptr);
+
+  if (is)
+    {
+      if (! discard)
+	{
+	  sptr[maxlen] = '\0';
+	  retval = sptr;
+	}
+    }
+  else
+    error ("fscanf: conversion failed");
+
+  return retval;
+}
 
 octave_value
 octave_base_stream::do_oscanf (const scanf_format_elt *elt)
 {
-  octave_value retval = Matrix ();
+  octave_value retval;
 
   istream *isp = input_stream ();
 
@@ -1260,7 +1292,7 @@ octave_base_stream::do_oscanf (const scanf_format_elt *elt)
 	      {
 		int tmp;
 
-		do_oscanf_num_conv (is, fmt, &tmp);
+		retval = do_oscanf_num_conv (is, fmt, &tmp, discard);
 	      }
 	      break;
 
@@ -1270,13 +1302,13 @@ octave_base_stream::do_oscanf (const scanf_format_elt *elt)
 		  {
 		    double tmp;
 
-		    do_oscanf_num_conv (is, fmt, &tmp);
+		    retval = do_oscanf_num_conv (is, fmt, &tmp, discard);
 		  }
 		else
 		  {
 		    float tmp;
 
-		    do_oscanf_num_conv (is, fmt, &tmp);
+		    retval = do_oscanf_num_conv (is, fmt, &tmp, discard);
 		  }
 	      }
 	      break;
@@ -1289,7 +1321,7 @@ octave_base_stream::do_oscanf (const scanf_format_elt *elt)
 
 		char *tmp = new char[width + 1];
 
-		do_oscanf_str_conv (is, fmt, tmp, width);
+		retval = do_oscanf_str_conv (is, fmt, tmp, width, discard);
 
 		is.setf (flags);
 
@@ -1303,7 +1335,9 @@ octave_base_stream::do_oscanf (const scanf_format_elt *elt)
 
 		int width = elt->width ? elt->width : 65535;
 		char *tmp = new char [width+1];
-		do_oscanf_str_conv (is, fmt, tmp, width);
+
+		retval = do_oscanf_str_conv (is, fmt, tmp, width, discard);
+
 		delete [] tmp;
 	      }
 	      break;
@@ -1402,15 +1436,22 @@ octave_base_stream::oscanf (const string& fmt)
 
 	    const scanf_format_elt *elt = fmt_list.first ();
 
+	    int num_values = 0;
+
 	    for (int i = 0; i < nconv; i++)
 	      {
-		retval (i) = do_oscanf (elt);
+		octave_value tmp = do_oscanf (elt);
+
+		if (tmp.is_defined ())
+		  retval (num_values++) = tmp;
 
 		if (! ok ())
 		  break;
 
 		elt = fmt_list.next ();
 	      }
+
+	    retval.resize (num_values);
 
 	    // Pick up any trailing stuff.
 	    if (ok () && len > nconv)
@@ -1642,38 +1683,51 @@ printf_value_cache::string_value (void)
 
 // Ugh again and again.
 
-#define do_printf_conv(os, fmt, nsa, sa_1, sa_2, have_arg, arg) \
-do \
-  { \
-    switch (nsa) \
-      { \
-      case 2: \
-	if (have_arg) \
-	  os.form (fmt, sa_1, sa_2, arg); \
-	else \
-	  os.form (fmt, sa_1, sa_2); \
-	break; \
- \
-      case 1: \
-	if (have_arg) \
-	  os.form (fmt, sa_1, arg); \
-	else \
-	  os.form (fmt, sa_1); \
-	break; \
- \
-      case 0: \
-	if (have_arg) \
-	  os.form (fmt, arg); \
-	else \
-	  os.form (fmt); \
-	break; \
- \
-      default: \
-	::error ("fprintf: internal error handling format"); \
-	break; \
-      } \
-  } \
-while (0)
+template <class T>
+void
+do_printf_conv (ostream& os, const char *fmt, int nsa, int sa_1,
+		int sa_2, bool have_arg, T arg)
+{
+  switch (nsa)
+    {
+    case 2:
+      if (have_arg)
+	os.form (fmt, sa_1, sa_2, arg);
+      else
+	os.form (fmt, sa_1, sa_2);
+      break;
+
+    case 1:
+      if (have_arg)
+	os.form (fmt, sa_1, arg);
+      else
+	os.form (fmt, sa_1);
+      break;
+
+    case 0:
+      if (have_arg)
+	os.form (fmt, arg);
+      else
+	os.form (fmt);
+      break;
+
+    default:
+      ::error ("fprintf: internal error handling format");
+      break;
+    }
+}
+
+template void
+do_printf_conv (ostream&, const char*, int, int, int, bool, int);
+
+template void
+do_printf_conv (ostream&, const char*, int, int, int, bool, long);
+
+template void
+do_printf_conv (ostream&, const char*, int, int, int, bool, double);
+
+template void
+do_printf_conv (ostream&, const char*, int, int, int, bool, const char*);
 
 int
 octave_base_stream::do_printf (printf_format_list& fmt_list,
@@ -1727,7 +1781,7 @@ octave_base_stream::do_printf (printf_format_list& fmt_list,
 	      const char *fmt = elt->text;
 
 	      if (doing_percent || args == 0)
-		do_printf_conv (os, fmt, nsa, sa_1, sa_2, 0, 0.0);
+		do_printf_conv (os, fmt, nsa, sa_1, sa_2, false, 0.0);
 	      else
 		{
 		  if (elt->type == 's' && val_cache.looking_at_string ())
@@ -1735,7 +1789,7 @@ octave_base_stream::do_printf (printf_format_list& fmt_list,
 		      string val = val_cache.string_value ();
 
 		      if (val_cache)
-			do_printf_conv (os, fmt, nsa, sa_1, sa_2, 1,
+			do_printf_conv (os, fmt, nsa, sa_1, sa_2, true,
 					val.c_str ());
 		      else
 			break;
@@ -1753,17 +1807,17 @@ octave_base_stream::do_printf (printf_format_list& fmt_list,
 			      {
 				if (elt->modifier == 'l')
 				  do_printf_conv (os, fmt, nsa, sa_1,
-						  sa_2, 1, (long) val);
+						  sa_2, true, (long) val);
 				else
 				  do_printf_conv (os, fmt, nsa, sa_1,
-						  sa_2, 1, (int) val);
+						  sa_2, true, (int) val);
 			      }
 			      break;
 
 			    case 'f': case 'e': case 'E':
 			    case 'g': case 'G':
 			      do_printf_conv (os, fmt, nsa, sa_1,
-					      sa_2, 1, val);
+					      sa_2, true, val);
 			      break;
 
 			    default:

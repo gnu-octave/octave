@@ -1,4 +1,14 @@
+Sat Dec  7 22:00:10 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-stream.cc (do_printf_conv, do_scanf_conv,
+	do_oscanf_num_conv, do_oscanf_str_conv): Convert to real
+	functions instead of CPP macros, using templates where necessary.
+	(do_oscanf_num_conv, do_oscanf_str_conv): Correctly handle
+	discarded values.
+
 Fri Dec  6 00:20:25 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Version 1.94.
 
 	* Map-*.cc, SLList-*.cc, SLStack-*.cc: Include config.h.
 

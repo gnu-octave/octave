@@ -1,5 +1,9 @@
 Thu Nov 19 14:30:25 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* dynamic-ld.cc (octave_dynamic_loader::mangle_name):
+	Prepend underscore here.
+	(octave_dynamic_loader::load_fcn_from_dot_oct_file): Not here.
+
 	* ov-re-mat.h (octave_matrix_value): Delete experimental code for
 	handling structure references for things like .rows, .cols, etc.
 

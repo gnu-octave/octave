@@ -21,7 +21,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA. 
 
-AC_REVISION($Revision: 1.311 $)
+AC_REVISION($Revision: 1.312 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -295,6 +295,8 @@ if test -n "$LD_STATIC_FLAG"; then
   AC_MSG_RESULT([defining LD_STATIC_FLAG to be $LD_STATIC_FLAG])
 fi
 AC_SUBST(LD_STATIC_FLAG)
+
+OCTAVE_CXX_PREPENDS_UNDERSCORE
 
 ### We need these before trying to find libf2c.
 
@@ -1067,6 +1069,7 @@ esac
 
 AC_PROG_LN_S
 
+OCTAVE_PROG_NM
 OCTAVE_PROG_RUNTEST
 
 AC_PROG_INSTALL

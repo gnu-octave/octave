@@ -710,7 +710,7 @@ dnl
 dnl OCTAVE_CXX_FLAG
 AC_DEFUN(OCTAVE_CXX_FLAG, [
   ac_safe=`echo "$1" | sed 'y%./+-%__p_%'`
-  AC_MSG_CHECKING(whether ${CXX-c++} accepts $1)
+  AC_MSG_CHECKING(whether ${CXX-g++} accepts $1)
   AC_CACHE_VAL(octave_cv_cxx_flag_$ac_safe, [
     AC_LANG_SAVE
     AC_LANG_CPLUSPLUS
@@ -807,6 +807,7 @@ fi
 dnl
 dnl Is DejaGNU installed?
 dnl
+dnl OCTAVE_PROG_RUNTEST
 AC_DEFUN(OCTAVE_PROG_RUNTEST,
 [if test "$cross_compiling" = yes; then
   RUNTEST=runtest
@@ -820,4 +821,46 @@ else
   fi
   AC_SUBST(RUNTEST)
 fi
+])
+dnl
+dnl Find nm.
+dnl
+dnl OCTAVE_PROG_NM
+AC_DEFUN(OCTAVE_PROG_NM,
+[if test "$cross_compiling" = yes; then
+  NM=nm
+  AC_MSG_RESULT(assuming $NM exists on $canonical_host_type host)
+  AC_SUBST(NM)
+else
+  AC_CHECK_PROG(NM, nm, nm, [])
+  AC_SUBST(NM)
+fi
+])
+dnl
+dnl See if the C++ compiler prepends an underscore to external names.
+dnl
+dnl OCTAVE_CXX_PREPENDS_UNDERSCORE
+AC_DEFUN(OCTAVE_CXX_PREPENDS_UNDERSCORE,
+[AC_MSG_CHECKING([whether ${CXX-g++} prepends an underscore to external names])
+  AC_CACHE_VAL(octave_cv_cxx_prepends_underscore,
+    [octave_cv_cxx_prepends_underscore=no
+    AC_LANG_SAVE
+    AC_LANG_CPLUSPLUS
+    cat > conftest.$ac_ext <<EOF
+bool FSmy_dld_fcn (void) { }
+EOF
+    if AC_TRY_EVAL(ac_compile); then
+      if test "`${NM-nm} conftest.o | grep _FSmy_dld_fcn`" != ""; then
+        octave_cv_cxx_prepends_underscore=yes
+      fi
+    else
+      echo "configure: failed program was:" >&AC_FD_CC
+      cat conftest.$ac_ext >&AC_FD_CC
+    fi
+    AC_LANG_RESTORE
+  ])
+  AC_MSG_RESULT($octave_cv_cxx_prepends_underscore)
+  if test $octave_cv_cxx_prepends_underscore = yes; then
+    AC_DEFINE(CXX_PREPENDS_UNDERSCORE)
+  fi
 ])

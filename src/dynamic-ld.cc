@@ -240,24 +240,6 @@ octave_dynamic_loader::load_fcn_from_dot_oct_file (const string& fcn_name)
       builtin_fcn_installer f
 	= instance->resolve_reference (mangled_name, oct_file);
 
-
-      // XXX FIXME XXX -- this should probably be handled correctly by
-      // mangle_octave_oct_file_name using a configure test.
-
-      // Perhaps we should always check for both forms of the name and
-      // issue a warning if they both exist?  (I still think it would
-      // be best to use some configure test to determine exactly what
-      // form of the symbol name we should be looking for...)
-
-      if (! f)
-	{
-	  string t = "_";
-
-	  mangled_name = t.append (mangled_name);
-
-	  f = instance->resolve_reference (mangled_name, oct_file);
-	}
-
       if (f)
 	retval = f ();
     }
@@ -274,7 +256,11 @@ octave_dynamic_loader::resolve_reference (const string&, const string&)
 string
 octave_dynamic_loader::mangle_name (const string& name)
 {
+#if defined (CXX_PREPENDS_UNDERSCORE)
+  string retval ("_FS");
+#else
   string retval ("FS");
+#endif
   retval.append (name);
   retval.append ("__Fv");
   return retval;

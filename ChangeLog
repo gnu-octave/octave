@@ -1,3 +1,13 @@
+2005-02-28  John W. Eaton  <jwe@octave.org>
+
+	* octMakefile.in (DISTDIRS): Remove glob from the list.
+	(dist): No need to clean up in glob subdirectory.
+	* glob: Delete directory.
+	* Makeconf.in (GLOB_INCFLAGS, LIBGLOB): Delete.
+	(do-subst-config-vals): Don't substitute them.
+	(INCFLAGS): Remove $(GLOB_INCFLAGS) from the list.
+	* configure.in: Don't test for glob or fnmatch.
+
 2005-02-22  Shan G. Smith  <shan@cybertrails.com>
 
 	* mkoctfile.in: If not linking, then use output file name

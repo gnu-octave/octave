@@ -1,3 +1,11 @@
+2005-02-28  John W. Eaton  <jwe@octave.org>
+
+	* toplev.cc (octave_config_info): Remove LIBGLOB and GLOB_INCFLAGS
+	from the list.
+	* oct-conf.h.in (OCTAVE_CONF_LIBGLOB, OCTAVE_CONF_GLOB_INCFLAGS):
+	Delete.
+	* Makefile.in (OCTAVE_LIBS): Remove $(LIBGLOB) from the list.
+
 2005-02-25  John W. Eaton  <jwe@octave.org>
 
 	Sparse merge.

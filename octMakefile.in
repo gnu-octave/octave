@@ -32,7 +32,7 @@ DISTFILES = $(CONF_DISTFILES) \
 	mkoctfile.in texi2dvi ChangeLog ChangeLog.[0-9]
 
 # Complete directory trees to distribute.
-DISTDIRS = glob # plplot
+DISTDIRS = # plplot
 
 # Subdirectories in which to run `make all'.
 SUBDIRS = @PLPLOT_DIR@ @DLFCN_DIR@ @GLOB_DIR@ \
@@ -179,8 +179,6 @@ dist: dist-info-files
 	  -o -name config.status -o -name config.cache -o -name stamp-h \
 	  -o -name klibtool.config -o -name stamp-auto \
 	  -o -name c-auto.h \) -print | xargs rm -rf
-	find `cat .fname`/glob -name Makefile | xargs rm -f
-	find `cat .fname`/glob -name config.h | xargs rm -f
 	rm -f `cat .fname`/test/octave.test/*.m
 	chmod -R a+rwX `cat .fname`
 	tar cf `cat .fname`.tar `cat .fname`

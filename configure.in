@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.460 $)
+AC_REVISION($Revision: 1.461 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -920,8 +920,6 @@ have_termios_h=no
 AC_CHECK_HEADERS($TERMIOS_H, have_termios_h=yes)
 AC_CHECK_HEADERS(termio.h, have_termio_h=yes, have_termio_h=no)
 AC_CHECK_HEADERS(sgtty.h, have_sgtty_h=yes, have_sgtty_h=no)
-AC_CHECK_HEADERS(glob.h, have_glob_h=yes, have_glob_h=no)
-AC_CHECK_HEADERS(fnmatch.h, have_fnmatch_h=yes, have_fnmatch_h=no)
 AC_CHECK_HEADERS(conio.h, have_conio_h=yes, have_conio_h=no)
 
 ### I'm told that termios.h is broken on NeXT systems.
@@ -942,42 +940,6 @@ if test "$have_termios_h" = yes \
 else
   AC_MSG_WARN([I couldn't find termios.h, termio.h, or sgtty.h!])
 fi
-
-## I'm told that setting LIBGLOB to be $(TOPDIR)/glob/libglob.a causes
-## trouble on SCO systems, but setting it to be the two object files
-## avoids the problem.
-
-GLOB_DIR=glob
-if test -n "$ALLOCA"; then
-  LIBGLOB='$(TOPDIR)/glob/glob.o $(TOPDIR)/glob/fnmatch.o $(TOPDIR)/glob/alloca.o'
-else
-  LIBGLOB='$(TOPDIR)/glob/glob.o $(TOPDIR)/glob/fnmatch.o'
-fi
-GLOB_INCFLAGS='-I$(top_srcdir)/glob -I$(TOPDIR)/glob'
-if test "$have_fnmatch_h" = yes && test "$have_glob_h" = yes; then
-  AC_EGREP_CPP(yes, [#include <fnmatch.h>
-#ifdef FNM_NOESCAPE
-#ifdef FNM_FOOBAR_PATHNAME /* FIXME: delete FOOBAR_ ? */
-#ifdef FNM_PERIOD
-   yes
-#endif
-#endif
-#endif
-    ], [
-      GLOB_DIR=
-      AC_CHECK_LIB(glob, glob)
-      AC_CHECK_FUNCS(fnmatch, have_fnmatch=yes, have_fnmatch=no)
-      AC_CHECK_FUNCS(glob, have_glob=yes, have_glob=no)
-      if test "$have_fnmatch" = yes && test "$have_glob" = yes; then
-	GLOB_DIR=
-	LIBGLOB=
-	GLOB_INCFLAGS=
-      fi
-    ])
-fi
-AC_SUBST(GLOB_DIR)
-AC_SUBST(LIBGLOB)
-AC_SUBST(GLOB_INCFLAGS)
 
 ### Checks for functions and variables.
 
@@ -1364,15 +1326,8 @@ export F77
 
 AC_CONFIG_SUBDIRS(scripts)
 
-# autoconf 2.50 deprecates the use of variables (e.g. $GLOB_DIR)
-# in AC_CONFIG_SUBDIRS; the following form is recommended instead:
-
-if test "x$GLOB_DIR" = xglob; then
-	AC_CONFIG_SUBDIRS(glob)
-fi
-
 if test "x$PLPLOT_DIR" = xplplot; then
-	AC_CONFIG_SUBDIRS(plplot)
+  AC_CONFIG_SUBDIRS(plplot)
 fi
 
 ### Some things to add to the bottom of config.h.

@@ -1,7 +1,11 @@
+2005-02-28  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in (LINK_DEPS): Remove -lglob from the list.
+
 2005-02-27  David Bateman  <dbateman@free.org>
 
-	* Sparse.cc (Sparse<T>::reshape): Set cidx for the N last elements in the
-	sparse matrix.
+	* Sparse.cc (Sparse<T>::reshape): Set cidx for the N last elements
+	in the sparse matrix.
 	
 2005-02-25  John W. Eaton  <jwe@octave.org>
 

@@ -91,7 +91,6 @@ ALL_FFLAGS = $(FFLAGS)
 # cc and associated flags.
 
 DLFCN_INCFLAGS = @DLFCN_INCFLAGS@
-GLOB_INCFLAGS = @GLOB_INCFLAGS@
 
 # Clean up INCFLAGS a bit if we are not compiling in a separate
 # directory.
@@ -117,7 +116,7 @@ else
     -I$(top_srcdir)/src \
     -I$(top_srcdir)/libcruft/misc
 endif
-INCFLAGS = $(TMP_IF_1) $(TMP_IF_2) $(DLFCN_INCFLAGS) $(GLOB_INCFLAGS)
+INCFLAGS = $(TMP_IF_1) $(TMP_IF_2) $(DLFCN_INCFLAGS)
 
 LIBFLAGS = -L$(TOPDIR)
 
@@ -178,7 +177,6 @@ RLD_FLAG = @RLD_FLAG@
 FLIBS = @FLIBS@
 
 LIBDLFCN = @LIBDLFCN@
-LIBGLOB = @LIBGLOB@
 LIBPLPLOT = @LIBPLPLOT@
 LIBOCTINTERP = @LIBOCTINTERP@
 LIBOCTAVE = @LIBOCTAVE@
@@ -430,7 +428,6 @@ $(SED) < $< \
   -e "s;%OCTAVE_CONF_FFTW_LIBS%;\"${FFTW_LIBS}\";" \
   -e "s;%OCTAVE_CONF_FLIBS%;\"${FLIBS}\";" \
   -e "s;%OCTAVE_CONF_FPICFLAG%;\"${FPICFLAG}\";" \
-  -e "s;%OCTAVE_CONF_GLOB_INCFLAGS%;\"${GLOB_INCFLAGS}\";" \
   -e "s;%OCTAVE_CONF_INCFLAGS%;\"${INCFLAGS}\";" \
   -e "s;%OCTAVE_CONF_LD_CXX%;\"${LD_CXX}\";" \
   -e "s;%OCTAVE_CONF_LDFLAGS%;\"${LDFLAGS}\";" \
@@ -442,7 +439,6 @@ $(SED) < $< \
   -e "s;%OCTAVE_CONF_LIBDLFCN%;\"${LIBDLFCN}\";" \
   -e "s;%OCTAVE_CONF_LIBEXT%;\"${LIBEXT}\";" \
   -e "s;%OCTAVE_CONF_LIBFLAGS%;\"${LIBFLAGS}\";" \
-  -e "s;%OCTAVE_CONF_LIBGLOB%;\"${LIBGLOB}\";" \
   -e "s;%OCTAVE_CONF_LIBOCTAVE%;\"${LIBOCTAVE}\";" \
   -e "s;%OCTAVE_CONF_LIBOCTINTERP%;\"${LIBOCTINTERP}\";" \
   -e "s;%OCTAVE_CONF_LIBPLPLOT%;\"${LIBPLPLOT}\";" \

@@ -1101,7 +1101,8 @@ octave_scan (std::istream& is, const scanf_format_elt& fmt, T* valptr)
 
 template<>
 std::istream&
-octave_scan<> (std::istream& is, const scanf_format_elt& fmt, char* valptr)
+octave_scan<> (std::istream& is, const scanf_format_elt& /* fmt */,
+	       char* valptr)
 {
   return is >> valptr;
 }

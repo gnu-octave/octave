@@ -486,7 +486,7 @@ tree_checker::visit_subplot (subplot& cmd)
 }
 
 void
-tree_checker::visit_subplot_axes (subplot_axes& cmd)
+tree_checker::visit_subplot_axes (subplot_axes&)
 {
 }
 

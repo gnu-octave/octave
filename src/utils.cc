@@ -227,7 +227,7 @@ keyword_almost_match (const char * const *std, int *min_len, const std::string& 
 // should be considered fatal; return 1 if this is ok.
 
 int
-empty_arg (const char *name, int nr, int nc)
+empty_arg (const char * /* name */, int nr, int nc)
 {
   return (nr == 0 || nc == 0);
 }

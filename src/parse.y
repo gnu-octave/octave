@@ -3811,7 +3811,7 @@ so any results remain available after @code{eval} returns.\n\
   return retval;
 }
 
-DEFUN (assignin, args, nargout,
+DEFUN (assignin, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} assignin (@var{context}, @var{varname}, @var{value})\n\
 Assign @var{value} to @var{varname} in context @var{context}, which\n\

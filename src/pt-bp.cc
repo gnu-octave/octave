@@ -271,22 +271,23 @@ tree_breakpoint::visit_complex_for_command (tree_complex_for_command& cmd)
 }
 
 void 
-tree_breakpoint::visit_octave_user_function (octave_user_function& cmd)
+tree_breakpoint::visit_octave_user_function (octave_user_function&)
 {
-  // we should not visit octave user functions because the function we are currently 
-  // in is the function where the breakpoint was requested
+  // We should not visit octave user functions because the function we
+  // are currently in is the function where the breakpoint was
+  // requested.
 }
 
 void 
-tree_breakpoint::visit_octave_user_function_header (octave_user_function& cmd)
+tree_breakpoint::visit_octave_user_function_header (octave_user_function&)
 {
-  // Do nothing
+  // Do nothing.
 }
 
 void 
-tree_breakpoint::visit_octave_user_function_trailer (octave_user_function& cmd)
+tree_breakpoint::visit_octave_user_function_trailer (octave_user_function&)
 {
-  // Do nothing
+  // Do nothing.
 }
 
 void 
@@ -482,13 +483,13 @@ tree_breakpoint::visit_plot_command (tree_plot_command& cmd)
 }
 
 void
-tree_breakpoint::visit_plot_limits (plot_limits& cmd)
+tree_breakpoint::visit_plot_limits (plot_limits&)
 {
   // Do nothing.  This case will be handled in visit_tree_plot_command.
 }
 
 void 
-tree_breakpoint::visit_plot_range (plot_range& cmd)
+tree_breakpoint::visit_plot_range (plot_range&)
 {
   // Do nothing.  This case will be handled in visit_tree_plot_command.
 }
@@ -596,31 +597,31 @@ tree_breakpoint::visit_statement_list (tree_statement_list& lst)
 }
 
 void 
-tree_breakpoint::visit_subplot (subplot& cmd)
+tree_breakpoint::visit_subplot (subplot&)
 {
   // Do nothing.  This case will be handled in visit_tree_plot_command.
 }
 
 void
-tree_breakpoint::visit_subplot_axes (subplot_axes& cmd)
+tree_breakpoint::visit_subplot_axes (subplot_axes&)
 {
   // Do nothing.  This caser will be handled in visit_tree_plot_command.
 }
 
 void
-tree_breakpoint::visit_subplot_list (subplot_list& cmd)
+tree_breakpoint::visit_subplot_list (subplot_list&)
 {
   // Do nothing.  This case will be handled in visit_tree_plot_command.
 }
 
 void 
-tree_breakpoint::visit_subplot_style (subplot_style& cmd)
+tree_breakpoint::visit_subplot_style (subplot_style&)
 {
   // Do nothing.  This case will be handled in visit_tree_plot_command.
 }
 
 void
-tree_breakpoint::visit_subplot_using (subplot_using& cmd)
+tree_breakpoint::visit_subplot_using (subplot_using&)
 {
   // Do nothing.  This case will be handled in visit_tree_plot_command.
 }

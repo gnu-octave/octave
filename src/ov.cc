@@ -969,7 +969,7 @@ octave_value::list_value (void) const
 
 ColumnVector
 octave_value::column_vector_value (bool force_string_conv,
-				   bool force_vector_conversion) const
+				   bool /* frc_vec_conv */) const
 {
   ColumnVector retval;
 
@@ -998,7 +998,7 @@ octave_value::column_vector_value (bool force_string_conv,
 
 ComplexColumnVector
 octave_value::complex_column_vector_value (bool force_string_conv,
-					   bool force_vector_conversion) const
+					   bool /* frc_vec_conv */) const
 {
   ComplexColumnVector retval;
 
@@ -1027,7 +1027,7 @@ octave_value::complex_column_vector_value (bool force_string_conv,
 
 RowVector
 octave_value::row_vector_value (bool force_string_conv,
-				bool force_vector_conversion) const
+				bool /* frc_vec_conv */) const
 {
   RowVector retval;
 
@@ -1056,7 +1056,7 @@ octave_value::row_vector_value (bool force_string_conv,
 
 ComplexRowVector
 octave_value::complex_row_vector_value (bool force_string_conv,
-					bool force_vector_conversion) const
+					bool /* frc_vec_conv */) const
 {
   ComplexRowVector retval;
 
@@ -1671,7 +1671,7 @@ gripe_unary_op_failed_or_no_method (const std::string& on,
 #endif
 
 void
-octave_value::do_non_const_unary_op (unary_op op, const octave_value_list& idx)
+octave_value::do_non_const_unary_op (unary_op, const octave_value_list&)
 {
   abort ();
 }

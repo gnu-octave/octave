@@ -1,6 +1,10 @@
 2003-11-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Array.cc (assignN): Allow single indexing to work.
+	(Array<T>::range_error (const char*, const Array<int>&)):
+	Report index values.
+
+	* Array.cc (Array<T>::index): Delete unused arg names.
 
 	* dim-vector.h (dim_vector::all_ones): New function.
 

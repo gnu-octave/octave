@@ -32,7 +32,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // they are stored in doubles.
 
 save_type
-get_save_type (double max_val, double min_val)
+get_save_type (double /* max_val */, double /* min_val */)
 {
   save_type st = LS_DOUBLE;
 

@@ -3,6 +3,48 @@
 	* version.h (OCTAVE_VERSION): Now 2.1.52.
 	(OCTAVE_API_VERSION): Now api-v3.
 
+	* ov.h (octave_value::all_strings): Pass second arg to rep function.
+
+	* DLD-FUNCTIONS/dasrt.cc (dasrt_user_f): Delete unused arg names.
+	* load-save.cc (do_load): Likewise.
+	* ls-utils.cc (get_save_type): Likewise.
+	* parse.y (Fassignin): Likewise.
+	* utils.cc (empty_arg): Likewise.
+	* ov-usr-fcn.h (octave_user_function::subsref): Likewise.
+	* ov-base-mat.h (octave_base_matrix::subsref): Likewise.
+	* ov-mapper.h (octave_mapper::subsref): Likewise.
+	* ov-builtin.h (octave_builtin::subsref): Likewise.
+	* ov-cell.h (octave_cell::subsref): Likewise.
+	* ov-base-scalar.h (octave_base_scalar::subsref): Likewise.
+	* ov-struct.h (octave_struct::subsref): Likewise.
+	* ov-range.h (octave_range::subsref): Likewise.
+	* ov-list.h (octave_list::subsref): Likewise.
+	* ov-base.cc (octave_base_value::print_info): Likewise.
+	* pt-check.cc (tree_checker::visit_subplot_axes): Likewise.
+	* pr-output.cc (octave_print_internal (std::ostream&, double, bool),
+	octave_print_internal (std::ostream&, const Complex&, bool),
+	octave_print_internal (std::ostream& const charNDArray&, bool,
+	int, bool): Likewise.
+	* oct-stream.cc (octave_scan<> (std::istream&, const
+	scanf_format_elt&, char*): Likewise
+	* TEMPLATE-INST/Array-tc.cc (resize_fill_value<octave_value>):
+	Likewise.
+	* pt-bp.cc (tree_breakpoint::visit_octave_user_function,
+	tree_breakpoint::visit_octave_user_function_header,
+	tree_breakpoint::visit_octave_user_function_trailer,
+	tree_breakpoint::visit_plot_limits,
+	tree_breakpoint::visit_plot_range,
+	tree_breakpoint::visit_subplot,
+	tree_breakpoint::visit_subplot_axes,
+	tree_breakpoint::visit_subplot_list,
+	tree_breakpoint::visit_subplot_style,
+	tree_breakpoint::visit_subplot_using): Likewise.
+	* ov.cc (octave_value::column_vector_value,
+	(octave_value::complex_column_vector_value,
+	(octave_value::row_vector_value,
+	octave_value::complex_row_vector_value,
+	octave_value::do_non_const_unary_op): Likewise.
+
 	* load-save.cc: Only include ls-hdf5.h if HAVE_HDF5 is defined.
 	From Melqart <melqart@free.fr>.
 

@@ -239,7 +239,7 @@ octave_base_value::print_name_tag (std::ostream& os, const std::string& name) co
 
 void
 octave_base_value::print_info (std::ostream& os,
-			       const std::string& prefix) const
+			       const std::string& /* prefix */) const
 {
   os << "no info for type: " << type_name () << "\n";
 }

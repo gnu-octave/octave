@@ -536,7 +536,7 @@ public:
 
   virtual string_vector all_strings (bool pad = false,
 				     bool force = false) const
-    { return rep->all_strings (pad); }
+    { return rep->all_strings (pad, force); }
 
   virtual std::string string_value (bool force = false) const
     { return rep->string_value (); }

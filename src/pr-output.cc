@@ -1354,7 +1354,8 @@ pr_plus_format (std::ostream& os, double d)
 }
 
 void
-octave_print_internal (std::ostream& os, double d, bool pr_as_read_syntax)
+octave_print_internal (std::ostream& os, double d,
+		       bool /* pr_as_read_syntax */)
 {
   if (plus_format)
     {
@@ -1614,7 +1615,7 @@ pr_plus_format (std::ostream& os, const Complex& c)
 
 void
 octave_print_internal (std::ostream& os, const Complex& c,
-		       bool pr_as_read_syntax)
+		       bool /* pr_as_read_syntax */)
 {
   if (plus_format)
     {
@@ -1964,7 +1965,7 @@ octave_print_internal (std::ostream& os, const charMatrix& chm,
 
 void
 octave_print_internal (std::ostream& os, const charNDArray& nda,
-		       bool pr_as_read_syntax, int extra_indent,
+		       bool pr_as_read_syntax, int /* extra_indent */,
 		       bool pr_as_string)
 {
   switch (nda.ndims ())

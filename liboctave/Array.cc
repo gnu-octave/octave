@@ -40,6 +40,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Range.h"
 #include "idx-vector.h"
 #include "lo-error.h"
+#include "lo-sstream.h"
 
 // One dimensional array class.  Handles the reference counting for
 // all the derived classes.
@@ -319,9 +320,25 @@ template <class T>
 T
 Array<T>::range_error (const char *fcn, const Array<int>& ra_idx) const
 {
-  // XXX FIXME XXX -- report index values too!
+  OSSTREAM buf;
 
-  (*current_liboctave_error_handler) ("range error in Array");
+  buf << fcn << " (";
+
+  int n = ra_idx.length ();
+
+  if (n > 0)
+    buf << ra_idx(0);
+
+  for (int i = 1; i < n; i++)
+    buf << ", " << ra_idx(i);
+
+  buf << "): range error";
+
+  buf << OSSTREAM_ENDS;
+
+  (*current_liboctave_error_handler) (OSSTREAM_C_STR (buf));
+
+  OSSTREAM_FREEZE (buf);
 
   return T ();
 }
@@ -330,9 +347,25 @@ template <class T>
 T&
 Array<T>::range_error (const char *fcn, const Array<int>& ra_idx)
 {
-  // XXX FIXME XXX -- report index values too!
+  OSSTREAM buf;
 
-  (*current_liboctave_error_handler) ("range error in Array");
+  buf << fcn << " (";
+
+  int n = ra_idx.length ();
+
+  if (n > 0)
+    buf << ra_idx(0);
+
+  for (int i = 1; i < n; i++)
+    buf << ", " << ra_idx(i);
+
+  buf << "): range error";
+
+  buf << OSSTREAM_ENDS;
+
+  (*current_liboctave_error_handler) (OSSTREAM_C_STR (buf));
+
+  OSSTREAM_FREEZE (buf);
 
   static T foo;
   return foo;
@@ -1966,7 +1999,7 @@ Array<T>::index (idx_vector& idx_i, idx_vector& idx_j, int resize_ok,
 
 template <class T>
 Array<T>
-Array<T>::index (Array<idx_vector>& ra_idx, int resize_ok, const T& rfv) const
+Array<T>::index (Array<idx_vector>& ra_idx, int resize_ok, const T&) const
 {
   // This function handles all calls with more than one idx.
   // For (3x3x3), the call can be A(2,5), A(2,:,:), A(3,2,3) etc.

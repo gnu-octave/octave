@@ -100,7 +100,7 @@ Schur decomposition.\n\
 
   if (nargout == 0 || nargout == 1)
     {
-      retval(0) = result.eigenvalues (), 1;
+      retval(0) = result.eigenvalues ();
     }
   else
     {

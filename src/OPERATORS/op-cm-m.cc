@@ -45,13 +45,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 DEFBINOP_OP (add, complex_matrix, matrix, +)
 DEFBINOP_OP (sub, complex_matrix, matrix, -)
 DEFBINOP_OP (mul, complex_matrix, matrix, *)
-
-DEFBINOP (div, complex_matrix, matrix)
-{
-  CAST_BINOP_ARGS (const octave_complex_matrix&, const octave_matrix&);
-
-  return xdiv (v1.complex_matrix_value (), v2.matrix_value ());
-}
+DEFBINOP_FN (div, complex_matrix, matrix, xdiv)
 
 DEFBINOPX (pow, complex_matrix, matrix)
 {

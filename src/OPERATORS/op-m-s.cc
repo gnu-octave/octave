@@ -59,7 +59,12 @@ DEFBINOP_FN (pow, matrix, scalar, xpow)
 
 DEFBINOP (ldiv, matrix, scalar)
 {
-  BINOP_NONCONFORMANT ("operator \\");
+  CAST_BINOP_ARGS (const octave_matrix&, const octave_scalar&);
+
+  Matrix m1 = v1.matrix_value ();
+  Matrix m2 = v2.matrix_value ();
+
+  return octave_value (xleftdiv (m1, m2));
 }
 
 DEFBINOP_FN (lt, matrix, scalar, mx_el_lt)

@@ -35,6 +35,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov.h"
 #include "ov-scalar.h"
 #include "ov-cx-mat.h"
+#include "ov-re-mat.h"
 #include "ov-typeinfo.h"
 #include "ops.h"
 #include "xdiv.h"
@@ -48,7 +49,12 @@ DEFBINOP_OP (mul, scalar, complex_matrix, *)
 
 DEFBINOP (div, scalar, complex_matrix)
 {
-  BINOP_NONCONFORMANT ("operator /");
+  CAST_BINOP_ARGS (const octave_scalar&, const octave_complex_matrix&);
+
+  Matrix m1 = v1.matrix_value ();
+  ComplexMatrix m2 = v2.complex_matrix_value ();
+
+  return octave_value (xdiv (m1, m2));
 }
 
 DEFBINOP_FN (pow, scalar, complex_matrix, xpow)

@@ -63,7 +63,12 @@ DEFBINOP_FN (pow, matrix, complex, xpow)
 
 DEFBINOP (ldiv, matrix, complex)
 {
-  BINOP_NONCONFORMANT ("operator \\");
+  CAST_BINOP_ARGS (const octave_matrix&, const octave_complex&);
+
+  Matrix m1 = v1.matrix_value ();
+  ComplexMatrix m2 = v2.complex_matrix_value ();
+
+  return octave_value (xleftdiv (m1, m2));
 }
 
 DEFBINOP_FN (lt, matrix, complex, mx_el_lt)

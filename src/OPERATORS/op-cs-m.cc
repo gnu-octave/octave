@@ -49,7 +49,12 @@ DEFBINOP_OP (mul, complex, matrix, *)
 
 DEFBINOP (div, complex, matrix)
 {
-  BINOP_NONCONFORMANT ("operator /");
+  CAST_BINOP_ARGS (const octave_complex&, const octave_matrix&);
+
+  ComplexMatrix m1 = v1.complex_matrix_value ();
+  Matrix m2 = v2.matrix_value ();
+
+  return octave_value (xdiv (m1, m2));
 }
 
 DEFBINOP_FN (pow, complex, matrix, xpow)

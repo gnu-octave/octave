@@ -45,7 +45,12 @@ DEFBINOP_OP (mul, scalar, matrix, *)
 
 DEFBINOP (div, scalar, matrix)
 {
-  BINOP_NONCONFORMANT ("operator /");
+  CAST_BINOP_ARGS (const octave_scalar&, const octave_matrix&);
+
+  Matrix m1 = v1.matrix_value ();
+  Matrix m2 = v2.matrix_value ();
+
+  return octave_value (xdiv (m1, m2));
 }
 
 DEFBINOP_FN (pow, scalar, matrix, xpow)

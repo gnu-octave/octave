@@ -56,13 +56,7 @@ DEFNCUNOP_METHOD (decr, matrix, decrement)
 DEFBINOP_OP (add, matrix, matrix, +)
 DEFBINOP_OP (sub, matrix, matrix, -)
 DEFBINOP_OP (mul, matrix, matrix, *)
-
-DEFBINOP (div, matrix, matrix)
-{
-  CAST_BINOP_ARGS (const octave_matrix&, const octave_matrix&);
-
-  return xdiv (v1.matrix_value (), v2.matrix_value ());
-}
+DEFBINOP_FN (div, matrix, matrix, xdiv)
 
 DEFBINOPX (pow, matrix, matrix)
 {

@@ -1,6 +1,6 @@
 function x = lyap (a, b, c)
 
-# usage: x = lyap (a, b {,c})
+# Usage: x = lyap (a, b {,c})
 #
 # If (a, b, c) are specified, then lyap returns the solution of the
 # Sylvester equation
@@ -21,6 +21,11 @@ function x = lyap (a, b, c)
 #   a x + x a' + b b' = 0
 #
 # whichever is appropriate.
+#
+# Solves by using the Bartels-Stewart algorithm (1972).
+
+# Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
+  
 
   if (nargin != 3 && nargin != 2)
     error ("usage: lyap (a, b {,c})");
@@ -68,7 +73,7 @@ function x = lyap (a, b, c)
       error ("lyap: b must be square in a sylvester equation");
     endif
 
-    [n1,m1] = size(c);
+    [n1, m1] = size(c);
 
     if (n != n1 || m != m1)
       error("lyap: a,b,c not conformably dimensioned");
@@ -77,6 +82,6 @@ function x = lyap (a, b, c)
 
 # Call octave built-in function.
 
-  x = syl(a,b,c);
+  x = syl (a, b, c);
 
 endfunction

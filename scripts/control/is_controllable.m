@@ -1,20 +1,24 @@
-function retval = is_controllable (a,b,tol)
+function retval = is_controllable (a, b, tol)
 
-# usage: is_controllable (a,b{,tol})
+# Usage: is_controllable (a, b {,tol})
 #
 # Returns 1 if the pair (a, b) is controllable, or 0 if not.
 #
 # See also: size, rows, columns, length, is_matrix, is_scalar, is_vector
-
+#
 # This should really use the method below, but I'm being lazy for now:
 #
 # Controllability is determined by applying Arnoldi iteration with
 # complete re-orthogonalization to obtain an orthogonal basis of the
-# Krylov subspace
+# Krylov subspace.
+#
+# (FIX ME... The Krylov subspace approach is not done yet!)
 #                      n-1
 #   span ([b,a*b,...,a^   b]).
 #
-# tol is a roundoff paramter, set to 2*eps if omitted
+# tol is a roundoff paramter, set to 2*eps if omitted.
+
+# Written by A. S. Hodel (scotte@eng.auburn.edu) August, 1993.
 
   if (nargin == 2 || nargin == 3)
 

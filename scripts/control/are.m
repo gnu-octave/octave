@@ -1,6 +1,6 @@
 function x = are (a, b, c, opt)
 
-# usage: x = are (a, b, c {,opt})
+# Usage: x = are (a, b, c {,opt})
 #
 # Solves algebraic riccati equation
 #
@@ -12,7 +12,9 @@ function x = are (a, b, c, opt)
 # opt is an option passed to the eigenvalue balancing routine; default
 # is `B'. 
 #
-# see also: balance
+# See also: balance
+
+# Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
 
   if (nargin == 3 || nargin == 4)
     if (nargin == 4)

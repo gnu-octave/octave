@@ -764,9 +764,6 @@ main (int argc, char **argv)
 
   // Allow the user to interrupt us without exiting.
 
-  volatile sig_handler *saved_sigint_handler
-    = octave_set_signal_handler (SIGINT, SIG_IGN);
-
   if (setjmp (toplevel) != 0)
     {
       raw_mode (0);

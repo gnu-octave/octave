@@ -18,12 +18,12 @@
 
 function retval = ctime (t)
 
-# usage: ctime (TMSTRUCT)
+# usage: ctime (TIME)
 
   if (nargin == 1)
     retval = asctime (localtime (t));
   else
-    usage ("ctime (TMSTRUCT)");
+    usage ("ctime (TIME)");
   endif
 
 endfunction

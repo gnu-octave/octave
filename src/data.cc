@@ -786,6 +786,19 @@ DEFUN (isempty, args, ,
   return retval;
 }
 
+DEFUN (isnumeric, args, ,
+  "isnumeric (x): return nonzero if x is a numeric object")
+{
+  octave_value retval;
+
+  if (args.length () == 1)
+    retval = args(0).is_numeric_type () ? 1.0 : 0.0;
+  else
+    print_usage ("is_list");
+
+  return retval;
+}
+
 DEFUN (is_list, args, ,
   "is_list (x): return nonzero if x is a list")
 {

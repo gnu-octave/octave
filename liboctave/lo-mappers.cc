@@ -185,13 +185,13 @@ xisnan (const Complex& x)
 double
 xfinite (const Complex& x)
 {
-  return (! (xisinf (real (x)) || xisinf (imag (x))));
+  return (xfinite (real (x)) && xfinite (imag (x)));
 }
 
 double
 xisinf (const Complex& x)
 {
-  return (! xfinite (x));
+  return (xisinf (real (x)) || xisinf (imag (x)));
 }
 
 // Complex -> complex mappers.

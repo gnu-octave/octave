@@ -1,3 +1,11 @@
+Mon Nov  2 20:33:16 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* install-octave.in (SHLEXT): Substitute.
+	(SHLEXT_VER): Define.
+	Use them for installing shared libraries.
+	Use subshells to avoid having to cd back to $distdir.
+	(distdir): Delete variable.
+
 Fri Oct  2 14:23:59 1998  Kurt Hornik  <Kurt.Hornik@ci.tuwien.ac.at>
 
 	* octave-inf.el (inferior-octave-prompt):  Also match prompts of

@@ -95,8 +95,8 @@ INCLUDES_FOR_INSTALL := $(INCLUDES) $(TEMPLATE_SRC) $(EXTRAS)
 DISTFILES := Makefile.in ChangeLog $(SOURCES) $(INCLUDES) $(EXTRAS)
 
 ifeq ($(SHARED_LIBS), true)
-  BINDISTFILES = liboctave.$(SHLEXT_VER)
-  BINDISTLIBS = liboctave/liboctave.$(SHLEXT_VER)
+  BINDISTLIBS = liboctave/liboctave
+  BINDISTFILES = $(addsuffix $(BINDISTLIBS), $(SHLEXT_VER))
 endif
 
 MAKEDEPS_1 := $(patsubst %.cc, %.d, $(SOURCES))
@@ -117,6 +117,14 @@ LIBOCTAVE_DEPEND := $(patsubst %, liboctave.$(LIBEXT)(%), $(OBJECTS))
 
 all: libraries
 .PHONY: all
+
+stmp-pic: pic
+	@if [ -f stmp-pic ]; then \
+	  true; \
+	else \
+	  echo "touch stmp-pic"; \
+	  touch stmp-pic; \
+	fi
 
 pic:
 	@if [ -d pic ]; then \
@@ -152,7 +160,7 @@ liboctave.$(SHLEXT): liboctave.$(SHLEXT_VER)
 liboctave.$(SHLEXT_VER): $(PICOBJ)
 	$(SH_LD) $(SH_LDFLAGS) $(SONAME_FLAGS) -o $@ $^
 
-$(PICOBJ): pic
+$(PICOBJ): stmp-pic
 
 check: all
 .PHONY: check
@@ -208,6 +216,7 @@ TAGS: $(SOURCES)
 clean:
 	rm -f *.$(LIBEXT) *.o *.d pic/*.o
 	-rmdir pic
+	rm -f stmp-pic
 	if $(SHARED_LIBS); then rm -f *.$(SHLEXT_VER) *.$(SHLEXT); fi
 .PHONY: clean
 

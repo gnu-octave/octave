@@ -1,3 +1,20 @@
+Mon Nov  2 13:36:04 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (BINDISTLIBS): Don't include .$(SHLEXT_VER) in name.
+
+	* Makefile.in (stmp-pic): New target.
+	($(PICOBJ)): Depend on stmp-pic, not pic.
+	(clean): Remove stmp-pic
+
+	* Makefile.in: Undo previous change to avoid optmization when
+	compiling lo-ieee.cc.
+
+Sun Nov  1 10:10:40 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lo-mappers.cc (xfinite): Define in terms of xfinite for real and
+	imaginary parts.
+	(xisinf): Define in terms of xisinf for real and imaginary parts.
+
 Thu Oct 29 18:57:50 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* boolMatrix.cc (boolMatrix::operator !): New function.

@@ -37,8 +37,6 @@ EOF
   exit 1
 fi
 
-distdir=`pwd`
-
 # Check whether to use -n or \c to keep echo from printing a newline
 # character.  Stolen from autoconf, which borrowed the idea from dist 3.0.
 
@@ -58,6 +56,8 @@ else
 fi
 
 EXE=@EXE@
+SHLEXT=@SHLEXT@
+SHLEXT_VER=$SHLEXT.$version
 
 # ==================== Where To Install Things ====================
 
@@ -234,8 +234,10 @@ if test -f LIBRARIES; then
   for f in `cat LIBRARIES`
   do
     file=`basename $f`
-    cp $f $octlibdir/$file
-    chmod 644 $octlibdir/$file
+    cp $f $octlibdir/$file.$SHLEXT_VER
+    chmod 644 $octlibdir/$file.$SHLEXT_VER
+    ( cd $octlibdir
+      ln -s $file.$SHLEXT_VER $file.$SHLEXT )
   done
 fi
 
@@ -252,26 +254,23 @@ if test -n "$oct_files"; then
     cat src/links-to-make | while read src dest
     do
       if test -n "$src" && test -n "$dest"; then
-	cd $octfiledir
-	ln $src $dest
+	( cd $octfiledir
+          ln $src $dest )
       fi
     done
   fi
-  cd $distdir
 fi
 
 echo "installing .m files in $fcnfiledir"
-cd scripts
-tar cf - . | ( cd $fcnfiledir ; tar xf - )
-find $fcnfiledir -type f -print | xargs chmod 0644
-find $fcnfiledir -name '*.img' -print | xargs rm -f
-cd $distdir
+( cd scripts
+  tar cf - . | ( cd $fcnfiledir ; tar xf - )
+  find $fcnfiledir -type f -print | xargs chmod 0644
+  find $fcnfiledir -name '*.img' -print | xargs rm -f )
 
 echo "installing image files in $imagedir"
-cd scripts/image
-cp *.img $imagedir
-chmod 644 $imagedir/*.img
-cd $distdir
+( cd scripts/image
+  cp *.img $imagedir
+  chmod 644 $imagedir/*.img )
 
 echo "creating ls-R file in $datadir/octave"
 ls -LR $datadir/octave > $datadir/octave/ls-R

@@ -279,6 +279,8 @@ install_mapper_functions (void)
     "toupper (STRING): convert lower case characters to upper case in STRING");
 
   DEFALIAS (gammaln, lgamma);
+
+  DEFALIAS (isfinite, finite);
 }
 
 /*

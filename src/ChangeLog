@@ -1,3 +1,17 @@
+Mon Nov  2 13:36:04 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (stmp-pic): New target.
+	($(PICOBJ)): Depend on stmp-pic, not pic.
+	(clean): Delete stmp-pic.
+
+Sun Nov  1 23:24:55 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* mappers.cc (install_mapper_functions): Add alias for isfinite.
+
+Sat Oct 31 08:46:55 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* data.cc (Fisnumeric): New function.
+
 Fri Oct 30 08:39:30 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-lvalue.cc (octave_lvalue::do_unary_op): Make it work for

@@ -181,8 +181,8 @@ DISTFILES = Makefile.in ChangeLog mkdefs mkops mkbuiltins mk-oct-links \
 	$(INCLUDES) $(DIST_SRC)
 
 ifeq ($(SHARED_LIBS), true)
-  BINDISTFILES = octave $(OCT_FILES) liboctinterp.$(SHLEXT_VER)
-  BINDISTLIBS = src/liboctinterp.$(SHLEXT_VER)
+  BINDISTLIBS = src/liboctinterp
+  BINDISTFILES = $(addsuffix $(BINDISTLIBS), $(SHLEXT_VER))
 else
   BINDISTFILES = octave $(OCT_FILES)
 endif
@@ -394,7 +394,7 @@ bin-dist:
 	    $(addprefix $(srcdir)/, $(DLD_SRC)) \
 	    > ../`cat ../.fname`/src/links-to-make; \
 	fi
-	if [ -n "$(BINDISTLIBS)" ]; then \
+	if [ -n "$(BINDISTLIBNS)" ]; then \
 	  echo $(BINDISTLIBS) >> ../`cat ../.fname`/LIBRARIES; \
 	fi
 .PHONY: bin-dist

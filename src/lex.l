@@ -493,8 +493,10 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
     current_input_column = 1;
     convert_spaces_to_comma = 1;
 
-    if (nesting_level.empty () || nesting_level.top () == BRACE)
+    if (nesting_level.empty ())
       return '\n';
+    else if (nesting_level.top () == BRACE)
+      return ';';
   }
 
 %{

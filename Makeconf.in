@@ -91,7 +91,7 @@ getversion = sed -e '/version_string/!d' -e 's/.*"\(.*\)".*/\1/' -e q
 
 # The version number.  TOPDIR is something like `.' or `..' or `../..'
 # and gets us back up to the top level of the source tree.
-version = `$(getversion) $(srcdir)/$(TOPDIR)/src/version.h`
+version := `$(getversion) $(srcdir)/$(TOPDIR)/src/version.h`
 
 # ==================== Where To Install Things ====================
 

@@ -228,11 +228,15 @@ octave_env::do_polite_directory_format (const std::string& name) const
   return retval;
 }
 
+static inline bool
+is_dir_sep (char c)
+{
 #if defined (__CYGWIN__)
-#define IS_DIR_SEP(c) (c == '/' || c == '\\')
+  return (c == '/' || c == '\\');
 #else
-#define IS_DIR_SEP(c) (c == '/')
+  return (c == '/');
 #endif
+}
 
 bool
 octave_env::do_absolute_pathname (const std::string& s) const
@@ -246,16 +250,17 @@ octave_env::do_absolute_pathname (const std::string& s) const
     return true;
 
 #if defined (__CYGWIN__)
-  if (len > 2 && isalpha (s[0]) && s[1] == ':' && IS_DIR_SEP (s[2]))
+  if ((len == 2 && isalpha (s[0]) && s[1] == ':')
+      || (len > 2 && isalpha (s[0]) && s[1] == ':' && is_dir_sep (s[2])))
     return true;
 #endif
 
   if (s[0] == '.')
     {
-      if (len == 1 || IS_DIR_SEP (s[1]))
+      if (len == 1 || is_dir_sep (s[1]))
 	return true;
 
-      if (s[1] == '.' && (len == 2 || IS_DIR_SEP (s[2])))
+      if (s[1] == '.' && (len == 2 || is_dir_sep (s[2])))
 	return true;
     }
 
@@ -450,7 +455,7 @@ octave_env::do_chdir (const std::string& newdir)
 
       if (len > 1)
 	{
-	  if (tmp[--len] == '/')
+	  if (is_dir_sep (tmp[--len]))
 	    tmp.resize (len);
 	}
 

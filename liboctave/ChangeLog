@@ -4,6 +4,8 @@
 	filenames.
 	(octave_env::do_make_absolute): Check for absolute name with
 	do_absolute_path.
+	(octave_env::do_chdir): Likewise.
+	(is_dir_sep): New function.
 
 2002-10-03  Paul Kienzle <pkienzle@users.sf.net>
 

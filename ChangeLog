@@ -1,5 +1,7 @@
 2001-06-29  Mumit Khan  <khan@nanotech.wisc.edu>
 
+	* aclocal.m4 (OCTAVE_CXX_ABI): Use "sun_v5" instead of "sun".
+
 	* aclocal.m4 (OCTAVE_CXX_ABI): New macro.
 	(OCTAVE_CXX_PREPENDS_UNDERSCORE): Add missing return value.
 	* configure.in: Use.

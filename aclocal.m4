@@ -1016,7 +1016,7 @@ EOF
         octave_cv_cxx_abi='gnu_v3'
       fi
       if test "`${NM-nm} conftest.o | grep __1cMFSmy_dld_fcn6F_b_`" != ""; then
-        octave_cv_cxx_abi='sun'
+        octave_cv_cxx_abi='sun_v5'
       fi
     else
       echo "configure: failed program was:" >&AC_FD_CC

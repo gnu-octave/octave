@@ -38,6 +38,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "error.h"
 #include "tree-const.h"
+#include "utils.h"
 #include "xpow.h"
 
 // This function also appears in tree-const.cc.  Maybe it should be a
@@ -53,6 +54,14 @@ any_element_is_negative (const Matrix& a)
       if (a.elem (i, j) < 0.0)
 	return 1;
   return 0;
+}
+
+static inline int
+xisint (double x)
+{
+  return (D_NINT (x) == x
+	  && ((x >= 0 && x < INT_MAX)
+	      || (x <= 0 && x > INT_MIN)));
 }
 
 // Safer pow functions.
@@ -77,10 +86,10 @@ xpow (double a, double b)
   if (a < 0.0 && (int) b != b)
     {
       Complex atmp (a);
-      return tree_constant (pow (atmp, b));
+      return pow (atmp, b);
     }
   else
-    return tree_constant (pow (a, b));
+    return pow (a, b);
 }
 
 // -*- 2 -*-
@@ -110,8 +119,7 @@ xpow (double a, const Matrix& b)
 	}
       ComplexDiagMatrix D (lambda);
 
-      ComplexMatrix result = Q * D * Q.inverse ();
-      retval = tree_constant (result);
+      retval = ComplexMatrix (Q * D * Q.inverse ());
     }
 
   return retval;
@@ -124,7 +132,7 @@ xpow (double a, const Complex& b)
   Complex result;
   Complex atmp (a);
   result = pow (atmp, b);
-  return tree_constant (result);
+  return result;
 }
 
 // -*- 4 -*-
@@ -137,7 +145,9 @@ xpow (double a, const ComplexMatrix& b)
   int nc = b.columns ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for x^A, A must be square");
+    {
+      error ("for x^A, A must be square");
+    }
   else
     {
       EIG b_eig (b);
@@ -154,8 +164,7 @@ xpow (double a, const ComplexMatrix& b)
 	}
       ComplexDiagMatrix D (lambda);
 
-      ComplexMatrix result = Q * D * Q.inverse ();
-      retval = tree_constant (result);
+      retval = ComplexMatrix (Q * D * Q.inverse ());
     }
 
   return retval;
@@ -173,38 +182,68 @@ xpow (const Matrix& a, double b)
   if (nr == 0 || nc == 0 || nr != nc)
     {
       error ("for A^b, A must be square");
-      return retval;
     }
-
-  if ((int) b == b)
+  else
     {
-      int btmp = (int) b;
-      if (btmp == 0)
+      if ((int) b == b)
 	{
-	  DiagMatrix result (nr, nr, 1.0);
-	  retval = tree_constant (result);
+	  int btmp = (int) b;
+	  if (btmp == 0)
+	    {
+	      retval = DiagMatrix (nr, nr, 1.0);
+	    }
+	  else
+	    {
+	      // Too much copying?
+	      // XXX FIXME XXX -- we shouldn't do this if the exponent is
+	      // large...
+
+	      Matrix atmp;
+	      if (btmp < 0)
+		{
+		  btmp = -btmp;
+		  atmp = a.inverse ();
+		}
+	      else
+		atmp = a;
+
+	      Matrix result (atmp);
+	      for (int i = 1; i < btmp; i++)
+		result = result * atmp;
+
+	      retval = result;
+	    }
 	}
       else
 	{
-	  // Too much copying?
-	  // XXX FIXME XXX -- we shouldn't do this if the exponent is
-	  // large...
+	  EIG a_eig (a);
+	  ComplexColumnVector lambda (a_eig.eigenvalues ());
+	  ComplexMatrix Q (a_eig.eigenvectors ());
 
-	  Matrix atmp;
-	  if (btmp < 0)
-	    {
-	      btmp = -btmp;
-	      atmp = a.inverse ();
-	    }
-	  else
-	    atmp = a;
+	  for (int i = 0; i < nr; i++)
+	    lambda.elem (i) = pow (lambda.elem (i), b);
 
-	  Matrix result (atmp);
-	  for (int i = 1; i < btmp; i++)
-	    result = result * atmp;
+	  ComplexDiagMatrix D (lambda);
 
-	  retval = tree_constant (result);
+	  retval = ComplexMatrix (Q * D * Q.inverse ());
 	}
+    }
+
+  return retval;
+}
+
+// -*- 6 -*-
+tree_constant
+xpow (const Matrix& a, const Complex& b)
+{
+  tree_constant retval;
+
+  int nr = a.rows ();
+  int nc = a.columns ();
+
+  if (nr == 0 || nc == 0 || nr != nc)
+    {
+      error ("for A^b, A must be square");
     }
   else
     {
@@ -217,38 +256,10 @@ xpow (const Matrix& a, double b)
 
       ComplexDiagMatrix D (lambda);
 
-      ComplexMatrix result = Q * D * Q.inverse ();
-      retval = tree_constant (result);
+      retval = ComplexMatrix (Q * D * Q.inverse ());
     }
 
   return retval;
-}
-
-// -*- 6 -*-
-tree_constant
-xpow (const Matrix& a, const Complex& b)
-{
-  int nr = a.rows ();
-  int nc = a.columns ();
-
-  if (nr == 0 || nc == 0 || nr != nc)
-    {
-      error ("for A^b, A must be square");
-      return tree_constant ();
-    }
-
-  EIG a_eig (a);
-  ComplexColumnVector lambda (a_eig.eigenvalues ());
-  ComplexMatrix Q (a_eig.eigenvectors ());
-
-  for (int i = 0; i < nr; i++)
-    lambda.elem (i) = pow (lambda.elem (i), b);
-
-  ComplexDiagMatrix D (lambda);
-
-  ComplexMatrix result = Q * D * Q.inverse ();
-
-  return tree_constant (result);
 }
 
 // -*- 7 -*-
@@ -256,8 +267,13 @@ tree_constant
 xpow (const Complex& a, double b)
 {
   Complex result;
-  result = pow (a, b);
-  return tree_constant (result);
+
+  if (xisint (b))
+    result = pow (a, (int) b);
+  else
+    result = pow (a, b);
+
+  return result;
 }
 
 // -*- 8 -*-
@@ -289,8 +305,7 @@ xpow (const Complex& a, const Matrix& b)
 	}
       ComplexDiagMatrix D (lambda);
 
-      ComplexMatrix result = Q * D * Q.inverse ();
-      retval = tree_constant (result);
+      retval = ComplexMatrix (Q * D * Q.inverse ());
     }
 
   return retval;
@@ -302,7 +317,7 @@ xpow (const Complex& a, const Complex& b)
 {
   Complex result;
   result = pow (a, b);
-  return tree_constant (result);
+  return result;
 }
 
 // -*- 10 -*-
@@ -315,7 +330,9 @@ xpow (const Complex& a, const ComplexMatrix& b)
   int nc = b.columns ();
 
   if (nr == 0 || nc == 0 || nr != nc)
-    error ("for x^A, A must be square");
+    {
+      error ("for x^A, A must be square");
+    }
   else
     {
       EIG b_eig (b);
@@ -332,8 +349,7 @@ xpow (const Complex& a, const ComplexMatrix& b)
 	}
       ComplexDiagMatrix D (lambda);
 
-      ComplexMatrix result = Q * D * Q.inverse ();
-      retval = tree_constant (result);
+      retval = ComplexMatrix (Q * D * Q.inverse ());
     }
 
   return retval;
@@ -351,38 +367,68 @@ xpow (const ComplexMatrix& a, double b)
   if (nr == 0 || nc == 0 || nr != nc)
     {
       error ("for A^b, A must be square");
-      return retval;
     }
-
-  if ((int) b == b)
+  else
     {
-      int btmp = (int) b;
-      if (btmp == 0)
+      if ((int) b == b)
 	{
-	  DiagMatrix result (nr, nr, 1.0);
-	  retval = tree_constant (result);
+	  int btmp = (int) b;
+	  if (btmp == 0)
+	    {
+	      retval = DiagMatrix (nr, nr, 1.0);
+	    }
+	  else
+	    {
+	      // Too much copying?
+	      // XXX FIXME XXX -- we shouldn't do this if the exponent is
+	      // large...
+
+	      ComplexMatrix atmp;
+	      if (btmp < 0)
+		{
+		  btmp = -btmp;
+		  atmp = a.inverse ();
+		}
+	      else
+		atmp = a;
+
+	      ComplexMatrix result (atmp);
+	      for (int i = 1; i < btmp; i++)
+		result = result * atmp;
+
+	      retval = result;
+	    }
 	}
       else
 	{
-	  // Too much copying?
-	  // XXX FIXME XXX -- we shouldn't do this if the exponent is
-	  // large...
+	  EIG a_eig (a);
+	  ComplexColumnVector lambda (a_eig.eigenvalues ());
+	  ComplexMatrix Q (a_eig.eigenvectors ());
 
-	  ComplexMatrix atmp;
-	  if (btmp < 0)
-	    {
-	      btmp = -btmp;
-	      atmp = a.inverse ();
-	    }
-	  else
-	    atmp = a;
+	  for (int i = 0; i < nr; i++)
+	    lambda.elem (i) = pow (lambda.elem (i), b);
 
-	  ComplexMatrix result (atmp);
-	  for (int i = 1; i < btmp; i++)
-	    result = result * atmp;
+	  ComplexDiagMatrix D (lambda);
 
-	  retval = tree_constant (result);
+	  retval = ComplexMatrix (Q * D * Q.inverse ());
 	}
+    }
+
+  return retval;
+}
+
+// -*- 12 -*-
+tree_constant
+xpow (const ComplexMatrix& a, const Complex& b)
+{
+  tree_constant retval;
+
+  int nr = a.rows ();
+  int nc = a.columns ();
+
+  if (nr == 0 || nc == 0 || nr != nc)
+    {
+      error ("for A^b, A must be square");
     }
   else
     {
@@ -395,38 +441,10 @@ xpow (const ComplexMatrix& a, double b)
 
       ComplexDiagMatrix D (lambda);
 
-      ComplexMatrix result = Q * D * Q.inverse ();
-      retval = tree_constant (result);
+      retval = ComplexMatrix (Q * D * Q.inverse ());
     }
 
   return retval;
-}
-
-// -*- 12 -*-
-tree_constant
-xpow (const ComplexMatrix& a, const Complex& b)
-{
-  int nr = a.rows ();
-  int nc = a.columns ();
-
-  if (nr == 0 || nc == 0 || nr != nc)
-    {
-      error ("for A^b, A must be square");
-      return tree_constant ();
-    }
-
-  EIG a_eig (a);
-  ComplexColumnVector lambda (a_eig.eigenvalues ());
-  ComplexMatrix Q (a_eig.eigenvectors ());
-
-  for (int i = 0; i < nr; i++)
-    lambda.elem (i) = pow (lambda.elem (i), b);
-
-  ComplexDiagMatrix D (lambda);
-
-  ComplexMatrix result = Q * D * Q.inverse ();
-
-  return tree_constant (result);
 }
 
 // Safer pow functions that work elementwise for matrices.
@@ -463,7 +481,7 @@ elem_xpow (double a, const Matrix& b)
 	for (int i = 0; i < nr; i++)
 	  result.elem (i, j) = pow (atmp, b.elem (i, j));
 
-      retval = tree_constant (result);
+      retval = result;
     }
   else
     {
@@ -472,7 +490,7 @@ elem_xpow (double a, const Matrix& b)
 	for (int i = 0; i < nr; i++)
 	  result.elem (i, j) = pow (a, b.elem (i, j)); 
 
-      retval = tree_constant (result);
+      retval = result;
     }
 
   return retval;
@@ -490,7 +508,7 @@ elem_xpow (double a, const ComplexMatrix& b)
     for (int i = 0; i < nr; i++)
       result.elem (i, j) = pow (a, b.elem (i, j));
 
-  return tree_constant (result);
+  return result;
 }
 
 // -*- 3 -*-
@@ -512,7 +530,7 @@ elem_xpow (const Matrix& a, double b)
 	    result.elem (i, j) = pow (atmp, b);
 	  }
 
-      retval = tree_constant (result);
+      retval = result;
     }
   else
     {
@@ -521,7 +539,7 @@ elem_xpow (const Matrix& a, double b)
 	for (int i = 0; i < nr; i++)
 	  result.elem (i, j) = pow (a.elem (i, j), b);
 
-      retval = tree_constant (result);
+      retval = result;
     }
 
   return retval;
@@ -531,6 +549,8 @@ elem_xpow (const Matrix& a, double b)
 tree_constant
 elem_xpow (const Matrix& a, const Matrix& b)
 {
+  tree_constant retval;
+
   int nr = a.rows ();
   int nc = a.columns ();
 
@@ -562,7 +582,8 @@ elem_xpow (const Matrix& a, const Matrix& b)
 	    Complex btmp (b.elem (i, j));
 	    complex_result.elem (i, j) = pow (atmp, btmp);
 	  }
-      return tree_constant (complex_result);
+
+      retval = complex_result;
     }
   else
     {
@@ -572,8 +593,10 @@ elem_xpow (const Matrix& a, const Matrix& b)
 	for (int i = 0; i < nr; i++)
 	  result.elem (i, j) = pow (a.elem (i, j), b.elem (i, j));
 
-      return tree_constant (result);
+      retval = result;
     }
+
+  return retval;
 }
 
 // -*- 5 -*-
@@ -588,7 +611,7 @@ elem_xpow (const Matrix& a, const Complex& b)
     for (int i = 0; i < nr; i++)
       result.elem (i, j) = pow (a.elem (i, j), b);
 
-  return tree_constant (result);
+  return result;
 }
 
 // -*- 6 -*-
@@ -605,7 +628,7 @@ elem_xpow (const Matrix& a, const ComplexMatrix& b)
     for (int i = 0; i < nr; i++)
       result.elem (i, j) = pow (a.elem (i, j), b.elem (i, j));
 
-  return tree_constant (result);
+  return result;
 }
 
 // -*- 7 -*-
@@ -618,9 +641,15 @@ elem_xpow (const Complex& a, const Matrix& b)
   ComplexMatrix result (nr, nc);
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      result.elem (i, j) = pow (a, b.elem (i, j));
+      {
+	double btmp = b.elem (i, j);
+	if (xisint (btmp))
+	  result.elem (i, j) = pow (a, (int) btmp);
+	else
+	  result.elem (i, j) = pow (a, btmp);
+      }
 
-  return tree_constant (result);
+  return result;
 }
 
 // -*- 8 -*-
@@ -635,7 +664,7 @@ elem_xpow (const Complex& a, const ComplexMatrix& b)
     for (int i = 0; i < nr; i++)
       result.elem (i, j) = pow (a, b.elem (i, j));
 
-  return tree_constant (result);
+  return result;
 }
 
 // -*- 9 -*-
@@ -646,11 +675,21 @@ elem_xpow (const ComplexMatrix& a, double b)
   int nc = a.columns ();
 
   ComplexMatrix result (nr, nc);
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
-      result.elem (i, j) = pow (a.elem (i, j), b);
 
-  return tree_constant (result);
+  if (xisint (b))
+    {
+      for (int j = 0; j < nc; j++)
+	for (int i = 0; i < nr; i++)
+	  result.elem (i, j) = pow (a.elem (i, j), (int) b);
+    }
+  else
+    {
+      for (int j = 0; j < nc; j++)
+	for (int i = 0; i < nr; i++)
+	  result.elem (i, j) = pow (a.elem (i, j), b);
+    }
+
+  return result;
 }
 
 // -*- 10 -*-
@@ -665,9 +704,15 @@ elem_xpow (const ComplexMatrix& a, const Matrix& b)
   ComplexMatrix result (nr, nc);
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      result.elem (i, j) = pow (a.elem (i, j), b.elem (i, j));
+      {
+	double btmp = b.elem (i, j);
+	if (xisint (btmp))
+	  result.elem (i, j) = pow (a.elem (i, j), (int) btmp);
+	else
+	  result.elem (i, j) = pow (a.elem (i, j), btmp);
+      }
 
-  return tree_constant (result);
+  return result;
 }
 
 // -*- 11 -*-
@@ -682,7 +727,7 @@ elem_xpow (const ComplexMatrix& a, const Complex& b)
     for (int i = 0; i < nr; i++)
       result.elem (i, j) = pow (a.elem (i, j), b);
 
-  return tree_constant (result);
+  return result;
 }
 
 // -*- 12 -*-
@@ -698,7 +743,7 @@ elem_xpow (const ComplexMatrix& a, const ComplexMatrix& b)
     for (int i = 0; i < nr; i++)
       result.elem (i, j) = pow (a.elem (i, j), b.elem (i, j));
 
-  return tree_constant (result);
+  return result;
 }
 
 /*

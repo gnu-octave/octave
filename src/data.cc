@@ -32,8 +32,12 @@ Software Foundation, Inc.
 #include <config.h>
 #endif
 
+#include <cfloat>
+#include <cmath>
+
 #include <string>
 
+#include "lo-ieee.h"
 #include "str-vec.h"
 
 #include "defun.h"
@@ -1088,6 +1092,61 @@ See also: logspace")
     }
 
   return retval;
+}
+
+void
+symbols_of_data (void)
+{
+  DEFCONST (I, Complex (0.0, 1.0), 0, 0,
+    "sqrt (-1)");
+
+  DEFCONST (Inf, octave_Inf, 0, 0,
+    "infinity");
+
+  DEFCONST (J, Complex (0.0, 1.0), 0, 0,
+    "sqrt (-1)");
+
+  DEFCONST (NaN, octave_NaN, 0, 0,
+    "not a number");
+
+#if defined (M_E)
+  double e_val = M_E;
+#else
+  double e_val = exp (1.0);
+#endif
+
+  DEFCONST (e, e_val, 0, 0,
+    "exp (1)");
+
+  DEFCONST (eps, DBL_EPSILON, 0, 0,
+    "machine precision");
+
+  DEFCONST (i, Complex (0.0, 1.0), 1, 0,
+    "sqrt (-1)");
+
+  DEFCONST (inf, octave_Inf, 0, 0,
+    "infinity");
+
+  DEFCONST (j, Complex (0.0, 1.0), 1, 0,
+    "sqrt (-1)");
+
+  DEFCONST (nan, octave_NaN, 0, 0,
+    "not a number");
+
+#if defined (M_PI)
+  double pi_val = M_PI;
+#else
+  double pi_val = 4.0 * atan (1.0);
+#endif
+
+  DEFCONST (pi, pi_val, 0, 0,
+    "ratio of the circumference of a circle to its diameter");
+
+  DEFCONST (realmax, DBL_MAX, 0, 0,
+    "realmax (): return largest representable floating point number");
+
+  DEFCONST (realmin, DBL_MIN, 0, 0,
+    "realmin (): return smallest representable floating point number");
 }
 
 /*

@@ -54,6 +54,7 @@ extern "C"
 #include "sighandlers.h"
 #include "variables.h"
 #include "error.h"
+#include "dynamic-ld.h"
 #include "tree-misc.h"
 #include "tree-const.h"
 #include "tree-plot.h"
@@ -436,6 +437,10 @@ main (int argc, char **argv)
 // Do this first, since some command line arguments may override the
 // defaults.
   initialize_globals (argv[0]);
+
+// Initialize dynamic linking.  This might not do anything.  Must
+// happen after initializing raw_prog_name.
+  init_dynamic_linker ();
 
   int optc;
   while ((optc = getopt_long (argc, argv, short_opts, long_opts, 0)) != EOF)
@@ -856,8 +861,8 @@ string CATCH.")
 
 // Execute a shell command.
 
-DEFUN ("shell_cmd", Fshell_cmd, Sshell_cmd, 2, 1,
-  "shell_cmd (string [, return_output]): execute shell commands")
+DEFUN ("system", Fsystem, Ssystem, 2, 1,
+  "system (string [, return_output]): execute shell commands")
 {
   Octave_object retval;
 
@@ -906,6 +911,8 @@ DEFUN ("shell_cmd", Fshell_cmd, Sshell_cmd, 2, 1,
 
   return retval;
 }
+
+DEFALIAS (shell_cmd, system);
 
 /*
 ;;; Local Variables: ***

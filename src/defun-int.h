@@ -37,9 +37,9 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #define DEFUN_INTERNAL(name, fname, sname, nargin_max, nargout_max, \
 		       is_text_fcn, doc) \
   BEGIN_INSTALL_BUILTIN \
-    extern DECLARE_FUN(fname); \
-    static builtin_function sname = \
-      { name, nargin_max, nargout_max, is_text_fcn, fname, doc }; \
+    extern DECLARE_FUN (fname); \
+    DEFINE_FUN_STRUCT (name, fname, sname, nargin_max, nargout_max, \
+		       is_text_fcn, doc); \
     install_builtin_function (&sname); \
   END_INSTALL_BUILTIN
 
@@ -57,13 +57,28 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #define DEFUN_INTERNAL(name, fname, sname, nargin_max, nargout_max, \
 		       is_text_fcn, doc) \
-  DECLARE_FUN(fname)
+  DECLARE_FUN (fname)
 
 // No definition is required for an alias.
 
 #define DEFALIAS_INTERNAL(name, alias)
 
 #endif /* ! MAKE_BUILTINS */
+
+// Define the structure that will be used to insert this function into
+// the symbol table.
+
+#define DEFINE_FUN_STRUCT(name, fname, sname, nargin_max, \
+			  nargout_max, is_text_fcn, doc) \
+  static builtin_function sname = \
+    { name, nargin_max, nargout_max, is_text_fcn, fname, doc }
+
+#define DEFINE_FUN_STRUCT_FUN(sname, fsname) \
+  builtin_function * \
+  fsname (void) \
+  { \
+    return &sname; \
+  }
 
 // Declare an internal function named fname.  This is the interface
 // used by all internal functions in Octave that are also callable

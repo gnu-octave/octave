@@ -37,8 +37,11 @@ function y = erfinv (x)
     y(i) = NaN * ones (length (i), 1);
   endif
 
-  y (find (x == -1)) = (-Inf) * ones (sum (x == -1), 1);
-  y (find (x == 1)) = Inf * ones (sum (x == 1), 1);
+  t = find (x == -1);
+  y (tmp) = (-Inf) * ones (size (t));
+
+  t = find (x == 1);
+  y (t) = Inf * ones (size (t));
   
   i = find ((x > -1) & (x < 1));
   if any (i)

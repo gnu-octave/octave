@@ -1,3 +1,11 @@
+Thu Jan 23 13:48:19 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* octave.test/unwind/unwind-2.m: Scripts now stop executing when
+	errors are encountered.
+
+	* octave.test/return/return.exp: Return at top level is no longer
+	an error.
+
 Tue Jan  7 00:16:23 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Version 2.0.1 released.

@@ -323,7 +323,7 @@ Programming Utilities
 
 Using Emacs With Octave
 
-* Setting Up Octave Mode::      
+* Installing the Emacs Octave Package::  
 * Using Octave Mode::           
 * Running Octave From Within Emacs::  
 * Using the Emacs Info Reader for Octave::  

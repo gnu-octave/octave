@@ -1,6 +1,14 @@
 Summary of changes for version 2.0.2:
 ------------------------------------
 
+  * Octave now stops executing commands from a script file if an error
+    is encountered.
+
+  * The return, and break commands now cause Octave to quit executing
+    commands from script files.  When used in invalid contexts, the
+    break, continue, and return commands are now simply ignored
+    instead of producing parse errors.
+
   * size ("") is now [0, 0].
 
 Summary of changes for version 2.0:

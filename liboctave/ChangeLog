@@ -1,3 +1,8 @@
+Wed Jan 22 16:18:53 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* dbleSVD.cc (SVD::init): Work around apparent dgesvd() bug.
+	* CmplxSVD.cc (ComplexSVD::init): Work around apparent zgesvd() bug.
+
 Mon Jan 20 18:44:11 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* chMatrix.cc (charMatrix::charMatrix (const string&)):

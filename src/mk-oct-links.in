@@ -3,9 +3,17 @@
 # Create additional links to .oct files that define more than one
 # function.
 
-# The first arg is taken as the directory where the .oct files are
-# installed.  The remaining arguments should be the list of source
-# files that were used to create the .oct files.
+# If the first arg is -p, only print the links we need to make.
+
+# The first non-option arg is taken as the directory where the .oct
+# files are installed.  The remaining arguments should be the list of
+# source files that were used to create the .oct files.
+
+print_only=false
+if [ $1 = "-p" ]; then
+  print_only=true
+  shift
+fi
 
 LN_S="%LN_S%"
 
@@ -22,8 +30,12 @@ for f in "$@"; do
       if [ "$n" = "$base" ]; then
         true
       else
-	echo "creating link $n.oct -> $base.oct"
-        ( cd $links_dir; rm -f $n.oct; $LN_S $base.oct $n.oct )
+        if $print_only; then
+          echo $base.oct $n.oct
+        else
+          echo "creating link $n.oct -> $base.oct"
+          ( cd $links_dir; rm -f $n.oct; $LN_S $base.oct $n.oct )
+        fi
       fi
     done
   fi

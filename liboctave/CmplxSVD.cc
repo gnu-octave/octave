@@ -99,7 +99,15 @@ ComplexSVD::init (const ComplexMatrix& a, SVD::type svd_type)
       break;
 
     case SVD::sigma_only:
-      jobu = jobv = 'N';
+
+      // Note:  for this case, both jobu and jobv should be 'N', but
+      // there seems to be a bug in dgesvd from Lapack V2.0.  To
+      // demonstrate the bug, set both jobu and jobv to 'N' and find
+      // the singular values of [eye(3), eye(3)].  The result is
+      // [-sqrt(2), -sqrt(2), -sqrt(2)].
+
+      jobu = 'O';
+      jobv = 'N';
       ncol_u = nrow_vt = 1;
       break;
 
@@ -109,7 +117,7 @@ ComplexSVD::init (const ComplexMatrix& a, SVD::type svd_type)
 
   type_computed = svd_type;
 
-  if (jobu != 'N')
+  if (! (jobu == 'N' || jobu == 'O'))
     left_sm.resize (m, ncol_u);
 
   Complex *u = left_sm.fortran_vec ();
@@ -117,7 +125,7 @@ ComplexSVD::init (const ComplexMatrix& a, SVD::type svd_type)
   sigma.resize (nrow_s, ncol_s);
   double *s_vec = sigma.fortran_vec ();
 
-  if (jobv != 'N')
+  if (! (jobv == 'N' || jobv == 'O'))
     right_sm.resize (nrow_vt, n);
 
   Complex *vt = right_sm.fortran_vec ();
@@ -140,7 +148,7 @@ ComplexSVD::init (const ComplexMatrix& a, SVD::type svd_type)
     (*current_liboctave_error_handler) ("unrecoverable error in zgesvd");
   else
     {
-      if (jobv != 'N')
+      if (! (jobv == 'N' || jobv == 'O'))
 	right_sm = right_sm.hermitian ();
     }
 

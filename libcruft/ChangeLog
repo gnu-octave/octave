@@ -1,3 +1,9 @@
+Wed Jan 22 15:03:33 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* misc/Makefile.in (pic/machar.o): Add $(CPICFLAG) for this target.
+
+	* misc/d1mach.f (d1mach): Move SAVE statement ahead of DATA statment.
+
 Wed Jan 15 21:04:29 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* blas/*.f: Update to latest version from Netlib.

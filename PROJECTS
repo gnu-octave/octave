@@ -394,10 +394,6 @@ Interpreter:
 
   * print_usage() should set error_state in most cases?
 
-  * Add an option to make Octave quit executing a script when error() is
-    called.  Also make it possible for `return' or `break' to exit a
-    script.
-
   * Make statements like this
 
       foo bar baz

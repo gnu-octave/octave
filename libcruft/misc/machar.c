@@ -19,7 +19,7 @@ August 3, 1988.
 #define PREC "Single "
 #define REALSIZE 1
 #endif
- 
+
 #ifdef DP
 #define REAL double
 #define ZERO 0.0e0
@@ -27,7 +27,7 @@ August 3, 1988.
 #define PREC "Double "
 #define REALSIZE 2
 #endif
- 
+
 #include <math.h>
 #include <stdio.h>
 
@@ -54,9 +54,9 @@ rmachar(ibeta,it,irnd,ngrd,machep,negep,iexp,minexp,
     translation of the Fortran 77 program in W. J. Cody, "MACHAR:
     A subroutine to dynamically determine machine parameters".
     TOMS (14), 1988.
- 
+
    Parameter values reported are as follows:
- 
+
         ibeta   - the radix for the floating-point representation
         it      - the number of base ibeta digits in the floating-point
                   significand
@@ -112,12 +112,12 @@ rmachar(ibeta,it,irnd,ngrd,machep,negep,iexp,minexp,
                   second, or perhaps third, largest number, being
                   too small by 1 or 2 units in the last digit of
                   the significand.
- 
+
       Latest revision - August 4, 1988
- 
+
       Author - W. J. Cody
                Argonne National Laboratory
- 
+
 */
 
 {
@@ -189,11 +189,11 @@ rmachar(ibeta,it,irnd,ngrd,machep,negep,iexp,minexp,
       (*negep) = (*it) + 3;
       betain = one / beta;
       a = one;
- 
+
       for (i = 1; i<=(*negep); i++) {
          a = a * betain;
       }
- 
+
       b = a;
       tmp = (one-a);
       tmp = tmp-one;
@@ -223,7 +223,7 @@ rmachar(ibeta,it,irnd,ngrd,machep,negep,iexp,minexp,
       }
 
       *eps = a;
-      
+
 /*
   determine ngrd
 */
@@ -286,7 +286,7 @@ rmachar(ibeta,it,irnd,ngrd,machep,negep,iexp,minexp,
          }
          mx = iz + iz - 1;
       }
- 
+
 /*
   loop to determine minexp, xmin.
     exit from loop is signaled by an underflow.
@@ -352,14 +352,14 @@ rmachar(ibeta,it,irnd,ngrd,machep,negep,iexp,minexp,
       (*xmax) = (*xmax) / (beta * beta * beta * (*xmin));
       i = (*maxexp) + (*minexp) + 3;
       if (i > 0) {
- 
+
          for (j = 1; j<=i; j++ ) {
              if ((*ibeta) == 2) (*xmax) = (*xmax) + (*xmax);
              if ((*ibeta) != 2) (*xmax) = (*xmax) * beta;
          }
 
       }
- 
+
     return;
 
 }

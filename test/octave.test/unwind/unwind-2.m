@@ -7,8 +7,7 @@ function f (x)
     [1,2;x];
     g = 1
   unwind_protect_cleanup
-    g = save_g;
+    g = save_g
   end_unwind_protect
 endfunction
 f (3)
-g

@@ -1,6 +1,6 @@
-@c Copyright (C) 1996 John W. Eaton
-@c Written by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at> on 1996/05/17
-@c Updated for octave.el version 0.8.3 by KH on 1996/07/02
+@c Copyright (C) 1996, 1997 John W. Eaton
+@c Written by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at> on 1996/05/17.
+@c Last updated by KH on 1997/01/22.
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
@@ -28,14 +28,31 @@ Please contact <Kurt.Hornik@@ci.tuwien.ac.at> if you have any questions
 or suggestions on using Emacs with Octave.
 
 @menu
-* Setting Up Octave Mode::      
+* Installing the Emacs Octave Package::  
 * Using Octave Mode::           
 * Running Octave From Within Emacs::  
 * Using the Emacs Info Reader for Octave::  
 @end menu
 
-@node Setting Up Octave Mode, Using Octave Mode, Emacs, Emacs
-@section Setting Up Octave Mode
+@node Installing the Emacs Octave Package, Using Octave Mode, Emacs, Emacs
+@section Installing the Emacs Octave Package
+
+The Emacs package @file{octave} consists of the three files
+@file{octave-mod.el}, @file{octave-inf.el}, and @file{octave-hlp.el}.
+These files, or better yet their byte-compiled versions, should be
+somewhere in your Emacs load-path.
+
+If you have GNU Emacs with a version number at least as high as 19.35,
+you are all set up, because the package is respectively will be part of
+GNU Emacs as of version 19.35.
+
+Otherwise, copy the three files from the @file{emacs} subdirectory of
+the Octave distribution to a place where Emacs can find them (this
+depends on how your Emacs was installed).  Byte-compile them for speed
+if you want.
+
+@node Using Octave Mode, Running Octave From Within Emacs, Installing the Emacs Octave Package, Emacs
+@section Using Octave Mode
 
 If you are lucky, your sysadmins have already arranged everything so
 that Emacs automatically goes into Octave mode whenever you visit an
@@ -44,23 +61,12 @@ proceed as follows.
 
 @enumerate
 @item
-Make sure that the file @file{octave.el} (or better, its byte-compiled
-version @file{octave.elc}) from the Octave distribution is somewhere in
-your load-path.
-
-@quotation
-@strong{Note:} The current version of @file{octave.el} was developed,
-tested and byte-compiled under GNU Emacs 19.31.  It may not work under
-other Emacs versions, in particular under XEmacs.
-@end quotation
-
-@item
 To begin using Octave mode for all @file{.m} files you visit, add the
 following lines to a file loaded by Emacs at startup time, typically
 your @file{~/.emacs} file:
 
 @lisp
-(autoload 'octave-mode "octave" nil t)
+(autoload 'octave-mode "octave-mod" nil t)
 (setq auto-mode-alist
       (cons '(\"\\\\.m$\" . octave-mode) auto-mode-alist))
 @end lisp
@@ -81,9 +87,6 @@ See the Emacs manual for more information about how to customize
 Font-lock mode.
 @end enumerate
 
-@node Using Octave Mode, Running Octave From Within Emacs, Setting Up Octave Mode, Emacs
-@section Using Octave Mode
-
 In Octave mode, the following special Emacs commands can be used in
 addition to the standard Emacs commands.
 
@@ -102,14 +105,15 @@ lines (@code{indent-according-to-mode}).
 
 @item ;
 Insert an ``electric'' semicolon (@code{octave-electric-semi}).  If
-@code{octave-auto-indent} is non-@code{nil}, typing a @samp{;}
+@code{octave-auto-newline} is non-@code{nil}, typing a @samp{;}
 automatically reindents the current line, inserts a newline and indents
 the new line.
 
 @item `
 Start entering an abbreviation (@code{octave-abbrev-start}).  If Abbrev
 mode is turned on, typing @kbd{`C-h} or @kbd{`?} lists all abbrevs.
-Any other key combination is executed normally.
+Any other key combination is executed normally.  Note that all Octave
+abbrevs start with a grave accent.
 
 @item M-LFD
 Break line at point and insert continuation marker and alignment
@@ -142,11 +146,19 @@ function, i.e., the one containing point or following point
 Properly indents the Octave function which contains point
 (@code{octave-indent-defun}).
 
+@item M-;
+If there is no comment already on this line, create a code-level comment
+(started by two comment characters) if the line is empty, or an in-line
+comment (started by one comment character) otherwise
+(@code{octave-indent-for-comment}).
+Point is left after the start of the comment which is properly aligned.
+
 @item C-c ;
-Puts the first character of @code{octave-comment-start} (usually
-@samp{#}) at the beginning of every line in the region
-(@code{octave-comment-region}).  With just @kbd{C-u} prefix argument,
-uncomment each line in the region.
+Puts the comment character @samp{#} (more precisely, the string value of
+@code{octave-comment-start}) at the beginning of every line in the
+region (@code{octave-comment-region}).  With just @kbd{C-u} prefix
+argument, uncomment each line in the region.  A numeric prefix argument
+@var{N} means use @var{N} comment characters.
 
 @item C-c :
 Uncomments every line in the region (@code{octave-uncomment-region}).
@@ -224,8 +236,8 @@ matches are found, one can cycle through them using the standard
 
 The variable @code{octave-help-files} is a list of files to search
 through and defaults to @code{'("octave")}.  If there is also an Octave
-Local Guide with corresponding info file @file{octave-LG} (for example),
-you can have @code{octave-help} search both files by
+Local Guide with corresponding info file, say, @file{octave-LG}, you can
+have @code{octave-help} search both files by 
 @lisp
 (setq octave-help-files '("octave" "octave-LG"))
 @end lisp
@@ -282,15 +294,6 @@ keywords match---if they don't, an error message is displayed.
 Extra indentation applied to statements in block structures.
 Default is 2.
 
-@item octave-comment-column
-Column to indent right-margin comments to.
-Default is 32.
-(Such comments are created using @key{M-;} (@code{indent-for-comment}).)
-
-@item octave-comment-start
-Delimiter inserted to start new comment.
-Default value is @samp{# }.
-
 @item octave-continuation-offset
 Extra indentation applied to Octave continuation lines.
 Default is 4. 
@@ -299,14 +302,9 @@ Default is 4.
 String used for Octave continuation lines.
 Normally @samp{\}.
 
-@item octave-fill-column
-Column beyond which automatic line-wrapping should happen.
-Default is 72.
-
-@item octave-inhibit-startup-message
-If @code{t}, no startup message is displayed when Octave mode is
-called. 
-Default is @code{nil}.
+@item octave-mode-startup-message
+If @code{t} (default), a startup message is displayed when Octave mode
+is called.
 
 @end table
 
@@ -356,16 +354,20 @@ M-x run-octave
 to directly start an inferior Octave process.  If Emacs does not know
 about this command, add the line
 @lisp
-(autoload 'run-octave "octave" nil t)
+(autoload 'run-octave "octave-inf" nil t)
 @end lisp
 @noindent
 to your @file{.emacs} file.
 
 This will start Octave in a special buffer the name of which is
 specified by the variable @code{inferior-octave-buffer} and defaults to
-@code{"*Octave Interaction*"}.  From within this buffer, you can
+@code{"*Inferior Octave*"}.  From within this buffer, you can
 interact with the inferior Octave process `as usual', i.e., by entering
-Octave commands at the prompt.
+Octave commands at the prompt.  The buffer is in Inferior Octave mode,
+which is derived from the standard Comint mode, a major mode for
+interacting with an inferior interpreter.  See the documentation for
+@code{comint-mode} for more details, and use @kbd{C-h b} to find out
+about available special keybindings.
 
 You can also communicate with an inferior Octave process from within
 files with Octave code (i.e., buffers in Octave mode), using the
@@ -391,7 +393,7 @@ Send the region to the inferior Octave process
 Make sure that `inferior-octave-buffer' is displayed
 (@code{octave-show-process-buffer}).
 @item C-c i h
-Delete all windows that display @file{inferior-octave-buffer}
+Delete all windows that display the inferior Octave buffer
 (@code{octave-hide-process-buffer}).
 @item C-c i k
 Kill the inferior Octave process and its buffer
@@ -423,7 +425,7 @@ You can also specify a startup file of Octave commands to be loaded on
 startup;  note that these commands will not produce any visible output
 in the process buffer.  Which file to use is controlled by the variable
 @code{inferior-octave-startup-file}.  If this is @code{nil}, the file
-@file{~/.emacs_octave} is used if it exists.
+@file{~/.emacs-octave} is used if it exists.
 
 And finally, @code{inferior-octave-mode-hook} is run after starting the
 process and putting its buffer into Inferior Octave mode.  Hence, if you
@@ -456,16 +458,17 @@ when Octave is waiting for input, or done sending output.
 
 You can also set up the Emacs Info reader for dealing with the results
 of Octave's @samp{help -i}.  For this, the package @file{gnuserv} needs
-to be installed.  The @file{gnuserv} package is not distributed with GNU
-Emacs, but it can be retrieved from any GNU Emacs Lisp Code Directory
-archive, e.g.@:
+to be installed, which unfortunately still does not come with GNU Emacs
+(it does with XEmacs).  It can be retrieved from any GNU Emacs Lisp Code
+Directory archive, e.g.@:
 @file{ftp://ftp.cis.ohio-state.edu/pub/gnu/emacs/elisp-archive},
-in the @file{packages} subdirectory.  There is also a newer version
-around (use archie to look for @file{gnuserv-2.1alpha.tar.gz}).
+in the @file{packages} subdirectory.  The alpha version of an enhanced
+version of gnuserv is available at 
+@file{ftp://ftp.wellfleet.com/netman/psmith/emacs/gnuserv-2.1alpha.tar.gz}.
 
 If @file{gnuserv} is installed, add the lines
 @lisp
-(autoload 'octave-help "octave" nil t)
+(autoload 'octave-help "octave-hlp" nil t)
 (require 'gnuserv)
 (gnuserv-start)
 @end lisp
@@ -480,9 +483,9 @@ in the indices of @emph{several} info files related to Octave (provided
 that the Emacs variable @code{octave-help-files} is set correctly).  In
 this case, set @code{INFO_PROGRAM} to @code{"info-emacs-octave-help"}.
 
-If you use Octave from within Emacs, it is probably best to put these
-settings in the @file{~/.emacs_octave} startup file (or in the file
-named by the Emacs variable @code{inferior-octave-startup-file}).
+If you use Octave from within Emacs, these settings are best done in the
+@file{~/.emacs-octave} startup file (or the file pointed to by the Emacs
+variable @code{inferior-octave-startup-file}).
 
 @c Local Variables:
 @c TeX-command-default: "Texinfo"

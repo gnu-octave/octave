@@ -1,3 +1,12 @@
+Wed Jan 22 11:14:07 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* aclocal.m4 (ld_run_path): Anchor search at beginning of line to
+	avoid GNU sed bug on HP-UX systems.  Use just one sed command.
+
+	* emacs/octave-hlp.el, emacs/octave-inf.el, emacs/octave-mod.el:
+	New files from Kurt Hornik.
+	* emacs/octave.el: Delete.
+
 Mon Jan 20 11:16:21 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* mkoctfile.in (ALL_CXXFLAGS): Delete reference to -lg++.

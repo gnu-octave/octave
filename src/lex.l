@@ -1341,8 +1341,17 @@ eat_whitespace (void)
 static void
 handle_number (char *yytext)
 {
+  char *tmp = strsave (yytext);
+
+  char *idx = strpbrk (tmp, "Dd");
+
+  if (idx)
+    *idx = 'e';
+
   double value;
-  int nread = sscanf (yytext, "%lf", &value);
+  int nread = sscanf (tmp, "%lf", &value);
+
+  delete [] tmp;
 
   // If yytext doesn't contain a valid number, we are in deep doo doo.
 

@@ -1,3 +1,10 @@
+Fri Jan 24 10:05:00 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* mk-oct-links.in: New arg, -p, to just print list of files to link.
+
+	* lex.l (handle_number): Convert `D' or `d' exponents to `e'
+	before scanning.
+
 Thu Jan 23 10:00:00 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pt-pr-code.h, pt-pr-code.cc (tree_print_code::visit_no_op_command):

@@ -2,8 +2,8 @@
       integer i
       logical init
       double precision dmach(5)
-      data init /.false./
       save init, dmach
+      data init /.false./
       if (.not. init) then
         call machar (dmach(1), dmach(2), dmach(3), dmach(4), dmach(5))
         init = .true.

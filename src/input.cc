@@ -130,7 +130,8 @@ FILE *ff_instream = 0;
 // Nonzero means we are using readline.
 int using_readline = 1;
 
-// Nonzero means commands are echoed as they are executed (-x).
+// Nonzero means commands are echoed as they are executed.
+// (--echo-commands; -x).
 int echo_input = 0;
 
 // Nonzero means this is an interactive shell.

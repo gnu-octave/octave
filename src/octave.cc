@@ -92,10 +92,11 @@ char *home_directory = 0;
 // Guess what?
 char *the_current_working_directory = 0;
 
-// Load path specified on command line.
+// Load path specified on command line.  (--path path; -p path)
 char *load_path = 0;
 
 // Name of the info file specified on command line.
+// (--info-file file; -i file)
 char *info_file = 0;
 
 // Name of the editor to be invoked by the edit_history command.
@@ -137,12 +138,14 @@ octave_Complex_error_handler (const char* msg)
 }
 
 // Nonzero means we read ~/.octaverc and ./.octaverc.
+// (--norc; --ignore-init-file; -f)
 static int read_init_files = 1;
 
 // Nonzero means we printed messages about reading startup files.
 static int reading_startup_message_printed = 0;
 
 // Nonzero means we don\'t print the usual startup message.
+// (--quiet; --silent; -q)
 static int inhibit_startup_message = 0;
 
 // Usage message

@@ -75,14 +75,14 @@ determinant (const tree_constant& a)
 	    int info;
 	    double rcond = 0.0;
 	    DET det = m.determinant (info, rcond);
+	    double d = 0.0;
 	    if (info == -1)
 	      warning ("det: matrix singular to machine precision, rcond = %g",
 		       rcond);
 	    else
-	      {
-		double d = det.value ();
-		retval = tree_constant (d);
-	      }
+	      d = det.value ();
+
+	    retval = tree_constant (d);
 	  }
 	else
 	  gripe_square_matrix_required ("det");
@@ -96,14 +96,14 @@ determinant (const tree_constant& a)
 	    int info;
 	    double rcond = 0.0;
 	    ComplexDET det = m.determinant (info, rcond);
+	    Complex c = 0.0;
 	    if (info == -1)
 	      warning ("det: matrix singular to machine precision, rcond = %g",
 		       rcond);
 	    else
-	      {
-		Complex c = det.value ();
-		retval = tree_constant (c);
-	      }
+	      Complex c = det.value ();
+
+	    retval = tree_constant (c);
 	  }
 	else
 	  gripe_square_matrix_required ("det");

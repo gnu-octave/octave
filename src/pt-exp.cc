@@ -691,8 +691,6 @@ tree_simple_assignment_expression::left_hand_side_id (void)
   return lhs->ident ();
 }
 
-// ??? FIXME ??? -- should this return the value of the RHS instead?
-
 // ??? FIXME ??? -- should octave_variable_reference::assign return
 // the right thing for us to return?
 
@@ -703,12 +701,15 @@ tree_simple_assignment_expression::eval (bool print)
 
   octave_value retval;
 
+  octave_value lhs_val;
+
   if (error_state)
     return retval;
 
   if (rhs)
     {
       octave_value rhs_val = rhs->eval (false);
+
       if (error_state)
 	{
 	  eval_error ();
@@ -745,7 +746,11 @@ tree_simple_assignment_expression::eval (bool print)
 			  if (error_state)
 			    eval_error ();
 			  else
-			    retval = ult.value ();
+			    {
+			      lhs_val = ult.value ();
+
+			      retval = rhs_val;
+			    }
 			}
 		      else
 			error ("??? invalid index list ???");
@@ -754,14 +759,21 @@ tree_simple_assignment_expression::eval (bool print)
 	      else
 		{
 		  ult.assign (rhs_val);
-		  retval = ult.value ();
+
+		  lhs_val = ult.value ();
+
+		  retval = rhs_val;
 		}
 	    }
 	}
     }
 
-  if (! error_state && print && retval.is_defined ())
-    retval.print_with_name (lhs->name ());
+  // Return value is RHS value, but the value we print is the complete
+  // LHS value so that expressions like x(2) = 2 (for x previously
+  // undefined) print b = [ 0; 2 ], which is more Matlab-like.
+
+  if (! error_state && print && lhs_val.is_defined ())
+    lhs_val.print_with_name (lhs->name ());
 
   return retval;
 }

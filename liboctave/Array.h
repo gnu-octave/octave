@@ -24,11 +24,13 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_Array_h)
 #define octave_Array_h 1
 
+#if defined (__GNUG__)
+#pragma interface
+#endif
+
 #include <assert.h>
 
 #include "lo-error.h"
-
-extern "C++" {
 
 // Classes we declare.
 
@@ -361,8 +363,6 @@ public:
   void resize (int n, int m);
   void resize (int n, int m, const T& val);
 };
-
-} // extern "C++"
 
 #endif
 

@@ -24,11 +24,13 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_ComplexHESS_h)
 #define octave_ComplexHESS_h 1
 
+#if defined (__GNUG__)
+#pragma interface
+#endif
+
 class ostream;
 
 #include "CMatrix.h"
-
-extern "C++" {
 
 class ComplexHESS
 {
@@ -88,8 +90,6 @@ inline ComplexMatrix ComplexHESS::unitary_hess_matrix (void) const
 {
   return unitary_hess_mat;
 }
-
-} // extern "C++"
 
 #endif
 

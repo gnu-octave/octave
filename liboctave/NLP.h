@@ -30,8 +30,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "LinConst.h"
 #include "NLConst.h"
 
-extern "C++" {
-
 #ifndef Vector
 #define Vector ColumnVector
 #endif
@@ -129,8 +127,6 @@ NLP::size (void) const
 {
   return x.capacity ();
 }
-
-} // extern "C++"
 
 #endif
 

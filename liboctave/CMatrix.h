@@ -24,13 +24,15 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_ComplexMatrix_h)
 #define octave_ComplexMatrix_h 1
 
+#if defined (__GNUG__)
+#pragma interface
+#endif
+
 #include <Complex.h>
 
 #include "MArray.h"
 
 #include "mx-defs.h"
-
-extern "C++" {
 
 class ComplexMatrix : public MArray2<Complex>
 {
@@ -344,8 +346,6 @@ private:
 
   ComplexMatrix (Complex *d, int r, int c) : MArray2<Complex> (d, r, c) { }
 };
-
-} // extern "C++"
 
 #endif
 

@@ -24,11 +24,13 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_ComplexCHOL_h)
 #define octave_ComplexCHOL_h 1
 
+#if defined (__GNUG__)
+#pragma interface
+#endif
+
 class ostream;
 
 #include "CMatrix.h"
-
-extern "C++" {
 
 class ComplexCHOL
 {
@@ -79,8 +81,6 @@ inline ComplexMatrix ComplexCHOL::chol_matrix (void) const
 {
   return chol_mat;
 }
-
-} // extern "C++"
 
 #endif
 

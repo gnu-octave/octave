@@ -24,11 +24,13 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_CHOL_h)
 #define octave_CHOL_h 1
 
+#if defined (__GNUG__)
+#pragma interface
+#endif
+
 class ostream;
 
 #include "dMatrix.h"
-
-extern "C++" {
 
 class CHOL
 {
@@ -81,8 +83,6 @@ inline Matrix CHOL::chol_matrix (void) const
 {
   return chol_mat;
 }
-
-} // extern "C++"
 
 #endif
 

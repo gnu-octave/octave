@@ -24,12 +24,14 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_NPSOL_h)
 #define octave_NPSOL_h 1
 
+#if defined (__GNUG__)
+#pragma interface
+#endif
+
 #ifndef NPSOL_MISSING
 
 #include "dColVector.h"
 #include "NLP.h"
-
-extern "C++" {
 
 #ifndef Vector
 #define Vector ColumnVector
@@ -187,8 +189,6 @@ extern int npsol_objective_error;
 
 inline NPSOL::NPSOL (const NPSOL& a) : NLP (a.x, a.phi, a.bnds, a.lc, a.nlc)
   { }
-
-} // extern "C++"
 
 #endif /* NPSOL_MISSING */
 

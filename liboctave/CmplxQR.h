@@ -24,12 +24,14 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_ComplexQR_h)
 #define octave_ComplexQR_h 1
 
+#if defined (__GNUG__)
+#pragma interface
+#endif
+
 class ostream;
 
 #include "CMatrix.h"
 #include "dbleQR.h"
-
-extern "C++" {
 
 class ComplexQR
 {
@@ -76,8 +78,6 @@ inline ComplexMatrix ComplexQR::R (void) const
 {
   return r;
 }
-
-} // extern "C++"
 
 #endif
 

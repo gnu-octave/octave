@@ -24,11 +24,13 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_ComplexDET_h)
 #define octave_ComplexDET_h 1
 
+#if defined (__GNUG__)
+#pragma interface
+#endif
+
 class ostream;
 
 #include <Complex.h>
-
-extern "C++" {
 
 class ComplexDET
 {
@@ -79,8 +81,6 @@ inline ComplexDET::ComplexDET (const Complex *d)
   det[0] = d[0];
   det[1] = d[1];
 }
-
-} // extern "C++"
 
 #endif
 

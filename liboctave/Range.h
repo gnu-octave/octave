@@ -24,7 +24,9 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_Range_h)
 #define octave_Range_h 1
 
-extern "C++" {
+#if defined (__GNUG__)
+#pragma interface
+#endif
 
 class istream;
 class ostream;
@@ -112,8 +114,6 @@ inline int Range::nelem (void) const { return rng_nelem; }
 inline void Range::set_base (double b) { rng_base = b;  }
 inline void Range::set_limit (double l) { rng_limit = l; }
 inline void Range::set_inc (double i) { rng_inc = i;   }
-
-} // extern "C++"
 
 #endif
 

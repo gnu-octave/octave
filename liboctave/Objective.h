@@ -24,9 +24,11 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_Objective_h)
 #define octave_Objective_h 1
 
-#include "dColVector.h"
+#if defined (__GNUG__)
+#pragma interface
+#endif
 
-extern "C++" {
+#include "dColVector.h"
 
 #ifndef Vector
 #define Vector ColumnVector
@@ -61,8 +63,6 @@ class Objective
   gradient_fcn grad;
 
 };
-
-} // extern "C++"
 
 #endif
 

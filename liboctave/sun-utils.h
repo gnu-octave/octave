@@ -24,9 +24,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_sun_utils_h)
 #define octave_sun_utils_h 1
 
-extern "C++" {
-
-#ifdef sun
+#if defined (sun)
 
 /*
  * I think that this is really only needed if linking to Fortran
@@ -44,7 +42,7 @@ extern "C" int MAIN_ (void);
  * boundaries.
  */
 
-#ifdef __GNUC__
+#if defined (__GNUC__)
 
 inline double
 access_double (double *unaligned_ptr)
@@ -74,12 +72,8 @@ assign_double (double *unaligned_ptr, double value)
 }
 
 #endif
-
 #endif
-
 #endif
-
-} // extern "C++"
 
 /*
 ;;; Local Variables: ***

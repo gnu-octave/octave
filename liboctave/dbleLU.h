@@ -24,11 +24,13 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_LU_h)
 #define octave_LU_h 1
 
+#if defined (__GNUG__)
+#pragma interface
+#endif
+
 class ostream;
 
 #include "dMatrix.h"
-
-extern "C++" {
 
 class LU
 {
@@ -86,8 +88,6 @@ inline Matrix LU::P (void) const
 {
   return p;
 }
-
-} // extern "C++"
 
 #endif
 

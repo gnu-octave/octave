@@ -24,11 +24,13 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_QR_h)
 #define octave_QR_h 1
 
+#if defined (__GNUG__)
+#pragma interface
+#endif
+
 class ostream;
 
 #include "dMatrix.h"
-
-extern "C++" {
 
 class QR
 {
@@ -82,8 +84,6 @@ inline Matrix QR::R (void) const
 {
   return r;
 }
-
-} // extern "C++"
 
 #endif
 

@@ -24,11 +24,13 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_HESS_h)
 #define octave_HESS_h 1
 
+#if defined (__GNUG__)
+#pragma interface
+#endif
+
 class ostream;
 
 #include "dMatrix.h"
-
-extern "C++" {
 
 class HESS
 {
@@ -90,8 +92,6 @@ inline Matrix HESS::unitary_hess_matrix (void) const
 {
   return unitary_hess_mat;
 }
-
-} // extern "C++"
 
 #endif
 

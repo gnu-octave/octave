@@ -24,14 +24,16 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_DiagMatrix_h)
 #define octave_DiagMatrix_h 1
 
+#if defined (__GNUG__)
+#pragma interface
+#endif
+
 #include "MArray.h"
 
 #include "dRowVector.h"
 #include "dColVector.h"
 
 #include "mx-defs.h"
-
-extern "C++" {
 
 class DiagMatrix : public MDiagArray<double>
 {
@@ -110,8 +112,6 @@ private:
 
   DiagMatrix (double *d, int nr, int nc) : MDiagArray<double> (d, nr, nc) { }
 };
-
-} // extern "C++"
 
 #endif
 

@@ -24,11 +24,9 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_liboctave_error_h)
 #define octave_liboctave_error_h 1
 
-extern "C++" {
-
 // Tell g++ that fatal doesn't return;
 
-#ifdef __GNUG__
+#if defined (__GNUG__)
 typedef void v_fcn_cpc_x (const char *, ...);
 volatile v_fcn_cpc_x fatal;
 #endif
@@ -42,8 +40,6 @@ typedef void (*liboctave_error_handler) (const char *, ...);
 extern liboctave_error_handler current_liboctave_error_handler;
 
 extern void set_liboctave_error_handler (liboctave_error_handler f);
-
-} // extern "C++"
 
 #endif
 

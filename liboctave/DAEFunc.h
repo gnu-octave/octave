@@ -24,10 +24,12 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_DAEFunc_h)
 #define octave_DAEFunc_h 1
 
+#if defined (__GNUG__)
+#pragma interface
+#endif
+
 class Matrix;
 class ColumnVector;
-
-extern "C++" {
 
 #ifndef Vector
 #define Vector ColumnVector
@@ -76,8 +78,6 @@ protected:
 
   DAEJacFunc jac;
 };
-
-} // extern "C++"
 
 #endif
 

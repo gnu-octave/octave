@@ -24,11 +24,13 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_Bounds_h)
 #define octave_Bounds_h 1
 
+#if defined (__GNUG__)
+#pragma interface
+#endif
+
 class ostream;
 
 #include "dColVector.h"
-
-extern "C++" {
 
 #ifndef Vector
 #define Vector ColumnVector
@@ -83,8 +85,6 @@ private:
   void error (const char *msg);
 
 };
-
-} // extern "C++"
 
 #endif
 

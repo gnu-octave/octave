@@ -24,11 +24,13 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_AEPBALANCE_h)
 #define octave_AEPBALANCE_h 1
 
+#if defined (__GNUG__)
+#pragma interface
+#endif
+
 class ostream;
 
 #include "dMatrix.h"
-
-extern "C++" {
 
 class AEPBALANCE
 {
@@ -84,8 +86,6 @@ inline Matrix AEPBALANCE::balancing_matrix (void) const
 {
   return balancing_mat;
 }
-
-} // extern "C++"
 
 #endif
 

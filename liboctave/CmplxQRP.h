@@ -24,11 +24,13 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_ComplexQRP_h)
 #define octave_ComplexQRP_h 1
 
+#if defined (__GNUG__)
+#pragma interface
+#endif
+
 class ostream;
 
 #include "CmplxQR.h"
-
-extern "C++" {
 
 class ComplexQRP : public ComplexQR
 {
@@ -67,8 +69,6 @@ inline Matrix ComplexQRP::P (void) const
 {
   return p;
 }
-
-} // extern "C++"
 
 #endif
 

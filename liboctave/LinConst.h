@@ -24,6 +24,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_LinConst_h)
 #define octave_LinConst_h 1
 
+#if defined (__GNUG__)
+#pragma interface
+#endif
+
 class ostream;
 
 class ColumnVector;
@@ -32,8 +36,6 @@ class ColumnVector;
 
 #include "dMatrix.h"
 #include "Bounds.h"
-
-extern "C++" {
 
 #ifndef Vector
 #define Vector ColumnVector
@@ -126,8 +128,6 @@ LinConst::set_constraint_matrix (const Matrix& amat)
 
   return *this;
 }
-
-} // extern "C++"
 
 #endif
 

@@ -24,11 +24,13 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_RowVector_h)
 #define octave_RowVector_h 1
 
+#if defined (__GNUG__)
+#pragma interface
+#endif
+
 #include "MArray.h"
 
 #include "mx-defs.h"
-
-extern "C++" {
 
 class RowVector : public MArray<double>
 {
@@ -106,8 +108,6 @@ Complex operator * (const RowVector& a, const ComplexColumnVector& b);
 // other operations
 
 RowVector linspace (double x1, double x2, int n);
-
-} // extern "C++"
 
 #endif
 

@@ -21,10 +21,12 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
+#if defined (__GNUG__)
+#pragma interface
+#endif
+
 #if !defined (octave_MArray_h)
 #define octave_MArray_h 1
-
-extern "C++" {
 
 #include "Array.h"
 
@@ -217,8 +219,6 @@ public:
 
   friend MDiagArray<T> operator - (const MDiagArray<T>& a);
 };
-
-} // extern "C++"
 
 #endif
 

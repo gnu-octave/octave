@@ -24,13 +24,15 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_ODE_h)
 #define octave_ODE_h 1
 
+#if defined (__GNUG__)
+#pragma interface
+#endif
+
 class ostream;
 
 #include "dMatrix.h"
 #include "dColVector.h"
 #include "ODEFunc.h"
-
-extern "C++" {
 
 class ODE_options
 {
@@ -131,8 +133,6 @@ private:
 		      double *pd, int *nrowpd);
 
 };
-
-} // extern "C++"
 
 #endif
 

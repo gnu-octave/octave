@@ -24,11 +24,13 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_LP_h)
 #define octave_LP_h 1
 
+#if defined (__GNUG__)
+#pragma interface
+#endif
+
 #include "dColVector.h"
 #include "Bounds.h"
 #include "LinConst.h"
-
-extern "C++" {
 
 #ifndef Vector
 #define Vector ColumnVector
@@ -55,8 +57,6 @@ class LP
   Bounds bnds;
   LinConst lc;
 };
-
-} // extern "C++"
 
 #endif
 

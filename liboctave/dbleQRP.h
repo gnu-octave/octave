@@ -24,11 +24,13 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_QRP_h)
 #define octave_QRP_h 1
 
+#if defined (__GNUG__)
+#pragma interface
+#endif
+
 class ostream;
 
 #include "dbleQR.h"
-
-extern "C++" {
 
 class QRP : public QR
 {
@@ -67,8 +69,6 @@ inline Matrix QRP::P (void) const
 {
   return p;
 }
-
-} // extern "C++"
 
 #endif
 

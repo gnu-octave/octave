@@ -24,11 +24,13 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_ComplexColumnVector_h)
 #define octave_ComplexColumnVector_h 1
 
+#if defined (__GNUG__)
+#pragma interface
+#endif
+
 #include "MArray.h"
 
 #include "mx-defs.h"
-
-extern "C++" {
 
 class ComplexColumnVector : public MArray<Complex>
 {
@@ -186,8 +188,6 @@ private:
 
   ComplexColumnVector (Complex *d, int l) : MArray<Complex> (d, l) { }
 };
-
-} // extern "C++"
 
 #endif
 

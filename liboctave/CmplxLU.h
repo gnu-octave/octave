@@ -24,12 +24,14 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_ComplexLU_h)
 #define octave_Complex_LU_h 1
 
+#if defined (__GNUG__)
+#pragma interface
+#endif
+
 class ostream;
 
 #include "dMatrix.h"
 #include "CMatrix.h"
-
-extern "C++" {
 
 class ComplexLU
 {
@@ -87,8 +89,6 @@ inline Matrix ComplexLU::P (void) const
 {
   return p;
 }
-
-} // extern "C++"
 
 #endif
 

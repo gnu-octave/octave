@@ -24,6 +24,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_ComplexDiagMatrix_h)
 #define octave_ComplexDiagMatrix_h 1
 
+#if defined (__GNUG__)
+#pragma interface
+#endif
+
 #include "MArray.h"
 
 #include "dRowVector.h"
@@ -32,8 +36,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "CColVector.h"
 
 #include "mx-defs.h"
-
-extern "C++" {
 
 class ComplexDiagMatrix : public MDiagArray<Complex>
 {
@@ -159,8 +161,6 @@ private:
   ComplexDiagMatrix (Complex *d, int nr, int nc)
     : MDiagArray<Complex> (d, nr, nc) { }
 };
-
-} // extern "C++"
 
 #endif
 

@@ -24,9 +24,11 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_DET_h)
 #define octave_DET_h 1
 
-class ostream;
+#if defined (__GNUG__)
+#pragma interface
+#endif
 
-extern "C++" {
+class ostream;
 
 class DET
 {
@@ -77,8 +79,6 @@ inline DET::DET (const double *d)
   det[0] = d[0];
   det[1] = d[1];
 }
-
-} // extern "C++"
 
 #endif
 

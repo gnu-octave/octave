@@ -24,13 +24,15 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_QPSOL_h)
 #define octave_QPSOL_h 1
 
+#if defined (__GNUG__)
+#pragma interface
+#endif
+
 #ifndef QPSOL_MISSING
 
 #include "dMatrix.h"
 #include "dColVector.h"
 #include "QP.h"
-
-extern "C++" {
 
 #ifndef Vector
 #define Vector ColumnVector
@@ -122,8 +124,6 @@ QPSOL::operator = (const QPSOL& a)
   lc = a.lc;
   return *this;
 }
-
-} // extern "C++"
 
 #endif /* QPSOL_MISSING */
 

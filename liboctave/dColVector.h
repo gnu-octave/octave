@@ -24,11 +24,13 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_ColumnVector_h)
 #define octave_ColumnVector_h 1
 
+#if defined (__GNUG__)
+#pragma interface
+#endif
+
 #include "MArray.h"
 
 #include "mx-defs.h"
-
-extern "C++" {
 
 class ColumnVector : public MArray<double>
 {
@@ -101,8 +103,6 @@ private:
 
   ColumnVector (double *d, int l) : MArray<double> (d, l) { }
 };
-
-} // extern "C++"
 
 #endif
 

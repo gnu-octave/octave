@@ -24,13 +24,15 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_EIG_h)
 #define octave_EIG_h 1
 
+#if defined (__GNUG__)
+#pragma interface
+#endif
+
 class ostream;
 
 #include "dMatrix.h"
 #include "CMatrix.h"
 #include "CColVector.h"
-
-extern "C++" {
 
 class EIG
 {
@@ -107,8 +109,6 @@ inline ComplexMatrix EIG::eigenvectors (void) const
 {
   return v;
 }
-
-} // extern "C++"
 
 #endif
 

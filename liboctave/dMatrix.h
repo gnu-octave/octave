@@ -24,14 +24,16 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_Matrix_int_h)
 #define octave_Matrix_int_h 1
 
+#if defined (__GNUG__)
+#pragma interface
+#endif
+
 // For FILE...
 #include <stdio.h>
 
 #include "MArray.h"
 
 #include "mx-defs.h"
-
-extern "C++" {
 
 class Matrix : public MArray2<double>
 {
@@ -237,8 +239,6 @@ private:
 
   Matrix (double *d, int r, int c) : MArray2<double> (d, r, c) { }
 };
-
-} // extern "C++"
 
 #endif
 

@@ -24,11 +24,13 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_LPsolve_h)
 #define octave_LPsolve_h 1
 
+#if defined (__GNUG__)
+#pragma interface
+#endif
+
 class ColumnVector;
 
 #include "LP.h"
-
-extern "C++" {
 
 #ifndef Vector
 #define Vector ColumnVector
@@ -59,8 +61,6 @@ class LPsolve : public LP
 
   void set_default_options (void);
 };
-
-} // extern "C++"
 
 #endif
 

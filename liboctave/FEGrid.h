@@ -24,11 +24,13 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_FEGrid_h)
 #define octave_FEGrid_h 1
 
+#if defined (__GNUG__)
+#pragma interface
+#endif
+
 class ostream;
 
 #include "dColVector.h"
-
-extern "C++" {
 
 #ifndef Vector
 #define Vector ColumnVector
@@ -82,8 +84,6 @@ inline double FEGrid::right (void) const
 
 inline Vector FEGrid::element_boundaries (void) const
   { return elem; }
-
-} // extern "C++"
 
 #endif
 

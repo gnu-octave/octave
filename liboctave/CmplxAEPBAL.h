@@ -24,11 +24,13 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_ComplexAEPBALANCE_h)
 #define octave_ComplexAEPBALANCE_h 1
 
+#if defined (__GNUG__)
+#pragma interface
+#endif
+
 class ostream;
 
 #include "CMatrix.h"
-
-extern "C++" {
 
 class ComplexAEPBALANCE
 {
@@ -83,8 +85,6 @@ inline ComplexMatrix ComplexAEPBALANCE::balancing_matrix (void) const
 {
   return balancing_mat;
 }
-
-} // extern "C++"
 
 #endif
 

@@ -24,12 +24,14 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_SVD_h)
 #define octave_SVD_h 1
 
+#if defined (__GNUG__)
+#pragma interface
+#endif
+
 class ostream;
 
 #include "dDiagMatrix.h"
 #include "dMatrix.h"
-
-extern "C++" {
 
 class SVD
 {
@@ -108,8 +110,6 @@ inline Matrix SVD::right_singular_matrix (void) const
 {
   return right_sm;
 }
-
-} // extern "C++"
 
 #endif
 

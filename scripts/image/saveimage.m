@@ -17,6 +17,7 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
+## -*- texinfo -*-
 ## @deftypefn {Function File} {} saveimage (@var{file}, @var{x}, @var{fmt}, @var{map})
 ## Save the matrix @var{x} to @var{file} in image format @var{fmt}.  Valid
 ## values for @var{fmt} are

@@ -170,8 +170,6 @@ initialize_globals (char *name)
   char *tmp = strrchr (raw_prog_name, '/');
   prog_name = tmp ? strsave (tmp+1) : strsave (raw_prog_name);
 
-  kpse_set_progname (name);
-
   struct passwd *entry = getpwuid (getuid ());
   if (entry)
     user_name = strsave (entry->pw_name);
@@ -190,28 +188,6 @@ initialize_globals (char *name)
     home_directory = strsave (hd);
   else
     home_directory = strsave ("I have no home!");
-
-  // This may seem odd, but doing it this way means that we don't have
-  // to modify the kpathsea library...
-
-  char *odb = getenv ("OCTAVE_DB_DIR");
-
-  if (odb)
-    oct_putenv ("TEXMF", odb);
-  else
-    {
-      char *oh = getenv ("OCTAVE_HOME");
-
-      if (oh)
-	{
-	  int len = strlen (oh) + 12;
-	  char *putenv_val = new char [len];
-	  sprintf (putenv_val, "%s/lib/octave", oh);
-	  oct_putenv ("TEXMF", putenv_val);
-	}
-      else  
-	oct_putenv ("TEXMF", OCTAVE_DATADIR "/octave");
-    }
 
   exec_path = default_exec_path ();
 
@@ -373,6 +349,8 @@ main (int argc, char **argv)
   initialize_error_handlers ();
 
   initialize_globals (argv[0]);
+
+  initialize_pathsearch (argv[0]);
 
   int optc;
   while ((optc = getopt_long (argc, argv, short_opts, long_opts, 0)) != EOF)

@@ -108,8 +108,8 @@ endif
 SOURCES := acosh.c arith-ops.cc asinh.c atanh.c data.cc dirfns.cc \
 	dynamic-ld.cc erf.c erfc.c error.cc file-info.cc file-io.cc \
 	filemode.c fnmatch.c getopt.c getopt1.c gripes.cc help.cc \
-	input.cc lex.l load-save.cc mappers.cc mkdir.c \
-	oct-hist.cc oct-map.cc oct-obj.cc pager.cc parse.y \
+	input.cc lex.l load-save.cc mappers.cc mkdir.c oct-hist.cc \
+	oct-map.cc oct-obj.cc pager.cc parse.y pathsearch.cc \
 	pr-output.cc procstream.cc pt-base.cc pt-cmd.cc pt-const.cc \
 	pt-exp-base.cc pt-exp.cc pt-fcn.cc pt-fvc-base.cc pt-fvc.cc \
 	pt-mat.cc pt-misc.cc pt-mvr-base.cc pt-mvr.cc pt-plot.cc \

@@ -1,3 +1,8 @@
+2000-06-26  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* variables.cc (var_matches_any_pattern): New function.
+	(Fclear): Use it to make exclusive clear work correctly.
+
 2000-06-08  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* ov-range.h (octave_range::is_numeric_type): New function.

@@ -1078,6 +1078,31 @@ bind_builtin_variable (const std::string& varname, const octave_value& val,
 
 // Deleting names from the symbol tables.
 
+static inline bool
+var_matches_any_pattern (const std::string& nm,
+			 const string_vector& argv, int argc, int idx)
+{
+  bool retval = false;
+
+  for (int k = idx; k < argc; k++)
+    {
+      std::string patstr = argv[k];
+
+      if (! patstr.empty ())
+	{
+	  glob_match pattern (patstr);
+
+	  if (pattern.match (nm))
+	    {
+	      retval = true;
+	      break;
+	    }
+	}
+    }
+
+  return retval;
+}
+
 DEFUN_TEXT (clear, args, ,
   "-*- texinfo -*-\n\
 @deffn {Command} clear [-x] pattern @dots{}\n\
@@ -1181,46 +1206,94 @@ This command may not be used within a function body.\n\
       // pattern matching code if the string doesn't contain any
       // globbing patterns.
 
-      for (int k = idx; k < argc; k++)
+      if (exclusive)
 	{
-	  std::string patstr = argv[k];
+	  int lcount = lvars.length ();
 
-	  if (! patstr.empty ())
+	  for (int i = 0; i < lcount; i++)
 	    {
-	      glob_match pattern (patstr);
+	      std::string nm = lvars[i];
 
-	      int lcount = lvars.length ();
+	      if (! var_matches_any_pattern (nm, argv, argc, idx))
+		curr_sym_tab->clear (nm);
+	    }
 
-	      for (int i = 0; i < lcount; i++)
+	  int gcount = gvars.length ();
+
+	  for (int i = 0; i < gcount; i++)
+	    {
+	      std::string nm = gvars[i];
+
+	      if (! var_matches_any_pattern (nm, argv, argc, idx))
 		{
-		  std::string nm = lvars[i];
-		  int match = pattern.match (nm);
-		  if ((exclusive && ! match) || (! exclusive && match))
-		    curr_sym_tab->clear (nm);
+		  int count = curr_sym_tab->clear (nm);
+
+		  if (count > 0)
+		    global_sym_tab->clear (nm, clear_user_functions);
 		}
+	    }
 
-	      int gcount = gvars.length ();
-	      for (int i = 0; i < gcount; i++)
+	  int fcount = fcns.length ();
+
+	  for (int i = 0; i < fcount; i++)
+	    {
+	      std::string nm = fcns[i];
+
+	      if (! var_matches_any_pattern (nm, argv, argc, idx))
 		{
-		  std::string nm = gvars[i];
-		  int match = pattern.match (nm);
-		  if ((exclusive && ! match) || (! exclusive && match))
+		  curr_sym_tab->clear (nm);
+
+		  global_sym_tab->clear (nm, clear_user_functions);
+		}
+	    }
+	}
+      else
+	{
+	  for (int k = idx; k < argc; k++)
+	    {
+	      std::string patstr = argv[k];
+
+	      if (! patstr.empty ())
+		{
+		  glob_match pattern (patstr);
+
+		  int lcount = lvars.length ();
+
+		  for (int i = 0; i < lcount; i++)
 		    {
-		      int count = curr_sym_tab->clear (nm);
-		      if (count > 0)
-			global_sym_tab->clear (nm, clear_user_functions);
+		      std::string nm = lvars[i];
+
+		      if (pattern.match (nm))
+			curr_sym_tab->clear (nm);
 		    }
-		}
 
-	      int fcount = fcns.length ();
-	      for (int i = 0; i < fcount; i++)
-		{
-		  std::string nm = fcns[i];
-		  int match = pattern.match (nm);
-		  if ((exclusive && ! match) || (! exclusive && match))
+		  int gcount = gvars.length ();
+
+		  for (int i = 0; i < gcount; i++)
 		    {
-		      curr_sym_tab->clear (nm);
-		      global_sym_tab->clear (nm, clear_user_functions);
+		      std::string nm = gvars[i];
+
+		      if (pattern.match (nm))
+			{
+			  int count = curr_sym_tab->clear (nm);
+
+			  if (count > 0)
+			    global_sym_tab->clear (nm, clear_user_functions);
+			}
+		    }
+
+		  int fcount = fcns.length ();
+
+		  for (int i = 0; i < fcount; i++)
+		    {
+		      std::string nm = fcns[i];
+
+		      if (pattern.match (nm))
+			{
+			  curr_sym_tab->clear (nm);
+
+			  global_sym_tab->clear (nm, clear_user_functions);
+			}
 		    }
 		}
 	    }

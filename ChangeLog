@@ -1,3 +1,8 @@
+2000-06-26  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* octave-bug.in: Substitute correct values for config_opts,
+	MACHINE, and CXXFLAGS.
+
 2000-06-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makeconf.in (GPERF): Allow substitution.

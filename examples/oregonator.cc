@@ -12,7 +12,7 @@ Reference:\n\
 {
   ColumnVector dx (3);
 
-  ColumnVector x = args(0).column_vector_value ();
+  ColumnVector x (args(0).vector_value ());
 
   dx(0) = 77.27 * (x(1) - x(0)*x(1) + x(0) - 8.375e-06*pow (x(0), 2));
   dx(1) = (x(2) - x(0)*x(1) - x(1)) / 77.27;

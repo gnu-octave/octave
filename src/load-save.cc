@@ -55,6 +55,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "user-prefs.h"
 #include "utils.h"
 
+// The default output format.  May be one of "binary", "text", or
+// "mat-binary".
+static string Vdefault_save_format;
+
+// The number of decimal digits to use when writing ascii data.
+static int Vsave_precision;
+
 // Used when converting Inf to something that gnuplot can read.
 
 #ifndef OCT_RBV
@@ -1897,7 +1904,7 @@ save_ascii_data (ostream& os, const octave_value& tc,
   int success = 1;
 
   if (! precision)
-    precision = user_pref.save_precision;
+    precision = Vsave_precision;
 
   if (! name.empty ())
     os << "# name: " << name << "\n";
@@ -2107,7 +2114,7 @@ get_default_save_format (void)
 {
   load_save_format retval = LS_ASCII;
 
-  string fmt = user_pref.default_save_format;
+  string fmt = Vdefault_save_format;
 
   if (fmt == "binary")
     retval = LS_BINARY;
@@ -2347,6 +2354,53 @@ save_three_d (ostream& os, const octave_value& tc, int parametric)
     }
 
   return (os && ! fail);
+}
+
+static int
+default_save_format (void)
+{
+  int status = 0;
+
+  string s = builtin_string_variable ("default_save_format");
+
+  if (s.empty ())
+    {
+      gripe_invalid_value_specified ("default_save_format");
+      status = -1;
+    }
+  else
+    Vdefault_save_format = s;
+
+  return status;
+}
+
+static int
+save_precision (void)
+{
+  double val;
+  if (builtin_real_scalar_variable ("save_precision", val)
+      && ! xisnan (val))
+    {
+      int ival = NINT (val);
+      if (ival >= 0 && (double) ival == val)
+	{
+	  Vsave_precision = ival;
+	  return 0;
+	}
+    }
+  gripe_invalid_value_specified ("save_precision");
+  return -1;
+}
+
+void
+symbols_of_load_save (void)
+{
+  DEFVAR (default_save_format, "ascii", 0, default_save_format,
+    "default format for files created with save, may be one of\n\
+\"binary\", \"text\", or \"mat-binary\"");
+
+  DEFVAR (save_precision, 15.0, 0, save_precision,
+    "number of significant figures kept by the ASCII save command");
 }
 
 /*

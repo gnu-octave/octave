@@ -135,10 +135,10 @@ function [realp, imagp, w] = nyquist (sys, w, outputs, inputs, atol)
     dnplot = 0;
     while(!dnplot)
       oneplot();
-      gset key;
+      __gnuplot_set__ key;
       clearplot();
       grid ("on");
-      gset data style lines;
+      __gnuplot_set__ data style lines;
 
       if(is_digital(sys))
         tstr = " G(e^{jw}) ";
@@ -154,7 +154,7 @@ function [realp, imagp, w] = nyquist (sys, w, outputs, inputs, atol)
           inn{1}, outn{1}, w(1), w(length(w))) )
       endif
 
-      gset nologscale xy;
+      __gnuplot_set__ nologscale xy;
 
       axis(axis2dlim([[vec(realp),vec(imagp)];[vec(realp),-vec(imagp)]]));
       plot(realp,imagp,"- ;+w;",realp,-imagp,"-@ ;-w;");

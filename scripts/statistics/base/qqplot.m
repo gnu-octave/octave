@@ -80,7 +80,7 @@ function [q, s] = qqplot (x, dist, varargin)
   if (nargout == 0)
     xlabel (q_label);
     ylabel ("sample points");
-    gset nokey;
+    __gnuplot_set__ nokey;
     plot (q, s);
   endif
 

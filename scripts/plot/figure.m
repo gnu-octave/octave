@@ -47,7 +47,7 @@ function f = figure (n)
       if (! isempty (gnuterm))
         oneplot ();
         figure_list = union (figure_list, f);
-        eval (sprintf ("__gset__ term %s %d\n", gnuterm, f));
+        eval (sprintf ("__gnuplot_set__ term %s %d\n", gnuterm, f));
       else
         error ("figure: requires GNUTERM (Aqua) or DISPLAY (X11)");
       endif

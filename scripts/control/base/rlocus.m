@@ -200,7 +200,7 @@ function [rldata, k_break, rlpol, gvec, real_ax_pts] = rlocus (sys, increment, m
     axdata = [real(rlpolv(idx)),imag(rlpolv(idx))];
     axlim = axis2dlim(axdata);
     axlim(1:2) = [xmin, xmax];
-    gset nologscale xy;
+    __gnuplot_set__ nologscale xy;
     grid("on");
     rldata = [real(rlpolv), imag(rlpolv) ];
     axis(axlim);

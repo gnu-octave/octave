@@ -281,28 +281,7 @@ $$
 but not @code{rand (5, 30)}.
 @end deffn
 
-@deffn {Command} gset options
-@deffnx {Command} gshow options
-@deffnx {Command} replot options
-In addition to the basic plotting commands, the whole range of
-@code{gset} and @code{gshow} commands from @code{gnuplot} are available,
-as is @code{replot}.
-
-@findex set
-@findex show
-Note that in Octave 2.0, the @code{set} and @code{show} commands were
-renamed to @code{gset} and @code{gshow} in order to allow for
-compatibility with the @sc{Matlab} graphics and GUI commands in a future
-version of Octave.  (For now, the old @code{set} and @code{show}
-commands do work, but they print an annoying warning message to try to
-get people to switch to using @code{gset} and @code{gshow}.)
-
-The @code{gset} and @code{gshow} commands allow you to set and show
-@code{gnuplot} parameters.  For more information about the @code{gset}
-and @code{gshow} commands, see the documentation for @code{set} and
-@code{show} in the @code{gnuplot} user's guide (also available on line
-if you run @code{gnuplot} directly, instead of running it from Octave).
-
+@deffn {Command} replot options
 The @code{replot} command allows you to force the plot to be
 redisplayed.  This is useful if you have changed something about the
 plot, such as the title or axis labels.  The @code{replot} command also
@@ -337,8 +316,7 @@ you probably don't want to have a completely new plot generated every
 time something as minor as an axis label changes.
 
 @findex shg
-The command @code{shg} is equivalent to executing @code{replot} without
-any arguments.
+The command @code{shg} is equivalent to executing @code{replot}.
 @end deffn
 
 Note that NaN values in the plot data are automatically omitted, and
@@ -355,8 +333,6 @@ Inf values are converted to a very large value before calling gnuplot.
 @DOCSTRING(gnuplot_binary)
 
 @DOCSTRING(gnuplot_has_frames)
-
-@DOCSTRING(graw)
 
 @DOCSTRING(gnuplot_command_plot)
 

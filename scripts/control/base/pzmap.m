@@ -66,7 +66,7 @@ function [zer, pol]=pzmap (sys)
     varstr = vars(is_digital(sys) + 1);
 
     ## Plot the data
-    gset nologscale xy;
+    __gnuplot_set__ nologscale xy;
     if(is_siso(sys))
       title(sprintf("Pole-zero map from %s to %s", ...
 	 sysgetsignals(sys,"in",1,1), sysgetsignals(sys,"out",1,1) ));

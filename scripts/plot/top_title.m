@@ -34,9 +34,9 @@ function top_title (text)
   endif
 
   if (isstr (text))
-    __gset__ bottom_title;
-    __gset__ title;
-    eval (sprintf ("__gset__ top_title \"%s\"",
+    __gnuplot_set__ bottom_title;
+    __gnuplot_set__ title;
+    eval (sprintf ("__gnuplot_set__ top_title \"%s\"",
 		   undo_string_escapes (undo_string_escapes (text))));
     if (automatic_replot)
       replot ();

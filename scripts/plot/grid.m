@@ -38,15 +38,15 @@ function grid (x)
   do_replot = false;
 
   if (nargin == 0)
-    __gset__ grid;
+    __gnuplot_set__ grid;
     do_replot = true;
   elseif (nargin == 1)
     if (isstr (x))
       if (strcmp ("off", x))
-        __gset__ nogrid;
+        __gnuplot_set__ nogrid;
 	do_replot = true;
       elseif (strcmp ("on", x))
-        __gset__ grid;
+        __gnuplot_set__ grid;
 	do_replot = true;
       else
 	usage (usage_msg);

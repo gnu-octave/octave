@@ -220,10 +220,10 @@ function [y, t] = __stepimp__ (sitype, sys, inp, tstop, n)
     if(nargout == 0)
       ## Plot the information
       oneplot();
-      gset nogrid
-      gset nologscale
-      gset autoscale
-      gset nokey
+      __gnuplot_set__ nogrid
+      __gnuplot_set__ nologscale
+      __gnuplot_set__ autoscale
+      __gnuplot_set__ nokey
       if (IMPULSE)
 	gm = zeros(NOUT, 1);
 	tt = "impulse";

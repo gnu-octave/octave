@@ -109,11 +109,11 @@ function [mag, phase, w] = nichols (sys, w, outputs, inputs)
   if (nargout < 1),
     ## Plot the information
     oneplot();
-    gset autoscale;
-    gset nokey;
+    __gnuplot_set__ autoscale;
+    __gnuplot_set__ nokey;
     clearplot();
     grid("on");
-    gset data style lines;
+    __gnuplot_set__ data style lines;
     if(is_digital(sys))
       tistr = "(exp(jwT)) ";
     else

@@ -24,7 +24,7 @@
 ## given by index (there are @var{cols} by @var{rows} subwindows).
 ##
 ## The global variable @var{__multiplot_scale__} should be used when the
-## command @code{__gset__ size xsize, ysize} has been used prior to calling
+## command @code{__gnuplot_set__ size xsize, ysize} has been used prior to calling
 ## @code{subplot}.
 ##
 ## The value of @var{__multiplot_scale__} should be a vector with two
@@ -157,9 +157,9 @@ function subplot (rows, columns, index)
 
       gnuplot_command_replot = "cle;rep";
 
-      __gset__ multiplot;
+      __gnuplot_set__ multiplot;
 
-      eval (sprintf ("__gset__ size %g, %g", __multiplot_xsize__,
+      eval (sprintf ("__gnuplot_set__ size %g, %g", __multiplot_xsize__,
                      __multiplot_ysize__));
     endif
 
@@ -175,7 +175,7 @@ function subplot (rows, columns, index)
     xo = (xp - 1.0) * __multiplot_xsize__;
     yo = (rows - yp) * __multiplot_ysize__;
 
-    eval (sprintf ("__gset__ origin %g, %g", xo, yo));
+    eval (sprintf ("__gnuplot_set__ origin %g, %g", xo, yo));
 
   endif
 

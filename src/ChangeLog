@@ -1,3 +1,15 @@
+2005-03-16  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/gplot.l (Fset, Fshow): Delete.
+	(F__gnuplot_plot__): Rename from Fgplot.
+	(F__gnuplot_splot__): Rename from Fgsplot.
+	(F__gnuplot_raw__): Rename from Fgraw.
+	(F__gnuplot_set__): Rename from Fgset.
+	(F__gnuplot_show__): Rename from Fgshow.
+	(F__gnuplot_replot__): Rename from Freplot.
+	(WARN_DEPRECATED, DEPRECATED_BODY): New macros.
+	(Fgplot, Fgsplot, Fgraw, Fgset, Fgshow): New functions.
+
 2005-03-15  John W. Eaton  <jwe@octave.org>
 
 	* lex.l (<COMMAND_START>{NL}): Reset lexer_flags.doing_rawcommand

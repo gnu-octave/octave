@@ -36,7 +36,7 @@ function __plt__ (caller, varargin)
     y_set = false;
     have_gp_cmd = false;
 
-    gp_cmd = "__gplot__";
+    gp_cmd = "__gnuplot_plot__";
     sep = "";
 
     ## Gather arguments, decode format, gather plot strings, and plot lines.

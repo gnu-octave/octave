@@ -148,10 +148,10 @@ function [mag_r, phase_r, w_r] = bode (sys, w, outputs, inputs, plot_style)
     unwind_protect
       automatic_replot = 0;
       oneplot();
-      gset autoscale;
-      gset nokey;
+      __gnuplot_set__ autoscale;
+      __gnuplot_set__ nokey;
       clearplot();
-      gset data style lines;
+      __gnuplot_set__ data style lines;
       if(is_digital(sys))
 	xlstr = ["Digital frequency w=rad/sec.  pi/T=",num2str(pi/systsam)];
 	tistr = "(exp(jwT)) ";

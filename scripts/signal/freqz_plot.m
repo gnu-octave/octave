@@ -45,7 +45,7 @@ function freqz_plot(w,h)
       automatic_replot = 0;
 
       subplot (311);
-      gset lmargin 10;
+      __gnuplot_set__ lmargin 10;
       axis ("labely");
       xlabel ("");
       grid ("on");
@@ -56,7 +56,7 @@ function freqz_plot(w,h)
       axis ("labely");
       title ("");
       xlabel ("");
-      gset tmargin 0;
+      __gnuplot_set__ tmargin 0;
       grid ("on");
       if (maxmag - min (mag) > 100)
       	axis ([ w(1), w(n), maxmag-100, maxmag ]);
@@ -84,8 +84,8 @@ function freqz_plot(w,h)
 
       grid ("off");
       axis ("auto", "label");
-      gset lmargin;
-      gset tmargin;
+      __gnuplot_set__ lmargin;
+      __gnuplot_set__ tmargin;
       oneplot ();
 
       automatic_replot = replot_state;

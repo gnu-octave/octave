@@ -48,9 +48,9 @@ function semilogyerr (varargin)
     usage ("semilogyerr (...)");
   endif
 
-  __gset__ nologscale x;
-  __gset__ logscale y;
-  __gset__ nopolar;
+  __gnuplot_set__ nologscale x;
+  __gnuplot_set__ logscale y;
+  __gnuplot_set__ nopolar;
 
   __errcomm__ ("semilogyerr", varargin{:});
 

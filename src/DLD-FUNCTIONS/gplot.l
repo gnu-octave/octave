@@ -2,18 +2,26 @@
 %option noyywrap
 
 %{
+// PKG_ADD: mark_as_rawcommand ("__gnuplot_plot__");
+// PKG_ADD: mark_as_rawcommand ("__gnuplot_set__");
+// PKG_ADD: mark_as_rawcommand ("__gnuplot_splot__");
+// PKG_ADD: mark_as_rawcommand ("__gnuplot_replot__");
+
 // PKG_ADD: mark_as_rawcommand ("gplot");
 // PKG_ADD: mark_as_rawcommand ("gset");
 // PKG_ADD: mark_as_rawcommand ("gsplot");
-
 // PKG_ADD: mark_as_rawcommand ("replot");
 
+// PKG_ADD: mark_as_command ("__gnuplot_show__");
+
 // PKG_ADD: mark_as_command ("gshow");
+
 // PKG_ADD: mark_as_command ("hold");
+
 // PKG_ADD: mark_as_command ("set");
 // PKG_ADD: mark_as_command ("show");
 
-// PKG_ADD: __gplot_init__ ();
+// PKG_ADD: __gnuplot_init__ ();
 
 // PKG_ADD: atexit ("closeplot");
 
@@ -1118,27 +1126,6 @@ doplot (std::string caller, octave_value_list args)
     }
 }
 
-DEFUN_DLD (gplot, args, ,
-  "Plot with gnuplot.\n")
-{
-  doplot ("plot", args);
-  return octave_value_list ();
-}
-
-DEFUN_DLD (gsplot, args, ,
-  "Plot with gnuplot.\n")
-{
-  doplot ("splot", args);
-  return octave_value_list ();
-}
-
-DEFUN_DLD (replot, args, ,
-  "Plot with gnuplot.\n")
-{
-  doplot ("replot", args);
-  return octave_value_list ();
-}
-
 DEFUN_DLD (clearplot, , ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} clearplot\n\
@@ -1146,11 +1133,6 @@ DEFUN_DLD (clearplot, , ,
 Clear the plot window and any titles or axis labels.  The name\n\
 @code{clg} is aliased to @code{clearplot} for compatibility with\n\
 @sc{Matlab}.\n\
-\n\
-The commands @kbd{gplot clear}, @kbd{gsplot clear}, and @kbd{replot\n\
-clear} are equivalent to @code{clearplot}.  (Previously, commands like\n\
-@kbd{gplot clear} would evaluate @code{clear} as an ordinary expression\n\
-and clear all the visible variables.)\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -1266,9 +1248,9 @@ files to hold the plot data.\n\
   return retval;
 }
 
-DEFUN_DLD (graw, args, ,
+DEFUN_DLD (__gnuplot_raw__, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} graw (@var{string})\n\
+@deftypefn {Built-in Function} {} __gnuplot_raw__ (@var{string})\n\
 Send @var{string} directly to gnuplot subprocess.\n\
 @end deftypefn")
 {
@@ -1294,9 +1276,9 @@ Send @var{string} directly to gnuplot subprocess.\n\
   return retval;
 }
 
-DEFUN_DLD (gset, args, ,
+DEFUN_DLD (__gnuplot_set__, args, ,
   "-*- texinfo -*-\n\
-@deffn {Command} gset options\n\
+@deffn {Command} __gnuplot_set__ options\n\
 Set plotting options for gnuplot\n\
 @end deffn")
 {
@@ -1348,17 +1330,9 @@ Set plotting options for gnuplot\n\
   return retval;
 }
 
-DEFUN_DLD (set, args, nargout,
+DEFUN_DLD (__gnuplot_show__, args, ,
   "-*- texinfo -*-\n\
-This command is has been replaced by @code{gset}.")
-{
-  warning ("set is obsolete -- use gset instead");
-  return Fgset (args, nargout);
-}
-
-DEFUN_DLD (gshow, args, ,
-  "-*- texinfo -*-\n\
-@deffn {Command} gshow options\n\
+@deffn {Command} __gnuplot_show__ options\n\
 Show plotting options.\n\
 @end deffn")
 {
@@ -1388,12 +1362,82 @@ Show plotting options.\n\
   return retval;
 }
 
-DEFUN_DLD (show, args, nargout,
-  "-*- texinfo -*-\n\
-This command is has been replaced by @code{gshow}.")
+DEFUN_DLD (__gnuplot_plot__, args, ,
+  "Plot with gnuplot.\n")
 {
-  warning ("show is obsolete -- use gshow instead");
-  return Fgshow (args, nargout);
+  doplot ("plot", args);
+  return octave_value_list ();
+}
+
+DEFUN_DLD (__gnuplot_splot__, args, ,
+  "Plot with gnuplot.\n")
+{
+  doplot ("splot", args);
+  return octave_value_list ();
+}
+
+DEFUN_DLD (__gnuplot_replot__, args, ,
+  "Plot with gnuplot.\n")
+{
+  doplot ("replot", args);
+  return octave_value_list ();
+}
+
+// Deprecated functions.
+
+#define WARN_DEPRECATED(FOLD, FNEW) \
+  do \
+    { \
+      static bool warned = false; \
+      if (! warned) \
+	{ \
+	  warned = true; \
+	  warning (#FOLD " is deprecated and will be removed from a future"); \
+	  warning ("version of Octave."); \
+	  warning ("You should use the higher-level plot functions"); \
+	  warning ("(\"plot\", \"mesh\", \"semilogx\", etc.) instead"); \
+	  warning ("of the low-level plotting commands."); \
+	  warning ("If you absolutely must use this function, use the"); \
+	  warning ("internal version " #FNEW " instead."); \
+	} \
+    } \
+  while (0)
+    
+#define DEPRECATED_BODY(FOLD, FNEW) \
+  WARN_DEPRECATED (FOLD, FNEW); \
+  return feval (#FNEW, args)
+
+// We can't further simplify this by putting the DEFUN_DLD in a macro
+// because then the mk-oct-links script will fail.
+
+DEFUN_DLD (gplot, args, ,
+  "")
+{
+  DEPRECATED_BODY (gplot, __gnuplot_plot__);
+}
+
+DEFUN_DLD (gsplot, args, ,
+  "")
+{
+  DEPRECATED_BODY (gsplot, __gnuplot_splot__);
+}
+
+DEFUN_DLD (graw, args, ,
+  "")
+{
+  DEPRECATED_BODY (graw, __gnuplot__raw__);
+}
+
+DEFUN_DLD (gset, args, ,
+  "")
+{
+  DEPRECATED_BODY (gset, __gnuplot_set__);
+}
+
+DEFUN_DLD (gshow, args, ,
+  "")
+{
+  DEPRECATED_BODY (gshow, __gnuplot__show__);
 }
 
 static int
@@ -1484,19 +1528,19 @@ gnuplot_has_frames (void)
   return 0;
 }
 
-DEFUN_DLD (__gplot_init__, , ,
+DEFUN_DLD (__gnuplot_init__, , ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} __gplot_init__ ()\n\
+@deftypefn {Loadable Function} __gnuplot_init__ ()\n\
 @end deftypefn")
 {
   octave_value_list retval;
 
-  static bool gplot_initialized = false;
+  static bool gnuplot_initialized = false;
 
-  if (gplot_initialized)
+  if (gnuplot_initialized)
     return retval;
 
-  gplot_initialized = true;
+  gnuplot_initialized = true;
 
   DEFVAR (automatic_replot, true, automatic_replot,
     "-*- texinfo -*-\n\

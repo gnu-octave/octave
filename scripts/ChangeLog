@@ -1,15 +1,24 @@
 2005-03-16  John W. Eaton  <jwe@octave.org>
 
-	* __axis_label__.m, __errplot__.m, __plt__.m, axis.m, bar.m,
-	bottom_title.m, contour.m, errorbar.m, figure.m, grid.m, loglog.m,
-	loglogerr.m, mesh.m, meshgrid.m, mplot.m, multiplot.m, oneplot.m,
-	plot.m, plot_border.m, polar.m, semilogx.m, semilogxerr.m,
-	semilogy.m, semilogyerr.m, shg.m, stairs.m, subplot.m,
-	subwindow.m, title.m, top_title.m, xlabel.m: Use __gplot__ instead
-	of gplot, __gsplot__ instead of gsplot, __gset__ instead of gset.
-	Remove gplot, gsplot from @seealso docs.
-
-2005-03-16  John W. Eaton  <jwe@octave.org>
+	* control/base/__stepimp__.m, control/base/bode.m,
+	control/base/frdemo.m, control/base/nichols.m,
+	control/base/nyquist.m, control/base/pzmap.m,
+	control/base/rldemo.m, control/base/rlocus.m,
+	control/hinf/dhinfdemo.m, control/hinf/hinfdemo.m,
+	plot/__axis_label__.m, plot/__errplot__.m, plot/__plt__.m,
+	plot/axis.m, plot/bar.m, plot/bottom_title.m, plot/contour.m,
+	plot/errorbar.m, plot/figure.m, plot/grid.m, plot/loglog.m,
+	plot/loglogerr.m, plot/mesh.m, plot/meshgrid.m, plot/mplot.m,
+	plot/multiplot.m, plot/oneplot.m, plot/plot.m, plot/plot_border.m,
+	plot/polar.m, plot/semilogx.m, plot/semilogxerr.m,
+	plot/semilogy.m, plot/semilogyerr.m, plot/shg.m, plot/stairs.m,
+	plot/subplot.m, plot/subwindow.m, plot/title.m, plot/top_title.m,
+	plot/xlabel.m, quaternion/demoquat.m,
+	quaternion/qcoordinate_plot.m, signal/freqz_plot.m, sparse/spy.m,
+	statistics/base/ppplot.m, statistics/base/qqplot.m:
+	Use __gnuplot_plot__ instead of gplot, __gnuplot_splot__ instead
+	of gsplot, and __gnuplot_set__ instead of gset. Remove gplot,
+	gsplot from @seealso docs.
 
 	* plot/replot.m: New file.
 

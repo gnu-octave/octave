@@ -34,7 +34,7 @@ function h = title (text)
   endif
 
   if (isstr (text))
-    eval (sprintf ("__gset__ title \"%s\"",
+    eval (sprintf ("__gnuplot_set__ title \"%s\"",
 		   undo_string_escapes (undo_string_escapes (text))));
     if (automatic_replot)
       replot ();

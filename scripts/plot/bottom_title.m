@@ -32,9 +32,9 @@ function bottom_title (text)
   endif
 
   if (isstr (text))
-    __gset__ top_title;
-    __gset__ title;
-    eval (sprintf ("__gset__ bottom_title \"%s\"",
+    __gnuplot_set__ top_title;
+    __gnuplot_set__ title;
+    eval (sprintf ("__gnuplot_set__ bottom_title \"%s\"",
 		   undo_string_escapes (undo_string_escapes (text))));
   else
     error ("bottom_title: text must be a string");

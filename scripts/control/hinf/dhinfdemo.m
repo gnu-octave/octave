@@ -150,7 +150,7 @@ if (length(yn) >= 1)
     if (columns(mag2) > 1);  mag2 = mag2';  endif
     figure(fig_n)
     fig_n = fig_n + 1;
-    gset grid
+    __gnuplot_set__ grid
     loglog(ww, [mag1 mag2]);
   endif
 endif

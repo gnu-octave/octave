@@ -248,10 +248,10 @@ function opt = demoquat ()
 	title(sprintf("yaw=%5.2f deg, pitch=%5.2f deg",thy,thp))
 	qcoordinate_plot(qi,qb,qview);
 	# uncomment the next four lines to get eps output
-	#gset terminal postscript eps 
-	#eval(sprintf("gset output 'fig%d.eps'",kk));
+	#__gnuplot_set__ terminal postscript eps 
+	#eval(sprintf("__gnuplot_set__ output 'fig%d.eps'",kk));
 	#replot
-	#gset terminal x11
+	#__gnuplot_set__ terminal x11
 	#prompt
       endfor
 

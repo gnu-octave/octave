@@ -44,24 +44,24 @@ function contour (x, y, z, n)
       n = y; 
     endif
     if (ismatrix (z))
-      __gset__ nosurface;
-      __gset__ contour;
-      __gset__ cntrparam bspline;
+      __gnuplot_set__ nosurface;
+      __gnuplot_set__ contour;
+      __gnuplot_set__ cntrparam bspline;
       if (isscalar (n))
-        command = sprintf ("__gset__ cntrparam levels %d", n);
+        command = sprintf ("__gnuplot_set__ cntrparam levels %d", n);
       elseif (isvector (n))
         tmp = sprintf ("%f", n(1));
         for i = 2:length (n)
           tmp = sprintf ("%s, %f", tmp, n(i));
         endfor
-        command = sprintf ("__gset__ cntrparam levels discrete %s", tmp);
+        command = sprintf ("__gnuplot_set__ cntrparam levels discrete %s", tmp);
       else
 	error ("contour: levels must be a scalar or vector") ;
       endif
       eval (command);
-      __gset__ noparametric;
-      __gset__ view 0, 0, 1, 1;
-      __gsplot__ z w l 1;
+      __gnuplot_set__ noparametric;
+      __gnuplot_set__ view 0, 0, 1, 1;
+      __gnuplot_splot__ z w l 1;
     else
       error ("contour: z of contour (z, levels) must be a matrix");
     endif
@@ -104,24 +104,24 @@ function contour (x, y, z, n)
 	  error (size_msg);
 	endif
       endif
-      __gset__ nosurface;
-      __gset__ contour;
-      __gset__ cntrparam bspline;
+      __gnuplot_set__ nosurface;
+      __gnuplot_set__ contour;
+      __gnuplot_set__ cntrparam bspline;
       if (isscalar (n))
-        command = sprintf ("__gset__ cntrparam levels %d", n);
+        command = sprintf ("__gnuplot_set__ cntrparam levels %d", n);
       elseif (isvector (n))
         tmp = sprintf ("%f", n(1));
         for i = 2:length (n)
           tmp = sprintf ("%s, %f", tmp, n(i));
         endfor
-        command = sprintf ("__gset__ cntrparam levels discrete %s", tmp);
+        command = sprintf ("__gnuplot_set__ cntrparam levels discrete %s", tmp);
       else
 	error ("contour: levels must be a scalar or vector") ;
       endif
       eval (command);
-      __gset__ parametric;
-      __gset__ view 0, 0, 1, 1;
-      __gsplot__ zz w l 1;
+      __gnuplot_set__ parametric;
+      __gnuplot_set__ view 0, 0, 1, 1;
+      __gnuplot_splot__ zz w l 1;
     else
       error ("contour: x and y must be vectors and z must be a matrix");
     endif

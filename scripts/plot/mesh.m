@@ -41,14 +41,14 @@ function mesh (x, y, z)
   if (nargin == 1)
     z = x;
     if (ismatrix (z))
-      __gset__ hidden3d;
-      __gset__ data style lines;
-      __gset__ surface;
-      __gset__ nocontour;
-      __gset__ noparametric;
-      __gset__ nologscale;
-      __gset__ view 60, 30, 1, 1
-      __gsplot__ (z');
+      __gnuplot_set__ hidden3d;
+      __gnuplot_set__ data style lines;
+      __gnuplot_set__ surface;
+      __gnuplot_set__ nocontour;
+      __gnuplot_set__ noparametric;
+      __gnuplot_set__ nologscale;
+      __gnuplot_set__ view 60, 30, 1, 1
+      __gnuplot_splot__ (z');
     else
       error ("mesh: argument must be a matrix");
     endif
@@ -69,15 +69,15 @@ function mesh (x, y, z)
           zz(:,i+2) = z(:,k);
           k++;
         endfor
-        __gset__ hidden3d;
-        __gset__ data style lines;
-        __gset__ surface;
-        __gset__ nocontour;
-        __gset__ nologscale;
-        __gset__ parametric;
-        __gset__ view 60, 30, 1, 1
-        __gsplot__ (zz);
-        __gset__ noparametric;
+        __gnuplot_set__ hidden3d;
+        __gnuplot_set__ data style lines;
+        __gnuplot_set__ surface;
+        __gnuplot_set__ nocontour;
+        __gnuplot_set__ nologscale;
+        __gnuplot_set__ parametric;
+        __gnuplot_set__ view 60, 30, 1, 1
+        __gnuplot_splot__ (zz);
+        __gnuplot_set__ noparametric;
       else
         msg = "mesh: rows (z) must be the same as length (y) and";
         msg = sprintf ("%s\ncolumns (z) must be the same as length (x)", msg);
@@ -97,15 +97,15 @@ function mesh (x, y, z)
           zz(:,i+2) = z(:,k);
           k++;
         endfor
-        __gset__ hidden3d;
-        __gset__ data style lines;
-        __gset__ surface;
-        __gset__ nocontour;
-        __gset__ nologscale;
-        __gset__ parametric;
-        __gset__ view 60, 30, 1, 1
-        __gsplot__ (zz);
-        __gset__ noparametric;
+        __gnuplot_set__ hidden3d;
+        __gnuplot_set__ data style lines;
+        __gnuplot_set__ surface;
+        __gnuplot_set__ nocontour;
+        __gnuplot_set__ nologscale;
+        __gnuplot_set__ parametric;
+        __gnuplot_set__ view 60, 30, 1, 1
+        __gnuplot_splot__ (zz);
+        __gnuplot_set__ noparametric;
       else
         error ("mesh: x, y, and z must have same dimensions");
       endif

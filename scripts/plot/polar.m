@@ -36,8 +36,8 @@ function polar (x1, x2, fmt)
   ## temporarily, probably inside an unwind_protect block, but there is
   ## no way to determine their current values.
 
-  __gset__ nologscale;
-  __gset__ nopolar;
+  __gnuplot_set__ nologscale;
+  __gnuplot_set__ nopolar;
 
   if (nargin == 3)
     if (isstr (fmt))

@@ -117,9 +117,9 @@ function errorbar (varargin)
     usage ("errorbar (...)");
   endif
 
-  __gset__ nologscale x;
-  __gset__ nologscale y;
-  __gset__ nopolar;
+  __gnuplot_set__ nologscale x;
+  __gnuplot_set__ nologscale y;
+  __gnuplot_set__ nopolar;
 
   __errcomm__ ("errorbar", varargin{:});
 

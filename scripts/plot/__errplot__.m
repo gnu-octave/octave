@@ -67,7 +67,7 @@ function __errplot__ (fstr,a1,a2,a3,a4,a5,a6)
 	       a1(:,i)-a3(:,i), a1(:,i)+a4(:,i), ...
 	       a2(:,i)-a5(:,i), a2(:,i)+a6(:,i)];
     endswitch
-    cmd = sprintf ("__gplot__ tmp %s", ifmt);
+    cmd = sprintf ("__gnuplot_plot__ tmp %s", ifmt);
     eval (cmd);
 endfor
 

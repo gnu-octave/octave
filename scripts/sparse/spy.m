@@ -31,9 +31,9 @@ function spy(S)
   unwind_protect
     automatic_replot = 0;
 
-    eval(sprintf('gset nokey'))
-    eval(sprintf('gset yrange [0:%d] reverse',m+1))
-    eval(sprintf('gset xrange [0:%d] noreverse',n+1))
+    eval(sprintf('__gnuplot_set__ nokey'))
+    eval(sprintf('__gnuplot_set__ yrange [0:%d] reverse',m+1))
+    eval(sprintf('__gnuplot_set__ xrange [0:%d] noreverse',n+1))
 
     if (length(i)<1000)
       plot(j,i,'*');
@@ -42,7 +42,7 @@ function spy(S)
     endif
 
     #TODO: we should store the reverse state so we don't undo it
-    gset yrange [0:1] noreverse
+    __gnuplot_set__ yrange [0:1] noreverse
     axis;
   unwind_protect_cleanup
     automatic_replot = arp;

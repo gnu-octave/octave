@@ -30,8 +30,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <stack>
 
 extern void reset_parser (void);
-extern int yylex (void);
-extern int yyparse (void);
+extern int octave_lex (void);
+extern int octave_parse (void);
 
 class tree;
 class tree_matrix;
@@ -46,7 +46,7 @@ class symbol_table;
 extern symbol_table *tmp_local_sym_tab;
 
 // Nonzero means print parser debugging info (-d).
-extern int yydebug;
+extern int octave_debug;
 
 // The current input line number.
 extern int input_line_number;

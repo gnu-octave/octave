@@ -1,3 +1,16 @@
+2004-02-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* toplev.cc (main_loop): Call octave_parse, not yyparse.
+	* octave.cc (octave_main): Increment octave_debug, not yydebug.
+	* parse.y (%name-prefix): New directive, set to "octave_".
+	* parse.h: Provide declarations for octave_lex and octave_parse
+	instead of yylex and yyparse.
+	* lex.l (%option prefix): New directive, set to "_octave".
+	Define yylval to be octave_lval.
+	Move definitions of YY_INPUT, YY_FATAL_ERROR, TOK_RETURN,
+	TOK_PUSH_AND_RETURN, BIN_OP_RETURN, XBIN_OP_RETURN here.
+	* lex.h: From here.
+
 2004-02-07  Petter Risholm  <risholm@stud.ntnu.no>
 
 	* ov-struct.cc (Fcell2struct): New function.

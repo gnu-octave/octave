@@ -23,74 +23,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_lex_h)
 #define octave_lex_h 1
 
-// Arrange to get input via readline.
-
-#ifdef YY_INPUT
-#undef YY_INPUT
-#endif
-#define YY_INPUT(buf, result, max_size) \
-  if ((result = octave_read (buf, max_size)) < 0) \
-    YY_FATAL_ERROR ("octave_read () in flex scanner failed");
-
-// Try to avoid crashing out completely on fatal scanner errors.
-// The call to yy_fatal_error should never happen, but it avoids a
-// `static function defined but not used' warning from gcc.
-
-#ifdef YY_FATAL_ERROR
-#undef YY_FATAL_ERROR
-#endif
-#define YY_FATAL_ERROR(msg) \
-  do \
-    { \
-      error (msg); \
-      OCTAVE_QUIT; \
-      yy_fatal_error (msg); \
-    } \
-  while (0)
-
-#define TOK_RETURN(tok) \
-  do \
-    { \
-      current_input_column += yyleng; \
-      lexer_flags.quote_is_transpose = false; \
-      lexer_flags.cant_be_identifier = false; \
-      lexer_flags.convert_spaces_to_comma = true; \
-      return (tok); \
-    } \
-  while (0)
-
-#define TOK_PUSH_AND_RETURN(name, tok) \
-  do \
-    { \
-      yylval.tok_val = new token (name, input_line_number, \
-				  current_input_column); \
-      token_stack.push (yylval.tok_val); \
-      TOK_RETURN (tok); \
-    } \
-  while (0)
-
-#define BIN_OP_RETURN(tok, convert) \
-  do \
-    { \
-      yylval.tok_val = new token (input_line_number, current_input_column); \
-      token_stack.push (yylval.tok_val); \
-      current_input_column += yyleng; \
-      lexer_flags.quote_is_transpose = false; \
-      lexer_flags.cant_be_identifier = true; \
-      lexer_flags.convert_spaces_to_comma = convert; \
-      return (tok); \
-    } \
-  while (0)
-
-#define XBIN_OP_RETURN(tok, convert) \
-  do \
-    { \
-	gripe_matlab_incompatible_operator (yytext); \
-        BIN_OP_RETURN (tok, convert); \
-    } \
-  while (0)
-
-// XXX FIXME XXX -- these input buffer things should be members of an
+// XXX FIXME XXX -- these input buffer things should be members of a
 // parser input stream class.
 
 typedef struct yy_buffer_state *YY_BUFFER_STATE;

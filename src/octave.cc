@@ -413,7 +413,8 @@ octave_main (int argc, char **argv, int embedded)
 	  break;
 
 	case 'd':
-	  yydebug++;
+	  // This is the same as yydebug in parse.y.
+	  octave_debug++;
 	  break;
 
 	case 'f':

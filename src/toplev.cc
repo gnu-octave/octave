@@ -149,7 +149,8 @@ main_loop (const std::string& fun_to_call)
 
 	  reset_parser ();
 
-	  retval = yyparse ();
+	  // This is the same as yyparse in parse.y.
+	  retval = octave_parse ();
 
 	  if (retval == 0)
 	    {

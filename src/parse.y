@@ -348,6 +348,8 @@ set_stmt_print_flag (tree_statement_list *, char, bool);
 
 // Bison declarations.
 
+%name-prefix = "octave_"
+
 %union
 {
   // The type of the basic tokens returned by the lexer.

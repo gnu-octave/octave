@@ -104,10 +104,14 @@ octave_dld_init (void)
 
   if (! initialized)
     {
-      static char *prog = make_absolute (raw_prog_name,
-					 the_current_working_directory);
+      char *full_path = 0;
 
-      char *full_path = dld_find_executable (prog);
+      char *tmp = dld_find_executable (raw_prog_name);
+      if (tmp)
+	{
+	  full_path = make_absolute (tmp, the_current_working_directory);
+	  free (tmp);
+	}
 
       if (full_path)
 	{

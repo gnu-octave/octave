@@ -1,3 +1,7 @@
+1999-10-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-time.cc: Include <climits>.
+
 1999-10-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* cmd-edit.h (command_editor::do_resize_terminal): New function.

@@ -4,7 +4,7 @@ TAGS: *.c *.h
 	  etags *.c *.h; else etags -i $(kpathsea_dir)/TAGS *.c *.h; fi
 
 mostlyclean::
-	rm -f *.o $(program) $(programs) squeeze $(library).a
+	rm -f *.o $(program) $(programs) squeeze $(library).a pic/*.o
 	if $(SHARED_LIBS); then rm -f *.$(SHLEXT); fi
 
 clean:: mostlyclean
@@ -13,6 +13,8 @@ clean:: mostlyclean
 distclean:: clean
 	rm -f Makefile MakeTeXPK *.pool
 	rm -f config.status config.log config.cache c-auto.h 
+	rm -f stamp-picdir
+	-rmdir pic
 
 # Although we can remake configure and c-auto.h.in, we don't remove
 # them, since many people may lack Autoconf.  Use configclean for that.

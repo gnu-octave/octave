@@ -201,13 +201,14 @@ readline: $(OBJECTS)
 	tilde.o vi_mode.o xmalloc.o -ltermcap
 
 clean:
-	$(RM) -f $(OBJECTS) libreadline.a libhistory.a
+	$(RM) -f $(OBJECTS) libreadline.a libhistory.a pic/*.o
 	(if [ -d doc ]; then cd doc; $(MAKE) $(MFLAGS) $@; fi)
 	if $(SHARED_LIBS); then rm -f *.$(SHLEXT); fi
 
 maintainer-clean realclean distclean mostlyclean: clean
 	(if [ -d doc ]; then cd doc; $(MAKE) $(MFLAGS) $@; fi)
-	rm -f Makefile config.log config.status
+	rm -f Makefile config.log config.status stamp-picdir
+	-rmdir pic
 
 local-dist:
 	for dir in $(SUBDIRS); do mkdir ../`cat ../.fname`/readline/$$dir; cd $$dir; $(MAKE) $@; cd ..; done

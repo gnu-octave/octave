@@ -1,5 +1,9 @@
 2000-03-31  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* oct-stream.cc (printf_value_cache::string_value): Return string
+	matrices in a Matlab-compatible way.
+	(printf_value_cache): Redesign the way list_exhausted works.
+
 	* oct-fstrm.cc (octave_fstream::do_close): New function.
 	* oct-stdstrm.cc (octave_istdiostream::do_close): Ditto.
 	(octave_ostdiostream::do_close): Ditto.

@@ -68,7 +68,7 @@ function inv = beta_inv (x, a, b)
     endif
 
     y_old = y;
-    for i = 1 : 100
+    for i = 1 : 10000
       h     = (beta_cdf (y_old, a, b) - x) ./ beta_pdf (y_old, a, b);
       y_new = y_old - h;
       ind   = find (y_new <= eps);

@@ -1970,7 +1970,7 @@ printf_value_cache
 {
 public:
 
-  enum state { ok, list_exhausted, conversion_error };
+  enum state { ok, conversion_error };
 
   printf_value_cache (const octave_value_list& args)
     : values (args), val_idx (0), elt_idx (0),
@@ -1990,8 +1990,7 @@ public:
 
   operator bool () const { return (curr_state == ok); }
 
-  bool exhausted (void)
-    { return (curr_state == list_exhausted || val_idx >= n_vals); }
+  bool exhausted (void) { return (val_idx >= n_vals); }
 
   bool looking_at_string (void);
 
@@ -2022,26 +2021,10 @@ printf_value_cache::looking_at_string (void)
 {
   bool retval = false;
 
-  int idx = -1;
-
-  if (elt_idx == 0)
-    idx = val_idx;
-  else if (elt_idx >= n_elts)
-    idx = val_idx + 1;
+  int idx = (elt_idx == 0) ? val_idx : -1;
 
   if (idx >= 0 && idx < n_vals)
-    {
-      octave_value tmp_val = values (idx);
-
-      // An empty string has zero rows and zero columns.
-
-      if (tmp_val.is_string ())
-	{
-	  int nr = tmp_val.rows ();
-
-	  retval = (nr == 1 || (nr == 0 && tmp_val.columns () == 0));
-	}
-    }
+    retval = values(idx).is_string ();
 
   return retval;
 }
@@ -2074,7 +2057,15 @@ printf_value_cache::double_value (void)
 
       if (elt_idx < n_elts)
 	{
-	  return data[elt_idx++];
+	  retval = data[elt_idx++];
+
+	  if (elt_idx >= n_elts)
+	    {
+	      elt_idx = 0;
+	      val_idx++;
+	      data = 0;
+	    }
+
 	  break;
 	}
       else
@@ -2084,8 +2075,6 @@ printf_value_cache::double_value (void)
 	  continue;
 	}
     }
-
-  curr_state = list_exhausted;
 
   return retval;
 }
@@ -2115,14 +2104,27 @@ printf_value_cache::string_value (void)
 
   if (looking_at_string ())
     {
-      if (elt_idx != 0)
-	{
-	  val_idx++;
-	  elt_idx = 0;
-	  data = 0;
-	}
+      octave_value tval = values (val_idx++);
 
-      retval = values (val_idx++).string_value ();
+      if (tval.rows () == 1)
+	retval = tval.string_value ();
+      else
+	{
+	  // In the name of Matlab compatibility.
+
+	  charMatrix chm = tval.char_matrix_value ();
+
+	  int nr = chm.rows ();
+	  int nc = chm.columns ();
+
+	  int k = 0;
+
+	  retval.resize (nr * nc, '\0');
+
+	  for (int j = 0; j < nc; j++)
+	    for (int i = 0; i < nr; i++)
+	      retval[k++] = chm(i,j);
+	}
     }
   else
     curr_state = conversion_error;

@@ -54,7 +54,11 @@ function inv = f_inv (x, m, n)
 
   k = find ((x > 0) & (x < 1) & (m > 0) & (n > 0));
   if (any (k))
-    inv(k) = ((1 ./ beta_inv (1 - x(k), n(k) / 2, m(k) / 2) - 1)
+    fprintf (stderr, "n1: %f\n", n(k));
+    fprintf (stderr, "n2: %f\n", m(k));
+    t = beta_inv (1 - x(k), n(k) / 2, m(k) / 2)
+    fprintf (stderr, "qbeta: %f\n", t);
+    inv(k) = ((1 ./ t - 1)
 	      .* n(k) ./ m(k));
   endif
 

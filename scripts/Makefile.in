@@ -22,8 +22,8 @@ INSTALL_DATA = @INSTALL_DATA@
 
 SOURCES = # *.m
 
-DISTFILES = Makefile.in $(SOURCES) configure.in configure \
-	mkinstalldirs
+DISTFILES = Makefile.in ChangeLog $(SOURCES) configure.in \
+	configure mkinstalldirs
 
 SUBDIRS = audio control elfun general image io linear-algebra \
 	miscellaneous plot polynomial set signal specfun \

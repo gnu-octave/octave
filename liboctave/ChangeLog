@@ -1,5 +1,9 @@
 Wed Oct 30 11:42:58 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Version 1.90.
+
+	* Makefile.in (DISTFILES): Add ChangeLog.
+
 	* cmd-hist.cc: Only include fcntl.h if HAVE_FCNTL_H.
 
 	* Matrix-ext.cc: Include <cfloat>, not <float.h>.

@@ -16,7 +16,7 @@ include $(TOPDIR)/Makeconf
 
 SOURCES =
 
-DISTFILES = Makefile.in $(SOURCES)
+DISTFILES = Makefile.in $(SOURCES) ChangeLog
 
 SUBDIRS =
 

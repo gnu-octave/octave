@@ -1,3 +1,12 @@
+Wed Oct 30 17:20:14 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Version 1.90.
+
+	* Makefile.in (DISTFILES): Add ChangeLog.
+
+	* misc/Makefile.in: Make pic/machar.o using special rule.
+	Use CPPFLAGS, not CPP_FLAGS.
+
 Thu Oct 24 20:22:47 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (CRUFT_OBJ): No special treatment for d1mach.o.

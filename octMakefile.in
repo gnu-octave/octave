@@ -23,8 +23,8 @@ CONF_DISTFILES = Makefile.in octMakefile.in Makeconf.in configure \
 	acconfig.h config.h.bot install-sh
 
 DISTFILES = $(CONF_DISTFILES) \
-	BUGS COPYING INSTALL INSTALL.OCTAVE NEWS PROJECTS README \
-	README.NLP ROADMAP SENDING-PATCHES THANKS move-if-change \
+	BUGS COPYING INSTALL INSTALL.OCTAVE NEWS NEWS.[0-9] PROJECTS \
+	README README.NLP ROADMAP SENDING-PATCHES THANKS move-if-change \
 	octave.sh octave-bug.in doinstall.sh mkinstalldirs mkoctfile.in \
 	MAKEINFO.PATCH ChangeLog ChangeLog.[0-9] 
 

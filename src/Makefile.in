@@ -182,7 +182,7 @@ SH_LIBS_TO_INSTALL = liboctinterp.$(SHLEXT) libtinst.$(SHLEXT)
 
 LIBS = @LIBS@
 
-DISTFILES = Makefile.in mkdefs mkbuiltins mk-oct-links.in \
+DISTFILES = Makefile.in ChangeLog mkdefs mkbuiltins mk-oct-links.in \
 	defaults.h.in oct-conf.h.in octave.gperf oct-gperf.h \
 	octave.cc parse.cc lex.cc y.tab.h \
 	$(INCLUDES) $(DLD_SRC) $(SOURCES) $(TEMPLATE_SRC) $(TI_SRC)

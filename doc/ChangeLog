@@ -1,3 +1,9 @@
+Wed Oct 30 17:20:28 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Version 1.90.
+
+	* Makefile.in (DISTFILES): Add ChangeLog.
+
 Sat Oct 12 13:38:49 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (maintainer-clean): Don't depend on distclean.

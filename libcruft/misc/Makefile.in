@@ -22,7 +22,7 @@ include $(TOPDIR)/Makeconf
 
 ifeq ($(SHARED_LIBS), true)
   ifdef CPICFLAG
-    CPICDEP := pic/d1mach.o pic/dostop.o
+    CPICDEP := pic/machar.o pic/dostop.o
   endif
   ifdef CXXPICFLAG
     CXXPICDEP := pic/f77-extern.o pic/lo-error.o
@@ -38,7 +38,10 @@ XCC = $(patsubst -O%, , $(CC))
 XALL_CFLAGS = $(patsubst -O%, , $(ALL_CFLAGS))
 
 machar.o: $(srcdir)/machar.c
-	$(XCC) -c $(CPP_FLAGS) $(XALL_CFLAGS) -DDP $(srcdir)/machar.c
+	$(XCC) -c $(CPPFLAGS) $(XALL_CFLAGS) -DDP $<
+
+pic/machar.o: $(srcdir)/machar.c
+	$(XCC) -c $(CPPFLAGS) $(XALL_CFLAGS) -DDP $< -o $@
 
 distclean::
 	rm -f d1mach.f gen-d1mach

@@ -1,5 +1,7 @@
 Wed Oct 30 11:49:27 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Makefile.in (DISTFILES): Add ChangeLog.
+
 	* Makefile.in (VPATH): Don't add $(common).
 	(common): Delete definition.
 	(getopt.c, getopt1.c): Restore files.

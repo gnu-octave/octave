@@ -73,7 +73,7 @@ SOURCES := Bounds.cc CollocWt.cc DAE.cc DASSL.cc FEGrid.cc FSQP.cc \
 
 EXTRAS := mx-inlines.cc
 
-DISTFILES := Makefile.in safe-xstat.cin safe-xstat.hin \
+DISTFILES := Makefile.in ChangeLog safe-xstat.cin safe-xstat.hin \
 	$(SOURCES) $(INCLUDES) $(EXTRAS)
 
 MAKEDEPS_1 := $(patsubst %.cc, %.d, $(SOURCES))

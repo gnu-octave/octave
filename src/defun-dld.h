@@ -30,6 +30,12 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "defun-int.h"
 
+// Define a builtin function that may be loaded dynamically at run
+// time.
+//
+// If Octave is not configured for dynamic linking of builtin
+// functions, this is exactly like DEFUN.
+
 #define DEFUN_DLD(name, fname, sname, nargin_max, nargout_max, doc) \
   DEFUN_INTERNAL (name, fname, sname, nargin_max, nargout_max, 0, doc)
 

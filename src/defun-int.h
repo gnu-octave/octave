@@ -24,7 +24,15 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_defun_int_h)
 #define octave_defun_int_h 1
 
+// MAKE_BUILTINS is defined to extract function names and related
+// information and create the *.def files that are eventually used to
+// create the buitlins.cc file.
+
 #ifdef MAKE_BUILTINS
+
+// Generate code to install name in the symbol table.  The script
+// mkdefs will create a .def file for every .cc file that uses DEFUN,
+// DEFUN_TEXT, or DEFUN_DLD.
 
 #define DEFUN_INTERNAL(name, fname, sname, nargin_max, nargout_max, \
 		       is_text_fcn, doc) \
@@ -35,17 +43,31 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
     install_builtin_function (&sname); \
   END_INSTALL_BUILTIN
 
-#define DEFALIAS_INTERNAL(alias, name)
+// Generate code for making another name for an existing function.
+
+#define DEFALIAS_INTERNAL(alias, name) \
+  BEGIN_INSTALL_BUILTIN \
+  alias_builtin (#alias, #name); \
+  END_INSTALL_BUILTIN
 
 #else /* ! MAKE_BUILTINS */
+
+// Generate the first line of the function definition.  This ensures
+// that the internal functions all have the same signature.
 
 #define DEFUN_INTERNAL(name, fname, sname, nargin_max, nargout_max, \
 		       is_text_fcn, doc) \
   DECLARE_FUN(fname)
 
-#define DEFALIAS_INTERNAL(alias, name)
+// No definition is required for an alias.
+
+#define DEFALIAS_INTERNAL(name, alias)
 
 #endif /* ! MAKE_BUILTINS */
+
+// Declare an internal function named fname.  This is the interface
+// used by all internal functions in Octave that are also callable
+// from the Octave language.
 
 #define DECLARE_FUN(fname) \
   Octave_object \

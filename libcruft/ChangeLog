@@ -1,3 +1,8 @@
+Sat Oct 12 00:20:41 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (maintainer-clean): Don't depend on distclean.
+	* Makerules.in (maintainer-clean): Ditto.
+
 Tue Aug 20 22:09:08 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makerules.in (stamp-picdir): Only create a pic subdirectory if

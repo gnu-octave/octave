@@ -90,6 +90,10 @@ public:
   friend MArray2<T> operator - (const MArray2<T>& a);
 };
 
+extern void
+gripe_nonconformant (const char *op, int op1_nr, int op1_nc,
+		     int op2_nr, int op2_nc);
+
 #define INSTANTIATE_MARRAY2_FRIENDS(T) \
   template MArray2<T>& operator += (MArray2<T>& a, const T& s); \
   template MArray2<T>& operator -= (MArray2<T>& a, const T& s); \

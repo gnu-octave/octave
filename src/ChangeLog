@@ -1,3 +1,159 @@
+Sat Oct 12 13:40:21 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	Changes for Octave's new type system:
+
+	* arith-ops.cc: Delete.
+	* pt-const.h, pt-const.cc: Massive changes.  Most functionality
+	moved to ov.h, ov.cc, and derived classes.
+
+	* variables.h, variables.cc (octave_variable_reference): New class
+	for getting references to variables and structure elements used in
+	assignments or value contexts.
+
+	* symtab.h, symtab.cc (symbol_record::define (const octave_value&),
+	symbol_record::variable_value, symbol_record::variable_reference):
+	New functions.
+	(symbol_record_info::type_name): Rename from type_as_string.
+
+	* pt-fvc-base.h, pt-fvc-base.cc (tree_fvc::increment,
+	tree_fvc::decrement): New functions to replace
+	tree_fvc::bump_value.
+	#if 0 assign and lookup_map_element functions.
+
+	* pt-mvr.cc (tree_multi_assignment_expression::eval):
+	Generated RHS value is now a tree_constant.
+
+	* pt-exp.h, pt-exp.cc (tree_boolean_expression): New class.
+	(tree_unary_expression, tree_binary_expression,
+	tree_boolean_expression): Move codes here from tree_expression.
+	(tree_simple_assignment_expression): Cope with changes to way of
+	doing assignments.
+
+	* pt-exp-base.h, pt-exp-base.cc (enum type): Delete codes for
+	unary and binary ops.
+	(tree_expression::expression_type): Delete.
+	(tree_expression::is_logically_true): Hand off to
+	octave_value::is_true to do real work.
+
+	* pr-output.h, pr-output.cc (any_element_is_inf_or_nan,
+	all_elements_are_ints): Delete.  Call member new functions for
+	these operations.
+	(free_format, plus_format, bank_format, hex_format,
+	compact_format, print_e, print_big_e): Use bool, not int.
+	(octave_print_internal): Hand off to scalar/real versions when
+	appropriate.
+
+	* octave.cc (main): Call initialize_types() and install_ops().
+	(verbose_usage): Add WWW address to output.
+
+	* parse.y (indirect_ref): Handle by making a tree instead of a
+	list using new version of tree_indirect_ref class.
+
+	* parse.y (make_boolean_op): New function.  Use it instead of
+	make_binary_op to create trees for && and || ops.
+	(make_binary_op): Codes come from tree_binary_expression now,
+	instead of tree_expression.
+	(make_unary_op): Codes come from tree_unary_expression now,
+	instead of tree_expression.
+	(make_boolean_op): Codes come from tree_boolean_expression.
+	
+	 *parse.y (tree_constant_type): Change type to tree_constant* from
+	octave_value*, and rename from octave_value_type.  Change uses.
+
+	* defun.h (DEFVAR_INT): Pass octave_value not pointer to
+	octave_value for defn when creating builtin_variable.
+
+	* gripes.h, gripes.cc (gripe_invalid_conversion): Args are
+	strings, not char*.
+	(gripe_implicit_conversion, gripe_divide_by_zero): New extern
+	gripe functions.
+
+	* mkbuiltins: For each file, create a separate static function to
+	install builtins, then create another single extern function to
+	call all of them.
+
+	* pt-fcn.cc (tree_function::bind_nargin_and_nargout):
+	Just pass doubles and let symbol_record::define handle creating
+	new value.
+
+	* pt-pr-code.cc, pt-pr-code.h (visit_constant): Renamed from
+	visit_octave_value.
+	(visit_unary_expression): Use tree_expression::is_prefix_op()
+	instead of switch on op types.
+
+	* pt-walk.h (visit_constant): Renamed from visit_octave_value.
+
+	* pt-misc.cc (initialize_undefined_elements): Get reference to
+	tmp, then assign.
+	* pt-cmd.cc (do_for_loop_once): Likewise, for loop identifier.
+
+	* input.cc (generate_struct_completions, looks_like_struct): Cast
+	tmp_fvc to tree_constant*, not octave_value*.
+	(get_user_input): Call print() on retval, not eval(1).
+
+	* help.cc (Ftype): Cast defn to tree_constant*, not octave_value*.
+
+	* balance.cc: Fix docstring.
+
+	* dassl.cc, fsolve.cc, load-save.cc, lsode.cc, npsol.cc, qpsol.cc,
+	quad.cc:
+	Include pt-fvc.h.
+
+	* data.cc (Fstruct_contains): call octave_value::struct_elt_val,
+	not octave_value::lookup_map_element.
+
+	* dirfns.cc (Fcd): Pass directory name as string directly to
+	bind_builtin_variable instead of creating new octave_value.
+
+	* toplev.cc: Include pt-fvc.h and lo-mappers.h
+
+	* data.cc, error.cc, file-io.cc, load-save.cc, pager.cc,
+	pt-mat.cc, pt-plot.cc, syscalls.cc, toplev.cc:
+	Include variables.h.
+
+	* Array-tc.cc, Map-tc.cc, SLList-misc.cc SLList-tc.cc, data.cc,
+	defaults.cc, dynamic-ld.cc, error.cc, gripes.cc, lex.l, octave.cc,
+	oct-map.h, oct-map.cc, oct-obj.h, pt-cmd.cc, pt-exp.cc, pt-fcn.cc,
+	pt-fvc-base.cc, pt-mat.cc, pt-misc.cc, pt-mvr-base.cc, pt-mvr.h,
+	resource.cc, strfns.cc, sysdep.cc, timefns.cc, toplev.cc:
+	Include ov.h instead of pt-const.h.
+
+	* xpow.cc (any_element_is_negative): Delete.
+	(xpow and elem_xpow functions): Check conformance here.
+
+	* xdiv.cc (mx_leftdiv_conform, mx_div_conform):
+	Now template-based, taking Matrices instead of dimensions as args.
+	Change all callers.
+
+	* op-cm-cm.cc, op-cm-cm.h, op-cm-cs.cc, op-cm-cs.h, op-cm-m.cc,
+ 	op-cm-m.h, op-cm-s.cc, op-cm-s.h, op-cs-cm.cc, op-cs-cm.h,
+ 	op-cs-cs.cc, op-cs-cs.h, op-cs-m.cc, op-cs-m.h, op-cs-s.cc,
+ 	op-cs-s.h, op-m-cm.cc, op-m-cm.h, op-m-cs.cc, op-m-cs.h, op-m-m.cc,
+	op-m-m.h, op-m-s.cc, op-m-s.h, op-s-cm.cc, op-s-cm.h, op-s-cs.cc,
+ 	op-s-cs.h, op-s-m.cc, op-s-m.h, op-s-s.cc, op-s-s.h,
+ 	op-str-str.cc, op-str-str.h, ops.cc, ops.h, ov-base.cc, ov-base.h,
+ 	ov-ch-mat.cc, ov-ch-mat.h, ov-colon.cc, ov-colon.h, ov-complex.cc,
+ 	ov-complex.h, ov-cx-mat.cc, ov-cx-mat.h, ov-range.cc, ov-range.h,
+ 	ov-re-mat.cc, ov-re-mat.h, ov-scalar.cc, ov-scalar.h, ov-str-mat.cc,
+	ov-str-mat.h, ov-struct.cc, ov-struct.h, ov-typeinfo.cc,
+ 	ov-typeinfo.h, ov-va-args.cc, ov-va-args.h, ov.cc, ov.h:
+ 	New files for Octave's new type system.
+	* Makefile.in: Add them to the appropriate lists.
+
+Sat Sep 14 21:58:33 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* mkbuiltins: Use .df instead of .def.
+	Write one function for each .df file, then call them
+	all in install_builtin_functions().
+	* Makefile.in: Handle .df instead of .def.
+
+	* balance.cc (balance): Fix typo in doc string.
+
+Wed Aug 28 21:01:49 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* octave.cc (verbose_usage): Include WWW address and bug-octave
+	mailing list address.
+
 Tue Aug 20 17:41:19 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in: Only define pattern rules for making .oct files if

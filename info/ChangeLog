@@ -1,3 +1,11 @@
+Sat Oct 12 00:22:21 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in (TERMLIBS): Check for ncurses.
+
+Fri Aug 30 09:07:40 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in (TERMLIBS): Add check for ncurses.
+
 Fri May 24 01:16:46 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in (TERMLIBS): Check for tputs, not main.

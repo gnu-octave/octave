@@ -32,6 +32,7 @@ class ostream;
 #include <SLList.h>
 
 class symbol_record;
+class tree_constant;
 class tree_function;
 
 class tree_walker;
@@ -62,21 +63,25 @@ public:
 
   string name (void) const;
 
-  tree_identifier *define (octave_value *t);
+  tree_identifier *define (tree_constant *t);
   tree_identifier *define (tree_function *t);
 
   void document (const string& s);
 
-  octave_value assign (octave_value& t);
-  octave_value assign (octave_value& t, const octave_value_list& args);
+  octave_value assign (const octave_value& t);
+  octave_value assign (const octave_value_list& args, const octave_value& t);
 
-  octave_value assign (SLList<string> list, octave_value& t);
-  octave_value assign (SLList<string> list, octave_value& t,
-			const octave_value_list& args); 
+#if 0
+  octave_value assign (SLList<string> list, const octave_value& t);
+  octave_value assign (SLList<string> list, const octave_value_list& args,
+		       const octave_value& t);
+#endif
 
   bool is_defined (void);
 
-  void bump_value (tree_expression::type);
+  void increment (void);
+
+  void decrement (void);
 
   tree_fvc *do_lookup (bool& script_file_executed, bool exec_script = true);
 
@@ -94,6 +99,10 @@ public:
   void eval_undefined_error (void);
 
   void accept (tree_walker& tw);
+
+  octave_value value (void) const;
+
+  octave_value& reference (void);
 
 private:
 
@@ -113,56 +122,90 @@ tree_indirect_ref : public tree_fvc
 public:
 
   tree_indirect_ref (int l = -1, int c = -1)
-    : tree_fvc (l, c), id (0), preserve_ident (false) { }
+    : tree_fvc (l, c), id (0), indir (0), nm (),
+      preserve_ident (false), preserve_indir (false),
+      maybe_do_ans_assign (false) { }
 
   tree_indirect_ref (tree_identifier *i, int l = -1, int c = -1)
-    : tree_fvc (l, c), id (i), preserve_ident (false) { }
+    : tree_fvc (l, c), id (i), indir (0), nm (),
+      preserve_ident (false), preserve_indir (false),
+      maybe_do_ans_assign (false) { }
+
+  tree_indirect_ref (tree_indirect_ref *i, const string& n,
+		     int l = -1, int c = -1)
+    : tree_fvc (l, c), id (0), indir (i), nm (n),
+      preserve_ident (false), preserve_indir (false),
+      maybe_do_ans_assign (false) { }
 
   ~tree_indirect_ref (void);
-
-  tree_indirect_ref *chain (const string& s);
 
   bool is_indirect_ref (void) const
     { return true; }
 
   bool is_identifier_only (void) const
-    { return (id && refs.empty ()); }
+    { return (id && nm.empty ()); }
 
   tree_identifier *ident (void)
     { return id; }
 
+  tree_indirect_ref *indirect (void)
+    { return indir; }
+
   void preserve_identifier (void)
     { preserve_ident = true; }
 
-  string name (void) const;
-
-  octave_value assign (octave_value& t);
-  octave_value assign (octave_value& t, const octave_value_list& args);
+  void preserve_indirect (void)
+    { preserve_indir = true; }
 
   void mark_for_possible_ans_assign (void)
-    { id->mark_for_possible_ans_assign (); }
+    {
+      maybe_do_ans_assign = true;
+
+      if (is_identifier_only ())
+	id->mark_for_possible_ans_assign ();
+    }
+
+  string name (void) const;
+
+#if 0
+  octave_value& assign (const octave_value& t);
+  octave_value& assign (const octave_value_list& args, const octave_value& t);
+#endif
 
   octave_value eval (bool print);
 
   octave_value_list eval (bool print, int nargout,
 			  const octave_value_list& args);
 
-  SLList<string> references (void) { return refs; }
+  octave_value value (void) const;
+  octave_value& reference (void);
+
+  string elt_name (void)
+    { return nm; }
 
   void accept (tree_walker& tw);
 
 private:
 
   // The identifier for this structure reference.  For example, in
-  // a.b, a is the id.
+  // a.b.c, a is the id.
   tree_identifier *id;
 
-  // The list of sub-element names.  For example, in a.b.c, refs
-  // contains the strings b and c.
-  SLList<string> refs;
+  // This element just points to another indirect reference.
+  tree_indirect_ref *indir;
+
+  // The sub-element name.
+  string nm;
 
   // True if we should not delete the identifier.
   bool preserve_ident;
+
+  // True if we should not delete the indirect reference.
+  bool preserve_indir;
+
+  // True if we should consider assigning the result of evaluating
+  // this identifier to the built-in variable ans.
+  bool maybe_do_ans_assign;
 };
 
 // Builtin functions.

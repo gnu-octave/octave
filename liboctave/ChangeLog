@@ -1,3 +1,42 @@
+Sat Oct 12 12:40:00 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* MArray-misc.cc: New file.
+	* Makefile.in (MATRIX_SRC): Add it to the list.
+
+	* mx-inlines.cc (equal): Return bool, not int.
+
+	* idx-vector.h (idx_vector (double)): New constructor.
+
+	* chMatrix.h, chMatrix.cc, CMatrix.h, CMatrix.cc, dMatrix.h,
+	dMatrix.cc, dDiagMatrix.h, dDiagMatrix.cc, dRowVector.h,
+	dRowVector.cc, dColVector.h, dColVector.cc, CColVector.h,
+	CColVector.cc, CDiagMatrix.h, CDiagMatrix.cc, CRowVector.h,
+	CRowVector.cc: Logical operators return bool, not int.
+
+	* CMatrix.h, CMatrix.cc (ComplexMatrix::any_element_is_inf_or_nan):
+	New function.
+
+	* dMatrix.h, dMatrix.cc (Matrix::any_element_is_negative,
+	Matrix::any_element_is_inf_or_nan, Matrix::abs,
+	Matrix::all_elements_are_inf_or_nan): New functions.
+
+	* Range.h, Range.cc (Range::all_elements_are_ints): New function.
+
+	* MArray.cc, MArray2.cc, MDiagArray2.cc: Call gripe_nonconformant
+	for errors.  Simplify macros by converting FCN to string for error
+	messages.
+
+	* Array-idx.h (Array<T>::index): New function.  Don't call
+	clear_index() here.
+	(Array<T>::value): Call it, do call clear_index() here.
+	* Array2-idx.h (Array<T>::value, Array<T>::index): Likewise, for
+	one and two arg index functions.
+
+Tue Sep 17 21:21:16 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DAEFunc.h: Delete #pragma interface since there is no longer a
+	separate implementation file.
+
 Tue Aug 20 17:38:46 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (stamp-picdir): Only create a pic subdirectory if

@@ -1,3 +1,18 @@
+Sat Oct 12 00:17:06 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* config.h.bot (STATIC_CAST, DYNAMIC_CAST, REINTERPRET_CAST):
+	New macros.
+
+Wed Sep 25 12:24:20 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: Don't look in /usr/ucb/include to find getrusage
+	on Solaris systems since that just seems to cause trouble.
+	* Makeconf.in (UCB_INCFLAGS): Delete.
+
+Fri Aug 30 09:07:23 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in (TERMLIBS): Add check for ncurses.
+
 Tue Aug 20 21:40:26 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in: Always set FPICFLAG, CPICFLAG, CXXPICFLAG, SHLEXT,

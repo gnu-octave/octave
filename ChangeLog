@@ -1,3 +1,7 @@
+Tue Dec  3 11:35:35 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* config.guess: Delete second copy of script in file.
+
 Sun Nov 24 21:40:25 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in: Set GCC_IEEE_FP_FLAG to -mieee-fp on all x86

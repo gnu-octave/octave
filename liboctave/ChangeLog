@@ -1,5 +1,10 @@
 Mon Dec  2 00:26:41 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* lo-ieee.cc (octave_ieee_init): Kluge for octave_Inf on SCO.
+	Only include nan.h if SCO is defined.  Define _IEEE before
+	including it and undefine it afterward.
+	[SCO] (isnan): Don't mistake Inf as NaN.
+
 	* Array-idx.h (assign): Only resize if assignment conforms.
 
 Wed Nov 20 01:00:40 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>

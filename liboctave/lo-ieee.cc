@@ -31,8 +31,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <floatingpoint.h>
 #endif
 
-#if defined (HAVE_NAN_H)
+#if defined (HAVE_NAN_H) && defined (SCO)
+#define _IEEE 1
 #include <nan.h>
+#undef _IEEE
 #endif
 
 #include "lo-ieee.h"
@@ -58,6 +60,9 @@ octave_ieee_init (void)
 #elif defined (__alpha__)
   extern unsigned int DINFINITY[2];
   octave_Inf =  (*((double *) (DINFINITY)));
+#elif defined (SCO)
+  double tmp = 1.0;
+  octave_Inf = 1.0 / (tmp - tmp);
 #else
   double tmp = 1e+10;
   octave_Inf = tmp;
@@ -89,18 +94,19 @@ octave_ieee_init (void)
 }
 
 #if defined (SCO)
-#define _IEEE 1
+
 extern "C" int
 isnan (double x)
 {
-  return (IsNANorINF(x) && NaN(x)) ? 1 : 0;
+  return (IsNANorINF (x) && NaN (x) && ! IsINF (x)) ? 1 : 0;
 }
 
 extern "C" int
 isinf (double x)
 {
-  return (IsNANorINF(x) && IsINF(x)) ? 1 : 0;
+  return (IsNANorINF (x) && IsINF (x)) ? 1 : 0;
 }
+
 #endif
 
 /*

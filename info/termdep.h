@@ -1,5 +1,5 @@
 /* termdep.h -- System things that terminal.c depends on.
-   $Id: termdep.h,v 1.5 1996-11-13 03:41:44 jwe Exp $
+   $Id: termdep.h,v 1.6 1996-12-03 17:49:39 jwe Exp $
 
    This file is part of GNU Info, a program for reading online documentation
    stored in Info format.
@@ -43,7 +43,7 @@
 #  endif
 #endif
 
-#if defined (HAVE_TERMIOS_H)
+#if defined (HAVE_TERMIOS_H) && ! defined (SCO)
 #  include <termios.h>
 #else
 #  if defined (HAVE_TERMIO_H)

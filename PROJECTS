@@ -118,6 +118,10 @@ Graphics:
 
   * Make it possible to check the current graphics terminal type.
 
+  * If possible, pass data to gnuplot without using temporary files.
+
+  * If possible, pass binary data to gnuplot to speed things up.
+
 -------
 Strings:
 -------
@@ -132,6 +136,12 @@ Strings:
 
   * Consider changing the default value of `string_fill_char' from SPC
     to NUL.
+
+  * Consider making size ("") ==> [0, 0] for compatibility with
+    Matlab, at least when some preference variable is set.
+
+  * Consider making ["test", []] ==> "test", for compatibility with
+    Matlab, at least when some set of preferences are set.
 
 ----------------
 Other Data Types:

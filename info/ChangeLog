@@ -1,3 +1,9 @@
+Mon Dec  2 13:48:57 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: Check for gethostname in libsocket.a, for SCO.
+
+	* termdep.h: Don't use termios.h on SCO systems.
+
 Sun Nov 24 21:24:39 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in (TERMLIBS): Look for ncurses too.

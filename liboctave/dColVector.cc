@@ -123,8 +123,7 @@ ColumnVector::stack (const ColumnVector& a) const
 RowVector
 ColumnVector::transpose (void) const
 {
-  int len = length ();
-  return RowVector (dup (data (), len), len);
+  return RowVector (*this);
 }
 
 ColumnVector

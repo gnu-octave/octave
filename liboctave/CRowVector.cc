@@ -194,8 +194,7 @@ ComplexRowVector::hermitian (void) const
 ComplexColumnVector
 ComplexRowVector::transpose (void) const
 {
-  int len = length ();
-  return ComplexColumnVector (dup (data (), len), len);
+  return ComplexColumnVector (*this);
 }
 
 ComplexRowVector

@@ -126,8 +126,7 @@ RowVector::append (const RowVector& a) const
 ColumnVector
 RowVector::transpose (void) const
 {
-  int len = length ();
-  return ColumnVector (dup (data (), len), len);
+  return ColumnVector (*this);
 }
 
 RowVector

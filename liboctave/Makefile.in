@@ -178,7 +178,7 @@ pic:
 	  mkdir pic; \
 	fi
 
-stamp-prereq: $(OPTS_INC) $(VX_OP_INC) $(VX_OP_SRC) $(MX_OP_INC) $(MX_OP_SRC)
+stamp-prereq: $(OPTS_INC) $(VX_OP_INC) $(VX_OP_SRC) $(MX_OP_INC) $(MX_OP_SRC) mx-ops.h
 	touch stamp-prereq
 
 ifeq ($(SHARED_LIBS), true)
@@ -322,8 +322,8 @@ $(MX_OP_INC) $(MX_OP_SRC) : $(srcdir)/mk-ops.awk mx-ops
 	$(AWK) -f $(srcdir)/mk-ops.awk prefix=mx $(srcdir)/mx-ops
 
 mx-ops.h : $(srcdir)/mk-ops.awk mx-ops
-	$(AWK) -f $(srcdir)/mk-ops.awk make_inclusive_header=mx-ops.h > $@.t
-	@$(top_srcdir)/move-if-change $@-t $@
+	$(AWK) -f $(srcdir)/mk-ops.awk prefix=mx make_inclusive_header=mx-ops.h $(srcdir)/mx-ops > $@-t
+	$(top_srcdir)/move-if-change $@-t $@
 
 
 # If missing, GNU make attempts to create them in the reverse of the

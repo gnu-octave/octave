@@ -24,19 +24,15 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_NLFunc_h)
 #define octave_NLFunc_h 1
 
-#if defined (__GNUG__)
-#pragma interface
-#endif
-
 class ColumnVector;
 class Matrix;
-
-typedef ColumnVector (*nonlinear_fcn) (const ColumnVector&);
-typedef Matrix (*jacobian_fcn) (const ColumnVector&);
 
 class NLFunc
 {
 public:
+
+  typedef ColumnVector (*nonlinear_fcn) (const ColumnVector&);
+  typedef Matrix (*jacobian_fcn) (const ColumnVector&);
 
   NLFunc (void)
     {

@@ -32,10 +32,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ODE.h"
 #include "DAEFunc.h"
 
-#ifndef Vector
-#define Vector ColumnVector
-#endif
-
 class DAE : public ODE, public DAEFunc
 {
 public:
@@ -44,29 +40,31 @@ public:
 
   DAE (int);
 
-  DAE (const Vector& x, double time, DAEFunc& f);
+  DAE (const ColumnVector& x, double time, DAEFunc& f);
 
-  DAE (const Vector& x, const Vector& xdot, double time, DAEFunc& f);
+  DAE (const ColumnVector& x, const ColumnVector& xdot,
+       double time, DAEFunc& f);
 
  ~DAE (void);
 
-  Vector deriv (void);
+  ColumnVector deriv (void);
 
-  virtual void initialize (const Vector& x, double t);
-  virtual void initialize (const Vector& x, const Vector& xdot, double t);
+  virtual void initialize (const ColumnVector& x, double t);
+  virtual void initialize (const ColumnVector& x,
+			   const ColumnVector& xdot, double t);
 
-  Vector integrate (double t);
+  ColumnVector integrate (double t);
 
-  Matrix integrate (const Vector& tout, Matrix& xdot_out);
-  Matrix integrate (const Vector& tout, Matrix& xdot_out,
-		    const Vector& tcrit); 
+  Matrix integrate (const ColumnVector& tout, Matrix& xdot_out);
+  Matrix integrate (const ColumnVector& tout, Matrix& xdot_out,
+		    const ColumnVector& tcrit); 
 
 protected:
 
   // Some of this is probably too closely related to DASSL, but hey,
   // this is just a first attempt...
 
-  Vector xdot;
+  ColumnVector xdot;
 
 private:
 

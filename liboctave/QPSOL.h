@@ -34,10 +34,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "dColVector.h"
 #include "QP.h"
 
-#ifndef Vector
-#define Vector ColumnVector
-#endif
-
 class QPSOL_options
 {
  public:

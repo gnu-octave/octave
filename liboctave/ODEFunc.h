@@ -24,39 +24,63 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_ODEFunc_h)
 #define octave_ODEFunc_h 1
 
-#if defined (__GNUG__)
-#pragma interface
-#endif
-
 class Matrix;
 class ColumnVector;
-
-#ifndef Vector
-#define Vector ColumnVector
-#endif
 
 class ODEFunc
 {
 public:
 
-  typedef Vector (*ODERHSFunc) (const Vector&, double);
-  typedef Matrix (*ODEJacFunc) (const Vector&, double);
+  typedef ColumnVector (*ODERHSFunc) (const ColumnVector&, double);
+  typedef Matrix (*ODEJacFunc) (const ColumnVector&, double);
 
-  ODEFunc (void);
-  ODEFunc (ODERHSFunc f);
-  ODEFunc (ODERHSFunc f, ODEJacFunc j);
+  ODEFunc (void)
+    {
+      fun = 0;
+      jac = 0;
+    }
 
-  ODEFunc (const ODEFunc& a);
+  ODEFunc (ODERHSFunc f)
+    {
+      fun = f;
+      jac = 0;
+    }
 
-  ODEFunc& operator = (const ODEFunc& a);
+  ODEFunc (ODERHSFunc f, ODEJacFunc j)
+    {
+      fun = f;
+      jac = j;
+    }
 
-  ODERHSFunc function (void) const;
+  ODEFunc (const ODEFunc& a)
+    {
+      fun = a.function ();
+      jac = a.jacobian_function ();
+    }
 
-  ODEFunc& set_function (ODERHSFunc f);
+  ODEFunc& operator = (const ODEFunc& a)
+    {
+      fun = a.function ();
+      jac = a.jacobian_function ();
 
-  ODEJacFunc jacobian_function (void) const;
+      return *this;
+    }
 
-  ODEFunc& set_jacobian_function (ODEJacFunc j);
+  ODERHSFunc function (void) const { return fun; }
+
+  ODEFunc& set_function (ODERHSFunc f)
+    {
+      fun = f;
+      return *this;
+    }
+
+  ODEJacFunc jacobian_function (void) const { return jac; }
+
+  ODEFunc& set_jacobian_function (ODEJacFunc j)
+    {
+      jac = j;
+      return *this;
+    }
 
 protected:
 

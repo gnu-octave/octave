@@ -64,10 +64,10 @@ extern "C"
 // function, and the user wants us to quit.
 int npsol_objective_error = 0;
 
-static objective_fcn user_phi;
-static gradient_fcn user_grad;
-static nonlinear_fcn user_g;
-static jacobian_fcn user_jac;
+static Objective::objective_fcn user_phi;
+static Objective::gradient_fcn user_grad;
+static NLFunc::nonlinear_fcn user_g;
+static NLFunc::jacobian_fcn user_jac;
 
 int
 npsol_objfun (int& mode, const int& n, double *xx, double *objf,

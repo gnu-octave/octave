@@ -37,10 +37,6 @@ class ColumnVector;
 #include "dMatrix.h"
 #include "Bounds.h"
 
-#ifndef Vector
-#define Vector ColumnVector
-#endif
-
 class LinConst : public Bounds
 {
 public:
@@ -51,15 +47,15 @@ public:
   LinConst (int eq, int ineq, int n)
     : Bounds (eq+ineq), A (nb, n) {}
 
-  LinConst (const Vector& l, const Matrix& amat, const Vector& u)
+  LinConst (const ColumnVector& l, const Matrix& amat, const ColumnVector& u)
     : Bounds (l, u), A (amat)
       {
 	if (nb != amat.rows ())
 	  error ("inconsistent sizes for constraint matrix and bounds vectors");
       }
 
-  LinConst (const Matrix& A_eq, const Vector& b_eq,
-	    const Matrix& A_ineq, const Vector& b_ineq);
+  LinConst (const Matrix& A_eq, const ColumnVector& b_eq,
+	    const Matrix& A_ineq, const ColumnVector& b_ineq);
 
   LinConst (const LinConst& a)
     : Bounds (a.lb, a.ub), A (a.constraint_matrix ()) {}
@@ -91,8 +87,8 @@ public:
   Matrix eq_constraint_matrix (void) const;
   Matrix ineq_constraint_matrix (void) const;
 
-  Vector eq_constraint_vector (void) const;
-  Vector ineq_constraint_vector (void) const;
+  ColumnVector eq_constraint_vector (void) const;
+  ColumnVector ineq_constraint_vector (void) const;
 
   friend ostream& operator << (ostream& os, const LinConst& b);
 

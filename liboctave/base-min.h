@@ -58,20 +58,20 @@ class base_minimizer
     {
       double objf;
       int inform;
-      Vector lambda;
+      ColumnVector lambda;
       return do_minimize (objf, inform, lambda);
     }
 
   virtual ColumnVector minimize (double& objf)
     {
       int inform;
-      Vector lambda;
+      ColumnVector lambda;
       return do_minimize (objf, inform, lambda);
     }
 
   virtual ColumnVector minimize (double& objf, int& inform)
     {
-      Vector lambda;
+      ColumnVector lambda;
       return do_minimize (objf, inform, lambda);
     }
 
@@ -86,7 +86,7 @@ class base_minimizer
       x = x0;
       double objf;
       int inform;
-      Vector lambda;
+      ColumnVector lambda;
       return do_minimize (objf, inform, lambda);
     }
 
@@ -94,7 +94,7 @@ class base_minimizer
     {
       x = x0;
       int inform;
-      Vector lambda;
+      ColumnVector lambda;
       return do_minimize (objf, inform, lambda);
     }
 
@@ -102,7 +102,7 @@ class base_minimizer
 				 int& inform)
     {
       x = x0;
-      Vector lambda;
+      ColumnVector lambda;
       return do_minimize (objf, inform, lambda);
     }
 

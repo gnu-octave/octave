@@ -28,6 +28,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #pragma interface
 #endif
 
+#include <cfloat>
+#include <cmath>
+
 #include "dColVector.h"
 
 #if !defined (octave_Quad_typedefs)

@@ -24,38 +24,62 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_Objective_h)
 #define octave_Objective_h 1
 
-#if defined (__GNUG__)
-#pragma interface
-#endif
-
 #include "dColVector.h"
-
-#ifndef Vector
-#define Vector ColumnVector
-#endif
-
-typedef double (*objective_fcn) (const Vector&);
-typedef Vector (*gradient_fcn) (const Vector&);
 
 class Objective
 {
  public:
 
-  Objective (void);
-  Objective (const objective_fcn);
-  Objective (const objective_fcn, const gradient_fcn);
+  typedef double (*objective_fcn) (const ColumnVector&);
+  typedef ColumnVector (*gradient_fcn) (const ColumnVector&);
 
-  Objective (const Objective& a);
+  Objective (void)
+    {
+      phi = 0;
+      grad = 0;
+    }
 
-  Objective& operator = (const Objective& a);
+  Objective (const objective_fcn obj)
+    {
+      phi = obj;
+      grad = 0;
+    }
 
-  objective_fcn objective_function (void) const;
+  Objective (const objective_fcn obj, const gradient_fcn g)
+    {
+      phi = obj;
+      grad = g;
+    }
 
-  Objective& set_objective_function (const objective_fcn);
+  Objective (const Objective& a)
+    {
+      phi = a.phi;
+      grad = a.grad;
+    }
 
-  gradient_fcn gradient_function (void) const;
+  Objective& operator = (const Objective& a)
+    {
+      phi = a.phi;
+      grad = a.grad;
 
-  Objective& set_gradient_function (const gradient_fcn);
+      return *this;
+    }
+
+  objective_fcn objective_function (void) const { return phi; }
+
+  Objective& set_objective_function (const objective_fcn obj)
+    {
+      phi = obj;
+      return *this;
+    }
+
+  gradient_fcn gradient_function (void) const { return grad; }
+
+  Objective& set_gradient_function (const gradient_fcn g)
+    {
+      grad = g;
+      return *this;
+    }
 
  private:
 

@@ -33,10 +33,6 @@ class ColumnVector;
 
 #include "QP.h"
 
-#ifndef Vector
-#define Vector ColumnVector
-#endif
-
 class QLD : public QP
 {
  public:

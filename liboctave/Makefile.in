@@ -44,8 +44,8 @@ MATRIX_SRC = CColVector.cc CDiagMatrix.cc CMatrix.cc CRowVector.cc \
 	dbleLU.cc dbleQR.cc dbleQRP.cc dbleSCHUR.cc dbleSVD.cc
 
 SOURCES = Bounds.cc CollocWt.cc DAE.cc FEGrid.cc FSQP.cc LinConst.cc \
-	LPsolve.cc NLEqn.cc NPSOL.cc Objective.cc ODE.cc QLD.cc \
-	QPSOL.cc Quad.cc Range.cc lo-error.cc sun-utils.cc \
+	LPsolve.cc NLEqn.cc NPSOL.cc ODE.cc QLD.cc QPSOL.cc Quad.cc \
+	Range.cc lo-error.cc sun-utils.cc \
 	$(TEMPLATE_SRC) \
 	$(TI_SRC) \
 	$(MATRIX_SRC)

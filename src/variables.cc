@@ -1738,6 +1738,14 @@ default_return_value");
 	  with_multiplot, 0, gnuplot_has_multiplot,
     "true if gnuplot supports multiplot, false otherwise");
 
+  DEFVAR ("history_file", SBV_history_file,
+	  default_history_file (), 0, sv_history_file,
+    "name of command history file");
+
+  DEFVAR ("history_size", SBV_history_size,
+	  default_history_size (), 0, history_size,
+    "number of commands to save in the history list");
+
   DEFCONST ("i", SBV_i, Complex (0.0, 1.0), 1, 0,
     "sqrt (-1)");
 

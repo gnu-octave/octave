@@ -52,6 +52,7 @@ init_user_prefs (void)
   user_pref.do_fortran_indexing = 0;
   user_pref.empty_list_elements_ok = 0;
   user_pref.gnuplot_has_multiplot = 0;
+  user_pref.history_size = 0;
   user_pref.ignore_function_time_stamp = 0;
   user_pref.implicit_str_to_num_ok = 0;
   user_pref.ok_to_lose_imaginary_part = 0;
@@ -85,6 +86,7 @@ init_user_prefs (void)
   user_pref.editor = 0;
   user_pref.exec_path = 0;
   user_pref.gnuplot_binary = 0;
+  user_pref.history_file = 0;
   user_pref.imagepath = 0;
   user_pref.info_file = 0;
   user_pref.info_prog = 0;
@@ -230,6 +232,27 @@ gnuplot_has_multiplot (void)
     check_preference ("gnuplot_has_multiplot");
 
   return 0;
+}
+
+
+// How many lines of command history should we save?
+
+int
+history_size (void)
+{
+  double val;
+  if (builtin_real_scalar_variable ("history_size", val)
+      && ! xisnan (val))
+    {
+      int ival = NINT (val);
+      if (ival >= 0 && (double) ival == val)
+	{
+	  user_pref.history_size = ival;
+	  return 0;
+	}
+    }
+  gripe_invalid_value_specified ("history_size");
+  return -1;
 }
 
 
@@ -829,6 +852,26 @@ sv_gnuplot_binary (void)
   else
     {
       gripe_invalid_value_specified ("gnuplot_binary");
+      status = -1;
+    }
+
+  return status;
+}
+
+int
+sv_history_file (void)
+{
+  int status = 0;
+
+  char *s = builtin_string_variable ("history_file");
+  if (s)
+    {
+      delete [] user_pref.history_file;
+      user_pref.history_file = s;
+    }
+  else
+    {
+      gripe_invalid_value_specified ("history_file");
       status = -1;
     }
 

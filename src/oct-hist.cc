@@ -47,6 +47,7 @@ Software Foundation, Inc.
 #include <fcntl.h>
 
 #include <readline/history.h>
+#include <readline/tilde.h>
 
 #include "defun.h"
 #include "error.h"
@@ -64,12 +65,6 @@ Software Foundation, Inc.
 // Nonzero means input is coming from temporary history file.
 int input_from_tmp_history_file = 0;
 
-// The number of lines to save in the history file.
-static int octave_hist_size = 1024;
-
-// The name of the history file.
-static char *octave_hist_file;
-
 // The number of hisory lines we read from the history file.
 static int history_lines_in_file = 0;
 
@@ -79,7 +74,7 @@ static int history_lines_this_session = 0;
 // Get some default values, possibly reading them from the
 // environment.
 
-static int
+int
 default_history_size (void)
 {
   int size = 1024;
@@ -93,7 +88,7 @@ default_history_size (void)
   return size;
 }
 
-static char *
+char *
 default_history_file (void)
 {
   char *file = 0;
@@ -120,19 +115,34 @@ default_history_file (void)
 void
 initialize_history (void)
 {
-  octave_hist_file = default_history_file ();
-  octave_hist_size = default_history_size ();
+  static char *file = 0;
 
-  read_history (octave_hist_file);
+  if (file)
+    free (file);
+
+  file = tilde_expand (user_pref.history_file);
+
+  read_history (file);
+
   using_history ();
+
   history_lines_in_file = where_history ();
 }
 
 void
 clean_up_history (void)
 {
-  stifle_history (octave_hist_size);
-  write_history (octave_hist_file);
+  static char *file = 0;
+
+  if (file)
+    free (file);
+
+  stifle_history (user_pref.history_size);
+
+  file = tilde_expand (user_pref.history_file);
+
+  if (user_pref.saving_history)
+    write_history (file);
 }
 
 void
@@ -166,13 +176,16 @@ do_history (int argc, char **argv)
 	  && ((*argv)[1] == 'r' || (*argv)[1] == 'w'
 	      || (*argv)[1] == 'a' || (*argv)[1] == 'n'))
 	{
-	  char *file;
+	  static char *file = 0;
 	  int result = 0;
 
+	  if (file)
+	    free (file);
+
 	  if (argc > 1)
-	    file = *(argv+1);
+	    file = tilde_expand (*(argv+1));
 	  else
-	    file = octave_hist_file;
+	    file = tilde_expand (user_pref.history_file);
 
 	  switch ((*argv)[1])
 	    {
@@ -626,7 +639,7 @@ current_history_number (void)
 {
   using_history ();
 
-  if (octave_hist_size > 0)
+  if (user_pref.history_size > 0)
     return history_base + where_history ();
   else
     return -1;

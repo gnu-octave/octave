@@ -24,6 +24,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_octave_hist_h)
 #define octave_octave_hist_h 1
 
+extern int default_history_size (void);
+extern char *default_history_file (void);
 extern void initialize_history (void);
 extern void clean_up_history (void);
 extern void maybe_save_history (const char*);

@@ -1,3 +1,7 @@
+2004-04-23  John W. Eaton  <jwe@octave.org>
+
+	* oct-sort.cc: Don't include oct-obj.h.
+
 2004-04-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Array.cc (Array<T>::index2, Array<T>::indexN):

@@ -66,7 +66,8 @@ X may not contain any Inf or NaN values.")
   else if (arg_is_empty > 0)
     return Octave_object (3, Matrix ());
 
-  SVD::type type = (nargin == 2) ? SVD::economy : SVD::std;
+  SVD::type type = ((nargout == 1) ? SVD::sigma_only
+		    : (nargin == 2) ? SVD::economy : SVD::std);
 
   if (arg.is_real_type ())
     {

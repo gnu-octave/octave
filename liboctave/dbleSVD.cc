@@ -42,6 +42,32 @@ extern "C"
 				long, long);
 }
 
+Matrix
+left_singular_matrix (void) const
+{
+  if (type == SVD::sigma_only)
+    {
+      (*current_liboctave_error_handler)
+	("ComplexSVD: U not computed because type == SVD::sigma_only");
+      return Matrix ();
+    }
+  else
+    return left_sm;
+}
+
+Matrix
+right_singular_matrix (void) const
+{
+  if (type == SVD::sigma_only)
+    {
+      (*current_liboctave_error_handler)
+	("ComplexSVD: V not computed because type == SVD::sigma_only");
+      return Matrix ();
+    }
+  else
+    return right_sm;
+}
+
 int
 SVD::init (const Matrix& a, SVD::type svd_type)
 {
@@ -63,15 +89,25 @@ SVD::init (const Matrix& a, SVD::type svd_type)
   int nrow_s = m;
   int ncol_s = n;
 
-  if (svd_type == SVD::economy)
+  switch (svd_type)
     {
+    case SVD::economy:
       jobu = jobv ="S";
       ncol_u = nrow_vt = nrow_s = ncol_s = min_mn;
+      break;
+
+    case SVD::sigma_only:
+      jobu = jobv ="N";
+      ncol_u = nrow_vt = 0;
+      break;
+
+    default:
+      break;
     }
 
-  double *u = new double[m * ncol_u];
+  double *u = (ncol_u > 0 ? new double[m * ncol_u] : 0);
   double *s_vec  = new double[min_mn];
-  double *vt = new double[nrow_vt * n];
+  double *vt = (ncol_vt > 0 ? new double[nrow_vt * n] : 0);
 
   int tmp1 = 3*min_mn + max_mn;
   int tmp2 = 5*min_mn - 4;
@@ -82,10 +118,16 @@ SVD::init (const Matrix& a, SVD::type svd_type)
 			    m, vt, nrow_vt, work, lwork, info, 1L,
 			    1L);
 
-  left_sm = Matrix (u, m, ncol_u);
+  if (ncol_u > 0)
+    left_sm = Matrix (u, m, ncol_u);
+
   sigma = DiagMatrix (s_vec, nrow_s, ncol_s);
-  Matrix vt_m (vt, nrow_vt, n);
-  right_sm = vt_m.transpose ();
+
+  if (nrow_vt > 0)
+    {
+      Matrix vt_m (vt, nrow_vt, n);
+      right_sm = vt_m.transpose ();
+    }
 
   delete [] tmp_data;
   delete [] work;

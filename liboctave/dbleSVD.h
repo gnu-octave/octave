@@ -74,9 +74,9 @@ public:
 
   DiagMatrix singular_values (void) const { return sigma; }
 
-  Matrix left_singular_matrix (void) const { return left_sm; }
+  Matrix left_singular_matrix (void);
 
-  Matrix right_singular_matrix (void) const { return right_sm; }
+  Matrix right_singular_matrix (void);
 
   friend ostream&  operator << (ostream& os, const SVD& a);
 

@@ -31,6 +31,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "CmplxSVD.h"
 #include "f77-uscore.h"
+#include "lo-error.h"
 #include "mx-inlines.cc"
 
 extern "C"
@@ -41,6 +42,32 @@ extern "C"
 				Complex*, const int&, Complex*,
 				const int&, double*, int&, long,
 				long);
+}
+
+ComplexMatrix
+ComplexSVD::left_singular_matrix (void) const
+{
+  if (type == SVD::sigma_only)
+    {
+      (*current_liboctave_error_handler)
+	("ComplexSVD: U not computed because type == SVD::sigma_only");
+      return ComplexMatrix ();
+    }
+  else
+    return left_sm;
+}
+
+ComplexMatrix
+ComplexSVD::right_singular_matrix (void) const
+{
+  if (type == SVD::sigma_only)
+    {
+      (*current_liboctave_error_handler)
+	("ComplexSVD: V not computed because type == SVD::sigma_only");
+      return ComplexMatrix ();
+    }
+  else
+    return right_sm;
 }
 
 int
@@ -64,15 +91,25 @@ ComplexSVD::init (const ComplexMatrix& a, SVD::type svd_type)
   int nrow_s = m;
   int ncol_s = n;
 
-  if (svd_type == SVD::economy)
+  switch (svd_type)
     {
-      jobu = jobv = "S";
+    case SVD::economy:
+      jobu = jobv ="S";
       ncol_u = nrow_vt = nrow_s = ncol_s = min_mn;
+      break;
+
+    case SVD::sigma_only:
+      jobu = jobv ="N";
+      ncol_u = nrow_vt = 0;
+      break;
+
+    default:
+      break;
     }
 
-  Complex *u = new Complex[m * ncol_u];
+  Complex *u = (ncol_u > 0 ? new Complex[m * ncol_u] : 0);
   double *s_vec  = new double[min_mn];
-  Complex *vt = new Complex[nrow_vt * n];
+  Complex *vt = (nrow_vt > 0 ? new Complex[nrow_vt * n] : 0);
 
   int lwork = 2*min_mn + max_mn;
   Complex *work = new Complex[lwork];
@@ -84,10 +121,16 @@ ComplexSVD::init (const ComplexMatrix& a, SVD::type svd_type)
 			    m, vt, nrow_vt, work, lwork, rwork, info,
 			    1L, 1L);
 
-  left_sm = ComplexMatrix (u, m, ncol_u);
+  if (ncol_u > 0)
+    left_sm = ComplexMatrix (u, m, ncol_u);
+
   sigma = DiagMatrix (s_vec, nrow_s, ncol_s);
-  ComplexMatrix vt_m (vt, nrow_vt, n);
-  right_sm = vt_m.hermitian ();
+
+  if (nrow_vt > 0)
+    {
+      ComplexMatrix vt_m (vt, nrow_vt, n);
+      right_sm = vt_m.hermitian ();
+    }
 
   delete [] tmp_data;
   delete [] work;

@@ -72,9 +72,9 @@ public:
 
   DiagMatrix singular_values (void) const { return sigma; }
 
-  ComplexMatrix left_singular_matrix (void) const { return left_sm; }
+  ComplexMatrix left_singular_matrix (void);
 
-  ComplexMatrix right_singular_matrix (void) const { return right_sm; }
+  ComplexMatrix right_singular_matrix (void);
 
   friend ostream&  operator << (ostream& os, const ComplexSVD& a);
 

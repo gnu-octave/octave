@@ -1,3 +1,11 @@
+2001-06-29  Mumit Khan  <khan@nanotech.wisc.edu>
+
+	* defun-int.h (DEFINE_FUN_INSTALLER_FUN{2,3}): New macros.
+	(DEFINE_FUN_INSTALLER_FUN): Use.
+	* dynamic-ld.cc ({STRINGIFY, STRINGIFY1}): New macros.
+	(octave_dynamic_loader::mangle_name): Support dynamic linking
+	for GNU v3 and Sun C++ ABI.
+
 2001-06-26  Mumit Khan  <khan@nanotech.wisc.edu>
 
 	* c-file-ptr-stream.h (c_file_ptr_buf::c_file_ptr_buf): Add GCC3

@@ -14,6 +14,9 @@
    internal array and matrix classes. */
 #undef BOUNDS_CHECKING
 
+/* Define to the C++ ABI your compiler uses.  */
+#undef CXX_ABI
+
 /* Define if your C++ runtime library is ISO compliant. */
 #undef CXX_ISO_COMPLIANT_LIBRARY
 

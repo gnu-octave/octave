@@ -308,6 +308,9 @@ octave_dynamic_loader::remove (const std::string& fcn_name, octave_shlib& shl)
   return (instance_ok ()) ? instance->do_remove (fcn_name, shl) : false;
 }
 
+#define STRINGIFY(s) STRINGIFY1(s)
+#define STRINGIFY1(s) #s
+
 std::string
 octave_dynamic_loader::mangle_name (const std::string& name)
 {
@@ -317,7 +320,8 @@ octave_dynamic_loader::mangle_name (const std::string& name)
   std::string retval ("FS");
 #endif
   retval.append (name);
-  retval.append ("__FRC12octave_shlib");
+  retval.append ("_");
+  retval.append (STRINGIFY (CXX_ABI));
   return retval;
 }
 

@@ -76,13 +76,21 @@ alias_builtin (const std::string& alias, const std::string& name);
 typedef bool (*octave_dld_fcn_installer) (const octave_shlib&);
 
 #define DEFINE_FUN_INSTALLER_FUN(name, doc) \
+  DEFINE_FUN_INSTALLER_FUN2(name, doc, CXX_ABI)
+
+#define DEFINE_FUN_INSTALLER_FUN2(name, doc, cxx_abi) \
+  DEFINE_FUN_INSTALLER_FUN3(name, doc, cxx_abi)
+
+#define DEFINE_FUN_INSTALLER_FUN3(name, doc, cxx_abi) \
+  extern "C" \
   bool \
-  FS ## name (const octave_shlib& shl) \
+  FS ## name ## _ ## cxx_abi (const octave_shlib& shl) \
   { \
     check_version (OCTAVE_VERSION, #name); \
     install_dld_function (F ## name, #name, shl, doc); \
     return error_state ? false : true; \
   }
+
 
 // MAKE_BUILTINS is defined to extract function names and related
 // information and create the *.df files that are eventually used to

@@ -1,3 +1,10 @@
+2001-06-29  Mumit Khan  <khan@nanotech.wisc.edu>
+
+	* aclocal.m4 (OCTAVE_CXX_ABI): New macro.
+	(OCTAVE_CXX_PREPENDS_UNDERSCORE): Add missing return value.
+	* configure.in: Use.
+	* acconfig.h (CXX_ABI): New macro.
+
 2001-05-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in: Quote the call to AC_CHECK_FUNC inside the

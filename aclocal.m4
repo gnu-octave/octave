@@ -913,7 +913,7 @@ AC_DEFUN(OCTAVE_CXX_PREPENDS_UNDERSCORE,
     AC_LANG_SAVE
     AC_LANG_CPLUSPLUS
     cat > conftest.$ac_ext <<EOF
-bool FSmy_dld_fcn (void) { }
+bool FSmy_dld_fcn (void) { return false; }
 EOF
     if AC_TRY_EVAL(ac_compile); then
       if test "`${NM-nm} conftest.o | grep _FSmy_dld_fcn`" != ""; then
@@ -990,3 +990,41 @@ AC_DEFUN(OCTAVE_ENABLE_READLINE, [
     ])
   fi
 ])
+dnl
+dnl Determine the C++ compiler ABI. It sets the macro CXX_ABI to the
+dnl name of the ABI, and is used to mangle the C linkage loadable
+dnl functions to avoid ABI mismatch.  GNU C++ currently uses gnu_v2 
+dnl (GCC versions <= 2.95.x) dnl or gnu_v3 (GCC versions >= 3.0).
+dnl Set to "unknown" is when we don't know enough about the ABI, which 
+dnl will happen when using an unsupported C++ compiler. 
+dnl
+dnl OCTAVE_CXX_ABI
+AC_DEFUN(OCTAVE_CXX_ABI,
+[AC_MSG_CHECKING([C++ ABI version used by ${CXX}])
+  AC_CACHE_VAL(octave_cv_cxx_abi,
+    [octave_cv_cxx_abi='unknown'
+    AC_LANG_SAVE
+    AC_LANG_CPLUSPLUS
+    cat > conftest.$ac_ext <<EOF
+bool FSmy_dld_fcn (void) { return false; }
+EOF
+    if AC_TRY_EVAL(ac_compile); then
+      if test "`${NM-nm} conftest.o | grep FSmy_dld_fcn__Fv`" != ""; then
+        octave_cv_cxx_abi='gnu_v2'
+      fi
+      if test "`${NM-nm} conftest.o | grep _Z12FSmy_dld_fcnv`" != ""; then
+        octave_cv_cxx_abi='gnu_v3'
+      fi
+      if test "`${NM-nm} conftest.o | grep __1cMFSmy_dld_fcn6F_b_`" != ""; then
+        octave_cv_cxx_abi='sun'
+      fi
+    else
+      echo "configure: failed program was:" >&AC_FD_CC
+      cat conftest.$ac_ext >&AC_FD_CC
+    fi
+    AC_LANG_RESTORE
+  ])
+  AC_MSG_RESULT($octave_cv_cxx_abi)
+  AC_DEFINE_UNQUOTED(CXX_ABI, $octave_cv_cxx_abi)
+])
+

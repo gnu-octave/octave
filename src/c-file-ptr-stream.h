@@ -31,7 +31,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <fstream>
 #include <cstdio>
 
-//
 // The c_file_ptr_buf requires a std::filebuf that accepts an open
 // file descriptor. This feature, while not part of the ISO C++
 // standard, is supported by a variety of C++ compiler runtimes,
@@ -45,8 +44,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // the GNU C++ runtime removes all non-standard std::filebuf constructors
 // and provides an extension template class __gnu_cxx::stdio_filebuf
 // that supports the the 3.0.x behavior.
-//
-#if __GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 1)
+
+#if __GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 1) && ! (defined (__APPLE__) && defined (__MACH__))
 # include <ext/stdio_filebuf.h>
 # define OCTAVE_STD_FILEBUF __gnu_cxx::stdio_filebuf<char>
 #else

@@ -321,7 +321,8 @@ defaults.h: defaults.h.in ../Makeconf Makefile
 	@$(top_srcdir)/move-if-change $@.tmp $@
 
 oct-gperf.h: octave.gperf
-	gperf -a -C -E -H octave_kw_hash -g -N octave_kw_lookup -p -t \
+	@echo "making $@ from $<"
+	@gperf -a -C -E -H octave_kw_hash -g -N octave_kw_lookup -p -t \
 	  $< > $@.tmp
 	@$(top_srcdir)/move-if-change $@.tmp $@
 

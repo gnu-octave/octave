@@ -20,11 +20,11 @@ TEXINFO = ack.texi amuse.texi arith.texi bugs.texi bugs1.texi \
 	fcn.texi fn-idx.texi gpl.texi help.texi history.texi \
 	hsuser.texi install.texi install1.texi intro.texi invoke.texi \
 	io.texi linalg.texi matrix.texi nonlin.texi octave.texi \
-	optim.texi plot.texi program.texi quad.texi rluser.texi \
-	signal.texi special.texi stats.texi stmt.texi strings.texi \
-	system.texi using.texi var.texi vr-idx.texi
+	op-idx.texi optim.texi plot.texi program.texi quad.texi \
+	rluser.texi signal.texi special.texi stats.texi stmt.texi \
+	strings.texi system.texi using.texi var.texi vr-idx.texi
 
-FORMATTED =  octave.dvi octave.ps octave.info-[0-9]*
+FORMATTED =  octave.dvi octave.ps octave.info octave.info-[0-9]*
 
 DISTFILES = Makefile.in $(TEXINFO) $(FORMATTED) texinfo.tex
 

@@ -37,6 +37,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "Matrix.h"
 
 #include "error.h"
+#include "octave.h"
 #include "variables.h"
 #include "octave-hist.h"
 #include "user-prefs.h"
@@ -46,8 +47,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "tree-plot.h"
 #include "tree-const.h"
 #include "symtab.h"
-#include "builtins.h"
-#include "octave.h"
 #include "parse.h"
 #include "lex.h"
 #include "token.h"
@@ -70,7 +69,7 @@ int maybe_screwed = 0;
 int maybe_screwed_again = 0;
 
 // Temporary symbol table pointer used to cope with bogus function syntax.
-symbol_table *tmp_local_sym_tab = (symbol_table *) NULL;
+symbol_table *tmp_local_sym_tab = 0;
 
 // Stack to hold list of literal matrices.
 SLStack <tree_matrix *> ml;
@@ -129,7 +128,7 @@ static void maybe_warn_assign_as_truth_value (tree_expression *expr);
 #define ABORT_PARSE \
   do \
     { \
-      global_command = NULL_TREE; \
+      global_command = 0; \
       reset_parser (); \
       yyerrok; \
       if (interactive) \
@@ -241,13 +240,13 @@ static void maybe_warn_assign_as_truth_value (tree_expression *expr);
 
 input		: '\n'
 		  {
-		    global_command = NULL_TREE;
+		    global_command = 0;
 		    promptflag = 1;
 		    YYACCEPT;
 		  }
 		| END_OF_INPUT
 		  {
-		    global_command = NULL_TREE;
+		    global_command = 0;
 		    promptflag = 1;
 		    YYABORT;
 		  }
@@ -284,9 +283,9 @@ input		: '\n'
 		;
 
 simple_list	: semi_comma
-		  { $$ = (tree_command_list *) NULL; }
+		  { $$ = 0; }
 		| comma_semi
-		  { $$ = (tree_command_list *) NULL; }
+		  { $$ = 0; }
 		| simple_list1
 		  { $$ = $1->reverse (); }
 		| simple_list1 semi_comma
@@ -377,12 +376,11 @@ command		: plot_command
 
 plot_command	: PLOT plot_command1
 		  {
-		    tree_subplot_list *tmp = (tree_subplot_list *) NULL;
-		    if ($2 != (tree_subplot_list *) NULL)
+		    tree_subplot_list *tmp = 0;
+		    if ($2)
 		      tmp = $2->reverse ();
 
-		    if (tmp == (tree_subplot_list *) NULL
-			&& $1->pttype () != token::replot)
+		    if (! tmp && $1->pttype () != token::replot)
 		      {
 			yyerror ("must have something to plot");
 			ABORT_PARSE;
@@ -428,9 +426,9 @@ ranges		: ranges1
 ranges1		: OPEN_BRACE expression COLON expression CLOSE_BRACE
 		  { $$ = new tree_plot_range ($2, $4); }
 		| OPEN_BRACE COLON expression CLOSE_BRACE
-		  { $$ = new tree_plot_range (NULL, $3); }
+		  { $$ = new tree_plot_range (0, $3); }
 		| OPEN_BRACE expression COLON CLOSE_BRACE
-		  { $$ = new tree_plot_range ($2, NULL); }
+		  { $$ = new tree_plot_range ($2, 0); }
 		| OPEN_BRACE COLON CLOSE_BRACE
 		  { $$ = new tree_plot_range (); }
 		| OPEN_BRACE CLOSE_BRACE
@@ -438,7 +436,7 @@ ranges1		: OPEN_BRACE expression COLON expression CLOSE_BRACE
 		;
 
 plot_command1	: // empty
-		  { $$ = (tree_subplot_list *) NULL; }
+		  { $$ = 0; }
 		| plot_command2
 		  { $$ = $1; }
 		| plot_command1 ',' plot_command2
@@ -452,23 +450,23 @@ plot_command2	: expression
 		;
 
 plot_options	: using
-		  { $$ = new tree_subplot_list ($1, NULL, NULL); }
+		  { $$ = new tree_subplot_list ($1, 0, 0); }
 		| title
-		  { $$ = new tree_subplot_list (NULL, $1, NULL); }
+		  { $$ = new tree_subplot_list (0, $1, 0); }
 		| style
-		  { $$ = new tree_subplot_list (NULL, NULL, $1); }
+		  { $$ = new tree_subplot_list (0, 0, $1); }
 		| using title
-		  { $$ = new tree_subplot_list ($1, $2, NULL); }
+		  { $$ = new tree_subplot_list ($1, $2, 0); }
 		| title using
-		  { $$ = new tree_subplot_list ($2, $1, NULL); }
+		  { $$ = new tree_subplot_list ($2, $1, 0); }
 		| using style
-		  { $$ = new tree_subplot_list ($1, NULL, $2); }
+		  { $$ = new tree_subplot_list ($1, 0, $2); }
 		| style using
-		  { $$ = new tree_subplot_list ($2, NULL, $1); }
+		  { $$ = new tree_subplot_list ($2, 0, $1); }
 		| title style
-		  { $$ = new tree_subplot_list (NULL, $1, $2); }
+		  { $$ = new tree_subplot_list (0, $1, $2); }
 		| style title
-		  { $$ = new tree_subplot_list (NULL, $2, $1); }
+		  { $$ = new tree_subplot_list (0, $2, $1); }
 		| using title style
 		  { $$ = new tree_subplot_list ($1, $2, $3); }
 		| using style title
@@ -697,27 +695,29 @@ expression	: variable '=' expression
 // anything -- no other possible syntax is valid if we've seen the
 // equals sign as the next token after the `]'.
 
-		    $$ = (tree_multi_assignment_expression *) NULL;
+		    $$ = 0;
 		    maybe_screwed_again--;
 		    tree_matrix *tmp = ml.pop ();
 		    tmp = tmp->reverse ();
 		    tree_return_list *id_list = tmp->to_return_list ();
-		    if (id_list == NULL_TREE)
+		    if (id_list)
+		      {
+			$$ = new tree_multi_assignment_expression
+			  (id_list, $6, $5->line (), $5->column ());
+		      }
+		    else
 		      {
 			yyerror ("parse error");
 			error ("invalid identifier list for assignment");
-			$$ = (tree_multi_assignment_expression *) NULL;
+			$$ = 0;
 			ABORT_PARSE;
 		      }
-		    else
-		      $$ = new tree_multi_assignment_expression
-			(id_list, $6, $5->line (), $5->column ());
 		  }
 		| NUM '=' expression
 		  {
 		    yyerror ("parse error");
 		    error ("invalid assignment to a number");
-		    $$ = (tree_simple_assignment_expression *) NULL;
+		    $$ = 0;
 		    ABORT_PARSE;
 		  }
 		| simple_expr
@@ -852,7 +852,7 @@ colon_expr	: simple_expr ':' simple_expr
 		| colon_expr ':' simple_expr
 		  {
 		    $$ = $1->chain ($3);
-		    if ($$ == (tree_colon_expression *) NULL)
+		    if (! $$)
 		      {
 			yyerror ("parse error");
 			ABORT_PARSE;
@@ -905,13 +905,13 @@ func_def	: FCN g_symtab are_we_screwed func_def1
 		  {
 		    curr_sym_tab = top_level_sym_tab;
 		    defining_func = 0;
-		    $$ = (tree_function *) NULL;
+		    $$ = 0;
 		  }
 		| FCN g_symtab are_we_screwed func_def2
 		  {
 		    curr_sym_tab = top_level_sym_tab;
 		    defining_func = 0;
-		    $$ = (tree_function *) NULL;
+		    $$ = 0;
 		  }
 		;
 
@@ -964,7 +964,7 @@ func_def2	: identifier safe local_symtab func_def3
 			  }
 
 			$4->stash_fcn_file_name (curr_fcn_file_name);
-			$4->stash_fcn_file_time (time ((time_t *) NULL));
+			$4->stash_fcn_file_time (time (0));
 			$4->mark_as_system_fcn_file ();
 		      }
 		    else if (! (input_from_tmp_history_file
@@ -1023,16 +1023,15 @@ variable	: identifier
 		  }
 		| identifier '(' ')'
 		  {
-		    $$ = new tree_index_expression
-		           ($1, (tree_argument_list *) NULL,
-			    $1->line (), $1->column ());
+		    $$ = new tree_index_expression ($1, 0, $1->line (),
+						    $1->column ()); 
 		  }
 		| identifier '['
 		  {
 		    yyerror ("parse error");
 		    error ("use `(\' and `)\' as index operators, not\
  `[\' and `]\'"); 
-		    $$ = (tree_index_expression *) NULL;
+		    $$ = 0;
 		    ABORT_PARSE;
 		  }
 		;
@@ -1040,7 +1039,7 @@ variable	: identifier
 param_list	: '(' ')'
 		  {
 		    quote_is_transpose = 0;
-		    $$ = (tree_parameter_list *) NULL;
+		    $$ = 0;
 		  }
 		| '(' ELLIPSIS ')'
 		  {
@@ -1106,7 +1105,7 @@ arg_list1	: ':'
 		    tree_constant *colon;
 		    colon = new tree_constant (tree_constant_rep::magic_colon);
 		    $$ = $1->chain (colon);
-		    if ($$ == NULL_TREE)
+		    if (! $$)
 		      {
 			yyerror ("parse error");
 			ABORT_PARSE;
@@ -1117,7 +1116,7 @@ arg_list1	: ':'
 		| arg_list1 ',' expression
 		  {
 		    $$ = $1->chain ($3);
-		    if ($$ == NULL_TREE)
+		    if (! $$)
 		      {
 			yyerror ("parse error");
 			ABORT_PARSE;
@@ -1171,7 +1170,7 @@ yyerror (char *s)
 {
   char *line = current_input_line;
   int err_col = current_input_column - 1;
-  if (err_col == 0 && line != (char *) NULL)
+  if (err_col == 0 && line)
     err_col = strlen (line) + 1;
 
 // Print a message like `parse error'.
@@ -1182,7 +1181,7 @@ yyerror (char *s)
     fprintf (stderr, " near line %d of file %s.m", input_line_number,
 	     curr_fcn_file_name);
 
-  if (line != (char *) NULL)
+  if (line)
     {
       int len = strlen (line);
       if (line[len-1] == '\n')
@@ -1293,7 +1292,7 @@ maybe_convert_to_ans_assign (tree_expression *expr)
     {
       symbol_record *sr = global_sym_tab->lookup ("ans", 1, 0);
 
-      assert (sr != (symbol_record *) NULL);
+      assert (sr);
       
       tree_identifier *ans = new tree_identifier (sr);
 

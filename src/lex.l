@@ -34,6 +34,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "config.h"
 #endif
 
+#include <string.h>
+
 #include "input.h"
 #include "token.h"
 
@@ -161,7 +163,7 @@ EXPON	([DdEe][+-]?{D}+)
 
 <HELP_FCN>[^ \t\n]*{S}*	    |
 <TEXT_FCN>[^ \t\n\;\,]*{S}* {
-			      static char *tok = (char *) NULL;
+			      static char *tok = 0;
 			      delete [] tok;
 			      tok = strip_trailing_whitespace (yytext);
 			      yylval.tok_val = new token (tok);
@@ -178,7 +180,7 @@ EXPON	([DdEe][+-]?{D}+)
 			    }
 			  else
 			    {
-			      static char *tok = (char *) NULL;
+			      static char *tok = 0;
 			      delete [] tok;
 			      int off1 = doing_set ? 0 : 1;
 			      int off2 = doing_set ? 0 : 2;
@@ -201,7 +203,7 @@ EXPON	([DdEe][+-]?{D}+)
 			    }
 			  else
 			    {
-			      static char *tok = (char *) NULL;
+			      static char *tok = 0;
 			      delete [] tok;
 			      int off1 = doing_set ? 0 : 1;
 			      int off2 = doing_set ? 0 : 2;
@@ -231,7 +233,7 @@ EXPON	([DdEe][+-]?{D}+)
 			    }
 			  else
 			    {
-			      static char *tok = (char *) NULL;
+			      static char *tok = 0;
 			      delete [] tok;
 			      tok = strsave (yytext);
 			      tok[yyleng-1] = '\0';
@@ -261,7 +263,7 @@ EXPON	([DdEe][+-]?{D}+)
 			    }
 			  else
 			    {
-			      static char *tok = (char *) NULL;
+			      static char *tok = 0;
 			      delete [] tok;
 			      tok = strsave (yytext);
 			      tok[yyleng-1] = '\0';
@@ -479,7 +481,7 @@ EXPON	([DdEe][+-]?{D}+)
 // Truncate the token at the first space or tab but don't write
 // directly on yytext.
 
-		  static char *tok = (char *) NULL;
+		  static char *tok = 0;
 		  delete [] tok;
 		  tok = strip_trailing_whitespace (yytext);
 		  return handle_identifier (tok, 0);
@@ -896,11 +898,11 @@ plot_style_token (char *s)
       "lines",
       "linespoints",
       "points",
-      (char *) NULL,
+      0,
     };
 
   char **tmp = plot_styles;
-  while (*tmp != (char *) NULL)
+  while (*tmp)
     {
       if (almost_match (*tmp, s))
 	return *tmp;
@@ -908,7 +910,7 @@ plot_style_token (char *s)
       tmp++;
     }
 
-  return (char *) NULL;
+  return 0;
 }
 
 /*
@@ -949,7 +951,7 @@ is_keyword (char *s)
   if (plotting && in_plot_style)
     {
       char *sty = plot_style_token (s);
-      if (sty != (char *) NULL)
+      if (sty)
 	{
 	  in_plot_style = 0;
 	  yylval.tok_val = new token (sty);
@@ -1031,7 +1033,7 @@ is_keyword (char *s)
 	  error ("function keyword invalid within a function body");
 
 	  if ((reading_fcn_file || reading_script_file)
-	      && curr_fcn_file_name != (char *) NULL)
+	      && curr_fcn_file_name)
 	    error ("defining new function near line %d of file `%s.m'",
 		   input_line_number, curr_fcn_file_name);
 	  else
@@ -1334,11 +1336,11 @@ strip_trailing_whitespace (char *s)
   char *retval = strsave (s);
 
   char *t = strchr (retval, ' ');
-  if (t != (char *) NULL)
+  if (t)
     *t = '\0';
 
   t = strchr (retval, '\t');
-  if (t != (char *) NULL)
+  if (t)
     *t = '\0';
 
   return retval;

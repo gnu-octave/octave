@@ -46,6 +46,7 @@ Software Foundation, Inc.
 #include <signal.h>
 #include <math.h>
 
+#include "f-balance.h"
 #include "f-colloc.h"
 #include "f-dassl.h"
 #include "f-det.h"
@@ -53,6 +54,7 @@ Software Foundation, Inc.
 #include "f-fft.h"
 #include "f-fsolve.h"
 #include "f-fsqp.h"
+#include "f-givens.h"
 #include "f-hess.h"
 #include "f-ifft.h"
 #include "f-inv.h"

@@ -54,11 +54,14 @@ static char *curr_real_fmt = 0;
 // Current format string for the imaginary part of complex numbers.
 static char *curr_imag_fmt = 0;
 
-// Nonzero means don\'t do any fancy formatting.
+// Nonzero means don't do any fancy formatting.
 static int free_format = 0;
 
 // Nonzero means print plus sign for nonzero, blank for zero.
 static int plus_format = 0;
+
+// Nonzero means don't put newlines around the column number headers.
+static int compact_format = 0;
 
 // Nonzero means always print like dollars and cents.
 static int bank_format = 0;
@@ -878,6 +881,29 @@ print_empty_matrix (ostream& os, int nr, int nc, int pr_as_read_syntax)
     }
 }
 
+static void
+pr_col_num_header (ostream& os, int total_width, int max_width,
+		   int lim, int col)
+{
+  if (total_width > max_width && user_pref.split_long_rows)
+    {
+      if (col != 0 && ! compact_format)
+	os << "\n";
+
+      int num_cols = lim - col;
+
+      if (num_cols == 1)
+	os << " Column " << col + 1 << ":\n";
+      else if (num_cols == 2)
+	os << " Columns " << col + 1 << " and " << lim << ":\n";
+      else
+	os << " Columns " << col + 1 << " through " << lim << ":\n";
+
+      if (! compact_format)
+	os << "\n";
+    }
+}
+
 void
 octave_print_internal (ostream& os, double d, int pr_as_read_syntax)
 {
@@ -1002,21 +1028,7 @@ octave_print_internal (ostream& os, const Matrix& m, int pr_as_read_syntax)
 	    {
 	      int lim = col + inc < nc ? col + inc : nc;
 
-	      if (total_width > max_width && user_pref.split_long_rows)
-		{
-		  if (col != 0)
-		    os << "\n";
-
-		  int num_cols = lim - col;
-		  if (num_cols == 1)
-		    os << " Column " << col + 1 << ":\n\n";
-		  else if (num_cols == 2)
-		    os << " Columns " << col + 1 << " and " << lim
-		      << ":\n\n";
-		  else
-		    os << " Columns " << col + 1 << " through " << lim
-		      << ":\n\n";
-		}
+	      pr_col_num_header (os, total_width, max_width, lim, col);
 
 	      for (int i = 0; i < nr; i++)
 		{
@@ -1161,21 +1173,7 @@ octave_print_internal (ostream& os, const ComplexMatrix& cm,
 	    {
 	      int lim = col + inc < nc ? col + inc : nc;
 
-	      if (total_width > max_width && user_pref.split_long_rows)
-		{
-		  if (col != 0)
-		    os << "\n";
-
-		  int num_cols = lim - col;
-		  if (num_cols == 1)
-		    os << " Column " << col + 1 << ":\n\n";
-		  else if (num_cols == 2)
-		    os << " Columns " << col + 1 << " and " << lim
-		      << ":\n\n";
-		  else
-		    os << " Columns " << col + 1 << " through " << lim
-		      << ":\n\n";
-		}
+	      pr_col_num_header (os, total_width, max_width, lim, col);
 
 	      for (int i = 0; i < nr; i++)
 		{
@@ -1265,21 +1263,7 @@ octave_print_internal (ostream& os, const Range& r,
 	    {
 	      int lim = col + inc < num_elem ? col + inc : num_elem;
 
-	      if (total_width > max_width && user_pref.split_long_rows)
-		{
-		  if (col != 0)
-		    os << "\n";
-
-		  int num_cols = lim - col;
-		  if (num_cols == 1)
-		    os << " Column " << col + 1 << ":\n\n";
-		  else if (num_cols == 2)
-		    os << " Columns " << col + 1 << " and " << lim
-		      << ":\n\n";
-		  else
-		    os << " Columns " << col + 1 << " through " << lim
-		      << ":\n\n";
-		}
+	      pr_col_num_header (os, total_width, max_width, lim, col);
 
 	      for (int i = col; i < lim; i++)
 		{
@@ -1418,9 +1402,13 @@ set_format_style (int argc, char **argv)
 	      free_format = 1;
 	    }
 	  else if (strcmp (*argv, "compact") == 0)
-	    error ("format: format state `compact' not implemented yet");
+	    {
+	      compact_format = 1;
+	    }
 	  else if (strcmp (*argv, "loose") == 0)
-	    error ("format: format state `loose' not implemented yet");
+	    {
+	      compact_format = 0;
+	    }
 	  else
 	    error ("format: unrecognized format state `%s'", *argv);
 	}

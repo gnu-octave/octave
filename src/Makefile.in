@@ -80,12 +80,12 @@ SOURCES := acosh.c arith-ops.cc asinh.c atanh.c data.cc dirfns.cc \
 	getopt.c getopt1.c gripes.cc help.cc idx-vector.cc \
 	input.cc lex.l load-save.cc mappers.cc octave.cc \
 	octave-hist.cc oct-obj.cc pager.cc parse.y pr-output.cc \
-	procstream.cc sighandlers.cc strcasecmp.c strncase.c strfns.cc \
-	symtab.cc sysdep.cc tc-rep.cc tc-rep-ass.cc tc-rep-idx.cc \
-	tempname.c timefns.cc tempnam.c token.cc tree-base.cc \
-	tree-cmd.cc tree-const.cc tree-expr.cc tree-misc.cc \
-	tree-plot.cc unwind-prot.cc user-prefs.cc utils.cc \
-	variables.cc xdiv.cc xpow.cc Map.cc SLStack.cc
+	procstream.cc sighandlers.cc strcasecmp.c strncase.c \
+	strfns.cc strftime.c symtab.cc sysdep.cc tc-rep.cc \
+	tc-rep-ass.cc tc-rep-idx.cc tempname.c timefns.cc tempnam.c \
+	token.cc tree-base.cc tree-cmd.cc tree-const.cc tree-expr.cc \
+	tree-misc.cc tree-plot.cc unwind-prot.cc user-prefs.cc \
+	utils.cc variables.cc xdiv.cc xpow.cc Map.cc SLStack.cc
 
 OBJECTS_4 := $(SOURCES) builtins.o
 OBJECTS_3 := $(patsubst %.l, %.o, $(OBJECTS_4))

@@ -18,17 +18,15 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __plt2vv__ (@var{x}, @var{y}, @var{fmt})
+## @deftypefn {Function File} {[data, fmtstr] =} __plt2vv__ (@var{x}, @var{y}, @var{fmt})
 ## @end deftypefn
 
 ## Author: jwe
 
-function __plt2vv__ (x, y, fmt)
+function [data, fmtstr] = __plt2vv__ (x, y, fmt)
 
-  if (nargin < 2 || nargin > 3)
-    msg = sprintf ("__plt2vv__ (x, y)\n");
-    msg = sprintf ("%s              __plt2vv__ (x, y, fmt)", msg);
-    usage (msg);
+  if (nargin < 2 || nargin > 3 || nargout != 2)
+    usage ("[data, fmtstr] = __plt2vv__ (x, y, fmt)");
   elseif (nargin == 2)
     fmt = "";
   elseif (rows (fmt) > 1)
@@ -56,8 +54,7 @@ function __plt2vv__ (x, y, fmt)
     error ("__plt2vv__: vector lengths must match");
   endif
 
-  tmp = [x, y];
-  cmd = sprintf ("gplot tmp %s", fmt);
-  eval (cmd);
+  data = [x, y];
+  fmtstr = fmt;
 
 endfunction

@@ -41,12 +41,14 @@ function __plr2__ (theta, rho, fmt)
     if (isscalar (rho))
       x = rho * cos (theta);
       y = rho * sin (theta);
-      __plt2ss__ (x, y, fmt);
+      __plt__ (x, y, fmt);
+    else
+      error ("__plr2__: invalid data for plotting");
     endif
   elseif (isvector (theta))
     if (isvector (rho))
       if (length (theta) != length (rho))
-        error ("polar: vector lengths must match");
+        error ("__plr2__: vector lengths must match");
       endif
       if (rows (rho) == 1)
         rho = rho';
@@ -56,7 +58,7 @@ function __plr2__ (theta, rho, fmt)
       endif
       x = rho .* cos (theta);
       y = rho .* sin (theta);
-      __plt2vv__ (x, y, fmt);
+      __plt__ (x, y, fmt);
     elseif (ismatrix (rho))
       [t_nr, t_nc] = size (theta);
       if (t_nr == 1)
@@ -73,11 +75,13 @@ function __plr2__ (theta, rho, fmt)
         r_nc = tmp;
       endif
       if (t_nr != r_nr)
-        error ("polar: vector and matrix sizes must match");
+        error ("__plr2__: vector and matrix sizes must match");
       endif
       x = diag (cos (theta)) * rho;
       y = diag (sin (theta)) * rho;
-      __plt2vm__ (x, y, fmt);
+      __plt__ (x, y, fmt);
+    else
+      error ("__plr2__: invalid data for plotting")
     endif
   elseif (ismatrix (theta))
     if (isvector (rho))
@@ -96,20 +100,24 @@ function __plr2__ (theta, rho, fmt)
         t_nc = tmp;
       endif
       if (r_nr != t_nr)
-        error ("polar: vector and matrix sizes must match");
+        error ("__plr2__: vector and matrix sizes must match");
       endif
       diag_r = diag (rho);
       x = diag_r * cos (theta);
       y = diag_r * sin (theta);
-      __plt2mv__ (x, y, fmt);
+      __plt__ (x, y, fmt);
     elseif (ismatrix (rho))
       if (size (rho) != size (theta))
-        error ("polar: matrix dimensions must match");
+        error ("__plr2__: matrix dimensions must match");
       endif
       x = rho .* cos (theta);
       y = rho .* sin (theta);
-      __plt2mm__ (x, y, fmt);
+      __plt__ (x, y, fmt);
+    else
+      error ("__plr2__: invalid data for plotting")
     endif
+  else
+    error ("__plr2__: invalid data for plotting")
   endif
 
 endfunction

@@ -18,15 +18,15 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __plt1__ (@var{x1}, @var{fmt})
+## @deftypefn {Function File} {[data, fmtstr] =} __plt1__ (@var{x1}, @var{fmt})
 ## @end deftypefn
 
 ## Author: jwe
 
-function __plt1__ (x1, fmt)
+function [data, fmtstr] = __plt1__ (x1, fmt)
 
-  if (nargin < 1 || nargin > 2)
-    usage ("__plt1__ (x1, fmt)");
+  if (nargin < 1 || nargin > 2 || nargout != 2)
+    usage ("[data, fmtstr] = __plt1__ (x1, fmt)");
   endif
 
   if (nargin == 1)
@@ -53,6 +53,6 @@ function __plt1__ (x1, fmt)
     x1 = (1:nr)';
   endif
 
-  __plt2__ (x1, x2, fmt);
+  [data, fmtstr] = __plt2__ (x1, x2, fmt);
 
 endfunction

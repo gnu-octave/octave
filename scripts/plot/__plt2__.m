@@ -18,15 +18,15 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __plt2__ (@var{x1}, @var{x2}, @var{fmt})
+## @deftypefn {Function File} {[data, fmtstr] =} __plt2__ (@var{x1}, @var{x2}, @var{fmt})
 ## @end deftypefn
 
 ## Author: jwe
 
-function __plt2__ (x1, x2, fmt)
+function [data, fmtstr] = __plt2__ (x1, x2, fmt)
 
-  if (nargin < 2 || nargin > 3)
-    usage ("__plt2__ (x1, x2, fmt)");
+  if (nargin < 2 || nargin > 3 || nargout != 2)
+    usage ("[data, fmtstr] = __plt2__ (x1, x2, fmt)");
   endif
 
   if (nargin == 2)
@@ -40,25 +40,35 @@ function __plt2__ (x1, x2, fmt)
   if (any (any (imag (x1))))
     x1 = real (x1);
   endif
+
   if (any (any (imag (x2))))
     x2 = real (x2);
   endif
+
   if (isscalar (x1))
     if (isscalar (x2))
-      __plt2ss__ (x1, x2, fmt);
+      [data, fmtstr] = __plt2ss__ (x1, x2, fmt);
+    else
+      error ("__plt2__: invalid data for plotting");
     endif
   elseif (isvector (x1))
     if (isvector (x2))
-      __plt2vv__ (x1, x2, fmt);
+      [data, fmtstr] = __plt2vv__ (x1, x2, fmt);
     elseif (ismatrix (x2))
-      __plt2vm__ (x1, x2, fmt);
+      [data, fmtstr] = __plt2vm__ (x1, x2, fmt);
+    else
+      error ("__plt2__: invalid data for plotting");
     endif
   elseif (ismatrix (x1))
     if (isvector (x2))
-      __plt2mv__ (x1, x2, fmt);
+      [data, fmtstr] = __plt2mv__ (x1, x2, fmt);
     elseif (ismatrix (x2))
-      __plt2mm__ (x1, x2, fmt);
+      [data, fmtstr] = __plt2mm__ (x1, x2, fmt);
+    else
+      error ("__plt2__: invalid data for plotting");
     endif
+  else
+    error ("__plt2__: invalid data for plotting");
   endif
 
 endfunction

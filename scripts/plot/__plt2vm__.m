@@ -18,18 +18,16 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __plt2vm__ (@var{x}, @var{y}, @var{fmt})
+## @deftypefn {Function File} {[data, fmtstr] =} __plt2vm__ (@var{x}, @var{y}, @var{fmt})
 ## @end deftypefn
 
 ## Author: jwe
 
-function __plt2vm__ (x, y, fmt)
+function [data, fmtstr] = __plt2vm__ (x, y, fmt)
 
-  if (nargin < 2 || nargin > 3)
-    msg = sprintf ("__plt2vm__ (x, y)\n");
-    msg = sprintf ("%s              __plt2vm__ (x, y, fmt)", msg);
-    usage (msg);
-  elseif (nargin == 2 || fmt == "")
+  if (nargin < 2 || nargin > 3 || nargout != 2)
+    usage ("[data, fmtstr] = __plt2vm__ (x, y, fmt)");
+  elseif (nargin == 2 || isempty (fmt))
     fmt = " ";  ## Yes, this is intentionally not an empty string!
   endif
 
@@ -54,23 +52,19 @@ function __plt2vm__ (x, y, fmt)
     error ("__plt2vm__: matrix dimensions must match");
   endif
 
-  k = 1;
-  fmt_nr = rows (fmt);
   if (y_nc > 0)
-    tmp = [x, y];
-    cmd = sprintf ("gplot tmp(:,%d:%d:%d) %s", 1, x_nc, x_nc+1,
-                   deblank (fmt (k, :)));
-    if (k < fmt_nr)
-      k++;
+    if (rows (fmt) == 1)
+      fmt = repmat (fmt, y_nc, 1);
     endif
-    for i = 2:y_nc
-      cmd = sprintf ("%s, tmp(:,%d:%d:%d) %s", cmd, 1, i, i+1,
-                     deblank (fmt (k, :)));
-      if (k < fmt_nr)
-        k++;
-      endif
+    tmp = [x, y];
+    dtmp = cell (y_nc, 1);
+    ftmp = cell (y_nc, 1);
+    for i = 1:y_nc
+      dtmp{i} = tmp(:,[1,i+1]);
+      ftmp{i} = deblank (fmt(i,:));
     endfor
-    eval (cmd);
+    data = dtmp;
+    fmtstr = ftmp;
   else
     error ("__plt2vm__: arguments must be a matrices");
   endif

@@ -1,3 +1,15 @@
+2005-01-24  John W. Eaton  <jwe@octave.org>
+
+	* plot/__plr2__.m, plot/__plt2__.m: Improve diagnostics.
+
+	* plot/__plr__.m: Use __plt__, not specific __pltXX__ functions.
+	* plot/__plt1__.m, plot/__plt2__.m, plot/__plt2mm__.m,
+	plot/__plt2mv__.m, plot/__plt2ss__.m, plot/__plt2vm__.m,
+	plot/__plt2vv__.m:
+	Return data and gnuplot commands instead of evaluating them.
+	* plot/__plt__.m: Handle evaluation of all gnuplot commands here.
+	Based on changes from Daniel J Sebald <daniel.sebald@ieee.org>.
+
 2005-01-18  John W. Eaton  <jwe@octave.org>
 
 	* linear-algebra/cross.m: Allocate idx1 before use.

@@ -27,11 +27,7 @@ function __plt__ (caller, varargin)
 
   nargs = nargin ();
 
-  if (nargs == 2)
-
-    __plt1__ (varargin{1}, "");
-
-  elseif (nargs > 2)
+  if (nargs >= 2)
 
     first_plot = 1;
     hold_state = ishold ();
@@ -39,17 +35,26 @@ function __plt__ (caller, varargin)
     unwind_protect
 
       k = 1;
+      j = 1;
       x = varargin{k++};
       nargs -= 2;
       x_set = 1;
       y_set = 0;
+      gp_cmd = "gplot";
+      have_gp_cmd = false;
 
-      ## Gather arguments, decode format, and plot lines.
+      ## Gather arguments, decode format, gather plot strings, and plot lines.
 
       while (nargs-- > 0)
 
         fmt = "";
         new = varargin{k++};
+
+        if (j > 1)
+          sep = ",\\\n";
+        else
+          sep = "";
+        endif
 
         if (isstr (new))
           if (! x_set)
@@ -57,17 +62,37 @@ function __plt__ (caller, varargin)
           endif
           fmt = __pltopt__ (caller, new);
           if (! y_set)
-            __plt1__ (x, fmt);
+            [data{j}, fmtstr] = __plt1__ (x, fmt);
           else
-            __plt2__ (x, y, fmt);
+            [data{j}, fmtstr] = __plt2__ (x, y, fmt);
           endif
-          hold on;
+	  if (iscell (data{j}))
+	    for i = 1:length (data{j})
+	      gp_cmd = sprintf ("%s%s data{%d}{%d} %s", gp_cmd, sep,
+				j, i, fmtstr{i});
+	      sep = ",\\\n";
+	      have_gp_cmd = true;
+	    endfor
+	  else
+            gp_cmd = sprintf ("%s%s data{%d} %s", gp_cmd, sep, j++, fmtstr);
+	    have_gp_cmd = true;
+          endif
           x_set = 0;
           y_set = 0;
         elseif (x_set)
           if (y_set)
-            __plt2__ (x, y, fmt);
-            hold on;
+            [data{j}, fmtstr] = __plt2__ (x, y, fmt);
+	    if (iscell (data{j}))
+	      for i = 1:length (data{j})
+		gp_cmd = sprintf ("%s%s data{%d}{%d} %s", gp_cmd, sep,
+				  j, i, fmtstr{i});
+		sep = ",\\\n";
+		have_gp_cmd = true;
+	      endfor
+	    else
+	      gp_cmd = sprintf ("%s%s data{%d} %s", gp_cmd, sep, j++, fmtstr);
+	      have_gp_cmd = true;
+	    endif
             x = new;
             y_set = 0;
           else
@@ -83,12 +108,27 @@ function __plt__ (caller, varargin)
 
       ## Handle last plot.
 
-      if  (x_set)
+      if (x_set)
         if (y_set)
-          __plt2__ (x, y, fmt);
+          [data{j}, fmtstr] = __plt2__ (x, y, fmt);
         else
-          __plt1__ (x, fmt);
+          [data{j}, fmtstr] = __plt1__ (x, fmt);
         endif
+	if (iscell (data{j}))
+	  for i = 1:length (data{j})
+	    gp_cmd = sprintf ("%s%s data{%d}{%d} %s", gp_cmd, sep,
+			      j, i, fmtstr{i});
+	    sep = ",\\\n";
+	    have_gp_cmd = true;
+	  endfor
+	else
+	  gp_cmd = sprintf ("%s%s data{%d} %s", gp_cmd, sep, j++, fmtstr);
+	  have_gp_cmd = true;
+        endif
+      endif
+
+      if (have_gp_cmd)
+        eval (gp_cmd);
       endif
 
     unwind_protect_cleanup

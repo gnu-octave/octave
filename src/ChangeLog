@@ -1,3 +1,8 @@
+2003-08-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* OPERATORS/op-str-s.cc, OPERATORS/op-str-m.cc: New files.
+	* Makefile.in (OP_XSRC): Add them to the list.
+
 2003-08-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* defaults.cc (maybe_add_or_del_packages): Use source_file instead

@@ -208,6 +208,35 @@ keyword_almost_match (const char **std, int *min_len, const string& s,
   return status;
 }
 
+// Return non-zero if either NR or NC is zero.  Return -1 if this
+// should be considered fatal; return 1 if this is ok.
+
+int
+empty_arg (const char *name, int nr, int nc)
+{
+  int is_empty = 0;
+
+  if (nr == 0 || nc == 0)
+    {
+      int flag = Vpropagate_empty_matrices;
+
+      if (flag < 0)
+	{
+	  gripe_empty_arg (name, 0);
+	  is_empty = 1;
+	}
+      else if (flag == 0)
+	{
+	  gripe_empty_arg (name, 1);
+	  is_empty = -1;
+	}
+      else
+	is_empty = 1;
+    }
+
+  return is_empty;
+}
+
 // See if the given file is in the path.
 
 string

@@ -1196,6 +1196,65 @@ Without any arguments, toggle the current echo state.")
   return retval;
 }
 
+DEFUN (completion_matches, args, nargout,
+  "completion_matches (HINT): generate possible completions given HINT")
+{
+  string_vector retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 1)
+    {
+      string hint_string = args(0).string_value ();
+
+      if (! error_state)
+	{
+	  int n = 32;
+
+	  string_vector list (n);
+
+	  const char *hint = hint_string.c_str ();
+
+	  int k = 0;
+
+	  for (;;)
+	    {
+	      const char *cmd = command_generator (hint, k);
+
+	      if (cmd)
+		{
+		  if (k > n)
+		    {
+		      n *= 2;
+		      list.resize (n);
+		    }
+
+		  list[k++] = cmd;
+		}
+	      else
+		{
+		  list.resize (k);
+		  break;
+		}
+	    }
+
+	  if (nargout > 0)
+	    retval = list;
+	  else
+	    {
+	      int len = list.length ();
+
+	      for (int i = 0; i < len; i++)
+		octave_stdout << list[i] << "\n";
+	    }
+	}
+    }
+  else
+    print_usage ("completion_matches");
+
+  return retval;
+}
+
 static int
 ps1 (void)
 {

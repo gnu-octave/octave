@@ -649,7 +649,11 @@ terminal_prep_terminal ()
   ioctl (tty, TCGETA, &original_termio);
   ioctl (tty, TCGETA, &ttybuff);
   ttybuff.c_iflag &= (~ISTRIP & ~INLCR & ~IGNCR & ~ICRNL & ~IXON);
+#if defined (NeXT)
+  ttybuff.c_oflag &= (~ONLCR);
+#else
   ttybuff.c_oflag &= (~ONLCR & ~OCRNL);
+#endif
   ttybuff.c_lflag &= (~ICANON & ~ECHO);
 
   ttybuff.c_cc[VMIN] = 1;

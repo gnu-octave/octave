@@ -30,18 +30,22 @@ function p = polyreduce (p)
 
   index = find (p == 0);
 
-  index = find (index == 1:length(index));
+  if (length (index) != 0)
 
-  if (length (index) == 0)
-    return;
-  endif
+    index = find (index == 1:length(index));
 
-  if(length(p)>1)
-    p = p (index (length (index))+1:length(p));
-  endif
+    if (length (index) != 0)
 
-  if (length (p) == 0)
-    p = 0;
+      if (length (p) > 1)
+	p = p (index (length (index))+1:length (p));
+      endif
+
+      if (length (p) == 0)
+	p = 0;
+      endif
+
+    endif
+
   endif
 
 endfunction

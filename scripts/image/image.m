@@ -25,6 +25,9 @@
 ## length of the colormap.  If @var{zoom} is omitted, the image will be
 ## scaled to fit within 600x350 (to a max of 4).
 ##
+## It first tries to use @code{display} from @code{ImageMagick} then
+## @code{xv} and then @code{xloadimage}.
+##
 ## The axis values corresponding to the matrix elements are specified in
 ## @var{x} and @var{y}. At present they are ignored.
 ## @end deftypefn
@@ -38,7 +41,7 @@ function image (x, y, A, zoom)
 
   if (nargin == 0)
     ## Load Bobbie Jo Richardson (Born 3/16/94)
-    x = loadimage ("default.img");
+    A = loadimage ("default.img");
     zoom = 2;
   elseif (nargin == 1)
     A = x;
@@ -74,12 +77,15 @@ function image (x, y, A, zoom)
 
   xloadimage = sprintf ("xloadimage -zoom %f %s", zoom*100, ppm_name);
 
+  ## ImageMagick:
+  im_display = sprintf ("display -geometry %f%% %s", zoom*100, ppm_name);
+  
   rm = sprintf ("rm -f %s", ppm_name);
 
   ## Need to let the shell clean up the tmp file because we are putting
   ## the viewer in the background.
 
-  system (sprintf ("( %s || %s && %s ) > /dev/null 2>&1 &",
-                   xv, xloadimage, rm));
+  system (sprintf ("( %s || %s || %s && %s ) > /dev/null 2>&1 &",
+                   im_display, xv, xloadimage, rm));
 
 endfunction

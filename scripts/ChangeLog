@@ -1,5 +1,8 @@
 2004-01-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* elfun/acot.m: Return atan (1./z).
+	From Gregory Vanuxem <g.vanuxem@wanadoo.fr>.
+
 	* miscellaneous/dir.m: New file.
 
 	* general/num2str.m: Use "%d" as format if values are ints with

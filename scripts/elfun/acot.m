@@ -30,6 +30,6 @@ function w = acot (z)
     usage ("acot (z)");
   endif
 
-  w = pi/2 - atan (z);
+  w = atan (1./z);
 
 endfunction

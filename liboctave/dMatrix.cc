@@ -2033,22 +2033,19 @@ Matrix::apply (d_d_Mapper f)
 bool
 Matrix::any_element_is_negative (bool neg_zero) const
 {
-  int nr = rows ();
-  int nc = cols ();
+  int nel = nelem ();
 
   if (neg_zero)
     {
-      for (int j = 0; j < nc; j++)
-	for (int i = 0; i < nr; i++)
-	  if (lo_ieee_signbit (elem (i, j)))
-	    return true;
+      for (int i = 0; i < nel; i++)
+	if (lo_ieee_signbit (elem (i)))
+	  return true;
     }
   else
     {
-      for (int j = 0; j < nc; j++)
-	for (int i = 0; i < nr; i++)
-	  if (elem (i, j) < 0)
-	    return true;
+      for (int i = 0; i < nel; i++)
+	if (elem (i) < 0)
+	  return true;
     }
 
   return false;
@@ -2058,34 +2055,31 @@ Matrix::any_element_is_negative (bool neg_zero) const
 bool
 Matrix::any_element_is_inf_or_nan (void) const
 {
-  int nr = rows ();
-  int nc = cols ();
+  int nel = nelem ();
 
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
-      {
-	double val = elem (i, j);
-	if (xisinf (val) || xisnan (val))
-	  return 1;
-      }
-  return 0;
+  for (int i = 0; i < nel; i++)
+    {
+      double val = elem (i);
+      if (xisinf (val) || xisnan (val))
+	return true;
+    }
+
+  return false;
 }
 
 bool
 Matrix::all_elements_are_int_or_inf_or_nan (void) const
 {
-  int nr = rows ();
-  int nc = cols ();
+  int nel = nelem ();
 
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
-      {
-	double val = elem (i, j);
-	if (xisnan (val) || D_NINT (val) == val)
-	  continue;
-	else
-	  return false;
-      }
+  for (int i = 0; i < nel; i++)
+    {
+      double val = elem (i);
+      if (xisnan (val) || D_NINT (val) == val)
+	continue;
+      else
+	return false;
+    }
 
   return true;
 }
@@ -2096,31 +2090,29 @@ Matrix::all_elements_are_int_or_inf_or_nan (void) const
 bool
 Matrix::all_integers (double& max_val, double& min_val) const
 {
-  int nr = rows ();
-  int nc = cols ();
+  int nel = nelem ();
 
-  if (nr > 0 && nc > 0)
+  if (nel > 0)
     {
-      max_val = elem (0, 0);
-      min_val = elem (0, 0);
+      max_val = elem (0);
+      min_val = elem (0);
     }
   else
     return false;
 
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
-      {
-	double val = elem (i, j);
+  for (int i = 0; i < nel; i++)
+    {
+      double val = elem (i);
 
-	if (val > max_val)
-	  max_val = val;
+      if (val > max_val)
+	max_val = val;
 
-	if (val < min_val)
-	  min_val = val;
+      if (val < min_val)
+	min_val = val;
 
-	if (D_NINT (val) != val)
-	  return false;
-      }
+      if (D_NINT (val) != val)
+	return false;
+    }
 
   return true;
 }
@@ -2128,17 +2120,15 @@ Matrix::all_integers (double& max_val, double& min_val) const
 bool
 Matrix::too_large_for_float (void) const
 {
-  int nr = rows ();
-  int nc = cols ();
+  int nel = nelem ();
 
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
-      {
-	double val = elem (i, j);
+  for (int i = 0; i < nel; i++)
+    {
+      double val = elem (i);
 
-	if (val > FLT_MAX || val < FLT_MIN)
-	  return true;
-      }
+      if (val > FLT_MAX || val < FLT_MIN)
+	return true;
+    }
 
   return false;
 }

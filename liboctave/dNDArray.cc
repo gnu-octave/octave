@@ -29,11 +29,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include <cfloat>
+
 #include "Array-util.h"
 #include "dNDArray.h"
 #include "mx-base.h"
 #include "lo-error.h"
 #include "lo-ieee.h"
+#include "lo-mappers.h"
 
 NDArray::NDArray (const boolNDArray& a)
   : MArrayN<double> (a.dims ())
@@ -62,8 +65,110 @@ NDArray::operator ! (void) const
   return b;
 }
 
-// XXX FIXME XXX -- this is not quite the right thing.
+bool
+NDArray::any_element_is_negative (bool neg_zero) const
+{
+  int nel = nelem ();
 
+  if (neg_zero)
+    {
+      for (int i = 0; i < nel; i++)
+	if (lo_ieee_signbit (elem (i)))
+	  return true;
+    }
+  else
+    {
+      for (int i = 0; i < nel; i++)
+	if (elem (i) < 0)
+	  return true;
+    }
+
+  return false;
+}
+
+
+bool
+NDArray::any_element_is_inf_or_nan (void) const
+{
+  int nel = nelem ();
+
+  for (int i = 0; i < nel; i++)
+    {
+      double val = elem (i);
+      if (xisinf (val) || xisnan (val))
+	return true;
+    }
+
+  return false;
+}
+
+bool
+NDArray::all_elements_are_int_or_inf_or_nan (void) const
+{
+  int nel = nelem ();
+
+  for (int i = 0; i < nel; i++)
+    {
+      double val = elem (i);
+      if (xisnan (val) || D_NINT (val) == val)
+	continue;
+      else
+	return false;
+    }
+
+  return true;
+}
+
+// Return nonzero if any element of M is not an integer.  Also extract
+// the largest and smallest values and return them in MAX_VAL and MIN_VAL.
+
+bool
+NDArray::all_integers (double& max_val, double& min_val) const
+{
+  int nel = nelem ();
+
+  if (nel > 0)
+    {
+      max_val = elem (0);
+      min_val = elem (0);
+    }
+  else
+    return false;
+
+  for (int i = 0; i < nel; i++)
+    {
+      double val = elem (i);
+
+      if (val > max_val)
+	max_val = val;
+
+      if (val < min_val)
+	min_val = val;
+
+      if (D_NINT (val) != val)
+	return false;
+    }
+
+  return true;
+}
+
+bool
+NDArray::too_large_for_float (void) const
+{
+  int nel = nelem ();
+
+  for (int i = 0; i < nel; i++)
+    {
+      double val = elem (i);
+
+      if (val > FLT_MAX || val < FLT_MIN)
+	return true;
+    }
+
+  return false;
+}
+
+// XXX FIXME XXX -- this is not quite the right thing.
 
 boolNDArray
 NDArray::all (int dim) const
@@ -107,29 +212,38 @@ NDArray::sum (int dim) const
   MX_ND_REAL_OP_REDUCTION (+= elem (iter_idx), 0);
 }
 
-Matrix
-NDArray::abs (void) const
+NDArray
+real (const ComplexNDArray& a)
 {
-  Matrix retval;
-
-  if (dims () . length () == 2)
-    {
-      int nr = rows ();
-      int nc = cols ();
-
-      retval.resize (nr, nc);
-      
-      for (int j = 0; j < nc; j++)
-	for (int i = 0; i < nr; i++)
-	  retval(i,j) = fabs (elem (i, j));
-    }
-  else
-    (*current_liboctave_error_handler)
-      ("abs is not yet implemented for N-d arrays");
-
+  int a_len = a.length ();
+  NDArray retval;
+  if (a_len > 0)
+    retval = NDArray (mx_inline_real_dup (a.data (), a_len), a.dims ());
   return retval;
 }
 
+NDArray
+imag (const ComplexNDArray& a)
+{
+  int a_len = a.length ();
+  NDArray retval;
+  if (a_len > 0)
+    retval = NDArray (mx_inline_imag_dup (a.data (), a_len), a.dims ());
+  return retval;
+}
+
+NDArray
+NDArray::abs (void) const
+{
+  NDArray retval (dims ());
+
+  int nel = nelem ();
+
+  for (int i = 0; i < nel; i++)
+    retval(i) = fabs (elem (i));
+
+  return retval;
+}
 
 Matrix
 NDArray::matrix_value (void) const
@@ -170,56 +284,6 @@ NDArray::compute_index (Array<int>& ra_idx,
 			const dim_vector& dimensions)
 {
   return ::compute_index (ra_idx, dimensions);
-}
-
-bool
-NDArray::any_element_is_negative (bool neg_zero) const
-{
-  int n = length (); 
-  if (neg_zero)
-    {
-      for (int i = 0; i < n; i++)
-	if (lo_ieee_signbit (Array<double>::elem (i)))
-	  return true;
-    }
-  else
-    {
-      for (int i = 0; i < n; i++)
-	if (Array<double>::elem (i) < 0)
-	  return true;
-    }
- 
- return false;
-}
-
-bool
-NDArray::all_integers (double& max_val, double& min_val) const
-{
-  int n = length ();
-
-  if (n > 0)
-    {
-      max_val = Array<double>::elem (0);
-      min_val = Array<double>::elem (0);
-    }
-  else 
-    return false;
-
-  for (int i = 0; i < n; i++)
-    {
-      double val = Array<double>::elem (0);
-      
-      if (val > max_val)
-	max_val = val;
-
-      if (val < min_val)
-	min_val = val;
-
-      if (D_NINT (val) != val)
-	return false;
-    }
-
-  return true;
 }
 
 NDS_CMP_OPS(NDArray, , double, )

@@ -120,25 +120,15 @@ ComplexNDArray::sum (int dim) const
   MX_ND_COMPLEX_OP_REDUCTION (+= elem (iter_idx), Complex (0, 0));
 }
 
-Matrix 
+NDArray
 ComplexNDArray::abs (void) const
 {
-  Matrix retval;
+  NDArray retval (dims ());
 
-  if (dims () . length () == 2)
-    {
-      int nr = rows ();
-      int nc = cols ();
+  int nel = nelem ();
 
-      retval.resize (nr, nc);
-      
-      for (int j = 0; j < nc; j++)
-	for (int i = 0; i < nr; i++)
-	  retval (i, j) = ::abs (elem (i, j));
-    }
-  else
-    (*current_liboctave_error_handler)
-      ("abs is not yet implemented for N-d arrays");
+  for (int i = 0; i < nel; i++)
+    retval(i) = ::abs (elem (i));
       
   return retval;
 }

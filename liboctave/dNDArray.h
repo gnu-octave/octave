@@ -70,6 +70,12 @@ public:
 
   boolNDArray operator ! (void) const;
 
+  bool any_element_is_negative (bool = false) const;
+  bool any_element_is_inf_or_nan (void) const;
+  bool all_elements_are_int_or_inf_or_nan (void) const;
+  bool all_integers (double& max_val, double& min_val) const;
+  bool too_large_for_float (void) const;
+
   // XXX FIXME XXX -- this is not quite the right thing.
 
   boolNDArray all (int dim = -1) const;
@@ -81,7 +87,10 @@ public:
   NDArray sum (int dim = -1) const;  
   NDArray sumsq (int dim = -1) const;
  
-  Matrix abs (void) const;
+  NDArray abs (void) const;
+
+  friend NDArray real (const ComplexNDArray& a);
+  friend NDArray imag (const ComplexNDArray& a);
 
   Matrix matrix_value (void) const;
 
@@ -101,12 +110,9 @@ public:
 
   static double resize_fill_value (void) { return 0; }
 
-  bool any_element_is_negative (bool = false) const;
-  bool all_integers (double& max_val, double& min_val) const;
-
 private:
 
-  NDArray (double *d, dim_vector& dv) : MArrayN<double> (d, dv) { }
+  NDArray (double *d, const dim_vector& dv) : MArrayN<double> (d, dv) { }
 };
 
 NDS_CMP_OP_DECLS (NDArray, double)

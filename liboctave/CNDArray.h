@@ -83,7 +83,7 @@ public:
   ComplexNDArray sum (int dim = -1) const;
   ComplexNDArray sumsq (int dim = -1) const;
 
-  Matrix abs (void) const;
+  NDArray abs (void) const;
 
   ComplexMatrix matrix_value (void) const;
 
@@ -108,7 +108,7 @@ public:
 
 private:
 
-  ComplexNDArray (Complex *d, dim_vector& dv)
+  ComplexNDArray (Complex *d, const dim_vector& dv)
     : MArrayN<Complex> (d, dv) { }
 };
 

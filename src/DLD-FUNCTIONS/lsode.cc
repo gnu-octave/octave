@@ -63,8 +63,6 @@ lsode_user_function (const ColumnVector& x, double t)
 {
   ColumnVector retval;
 
-  int nstates = x.capacity ();
-
   octave_value_list args;
   args(1) = t;
   args(0) = x;
@@ -103,8 +101,6 @@ Matrix
 lsode_user_jacobian (const ColumnVector& x, double t)
 {
   Matrix retval;
-
-  int nstates = x.capacity ();
 
   octave_value_list args;
   args(1) = t;

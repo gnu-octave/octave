@@ -1,3 +1,21 @@
+2003-11-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* dNDArray.cc (NDArray::all_elements_are_int_or_inf_or_nan,
+	NDArray::any_element_is_inf_or_nan, NDArray::too_large_for_float):
+	New functions.
+	* dNDArray.h: Provide decls.
+
+	* dMatrix.h (Matrix::any_element_is_negative,
+	Matrix::any_element_is_inf_or_nan, Matrix::too_large_for_float,
+	Matrix::all_elements_are_int_or_inf_or_nan, Matrix::all_integers):
+	Simplify.
+
+	* dNDArray.cc (NDArray::abs): Make it work for N-d arrays.
+	* CNDArray.cc (ComplexNDArray::abs): Likewise.
+
+	* dNDArray.cc (real, imag): New functions.
+	* dNDArray.h: Provide decls.
+
 2003-11-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (TEMPLATE_SRC): Move MArrayN.cc here from MATRIX_SRC.

@@ -1,3 +1,8 @@
+Thu Mar 20 14:47:49 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* mk-oct-links (links_dir): Don't use -h option for grep.  It's
+	not needed since we are working on one file at a time anyway.
+
 Mon Mar 17 10:53:29 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* lex.l (handle_identifier): When handling indirect_ref, set

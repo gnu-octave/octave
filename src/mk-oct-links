@@ -20,7 +20,7 @@ shift
 
 for f in "$@"; do
   base=`basename $f | sed 's/\.cc$//'`
-  fcns=`grep -h '^ *DEFUN_DLD' $f |\
+  fcns=`grep '^ *DEFUN_DLD' $f |\
         sed -e 's/DEFUN_DLD *( *//' -e 's/ *,.*$//' |\
         sort -u`
   if [ -n "$fcns" ]; then

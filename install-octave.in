@@ -7,6 +7,10 @@
 # University of Wisconsin-Madison
 # Department of Chemical Engineering
 
+# Exit on any error.
+
+set -e
+
 # get version
 version=`cat VERSION 2> /dev/null`
 
@@ -209,22 +213,6 @@ DIRS_TO_MAKE="$bindir $datadir $libdir $octlibdir $libexecdir \
 
 ./mkinstalldirs $DIRS_TO_MAKE
 
-if test "$prefix" = /usr/local
-then
-  echo "installing src/octave as $bindir/octave"
-  cp src/octave $bindir/octave
-  chmod 755 $bindir/octave
-else
-  echo "installing octave-sh as $bindir/octave"
-  sed "s|@OCTAVE_HOME@|$prefix|; s|@LD_LIBRARY_PATH@|$octlibdir|" octave-sh \
-    > $bindir/octave
-  chmod 755 $bindir/octave
-
-  echo "installing src/octave as $bindir/octave.bin"
-  cp src/octave $bindir/octave.bin
-  chmod 755 $bindir/octave.bin
-fi
-
 echo "installing octave-bug as $bindir/octave-bug"
 cp octave-bug $bindir/octave-bug
 chmod 755 $bindir/octave-bug
@@ -291,6 +279,26 @@ done
 echo "installing man page in $mandir"
 cp doc/interpreter/octave.1 $mandir/octave.$manext
 chmod 644 $mandir/octave.$manext
+
+# Do this last, so that it won't be available if some other error
+# happens earlier.  Otherwise, people might try to run Octave with
+# an incomplete installation.
+
+if test "$prefix" = /usr/local
+then
+  echo "installing src/octave as $bindir/octave"
+  cp src/octave $bindir/octave
+  chmod 755 $bindir/octave
+else
+  echo "installing octave-sh as $bindir/octave"
+  sed "s|@OCTAVE_HOME@|$prefix|; s|@LD_LIBRARY_PATH@|$octlibdir|" octave-sh \
+    > $bindir/octave
+  chmod 755 $bindir/octave
+
+  echo "installing src/octave as $bindir/octave.bin"
+  cp src/octave $bindir/octave.bin
+  chmod 755 $bindir/octave.bin
+fi
 
 case "$canonical_host_type" in
   *-*-cygwin32)

@@ -1,3 +1,7 @@
+2000-01-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* plot/mesh.m: Fix error message to reflect reality.
+
 2000-01-24  Cyril Humbert <humbert@phobos.univ-mlv.fr>
 
 	* statistics/distributions/weibull_pdf.m: Use correct formula.

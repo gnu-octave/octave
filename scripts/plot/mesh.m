@@ -76,8 +76,8 @@ function mesh (x, y, z)
         gsplot (zz);
         gset noparametric;
       else
-        msg = "mesh: rows (z) must be the same as length (x) and";
-        msg = sprintf ("%s\ncolumns (z) must be the same as length (y)", msg);
+        msg = "mesh: rows (z) must be the same as length (y) and";
+        msg = sprintf ("%s\ncolumns (z) must be the same as length (x)", msg);
         error (msg);
       endif
     elseif (is_matrix (x) && is_matrix (y) && is_matrix (z))

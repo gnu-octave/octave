@@ -22,7 +22,6 @@ Cambridge, MA 02139, USA.  */
 
 #ifndef HAVE_TEMPNAM
 
-#include <sys/types.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
@@ -31,8 +30,9 @@ Cambridge, MA 02139, USA.  */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/stat.h>
 #include <fcntl.h>
+
+#include "statdefs.h"
 
 #ifndef FILENAME_MAX
 #ifdef MAXPATHLEN

@@ -89,11 +89,20 @@ typedef bool (*octave_dld_fcn_installer) (const octave_shlib&);
 
 // Generate code to install name in the symbol table.  The script
 // mkdefs will create a .def file for every .cc file that uses DEFUN,
-// DEFUN_TEXT, or DEFUN_DLD.
+// or DEFUN_TEXT.
 
 #define DEFUN_INTERNAL(name, args_name, nargout_name, is_text_fcn, doc) \
   BEGIN_INSTALL_BUILTIN \
     XDEFUN_INTERNAL (name, args_name, nargout_name, is_text_fcn, doc) \
+  END_INSTALL_BUILTIN
+
+// Generate code to install name in the symbol table.  The script
+// mkdefs will create a .def file for every .cc file that uses
+// DEFUN_DLD.
+
+#define DEFUN_DLD_INTERNAL(name, args_name, nargout_name, is_text_fcn, doc) \
+  BEGIN_INSTALL_BUILTIN \
+    XDEFUN_DLD_INTERNAL (name, args_name, nargout_name, is_text_fcn, doc) \
   END_INSTALL_BUILTIN
 
 // Generate code for making another name for an existing function.

@@ -29,6 +29,13 @@ cat << \EOF
 #include "oct-obj.h"
 #include "variables.h"
 
+#if defined (OCTAVE_LITE) && defined (WITH_DYNAMIC_LINKING)
+#define XDEFUN_DLD_INTERNAL(name, args_name, nargout_name, is_text_fcn, doc)
+#else
+#define XDEFUN_DLD_INTERNAL(name, args_name, nargout_name, is_text_fcn, doc) \
+  XDEFUN_INTERNAL(name, args_name, nargout_name, is_text_fcn, doc)
+#endif
+
 #define XDEFUN_INTERNAL(name, args_name, nargout_name, is_text_fcn, doc) \
   extern DECLARE_FUN (name, args_name, nargout_name); \
     install_builtin_function (F ## name, #name, doc, is_text_fcn); \

@@ -1,3 +1,7 @@
+1999-11-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* interpreter/Makefile.in (%.texi : %.txi): Suppress command echo.
+
 1999-10-21  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* interpreter/Makefile.in (dist): Remove .texi files first, so

@@ -49,7 +49,6 @@ $(SUBDIRS):
 .PHONY: $(SUBDIRS)
 
 DOCSTRINGS: gethelp mkdoc $(ALL_M_FILES)
-	echo $(ALL_M_FILES)
 	$(srcdir)/mkdoc $(srcdir) > $@.t
 	mv $@.t $@
 

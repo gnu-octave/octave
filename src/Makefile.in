@@ -27,12 +27,6 @@ CXXFLAGS_NO_PT_FLAGS = $(filter-out $(PT_FLAGS), $(ALL_CXXFLAGS))
 	  | $(srcdir)/mkdefs > $@.t
 	@mv $@.t $@
 
-%.dc : %.cc
-	@echo making $@ from $<
-	@$(CXXCPP) -c $(CPPFLAGS) $(CXXFLAGS_NO_PT_FLAGS) -DMAKE_DOC $< \
-	  | $(srcdir)/mkdocs > $@.t
-	@mv $@.t $@
-
 # How to make a .oct file from a .o file:
 
 ifeq ($(OCTAVE_LITE), true)

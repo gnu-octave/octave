@@ -41,12 +41,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #if defined (MAKE_BUILTINS)
 
-#if ! (defined (OCTAVE_LITE) && defined (WITH_DYNAMIC_LINKING))
-
 #define DEFUN_DLD(name, args_name, nargout_name, doc) \
-  DEFUN_INTERNAL (name, args_name, nargout_name, 0, doc)
-
-#endif
+  DEFUN_DLD_INTERNAL (name, args_name, nargout_name, 0, doc)
 
 #else
 

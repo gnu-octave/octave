@@ -1,6 +1,13 @@
 1999-11-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* defun-int.h (DEFUN_DLD_INTERNAL): New macro.
+	* defun-dld.h [MAKE_BUILTINS] (DEFUN_DLD): Simply expand to
+	DEFUN_DLD_INTERNAL.
+	* mkbuiltins: Generate code to define DEFUN_DLD_INTERNAL.
+	* mkgendoc: Likewise.
+
 	* Makefile.in (gendoc.o): Don't optimize when creating gendoc.
+	(%.dc : %.cc): Delete rule.
 
 	* pt-decl.cc (Vdefault_global_variable_value): Texinofize doc string.
 	* variables.cc (Fclear, Fdocument, Fexist, Fis_global, Fwho): Ditto.
@@ -13,7 +20,6 @@
 	* mappers.cc: (Fisalnum, Fisalpha, Fisascii, Fiscntrl, Fisdigit,
 	Fisgraph, Fislower, Fisprint, Fispunct, Fisspace, Fisupper,
 	Fisxdigit, Ftoascii, Ftolower, Ftoupper): Ditto.
-	
 
 1999-11-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

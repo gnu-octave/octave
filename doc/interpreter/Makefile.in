@@ -76,10 +76,11 @@ $(DOCSTRINGS):
 	$(MAKE) -C $(dir $@) $(notdir $@)
 
 %.texi : %.txi
-	./munge-texi \
+	@echo making $@ from $<
+	@./munge-texi \
 	  -d $(TOPDIR)/src/DOCSTRINGS \
 	  -d $(TOPDIR)/scripts/DOCSTRINGS < $< > $@.t
-	mv $@.t $@
+	@mv $@.t $@
 
 octave.info: $(MAIN_TEXINFO) $(SUB_TEXINFO) ../conf.texi
 	-makeinfo -I$(srcdir) -I$(srcdir)/.. $<

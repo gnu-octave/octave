@@ -1,10 +1,4 @@
 
-#if defined (__GNUC__)
-#define UNUSED /* waiting for this to work with g++ */
-#else
-#define UNUSED
-#endif
-
 #if defined __GNUC__
 #define NORETURN __attribute__ ((__noreturn__))
 #else

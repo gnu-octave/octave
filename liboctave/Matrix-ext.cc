@@ -25,8 +25,9 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "config.h"
 #endif
 
+#include <cfloat>
+
 #include <iostream.h>
-#include <float.h>
 
 #include "Matrix.h"
 #include "mx-inlines.cc"

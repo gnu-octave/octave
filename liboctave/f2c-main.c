@@ -22,9 +22,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <assert.h>
 
-// I think that this is really only needed if linking to Fortran
-// compiled libraries on a Sun.  It also seems to be needed on
-// some Linux/ELF systems with g77.  It should never be called.
+/* I think that this is really only needed if linking to Fortran
+   compiled libraries on a Sun.  It also seems to be needed on
+   some Linux/ELF systems with g77.  It should never be called. */
 
 #if defined (sun)
 int

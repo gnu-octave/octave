@@ -325,8 +325,6 @@ exec_path (void)
       string std_path = Vlocal_arch_lib_dir;
       std_path.append (SEPCHAR_STR);
       std_path.append (Varch_lib_dir);
-      std_path.append (SEPCHAR_STR);
-      std_path.append (Vbin_dir);
 
       int std_len = std_path.length ();
 

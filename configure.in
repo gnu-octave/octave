@@ -22,7 +22,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### 02111-1307, USA. 
 
 AC_INIT
-AC_REVISION($Revision: 1.368 $)
+AC_REVISION($Revision: 1.369 $)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -792,7 +792,7 @@ AC_HEADER_SYS_WAIT
 
 ### C headers
 
-AC_CHECK_HEADERS(assert.h curses.h dlfcn.h fcntl.h float.h \
+AC_CHECK_HEADERS(assert.h curses.h direct.h dlfcn.h fcntl.h float.h \
   floatingpoint.h grp.h ieeefp.h limits.h memory.h nan.h \
   ncurses.h poll.h pwd.h stdlib.h string.h sys/ioctl.h \
   sys/param.h sys/poll.h sys/resource.h sys/select.h sys/stat.h \
@@ -811,6 +811,7 @@ AC_CHECK_HEADERS(termio.h, have_termio_h=yes, have_termio_h=no)
 AC_CHECK_HEADERS(sgtty.h, have_sgtty_h=yes, have_sgtty_h=no)
 AC_CHECK_HEADERS(glob.h, have_glob_h=yes, have_glob_h=no)
 AC_CHECK_HEADERS(fnmatch.h, have_fnmatch_h=yes, have_fnmatch_h=no)
+AC_CHECK_HEADERS(conio.h, have_conio_h=yes, have_conio_h=no)
 
 ### I'm told that termios.h is broken on NeXT systems.
 
@@ -868,7 +869,7 @@ AC_SUBST(GLOB_INCFLAGS)
 AC_CHECK_FUNCS(atexit bcopy bzero dup2 endgrent endpwent execvp \
   fcntl fork getcwd getegid geteuid getgid getgrent getgrgid \
   getgrnam getpgrp getpid getppid getpwent \
-  getpwuid gettimeofday getuid getwd link localtime_r lstat \
+  getpwuid gettimeofday getuid getwd _kbhit link localtime_r lstat \
   memmove mkdir mkfifo on_exit pipe poll putenv readlink rename \
   rindex rmdir select setgrent setpwent setvbuf sigaction sigpending \
   sigprocmask sigsuspend stat strcasecmp strdup strerror strftime \
@@ -1030,6 +1031,9 @@ AC_STRUCT_TIMEZONE
 AC_FUNC_CLOSEDIR_VOID
 
 AC_CHECK_MEMBERS(struct group.gr_passwd)
+
+# mkdir takes a single argument on some systems.
+OCTAVE_MKDIR_TAKES_ONE_ARG
 
 octave_found_termlib=no
 for termlib in ncurses curses termcap terminfo termlib; do
@@ -1255,6 +1259,10 @@ typedef short nlink_t;
 
 #if !defined(HAVE_SIGSET_T)
 typedef int sigset_t;
+#endif
+
+#if defined(MKDIR_TAKES_ONE_ARG)
+#  define mkdir(a,b) mkdir(a)
 #endif
 ])
 

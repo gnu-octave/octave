@@ -1,3 +1,11 @@
+2002-09-26  Paul Kienzle <pkienzle@users.sf.net>
+
+	* sysdep.cc: Include conio.h if it exists.
+	(octave_kbhit): Rename from kbhit.  Implement with _kbhit if it
+	exists. Change all callers.
+	* cutils.c (octave_sleep): New function.
+	Change all callers of sleep to use octave_sleep instead.
+
 2002-09-26  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* BaseSLList.cc, BaseSLList.h, Cell.cc, Cell.h, DLList.cc,
@@ -43,8 +51,6 @@
 	unwind-prot.cc, unwind-prot.h:
 	If __GNUG__, use pragma interface/implementation.  Allow this to
 	be turned off by defining NO_PRAGMA_INTERFACE_IMPLEMENTATION.
-
-
 
 2002-09-26  Paul Kienzle <pkienzle@users.sf.net>
 

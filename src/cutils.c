@@ -72,6 +72,12 @@ do_octave_usleep (unsigned int useconds)
 }
 
 void
+octave_sleep (unsigned int seconds)
+{
+  sleep (seconds);
+}
+
+void
 octave_usleep (unsigned int useconds)
 {
   unsigned int sec = useconds / 1000000;

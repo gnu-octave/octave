@@ -47,6 +47,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <termio.h>
 #elif defined (HAVE_SGTTY_H)
 #include <sgtty.h>
+#endif 
+
+#if defined (HAVE_CONIO_H)
+#include <conio.h>
 #endif
 
 #if defined (HAVE_SYS_IOCTL_H)
@@ -312,8 +316,14 @@ raw_mode (bool on, bool wait)
 // Read one character from the terminal.
 
 int
-kbhit (bool wait)
+octave_kbhit (bool wait)
 {
+#ifdef HAVE__KBHIT
+  if (! wait && ! _kbhit ())
+    c = 0;
+  else
+    c = std::cin.get ();
+#else
   raw_mode (true, wait);
 
   int c = std::cin.get ();
@@ -322,6 +332,7 @@ kbhit (bool wait)
     std::cin.clear ();
 
   raw_mode (false, true);
+#endif
 
   return c;
 }
@@ -433,7 +444,7 @@ returning the empty string if no key is available.\n\
 
   if (interactive || forced_interactive)
     {
-      int c = kbhit (args.length () == 0);
+      int c = octave_kbhit (args.length () == 0);
 
       if (c == -1)
 	c = 0;
@@ -486,20 +497,20 @@ clc;\n\
 	  else if (xisinf (dval))
 	    {
 	      flush_octave_stdout ();
-	      kbhit ();
+	      octave_kbhit ();
 	    }
 	  else
 	    {
 	      int delay = NINT (dval);
 	      if (delay > 0)
-		sleep (delay);
+		octave_sleep (delay);
 	    }
 	}
     }
   else
     {
       flush_octave_stdout ();
-      kbhit ();
+      octave_kbhit ();
     }
 
   return retval;
@@ -525,7 +536,7 @@ Suspend the execution of the program for the given number of seconds.\n\
 	    {
 	      int delay = NINT (dval);
 	      if (delay > 0)
-		sleep (delay);
+		octave_sleep (delay);
 	    }
 	}
     }

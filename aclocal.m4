@@ -643,4 +643,24 @@ EOF
   AC_MSG_RESULT($octave_cv_cxx_abi)
   AC_DEFINE_UNQUOTED(CXX_ABI, $octave_cv_cxx_abi, [Define to the C++ ABI your compiler uses.])
 ])
-
+dnl
+dnl Determine if mkdir accepts only one argument instead dnl of the usual 2.
+dnl
+AC_DEFUN(OCTAVE_MKDIR_TAKES_ONE_ARG,
+[AC_CACHE_CHECK([if mkdir takes one argument], octave_cv_mkdir_takes_one_arg,
+[AC_TRY_COMPILE([
+#include <sys/types.h>
+#ifdef HAVE_SYS_STAT_H
+# include <sys/stat.h>
+#endif
+#ifdef HAVE_UNISTD_H
+# include <unistd.h>
+#endif
+#ifdef HAVE_DIRECT_H
+# include <direct.h>
+#endif], [mkdir ("foo", 0);],
+        octave_cv_mkdir_takes_one_arg=no, octave_cv_mkdir_takes_one_arg=yes)])
+if test $octave_cv_mkdir_takes_one_arg = yes ; then
+  AC_DEFINE(MKDIR_TAKES_ONE_ARG, 1, [Define if host mkdir takes a single argument.])
+fi
+])

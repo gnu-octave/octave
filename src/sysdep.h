@@ -32,7 +32,7 @@ extern void sysdep_init (void);
 
 extern void raw_mode (bool, bool wait = true);
 
-extern int kbhit (bool wait = true);
+extern int octave_kbhit (bool wait = true);
 
 #endif
 

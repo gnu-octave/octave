@@ -75,6 +75,8 @@ octave_vformat (std::ostream& os, const char *fmt, va_list args);
 
 extern "C" void octave_usleep (unsigned int useconds);
 
+extern "C" void octave_sleep (unsigned int seconds);
+
 extern "C" int octave_strcasecmp (const char *s1, const char *s2);
 
 extern "C" int octave_strncasecmp (const char *s1, const char *s2, size_t n);

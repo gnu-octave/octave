@@ -1,3 +1,15 @@
+2002-09-25  Mumit Khan  <khan@nanotech.wisc.edu>
+ 
+ 	* aclocal.m4 (OCTAVE_MKDIR_TAKES_ONE_ARG): New macro to determine if
+ 	host mkdir accepts only one arg instead of the usual two.
+ 	* configure.in: Use. Check for direct.h.
+ 	(mkdir): Define.
+ 
+2002-09-26  Paul Kienzle <pkienzle@users.sf.net>
+
+	* configure.in: Check for conio.h.
+	Check for _kbhit.
+
 2002-09-26  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in (AH_BOTTOM): Don't define

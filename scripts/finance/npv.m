@@ -28,7 +28,7 @@
 ## Note that rates are not specified in percent, i.e., one has to write
 ## 0.05 rather than 5 %.
 ## @end deftypefn
-## @seealso{irr, pv}
+## @seealso{irr and pv}
   
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  Net present value of a series of payments

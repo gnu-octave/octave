@@ -25,7 +25,7 @@
 ## 
 ## @end deftypefn 
 ## @seealso{plot, semilogx, semilogy, loglog, polar, mesh, contour,
-## bar, stairs, gplot, gsplot, replot, xlabel, ylabel}
+## bar, stairs, gplot, gsplot, replot, xlabel, and ylabel}
 
 ## Author: jwe
 

@@ -24,7 +24,7 @@
 ## which suffers from the ill-conditioning of the Hilbert matrix, and the
 ## finite precision of your computer's floating point arithmetic.
 ## @end deftypefn
-## @seealso{hankel, vander, sylvester_matrix, hilb, toeplitz}
+## @seealso{hankel, vander, sylvester_matrix, hilb, and toeplitz}
 
 ## Author: jwe
 

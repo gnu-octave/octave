@@ -156,7 +156,7 @@
 ## with points displayed as @samp{*}.
 ## @end deftypefn
 ## @seealso{semilogx, semilogy, loglog, polar, mesh, contour, __pltopt__
-## bar, stairs, gplot, gsplot, replot, xlabel, ylabel, title}
+## bar, stairs, gplot, gsplot, replot, xlabel, ylabel, and title}
 
 ## Author: jwe
 

@@ -22,7 +22,7 @@
 ## @var{x} defaults to the string @code{"s"}
 ## @end deftypefn
 ## @seealso{polyval, polyvalm, poly, roots, conv, deconv, residue, 
-## filter, polyderiv, polyinteg, polyout} 
+## filter, polyderiv, polyinteg, and polyout} 
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 ## Created: June 1995

@@ -38,7 +38,7 @@
 ## @end table
 ## @end deftypefn
 ## @seealso{size, rows, columns, length, is_matrix, is_scalar, is_vector
-##     is_observable, is_stabilizable, is_detectable, krylov, krylovb}
+## is_observable, is_stabilizable, is_detectable, krylov, and krylovb}
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 ## Created: August 1993

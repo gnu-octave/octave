@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File } { @var{y} =} polyout ( @var{c}@{, @var{x}@})
+## @deftypefn {Function File} {@var{y} =} polyout (@var{c}@{, @var{x}@})
 ## write formatted polynomial 
 ## @example
 ##    c(x) = c(1) * x^n + ... + c(n) x + c(n+1)
@@ -26,7 +26,7 @@
 ##  @var{x} defaults to the string @code{"s"}
 ## @end deftypefn
 ## @seealso{polyval, polyvalm, poly, roots, conv, deconv, residue, 
-## filter, polyderiv, polyinteg}
+## filter, polyderiv, and polyinteg}
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 ## Created: May 1995

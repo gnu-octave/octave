@@ -24,7 +24,7 @@
 ## @var{bps} specifies whether the input data uses 8 bit per sample
 ## (default) or 16 bit.
 ## @end deftypefn
-## @seealso{lin2mu, loadaudio, saveaudio, playaudio, setaudio, record}
+## @seealso{lin2mu, loadaudio, saveaudio, playaudio, setaudio, and record}
 
 ## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
 ## Created: 18 October 1994

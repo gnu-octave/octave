@@ -41,7 +41,7 @@
 ## @strong{Outputs}
 ## @var{y}, @var{t}: impulse response
 ## @end deftypefn
-## @seealso{step, stepimp}
+## @seealso{step and stepimp}
 
 ## Author: Kai P. Mueller <mueller@ifr.ing.tu-bs.de>
 ## Created: October 2, 1997

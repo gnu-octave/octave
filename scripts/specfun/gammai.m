@@ -44,7 +44,7 @@
 ## If neither @var{a} nor @var{x} is scalar, the sizes of @var{a} and
 ## @var{x} must agree, and @var{gammai} is applied element-by-element.
 ## @end deftypefn
-## @seealso{gamma, lgamma}
+## @seealso{gamma and lgamma}
 
 ## Author: jwe
 ## Created: 30 Jan 1998

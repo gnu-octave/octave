@@ -30,7 +30,7 @@
 ## @end group
 ## @end example
 ## @end deftypefn
-## @seealso{fliplr, rot90}
+## @seealso{fliplr and rot90}
 
 ## Author: jwe
 

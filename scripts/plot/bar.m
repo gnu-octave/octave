@@ -43,7 +43,7 @@
 ## are equivalent.
 ## @end deftypefn
 ## @seealso{plot, semilogx, semilogy, loglog, polar, mesh, contour,
-## stairs, gplot, gsplot, replot, xlabel, ylabel, title}
+## stairs, gplot, gsplot, replot, xlabel, ylabel, and title}
 
 ## Author: jwe
 

@@ -29,7 +29,7 @@
 ## or @code{impulse} instead.
 ## 
 ## @end deftypefn
-## @seealso{step, impulse}
+## @seealso{step and impulse}
 
 ## Author: Kai P. Mueller <mueller@ifr.ing.tu-bs.de>
 ## Created: October 2, 1997

@@ -24,7 +24,7 @@
 ## string argument @var{`method'}, one can specify whether payments are made
 ## at the end ("e", default) or at the beginning ("b") of each period.
 ## @end deftypefn
-## @seealso{pv, pmt, nper, npv}
+## @seealso{pv, pmt, nper, and npv}
   
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  Rate of return of an investment

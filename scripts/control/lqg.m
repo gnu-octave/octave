@@ -15,7 +15,7 @@
 ## You should have received a copy of the GNU General Public License 
 ## along with Octave; see the file COPYING.  If not, write to the Free 
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
- 
+
 ## -*- texinfo -*-
 ## @deftypefn {Function File } {[@var{K}, @var{Q}, @var{P}, @var{Ee}, @var{Er}] =} lqg(@var{sys}, @var{Sigw}, @var{Sigv}, @var{Q}, @var{R}, @var{in_idx})
 ## Design a linear-quadratic-gaussian optimal controller for the system
@@ -33,9 +33,11 @@
 ## @table @var
 ## @item  sys
 ## system data structure
-## @item  Sigw, Sigv
+## @item  Sigw
+## @itemx  Sigv
 ## intensities of independent Gaussian noise processes (as above)
-## @item  Q, R
+## @item  Q
+## @itemx  R
 ## state, control weighting respectively.  Control ARE is
 ## @item  in_idx
 ## indices of controlled inputs
@@ -46,8 +48,9 @@
 ## @strong{Outputs}
 ## @table @var
 ## @item    K
-## system data structure format LQG optimal controller
-## (Obtain A,B,C matrices with @code{sys2ss}, @code{sys2tf}, or @code{sys2zp} as appropriate)
+## system data structure format LQG optimal controller (Obtain A,B,C
+## matrices with @code{sys2ss}, @code{sys2tf}, or @code{sys2zp} as
+## appropriate)
 ## @item    P
 ## Solution of control (state feedback) algebraic Riccati equation
 ## @item    Q
@@ -58,7 +61,7 @@
 ## controller poles
 ## @end table
 ## @end deftypefn
-## @seealso{h2syn, lqe, lqr}
+## @seealso{h2syn, lqe, and lqr}
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 ## Created: August 1995

@@ -23,7 +23,7 @@
 ## the command @code{replot} to redisplay it with the new title.
 ## @end deftypefn
 ## @seealso{plot, semilogx, semilogy, loglog, polar, mesh, contour,
-## bar, stairs, gplot, gsplot, replot, xlabel, ylabel}
+## bar, stairs, gplot, gsplot, replot, xlabel, and ylabel}
 
 ## Author: jwe
 

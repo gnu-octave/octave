@@ -39,7 +39,7 @@
 ## If @var{x} is a matrix, compute the standard deviation for
 ## each column and return them in a row vector.
 ## @end deftypefn
-## @seealso{mean, median}
+## @seealso{mean and median}
 
 ## Author: jwe
 

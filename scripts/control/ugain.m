@@ -24,7 +24,7 @@
 ##  Watch out if you are forming sampled systems since "ugain"
 ##  does not contain a sampling period.  
 ## @end deftypefn
-## @seealso{hinfdemo (MIMO H_infinty example, Boeing 707-321 aircraft model)}
+## @seealso{hinfdemo and jet707}
 
 ## Author: Kai P. Mueller <mueller@ifr.ing.tu-bs.de>
 ## Created: April 1998

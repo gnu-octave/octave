@@ -53,7 +53,7 @@
 ## @end example
 ## @end ifinfo
 ## @end deftypefn
-## @seealso{hankel, vander, sylvester_matrix, hilb, invhib}
+## @seealso{hankel, vander, sylvester_matrix, hilb, and invhib}
 
 ## Author: jwe
 

@@ -24,7 +24,7 @@
 ## @var{tol} is omitted, use a tolerance equal to the machine precision.
 ## @end deftypefn
 ## @seealso{size, rows, columns, length, is_matrix, is_scalar,
-## is_square, is_vector}
+## is_square, and is_vector}
 
 ## Author: A. S. Hodel <scotte@eng.auburn.edu>
 ## Created: August 1993

@@ -36,7 +36,8 @@
 ## @table @var
 ## @item retval
 ## Logical flag; returns true (1) if the system @var{sys} or the
-## pair (@var{a},@var{b}) is controllable, whichever was passed as input arguments.
+## pair (@var{a},@var{b}) is controllable, whichever was passed as input
+## arguments.
 ## @item U
 ##  U is an orthogonal basis of the controllable subspace. 
 ## @end table
@@ -48,11 +49,13 @@
 ## @example
 ## span ([b,a*b,...,a^@{n-1@}*b]).
 ## @end example
-## The Arnoldi iteration is executed with @code{krylov} if the system has a single input; otherwise a block Arnoldi iteration is performed with @code{krylovb}.
+## The Arnoldi iteration is executed with @code{krylov} if the system
+## has a single input; otherwise a block Arnoldi iteration is performed
+## with @code{krylovb}.
 ## 
 ## @end deftypefn
 ## @seealso{size, rows, columns, length, is_matrix, is_scalar, is_vector
-## is_observable, is_stabilizable, is_detectable, krylov, krylovb}
+## is_observable, is_stabilizable, is_detectable, krylov, and krylovb}
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 ## Created: August 1993

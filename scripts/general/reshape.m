@@ -49,7 +49,7 @@
 ## colon operator.  Note that the total number of elements in the original
 ## matrix must match the total number of elements in the new matrix.
 ## @end deftypefn
-## @seealso{`:', do_fortran_indexing}
+## @seealso{`:' and do_fortran_indexing}
 
 ## Author: jwe
 

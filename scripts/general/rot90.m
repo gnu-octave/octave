@@ -47,7 +47,7 @@
 ## @end group
 ## @end example
 ## @end deftypefn
-## @seealso{flipud, fliplr}
+## @seealso{flipud and fliplr}
 
 ## Author: jwe
 

@@ -60,7 +60,7 @@
 ## @end group
 ## @end example
 ## @end deftypefn
-## @seealso{triu, diag}
+## @seealso{triu and diag}
 
 ## Author: jwe
 

@@ -27,7 +27,7 @@
 ## to different @var{y} values.
 ## @end deftypefn
 ## @seealso{plot, semilogx, semilogy, loglog, polar, meshgrid, meshdom,
-## contour, bar, stairs, gplot, gsplot, replot, xlabel, ylabel, title}
+## contour, bar, stairs, gplot, gsplot, replot, xlabel, ylabel, and title}
 
 ## Author: jwe
 

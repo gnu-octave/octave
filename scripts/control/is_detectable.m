@@ -24,13 +24,14 @@
 ##  Returns 1 if the system @var{a} or the pair (@var{a},@var{c})is 
 ##  detectable, 0 if not.
 ## 
-## @strong{See} @code{is_stabilizable} for detailed description of arguments and
-## computational method.
+## @strong{See} @code{is_stabilizable} for detailed description of
+## arguments and computational method.
 ## 
 ##  Default: tol = 10*norm(a,'fro')*eps 
 ## 
 ## @end deftypefn
-## @seealso{is_stabilizable, size, rows, columns, length, is_matrix, is_scalar, is_vector}
+## @seealso{is_stabilizable, size, rows, columns, length, is_matrix,
+## is_scalar, and is_vector}
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 ## Created: August 1993

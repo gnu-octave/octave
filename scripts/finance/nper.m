@@ -29,7 +29,7 @@
 ## Note that the rate r is not specified in percent, i.e., one has to
 ## write 0.05 rather than 5 %.
 ## @end deftypefn
-## @seealso{pv, pmt, rate, npv}
+## @seealso{pv, pmt, rate, and npv}
   
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  Number of payments needed for amortizing a loan

@@ -44,7 +44,7 @@
 ## @end example
 ## @end ifinfo
 ## @end deftypefn
-## @seealso{vander, sylvester_matrix, hilb, invhilb, toeplitz}
+## @seealso{vander, sylvester_matrix, hilb, invhilb, and toeplitz}
 
 ## Author: jwe
 

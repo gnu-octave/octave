@@ -21,7 +21,7 @@
 ## @deftypefn {Function File} {} is_scalar (@var{a})
 ## Return 1 if @var{a} is a scalar.  Otherwise, return 0.
 ## @end deftypefn
-## @seealso{size, rows, columns, length, is_scalar, is_matrix}
+## @seealso{size, rows, columns, length, is_scalar, and is_matrix}
 
 ## Author: jwe
 

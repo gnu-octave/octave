@@ -29,7 +29,7 @@
 ## @strong{See} @code{is_controllable} for detailed description of arguments
 ## and default values.
 ## @end deftypefn
-## @seealso{size, rows, columns, length, is_matrix, is_scalar, is_vector}
+## @seealso{size, rows, columns, length, is_matrix, is_scalar, and is_vector}
 
 ## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 ## Created: August 1993

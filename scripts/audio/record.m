@@ -24,7 +24,7 @@
 ## 8kHz.  The program waits until the user types @key{RET} and then
 ## immediately starts to record.
 ## @end deftypefn
-## @seealso{lin2mu, mu2lin, loadaudio, saveaudio, playaudio, setaudio}
+## @seealso{lin2mu, mu2lin, loadaudio, saveaudio, playaudio, and setaudio}
 
 ## usage:  X = record (sec [, sampling_rate])
 ##

@@ -24,7 +24,7 @@
 ## omitted, @code{"on"} is assumed.
 ## @end deftypefn
 ## @seealso{plot, semilogx, semilogy, loglog, polar, mesh, contour,
-## bar, stairs, gplot, gsplot, replot, xlabel, ylabel, title}
+## bar, stairs, gplot, gsplot, replot, xlabel, ylabel, and title}
 
 ## Author: jwe
 

@@ -611,7 +611,7 @@ display_help_text (ostream& os, const string& msg)
 	cols = 72;
 
       ostrstream buf;
-      buf << "sed 's/^[#%]+ *//' | makeinfo"
+      buf << "sed -e 's/^[#%]+ *//' -e 's/^ *@/@/' | makeinfo"
 	  << " -D \"VERSION " << OCTAVE_VERSION << "\""
 	  << " -D \"OCTAVEHOME " << OCTAVE_PREFIX << "\""
 	  << " -D \"TARGETHOSTTYPE " << CANONICAL_HOST_TYPE << "\""
@@ -633,6 +633,8 @@ display_help_text (ostream& os, const string& msg)
       if (filter)
 	{
 	  filter << "@macro seealso {args}\n"
+		 << "\n"
+		 << "@noindent\n"
 		 << "See also: \\args\\.\n"
                  << "@end macro\n";
 

@@ -24,7 +24,7 @@
 ## specify whether payments are made at the end ("e", default) or at the
 ## beginning ("b") of each period.
 ## @end deftypefn
-## @seealso{pv, nper, rate}
+## @seealso{pv, nper, and rate}
   
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  Amount of periodic payment needed to amortize a loan

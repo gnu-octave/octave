@@ -25,7 +25,7 @@
 ## and the columns of @var{yy} are copies of @var{y}.
 ## @end deftypefn
 ## @seealso{sombrero, plot, semilogx, semilogy, loglog, polar, mesh, meshdom, contour,
-## bar, stairs, gplot, gsplot, replot, xlabel, ylabel, title}
+## bar, stairs, gplot, gsplot, replot, xlabel, ylabel, and title}
 
 ## Author: jwe
 

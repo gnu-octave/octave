@@ -87,6 +87,8 @@ SOURCES := acosh.c arith-ops.cc asinh.c atanh.c data.cc dirfns.cc \
 	tree-misc.cc tree-plot.cc unwind-prot.cc user-prefs.cc \
 	utils.cc variables.cc xdiv.cc xpow.cc Map.cc SLStack.cc
 
+TEMPLATE_SRC = Map.cc SLStack.cc
+
 OBJECTS_4 := $(SOURCES) builtins.o
 OBJECTS_3 := $(patsubst %.l, %.o, $(OBJECTS_4))
 OBJECTS_2 := $(patsubst %.y, %.o, $(OBJECTS_3))
@@ -117,7 +119,7 @@ OCTAVE_LIBS = @LIBOCTDLD@ ../liboctave/liboctave.a libtinst.a \
 
 DISTFILES = Makefile.in mkdefs mkbuiltins \
 	parse.cc lex.cc y.tab.h $(INCLUDES) $(DLD_SRC) $(SOURCES) \
-	$(TI_SRC) 
+	$(TEMPLATE_SRC) $(TI_SRC)
 
 all: defaults.h octave
 .PHONY: all

@@ -177,7 +177,10 @@ then
     ( /usr/ucb/mail -s "$SUBJECT" $BUGADDR < $TEMP ) > /dev/null 2>&1 || \
     ( /bin/mail $BUGADDR < $TEMP ) > /dev/null 2>&1 || \
     ( echo "unable to send mail -- saving message in \$HOME/dead.octave-bug"; \
-      cat $TEMP >> $HOME/dead.octave-bug )
+      cat $TEMP >> $HOME/dead.octave-bug; exit 1 )
+
+    echo "bug report sent to $BUGADDR"
+
   fi
 else
   echo "problems with edit -- no bug report submitted"

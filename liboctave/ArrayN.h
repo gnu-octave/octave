@@ -104,69 +104,69 @@ public:
       return *this;
     }
 
-  int compute_index (const Array<int>& idx) const;
+  int compute_index (const Array<int>& ra_idx) const;
 
   Array<int> dims (void) const { return dimensions; }
 
-  T range_error (const char *fcn, const Array<int>& idx) const;
-  T& range_error (const char *fcn, const Array<int>& idx);
+  T range_error (const char *fcn, const Array<int>& ra_idx) const;
+  T& range_error (const char *fcn, const Array<int>& ra_idx);
 
   // No checking of any kind, ever.
 
-  T& xelem (const Array<int>& idx)
-    { return Array<T>::xelem (compute_index (idx)); }
+  T& xelem (const Array<int>& ra_idx)
+    { return Array<T>::xelem (compute_index (ra_idx)); }
 
-  T xelem (const Array<int>& idx) const
-    { return Array<T>::xelem (compute_index (idx)); }
+  T xelem (const Array<int>& ra_idx) const
+    { return Array<T>::xelem (compute_index (ra_idx)); }
 
   // Note that the following element selection methods don't use
   // xelem() because they need to make use of the code in
   // Array<T>::elem() that checks the reference count.
 
-  T& checkelem (const Array<int>& idx)
+  T& checkelem (const Array<int>& ra_idx)
     {
-      int i = compute_index (idx);
+      int i = compute_index (ra_idx);
 
       if (i < 0)
-	return range_error ("ArrayN<T>::checkelem", idx);
+	return range_error ("ArrayN<T>::checkelem", ra_idx);
       else
 	return Array<T>::elem (i);
     }
 
-  T& elem (const Array<int>& idx)
+  T& elem (const Array<int>& ra_idx)
     {
-      int i = compute_index (idx);
+      int i = compute_index (ra_idx);
 
       return Array<T>::elem (i);
     }
 
 #if defined (BOUNDS_CHECKING)
-  T& operator () (const Array<int>& idx) { return checkelem (idx); }
+  T& operator () (const Array<int>& ra_idx) { return checkelem (ra_idx); }
 #else
-  T& operator () (const Array<int>& idx) { return elem (idx); }
+  T& operator () (const Array<int>& ra_idx) { return elem (ra_idx); }
 #endif
 
-  T checkelem (const Array<int>& idx) const
+  T checkelem (const Array<int>& ra_idx) const
     {
-      int i = compute_index (idx);
+      int i = compute_index (ra_idx);
 
       if (i < 0)
-	return range_error ("ArrayN<T>::checkelem", idx);
+	return range_error ("ArrayN<T>::checkelem", ra_idx);
       else
 	return Array<T>::elem (i);
     }
 
-  T elem (const Array<int>& idx) const
+  T elem (const Array<int>& ra_idx) const
     {
-      int i = compute_index (idx);
+      int i = compute_index (ra_idx);
 
       return Array<T>::elem (i);
     }
 
 #if defined (BOUNDS_CHECKING)
-  T operator () (const Array<int>& idx) const { return checkelem (idx); }
+  T operator () (const Array<int>& ra_idx) const { return checkelem (ra_idx); }
 #else
-  T operator () (const Array<int>& idx) const { return elem (idx); }
+  T operator () (const Array<int>& ra_idx) const { return elem (ra_idx); }
 #endif
 
   void resize (const Array<int>& dims);
@@ -175,14 +175,14 @@ public:
   ArrayN<T>& insert (const ArrayN<T>& a, const Array<int>& dims);
 
 #ifdef HEAVYWEIGHT_INDEXING
-  void maybe_delete_elements (Array<idx_vector>& idx);
+  void maybe_delete_elements (Array<idx_vector>& ra_idx);
 
   ArrayN<T> value (void);
 
-  ArrayN<T> index (idx_vector& idx, int resize_ok = 0,
+  ArrayN<T> index (idx_vector& ra_idx, int resize_ok = 0,
 		   const T& rfv = Array<T>::resize_fill_value ()) const;
 
-  ArrayN<T> index (Array<idx_vector>& idx, int resize_ok = 0,
+  ArrayN<T> index (Array<idx_vector>& ra_idx, int resize_ok = 0,
 		   const T& rfv = Array<T>::resize_fill_value ()) const;
 
 #endif

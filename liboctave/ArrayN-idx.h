@@ -42,22 +42,22 @@ ArrayN<T>::value (void)
 
   if (n_idx > 1)
     {
-      Array<idx_vector> idx (n_idx);
+      Array<idx_vector> ra_idx (n_idx);
 
       idx_vector *tmp = get_idx ();
 
       for (int i = 0; i < n_idx; i++)
-	idx(i) = tmp[i];
+	ra_idx(i) = tmp[i];
 
-      return index (idx);
+      return index (ra_idx);
     }
   else if (n_idx == 1)
     {
       idx_vector *tmp = get_idx ();
 
-      idx_vector idx = tmp[0];
+      idx_vector ra_idx = tmp[0];
 
-      return index (idx);
+      return index (ra_idx);
     }
   else
     (*current_liboctave_error_handler)
@@ -70,7 +70,7 @@ ArrayN<T>::value (void)
 
 template <class T>
 ArrayN<T>
-ArrayN<T>::index (idx_vector& idx, int resize_ok,
+ArrayN<T>::index (idx_vector& ra_idx, int resize_ok,
 		  const T& resize_fill_value) const
 {
   ArrayN<T> retval;
@@ -79,32 +79,32 @@ ArrayN<T>::index (idx_vector& idx, int resize_ok,
 }
 
 static inline Array<int>
-freeze (Array<idx_vector>& idx, const Array<int>& dimensions, int resize_ok)
+freeze (Array<idx_vector>& ra_idx, const Array<int>& dimensions, int resize_ok)
 {
   Array<int> retval;
 
-  int n = idx.length ();
+  int n = ra_idx.length ();
 
   assert (n == dimensions.length ());
 
   retval.resize (n);
 
   for (int i = 0; i < n; i++)
-    retval(i) = idx(i).freeze (dimensions(i), "XXX FIXME XXX", resize_ok);
+    retval(i) = ra_idx(i).freeze (dimensions(i), "XXX FIXME XXX", resize_ok);
 
   return retval;
 }
 
 static inline bool
-all_ok (const Array<idx_vector>& idx)
+all_ok (const Array<idx_vector>& ra_idx)
 {
   bool retval = true;
 
-  int n = idx.length ();
+  int n = ra_idx.length ();
 
   for (int i = 0; i < n; i++)
     {
-      if (! idx(i))
+      if (! ra_idx(i))
 	{
 	  retval = false;
 	  break;
@@ -115,15 +115,15 @@ all_ok (const Array<idx_vector>& idx)
 }
 
 static inline bool
-any_orig_empty (const Array<idx_vector>& idx)
+any_orig_empty (const Array<idx_vector>& ra_idx)
 {
   bool retval = false;
 
-  int n = idx.length ();
+  int n = ra_idx.length ();
 
   for (int i = 0; i < n; i++)
     {
-      if (idx(i).orig_empty ())
+      if (ra_idx(i).orig_empty ())
 	{
 	  retval = true;
 	  break;
@@ -162,12 +162,12 @@ get_zero_len_size (const Array<int>& frozen_lengths,
 }
 
 static inline bool
-all_colon_equiv (const Array<idx_vector>& idx,
+all_colon_equiv (const Array<idx_vector>& ra_idx,
 		 const Array<int>& frozen_lengths)
 {
   bool retval = true;
 
-  int idx_n = idx.length ();
+  int idx_n = ra_idx.length ();
 
   int n = frozen_lengths.length ();
 
@@ -175,7 +175,7 @@ all_colon_equiv (const Array<idx_vector>& idx,
 
   for (int i = 0; i < n; i++)
     {
-      if (! idx(i).is_colon_equiv (frozen_lengths(i)))
+      if (! ra_idx(i).is_colon_equiv (frozen_lengths(i)))
 	{
 	  retval = false;
 	  break;
@@ -186,34 +186,34 @@ all_colon_equiv (const Array<idx_vector>& idx,
 }
 
 static Array<int>
-get_elt_idx (const Array<idx_vector>& idx, const Array<int>& result_idx)
+get_elt_idx (const Array<idx_vector>& ra_idx, const Array<int>& result_idx)
 {
-  int n = idx.length ();
+  int n = ra_idx.length ();
 
   Array<int> retval (n);
 
   for (int i = 0; i < n; i++)
-    retval(i) = idx(result_idx(i));
+    retval(i) = ra_idx(result_idx(i));
 
   return retval;
 }
 
 template <class T>
 ArrayN<T>
-ArrayN<T>::index (Array<idx_vector>& arr_idx, int resize_ok,
+ArrayN<T>::index (Array<idx_vector>& ra_idx, int resize_ok,
 		  const T& resize_fill_value) const
 {
   ArrayN<T> retval;
 
   int n_dims = dimensions.length ();
 
-  Array<int> frozen_lengths = freeze (arr_idx, dimensions, resize_ok);
+  Array<int> frozen_lengths = freeze (ra_idx, dimensions, resize_ok);
 
   if (frozen_lengths.length () == n_dims)
     {
-      if (all_ok (arr_idx))
+      if (all_ok (ra_idx))
 	{
-	  if (any_orig_empty (arr_idx))
+	  if (any_orig_empty (ra_idx))
 	    {
 	      retval.resize (frozen_lengths);
 	    }
@@ -224,7 +224,7 @@ ArrayN<T>::index (Array<idx_vector>& arr_idx, int resize_ok,
 
 	      retval.resize (new_size);
 	    }
-	  else if (all_colon_equiv (arr_idx, frozen_lengths))
+	  else if (all_colon_equiv (ra_idx, frozen_lengths))
 	    {
 	      retval = *this;
 	    }

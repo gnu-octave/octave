@@ -894,7 +894,7 @@ plot_style_token (char *s)
 {
   static char *plot_styles[] = 
     {
-      "boxes"
+      "boxes",
       "boxerrorbars",
       "dots",
       "errorbars",

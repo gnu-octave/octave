@@ -73,6 +73,15 @@
 /* Define if using some method of dynamic linking. */
 #undef WITH_DYNAMIC_LINKING
 
+/* Define to `short' if <sys/types.h> doesn't define. */
+#undef dev_t
+
+/* Define to `unsigned long' if <sys/types.h> doesn't define. */
+#undef ino_t
+
+/* Define to `short' if <sys/types.h> doesn't define. */
+#undef nlink_t
+
 
 /* Leave that blank line there!!  Autoheader needs it.
    If you're adding to this file, keep in mind:

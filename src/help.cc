@@ -340,6 +340,8 @@ print_usage (const char *string, int just_usage)
 	  maybe_page_output (output_buf);
 	}
     }
+  else
+    warning ("no usage message found for `%s'", string);
 }
 
 static void

@@ -825,7 +825,7 @@ DEFUN ("undo_string_escapes", Fundo_string_escapes,
       delete [] str;
     }
   else
-    print_usage ("undo_string_escapaes");
+    print_usage ("undo_string_escapes");
 
   return retval;
 }

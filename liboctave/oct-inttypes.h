@@ -180,9 +180,9 @@ public:
 
   bool operator ! (void) const { return ! ival; }
 
-  T operator + (void) const { return ival; }
+  octave_int<T> operator + (void) const { return *this; }
 
-  T operator - (void) const
+  octave_int<T> operator - (void) const
   {
     return std::numeric_limits<T>::is_signed ? -ival : 0;
   }
@@ -204,6 +204,9 @@ public:
     ival = OCTAVE_INT_FIT_TO_RANGE (t - tx, T);
     return *this;
   }
+
+  octave_int<T> min (void) const { return std::numeric_limits<T>::min (); }
+  octave_int<T> max (void) const { return std::numeric_limits<T>::max (); }
 
 private:
 
@@ -248,12 +251,37 @@ typedef octave_int<octave_uint64_t> octave_uint64;
     double ty = static_cast<double> (y.value ()); \
     double r = tx OP ty; \
     return OCTAVE_INT_FIT_TO_RANGE2 (r, T1, T2); \
-  } \
+  }
 
 OCTAVE_INT_BIN_OP(+)
 OCTAVE_INT_BIN_OP(-)
 OCTAVE_INT_BIN_OP(*)
 OCTAVE_INT_BIN_OP(/)
+
+#define OCTAVE_INT_BITCMP_OP(OP) \
+ \
+  template <class T> \
+  octave_int<T> \
+  operator OP (const octave_int<T>& x, const octave_int<T>& y) \
+  { \
+    return x.value () OP y.value (); \
+  }
+
+OCTAVE_INT_BITCMP_OP (&)
+OCTAVE_INT_BITCMP_OP (|)
+OCTAVE_INT_BITCMP_OP (^)
+
+#define OCTAVE_INT_BITSHIFT_OP(OP) \
+ \
+  template <class T1, class T2> \
+  octave_int<T1> \
+  operator OP (const octave_int<T1>& x, const T2& y) \
+  { \
+    return x.value () OP y; \
+  }
+
+OCTAVE_INT_BITSHIFT_OP (<<)
+OCTAVE_INT_BITSHIFT_OP (>>)
 
 #define OCTAVE_INT_CMP_OP(OP) \
  \
@@ -262,7 +290,7 @@ OCTAVE_INT_BIN_OP(/)
   operator OP (const octave_int<T1>& x, const octave_int<T2>& y) \
   { \
     return x.value () OP y.value (); \
-  } \
+  }
 
 OCTAVE_INT_CMP_OP (<)
 OCTAVE_INT_CMP_OP (<=)

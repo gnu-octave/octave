@@ -216,6 +216,22 @@ public:
 
   charNDArray char_array_value (bool = false) const;
 
+  int8NDArray int8_array_value (void) const;
+
+  int16NDArray int16_array_value (void) const;
+
+  int32NDArray int32_array_value (void) const;
+
+  int64NDArray int64_array_value (void) const;
+
+  uint8NDArray uint8_array_value (void) const;
+
+  uint16NDArray uint16_array_value (void) const;
+
+  uint32NDArray uint32_array_value (void) const;
+
+  uint64NDArray uint64_array_value (void) const;
+
   string_vector all_strings (bool pad = false, bool force = false) const;
 
   std::string string_value (bool force = false) const;

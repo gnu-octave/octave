@@ -136,7 +136,7 @@ PT_SRC := pt.cc pt-arg-list.cc pt-assign.cc pt-bp.cc pt-binop.cc \
 	pt-idx.cc pt-jump.cc pt-loop.cc pt-mat.cc pt-misc.cc \
 	pt-plot.cc pt-pr-code.cc pt-select.cc pt-stmt.cc pt-unop.cc
 
-DIST_SRC := Cell.cc c-file-ptr-stream.cc comment-list.cc \
+DIST_SRC := Cell.cc bitfcns.cc c-file-ptr-stream.cc comment-list.cc \
 	cutils.c data.cc debug.cc defaults.cc defun.cc dirfns.cc \
 	dynamic-ld.cc error.cc file-io.cc fn-cache.cc gripes.cc \
 	help.cc input.cc lex.l load-save.cc ls-hdf5.cc \

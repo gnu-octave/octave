@@ -557,6 +557,30 @@ public:
   virtual charNDArray char_array_value (bool frc_str_conv = false) const
     { return rep->char_array_value (frc_str_conv); }
 
+  virtual int8NDArray int8_array_value (void) const
+    { return rep->int8_array_value (); }
+
+  virtual int16NDArray int16_array_value (void) const
+    { return rep->int16_array_value (); }
+
+  virtual int32NDArray int32_array_value (void) const
+    { return rep->int32_array_value (); }
+
+  virtual int64NDArray int64_array_value (void) const
+    { return rep->int64_array_value (); }
+
+  virtual uint8NDArray uint8_array_value (void) const
+    { return rep->uint8_array_value (); }
+
+  virtual uint16NDArray uint16_array_value (void) const
+    { return rep->uint16_array_value (); }
+
+  virtual uint32NDArray uint32_array_value (void) const
+    { return rep->uint32_array_value (); }
+
+  virtual uint64NDArray uint64_array_value (void) const
+    { return rep->uint64_array_value (); }
+
   virtual string_vector all_strings (bool pad = false,
 				     bool force = false) const
     { return rep->all_strings (pad, force); }

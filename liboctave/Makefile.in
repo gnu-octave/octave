@@ -34,7 +34,8 @@ MATRIX_INC := Array.h Array2.h Array3.h ArrayN.h DiagArray2.h \
 	dNDArray.h dRowVector.h dbleAEPBAL.h dbleCHOL.h dbleDET.h \
 	dbleHESS.h dbleLU.h dbleQR.h dbleQRP.h dbleSCHUR.h dbleSVD.h \
 	int8NDArray.h uint8NDArray.h int16NDArray.h uint16NDArray.h \
-	int32NDArray.h uint32NDArray.h int64NDArray.h uint64NDArray.h 
+	int32NDArray.h uint32NDArray.h int64NDArray.h uint64NDArray.h \
+	intNDArray.h
 
 MX_OP_INC := $(shell $(AWK) -f $(srcdir)/mk-ops.awk prefix=mx list_h_files=1 $(srcdir)/mx-ops)
 
@@ -55,11 +56,11 @@ INCLUDES := Bounds.h CollocWt.h DAE.h DAEFunc.h DAERT.h \
 	glob-match.h idx-vector.h kpse-xfns.h \
 	lo-ieee.h lo-mappers.h lo-specfun.h lo-sstream.h \
 	lo-sysdep.h lo-utils.h mach-info.h oct-alloc.h oct-cmplx.h \
-	oct-env.h oct-fftw.h oct-getopt.h oct-group.h oct-passwd.h \
-	oct-rand.h oct-rl-edit.h oct-rl-hist.h oct-shlib.h oct-sort.h \
-	oct-syscalls.h oct-time.h pathlen.h pathsearch.h \
-	prog-args.h so-array.h statdefs.h str-vec.h sun-utils.h sysdir.h \
-	systime.h syswait.h \
+	oct-env.h oct-fftw.h oct-getopt.h oct-group.h oct-inttypes.h \
+	oct-passwd.h oct-rand.h oct-rl-edit.h oct-rl-hist.h \
+	oct-shlib.h oct-sort.h oct-syscalls.h oct-time.h pathlen.h \
+	pathsearch.h prog-args.h so-array.h statdefs.h str-vec.h \
+	sun-utils.h sysdir.h systime.h syswait.h \
 	$(OPTS_INC) \
 	$(MATRIX_INC) \
 	$(MX_OP_INC) \

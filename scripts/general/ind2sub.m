@@ -18,7 +18,7 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{s1}, @var{s2}, @dots{}, @var{sN}] =} sub2ind (@var{dims}, @var{ind})
+## @deftypefn {Function File} {[@var{s1}, @var{s2}, @dots{}, @var{sN}] =} ind2sub (@var{dims}, @var{ind})
 ## Convert a linear index into subscripts.
 ## @end deftypefn
 ## @seealso{sub2ind}

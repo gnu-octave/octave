@@ -1,3 +1,8 @@
+2004-06-22  David Bateman  <dbateman@free.fr>
+
+	* configure.in: Use -Wl,-Bsymbolic for MKOCTFILE_DL_LDFLAGS on
+	GNU/Linux systems but not for SH_LDFLAGS.
+    
 2004-04-22  John W. Eaton  <jwe@octave.org>
 
 	* configure.in: Add -Wl,-Bsymbolic to SH_LDFLAGS for GNU/Linux

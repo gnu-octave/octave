@@ -1,3 +1,7 @@
+2004-06-22  Etienne Grossmann  <etienne@cs.uky.edu>
+
+	* general/ind2sub.m: Doc fix.
+
 2004-06-08  John W. Eaton  <jwe@octave.org>
 
 	* statistics/tests/kolmogorov_smirnov_test.m: Use func2str to

@@ -1,3 +1,8 @@
+2004-06-17  John W. Eaton  <jwe@octave.org>
+
+	* bitfcns.cc (bitfcns): New file.
+	* Makefile.in (DIST_SRC): Add it to the list.
+
 2004-06-16  John W. Eaton  <jwe@octave.org>
 
 	* OPERATORS/op-int.h: New file.

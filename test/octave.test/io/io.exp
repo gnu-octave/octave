@@ -43,7 +43,7 @@ set prog_output "\n... sscanf:.*"
 do_test sscanf-4.m
 
 set test printf-1
-set prog_output "test: 1\nans = 2"
+set prog_output "test: 1\nans = 8"
 do_test printf-1.m
 
 set test printf-2

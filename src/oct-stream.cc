@@ -1991,7 +1991,7 @@ public:
   operator bool () const { return (curr_state == ok); }
 
   bool exhausted (void)
-    { return (curr_state == list_exhausted || val_idx + 1 >= n_vals); }
+    { return (curr_state == list_exhausted || val_idx >= n_vals); }
 
   bool looking_at_string (void);
 

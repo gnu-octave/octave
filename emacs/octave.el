@@ -849,7 +849,12 @@ An abbrev before point is expanded if `abbrev-mode' is non-nil."
 
 (defun octave-electric-semi ()
   (interactive)
-  (if (and (not (octave-is-in-string-p (point))) octave-auto-newline)
+  (if (and (not (octave-is-in-string-p (point)))
+	   octave-auto-newline
+	   (not (save-excursion
+		  (and
+		   (re-search-backward "\\s<" (octave-point 'bol) t)
+		   (not (octave-is-in-string-p (point)))))))
       (progn
 	(insert ";")
 	(octave-indent-line)

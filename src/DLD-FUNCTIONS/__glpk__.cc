@@ -41,13 +41,11 @@ extern "C" {
 #include <glpk.h>
 }
 
-#define OCTOUT octave_stdout
-#define OCTERR octave_stdout
 #define NIntP 17
 #define NRealP 10
 
 int lpxIntParam[NIntP] = {
-  1,
+  0,
   1,
   0,
   1,
@@ -120,14 +118,14 @@ int fperr; //-- Global error number
 int
 glpk_fault_hook (void * /* info */, char *msg)
 {
-  OCTERR << "*** SEVERE CRITICAL ERROR *** from GLPK !\n\n"<<msg<<" %s\n";
+  error ("CRITICAL ERROR in GLPK: %s", msg);
   longjmp (mark, -1);
 }
 
 int
 glpk_print_hook (void * /* info */, char *msg)
 {
-  OCTERR << msg << "\n";
+  message (0, "%s\n", msg);
   return 1;
 }
 
@@ -139,7 +137,7 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
       int save_pb, double *xmin, double *fmin, double *status,
       double *lambda, double *redcosts, double *time, double *mem)
 {
-  int error;
+  int errnum;
   int typx = 0;
   int method;
 
@@ -235,7 +233,7 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
     {
       if (lpx_write_cpxlp (lp, "outpb.lp") != 0)
 	{
-	  OCTERR << "Unable to write problem\n";
+	  error ("__glpk__: unable to write problem");
 	  longjmp (mark, -1);
 	}
     }
@@ -268,28 +266,28 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
 	if (isMIP)
 	  {
 	    method = 'I';
-	    error = lpx_simplex (lp);
-	    error = lpx_integer (lp);
+	    errnum = lpx_simplex (lp);
+	    errnum = lpx_integer (lp);
 	  }
 	else
-	  error = lpx_simplex(lp);
+	  errnum = lpx_simplex(lp);
       }
      break;
 
     case 'T':
-      error = lpx_interior(lp);
+      errnum = lpx_interior(lp);
       break;
 
     default:
       insist (method != method);
     }
 
-  /*  error assumes the following results:
-      error=0 <=> No errors
-      error=1 <=> Iteration limit exceeded.
-      error=2 <=> Numerical problems with basis matrix.
+  /*  errnum assumes the following results:
+      errnum = 0 <=> No errors
+      errnum = 1 <=> Iteration limit exceeded.
+      errnum = 2 <=> Numerical problems with basis matrix.
   */
-  if (error == LPX_E_OK)
+  if (errnum == LPX_E_OK)
     {
       if (isMIP)
 	{
@@ -354,12 +352,64 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
 
    lpx_delete_prob (lp);
 
-   *status= static_cast<double> (error);
+   *status= static_cast<double> (errnum);
 
-   return error;
+   return errnum;
 }
 
 #endif
+
+#define OCTAVE_GLPK_GET_REAL_PARAM(NAME, IDX) \
+  do \
+    { \
+      if (PARAM.contains (NAME)) \
+	{ \
+	  Cell tmp = PARAM.contents (NAME); \
+ \
+          if (! tmp.is_empty ()) \
+	    { \
+	      lpxRealParam[IDX] = tmp(0).scalar_value (); \
+ \
+              if (error_state) \
+		{ \
+		  error ("glpk: invalid value in param." NAME); \
+		  return retval; \
+		} \
+	    } \
+	  else \
+	    { \
+	      error ("glpk: invalid value in param." NAME); \
+	      return retval; \
+	    } \
+	} \
+    } \
+  while (0)
+
+#define OCTAVE_GLPK_GET_INT_PARAM(NAME, VAL) \
+  do \
+    { \
+      if (PARAM.contains (NAME)) \
+	{ \
+	  Cell tmp = PARAM.contents (NAME); \
+ \
+          if (! tmp.is_empty ()) \
+	    { \
+	      VAL = tmp(0).int_value (); \
+ \
+              if (error_state) \
+		{ \
+		  error ("glpk: invalid value in param." NAME); \
+		  return retval; \
+		} \
+	    } \
+	  else \
+	    { \
+	      error ("glpk: invalid value in param." NAME); \
+	      return retval; \
+	    } \
+	} \
+    } \
+  while (0)
 
 DEFUN_DLD (__glpk__, args, ,
   "__glpk__: internal interface for the GLPK library.\n\
@@ -372,9 +422,9 @@ You should be using using glpk instead")
 
   int nrhs = args.length ();
 
-  if (nrhs < 1)
+  if (nrhs != 9)
     {
-      OCTERR<<"Use the script glpk for the optimization\n";
+      print_usage ("__glpk__");
       return retval;
     }
 
@@ -383,13 +433,27 @@ You should be using using glpk instead")
   int mrowsc = args(0).rows();
 
   Matrix C (args(0).matrix_value ());
+
+  if (error_state)
+    {
+      error ("__glpk__: invalid value of C");
+      return retval;
+    }
+
   double *c = C.fortran_vec ();
 
   //-- 2nd Input. A matrix containing the constraints coefficients.
   // If matrix A is NOT a sparse matrix
   // if(!mxIsSparse(A_IN)){
-  int mrowsA = args(1).rows();
   Matrix A (args(1).matrix_value ()); // get the matrix
+
+  if (error_state)
+    {
+      error ("__glpk__: invalid value of A");
+      return retval;
+    }
+
+  int mrowsA = A.rows ();
   Array<int> rn (mrowsA*mrowsc+1);
   Array<int> cn (mrowsA*mrowsc+1);
   ColumnVector a (mrowsA*mrowsc+1, 0.0);
@@ -444,11 +508,25 @@ You should be using using glpk instead")
   //-- 3rd Input. A column array containing the right-hand side value
   //	           for each constraint in the constraint matrix.
   Matrix B (args(2).matrix_value ());
+
+  if (error_state)
+    {
+      error ("__glpk__: invalid value of b");
+      return retval;
+    }
+
   double *b = B.fortran_vec ();
 
   //-- 4th Input. An array of length mrowsc containing the lower
   //--            bound on each of the variables.
   Matrix LB (args(3).matrix_value ());
+
+  if (error_state)
+    {
+      error ("__glpk__: invalid value of lb");
+      return retval;
+    }
+
   double *lb = LB.fortran_vec ();
 
   //-- LB argument, default: Free
@@ -468,6 +546,12 @@ You should be using using glpk instead")
   //--            bound on each of the variables.
   Matrix UB (args(4).matrix_value ());
 
+  if (error_state)
+    {
+      error ("__glpk__: invalid value of ub");
+      return retval;
+    }
+
   double *ub = UB.fortran_vec ();
 
   Array<int> freeUB (mrowsc);
@@ -485,10 +569,23 @@ You should be using using glpk instead")
   //-- 6th Input. A column array containing the sense of each constraint
   //--            in the constraint matrix.
   charMatrix CTYPE (args(5).char_matrix_value ());
+
+  if (error_state)
+    {
+      error ("__glpk__: invalid value of ctype");
+      return retval;
+    }
+
   char *ctype = CTYPE.fortran_vec ();
 
   //-- 7th Input. A column array containing the types of the variables.
   charMatrix VTYPE (args(6).char_matrix_value ());
+
+  if (error_state)
+    {
+      error ("__glpk__: invalid value of vtype");
+      return retval;
+    }
 
   Array<int> vartype (mrowsc);
   volatile int isMIP = 0;
@@ -506,6 +603,13 @@ You should be using using glpk instead")
   //-- 8th Input. Sense of optimization.
   volatile int sense;
   double SENSE = args(7).scalar_value ();
+
+  if (error_state)
+    {
+      error ("__glpk__: invalid value of sense");
+      return retval;
+    }
+
   if (SENSE >= 0)
     sense = 1;
   else
@@ -514,229 +618,133 @@ You should be using using glpk instead")
   //-- 9th Input. A structure containing the control parameters.
   Octave_map PARAM = args(8).map_value ();
 
+  if (error_state)
+    {
+      error ("__glpk__: invalid value of param");
+      return retval;
+    }
+
   //-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   //-- Integer parameters
   //-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
   //-- Level of messages output by the solver
-  if (PARAM.contains ("msglev"))
+  OCTAVE_GLPK_GET_INT_PARAM ("msglev", lpxIntParam[0]);
+  if (lpxIntParam[0] < 0 || lpxIntParam[0] > 3)
     {
-      octave_value tmp = PARAM.contents (PARAM.seek ("msglev"))(0);
-
-      double numtmp = tmp.scalar_value ();
-      if (numtmp != 0 && numtmp != 1 && numtmp != 2 && numtmp != 3)
-	{
-	  OCTOUT << "'msglev' parameter must be only:\n\t0 - no output,\n\t1 - error messages only),\n\t2 - normal output,\n\t3 - full output [default]\n";
-	  return retval;
-	}
-
-      lpxIntParam[0] = static_cast<int> (numtmp);
-   }
+      error ("__glpk__: param.msglev must be 0 (no output [default]) or 1 (error messages only) or 2 (normal output) or 3 (full output)");
+      return retval;
+    }
 
   //-- scaling option
-  if (PARAM.contains ("scale"))
+  OCTAVE_GLPK_GET_INT_PARAM ("scale", lpxIntParam[1]);
+  if (lpxIntParam[1] < 0 || lpxIntParam[1] > 2)
     {
-      octave_value tmp = PARAM.contents (PARAM.seek ("scale"))(0);
-      double numtmp = tmp.scalar_value ();
-      if (numtmp != 0 && numtmp != 1 && numtmp != 2)
-	{
-	  OCTOUT << "'scale' parameter must be only:\n\t0 - no scaling,\n\t1 - equilibration scaling,\n\t2 - geometric mean scaling\n";
-	  return retval;
-	}
-      lpxIntParam[1] = static_cast<int> (numtmp);
+      error ("__glpk__: param.scale must be 0 (no scaling) or 1 (equilibration scaling [default]) or 2 (geometric mean scaling)");
+      return retval;
     }
 
   //-- Dual dimplex option
-  if (PARAM.contains ("dual"))
+  OCTAVE_GLPK_GET_INT_PARAM ("dual", lpxIntParam[2]);
+  if (lpxIntParam[2] < 0 || lpxIntParam[2] > 1)
     {
-      octave_value tmp = PARAM.contents (PARAM.seek ("dual"))(0);
-      double numtmp = tmp.scalar_value ();
-      if (numtmp != 0 && numtmp != 1)
-	{
-	  OCTOUT<<"'dual' parameter must be only:\n\t0 - do not use the dual simplex [default],\n\t1 - use dual simplex\n";
-	  return retval;
-	}
-      lpxIntParam[2] = static_cast<int> (numtmp);
+      error ("__glpk__: param.dual must be 0 (do NOT use dual simplex [default]) or 1 (use dual simplex)");
+      return retval;
     }
 
   //-- Pricing option
-  if (PARAM.contains ("price"))
+  OCTAVE_GLPK_GET_INT_PARAM ("price", lpxIntParam[3]);
+  if (lpxIntParam[3] < 0 || lpxIntParam[3] > 1)
     {
-      octave_value tmp = PARAM.contents (PARAM.seek ("price"))(0);
-      double numtmp = tmp.scalar_value();
-      if (numtmp != 0 && numtmp != 1)
-	{
-	  OCTOUT << "'price' parameter must be only:\n\t0 - textbook pricing,\n\t1 - steepest edge pricing [default]\n";
-	  return retval;
-	}
-      lpxIntParam[3] = static_cast<int> (numtmp);
-   }
+      error ("__glpk__: param.price must be 0 (textbook pricing) or 1 (steepest edge pricing [default])");
+      return retval;
+    }
 
   //-- Solution rounding option
-  if (PARAM.contains ("round"))
+  OCTAVE_GLPK_GET_INT_PARAM ("round", lpxIntParam[4]);
+  if (lpxIntParam[4] < 0 || lpxIntParam[4] > 1)
     {
-      octave_value tmp = PARAM.contents (PARAM.seek ("round"))(0);
-      double numtmp = tmp.scalar_value ();
-      if (numtmp != 0 && numtmp != 1)
-	{
-	  OCTOUT << "'round' parameter must be only:\n\t0 - report all primal and dual values [default],\n\t1 - replace tiny primal and dual values by exact zero\n";
-	  return retval;
-	}
-      lpxIntParam[4] = static_cast<int> (numtmp);
+      error ("__glpk__: param.round must be 0 (report all primal and dual values [default]) or 1 (replace tiny primal and dual values by exact zero)");
+      return retval;
     }
 
   //-- Simplex iterations limit
-  if (PARAM.contains ("itlim"))
-    {
-      octave_value tmp = PARAM.contents (PARAM.seek ("itlim"))(0);
-      lpxIntParam[5] = static_cast<int> (tmp.scalar_value ());
-    }
+  OCTAVE_GLPK_GET_INT_PARAM ("itlim", lpxIntParam[5]);
 
   //-- Simplex iterations count
-  if (PARAM.contains ("itcnt"))
-    {
-      octave_value tmp = PARAM.contents (PARAM.seek ("itcnt"))(0);
-      lpxIntParam[6] = static_cast<int> (tmp.scalar_value ());
-    }
+  OCTAVE_GLPK_GET_INT_PARAM ("itcnt", lpxIntParam[6]);
 
   //-- Output frequency, in iterations
-  if (PARAM.contains ("outfrq"))
-    {
-      octave_value tmp = PARAM.contents (PARAM.seek ("outfrq"))(0);
-      lpxIntParam[7] = static_cast<int> (tmp.scalar_value ());
-    }
+  OCTAVE_GLPK_GET_INT_PARAM ("outfrq", lpxIntParam[7]);
 
   //-- Branching heuristic option
-  if (PARAM.contains("branch"))
+  OCTAVE_GLPK_GET_INT_PARAM ("branch", lpxIntParam[14]);
+  if (lpxIntParam[14] < 0 || lpxIntParam[14] > 2)
     {
-      octave_value tmp = PARAM.contents (PARAM.seek ("branch"))(0);
-      double numtmp = tmp.scalar_value ();
-      if (numtmp != 0 && numtmp != 1 && numtmp != 2)
-	{
-	  OCTOUT << "'branch' parameter must be only (for MIP only):\n\t0 - branch on the first variable,\n\t1 - branch on the last variable,\n\t2 - branch using a heuristic by Driebeck and Tomlin [default]\n";
-	  return retval;
-	}
-      lpxIntParam[14] = static_cast<int> (numtmp);
-   }
+      error ("__glpk__: param.branch must be (MIP only) 0 (branch on first variable) or 1 (branch on last variable) or 2 (branch using a heuristic by Driebeck and Tomlin [default]");
+      return retval;
+    }
 
   //-- Backtracking heuristic option
-  if (PARAM.contains ("btrack"))
+  OCTAVE_GLPK_GET_INT_PARAM ("btrack", lpxIntParam[15]);
+  if (lpxIntParam[15] < 0 || lpxIntParam[15] > 2)
     {
-      octave_value tmp = PARAM.contents (PARAM.seek ("btrack"))(0);
-      double numtmp = tmp.scalar_value ();
-      if (numtmp != 0 && numtmp != 1 && numtmp != 2)
-	{
-	  OCTOUT << "'btrack' parameter must be only (for MIP only):\n\t0 - depth first search,\n\t1 - breadth first search,\n\t2 - backtrack using the best projection heuristic\n";
-	  return retval;
-	}
-      lpxIntParam[15] = static_cast<int> (numtmp);
-   }
+      error ("__glpk__: param.btrack must be (MIP only) 0 (depth first search) or 1 (breadth first search) or 2 (backtrack using the best projection heuristic [default]");
+      return retval;
+    }
 
   //-- Presolver option
-  if (PARAM.contains ("presol"))
+  OCTAVE_GLPK_GET_INT_PARAM ("presol", lpxIntParam[16]);
+  if (lpxIntParam[16] < 0 || lpxIntParam[16] > 1)
     {
-      octave_value tmp = PARAM.contents (PARAM.seek ("presol"))(0);
-      double numtmp = tmp.scalar_value ();
-      if (numtmp != 0 && numtmp != 1)
-	{
-	  OCTOUT << "'presol' parameter must be only:\n\t0 - LP presolver is ***NOT*** used,\n\t1 - LP presol is used\n";
-	  return retval;
-	}
-      lpxIntParam[16] = static_cast<int> (numtmp);
+      error ("__glpk__: param.presol must be 0 (do NOT use LP presolver) or 1 (use LP presolver [default])");
+      return retval;
     }
 
   //-- LPsolver option
   volatile int lpsolver = 1;
-  if (PARAM.contains ("lpsolver"))
+  OCTAVE_GLPK_GET_INT_PARAM ("lpsolver", lpsolver);
+  if (lpsolver < 1 || lpsolver > 2)
     {
-      octave_value tmp = PARAM.contents (PARAM.seek ("lpsolver"))(0);
-      double numtmp = tmp.scalar_value ();
-      if (numtmp != 1 && numtmp != 2)
-	{
-	  OCTOUT << "'lpsolver' parameter must be only:\n\t1 - simplex method,\n\t2 - interior point method\n";
-	  return retval;
-	}
-      lpsolver = static_cast<int> (numtmp);
+      error ("__glpk__: param.lpsolver must be 1 (simplex method) or 2 (interior point method)");
+      return retval;
     }
 
   //-- Save option
   volatile int save_pb = 0;
-  if (PARAM.contains ("save"))
-    {
-      octave_value tmp = PARAM.contents (PARAM.seek ("save"))(0);
-      save_pb = (tmp.scalar_value () != 0);
-    }
+  OCTAVE_GLPK_GET_INT_PARAM ("save", save_pb);
+  save_pb = save_pb != 0;
 
   //-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   //-- Real parameters
   //-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
   //-- Ratio test option
-  if (PARAM.contains ("relax"))
-    {
-      octave_value tmp = PARAM.contents (PARAM.seek ("relax"))(0);
-      lpxRealParam[0] = tmp.scalar_value ();
-    }
+  OCTAVE_GLPK_GET_REAL_PARAM ("relax", 0);
 
   //-- Relative tolerance used to check if the current basic solution
   //-- is primal feasible
-  if (PARAM.contains ("tolbnd"))
-    {
-      octave_value tmp = PARAM.contents (PARAM.seek ("tolbn"))(0);
-      lpxRealParam[1] = tmp.scalar_value ();
-    }
+  OCTAVE_GLPK_GET_REAL_PARAM ("tolbnd", 1);
 
   //-- Absolute tolerance used to check if the current basic solution
   //-- is dual feasible
-  if (PARAM.contains ("toldj"))
-    {
-      octave_value tmp = PARAM.contents (PARAM.seek ("toldj"))(0);
-      lpxRealParam[2] = tmp.scalar_value();
-    }
+  OCTAVE_GLPK_GET_REAL_PARAM ("toldj", 2);
 
   //-- Relative tolerance used to choose eligible pivotal elements of
   //--	the simplex table in the ratio test
-  if (PARAM.contains ("tolpiv"))
-    {
-      octave_value tmp = PARAM.contents (PARAM.seek ("tolpiv"))(0);
-      lpxRealParam[3] = tmp.scalar_value ();
-    }
+  OCTAVE_GLPK_GET_REAL_PARAM ("tolpiv", 3);
 
-  if (PARAM.contains ("objll"))
-    {
-      octave_value tmp = PARAM.contents (PARAM.seek ("objll"))(0);
-      lpxRealParam[4] = tmp.scalar_value ();
-    }
+  OCTAVE_GLPK_GET_REAL_PARAM ("objll", 4);
 
-  if (PARAM.contains ("objul"))
-    {
-      octave_value tmp = PARAM.contents (PARAM.seek ("objul"))(0);
-      lpxRealParam[5] = tmp.scalar_value ();
-    }
+  OCTAVE_GLPK_GET_REAL_PARAM ("objul", 5);
 
-  if (PARAM.contains ("tmlim"))
-    {
-      octave_value tmp = PARAM.contents (PARAM.seek ("tmlim"))(0);
-      lpxRealParam[6] = tmp.scalar_value ();
-    }
+  OCTAVE_GLPK_GET_REAL_PARAM ("tmlim", 6);
 
-  if (PARAM.contains ("outdly"))
-    {
-      octave_value tmp = PARAM.contents (PARAM.seek ("outdly"))(0);
-      lpxRealParam[7] = tmp.scalar_value ();
-    }
+  OCTAVE_GLPK_GET_REAL_PARAM ("outdly", 7);
 
-  if (PARAM.contains ("tolint"))
-    {
-      octave_value tmp = PARAM.contents (PARAM.seek ("tolint"))(0);
-      lpxRealParam[8] = tmp.scalar_value ();
-    }
+  OCTAVE_GLPK_GET_REAL_PARAM ("tolint", 8);
 
-  if (PARAM.contains ("tolobj"))
-    {
-      octave_value tmp = PARAM.contents (PARAM.seek ("tolobj"))(0);
-      lpxRealParam[9] = tmp.scalar_value ();
-    }
+  OCTAVE_GLPK_GET_REAL_PARAM ("tolobj", 9);
 
   //-- Assign pointers to the output parameters
   ColumnVector xmin (mrowsc);

@@ -35,6 +35,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-alloc.h"
 #include "oct-stream.h"
 #include "ov-base.h"
+#include "ov-scalar.h"
 #include "ov-typeinfo.h"
 
 class tree_walker;
@@ -61,7 +62,10 @@ public:
   ~octave_file (void) { }
 
   octave_value *clone (void) const { return new octave_file (*this); }
-  octave_value *empty_clone (void) const { return new octave_file (); }
+
+  // For compatibility, a file object should appear as if it is a
+  // scalar object, in contexts where that is needed.
+  octave_value *empty_clone (void) const { return new octave_scalar (); }
 
   type_conv_fcn numeric_conversion_function (void) const;
 

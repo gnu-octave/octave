@@ -907,7 +907,7 @@ func_def2	: identifier safe local_symtab func_def3
 			if (strcmp (curr_fcn_file_name, id_name) != 0)
 			  {
 			    warning ("function name `%s' does not agree\
- with function file name `%s'", id_name, curr_fcn_file_name);
+ with function file name `%s.m'", id_name, curr_fcn_file_name);
 
 			    $1->rename (curr_fcn_file_name);
 			    id_name = $1->name ();
@@ -923,7 +923,7 @@ func_def2	: identifier safe local_symtab func_def3
 			     && strcmp (curr_fcn_file_name, id_name) == 0)
 		      {
 			warning ("function `%s' defined within\
- script file `%s'", id_name, curr_fcn_file_name);
+ script file `%s.m'", id_name, curr_fcn_file_name);
 		      }
 
 		    top_level_sym_tab->clear (id_name);
@@ -1118,7 +1118,7 @@ yyerror (char *s)
 
 // Maybe print the line number and file name.
   if (reading_fcn_file || reading_script_file)
-    fprintf (stderr, " near line %d of file %s", input_line_number,
+    fprintf (stderr, " near line %d of file %s.m", input_line_number,
 	     curr_fcn_file_name);
 
   if (line != (char *) NULL)

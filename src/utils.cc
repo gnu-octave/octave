@@ -598,8 +598,7 @@ file_in_path (const char *name, const char *suffix)
 char *
 fcn_file_in_path (const char *name)
 {
-  char *fcn_file = file_in_path (name, (char *) NULL);
-  return (fcn_file) ? fcn_file : file_in_path (name, ".m");
+  return file_in_path (name, ".m");
 }
 
 /*

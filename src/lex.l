@@ -1022,9 +1022,8 @@ is_keyword (char *s)
 
 	  if ((reading_fcn_file || reading_script_file)
 	      && curr_fcn_file_name != (char *) NULL)
-	    error ("defining new function near line %d of file `%s'",
-		   input_line_number,
-		   curr_fcn_file_name);
+	    error ("defining new function near line %d of file `%s.m'",
+		   input_line_number, curr_fcn_file_name);
 	  else
 	    error ("defining new function near line %d", input_line_number);
 
@@ -1499,7 +1498,7 @@ check_for_garbage_after_fcn_def (void)
 	  else
 	    {
 	      warning ("ignoring trailing garbage after end of function\n\
-         near line %d of file `%s'", lineno, curr_fcn_file_name);
+         near line %d of file `%s.m'", lineno, curr_fcn_file_name);
 	      
 	      yyunput ('\n', yytext);
 	      return;

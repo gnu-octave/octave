@@ -23,6 +23,14 @@
 ## Sets @code{gnuplot} in multiplot mode and plots in location
 ## given by index (there are @var{cols} by @var{rows} subwindows).
 ##
+## The global variable @var{__multiplot_scale__} should be used when the
+## command @code{gset size xsize, ysize} has been used prior to calling
+## @code{subplot}.
+##
+## The value of @var{__multiplot_scale__} should be a vector with two
+## elements, the first set equal to @var{xsize} and the second to
+## @var{ysize}.
+##
 ## Input:
 ##
 ## @table @var
@@ -83,6 +91,11 @@ function subplot (rows, columns, index)
   global __multiplot_yn__;
   global __multiplot_xi__;
   global __multiplot_yi__;
+  global __multiplot_scale__;
+
+  if (isempty (__multiplot_scale__))
+    __multiplot_scale__ = [1, 1];
+  endif
 
   if (nargin != 3 && nargin != 1)
     usage ("subplot (rows, columns, index) or subplot (rcn)");
@@ -139,8 +152,8 @@ function subplot (rows, columns, index)
       __multiplot_mode__ = 1;
       __multiplot_xn__ = columns;
       __multiplot_yn__ = rows;
-      __multiplot_xsize__ = 1.0 ./ columns;
-      __multiplot_ysize__ = 1.0 ./ rows;
+      __multiplot_xsize__ = __multiplot_scale__(1) ./ columns;
+      __multiplot_ysize__ = __multiplot_scale__(2) ./ rows;
 
       gnuplot_command_replot = "cle;rep";
 

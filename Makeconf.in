@@ -33,6 +33,8 @@ WITH_SHL = @use_shl@
 
 OCTAVE_LITE = @lite_kernel@
 
+SHARED_LIBS = @shared_libs@
+
 # Fortran to C translator and associated flags.
 
 F2C = @F2C@

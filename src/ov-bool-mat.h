@@ -96,7 +96,7 @@ public:
   ComplexMatrix complex_matrix_value (bool = false) const
     { return matrix; }
 
-  boolMatrix bool_matrix_value (bool = false) const
+  boolMatrix bool_matrix_value (void) const
     { return matrix; }
 
   octave_value convert_to_str (void) const

@@ -1,5 +1,8 @@
 2000-02-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* ov.h, ov-bool.h, ov-bool-mat.h (bool_matrix_value):
+	Delete unnecessary arg.
+
 	* ov.h (octave_value::do_multi_index_op): Rename from do_index_op.
 
 	* ov-fcn.h (octave_function::is_system_fcn_file): Now const.

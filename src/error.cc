@@ -375,17 +375,22 @@ to check for the proper number of arguments.\n\
 void
 bind_global_error_variable (void)
 {
-  *error_message_buffer << ends;
+  if (error_message_buffer)
+    {
+      *error_message_buffer << ends;
 
-  char *error_text = error_message_buffer->str ();
+      char *error_text = error_message_buffer->str ();
 
-  bind_builtin_constant ("__error_text__", error_text, true);
+      bind_builtin_constant ("__error_text__", error_text, true);
 
-  delete [] error_text;
+      delete [] error_text;
 
-  delete error_message_buffer;
+      delete error_message_buffer;
 
-  error_message_buffer = 0;
+      error_message_buffer = 0;
+    }
+  else
+    bind_builtin_constant ("__error_text__", "", true);
 }
 
 void

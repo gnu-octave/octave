@@ -1,5 +1,16 @@
 2000-01-28  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* pt-except.cc (do_catch_code): Unwind-protect buffer_error_messages.
+	Be sure to run all unwind-protects before returning.
+	(tree_try_catch_command::eval): Add do_catch_code cleanup function
+	to unwind-protect stack before resetting buffer_error_messages.
+	Use unwind-protect to save and restore buffer_error_messages.
+	If there is no catch code, discard the cleanup function and run
+	the unwind-protect for buffer_error_messages.
+
+	* error.cc (bind_global_error_variable): Avoid dereferencing
+	error_message_buffer if it is NULL.
+
 	* parse.y (evaluating_function_body): New global flag.
 	* ov-usr-fcn.cc (octave_user_function::do_index_op):
 	Protect and set it here.

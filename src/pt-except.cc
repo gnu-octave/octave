@@ -53,11 +53,16 @@ do_catch_code (void *ptr)
 {
   tree_statement_list *list = static_cast<tree_statement_list *> (ptr);
 
+  unwind_protect::begin_frame ("do_catch_code");
+
   // Set up for letting the user print any messages from errors that
   // occurred in the body of the try_catch statement.
 
+  unwind_protect_bool (buffer_error_messages);
   buffer_error_messages = false;
+
   bind_global_error_variable ();
+
   unwind_protect::add (clear_global_error_variable, 0);
 
   // Similarly, if we have seen a return or break statement, allow all
@@ -92,7 +97,7 @@ do_catch_code (void *ptr)
   else
     unwind_protect::run ();
 
-  unwind_protect::run ();
+  unwind_protect::run_frame ("do_catch_code");
 }
 
 void
@@ -100,15 +105,13 @@ tree_try_catch_command::eval (void)
 {
   unwind_protect::begin_frame ("tree_try_catch::eval");
 
-  unwind_protect::add (do_catch_code, catch_code);
-
-  bool old_buffer_error_messages = buffer_error_messages;
-
   if (catch_code)
     {
       unwind_protect_bool (buffer_error_messages);
       buffer_error_messages = true;
     }
+
+  unwind_protect::add (do_catch_code, catch_code);
 
   if (try_code)
     try_code->eval ();
@@ -121,8 +124,12 @@ tree_try_catch_command::eval (void)
   else
     {
       error_state = 0;
-      buffer_error_messages = old_buffer_error_messages;
-      unwind_protect::discard_frame ("tree_try_catch::eval");
+
+      // For clearing the do_catch_code cleanup function.
+      unwind_protect::discard ();
+
+      // For restoring buffer_error_messages.
+      unwind_protect::run ();
     }
 }
 

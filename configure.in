@@ -20,7 +20,7 @@ dnl Copyright (C) 1996 John W. Eaton
 ### along with Octave; see the file COPYING.  If not, write to the Free
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-AC_REVISION($Revision: 1.165 $)
+AC_REVISION($Revision: 1.166 $)
 AC_PREREQ(2.0)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -301,18 +301,20 @@ AC_SUBST(LD_STATIC_FLAG)
 
 AC_ARG_ENABLE(dl,
   [  --enable-dl             use dlopen/dlsym for dynamic linking (not all systems)],
-  [if test $enableval = no; then WITH_DL=false; else WITH_DL=true; fi],
-  WITH_DL=false)
-AC_SUBST(WITH_DL)
+  [if test $enableval = no; then WITH_DL=no;
+   elif test $enableval = yes; then WITH_DL=yes;
+   else WITH_DL=maybe; fi],
+  WITH_DL=maybe)
 
 ### Allow the user to experiment with dynamic linking using
 ### shl_load/shl_findsym (HP/UX only?).
 
 AC_ARG_ENABLE(shl,
   [  --enable-shl            use shl_load/shl_findsym for dynamic linking (HP only?)],
-  [if test $enableval = no; then WITH_SHL=false; else WITH_SHL=true; fi],
-  WITH_SHL=false)
-AC_SUBST(WITH_SHL)
+  [if test $enableval = no; then WITH_SHL=no;
+   elif test $enableval = yes; then WITH_SHL=yes;
+   else WITH_SHL=maybe; fi],
+  WITH_SHL=maybe)
 
 ### Enable creation of shared libraries.  Currently only works with
 ### gcc on some systems.
@@ -654,36 +656,47 @@ AC_CHECK_FUNCS(sigaction sigprocmask sigpending sigsuspend)
 OCTAVE_SMART_PUTENV
 OCTAVE_PROGRAM_INVOCATION_NAME
 
-AC_CHECK_LIB(dl, dlopen)
-AC_CHECK_FUNCS(dlopen dlsym dlerror dlclose)
-
-if test "$ac_cv_func_dlopen" = yes \
-    && test "$ac_cv_func_dlopen" = yes \
-    && test "$ac_cv_func_dlsym" = yes \
-    && test "$ac_cv_func_dlerror" = yes \
-    && test "$ac_cv_func_dlclose" = yes; then
-  WITH_DL=true
-elif $WITH_DL; then
-  AC_MSG_ERROR([--enable-dl specified, but required functions are missing!])
+if test "$WITH_DL" = yes || test "$WITH_DL" = maybe; then
+  AC_CHECK_LIB(dl, dlopen)
+  AC_CHECK_FUNCS(dlopen dlsym dlerror dlclose)
+  if test "$ac_cv_func_dlopen" = yes \
+     && test "$ac_cv_func_dlsym" = yes \
+     && test "$ac_cv_func_dlerror" = yes \
+     && test "$ac_cv_func_dlclose" = yes; then
+    WITH_DL=true
+  else
+    if test "$WITH_DL" = yes; then
+      AC_MSG_ERROR([--enable-dl specified, but functions are missing!])
+    fi
+    WITH_DL=false
+  fi
+  if $WITH_DL; then
+    AC_DEFINE(WITH_DL, 1)
+  fi
+else
+  WITH_DL=false
 fi
+AC_SUBST(WITH_DL)
 
-if $WITH_DL; then
-  AC_DEFINE(WITH_DL, 1)
+if test "$WITH_SHL" = yes || test "$WITH_SHL" = maybe; then
+  AC_CHECK_LIB(dld, shl_load)
+  AC_CHECK_FUNCS(shl_load shl_findsym)
+  if test "$ac_cv_func_shl_load" = yes \
+     && test "$ac_cv_func_shl_findsym" = yes; then
+    WITH_SHL=true
+  else
+    if test "$WITH_SHL" = yes; then
+      AC_MSG_ERROR([--enable-shl specified, but functions are missing!])
+    fi
+    WITH_SHL=false
+  fi
+  if $WITH_SHL; then
+    AC_DEFINE(WITH_SHL, 1)
+  fi
+else
+  WITH_SHL=false
 fi
-
-AC_CHECK_LIB(dld, shl_load)
-AC_CHECK_FUNCS(shl_load shl_findsym)
-
-if test "$ac_cv_func_shl_load" = yes \
-    && test "$ac_cv_func_shl_findsym" = yes; then
-  WITH_SHL=true
-elif $WITH_SHL; then
-  AC_MSG_ERROR([--enable-shl specified, but required functions are missing!])
-fi
-
-if $WITH_SHL; then
-  AC_DEFINE(WITH_SHL, 1)
-fi
+AC_SUBST(WITH_SHL)
 
 ### Set WITH_DYNAMIC_LINKING after all the other shared library stuff
 ### has been determined.

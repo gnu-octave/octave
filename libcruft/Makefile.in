@@ -47,9 +47,7 @@ ifeq ($(SHARED_LIBS), true)
 endif
 
 # include BLAS and FFTW just in case some of libcruft depends on them
-ifeq ($(INCLUDE_LINK_DEPS),true)
-  LINK_DEPS = $(BLAS_LIBS) $(FFTW_LIBS) $(FLIBS)
-endif
+LINK_DEPS = $(BLAS_LIBS) $(FFTW_LIBS) $(FLIBS)
 
 all: libraries
 .PHONY: all

@@ -71,8 +71,6 @@ SHLBIN = @SHLBIN@
 SHLBIN_VER = @SHLBIN_VER@
 SHLLINKEXT=
 
-INCLUDE_LINK_DEPS = @INCLUDE_LINK_DEPS@
-
 LIBEXT = a
 
 # Fortran to C translator and associated flags.
@@ -424,7 +422,6 @@ $(SED) < $< \
   -e "s;%OCTAVE_CONF_FPICFLAG%;\"${FPICFLAG}\";" \
   -e "s;%OCTAVE_CONF_GLOB_INCFLAGS%;\"${GLOB_INCFLAGS}\";" \
   -e "s;%OCTAVE_CONF_INCFLAGS%;\"${INCFLAGS}\";" \
-  -e "s;%OCTAVE_CONF_INCLUDE_LINK_DEPS%;\"${INCLUDE_LINK_DEPS}\";"\
   -e "s;%OCTAVE_CONF_LD_CXX%;\"${LD_CXX}\";" \
   -e "s;%OCTAVE_CONF_LDFLAGS%;\"${LDFLAGS}\";" \
   -e "s;%OCTAVE_CONF_LD_STATIC_FLAG%;\"${LD_STATIC_FLAG}\";" \

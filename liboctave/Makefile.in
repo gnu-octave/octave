@@ -18,12 +18,9 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
-ifeq ($(INCLUDE_LINK_DEPS), true)
-  LINK_DEPS = \
-    -L../libcruft -L../glob -L. $(RLD_FLAG) \
-    $(LIBCRUFT) $(BLAS_LIBS) $(FFTW_LIBS) $(LIBREADLINE) \
-    -lglob $(LIBS) $(FLIBS)
-endif
+LINK_DEPS = \
+  -L../libcruft -L../glob -L. $(RLD_FLAG) \
+  $(LIBCRUFT) $(BLAS_LIBS) $(FFTW_LIBS) $(LIBREADLINE) -lglob $(LIBS) $(FLIBS)
 
 MATRIX_INC := Array.h Array2.h Array3.h ArrayN.h DiagArray2.h \
 	Array-flags.h Array-util.h ArrayN-idx.h MArray-defs.h \

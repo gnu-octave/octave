@@ -1,5 +1,13 @@
 2004-02-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* mkoctfile.in: Delete INCLUDE_LINK_DEPS.  Fix help text.
+	Always define LINK_DEPS.
+	(LINK_DEPS): Also include FLIBS in the list.
+
+	* Makeconf.in (INCLUDE_LINK_DEPS): Don't substitute.
+	(do-subst-config-vals): Delete INCLUDE_LINK_DEPS.
+	* configure.in (INCLUDE_LINK_DEPS): Delete.
+
 	* mkoctfile (SH_LD, SH_LDFLAGS): Delete.
 	(DL_LD, DL_LDFLAGS): New variables.  Use them instead of SH_LD and
 	SH_LDFLAGS for creating .oct files.

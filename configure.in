@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.444 $)
+AC_REVISION($Revision: 1.445 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -671,7 +671,6 @@ MKOCTFILE_DL_LDFLAGS='$(DL_LDFLAGS)'
 SONAME_FLAGS=
 RLD_FLAG=
 NO_OCT_FILE_STRIP=false
-INCLUDE_LINK_DEPS=false
 TEMPLATE_AR='$(AR)'
 TEMPLATE_ARFLAGS="$ARFLAGS"
 library_path_var=LD_LIBRARY_PATH
@@ -702,7 +701,6 @@ case "$canonical_host_type" in
     SHLLIB='$(SHLEXT)'
     SHLEXT_VER='$(version).$(SHLEXT)'
     SHLLIB_VER='$(version).$(SHLLIB)'
-    INCLUDE_LINK_DEPS=true
     NO_OCT_FILE_STRIP=true
     library_path_var=DYLD_LIBRARY_PATH	
   ;;
@@ -716,7 +714,6 @@ case "$canonical_host_type" in
     SH_LDFLAGS="-shared -Wl,--export-all-symbols -Wl,--enable-auto-import"
     SHLLINKEXT=.dll
     SONAME_FLAGS='-Wl,--out-implib=$@.a'
-    INCLUDE_LINK_DEPS=true
     library_path_var=PATH
   ;;
   *-*-linux* | *-*-gnu*)
@@ -818,7 +815,6 @@ AC_MSG_RESULT([defining NO_OCT_FILE_STRIP to be $NO_OCT_FILE_STRIP])
 AC_MSG_RESULT([defining RLD_FLAG to be $RLD_FLAG])
 AC_MSG_RESULT([defining TEMPLATE_AR to be $TEMPLATE_AR])
 AC_MSG_RESULT([defining TEMPLATE_ARFLAGS to be $TEMPLATE_ARFLAGS])
-AC_MSG_RESULT([defining INCLUDE_LINK_DEPS to be $INCLUDE_LINK_DEPS])
 AC_MSG_RESULT([defining library_path_var to be $library_path_var])
 AC_SUBST(FPICFLAG)
 AC_SUBST(CPICFLAG)
@@ -841,7 +837,6 @@ AC_SUBST(NO_OCT_FILE_STRIP)
 AC_SUBST(RLD_FLAG)
 AC_SUBST(TEMPLATE_AR)
 AC_SUBST(TEMPLATE_ARFLAGS)
-AC_SUBST(INCLUDE_LINK_DEPS)
 AC_SUBST(library_path_var)
 
 ### special checks for odd OS specific things.

@@ -48,7 +48,6 @@ set -e
 : ${LDFLAGS=%OCTAVE_CONF_LDFLAGS%}
 : ${LD_STATIC_FLAG=%OCTAVE_CONF_LD_STATIC_FLAG%}
 : ${LFLAGS=%OCTAVE_CONF_MKOCTFILE_LFLAGS%}
-: ${INCLUDE_LINK_DEPS=%OCTAVE_CONF_INCLUDE_LINK_DEPS%}
 
 : ${ALL_FFLAGS="$FFLAGS"}
 
@@ -145,8 +144,6 @@ Options:
                             FPICFLAG      SHLEXT
                             CC            DL_LD
                             CFLAGS        DL_LDFLAGS
-
-                            INCLUDE_LINK_DEPS
 
                             LD_CXX        LFLAGS
                             LDFLAGS       LD_STATIC_FLAG
@@ -386,10 +383,7 @@ if $link; then
       exit 1
     fi
   else
-    LINK_DEPS=
-    if $INCLUDE_LINK_DEPS ; then
-	LINK_DEPS="$LFLAGS $LIBOCTAVE $LIBCRUFT $LIBOCTINTERP $BLAS_LIBS $FFTW_LIBS"
-    fi
+    LINK_DEPS="$LFLAGS $LIBOCTAVE $LIBCRUFT $LIBOCTINTERP $BLAS_LIBS $FFTW_LIBS $FLIBS"
     cmd="$DL_LD $DL_LDFLAGS -o $octfile $objfiles $ldflags $LINK_DEPS"
     $dbg $cmd
     eval $cmd

@@ -1,5 +1,7 @@
 2004-02-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Makefile.in (LINK_DEPS): Always define.
+
 	* Array.cc (Array<T>::squeeze): Always return an array with at
 	least two dimensions.
 

@@ -1,5 +1,7 @@
 2004-02-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Makefile.in (OCTINTERP_LINK_DEPS, OCT_LINK_DEPS): Always define.
+
 	* oct-conf.h.in: Add OCTAVE_CONF_DL_LD, OCTAVE_CONF_DL_LDFLAGS,
 	and OCTAVE_CONF_MKOCTFILE_DL_LDFLAGS.
 	Delete OCTAVE_CONF_MKOCTFILE_SH_LDFLAGS.

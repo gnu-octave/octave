@@ -45,16 +45,16 @@ Software Foundation, Inc.
 #include <unistd.h>
 #endif
 
-#include "tree-const.h"
-#include "octave.h"
+#include "defun.h"
+#include "error.h"
+#include "f77-uscore.h"
 #include "help.h"
 #include "input.h"
-#include "utils.h"
 #include "oct-obj.h"
-#include "error.h"
+#include "octave.h"
 #include "sysdep.h"
-#include "defun.h"
-#include "f77-uscore.h"
+#include "tree-const.h"
+#include "utils.h"
 
 extern "C"
 {

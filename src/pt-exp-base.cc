@@ -42,26 +42,26 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <unistd.h>
 #endif
 
-#include "variables.h"
-#include "user-prefs.h"
+#include "defun.h"
 #include "dynamic-ld.h"
-#include "help.h"
 #include "error.h"
 #include "gripes.h"
+#include "help.h"
+#include "input.h"
+#include "lex.h"
+#include "octave-hist.h"
+#include "octave.h"
 #include "pager.h"
+#include "parse.h"
+#include "symtab.h"
 #include "tree-base.h"
+#include "tree-const.h"
 #include "tree-expr.h"
 #include "tree-misc.h"
-#include "tree-const.h"
-#include "input.h"
-#include "symtab.h"
-#include "utils.h"
-#include "octave.h"
-#include "octave-hist.h"
 #include "unwind-prot.h"
-#include "parse.h"
-#include "lex.h"
-#include "defun.h"
+#include "user-prefs.h"
+#include "utils.h"
+#include "variables.h"
 
 // Nonzero means we're returning from a function.
 extern int returning;

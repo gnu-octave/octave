@@ -33,11 +33,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <iostream.h>
 
-#include "dMatrix.h"
 #include "Range.h"
+#include "dMatrix.h"
+
+#include "error.h"
 #include "idx-vector.h"
 #include "user-prefs.h"
-#include "error.h"
 #include "utils.h"
 
 idx_vector::idx_vector (const idx_vector& a)

@@ -29,12 +29,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <strstream.h>
 
-#include "utils.h"
-#include "error.h"
-#include "pager.h"
-#include "oct-obj.h"
-#include "tree-const.h"
 #include "defun.h"
+#include "error.h"
+#include "oct-obj.h"
+#include "pager.h"
+#include "tree-const.h"
+#include "utils.h"
 
 // Current error state.
 int error_state = 0;

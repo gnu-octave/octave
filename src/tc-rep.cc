@@ -31,23 +31,22 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <fstream.h>
 #include <iostream.h>
 
-#include "mx-base.h"
 #include "Range.h"
+#include "mx-base.h"
 
 #include "arith-ops.h"
-#include "variables.h"
-#include "sysdep.h"
 #include "error.h"
 #include "gripes.h"
+#include "idx-vector.h"
+#include "oct-map.h"
+#include "pr-output.h"
+#include "sysdep.h"
+#include "tc-inlines.h"
+#include "tree-const.h"
+#include "unwind-prot.h"
 #include "user-prefs.h"
 #include "utils.h"
-#include "pr-output.h"
-#include "tree-const.h"
-#include "idx-vector.h"
-#include "unwind-prot.h"
-#include "oct-map.h"
-
-#include "tc-inlines.h"
+#include "variables.h"
 
 // The following three variables could be made static members of the
 // TC_REP class.

@@ -46,18 +46,18 @@ Software Foundation, Inc.
 
 #include <fcntl.h>
 
-#include "statdefs.h"
-#include "utils.h"
+#include "defun.h"
 #include "error.h"
 #include "input.h"
-#include "pager.h"
-#include "octave.h"
 #include "oct-obj.h"
-#include "user-prefs.h"
-#include "unwind-prot.h"
 #include "octave-hist.h"
+#include "octave.h"
+#include "pager.h"
 #include "sighandlers.h"
-#include "defun.h"
+#include "statdefs.h"
+#include "unwind-prot.h"
+#include "user-prefs.h"
+#include "utils.h"
 
 extern "C"
 {

@@ -29,18 +29,18 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <cfloat>
 
-#include "dMatrix.h"
-#include "dColVector.h"
 #include "CColVector.h"
+#include "dColVector.h"
+#include "dMatrix.h"
 #include "f77-uscore.h"
 
+#include "defun-dld.h"
+#include "error.h"
+#include "gripes.h"
+#include "help.h"
 #include "tree-const.h"
 #include "user-prefs.h"
-#include "gripes.h"
-#include "error.h"
 #include "utils.h"
-#include "help.h"
-#include "defun-dld.h"
 
 extern "C"
 {

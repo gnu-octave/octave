@@ -27,11 +27,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <cmath>
 
-#include "tree-const.h"
+#include "defun-dld.h"
 #include "error.h"
 #include "gripes.h"
 #include "help.h"
-#include "defun-dld.h"
+#include "tree-const.h"
 
 #ifndef MAX
 #define MAX(a,b) ((a) > (b) ? (a) : (b))

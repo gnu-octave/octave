@@ -29,11 +29,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <Complex.h>
 
-#include "xdiv.h"
-#include "dMatrix.h"
 #include "CMatrix.h"
-#include "tree-const.h"
+#include "dMatrix.h"
+
 #include "error.h"
+#include "tree-const.h"
+#include "xdiv.h"
 
 static inline int
 result_ok (int info, double rcond, int warn = 1)

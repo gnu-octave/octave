@@ -27,13 +27,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "EIG.h"
 
+#include "defun-dld.h"
+#include "error.h"
+#include "gripes.h"
+#include "help.h"
 #include "tree-const.h"
 #include "user-prefs.h"
-#include "gripes.h"
-#include "error.h"
 #include "utils.h"
-#include "help.h"
-#include "defun-dld.h"
 
 DEFUN_DLD_BUILTIN ("eig", Feig, Seig, 2, 1,
   "eig (X) or [V, D] = eig (X): compute eigenvalues and eigenvectors of X")

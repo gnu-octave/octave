@@ -27,11 +27,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <cstring>
 
-#include "user-prefs.h"
-#include "mappers.h"
 #include "error.h"
-#include "variables.h"
+#include "mappers.h"
+#include "user-prefs.h"
 #include "utils.h"
+#include "variables.h"
 
 // The list of user preferences.  Values change when global variables
 // change, so we don\'t have to do a variable look up every time we

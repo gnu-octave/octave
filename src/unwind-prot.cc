@@ -35,8 +35,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "CMatrix.h"
 
-#include "unwind-prot.h"
 #include "error.h"
+#include "unwind-prot.h"
 #include "utils.h"
 
 unwind_elem::unwind_elem (void)

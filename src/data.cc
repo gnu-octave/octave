@@ -33,14 +33,14 @@ Software Foundation, Inc.
 #include <config.h>
 #endif
 
-#include "tree-const.h"
-#include "user-prefs.h"
-#include "oct-map.h"
-#include "help.h"
-#include "utils.h"
+#include "defun.h"
 #include "error.h"
 #include "gripes.h"
-#include "defun.h"
+#include "help.h"
+#include "oct-map.h"
+#include "tree-const.h"
+#include "user-prefs.h"
+#include "utils.h"
 
 #ifndef MIN
 #define MIN(a,b) ((a) < (b) ? (a) : (b))

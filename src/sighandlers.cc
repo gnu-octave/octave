@@ -35,10 +35,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <unistd.h>
 #endif
 
-#include "syswait.h"
-#include "sighandlers.h"
-#include "octave.h"
 #include "error.h"
+#include "octave.h"
+#include "sighandlers.h"
+#include "syswait.h"
 #include "utils.h"
 
 // Nonzero means we have already printed a message for this series of

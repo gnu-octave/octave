@@ -34,22 +34,22 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <Complex.h>
 
-#include "dMatrix.h"
 #include "CMatrix.h"
 #include "Range.h"
+#include "dMatrix.h"
 
-#include "tree-const.h"
-#include "variables.h"
-#include "user-prefs.h"
-#include "pr-output.h"
+#include "defun.h"
+#include "error.h"
+#include "help.h"
 #include "mappers.h"
 #include "oct-str.h"
-#include "sysdep.h"
 #include "pager.h"
-#include "help.h"
-#include "error.h"
+#include "pr-output.h"
+#include "sysdep.h"
+#include "tree-const.h"
+#include "user-prefs.h"
 #include "utils.h"
-#include "defun.h"
+#include "variables.h"
 
 // Current format string for real numbers and the real part of complex
 // numbers.

@@ -25,18 +25,18 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
-#include "dbleSVD.h"
 #include "CmplxSVD.h"
+#include "dbleSVD.h"
 
+#include "defun-dld.h"
+#include "error.h"
+#include "gripes.h"
+#include "help.h"
+#include "mappers.h"
+#include "pr-output.h"
 #include "tree-const.h"
 #include "user-prefs.h"
-#include "pr-output.h"
-#include "mappers.h"
-#include "gripes.h"
-#include "error.h"
 #include "utils.h"
-#include "help.h"
-#include "defun-dld.h"
 
 DEFUN_DLD_BUILTIN ("svd", Fsvd, Ssvd, 2, 3,
   "S = svd (X) or [U, S, V] = svd (X [, 0])\n\

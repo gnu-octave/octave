@@ -30,11 +30,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include "Array.h"
-#include "mx-base.h"
 #include "Range.h"
+#include "mx-base.h"
 
-#include "tree-const.h"
 #include "oct-obj.h"
+#include "tree-const.h"
 
 // We can't put these functions in oct-obj.h without including
 // tree-const.h there too, and that causes trouble...

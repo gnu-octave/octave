@@ -27,21 +27,21 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
-#include "dMatrix.h"
 #include "CMatrix.h"
-#include "dbleAEPBAL.h"
 #include "CmplxAEPBAL.h"
-#include "dbleAEPBAL.h"
 #include "CmplxAEPBAL.h"
+#include "dMatrix.h"
+#include "dbleAEPBAL.h"
+#include "dbleAEPBAL.h"
 #include "dbleGEPBAL.h"
 
+#include "defun-dld.h"
+#include "error.h"
+#include "gripes.h"
+#include "help.h"
 #include "tree-const.h"
 #include "user-prefs.h"
-#include "gripes.h"
-#include "error.h"
 #include "utils.h"
-#include "help.h"
-#include "defun-dld.h"
 
 DEFUN_DLD_BUILTIN ("balance", Fbalance, Sbalance, 4, 4,
   "AA = balance (A [, OPT]) or [[DD,] AA] =  balance (A [, OPT])\n\

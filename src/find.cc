@@ -25,11 +25,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
-#include "tree-const.h"
+#include "defun-dld.h"
 #include "error.h"
 #include "gripes.h"
 #include "help.h"
-#include "defun-dld.h"
+#include "tree-const.h"
 
 static Octave_object
 find_to_fortran_idx (const ColumnVector i_idx, const ColumnVector j_idx,

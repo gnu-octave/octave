@@ -29,20 +29,20 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <cmath>
 
-#include "dMatrix.h"
-#include "CMatrix.h"
 #include "CColVector.h"
-#include "dbleAEPBAL.h"
+#include "CMatrix.h"
 #include "CmplxAEPBAL.h"
+#include "dMatrix.h"
+#include "dbleAEPBAL.h"
 #include "f77-uscore.h"
 
+#include "defun-dld.h"
+#include "error.h"
+#include "gripes.h"
+#include "help.h"
 #include "tree-const.h"
 #include "user-prefs.h"
-#include "gripes.h"
-#include "error.h"
 #include "utils.h"
-#include "help.h"
-#include "defun-dld.h"
 
 extern "C"
 {

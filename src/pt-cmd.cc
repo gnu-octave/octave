@@ -41,18 +41,18 @@ int continuing = 0;
 // is also needed in tree-expr.cc.
 int returning = 0;
 
-#include "user-prefs.h"
-#include "variables.h"
-#include "oct-map.h"
-#include "symtab.h"
 #include "error.h"
 #include "gripes.h"
+#include "oct-map.h"
+#include "symtab.h"
 #include "tree-base.h"
-#include "tree-expr.h"
 #include "tree-cmd.h"
-#include "tree-misc.h"
 #include "tree-const.h"
+#include "tree-expr.h"
+#include "tree-misc.h"
 #include "unwind-prot.h"
+#include "user-prefs.h"
+#include "variables.h"
 
 // Decide if it's time to quit a for or while loop.
 static inline int

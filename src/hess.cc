@@ -25,16 +25,16 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
-#include "dbleHESS.h"
 #include "CmplxHESS.h"
+#include "dbleHESS.h"
 
-#include "tree-const.h"
-#include "user-prefs.h"
+#include "defun-dld.h"
 #include "error.h"
 #include "gripes.h"
-#include "utils.h"
 #include "help.h"
-#include "defun-dld.h"
+#include "tree-const.h"
+#include "user-prefs.h"
+#include "utils.h"
 
 DEFUN_DLD_BUILTIN ("hess", Fhess, Shess, 2, 2,
   "[P, H] = hess (A) or H = hess (A): Hessenberg decomposition")

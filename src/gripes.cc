@@ -25,9 +25,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
-#include "tree-const.h"
-#include "gripes.h"
 #include "error.h"
+#include "gripes.h"
+#include "tree-const.h"
 
 void
 gripe_string_invalid (void)

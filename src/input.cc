@@ -95,25 +95,25 @@ gnu_readline (char *s)
 }
 }
 
-#include "pathlen.h"
-#include "help.h"
+#include "defun.h"
+#include "dirfns.h"
 #include "error.h"
-#include "utils.h"
+#include "help.h"
 #include "input.h"
+#include "oct-map.h"
+#include "oct-obj.h"
+#include "octave-hist.h"
+#include "octave.h"
 #include "pager.h"
 #include "parse.h"
-#include "dirfns.h"
-#include "octave.h"
-#include "sysdep.h"
-#include "variables.h"
-#include "tree-const.h"
-#include "octave-hist.h"
+#include "pathlen.h"
 #include "sighandlers.h"
-#include "user-prefs.h"
-#include "oct-obj.h"
-#include "oct-map.h"
 #include "symtab.h"
-#include "defun.h"
+#include "sysdep.h"
+#include "tree-const.h"
+#include "user-prefs.h"
+#include "utils.h"
+#include "variables.h"
 
 // The size that strings change by.
 #ifndef DEFAULT_ARRAY_SIZE

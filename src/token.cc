@@ -32,9 +32,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cassert>
 
 #include "error.h"
+#include "symtab.h"
 #include "token.h"
 #include "utils.h"
-#include "symtab.h"
 
 token::token (int l, int c)
 {

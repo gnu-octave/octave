@@ -25,13 +25,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
-#include "tree-const.h"
-#include "systime.h"
-#include "oct-obj.h"
-#include "oct-map.h"
 #include "defun.h"
-#include "utils.h"
 #include "help.h"
+#include "oct-map.h"
+#include "oct-obj.h"
+#include "systime.h"
+#include "tree-const.h"
+#include "utils.h"
 
 #ifdef HAVE_SYS_RESOURCE_H
 extern "C"

@@ -34,20 +34,20 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <fstream.h>
 #include <strstream.h>
 
-#include "tree-base.h"
-#include "tree-expr.h"
-#include "tree-const.h"
-#include "user-prefs.h"
-#include "unwind-prot.h"
-#include "load-save.h"
-#include "sysdep.h"
-#include "symtab.h"
-#include "pager.h"
+#include "defun.h"
 #include "error.h"
 #include "gripes.h"
-#include "defun.h"
-#include "utils.h"
 #include "help.h"
+#include "load-save.h"
+#include "pager.h"
+#include "symtab.h"
+#include "sysdep.h"
+#include "tree-base.h"
+#include "tree-const.h"
+#include "tree-expr.h"
+#include "unwind-prot.h"
+#include "user-prefs.h"
+#include "utils.h"
 
 extern "C"
 {

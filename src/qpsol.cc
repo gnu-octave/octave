@@ -29,14 +29,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "QPSOL.h"
 
-#include "tree-const.h"
-#include "variables.h"
-#include "gripes.h"
-#include "error.h"
-#include "utils.h"
-#include "pager.h"
-#include "help.h"
 #include "defun-dld.h"
+#include "error.h"
+#include "gripes.h"
+#include "help.h"
+#include "pager.h"
+#include "tree-const.h"
+#include "utils.h"
+#include "variables.h"
 
 #ifndef QPSOL_MISSING
 

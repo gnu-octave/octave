@@ -30,16 +30,16 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <Complex.h>
 
+#include "arith-ops.h"
 #include "error.h"
 #include "gripes.h"
-#include "utils.h"
 #include "mappers.h"
-#include "user-prefs.h"
 #include "tree-const.h"
-#include "arith-ops.h"
 #include "unwind-prot.h"
-#include "xpow.h"
+#include "user-prefs.h"
+#include "utils.h"
 #include "xdiv.h"
+#include "xpow.h"
 
 #if defined (HAVE_ISINF) || (defined (HAVE_FINITE) && defined (HAVE_ISNAN))
 #define DIVIDE_BY_ZERO_ERROR \

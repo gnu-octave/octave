@@ -34,16 +34,16 @@ extern "C"
 #endif
 }
 
-#include "pathsearch.h"
-#include "dynamic-ld.h"
-#include "tree-const.h"
-#include "user-prefs.h"
-#include "variables.h"
 #include "defaults.h"
 #include "dirfns.h"
-#include "octave.h"
-#include "utils.h"
+#include "dynamic-ld.h"
 #include "error.h"
+#include "octave.h"
+#include "pathsearch.h"
+#include "tree-const.h"
+#include "user-prefs.h"
+#include "utils.h"
+#include "variables.h"
 
 typedef builtin_function * (*Octave_builtin_fcn_struct_fcn)(void);
 

@@ -29,14 +29,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
-#include "symtab.h"
 #include "error.h"
-#include "variables.h"
-#include "utils.h"
-#include "user-prefs.h"
+#include "symtab.h"
 #include "tree-base.h"
-#include "tree-expr.h"
 #include "tree-const.h"
+#include "tree-expr.h"
+#include "user-prefs.h"
+#include "utils.h"
+#include "variables.h"
 
 extern "C"
 {

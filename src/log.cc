@@ -27,13 +27,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "EIG.h"
 
-#include "tree-const.h"
-#include "user-prefs.h"
+#include "defun-dld.h"
 #include "error.h"
 #include "gripes.h"
-#include "utils.h"
 #include "help.h"
-#include "defun-dld.h"
+#include "tree-const.h"
+#include "user-prefs.h"
+#include "utils.h"
 
 // XXX FIXME XXX -- the next two functions should really be just one...
 

@@ -37,14 +37,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include "error.h"
-#include "tree-base.h"
-#include "tree-expr.h"
-#include "tree-cmd.h"
-#include "octave.h"
-#include "tree-misc.h"
-#include "tree-const.h"
-#include "user-prefs.h"
 #include "oct-obj.h"
+#include "octave.h"
+#include "tree-base.h"
+#include "tree-cmd.h"
+#include "tree-const.h"
+#include "tree-expr.h"
+#include "tree-misc.h"
+#include "user-prefs.h"
 
 // Nonzero means we're breaking out of a loop or function body.
 extern int breaking;

@@ -27,10 +27,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "LPsolve.h"
 
-#include "tree-const.h"
+#include "defun-dld.h"
 #include "error.h"
 #include "help.h"
-#include "defun-dld.h"
+#include "tree-const.h"
 
 DEFUN_DLD_BUILTIN ("lp_solve", Flp_solve, Slp_solve, 11, 3,
   "lp_solve (): solve linear programs using lp_solve.")

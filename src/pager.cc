@@ -34,15 +34,15 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "procstream.h"
 
+#include "defun.h"
+#include "error.h"
+#include "help.h"
+#include "input.h"
+#include "oct-obj.h"
+#include "pager.h"
 #include "sighandlers.h"
 #include "user-prefs.h"
-#include "oct-obj.h"
-#include "error.h"
-#include "defun.h"
-#include "input.h"
-#include "pager.h"
 #include "utils.h"
-#include "help.h"
 
 // Where we stash output headed for the screen.
 static ostrstream *pager_buf = 0;

@@ -25,15 +25,15 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
-#include "dbleLU.h"
 #include "CmplxLU.h"
+#include "dbleLU.h"
 
+#include "defun-dld.h"
+#include "gripes.h"
+#include "help.h"
 #include "tree-const.h"
 #include "user-prefs.h"
-#include "gripes.h"
 #include "utils.h"
-#include "help.h"
-#include "defun-dld.h"
 
 DEFUN_DLD_BUILTIN ("lu", Flu, Slu, 2, 3,
   "[L, U, P] = lu (A): LU factorization")

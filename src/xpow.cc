@@ -29,15 +29,16 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <Complex.h>
 
-#include "xpow.h"
-#include "dMatrix.h"
-#include "CMatrix.h"
-#include "dDiagMatrix.h"
-#include "CDiagMatrix.h"
 #include "CColVector.h"
+#include "CDiagMatrix.h"
+#include "CMatrix.h"
 #include "EIG.h"
-#include "tree-const.h"
+#include "dDiagMatrix.h"
+#include "dMatrix.h"
+
 #include "error.h"
+#include "tree-const.h"
+#include "xpow.h"
 
 // This function also appears in tree-const.cc.  Maybe it should be a
 // member function of the Matrix class.

@@ -25,18 +25,17 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
-#include "dbleQR.h"
 #include "CmplxQR.h"
-
-#include "dbleQRP.h"
 #include "CmplxQRP.h"
+#include "dbleQR.h"
+#include "dbleQRP.h"
 
+#include "defun-dld.h"
+#include "gripes.h"
+#include "help.h"
 #include "tree-const.h"
 #include "user-prefs.h"
-#include "gripes.h"
 #include "utils.h"
-#include "help.h"
-#include "defun-dld.h"
 
 DEFUN_DLD_BUILTIN ("qr", Fqr, Sqr, 2, 2,
   "[Q, R] = qr (X):      form Q unitary and R upper triangular such\n\

@@ -551,7 +551,7 @@ TC_REP::fortran_style_matrix_index (const Matrix& mi) const
       const double *cop_out_index = mi.data ();
 
       idx_vector iv (mi, 1, "", len);
-      if (! iv)
+      if (! iv || range_max_check (iv.max (), len) < 0)
 	return retval;
 
       int result_size = iv.length ();

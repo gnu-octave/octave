@@ -3,7 +3,7 @@
 
 # Copyright (C) 1992, 93, 94, 95, 96 Free Software Foundation, Inc.
 
-# $Id: texi2dvi,v 1.1 1996-11-14 20:42:03 jwe Exp $
+# $Id: texi2dvi,v 1.2 1996-11-14 20:48:14 jwe Exp $
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -47,7 +47,7 @@
 progname=`echo "$0" | sed -e 's/[^\/]*\///g'`
 
 # This string is expanded by rcs automatically when this file is checked out.
-rcs_revision='$Revision: 1.1 $'
+rcs_revision='$Revision: 1.2 $'
 version=`set - $rcs_revision; echo $2`
 
 # To prevent hairy quoting and escaping later.
@@ -179,7 +179,7 @@ for command_line_filename in ${1+"$@"} ; do
   # else.  `.' goes first to ensure that any old .aux, .cps, etc. files in
   # ${directory} don't get used in preference to fresher files in `.'.
   TEXINPUTS=".:${directory}:${TEXINPUTS_orig}"
-  makeinfo_inputs="-I `echo $TEXINPUTS | sed 's,:, -I ,g'`"
+  makeinfo_inputs="-I`echo $TEXINPUTS | sed 's,:, -I,g'`"
 
   # Expand macro commands in the original source file using Makeinfo;
   #   the macro syntax bfox implemented is impossible to implement in TeX.
@@ -188,8 +188,8 @@ for command_line_filename in ${1+"$@"} ; do
   # Discard main info output, the user asked to run TeX, not makeinfo.
   # Redirect output to /dev/null to throw away `Making info file...' msg.
   $verbose "Macro-expanding $command_line_filename to $filename_tmp ..."
-  $makeinfo --footnote-style=end -E $filename_tmp -o /dev/null \
-    $command_line_filename >/dev/null
+  $makeinfo $makeinfo_inputs --footnote-style=end -E $filename_tmp \
+    -o /dev/null $command_line_filename >/dev/null
 
   # But if there were no macros, or makeinfo failed for some reason,
   # just use the original file.  (It shouldn't make any difference, but
@@ -333,7 +333,10 @@ true # exit successfully.
 
 # texi2dvi ends here
 # $Log: texi2dvi,v $
-# Revision 1.1  1996-11-14 20:42:03  jwe
+# Revision 1.2  1996-11-14 20:48:14  jwe
+# *** empty log message ***
+#
+# Revision 1.1  1996/11/14 20:42:03  jwe
 # *** empty log message ***
 #
 # Revision 1.10  1996/10/04 18:21:55  karl

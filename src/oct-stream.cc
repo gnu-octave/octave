@@ -1034,6 +1034,8 @@ octave_scan (std::istream& is, const scanf_format_elt& fmt, T valptr)
   // istream::scan exists in the GNU iostream library.  --jwe
 
   error ("formatted input only works when Octave is compiled with G++");
+
+  return is;
 }
 
 template std::istream&

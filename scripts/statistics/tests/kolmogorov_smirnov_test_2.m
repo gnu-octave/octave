@@ -73,11 +73,12 @@ function [pval, ks, d] = kolmogorov_smirnov_test_2 (x, y, alt)
   count (find (i <= n_x)) = 1 / n_x;
   count (find (i > n_x)) = - 1 / n_y;
 
-  z = cumsum(count);
-  if ( find(diff(s))) 
+  z = cumsum (count);
+  ds = diff (s);
+  if (any (ds == 0))
     ## There are some ties, so keep only those changes.
     warning ("cannot compute correct p-values with ties")
-    elems = [find(diff(s)); n_x + n_y];
+    elems = [find(ds); n_x+n_y];
     z = z(elems);
   endif
   

@@ -1,3 +1,12 @@
+2004-01-08  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* statistics/tests/kolmogorov_smirnov_test_2.m: Fix test for ties.
+
+2004-01-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* miscellaneous/path.m: Handle DEFAULT_LOADPATH substitution.
+	Always return substituted version of LOADPATH if nargout != 0.
+
 2003-12-21  Schloegl Alois  <alois.schloegl@tugraz.at>
 
 	* miscellaneous/fullfile.m: If filename is empty, set it to "."

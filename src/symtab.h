@@ -46,6 +46,7 @@ typedef int (*sv_Function)(void);
 #define HASH_MASK (HASH_TABLE_SIZE - 1)
 
 class tree;
+class tree_fvc;
 class tree_builtin;
 class tree_constant;
 class tree_function;
@@ -87,7 +88,7 @@ public:
   void unprotect (void);
   void make_eternal (void);
 
-  tree *def (void) const;
+  tree_fvc *def (void) const;
   char *help (void) const;
   void document (const char *h);
 
@@ -111,7 +112,7 @@ private:
   unsigned read_only : 1;
 
   char *help_string;
-  tree *definition;
+  tree_fvc *definition;
   symbol_def *next_elem;
   int count;
 
@@ -137,7 +138,7 @@ public:
 
   char *name (void) const;
   char *help (void) const; 
-  tree *def (void) const;
+  tree_fvc *def (void) const;
 
   void rename (const char *n);
 

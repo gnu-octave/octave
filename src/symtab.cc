@@ -75,7 +75,7 @@ symbol_def::init_state (void)
   read_only = 0;
 
   help_string = (char *) NULL;
-  definition = NULL_TREE;
+  definition = (tree_fvc *) NULL;
   next_elem = (symbol_def *) NULL;
   count = 0;
 }
@@ -163,7 +163,7 @@ symbol_def::make_eternal (void)
   eternal = 1;
 }
 
-tree *
+tree_fvc *
 symbol_def::def (void) const
 {
   return definition;
@@ -259,13 +259,13 @@ symbol_record::rename (const char *n)
   nm = strsave (n);
 }
 
-tree *
+tree_fvc *
 symbol_record::def (void) const
 {
   if (definition != (symbol_def *) NULL)
     return definition->def ();
   else
-    return NULL_TREE;
+    return (tree_fvc *) NULL;
 }
 
 int
@@ -401,7 +401,7 @@ symbol_record::define (tree_constant *t)
   if (is_variable () && read_only_error ())
     return 0;
 
-  tree *saved_def = NULL_TREE;
+  tree_fvc *saved_def = (tree_fvc *) NULL;
   if (definition == (symbol_def *) NULL)
     {
       definition = new symbol_def ();

@@ -730,22 +730,26 @@ but it uses less memory and avoids calling conj if X is real.")
   return retval;
 }
 
+DEFUN (is_complex, args, ,
+  "is_complex (x): return nonzero if x is a complex numeric object")
+{
+  octave_value retval;
+
+  if (args.length () == 1)
+    retval = args(0).is_complex_type () ? 1.0 : 0.0;
+  else
+    print_usage ("is_complex");
+
+  return retval;
+}
+
 DEFUN (is_struct, args, ,
   "is_struct (x): return nonzero if x is a structure")
 {
-  octave_value_list retval;
+  octave_value retval;
 
-  int nargin = args.length ();
-
-  if (nargin == 1)
-    {
-      octave_value arg = args(0);
-
-      if (arg.is_map ())
-	retval = 1.0;
-      else
-	retval = 0.0;
-    }
+  if (args.length () == 1)
+    retval = args(0).is_map () ? 1.0 : 0.0;
   else
     print_usage ("is_struct");
 

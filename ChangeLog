@@ -1,3 +1,9 @@
+2003-03-05  Paul Kienzle <pkienzle@users.sf.net>
+
+	* aclocal.m4 (OCTAVE_DYNAMIC_AUTO_ARRAYS): New macro.
+	* configure.in: Use it.
+	(AH_BOTTOM): Check HAVE_DYNAMIC_AUTO_ARRAYS instead of __GNUG__.
+
 2003-03-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in: Undo previous change.

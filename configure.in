@@ -22,7 +22,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### 02111-1307, USA. 
 
 AC_INIT
-AC_REVISION($Revision: 1.420 $)
+AC_REVISION($Revision: 1.421 $)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -867,6 +867,10 @@ OCTAVE_STRING_NPOS
 
 OCTAVE_PLACEMENT_DELETE
 
+### See if we can auto allocate variable sized arrays.
+
+OCTAVE_DYNAMIC_AUTO_ARRAYS
+
 ### Checks for header files.
 
 AC_HEADER_STDC
@@ -1388,7 +1392,7 @@ typedef int sig_atomic_t;
 #define OCTAVE_HAVE_SIG_JUMP
 #endif
 
-#if defined (__GNUG__)
+#if defined (HAVE_DYNAMIC_AUTO_ARRAYS)
 #define OCTAVE_LOCAL_BUFFER(T, buf, size) \
   T buf[size]
 #else

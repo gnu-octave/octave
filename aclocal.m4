@@ -102,6 +102,21 @@ fi
 AC_LANG_POP(C++)
 ])
 dnl
+dnl See if the compiler dynamic auto arrays
+dnl
+AC_DEFUN(OCTAVE_DYNAMIC_AUTO_ARRAYS,
+[AC_CACHE_CHECK([whether C++ supports dynamic auto arrays],
+octave_cv_dynamic_auto_arrays,
+[AC_LANG_PUSH(C++)
+AC_TRY_COMPILE(,
+[void test(char *); int length(); char x[length()]; test(x);],
+octave_cv_dynamic_auto_arrays=yes, octave_cv_dynamic_auto_arrays=no)])
+if test $octave_cv_dynamic_auto_arrays = yes; then
+AC_DEFINE(HAVE_DYNAMIC_AUTO_ARRAYS,1,[Define if C++ supports dynamic auto arrays])
+fi
+AC_LANG_POP(C++)
+])
+dnl
 dnl The following test is from Karl Berry's Kpathseach library.  I'm
 dnl including it here in case we someday want to make the use of
 dnl kpathsea optional.

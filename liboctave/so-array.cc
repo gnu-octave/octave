@@ -106,14 +106,14 @@ streamoff_array::compute_index (Array<int>& ra_idx,
   return ::compute_index (ra_idx, dimensions);
 }
 
-SND_CMP_OP (mx_el_eq, ==, std::streamoff, , streamoff_array, , FBM)
-SND_CMP_OP (mx_el_ne, !=, std::streamoff, , streamoff_array, , TBM)
+SND_CMP_OP (mx_el_eq, ==, std::streamoff, , streamoff_array, )
+SND_CMP_OP (mx_el_ne, !=, std::streamoff, , streamoff_array, )
 
-NDS_CMP_OP (mx_el_eq, ==, streamoff_array, , std::streamoff, , FBM)
-NDS_CMP_OP (mx_el_ne, !=, streamoff_array, , std::streamoff, , TBM)
+NDS_CMP_OP (mx_el_eq, ==, streamoff_array, , std::streamoff, )
+NDS_CMP_OP (mx_el_ne, !=, streamoff_array, , std::streamoff, )
 
-NDND_CMP_OP (mx_el_eq, ==, streamoff_array, , streamoff_array, , FBM, TBM)
-NDND_CMP_OP (mx_el_ne, !=, streamoff_array, , streamoff_array, , TBM, FBM)
+NDND_CMP_OP (mx_el_eq, ==, streamoff_array, , streamoff_array, )
+NDND_CMP_OP (mx_el_ne, !=, streamoff_array, , streamoff_array, )
 
 NDND_BIN_OP (streamoff_array, operator +,
 	     streamoff_array, streamoff_array, mx_inline_add)

@@ -1,5 +1,8 @@
 2004-03-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* so-array.cc (SND_CMP_OP, NDS_CMP_OP, NDND_CMP_OP):
+	Omit empty result args.
+
 	* Array.cc (Array<T>::Array (const Array<T>&, const dim_vector&)):
 	Move here from Array.h, check that size of array arg is not
 	smaller than the size defined by the new dimensions.

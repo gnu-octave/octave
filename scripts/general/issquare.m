@@ -33,7 +33,7 @@ function retval = issquare (x)
   retval = 0;
 
   if (nargin == 1)
-    if (ismatrix (x))
+    if (ismatrix (x) && ndims (x) < 3)
       [nr, nc] = size (x);
       if (nr == nc && nr > 0)
         retval = nr;

@@ -1,3 +1,17 @@
+2004-05-06  David Bateman  <dbateman@free.fr>
+
+	* general/issquare.m: Fail if ndim(x) > 2.
+
+	* linear-algebra/norm.m, linear-algebra/norm.m: Fail if ndim(x) > 2.
+
+	* linear-alegbra/cross.m, linear-algebra/dot.m: Allow matrix and
+	N-d array arguments.  Add optional dim argument to define
+	dimension along which to operate.
+
+	* linear-algebra/dmult.m: Allow N-d arrays.
+
+	* linear-algebra/vec.m: Use v(:) and not reshape.
+
 2004-04-29  David Bateman  <dbateman@free.fr>
 
 	* statistics/base/ranks.m, statistics/base/run_count.m,

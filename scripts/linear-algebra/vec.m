@@ -36,6 +36,6 @@ function v = vec (x)
     usage ("vec (x)");
   endif
 
-  v = reshape (x, prod (size (x)), 1);
+  v = x(:);
 
 endfunction

@@ -68,6 +68,10 @@ function retval = norm (x, p)
     return;
   endif
 
+  if (ndims (x) > 2)
+    error ("norm: Only valid on 2-D objects")
+  endif
+
   ## Do we have a vector or matrix as the first argument?
 
   if (rows (x) == 1 || columns (x) == 1)

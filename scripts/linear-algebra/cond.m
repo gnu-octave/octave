@@ -30,6 +30,10 @@
 function retval = cond (a)
 
   if (nargin == 1)
+    if (ndims (x) > 2)
+      error ("cond: Only valid on 2-D objects")
+    endif
+
     [nr, nc] = size (a);
     if (nr == 0 || nc == 0)
       retval = 0.0;

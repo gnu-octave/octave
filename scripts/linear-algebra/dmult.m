@@ -31,12 +31,11 @@ function M = dmult (a, B)
   if (nargin != 2)
     usage ("dmult (a, B)");
   endif
-
-  s = size (a);
-  if ((min (s) > 1) || (max (s) != rows (B)))
+ if (! isvector (a))
     error ("dmult: a must be a vector of length rows (B)");
   endif
-
-  M = (reshape (a, max (s), 1) * ones (1, columns (B))) .* B;
-
+  a = a(:);
+  sb = size (B);
+  sb(1) = 1;
+  M = repmat (a(:), sb) .* B;
 endfunction

@@ -18,36 +18,37 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} dot (@var{x}, @var{y})
-## Computes the dot product of two vectors.
+## @deftypefn {Function File} {} dot (@var{x}, @var{y}, @var{dim})
+## Computes the dot product of two vectors. If @var{x} and @var{y}
+## are matrices, calculate the dot-product along the first 
+## non-singleton dimension. If the optional argument @var{dim} is
+## given, calculate the dot-product along this dimension.
 ## @end deftypefn
 
 ## Author: jwe
 
-function z = dot (x, y)
+function z = dot (x, y, dim)
 
-  if (nargin != 2)
-    usage ("dot (x, y)");
+  if (nargin != 2 && nargin != 3)
+    usage ("dot (x, y, dim)");
   endif
 
-  if (isvector (x) && isvector (y) && length (x) == length (y))
-    [x_nr, x_nc] = size (x);
-    [y_nr, y_nc] = size (y);
-    if (x_nr == 1)
-      if (y_nr == 1)
-        z = x * y.';
-      else
-        z = x * y;
-      endif
-    else
-      if (y_nr == 1)
-        z = y * x;
-      else
-        z = y.' * x;
-      endif
+  if (nargin < 3)
+    if isvector (x)
+      x = x(:);
     endif
+    if isvector (y)
+      y = y(:);
+    endif
+    if (size (x) != size (y))
+      error ("dot: sizes of arguments must match")
+    endif
+    z = sum(x .* y);
   else
-    error ("dot: both arguments must be vectors of the same length");
+    if (size (x) != size (y))
+      error ("dot: sizes of arguments must match")
+    endif
+    z = sum(x .* y, dim);
   endif
 
 endfunction

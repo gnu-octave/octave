@@ -1094,11 +1094,38 @@ octave_scan (std::istream& is, const scanf_format_elt& fmt, T* valptr)
   switch (fmt.type)
     {
     case 'o':
-      is >> std::oct >> ref;
+      is >> std::oct >> ref >> std::dec;
       break;
 
     case 'x':
-      is >> std::hex >> ref;
+      is >> std::hex >> ref >> std::dec;
+      break;
+
+    case 'i':
+      {
+	int c1 = is.get ();
+
+	if (! is.eof ())
+	  {
+	    if (c1 == '0')
+	      {
+		int c2 = is.peek ();
+
+		is.putback (c1);
+
+		if (c2 == 'x' || c2 == 'X')
+		  is >> std::hex >> ref >> std::dec;
+		else
+		  is >> std::oct >> ref >> std::dec;
+	      }
+	    else
+	      {
+		is.putback (c1);
+
+		is >> ref;
+	      }
+	  }
+      }
       break;
 
     default:

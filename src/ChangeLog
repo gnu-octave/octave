@@ -1,5 +1,8 @@
 2004-08-02  John W. Eaton  <jwe@octave.org>
 
+	* oct-stream.cc (octave_scan): For %i format, recognize numbers
+	with leading 0x or 0X as hex and leading 0 as octal.
+
 	* OPERATORS/op-fcn-handle.cc: Delete.
 	* Makefile.in (OP_XSRC): Delete it from the list.
 	* pr-output.cc (octave_print_internal (std::ostream&, const

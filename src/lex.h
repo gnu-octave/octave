@@ -46,6 +46,9 @@ extern void restore_input_buffer (void *buf);
 // Delete a buffer (for unwind-prot).
 extern void delete_input_buffer (void *buf);
 
+// Is the given string a keyword?
+extern bool is_keyword (const std::string& s);
+
 // For communication between the lexer and parser.
 
 class

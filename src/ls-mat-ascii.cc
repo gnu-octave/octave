@@ -49,6 +49,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "defun.h"
 #include "error.h"
 #include "gripes.h"
+#include "lex.h"
 #include "load-save.h"
 #include "oct-obj.h"
 #include "oct-map.h"
@@ -209,7 +210,7 @@ read_mat_ascii_data (std::istream& is, const std::string& filename,
   else
     varname = filename;
 
-  pos = varname.find ('.');
+  pos = varname.rfind ('.');
 
   if (pos != NPOS)
     varname = varname.substr (0, pos);
@@ -222,7 +223,7 @@ read_mat_ascii_data (std::istream& is, const std::string& filename,
 	varname[i] = '_';
     }
 
-  if (! isalpha (varname[0]))
+  if (is_keyword (varname) || ! isalpha (varname[0]))
     varname.insert (0, "X");
 
   if (valid_identifier (varname))

@@ -229,7 +229,7 @@ static bool Vwarn_single_quote_string = false;
 static void fixup_column_count (char *s);
 static void do_comma_insert_check (void);
 static int is_plot_keyword (const std::string& s);
-static int is_keyword (const std::string& s);
+static int is_keyword_token (const std::string& s);
 static void prep_for_function (void);
 static void prep_for_nested_function (void);
 static std::string plot_style_token (const std::string& s);
@@ -1161,7 +1161,7 @@ prep_for_nested_function (void)
 // Handle keywords.  Return -1 if the keyword should be ignored.
 
 static int
-is_keyword (const std::string& s)
+is_keyword_token (const std::string& s)
 {
   int l = input_line_number;
   int c = current_input_column;
@@ -2472,7 +2472,7 @@ handle_identifier (void)
   // Keywords can be followed by identifiers (TOK_RETURN handles
   // that).
 
-  int kw_token = is_keyword (tok);
+  int kw_token = is_keyword_token (tok);
 
   if (kw_token)
     {
@@ -2653,6 +2653,12 @@ lexical_feedback::init (void)
   quote_is_transpose = false;
 }
 
+bool
+is_keyword (const std::string& s)
+{
+  return octave_kw_lookup (s.c_str (), s.length ()) != 0;
+}
+
 DEFCMD (iskeyword, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} iskeyword (@var{name})\n\
@@ -2664,7 +2670,7 @@ is omitted, return a list of keywords.\n\
 
   int argc = args.length () + 1;
 
-  string_vector argv = args.make_argv ("help");
+  string_vector argv = args.make_argv ("iskeyword");
 
   if (error_state)
     return retval;
@@ -2680,9 +2686,7 @@ is omitted, return a list of keywords.\n\
     }
   else if (argc == 2)
     {
-      std::string s = argv[1];
-
-      retval = (octave_kw_lookup (s.c_str (), s.length ()) != 0);
+      retval = is_keyword (argv[1]);
     }
   else
     print_usage ("iskeyword");

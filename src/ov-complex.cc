@@ -245,7 +245,8 @@ octave_complex::save_hdf5 (hid_t loc_id, const char *name,
   bool retval = true;
 
   space_hid = H5Screate_simple (0, dimens, 0);
-  if (space_hid < 0) return false;
+  if (space_hid < 0)
+    return false;
 
   type_hid = hdf5_make_complex_type (H5T_NATIVE_DOUBLE);
   if (type_hid < 0) 
@@ -269,6 +270,7 @@ octave_complex::save_hdf5 (hid_t loc_id, const char *name,
   H5Dclose (data_hid);
   H5Tclose (type_hid);
   H5Sclose (space_hid);
+
   return retval;
 }
 
@@ -284,7 +286,7 @@ octave_complex::load_hdf5 (hid_t loc_id, const char *name,
 
   if (! hdf5_types_compatible (type_hid, complex_type))
     {
-      H5Tclose(complex_type);
+      H5Tclose (complex_type);
       H5Dclose (data_hid);
       return false;
     }
@@ -294,7 +296,7 @@ octave_complex::load_hdf5 (hid_t loc_id, const char *name,
 
   if (rank != 0) 
     {
-      H5Tclose(complex_type);
+      H5Tclose (complex_type);
       H5Sclose (space_id);
       H5Dclose (data_hid);
       return false;
@@ -309,9 +311,10 @@ octave_complex::load_hdf5 (hid_t loc_id, const char *name,
       scalar = ctmp;
     }
 
-  H5Tclose(complex_type);
+  H5Tclose (complex_type);
   H5Sclose (space_id);
   H5Dclose (data_hid);
+
   return retval;
 }
 #endif

@@ -233,6 +233,7 @@ octave_scalar::save_hdf5 (hid_t loc_id, const char *name,
 
   H5Dclose (data_hid);
   H5Sclose (space_hid);
+
   return retval;
 }
 
@@ -260,7 +261,9 @@ octave_scalar::load_hdf5 (hid_t loc_id, const char *name,
     }
 
   scalar = dtmp;
+
   H5Dclose (data_hid);
+
   return true;
 }
 #endif

@@ -343,12 +343,12 @@ bool
 octave_bool_matrix::save_hdf5 (hid_t loc_id, const char *name,
 			       bool /* save_as_floats */)
 {
-  dim_vector d = dims ();
-  int empty = save_hdf5_empty (loc_id, name, d);
-  if (empty != 0)
+  dim_vector dv = dims ();
+  int empty = save_hdf5_empty (loc_id, name, dv);
+  if (empty)
     return (empty > 0);
 
-  int rank = d.length ();
+  int rank = dv.length ();
   hid_t space_hid = -1, data_hid = -1;
   bool retval = true;
   boolNDArray m = bool_array_value ();
@@ -357,7 +357,7 @@ octave_bool_matrix::save_hdf5 (hid_t loc_id, const char *name,
 
   // Octave uses column-major, while HDF5 uses row-major ordering
   for (int i = 0; i < rank; i++)
-    hdims[i] = d (rank-i-1);
+    hdims[i] = dv (rank-i-1);
 
   space_hid = H5Screate_simple (rank, hdims, 0);
   if (space_hid < 0) return false;
@@ -382,6 +382,7 @@ octave_bool_matrix::save_hdf5 (hid_t loc_id, const char *name,
 
   H5Dclose (data_hid);
   H5Sclose (space_hid);
+
   return retval;
 }
 
@@ -389,14 +390,15 @@ bool
 octave_bool_matrix::load_hdf5 (hid_t loc_id, const char *name,
 			       bool /* have_h5giterate_bug */)
 {
+  bool retval = false;
+
   dim_vector dv;
   int empty = load_hdf5_empty (loc_id, name, dv);
   if (empty > 0)
     matrix.resize(dv);
-  if (empty != 0)
-      return (empty > 0);
+  if (empty)
+    return (empty > 0);
 
-  bool retval = false;
   hid_t data_hid = H5Dopen (loc_id, name);
   hid_t space_id = H5Dget_space (data_hid);
 
@@ -442,6 +444,7 @@ octave_bool_matrix::load_hdf5 (hid_t loc_id, const char *name,
     }
 
   H5Dclose (data_hid);
+
   return retval;
 }
 #endif

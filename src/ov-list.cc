@@ -682,6 +682,7 @@ octave_list::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
     }
 
   H5Gclose (data_hid);
+
   return true;
 }
 

@@ -1,3 +1,8 @@
+2004-03-12  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-cell.cc (octave_cell::save_hdf5): Handle empty cells.
+	(octave_cell::load_hdf5): Likewise.
+
 2004-03-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* ov-base-mat.cc (octave_base_matrix<MT>::subsasgn): If empty,

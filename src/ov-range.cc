@@ -413,6 +413,7 @@ octave_range::save_hdf5 (hid_t loc_id, const char *name,
   H5Dclose (data_hid);
   H5Tclose (type_hid);
   H5Sclose (space_hid);
+
   return retval;
 }
 
@@ -421,6 +422,7 @@ octave_range::load_hdf5 (hid_t loc_id, const char *name,
 			 bool /* have_h5giterate_bug */)
 {
   bool retval = false;
+
   hid_t data_hid = H5Dopen (loc_id, name);
   hid_t type_hid = H5Dget_type (data_hid);
 
@@ -428,7 +430,7 @@ octave_range::load_hdf5 (hid_t loc_id, const char *name,
 
   if (! hdf5_types_compatible (type_hid, range_type))
     {
-      H5Tclose(range_type);
+      H5Tclose (range_type);
       H5Dclose (data_hid);
       return false;
     }
@@ -438,7 +440,7 @@ octave_range::load_hdf5 (hid_t loc_id, const char *name,
 
   if (rank != 0)
     {
-      H5Tclose(range_type);
+      H5Tclose (range_type);
       H5Sclose (space_hid);
       H5Dclose (data_hid);
       return false;
@@ -453,11 +455,11 @@ octave_range::load_hdf5 (hid_t loc_id, const char *name,
       range = r;
     }
 
-  H5Tclose(range_type);
+  H5Tclose (range_type);
   H5Sclose (space_hid);
   H5Dclose (data_hid);
-  return retval;
 
+  return retval;
 }
 #endif
 

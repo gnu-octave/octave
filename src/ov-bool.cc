@@ -187,6 +187,7 @@ octave_bool::save_hdf5 (hid_t loc_id, const char *name,
 
   H5Dclose (data_hid);
   H5Sclose (space_hid);
+
   return retval;
 }
 
@@ -214,7 +215,9 @@ octave_bool::load_hdf5 (hid_t loc_id, const char *name,
     }
 
   scalar = (dtmp != 0.);
+
   H5Dclose (data_hid);
+
   return true;
 }
 #endif

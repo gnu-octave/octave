@@ -496,12 +496,12 @@ bool
 octave_char_matrix_str::save_hdf5 (hid_t loc_id, const char *name,
 				   bool /* save_as_floats */)
 {
-  dim_vector d = dims ();
-  int empty = save_hdf5_empty (loc_id, name, d);
-  if (empty != 0)
+  dim_vector dv = dims ();
+  int empty = save_hdf5_empty (loc_id, name, dv);
+  if (empty)
     return (empty > 0);
 
-  int rank = d.length ();
+  int rank = dv.length ();
   hid_t space_hid = -1, data_hid = -1;
   bool retval = true;
   charNDArray m = char_array_value ();
@@ -510,7 +510,7 @@ octave_char_matrix_str::save_hdf5 (hid_t loc_id, const char *name,
 
   // Octave uses column-major, while HDF5 uses row-major ordering
   for (int i = 0; i < rank; i++)
-    hdims[i] = d (rank-i-1);
+    hdims[i] = dv (rank-i-1);
  
   space_hid = H5Screate_simple (rank, hdims, 0);
   if (space_hid < 0)
@@ -524,9 +524,9 @@ octave_char_matrix_str::save_hdf5 (hid_t loc_id, const char *name,
       return false;
     }
 
-  OCTAVE_LOCAL_BUFFER (char, s, d.numel ());
+  OCTAVE_LOCAL_BUFFER (char, s, dv.numel ());
 
-  for (int i = 0; i < d.numel(); ++i)
+  for (int i = 0; i < dv.numel (); ++i)
     s[i] = m(i);
 
   retval = H5Dwrite (data_hid, H5T_NATIVE_CHAR, H5S_ALL, H5S_ALL, 
@@ -534,6 +534,7 @@ octave_char_matrix_str::save_hdf5 (hid_t loc_id, const char *name,
 
   H5Dclose (data_hid);
   H5Sclose (space_hid);
+
   return retval;
 }
 
@@ -541,12 +542,14 @@ bool
 octave_char_matrix_str::load_hdf5 (hid_t loc_id, const char *name,
 				   bool /* have_h5giterate_bug */)
 {
+  bool retval = false;
+
   dim_vector dv;
   int empty = load_hdf5_empty (loc_id, name, dv);
   if (empty > 0)
     matrix.resize(dv);
-  if (empty != 0)
-      return (empty > 0);
+  if (empty)
+    return (empty > 0);
 
   hid_t data_hid = H5Dopen (loc_id, name);
   hid_t space_hid = H5Dget_space (data_hid);
@@ -556,7 +559,6 @@ octave_char_matrix_str::load_hdf5 (hid_t loc_id, const char *name,
 
   if (type_class_hid == H5T_INTEGER)
     {
-      bool retval = false;
       if (rank < 1)
 	{
 	  H5Tclose (type_hid);
@@ -698,6 +700,8 @@ octave_char_matrix_str::load_hdf5 (hid_t loc_id, const char *name,
 	  return false;
 	}
     }
+
+  return retval;
 }
 #endif
 

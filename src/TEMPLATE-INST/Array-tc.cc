@@ -47,7 +47,7 @@ resize_fill_value<octave_value> (const octave_value& x)
   return retval;
 }
 
-INSTANTIATE_ARRAY (octave_value);
+template class Array<octave_value>;
 
 template class Array2<octave_value>;
 

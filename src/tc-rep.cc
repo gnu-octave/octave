@@ -843,17 +843,15 @@ TC_REP::matrix_value (int force_string_conversion) const
 	  {
 	    int len = strlen (string);
 
-	    retval.resize (1, len);
-
-	    if (len > 1)
+	    if (len > 0)
 	      {
+		retval.resize (1, len);
+
 		for (int i = 0; i < len; i++)
 		  retval.elem (0, i) = toascii ((int) string[i]);
 	      }
-	    else if (len == 1)
-	      retval.elem (0, 0) = toascii ((int) string[0]);
 	    else
-	      panic_impossible ();
+	      retval = Matrix ();
 	  }
 	else
 	  gripe_invalid_conversion ("string", "real matrix");

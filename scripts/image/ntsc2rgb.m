@@ -19,9 +19,11 @@
 
 ## Image format conversion.
 
-function rgb = ntsc2rgb (yiq)
+## Author: Tony Richardson <amr@mpl.ucsd.edu>
+## Created: July 1994
+## Adapted-By: jwe
 
-  ## Written by Tony Richardson (amr@mpl.ucsd.edu) July 1994.
+function rgb = ntsc2rgb (yiq)
 
   if (nargin != 1)
     usage ("ntsc2rgb (yiq)");

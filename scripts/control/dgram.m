@@ -24,10 +24,12 @@
 ##  dgram (A, B)   returns the discrete controllability gramian.
 ##  dgram (A', C') returns the observability gramian.
 
-function gramian = dgram (A, B)
+## Author: R. Bruce Tenison <btenison@eng.auburn.edu>
+## Created: October 1993
+## Adapted-By: jwe
 
-  ##  Written by R. Bruce Tenison (btenison@eng.auburn.edu)
-  ##  October 1993
+
+function gramian = dgram (A, B)
 
   [U, Sig, V] = svd (B);
 

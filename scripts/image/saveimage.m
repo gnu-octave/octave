@@ -52,25 +52,27 @@
 ##
 ## SEE ALSO: loadimage, save, load, colormap
 
+## Author: Tony Richardson <amr@mpl.ucsd.edu>
+## Created: July 1994
+## Adapted-By: jwe
+
+## Rewritten by jwe to avoid using octoppm and pbm routines so that
+## people who don't have the the pbm stuff installed can still use this
+## function. 
+##
+## The conversion to PostScript is based on pnmtops.c, which is part of
+## the portable bitmap utilties and bears this copyright notice:
+##
+## Copyright (C) 1989 by Jef Poskanzer.
+##
+## Permission to use, copy, modify, and distribute this software and its
+## documentation for any purpose and without fee is hereby granted, provided
+## that the above copyright notice appear in all copies and that both that
+## copyright notice and this permission notice appear in supporting
+## documentation.  This software is provided "as is" without express or
+## implied warranty.
+
 function saveimage (filename, img, img_form, map)
-
-  ## Written by Tony Richardson (amr@mpl.ucsd.edu) July 1994.
-
-  ## Rewritten by jwe to avoid using octoppm and pbm routines so that
-  ## people who don't have the the pbm stuff installed can still use this
-  ## function. 
-  ##
-  ## The conversion to PostScript is based on pnmtops.c, which is part of
-  ## the portable bitmap utilties and bears this copyright notice:
-  ##
-  ## Copyright (C) 1989 by Jef Poskanzer.
-  ##
-  ## Permission to use, copy, modify, and distribute this software and its
-  ## documentation for any purpose and without fee is hereby granted, provided
-  ## that the above copyright notice appear in all copies and that both that
-  ## copyright notice and this permission notice appear in supporting
-  ## documentation.  This software is provided "as is" without express or
-  ## implied warranty.
 
   if (nargin < 2 || nargin > 4)
     usage ("saveimage (filename, matrix, [format, [colormap]])");

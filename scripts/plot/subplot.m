@@ -53,9 +53,10 @@
 ##   -----------------------------------
 ##
 
-function subplot (rows, columns, index)
+## Author: Vinayak Dutt <Dutt.Vinayak@mayo.EDU>
+## Adapted-By: jwe
 
-  ## Written by Vinayak Dutt, Dutt.Vinayak@mayo.EDU
+function subplot (rows, columns, index)
 
   if (! gnuplot_has_multiplot)
     error ("subplot: gnuplot does not appear to support this feature");

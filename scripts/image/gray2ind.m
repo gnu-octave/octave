@@ -19,9 +19,11 @@
 
 ## Image format conversion
 
-function [X, map] = gray2ind (I, n)
+## Author: Tony Richardson <amr@mpl.ucsd.edu>
+## Created: July 1994
+## Adapted-By: jwe
 
-  ## Written by Tony Richardson (amr@mpl.ucsd.edu) July 1994.
+function [X, map] = gray2ind (I, n)
 
   if (nargin < 1 || nargin > 2)
     usage ("gray2ind (I, n)");

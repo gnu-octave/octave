@@ -25,9 +25,11 @@
 ##
 ## [g [, v]] = gcd (a1, ..., ak) is the same with a = [a1, ..., ak].
 
-function [g, v] = gcd (a, ...)
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Created: 16 September 1994
+## Adapted-By: jwe
 
-## Written by KH (Kurt.Hornik@ci.tuwien.ac.at) on Sep 16, 1994.
+function [g, v] = gcd (a, ...)
 
   if (nargin > 1)
     va_start;

@@ -24,10 +24,12 @@
 ## If x has more than one component, both a and b must be scalars.
 ## If x is a scalar, a and b must be of compatible dimensions.
 
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Created: 2 August 1994.
+## Adapted-By: jwe
+
 function y = betai (a, b, x)
   
-  ## Written by KH (Kurt.Hornik@ci.tuwien.ac.at) on Aug 2, 1994.
-
   ## Computation is based on the series expansion
   ##   betai(a, b, x) 
   ##     = \frac{1}{B(a, b)} x^a 

@@ -24,12 +24,12 @@
 ## The optional argument bit specifies whether the input data is 
 ## 8 bit (default) or 16 bit.
 
+## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
+## Created: 18 October 1994
+## Adapted-By: jwe
+
 function y = mu2lin (x, bit)
   
-  ## Written by AW (Andreas.Weingessel@ci.tuwien.ac.at) on Oct 18, 1994
-  ## Updated by AW (Andreas.Weingessel@ci.tuwien.ac.at) on Oct 27, 1994
-  ## Copyright Department of Probability Theory and Statistics TU Wien
-
   if (nargin == 1)
     bit = 8;
   elseif (nargin == 2)

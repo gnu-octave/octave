@@ -24,10 +24,11 @@
 ## between the i-th variable in X and the j-th variable in Y.
 ## cov(X) is cov(X, X).
 
-function retval = cov (X, Y)
+## Author: Kurt Hornik <hornik@ci.tuwien.ac.at>
+## Created: March 1993
+## Adapted-By: jwe
 
-  ## Written by Kurt Hornik (hornik@ci.tuwien.ac.at) March 1993.
-  ## Dept of Probability Theory and Statistics TU Wien, Austria.
+function retval = cov (X, Y)
 
   if (nargin < 1 || nargin > 2)
     usage ("cov (X [, Y])");

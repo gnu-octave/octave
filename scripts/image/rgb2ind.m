@@ -25,9 +25,11 @@
 ##
 ## Bugs: The color map may have duplicate entries.
 
-function [X, map] = rgb2ind (R, G, B)
+## Author: Tony Richardson <amr@mpl.ucsd.edu>
+## Created: July 1994
+## Adapted-By: jwe
 
-  ## Written by Tony Richardson (amr@mpl.ucsd.edu) July 1994.
+function [X, map] = rgb2ind (R, G, B)
 
   if (nargin != 3)
     usage ("[X, map] = rgb2ind (R, G, B)");

@@ -24,10 +24,11 @@
 ## i-th variable in X and the j-th variable in Y.
 ## corrcoef(X) is corrcoef(X, X).
 
-function retval = corrcoef (X, Y)
+## Author: Kurt Hornik <hornik@ci.tuwien.ac.at>
+## Created: March 1993
+## Adapted-By: jwe
 
-  ## Written by Kurt Hornik (hornik@ci.tuwien.ac.at) March 1993.
-  ## Dept of Probability Theory and Statistics TU Wien, Austria.
+function retval = corrcoef (X, Y)
 
   if (nargin < 1 || nargin > 2)
     usage ("corrcoef (X [, Y])");

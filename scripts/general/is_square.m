@@ -24,9 +24,11 @@
 ##
 ## See also: size, rows, columns, length, is_matrix, is_scalar, is_vector
 
-function retval = is_square (x)
+## Author: A. S. Hodel <scotte@eng.auburn.edu>
+## Created: August 1993
+## Adapted-By: jwe
 
-  ## Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
+function retval = is_square (x)
 
   if (nargin == 1)
     [nr, nc] = size (x);

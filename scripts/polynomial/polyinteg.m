@@ -27,9 +27,11 @@
 ## SEE ALSO: poly, polyderiv, polyreduce, roots, conv, deconv, residue,
 ##           filter, polyval, polyvalm
 
-function p = polyinteg (p)
+## Author: Tony Richardson <amr@mpl.ucsd.edu>
+## Created: June 1994
+## Adapted-By: jwe
 
-  ## Written by Tony Richardson (amr@mpl.ucsd.edu) June 1994.
+function p = polyinteg (p)
 
   if(nargin != 1)
     usage ("polyinteg (vector)");

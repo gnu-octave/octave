@@ -22,10 +22,12 @@
 ## Returns the beta function beta(a,b) = gamma(a) * gamma(b) / gamma(a+b)
 ## of a and b.
 
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Created: 13 June 1993
+## Adapted-By: jwe
+
 function retval = beta (a, b)
   
-  ## Written by KH (Kurt.Hornik@ci.tuwien.ac.at) on Jun 13, 1993
-
   if (nargin != 2)
     usage ("beta (a, b)");
   endif

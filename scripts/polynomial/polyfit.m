@@ -23,11 +23,13 @@
 ## minimizes sumsq (p(x(i)) - y(i)), i.e., that best fits the data 
 ## in the least squares sense.
 
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Created: 13 December 1994
+## Adapted-By: jwe
+
 function p = polyfit (x, y, n)
   
-  ## Written by KH (Kurt.Hornik@ci.tuwien.ac.at) on Dec 13, 1994
-  ## Copyright Dept of Statistics and Probability Theory TU Wien
-  
+ 
   if (nargin != 3)
     usage ("polyfit (x, y, n)");
   endif

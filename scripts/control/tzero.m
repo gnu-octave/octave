@@ -25,9 +25,11 @@
 ##
 ## Needs to incorporate mvzero algorithm to isolate finite zeros.
 
-function zr = tzero (a, b, c, d, bal)
+## Author: A. S. Hodel <scotte@eng.auburn.edu>
+## Created: August 1993
+## Adapted-By: jwe
 
-  ## Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
+function zr = tzero (a, b, c, d, bal)
 
   if (nargin == 4)
     bal = "B";

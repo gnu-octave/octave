@@ -22,10 +22,11 @@
 ## Replace all occurences of the substring x of the string s with the
 ## string y.
 
+## Author: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
+## Created: 11 November 1994
+## Adapted-By: jwe
+
 function t = strrep (s, x, y)
-  
-## Written by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at> on 1994/10/11
-  ## Updated by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at> on 1996/05/25  
   
   if (nargin <> 3)
     usage ("strrep (s, x, y)");

@@ -40,11 +40,12 @@
 ##   p = the estimate error covariance after the measurement update
 ##   e = closed loop poles of (A - A L C)
 
-function [l, m, p, e] = dlqe (a, g, c, sigw, sigv, zz)
+## Author: A. S. Hodel <scotte@eng.auburn.edu>
+##         R. Bruce Tenison <btenison@eng.auburn.edu>
+## Created: August 1993
+## Adapted-By: jwe
 
-  ## Written by A. S. Hodel (scotte@eng.auburn.edu) August, 1993.
-  ## Modified for discrete time by R. Bruce Tenison (btenison@eng.auburn.edu)
-  ## October, 1993
+function [l, m, p, e] = dlqe (a, g, c, sigw, sigv, zz)
 
   if (nargin != 5 && nargin != 6)
     error ("dlqe: invalid number of arguments");

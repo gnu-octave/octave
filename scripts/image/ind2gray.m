@@ -28,9 +28,11 @@
 ##
 ## SEE ALSO: gray2ind, rgb2ntsc, image, colormap
 
-function Y = ind2gray (X, map)
+## Author: Tony Richardson <amr@mpl.ucsd.edu>
+## Created: July 1994
+## Adapted-By: jwe
 
-  ## Written by Tony Richardson (amr@mpl.ucsd.edu) July 1994.
+function Y = ind2gray (X, map)
 
   if (nargin < 1 || nargin > 2)
     usage ("ind2gray (X, map)");

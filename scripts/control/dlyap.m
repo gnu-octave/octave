@@ -32,9 +32,11 @@
 ## whichever is appropriate.  Uses Schur decomposition as in Kitagawa
 ## (1977).
 
-function x = dlyap (a, b)
+## Author: A. S. Hodel <scotte@eng.auburn.edu>
+## Created: August 1993
+## Adapted-By: jwe
 
-  ## Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
+function x = dlyap (a, b)
 
   if ((n = is_square (a)) == 0)
     warning ("dlyap: a must be square");

@@ -42,9 +42,11 @@
 ##
 ## SEE ALSO: poly, roots, residue, conv, deconv, polyval, polyderiv, polyinteg
 
-function A = compan (c)
+## Author: Tony Richardson <amr@mpl.ucsd.edu>
+## Created: June 1994
+## Adapted-By: jwe
 
-  ## Written by Tony Richardson (amr@mpl.ucsd.edu) June 1994.
+function A = compan (c)
 
   if (nargin != 1)
     usage ("compan (vector)");

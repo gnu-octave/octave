@@ -27,9 +27,11 @@
 ##
 ## SEE ALSO: image, imshow
 
-function x = imagesc (x, zoom)
+## Author: Tony Richardson <amr@mpl.ucsd.edu>
+## Created: July 1994
+## Adapted-By: jwe
 
-  ## Written by Tony Richardson (amr@mpl.ucsd.edu) July 1994.
+function x = imagesc (x, zoom)
 
   if (nargin < 1 || nargin > 2)
     usage ("image (matrix, [zoom])");

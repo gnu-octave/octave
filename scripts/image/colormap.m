@@ -29,9 +29,11 @@
 ## 
 ## colormap with no arguments returns the current colormap.
 
-function cmap = colormap (map)
+## Author: Tony Richardson <amr@mpl.ucsd.edu>
+## Created: July 1994
+## Adapted-By: jwe
 
-  ## Written by Tony Richardson (amr@mpl.ucsd.edu) July 1994.
+function cmap = colormap (map)
 
   global CURRENT_COLOR_MAP
 

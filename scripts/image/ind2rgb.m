@@ -25,9 +25,11 @@
 ##
 ## SEE ALSO: rgb2ind, image, imshow, ind2gray, gray2ind.
 
-function [R, G, B] = ind2rgb (X, map)
+## Author: Tony Richardson <amr@mpl.ucsd.edu>
+## Created: July 1994
+## Adapted-By: jwe
 
-  ## Written by Tony Richardson (amr@mpl.ucsd.edu) July 1994.
+function [R, G, B] = ind2rgb (X, map)
 
   if (nargin < 1 || nargin > 2)
     usage ("ind2rgb (X, map)");

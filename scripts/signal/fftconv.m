@@ -27,10 +27,12 @@
 ## The computation uses the FFT by calling fftfilt.  If the optional
 ## argument N is specified, an N-point FFT is used.
 
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Created: 3 September 1994
+## Adapted-By: jwe
+
 function c = fftconv (a, b, N)
 
-  ## Written by KH (Kurt.Hornik@ci.tuwien.ac.at) on Sep 3, 1994.
-  
   if (nargin < 2 || nargin > 3)
     usage ("fftconv (b, x [, N])");
   endif

@@ -19,9 +19,11 @@
 
 ## Image format conversion.
 
-function yiq = rgb2ntsc (rgb)
+## Author: Tony Richardson <amr@mpl.ucsd.edu>
+## Created: July 1994
+## Adapted-By: jwe
 
-  ## Written by Tony Richardson (amr@mpl.ucsd.edu) July 1994.
+function yiq = rgb2ntsc (rgb)
 
   if (nargin != 1)
     usage ("rgb2ntsc (rgb)");

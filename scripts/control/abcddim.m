@@ -28,9 +28,11 @@
 ##
 ## Returns n = m = p = -1 if the system is not compatible.
 
-function [n, m, p] = abcddim (a, b, c, d)
+## Author: A. S. Hodel <scotte@eng.auburn.edu>
+## Created: August 1993
+## Adapted-By: jwe
 
-  ## Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
+function [n, m, p] = abcddim (a, b, c, d)
 
   if (nargin != 4)
     error ("usage: abcddim (a, b, c, d)");

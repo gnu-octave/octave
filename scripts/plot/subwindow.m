@@ -26,9 +26,11 @@
 ## multiplot mode has to be previously initialized using multiplot()
 ## command, else this command just becomes an aliad to multiplot()
 
-function subwindow (xn, yn)
+## Author: Vinayak Dutt <Dutt.Vinayak@mayo.EDU>
+## Created: 3 July 95
+## Adapted-By: jwe
 
-  ## Written by Vinayak Dutt, Dutt.Vinayak@mayo.EDU  3 Jul 95 
+function subwindow (xn, yn)
 
   if (! gnuplot_has_multiplot)
     error ("subwindow: gnuplot does not appear to support this feature");

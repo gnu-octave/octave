@@ -30,10 +30,10 @@
 ## See command plot() for the various options to this command
 ## as this is just mulitplot version of the same command.
 
+## Author: Vinayak Dutt <Dutt.Vinayak@mayo.EDU>
+## Adapted-By: jwe
+
 function mplot (...)
-
-
-  ## Written by Vinayak Dutt, Dutt.Vinayak@mayo.EDU
 
   if (! gnuplot_has_multiplot)
     error ("mplot: gnuplot does not appear to support this feature");

@@ -24,9 +24,11 @@
 ##
 ## See other plotting commands also.
 
-function zlabel (text)
+## Author: Vinayak Dutt <Dutt.Vinayak@mayo.EDU>
+## Created: 3 July 95
+## Adapted-By: jwe
 
-  ## Written by Vinayak Dutt, Dutt.Vinayak@mayo.EDU  3 Jul 95 
+function zlabel (text)
 
   if (nargin != 1)
     usage ("zlabel (text)");

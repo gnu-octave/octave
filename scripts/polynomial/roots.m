@@ -22,11 +22,12 @@
 ## For a vector v with n components, return the roots of the
 ## polynomial v(1) * z^(n-1) + ... + v(n-1) * z + v(n).
 
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Created: 24 December 1993
+## Adapted-By: jwe
+
 function r = roots (v)
 
-  ## Written by KH (Kurt.Hornik@ci.tuwien.ac.at) on Dec 24, 1993
-  ## Updated by KH on Nov 25, 1994
-  
   if (min (size (v)) > 1 || nargin != 1)
     usage ("roots (v), where v is a vector");
   endif

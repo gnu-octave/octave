@@ -31,9 +31,11 @@
 ## SEE ALSO: conv, poly, roots, residue, polyval, polyderiv,
 ## polyinteg 
 
-function [b, r] = deconv (y, a)
+## Author: Tony Richardson <amr@mpl.ucsd.edu>
+## Created: June 1994
+## Adapted-By: jwe
 
-  ## Written by Tony Richardson (amr@mpl.ucsd.edu) June 1994.
+function [b, r] = deconv (y, a)
 
   if (nargin != 2)
     usage ("deconv (y, a)");

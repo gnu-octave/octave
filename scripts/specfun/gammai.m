@@ -30,10 +30,12 @@
 ## If neither a nor x is scalar, the sizes of a and x must agree, and
 ## gammai is applied pointwise.
 
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Created: 13 August 1994
+## Adapted-By: jwe
+
 function y = gammai (a, x)
   
-  ## Written by KH (Kurt.Hornik@ci.tuwien.ac.at) on Aug 13, 1994
-
   if (nargin != 2)
     usage ("gammai (a, x)");
   endif

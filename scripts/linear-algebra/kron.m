@@ -24,9 +24,11 @@
 ##
 ##   x = [a(i,j) b]
 
-function x = kron (a, b)
+## Author: A. S. Hodel <scotte@eng.auburn.edu>
+## Created: August 1993
+## Adapted-By: jwe
 
-  ## Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
+function x = kron (a, b)
 
   if (nargin == 2)
 

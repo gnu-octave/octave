@@ -25,9 +25,11 @@
 ## Switches from multiplot (if in  multiplot mode) to single plot
 ## mode
 
-function oneplot ()
+## Author: Vinayak Dutt <Dutt.Vinayak@mayo.EDU>
+## Created: 3 July 95
+## Adapted-By: jwe
 
-  ## Written by Vinayak Dutt, Dutt.Vinayak@mayo.EDU  3 Jul 95 
+function oneplot ()
 
   if (! gnuplot_has_multiplot)
     error ("oneplot: gnuplot does not appear to support this feature");

@@ -29,9 +29,11 @@
 ##
 ## SEE ALSO: image, imagesc, colormap, gray2ind, rgb2ind.
 
-function imshow (a1, a2, a3)
+## Author: Tony Richardson <amr@mpl.ucsd.edu>
+## Created: July 1994
+## Adapted-By: jwe
 
-  ## Written by Tony Richardson (amr@mpl.ucsd.edu) July 1994.
+function imshow (a1, a2, a3)
 
   if (nargin < 0 || nargin > 3)
     usage ("imshow (args)");

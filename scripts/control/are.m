@@ -33,9 +33,11 @@
 ##
 ## See also: balance
 
-function x = are (a, b, c, opt)
+## Author: A. S. Hodel <scotte@eng.auburn.edu>
+## Created: August 1993
+## Adapted-By: jwe
 
-  ## Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
+function x = are (a, b, c, opt)
 
   if (nargin == 3 || nargin == 4)
     if (nargin == 4)

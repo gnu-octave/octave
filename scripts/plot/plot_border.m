@@ -36,9 +36,11 @@
 ##
 ## Without any arguments, turns borders off.
 
-function plot_border (...)
+## Author: Vinayak Dutt <Dutt.Vinayak@mayo.EDU>
+## Created: 3 July 95
+## Adapted-By: jwe
 
-  ## Written by Vinayak Dutt, Dutt.Vinayak@mayo.EDU  3 Jul 95 
+function plot_border (...)
 
   if (! gnuplot_has_multiplot)
     error ("plot_border: gnuplot does not appear to support this feature");

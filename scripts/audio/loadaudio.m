@@ -32,11 +32,12 @@
 ## mu-law encoded files are transformed to 8 and 16-bit linear
 ## format, respectively.
 
+## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
+## Created: 10 April 1994
+## Adapted-By: jwe
+
 function X = loadaudio (name, ext, bit)
   
-  ## Written by AW (Andreas.Weingessel@ci.tuwien.ac.at) on Apr 10, 1994
-  ## Last modified by AW on Oct 29, 1994
-
   if (nargin == 0 || nargin > 3)
     usage ("loadaudio (name [, ext [, bit]])");
   endif

@@ -25,9 +25,11 @@
 ##
 ## SEE ALSO: saveimage, load, save
 
-function [X, map] = loadimage (filename)
+## Author: Tony Richardson <amr@mpl.ucsd.edu>
+## Created: July 1994
+## Adapted-By: jwe
 
-  ## Written by Tony Richardson (amr@mpl.ucsd.edu) July 1994.
+function [X, map] = loadimage (filename)
 
   if (nargin != 1)
     usage ("loadimage (filename)");

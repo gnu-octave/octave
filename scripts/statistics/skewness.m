@@ -28,9 +28,11 @@
 ## If x is a matrix, return a row vector containing the skewness for each
 ## column.
 
-function retval = skewness (x)
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Created: 29 July 1994
+## Adapted-By: jwe
 
-  ## Written by KH (Kurt.Hornik@ci.tuwien.ac.at) on Jul 29, 1994.
+function retval = skewness (x)
 
   if (nargin != 1)
     usage ("skewness (x)");

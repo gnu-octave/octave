@@ -22,13 +22,15 @@
 ## y = fftfilt (b, x) filters x with the FIR filter b using the FFT.
 ## y = fftfilt (b, x, N) uses the overlap-add method to filter x with
 ## b using an N-point FFT.
+##
+## Reference:  Oppenheim & Schafer (1989).  Discrete-time Signal
+## Processing (Chapter 8).  Prentice-Hall.
+
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Created: 3 September 1994
+## Adapted-By: jwe
 
 function y = fftfilt (b, x, N)
-
-  ## Written by KH (Kurt.Hornik@ci.tuwien.ac.at) on Sep 3, 1994
-
-  ## Reference:  Oppenheim & Schafer (1989).  Discrete-time Signal
-  ## Processing (Chapter 8).  Prentice-Hall.
 
   ## If N is not specified explicitly, we do not use the overlap-add 
   ## method at all because loops are really slow.  Otherwise, we only

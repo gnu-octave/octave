@@ -21,12 +21,12 @@
 ##
 ## executes the shell command `mixer [w_type [, value]]'
 
+## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
+## Created: 5 October 1994
+## Adapted-By: jwe
+
 function setaudio (w_type, value)
   
-  ## Written by AW (Andreas.Weingessel@ci.tuwien.ac.at) on Oct 5, 1994
-  ## Updated by AW on Nov 3, 1994
-  ## Copyright Department of Probability Theory and Statistics TU Wien
-
   if (nargin == 0)
     system ("mixer");
   elseif (nargin == 1)

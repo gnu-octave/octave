@@ -30,9 +30,11 @@
 ##
 ## Algorithm taken from Golub and Van Loan, Matrix Computations, 2nd ed.
 
-function [aa, bb, q, z] = qzhess (a, b)
+## Author: A. S. Hodel <scotte@eng.auburn.edu>
+## Created: August 1993
+## Adapted-By: jwe
 
-  ## Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
+function [aa, bb, q, z] = qzhess (a, b)
 
   if (nargin != 2)
     error ("usage: [aa, bb, q, z] = qzhess (a, b)");

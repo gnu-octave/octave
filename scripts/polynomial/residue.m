@@ -62,9 +62,11 @@
 ##
 ## SEE ALSO: poly, roots, conv, deconv, polyval, polyderiv, polyinteg
 
-function [r, p, k, e] = residue (b, a, toler)
+## Author: Tony Richardson <amr@mpl.ucsd.edu>
+## Created: June 1994
+## Adapted-By: jwe
 
-  ## Written by Tony Richardson (amr@mpl.ucsd.edu) June 1994.
+function [r, p, k, e] = residue (b, a, toler)
 
   ## Here's the method used to find the residues.
   ## The partial fraction expansion can be written as:

@@ -44,9 +44,11 @@
 ##
 ## See also: balance, are
 
-function x = dare (a, b, c, r, opt)
+## Author: A. S. Hodel <scotte@eng.auburn.edu>
+## Created: August 1993
+## Adapted-By: jwe
 
-  ## Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
+function x = dare (a, b, c, r, opt)
 
   if (nargin == 4 || nargin == 5)
     if (nargin == 5)

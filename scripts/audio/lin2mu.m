@@ -22,11 +22,12 @@
 ## x is a vector of an 8- or 16-bit linearly encoded audio sample,
 ## This is transformed into a mu-law encoded vector.
 
+## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
+## Created: 17 October 1994
+## Adapted-By: jwe
+
 function y = lin2mu (x)
   
-  ## Written by AW (Andreas.Weingessel@ci.tuwien.ac.at) on Oct 17, 1994
-  ## Copyright Department of Probability Theory and Statistics TU Wien
-
   if (nargin != 1)
     usage ("y = lin2mu (x)");
   endif

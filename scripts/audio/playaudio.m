@@ -31,12 +31,12 @@
 ##
 ## `playaudio (X)' plays the audio data contained in the vector X.
 
+## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
+## Created: 11 April 1994
+## Adapted-By: jwe
+
 function playaudio (name, ext)
   
-  ## Written by AW (Andreas.Weingessel@ci.tuwien.ac.at) on Apr 11, 1994
-  ## Last modified by AW on Nov 7, 1994
-  ## Copyright Dept of Probability Theory and Statistics TU Wien
-
   file = octave_tmp_file_name ();
 
   usage_msg = "playaudio (name [, ext])  or  playaudio (X)";

@@ -26,9 +26,11 @@
 ## If x is a vector, poly (x) is a vector of coefficients of the
 ## polynomial whose roots are the elements of x.
 
-function y = poly (x)
+## Author: KH <Kurt.Hornik@neuro.tuwien.ac.at>
+## Created: 24 December 1993
+## Adapted-By: jwe
 
-  ## Written by KH (Kurt.Hornik@neuro.tuwien.ac.at) Dec 24, 1993.
+function y = poly (x)
 
   if (nargin != 1)
     usage ("poly (x)");

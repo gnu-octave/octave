@@ -35,9 +35,11 @@
 ##
 ## tol is a roundoff paramter, set to 2*eps if omitted.
 
-function retval = is_controllable (a, b, tol)
+## Author: A. S. Hodel <scotte@eng.auburn.edu>
+## Created: August 1993
+## Adapted-By: jwe
 
-  ## Written by A. S. Hodel (scotte@eng.auburn.edu) August, 1993.
+function retval = is_controllable (a, b, tol)
 
   if (nargin == 2 || nargin == 3)
 

@@ -29,10 +29,11 @@
 ##
 ## assuming a zero-order hold on the input and sample time T.
 
-function [Ad, Bd] = c2d (Ac, Bc, T)
+## Author: R.B. Tenison <btenison@eng.auburn.edu>
+## Created: October 1993
+## Adapted-By: jwe
 
-  ## Written by R.B. Tenison (btenison@eng.auburn.edu)
-  ## October 1993
+function [Ad, Bd] = c2d (Ac, Bc, T)
 
   ## check args
   if (nargin != 3)

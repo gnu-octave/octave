@@ -37,9 +37,11 @@
 ##   p = solution of algebraic Riccati equation
 ##   e = closed loop poles of (A - B K)
 
-function [k, p, e] = lqr (a, b, q, r, zz)
+## Author: A. S. Hodel <scotte@eng.auburn.edu>
+## Created: August 1993
+## Adapted-By: jwe
 
-  ## Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
+function [k, p, e] = lqr (a, b, q, r, zz)
 
   if (nargin != 4 && nargin != 5)
     error ("lqr: invalid number of arguments");

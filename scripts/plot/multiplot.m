@@ -28,9 +28,11 @@
 ## NOTE: this will work only with gnuplot installed with
 ##       multiplot patch
 
-function multiplot (xn, yn)
+## Author: Vinayak Dutt, Dutt.Vinayak@mayo.EDU
+## Created: 3 July 95
+## Adapted-By: jwe
 
-  ## Written by Vinayak Dutt, Dutt.Vinayak@mayo.EDU  3 Jul 95 
+function multiplot (xn, yn)
 
   if (! gnuplot_has_multiplot)
     error ("multiplot: gnuplot does not appear to support this feature");

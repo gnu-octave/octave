@@ -38,9 +38,11 @@
 ##   p = solution of algebraic Riccati equation
 ##   e = closed loop poles of (A - K C)
 
-function [k, p, e] = lqe (a, g, c, sigw, sigv, zz)
+## Author: A. S. Hodel <scotte@eng.auburn.edu>
+## Created: August 1993
+## Adapted-By: jwe
 
-  ## Written by A. S. Hodel (scotte@eng.auburn.edu) August, 1993.
+function [k, p, e] = lqe (a, g, c, sigw, sigv, zz)
 
   if (nargin != 5 && nargin != 6)
     error ("lqe: invalid number of arguments");

@@ -41,10 +41,11 @@
 ##
 ## Solves by using the Bartels-Stewart algorithm (1972).
 
-function x = lyap (a, b, c)
+## Author: A. S. Hodel <scotte@eng.auburn.edu>
+## Created: August 1993
+## Adapted-By: jwe
 
-  ## Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
-  
+function x = lyap (a, b, c)
 
   if (nargin != 3 && nargin != 2)
     usage ("lyap (a, b {,c})");

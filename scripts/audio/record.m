@@ -24,11 +24,11 @@
 ## The program waits for you to hit the ENTER key, then the recording
 ## starts immediatly.
 
-function X = record (sec, sampling_rate)
+## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
+## Created: 19 September 1994
+## Adapted-By: jwe
 
-  ## Written by AW (Andreas.Weingessel@ci.tuwien.ac.at) on Sep 19, 1994
-  ## Last modified by AW on Oct 5, 1994
-  ## Copyright Dept of Probability Theory and Statistics TU Wien
+function X = record (sec, sampling_rate)
 
   if (nargin == 1)
     sampling_rate = 8000;

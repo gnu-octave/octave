@@ -23,11 +23,12 @@
 ## integer vector a.
 ## lcm (a1, ..., ak) is the same as lcm([a1, ..., ak]).
 
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Created: 16 September 1994
+## Adapted-By: jwe
+
 function l = lcm (a, ...)
 
-## Written by KH (Kurt.Hornik@ci.tuwien.ac.at) on Sep 16, 1994.
-
-  if (nargin > 1)
     va_start;
     for k = 2:nargin;
       a = [a, (va_arg ())];

@@ -29,12 +29,12 @@
 ## If the data is saved linearly, the bit argument decides whether an
 ## 8-bit (default) or a 16-bit format is used.
 
+## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
+## Created: 5 September 1994
+## Adapted-By: jwe
+
 function saveaudio (name, X, ext, bit)
   
-  ## Written by AW (Andreas.Weingessel@ci.tuwien.ac.at) on Sep 5, 1994
-  ## Last modified by AW on Oct 29, 1994
-  ## Copyright Dept of Probability Theory and Statistics TU Wien
-
   if (nargin < 2 || nargin > 4)
     usage ("saveaudio (X, name [, ext [, bit]])");
   endif

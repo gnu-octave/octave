@@ -27,9 +27,11 @@
 ##
 ## SEE ALSO: imshow, imagesc, colormap.
 
-function image (x, zoom)
+## Author: Tony Richardson <amr@mpl.ucsd.edu>
+## Created: July 1994
+## Adapted-By: jwe
 
-  ## Written by Tony Richardson (amr@mpl.ucsd.edu) July 1994.
+function image (x, zoom)
 
   if (nargin == 0)
     ## Load Bobbie Jo Richardson (Born 3/16/94)

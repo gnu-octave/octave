@@ -24,9 +24,11 @@
 ## See also: size, rows, columns, length, is_matrix, is_scalar, 
 ## is_square, is_vector
 
-function retval = is_symmetric (x,tol)
+## Author: A. S. Hodel <scotte@eng.auburn.edu>
+## Created: August 1993
+## Adapted-By: jwe
 
-  ## Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
+function retval = is_symmetric (x,tol)
 
   if (nargin == 1 || nargin == 2)
     if ((retval = is_square (x)))

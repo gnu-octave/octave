@@ -23,10 +23,11 @@
 ## samples X and Y, which must have the same number of components
 ## (columns), but may have a different number of observations (rows).
 
-function retval = mahalanobis (X, Y)
+## Author: Friedrich Leisch <leisch@ci.tuwien.ac.at>
+## Created: July 1993
+## Adapted-By: jwe
 
-  ## Written by Friedrich Leisch (leisch@ci.tuwien.ac.at) July 1993.
-  ## Dept of Probability Theory and Statistics TU Wien, Austria.
+function retval = mahalanobis (X, Y)
 
   if (nargin != 2)
     usage ("mahalanobis (X, Y)");

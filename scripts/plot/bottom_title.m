@@ -26,9 +26,10 @@
 ## rather than the top.
 ##
 
-function bottom_title (text)
+## Author: Vinayak Dutt <Dutt.Vinayak@mayo.EDU>
+## Adapted-By: jwe
 
-  ## Written by Vinayak Dutt, Dutt.Vinayak@mayo.EDU
+function bottom_title (text)
 
   if (! gnuplot_has_multiplot)
     error ("bottom_title: gnuplot does not appear to support this feature");

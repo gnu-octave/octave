@@ -24,9 +24,11 @@
 ##
 ## makes a title with text "text" at the top of the plot 
 
-function top_title (text)
+## Author: Vinayak Dutt <Dutt.Vinayak@mayo.EDU>
+## Created: 3 July 95
+## Adapted-By: jwe
 
-  ## Written by Vinayak Dutt, Dutt.Vinayak@mayo.EDU  3 Jul 95 
+function top_title (text)
 
   if (! gnuplot_has_multiplot)
     error ("top_title: gnuplot does not appear to support this feature");

@@ -61,8 +61,12 @@
 #include <octave/symtab.h>
 #include <octave/variables.h>
 
-// Note, nargout is not used, so it is omitted from the argument list
-// to avoid the warning from gcc about an unused function parameter.
+// DEFUN_DLD and the macros that it depends on are defined in the
+// files defun-dld.h, defun.h, and defun-int.h.
+
+// Note that the third parameter (nargout) is not used, so it is
+// omitted from the list of arguments to DEFUN_DLD in order to avoid
+// the warning from gcc about an unused function parameter. 
 
 DEFUN_DLD (hello, args, ,
   "[...] = hello (...)\n\

@@ -51,6 +51,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <readline/tilde.h>
 
 #include <DLList.h>
+#include <SLStack.h>
 
 #include "dMatrix.h"
 
@@ -78,6 +79,18 @@ static int fmt_arg_count = 0;
 
 // double linked list containing relevant information about open files
 static DLList <file_info> file_list;
+
+// stack for next available file number
+static SLStack <int> next_available_file_number;
+
+static int
+get_next_avail_file_num (void)
+{
+  if (next_available_file_number.empty ())
+    return file_list.length ();
+  else
+    return next_available_file_number.pop ();
+}
 
 void
 initialize_file_io (void)
@@ -147,8 +160,8 @@ fopen_file_for_user (const char *name, const char *mode,
 {
   FILE *file_ptr = fopen (name, mode);
   if (file_ptr)
-    {
-      int file_number = file_list.length () + 1;
+    { 
+      int file_number = get_next_avail_file_num ();
 
       file_info file (file_number, name, file_ptr, mode);
       file_list.append (file);
@@ -223,6 +236,7 @@ fclose_internal (const Octave_object& args)
     }
 
   int success = fclose (file.fptr ());
+  next_available_file_number.push (file.number ());
   file_list.del (p);
 
   if (success == 0)
@@ -493,7 +507,7 @@ fopen_internal (const Octave_object& args)
       return retval;
     }
 
-  int file_number =  file_list.length () + 1;
+  int file_number = get_next_avail_file_num ();
 
   file_info file (file_number, name, file_ptr, mode);
   file_list.append (file);
@@ -543,7 +557,7 @@ freport_internal (void)
     {
       file_info file = file_list (p);
       output_buf.form ("%7d%6s  %s\n", file.number (),
-		       file.mode ().data (), file.name ().data ());
+		       file.mode ().c_str (), file.name ().c_str ());
       file_list.next (p);
     }
 
@@ -751,9 +765,10 @@ close_files (void)
 	    {
 	      int success = fclose (file.fptr ());
 	      if (success != 0)
-		error ("closing %s", file.name ().data ());
+		error ("closing %s", file.name ().c_str ());
 	    }
 
+	  next_available_file_number.push (file.number ());
 	  file_list.del (p);
 	}
       else
@@ -1946,7 +1961,7 @@ popen_internal (const Octave_object& args)
       return retval;
     }
 
-  int number = file_list.length () + 1;
+  int number = get_next_avail_file_num ();
 
   file_info file (number, name, file_ptr, mode);
   file_list.append (file);
@@ -1995,6 +2010,7 @@ pclose_internal (const Octave_object& args)
     }
 
   int success = pclose (file.fptr ());
+  next_available_file_number.push (file.number ());
   file_list.del (p);
 
   if (success == 0)
@@ -2091,7 +2107,7 @@ execute_internal (const Octave_object& args)
 	  return retval;
 	}
 
-      new_stdin = file_list.length () + 1;
+      new_stdin = get_next_avail_file_num ();
       new_stdout = new_stdin + 1;
 
       file_info new_stdin_file_ptr (new_stdin, name, stdin_file, "w");

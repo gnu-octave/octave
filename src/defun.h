@@ -38,11 +38,16 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //     information about the variable, and that is passed to
 //     install_builtin_variable to register it in the symbol table.
 //     By convention, it is constructed by prefixing name with the
-//     character S.
+//     character SBV.
+//
+//   defn is the initial value for the variable.
 //
 //   ins_as_fcn is a flag that says whether to install the variable as
 //     if it were a function (allowing the name to also be used as a
 //     variable by users, but recover its original definition if cleared).
+//
+//   protect is a flag that says whether it should be possible to give
+//     the variable a new value.
 //
 //   eternal is a flag that says whether it should be possible to
 //     clear the variable.  Most builtin variables are eternal, and

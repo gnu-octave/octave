@@ -50,44 +50,6 @@ extern "C"
 			long, long);
 }
 
-// Return value of tree_constant argument as ComplexMatrix.
-
-ComplexMatrix
-ComplexMatrixLoad (tree_constant& arg)
-{
-  ComplexMatrix retval;
-
-// Set argument size for scalar (for later).
-
-  switch (arg.const_type ())
-    {
-    case tree_constant_rep::scalar_constant:
-      retval.resize (1, 1);
-      {
-        double real_val = arg.double_value ();
-        retval.elem (0, 0) = real_val;
-      }
-      break;
-    case tree_constant_rep::complex_scalar_constant:
-      retval.resize (1, 1);
-      retval.elem (0, 0) = arg.complex_value ();
-      break;
-    case tree_constant_rep::matrix_constant:
-      {
-        Matrix tmp = arg.matrix_value ();
-        retval = tmp;
-      }
-      break;
-    case tree_constant_rep::complex_matrix_constant:
-      retval = arg.complex_matrix_value ();
-      break;
-    default:
-      panic_impossible ();
-      break;
-    }
-  return retval;
-}
-
 #ifdef WITH_DLD
 tree_constant *
 builtin_syl_2 (tree_constant *args, int nargin, int nargout)
@@ -140,9 +102,9 @@ syl (tree_constant *args, int nargin, int nargout)
 
 // Do everything in complex arithmetic;
 
-	ComplexMatrix ca = ComplexMatrixLoad (arga);
-	ComplexMatrix cb = ComplexMatrixLoad (argb);
-	ComplexMatrix cc = ComplexMatrixLoad (argc);
+	ComplexMatrix ca = arga.complex_matrix_value ();
+	ComplexMatrix cb = argb.complex_matrix_value ();
+	ComplexMatrix cc = argc.complex_matrix_value ();
   
 // Compute Schur decompositions
 

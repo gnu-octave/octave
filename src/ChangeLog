@@ -1,5 +1,7 @@
 2003-10-31  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* ov.cc (octave_value::length): If any dim is zero, return 0.
+
 	* ov-cell.cc (octave_cell::subsref): When indexing with '{', quit
 	early if an error occurs in do_index_op.
 

@@ -1,3 +1,12 @@
+2003-10-31  Petter Risholm  <risholm@stud.ntnu.no>
+
+	* mx-inlines.cc (MX_ND_CUMULATIVE_OP): New macro.
+
+	* CNDArray.cc, CNDArray.h (ComplexNDArray::cumsum,
+	ComplexNDArray::cumprod): Return ComplexNDArray.  Handle N-d arrays.
+	* dNDArray.cc, dNDArray.h (NDArray::cumsum, NDArray::cumprod):
+	Return NDArray.  Handle N-d arrays.
+
 2003-10-31  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* LSODE.cc (LSODE::do_integrate): Avoid name conflict on systems

@@ -65,6 +65,7 @@ NDArray::operator ! (void) const
 
 // XXX FIXME XXX -- this is not quite the right thing.
 
+
 boolNDArray
 NDArray::all (int dim) const
 {
@@ -77,36 +78,16 @@ NDArray::any (int dim) const
   MX_ND_ANY_ALL_REDUCTION (MX_ND_ANY_EVAL (MX_ND_ANY_EXPR), false);
 }
 
-Matrix
+NDArray
 NDArray::cumprod (int dim) const
 {
- if (dims () . length () == 2)
-   {
-     MX_CUMULATIVE_OP (Matrix, double, *=);
-   }
- else
-   {
-     (*current_liboctave_error_handler)
-       ("cumprod is not yet implemented for N-d arrays");
-
-     return Matrix ();
-   }
+  MX_ND_CUMULATIVE_OP (NDArray, double, 1, *);
 }
 
-Matrix
+NDArray
 NDArray::cumsum (int dim) const
 {
-  if (dims () . length () == 2)
-    {
-      MX_CUMULATIVE_OP (Matrix, double, +=);
-    }
-  else
-    {
-      (*current_liboctave_error_handler)
-	("cumprod is not yet implemented for N-d arrays");
-
-      return Matrix ();
-    }
+  MX_ND_CUMULATIVE_OP (NDArray, double, 0, +);
 }
 
 NDArray

@@ -88,36 +88,16 @@ ComplexNDArray::any (int dim) const
     (MX_ND_ANY_EVAL (elem (iter_idx) != Complex (0, 0)), false);
 }
 
-ComplexMatrix
+ComplexNDArray
 ComplexNDArray::cumprod (int dim) const
 {
-  if (dims () . length () == 2)
-    {
-      MX_CUMULATIVE_OP (ComplexMatrix, Complex, *=);
-    }
-  else
-    {
-      (*current_liboctave_error_handler)
-	("cumsum is not yet implemented for N-d arrays");
-
-      return ComplexMatrix ();
-    }
+  MX_ND_CUMULATIVE_OP (ComplexNDArray, Complex, Complex (1, 0), *);
 }
 
-ComplexMatrix
+ComplexNDArray
 ComplexNDArray::cumsum (int dim) const
 {
-  if (dims () . length () == 2)
-    {
-      MX_CUMULATIVE_OP (ComplexMatrix, Complex, +=);
-    }
-  else
-    {
-      (*current_liboctave_error_handler)
-	("cumsum is not yet implemented for N-d arrays");
-
-      return ComplexMatrix ();
-    }
+  MX_ND_CUMULATIVE_OP (ComplexNDArray, Complex, Complex (0, 0), +);
 }
 
 ComplexNDArray

@@ -75,8 +75,8 @@ public:
   boolNDArray all (int dim = -1) const;
   boolNDArray any (int dim = -1) const;
 
-  Matrix cumprod (int dim = -1) const;
-  Matrix cumsum (int dim = -1) const;
+  NDArray cumprod (int dim = -1) const;
+  NDArray cumsum (int dim = -1) const;
   NDArray prod (int dim = -1) const;
   NDArray sum (int dim = -1) const;  
   NDArray sumsq (int dim = -1) const;

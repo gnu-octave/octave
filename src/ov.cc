@@ -839,12 +839,18 @@ octave_value::length (void) const
   int retval = 0;
 
   dim_vector dv = dims ();
-      
+
   for (int i = 0; i < dv.length (); i++)
     {
       if (dv(i) < 0)
 	{
 	  retval = -1;
+	  break;
+	}
+
+      if (dv(i) == 0)
+	{
+	  retval = 0;
 	  break;
 	}
 

@@ -504,6 +504,128 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
 #define MX_ND_ANY_ALL_REDUCTION(EVAL_EXPR, VAL) \
   MX_ND_REDUCTION (EVAL_EXPR, , VAL, , boolNDArray)
 
+#define MX_ND_CUMULATIVE_OP(RET_TYPE, ACC_TYPE, VAL, OP) \
+  RET_TYPE retval; \
+ \
+  dim_vector dv = dims (); \
+ \
+  int empty = true; \
+ \
+  /* If dim is larger then number of dims, return array as is */ \
+  if (dim > dv.length ()) \
+    { \
+      retval = RET_TYPE (*this); \
+ \
+      return retval; \
+    } \
+ \
+  /* Check if all dims are empty */ \
+  for (int i = 0; i < dv.length (); i++) \
+    { \
+      if (dv(i) > 0) \
+        { \
+          empty = false; \
+          break; \
+        } \
+    } \
+ \
+  if (empty) \
+    { \
+      retval.resize (dv); \
+ \
+      return retval; \
+    } \
+ \
+  /* We need to find first non-singleton dim */ \
+  if (dim == -1) \
+    { \
+      for (int i = 0; i < dv.length (); i++) \
+        { \
+	  if (dv (i) != 1) \
+	    { \
+	      dim = i; \
+	      break; \
+	    } \
+        } \
+ \
+      if (dim == -1) \
+       	dim = 0; \
+    } \
+ \
+  /* Check to see if we have an empty array */ \
+  /* ie 1x2x0x3.                            */ \
+  int squeezed = 0; \
+ \
+  for (int i = 0; i < dv.length (); i++) \
+    { \
+      if (dv(i) == 0) \
+        { \
+          squeezed = 1; \
+	  break; \
+        } \
+    } \
+ \
+  if (squeezed) \
+    {  \
+      retval.resize (dv); \
+ \
+      return retval; \
+    } \
+ \
+  /* Make sure retval has correct dimensions */ \
+  retval.resize (dv, VAL); \
+ \
+  /*  Length of Dimension */ \
+  int dim_length = 1; \
+ \
+  dim_length = dv (dim); \
+ \
+  dv (dim) = 1; \
+ \
+  /* We need to find the number of elements we need to */ \
+  /* fill in retval. First we need to get last idx of  */ \
+  /* the dimension vector                              */ \
+ \
+  /* This could be done faster */ \
+  Array<int> temp_dv (dv.length (), 0); \
+ \
+  for (int x = 0; x < dv.length (); x++) \
+    temp_dv(x) = dv(x) - 1; \
+ \
+  /* This finds the number of elements in retval */ \
+  int num_iter = compute_index (temp_dv, dv) + 1; \
+ \
+  Array<int> iter_idx (dv.length (), 0); \
+ \
+  /* Filling in values.         */ \
+  /* First loop finds new index */ \
+ \
+  for (int j = 0; j < num_iter; j++) \
+    { \
+      for (int i = 0; i < dim_length; i++) \
+	{ \
+	  if (i > 0) \
+	    { \
+	      iter_idx (dim) = i - 1; \
+ \
+	      ACC_TYPE prev_sum = retval (iter_idx); \
+ \
+	      iter_idx (dim) = i; \
+	      \
+	      retval (iter_idx) = elem (iter_idx) OP prev_sum; \
+	    } \
+	  else \
+	    retval (iter_idx) = elem (iter_idx); \
+	} \
+ \
+      if (dim > -1) \
+        iter_idx (dim) = 0; \
+ \
+      increment_index (iter_idx, dv); \
+    } \
+\
+  return retval
+
 #endif
 
 /*

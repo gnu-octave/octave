@@ -8,6 +8,103 @@
 <h1> News for Octave Version 2 </h1>
 <hr>
 
+<h2>Summary of changes for version 2.0.10</h2>
+
+<ul>
+<li>The built-in variable `PWD' has been removed.  If you need to get
+    the value of the current working directory, use the pwd() function
+    instead.
+</li>
+<p>
+<li>For compatibility with Matlab, Octave's lyap function now solves
+<pre>
+      A*X + X*A' + C = 0
+</pre>
+    instead of
+<pre>
+      A'*X + X*A + C = 0
+</pre>
+    To try to avoid confusion for people who are used to the way
+    Octave behaved in previous versions, a warning is printed the
+    first time lyap is called in a given session.  To completely
+    disable the warning, simply add
+<pre>
+      global __disable_lyap_interface_change_warning__;
+</pre>
+    to your ~/.octaverc file.  The warning will eventually disappear
+    for good in some future version of Octave.
+</li>
+<p>
+<li>New built-in functions for computing Bessel functions:
+    besseli, besselj, besselk, and bessely.
+</li>
+<p>
+<li>The gammai and betai functions are now implemented as built-in
+    functions rather than function files.
+</li>
+<p>
+<li>The new built-in variable `implicit_num_to_str_ok' controls
+    whether Octave converts expressions like `[97, 98, 99, "123"]' to
+    strings.  The default value is 0 unless you use --traditional.
+</li>
+<p>
+<li>The new built-in variable `fixed_point_format' controls whether
+    Octave uses a scaled fixed-point format for displaying matrices.
+    The default value is 0 unless you use --traditional.
+</li>
+<p>
+<li>The function sumsq now computes sum (x .* conj (x)) for complex values.
+</li>
+<p>
+<li>Dynamically linked functions can be cleared.
+</li>
+<p>
+<li>If a .oct file has a time stamp more recent than the time that it
+    was loaded, it is automatically reloaded.  Reloading a .oct file
+    may cause several functions to be cleared automatically.  By
+    default, a warning is printed that lists the names of the
+    functions that will be cleared.  You can suppress the message by
+    setting the new built-in variable `warn_reload_forces_clear' to 0.
+</li>
+<p>
+<li>Global variables are now initialized to the empty matrix, for
+    compatibility with Matlab.
+</li>
+<p>
+<li>Explicit initialization of global variables only happens once.
+    For example, after the following statements are evaluated, g still
+    has the value 1.
+<pre>
+      global g = 1
+      global g = 2
+</pre>
+    This is useful for initializing global variables that are used to
+    maintain state information that is shared among several functions.
+</li>
+<p>
+<li>The new built-in variable max_recursion_depth allows you to
+    prevent Octave from attempting infinite recursion.  The default
+    value is 256.
+</li>
+<p>
+<li>Octave now uses readline version 2.1 and kpathsea 3.0.
+</li>
+<p>
+<li>The libreadline and libkpathsea libraries are no longer installed.
+</li>
+<p>
+<li>The libcruft, liboctave, and liboctinterp libraries are now
+    installed in $libdir/octave instead of just $libdir.
+</li>
+<p>
+<li>It's no longer necessary to have libg++, but you do need to have
+    the GNU implementation of libstdc++.  If you are using gcc 2.7.2,
+    libstdc++ is distributed as part of libg++ 2.7.2.  For later
+    versions, libstdc++ is distributed separately.  For egcs,
+    libstdc++ is included with the compiler distribution.
+</li>
+</ul>
+
 <h2>Summary of changes for version 2.0.9</h2>
 
 This is a bug-fixing release, but there is one new user-visible
@@ -34,6 +131,7 @@ features.
     Lapack subroutine for symmetric matrices for a significant
     increase in performance.
 </li>
+<p>
 <li>It is now possible to use the mkoctfile script to create .oct
     files from multiple source and object files.
 </li>
@@ -53,9 +151,11 @@ user-visilbe features.
     Octave prints the results of commands executed by eval() that do
     not end with semicolons.  The default is 1.
 </li>
+<p>
 <li>The new built-in constant OCTAVE_HOME specifies the top-level
     directory where Octave is installed.
 </li>
+<p>
 <li>Octave no longer includes functions to work with NPSOL or QPSOL,
     because they are not free software.
 </li>
@@ -67,9 +167,11 @@ user-visilbe features.
 <li>A `switch' statement is now available.  See the Statements chapter
     in the manual for details.
 </li>
+<p>
 <li>Commands like ls, save, and cd may now also be used as formal
     parameters for functions.
-
+</li>
+<p>
 <li>More tests.
 </li>
 </ul>
@@ -82,8 +184,8 @@ user-visilbe features.
     for functions, or as the names of structure variables.  Failed
     assignments leave them undefined (you can recover the orginal
     function definition using clear).
-<p>
 </li>
+<p>
 <li>Is is now possible to invoke commands like ls, save, and cd as
     normal functions (for example, load ("foo", "x", "y", "z")).
 </li>
@@ -128,17 +230,17 @@ user-visilbe features.
 </li>
 <li>Octave now stops executing commands from a script file if an error
     is encountered.
-<p>
 </li>
+<p>
 <li>The return, and break commands now cause Octave to quit executing
     commands from script files.  When used in invalid contexts, the
     break, continue, and return commands are now simply ignored
     instead of producing parse errors.
-<p>
 </li>
+<p>
 <li>size ("") is now [0, 0].
-<p>
 </li>
+<p>
 <li>New functions:
 <dl>
 <dt><b>sleep</b></dt>

@@ -71,7 +71,7 @@ extern char *current_input_line;
 
 extern "C"
 {
-char *gnu_readline (char *s);
+char *gnu_readline (const char *s);
 }
 
 #endif

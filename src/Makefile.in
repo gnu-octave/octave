@@ -64,7 +64,7 @@ INCLUDES := arith-ops.h builtins.h defaults.h.in defun.h defun-dld.h \
 	getopt.h gripes.h help.h idx-vector.h input.h lex.h \
 	load-save.h mappers.h missing-math.h octave.h octave-hist.h \
 	oct-map.h oct-obj.h pager.h parse.h pr-output.h procstream.h \
-	sighandlers.h statdefs.h symtab.h sysdep.h token.h \
+	sighandlers.h statdefs.h symtab.h sysdep.h systime.h token.h \
 	tree-base.h tree-cmd.h tree-const.h tree-expr.h tree-misc.h \
 	tree-plot.h tc-inlines.h tc-rep.h unwind-prot.h user-prefs.h \
 	utils.h variables.h version.h xdiv.h xpow.h Map.h SLStack.h \

@@ -48,19 +48,21 @@ TAGS: $(SOURCES)
 	etags $(SOURCES)
 
 clean::
-	rm -f *.a *.o
+	rm -f *.a *.o pic/*.o
 .PHONY: clean
 
 mostlyclean::
-	rm -f *.o
+	rm -f *.o pic/*.o
 .PHONY: mostlyclean
 
 distclean:: clean
-	rm -f Makefile
+	rm -f Makefile stamp-picdir
+	-rmdir pic
 .PHONY: distclean
 	
 maintainer-clean:: distclean
-	rm -f tags TAGS
+	rm -f tags TAGS stamp-picdir
+	-rmdir pic
 .PHONY: maintainer-clean
 
 local-dist:

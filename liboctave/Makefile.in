@@ -187,11 +187,13 @@ mostlyclean: clean
 .PHONY: mostlyclean
 
 distclean: clean
-	rm -f Makefile so_locations
+	rm -f Makefile so_locations stamp-picdir stamp-shared
+	-rmdir pic
 .PHONY: distclean
 
 maintainer-clean: distclean
-	rm -f tags TAGS
+	rm -f tags TAGS stamp-picdir stamp-shared
+	-rmdir pic
 .PHONY: maintainer-clean
 
 local-dist:

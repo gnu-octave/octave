@@ -258,22 +258,24 @@ TAGS: $(SOURCES) $(DLD_SRC) $(TI_SRC)
 	etags $(SOURCES) $(DLD_SRC) $(TI_SRC)
 
 clean:
-	rm -f *.a *.o builtins.cc \
-	defaults.h *.d *.def
+	rm -f *.a *.o *.d *.def pic/*.o builtins.cc defaults.h
 	if $(SHARED_LIBS); then rm -f *.$(SHLEXT); fi
 .PHONY: clean
 
 mostlyclean:
-	rm -f *.o
+	rm -f *.o pic/*.o
 .PHONY: mostlyclean
 
 distclean: clean
 	rm -f Makefile octave .fname so_locations
+	rm -f stamp-picdir stamp-tinst stamp-interp
+	-rmdir pic
 .PHONY: distclean
 
 maintainer-clean: distclean
-	rm -f tags TAGS y.tab.c y.tab.h y.output yy.lex.c \
-	lex.cc parse.cc oct-gperf.h
+	rm -f tags TAGS y.tab.c y.tab.h y.output yy.lex.c lex.cc \
+	rm -f parse.cc oct-gperf.h stamp-picdir stamp-tinst stamp-interp
+	-rmdir pic
 .PHONY: maintainer-clean
 
 local-dist: parse.cc lex.cc oct-gperf.h

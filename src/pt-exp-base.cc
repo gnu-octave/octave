@@ -2529,10 +2529,10 @@ tree_function::define_ret_list (tree_parameter_list *t)
 }
 
 void
-tree_function::stash_fcn_file_name (char *s)
+tree_function::stash_fcn_file_name (void)
 {
   delete [] file_name;
-  file_name = strsave (s);
+  file_name = fcn_name ? fcn_fie_in_path (fcn_name) : 0
 }
 
 void

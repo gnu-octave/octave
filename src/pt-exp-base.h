@@ -839,7 +839,7 @@ public:
   tree_function *define_param_list (tree_parameter_list *t);
   tree_function *define_ret_list (tree_parameter_list *t);
 
-  void stash_fcn_file_name (char * s);
+  void stash_fcn_file_name (void);
 
   void stash_fcn_file_time (time_t t)
     { t_parsed = t; }

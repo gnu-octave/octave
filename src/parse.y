@@ -969,7 +969,7 @@ func_def2	: identifier safe local_symtab func_def3
 			    id_name = $1->name ();
 			  }
 
-			$4->stash_fcn_file_name (curr_fcn_file_name);
+			$4->stash_fcn_file_name ();
 			$4->stash_fcn_file_time (time (0));
 			$4->mark_as_system_fcn_file ();
 		      }

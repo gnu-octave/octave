@@ -77,6 +77,7 @@ usage (const char *fmt, ...)
 {
   va_list args;
   va_start (args, fmt);
+  error_state = -1;
   verror ("usage", fmt, args);
   va_end (args);
 }
@@ -107,7 +108,7 @@ error (const char *fmt, ...)
   va_list args;
   va_start (args, fmt);
 
-  int len;
+  int len = 0;
   if (fmt && *fmt && fmt[(len = strlen (fmt)) - 1] == '\n')
     {
       error_state = -2;

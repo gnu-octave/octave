@@ -48,8 +48,11 @@ Look for Octave sources in the directory @var{dir}.
 @item --with-f2c
 Use @code{f2c} even if a Fortran compiler is available.
 
-@item --with-g77
-Use @code{g77} to compile Fortran code.
+@item --with-f77
+Use @code{f77} to compile Fortran code.  You may also specify the name
+of the compiler to use as an optional argument.  For example,
+@code{--with-f77=g77} sets the name of the Fortran compiler to
+@code{g77}.
 
 @item --enable-shared
 Create shared libraries.  If you are planning to use

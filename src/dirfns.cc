@@ -302,7 +302,7 @@ system-dependent error message.\n\
 
 DEFUN (mkdir, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{err}, @var{msg}] =} mkdir (@var{dir})\\n\
+@deftypefn {Built-in Function} {[@var{err}, @var{msg}] =} mkdir (@var{dir})\n\
 Create a directory named @var{dir}.\n\
 \n\
 If successful, @var{err} is 0 and @var{msg} is an empty string.\n\

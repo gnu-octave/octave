@@ -587,7 +587,7 @@ See stat.\n\
 DEFUN (mkfifo, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{err}, @var{msg}] =} mkfifo (@var{name}, @var{mode})\n\
-Create a @var{fifo} special file named @var{name} with file mode @var{mode}\n\\n\
+Create a @var{fifo} special file named @var{name} with file mode @var{mode}\n\
 \n\
 If successful, @var{err} is 0 and @var{msg} is an empty string.\n\
 Otherwise, @var{err} is nonzero and @var{msg} contains a\n\

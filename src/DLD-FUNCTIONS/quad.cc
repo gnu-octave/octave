@@ -218,13 +218,13 @@ solution.\n\
 
 	  have_sing = 1;
 
-	  sing = args(4).vector_value ();
+	  sing = ColumnVector (args(4).vector_value ());
 
 	  if (error_state)
 	    QUAD_ABORT1 ("expecting vector of singularities as fourth argument");
 
 	case 4:
-	  tol = args(3).vector_value ();
+	  tol = ColumnVector (args(3).vector_value ());
 
 	  if (error_state)
 	    QUAD_ABORT1 ("expecting vector of tolerances as fifth argument");

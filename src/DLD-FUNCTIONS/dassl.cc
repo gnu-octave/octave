@@ -96,7 +96,7 @@ dassl_user_function (const ColumnVector& x, const ColumnVector& xdot, double t)
 
       if (tmp.length () > 0 && tmp(0).is_defined ())
 	{
-	  retval = tmp(0).vector_value ();
+	  retval = ColumnVector (tmp(0).vector_value ());
 
 	  if (error_state || retval.length () == 0)
 	    gripe_user_supplied_eval ("dassl");
@@ -192,17 +192,17 @@ discontinuity in the derivative.\n\
       if (! dassl_fcn)
 	DASSL_ABORT ();
 
-      ColumnVector state = args(1).vector_value ();
+      ColumnVector state = ColumnVector (args(1).vector_value ());
 
       if (error_state)
 	DASSL_ABORT1 ("expecting state vector as second argument");
 
-      ColumnVector deriv = args(2).vector_value ();
+      ColumnVector deriv (args(2).vector_value ());
 
       if (error_state)
 	DASSL_ABORT1 ("expecting derivative vector as third argument");
 
-      ColumnVector out_times = args(3).vector_value ();
+      ColumnVector out_times (args(3).vector_value ());
 
       if (error_state)
 	DASSL_ABORT1 ("expecting output time vector as fourth argument");
@@ -211,7 +211,7 @@ discontinuity in the derivative.\n\
       int crit_times_set = 0;
       if (nargin > 4)
 	{
-	  crit_times = args(4).vector_value ();
+	  crit_times = ColumnVector (args(4).vector_value ());
 
 	  if (error_state)
 	    DASSL_ABORT1 ("expecting critical time vector as fifth argument");

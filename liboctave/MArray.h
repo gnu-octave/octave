@@ -109,7 +109,7 @@ public:
   MArray (void) : Array<T> () { }
   MArray (int n) : Array<T> (n) { }
   MArray (int n, const T& val) : Array<T> (n, val) { }
-//  MArray (const Array<T>& a) : Array<T> (a) { }
+  MArray (const Array<T>& a) : Array<T> (a) { }
   MArray (const MArray<T>& a) : Array<T> (a) { }
 
   ~MArray (void) { }

@@ -1,10 +1,19 @@
 2000-01-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* ov.h, ov.cc (octave_value::column_vector_value,
+	octave_value::row_vector_value,
+	octave_value::complex_column_vector_value,
+	octave_value::complex_row_vector_value): New functions.
+	(octave_value::vector_value): Now returns Array<double>.
+	(octave_value::complex_vector_value): Now returns Array<Complex>.
+	Sprinkle conversions where necessary.
+
 	* ov.cc (Vprefer_column_vectors): Now static.
 	* ov.h (octave_value (const ComplexRowVector&),
 	octave_value (const ComplexColumnVector&),
 	octave_value (const RowVector&), octave_value (const ColumnVector&)):
 	Delete second arg.  Change all callers.
+
 	* oct-obj.h (octave_value_list (const RowVector&),
 	octave_value_list (const ColumnVector&),
 	octave_value_list (const ComplexRowVector&),

@@ -754,10 +754,128 @@ octave_value::list_value (void) const
 }
 
 ColumnVector
+octave_value::column_vector_value (bool force_string_conv,
+				   bool force_vector_conversion) const
+{
+  ColumnVector retval;
+
+  Matrix m = matrix_value (force_string_conv);
+
+  if (error_state)
+    return retval;
+
+  int nr = m.rows ();
+  int nc = m.columns ();
+
+  if (nc == 1)
+    {
+      retval.resize (nr);
+      for (int i = 0; i < nr; i++)
+	retval (i) = m (i, 0);
+    }
+  else
+    {
+      string tn = type_name ();
+      gripe_invalid_conversion (tn.c_str (), "real column vector");
+    }
+
+  return retval;
+}
+
+ComplexColumnVector
+octave_value::complex_column_vector_value (bool force_string_conv,
+					   bool force_vector_conversion) const
+{
+  ComplexColumnVector retval;
+
+  ComplexMatrix m = complex_matrix_value (force_string_conv);
+
+  if (error_state)
+    return retval;
+
+  int nr = m.rows ();
+  int nc = m.columns ();
+
+  if (nc == 1)
+    {
+      retval.resize (nc);
+      for (int i = 0; i < nc; i++)
+	retval (i) = m (i, 0);
+    }
+  else
+    {
+      string tn = type_name ();
+      gripe_invalid_conversion (tn.c_str (), "complex column vector");
+    }
+
+  return retval;
+}
+
+RowVector
+octave_value::row_vector_value (bool force_string_conv,
+				bool force_vector_conversion) const
+{
+  RowVector retval;
+
+  Matrix m = matrix_value (force_string_conv);
+
+  if (error_state)
+    return retval;
+
+  int nr = m.rows ();
+  int nc = m.columns ();
+
+  if (nr == 1)
+    {
+      retval.resize (nc);
+      for (int i = 0; i < nc; i++)
+	retval (i) = m (0, i);
+    }
+  else
+    {
+      string tn = type_name ();
+      gripe_invalid_conversion (tn.c_str (), "real row vector");
+    }
+
+  return retval;
+}
+
+ComplexRowVector
+octave_value::complex_row_vector_value (bool force_string_conv,
+					bool force_vector_conversion) const
+{
+  ComplexRowVector retval;
+
+  ComplexMatrix m = complex_matrix_value (force_string_conv);
+
+  if (error_state)
+    return retval;
+
+  int nr = m.rows ();
+  int nc = m.columns ();
+
+  if (nr == 1)
+    {
+      retval.resize (nc);
+      for (int i = 0; i < nc; i++)
+	retval (i) = m (0, i);
+    }
+  else
+    {
+      string tn = type_name ();
+      gripe_invalid_conversion (tn.c_str (), "complex row vector");
+    }
+
+  return retval;
+}
+
+// Sloppy...
+
+Array<double>
 octave_value::vector_value (bool force_string_conv,
 			    bool force_vector_conversion) const
 {
-  ColumnVector retval;
+  Array<double> retval;
 
   Matrix m = matrix_value (force_string_conv);
 
@@ -797,11 +915,11 @@ octave_value::vector_value (bool force_string_conv,
   return retval;
 }
 
-ComplexColumnVector
+Array<Complex>
 octave_value::complex_vector_value (bool force_string_conv,
 				    bool force_vector_conversion) const
 {
-  ComplexColumnVector retval;
+  Array<Complex> retval;
 
   ComplexMatrix m = complex_matrix_value (force_string_conv);
 

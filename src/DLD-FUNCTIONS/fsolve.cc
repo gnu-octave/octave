@@ -112,7 +112,7 @@ fsolve_user_function (const ColumnVector& x)
       octave_value_list tmp = fsolve_fcn->do_index_op (1, args);
       if (tmp.length () > 0 && tmp(0).is_defined ())
 	{
-	  retval = tmp(0).vector_value ();
+	  retval = ColumnVector (tmp(0).vector_value ());
 
 	  if (error_state || retval.length () <= 0)
 	    gripe_user_supplied_eval ("fsolve");
@@ -176,7 +176,7 @@ equations such that @code{f(@var{x}) == 0}.\n\
       if (! fsolve_fcn)
 	FSOLVE_ABORT ();
 
-      ColumnVector x = args(1).vector_value ();
+      ColumnVector x (args(1).vector_value ());
 
       if (error_state)
 	FSOLVE_ABORT1 ("expecting vector as second argument");

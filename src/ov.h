@@ -446,12 +446,25 @@ public:
   virtual boolMatrix bool_matrix_value (void) const
     { return rep->bool_matrix_value (); }
 
-  ColumnVector vector_value (bool frc_str_conv = false,
+  ColumnVector column_vector_value (bool frc_str_conv = false,
 			     bool frc_vec_conv = false) const;
 
   ComplexColumnVector
-  complex_vector_value (bool frc_str_conv = false,
+  complex_column_vector_value (bool frc_str_conv = false,
 			bool frc_vec_conv = false) const;
+
+  RowVector row_vector_value (bool frc_str_conv = false,
+			      bool frc_vec_conv = false) const;
+
+  ComplexRowVector
+  complex_row_vector_value (bool frc_str_conv = false,
+			    bool frc_vec_conv = false) const;
+
+  Array<double> vector_value (bool frc_str_conv = false,
+			      bool frc_vec_conv = false) const;
+
+  Array<Complex> complex_vector_value (bool frc_str_conv = false,
+				       bool frc_vec_conv = false) const;
 
   // Conversions.  These should probably be private.  If a user of this
   // class wants a certain kind of constant, he should simply ask for

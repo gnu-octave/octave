@@ -1,3 +1,7 @@
+2000-01-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* MArray.h (MArray <const Array<T>&)): New constructor.
+
 2000-01-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pathsearch.cc (dir_path::all_directories): Avoid dereferencing

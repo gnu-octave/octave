@@ -266,9 +266,9 @@ $$\n\
       || args(2).is_complex_type ()
       || (nargin == 4 && args(3).is_complex_type ()))
     {
-      ComplexColumnVector b = args(0).complex_vector_value ();
-      ComplexColumnVector a = args(1).complex_vector_value ();
-      ComplexColumnVector x = args(2).complex_vector_value ();
+      ComplexColumnVector b (args(0).complex_vector_value ());
+      ComplexColumnVector a (args(1).complex_vector_value ());
+      ComplexColumnVector x (args(2).complex_vector_value ());
 
       if (! error_state)
 	{
@@ -284,7 +284,7 @@ $$\n\
 	      si.resize (si_len, 0.0);
 	    }
 	  else
-	    si = args(3).complex_vector_value ();
+	    si = ComplexColumnVector (args(3).complex_vector_value ());
 
 	  if (! error_state)
 	    {
@@ -311,9 +311,9 @@ $$\n\
     }
   else
     {
-      ColumnVector b = args(0).vector_value ();
-      ColumnVector a = args(1).vector_value ();
-      ColumnVector x = args(2).vector_value ();
+      ColumnVector b (args(0).vector_value ());
+      ColumnVector a (args(1).vector_value ());
+      ColumnVector x (args(2).vector_value ());
 
       if (! error_state)
 	{
@@ -329,7 +329,7 @@ $$\n\
 	      si.resize (si_len, 0.0);
 	    }
 	  else
-	    si = args(3).vector_value ();
+	    si = ColumnVector (args(3).vector_value ());
 
 	  if (! error_state)
 	    {

@@ -640,7 +640,7 @@ get_dimensions (const octave_value& a, const char *warn_for,
 
       if ((nr == 1 && nc == 2) || (nr == 2 && nc == 1))
 	{
-	  ColumnVector v = a.vector_value ();
+	  Array<double> v = a.vector_value ();
 
 	  if (error_state)
 	    return;

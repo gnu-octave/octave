@@ -32,6 +32,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov.h"
 #include "ov-scalar.h"
 #include "ov-complex.h"
+#include "ov-cx-mat.h"
 #include "ov-typeinfo.h"
 #include "op-s-cs.h"
 #include "ops.h"
@@ -204,6 +205,14 @@ el_or (const octave_value& a1, const octave_value& a2)
   return octave_value (v1.double_value () || (v2.complex_value () != 0.0));
 }
 
+static octave_value *
+complex_matrix_conv (const octave_value& a)
+{
+  CAST_CONV_ARG (const octave_scalar&);
+
+  return new octave_complex_matrix (v.complex_matrix_value ());
+}
+
 void
 install_s_cs_ops (void)
 {
@@ -225,6 +234,10 @@ install_s_cs_ops (void)
   INSTALL_BINOP (el_ldiv, octave_scalar, octave_complex, el_ldiv);
   INSTALL_BINOP (el_and, octave_scalar, octave_complex, el_and);
   INSTALL_BINOP (el_or, octave_scalar, octave_complex, el_or);
+
+  INSTALL_ASSIGNCONV (octave_scalar, octave_complex, octave_complex_matrix);
+
+  INSTALL_WIDENOP (octave_scalar, octave_complex_matrix, complex_matrix_conv);
 }
 
 /*

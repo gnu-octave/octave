@@ -1,3 +1,36 @@
+Tue Oct 15 11:35:51 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* op-cs-cm.cc, op-cs-cs.cc, op-cs-m.cc, op-cs-s.cc
+	(complex_matrix_conv): New functions.
+	Install preferred assignment conversion and widening ops.
+
+	* op-s-cm.cc, op-s-cs.cc (complex_matrix_conv): New functions.
+	Install preferred assignment conversion and widening ops.
+
+	* op-s-m.cc, op-s-s.cc (matrix_conv): New functions.
+	Install preferred assignment conversion and widening ops.
+
+	* ov.cc (octave_value::try_assignment_with_conversion,
+	octave_value::convert_and_assign, octave_value::try_assignment): 
+	New functions.
+	(octave_value::assign): Use them to implement twisted logic for
+	type conversions in assigments.
+
+	* pt-const.h (tree_constant::maybe_mutate): New function.
+	* ov.h (octave_value::maybe_mutate): New function.
+	(octave_value::try_narrowing_conversion): New function.
+	Use just one typedef for widening_op_fcn and numeric_conv_fcn.
+	Change all uses.
+	* ov-base.h, ov-complex.h, ov-complex.cc, ov-cx-mat.h,
+	ov-cx-mat.cc, ov-range.h, ov-range.cc, ov-re-mat.h, ov-re-mat.cc,
+	Provide derived class versions of try try_narrowing_conversion().
+
+	* pr-output.cc (octave_print_internal): Don't bother handing off
+	to scalar/real versions, even when it would seem appropriate.
+
+	* symtab.cc (symbol_def::define (tree_constant *)): Call
+	maybe_mutate on constants here.
+
 Mon Oct 14 11:05:24 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pt-fvc.cc (tree_identifier::eval): If retval is undefined and

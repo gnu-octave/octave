@@ -206,6 +206,14 @@ el_or (const octave_value& a1, const octave_value& a2)
 		 s != 0.0 || m (i, j) != 0.0);
 }
 
+static octave_value *
+complex_matrix_conv (const octave_value& a)
+{
+  CAST_CONV_ARG (const octave_complex&);
+
+  return new octave_complex_matrix (v.complex_matrix_value ());
+}
+
 void
 install_cs_cm_ops (void)
 {
@@ -227,6 +235,10 @@ install_cs_cm_ops (void)
   INSTALL_BINOP (el_ldiv, octave_complex, octave_complex_matrix, el_ldiv);
   INSTALL_BINOP (el_and, octave_complex, octave_complex_matrix, el_and);
   INSTALL_BINOP (el_or, octave_complex, octave_complex_matrix, el_or);
+
+  INSTALL_ASSIGNCONV (octave_complex, octave_complex_matrix, octave_complex_matrix);
+
+  INSTALL_WIDENOP (octave_complex, octave_complex_matrix, complex_matrix_conv);
 }
 
 /*

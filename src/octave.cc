@@ -237,6 +237,28 @@ initialize_globals (char *name)
 
   putenv (putenv_cmd);
 
+// This may seem odd, but doing it this way means that we don't have
+// to modify the kpathsea library...
+
+  char *odb = getenv ("OCTAVE_DB_DIR");
+
+  if (odb)
+    putenv (strconcat ("TEXMF=", odb));
+  else
+    {
+      char *oh = getenv ("OCTAVE_HOME");
+
+      if (oh)
+	{
+	  len = strlen (oh) + 18;
+	  putenv_cmd = new char [len];
+	  sprintf (putenv_cmd, "TEXMF=%s/lib/octave", oh);
+	  putenv (putenv_cmd);
+	}
+      else  
+	putenv (strsave ("TEXMF=" OCTAVE_DATADIR "/octave"));
+    }
+
   raw_prog_name = strsave (name);
   prog_name = strsave ("octave");
 

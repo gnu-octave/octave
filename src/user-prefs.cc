@@ -382,7 +382,7 @@ struct_levels_to_print (void)
       && ! xisnan (val))
     {
       int ival = NINT (val);
-      if (ival > 0 && (double) ival == val)
+      if (ival >= 0 && (double) ival == val)
 	{
 	  user_pref.struct_levels_to_print = ival;
 	  return status;

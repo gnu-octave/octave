@@ -50,7 +50,7 @@ BINDISTFILES = COPYING ChangeLog NEWS README THANKS INSTALL.OCTAVE \
 BINDISTSUBDIRS = emacs scripts doc
 
 # Subdirectories in which to run clean targets.
-CLEANSUBDIRS = $(DISTSUBDIRS) 
+CLEANSUBDIRS = $(DISTSUBDIRS) glob kpathsea
 
 DIRS_TO_MAKE = $(bindir) $(libdir) $(octincludedir) $(fcnfiledir) \
   $(octfiledir) $(archlibdir) \

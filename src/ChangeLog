@@ -1,5 +1,10 @@
 2004-01-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* oct-stream.cc (convert_to_valid_int, get_size):
+	Use lo_ieee_is_NaN_or_NA instead of xisnan.
+	(octave_base_stream::do_printf): Correct special case check for
+	NA, NaN, Inf, or out of range integers.
+
 	* dirfns.cc (Fglob): Always return list of files as a cell array.
 	(Freaddir): Likewise.
 

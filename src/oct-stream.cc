@@ -62,7 +62,7 @@ convert_to_valid_int (const octave_value& tc, int& conv_err)
 
   if (! error_state)
     {
-      if (! xisnan (dval))
+      if (! lo_ieee_is_NaN_or_NA (dval))
 	{
 	  int ival = NINT (dval);
 
@@ -85,7 +85,7 @@ get_size (double d, const std::string& who)
 {
   int retval = -1;
 
-  if (! xisnan (d))
+  if (! lo_ieee_is_NaN_or_NA (d))
     {
       if (! xisinf (d))
 	{
@@ -2383,24 +2383,25 @@ octave_base_stream::do_printf (printf_format_list& fmt_list,
 
 		  if (val_cache)
 		    {
-		      if ((xisnan (val) || xisinf (val)
-			   || val > INT_MAX || val < INT_MIN)
-			  && (elt->type == 'd'
-			      || elt->type == 'i'
-			      || elt->type == 'c'
-			      || elt->type == 'o'
-			      || elt->type == 'x'
-			      || elt->type == 'X'
-			      || elt->type == 'u'))
+		      if (lo_ieee_is_NaN_or_NA (val) || xisinf (val)
+			  || ((val > INT_MAX || val < INT_MIN)
+			      && (elt->type == 'd'
+				  || elt->type == 'i'
+				  || elt->type == 'c'
+				  || elt->type == 'o'
+				  || elt->type == 'x'
+				  || elt->type == 'X'
+				  || elt->type == 'u')))
 			{
 			  std::string tfmt = fmt;
 
-			  if (xisnan (val) || xisinf (val))
+			  if (lo_ieee_is_NaN_or_NA (val) || xisinf (val))
 			    {
 			      tfmt.replace (tfmt.rfind (elt->type), 1, 1, 's');
 
 			      const char *tval = xisinf (val)
-				? (val < 0 ? "-Inf" : "Inf") : "NaN";
+				? (val < 0 ? "-Inf" : "Inf")
+				: (lo_ieee_is_NA (val) ? "NA" : "NaN");
 
 			      retval += do_printf_conv (os, tfmt.c_str (),
 							nsa, sa_1, sa_2,

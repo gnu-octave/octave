@@ -1910,6 +1910,50 @@ tree_constant_rep::convert_to_str (void)
   return retval;
 }
 
+int
+tree_constant_rep::is_true (void) const
+{
+  if (type_tag == string_constant || type_tag == range_constant)
+    {
+      tree_constant tmp = make_numeric ();
+      return tmp.is_true ();
+    }
+
+  int retval;
+  switch (type_tag)
+    {
+    case scalar_constant:
+      retval = (scalar != 0.0);
+      break;
+    case matrix_constant:
+      {
+	Matrix m = (matrix->all ()) . all ();
+	retval = (m.rows () == 1
+		  && m.columns () == 1
+		  && m.elem (0, 0) != 0.0);
+      }
+      break;
+    case complex_scalar_constant:
+      retval = (*complex_scalar != 0.0);
+      break;
+    case complex_matrix_constant:
+      {
+	Matrix m = (complex_matrix->all ()) . all ();
+	retval = (m.rows () == 1
+		  && m.columns () == 1
+		  && m.elem (0, 0) != 0.0);
+      }
+      break;
+    case string_constant:
+    case range_constant:
+    case magic_colon:
+    default:
+      panic_impossible ();
+      break;
+    }
+  return retval;
+}
+
 tree_constant
 tree_constant_rep::cumprod (void) const
 {
@@ -2216,7 +2260,12 @@ tree_constant_rep::diag (void) const
       {
 	int nr = rows ();
 	int nc = columns ();
-	if (nr == 1 || nc == 1)
+	if (nr == 0 || nc == 0)
+	  {
+	    Matrix mtmp (nr, nc);
+	    retval = tree_constant (mtmp);
+	  }
+	else if (nr == 1 || nc == 1)
 	  retval = make_diag (matrix_value (), 0);
 	else
 	  {
@@ -2233,7 +2282,12 @@ tree_constant_rep::diag (void) const
       {
 	int nr = rows ();
 	int nc = columns ();
-	if (nr == 1 || nc == 1)
+	if (nr == 0 || nc == 0)
+	  {
+	    Matrix mtmp (nr, nc);
+	    retval = tree_constant (mtmp);
+	  }
+	else if (nr == 1 || nc == 1)
 	  retval = make_diag (complex_matrix_value (), 0);
 	else
 	  {
@@ -2297,7 +2351,12 @@ tree_constant_rep::diag (const tree_constant& a) const
 	  int k = NINT (tmp_a.double_value ());
 	  int nr = rows ();
 	  int nc = columns ();
-	  if (nr == 1 || nc == 1)
+	  if (nr == 0 || nc == 0)
+	    {
+	      Matrix mtmp (nr, nc);
+	      retval = tree_constant (mtmp);
+	    }
+	  else if (nr == 1 || nc == 1)
 	    retval = make_diag (matrix_value (), k);
 	  else
 	    {
@@ -2336,7 +2395,12 @@ tree_constant_rep::diag (const tree_constant& a) const
 	  int k = NINT (tmp_a.double_value ());
 	  int nr = rows ();
 	  int nc = columns ();
-	  if (nr == 1 || nc == 1)
+	  if (nr == 0 || nc == 0)
+	    {
+	      Matrix mtmp (nr, nc);
+	      retval = tree_constant (mtmp);
+	    }
+	  else if (nr == 1 || nc == 1)
 	    retval = make_diag (complex_matrix_value (), k);
 	  else
 	    {

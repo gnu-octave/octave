@@ -1,5 +1,7 @@
 Sun Nov 17 14:14:48 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Makefile.in (parse.cc): Expect 12 shift/reduce conflicts.
+
 	* parse.y (set_stmt_print_flag): New function.
 	(sep_type): New member for bison %union declaration.
 	Simplify rules for statement lists keeping track of the type of

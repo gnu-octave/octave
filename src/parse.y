@@ -168,7 +168,7 @@ static void maybe_warn_assign_as_truth_value (tree *expr);
 %token <tok_val> LEFTDIV EMUL EDIV ELEFTDIV QUOTE TRANSPOSE
 %token <tok_val> PLUS_PLUS MINUS_MINUS POW EPOW
 %token <tok_val> NUM IMAG_NUM
-%token <tok_val> NAME SCREW CLEAR
+%token <tok_val> NAME SCREW
 %token <tok_val> END
 %token <tok_val> PLOT
 %token <tok_val> TEXT STYLE
@@ -213,8 +213,8 @@ static void maybe_warn_assign_as_truth_value (tree *expr);
 %left UNARY PLUS_PLUS MINUS_MINUS EXPR_NOT
 %right POW EPOW
 
-// There are 20 shift/reduce conflicts, ok?
-%expect 20
+// There are 19 shift/reduce conflicts, ok?
+%expect 19
 
 // Where to start.
 %start input
@@ -792,31 +792,6 @@ colon_expr	: simple_expr ':' simple_expr
 
 word_list_cmd	: identifier word_list
 		  { $$ = new tree_word_list_command ($1, $2); }
-		| CLEAR
-		  {
-		    if (defining_func)
-		      {
-			yyerror ("parse error");
-			error ("clear: invalid within function body");
-			ABORT_PARSE;
-		      }
-		    tree_identifier *tmp = new tree_identifier
-		      ($1->sym_rec (), $1->line (), $1->column ());
-		    $$ = new tree_word_list_command (tmp,
-						     (tree_word_list *) NULL);
-		  }
-		| CLEAR word_list
-		  {
-		    if (defining_func)
-		      {
-			yyerror ("parse error");
-			error ("clear: invalid within function body");
-			ABORT_PARSE;
-		      }
-		    tree_identifier *tmp = new tree_identifier
-		      ($1->sym_rec (), $1->line (), $1->column ());
-		    $$ = new tree_word_list_command (tmp, $2);
-		  }
 		;
 
 word_list	: word_list1

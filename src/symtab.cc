@@ -463,24 +463,6 @@ symbol_record::clear_all (void)
 }
 
 void
-symbol_record::undefine (void)
-{
-  if (var != (symbol_def *) NULL)
-    {
-      if (--var->count <= 0)
-	delete var;
-      var = (symbol_def *) NULL;
-    }
-
-  if (fcn != (symbol_def *) NULL)
-    {
-      if (--fcn->count <= 0)
-	delete fcn;
-      fcn = (symbol_def *) NULL;
-    }
-}
-
-void
 symbol_record::mark_as_formal_parameter (void)
 {
   formal_param = 1;
@@ -579,27 +561,12 @@ symbol_table::clear (void)
 {
   for (int i = 0; i < HASH_TABLE_SIZE; i++)
     {
-      symbol_record *prev = &table[i];
-      symbol_record *curr = prev->next ();
+      symbol_record *ptr = table[i].next ();
 
-      while (curr != (symbol_record *) NULL)
+      while (ptr != (symbol_record *) NULL)
 	{
-	  curr->clear_all ();
-
-// This record might have been read only.  If so, we shouldn't delete
-// it from the table.
-	  if (curr->is_defined ())
-	    {
-	      prev = curr;
-	      curr = curr->next ();
-	    }
-	  else
-	    {
-	      prev->next_elem = curr->next ();
-	      symbol_record *tmp = curr;
-	      curr = curr->next ();
-	      delete tmp;
-	    }
+	  ptr->clear_all ();
+	  ptr = ptr->next ();
 	}
     }
 }
@@ -618,14 +585,6 @@ symbol_table::clear (const char *nm)
 	{
 	  curr->clear_visible ();
 
-	  if (! curr->is_defined ())
-	    {
-	      prev->next_elem = curr->next ();
-	      symbol_record *tmp = curr;
-	      curr = curr->next ();
-	      delete tmp;
-	    }
-
 	  return 1;
 	}
       prev = curr;
@@ -633,21 +592,6 @@ symbol_table::clear (const char *nm)
     }
 
   return 0;
-}
-
-void
-symbol_table::undefine (void)
-{
-  for (int i = 0; i < HASH_TABLE_SIZE; i++)
-    {
-      symbol_record *ptr = table[i].next ();
-
-      while (ptr != (symbol_record *) NULL)
-	{
-	  ptr->undefine ();
-	  ptr = ptr->next ();
-	}
-    }
 }
 
 // Ugh.

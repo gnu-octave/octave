@@ -846,20 +846,21 @@ install_builtins (void)
   bind_protected_variable ("stderr", tmp);
   make_eternal ("stderr");
 
+// If using 1.0 / 0.0 doesn't work, you might also try using a very
+// large constant like 1.0e100000.
+
 #if defined (HAVE_ISINF) || defined (HAVE_FINITE)
 #ifdef linux
-  tmp = new tree_constant (HUGE_VAL);
+  double tmp_inf = HUGE_VAL;
 #else
-  tmp = new tree_constant (1.0/0.0);
+  double tmp_inf = 1.0 / 0.0;
 #endif
+
+  tmp = new tree_constant (tmp_inf);
   bind_protected_variable ("Inf", tmp);
   make_eternal ("Inf");
 
-#ifdef linux
-  tmp = new tree_constant (HUGE_VAL);
-#else
-  tmp = new tree_constant (1.0/0.0);
-#endif
+  tmp = new tree_constant (tmp_inf);
   bind_protected_variable ("inf", tmp);
   make_eternal ("inf");
 
@@ -877,20 +878,21 @@ install_builtins (void)
   make_eternal ("inf");
 #endif
 
+// If tmp_inf / tmp_inf fails to produce a NaN, you might also try
+// something like 0.0 / 0.0.
+
 #if defined (HAVE_ISNAN)
 #ifdef linux
-  tmp = new tree_constant (NAN);
+  double tmp_nan = NAN;
 #else
-  tmp = new tree_constant (0.0/0.0);
+  double tmp_nan = tmp_inf / tmp_inf;
 #endif
+
+  tmp = new tree_constant (tmp_nan);
   bind_protected_variable ("NaN", tmp);
   make_eternal ("NaN");
 
-#ifdef linux
-  tmp = new tree_constant (NAN);
-#else
-  tmp = new tree_constant (0.0/0.0);
-#endif
+  tmp = new tree_constant (tmp_nan);
   bind_protected_variable ("nan", tmp);
   make_eternal ("nan");
 #endif

@@ -244,7 +244,7 @@ raw_mode (int on)
 // Set the modes to the way we want them.
 
 	s.c_lflag &= ~(ICANON|ECHO|ECHOE|ECHOK|ECHONL);
-	s.c_oflag |=  (OPOST|ONLCR|TAB3);
+	s.c_oflag |=  (OPOST|ONLCR);
 	s.c_oflag &= ~(OCRNL|ONOCR|ONLRET);
 	s.c_cc[VMIN] = 1;
 	s.c_cc[VTIME] = 0;
@@ -277,7 +277,7 @@ raw_mode (int on)
 // Set the modes to the way we want them.
 
 	s.c_lflag &= ~(ICANON|ECHO|ECHOE|ECHOK|ECHONL);
-	s.c_oflag |=  (OPOST|ONLCR|TAB3);
+	s.c_oflag |=  (OPOST|ONLCR);
 	s.c_oflag &= ~(OCRNL|ONOCR|ONLRET);
 	s.c_cc[VMIN] = 1;
 	s.c_cc[VTIME] = 0;
@@ -310,7 +310,7 @@ raw_mode (int on)
 // Set the modes to the way we want them.
 
 	s.sg_flags |= CBREAK;
-	s.sg_flags &= ~(ECHO|XTABS);
+	s.sg_flags &= ~(ECHO);
       } 
     else
       {

@@ -156,7 +156,6 @@ public:
 
   void clear_visible (void);
   void clear_all (void);
-  void undefine (void);
 
   void mark_as_formal_parameter (void);
   int is_formal_parameter (void) const;
@@ -196,7 +195,6 @@ public:
 
   void clear (void);
   int clear (const char *nm);
-  void undefine (void);
 
   void bind_globals (void);
 

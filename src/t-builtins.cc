@@ -50,6 +50,7 @@ Software Foundation, Inc.
 #include <sys/stat.h>
 #include <time.h>
 #include <errno.h>
+#include <signal.h>
 #include <String.h>
 
 #include "procstream.h"
@@ -60,12 +61,14 @@ Software Foundation, Inc.
 #include "input.h"
 #include "pager.h"
 #include "utils.h"
+#include "sighandlers.h"
 #include "builtins.h"
 #include "t-builtins.h"
 #include "octave.h"
 #include "octave-hist.h"
 #include "user-prefs.h"
 #include "pr-output.h"
+#include "defaults.h"
 #include "tree.h"
 #include "help.h"
 
@@ -74,6 +77,19 @@ extern "C"
 {
   extern char *strerror (int);
   char *tilde_expand (char *s); /* From readline's tilde.c */
+}
+
+extern "C"
+{
+#include "info.h"
+#include "dribble.h"
+#include "terminal.h"
+
+  extern int initialize_info_session ();
+  extern int index_entry_exists ();
+  extern int do_info_index_search ();
+  extern void finish_info_session ();
+  extern char *replace_in_documentation ();
 }
 
 extern int symbol_out_of_date (symbol_record *s);
@@ -231,7 +247,8 @@ builtin_clear (int argc, char **argv)
   if (argc == 1)
     {
       curr_sym_tab->clear ();
-      global_sym_tab->clear ();
+      if (curr_sym_tab == top_level_sym_tab)
+	global_sym_tab->clear ();
     }
   else
     {
@@ -263,13 +280,16 @@ builtin_clear (int argc, char **argv)
 		    }
 		}
 
-	      for (i = 0; i < g_count; i++)
+	      if (curr_sym_tab == top_level_sym_tab)
 		{
-		  String nm (g_names[i]);
-		  if (nm.matches (rx)
-		      && ! in_list (g_names[i], locals_cleared))
+		  for (i = 0; i < g_count; i++)
 		    {
-		      global_sym_tab->clear (g_names[i]);
+		      String nm (g_names[i]);
+		      if (nm.matches (rx)
+			  && ! in_list (g_names[i], locals_cleared))
+			{
+			  global_sym_tab->clear (g_names[i]);
+			}
 		    }
 		}
 	    }
@@ -336,6 +356,143 @@ builtin_format (int argc, char **argv)
   return retval;
 }
 
+static void
+help_syms_list (ostrstream& output_buf, help_list *list,
+		const char *desc)
+{
+  int count = 0;
+  char **symbols = names (list, count);
+  output_buf << "\n*** " << desc << ":\n\n";
+  if (symbols != (char **) NULL && count > 0)
+    list_in_columns (output_buf, symbols);
+  delete [] symbols;
+}
+
+static void
+simple_help (void)
+{
+  ostrstream output_buf;
+
+  help_syms_list (output_buf, operator_help (), "operators");
+
+  help_syms_list (output_buf, keyword_help (), "reserved words");
+
+  help_syms_list (output_buf, builtin_text_functions_help (),
+		  "text functions (these names are also reserved)");
+
+  help_syms_list (output_buf, builtin_mapper_functions_help (),
+		  "mapper functions");
+
+  help_syms_list (output_buf, builtin_general_functions_help (),
+		  "general functions");
+
+  help_syms_list (output_buf, builtin_variables_help (),
+		  "builtin variables");
+      
+// Also need to list variables and currently compiled functions from
+// the symbol table, if there are any.
+
+// Also need to search octave_path for script files.
+
+  char **path = pathstring_to_vector (user_pref.loadpath);
+
+  char **ptr = path;
+  if (ptr != (char **) NULL)
+    {
+      while (*ptr != (char *) NULL)
+	{
+	  int count;
+	  char **names = get_m_file_names (count, *ptr, 0);
+	  output_buf << "\n*** M-files in "
+		     << make_absolute (*ptr, the_current_working_directory)
+		     << ":\n\n";
+	  if (names != (char **) NULL && count > 0)
+	    list_in_columns (output_buf, names);
+	  delete [] names;
+	  ptr++;
+	}
+    }
+
+  output_buf << ends;
+  maybe_page_output (output_buf);
+}
+
+static int
+try_info (const char *string)
+{
+  int status = 0;
+
+  char *directory_name = strsave (DEFAULT_INFO_FILE);
+  char *temp = filename_non_directory (directory_name);
+
+  if (temp != directory_name)
+    {
+      *temp = 0;
+      info_add_path (directory_name, INFOPATH_PREPEND);
+    }
+
+  delete [] directory_name;
+
+  NODE *initial_node = info_get_node (DEFAULT_INFO_FILE, (char *)NULL);
+
+  if (! initial_node)
+    {
+      warning ("can't find info file!\n");
+      return status;
+    }
+
+  initialize_info_session (initial_node, 0);
+
+  if (index_entry_exists (windows, string))
+    {
+      terminal_clear_screen ();
+
+      terminal_prep_terminal ();
+
+      display_update_display (windows);
+
+      info_last_executed_command = (VFunction *)NULL;
+
+      do_info_index_search (windows, 0, string);
+
+      char *format = replace_in_documentation
+	("Type \"\\[quit]\" to quit, \"\\[get-help-window]\" for help.");
+
+      window_message_in_echo_area (format);
+
+      info_read_and_dispatch ();
+
+      terminal_goto_xy (0, screenheight - 1);
+
+      terminal_clear_to_eol ();
+
+      terminal_unprep_terminal ();
+
+      status = 1;
+    }
+
+  finish_info_session (initial_node, 0);
+
+  return status;
+}
+
+static int
+help_from_list (ostrstream& output_buf, const help_list *list,
+		const char *string)
+{
+  char *name;
+  while ((name = list->name) != (char *) NULL)
+    {
+      if (strcmp (name, string) == 0)
+	{
+	  output_buf << "\n" << list->help << "\n";
+	  return 1;
+	}
+      list++;
+    }
+  return 0;
+}
+
 /*
  * Print cryptic yet witty messages.
  */
@@ -344,106 +501,39 @@ builtin_help (int argc, char **argv)
 {
   tree_constant retval;
 
-  ostrstream output_buf;
   if (argc == 1)
     {
-      char **symbols;
-      int count = 0;
-
-      symbols = names (operator_help (), count);
-      output_buf << "\n*** operators:\n\n";
-      if (symbols != (char **) NULL && count > 0)
-	list_in_columns (output_buf, symbols);
-      delete [] symbols;
-
-      symbols = names (keyword_help (), count);
-      output_buf << "\n*** reserved words:\n\n";
-      if (symbols != (char **) NULL && count > 0)
-	list_in_columns (output_buf, symbols);
-      delete [] symbols;
-
-      symbols = names (builtin_text_functions_help (), count);
-      output_buf
-	<< "\n*** text functions (these names are also reserved):\n\n";
-      if (symbols != (char **) NULL && count > 0)
-	list_in_columns (output_buf, symbols);
-      delete [] symbols;
-
-      symbols = names (builtin_mapper_functions_help (), count);
-      output_buf << "\n*** mapper functions:\n\n";
-      if (symbols != (char **) NULL && count > 0)
-	list_in_columns (output_buf, symbols);
-      delete [] symbols;
-
-      symbols = names (builtin_general_functions_help (), count);
-      output_buf << "\n*** general functions:\n\n";
-      if (symbols != (char **) NULL && count > 0)
-	list_in_columns (output_buf, symbols);
-      delete [] symbols;
-
-      symbols = names (builtin_variables_help (), count);
-      output_buf << "\n*** builtin variables:\n\n";
-      if (symbols != (char **) NULL && count > 0)
-	list_in_columns (output_buf, symbols);
-      delete [] symbols;
-
-// Also need to list variables and currently compiled functions from
-// the symbol table, if there are any.
-
-// Also need to search octave_path for script files.
-
-      char **path = pathstring_to_vector (user_pref.loadpath);
-
-      char **ptr = path;
-      if (ptr != (char **) NULL)
-	{
-	  while (*ptr != (char *) NULL)
-	    {
-	      int count;
-	      char **names = get_m_file_names (count, *ptr, 0);
-	      output_buf << "\n*** M-files in "
-		      << make_absolute (*ptr, the_current_working_directory)
-		      << ":\n\n";
-	      if (names != (char **) NULL && count > 0)
-		list_in_columns (output_buf, names);
-	      delete [] names;
-	      ptr++;
-	    }
-	}
+      simple_help ();
     }
   else
     {
+      ostrstream output_buf;
+
       char *m_file_name = (char *) NULL;
       symbol_record *sym_rec;
       help_list *op_help_list = operator_help ();
       help_list *kw_help_list = keyword_help ();
+
       for (int i = 1; i < argc; i++)
 	{
 	  if (argv[i] == (char *) NULL || argv[i][0] == '\0')
 	    continue;
 
-	  int j = 0;
-	  char *name;
-	  while ((name = op_help_list[j].name) != (char *) NULL)
-	    {
-	      if (strcmp (name, argv[i]) == 0)
-		{
-		 output_buf << "\n" << op_help_list[j].help << "\n";
-		  goto next;
-		}
-	      j++;
-	    }
+	  volatile sig_handler *old_sigint_handler = signal (SIGINT, SIG_IGN);
 
-	  j = 0;
-	  while ((name = kw_help_list[j].name) != (char *) NULL)
-	    {
-	      if (strcmp (name, argv[i]) == 0)
-		{
-		  output_buf << "\n" << kw_help_list[j].help << "\n";
-		  goto next;
-		}
-	      j++;
-	    }
+	  int help_found = try_info (argv[i]);
+
+	  signal (SIGINT, old_sigint_handler);
+
+	  if (help_found)
+	    continue;
+
+
+	  if (help_from_list (output_buf, op_help_list, argv[i]))
+	    continue;
+
+	  if (help_from_list (output_buf, kw_help_list, argv[i]))
+	    continue;
 
 	  sym_rec = curr_sym_tab->lookup (argv[i], 0, 0);
 	  if (sym_rec != (symbol_record *) NULL)
@@ -452,7 +542,7 @@ builtin_help (int argc, char **argv)
 	      if (h != (char *) NULL && *h != '\0')
 		{
 		  output_buf << "\n" << h << "\n";
-		  goto next;
+		  continue;
 		}
 	    }
 
@@ -464,7 +554,7 @@ builtin_help (int argc, char **argv)
 	      if (h != (char *) NULL && *h != '\0')
 		{
 		  output_buf << "\n" << h << "\n";
-		  goto next;
+		  continue;
 		}
 	    }
 
@@ -484,21 +574,18 @@ builtin_help (int argc, char **argv)
 		  if (h != (char *) NULL && *h != '\0')
 		    {
 		      output_buf << "\n" << h << "\n";
-		      goto next;
+		      continue;
 		    }
 		}
 	    }
 	  delete [] m_file_name;
 
 	  output_buf << "Sorry, `" << argv[i] << "' is not documented\n";
-
-	next:
-	  continue;
 	}
-    }
 
-  output_buf << ends;
-  maybe_page_output (output_buf);
+      output_buf << ends;
+      maybe_page_output (output_buf);
+    }
 
   return retval;
 }
@@ -579,7 +666,6 @@ load_variable (char *nm, int force, istream& is)
  * BUGS:
  *
  *  -- This function is not terribly robust.
- *  -- Symbols are only inserted into the current symbol table.
  */
 tree_constant
 builtin_load (int argc, char **argv)

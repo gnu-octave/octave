@@ -1315,20 +1315,7 @@ handle_identifier (char *tok, int next_tok_is_eq)
     {
       BEGIN TEXT_FCN;
 
-      if (strcmp (tok, "clear") == 0)
-	{
-	  symbol_record *sr = global_sym_tab->lookup ("clear", 1, 0);
-
-	  assert (sr != (symbol_record *) NULL);
-
-	  yylval.tok_val = new token (sr, input_line_number,
-				      current_input_column);
-
-	  token_stack.push (yylval.tok_val);
-
-	  return CLEAR;
-	}
-      else if (strcmp (tok, "help") == 0)
+      if (strcmp (tok, "help") == 0)
 	BEGIN HELP_FCN;
       else if (strcmp (tok, "set") == 0)
 	doing_set = 1;

@@ -1,3 +1,8 @@
+Fri May 28 11:02:37 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DLD-FUNCTIONS/chol.cc (Fchol): If two output arguments, never
+	produce error message.
+
 Thu May 27 18:28:35 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* DLD-FUNCTIONS/chol.cc (Fchol): Also return info as second output.

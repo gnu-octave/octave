@@ -66,13 +66,13 @@ DEFUN_DLD (chol, args, nargout,
 	{
 	  int info;
 	  CHOL fact (m, info);
-	  if (info != 0)
-	    error ("chol: matrix not positive definite");
-	  else
+	  if (nargout == 2 || info == 0)
 	    {
 	      retval(1) = static_cast<double> (info);
 	      retval(0) = fact.chol_matrix ();
 	    }
+	  else
+	    error ("chol: matrix not positive definite");
 	}
     }
   else if (arg.is_complex_type ())
@@ -83,13 +83,13 @@ DEFUN_DLD (chol, args, nargout,
 	{
 	  int info;
 	  ComplexCHOL fact (m, info);
-	  if (info != 0)
-	    error ("chol: matrix not positive definite");
-	  else
+	  if (nargout == 2 || info == 0)
 	    {
 	      retval(1) = static_cast<double> (info);
 	      retval(0) = fact.chol_matrix ();
 	    }
+	  else
+	    error ("chol: matrix not positive definite");
 	}
     }
   else

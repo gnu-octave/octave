@@ -1,4 +1,4 @@
-// tree-base.h                                           -*- C++ -*-
+// tree.h                                                -*- C++ -*-
 /*
 
 Copyright (C) 1992, 1993, 1994 John W. Eaton
@@ -36,6 +36,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #define NULL_TREE_CONST (tree_constant *)NULL
 #endif
 
+class tree;
+class tree_fvc;
 class ostream;
 class tree_constant;
 class tree_identifier;
@@ -94,63 +96,7 @@ public:
 
   virtual ~tree (void) { }
 
-// Only the finest cheese...
-  virtual int is_identifier (void) const
-    { return 0; }
-
-  virtual int is_constant (void) const
-    { return 0; }
-
-  virtual int is_builtin (void) const
-    { return 0; }
-
-  virtual int is_index_expression (void) const
-    { return 0; }
-
-  virtual int is_assignment_expression (void) const
-    { return 0; }
-
-  virtual int is_prefix_expression (void) const
-    { return 0; }
-
-  virtual char *name (void) const
-    { assert (0); return (char *) NULL; }
-
-  virtual int max_expected_args (void)
-    { assert (0); return 0; }
-  
-  virtual void set_print_flag (int print)
-    { assert (0); }
-
-  virtual void mark_for_possible_ans_assign (void)
-    { assert (0); }
-
-  virtual tree_constant assign (tree_constant& t, tree_constant *args,
-				int nargs);
-
-  virtual void bump_value (tree::expression_type)
-    { assert (0); }
-
-  virtual char *fcn_file_name (void)
-    { return (char *) NULL; }
-
-  virtual time_t time_parsed (void)
-    { assert (0); return 0; }
-
-  virtual int is_system_fcn_file (void) const
-    { return 0; }
-
   virtual tree_constant eval (int print) = 0;
-
-  virtual tree_constant *eval (int print, int nargout);
-
-  virtual tree_constant *eval (const tree_constant *args, int nargin,
-			       int nargout, int print)
-    { assert (0); return NULL_TREE_CONST; }
-
-  virtual int save (ostream& os, int mark_as_global = 0,
-		    int precision = 17)
-    { assert (0); return 0; }
 
   virtual int line (void) const { return line_num; }
   virtual int column (void) const { return column_num; }

@@ -32,6 +32,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "builtins.h"
 #include "tree-base.h"
+#include "tree-expr.h"
+#include "tc-rep.h"
 
 #include "mx-base.h"
 #include "Range.h"
@@ -39,505 +41,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 class idx_vector;
 
 /*
- * How about a few macros?
- */
-
-#ifndef MAX
-#define MAX(a,b) ((a) > (b) ? (a) : (b))
-#endif
-
-#ifndef MIN
-#define MIN(a,b) ((a) < (b) ? (a) : (b))
-#endif
-
-#ifndef ABS
-#define ABS(x) (((x) < 0) ? (-x) : (x))
-#endif
-
-#ifndef NULL_TREE
-#define NULL_TREE (tree *)NULL
-#endif
-
-#ifndef NULL_TREE_CONST
-#define NULL_TREE_CONST (tree_constant *)NULL
-#endif
-
-/*
- * The following are used by some of the functions in the
- * tree_constant_rep class that must deal with real and complex
- * matrices.  This was not done with overloaded or virtual functions
- * from the Matrix class because there is no clean way to do that --
- * the necessary functions (like elem) need to return values of
- * different types...
- */
-
-// Given a tree_constant, and the names to be used for the real and
-// complex matrix and their dimensions, declare a real or complex
-// matrix, and initialize it from the tree_constant.  Note that m, cm,
-// nr, and nc must not be previously declared, and they must not be
-// expressions.  Since only one of the matrices will be defined after
-// this macro is used, only one set of dimesions is declared.
-
-// This macro only makes sense inside a friend or member function of
-// the tree_constant_rep class
-
-#define REP_RHS_MATRIX(tc,m,cm,nr,nc) \
-  int nr = 0; \
-  int nc = 0; \
-  Matrix m; \
-  ComplexMatrix cm; \
-  if ((tc).const_type () == tree_constant_rep::complex_matrix_constant) \
-    { \
-      cm = (tc).complex_matrix_value (); \
-      nr = (cm).rows (); \
-      nc = (cm).columns (); \
-    } \
-  else if ((tc).const_type () == tree_constant_rep::matrix_constant) \
-    { \
-      m = (tc).matrix_value (); \
-      nr = (m).rows (); \
-      nc = (m).columns (); \
-    } \
-  else \
-    abort ();
-
-// Assign a real or complex value to a tree_constant.
-//
-// This macro only makes sense inside a friend or member function of
-// the tree_constant_rep class.
-
-#define REP_ELEM_ASSIGN(i,j,rval,cval,real_type) \
-  do \
-    { \
-      if (type_tag == tree_constant_rep::matrix_constant) \
-        { \
-          if (real_type) \
-            matrix->elem ((i), (j)) = (rval); \
-          else \
-            abort (); \
-        } \
-      else \
-        { \
-          if (real_type) \
-            complex_matrix->elem ((i), (j)) = (rval); \
-          else \
-            complex_matrix->elem ((i), (j)) = (cval); \
-        } \
-    } \
-  while (0)
-
-// Given a real and complex matrix and row and column dimensions,
-// declare both and size one of them.  Only one of the matrices should
-// be used after this macro has been used.
-
-// This macro only makes sense inside a friend or member function of
-// the tree_constant_rep class.
-
-#define CRMATRIX(m,cm,nr,nc) \
-  Matrix m; \
-  ComplexMatrix cm; \
-  if (type_tag == tree_constant_rep::matrix_constant) \
-    (m).resize ((nr), (nc)); \
-  else if (type_tag == complex_matrix_constant) \
-    (cm).resize ((nr), (nc)); \
-  else \
-    abort (); \
-
-// Assign a real or complex matrix to a tree constant.
-
-// This macro only makes sense inside a friend or member function of
-// the tree_constant_rep class.
-
-#define ASSIGN_CRMATRIX_TO(tc,m,cm) \
-  do \
-    { \
-      if (type_tag == matrix_constant) \
-        tc = tree_constant (m); \
-      else \
-        tc = tree_constant (cm); \
-    } \
-  while (0)
-
-// Assign an element of this tree_constant_rep's real or complex
-// matrix to another real or complex matrix.
-
-// This macro only makes sense inside a friend or member function of
-// the tree_constant_rep class.
-
-#define CRMATRIX_ASSIGN_REP_ELEM(m,cm,i1,j1,i2,j2) \
-  do \
-    { \
-      if (type_tag == matrix_constant) \
-        (m).elem ((i1), (j1)) = matrix->elem ((i2), (j2)); \
-      else \
-        (cm).elem ((i1), (j1)) = complex_matrix->elem ((i2), (j2)); \
-    } \
-  while (0)
-
-// Assign a value to an element of a real or complex matrix.  Assumes
-// that the lhs and rhs are either both real or both complex types.
-
-#define CRMATRIX_ASSIGN_ELEM(m,cm,i,j,rval,cval,real_type) \
-  do \
-    { \
-      if (real_type) \
-        (m).elem ((i), (j)) = (rval); \
-      else \
-        (cm).elem ((i), (j)) = (cval); \
-    } \
-  while (0)
-
-
-/*
- * Forward class declarations.
- */
-class tree;
-class tree_constant;
-
-#ifndef TREE_FCN_TYPEDEFS
-#define TREE_FCN_TYPEDEFS 1
-
-typedef tree_constant* (*Text_fcn)(int, char **, int);
-typedef tree_constant* (*General_fcn)(tree_constant *, int, int);
-
-#endif
-
-/*
- * The actual representation of the tree_constant.
+ * Constants.
  */
 class
-tree_constant_rep
-{
-friend class tree_constant;
-
-  enum force_orient
-    {
-      no_orient,
-      row_orient,
-      column_orient,
-    };
-
-public:
-  enum constant_type
-    {
-      unknown_constant,
-      scalar_constant,
-      matrix_constant,
-      complex_scalar_constant,
-      complex_matrix_constant,
-      string_constant,
-      range_constant,
-      magic_colon,
-    };
-
-  tree_constant_rep (void);
-
-  tree_constant_rep (double d);
-  tree_constant_rep (const Matrix& m);
-  tree_constant_rep (const DiagMatrix& d);
-  tree_constant_rep (const RowVector& v, int pcv);
-  tree_constant_rep (const ColumnVector& v, int pcv);
-
-  tree_constant_rep (const Complex& c);
-  tree_constant_rep (const ComplexMatrix& m);
-  tree_constant_rep (const ComplexDiagMatrix& d);
-  tree_constant_rep (const ComplexRowVector& v, int pcv);
-  tree_constant_rep (const ComplexColumnVector& v, int pcv);
-
-  tree_constant_rep (const char *s);
-
-  tree_constant_rep (double base, double limit, double inc);
-  tree_constant_rep (const Range& r);
-
-  tree_constant_rep (tree_constant_rep::constant_type t);
-
-  tree_constant_rep (const tree_constant_rep& t);
-
-  ~tree_constant_rep (void);
-
-#if defined (MDEBUG)
-  void *operator new (size_t size);
-  void operator delete (void *p, size_t size);
-#endif
-
-  void resize (int i, int j);
-  void resize (int i, int j, double val);
-
-  void maybe_resize (int imax, force_orient fo = no_orient);
-  void maybe_resize (int imax, int jmax);
-
-  int valid_as_scalar_index (void) const;
-
-  int is_defined (void) const
-    { return type_tag != tree_constant_rep::unknown_constant; }
-
-  int is_undefined (void) const
-    { return type_tag == tree_constant_rep::unknown_constant; }
-
-  int is_string_type (void) const
-    { return type_tag == tree_constant_rep::string_constant; }
-
-  int is_scalar_type (void) const
-    { return type_tag == scalar_constant
-             || type_tag == complex_scalar_constant; }
-
-  int is_matrix_type (void) const
-    { return type_tag == matrix_constant
-             || type_tag == complex_matrix_constant; }
-
-  int is_real_type (void) const
-    { return type_tag == scalar_constant
-             || type_tag == matrix_constant
-	     || type_tag == range_constant; }
-
-  int is_complex_type (void) const
-    { return type_tag == complex_matrix_constant
-             || type_tag == complex_scalar_constant; }
-
-
-  int is_numeric_type (void) const
-    { return type_tag == scalar_constant
-             || type_tag == matrix_constant
-	     || type_tag == complex_matrix_constant
-             || type_tag == complex_scalar_constant; }
-
-  int is_numeric_or_range_type (void) const
-    { return type_tag == scalar_constant
-             || type_tag == matrix_constant
-	     || type_tag == complex_matrix_constant
-             || type_tag == complex_scalar_constant
-	     || type_tag == range_constant; }
-
-  double to_scalar (void) const;
-  ColumnVector to_vector (void) const;
-  Matrix to_matrix (void) const;
-
-  tree_constant_rep::constant_type force_numeric (int force_str_conv = 0);
-  tree_constant make_numeric (int force_str_conv = 0) const;
-
-  friend tree_constant
-    do_binary_op (tree_constant& a, tree_constant& b, tree::expression_type t);
-
-  friend tree_constant
-    do_unary_op (tree_constant& a, tree::expression_type t);
-
-  void assign (tree_constant& rhs, tree_constant *args, int nargs);
-
-  void do_scalar_assignment
-    (tree_constant& rhs, tree_constant *args, int nargin);
-
-  void do_matrix_assignment
-    (tree_constant& rhs, tree_constant *args, int nargin);
-
-  void do_matrix_assignment
-    (tree_constant& rhs, tree_constant& i_arg);
-
-  void do_matrix_assignment
-    (tree_constant& rhs, tree_constant& i_arg, tree_constant& j_arg);
-
-  void fortran_style_matrix_assignment (tree_constant& rhs,
-					tree_constant& i_arg);
-
-  void fortran_style_matrix_assignment (tree_constant& rhs, constant_type ci);
-
-  void fortran_style_matrix_assignment (tree_constant& rhs, idx_vector& i);
-
-  void vector_assignment (tree_constant& rhs, tree_constant& i_arg);
-
-  void check_vector_assign (int rhs_nr, int rhs_nc, int ilen,
-			    const char *rm);
-
-  void do_vector_assign (tree_constant& rhs, int i);
-  void do_vector_assign (tree_constant& rhs, idx_vector& i);
-  void do_vector_assign (tree_constant& rhs, Range& i);
-
-  void do_matrix_assignment
-    (tree_constant& rhs, int i, tree_constant& j_arg);
-  void do_matrix_assignment
-    (tree_constant& rhs, idx_vector& i, tree_constant& j_arg);
-  void do_matrix_assignment
-    (tree_constant& rhs, Range& i, tree_constant& j_arg);
-  void do_matrix_assignment
-    (tree_constant& rhs, constant_type i, tree_constant& j_arg);
-
-  void do_matrix_assignment (tree_constant& rhs, int i, int j);
-  void do_matrix_assignment (tree_constant& rhs, int i, idx_vector& jv);
-  void do_matrix_assignment (tree_constant& rhs, int i, Range& j);
-  void do_matrix_assignment (tree_constant& rhs, int i, constant_type cj);
-
-  void do_matrix_assignment (tree_constant& rhs, idx_vector& iv, int j);
-  void do_matrix_assignment (tree_constant& rhs, idx_vector& iv,
-			     idx_vector& jv);
-  void do_matrix_assignment (tree_constant& rhs, idx_vector& iv, Range& j);
-  void do_matrix_assignment (tree_constant& rhs, idx_vector& iv,
-			     constant_type j);
-
-  void do_matrix_assignment (tree_constant& rhs, Range& i, int j);
-  void do_matrix_assignment (tree_constant& rhs, Range& i, idx_vector& jv);
-  void do_matrix_assignment (tree_constant& rhs, Range& i, Range& j);
-  void do_matrix_assignment (tree_constant& rhs, Range& i, constant_type j);
-
-  void do_matrix_assignment (tree_constant& rhs, constant_type i, int j);
-  void do_matrix_assignment (tree_constant& rhs, constant_type i,
-			     idx_vector& jv);
-  void do_matrix_assignment (tree_constant& rhs, constant_type i, Range& j);
-  void do_matrix_assignment (tree_constant& rhs, constant_type i,
-			     constant_type j);
-
-  void delete_row (int);
-  void delete_rows (idx_vector& i);
-  void delete_rows (Range& i);
-
-  void delete_column (int);
-  void delete_columns (idx_vector& j);
-  void delete_columns (Range& j);
-
-  void bump_value (tree::expression_type);
-
-  void eval (int print);
-
-  tree_constant *eval (const tree_constant *args, int n_in, int n_out,
-		       int print);
-
-  tree_constant do_scalar_index (const tree_constant *args,
-				 int nargin) const;
-
-  tree_constant do_matrix_index (const tree_constant *args, int nargin) const;
-
-  tree_constant do_matrix_index (const tree_constant& i_arg) const;
-
-  tree_constant do_matrix_index (const tree_constant& i_arg,
-				 const tree_constant& j_arg) const; 
-
-  tree_constant do_matrix_index (constant_type i) const;
-
-  tree_constant fortran_style_matrix_index (const tree_constant& i_arg) const;
-  tree_constant fortran_style_matrix_index (const Matrix& mi) const;
-
-  tree_constant do_vector_index (const tree_constant& i_arg) const;
-
-  tree_constant do_matrix_index (int i, const tree_constant& i_arg) const;
-  tree_constant do_matrix_index (const idx_vector& i,
-				 const tree_constant& i_arg) const; 
-  tree_constant do_matrix_index (const Range& i,
-				 const tree_constant& i_arg) const;
-  tree_constant do_matrix_index (constant_type i,
-				 const tree_constant& i_arg) const;
-
-  tree_constant do_matrix_index (int i, int j) const;
-  tree_constant do_matrix_index (int i, const idx_vector& j) const;
-  tree_constant do_matrix_index (int i, const Range& j) const;
-  tree_constant do_matrix_index (int i, constant_type cj) const;
-
-  tree_constant do_matrix_index (const idx_vector& i, int j) const;
-  tree_constant do_matrix_index (const idx_vector& i,
-				 const idx_vector& j) const;
-  tree_constant do_matrix_index (const idx_vector& i, const Range& j) const;
-  tree_constant do_matrix_index (const idx_vector& i, constant_type j) const;
-
-  tree_constant do_matrix_index (const Range& i, int j) const;
-  tree_constant do_matrix_index (const Range& i, const idx_vector& j) const;
-  tree_constant do_matrix_index (const Range& i, const Range& j) const;
-  tree_constant do_matrix_index (const Range& i, constant_type j) const;
-
-  tree_constant do_matrix_index (constant_type i, int j) const;
-  tree_constant do_matrix_index (constant_type i, const idx_vector& j) const;
-  tree_constant do_matrix_index (constant_type i, const Range& j) const;
-  tree_constant do_matrix_index (constant_type i, constant_type j) const;
-
-  int save (ostream& os, int mark_as_global, int precision);
-  int save_three_d (ostream& os, int parametric);
-  int load (istream& is);
-  constant_type load (istream& is, constant_type t);
-
-  double double_value (void) const;
-  Matrix matrix_value (void) const;
-  Complex complex_value (void) const;
-  ComplexMatrix complex_matrix_value (void) const;
-  char *string_value (void) const;
-  Range range_value (void) const;
-
-  int rows (void) const;
-  int columns (void) const;
-
-  tree_constant all (void) const;
-  tree_constant any (void) const;
-  tree_constant isstr (void) const;
-
-  tree_constant convert_to_str (void);
-
-  void convert_to_row_or_column_vector (void);
-
-  int is_true (void) const;
-
-  tree_constant cumprod (void) const;
-  tree_constant cumsum (void) const;
-  tree_constant prod (void) const;
-  tree_constant sum (void) const;
-  tree_constant sumsq (void) const;
-
-  tree_constant diag (void) const;
-  tree_constant diag (const tree_constant& a) const;
-
-  friend tree_constant fill_matrix (const tree_constant& a,
-				    double d, const char *warn_for);
-  friend tree_constant fill_matrix (const tree_constant& a,
-				    const tree_constant& b,
-				    double d, const char *warn_for);
-
-  friend tree_constant identity_matrix (const tree_constant& a);
-  friend tree_constant identity_matrix (const tree_constant& a,
-					const tree_constant& b);
-
-  friend tree_constant find_nonzero_elem_idx (const tree_constant& a);
-
-  friend tree_constant *matrix_log (const tree_constant& a);
-  friend tree_constant *matrix_sqrt (const tree_constant& a);
-
-  friend tree_constant *column_max (const tree_constant *args, int nargin,
-				    int nargout);
-
-  friend tree_constant *column_min (const tree_constant *args, int nargin,
-				    int nargout);
-  
-  friend tree_constant *sort (const tree_constant *args, int nargin,
-			      int nargout);
- 
-  friend tree_constant *feval (const tree_constant *args, int nargin,
-			       int nargout);
-
-  friend tree_constant eval_string (const tree_constant& arg, int&
-				    parse_status);
-
-  friend tree_constant get_user_input (const tree_constant *args,
-				       int nargin, int nargout,
-				       int debug = 0);
-
-  constant_type const_type (void) const { return type_tag; }
-
-  tree_constant mapper (Mapper_fcn& m_fcn, int print) const;
-
-private:
-  int count;
-  constant_type type_tag;
-  union
-    {
-      double scalar;			// A real scalar constant.
-      Matrix *matrix;			// A real matrix constant.
-      Complex *complex_scalar;		// A real scalar constant.
-      ComplexMatrix *complex_matrix;	// A real matrix constant.
-      char *string;			// A character string constant.
-      Range *range;			// A set of evenly spaced values.
-    };
-};
-
-/*
- * Constants.  Nice -- No need to interpret them anymore.  Logically,
- * this should be ahead of the tree_constant_rep class, but that
- * causes problems with my version of g++ (~2.2.2)...
- */
-class
-tree_constant : public tree
+tree_constant : public tree_fvc
 {
 friend class tree_constant_rep;
 
@@ -751,20 +258,28 @@ public:
     }
 
   tree_constant eval (int print)
-    { rep->eval (print); return *this; }
-
-// A tree constant can have one and only one value to return.
-  tree_constant *eval (int print, int nargout)
     {
-      rep->eval (print);
-      tree_constant *retval = new tree_constant [2];
-      retval[0] = *this;
-      return retval;
+      rep->maybe_mutate ();
+      if (print)
+	rep->print ();
+      return *this;
     }
 
-  tree_constant *eval (const tree_constant *args, int n_in, int n_out,
-		       int print)
-    { return rep->eval (args, n_in, n_out, print); }
+  tree_constant *eval (int print, int nargout,
+		       const tree_constant *args = NULL_TREE_CONST,
+		       int nargin = 0)
+    {
+      tree_constant *retval = new tree_constant [2];
+
+      if (args != NULL_TREE_CONST && nargin > 0)
+	retval[0] = rep->do_index (args, nargin);
+      else
+	retval[0] = *this;
+
+      if (retval[0].is_defined ())
+	retval[0].eval (print);
+      return retval;
+    }
 
 private:
   tree_constant_rep *rep;
@@ -776,6 +291,40 @@ private:
  */
 
 extern tree_constant *vector_of_empties (int nargout, const char *fcn_name);
+
+extern tree_constant fill_matrix (const tree_constant& a,
+				  double d, const char *warn_for);
+extern tree_constant fill_matrix (const tree_constant& a,
+				  const tree_constant& b,
+				  double d, const char *warn_for);
+
+extern tree_constant identity_matrix (const tree_constant& a);
+extern tree_constant identity_matrix (const tree_constant& a,
+				      const tree_constant& b);
+
+extern tree_constant find_nonzero_elem_idx (const tree_constant& a);
+
+extern tree_constant *matrix_log (const tree_constant& a);
+extern tree_constant *matrix_sqrt (const tree_constant& a);
+
+extern tree_constant *column_max (const tree_constant *args, int nargin,
+				  int nargout);
+
+extern tree_constant *column_min (const tree_constant *args, int nargin,
+				  int nargout);
+  
+extern tree_constant *sort (const tree_constant *args, int nargin,
+			    int nargout);
+ 
+extern tree_constant *feval (const tree_constant *args, int nargin,
+			     int nargout);
+
+extern tree_constant eval_string (const tree_constant& arg, int&
+				  parse_status);
+
+extern tree_constant get_user_input (const tree_constant *args,
+				     int nargin, int nargout,
+				     int debug = 0);
 
 #endif
 

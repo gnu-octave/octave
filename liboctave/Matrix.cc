@@ -31,6 +31,88 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "Matrix.h"
 #include "mx-inlines.cc"
 #include "lo-error.h"
+#include "f77-uscore.h"
+
+// Fortran functions we call.
+
+extern "C"
+{
+  int F77_FCN (dgemm) (const char*, const char*, const int*,
+		       const int*, const int*, const double*,
+		       const double*, const int*, const double*,
+		       const int*, const double*, double*, const int*,
+		       long, long);
+
+  int F77_FCN (dgemv) (const char*, const int*, const int*,
+		       const double*, const double*, const int*,
+		       const double*, const int*, const double*,
+		       double*, const int*, long);
+
+  int F77_FCN (dgeco) (double*, const int*, const int*, int*, double*,
+		       double*);
+
+  int F77_FCN (dgesl) (const double*, const int*, const int*,
+		       const int*, double*, const int*); 
+
+  int F77_FCN (dgedi) (double*, const int*, const int*, const int*,
+		       double*, double*, const int*);
+
+  int F77_FCN (dgelss) (const int*, const int*, const int*, double*,
+			const int*, double*, const int*, double*,
+			const double*, int*, double*, const int*,
+			int*);
+
+/*
+ * f2c translates complex*16 as
+ *
+ *   typedef struct { doublereal re, im; } doublecomplex;
+ *
+ * and Complex.h from libg++ uses
+ *
+ *   protected:
+ *     double re;
+ *     double im;
+ *
+ * as the only data members, so this should work (fingers crossed that
+ * things don't change).
+ */
+
+  int F77_FCN (zgemm) (const char*, const char*, const int*,
+		       const int*, const int*, const Complex*,
+		       const Complex*, const int*, const Complex*,
+		       const int*, const Complex*, Complex*, const int*,
+		       long, long);
+
+  int F77_FCN (zgemv) (const char*, const int*, const int*,
+		       const Complex*, const Complex*, const int*,
+		       const Complex*, const int*, const Complex*,
+		       Complex*, const int*, long);
+
+  int F77_FCN (zgeco) (Complex*, const int*, const int*, int*,
+		       double*, Complex*);
+
+  int F77_FCN (zgedi) (Complex*, const int*, const int*, int*,
+		       Complex*, Complex*, const int*);
+
+  int F77_FCN (zgesl) (Complex*, const int*, const int*, int*,
+		       Complex*, const int*);
+
+  int F77_FCN (zgelss) (const int*, const int*, const int*, Complex*,
+			const int*, Complex*, const int*, double*,
+			const double*, int*, Complex*, const int*,
+			double*, int*);
+
+// Note that the original complex fft routines were not written for
+// double complex arguments.  They have been modified by adding an
+// implicit double precision (a-h,o-z) statement at the beginning of
+// each subroutine.
+
+  int F77_FCN (cffti) (const int*, Complex*);
+
+  int F77_FCN (cfftf) (const int*, Complex*, Complex*);
+
+  int F77_FCN (cfftb) (const int*, Complex*, Complex*);
+}
 
 /*
  * Matrix class.

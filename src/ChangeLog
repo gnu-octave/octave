@@ -1,3 +1,10 @@
+2005-03-28  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/gplot.l (Fgraw): Recommend __gnuplot_raw__, not
+	__gnuplot__raw__.
+	(Fgshow): Recommend __gnuplot_show__, not __gnuplot__show__.
+	Don't add "mark_as_rawcommand ("replot")" to PKG_ADD file.
+
 2005-03-26  John W. Eaton <jwe@octave.org>
 
 	* input.cc (gnu_readline): Don't wrap call to command_editor::readline

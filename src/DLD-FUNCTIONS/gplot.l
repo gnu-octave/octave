@@ -10,7 +10,6 @@
 // PKG_ADD: mark_as_rawcommand ("gplot");
 // PKG_ADD: mark_as_rawcommand ("gset");
 // PKG_ADD: mark_as_rawcommand ("gsplot");
-// PKG_ADD: mark_as_rawcommand ("replot");
 
 // PKG_ADD: mark_as_command ("__gnuplot_show__");
 
@@ -1425,7 +1424,7 @@ DEFUN_DLD (gsplot, args, ,
 DEFUN_DLD (graw, args, ,
   "")
 {
-  DEPRECATED_BODY (graw, __gnuplot__raw__);
+  DEPRECATED_BODY (graw, __gnuplot_raw__);
 }
 
 DEFUN_DLD (gset, args, ,
@@ -1437,7 +1436,7 @@ DEFUN_DLD (gset, args, ,
 DEFUN_DLD (gshow, args, ,
   "")
 {
-  DEPRECATED_BODY (gshow, __gnuplot__show__);
+  DEPRECATED_BODY (gshow, __gnuplot_show__);
 }
 
 static int

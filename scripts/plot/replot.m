@@ -27,9 +27,9 @@
 function replot ()
 
   if (nargin == 0)
-    ## No semicolon following the __greplot__ line unless you also fix
-    ## gplot.l to allow it.
-    __greplot__
+    ## No semicolon following the __gnuplot_replot__ line unless you
+    ## also fix gplot.l to allow it.
+    __gnuplot_replot__
   else
     usage ("replot ()");
   endif

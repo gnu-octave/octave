@@ -1,3 +1,7 @@
+2005-03-28  Dmitri A. Sergatskov  <dasergatskov@gmail.com>
+
+	* plot/replot.m: Use __gnuplot_replot__, not __greplot__.
+
 2005-03-24  John W. Eaton  <jwe@octave.org>
 
 	* optimization/glpkmex.m: Texinfoize Doc string.

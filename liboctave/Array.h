@@ -24,13 +24,13 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_Array_h)
 #define octave_Array_h 1
 
-#include <assert.h>
-
-#include "lo-error.h"
-
 #if defined (__GNUG__) && defined (USE_EXTERNAL_TEMPLATES)
 #pragma interface
 #endif
+
+#include <assert.h>
+
+#include "lo-error.h"
 
 extern "C++" {
 

@@ -590,33 +590,26 @@ DEFUN ("pause", Fpause, Spause, 10,
       return retval;
     }
 
-  if (interactive)
+  if (nargin == 1)
     {
-      switch (nargin)
+      double dval = args(0).double_value ();
+
+      if (! error_state)
 	{
-	case 1:
-	  {
-	    double dval = args(0).double_value ();
-
-	    if (! error_state)
-	      {
-		if (xisnan (dval))
-		  warning ("pause: NaN is an invalid delay");
-		else
-		  {
-		    int delay = NINT (dval);
-		    if (delay > 0)
-		      sleep (delay);
-		  }
-	      }
-	  }
-	  break;
-
-	default:
-	  if (kbhit () == EOF)
-	    clean_up_and_exit (0);
-	  break;
+	  if (xisnan (dval))
+	    warning ("pause: NaN is an invalid delay");
+	  else
+	    {
+	      int delay = NINT (dval);
+	      if (delay > 0)
+		sleep (delay);
+	    }
 	}
+    }
+  else
+    {
+      if (kbhit () == EOF)
+	clean_up_and_exit (0);
     }
 
   return retval;

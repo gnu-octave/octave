@@ -103,7 +103,7 @@ command_history::size (void)
 }
 
 void
-command_history::ignore_entries (bool flag = true)
+command_history::ignore_entries (bool flag)
 {
   ignoring_additions = flag;
 }

@@ -3,6 +3,15 @@
 # Generate option handling code from a simpler input files for
 # Octave's functions like lsode, dassl, etc.
 
+# TODO:
+#
+# * Improve default documentation and/or individual documentation
+#   in data files. 
+#
+# * Fix print/show code to display/return something more informative
+#   for special values (for example, -1 ==> infinite in some cases).
+#   Probably need more information in the data files for this.
+
 # Input file format:
 #
 # CLASS = string
@@ -164,12 +173,6 @@ sub parse_option_block
 
 sub process_data
 {
-  @uniq_types = &get_uniq_types (@type);
-  @uniq_set_arg_types = &get_uniq_types (@set_arg_type);
-
-  @get_type_num = &get_uniq_type_num (*type, *uniq_types);
-  @set_type_num = &get_uniq_type_num (*set_arg_type, *uniq_set_arg_types);
-
   $max_tokens = &max (@n_toks);
 
   &get_min_match_len_info ($max_tokens);
@@ -188,40 +191,6 @@ Given one argument, \@code{$opt_fcn_name} returns the value of the\\n\\
 corresponding option.  If no arguments are supplied, the names of all\\n\\
 the available options and their current values are displayed.\\n\\\n";
     }
-}
-
-sub get_uniq_types
-{
-  local ($k, $i, @retval, %u);
-
-  $k = 0;
-
-  for ($i = 0; $i < $opt_num; $i++)
-    {
-      local ($x);
-      $x = $_[$i];
-      $u{$x}++;
-      $retval[$k++] = $x if ($u{$x} == 1);
-    }
-
-  @retval;
-}
-
-sub get_uniq_type_num
-{
-  local (*t, *ut) = @_;
-
-  local ($k, $i, @retval);
-
-  for ($i = 0; $i < $opt_num; $i++)
-    {
-      for $k (0 .. $#ut)
-        {
-          $retval[$i] = $k if ($t[$i] eq $ut[$k]);
-        }
-    }
-
-  @retval;
 }
 
 sub get_min_match_len_info
@@ -476,10 +445,6 @@ sub emit_opt_handler_fcns
 
 static ${class_name} ${static_object_name};\n\n";
 
-  &emit_set_mf_typedefs (@uniq_set_arg_types);
-
-  &emit_get_mf_typedefs (@uniq_types);
-
   &emit_struct_decl;
 
   &emit_struct_def;
@@ -491,32 +456,6 @@ static ${class_name} ${static_object_name};\n\n";
   &emit_show_function;
 
   &emit_options_function;
-}
-
-sub emit_set_mf_typedefs
-{
-  local ($k) = 0;
-
-  foreach (@_)
-    {
-      print "typedef void (${class_name}::*set_opt_mf_$k) ($_[$k]);\n";
-      $k++;
-    }
-
-  print "\n";
-}
-
-sub emit_get_mf_typedefs
-{
-  local ($k) = 0;
-
-  foreach (@_)
-    {
-      print "typedef $_[$k] (${class_name}::*get_opt_mf_$k) (void) const;\n";
-      $k++;
-    }
-
-  print "\n";
 }
 
 sub emit_struct_decl
@@ -531,16 +470,6 @@ sub emit_struct_decl
   print "  const char *kw_tok[MAX_TOKENS + 1];\n";
   print "  int min_len[MAX_TOKENS + 1];\n";
   print "  int min_toks_to_match;\n";
-
-  foreach $i (0 .. $#uniq_set_arg_types)
-    {
-      print "  set_opt_mf_$i set_fcn_$i;\n";
-    }
-
-  foreach $i (0 .. $#uniq_set_arg_types)
-    {
-      print "  get_opt_mf_$i get_fcn_$i;\n";
-    }
 
   print "};\n\n";
 }
@@ -562,8 +491,6 @@ sub emit_struct_def
 	  print "\n";
 	}
     }
-
-  &emit_option_table_entry ($i, 1);
 
   print "};\n\n";
 }
@@ -611,32 +538,6 @@ sub emit_option_table_entry
         }
     }
   print " }, $min_toks_to_match[$i], ";
-
-  print "    ";
-  for $k (0 .. $#uniq_set_arg_types)
-    {
-      if ($empty || $k != $set_type_num[$i])
-        {
-          print "0, ";
-        }
-      else
-        {
-          print "&${class_name}::set_$opt[$i], ";
-        }
-    }
-
-  print "\n    ";
-  for $k (0 .. $#uniq_types)
-    {
-      if ($empty || $k != $get_type_num[$i])
-        {
-          print "0, ";
-        }
-      else
-        {
-          print "&${class_name}::$opt[$i], ";
-        }
-    }
 
   print "},\n";
 }

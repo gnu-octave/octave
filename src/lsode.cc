@@ -43,6 +43,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Global pointer for user defined function required by lsode.
 static tree_fvc *lsode_fcn;
 
+// Global pointer for optional user defined jacobian function used by lsode.
+static tree_fvc *lsode_jac;
+
 static LSODE_options lsode_opts;
 
 ColumnVector
@@ -55,20 +58,11 @@ lsode_user_function (const ColumnVector& x, double t)
   octave_value_list args;
   args(1) = t;
 
-  if (nstates > 1)
-    {
-      Matrix m (nstates, 1);
-     for (int i = 0; i < nstates; i++)
-	m (i, 0) = x (i);
-      octave_value state (m);
-      args(0) = state;
-    }
-  else
-    {
-      double d = x (0);
-      octave_value state (d);
-      args(0) = state;
-    }
+  Matrix m (nstates, 1);
+  for (int i = 0; i < nstates; i++)
+    m (i, 0) = x (i);
+  octave_value state (m);
+  args(0) = state;
 
   if (lsode_fcn)
     {
@@ -83,6 +77,46 @@ lsode_user_function (const ColumnVector& x, double t)
       if (tmp.length () > 0 && tmp(0).is_defined ())
 	{
 	  retval = tmp(0).vector_value ();
+
+	  if (error_state || retval.length () == 0)
+	    gripe_user_supplied_eval ("lsode");
+	}
+      else
+	gripe_user_supplied_eval ("lsode");
+    }
+
+  return retval;
+}
+
+Matrix
+lsode_user_jacobian (const ColumnVector& x, double t)
+{
+  Matrix retval;
+
+  int nstates = x.capacity ();
+
+  octave_value_list args;
+  args(1) = t;
+
+  Matrix m (nstates, 1);
+  for (int i = 0; i < nstates; i++)
+    m (i, 0) = x (i);
+  octave_value state (m);
+  args(0) = state;
+
+  if (lsode_jac)
+    {
+      octave_value_list tmp = lsode_jac->eval (0, 1, args);
+
+      if (error_state)
+	{
+	  gripe_user_supplied_eval ("lsode");
+	  return retval;
+	}
+
+      if (tmp.length () > 0 && tmp(0).is_defined ())
+	{
+	  retval = tmp(0).matrix_value ();
 
 	  if (error_state || retval.length () == 0)
 	    gripe_user_supplied_eval ("lsode");
@@ -114,12 +148,48 @@ where xdot and x are vectors and t is a scalar.\n")
       return retval;
     }
 
-  lsode_fcn = extract_function
-    (args(0), "lsode", "__lsode_fcn__",
-     "function xdot = __lsode_fcn__ (x, t) xdot = ",
-     "; endfunction");
+  octave_value f_arg = args(0);
 
-  if (! lsode_fcn)
+  switch (f_arg.rows ())
+    {
+    case 1:
+      lsode_fcn = extract_function
+	(args(0), "lsode", "__lsode_fcn__",
+	 "function xdot = __lsode_fcn__ (x, t) xdot = ",
+	 "; endfunction");
+      break;
+
+    case 2:
+      {
+	string_vector tmp = args(0).all_strings ();
+
+	if (! error_state)
+	  {
+	    lsode_fcn = extract_function
+	      (tmp(0), "lsode", "__lsode_fcn__",
+	       "function xdot = __lsode_fcn__ (x, t) xdot = ",
+	       "; endfunction");
+
+	    if (lsode_fcn)
+	      {
+		lsode_jac = extract_function
+		  (tmp(1), "lsode", "__lsode_jac__",
+		   "function jac = __lsode_jac__ (x, t) jac = ",
+		   "; endfunction");
+
+		if (! lsode_jac)
+		  lsode_fcn = 0;
+	      }
+	  }
+      }
+      break;
+
+    default:
+      error ("lsode: second arg should be a string or 2-element string array");
+      break;
+    }
+
+  if (error_state || ! lsode_fcn)
     return retval;
 
   ColumnVector state = args(1).vector_value ();
@@ -158,7 +228,11 @@ where xdot and x are vectors and t is a scalar.\n")
   int nsteps = out_times.capacity ();
 
   ODEFunc func (lsode_user_function);
+  if (lsode_jac)
+    func.set_jacobian_function (lsode_user_jacobian);
+
   LSODE ode (state, tzero, func);
+
   ode.copy (lsode_opts);
 
   int nstates = state.capacity ();
@@ -179,7 +253,9 @@ where xdot and x are vectors and t is a scalar.\n")
 }
 
 typedef void (LSODE_options::*d_set_opt_mf) (double);
+typedef void (LSODE_options::*i_set_opt_mf) (int);
 typedef double (LSODE_options::*d_get_opt_mf) (void);
+typedef int (LSODE_options::*i_get_opt_mf) (void);
 
 #define MAX_TOKENS 3
 
@@ -190,7 +266,9 @@ struct LSODE_OPTIONS
   int min_len[MAX_TOKENS + 1];
   int min_toks_to_match;
   d_set_opt_mf d_set_fcn;
+  i_set_opt_mf i_set_fcn;
   d_get_opt_mf d_get_fcn;
+  i_get_opt_mf i_get_fcn;
 };
 
 static LSODE_OPTIONS lsode_option_table [] =
@@ -198,37 +276,43 @@ static LSODE_OPTIONS lsode_option_table [] =
   { "absolute tolerance",
     { "absolute", "tolerance", 0, 0, },
     { 1, 0, 0, 0, }, 1,
-    LSODE_options::set_absolute_tolerance,
-    LSODE_options::absolute_tolerance, },
+    LSODE_options::set_absolute_tolerance, 0,
+    LSODE_options::absolute_tolerance, 0, },
 
   { "initial step size",
     { "initial", "step", "size", 0, },
     { 1, 0, 0, 0, }, 1,
-    LSODE_options::set_initial_step_size,
-    LSODE_options::initial_step_size, },
+    LSODE_options::set_initial_step_size, 0,
+    LSODE_options::initial_step_size, 0, },
 
   { "maximum step size",
     { "maximum", "step", "size", 0, },
     { 2, 0, 0, 0, }, 1,
-    LSODE_options::set_maximum_step_size,
-    LSODE_options::maximum_step_size, },
+    LSODE_options::set_maximum_step_size, 0,
+    LSODE_options::maximum_step_size, 0, },
 
   { "minimum step size",
     { "minimum", "step", "size", 0, },
     { 2, 0, 0, 0, }, 1,
-    LSODE_options::set_minimum_step_size,
-    LSODE_options::minimum_step_size, },
+    LSODE_options::set_minimum_step_size, 0,
+    LSODE_options::minimum_step_size, 0, },
 
   { "relative tolerance",
     { "relative", "tolerance", 0, 0, },
     { 1, 0, 0, 0, }, 1,
-    LSODE_options::set_relative_tolerance,
-    LSODE_options::relative_tolerance, },
+    LSODE_options::set_relative_tolerance, 0,
+    LSODE_options::relative_tolerance, 0, },
+
+  { "step limit",
+    { "step", "limit", 0, 0, },
+    { 1, 0, 0, 0, }, 1,
+    0, LSODE_options::set_step_limit,
+    0, LSODE_options::step_limit, },
 
   { 0,
     { 0, 0, 0, 0, },
     { 0, 0, 0, 0, }, 0,
-    0, 0, },
+    0, 0, 0, 0, },
 };
 
 static void
@@ -247,13 +331,22 @@ print_lsode_option_list (ostream& os)
   while ((keyword = list->keyword) != 0)
     {
       os.form ("  %-40s ", keyword);
-
-      double val = (lsode_opts.*list->d_get_fcn) ();
-      if (val < 0.0)
-	os << "computed automatically";
+      if (list->d_get_fcn)
+	{
+	  double val = (lsode_opts.*list->d_get_fcn) ();
+	  if (val < 0.0)
+	    os << "computed automatically";
+	  else
+	    os << val;
+	}
       else
-	os << val;
-
+	{
+	  int val = (lsode_opts.*list->i_get_fcn) ();
+	  if (val < 0)
+	    os << "infinite";
+	  else
+	    os << val;
+	}
       os << "\n";
       list++;
     }
@@ -271,8 +364,18 @@ set_lsode_option (const string& keyword, double val)
       if (keyword_almost_match (list->kw_tok, list->min_len, keyword,
 				list->min_toks_to_match, MAX_TOKENS))
 	{
-	  (lsode_opts.*list->d_set_fcn) (val);
-
+	  if (list->d_set_fcn)
+	    (lsode_opts.*list->d_set_fcn) (val);
+	  else
+	    {
+	      if (xisnan (val))
+		{
+		  error ("lsode_options: %s: expecting integer, found NaN",
+			 keyword.c_str ());
+		}
+	      else
+		(lsode_opts.*list->i_set_fcn) (NINT (val));
+	    }
 	  return;
 	}
       list++;
@@ -293,11 +396,22 @@ show_lsode_option (const string& keyword)
       if (keyword_almost_match (list->kw_tok, list->min_len, keyword,
 				list->min_toks_to_match, MAX_TOKENS))
 	{
-	  double val = (lsode_opts.*list->d_get_fcn) ();
-	  if (val < 0.0)
-	    retval = "computed automatically";
+	  if (list->d_get_fcn)
+	    {
+	      double val = (lsode_opts.*list->d_get_fcn) ();
+	      if (val < 0.0)
+		retval = "computed automatically";
+	      else
+		retval = val;
+	    }
 	  else
-	    retval = val;
+	    {
+	      int val = (lsode_opts.*list->i_get_fcn) ();
+	      if (val < 0)
+		retval = "infinite";
+	      else
+		retval = static_cast<double> (val);
+	    }
 
 	  return retval;
 	}

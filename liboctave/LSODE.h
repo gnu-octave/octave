@@ -64,6 +64,7 @@ public:
       x_maximum_step_size = -1.0;
       x_minimum_step_size = 0.0;
       x_relative_tolerance = sqrt_eps;
+      x_step_limit = 500;
     }
 
   void copy (const LSODE_options& opt)
@@ -73,6 +74,7 @@ public:
       x_maximum_step_size = opt.x_maximum_step_size;
       x_minimum_step_size = opt.x_minimum_step_size;
       x_relative_tolerance = opt.x_relative_tolerance;
+      x_step_limit = opt.x_step_limit;
     }
 
   void set_default_options (void) { init (); }
@@ -92,6 +94,9 @@ public:
   void set_relative_tolerance (double val)
     { x_relative_tolerance = (val > 0.0) ? val : ::sqrt (DBL_EPSILON); }
 
+  void set_step_limit (int val)
+    { x_step_limit = val; }
+
   double absolute_tolerance (void)
     { return x_absolute_tolerance; }
 
@@ -107,6 +112,9 @@ public:
   double relative_tolerance (void)
     {  return x_relative_tolerance; }
 
+  int step_limit (void)
+    { return x_step_limit; }
+
 private:
 
   double x_absolute_tolerance;
@@ -114,6 +122,8 @@ private:
   double x_maximum_step_size;
   double x_minimum_step_size;
   double x_relative_tolerance;
+
+  int x_step_limit;
 };
 
 class
@@ -164,7 +174,6 @@ private:
   int iopt;
   int liw;
   int lrw;
-  int working_too_hard;
   int sanity_checked;
 
   friend int lsode_f (int *neq, double *t, double *y, double *ydot);

@@ -239,10 +239,11 @@ LSODE::do_integrate (double tout)
   rwork.elem (5) = (maximum_step_size () >= 0.0) ? maximum_step_size () : 0.0;
   rwork.elem (6) = (minimum_step_size () >= 0.0) ? minimum_step_size () : 0.0;
 
+  if (step_limit () > 0)
+    iwork.elem (5) = step_limit ();
+
   int *piwork = iwork.fortran_vec ();
   double *prwork = rwork.fortran_vec ();
-
-  working_too_hard = 0;
 
  again:
 
@@ -268,12 +269,11 @@ LSODE::do_integrate (double tout)
 	  break;
 
 	case -1:  // excess work done on this call (perhaps wrong mf).
-	  working_too_hard++;
-	  if (working_too_hard > 20)
+	  if (step_limit () > 0)
 	    {
 	      (*current_liboctave_error_handler)
 		("giving up after more than %d steps attempted in lsode",
-		 iwork.elem (5) * 20);
+		 step_limit ());
 	      integration_error = 1;
 	    }
 	  else

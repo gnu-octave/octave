@@ -1,3 +1,14 @@
+Fri Mar 28 15:33:11 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lsode.cc (struct LSODE_OPTIONS): Handle integer options.
+	(print_lsode_option_list, set_lsode_option, show_lsode_option): Ditto.
+	(lsode_option_table): Add element for step limit.
+	(lsode_user_jacobian): New function.
+	(Flsode): Allow function name arg to be a 2-element string array
+	specifying the function and jacobian function.
+
+	* variables.cc (get_global_value, set_global_value): New functions.
+
 Wed Mar 26 17:08:27 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	Implement static variable declaration:

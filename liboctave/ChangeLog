@@ -1,3 +1,13 @@
+Fri Mar 28 15:37:09 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* LSODE.h (x_step_limit): New field.
+	(LSODE_options::init): Initialize it.
+	(LSODE_options::copy): Copy it.
+	(LSODE_options::set_step_limit, LSODE_options::step_limit):
+	New functions.
+	(LSODE::working_too_hard): Delete.
+	* LSODE.cc (LSODE::do_integrate): Handle step limit.
+
 Wed Mar 26 15:31:57 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* MArray-b.cc: Delete.

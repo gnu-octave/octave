@@ -30,10 +30,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "lo-utils.h"
 #include "oct-env.h"
-#include "oct-kpse.h"
 #include "pathsearch.h"
 #include "str-vec.h"
 #include "str-vec.h"
+
+#include "kpse.h"
 
 static bool octave_kpathsea_initialized = false;
 
@@ -60,7 +61,7 @@ dir_path::all_directories (void)
       for (int i = 0; i < len; i++)
 	{
 	  str_llist_type *elt_dirs
-	    = ::octave_kpse_element_dirs (pv[i].c_str ());
+	    = kpse_element_dirs (pv[i].c_str ());
 
 	  if (elt_dirs)
 	    {
@@ -96,7 +97,7 @@ dir_path::find_first (const std::string& nm)
 
   if (initialized)
     {
-      char *tmp = ::octave_kpse_path_search (p.c_str (), nm.c_str (), true);
+      char *tmp = kpse_path_search (p.c_str (), nm.c_str (), true);
 
       if (tmp)
 	{
@@ -151,7 +152,7 @@ dir_path::find_all (const std::string& nm)
 
   if (initialized)
     {
-      char **tmp = ::octave_kpse_all_path_search (p.c_str (), nm.c_str ());
+      char **tmp = kpse_all_path_search (p.c_str (), nm.c_str ());
 
       retval = make_retval (tmp);
 
@@ -196,7 +197,7 @@ dir_path::find_first_of (const string_vector& names)
     {
       const char **c_names = make_c_names (names);
 
-      char *tmp = ::octave_kpse_path_find_first_of (p.c_str (), c_names, true);
+      char *tmp = kpse_path_find_first_of (p.c_str (), c_names, true);
 
       delete_c_names (c_names);
 
@@ -219,7 +220,7 @@ dir_path::find_all_first_of (const string_vector& names)
     {
       const char **c_names = make_c_names (names);
 
-      char **tmp = ::octave_kpse_all_path_find_first_of (p.c_str (), c_names);
+      char **tmp = kpse_all_path_find_first_of (p.c_str (), c_names);
 
       delete_c_names (c_names);
 
@@ -229,34 +230,6 @@ dir_path::find_all_first_of (const string_vector& names)
     }
 
   return retval;
-}
-
-void
-dir_path::set_program_name (const std::string& nm)
-{
-  std::string selfautodir = octave_env::getenv ("SELFAUTODIR");
-  std::string selfautoloc = octave_env::getenv ("SELFAUTOLOC");
-  std::string selfautoparent = octave_env::getenv ("SELFAUTOPARENT");
-
-  ::octave_kpse_set_progname (nm.c_str ());
-
-  // Calling kpse_set_progname has the unfortunate side-effect of
-  // exporting the following variables.  If they were empty when we
-  // started, we make them empty again so that they will not interfere
-  // with TeX if it is run as a subprocess of Octave (if they were set
-  // before, we want to preserve their values).
-  //
-  // XXX FIXME XXX -- is there a reasonable way to actually remove
-  // them from the environment?
-
-  if (selfautodir.empty ())
-    octave_env::putenv ("SELFAUTODIR", "");
-
-  if (selfautoloc.empty ())
-    octave_env::putenv ("SELFAUTOLOC", "");
-
-  if (selfautoparent.empty ())
-    octave_env::putenv ("SELFAUTOPARENT", "");
 }
 
 void
@@ -275,13 +248,13 @@ dir_path::init (void)
   char *t1 = 0;
 
   if (p_default.empty ())
-    t1 = ::octave_kpse_path_expand (p_orig.c_str ());
+    t1 = kpse_path_expand (p_orig.c_str ());
   else
     {
       char *t2
-	= ::octave_kpse_expand_default (p_orig.c_str (), p_default.c_str ());
+	= kpse_expand_default (p_orig.c_str (), p_default.c_str ());
 
-      t1 = ::octave_kpse_path_expand (t2);
+      t1 = kpse_path_expand (t2);
 
       if (t2)
 	free (t2);
@@ -296,21 +269,21 @@ dir_path::init (void)
     p = std::string ();
 
   int count = 0;
-  char *path_elt = ::octave_kpse_path_element (p.c_str ());
+  char *path_elt = kpse_path_element (p.c_str ());
   while (path_elt)
     {
-      path_elt = ::octave_kpse_path_element (0);
+      path_elt = kpse_path_element (0);
       count++;
     }
 
   pv.resize (count);
 
-  path_elt = ::octave_kpse_path_element (p.c_str ());
+  path_elt = kpse_path_element (p.c_str ());
 
   for (int i = 0; i < count; i++)
     {
       pv[i] = path_elt;
-      path_elt = ::octave_kpse_path_element (0);
+      path_elt = kpse_path_element (0);
     }
 
   initialized = true;

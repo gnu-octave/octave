@@ -22,7 +22,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### 02111-1307, USA. 
 
 AC_INIT
-AC_REVISION($Revision: 1.423 $)
+AC_REVISION($Revision: 1.424 $)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -135,12 +135,6 @@ dnl   AC_DEFINE(USE_PLPLOT, 1, [Define to use plplot.])
 dnl fi
 AC_SUBST(LIBPLPLOT)
 AC_SUBST(PLPLOT_DIR)
-
-### Don't change the definition of LIBKPATHSEA without understanding
-### the way it is used in liboctave/Makefile.
-
-LIBKPATHSEA='$(TOPDIR)/kpathsea/libkpathsea.$(LIBEXT)'
-AC_SUBST(LIBKPATHSEA)
 
 ### Make it possible to have Octave's array and matrix classes do bounds
 ### checking on element references.  This slows some operations down a
@@ -954,7 +948,7 @@ AC_SUBST(GLOB_INCFLAGS)
 
 ### Checks for functions and variables.
 
-AC_CHECK_FUNCS(atexit bcopy bzero dup2 endgrent endpwent execvp \
+AC_CHECK_FUNCS(atexit basename bcopy bzero dup2 endgrent endpwent execvp \
   fcntl fork getcwd getegid geteuid getgid getgrent getgrgid \
   getgrnam getpgrp getpid getppid getpwent getpwuid gettimeofday \
   getuid getwd _kbhit kill link localtime_r lstat memmove mkdir \
@@ -1310,7 +1304,7 @@ export CC
 export CXX
 export F77
 
-AC_CONFIG_SUBDIRS(kpathsea scripts)
+AC_CONFIG_SUBDIRS(scripts)
 
 # autoconf 2.50 deprecates the use of variables (e.g. $GLOB_DIR)
 # in AC_CONFIG_SUBDIRS; the following form is recommended instead:

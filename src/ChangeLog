@@ -1,3 +1,10 @@
+2003-04-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* toplev.cc (octave_config_info): Delete LIBKPATHSEA from struct.
+	* oct-conf.h.in: Don't substitute LIBKPATHSEA.
+
+	* octave.cc (octave_main): Don't call dir_path::set_program_name.
+
 2003-04-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* ov-file.h (octave_file::empty_clone): Create an octave_scalar

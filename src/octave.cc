@@ -375,8 +375,6 @@ octave_main (int argc, char **argv, int embedded)
 {
   octave_env::set_program_name (argv[0]);
 
-  dir_path::set_program_name (argv[0]);
-
   // The order of these calls is important.  The call to
   // install_defaults must come before install_builtins because
   // default variable values must be available for the variables to be

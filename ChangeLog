@@ -1,3 +1,19 @@
+2003-04-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in octMakefile.in: Delete kpathsea targets.
+
+	* kpathsea: Delete all files and directory.
+
+	* configure.in: Don't run configure in kpathsea subdirectory.
+
+	* README.kpathsea: New file.
+	* octMakefile.in (DISTFILES): Include it in the list.
+
+	* Makeconf.in (do-subst-config-vals): Don't substitute it.
+
+	* configure.in: Also check for basename.
+	Don't substitute LIBKPATHSEA.
+
 2003-04-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in (AH_BOTTOM): Don't assume that __WIN32__ will be

@@ -24,18 +24,19 @@ CONF_DISTFILES = Makefile Makefile.in octMakefile.in Makeconf.in \
 	acx_blas.m4 acx_lapack.m4 config.h.in install-sh autogen.sh
 
 DISTFILES = $(CONF_DISTFILES) \
-	BUGS COPYING FLEX.patch INSTALL INSTALL.OCTAVE NEWS NEWS.[0-9] \
-	PROJECTS README README.Linux README.Windows README.MachTen ROADMAP \
-	SENDING-PATCHES THANKS move-if-change octave-sh octave-bug.in \
+	BUGS COPYING FLEX.patch INSTALL INSTALL.OCTAVE NEWS \
+	NEWS.[0-9] PROJECTS README README.Linux README.Windows \
+	README.MachTen README.kpathsea ROADMAP SENDING-PATCHES \
+	THANKS move-if-change octave-sh octave-bug.in \
 	octave-config.in install-octave.in mk-opts.pl mkinstalldirs \
 	mkoctfile.in texi2dvi ChangeLog ChangeLog.[0-9]
 
 # Complete directory trees to distribute.
-DISTDIRS = glob kpathsea # plplot
+DISTDIRS = glob # plplot
 
 # Subdirectories in which to run `make all'.
 SUBDIRS = @PLPLOT_DIR@ @DLFCN_DIR@ @GLOB_DIR@ \
-	kpathsea libcruft liboctave scripts doc examples
+	libcruft liboctave scripts doc examples
 
 ALL_SUBDIRS = $(SUBDIRS) src
 
@@ -61,7 +62,7 @@ BINDISTFILES = $(addprefix $(srcdir)/, $(XBINDISTFILES)) \
 BINDISTSUBDIRS = libcruft liboctave src scripts doc emacs examples
 
 # Subdirectories in which to run clean targets.
-CLEANSUBDIRS = $(DISTSUBDIRS) @GLOB_DIR@ kpathsea
+CLEANSUBDIRS = $(DISTSUBDIRS) @GLOB_DIR@
 
 DIRS_TO_MAKE = $(bindir) $(libdir) $(octincludedir)/octave $(fcnfiledir) \
   $(octfiledir) $(archlibdir) $(localarchlibdir) \
@@ -94,10 +95,6 @@ $(SUBDIRS):
 check:
 	$(MAKE) -C test check
 .PHONY: check
-
-kpathsea.info:
-	$(MAKE) -C kpathsea kpathsea.info
-.PHONY: kpathsea.info
 
 octave.info:
 	$(MAKE) -C doc/interpreter octave.info
@@ -171,8 +168,7 @@ dist: dist-info-files
 	  -o -name config.status -o -name config.cache -o -name stamp-h \
 	  -o -name klibtool.config -o -name stamp-auto \
 	  -o -name c-auto.h \) -print | xargs rm -rf
-	find `cat .fname`/kpathsea `cat .fname`/glob \
-	  -name Makefile | xargs rm -f
+	find `cat .fname`/glob -name Makefile | xargs rm -f
 	find `cat .fname`/glob -name config.h | xargs rm -f
 	rm -f `cat .fname`/test/octave.test/*.m
 	chmod -R a+rwX `cat .fname`

@@ -20,7 +20,7 @@ INSTALL_DATA = @INSTALL_DATA@
 
 ifeq ($(INCLUDE_LINK_DEPS), true)
   LINK_DEPS = \
-    -L../libcruft -L../kpathsea -L../glob -L. $(RLD_FLAG) \
+    -L../libcruft -L../glob -L. $(RLD_FLAG) \
     $(LIBCRUFT) $(BLAS_LIBS) $(FFTW_LIBS) $(LIBREADLINE) \
     -lglob $(LIBS) $(FLIBS)
 endif
@@ -57,14 +57,15 @@ INCLUDES := Bounds.h CollocWt.h DAE.h DAEFunc.h DAERT.h \
 	NLFunc.h NLP.h ODE.h ODEFunc.h ODES.h ODESFunc.h \
 	ODESSA.h Objective.h QP.h Quad.h Range.h base-dae.h \
 	base-de.h base-min.h byte-swap.h cmd-edit.h cmd-hist.h \
-	data-conv.h dir-ops.h file-ops.h file-stat.h \
-	glob-match.h idx-vector.h lo-ieee.h lo-mappers.h \
-	lo-specfun.h lo-sstream.h lo-sysdep.h lo-utils.h \
-	mach-info.h oct-alloc.h oct-cmplx.h oct-env.h oct-fftw.h \
-	oct-getopt.h oct-group.h oct-kpse.h oct-passwd.h oct-rand.h \
-	oct-rl-edit.h oct-rl-hist.h oct-shlib.h oct-syscalls.h \
-	oct-time.h pathlen.h pathsearch.h prog-args.h statdefs.h \
-	str-vec.h sun-utils.h sysdir.h systime.h syswait.h \
+	data-conv.h dir-ops.h file-ops.h file-stat.h getopt.h \
+	glob-match.h idx-vector.h kpse.h kpse-config.h kpse-xfns.h \
+	lo-ieee.h lo-mappers.h lo-specfun.h lo-sstream.h \
+	lo-sysdep.h lo-utils.h mach-info.h oct-alloc.h oct-cmplx.h \
+	oct-env.h oct-fftw.h oct-getopt.h oct-group.h oct-passwd.h \
+	oct-rand.h oct-rl-edit.h oct-rl-hist.h oct-shlib.h \
+	oct-syscalls.h oct-time.h pathlen.h pathsearch.h \
+	prog-args.h statdefs.h str-vec.h sun-utils.h sysdir.h \
+	systime.h syswait.h \
 	$(OPTS_INC) \
 	$(MATRIX_INC) \
 	$(MX_OP_INC) \
@@ -110,7 +111,7 @@ LIBOCTAVE_CXX_SOURCES := Bounds.cc CollocWt.cc \
 	$(MX_OP_SRC) \
 	$(VX_OP_SRC)
 
-LIBOCTAVE_C_SOURCES := f2c-main.c filemode.c \
+LIBOCTAVE_C_SOURCES := f2c-main.c filemode.c getopt.c getopt1.c \
 	lo-cieee.c lo-cutils.c mkdir.c oct-getopt.c rename.c \
 	rmdir.c strftime.c strptime.c tempname.c tempnam.c
 
@@ -122,9 +123,9 @@ LIBOCT_READLINE_C_SOURCES := oct-rl-edit.c oct-rl-hist.c
 
 LIBOCT_READLINE_SOURCES := $(LIBOCT_READLINE_CXX_SOURCES) $(LIBOCT_READLINE_C_SOURCES)
 
-LIBOCT_PATHSEARCH_CXX_SOURCES := pathsearch.cc
+LIBOCT_PATHSEARCH_CXX_SOURCES := pathsearch.cc kpse.cc
 
-LIBOCT_PATHSEARCH_C_SOURCES := oct-kpse.c
+LIBOCT_PATHSEARCH_C_SOURCES := kpse-xfns.c
 
 LIBOCT_PATHSEARCH_SOURCES := \
 	$(LIBOCT_PATHSEARCH_C_SOURCES) $(LIBOCT_PATHSEARCH_CXX_SOURCES)
@@ -210,24 +211,19 @@ else
 endif
 .PHONY: libraries
 
-libkpathsea-target:
-	$(MAKE) -C ../kpathsea
-.PHONY: libkpathsea-target
-
-liboctave.$(LIBEXT): $(LIBOCTAVE_OBJECTS) libkpathsea-target
+liboctave.$(LIBEXT): $(LIBOCTAVE_OBJECTS)
 	rm -f $@
-	$(TEMPLATE_AR) $(TEMPLATE_ARFLAGS) $@ $(LIBOCTAVE_OBJECTS) \
-	  ../kpathsea/STATIC/*.o
+	$(TEMPLATE_AR) $(TEMPLATE_ARFLAGS) $@ $(LIBOCTAVE_OBJECTS)
 	$(RANLIB) $@
 
 liboctave.$(SHLEXT_VER): liboctave.$(SHLEXT)
 	rm -f $@
 	$(LN_S) $< $@
 
-liboctave.$(SHLEXT): $(LIBOCTAVE_PICOBJ) libkpathsea-target
+liboctave.$(SHLEXT): $(LIBOCTAVE_PICOBJ)
 	rm -f $@
 	$(SH_LD) $(SH_LDFLAGS) $(SONAME_FLAGS) -o $@ \
-	$(LIBOCTAVE_PICOBJ) ../kpathsea/SHARED/*.o $(LINK_DEPS)
+	$(LIBOCTAVE_PICOBJ) $(LINK_DEPS)
 
 $(LIBOCTAVE_PICOBJ): stmp-pic
 

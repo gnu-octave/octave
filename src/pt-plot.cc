@@ -163,7 +163,6 @@ open_plot_stream (void)
 #if defined (HAVE_POSIX_SIGNALS)
       sigset_t set, oset;
       sigemptyset (&set);
-      sigaddset (&set, SIGCHLD);
       sigaddset (&set, SIGINT);
       sigprocmask (SIG_BLOCK, &set, &oset);
 #endif

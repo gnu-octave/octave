@@ -1,3 +1,7 @@
+Wed Nov 13 11:19:22 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lo-ieee.cc (isnan, isinf): Provide functions for SCO.
+
 Tue Nov 12 11:11:21 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* idx-vector.cc (idx_is_inf_or_nan): New function.

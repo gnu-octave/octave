@@ -1,4 +1,12 @@
+Wed Nov 13 11:13:22 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* sysdep.cc: Conditionally include ieeefp.h.
+	(BSD_init, SCO_init): New functions.
+	(sysdep_init): Conditionally call them here.
+
 Tue Nov 12 00:14:56 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pt-plot.cc (open_plot_stream): Don't block SIGCHLD.
 
 	* load-save.cc (read_binary_data): When reading string arrays, be
 	sure to create an octave_char_matrix_str object, not just an

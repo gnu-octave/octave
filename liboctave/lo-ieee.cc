@@ -31,6 +31,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <floatingpoint.h>
 #endif
 
+#if defined (HAVE_NAN_H)
+#include <nan.h>
+#endif
+
 #include "lo-ieee.h"
 
 // Octave's idea of infinity.
@@ -83,6 +87,21 @@ octave_ieee_init (void)
 
 #endif
 }
+
+#if defined (SCO)
+#define _IEEE 1
+extern "C" int
+isnan (double x)
+{
+  return (IsNANorINF(x) && NaN(x)) ? 1 : 0;
+}
+
+extern "C" int
+isinf (double x)
+{
+  return (IsNANorINF(x) && IsINF(x)) ? 1 : 0;
+}
+#endif
 
 /*
 ;;; Local Variables: ***

@@ -63,6 +63,10 @@ LOSE! LOSE!
 #include <floatingpoint.h>
 #endif
 
+#if defined (HAVE_IEEEFP_H)
+#include <ieeefp.h>
+#endif
+
 #if !defined (HAVE_GETHOSTNAME) && defined (HAVE_SYS_UTSNAME_H)
 #include <sys/utsname.h>
 #endif
@@ -94,7 +98,18 @@ extern "C" void _rl_output_character_function ();
 #define STDIN_FILENO 1
 #endif
 
-#ifdef NeXT
+#if defined (__386BSD__) || defined (__FreeBSD__)
+static void
+BSD_init (void)
+{
+#if defined (HAVE_FLOATINGPOINT_H)
+  // Disable trapping on common exceptions.
+  fpsetmask (~(FP_X_OFL|FP_X_INV|FP_X_DZ|FP_X_DNML|FP_X_UFL|FP_X_IMP));
+#endif
+}
+#endif
+
+#if defined NeXT
 extern "C"
 {
   typedef void (*_cplus_fcn_int) (int);
@@ -116,6 +131,17 @@ static void
 NeXT_init (void)
 {
   malloc_error (malloc_handler);
+}
+#endif
+
+#if defined (SCO)
+static void
+SCO_init (void)
+{
+#if defined (HAVE_IEEEFP_H)
+  // Disable trapping on common exceptions.
+  fpsetmask (~(FP_X_OFL|FP_X_INV|FP_X_DZ|FP_X_DNML|FP_X_UFL|FP_X_IMP));
+#endif
 }
 #endif
 
@@ -149,14 +175,11 @@ void
 sysdep_init (void)
 {
 #if defined (__386BSD__) || defined (__FreeBSD__)
-#if defined (HAVE_FLOATINGPOINT_H)
-  // Disable trapping on common exceptions.
-  fpsetmask (~(FP_X_OFL|FP_X_INV|FP_X_DZ|FP_X_DNML|FP_X_UFL|FP_X_IMP));
-#endif
-#endif
-
-#ifdef NeXT
+  BSD_init ();
+#elif defined NeXT
   NeXT_init ();
+#elif defined (SCO)
+  SCO_init ();
 #endif
 
   octave_ieee_init ();

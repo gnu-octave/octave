@@ -21,7 +21,7 @@ dnl Copyright (C) 1996 John W. Eaton
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA. 
 
-AC_REVISION($Revision: 1.230 $)
+AC_REVISION($Revision: 1.231 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -612,10 +612,10 @@ AC_HEADER_TIME
 AC_HEADER_SYS_WAIT
 
 AC_CHECK_HEADERS(assert.h curses.h fcntl.h float.h floatingpoint.h \
-  grp.h limits.h memory.h ncurses.h pwd.h sgtty.h stdlib.h string.h \
-  sys/param.h sys/resource.h sys/select.h sys/stat.h sys/time.h \
-  sys/times.h sys/types.h sys/utsname.h termcap.h termio.h termios.h \
-  unistd.h varargs.h)
+  grp.h ieeefp.h limits.h memory.h nan.h ncurses.h pwd.h sgtty.h \
+  stdlib.h string.h sys/param.h sys/resource.h sys/select.h sys/stat.h \
+  sys/time.h sys/times.h sys/types.h sys/utsname.h termcap.h termio.h \
+  termios.h unistd.h varargs.h)
 
 if test "$ac_cv_header_termios_h" = yes \
     || test "$ac_cv_header_termio_h" = yes \
@@ -774,10 +774,20 @@ esac
 XCFLAGS="$CFLAGS"
 CFLAGS="$CFLAGS $GCC_IEEE_FP_FLAG"
 
-### I am told that Inf and NaN don't work on m68k HP sytems.
+### I am told that Inf and NaN don't work on m68k HP sytems, and that
+### on SCO systems, isnan and isinf don't work, but they can be
+### replaced by something that does.
 
 case "$canonical_host_type" in
   m68k-hp-hpux*)
+  ;;
+  *-*-sco*)
+    AC_MSG_RESULT([defining SCO to be 1])
+    AC_DEFINE(SCO, 1)
+    AC_MSG_RESULT([forcing HAVE_ISINF for SCO])
+    AC_DEFINE(HAVE_ISINF, 1)
+    AC_MSG_RESULT([forcing HAVE_ISNAN for SCO])
+    AC_DEFINE(HAVE_ISNAN, 1)
   ;;
   *)
     AC_CHECK_FUNCS(finite isnan isinf infinity quiet_nan)

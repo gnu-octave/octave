@@ -204,6 +204,8 @@ IDX_VEC_REP::idx_vector_rep (double d)
 
       data[0] = tree_to_mat_idx (d);
     }
+
+  init_state ();
 }
 
 IDX_VEC_REP::idx_vector_rep (const Range& r)

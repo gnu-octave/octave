@@ -51,7 +51,7 @@ tree_breakpoint::take_action (tree &tr)
     {
       if (tr.is_breakpoint ())
 	{
-	  lst.append (octave_value (static_cast<double> (tr.line ())));
+	  bp_list.append (octave_value (static_cast<double> (tr.line ())));
 	  line = tr.line () + 1;
 	}
     }
@@ -84,10 +84,13 @@ tree_breakpoint::visit_while_command (tree_while_command& cmd)
 void
 tree_breakpoint::visit_do_until_command (tree_do_until_command& cmd)
 {
-  tree_statement_list *lst = cmd.body ();
+  if (found)
+    return;
 
   if (cmd.line () >= line)
     take_action (cmd);
+
+  tree_statement_list *lst = cmd.body ();
 
   if (lst)
     lst->accept (*this);
@@ -126,13 +129,10 @@ tree_breakpoint::visit_binary_expression (tree_binary_expression& expr)
   tree_expression *rhs = expr.rhs ();
 
   if (lhs && lhs->line () >= line)
-    {
-      take_action (expr);
-      return;
-    }
+    lhs->accept (*this);
 
   if (rhs && rhs->line () >= line)
-    take_action (expr);  
+    rhs->accept (*this);  
 }
 
 void 
@@ -150,6 +150,9 @@ tree_breakpoint::visit_colon_expression (tree_colon_expression& expr)
 {
   if (found)
     return;
+
+  if (expr.line () >= line)
+    take_action (expr);
 
   tree_expression *base = expr.base (); 
 

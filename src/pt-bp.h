@@ -28,7 +28,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include "input.h"
+#include "ov-usr-fcn.h"
 #include "pt-walk.h"
+#include "pt-pr-code.h"
+#include "toplev.h"
 
 class tree;
 
@@ -40,7 +43,7 @@ tree_breakpoint : public tree_walker
   enum action { set = 1, clear = 2, list = 3 };
 
   tree_breakpoint (int l, action a)
-    : line (l), act (a), found (false), lst () { }
+    : line (l), act (a), found (false), bp_list () { }
 
   ~tree_breakpoint (void) { }
 
@@ -140,7 +143,7 @@ tree_breakpoint : public tree_walker
 
   void visit_unwind_protect_command (tree_unwind_protect_command&);
 
-  octave_value_list get_list (void) { return lst; }
+  octave_value_list get_list (void) { return bp_list; }
   
   int get_line (void) { return line; }
 
@@ -148,13 +151,17 @@ tree_breakpoint : public tree_walker
 
   void take_action (tree &tr);
 
+  // Statement line number we are looking for.
   int line;
 
+  // What to do.
   action act;
-  
+
+  // Have we already found the line?
   bool found;
 
-  octave_value_list lst;
+  // List of breakpoint line numbers.
+  octave_value_list bp_list;
 
   // No copying!
 
@@ -166,10 +173,28 @@ tree_breakpoint : public tree_walker
 #define MAYBE_DO_BREAKPOINT \
   do \
     { \
-      if (tree::break_next || is_breakpoint ()) \
+      if ((tree::break_next && tree::last_line == 0) \
+	  || (tree::break_next \
+	      && curr_function == tree::break_function \
+	      && tree::last_line != line ()) \
+	  || is_breakpoint ()) \
         { \
           tree::break_next = false; \
-          octave_stdout << "line: " << line () << std::endl; \
+ \
+          if (curr_function) \
+            octave_stdout << curr_function->function_name () << ": ";  \
+ \
+          octave_stdout << "line " << line () << ", " \
+			<< "column " << column () \
+			<< std::endl; \
+ \
+          tree_print_code tpc (octave_stdout); \
+          this->accept (tpc); \
+ \
+          octave_stdout << std::endl; \
+ \
+          tree::break_statement = this; \
+ \
           do_keyboard (); \
         } \
     } \

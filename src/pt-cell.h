@@ -46,7 +46,7 @@ tree_cell : public tree_matrix
 {
 public:
 
-  tree_cell (tree_argument_list *row = 0) : tree_matrix (row) { }
+  tree_cell (tree_argument_list *row = 0, int line = -1, int column = -1) : tree_matrix (row, line, column) { }
 
   ~tree_cell (void) { }
 

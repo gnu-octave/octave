@@ -47,8 +47,8 @@ tree_matrix : public tree_expression, public SLList<tree_argument_list *>
 {
 public:
 
-  tree_matrix (tree_argument_list *row = 0)
-    : tree_expression (), SLList<tree_argument_list *> ()
+  tree_matrix (tree_argument_list *row = 0, int line = -1, int column = -1)
+    : tree_expression (line, column), SLList<tree_argument_list *> ()
   {
     if (row)
       append (row);

@@ -40,7 +40,7 @@ ifeq ($(OCTAVE_LITE), true)
 endif
 
 DLD_XSRC := balance.cc besselj.cc betainc.cc chol.cc colloc.cc dassl.cc \
-	debug.cc det.cc eig.cc expm.cc fft.cc fft2.cc filter.cc find.cc \
+	det.cc eig.cc expm.cc fft.cc fft2.cc filter.cc find.cc \
 	fsolve.cc gammainc.cc getgrent.cc getpwent.cc getrusage.cc \
 	givens.cc hess.cc ifft.cc ifft2.cc inv.cc log.cc lpsolve.cc \
 	lsode.cc lu.cc minmax.cc pinv.cc qr.cc quad.cc qz.cc rand.cc \
@@ -122,7 +122,7 @@ PT_SRC := pt.cc pt-arg-list.cc pt-assign.cc pt-bp.cc pt-binop.cc pt-cell.cc \
 
 DIST_SRC := BaseSLList.cc Cell.cc DLList.cc Map.cc SLList.cc \
 	SLStack.cc Stack.cc c-file-ptr-stream.cc comment-list.cc \
-	cutils.c data.cc \
+	cutils.c data.cc debug.cc \
 	defaults.cc defun.cc dirfns.cc dynamic-ld.cc error.cc \
 	file-io.cc fn-cache.cc gripes.cc help.cc input.cc lex.l \
 	load-save.cc mappers.cc matherr.c oct-fstrm.cc oct-hist.cc \

@@ -38,6 +38,15 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // If true, stop executing at the next possible point.
 bool tree::break_next = false;
 
+// The line where dbg_next was executed.
+int tree::last_line = 0;
+
+// The function where the last breakpoint occurred.
+const octave_user_function *tree::break_function = 0;
+
+// The statement where the last breakpoint occurred.
+const tree *break_statement = 0;
+
 // Hide the details of the string buffer so that we are less likely to
 // create a memory leak.
 

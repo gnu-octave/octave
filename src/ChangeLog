@@ -1,5 +1,56 @@
 2001-02-28  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* pt.h (tree::break_statement): New static member.
+	(tree::break_function): Make const.
+	* pt.cc (tree::break_statement): Initialize here.
+	(tree::break_function): Make const.
+	* pb-bp.h (break_statement): Delete global varaible declaration.
+	* pt-bp.cc (break_statement): Delete global variable definition.
+
+	* pt-bp.h (tree_breakpoint::bp_list): Rename from lst.
+
+	* pt.h: Don't inlcude ov-usr-fcn.h.
+	Provide forward declaration of octave_user_function class.
+
+2001-02-28  Ben Sapp  <bsapp@lanl.gov>
+
+	* debug.cc (get_user_function): Simplify by using curr_function.
+	(Fdbg_where): New function.
+	(Fdbg_list): Now DLD_TEXT instead of DLD_FCN.
+	(Fdbg_set): Likewise.
+	(Fdbg_delete): Likewise. 
+
+	* pt-bp.h (break_statement): New global variable.
+	(MAYBE_DO_BREAKPOINT): Check for dbg_next and dbg_step.
+	Print line, column, and current statement.
+	* pt-bp.cc (break_statement): New global variable
+	(tree_breakpoint::visit_do_until_command): Return immediately if
+	we've already found the line.
+	(tree_breakpoint::visit_colon_expression): Set breakpoint info here.
+	(tree_breakpoint::visit_binary_expression): Recurse here when
+	checking for breakpoints.
+
+	* debug.cc: Move here from DLD-FUNCTIONS/debug.cc.
+	* Makefile.in (DIST_SRC): Add it to the list.
+	(DLD_XSRC): Delete it from the list.
+
+	* pt.h (tree::last_line, tree::break_function): New static members.
+	* pt.cc(tree::last_line, tree::break_function): Initialize them.
+
+	* pt-cell.h (tree_cell::tree_cell): Accept line and column info.
+	* pt-mat.h (tree_matrix::tree_matrix): Likewise.
+
+	* ov-usr-fcn.h (octave_user_function::sym_tab): Delete.
+
+	* input.cc (get_user_input): Handle dbg_next.
+	Set tree:break_function and tree::last_line when doing dbg_step.
+
+2001-02-28  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lex.l (handle_string): Save line and column information in token.
+	(is_keyword): Save line and column information for plot style and
+	axes tokens.
+
 	* toplev.cc (main_loop): Set retval to non-zero value if error
 	occurs when not interactive.
 

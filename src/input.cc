@@ -60,6 +60,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pathlen.h"
 #include "pt.h"
 #include "pt-const.h"
+#include "pt-stmt.h"
 #include "sighandlers.h"
 #include "symtab.h"
 #include "sysdep.h"
@@ -553,6 +554,21 @@ get_user_input (const octave_value_list& args, bool debug, int nargout)
 	  else if (match_sans_spaces ("dbg_step", input_buf))
 	    {
 	      tree::break_next = true;
+
+	      tree::last_line = 0;
+
+	      tree::break_function = curr_function;
+
+	      return retval;
+	    }
+	  else if (match_sans_spaces ("dbg_next", input_buf))
+	    {
+	      tree::break_next = true;
+
+	      tree::last_line = curr_statement->line ();
+
+	      tree::break_function = curr_function;
+
 	      return retval;
 	    }
 	}

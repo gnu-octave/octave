@@ -31,6 +31,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <iostream>
 
+class octave_user_function;
 class tree_walker;
 
 // Base class for the parse tree.
@@ -69,6 +70,15 @@ public:
 
   // If true, stop executing at the next possible point.
   static bool break_next;
+  
+  // The line where dbg_next was executed.
+  static int last_line; 
+
+  // The function where the last breakpoint occurred.
+  static const octave_user_function *break_function;
+
+  // The statement where the last breakpoint occurred.
+  static const tree *break_statement;
 
 private:
 

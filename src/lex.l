@@ -990,6 +990,9 @@ is_plot_keyword (const std::string& s)
 static int
 is_keyword (const std::string& s)
 {
+  int l = input_line_number;
+  int c = current_input_column;
+
   if (lexer_flags.plotting)
     {
       if (lexer_flags.in_plot_style)
@@ -999,7 +1002,7 @@ is_keyword (const std::string& s)
 	  if (! sty.empty ())
 	    {
 	      lexer_flags.in_plot_style = false;
-	      yylval.tok_val = new token (sty);
+	      yylval.tok_val = new token (sty, l, c);
 	      token_stack.push (yylval.tok_val);
 	      return STYLE;
 	    }
@@ -1011,15 +1014,12 @@ is_keyword (const std::string& s)
 	  if (! axes.empty ())
 	    {
 	      lexer_flags.in_plot_axes = false;
-	      yylval.tok_val = new token (axes);
+	      yylval.tok_val = new token (axes, l, c);
 	      token_stack.push (yylval.tok_val);
 	      return AXES_TAG;
 	    }
 	}	
     }
-
-  int l = input_line_number;
-  int c = current_input_column;
 
   int len = s.length ();
 
@@ -1885,6 +1885,9 @@ handle_string (char delim, int text_style)
 {
   std::ostrstream buf;
 
+  int bos_line = input_line_number;
+  int bos_col = current_input_column;
+
   int c;
   int escape_pending = 0;
 
@@ -1949,7 +1952,7 @@ handle_string (char delim, int text_style)
 		      lexer_flags.convert_spaces_to_comma = true;
 		    }
 
-		  yylval.tok_val = new token (s);
+		  yylval.tok_val = new token (s, bos_line, bos_col);
 		  token_stack.push (yylval.tok_val);
 
 		  if (delim == '\'')

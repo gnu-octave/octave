@@ -24,6 +24,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include "defun.h"
 #include "error.h"
 #include "input.h"
 #include "pager.h"
@@ -36,45 +37,21 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-usr-fcn.h"
 #include "ov-fcn.h"
 #include "pt-pr-code.h"
+#include "pt.h"
+#include "pt-bp.h"
 #include "pt-stmt.h"
 #include "toplev.h"
 #include "unwind-prot.h"
 #include "variables.h"
-#include "defun-dld.h"
-#include "defun-int.h"
 
 octave_user_function *
 get_user_function (std::string str = "")
 {
   octave_user_function *dbg_fcn = NULL;
 
-  if (curr_sym_tab != top_level_sym_tab)
+  if (curr_function)
     {
-      Array<symbol_record *> srs =  
-	top_level_sym_tab->symbol_list ("*",
-					symbol_record::USER_FUNCTION,
-					SYMTAB_ALL_SCOPES);
-      int len = srs.length ();
-      
-      for (int i = 0; i < len ; i++)
-	{
-	  symbol_record *ptr = srs(i);
-	  
-	  if (ptr && ptr->is_user_function ())
-	    {
-	      octave_value tmp = ptr->def ();
-	      octave_user_function *tmp_fcn
-		= static_cast<octave_user_function *> (tmp.function_value ());
-	      symbol_table *st = tmp_fcn->sym_table ();
-
-	      if (st == curr_sym_tab)
-		{
-		  dbg_fcn = tmp_fcn;
-		  break;
-		}
-	    }
-	}
-
+      dbg_fcn = curr_function;
     }
   else if (str.compare (""))
     {
@@ -100,7 +77,7 @@ get_user_function (std::string str = "")
   return dbg_fcn;
 }
 
-DEFUN_DLD (dbg_set, args, ,
+DEFUN_TEXT (dbg_set, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {rline =} dbg_set (func, line)\n\
 Set a breakpoint in a function\n\
@@ -115,29 +92,26 @@ Line you would like the breakpoint to be set on\n\
 The rline returned is the real line that the breakpoint was set at.\n\
 \n\
 @end deftypefn\n\
-@seealso{dbg_delete, dbg_list, dbg_cont}")
+@seealso{dbg_delete, dbg_list, dbg_where}")
 {
-  octave_value_list retval;
+  octave_value retval;
+
   int result = -1;
   int nargin = args.length ();
+  
+  string_vector argv = args.make_argv ("dbg_set");
+
+  if (error_state)
+    return retval;
 
   if (nargin == 2)
     { 
-      if (!args(0).is_string ())
-	{
-	  gripe_wrong_type_arg ("dbg_set", args(0));
-	  return retval;
-	}
+      std::string symbol_name = argv[1];
 
-      std::string symbol_name = args(0).string_value ();
+      std::string line_number = argv[2];
+
+      int line = atoi (line_number.c_str ());
       
-      if (!args(1).is_real_scalar ())
-	{
-	  gripe_wrong_type_arg ("dbg_set", args(1));
-	  return retval;
-	}
-
-      int line = int(args(1).double_value ());
       octave_user_function *dbg_fcn = get_user_function (symbol_name);
 
       if (dbg_fcn)
@@ -150,13 +124,10 @@ The rline returned is the real line that the breakpoint was set at.\n\
     }
   else if (nargin == 1)
     {
-      if (!args(0).is_real_scalar ())
-	{
-	  gripe_wrong_type_arg ("dbg_set", args(1));
-	  return retval;
-	}
+      std::string line_number = argv[1];
 
-      int line = int(args(0).double_value ());
+      int line = atoi (line_number.c_str ());
+
       octave_user_function *dbg_fcn = get_user_function ();
       
       if (dbg_fcn)
@@ -168,13 +139,14 @@ The rline returned is the real line that the breakpoint was set at.\n\
 	error ("unable to find the function requested\n");	 
     }
   else
-    error ("one argument when in a function and two when not.\n");
+    error ("one argument when in a function and two when not\n");
 
-  retval = double(result);
+  retval = static_cast<double> (result);
+
   return retval;
 }
 
-DEFUN_DLD (dbg_delete, args, ,
+DEFUN_TEXT (dbg_delete, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} dbg_delete (func, line)\n\
 Delete a breakpoint in a function\n\
@@ -188,46 +160,42 @@ Line where you would like to remove the the breakpoint\n\
 No checking is done to make sure that the line you requested is really\n\
 a breakpoint.   If you get the wrong line nothing will happen.\n\
 @end deftypefn\n\
-@seealso{dbg_delete, dbg_list, dbg_cont}")
+@seealso{dbg_set, dbg_list, dbg_where}")
 {
-  octave_value_list retval;
-  int line = -1;
+  octave_value retval;
+
   std::string symbol_name = "";
+
+  int line = -1;
   int nargin = args.length ();
   
-  if ((nargin != 1) && (nargin != 2))
+  if (nargin != 1 && nargin != 2)
     {
       error ("need one or two arguements\n");
       return retval;
     }
   
+  string_vector argv = args.make_argv ("dbg_delete");
+
+  if (error_state)
+    return retval;
+
   if (nargin == 2)
     {
-      if (!args(0).is_string ())
-	{
-	  gripe_wrong_type_arg ("dbg_delete", args(0));
-	  return retval;
-	}
+      octave_stdout << "2 input arguments\n";
+      symbol_name = argv[1];
+ 
+      octave_stdout << argv[1] << std::endl;
+      std::string line_number = argv[2];
 
-      std::string symbol_name = args(0).string_value ();
-      
-      if (!args(1).is_real_scalar ())
-	{
-	  gripe_wrong_type_arg ("dbg_delete", args(1));
-	  return retval;
-	}
-
-      line = int(args(1).double_value ());
+      line = atoi (line_number.c_str ());     
     }
   else if (nargin == 1)
     {
-      if (!args(1).is_real_scalar ())
-	{
-	  gripe_wrong_type_arg ("dbg_delete", args(1));
-	  return retval;
-	}
+      octave_stdout << "1 input argument\n";
+      std::string line_number = argv[1];
 
-      line = int(args(1).double_value ());      
+      line = atoi (line_number.c_str ());     
     }
   else
     {
@@ -235,6 +203,7 @@ a breakpoint.   If you get the wrong line nothing will happen.\n\
       return retval;
     }
 
+  octave_stdout << "symbol_name = " << symbol_name << std::endl;
   octave_user_function *dbg_fcn = get_user_function (symbol_name);
   
   if (dbg_fcn)
@@ -244,10 +213,11 @@ a breakpoint.   If you get the wrong line nothing will happen.\n\
     }
   else
     error ("unable to find the function requested\n");
+
   return retval;
 }
 
-DEFUN_DLD (dbg_list, args, ,
+DEFUN_TEXT (dbg_list, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {lst =} dbg_list ([func])\n\
 Return a vector containing the lines on which a function has \n\
@@ -258,14 +228,13 @@ String representing the function name.  When already in debug\n\
 mode this should be left out.\n\
 @end table\n\
 @end deftypefn\n\
-@seealso{dbg_delete, dbg_set, dbg_cont}")
+@seealso{dbg_delete, dbg_set, dbg_where}")
 {
-  octave_value_list retval;
-  octave_value_list lst;
-  RowVector vec;
+  octave_value retval;
+
   int nargin = args.length ();
 
-  if ((nargin != 0) && (nargin != 1))
+  if (nargin != 0 && nargin != 1)
     {
       error ("only zero or one arguements accepted\n");
       return retval;
@@ -286,40 +255,57 @@ mode this should be left out.\n\
   if (dbg_fcn)
     {
       tree_statement_list *cmds = dbg_fcn->body ();
-      lst = cmds->list_breakpoints ();
-      vec = RowVector (lst.length (), 0.0);
+
+      octave_value_list lst = cmds->list_breakpoints ();
+
+      RowVector vec (lst.length (), 0.0);
 
       for (int i = 0; i < lst.length (); i++)
 	{ 
-	  if(lst(i).is_real_scalar ())
-	    {
-	      double x = lst(i).double_value ();
+	  vec(i) = lst(i).double_value ();
 
-	      if (! error_state)
-		vec(i) = x;
-	      else
-		panic_impossible ();
-	    }
-	  else
+	  if (error_state)
 	    panic_impossible ();
 	}
+
+      retval = octave_value (vec);
     }
   else
-    error ("unable to find the function you requested");
+    error ("unable to find the function you requested\n");
 
-  return octave_value(vec);
+  return retval;
 }
 
 
-DEFUN_DLD (dbg_where, , ,
+DEFUN_TEXT (dbg_where, , ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} dbg_where ()\n\
 Show where we are in the code\n\
-@end deftypefn\n")
+@end deftypefn\n\
+@seealso{dbg_delete, dbg_list, dbg_set}")
 {
   octave_value retval;
+  
+  octave_user_function *dbg_fcn = curr_function;
 
-  warning ("not implemented");
+  if (dbg_fcn)
+    {
+      std::string name = dbg_fcn->function_name ();
+
+      octave_stdout << name << ":";
+
+      const tree *dbg_stmt = tree::break_statement;
+
+      if (dbg_stmt)
+	{
+	  octave_stdout << "line " << dbg_stmt->line () << ", "; 
+	  octave_stdout << "column " << dbg_stmt->column () << std::endl;
+	}
+      else
+	octave_stdout << "-1\n";
+    }
+  else
+    error ("must be inside of a user function to use dbg_where\n");
 
   return retval;
 }

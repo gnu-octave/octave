@@ -342,6 +342,76 @@ display_names_from_help_list (ostrstream& output_buf, help_list *list,
   delete [] symbols;
 }
 
+static char *
+print_symbol_type (ostrstream& output_buf, symbol_record *sym_rec,
+		   char *name, int print)
+{
+  char *retval = 0;
+
+  if (sym_rec->is_user_function ())
+    {
+      tree_fvc *defn = sym_rec->def ();
+      char *fn = defn->fcn_file_name ();
+      if (fn)
+	{
+	  char *ff = fcn_file_in_path (fn);
+	  ff = ff ? ff : fn;
+
+	  if (print)
+	    output_buf << name
+	      << " is the function defined from:\n"
+		<< ff << "\n";
+	  else
+	    retval = ff;
+	}
+      else
+	{
+	  if (print)
+	    output_buf << name << " is a user-defined function\n";
+	  else
+	    retval = "user-defined function";
+	}
+    }
+  else if (sym_rec->is_text_function ())
+    {
+      if (print)
+	output_buf << name << " is a builtin text-function\n";
+      else
+	retval = "builtin text-function";
+    }
+  else if (sym_rec->is_builtin_function ())
+    {
+      if (print)
+	output_buf << name << " is a builtin function\n";
+      else
+	retval = "builtin function";
+    }
+  else if (sym_rec->is_user_variable ())
+    {
+      if (print)
+	output_buf << name << " is a user-defined variable\n";
+      else
+	retval = "user-defined variable";
+    }
+  else if (sym_rec->is_builtin_variable ())
+    {
+      if (print)
+	output_buf << name << " is a builtin variable\n";
+      else
+	retval = "builtin variable";
+    }
+  else
+    {
+      if (print)
+	output_buf << "which: `" << name
+	  << "' has unknown type\n";
+      else
+	retval = "unknown type";
+    }
+
+  return retval;
+}
+
 static void
 display_symtab_names (ostrstream& output_buf, char **names,
 		      int count, const char *desc)
@@ -594,8 +664,8 @@ print cryptic yet witty messages")
 		  char *h = sym_rec->help ();
 		  if (h && *h)
 		    {
-		      output_buf << "\n*** " << *argv << ":\n\n"
-				 << h << "\n";
+		      print_symbol_type (output_buf, sym_rec, *argv, 1);
+		      output_buf << "\n" << h << "\n";
 		      continue;
 		    }
 		}
@@ -742,66 +812,11 @@ file, print the full name of the file.")
 
 	  if (sym_rec)
 	    {
-	      if (sym_rec->is_user_function ())
-		{
-		  tree_fvc *defn = sym_rec->def ();
-		  char *fn = defn->fcn_file_name ();
-		  if (fn)
-		    {
-		      char *ff = fcn_file_in_path (fn);
-		      ff = ff ? ff : fn;
-
-		      if (nargout == 0)
-			output_buf << *argv
-			  << " is the function defined from:\n"
-			    << ff << "\n";
-		      else
-			retval(i) = ff;
-		    }
-		  else
-		    {
-		      if (nargout == 0)
-			output_buf << *argv << " is a user-defined function\n";
-		      else
-			retval(i) = "user-defined function";
-		    }
-		}
-	      else if (sym_rec->is_text_function ())
-		{
-		  if (nargout == 0)
-		    output_buf << *argv << " is a builtin text-function\n";
-		  else
-		    retval(i) = "builtin text-function";
-		}
-	      else if (sym_rec->is_builtin_function ())
-		{
-		  if (nargout == 0)
-		    output_buf << *argv << " is a builtin function\n";
-		  else
-		    retval(i) = "builtin function";
-		}
-	      else if (sym_rec->is_user_variable ())
-		{
-		  if (nargout == 0)
-		    output_buf << *argv << " is a user-defined variable\n";
-		  else
-		    retval(i) = "user-defined variable";
-		}
-	      else if (sym_rec->is_builtin_variable ())
-		{
-		  if (nargout == 0)
-		    output_buf << *argv << " is a builtin variable\n";
-		  else
-		    retval(i) = "builtin variable";
-		}
-	      else
-		{
-		  if (nargout == 0)
-		    output_buf << "which: `" << *argv
-		      << "' has unknown type\n";
-		  else
-		    retval(i) = "unknown type";
-		}
+	      int print = (nargout == 0);
+	      char *tmp = print_symbol_type (output_buf, sym_rec,
+					     *argv, print);
+	      if (! print)
+		retval(i) = tmp;
 	    }
 	  else
 	    {

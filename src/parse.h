@@ -94,6 +94,10 @@ extern int in_plot_using;
 // Nonzero means we're looking at the style part of a plot command.
 extern int in_plot_style;
 
+// Nonzero means we're looking at an indirect reference to a structure
+// element.
+extern int looking_at_indirect_ref;
+
 #endif
 
 /*

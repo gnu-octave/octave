@@ -1145,11 +1145,12 @@ character, but may not be combined.")
 
   int nargin = args.length ();
 
-  Octave_object tmp_args = args;
+  Octave_object tmp_args;
+  for (int i = nargin; i > 0; i--)
+    tmp_args(i) = args(i-1);
+  tmp_args(0) = "-long";
 
-  tmp_args(nargin) = "-long";
-
-  int argc = nargin + 1;
+  int argc = tmp_args.length () + 1;
   char **argv = make_argv (tmp_args, "whos");
 
   if (error_state)

@@ -132,6 +132,7 @@ symbol_record::symbol_record (void)
 {
   nm = (char *) NULL;
   formal_param = 0;
+  forced_global = 0;
   var = (symbol_def *) NULL;
   fcn = (symbol_def *) NULL;
   sv_fcn = (sv_Function) NULL;
@@ -142,6 +143,7 @@ symbol_record::symbol_record (char *n)
 {
   nm = strsave (n);
   formal_param = 0;
+  forced_global = 0;
   var = (symbol_def *) NULL;
   fcn = (symbol_def *) NULL;
   sv_fcn = (sv_Function) NULL;
@@ -152,6 +154,7 @@ symbol_record::symbol_record (char *n, symbol_record *nxt)
 {
   nm = strsave (n);
   formal_param = 0;
+  forced_global = 0;
   var = (symbol_def *) NULL;
   fcn = (symbol_def *) NULL;
   sv_fcn = (sv_Function) NULL;
@@ -430,6 +433,7 @@ symbol_record::clear_visible (void)
       if (--var->count <= 0)
 	delete var;
       var = (symbol_def *) NULL;
+      forced_global = 0;
     }
   else if (fcn != (symbol_def *) NULL && fcn->lifespan != symbol_def::eternal)
     {
@@ -447,6 +451,7 @@ symbol_record::clear_all (void)
       if (--var->count <= 0)
 	delete var;
       var = (symbol_def *) NULL;
+      forced_global = 0;
     }
 
   if (fcn != (symbol_def *) NULL && fcn->lifespan != symbol_def::eternal)
@@ -488,11 +493,24 @@ symbol_record::is_formal_parameter (void)
 }
 
 void
+symbol_record::mark_as_forced_global (void)
+{
+  forced_global = 1;
+}
+
+int
+symbol_record::is_forced_global (void)
+{
+  return forced_global;
+}
+
+void
 symbol_record::alias (symbol_record *s, int force = 0)
 {
   sv_fcn = s->sv_fcn; // Maybe this should go in the var symbol_def?
 
   formal_param = s->formal_param; // Hmm.
+  forced_global = s->forced_global; // Hmm.
 
   if (force && s->var == (symbol_def *) NULL
       && s->fcn == (symbol_def *) NULL)

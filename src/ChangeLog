@@ -1,5 +1,25 @@
 2003-11-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* ov-file.h (octave_file::all, octave_file::any,
+	octave_file::dims, octave_file::is_real_type,
+	octave_file::ist_real_scalar): New functions.
+
+	* lex.l (bracket_brace_paren_nesting_level::is_bracket_or_brace):
+	New function.
+	(handle_close_bracket): New arg, bracket_type.  Change all uses.
+	Return bool, not int.  First arg is now bool.
+	(<MATRIX_START>{SNLCMT}*\}{S}*): New pattern.
+	(maybe_unput_comma): Handle brace nesting level the same as brackets.
+	(handle_close_brace): Likewise.
+	(<MATRIX_START>{S}+): Likewise.
+	(<MATRIX_START>{S}*{COMMENT}{SNLCMT}*): Likewise.
+	(<MATRIX_START>{S}*{NL}{SNLCMT}*): Likewise.
+	({NL}): Likewise.
+	({CCHAR}): Likewise.
+	(")"): Likewise.
+	(\{{S}*): Handle the same as \[{S}*.
+	("}"): Handle the same as \].
+
 	* Makefile.in (stamp-prereq): Add oct-gperf.h, parse.cc, and
 	lex.cc to the list.
 

@@ -81,6 +81,18 @@ public:
 
   bool is_stream (void) const { return true; }
 
+  // Pretend we are a real scalar for better compatibility, maybe.
+
+  bool is_real_scalar (void) const { return true; }
+
+  bool is_real_type (void) const { return true; }
+
+  dim_vector dims (void) const { static dim_vector dv (1, 1); return dv; }
+
+  octave_value all (int = 0) const { return (number != 0.0); }
+
+  octave_value any (int = 0) const { return (number != 0.0); }
+
   void print (std::ostream& os, bool pr_as_read_syntax = false) const;
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;

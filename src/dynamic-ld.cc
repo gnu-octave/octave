@@ -1,7 +1,7 @@
 // dynamic-ld.cc                                         -*- C++ -*-
 /*
 
-Copyright (C) 1993, 1994 John W. Eaton
+Copyright (C) 1993, 1994, 1995 John W. Eaton
 
 This file is part of Octave.
 

@@ -1,7 +1,7 @@
 // octave.cc                                            -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994 John W. Eaton
+Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
 
 This file is part of Octave.
 
@@ -370,7 +370,7 @@ verbose_usage (void)
 {
   cout << "\n"
        << "  Octave, version " << version_string
-       << ".  Copyright (C) 1992, 1993, 1994 John W. Eaton.\n"
+       << ".  Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton.\n"
        << "  This is free software with ABSOLUTELY NO WARRANTY.\n"
        << "\n"
        << "  usage: " << usage_string
@@ -544,7 +544,7 @@ main (int argc, char **argv)
 
   if (! inhibit_startup_message)
     cout << "Octave, version " << version_string
-	 << ".  Copyright (C) 1992, 1993, 1994 John W. Eaton.\n"
+	 << ".  Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton.\n"
 	 << "This is free software with ABSOLUTELY NO WARRANTY.\n"
 	 << "For details, type `warranty'.\n" << endl;
 
@@ -729,7 +729,7 @@ DEFUN ("warranty", Fwarranty, Swarranty, 0, 0,
 
   ostrstream output_buf;
   output_buf << "\n    Octave, version " << version_string
-	     << ".  Copyright (C) 1992, 1993, 1994 John W. Eaton\n"
+	     << ".  Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton\n"
 	     << "\n\
     This program is free software; you can redistribute it and/or modify\n\
     it under the terms of the GNU General Public License as published by\n\

@@ -1,7 +1,7 @@
 // f-fft2.cc                                           -*- C++ -*-
 /*
 
-Copyright (C) 1994 John W. Eaton
+Copyright (C) 1994, 1995 John W. Eaton
 
 This file is part of Octave.
 

@@ -38,6 +38,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "user-prefs.h"
 #include "load-save.h"
 #include "symtab.h"
+#include "pager.h"
 #include "error.h"
 #include "defun.h"
 #include "utils.h"
@@ -1688,16 +1689,32 @@ found in the file will be replaced with the values read from the file.")
 
   int force = 0;
 
-// Here is where we would get the default load format if it were
-// stored in a user preference variable.
+// It isn't necessary to have the default load format stored in a user
+// preference variable since we can determine the type of file as we
+// are reading.
 
   load_save_format format = LS_UNKNOWN;
+
+  int list_only = 0;
+  int verbose = 0;
 
   while (argc > 0)
     {
       if (strcmp (*argv, "-force") == 0 || strcmp (*argv, "-f") == 0)
 	{
 	  force++;
+	  argc--;
+	  argv++;
+	}
+      else if (strcmp (*argv, "-list") == 0 || strcmp (*argv, "-l") == 0)
+	{
+	  list_only = 1;
+	  argc--;
+	  argv++;
+	}
+      else if (strcmp (*argv, "-verbose") == 0 || strcmp (*argv, "-v") == 0)
+	{
+	  verbose = 1;
 	  argc--;
 	  argv++;
 	}
@@ -1787,6 +1804,7 @@ found in the file will be replaced with the values read from the file.")
 	}
     }
 
+  ostrstream output_buf;
   int count = 0;
   for (;;)
     {
@@ -1827,7 +1845,26 @@ found in the file will be replaced with the values read from the file.")
 	      if (argc == 0 || matches_patterns (argv, argc, name))
 		{
 		  count++;
-		  install_loaded_variable (force, name, tc, global, doc);
+		  if (list_only)
+		    {
+		      if (verbose)
+			{
+			  if (count == 1)
+			    output_buf
+			      << "type               rows   cols   name\n"
+			      << "====               ====   ====   ====\n";
+
+			  output_buf.form ("%-16s", tc.type_as_string ());
+			  output_buf.form ("%7d", tc.rows ());
+			  output_buf.form ("%7d", tc.columns ());
+			  output_buf << "   ";
+			}
+		      output_buf << name << "\n";
+		    }
+		  else
+		    {
+		      install_loaded_variable (force, name, tc, global, doc);
+		    }
 		}
 	    }
 	  else
@@ -1844,6 +1881,19 @@ found in the file will be replaced with the values read from the file.")
 
       delete [] name;
       delete [] doc;
+    }
+
+  if (list_only && count)
+    {
+      if (nargout > 0)
+	{
+	  output_buf << ends;
+	  char *msg = output_buf.str ();
+	  retval = msg;
+	  delete [] msg;
+	}
+      else
+	maybe_page_output (output_buf);
     }
 
   if (file);

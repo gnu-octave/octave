@@ -22,7 +22,7 @@ function retval = printf (fmt, ...)
 #
 # Formatted write to standard output.
 #
-# See also: fprintf
+# See also: fprintf sprintf
 
   retval = -1;
 

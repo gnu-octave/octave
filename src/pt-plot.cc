@@ -26,6 +26,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #endif
 
 #include <iostream.h>
+#include <fstream.h>
 #include <strstream.h>
 
 #include "error.h"
@@ -235,8 +236,21 @@ tree_subplot_list::print (int ndim, ostrstream& plot_buf)
       tree_constant data = plot_data->eval (0);
       if (data.is_defined ())
 	{
-	  nc = data.columns ();
 	  char *file = (char *) NULL;
+	  if (data.is_string_type ())
+	    {
+	      file = data.string_value ();
+	      ifstream ftmp (file);
+	      if (ftmp)
+		{
+		  plot_buf << " \"" << file << '"';
+		  goto have_existing_file;
+		}
+	      else
+		file = (char *) NULL;
+	    }
+
+	  nc = data.columns ();
 	  switch (ndim)
 	    {
 	    case 2:
@@ -261,6 +275,8 @@ tree_subplot_list::print (int ndim, ostrstream& plot_buf)
     }
   else
     return -1;
+
+ have_existing_file:
 
   if (using != (tree_subplot_using *) NULL)
     {

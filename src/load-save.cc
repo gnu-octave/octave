@@ -93,7 +93,7 @@ install_loaded_variable (int force, char *name, const octave_value& val,
 {
   // Is there already a symbol by this name?  If so, what is it?
 
-  symbol_record *lsr = curr_sym_tab->lookup (name, 0, 0);
+  symbol_record *lsr = curr_sym_tab->lookup (name);
 
   int is_undefined = 1;
   int is_variable = 0;
@@ -116,7 +116,7 @@ install_loaded_variable (int force, char *name, const octave_value& val,
 	{
 	  if (force || is_undefined)
 	    {
-	      lsr = curr_sym_tab->lookup (name, 1, 0);
+	      lsr = curr_sym_tab->lookup (name, true);
 	      link_to_global_variable (lsr);
 	      sr = lsr;
 	    }
@@ -130,7 +130,7 @@ install_loaded_variable (int force, char *name, const octave_value& val,
 	{
 	  if (force)
 	    {
-	      lsr = curr_sym_tab->lookup (name, 1, 0);
+	      lsr = curr_sym_tab->lookup (name, true);
 	      link_to_global_variable (lsr);
 	      sr = lsr;
 	    }
@@ -144,7 +144,7 @@ install_loaded_variable (int force, char *name, const octave_value& val,
 	{
 	  if (force)
 	    {
-	      lsr = curr_sym_tab->lookup (name, 1, 0);
+	      lsr = curr_sym_tab->lookup (name, true);
 	      link_to_global_variable (lsr);
 	      sr = lsr;
 	    }
@@ -163,7 +163,7 @@ install_loaded_variable (int force, char *name, const octave_value& val,
 	{
 	  if (force || is_undefined)
 	    {
-	      lsr = curr_sym_tab->lookup (name, 1, 0);
+	      lsr = curr_sym_tab->lookup (name, true);
 	      link_to_global_variable (lsr);
 	      sr = lsr;
 	    }
@@ -177,7 +177,7 @@ install_loaded_variable (int force, char *name, const octave_value& val,
 	{
 	  if (force)
 	    {
-	      lsr = curr_sym_tab->lookup (name, 1, 0);
+	      lsr = curr_sym_tab->lookup (name, true);
 	      link_to_global_variable (lsr);
 	      sr = lsr;
 	    }
@@ -191,7 +191,7 @@ install_loaded_variable (int force, char *name, const octave_value& val,
 	{
 	  if (force || is_undefined)
 	    {
-	      lsr = curr_sym_tab->lookup (name, 1, 0);
+	      lsr = curr_sym_tab->lookup (name, true);
 	      sr = lsr;
 	    }
 	  else

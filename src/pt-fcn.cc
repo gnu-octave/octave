@@ -72,8 +72,8 @@ extern int returning;
 void
 tree_function::install_nargin_and_nargout (void)
 {
-  nargin_sr = sym_tab->lookup ("nargin", 1, 0);
-  nargout_sr = sym_tab->lookup ("nargout", 1, 0);
+  nargin_sr = sym_tab->lookup ("nargin", true);
+  nargout_sr = sym_tab->lookup ("nargout", true);
 }
 
 void

@@ -86,56 +86,56 @@ symbol_def::~symbol_def (void)
   delete definition;
 }
 
-int
+bool
 symbol_def::is_variable (void) const
 {
   return (type & USER_VARIABLE || type & BUILTIN_VARIABLE);
 }
 
-int
+bool
 symbol_def::is_function (void) const
 {
   return (type & USER_FUNCTION || type & BUILTIN_FUNCTION);
 }
 
-int
+bool
 symbol_def::is_user_variable (void) const
 {
   return (type & USER_VARIABLE);
 }
 
-int
+bool
 symbol_def::is_text_function (void) const
 {
   return (type & TEXT_FUNCTION);
 }
 
-int
+bool
 symbol_def::is_mapper_function (void) const
 {
   return (type & MAPPER_FUNCTION);
 }
 
-int
+bool
 symbol_def::is_user_function (void) const
 {
   return (type & USER_FUNCTION);
 }
 
-int
+bool
 symbol_def::is_builtin_variable (void) const
 {
   return (type & BUILTIN_VARIABLE);
 }
 
-int
+bool
 symbol_def::is_builtin_function (void) const
 {
   return (type & BUILTIN_FUNCTION);
 }
 
 // XXX FIXME XXX
-int
+bool
 symbol_def::is_map_element (const string& /* elts */) const
 {
   return 0;
@@ -261,7 +261,7 @@ symbol_record::help (void) const
 tree_fvc *
 symbol_record::def (void) const
 {
-  return definition ? definition->def () : 0;
+  return definition ? definition->def () : false;
 }
 
 void
@@ -271,82 +271,82 @@ symbol_record::rename (const string& new_name)
     nm = new_name;
 }
 
-int
+bool
 symbol_record::is_function (void) const
 {
-  return definition ? definition->is_function () : 0;
+  return definition ? definition->is_function () : false;
 }
 
-int
+bool
 symbol_record::is_text_function (void) const
 {
-  return definition ? definition->is_text_function () : 0;
+  return definition ? definition->is_text_function () : false;
 }
 
-int
+bool
 symbol_record::is_mapper_function (void) const
 {
-  return definition ? definition->is_mapper_function () : 0;
+  return definition ? definition->is_mapper_function () : false;
 }
 
-int
+bool
 symbol_record::is_user_function (void) const
 {
-  return definition ? definition->is_user_function () : 0;
+  return definition ? definition->is_user_function () : false;
 }
 
-int
+bool
 symbol_record::is_builtin_function (void) const
 {
-  return definition ? definition->is_builtin_function () : 0;
+  return definition ? definition->is_builtin_function () : false;
 }
 
-int
+bool
 symbol_record::is_variable (void) const
 {
-  return definition ? definition->is_variable () : 0;
+  return definition ? definition->is_variable () : false;
 }
 
-int
+bool
 symbol_record::is_user_variable (void) const
 {
-  return definition ? definition->is_user_variable () : 0;
+  return definition ? definition->is_user_variable () : false;
 }
 
-int
+bool
 symbol_record::is_builtin_variable (void) const
 {
-  return definition ? definition->is_builtin_variable () : 0;
+  return definition ? definition->is_builtin_variable () : false;
 }
 
-int
+bool
 symbol_record::is_map_element (const string& elts) const
 {
-  return definition ? definition->is_map_element (elts) : 0;
+  return definition ? definition->is_map_element (elts) : false;
 }
 
 unsigned
 symbol_record::type (void) const
 {
-  return definition ? definition->type : 0;
+  return definition ? definition->type : false;
 }
 
-int
+bool
 symbol_record::is_defined (void) const
 {
-  return definition ? (definition->def () != 0) : 0;
+  return definition ? (definition->def () != 0) : false;
 }
 
-int
+bool
 symbol_record::is_read_only (void) const
 {
-  return definition ? definition->read_only : 0;
+  return definition ? definition->read_only : false;
 }
 
-int
+bool
 symbol_record::is_eternal (void) const
 {
-  return definition ? definition->eternal : 0;
+  return definition ? definition->eternal : false;
 }
 
 void
@@ -433,7 +433,7 @@ symbol_record::define (const octave_value& v)
 }
 
 int
-symbol_record::define (tree_builtin *t, int text_fcn)
+symbol_record::define (tree_builtin *t, bool text_fcn)
 {
   if (read_only_error ("redefine"))
     return 0;
@@ -462,7 +462,7 @@ symbol_record::define (tree_builtin *t, int text_fcn)
 }
 
 int
-symbol_record::define (tree_function *t, int text_fcn)
+symbol_record::define (tree_function *t, bool text_fcn)
 {
   if (read_only_error ("redefine"))
     return 0;
@@ -557,7 +557,7 @@ symbol_record::clear (void)
 }
 
 void
-symbol_record::alias (symbol_record *s, int force)
+symbol_record::alias (symbol_record *s, bool force)
 {
   sv_fcn = s->sv_fcn;
 
@@ -580,7 +580,7 @@ symbol_record::mark_as_formal_parameter (void)
   formal_param = 1;
 }
 
-int
+bool
 symbol_record::is_formal_parameter (void) const
 {
   return formal_param;
@@ -592,7 +592,7 @@ symbol_record::mark_as_linked_to_global (void)
   linked_to_global = 1;
 }
 
-int
+bool
 symbol_record::is_linked_to_global (void) const
 {
   return linked_to_global;
@@ -609,7 +609,7 @@ symbol_record::mark_as_static (void)
     tagged_static = 1;
 }
 
-int
+bool
 symbol_record::is_static (void) const
 {
   return tagged_static;
@@ -812,31 +812,31 @@ symbol_record_info::operator = (const symbol_record_info& s)
   return *this;
 }
 
-int
+bool
 symbol_record_info::is_defined (void) const
 {
   return initialized;
 }
 
-int
+bool
 symbol_record_info::is_read_only (void) const
 {
   return read_only;
 }
 
-int
+bool
 symbol_record_info::is_eternal (void) const
 {
   return eternal;
 }
 
-int
+bool
 symbol_record_info::hides_fcn (void) const
 {
   return (hides & SR_INFO_USER_FUNCTION);
 }
 
-int
+bool
 symbol_record_info::hides_builtin (void) const
 {
   return (hides & SR_INFO_BUILTIN_FUNCTION);
@@ -864,7 +864,7 @@ symbol_record_info::type_name (void) const
   return retval;
 }
 
-int
+bool
 symbol_record_info::is_function (void) const
 {
   return (type == symbol_def::USER_FUNCTION
@@ -898,7 +898,7 @@ symbol_table::symbol_table (void)
 }
 
 symbol_record *
-symbol_table::lookup (const string& nm, int insert, int warn)
+symbol_table::lookup (const string& nm, bool insert, bool warn)
 {
   int index = hash (nm) & HASH_MASK;
 
@@ -960,7 +960,7 @@ symbol_table::rename (const string& old_name, const string& new_name)
 }
 
 void
-symbol_table::clear (int clear_user_functions)
+symbol_table::clear (bool clear_user_functions)
 {
   for (int i = 0; i < HASH_TABLE_SIZE; i++)
     {
@@ -980,7 +980,7 @@ symbol_table::clear (int clear_user_functions)
 }
 
 int
-symbol_table::clear (const string& nm, int clear_user_functions)
+symbol_table::clear (const string& nm, bool clear_user_functions)
 {
   int index = hash (nm) & HASH_MASK;
 
@@ -1047,7 +1047,7 @@ matches_patterns (const string& name, const string_vector& pats, int npats)
 
 symbol_record_info *
 symbol_table::long_list (int& count, const string_vector& pats,
-			 int npats, int sort, unsigned type,
+			 int npats, bool sort, unsigned type,
 			 unsigned scope) const 
 {
   count = 0;
@@ -1087,7 +1087,7 @@ symbol_table::long_list (int& count, const string_vector& pats,
 
 string_vector
 symbol_table::list (int& count, const string_vector& pats, int npats,
-		    int sort, unsigned type, unsigned scope) const
+		    bool sort, unsigned type, unsigned scope) const
 {
   count = 0;
   int n = size ();
@@ -1205,20 +1205,20 @@ symbol_table::hash (const string& str)
 
 // Return nonzero if S is a valid identifier.
 
-int
+bool
 valid_identifier (const char *s)
 {
   if (! s || ! (isalnum (*s) || *s == '_'))
-     return 0;
+     return false;
 
   while (*++s != '\0')
     if (! (isalnum (*s) || *s == '_'))
-      return 0;
+      return false;
 
-  return 1;
+  return true;
 }
 
-int
+bool
 valid_identifier (const string& s)
 {
   return valid_identifier (s.c_str ());

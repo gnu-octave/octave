@@ -43,16 +43,16 @@ typedef int (*sv_Function)(void);
 
 struct builtin_variable
 {
-  builtin_variable (const string& n, const octave_value& v, int iaf, int p,
-		    int e, sv_Function svf, const string& h)
+  builtin_variable (const string& n, const octave_value& v, bool iaf,
+		    bool p, bool e, sv_Function svf, const string& h)
     : name (n), value (v), install_as_function (iaf), protect (p),
       eternal (e), sv_function (svf), help_string (h) { }
 
   string name;
   octave_value value;
-  int install_as_function;
-  int protect;
-  int eternal;
+  bool install_as_function;
+  bool protect;
+  bool eternal;
   sv_Function sv_function;
   string help_string;
 };
@@ -91,21 +91,22 @@ typedef octave_value_list (*Octave_builtin_fcn)(const octave_value_list&, int);
 
 struct builtin_function
 {
-  builtin_function (const string& n, int itf, Octave_builtin_fcn f,
+  builtin_function (const string& n, bool itf, Octave_builtin_fcn f,
 		    const string& h)
     : name (n), is_text_fcn (itf), fcn (f), help_string (h) { }
 
   string name;
-  int is_text_fcn;
+  bool is_text_fcn;
   Octave_builtin_fcn fcn;
   string help_string;
 };
 
 extern void initialize_symbol_tables (void);
 
-extern bool lookup (symbol_record *s, int exec_script = 1);
+extern bool lookup (symbol_record *s, bool exec_script = true);
 
-extern symbol_record *lookup_by_name (const string& nm, int exec_script = 1);
+extern symbol_record *lookup_by_name (const string& nm,
+				      bool exec_script = true);
 
 extern octave_value get_global_value (const string& nm);
 
@@ -130,7 +131,7 @@ extern bool is_builtin_function_name (const string&);
 extern bool is_globally_visible (const string&);
 
 extern tree_fvc *is_valid_function (const octave_value&, const string&,
-				    int warn = 0); 
+				    bool warn = false); 
 
 tree_fvc *extract_function (const octave_value& arg, const string& warn_for,
 			    const string& fname, const string& header,
@@ -147,19 +148,21 @@ extern void install_builtin_variable (const builtin_variable& v);
 extern void
 install_builtin_variable_as_function (const string& name,
 				      const octave_value& val,
-				      int protect = 0, int eternal = 0,
+				      bool protect = false,
+				      bool eternal = false,
 				      const string& help = string ());
 
 extern void alias_builtin (const string& alias, const string& name);
 
-extern void bind_ans (const octave_value& val, int print);
+extern void bind_ans (const octave_value& val, bool print);
 
 extern void bind_global_error_variable (void);
 
 extern void clear_global_error_variable (void *);
 
 extern void bind_builtin_variable (const string&, const octave_value&,
-				   int protect = 0, int eternal = 0,
+				   bool protect = false,
+				   bool eternal = false,
 				   sv_Function f = (sv_Function) 0,
 				   const string& help = string ());
 

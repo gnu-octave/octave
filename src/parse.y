@@ -1378,7 +1378,7 @@ maybe_convert_to_ans_assign (tree_expression *expr)
       // tree_simple_assignment_expression along with a flag to not
       // delete it seems to create a memory leak.  Hmm.
 
-      static symbol_record *sr = global_sym_tab->lookup ("ans", 1, 0);
+      static symbol_record *sr = global_sym_tab->lookup ("ans", true);
       tree_identifier *ans_id = new tree_identifier (sr);
 
       int l = expr->line ();
@@ -2192,7 +2192,7 @@ frob_function_def (tree_identifier *id, tree_function *fcn)
 
   top_level_sym_tab->clear (id_name);
 
-  symbol_record *sr = global_sym_tab->lookup (id_name, 0, 0);
+  symbol_record *sr = global_sym_tab->lookup (id_name);
 
   if (sr)
     fcn->stash_symtab_ptr (sr);

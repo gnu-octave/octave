@@ -68,15 +68,15 @@ public:
 
   ~symbol_def (void);
 
-  int is_variable (void) const;
-  int is_function (void) const;
-  int is_text_function (void) const;
-  int is_mapper_function (void) const;
-  int is_user_variable (void) const;
-  int is_user_function (void) const;
-  int is_builtin_variable (void) const;
-  int is_builtin_function (void) const;
-  int is_map_element (const string& elts) const;
+  bool is_variable (void) const;
+  bool is_function (void) const;
+  bool is_text_function (void) const;
+  bool is_mapper_function (void) const;
+  bool is_user_variable (void) const;
+  bool is_user_function (void) const;
+  bool is_builtin_variable (void) const;
+  bool is_builtin_function (void) const;
+  bool is_map_element (const string& elts) const;
 
   void define (tree_constant *t);
   void define (tree_builtin *t, unsigned fcn_type = 0);
@@ -139,21 +139,21 @@ public:
 
   void rename (const string& new_name);
 
-  int is_function (void) const;
-  int is_user_function (void) const;
-  int is_text_function (void) const;
-  int is_mapper_function (void) const;
-  int is_builtin_function (void) const;
-  int is_variable (void) const;
-  int is_user_variable (void) const;
-  int is_builtin_variable (void) const;
-  int is_map_element (const string& elts) const;
+  bool is_function (void) const;
+  bool is_user_function (void) const;
+  bool is_text_function (void) const;
+  bool is_mapper_function (void) const;
+  bool is_builtin_function (void) const;
+  bool is_variable (void) const;
+  bool is_user_variable (void) const;
+  bool is_builtin_variable (void) const;
+  bool is_map_element (const string& elts) const;
 
   unsigned type (void) const;
 
-  int is_defined (void) const;
-  int is_read_only (void) const;
-  int is_eternal (void) const;
+  bool is_defined (void) const;
+  bool is_read_only (void) const;
+  bool is_eternal (void) const;
 
   void protect (void);
   void unprotect (void);
@@ -163,8 +163,8 @@ public:
 
   int define (tree_constant *t);
   int define (const octave_value& v);
-  int define (tree_builtin *t, int text_fcn = 0);
-  int define (tree_function *t, int text_fcn = 0);
+  int define (tree_builtin *t, bool text_fcn = false);
+  int define (tree_function *t, bool text_fcn = false);
   int define_as_fcn (const octave_value& v);
   int define_builtin_var (const octave_value& v);
 
@@ -172,16 +172,16 @@ public:
 
   int clear (void);
 
-  void alias (symbol_record *s, int force = 0);
+  void alias (symbol_record *s, bool force = false);
 
   void mark_as_formal_parameter (void);
-  int is_formal_parameter (void) const;
+  bool is_formal_parameter (void) const;
 
   void mark_as_linked_to_global (void);
-  int is_linked_to_global (void) const;
+  bool is_linked_to_global (void) const;
 
   void mark_as_static (void);
-  int is_static (void) const;
+  bool is_static (void) const;
 
   octave_value variable_value (void) const;
   octave_value& variable_reference (void);
@@ -235,13 +235,13 @@ public:
 
   symbol_record_info& operator = (const symbol_record_info& s);
 
-  int is_defined (void) const;
-  int is_read_only (void) const;
-  int is_eternal (void) const;
-  int hides_fcn (void) const;
-  int hides_builtin (void) const;
+  bool is_defined (void) const;
+  bool is_read_only (void) const;
+  bool is_eternal (void) const;
+  bool hides_fcn (void) const;
+  bool hides_builtin (void) const;
   string type_name (void) const;
-  int is_function (void) const;
+  bool is_function (void) const;
   int rows (void) const;
   int columns (void) const;
   string name (void) const;
@@ -255,7 +255,7 @@ public:
 
 private:
 
-  int initialized;
+  bool initialized;
   int nr;
   int nc;
   unsigned type : 6;
@@ -290,23 +290,25 @@ public:
 
   symbol_table (void);
 
-  symbol_record *lookup (const string& nm, int insert = 0, int warn = 0);
+  symbol_record *lookup (const string& nm, bool insert = false,
+			 bool warn = false);
 
   void rename (const string& old_name, const string& new_name);
 
-  void clear (int clear_user_functions = 1);
-  int clear (const string& nm, int clear_user_functions = 1);
+  void clear (bool clear_user_functions = true);
+  int clear (const string& nm, bool clear_user_functions = true);
 
   int size (void) const;
 
   symbol_record_info *
   long_list (int& count, const string_vector& pats = string_vector (),
-	     int npats = 0, int sort = 0, unsigned type = SYMTAB_ALL_TYPES,
+	     int npats = 0, bool sort = false,
+	     unsigned type = SYMTAB_ALL_TYPES,
 	     unsigned scope = SYMTAB_ALL_SCOPES) const;
 
   string_vector
   list (int& count, const string_vector& pats = string_vector (),
-	int npats = 0, int sort = 0, unsigned type = SYMTAB_ALL_TYPES,
+	int npats = 0, bool sort = false, unsigned type = SYMTAB_ALL_TYPES,
 	unsigned scope = SYMTAB_ALL_SCOPES) const;
 
   symbol_record **glob (int& count, const string& pat = string ("*"),
@@ -323,9 +325,9 @@ private:
   symbol_record table[HASH_TABLE_SIZE];
 };
 
-extern int valid_identifier (const char *s);
+extern bool valid_identifier (const char *s);
 
-extern int valid_identifier (const string& s);
+extern bool valid_identifier (const string& s);
 
 #endif
 

@@ -193,7 +193,7 @@ initialize_symbol_tables (void)
 bool
 is_builtin_variable (const string& name)
 {
-  symbol_record *sr = global_sym_tab->lookup (name, 0, 0);
+  symbol_record *sr = global_sym_tab->lookup (name);
   return (sr && sr->is_builtin_variable ());
 }
 
@@ -229,14 +229,14 @@ is_mapper_function_name (const string& s)
 bool
 is_globally_visible (const string& name)
 {
-  symbol_record *sr = curr_sym_tab->lookup (name, 0, 0);
+  symbol_record *sr = curr_sym_tab->lookup (name);
   return (sr && sr->is_linked_to_global ());
 }
 
 // Is this octave_value a valid function?
 
 tree_fvc *
-is_valid_function (const octave_value& arg, const string& warn_for, int warn)
+is_valid_function (const octave_value& arg, const string& warn_for, bool warn)
 {
   tree_fvc *ans = 0;
 
@@ -341,7 +341,7 @@ otherwise, return 0.")
       return retval;
     }
 
-  symbol_record *sr = curr_sym_tab->lookup (name, 0, 0);
+  symbol_record *sr = curr_sym_tab->lookup (name);
 
   retval = static_cast<double> (sr && sr->is_linked_to_global ());
 
@@ -388,9 +388,9 @@ returns:\n\
       symbol_name = name.substr (0, pos);
     }
 
-  symbol_record *sr = curr_sym_tab->lookup (symbol_name, 0, 0);
+  symbol_record *sr = curr_sym_tab->lookup (symbol_name);
   if (! sr)
-    sr = global_sym_tab->lookup (symbol_name, 0, 0);
+    sr = global_sym_tab->lookup (symbol_name);
 
   retval = 0.0;
 
@@ -646,7 +646,7 @@ safe_fclose (void *f)
 }
 
 static int
-parse_fcn_file (int exec_script, const string& ff)
+parse_fcn_file (bool exec_script, const string& ff)
 {
   begin_unwind_frame ("parse_fcn_file");
 
@@ -754,7 +754,7 @@ parse_fcn_file (int exec_script, const string& ff)
 }
 
 static bool
-load_fcn_from_file (symbol_record *sym_rec, int exec_script)
+load_fcn_from_file (symbol_record *sym_rec, bool exec_script)
 {
   bool script_file_executed = false;
 
@@ -791,7 +791,7 @@ load_fcn_from_file (symbol_record *sym_rec, int exec_script)
 }
 
 bool
-lookup (symbol_record *sym_rec, int exec_script)
+lookup (symbol_record *sym_rec, bool exec_script)
 {
   bool script_executed = false;
 
@@ -823,9 +823,9 @@ lookup (symbol_record *sym_rec, int exec_script)
 // current symbol table.
 
 symbol_record *
-lookup_by_name (const string& nm, int exec_script)
+lookup_by_name (const string& nm, bool exec_script)
 {
-  symbol_record *sym_rec = curr_sym_tab->lookup (nm, 1, 0);
+  symbol_record *sym_rec = curr_sym_tab->lookup (nm, true);
 
   lookup (sym_rec, exec_script);
 
@@ -859,7 +859,7 @@ get_global_value (const string& nm)
 void
 set_global_value (const string& nm, const octave_value& val)
 {
-  symbol_record *sr = global_sym_tab->lookup (nm, 1);
+  symbol_record *sr = global_sym_tab->lookup (nm, true);
 
   if (sr)
     sr->define (val);
@@ -897,7 +897,7 @@ get_help_from_file (const string& path)
 string
 builtin_string_variable (const string& name)
 {
-  symbol_record *sr = global_sym_tab->lookup (name, 0, 0);
+  symbol_record *sr = global_sym_tab->lookup (name);
 
   // It is a prorgramming error to look for builtins that aren't.
 
@@ -926,7 +926,7 @@ int
 builtin_real_scalar_variable (const string& name, double& d)
 {
   int status = 0;
-  symbol_record *sr = global_sym_tab->lookup (name, 0, 0);
+  symbol_record *sr = global_sym_tab->lookup (name);
 
   // It is a prorgramming error to look for builtins that aren't.
 
@@ -955,7 +955,7 @@ builtin_any_variable (const string& name)
 {
   octave_value retval;
 
-  symbol_record *sr = global_sym_tab->lookup (name, 0, 0);
+  symbol_record *sr = global_sym_tab->lookup (name);
 
   // It is a prorgramming error to look for builtins that aren't.
 
@@ -983,7 +983,7 @@ link_to_global_variable (symbol_record *sr)
 
   string nm = sr->name ();
 
-  symbol_record *gsr = global_sym_tab->lookup (nm, 1, 0);
+  symbol_record *gsr = global_sym_tab->lookup (nm, true);
 
   if (sr->is_formal_parameter ())
     {
@@ -1029,7 +1029,7 @@ link_to_global_variable (symbol_record *sr)
 void
 link_to_builtin_variable (symbol_record *sr)
 {
-  symbol_record *tmp_sym = global_sym_tab->lookup (sr->name (), 0, 0);
+  symbol_record *tmp_sym = global_sym_tab->lookup (sr->name ());
 
   if (tmp_sym && tmp_sym->is_builtin_variable ())
     sr->alias (tmp_sym);
@@ -1043,7 +1043,7 @@ link_to_builtin_variable (symbol_record *sr)
 void
 link_to_builtin_or_function (symbol_record *sr)
 {
-  symbol_record *tmp_sym = global_sym_tab->lookup (sr->name (), 0, 0);
+  symbol_record *tmp_sym = global_sym_tab->lookup (sr->name ());
 
   if (tmp_sym
       && (tmp_sym->is_builtin_variable () || tmp_sym->is_function ())
@@ -1062,11 +1062,11 @@ link_to_builtin_or_function (symbol_record *sr)
 void
 force_link_to_function (const string& id_name)
 {
-  symbol_record *gsr = global_sym_tab->lookup (id_name, 1, 0);
+  symbol_record *gsr = global_sym_tab->lookup (id_name, true);
   if (gsr->is_function ())
     {
       curr_sym_tab->clear (id_name);
-      symbol_record *csr = curr_sym_tab->lookup (id_name, 1, 0);
+      symbol_record *csr = curr_sym_tab->lookup (id_name, true);
       csr->alias (gsr);
     }
 }
@@ -1176,7 +1176,7 @@ print_long_listing (ostream& os, symbol_record_info *s)
 
 static int
 maybe_list (const char *header, const string_vector& argv, int argc,
-	    ostream& os, int show_verbose, symbol_table
+	    ostream& os, bool show_verbose, symbol_table
 	    *sym_tab, unsigned type, unsigned scope)
 {
   int count;
@@ -1236,7 +1236,7 @@ Associate a cryptic message with a variable name.")
 		error ("document: can't redefine help for built-in variables and functions");
 	      else
 		{
-		  symbol_record *sym_rec = curr_sym_tab->lookup (name, 0);
+		  symbol_record *sym_rec = curr_sym_tab->lookup (name);
 
 		  if (sym_rec)
 		    sym_rec->document (help);
@@ -1260,17 +1260,17 @@ do_who (int argc, const string_vector& argv)
 {
   octave_value_list retval;
 
-  int show_builtins = 0;
-  int show_functions = (curr_sym_tab == top_level_sym_tab);
-  int show_variables = 1;
-  int show_verbose = 0;
+  bool show_builtins = false;
+  bool show_functions = (curr_sym_tab == top_level_sym_tab);
+  bool show_variables = true;
+  bool show_verbose = false;
 
   string my_name = argv[0];
 
   if (argc > 1)
     {
-      show_functions = 0;
-      show_variables = 0;
+      show_functions = false;
+      show_variables = false;
     }
 
   int i;
@@ -1278,18 +1278,18 @@ do_who (int argc, const string_vector& argv)
     {
       if (argv[i] == "-all" || argv[i] == "-a")
 	{
-	  show_builtins++;
-	  show_functions++;
-	  show_variables++;
+	  show_builtins = true;
+	  show_functions = true;
+	  show_variables = true;
 	}
       else if (argv[i] == "-builtins" || argv[i] == "-b")
-	show_builtins++;
+	show_builtins = true;
       else if (argv[i] == "-functions" || argv[i] == "-f")
-	show_functions++;
+	show_functions = true;
       else if (argv[i] == "-long" || argv[i] == "-l")
-	show_verbose++;
+	show_verbose = true;
       else if (argv[i] == "-variables" || argv[i] == "-v")
-	show_variables++;
+	show_variables = true;
       else if (argv[i][0] == '-')
 	warning ("%s: unrecognized option `%s'", my_name.c_str (),
 		 argv[i].c_str ());
@@ -1405,7 +1405,7 @@ character, but may not be combined.")
 void
 install_builtin_mapper (const builtin_mapper_function& mf)
 {
-  symbol_record *sym_rec = global_sym_tab->lookup (mf.name, 1);
+  symbol_record *sym_rec = global_sym_tab->lookup (mf.name, true);
   sym_rec->unprotect ();
 
   tree_builtin *def = new tree_builtin (mf, mf.name);
@@ -1420,7 +1420,7 @@ install_builtin_mapper (const builtin_mapper_function& mf)
 void
 install_builtin_function (const builtin_function& f)
 {
-  symbol_record *sym_rec = global_sym_tab->lookup (f.name, 1);
+  symbol_record *sym_rec = global_sym_tab->lookup (f.name, true);
   sym_rec->unprotect ();
 
   tree_builtin *def = new tree_builtin (f.fcn, f.name);
@@ -1446,10 +1446,10 @@ install_builtin_variable (const builtin_variable& v)
 void
 install_builtin_variable_as_function (const string& name,
 				      const octave_value& val,
-				      int protect, int eternal,
+				      bool protect, bool eternal,
 				      const string& help)
 {
-  symbol_record *sym_rec = global_sym_tab->lookup (name, 1);
+  symbol_record *sym_rec = global_sym_tab->lookup (name, true);
   sym_rec->unprotect ();
 
   string tmp_help = help.empty () ? sym_rec->help () : help;
@@ -1468,12 +1468,12 @@ install_builtin_variable_as_function (const string& name,
 void
 alias_builtin (const string& alias, const string& name)
 {
-  symbol_record *sr_name = global_sym_tab->lookup (name, 0, 0);
+  symbol_record *sr_name = global_sym_tab->lookup (name);
 
   if (! sr_name)
     panic ("can't alias to undefined name!");
 
-  symbol_record *sr_alias = global_sym_tab->lookup (alias, 1, 0);
+  symbol_record *sr_alias = global_sym_tab->lookup (alias, true);
 
   if (sr_alias)
     sr_alias->alias (sr_name);
@@ -1485,9 +1485,9 @@ alias_builtin (const string& alias, const string& name)
 // Defining variables.
 
 void
-bind_ans (const octave_value& val, int print)
+bind_ans (const octave_value& val, bool print)
 {
-  static symbol_record *sr = global_sym_tab->lookup ("ans", 1, 0);
+  static symbol_record *sr = global_sym_tab->lookup ("ans", true);
 
   tree_identifier *ans_id = new tree_identifier (sr);
   tree_constant *tmp = new tree_constant (val);
@@ -1534,10 +1534,10 @@ clear_global_error_variable (void *)
 
 void
 bind_builtin_variable (const string& varname, const octave_value& val,
-		       int protect, int eternal, sv_Function sv_fcn,
+		       bool protect, bool eternal, sv_Function sv_fcn,
 		       const string& help)
 {
-  symbol_record *sr = global_sym_tab->lookup (varname, 1, 0);
+  symbol_record *sr = global_sym_tab->lookup (varname, true);
 
   // It is a programming error for a builtin symbol to be missing.
   // Besides, we just inserted it, so it must be there.
@@ -1740,7 +1740,7 @@ With -x, exclude the named variables")
   // functions unless we are at the top level.  (Allowing that to
   // happen inside functions would result in pretty odd behavior...)
 
-  int clear_user_functions = (curr_sym_tab == top_level_sym_tab);
+  bool clear_user_functions = (curr_sym_tab == top_level_sym_tab);
 
   if (argc == 1)
     {

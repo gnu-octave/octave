@@ -348,7 +348,7 @@ additional_help_message (ostream&)
 void
 print_usage (const string& nm, int just_usage)
 {
-  symbol_record *sym_rec = global_sym_tab->lookup (nm, 0, 0);
+  symbol_record *sym_rec = global_sym_tab->lookup (nm);
   if (sym_rec)
     {
       string h = sym_rec->help ();

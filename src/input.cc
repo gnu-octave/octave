@@ -673,9 +673,9 @@ generate_struct_completions (const char *text, char *& prefix,
   delete [] hint;
   hint = strsave (ptr + 1);
 
-  symbol_record *sr = curr_sym_tab->lookup (id, 0, 0);
+  symbol_record *sr = curr_sym_tab->lookup (id);
   if (! sr)
-    sr = global_sym_tab->lookup (id, 0, 0);
+    sr = global_sym_tab->lookup (id);
 
   if (sr && sr->is_defined ())
     {
@@ -689,7 +689,7 @@ generate_struct_completions (const char *text, char *& prefix,
 	{
 	  if (elts && *elts)
 	    {
-	      octave_value ult = def->lookup_map_element (elts, 0, 1);
+	      octave_value ult = def->lookup_map_element (elts, false, true);
 
 	      if (ult.is_map ())
 		{
@@ -767,9 +767,9 @@ looks_like_struct (const char *nm)
       elts = ptr + 1;
     }
 
-  symbol_record *sr = curr_sym_tab->lookup (id, 0, 0);
+  symbol_record *sr = curr_sym_tab->lookup (id);
   if (! sr)
-    sr = global_sym_tab->lookup (id, 0, 0);
+    sr = global_sym_tab->lookup (id);
 
   if (sr && sr->is_defined ())
     {
@@ -783,7 +783,7 @@ looks_like_struct (const char *nm)
 	{
 	  if (elts && *elts)
 	    {
-	      octave_value ult = def->lookup_map_element (elts, 0, 1);
+	      octave_value ult = def->lookup_map_element (elts, false, true);
 
 	      if (ult.is_map ())
 		retval = 1;

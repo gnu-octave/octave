@@ -1079,13 +1079,13 @@ is_keyword (const string& s)
 static symbol_record *
 lookup_identifier (const string& name)
 {
-  return curr_sym_tab->lookup (name, 1, 0);
+  return curr_sym_tab->lookup (name, true);
 }
 
 static bool
 is_variable (const string& name)
 {
-  symbol_record *sr = curr_sym_tab->lookup (name, 0, 0);
+  symbol_record *sr = curr_sym_tab->lookup (name);
 
   return sr && sr->is_variable ();
 }
@@ -1093,7 +1093,7 @@ is_variable (const string& name)
 static void
 force_local_variable (const string& name)
 {
-  symbol_record *sr = curr_sym_tab->lookup (name, 1, 0);
+  symbol_record *sr = curr_sym_tab->lookup (name, true);
 
   if (sr)
     sr->define (octave_value ());

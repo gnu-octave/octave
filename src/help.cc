@@ -317,9 +317,9 @@ is available in the on-line version of the manual.\n\
 Use the command `help -i <topic>' to search the manual index.\n"
 
 static void
-additional_help_message (ostrstream& output_buf, int force = 0)
+additional_help_message (ostrstream& output_buf)
 {
-  if (! (user_pref.suppress_verbose_help_message || force))
+  if (! user_pref.suppress_verbose_help_message)
     output_buf << VERBOSE_HELP_MESSAGE;
 }
 
@@ -337,7 +337,8 @@ print_usage (const char *string, int just_usage)
 	  output_buf << "\n*** " << string << ":\n\n"
 	    << h << "\n";
 
-	  additional_help_message (output_buf, !just_usage);
+	  if (! just_usage)
+	    additional_help_message (output_buf)
 	  output_buf << ends;
 	  maybe_page_output (output_buf);
 	}

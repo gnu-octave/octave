@@ -5,6 +5,12 @@ top_srcdir = @top_srcdir@
 srcdir = @srcdir@
 VPATH = @srcdir@
 
+CPICFLAGS = @CPICFLAG@
+
+SHLEXT = @SHLEXT@
+
+SHARED_LIBS = @SHARED_LIBS@
+
 CC = @CC@
 # CFLAGS is used for both compilation and linking.
 CFLAGS = @CFLAGS@ $(XCFLAGS)
@@ -14,6 +20,8 @@ CPPFLAGS = $(XCPPFLAGS) -I. -I$(srcdir) \
 	   -I$(kpathsea_parent) -I$(kpathsea_srcdir_parent) \
 	   $(prog_cflags) @CPPFLAGS@ $(DEFS) 
 .c.o:
+	[ -z "$(CPICFLAG)" ] ||\
+	  $(CC) $(CPPFLAGS) $(CPICFLAG) $(CFLAGS) -c $< -o pic/$@
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $<
 .SUFFIXES: .c .o
 
@@ -33,7 +41,7 @@ kpathsea_parent = ..
 kpathsea_dir = $(kpathsea_parent)/kpathsea
 kpathsea_srcdir_parent = $(top_srcdir)/..
 kpathsea_srcdir = $(kpathsea_srcdir_parent)/kpathsea
-kpathsea = $(kpathsea_dir)/kpathsea.a
+kpathsea = $(kpathsea_dir)/libkpathsea.a
 
 ##ifeq ($(CC), gcc)
 ##XDEFS = -Wall -Wpointer-arith $(warn_more)

@@ -18,7 +18,7 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
-MATRIX_INC = Array.h Array-idx.h MArray.h Matrix.h mx-base.h \
+MATRIX_INC := Array.h Array-idx.h MArray.h Matrix.h mx-base.h \
 	mx-defs.h mx-ext.h CColVector.h CDiagMatrix.h CMatrix.h \
 	CRowVector.h CmplxAEPBAL.h CmplxCHOL.h CmplxDET.h CmplxHESS.h \
 	CmplxLU.h CmplxQR.h CmplxQRP.h CmplxSCHUR.h CmplxSVD.h EIG.h \
@@ -27,19 +27,19 @@ MATRIX_INC = Array.h Array-idx.h MArray.h Matrix.h mx-base.h \
 	dbleCHOL.h dbleDET.h dbleGEPBAL.h dbleHESS.h dbleLU.h dbleQR.h \
 	dbleQRP.h dbleSCHUR.h dbleSVD.h
 
-INCLUDES = Bounds.h CollocWt.h DAE.h DAEFunc.h FEGrid.h	FSQP.h \
+INCLUDES := Bounds.h CollocWt.h DAE.h DAEFunc.h FEGrid.h FSQP.h \
 	LinConst.h LP.h LPsolve.h NLConst.h NLEqn.h NLFunc.h NLP.h \
 	NPSOL.h ODE.h ODEFunc.h Objective.h QP.h QPSOL.h \
 	Quad.h Range.h base-min.h f77-uscore.h idx-vector.h \
 	lo-error.h oct-cmplx.h sun-utils.h \
 	$(MATRIX_INC)
 
-TEMPLATE_SRC = Array.cc MArray.cc
+TEMPLATE_SRC := Array.cc MArray.cc
 
-TI_SRC = Array-C.cc Array-c.cc Array-i.cc Array-d.cc Array-s.cc \
+TI_SRC := Array-C.cc Array-c.cc Array-i.cc Array-d.cc Array-s.cc \
 	 MArray-C.cc MArray-c.cc MArray-i.cc MArray-d.cc MArray-s.cc
 
-MATRIX_SRC = Array-ext.cc CColVector.cc CDiagMatrix.cc CMatrix.cc \
+MATRIX_SRC := Array-ext.cc CColVector.cc CDiagMatrix.cc CMatrix.cc \
 	CRowVector.cc CmplxAEPBAL.cc CmplxCHOL.cc CmplxDET.cc \
 	CmplxHESS.cc CmplxLU.cc CmplxQR.cc CmplxQRP.cc CmplxSCHUR.cc \
 	CmplxSVD.cc EIG.cc cMatrix.cc dColVector.cc dDiagMatrix.cc \
@@ -47,28 +47,36 @@ MATRIX_SRC = Array-ext.cc CColVector.cc CDiagMatrix.cc CMatrix.cc \
 	dbleDET.cc dbleGEPBAL.cc dbleHESS.cc dbleLU.cc dbleQR.cc \
 	dbleQRP.cc dbleSCHUR.cc dbleSVD.cc
 
-SOURCES = Bounds.cc CollocWt.cc DAE.cc FEGrid.cc FSQP.cc LinConst.cc \
+SOURCES := Bounds.cc CollocWt.cc DAE.cc FEGrid.cc FSQP.cc LinConst.cc \
 	LPsolve.cc NLEqn.cc NPSOL.cc ODE.cc QPSOL.cc Quad.cc \
 	Range.cc idx-vector.cc lo-error.cc sun-utils.cc \
 	$(TEMPLATE_SRC) \
 	$(TI_SRC) \
 	$(MATRIX_SRC)
 
-EXTRAS = mx-inlines.cc
+EXTRAS := mx-inlines.cc
 
-DISTFILES = Makefile.in $(SOURCES) $(INCLUDES) $(EXTRAS)
+DISTFILES := Makefile.in $(SOURCES) $(INCLUDES) $(EXTRAS)
 
-MAKEDEPS = $(patsubst %.cc, %.d, $(SOURCES))
+MAKEDEPS := $(patsubst %.cc, %.d, $(SOURCES))
 
-OBJECTS = $(patsubst %.cc, %.o, $(SOURCES))
+OBJECTS := $(patsubst %.cc, %.o, $(SOURCES))
+
+ifeq ($(SHARED_LIBS), true)
+  ifdef CXXPICFLAG
+    PICOBJ := $(addprefix pic/, $(OBJECTS))
+  else
+    PICOBJ := $(OBJECTS)
+  endif
+endif
 
 LIBOCTAVE_DEPEND := $(patsubst %, liboctave.a(%), $(OBJECTS))
 
-all: stamp-picdir liboctave.a
+all: stamp-picdir liboctave.a stamp-shared
 .PHONY: all
 
 stamp-picdir:
-	if [ -n "$(FPICFLAG)" ] || [ -n "$(CPICFLAG)" ] || [ -n "$(CXXPICFLAG)" ]; then \
+	if [ -n "$(CXXPICFLAG)" ]; then \
 	  if [ -d pic ]; then true; else mkdir pic ; fi ; \
 	else true; fi
 	touch stamp-picdir
@@ -76,6 +84,13 @@ stamp-picdir:
 liboctave.a: $(OBJECTS)
 	$(AR) $(ARFLAGS) liboctave.a $(OBJECTS)
 	$(RANLIB) liboctave.a
+
+stamp-shared:
+	if $(SHARED_LIBS); then \
+	  $(CXX) -shared -o liboctave.$(SHLEXT) $(PICOBJ) \
+	  -L../libcruft -lcruft; \
+	else true; fi
+	touch stamp-shared
 
 check: all
 .PHONY: check
@@ -85,6 +100,10 @@ install: all
 	rm -f $(libdir)/liboctave.a
 	$(INSTALL_DATA) liboctave.a $(libdir)/liboctave.a
 	$(RANLIB) $(libdir)/liboctave.a
+	if $(SHARED_LIBS); then \
+	  rm -f $(libdir)/liboctave.$(SHLEXT); \
+	  $(INSTALL_DATA) liboctave.$(SHLEXT) $(libdir)/liboctave.$(SHLEXT); \
+	fi
 	for f in $(INCLUDES) $(TEMPLATE_SRC) ; do \
 	  rm -f $(includedir)/$$f ; \
 	  $(INSTALL_DATA) $(srcdir)/$$f $(includedir)/$$f ; \

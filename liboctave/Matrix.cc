@@ -1822,6 +1822,28 @@ Matrix::row_min (void) const
 }
 
 ColumnVector
+Matrix::row_min_loc (void) const
+{
+  ColumnVector result;
+
+  if (nr > 0 && nc > 0)
+    {
+      result.resize (nr);
+
+      for (int i = 0; i < nr; i++)
+        {
+          int res = 0;
+          for (int j = 0; j < nc; j++)
+            if (elem (i, j) < elem (i, res))
+              res = j;
+          result.elem (i) = (double) (res + 1);
+        }
+    }
+
+  return result;
+}
+
+ColumnVector
 Matrix::row_max (void) const
 {
   ColumnVector result;
@@ -1838,6 +1860,28 @@ Matrix::row_max (void) const
 	      res = elem (i, j);
 	  result.elem (i) = res;
 	}
+    }
+
+  return result;
+}
+
+ColumnVector
+Matrix::row_max_loc (void) const
+{
+  ColumnVector result;
+
+  if (nr > 0 && nc > 0)
+    {
+      result.resize (nr);
+
+      for (int i = 0; i < nr; i++)
+        {
+          int res = 0;
+          for (int j = 0; j < nc; j++)
+            if (elem (i, j) > elem (i, res))
+              res = j;
+          result.elem (i) = (double) (res + 1);
+        }
     }
 
   return result;
@@ -1864,6 +1908,28 @@ Matrix::column_min (void) const
 
   return result;
 }
+RowVector
+Matrix::column_min_loc (void) const
+{
+  RowVector result;
+
+  if (nr > 0 && nc > 0)
+    {
+      result.resize (nc);
+
+      for (int j = 0; j < nc; j++)
+        {
+          int res = 0.0;
+          for (int i = 0; i < nr; i++)
+            if (elem (i, j) < elem (res, j))
+              res = i;
+          result.elem (j) = (double) (res + 1);
+        }
+    }
+
+  return result;
+}
+
 
 RowVector
 Matrix::column_max (void) const
@@ -1882,6 +1948,28 @@ Matrix::column_max (void) const
 	      res = elem (i, j);
 	  result.elem (j) = res;
 	}
+    }
+
+  return result;
+}
+
+RowVector
+Matrix::column_max_loc (void) const
+{
+  RowVector result;
+
+  if (nr > 0 && nc > 0)
+    {
+      result.resize (nc);
+
+      for (int j = 0; j < nc; j++)
+        {
+          int res = 0;
+          for (int i = 0; i < nr; i++)
+            if (elem (i, j) > elem (res, j))
+              res = i;
+          result.elem (j) = (double) (res + 1);
+        }
     }
 
   return result;
@@ -4126,6 +4214,32 @@ ComplexMatrix::row_min (void) const
 }
 
 ComplexColumnVector
+ComplexMatrix::row_min_loc (void) const
+{
+  ComplexColumnVector result;
+
+  if (nr > 0 && nc > 0)
+    {
+      result.resize (nr);
+
+      for (int i = 0; i < nr; i++)
+        {
+          Complex res = 0;
+          double absres = abs (elem (i, 0));
+          for (int j = 0; j < nc; j++)
+            if (abs (elem (i, j)) < absres)
+              {
+                res = j;
+                absres = abs (elem (i, j));
+              }
+          result.elem (i) = res + 1;
+        }
+    }
+
+  return result;
+}
+
+ComplexColumnVector
 ComplexMatrix::row_max (void) const
 {
   ComplexColumnVector result;
@@ -4146,6 +4260,32 @@ ComplexMatrix::row_max (void) const
 	      }
 	  result.elem (i) = res;
 	}
+    }
+
+  return result;
+}
+
+ComplexColumnVector
+ComplexMatrix::row_max_loc (void) const
+{
+  ComplexColumnVector result;
+
+  if (nr > 0 && nc > 0)
+    {
+      result.resize (nr);
+
+      for (int i = 0; i < nr; i++)
+        {
+          Complex res = 0;
+          double absres = abs (elem (i, 0));
+          for (int j = 0; j < nc; j++)
+            if (abs (elem (i, j)) > absres)
+              {
+                res = j;
+                absres = abs (elem (i, j));
+              }
+          result.elem (i) = res + 1;
+        }
     }
 
   return result;
@@ -4178,6 +4318,32 @@ ComplexMatrix::column_min (void) const
 }
 
 ComplexRowVector
+ComplexMatrix::column_min_loc (void) const
+{
+  ComplexRowVector result;
+
+  if (nr > 0 && nc > 0)
+    {
+      result.resize (nc);
+
+      for (int j = 0; j < nc; j++)
+        {
+          Complex res = 0;
+          double absres = abs (elem (0, j));
+          for (int i = 0; i < nr; i++)
+            if (abs (elem (i, j)) < absres)
+              {
+                res = i;
+                absres = abs (elem (i, j));
+              }
+          result.elem (j) = res + 1;
+        }
+    }
+
+  return result;
+}
+
+ComplexRowVector
 ComplexMatrix::column_max (void) const
 {
   ComplexRowVector result;
@@ -4198,6 +4364,32 @@ ComplexMatrix::column_max (void) const
 	      }
 	  result.elem (j) = res;
 	}
+    }
+
+  return result;
+}
+
+ComplexRowVector
+ComplexMatrix::column_max_loc (void) const
+{
+  ComplexRowVector result;
+
+  if (nr > 0 && nc > 0)
+    {
+      result.resize (nc);
+
+      for (int j = 0; j < nc; j++)
+        {
+          Complex res = 0;
+          double absres = abs (elem (0, j));
+          for (int i = 0; i < nr; i++)
+            if (abs (elem (i, j)) > absres)
+              {
+                res = i;
+                absres = abs (elem (i, j));
+              }
+          result.elem (j) = res + 1;
+        }
     }
 
   return result;

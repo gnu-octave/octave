@@ -429,10 +429,6 @@ where xdot and x are vectors and t is a scalar.\n", },
   { "min", 3, 2, builtin_min,
     "min (x): minimum value(s) of a vector (matrix)", },
 
-  { "get_next_arg", 1, 1, builtin_get_next_arg,
-    "get_next_arg (): return next argument in function taking varible\n\
-number of parameters", },
-
   { "npsol", 11, 3, builtin_npsol,
 #if defined (NPSOL_MISSING)
     "This function requires NPSOL, which is not freely\n\
@@ -564,6 +560,14 @@ at which the integrand is singular.\n", },
 
   { "syl", 4, 1, builtin_syl,
     "X = syl (A, B, C): solve the Sylvester equation A X + X B + C = 0", },
+
+  { "va_arg", 1, 1, builtin_va_arg,
+    "va_arg (): return next argument in function taking varible\n\
+number of parameters", },
+
+  { "va_start", 1, 0, builtin_va_start,
+    "va_start (): reset the pointer to the list of optional arguments\n\
+to the beginning", },
 
   { "warranty", 1, 0, builtin_warranty,
     "warranty (): describe copying conditions", },

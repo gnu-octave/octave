@@ -512,10 +512,16 @@ public:
   ColumnVector diag (int k) const;
 
   ColumnVector row_min (void) const;
+  ColumnVector row_min_loc (void) const;
+
   ColumnVector row_max (void) const;
+  ColumnVector row_max_loc (void) const;
 
   RowVector column_min (void) const;
+  RowVector column_min_loc (void) const;
+
   RowVector column_max (void) const;
+  RowVector column_max_loc (void) const;
 
 // i/o
 
@@ -1349,10 +1355,16 @@ public:
   ComplexColumnVector diag (int k) const;
 
   ComplexColumnVector row_min (void) const;
+  ComplexColumnVector row_min_loc (void) const;
+
   ComplexColumnVector row_max (void) const;
+  ComplexColumnVector row_max_loc (void) const;
 
   ComplexRowVector column_min (void) const;
+  ComplexRowVector column_min_loc (void) const;
+
   ComplexRowVector column_max (void) const;
+  ComplexRowVector column_max_loc (void) const;
 
 // i/o
 

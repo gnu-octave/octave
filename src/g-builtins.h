@@ -76,7 +76,6 @@ extern tree_constant *builtin_fseek (const tree_constant *, int, int);
 extern tree_constant *builtin_fsolve (const tree_constant *, int, int);
 extern tree_constant *builtin_fsqp (const tree_constant *, int, int);
 extern tree_constant *builtin_ftell (const tree_constant *, int, int);
-extern tree_constant *builtin_get_next_arg (const tree_constant *, int, int);
 extern tree_constant *builtin_getenv (const tree_constant *, int, int);
 extern tree_constant *builtin_givens (const tree_constant *, int, int);
 extern tree_constant *builtin_hess (const tree_constant *, int, int);
@@ -120,6 +119,8 @@ extern tree_constant *builtin_sum (const tree_constant *, int, int);
 extern tree_constant *builtin_sumsq (const tree_constant *, int, int);
 extern tree_constant *builtin_svd (const tree_constant *, int, int);
 extern tree_constant *builtin_syl (const tree_constant *, int, int);
+extern tree_constant *builtin_va_arg (const tree_constant *, int, int);
+extern tree_constant *builtin_va_start (const tree_constant *, int, int);
 extern tree_constant *builtin_warranty (const tree_constant *, int, int);
 extern tree_constant *builtin_zeros (const tree_constant *, int, int);
 

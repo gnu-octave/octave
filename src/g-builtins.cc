@@ -818,35 +818,6 @@ builtin_ftell (const tree_constant *args, int nargin, int nargout)
 }
 
 /*
- * Variable argument lists.
- */
-tree_constant *
-builtin_get_next_arg (const tree_constant *args, int nargin, int nargout)
-{
-  tree_constant *retval = NULL_TREE_CONST;
-  if (nargin == 1)
-    {
-      if (curr_function != (tree_function *) NULL)
-	{
-	  if (curr_function->takes_varargs ())
-	    {
-	      retval = new tree_constant [2];
-	      retval[0] = curr_function->get_next_arg ();
-	    }
-	  else
-	    error ("next_arg only valid within function taking\
- variable number of arguments");
-	}
-      else
-	error ("next_arg only valid within function body");
-    }
-  else
-    print_usage ("get_next_arg");
-
-  return retval;
-}
-
-/*
  * Get the value of an environment variable.
  */
 tree_constant *
@@ -1683,6 +1654,58 @@ builtin_hess (const tree_constant *args, int nargin, int nargout)
 		 retval = hess (args, nargin, nargout);)
   else
     print_usage ("hess");
+
+  return retval;
+}
+
+/*
+ * Variable argument lists.
+ */
+tree_constant *
+builtin_va_arg (const tree_constant *args, int nargin, int nargout)
+{
+  tree_constant *retval = NULL_TREE_CONST;
+  if (nargin == 1)
+    {
+      if (curr_function != (tree_function *) NULL)
+	{
+	  if (curr_function->takes_varargs ())
+	    {
+	      retval = new tree_constant [2];
+	      retval[0] = curr_function->va_arg ();
+	    }
+	  else
+	    error ("va_arg only valid within function taking\
+ variable number of arguments");
+	}
+      else
+	error ("va_arg only valid within function body");
+    }
+  else
+    print_usage ("va_arg");
+
+  return retval;
+}
+
+tree_constant *
+builtin_va_start (const tree_constant *args, int nargin, int nargout)
+{
+  tree_constant *retval = NULL_TREE_CONST;
+  if (nargin == 1)
+    {
+      if (curr_function != (tree_function *) NULL)
+	{
+	  if (curr_function->takes_varargs ())
+	    curr_function->va_start ();
+	  else
+	    error ("va_start only valid within function taking\
+ variable number of arguments");
+	}
+      else
+	error ("va_start only valid within function body");
+    }
+  else
+    print_usage ("va_start");
 
   return retval;
 }

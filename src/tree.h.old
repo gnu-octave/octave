@@ -252,7 +252,8 @@ public:
   int is_system_m_file (void) const;
 
   int takes_varargs (void) const;
-  tree_constant get_next_arg (void);
+  void va_start (void);
+  tree_constant va_arg (void);
 
   void stash_function_name (char *s);
   char *function_name (void);
@@ -281,6 +282,7 @@ private:
   time_t t_parsed;
   int system_m_file;
   int varargs_ok;
+  int num_named_args;
   const tree_constant *args_passed;
   int num_args_passed;
   int curr_arg_number;

@@ -144,8 +144,11 @@ safe-lstat.o: safe-lstat.h safe-stat.h
 check: all
 .PHONY: check
 
-install: all
-	$(top_srcdir)/mkinstalldirs $(libdir) $(includedir)
+install: install-libs install-includes
+.PHONY: install
+
+install-libs:
+	$(top_srcdir)/mkinstalldirs $(libdir)
 	rm -f $(libdir)/liboctave.a
 	$(INSTALL_DATA) liboctave.a $(libdir)/liboctave.a
 	$(RANLIB) $(libdir)/liboctave.a
@@ -153,6 +156,10 @@ install: all
 	  rm -f $(libdir)/liboctave.$(SHLEXT); \
 	  $(INSTALL_DATA) liboctave.$(SHLEXT) $(libdir)/liboctave.$(SHLEXT); \
 	fi
+.PHONY: install-libs
+
+install-includes:
+	$(top_srcdir)/mkinstalldirs $(includedir)
 	for f in $(INCLUDES) $(TEMPLATE_SRC) ; do \
 	  rm -f $(includedir)/$$f ; \
 	  $(INSTALL_DATA) $(srcdir)/$$f $(includedir)/$$f ; \
@@ -168,10 +175,10 @@ install: all
 	  fi ; \
 	  $(LN_S) $(includedir) $$linkdir ; \
 	fi
-.PHONY: install
+.PHONY: install-includes
 
 uninstall:
-	rm -f $(libdir)/liboctave.a
+	rm -f $(libdir)/liboctave.a $(libdir)/liboctave.$(SHLEXT)
 	for f in $(INCLUDES) ; do rm -f $(includedir)/$$f ; done
 .PHONY: uninstall
 

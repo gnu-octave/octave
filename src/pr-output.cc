@@ -878,8 +878,7 @@ print_empty_matrix (ostream& os, int nr, int nc, int pr_as_read_syntax)
 }
 
 void
-octave_print_internal (ostream& os, double d,
-		       int pr_as_read_syntax)
+octave_print_internal (ostream& os, double d, int pr_as_read_syntax)
 {
   if (plus_format)
     {
@@ -902,8 +901,7 @@ octave_print_internal (ostream& os, double d,
 }
 
 void
-octave_print_internal (ostream& os, const Matrix& m,
-		       int pr_as_read_syntax)
+octave_print_internal (ostream& os, const Matrix& m, int pr_as_read_syntax)
 {
   int nr = m.rows ();
   int nc = m.columns ();

@@ -117,7 +117,7 @@ map (d_dd_fcn f, const Matrix& x, const Matrix& y)
   int y_nr = y.rows ();
   int y_nc = y.columns ();
 
-  assert (x_nr == x_nc && y_nr == y_nc);
+  assert (x_nr == y_nr && x_nc == y_nc);
 
   Matrix retval (x_nr, x_nc);
 
@@ -149,14 +149,10 @@ DEFUN ("atan2", Fatan2, Satan2, 2, 1,
       int arg_y_empty = empty_arg ("atan2", y_nr, y_nc);
       int arg_x_empty = empty_arg ("atan2", x_nr, x_nc);
 
-      if (arg_y_empty < 0 || arg_x_empty < 0)
+      if (arg_y_empty > 0 && arg_x_empty > 0)
+	return Matrix ();
+      else if (arg_y_empty || arg_x_empty)
 	return retval;
-
-      if (arg_y_empty || arg_x_empty)
-	{
-	  retval = Matrix ();
-	  return retval;
-	}
 
       int y_is_scalar = (y_nr == 1 && y_nc == 1);
       int x_is_scalar = (x_nr == 1 && x_nc == 1);

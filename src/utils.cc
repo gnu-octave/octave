@@ -522,6 +522,9 @@ make_argv (const Octave_object& args, const char *fcn_name)
   return argv;
 }
 
+// Return non-zero if either NR or NC is zero.  Return -1 if this
+// should be considered fatal; return 1 if this is ok.
+
 int
 empty_arg (const char *name, int nr, int nc)
 {
@@ -541,6 +544,8 @@ empty_arg (const char *name, int nr, int nc)
 	  gripe_empty_arg (name, 1);
 	  is_empty = -1;
 	}
+      else
+	is_empty = 1;
     }
 
   return is_empty;

@@ -39,6 +39,8 @@ extern int save_three_d (ostream& os, const octave_value& t,
 
 extern void save_user_variables (void);
 
+extern void symbols_of_load_save (void);
+
 #endif
 
 /*

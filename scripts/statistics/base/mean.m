@@ -96,8 +96,12 @@ function y = mean (x, opt1, opt2)
     endif
   endif
 
-  sz = size (x);
-  n = sz (dim);
+  if (dim > ndims (x))
+    n = 1;
+  else
+    sz = size (x);
+    n = sz (dim);
+  endif
 
   if (strcmp (opt, "a"))
     y = sum (x, dim) / n;

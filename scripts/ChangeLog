@@ -1,3 +1,8 @@
+2005-03-24  Quentin Spencer  <qspencer@ieee.org>
+
+	* statistics/base/mean.m: Allow DIMS arg greater than the number
+	of dimensions of X.
+
 2005-03-23  John W. Eaton  <jwe@octave.org>
 
 	* general/tril.m, general/triu.m: Return value of same class as

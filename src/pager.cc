@@ -403,7 +403,7 @@ symbols_of_pager (void)
   DEFVAR (PAGER, default_pager (), 0, sv_pager_binary,
     "path to pager binary");
 
-  DEFVAR (page_output_immediately, 1.0, 0, page_output_immediately,
+  DEFVAR (page_output_immediately, 0.0, 0, page_output_immediately,
     "if paging output, start sending it as soon as it is available");
 
   DEFVAR (page_screen_output, 1.0, 0, page_screen_output,

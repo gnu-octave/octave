@@ -1,0 +1,146 @@
+      SUBROUTINE BDPERT( FIRSTV, NEGSTP, BIGALF, BIGBND, PNORM,
+     *                   JADD1, JADD2, PALFA1, PALFA2,
+     *                   ISTATE, N, NCLIN0, NROWA, NCTOTL,
+     *                   ANORM, AP, AX, BL, BU, FEATOL, P, X )
+C
+C     IMPLICIT           REAL*8(A-H,O-Z)
+      LOGICAL            FIRSTV, NEGSTP
+      INTEGER            JADD1, JADD2, N, NCLIN0, NCTOTL, NROWA
+      INTEGER            ISTATE(NCTOTL)
+      DOUBLE PRECISION   BIGALF, BIGBND, PALFA1, PALFA2, PNORM
+      DOUBLE PRECISION   AP(NCLIN0), AX(NROWA), BL(NCTOTL), BU(NCTOTL),
+     *                   FEATOL(NCTOTL), P(N), X(N), ANORM(NCLIN0)
+C
+      DOUBLE PRECISION   PARM
+      INTEGER            NOUT, MSG, ISTART
+      COMMON    /SOL1CM/ NOUT, MSG, ISTART
+      COMMON    /SOL4CM/ PARM(10)
+C
+C  *********************************************************************
+C  BDPERT  FINDS STEPS  PALFA1, PALFA2  SUCH THAT
+C     THE POINT  X + PALFA1*P  REACHES A LINEAR CONSTRAINT THAT IS
+C                              CURRENTLY NOT IN THE WORKING SET BUT IS
+C                              SATISFIED,
+C     THE POINT  X + PALFA2*P  REACHES A LINEAR CONSTRAINT THAT IS
+C                              CURRENTLY NOT IN THE WORKING SET BUT IS
+C                              VIOLATED.
+C  THE CONSTRAINTS ARE PERTURBED BY AN AMOUNT  FEATOL, SO THAT
+C  PALFA1  IS SLIGHTLY LARGER THAN IT SHOULD BE, AND
+C  PALFA2  IS SLIGHTLY SMALLER THAN IT SHOULD BE.  THIS GIVES
+C  SOME LEEWAY LATER WHEN THE EXACT STEPS ARE COMPUTED BY BNDALF.
+C
+C  CONSTRAINTS IN THE WORKING SET ARE IGNORED  (ISTATE(J) GE 1).
+C
+C  IF  NEGSTP  IS TRUE, THE SEARCH DIRECTION WILL BE TAKEN TO BE  - P.
+C
+C
+C  VALUES OF ISTATE(J)....
+C
+C     - 2         - 1         0           1          2         3
+C  A*X LT BL   A*X GT BU   A*X FREE   A*X = BL   A*X = BU   BL = BU
+C
+C  THE VALUES -2 AND -1 DO NOT OCCUR ONCE LPCORE FINDS A FEASIBLE POINT.
+C
+C  SYSTEMS OPTIMIZATION LABORATORY, STANFORD UNIVERSITY.
+C  VERSION OF MAY 1982.  REV. OCT. 1982.  JUNE 1986.
+C  *********************************************************************
+C
+      LOGICAL            LASTV, NOLOW, NOUPP
+      INTEGER            I, J, JS
+      DOUBLE PRECISION   ABSATP, ATP, ATX, EPSPT9, ONE, RES, ROWNRM,
+     *                   ZERO
+      DOUBLE PRECISION   DABS
+      DATA               ZERO/0.0D+0/, ONE/1.0D+0/
+C
+      EPSPT9 = PARM(4)
+      IF (MSG .EQ. 99) WRITE (NOUT, 1100)
+      LASTV  = .NOT. FIRSTV
+      JADD1  = 0
+      JADD2  = 0
+      PALFA1 = BIGALF
+      PALFA2 = ZERO
+      IF (FIRSTV) PALFA2 = BIGALF
+C
+      DO 200 J = 1, NCTOTL
+         JS     = ISTATE(J)
+         IF (JS .GT. 0) GO TO 200
+         IF (J  .GT. N) GO TO 120
+C
+C        BOUND CONSTRAINT.
+C
+         ATX    = X(J)
+         ATP    = P(J)
+         ROWNRM = ONE
+         GO TO 130
+C
+C        GENERAL LINEAR CONSTRAINT.
+C
+  120    I      = J - N
+         ATX    = AX(I)
+         ATP    = AP(I)
+         ROWNRM = ONE + ANORM(I)
+C
+  130    IF (NEGSTP) ATP = - ATP
+         IF (DABS(ATP) .GT. EPSPT9*ROWNRM*PNORM) GO TO 135
+         RES    = - ONE
+         GO TO 190
+C
+  135    IF (ATP .GT. ZERO) GO TO 150
+C
+C        AX  IS DECREASING.
+C        TEST FOR SMALLER PALFA1 IF LOWER BOUND IS SATISFIED.
+C
+         IF (JS .EQ. (- 2)) GO TO 190
+         ABSATP = - ATP
+         NOLOW  = BL(J) .LE. (- BIGBND)
+         IF (NOLOW) GO TO 140
+         RES    = ATX - BL(J) + FEATOL(J)
+         IF (BIGALF*ABSATP .LE. DABS( RES )) GO TO 140
+         IF (PALFA1*ABSATP .LE.       RES  ) GO TO 140
+         PALFA1 = RES/ABSATP
+         JADD1  = J
+C
+C        TEST FOR DIFFERENT PALFA2 IF UPPER BOUND IS VIOLATED.
+C
+  140    IF (JS .NE. (- 1)) GO TO 190
+         RES    = ATX - BU(J) - FEATOL(J)
+         IF (BIGALF*ABSATP .LE. DABS( RES )) GO TO 190
+         IF (LASTV   .AND.  PALFA2*ABSATP .GE. RES) GO TO 190
+         IF (FIRSTV  .AND.  PALFA2*ABSATP .LE. RES) GO TO 190
+         PALFA2 = RES/ABSATP
+         JADD2  = J
+         GO TO 190
+C
+C        AX  IS INCREASING.
+C        TEST FOR SMALLER PALFA1 IF UPPER BOUND IS SATISFIED.
+C
+  150    IF (JS .EQ. (- 1)) GO TO 190
+         NOUPP  = BU(J) .GE.   BIGBND
+         IF (NOUPP) GO TO 160
+         RES    = BU(J) - ATX + FEATOL(J)
+         IF (BIGALF*ATP .LE. DABS( RES )) GO TO 160
+         IF (PALFA1*ATP .LE.       RES  ) GO TO 160
+         PALFA1 = RES/ATP
+         JADD1  = J
+C
+C        TEST FOR DIFFERENT PALFA2 IF LOWER BOUND IS VIOLATED.
+C
+  160    IF (JS .NE. (- 2)) GO TO 190
+         RES    = BL(J) - ATX - FEATOL(J)
+         IF (BIGALF*ATP .LE. DABS( RES )) GO TO 190
+         IF (LASTV   .AND.  PALFA2*ATP .GE. RES) GO TO 190
+         IF (FIRSTV  .AND.  PALFA2*ATP .LE. RES) GO TO 190
+         PALFA2 = RES/ATP
+         JADD2  = J
+C
+  190    IF (MSG .EQ. 99) WRITE (NOUT, 1200) J, JS, FEATOL(J), ATX,
+     *      ATP, JADD1, PALFA1, JADD2, PALFA2
+  200 CONTINUE
+      RETURN
+C
+ 1100 FORMAT(/ 50H    J  JS         FEATOL         AX             AP,
+     *   46H     JADD1       PALFA1     JADD2       PALFA2 /)
+ 1200 FORMAT(I5, I4, 3G15.5, 2(I6, G17.7))
+C
+C  END OF BDPERT
+      END

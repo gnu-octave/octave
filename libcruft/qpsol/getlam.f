@@ -1,0 +1,139 @@
+      SUBROUTINE GETLAM( LPROB, N, NCLIN0, NCTOTL,
+     *                   NACTIV, NCOLZ, NFREE, NROWA,
+     *                   NROWRT, NCOLRT, JSMLST, KSMLST, SMLLST,
+     *                   ISTATE, KACTIV,
+     *                   A, ANORM, QTG, RLAMDA, RT )
+C
+C     IMPLICIT           REAL*8(A-H,O-Z)
+      INTEGER            LPROB, N, NCLIN0, NCTOTL, NACTIV, NCOLZ, NFREE,
+     *                   NROWA, NROWRT, NCOLRT, JSMLST, KSMLST
+      INTEGER            ISTATE(NCTOTL), KACTIV(N)
+      DOUBLE PRECISION   SMLLST
+      DOUBLE PRECISION   A(NROWA,N), ANORM(NCLIN0), RLAMDA(N), QTG(N),
+     *                   RT(NROWRT,NCOLRT)
+C
+      INTEGER            NOUT, MSG, ISTART
+      DOUBLE PRECISION   WMACH
+      COMMON    /SOLMCH/ WMACH(15)
+      COMMON    /SOL1CM/ NOUT, MSG, ISTART
+C
+C  *********************************************************************
+C  GETLAM  FIRST COMPUTES THE LAGRANGE MULTIPLIER ESTIMATES FOR THE
+C  GIVEN WORKING SET.  IT THEN DETERMINES THE VALUES AND INDICES OF
+C  CERTAIN SIGNIFICANT MULTIPLIERS.  IN THIS PROCESS, THE MULTIPLIERS
+C  FOR INEQUALITIES AT THEIR UPPER BOUNDS ARE ADJUSTED SO THAT A
+C  NEGATIVE MULTIPLIER FOR AN INEQUALITY CONSTRAINT INDICATES
+C  NON-OPTIMALITY.  IN THE FOLLOWING, THE TERM MINIMUM REFERS TO THE
+C  ORDERING OF NUMBERS ON THE REAL LINE, AND NOT TO THEIR MAGNITUDE.
+C
+C  SMLLST  IS THE MINIMUM AMONG THE INEQUALITY CONSTRAINTS OF THE
+C          (ADJUSTED) MULTIPLIERS SCALED BY THE 2-NORM OF THE
+C          ASSOCIATED CONSTRAINT ROW.
+C
+C  JSMLST  IS THE INDEX OF THE CONSTRAINT CORRESPONDING TO  SMLLST.
+C  KSMLST  MARKS ITS POSITION IN  KACTIV.
+C
+C
+C  ON EXIT,  ELEMENTS  1  THRU  NACTIV  OF  RLAMDA  CONTAIN THE
+C  (UNADJUSTED) MULTIPLIERS FOR THE GENERAL CONSTRAINTS.  ELEMENTS
+C  NACTIV  ONWARDS OF  RLAMDA  CONTAIN THE (UNADJUSTED) MULTIPLIERS FOR
+C  THE SIMPLE BOUNDS.
+C
+C  SYSTEMS OPTIMIZATION LABORATORY, STANFORD UNIVERSITY.
+C  ORIGINAL VERSION OCTOBER 1982.
+C  *********************************************************************
+C
+      INTEGER            I, IS, J, JGFXD, K, KA, KB, L, L1, L2,
+     *                   NFIXED, NLAM
+      DOUBLE PRECISION   ANORMJ, BLAM, FLMAX, RLAM
+      DOUBLE PRECISION   ONE
+      DOUBLE PRECISION   DABS
+      DATA               ONE / 1.0D+0 /
+C
+      FLMAX  = WMACH(7)
+C
+C  ---------------------------------------------------------------------
+C  FIRST, COMPUTE THE LAGRANGE MULTIPLIERS FOR THE GENERAL CONSTRAINTS
+C  IN THE WORKING SET, BY SOLVING  T(TRANSPOSE)*RLAMDA = Y(T)*GRAD.
+C  ---------------------------------------------------------------------
+      NFIXED = N      - NFREE
+      NLAM   = NFIXED + NACTIV
+      IF (NACTIV .EQ. 0) GO TO 120
+      CALL COPYVC( NACTIV, QTG(NCOLZ+1), NACTIV, 1, RLAMDA, NACTIV, 1 )
+      CALL TSOLVE( 2, NROWRT, NACTIV, RT(1,NCOLZ+1), RLAMDA )
+C
+C  ---------------------------------------------------------------------
+C  NOW SET ELEMENTS NACTIV, NACTIV+1,... OF RLAMDA EQUAL TO THE
+C  MULTIPLIERS FOR THE BOUND CONSTRAINTS IN THE WORKING SET.
+C  ---------------------------------------------------------------------
+  120 IF (NFIXED .EQ. 0) GO TO 300
+      DO 190 L = 1, NFIXED
+         KB    = NACTIV + L
+         J     = KACTIV(KB)
+         JGFXD = NFREE + L
+         BLAM  = QTG(JGFXD)
+         IF (NACTIV .EQ. 0) GO TO 180
+         DO 170 KA = 1, NACTIV
+            I    = KACTIV(KA)
+            BLAM = BLAM - A(I,J)*RLAMDA(KA)
+  170    CONTINUE
+  180    RLAMDA(KB) = BLAM
+  190 CONTINUE
+C
+C  ---------------------------------------------------------------------
+C  FIND  JSMLST,  KSMLST  AND  SMLLST.
+C  ---------------------------------------------------------------------
+  300 SMLLST =   FLMAX
+      JSMLST =   0
+      KSMLST =   0
+      IF (NLAM .EQ. 0) GO TO 400
+      DO 330 K = 1, NLAM
+         J    = KACTIV(K)
+         IF (K .LE. NACTIV) J = J + N
+C
+         IS   = ISTATE(J)
+         IF (IS .EQ. 3) GO TO 330
+C
+         I      = J - N
+         IF (J .LE. N) ANORMJ = ONE
+         IF (J .GT. N) ANORMJ = ANORM(I)
+C
+         RLAM = RLAMDA(K) * ANORMJ
+C
+C        CHANGE THE SIGN OF THE ESTIMATE IF THE CONSTRAINT IS IN THE
+C        WORKING SET (OR VIOLATED) AT ITS UPPER BOUND.
+C
+         IF (IS .EQ. 2) RLAM = - RLAM
+         IF (IS .EQ. 4) RLAM = - DABS( RLAM )
+C
+C        FIND THE SMALLEST MULTIPLIER FOR THE INEQUALITIES.
+C
+         IF (SMLLST .LE. RLAM) GO TO 330
+         SMLLST = RLAM
+         JSMLST = J
+         KSMLST = K
+  330 CONTINUE
+C
+C  ---------------------------------------------------------------------
+C  IF REQUIRED, PRINT THE MULTIPLIERS.
+C  ---------------------------------------------------------------------
+  400 IF (MSG .LT. 20) GO TO 900
+      IF (NACTIV .GT. 0)
+     *   WRITE (NOUT, 2000) LPROB, (KACTIV(K), RLAMDA(K), K=1,NACTIV)
+      L1 = NACTIV + 1
+      L2 = NLAM
+      IF (L1 .LE. L2)
+     *   WRITE (NOUT, 2100) LPROB, (KACTIV(K), RLAMDA(K), K=L1,L2)
+         IF (MSG .GE. 80) WRITE (NOUT, 2200) JSMLST, SMLLST, KSMLST
+C
+  900 RETURN
+C
+ 2000 FORMAT(/ 21H MULTIPLIERS FOR THE , A2, 15H CONSTRAINTS...
+     *       / 4(I5, 1PE11.2))
+ 2100 FORMAT(/ 21H MULTIPLIERS FOR THE , A2, 21H BOUND CONSTRAINTS...
+     *       / 4(I5, 1PE11.2))
+ 2200 FORMAT(/ 51H //GETLAM//  JSMLST     SMLLST     KSMLST  (SCALED)
+     *       / 13H //GETLAM//  , I6, 1PE11.2, 5X, I6 )
+C
+C  END OF GETLAM
+      END

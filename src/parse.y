@@ -980,7 +980,9 @@ switch_command	: SWITCH stash_comment expression opt_sep case_list END
 		  }
 		;
 
-case_list	: case_list1
+case_list	: // empty
+		  { $$ = new tree_switch_case_list (); }
+		| case_list1
 		  { $$ = $1; }
 		| case_list1 default_case
 		  {

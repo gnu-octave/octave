@@ -16,6 +16,7 @@
 #
 # CLASS = string
 # FCN_NAME = string
+# INCLUDE = file
 # DOC_STRING doc END_DOC_STRING
 # OPTION
 #   NAME = string
@@ -87,12 +88,20 @@ sub parse_input
           die "duplicate FCN_NAME" if ($fcn_name ne "");
           $fcn_name = $1;
         }
+      elsif (/^\s*INCLUDE\s*=\s*"(\S+)"\s*$/)
+        {
+          $include = "${include}#include <$1>\n";
+	}
       elsif (/^\s*DOC_STRING\s*$/)
         {
           die "duplicate DOC_STRING" if ($have_doc_string);
           &parse_doc_string;
           $have_doc_string = 1;
         }
+      else
+        {
+	  die "mk-opts.pl: unknown command: $_\n"
+	}
     }
 }
 
@@ -326,6 +335,8 @@ sub emit_opt_class_header
 #include <cfloat>
 #include <cmath>
 
+${include}
+
 class
 ${class_name}
 {
@@ -430,6 +441,9 @@ sub emit_set_decl
 sub emit_opt_handler_fcns
 {
   local ($i);
+  my $header = $INFILE;
+  $header =~ s/[.]\w*$/.h/; # replace .in with .h
+  $header =~ s|^.*/([^/]*)$|$1|; # strip directory part
 
   print "// DO NOT EDIT!\n// Generated automatically from $INFILE.\n\n";
 
@@ -440,8 +454,14 @@ sub emit_opt_handler_fcns
 #include <iomanip>
 #include <iostream>
 
+#include \"$header\"
+
 #include \"defun-dld.h\"
 #include \"pr-output.h\"
+
+#include \"oct-obj.h\"
+#include \"utils.h\"
+#include \"pager.h\"
 
 static ${class_name} ${static_object_name};\n\n";
 
@@ -580,6 +600,24 @@ print_${class_name} (std::ostream& os)
         {
           print "    os << $static_object_name.$opt[$i] () << \"\\n\";\n";
         }
+      elsif ($type[$i] eq "Array<int>")
+        {
+          print "    Array<int> val = $static_object_name.$opt[$i] ();\n\n";
+          print "    if (val.length () == 1)
+      {
+        os << val(0) << \"\\n\";
+      }
+    else
+      {
+        os << \"\\n\\n\";
+	int len = val.length ();
+	Matrix tmp (len, 1);
+	for (int i = 0; i < len; i++)
+	  tmp(i,0) = val(i);
+        octave_print_internal (os, tmp, false, 2);
+        os << \"\\n\\n\";
+      }\n";
+        }
       elsif ($type[$i] eq "Array<double>")
         {
           print "    Array<double> val = $static_object_name.$opt[$i] ();\n\n";
@@ -641,6 +679,12 @@ set_${class_name} (const std::string& keyword, const octave_value& val)
           print "      if (! error_state)
         $static_object_name.set_$opt[$i] (tmp);\n";
         }
+      elsif ($type[$i] eq "Array<int>")
+        {
+          print "      Array<int> tmp = val.int_vector_value ();\n\n";
+          print "      if (! error_state)
+        $static_object_name.set_$opt[$i] (tmp);\n";
+        }
       elsif ($type[$i] eq "Array<double>")
         {
           print "      Array<double> tmp = val.vector_value ();\n\n";
@@ -696,6 +740,22 @@ show_${class_name} (const std::string& keyword)
       elsif ($type[$i] eq "std::string")
         {
           print "      retval = $static_object_name.$opt[$i] ();\n";
+        }
+      elsif ($type[$i] eq "Array<int>")
+        {
+          print "      Array<int> val = $static_object_name.$opt[$i] ();\n\n";
+          print "      if (val.length () == 1)
+        {
+          retval = static_cast<double> (val(0));
+        }
+      else
+        {
+	  int len = val.length ();
+	  ColumnVector tmp (len);
+	  for (int i = 0; i < len; i++)
+	    tmp(i) = val(i);
+          retval = tmp;
+        }\n";
         }
       elsif ($type[$i] eq "Array<double>")
         {

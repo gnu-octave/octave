@@ -1,5 +1,7 @@
 CLASS = "ODESSA"
 
+INCLUDE = "ODES.h"
+
 OPTION
   NAME = "absolute tolerance"
   TYPE = "Array<double>"

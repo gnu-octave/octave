@@ -2,6 +2,10 @@ CLASS = "NLEqn"
 
 FCN_NAME = "fsolve"
 
+INCLUDE = "dColVector.h"
+INCLUDE = "NLFunc.h"
+
+
 DOC_STRING
 When called with two arguments, this function allows you set options
 parameters for the function @code{fsolve}.  Given one argument,

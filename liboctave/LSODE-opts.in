@@ -1,5 +1,7 @@
 CLASS = "LSODE"
 
+INCLUDE = "ODE.h"
+
 OPTION
   NAME = "absolute tolerance"
   TYPE = "Array<double>"

@@ -483,6 +483,10 @@ public:
   complex_row_vector_value (bool frc_str_conv = false,
 			    bool frc_vec_conv = false) const;
 
+  Array<int> int_vector_value (bool req_int = false,
+			       bool frc_str_conv = false,
+			       bool frc_vec_conv = false) const;
+
   Array<double> vector_value (bool frc_str_conv = false,
 			      bool frc_vec_conv = false) const;
 

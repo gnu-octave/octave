@@ -1,3 +1,12 @@
+2002-08-15  Paul Kienzle <pkienzle@users.sf.net>
+
+	* DASPK-opts.in, DASPK.h: Move include to .in file.
+	* DASRT-opts.in, DASRT.h: Likewise.
+        * DASSL-opts.in, DASSL.h: Likewise.
+	* LSODE-opts.in, LSODE.h: Likewise.
+	* NLEqn-opts.in, NLEqn.h: Likewise.
+	* ODESSA-opts.in, ODESSA.h: Likewise.
+
 2002-08-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* LSODE.cc (LSODE::error_message): Also return current T on

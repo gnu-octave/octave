@@ -1,5 +1,7 @@
 CLASS = "DASSL"
 
+INCLUDE = "DAE.h"
+
 OPTION
   NAME = "absolute tolerance"
   TYPE = "Array<double>"
@@ -45,6 +47,13 @@ OPTION
   TYPE = "double"
   INIT_VALUE = "-1.0"
   SET_EXPR = "(val >= 0.0) ? val : -1.0"
+END_OPTION
+
+OPTION
+  NAME = "maximum order"
+  TYPE = "int"
+  INIT_VALUE = "-1"
+  SET_EXPR = "val"
 END_OPTION
 
 OPTION

@@ -907,6 +907,82 @@ octave_value::vector_value (bool force_string_conv,
   return retval;
 }
 
+Array<int>
+octave_value::int_vector_value (bool force_string_conv, bool require_int,
+				bool force_vector_conversion) const
+{
+  Array<int> retval;
+
+  Matrix m = matrix_value (force_string_conv);
+
+  if (error_state)
+    return retval;
+
+  int nr = m.rows ();
+  int nc = m.columns ();
+
+  if (nr == 1)
+    {
+      retval.resize (nc);
+      for (int i = 0; i < nc; i++)
+	{
+	  double d = m (0, i);
+
+	  if (require_int && D_NINT (d) != d)
+	    {
+	      error ("conversion to integer value failed");
+	      return retval;
+	    }
+
+	  retval (i) = static_cast<int> (d);
+	}
+    }
+  else if (nc == 1)
+    {
+      retval.resize (nr);
+      for (int i = 0; i < nr; i++)
+	{
+	  double d = m (i, 0);
+
+	  if (require_int && D_NINT (d) != d)
+	    {
+	      error ("conversion to integer value failed");
+	      return retval;
+	    }
+
+	  retval (i) = static_cast<int> (d);
+	}
+    }
+  else if (nr > 0 && nc > 0
+	   && (Vdo_fortran_indexing || force_vector_conversion))
+    {
+      retval.resize (nr * nc);
+      int k = 0;
+      for (int j = 0; j < nc; j++)
+	{
+	  for (int i = 0; i < nr; i++)
+	    {
+	      double d = m (i, j);
+
+	      if (require_int && D_NINT (d) != d)
+		{
+		  error ("conversion to integer value failed");
+		  return retval;
+		}
+
+	      retval (k++) = static_cast<int> (d);
+	    }
+	}
+    }
+  else
+    {
+      std::string tn = type_name ();
+      gripe_invalid_conversion (tn.c_str (), "real vector");
+    }
+
+  return retval;
+}
+
 Array<Complex>
 octave_value::complex_vector_value (bool force_string_conv,
 				    bool force_vector_conversion) const

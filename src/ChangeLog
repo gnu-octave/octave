@@ -1,3 +1,9 @@
+2002-08-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* parse.y (case_list): Allow it to be empty.
+
+	* ov.cc, ov.h (octave_value::int_vector_value): New function.
+
 2002-08-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (OCTAVE_LIBS): Only include $(LIBKPATHSEA) if not

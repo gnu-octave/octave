@@ -1,5 +1,7 @@
 CLASS = "DASRT"
 
+INCLUDE = "DAERT.h"
+
 OPTION
   NAME = "absolute tolerance"
   TYPE = "Array<double>"

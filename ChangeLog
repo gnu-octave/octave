@@ -1,3 +1,11 @@
+2002-08-15  Paul Kienzle <pkienzle@users.sf.net>
+
+	* mk-opts.pl: Add support for INCLUDE = "...".
+
+2002-08-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* mk-opts.pl: Handle Array<int> too.
+
 2002-08-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* mk-opts.pl (emit_options_function): Emit newline at EOF.

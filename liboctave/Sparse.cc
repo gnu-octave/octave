@@ -751,7 +751,8 @@ Sparse<T>::reshape (const dim_vector& new_dims) const
 		retval.xdata(j) = data(j);
 		retval.xridx(j) = ii;
 	      }
-	  retval.xcidx(new_nc) = new_nnz;
+	  for (int k = kk; k < new_nc; k++)
+	    retval.xcidx(k+1) = new_nnz;
 	}
       else
 	(*current_liboctave_error_handler) ("reshape: size mismatch");

@@ -356,7 +356,7 @@ static inline int
 make_uniq (int *d, int l)
 {
   int k = 0;
-  for (int ii = 1; k < l; ii++)
+  for (int ii = 1; ii < l; ii++)
     {
       if (d[ii] != d[k])
 	{

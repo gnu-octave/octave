@@ -144,17 +144,20 @@ octave_list::print_name_tag (ostream& os, const string& name) const
 }
 
 DEFUN (list, args, ,
-  "list (ARGS)\n\
-\n\
-Create a new list from ARGS.")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} list (@var{a1}, @var{a2}, @dots{}})\n\
+Create a new list with elements given by the arguments @var{a1},\n\
+@var{a2}, @dots{}.\n\
+@end deftypefn")
 {
   return octave_value (args);
 }
 
 DEFUN (nth, args, ,
-  "nth (LIST, N)\n\
-\n\
-Return the N-th element of LIST.")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} nth (@var{list}, @var{n})\n\
+Return the @var{n}-th element of @var{list}.\n\
+@end deftypefn")
 {
   octave_value retval;
 
@@ -186,18 +189,22 @@ Return the N-th element of LIST.")
 }
 
 DEFUN (append, args, ,
-  "append (LIST, ARG, ...)\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} append (@var{list}, @var{a1}, @var{a2}, @dots{})\n\
+Return a new list created by appending @var{a1}, @var{a1}, @dots{}, to\n\
+@var{list}.  If any of the arguments to be appended is a list, its\n\
+elements are appended individually.  For example,\n\
 \n\
-Return a new list created by appending each ARG to LIST.  If any of\n\
-the arguments to be appended is a list, its elements are appended\n\
-individually.  For example,\n\
+@example\n\
+x = list (1, 2);\n\
+y = list (3, 4);\n\
+append (x, y);\n\
+@end example\n\
 \n\
-  x = list (1, 2);\n\
-  y = list (3, 4);\n\
-  append (x, y);\n\
-\n\
-results in the list containing the four elements (1 2 3 4), not a list\n\
-containing the three elements (1 2 (3 4))")
+@noindent\n\
+results in the list containing the four elements @samp{(1 2 3 4)}, not\n\
+a list containing the three elements @samp{(1 2 (3 4))}.\n\
+@end deftypefn")
 {
   octave_value retval;
 
@@ -229,9 +236,10 @@ containing the three elements (1 2 (3 4))")
 }
 
 DEFUN (reverse, args, ,
-  "reverse (LIST)\n\
-\n\
-Return a new list created by reversing the elements of LIST")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} reverse (@var{list})\n\
+Return a new list created by reversing the elements of @var{list}.\n\
+@end deftypefn")
 {
   octave_value retval;
 
@@ -251,16 +259,15 @@ Return a new list created by reversing the elements of LIST")
 }
 
 DEFUN (splice, args, ,
-  "splice (LIST_1, OFFSET, LENGTH, LIST_2)\n\
-splice (LIST_1, OFFSET, LENGTH, LIST_2)\n\
-splice (LIST_1, OFFSET, LENGTH)\n\
-splice (LIST_1, OFFSET)\n\
-\n\
-Replace LENGTH elements of LIST_1 beginning at OFFSET with the\n\
-contents of LIST_2 (if any).  If LENGTH is omitted, all elements\n\
-from OFFSET to the end of LIST_1 are replaced.  As a special case, if\n\
-OFFSET is one greater than the length of LIST_1 and LENGTH is 0,\n\
-splice is equivalent to append (LIST_1, LIST_2)")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} splice (@var{list_1}, @var{offset}, @var{length}, @var{list_2})\n\
+Replace @var{length} elements of @var{list_1} beginning at\n\
+@var{offset} with the contents of @var{list_2} (if any).  If\n\
+@var{length} is omitted, all elements from @var{offset} to the end of\n\
+@var{list_1} are replaced.  As a special case, if @var{offset} is one\n\
+greater than the length of @var{list_1} and @var{length} is 0, splice\n\
+is equivalent to @code{append (@var{list_1}, @var{list_2}).\n\
+@end deftypefn") 
 {
   octave_value retval;
 

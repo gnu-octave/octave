@@ -184,7 +184,7 @@ static int
 kluge_procbuf_delay (void)
 {
   double val;
-  if (builtin_real_scalar_variable ("kluge_procbuf_delay", val)
+  if (builtin_real_scalar_variable ("__kluge_procbuf_delay__", val)
       && ! xisnan (val))
     {
       int ival = NINT (val);
@@ -194,16 +194,20 @@ kluge_procbuf_delay (void)
 	  return 0;
 	}
     }
-  gripe_invalid_value_specified ("kluge_procbuf_delay");
+  gripe_invalid_value_specified ("__kluge_procbuf_delay__");
   return -1;
 }
 
 void
 symbols_of_oct_procbuf (void)
 {
-  DEFVAR (kluge_procbuf_delay, static_cast<double> (Vkluge_procbuf_delay),
+  DEFVAR (__kluge_procbuf_delay__, static_cast<double> (Vkluge_procbuf_delay),
 	  kluge_procbuf_delay,
-    "number of microseconds to delay in the parent after forking");
+    "-*- texinfo -*-\n\
+@defvr __kluge_procbuf_delay__\n\
+Number of microseconds to delay in the parent after forking.\n\
+@end defvr");
+
 }
 
 /*

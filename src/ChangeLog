@@ -9,12 +9,16 @@
 	* toplev.cc (Fwarranty, Fcasesen): Ditto.
 	* utils.cc (Fdo_string_escapes, Ffile_in_loadpath): Ditto.
 	* variables.cc (F__dump_symtab_info__, F__dump_symbol_info__): Ditto.
+	* ov-list.cc (Flist, Fappend, Fnth, Freverse, Fsplice): Ditto.
 
 	* pt-plot.cc (Fgraw, Fgset, Fgshow, Vgnuplot_command_plot, 
 	Vgnuplot_command_replot, Vgnuplot_command_splot,
 	Vgnuplot_command_using, Vgnuplot_command_with,
 	Vgnuplot_command_axes, Vgnuplot_command_title,
 	Vgnuplot_command_end): Texinfoize doc strings.
+
+	* oct-procbuf.cc (__kluge_procbuf_delay__): Rename from
+	kluge_procbuf_delay.  Texinfoize doc string.
 
 2000-01-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

@@ -1,4 +1,4 @@
-% Copyright (C) 1996 John W. Eaton
+% Copyright (C) 1996, 1997 John W. Eaton
 % This is part of the Octave manual.
 % For copying conditions, see the file gpl.texi.
 
@@ -34,7 +34,7 @@
 
 @ifinfo
 
-Copyright (C) 1996 John W. Eaton.
+Copyright (C) 1996, 1997 John W. Eaton.
 
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
@@ -64,7 +64,7 @@ modified versions.
 @author{John W. Eaton}
 @page
 @vskip 0pt plus 1filll
-Copyright @copyright{} 1996 John W. Eaton.
+Copyright @copyright{} 1996, 1997 John W. Eaton.
 
 This is the first edition of the documentation for Octave's C++ classes,
 and is consistent with version @value{VERSION} of Octave.

@@ -240,7 +240,7 @@ block of comments that can be used as the help text for the function.
 Here is an example:
 
 @example
-## Copyright (C) 1996 John W. Eaton
+## Copyright (C) 1996, 1997 John W. Eaton
 ##
 ## This file is part of Octave.
 ##

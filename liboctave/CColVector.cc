@@ -1,7 +1,7 @@
 // ColumnVector manipulations.
 /*
 
-Copyright (C) 1996 John W. Eaton
+Copyright (C) 1996, 1997 John W. Eaton
 
 This file is part of Octave.
 

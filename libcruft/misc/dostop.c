@@ -1,7 +1,7 @@
 /* dostop.c                                              -*- C -*- */
 /*
 
-Copyright (C) 1992, 1993 John W. Eaton
+Copyright (C) 1996, 1997 John W. Eaton
 
 This file is part of Octave.
 

@@ -1,3 +1,15 @@
+2002-12-26  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pathsearch.cc (make_retval, free_c_array, make_c_names,
+	delete_c_names): New helper functions.
+	(dir_path::find_first_of): New function.
+	(dir_path::find_all_first_of): Likewise.
+	* pathsearch.h: Provide decls.
+
+	* oct-kpse.c (octave_kpse_path_find_first_of): New function.
+	(octave_kpse_all_path_find_first_of): Likewise.
+	* oct-kpse.h: Provide decls.
+
 2002-12-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* ODESSA.cc (ODESSA::integrate): Handle maxord.

@@ -51,6 +51,10 @@ extern char *octave_kpse_path_search (const char *, const char *, int);
 
 extern char **octave_kpse_all_path_search (const char *, const char *);
 
+extern char *octave_kpse_path_find_first_of (const char *, const char **, int);
+
+extern char **octave_kpse_all_path_find_first_of (const char *, const char **);
+
 extern void octave_kpse_set_progname (const char *);
 
 extern char *octave_kpse_expand_default (const char *, const char *);

@@ -97,6 +97,7 @@ dir_path::find_first (const std::string& nm)
   if (initialized)
     {
       char *tmp = ::octave_kpse_path_search (p.c_str (), nm.c_str (), true);
+
       if (tmp)
 	{
 	  retval = tmp;
@@ -105,6 +106,42 @@ dir_path::find_first (const std::string& nm)
     }
 
   return retval;
+}
+
+static string_vector
+make_retval (char **tmp)
+{
+  string_vector retval;
+
+  if (tmp)
+    {
+      int count = 0;
+      char **ptr = tmp;
+      while (*ptr++)
+	count++;
+
+      retval.resize (count);
+
+      for (int i = 0; i < count; i++)
+	retval[i] = tmp[i];
+    }
+
+  return retval;
+}
+
+static void
+free_c_array (char **tmp)
+{
+  if (tmp)
+    {
+      char **ptr = tmp;
+
+      while (char *elt = *ptr++)
+	if (elt)
+	  free (elt);
+
+      free (tmp);
+    }
 }
 
 string_vector
@@ -116,18 +153,79 @@ dir_path::find_all (const std::string& nm)
     {
       char **tmp = ::octave_kpse_all_path_search (p.c_str (), nm.c_str ());
 
+      retval = make_retval (tmp);
+
+      free_c_array (tmp);
+    }
+
+  return retval;
+}
+
+static const char **
+make_c_names (const string_vector& names)
+{
+  int len = names.length ();
+
+  const char **c_names = new const char *[len+1];
+
+  for (int i = 0; i < len; i++)
+    c_names[i] = strsave (names[i].c_str ());
+
+  c_names[len] = 0;
+
+  return c_names;
+}
+
+static void
+delete_c_names (const char **c_names)
+{
+  const char **p = c_names;
+
+  while (const char *elt = *p++)
+    delete [] elt;
+
+  delete [] c_names;
+}
+
+std::string
+dir_path::find_first_of (const string_vector& names)
+{
+  std::string retval;
+
+  if (initialized)
+    {
+      const char **c_names = make_c_names (names);
+
+      char *tmp = ::octave_kpse_path_find_first_of (p.c_str (), c_names, true);
+
+      delete_c_names (c_names);
+
       if (tmp)
 	{
-	  int count = 0;
-	  char **ptr = tmp;
-	  while (*ptr++)
-	    count++;
-
-	  retval.resize (count);
-
-	  for (int i = 0; i < count; i++)
-	    retval[i] = tmp[i];
+	  retval = tmp;
+	  free (tmp);
 	}
+    }
+
+  return retval;
+}
+
+string_vector
+dir_path::find_all_first_of (const string_vector& names)
+{
+  string_vector retval;
+
+  if (initialized)
+    {
+      const char **c_names = make_c_names (names);
+
+      char **tmp = ::octave_kpse_all_path_find_first_of (p.c_str (), c_names);
+
+      delete_c_names (c_names);
+
+      retval = make_retval (tmp);
+
+      free_c_array (tmp);
     }
 
   return retval;

@@ -72,6 +72,9 @@ public:
 
   string_vector find_all (const std::string&);
 
+  std::string find_first_of (const string_vector& names);
+  string_vector find_all_first_of (const string_vector& names);
+
   static void set_program_name (const std::string&);
 
   void rehash (void)

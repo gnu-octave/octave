@@ -367,6 +367,245 @@ kpse_all_path_search P2C(const_string, path,  const_string, name)
   return ret;
 }
 
+/* This is the hard case -- look in each element of PATH for each
+   element of NAMES.  If ALL is false, return the first file found.
+   Otherwise, search all elements of PATH.  */
+
+static str_list_type
+path_find_first_of P4C(const_string, path, const_string *, names,
+		       boolean, must_exist, boolean, all)
+{
+  const_string *p;
+  string elt;
+  const_string name;
+  str_list_type ret_list;
+  boolean done = false;
+  ret_list = str_list_init (); /* some compilers lack struct initialization */
+
+  for (elt = kpse_path_element (path); !done && elt;
+       elt = kpse_path_element (NULL))
+    {
+      str_llist_type *dirs;
+      str_llist_elt_type *dirs_elt;
+      str_list_type *found;
+      boolean allow_disk_search = true;
+
+      if (*elt == '!' && *(elt + 1) == '!')
+	{
+	  /* Those magic leading chars in a path element means don't
+	     search the disk for this elt.  And move past the magic to
+	     get to the name.  */
+
+	  allow_disk_search = false;
+	  elt += 2;
+	}
+
+      /* Do not touch the device if present */
+
+      if (NAME_BEGINS_WITH_DEVICE (elt))
+	{
+	  while (IS_DIR_SEP (*(elt + 2)) && IS_DIR_SEP (*(elt + 3)))
+	    {
+	      *(elt + 2) = *(elt + 1);
+	      *(elt + 1) = *elt;
+	      elt++;
+	    }
+	}
+      else
+	{
+	  /* We never want to search the whole disk.  */
+	  while (IS_DIR_SEP (*elt) && IS_DIR_SEP (*(elt + 1)))
+	    elt++;
+	}
+
+      /* We have to search one directory at a time.  */
+      dirs = kpse_element_dirs (elt);
+      for (dirs_elt = *dirs; dirs_elt; dirs_elt = STR_LLIST_NEXT (*dirs_elt))
+	{
+	  string dir = STR_LLIST (*dirs_elt);
+
+	  for (p = names; !done && *p; p++)
+	    {
+	      name = *p;
+
+	      /* Try ls-R, unless we're searching for texmf.cnf.  Our caller
+		 (find_first_of), also tests first_search, and does the
+		 resetting.  */
+	      found = first_search ? NULL : kpse_db_search (name, dir, all);
+
+	      /* Search the filesystem if (1) the path spec allows it,
+		 and either
+
+		   (2a) we are searching for texmf.cnf ; or
+		   (2b) no db exists; or 
+		   (2c) no db's are relevant to this elt; or
+		   (3) MUST_EXIST && NAME was not in the db.
+
+		 In (2*), `found' will be NULL.
+		 In (3),  `found' will be an empty list. */
+
+	      if (allow_disk_search
+		  && (!found || (must_exist && !STR_LIST (*found))))
+		{
+		  static str_llist_type *tmp = 0;
+
+		  if (! tmp)
+		    {
+		      tmp = XTALLOC1 (str_llist_type);
+		      *tmp = NULL;
+		      str_llist_add (tmp, "");
+		    }
+
+		  STR_LLIST (*(*tmp)) = dir;
+
+		  if (!found)
+		    found = XTALLOC1 (str_list_type);
+
+		  *found = dir_list_search (tmp, name, all);
+		}
+
+	      /* Did we find anything anywhere?  */
+	      if (found && STR_LIST (*found))
+		{
+		  if (all)
+		    str_list_concat (&ret_list, *found);
+		  else
+		    {
+		      str_list_add (&ret_list, STR_LIST_ELT (*found, 0));
+		      done = true;
+		    }
+		}
+
+	      /* Free the list space, if any (but not the elements).  */
+	      if (found)
+		{
+		  str_list_free (found);
+		  free (found);
+		}
+	    }
+	}
+    }
+
+  return ret_list;
+}      
+
+static string *
+find_first_of P4C(const_string, path, const_string *, names,
+		  boolean, must_exist, boolean, all)
+{
+  str_list_type ret_list;
+  boolean absolute_p;
+
+#ifdef __DJGPP__
+  /* We will use `stat' heavily, so let's request for
+     the fastest possible version of `stat', by telling
+     it what members of struct stat do we really need.
+
+     We need to set this on each call because this is a
+     library function; the caller might need other options
+     from `stat'.  Thus save the flags and restore them
+     before exit.
+
+     This call tells `stat' that we do NOT need to recognize
+     executable files (neither by an extension nor by a magic
+     signature); that we do NOT need time stamp of root directories;
+     and that we do NOT need the write access bit in st_mode.
+
+     Note that `kpse_set_progname' needs the EXEC bits,
+     but it was already called by the time we get here.  */
+  unsigned short save_djgpp_flags  = _djstat_flags;
+
+  _djstat_flags = _STAT_EXEC_MAGIC | _STAT_EXEC_EXT
+		  | _STAT_ROOT_TIME | _STAT_WRITEBIT;
+#endif
+
+  if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
+    {
+      const_string *p;
+      fputs ("start find_first_of((", stderr);
+      for (p = names; *p; p++)
+	{
+	  if (p == names)
+	    fputs (*p, stderr);
+	  else
+	    fprintf (stderr, ", %s", *p);
+	}
+      fprintf (stderr, "), path=%s, must_exist=%d).\n", path, must_exist);
+    }
+
+  /* Find the file. */
+  ret_list = path_find_first_of (path, names, must_exist, all);
+
+  /* Append NULL terminator if we didn't find anything at all, or we're
+     supposed to find ALL and the list doesn't end in NULL now.  */
+  if (STR_LIST_LENGTH (ret_list) == 0
+      || (all && STR_LIST_LAST_ELT (ret_list) != NULL))
+    str_list_add (&ret_list, NULL);
+
+  /* The very first search is for texmf.cnf.  We can't log that, since
+     we want to allow setting TEXMFLOG in texmf.cnf.  */
+  if (first_search) {
+    first_search = false;
+  } else {
+    /* Record the filenames we found, if desired.  And wrap them in a
+       debugging line if we're doing that.  */
+    if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
+      {
+	const_string *p;
+	fputs ("find_first_of(", stderr);
+	for (p = names; *p; p++)
+	  {
+	    if (p == names)
+	      fputs (*p, stderr);
+	    else
+	      fprintf (stderr, ", %s", *p);
+	  }
+	fputs (") =>", stderr);
+      }
+    log_search (ret_list);
+    if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
+      putc ('\n', stderr);
+  }  
+
+#ifdef __DJGPP__
+  /* Undo any side effects.  */
+  _djstat_flags = save_djgpp_flags;
+#endif
+
+  return STR_LIST (ret_list);
+}
+
+/* Search each element of PATH for each element of NAMES.  Return the
+   first one found.  */
+
+string
+kpse_path_find_first_of P3C(const_string, path, const_string *, names,
+			    boolean, must_exist)
+{
+  static string *ret_list = 0;
+
+  if (ret_list)
+    {
+      free (ret_list);
+      ret_list = 0;  /* Don't let an interrupt in search() cause trouble */
+    }
+
+  ret_list = find_first_of (path, names, must_exist, false);
+
+  return *ret_list;  /* Freeing this is caller's responsibility */
+}
+
+/* Search each element of PATH for each element of NAMES and return a
+   list containing everything found, in the order found.  */
+
+string *
+kpse_all_path_find_first_of P2C(const_string, path,  const_string *, names)
+{
+  string *ret = find_first_of (path, names, true, true);
+  return ret;
+}
+
+
 #ifdef TEST
 
 void

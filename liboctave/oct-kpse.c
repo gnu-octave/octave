@@ -51,6 +51,19 @@ octave_kpse_all_path_search (const char *path, const char *name)
   return kpse_all_path_search (path, name);
 }
 
+char *
+octave_kpse_path_find_first_of (const char *path, const char **names,
+				int must_exist)
+{
+  return kpse_path_find_first_of (path, names, must_exist);
+}
+
+char **
+octave_kpse_all_path_find_first_of (const char *path, const char **names)
+{
+  return kpse_all_path_find_first_of (path, names);
+}
+
 void
 octave_kpse_set_progname (const char *name)
 {

@@ -72,6 +72,18 @@ extern string kpse_path_search P3H(const_string path, const_string name,
    all the filenames (or NULL if none), instead of taking the first.  */
 extern string *kpse_all_path_search P2H(const_string path, const_string name);
 
+/* Search each element of PATH for each element in the list of NAMES.
+   Return the first one found.  */
+extern string kpse_path_find_first_of P3H(const_string path,
+					  const_string *names,
+					  boolean must_exist);
+
+/* Like `kpse_path_find_first_of' with MUST_EXIST true, but return a
+   list of all the filenames (or NULL if none), instead of taking the
+   first.  */
+extern string *kpse_all_path_find_first_of P2H(const_string path,
+					       const_string *names);
+
 #if 0
 /* Clear the directory cache.  */
 extern void kpse_clear_dir_cache P1H(void);

@@ -89,15 +89,14 @@ dnl
 AC_DEFUN(OCTAVE_STRING_NPOS,
 [AC_CACHE_CHECK([whether including <string> defines NPOS],
 octave_cv_string_npos,
-[AC_LANG_SAVE
-AC_LANG_CPLUSPLUS
+[AC_LANG_PUSH(C++)
 AC_TRY_COMPILE([#include <string>],
 [size_t foo = NPOS],
 octave_cv_string_npos=yes, octave_cv_string_npos=no)])
 if test $octave_cv_string_npos = no; then
   AC_DEFINE(NPOS, [std::string::npos], [Define (to string::npos) if <string> doesn't])
 fi
-AC_LANG_RESTORE
+AC_LANG_POP(C++)
 ])
 dnl
 dnl The following test is from Karl Berry's Kpathseach library.  I'm
@@ -302,8 +301,7 @@ AC_DEFUN(OCTAVE_CXX_NEW_FRIEND_TEMPLATE_DECL, [
   AC_REQUIRE([AC_PROG_CXX])
   AC_MSG_CHECKING([for C++ support for new friend template declaration])
   AC_CACHE_VAL(octave_cv_cxx_new_friend_template_decl, [
-    AC_LANG_SAVE
-    AC_LANG_CPLUSPLUS
+    AC_LANG_PUSH(C++)
     rm -f conftest.h
     cat > conftest.h <<EOB
        struct A {
@@ -324,7 +322,7 @@ EOB
       octave_cv_cxx_new_friend_template_decl=no,
       octave_cv_cxx_new_friend_template_decl=yes
     )
-    AC_LANG_RESTORE
+    AC_LANG_POP(C++)
   ])
   AC_MSG_RESULT($octave_cv_cxx_new_friend_template_decl)
   if test $octave_cv_cxx_new_friend_template_decl = yes; then
@@ -342,15 +340,14 @@ AC_DEFUN(OCTAVE_CC_FLAG, [
   ac_safe=`echo "$1" | sed 'y%./+-%__p_%'`
   AC_MSG_CHECKING(whether ${CC-cc} accepts $1)
   AC_CACHE_VAL(octave_cv_cc_flag_$ac_safe, [
-    AC_LANG_SAVE
-    AC_LANG_C
+    AC_LANG_PUSH(C)
     XCFLAGS="$CFLAGS"
     CFLAGS="$CFLAGS $1"
     AC_TRY_LINK([], [],
       eval "octave_cv_cc_flag_$ac_safe=yes",
       eval "octave_cv_cc_flag_$ac_safe=no")
     CFLAGS="$XCFLAGS"
-    AC_LANG_RESTORE
+    AC_LANG_POP(C)
   ])
   if eval "test \"`echo '$octave_cv_cc_flag_'$ac_safe`\" = yes"; then
     AC_MSG_RESULT(yes)
@@ -373,15 +370,14 @@ AC_DEFUN(OCTAVE_CXX_FLAG, [
   ac_safe=`echo "$1" | sed 'y%./+-%__p_%'`
   AC_MSG_CHECKING(whether ${CXX-g++} accepts $1)
   AC_CACHE_VAL(octave_cv_cxx_flag_$ac_safe, [
-    AC_LANG_SAVE
-    AC_LANG_CPLUSPLUS
+    AC_LANG_PUSH(C++)
     XCXXFLAGS="$CXXFLAGS"
     CXXFLAGS="$CXXFLAGS $1"
     AC_TRY_LINK([], [],
       eval "octave_cv_cxx_flag_$ac_safe=yes",
       eval "octave_cv_cxx_flag_$ac_safe=no")
     CXXFLAGS="$XCXXFLAGS"
-    AC_LANG_RESTORE
+    AC_LANG_POP(C++)
   ])
   if eval "test \"`echo '$octave_cv_cxx_flag_'$ac_safe`\" = yes"; then
     AC_MSG_RESULT(yes)
@@ -568,8 +564,7 @@ AC_DEFUN(OCTAVE_CXX_PREPENDS_UNDERSCORE,
 [AC_MSG_CHECKING([whether ${CXX-g++} prepends an underscore to external names])
   AC_CACHE_VAL(octave_cv_cxx_prepends_underscore,
     [octave_cv_cxx_prepends_underscore=no
-    AC_LANG_SAVE
-    AC_LANG_CPLUSPLUS
+    AC_LANG_PUSH(C++)
     cat > conftest.$ac_ext <<EOF
 bool FSmy_dld_fcn (void) { return false; }
 EOF
@@ -578,10 +573,10 @@ EOF
         octave_cv_cxx_prepends_underscore=yes
       fi
     else
-      echo "configure: failed program was:" >&AC_FD_CC
-      cat conftest.$ac_ext >&AC_FD_CC
+      echo "configure: failed program was:" >&AS_MESSAGE_LOG_FD
+      cat conftest.$ac_ext >&AS_MESSAGE_LOG_FD
     fi
-    AC_LANG_RESTORE
+    AC_LANG_POP(C++)
   ])
   AC_MSG_RESULT($octave_cv_cxx_prepends_underscore)
   if test $octave_cv_cxx_prepends_underscore = yes; then
@@ -597,8 +592,7 @@ AC_DEFUN(OCTAVE_CXX_ISO_COMPLIANT_LIBRARY, [
   AC_REQUIRE([AC_PROG_CXX])
   AC_MSG_CHECKING([if C++ library is ISO compliant])
   AC_CACHE_VAL(octave_cv_cxx_iso_compliant_library, [
-    AC_LANG_SAVE
-    AC_LANG_CPLUSPLUS
+    AC_LANG_PUSH(C++)
     rm -f conftest.h
     for inc in algorithm bitset cassert cctype cerrno cfloat ciso646 \
 	climits clocale cmath complex csetjmp csignal cstdarg cstddef \
@@ -618,7 +612,7 @@ AC_DEFUN(OCTAVE_CXX_ISO_COMPLIANT_LIBRARY, [
       octave_cv_cxx_iso_compliant_library=yes,
       octave_cv_cxx_iso_compliant_library=no
     )
-    AC_LANG_RESTORE
+    AC_LANG_POP(C++)
   ])
   AC_MSG_RESULT($octave_cv_cxx_iso_compliant_library)
   if test $octave_cv_cxx_iso_compliant_library = yes; then
@@ -661,8 +655,7 @@ AC_DEFUN(OCTAVE_CXX_ABI,
 [AC_MSG_CHECKING([C++ ABI version used by ${CXX}])
   AC_CACHE_VAL(octave_cv_cxx_abi,
     [octave_cv_cxx_abi='unknown'
-    AC_LANG_SAVE
-    AC_LANG_CPLUSPLUS
+    AC_LANG_PUSH(C++)
     cat > conftest.$ac_ext <<EOF
 bool FSmy_dld_fcn (void) { return false; }
 EOF
@@ -677,10 +670,10 @@ EOF
         octave_cv_cxx_abi='sun_v5'
       fi
     else
-      echo "configure: failed program was:" >&AC_FD_CC
-      cat conftest.$ac_ext >&AC_FD_CC
+      echo "configure: failed program was:" >&AS_MESSAGE_LOG_FD
+      cat conftest.$ac_ext >&AS_MESSAGE_LOG_FD
     fi
-    AC_LANG_RESTORE
+    AC_LANG_POP(C++)
   ])
   AC_MSG_RESULT($octave_cv_cxx_abi)
   AC_DEFINE_UNQUOTED(CXX_ABI, $octave_cv_cxx_abi, [Define to the C++ ABI your compiler uses.])

@@ -239,12 +239,10 @@ octave_env::do_absolute_pathname (const std::string& s) const
   if (len == 0)
     return false;
 
-#if defined (__CYGWIN__) || ! defined (__WIN32__)
   if (file_ops::is_dir_sep (s[0]))
     return true;
-#endif
 
-#if defined (__WIN32__)
+#if defined (__WIN32__) || defined (__CYGWIN__)
   if ((len == 2 && isalpha (s[0]) && s[1] == ':')
       || (len > 2 && isalpha (s[0]) && s[1] == ':'
 	  && file_ops::is_dir_sep (s[2])))

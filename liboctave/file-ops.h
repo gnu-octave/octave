@@ -82,7 +82,7 @@ file_ops
 
 #define OCTAVE_DIR_SEP_CHAR '/'
 #define OCTAVE_DIR_SEP_STR "/"
-#if defined (__WIN32__)
+#if defined (__WIN32__) || defined (__CYGWIN__)
 #define OCTAVE_DIR_SEP_CHARS "/\\"
 #else
 #define OCTAVE_DIR_SEP_CHARS OCTAVE_DIR_SEP_STR

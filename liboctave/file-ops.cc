@@ -623,7 +623,7 @@ file_ops::unlink (const std::string& name, std::string& msg)
 bool
 file_ops::is_dir_sep (char c)
 {
-#if defined (__WIN32__)
+#if defined (__WIN32__) || defined (__CYGWIN__)
   return (c == '/' || c == '\\');
 #else
   return (c == '/');

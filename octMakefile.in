@@ -14,10 +14,10 @@ VPATH = @srcdir@
 include Makeconf
 
 DISTFILES = BUGS COPYING ChangeLog INSTALL INSTALL.OCTAVE \
-	Makefile.in Makeconf.in NEWS PLOTTING PROJECTS README \
-	README.NLP SENDING-PATCHES THANKS f2c-compat.sh flibs.sh \
-	configure configure.in config.guess config.sub octave.sh \
-	octave-mode.el doinstall.sh mkpath.c config.h.in acconfig.h
+	Makefile.in Makeconf.in NEWS PROJECTS README README.NLP \
+	SENDING-PATCHES THANKS f2c-compat.sh flibs.sh configure \
+	configure.in config.guess config.sub octave.sh octave-mode.el \
+	doinstall.sh mkpath.c config.h.in acconfig.h
 
 # Complete directory trees to distribute.
 DISTDIRS = bsd-math dld

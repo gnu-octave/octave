@@ -100,18 +100,18 @@ function plot_border (varargin)
   endwhile
 
   if (none)
-    gset noborder;
+    __gset__ noborder;
   else
     if (all)
       border = 15;
     else
       border = south + west + north + east;
     endif
-    eval (sprintf ("gset border %d", border));
+    eval (sprintf ("__gset__ border %d", border));
   endif
 
   if (automatic_replot)
-    replot
+    replot ();
   endif
 
 endfunction

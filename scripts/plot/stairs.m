@@ -44,7 +44,7 @@
 ## @end deftypefn
 ##
 ## @seealso{plot, semilogx, semilogy, loglog, polar, mesh, contour,
-## bar, gplot, gsplot, replot, xlabel, ylabel, and title}
+## bar, replot, xlabel, ylabel, and title}
 
 ## Author: jwe
 

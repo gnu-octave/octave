@@ -1,3 +1,18 @@
+2005-03-16  John W. Eaton  <jwe@octave.org>
+
+	* __axis_label__.m, __errplot__.m, __plt__.m, axis.m, bar.m,
+	bottom_title.m, contour.m, errorbar.m, figure.m, grid.m, loglog.m,
+	loglogerr.m, mesh.m, meshgrid.m, mplot.m, multiplot.m, oneplot.m,
+	plot.m, plot_border.m, polar.m, semilogx.m, semilogxerr.m,
+	semilogy.m, semilogyerr.m, shg.m, stairs.m, subplot.m,
+	subwindow.m, title.m, top_title.m, xlabel.m: Use __gplot__ instead
+	of gplot, __gsplot__ instead of gsplot, __gset__ instead of gset.
+	Remove gplot, gsplot from @seealso docs.
+
+2005-03-16  John W. Eaton  <jwe@octave.org>
+
+	* plot/replot.m: New file.
+
 2005-03-15  David Bateman  <dbateman@free.fr>
 
 	* set/unique.m, set/ismember.m: Handle cell arrays.

@@ -1,4 +1,4 @@
-## Copyright (C) 1996, 1997 John W. Eaton
+## Copyright (C) 2005 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -18,37 +18,20 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} title (@var{string})
-## Specify a title for a plot.
+## @deftypefn {Function File} {} replot ()
+## Refressh the plot window.
 ## @end deftypefn
-##
-## @seealso{plot, semilogx, semilogy, loglog, polar, mesh, contour,
-## bar, stairs, replot, xlabel, and ylabel}
 
 ## Author: jwe
 
-function h = title (text)
+function replot ()
 
-  if (nargin != 1)
-    usage ("title (text)");
-  endif
-
-  if (isstr (text))
-    eval (sprintf ("__gset__ title \"%s\"",
-		   undo_string_escapes (undo_string_escapes (text))));
-    if (automatic_replot)
-      replot ();
-    endif
+  if (nargin == 0)
+    ## No semicolon following the __greplot__ line unless you also fix
+    ## gplot.l to allow it.
+    __greplot__
   else
-    error ("title: text must be a string");
-  endif
-
-  ## XXX FIXME XXX -- eventually, we will return a graphics handle.  For
-  ## now, return something, so that calls that expect a handle won't
-  ## fail (at least immediately).
-
-  if (nargout > 0)
-    h = -1;
+    usage ("replot ()");
   endif
 
 endfunction

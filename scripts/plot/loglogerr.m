@@ -36,7 +36,7 @@
 ## @end deftypefn
 ##
 ## @seealso{errorbar, semilogxerr, semilogyerr, polar, mesh, contour, 
-## __pltopt__, bar, stairs, gplot, gsplot, replot, xlabel, ylabel, and title}
+## __pltopt__, bar, stairs, replot, xlabel, ylabel, and title}
 
 ## Created: 20.2.2001
 ## Author: Teemu Ikonen <tpikonen@pcu.helsinki.fi>
@@ -48,9 +48,9 @@ function loglogerr (varargin)
     usage ("loglogerr(...)");
   endif
 
-  gset logscale x;
-  gset logscale y;
-  gset nopolar;
+  __gset__ logscale x;
+  __gset__ logscale y;
+  __gset__ nopolar;
 
   __errcomm__ ("loglogerr", varargin{:});
 

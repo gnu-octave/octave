@@ -21,12 +21,12 @@
 ## @deftypefn {Function File} {} shg
 ##
 ## Show the graph window.  Currently, this is the same as executing
-## replot without any arguments.
+## replot.
 ##
 ## @end deftypefn
 ##
 ## @seealso{plot, semilogx, semilogy, loglog, polar, mesh, contour,
-## bar, stairs, gplot, gsplot, replot, xlabel, and ylabel}
+## bar, stairs, replot, xlabel, and ylabel}
 
 ## Author: jwe
 
@@ -36,6 +36,6 @@ function shg ()
     warning ("shg: ignoring extra arguments");
   endif
 
-  replot
+  replot ();
 
 endfunction

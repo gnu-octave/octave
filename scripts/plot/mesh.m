@@ -28,7 +28,7 @@
 ## @end deftypefn
 ##
 ## @seealso{plot, semilogx, semilogy, loglog, polar, meshgrid, meshdom,
-## contour, bar, stairs, gplot, gsplot, replot, xlabel, ylabel, and title}
+## contour, bar, stairs, replot, xlabel, ylabel, and title}
 
 ## Author: jwe
 
@@ -41,14 +41,14 @@ function mesh (x, y, z)
   if (nargin == 1)
     z = x;
     if (ismatrix (z))
-      gset hidden3d;
-      gset data style lines;
-      gset surface;
-      gset nocontour;
-      gset noparametric;
-      gset nologscale;
-      gset view 60, 30, 1, 1
-      gsplot (z');
+      __gset__ hidden3d;
+      __gset__ data style lines;
+      __gset__ surface;
+      __gset__ nocontour;
+      __gset__ noparametric;
+      __gset__ nologscale;
+      __gset__ view 60, 30, 1, 1
+      __gsplot__ (z');
     else
       error ("mesh: argument must be a matrix");
     endif
@@ -69,15 +69,15 @@ function mesh (x, y, z)
           zz(:,i+2) = z(:,k);
           k++;
         endfor
-        gset hidden3d;
-        gset data style lines;
-        gset surface;
-        gset nocontour;
-        gset nologscale;
-        gset parametric;
-        gset view 60, 30, 1, 1
-        gsplot (zz);
-        gset noparametric;
+        __gset__ hidden3d;
+        __gset__ data style lines;
+        __gset__ surface;
+        __gset__ nocontour;
+        __gset__ nologscale;
+        __gset__ parametric;
+        __gset__ view 60, 30, 1, 1
+        __gsplot__ (zz);
+        __gset__ noparametric;
       else
         msg = "mesh: rows (z) must be the same as length (y) and";
         msg = sprintf ("%s\ncolumns (z) must be the same as length (x)", msg);
@@ -97,15 +97,15 @@ function mesh (x, y, z)
           zz(:,i+2) = z(:,k);
           k++;
         endfor
-        gset hidden3d;
-        gset data style lines;
-        gset surface;
-        gset nocontour;
-        gset nologscale;
-        gset parametric;
-        gset view 60, 30, 1, 1
-        gsplot (zz);
-        gset noparametric;
+        __gset__ hidden3d;
+        __gset__ data style lines;
+        __gset__ surface;
+        __gset__ nocontour;
+        __gset__ nologscale;
+        __gset__ parametric;
+        __gset__ view 60, 30, 1, 1
+        __gsplot__ (zz);
+        __gset__ noparametric;
       else
         error ("mesh: x, y, and z must have same dimensions");
       endif

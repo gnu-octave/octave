@@ -26,7 +26,7 @@
 ## @end deftypefn
 ##
 ## @seealso{plot, semilogx, semilogy, loglog, mesh, contour, bar,
-## stairs, gplot, gsplot, replot, xlabel, ylabel, and title}
+## stairs, replot, xlabel, ylabel, and title}
 
 ## Author: jwe
 
@@ -36,8 +36,8 @@ function polar (x1, x2, fmt)
   ## temporarily, probably inside an unwind_protect block, but there is
   ## no way to determine their current values.
 
-  gset nologscale;
-  gset nopolar;
+  __gset__ nologscale;
+  __gset__ nopolar;
 
   if (nargin == 3)
     if (isstr (fmt))

@@ -25,7 +25,7 @@
 ## @end deftypefn
 ##
 ## @seealso{plot, semilogx, semilogy, loglog, polar, mesh, contour,
-## bar, stairs, gplot, gsplot, replot, xlabel, ylabel, and title}
+## bar, stairs, replot, xlabel, ylabel, and title}
 
 ## Author: jwe
 
@@ -38,15 +38,15 @@ function grid (x)
   do_replot = false;
 
   if (nargin == 0)
-    gset grid;
+    __gset__ grid;
     do_replot = true;
   elseif (nargin == 1)
     if (isstr (x))
       if (strcmp ("off", x))
-        gset nogrid;
+        __gset__ nogrid;
 	do_replot = true;
       elseif (strcmp ("on", x))
-        gset grid;
+        __gset__ grid;
 	do_replot = true;
       else
 	usage (usage_msg);
@@ -59,7 +59,7 @@ function grid (x)
   endif
 
   if (do_replot && automatic_replot)
-    replot
+    replot ();
   endif
 
 endfunction

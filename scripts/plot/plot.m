@@ -165,7 +165,7 @@
 ## @end deftypefn
 ##
 ## @seealso{semilogx, semilogy, loglog, polar, mesh, contour, __pltopt__
-## bar, stairs, errorbar, gplot, gsplot, replot, xlabel, ylabel, and title}
+## bar, stairs, errorbar, replot, xlabel, ylabel, and title}
 
 ## Author: jwe
 
@@ -175,8 +175,8 @@ function plot (varargin)
   ## temporarily, probably inside an unwind_protect block, but there is
   ## no way to determine their current values.
 
-  gset nologscale;
-  gset nopolar;
+  __gset__ nologscale;
+  __gset__ nopolar;
 
   __plt__ ("plot", varargin{:});
 

@@ -30,10 +30,10 @@ function h = __axis_label__ (caller, text)
     usage ("__axis_label__ (caller, text)");
   elseif (nargin == 2)
     if (isstr (text))
-      eval (sprintf ("gset %s \"%s\"", caller,
+      eval (sprintf ("__gset__ %s \"%s\"", caller,
 		     undo_string_escapes (undo_string_escapes (text))));
       if (automatic_replot)
-	replot
+	replot ();
       endif
     else
       error ("%s: text must be a string", caller);

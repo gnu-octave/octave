@@ -25,7 +25,7 @@
 ## @end deftypefn
 ##
 ## @seealso{plot, semilogy, loglog, polar, mesh, contour, bar, stairs,
-## gplot, gsplot, replot, xlabel, ylabel, and title}
+## replot, xlabel, ylabel, and title}
 
 ## Author: jwe
 
@@ -35,9 +35,9 @@ function loglog (varargin)
   ## temporarily, probably inside an unwind_protect block, but there is
   ## no way to determine their current values.
 
-  gset logscale x;
-  gset logscale y;
-  gset nopolar;
+  __gset__ logscale x;
+  __gset__ logscale y;
+  __gset__ nopolar;
 
   __plt__ ("loglog", varargin{:});
 

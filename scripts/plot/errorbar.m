@@ -105,7 +105,7 @@
 ## @end deftypefn
 ##
 ## @seealso{semilogx, semilogy, loglog, polar, mesh, contour, __pltopt__,
-## bar, stairs, gplot, gsplot, replot, xlabel, ylabel, and title}
+## bar, stairs, replot, xlabel, ylabel, and title}
 
 ## Created: 18.7.2000
 ## Author: Teemu Ikonen <tpikonen@pcu.helsinki.fi>
@@ -117,9 +117,9 @@ function errorbar (varargin)
     usage ("errorbar (...)");
   endif
 
-  gset nologscale x;
-  gset nologscale y;
-  gset nopolar;
+  __gset__ nologscale x;
+  __gset__ nologscale y;
+  __gset__ nopolar;
 
   __errcomm__ ("errorbar", varargin{:});
 

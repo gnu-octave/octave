@@ -26,7 +26,7 @@
 ## @end deftypefn
 ##
 ## @seealso{plot, semilogx, semilogy, loglog, polar, mesh, contour,
-## bar, stairs, gplot, gsplot, replot, xlabel, ylabel, and title}
+## bar, stairs, replot, xlabel, ylabel, and title}
 
 ## Author: jwe
 
@@ -44,24 +44,24 @@ function contour (x, y, z, n)
       n = y; 
     endif
     if (ismatrix (z))
-      gset nosurface;
-      gset contour;
-      gset cntrparam bspline;
+      __gset__ nosurface;
+      __gset__ contour;
+      __gset__ cntrparam bspline;
       if (isscalar (n))
-        command = sprintf ("gset cntrparam levels %d", n);
+        command = sprintf ("__gset__ cntrparam levels %d", n);
       elseif (isvector (n))
         tmp = sprintf ("%f", n(1));
         for i = 2:length (n)
           tmp = sprintf ("%s, %f", tmp, n(i));
         endfor
-        command = sprintf ("gset cntrparam levels discrete %s", tmp);
+        command = sprintf ("__gset__ cntrparam levels discrete %s", tmp);
       else
 	error ("contour: levels must be a scalar or vector") ;
       endif
       eval (command);
-      gset noparametric;
-      gset view 0, 0, 1, 1;
-      gsplot z w l 1;
+      __gset__ noparametric;
+      __gset__ view 0, 0, 1, 1;
+      __gsplot__ z w l 1;
     else
       error ("contour: z of contour (z, levels) must be a matrix");
     endif
@@ -104,24 +104,24 @@ function contour (x, y, z, n)
 	  error (size_msg);
 	endif
       endif
-      gset nosurface;
-      gset contour;
-      gset cntrparam bspline;
+      __gset__ nosurface;
+      __gset__ contour;
+      __gset__ cntrparam bspline;
       if (isscalar (n))
-        command = sprintf ("gset cntrparam levels %d", n);
+        command = sprintf ("__gset__ cntrparam levels %d", n);
       elseif (isvector (n))
         tmp = sprintf ("%f", n(1));
         for i = 2:length (n)
           tmp = sprintf ("%s, %f", tmp, n(i));
         endfor
-        command = sprintf ("gset cntrparam levels discrete %s", tmp);
+        command = sprintf ("__gset__ cntrparam levels discrete %s", tmp);
       else
 	error ("contour: levels must be a scalar or vector") ;
       endif
       eval (command);
-      gset parametric;
-      gset view 0, 0, 1, 1;
-      gsplot zz w l 1;
+      __gset__ parametric;
+      __gset__ view 0, 0, 1, 1;
+      __gsplot__ zz w l 1;
     else
       error ("contour: x and y must be vectors and z must be a matrix");
     endif

@@ -974,25 +974,21 @@ octave_base_stream::do_gets (int max_len, bool& err,
 	    break;
 	}
 
-      if (is.fail ())
-	{
-	  err = true;
-	  std::string msg = fcn;
-	  msg.append (": read error");
-	  error (msg);
-	}
-      else if (char_count == 0 && is.eof ())
-	{
-	  err = true;
-	  std::string msg = fcn;
-	  msg.append (": at end of file");
-	  error (msg);
-	}
-      else
+      if (is.good () || (is.eof () && char_count > 0))
 	{
 	  buf << OSSTREAM_ENDS;
 	  retval = OSSTREAM_STR (buf);
 	  OSSTREAM_FREEZE (buf);
+	}
+      else
+	{
+	  err = true;
+	  std::string msg = fcn;
+	  if (is.eof () && char_count == 0)
+	    msg.append (": at end of file");
+	  else
+	    msg.append (": read error");
+	  error (msg);
 	}
     }
   else

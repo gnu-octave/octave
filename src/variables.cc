@@ -1700,7 +1700,7 @@ This command may not be used within a function body.\n\
 		break;
 	    }
 
-	  if (idx < argc)
+	  if (idx <= argc)
 	    {
 	      if (! have_dash_option)
 		{

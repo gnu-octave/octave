@@ -1,5 +1,11 @@
 2002-12-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* variables.cc (Fclear): Fix off-by-one error.
+
+	* oct-stream.cc (octave_base_stream::do_gets): Correctly read
+	last line of file even if it does not end with new line
+	character.
+
 	* pt-select.cc (equal): Don't look up == op, just try it and see
 	whether it works.
 

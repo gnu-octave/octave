@@ -141,7 +141,9 @@ fortran_column (int i, int nr)
 
 // How about a few macros?
 
+#ifndef TC_REP
 #define TC_REP tree_constant::tree_constant_rep
+#endif
 
 #ifndef MAX
 #define MAX(a,b) ((a) > (b) ? (a) : (b))

@@ -32,8 +32,8 @@ extern "C++" {
 #define Vector ColumnVector
 #endif
 
-typedef double (*objective_fcn) (Vector&);
-typedef Vector (*gradient_fcn) (Vector&);
+typedef double (*objective_fcn) (const Vector&);
+typedef Vector (*gradient_fcn) (const Vector&);
 
 class Objective
 {

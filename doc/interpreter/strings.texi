@@ -123,7 +123,7 @@ Data Types} for more information about creating matrices.
 @section Creating Strings
 
 @deftypefn {Function File} {} blanks (@var{n})
-Returns a string of @var{n} blanks.
+Return a string of @var{n} blanks.
 @end deftypefn
 
 @deftypefn {Function File} {} int2str (@var{n})
@@ -177,7 +177,7 @@ string_fill_char = "X";
 @end defvr
 
 @deftypefn {Function File} {} str2mat (@var{s_1}, @dots{}, @var{s_n})
-Returns a matrix containing the strings @var{s_1}, @dots{}, @var{s_n} as
+Return a matrix containing the strings @var{s_1}, @dots{}, @var{s_n} as
 its rows.  Each string is padded with blanks in order to form a valid
 matrix.
 
@@ -199,7 +199,7 @@ Removes the trailing blanks from the string @var{s}.
 @end deftypefn
 
 @deftypefn {Function File} {} findstr (@var{s}, @var{t}, @var{overlap})
-Returns the vector of all positions in the longer of the two strings
+Return the vector of all positions in the longer of the two strings
 @var{s} and @var{t} where an occurrence of the shorter of the two starts.
 If the optional argument @var{overlap} is nonzero, the returned vector
 can include overlapping positions (this is the default).  For example,
@@ -213,7 +213,7 @@ findstr ("abababa", "aba", 0)
 @end deftypefn
 
 @deftypefn {Function File} {} index (@var{s}, @var{t})
-Returns the position of the first occurrence of the string @var{t} in the
+Return the position of the first occurrence of the string @var{t} in the
 string @var{s}, or 0 if no occurrence is found.  For example,
 
 @example
@@ -225,7 +225,7 @@ index ("Teststring", "t")
 @end deftypefn
 
 @deftypefn {Function File} {} rindex (@var{s}, @var{t})
-Returns the position of the last occurrence of the string @var{t} in the
+Return the position of the last occurrence of the string @var{t} in the
 string @var{s}, or 0 if no occurrence is found.  For example,
 
 @example
@@ -268,7 +268,7 @@ strrep ("This is a test string", "is", "&%$")
 @end deftypefn
 
 @deftypefn {Function File} {} substr (@var{s}, @var{beg}, @var{len})
-Returns the substring of @var{s} which starts at character number
+Return the substring of @var{s} which starts at character number
 @var{beg} and is @var{len} characters long.  For example,
 
 @example
@@ -287,8 +287,8 @@ This function is patterned after AWK.  You can get the same result by
 @section String Conversions
 
 @deftypefn {Function File} {} bin2dec (@var{s})
-Given a binary number represented as a string of zeros and ones,
-returns the corresponding decimal number.  For example,
+Return a decimal number corresponding to the the binary number
+represented as a string of zeros and ones.  For example,
 
 @example
 bin2dec ("1110")
@@ -297,8 +297,8 @@ bin2dec ("1110")
 @end deftypefn
 
 @deftypefn {Function File} {} dec2bin (@var{n})
-Given a nonnegative integer, returns the corresponding binary number as
-a string of ones and zeros.  For example, 
+Return a binary number corresponding the the nonnegative decimal number
+@var{n}, as a string of ones and zeros.  For example,
 
 @example
 dec2bin (14)
@@ -307,8 +307,8 @@ dec2bin (14)
 @end deftypefn
 
 @deftypefn {Function File} {} dec2hex (@var{n})
-Given a nonnegative integer, returns the corresponding hexadecimal
-number as a string.  For example,
+Return the hexadecimal number corresponding to the nonnegative decimal
+number @var{n}, as a string.  For example,
 
 @example
 dec2hex (2748)
@@ -317,8 +317,8 @@ dec2hex (2748)
 @end deftypefn
 
 @deftypefn {Function File} {} hex2dec (@var{s})
-Given a hexadecimal number represented as a string, returns the
-corresponding decimal number.  For example,
+Return the decimal number corresponding to the hexadecimal number stored
+in the string @var{s}.  For example,
 
 @example
 hex2dec ("12B")
@@ -356,7 +356,7 @@ tolower ("MiXeD cAsE 123")
 @end deftypefn
 
 @deftypefn {Function File} {} toupper (@var{s})
-Returns a copy of the string @var{s}, with each  lower-case character
+Return a copy of the string @var{s}, with each  lower-case character
 replaced by the corresponding upper-case one; nonalphabetic characters
 are left unchanged.  For example,
 
@@ -418,52 +418,52 @@ isalpha ("!Q@@WERT^Y&")
 @end example
 
 @deftypefn {Mapping Function} {} isalnum (@var{s})
-Returns true for characters that are letters or digits (@code{isalpha
+Return 1 for characters that are letters or digits (@code{isalpha
 (@var{a})} or @code{isdigit (@var{})} is true).
 @end deftypefn
 
 @deftypefn {Mapping Function} {} isalpha (@var{s})
-Returns true for characters that are letters (@code{isupper (@var{a})}
+Return true for characters that are letters (@code{isupper (@var{a})}
 or @code{islower (@var{})} is true). 
 @end deftypefn
 
 @deftypefn {Mapping Function} {} isascii (@var{s})
-Returns true for characters that are ASCII (in the range 0 to 127 decimal).
+Return 1 for characters that are ASCII (in the range 0 to 127 decimal).
 @end deftypefn
 
 @deftypefn {Mapping Function} {} iscntrl (@var{s})
-Returns true for control characters.
+Return 1 for control characters.
 @end deftypefn
 
 @deftypefn {Mapping Function} {} isdigit (@var{s})
-Returns true for characters that are decimal digits.
+Return 1 for characters that are decimal digits.
 @end deftypefn
 
 @deftypefn {Mapping Function} {} isgraph (@var{s})
-Returns true for printable characters (but not the space character).
+Return 1 for printable characters (but not the space character).
 @end deftypefn
 
 @deftypefn {Mapping Function} {} islower (@var{s})
-Returns true for characters that are lower case letters.
+Return 1 for characters that are lower case letters.
 @end deftypefn
 
 @deftypefn {Mapping Function} {} isprint (@var{s})
-Returns true for printable characters (including the space character).
+Return 1 for printable characters (including the space character).
 @end deftypefn
 
 @deftypefn {Mapping Function} {} ispunct (@var{s})
-Returns true for punctuation characters.
+Return 1 for punctuation characters.
 @end deftypefn
 
 @deftypefn {Mapping Function} {} isspace (@var{s})
-Returns true for whitespace characters (space, formfeed, newline,
+Return 1 for whitespace characters (space, formfeed, newline,
 carriage return, tab, and vertical tab).
 @end deftypefn
 
 @deftypefn {Mapping Function} {} isupper (@var{s})
-Returns true for upper case letters.
+Return 1 for upper case letters.
 @end deftypefn
 
 @deftypefn {Mapping Function} {} isxdigit (@var{s})
-Returns true for characters that are hexadecimal digits.
+Return 1 for characters that are hexadecimal digits.
 @end deftypefn

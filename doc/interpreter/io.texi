@@ -1443,14 +1443,14 @@ by the time your program attempts to open it.
 @subsection End of File and Errors
 
 @deftypefn {Built-in Function} {} feof (@var{fid})
-Returns 1 if an end-of-file condition has been encountered for a given
+Return 1 if an end-of-file condition has been encountered for a given
 file and 0 otherwise.  Note that it will only return 1 if the end of the
 file has already been encountered, not if the next read operation will
 result in an end-of-file condition.
 @end deftypefn
 
 @deftypefn {Built-in Function} {} ferror (@var{fid})
-Returns 1 if an error condition has been encountered for a given file
+Return 1 if an error condition has been encountered for a given file
 and 0 otherwise.  Note that it will only return 1 if an error has
 already been encountered, not if the next operation will result in an
 error condition.

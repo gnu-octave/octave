@@ -185,17 +185,17 @@ The following functions are available to give you information about
 structures.
 
 @deftypefn {Built-in Function} {} is_struct (@var{expr})
-Returns 1 if the value of the expression @var{expr} is a structure.
+Return 1 if the value of the expression @var{expr} is a structure.
 @end deftypefn
 
 @deftypefn {Built-in Function} {} struct_contains (@var{expr}, @var{name})
-This function returns 1 if the expression @var{expr} is a structure and it
-includes an element named @var{name}.  The first argument must be a
-structure and the second must be a string.
+Return 1 if the expression @var{expr} is a structure and it includes an
+element named @var{name}.  The first argument must be a structure and
+the second must be a string.
 @end deftypefn
 
-@deftypefn {Built-in Function} {} struct_elements (@var{expr})
-If the expression @var{expr} is a structure, this function returns a
-list of strings naming the elements of the structure.  It is an error to
-call @code{struct_elements} with an argument that is not a structure.
+@deftypefn {Built-in Function} {} struct_elements (@var{struct})
+Return a list of strings naming the elements of the structure @{struct}.
+It is an error to call @code{struct_elements} with an argument that is
+not a structure.
 @end deftypefn

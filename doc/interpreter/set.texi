@@ -9,9 +9,8 @@ Octave has a limited set of functions for managing sets of data, where a
 set is defined as a collection unique elements.
 
 @deftypefn {Function File} {} create_set (@var{x})
-Given a matrix or vector of values, the function @code{create_set}
-returns a row vector containing unique values, sorted in ascending
-order.  For example,
+Return a row vector containing the unique values in @var{x}, sorted in
+ascending order.  For example,
 
 @example
 @group
@@ -46,7 +45,7 @@ intersection ([ 1, 2, 3 ], [ 2, 3, 5 ])
 @end deftypefn
 
 @deftypefn {Function File} {} complement (@var{x}, @var{y})
-Returns the elements of set @var{y} that are not in set @var{x}.  For
+Return the elements of set @var{y} that are not in set @var{x}.  For
 example,
 
 @example

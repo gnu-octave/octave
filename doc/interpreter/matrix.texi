@@ -161,10 +161,10 @@ finite ([13, Inf, NaN])
 @end deftypefn
 
 @deftypefn {Loadable Function} {} find (@var{x})
-The function @code{find} returns a vector of indices of nonzero elements
-of a matrix.  To obtain a single index for each matrix element, Octave
-pretends that the columns of a matrix form one long vector (like Fortran
-arrays are stored).  For example,
+Return a vector of indices of nonzero elements of a matrix.  To obtain a
+single index for each matrix element, Octave pretends that the columns
+of a matrix form one long vector (like Fortran arrays are stored).  For
+example,
 
 @example
 @group
@@ -235,7 +235,7 @@ flipud ([1, 2; 3, 4])
 @end deftypefn
 
 @deftypefn {Function File} {} rot90 (@var{x}, @var{n})
-Returns a copy of @var{x} with the elements rotated counterclockwise in
+Return a copy of @var{x} with the elements rotated counterclockwise in
 90-degree increments.  The second argument is optional, and specifies
 how many 90-degree rotations are to be applied (the default value is 1).
 Negative values of @var{n} rotate the matrix in a clockwise direction.
@@ -306,7 +306,7 @@ If @var{x} is a matrix, do the same for each column of @var{x}.
 @end deftypefn
 
 @deftypefn {Loadable Function} {[@var{s}, @var{i}] =} sort (@var{x})
-Returns a copy of @var{x} with the elements elements arranged in
+Return a copy of @var{x} with the elements elements arranged in
 increasing order.  For matrices, @code{sort} orders the elements in each
 column.
 
@@ -409,14 +409,14 @@ tril (ones (3), 1)
 @end deftypefn
 
 @deftypefn {Function File} {} vec (@var{x})
-For a matrix @var{x}, returns the vector obtained by stacking the
-columns of @var{x} one above the other.
+Return the vector obtained by stacking the columns of the matrix @var{x}
+one above the other.
 @end deftypefn
 
 @deftypefn {Function File} {} vech (@var{x})
-For a square matrix @var{x}, returns the vector obtained from @var{x}
-by eliminating all supradiagonal elements and stacking the result
-one column above the other.
+Return the vector obtained by eliminating all supradiagonal elements of
+the square matrix @var{x} and stacking the result one column above the
+other.
 @end deftypefn
 
 @node Special Utility Matrices, Famous Matrices, Rearranging Matrices, Matrix Manipulation
@@ -424,7 +424,7 @@ one column above the other.
 
 @deftypefn {Built-in Function} {} eye (@var{x})
 @deftypefnx {Built-in Function} {} eye (@var{n}, @var{m})
-Returns an identity matrix.  If invoked with a single scalar argument,
+Return an identity matrix.  If invoked with a single scalar argument,
 @code{eye} returns a square matrix with the dimension specified.  If you
 supply two scalar arguments, @code{eye} takes them to be the number of
 rows and columns.  If given a vector with two elements, @code{eye} uses
@@ -459,7 +459,7 @@ is equivalent to calling it with an argument of 1.
 
 @deftypefn {Built-in Function} {} ones (@var{x})
 @deftypefnx {Built-in Function} {} ones (@var{n}, @var{m})
-Returns a matrix whose elements are all 1.  The arguments are handled
+Return a matrix whose elements are all 1.  The arguments are handled
 the same as the arguments for @code{eye}.
 
 If you need to create a matrix whose values are all the same, you should
@@ -472,14 +472,14 @@ val_matrix = val * ones (n, m)
 
 @deftypefn {Built-in Function} {} zeros (@var{x})
 @deftypefnx {Built-in Function} {} zeros (@var{n}, @var{m})
-Returns a matrix whose elements are all 0.  The arguments are handled
+Return a matrix whose elements are all 0.  The arguments are handled
 the same as the arguments for @code{eye}.
 @end deftypefn
 
 @deftypefn {Loadable Function} {} rand (@var{x})
 @deftypefnx {Loadable Function} {} rand (@var{n}, @var{m})
 @deftypefnx {Loadable Function} {} rand (@code{"seed"}, @var{x})
-Returns a matrix with random elements uniformly distributed on the
+Return a matrix with random elements uniformly distributed on the
 interval (0, 1).  The arguments are handled the same as the arguments
 for @code{eye}.  In
 addition, you can set the seed for the random number generator using the
@@ -503,7 +503,7 @@ rand ("seed")
 @deftypefn {Loadable Function} {} randn (@var{x})
 @deftypefnx {Loadable Function} {} randn (@var{n}, @var{m})
 @deftypefnx {Loadable Function} {} randn (@code{"seed"}, @var{x})
-Returns a matrix with normally distributed random elements.  The
+Return a matrix with normally distributed random elements.  The
 arguments are handled the same as the arguments for @code{eye}.  In
 addition, you can set the seed for the random number generator using the
 form
@@ -570,7 +570,7 @@ Biomathematics at The University of Texas, M.D. Anderson Cancer Center,
 Houston, TX 77030.
 
 @deftypefn {Built-in Function} {} diag (@var{v}, @var{k})
-Returns a diagonal matrix with vector @var{v} on diagonal @var{k}.  The
+Return a diagonal matrix with vector @var{v} on diagonal @var{k}.  The
 second argument is optional.  If it is positive, the vector is placed on
 the @var{k}-th super-diagonal.  If it is negative, it is placed on the
 @var{-k}-th sub-diagonal.  The default value of @var{k} is 0, and the

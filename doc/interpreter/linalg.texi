@@ -154,7 +154,7 @@ p-norm of @var{a}, @code{(sum (abs (@var{a}) .^ @var{p})) ^ (1/@var{p})}.
 @end deftypefn
 
 @deftypefn {Function File} {} null (@var{a}, @var{tol})
-Returns an orthonormal basis of the null space of @var{a}.
+Return an orthonormal basis of the null space of @var{a}.
 
 The dimension of the null space is taken as the number of singular
 values of @var{a} not greater than @var{tol}.  If the argument @var{tol}
@@ -166,7 +166,7 @@ max (size (@var{a})) * max (svd (@var{a})) * eps
 @end deftypefn
 
 @deftypefn {Function File} {} orth (@var{a}, @var{tol})
-Returns an orthonormal basis of the range space of @var{a}.
+Return an orthonormal basis of the range space of @var{a}.
 
 The dimension of the range space is taken as the number of singular
 values of @var{a} greater than @var{tol}.  If the argument @var{tol} is
@@ -178,7 +178,7 @@ max (size (@var{a})) * max (svd (@var{a})) * eps
 @end deftypefn
 
 @deftypefn {Function File} {} pinv (@var{x}, @var{tol})
-Returns the pseudoinverse of @var{x}.  Singular values less than
+Return the pseudoinverse of @var{x}.  Singular values less than
 @var{tol} are ignored. 
 
 If the second argument is omitted, it is assumed that
@@ -671,8 +671,8 @@ decomposition, eliminating the unnecessary rows or columns of @var{u} or
 @section Functions of a Matrix
 
 @deftypefn {Loadable Function} {} expm (@var{a})
-Returns the exponential of a matrix, defined as the
-infinite Taylor series
+Return the exponential of a matrix, defined as the infinite Taylor
+series
 @iftex
 @tex
 $$

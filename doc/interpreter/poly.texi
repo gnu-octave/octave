@@ -101,12 +101,12 @@ whose roots are the elements of @var{x}.
 @end deftypefn
 
 @deftypefn {Function File} {} polyderiv (@var{c})
-Returns the coefficients of the derivative of the polynomial whose
+Return the coefficients of the derivative of the polynomial whose
 coefficients are given by vector @var{c}.
 @end deftypefn
 
 @deftypefn {Function File} {} polyfit (@var{n}, @var{y}, @var{n})
-Returns the coefficients of a polynomial @var{p}(@var{x}) of degree
+Return the coefficients of a polynomial @var{p}(@var{x}) of degree
 @var{n} that minimizes 
 @iftex
 @tex
@@ -122,7 +122,7 @@ $$
 @end deftypefn
 
 @deftypefn {Function File} {} polyinteg (@var{c})
-Returns the coefficients of the integral the polynomial whose coefficients
+Return the coefficients of the integral the polynomial whose coefficients
 are represented by the vector @var{c}.
 
 The constant of integration is set to zero.

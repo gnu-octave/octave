@@ -62,11 +62,10 @@ zeros.
 @end deftypefn
 
 @deftypefn {Built-in Function} {} fftconv (@var{a}, @var{b}, @var{n})
-This function returns the convolution of the vectors @var{a} and
-@var{b}, a vector with length equal to the @code{length (a) + length (b)
-- 1}.  If @var{a} and @var{b} are the coefficient vectors of two
-polynomials, the returned value is the coefficient vector of the product
-polynomial.
+Return the convolution of the vectors @var{a} and @var{b}, as a vector
+with length equal to the @code{length (a) + length (b) - 1}.  If @var{a}
+and @var{b} are the coefficient vectors of two polynomials, the returned
+value is the coefficient vector of the product polynomial.
 
 The computation uses the FFT by calling the function @code{fftfilt}.  If
 the optional argument @var{n} is specified, an N-point FFT is used.
@@ -82,8 +81,8 @@ overlap-add method to filter @var{x} with @var{b} using an N-point FFT.
 @end deftypefn
 
 @deftypefn {Loadable Function} {y =} filter (@var{b}, @var{a}, @var{x})
-This function returns the solution to the following linear,
-time-invariant difference equation:
+Return the solution to the following linear, time-invariant difference
+equation:
 @iftex
 @tex
 $$

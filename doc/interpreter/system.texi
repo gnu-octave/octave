@@ -336,7 +336,7 @@ The function clock is more accurate on systems that have the
 @end deftypefn
 
 @deftypefn {Function File} {} date ()
-Returns the date as a character string in the form DD-MMM-YY.  For
+Return the date as a character string in the form DD-MMM-YY.  For
 example,
 
 @example
@@ -992,7 +992,7 @@ Return the real group id of the current process.
 @section Environment Variables
 
 @deftypefn {Built-in Function} {} getenv (@var{var})
-Returns the value of the environment variable @var{var}.  For example,
+Return the value of the environment variable @var{var}.  For example,
 
 @example
 getenv ("PATH")
@@ -1024,7 +1024,7 @@ directory is not changed.
 @end deffn
 
 @deftypefn {Built-in Function} {} pwd ()
-Returns the current working directory.
+Return the current working directory.
 @end deftypefn
 
 @defvr {Built-in Variable} PWD
@@ -1181,7 +1181,7 @@ floating point calculations.
 @end deftypefn
 
 @deftypefn {Built-in Function} {} version ()
-Returns Octave's version number as a string.  This is also the value of
+Return Octave's version number as a string.  This is also the value of
 the built-in variable @code{OCTAVE_VERSION}.
 @end deftypefn
 

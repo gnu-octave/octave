@@ -416,7 +416,7 @@ elements in each column, as a row vector.
 @section Special Functions
 
 @deftypefn {Mapping Function} {} beta (@var{a}, @var{b})
-Returns the Beta function,
+Return the Beta function,
 @iftex
 @tex
 $$
@@ -433,7 +433,7 @@ beta (a, b) = gamma (a) * gamma (b) / gamma (a + b).
 @end deftypefn
 
 @deftypefn {Mapping Function} {} betai (@var{a}, @var{b}, @var{x})
-Returns the incomplete Beta function,
+Return the incomplete Beta function,
 @iftex
 @tex
 $$
@@ -458,7 +458,7 @@ compatible dimensions.
 @end deftypefn
 
 @deftypefn {Mapping Function} {} bincoeff (@var{n}, @var{k})
-Returns the binomial coefficient of @var{n} and @var{k}, defined as
+Return the binomial coefficient of @var{n} and @var{k}, defined as
 @iftex
 @tex
 $$
@@ -576,7 +576,7 @@ If neither @var{a} nor @var{x} is scalar, the sizes of @var{a} and
 
 @deftypefn {Mapping Function} {} lgamma (@var{a}, @var{x})
 @deftypefnx {Mapping Function} {} gammaln (@var{a}, @var{x})
-Returns the natural logarithm of the gamma function.
+Return the natural logarithm of the gamma function.
 @end deftypefn
 
 @deftypefn {Function File} {} cross (@var{x}, @var{y})
@@ -592,7 +592,7 @@ cross ([1,1,0], [0,1,1])
 @end deftypefn
 
 @deftypefn {Function File} {} commutation_matrix (@var{m}, @var{n})
-Returns the commutation matrix
+Return the commutation matrix
 @iftex
 @tex
  $K_{m,n}$
@@ -654,7 +654,7 @@ applications in statistics and econometrics.
 @end deftypefn
 
 @deftypefn {Function File} {} duplication_matrix (@var{n})
-Returns the duplication matrix
+Return the duplication matrix
 @iftex
 @tex
  $D_n$

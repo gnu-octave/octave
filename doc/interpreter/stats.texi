@@ -112,9 +112,10 @@ the kurtosis of each column.
 @end deftypefn
 
 @deftypefn {Function File} {} mahalanobis (@var{x}, @var{y})
-Returns Mahalanobis' D-square distance between the multivariate samples
-@var{x} and @var{y}, which must have the same number of components
-(columns), but may have a different number of observations (rows).
+Return the Mahalanobis' D-square distance between the multivariate
+samples @var{x} and @var{y}, which must have the same number of
+components (columns), but may have a different number of observations
+(rows).
 @end deftypefn
 
 @deftypefn {Function File} {} skewness (@var{x})

@@ -780,7 +780,7 @@ possible to write statements like
 @group
 if (fine_dining_destination == on_a_boat
     || fine_dining_destination == on_a_train)
-  suess (i, will, not, eat, them, sam, i, am, i,
+  seuss (i, will, not, eat, them, sam, i, am, i,
          will, not, eat, green, eggs, and, ham);
 endif
 @end group

@@ -3,9 +3,9 @@
 # Common rules for octave's libcruft directories.
 #
 # John W. Eaton
-# jwe@che.utexas.edu
+# jwe@bevo.che.wisc.edu
+# University of Wisconsin-Madison
 # Department of Chemical Engineering
-# The University of Texas at Austin
 
 SOURCES = *.f
 

@@ -1,3 +1,8 @@
+2000-04-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* misc/Makefile.in (install, uninstall): Include files go in
+	$(octincludedir)/octave, not just $(octincludedir).
+
 2000-03-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (LIBRARIES): Conditionally define. 	

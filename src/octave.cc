@@ -346,7 +346,6 @@ maximum_braindamage (void)
   bind_builtin_variable ("PS2", "");
   bind_builtin_variable ("beep_on_error", true);
   bind_builtin_variable ("crash_dumps_octave_core", false);
-  bind_builtin_variable ("default_eval_print_flag", false);
   bind_builtin_variable ("default_global_variable_value", Matrix ());
   bind_builtin_variable ("default_save_format", "mat-binary");
   bind_builtin_variable ("define_all_return_values", true);

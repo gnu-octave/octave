@@ -1,5 +1,13 @@
 2003-07-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* octave.cc (maximum_braindamage): Don't set default_eval_print_flag.
+
+	* parse.y (Vdefault_eval_print_flag): Delete: 
+	(default_eval_print_flag): Delete.
+	(symbols_of_parse): Delete DEFVAR for default_eval_print_flag.
+	(Feval, Fevalin): Return empty octave_value_list and turn printing
+	on in eval_string if nargout is zero.
+
 	* ov-list.cc (octave_list::assign): Check
 	Vwarn_resize_on_range_error, not Vresize_on_range_error.
 

@@ -53,7 +53,6 @@ function dump_prefs (file)
               "beep_on_error";
               "completion_append_char";
               "crash_dumps_octave_core";
-              "default_eval_print_flag";
               "default_global_variable_value";
               "default_return_value";
               "default_save_format";

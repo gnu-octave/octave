@@ -1,5 +1,33 @@
 2003-07-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* image/colormap.m: Don't save and restore default_eval_print_flag.
+
+	* miscellaneous/dump_prefs.m: Delete default_eval_print_flag.
+
+	* control/util/zgshsr.m: Use x OP= y instead of x = x OP y.
+	* control/system/sys2fir.m: Likewise.
+
+	* control/system/is_siso.m: Use && instead of & where appropriate.
+	* control/system/__tf2sysl__.m: Likewise.
+
+	* control/system/__tf2sysl__.m: Use end instead of length(X).
+
+	* control/freqchkw.m: Use %-escapes for error instead of num2str
+	and [] concatenation.
+	* control/system/sys2fir.m: Likewise.
+
+	* control/base/dgram.m, control/base/freqchkw.m,
+	control/base/gram.m, control/system/__abcddims__.m,
+	control/system/__sysdefstname__.m, control/system/__tf2sysl__.m,
+	control/system/is_sample.m, control/system/is_signal_list.m,
+	control/system/is_siso.m, control/system/sys2fir.m,
+	control/system/syschtsam.m, control/system/sysgettsam.m,
+	control/system/sysgettype.m, control/system/tf2zp.m,
+	control/system/ugain.m, control/util/prompt.m,
+	control/util/run_cmd.m, control/util/zgrownorm.m,
+	control/util/zgshsr.m:
+	Improve conformance to Octave coding style.	
+
 	* miscellaneous/dump_prefs.m: Add warn_resize_on_reange_error to
 	the list.
 	Delete resize_on_range_error from the list.

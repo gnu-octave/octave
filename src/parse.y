@@ -69,9 +69,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "variables.h"
 
-// TRUE means we print 
-static bool Vdefault_eval_print_flag = true;
-
 // If TRUE, generate a warning for the assignment in things like
 //
 //   octave> if (a = 2 < n)
@@ -3745,33 +3742,9 @@ DEFUN (eval, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} eval (@var{try}, @var{catch})\n\
 Parse the string @var{try} and evaluate it as if it were an Octave\n\
-program, returning the last value computed.  If that fails, evaluate\n\
-the string @var{catch}.  The string @var{try} is evaluated in the\n\
-current context, so any results remain available after @code{eval}\n\
-returns.  For example,\n\
-\n\
-@example\n\
-@group\n\
-eval (\"a = 13\")\n\
-     @print{} a = 13\n\
-     @result{} 13\n\
-@end group\n\
-@end example\n\
-\n\
-In this case, the value of the evaluated expression is printed and it is\n\
-also returned returned from @code{eval}.  Just as with any other\n\
-expression, you can turn printing off by ending the expression in a\n\
-semicolon.  For example,\n\
-\n\
-@example\n\
-eval (\"a = 13;\")\n\
-     @result{} 13\n\
-@end example\n\
-\n\
-In this example, the variable @code{a} has been given the value 13, but\n\
-the value of the expression is not printed.  You can also turn off\n\
-automatic printing for all expressions executed by @code{eval} using the\n\
-variable @code{default_eval_print_flag}.\n\
+program.  If that fails, evaluate the string @var{catch}.\n\
+The string @var{try} is evaluated in the current context,\n\
+so any results remain available after @code{eval} returns.\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -3790,8 +3763,11 @@ variable @code{default_eval_print_flag}.\n\
 
       int parse_status = 0;
 
-      retval = eval_string (args(0), ! Vdefault_eval_print_flag,
-			    parse_status, nargout);
+      octave_value_list tmp = eval_string (args(0), nargout > 0,
+					   parse_status, nargout);
+
+      if (nargout > 0)
+	retval = tmp;
 
       if (nargin > 1 && (parse_status != 0 || error_state))
 	{
@@ -3924,8 +3900,11 @@ context @var{context}, which may be either @code{\"caller\"} or\n\
 
 	      int parse_status = 0;
 
-	      retval = eval_string (args(1), ! Vdefault_eval_print_flag,
-				    parse_status, nargout);
+	      octave_value_list tmp = eval_string (args(1), nargout > 0,
+						   parse_status, nargout);
+
+	      if (nargout > 0)
+		retval = tmp;
 
 	      if (nargin > 2 && (parse_status != 0 || error_state))
 		{
@@ -3955,14 +3934,6 @@ context @var{context}, which may be either @code{\"caller\"} or\n\
     print_usage ("evalin");
 
   return retval;
-}
-
-static int
-default_eval_print_flag (void)
-{
-  Vdefault_eval_print_flag = check_preference ("default_eval_print_flag");
-
-  return 0;
 }
 
 static int
@@ -4018,14 +3989,6 @@ warn_variable_switch_label (void)
 void
 symbols_of_parse (void)
 {
-  DEFVAR (default_eval_print_flag, true, default_eval_print_flag,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} default_eval_print_flag\n\
-If the value of this variable is nonzero, Octave prints the results of\n\
-commands executed by @code{eval} that do not end with semicolons.  If it\n\
-is zero, automatic printing is suppressed.  The default value is 1.\n\
-@end defvr");
-
   DEFVAR (warn_assign_as_truth_value, true, warn_assign_as_truth_value,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} warn_assign_as_truth_value\n\

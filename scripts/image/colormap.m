@@ -51,13 +51,7 @@ function cmap = colormap (map)
       if (strcmp (map, "default"))
         map = gray ();
       else
-        unwind_protect
-          save_default_eval_print_flag = default_eval_print_flag;
-          default_eval_print_flag = 0;
-          map = eval (map);
-        unwind_protect_cleanup
-          default_eval_print_flag = save_default_eval_print_flag;
-        end_unwind_protect
+        map = eval (map);
       endif
     endif
 

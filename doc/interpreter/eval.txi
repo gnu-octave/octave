@@ -18,8 +18,6 @@ call user-supplied functions.
 
 @DOCSTRING(eval)
 
-@DOCSTRING(default_eval_print_flag)
-
 @DOCSTRING(feval)
 
 Here is a simple-minded function using @code{feval} that finds the root

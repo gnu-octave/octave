@@ -241,11 +241,6 @@ Default value: 0.
 
 Default value: @code{" "}.
 
-@item default_eval_print_flag
-@xref{Evaluation}.
-
-Default value: 1.
-
 @item default_return_value
 @xref{Multiple Return Values}.
 

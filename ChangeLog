@@ -1,3 +1,7 @@
+2004-02-20  Per Persson  <persquare@mac.com>
+
+	* mkoctfile.in (LINK_DEPS): Include $LDFLAGS in the list.
+
 2004-02-18  Per Persson  <persquare@mac.com>
 
 	* configure.in (*-*-darwin*): Define SONAME_FLAGS.

@@ -68,6 +68,10 @@ octave_interrupt_exception
 
 extern sig_atomic_t octave_interrupt_immediately;
 
+// > 0: interrupt pending
+//   0: no interrupt pending
+// < 0: handling interrupt
+//
 extern sig_atomic_t octave_interrupt_state;
 
 extern sig_atomic_t octave_allocation_error;
@@ -79,9 +83,9 @@ extern void octave_throw_bad_alloc (void) GCC_ATTR_NORETURN;
 #define OCTAVE_QUIT \
   do \
     { \
-      if (octave_interrupt_state) \
+      if (octave_interrupt_state > 0) \
         { \
-          octave_interrupt_state = 0; \
+          octave_interrupt_state = -1; \
           octave_throw_interrupt_exception (); \
         } \
     } \

@@ -1,5 +1,21 @@
 2004-02-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* sighandlers.cc (sigfpe_handler, sigpipe_handler):
+	Don't increment	octave_interrupt_state if it is less than 0.
+	(sigint_handler): If octave_interrupt_state is less than zero,
+	reset it.
+
+	* pt-except.cc (do_catch_code): Call OCTAVE_QUIT here so the catch
+	code won't run if an interrupt is pending.  Don't run catch code
+	if intterrupt_state is less than zero.
+
+2004-02-20  Per Persson  <persquare@mac.com>
+
+	* Makefile.in (OCT_LINK_DEPS, OCTINTERP_LINK_DEPS):
+	Include	$(LIBS) in the list before $(FLIBS).
+
+2004-02-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
 	* pr-output.cc (octave_print_internal (std::ostream&, const
 	Range&, bool, int)): Don't print values beyond the limits of the
 	range.

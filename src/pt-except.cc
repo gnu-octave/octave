@@ -57,7 +57,27 @@ tree_try_catch_command::~tree_try_catch_command (void)
 static void
 do_catch_code (void *ptr)
 {
-  if (octave_interrupt_immediately)
+  // Is it safe to call OCTAVE_QUIT here?  We are already running
+  // something on the unwind_protect stack, but the element for this
+  // action would have already been popped from the top of the stack,
+  // so we should not be attempting to run it again.
+
+  OCTAVE_QUIT;
+
+  // If we are interrupting immediately, or if an interrupt is in
+  // progress (octave_interrupt_state < 0), then we don't want to run
+  // the catch code (it should only run on errors, not interrupts).
+
+  // If octave_interrupt_state is positive, an interrupt is pending.
+  // The only way that could happen would be for the interrupt to
+  // come in after the OCTAVE_QUIT above and before the if statement
+  // below -- it's possible, but unlikely.  In any case, we should
+  // probably let the catch code throw the exception because we don't
+  // want to skip that and potentially run some other code.  For
+  // example, an error may have originally brought us here for some
+  // cleanup operation and we shouldn't skip that.
+
+  if (octave_interrupt_immediately || octave_interrupt_state < 0)
     return;
 
   tree_statement_list *list = static_cast<tree_statement_list *> (ptr);

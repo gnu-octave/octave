@@ -237,7 +237,7 @@ sigfpe_handler (int /* sig */)
   // XXX FIXME XXX -- will setting octave_interrupt_state really help
   // here?
 
-  if (can_interrupt)
+  if (can_interrupt && octave_interrupt_state >= 0)
     octave_interrupt_state++;
 
   SIGHANDLER_RETURN (0);
@@ -334,6 +334,13 @@ sigint_handler (int sig)
 	octave_jump_to_enclosing_context ();
       else
 	{
+	  // If we are already cleaning up from a previous interrupt,
+	  // take note of the fact that another interrupt signal has
+	  // arrived.
+
+	  if (octave_interrupt_state < 0)
+	    octave_interrupt_state = 0;
+
 	  octave_interrupt_state++;
 
 	  if (interactive && octave_interrupt_state == 2)
@@ -363,7 +370,7 @@ sigpipe_handler (int /* sig */)
   // XXX FIXME XXX -- will setting octave_interrupt_state really help
   // here?
 
-  if (pipe_handler_error_count  > 100)
+  if (pipe_handler_error_count  > 100 && octave_interrupt_state >= 0)
     octave_interrupt_state++;
 
   SIGHANDLER_RETURN (0);

@@ -1,3 +1,8 @@
+2003-07-08  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* octMakefile.in (DIRS_TO_MAKE): Include $(localverarchlibdir) in
+	the list.
+
 2003-07-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makeconf.in: Set and substitute values for startupfiledir and

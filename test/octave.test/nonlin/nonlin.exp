@@ -5,3 +5,5 @@ do_test fsolve-1.m
 set test fsolve-2
 set prog_output "info good\nsolution good\nvalue good"
 do_test fsolve-2.m
+
+# fsolve_options

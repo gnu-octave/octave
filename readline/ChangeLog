@@ -2,6 +2,7 @@ Thu Feb 13 13:50:21 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (stamp-history, stamp-readline): Use $(SH_LD)
 	$(SH_LDFLAGS) instead of $(CXX) -shared.
+	(SH_LD, SH_LDFLAGS): Substitute here.
 
 	* configure.in (SH_TERMLIBS): Delete.
 	Update config for shared libraries.

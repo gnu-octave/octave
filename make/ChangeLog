@@ -1,3 +1,7 @@
+Thu Feb 13 21:26:03 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* common.make (SH_LD, SH_LDFLAGS): Substitute here.
+
 Tue May 14 22:35:12 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* misc.make (clean): Also remove pic/*.o.

@@ -40,11 +40,11 @@ extern "C"
 				const double&, int&, double*,
 				const int&);
 
-  int F77_FCN (hybrj1) (int (*)(int*, double*, double*, double*, int*,
-				int*),
-			const int&, double*, double*, double*,
-			const int&, const double&, int&, double*,
-			const int&);
+  int F77_FCN (hybrj1, HYBRJ1) (int (*)(int*, double*, double*,
+					double*, int*, int*),
+				const int&, double*, double*, double*,
+				const int&, const double&, int&,
+				double*, const int&);
 }
 
 static nonlinear_fcn user_fun;

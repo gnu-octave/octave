@@ -24,7 +24,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
-#include "getopt.h"
+#include <kpathsea/getopt.h>
 
 int
 octave_getopt (int argc, char *const *argv, const char *optstring)

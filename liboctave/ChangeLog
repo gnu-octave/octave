@@ -1,3 +1,7 @@
+2003-03-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-getopt.c: Include <kpathsea/getopt.h>, not "getopt.h".
+
 2003-02-21  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-alloc.h (DECLARE_OCTAVE_ALLOCATOR): Handle systems with or

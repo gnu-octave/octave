@@ -316,7 +316,7 @@ public:
 
   void close (octave_shlib::close_hook cl_hook = 0);
 
-  bool is_open (void) const { return { library != 0); }
+  bool is_open (void) const { return (library != 0); }
 
 private:
 
@@ -369,7 +369,7 @@ octave_shl_load_shlib::search (const std::string& name,
 
   if (is_open ())
     {
-      std::string s ym_name = name;
+      std::string sym_name = name;
 
       if (mangler)
 	sym_name = mangler (name);

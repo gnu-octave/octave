@@ -66,7 +66,6 @@ LSODE::LSODE (void) : ODE (), LSODE_options ()
 
   istate = 1;
   itask = 1;
-  iopt = 0;
 
   liw = 20 + n;
   lrw = 22 + n * (9 + n);
@@ -87,7 +86,6 @@ LSODE::LSODE (const ColumnVector& state, double time, const ODEFunc& f)
 
   istate = 1;
   itask = 1;
-  iopt = 0;
 
   liw = 20 + n;
   lrw = 22 + n * (9 + n);
@@ -183,10 +181,8 @@ LSODE::do_integrate (double tout)
 	rwork.elem (i) = 0;
     }
 
-  if (jac)
-    method_flag = 21;
-  else
-    method_flag = 22;
+  int method_flag = jac ? 21 : 22;
+  int iopt = 0;
 
   integration_error = 0;
 

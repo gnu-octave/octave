@@ -165,12 +165,10 @@ private:
   int n;
   int integration_error;
   int restart;
-  int method_flag;
   Array<int> iwork;
   Array<double> rwork;
   int istate;
   int itask;
-  int iopt;
   int liw;
   int lrw;
   int sanity_checked;

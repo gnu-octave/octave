@@ -164,6 +164,8 @@ EXPON	([DdEe][+-]?{D}+)
 			    }
 		        }
 
+<TEXT_FCN>{S}*		{ current_input_column += yyleng; }
+
 <HELP_FCN>[^ \t\n]*{S}*	    |
 <TEXT_FCN>[^ \t\n\;\,]*{S}* {
 			      static char *tok = 0;
@@ -219,8 +221,6 @@ EXPON	([DdEe][+-]?{D}+)
 			    }
 			  return TEXT;
 			}
-
-<TEXT_FCN>{S}*		{ current_input_column += yyleng; }
 
 <STRING>{QSTR}*[\n\']	{
 			  if (braceflag)
@@ -296,8 +296,12 @@ EXPON	([DdEe][+-]?{D}+)
 // different for the expression on the left hand side of the equals
 // operator.
 
-			  in_brace_or_paren.pop ();
-			  braceflag--;
+			  if (! in_brace_or_paren.empty ())
+			    {
+			      in_brace_or_paren.pop ();
+			      braceflag--;
+			    }
+
 			  if (braceflag == 0)
 			    {
 			      if (! defining_func)
@@ -312,8 +316,12 @@ EXPON	([DdEe][+-]?{D}+)
 			}
 
 <MATRIX>{SN}*\]{S}*/=	{
-			  in_brace_or_paren.pop ();
-			  braceflag--;
+			  if (! in_brace_or_paren.empty ())
+			    {
+			      in_brace_or_paren.pop ();
+			      braceflag--;
+			    }
+
 			  if (braceflag == 0)
 			    {
 			      BEGIN 0;
@@ -336,8 +344,12 @@ EXPON	([DdEe][+-]?{D}+)
 // It's a pain in the ass to decide whether to insert a comma after
 // seeing a ']' character...
 
-			  in_brace_or_paren.pop ();
-			  braceflag--;
+			  if (! in_brace_or_paren.empty ())
+			    {
+			      in_brace_or_paren.pop ();
+			      braceflag--;
+			    }
+
 			  if (braceflag == 0)
 			    {
 			      if (! defining_func)
@@ -358,9 +370,12 @@ EXPON	([DdEe][+-]?{D}+)
 			      unput (c1);
 			      int other_op = match_any (c1, ",;\n]");
 
-			      if (! (postfix_un_op || bin_op || other_op)
-				     && in_brace_or_paren.top ()
-				     && convert_spaces_to_comma)
+			      if (! (postfix_un_op
+				     || bin_op
+				     || other_op
+				     || in_brace_or_paren.empty ())
+				  && in_brace_or_paren.top ()
+				  && convert_spaces_to_comma)
 				{
 				  unput (',');
 				  return ']';
@@ -385,7 +400,9 @@ EXPON	([DdEe][+-]?{D}+)
 			      int postfix_un_op
 				= next_token_is_postfix_unary_op (1, yytext);
 
-			      if (! (postfix_un_op || bin_op)
+			      if (! (postfix_un_op
+				     || bin_op
+				     || in_brace_or_paren.empty ())
 				  && in_brace_or_paren.top ()
 				  && convert_spaces_to_comma)
 				TOK_RETURN (',');

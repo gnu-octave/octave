@@ -1573,7 +1573,8 @@ make_multi_val_ret (tree_expression *rhs, int l, int c)
       if (list_len == 1)
 	{
 	  tree_index_expression *lhs = id_list->remove_front ();
-	  retval = new tree_simple_assignment_expression (lhs, rhs, l, c);
+	  retval = new tree_simple_assignment_expression (lhs, rhs,
+							  0, 0, l, c);
 	  
 	}
       else if (list_len > 1)

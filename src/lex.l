@@ -792,12 +792,16 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 . {
     // EOF happens here if we are parsing nested functions.
 
-    if (yytext[0] != EOF)
+    unput (yytext[0]);
+
+    int c = yyinput ();
+
+    if (c != EOF)
       {
 	current_input_column++;
 
 	error ("invalid character `%s' (ASCII %d) near line %d, column %d",
-	       undo_string_escape (yytext[0]), static_cast<int> (yytext[0]),
+	       undo_string_escape (static_cast<char> (c)), c,
 	       input_line_number, current_input_column);
 
 	return LEXICAL_ERROR;

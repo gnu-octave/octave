@@ -80,10 +80,10 @@ realclean: distclean
 
 local-dist:
 	ln $(DISTFILES) ../`cat ../.fname`/scripts
-	for dir in $(DISTSUBDIRS); do mkdir `cat .fname`/$$dir; cd $$dir; $(MAKE) $@; cd ..; done
+	for dir in $(DISTSUBDIRS); do mkdir ../`cat ../.fname`/scripts/$$dir; cd $$dir; $(MAKE) $@; cd ..; done
 .PHONY: local-dist
 
 dist:
 	ln $(DISTFILES) ../`cat ../.fname`/scripts
-	for dir in $(DISTSUBDIRS); do mkdir `cat .fname`/$$dir; cd $$dir; $(MAKE) $@; cd ..; done
+	for dir in $(DISTSUBDIRS); do mkdir ../`cat ../.fname`/scripts/$$dir; cd $$dir; $(MAKE) $@; cd ..; done
 .PHONY: dist

@@ -52,7 +52,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 static octave_user_function *
 get_user_function (std::string str = "")
 {
-  octave_user_function *dbg_fcn = NULL;
+  octave_user_function *dbg_fcn = 0;
 
   if (str.compare (""))
     {

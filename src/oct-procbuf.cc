@@ -110,7 +110,7 @@ octave_procbuf::open (const char *command, int mode)
 	  octave_procbuf_list = octave_procbuf_list->next;
 	}
 
-      execl ("/bin/sh", "sh", "-c", command, NULL);
+      execl ("/bin/sh", "sh", "-c", command, 0);
 
       exit (127);
     }

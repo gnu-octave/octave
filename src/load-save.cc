@@ -1185,7 +1185,7 @@ hdf5_import_multidim (hid_t data_id, hid_t space_id, hsize_t rank,
       nc = dims[0];  // octave uses column-major & HDF5 uses row-major
       nr = dims[1];
 
-      hid_t mem_space_id = H5Screate_simple (2, dims, NULL);
+      hid_t mem_space_id = H5Screate_simple (2, dims, 0);
 
       if (mem_space_id < 0)
 	return -1;
@@ -1194,7 +1194,7 @@ hdf5_import_multidim (hid_t data_id, hid_t space_id, hsize_t rank,
 	return -1;
     
       if (H5Sselect_hyperslab (space_id, H5S_SELECT_SET,
-			       start, NULL, count, NULL) < 0)
+			       start, 0, count, 0) < 0)
 	{
 	  H5Sclose (mem_space_id);
 	  return -1;
@@ -1269,7 +1269,7 @@ hdf5_check_attr (hid_t loc_id, const char *attr_name)
   // reporting function:
 
   H5Eget_auto (&err_func, &err_func_data);
-  H5Eset_auto (NULL, NULL);
+  H5Eset_auto (0, 0);
 
   hid_t attr_id = H5Aopen_name (loc_id, attr_name);
 
@@ -1675,7 +1675,7 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
       bool is_list = hdf5_check_attr (subgroup_id, "OCTAVE_LIST");
 
       hdf5_callback_data dsub;
-      dsub.name = dsub.doc = (char*) NULL;
+      dsub.name = dsub.doc = (char*) 0;
       dsub.global = 0;
       dsub.complex_type = d->complex_type;
       dsub.range_type = d->range_type;
@@ -1733,7 +1733,7 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
   if (retval > 0)
     {
       // get documentation string, if any:
-      int comment_length = H5Gget_comment (group_id, name, 0, NULL);
+      int comment_length = H5Gget_comment (group_id, name, 0, 0);
 
       if (comment_length > 1)
 	{
@@ -1748,7 +1748,7 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
 	  strcpy (d->doc, name);
 	}
       else
-	d->doc = (char *) NULL;
+	d->doc = (char *) 0;
 
       // copy name (actually, vname):
       d->name = new char [strlen (vname) + 1];
@@ -1804,9 +1804,9 @@ read_hdf5_data (std::istream& is,
   hdf5_ifstream& hs = (hdf5_ifstream&) is;
   hdf5_callback_data d;
 
-  d.name = (char *) NULL;
+  d.name = (char *) 0;
   d.global = 0;
-  d.doc = (char *) NULL;
+  d.doc = (char *) 0;
   d.complex_type = hdf5_make_complex_type (H5T_NATIVE_DOUBLE);
   d.range_type = hdf5_make_range_type (H5T_NATIVE_DOUBLE);
   d.import = import;
@@ -3654,7 +3654,7 @@ add_hdf5_data (hid_t loc_id, const octave_value& tc,
 	goto error_cleanup;
 
       dims[0] = nr;
-      space_id = H5Screate_simple (nr > 0 ? 1 : 0, dims, (hsize_t*) NULL);
+      space_id = H5Screate_simple (nr > 0 ? 1 : 0, dims, (hsize_t*) 0);
       if (space_id < 0)
 	goto error_cleanup;
 
@@ -3681,7 +3681,7 @@ add_hdf5_data (hid_t loc_id, const octave_value& tc,
     }
   else if (tc.is_range ())
     {
-      space_id = H5Screate_simple (0, dims, (hsize_t*) NULL);
+      space_id = H5Screate_simple (0, dims, (hsize_t*) 0);
       if (space_id < 0)
 	goto error_cleanup;
 
@@ -3706,7 +3706,7 @@ add_hdf5_data (hid_t loc_id, const octave_value& tc,
     }
   else if (tc.is_real_scalar ())
     {
-      space_id = H5Screate_simple (0, dims, (hsize_t*) NULL);
+      space_id = H5Screate_simple (0, dims, (hsize_t*) 0);
       if (space_id < 0) goto error_cleanup;
 
       data_id = H5Dcreate (loc_id, name.c_str (), 
@@ -3725,7 +3725,7 @@ add_hdf5_data (hid_t loc_id, const octave_value& tc,
       dims[1] = m.rows ();    // Octave uses column-major, while
       dims[0] = m.columns (); // HDF5 uses row-major ordering
 
-      space_id = H5Screate_simple (dims[1] > 1 ?2:1, dims, (hsize_t*) NULL);
+      space_id = H5Screate_simple (dims[1] > 1 ?2:1, dims, (hsize_t*) 0);
       if (space_id < 0)
 	goto error_cleanup;
 
@@ -3765,7 +3765,7 @@ add_hdf5_data (hid_t loc_id, const octave_value& tc,
     }
   else if (tc.is_complex_scalar ())
     {
-      space_id = H5Screate_simple (0, dims, (hsize_t*) NULL);
+      space_id = H5Screate_simple (0, dims, (hsize_t*) 0);
       if (space_id < 0)
 	goto error_cleanup;
 
@@ -3790,7 +3790,7 @@ add_hdf5_data (hid_t loc_id, const octave_value& tc,
       dims[1] = m.rows ();    // Octave uses column-major, while
       dims[0] = m.columns (); // HDF5 uses row-major ordering
 
-      space_id = H5Screate_simple (dims[1] > 1 ?2:1, dims, (hsize_t*) NULL);
+      space_id = H5Screate_simple (dims[1] > 1 ?2:1, dims, (hsize_t*) 0);
       if (space_id < 0)
 	goto error_cleanup;
 

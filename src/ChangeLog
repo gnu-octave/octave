@@ -1,3 +1,14 @@
+2002-05-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* load-save.cc (hdf5_import_multidim, hdf5_check_attr,
+	hdf5_callback_data, hdf5_read_next_data, read_hdf5_data,
+	add_hdf5_data): Use 0, not NULL in calls to HDF routines.
+
+	* oct-procbuf.cc (octave_procbuf::open): Use NULL, not 0 as last
+	arg in call to execl.xo
+
+	* debug.cc (get_user_function): Initialise dbg_fcn to 0, not NULL.
+
 2002-05-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* DLD-FUNCTIONS/lsode.cc (LSODE_options::da_set_opt_mf,

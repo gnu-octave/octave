@@ -1,3 +1,11 @@
+2002-05-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: Maybe add -fno-coalesce-templates to XTRA_CXXFLAGS
+	on darwin systems.
+	(SH_LDFLAGS): Set this on darwin systems.
+	(RDYNAMIC_FLAG): Never set this to -rdynamic on darwin systems.
+	(UGLY_DEFS): Cope with broken sed or shell quoting on darwin systems.
+
 2002-05-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* aclocal.m4 (OCTAVE_CXX_ISO_COMPLIANT_LIBRARY): Omit cwctype.

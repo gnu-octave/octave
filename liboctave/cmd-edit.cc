@@ -36,6 +36,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <unistd.h>
 #endif
 
+#include "quit.h"
+
 #include "cmd-edit.h"
 #include "cmd-hist.h"
 #include "lo-error.h"
@@ -192,7 +194,13 @@ gnu_readline::do_readline (const std::string& prompt, bool& eof)
 
   eof = false;
 
-  char *line = ::octave_rl_readline (prompt.c_str ());
+  char *line = 0;
+
+  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
+  line = ::octave_rl_readline (prompt.c_str ());
+
+  END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
   if (line)
     {

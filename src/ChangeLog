@@ -1,3 +1,8 @@
+2005-03-26  John W. Eaton <jwe@octave.org>
+
+	* input.cc (gnu_readline): Don't wrap call to command_editor::readline
+	with {BEGIN,END}_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE.
+
 2005-03-25  John W. Eaton  <jwe@octave.org>
 
 	* toplev.cc (main_loop): Don't use octave_set_current_context here.

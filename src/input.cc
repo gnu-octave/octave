@@ -177,11 +177,7 @@ gnu_readline (const std::string& s, bool force_readline)
     {
       bool eof;
 
-      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-
       retval = command_editor::readline (s, eof);
-
-      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
       if (! eof && retval.empty ())
 	retval = "\n";

@@ -33,32 +33,32 @@ function cdf = poisson_cdf (x, l)
     usage ("poisson_cdf (x, lambda)");
   endif
 
-  [retval, x, l] = common_size (x, l);
-  if (retval > 0)
-    error ("poisson_cdf: x and lambda must be of common size or scalar");
+  if (!isscalar (l))
+    [retval, x, l] = common_size (x, l);
+    if (retval > 0)
+      error ("poisson_cdf: x and lambda must be of common size or scalar");
+    endif
   endif
 
-  [r, c] = size (x);
-  s = r * c;
-  x = reshape (x, 1, s);
-  l = reshape (l, 1, s);
-  cdf = zeros (1, s);
+  cdf = zeros (size (x));
 
   k = find (isnan (x) | !(l > 0));
   if (any (k))
-    cdf(k) = NaN * ones (1, length (k));
+    cdf(k) = NaN;
   endif
 
   k = find ((x == Inf) & (l > 0));
   if (any (k))
-    cdf(k) = ones (1, length (k));
+    cdf(k) = 1;
   endif
 
   k = find ((x >= 0) & (x < Inf) & (l > 0));
   if (any (k))
-    cdf(k) = 1 - gammainc (l(k), floor (x(k)) + 1);
+    if (isscalar (l))
+      cdf(k) = 1 - gammainc (l, floor (x(k)) + 1);
+    else
+      cdf(k) = 1 - gammainc (l(k), floor (x(k)) + 1);
+    endif
   endif
-
-  cdf = reshape (cdf, r, c);
 
 endfunction

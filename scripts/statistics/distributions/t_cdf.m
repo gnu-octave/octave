@@ -33,36 +33,36 @@ function cdf = t_cdf (x, n)
     usage ("t_cdf (x, n)");
   endif
 
-  [retval, x, n] = common_size (x, n);
-  if (retval > 0)
-    error ("t_cdf: x and n must be of common size or scalar");
+  if (!isscalar (n))
+    [retval, x, n] = common_size (x, n);
+    if (retval > 0)
+      error ("t_cdf: x and n must be of common size or scalar");
+    endif
   endif
 
-  [r, c] = size (x);
-  s = r * c;
-  x = reshape (x, 1, s);
-  n = reshape (n, 1, s);
-  cdf = zeros (1, s);
+  cdf = zeros (size (x));
 
   k = find (isnan (x) | !(n > 0));
   if (any (k))
-    cdf(k) = NaN * ones (1, length (k));
+    cdf(k) = NaN;
   endif
 
   k = find ((x == Inf) & (n > 0));
   if (any (k))
-    cdf(k) = ones (1, length (k));
+    cdf(k) = 1;
   endif
 
   k = find ((x > -Inf) & (x < Inf) & (n > 0));
   if (any (k))
-    cdf(k) = betainc (1 ./ (1 + x(k) .^ 2 ./ n(k)), n(k) / 2, 1 / 2) / 2;
+    if (isscalar (n))
+      cdf(k) = betainc (1 ./ (1 + x(k) .^ 2 ./ n), n / 2, 1 / 2) / 2;
+    else
+      cdf(k) = betainc (1 ./ (1 + x(k) .^ 2 ./ n(k)), n(k) / 2, 1 / 2) / 2;
+    endif
     ind = find (x(k) > 0);
     if (any (ind))
       cdf(k(ind)) = 1 - cdf(k(ind));
     endif
   endif
-
-  cdf = reshape (cdf, r, c);
 
 endfunction

@@ -19,9 +19,11 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} lognormal_rnd (@var{a}, @var{v}, @var{r}, @var{c})
+## @deftypefnx {Function File} {} lognormal_rnd (@var{a}, @var{v}, @var{sz})
 ## Return an @var{r} by @var{c} matrix of random samples from the
 ## lognormal distribution with parameters @var{a} and @var{v}. Both
 ## @var{a} and @var{v} must be scalar or of size @var{r} by @var{c}.
+## Or if @var{sz} is a vector, create a matrix of size @var{sz}.
 ##
 ## If @var{r} and @var{c} are omitted, the size of the result matrix is
 ## the common size of @var{a} and @var{v}.
@@ -32,6 +34,15 @@
 
 function rnd = lognormal_rnd (a, v, r, c)
 
+  if (nargin > 1)
+    if (!isscalar(a) || !isscalar(v)) 
+      [retval, a, v] = common_size (a, v);
+      if (retval > 0)
+	error ("lognormal_rnd: a and v must be of common size or scalar");
+      endif
+    endif
+  endif
+
   if (nargin == 4)
     if (! (isscalar (r) && (r > 0) && (r == round (r))))
       error ("lognormal_rnd: r must be a positive integer");
@@ -39,35 +50,51 @@ function rnd = lognormal_rnd (a, v, r, c)
     if (! (isscalar (c) && (c > 0) && (c == round (c))))
       error ("lognormal_rnd: c must be a positive integer");
     endif
-    [retval, a, v] = common_size (a, v, zeros (r, c));
-    if (retval > 0)
-      error ("lognormal_rnd: a and v must be scalar or of size %d by %d", r, c);
+    sz = [r, c];
+
+    if (any (size (a) != 1) && 
+	((length (size (a)) != length (sz)) || any (size (a) != sz)))
+      error ("lognormal_rnd: a and b must be scalar or of size [r, c]");
+    endif
+
+  elseif (nargin == 3)
+    if (isscalar (r) && (r > 0))
+      sz = [r, r];
+    elseif (isvector(r) && all (r > 0))
+      sz = r(:)';
+    else
+      error ("lognormal_rnd: r must be a postive integer or vector");
+    endif
+
+    if (any (size (a) != 1) && 
+	((length (size (a)) != length (sz)) || any (size (a) != sz)))
+      error ("lognormal_rnd: a and b must be scalar or of size sz");
     endif
   elseif (nargin == 2)
-    [retval, a, v] = common_size (a, v);
-    if (retval > 0)
-      error ("lognormal_rnd: a and v must be of common size or scalar");
-    endif
+    sz = size(a);
   else
     usage ("lognormal_rnd (a, v, r, c)");
   endif
 
-  [r, c] = size (a);
-  s = r * c;
-  a = reshape (a, 1, s);
-  v = reshape (v, 1, s);
-  rnd = zeros (1, s);
+  if (isscalar (a) && isscalar (v))
+    if  (!(a > 0) | !(a < Inf) | !(v > 0) | !(v < Inf))
+      rnd = NaN * ones (sz);
+    elseif find ((a > 0) & (a < Inf) & (v > 0) & (v < Inf));
+      rnd = a * exp (sqrt (v) .* randn (sz));
+    else
+      rnd = zeros (sz);
+    endif
+  else
+    rnd = zeros (sz);
+    k = find (!(a > 0) | !(a < Inf) | !(v > 0) | !(v < Inf));
+    if (any (k))
+      rnd(k) = NaN * ones (1, length (k));
+    endif
 
-  k = find (!(a > 0) | !(a < Inf) | !(v > 0) | !(v < Inf));
-  if (any (k))
-    rnd(k) = NaN * ones (1, length (k));
+    k = find ((a > 0) & (a < Inf) & (v > 0) & (v < Inf));
+    if (any (k))
+      rnd(k) = a(k) .* exp (sqrt (v(k)) .* randn (1, length (k)));
+    endif
   endif
-
-  k = find ((a > 0) & (a < Inf) & (v > 0) & (v < Inf));
-  if (any (k))
-    rnd(k) = a(k) .* exp (sqrt (v(k)) .* randn (1, length (k)));
-  endif
-
-  rnd = reshape (rnd, r, c);
 
 endfunction

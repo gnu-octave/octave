@@ -57,17 +57,20 @@ function cdf = kolmogorov_smirnov_cdf (x, tol)
     endif
   endif
 
-  [nr, nc] = size (x);
-  if (min (nr, nc) == 0)
+  n = numel (x);
+  if (n == 0)
     error ("kolmogorov_smirnov_cdf: x must not be empty");
   endif
 
-  n   = nr * nc;
-  x   = reshape (x, 1, n);
-  cdf = zeros (1, n);
+  cdf = zeros (size (x));
+
   ind = find (x > 0);
   if (length (ind) > 0)
-    y   = x(ind);
+    if (size(ind,2) < size(ind,1))
+      y = x(ind.');
+    else
+      y   = x(ind);
+    endif
     K   = ceil (sqrt (- log (tol) / 2) / min (y));
     k   = (1:K)';
     A   = exp (- 2 * k.^2 * y.^2);
@@ -75,7 +78,5 @@ function cdf = kolmogorov_smirnov_cdf (x, tol)
     A(odd,:) = -A(odd,:);
     cdf(ind) = 1 + 2 * sum (A);
   endif
-
-  cdf = reshape (cdf, nr, nc);
 
 endfunction

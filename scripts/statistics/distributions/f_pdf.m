@@ -33,31 +33,34 @@ function pdf = f_pdf (x, m, n)
     usage ("f_pdf (x, m, n)");
   endif
 
-  [retval, x, m, n] = common_size (x, m, n);
-  if (retval > 0)
-    error ("f_pdf: x, m and n must be of common size or scalar");
+  if (!isscalar (m) || !isscalar (n))
+    [retval, x, m, n] = common_size (x, m, n);
+    if (retval > 0)
+      error ("f_pdf: x, m and n must be of common size or scalar");
+    endif
   endif
 
-  [r, c] = size (x);
-  s = r * c;
-  x = reshape (x, 1, s);
-  m = reshape (m, 1, s);
-  n = reshape (n, 1, s);
-  pdf = zeros (1, s);
+  sz = size (x);
+  pdf = zeros (sz);
 
   k = find (isnan (x) | !(m > 0) | !(n > 0));
   if (any (k))
-    pdf(k) = NaN * ones (1, length (k));
+    pdf(k) = NaN;
   endif
 
   k = find ((x > 0) & (x < Inf) & (m > 0) & (n > 0));
   if (any (k))
-    tmp = m(k) .* x(k) ./ n(k);
-    pdf(k) = (exp ((m(k) / 2 - 1) .* log (tmp)
-		   - ((m(k) + n(k)) / 2) .* log (1 + tmp))
-	      .* (m(k) ./ n(k)) ./ beta (m(k) / 2, n(k) / 2));
+    if (isscalar (m) && isscalar (n))
+      tmp = m / n * x(k);
+      pdf(k) = (exp ((m / 2 - 1) .* log (tmp)
+		     - ((m + n) / 2) .* log (1 + tmp))
+		.* (m / n) ./ beta (m / 2, n / 2));
+    else
+      tmp = m(k) .* x(k) ./ n(k);
+      pdf(k) = (exp ((m(k) / 2 - 1) .* log (tmp)
+		     - ((m(k) + n(k)) / 2) .* log (1 + tmp))
+		.* (m(k) ./ n(k)) ./ beta (m(k) / 2, n(k) / 2));
+    endif
   endif
-
-  pdf = reshape (pdf, r, c);
 
 endfunction

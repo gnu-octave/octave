@@ -19,9 +19,11 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} t_rnd (@var{n}, @var{r}, @var{c})
+## @deftypefnx {Function File} {} t_rnd (@var{n}, @var{sz})
 ## Return an @var{r} by @var{c} matrix of random samples from the t
 ## (Student) distribution with @var{n} degrees of freedom.  @var{n} must
-## be a scalar or of size @var{r} by @var{c}.
+## be a scalar or of size @var{r} by @var{c}. Or if @va{sz} is a
+## vector create a matrix of size @var{sz}.
 ##
 ## If @var{r} and @var{c} are omitted, the size of the result matrix is
 ## the size of @var{n}.
@@ -39,29 +41,51 @@ function rnd = t_rnd (n, r, c)
     if (! (isscalar (c) && (c > 0) && (c == round (c))))
       error ("t_rnd: c must be a positive integer");
     endif
-    [retval, n] = common_size (n, zeros (r, c));
-    if (retval > 0)
-      error ("t_rnd: n must be scalar or of size %d by %d", r, c);
+    sz = [r, c];
+
+    if (any (size (n) != 1) && 
+	((length (size (n)) != length (sz)) || any (size (n) != sz)))
+      error ("t_rnd: n must be scalar or of size sz");
     endif
-  elseif (nargin != 1)
+  elseif (nargin == 2)
+    if (isscalar (r) && (r > 0))
+      sz = [r, r];
+    elseif (isvector(r) && all (r > 0))
+      sz = r(:)';
+    else
+      error ("t_rnd: r must be a postive integer or vector");
+    endif
+
+    if (any (size (n) != 1) && 
+	((length (size (n)) != length (sz)) || any (size (n) != sz)))
+      error ("t_rnd: n must be scalar or of size sz");
+    endif
+  elseif (nargin == 1)
+    sz = size (n);
+  else
     usage ("t_rnd (n, r, c)");
   endif
 
-  [r, c] = size (n);
-  s = r * c;
-  n = reshape (n, 1, s);
-  rnd = zeros (1, s);
+  if (isscalar (n))
+    if (!(n > 0) || !(n < Inf))
+      rnd = NaN * ones (sz);
+    elseif ((n > 0) && (n < Inf))
+      rnd = t_inv (rand (sz), n);
+    else
+      rnd = zeros (size (n));
+    endif
+  else
+    rnd = zeros (size (n));
 
-  k = find (!(n > 0) | !(n < Inf));
-  if (any (k))
-    rnd(k) = NaN * ones (1, length (k));
+    k = find (!(n > 0) | !(n < Inf));
+    if (any (k))
+      rnd(k) = NaN;
+    endif
+
+    k = find ((n > 0) & (n < Inf));
+    if (any (k))
+      rnd(k) = t_inv (rand (size (k)), n(k));
+    endif
   endif
-
-  k = find ((n > 0) & (n < Inf));
-  if (any (k))
-    rnd(k) = t_inv (rand (1, length (k)), n(k));
-  endif
-
-  rnd = reshape (rnd, r, c);
 
 endfunction

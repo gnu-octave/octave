@@ -39,43 +39,76 @@ function rnd = poisson_rnd (l, r, c)
     if (! (isscalar (c) && (c > 0) && (c == round (c))))
       error ("poisson_rnd: c must be a positive integer");
     endif
-    [retval, l] = common_size (l, zeros (r, c));
-    if (retval > 0)
-      error ("poisson_rnd: lambda must be scalar or of size %d by %d", r, c);
+    sz = [r, c];
+
+    if (any (size (l) != 1) && 
+	((length (size (l)) != length (sz)) || any (size (l) != sz)))
+      error ("poisson_rnd: lambda must be scalar or of size [r, c]");
     endif
-  elseif (nargin != 1)
+  elseif (nargin == 2)
+    if (isscalar (r) && (r > 0))
+      sz = [r, r];
+    elseif (isvector(r) && all (r > 0))
+      sz = r(:)';
+    else
+      error ("poisson_rnd: r must be a postive integer or vector");
+    endif
+
+    if (any (size (l) != 1) && 
+	((length (size (l)) != length (sz)) || any (size (l) != sz)))
+      error ("poisson_rnd: lambda must be scalar or of size sz");
+    endif
+  elseif (nargin == 1)
+    sz = size (l);
+  else
     usage ("poisson_rnd (lambda, r, c)");
   endif
 
-  [r, c] = size (l);
-  s = r * c;
-  l = reshape (l, 1, s);
-  rnd = zeros (1, s);
+  if (isscalar (l))
 
-  k = find (!(l > 0) | !(l < Inf));
-  if (any (k))
-    rnd(k) = NaN * ones (1, length (k));
+    if (!(l > 0) | !(l < Inf))
+      rnd = NaN * ones (sz);
+    elseif ((l > 0) & (l < Inf))
+      num = zeros (sz);
+      sum = - log (1 - rand (sz)) ./ l;
+      while (1)
+	ind = find (sum < 1);
+	if (any (ind))
+          sum(ind) = (sum(ind) - log (1 - rand (size (ind))) / l);
+          num(ind) = num(ind) + 1;
+	else
+          break;
+	endif
+      endwhile
+      rnd = num;
+    else
+      rnd = zeros (sz);
+    endif
+  else
+    rnd = zeros (sz);
+
+    k = find (!(l > 0) | !(l < Inf));
+    if (any (k))
+      rnd(k) = NaN;
+    endif
+
+    k = find ((l > 0) & (l < Inf));
+    if (any (k))
+      l = l(k);
+      num = zeros (size (k));
+      sum = - log (1 - rand (size (k))) ./ l;
+      while (1)
+	ind = find (sum < 1);
+	if (any (ind))
+          sum(ind) = (sum(ind)
+                      - log (1 - rand (1, length (ind))) ./ l(ind));
+          num(ind) = num(ind) + 1;
+	else
+          break;
+	endif
+      endwhile
+      rnd(k) = num;
+    endif
   endif
-
-  k = find ((l > 0) & (l < Inf));
-  if (any (k))
-    l = l(k);
-    len = length (k);
-    num = zeros (1, len);
-    sum = - log (1 - rand (1, len)) ./ l;
-    while (1)
-      ind = find (sum < 1);
-      if (any (ind))
-        sum(ind) = (sum(ind)
-                    - log (1 - rand (1, length (ind))) ./ l(ind));
-        num(ind) = num(ind) + 1;
-      else
-        break;
-      endif
-    endwhile
-    rnd(k) = num;
-  endif
-
-  rnd = reshape (rnd, r, c);
 
 endfunction

@@ -36,7 +36,11 @@
 function cdf = hypergeometric_cdf (x, m, t, n)
 
   if (nargin != 4)
-    usage ("hypergeometrix_cdf (x, m, t, n)");
+    usage ("hypergeometric_cdf (x, m, t, n)");
+  endif
+
+  if (!isscalar (m) || !isscalar (t) || !isscalar (n))
+    error ("hypergeometric_cdf: m, t and n must all be positive integers");
   endif
 
   if ((m < 0) | (t < 0) | (n <= 0) | (m != round (m)) |

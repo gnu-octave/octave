@@ -40,32 +40,32 @@ function pdf = weibull_pdf (x, shape, scale)
     usage ("weibull_pdf (x, alpha, sigma)");
   endif
 
-  [retval, x, shape, scale] = common_size (x, shape, scale);
-  if (retval > 0)
-    error ("weibull_pdf: x, alpha and sigma must be of common size or scalar");
+  if (!isscalar (shape) || !isscalar (scale))
+    [retval, x, shape, scale] = common_size (x, shape, scale);
+    if (retval > 0)
+      error ("weibull_pdf: x, alpha and sigma must be of common size or scalar");
+    endif
   endif
 
-  [r, c] = size (x);
-  s = r * c;
-  x = reshape (x, 1, s);
-  shape = reshape (shape, 1, s);
-  scale = reshape (scale, 1, s);
-
-  pdf = NaN * ones (1, s);
+  pdf = NaN * ones (size (x));
   ok = ((shape > 0) & (shape < Inf) & (scale > 0) & (scale < Inf));
 
   k = find ((x > -Inf) & (x <= 0) & ok);
   if (any (k))
-    pdf(k) = zeros (1, length (k));
+    pdf(k) = 0;
   endif
 
   k = find ((x > 0) & (x < Inf) & ok);
   if (any (k))
-    pdf(k) = (shape(k) .* (scale(k) .^ -shape(k))
-              .* (x(k) .^ (shape(k) - 1))
-              .* exp(- (x(k) ./ scale(k)) .^ shape(k)));
+    if (isscalar (shape) && isscalar (scale))
+      pdf(k) = (shape .* (scale .^ -shape)
+		.* (x(k) .^ (shape - 1))
+		.* exp(- (x(k) / scale) .^ shape));
+    else
+      pdf(k) = (shape(k) .* (scale(k) .^ -shape(k))
+		.* (x(k) .^ (shape(k) - 1))
+		.* exp(- (x(k) ./ scale(k)) .^ shape(k)));
+    endif
   endif
-
-  pdf = reshape (pdf, r, c);
 
 endfunction

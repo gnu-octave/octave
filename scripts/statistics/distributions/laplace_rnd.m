@@ -19,8 +19,10 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} laplace_rnd (@var{r}, @var{c})
+## @deftypefnx {Function File} {} laplace_rnd (@var{sz});
 ## Return an @var{r} by @var{c} matrix of random numbers from the
-## Laplace distribution.
+## Laplace distribution. Or is @var{sz} is a vector, create a matrix of
+## @var{sz}.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
@@ -28,18 +30,27 @@
 
 function rnd = laplace_rnd (r, c)
 
-  if (nargin != 2)
+  if (nargin == 2)
+    if (! (isscalar (r) && (r > 0) && (r == round (r))))
+      error ("laplace_rnd: r must be a positive integer");
+    endif
+    if (! (isscalar (c) && (c > 0) && (c == round (c))))
+      error ("laplace_rnd: c must be a positive integer");
+    endif
+    sz = [r, c];
+  elseif (nargin == 1)
+    if (isscalar (r) && (r > 0))
+      sz = [r, r];
+    elseif (isvector(r) && all (r > 0))
+      sz = r(:)';
+    else
+      error ("laplace_rnd: r must be a postive integer or vector");
+    endif
+  else
     usage ("laplace_rnd (r, c)");
   endif
 
-  if (! (isscalar (r) && (r > 0) && (r == round (r))))
-    error ("laplace_rnd: r must be a positive integer");
-  endif
-  if (! (isscalar (c) && (c > 0) && (c == round (c))))
-    error ("laplace_rnd: c must be a positive integer");
-  endif
-
-  tmp = rand (r, c);
+  tmp = rand (sz);
   rnd = ((tmp < 1/2) .* log (2 * tmp)
          - (tmp > 1/2) .* log (2 * (1 - tmp)));
 

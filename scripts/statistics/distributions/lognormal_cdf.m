@@ -47,33 +47,32 @@ function cdf = lognormal_cdf (x, a, v)
   ## cdf = normal_cdf (log (x), log (a), v);
   ## Hence ...
 
-  [retval, x, a, v] = common_size (x, a, v);
-  if (retval > 0)
-    error ("lognormal_cdf: x, a and v must be of common size or scalars");
+  if (!isscalar (a) || !isscalar (v))
+    [retval, x, a, v] = common_size (x, a, v);
+    if (retval > 0)
+      error ("lognormal_cdf: x, a and v must be of common size or scalars");
+    endif
   endif
 
-  [r, c] = size (x);
-  s = r * c;
-  x = reshape (x, 1, s);
-  a = reshape (a, 1, s);
-  v = reshape (v, 1, s);
-  cdf = zeros (1, s);
+  cdf = zeros (size (x));
 
   k = find (isnan (x) | !(a > 0) | !(a < Inf) | !(v > 0) | !(v < Inf));
   if (any (k))
-    cdf(k) = NaN * ones (1, length (k));
+    cdf(k) = NaN;
   endif
 
   k = find ((x == Inf) & (a > 0) & (a < Inf) & (v > 0) & (v < Inf));
   if (any (k))
-    cdf(k) = ones (1, length (k));
+    cdf(k) = 1;
   endif
 
   k = find ((x > 0) & (x < Inf) & (a > 0) & (a < Inf) & (v > 0) & (v < Inf));
   if (any (k))
-    cdf(k) = stdnormal_cdf ((log (x(k)) - log (a(k))) ./ sqrt (v(k)));
+    if (isscalar (a) && isscalar (v))
+      cdf(k) = stdnormal_cdf ((log (x(k)) - log (a)) / sqrt (v));
+    else
+      cdf(k) = stdnormal_cdf ((log (x(k)) - log (a(k))) ./ sqrt (v(k)));
+    endif
   endif
-
-  cdf = reshape (cdf, r, c);
 
 endfunction

@@ -40,36 +40,34 @@ function cdf = weibull_cdf (x, shape, scale)
     usage ("weibull_cdf (x, alpha, sigma)");
   endif
 
-  [retval, x, shape, scale] = common_size (x, shape, scale);
-  if (retval > 0)
-    error ("weibull_cdf: x, alpha and sigma must be of common size or scalar");
+  if (!isscalar (shape) || !isscalar (scale))
+    [retval, x, shape, scale] = common_size (x, shape, scale);
+    if (retval > 0)
+      error ("weibull_cdf: x, alpha and sigma must be of common size or scalar");
+    endif
   endif
 
-  [r, c] = size (x);
-  s = r * c;
-  x = reshape (x, 1, s);
-  shape = reshape (shape, 1, s);
-  scale = reshape (scale, 1, s);
-
-  cdf = NaN * ones (1, s);
+  cdf = NaN * ones (size (x));
 
   ok = ((shape > 0) & (shape < Inf) & (scale > 0) & (scale < Inf));
 
   k = find ((x <= 0) & ok);
   if (any (k))
-    cdf(k) = zeros (1, length (k));
+    cdf(k) = 0;
   endif
 
   k = find ((x > 0) & (x < Inf) & ok);
   if (any (k))
-    cdf(k) = 1 - exp (- (x(k) ./ scale(k)) .^ shape(k));
+    if (isscalar (shape) && isscalar (scale))
+      cdf(k) = 1 - exp (- (x(k) / scale) .^ shape);
+    else
+      cdf(k) = 1 - exp (- (x(k) ./ scale(k)) .^ shape(k));
+    endif
   endif
 
   k = find ((x == Inf) & ok);
   if (any (k))
-    cdf(k) = ones (1, length (k));
+    cdf(k) = 1;
   endif
-
-  cdf = reshape (cdf, r, c);
 
 endfunction

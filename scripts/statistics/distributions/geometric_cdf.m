@@ -32,32 +32,34 @@ function cdf = geometric_cdf (x, p)
     usage ("geometric_cdf (x, p)");
   endif
 
-  [retval, x, p] = common_size (x, p);
-  if (retval > 0)
-    error ("geometric_cdf: x and p must be of common size or scalar");
+  if (!isscalar (x) && !isscalar (p))
+    [retval, x, p] = common_size (x, p);
+    if (retval > 0)
+      error ("geometric_cdf: x and p must be of common size or scalar");
+    endif
   endif
 
-  [r, c] = size (x);
-  s = r * c;
-  x   = reshape (x, 1, s);
-  p   = reshape (p, 1, s);
-  cdf = zeros (1, s);
+  cdf = zeros (size (x));
 
   k = find (isnan (x) | !(p >= 0) | !(p <= 1));
   if (any (k))
-    cdf(k) = NaN * ones (1, length (k));
+    cdf(k) = NaN;
   endif
 
   k = find ((x == Inf) & (p >= 0) & (p <= 1));
   if (any (k))
-    cdf(k) = ones (1, length (k));
+    cdf(k) = 1;
   endif
 
   k = find ((x >= 0) & (x < Inf) & (x == round (x)) & (p > 0) & (p <= 1));
   if (any (k))
-    cdf(k) = 1 - ((1 - p(k)) .^ (x(k) + 1));
+    if (isscalar (x))
+      cdf(k) = 1 - ((1 - p(k)) .^ (x + 1));
+    elseif (isscalar (p))
+      cdf(k) = 1 - ((1 - p) .^ (x(k) + 1));
+    else
+      cdf(k) = 1 - ((1 - p(k)) .^ (x(k) + 1));
+    endif
   endif
-
-  cdf = reshape (cdf, r, c);
 
 endfunction

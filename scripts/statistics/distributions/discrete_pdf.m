@@ -33,7 +33,7 @@ function pdf = discrete_pdf (x, v, p)
     usage ("discrete_pdf (x, v, p)");
   endif
 
-  [r, c] = size (x);
+  sz = size (x);
 
   if (! isvector (v))
     error ("discrete_pdf: v must be a vector");
@@ -43,23 +43,21 @@ function pdf = discrete_pdf (x, v, p)
     error ("discrete_pdf: p must be a nonzero, nonnegative vector");
   endif
 
-  n = r * c;
+  n = numel (x);
   m = length (v);
   x = reshape (x, n, 1);
   v = reshape (v, 1, m);
   p = reshape (p / sum (p), m, 1);
 
-  pdf = zeros (n, 1);
+  pdf = zeros (sz);
   k = find (isnan (x));
   if (any (k))
-    pdf (k) = NaN * ones (length (k), 1);
+    pdf (k) = NaN;
   endif
   k = find (!isnan (x));
   if (any (k))
     n = length (k);
     pdf (k) = ((x(k) * ones (1, m)) == (ones (n, 1) * v)) * p;
   endif
-
-  pdf = reshape (pdf, r, c);
 
 endfunction

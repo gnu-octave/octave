@@ -36,6 +36,10 @@ function inv = hypergeometric_inv (x, m, t, n)
     usage ("hypergeometric_inv (x, m, t, n)");
   endif
 
+  if (!isscalar (m) || !isscalar (t) || !isscalar (n))
+    error ("hypergeometrix_inv: m, t and n must all be positive integers");
+  endif
+
   if ((m < 0) | (t < 0) | (n <= 0) | (m != round (m)) |
       (t != round (t)) | (n != round (n)) | (m > t) | (n > t))
     inv = NaN * ones (size (x))

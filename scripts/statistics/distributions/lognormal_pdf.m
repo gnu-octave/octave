@@ -47,28 +47,27 @@ function pdf = lognormal_pdf (x, a, v)
   ## pdf = (x > 0) ./ x .* normal_pdf (log (x), log (a), v);
   ## Hence ...
 
-  [retval, x, a, v] = common_size (x, a, v);
-  if (retval > 0)
-    error ("lognormal_pdf: x, a and v must be of common size or scalars");
+  if (!isscalar (a) || !isscalar (v))
+    [retval, x, a, v] = common_size (x, a, v);
+    if (retval > 0)
+      error ("lognormal_pdf: x, a and v must be of common size or scalars");
+    endif
   endif
 
-  [r, c] = size (x);
-  s = r * c;
-  x = reshape (x, 1, s);
-  a = reshape (a, 1, s);
-  v = reshape (v, 1, s);
-  pdf = zeros (1, s);
+  pdf = zeros (size (x));
 
   k = find (isnan (x) | !(a > 0) | !(a < Inf) | !(v > 0) | !(v < Inf));
   if (any (k))
-    pdf(k) = NaN * ones (1, length (k));
+    pdf(k) = NaN;
   endif
 
   k = find ((x > 0) & (x < Inf) & (a > 0) & (a < Inf) & (v > 0) & (v < Inf));
   if (any (k))
-    pdf(k) = normal_pdf (log (x(k)), log (a(k)), v(k)) ./ x(k);
+    if (isscalar (a) && isscalar (v))
+      pdf(k) = normal_pdf (log (x(k)), log (a), v) ./ x(k);
+    else
+      pdf(k) = normal_pdf (log (x(k)), log (a(k)), v(k)) ./ x(k);
   endif
-
-  pdf = reshape (pdf, r, c);
+  endif
 
 endfunction

@@ -32,27 +32,34 @@ function pdf = exponential_pdf (x, l)
     usage ("exponential_pdf (x, lambda)");
   endif
 
-  [retval, x, l] = common_size (x, l);
-  if (retval > 0)
-    error ("exponential_pdf: x and lambda must be of common size or scalar");
+  if (!isscalar (x) && !isscalar(l))
+    [retval, x, l] = common_size (x, l);
+    if (retval > 0)
+      error ("exponential_pdf: x and lambda must be of common size or scalar");
+    endif
   endif
 
-  [r, c] = size (x);
-  s = r * c;
-  x = reshape (x, 1, s);
-  l = reshape (l, 1, s);
-  pdf = zeros (1, s);
+  if (isscalar (x))
+    sz = size (l);
+  else
+    sz = size (x);
+  endif
+  pdf = zeros (sz);
 
   k = find (!(l > 0) | isnan (x));
   if (any (k))
-    pdf(k) = NaN * ones (1, length (k));
+    pdf(k) = NaN;
   endif
 
   k = find ((x > 0) & (x < Inf) & (l > 0));
   if (any (k))
-    pdf(k) = l(k) .* exp (- l(k) .* x(k));
+    if isscalar (l)
+      pdf(k) = l .* exp (- l .* x(k));
+    elseif isscalar (x)
+      pdf(k) = l(k) .* exp (- l(k) .* x);
+    else
+      pdf(k) = l(k) .* exp (- l(k) .* x(k));
+    endif
   endif
-
-  pdf = reshape (pdf, r, c);
 
 endfunction

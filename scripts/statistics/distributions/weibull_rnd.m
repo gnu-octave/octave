@@ -19,9 +19,11 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} weibull_rnd (@var{alpha}, @var{sigma}, @var{r}, @var{c})
+## @deftypefnx {Function File} {} weibull_rnd (@var{alpha}, @var{sigma}, @var{sz})
 ## Return an @var{r} by @var{c} matrix of random samples from the
 ## Weibull distribution with parameters @var{alpha} and @var{sigma}
-## which must be scalar or of size @var{r} by @var{c}.
+## which must be scalar or of size @var{r} by @var{c}. Or if @var{sz}
+## is a vector return a matrix of size @var{sz}.
 ##
 ## If @var{r} and @var{c} are omitted, the size of the result matrix is
 ## the common size of @var{alpha} and @var{sigma}.
@@ -32,6 +34,15 @@
 
 function rnd = weibull_rnd (shape, scale, r, c)
 
+  if (nargin > 1)
+    if (!isscalar(shape) || !isscalar(scale)) 
+      [retval, shape, scale] = common_size (shape, scale);
+      if (retval > 0)
+	error ("weibull_rnd: shape and scale must be of common size or scalar");
+      endif
+    endif
+  endif
+
   if (nargin == 4)
     if (! (isscalar (r) && (r > 0) && (r == round (r))))
       error ("weibull_rnd: r must be a positive integer");
@@ -39,32 +50,46 @@ function rnd = weibull_rnd (shape, scale, r, c)
     if (! (isscalar (c) && (c > 0) && (c == round (c))))
       error ("weibull_rnd: c must be a positive integer");
     endif
-    [retval, shape, scale] = common_size (shape, scale, zeros (r, c));
-    if (retval > 0)
-      error ("weibull_rnd: alpha and sigma must be scalar or of size %d by %d",
-	     r, c);
+    sz = [r, c];
+
+    if (any (size (scale) != 1) && 
+	((length (size (scale)) != length (sz)) ||
+	 any (size (scale) != sz)))
+      error ("weilbull_rnd: shape and scale must be scalar or of size [r, c]");
+    endif
+  elseif (nargin == 3)
+    if (isscalar (r) && (r > 0))
+      sz = [r, r];
+    elseif (isvector(r) && all (r > 0))
+      sz = r(:)';
+    else
+      error ("weibull_rnd: r must be a postive integer or vector");
+    endif
+
+    if (any (size (scale) != 1) && 
+	((length (size (scale)) != length (sz)) ||
+	 any (size (scale) != sz)))
+      error ("weibull_rnd: shape and scale must be scalar or of size sz");
     endif
   elseif (nargin == 2)
-    [retval, shape, scale] = common_size (shape, scale);
-    if (retval > 0)
-      error ("weibull_rnd: alpha and sigma must be of common size or scalar");
-    endif
+    sz = size(shape);
   else
     usage ("weibull_rnd (alpha, sigma, r, c)");
   endif
 
-  [r, c] = size (shape);
-  s = r * c;
-  shape = reshape (shape, 1, s);
-  scale = reshape (scale, 1, s);
-
-  rnd = NaN * ones (1, s);
-  k = find ((shape > 0) & (shape < Inf) & (scale > 0) & (scale < Inf));
-  if (any (k))
-    rnd(k) = (scale(k)
-              .* (- log (1 - rand (1, length (k)))) .^ (1 ./ shape(k)));
+  if (isscalar (shape) && isscalar (scale))
+    if ((shape > 0) & (shape < Inf) & (scale > 0) & (scale < Inf))
+      rnd = (scale * (- log (1 - rand (sz))) .^ (1 / shape));
+    else
+      rnd = NaN * ones (sz);
+    endif
+  else
+    rnd = NaN * ones (sz);
+    k = find ((shape > 0) & (shape < Inf) & (scale > 0) & (scale < Inf));
+    if (any (k))
+      rnd(k) = (scale(k)
+		.* (- log (1 - rand (size (k)))) .^ (1 ./ shape(k)));
+    endif
   endif
-
-  rnd = reshape (rnd, r, c);
 
 endfunction

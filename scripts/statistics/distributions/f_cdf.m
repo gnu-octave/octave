@@ -33,33 +33,34 @@ function cdf = f_cdf (x, m, n)
     usage ("f_cdf (x, m, n)");
   endif
 
-  [retval, x, m, n] = common_size (x, m, n);
-  if (retval > 0)
-    error ("f_cdf: x, m and n must be of common size or scalar");
+  if (!isscalar (m) || !isscalar (n))
+    [retval, x, m, n] = common_size (x, m, n);
+    if (retval > 0)
+      error ("f_cdf: x, m and n must be of common size or scalar");
+    endif
   endif
 
-  [r, c] = size (x);
-  s = r * c;
-  x = reshape (x, 1, s);
-  m = reshape (m, 1, s);
-  n = reshape (n, 1, s);
-  cdf = zeros (1, s);
+  sz = size (x);
+  cdf = zeros (sz);
 
   k = find (!(m > 0) | !(n > 0) | isnan (x));
   if (any (k))
-    cdf(k) = NaN * ones (1, length (k));
+    cdf(k) = NaN;
   endif
 
   k = find ((x == Inf) & (m > 0) & (n > 0));
   if (any (k))
-    cdf(k) = ones (1, length (k));
+    cdf(k) = 1;
   endif
 
   k = find ((x > 0) & (x < Inf) & (m > 0) & (n > 0));
   if (any (k))
-    cdf(k) = 1 - betainc (1 ./ (1 + m(k) .* x(k) ./ n(k)), n(k) / 2, m(k) / 2);
+    if (isscalar (m) && isscalar (n))
+      cdf(k) = 1 - betainc (1 ./ (1 + m .* x(k) ./ n), n / 2, m / 2);
+    else
+      cdf(k) = 1 - betainc (1 ./ (1 + m(k) .* x(k) ./ n(k)), n(k) / 2, 
+			    m(k) / 2);
+    endif
   endif
-
-  cdf = reshape (cdf, r, c);
 
 endfunction

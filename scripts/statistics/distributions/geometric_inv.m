@@ -32,33 +32,34 @@ function inv = geometric_inv (x, p)
     usage ("geometric_inv (x, p)");
   endif
 
-  [retval, x, p] = common_size (x, p);
-  if (retval > 0)
-    error ("geometric_inv: x and p must be of common size or scalar");
+  if (!isscalar (x) && !isscalar (p))
+    [retval, x, p] = common_size (x, p);
+    if (retval > 0)
+      error ("geometric_inv: x and p must be of common size or scalar");
+    endif
   endif
 
-  [r, c] = size (x);
-  s = r * c;
-  x   = reshape (x, 1, s);
-  p   = reshape (p, 1, s);
-  inv = zeros (1, s);
+  inv = zeros (size (x));
 
   k = find (!(x >= 0) | !(x <= 1) | !(p >= 0) | !(p <= 1));
   if (any (k))
-    inv(k) = NaN * ones (1, length (k));
+    inv(k) = NaN;
   endif
 
   k = find ((x == 1) & (p >= 0) & (p <= 1));
   if (any (k))
-    inv(k) = Inf * ones (1, length (k));
+    inv(k) = Inf;
   endif
 
   k = find ((x > 0) & (x < 1) & (p > 0) & (p <= 1));
   if (any (k))
-    inv(k) = max (ceil (log (1 - x(k)) ./ log (1 - p(k))) - 1,
-		  zeros (1, length (k)));
+    if (isscalar (x))
+      inv(k) = max (ceil (log (1 - x) ./ log (1 - p(k))) - 1, 0);
+    elseif (isscalar (p))
+      inv(k) = max (ceil (log (1 - x(k)) / log (1 - p)) - 1, 0);
+    else
+      inv(k) = max (ceil (log (1 - x(k)) ./ log (1 - p(k))) - 1, 0);
+    endif
   endif
-
-  inv = reshape (inv, r, c);
 
 endfunction

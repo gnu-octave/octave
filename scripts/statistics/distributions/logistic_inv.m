@@ -32,31 +32,26 @@ function inv = logistic_inv (x)
     usage ("logistic_inv (x)");
   endif
 
-  [r, c] = size (x);
-  s = r * c;
-  x = reshape (x, 1, s);
-  inv = zeros (1, s);
+  inv = zeros (size (x));
 
   k = find ((x < 0) | (x > 1) | isnan (x));
   if (any (k))
-    inv(k) = NaN * ones (1, length (k));
+    inv(k) = NaN;
   endif
 
   k = find (x == 0);
   if (any (k))
-    inv(k) = (-Inf) * ones (1, length (k));
+    inv(k) = -Inf;
   endif
 
   k = find (x == 1);
   if (any (k))
-    inv(k) = Inf * ones (1, length (k));
+    inv(k) = Inf;
   endif
 
   k = find ((x > 0) & (x < 1));
   if (any (k))
     inv (k) = - log (1 ./ x(k) - 1);
   endif
-
-  inv = reshape (inv, r, c);
 
 endfunction

@@ -32,19 +32,16 @@ function inv = laplace_inv (x)
     usage ("laplace_inv (x)");
   endif
 
-  [r, c] = size (x);
-  s = r * c;
-  x = reshape (x, 1, s);
-  inv = (-Inf) * ones (1, s);
+  inv = (-Inf) * ones (size (x));
 
   k = find (isnan (x) | (x < 0) | (x > 1));
   if (any (k))
-    inv(k) = NaN * ones (1, length (k));
+    inv(k) = NaN;
   endif
 
   k = find (x == 1);
   if (any (k))
-    inv(k) = Inf * ones (1, length (k));
+    inv(k) = Inf;
   endif
 
   k = find ((x > 0) & (x < 1));
@@ -52,7 +49,5 @@ function inv = laplace_inv (x)
     inv(k) = ((x(k) < 1/2) .* log (2 * x(k))
 	      - (x(k) > 1/2) .* log (2 * (1 - x(k))));
   endif
-
-  inv = reshape (inv, r, c);
 
 endfunction

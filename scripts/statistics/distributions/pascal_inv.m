@@ -37,50 +37,58 @@ function inv = pascal_inv (x, n, p)
     usage ("pascal_inv (x, n, p)");
   endif
 
-  [retval, x, n, p] = common_size (x, n, p);
-  if (retval > 0)
-    error ("pascal_inv: x, n and p must be of common size or scalar");
+  if (!isscalar(n) || !isscalar(p)) 
+    [retval, x, n, p] = common_size (x, n, p);
+    if (retval > 0)
+      error ("pascal_inv: x, n and p must be of common size or scalar");
+    endif
   endif
 
-  [r, c] = size (x);
-  s = r * c;
-  x   = reshape (x, 1, s);
-  n   = reshape (n, 1, s);
-  p   = reshape (p, 1, s);
-  inv = zeros (1, s);
+  inv = zeros (size (x));
 
   k = find (isnan (x) | (x < 0) | (x > 1) | (n < 1) | (n == Inf)
 	    | (n != round (n)) | (p < 0) | (p > 1));
   if (any (k))
-    inv(k) = NaN * ones (1, length (k));
+    inv(k) = NaN;
   endif
 
   k = find ((x == 1) & (n > 0) & (n < Inf) & (n == round (n))
 	    & (p >= 0) & (p <= 1));
   if (any (k))
-    inv(k) = Inf * ones (1, length (k));
+    inv(k) = Inf;
   endif
 
   k = find ((x >= 0) & (x < 1) & (n > 0) & (n < Inf)
 	    & (n == round (n)) & (p > 0) & (p <= 1));
   if (any (k))
+    m = zeros (size (k));
     x = x(k);
-    n = n(k);
-    p = p(k);
-    m = zeros (1, length (k));
-    s = p .^ n;
-    while (1)
-      l = find (s < x);
-      if (any (l))
-        m(l) = m(l) + 1;
-        s(l) = s(l) + pascal_pdf (m(l), n(l), p(l));
-      else
-        break;
-      endif
-    endwhile
+    if (isscalar (n) && isscalar (p))
+      s = p ^ n * ones (size(k));
+      while (1)
+	l = find (s < x);
+	if (any (l))
+          m(l) = m(l) + 1;
+          s(l) = s(l) + pascal_pdf (m(l), n, p);
+	else
+          break;
+	endif
+      endwhile
+    else
+      n = n(k);
+      p = p(k);
+      s = p .^ n;
+      while (1)
+	l = find (s < x);
+	if (any (l))
+          m(l) = m(l) + 1;
+          s(l) = s(l) + pascal_pdf (m(l), n(l), p(l));
+	else
+          break;
+	endif
+      endwhile
+    endif
     inv(k) = m;
   endif
-
-  inv = reshape (inv, r, c);
 
 endfunction

@@ -47,34 +47,33 @@ function inv = lognormal_inv (x, a, v)
   ## inv = exp (normal_inv (x, log (a), v));
   ## Hence ...
 
-  [retval, x, a, v] = common_size (x, a, v);
-  if (retval > 0)
-    error ("lognormal_inv: x, a and v must be of common size or scalars");
+  if (!isscalar (a) || !isscalar (v))
+    [retval, x, a, v] = common_size (x, a, v);
+    if (retval > 0)
+      error ("lognormal_inv: x, a and v must be of common size or scalars");
+    endif
   endif
 
-  [r, c] = size (x);
-  s = r * c;
-  x = reshape (x, 1, s);
-  a = reshape (a, 1, s);
-  v = reshape (v, 1, s);
-  inv = zeros (1, s);
+  inv = zeros (size (x));
 
   k = find (!(x >= 0) | !(x <= 1) | !(a > 0) | !(a < Inf)
 	    | !(v > 0) | !(v < Inf));
   if (any (k))
-    inv(k) = NaN * ones (1, length (k));
+    inv(k) = NaN;
   endif
 
   k = find ((x == 1) & (a > 0) & (a < Inf) & (v > 0) & (v < Inf));
   if (any (k))
-    inv(k) = Inf * ones (1, length (k));
+    inv(k) = Inf;
   endif
 
   k = find ((x > 0) & (x < 1) & (a > 0) & (a < Inf) & (v > 0) & (v < Inf));
   if (any (k))
-    inv(k) = a(k) .* exp (sqrt (v(k)) .* stdnormal_inv (x(k)));
+    if (isscalar (a) && isscalar (v))
+      inv(k) = a .* exp (sqrt (v) .* stdnormal_inv (x(k)));
+    else
+      inv(k) = a(k) .* exp (sqrt (v(k)) .* stdnormal_inv (x(k)));
+    endif
   endif
-
-  inv = reshape (inv, r, c);
 
 endfunction

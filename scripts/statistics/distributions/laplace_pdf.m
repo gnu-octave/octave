@@ -32,21 +32,16 @@ function pdf = laplace_pdf (x)
     usage ("laplace_pdf (x)");
   endif
 
-  [r, c] = size (x);
-  s = r * c;
-  x = reshape (x, 1, s);
-  pdf = zeros (1, s);
+  pdf = zeros (size (x));
 
   k = find (isnan (x));
   if (any (k))
-    pdf(k) = NaN * ones (1, length (k));
+    pdf(k) = NaN;
   endif
 
   k = find ((x > -Inf) & (x < Inf));
   if (any (k))
     pdf(k) = exp (- abs (x(k))) / 2;
   endif
-
-  pdf = reshape (pdf, r, c);
 
 endfunction

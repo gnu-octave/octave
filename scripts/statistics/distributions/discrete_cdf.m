@@ -33,7 +33,7 @@ function cdf = discrete_cdf (x, v, p)
     usage ("discrete_cdf (x, v, p)");
   endif
 
-  [r, c] = size (x);
+  sz = size (x);
 
   if (! isvector (v))
     error ("discrete_cdf: v must be a vector");
@@ -43,23 +43,21 @@ function cdf = discrete_cdf (x, v, p)
     error ("discrete_cdf: p must be a nonzero, nonnegative vector");
   endif
 
-  n = r * c;
+  n = numel (x);
   m = length (v);
   x = reshape (x, n, 1);
   v = reshape (v, 1, m);
   p = reshape (p / sum (p), m, 1);
 
-  cdf = zeros (n, 1);
+  cdf = zeros (sz);
   k = find (isnan (x));
   if (any (k))
-    cdf (k) = NaN * ones (length (k), 1);
+    cdf (k) = NaN;
   endif
   k = find (!isnan (x));
   if (any (k))
     n = length (k);
     cdf (k) = ((x(k) * ones (1, m)) >= (ones (n, 1) * v)) * p;
   endif
-
-  cdf = reshape (cdf, r, c);
 
 endfunction

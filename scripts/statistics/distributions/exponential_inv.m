@@ -33,32 +33,40 @@ function inv = exponential_inv (x, l)
     usage ("exponential_inv (x, lambda)");
   endif
 
-  [retval, x, l] = common_size (x, l);
-  if (retval > 0)
-    error ("exponential_inv: x and lambda must be of common size or scalar");
+  if (!isscalar (x) && !isscalar(l))
+    [retval, x, l] = common_size (x, l);
+    if (retval > 0)
+      error ("exponential_inv: x and lambda must be of common size or scalar");
+    endif
   endif
 
-  [r, c] = size (x);
-  s = r * c;
-  x = reshape (x, 1, s);
-  l = reshape (l, 1, s);
-  inv = zeros (1, s);
+  if (isscalar (x))
+    sz = size (l);
+  else
+    sz = size (x);
+  endif
+
+  inv = zeros (sz);
 
   k = find (!(l > 0) | (x < 0) | (x > 1) | isnan (x));
   if (any (k))
-    inv(k) = NaN * ones (1, length (k));
+    inv(k) = NaN;
   endif
 
   k = find ((x == 1) & (l > 0));
   if (any (k))
-    inv(k) = Inf * ones (1, length (k));
+    inv(k) = Inf;
   endif
 
   k = find ((x > 0) & (x < 1) & (l > 0));
   if (any (k))
-    inv(k) = - log (1 - x(k)) ./ l(k);
+    if isscalar (l)
+      inv(k) = - log (1 - x(k)) ./ l;
+    elseif isscalar (x)
+      inv(k) = - log (1 - x) ./ l(k);
+    else
+      inv(k) = - log (1 - x(k)) ./ l(k);
+    endif
   endif
-
-  inv = reshape (inv, r, c);
 
 endfunction

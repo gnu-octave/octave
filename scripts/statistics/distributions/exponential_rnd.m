@@ -19,9 +19,11 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} exponential_rnd (@var{lambda}, @var{r}, @var{c})
+## @deftypefn {Function File} {} exponential_rnd (@var{lambda}, @var{sz})
 ## Return an @var{r} by @var{c} matrix of random samples from the
 ## exponential distribution with parameter @var{lambda}, which must be a
-## scalar or of size @var{r} by @var{c}.
+## scalar or of size @var{r} by @var{c}. Or if @var{sz} is a vector, 
+## create a matrix of size @var{sz}.
 ##
 ## If @var{r} and @var{c} are omitted, the size of the result matrix is
 ## the size of @var{lambda}.
@@ -39,29 +41,48 @@ function rnd = exponential_rnd (l, r, c)
     if (! (isscalar (c) && (c > 0) && (c == round (c))))
       error ("exponential_rnd: c must be a positive integer");
     endif
-    [retval, l] = common_size (l, zeros (r, c));
-    if (retval > 0)
-      error ("exponential_rnd: lambda must be scalar or of size %d by %d",
-	     r, c);
+    sz = [r, c];
+
+    if (any (size (l) != 1) && 
+	((length (size (nl)) != length (sz)) || any (size (l) != sz)))
+      error ("exponential_rnd: lambda must be scalar or of size [r, c]");
     endif
-  elseif (nargin != 1)
+  elseif (nargin == 2)
+    if (isscalar (r) && (r > 0))
+      sz = [r, r];
+    elseif (isvector(r) && all (r > 0))
+      sz = r(:)';
+    else
+      error ("exponential_rnd: r must be a postive integer or vector");
+    endif
+
+    if (any (size (l) != 1) && 
+	((length (size (l)) != length (sz)) || any (size (l) != sz)))
+      error ("exponential_rnd: lambda must be scalar or of size sz");
+    endif
+  elseif (nargin == 1)
+    sz = size (l);
+  else
     usage ("exponential_rnd (lambda, r, c)");
   endif
 
-  [r, c] = size (l);
-  s = r * c;
-  l = reshape (l, 1, s);
-  rnd = zeros (1, s);
 
-  k = find (!(l > 0) | !(l < Inf));
-  if (any (k))
-    rnd(k) = NaN * ones (1, length (k));
+  if (isscalar (l))
+    if ((l > 0) && (l < Inf))
+      rnd = - log (1 - rand (sz)) ./ l;
+    else
+      rnd = NaN * ones (sz);
+    endif
+  else
+    rnd = zeros (sz);
+    k = find (!(l > 0) | !(l < Inf));
+    if (any (k))
+      rnd(k) = NaN;
+    endif
+    k = find ((l > 0) & (l < Inf));
+    if (any (k))
+      rnd(k) = - log (1 - rand (size (k))) ./ l(k);
+    endif
   endif
-  k = find ((l > 0) & (l < Inf));
-  if (any (k))
-    rnd(k) = - log (1 - rand (1, length (k))) ./ l(k);
-  endif
-
-  rnd = reshape (rnd, r, c);
 
 endfunction

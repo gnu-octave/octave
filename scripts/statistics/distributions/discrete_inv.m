@@ -33,7 +33,7 @@ function inv = discrete_inv (x, v, p)
     usage ("discrete_inv (x, v, p)");
   endif
 
-  [r, c] = size (x);
+  sz = size (x);
 
   if (! isvector (v))
     error ("discrete_inv: v must be a vector");
@@ -43,7 +43,7 @@ function inv = discrete_inv (x, v, p)
     error ("discrete_inv: p must be a nonzero, nonnegative vector");
   endif
 
-  n = r * c;
+  n = numel (x);
   x = reshape (x, 1, n);
   m = length (v);
   v = sort (v);
@@ -52,12 +52,12 @@ function inv = discrete_inv (x, v, p)
   ## Allow storage allocated for P to be reclaimed.
   p = [];
 
-  inv = NaN * ones (n, 1);
+  inv = NaN * ones (sz);
   if (any (k = find (x == 0)))
-    inv(k) = -Inf * ones (1, length (k));
+    inv(k) = -Inf;
   endif
   if (any (k = find (x == 1)))
-    inv(k) = v(m) * ones (1, length (k));
+    inv(k) = v(m) * ones (size (k));
   endif
 
   if (any (k = find ((x > 0) & (x < 1))))
@@ -68,14 +68,12 @@ function inv = discrete_inv (x, v, p)
     ##
     ## Vectorized code is:
     ##
-    ##   inv(k) = v(sum ((ones (m, 1) * x(k)) > (s * ones (1, n))) + 1);
+    ##     inv(k) = v(sum ((ones (m, 1) * x(k)) > (s * ones (1, n))) + 1);
 
     for q = 1:n
-      inv(q) = v(sum (x(q) > s) + 1);
+      inv(k(q)) = v(sum (x(k(q)) > s) + 1);
     endfor
   endif
-
-  inv = reshape (inv, r, c);
 
 endfunction
 

@@ -33,34 +33,34 @@ function inv = f_inv (x, m, n)
     usage ("f_inv (x, m, n)");
   endif
 
-  [retval, x, m, n] = common_size (x, m, n);
-  if (retval > 0)
-    error ("f_inv: x, m and n must be of common size or scalar");
+  if (!isscalar (m) || !isscalar (n))
+    [retval, x, m, n] = common_size (x, m, n);
+    if (retval > 0)
+      error ("f_inv: x, m and n must be of common size or scalar");
+    endif
   endif
 
-  [r, c] = size (x);
-  s = r * c;
-  x = reshape (x, 1, s);
-  m = reshape (m, 1, s);
-  n = reshape (n, 1, s);
-  inv = zeros (1, s);
+  sz = size (x);
+  inv = zeros (sz);
 
   k = find ((x < 0) | (x > 1) | isnan (x) | !(m > 0) | !(n > 0));
   if (any (k))
-    inv(k) = NaN * ones (1, length (k));
+    inv(k) = NaN;
   endif
 
   k = find ((x == 1) & (m > 0) & (n > 0));
   if (any (k))
-    inv(k) = Inf * ones (1, length (k));
+    inv(k) = Inf;
   endif
 
   k = find ((x > 0) & (x < 1) & (m > 0) & (n > 0));
   if (any (k))
-    inv(k) = ((1 ./ beta_inv (1 - x(k), n(k) / 2, m(k) / 2) - 1)
-	      .* n(k) ./ m(k));
+    if (isscalar (m) && isscalar (n))
+      inv(k) = ((1 ./ beta_inv (1 - x(k), n / 2, m / 2) - 1) .* n ./ m);
+    else
+      inv(k) = ((1 ./ beta_inv (1 - x(k), n(k) / 2, m(k) / 2) - 1)
+		.* n(k) ./ m(k));
+    endif
   endif
-
-  inv = reshape (inv, r, c);
 
 endfunction

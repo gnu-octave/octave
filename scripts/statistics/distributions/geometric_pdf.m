@@ -32,33 +32,35 @@ function pdf = geometric_pdf (x, p)
     usage ("geometric_pdf (x, p)");
   endif
 
-  [retval, x, p] = common_size (x, p);
-  if (retval > 0)
-    error ("geometric_pdf: x and p must be of common size or scalar");
+  if (!isscalar (x) && !isscalar (p))
+    [retval, x, p] = common_size (x, p);
+    if (retval > 0)
+      error ("geometric_pdf: x and p must be of common size or scalar");
+    endif
   endif
 
-  [r, c] = size (x);
-  s = r * c;
-  x   = reshape (x, 1, s);
-  p   = reshape (p, 1, s);
-  cdf = zeros (1, s);
+  pdf = zeros (size (x));
 
   k = find (isnan (x) | !(p >= 0) | !(p <= 1));
   if (any (k))
-    pdf(k) = NaN * ones (1, length (k));
+    pdf(k) = NaN;
   endif
 
   ## Just for the fun of it ...
   k = find ((x == Inf) & (p == 0));
   if (any (k))
-    pdf(k) = ones (1, length (k));
+    pdf(k) = 1;
   endif
 
   k = find ((x >= 0) & (x < Inf) & (x == round (x)) & (p > 0) & (p <= 1));
   if (any (k))
-    pdf(k) = p(k) .* ((1 - p(k)) .^ x(k));
+    if (isscalar (x))
+      pdf(k) = p(k) .* ((1 - p(k)) .^ x);
+    elseif (isscalar (p))
+      pdf(k) = p .* ((1 - p) .^ x(k));
+    else
+      pdf(k) = p(k) .* ((1 - p(k)) .^ x(k));
+    endif
   endif
-
-  pdf = reshape (pdf, r, c);
 
 endfunction

@@ -37,37 +37,41 @@ function inv = t_inv (x, n)
     usage ("t_inv (x, n)");
   endif
 
-  [retval, x, n] = common_size (x, n);
-  if (retval > 0)
-    error ("t_inv: x and n must be of common size or scalar");
+  if (!isscalar (n))
+    [retval, x, n] = common_size (x, n);
+    if (retval > 0)
+      error ("t_inv: x and n must be of common size or scalar");
+    endif
   endif
 
-  [r, c] = size (x);
-  s = r * c;
-  x = reshape (x, 1, s);
-  n = reshape (n, 1, s);
-  inv = zeros (1, s);
+  inv = zeros (size (x));
 
   k = find ((x < 0) | (x > 1) | isnan (x) | !(n > 0));
   if (any (k))
-    inv(k) = NaN * ones (1, length (k));
+    inv(k) = NaN;
   endif
 
   k = find ((x == 0) & (n > 0));
   if (any (k))
-    inv(k) = (-Inf) * ones (1, length (k));
+    inv(k) = -Inf;
   endif
 
   k = find ((x == 1) & (n > 0));
   if (any (k))
-    inv(k) = Inf * ones (1, length (k));
+    inv(k) = Inf;
   endif
 
   k = find ((x > 0) & (x < 1) & (n > 0) & (n < 10000));
   if (any (k))
-    inv(k) = (sign (x(k) - 1/2)
-	      .* sqrt (n(k) .* (1 ./ beta_inv (2*min (x(k), 1 - x(k)),
-					       n(k)/2, 1/2) - 1)));
+    if (isscalar (n))
+      inv(k) = (sign (x(k) - 1/2)
+		.* sqrt (n .* (1 ./ beta_inv (2*min (x(k), 1 - x(k)),
+						 n/2, 1/2) - 1)));
+    else
+      inv(k) = (sign (x(k) - 1/2)
+		.* sqrt (n(k) .* (1 ./ beta_inv (2*min (x(k), 1 - x(k)),
+						 n(k)/2, 1/2) - 1)));
+    endif
   endif
 
   ## For large n, use the quantiles of the standard normal
@@ -75,7 +79,5 @@ function inv = t_inv (x, n)
   if (any (k))
     inv(k) = stdnormal_inv (x(k));
   endif
-
-  inv = reshape (inv, r, c);
 
 endfunction

@@ -33,28 +33,29 @@ function pdf = t_pdf (x, n)
     usage ("t_pdf (x, n)");
   endif
 
-  [retval, x, n] = common_size (x, n);
-  if (retval > 0)
-    error ("t_pdf: x and n must be of common size or scalar");
+  if (!isscalar (n))
+    [retval, x, n] = common_size (x, n);
+    if (retval > 0)
+      error ("t_pdf: x and n must be of common size or scalar");
+    endif
   endif
 
-  [r, c] = size (x);
-  s = r * c;
-  x = reshape (x, 1, s);
-  n = reshape (n, 1, s);
-  pdf = zeros (1, s);
+  pdf = zeros (size (x));
 
   k = find (isnan (x) | !(n > 0) | !(n < Inf));
   if (any (k))
-    pdf(k) = NaN * ones (1, length (k));
+    pdf(k) = NaN;
   endif
 
   k = find (!isinf (x) & !isnan (x) & (n > 0) & (n < Inf));
   if (any (k))
-    pdf(k) = (exp (- (n(k) + 1) .* log (1 + x(k) .^ 2 ./ n(k))/2)
-	      ./ (sqrt (n(k)) .* beta (n(k)/2, 1/2)));
+    if (isscalar (n))
+      pdf(k) = (exp (- (n + 1) .* log (1 + x(k) .^ 2 ./ n)/2)
+		/ (sqrt (n) * beta (n/2, 1/2)));
+    else
+      pdf(k) = (exp (- (n(k) + 1) .* log (1 + x(k) .^ 2 ./ n(k))/2)
+		./ (sqrt (n(k)) .* beta (n(k)/2, 1/2)));
+    endif
   endif
-
-  pdf = reshape (pdf, r, c);
 
 endfunction

@@ -40,7 +40,11 @@ function retval = wiener_rnd (t, d, n)
   elseif (nargin == 2)
     n = 1000;
   elseif (nargin > 3)
-    usage ("wiener_rnd (t, d,n)");
+    usage ("wiener_rnd (t, d, n)");
+  endif
+
+  if (!isscalar (t) || !isscalar (d) || !isscalar (n))
+    error ("wiener_rnd: t, d and n must all be positive integers");
   endif
 
   retval = randn (n * t, d);

@@ -33,35 +33,34 @@ function inv = weibull_inv (x, shape, scale)
     usage ("weibull_inv (x, alpha, sigma)");
   endif
 
-  [retval, x, shape, scale] = common_size (x, shape, scale);
-  if (retval > 0)
-    error ("weibull_inv: x, alpha and sigma must be of common size or scalar");
+  if (!isscalar (shape) || !isscalar (scale))
+    [retval, x, shape, scale] = common_size (x, shape, scale);
+    if (retval > 0)
+      error ("weibull_inv: x, alpha and sigma must be of common size or scalar");
+    endif
   endif
 
-  [r, c] = size (x);
-  s = r * c;
-  x = reshape (x, 1, s);
-  shape = reshape (shape, 1, s);
-  scale = reshape (scale, 1, s);
+  inv = NaN * ones (size (x));
 
-  inv = NaN * ones (1, s);
   ok = ((shape > 0) & (shape < Inf) & (scale > 0) & (scale < Inf));
 
   k = find ((x == 0) & ok);
   if (any (k))
-    inv(k) = -Inf * ones (1, length (k));
+    inv(k) = -Inf;
   endif
 
   k = find ((x > 0) & (x < 1) & ok);
   if (any (k))
-    inv(k) = scale(k) .* (- log (1 - x(k))) .^ (1 ./ shape(k));
+    if (isscalar (shape) && isscalar (scale))
+      inv(k) = scale * (- log (1 - x(k))) .^ (1 / shape);
+    else
+      inv(k) = scale(k) .* (- log (1 - x(k))) .^ (1 ./ shape(k));
+    endif
   endif
 
   k = find ((x == 1) & ok);
   if (any (k))
-    inv(k) = Inf * ones (1, length (k));
+    inv(k) = Inf;
   endif
-
-  inv = reshape (inv, r, c);
 
 endfunction

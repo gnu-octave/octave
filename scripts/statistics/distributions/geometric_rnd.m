@@ -19,12 +19,14 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} geometric_rnd (@var{p}, @var{r}, @var{c})
+## @deftypefnx {Function File} {} geometric_rnd (@var{p}, @var{sz})
 ## Return an @var{r} by @var{c} matrix of random samples from the
 ## geometric distribution with parameter @var{p}, which must be a scalar
 ## or of size @var{r} by @var{c}.
 ##
-## If @var{r} and @var{c} are omitted, the size of the result matrix is
-## the size of @var{p}.
+## If @var{r} and @var{c} are given create a matrix with @var{r} rows and
+## @var{c} columns. Or if @var{sz} is a vector, create a matrix of size
+## @var{sz}.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
@@ -39,34 +41,59 @@ function rnd = geometric_rnd (p, r, c)
     if (! (isscalar (c) && (c > 0) && (c == round (c))))
       error ("geometric_rnd: c must be a positive integer");
     endif
-    [retval, p] = common_size (p, zeros (r, c));
-    if (retval > 0)
-      error ("geometric_rnd: p must be scalar or of size %d by %d", r, c);
+    sz = [r, c];
+
+    if (any (size (p) != 1) && ((length (size (p)) != length (sz)) ||
+				any (size (p) != sz)))
+      error ("geometric_rnd: p must be scalar or of size [r, c]");
     endif
+  elseif (nargin == 2)
+    if (isscalar (r) && (r > 0))
+      sz = [r, r];
+    elseif (isvector(r) && all (r > 0))
+      sz = r(:)';
+    else
+      error ("geometric_rnd: r must be a postive integer or vector");
+    endif
+
+    if (any (size (p) != 1) && ((length (size (p)) != length (sz)) ||
+				any (size (p) != sz)))
+      error ("geometric_rnd: n must be scalar or of size sz");
+    endif
+  elseif (nargin == 1)
+    sz = size(n);
   elseif (nargin != 1)
     usage ("geometric_rnd (p, r, c)");
   endif
 
-  [r, c] = size (p);
-  s = r * c;
-  p = reshape (p, 1, s);
-  rnd = zeros (1, s);
 
-  k = find (!(p >= 0) | !(p <= 1));
-  if (any (k))
-    rnd(k) = NaN * ones (1, length (k));
+  if (isscalar (p))
+    if (!(p >= 0) || !(p <= 1))
+      rnd = NaN * ones (sz);
+    elseif (p == 0)
+      rnd = Inf * ones (sz);
+    elseif ((p > 0) & (p < 1));
+      rnd = floor (log (rand (sz)) / log (1 - p));
+    else
+      rnd = zeros (sz);
+    endif
+  else
+    rnd = zeros (sz);
+
+    k = find (!(p >= 0) | !(p <= 1));
+    if (any (k))
+      rnd(k) = NaN * ones (1, length (k));
+    endif
+
+    k = find (p == 0);
+    if (any (k))
+      rnd(k) = Inf * ones (1, length (k));
+    endif
+
+    k = find ((p > 0) & (p < 1));
+    if (any (k))
+      rnd(k) = floor (log (rand (size (k))) ./ log (1 - p(k)));
+    endif
   endif
-
-  k = find (p == 0);
-  if (any (k))
-    rnd(k) = Inf * ones (1, length (k));
-  endif
-
-  k = find ((p > 0) & (p < 1));
-  if (any (k))
-    rnd(k) = floor (log (rand (1, length (k))) ./ log (1 - p(k)));
-  endif
-
-  rnd = reshape (rnd, r, c);
 
 endfunction

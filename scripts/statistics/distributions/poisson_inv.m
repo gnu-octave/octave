@@ -33,41 +33,45 @@ function inv = poisson_inv (x, l)
     usage ("poisson_inv (x, lambda)");
   endif
 
-  [retval, x, l] = common_size (x, l);
-  if (retval > 0)
-    error ("poisson_inv: x and lambda must be of common size or scalar");
+  if (!isscalar (l))
+    [retval, x, l] = common_size (x, l);
+    if (retval > 0)
+      error ("poisson_inv: x and lambda must be of common size or scalar");
+    endif
   endif
 
-  [r, c] = size (x);
-  s = r * c;
-  x = reshape (x, 1, s);
-  l = reshape (l, 1, s);
-  inv = zeros (1, s);
+  inv = zeros (size (x));
 
   k = find ((x < 0) | (x > 1) | isnan (x) | !(l > 0));
   if (any (k))
-    inv(k) = NaN * ones (1, length (k));
+    inv(k) = NaN;
   endif
 
   k = find ((x == 1) & (l > 0));
   if (any (k))
-    inv(k) = Inf * ones (1, length (k));
+    inv(k) = Inf;
   endif
 
   k = find ((x > 0) & (x < 1) & (l > 0));
   if (any (k))
-    cdf = exp (-l(k));
+    if (isscalar (l))
+      cdf = exp (-l) * ones (size (k));
+    else
+      cdf = exp (-l(k));
+    endif
     while (1)
       m = find (cdf < x(k));
       if (any (m))
         inv(k(m)) = inv(k(m)) + 1;
-        cdf(m) = cdf(m) + poisson_pdf (inv(k(m)), l(k(m)));
+	if (isscalar (l))
+          cdf(m) = cdf(m) + poisson_pdf (inv(k(m)), l);
+	else
+          cdf(m) = cdf(m) + poisson_pdf (inv(k(m)), l(k(m)));
+	endif
       else
         break;
       endif
     endwhile
   endif
-
-  inv = reshape (inv, r, c);
 
 endfunction

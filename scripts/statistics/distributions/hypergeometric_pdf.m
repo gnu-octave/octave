@@ -37,18 +37,15 @@ function pdf = hypergeometric_pdf (x, m, t, n)
     usage ("hypergeometric_pdf (x, m, t, n)");
   endif
 
-  [retval, x, m, t, n] = common_size (x, m, t, n);
-  if (retval > 0)
-    error ("hypergeometric_pdf: x, m, t, and n must be of common size or scalar");
+  if (!isscalar (m) || !isscalar (t) || !isscalar (n))
+    [retval, x, m, t, n] = common_size (x, m, t, n);
+    if (retval > 0)
+      error ("hypergeometric_pdf: x, m, t, and n must be of common size or scalar");
+    endif
   endif
 
-  [r, c] = size (x);
-  s = r * c;
-  x = reshape (x, 1, s);
-  m = reshape (m, 1, s);
-  t = reshape (t, 1, s);
-  n = reshape (n, 1, s);
-  pdf = zeros * ones (1, s);
+  pdf = zeros (size (x));
+
   ## everything in i1 gives NaN
   i1 = ((m < 0) | (t < 0) | (n <= 0) | (m != round (m)) |
         (t != round (t)) | (n != round (n)) | (m > t) | (n > t));
@@ -56,12 +53,21 @@ function pdf = hypergeometric_pdf (x, m, t, n)
   i2 = ((x != round (x)) | (x < 0) | (x > m) | (n < x) | (n-x > t-m));
   k = find (i1);
   if (any (k))
-    pdf (k) = NaN * ones (size (k));
+    if (isscalar (m) && isscalar (t) && isscalar (n))
+      pdf = NaN * ones ( size (x));
+    else
+      pdf (k) = NaN;
+    endif
   endif
   k = find (!i1 & !i2);
   if (any (k))
-    pdf (k) = (bincoeff (m(k), x(k)) .* bincoeff (t(k)-m(k), n(k)-x(k))
-               ./ bincoeff (t(k), n(k)));
+    if (isscalar (m) && isscalar (t) && isscalar (n))
+      pdf (k) = (bincoeff (m, x(k)) .* bincoeff (t-m, n-x(k))
+		 / bincoeff (t, n));
+    else
+      pdf (k) = (bincoeff (m(k), x(k)) .* bincoeff (t(k)-m(k), n(k)-x(k))
+		 ./ bincoeff (t(k), n(k)));
+    endif
   endif
 
 endfunction

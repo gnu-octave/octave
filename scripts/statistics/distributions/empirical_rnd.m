@@ -19,19 +19,35 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} empirical_rnd (@var{n}, @var{data})
+## @deftypefnx {Function File} {} empirical_rnd (@var{data}, @var{r}, @var{c})
+## @deftypefnx {Function File} {} empirical_rnd (@var{data}, @var{sz})
 ## Generate a bootstrap sample of size @var{n} from the empirical
 ## distribution obtained from the univariate sample @var{data}.
+##
+## If @var{r} and @var{c} are given create a matrix with @var{r} rows and
+## @var{c} columns. Or if @var{sz} is a vector, create a matrix of size
+## @var{sz}.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description: Bootstrap samples from the empirical distribution
 
-function rnd = empirical_rnd (n, data)
+function rnd = empirical_rnd (data, r, c)
+
+  if (nargin == 2)
+    if (isscalar(data))
+      c = data;
+      data = r;
+      r = 1;
+    endif
+  elseif (nargin != 3)
+    usage ("empirical_rnd (n, data) | empirical_rnd (data, r, c)");
+  endif
 
   if (! isvector (data))
     error ("empirical_rnd: data must be a vector");
   endif
 
-  rnd = discrete_rnd (n, data, ones (size (data)) / length (data));
+  rnd = discrete_rnd (data, ones (size (data)) / length (data), r, c);
 
 endfunction

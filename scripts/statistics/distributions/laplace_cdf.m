@@ -32,26 +32,21 @@ function cdf = laplace_cdf (x)
     usage ("laplace_cdf (x)");
   endif
 
-  [r, c] = size (x);
-  s = r * c;
-  x = reshape (x, 1, s);
-  cdf = zeros (1, s);
+  cdf = zeros (size (x));
 
   k = find (isnan (x));
   if (any (k))
-    cdf(k) = NaN * ones (1, length (k));
+    cdf(k) = NaN;
   endif
 
   k = find (x == Inf);
   if (any (k))
-    cdf(k) = ones (1, length (k));
+    cdf(k) = 1;
   endif
 
   k = find ((x > -Inf) & (x < Inf));
   if (any (k))
     cdf(k) = (1 + sign (x(k)) .* (1 - exp (- abs (x(k))))) / 2;
   endif
-
-  cdf = reshape (cdf, r, c);
 
 endfunction

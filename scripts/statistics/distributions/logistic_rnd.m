@@ -19,8 +19,10 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} logistic_rnd (@var{r}, @var{c})
+## @deftypefn {Function File} {} logistic_rnd (@var{sz})
 ## Return an @var{r} by @var{c} matrix of random numbers from the
-## logistic distribution.
+## logistic distribution. Or is @var{sz} is a vector, create a matrix of
+## @var{sz}.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
@@ -28,17 +30,27 @@
 
 function rnd = logistic_rnd (r, c)
 
-  if (nargin != 2)
+
+  if (nargin == 2)
+    if (! (isscalar (r) && (r > 0) && (r == round (r))))
+      error ("logistic_rnd: r must be a positive integer");
+    endif
+    if (! (isscalar (c) && (c > 0) && (c == round (c))))
+      error ("logistic_rnd: c must be a positive integer");
+    endif
+    sz = [r, c];
+  elseif (nargin == 1)
+    if (isscalar (r) && (r > 0))
+      sz = [r, r];
+    elseif (isvector(r) && all (r > 0))
+      sz = r(:)';
+    else
+      error ("logistic_rnd: r must be a postive integer or vector");
+    endif
+  else
     usage ("logistic_rnd (r, c)");
   endif
 
-  if (! (isscalar (r) && (r > 0) && (r == round (r))))
-    error ("logistic_rnd: r must be a positive integer");
-  endif
-  if (! (isscalar (c) && (c > 0) && (c == round (c))))
-    error ("logistic_rnd: c must be a positive integer");
-  endif
-
-  rnd = - log (1 ./ rand (r, c) - 1);
+  rnd = - log (1 ./ rand (sz) - 1);
 
 endfunction

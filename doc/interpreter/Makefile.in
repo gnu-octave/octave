@@ -45,7 +45,8 @@ FORMATTED =  octave.dvi octave.ps octave.info octave.info-[0-9]* \
 #	liboctave.dvi liboctave.ps liboctave.info liboctave.info-[0-9]*
 
 DISTFILES = Makefile.in conf.texi.in conf.texi texinfo.tex dir \
-	octave.1 $(REFCARD) $(ALL_TEXINFO) $(FORMATTED)
+	octave.1 mkinstalldirs \
+	$(REFCARD) $(ALL_TEXINFO) $(FORMATTED)
 
 SPELL = $(patsubst %.texi, %.spell, $(ALL_TEXINFO))
 

@@ -2717,7 +2717,7 @@ the file @file{data} in Octave's binary format.\n\
       if (file)
 	{
 	  bool write_header_info
-	    = ((file.rdbuf ())->seekoff (0, std::ios::cur) == 0);
+	    = ((file.rdbuf ())->pubseekoff (0, std::ios::cur) == 0);
 
 	  save_vars (argv, i, argc, file, save_builtins, format,
 		     save_as_floats, write_header_info);

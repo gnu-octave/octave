@@ -1,5 +1,9 @@
 2000-02-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* load-save.cc (Fsave): Call pubseekoff instead of seekoff.	
+	* oct-strstrm.cc (octave_base_strstream::tell): Likewise.
+	(octave_base_strstream::seek): Likewise.
+
 	* oct-stream.cc (octave_base_stream::read): Rename count to char_count.
 	(octave_base_stream::do_gets): Likewise.
 

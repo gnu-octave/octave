@@ -41,7 +41,7 @@ octave_base_strstream::seek (std::streamoff offset, std::ios::seek_dir origin)
 	{
 	  clear ();
 
-	  sb->seekoff (offset, origin);
+	  sb->pubseekoff (offset, origin);
 	  retval = bad () ? -1 : 0;
 	}
     }
@@ -64,7 +64,7 @@ octave_base_strstream::tell (void) const
 
       if (sb)
 	{
-	  retval = static_cast<long> (sb->seekoff (0, std::ios::cur));
+	  retval = static_cast<long> (sb->pubseekoff (0, std::ios::cur));
 
 	  if (bad ())
 	    retval = -1;

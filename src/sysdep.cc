@@ -410,7 +410,7 @@ DEFUN ("getenv", Fgetenv, Sgetenv, 2, 1,
   return retval;
 }
 
-DEFALIAS (home, clc)
+DEFALIAS (home, clc);
 
 DEFUN ("kbhit", Fkbhit, Skbhit, 1, 1,
   "kbhit: get a single character from the terminal")

@@ -411,7 +411,7 @@ users home directory")
   return retval;
 }
 
-DEFALIAS (dir, ls)
+DEFALIAS (dir, ls);
 
 /*
  * Get a directory listing.

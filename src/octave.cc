@@ -579,7 +579,7 @@ DEFUN_TEXT ("casesen", Fcasesen, Scasesen, 2, 1,
   return retval;
 }
 
-DEFALIAS (exit, quit)
+DEFALIAS (exit, quit);
 
 DEFUN ("flops", Fflops, Sflops, 2, 1,
   "flops (): count floating point operations")

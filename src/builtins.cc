@@ -154,7 +154,7 @@ static builtin_text_functions text_functions[] =
     "change current working directory\n", },
 
   { "clear", -1, builtin_clear,
-    "clear symbol(s) from symbol table\n", },
+    "clear symbol(s) matching a list of regular expressions\n", },
 
   { "dir", -1, builtin_ls,
     "print a directory listing\n", },

@@ -50,6 +50,7 @@ Software Foundation, Inc.
 #include <sys/stat.h>
 #include <time.h>
 #include <errno.h>
+#include <String.h>
 
 #include "procstream.h"
 
@@ -206,8 +207,22 @@ builtin_cd (int argc, char **argv)
   return retval;
 }
 
+static int
+in_list (char *s, char **list)
+{
+  while (*list != (char *) NULL)
+    {
+      if (strcmp (s, *list) == 0)
+	return 1;
+      list++;
+    }
+
+  return 0;
+}
+
 /*
- * Wipe out user-defined variables and functions.
+ * Wipe out user-defined variables and functions given a list of
+ * regular expressions. 
  */
 tree_constant
 builtin_clear (int argc, char **argv)
@@ -220,12 +235,55 @@ builtin_clear (int argc, char **argv)
     }
   else
     {
+      int count;
+      char **names = curr_sym_tab->list (count);
+
+      int g_count;
+      char **g_names = global_sym_tab->list (g_count);
+
+      int num_cleared = 0;
+      char **locals_cleared = new char * [count+1];
+      locals_cleared[num_cleared] = (char *) NULL;
+
       while (--argc > 0)
 	{
 	  argv++;
-	  if (*argv != (char *) NULL && ! curr_sym_tab->clear (*argv))
-	    global_sym_tab->clear (*argv);
+	  if (*argv != (char *) NULL)
+	    {
+	      Regex rx (*argv);
+
+	      int i;
+	      for (i = 0; i < count; i++)
+		{
+		  String nm (names[i]);
+		  if (nm.matches (rx) && curr_sym_tab->clear (names[i]))
+		    {
+		      locals_cleared[num_cleared++] = strsave (names[i]);
+		      locals_cleared[num_cleared] = (char *) NULL;
+		    }
+		}
+
+	      for (i = 0; i < g_count; i++)
+		{
+		  String nm (g_names[i]);
+		  if (nm.matches (rx)
+		      && ! in_list (g_names[i], locals_cleared))
+		    {
+		      global_sym_tab->clear (g_names[i]);
+		    }
+		}
+	    }
 	}
+
+      int i = 0;
+      while (locals_cleared[i] != (char *) NULL)
+	delete [] locals_cleared[i++];
+      delete [] locals_cleared;
+
+      delete [] names;
+      delete [] g_names;
+      delete [] g_names;
+
     }
   return retval;
 }

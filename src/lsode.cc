@@ -164,8 +164,12 @@ where xdot and x are vectors and t is a scalar.\n")
   else
     output = ode.integrate (out_times);
 
-  retval.resize (1);
-  retval(0) = output;
+  if (! error_state)
+    {
+      retval.resize (1);
+      retval(0) = output;
+    }
+
   return retval;
 }
 

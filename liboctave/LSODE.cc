@@ -71,6 +71,8 @@ LSODE::LSODE (void) : ODE (), LSODE_options ()
 
   liw = 20 + n;
   lrw = 22 + n * (9 + n);
+
+  sanity_checked = 0;
 }
 
 LSODE::LSODE (const ColumnVector& state, double time, const ODEFunc& f)
@@ -91,6 +93,8 @@ LSODE::LSODE (const ColumnVector& state, double time, const ODEFunc& f)
 
   liw = 20 + n;
   lrw = 22 + n * (9 + n);
+
+  sanity_checked = 0;
 }
 
 void
@@ -116,7 +120,7 @@ int
 lsode_f (const int& neq, const double& time, double *,
 	 double *deriv, int& ierr) 
 {
-  ColumnVector tmp_deriv (neq);
+  ColumnVector tmp_deriv;
 
   // NOTE: this won't work if LSODE passes copies of the state vector.
   //       In that case we have to create a temporary vector object
@@ -197,6 +201,22 @@ LSODE::do_integrate (double tout)
   tmp_x = &x;
   user_fun = function ();
   user_jac = jacobian_function ();
+
+  if (! sanity_checked)
+    {
+      ColumnVector xdot = (*user_fun) (x, t);
+
+      if (x.length () != xdot.length ())
+	{
+	  (*current_liboctave_error_handler)
+	    ("lsode: inconsistent sizes for state and derivative vectors");
+
+	  integration_error = 1;
+	  return retval;
+	}
+
+      sanity_checked = 1;
+    }
 
   // Try 5000 steps before giving up.
 

@@ -165,6 +165,7 @@ private:
   int liw;
   int lrw;
   int working_too_hard;
+  int sanity_checked;
 
   friend int lsode_f (int *neq, double *t, double *y, double *ydot);
 

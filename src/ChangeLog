@@ -1,5 +1,8 @@
 Wed Jul 24 05:08:07 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* lsode.cc (Flsode): Don't set the return value if an error
+	occurred during integration.
+
 	* file-io.cc (symbols_of_file_io): Redefine values of SEEK_SET,
 	SEEK_CUR, and SEEK_END for Matlab compatibility.
 	* oct-stream.cc (seek): Check for compatible values of ORIGIN arg.

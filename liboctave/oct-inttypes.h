@@ -23,13 +23,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_inttypes_h)
 #define octave_inttypes_h 1
 
-#include <cmath>
-
 #include <limits>
 #include <iostream>
 
 #include "data-conv.h"
 #include "lo-ieee.h"
+#include "lo-mappers.h"
 
 typedef signed char octave_int8_t;
 typedef TWO_BYTE_INT octave_int16_t;

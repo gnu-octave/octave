@@ -1,4 +1,12 @@
+2001-02-05  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lo-mappers.h (tanh (const Complex&)): Only declare if not
+	CXX_ISO_COMPLIANT_LIBRARY.
+
 2001-02-05  Mumit Khan  <khan@nanotech.wisc.edu>
+
+	* lo-mappers.cc (tanh (const Complex&)): Only define if not
+	CXX_ISO_COMPLIANT_LIBRARY.
 
 	* Makefile.in (TEMPLATE_AR, TEMPLATE_ARFLAGS): Use to create
 	archive libraries containing templates.

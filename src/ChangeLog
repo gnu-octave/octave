@@ -1,5 +1,8 @@
 2001-02-05  Mumit Khan  <khan@nanotech.wisc.edu>
 
+	* pr-output.cc (set_format): Add std:: namespace qualifier as
+	needed.
+
 	* oct-stream.cc (octave_scan): Implement, and specialize for
 	char*. Delete the old template instantiations.
 	(BEGIN_S_CONVERSION): Use strings instead of ostrstreambuf.

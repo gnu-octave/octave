@@ -268,11 +268,15 @@ signum (const Complex& x)
   return x / abs (x);
 }
 
+#if !defined (CXX_ISO_COMPLIANT_LIBRARY)
+
 Complex
 tanh (const Complex& x)
 {
   return sinh (x) / cosh (x);
 }
+
+#endif
 
 // complex -> bool mappers.
 

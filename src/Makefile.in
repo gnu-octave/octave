@@ -18,8 +18,6 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
-LIBOBJS = @LIBOBJS@
-
 # Cancel default rule for .c from .y and make .cc from .y instead.
 
 %.c : %.y
@@ -123,11 +121,10 @@ DISTFILES = Makefile.in mkdefs mkbuiltins \
 all: defaults.h octave
 .PHONY: all
 
-octave: $(OBJECTS) $(DLD_OBJ) $(LIBOBJS) $(OCTAVE_LIBS) liboctdld.a
+octave: $(OBJECTS) $(DLD_OBJ) $(OCTAVE_LIBS) liboctdld.a
 	$(CXX) $(CPPFLAGS) $(ALL_CXXFLAGS) $(ALL_LDFLAGS) -o octave \
 	$(OBJECTS) \
 	$(OCTAVE_LIBS) \
-	$(LIBOBJS) \
 	$(FLIBS) $(LEXLIB) -ltermcap -lm -lg++
 
 liboctdld.a: $(DLD_OBJ)

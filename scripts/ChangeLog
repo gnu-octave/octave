@@ -1,3 +1,7 @@
+2005-01-27  Benjamin Hall  <benjamin.hall@pw.utc.com>
+
+	* statistics/base/median.m: Make it work for the scalar case too.
+
 2005-01-25  Daniel J Sebald  <daniel.sebald@ieee.org>.
 
 	* plot/__plt__.m: Initialize fmt and sep outside of loop.

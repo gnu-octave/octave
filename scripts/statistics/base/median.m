@@ -62,7 +62,7 @@ function retval = median (a, dim)
 
   sz = size (a);
   s = sort (a, dim);
-  if (numel (a) > 1)
+  if (numel (a) > 0)
     if (numel (a) == sz(dim))
       if (rem (sz(dim), 2) == 0)
 	i = sz(dim) / 2;

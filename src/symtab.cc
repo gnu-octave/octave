@@ -29,8 +29,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
-#include "fnmatch.h"
-
+#include "oct-glob.h"
 #include "str-vec.h"
 
 #include "error.h"
@@ -988,7 +987,8 @@ matches_patterns (const string& name, const string_vector& pats, int npats)
 {
   for (int i = 0; i < npats; i++)
     {
-      if (fnmatch (pats[i].c_str (), name.c_str (), __FNM_FLAGS) == 0)
+      glob_match pattern (pats[i]);
+      if (pattern.match (name))
 	return 1;
     }
 
@@ -1099,10 +1099,10 @@ symbol_table::glob (int& count, const string& pat, unsigned type,
 
 	  unsigned my_type = ptr->type ();
 
-	  string tmp = ptr->name ();
+	  glob_match pattern (pat);
 
 	  if ((type & my_type) && (scope & my_scope)
-	      && fnmatch (pat.c_str (), tmp.c_str (), __FNM_FLAGS) == 0)
+	      && pattern.match (ptr->name ()))
 	    {
 	      symbols[count++] = ptr;
 	    }

@@ -40,8 +40,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <readline/readline.h>
 
-#include "fnmatch.h"
-
+#include "file-ops.h"
+#include "oct-glob.h"
 #include "str-vec.h"
 
 #include "defaults.h"
@@ -49,7 +49,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "dirfns.h"
 #include "dynamic-ld.h"
 #include "error.h"
-#include "file-ops.h"
 #include "help.h"
 #include "input.h"
 #include "lex.h"
@@ -1925,13 +1924,13 @@ With -x, exclude the named variables")
 
 	  if (! patstr.empty ())
 	    {
-	      const char *pat = patstr.c_str ();
+	      glob_match pattern (patstr);
 
 	      int i;
 	      for (i = 0; i < lcount; i++)
 		{
 		  string nm = lvars[i];
-		  int match = (fnmatch (pat, nm.c_str (), __FNM_FLAGS) == 0);
+		  int match = pattern.match (nm);
 		  if ((exclusive && ! match) || (! exclusive && match))
 		    curr_sym_tab->clear (nm);
 		}
@@ -1940,7 +1939,7 @@ With -x, exclude the named variables")
 	      for (i = 0; i < gcount; i++)
 		{
 		  string nm = gvars[i];
-		  int match = (fnmatch (pat, nm.c_str (), __FNM_FLAGS) == 0);
+		  int match = pattern.match (nm);
 		  if ((exclusive && ! match) || (! exclusive && match))
 		    {
 		      count = curr_sym_tab->clear (nm);
@@ -1952,7 +1951,7 @@ With -x, exclude the named variables")
 	      for (i = 0; i < fcount; i++)
 		{
 		  string nm = fcns[i];
-		  int match = (fnmatch (pat, nm.c_str (), __FNM_FLAGS) == 0);
+		  int match = pattern.match (nm);
 		  if ((exclusive && ! match) || (! exclusive && match))
 		    {
 		      count = curr_sym_tab->clear (nm);

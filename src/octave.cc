@@ -81,6 +81,15 @@ extern "C" int on_exit ();
 #define atexit on_exit
 #endif
 
+// Don't redefine the variables if glibc already has.
+#ifndef HAVE_PROGRAM_INVOCATION_NAME
+char *program_invocation_name;
+char *program_invocation_short_name;
+#else
+extern char *program_invocation_name;
+extern char *program_invocation_short_name;
+#endif
+
 // This is from readline's paren.c:
 extern int rl_blink_matching_paren;
 
@@ -166,6 +175,15 @@ intern_argv (int argc, char **argv)
 static void
 initialize_globals (const string& name)
 {
+  // Kpathsea needs this.
+
+#ifndef HAVE_PROGRAM_INVOCATION_NAME
+  program_invocation_name = strsave (name.c_str ());
+  program_invocation_short_name = strrchr (program_invocation_name, '/');
+  if (! program_invocation_short_name)
+    program_invocation_short_name = program_invocation_name;
+#endif
+
   raw_prog_name = name;
   size_t pos = raw_prog_name.rfind ('/');
   if (pos == NPOS)
@@ -198,6 +216,32 @@ initialize_globals (const string& name)
   info_prog = default_info_prog ();
 
   editor = default_editor ();
+}
+
+static void
+initialize_pathsearch (void)
+{
+  // This may seem odd, but doing it this way means that we don't have
+  // to modify the kpathsea library...
+
+  char *odb = getenv ("OCTAVE_DB_DIR");
+
+  if (odb)
+    oct_putenv ("TEXMF", odb);
+  else
+    {
+      char *oh = getenv ("OCTAVE_HOME");
+
+      if (oh)
+	{
+	  int len = strlen (oh) + 12;
+	  char *putenv_val = new char [len];
+	  sprintf (putenv_val, "%s/lib/octave", oh);
+	  oct_putenv ("TEXMF", putenv_val);
+	}
+      else  
+	oct_putenv ("TEXMF", OCTAVE_DATADIR "/octave");
+    }
 }
 
 // Initialize by reading startup files.
@@ -355,7 +399,7 @@ main (int argc, char **argv)
 
   initialize_globals (argv[0]);
 
-  initialize_pathsearch (argv[0]);
+  initialize_pathsearch ();
 
   int optc;
   while ((optc = getopt_long (argc, argv, short_opts, long_opts, 0)) != EOF)

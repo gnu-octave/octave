@@ -36,8 +36,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <fstream.h>
 #include <strstream.h>
 
-#include "fnmatch.h"
-
+#include "oct-glob.h"
 #include "str-vec.h"
 
 #include "defun.h"
@@ -1984,11 +1983,12 @@ read_mat_binary_data (istream& is, const string& filename,
 
 static int
 matches_patterns (const string_vector& patterns, int pat_idx,
-		  int num_pat, char *name)
+		  int num_pat, const string& name)
 {
   for (int i = pat_idx; i < num_pat; i++)
     {
-      if (fnmatch (patterns[i].c_str (), name, __FNM_FLAGS) == 0)
+      glob_match pattern (patterns[i]);
+      if (pattern.match (name))
 	return 1;
     }
   return 0;

@@ -33,28 +33,28 @@ function cdf = gamma_cdf (x, a, b)
     usage ("gamma_cdf (x, a, b)");
   endif
 
-  [retval, x, a, b] = common_size (x, a, b);
-  if (retval > 0)
-    error ("gamma_cdf: x, a and b must be of common size or scalars");
+  if (!isscalar (a) || !isscalar(b))
+    [retval, x, a, b] = common_size (x, a, b);
+    if (retval > 0)
+      error ("gamma_cdf: x, a and b must be of common size or scalars");
+    endif
   endif
 
-  [r, c] = size (x);
-  s = r * c;
-  x   = reshape (x, s, 1);
-  a   = reshape (a, s, 1);
-  b   = reshape (b, s, 1);
-  cdf = zeros (s, 1);
+  sz = size (x);
+  cdf = zeros (sz);
 
   k = find (!(a > 0) | !(b > 0) | isnan (x));
   if (any (k))
-    cdf (k) = NaN * ones (length (k), 1);
+    cdf (k) = NaN;
   endif
 
   k = find ((x > 0) & (a > 0) & (b > 0));
   if (any (k))
-    cdf (k) = gammainc (b(k) .* x(k), a(k));
+    if (isscalar (a) && isscalar(b))
+      cdf (k) = gammainc (b * x(k), a);
+    else
+      cdf (k) = gammainc (b(k) .* x(k), a(k));
+    endif
   endif
-
-  cdf = reshape (cdf, r, c);
 
 endfunction

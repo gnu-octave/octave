@@ -39,24 +39,24 @@ function cdf = cauchy_cdf (x, location, scale)
     scale = 1;
   endif
 
-  [retval, x, location, scale] = common_size (x, location, scale);
-  if (retval > 0)
-    error ("cauchy_cdf: x, lambda and sigma must be of common size or scalar");
+  if (!isscalar (location) || !isscalar (scale)) 
+    [retval, x, location, scale] = common_size (x, location, scale);
+    if (retval > 0)
+      error ("cauchy_cdf: x, lambda and sigma must be of common size or scalar");
+    endif
   endif
 
-  [r, c] = size (x);
-  s = r * c;
-  x = reshape (x, 1, s);
-  location = reshape (location, 1, s);
-  scale = reshape (scale, 1, s);
-  cdf = NaN * ones (1, s);
+  sz = size (x);
+  cdf = NaN * ones (sz);
 
   k = find ((x > -Inf) & (x < Inf) & (location > -Inf) &
             (location < Inf) & (scale > 0) & (scale < Inf));
   if (any (k))
-    cdf(k) = 0.5 + atan ((x(k) - location(k)) ./ scale(k)) / pi;
+    if (isscalar (location) && isscalar (scale)) 
+      cdf(k) = 0.5 + atan ((x(k) - location) ./ scale) / pi;
+    else
+      cdf(k) = 0.5 + atan ((x(k) - location(k)) ./ scale(k)) / pi;
+    endif
   endif
-
-  cdf = reshape (cdf, r, c);
 
 endfunction

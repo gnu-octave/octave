@@ -31,7 +31,7 @@
 
 function inv = normal_inv (x, m, v)
 
-  if (! ((nargin == 1) || (nargin == 3)))
+  if (nargin != 1 && nargin != 3)
     usage ("normal_inv (x, m, v)");
   endif
 
@@ -40,26 +40,32 @@ function inv = normal_inv (x, m, v)
     v = 1;
   endif
 
-  [retval, x, m, v] = common_size (x, m, v);
-  if (retval > 0)
-    error ("normal_inv: x, m and v must be of common size or scalars");
+  if (!isscalar (m) || !isscalar(v))
+    [retval, x, m, v] = common_size (x, m, v);
+    if (retval > 0)
+      error ("normal_inv: x, m and v must be of common size or scalars");
+    endif
   endif
 
-  [r, c] = size (x);
-  s = r * c;
-  x = reshape (x, 1, s);
-  m = reshape (m, 1, s);
-  v = reshape (v, 1, s);
-  inv = zeros (1, s);
+  sz = size (x);
+  inv = zeros (sz);
 
-  k = find (isinf (m) | isnan (m) | !(v > 0) | !(v < Inf));
-  if (any (k))
-    inv(k) = NaN * ones (1, length (k));
-  endif
+  if (isscalar (m) && isscalar(v))
+    if (find (isinf (m) | isnan (m) | !(v > 0) | !(v < Inf)))
+      inv = NaN * ones (sz);
+    else
+      inv =  m + sqrt (v) .* stdnormal_inv (x);
+    endif
+  else
+    k = find (isinf (m) | isnan (m) | !(v > 0) | !(v < Inf));
+    if (any (k))
+      inv(k) = NaN;
+    endif
 
-  k = find (!isinf (m) & !isnan (m) & (v > 0) & (v < Inf));
-  if (any (k))
-    inv(k) = m(k) + sqrt (v(k)) .* stdnormal_inv (x(k));
+    k = find (!isinf (m) & !isnan (m) & (v > 0) & (v < Inf));
+    if (any (k))
+      inv(k) = m(k) + sqrt (v(k)) .* stdnormal_inv (x(k));
+    endif
   endif
 
   k = find ((v == 0) & (x > 0) & (x < 1));
@@ -69,7 +75,5 @@ function inv = normal_inv (x, m, v)
 
   inv((v == 0) & (x == 0)) = -Inf;
   inv((v == 0) & (x == 1)) = Inf;
-
-  inv = reshape (inv, r, c);
 
 endfunction

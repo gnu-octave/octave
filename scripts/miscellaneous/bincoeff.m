@@ -65,20 +65,17 @@ function b = bincoeff (n, k)
     error ("bincoeff: n and k must be of common size or scalars");
   endif
 
-  [r, c] = size (n);
-  s = r * c;
-  n   = reshape (n, s, 1);
-  k   = reshape (k, s, 1);
-  b   = zeros (s, 1);
+  sz = size (n);
+  b   = zeros (sz);
 
   ind = find (! (k >= 0) | (k != real (round (k))) | isnan (n));
   if (any (ind))
-    b(ind) = NaN * ones (length (ind), 1);
+    b(ind) = NaN;
   endif
 
   ind = find (k == 0);
   if (any (ind))
-    b(ind) = ones (length (ind), 1);
+    b(ind) = 1;
   endif
 
   ind = find ((k > 0) & ((n == real (round (n))) & (n < 0)));
@@ -98,8 +95,6 @@ function b = bincoeff (n, k)
   if (any (ind))
     b(ind) = round (b(ind));
   endif
-
-  b = reshape (b, r, c);
 
 endfunction
 

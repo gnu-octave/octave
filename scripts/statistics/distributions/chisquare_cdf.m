@@ -33,9 +33,11 @@ function cdf = chisquare_cdf (x, n)
     usage ("chisquare_cdf (x, n)");
   endif
 
-  [retval, x, n] = common_size (x, n);
-  if (retval > 0)
-    error ("chisquare_cdf: x and n must be of common size or scalar");
+  if (!isscalar (n))
+    [retval, x, n] = common_size (x, n);
+    if (retval > 0)
+      error ("chisquare_cdf: x and n must be of common size or scalar");
+    endif
   endif
 
   cdf = gamma_cdf (x, n / 2, 1 / 2);

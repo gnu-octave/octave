@@ -1,5 +1,39 @@
 2004-04-06  David Bateman  <dbateman@free.fr>
 
+	* general/common_size.m, miscellaneous/bincoeff.m,
+	statistics/distributions/beta_cdf.m,
+	statistics/distributions/beta_inv.m,
+	statistics/distributions/beta_pdf.m,
+	statistics/distributions/beta_rnd.m,
+	statistics/distributions/binomial_cdf.m,
+	statistics/distributions/binomial_inv.m,
+	statistics/distributions/binomial_pdf.m,
+	statistics/distributions/binomial_rnd.m,
+	statistics/distributions/cauchy_cdf.m,
+	statistics/distributions/cauchy_inv.m,
+	statistics/distributions/cauchy_pdf.m,
+	statistics/distributions/cauchy_rnd.m,
+	statistics/distributions/chisquare_cdf.m,
+	statistics/distributions/chisquare_inv.m,
+	statistics/distributions/chisquare_pdf.m,
+	statistics/distributions/chisquare_rnd.m,
+	statistics/distributions/gamma_cdf.m,
+	statistics/distributions/gamma_inv.m,
+	statistics/distributions/gamma_pdf.m,
+	statistics/distributions/gamma_rnd.m,
+	statistics/distributions/normal_cdf.m,
+	statistics/distributions/normal_inv.m,
+	statistics/distributions/normal_pdf.m,
+	statistics/distributions/normal_rnd.m,
+	statistics/distributions/stdnormal_cdf.m,
+	statistics/distributions/stdnormal_pdf.m,
+	statistics/distributions/stdnormal_rnd.m,
+	statistics/distributions/uniform_cdf.m,
+	statistics/distributions/uniform_inv.m,
+	statistics/distributions/uniform_pdf.m,
+	statistics/distributions/uniform_rnd.m:
+	Allow the inputs to be N-d arrays.
+
 	* statistics/base/var.m: Update for N-d arrays.  Allow dimension arg.
 	* statistics/base/median.m: Likewise.
 

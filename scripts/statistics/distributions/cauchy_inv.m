@@ -39,37 +39,36 @@ function inv = cauchy_inv (x, location, scale)
     scale = 1;
   endif
 
-  [retval, x, location, scale] = common_size (x, location, scale);
-  if (retval > 0)
-    error ("cauchy_inv: x, lambda and sigma must be of common size or scalar");
+  if (!isscalar (location) || !isscalar (scale)) 
+    [retval, x, location, scale] = common_size (x, location, scale);
+    if (retval > 0)
+      error ("cauchy_inv: x, lambda and sigma must be of common size or scalar");
+    endif
   endif
 
-  [r, c] = size (x);
-  s = r * c;
-  x = reshape (x, 1, s);
-  location = reshape (location, 1, s);
-  scale = reshape (scale, 1, s);
-
-  inv = NaN * ones (1, s);
+  sz = size (x);
+  inv = NaN * ones (sz);
 
   ok = ((location > -Inf) & (location < Inf) &
        (scale > 0) & (scale < Inf));
 
   k = find ((x == 0) & ok);
   if (any (k))
-    inv(k) = -Inf * ones (1, length (k));
+    inv(k) = -Inf;
   endif
 
   k = find ((x > 0) & (x < 1) & ok);
   if (any (k))
-    inv(k) = location(k) - scale(k) .* cot (pi * x(k));
+    if (isscalar (location) && isscalar (scale)) 
+      inv(k) = location - scale .* cot (pi * x(k));
+    else
+      inv(k) = location(k) - scale(k) .* cot (pi * x(k));
+    endif
   endif
 
   k = find ((x == 1) & ok);
   if (any (k))
-    inv(k) = Inf * ones (1, length (k));
+    inv(k) = Inf;
   endif
-
-  inv = reshape (inv, r, c);
 
 endfunction

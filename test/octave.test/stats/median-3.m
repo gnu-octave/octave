@@ -1,1 +1,1 @@
-median (1, 2)
+median (1, 2, 3)

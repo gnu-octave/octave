@@ -49,8 +49,20 @@ function [errorcode, varargout] = common_size (varargin)
     error ("common_size: only makes sense if nargin >= 2");
   endif
 
+  len = 2;
   for i = 1 : nargin
-    s(i,:) = size (varargin{i});
+    sz =  size (varargin{i});
+    if (length (sz) < len)
+      s(i,:) = [sz, ones(1,len - length(sz))];
+    else
+      if (length (sz) > len)
+	if (i > 1)
+	  s = [s, ones(size(s,1), length(sz) - len)];
+	endif
+	len = length (sz);
+      endif
+      s(i,:) = sz;
+    endif
   endfor
 
   m = max (s);

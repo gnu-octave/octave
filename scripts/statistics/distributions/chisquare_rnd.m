@@ -19,9 +19,10 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} chisquare_rnd (@var{n}, @var{r}, @var{c})
-## Return an @var{r} by @var{c} matrix of random samples from the
-## chisquare distribution with @var{n} degrees of freedom.  @var{n} must
-## be a scalar or of size @var{r} by @var{c}.
+## @deftypefnx {Function File} {} chisquare_rnd (@var{n}, @var{sz})
+## Return an @var{r} by @var{c}  or a @code{size (@var{sz})} matrix of 
+## random samples from the chisquare distribution with @var{n} degrees 
+## of freedom.  @var{n} must be a scalar or of size @var{r} by @var{c}.
 ##
 ## If @var{r} and @var{c} are omitted, the size of the result matrix is
 ## the size of @var{n}.
@@ -39,29 +40,43 @@ function rnd = chisquare_rnd (n, r, c)
     if (! (isscalar (c) && (c > 0) && (c == round (c))))
       error ("chisquare_rnd: c must be a positive integer");
     endif
-    [retval, n] = common_size (n, zeros (r, c));
-    if (retval > 0)
-      error ("chisquare_rnd: n must be scalar or of size %d by %d", r, c);
+    sz = [r, c];
+  elseif (nargin == 2)
+    if (isscalar (r) && (r > 0))
+      sz = [r, r];
+    elseif (isvector(r) && all (r > 0))
+      sz = r(:)';
+    else
+      error ("chisquare_rnd: r must be a postive integer or vector");
     endif
-  elseif (nargin != 1)
+  elseif (nargin == 1)
+    sz = size(n);
+  else
     usage ("chisquare_rnd (n, r, c)");
   endif
 
-  [r, c] = size (n);
-  s = r * c;
-  n = reshape (n, 1, s);
-  rnd = zeros (1, s);
+  if (isscalar (n))
+     if (find (!(n > 0) | !(n < Inf)))
+       rnd = NaN * ones (sz);
+     else
+       rnd =  chisquare_inv (rand (sz), n);
+     endif
+  else
+    [retval, n, dummy] = common_size (n, ones (sz));
+    if (retval > 0)
+      error ("chisquare_rnd: a and b must be of common size or scalar");
+    endif
 
-  k = find (!(n > 0) | !(n < Inf));
-  if (any (k))
-    rnd(k) = NaN * ones (1, length (k));
+    rnd = zeros (sz);
+    k = find (!(n > 0) | !(n < Inf));
+    if (any (k))
+      rnd(k) = NaN;
+    endif
+
+    k = find ((n > 0) & (n < Inf));
+    if (any (k))
+      rnd(k) = chisquare_inv (rand (size (k)), n(k));
+    endif
   endif
-
-  k = find ((n > 0) & (n < Inf));
-  if (any (k))
-    rnd(k) = chisquare_inv (rand (1, length (k)), n(k));
-  endif
-
-  rnd = reshape (rnd, r, c);
 
 endfunction

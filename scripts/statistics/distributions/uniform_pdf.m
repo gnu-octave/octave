@@ -30,7 +30,7 @@
 
 function pdf = uniform_pdf (x, a, b)
 
-  if (! (nargin == 1 || nargin == 3))
+  if (nargin != 1 && nargin != 3)
     usage ("uniform_pdf (x, a, b)");
   endif
 
@@ -39,28 +39,28 @@ function pdf = uniform_pdf (x, a, b)
     b = 1;
   endif
 
-  [retval, x, a, b] = common_size (x, a, b);
-  if (retval > 0)
-    error ("uniform_pdf: x, a and b must be of common size or scalars");
+  if (!isscalar (a) || !isscalar(b))
+    [retval, x, a, b] = common_size (x, a, b);
+    if (retval > 0)
+      error ("uniform_pdf: x, a and b must be of common size or scalars");
+    endif
   endif
 
-  [r, c] = size (x);
-  s = r * c;
-  x = reshape (x, 1, s);
-  a = reshape (a, 1, s);
-  b = reshape (b, 1, s);
-  pdf = zeros (1, s);
+  sz = size (x);
+  pdf = zeros (sz);
 
   k = find (isnan (x) | !(a < b));
   if (any (k))
-    pdf(k) = NaN * ones (1, length (k));
+    pdf(k) = NaN;
   endif
 
   k = find ((x > a) & (x < b));
   if (any (k))
-    pdf(k) = 1 ./ (b(k) - a(k));
+    if (isscalar (a) && isscalar(b))
+      pdf(k) = 1 ./ (b - a);
+    else
+      pdf(k) = 1 ./ (b(k) - a(k));
+    endif
   endif
-
-  pdf = reshape (pdf, r, c);
 
 endfunction

@@ -19,9 +19,10 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} uniform_rnd (@var{a}, @var{b}, @var{r}, @var{c})
-## Return an @var{r} by @var{c} matrix of random samples from the
-## uniform distribution on [@var{a}, @var{b}].  Both @var{a} and @var{b}
-## must be scalar or of size @var{r} by @var{c}.
+## @deftypefnx {Function File} {} uniform_rnd (@var{a}, @var{b}, @var{sz})
+## Return an @var{r} by @var{c} or a @code{size (@var{sz})} matrix of 
+## random samples from the uniform distribution on [@var{a}, @var{b}]. 
+## Both @var{a} and @var{b} must be scalar or of size @var{r} by @var{c}.
 ##
 ## If @var{r} and @var{c} are omitted, the size of the result matrix is
 ## the common size of @var{a} and @var{b}.
@@ -32,6 +33,15 @@
 
 function rnd = uniform_rnd (a, b, r, c)
 
+  if (nargin > 1)
+    if (!isscalar(a) || !isscalar(b)) 
+      [retval, a, b] = common_size (a, b);
+      if (retval > 0)
+	error ("uniform_rnd: a and b must be of common size or scalar");
+      endif
+    endif
+  endif
+
   if (nargin == 4)
     if (! (isscalar (r) && (r > 0) && (r == round (r))))
       error ("uniform_rnd: r must be a positive integer");
@@ -39,35 +49,34 @@ function rnd = uniform_rnd (a, b, r, c)
     if (! (isscalar (c) && (c > 0) && (c == round (c))))
       error ("uniform_rnd: c must be a positive integer");
     endif
-    [retval, a, b] = common_size (a, b, zeros (r, c));
-    if (retval > 0)
-      error ("uniform_rnd: a and b must be scalar or of size %d by %d", r, c);
+    sz = [r, c];
+  elseif (nargin == 3)
+    if (isscalar (r) && (r > 0))
+      sz = [r, r];
+    elseif (isvector(r) && all (r > 0))
+      sz = r(:)';
+    else
+      error ("uniform_rnd: r must be a postive integer or vector");
     endif
   elseif (nargin == 2)
-    [retval, a, b] = common_size (a, b);
-    if (retval > 0)
-      error ("uniform_rnd: a and b must be of common size or scalar");
-    endif
+    sz = size(a);
   else
     usage ("uniform_rnd (a, b, r, c)");
   endif
 
-  [r, c] = size (a);
-  s = r * c;
-  a = reshape (a, 1, s);
-  b = reshape (b, 1, s);
-  rnd = zeros (1, s);
+  if (isscalar(a) && isscalar(b))
+    if (find (!(-Inf < a) | !(a < b) | !(b < Inf)))
+      rnd = NaN * ones(sz);
+    else
+      rnd =  a + (b - a) .* rand (sz);
+    endif
+  else
+    rnd =  a + (b - a) .* rand (sz);
 
-  k = find (!(-Inf < a) | !(a < b) | !(b < Inf));
-  if (any (k))
-    rnd(k) = NaN * ones (1, length (k));
+    k = find (!(-Inf < a) | !(a < b) | !(b < Inf));
+    if (any (k))
+      rnd(k) = NaN;
+    endif
   endif
-
-  k = find ((-Inf < a) & (a < b) & (b < Inf));
-  if (any (k))
-    rnd(k) = a(k) + (b(k) - a(k)) .* rand (1, length (k));
-  endif
-
-  rnd = reshape (rnd, r, c);
 
 endfunction

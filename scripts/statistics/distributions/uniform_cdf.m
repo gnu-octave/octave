@@ -30,7 +30,7 @@
 
 function cdf = uniform_cdf (x, a, b)
 
-  if (! (nargin == 1 || nargin == 3))
+  if (nargin != 1 && nargin != 3)
     usage ("uniform_cdf (x, a, b)");
   endif
 
@@ -39,33 +39,33 @@ function cdf = uniform_cdf (x, a, b)
     b = 1;
   endif
 
-  [retval, x, a, b] = common_size (x, a, b);
-  if (retval > 0)
-    error ("uniform_cdf: x, a and b must be of common size or scalar");
+  if (!isscalar (a) || !isscalar(b))
+    [retval, x, a, b] = common_size (x, a, b);
+    if (retval > 0)
+      error ("uniform_cdf: x, a and b must be of common size or scalar");
+    endif
   endif
 
-  [r, c] = size (x);
-  s = r * c;
-  x = reshape (x, 1, s);
-  a = reshape (a, 1, s);
-  b = reshape (b, 1, s);
-  cdf = zeros (1, s);
+  sz = size (x);
+  cdf = zeros (sz);
 
   k = find (isnan (x) | !(a < b));
   if (any (k))
-    cdf(k) = NaN * ones (1, length (k));
+    cdf(k) = NaN;
   endif
 
   k = find ((x >= b) & (a < b));
   if (any (k))
-    cdf(k) = ones (1, length (k));
+    cdf(k) = 1;
   endif
-
+  
   k = find ((x > a) & (x < b));
   if (any (k))
-    cdf(k) = (x(k) < b(k)) .* (x(k) - a(k)) ./ (b(k) - a(k));
+    if (isscalar (a) && isscalar(b))
+      cdf(k) = (x(k) < b) .* (x(k) - a) ./ (b - a);
+    else
+      cdf(k) = (x(k) < b(k)) .* (x(k) - a(k)) ./ (b(k) - a(k));
+    endif
   endif
-
-  cdf = reshape (cdf, r, c);
 
 endfunction

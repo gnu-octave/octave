@@ -32,12 +32,12 @@ function cdf = stdnormal_cdf (x)
     usage ("stdnormal_cdf (x)");
   endif
 
-  [r_x, c_x] = size (x);
-  if (r_x * c_x == 0)
+  sz = size (x);
+  if (numel(x) == 0)
     error ("stdnormal_cdf: x must not be empty");
   endif
 
-  cdf = (ones (r_x, c_x) + erf (x / sqrt (2))) / 2;
+  cdf = (ones (sz) + erf (x / sqrt (2))) / 2;
 
 endfunction
 

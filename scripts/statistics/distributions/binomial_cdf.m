@@ -32,37 +32,37 @@ function cdf = binomial_cdf (x, n, p)
     usage ("binomial_cdf (x, n, p)");
   endif
 
-  [retval, x, n, p] = common_size (x, n, p);
-  if (retval > 0)
-    error ("binomial_cdf: x, n and p must be of common size or scalar");
+  if (!isscalar (n) || !isscalar (p))
+    [retval, x, n, p] = common_size (x, n, p);
+    if (retval > 0)
+      error ("binomial_cdf: x, n and p must be of common size or scalar");
+    endif
   endif
 
-  [r, c] = size (x);
-  s = r * c;
-  x   = reshape (x, 1, s);
-  n   = reshape (n, 1, s);
-  p   = reshape (p, 1, s);
-  cdf = zeros (1, s);
+  sz = size (x);
+  cdf = zeros (sz);
 
   k = find (isnan (x) | !(n >= 0) | (n != round (n))
 	    | !(p >= 0) | !(p <= 1));
   if (any (k))
-    cdf(k) = NaN * ones (1, length (k));
+    cdf(k) = NaN;
   endif
 
   k = find ((x >= n) & (n >= 0) & (n == round (n))
 	    & (p >= 0) & (p <= 1));
   if (any (k))
-    cdf(k) = ones (1, length (k));
+    cdf(k) = 1;
   endif
 
   k = find ((x >= 0) & (x < n) & (n == round (n))
 	    & (p >= 0) & (p <= 1));
   if (any (k))
     tmp = floor (x(k));
-    cdf(k) = 1 - betainc (p(k), tmp + 1, n(k) - tmp);
+    if (isscalar (n) && isscalar (p))
+      cdf(k) = 1 - betainc (p, tmp + 1, n - tmp);
+    else
+      cdf(k) = 1 - betainc (p(k), tmp + 1, n(k) - tmp);
+    endif
   endif
-
-  cdf = reshape (cdf, r, c);
 
 endfunction

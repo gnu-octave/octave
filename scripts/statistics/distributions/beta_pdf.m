@@ -31,30 +31,31 @@ function pdf = beta_pdf (x, a, b)
   if (nargin != 3)
     usage ("beta_pdf (a, b, x)");
   endif
-
-  [retval, x, a, b] = common_size (x, a, b);
-  if (retval > 0)
-    error ("beta_pdf: x, a and b must be of common size or scalar");
+  
+  if (!isscalar (a) || !isscalar(b))
+    [retval, x, a, b] = common_size (x, a, b);
+    if (retval > 0)
+      error ("beta_pdf: x, a and b must be of common size or scalar");
+    endif
   endif
 
-  [r, c] = size (x);
-  s = r * c;
-  x   = reshape (x, s, 1);
-  a   = reshape (a, s, 1);
-  b   = reshape (b, s, 1);
-  pdf = zeros (s, 1);
+  sz = size (x);
+  pdf = zeros (sz);
 
   k = find (!(a > 0) | !(b > 0) | isnan (x));
   if (any (k))
-    pdf (k) = NaN * ones (length (k), 1);
+    pdf (k) = NaN;
   endif
 
   k = find ((x > 0) & (x < 1) & (a > 0) & (b > 0));
   if (any (k))
-    pdf(k) = exp ((a(k) - 1) .* log (x(k))
-		  + (b(k) - 1) .* log (1 - x(k))) ./ beta (a(k), b(k));
+    if (isscalar(a) && isscalar(b))
+      pdf(k) = exp ((a - 1) .* log (x(k))
+		    + (b - 1) .* log (1 - x(k))) ./ beta (a, b);
+    else
+      pdf(k) = exp ((a(k) - 1) .* log (x(k))
+		    + (b(k) - 1) .* log (1 - x(k))) ./ beta (a(k), b(k));
+    endif
   endif
-
-  pdf = reshape (pdf, r, c);
 
 endfunction

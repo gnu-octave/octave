@@ -39,26 +39,26 @@ function pdf = cauchy_pdf (x, location, scale)
     scale = 1;
   endif
 
-  [retval, x, location, scale] = common_size (x, location, scale);
-  if (retval > 0)
-    error ("cauchy_pdf: x, lambda and sigma must be of common size or scalar");
+  if (!isscalar (location) || !isscalar (scale)) 
+    [retval, x, location, scale] = common_size (x, location, scale);
+    if (retval > 0)
+      error ("cauchy_pdf: x, lambda and sigma must be of common size or scalar");
+    endif
   endif
 
-  [r, c] = size (x);
-  s = r * c;
-  x = reshape (x, 1, s);
-  location = reshape (location, 1, s);
-  scale = reshape (scale, 1, s);
-
-  pdf = NaN * ones (1, s);
+  sz = size (x);
+  pdf = NaN * ones (sz);
 
   k = find ((x > -Inf) & (x < Inf) & (location > -Inf) &
             (location < Inf) & (scale > 0) & (scale < Inf));
   if (any (k))
-    pdf(k) = ((1 ./ (1 + ((x(k) - location(k)) ./ scale(k)) .^ 2))
-	      / pi ./ scale(k));
+    if (isscalar (location) && isscalar (scale)) 
+      pdf(k) = ((1 ./ (1 + ((x(k) - location) ./ scale) .^ 2))
+		/ pi ./ scale);
+    else
+      pdf(k) = ((1 ./ (1 + ((x(k) - location(k)) ./ scale(k)) .^ 2))
+		/ pi ./ scale(k));
+    endif
   endif
-
-  pdf = reshape (pdf, r, c);
 
 endfunction

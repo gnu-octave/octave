@@ -33,35 +33,41 @@ function pdf = gamma_pdf (x, a, b)
     usage ("gamma_pdf (x, a, b)");
   endif
 
-  [retval, x, a, b] = common_size (x, a, b);
-  if (retval > 0)
-    error ("gamma_pdf: x, a and b must be of common size or scalars");
+  if (!isscalar (a) || !isscalar(b))
+    [retval, x, a, b] = common_size (x, a, b);
+    if (retval > 0)
+      error ("gamma_pdf: x, a and b must be of common size or scalars");
+    endif
   endif
 
-  [r, c] = size (x);
-  s = r * c;
-  x   = reshape (x, s, 1);
-  a   = reshape (a, s, 1);
-  b   = reshape (b, s, 1);
-  pdf = zeros (s, 1);
+  sz = size(x);
+  pdf = zeros (sz);
 
   k = find (!(a > 0) | !(b > 0) | isnan (x));
   if (any (k))
-    pdf (k) = NaN * ones (length (k), 1);
+    pdf (k) = NaN;
   endif
 
   k = find ((x > 0) & (a > 0) & (a <= 1) & (b > 0));
   if (any (k))
-    pdf(k) = ((b(k) .^ a(k)) .* (x(k) .^ (a(k) - 1))
-	      .* exp(-b(k) .* x(k)) ./ gamma (a(k)));
+    if (isscalar(a) && isscalar(b))
+      pdf(k) = ((b .^ a) .* (x(k) .^ (a - 1))
+		.* exp(-b .* x(k)) ./ gamma (a));
+    else
+      pdf(k) = ((b(k) .^ a(k)) .* (x(k) .^ (a(k) - 1))
+		.* exp(-b(k) .* x(k)) ./ gamma (a(k)));
+    endif
   endif
 
   k = find ((x > 0) & (a > 1) & (b > 0));
   if (any (k))
-    pdf(k) = exp (a(k) .* log (b(k)) + (a(k)-1) .* log (x(k))
-		  - b(k) .* x(k) - gammaln (a(k)));
+    if (isscalar(a) && isscalar(b))
+      pdf(k) = exp (a .* log (b) + (a-1) .* log (x(k))
+		    - b .* x(k) - gammaln (a));
+    else
+      pdf(k) = exp (a(k) .* log (b(k)) + (a(k)-1) .* log (x(k))
+		    - b(k) .* x(k) - gammaln (a(k)));
+    endif
   endif
-
-  pdf = reshape (pdf, r, c);
 
 endfunction

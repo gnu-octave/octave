@@ -40,30 +40,34 @@ function cdf = normal_cdf (x, m, v)
     v = 1;
   endif
 
-  [retval, x, m, v] = common_size (x, m, v);
-  if (retval > 0)
-    error ("normal_cdf: x, m and v must be of common size or scalars");
+  if (!isscalar (m) || !isscalar(v))
+    [retval, x, m, v] = common_size (x, m, v);
+    if (retval > 0)
+      error ("normal_cdf: x, m and v must be of common size or scalar");
+    endif
   endif
 
-  [r, c] = size (x);
-  s = r * c;
-  x = reshape (x, 1, s);
-  m = reshape (m, 1, s);
-  v = reshape (v, 1, s);
-  cdf = zeros (1, s);
+  sz = size (x);
+  cdf = zeros (sz);
 
-  k = find (isinf (m) | isnan (m) | !(v >= 0) | !(v < Inf));
-  if (any (k))
-    cdf(k) = NaN * ones (1, length (k));
-  endif
+  if (isscalar (m) && isscalar(v))
+    if (find (isinf (m) | isnan (m) | !(v >= 0) | !(v < Inf)))
+      cdf = NaN * ones (sz);
+    else
+      cdf =  stdnormal_cdf ((x - m) ./ sqrt (v));
+    endif
+  else
+    k = find (isinf (m) | isnan (m) | !(v >= 0) | !(v < Inf));
+    if (any (k))
+      cdf(k) = NaN;
+    endif
 
-  k = find (!isinf (m) & !isnan (m) & (v >= 0) & (v < Inf));
-  if (any (k))
-    cdf(k) = stdnormal_cdf ((x(k) - m(k)) ./ sqrt (v(k)));
+    k = find (!isinf (m) & !isnan (m) & (v >= 0) & (v < Inf));
+    if (any (k))
+      cdf(k) = stdnormal_cdf ((x(k) - m(k)) ./ sqrt (v(k)));
+    endif
   endif
 
   cdf((v == 0) & (x == m)) = 0.5;
-
-  cdf = reshape (cdf, r, c);
 
 endfunction

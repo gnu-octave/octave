@@ -33,9 +33,11 @@ function pdf = chisquare_pdf (x, n)
     usage ("chisquare_pdf (x, n)");
   endif
 
-  [retval, x, n] = common_size (x, n);
-  if (retval > 0)
-    error ("chisquare_pdf: x and n must be of common size or scalar");
+  if (!isscalar (n))
+    [retval, x, n] = common_size (x, n);
+    if (retval > 0)
+      error ("chisquare_pdf: x and n must be of common size or scalar");
+    endif
   endif
 
   pdf = gamma_pdf (x, n / 2, 1 / 2);

@@ -33,30 +33,31 @@ function pdf = binomial_pdf (x, n, p)
     usage ("binomial_pdf (x, n, p)");
   endif
 
-  [retval, x, n, p] = common_size (x, n, p);
-  if (retval > 0)
-    error ("binomial_pdf: x, n and p must be of common size or scalar");
+  if (!isscalar (n) || !isscalar (p))
+    [retval, x, n, p] = common_size (x, n, p);
+    if (retval > 0)
+      error ("binomial_pdf: x, n and p must be of common size or scalar");
+    endif
   endif
 
-  [r, c] = size (x);
-  s = r * c;
-  x   = reshape (x, 1, s);
-  n   = reshape (n, 1, s);
-  p   = reshape (p, 1, s);
-  cdf = zeros (1, s);
+  sz = size (x);
+  pdf = zeros (sz);
 
   k = find (isnan (x) | !(n >= 0) | (n != round (n)) | !(p >= 0) | !(p <= 1));
   if (any (k))
-    pdf(k) = NaN * ones (1, length (k));
+    pdf(k) = NaN;
   endif
 
   k = find ((x >= 0) & (x <= n) & (x == round (x))
 	    & (n == round (n)) & (p >= 0) & (p <= 1));
   if (any (k))
-    pdf(k) = (bincoeff (n(k), x(k)) .* (p(k) .^ x(k))
-	      .* ((1 - p(k)) .^ (n(k) - x(k))));
+    if (isscalar (n) && isscalar (p))
+      pdf(k) = (bincoeff (n, x(k)) .* (p .^ x(k))
+		.* ((1 - p) .^ (n - x(k))));
+    else
+      pdf(k) = (bincoeff (n(k), x(k)) .* (p(k) .^ x(k))
+		.* ((1 - p(k)) .^ (n(k) - x(k))));
+    endif
   endif
-
-  pdf = reshape (pdf, r, c);
 
 endfunction

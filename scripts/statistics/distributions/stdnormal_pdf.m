@@ -32,21 +32,17 @@ function pdf = stdnormal_pdf (x)
     usage ("stdnormal_pdf (x)");
   endif
 
-  [r, c] = size (x);
-  s = r * c;
-  x = reshape (x, 1, s);
-  pdf = zeros (1, s);
+  sz = size(x);
+  pdf = zeros (sz);
 
   k = find (isnan (x));
   if (any (k))
-    pdf(k) = NaN * ones (1, length (k));
+    pdf(k) = NaN;
   endif
 
   k = find (!isinf (x));
   if (any (k))
     pdf (k) = (2 * pi)^(- 1/2) * exp (- x(k) .^ 2 / 2);
   endif
-
-  pdf = reshape (pdf, r, c);
 
 endfunction

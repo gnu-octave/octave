@@ -19,8 +19,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} stdnormal_rnd (@var{r}, @var{c})
-## Return an @var{r} by @var{c} matrix of random numbers from the
-## standard normal distribution.
+## @deftypefnx {Function File} {} stdnormal_rnd (@var{sz})
+## Return an @var{r} by @var{c} or @code{size (@var{sz})} matrix of 
+## random numbers from the standard normal distribution.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
@@ -28,17 +29,28 @@
 
 function rnd = stdnormal_rnd (r, c)
 
-  if (nargin != 2)
+  if (nargin != 1 && nargin != 2)
     usage ("stdnormal_rnd (r, c)");
   endif
 
-  if (! (isscalar (r) && (r > 0) && (r == round (r))))
-    error ("stdnormal_rnd: r must be a positive integer");
-  endif
-  if (! (isscalar (c) && (c > 0) && (c == round (c))))
-    error ("stdnormal_rnd: c must be a positive integer");
+  if (nargin == 2)
+    if (! (isscalar (r) && (r > 0) && (r == round (r))))
+      error ("stdnormal_rnd: r must be a positive integer");
+    endif
+    if (! (isscalar (c) && (c > 0) && (c == round (c))))
+      error ("stdnormal_rnd: c must be a positive integer");
+    endif
+    sz = [r, c];
+  else
+    if (isscalar (r) && (r > 0))
+      sz = [r, r];
+    elseif (isvector(r) && all (r > 0))
+      sz = r(:)';
+    else
+      error ("stdnormal_rnd: r must be a postive integer or vector");
+    endif
   endif
 
-  rnd = randn (r, c);
+  rnd = randn (sz);
 
 endfunction

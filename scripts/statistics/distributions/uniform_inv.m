@@ -30,7 +30,7 @@
 
 function inv = uniform_inv (x, a, b)
 
-  if (! (nargin == 1 || nargin == 3))
+  if (nargin != 1 && nargin != 3)
     usage ("uniform_inv (x, a, b)");
   endif
 
@@ -39,28 +39,28 @@ function inv = uniform_inv (x, a, b)
     b = 1;
   endif
 
-  [retval, x, a, b] = common_size (x, a, b);
-  if (retval > 0)
-    error ("uniform_inv: x, a and b must be of common size or scalars");
+  if (!isscalar (a) || !isscalar(b))
+    [retval, x, a, b] = common_size (x, a, b);
+    if (retval > 0)
+      error ("uniform_cdf: x, a and b must be of common size or scalar");
+    endif
   endif
 
-  [r, c] = size (x);
-  s   = r * c;
-  x   = reshape (x, 1, s);
-  a   = reshape (a, 1, s);
-  b   = reshape (b, 1, s);
-  inv = zeros (1, s);
+  sz = size (x);
+  inv = zeros (sz);
 
   k = find ((x < 0) | (x > 1) | isnan (x) | !(a < b));
   if (any (k))
-    inv(k) = NaN * ones (1, length (k));
+    inv(k) = NaN;
   endif
 
   k = find ((x >= 0) & (x <= 1) & (a < b));
   if (any (k))
-    inv(k) = a(k) + x(k) .* (b(k) - a(k));
+    if (isscalar (a) && isscalar(b))
+      inv(k) = a + x(k) .* (b - a);
+    else
+      inv(k) = a(k) + x(k) .* (b(k) - a(k));
+    endif
   endif
-
-  inv = reshape (inv, r, c);
 
 endfunction

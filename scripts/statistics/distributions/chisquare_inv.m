@@ -33,9 +33,11 @@ function inv = chisquare_inv (x, n)
     usage ("chisquare_inv (x, n)");
   endif
 
-  [retval, x, n] = common_size (x, n);
-  if (retval > 0)
-    error ("chisquare_inv: x and n must be of common size or scalar");
+  if (!isscalar (n))
+    [retval, x, n] = common_size (x, n);
+    if (retval > 0)
+      error ("chisquare_inv: x and n must be of common size or scalar");
+    endif
   endif
 
   inv = gamma_inv (x, n / 2, 1 / 2);

@@ -32,39 +32,48 @@ function inv = binomial_inv (x, n, p)
     usage ("binomial_inv (x, n, p)");
   endif
 
-  [retval, x, n, p] = common_size (x, n, p);
-  if (retval > 0)
-    error ("binomial_inv: x, n and p must be of common size or scalars");
+  if (!isscalar (n) || !isscalar (p))
+    [retval, x, n, p] = common_size (x, n, p);
+    if (retval > 0)
+      error ("binomial_inv: x, n and p must be of common size or scalars");
+    endif
   endif
-
-  [r, c] = size (x);
-  s   = r * c;
-  x   = reshape (x, 1, s);
-  n   = reshape (n, 1, s);
-  p   = reshape (p, 1, s);
-  inv = zeros (1, s);
+  
+  sz = size (x);
+  inv = zeros (sz);
 
   k = find (!(x >= 0) | !(x <= 1) | !(n >= 0) | (n != round (n))
 	    | !(p >= 0) | !(p <= 1));
   if (any (k))
-    inv(k) = NaN * ones (1, length (k));
+    inv(k) = NaN;
   endif
 
   k = find ((x >= 0) & (x <= 1) & (n >= 0) & (n == round (n))
 	    & (p >= 0) & (p <= 1));
   if (any (k))
-    cdf = binomial_pdf (0, n(k), p(k));
-    while (any (inv(k) < n(k)))
-      m = find (cdf < x(k));
-      if (any (m))
-        inv(k(m)) = inv(k(m)) + 1;
-        cdf(m) = cdf(m) + binomial_pdf (inv(k(m)), n(k(m)), p(k(m)));
-      else
-        break;
-      endif
-    endwhile
+    if (isscalar (n) && isscalar (p))
+      cdf = binomial_pdf (0, n, p) * ones (size(k));
+      while (any (inv(k) < n))
+	m = find (cdf < x(k));
+	if (any (m))
+          inv(k(m)) = inv(k(m)) + 1;
+          cdf(m) = cdf(m) + binomial_pdf (inv(k(m)), n, p);
+	else
+          break;
+	endif
+      endwhile
+    else 
+      cdf = binomial_pdf (0, n(k), p(k));
+      while (any (inv(k) < n(k)))
+	m = find (cdf < x(k));
+	if (any (m))
+          inv(k(m)) = inv(k(m)) + 1;
+          cdf(m) = cdf(m) + binomial_pdf (inv(k(m)), n(k(m)), p(k(m)));
+	else
+          break;
+	endif
+      endwhile
+    endif
   endif
-
-  inv = reshape (inv, r, c);
 
 endfunction

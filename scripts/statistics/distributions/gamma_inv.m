@@ -33,34 +33,36 @@ function inv = gamma_inv (x, a, b)
     usage ("gamma_inv (x, a, b)");
   endif
 
-  [retval, x, a, b] = common_size (x, a, b);
-  if (retval > 0)
-    error ("gamma_inv: x, a and b must be of common size or scalars");
+  if (!isscalar (a) || !isscalar(b))
+    [retval, x, a, b] = common_size (x, a, b);
+    if (retval > 0)
+      error ("gamma_inv: x, a and b must be of common size or scalars");
+    endif
   endif
 
-  [r, c] = size (x);
-  s   = r * c;
-  x   = reshape (x, s, 1);
-  a   = reshape (a, s, 1);
-  b   = reshape (b, s, 1);
-  inv = zeros (s, 1);
+  sz = size (x);
+  inv = zeros (sz);
 
   k = find ((x < 0) | (x > 1) | isnan (x) | !(a > 0) | !(b > 0));
   if (any (k))
-    inv (k) = NaN * ones (length (k), 1);
+    inv (k) = NaN;
   endif
 
   k = find ((x == 1) & (a > 0) & (b > 0));
   if (any (k))
-    inv (k) = Inf * ones (length (k), 1);
+    inv (k) = Inf;
   endif
 
   k = find ((x > 0) & (x < 1) & (a > 0) & (b > 0));
   if (any (k))
-    a = a (k);
-    b = b (k);
+    if (!isscalar(a) || !isscalar(b))
+      a = a (k);
+      b = b (k);
+      y = a ./ b;
+    else
+      y = a / b * ones (size (k));
+    endif
     x = x (k);
-    y = a ./ b;
     l = find (x < eps);
     if (any (l))
       y(l) = sqrt (eps) * ones (length (l), 1);
@@ -83,7 +85,5 @@ function inv = gamma_inv (x, a, b)
 
     inv (k) = y_new;
   endif
-
-  inv = reshape (inv, r, c);
 
 endfunction

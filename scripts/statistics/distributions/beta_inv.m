@@ -33,34 +33,36 @@ function inv = beta_inv (x, a, b)
     usage ("beta_inv (x, a, b)");
   endif
 
-  [retval, x, a, b] = common_size (x, a, b);
-  if (retval > 0)
-    error ("beta_inv: x, a and b must be of common size or scalars");
+  if (!isscalar (a) || !isscalar(b))
+    [retval, x, a, b] = common_size (x, a, b);
+    if (retval > 0)
+      error ("beta_inv: x, a and b must be of common size or scalars");
+    endif
   endif
-
-  [r, c] = size (x);
-  s   = r * c;
-  x   = reshape (x, s, 1);
-  a   = reshape (a, s, 1);
-  b   = reshape (b, s, 1);
-  inv = zeros (s, 1);
+  
+  sz = size (x);
+  inv = zeros (sz);
 
   k = find ((x < 0) | (x > 1) | !(a > 0) | !(b > 0) | isnan (x));
   if (any (k))
-    inv (k) = NaN * ones (length (k), 1);
+    inv (k) = NaN;
   endif
 
   k = find ((x == 1) & (a > 0) & (b > 0));
   if (any (k))
-    inv (k) = ones (length (k), 1);
+    inv (k) = 1;
   endif
 
   k = find ((x > 0) & (x < 1) & (a > 0) & (b > 0));
   if (any (k))
-    a = a (k);
-    b = b (k);
+    if (!isscalar(a) || !isscalar(b))
+      a = a (k);
+      b = b (k);
+      y = a ./ (a + b);
+    else
+      y = a / (a + b) * ones (size (k));
+    endif
     x = x (k);
-    y = a ./ (a + b);
     l = find (y < eps);
     if (any (l))
       y(l) = sqrt (eps) * ones (length (l), 1);
@@ -91,7 +93,5 @@ function inv = beta_inv (x, a, b)
 
     inv (k) = y_new;
   endif
-
-  inv = reshape (inv, r, c);
 
 endfunction

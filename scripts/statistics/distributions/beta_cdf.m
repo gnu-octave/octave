@@ -33,33 +33,33 @@ function cdf = beta_cdf (x, a, b)
     usage ("beta_cdf (a, b, x)");
   endif
 
-  [retval, x, a, b] = common_size (x, a, b);
-  if (retval > 0)
-    error ("beta_cdf: x, a and b must be of common size or scalar");
+  if (!isscalar (a) || !isscalar(b))
+    [retval, x, a, b] = common_size (x, a, b);
+    if (retval > 0)
+      error ("beta_cdf: x, a and b must be of common size or scalar");
+    endif
   endif
 
-  [r, c] = size (x);
-  s = r * c;
-  x   = reshape (x, s, 1);
-  a   = reshape (a, s, 1);
-  b   = reshape (b, s, 1);
-  cdf = zeros (s, 1);
+  sz = size(x);
+  cdf = zeros (sz);
 
   k = find (!(a > 0) | !(b > 0) | isnan (x));
   if (any (k))
-    cdf (k) = NaN * ones (length (k), 1);
+    cdf (k) = NaN;
   endif
 
   k = find ((x >= 1) & (a > 0) & (b > 0));
   if (any (k))
-    cdf (k) = ones (length (k), 1);
+    cdf (k) = 1;
   endif
 
   k = find ((x > 0) & (x < 1) & (a > 0) & (b > 0));
   if (any (k))
-    cdf (k) = betainc (x(k), a(k), b(k));
+    if (isscalar (a) && isscalar(b))
+      cdf (k) = betainc (x(k), a, b);
+    else
+      cdf (k) = betainc (x(k), a(k), b(k));
+    endif
   endif
-
-  cdf = reshape (cdf, r, c);
 
 endfunction

@@ -19,9 +19,10 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} cauchy_rnd (@var{lambda}, @var{sigma}, @var{r}, @var{c})
-## Return an @var{r} by @var{c} matrix of random samples from the Cauchy
-## distribution with parameters @var{lambda} and @var{sigma} which must
-## both be scalar or of size @var{r} by @var{c}.
+## @deftypefnx {Function File} {} cauchy_rnd (@var{lambda}, @var{sigma}, @var{sz})
+## Return an @var{r} by @var{c} or a @code{size (@var{sz})} matrix of 
+## random samples from the Cauchy distribution with parameters @var{lambda} 
+## and @var{sigma} which must both be scalar or of size @var{r} by @var{c}.
 ##
 ## If @var{r} and @var{c} are omitted, the size of the result matrix is
 ## the common size of @var{lambda} and @var{sigma}.
@@ -32,6 +33,15 @@
 
 function rnd = cauchy_rnd (l, scale, r, c)
 
+  if (nargin > 1)
+    if (!isscalar (l) || !isscalar (scale)) 
+      [retval, l, scale] = common_size (l, scale);
+      if (retval > 0)
+	error ("cauchy_rnd: lambda and sigma must be of common size or scalar");
+      endif
+    endif
+  endif
+
   if (nargin == 4)
     if (! (isscalar (r) && (r > 0) && (r == round (r))))
       error ("cauchy_rnd: r must be a positive integer");
@@ -39,32 +49,33 @@ function rnd = cauchy_rnd (l, scale, r, c)
     if (! (isscalar (c) && (c > 0) && (c == round (c))))
       error ("cauchy_rnd: c must be a positive integer");
     endif
-    [retval, l, scale] = common_size (l, scale, zeros (r, c));
-    if (retval > 0)
-      error ("cauchy_rnd: lambda and sigma must be scalar or of size %d by %d",
-	     r, c); 
+    sz = [r, c];
+  elseif (nargin == 3)
+    if (isscalar (r) && (r > 0))
+      sz = [r, r];
+    elseif (isvector(r) && all (r > 0))
+      sz = r(:)';
+    else
+      error ("cauchy_rnd: r must be a postive integer or vector");
     endif
   elseif (nargin == 2)
-    [retval, l, scale] = common_size (l, scale);
-    if (retval > 0)
-      error ("cauchy_rnd: lambda and sigma must be of common size or scalar");
-    endif
-    [r, c] = size (l);
+    sz = size(l);
   else
     usage ("cauchy_rnd (lambda, sigma, r, c)");
   endif
 
-  s = r * c;
-  l = reshape (l, 1, s);
-  scale = reshape (scale, 1, s);
-
-  rnd = NaN * ones (1, s);
-
-  k = find ((l > -Inf) & (l < Inf) & (scale > 0) & (scale < Inf));
-  if (any (k))
-    rnd(k) = l(k) - cot (pi * rand (1, length (k))) .* scale(k);
+  if (isscalar (l) && isscalar (scale)) 
+    if (find (!(l > -Inf) | !(l < Inf) | !(scale > 0) | !(scale < Inf)))
+      rnd = NaN * ones (sz);
+    else
+      rnd = l - cot (pi * rand (sz)) .* scale;
+    endif
+  else
+    rnd = NaN * ones (sz);
+    k = find ((l > -Inf) & (l < Inf) & (scale > 0) & (scale < Inf));
+    if (any (k))
+      rnd(k) = l(k)(:) - cot (pi * rand (size (k))) .* scale(k)(:);
+    endif
   endif
-
-  rnd = reshape (rnd, r, c);
 
 endfunction

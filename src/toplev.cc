@@ -720,7 +720,7 @@ which they were registered with atexit()")
   else
     print_usage ("atexit");
 #else
-  error ("atexit: not supported on this system");
+  gripe_not_supported ("atexit");
 #endif
 
   return retval;

@@ -43,6 +43,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "defun.h"
 #include "error.h"
 #include "file-ops.h"
+#include "gripes.h"
 #include "help.h"
 #include "lo-utils.h"
 #include "oct-map.h"
@@ -79,12 +80,6 @@ mk_stat_map (const file_stat& fs)
 #endif
 
   return m;
-}
-
-static void
-gripe_not_supported (const char *fcn)
-{
-  error ("%s: not supported on this system", fcn);
 }
 
 DEFUN(dup2, args, ,

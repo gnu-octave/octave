@@ -29,6 +29,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt-const.h"
 
 void
+gripe_not_supported (const char *fcn)
+{
+  error ("%s: not supported on this system", fcn);
+}
+
+void
 gripe_string_invalid (void)
 {
   error ("string constant used in invalid context");

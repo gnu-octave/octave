@@ -61,11 +61,11 @@ static bool Vreturn_last_computed_value;
 // semicolon has been appended to each statement).
 static bool Vsilent_functions;
 
-// Nonzero means we're returning from a function.
-extern int returning;
-
 // Nonzero means we're breaking out of a loop or function body.
 extern int breaking;
+
+// Nonzero means we're returning from a function.
+extern int returning;
 
 // User defined functions.
 

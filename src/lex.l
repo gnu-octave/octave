@@ -540,18 +540,18 @@ EXPON	([DdEe][+-]?{D}+)
 		}
 
 \"		{ BEGIN DQSTRING; }
-".**"		{ BIN_OP_RETURN (EPOW, 0); }
 ".*"		{ BIN_OP_RETURN (EMUL, 0); }
 "./"		{ BIN_OP_RETURN (EDIV, 0); }
 ".\\"		{ BIN_OP_RETURN (ELEFTDIV, 0); }
+".**"		|
 ".^"		{ BIN_OP_RETURN (EPOW, 0); }
 ".'"		{ do_comma_insert_check (); BIN_OP_RETURN (TRANSPOSE, 1); }
 "++"		{ do_comma_insert_check (); BIN_OP_RETURN (PLUS_PLUS, 1); }
 "--"		{ do_comma_insert_check (); BIN_OP_RETURN (MINUS_MINUS, 1); }
 "<="		{ BIN_OP_RETURN (EXPR_LE, 0); }
 "=="		{ BIN_OP_RETURN (EXPR_EQ, 0); }
-"~="		{ BIN_OP_RETURN (EXPR_NE, 0); }
-"!="		{ BIN_OP_RETURN (EXPR_NE, 0); }
+"~="		|
+"!="		|
 "<>"		{ BIN_OP_RETURN (EXPR_NE, 0); }
 ">="		{ BIN_OP_RETURN (EXPR_GE, 0); }
 "||"		{
@@ -570,11 +570,7 @@ EXPON	([DdEe][+-]?{D}+)
 		}
 "|"		{ BIN_OP_RETURN (EXPR_OR, 0); }
 "&"		{ BIN_OP_RETURN (EXPR_AND, 0); }
-"!"		{
-		  if (plotting && ! in_plot_range)
-		    past_plot_range = 1;
-		  BIN_OP_RETURN (EXPR_NOT, 1);
-		}
+"!"		|
 "~"		{
 		  if (plotting && ! in_plot_range)
 		    past_plot_range = 1;
@@ -582,22 +578,24 @@ EXPON	([DdEe][+-]?{D}+)
 		}
 "<"		{ BIN_OP_RETURN (EXPR_LT, 0); }
 ">"		{ BIN_OP_RETURN (EXPR_GT, 0); }
-"+"		{ 
+"+"		|
+".+"		{ 
 		  if (plotting && ! in_plot_range)
 		    past_plot_range = 1;
 		  BIN_OP_RETURN ('+', 0);
 		}
-"-"		{
+"-"		|
+".-"		{ 
 		  if (plotting && ! in_plot_range)
 		    past_plot_range = 1;
 		  BIN_OP_RETURN ('-', 0);
 		}
-"**"		{ BIN_OP_RETURN (POW, 0); }
 "*"		{ BIN_OP_RETURN ('*', 0); }
 "/"		{ BIN_OP_RETURN ('/', 0); }
 "\\"		{ BIN_OP_RETURN (LEFTDIV, 0); }
 ";"		{ BIN_OP_RETURN (';', 1); }
 ","		{ BIN_OP_RETURN (',', 1); }
+"**"		|
 "^"		{ BIN_OP_RETURN (POW, 0); }
 "="		{ BIN_OP_RETURN ('=', 1); }
 "("		{

@@ -131,11 +131,19 @@ send_to_plot_stream (const char *cmd)
 	return -1;
     }
 
-  if (plot_line_count == 0 && strncmp (cmd, "replot", 6) == 0)
+  int is_replot = (strncmp (cmd, "replot", 6) == 0);
+  int is_splot = (strncmp (cmd, "splot", 5) == 0);
+  int is_plot = (strncmp (cmd, "plot", 4) == 0);
+
+  if (plot_line_count == 0 && is_replot)
     error ("replot: no previous plot");
   else
     {
       plot_stream << cmd;
+      if (! (is_replot || is_splot || is_plot)
+	  && plot_line_count > 0
+	  && user_pref.automatic_replot)
+	plot_stream << "replot\n";
       plot_stream.flush ();
       pipe_handler_error_count = 0;
     }

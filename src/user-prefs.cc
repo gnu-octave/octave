@@ -37,14 +37,14 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 // need to check a preference.
 user_preferences user_pref;
 
-/*
- * Check the value of a string variable to see if it it\'s ok to do
- * something.
- *
- *   return of -1 => ok, but give me warning (default).
- *   return of  0 => always ok.
- *   return of  1 => never ok.
- */
+
+// Check the value of a string variable to see if it it's ok to do
+// something.
+//
+//   return of -1 => ok, but give me warning (default).
+//   return of  0 => always ok.
+//   return of  1 => never ok.
+
 static int
 check_str_pref (char *var)
 {
@@ -63,41 +63,52 @@ check_str_pref (char *var)
   return pref;
 }
 
-/*
- * Should commas be required to separate elements in a literal matrix
- * list?
- *
- *   user specifies   value of pref
- *   --------------   -------------
- *   "required"             2
- *   "traditional"          1
- *   anything else          0
- *
- * Octave will never insert a comma in a literal matrix list if the
- * user specifies "required".  For example, the statement [1 2] will
- * result in an error instead of being treated the same as [1, 2].
- *
- * Traditional behavior makes Octave convert spaces to a comma between
- * identifiers and `('.  For example, the statement
- *
- *   [eye (2)]
- *
- * will be parsed as
- *
- *   [eye, (2)]
- *
- * and will result in an error since the `eye' function will be
- * called with no arguments.  To get around this, you would have to
- * omit the space between `eye' and the `('.
- *
- * The default value is 0, which results in behavior that is the same
- * as traditional, except that Octave does not convert spaces to a
- * comma between identifiers and `('.  For example, the statement
- *
- *   [eye (2)]
- *
- * will result in a call to `eye' with the argument `2'. 
- */
+// Should a replot command be generated automatically each time a plot
+// changes in some way?
+
+int
+automatic_replot (void)
+{
+  user_pref.automatic_replot = check_str_pref ("automatic_replot");
+
+  return 0;
+}
+
+
+// Should commas be required to separate elements in a literal matrix
+// list?
+//
+//   user specifies   value of pref
+//   --------------   -------------
+//   "required"             2
+//   "traditional"          1
+//   anything else          0
+//
+// Octave will never insert a comma in a literal matrix list if the
+// user specifies "required".  For example, the statement [1 2] will
+// result in an error instead of being treated the same as [1, 2].
+//
+// Traditional behavior makes Octave convert spaces to a comma between
+// identifiers and `('.  For example, the statement
+//
+//   [eye (2)]
+//
+// will be parsed as
+//
+//   [eye, (2)]
+//
+// and will result in an error since the `eye' function will be
+// called with no arguments.  To get around this, you would have to
+// omit the space between `eye' and the `('.
+//
+// The default value is 0, which results in behavior that is the same
+// as traditional, except that Octave does not convert spaces to a
+// comma between identifiers and `('.  For example, the statement
+//
+//   [eye (2)]
+//
+// will result in a call to `eye' with the argument `2'. 
+
 int
 commas_in_literal_matrix (void)
 {
@@ -114,13 +125,13 @@ commas_in_literal_matrix (void)
   return 0;
 }
 
-/*
- * Should we allow assignments like:
- *
- *   octave> A(1) = 3; A(2) = 5
- *
- * for A already defined and a matrix type?
- */
+
+// Should we allow assignments like:
+//
+//   octave> A(1) = 3; A(2) = 5
+//
+// for A already defined and a matrix type?
+
 int
 do_fortran_indexing (void)
 {
@@ -130,10 +141,10 @@ do_fortran_indexing (void)
   return 0;
 }
 
-/*
- * Should ignore empty elements in a matrix list (i.e., is an
- *  expression like `[[], 1]' ok?
- */
+
+// Should ignore empty elements in a matrix list (i.e., is an
+//  expression like `[[], 1]' ok?
+
 int
 empty_list_elements_ok (void)
 {
@@ -143,10 +154,10 @@ empty_list_elements_ok (void)
   return 0;
 }
 
-/*
- * Should Octave always check to see if function files have changed
- * since they were last compiled?
- */
+
+// Should Octave always check to see if function files have changed
+// since they were last compiled?
+
 int
 ignore_function_time_stamp (void)
 {
@@ -167,14 +178,14 @@ ignore_function_time_stamp (void)
   return 0;
 }
 
-/*
- * Should we allow things like:
- *
- *   octave> 'abc' + 0
- *   97 98 99
- *
- * to happen?
- */
+
+// Should we allow things like:
+//
+//   octave> 'abc' + 0
+//   97 98 99
+//
+// to happen?
+
 int
 implicit_str_to_num_ok (void)
 {
@@ -184,10 +195,10 @@ implicit_str_to_num_ok (void)
   return 0;
 }
 
-/*
- * Should we allow silent conversion of complex to real when a real
- * type is what we\'re really looking for?
- */
+
+// Should we allow silent conversion of complex to real when a real
+// type is what we\'re really looking for?
+
 int
 ok_to_lose_imaginary_part (void)
 {
@@ -197,10 +208,10 @@ ok_to_lose_imaginary_part (void)
   return 0;
 }
 
-/*
- * If possible, send all output intended for the screen through the
- * pager. 
- */
+
+// If possible, send all output intended for the screen through the
+// pager. 
+
 int
 page_screen_output (void)
 {
@@ -209,14 +220,14 @@ page_screen_output (void)
   return 0;
 }
 
-/*
- * When doing assignments like:
- *
- *   octave> A(1) = 3; A(2) = 5
- *
- * (for A undefined) should we build column vectors?  Returning true
- * only matters when resize_on_range_error is also true.
- */
+
+// When doing assignments like:
+//
+//   octave> A(1) = 3; A(2) = 5
+//
+// (for A undefined) should we build column vectors?  Returning true
+// only matters when resize_on_range_error is also true.
+
 int
 prefer_column_vectors (void)
 {
@@ -226,13 +237,13 @@ prefer_column_vectors (void)
   return 0;
 }
 
-/*
- * For things like
- *
- *   a = [2,3]; a([1,1])
- *
- * return [2 3] instead of [2 2].
- */
+
+// For things like
+//
+//   a = [2,3]; a([1,1])
+//
+// return [2 3] instead of [2 2].
+
 int
 prefer_zero_one_indexing (void)
 {
@@ -242,15 +253,15 @@ prefer_zero_one_indexing (void)
   return 0;
 }
 
-/*
- * Should we print things like
- *
- *   octave> a = [1,2;3,4]
- *   a = 
- *
- *      1  2
- *      3  4
- */
+
+// Should we print things like
+//
+//   octave> a = [1,2;3,4]
+//   a = 
+//
+//      1  2
+//      3  4
+
 int
 print_answer_id_name (void)
 {
@@ -260,9 +271,9 @@ print_answer_id_name (void)
   return 0;
 }
 
-/*
- * Should we also print the dimensions of empty matrices?
- */
+
+// Should we also print the dimensions of empty matrices?
+
 int
 print_empty_dimensions (void)
 {
@@ -272,10 +283,10 @@ print_empty_dimensions (void)
   return 0;
 }
 
-/*
- * Should operations on empty matrices return empty matrices or an
- * error?
- */
+
+// Should operations on empty matrices return empty matrices or an
+// error?
+
 int
 propagate_empty_matrices (void)
 {
@@ -285,10 +296,10 @@ propagate_empty_matrices (void)
   return 0;
 }
 
-/*
- * When doing assignments, should we resize matrices if the indices
- * are outside the current bounds?
- */
+
+// When doing assignments, should we resize matrices if the indices
+// are outside the current bounds?
+
 int
 resize_on_range_error (void)
 {
@@ -298,10 +309,10 @@ resize_on_range_error (void)
   return 0;
 }
 
-/*
- * If a function does not return any values explicitly, return the
- * last computed value.
- */
+
+// If a function does not return any values explicitly, return the
+// last computed value.
+
 int
 return_last_computed_value (void)
 {
@@ -311,9 +322,9 @@ return_last_computed_value (void)
   return 0;
 }
 
-/*
- * Suppress printing results in called functions.
- */
+
+// Suppress printing results in called functions.
+
 int
 silent_functions (void)
 {
@@ -323,9 +334,9 @@ silent_functions (void)
   return 0;
 }
 
-/*
- * Should should big matrices be split into smaller slices for output?
- */
+
+// Should should big matrices be split into smaller slices for output?
+
 int
 split_long_rows (void)
 {
@@ -334,13 +345,13 @@ split_long_rows (void)
   return 0;
 }
 
-/*
- * Should things like:
- *
- *   octave> ones (-1, 5)
- *
- * result in an empty matrix or an error?
- */
+
+// Should things like:
+//
+//   octave> ones (-1, 5)
+//
+// result in an empty matrix or an error?
+
 int
 treat_neg_dim_as_zero (void)
 {
@@ -350,15 +361,15 @@ treat_neg_dim_as_zero (void)
   return 0;
 }
 
-/*
- * Generate a warning for the assignment in things like
- *
- *   octave> if (a = 2 < n)
- *
- * but not
- *
- *   octave> if ((a = 2) < n)
- */
+
+// Generate a warning for the assignment in things like
+//
+//   octave> if (a = 2 < n)
+//
+// but not
+//
+//   octave> if ((a = 2) < n)
+
 int
 warn_assign_as_truth_value (void)
 {
@@ -368,11 +379,11 @@ warn_assign_as_truth_value (void)
   return 0;
 }
 
-/*
- * Generate a warning for the comma in things like
- *
- *   octave> global a, b = 2
- */
+
+// Generate a warning for the comma in things like
+//
+//   octave> global a, b = 2
+
 int
 warn_comma_in_global_decl (void)
 {
@@ -382,9 +393,9 @@ warn_comma_in_global_decl (void)
   return 0;
 }
 
-/*
- * On IEEE machines, allow divide by zero errors to be suppressed.
- */
+
+// On IEEE machines, allow divide by zero errors to be suppressed.
+
 int
 warn_divide_by_zero (void)
 {

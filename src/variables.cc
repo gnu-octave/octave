@@ -1333,6 +1333,10 @@ install_builtin_variables (void)
   DEFVAR ("ans", SBV_ans, , 0, 0, 1, 0,
     "");
 
+  DEFVAR ("automatic_replot", SBV_automatic_replot, "false",
+	  0, 0, 1, automatic_replot,
+    "if true, auto-insert a replot command when a plot changes");
+
   DEFVAR ("commas_in_literal_matrix", SBV_commas_in_literal_matrix, "",
 	  0, 0, 1, commas_in_literal_matrix,
     "control auto-insertion of commas in literal matrices");

@@ -21,6 +21,14 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
+/*
+
+The function gethostname was adapted from a similar function from GNU
+Bash, the Bourne Again SHell, copyright (C) 1987, 1989, 1991 Free
+Software Foundation, Inc.
+
+*/
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif

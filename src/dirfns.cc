@@ -21,6 +21,25 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
+/*
+
+The functions listed below were adapted from similar functions from
+the GNU C library, copyright (C) 1991, 1992, 1993, Free Software
+Foundation, Inc.
+
+  dir_access    exists    gen_tempname    tempnam
+
+The functions listed below were adapted from a similar functions
+from GNU Bash, the Bourne Again SHell, copyright (C) 1987, 1989, 1991
+Free Software Foundation, Inc.
+
+  polite_directory_format  absolute_pathname
+  absolute_program         base_pathname
+  make_absolute            pathname_backup
+  change_to_directory      get_working_directory
+
+*/ 
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -29,9 +48,14 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
+#include <stddef.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <strstream.h>
 #include <sys/param.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include <errno.h>
 
 // This mess suggested by the autoconf manual.
@@ -85,10 +109,195 @@ static int follow_symbolic_links = 1;
 // of symbolic link following.
 static int verbatim_pwd = 1;
 
-/*
- * Remove the last N directories from PATH.  Do not PATH blank.
- * PATH must contain enough space for MAXPATHLEN characters.
- */
+#ifndef HAVE_TEMPNAM
+
+#ifndef P_tmpdir
+#define P_tmpdir "/usr/tmp/"
+#endif
+
+// Return nonzero if DIR is an existent directory.
+
+static int
+diraccess (const char *dir)
+{
+  struct stat buf;
+  return stat (dir, &buf) == 0 && S_ISDIR (buf.st_mode);
+}
+
+// Return nonzero if FILE exists.
+
+static int
+exists (const char *file)
+{
+// We can stat the file even if we can't read its data.
+  struct stat st;
+  int save = errno;
+  if (stat (file, &st) == 0)
+    return 1;
+  else
+    {
+// We report that the file exists if stat failed for a reason other
+// than nonexistence.  In this case, it may or may not exist, and we
+// don't know; but reporting that it does exist will never cause any
+// trouble, while reporting that it doesn't exist when it does would
+// violate the interface of gen_tempname.
+      int exists = errno != ENOENT;
+      errno = save;
+      return exists;
+    }
+}
+
+// These are the characters used in temporary filenames.
+
+static const char letters[] =
+  "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+// Generate a temporary filename and return it (in a static buffer).
+// If DIR_SEARCH is nonzero, DIR and PFX are used as described for
+// tempnam.  If not, a temporary filename in P_tmpdir with no special
+// prefix is generated.  This goes through a cyclic pattern of all
+// possible filenames consisting of five decimal digits of the current
+// pid and three of the characters in `letters'.  Data for tempnam and
+// tmpnam is kept separate, but when tempnam is using P_tmpdir and no
+// prefix (i.e, it is identical to tmpnam), the same data is used.
+// Each potential filename is tested for an already-existing file of
+// the same name, and no name of an existing file will be returned.
+// When the cycle reaches its end (12345ZZZ), NULL is returned.
+
+static char *
+gen_tempname (const char *dir, const char *pfx, int dir_search,
+	      size_t *lenptr)
+{
+  int saverrno = errno;
+  static const char tmpdir[] = P_tmpdir;
+  static size_t indices[2];
+  size_t *idx;
+  static char buf[MAXPATHLEN];
+  static pid_t oldpid = (pid_t) 0;
+  pid_t pid = getpid ();
+  register size_t len, plen, dlen;
+
+  if (dir_search)
+    {
+      register const char *d = getenv ("TMPDIR");
+      if (d != NULL && !diraccess (d))
+	d = NULL;
+      if (d == NULL && dir != NULL && diraccess (dir))
+	d = dir;
+      if (d == NULL && diraccess (tmpdir))
+	d = tmpdir;
+      if (d == NULL && diraccess ("/tmp"))
+	d = "/tmp";
+      if (d == NULL)
+	{
+	  errno = ENOENT;
+	  return NULL;
+	}
+      dir = d;
+    }
+  else
+    dir = tmpdir;
+
+  dlen = strlen (dir);
+
+// Remove trailing slashes from the directory name.
+  while (dlen > 1 && dir[dlen - 1] == '/')
+    --dlen;
+
+  if (pfx != NULL && *pfx != '\0')
+    {
+      plen = strlen (pfx);
+      if (plen > 5)
+	plen = 5;
+    }
+  else
+    plen = 0;
+
+  if (dir != tmpdir && !strcmp (dir, tmpdir))
+    dir = tmpdir;
+  idx = &indices[(plen == 0 && dir == tmpdir) ? 1 : 0];
+
+  if (pid != oldpid)
+    {
+      oldpid = pid;
+      indices[0] = indices[1] = 0;
+    }
+
+  len = dlen + 1 + plen + 5 + 3;
+  for (; *idx < ((sizeof (letters) - 1) * (sizeof (letters) - 1) *
+		 (sizeof (letters) - 1));
+       ++*idx)
+    {
+// Construct a file name and see if it already exists.
+//
+// We use a single counter in *IDX to cycle each of three character
+// positions through each of 62 possible letters.
+
+      if (sizeof (buf) < len)
+	return NULL;
+
+      sprintf (buf, "%.*s/%.*s%.5d%c%c%c",
+	       (int) dlen, dir, (int) plen, pfx, pid % 100000,
+	       letters[*idx % (sizeof (letters) - 1)],
+	       letters[(*idx / (sizeof (letters) - 1))
+		       % (sizeof (letters) - 1)], 
+	       letters[(*idx / ((sizeof (letters) - 1)
+				* (sizeof (letters) - 1)))
+		       % (sizeof (letters) - 1)]);
+
+      if (strlen (buf) != (int) len)
+	return NULL;
+
+      if (exists (buf))
+	continue;
+
+// If the file already existed we have continued the loop above, so we
+// only get here when we have a winning name to return.
+
+      errno = saverrno;
+
+      if (lenptr != NULL)
+	*lenptr = len + 1;
+
+      return buf;
+    }
+
+// We got out of the loop because we ran out of combinations to try.
+  errno = EEXIST;		// ???
+  return NULL;
+}
+
+// Generate a unique temporary filename using up to five characters of
+// PFX if it is not NULL.  The directory to put this file in is
+// searched for as follows: First the environment variable "TMPDIR" is
+// checked.  If it contains the name of a writable directory, that
+// directory is used.  If not and if DIR is not NULL, that value is
+// checked.  If that fails, P_tmpdir is tried and finally "/tmp".  The
+// storage for the filename is allocated by `malloc'.
+
+char *
+tempnam (const char *dir, const char *pfx)
+{
+  size_t len;
+  register char *s;
+  register char *t = gen_tempname (dir, pfx, 1, &len);
+
+  if (t == NULL)
+    return NULL;
+
+  s = (char *) malloc (len);
+  if (s == NULL)
+    return NULL;
+
+  (void) memcpy (s, t, len);
+  return s;
+}
+
+#endif
+
+// Remove the last N directories from PATH.  Do not PATH blank.
+// PATH must contain enough space for MAXPATHLEN characters.
+
 void
 pathname_backup (char *path, int n)
 {
@@ -111,10 +320,9 @@ pathname_backup (char *path, int n)
     }
 }
 
-/*
- * Return a pretty pathname.  If the first part of the pathname is the
- * same as $HOME, then replace that with `~'.
- */
+// Return a pretty pathname.  If the first part of the pathname is the
+// same as $HOME, then replace that with `~'.
+
 char *
 polite_directory_format (char *name)
 {
@@ -131,9 +339,8 @@ polite_directory_format (char *name)
     return name;
 }
 
-/*
- * Return 1 if STRING contains an absolute pathname, else 0.
- */
+// Return 1 if STRING contains an absolute pathname, else 0.
+
 int
 absolute_pathname (const char *string)
 {
@@ -155,21 +362,19 @@ absolute_pathname (const char *string)
   return 0;
 }
 
-/*
- * Return 1 if STRING is an absolute program name; it is absolute if
- * it contains any slashes.  This is used to decide whether or not to
- * look up through $PATH.
- */
+// Return 1 if STRING is an absolute program name; it is absolute if
+// it contains any slashes.  This is used to decide whether or not to
+// look up through $PATH.
+
 int
 absolute_program (const char *string)
 {
   return (strchr (string, '/') != 0);
 }
 
-/*
- * Return the `basename' of the pathname in STRING (the stuff after
- * the last '/').  If STRING is not a full pathname, simply return it.
- */
+// Return the `basename' of the pathname in STRING (the stuff after
+// the last '/').  If STRING is not a full pathname, simply return it.
+
 char *
 base_pathname (char *string)
 {
@@ -184,12 +389,11 @@ base_pathname (char *string)
     return (string);
 }
 
-/*
- * Turn STRING (a pathname) into an absolute pathname, assuming that
- * DOT_PATH contains the symbolic location of '.'.  This always
- * returns a new string, even if STRING was an absolute pathname to
- * begin with.
- */
+// Turn STRING (a pathname) into an absolute pathname, assuming that
+// DOT_PATH contains the symbolic location of '.'.  This always
+// returns a new string, even if STRING was an absolute pathname to
+// begin with.
+
 char *
 make_absolute (const char *string, const char *dot_path)
 {
@@ -248,15 +452,14 @@ make_absolute (const char *string, const char *dot_path)
   return strsave (current_path);
 }
 
-/*
- * Has file `A' been modified after time `T'?
- *
- * case:
- *
- *   a newer than t         returns    1
- *   a older than t         returns    0
- *   stat on a fails        returns   -1
- */
+// Has file `A' been modified after time `T'?
+//
+// case:
+//
+//   a newer than t         returns    1
+//   a older than t         returns    0
+//   stat on a fails        returns   -1
+
 int
 is_newer (const char *fa, time_t t)
 {
@@ -274,10 +477,9 @@ is_newer (const char *fa, time_t t)
   return (fa_sb.st_mtime > t);
 }
 
-/*
- * Return a consed string which is the current working directory.
- * FOR_WHOM is the name of the caller for error printing.
- */ 
+// Return a consed string which is the current working directory.
+// FOR_WHOM is the name of the caller for error printing.
+
 char *
 get_working_directory (const char *for_whom)
 {
@@ -307,10 +509,9 @@ get_working_directory (const char *for_whom)
   return the_current_working_directory;
 }
 
-/*
- * Do the work of changing to the directory NEWDIR.  Handle symbolic
- * link following, etc.
- */ 
+// Do the work of changing to the directory NEWDIR.  Handle symbolic
+// link following, etc.
+
 static int
 change_to_directory (const char *newdir)
 {
@@ -326,7 +527,7 @@ change_to_directory (const char *newdir)
       else
 	t = strsave (newdir);
 
-      /* Get rid of trailing `/'. */
+// Get rid of trailing `/'.
       {
 	register int len_t = strlen (t);
 	if (len_t > 1)
@@ -413,9 +614,8 @@ users home directory")
 
 DEFALIAS (chdir, cd);
 
-/*
- * Get a directory listing.
- */
+// Get a directory listing.
+
 DEFUN_TEXT ("ls", Fls, Sls, -1, 1,
   "ls [options]\n\
 \n\

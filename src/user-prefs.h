@@ -26,6 +26,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 struct user_preferences
 {
+  int automatic_replot;
   int commas_in_literal_matrix;
   int do_fortran_indexing;
   int empty_list_elements_ok;
@@ -63,6 +64,7 @@ struct user_preferences
 
 extern user_preferences user_pref;
 
+extern int automatic_replot (void);
 extern int commas_in_literal_matrix (void);
 extern int do_fortran_indexing (void);
 extern int empty_list_elements_ok (void);

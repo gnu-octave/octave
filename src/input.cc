@@ -21,6 +21,16 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
+/*
+
+The 3 functions listed below were adapted from similar functions
+from GNU Bash, the Bourne Again SHell, copyright (C) 1987, 1989, 1991
+Free Software Foundation, Inc.
+
+  read_octal    sub_append_string    decode_prompt_string
+
+*/
+
 // Use the GNU readline library for command line editing and hisory.
 
 #ifdef HAVE_CONFIG_H

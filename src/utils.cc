@@ -21,27 +21,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
-/*
-
-The 12 functions listed below were adapted from a similar functions
-from GNU Bash, the Bourne Again SHell, copyright (C) 1987, 1989, 1991
-Free Software Foundation, Inc.
-
-  polite_directory_format  absolute_pathname
-  absolute_program         base_pathname
-  read_octal               sub_append_string
-  decode_prompt_string     pathname_backup
-  make_absolute            get_working_directory
-  change_to_directory      gethostname
-
-The 2 functions listed below were adapted from a similar functions
-from GCC, the GNU C compiler, copyright (C) 1987, 1989, 1992, 1993,
-1994 Free Software Foundation, Inc.
-
-  choose_temp_base_try     octave_tmp_file_name
-
-*/
-
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -205,78 +184,15 @@ read_until (istream& stream, char character)
 }
 #endif
 
-// Compute a string to use as the base of all temporary file names.
-
-static char *
-choose_temp_base_try (char *try_me, char *base)
-{
-  char *retval;
-
-  if (base)
-    retval = base;
-  else if (! try_me)
-    retval = 0;
-  else if (access (try_me, R_OK | W_OK) != 0)
-    retval = 0;
-  else
-    retval = try_me;
-
-  return retval;
-}
-
-// Get a temporary file name.  The prefix comes from the envvar
-// TMPDIR, or TMP, or TEMP if defined; otherwise, from the P_tmpdir
-// macro if that is defined; otherwise, it is /usr/tmp or /tmp, or ./.
-//
-// If nothing works, panic.
+// Get a temporary file name.
 
 char *
 octave_tmp_file_name (void)
 {
-#if defined (HAVE_MKTEMP)
-  static char *temp_file_name = 0;
-
-  char *base = 0;
-  int len;
-
-  base = choose_temp_base_try (getenv ("TMPDIR"), base);
-  base = choose_temp_base_try (getenv ("TMP"), base);
-  base = choose_temp_base_try (getenv ("TEMP"), base);
-
-#ifdef P_tmpdir
-  base = choose_temp_base_try (P_tmpdir, base);
-#endif
-
-  base = choose_temp_base_try ("/usr/tmp", base);
-  base = choose_temp_base_try ("/tmp", base);
-
-// If all else fails, use the current directory!
-
-  if (base == (char *)0)
-    base = "./";
-
-  len = strlen (base);
-
-  delete [] temp_file_name;
-
-  temp_file_name = new char [len + sizeof("/oct-XXXXXX") + 1];
-
-  strcpy (temp_file_name, base);
-
-  if (len > 0 && temp_file_name[len-1] != '/')
-    temp_file_name[len++] = '/';
-
-  strcpy (temp_file_name + len, "oct-XXXXXX");
-
-  mktemp (temp_file_name);
-
-  if (! strlen (temp_file_name))
-    panic ("unable to find directory for temporary files!");
-
-  return temp_file_name;
-#else
-  return tmpnam (0);
-#endif
+  char *retval = tempnam (0, "oct-");
+  if (! retval)
+    error ("can't open temporary file!");
+  return retval;
 }
 
 char **

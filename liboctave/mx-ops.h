@@ -27,45 +27,45 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // ComplexDiagMatrix by X ops.
 
-mx-cdm-cm.h
-mx-cdm-cs.h
-mx-cdm-dm.h
-mx-cdm-m.h
-mx-cdm-s.h
+#include "mx-cdm-cm.h"
+#include "mx-cdm-cs.h"
+#include "mx-cdm-dm.h"
+#include "mx-cdm-m.h"
+#include "mx-cdm-s.h"
 
 // ComplexMatrix by X ops.
 
-mx-cm-cdm.h
-mx-cm-dm.h
-mx-cm-m.h
-mx-cm-s.h
+#include "mx-cm-cdm.h"
+#include "mx-cm-dm.h"
+#include "mx-cm-m.h"
+#include "mx-cm-s.h"
 
 // Complex scalar by X ops.
 
-mx-cs-cdm.h
-mx-cs-dm.h
-mx-cs-m.h
+#include "mx-cs-cdm.h"
+#include "mx-cs-dm.h"
+#include "mx-cs-m.h"
 
 // DiagMatrix by X ops.
 
-mx-dm-cdm.h
-mx-dm-cm.h
-mx-dm-cs.h
-mx-dm-m.h
-mx-dm-s.h
+#include "mx-dm-cdm.h"
+#include "mx-dm-cm.h"
+#include "mx-dm-cs.h"
+#include "mx-dm-m.h"
+#include "mx-dm-s.h"
 
 // Matrix by X ops.
 
-mx-m-cdm.h
-mx-m-cm.h
-mx-m-cs.h
-mx-m-dm.h
+#include "mx-m-cdm.h"
+#include "mx-m-cm.h"
+#include "mx-m-cs.h"
+#include "mx-m-dm.h"
 
 // Real scalar by X ops.
 
-mx-s-cdm.h
-mx-s-cm.h
-mx-s-dm.h
+#include "mx-s-cdm.h"
+#include "mx-s-cm.h"
+#include "mx-s-dm.h"
 
 #endif
 

@@ -64,6 +64,9 @@ $(CRUFT_PICOBJ): stmp-pic
 install:: all
 .PHONY: install
 
+install-strip:: all
+.PHONY: install-strip
+
 uninstall::
 .PHONY: uninstall
 

@@ -504,13 +504,18 @@ bitshift (const octave_int<T>& a, int n,
     return a;
 }
 
+// XXX FIXME XXX -- need partial specializations for int64 and uint64
+// types.
+
 #define OCTAVE_INT_CMP_OP(OP) \
  \
   template <class T1, class T2> \
   bool \
   operator OP (const octave_int<T1>& x, const octave_int<T2>& y) \
   { \
-    return x.value () OP y.value (); \
+    double tx = static_cast<double> (x.value ()); \
+    double ty = static_cast<double> (y.value ()); \
+    return tx OP ty; \
   }
 
 OCTAVE_INT_CMP_OP (<)

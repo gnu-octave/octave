@@ -1,4 +1,19 @@
+2004-09-03  David Bateman  <dbateman@free.fr>
+
+	* boolNDArray.cc (boolNDArray::concat, boolNDArray::insert):
+	New functions for boolean matrix concatenation.
+	* boolNDArray.h: Provide decls.
+
 2004-09-03  John W. Eaton  <jwe@octave.org>
+
+	* oct-inttpes.h (OCTAVE_INT_CMP_OP): Convert operarands to double
+	to avoid signed/unsigned int comparison problems.
+
+	* mx-ops: Generate CMP and BOOL ops for mixed integer types and
+	for mixed integer and double types.
+
+	* mk-ops.awk: Output BIN_OP_DECLS, CMP_OP_DECLS, and BOOL_OP_DECLS
+	separately, and only if needed.
 
 	* oct-inttypes.h (octave_fit_to_range): Use constructor instead of
 	static_cast for type conversion.

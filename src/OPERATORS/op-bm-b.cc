@@ -45,7 +45,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 DEFNDBINOP_FN (el_and, bool_matrix, bool, bool_array, bool, mx_el_and)
 DEFNDBINOP_FN (el_or, bool_matrix, bool, bool_array, bool, mx_el_or)
 
-DEFNDCATOP_FN (bm_b, bool_matrix, bool, array, array, concat)
+DEFNDCATOP_FN (bm_b, bool_matrix, bool, bool_array, bool_array, concat)
 DEFNDCATOP_FN (bm_s, bool_matrix, scalar, array, array, concat)
 DEFNDCATOP_FN (m_b, matrix, bool, array, array, concat)
 

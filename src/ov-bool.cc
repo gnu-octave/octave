@@ -36,6 +36,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-obj.h"
 #include "ops.h"
 #include "ov-bool.h"
+#include "ov-bool-mat.h"
 #include "ov-base.h"
 #include "ov-base-scalar.h"
 #include "ov-base-scalar.cc"
@@ -97,7 +98,7 @@ octave_bool::do_index_op (const octave_value_list& idx, int resize_ok)
       // 1x1 matrix back to a scalar value.  Need a better solution
       // to this problem.
 
-      octave_value tmp (new octave_matrix (matrix_value ()));
+      octave_value tmp (new octave_bool_matrix (bool_matrix_value ()));
 
       retval = tmp.do_index_op (idx, resize_ok);
     }

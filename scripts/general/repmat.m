@@ -55,7 +55,16 @@ function x = repmat (a, m, n)
     if (isstr (a))
       x = setstr (toascii (a) * ones (idx));
     else
-      x = a * ones(idx, class(a));
+      if (strcmp (class (a), "double"))
+	## This is faster with octave for double/Complex
+	x = a * ones(idx, class(a));
+      else
+	cidx = cell (1, length (idx));
+	for i=1:length(idx)
+	  cidx{i} = ones (1,idx(i));
+	endfor
+	x = a (cidx{:});
+      endif
     endif
   elseif (ndims (a) == 2 && length (idx) < 3)
     if (isstr (a))

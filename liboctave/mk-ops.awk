@@ -137,8 +137,18 @@ BEGIN {
 
           printf ("#include \"mx-op-defs.h\"\n") >> h_file;
 
-          printf ("%s%s_OP_DECLS (%s, %s, %s)\n", lhs_class,
-		  rhs_class, result_type, lhs_type, rhs_type) >> h_file
+          if (bin_ops)
+            printf ("%s%s_BIN_OP_DECLS (%s, %s, %s)\n", lhs_class,
+		    rhs_class, result_type, lhs_type, rhs_type) >> h_file
+
+          if (cmp_ops)
+            printf ("%s%s_CMP_OP_DECLS (%s, %s)\n", lhs_class,
+		    rhs_class, lhs_type, rhs_type) >> h_file
+
+          if (bool_ops)
+            printf ("%s%s_BOOL_OP_DECLS (%s, %s)\n", lhs_class,
+		    rhs_class, lhs_type, rhs_type) >> h_file
+
 
           print "#endif" >> h_file;
 

@@ -1,5 +1,52 @@
 2004-09-03  John W. Eaton  <jwe@octave.org>
 
+	* OPERATORS/op-b-bm.cc (DEFCONV): Define bool scalar to bool
+	matrix conversion.
+	(install_b_bm_ops): Install it.
+	Install conversion for assignment of bool matrix to indexed bool.
+	* OPERATORS/op-b-b.cc (install_b_b_ops): Install conversion for
+	assignment of bool to indexed bool.
+
+2004-09-03  David Bateman  <dbateman@free.fr>
+
+	* OPERATORS/op-b-b.cc, OPERATORS/op-b-bm.cc, OPERATORS/op-bm-b.cc,
+	OPERATORS/op-bm-bm.cc: Modify concatenation between boolean types
+	so that it returns a boolean.
+
+	* ov-bool.cc (octave_bool::do_index_op): Return boolean matrix.
+
+	* ov-intx.h (do_index_op (const octave_value_list&, int)):
+	New function for indexed subsref of int types.
+
+2004-09-03  John W. Eaton  <jwe@octave.org>
+
+	* OPERATORS/op-int.h (OCTAVE_SM_INT_OPS): Define int by double
+	mixed comparison and bool ops.
+	(OCTAVE_INSTALL_SM_INT_OPS): Install them.
+	(OCTAVE_MS_INT_OPS): Define double by int mixed comparison and
+	bool ops.
+	(OCTAVE_INSTALL_MS_INT_OPS): Install them
+
+	* OPERATORS/op-i8-i8.cc, OPERATORS/op-i16-i16.cc,
+	OPERATORS/op-i32-i32.cc, OPERATORS/op-i64-i64.cc,
+	OPERATORS/op-ui8-ui8.cc, OPERATORS/op-ui16-ui16.cc,
+	OPERATORS/op-ui32-ui32.cc, OPERATORS/op-ui64-ui64.cc:
+	Define and install various mixed-type operators.
+
+	* OPERATORS/op-int.h (OCTAVE_MM_INT_OPS): Also define mixed int
+	and double matrix comparison and bool ops.
+	(OCTAVE_INSTALL_MM_INT_OPS): Install them.
+	(OCTAVE_SS_INT_BOOL_OPS, OCTAVE_SM_INT_BOOL_OPS,
+	OCTAVE_MS_INT_BOOL_OPS, OCTAVE_MM_INT_BOOL_OPS):
+	Define logical AND and OR ops.
+	(OCTAVE_INSTALL_SS_INT_BOOL_OPS, OCTAVE_INSTALL_SM_INT_BOOL_OPS,
+	OCTAVE_INSTALL_MS_INT_BOOL_OPS, OCTAVE_INSTALL_MM_INT_BOOL_OPS):
+	Install them.
+	(OCTAVE_MM_INT_CMP_OPS, OCTAVE_MM_INT_BOOL_OPS): Accept prefix arg.
+	(OCTAVE_MM_CONV): New macro.
+	(OCTAVE_MM_INT_OPS): Use it to define complex matrix conversion.
+	(OCTAVE_MIXED_INT_CMP_OPS, OCTAVE_MIXED_INT_BOOL_OPS): New macros.
+
 	* OPERATORS/op-int.h (OCTAVE_MS_INT_OPS): Don't define indexed int
 	matrix = complex scalar assignment ops.
 	(OCTAVE_MS_INT_OPS): Don't define indexed int matrix = complex

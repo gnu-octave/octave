@@ -28,6 +28,39 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include "mx-ui64nda-i8.h"
+#include "mx-ui64nda-ui8.h"
+#include "mx-ui64nda-i16.h"
+#include "mx-ui64nda-ui16.h"
+#include "mx-ui64nda-i32.h"
+#include "mx-ui64nda-ui32.h"
+#include "mx-ui64nda-i64.h"
+
+#include "mx-ui64nda-i8nda.h"
+#include "mx-ui64nda-ui8nda.h"
+#include "mx-ui64nda-i16nda.h"
+#include "mx-ui64nda-ui16nda.h"
+#include "mx-ui64nda-i32nda.h"
+#include "mx-ui64nda-ui32nda.h"
+#include "mx-ui64nda-i64nda.h"
+
+#include "mx-ui64-i8nda.h"
+#include "mx-ui64-ui8nda.h"
+#include "mx-ui64-i16nda.h"
+#include "mx-ui64-ui16nda.h"
+#include "mx-ui64-i32nda.h"
+#include "mx-ui64-ui32nda.h"
+#include "mx-ui64-i64nda.h"
+
+#include "mx-ui64nda-s.h"
+#include "mx-s-ui64nda.h"
+
+#include "mx-ui64nda-nda.h"
+#include "mx-nda-ui64nda.h"
+
+#include "mx-ui64-nda.h"
+#include "mx-nda-ui64.h"
+
 #include "gripes.h"
 #include "oct-obj.h"
 #include "ov.h"
@@ -64,8 +97,8 @@ OCTAVE_MS_INT_ASSIGN_OPS (mx, uint64_, , )
 OCTAVE_MS_INT_ASSIGN_OPS (mc, uint64_, complex_, )
 
 OCTAVE_M_INT_UNOPS (uint64)
-OCTAVE_MM_INT_CMP_OPS (uint64, uint64)
-OCTAVE_MM_INT_BOOL_OPS (uint64, uint64)
+OCTAVE_MM_INT_CMP_OPS (mm, uint64_, uint64_)
+OCTAVE_MM_INT_BOOL_OPS (mm, uint64_, uint64_)
 OCTAVE_MM_INT_ASSIGN_OPS (mm, uint64_, uint64_, uint64_)
 OCTAVE_MM_INT_ASSIGN_OPS (mmx, uint64_, , )
 OCTAVE_MM_INT_ASSIGN_OPS (mmc, uint64_, complex_, )
@@ -86,6 +119,14 @@ OCTAVE_MM_INT_ASSIGN_OPS (mmi32, uint64_, int32_, int32_)
 OCTAVE_MM_INT_ASSIGN_OPS (mmui32, uint64_, uint32_, uint32_)
 OCTAVE_MM_INT_ASSIGN_OPS (mmi64, uint64_, int64_, int64_)
 
+OCTAVE_MIXED_INT_CMP_OPS (uint64, int8)
+OCTAVE_MIXED_INT_CMP_OPS (uint64, uint8)
+OCTAVE_MIXED_INT_CMP_OPS (uint64, int16)
+OCTAVE_MIXED_INT_CMP_OPS (uint64, uint16)
+OCTAVE_MIXED_INT_CMP_OPS (uint64, int32)
+OCTAVE_MIXED_INT_CMP_OPS (uint64, uint32)
+OCTAVE_MIXED_INT_CMP_OPS (uint64, int64)
+
 void
 install_ui64_ui64_ops (void)
 {
@@ -103,8 +144,8 @@ install_ui64_ui64_ops (void)
   OCTAVE_INSTALL_MS_INT_ASSIGN_OPS (mc, uint64_, complex_);
 
   OCTAVE_INSTALL_M_INT_UNOPS (uint64);
-  OCTAVE_INSTALL_MM_INT_CMP_OPS (uint64, uint64);
-  OCTAVE_INSTALL_MM_INT_BOOL_OPS (uint64, uint64);
+  OCTAVE_INSTALL_MM_INT_CMP_OPS (mm, uint64_, uint64_);
+  OCTAVE_INSTALL_MM_INT_BOOL_OPS (mm, uint64_, uint64_);
   OCTAVE_INSTALL_MM_INT_ASSIGN_OPS (mm, uint64_, uint64_);
   OCTAVE_INSTALL_MM_INT_ASSIGN_OPS (mmx, uint64_, );
   OCTAVE_INSTALL_MM_INT_ASSIGN_OPS (mmc, uint64_, complex_);
@@ -132,6 +173,14 @@ install_ui64_ui64_ops (void)
   OCTAVE_INSTALL_SM_INT_ASSIGNCONV (uint64, int32);
   OCTAVE_INSTALL_SM_INT_ASSIGNCONV (uint64, uint32);
   OCTAVE_INSTALL_SM_INT_ASSIGNCONV (uint64, int64);
+
+  OCTAVE_INSTALL_MIXED_INT_CMP_OPS (uint64, int8);
+  OCTAVE_INSTALL_MIXED_INT_CMP_OPS (uint64, uint8);
+  OCTAVE_INSTALL_MIXED_INT_CMP_OPS (uint64, int16);
+  OCTAVE_INSTALL_MIXED_INT_CMP_OPS (uint64, uint16);
+  OCTAVE_INSTALL_MIXED_INT_CMP_OPS (uint64, int32);
+  OCTAVE_INSTALL_MIXED_INT_CMP_OPS (uint64, uint32);
+  OCTAVE_INSTALL_MIXED_INT_CMP_OPS (uint64, int64);
 }
 
 /*

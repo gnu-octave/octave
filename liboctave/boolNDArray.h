@@ -70,6 +70,12 @@ public:
   boolNDArray all (int dim = -1) const;
   boolNDArray any (int dim = -1) const;
 
+  friend boolNDArray concat (const boolNDArray& ra, const boolNDArray& rb, 
+			     const Array<int>& ra_idx);
+
+  boolNDArray& insert (const boolNDArray& a, int r, int c);
+  boolNDArray& insert (const boolNDArray& a, const Array<int>& ra_idx);
+
   boolMatrix matrix_value (void) const;
 
   boolNDArray squeeze (void) const { return ArrayN<bool>::squeeze (); }

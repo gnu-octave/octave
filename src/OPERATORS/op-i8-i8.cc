@@ -28,6 +28,39 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include "mx-i8nda-ui8.h"
+#include "mx-i8nda-i16.h"
+#include "mx-i8nda-ui16.h"
+#include "mx-i8nda-i32.h"
+#include "mx-i8nda-ui32.h"
+#include "mx-i8nda-i64.h"
+#include "mx-i8nda-ui64.h"
+
+#include "mx-i8nda-ui8nda.h"
+#include "mx-i8nda-i16nda.h"
+#include "mx-i8nda-ui16nda.h"
+#include "mx-i8nda-i32nda.h"
+#include "mx-i8nda-ui32nda.h"
+#include "mx-i8nda-i64nda.h"
+#include "mx-i8nda-ui64nda.h"
+
+#include "mx-i8-ui8nda.h"
+#include "mx-i8-i16nda.h"
+#include "mx-i8-ui16nda.h"
+#include "mx-i8-i32nda.h"
+#include "mx-i8-ui32nda.h"
+#include "mx-i8-i64nda.h"
+#include "mx-i8-ui64nda.h"
+
+#include "mx-i8nda-s.h"
+#include "mx-s-i8nda.h"
+
+#include "mx-i8nda-nda.h"
+#include "mx-nda-i8nda.h"
+
+#include "mx-i8-nda.h"
+#include "mx-nda-i8.h"
+
 #include "gripes.h"
 #include "oct-obj.h"
 #include "ov.h"
@@ -68,6 +101,14 @@ OCTAVE_MM_INT_ASSIGN_OPS (mmui32, int8_, uint32_, uint32_)
 OCTAVE_MM_INT_ASSIGN_OPS (mmi64, int8_, int64_, int64_)
 OCTAVE_MM_INT_ASSIGN_OPS (mmui64, int8_, uint64_, uint64_)
 
+OCTAVE_MIXED_INT_CMP_OPS (int8, uint8)
+OCTAVE_MIXED_INT_CMP_OPS (int8, int16)
+OCTAVE_MIXED_INT_CMP_OPS (int8, uint16)
+OCTAVE_MIXED_INT_CMP_OPS (int8, int32)
+OCTAVE_MIXED_INT_CMP_OPS (int8, uint32)
+OCTAVE_MIXED_INT_CMP_OPS (int8, int64)
+OCTAVE_MIXED_INT_CMP_OPS (int8, uint64)
+
 void
 install_i8_i8_ops (void)
 {
@@ -96,6 +137,14 @@ install_i8_i8_ops (void)
   OCTAVE_INSTALL_SM_INT_ASSIGNCONV (int8, uint32);
   OCTAVE_INSTALL_SM_INT_ASSIGNCONV (int8, int64);
   OCTAVE_INSTALL_SM_INT_ASSIGNCONV (int8, uint64);
+
+  OCTAVE_INSTALL_MIXED_INT_CMP_OPS (int8, uint8);
+  OCTAVE_INSTALL_MIXED_INT_CMP_OPS (int8, int16);
+  OCTAVE_INSTALL_MIXED_INT_CMP_OPS (int8, uint16);
+  OCTAVE_INSTALL_MIXED_INT_CMP_OPS (int8, int32);
+  OCTAVE_INSTALL_MIXED_INT_CMP_OPS (int8, uint32);
+  OCTAVE_INSTALL_MIXED_INT_CMP_OPS (int8, int64);
+  OCTAVE_INSTALL_MIXED_INT_CMP_OPS (int8, uint64);
 }
 
 /*

@@ -66,7 +66,7 @@ DEFNDBINOP_FN (el_and, bool_matrix, bool_matrix, bool_array, bool_array,
 DEFNDBINOP_FN (el_or,  bool_matrix, bool_matrix, bool_array, bool_array,
 	       mx_el_or)
 
-DEFNDCATOP_FN (bm_bm, bool_matrix, bool_matrix, array, array, concat)
+DEFNDCATOP_FN (bm_bm, bool_matrix, bool_matrix, bool_array, bool_array, concat)
 DEFNDCATOP_FN (bm_m, bool_matrix, matrix, array, array, concat)
 DEFNDCATOP_FN (m_bm, matrix, bool_matrix, array, array, concat)
 

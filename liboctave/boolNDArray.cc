@@ -61,6 +61,31 @@ boolNDArray::any (int dim) const
   MX_ND_ANY_ALL_REDUCTION (MX_ND_ANY_EVAL (MX_ND_ANY_EXPR), false);
 }
 
+boolNDArray
+concat (const boolNDArray& ra, const boolNDArray& rb, const Array<int>& ra_idx)
+{
+  boolNDArray retval (ra);
+  if (rb.numel () > 0)
+    retval.insert (rb, ra_idx);
+  return retval;
+}
+
+boolNDArray&
+boolNDArray::insert (const boolNDArray& a, int r, int c)
+{
+  Array<bool>::insert (a, r, c);
+  return *this;
+}
+
+boolNDArray&
+boolNDArray::insert (const boolNDArray& a, const Array<int>& ra_idx)
+{
+  Array<bool>::insert (a, ra_idx);
+  return *this;
+}
+
+
+
 boolMatrix
 boolNDArray::matrix_value (void) const
 {

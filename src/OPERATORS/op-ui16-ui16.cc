@@ -28,6 +28,39 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include "mx-ui16nda-i8.h"
+#include "mx-ui16nda-ui8.h"
+#include "mx-ui16nda-i16.h"
+#include "mx-ui16nda-i32.h"
+#include "mx-ui16nda-ui32.h"
+#include "mx-ui16nda-i64.h"
+#include "mx-ui16nda-ui64.h"
+
+#include "mx-ui16nda-i8nda.h"
+#include "mx-ui16nda-ui8nda.h"
+#include "mx-ui16nda-i16nda.h"
+#include "mx-ui16nda-i32nda.h"
+#include "mx-ui16nda-ui32nda.h"
+#include "mx-ui16nda-i64nda.h"
+#include "mx-ui16nda-ui64nda.h"
+
+#include "mx-ui16-i8nda.h"
+#include "mx-ui16-ui8nda.h"
+#include "mx-ui16-i16nda.h"
+#include "mx-ui16-i32nda.h"
+#include "mx-ui16-ui32nda.h"
+#include "mx-ui16-i64nda.h"
+#include "mx-ui16-ui64nda.h"
+
+#include "mx-ui16nda-s.h"
+#include "mx-s-ui16nda.h"
+
+#include "mx-ui16nda-nda.h"
+#include "mx-nda-ui16nda.h"
+
+#include "mx-ui16-nda.h"
+#include "mx-nda-ui16.h"
+
 #include "gripes.h"
 #include "oct-obj.h"
 #include "ov.h"
@@ -68,6 +101,14 @@ OCTAVE_MM_INT_ASSIGN_OPS (mmui32, uint16_, uint32_, uint32_)
 OCTAVE_MM_INT_ASSIGN_OPS (mmi64, uint16_, int64_, int64_)
 OCTAVE_MM_INT_ASSIGN_OPS (mmui64, uint16_, uint64_, uint64_)
 
+OCTAVE_MIXED_INT_CMP_OPS (uint16, int8)
+OCTAVE_MIXED_INT_CMP_OPS (uint16, uint8)
+OCTAVE_MIXED_INT_CMP_OPS (uint16, int16)
+OCTAVE_MIXED_INT_CMP_OPS (uint16, int32)
+OCTAVE_MIXED_INT_CMP_OPS (uint16, uint32)
+OCTAVE_MIXED_INT_CMP_OPS (uint16, int64)
+OCTAVE_MIXED_INT_CMP_OPS (uint16, uint64)
+
 void
 install_ui16_ui16_ops (void)
 {
@@ -96,6 +137,14 @@ install_ui16_ui16_ops (void)
   OCTAVE_INSTALL_SM_INT_ASSIGNCONV (uint16, uint32);
   OCTAVE_INSTALL_SM_INT_ASSIGNCONV (uint16, int64);
   OCTAVE_INSTALL_SM_INT_ASSIGNCONV (uint16, uint64);
+
+  OCTAVE_INSTALL_MIXED_INT_CMP_OPS (uint16, int8);
+  OCTAVE_INSTALL_MIXED_INT_CMP_OPS (uint16, uint8);
+  OCTAVE_INSTALL_MIXED_INT_CMP_OPS (uint16, int16);
+  OCTAVE_INSTALL_MIXED_INT_CMP_OPS (uint16, int32);
+  OCTAVE_INSTALL_MIXED_INT_CMP_OPS (uint16, uint32);
+  OCTAVE_INSTALL_MIXED_INT_CMP_OPS (uint16, int64);
+  OCTAVE_INSTALL_MIXED_INT_CMP_OPS (uint16, uint64);
 }
 
 /*

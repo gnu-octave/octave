@@ -32,6 +32,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-obj.h"
 #include "ov.h"
 #include "ov-bool.h"
+#include "ov-bool-mat.h"
 #include "ov-scalar.h"
 #include "ov-re-mat.h"
 #include "ov-typeinfo.h"
@@ -54,7 +55,7 @@ DEFBINOP_OP (ne, bool, bool, !=)
 DEFBINOP_OP (el_and, bool, bool, &&)
 DEFBINOP_OP (el_or, bool, bool, ||)
 
-DEFNDCATOP_FN (b_b, bool, bool, array, array, concat)
+DEFNDCATOP_FN (b_b, bool, bool, bool_array, bool_array, concat)
 DEFNDCATOP_FN (b_s, bool, scalar, array, array, concat)
 DEFNDCATOP_FN (s_b, scalar, bool, array, array, concat)
 
@@ -73,6 +74,8 @@ install_b_b_ops (void)
   INSTALL_CATOP (octave_bool, octave_bool, b_b);
   INSTALL_CATOP (octave_bool, octave_scalar, b_s);
   INSTALL_CATOP (octave_scalar, octave_bool, s_b);
+
+  INSTALL_ASSIGNCONV (octave_bool, octave_bool, octave_bool_matrix);
 }
 
 /*

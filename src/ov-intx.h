@@ -118,6 +118,32 @@ public:
   empty_clone (void) const
     { return new OCTAVE_VALUE_INT_SCALAR_T (); }
 
+  octave_value do_index_op (const octave_value_list& idx, int resize_ok)
+  {
+    octave_value retval;
+
+    if (idx.valid_scalar_indices ())
+      retval = scalar;
+    else
+      {
+	// XXX FIXME XXX -- this doesn't solve the problem of
+	//
+	//   a = 1; a([1,1], [1,1], [1,1])
+	//
+	// and similar constructions.  Hmm...
+
+	// XXX FIXME XXX -- using this constructor avoids narrowing the
+	// 1x1 matrix back to a scalar value.  Need a better solution
+	// to this problem.
+
+	octave_value tmp (new OCTAVE_VALUE_INT_MATRIX_T (
+			     OCTAVE_VALUE_INT_NDARRAY_EXTRACTOR_FUNCTION ())); 
+	retval = tmp.do_index_op (idx, resize_ok);
+      }
+
+    return retval;
+  }
+
   OCTAVE_INT_T
   OCTAVE_VALUE_INT_SCALAR_EXTRACTOR_FUNCTION (void) const
     { return scalar; }

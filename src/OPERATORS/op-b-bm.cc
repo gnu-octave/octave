@@ -45,9 +45,16 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 DEFNDBINOP_FN (el_and, bool, bool_matrix, bool, bool_array, mx_el_and)
 DEFNDBINOP_FN (el_or, bool, bool_matrix, bool, bool_array, mx_el_or)
 
-DEFNDCATOP_FN (b_bm, bool, bool_matrix, array, array, concat)
+DEFNDCATOP_FN (b_bm, bool, bool_matrix, bool_array, bool_array, concat)
 DEFNDCATOP_FN (b_m, bool, matrix, array, array, concat)
 DEFNDCATOP_FN (s_bm, scalar, bool_matrix, array, array, concat)
+
+DEFCONV (bool_matrix_conv, bool, bool_matrix)
+{
+  CAST_CONV_ARG (const octave_bool&);
+
+  return new octave_bool_matrix (v.bool_matrix_value ());
+}
 
 void
 install_b_bm_ops (void)
@@ -58,6 +65,10 @@ install_b_bm_ops (void)
   INSTALL_CATOP (octave_bool, octave_bool_matrix, b_bm);
   INSTALL_CATOP (octave_bool, octave_matrix, b_m);
   INSTALL_CATOP (octave_scalar, octave_bool_matrix, s_bm);
+
+  INSTALL_ASSIGNCONV (octave_bool, octave_bool_matrix, octave_bool_matrix);
+
+  INSTALL_WIDENOP (octave_bool, octave_bool_matrix, bool_matrix_conv);
 }
 
 /*

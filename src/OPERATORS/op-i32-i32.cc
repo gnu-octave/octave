@@ -28,6 +28,39 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include "mx-i32nda-i8.h"
+#include "mx-i32nda-ui8.h"
+#include "mx-i32nda-i16.h"
+#include "mx-i32nda-ui16.h"
+#include "mx-i32nda-ui32.h"
+#include "mx-i32nda-i64.h"
+#include "mx-i32nda-ui64.h"
+
+#include "mx-i32nda-i8nda.h"
+#include "mx-i32nda-ui8nda.h"
+#include "mx-i32nda-i16nda.h"
+#include "mx-i32nda-ui16nda.h"
+#include "mx-i32nda-ui32nda.h"
+#include "mx-i32nda-i64nda.h"
+#include "mx-i32nda-ui64nda.h"
+
+#include "mx-i32-i8nda.h"
+#include "mx-i32-ui8nda.h"
+#include "mx-i32-i16nda.h"
+#include "mx-i32-ui16nda.h"
+#include "mx-i32-ui32nda.h"
+#include "mx-i32-i64nda.h"
+#include "mx-i32-ui64nda.h"
+
+#include "mx-i32nda-s.h"
+#include "mx-s-i32nda.h"
+
+#include "mx-i32nda-nda.h"
+#include "mx-nda-i32nda.h"
+
+#include "mx-i32-nda.h"
+#include "mx-nda-i32.h"
+
 #include "gripes.h"
 #include "oct-obj.h"
 #include "ov.h"
@@ -68,6 +101,14 @@ OCTAVE_MM_INT_ASSIGN_OPS (mmui32, int32_, uint32_, uint32_)
 OCTAVE_MM_INT_ASSIGN_OPS (mmi64, int32_, int64_, int64_)
 OCTAVE_MM_INT_ASSIGN_OPS (mmui64, int32_, uint64_, uint64_)
 
+OCTAVE_MIXED_INT_CMP_OPS (int32, int8)
+OCTAVE_MIXED_INT_CMP_OPS (int32, uint8)
+OCTAVE_MIXED_INT_CMP_OPS (int32, int16)
+OCTAVE_MIXED_INT_CMP_OPS (int32, uint16)
+OCTAVE_MIXED_INT_CMP_OPS (int32, uint32)
+OCTAVE_MIXED_INT_CMP_OPS (int32, int64)
+OCTAVE_MIXED_INT_CMP_OPS (int32, uint64)
+
 void
 install_i32_i32_ops (void)
 {
@@ -96,6 +137,14 @@ install_i32_i32_ops (void)
   OCTAVE_INSTALL_SM_INT_ASSIGNCONV (int32, uint32);
   OCTAVE_INSTALL_SM_INT_ASSIGNCONV (int32, int64);
   OCTAVE_INSTALL_SM_INT_ASSIGNCONV (int32, uint64);
+
+  OCTAVE_INSTALL_MIXED_INT_CMP_OPS (int32, int8);
+  OCTAVE_INSTALL_MIXED_INT_CMP_OPS (int32, uint8);
+  OCTAVE_INSTALL_MIXED_INT_CMP_OPS (int32, int16);
+  OCTAVE_INSTALL_MIXED_INT_CMP_OPS (int32, uint16);
+  OCTAVE_INSTALL_MIXED_INT_CMP_OPS (int32, uint32);
+  OCTAVE_INSTALL_MIXED_INT_CMP_OPS (int32, int64);
+  OCTAVE_INSTALL_MIXED_INT_CMP_OPS (int32, uint64);
 }
 
 /*

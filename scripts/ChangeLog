@@ -1,3 +1,8 @@
+2000-12-13   Teemu Ikonen  <tpikonen@pcu.helsinki.fi>
+
+        * polynomial/deconv.m: For compatibility with Matlab, don't reduce
+	  result polynomials.
+
 2000-12-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* image/saveimage.m: Don't try to create rawbit image.

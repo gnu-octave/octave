@@ -1186,7 +1186,7 @@ Matrix::lssolve (const Matrix& b, int& info, int& rank) const
       double *tmp_data = atmp.fortran_vec ();
 
       int nrr = m > n ? m : n;
-      Matrix result (nrr, nrhs);
+      Matrix result (nrr, nrhs, 0.0);
 
       for (int j = 0; j < nrhs; j++)
 	for (int i = 0; i < m; i++)

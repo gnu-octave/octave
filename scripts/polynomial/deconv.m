@@ -57,15 +57,11 @@ function [b, r] = deconv (y, a)
     b = 0;
   endif
 
-  b = polyreduce (b);
-
   lc = la + length (b) - 1;
   if (ly == lc)
     r = y - conv (a, b);
   else
     r = [(zeros (1, lc - ly)), y] - conv (a, b);
   endif
-
-  r = polyreduce (r);
 
 endfunction

@@ -512,8 +512,8 @@
             DO 40 I = 1, NRHS, CHUNK
                BL = MIN( NRHS-I+1, CHUNK )
                CALL ZGEMM( 'C', 'N', M, BL, M, CONE, WORK( IL ), LDWORK,
-     $                     B( 1, I ), LDB, CZERO, WORK( IWORK ), N )
-               CALL ZLACPY( 'G', M, BL, WORK( IWORK ), N, B( 1, I ),
+     $                     B( 1, I ), LDB, CZERO, WORK( IWORK ), M )
+               CALL ZLACPY( 'G', M, BL, WORK( IWORK ), M, B( 1, I ),
      $                      LDB )
    40       CONTINUE
          ELSE

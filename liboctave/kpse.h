@@ -20,19 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #define KPATHSEA_PATHSEARCH_H
 
 #include <string>
-
-/* Lists of strings; used for, e.g., directory lists.  */
-
-typedef struct
-{
-  unsigned length;
-  char **list;
-} str_list_type;
-
-#define STR_LIST_LENGTH(l) ((l).length)
-#define STR_LIST(l) ((l).list)
-#define STR_LIST_ELT(l, n) STR_LIST (l)[n]
-#define STR_LIST_LAST_ELT(l) STR_LIST_ELT (l, STR_LIST_LENGTH (l) - 1)
+#include "str-vec.h"
 
 /* It's a little bizarre to be using the same type for the list and the
    elements of the list, but no reason not to in this case, I think --
@@ -41,7 +29,7 @@ typedef struct
 
 struct str_llist_elt
 {
-  char *str;
+  std::string str;
   int moved;
   struct str_llist_elt *next;
 };
@@ -93,24 +81,27 @@ extern str_llist_type *kpse_element_dirs (const char *elt);
    do this once, in advance, instead of for every search using it.
    
    In any case, return the complete filename if found, otherwise NULL.  */
-extern char *kpse_path_search (const char *path, const char *name,
-			       bool must_exist);
+extern std::string kpse_path_search (const std::string& path,
+				     const std::string& name,
+				     bool must_exist);
 
 
 /* Like `kpse_path_search' with MUST_EXIST true, but return a list of
    all the filenames (or NULL if none), instead of taking the first.  */
-extern char **kpse_all_path_search (const char *path, const char *name);
+extern string_vector kpse_all_path_search (const std::string& path,
+					   const std::string&  name);
 
 /* Search each element of PATH for each element in the list of NAMES.
    Return the first one found.  */
-extern char *kpse_path_find_first_of (const char *path, const char **names,
-				      bool must_exist);
+extern std::string kpse_path_find_first_of (const std::string& path,
+					    const string_vector& names,
+					    bool must_exist);
 
 /* Like `kpse_path_find_first_of' with MUST_EXIST true, but return a
    list of all the filenames (or NULL if none), instead of taking the
    first.  */
-extern char **kpse_all_path_find_first_of (const char *path,
-					   const char **names);
+extern string_vector kpse_all_path_find_first_of (const std::string& path,
+						  const string_vector& names);
 
 /* expand.h: general expansion.  */
 
@@ -150,8 +141,8 @@ extern void kpse_init_db (void);
    the first.  If no matches, return a pointer to an empty list.  If no
    databases can be read, or PATH_ELT is not in any of the databases,
    return NULL.  */
-extern str_list_type *kpse_db_search (const char *name,
-				      const char *path_elt, bool all);
+extern string_vector kpse_db_search (const std::string& name,
+				     const std::string& path_elt, bool all);
 
 /* Insert the filename FNAME into the database.
    Called by mktexpk et al.  */

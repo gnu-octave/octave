@@ -22,6 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #include <config.h>
 #endif
 
+#include <map>
 #include <string>
 
 #include "kpse-config.h"
@@ -215,28 +216,23 @@ extern int fclose (FILE *);
 /* hash.h: declarations for a hash table.  */
 
 /* A single (key,value) pair.  */
-typedef struct hash_element_struct
+struct hash_element_type
 {
-  const char *key;
-  const char *value;
-  struct hash_element_struct *next;
-} hash_element_type;
+  std::string key;
+  std::string value;
+  struct hash_element_type *next;
+};
 
 /* The usual arrangement of buckets initialized to null.  */
-typedef struct
+struct hash_table_type
 {
   hash_element_type **buckets;
   unsigned size;
-} hash_table_type;
+};
 
 static hash_table_type hash_create (unsigned size);
 
 
-#ifdef KPSE_DEBUG
-/* How to print the hash results when debugging.  */
-extern int kpse_debug_hash_lookup_int;
-#endif
-
 /* lib.h: other stuff.  */
 
 /* Define common sorts of messages.  */
@@ -334,18 +330,17 @@ static char *xstrdup (const char *s);
 
 extern char *xbasename (const char *name);
 
-static int dir_p (const char *fn);
-
 #ifndef WIN32
 int dir_links (const char *fn);
 #endif
 
-static unsigned hash (hash_table_type table, const char *key);
+static unsigned hash (hash_table_type table, const std::string& key);
 
-static void hash_insert (hash_table_type *table, const char *key,
-			 const char *value);
+static void hash_insert (hash_table_type *table, const std::string& key,
+			 const std::string& value);
 
-static char **hash_lookup (hash_table_type table, const char *key);
+static string_vector hash_lookup (hash_table_type table,
+				  const std::string& key);
 
 static void hash_print (hash_table_type table, int summary_only);
 
@@ -359,17 +354,13 @@ static char *kpse_truncate_filename (const char *name);
 
 static char *kpse_readable_file (const char *name);
 
-static int kpse_absolute_p (const char *filename, int relative_ok);
+static bool kpse_absolute_p (const std::string& filename, int relative_ok);
 
-static str_list_type str_list_init (void);
+static void str_list_add (string_vector& l, const std::string& s);
 
-static void str_list_add (str_list_type *l, char *s);
+static void str_list_concat (string_vector& target, const string_vector& more);
 
-static void str_list_concat (str_list_type *target, str_list_type more);
-
-static void str_list_free (str_list_type *l);
-
-static void str_llist_add (str_llist_type *l, char *str);
+static void str_llist_add (str_llist_type *l, const std::string& str);
 
 static void str_llist_float (str_llist_type *l, str_llist_elt_type *mover);
 
@@ -398,7 +389,7 @@ static bool first_search = true;
    record the filename(s) found in $TEXMFLOG.  */
 
 static void
-log_search (str_list_type filenames)
+log_search (string_vector filenames)
 {
   static FILE *log_file = NULL;
   static bool first_time = true; /* Need to open the log file?  */
@@ -415,23 +406,23 @@ log_search (str_list_type filenames)
   }
 
   if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH) || log_file) {
-    unsigned e;
+    int e;
 
     /* FILENAMES should never be null, but safety doesn't hurt.  */
-    for (e = 0; e < STR_LIST_LENGTH (filenames) && STR_LIST_ELT (filenames, e);
+    for (e = 0; e < filenames.length () && ! filenames[e].empty ();
          e++) {
-      char *filename = STR_LIST_ELT (filenames, e);
+      std::string filename = filenames[e];
 
       /* Only record absolute filenames, for privacy.  */
-      if (log_file && kpse_absolute_p (filename, false))
+      if (log_file && kpse_absolute_p (filename.c_str (), false))
         fprintf (log_file, "%lu %s\n", (long unsigned) time (NULL),
-                 filename);
+                 filename.c_str ());
 
       /* And show them online, if debugging.  We've already started
          the debugging line in `search', where this is called, so
          just print the filename here, don't use DEBUGF.  */
       if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
-        fputs (filename, stderr);
+        fputs (filename.c_str (), stderr);
     }
   }
 }
@@ -448,21 +439,20 @@ log_search (str_list_type filenames)
 
 #define INIT_ALLOC 75  /* Doesn't much matter what this number is.  */
 
-static str_list_type
-dir_list_search (str_llist_type *dirs, const char *name, bool search_all)
+static string_vector
+dir_list_search (str_llist_type *dirs, const std::string& name,
+		 bool search_all)
 {
   str_llist_elt_type *elt;
-  str_list_type ret;
-  unsigned name_len = strlen (name);
+  string_vector ret;
+  unsigned name_len = name.length ();
   unsigned allocated = INIT_ALLOC;
   char *potential = (char *) xmalloc (allocated);
 
-  ret = str_list_init ();
-  
   for (elt = *dirs; elt; elt = STR_LLIST_NEXT (*elt))
     {
-      const char *dir = STR_LLIST (*elt);
-      unsigned dir_len = strlen (dir);
+      const std::string dir = STR_LLIST (*elt);
+      unsigned dir_len = dir.length ();
       
       while (dir_len + name_len + 1 > allocated)
         {
@@ -470,12 +460,12 @@ dir_list_search (str_llist_type *dirs, const char *name, bool search_all)
           XRETALLOC (potential, allocated, char);
         }
       
-      strcpy (potential, dir);
-      strcat (potential, name);
+      strcpy (potential, dir.c_str ());
+      strcat (potential, name.c_str ());
       
       if (kpse_readable_file (potential))
         { 
-          str_list_add (&ret, potential);
+          str_list_add (ret, potential);
           
           /* Move this element towards the top of the list.  */
           str_llist_float (dirs, elt);
@@ -502,22 +492,16 @@ dir_list_search (str_llist_type *dirs, const char *name, bool search_all)
 /* This is called when NAME is absolute or explicitly relative; if it's
    readable, return (a list containing) it; otherwise, return NULL.  */
 
-static str_list_type
-absolute_search (char *name)
+static string_vector
+absolute_search (const std::string& name_arg)
 {
-  str_list_type ret_list;
+  string_vector ret_list;
+  const char *name = name_arg.c_str ();
   char *found = kpse_readable_file (name);
   
-  /* Some old compilers can't initialize structs.  */
-  ret_list = str_list_init ();
-
-  /* If NAME wasn't found, free the expansion.  */
-  if (name != found)
-    free (name);
-
   /* Add `found' to the return list even if it's null; that tells
      the caller we didn't find anything.  */
-  str_list_add (&ret_list, found);
+  str_list_add (ret_list, found);
   
   return ret_list;
 }
@@ -525,81 +509,84 @@ absolute_search (char *name)
 /* This is the hard case -- look for NAME in PATH.  If ALL is false,
    return the first file found.  Otherwise, search all elements of PATH.  */
 
-static str_list_type
-path_search (const char *path, char *name, bool must_exist, bool all)
+static string_vector
+path_search (const std::string& path_arg, const std::string& name,
+	     bool must_exist, bool all)
 {
   char *elt;
-  str_list_type ret_list;
+  string_vector ret_list;
   bool done = false;
-  ret_list = str_list_init (); /* some compilers lack struct initialization */
+
+  const char *path = path_arg.c_str ();
 
   for (elt = kpse_path_element (path); !done && elt;
-       elt = kpse_path_element (NULL)) {
-    str_list_type *found;
-    bool allow_disk_search = true;
+       elt = kpse_path_element (NULL))
+    {
+      string_vector found;
+      bool allow_disk_search = true;
 
-    if (*elt == '!' && *(elt + 1) == '!') {
-      /* Those magic leading chars in a path element means don't search the
-         disk for this elt.  And move past the magic to get to the name.  */
-      allow_disk_search = false;
-      elt += 2;
-    }
+      if (*elt == '!' && *(elt + 1) == '!')
+	{
+	  /* Those magic leading chars in a path element means don't
+	     search the disk for this elt.  And move past the magic to
+	     get to the name.  */
+	  allow_disk_search = false;
+	  elt += 2;
+	}
 
-    /* Do not touch the device if present */
-    if (NAME_BEGINS_WITH_DEVICE (elt)) {
-      while (IS_DIR_SEP (*(elt + 2)) && IS_DIR_SEP (*(elt + 3))) {
-	*(elt + 2) = *(elt + 1);
-	*(elt + 1) = *elt;
-	elt++;
-      }
-    } else {
-      /* We never want to search the whole disk.  */
-      while (IS_DIR_SEP (*elt) && IS_DIR_SEP (*(elt + 1)))
-        elt++;
-    }
+      /* Do not touch the device if present */
+      if (NAME_BEGINS_WITH_DEVICE (elt))
+	{
+	  while (IS_DIR_SEP (*(elt + 2)) && IS_DIR_SEP (*(elt + 3)))
+	    {
+	      *(elt + 2) = *(elt + 1);
+	      *(elt + 1) = *elt;
+	      elt++;
+	    }
+	}
+      else
+	{
+	  /* We never want to search the whole disk.  */
+	  while (IS_DIR_SEP (*elt) && IS_DIR_SEP (*(elt + 1)))
+	    elt++;
+	}
     
-    /* Try ls-R, unless we're searching for texmf.cnf.  Our caller
-       (search), also tests first_search, and does the resetting.  */
-    found = first_search ? NULL : kpse_db_search (name, elt, all);
+      /* Try ls-R, unless we're searching for texmf.cnf.  Our caller
+	 (search), also tests first_search, and does the resetting.  */
+      found = first_search
+	? string_vector () : kpse_db_search (name, elt, all);
 
-    /* Search the filesystem if (1) the path spec allows it, and either
+      /* Search the filesystem if (1) the path spec allows it, and either
          (2a) we are searching for texmf.cnf ; or
          (2b) no db exists; or 
          (2c) no db's are relevant to this elt; or
          (3) MUST_EXIST && NAME was not in the db.
-       In (2*), `found' will be NULL.
-       In (3),  `found' will be an empty list. */
-    if (allow_disk_search && (!found || (must_exist && !STR_LIST (*found)))) {
-      str_llist_type *dirs = kpse_element_dirs (elt);
-      if (dirs && *dirs) {
-        if (!found)
-          found = XTALLOC1 (str_list_type);
-        *found = dir_list_search (dirs, name, all);
-      }
+	 In (2*), `found' will be NULL.
+	 In (3),  `found' will be an empty list. */
+
+      if (allow_disk_search && found.empty ())
+	{
+	  str_llist_type *dirs = kpse_element_dirs (elt);
+	  if (dirs && *dirs) {
+	    found = dir_list_search (dirs, name, all);
+	  }
+	}
+
+      /* Did we find anything anywhere?  */
+      if (! found.empty ())
+	{
+	  if (all)
+	    str_list_concat (ret_list, found);
+	  else
+	    {
+	      str_list_add (ret_list, found[0]);
+	      done = true;
+	    }
+	}
     }
 
-    /* Did we find anything anywhere?  */
-    if (found && STR_LIST (*found))
-      if (all)
-        str_list_concat (&ret_list, *found);
-      else {
-        str_list_add (&ret_list, STR_LIST_ELT (*found, 0));
-        done = true;
-      }
-
-    /* Free the list space, if any (but not the elements).  */
-    if (found) {
-      str_list_free (found);
-      free (found);
-    }
-  }
-
-  /* Free the expanded name we were passed.  It can't be in the return
-     list, since the path directories got unconditionally prepended.  */
-  free (name);
-  
   return ret_list;
-}      
+}
 
 /* Search PATH for ORIGINAL_NAME.  If ALL is false, or ORIGINAL_NAME is
    absolute_p, check ORIGINAL_NAME itself.  Otherwise, look at each
@@ -609,16 +596,15 @@ path_search (const char *path, char *name, bool must_exist, bool all)
    contain just NULL.  If ALL is true, the list will be
    terminated with NULL.  */
 
-static char **
-search (const char *path, const char *original_name,
+static string_vector
+search (const std::string& path, const std::string& original_name,
 	bool must_exist, bool all)
 {
-  str_list_type ret_list;
+  string_vector ret_list;
   bool absolute_p;
 
   /* Make a leading ~ count as an absolute filename, and expand $FOO's.  */
-  std::string tmp = kpse_expand (original_name);
-  char *name = xstrdup (tmp.c_str ());
+  std::string name = kpse_expand (original_name);
   
   /* If the first name is absolute or explicitly relative, no need to
      consider PATH at all.  */
@@ -626,18 +612,12 @@ search (const char *path, const char *original_name,
   
   if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
     DEBUGF4 ("start search(file=%s, must_exist=%d, find_all=%d, path=%s).\n",
-             name, must_exist, all, path);
+             name.c_str (), must_exist, all, path.c_str ());
 
   /* Find the file(s). */
   ret_list = absolute_p ? absolute_search (name)
                         : path_search (path, name, must_exist, all);
   
-  /* Append NULL terminator if we didn't find anything at all, or we're
-     supposed to find ALL and the list doesn't end in NULL now.  */
-  if (STR_LIST_LENGTH (ret_list) == 0
-      || (all && STR_LIST_LAST_ELT (ret_list) != NULL))
-    str_list_add (&ret_list, NULL);
-
   /* The very first search is for texmf.cnf.  We can't log that, since
      we want to allow setting TEXMFLOG in texmf.cnf.  */
   if (first_search) {
@@ -646,65 +626,56 @@ search (const char *path, const char *original_name,
     /* Record the filenames we found, if desired.  And wrap them in a
        debugging line if we're doing that.  */
     if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
-      DEBUGF1 ("search(%s) =>", original_name);
+      DEBUGF1 ("search(%s) =>", original_name.c_str ());
     log_search (ret_list);
     if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
       putc ('\n', stderr);
   }  
 
-  return STR_LIST (ret_list);
+  return ret_list;
 }
 
 /* Search PATH for the first NAME.  */
 
-char *
-kpse_path_search (const char *path, const char *name, bool must_exist)
+std::string
+kpse_path_search (const std::string& path, const std::string& name,
+		  bool must_exist)
 {
-  static char **ret_list = 0;
+  string_vector ret_list = search (path, name, must_exist, false);
 
-  if (ret_list)
-    {
-      free (ret_list);
-      ret_list = 0;  /* Don't let an interrupt in search() cause trouble */
-    }
-
-  ret_list = search (path, name, must_exist, false);
-
-  return *ret_list;  /* Freeing this is caller's responsibility */
+  return ret_list.empty () ? std::string () : ret_list[0];
 }
 
 
 /* Search all elements of PATH for files named NAME.  Not sure if it's
    right to assert `must_exist' here, but it suffices now.  */
 
-char **
-kpse_all_path_search (const char *path, const char *name)
+string_vector
+kpse_all_path_search (const std::string& path, const std::string& name)
 {
-  char **ret = search (path, name, true, true);
-  return ret;
+  return search (path, name, true, true);
 }
 
 /* This is the hard case -- look in each element of PATH for each
    element of NAMES.  If ALL is false, return the first file found.
    Otherwise, search all elements of PATH.  */
 
-static str_list_type
-path_find_first_of (const char *path, const char **names,
+static string_vector
+path_find_first_of (const std::string& path_arg, const string_vector& names,
 		    bool must_exist, bool all)
 {
-  const char **p;
   char *elt;
-  const char *name;
-  str_list_type ret_list;
+  string_vector ret_list;
   bool done = false;
-  ret_list = str_list_init (); /* some compilers lack struct initialization */
+
+  const char *path = path_arg.c_str ();
 
   for (elt = kpse_path_element (path); !done && elt;
        elt = kpse_path_element (NULL))
     {
       str_llist_type *dirs;
       str_llist_elt_type *dirs_elt;
-      str_list_type *found;
+      string_vector found;
       bool allow_disk_search = true;
 
       if (*elt == '!' && *(elt + 1) == '!')
@@ -739,16 +710,17 @@ path_find_first_of (const char *path, const char **names,
       dirs = kpse_element_dirs (elt);
       for (dirs_elt = *dirs; dirs_elt; dirs_elt = STR_LLIST_NEXT (*dirs_elt))
 	{
-	  char *dir = STR_LLIST (*dirs_elt);
+	  const std::string dir = STR_LLIST (*dirs_elt);
 
-	  for (p = names; !done && *p; p++)
+	  int len = names.length ();
+	  for (int i = 0; i < len && !done; i++)
 	    {
-	      name = *p;
+	      std::string name = names[i];
 
 	      /* Try ls-R, unless we're searching for texmf.cnf.  Our caller
 		 (find_first_of), also tests first_search, and does the
 		 resetting.  */
-	      found = first_search ? NULL : kpse_db_search (name, dir, all);
+	      found = first_search ? string_vector () : kpse_db_search (name, dir.c_str (), all);
 
 	      /* Search the filesystem if (1) the path spec allows it,
 		 and either
@@ -761,43 +733,32 @@ path_find_first_of (const char *path, const char **names,
 		 In (2*), `found' will be NULL.
 		 In (3),  `found' will be an empty list. */
 
-	      if (allow_disk_search
-		  && (!found || (must_exist && !STR_LIST (*found))))
+	      if (allow_disk_search && found.empty ())
 		{
 		  static str_llist_type *tmp = 0;
 
 		  if (! tmp)
 		    {
-		      tmp = XTALLOC1 (str_llist_type);
+		      tmp = new str_llist_type;
 		      *tmp = NULL;
 		      str_llist_add (tmp, "");
 		    }
 
 		  STR_LLIST (*(*tmp)) = dir;
 
-		  if (!found)
-		    found = XTALLOC1 (str_list_type);
-
-		  *found = dir_list_search (tmp, name, all);
+		  found = dir_list_search (tmp, name, all);
 		}
 
 	      /* Did we find anything anywhere?  */
-	      if (found && STR_LIST (*found))
+	      if (! found.empty ())
 		{
 		  if (all)
-		    str_list_concat (&ret_list, *found);
+		    str_list_concat (ret_list, found);
 		  else
 		    {
-		      str_list_add (&ret_list, STR_LIST_ELT (*found, 0));
+		      str_list_add (ret_list, found[0]);
 		      done = true;
 		    }
-		}
-
-	      /* Free the list space, if any (but not the elements).  */
-	      if (found)
-		{
-		  str_list_free (found);
-		  free (found);
 		}
 	    }
 	}
@@ -806,34 +767,28 @@ path_find_first_of (const char *path, const char **names,
   return ret_list;
 }      
 
-static char **
-find_first_of (const char *path, const char **names,
+static string_vector
+find_first_of (const std::string& path, const string_vector& names,
 	       bool must_exist, bool all)
 {
-  str_list_type ret_list;
+  string_vector ret_list;
 
   if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
     {
-      const char **p;
       fputs ("start find_first_of((", stderr);
-      for (p = names; *p; p++)
+      int len = names.length ();
+      for (int i = 0; i < len; i++)
 	{
-	  if (p == names)
-	    fputs (*p, stderr);
+	  if (i == 0)
+	    fputs (names[i].c_str (), stderr);
 	  else
-	    fprintf (stderr, ", %s", *p);
+	    fprintf (stderr, ", %s", names[i].c_str ());
 	}
-      fprintf (stderr, "), path=%s, must_exist=%d).\n", path, must_exist);
+      fprintf (stderr, "), path=%s, must_exist=%d).\n", path.c_str (), must_exist);
     }
 
   /* Find the file. */
   ret_list = path_find_first_of (path, names, must_exist, all);
-
-  /* Append NULL terminator if we didn't find anything at all, or we're
-     supposed to find ALL and the list doesn't end in NULL now.  */
-  if (STR_LIST_LENGTH (ret_list) == 0
-      || (all && STR_LIST_LAST_ELT (ret_list) != NULL))
-    str_list_add (&ret_list, NULL);
 
   /* The very first search is for texmf.cnf.  We can't log that, since
      we want to allow setting TEXMFLOG in texmf.cnf.  */
@@ -844,14 +799,14 @@ find_first_of (const char *path, const char **names,
        debugging line if we're doing that.  */
     if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
       {
-	const char **p;
 	fputs ("find_first_of(", stderr);
-	for (p = names; *p; p++)
+	int len = names.length ();
+	for (int i = 0; i < len; i++)
 	  {
-	    if (p == names)
-	      fputs (*p, stderr);
+	    if (i == 0)
+	      fputs (names[i].c_str (), stderr);
 	    else
-	      fprintf (stderr, ", %s", *p);
+	      fprintf (stderr, ", %s", names[i].c_str ());
 	  }
 	fputs (") =>", stderr);
       }
@@ -860,37 +815,29 @@ find_first_of (const char *path, const char **names,
       putc ('\n', stderr);
   }  
 
-  return STR_LIST (ret_list);
+  return ret_list;
 }
 
 /* Search each element of PATH for each element of NAMES.  Return the
    first one found.  */
 
-char *
-kpse_path_find_first_of (const char *path, const char **names,
+std::string
+kpse_path_find_first_of (const std::string& path, const string_vector& names,
 			 bool must_exist)
 {
-  static char **ret_list = 0;
+  string_vector ret_list = find_first_of (path, names, must_exist, false);
 
-  if (ret_list)
-    {
-      free (ret_list);
-      ret_list = 0;  /* Don't let an interrupt in search() cause trouble */
-    }
-
-  ret_list = find_first_of (path, names, must_exist, false);
-
-  return *ret_list;  /* Freeing this is caller's responsibility */
+  return ret_list.empty () ? std::string () : ret_list[0];
 }
 
 /* Search each element of PATH for each element of NAMES and return a
    list containing everything found, in the order found.  */
 
-char **
-kpse_all_path_find_first_of (const char *path, const char **names)
+string_vector
+kpse_all_path_find_first_of (const std::string& path,
+			     const string_vector& names)
 {
-  char **ret = find_first_of (path, names, true, true);
-  return ret;
+  return find_first_of (path, names, true, true);
 }
 
 /* expand.c: general expansion.  Some of this file (the brace-expansion
@@ -1154,17 +1101,17 @@ kpse_path_expand (const char *path)
       str_llist_elt_type *dir;
 
       for (dir = *dirs; dir; dir = STR_LLIST_NEXT (*dir)) {
-        char *thedir = STR_LLIST (*dir);
-        unsigned dirlen = strlen (thedir);
+        const std::string thedir = STR_LLIST (*dir);
+        unsigned dirlen = thedir.length ();
         char *save_ret = ret;
         /* Retain trailing slash if that's the root directory.  */
         if (dirlen == 1 || (dirlen == 3 && NAME_BEGINS_WITH_DEVICE (thedir)
                             && IS_DIR_SEP (thedir[2]))) {
-          ret = concat3 (ret, thedir, ENV_SEP_STRING);
+          ret = concat3 (ret, thedir.c_str (), ENV_SEP_STRING);
           len += dirlen + 1;
           ret[len - 1] = ENV_SEP;
         } else {
-          ret = concat (ret, thedir);
+          ret = concat (ret, thedir.c_str ());
           len += dirlen;
           ret [len - 1] = ENV_SEP;
         }
@@ -1506,22 +1453,22 @@ typedef enum
 
 typedef struct
 {
-  const char *type;		/* Human-readable description.  */
-  const char *path;		/* The search path to use.  */
-  const char *raw_path;	/* Pre-$~ (but post-default) expansion.  */
-  const char *path_source;	/* Where the path started from.  */
-  const char *override_path;	/* From client environment variable.  */
-  const char *client_path;	/* E.g., from dvips's config.ps.  */
-  const char *cnf_path;	/* From texmf.cnf.  */
-  const char *default_path;	/* If all else fails.  */
-  const char **suffix;		/* For kpse_find_file to check for/append.  */
-  const char **alt_suffix;	/* More suffixes to check for.  */
-  bool suffix_search_only;	/* Only search with a suffix?  */
-  const char *program;		/* ``mktexpk'', etc.  */
-  const char *program_args;	/* Args to `program'.  */
-  bool program_enabled_p;	/* Invoke `program'?  */
+  std::string type;	     /* Human-readable description.  */
+  std::string path;	     /* The search path to use.  */
+  std::string raw_path;	     /* Pre-$~ (but post-default) expansion.  */
+  std::string path_source;   /* Where the path started from.  */
+  std::string override_path; /* From client environment variable.  */
+  std::string client_path;   /* E.g., from dvips's config.ps.  */
+  std::string cnf_path;	     /* From texmf.cnf.  */
+  std::string default_path;  /* If all else fails.  */
+  const char **suffix;	     /* For kpse_find_file to check for/append.  */
+  const char **alt_suffix;   /* More suffixes to check for.  */
+  bool suffix_search_only;   /* Only search with a suffix?  */
+  std::string program;	     /* ``mktexpk'', etc.  */
+  std::string program_args;  /* Args to `program'.  */
+  bool program_enabled_p;    /* Invoke `program'?  */
   kpse_src_type program_enable_level; /* Who said to invoke `program'.  */
-  bool binmode;              /* The files must be opened in binary mode. */
+  bool binmode;		     /* The files must be opened in binary mode. */
 } kpse_format_info_type;
 
 /* The sole variable of that type, indexed by `kpse_file_format_type'.
@@ -1533,9 +1480,9 @@ static kpse_format_info_type kpse_format_info;
 /* And EXPAND_DEFAULT calls kpse_expand_default on try_path and the
    present info->path.  */
 #define EXPAND_DEFAULT(try_path, source_string)			\
-  if (try_path) {						\
+  if (! try_path.empty ()) {					\
       info->raw_path = try_path;				\
-      info->path = kpse_expand_default (try_path, info->path);	\
+      info->path = kpse_expand_default (try_path.c_str (), (info->path).c_str ());	\
       info->path_source = source_string;			\
   }
 
@@ -1572,7 +1519,7 @@ init_path (kpse_format_info_type *info, const char *default_path, ...)
       }
     }
     
-    if (var && info->cnf_path)
+    if (var && ! info->cnf_path.empty ())
       break;
   }
   va_end (ap);
@@ -1590,10 +1537,16 @@ init_path (kpse_format_info_type *info, const char *default_path, ...)
   EXPAND_DEFAULT (info->cnf_path, "texmf.cnf");
   EXPAND_DEFAULT (info->client_path, "program config file");
   if (var)
-    EXPAND_DEFAULT (getenv (var), concat (var, " environment variable"));
+    {
+      char *val = getenv (var);
+      std::string sval;
+      if (val)
+	sval = val;
+      EXPAND_DEFAULT (sval, concat (var, " environment variable"));
+    }
   EXPAND_DEFAULT (info->override_path, "application override variable");
-  std::string tmp = kpse_brace_expand (info->path);
-  info->path = tmp.c_str ();
+  std::string tmp = kpse_brace_expand ((info->path).c_str ());
+  info->path = tmp;
 }
 
 
@@ -1639,28 +1592,29 @@ remove_dbonly (const char *path)
 
 /* Initialize everything for FORMAT.  */
 
-static const char *
+static std::string
 kpse_init_format (void)
 {
   /* If we get called twice, don't redo all the work.  */
-  if (kpse_format_info.path)
+  if (! kpse_format_info.path.empty ())
     return kpse_format_info.path;
     
   kpse_format_info.type = "ls-R";
   init_path (&kpse_format_info, DEFAULT_TEXMFDBS, DB_ENVS, NULL);
   add_suffixes(&kpse_format_info.suffix, "ls-R", NULL);
-  kpse_format_info.path = remove_dbonly (kpse_format_info.path);
+  kpse_format_info.path = remove_dbonly (kpse_format_info.path.c_str ());
 
 #ifdef KPSE_DEBUG
-#define MAYBE(member) (kpse_format_info.member ? kpse_format_info.member : "(none)")
+#define MAYBE(member) (kpse_format_info.member.empty () ? "(none)" : kpse_format_info.member.c_str ())
 
   /* Describe the monster we've created.  */
   if (KPSE_DEBUG_P (KPSE_DEBUG_PATHS))
     {
       DEBUGF2 ("Search path for %s files (from %s)\n",
-              kpse_format_info.type, kpse_format_info.path_source);
-      DEBUGF1 ("  = %s\n", kpse_format_info.path);
-      DEBUGF1 ("  before expansion = %s\n", kpse_format_info.raw_path);
+	       kpse_format_info.type.c_str (),
+	       kpse_format_info.path_source.c_str ());
+      DEBUGF1 ("  = %s\n", kpse_format_info.path.c_str ());
+      DEBUGF1 ("  before expansion = %s\n", kpse_format_info.raw_path.c_str ());
       DEBUGF1 ("  application override path = %s\n", MAYBE (override_path));
       DEBUGF1 ("  application config file path = %s\n", MAYBE (client_path));
       DEBUGF1 ("  texmf.cnf path = %s\n", MAYBE (cnf_path));
@@ -1715,7 +1669,7 @@ static hash_table_type alias_db;
 #define ALIAS_HASH_SIZE 1009
 #endif
 
-static str_list_type db_dir_list;
+static string_vector db_dir_list;
 
 /* If DIRNAME contains any element beginning with a `.' (that is more
    than just `./'), return true.  This is to allow ``hidden''
@@ -1788,16 +1742,16 @@ read_line (FILE *f)
    Otherwise, add entries from DB_FILENAME to TABLE, and return true.  */
 
 static bool
-db_build (hash_table_type *table, const char *db_filename)
+db_build (hash_table_type *table, const std::string& db_filename)
 {
   char *line;
   unsigned dir_count = 0, file_count = 0, ignore_dir_count = 0;
-  unsigned len = strlen (db_filename) - sizeof (DB_NAME) + 1; /* Keep the /. */
+  unsigned len = db_filename.length () - sizeof (DB_NAME) + 1; /* Keep the /. */
   char *top_dir = (char *) xmalloc (len + 1);
   char *cur_dir = NULL; /* First thing in ls-R might be a filename.  */
-  FILE *db_file = xfopen (db_filename, "r");
+  FILE *db_file = xfopen (db_filename.c_str (), "r");
   
-  strncpy (top_dir, db_filename, len);
+  strncpy (top_dir, db_filename.c_str (), len);
   top_dir[len] = 0;
   
   if (db_file) {
@@ -1840,14 +1794,14 @@ db_build (hash_table_type *table, const char *db_filename)
       free (line);
     }
 
-    xfclose (db_file, db_filename);
+    xfclose (db_file, db_filename.c_str ());
 
     if (file_count == 0) {
-      WARNING1 ("kpathsea: No usable entries in %s", db_filename);
+      WARNING1 ("kpathsea: No usable entries in %s", db_filename.c_str ());
       WARNING ("kpathsea: See the manual for how to generate ls-R");
       db_file = NULL;
     } else {
-      str_list_add (&db_dir_list, xstrdup (top_dir));
+      str_list_add (db_dir_list, top_dir);
     }
 
 #ifdef KPSE_DEBUG
@@ -1859,7 +1813,7 @@ db_build (hash_table_type *table, const char *db_filename)
       bool hash_summary_only = true;
 
       DEBUGF4 ("%s: %u entries in %d directories (%d hidden).\n",
-               db_filename, file_count, dir_count, ignore_dir_count);
+               db_filename.c_str (), file_count, dir_count, ignore_dir_count);
       DEBUGF ("ls-R hash table:");
       hash_print (*table, hash_summary_only);
       fflush (stderr);
@@ -1900,8 +1854,11 @@ kpse_db_insert (const char *passed_fname)
    $ and ~ expansion have already been done.  */
      
 static bool
-match (const char *filename, const char *path_elt)
+match (const std::string& filename_arg, const std::string& path_elt_arg)
 {
+  const char *filename = filename_arg.c_str ();
+  const char *path_elt = path_elt_arg.c_str ();
+
   const char *original_filename = filename;
   bool matched = false;
   
@@ -1967,18 +1924,24 @@ match (const char *filename, const char *path_elt)
    search in it, which is all we do anyway.  */
    
 static bool
-elt_in_db (const char *db_dir,  const char *path_elt)
+elt_in_db (const std::string& db_dir, const std::string& path_elt)
 {
   bool found = false;
 
-  while (!found && FILECHARCASEEQ (*db_dir++, *path_elt++)) {
+  size_t db_dir_len = db_dir.length ();
+  size_t path_elt_len = path_elt.length ();
+
+  size_t i = 0;
+
+  while (!found && FILECHARCASEEQ (db_dir[i], path_elt[i])) {
+    i++;
     /* If we've matched the entire db directory, it's good.  */
-    if (*db_dir == 0)
+    if (i == db_dir_len)
       found = true;
  
     /* If we've reached the end of PATH_ELT, but not the end of the db
        directory, it's no good.  */
-    else if (*path_elt == 0)
+    else if (i == path_elt_len)
       break;
   }
 
@@ -1988,11 +1951,11 @@ elt_in_db (const char *db_dir,  const char *path_elt)
 /* If ALIAS_FILENAME exists, read it into TABLE.  */
 
 static bool
-alias_build (hash_table_type *table, const char *alias_filename)
+alias_build (hash_table_type *table, const std::string& alias_filename)
 {
   char *line, *real, *alias;
   unsigned count = 0;
-  FILE *alias_file = xfopen (alias_filename, "r");
+  FILE *alias_file = xfopen (alias_filename.c_str (), "r");
 
   if (alias_file) {
     while ((line = read_line (alias_file)) != NULL) {
@@ -2024,14 +1987,14 @@ alias_build (hash_table_type *table, const char *alias_filename)
     if (KPSE_DEBUG_P (KPSE_DEBUG_HASH)) {
       /* As with ls-R above ... */
       bool hash_summary_only = true;
-      DEBUGF2 ("%s: %u aliases.\n", alias_filename, count);
+      DEBUGF2 ("%s: %u aliases.\n", alias_filename.c_str (), count);
       DEBUGF ("alias hash table:");
       hash_print (*table, hash_summary_only);
       fflush (stderr);
     }
 #endif /* KPSE_DEBUG */
 
-    xfclose (alias_file, alias_filename);
+    xfclose (alias_file, alias_filename.c_str ());
   }
 
   return alias_file != NULL;
@@ -2044,20 +2007,22 @@ void
 kpse_init_db (void)
 {
   bool ok = false;
-  const char *db_path = kpse_init_format ();
-  char **db_files = kpse_all_path_search (db_path, DB_NAME);
-  char **orig_db_files = db_files;
+  const std::string db_path = kpse_init_format ();
+  string_vector db_files = kpse_all_path_search (db_path.c_str (), DB_NAME);
 
   /* Must do this after the path searching (which ends up calling
     kpse_db_search recursively), so db.buckets stays NULL.  */
   db = hash_create (DB_HASH_SIZE);
 
-  while (db_files && *db_files) {
-    if (db_build (&db, *db_files))
-      ok = true;
-    free (*db_files);
-    db_files++;
-  }
+  int len = db_files.length ();
+  for (int i = 0; i < len; i++)
+    {
+      if (! db_files[i].empty ())
+	{
+	  if (db_build (&db, db_files[i]))
+	    ok = true;
+	}
+    }
   
   if (!ok) {
     /* If db can't be built, leave `size' nonzero (so we don't
@@ -2066,50 +2031,50 @@ kpse_init_db (void)
     db.buckets = NULL;
   }
 
-  free (orig_db_files);
-
   /* Add the content of any alias databases.  There may exist more than
      one alias file along DB_NAME files.  This duplicates the above code
      -- should be a function.  */
   ok = false;
-  db_files = kpse_all_path_search (db_path, ALIAS_NAME);
-  orig_db_files = db_files;
+  db_files = kpse_all_path_search (db_path.c_str (), ALIAS_NAME);
 
   alias_db = hash_create (ALIAS_HASH_SIZE);
 
-  while (db_files && *db_files) {
-    if (alias_build (&alias_db, *db_files))
-      ok = true;
-    free (*db_files);
-    db_files++;
-  }
+  len = db_files.length ();
+  for (int i = 0; i < len; i++)
+    {
+      if (! db_files[i].empty ())
+	{
+	  if (alias_build (&alias_db, db_files[i]))
+	    ok = true;
+	}
+    }
 
   if (!ok) {
     free (alias_db.buckets);
     alias_db.buckets = NULL;
   }
-
-  free (orig_db_files);
 }
 
 /* Avoid doing anything if this PATH_ELT is irrelevant to the databases. */
 
-str_list_type *
-kpse_db_search (const char *name, const char *orig_path_elt, bool all)
+string_vector
+kpse_db_search (const std::string& name_arg,
+		const std::string& orig_path_elt_arg, bool all)
 {
-  char **db_dirs, **orig_dirs, **r;
   const char *last_slash;
   char *path_elt;
   bool done;
-  str_list_type *ret = 0;
-  unsigned e;
-  char **aliases = NULL;
+  string_vector ret;
+  string_vector aliases;
   bool relevant = false;
+
+  const char *name = name_arg.c_str ();
+  const char *orig_path_elt = orig_path_elt_arg.c_str ();
   
   /* If we failed to build the database (or if this is the recursive
      call to build the db path), quit.  */
   if (db.buckets == NULL)
-    return NULL;
+    return ret;
   
   /* When tex-glyph.c calls us looking for, e.g., dpi600/cmr10.pk, we
      won't find it unless we change NAME to just `cmr10.pk' and append
@@ -2118,14 +2083,16 @@ kpse_db_search (const char *name, const char *orig_path_elt, bool all)
      DPI_BITMAP_SPEC.  But don't do anything if the / begins NAME; that
      should never happen.  */
   last_slash = strrchr (name, '/');
-  if (last_slash && last_slash != name) {
-    unsigned len = last_slash - name + 1;
-    char *dir_part = (char *) xmalloc (len);
-    strncpy (dir_part, name, len - 1);
-    dir_part[len - 1] = 0;
-    path_elt = concat3 (orig_path_elt, "/", dir_part);
-    name = last_slash + 1;
-  } else
+  if (last_slash && last_slash != name)
+    {
+      unsigned len = last_slash - name + 1;
+      char *dir_part = (char *) xmalloc (len);
+      strncpy (dir_part, name, len - 1);
+      dir_part[len - 1] = 0;
+      path_elt = concat3 (orig_path_elt, "/", dir_part);
+      name = last_slash + 1;
+    }
+  else
     path_elt = (char *) orig_path_elt;
 
   /* Don't bother doing any lookups if this `path_elt' isn't covered by
@@ -2133,102 +2100,84 @@ kpse_db_search (const char *name, const char *orig_path_elt, bool all)
      extra couple of hash lookups matter -- they don't -- but rather
      because we want to return NULL in this case, so path_search can
      know to do a disk search.  */
-  for (e = 0; !relevant && e < STR_LIST_LENGTH (db_dir_list); e++) {
-    relevant = elt_in_db (STR_LIST_ELT (db_dir_list, e), path_elt);
-  }
+  for (int e = 0; !relevant && e < db_dir_list.length (); e++)
+    relevant = elt_in_db (db_dir_list[e], path_elt);
+
   if (!relevant)
-    return NULL;
+    return ret;
 
   /* If we have aliases for this name, use them.  */
   if (alias_db.buckets)
     aliases = hash_lookup (alias_db, name);
 
-  if (!aliases) {
-    aliases = XTALLOC1 (char *);
-    aliases[0] = NULL;
-  }
-  {  /* Push aliases up by one and insert the original name at the front.  */
-    unsigned i;
-    unsigned len = 1; /* Have NULL element already allocated.  */
-    for (r = aliases; *r; r++)
-      len++;
-    XRETALLOC (aliases, len + 1, char *);
-    for (i = len; i > 0; i--) {
-      aliases[i] = aliases[i - 1];
-    }
-    aliases[0] = (char *) name;
-  }
+  /* Push aliases up by one and insert the original name at the front.  */
+  int len = aliases.length ();
+  aliases.resize (len+1);
+  for (int i = len; i > 0; i--)
+    aliases[i] = aliases[i - 1];
+  aliases[0] = name;
 
   done = false;
-  for (r = aliases; !done && *r; r++) {
-    char *atry = *r;
+  len = aliases.length ();
+  for (int i = 0; i < len && !done; i++)
+    {
+      std::string atry = aliases[i];
 
-    /* We have an ls-R db.  Look up `atry'.  */
-    orig_dirs = db_dirs = hash_lookup (db, atry);
+      /* We have an ls-R db.  Look up `atry'.  */
+      string_vector db_dirs = hash_lookup (db, atry);
 
-    ret = XTALLOC1 (str_list_type);
-    *ret = str_list_init ();
+      /* For each filename found, see if it matches the path element.  For
+	 example, if we have .../cx/cmr10.300pk and .../ricoh/cmr10.300pk,
+	 and the path looks like .../cx, we don't want the ricoh file.  */
 
-    /* For each filename found, see if it matches the path element.  For
-       example, if we have .../cx/cmr10.300pk and .../ricoh/cmr10.300pk,
-       and the path looks like .../cx, we don't want the ricoh file.  */
-    while (!done && db_dirs && *db_dirs) {
-      char *db_file = concat (*db_dirs, atry);
-      bool matched = match (db_file, path_elt);
+      int db_dirs_len = db_dirs.length ();
+      for (int j = 0; j < db_dirs_len && !done; j++)
+	{
+	  std::string db_file = db_dirs[j] + atry;
+	  bool matched = match (db_file, path_elt);
 
 #ifdef KPSE_DEBUG
-      if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
-        DEBUGF3 ("db:match(%s,%s) = %d\n", db_file, path_elt, matched);
+	  if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
+	    DEBUGF3 ("db:match(%s,%s) = %d\n", db_file.c_str (), path_elt, matched);
 #endif
 
-      /* We got a hit in the database.  Now see if the file actually
-         exists, possibly under an alias.  */
-      if (matched) {
-        char *found = NULL;
-        if (kpse_readable_file (db_file)) {
-          found = db_file;
-          
-        } else {
-          char **a;
-          
-          free (db_file); /* `db_file' wasn't on disk.  */
-          
-          /* The hit in the DB doesn't exist in disk.  Now try all its
-             aliases.  For example, suppose we have a hierarchy on CD,
-             thus `mf.bas', but ls-R contains `mf.base'.  Find it anyway.
-             Could probably work around this with aliases, but
-             this is pretty easy and shouldn't hurt.  The upshot is that
-             if one of the aliases actually exists, we use that.  */
-          for (a = aliases + 1; *a && !found; a++) {
-            char *atry = concat (*db_dirs, *a);
-            if (kpse_readable_file (atry))
-              found = atry;
-            else
-              free (atry);
-          }
-        }
-          
-        /* If we have a real file, add it to the list, maybe done.  */
-        if (found) {
-          str_list_add (ret, found);
-          if (!all && found)
-            done = true;
-        }
-      } else { /* no match in the db */
-        free (db_file);
-      }
-      
+	  /* We got a hit in the database.  Now see if the file actually
+	     exists, possibly under an alias.  */
+	  if (matched)
+	    {
+	      std::string found;
+	      if (kpse_readable_file (db_file.c_str ()))
+		found = db_file;
+	      else
+		{
+		  /* The hit in the DB doesn't exist in disk.  Now try
+		     all its aliases.  For example, suppose we have a
+		     hierarchy on CD, thus `mf.bas', but ls-R contains
+		     `mf.base'.  Find it anyway.  Could probably work
+		     around this with aliases, but this is pretty easy
+		     and shouldn't hurt.  The upshot is that if one of
+		     the aliases actually exists, we use that.  */
 
-      /* On to the next directory, if any.  */
-      db_dirs++;
+		  int aliases_len = aliases.length ();
+
+		  for (int k = 1; k < aliases_len && found.empty (); k++)
+		    {
+		      std::string atry = db_dirs[j] + aliases[k];
+		      if (kpse_readable_file (atry.c_str ()))
+			found = atry;
+		    }
+		}
+          
+	      /* If we have a real file, add it to the list, maybe done.  */
+	      if (! found.empty ())
+		{
+		  str_list_add (ret, found);
+		  if (! (all || found.empty ()))
+		    done = true;
+		}
+	    }
+	}
     }
-
-    /* This is just the space for the pointers, not the strings.  */
-    if (orig_dirs && *orig_dirs)
-      free (orig_dirs);
-  }
-  
-  free (aliases);
   
   /* If we had to break up NAME, free the temporary PATH_ELT.  */
   if (path_elt != orig_path_elt)
@@ -2309,22 +2258,35 @@ kpse_expand_default (const char *path, const char *fallback)
    DIR ends with a DIR_SEP for the benefit of later searches.  */
 
 static void
-dir_list_add (str_llist_type *l, const char *dir)
+dir_list_add (str_llist_type *l, const std::string& dir)
 {
-  char last_char = dir[strlen (dir) - 1];
-  char *saved_dir
-    = IS_DIR_SEP (last_char) || IS_DEVICE_SEP (last_char)
-      ? xstrdup (dir)
-      : concat (dir, DIR_SEP_STRING);
+  char last_char = dir[dir.length () - 1];
+  std::string saved_dir = dir;
+  if (IS_DIR_SEP (last_char) || IS_DEVICE_SEP (last_char))
+    saved_dir += DIR_SEP_STRING;
   
   str_llist_add (l, saved_dir);
 }
 
+/* Return true if FN is a directory or a symlink to a directory,
+   false if not. */
 
+static bool
+dir_p (const std::string& fn)
+{
+#ifdef WIN32
+  unsigned int fa = GetFileAttributes(fn.c_str ());
+  return (fa != 0xFFFFFFFF && (fa & FILE_ATTRIBUTE_DIRECTORY));
+#else
+  struct stat stats;
+  return stat (fn.c_str (), &stats) == 0 && S_ISDIR (stats.st_mode);
+#endif
+}
+ 
 /* If DIR is a directory, add it to the list L.  */
 
 static void
-checked_dir_list_add (str_llist_type *l, const char *dir)
+checked_dir_list_add (str_llist_type *l, const std::string& dir)
 {
   if (dir_p (dir))
     dir_list_add (l, dir);
@@ -2421,7 +2383,7 @@ do_subdir (str_llist_type *str_list_ptr, const char *elt,
 
   /* Include top level before subdirectories, if nothing to match.  */
   if (*post == 0)
-    dir_list_add (str_list_ptr, name.c_str ());
+    dir_list_add (str_list_ptr, name);
   else {
     /* If we do have something to match, see if it exists.  For
        example, POST might be `pk/ljfour', and they might have a
@@ -2457,7 +2419,7 @@ do_subdir (str_llist_type *str_list_ptr, const char *elt,
   
   /* Include top level before subdirectories, if nothing to match.  */
   if (*post == 0)
-    dir_list_add (str_list_ptr, name.c_str ());
+    dir_list_add (str_list_ptr, name);
   else
     { /* If we do have something to match, see if it exists.  For
          example, POST might be `pk/ljfour', and they might have a
@@ -2513,7 +2475,7 @@ do_subdir (str_llist_type *str_list_ptr, const char *elt,
               else if (*post == 0)
                 /* Nothing to match, no recursive subdirectories to
                    look for: we're done with this branch.  Add it.  */
-                dir_list_add (str_list_ptr, name.c_str ());
+                dir_list_add (str_list_ptr, name);
 #endif
             }
 
@@ -2576,7 +2538,7 @@ kpse_element_dirs (const char *elt)
     return ret;
 
   /* We're going to have a real directory list to return.  */
-  ret = XTALLOC1 (str_llist_type);
+  ret = new str_llist_type;
   *ret = NULL;
 
   /* We handle the hard case in a subroutine.  */
@@ -2594,7 +2556,7 @@ kpse_element_dirs (const char *elt)
         {
           str_llist_elt_type *e;
           for (e = *ret; e; e = STR_LLIST_NEXT (*e))
-            fprintf (stderr, " %s", STR_LLIST (*e));
+            fprintf (stderr, " %s", (STR_LLIST (*e)).c_str ());
         }
       putc ('\n', stderr);
       fflush (stderr);
@@ -2802,21 +2764,6 @@ xstrdup (const char *s)
 
 /* dir.c: directory operations.  */
 
-/* Return true if FN is a directory or a symlink to a directory,
-   false if not. */
-
-int
-dir_p (const char *fn)
-{
-#ifdef WIN32
-  unsigned int fa = GetFileAttributes(fn);
-  return (fa != 0xFFFFFFFF && (fa & FILE_ATTRIBUTE_DIRECTORY));
-#else
-  struct stat stats;
-  return stat (fn, &stats) == 0 && S_ISDIR (stats.st_mode);
-#endif
-}
-
 #ifndef WIN32
 
 /* Return -1 if FN isn't a directory, else its number of links.
@@ -2826,39 +2773,20 @@ dir_p (const char *fn)
 int
 dir_links (const char *fn)
 {
-  static hash_table_type link_table;
-  char **hash_ret;
+  std::map<std::string, long> link_table;
+
   long ret;
   
-  if (link_table.size == 0)
-    link_table = hash_create (457);
-
-#ifdef KPSE_DEBUG
-  /* This is annoying, but since we're storing integers as pointers, we
-     can't print them as strings.  */
-  if (KPSE_DEBUG_P (KPSE_DEBUG_HASH))
-    kpse_debug_hash_lookup_int = 1;
-#endif
-
-  hash_ret = hash_lookup (link_table, fn);
-  
-#ifdef KPSE_DEBUG
-  if (KPSE_DEBUG_P (KPSE_DEBUG_HASH))
-    kpse_debug_hash_lookup_int = 0;
-#endif
-
-  /* Have to cast the int we need to/from the const_string that the hash
-     table stores for values. Let's hope an int fits in a pointer.  */
-  if (hash_ret)
-    ret = (long) *hash_ret;
+  if (link_table.find (fn) != link_table.end ())
+    ret = link_table[fn];
   else
     {
       struct stat stats;
+
       ret = stat (fn, &stats) == 0 && S_ISDIR (stats.st_mode)
             ? stats.st_nlink : (unsigned) -1;
 
-      /* It's up to us to copy the value.  */
-      hash_insert (&link_table, xstrdup (fn), (const char *) ret);
+      link_table[fn] = ret;
       
 #ifdef KPSE_DEBUG
       if (KPSE_DEBUG_P (KPSE_DEBUG_STAT))
@@ -2883,14 +2811,15 @@ dir_links (const char *fn)
 #endif
 
 static unsigned
-hash (hash_table_type table, const char *key)
+hash (hash_table_type table, const std::string& key)
 {
   unsigned n = 0;
   
   /* Our keys aren't often anagrams of each other, so no point in
      weighting the characters.  */
-  while (*key != 0)
-    n = (n + n + TRANSFORM (*key++)) % table.size;
+  size_t len = key.length ();
+  for (size_t i = 0; i < len; i++)
+    n = (n + n + TRANSFORM (key[i])) % table.size;
   
   return n;
 }
@@ -2902,7 +2831,7 @@ hash_create (unsigned size)
      optimizer bug for Alpha.  */
   static hash_table_type ret;
   unsigned b;
-  ret.buckets = XTALLOC (size, hash_element_type *);
+  ret.buckets = new hash_element_type * [size];
   ret.size = size;
   
   /* calloc's zeroes aren't necessarily NULL, so be safe.  */
@@ -2916,10 +2845,11 @@ hash_create (unsigned size)
    duplicate the strings, in case they're being purposefully shared.  */
 
 void
-hash_insert (hash_table_type *table, const char *key, const char *value)
+hash_insert (hash_table_type *table, const std::string& key,
+	     const std::string& value)
 {
   unsigned n = hash (*table, key);
-  hash_element_type *new_elt = XTALLOC1 (hash_element_type);
+  hash_element_type *new_elt = new hash_element_type;
 
   new_elt->key = key;
   new_elt->value = value;
@@ -2941,45 +2871,32 @@ hash_insert (hash_table_type *table, const char *key, const char *value)
 /* Look up STR in MAP.  Return a (dynamically-allocated) list of the
    corresponding strings or NULL if no match.  */ 
 
-#ifdef KPSE_DEBUG
-/* Print the hash values as integers if this is nonzero.  */
-int kpse_debug_hash_lookup_int = 0; 
-#endif
-
-char **
-hash_lookup (hash_table_type table, const char *key)
+static string_vector
+hash_lookup (hash_table_type table, const std::string& key)
 {
   hash_element_type *p;
-  str_list_type ret;
+  string_vector ret;
   unsigned n = hash (table, key);
-  ret = str_list_init ();
   
   /* Look at everything in this bucket.  */
   for (p = table.buckets[n]; p != NULL; p = p->next)
-    if (FILESTRCASEEQ (key, p->key))
-      /* Cast because the general str_list_type shouldn't force const data.  */
-      str_list_add (&ret, (char *) p->value);
+    if (FILESTRCASEEQ (key.c_str (), p->key.c_str ()))
+      /* Cast because the general string_vector shouldn't force const data.  */
+      str_list_add (ret, p->value);
   
-  /* If we found anything, mark end of list with null.  */
-  if (STR_LIST (ret))
-    str_list_add (&ret, NULL);
-
 #ifdef KPSE_DEBUG
   if (KPSE_DEBUG_P (KPSE_DEBUG_HASH))
     {
-      DEBUGF1 ("hash_lookup(%s) =>", key);
-      if (!STR_LIST (ret))
+      DEBUGF1 ("hash_lookup(%s) =>", key.c_str ());
+      if (ret.empty ())
         fputs (" (nil)\n", stderr);
       else
         {
-          char **r;
-          for (r = STR_LIST (ret); *r; r++)
+	  int len = ret.length ();
+	  for (int i = 0; i < len; i++)
             {
               putc (' ', stderr);
-              if (kpse_debug_hash_lookup_int)
-                fprintf (stderr, "%ld", (long) *r);
-              else
-                fputs (*r, stderr);
+	      fputs (ret[i].c_str (), stderr);
             }
           putc ('\n', stderr);
         }
@@ -2987,7 +2904,7 @@ hash_lookup (hash_table_type table, const char *key)
     }
 #endif
 
-  return STR_LIST (ret);
+  return ret;
 }
 
 /* We only print nonempty buckets, to decrease output volume.  */
@@ -3015,7 +2932,7 @@ hash_print (hash_table_type table, int summary_only)
 
       if (!summary_only) {
         for (tb = bucket; tb != NULL; tb = tb->next)
-          fprintf (stderr, " %s=>%s", tb->key, tb->value);
+          fprintf (stderr, " %s=>%s", tb->key.c_str (), tb->value.c_str ());
         putc ('\n', stderr);
       }
     }
@@ -3239,23 +3156,27 @@ kpse_readable_file (const char *name)
 /* Sorry this is such a system-dependent mess, but I can't see any way
    to usefully generalize.  */
 
-int
-kpse_absolute_p (const char *filename, int relative_ok)
+bool
+kpse_absolute_p (const std::string& filename, int relative_ok)
 {
-  int absolute = IS_DIR_SEP (*filename)
+  size_t len = filename.length ();
+
+  int absolute = IS_DIR_SEP (len > 0 && filename[0])
 #ifdef DOSISH
                      /* Novell allows non-alphanumeric drive letters. */
-                     || (*filename && IS_DEVICE_SEP (filename[1]))
+                     || (len > 0 && IS_DEVICE_SEP (filename[1]))
 #endif /* DOSISH */
 #ifdef WIN32
                      /* UNC names */
-                     || (*filename == '\\' && filename[1] == '\\')
+                     || (len > 1 && filename[0] == '\\' && filename[1] == '\\')
 #endif
 		      ;
   int explicit_relative
     = relative_ok
-      && (*filename == '.' && (IS_DIR_SEP (filename[1])
-                         || (filename[1] == '.' && IS_DIR_SEP (filename[2]))));
+      && (len > 1
+	  && filename[0] == '.'
+	  && (IS_DIR_SEP (filename[1])
+	      || (len > 2 && filename[1] == '.' && IS_DIR_SEP (filename[2]))));
 
   return absolute || explicit_relative;
 }
@@ -3264,51 +3185,28 @@ kpse_absolute_p (const char *filename, int relative_ok)
 
 /* See the lib.h file for comments.  */
 
-str_list_type
-str_list_init (void)
-{
-  str_list_type ret;
-  
-  STR_LIST_LENGTH (ret) = 0;
-  STR_LIST (ret) = NULL;
-  
-  return ret;
-}
-
 void
-str_list_add (str_list_type *l, char *s)
+str_list_add (string_vector& l, const std::string& s)
 {
-  STR_LIST_LENGTH (*l)++;
-  XRETALLOC (STR_LIST (*l), STR_LIST_LENGTH (*l), char *);
-  STR_LIST_LAST_ELT (*l) = s;
+  int len = l.length ();
+  l.resize (len + 1);
+  l[len] = s;
 }
 
 /* May as well save some reallocations and do everything in a chunk
    instead of calling str_list_add on each element.  */
    
 void
-str_list_concat (str_list_type *target, str_list_type more)
+str_list_concat (string_vector& target, const string_vector& more)
 {
-  unsigned e;
-  unsigned prev_len = STR_LIST_LENGTH (*target);
+  int e;
+  int prev_len = target.length ();
+  int new_len = prev_len + more.length ();
 
-  STR_LIST_LENGTH (*target) += STR_LIST_LENGTH (more);
-  XRETALLOC (STR_LIST (*target), STR_LIST_LENGTH (*target), char *);
+  target.resize (new_len);
   
-  for (e = 0; e < STR_LIST_LENGTH (more); e++)
-    STR_LIST_ELT (*target, prev_len + e) = STR_LIST_ELT (more, e);
-}
-
-/* Free the list (but not the elements within it).  */
-
-void
-str_list_free (str_list_type *l)
-{
-  if (STR_LIST (*l))
-    {
-      free (STR_LIST (*l));
-      STR_LIST (*l) = NULL;
-    }
+  for (e = 0; e < more.length (); e++)
+    target[prev_len + e] = more[e];
 }
 
 /* str-llist.c: Implementation of a linked list of strings.  */
@@ -3316,10 +3214,10 @@ str_list_free (str_list_type *l)
 /* Add the new string STR to the end of the list L.  */
 
 void
-str_llist_add (str_llist_type *l, char *str)
+str_llist_add (str_llist_type *l, const std::string& str)
 {
   str_llist_elt_type *e;
-  str_llist_elt_type *new_elt = XTALLOC1 (str_llist_elt_type);
+  str_llist_elt_type *new_elt = new str_llist_elt_type;
   
   /* The new element will be at the end of the list.  */
   STR_LLIST (*new_elt) = str;

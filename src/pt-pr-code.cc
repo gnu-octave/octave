@@ -31,7 +31,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream.h>
 
 #include "error.h"
-#include "oct-usr-fcn.h"
+#include "ov-usr-fcn.h"
 #include "pr-output.h"
 #include "pt-cmd.h"
 #include "pt-const.h"
@@ -40,7 +40,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt-indir.h"
 #include "pt-mat.h"
 #include "pt-misc.h"
-#include "pt-mvr.h"
 #include "pt-plot.h"
 #include "pt-pr-code.h"
 
@@ -157,10 +156,14 @@ tree_print_code::visit_decl_elt (tree_decl_elt& cmd)
   if (id)
     id->accept (*this);
 
-  tree_simple_assignment_expression *ass_expr = cmd.assign_expr ();
+  tree_expression *expr = cmd.expression ();
 
-  if (ass_expr)
-    ass_expr->accept (*this);
+  if (expr)
+    {
+      os << " = ";
+
+      expr->accept (*this);
+    }
 }
 
 void
@@ -185,18 +188,53 @@ tree_print_code::visit_decl_init_list (tree_decl_init_list& lst)
 }
 
 void
-tree_print_code::visit_for_command (tree_for_command& cmd)
+tree_print_code::visit_simple_for_command (tree_simple_for_command& cmd)
 {
   indent ();
 
   os << "for ";
 
-  tree_index_expression *id = cmd.ident ();
+  tree_expression *lhs = cmd.left_hand_side ();
 
-  if (id)
-    id->accept (*this);
+  if (lhs)
+    lhs->accept (*this);
 
   os << " = ";
+
+  tree_expression *expr = cmd.control_expr ();
+
+  if (expr)
+    expr->accept (*this);
+
+  newline ();
+
+  tree_statement_list *list = cmd.body ();
+
+  if (list)
+    {
+      increment_indent_level ();
+      list->accept (*this);
+      decrement_indent_level ();
+    }
+
+  indent ();
+
+  os << "endfor";
+}
+
+void
+tree_print_code::visit_complex_for_command (tree_complex_for_command& cmd)
+{
+  indent ();
+
+  os << "for [";
+
+  tree_argument_list *lhs = cmd.left_hand_side ();
+
+  if (lhs)
+    lhs->accept (*this);
+
+  os << "] = ";
 
   tree_expression *expr = cmd.control_expr ();
 
@@ -410,10 +448,10 @@ tree_print_code::visit_index_expression (tree_index_expression& expr)
 
   print_parens (expr, "(");
 
-  tree_indirect_ref *id = expr.ident ();
+  tree_expression *e= expr.expression ();
 
-  if (id)
-    id->accept (*this);
+  if (e)
+    e->accept (*this);
 
   tree_argument_list *list = expr.arg_list ();
 
@@ -434,10 +472,12 @@ tree_print_code::visit_indirect_ref (tree_indirect_ref& expr)
 
   print_parens (expr, "(");
 
-  // The name of the indirect ref includes the sub-elements.
+  tree_expression *e = expr.expression ();
 
-  string nm = expr.name ();
-  os << (nm.empty () ? string ("(empty)") : nm);
+  if (e)
+    e->accept (*this);
+
+  os << "." << expr.elt_name ();
 
   print_parens (expr, ")");
 }
@@ -455,7 +495,7 @@ tree_print_code::visit_matrix (tree_matrix& lst)
 
   while (p)
     {
-      tree_matrix_row *elt = lst (p);
+      tree_argument_list *elt = lst (p);
 
       lst.next (p);
 
@@ -474,35 +514,13 @@ tree_print_code::visit_matrix (tree_matrix& lst)
 }
 
 void
-tree_print_code::visit_matrix_row (tree_matrix_row& lst)
-{
-  Pix p = lst.first ();
-
-  while (p)
-    {
-      tree_expression *elt = lst (p);
-
-      lst.next (p);
-
-      if (elt)
-	{
-	  elt->accept (*this);
-
-	  if (p)
-	    os << ", ";
-	}
-    }
-}
-
-void
-tree_print_code::visit_multi_assignment_expression
-  (tree_multi_assignment_expression& expr)
+tree_print_code::visit_multi_assignment (tree_multi_assignment& expr)
 {
   indent ();
 
   print_parens (expr, "(");
 
-  tree_return_list *lhs = expr.left_hand_side ();
+  tree_argument_list *lhs = expr.left_hand_side ();
 
   if (lhs)
     {
@@ -519,7 +537,7 @@ tree_print_code::visit_multi_assignment_expression
 
   os << " = ";
 
-  tree_multi_val_ret *rhs = expr.right_hand_side ();
+  tree_expression *rhs = expr.right_hand_side ();
 
   if (rhs)
     rhs->accept (*this);
@@ -714,31 +732,18 @@ tree_print_code::visit_return_list (tree_return_list& lst)
 }
 
 void
-tree_print_code::visit_simple_assignment_expression
-  (tree_simple_assignment_expression& expr)
+tree_print_code::visit_simple_assignment (tree_simple_assignment& expr)
 {
   indent ();
 
   print_parens (expr, "(");
 
-  if (! expr.is_ans_assign ())
-    {
-      tree_indirect_ref *lhs = expr.left_hand_side ();
+  tree_expression *lhs = expr.left_hand_side ();
 
-      if (lhs)
-	lhs->accept (*this);
+  if (lhs)
+    lhs->accept (*this);
 
-      tree_argument_list *index = expr.lhs_index ();
-
-      if (index)
-	{
-	  os << " (";
-	  index->accept (*this);
-	  os << ")";
-	}
-
-      os << " " << expr.oper () << " ";
-    }
+  os << " " << expr.oper () << " ";
 
   tree_expression *rhs = expr.right_hand_side ();
 

@@ -31,7 +31,8 @@ class tree_continue_command;
 class tree_decl_command;
 class tree_decl_elt;
 class tree_decl_init_list;
-class tree_for_command;
+class tree_simple_for_command;
+class tree_complex_for_command;
 class octave_user_function;
 class tree_identifier;
 class tree_if_clause;
@@ -43,8 +44,7 @@ class tree_switch_command;
 class tree_index_expression;
 class tree_indirect_ref;
 class tree_matrix;
-class tree_matrix_row;
-class tree_multi_assignment_expression;
+class tree_multi_assignment;
 class tree_no_op_command;
 class tree_oct_obj;
 class tree_constant;
@@ -56,7 +56,7 @@ class tree_postfix_expression;
 class tree_prefix_expression;
 class tree_return_command;
 class tree_return_list;
-class tree_simple_assignment_expression;
+class tree_simple_assignment;
 class tree_statement;
 class tree_statement_list;
 class subplot;
@@ -97,7 +97,10 @@ public:
   visit_decl_init_list (tree_decl_init_list&) = 0;
 
   virtual void
-  visit_for_command (tree_for_command&) = 0;
+  visit_simple_for_command (tree_simple_for_command&) = 0;
+
+  virtual void
+  visit_complex_for_command (tree_complex_for_command&) = 0;
 
   virtual void
   visit_octave_user_function (octave_user_function&) = 0;
@@ -133,10 +136,7 @@ public:
   visit_matrix (tree_matrix&) = 0;
 
   virtual void
-  visit_matrix_row (tree_matrix_row&) = 0;
-
-  virtual void
-  visit_multi_assignment_expression (tree_multi_assignment_expression&) = 0;
+  visit_multi_assignment (tree_multi_assignment&) = 0;
 
   virtual void
   visit_no_op_command (tree_no_op_command&) = 0;
@@ -172,7 +172,7 @@ public:
   visit_return_list (tree_return_list&) = 0;
 
   virtual void
-  visit_simple_assignment_expression (tree_simple_assignment_expression&) = 0;
+  visit_simple_assignment (tree_simple_assignment&) = 0;
 
   virtual void
   visit_statement (tree_statement&) = 0;

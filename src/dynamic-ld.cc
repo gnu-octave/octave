@@ -50,7 +50,7 @@ extern "C"
 #include "toplev.h"
 #include "pathsearch.h"
 #include "oct-obj.h"
-#include "oct-builtin.h"
+#include "ov-builtin.h"
 #include "ov.h"
 #include "utils.h"
 #include "variables.h"
@@ -69,7 +69,7 @@ public:
 
 private:
 
-  octave_dynamic_loader::builtin_fcn
+  octave_dynamic_loader::builtin_fcn_installer
   resolve_reference (const string& mangled_name, const string& file);
 
   // No copying!
@@ -80,11 +80,11 @@ private:
   operator = (const octave_dlopen_dynamic_loader&);
 };
 
-octave_dynamic_loader::builtin_fcn
+octave_dynamic_loader::builtin_fcn_installer
 octave_dlopen_dynamic_loader::resolve_reference (const string& name,
 						 const string& file)
 {
-  octave_dynamic_loader::builtin_fcn retval = 0;
+  octave_dynamic_loader::builtin_fcn_installer retval = 0;
 
   // Dynamic linking with dlopen/dlsym doesn't require specification
   // of the libraries at runtime.  Instead, they are specified when
@@ -98,7 +98,7 @@ octave_dlopen_dynamic_loader::resolve_reference (const string& name,
     {
       void *tmp = dlsym (handle, nm);
 
-      retval = static_cast<octave_dynamic_loader::builtin_fcn> (tmp);
+      retval = static_cast<octave_dynamic_loader::builtin_fcn_installer> (tmp);
 
       if (! retval)
 	{
@@ -132,7 +132,7 @@ public:
 
 private:
 
-  octave_dynamic_loader::builtin_fcn
+  octave_dynamic_loader::builtin_fcn_installer
   resolve_reference (const string& mangled_name, const string& file);
 
   // No copying!
@@ -143,11 +143,11 @@ private:
   operator = (const octave_shl_load_dynamic_loader&);
 };
 
-octave_dynamic_loader::builtin_fcn
+octave_dynamic_loader::builtin_fcn_installer
 octave_shl_load_dynamic_loader::resolve_reference (const string& name,
 						   const string& file)
 {
-  octave_dynamic_loader::builtin_fcn retval = 0;
+  octave_dynamic_loader::builtin_fcn_installer retval = 0;
 
   // Dynamic linking with shl_load/shl_findsym doesn't require
   // specification of the libraries at runtime.  Instead, they are
@@ -213,13 +213,13 @@ octave_dynamic_loader::make_dynamic_loader (void)
 #endif
 }
 
-int
+bool
 octave_dynamic_loader::load_fcn_from_dot_oct_file (const string& fcn_name)
 {
   if (! instance_ok ())
     make_dynamic_loader ();
 
-  int retval = 0;
+  bool retval = false;
 
   string oct_file = oct_file_in_path (fcn_name);
 
@@ -227,24 +227,17 @@ octave_dynamic_loader::load_fcn_from_dot_oct_file (const string& fcn_name)
     {
       string mangled_name = instance->mangle_name (fcn_name);
 
-      builtin_fcn f = instance->resolve_reference (mangled_name, oct_file);
+      builtin_fcn_installer f
+	= instance->resolve_reference (mangled_name, oct_file);
 
       if (f)
-	{
-	  octave_builtin *obj = f ();
-
-	  if (obj)
-	    {
-	      install_builtin_function (obj);
-	      retval = 1;
-	    }
-	}
+	retval = f ();
     }
 
   return retval;
 }
 
-octave_dynamic_loader::builtin_fcn
+octave_dynamic_loader::builtin_fcn_installer
 octave_dynamic_loader::resolve_reference (const string&, const string&)
 {
   return 0;

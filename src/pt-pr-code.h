@@ -62,7 +62,9 @@ public:
 
   void visit_decl_init_list (tree_decl_init_list&);
 
-  void visit_for_command (tree_for_command&);
+  void visit_simple_for_command (tree_simple_for_command&);
+
+  void visit_complex_for_command (tree_complex_for_command&);
 
   void visit_octave_user_function (octave_user_function&);
 
@@ -84,9 +86,7 @@ public:
 
   void visit_matrix (tree_matrix&);
 
-  void visit_matrix_row (tree_matrix_row&);
-
-  void visit_multi_assignment_expression (tree_multi_assignment_expression&);
+  void visit_multi_assignment (tree_multi_assignment&);
 
   void visit_no_op_command (tree_no_op_command&);
 
@@ -110,7 +110,7 @@ public:
 
   void visit_return_list (tree_return_list&);
 
-  void visit_simple_assignment_expression (tree_simple_assignment_expression&);
+  void visit_simple_assignment (tree_simple_assignment&);
 
   void visit_statement (tree_statement&);
 

@@ -32,7 +32,7 @@ public:
 
   octave_iprocstream (const string& n,
 		      ios::openmode arg_md = ios::in,
-		      arch_type arg_at = native);
+		      arch_type arg_at = at_native);
 
   ~octave_iprocstream (void);
 
@@ -52,7 +52,7 @@ public:
 
   octave_oprocstream (const string& n,
 		       ios::openmode arg_md = ios::out,
-		       arch_type arg_at = native);
+		       arch_type arg_at = at_native);
 
   ~octave_oprocstream (void);
 

@@ -32,7 +32,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 octave_fstream::octave_fstream (const string& nm_arg,
 				ios::openmode md = ios::in|ios::out,
-				octave_base_stream::arch_type at = native)
+				octave_base_stream::arch_type at)
   : octave_base_stream (md, at), nm (nm_arg)
 {
   // Override default protection of 0664 so that umask will appear to

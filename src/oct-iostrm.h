@@ -35,7 +35,7 @@ public:
 
   octave_base_iostream (const string& n = string (),
 			ios::openmode md = ios::in|ios::out,
-			octave_base_stream::arch_type at = native)
+			octave_base_stream::arch_type at = at_native)
     : octave_base_stream (md, at), nm (n) { }
 
   ~octave_base_iostream (void) { }
@@ -79,7 +79,7 @@ octave_istream : public octave_base_iostream
 public:
 
   octave_istream (istream *arg = 0, const string& nm = string ())
-    : octave_base_iostream (nm, ios::in, octave_base_stream::native),
+    : octave_base_iostream (nm, ios::in, octave_base_stream::at_native),
       is (arg) { }
 
   ~octave_istream (void) { }
@@ -107,7 +107,7 @@ octave_ostream : public octave_base_iostream
 public:
 
   octave_ostream (ostream *arg, const string& nm = string ())
-    : octave_base_iostream (nm, ios::out, octave_base_stream::native),
+    : octave_base_iostream (nm, ios::out, octave_base_stream::at_native),
       os (arg) { }
 
   ~octave_ostream (void) { }

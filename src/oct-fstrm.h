@@ -34,7 +34,7 @@ public:
 
   octave_fstream (const string& nm_arg,
 		  ios::openmode md = ios::in|ios::out,
-		  octave_base_stream::arch_type at = native);
+		  octave_base_stream::arch_type at = at_native);
 
   ~octave_fstream (void) { }
 

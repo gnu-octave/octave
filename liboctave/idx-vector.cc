@@ -37,6 +37,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 idx_vector::idx_vector (const idx_vector& a)
 {
+  data = 0;
   initialized = a.initialized;
 
   len = a.len;
@@ -53,8 +54,6 @@ idx_vector::idx_vector (const idx_vector& a)
       max_val = a.max_val;
       min_val = a.min_val;
     }
-  else
-    data = 0;
 }
 
 static inline int
@@ -69,6 +68,7 @@ tree_to_mat_idx (double x)
 idx_vector::idx_vector (const Matrix& m, int do_ftn_idx,
 			const char *rc, int z_len)
 {
+  data = 0;
   initialized = 0;
 
   int nr = m.rows ();
@@ -77,7 +77,6 @@ idx_vector::idx_vector (const Matrix& m, int do_ftn_idx,
   if (nr == 0 || nc == 0)
     {
       len = 0;
-      data =0;
       num_zeros = 0;
       num_ones = 0;
       one_zero = 0;
@@ -117,6 +116,7 @@ idx_vector::idx_vector (const Matrix& m, int do_ftn_idx,
 
 idx_vector::idx_vector (const Range& r)
 {
+  data = 0;
   initialized = 0;
 
   len = r.nelem ();
@@ -128,7 +128,6 @@ idx_vector::idx_vector (const Range& r)
     }
   else if (len == 0)
     {
-      data = 0;
       num_zeros = 0;
       num_ones = 0;
       one_zero = 0;

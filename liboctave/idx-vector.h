@@ -89,7 +89,7 @@ private:
 inline idx_vector::idx_vector (void)
 {
   len = 0;
-  data = (int *) 0;
+  data = 0;
   num_zeros = 0;
   num_ones = 0;
   one_zero = 0;
@@ -99,12 +99,6 @@ inline idx_vector::idx_vector (void)
 inline idx_vector::~idx_vector (void)
 {
   delete [] data;
-  data = (int *) 0;
-  num_zeros = 0;
-  num_ones = 0;
-  len = 0;
-  one_zero = 0;
-  initialized = 0;
 }
 
 inline idx_vector::operator void * () const

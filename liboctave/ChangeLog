@@ -1,3 +1,17 @@
+2004-03-03  Hans Ekkehard Plesser  <hans.ekkehard.plesser@nlh.no>
+
+	* base-lu.cc (base_lu<>::L): Check bounds before setting diagonal
+	element.
+
+2004-03-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Range.h (Range::Range): Add cache to member initialization list.
+	(Range::clear_cache): New private function.
+
+	* Range.h (Range::set_base, Range::set_limit, Range::set_inc):
+	Use clear cache.  Don't do anything if range does not change.
+	* Range.cc (Range::sort): Likewise.
+
 2004-03-02  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* Range.cc (Range::matrix_value): Cache result.

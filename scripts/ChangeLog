@@ -1,3 +1,7 @@
+2004-03-03  Stefan van der Walt  <stefan@sun.ac.za>
+
+	* plot/hist.m: Compute histogram correctly for n>=30.
+
 2004-03-02  Paul Kienzle <pkienzle@users.sf.net>
 
 	* signal/sinc.m: Use i(:) instead of i when checking for any nonzeros.

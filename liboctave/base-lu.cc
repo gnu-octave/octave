@@ -42,7 +42,9 @@ base_lu <lu_type, lu_elt_type, p_type, p_elt_type> :: L (void) const
 
   for (int i = 0; i < a_nr; i++)
     {
-      l.xelem (i, i) = 1.0;
+      if (i < a_nc)
+	l.xelem (i, i) = 1.0;
+
       for (int j = 0; j < (i < a_nc ? i : a_nc); j++)
 	l.xelem (i, j) = a_fact.xelem (i, j);
     }

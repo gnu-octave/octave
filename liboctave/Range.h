@@ -36,23 +36,23 @@ Range
  public:
 
   Range (void)
-    : rng_base (-1), rng_limit (-1), rng_inc (-1), rng_nelem (-1) { }
+    : rng_base (-1), rng_limit (-1), rng_inc (-1), rng_nelem (-1), cache () { }
 
   Range (const Range& r)
     : rng_base (r.rng_base), rng_limit (r.rng_limit), rng_inc (r.rng_inc),
-      rng_nelem (r.rng_nelem) { }
+      rng_nelem (r.rng_nelem), cache () { }
 
   Range (double b, double l)
     : rng_base (b), rng_limit (l), rng_inc (1),
-      rng_nelem (nelem_internal ()) { }
+      rng_nelem (nelem_internal ()), cache () { }
 
   Range (double b, double l, double i)
     : rng_base (b), rng_limit (l), rng_inc (i),
-      rng_nelem (nelem_internal ()) { }
+      rng_nelem (nelem_internal ()), cache () { }
 
-  double base (void) const { return rng_base;  }
+  double base (void) const { return rng_base; }
   double limit (void) const { return rng_limit; }
-  double inc (void) const { return rng_inc;   }
+  double inc (void) const { return rng_inc; }
   int nelem (void) const { return rng_nelem; }
 
   bool all_elements_are_ints (void) const;
@@ -64,9 +64,32 @@ Range
 
   void sort (void);
 
-  void set_base (double b) { rng_base = b; cache.resize (0,0); }
-  void set_limit (double l) { rng_limit = l; cache.resize (0,0); }
-  void set_inc (double i) { rng_inc = i; cache.resize (0,0); }
+  void set_base (double b)
+  {
+    if (rng_base != b)
+      {
+	rng_base = b;
+	clear_cache ();
+      }
+  }
+
+  void set_limit (double l)
+  {
+    if (rng_limit != l)
+      {
+	rng_limit = l;
+	clear_cache ();
+      }
+  }
+
+  void set_inc (double i)
+  {
+    if (rng_inc != i)
+      {
+	rng_inc = i;
+	clear_cache ();
+      }
+  }
 
   friend std::ostream& operator << (std::ostream& os, const Range& r);
   friend std::istream& operator >> (std::istream& is, Range& r);
@@ -75,14 +98,17 @@ Range
 
  private:
 
-  mutable Matrix cache;
   double rng_base;
   double rng_limit;
   double rng_inc;
 
   int rng_nelem;
 
+  mutable Matrix cache;
+
   int nelem_internal (void) const;
+
+  void clear_cache (void) const { cache.resize (0, 0); }
 };
 
 extern Range operator - (const Range& r);

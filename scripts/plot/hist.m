@@ -95,7 +95,7 @@ function [nn, xx] = hist (y, x, norm)
     ## Put cutoff elements between boundaries, integrate over all
     ## elements, keep totals at boundaries.
     [s, idx] = sort ([cutoff(:); y(:)]);
-    chist = cumsum(idx>n);
+    chist = cumsum(idx>=n);
     chist = [0; chist(idx<n); chist(end)];
   endif
 
@@ -114,3 +114,8 @@ function [nn, xx] = hist (y, x, norm)
   endif
 
 endfunction
+
+%!test
+%!  for n = [1, 10, 30, 100, 1000]
+%!    assert( sum(hist([1:n], [1:n])) == n );
+%!  endfor

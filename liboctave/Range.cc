@@ -52,7 +52,7 @@ Range::all_elements_are_ints (void) const
 Matrix
 Range::matrix_value (void) const
 {
-  if (rng_nelem > 0 && cache.rows() == 0)
+  if (rng_nelem > 0 && cache.rows () == 0)
     {
       cache.resize (1, rng_nelem);
       double b = rng_base;
@@ -129,7 +129,7 @@ Range::sort (void)
       rng_base = min ();
       rng_limit = tmp;
       rng_inc = -rng_inc;
-      cache.resize (0,0);
+      clear_cache ();
     }
 }
 

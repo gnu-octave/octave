@@ -84,6 +84,9 @@ typedef void (*non_const_unary_op_fcn)
 typedef octave_value (*binary_op_fcn)
   (const octave_value&, const octave_value&);
 
+typedef octave_value (*cat_op_fcn)
+  (const octave_value&, const octave_value&, const Array<int>& ra_idx);
+
 typedef octave_value (*assign_op_fcn)
   (octave_value&, const octave_value_list&, const octave_value&);
 
@@ -366,6 +369,9 @@ public:
 
   octave_value ipermute (const Array<int>& vec) const
     { return rep->permute (vec, true); }
+
+  virtual octave_value resize (const dim_vector& dv) const
+     { return rep->resize (dv);}
 
   // Does this constant have a type?  Both of these are provided since
   // it is sometimes more natural to write is_undefined() instead of
@@ -710,6 +716,10 @@ public:
   friend octave_value do_binary_op (binary_op op,
 				    const octave_value& a,
 				    const octave_value& b);
+
+  friend octave_value do_cat_op (const octave_value& a,
+				 const octave_value& b,
+				 const Array<int>& ra_idx);
 
   const octave_value& get_rep (void) const { return *rep; }
 

@@ -71,8 +71,16 @@ public:
 
   boolNDArray all (int dim = -1) const;
   boolNDArray any (int dim = -1) const;
-  int cat (const charNDArray& ra_arg, int dim, int iidx, int move);
- 
+  friend charNDArray concat (const charNDArray& ra, const charNDArray& rb, 
+			     const Array<int>& ra_idx);
+  friend charNDArray concat (const charNDArray& ra, const NDArray& rb,
+			     const Array<int>& ra_idx);
+  friend charNDArray concat (const NDArray& ra, const charNDArray& rb,
+			     const Array<int>& ra_idx);
+
+  charNDArray& insert (const charNDArray& a, int r, int c);
+  charNDArray& insert (const charNDArray& a, const Array<int>& ra_idx);
+  
   charMatrix matrix_value (void) const;
 
   charNDArray squeeze (void) const { return ArrayN<char>::squeeze (); }

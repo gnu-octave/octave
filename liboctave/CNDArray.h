@@ -79,7 +79,13 @@ public:
   ComplexNDArray prod (int dim = -1) const;
   ComplexNDArray sum (int dim = -1) const;
   ComplexNDArray sumsq (int dim = -1) const;
-  int cat (const ComplexNDArray& ra_arg, int dim, int iidx, int move);
+  friend ComplexNDArray concat (const ComplexNDArray& ra, 
+				const ComplexNDArray& rb, 
+				const Array<int>& ra_idx);
+  friend ComplexNDArray concat (const ComplexNDArray& ra, const NDArray& rb,
+				const Array<int>& ra_idx);
+  friend ComplexNDArray concat (const NDArray& ra, const ComplexNDArray& rb,
+				const Array<int>& ra_idx);
 
   ComplexNDArray max (int dim = 0) const;
   ComplexNDArray max (ArrayN<int>& index, int dim = 0) const;
@@ -88,6 +94,7 @@ public:
 
   ComplexNDArray& insert (const NDArray& a, int r, int c);
   ComplexNDArray& insert (const ComplexNDArray& a, int r, int c);
+  ComplexNDArray& insert (const ComplexNDArray& a, const Array<int>& ra_idx);
   
   NDArray abs (void) const;
 

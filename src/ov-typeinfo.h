@@ -55,6 +55,8 @@ public:
   static bool register_binary_op (octave_value::binary_op, int, int,
 				  binary_op_fcn);
 
+  static bool register_cat_op (int, int, cat_op_fcn);
+
   static bool register_assign_op (octave_value::assign_op, int, int,
 				  assign_op_fcn);
 
@@ -89,6 +91,12 @@ public:
   lookup_binary_op (octave_value::binary_op op, int t1, int t2)
   {
     return instance->do_lookup_binary_op (op, t1, t2);
+  }
+
+  static cat_op_fcn
+  lookup_cat_op (int t1, int t2)
+  {
+    return instance->do_lookup_cat_op (t1, t2);
   }
 
   static assign_op_fcn
@@ -137,6 +145,7 @@ protected:
 			   (non_const_unary_op_fcn) 0),
       binary_ops (octave_value::num_binary_ops, init_tab_sz,
 		  init_tab_sz, (binary_op_fcn) 0),
+      cat_ops (init_tab_sz, init_tab_sz, (cat_op_fcn) 0),
       assign_ops (octave_value::num_assign_ops, init_tab_sz,
 		  init_tab_sz, (assign_op_fcn) 0),
       assignany_ops (octave_value::num_assign_ops, init_tab_sz,
@@ -163,6 +172,8 @@ private:
 
   Array3<binary_op_fcn> binary_ops;
 
+  Array2<cat_op_fcn> cat_ops;
+
   Array3<assign_op_fcn> assign_ops;
 
   Array2<assign_op_fcn> assignany_ops;
@@ -184,6 +195,8 @@ private:
   bool do_register_binary_op (octave_value::binary_op, int, int,
 			      binary_op_fcn);
 
+  bool do_register_cat_op (int, int, cat_op_fcn);
+
   bool do_register_assign_op (octave_value::assign_op, int, int,
 			      assign_op_fcn);
 
@@ -204,6 +217,8 @@ private:
     (octave_value::unary_op, int);
 
   binary_op_fcn do_lookup_binary_op (octave_value::binary_op, int, int);
+
+  cat_op_fcn do_lookup_cat_op (int, int);
 
   assign_op_fcn do_lookup_assign_op (octave_value::assign_op, int, int);
 

@@ -357,6 +357,77 @@ public:
  
     return new_dims;
   }
+
+  bool concat (const dim_vector& dvb, int dim = 0)
+  {
+    if (all_zero ())
+      {
+	*this = dvb;
+	return true;
+      }
+
+    if (dvb.all_zero ())
+      return true;
+
+    int na = length ();
+    int nb = dvb.length ();
+  
+    // Find the max and min value of na and nb
+    int n_max = na > nb ? na : nb;
+    int n_min = na < nb ? na : nb;
+  
+    // The elements of the dimension vectors can only differ
+    // if the dim variable differs from the actual dimension
+    // they differ.
+
+    for (int i = 0; i < n_min; i++)
+      {
+	if (elem(i) != dvb(i) && dim != i)
+	    return false;
+      }
+  
+    // Ditto.
+    for (int i = n_min; i < n_max; i++)
+      {
+	if (na > n_min)
+	  {
+	    if (elem(i) != 1 && dim != i)
+	      return false;
+	  }
+	else 
+	  {
+	    if (dvb(i) != 1 && dim != i)
+	      return false;
+	  }
+      }
+    
+    // If we want to add the dimension vectors at a dimension
+    // larger than both, then we need to set n_max to this number
+    // so that we resize *this to the right dimension.
+    
+    n_max = n_max > (dim + 1) ? n_max : (dim + 1);
+    
+    // Resize *this to the appropriate dimensions.
+    
+    if (n_max > na)
+      {
+	dim_vector_rep *old_rep = rep;
+
+	rep = new dim_vector_rep (n_max, old_rep, 1);
+
+	if (--old_rep->count <= 0)
+	  delete old_rep;
+      }
+  
+    // Larger or equal since dim has been decremented by one.
+
+    if (dim >= nb)
+      elem (dim) = elem (dim)++;
+    else
+      elem (dim) += dvb(dim);
+
+    return true;
+  }
 };
 
 static inline bool

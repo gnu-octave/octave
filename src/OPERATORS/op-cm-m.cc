@@ -80,6 +80,8 @@ DEFBINOP (el_ldiv, complex_matrix, matrix)
 DEFNDBINOP_FN (el_and, complex_matrix, matrix, complex_array, array, mx_el_and)
 DEFNDBINOP_FN (el_or,  complex_matrix, matrix, complex_array, array, mx_el_or)
 
+DEFNDCATOP_FN (cm_m, complex_matrix, matrix, complex_array, array, concat)
+
 DEFNDASSIGNOP_FN (assign, complex_matrix, matrix, complex_array, assign)
 
 void
@@ -103,6 +105,8 @@ install_cm_m_ops (void)
   INSTALL_BINOP (op_el_ldiv, octave_complex_matrix, octave_matrix, el_ldiv);
   INSTALL_BINOP (op_el_and, octave_complex_matrix, octave_matrix, el_and);
   INSTALL_BINOP (op_el_or, octave_complex_matrix, octave_matrix, el_or);
+
+  INSTALL_CATOP (octave_complex_matrix, octave_matrix, cm_m);
 
   INSTALL_ASSIGNOP (op_asn_eq, octave_complex_matrix, octave_matrix, assign);
 }

@@ -1,3 +1,7 @@
+2004-07-23  David Bateman  <dbateman@free.fr>
+
+	* general/bitcmp.m, general/bitget.m, general/bitset.m: New functions.
+
 2004-07-22  Etienne Grossmann  <etienne@cs.uky.edu>
 
 	* general/sub2ind.m: Make reshaping index list unnecessary.

@@ -95,6 +95,9 @@ public:
 
   NDArray array_value (bool = false) const;
 
+  octave_value resize (const dim_vector& dv) const
+    { ComplexNDArray retval (dv); if (dv.numel()) retval(0) = scalar; return retval; }
+
   Complex complex_value (bool = false) const;
 
   ComplexMatrix complex_matrix_value (bool = false) const;

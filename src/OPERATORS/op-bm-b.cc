@@ -33,6 +33,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov.h"
 #include "ov-bool.h"
 #include "ov-bool-mat.h"
+#include "ov-scalar.h"
+#include "ov-re-mat.h"
 #include "ov-typeinfo.h"
 #include "ops.h"
 #include "xdiv.h"
@@ -43,6 +45,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 DEFNDBINOP_FN (el_and, bool_matrix, bool, bool_array, bool, mx_el_and)
 DEFNDBINOP_FN (el_or, bool_matrix, bool, bool_array, bool, mx_el_or)
 
+DEFNDCATOP_FN (bm_b, bool_matrix, bool, array, array, concat)
+DEFNDCATOP_FN (bm_s, bool_matrix, scalar, array, array, concat)
+DEFNDCATOP_FN (m_b, matrix, bool, array, array, concat)
+
 DEFNDASSIGNOP_FN (assign, bool_matrix, bool, bool_array, assign)
 
 void
@@ -50,6 +56,10 @@ install_bm_b_ops (void)
 {
   INSTALL_BINOP (op_el_and, octave_bool_matrix, octave_bool, el_and);
   INSTALL_BINOP (op_el_or, octave_bool_matrix, octave_bool, el_or);
+
+  INSTALL_CATOP (octave_bool_matrix, octave_bool, bm_b);
+  INSTALL_CATOP (octave_bool_matrix, octave_scalar, bm_s);
+  INSTALL_CATOP (octave_matrix, octave_bool, m_b);
 
   INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_bool, assign);
 }

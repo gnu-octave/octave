@@ -211,14 +211,14 @@ octave_base_matrix<MT>::is_true (void) const
   bool retval = false;
   dim_vector dv = matrix.dims ();
   int nel = dv.numel ();
-  
+
   if (nel > 0)
     {
       MT t1 (matrix.reshape (dim_vector (nel, 1)));
 
       boolNDArray t2 = t1.all ();
 
-      retval = t2(0,0);
+      retval = t2(0);
     }
 
   return retval;

@@ -570,8 +570,9 @@ Array<T>::resize_no_fill (const dim_vector& dv)
   dim_vector dv_old = dimensions;
   int dv_old_orig_len = dv_old.length ();
   dimensions = dv;
+  int ts_old = get_size (dv_old);
 
-  if (ts > 0 && dv_old_orig_len > 0)
+  if (ts > 0 && ts_old > 0 && dv_old_orig_len > 0)
     {
       Array<int> ra_idx (dimensions.length (), 0);
 
@@ -1040,11 +1041,14 @@ Array<T>::insert (const Array<T>& a, const Array<int>& ra_idx)
 
   if (n == dimensions.length ())
     {
-      dim_vector a_dims = a.dims ();
+      dim_vector dva = a.dims ();
+      dim_vector dv = dims ();
+      int len_a = dva.length ();
 
       for (int i = 0; i < n; i++)
 	{
-	  if (ra_idx(i) < 0 || ra_idx(i) + a_dims(i) > dimensions(i))
+	  if (ra_idx(i) < 0 || (ra_idx(i) + 
+				(i < len_a ? dva(i) : 1)) > dimensions(i))
 	    {
 	      (*current_liboctave_error_handler)
 		("Array<T>::insert: range error for insert");
@@ -1052,15 +1056,39 @@ Array<T>::insert (const Array<T>& a, const Array<int>& ra_idx)
 	    }
 	}
 
+      if (dva.numel ())
+        {
+	  const T *a_data = a.data ();   
+	  int numel_to_move = dva (0);
+	  int skip = dv (0);
+	  for (int i = 0; i < len_a - 1; i++)
+	    if (ra_idx(i) == 0 && dva(i) == dv(i))
+	      {
+		numel_to_move *= dva(i+1);
+		skip *= dv(i+1);
+	      }
+	    else
+	      {
+		skip -= dva(i);
+		break;
+	      }
 
-#if 0
-      // XXX FIXME XXX -- need to copy elements
+	  int jidx = ra_idx (n - 1);
+	  for (int i = n-2; i >= 0; i--)
+	    {
+	      jidx *= dv (i);
+	      jidx += ra_idx (i);
+	    }
 
-      for (int j = 0; j < a_cols; j++)
-	for (int i = 0; i < a_rows; i++)
-	  elem (r+i, c+j) = a.elem (i, j);
-#endif
-
+	  int iidx = 0;
+	  int moves = dva.numel () / numel_to_move;
+	  for (int i = 0; i < moves; i++)
+	    {
+	      for (int j = 0; j < numel_to_move; j++)
+		elem (jidx++) = a_data[iidx++];
+	      jidx += skip;
+	    }
+	}
     }
   else
     (*current_liboctave_error_handler)
@@ -3078,29 +3106,6 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
   lhs.clear_index ();
 
   return retval;
-}
-
-template <class T>
-int
-cat_ra (Array<T>& ra, const Array<T>& ra_arg, int dim, int idx, int move)
-{
-  dim_vector dv_arg = ra_arg.dims (); 
-  
-  const T *arg_data = ra_arg.data ();
-  
-  int numel_to_move = dv_arg(0);
-
-  int numel_arg = dv_arg.length ();
-
-  int ii_limit = dim+1 > numel_arg ? numel_arg : dim + 1;
-  
-  for (int ii = 1; ii < ii_limit; ii++)
-    numel_to_move *= dv_arg(ii);
-
-  for (int j = 0; j < numel_to_move; j++)
-    ra.elem (idx++) = arg_data[numel_to_move * move + j];
-  
-  return idx;
 }
 
 template <class T>

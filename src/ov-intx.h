@@ -61,6 +61,16 @@ public:
   OCTAVE_VALUE_INT_NDARRAY_EXTRACTOR_FUNCTION (void) const
     { return matrix; }
 
+  NDArray
+  array_value (bool = false) const
+    { 
+      NDArray retval (matrix.dims ()); 
+      int nel = matrix.numel ();
+      for (int i = 0; i < nel; i++)
+        retval (i) = double (matrix(i));
+      return retval;
+    }
+
 private:
 
   DECLARE_OCTAVE_ALLOCATOR
@@ -97,6 +107,17 @@ public:
   OCTAVE_INT_NDARRAY_T
   OCTAVE_VALUE_INT_NDARRAY_EXTRACTOR_FUNCTION (void) const
     { return OCTAVE_INT_NDARRAY_T (dim_vector (1, 1), scalar); }
+
+  octave_value resize (const dim_vector& dv) const
+    { OCTAVE_INT_NDARRAY_T retval (dv); if (dv.numel()) retval(0) = scalar; return retval; }
+
+  NDArray
+  array_value (bool = false) const
+    { 
+      NDArray retval (dim_vector (1,1)); 
+      retval (0) = double (scalar);
+      return retval;
+    }
 
 private:
 

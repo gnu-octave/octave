@@ -111,6 +111,9 @@ public:
   boolNDArray bool_array_value (void) const
     { return boolNDArray (dim_vector (1, 1), scalar); }
 
+  octave_value resize (const dim_vector& dv) const
+    { boolNDArray retval (dv); if (dv.numel()) retval(0) = scalar; return retval; }
+
   octave_value convert_to_str_internal (bool pad, bool force) const;
 
   bool save_ascii (std::ostream& os, bool& infnan_warned,

@@ -1,3 +1,76 @@
+2004-07-23  David Bateman  <dbateman@free.fr>
+
+	* ov-intx.h (OCTAVE_VALUE_INT_MATRIX_T::array_value,
+	OCTAVE_VALUE_INT_SCALAR_T::array_value): new methods to extract array
+	value from integer types.
+
+	* bitfcns.cc (BITOPX): New Macro renamed from BITOP.
+	(BITOP): Alter to allow different types and call BITOP appropriately.
+	(DO_SBITSHIFT, DO_UBITSHIFT): New macros for signed, unsigned
+	bitshifts.
+
+	(DO_BITSHIFT): Test for shift of more bits than in type, which is
+	undefined.  Generalize to allow double args as well.
+	(Fbitshift): Add int and double types.
+	(Fbitmax): Return 53 bit value which conforms to IEEE754 double
+	mantissa.
+	(Fintmax, Fintmin): New functions.
+	(Fbitget, Fbitset, Fbitcmp): Delete.
+
+	* OPERATORS/op-int.h: Add sm_el_pow function
+
+	* ops.h (CATOPDECL, DEFCATOPX, DEFCATOP, DEFCATOP_FB, DEFNDCATOP_FN, 
+	CATOP_NONCONFORMANT, INSTALL_CATOP): New macros.
+	
+	* OPERATORS/op-b-b.cc, OPERATORS/op-b-bm.cc, OPERATORS/op-bm-b.cc, 
+	OPERATORS/op-bm-bm.cc, OPERATORS/op-cell.cc, OPERATORS/op-chm.cc, 
+	OPERATORS/op-cm-cm.cc, OPERATORS/op-cm-cs.cc, OPERATORS/op-cm-m.cc, 
+	OPERATORS/op-cm-s.cc, OPERATORS/op-cs-cm.cc, OPERATORS/op-cs-cs.cc, 
+	OPERATORS/op-cs-m.cc, OPERATORS/op-cs-s.cc, OPERATORS/op-m-cm.cc, 
+	OPERATORS/op-m-cs.cc, OPERATORS/op-m-m.cc, OPERATORS/op-m-s.cc, 
+	OPERATORS/op-range.cc, OPERATORS/op-s-cm.cc, OPERATORS/op-s-cs.cc, 
+	OPERATORS/op-s-m.cc, OPERATORS/op-s-s.cc, OPERATORS/op-str-str.cc,
+	OPERATORS/op-str-m.cc, OPERATORS/op-str-s.cc (CATOPDECL, DEFCATOPX,
+	DEFCATOP, DEFCATOP_FB, DEFNDCATOP_FN, CATOP_NONCONFORMANT,
+	INSTALL_CATOP): Use them to define concatenation functions.
+
+	* OPERATORS/op-int.h (OCTAVE_CONCAT_FN, OCTAVE_INSTALL_CONCAT_FN):
+	New macros to define and install concatentaion functions for int/uint
+	types.
+	
+	* TEMPLATE-INST/Array-tc.cc (INSTANTIATE_ARRAY_CAT): Delete.
+
+	* pt-mat.cc (tm_row_const::tm_row_const_rep::do_init_element):
+	Also append empty elements to the list of elements to be parsed.
+	(tree_matrix::rvalue): Use new concatenation binary operators.
+
+	* data.cc (cat_add_dims): Delete (now dim_vector::concat).
+	(do_cat): Use new concatenation binary operators.
+
+	* ov-typeinfo.cc (cat_op_fcn): Instantiate the array of cat functions.
+	(register_cat_op, do_register_cat_op, do_lookup_cat_op): New functions.
+	(cat_ops): Lookup table of binary concatentaion operators.
+
+	* ov-typeinfo.h (lookup_cat_op): New function.
+
+	* ov.cc (gripe_cat_op, gripe_cat_op_conv, do_cat_op): New functions.
+
+	* ov.h (cat_op_fcn): Definition.
+	(resize, do_cat_op): New functions.
+
+	* ov-intx.h (resize): New_function
+
+	* version.h (OCTAVE_API_VERSION): Bump version to api-v9.
+
+	* Cell.cc, Cell.h, oct-map.cc, oct-map.h (cat): Delete.
+	(concat): New function.
+
+	* Cell.cc, Cell.h (insert): New function
+
+	* ov-base.cc, ov-base.h, ov-scalar.h, ov-complex.h, ov-bool.h, 
+	ov-range.h, ov-base-mat.h, (resize): New function.
+
+
 2004-07-23  John W. Eaton  <jwe@octave.org>
 
 	* symtab.cc (whos_parameter): Move decl here, from symtab.h.

@@ -118,6 +118,8 @@ DEFBINOP (el_ldiv, scalar, scalar)
 DEFBINOP_OP (el_and, scalar, scalar, &&)
 DEFBINOP_OP (el_or, scalar, scalar, ||)
 
+DEFNDCATOP_FN (s_s, scalar, scalar, array, array, concat)
+
 void
 install_s_s_ops (void)
 {
@@ -147,6 +149,8 @@ install_s_s_ops (void)
   INSTALL_BINOP (op_el_ldiv, octave_scalar, octave_scalar, el_ldiv);
   INSTALL_BINOP (op_el_and, octave_scalar, octave_scalar, el_and);
   INSTALL_BINOP (op_el_or, octave_scalar, octave_scalar, el_or);
+
+  INSTALL_CATOP (octave_scalar, octave_scalar, s_s);
 
   INSTALL_ASSIGNCONV (octave_scalar, octave_scalar, octave_matrix);
 }

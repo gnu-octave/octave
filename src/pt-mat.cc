@@ -215,11 +215,12 @@ tm_row_const::tm_row_const_rep::do_init_element (tree_expression *elt,
 	}
       dv.elem (1) = dv.elem (1) + this_elt_nc;
 
-      append (val);
     }
   else if (Vwarn_empty_list_elements)
     eval_warning ("empty matrix found in matrix list",
 		  elt->line (), elt->column ());
+
+  append (val);
 
   if (all_str && ! val.is_string ())
     all_str = false;
@@ -491,10 +492,6 @@ tree_matrix::all_elements_are_constant (void) const
   return true;
 }
 
-// Just about as ugly as it gets.
-// Less ugly than before, anyway.
-// Looking better all the time.
-
 octave_value_list
 tree_matrix::rvalue (int nargout)
 {
@@ -515,123 +512,84 @@ tree_matrix::rvalue (void)
 {
   octave_value retval;
 
-  tm_const tmp (*this);
-
   bool all_strings_p = false;
-  bool some_strings_p = false;
   bool all_empty_p = false;
-
   bool frc_str_conv = false;
+
+  tm_const tmp (*this);
 
   if (tmp)
     {
       dim_vector dv = tmp.dims ();
+      all_strings_p = tmp.all_strings_p ();
+      all_empty_p = tmp.all_empty_p ();
+      frc_str_conv = tmp.some_strings_p ();
 
-      NDArray nd;
-      ComplexNDArray cnd;
-      charNDArray chnd;
+      // XXX FIXME XX
+      // The previous version of this code obtained the return type and 
+      // initialized an array of the correct type. However the return type
+      // is now built-up from the return types of do_cat_op. Should we special
+      // case the situation where there are only NDArray and ComplexNDArray
+      // elements, or things like boolMatrix that widen to them, and do the
+      // correct initialization? How to do this? Will it be faster? Check against
+      // version 2.1.57
+
+
+      // The line below might seem crazy, since we take a copy
+      // of the first argument, resize it to be empty and then resize
+      // it to be full. This is done since it means that there is no
+      // recopying of data, as would happen if we used a single resize.
+      // It should be noted that resize operation is also significantly 
+      // slower than the do_cat_op function, so it makes sense to have an
+      // empty matrix and copy all data.
+      //
+      // We might also start with a empty octave_value using
+      //    ctmp = octave_value_typeinfo::lookup_type
+      //          (tmp.begin() -> begin() -> type_name());
+      // and then directly resize. However, for some types there might be
+      // some additional setup needed, and so this should be avoided.
+
+      octave_value ctmp;
+      if (all_strings_p)
+	if (all_empty_p)
+	  ctmp = octave_value (charNDArray (), true);
+	else
+	  ctmp = octave_value (charNDArray (dv, Vstring_fill_char), true);
+      else
+	{
+	  if (all_empty_p)
+	    ctmp = (*(tmp.begin() -> begin()));
+	  else
+	    ctmp = (*(tmp.begin() -> begin())).resize (dim_vector (0,0)).resize (dv);
+	}
+
+      if (error_state)
+	goto done;
 
       // Now, extract the values from the individual elements and
       // insert them in the result matrix.
-
-      bool found_complex = tmp.complex_p ();
-
-      all_strings_p = tmp.all_strings_p ();
-      some_strings_p = tmp.some_strings_p ();
-      all_empty_p = tmp.all_empty_p ();
-
-      frc_str_conv = some_strings_p;
-
-      if (all_strings_p)
-	chnd.resize_and_fill (dv, Vstring_fill_char);
-      else if (found_complex)
-	cnd.resize_and_fill (dv, 0.0);
-      else
-	nd.resize_and_fill (dv, 0.0);
-
-      int put_row = 0;
-
+      Array<int> ra_idx (dv.length (), 0);
       for (tm_const::iterator p = tmp.begin (); p != tmp.end (); p++)
 	{
-	  int put_col = 0;
-
 	  tm_row_const row = *p;
-
 	  for (tm_row_const::iterator q = row.begin (); q != row.end (); q++)
 	    {
 	      octave_value elt = *q;
 
-	      if (found_complex)
-		{
-		  if (elt.is_real_scalar ())
-		    cnd (put_row, put_col) = elt.double_value ();
-		  else if (elt.is_real_matrix () || elt.is_range ())
-		    cnd.insert (elt.array_value (), put_row, put_col);
-		  else if (elt.is_complex_scalar ())
-		    cnd (put_row, put_col) = elt.complex_value ();
-		  else
-		    {
-		      ComplexNDArray cnd_elt = elt.complex_array_value ();
-
-		      if (error_state)
-			goto done;
-
-		      cnd.insert (cnd_elt, put_row, put_col);
-		    }
-		}
-	      else
-		{
-		  if (elt.is_real_scalar ())
-		    nd (put_row, put_col) = elt.double_value ();
-		  else if (elt.is_string () && all_strings_p)
-		    {
-		      charNDArray chnd_elt = elt.char_array_value ();
-
-		      if (error_state)
-			goto done;
-
-		      chnd.insert (chnd_elt, put_row, put_col);
-		    }
-		  else
-		    {
-		      NDArray nd_elt = elt.array_value (frc_str_conv);
-
-		      if (error_state)
-			goto done;
-
-		      nd.insert (nd_elt, put_row, put_col);
-		    }
-		}
-
-	      if (all_strings_p && chnd.rows () > 0 && chnd.cols () > 0)
-		retval = octave_value (chnd, true);
-	      else if (found_complex)
-		retval = cnd;
-	      else
-		retval = nd;
-
-	      put_col += elt.columns ();
+	      ctmp = do_cat_op (ctmp, elt, ra_idx);
+	      if (error_state)
+		goto done;
+	      ra_idx (1) += elt.columns ();
 	    }
-
-	  put_row += row.rows ();
+	  ra_idx (0) += row.rows ();
+	  ra_idx (1) = 0;
 	}
-    }
-
-done:
-
-  if (! error_state)
-    {
-      if (retval.is_undefined () && all_empty_p)
-	{
-	  if (all_strings_p)
-	    retval = "";
-	  else
-	    retval = NDArray ();
-	}
-      else if (frc_str_conv && ! retval.is_string ())
+      retval = ctmp;
+      if (frc_str_conv && ! retval.is_string ())
 	retval = retval.convert_to_str ();
     }
 
+done:
   return retval;
 }
 

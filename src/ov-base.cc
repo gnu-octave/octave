@@ -191,6 +191,13 @@ octave_base_value::permute (const Array<int>&, bool) const
 }
 
 octave_value
+octave_base_value::resize (const dim_vector& dv) const
+{
+  gripe_wrong_type_arg ("octave_base_value::resize ()", type_name ());
+  return octave_value ();
+}
+
+octave_value
 octave_base_value::convert_to_str_internal (bool, bool) const
 {
   gripe_wrong_type_arg ("octave_base_value::convert_to_str_internal ()",

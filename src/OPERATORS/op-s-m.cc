@@ -94,6 +94,8 @@ DEFBINOP (el_ldiv, scalar, matrix)
 DEFNDBINOP_FN (el_and, scalar, matrix, scalar, array, mx_el_and)
 DEFNDBINOP_FN (el_or,  scalar, matrix, scalar, array, mx_el_or)
 
+DEFNDCATOP_FN (s_m, scalar, matrix, array, array, concat)
+
 DEFCONV (matrix_conv, scalar, matrix)
 {
   CAST_CONV_ARG (const octave_scalar&);
@@ -122,6 +124,8 @@ install_s_m_ops (void)
   INSTALL_BINOP (op_el_ldiv, octave_scalar, octave_matrix, el_ldiv);
   INSTALL_BINOP (op_el_and, octave_scalar, octave_matrix, el_and);
   INSTALL_BINOP (op_el_or, octave_scalar, octave_matrix, el_or);
+
+  INSTALL_CATOP (octave_scalar, octave_matrix, s_m);
 
   INSTALL_ASSIGNCONV (octave_scalar, octave_matrix, octave_matrix);
 

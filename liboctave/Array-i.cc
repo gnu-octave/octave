@@ -46,16 +46,6 @@ INSTANTIATE_ARRAY_AND_ASSIGN (octave_uint16);
 INSTANTIATE_ARRAY_AND_ASSIGN (octave_uint32);
 INSTANTIATE_ARRAY_AND_ASSIGN (octave_uint64);
 
-INSTANTIATE_ARRAY_CAT (octave_int8);
-INSTANTIATE_ARRAY_CAT (octave_int16);
-INSTANTIATE_ARRAY_CAT (octave_int32);
-INSTANTIATE_ARRAY_CAT (octave_int64);
-
-INSTANTIATE_ARRAY_CAT (octave_uint8);
-INSTANTIATE_ARRAY_CAT (octave_uint16);
-INSTANTIATE_ARRAY_CAT (octave_uint32);
-INSTANTIATE_ARRAY_CAT (octave_uint64);
-
 #include "Array2.h"
 
 template class Array2<int>;

@@ -155,6 +155,8 @@ DEFBINOP (el_or, scalar, complex)
   return octave_value (v1.double_value () || (v2.complex_value () != 0.0));
 }
 
+DEFNDCATOP_FN (s_cs, scalar, complex, array, complex_array, concat)
+
 void
 install_s_cs_ops (void)
 {
@@ -176,6 +178,8 @@ install_s_cs_ops (void)
   INSTALL_BINOP (op_el_ldiv, octave_scalar, octave_complex, el_ldiv);
   INSTALL_BINOP (op_el_and, octave_scalar, octave_complex, el_and);
   INSTALL_BINOP (op_el_or, octave_scalar, octave_complex, el_or);
+
+  INSTALL_CATOP (octave_scalar, octave_complex, s_cs);
 
   INSTALL_ASSIGNCONV (octave_scalar, octave_complex, octave_complex_matrix);
 }

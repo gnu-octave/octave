@@ -118,7 +118,8 @@ Octave_map
 
   int numel (void) const;
 
-  int cat (const Octave_map& ra_arg, int dim, int iidx, int move);
+  friend Octave_map concat (const Octave_map& ra, const Octave_map& rb, 
+			    const Array<int>& ra_idx);
 
   Octave_map& assign (const octave_value_list& idx, const Octave_map& rhs);
 

@@ -69,13 +69,15 @@ public:
 
   boolNDArray all (int dim = -1) const;
   boolNDArray any (int dim = -1) const;
-  int cat (const intNDArray<T>& ra_arg, int dim, int iidx, int move);
 
   intNDArray squeeze (void) const
     { return intNDArray<T> (MArrayN<T>::squeeze ()); }
 
   intNDArray transpose (void) const
     { return intNDArray<T> (MArrayN<T>::transpose ()); }
+
+  intNDArray& insert (const intNDArray<T>& a, int r, int c);
+  intNDArray& insert (const intNDArray<T>& a, const Array<int>& ra_idx);
 
   static void increment_index (Array<int>& ra_idx,
 			       const dim_vector& dimensions,

@@ -33,8 +33,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 INSTANTIATE_ARRAY_AND_ASSIGN (Complex);
 
-INSTANTIATE_ARRAY_CAT (Complex);
-
 INSTANTIATE_ARRAY_ASSIGN (Complex, double);
 INSTANTIATE_ARRAY_ASSIGN (Complex, int);
 INSTANTIATE_ARRAY_ASSIGN (Complex, short);

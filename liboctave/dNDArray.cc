@@ -792,10 +792,13 @@ NDArray::min (ArrayN<int>& idx_arg, int dim) const
   return result;
 }
 
-int
-NDArray::cat (const NDArray& ra_arg, int dim, int iidx, int move)
+NDArray
+concat (const NDArray& ra, const NDArray& rb, const Array<int>& ra_idx)
 {
-  return ::cat_ra (*this, ra_arg, dim, iidx, move);
+  NDArray retval (ra);
+  if (ra.numel () > 0)
+    retval.insert (rb, ra_idx);
+  return retval;
 }
 
 NDArray
@@ -816,6 +819,20 @@ imag (const ComplexNDArray& a)
   if (a_len > 0)
     retval = NDArray (mx_inline_imag_dup (a.data (), a_len), a.dims ());
   return retval;
+}
+
+NDArray&
+NDArray::insert (const NDArray& a, int r, int c)
+{
+  Array<double>::insert (a, r, c);
+  return *this;
+}
+
+NDArray&
+NDArray::insert (const NDArray& a, const Array<int>& ra_idx)
+{
+  Array<double>::insert (a, ra_idx);
+  return *this;
 }
 
 NDArray

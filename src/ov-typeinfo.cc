@@ -56,6 +56,9 @@ INSTANTIATE_ARRAY (binary_op_fcn);
 template class Array2<binary_op_fcn>;
 template class Array3<binary_op_fcn>;
 
+INSTANTIATE_ARRAY (cat_op_fcn);
+template class Array2<cat_op_fcn>;
+
 INSTANTIATE_ARRAY (assign_op_fcn);
 template class Array2<assign_op_fcn>;
 template class Array3<assign_op_fcn>;
@@ -113,6 +116,13 @@ octave_value_typeinfo::register_binary_op (octave_value::binary_op op,
 {
   return (instance_ok ())
     ? instance->do_register_binary_op (op, t1, t2, f) : false;
+}
+
+bool
+octave_value_typeinfo::register_cat_op (int t1, int t2, cat_op_fcn f)
+{
+  return (instance_ok ())
+    ? instance->do_register_cat_op (t1, t2, f) : false;
 }
 
 bool
@@ -190,6 +200,8 @@ octave_value_typeinfo::do_register_type (const std::string& t_name,
       binary_ops.resize (static_cast<int> (octave_value::num_binary_ops),
 			 len, len, static_cast<binary_op_fcn> (0));
 
+      cat_ops.resize (len, len, static_cast<cat_op_fcn> (0));
+
       assign_ops.resize (static_cast<int> (octave_value::num_assign_ops),
 			 len, len, static_cast<assign_op_fcn> (0));
 
@@ -264,6 +276,23 @@ octave_value_typeinfo::do_register_binary_op (octave_value::binary_op op,
     }
 
   binary_ops.checkelem (static_cast<int> (op), t1, t2) = f;
+
+  return false;
+}
+
+bool
+octave_value_typeinfo::do_register_cat_op (int t1, int t2, cat_op_fcn f)
+{
+  if (lookup_cat_op (t1, t2))
+    {
+      std::string t1_name = types(t1);
+      std::string t2_name = types(t2);
+
+      warning ("duplicate concatenation operator for types `%s' and `%s'",
+	       t1_name.c_str (), t1_name.c_str ());
+    }
+
+  cat_ops.checkelem (t1, t2) = f;
 
   return false;
 }
@@ -396,6 +425,12 @@ octave_value_typeinfo::do_lookup_binary_op (octave_value::binary_op op,
 					    int t1, int t2)
 {
   return binary_ops.checkelem (static_cast<int> (op), t1, t2);
+}
+
+cat_op_fcn
+octave_value_typeinfo::do_lookup_cat_op (int t1, int t2)
+{
+  return cat_ops.checkelem (t1, t2);
 }
 
 assign_op_fcn

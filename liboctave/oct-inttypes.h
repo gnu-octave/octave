@@ -313,6 +313,21 @@ OCTAVE_INT_CMP_OP (>)
 OCTAVE_INT_CMP_OP (==)
 OCTAVE_INT_CMP_OP (!=)
 
+#define OCTAVE_INT_CONCAT_FN(TYPE) \
+intNDArray< TYPE > \
+concat (const intNDArray< TYPE >& ra, const intNDArray< TYPE >& rb, \
+	const Array<int>& ra_idx) \
+{ \
+  intNDArray< TYPE > retval (ra); \
+  retval.insert (rb, ra_idx); \
+  return retval; \
+}
+
+#define OCTAVE_INT_CONCAT_DECL(TYPE) \
+intNDArray< TYPE > \
+concat (const intNDArray< TYPE >& ra, const intNDArray< TYPE >& rb, \
+	const Array<int>& ra_idx);
+
 #undef OCTAVE_INT_TRAIT
 #undef OCTAVE_INT_BINOP_TRAIT
 #undef OCTAVE_INT_MIN_VAL

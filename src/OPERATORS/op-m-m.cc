@@ -95,6 +95,8 @@ DEFBINOP (el_ldiv, matrix, matrix)
 DEFNDBINOP_FN (el_and, matrix, matrix, array, array, mx_el_and)
 DEFNDBINOP_FN (el_or,  matrix, matrix, array, array, mx_el_or)
 
+DEFNDCATOP_FN (m_m, matrix, matrix, array, array, concat)
+
 DEFNDASSIGNOP_FN (assign, matrix, matrix, array, assign)
 
 void
@@ -126,6 +128,8 @@ install_m_m_ops (void)
   INSTALL_BINOP (op_el_ldiv, octave_matrix, octave_matrix, el_ldiv);
   INSTALL_BINOP (op_el_and, octave_matrix, octave_matrix, el_and);
   INSTALL_BINOP (op_el_or, octave_matrix, octave_matrix, el_or);
+
+  INSTALL_CATOP (octave_matrix, octave_matrix, m_m);
 
   INSTALL_ASSIGNOP (op_asn_eq, octave_matrix, octave_matrix, assign);
 }

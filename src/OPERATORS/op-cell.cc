@@ -52,6 +52,8 @@ DEFUNOP (transpose, cell)
     return octave_value (Cell (v.cell_value().transpose ()));
 }
 
+DEFCATOP_FN (c_c, cell, cell, concat)
+
 DEFASSIGNANYOP_FN (assign, cell, assign);
 
 void
@@ -59,6 +61,8 @@ install_cell_ops (void)
 {
   INSTALL_UNOP (op_transpose, octave_cell, transpose);
   INSTALL_UNOP (op_hermitian, octave_cell, transpose);
+
+  INSTALL_CATOP (octave_cell, octave_cell, c_c);
 
   INSTALL_ASSIGNANYOP (op_asn_eq, octave_cell, assign);
 }

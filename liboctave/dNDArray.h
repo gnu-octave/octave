@@ -84,13 +84,17 @@ public:
   NDArray prod (int dim = -1) const;
   NDArray sum (int dim = -1) const;  
   NDArray sumsq (int dim = -1) const;
-  int cat (const NDArray& ra_arg, int dim, int iidx, int move);
+  friend NDArray concat (const NDArray& ra, const NDArray& rb, 
+			 const Array<int>& ra_idx);
 
   NDArray max (int dim = 0) const;
   NDArray max (ArrayN<int>& index, int dim = 0) const;
   NDArray min (int dim = 0) const;
   NDArray min (ArrayN<int>& index, int dim = 0) const;
   
+  NDArray& insert (const NDArray& a, int r, int c);
+  NDArray& insert (const NDArray& a, const Array<int>& ra_idx);
+
   NDArray abs (void) const;
 
   ComplexNDArray fourier (int dim = 1) const;

@@ -117,6 +117,14 @@ DEFASSIGNOP (assign, char_matrix_str, char_matrix_str)
   return octave_value ();
 }
 
+DEFCATOP (str_str, char_matrix_str, char_matrix_str)
+{
+  CAST_BINOP_ARGS (const octave_char_matrix_str&,
+		   const octave_char_matrix_str&);
+  return octave_value (concat (v1.char_array_value (), v2.char_array_value (), 
+			       ra_idx), true);
+}
+
 void
 install_str_str_ops (void)
 {
@@ -125,6 +133,8 @@ install_str_str_ops (void)
 
   INSTALL_BINOP (op_eq, octave_char_matrix_str, octave_char_matrix_str, eq);
   INSTALL_BINOP (op_ne, octave_char_matrix_str, octave_char_matrix_str, ne);
+
+  INSTALL_CATOP (octave_char_matrix_str, octave_char_matrix_str, str_str);
 
   INSTALL_ASSIGNOP (op_asn_eq, octave_char_matrix_str, octave_char_matrix_str, assign);
 }

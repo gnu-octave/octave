@@ -64,13 +64,6 @@ intNDArray<T>::any (int dim) const
 }
 
 template <class T>
-int
-intNDArray<T>::cat (const intNDArray<T>& ra_arg, int dim, int iidx, int move)
-{
-  return ::cat_ra (*this, ra_arg, dim, iidx, move);  
-}
-
-template <class T>
 void
 intNDArray<T>::increment_index (Array<int>& ra_idx,
 			       const dim_vector& dimensions,
@@ -85,6 +78,22 @@ intNDArray<T>::compute_index (Array<int>& ra_idx,
 			      const dim_vector& dimensions)
 {
   return ::compute_index (ra_idx, dimensions);
+}
+
+template <class T>
+intNDArray<T>&
+intNDArray<T>::insert (const intNDArray<T>& a, int r, int c)
+{
+  Array<T>::insert (a, r, c);
+  return *this;
+}
+
+template <class T>
+intNDArray<T>&
+intNDArray<T>::insert (const intNDArray<T>& a, const Array<int>& ra_idx)
+{
+  Array<T>::insert (a, ra_idx);
+  return *this;
 }
 
 // This contains no information on the array structure !!!

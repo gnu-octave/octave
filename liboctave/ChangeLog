@@ -1,3 +1,36 @@
+2004-07-23  David Bateman  <dbateman@free.fr>
+
+	* Array.cc, Array.h (cat_ra): Delete.
+	* Array.h, Array-C.cc, Array-d.cc, Array-ch.cc, Array-i.cc 
+	(INSTANTIATE_ARRAY_CAT): Delete.
+
+	* dNDArray.cc, dNDArray.h, CNDArray.cc, CNDArray.h, chNDArray.cc, 
+	chNDArray.h, intNDArray.cc, intNDArray.h (cat): Delete.
+	
+	* Array.cc (Array<T>::insert): Copy data in NDArray version.
+
+	* dNDArray.cc, dNDArray.h, CNDArray.cc, CNDArray.h, chNDArray.cc, 
+	chNDArray.h (concat): New function used for concatenation that does
+	an indexed copy of one array into another.
+
+	* dim-vector.h (concat): New function to concatenate dim_vectors.
+
+	* dNDArray.cc, dNDArray.h, CNDArray.cc, CNDArray.h, chNDArray.cc,
+	chNDArray.h, intNDArray.cc, intNDArray.h (insert): New function for 
+	insertion of one NDArray into another.
+
+	* oct-inttype.cc (OCTAVE_INT_CONCAT_FN, OCTAVE_INT_CONCAT_DECL): New
+	macros to define the int/uint concatenation functions.
+
+	* uint8NDArray.cc, uint16NDArray.cc, uint32NDArray.cc, uint64NDArray.cc
+	int8NDArray.cc, int16NDArray.cc, int32NDArray.cc, int64NDArray.cc
+	(OCTAVE_INT_CONCAT_FN): Instantiate the concatenation function .
+
+	* uint8NDArray.h, uint16NDArray.h, uint32NDArray.h, uint64NDArray.h
+	int8NDArray.h, int16NDArray.h, int32NDArray.h, int64NDArray.h
+	(OCTAVE_INT_CONCAT_DECL): Declare the int/uint concatentaion
+	functions.
+
 2004-07-22  David Bateman  <dbateman@free.fr>
 
 	* oct-sort.h: Don't include oct-obj.h.

@@ -100,10 +100,26 @@ Cell::assign (const octave_value_list& idx_arg, const Cell& rhs,
   return *this;
 }
 
-int
-Cell::cat (const Cell& ra_arg, int dim, int iidx, int move)
+Cell
+concat (const Cell& ra, const Cell& rb, const Array<int>& ra_idx)
 {
-  return ::cat_ra (*this, ra_arg, dim, iidx, move);
+  Cell retval (ra);
+  retval.insert (rb, ra_idx);
+  return retval;
+}
+
+Cell&
+Cell::insert (const Cell& a, int r, int c)
+{
+  Array<octave_value>::insert (a, r, c);
+  return *this;
+}
+
+Cell&
+Cell::insert (const Cell& a, const Array<int>& ra_idx)
+{
+  Array<octave_value>::insert (a, ra_idx);
+  return *this;
 }
 
 /*

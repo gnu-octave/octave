@@ -20,6 +20,18 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
+#define OCTAVE_CONCAT_FN(TYPE) \
+  DEFNDCATOP_FN (TYPE ## _s_s, TYPE ## _scalar, TYPE ## _scalar, TYPE ## _array, TYPE ## _array, concat) \
+  DEFNDCATOP_FN (TYPE ## _s_m, TYPE ## _scalar, TYPE ## _matrix, TYPE ## _array, TYPE ## _array, concat) \
+  DEFNDCATOP_FN (TYPE ## _m_s, TYPE ## _matrix, TYPE ## _scalar, TYPE ## _array, TYPE ## _array, concat) \
+  DEFNDCATOP_FN (TYPE ## _m_m, TYPE ## _matrix, TYPE ## _matrix, TYPE ## _array, TYPE ## _array, concat)
+
+#define OCTAVE_INSTALL_CONCAT_FN(TYPE) \
+  INSTALL_CATOP (octave_ ## TYPE ## _scalar, octave_ ## TYPE ## _scalar, TYPE ## _s_s) \
+  INSTALL_CATOP (octave_ ## TYPE ## _scalar, octave_ ## TYPE ## _matrix, TYPE ## _s_m) \
+  INSTALL_CATOP (octave_ ## TYPE ## _matrix, octave_ ## TYPE ## _scalar, TYPE ## _m_s) \
+  INSTALL_CATOP (octave_ ## TYPE ## _matrix, octave_ ## TYPE ## _matrix, TYPE ## _m_m)
+
 #define OCTAVE_S_INT_UNOPS(TYPE) \
   /* scalar unary ops. */  \
  \
@@ -148,7 +160,15 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  \
   DEFNDBINOP_OP (sm_el_mul, TS ## _scalar, TM ## _matrix, TS ## _scalar, TM ## _array, *) \
   /* DEFNDBINOP_FN (sm_el_div, TS ## _scalar, TM ## _matrix, TS ## _scalar, TM ## _array, x_el_div) */ \
-  /* DEFNDBINOP_FN (sm_el_pow, TS ## _scalar, TM ## _matrix, TS ## _scalar, TM ## _array, elem_xpow) */ \
+  DEFBINOP (sm_el_pow, TS ## _scalar, TM ## _matrix) \
+  { \
+    CAST_BINOP_ARGS (const octave_ ## TS ## _scalar&, const octave_ ## TM ## _matrix&); \
+ \
+    double d = v1.TS ## _scalar_value (); \
+ \
+    /* XXX FIXME XXX Return type wrong */ \
+    return octave_value (elem_xpow (d, v2.array_value()));	\
+  } \
  \
   /* DEFBINOP (sm_el_ldiv, TS ## _scalar, TM ## _matrix) */ \
   /* { */ \
@@ -350,7 +370,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   OCTAVE_SS_INT_OPS (TYPE) \
   OCTAVE_SM_INT_OPS (TYPE) \
   OCTAVE_MS_INT_OPS (TYPE) \
-  OCTAVE_MM_INT_OPS (TYPE)
+  OCTAVE_MM_INT_OPS (TYPE) \
+  OCTAVE_CONCAT_FN (TYPE)
 
 #define OCTAVE_INSTALL_S_INT_UNOPS(TYPE) \
   INSTALL_UNOP (op_not, octave_ ## TYPE ## _scalar, s_not); \
@@ -406,7 +427,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   /* INSTALL_BINOP (op_ldiv, octave_ ## T1 ## _scalar, octave_ ## T2 ## _matrix, sm_ldiv); */ \
   INSTALL_BINOP (op_el_mul, octave_ ## T1 ## _scalar, octave_ ## T2 ## _matrix, sm_el_mul); \
   /* INSTALL_BINOP (op_el_div, octave_ ## T1 ## _scalar, octave_ ## T2 ## _matrix, sm_el_div); */ \
-  /* INSTALL_BINOP (op_el_pow, octave_ ## T1 ## _scalar, octave_ ## T2 ## _matrix, sm_el_pow); */ \
+  INSTALL_BINOP (op_el_pow, octave_ ## T1 ## _scalar, octave_ ## T2 ## _matrix, sm_el_pow); \
   /* INSTALL_BINOP (op_el_ldiv, octave_ ## T1 ## _scalar, octave_ ## T2 ## _matrix, sm_el_ldiv); */
 
 #define OCTAVE_INSTALL_SM_INT_CMP_OPS(T1, T2) \
@@ -526,7 +547,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   OCTAVE_INSTALL_SS_INT_OPS (TYPE) \
   OCTAVE_INSTALL_SM_INT_OPS (TYPE) \
   OCTAVE_INSTALL_MS_INT_OPS (TYPE) \
-  OCTAVE_INSTALL_MM_INT_OPS (TYPE)
+  OCTAVE_INSTALL_MM_INT_OPS (TYPE) \
+  OCTAVE_INSTALL_CONCAT_FN (TYPE)
 
 /*
 ;;; Local Variables: ***

@@ -42,6 +42,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "Cell.h"
 #include "oct-map.h"
+#include "pt-mat.h"
 
 #define ANY_ALL(FCN) \
  \
@@ -667,91 +668,6 @@ omitted, it defaults to 1 (column-wise products).\n\
   DATA_REDUCTION (prod);
 }
 
-static bool
-cat_add_dims (dim_vector& dv_new, const dim_vector& dv_arg, int dim)
-{
-  // dv_arg is []
-
-  if (dv_arg.all_zero ())
-    return true;
-  
-  // dv_new is []
-
-  if (dv_new.all_zero ())
-    {
-      dv_new = dv_arg;
-      return true;
-    }
-  
-  int n_new  = dv_new.length ();
-  int n_args = dv_arg.length ();
-  
-  // Find the max and min value of n_new and n_args
-
-  int n_max = n_new > n_args ? n_new : n_args;
-  int n_min = n_new < n_args ? n_new : n_args;  
-
-  // The elements of the dimension vectors can only differ
-  // if the dim variable differs from the actual dimension
-  // they differ.
-
-  for (int i = 0; i < n_min; i++)
-    {
-      if (dv_new(i) != dv_arg(i) && dim != i)
-	{
-	  error ("cat: dimension mismatch");
-	  return false;
-	}
-    }
-  
-  // Ditto.
-
-  for (int i = n_min; i < n_max; i++)
-    {
-      if (n_new > n_min)
-	{
-	  if (dv_new(i) != 1 && dim != i)
-	    {
-	      error ("cat: dimension mismatch");
-	      return false;
-	    }
-	}
-      else 
-	{
-	  if (dv_arg(i) != 1 && dim != i)
-	    {
-	      error ("cat: dimension mismatch");
-	      return false;
-	    }
-	}
-    }
-
-  // If we want to add the dimension vectors at a dimension
-  // larger than both, then we need to set n_max to this number
-  // so that we resize dv_new to the right dimension.
-
-  n_max = n_max > (dim + 1) ? n_max : (dim + 1);
-  
-  // Resize dv_new to new the appropriate dimensions.
-
-  if (n_max > n_new)
-    {
-      dv_new.resize (n_max);
-
-      for (int i = n_new; i < n_max; i++)
-	dv_new.elem (i) = 1;
-    }
-  
-  // Larger or equal since dim has been decremented by one.
-
-  if (dim >= n_args)
-    dv_new.elem (dim) = dv_new.elem (dim)++;
-  else
-    dv_new.elem (dim) += dv_arg(dim);
-
-  return true;
-}
-
 static octave_value
 do_cat (const octave_value_list& args, std::string fname)
 {
@@ -771,183 +687,67 @@ do_cat (const octave_value_list& args, std::string fname)
   
       if (dim >= 0)
 	{
+ 	  
+ 	  dim_vector  dv = args(1).dims ();
 	  
-	  dim_vector  dv = args(1).dims ();
-  
-	  for (int i = 2; i < args.length (); i++)
-	    {
-	      // add_dims constructs a dimension vector which holds the
+ 	  for (int i = 2; i < args.length (); i++)
+  	    {
+ 	      // add_dims constructs a dimension vector which holds the
 	      // dimensions of the final array after concatenation.
 
-	      if (! cat_add_dims (dv, args(i).dims (), dim))
+	      if (! dv.concat (args(i).dims (), dim))
 		{
 		  // Dimensions do not match. 
-		  // cat_add_dims printed a error msg
+		  error ("cat: dimension mismatch");
 		  return retval;
 		}
 	    }
 
-	  NDArray cat_re;
-	  ComplexNDArray cat_cx;
-	  charNDArray cat_ch;
-	  Cell cat_cell;
-	  Octave_map cat_map;
-
-	  // The final array can be of three types:
+	  // The lines below might seem crazy, since we take a copy
+	  // of the first argument, resize it to be empty and then resize
+	  // it to be full. This is done since it means that there is no
+	  // recopying of data, as would happen if we used a single resize.
+	  // It should be noted that resize operation is also significantly 
+	  // slower than the do_cat_op function, so it makes sense to have an
+	  // empty matrix and copy all data.
 	  //
-	  //       re cx ch c
-	  // ----------------
-	  // re   |re cx ch X
-	  // cx   |cx cx X  X
-	  // ch   |ch X  ch X
-	  // cell |X  X  X  c
-	  // (X means incompatible).
+	  // We might also start with a empty octave_value using
+	  //   tmp = octave_value_typeinfo::lookup_type (args(1).type_name());
+	  // and then directly resize. However, for some types there might be
+	  // some additional setup needed, and so this should be avoided.
+	  octave_value tmp;
+          bool any_strings = false;
+          bool all_strings = true;
+          for (int i = 1; i < n_args; i++)
+	    if (args(i).is_string ())
+	      any_strings = true;
+	    else
+	      all_strings = false;
+	  
+	  if (all_strings)
+	    tmp = octave_value (charNDArray (dv, Vstring_fill_char), true);
+	  else
+	    tmp = args(1).resize (dim_vector (0,0)).resize (dv);
 
-	  enum types { REAL, COMPLEX, CHAR, CELL, MAP} t;      
+	  if (error_state)
+	    return retval;
 
-	  // Initialize t to right value
-	  if (args(1).is_cell ())
+	  Array<int> ra_idx (dv.length (), 0);
+	  for (int i = 1; i < n_args; i++)
 	    {
-	      t = CELL;
-	      cat_cell = Cell (dv);
+	      tmp = do_cat_op (tmp, args (i), ra_idx);
+
+	      if (error_state)
+		return retval;
+
+	      dim_vector dv_tmp = args (i).dims ();
+	      ra_idx (dim) += (dim < dv_tmp.length () ? dv_tmp (dim) : 1);
 	    }
-	  else if (args(1).is_map ())
-	    {
-	      error ("concatenation of structures is not yet implemented");
-	      return retval;
-	      // t = MAP;
-	      // cat_map = Octave_map (dv);
-	    }
-	  else 
-	    {
-	      t = REAL;
-	      cat_re = NDArray (dv, 0);
-	    }
- 
-	  int idx = 0;
-  
-	  dim_vector dv_first = args(1).dims ();
-      
-	  // n_moves tells us how many times we need to
-	  // visit each argument.
-	  //
-	  // If we are concatenating a 2x2x2 array with a 2x2x2 array
-	  // along the second dimensions, we do two iterations
-	  // trough the arguments and move 2x2 elements from each
-	  // of the arguments into the resulting array on each iteration.
-	  int n_moves = 1;
 
-	  for (int i = dim + 1; i < dv_first.length (); i++)
-	    n_moves *= dv_first(i);
-      
-	  for (int move = 0; move < n_moves ; move++)
-	    {     
-	      for (int i = 1; i < n_args; i++)
-		{
-		  octave_value tmp = args (i);
-
-		  if (t == MAP)
-		    {
-		      error ("concatenation of structures is not yet implemented");
-		      return retval;
-		    }
-		  else if (t == CELL)
-		    {
-		      if (! tmp.is_cell ())
-			{
-			  error ("cannot convert argument to cell");
-			  return retval;
-			}
-		      else
-			{
-			  Cell ra_tmp = args(i).cell_value ();
-	  
-			  if (error_state)
-			    return retval;
-
-			  idx = cat_cell.cat (ra_tmp, dim, idx, move);
-			}
-		    }
-		  else if (t == REAL)
-		    {
-		      if (tmp.is_complex_type ())
-			{
-			  cat_cx = ComplexNDArray (cat_re);		  
-		  
-			  ComplexNDArray ra_tmp = tmp.complex_array_value ();
-	  
-			  if (error_state)
-			    return retval;
-
-			  idx = cat_cx.cat (ra_tmp, dim, idx, move);
-
-			  t = COMPLEX;
-			}
-		      else if (tmp.is_string ())
-			{
-			  // This is a hack to be able to convert a dNDArray
-			  // to a chNDArray.
-
-			  cat_ch = charNDArray (octave_value (cat_re).char_array_value ());	  
-		  
-			  charNDArray ra_tmp = tmp.char_array_value ();
-	  
-			  if (error_state)
-			    return retval;
-
-			  idx = cat_ch.cat (ra_tmp, dim, idx, move);
-	
-			  t = CHAR;
-			}
-		      else //if (tmp.is_real_type ())
-			{ 
-			  NDArray ra_tmp = tmp.array_value ();
-	
-			  if (error_state)
-			    return retval;
-		
-			  idx = cat_re.cat (ra_tmp, dim, idx, move);
-			}  
-		    }
-		  else if (t == COMPLEX)
-		    {
-		      ComplexNDArray ra_tmp = tmp.complex_array_value ();
-	  
-		      if (error_state)
-			return retval;
-
-		      idx = cat_cx.cat (ra_tmp, dim, idx, move);
-		    }
-		  else if (t == CHAR)
-		    {
-		      if (tmp.is_complex_type ())
-			{
-			  error ("cannot convert complex type to character type");
-			  return retval;
-			}
-		      else
-			{
-			  charNDArray ra_tmp = tmp.char_array_value ();
-	  
-			  if (error_state)
-			    return retval;
-
-			  cat_ch.cat (ra_tmp, dim, idx, move);
-			}
-		    }
-		}
-	    }
-      
-	  if (t == REAL)
-	    retval = octave_value (cat_re);
-	  else if (t == COMPLEX)
-	    retval = octave_value (cat_cx);
-	  else if (t == CHAR)
-	    retval = octave_value (cat_ch);
-	  else if (t == CELL)
-	    retval = octave_value (cat_cell);
-	  else if (t == MAP)
-	    retval = octave_value (cat_map);
+          if (any_strings && !all_strings)
+            retval = tmp.convert_to_str ();
+          else
+	    retval = tmp;
 	}
       else print_usage (fname);
     }

@@ -653,10 +653,33 @@ ComplexNDArray::sum (int dim) const
   MX_ND_COMPLEX_OP_REDUCTION (+= elem (iter_idx), Complex (0, 0));
 }
 
-int
-ComplexNDArray::cat (const ComplexNDArray& ra_arg, int dim, int iidx, int move)
+ComplexNDArray
+concat (const ComplexNDArray& ra, const ComplexNDArray& rb, 
+	const Array<int>& ra_idx)
 {
-  return ::cat_ra(*this, ra_arg, dim, iidx, move);
+  ComplexNDArray retval (ra);
+  if (ra.numel () > 0)
+    retval.insert (rb, ra_idx);
+  return retval;
+}
+
+ComplexNDArray
+concat (const ComplexNDArray& ra, const NDArray& rb, const Array<int>& ra_idx)
+{
+  ComplexNDArray retval (ra);
+  ComplexNDArray tmp (rb);
+  if (ra.numel () > 0)
+    retval.insert (tmp, ra_idx);
+  return retval;
+}
+
+ComplexNDArray
+concat (const NDArray& ra, const ComplexNDArray& rb, const Array<int>& ra_idx)
+{
+  ComplexNDArray retval (ra);
+  if (ra.numel () > 0)
+    retval.insert (rb, ra_idx);
+  return retval;
 }
 
 static const Complex Complex_NaN_result (octave_NaN, octave_NaN);
@@ -912,6 +935,13 @@ ComplexNDArray&
 ComplexNDArray::insert (const ComplexNDArray& a, int r, int c)
 {
   Array<Complex>::insert (a, r, c);
+  return *this;
+}
+
+ComplexNDArray&
+ComplexNDArray::insert (const ComplexNDArray& a, const Array<int>& ra_idx)
+{
+  Array<Complex>::insert (a, ra_idx);
   return *this;
 }
 

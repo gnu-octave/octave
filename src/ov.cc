@@ -1662,6 +1662,92 @@ do_binary_op (octave_value::binary_op op,
   return retval;
 }
 
+static void
+gripe_cat_op (const std::string& tn1, const std::string& tn2)
+{
+  error ("concatenation operator not implemented for `%s' by `%s' operations",
+	 tn1.c_str (), tn2.c_str ());
+}
+
+static void
+gripe_cat_op_conv (void)
+{
+  error ("type conversion failed for concatenation operator");
+}
+
+octave_value
+do_cat_op (const octave_value& v1, const octave_value& v2, 
+	   const Array<int>& ra_idx)
+{
+  octave_value retval;
+
+  int t1 = v1.type_id ();
+  int t2 = v2.type_id ();
+
+  cat_op_fcn f = octave_value_typeinfo::lookup_cat_op (t1, t2);
+
+  if (f)
+    retval = f (*v1.rep, *v2.rep, ra_idx);
+  else
+    {
+      octave_value tv1;
+      type_conv_fcn cf1 = v1.numeric_conversion_function ();
+
+      if (cf1)
+	{
+	  octave_value *tmp = cf1 (*v1.rep);
+
+	  if (tmp)
+	    {
+	      tv1 = octave_value (tmp);
+	      t1 = tv1.type_id ();
+	    }
+	  else
+	    {
+	      gripe_cat_op_conv ();
+	      return retval;
+	    }
+	}
+      else
+	tv1 = v1;
+
+      octave_value tv2;
+      type_conv_fcn cf2 = v2.numeric_conversion_function ();
+
+      if (cf2)
+	{
+	  octave_value *tmp = cf2 (*v2.rep);
+
+	  if (tmp)
+	    {
+	      tv2 = octave_value (tmp);
+	      t2 = tv2.type_id ();
+	    }
+	  else
+	    {
+	      gripe_cat_op_conv ();
+	      return retval;
+	    }
+	}
+      else
+	tv2 = v2;
+
+      if (cf1 || cf2)
+	{
+	  f = octave_value_typeinfo::lookup_cat_op (t1, t2);
+
+	  if (f)
+	    retval = f (*tv1.rep, *tv2.rep, ra_idx);
+	  else
+	    gripe_cat_op (v1.type_name (), v2.type_name ());
+	}
+      else
+	gripe_cat_op (v1.type_name (), v2.type_name ());
+    }
+
+  return retval;
+}
+
 void
 octave_value::print_info (std::ostream& os, const std::string& prefix) const
 {

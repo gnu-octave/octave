@@ -88,11 +88,14 @@ Octave_map::numel (void) const
   return retval;
 }
 
-int
-Octave_map::cat (const Octave_map& ra_arg, int dim, int iidx, int move)
+Octave_map
+concat (const Octave_map& ra, const Octave_map& rb, const Array<int>& ra_idx)
 {
-  //return ::cat_ra (*this, ra_arg, dim, iidx, move);
-  return 0;
+  // XXX FIXME XXX
+  Octave_map retval;
+  //Octave_map retval (ra);
+  //::concat_ra (retval, rb, dim) 
+  return retval;
 }
 
 static string_vector

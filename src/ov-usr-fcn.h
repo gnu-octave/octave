@@ -36,6 +36,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-fcn.h"
 #include "ov-typeinfo.h"
 
+#include "SLStack.h"
+
 class string_vector;
 
 class octave_value;
@@ -115,8 +117,19 @@ public:
   std::string function_name (void)
     { return fcn_name; }
 
-  void clear_args_passed (void)
-    { args_passed = octave_value_list (); }
+  void save_args_passed (const octave_value_list& args)
+    {
+      if (call_depth > 1)
+	saved_args.push (args_passed);
+
+      args_passed = args;
+    }
+
+  void restore_args_passed (void)
+    {
+      if (! saved_args.empty ())
+	args_passed = saved_args.pop ();
+    }
 
   octave_value_list
   do_multi_index_op (int nargout, const octave_value_list& args);
@@ -186,6 +199,9 @@ private:
 
   // The values that were passed as arguments.
   octave_value_list args_passed;
+
+  // A place to store the passed args for recursive calls.
+  SLStack<octave_value_list> saved_args;
 
   // The number of arguments passed in.
   int num_args_passed;

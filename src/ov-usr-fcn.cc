@@ -241,12 +241,12 @@ clear_param_list (void *lst)
 }
 
 static void
-clear_args_passed (void *fcn)
+restore_args_passed (void *fcn)
 {
   octave_user_function *tmp = static_cast<octave_user_function *> (fcn);
 
   if (tmp)
-    tmp->clear_args_passed ();
+    tmp->restore_args_passed ();
 }
 
 static void
@@ -323,16 +323,11 @@ octave_user_function::do_multi_index_op (int nargout,
   unwind_protect_ptr (curr_function);
   curr_function = this;
 
-  // XXX FIXME XXX -- ???
-  // unwind_protect_ptr (args_passed);
+  // Save and restore args passed for recursive calls.
 
-  args_passed = args;
+  save_args_passed (args);
 
-  // Force cache of arguments to be undefined when this function exits.
-  // Doing so decrements the reference counts on the values of local
-  // variables that are also named function parameters.
-
-  unwind_protect::add (::clear_args_passed, this);
+  unwind_protect::add (::restore_args_passed, this);
 
   string_vector arg_names = args.name_tags ();
 

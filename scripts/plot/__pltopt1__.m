@@ -37,7 +37,8 @@ function fmt = __pltopt1__ (caller, opt)
   set_impulses = 0;
   set_steps = 0;
   set_boxes = 0;
-  set_errbars = 0;
+  set_yerrbars = 0;
+  set_xerrbars = 0;
   set_key = 0;
   set_linestyle = "solid";
 
@@ -52,7 +53,9 @@ function fmt = __pltopt1__ (caller, opt)
   DOTS = "d";
   IMPULSES = "i";
   STEPS = "s";
-  ERRORBARS = "e";
+  YERRORBARS = "yerr";
+  XERRORBARS = "xerr";
+  XYERRORBARS = "xyerr";
   TITLE = "title";
 
   if (nargin != 2)
@@ -100,7 +103,9 @@ function fmt = __pltopt1__ (caller, opt)
     elseif (strcmp (char, "L"))
       set_steps = 1;
     elseif (strcmp (char, "~"))
-      set_errbars = 1;
+      set_yerrbars = 1;
+    elseif (strcmp (char, ">"))
+      set_xerrbars = 1;  
     elseif (strcmp (char, "#"))
       set_boxes = 1;
     elseif (strcmp (char, "0") || strcmp (char, "1") ...
@@ -194,7 +199,7 @@ function fmt = __pltopt1__ (caller, opt)
       fmt = strcat (fmt, " ", LINES);
     endif
   elseif (set_boxes)
-    if (set_errbars)
+    if (set_yerrbars)
       fmt = strcat (fmt, " ", BOXERRORBARS);
     else
       fmt = strcat (fmt, " ", BOXES);
@@ -207,8 +212,14 @@ function fmt = __pltopt1__ (caller, opt)
     fmt = strcat (fmt, " ", IMPULSES);
   elseif (set_steps)
     fmt = strcat (fmt, " ", STEPS);
-  elseif (set_errbars)
-    fmt = strcat (fmt, " ", ERRORBARS);
+  elseif (set_yerrbars)
+    if(set_xerrbars)
+        fmt = strcat (fmt, " ", XYERRORBARS);
+    else
+        fmt = strcat (fmt, " ", YERRORBARS);
+    endif
+  elseif (set_xerrbars)
+    fmt = strcat (fmt, " ", XERRORBARS);
   endif
 
   if (strcmp (fmt, WITH))

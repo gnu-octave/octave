@@ -30,36 +30,58 @@
 ## @table @code
 ## @item "-"
 ## For lines plot style (default).
+##
 ## @item "."
 ## For dots plot style.
+##
 ## @item "@"
 ## For points plot style.
+##
 ## @item "-@"
-##For linespoints plot style.
+## For linespoints plot style.
+##
 ## @item "^"
 ## For impulses plot style.
+##
 ## @item "L"
 ## For steps plot style.
+##
 ## @item "#"
 ## For boxes plot style.
+##
 ## @item "~"
-## For errorbars plot style.
+## For yerrorbars plot style.
+##
+## @item ">"
+## For xerrorbars plot style.
+##
+## @item "~>"
+## For xyerrorbars plot style.
+##
 ## @item "#~"
 ## For boxerrorbars plot style.
+##
 ## @item "n"
 ## With @code{n} in 1-6 (wraps at 8), plot color
+##
 ## @item "nm"
 ## With @code{m} in 1-6 (wraps at 6), point style (only valid for @code{"@"} or
 ## @code{"-@"})
+##
 ## @item @var{c}
 ## Where @var{c} is one of @code{"r"}, @code{"g"}, @code{"b"}, @code{"m"},
 ## @code{"c"}, or @code{"w"} colors.
+##
 ## @item ";title;"
 ## Here @code{"title"} is the label for the key.
-## @end table
 ##
-## Special points formats:  @code{"+"}, @code{"*"}, @code{"o"}, or
-## @code{"x"} will display points in that style for term x11.
+## @item +
+## @itemx *
+## @itemx o
+## @itemx x
+## Used in combination with the points or linespoints styles, set the point
+## style.
+## @end table
 ##
 ## The legend may be fixed to include the name of the variable
 ## plotted in some future version of Octave.

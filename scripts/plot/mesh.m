@@ -45,6 +45,7 @@ function mesh (x, y, z)
       gset surface;
       gset nocontour;
       gset noparametric;
+      gset nologscale;
       gset view 60, 30, 1, 1
       gsplot (z');
     else
@@ -71,6 +72,7 @@ function mesh (x, y, z)
         gset data style lines;
         gset surface;
         gset nocontour;
+        gset nologscale;
         gset parametric;
         gset view 60, 30, 1, 1
         gsplot (zz);
@@ -98,6 +100,7 @@ function mesh (x, y, z)
         gset data style lines;
         gset surface;
         gset nocontour;
+        gset nologscale;
         gset parametric;
         gset view 60, 30, 1, 1
         gsplot (zz);

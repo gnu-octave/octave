@@ -94,14 +94,20 @@
 ## @item L
 ## Set steps plot style.
 ##
-## @item #
-## Set boxes plot style.
+## @item "#"
+## For boxes plot style.
 ##
-## @item ~
-## Set errorbars plot style.
+## @item "~"
+## For yerrorbars plot style.
 ##
-## @item #~
-## Set boxerrorbars plot style.
+## @item ">"
+## For xerrorbars plot style.
+##
+## @item "~>"
+## For xyerrorbars plot style.
+##
+## @item "#~"
+## For boxerrorbars plot style.
 ##
 ## @item @var{n}
 ## Interpreted as the plot color if @var{n} is an integer in the range 1 to
@@ -116,6 +122,9 @@
 ## If @var{c} is one of @code{"r"}, @code{"g"}, @code{"b"}, @code{"m"},
 ## @code{"c"}, or @code{"w"}, it is interpreted as the plot color (red,
 ## green, blue, magenta, cyan, or white).
+##
+## @item ";title;"
+## Here @code{"title"} is the label for the key.
 ##
 ## @item +
 ## @itemx *
@@ -170,7 +179,7 @@
 ## in the key.
 ## @end deftypefn
 ## @seealso{semilogx, semilogy, loglog, polar, mesh, contour, __pltopt__
-## bar, stairs, gplot, gsplot, replot, xlabel, ylabel, and title}
+## bar, stairs, errorbar, gplot, gsplot, replot, xlabel, ylabel, and title}
 
 ## Author: jwe
 

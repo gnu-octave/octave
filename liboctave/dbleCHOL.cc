@@ -45,6 +45,7 @@ CHOL::init (const Matrix& a)
 {
   int a_nr = a.rows ();
   int a_nc = a.cols ();
+
   if (a_nr != a_nc)
     {
       (*current_liboctave_error_handler) ("CHOL requires square matrix");
@@ -54,19 +55,23 @@ CHOL::init (const Matrix& a)
   int n = a_nc;
   int info;
 
-  double *h = dup (a.data (), a.length ());
+  chol_mat = a;
+  double *h = chol_mat.fortran_vec ();
 
-  F77_FCN (dpotrf, DPOTRF) ("U", n, h, n, info, 1L);
+  F77_XFCN (dpotrf, DPOTRF, ("U", n, h, n, info, 1L));
 
-  chol_mat = Matrix (h, n, n);
+  if (f77_exception_encountered)
+    (*current_liboctave_error_handler) ("unrecoverable error in dpotrf");
+  else
+    {
+      // If someone thinks of a more graceful way of doing this (or
+      // faster for that matter :-)), please let me know!
 
-  // If someone thinks of a more graceful way of doing this (or faster
-  // for that matter :-)), please let me know!
-
-  if (n > 1)
-    for (int j = 0; j < a_nc; j++)
-      for (int i = j+1; i < a_nr; i++)
-        chol_mat.elem (i, j) = 0.0;
+      if (n > 1)
+	for (int j = 0; j < a_nc; j++)
+	  for (int i = j+1; i < a_nr; i++)
+	    chol_mat.elem (i, j) = 0.0;
+    }
 
   return info;
 }

@@ -155,11 +155,14 @@ QPSOL::do_minimize (double& objf, int& inform, ColumnVector& lambda)
   Array<double> aw (lenw);
   double *w = aw.fortran_vec ();
 
-  F77_FCN (qpsol, QPSOL) (itmax, msglvl, n, nclin, nctotl, ncon, n,
-			  n, bigbnd, pa, pbl, pbu, pc, featol, ph,
-			  qphess, cold, lp, orthog, istate, px,
-			  inform, iter, objf, pclambda, iw, leniw, w,
-			  lenw);
+  F77_XFCN (qpsol, QPSOL, (itmax, msglvl, n, nclin, nctotl, ncon, n,
+			   n, bigbnd, pa, pbl, pbu, pc, featol, ph,
+			   qphess, cold, lp, orthog, istate, px,
+			   inform, iter, objf, pclambda, iw, leniw, w,
+			   lenw));
+
+  if (f77_exception_encountered)
+    (*current_liboctave_error_handler) ("unrecoverable error in qpsol");
 
   return x;
 }

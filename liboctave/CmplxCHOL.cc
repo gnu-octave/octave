@@ -45,31 +45,36 @@ ComplexCHOL::init (const ComplexMatrix& a)
 {
   int a_nr = a.rows ();
   int a_nc = a.cols ();
-   if (a_nr != a_nc)
-     {
-       (*current_liboctave_error_handler)
-	 ("ComplexCHOL requires square matrix");
-       return -1;
-     }
 
-   int n = a_nc;
-   int info;
+  if (a_nr != a_nc)
+    {
+      (*current_liboctave_error_handler)
+	("ComplexCHOL requires square matrix");
+      return -1;
+    }
 
-   Complex *h = dup (a.data (), a.length ());
+  int n = a_nc;
+  int info;
 
-   F77_FCN (zpotrf, ZPOTRF) ("U", n, h, n, info, 1L);
+  chol_mat = a;
+  Complex *h = chol_mat.fortran_vec ();
 
-   chol_mat = ComplexMatrix (h, n, n);
+  F77_XFCN (zpotrf, ZPOTRF, ("U", n, h, n, info, 1L));
 
-  // If someone thinks of a more graceful way of doing this (or faster
-  // for that matter :-)), please let me know!
+  if (f77_exception_encountered)
+    (*current_liboctave_error_handler) ("unrecoverable error in zpotrf");
+  else
+    {
+      // If someone thinks of a more graceful way of doing this (or
+      // faster for that matter :-)), please let me know!
 
-  if (n > 1)
-    for (int j = 0; j < a_nc; j++)
-      for (int i = j+1; i < a_nr; i++)
-        chol_mat.elem (i, j) = 0.0;
+      if (n > 1)
+	for (int j = 0; j < a_nc; j++)
+	  for (int i = j+1; i < a_nr; i++)
+	    chol_mat.elem (i, j) = 0.0;
+    }
 
-   return info;
+  return info;
 }
 
 /*

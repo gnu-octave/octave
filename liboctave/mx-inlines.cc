@@ -482,6 +482,8 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
       increment_index (iter_idx, dv); \
     } \
  \
+  retval.chop_trailing_singletons (); \
+ \
   return retval
 
 #define MX_ND_REAL_OP_REDUCTION(ASN_EXPR, INIT_VAL) \

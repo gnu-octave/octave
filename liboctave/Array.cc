@@ -28,7 +28,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <assert.h>
 
 #if defined (__GNUG__) && defined (USE_EXTERNAL_TEMPLATES)
-#pragma implementation
+#pragma implementation "Array.h"
 #endif
 
 #include "Array.h"

@@ -24,11 +24,11 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (_Array_h)
 #define _Array_h 1
 
+#include "lo-error.h"
+
 #if defined (__GNUG__) && defined (USE_EXTERNAL_TEMPLATES)
 #pragma interface
 #endif
-
-#include "lo-error.h"
 
 // Classes we declare.
 

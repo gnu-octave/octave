@@ -52,7 +52,8 @@ SPELL = $(patsubst %.texi, %.spell, $(ALL_TEXINFO))
 	sed -e 's/@@/ at /g' -e 's/@[a-zA-Z]*//g' $< | spell > $@.tmp
 	mv $@.tmp $@
 
-all: octave.info octave.dvi octave.ps refcard.dvi refcard.ps
+all: octave.info octave.dvi octave.ps refcard.dvi refcard.ps \
+	FAQ.info FAQ.dvi FAQ.ps
 #	liboctave.info liboctave.dvi liboctave.ps
 .PHONY: all
 

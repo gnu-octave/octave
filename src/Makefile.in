@@ -70,10 +70,11 @@ OV_INCLUDES := ov-re-mat.h ov-cx-mat.h ov-ch-mat.h \
 	ov-str-mat.h ov-bool-mat.h ov-bool.h ov-file.h ov.h \
 	ov-fcn.h ov-builtin.h ov-mapper.h ov-usr-fcn.h ov-typeinfo.h
 
-PT_INCLUDES := pt-base.h pt-cmd.h pt-const.h pt-exp.h pt-id.h \
-	pt-indir.h pt-mat.h pt-misc.h pt-plot.h pt-pr-code.h \
-	pt-walk.h pt-unop.h pt-binop.h pt-colon.h pt-idx.h \
-	pt-assign.h
+PT_INCLUDES := pt-arg-list.h pt-assign.h pt-base.h pt-binop.h \
+	pt-cmd.h pt-colon.h pt-const.h pt-decl.h pt-except.h \
+	pt-exp.h pt-id.h pt-idx.h pt-indir.h pt-jump.h pt-loop.h \
+	pt-mat.h pt-misc.h pt-plot.h pt-pr-code.h pt-select.h \
+	pt-stmt.h pt-unop.h pt-walk.h
 
 INCLUDES := BaseSLList.h Map.h SLList.h SLStack.h Stack.h defun-dld.h \
 	defun-int.h defun.h dirfns.h dynamic-ld.h error.h file-io.h \
@@ -110,9 +111,11 @@ OV_SRC := ov-base.cc ov-ch-mat.cc ov-list.cc ov-re-mat.cc \
 	ov-bool-mat.cc ov-bool.cc ov-file.cc ov.cc ov-fcn.cc \
 	ov-builtin.cc ov-mapper.cc ov-usr-fcn.cc ov-typeinfo.cc
 
-PT_SRC := pt-base.cc pt-cmd.cc pt-const.cc pt-exp.cc pt-id.cc \
-	pt-indir.cc pt-mat.cc pt-misc.cc pt-plot.cc pt-pr-code.cc \
-	pt-unop.cc pt-binop.cc pt-colon.cc pt-idx.cc pt-assign.cc
+PT_SRC := pt-arg-list.cc pt-assign.cc pt-base.cc pt-binop.cc \
+	pt-cmd.cc pt-colon.cc pt-const.cc pt-decl.cc pt-except.cc \
+	pt-exp.cc pt-id.cc pt-idx.cc pt-indir.cc pt-jump.cc \
+	pt-loop.cc pt-mat.cc pt-misc.cc pt-plot.cc pt-pr-code.cc \
+	pt-select.cc pt-stmt.cc pt-unop.cc
 
 SOURCES := BaseSLList.cc Map.cc SLList.cc SLStack.cc Stack.cc \
 	data.cc defaults.cc defun.cc dirfns.cc dynamic-ld.cc \

@@ -32,7 +32,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-obj.h"
 #include "ov.h"
 #include "pt-binop.h"
-#include "pt-pr-code.h"
 #include "pt-walk.h"
 
 // Binary expressions.

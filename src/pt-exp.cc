@@ -70,7 +70,7 @@ tree_expression::rvalue (void)
 }
 
 octave_value_list
-tree_expression::rvalue (int nargout)
+tree_expression::rvalue (int)
 {
   ::error ("invalid rvalue function called in expression");
   return octave_value_list ();

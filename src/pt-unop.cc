@@ -33,7 +33,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-lvalue.h"
 #include "ov.h"
 #include "pt-unop.h"
-#include "pt-pr-code.h"
 #include "pt-walk.h"
 
 // Prefix expressions.

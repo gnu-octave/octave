@@ -29,16 +29,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include "error.h"
-#include "gripes.h"
 #include "oct-map.h"
 #include "oct-obj.h"
 #include "oct-lvalue.h"
+#include "ov.h"
 #include "pager.h"
-#include "pt-const.h"
-#include "pt-id.h"
 #include "pt-indir.h"
 #include "pt-walk.h"
-#include "symtab.h"
 #include "utils.h"
 #include "variables.h"
 
@@ -52,7 +49,10 @@ tree_indirect_ref::~tree_indirect_ref (void)
 string
 tree_indirect_ref::name (void) const
 {
-  return expr->name () + "." + nm;
+  // ??? FIXME ???
+  string xname = expr->name ();
+
+  return (xname == "<unknown>") ? xname : xname + "." + nm;
 }
 
 octave_value_list
@@ -73,7 +73,16 @@ tree_indirect_ref::rvalue (int nargout)
 	  octave_value val = tmp(0).do_struct_elt_index_op (nm);
 
 	  if (print_result () && nargout == 0 && val.is_defined ())
-	    val.print_with_name (octave_stdout, name ());
+	    {
+	      // ??? FIXME ???
+
+	      string xname = name ();
+
+	      if (xname == "<unknown>")
+		bind_ans (val, true);
+	      else
+		val.print_with_name (octave_stdout, xname);
+	    }
 
 	  retval = val;
 	}

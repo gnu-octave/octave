@@ -33,7 +33,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pager.h"
 #include "ov.h"
 #include "pt-colon.h"
-#include "pt-pr-code.h"
 #include "pt-walk.h"
 
 // Colon expressions.

@@ -30,7 +30,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "SLList.cc"
 
 #include "ov.h"
-#include "pt-misc.h"
+#include "pt-arg-list.h"
+#include "pt-decl.h"
+#include "pt-select.h"
+#include "pt-stmt.h"
 
 template class SLNode<tree_argument_list *>;
 template class SLList<tree_argument_list *>;

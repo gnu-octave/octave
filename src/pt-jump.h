@@ -20,24 +20,69 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
+#if !defined (octave_tree_jump_h)
+#define octave_tree_jump_h 1
+
 #if defined (__GNUG__)
-#pragma implementation
+#pragma interface
 #endif
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+class tree_walker;
 
 #include "pt-cmd.h"
-#include "pt-walk.h"
 
-// No-op.
+// Break.
 
-void
-tree_no_op_command::accept (tree_walker& tw)
+class
+tree_break_command : public tree_command
 {
-  tw.visit_no_op_command (*this);
-}
+public:
+
+  tree_break_command (int l = -1, int c = -1)
+    : tree_command (l, c) { }
+
+  ~tree_break_command (void) { }
+
+  void eval (void);
+
+  void accept (tree_walker& tw);
+};
+
+// Continue.
+
+class
+tree_continue_command : public tree_command
+{
+public:
+
+  tree_continue_command (int l = -1, int c = -1)
+    : tree_command (l, c) { }
+
+  ~tree_continue_command (void) { }
+
+  void eval (void);
+
+  void accept (tree_walker& tw);
+};
+
+// Return.
+
+class
+tree_return_command : public tree_command
+{
+public:
+
+  tree_return_command (int l = -1, int c = -1)
+    : tree_command (l, c) { }
+
+  ~tree_return_command (void) { }
+
+  void eval (void);
+
+  void accept (tree_walker& tw);
+};
+
+#endif
 
 /*
 ;;; Local Variables: ***

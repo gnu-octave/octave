@@ -20,24 +20,49 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
+#if !defined (octave_tree_arg_list_h)
+#define octave_tree_arg_list_h 1
+
 #if defined (__GNUG__)
-#pragma implementation
+#pragma interface
 #endif
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include <SLList.h>
 
-#include "pt-cmd.h"
-#include "pt-walk.h"
+class octave_value_list;
 
-// No-op.
+class tree_expression;
 
-void
-tree_no_op_command::accept (tree_walker& tw)
+class tree_walker;
+
+#include "str-vec.h"
+
+// Argument lists.  Used to hold the list of expressions that are the
+// arguments in a function call or index expression.
+
+class
+tree_argument_list : public SLList<tree_expression *>
 {
-  tw.visit_no_op_command (*this);
-}
+public:
+
+  tree_argument_list (void)
+    : SLList<tree_expression *> () { }
+
+  tree_argument_list (tree_expression *t)
+    : SLList<tree_expression *> () { append (t); }
+
+  ~tree_argument_list (void);
+
+  bool all_elements_are_constant (void) const;
+
+  octave_value_list convert_to_const_vector (void);
+
+  string_vector get_arg_names (void) const;
+
+  void accept (tree_walker& tw);
+};
+
+#endif
 
 /*
 ;;; Local Variables: ***

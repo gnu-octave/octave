@@ -28,15 +28,63 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
-#include "pt-cmd.h"
+// Nonzero means we're breaking out of a loop or function body.
+int breaking = 0;
+
+// Nonzero means we're jumping to the end of a loop.
+int continuing = 0;
+
+// Nonzero means we're returning from a function.  Global because it
+// is also needed in tree-expr.cc.
+int returning = 0;
+
+#include "error.h"
+#include "pt-jump.h"
 #include "pt-walk.h"
 
-// No-op.
+// Break.
 
 void
-tree_no_op_command::accept (tree_walker& tw)
+tree_break_command::eval (void)
 {
-  tw.visit_no_op_command (*this);
+  if (! error_state)
+    breaking = 1;
+}
+
+void
+tree_break_command::accept (tree_walker& tw)
+{
+  tw.visit_break_command (*this);
+}
+
+// Continue.
+
+void
+tree_continue_command::eval (void)
+{
+  if (! error_state)
+    continuing = 1;
+}
+
+void
+tree_continue_command::accept (tree_walker& tw)
+{
+  tw.visit_continue_command (*this);
+}
+
+// Return.
+
+void
+tree_return_command::eval (void)
+{
+  if (! error_state)
+    returning = 1;
+}
+
+void
+tree_return_command::accept (tree_walker& tw)
+{
+  tw.visit_return_command (*this);
 }
 
 /*

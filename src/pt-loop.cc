@@ -1,0 +1,400 @@
+/*
+
+Copyright (C) 1996, 1997 John W. Eaton
+
+This file is part of Octave.
+
+Octave is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2, or (at your option) any
+later version.
+
+Octave is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with Octave; see the file COPYING.  If not, write to the Free
+Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+*/
+
+#if defined (__GNUG__)
+#pragma implementation
+#endif
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+// Nonzero means we're breaking out of a loop or function body.
+extern int breaking;
+
+// Nonzero means we're jumping to the end of a loop.
+extern int continuing;
+
+// Nonzero means we're returning from a function.  Global because it
+// is also needed in tree-expr.cc.
+extern int returning;
+
+#include "error.h"
+#include "gripes.h"
+#include "oct-map.h"
+#include "oct-lvalue.h"
+#include "ov.h"
+#include "pt-arg-list.h"
+#include "pt-cmd.h"
+#include "pt-exp.h"
+#include "pt-loop.h"
+#include "pt-stmt.h"
+#include "pt-walk.h"
+
+// Decide if it's time to quit a for or while loop.
+static inline bool
+quit_loop_now (void)
+{
+  // Maybe handle `continue N' someday...
+
+  if (continuing)
+    continuing--;
+
+  bool quit = (error_state || returning || breaking || continuing);
+
+  if (breaking)
+    breaking--;
+
+  return quit;
+}
+
+// While.
+
+tree_while_command::~tree_while_command (void)
+{
+  delete expr;
+  delete list;
+}
+
+void
+tree_while_command::eval (void)
+{
+  if (error_state)
+    return;
+
+  if (! expr)
+    panic_impossible ();
+
+  for (;;)
+    {
+      if (expr->is_logically_true ("while"))
+	{
+	  if (list)
+	    {
+	      list->eval ();
+
+	      if (error_state)
+		{
+		  eval_error ();
+		  return;
+		}
+	    }
+
+	  if (quit_loop_now ())
+	    break;
+	}
+      else
+	break;
+    }
+}
+
+void
+tree_while_command::eval_error (void)
+{
+  if (error_state > 0)
+    ::error ("evaluating while command near line %d, column %d",
+	     line (), column ());
+}
+
+void
+tree_while_command::accept (tree_walker& tw)
+{
+  tw.visit_while_command (*this);
+}
+
+// For.
+
+tree_simple_for_command::~tree_simple_for_command (void)
+{
+  delete expr;
+  delete list;
+}
+
+inline void
+tree_simple_for_command::do_for_loop_once (octave_lvalue& ult,
+					   const octave_value& rhs,
+					   bool& quit)
+{
+  quit = false;
+
+  ult.assign (octave_value::asn_eq, rhs);
+
+  if (! error_state)
+    {
+      if (list)
+	{
+	  list->eval ();
+
+	  if (error_state)
+	    eval_error ();
+	}
+    }
+  else
+    eval_error ();
+
+  quit = quit_loop_now ();
+}
+
+#define DO_LOOP(arg) \
+  do \
+    { \
+      for (int i = 0; i < steps; i++) \
+	{ \
+	  octave_value val (arg); \
+ \
+	  bool quit = false; \
+ \
+	  do_for_loop_once (ult, val, quit); \
+ \
+	  if (quit) \
+	    break; \
+	} \
+    } \
+  while (0)
+
+void
+tree_simple_for_command::eval (void)
+{
+  if (error_state)
+    return;
+
+  octave_value rhs = expr->rvalue ();
+
+  if (error_state || rhs.is_undefined ())
+    {
+      eval_error ();
+      return;
+    }
+
+  octave_lvalue ult = lhs->lvalue ();
+
+  if (error_state)
+    {
+      eval_error ();
+      return;
+    }
+
+  if (rhs.is_scalar_type ())
+    {
+      bool quit = false;
+
+      do_for_loop_once (ult, rhs, quit);
+    }
+  else if (rhs.is_matrix_type ())
+    {
+      Matrix m_tmp;
+      ComplexMatrix cm_tmp;
+
+      int nr;
+      int steps;
+
+      if (rhs.is_real_matrix ())
+	{
+	  m_tmp = rhs.matrix_value ();
+	  nr = m_tmp.rows ();
+	  steps = m_tmp.columns ();
+	}
+      else
+	{
+	  cm_tmp = rhs.complex_matrix_value ();
+	  nr = cm_tmp.rows ();
+	  steps = cm_tmp.columns ();
+	}
+
+      if (rhs.is_real_matrix ())
+	{
+	  if (nr == 1)
+	    DO_LOOP (m_tmp (0, i));
+	  else
+	    DO_LOOP (m_tmp.extract (0, i, nr-1, i));
+	}
+      else
+	{
+	  if (nr == 1)
+	    DO_LOOP (cm_tmp (0, i));
+	  else
+	    DO_LOOP (cm_tmp.extract (0, i, nr-1, i));
+	}
+    }
+  else if (rhs.is_string ())
+    {
+      gripe_string_invalid ();
+    }
+  else if (rhs.is_range ())
+    {
+      Range rng = rhs.range_value ();
+
+      int steps = rng.nelem ();
+      double b = rng.base ();
+      double increment = rng.inc ();
+
+      for (int i = 0; i < steps; i++)
+	{
+	  double tmp_val = b + i * increment;
+
+	  octave_value val (tmp_val);
+
+	  bool quit = false;
+
+	  do_for_loop_once (ult, val, quit);
+
+	  if (quit)
+	    break;
+	}
+    }
+  else if (rhs.is_map ())
+    {
+      Octave_map tmp_val (rhs.map_value ());
+
+      for (Pix p = tmp_val.first (); p != 0; tmp_val.next (p))
+	{
+	  octave_value val = tmp_val.contents (p);
+
+	  bool quit = false;
+
+	  do_for_loop_once (ult, val, quit);
+
+	  if (quit)
+	    break;
+	}
+    }
+  else
+    {
+      ::error ("invalid type in for loop expression near line %d, column %d",
+	       line (), column ());
+    }
+}
+
+void
+tree_simple_for_command::eval_error (void)
+{
+  if (error_state > 0)
+    ::error ("evaluating for command near line %d, column %d",
+	     line (), column ());
+}
+
+void
+tree_simple_for_command::accept (tree_walker& tw)
+{
+  tw.visit_simple_for_command (*this);
+}
+
+tree_complex_for_command::~tree_complex_for_command (void)
+{
+  delete expr;
+  delete list;
+}
+
+void
+tree_complex_for_command::do_for_loop_once (octave_lvalue &val_ref,
+					    octave_lvalue &key_ref,
+					    const octave_value& val,
+					    const octave_value& key,
+					    bool& quit)
+{
+  quit = false;
+
+  val_ref.assign (octave_value::asn_eq, val);
+  key_ref.assign (octave_value::asn_eq, key);
+
+  if (! error_state)
+    {
+      if (list)
+	{
+	  list->eval ();
+
+	  if (error_state)
+	    eval_error ();
+	}
+    }
+  else
+    eval_error ();
+
+  quit = quit_loop_now ();
+}
+
+void
+tree_complex_for_command::eval (void)
+{
+  if (error_state)
+    return;
+
+  octave_value rhs = expr->rvalue ();
+
+  if (error_state || rhs.is_undefined ())
+    {
+      eval_error ();
+      return;
+    }
+
+  if (rhs.is_map ())
+    {
+      // Cycle through structure elements.  First element of id_list
+      // is set to value and the second is set to the name of the
+      // structure element.
+
+      Pix p = lhs->first ();
+      tree_expression *elt = lhs->operator () (p);
+      octave_lvalue val_ref = elt->lvalue ();
+
+      lhs->next (p);
+      elt = lhs->operator () (p);
+      octave_lvalue key_ref = elt->lvalue ();
+
+      Octave_map tmp_val (rhs.map_value ());
+
+      for (p = tmp_val.first (); p != 0; tmp_val.next (p))
+	{
+	  octave_value key = tmp_val.key (p);
+	  octave_value val = tmp_val.contents (p);
+
+	  bool quit = false;
+
+	  do_for_loop_once (key_ref, val_ref, key, val, quit);
+
+	  if (quit)
+	    break;
+	}
+    }
+  else
+    error ("in statement `for [X, Y] = VAL', VAL must be a structure");
+}
+
+void
+tree_complex_for_command::eval_error (void)
+{
+  if (error_state > 0)
+    ::error ("evaluating for command near line %d, column %d",
+	     line (), column ());
+}
+
+void
+tree_complex_for_command::accept (tree_walker& tw)
+{
+  tw.visit_complex_for_command (*this);
+}
+
+/*
+;;; Local Variables: ***
+;;; mode: C++ ***
+;;; End: ***
+*/

@@ -1,0 +1,170 @@
+/*
+
+Copyright (C) 1996, 1997 John W. Eaton
+
+This file is part of Octave.
+
+Octave is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2, or (at your option) any
+later version.
+
+Octave is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with Octave; see the file COPYING.  If not, write to the Free
+Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+*/
+
+#if !defined (octave_tree_loop_h)
+#define octave_tree_loop_h 1
+
+#if defined (__GNUG__)
+#pragma interface
+#endif
+
+class octave_value;
+class octave_lvalue;
+
+class tree_argument_list;
+class tree_expression;
+class tree_statement_list;
+
+class tree_walker;
+
+#include "pt-cmd.h"
+
+// While.
+
+class
+tree_while_command : public tree_command
+{
+public:
+
+  tree_while_command (int l = -1, int c = -1)
+    : tree_command (l, c), expr (0), list (0) { }
+
+  tree_while_command (tree_expression *e, int l = -1, int c = -1)
+    : tree_command (l, c), expr (e), list (0) { }
+
+  tree_while_command (tree_expression *e, tree_statement_list *lst,
+		      int l = -1, int c = -1)
+    : tree_command (l, c), expr (e), list (lst) { }
+
+  ~tree_while_command (void);
+
+  void eval (void);
+
+  void eval_error (void);
+
+  tree_expression *condition (void) { return expr; }
+
+  tree_statement_list *body (void) { return list; }
+
+  void accept (tree_walker& tw);
+
+private:
+
+  // Expression to test.
+  tree_expression *expr;
+
+  // List of commands to execute.
+  tree_statement_list *list;
+};
+
+// For.
+
+class
+tree_simple_for_command : public tree_command
+{
+public:
+
+  tree_simple_for_command (int l = -1, int c = -1)
+    : tree_command (l, c), lhs (0), expr (0), list (0) { }
+
+  tree_simple_for_command (tree_expression *le, tree_expression *re,
+			   tree_statement_list *lst, int l = -1, int c = -1)
+    : tree_command (l, c), lhs (le), expr (re), list (lst) { }
+
+  ~tree_simple_for_command (void);
+
+  void eval (void);
+
+  void eval_error (void);
+
+  tree_expression *left_hand_side (void) { return lhs; }
+
+  tree_expression *control_expr (void) { return expr; }
+
+  tree_statement_list *body (void) { return list; }
+
+  void accept (tree_walker& tw);
+
+private:
+
+  // Expression to modify.
+  tree_expression *lhs;
+
+  // Expression to evaluate.
+  tree_expression *expr;
+
+  // List of commands to execute.
+  tree_statement_list *list;
+
+  void do_for_loop_once (octave_lvalue &ult, const octave_value& rhs,
+			 bool& quit);
+};
+
+class
+tree_complex_for_command : public tree_command
+{
+public:
+
+  tree_complex_for_command (int l = -1, int c = -1)
+    : tree_command (l, c), lhs (0), expr (0), list (0) { }
+
+  tree_complex_for_command (tree_argument_list *le, tree_expression *re,
+			    tree_statement_list *lst, int l = -1, int c = -1)
+    : tree_command (l, c), lhs (le), expr (re), list (lst) { }
+
+  ~tree_complex_for_command (void);
+
+  void eval (void);
+
+  void eval_error (void);
+
+  tree_argument_list *left_hand_side (void) { return lhs; }
+
+  tree_expression *control_expr (void) { return expr; }
+
+  tree_statement_list *body (void) { return list; }
+
+  void accept (tree_walker& tw);
+
+private:
+
+  // Expression to modify.
+  tree_argument_list *lhs;
+
+  // Expression to evaluate.
+  tree_expression *expr;
+
+  // List of commands to execute.
+  tree_statement_list *list;
+
+  void do_for_loop_once (octave_lvalue &val_ref, octave_lvalue &key_ref,
+			 const octave_value& val, const octave_value& key,
+			 bool& quit);
+};
+
+#endif
+
+/*
+;;; Local Variables: ***
+;;; mode: C++ ***
+;;; End: ***
+*/

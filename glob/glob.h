@@ -1,4 +1,4 @@
-/* Copyright (C) 1991, 1992 Free Software Foundation, Inc.
+/* Copyright (C) 1991, 1992, 1995, 1996 Free Software Foundation, Inc.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Library General Public License as
@@ -25,7 +25,8 @@ extern "C"
 #endif
 
 #undef	__ptr_t
-#if defined (__cplusplus) || (defined (__STDC__) && __STDC__)
+#if (defined (__cplusplus) || (defined (__STDC__) && __STDC__) \
+     || defined (WIN32))
 #undef	__P
 #define	__P(protos)	protos
 #define	__ptr_t	void *
@@ -47,10 +48,16 @@ extern "C"
 #define	GLOB_NOESCAPE	(1 << 6)/* Backslashes don't quote metacharacters.  */
 #define	GLOB_PERIOD	(1 << 7)/* Leading `.' can be matched by metachars.  */
 #define	__GLOB_FLAGS	(GLOB_ERR|GLOB_MARK|GLOB_NOSORT|GLOB_DOOFFS| \
-			 GLOB_NOESCAPE|GLOB_NOCHECK|GLOB_APPEND|GLOB_PERIOD)
+			 GLOB_NOESCAPE|GLOB_NOCHECK|GLOB_APPEND|     \
+			 GLOB_PERIOD|GLOB_ALTDIRFUNC|GLOB_BRACE|     \
+			 GLOB_NOMAGIC|GLOB_TILDE)
 
 #if !defined (_POSIX_C_SOURCE) || _POSIX_C_SOURCE < 2 || defined (_BSD_SOURCE)
 #define	GLOB_MAGCHAR	(1 << 8)/* Set in gl_flags if any metachars seen.  */
+#define GLOB_ALTDIRFUNC	(1 << 9)/* Use gl_opendir et al functions.  */
+#define GLOB_BRACE	(1 << 10)/* Expand "{a,b}" to "a" "b".  */
+#define GLOB_NOMAGIC	(1 << 11)/* If no magic chars, return the pattern.  */
+#define GLOB_TILDE	(1 <<12)/* Expand ~user and ~ to home directories.  */
 #endif
 
 /* Error returns from `glob'.  */
@@ -59,12 +66,23 @@ extern "C"
 #define	GLOB_NOMATCH	3	/* No matches found.  */
 
 /* Structure describing a globbing run.  */
+#if !defined (_AMIGA) && !defined (VMS) /* Buggy compiler.   */
+struct stat;
+#endif
 typedef struct
   {
     int gl_pathc;		/* Count of paths matched by the pattern.  */
     char **gl_pathv;		/* List of matched pathnames.  */
     int gl_offs;		/* Slots to reserve in `gl_pathv'.  */
     int gl_flags;		/* Set to FLAGS, maybe | GLOB_MAGCHAR.  */
+
+    /* If the GLOB_ALTDIRFUNC flag is set, the following functions
+       are used instead of the normal file access functions.  */
+    void (*gl_closedir) __P ((void *));
+    struct dirent *(*gl_readdir) __P ((void *));
+    __ptr_t (*gl_opendir) __P ((const char *));
+    int (*gl_lstat) __P ((const char *, struct stat *));
+    int (*gl_stat) __P ((const char *, struct stat *));
   } glob_t;
 
 /* Do glob searching for PATTERN, placing results in PGLOB.
@@ -82,13 +100,6 @@ extern int glob __P ((const char *__pattern, int __flags,
 /* Free storage allocated in PGLOB by a previous `glob' call.  */
 extern void globfree __P ((glob_t *__pglob));
 
-
-#if !defined (_POSIX_C_SOURCE) || _POSIX_C_SOURCE < 2 || defined (_GNU_SOURCE)
-/* If they are not NULL, `glob' uses these functions to read directories.  */
-extern __ptr_t (*__glob_opendir_hook) __P ((const char *__directory));
-extern const char *(*__glob_readdir_hook) __P ((__ptr_t __stream));
-extern void (*__glob_closedir_hook) __P ((__ptr_t __stream));
-#endif
 
 #ifdef	__cplusplus
 }

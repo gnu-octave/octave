@@ -1513,14 +1513,21 @@ install_builtin_variables (void)
 // Deleting names from the symbol tables.
 
 DEFUN_TEXT ("clear", Fclear, Sclear, -1, 1,
-  "clear [name ...]\n\
+  "clear [-x] [name ...]\n\
 \n\
-clear symbol(s) matching a list of globbing patterns\n\
-if no arguments are given, clear all user-defined variables and functions")
+Clear symbol(s) matching a list of globbing patterns.\n\
+\n\
+If no arguments are given, clear all user-defined variables and
+functions.\n\
+\n\
+With -x, exclude the named variables")
 {
   Octave_object retval;
 
   DEFINE_ARGV("clear");
+
+  argc--;
+  argv++;
 
 // Always clear the local table, but don't clear currently compiled
 // functions unless we are at the top level.  (Allowing that to happen
@@ -1528,59 +1535,88 @@ if no arguments are given, clear all user-defined variables and functions")
 
   int clear_user_functions = (curr_sym_tab == top_level_sym_tab);
 
-  if (argc == 1)
+  if (argc == 0)
     {
       curr_sym_tab->clear ();
       global_sym_tab->clear (clear_user_functions);
     }
   else
     {
-      int lcount;
-      char **lvars = curr_sym_tab->list (lcount, 0,
-					 symbol_def::USER_VARIABLE,
-					 SYMTAB_LOCAL_SCOPE);
-      int gcount;
-      char **gvars = curr_sym_tab->list (gcount, 0,
-					 symbol_def::USER_VARIABLE,
-					 SYMTAB_GLOBAL_SCOPE);
-      int fcount;
-      char **fcns = curr_sym_tab->list (fcount, 0,
-					symbol_def::USER_FUNCTION,
-					SYMTAB_ALL_SCOPES);
+      int exclusive = 0;
 
-      while (--argc > 0)
+      if (argc > 0)
 	{
-	  argv++;
-	  if (*argv)
+	  if (strcmp (*argv, "-x") == 0)
+	    {
+	      exclusive = 1;
+	      argv++;
+	      argc--;
+	    }
+	}
+
+      int lcount = 0;
+      int gcount = 0;
+      int fcount = 0;
+
+      char **lvars = 0;
+      char **gvars = 0;
+      char **fcns = 0;
+
+      if (argc > 0)
+	{
+	  lvars = curr_sym_tab->list (lcount, 0, symbol_def::USER_VARIABLE,
+				      SYMTAB_LOCAL_SCOPE);
+
+	  gvars = curr_sym_tab->list (gcount, 0, symbol_def::USER_VARIABLE,
+				      SYMTAB_GLOBAL_SCOPE);
+
+	  fcns = curr_sym_tab->list (fcount, 0, symbol_def::USER_FUNCTION,
+				     SYMTAB_ALL_SCOPES);
+	}
+
+      while (argc > 0)
+	{
+	  char *pat = *argv;
+
+	  if (pat)
 	    {
 	      int i;
 	      for (i = 0; i < lcount; i++)
 		{
-		  if (fnmatch (*argv, lvars[i], __FNM_FLAGS) == 0)
-		    curr_sym_tab->clear (lvars[i]);
+		  char *nm = lvars[i];
+		  int match = (fnmatch (pat, nm, __FNM_FLAGS) == 0);
+		  if ((exclusive && ! match) || (! exclusive && match))
+		    curr_sym_tab->clear (nm);
 		}
 
 	      int count;
 	      for (i = 0; i < gcount; i++)
 		{
-		  if (fnmatch (*argv, gvars[i], __FNM_FLAGS) == 0)
+		  char *nm = gvars[i];
+		  int match = (fnmatch (pat, nm, __FNM_FLAGS) == 0);
+		  if ((exclusive && ! match) || (! exclusive && match))
 		    {
-		      count = curr_sym_tab->clear (gvars[i]);
+		      count = curr_sym_tab->clear (nm);
 		      if (count > 0)
-			global_sym_tab->clear (gvars[i], clear_user_functions);
+			global_sym_tab->clear (nm, clear_user_functions);
 		    }
 		}
 
 	      for (i = 0; i < fcount; i++)
 		{
-		  if (fnmatch (*argv, fcns[i], __FNM_FLAGS) == 0)
+		  char *nm = fcns[i];
+		  int match = (fnmatch (pat, nm, __FNM_FLAGS) == 0);
+		  if ((exclusive && ! match) || (! exclusive && match))
 		    {
-		      count = curr_sym_tab->clear (fcns[i]);
+		      count = curr_sym_tab->clear (nm);
 		      if (count > 0)
-			global_sym_tab->clear (fcns[i], clear_user_functions);
+			global_sym_tab->clear (nm, clear_user_functions);
 		    }
 		}
 	    }
+
+	  argc--;
+	  argv++;
 	}
 
       delete [] lvars;

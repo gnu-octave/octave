@@ -608,16 +608,35 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs)
 
 		      if (len > 0)
 			{
-			  if (pcv_flag)
+			  int idx_nr = idx.orig_rows ();
+			  int idx_nc = idx.orig_columns ();
+
+			  if (dfi_flag || (idx_nr == 1 && idx_nc == 1))
+			    {
+			      if (pcv_flag)
+				{
+				  lhs.d1 = lhs.length ();
+				  lhs.d2 = 1;
+				}
+			      else
+				{
+				  lhs.d1 = 1;
+				  lhs.d2 = lhs.length ();
+				}
+			    }
+			  else if (idx_nr == 1 && rhs_nr == 1)
+			    {
+			      lhs.d1 = 1;
+			      lhs.d2 = lhs.length ();
+			    }
+			  else if (idx_nc == 1 && rhs_nc == 1)
 			    {
 			      lhs.d1 = lhs.length ();
 			      lhs.d2 = 1;
 			    }
 			  else
-			    {
-			      lhs.d1 = 1;
-			      lhs.d2 = lhs.length ();
-			    }
+			    (*current_liboctave_error_handler)
+      ("A(I) = X: X must be a scalar or a matrix with the same size as I");
 			}
 		      else
 			{

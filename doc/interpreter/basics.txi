@@ -816,7 +816,7 @@ reproduce the command line that is used to execute it.
 #! /bin/octave -qf
 printf ("%s", program_name);
 for i = 1:nargin
-  printf (" %s", argv{i});
+  printf (" %s", argv@{i@});
 endfor
 printf ("\n");
 @end group

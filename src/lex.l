@@ -188,7 +188,7 @@ static std::string strip_trailing_whitespace (char *s);
 static void handle_number (void);
 static int handle_string (char delim, int text_style = 0);
 static int handle_close_bracket (int spc_gobbled);
-static int handle_identifier (const std::string& tok, int spc_gobbled);
+static int handle_identifier (void);
 static bool have_continuation (bool trailing_comments_ok = true);
 static bool have_ellipsis_continuation (bool trailing_comments_ok = true);
 static void scan_for_comments (const char *);
@@ -481,9 +481,15 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
 {EL} {
     if (lexer_flags.looking_at_parameter_list)
-      return VARARGIN;
+      {
+	warning ("`...' is deprecated; use varargin instead");
+	return VARARGIN;
+      }
     else if (lexer_flags.looking_at_return_list)
-      return VARARGOUT;
+      {
+	warning ("`...' is deprecated; use varargout instead");
+	return VARARGOUT;
+      }
     else
       return LEXICAL_ERROR;
   }
@@ -502,11 +508,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %}
 
 {IDENT}{S}* {
-    std::string tok = strip_trailing_whitespace (yytext);
-    int c = yytext[yyleng-1];
-    int cont_is_spc = eat_continuation ();
-    int spc_gobbled = (cont_is_spc || c == ' ' || c == '\t');
-    return handle_identifier (tok, spc_gobbled);
+    return handle_identifier ();
   }
 
 %{
@@ -1164,6 +1166,16 @@ is_keyword (const std::string& s)
 
         case magic_line_kw:
 	  yylval.tok_val = new token (static_cast<double> (l), "", l, c);
+	  break;
+
+	case varargin_kw:
+	  if (! lexer_flags.looking_at_parameter_list)
+	    return 0;
+	  break;
+
+	case varargout_kw:
+	  if (! lexer_flags.looking_at_return_list)
+	    return 0;
 	  break;
 
 	default:
@@ -2175,8 +2187,16 @@ maybe_unput_comma (int spc_gobbled)
 // an identifier.  Handles keywords.
 
 static int
-handle_identifier (const std::string& tok, int spc_gobbled)
+handle_identifier (void)
 {
+  std::string tok = strip_trailing_whitespace (yytext);
+
+  int c = yytext[yyleng-1];
+
+  int cont_is_spc = eat_continuation ();
+
+  int spc_gobbled = (cont_is_spc || c == ' ' || c == '\t');
+
   // It is almost always an error for an identifier to be followed
   // directly by another identifier.  Special cases are handled
   // below.

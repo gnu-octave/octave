@@ -31,6 +31,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "str-vec.h"
 
 #include <defaults.h>
+#include "Cell.h"
 #include "defun.h"
 #include "error.h"
 #include "input.h"
@@ -83,7 +84,7 @@ octave_user_function::octave_user_function
     system_fcn_file (false), call_depth (0),
     num_named_args (0), args_passed (), num_args_passed (0),
     curr_va_arg_number (0), vr_list (0), symtab_entry (0),
-    argn_sr (0), nargin_sr (0), nargout_sr (0)
+    argn_sr (0), nargin_sr (0), nargout_sr (0), varargin_sr (0)
 {
   install_automatic_vars ();
 
@@ -199,6 +200,52 @@ octave_user_function::octave_vr_val (const octave_value& val)
   assert (vr_list);
 
   vr_list->append (val);
+}
+
+void
+octave_user_function::varargout_to_vr_val (void)
+{
+  assert (vr_list && vr_list->empty ());
+
+  symbol_record *sr = sym_tab->lookup ("varargout");
+
+  if (sr && sr->is_variable ())
+    {
+      octave_value v = sr->def ();
+
+      Cell c = v.cell_value ();
+
+      if (! error_state)
+	{
+	  // XXX FIXME XXX -- should varargout be required to be a
+	  // cell array with a single row or column?  If not, should
+	  // we have a cleaner way of doing this operation?
+
+	  int n = c.length ();
+
+	  const octave_value *d = c.data ();
+
+	  for (int i = 0; i < n; i++)
+	    vr_list->append (d[i]);
+	}
+      else
+	error ("expecting varargout to be a cell array object");
+    }
+}
+
+bool
+octave_user_function::has_varargout (void) const
+{
+  bool retval = false;
+
+  if (takes_var_return ())
+    {
+      symbol_record *sr = sym_tab->lookup ("varargout");
+
+      retval = (sr && sr->is_variable ());
+    }
+
+  return retval;
 }
 
 void
@@ -393,7 +440,7 @@ octave_user_function::do_multi_index_op (int nargout,
   // variables.
 
   {
-    bind_automatic_vars (arg_names, nargin, nargout);
+    bind_automatic_vars (arg_names, nargin, nargout, octave_all_va_args ());
 
     bool echo_commands = (Vecho_executing_commands & ECHO_FUNCTIONS);
 
@@ -438,6 +485,9 @@ octave_user_function::do_multi_index_op (int nargout,
 	    if (tmp.is_defined ())
 	      ret_list->initialize_undefined_elements (tmp);
 	  }
+
+	if (has_varargout ())
+	  varargout_to_vr_val ();
 
 	retval = ret_list->convert_to_const_vector (vr_list);
       }
@@ -511,17 +561,33 @@ octave_user_function::install_automatic_vars (void)
   argn_sr = sym_tab->lookup ("argn", true);
   nargin_sr = sym_tab->lookup ("nargin", true);
   nargout_sr = sym_tab->lookup ("nargout", true);
+
+  if (takes_varargs ())
+    varargin_sr = sym_tab->lookup ("varargin", true);
 }
 
 void
 octave_user_function::bind_automatic_vars
-  (const string_vector& arg_names, int nargin, int nargout)
+  (const string_vector& arg_names, int nargin, int nargout,
+   const octave_value_list& va_args)
 {
   if (! arg_names.empty ())
     argn_sr->define (arg_names);
 
   nargin_sr->define (static_cast<double> (nargin));
   nargout_sr->define (static_cast<double> (nargout));
+
+  if (takes_varargs ())
+    {
+      int n = va_args.length ();
+
+      Cell varargin (1, n);
+
+      for (int i = 0; i < n; i++)
+	varargin(0,i) = va_args(i);
+
+      varargin_sr->define (varargin);
+    }
 }
 
 DEFUNX ("va_arg", Fva_arg, args, ,
@@ -611,7 +677,9 @@ been declared to return an unspecified number of output arguments.\n\
     {
       if (curr_function)
 	{
-	  if (curr_function->takes_var_return ())
+	  if (curr_function->has_varargout ())
+	    ::error ("vr_val and varargout cannot both be used in the same function");
+	  else if (curr_function->takes_var_return ())
 	    curr_function->octave_vr_val (args(0));
 	  else
 	    {

@@ -35,6 +35,8 @@ enum octave_kw_id
   until_kw,
   unwind_protect_kw,
   unwind_protect_cleanup_kw,
+  varargin_kw,
+  varargout_kw,
   while_kw
 };
 
@@ -72,6 +74,8 @@ try, TRY, try_kw
 until, UNTIL, until_kw
 unwind_protect, UNWIND, unwind_protect_kw
 unwind_protect_cleanup, CLEANUP, unwind_protect_cleanup_kw
+varargin, VARARGIN, varargin_kw
+varargout, VARARGOUT, varargout_kw
 while, WHILE, while_kw
 __FILE__, TEXT, magic_file_kw
 __LINE__, NUM, magic_line_kw

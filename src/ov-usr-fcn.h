@@ -112,6 +112,10 @@ public:
 
   void octave_vr_val (const octave_value& val);
 
+  void varargout_to_vr_val (void);
+
+  bool has_varargout (void) const;
+
   void stash_function_name (const std::string& s);
 
   std::string function_name (void)
@@ -233,6 +237,9 @@ private:
   // The symbol record for nargout in the local symbol table.
   symbol_record *nargout_sr;
 
+  // The symbol record for varargin in the local symbol table.
+  symbol_record *varargin_sr;
+
   void print_code_function_header (void);
 
   void print_code_function_trailer (void);
@@ -240,7 +247,7 @@ private:
   void install_automatic_vars (void);
 
   void bind_automatic_vars (const string_vector& arg_names, int nargin,
-			    int nargout);
+			    int nargout, const octave_value_list& va_args);
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 

@@ -1,4 +1,24 @@
+2002-07-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lex.l (EL): Warn that `...' is deprecated.
+
+	* ov-usr-fcn.cc (octave_user_function::varargout_to_vr_val,
+	octave_user_function::has_varargout): New functions.
+	(Fvr_val): Ensure varargout is not defined.
+	(octave_user_function::do_multi_index_op): Copy values from
+	varargout here.
+
 2002-07-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-usr-fcn.h (octave_user_function::varargin_sr): New data member.
+	* ov-usr-fcn.cc (octave_user_function::octave_user_function):
+	Initialize it.
+	(bind_automatic_vars): Handle varargin.  Change	all callers.
+
+	* octave.gperf: Handle varargin and varargout as keywords.
+	* lex.l (is_keyword): Likewise.
+	(IDENT): Move all actions into handle_identifier.
+	(handle_identifier): Now takes no args.
 
 	* lex.l (EL): Return VARARGIN or VARARGOUT, not ELLIPSIS.
 	* parse.y (param_list): Use VARARGIN instead of ELLIPSIS.

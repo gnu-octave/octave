@@ -73,14 +73,15 @@ GEPBALANCE::init (const Matrix& a, const Matrix& b, const string& balance_job)
 
   int n = a_nc;
 
-  // Parameters for balance call.
-
   int info;
   int ilo;
   int ihi;
-  double *cscale = new double [n];
-  double *cperm = new double [n];
+
+  Array<double> cscale (n);
+  double *pcscale = cscale.fortran_vec ();
+
   Matrix wk (n, 6, 0.0);
+  double *pwk = wk.fortran_vec ();
 
   // Back out the permutations:
   //
@@ -102,23 +103,18 @@ GEPBALANCE::init (const Matrix& a, const Matrix& b, const string& balance_job)
   balanced_a_mat = a;
   balanced_b_mat = b;
 
-  // Initialize balancing matrices to identity.
-
-  left_balancing_mat = Matrix (n, n, 0.0);
-  for (int i = 0; i < n; i++)
-    left_balancing_mat (i, i) = 1.0;
-
-  right_balancing_mat = left_balancing_mat;
+  double *p_balanced_a_mat = balanced_a_mat.fortran_vec ();
+  double *p_balanced_b_mat = balanced_b_mat.fortran_vec ();
 
   // Check for permutation option.
 
-  char bal_job = balance_job[0];
+  char job = balance_job[0];
 
-  if (bal_job == 'P' || bal_job == 'B')
+  if (job == 'P' || job == 'B')
     {
-      F77_FCN (reduce, REDUCE) (n, n, balanced_a_mat.fortran_vec (),
-				n, balanced_b_mat.fortran_vec (), ilo,
-				ihi, cscale, wk.fortran_vec ());
+      F77_XFCN (reduce, REDUCE, (n, n, p_balanced_a_mat, n,
+				 p_balanced_b_mat, ilo, ihi,
+				 pcscale, pwk));
     }
   else
     {
@@ -128,65 +124,101 @@ GEPBALANCE::init (const Matrix& a, const Matrix& b, const string& balance_job)
       ihi = n;
     }
 
-  // Check for scaling option.
-
-  if ((bal_job == 'S' || bal_job == 'B') && ilo != ihi)
-    {
-      F77_FCN (scaleg, SCALEG) (n, n, balanced_a_mat.fortran_vec (), 
-				n, balanced_b_mat.fortran_vec (), ilo,
-				ihi, cscale, cperm, wk.fortran_vec ());
-    }
+  if (f77_exception_encountered)
+    (*current_liboctave_error_handler) ("unrecoverable error in reduce");
   else
     {
-      // Set scaling data to 0's.
+      Array<double> cperm (n);
+      double *pcperm = cperm.fortran_vec ();
 
-      for (int tmp = ilo-1; tmp < ihi; tmp++)
+      // Check for scaling option.
+
+      if ((job == 'S' || job == 'B') && ilo != ihi)
 	{
-	  cscale[tmp] = 0.0;
-	  wk.elem (tmp, 0) = 0.0;
+	  F77_XFCN (scaleg, SCALEG, (n, n, p_balanced_a_mat, n,
+				     p_balanced_b_mat, ilo, ihi,
+				     pcscale, pcperm, pwk));
 	}
-    }
+      else
+	{
+	  // Set scaling data to 0's.
 
-  // Scaleg returns exponents, not values, so...
+	  for (int i = ilo-1; i < ihi; i++)
+	    {
+	      cscale.elem (i) = 0.0;
+	      wk.elem (i, 0) = 0.0;
+	    }
+	}
 
-  for (int tmp = ilo-1; tmp < ihi; tmp++)
-    {
-      cscale[tmp] = pow (2.0, cscale[tmp]);
-      wk.elem (tmp, 0) = pow (2.0, -wk.elem (tmp, 0));
-    }
+      if (f77_exception_encountered)
+	(*current_liboctave_error_handler) ("unrecoverable error in scaleg");
+      else
+	{
+	  // Scaleg returns exponents, not values, so...
 
-  // Column permutations/scaling.
+	  for (int i = ilo-1; i < ihi; i++)
+	    {
+	      cscale.elem (i) = pow (2.0, cscale.elem (i));
+	      wk.elem (i, 0) = pow (2.0, -wk.elem (i, 0));
+	    }
 
-  F77_FCN (dgebak, DGEBAK) (&bal_job, "R", n, ilo, ihi, cscale, n, 
-			    right_balancing_mat.fortran_vec (), n,
-			    info, 1L, 1L);
+	  // Initialize balancing matrices to identity.
+
+	  left_balancing_mat = Matrix (n, n, 0.0);
+	  for (int i = 0; i < n; i++)
+	    left_balancing_mat (i, i) = 1.0;
+
+	  right_balancing_mat = left_balancing_mat;
+
+	  double *p_right_balancing_mat = right_balancing_mat.fortran_vec ();
+	  double *p_left_balancing_mat = left_balancing_mat.fortran_vec ();
+
+	  // Column permutations/scaling.
+
+	  char side = 'R';
+
+	  F77_XFCN (dgebak, DGEBAK, (&job, &side, n, ilo, ihi, pcscale,
+				     n, p_right_balancing_mat, n, info,
+				     1L, 1L));
     
-  // Row permutations/scaling.
+	  if (f77_exception_encountered)
+	    (*current_liboctave_error_handler)
+	      ("unrecoverable error in dgebak");
+	  else
+	    {
+	      // Row permutations/scaling.
 
-  F77_FCN (dgebak, DGEBAK) (&bal_job, "L", n, ilo, ihi,
-			    wk.fortran_vec (), n,
-			    left_balancing_mat.fortran_vec (), n,
-			    info, 1L, 1L);
+	      side = 'L';
 
-  // XXX FIXME XXX --- these four lines need to be added and
-  // debugged.  GEPBALANCE::init will work without them, though, so
-  // here they are.
+	      F77_XFCN (dgebak, DGEBAK, (&job, &side, n, ilo, ihi, pwk,
+					 n, p_left_balancing_mat, n,
+					 info, 1L, 1L));
 
 #if 0
-  if ((bal_job == 'P' || bal_job == 'B') && ilo != ihi)
-    {
-      F77_FCN (gradeq, GRADEQ) (n, n, balanced_a_mat.fortran_vec (),
-				n, balanced_b_mat.fortran_vec (), ilo,
-				ihi, cperm, wk.fortran_vec ());
-    }
+	      // XXX FIXME XXX --- these four lines need to be added and
+	      // debugged.  GEPBALANCE::init will work without them, though, so
+	      // here they are.
+
+	      if ((job == 'P' || job == 'B') && ilo != ihi)
+		{
+		  F77_XFCN (gradeq, GRADEQ, (n, n, p_balanced_a_mat, n,
+					     p_balanced_b_mat, ilo, ihi,
+					     pcperm, pwk));
+		}
 #endif
 
-  // Transpose for aa = cc*a*dd convention...
+	      if (f77_exception_encountered)
+		(*current_liboctave_error_handler)
+		  ("unrecoverable error in dgebak");
+	      else
+		{
+		  // Transpose for aa = cc*a*dd convention...
 
-  left_balancing_mat = left_balancing_mat.transpose ();
-
-  delete [] cscale;
-  delete [] cperm;
+		  left_balancing_mat = left_balancing_mat.transpose ();
+		}
+	    }
+	}
+    }
 
   return info;
 }

@@ -59,6 +59,8 @@ public:
       return *this;
     }
 
+  ~ComplexAEPBALANCE (void) { }
+
   ComplexMatrix balanced_matrix (void) const { return balanced_mat; }
 
   ComplexMatrix balancing_matrix (void) const { return balancing_mat; }

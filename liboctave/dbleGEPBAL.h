@@ -66,6 +66,8 @@ public:
       return *this;
     }
 
+  ~GEPBALANCE (void) { }
+
   Matrix balanced_a_matrix (void) const { return balanced_a_mat; }
   Matrix balanced_b_matrix (void) const { return balanced_b_mat; }
 

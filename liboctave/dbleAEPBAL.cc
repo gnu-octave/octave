@@ -49,44 +49,47 @@ extern "C"
 int
 AEPBALANCE::init (const Matrix& a, const string& balance_job)
 {
-  int a_nc = a.cols ();
+  int n = a.cols ();
 
-  if (a.rows () != a_nc)
+  if (a.rows () != n)
     {
       (*current_liboctave_error_handler) ("AEPBALANCE requires square matrix");
       return -1;
     }
 
-  int n = a_nc;
-
-  // Parameters for balance call.
-
   int info;
   int ilo;
   int ihi;
-  double *scale = new double [n];
 
-  // Copy matrix into local structure.
+  Array<double> scale (n);
+  double *pscale = scale.fortran_vec ();
 
   balanced_mat = a;
+  double *p_balanced_mat = balanced_mat.fortran_vec ();
 
-  char bal_job = balance_job[0];
+  char job = balance_job[0];
 
-  F77_FCN (dgebal, DGEBAL) (&bal_job, n,
-			    balanced_mat.fortran_vec (), n, ilo, ihi,
-			    scale, info, 1L, 1L);
+  F77_XFCN (dgebal, DGEBAL, (&job, n, p_balanced_mat, n, ilo, ihi,
+			     pscale, info, 1L, 1L));
 
-  // Initialize balancing matrix to identity.
+  if (f77_exception_encountered)
+    (*current_liboctave_error_handler) ("unrecoverable error in dgebal");
+  else
+    {
+      balancing_mat = Matrix (n, n, 0.0);
+      for (int i = 0; i < n; i++)
+	balancing_mat.elem (i ,i) = 1.0;
 
-  balancing_mat = Matrix (n, n, 0.0);
-  for (int i = 0; i < n; i++)
-    balancing_mat.elem (i ,i) = 1.0;
+      double *p_balancing_mat = balancing_mat.fortran_vec ();
 
-  F77_FCN (dgebak, DGEBAK) (&bal_job, "R", n, ilo, ihi, scale, n,
-			    balancing_mat.fortran_vec (), n, info, 1L,
-			    1L);
+      char side = 'R';
 
-  delete [] scale;
+      F77_XFCN (dgebak, DGEBAK, (&job, &side, n, ilo, ihi, pscale, n,
+				 p_balancing_mat, n, info, 1L, 1L));
+
+      if (f77_exception_encountered)
+	(*current_liboctave_error_handler) ("unrecoverable error in dgebak");
+    }
 
   return info;
 }

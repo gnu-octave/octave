@@ -1,3 +1,11 @@
+2005-03-22  John W. Eaton  <jwe@octave.org>
+
+	* optimization: New directory.
+	* Makefile.in (SUBDIRS): Add it to the list.
+	* optimization/Makefile.in: New file.
+	* optimization/glpk.m, optimization/glpkparams.m,
+	optimization/glpktest1, optimization/glpktest2: New files.
+
 2005-03-16  Soren Hauberg  <soren@hauberg.org>
 
 	* strings/split.m: Quick return for empty second arg.

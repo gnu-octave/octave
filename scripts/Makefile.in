@@ -30,8 +30,8 @@ DISTFILES = Makefile.in ChangeLog $(SOURCES) configure.in \
 	skip-autoheader DOCSTRINGS
 
 SUBDIRS = audio control deprecated elfun finance general image io \
-	linear-algebra miscellaneous plot polynomial quaternion \
-	set signal sparse specfun special-matrix startup \
+	linear-algebra miscellaneous optimization plot polynomial \
+	quaternion set signal sparse specfun special-matrix startup \
 	statistics strings time
 
 DISTSUBDIRS = $(SUBDIRS)

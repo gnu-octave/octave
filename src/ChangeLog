@@ -1,3 +1,8 @@
+2005-03-22  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/__glpk__.cc: New file.
+	* Makefile.in (DLD_XSRC): Add it to the list.
+
 2005-03-21  John W. Eaton  <jwe@octave.org>
 
 	* octave.cc (maximum_braindamage):

@@ -533,7 +533,7 @@ main (int argc, char **argv)
 
   execute_startup_files ();
 
-  octave_command_history.read ();
+  octave_command_history.read (false);
 
   if (! inhibit_startup_message && reading_startup_message_printed)
     cout << endl;

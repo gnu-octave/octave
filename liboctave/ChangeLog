@@ -1,3 +1,9 @@
+Sun Feb  2 22:33:44 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* cmd-hist.cc (command_history::read): New arg, must_exist.
+	Set line_in_file here too.
+	(command_history::read_range): New arg, must_exist.
+
 Fri Jan 31 09:21:57 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* f2c-main.c: Change C++-style comments to C-style comments.

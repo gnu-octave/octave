@@ -45,8 +45,10 @@ class
 Stack
 {
  public:
-  inline Stack (void) { }
-  inline virtual ~Stack (void) { }
+
+  Stack (void) { }
+
+  virtual ~Stack (void) { }
 
   virtual void push (const T& item) = 0;
 

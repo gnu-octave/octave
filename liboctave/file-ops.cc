@@ -42,6 +42,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "file-ops.h"
 #include "oct-env.h"
 #include "oct-passwd.h"
+#include "pathlen.h"
 #include "statdefs.h"
 #include "str-vec.h"
 
@@ -105,6 +106,110 @@ file_ops::mkfifo (const std::string& name, mode_t mode, std::string& msg)
     }
 #else
   msg = NOT_SUPPORTED ("mkfifo");
+#endif
+
+  return status;
+}
+
+// I don't know how to emulate this on systems that don't provide it.
+
+int
+file_ops::link (const std::string& old_name, const std::string& new_name)
+{
+  std::string msg;
+  return link (old_name, new_name, msg);
+}
+
+int
+file_ops::link (const std::string& old_name,
+		const std::string& new_name, std::string& msg)
+{
+  msg = std::string ();
+
+  int status = -1;
+
+#if defined (HAVE_LINK)
+  status = ::link (old_name.c_str (), new_name.c_str ());
+
+  if (status < 0)
+    {
+      using namespace std;
+      msg = ::strerror (errno);
+    }
+#else
+  msg = NOT_SUPPORTED ("link");
+#endif
+
+  return status;
+}
+
+// I don't know how to emulate this on systems that don't provide it.
+
+int
+file_ops::symlink (const std::string& old_name, const std::string& new_name)
+{
+  std::string msg;
+  return symlink (old_name, new_name, msg);
+}
+
+int
+file_ops::symlink (const std::string& old_name,
+		   const std::string& new_name, std::string& msg)
+{
+  msg = std::string ();
+
+  int status = -1;
+
+#if defined (HAVE_SYMLINK)
+  status = ::symlink (old_name.c_str (), new_name.c_str ());
+
+  if (status < 0)
+    {
+      using namespace std;
+      msg = ::strerror (errno);
+    }
+#else
+  msg = NOT_SUPPORTED ("symlink");
+#endif
+
+  return status;
+}
+
+// We provide a replacement for rename().
+
+int
+file_ops::readlink (const std::string& path, std::string& result)
+{
+  std::string msg;
+  return readlink (path, result, msg);
+}
+
+int
+file_ops::readlink (const std::string& path, std::string& result,
+		    std::string& msg)
+{
+  int status = -1;
+
+  msg = std::string ();
+
+  char buf[MAXPATHLEN+1];
+
+#if defined (HAVE_READLINK)
+  status = ::readlink (path.c_str (), buf, MAXPATHLEN);
+
+  if (status < 0)
+    {
+      using namespace std;
+      msg = ::strerror (errno);
+    }
+  else
+    {
+      buf[status] = '\0';
+      result = string (buf);
+      status = 0;
+    }
+#else
+  msg = NOT_SUPPORTED ("rename");
 #endif
 
   return status;

@@ -40,6 +40,15 @@ file_ops
   static int mkfifo (const std::string&, mode_t);
   static int mkfifo (const std::string&, mode_t, std::string&);
 
+  static int link (const std::string&, const std::string&);
+  static int link (const std::string&, const std::string&, std::string&);
+
+  static int symlink (const std::string&, const std::string&);
+  static int symlink (const std::string&, const std::string&, std::string&);
+
+  static int readlink (const std::string&, std::string&);
+  static int readlink (const std::string&, std::string&, std::string&);
+
   static int rename (const std::string&, const std::string&);
   static int rename (const std::string&, const std::string&, std::string&);
 
@@ -47,7 +56,8 @@ file_ops
   static int rmdir (const std::string&, std::string&);
 
   static std::string tempnam (const std::string&, const std::string&);
-  static std::string tempnam (const std::string&, const std::string&, std::string&);
+  static std::string tempnam (const std::string&, const std::string&,
+			      std::string&);
 
   typedef std::string (*tilde_expansion_hook) (const std::string&);
 

@@ -366,6 +366,142 @@ system-dependent error message.\n\
   return retval;
 }
 
+DEFUN (link, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {[@var{err}, @var{msg}] =} link (@var{old}, @var{new})\n\
+Create a new link (also known as a hard link) to an existing file.\n\
+\n\
+If successful, @var{err} is 0 and @var{msg} is an empty string.\n\
+Otherwise, @var{err} is nonzero and @var{msg} contains a\n\
+system-dependent error message.\n\
+@end deftypefn")
+{
+  octave_value_list retval;
+
+  retval(1) = std::string ();
+  retval(0) = -1.0;
+
+  if (args.length () == 2)
+    {
+      std::string from = args(0).string_value ();
+
+      if (error_state)
+	gripe_wrong_type_arg ("link", args(0));
+      else
+	{
+	  std::string to = args(1).string_value ();
+
+	  if (error_state)
+	    gripe_wrong_type_arg ("link", args(1));
+	  else
+	    {
+	      std::string msg;
+
+	      int status = file_ops::link (from, to, msg);
+
+	      retval(0) = static_cast<double> (status);
+
+	      if (status < 0)
+		retval(1) = msg;
+	    }
+	}
+    }
+  else
+    print_usage ("link");
+
+  return retval;
+}
+
+DEFUN (symlink, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {[@var{err}, @var{msg}] =} symlink (@var{old}, @var{new})\n\
+Create a symbolic link @var{new} which contains the string @var{old}.\n\
+\n\
+If successful, @var{err} is 0 and @var{msg} is an empty string.\n\
+Otherwise, @var{err} is nonzero and @var{msg} contains a\n\
+system-dependent error message.\n\
+@end deftypefn")
+{
+  octave_value_list retval;
+
+  retval(1) = std::string ();
+  retval(0) = -1.0;
+
+  if (args.length () == 2)
+    {
+      std::string from = args(0).string_value ();
+
+      if (error_state)
+	gripe_wrong_type_arg ("symlink", args(0));
+      else
+	{
+	  std::string to = args(1).string_value ();
+
+	  if (error_state)
+	    gripe_wrong_type_arg ("symlink", args(1));
+	  else
+	    {
+	      std::string msg;
+
+	      int status = file_ops::symlink (from, to, msg);
+
+	      retval(0) = static_cast<double> (status);
+
+	      if (status < 0)
+		retval(1) = msg;
+	    }
+	}
+    }
+  else
+    print_usage ("symlink");
+
+  return retval;
+}
+
+DEFUN (readlink, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {[@var{result}, @var{err}, @var{msg}] =} symlink (@var{symlink})\n\
+Read the value of the symbolic link @var{symlink}.\n\
+\n\
+If successful, @var{result} contains the contents of the symbolic link\n\
+@var{symlink}, @var{err} is 0 and @var{msg} is an empty string.\n\
+Otherwise, @var{err} is nonzero and @var{msg} contains a\n\
+system-dependent error message.\n\
+@end deftypefn")
+{
+  octave_value_list retval;
+
+  retval(2) = std::string ();
+  retval(1) = -1.0;
+  retval(0) = std::string ();
+
+  if (args.length () == 1)
+    {
+      std::string symlink = args(0).string_value ();
+
+      if (error_state)
+	gripe_wrong_type_arg ("readlink", args(0));
+      else
+	{
+	  std::string result;
+	  std::string msg;
+
+	  int status = file_ops::readlink (symlink, result, msg);
+
+	  retval(0) = result;
+
+	  retval(1) = static_cast<double> (status);
+
+	  if (status < 0)
+	    retval(2) = msg;
+	}
+    }
+  else
+    print_usage ("readlink");
+
+  return retval;
+}
+
 DEFUN (rename, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{err}, @var{msg}] =} rename (@var{old}, @var{new})\n\

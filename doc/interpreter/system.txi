@@ -117,6 +117,10 @@ about the status of files.
 
 @DOCSTRING(rename)
 
+@DOCSTRING(link)
+
+@DOCSTRING(symlink)
+
 @DOCSTRING(unlink)
 
 @DOCSTRING(readdir)

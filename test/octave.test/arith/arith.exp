@@ -1,26 +1,254 @@
-# ceil
-# exp
-# fix
-# floor
+set test ceil-1
+set prog_output "ans = 1"
+do_test ceil-1.m
+
+set test ceil-2
+set prog_output "ans = 1"
+do_test ceil-2.m
+
+set test ceil-3
+set prog_output "error:.*"
+do_test ceil-3.m
+
+set test ceil-4
+set prog_output "error:.*"
+do_test ceil-4.m
+
+set test exp-1
+set prog_output "ans = 1"
+do_test exp-1.m
+
+set test exp-2
+set prog_output "ans = 1"
+do_test exp-2.m
+
+set test exp-3
+set prog_output "error:.*"
+do_test exp-3.m
+
+set test exp-4
+set prog_output "error:.*"
+do_test exp-4.m
+
+set test fix-1
+set prog_output "ans = 1"
+do_test fix-1.m
+
+set test fix-2
+set prog_output "ans = 1"
+do_test fix-2.m
+
+set test fix-3
+set prog_output "error:.*"
+do_test fix-3.m
+
+set test fix-4
+set prog_output "error:.*"
+do_test fix-4.m
+
+set test floor-1
+set prog_output "ans = 1"
+do_test floor-1.m
+
+set test floor-2
+set prog_output "ans = 1"
+do_test floor-2.m
+
+set test floor-3
+set prog_output "error:.*"
+do_test floor-3.m
+
+set test floor-4
+set prog_output "error:.*"
+do_test floor-4.m
+
 # gcd
 # lcm
 # log
 # log10
 # log2
-# max
-# min
+
+set test max-1
+set prog_output "ans = 1"
+do_test max-1.m
+
+set test max-2
+set prog_output "ans = 1"
+do_test max-2.m
+
+set test max-3
+set prog_output "error:.*"
+do_test max-3.m
+
+set test max-4
+set prog_output "error:.*"
+do_test max-4.m
+
+set test min-1
+set prog_output "ans = 1"
+do_test min-1.m
+
+set test min-2
+set prog_output "ans = 1"
+do_test min-2.m
+
+set test min-3
+set prog_output "error:.*"
+do_test min-3.m
+
+set test min-4
+set prog_output "error:.*"
+do_test min-4.m
+
 # nexpow2
 # pow2
+
 # rem
-# round
-# sign
-# sqrt
-# xor
-# abs
-# arg
-# conj
-# imag
-# real
+
+set test round-1
+set prog_output "ans = 1"
+do_test round-1.m
+
+set test round-2
+set prog_output "ans = 1"
+do_test round-2.m
+
+set test round-3
+set prog_output "error:.*"
+do_test round-3.m
+
+set test round-4
+set prog_output "error:.*"
+do_test round-4.m
+
+set test sign-1
+set prog_output "ans = 1"
+do_test sign-1.m
+
+set test sign-2
+set prog_output "ans = 1"
+do_test sign-2.m
+
+set test sign-3
+set prog_output "error:.*"
+do_test sign-3.m
+
+set test sign-4
+set prog_output "error:.*"
+do_test sign-4.m
+
+set test sqrt-1
+set prog_output "ans = 1"
+do_test sqrt-1.m
+
+set test sqrt-2
+set prog_output "ans = 1"
+do_test sqrt-2.m
+
+set test sqrt-3
+set prog_output "error:.*"
+do_test sqrt-3.m
+
+set test sqrt-4
+set prog_output "error:.*"
+do_test sqrt-4.m
+
+set test abs-1
+set prog_output "ans = 1"
+do_test abs-1.m
+
+set test abs-2
+set prog_output "ans = 1"
+do_test abs-2.m
+
+set test abs-3
+set prog_output "error:.*"
+do_test abs-3.m
+
+set test abs-4
+set prog_output "error:.*"
+do_test abs-4.m
+
+set test xor-1
+set prog_output "ans = 1"
+do_test xor-1.m
+
+set test xor-2
+set prog_output "ans = 1"
+do_test xor-2.m
+
+set test xor-3
+set prog_output "error:.*"
+do_test xor-3.m
+
+set test xor-4
+set prog_output "error:.*"
+do_test xor-4.m
+
+set test arg-1
+set prog_output "ans = 1"
+do_test arg-1.m
+
+set test arg-2
+set prog_output "ans = 1"
+do_test arg-2.m
+
+set test arg-3
+set prog_output "error:.*"
+do_test arg-3.m
+
+set test arg-4
+set prog_output "error:.*"
+do_test arg-4.m
+
+set test conj-1
+set prog_output "ans = 1"
+do_test conj-1.m
+
+set test conj-2
+set prog_output "ans = 1"
+do_test conj-2.m
+
+set test conj-3
+set prog_output "error:.*"
+do_test conj-3.m
+
+set test conj-4
+set prog_output "error:.*"
+do_test conj-4.m
+
+set test imag-1
+set prog_output "ans = 1"
+do_test imag-1.m
+
+set test imag-2
+set prog_output "ans = 1"
+do_test imag-2.m
+
+set test imag-3
+set prog_output "error:.*"
+do_test imag-3.m
+
+set test imag-4
+set prog_output "error:.*"
+do_test imag-4.m
+
+set test real-1
+set prog_output "ans = 1"
+do_test real-1.m
+
+set test real-2
+set prog_output "ans = 1"
+do_test real-2.m
+
+set test real-3
+set prog_output "error:.*"
+do_test real-3.m
+
+set test real-4
+set prog_output "error:.*"
+do_test real-4.m
+
 # sin
 # cos
 # tan
@@ -45,11 +273,13 @@
 # acsch
 # acoth
 # atan2
+
 # sum
 # prod
 # cumsum
 # cumprod
 # sumsq
+
 # beta
 # betai
 # bincoeff

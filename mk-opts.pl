@@ -566,6 +566,8 @@ sub emit_print_function
 {
   local ($i);
 
+  ## XXX FIXME XXX -- determine the width of the table automatically.
+
   print "static void
 print_${class_name} (std::ostream& os)
 {
@@ -573,15 +575,15 @@ print_${class_name} (std::ostream& os)
 
   os << \"\\n\"
      << \"Options for $CLASS include:\\n\\n\"
-     << \"  keyword                                   value\\n\"
-     << \"  -------                                   -----\\n\";
+     << \"  keyword                                             value\\n\"
+     << \"  -------                                             -----\\n\";
 
   $struct_name *list = $static_table_name;\n\n";
 
   for ($i = 0; $i < $opt_num; $i++)
     {
       print "  {\n    os << \"  \"
-       << std::setiosflags (std::ios::left) << std::setw (40)
+       << std::setiosflags (std::ios::left) << std::setw (50)
        << list[$i].keyword
        << std::resetiosflags (std::ios::left)
        << \"  \";\n\n";

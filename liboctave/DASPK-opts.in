@@ -50,6 +50,26 @@ OPTION
 END_OPTION
 
 OPTION
+  NAME = "algebraic variables"
+  TYPE = "Array<int>"
+  SET_ARG_TYPE = const $TYPE&
+  INIT_BODY
+    $OPTVAR.resize (1);
+    $OPTVAR(0) = 0;
+  END_INIT_BODY
+  SET_CODE
+    void set_$OPT (int val)
+      {
+        $OPTVAR.resize (1);
+        $OPTVAR(0) = val;
+      }
+
+    void set_$OPT (const $TYPE& val)
+      { $OPTVAR = val; }
+  END_SET_CODE
+END_OPTION
+
+OPTION
   NAME = "enforce inequality constraints"
   TYPE = "int"
   INIT_VALUE = "0"
@@ -68,7 +88,7 @@ OPTION
     void set_$OPT (int val)
       {
         $OPTVAR.resize (1);
-        $OPTVAR(0) = (val > 0.0) ? val : 0;
+        $OPTVAR(0) = val;
       }
 
     void set_$OPT (const $TYPE& val)
@@ -77,52 +97,33 @@ OPTION
 END_OPTION
 
 OPTION
-  NAME = "exclude algebraic variables in error test"
+  NAME = "exclude algebraic variables from error test"
   TYPE = "int"
   INIT_VALUE = "0"
   SET_EXPR = "val"
 END_OPTION
 
 OPTION
-  NAME = "initial condition maximum step"
-  TYPE = "double"
-  INIT_VALUE = "-1.0"
-  SET_EXPR = "(val >= 0.0) ? val : -1.0"
-END_OPTION
-
-OPTION
-  NAME = "initial condition maximum jacobian evaluations"
-  TYPE = "int"
-  INIT_VALUE = "-1"
-  SET_EXPR = "(val >= 0) ? val : -1"
-END_OPTION
-
-OPTION
-  NAME = "initial condition maximum newton iterations"
-  TYPE = "int"
-  INIT_VALUE = "-1"
-  SET_EXPR = "(val >= 0) ? val : -1"
-END_OPTION
-
-OPTION
-  NAME = "initial condition minimum linesearch step"
-  TYPE = "double"
-  INIT_VALUE = "-1.0"
-  SET_EXPR = "(val >= 0.0) ? val : 0.0"
-END_OPTION
-
-OPTION
-  NAME = "initial condition omit linesearch"
+  NAME = "use initial condition heuristics"
   TYPE = "int"
   INIT_VALUE = "0"
   SET_EXPR = "val"
 END_OPTION
 
 OPTION
-  NAME = "initial condition swing factor"
-  TYPE = "double"
-  INIT_VALUE = "1.0"
-  SET_EXPR = "(val >= 0.0) ? val : -1.0"
+  NAME = "initial condition heuristics"
+  TYPE = "Array<double>"
+  SET_ARG_TYPE = "const $TYPE&"
+  INIT_BODY
+    $OPTVAR.resize (6, 0.0);
+    $OPTVAR(0) = 5.0;
+    $OPTVAR(1) = 6.0;
+    $OPTVAR(2) = 5.0;
+    $OPTVAR(3) = 0.0;
+    $OPTVAR(4) = ::pow (DBL_EPSILON, 2.0/3.0);
+    $OPTVAR(5) = 0.01;
+  END_INIT_BODY
+  SET_EXPR = "val"
 END_OPTION
 
 OPTION
@@ -144,13 +145,6 @@ OPTION
   TYPE = "double"
   INIT_VALUE = "-1.0"
   SET_EXPR = "(val >= 0.0) ? val : -1.0"
-END_OPTION
-
-OPTION
-  NAME = "minimum step size"
-  TYPE = "double"
-  INIT_VALUE = "0.0"
-  SET_EXPR = "(val >= 0.0) ? val : 0.0"
 END_OPTION
 
 OPTION

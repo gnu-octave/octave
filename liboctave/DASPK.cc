@@ -68,9 +68,9 @@ DASPK::DASPK (void) : DAE ()
 {
   sanity_checked = 0;
 
-  info.resize (15);
+  info.resize (20);
 
-  for (int i = 0; i < 15; i++)
+  for (int i = 0; i < 20; i++)
     info.elem (i) = 0;
 }
 
@@ -176,6 +176,9 @@ ddaspk_j (const double& time, const double *state, const double *deriv,
 ColumnVector
 DASPK::do_integrate (double tout)
 {
+  // XXX FIXME XXX -- should handle all this option stuff just once
+  // for each new problem.
+
   ColumnVector retval;
 
   if (restart)
@@ -259,27 +262,196 @@ DASPK::do_integrate (double tout)
   else
     {
       (*current_liboctave_error_handler)
-	("dassl: inconsistent sizes for tolerance arrays");
+	("daspk: inconsistent sizes for tolerance arrays");
 
       integration_error = true;
       return retval;
     }
 
-  if (initial_step_size () >= 0.0)
+  double hmax = maximum_step_size ();
+  if (hmax >= 0.0)
     {
-      rwork.elem (2) = initial_step_size ();
+      rwork.elem (1) = hmax;
+      info.elem (6) = 1;
+    }
+  else
+    info.elem (6) = 0;
+
+  double h0 = initial_step_size ();
+  if (h0 >= 0.0)
+    {
+      rwork.elem (2) = h0;
       info.elem (7) = 1;
     }
   else
     info.elem (7) = 0;
 
-  if (maximum_step_size () >= 0.0)
+  int maxord = maximum_order ();
+  if (maxord >= 0)
     {
-      rwork.elem (1) = maximum_step_size ();
-      info.elem (6) = 1;
+      if (maxord > 0 && maxord < 6)
+	{
+	  info(8) = 1;
+	  iwork(2) = maxord;
+	}
+      else
+	{
+	  (*current_liboctave_error_handler)
+	    ("daspk: invalid value for maximum order");
+	  integration_error = true;
+	  return retval;
+	}
     }
-  else
-    info.elem (6) = 0;
+
+  int eiq = enforce_inequality_constraints ();
+  switch (eiq)
+    {
+    case 1:
+    case 3:
+      {
+	Array<int> ict = inequality_constraint_types ();
+
+	if (ict.length () == n)
+	  {
+	    for (int i = 0; i < n; i++)
+	      {
+		int val = ict(i);
+		if (val < -2 || val > 2)
+		  {
+		    (*current_liboctave_error_handler)
+		      ("daspk: invalid value for inequality constraint type");
+		    integration_error = true;
+		    return retval;
+		  }
+		iwork(40+i) = val;
+	      }
+	  }
+	else
+	  {
+	    (*current_liboctave_error_handler)
+	      ("daspk: inequality constraint types size mismatch");
+	    integration_error = true;
+	    return retval;
+	  }
+      }
+      // Fall through...
+
+    case 2:
+      info(9) = eiq;
+      break;
+
+    default:
+      (*current_liboctave_error_handler)
+	("daspk: invalid value for enforce inequality constraints option");
+      integration_error = true;
+      return retval;
+    }
+
+  int ccic = compute_consistent_initial_condition ();
+  if (ccic)
+    {
+      if (ccic == 1)
+	{
+	  // XXX FIXME XXX -- this code is duplicated below.
+
+	  Array<int> av = algebraic_variables ();
+
+	  if (av.length () == n)
+	    {
+	      int lid;
+	      if (eiq == 0 || eiq == 2)
+		lid = 40;
+	      else if (eiq == 1 || eiq == 3)
+		lid = 40 + n;
+	      else
+		abort ();
+
+	      for (int i = 0; i < n; i++)
+		iwork(lid+i) = av(i) ? -1 : 1;
+	    }
+	  else
+	    {
+	      (*current_liboctave_error_handler)
+		("daspk: algebraic variables size mismatch");
+	      integration_error = true;
+	      return retval;
+	    }
+	}
+      else if (ccic != 2)
+	{
+	  (*current_liboctave_error_handler)
+	    ("daspk: invalid value for compute consistent initial condition option");
+	  integration_error = true;
+	  return retval;
+	}
+
+      info(10) = ccic;
+    }
+
+  if (exclude_algebraic_variables_from_error_test ())
+    {
+      info(15) = 1;
+
+      // XXX FIXME XXX -- this code is duplicated above.
+
+      Array<int> av = algebraic_variables ();
+
+      if (av.length () == n)
+	{
+	  int lid;
+	  if (eiq == 0 || eiq == 2)
+	    lid = 40;
+	  else if (eiq == 1 || eiq == 3)
+	    lid = 40 + n;
+	  else
+	    abort ();
+
+	  for (int i = 0; i < n; i++)
+	    iwork(lid+i) = av(i) ? -1 : 1;
+	}
+    }
+
+  if (use_initial_condition_heuristics ())
+    {
+      Array<double> ich = initial_condition_heuristics ();
+
+      if (ich.length () == 6)
+	{
+	  iwork(31) = NINT (ich(0));
+	  iwork(32) = NINT (ich(1));
+	  iwork(33) = NINT (ich(2));
+	  iwork(34) = NINT (ich(3));
+
+	  rwork(13) = ich(4);
+	  rwork(14) = ich(5);
+	}
+      else
+	{
+	  (*current_liboctave_error_handler)
+	    ("daspk: invalid initial condition heuristics option");
+	  integration_error = true;
+	  return retval;
+	}
+
+      info(16) = 1;
+    }
+
+  int pici = print_initial_condition_info ();
+  switch (pici)
+    {
+    case 0:
+    case 1:
+    case 2:
+      info(17) = pici;
+      break;
+
+    default:
+      (*current_liboctave_error_handler)
+	("daspk: invalid value for print initial condition info option");
+      integration_error = true;
+      return retval;
+      break;
+    }
 
   double *dummy = 0;
   int *idummy = 0;

@@ -161,6 +161,9 @@ ddassl_j (const double& time, const double *state, const double *deriv,
 ColumnVector
 DASSL::do_integrate (double tout)
 {
+  // XXX FIXME XXX -- should handle all this option stuff just once
+  // for each new problem.
+
   ColumnVector retval;
 
   if (restart)
@@ -239,21 +242,46 @@ DASSL::do_integrate (double tout)
       return retval;
     }
 
-  if (initial_step_size () >= 0.0)
+  double hmax = maximum_step_size ();
+  if (hmax >= 0.0)
     {
-      rwork.elem (2) = initial_step_size ();
+      rwork.elem (1) = hmax;
+      info.elem (6) = 1;
+    }
+  else
+    info.elem (6) = 0;
+
+  double h0 = initial_step_size ();
+  if (h0 >= 0.0)
+    {
+      rwork.elem (2) = h0;
       info.elem (7) = 1;
     }
   else
     info.elem (7) = 0;
 
-  if (maximum_step_size () >= 0.0)
+  int maxord = maximum_order ();
+  if (maxord >= 0)
     {
-      rwork.elem (1) = maximum_step_size ();
-      info.elem (6) = 1;
+      if (maxord > 0 && maxord < 6)
+	{
+	  info(8) = 1;
+	  iwork(2) = maxord;
+	}
+      else
+	{
+	  (*current_liboctave_error_handler)
+	    ("dassl: invalid value for maximum order");
+	  integration_error = true;
+	  return retval;
+	}
     }
-  else
-    info.elem (6) = 0;
+
+  int enc = enforce_nonnegativity_constraints ();
+  info (9) = enc ? 1 : 0;
+
+  int ccic = compute_consistent_initial_condition ();
+  info(10) = ccic ? 1 : 0;
 
   double *dummy = 0;
   int *idummy = 0;

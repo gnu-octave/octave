@@ -564,6 +564,13 @@ including a reproducible test case and send the message."
   (run-hooks 'octave-mode-hook))
 
 ;;; Miscellaneous useful functions
+
+(unless (fboundp 'line-beginning-position)
+  (defalias 'line-beginning-position 'point-at-bol))
+
+(unless (fboundp 'line-end-position)
+  (defalias 'line-end-position 'point-at-eol))
+
 (defun octave-describe-major-mode ()
   "Describe the current major mode."
   (interactive)

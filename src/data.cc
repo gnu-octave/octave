@@ -1036,6 +1036,12 @@ See also: logspace")
 
   int npoints = 100;
 
+  if (nargin != 2 && nargin != 3)
+    {
+      print_usage ("linspace");
+      return retval;
+    }
+
   if (nargin == 3)
     {
       double n = args(2).double_value ();
@@ -1043,8 +1049,6 @@ See also: logspace")
       if (! error_state)
 	npoints = NINT (n);
     }
-  else
-    print_usage ("linspace");
 
   if (! error_state)
     {

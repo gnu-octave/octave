@@ -560,7 +560,7 @@ tree_print_code::visit_oct_obj (tree_oct_obj&)
 }
 
 void
-tree_print_code::visit_octave_value (octave_value& val)
+tree_print_code::visit_constant (tree_constant& val)
 {
   indent ();
 
@@ -1034,24 +1034,19 @@ tree_print_code::visit_unary_expression (tree_unary_expression& expr)
 
   tree_expression *op = expr.operand ();
 
-  tree_expression::type etype = expr.expression_type ();
-
-  switch (etype)
+  if (expr.is_prefix_op ())
     {
-    case tree_expression::hermitian:
-    case tree_expression::transpose:
-      if (op)
-	op->accept (*this);
-	os << expr.oper ();
-      break;
-
-    case tree_expression::not:
-    case tree_expression::uminus:
-    default:
       os << expr.oper ();
+
       if (op)
 	op->accept (*this);
-      break;
+    }
+  else
+    {
+      if (op)
+	op->accept (*this);
+
+      os << expr.oper ();
     }
 
   if (in_parens)

@@ -86,7 +86,7 @@ public:
 
   void visit_oct_obj (tree_oct_obj&);
 
-  void visit_octave_value (octave_value&);
+  void visit_constant (tree_constant&);
 
   void visit_parameter_list (tree_parameter_list&);
 

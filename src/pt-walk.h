@@ -102,7 +102,7 @@ public:
   visit_oct_obj (tree_oct_obj&) = 0;
 
   virtual void
-  visit_octave_value (octave_value&) = 0;
+  visit_constant (tree_constant&) = 0;
 
   virtual void
   visit_parameter_list (tree_parameter_list&) = 0;

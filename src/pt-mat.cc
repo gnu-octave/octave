@@ -34,7 +34,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "defun.h"
 #include "error.h"
 #include "oct-obj.h"
-#include "pt-const.h"
 #include "pt-exp.h"
 #include "pt-fvc.h"
 #include "pt-mat.h"
@@ -42,6 +41,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt-mvr.h"
 #include "pt-walk.h"
 #include "utils.h"
+#include "ov.h"
+#include "variables.h"
 
 // Are empty elements in a matrix list ok?  For example, is the empty
 // matrix in an expression like `[[], 1]' ok?  A positive value means

@@ -49,10 +49,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-obj.h"
 #include "pager.h"
 #include "pt-exp.h"
+#include "pt-fvc.h"
 #include "symtab.h"
 #include "sysdep.h"
 #include "unwind-prot.h"
 #include "utils.h"
+#include "variables.h"
 
 // The default output format.  May be one of "binary", "text", or
 // "mat-binary".
@@ -85,7 +87,7 @@ enum load_save_format
 // Assumes TC is defined.
 
 static void
-install_loaded_variable (int force, char *name, const octave_value& tc,
+install_loaded_variable (int force, char *name, const octave_value& val,
 			 int global, char *doc)
 {
   // Is there already a symbol by this name?  If so, what is it?
@@ -203,8 +205,7 @@ install_loaded_variable (int force, char *name, const octave_value& tc,
 
   if (sr)
     {
-      octave_value *tmp_tc = new octave_value (tc);
-      sr->define (tmp_tc);
+      sr->define (val);
       if (doc)
 	sr->document (doc);
       return;
@@ -1364,7 +1365,8 @@ do_load (istream& stream, const string& orig_fname, int force,
 			      << "type               rows   cols   name\n"
 			      << "====               ====   ====   ====\n";
 
-			  output_buf.form ("%-16s", tc.type_as_string ());
+			  string type = tc.type_name ();
+			  output_buf.form ("%-16s", type.c_str ());
 			  output_buf.form ("%7d", tc.rows ());
 			  output_buf.form ("%7d", tc.columns ());
 			  output_buf << "   ";
@@ -2083,7 +2085,8 @@ do_save (ostream& os, symbol_record *sr, load_save_format fmt,
   string name = sr->name ();
   string help = sr->help ();
   int global = sr->is_linked_to_global ();
-  octave_value tc = *((octave_value *) sr->def ());
+  tree_fvc *tmp = sr->def ();
+  octave_value tc = tmp->eval (0);
 
   if (tc.is_undefined ())
     return;

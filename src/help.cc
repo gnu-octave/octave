@@ -788,7 +788,7 @@ display the definition of each NAME that refers to a function")
 
 		  assert (defn && defn->is_constant ());
 
-		  octave_value *tmp = (octave_value *) defn;
+		  tree_constant *tmp = (tree_constant *) defn;
 
 		  int var_ok = 1;
 		  if (tmp && tmp->is_map ())

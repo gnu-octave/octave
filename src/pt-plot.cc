@@ -61,6 +61,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "sighandlers.h"
 #include "sysdep.h"
 #include "utils.h"
+#include "variables.h"
 
 // If TRUE, a replot command is issued automatically each time a plot
 // changes in some way.
@@ -627,8 +628,7 @@ subplot::extract_plot_data (int ndim, octave_value& data)
       args(1) = val;
       args(0) = octave_value::magic_colon_t;
 
-      octave_value_list tmp = data.eval (0, 1, args);
-      retval = tmp(0);
+      retval = data.index (args);
 
       if (error_state)
 	return octave_value ();

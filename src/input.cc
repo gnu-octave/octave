@@ -679,9 +679,9 @@ generate_struct_completions (const char *text, char *& prefix,
     {
       tree_fvc *tmp_fvc = sr->def ();
 
-      octave_value *def = 0;
+      tree_constant *def = 0;
       if (tmp_fvc->is_constant ())
-	def = (octave_value *) tmp_fvc;
+	def = (tree_constant *) tmp_fvc;
 
       if (def && def->is_map ())
 	{
@@ -773,9 +773,9 @@ looks_like_struct (const char *nm)
     {
       tree_fvc *tmp_fvc = sr->def ();
 
-      octave_value *def = 0;
+      tree_constant *def = 0;
       if (tmp_fvc->is_constant ())
-	def = (octave_value *) tmp_fvc;
+	def = (tree_constant *) tmp_fvc;
 
       if (def && def->is_map ())
 	{
@@ -1082,7 +1082,7 @@ get_user_input (const octave_value_list& args, int debug = 0)
 	  if (retval.is_defined ())
 	    {
 	      if (debug)
-		retval.eval (1);
+		retval.print ();
 	    }
 	  else
 	    retval = Matrix ();

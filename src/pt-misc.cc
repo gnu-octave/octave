@@ -40,7 +40,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pager.h"
 #include "toplev.h"
 #include "pt-cmd.h"
-#include "pt-const.h"
 #include "pt-exp.h"
 #include "pt-fcn.h"
 #include "pt-fvc.h"
@@ -48,6 +47,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt-mvr.h"
 #include "pt-walk.h"
 #include "pt-pr-code.h"
+#include "ov.h"
 #include "variables.h"
 
 // Nonzero means we're breaking out of a loop or function body.
@@ -306,7 +306,10 @@ tree_parameter_list::initialize_undefined_elements (octave_value& val)
     {
       tree_identifier *elt = this->operator () (p);
       if (! elt->is_defined ())
-	elt->assign (val);
+	{
+	  octave_variable_reference tmp (elt);
+	  tmp.assign (val);
+	}
     }
 }
 
@@ -326,7 +329,7 @@ tree_parameter_list::define_from_arg_vector (const octave_value_list& args)
     {
       tree_identifier *elt = this->operator () (p);
 
-      octave_value *tmp = 0;
+      tree_constant *tmp = 0;
 
       if (i < nargin)
 	{
@@ -335,7 +338,7 @@ tree_parameter_list::define_from_arg_vector (const octave_value_list& args)
 	      ::error ("invalid use of colon in function argument list");
 	      return;
 	    }
-	  tmp = new octave_value (args(i));
+	  tmp = new tree_constant (args (i));
 	}
 
       elt->define (tmp);

@@ -6,6 +6,10 @@
    Leave the following blank line there!!  Autoheader needs it.  */
 
 
+/* Define if you want bounds checking on element references for
+   internal array and matrix classes. */
+#undef BOUNDS_CHECKING
+
 /* Define if your math.h declares struct exception for matherr() */
 #undef EXCEPTION_IN_MATH
 

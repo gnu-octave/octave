@@ -192,9 +192,9 @@ file_ops::readlink (const std::string& path, std::string& result,
 
   msg = std::string ();
 
+#if defined (HAVE_READLINK)
   char buf[MAXPATHLEN+1];
 
-#if defined (HAVE_READLINK)
   status = ::readlink (path.c_str (), buf, MAXPATHLEN);
 
   if (status < 0)

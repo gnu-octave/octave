@@ -1,3 +1,8 @@
+2002-09-26  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in (AH_BOTTOM): Don't define
+	USE_PRAGMA_INTERFACE_IMPLEMENTATION.
+
 2002-09-26  Paul Kienzle <pkienzle@users.sf.net>
 
 	* configure.in: Fix syntax errors in !HAVE_XXX_T.

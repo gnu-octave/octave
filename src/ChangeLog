@@ -1,3 +1,51 @@
+2002-09-26  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* BaseSLList.cc, BaseSLList.h, Cell.cc, Cell.h, DLList.cc,
+	DLList.h, Map.cc, Map.h, OPERATORS/op-b-b.cc,
+	OPERATORS/op-bm-b.cc, OPERATORS/op-bm-bm.cc, OPERATORS/op-cell.cc,
+	OPERATORS/op-chm.cc, OPERATORS/op-cm-cm.cc, OPERATORS/op-cm-cs.cc,
+	OPERATORS/op-cm-m.cc, OPERATORS/op-cm-s.cc, OPERATORS/op-cs-cm.cc,
+	OPERATORS/op-cs-cs.cc, OPERATORS/op-cs-m.cc, OPERATORS/op-cs-s.cc,
+	OPERATORS/op-fil-b.cc, OPERATORS/op-fil-bm.cc,
+	OPERATORS/op-fil-cm.cc, OPERATORS/op-fil-cs.cc,
+	OPERATORS/op-fil-lis.cc, OPERATORS/op-fil-m.cc,
+	OPERATORS/op-fil-rec.cc, OPERATORS/op-fil-s.cc,
+	OPERATORS/op-fil-str.cc, OPERATORS/op-list.cc,
+	OPERATORS/op-m-cm.cc, OPERATORS/op-m-cs.cc, OPERATORS/op-m-m.cc,
+	OPERATORS/op-m-s.cc, OPERATORS/op-range.cc, OPERATORS/op-s-cm.cc,
+	OPERATORS/op-s-cs.cc, OPERATORS/op-s-m.cc, OPERATORS/op-s-s.cc,
+	OPERATORS/op-str-str.cc, SLList.cc, SLList.h, SLStack.cc,
+	SLStack.h, Stack.cc, Stack.h, c-file-ptr-stream.cc,
+	c-file-ptr-stream.h, comment-list.cc, comment-list.h, oct-map.cc,
+	oct-map.h, oct-obj.cc, oct-obj.h, ov-base-mat.cc, ov-base-mat.h,
+	ov-base-nd-array.cc, ov-base-nd-array.h, ov-base-scalar.cc,
+	ov-base-scalar.h, ov-base.cc, ov-base.h, ov-bool-mat.cc,
+	ov-bool-mat.h, ov-bool.cc, ov-bool.h, ov-builtin.cc, ov-builtin.h,
+	ov-cell.cc, ov-cell.h, ov-ch-mat.cc, ov-ch-mat.h, ov-colon.cc,
+	ov-complex.cc, ov-complex.h, ov-cs-list.cc ov-cs-list.h,
+	ov-cx-mat.cc, ov-cx-mat.h, ov-dld-fcn.cc, ov-dld-fcn.h, ov-fcn.cc,
+	ov-fcn.h, ov-file.cc, ov-file.h, ov-list.cc, ov-list.h,
+	ov-mapper.cc, ov-mapper.h, ov-range.cc, ov-range.h, ov-re-mat.cc,
+	ov-re-mat.h, ov-re-nd-array.cc, ov-re-nd-array.h, ov-scalar.cc,
+	ov-scalar.h, ov-str-mat.cc, ov-str-mat.h, ov-struct.cc,
+	ov-struct.h, ov-typeinfo.cc, ov-typeinfo.h, ov-usr-fcn.cc,
+	ov-usr-fcn.h, ov-va-args.cc, ov.cc, ov.h, procstream.cc,
+	procstream.h, pt-arg-list.cc, pt-arg-list.h, pt-assign.cc,
+	pt-assign.h, pt-binop.cc, pt-binop.h, pt-bp.cc, pt-bp.h,
+	pt-cell.cc, pt-cell.h, pt-check.cc, pt-check.h, pt-cmd.cc,
+	pt-cmd.h, pt-colon.cc, pt-colon.h, pt-const.cc, pt-const.h,
+	pt-decl.cc, pt-decl.h, pt-except.cc, pt-except.h, pt-exp.cc,
+	pt-exp.h, pt-id.cc, pt-id.h, pt-idx.cc, pt-idx.h, pt-jump.cc,
+	pt-jump.h, pt-loop.cc, pt-loop.h, pt-mat.cc, pt-mat.h, pt-misc.cc,
+	pt-misc.h, pt-plot.cc, pt-plot.h, pt-pr-code.cc, pt-pr-code.h,
+	pt-select.cc, pt-select.h, pt-stmt.cc, pt-stmt.h, pt-unop.cc,
+	pt-unop.h, pt.cc, pt.h, symtab.cc, symtab.h, token.cc, token.h,
+	unwind-prot.cc, unwind-prot.h:
+	If __GNUG__, use pragma interface/implementation.  Allow this to
+	be turned off by defining NO_PRAGMA_INTERFACE_IMPLEMENTATION.
+
+
+
 2002-09-26  Paul Kienzle <pkienzle@users.sf.net>
 
 	* mappers.cc (install_mapper_functions): Install erf, not xerf.

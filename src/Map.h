@@ -36,7 +36,7 @@ License as published by the Free Software Foundation.
 #if ! defined (octave_Map_h)
 #define octave_Map_h 1
 
-#if defined (USE_PRAGMA_INTERFACE_IMPLEMENTATION)
+#if defined (__GNUG__) && ! defined (NO_PRAGMA_INTERFACE_IMPLEMENTATION)
 #pragma interface
 #endif
 

@@ -79,8 +79,8 @@ symbol_out_of_date (symbol_record *sr)
 
   if (sr != (symbol_record *) NULL)
     {
-      tree *ans = sr->def ();
-      if (ans != NULL_TREE)
+      tree_fvc *ans = sr->def ();
+      if (ans != (tree_fvc *) NULL)
 	{
 	  char *ff = ans->fcn_file_name ();
 	  if (! (ff == (char *) NULL
@@ -277,9 +277,9 @@ builtin_string_variable (const char *name)
 
   char *retval = (char *) NULL;
 
-  tree *defn = sr->def ();
+  tree_fvc *defn = sr->def ();
 
-  if (defn != NULL_TREE)
+  if (defn != (tree_fvc *) NULL)
     {
       tree_constant val = defn->eval (0);
 
@@ -309,9 +309,9 @@ builtin_real_scalar_variable (const char *name, double& d)
 
   assert (sr != (symbol_record *) NULL);
 
-  tree *defn = sr->def ();
+  tree_fvc *defn = sr->def ();
 
-  if (defn != NULL_TREE)
+  if (defn != (tree_fvc *) NULL)
     {
       tree_constant val = defn->eval (0);
 
@@ -631,10 +631,10 @@ is_builtin_variable (const char *name)
 /*
  * Is this tree_constant a valid function?
  */
-tree *
+tree_fvc *
 is_valid_function (tree_constant& arg, char *warn_for, int warn = 0)
 {
-  tree *ans = NULL_TREE;
+  tree_fvc *ans = (tree_fvc *) NULL;
 
   if (! arg.is_string_type ())
     {
@@ -659,12 +659,12 @@ is_valid_function (tree_constant& arg, char *warn_for, int warn = 0)
     }
 
   ans = sr->def ();
-  if (ans == NULL_TREE || ! sr->is_function ())
+  if (ans == (tree_fvc *) NULL || ! sr->is_function ())
     {
       if (warn)
 	error ("%s: the symbol `%s' is not valid as a function",
 	       warn_for, fcn_name);
-      ans = NULL_TREE;
+      ans = (tree_fvc *) NULL;
     }
 
   return ans;
@@ -674,7 +674,7 @@ is_valid_function (tree_constant& arg, char *warn_for, int warn = 0)
  * Does this function take the right number of arguments?
  */
 int
-takes_correct_nargs (tree *fcn, int expected_nargin, char *warn_for,
+takes_correct_nargs (tree_fvc *fcn, int expected_nargin, char *warn_for,
 		     int warn = 0) 
 {
   int nargs = fcn->max_expected_args () - 1;

@@ -28,6 +28,7 @@ class istream;
 class symbol_record;
 class symbol_table;
 class tree;
+class tree_fvc;
 class tree_constant;
 
 struct builtin_mapper_functions;
@@ -87,8 +88,8 @@ extern void skip_comments (istream&);
 extern int valid_identifier (char *);
 extern int identifier_exists (char *);
 extern int is_builtin_variable (const char *name);
-extern tree *is_valid_function (tree_constant&, char *, int warn = 0);
-extern int takes_correct_nargs (tree *, int, char *, int warn = 0);
+extern tree_fvc *is_valid_function (tree_constant&, char *, int warn = 0);
+extern int takes_correct_nargs (tree_fvc *, int, char *, int warn = 0);
 extern char **make_name_list (void);
 
 // Symbol table for symbols at the top level.

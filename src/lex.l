@@ -1072,6 +1072,23 @@ lookup_identifier (const string& name)
   return curr_sym_tab->lookup (name, 1, 0);
 }
 
+static bool
+is_variable (const string& name)
+{
+  symbol_record *sr = curr_sym_tab->lookup (name, 0, 0);
+
+  return sr && sr->is_variable ();
+}
+
+static void
+force_local_variable (const string& name)
+{
+  symbol_record *sr = curr_sym_tab->lookup (name, 1, 0);
+
+  if (sr)
+    sr->define (octave_value ());
+}
+
 // Grab the help text from an function file.  Always overwrites the
 // current contents of help_buf.
 
@@ -1721,22 +1738,10 @@ handle_identifier (const string& tok, int spc_gobbled)
 	TOK_RETURN (plot_option_kw);
     }
 
-  // If we are looking at a text style function, set up to gobble its
-  // arguments.  These are also reserved words, but only because it
-  // would be very difficult to do anything intelligent with them if
-  // they were not reserved.
-
-  if (is_text_function_name (tok))
-    {
-      BEGIN TEXT_FCN;
-
-      if (tok == "gset")
-	lexer_flags.doing_set = 1;
-    }
-
   int c = yyinput ();
   yyunput (c, yytext);
-  int next_tok_is_eq = (c == '=');
+  bool next_tok_is_eq = (c == '=');
+  bool next_tok_is_paren = (c == '(');
 
   // Make sure we put the return values of a function in the symbol
   // table that is local to the function.
@@ -1744,6 +1749,25 @@ handle_identifier (const string& tok, int spc_gobbled)
   if (next_tok_is_eq
       && lexer_flags.defining_func && lexer_flags.maybe_screwed)
     curr_sym_tab = tmp_local_sym_tab;
+
+  // Kluge alert.
+  //
+  // If we are looking at a text style function, set up to gobble its
+  // arguments.  If the following token is `=', force the symbol to be
+  // inserted as a variable in the current symbol table.
+
+  if (is_text_function_name (tok) && ! is_variable (tok))
+    {
+      if (next_tok_is_eq)
+	force_local_variable (tok);
+      else if (! next_tok_is_paren)
+	{
+	  if (tok == "gset")
+	    lexer_flags.doing_set = 1;
+
+	  BEGIN TEXT_FCN;
+	}
+    }
 
   // Find the token in the symbol table.
 

@@ -145,7 +145,7 @@ tex-file.o:
 pic/tex-file.o:
 	$(CC) $(CPPFLAGS) $(CPICFLAG) $(CFLAGS) \
 	  -DDEFAULT_FONT_SIZES='"$(default_texsizes)"'\
-	  -c $(srcdir)/tex-file.c -o pic/$@
+	  -c $(srcdir)/tex-file.c -o $@
 
 # Need the -DHAVE_CONFIG_H.
 gmalloc.o:

@@ -42,11 +42,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #if defined (HAVE_INFINITY)
-#extern "C" double infinity ();
+extern "C" double infinity ();
 #endif
 
 #if defined (HAVE_QUIET_NAN)
-#extern "C" double quiet_nan (long);
+extern "C" double quiet_nan (long);
 #endif
 
 #include "lo-ieee.h"

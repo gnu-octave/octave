@@ -1,4 +1,14 @@
+Wed Feb 19 10:30:14 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Version 2.0.4 released.
+
+	* lex.l (handle_identifier): Allow commands like ls, save, etc. to
+	also be used as simple variable names.  Also make it possible to
+	use the normal function call syntax to invoke them.
+
 Tue Feb 18 09:22:04 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (%.oct:%.o, %.oct:pic/%.o): Use $(SH_LDFLAGS) here.
 
 	* Version 2.0.3 released.
 

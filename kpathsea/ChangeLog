@@ -1,3 +1,9 @@
+Tue Feb 18 17:36:03 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (pic/tex-file.o): Delete extra pic/ in commands.
+
+	* configure.in (SH_LDFLAGS): Fix typo in last change.
+
 Thu Feb 13 17:35:20 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in: Update config for shared libraries.

@@ -4,12 +4,16 @@ Octave version 2.0.3 is now available for ftp from ftp.che.wisc.edu
 in the directory /pub/octave.  Diffs from the previous release are
 also available in the same directory.
 
+  -rw-r--r--   1 jwe  3312470 Feb 18 13:08 octave-2.0.3.tar.gz
+  -rw-r--r--   1 jwe   217812 Feb 18 13:43 octave-2.0.2-2.0.3.patch.
+
 In addition to the source distributions, there are binary
-distributions available for Linux running on Intel systems and OSF/1
-running on Alpha systems.  Binary distributions for other platforms
-will be available from ftp.che.wisc.edu when they are contributed by
-volunteers.  If you would like to help to make a binary distribution
-available, please contact bug-octave@bevo.che.wisc.edu.
+distributions available for Linux running on Intel systems, OSF/1
+running on Alpha systems, and HA-UX 9.x running on HPPA systems.
+Binary distributions for other platforms will be available from
+ftp.che.wisc.edu when they are contributed by volunteers.  If you
+would like to help to make a binary distribution available, please
+contact bug-octave@bevo.che.wisc.edu.
 
 Version 2.0.3 is primarily a bug-fixing release.  Most bugs reported
 since the release of version 2.0.2 have been fixed.  There are also a

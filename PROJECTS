@@ -259,9 +259,6 @@ Interpreter:
   * Make it possible to get the names of the arguments that are passed
     to functions, at least if simple variables are passed.
 
-  * Fix name of text-style functions (or at least explain it in the
-    manual).
-
   * Consider allowing an arbitrary property list to be attached to any
     variable.  This could be a more general way to handle the help
     string that can currently be added with `document'.
@@ -403,8 +400,6 @@ Interpreter:
       foo ("bar", "baz")
 
     This is pretty ugly and introduces some conflicts.
-
-  * Make it possible to use text-style function names as variables.
 
   * Add a command that works like bash's `builtin' command.
 

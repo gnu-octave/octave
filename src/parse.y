@@ -342,7 +342,10 @@ list		: list1
 		;
 
 list1		: command
-		  { $$ = new tree_command_list ($1); }
+		  {
+		    beginning_of_function = 0;
+		    $$ = new tree_command_list ($1);
+		  }
 		| list1 comma_nl_sep command
 		  { $$ = $1->chain ($3); }
 		| list1 semi_sep command

@@ -20,7 +20,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
-%x COMMENT
 %x NEW_MATRIX
 %x HELP_FCN
 %s TEXT_FCN
@@ -57,10 +56,6 @@ static SLStack <token*> token_stack;
 #include "parse.h"
 #include "lex.h"
 
-// Nonzero means we thing we are looking at the beginning of a
-// function definition.
-static int beginning_of_function = 0;
-
 // Nonzero means we think we are looking at a set command.
 static int doing_set = 0;
 
@@ -72,6 +67,10 @@ static int braceflag = 0;
 
 // Return transpose or start a string?
 int quote_is_transpose = 0;
+
+// Nonzero means we thing we are looking at the beginning of a
+// function definition.
+int beginning_of_function = 0;
 
 // Nonzero means that we should convert spaces to a comma inside a
 // matrix definition.
@@ -120,31 +119,6 @@ DQSTR	([^\n\"\\]*{ECHAR}*)
 IDENT	([_a-zA-Z][_a-zA-Z0-9]*)
 EXPON	([DdEe][+-]?{D}+)
 %%
-
-\%			|
-\#			{
-			  if (beginning_of_function)
-			    {
-			      grab_help_text ();
-			      beginning_of_function = 0;
-			    }
-
-			  BEGIN COMMENT;
-			  current_input_column += yyleng;
-			}
-
-<COMMENT>\n		{
-			  BEGIN 0;
-			  current_input_column = 1;
-			  quote_is_transpose = 0;
-			  cant_be_identifier = 0;
-			  convert_spaces_to_comma = 1;
-			  return '\n';
-			}
-
-<COMMENT><<EOF>>	{ TOK_RETURN (END_OF_INPUT); }
-
-<COMMENT>.*$		{ current_input_column += yyleng; }
 
 <NEW_MATRIX>[^ \t\n]	{
 			  yyless (0);
@@ -537,6 +511,26 @@ EXPON	([DdEe][+-]?{D}+)
 		    BIN_OP_RETURN (COLON, 1);
 		  else
 		    BIN_OP_RETURN (':', 0);
+		}
+
+\%		|
+\#		{
+		  if (in_brace_or_paren.empty () && beginning_of_function)
+		    {
+		      grab_help_text ();
+		      beginning_of_function = 0;
+		    }
+		  else
+		    {
+		      int c;
+		      while ((c = yyinput ()) != EOF && c != '\n')
+			; // Eat comment.
+		    }
+
+		  current_input_column = 1;
+
+		  if (! braceflag || beginning_of_function)
+		    return '\n';
 		}
 
 \"		{ BEGIN DQSTRING; }
@@ -1144,9 +1138,8 @@ grab_help_text (void)
 	      in_comment = 1;
 	    case ' ':
 	    case '\t':
-	      break;
 	    default:
-	      goto done;
+	      break;
 	    }
 	}
 
@@ -1154,19 +1147,9 @@ grab_help_text (void)
 	{
 	  warning ("grab_help_text: buffer overflow after caching %d chars",
 		   max_len);
-
-	  goto done;
+	  break;
 	}
     }
-
- done:
-
-// Make sure there's an end of line so yylex sees an end to the
-// comment immediately.
-
-  yyunput (c, yytext);
-  if (c != '\n')
-    yyunput ('\n', yytext);
 
   help_buf[len] =  '\0';
 }

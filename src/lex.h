@@ -96,6 +96,10 @@ extern void check_for_garbage_after_fcn_def (void);
 // Return transpose or start a string?
 extern int quote_is_transpose;
 
+// Nonzero means we thing we are looking at the beginning of a
+// function definition.
+extern int beginning_of_function;
+
 #endif
 
 /*

@@ -234,7 +234,7 @@ pathstring_to_vector (char *pathstring)
 	  char *ptr = tmp_path;
 	  while (*ptr != '\0')
 	    {
-	      if (*ptr == ':')
+	      if (*ptr == SEPCHAR)
 		nelem++;
 	      ptr++;
 	    }
@@ -252,7 +252,7 @@ pathstring_to_vector (char *pathstring)
       char *ptr = tmp_path;
       while (i < nelem)
 	{
-	  char *end = strchr (ptr, ':');
+	  char *end = strchr (ptr, SEPCHAR);
 	  if (end)
 	    *end = '\0';
 	  char *result = tilde_expand (ptr);

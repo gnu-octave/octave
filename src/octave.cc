@@ -225,12 +225,14 @@ initialize_globals (char *name)
     {
       len += strlen (shell_path) + 1;
       putenv_cmd = new char [len];
-      sprintf (putenv_cmd, "PATH=%s:%s:%s", shell_path, arch_dir, bin_dir);
+      sprintf (putenv_cmd,
+	       "PATH=%s" SEPCHAR_STR "%s" SEPCHAR_STR "%s",
+	       shell_path, arch_dir, bin_dir);
     }
   else
     {
       putenv_cmd = new char [len];
-      sprintf (putenv_cmd, "PATH=%s:%s", arch_dir, bin_dir);
+      sprintf (putenv_cmd, "PATH=%s" SEPCHAR_STR "%s", arch_dir, bin_dir);
     }
 
   putenv (putenv_cmd);

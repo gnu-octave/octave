@@ -407,7 +407,7 @@ default_path (void)
     {
       pathstring = strsave (oct_path);
 
-      if (pathstring[0] == ':')
+      if (pathstring[0] == SEPCHAR)
 	{
 	  char *tmp = pathstring;
 	  pathstring = strconcat (std_path, pathstring);
@@ -415,7 +415,7 @@ default_path (void)
 	}
 
       int tmp_len = strlen (pathstring);
-      if (pathstring[tmp_len-1] == ':')
+      if (pathstring[tmp_len-1] == SEPCHAR)
 	{
 	  char *tmp = pathstring;
 	  pathstring = strconcat (pathstring, std_path);

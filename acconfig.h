@@ -55,6 +55,14 @@
 /* Define if this is Octave. */
 #undef OCTAVE_SOURCE
 
+/* Define this to be the path separator for your system, as a
+   character constant */
+#undef SEPCHAR
+
+/* Define this to be the path separator for your system, as a
+   character string */
+#undef SEPCHAR_STR
+
 /* Define if you don't have QPSOL. */
 #undef QPSOL_MISSING
 

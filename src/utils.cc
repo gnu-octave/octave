@@ -717,7 +717,10 @@ octave_vformat (std::ostream& os, const char *fmt, va_list args)
 
 #if defined (__GNUG__) && !CXX_ISO_COMPLIANT_LIBRARY
 
-  os.vform (fmt, args);
+  std::streambuf *sb = os.rdbuf ();
+
+  if (sb)
+    retval = sb->vform (fmt, args);
 
 #else
 

@@ -2,6 +2,9 @@
 
 	* version.h (OCTAVE_VERSION): Now 2.1.38.
 
+	* utils.cc (octave_vformat): Get return value from
+	streambuf::vform.
+
 	* DLD-FUNCTIONS/fsolve.cc (Ffsolve): Always return solution.
 	Don't barf on nargout == 3.
 

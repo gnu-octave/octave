@@ -72,11 +72,23 @@ npsol_objective_function (const ColumnVector& x)
 //  args[0] = name;
   args[1] = decision_vars;
 
+  static double retval;
+  retval = 0.0;
+
   tree_constant objective_value;
   if (npsol_objective != NULL_TREE)
     {
       tree_constant *tmp = npsol_objective->eval (args, 2, 1, 0);
+
       delete [] args;
+
+      if (error_state)
+	{
+	  error ("npsol: error evaluating objective function");
+	  npsol_objective_error = 1; // XXX FIXME XXX
+	  return retval;
+	}
+
       if (tmp != NULL_TREE_CONST && tmp[0].is_defined ())
 	{
 	  objective_value = tmp[0];
@@ -86,12 +98,10 @@ npsol_objective_function (const ColumnVector& x)
 	{
 	  delete [] tmp;
 	  error ("npsol: error evaluating objective function");
-	  jump_to_top_level ();
+	  npsol_objective_error = 1; // XXX FIXME XXX
+	  return retval;
 	}
     }
-
-  static double retval;
-  retval = 0.0;
 
   switch (objective_value.const_type ())
     {
@@ -101,7 +111,10 @@ npsol_objective_function (const ColumnVector& x)
 	if (m.rows () == 1 && m.columns () == 1)
 	  retval = m.elem (0, 0);
 	else
-	  gripe_user_returned_invalid ("npsol_objective");
+	  {
+	    gripe_user_returned_invalid ("npsol_objective");
+	    npsol_objective_error = 1; // XXX FIXME XXX
+	  }
       }
       break;
     case tree_constant_rep::scalar_constant:
@@ -109,6 +122,7 @@ npsol_objective_function (const ColumnVector& x)
       break;
     default:
       gripe_user_returned_invalid ("npsol_objective");
+      npsol_objective_error = 1; // XXX FIXME XXX
       break;
     }
 
@@ -144,17 +158,28 @@ npsol_constraint_function (const ColumnVector& x)
   if (npsol_constraints != NULL_TREE)
     {
       tree_constant *tmp = npsol_constraints->eval (args, 2, 1, 0);
+
       delete [] args;
+
+      if (error_state)
+	{
+	  error ("npsol: error evaluating constraints");
+	  return retval;
+	}
+
       if (tmp != NULL_TREE_CONST && tmp[0].is_defined ())
 	{
 	  retval = tmp[0].to_vector ();
+
 	  delete [] tmp;
+
+	  if (retval.length () <= 0)
+	    error ("npsol: error evaluating constraints");
 	}
       else
 	{
 	  delete [] tmp;
 	  error ("npsol: error evaluating constraints");
-	  jump_to_top_level ();
 	}
     }
 

@@ -92,6 +92,12 @@ private:
 
 };
 
+// XXX FIXME XXX -- would be nice to not have to have this global
+// variable.
+// Nonzero means an error occurred in the calculation of the objective
+// function, and the user wants us to quit.
+extern int npsol_objective_error;
+
 inline NPSOL::NPSOL (const NPSOL& a) : NLP (a.x, a.phi, a.bnds, a.lc, a.nlc)
   { set_default_options (); }
 

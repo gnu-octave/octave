@@ -38,12 +38,21 @@ extern "C"
   int F77_FCN (npoptn) (char *, long);
 
   int F77_FCN (npsol) (int *, int *, int *, int *, int *, int *,
-		       double *, double *, double *, int (*)(),
-		       int (*)(), int *, int *, int *, double *,
+		       double *, double *, double *,
+		       int (*)(int*, int*, int*, int*, int*, double*,
+			       double*, double*, int*),
+		       int (*)(int*, int*, double*, double*, double*, int*),
+		       int *, int *, int *, double *,
 		       double *, double *, double *, double *,
 		       double *, double *, int *, int *, double *,
 		       int *); 
 }
+
+// XXX FIXME XXX -- would be nice to not have to have this global
+// variable.
+// Nonzero means an error occurred in the calculation of the objective
+// function, and the user wants us to quit.
+int npsol_objective_error = 0;
 
 static objective_fcn user_phi;
 static gradient_fcn user_grad;
@@ -57,12 +66,21 @@ npsol_objfun (int *mode, int *n, double *xx, double *objf,
   int nn = *n;
   Vector tmp_x (nn);
 
+  npsol_objective_error = 0;
+
   for (int i = 0; i < nn; i++)
     tmp_x.elem (i) = xx[i];
 
   if (*mode == 0 || *mode == 2)
     {
       double value = (*user_phi) (tmp_x);
+
+      if (npsol_objective_error)
+	{
+	  *mode = -1;
+	  return 0;
+	}
+
 #if defined (sun) && defined (__GNUC__)
       assign_double (objf, value);
 #else
@@ -76,8 +94,13 @@ npsol_objfun (int *mode, int *n, double *xx, double *objf,
 
       tmp_grad = (*user_grad) (tmp_x);
 
-      for (i = 0; i < nn; i++)
-	objgrd[i] = tmp_grad.elem (i);
+      if (tmp_grad.length () == 0)
+	*mode = -1;
+      else
+	{
+	  for (i = 0; i < nn; i++)
+	    objgrd[i] = tmp_grad.elem (i);
+	}
     }
 
   return 0;
@@ -96,8 +119,16 @@ npsol_confun (int *mode, int *ncnln, int *n, int *nrowj, int *needc,
 
   tmp_c = (*user_g) (tmp_x);
 
-  for (i = 0; i < nncnln; i++)
-    cons[i] = tmp_c.elem (i);
+  if (tmp_c.length () == 0)
+    {
+      *mode = -1;
+      return 0;
+    }
+  else
+    {
+      for (i = 0; i < nncnln; i++)
+	cons[i] = tmp_c.elem (i);
+    }
 
   if (user_jac != NULL)
     {
@@ -105,10 +136,15 @@ npsol_confun (int *mode, int *ncnln, int *n, int *nrowj, int *needc,
 
       tmp_jac = (*user_jac) (tmp_x);
 
-      int ld = *nrowj;
-      for (int j = 0; j < nn; j++)
-	for (i = 0; i < nncnln; i++)
-	  cjac[i+j*ld] = tmp_jac (i, j);
+      if (tmp_jac.rows () == 0 || tmp_jac.columns () == 0)
+	*mode = -1;
+      else
+	{
+	  int ld = *nrowj;
+	  for (int j = 0; j < nn; j++)
+	    for (i = 0; i < nncnln; i++)
+	      cjac[i+j*ld] = tmp_jac (i, j);
+	}
     }
 
   return 0;

@@ -36,17 +36,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <strstream.h>
 
-#include "input.h"
-#include "token.h"
-
 #include "SLStack.h"
 
-// Stack to hold tokens so that we can delete them when the parser is
-// reset and avoid growing forever just because we are stashing some
-// information.  This has to appear before lex.h is included, because
-// one of the macros defined there uses token_stack.
-static SLStack <token*> token_stack;
-
+#include "input.h"
+#include "token.h"
 #include "user-prefs.h"
 #include "variables.h"
 #include "octave.h"
@@ -62,6 +55,12 @@ static SLStack <token*> token_stack;
 #include "y.tab.h"
 #include "parse.h"
 #include "lex.h"
+
+// Stack to hold tokens so that we can delete them when the parser is
+// reset and avoid growing forever just because we are stashing some
+// information.  This has to appear before lex.h is included, because
+// one of the macros defined there uses token_stack.
+static SLStack <token*> token_stack;
 
 // Nonzero means we think we are looking at a set command.
 static int doing_set = 0;

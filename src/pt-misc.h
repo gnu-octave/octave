@@ -50,9 +50,9 @@ class tree_global_init_list;
 #include <SLList.h>
 
 #include "tree-base.h"
-#include "tree-expr.h"
-#include "tree-const.h"
 #include "tree-cmd.h"
+#include "tree-const.h"
+#include "tree-expr.h"
 
 // A list of expressions and commands to be executed.
 

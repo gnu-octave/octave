@@ -22,8 +22,8 @@ Boston, MA  02111-1307, USA.  */
 
 #ifndef HAVE_STRCASECMP
 
-#include <string.h>
 #include <ctype.h>
+#include <string.h>
 
 /* Compare S1 and S2, ignoring case, returning less than, equal to or
    greater than zero if S1 is lexiographically less than,

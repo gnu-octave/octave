@@ -35,10 +35,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "SLList.h"
 
-#include "variables.h"
-#include "mappers.h"
 #include "error.h"
+#include "mappers.h"
 #include "oct-obj.h"
+#include "variables.h"
 
 class tree_constant;
 class tree_statement_list;

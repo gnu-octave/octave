@@ -1152,40 +1152,49 @@ tree_constant_rep::eval (int print)
       break;
     }
 
-  int nr = rows ();
-  int nc = columns ();
+// Avoid calling rows() and columns() for things like magic_colon.
 
-  if (nr == 1 && nc == 1)
+  int nr = 1;
+  int nc = 1;
+  if (type_tag == matrix_constant
+      || type_tag == complex_matrix_constant
+      || type_tag == range_constant)
     {
-      switch (type_tag)
+      nr = rows ();
+      nc = columns ();
+    }
+
+  switch (type_tag)
+    {
+    case matrix_constant:
+      if (nr == 1 && nc == 1)
 	{
-	case matrix_constant:
-	  {
-	    double d = matrix->elem (0, 0);
-	    delete matrix;
-	    scalar = d;
-	    type_tag = scalar_constant;
-	  }
-	  break;
-	case complex_matrix_constant:
-	  {
-	    Complex c = complex_matrix->elem (0, 0);
-	    delete complex_matrix;
-	    complex_scalar = new Complex (c);
-	    type_tag = complex_scalar_constant;
-	  }
-	  break;
-	case range_constant:
-	  {
-	    double d = range->base ();
-	    delete range;
-	    scalar = d;
-	    type_tag = scalar_constant;
-	  }
-	  break;
-	default:
-	  break;
+	  double d = matrix->elem (0, 0);
+	  delete matrix;
+	  scalar = d;
+	  type_tag = scalar_constant;
 	}
+      break;
+    case complex_matrix_constant:
+      if (nr == 1 && nc == 1)
+	{
+	  Complex c = complex_matrix->elem (0, 0);
+	  delete complex_matrix;
+	  complex_scalar = new Complex (c);
+	  type_tag = complex_scalar_constant;
+	}
+      break;
+    case range_constant:
+      if (nr == 1 && nc == 1)
+	{
+	  double d = range->base ();
+	  delete range;
+	  scalar = d;
+	  type_tag = scalar_constant;
+	}
+      break;
+    default:
+      break;
     }
 
   if (print)

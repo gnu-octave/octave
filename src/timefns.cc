@@ -227,7 +227,7 @@ DEFUN ("mktime", Fmktime, Smktime, 1, 2,
 {
   Octave_object retval;
 
-  if (args.length () == 1 && args(1).is_map ()) 
+  if (args.length () == 1 && args(0).is_map ()) 
     {
       Octave_map map = args(0).map_value ();
 

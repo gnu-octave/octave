@@ -362,17 +362,11 @@ pathstring_to_vector (char *pathstring)
 	    }
 	}
 
-// Why do I have to do this?
-
       char **foo = path;
       while (foo && *foo)
-	{
-	  delete [] *foo;
-	  *foo = (char *) NULL;
-	  foo++;
-	}
-      
+	delete [] *foo++;
       delete [] path;
+
       path = new char * [nelem+1];
       path[nelem] = (char *) NULL;
 
@@ -1313,10 +1307,16 @@ get_m_file_names (int& num, const char *dir, int no_suffix)
 
 	      if (i == num_max - 1)
 		{
+// Reallocate the array.  Only copy pointers, not the strings they
+// point to, then only delete the original array of pointers, and not
+// the strings they point to.
+
 		  num_max += 256;
 		  char **tmp = new char * [num_max];
 		  for (int j = 0; j < i; j++)
 		    tmp[j] = retval[j];
+
+		  delete [] retval;
 
 		  retval = tmp;
 		}
@@ -1350,10 +1350,16 @@ get_m_file_names (int& num, int no_suffix)
 
 	  if (i + tmp_num >= num_max - 1)
 	    {
+// Reallocate the array.  Only copy pointers, not the strings they
+// point to, then only delete the original array of pointers, and not
+// the strings they point to.
+
 	      num_max += 1024;
 	      char **tmp = new char * [num_max];
 	      for (int j = 0; j < i; j++)
 		tmp[j] = retval[j];
+
+	      delete [] retval;
 
 	      retval = tmp;
 	    }

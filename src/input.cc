@@ -303,7 +303,12 @@ command_generator (char *text, int state)
       len = strlen (text);
 
       if (name_list != (char **) NULL)
-	delete [] name_list;
+	{
+	  char **ptr = name_list;
+	  while (ptr && *ptr)
+	    delete [] *ptr++;
+	  delete [] name_list;
+	}
 
       name_list = make_name_list ();
     }
@@ -313,7 +318,11 @@ command_generator (char *text, int state)
     {
       list_index++;
       if (strncmp (name, text, len) == 0)
-	return name;
+	{
+	  char *buf = xmalloc (1 + strlen (name));
+	  strcpy (buf, name);
+	  return buf;
+	}
     }
 
   return (char *) NULL;

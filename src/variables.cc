@@ -694,6 +694,9 @@ make_name_list (void)
   char **lcl = (char **) NULL;
   char **mfl = (char **) NULL;
 
+// Each of these functions returns a new vector of pointers to new
+// strings.
+
   key = names (keyword_help (), key_len);
   glb = global_sym_tab->list (glb_len);
   top = top_level_sym_tab->list (top_len);
@@ -705,22 +708,26 @@ make_name_list (void)
 
   char **list = new char * [total_len+1];
   
+// Put all the symbols in one big list.  Only copy pointers, not the
+// strings they point to, then only delete the original array of
+// pointers, and not the strings they point to.
+
   int j = 0;
   int i = 0;
   for (i = 0; i < key_len; i++)
-    list[j++] = strsave (key[i]);
+    list[j++] = key[i];
 
   for (i = 0; i < glb_len; i++)
-    list[j++] = strsave (glb[i]);
+    list[j++] = glb[i];
 
   for (i = 0; i < top_len; i++)
-    list[j++] = strsave (top[i]);
+    list[j++] = top[i];
 
   for (i = 0; i < lcl_len; i++)
-    list[j++] = strsave (lcl[i]);
+    list[j++] = lcl[i];
 
   for (i = 0; i < mfl_len; i++)
-    list[j++] = strsave (mfl[i]);
+    list[j++] = mfl[i];
 
   list[j] = (char *) NULL;
 

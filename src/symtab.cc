@@ -980,8 +980,7 @@ symbol_table::save (ostream& os, int mark_as_global = 0)
 	{
 	  if (save (os, *ptr, mark_as_global))
 	    status++;
-
-	  ptr++;
+	  delete [] *ptr++;
 	}
       delete [] names;
     }

@@ -245,7 +245,7 @@ names (help_list *lst, int& count)
       ptr++;
     }
 
-  name_list[count] = (char *) NULL;
+  name_list[i] = (char *) NULL;
   return name_list;
 }
 

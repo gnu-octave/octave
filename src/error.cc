@@ -89,7 +89,7 @@ error (const char *fmt, ...)
   va_start (args, fmt);
 
   int len;
-  if (fmt && fmt[(len = strlen (fmt) - 1)] == '\n')
+  if (fmt && fmt[(len = strlen (fmt)) - 1] == '\n')
     {
       error_state = -2;
       char *tmp_fmt = strsave (fmt);

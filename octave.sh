@@ -9,4 +9,4 @@
 OCTAVE_HOME=@OCTAVE_HOME@
 export OCTAVE_HOME
 
-exec octave.bin $*
+exec $OCTAVE_HOME/bin/octave.bin $*

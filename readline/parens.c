@@ -64,7 +64,8 @@ rl_insert_close (count, invoking_key)
 #if defined (HAVE_SYS_SELECT_H)
 #include <sys/select.h>
 #endif
-#if defined (FD_SET)
+/* Including sys/time.h on Linux (any others?) defines the FD_XXX macros. */
+#if defined (FD_SET) || defined (__linux__)
 #  include <sys/time.h>
 #endif /* FD_SET */
 #include "readline.h"

@@ -1,3 +1,8 @@
+Tue Mar  4 12:19:24 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* emacs/octave-mod.el: Update from Kurt Hornik to handle switch
+	statement.
+
 Mon Mar  3 15:44:42 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* dlfcn/Makefile.in (DISTFILES): Add ftp-site.

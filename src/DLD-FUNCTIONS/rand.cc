@@ -190,8 +190,6 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn)
 	  }
 	else
 	  {
-	    int nargin = args.length ();
-
 	    dims.resize (nargin);
 
 	    for (int i = 0; i < nargin; i++)

@@ -35,9 +35,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 
 Cell
-Octave_map::operator [] (const std::string& key) const
+Octave_map::operator [] (const std::string& k) const
 {
-  const_iterator p = seek (key);
+  const_iterator p = seek (k);
 
   return p != end () ? p->second : Cell ();
 }
@@ -124,11 +124,11 @@ Octave_map::assign (const octave_value_list& idx, const Octave_map& rhs)
 
       for (int i = 0; i < len; i++)
 	{
-	  std::string key = t_keys[i];
+	  std::string k = t_keys[i];
 
-	  Cell t_rhs = rhs[key];
+	  Cell t_rhs = rhs[k];
 
-	  assign (idx, key, t_rhs);
+	  assign (idx, k, t_rhs);
 
 	  if (error_state)
 	    break;
@@ -171,10 +171,10 @@ common_size (const dim_vector& a, const dim_vector& b)
 }
 
 Octave_map&
-Octave_map::assign (const octave_value_list& idx, const std::string& key,
+Octave_map::assign (const octave_value_list& idx, const std::string& k,
 		    const Cell& rhs)
 {
-  Cell tmp = map[key];
+  Cell tmp = map[k];
 
   octave_value fill_value = Matrix ();
 
@@ -200,25 +200,25 @@ Octave_map::assign (const octave_value_list& idx, const std::string& key,
 
       dimensions = new_dims;
 
-      map[key] = tmp;
+      map[k] = tmp;
     }
 
   return *this;
 }
 
 Octave_map&
-Octave_map::assign (const std::string& key, const Cell& rhs)
+Octave_map::assign (const std::string& k, const Cell& rhs)
 {
   if (empty ())
     {
-      map[key] = rhs;
+      map[k] = rhs;
 
       dimensions = dim_vector (1, 1);
     }
   else
     {
       if (dims () == rhs.dims ())
-	map[key] = rhs;
+	map[k] = rhs;
       else
 	error ("invalid structure assignment");
     }

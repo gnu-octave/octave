@@ -1670,7 +1670,7 @@ ComplexMatrix::solve (const ComplexMatrix& b, int& info, double& rcond,
 
 		  int b_nc = b.cols ();
 
-		  char job = 'N';
+		  job = 'N';
 		  F77_XFCN (zgetrs, ZGETRS, (F77_CONST_CHAR_ARG2 (&job, 1),
 					     nr, b_nc, tmp_data, nr,
 					     pipvt, result, b.rows(), info
@@ -1821,7 +1821,7 @@ ComplexMatrix::solve (const ComplexColumnVector& b, int& info,
 		  retval = b;
 		  Complex *result = retval.fortran_vec ();
 
-		  char job = 'N';
+		  job = 'N';
 		  F77_XFCN (zgetrs, ZGETRS, (F77_CONST_CHAR_ARG2 (&job, 1),
 					     nr, 1, tmp_data, nr, pipvt,
 					     result, b.length(), info
@@ -2784,12 +2784,12 @@ ComplexMatrix::column_is_real_only (int j) const
 ComplexColumnVector
 ComplexMatrix::row_min (void) const
 {
-  Array<int> index;
-  return row_min (index);
+  Array<int> dummy_idx;
+  return row_min (dummy_idx);
 }
 
 ComplexColumnVector
-ComplexMatrix::row_min (Array<int>& index) const
+ComplexMatrix::row_min (Array<int>& idx_arg) const
 {
   ComplexColumnVector result;
 
@@ -2799,7 +2799,7 @@ ComplexMatrix::row_min (Array<int>& index) const
   if (nr > 0 && nc > 0)
     {
       result.resize (nr);
-      index.resize (nr);
+      idx_arg.resize (nr);
 
       for (int i = 0; i < nr; i++)
         {
@@ -2842,12 +2842,12 @@ ComplexMatrix::row_min (Array<int>& index) const
 	  if (octave_is_NaN_or_NA (tmp_min))
 	    {
 	      result.elem (i) = Complex_NaN_result;
-	      index.elem (i) = 0;
+	      idx_arg.elem (i) = 0;
 	    }
 	  else
 	    {
 	      result.elem (i) = tmp_min;
-	      index.elem (i) = idx_j;
+	      idx_arg.elem (i) = idx_j;
 	    }
         }
     }
@@ -2858,12 +2858,12 @@ ComplexMatrix::row_min (Array<int>& index) const
 ComplexColumnVector
 ComplexMatrix::row_max (void) const
 {
-  Array<int> index;
-  return row_max (index);
+  Array<int> dummy_idx;
+  return row_max (dummy_idx);
 }
 
 ComplexColumnVector
-ComplexMatrix::row_max (Array<int>& index) const
+ComplexMatrix::row_max (Array<int>& idx_arg) const
 {
   ComplexColumnVector result;
 
@@ -2873,7 +2873,7 @@ ComplexMatrix::row_max (Array<int>& index) const
   if (nr > 0 && nc > 0)
     {
       result.resize (nr);
-      index.resize (nr);
+      idx_arg.resize (nr);
 
       for (int i = 0; i < nr; i++)
         {
@@ -2916,12 +2916,12 @@ ComplexMatrix::row_max (Array<int>& index) const
 	  if (octave_is_NaN_or_NA (tmp_max))
 	    {
 	      result.elem (i) = Complex_NaN_result;
-	      index.elem (i) = 0;
+	      idx_arg.elem (i) = 0;
 	    }
 	  else
 	    {
 	      result.elem (i) = tmp_max;
-	      index.elem (i) = idx_j;
+	      idx_arg.elem (i) = idx_j;
 	    }
         }
     }
@@ -2932,12 +2932,12 @@ ComplexMatrix::row_max (Array<int>& index) const
 ComplexRowVector
 ComplexMatrix::column_min (void) const
 {
-  Array<int> index;
-  return column_min (index);
+  Array<int> dummy_idx;
+  return column_min (dummy_idx);
 }
 
 ComplexRowVector
-ComplexMatrix::column_min (Array<int>& index) const
+ComplexMatrix::column_min (Array<int>& idx_arg) const
 {
   ComplexRowVector result;
 
@@ -2947,7 +2947,7 @@ ComplexMatrix::column_min (Array<int>& index) const
   if (nr > 0 && nc > 0)
     {
       result.resize (nc);
-      index.resize (nc);
+      idx_arg.resize (nc);
 
       for (int j = 0; j < nc; j++)
         {
@@ -2990,12 +2990,12 @@ ComplexMatrix::column_min (Array<int>& index) const
 	  if (octave_is_NaN_or_NA (tmp_min))
 	    {
 	      result.elem (j) = Complex_NaN_result;
-	      index.elem (j) = 0;
+	      idx_arg.elem (j) = 0;
 	    }
 	  else
 	    {
 	      result.elem (j) = tmp_min;
-	      index.elem (j) = idx_i;
+	      idx_arg.elem (j) = idx_i;
 	    }
         }
     }
@@ -3006,12 +3006,12 @@ ComplexMatrix::column_min (Array<int>& index) const
 ComplexRowVector
 ComplexMatrix::column_max (void) const
 {
-  Array<int> index;
-  return column_max (index);
+  Array<int> dummy_idx;
+  return column_max (dummy_idx);
 }
 
 ComplexRowVector
-ComplexMatrix::column_max (Array<int>& index) const
+ComplexMatrix::column_max (Array<int>& idx_arg) const
 {
   ComplexRowVector result;
 
@@ -3021,7 +3021,7 @@ ComplexMatrix::column_max (Array<int>& index) const
   if (nr > 0 && nc > 0)
     {
       result.resize (nc);
-      index.resize (nc);
+      idx_arg.resize (nc);
 
       for (int j = 0; j < nc; j++)
         {
@@ -3064,12 +3064,12 @@ ComplexMatrix::column_max (Array<int>& index) const
 	  if (octave_is_NaN_or_NA (tmp_max))
 	    {
 	      result.elem (j) = Complex_NaN_result;
-	      index.elem (j) = 0;
+	      idx_arg.elem (j) = 0;
 	    }
 	  else
 	    {
 	      result.elem (j) = tmp_max;
-	      index.elem (j) = idx_i;
+	      idx_arg.elem (j) = idx_i;
 	    }
         }
     }

@@ -172,21 +172,21 @@ string_vector::list_in_columns (std::ostream& os) const
   // Calculate the maximum number of columns that will fit.
 
   int line_length = command_editor::terminal_cols ();
-  int cols = line_length / max_name_length;
-  if (cols == 0)
-    cols = 1;
+  int nc = line_length / max_name_length;
+  if (nc == 0)
+    nc = 1;
 
   // Calculate the number of rows that will be in each column except
   // possibly  for a short column on the right.
 
-  int rows = total_names / cols + (total_names % cols != 0);
+  int nr = total_names / nc + (total_names % nc != 0);
 
   // Recalculate columns based on rows.
 
-  cols = total_names / rows + (total_names % rows != 0);
+  nc = total_names / nr + (total_names % nr != 0);
 
   int count;
-  for (int row = 0; row < rows; row++)
+  for (int row = 0; nr < nr; row++)
     {
       count = row;
       int pos = 0;
@@ -200,7 +200,7 @@ string_vector::list_in_columns (std::ostream& os) const
 	  os << nm;
 	  int name_length = nm.length ();
 
-	  count += rows;
+	  count += nr;
 	  if (count >= total_names)
 	    break;
 

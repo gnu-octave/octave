@@ -21,8 +21,15 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA. 
 
+### Preserve CFLAGS and CXXFLAGS from the environment before doing
+### anything else because we don't know which macros might call
+### AC_PROG_CC or AC_PROG_CXX.
+
+EXTERN_CFLAGS="$CFLAGS"
+EXTERN_CXXFLAGS="$CXXFLAGS"
+
 AC_INIT
-AC_REVISION($Revision: 1.435 $)
+AC_REVISION($Revision: 1.436 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -161,8 +168,6 @@ AC_DEFINE(__NO_MATH_INLINES, 1, [Define if your version of GNU libc has buggy in
 
 ### See which C++ compiler to use (we expect to find g++).
 
-EXTERN_CXXFLAGS="$CXXFLAGS"
-
 AC_PROG_CXX
 AC_PROG_CXXCPP
 
@@ -192,8 +197,6 @@ OCTAVE_CXX_ISO_COMPLIANT_LIBRARY
 OCTAVE_CXX_ABI
 
 ### See which C compiler to use (we expect to find gcc).
-
-EXTERN_CFLAGS="$CFLAGS"
 
 AC_PROG_CC
 AC_PROG_CPP
@@ -1275,15 +1278,17 @@ esac
 AC_MSG_RESULT([defining UGLY_DEFS to be $UGLY_DEFS])
 AC_SUBST(UGLY_DEFS)
 
-### Maybe add -Wall to compiler flags now that we're done feature
-### testing. 
+### Maybe add -Wall and -Wshadow to compiler flags now that we're
+### done feature testing. 
 
 if test -z "$EXTERN_CFLAGS"; then
   OCTAVE_CC_FLAG(-Wall)
+  OCTAVE_CC_FLAG(-Wshadow)
 fi
 
 if test -z "$EXTERN_CXXFLAGS"; then
   OCTAVE_CXX_FLAG(-Wall)
+  OCTAVE_CXX_FLAG(-Wshadow)
 fi
 
 ### Someday, maybe include -ansi and even -pedantic in this list...

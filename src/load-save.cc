@@ -413,7 +413,7 @@ extract_keyword (std::istream& is, const char *keyword)
     {
       while (len)
 	{
-	  char c = retval[len-1];
+	  c = retval[len-1];
 
 	  if (c == ' ' || c == '\t')
 	    len--;
@@ -1064,16 +1064,16 @@ read_binary_data (std::istream& is, bool swap,
 	      goto data_read_error;
 	    if (swap)
 	      swap_4_bytes (X_CAST (char *, &len));
-	    OCTAVE_LOCAL_BUFFER (char, tmp, len+1);
-	    if (! is.read (X_CAST (char *, tmp), len))
+	    OCTAVE_LOCAL_BUFFER (char, btmp, len+1);
+	    if (! is.read (X_CAST (char *, btmp), len))
 	      goto data_read_error;
 	    if (len > max_len)
 	      {
 		max_len = len;
 		chm.resize (elements, max_len, 0);
 	      }
-	    tmp [len] = '\0';
-	    chm.insert (tmp, i, 0);
+	    btmp [len] = '\0';
+	    chm.insert (btmp, i, 0);
 	  }
 	tc = octave_value (chm, true);
       }
@@ -2673,7 +2673,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
   
   // dimensions array subelement
   {
-    std::streampos pos;
+    std::streampos tmp_pos;
 
     if (read_mat5_tag (is, swap, type, dimension_length) || type != miINT32)
       {
@@ -2681,19 +2681,19 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	goto early_read_error;
       }
 
-    pos = is.tellg ();
+    tmp_pos = is.tellg ();
     read_int (is, swap, nr);
     read_int (is, swap, nc);
     re.resize (nr, nc);
 
     // delay checking for a multidimensional array until we have read
     // the variable name
-    is.seekg (pos + static_cast<std::streamoff> (dimension_length));
+    is.seekg (tmp_pos + static_cast<std::streamoff> (dimension_length));
   }
 
   // array name subelement
   {
-    std::streampos pos;
+    std::streampos tmp_pos;
       
     if (read_mat5_tag (is, swap, type, len) || type != miINT8)
       {
@@ -2701,7 +2701,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	goto early_read_error;
       }
 
-    pos = is.tellg ();
+    tmp_pos = is.tellg ();
     OCTAVE_LOCAL_BUFFER (char, name, len+1);
 
     if (len)			// structure field subelements have
@@ -2710,7 +2710,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	if (! is.read (X_CAST (char *, name), len ))
 	  goto data_read_error;
 	
-	is.seekg (pos + static_cast<std::streamoff> (PAD (len)));
+	is.seekg (tmp_pos + static_cast<std::streamoff> (PAD (len)));
       }
 
     name[len] = '\0';
@@ -2763,8 +2763,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
     case mxSTRUCT_CLASS:
       {
 	Octave_map m;
-	FOUR_BYTE_INT type;
-	FOUR_BYTE_INT len;
+	FOUR_BYTE_INT fn_type;
+	FOUR_BYTE_INT fn_len;
 	FOUR_BYTE_INT field_name_length;
 	int i;
 
@@ -2773,13 +2773,13 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	// be 32.  We read and use the actual value, on the theory
 	// that eventually someone will recognize that's a waste of
 	// space.
-	if (read_mat5_tag (is, swap, type, len) || type != miINT32)
+	if (read_mat5_tag (is, swap, fn_type, fn_len) || fn_type != miINT32)
 	  {
 	    error ("load: invalid field name subelement");
 	    goto data_read_error;
 	  }
 
-	if (! is.read (X_CAST (char *, &field_name_length), len ))
+	if (! is.read (X_CAST (char *, &field_name_length), fn_len ))
 	  goto data_read_error;
 
 	if (swap)
@@ -2787,19 +2787,19 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
 	// field name subelement.  The length of this subelement tells
 	// us how many fields there are.
-	if (read_mat5_tag (is, swap, type, len) || type != miINT8)
+	if (read_mat5_tag (is, swap, fn_type, fn_len) || fn_type != miINT8)
 	  {
 	    error ("load: invalid field name subelement");
 	    goto data_read_error;
 	  }
 
-	int n_fields = len/field_name_length;
+	int n_fields = fn_len/field_name_length;
 
-	len = PAD (len);
+	fn_len = PAD (fn_len);
 
-	OCTAVE_LOCAL_BUFFER (char, elname, len);
+	OCTAVE_LOCAL_BUFFER (char, elname, fn_len);
 
-	if (! is.read (elname, len))
+	if (! is.read (elname, fn_len))
 	  goto data_read_error;
 
 	int n;
@@ -2826,12 +2826,12 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	      }
 	  }
 
-	for (int i = n_fields-1; i >= 0; i--)
+	for (int j = n_fields-1; j >= 0; j--)
 	  {
-	    const char *key = elname + i*field_name_length;
+	    const char *key = elname + j*field_name_length;
 
-	    for (int j = n-1; j >=0; j--)
-	      m[key](j) = field_elts(i,j);
+	    for (int k = n-1; k >=0; k--)
+	      m[key](k) = field_elts(j,k);
 	  }
 
 	tc = m;
@@ -2854,7 +2854,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
       
       // real data subelement
       {
-	std::streampos pos;
+	std::streampos tmp_pos;
 	
 	if (read_mat5_tag (is, swap, type, len))
 	  {
@@ -2862,7 +2862,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	    goto data_read_error;
 	  }
 
-	pos = is.tellg ();
+	tmp_pos = is.tellg ();
 	read_mat5_binary_data (is, re.fortran_vec (), nr*nc, swap,
 			       (enum mat5_data_type) type, flt_fmt);
 
@@ -2872,7 +2872,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	    goto data_read_error;
 	  }
 
-	is.seekg (pos + static_cast<std::streamoff> (PAD (len)));
+	is.seekg (tmp_pos + static_cast<std::streamoff> (PAD (len)));
       }
       
       // imaginary data subelement
@@ -3610,8 +3610,8 @@ save_binary_data (std::ostream& os, const octave_value& tc,
 	  FOUR_BYTE_INT len = chm.cols ();
 	  os.write (X_CAST (char *, &len), 4);
 	  std::string tstr = chm.row_as_string (i);
-	  const char *tmp = tstr.data ();
-	  os.write (X_CAST (char *, tmp), len);
+	  const char *btmp = tstr.data ();
+	  os.write (X_CAST (char *, btmp), len);
 	}
     }
   else if (tc.is_range ())
@@ -3634,8 +3634,8 @@ save_binary_data (std::ostream& os, const octave_value& tc,
       os.write (X_CAST (char *, &tmp), 1);
       tmp = (char) LS_DOUBLE;
       os.write (X_CAST (char *, &tmp), 1);
-      double tmp = tc.double_value ();
-      os.write (X_CAST (char *, &tmp), 8);
+      double dtmp = tc.double_value ();
+      os.write (X_CAST (char *, &dtmp), 8);
     }
   else if (tc.is_real_matrix ())
     {
@@ -3673,8 +3673,8 @@ save_binary_data (std::ostream& os, const octave_value& tc,
       os.write (X_CAST (char *, &tmp), 1);
       tmp = (char) LS_DOUBLE;
       os.write (X_CAST (char *, &tmp), 1);
-      Complex tmp = tc.complex_value ();
-      os.write (X_CAST (char *, &tmp), 16);
+      Complex ctmp = tc.complex_value ();
+      os.write (X_CAST (char *, &ctmp), 16);
     }
   else if (tc.is_complex_matrix ())
     {
@@ -4350,11 +4350,11 @@ save_mat5_binary_element (std::ostream& os,
   if (tc.is_string ())
     {
       charMatrix chm = tc.char_matrix_value ();
-      int nc = chm.cols ();
-      int len = nr*nc*2;
-      int paddedlength = PAD (nr*nc*2);
+      int ncol = chm.cols ();
+      int len = nr*ncol*2;
+      int paddedlength = PAD (nr*ncol*2);
 
-      OCTAVE_LOCAL_BUFFER (TWO_BYTE_INT, buf, nc*nr+3);
+      OCTAVE_LOCAL_BUFFER (TWO_BYTE_INT, buf, ncol*nr+3);
       write_mat5_tag (os, miUINT16, len);
 
       for (int i = 0; i < nr; i++)
@@ -4362,10 +4362,10 @@ save_mat5_binary_element (std::ostream& os,
 	  std::string tstr = chm.row_as_string (i);
 	  const char *s = tstr.data ();
 
-	  for (int j = 0; j < nc; j++)
+	  for (int j = 0; j < ncol; j++)
 	    buf[j*nr+i] = *s++ & 0x00FF;
 	}
-      os.write ((char *)buf, nr*nc*2);
+      os.write ((char *)buf, nr*ncol*2);
       
       if (paddedlength > len)
 	os.write ((char *)buf, paddedlength - len);
@@ -4500,20 +4500,20 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
 
       charMatrix chm = tc.char_matrix_value ();
 
-      int nr = chm.rows ();
-      int nc = chm.cols ();
+      int nrow = chm.rows ();
+      int ncol = chm.cols ();
 	
-      OCTAVE_LOCAL_BUFFER (double, buf, nc*nr);
+      OCTAVE_LOCAL_BUFFER (double, buf, ncol*nrow);
 	
-      for (int i = 0; i < nr; i++)
+      for (int i = 0; i < nrow; i++)
       	{
 	  std::string tstr = chm.row_as_string (i);
 	  const char *s = tstr.data ();
 	  
-	  for (int j = 0; j < nc; j++)
-	    buf[j*nr+i] = static_cast<double> (*s++ & 0x00FF);
+	  for (int j = 0; j < ncol; j++)
+	    buf[j*nrow+i] = static_cast<double> (*s++ & 0x00FF);
        	}
-      os.write ((char *)buf, nr*nc*sizeof(double));
+      os.write ((char *)buf, nrow*ncol*sizeof(double));
       
       unwind_protect::run_frame ("save_mat_binary_data");
     }

@@ -166,7 +166,7 @@ intern_argv (int argc, char **argv)
 {
   bind_builtin_variable ("nargin", argc-1, true, true, 0);
 
-  Cell octave_argv;
+  Cell args;
 
   if (argc > 1)
     {
@@ -177,10 +177,10 @@ intern_argv (int argc, char **argv)
       while (--i > 0)
 	tmp(i-1) = octave_value (*(argv+i));
 
-      octave_argv = Cell (tmp, argc-1, 1);
+      args = Cell (tmp, argc-1, 1);
     }
 
-  bind_builtin_constant ("argv", octave_argv, true, true);
+  bind_builtin_constant ("argv", args, true, true);
 }
 
 static void

@@ -76,12 +76,12 @@ public:
 
   DASRT (void) : DAERT (), DASRT_options (), initialized (false) { }
 
-  DASRT (const ColumnVector& state, double time, DAERTFunc& f)
-    : DAERT (state, time, f), DASRT_options (), initialized (false) { }
+  DASRT (const ColumnVector& s, double tm, DAERTFunc& f)
+    : DAERT (s, tm, f), DASRT_options (), initialized (false) { }
 
-  DASRT (const ColumnVector& state, const ColumnVector& deriv,
-	 double time, DAERTFunc& f)
-    : DAERT (state, deriv, time, f), DASRT_options (), initialized (false) { }
+  DASRT (const ColumnVector& s, const ColumnVector& deriv,
+	 double tm, DAERTFunc& f)
+    : DAERT (s, deriv, tm, f), DASRT_options (), initialized (false) { }
 
   ~DASRT (void) { }
 

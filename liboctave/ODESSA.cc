@@ -192,8 +192,8 @@ ODESSA::ODESSA (void) : ODES (), ODESSA_options ()
   sanity_checked = false;
 }
 
-ODESSA::ODESSA (const ColumnVector& state, double time, ODESFunc& f)
-  : ODES (state, time, f), ODESSA_options ()
+ODESSA::ODESSA (const ColumnVector& s, double tm, ODESFunc& f)
+  : ODES (s, tm, f), ODESSA_options ()
 {
   initialized = false;
 
@@ -215,14 +215,14 @@ ODESSA::ODESSA (const ColumnVector& state, double time, ODESFunc& f)
   y.resize (n, 1, 0.0);
 }
 
-ODESSA::ODESSA (const ColumnVector& state, const ColumnVector& xtheta,
-		const Matrix& sensitivity_guess, double time, ODESFunc& f)
-  : ODES (state, xtheta, time, f)
+ODESSA::ODESSA (const ColumnVector& s, const ColumnVector& xtheta,
+		const Matrix& sensitivity_guess, double tm, ODESFunc& f)
+  : ODES (s, xtheta, tm, f)
 {
   initialized = false;
 
   neq.resize(2);
-  n = state.length();
+  n = s.length();
   npar = xtheta.length();
 
   neq(0) = n;

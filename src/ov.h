@@ -329,8 +329,8 @@ public:
 
   int numel (void) const;
 
-  virtual octave_value reshape (const dim_vector& dims) const
-    { return rep->reshape (dims); }
+  virtual octave_value reshape (const dim_vector& dv) const
+    { return rep->reshape (dv); }
 
   // Does this constant have a type?  Both of these are provided since
   // it is sometimes more natural to write is_undefined() instead of
@@ -362,6 +362,9 @@ public:
 
   virtual bool is_complex_matrix (void) const
     { return rep->is_complex_matrix (); }
+
+  virtual bool is_bool_matrix (void) const
+    { return rep->is_bool_matrix (); }
 
   virtual bool is_char_matrix (void) const
     { return rep->is_char_matrix (); }

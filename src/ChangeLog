@@ -1,3 +1,19 @@
+2003-11-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-cell.cc (octave_cell::print_raw): Use dim_vector::str.
+
+	* Cell.cc, Cell.h, debug.cc, file-io.cc, load-save.cc,
+	oct-fstrm.cc, oct-iostrm.cc, oct-iostrm.h, oct-map.cc, oct-map.h,
+	oct-prcstrm.cc, oct-stdstrm.h, oct-stream.cc, oct-strstrm.h,
+	octave.cc, ov-base.h, ov-cell.cc, ov.cc, ov.h, pt-cell.h,
+	pt-mat.cc, pt-mat.h, pt-plot.cc, pt-stmt.cc, variables.cc,
+	DLD-FUNCTIONS/rand.cc: Avoid -Wshadow warnings.
+
+2003-11-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov.h (octave_base_value::is_bool_matrix): New virtual function.
+	* ov-base.h (octave_base_value::is_bool_matrix): New function.
+
 2003-10-31  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* ov.cc (octave_value::length): If any dim is zero, return 0.

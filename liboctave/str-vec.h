@@ -81,11 +81,11 @@ public:
 
   static int compare (const void *a_arg, const void *b_arg);
 
-  string_vector& qsort (bool make_unique = false)
+  string_vector& qsort (bool make_uniq = false)
   {
     Array<std::string>::qsort (compare);
 
-    if (make_unique)
+    if (make_uniq)
       uniq ();
 
     return *this;

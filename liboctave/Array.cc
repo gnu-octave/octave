@@ -392,13 +392,13 @@ Array<T>::resize_no_fill (int n)
 
 template <class T>
 void
-Array<T>::resize_no_fill (const dim_vector& dims)
+Array<T>::resize_no_fill (const dim_vector& dv)
 {
-  int n = dims.length ();
+  int n = dv.length ();
 
   for (int i = 0; i < n; i++)
     {
-      if (dims(i) < 0)
+      if (dv(i) < 0)
 	{
 	  (*current_liboctave_error_handler)
 	    ("can't resize to negative dimension");
@@ -416,7 +416,7 @@ Array<T>::resize_no_fill (const dim_vector& dims)
     {
       for (int i = 0; i < n; i++)
 	{
-	  if (dims(i) != dimensions(i))
+	  if (dv(i) != dimensions(i))
 	    {
 	      same_size = false;
 	      break;
@@ -432,9 +432,9 @@ Array<T>::resize_no_fill (const dim_vector& dims)
   typename Array<T>::ArrayRep *old_rep = rep;
   const T *old_data = data ();
 
-  rep = new typename Array<T>::ArrayRep (get_size (dims));
+  rep = new typename Array<T>::ArrayRep (get_size (dv));
 
-  dimensions = dims;
+  dimensions = dv;
 
   Array<int> ra_idx (dimensions.length (), 0);
 
@@ -705,13 +705,13 @@ Array<T>::resize_and_fill (int r, int c, int p, const T& val)
 
 template <class T>
 void
-Array<T>::resize_and_fill (const dim_vector& dims, const T& val)
+Array<T>::resize_and_fill (const dim_vector& dv, const T& val)
 {
-  int n = dims.length ();
+  int n = dv.length ();
 
   for (int i = 0; i < n; i++)
     {
-      if (dims(i) < 0)
+      if (dv(i) < 0)
 	{
 	  (*current_liboctave_error_handler)
 	    ("can't resize to negative dimension");
@@ -729,7 +729,7 @@ Array<T>::resize_and_fill (const dim_vector& dims, const T& val)
     {
       for (int i = 0; i < n; i++)
 	{
-	  if (dims(i) != dimensions(i))
+	  if (dv(i) != dimensions(i))
 	    {
 	      same_size = false;
 	      break;
@@ -745,11 +745,11 @@ Array<T>::resize_and_fill (const dim_vector& dims, const T& val)
 
   int old_len = length ();
 
-  int len = get_size (dims);
+  int len = get_size (dv);
 
   rep = new typename Array<T>::ArrayRep (len);
 
-  dimensions = dims;
+  dimensions = dv;
 
   Array<int> ra_idx (dimensions.length (), 0);
 
@@ -872,13 +872,13 @@ template <class T>
 void
 Array<T>::maybe_delete_dims (void)
 {
-  int ndims = dimensions.length ();
+  int nd = dimensions.length ();
 
   dim_vector new_dims (1, 1);
 
   bool delete_dims = true;
 
-  for (int i = ndims - 1; i >= 0; i--)
+  for (int i = nd - 1; i >= 0; i--)
     {
       if (delete_dims)
         {
@@ -893,7 +893,7 @@ Array<T>::maybe_delete_dims (void)
 	new_dims(i) = dimensions(i);
     }
 
-  if (ndims != new_dims.length ())
+  if (nd != new_dims.length ())
     dimensions = new_dims;
 }
 
@@ -1834,7 +1834,7 @@ Array<T>::indexN (idx_vector& ra_idx, int resize_ok, const T& rfv) const
 
 	  int r_dims = result_dims.length ();
 
-	  Array<int> index (r_dims, 0);
+	  Array<int> iidx (r_dims, 0);
 
 	  int k = 0;
 
@@ -1843,15 +1843,15 @@ Array<T>::indexN (idx_vector& ra_idx, int resize_ok, const T& rfv) const
 	      int ii = ra_idx.elem (k++);
 
 	      if (ii >= orig_len)
-	        retval.elem (index) = rfv;
+	        retval.elem (iidx) = rfv;
 	      else
 	        {
 		  Array<int> temp = get_ra_idx (ii, dims ());
 
-		  retval.elem (index) = elem (temp);
+		  retval.elem (iidx) = elem (temp);
 		}
 	      if (i != n - 1)
-		increment_index (index, result_dims);
+		increment_index (iidx, result_dims);
 	    }
 	}
     }
@@ -2605,8 +2605,8 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 	      dim_vector lhs_inc;
 	      lhs_inc.resize (lhs_dims.length ());
 
-	      for (int i = 0; i < lhs_dims.length (); i++)
-		lhs_inc(i) = lhs_dims(i) + 1;
+	      for (int j = 0; j < lhs_dims.length (); j++)
+		lhs_inc(j) = lhs_dims(j) + 1;
 
 	      if (index_in_bounds(elt_idx, lhs_inc))
 		lhs.checkelem (elt_idx) = scalar;

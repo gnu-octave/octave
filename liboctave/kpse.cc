@@ -2519,10 +2519,10 @@ kpse_db_search (const std::string& name_arg,
 
 		  for (int k = 1; k < aliases_len && found.empty (); k++)
 		    {
-		      std::string atry = db_dirs[j] + aliases[k];
-		      std::string tmp = kpse_readable_file (atry);
+		      std::string aatry = db_dirs[j] + aliases[k];
+		      tmp = kpse_readable_file (aatry);
 		      if (! tmp.empty ())
-			found = atry;
+			found = aatry;
 		    }
 		}
 

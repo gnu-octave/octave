@@ -44,17 +44,17 @@ Octave_map
 
   Octave_map (void) : map (), dimensions (0, 0) { }
 
-  Octave_map (const std::string& key, const octave_value& value)
+  Octave_map (const std::string& k, const octave_value& value)
     : map (), dimensions (1, 1)
-    { map[key] = value; }
+    { map[k] = value; }
 
-  Octave_map (const std::string& key, const Cell& vals)
+  Octave_map (const std::string& k, const Cell& vals)
     : map (), dimensions (vals.dims ())
-    { map[key] = vals; }
+    { map[k] = vals; }
 
-  Octave_map (const std::string& key, const octave_value_list& val_list)
+  Octave_map (const std::string& k, const octave_value_list& val_list)
     : map (), dimensions (1, val_list.length ())
-  { map[key] = val_list; }
+  { map[k] = val_list; }
 
   Octave_map (const Octave_map& m) : map (m.map), dimensions (m.dimensions) { }
 
@@ -76,13 +76,13 @@ Octave_map
 
   int empty (void) const { return map.empty (); }
 
-  Cell& operator [] (const std::string& key) { return map[key]; }
+  Cell& operator [] (const std::string& k) { return map[k]; }
 
-  Cell operator [] (const std::string& key) const;
+  Cell operator [] (const std::string& k) const;
 
-  void del (const std::string& key)
+  void del (const std::string& k)
     {
-      iterator p = map.find (key);
+      iterator p = map.find (k);
       if (p != map.end ())
 	map.erase (p);
     }
@@ -101,10 +101,10 @@ Octave_map
   Cell contents (const_iterator p) const
     { return operator [] (key(p)); }
 
-  const_iterator seek (const std::string& key) const { return map.find (key); }
+  const_iterator seek (const std::string& k) const { return map.find (k); }
 
-  int contains (const std::string& key) const
-    { return (seek (key) != map.end ()); }
+  int contains (const std::string& k) const
+    { return (seek (k) != map.end ()); }
 
   void clear (void) { map.clear (); }
 
@@ -122,10 +122,10 @@ Octave_map
 
   Octave_map& assign (const octave_value_list& idx, const Octave_map& rhs);
 
-  Octave_map& assign (const octave_value_list& idx, const std::string& key,
+  Octave_map& assign (const octave_value_list& idx, const std::string& k,
 		      const Cell& rhs);
 
-  Octave_map& assign (const std::string& key, const Cell& rhs);
+  Octave_map& assign (const std::string& k, const Cell& rhs);
 
   Octave_map index (const octave_value_list& idx);
 

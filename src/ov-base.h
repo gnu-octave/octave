@@ -112,6 +112,8 @@ public:
 
   bool is_complex_matrix (void) const { return false; }
 
+  bool is_bool_matrix (void) const { return false; }
+
   bool is_char_matrix (void) const { return false; }
 
   bool is_string (void) const { return false; }

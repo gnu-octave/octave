@@ -688,8 +688,6 @@ written to the stream @var{fid} instead of @code{stdout}.\n\
 
       if (! error_state)
 	{
-	  std::string who;
-
 	  if (args(fmt_n).is_string ())
 	    {
 	      std::string fmt = args(fmt_n).string_value ();

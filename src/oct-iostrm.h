@@ -33,10 +33,10 @@ octave_base_iostream : public octave_base_stream
 public:
 
   octave_base_iostream (const std::string& n = std::string (),
-			std::ios::openmode md = std::ios::in|std::ios::out,
-			oct_mach_info::float_format flt_fmt =
+			std::ios::openmode m = std::ios::in|std::ios::out,
+			oct_mach_info::float_format ff =
 			oct_mach_info::flt_fmt_native)
-    : octave_base_stream (md, flt_fmt), nm (n) { }
+    : octave_base_stream (m, ff), nm (n) { }
 
   // Position a stream at OFFSET relative to ORIGIN.
 
@@ -78,12 +78,12 @@ octave_istream : public octave_base_iostream
 {
 public:
 
-  octave_istream (std::istream *arg = 0, const std::string& nm = std::string ())
-    : octave_base_iostream (nm, std::ios::in, oct_mach_info::flt_fmt_native),
+  octave_istream (std::istream *arg = 0, const std::string& n = std::string ())
+    : octave_base_iostream (n, std::ios::in, oct_mach_info::flt_fmt_native),
       is (arg) { }
 
   static octave_stream
-  create (std::istream *arg = 0, const std::string& nm = std::string ());
+  create (std::istream *arg = 0, const std::string& n = std::string ());
 
   // Return non-zero if EOF has been reached on this stream.
 
@@ -115,12 +115,12 @@ octave_ostream : public octave_base_iostream
 {
 public:
 
-  octave_ostream (std::ostream *arg, const std::string& nm = std::string ())
-    : octave_base_iostream (nm, std::ios::out, oct_mach_info::flt_fmt_native),
+  octave_ostream (std::ostream *arg, const std::string& n = std::string ())
+    : octave_base_iostream (n, std::ios::out, oct_mach_info::flt_fmt_native),
       os (arg) { }
 
   static octave_stream
-  create (std::ostream *arg, const std::string& nm = std::string ());
+  create (std::ostream *arg, const std::string& n = std::string ());
 
   // Return non-zero if EOF has been reached on this stream.
 

@@ -32,15 +32,15 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 octave_stream
 octave_fstream::create (const std::string& nm_arg, std::ios::openmode arg_md,
-			oct_mach_info::float_format flt_fmt)
+			oct_mach_info::float_format ff)
 {
-  return octave_stream (new octave_fstream (nm_arg, arg_md, flt_fmt));
+  return octave_stream (new octave_fstream (nm_arg, arg_md, ff));
 }
 
 octave_fstream::octave_fstream (const std::string& nm_arg,
 				std::ios::openmode arg_md,
-				oct_mach_info::float_format flt_fmt)
-  : octave_base_stream (arg_md, flt_fmt), nm (nm_arg)
+				oct_mach_info::float_format ff)
+  : octave_base_stream (arg_md, ff), nm (nm_arg)
 {
 
 #if CXX_ISO_COMPLIANT_LIBRARY

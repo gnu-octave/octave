@@ -377,7 +377,7 @@ get_struct_elts (const std::string& text)
 
   for (int i = 0; i < n; i++)
     {
-      size_t len = text.find ('.', pos);
+      len = text.find ('.', pos);
 
       if (len != NPOS)
 	len -= pos;
@@ -1171,8 +1171,8 @@ do_who (int argc, const string_vector& argv, int return_list)
 
 	  octave_value_list ovl (len, octave_value ());
 
-	  for (int i = 0; i < len; i++)
-	    ovl(i) = names(i);
+	  for (int j = 0; j < len; i++)
+	    ovl(j) = names(j);
 
 	  retval = Octave_map ("name", ovl);
 	}

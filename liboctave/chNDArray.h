@@ -43,9 +43,9 @@ public:
   
   charNDArray (void) : MArrayN<char> () { }
 
-  charNDArray (dim_vector& dims) : MArrayN<char> (dims) { }
+  charNDArray (dim_vector& dv) : MArrayN<char> (dv) { }
 
-  charNDArray (dim_vector& dims, char val) : MArrayN<char> (dims, val) { }
+  charNDArray (dim_vector& dv, char val) : MArrayN<char> (dv, val) { }
   
   charNDArray (const charNDArray& a) : MArrayN<char> (a) { }
 
@@ -92,7 +92,7 @@ public:
 
 private:
 
-  charNDArray (char *d, dim_vector& dims) : MArrayN<char> (d, dims) { }
+  charNDArray (char *d, dim_vector& dv) : MArrayN<char> (d, dv) { }
 };
 
 MARRAY_FORWARD_DEFS (MArrayN, charNDArray, char)

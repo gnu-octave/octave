@@ -32,10 +32,11 @@ octave_stdiostream : public octave_base_stream
 public:
 
   octave_stdiostream (const std::string& n, FILE *f = 0,
-		      std::ios::openmode arg_md = std::ios::in|std::ios::out,
-		      oct_mach_info::float_format flt_fmt = oct_mach_info::flt_fmt_native,
+		      std::ios::openmode m = std::ios::in|std::ios::out,
+		      oct_mach_info::float_format ff =
+		      oct_mach_info::flt_fmt_native,
 		      c_file_ptr_buf::close_fcn cf = c_file_ptr_buf::fclose)
-    : octave_base_stream (arg_md, flt_fmt), nm (n), md (arg_md), s(0)
+    : octave_base_stream (m, ff), nm (n), md (m), s(0)
   {
     if (f)
       s = new io_c_file_ptr_stream (f, cf);
@@ -43,11 +44,11 @@ public:
 
   static octave_stream
   create (const std::string& n, FILE *f = 0,
-	  std::ios::openmode arg_md = std::ios::in|std::ios::out,
-	  oct_mach_info::float_format flt_fmt = oct_mach_info::flt_fmt_native,
+	  std::ios::openmode m = std::ios::in|std::ios::out,
+	  oct_mach_info::float_format ff = oct_mach_info::flt_fmt_native,
 	  c_file_ptr_buf::close_fcn cf = c_file_ptr_buf::fclose)
   {
-    return octave_stream (new octave_stdiostream (n, f, arg_md, flt_fmt, cf));
+    return octave_stream (new octave_stdiostream (n, f, m, ff, cf));
   }
 
   // Position a stream at OFFSET relative to ORIGIN.

@@ -232,11 +232,11 @@ tm_row_const::tm_row_const_rep::init (const tree_argument_list& row)
 	{
 	  if (tmp.is_cs_list ())
 	    {
-	      octave_value_list lst = tmp.list_value ();
+	      octave_value_list tlst = tmp.list_value ();
 
-	      for (int i = 0; i < lst.length (); i++)
+	      for (int i = 0; i < tlst.length (); i++)
 		{
-		  if (! do_init_element (elt, lst(i), first_elem))
+		  if (! do_init_element (elt, tlst(i), first_elem))
 		    goto done;
 		}
 	    }

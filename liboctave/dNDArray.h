@@ -43,10 +43,10 @@ public:
   
   NDArray (void) : MArrayN<double> () { }
 
-  NDArray (const dim_vector& dims) : MArrayN<double> (dims) { }
+  NDArray (const dim_vector& dv) : MArrayN<double> (dv) { }
 
-  NDArray (const dim_vector& dims, double val)
-    : MArrayN<double> (dims, val) { }
+  NDArray (const dim_vector& dv, double val)
+    : MArrayN<double> (dv, val) { }
   
   NDArray (const NDArray& a) : MArrayN<double> (a) { }
 
@@ -106,7 +106,7 @@ public:
 
 private:
 
-  NDArray (double *d, dim_vector& dims) : MArrayN<double> (d, dims) { }
+  NDArray (double *d, dim_vector& dv) : MArrayN<double> (d, dv) { }
 };
 
 NDS_CMP_OP_DECLS (NDArray, double)

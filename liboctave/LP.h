@@ -34,22 +34,22 @@ octave_LP : public base_minimizer
 public:
 
   octave_LP (void)
-    : base_minimizer (), c (), bnds (), lc () { }
+    : base_minimizer (), cvec (), bnds (), lin_constr () { }
 
-  octave_LP (const ColumnVector& c_arg)
-    : base_minimizer (), c (c_arg), bnds (), lc () { }
+  octave_LP (const ColumnVector& c)
+    : base_minimizer (), cvec (c), bnds (), lin_constr () { }
 
-  octave_LP (const ColumnVector& c_arg, const Bounds& b)
-    : base_minimizer (), c (c_arg), bnds (b), lc () { }
+  octave_LP (const ColumnVector& c, const Bounds& b)
+    : base_minimizer (), cvec (c), bnds (b), lin_constr () { }
 
-  octave_LP (const ColumnVector& c_arg, const Bounds& b, const LinConst& l)
-    : base_minimizer (), c (c_arg), bnds (b), lc (l) { }
+  octave_LP (const ColumnVector& c, const Bounds& b, const LinConst& l)
+    : base_minimizer (), cvec (c), bnds (b), lin_constr (l) { }
 
-  octave_LP (const ColumnVector& c_arg, const LinConst& l)
-    : base_minimizer (), c (c_arg), bnds (), lc (l) { }
+  octave_LP (const ColumnVector& c, const LinConst& l)
+    : base_minimizer (), cvec (c), bnds (), lin_constr (l) { }
 
   octave_LP (const octave_LP& a)
-    : base_minimizer (a), c (a.c), bnds (a.bnds), lc (a.lc) { }
+    : base_minimizer (a), cvec (a.cvec), bnds (a.bnds), lin_constr (a.lin_constr) { }
 
   octave_LP& operator = (const octave_LP& a)
     {
@@ -57,26 +57,26 @@ public:
 	{
 	  base_minimizer::operator = (a);
 
-	  c = a.c;
+	  cvec = a.cvec;
 	  bnds = a.bnds;
-	  lc = a.lc;
+	  lin_constr = a.lin_constr;
 	}
       return *this;
     }
 
   ~octave_LP (void) { }
 
-  ColumnVector linear_obj_coeff (void) const { return c; }
+  ColumnVector linear_obj_coeff (void) const { return cvec; }
 
   Bounds bounds (void) const { return bnds; }
 
-  LinConst linear_constraints (void) const { return lc; }
+  LinConst linear_constraints (void) const { return lin_constr; }
 
 protected:
 
-  ColumnVector c;
+  ColumnVector cvec;
   Bounds bnds;
-  LinConst lc;
+  LinConst lin_constr;
 };
 
 #endif

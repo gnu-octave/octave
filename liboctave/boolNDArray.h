@@ -43,10 +43,10 @@ public:
   
   boolNDArray (void) : ArrayN<bool> () { }
 
-  boolNDArray (dim_vector& dims) : ArrayN<bool> (dims) { }
+  boolNDArray (dim_vector& dv) : ArrayN<bool> (dv) { }
 
-  boolNDArray (dim_vector& dims, const bool& val)
-    : ArrayN<bool> (dims, val) { }
+  boolNDArray (dim_vector& dv, const bool& val)
+    : ArrayN<bool> (dv, val) { }
   
   boolNDArray (const boolNDArray& a) : ArrayN<bool> (a) { }
 
@@ -94,7 +94,7 @@ public:
 
 private:
 
-  boolNDArray (bool *d, dim_vector& dims) : ArrayN<bool> (d, dims) { }
+  boolNDArray (bool *d, dim_vector& dv) : ArrayN<bool> (d, dv) { }
 };
 
 NDND_CMP_OP_DECLS (boolNDArray, boolNDArray)

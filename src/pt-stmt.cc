@@ -204,9 +204,9 @@ tree_statement_list::delete_breakpoint (int line)
 
       int len = bp_lst.length ();
 
-      for (int line = 0; line < len; line++)
+      for (int i = 0; i < len; i++)
 	{
-	  tree_breakpoint tbp (line, tree_breakpoint::clear);
+	  tree_breakpoint tbp (i, tree_breakpoint::clear);
 	  accept (tbp);
 	}
     }

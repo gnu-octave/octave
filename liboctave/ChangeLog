@@ -1,4 +1,13 @@
-2003-11-08  John Eaton  <osc0383@coe3.osc.edu>
+2003-11-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Array.cc, Array.h, ArrayN.h, CMatrix.cc, CNDArray.h,
+	CRowVector.cc, CmplxQR.cc, CollocWt.h, DASPK.h, DASRT.h, DASSL.h,
+	FEGrid.cc, LP.h, LSODE.h, MArrayN.h, ODE.h, ODES.h, ODESSA.cc,
+	boolNDArray.h, chNDArray.h, dMatrix.cc, dNDArray.h, dRowVector.cc,
+	dbleQR.cc, kpse.cc, oct-rl-hist.c, str-vec.cc, str-vec.h:
+	Avoid -Wshadow warnings.
+
+2003-11-08  John Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Array.h (Array<T>::nil_rep): Qualify return type with typename.
 

@@ -1307,7 +1307,7 @@ Matrix::solve (const Matrix& b, int& info, double& rcond,
 
 		  int b_nc = b.cols ();
 
-		  char job = 'N';
+		  job = 'N';
 		  F77_XFCN (dgetrs, DGETRS, (F77_CONST_CHAR_ARG2 (&job, 1),
 					     nr, b_nc, tmp_data, nr,
 					     pipvt, result, b.rows(), info
@@ -1456,7 +1456,7 @@ Matrix::solve (const ColumnVector& b, int& info, double& rcond,
 		  retval = b;
 		  double *result = retval.fortran_vec ();
 
-		  char job = 'N';
+		  job = 'N';
 		  F77_XFCN (dgetrs, DGETRS, (F77_CONST_CHAR_ARG2 (&job, 1),
 					     nr, 1, tmp_data, nr, pipvt,
 					     result, b.length(), info
@@ -2264,12 +2264,12 @@ Matrix::diag (int k) const
 ColumnVector
 Matrix::row_min (void) const
 {
-  Array<int> index;
-  return row_min (index);
+  Array<int> dummy_idx;
+  return row_min (dummy_idx);
 }
 
 ColumnVector
-Matrix::row_min (Array<int>& index) const
+Matrix::row_min (Array<int>& idx_arg) const
 {
   ColumnVector result;
 
@@ -2279,7 +2279,7 @@ Matrix::row_min (Array<int>& index) const
   if (nr > 0 && nc > 0)
     {
       result.resize (nr);
-      index.resize (nr);
+      idx_arg.resize (nr);
 
       for (int i = 0; i < nr; i++)
         {
@@ -2309,7 +2309,7 @@ Matrix::row_min (Array<int>& index) const
 	    }
 
 	  result.elem (i) = tmp_min;
-	  index.elem (i) = octave_is_NaN_or_NA (tmp_min) ? 0 : idx_j;
+	  idx_arg.elem (i) = octave_is_NaN_or_NA (tmp_min) ? 0 : idx_j;
         }
     }
 
@@ -2319,12 +2319,12 @@ Matrix::row_min (Array<int>& index) const
 ColumnVector
 Matrix::row_max (void) const
 {
-  Array<int> index;
-  return row_max (index);
+  Array<int> dummy_idx;
+  return row_max (dummy_idx);
 }
 
 ColumnVector
-Matrix::row_max (Array<int>& index) const
+Matrix::row_max (Array<int>& idx_arg) const
 {
   ColumnVector result;
 
@@ -2334,7 +2334,7 @@ Matrix::row_max (Array<int>& index) const
   if (nr > 0 && nc > 0)
     {
       result.resize (nr);
-      index.resize (nr);
+      idx_arg.resize (nr);
 
       for (int i = 0; i < nr; i++)
         {
@@ -2364,7 +2364,7 @@ Matrix::row_max (Array<int>& index) const
 	    }
 
 	  result.elem (i) = tmp_max;
-	  index.elem (i) = octave_is_NaN_or_NA (tmp_max) ? 0 : idx_j;
+	  idx_arg.elem (i) = octave_is_NaN_or_NA (tmp_max) ? 0 : idx_j;
         }
     }
 
@@ -2374,12 +2374,12 @@ Matrix::row_max (Array<int>& index) const
 RowVector
 Matrix::column_min (void) const
 {
-  Array<int> index;
-  return column_min (index);
+  Array<int> dummy_idx;
+  return column_min (dummy_idx);
 }
 
 RowVector
-Matrix::column_min (Array<int>& index) const
+Matrix::column_min (Array<int>& idx_arg) const
 {
   RowVector result;
 
@@ -2389,7 +2389,7 @@ Matrix::column_min (Array<int>& index) const
   if (nr > 0 && nc > 0)
     {
       result.resize (nc);
-      index.resize (nc);
+      idx_arg.resize (nc);
 
       for (int j = 0; j < nc; j++)
         {
@@ -2419,7 +2419,7 @@ Matrix::column_min (Array<int>& index) const
 	    }
 
 	  result.elem (j) = tmp_min;
-	  index.elem (j) = octave_is_NaN_or_NA (tmp_min) ? 0 : idx_i;
+	  idx_arg.elem (j) = octave_is_NaN_or_NA (tmp_min) ? 0 : idx_i;
         }
     }
 
@@ -2429,12 +2429,12 @@ Matrix::column_min (Array<int>& index) const
 RowVector
 Matrix::column_max (void) const
 {
-  Array<int> index;
-  return column_max (index);
+  Array<int> dummy_idx;
+  return column_max (dummy_idx);
 }
 
 RowVector
-Matrix::column_max (Array<int>& index) const
+Matrix::column_max (Array<int>& idx_arg) const
 {
   RowVector result;
 
@@ -2444,7 +2444,7 @@ Matrix::column_max (Array<int>& index) const
   if (nr > 0 && nc > 0)
     {
       result.resize (nc);
-      index.resize (nc);
+      idx_arg.resize (nc);
 
       for (int j = 0; j < nc; j++)
         {
@@ -2474,7 +2474,7 @@ Matrix::column_max (Array<int>& index) const
 	    }
 
 	  result.elem (j) = tmp_max;
-	  index.elem (j) = octave_is_NaN_or_NA (tmp_max) ? 0 : idx_i;
+	  idx_arg.elem (j) = octave_is_NaN_or_NA (tmp_max) ? 0 : idx_i;
         }
     }
 
@@ -2698,7 +2698,7 @@ Matrix::read (std::istream& is, int nr, int nc,
 
   int count = 0;
 
-  double *data = 0;
+  double *dat = 0;
   int max_size = 0;
 
   int final_nr = 0;
@@ -2709,20 +2709,20 @@ Matrix::read (std::istream& is, int nr, int nc,
       if (nc > 0)
 	{
 	  resize (nr, nc, 0.0);
-	  data = fortran_vec ();
+	  dat = fortran_vec ();
 	  max_size = nr * nc;
 	}
       else
 	{
 	  resize (nr, 32, 0.0);
-	  data = fortran_vec ();
+	  dat = fortran_vec ();
 	  max_size = nr * 32;
 	}
     }
   else
     {
       resize (32, 1, 0.0);
-      data = fortran_vec ();
+      dat = fortran_vec ();
       max_size = 32;
     }
 
@@ -2774,10 +2774,10 @@ Matrix::read (std::istream& is, int nr, int nc,
 		      else
 			resize (max_size, 1, 0.0);
 
-		      data = fortran_vec ();
+		      dat = fortran_vec ();
 		    }
 
-		  data[count++] = tmp;
+		  dat[count++] = tmp;
 		}
 
 	      if (skip != 0)

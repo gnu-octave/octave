@@ -334,9 +334,9 @@ octave_cell::print (std::ostream& os, bool) const
 void
 octave_cell::print_raw (std::ostream& os, bool) const
 {
-  int ndims = matrix.ndims ();
+  int nd = matrix.ndims ();
 
-  if (ndims == 2)
+  if (nd == 2)
     {
       int nr = rows ();
       int nc = columns ();
@@ -383,15 +383,8 @@ octave_cell::print_raw (std::ostream& os, bool) const
   else
     {
       indent (os);
-      os << "{";
       dim_vector dv = matrix.dims ();
-      for (int i = 0; i < ndims; i++)
-	{
-	  if (i > 0)
-	    os << "x";
-	  os << dv(i);
-	}
-      os << " Cell Array}";
+      os << "{" << dv.str () << " Cell Array}";
       newline (os);
     }
 }

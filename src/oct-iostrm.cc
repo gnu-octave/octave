@@ -69,9 +69,9 @@ octave_istream::eof (void) const
 }
 
 octave_stream
-octave_istream::create (std::istream *arg, const std::string& nm)
+octave_istream::create (std::istream *arg, const std::string& n)
 {
-  return octave_stream (new octave_istream (arg, nm));
+  return octave_stream (new octave_istream (arg, n));
 }
 
 // Return non-zero if EOF has been reached on this stream.
@@ -83,9 +83,9 @@ octave_ostream::eof (void) const
 }
 
 octave_stream
-octave_ostream::create (std::ostream *arg, const std::string& nm)
+octave_ostream::create (std::ostream *arg, const std::string& n)
 {
-  return octave_stream (new octave_ostream (arg, nm));
+  return octave_stream (new octave_ostream (arg, n));
 }
 
 /*

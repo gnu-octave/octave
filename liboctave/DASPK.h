@@ -39,12 +39,12 @@ public:
 
   DASPK (void) : DAE (), DASPK_options (), initialized (false) { }
 
-  DASPK (const ColumnVector& state, double time, DAEFunc& f)
-    : DAE (state, time, f), DASPK_options (), initialized (false) { }
+  DASPK (const ColumnVector& s, double tm, DAEFunc& f)
+    : DAE (s, tm, f), DASPK_options (), initialized (false) { }
 
-  DASPK (const ColumnVector& state, const ColumnVector& deriv,
-	 double time, DAEFunc& f)
-    : DAE (state, deriv, time, f), DASPK_options (), initialized (false) { }
+  DASPK (const ColumnVector& s, const ColumnVector& deriv,
+	 double tm, DAEFunc& f)
+    : DAE (s, deriv, tm, f), DASPK_options (), initialized (false) { }
 
   ~DASPK (void) { }
 

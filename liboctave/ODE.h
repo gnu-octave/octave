@@ -34,8 +34,8 @@ public:
   ODE (void)
     : base_diff_eqn (), ODEFunc () { }
 
-  ODE (const ColumnVector& state, double time, const ODEFunc& f)
-    : base_diff_eqn (state, time), ODEFunc (f) { }
+  ODE (const ColumnVector& s, double tm, const ODEFunc& f)
+    : base_diff_eqn (s, tm), ODEFunc (f) { }
 
   ODE (const ODE& a)
     : base_diff_eqn (a), ODEFunc (a) { }

@@ -1,3 +1,8 @@
+2003-11-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: Preserve CFLAGS and CXXFLAGS before doing anything.
+	Maybe add -Wshadow to CFLAGS and CXXFLAGS.
+
 2003-10-24  Stefan Monnier  <monnier@iro.umontreal.ca>
 
 	* emacs/octave-mod.el (octave-comment-start): Simplify.

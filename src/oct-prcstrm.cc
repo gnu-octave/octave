@@ -36,16 +36,16 @@ cxx_pclose (FILE *f)
 
 octave_stream
 octave_iprocstream::create (const std::string& n, std::ios::openmode arg_md,
-			    oct_mach_info::float_format flt_fmt)
+			    oct_mach_info::float_format ff)
 {
-  return octave_stream (new octave_iprocstream (n, arg_md, flt_fmt));
+  return octave_stream (new octave_iprocstream (n, arg_md, ff));
 }
 
 octave_iprocstream::octave_iprocstream (const std::string& n,
 					std::ios::openmode arg_md,
-					oct_mach_info::float_format flt_fmt)
+					oct_mach_info::float_format ff)
   : octave_stdiostream (n, ::popen (n.c_str (), "r"),
-			arg_md, flt_fmt, cxx_pclose)
+			arg_md, ff, cxx_pclose)
 {
 }
 
@@ -56,16 +56,16 @@ octave_iprocstream::~octave_iprocstream (void)
 
 octave_stream
 octave_oprocstream::create (const std::string& n, std::ios::openmode arg_md,
-			    oct_mach_info::float_format flt_fmt)
+			    oct_mach_info::float_format ff)
 {
-  return octave_stream (new octave_oprocstream (n, arg_md, flt_fmt));
+  return octave_stream (new octave_oprocstream (n, arg_md, ff));
 }
 
 octave_oprocstream::octave_oprocstream (const std::string& n,
 					std::ios::openmode arg_md,
-					oct_mach_info::float_format flt_fmt)
+					oct_mach_info::float_format ff)
   : octave_stdiostream (n, ::popen (n.c_str (), "w"),
-			arg_md, flt_fmt, cxx_pclose)
+			arg_md, ff, cxx_pclose)
 {
 }
 

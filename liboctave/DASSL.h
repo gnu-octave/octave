@@ -39,12 +39,12 @@ public:
 
   DASSL (void) : DAE (), DASSL_options (), initialized (false) { }
 
-  DASSL (const ColumnVector& state, double time, DAEFunc& f)
-    : DAE (state, time, f), DASSL_options (), initialized (false) { }
+  DASSL (const ColumnVector& s, double tm, DAEFunc& f)
+    : DAE (s, tm, f), DASSL_options (), initialized (false) { }
 
-  DASSL (const ColumnVector& state, const ColumnVector& deriv,
-	 double time, DAEFunc& f)
-    : DAE (state, deriv, time, f), DASSL_options (), initialized (false) { }
+  DASSL (const ColumnVector& s, const ColumnVector& deriv,
+	 double tm, DAEFunc& f)
+    : DAE (s, deriv, tm, f), DASSL_options (), initialized (false) { }
 
   ~DASSL (void) { }
 

@@ -45,8 +45,8 @@ public:
     : n (nc), inc_left (il), inc_right (ir), lb (0.0), rb (1.0),
       Alpha (0.0), Beta (0.0), r (), q (), A (), B (), initialized (0) { }
 
-  CollocWt (int nc, int il, int ir, double l, double r)
-    : n (nc), inc_left (il), inc_right (ir), lb (l), rb (r),
+  CollocWt (int nc, int il, int ir, double l, double rr)
+    : n (nc), inc_left (il), inc_right (ir), lb (l), rb (rr),
       Alpha (0.0), Beta (0.0), r (), q (), A (), B (), initialized (0) { }
 
   CollocWt (int nc, double a, double b, int il, int ir)
@@ -54,8 +54,8 @@ public:
       Alpha (a), Beta (b), initialized (0) { }
 
   CollocWt (int nc, double a, double b, int il, int ir,
-		      double l, double r)  
-    : n (nc), inc_left (il), inc_right (ir), lb (l), rb (r),
+		      double ll, double rr)  
+    : n (nc), inc_left (il), inc_right (ir), lb (ll), rb (rr),
       Alpha (a), Beta (b), r (), q (), A (), B (), initialized (0) { }
 
   CollocWt (const CollocWt& a)
@@ -84,9 +84,9 @@ public:
 
   ~CollocWt (void) { }
 
-  CollocWt& resize (int ncol)
+  CollocWt& resize (int nc)
     {
-      n = ncol;
+      n = nc;
       initialized = 0;
       return *this;
     }

@@ -152,9 +152,9 @@ protected:
     : rep (new typename Array<T>::ArrayRep (d, n)), dimensions (n),
       idx (0), idx_count (0) { }
 
-  Array (T *d, const dim_vector& dims)
-    : rep (new typename Array<T>::ArrayRep (d, get_size (dims))),
-      dimensions (dims), idx (0), idx_count (0) { }
+  Array (T *d, const dim_vector& dv)
+    : rep (new typename Array<T>::ArrayRep (d, get_size (dv))),
+      dimensions (dv), idx (0), idx_count (0) { }
 
 private:
 
@@ -191,19 +191,19 @@ public:
 
 public:
 
-  Array (const dim_vector& dims)
-    : rep (new typename Array<T>::ArrayRep (get_size (dims))),
-      dimensions (dims), idx (0), idx_count (0) { }
+  Array (const dim_vector& dv)
+    : rep (new typename Array<T>::ArrayRep (get_size (dv))),
+      dimensions (dv), idx (0), idx_count (0) { }
 
-  Array (const dim_vector& dims, const T& val)
-    : rep (new typename Array<T>::ArrayRep (get_size (dims))),
-      dimensions (dims), idx (0), idx_count (0)
+  Array (const dim_vector& dv, const T& val)
+    : rep (new typename Array<T>::ArrayRep (get_size (dv))),
+      dimensions (dv), idx (0), idx_count (0)
     {
       fill (val);
     }
 
-  Array (const Array<T>& a, const dim_vector& dims)
-    : rep (a.rep), dimensions (dims), idx (0), idx_count (0)
+  Array (const Array<T>& a, const dim_vector& dv)
+    : rep (a.rep), dimensions (dv), idx (0), idx_count (0)
     {
       rep->count++;
     }
@@ -251,7 +251,7 @@ public:
 
   static int get_size (int r, int c);
   static int get_size (int r, int c, int p);
-  static int get_size (const dim_vector& dims);
+  static int get_size (const dim_vector& dv);
 
   int compute_index (const Array<int>& ra_idx) const;
 
@@ -424,8 +424,8 @@ public:
   void resize_no_fill (int r, int c, int p);
   void resize_and_fill (int r, int c, int p, const T& val);
 
-  void resize_no_fill (const dim_vector& dims);
-  void resize_and_fill (const dim_vector& dims, const T& val);
+  void resize_no_fill (const dim_vector& dv);
+  void resize_and_fill (const dim_vector& dv, const T& val);
 
 public:
 
@@ -433,14 +433,14 @@ public:
 
   //  void resize (int n, const T& val) { resize_and_fill (n, val); }
 
-  void resize (const dim_vector& dims) { resize_no_fill (dims); }
+  void resize (const dim_vector& dv) { resize_no_fill (dv); }
 
-  void resize (const dim_vector& dims, const T& val)
-    { resize_and_fill (dims, val); }
+  void resize (const dim_vector& dv, const T& val)
+    { resize_and_fill (dv, val); }
 
   Array<T>& insert (const Array<T>& a, int r, int c);
 
-  Array<T>& insert (const Array<T>& a, const Array<int>& dims);
+  Array<T>& insert (const Array<T>& a, const Array<int>& dv);
 
   bool is_square (void) const { return (dim1 () == dim2 ()); }
 

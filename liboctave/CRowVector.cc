@@ -334,9 +334,6 @@ operator * (const ComplexRowVector& v, const ComplexMatrix& a)
     gripe_nonconformant ("operator *", 1, len, a_nr, a_nc);
   else
     {
-      int a_nr = a.rows ();
-      int a_nc = a.cols ();
-
       if (len == 0)
 	retval.resize (a_nc, 0.0);
       else

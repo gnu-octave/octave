@@ -38,12 +38,12 @@ public:
   ODES (void)
     : base_diff_eqn (), ODESFunc (), theta () { }
 
-  ODES (const ColumnVector& x, double t, ODESFunc& f)
-    : base_diff_eqn (x, t), ODESFunc (f), xdot (x.length (), 0.0), theta () { }
+  ODES (const ColumnVector& s, double tm, ODESFunc& f)
+    : base_diff_eqn (s, tm), ODESFunc (f), xdot (s.length (), 0.0), theta () { }
 
-  ODES (const ColumnVector& x, const ColumnVector& xtheta, double t,
+  ODES (const ColumnVector& s, const ColumnVector& xtheta, double tm,
 	ODESFunc& f)
-    : base_diff_eqn (x, t), ODESFunc (f), xdot (x.length (), 0.0),
+    : base_diff_eqn (s, tm), ODESFunc (f), xdot (s.length (), 0.0),
       theta (xtheta) { }
 
   ODES (const ODES& a)

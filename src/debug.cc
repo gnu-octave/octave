@@ -64,7 +64,7 @@ get_user_function (std::string str = "")
 	}
       else
 	{
-	  symbol_record *ptr = lookup_by_name (str, false);
+	  ptr = lookup_by_name (str, false);
 	
 	  if (ptr && ptr->is_user_function ())
 	    {

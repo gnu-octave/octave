@@ -776,7 +776,8 @@ subplot::print (int ndim, OSSTREAM& plot_buf)
 
   if (sp_axes_clause)
     {
-      int status = sp_axes_clause->print (plot_buf);
+      status = sp_axes_clause->print (plot_buf);
+
       if (status < 0)
 	return -1;
     }
@@ -801,7 +802,8 @@ subplot::print (int ndim, OSSTREAM& plot_buf)
 
   if (sp_style_clause)
     {
-      int status = sp_style_clause->print (plot_buf);
+      status = sp_style_clause->print (plot_buf);
+
       if (status < 0)
 	return -1;
     }

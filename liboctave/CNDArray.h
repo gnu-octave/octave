@@ -43,10 +43,10 @@ public:
   
   ComplexNDArray (void) : MArrayN<Complex> () { }
 
-  ComplexNDArray (const dim_vector& dims) : MArrayN<Complex> (dims) { }
+  ComplexNDArray (const dim_vector& dv) : MArrayN<Complex> (dv) { }
 
-  ComplexNDArray (const dim_vector& dims, const Complex& val)
-    : MArrayN<Complex> (dims, val) { }
+  ComplexNDArray (const dim_vector& dv, const Complex& val)
+    : MArrayN<Complex> (dv, val) { }
   
   ComplexNDArray (const ComplexNDArray& a) : MArrayN<Complex> (a) { }
 
@@ -108,8 +108,8 @@ public:
 
 private:
 
-  ComplexNDArray (Complex *d, dim_vector& dims)
-    : MArrayN<Complex> (d, dims) { }
+  ComplexNDArray (Complex *d, dim_vector& dv)
+    : MArrayN<Complex> (d, dv) { }
 };
 
 NDS_CMP_OP_DECLS (ComplexNDArray, Complex)

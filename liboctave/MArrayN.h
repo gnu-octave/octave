@@ -46,15 +46,15 @@ MArrayN : public ArrayN<T>
 {
 protected:
 
-  MArrayN (T *d, const dim_vector& dims) : ArrayN<T> (d, dims) { }
+  MArrayN (T *d, const dim_vector& dv) : ArrayN<T> (d, dv) { }
 
 public:
   
   MArrayN (void) : ArrayN<T> () {}
   
-  MArrayN (const dim_vector& dims) : ArrayN<T> (dims) { }
+  MArrayN (const dim_vector& dv) : ArrayN<T> (dv) { }
   
-  MArrayN (const dim_vector& dims, const T& val) : ArrayN<T> (dims, val) { }
+  MArrayN (const dim_vector& dv, const T& val) : ArrayN<T> (dv, val) { }
 
   MArrayN (const Array2<T>& a) : ArrayN<T> (a) { }
 

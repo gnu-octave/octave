@@ -115,7 +115,7 @@ QR::init (const Matrix& a, QR::type qr_type)
 
 	  lwork = 32 * n2;
 	  work.resize (lwork);
-	  double *pwork = work.fortran_vec ();
+	  pwork = work.fortran_vec ();
 
 	  F77_XFCN (dorgqr, DORGQR, (m, n2, min_mn, tmp_data, m, ptau,
 				     pwork, lwork, info));

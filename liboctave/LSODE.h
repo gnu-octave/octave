@@ -39,8 +39,8 @@ public:
 
   LSODE (void) : ODE (), LSODE_options (), initialized (false) { }
 
-  LSODE (const ColumnVector& state, double time, const ODEFunc& f)
-    : ODE (state, time, f), LSODE_options (), initialized (false) { }
+  LSODE (const ColumnVector& s, double tm, const ODEFunc& f)
+    : ODE (s, tm, f), LSODE_options (), initialized (false) { }
 
   ~LSODE (void) { }
 

@@ -399,10 +399,10 @@ octave_value::octave_value (double d)
   rep->count = 1;
 }
 
-octave_value::octave_value (const Cell& c, bool is_cs_list)
+octave_value::octave_value (const Cell& c, bool is_csl)
   : rep (0)
 {
-  if (is_cs_list)
+  if (is_csl)
     rep = new octave_cs_list (c);
   else
     rep = new octave_cell (c);
@@ -410,12 +410,12 @@ octave_value::octave_value (const Cell& c, bool is_cs_list)
   rep->count = 1;
 }
 
-octave_value::octave_value (const ArrayN<octave_value>& a, bool is_cs_list)
+octave_value::octave_value (const ArrayN<octave_value>& a, bool is_csl)
   : rep (0)
 {
   Cell c (a);
 
-  if (is_cs_list)
+  if (is_csl)
     rep = new octave_cs_list (c);
   else
     rep = new octave_cell (c);
@@ -548,8 +548,8 @@ octave_value::octave_value (const string_vector& s)
   maybe_mutate ();
 }
 
-octave_value::octave_value (const charMatrix& chm, bool is_string)
-  : rep (is_string
+octave_value::octave_value (const charMatrix& chm, bool is_str)
+  : rep (is_str
 	 ? new octave_char_matrix_str (chm)
 	 : new octave_char_matrix (chm))
 {
@@ -557,8 +557,8 @@ octave_value::octave_value (const charMatrix& chm, bool is_string)
   maybe_mutate ();
 }
 
-octave_value::octave_value (const charNDArray& chm, bool is_string)
-  : rep (is_string
+octave_value::octave_value (const charNDArray& chm, bool is_str)
+  : rep (is_str
 	 ? new octave_char_matrix_str (chm)
 	 : new octave_char_matrix (chm))
 {
@@ -604,8 +604,8 @@ octave_value::octave_value (const octave_fcn_handle& fh)
   rep->count = 1;
 }
 
-octave_value::octave_value (const octave_value_list& l, bool is_cs_list)
-  : rep (is_cs_list ? new octave_cs_list (l) : new octave_list (l))
+octave_value::octave_value (const octave_value_list& l, bool is_csl)
+  : rep (is_csl ? new octave_cs_list (l) : new octave_list (l))
 {
   rep->count = 1;
 }
@@ -1472,8 +1472,7 @@ do_binary_op (octave_value::binary_op op,
 
       if (cf1 || cf2)
 	{
-	  binary_op_fcn f
-	    = octave_value_typeinfo::lookup_binary_op (op, t1, t2);
+	  f = octave_value_typeinfo::lookup_binary_op (op, t1, t2);
 
 	  if (f)
 	    retval = f (*tv1.rep, *tv2.rep);
@@ -1537,7 +1536,7 @@ do_unary_op (octave_value::unary_op op, const octave_value& v)
 	      tv = octave_value (tmp);
 	      t = tv.type_id ();
 
-	      unary_op_fcn f = octave_value_typeinfo::lookup_unary_op (op, t);
+	      f = octave_value_typeinfo::lookup_unary_op (op, t);
 
 	      if (f)
 		retval = f (*tv.rep);

@@ -47,17 +47,17 @@ Cell::Cell (const string_vector& sv)
 }
 
 Cell
-Cell::index (const octave_value_list& idx, bool resize_ok) const
+Cell::index (const octave_value_list& idx_arg, bool resize_ok) const
 {
   Cell retval;
 
-  int n = idx.length ();
+  int n = idx_arg.length ();
 
   switch (n)
     {
     case 1:
       {
-	idx_vector i = idx(0).index_vector ();
+	idx_vector i = idx_arg(0).index_vector ();
 
 	retval = index (i, resize_ok);
       }
@@ -65,8 +65,8 @@ Cell::index (const octave_value_list& idx, bool resize_ok) const
 
     case 2:
       {
-	idx_vector i = idx(0).index_vector ();
-	idx_vector j = idx(1).index_vector ();
+	idx_vector i = idx_arg(0).index_vector ();
+	idx_vector j = idx_arg(1).index_vector ();
 
 	retval = index (i, j, resize_ok);
       }
@@ -77,7 +77,7 @@ Cell::index (const octave_value_list& idx, bool resize_ok) const
 	Array<idx_vector> iv (n);
 
 	for (int i = 0; i < n; i++)
-	  iv(i) = idx(i).index_vector ();
+	  iv(i) = idx_arg(i).index_vector ();
 
 	retval = index (iv, resize_ok);
       }
@@ -88,12 +88,12 @@ Cell::index (const octave_value_list& idx, bool resize_ok) const
 }
 
 Cell&
-Cell::assign (const octave_value_list& idx, const Cell& rhs,
+Cell::assign (const octave_value_list& idx_arg, const Cell& rhs,
 	      const octave_value& fill_val)
 
 {
-  for (int i = 0; i < idx.length (); i++)
-    set_index (idx(i).index_vector ());
+  for (int i = 0; i < idx_arg.length (); i++)
+    set_index (idx_arg(i).index_vector ());
 
   ::assign (*this, rhs, fill_val);
 

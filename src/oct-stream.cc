@@ -710,7 +710,7 @@ printf_format_list::process_conversion
 
   *buf << s[i++];
 
-  bool next = false;
+  bool nxt = false;
 
   while (i < n)
     {
@@ -722,11 +722,11 @@ printf_format_list::process_conversion
 	  break;
 
 	default:
-	  next = true;
+	  nxt = true;
 	  break;
 	}
 
-      if (next)
+      if (nxt)
 	break;
     }
 
@@ -742,9 +742,9 @@ printf_format_list::process_conversion
 	{
 	  if (isdigit (s[i]))
 	    {
-	      int n = 0;
+	      int nn = 0;
 	      std::string tmp = s.substr (i);
-	      sscanf (tmp.c_str (), "%d%n", &fw, &n);
+	      sscanf (tmp.c_str (), "%d%n", &fw, &nn);
 	    }
 
 	  while (i < n && isdigit (s[i]))
@@ -768,9 +768,9 @@ printf_format_list::process_conversion
 	    {
 	      if (isdigit (s[i]))
 		{
-		  int n = 0;
+		  int nn = 0;
 		  std::string tmp = s.substr (i);
-		  sscanf (tmp.c_str (), "%d%n", &prec, &n);
+		  sscanf (tmp.c_str (), "%d%n", &prec, &nn);
 		}
 
 	      while (i < n && isdigit (s[i]))

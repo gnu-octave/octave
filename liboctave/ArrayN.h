@@ -52,7 +52,7 @@ protected:
   static int get_size (const dim_vector& dims)
     { return Array<T>::get_size (dims); }
 
-  ArrayN (T *d, const dim_vector& dims) : Array<T> (d, dims) { }
+  ArrayN (T *d, const dim_vector& dv) : Array<T> (d, dv) { }
 
 public:
 
@@ -62,10 +62,10 @@ public:
 
   ArrayN (void) : Array<T> () { }
 
-  ArrayN (const dim_vector& dims) : Array<T> (dims) { }
+  ArrayN (const dim_vector& dv) : Array<T> (dv) { }
 
-  ArrayN (const dim_vector& dims, const T& val)
-    : Array<T> (dims) { fill (val); }
+  ArrayN (const dim_vector& dv, const T& val)
+    : Array<T> (dv) { fill (val); }
 
   ArrayN (const Array2<T>& a) : Array<T> (a, a.dims ()) { }
 
@@ -73,7 +73,7 @@ public:
 
   ArrayN (const Array<T>& a) : Array<T> (a) { }
 
-  ArrayN (const Array<T>& a, const dim_vector& dims) : Array<T> (a, dims) { }
+  ArrayN (const Array<T>& a, const dim_vector& dv) : Array<T> (a, dv) { }
 
   ~ArrayN (void) { }
 
@@ -85,17 +85,17 @@ public:
       return *this;
     }
 
-  void resize (const dim_vector& dims)
-    { Array<T>::resize_no_fill (dims); }
+  void resize (const dim_vector& dv)
+    { Array<T>::resize_no_fill (dv); }
 
-  void resize (const dim_vector& dims, const T& val)
-    { Array<T>::resize (dims, val); }
+  void resize (const dim_vector& dv, const T& val)
+    { Array<T>::resize (dv, val); }
 
   ArrayN<T> squeeze (void) const { return Array<T>::squeeze (); }
 
-  ArrayN<T>& insert (const ArrayN<T>& a, const dim_vector& dims)
+  ArrayN<T>& insert (const ArrayN<T>& a, const dim_vector& dv)
     {
-      Array<T>::insert (a, dims);
+      Array<T>::insert (a, dv);
       return *this;
     }
 

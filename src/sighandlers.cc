@@ -208,33 +208,26 @@ sigchld_handler (int /* sig */)
 
   int n = octave_child_list::length ();
 
-  if (n == 0)
+  for (int i = 0; i < n; i++)
     {
-      waitpid (-1, 0, WNOHANG);
-    }
-  else
-    {
-      for (int i = 0; i < n; i++)
+      octave_child& elt = octave_child_list::elem (i);
+
+      pid_t pid = elt.pid;
+
+      if (pid > 0)
 	{
-	  octave_child& elt = octave_child_list::elem (i);
+	  int status;
 
-	  pid_t pid = elt.pid;
-
-	  if (pid > 0)
+	  if (waitpid (pid, &status, WNOHANG) > 0)
 	    {
-	      int status;
+	      elt.pid = -1;
 
-	      if (waitpid (pid, &status, WNOHANG) > 0)
-		{
-		  elt.pid = -1;
+	      octave_child::dead_child_handler f = elt.handler;
 
-		  octave_child::dead_child_handler f = elt.handler;
+	      if (f)
+		f (pid, status);
 
-		  if (f)
-		    f (pid, status);
-
-		  break;
-		}
+	      break;
 	    }
 	}
     }

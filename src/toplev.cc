@@ -280,14 +280,6 @@ Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.\n\
 
 // Execute a shell command.
 
-static int cmd_status = 0;
-
-static void
-cmd_death_handler (pid_t, int status)
-{
-  cmd_status = status;
-}
-
 static void
 cleanup_iprocstream (void *p)
 {
@@ -305,12 +297,8 @@ run_command_and_return_output (const string& cmd_str)
 
   iprocstream *cmd = new iprocstream (cmd_str.c_str ());
 
-  cmd_status = -1;
-
   if (cmd)
     {
-      octave_child_list::insert (cmd->pid (), cmd_death_handler);
-
       unwind_protect::add (cleanup_iprocstream, cmd);
 
       if (*cmd)
@@ -344,16 +332,7 @@ run_command_and_return_output (const string& cmd_str)
 	  while (cmd->get (ch))
 	    output_buf.put (ch);
 
-	  cmd->close ();
-
-	  // One way or another, cmd_death_handler should be called
-	  // when the process exits, and it will save the exit status
-	  // of the command in cmd_status.
-
-	  // The value in cmd_status is as returned by waitpid.  If
-	  // the process exited normally, extract the actual exit
-	  // status of the command.  Otherwise, return 127 as a
-	  // failure code.
+	  int cmd_status = cmd->close ();
 
 	  if (WIFEXITED (cmd_status))
 	    cmd_status = WEXITSTATUS (cmd_status);

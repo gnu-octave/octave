@@ -1,3 +1,18 @@
+Wed Jul 14 17:38:46 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* systime.h: Move to liboctave directory.
+	* Makefile.in (INCLUDES): Delete it from the list
+
+Tue Jul 13 14:34:57 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* sighandlers.cc (sigchld_handler): Only wait for processes in
+	octave_child_list.
+	* toplev.cc (cmd_status): Delete unused static variable.
+	(cmd_death_handler): Delete unused function.
+	(run_command_and_return_output): Don't add cmd_death_handler to
+	octave_child_list.  Simply extract command exit status from
+	calling close() on the procstream object.
+
 Mon Jul 12 22:38:50 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* defun.h (DEFUN_MAPPER): Handle new args, d_b_map and c_b_map.

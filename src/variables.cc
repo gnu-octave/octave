@@ -309,7 +309,10 @@ subst_octave_home (char *s)
 	  p2 = strstr (p1, prefix);
 	  
 	  if (! p2)
-	    panic_impossible ();
+	    {
+	      error ("unable to substitute OCTAVE_HOME");
+	      return retval;
+	    }
 
 	  if (p1 == p2)
 	    {
@@ -1253,7 +1256,7 @@ alias_builtin (const char *alias, const char *name)
   if (sr_alias)
     sr_alias->alias (sr_name);
   else
-    panic_impossible ();
+    panic ("can't find symbol record for builtin function `%s'", alias);
 }
 
 // Defining variables.

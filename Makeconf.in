@@ -140,6 +140,7 @@ TERMLIBS = @TERMLIBS@
 LIBDLFCN = @LIBDLFCN@
 LIBPLPLOT = @LIBPLPLOT@
 LIBREADLINE = @LIBREADLINE@
+SPECIAL_MATH_LIB = @SPECIAL_MATH_LIB@
 
 # The arguments passed to configure.
 config_opts = @config_opts@

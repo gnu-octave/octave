@@ -171,7 +171,7 @@ VAR_FILES := $(patsubst %.cc, %, $(VAR_1))
 OCTAVE_LFLAGS = -L../liboctave -L../libcruft -L../glob \
 	-L../dlfcn -L. $(RLD_FLAG)
 
-OCTAVE_LIBS = -loctinterp -loctave -lcruft $(LIBPLPLOT) \
+OCTAVE_LIBS = -loctinterp -loctave $(SPECIAL_MATH_LIB) -lcruft $(LIBPLPLOT) \
 	$(LIBREADLINE) ../kpathsea/libkpathsea.$(LIBEXT) -lglob $(LIBDLFCN)
 
 LIBS = @LIBS@

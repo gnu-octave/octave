@@ -1,3 +1,10 @@
+Wed Nov 26 01:49:47 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* slatec-fn/d9gmit.f, slatec-fn/d9lgic.f, slatec-fn/d9lgit.f,
+	slatec-fn/dbetai.f, slatec-fn/dgami.f, slatec-fn/dgamit.f,
+	slatec-fn/dgamr.f, slatec-fn/dlbeta.f, slatec-fn/dlnrel.f:
+	New files for incomplete beta and incomplete gamma functions.
+
 Thu Jul 17 13:18:57 1997  Klaus Gebhardt <gebhardt@crunch.ikp.physik.th-darmstadt.de>
 
 	* blas/xerbla.f (xerbla): Call XSTOPX instead of using STOP.

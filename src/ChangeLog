@@ -1,3 +1,8 @@
+Wed Nov 26 00:39:34 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (OCTAVE_LIBS): Include $(SPECIAL_MATH_LIB) just
+	ahead of -lcruft.
+
 Thu Nov 20 15:16:22 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* octave.cc (maximum_braindamage): Bind implicit_num_to_str_ok to 1.

@@ -1,3 +1,9 @@
+Wed Nov 26 00:38:31 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in (SPECIAL_MATH_LIB): If libdxml exists on DU
+	systems, define SPECIAL_MATH_LIB.
+	* Makeconf.in (SPECIAL_MATH_LIB): Substitute it.
+
 Wed Nov 19 01:54:11 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* aclocal.m4 (OCTAVE_CXX_NEW_FRIEND_TEMPLATE_DECL): Don't forget

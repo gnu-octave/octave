@@ -1,3 +1,29 @@
+2004-07-27  David Bateman  <dbateman@free.fr>
+
+	* ov-int8.cc, ov-int16.cc, ov-int32.cc, ov-int64.cc, ov-uint8.cc, 
+	ov-uint16.cc, ov-uint32.cc, ov-uint64.cc (HDF5_SAVE_TYPE): Define
+	for HDF5 native format for the type.
+
+	* ov-base-int.h (save_ascii, save_binary, load_binary, save_hdf5):
+	Delete unused arguments.
+
+	* ov-base-int.cc (octave_base_int_matrix::save_ascii,
+	octave_base_int_matrix::save_binary,
+	octave_base_int_scalar::save_ascii,
+	octave_base_int_scalar::save_binary,
+	octave_base_int_scalar::save_hdf5): Delete unused argument.
+
+	* ov-base-int.cc (octave_base_int_matrix::save_binary,
+	octave_base_int_matrix::load_binary,
+	octave_base_int_matrix::save_hdf5,
+	octave_base_int_matrix::load_hdf5,
+	octave_base_int_scalar::save_ascii,
+	octave_base_int_scalar::load_ascii,
+	octave_base_int_scalar::save_binary,
+	octave_base_int_scalar::load_binary,
+	octave_base_int_scalar::save_hdf5,
+	octave_base_int_scalar::load_hdf5): Implement missing functions.
+
 2004-07-23  David Bateman  <dbateman@free.fr>
 
 	* ov-intx.h (OCTAVE_VALUE_INT_MATRIX_T::array_value,

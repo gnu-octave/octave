@@ -44,6 +44,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-lvalue.h"
 #include "ops.h"
 #include "ov-base.h"
+
+#ifdef HAVE_HDF5
+#define HDF5_SAVE_TYPE H5T_NATIVE_UINT8
+#endif
+
 #include "ov-base-int.h"
 #include "ov-base-int.cc"
 #include "ov-uint8.h"

@@ -75,13 +75,13 @@ public:
 
   bool load_ascii (std::istream& is);
 
-  bool save_binary (std::ostream& os, bool& save_as_floats);
+  bool save_binary (std::ostream& os, bool& );
 
   bool load_binary (std::istream& is, bool swap, 
-		    oct_mach_info::float_format fmt);
+		    oct_mach_info::float_format );
 
 #if defined (HAVE_HDF5)
-  bool save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats);
+  bool save_hdf5 (hid_t loc_id, const char *name, bool);
 
   bool load_hdf5 (hid_t loc_id, const char *name, bool have_h5giterate_bug);
 #endif
@@ -112,18 +112,17 @@ public:
 
   //  void decrement (void) { scalar -= 1; }
 
-  bool save_ascii (std::ostream& os, bool& infnan_warned,
-		   bool strip_nan_and_inf);
+  bool save_ascii (std::ostream& os, bool&, bool );
 
   bool load_ascii (std::istream& is);
 
-  bool save_binary (std::ostream& os, bool& save_as_floats);
+  bool save_binary (std::ostream& os, bool& );
 
   bool load_binary (std::istream& is, bool swap, 
-		    oct_mach_info::float_format fmt);
+		    oct_mach_info::float_format );
 
 #if defined (HAVE_HDF5)
-  bool save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats);
+  bool save_hdf5 (hid_t loc_id, const char *name, bool );
 
   bool load_hdf5 (hid_t loc_id, const char *name, bool have_h5giterate_bug);
 #endif

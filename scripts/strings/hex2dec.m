@@ -35,7 +35,7 @@
 ##
 ## @seealso{dec2hex, base2dec, dec2base, bin2dec, dec2bin}
 
-## Author: Daniel Calvelo
+## Author: Daniel Calvelo <dcalvelo@yahoo.com>
 ## Adapted-by: Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
 
 function d = hex2dec (h)

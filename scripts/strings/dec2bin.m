@@ -33,7 +33,7 @@
 ##
 ## @seealso{bin2dec, dec2base, base2dec, hex2dec, dec2hex}
 
-## Author: Daniel Calvelo
+## Author: Daniel Calvelo <dcalvelo@yahoo.com>
 ## 2001-02-02 Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
 
 function h = dec2bin (d)

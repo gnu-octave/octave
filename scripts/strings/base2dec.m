@@ -44,7 +44,7 @@
 ## @end deftypefn
 ## @seealso{dec2base, dec2bin, bin2dec, hex2dec, dec2hex}
 
-## Author: Daniel Calvelo <>
+## Author: Daniel Calvelo <dcalvelo@yahoo.com>
 ## Adapted-by: Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
 
 function out = base2dec (d, base)

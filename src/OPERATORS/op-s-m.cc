@@ -119,7 +119,7 @@ install_s_m_ops (void)
 
   INSTALL_ASSIGNCONV (octave_scalar, octave_matrix, octave_matrix);
 
-  INSTALL_WIDENOP (op_octave_scalar, octave_matrix, matrix_conv);
+  INSTALL_WIDENOP (octave_scalar, octave_matrix, matrix_conv);
 }
 
 /*

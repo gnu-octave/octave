@@ -123,7 +123,7 @@ install_cs_m_ops (void)
 
   INSTALL_ASSIGNCONV (octave_complex, octave_matrix, octave_complex_matrix);
 
-  INSTALL_WIDENOP (op_octave_complex, octave_complex_matrix, complex_matrix_conv);
+  INSTALL_WIDENOP (octave_complex, octave_complex_matrix, complex_matrix_conv);
 }
 
 /*

@@ -128,7 +128,7 @@ extern char *maybe_add_default_load_path (const char *p);
 
 extern char *octave_lib_dir (void);
 extern char *octave_arch_lib_dir (void);
-extern char *octave_fcn_file_dir (void)
+extern char *octave_fcn_file_dir (void);
 extern char *octave_bin_dir (void);
 extern char *default_exec_path (void);
 extern char *default_path (void);

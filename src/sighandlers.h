@@ -53,6 +53,12 @@ extern void install_signal_handlers (void);
 extern char *sys_siglist[];
 #endif
 
+#if defined (HAVE_SIGACTION) && defined (HAVE_SIGPROCMASK)
+#if defined (HAVE_SIGPENDING) && defined (HAVE_SIGSUSPEND)
+#define HAVE_POSIX_SIGNALS
+#endif
+#endif
+
 #endif
 
 /*

@@ -20,7 +20,7 @@ dnl Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
 ### along with Octave; see the file COPYING.  If not, write to the Free
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-AC_REVISION($Revision: 1.136 $)
+AC_REVISION($Revision: 1.137 $)
 AC_PREREQ(2.0)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -566,23 +566,7 @@ AC_CHECK_HEADERS(assert.h float.h floatingpoint.h limits.h memory.h)
 AC_CHECK_HEADERS(pwd.h stdlib.h string.h unistd.h varargs.h)
 AC_CHECK_HEADERS(sys/fcntl.h sys/param.h sys/resource.h sys/select.h)
 AC_CHECK_HEADERS(sys/stat.h sys/time.h sys/utsname.h)
-
-### Use sgtty on Ultrix so that using DEC Migrate to convert a Mips
-### binary to an Alpha binary will work.  Also on Alpha/OSF to avoid
-### a readline bug.
-
-case "$canonical_host_type" in
-  mips-dec-ultrix* | alpha-dec-osf*)
-    AC_CHECK_HEADER(sgtty.h, [AC_DEFINE(HAVE_SGTTY_H, 1)], [])
-
-    if test "$ac_cv_header_sgtty_h" = no; then
-      AC_CHECK_HEADERS(termios.h termio.h sgtty.h, [break], [])
-    fi
-  ;;
-  *)
-    AC_CHECK_HEADERS(termios.h termio.h sgtty.h, [break], [])
-  ;;
-esac
+AC_CHECK_HEADERS(termios.h termio.h sgtty.h)
 
 if test "$ac_cv_header_termios_h" = yes \
     || test "$ac_cv_header_termio_h" = yes \
@@ -598,6 +582,7 @@ AC_CHECK_FUNCS(setvbuf getcwd gethostname bzero bcopy rindex vfprintf vsprintf)
 AC_CHECK_FUNCS(stricmp strnicmp strcasecmp strncasecmp strerror atexit)
 AC_CHECK_FUNCS(on_exit tempnam memmove putenv getrusage)
 AC_CHECK_FUNCS(mkdir rmdir rename umask)
+AC_CHECK_FUNCS(sigaction sigprocmask sigpending sigsuspend)
 
 ### There is more than one possible prototype for gettimeofday.  See
 ### which one (if any) appears in sys/time.h.
@@ -817,16 +802,14 @@ export CC
 export CXX
 export F77
 
-AC_CONFIG_SUBDIRS(kpathsea libcruft scripts $INFO_DIR $PLPLOT_DIR)
+AC_CONFIG_SUBDIRS(kpathsea libcruft scripts $INFO_DIR $PLPLOT_DIR $READLINE_DIR)
 
 ### Do the substitutions in all the Makefiles.
 
 define([tmpA], [Makefile octMakefile Makeconf])dnl
 define([tmpB], [liboctave/Makefile src/Makefile dld/Makefile])dnl
-define([tmpC], [readline/Makefile readline/doc/Makefile])dnl
-define([tmpD], [readline/examples/Makefile doc/Makefile])dnl
-define([tmpE], [test/Makefile])dnl
-define([srcdirs], [tmpA tmpB tmpC tmpD tmpE])dnl
+define([tmpC], [doc/Makefile test/Makefile])dnl
+define([srcdirs], [tmpA tmpB tmpC])dnl
 
 AC_OUTPUT([srcdirs])
 

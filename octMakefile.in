@@ -24,10 +24,10 @@ CONF_DISTFILES = Makefile.in octMakefile.in Makeconf.in configure \
 
 DISTFILES = $(CONF_DISTFILES) \
 	BUGS COPYING INSTALL INSTALL.OCTAVE NEWS NEWS.[0-9] PROJECTS \
-	README README.NLP README.Windows ROADMAP SENDING-PATCHES \
-	THANKS move-if-change octave.sh octave-bug.in doinstall.sh \
-	mkinstalldirs mkoctfile.in texi2dvi INFO.PATCH MAKEINFO.PATCH \
-	ChangeLog ChangeLog.[0-9]
+	README README.Linux README.NLP README.Windows ROADMAP \
+	SENDING-PATCHES THANKS move-if-change octave.sh octave-bug.in \
+	doinstall.sh mkinstalldirs mkoctfile.in texi2dvi INFO.PATCH \
+	MAKEINFO.PATCH ChangeLog ChangeLog.[0-9]
 
 # Complete directory trees to distribute.
 DISTDIRS = emacs glob kpathsea make # plplot
@@ -41,7 +41,7 @@ CONF_DISTSUBDIRS = src
 
 # Subdirectories in which to run `make dist'.
 DISTSUBDIRS = libcruft liboctave info readline dlfcn src scripts \
-	test doc examples 
+	test doc examples
 
 BINDISTFILES = COPYING ChangeLog NEWS README THANKS INSTALL.OCTAVE \
 	BUGS PROJECTS octave-bug octave.sh doinstall.sh \

@@ -1,0 +1,46 @@
+Since July 1996, most work on Octave has been done using a
+Linux/GNU system.
+
+If you have trouble compiling or running Octave on a Linux/GNU system,
+it is very likely that the problem is with your system, or your
+installation of the compiler and libraries, and not with Octave
+itself.
+
+For example, if you can compile Octave, but it crashes with a
+segmentation fault right away, you probably have incompatible versions
+of libc and libg++ installed, or you have a version of the dynamic
+loader, ld.so, that is incompatible with your versions of the
+libraries, or both.
+
+On my development system, I am using the following software:
+
+  * Linux kernel 2.0.6
+  * gcc/g++ 2.7.2
+  * libg++/libstdc++ 2.7.1.0
+  * libm 5.0.5
+  * libc 5.2.18
+  * libncurses 3.0
+  * ld.so 1.7.14
+
+I know from experience that the versions listed above seem to work
+well together, but they may not work for you, because if you have a
+newer version of the kernel, you may need a newer version of the C
+library.  Other than that, I don't have time to keep up with all the
+various library versions (life is much too short for that), nor do I
+know which combinations are supposed to work together.  That sort of
+information should be clearly stated in the release notes for the
+libraries.  If it is not, please ask the maintainers of the libraries
+to clarify the documentation.
+
+If you can't compile Octave, you should first check to see that your
+compiler and header files are properly installed.  Do you have
+multiple versions of the g++ include files on your system?  Are you
+sure that your copy of g++ is finding the right set (compiling a short
+program with g++ -v will tell you the search path)?
+
+John W. Eaton
+jwe@bevo.che.wisc.edu
+University of Wisconsin-Madison
+Department of Chemical Engineering
+
+Sat Dec 14 09:44:05 1996

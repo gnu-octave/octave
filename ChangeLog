@@ -1,3 +1,8 @@
+Sat Dec 14 09:46:50 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* README.Linux: New file.
+	* octMakefile.in: Distribute it.
+
 Fri Dec 13 22:37:49 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in (TERMLIBS): Look for termcap and terminfo after

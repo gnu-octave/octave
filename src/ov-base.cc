@@ -145,10 +145,10 @@ octave_base_value::char_matrix_value (bool) const
   return retval;
 }
 
-charMatrix
+string_vector
 octave_base_value::all_strings (void) const
 {
-  charMatrix retval;
+  string_vector retval;
   gripe_wrong_type_arg ("octave_base_value::all_strings()", type_name ());
   return retval;
 }

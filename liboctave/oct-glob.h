@@ -25,6 +25,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <string>
 
+#include "Array.h"
+#include "str-vec.h"
+
 class
 glob_match
 {
@@ -37,7 +40,17 @@ public:
       period = 4     // Leading `.' is matched only explicitly.
    };
 
+  enum match_type
+    {
+      any = 2,  // Match any pattern.
+      all = 2   // Must match all patterns.
+    };
+
   glob_match (const string& p = string (),
+	      unsigned int f = pathname|noescape|period)
+    : pat (p), flags (f) { }
+
+  glob_match (const string_vector& p = string_vector (),
 	      unsigned int f = pathname|noescape|period)
     : pat (p), flags (f) { }
 
@@ -57,12 +70,18 @@ public:
 
   void set_pattern (const string& p) { pat = p; }
 
-  bool match (const string&);
+  void set_pattern (const string_vector& p) { pat = p; }
+
+  bool match (const string&, match_type mt = any);
+
+  Array<bool> match (const string_vector&, match_type mt = any);
+
+  string_vector glob (void);
 
 private:
 
-  // Globbing pattern.
-  string pat;
+  // Globbing pattern(s).
+  string_vector pat;
 
   // Option flags.
   unsigned int flags;

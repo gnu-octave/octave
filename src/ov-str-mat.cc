@@ -189,10 +189,17 @@ octave_char_matrix_str::matrix_value (bool force_string_conv) const
   return retval;
 }
 
-charMatrix
+string_vector
 octave_char_matrix_str::all_strings (void) const
 {
-  return matrix;
+  int n = matrix.rows ();
+
+  string_vector retval (n);
+
+  for (int i = 0; i < n; i++)
+    retval[i] = matrix.row_as_string (i, true);
+
+  return retval;
 }
 
 string

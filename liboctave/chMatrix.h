@@ -67,7 +67,7 @@ public:
   charMatrix& insert (const char *s, int r, int c);
   charMatrix& insert (const charMatrix& a, int r, int c);
 
-  string row_as_string (int r) const;
+  string row_as_string (int r, bool strip_trailing_whitespace = false) const;
 
 #if 0
   Matrix& insert (const RowVector& a, int r, int c);

@@ -25,15 +25,107 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include <fnmatch.h>
+#include <glob.h>
+
+#include <iostream.h>
 
 #include <string>
 
+#include "file-ops.h"
 #include "oct-glob.h"
+#include "str-vec.h"
 
 bool
-glob_match::match (const string& s)
+glob_match::match (const string& s, match_type mt)
 {
-  return fnmatch (pat.c_str (), s.c_str (), flags) != FNM_NOMATCH;
+  int npat = pat.length ();
+
+  const char *str = s.c_str ();
+
+  if (mt == all)
+    {
+      for (int i = 0; i < npat; i++)
+	if (fnmatch (pat(i).c_str (), str, flags) == FNM_NOMATCH)
+	  return false;
+
+      return true;
+    }
+  else
+    {
+      for (int i = 0; i < npat; i++)
+	if (fnmatch (pat(i).c_str (), str, flags) != FNM_NOMATCH)
+	  return true;
+
+      return false;
+    }
+}
+
+Array<bool>
+glob_match::match (const string_vector& s, match_type mt)
+{
+  int n = s.length ();
+
+  Array<bool> retval (n);
+
+  for (int i = 0; i < n; i++)
+    retval(i) = match (s[i], mt);
+
+  return retval;
+}
+
+static bool
+single_match_exists (const string& file)
+{
+  file_stat s (file);
+
+  return s.exists ();
+}
+
+string_vector
+glob_match::glob (void)
+{
+  string_vector retval;
+
+  int npat = pat.length ();
+
+  int k = 0;
+
+  for (int i = 0; i < npat; i++)
+    {
+      string xpat = pat(i);
+
+      if (! xpat.empty ())
+	{
+	  glob_t glob_info;
+
+	  int err = ::glob (xpat.c_str (), GLOB_NOSORT, 0, &glob_info);
+
+	  if (! err)
+	    {
+	      int n = glob_info.gl_pathc;
+
+	      char **matches = glob_info.gl_pathv;
+
+	      // XXX FIXME XXX -- we shouldn't have to check to see if
+	      // a single match exists, but it seems that glob() won't
+	      // check for us unless the pattern contains globbing
+	      // characters.  Hmm.
+
+	      if (n > 1
+		  || (n == 1 && single_match_exists (string (matches[0]))))
+		{
+		  retval.resize (k+n);
+
+		  for (int j = 0; j < n; j++)
+		    retval[k++] = matches[j];
+		}
+
+	      globfree (&glob_info);
+	    }
+	}
+    }
+
+  return retval.qsort ();
 }
 
 /*
@@ -41,3 +133,4 @@ glob_match::match (const string& s)
 ;;; mode: C++ ***
 ;;; End: ***
 */
+

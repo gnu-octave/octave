@@ -554,6 +554,26 @@ oct_tilde_expand (const string& name)
   return retval;
 }
 
+// A vector version of the above.
+
+string_vector
+oct_tilde_expand (const string_vector& names)
+{
+  string_vector retval;
+
+  if (! error_state)
+    {
+      int n = names.length ();
+
+      retval.resize (n);
+
+      for (int i = 0; i < n; i++)
+	retval[i] = oct_tilde_expand (names[i]);
+    }
+
+  return retval;
+}
+
 DEFUN (tilde_expand, args, ,
   "tilde_expand (STRING): perform tilde expansion on STRING")
 {
@@ -562,7 +582,7 @@ DEFUN (tilde_expand, args, ,
   int nargin = args.length ();
 
   if (nargin == 1)
-    retval = oct_tilde_expand (args(0).string_value ());
+    retval = oct_tilde_expand (args(0).all_strings ());
   else
     print_usage ("tilde_expand");
 

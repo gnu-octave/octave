@@ -47,8 +47,8 @@ INCLUDES := Bounds.h CollocWt.h DAE.h DAEFunc.h DASSL.h FEGrid.h FSQP.h \
 TEMPLATE_SRC := Array.cc Array2.cc Array3.cc DiagArray2.cc \
 	MArray.cc MArray2.cc MDiagArray2.cc base-lu.cc
 
-TI_SRC := Array-C.cc Array-ch.cc Array-i.cc Array-d.cc Array-s.cc \
-	Array-str.cc \
+TI_SRC := Array-C.cc Array-b.cc Array-ch.cc Array-i.cc Array-d.cc \
+	Array-s.cc Array-str.cc \
 	MArray-C.cc MArray-ch.cc MArray-i.cc MArray-d.cc MArray-s.cc
 
 MATRIX_SRC := Array-flags.cc CColVector.cc CDiagMatrix.cc CMatrix.cc \

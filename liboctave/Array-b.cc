@@ -20,29 +20,18 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-#if !defined (octave_sysdep_h)
-#define octave_sysdep_h 1
-
-#include <string>
-
-#include "lo-ieee.h"
-
-extern void sysdep_init (void);
-
-extern void raw_mode (int);
-extern int kbhit (void);
-
-extern string octave_getcwd (void);
-extern int octave_chdir (const string&);
-
-#if !defined (HAVE_GETHOSTNAME) && defined (HAVE_SYS_UTSNAME_H)
-extern int gethostname (char *, int);
+#ifdef HAVE_CONFIG_H
+#include <config.h>
 #endif
 
-extern string oct_tilde_expand (const string&);
-extern string_vector oct_tilde_expand (const string_vector&);
+// Instantiate Arrays of bool values.
 
-#endif
+#include "Array.h"
+#include "Array.cc"
+
+template class Array<bool>;
+
+template void assign (Array<bool>&, const Array<bool>&);
 
 /*
 ;;; Local Variables: ***

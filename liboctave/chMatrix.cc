@@ -115,7 +115,7 @@ charMatrix::insert (const charMatrix& a, int r, int c)
 }
 
 string
-charMatrix::row_as_string (int r) const
+charMatrix::row_as_string (int r, bool strip_ws = false) const 
 {
   if (r < 0 || r >= rows ())
     {
@@ -130,9 +130,21 @@ charMatrix::row_as_string (int r) const
   for (int i = 0; i < nc; i++)
     retval[i] = elem (r, i);
 
-  while (--nc >= 0)
-    if (retval[nc])
-      break;
+  if (strip_ws)
+    {
+      while (--nc >= 0)
+	{
+	  char c = retval[nc];
+	  if (c && c != ' ')
+	    break;
+	}
+    }
+  else
+    {
+      while (--nc >= 0)
+	if (retval[nc])
+	  break;
+    }
 
   retval.resize (nc+1);
 

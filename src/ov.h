@@ -315,7 +315,7 @@ public:
   virtual charMatrix char_matrix_value (bool frc_str_conv = false) const
     { return rep->char_matrix_value (frc_str_conv); }
 
-  virtual charMatrix all_strings (void) const
+  virtual string_vector all_strings (void) const
     { return rep->all_strings (); }
 
   virtual string string_value (void) const

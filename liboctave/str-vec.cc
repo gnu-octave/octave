@@ -31,6 +31,32 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-term.h"
 #include "str-vec.h"
 
+// Create a string vector from a NULL terminated list of C strings.
+
+string_vector::string_vector (const char * const *s)
+  : Array<string> ()
+{
+  int n = 0;
+
+  while (*s++)
+    n++;
+
+  resize (n);
+
+  for (int i = 0; i < n; i++)
+    elem (i) = s[i];
+}
+
+// Create a string vector from up to N C strings.  Assumes that N is
+// nonnegative.
+
+string_vector::string_vector (const char * const *s, int n)
+  : Array<string> (n)
+{
+  for (int i = 0; i < n; i++)
+    elem (i) = s[i];
+}
+
 // Format a list in neat columns.  Mostly stolen from GNU ls.
 
 ostream&

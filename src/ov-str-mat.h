@@ -98,7 +98,7 @@ public:
 
   Matrix matrix_value (bool = false) const;
 
-  charMatrix all_strings (void) const;
+  string_vector all_strings (void) const;
 
   string string_value (void) const;
 

@@ -1,3 +1,18 @@
+Sun Nov 10 17:09:24 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* str-vec.h, str-vec.cc: Add constructors to make string vectors
+	from vectors of C strings.
+
+	* oct-glob.h, oct-glob.cc (glob_match): Allow pat to be a string
+	vector.
+	(glob_match::match): Allow match string to be a string vector.
+	(glob_match::glob): New function.
+
+	* chMatrix.cc (charMatrix::row_as_string): New arg, strip_ws.
+
+	* Array-b.cc: New file.
+	* Makefile.in (TI_SRC): Add it to the list.
+
 Fri Nov  8 18:09:12 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* file-ops.cc: Change #include "" to #include <> for safe-lstat.h

@@ -53,6 +53,10 @@ public:
 
   string_vector (const string_vector& s) : Array<string> (s) { }
 
+  string_vector (const char * const *s);
+
+  string_vector (const char * const *s, int n);
+
   string_vector& operator = (const string_vector& s)
     {
       if (this != &s)

@@ -142,7 +142,7 @@ public:
 
   charMatrix char_matrix_value (bool frc_str_conv = false) const;
 
-  charMatrix all_strings (void) const;
+  string_vector all_strings (void) const;
 
   string string_value (void) const;
 

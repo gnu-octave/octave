@@ -1,3 +1,38 @@
+2000-05-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-base-nd-array.h, ov-base-nd-array.cc, ov-re-nd-array.h,
+	ov-re-nd-array.h: New files.
+	* Makefile.in: Add them to the appropriate lists.
+
+	* pt-stmt.h, pt-stmt.cc (class tree_statement):
+	Store comments associated with this parse tree element.
+	* pt-select.h, pt-select.cc (class tree_if_clause,
+	class tree_if_command, class tree_switch_case
+	class tree_switch_command): Likewise.
+	* pt-loop.h, pt-loop.cc (class tree_while_command,
+	class tree_do_until_command, class tree_simple_for_command,
+	class tree_complex_for_command): Likewise.
+	* pt-except.h, pt-except.cc (class tree_try_catch_command,
+	class tree_unwind_protect_command): Likewise.
+	* ov-usr-fcn.h, ov-usr-fcn.cc (class octave_user_function): Likewise.
+	* pt-pr-code.h, pt-pr-code.cc (tree_print_code::print_comment_elt,
+	tree_print_code::print_comment_list,
+	tree_print_code::print_indented_comment): New functions.
+	(tree_print_code::visit_simple_for_command,
+	tree_print_code::visit_complex_for_command,
+	tree_print_code::visit_octave_user_function_header,
+	tree_print_code::visit_octave_user_function_trailer,
+	tree_print_code::visit_if_command, tree_print_code::visit_statement,
+	tree_print_code::visit_switch_case,
+	tree_print_code::visit_switch_command,
+	tree_print_code::visit_try_catch_command,
+	tree_print_code::visit_unwind_protect_command
+	tree_print_code::visit_while_command,
+	tree_print_code::visit_do_until_command): Handle comments.
+	* lex.l, parse.y: Handle comments in parse trees.
+	* comment-list.h, comment-list.cc: New files.
+	* Makefile.in: Add them to the appropriate lists.
+
 2000-04-23  etienne grossmann <etienne@anonimo.isr.ist.utl.pt>
 
 	* pt-mat.cc (tm_row_const::tm_row_const_rep::eval_error):

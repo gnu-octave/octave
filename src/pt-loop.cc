@@ -67,6 +67,8 @@ tree_while_command::~tree_while_command (void)
 {
   delete expr;
   delete list;
+  delete lead_comm;
+  delete trail_comm;
 }
 
 void
@@ -164,6 +166,8 @@ tree_simple_for_command::~tree_simple_for_command (void)
 {
   delete expr;
   delete list;
+  delete lead_comm;
+  delete trail_comm;
 }
 
 inline void
@@ -364,6 +368,8 @@ tree_complex_for_command::~tree_complex_for_command (void)
 {
   delete expr;
   delete list;
+  delete lead_comm;
+  delete trail_comm;
 }
 
 void

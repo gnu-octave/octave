@@ -31,6 +31,7 @@ class tree_statement_list;
 
 class tree_walker;
 
+#include "comment-list.h"
 #include "pt-cmd.h"
 
 // Simple exception handling.
@@ -41,11 +42,16 @@ tree_try_catch_command : public tree_command
 public:
 
   tree_try_catch_command (int l = -1, int c = -1)
-    : tree_command (l, c), try_code (0), catch_code (0) { }
+    : tree_command (l, c), try_code (0), catch_code (0), lead_comm (0),
+      mid_comm (0), trail_comm (0) { }
 
   tree_try_catch_command (tree_statement_list *tc, tree_statement_list *cc,
+			  octave_comment_list *cl = 0,
+			  octave_comment_list *cm = 0,
+			  octave_comment_list *ct = 0,
 			  int l = -1, int c = -1)
-    : tree_command (l, c), try_code (tc), catch_code (cc) { }
+    : tree_command (l, c), try_code (tc), catch_code (cc),
+      lead_comm (cl), mid_comm (cm), trail_comm (ct) { }
 
   ~tree_try_catch_command (void);
 
@@ -54,6 +60,12 @@ public:
   tree_statement_list *body (void) { return try_code; }
 
   tree_statement_list *cleanup (void) { return catch_code; }
+
+  octave_comment_list *leading_comment (void) { return lead_comm; }
+
+  octave_comment_list *middle_comment (void) { return mid_comm; }
+
+  octave_comment_list *trailing_comment (void) { return trail_comm; }
 
   void accept (tree_walker& tw);
 
@@ -64,6 +76,15 @@ private:
 
   // The code to execute if an error occurs in the first block.
   tree_statement_list *catch_code;
+
+  // Comment preceding TRY token.
+  octave_comment_list *lead_comm;
+
+  // Comment preceding CATCH token.
+  octave_comment_list *mid_comm;
+
+  // Comment preceding END_TRY_CATCH token.
+  octave_comment_list *trail_comm;
 
   // No copying!
 
@@ -80,12 +101,17 @@ tree_unwind_protect_command : public tree_command
 public:
 
   tree_unwind_protect_command (int l = -1, int c = -1)
-    : tree_command (l, c), unwind_protect_code (0), cleanup_code (0) { }
+    : tree_command (l, c), unwind_protect_code (0), cleanup_code (0),
+      lead_comm (0), mid_comm (0), trail_comm (0) { }
 
   tree_unwind_protect_command (tree_statement_list *tc,
 			       tree_statement_list *cc,
+			       octave_comment_list *cl = 0,
+			       octave_comment_list *cm = 0,
+			       octave_comment_list *ct = 0,
 			       int l = -1, int c = -1)
-    : tree_command (l, c), unwind_protect_code (tc), cleanup_code (cc) { }
+    : tree_command (l, c), unwind_protect_code (tc), cleanup_code (cc),
+      lead_comm (cl), mid_comm (cm), trail_comm (ct) { }
 
   ~tree_unwind_protect_command (void);
 
@@ -94,6 +120,12 @@ public:
   tree_statement_list *body (void) { return unwind_protect_code; }
 
   tree_statement_list *cleanup (void) { return cleanup_code; }
+
+  octave_comment_list *leading_comment (void) { return lead_comm; }
+
+  octave_comment_list *middle_comment (void) { return mid_comm; }
+
+  octave_comment_list *trailing_comment (void) { return trail_comm; }
 
   void accept (tree_walker& tw);
 
@@ -105,6 +137,15 @@ private:
   // The body of code to execute no matter what happens in the first
   // body of code.
   tree_statement_list *cleanup_code;
+
+  // Comment preceding TRY token.
+  octave_comment_list *lead_comm;
+
+  // Comment preceding CATCH token.
+  octave_comment_list *mid_comm;
+
+  // Comment preceding END_TRY_CATCH token.
+  octave_comment_list *trail_comm;
 
   // No copying!
 

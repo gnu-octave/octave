@@ -46,6 +46,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "file-ops.h"
 #include "file-stat.h"
 
+#include "comment-list.h"
 #include "defun.h"
 #include "dynamic-ld.h"
 #include "error.h"
@@ -102,6 +103,9 @@ int current_input_column = 1;
 
 // Buffer for help text snagged from function files.
 std::string help_buf;
+
+// Buffer for comments appearing before a function statement.
+static std::string fcn_comment_header;
 
 // TRUE means we are using readline.
 // (--no-line-editing)
@@ -179,28 +183,31 @@ make_postfix_op (int op, tree_expression *op1, token *tok_val);
 // Build an unwind-protect command.
 static tree_command *
 make_unwind_command (token *unwind_tok, tree_statement_list *body,
-		     tree_statement_list *cleanup, token *end_tok);
+		     tree_statement_list *cleanup, token *end_tok,
+		     octave_comment_list *lc, octave_comment_list *mc);
 
 // Build a try-catch command.
 static tree_command *
 make_try_command (token *try_tok, tree_statement_list *body,
-		  tree_statement_list *cleanup, token *end_tok);
+		  tree_statement_list *cleanup, token *end_tok,
+		  octave_comment_list *lc, octave_comment_list *mc);
 
 // Build a while command.
 static tree_command *
 make_while_command (token *while_tok, tree_expression *expr,
-		    tree_statement_list *body, token *end_tok);
+		    tree_statement_list *body, token *end_tok,
+		    octave_comment_list *lc);
 
 // Build a do-until command.
 static tree_command *
 make_do_until_command (token *do_tok, tree_statement_list *body,
-		       tree_expression *expr);
+		       tree_expression *expr, octave_comment_list *lc);
 
 // Build a for command.
 static tree_command *
 make_for_command (token *for_tok, tree_argument_list *lhs,
 		  tree_expression *expr, tree_statement_list *body,
-		  token *end_tok);
+		  token *end_tok, octave_comment_list *lc);
 
 // Build a break command.
 static tree_command *
@@ -220,20 +227,24 @@ start_if_command (tree_expression *expr, tree_statement_list *list);
 
 // Finish an if command.
 static tree_if_command *
-finish_if_command (token *if_tok, tree_if_command_list *list, token *end_tok);
+finish_if_command (token *if_tok, tree_if_command_list *list,
+		   token *end_tok, octave_comment_list *lc);
 
 // Build an elseif clause.
 static tree_if_clause *
-make_elseif_clause (tree_expression *expr, tree_statement_list *list);
+make_elseif_clause (tree_expression *expr, tree_statement_list *list,
+		    octave_comment_list *lc);
 
 // Finish a switch command.
 static tree_switch_command *
 finish_switch_command (token *switch_tok, tree_expression *expr,
-		       tree_switch_case_list *list, token *end_tok);
+		       tree_switch_case_list *list, token *end_tok,
+		       octave_comment_list *lc);
 
 // Build a switch case.
 static tree_switch_case *
-make_switch_case (tree_expression *expr, tree_statement_list *list);
+make_switch_case (tree_expression *expr, tree_statement_list *list,
+		  octave_comment_list *lc);
 
 // Build an assignment to a variable.
 static tree_expression *
@@ -250,11 +261,13 @@ frob_function (tree_identifier *id, octave_user_function *fcn);
 
 // Finish defining a function.
 static octave_user_function *
-finish_function (tree_identifier *id, octave_user_function *fcn);
+finish_function (tree_identifier *id, octave_user_function *fcn,
+		 octave_comment_list *lc);
 
 // Finish defining a function a different way.
 static octave_user_function *
-finish_function (tree_parameter_list *ret_list, octave_user_function *fcn);
+finish_function (tree_parameter_list *ret_list,
+		 octave_user_function *fcn, octave_comment_list *lc);
 
 // Reset state after parsing function.
 static void
@@ -308,6 +321,9 @@ set_stmt_print_flag (tree_statement_list *, char, bool);
 {
   // The type of the basic tokens returned by the lexer.
   token *tok_val;
+
+  // Comment strings that we need to deal with mid-rule.
+  octave_comment_list *comment_type;
 
   // Types for the nonterminals we generate.
   char sep_type;
@@ -375,6 +391,7 @@ set_stmt_print_flag (tree_statement_list *, char, bool);
 %token USING TITLE WITH AXES COLON OPEN_BRACE CLOSE_BRACE CLEAR
 
 // Nonterminals we construct.
+%type <comment_type> stash_comment function_beg
 %type <sep_type> sep_no_nl opt_sep_no_nl sep opt_sep
 %type <tree_type> input
 %type <tree_constant_type> constant magic_colon
@@ -510,14 +527,28 @@ list1		: statement
 		;
 
 statement	: expression
-		  { $$ = new tree_statement ($1); }
+		  {
+		    octave_comment_list *comment
+		      = octave_comment_buffer::get_comment ();
+
+		    $$ = new tree_statement ($1, comment);
+		  }
 		| command
-		  { $$ = new tree_statement ($1); }
+		  {
+		    octave_comment_list *comment
+		      = octave_comment_buffer::get_comment ();
+
+		    $$ = new tree_statement ($1, comment);
+		  }
 		| PLOT CLEAR
 		  {
 		    symbol_record *sr = lookup_by_name ("clearplot", 0);
 		    tree_identifier *id = new tree_identifier (sr);
-		    $$ = new tree_statement (id);
+
+		    octave_comment_list *comment
+		      = octave_comment_buffer::get_comment ();
+
+		    $$ = new tree_statement (id, comment);
 		  }
 		;
 
@@ -880,9 +911,9 @@ select_command	: if_command
 // If statement
 // ============
 
-if_command	: IF if_cmd_list END
+if_command	: IF stash_comment if_cmd_list END
 		  {
-		    if (! ($$ = finish_if_command ($1, $2, $3)))
+		    if (! ($$ = finish_if_command ($1, $3, $4, $2)))
 		      ABORT_PARSE;
 		  }
 		;
@@ -905,21 +936,23 @@ if_cmd_list1	: expression opt_sep opt_list
 		  }
 		;
 
-elseif_clause	: ELSEIF opt_sep expression opt_sep opt_list
-		  { $$ = make_elseif_clause ($3, $5); }
+elseif_clause	: ELSEIF stash_comment opt_sep expression opt_sep opt_list
+		  { $$ = make_elseif_clause ($4, $6, $2); }
 		;
 
-else_clause	: ELSE opt_sep opt_list
-		  { $$ = new tree_if_clause ($3); }
+else_clause	: ELSE stash_comment opt_sep opt_list
+		  {
+		    $$ = new tree_if_clause ($4, $2);
+		  }
 		;
 
 // ================
 // Switch statement
 // ================
 
-switch_command	: SWITCH expression opt_sep case_list END
+switch_command	: SWITCH stash_comment expression opt_sep case_list END
 		  {
-		    if (! ($$ = finish_switch_command ($1, $2, $4, $5)))
+		    if (! ($$ = finish_switch_command ($1, $3, $5, $6, $2)))
 		      ABORT_PARSE;
 		  }
 		;
@@ -942,31 +975,33 @@ case_list1	: switch_case
 		  }
 		;
 
-switch_case	: CASE opt_sep expression opt_sep list
-		  { $$ = make_switch_case ($3, $5); }
+switch_case	: CASE stash_comment opt_sep expression opt_sep list
+		  { $$ = make_switch_case ($4, $6, $2); }
 		;
 
-default_case	: OTHERWISE opt_sep opt_list
-		  { $$ = new tree_switch_case ($3); }
+default_case	: OTHERWISE stash_comment opt_sep opt_list
+		  {
+		    $$ = new tree_switch_case ($4, $2);
+		  }
 		;
 
 // =======
 // Looping
 // =======
 
-loop_command	: WHILE expression opt_sep opt_list END
+loop_command	: WHILE stash_comment expression opt_sep opt_list END
 		  {
-		    if (! ($$ = make_while_command ($1, $2, $4, $5)))
+		    if (! ($$ = make_while_command ($1, $3, $5, $6, $2)))
 		      ABORT_PARSE;
 		  }
-		| DO opt_sep opt_list UNTIL expression
+		| DO stash_comment opt_sep opt_list UNTIL expression
 		  {
-		    if (! ($$ = make_do_until_command ($1, $3, $5)))
+		    if (! ($$ = make_do_until_command ($1, $4, $6, $2)))
 		      ABORT_PARSE;
 		  }
-		| FOR assign_lhs '=' expression opt_sep opt_list END
+		| FOR stash_comment assign_lhs '=' expression opt_sep opt_list END
 		  {
-		    if (! ($$ = make_for_command ($1, $2, $4, $6, $7)))
+		    if (! ($$ = make_for_command ($1, $3, $5, $7, $8, $2)))
 		      ABORT_PARSE;
 		  }
 		;
@@ -996,14 +1031,16 @@ jump_command	: BREAK
 // Exceptions
 // ==========
 
-except_command	: UNWIND opt_sep opt_list CLEANUP opt_sep opt_list END
+except_command	: UNWIND stash_comment opt_sep opt_list CLEANUP
+		  stash_comment opt_sep opt_list END
 		  {
-		    if (! ($$ = make_unwind_command ($1, $3, $6, $7)))
+		    if (! ($$ = make_unwind_command ($1, $4, $8, $9, $2, $6)))
 		      ABORT_PARSE;
 		  }
-		| TRY opt_sep opt_list CATCH opt_sep opt_list END
+		| TRY stash_comment opt_sep opt_list CATCH
+		  stash_comment opt_sep opt_list END
 		  {
-		    if (! ($$ = make_try_command ($1, $3, $6, $7)))
+		    if (! ($$ = make_try_command ($1, $4, $8, $9, $2, $6)))
 		      ABORT_PARSE;
 		  }
 		;
@@ -1136,23 +1173,25 @@ return_list_end	: global_symtab ']'
 // Function definition
 // ===================
 
-function_beg	: FCN global_symtab
+function_beg	: FCN stash_comment global_symtab
+		  { $$ = $2; }
 		;
 
 function	: function_beg function2
 		  {
+		    $2->stash_leading_comment ($1);
 		    recover_from_parsing_function ();
 		    $$ = 0;
 		  }
 		| function_beg identifier function1
 		  {
-		    finish_function ($2, $3);
+		    finish_function ($2, $3, $1);
 		    recover_from_parsing_function ();
 		    $$ = 0;
 		  }
 		| function_beg return_list function1
 		  {
-		    finish_function ($2, $3);
+		    finish_function ($2, $3, $1);
 		    recover_from_parsing_function ();
 		    $$ = 0;
 		  }
@@ -1354,6 +1393,10 @@ style		: WITH STYLE
 // =============
 // Miscellaneous
 // =============
+
+stash_comment	: // empty
+		  { $$ = octave_comment_buffer::get_comment (); }
+		;
 
 parse_error	: LEXICAL_ERROR
 		  { yyerror ("parse error"); }
@@ -2030,16 +2073,20 @@ make_postfix_op (int op, tree_expression *op1, token *tok_val)
 
 static tree_command *
 make_unwind_command (token *unwind_tok, tree_statement_list *body,
-		     tree_statement_list *cleanup, token *end_tok)
+		     tree_statement_list *cleanup, token *end_tok,
+		     octave_comment_list *lc, octave_comment_list *mc)
 {
   tree_command *retval = 0;
 
   if (end_token_ok (end_tok, token::unwind_protect_end))
     {
+      octave_comment_list *tc = octave_comment_buffer::get_comment ();
+
       int l = unwind_tok->line ();
       int c = unwind_tok->column ();
 
-      retval = new tree_unwind_protect_command (body, cleanup, l, c);
+      retval = new tree_unwind_protect_command (body, cleanup,
+						lc, mc, tc, l, c);
     }
 
   return retval;
@@ -2049,16 +2096,20 @@ make_unwind_command (token *unwind_tok, tree_statement_list *body,
 
 static tree_command *
 make_try_command (token *try_tok, tree_statement_list *body,
-		  tree_statement_list *cleanup, token *end_tok)
+		  tree_statement_list *cleanup, token *end_tok,
+		  octave_comment_list *lc, octave_comment_list *mc)
 {
   tree_command *retval = 0;
 
   if (end_token_ok (end_tok, token::try_catch_end))
     {
+      octave_comment_list *tc = octave_comment_buffer::get_comment ();
+
       int l = try_tok->line ();
       int c = try_tok->column ();
 
-      retval = new tree_try_catch_command (body, cleanup, l, c);
+      retval = new tree_try_catch_command (body, cleanup,
+					   lc, mc, tc, l, c);
     }
 
   return retval;
@@ -2068,7 +2119,8 @@ make_try_command (token *try_tok, tree_statement_list *body,
 
 static tree_command *
 make_while_command (token *while_tok, tree_expression *expr,
-		    tree_statement_list *body, token *end_tok)
+		    tree_statement_list *body, token *end_tok,
+		    octave_comment_list *lc)
 {
   tree_command *retval = 0;
 
@@ -2076,12 +2128,14 @@ make_while_command (token *while_tok, tree_expression *expr,
 
   if (end_token_ok (end_tok, token::while_end))
     {
+      octave_comment_list *tc = octave_comment_buffer::get_comment ();
+
       lexer_flags.looping--;
 
       int l = while_tok->line ();
       int c = while_tok->column ();
 
-      retval = new tree_while_command (expr, body, l, c);
+      retval = new tree_while_command (expr, body, lc, tc, l, c);
     }
 
   return retval;
@@ -2091,18 +2145,20 @@ make_while_command (token *while_tok, tree_expression *expr,
 
 static tree_command *
 make_do_until_command (token *do_tok, tree_statement_list *body,
-		       tree_expression *expr)
+		       tree_expression *expr, octave_comment_list *lc)
 {
   tree_command *retval = 0;
 
   maybe_warn_assign_as_truth_value (expr);
+
+  octave_comment_list *tc = octave_comment_buffer::get_comment ();
 
   lexer_flags.looping--;
 
   int l = do_tok->line ();
   int c = do_tok->column ();
 
-  retval = new tree_do_until_command (expr, body, l, c);
+  retval = new tree_do_until_command (expr, body, lc, tc, l, c);
 
   return retval;
 }
@@ -2112,12 +2168,14 @@ make_do_until_command (token *do_tok, tree_statement_list *body,
 static tree_command *
 make_for_command (token *for_tok, tree_argument_list *lhs,
 		  tree_expression *expr, tree_statement_list *body,
-		  token *end_tok)
+		  token *end_tok, octave_comment_list *lc)
 {
   tree_command *retval = 0;
 
   if (end_token_ok (end_tok, token::for_end))
     {
+      octave_comment_list *tc = octave_comment_buffer::get_comment ();
+
       lexer_flags.looping--;
 
       int l = for_tok->line ();
@@ -2127,12 +2185,14 @@ make_for_command (token *for_tok, tree_argument_list *lhs,
 	{
 	  tree_expression *tmp = lhs->remove_front ();
 
-	  retval = new tree_simple_for_command (tmp, expr, body, l, c);
+	  retval = new tree_simple_for_command (tmp, expr, body,
+						lc, tc, l, c);
 
 	  delete lhs;
 	}
       else
-	retval = new tree_complex_for_command (lhs, expr, body, l, c);
+	retval = new tree_complex_for_command (lhs, expr, body,
+					       lc, tc, l, c);
     }
 
   return retval;
@@ -2210,16 +2270,18 @@ start_if_command (tree_expression *expr, tree_statement_list *list)
 
 static tree_if_command *
 finish_if_command (token *if_tok, tree_if_command_list *list,
-		   token *end_tok)
+		   token *end_tok, octave_comment_list *lc)
 {
   tree_if_command *retval = 0;
 
   if (end_token_ok (end_tok, token::if_end))
     {
+      octave_comment_list *tc = octave_comment_buffer::get_comment ();
+
       int l = if_tok->line ();
       int c = if_tok->column ();
 
-      retval = new tree_if_command (list, l, c);
+      retval = new tree_if_command (list, lc, tc, l, c);
     }
 
   return retval;
@@ -2228,27 +2290,31 @@ finish_if_command (token *if_tok, tree_if_command_list *list,
 // Build an elseif clause.
 
 static tree_if_clause *
-make_elseif_clause (tree_expression *expr, tree_statement_list *list)
+make_elseif_clause (tree_expression *expr, tree_statement_list *list,
+		    octave_comment_list *lc)
 {
   maybe_warn_assign_as_truth_value (expr);
 
-  return new tree_if_clause (expr, list);
+  return new tree_if_clause (expr, list, lc);
 }
 
 // Finish a switch command.
 
 static tree_switch_command *
 finish_switch_command (token *switch_tok, tree_expression *expr,
-		       tree_switch_case_list *list, token *end_tok)
+		       tree_switch_case_list *list, token *end_tok,
+		       octave_comment_list *lc)
 {
   tree_switch_command *retval = 0;
 
   if (end_token_ok (end_tok, token::switch_end))
     {
+      octave_comment_list *tc = octave_comment_buffer::get_comment ();
+
       int l = switch_tok->line ();
       int c = switch_tok->column ();
 
-      retval = new tree_switch_command (expr, list, l, c);
+      retval = new tree_switch_command (expr, list, lc, tc, l, c);
     }
 
   return retval;
@@ -2257,11 +2323,12 @@ finish_switch_command (token *switch_tok, tree_expression *expr,
 // Build a switch case.
 
 static tree_switch_case *
-make_switch_case (tree_expression *expr, tree_statement_list *list)
+make_switch_case (tree_expression *expr, tree_statement_list *list,
+		  octave_comment_list *lc)
 {
   maybe_warn_variable_switch_label (expr);
 
-  return new tree_switch_case (expr, list);
+  return new tree_switch_case (expr, list, lc);
 }
 
 // Build an assignment to a variable.
@@ -2362,6 +2429,13 @@ start_function (tree_parameter_list *param_list, tree_statement_list *body)
   octave_user_function *fcn
     = new octave_user_function (param_list, 0, body, curr_sym_tab);
 
+  if (fcn)
+    {
+      octave_comment_list *tc = octave_comment_buffer::get_comment ();
+
+      fcn->stash_trailing_comment (tc);
+    }
+
   return fcn;
 }
 
@@ -2439,11 +2513,14 @@ frob_function (tree_identifier *id, octave_user_function *fcn)
 // Finish defining a function.
 
 static octave_user_function *
-finish_function (tree_identifier *id, octave_user_function *fcn)
+finish_function (tree_identifier *id, octave_user_function *fcn,
+		 octave_comment_list *lc)
 {
   tree_parameter_list *tpl = new tree_parameter_list (id);
 
   tpl->mark_as_formal_parameters ();
+
+  fcn->stash_leading_comment (lc);
 
   return fcn->define_ret_list (tpl);
 }
@@ -2451,9 +2528,12 @@ finish_function (tree_identifier *id, octave_user_function *fcn)
 // Finish defining a function a different way.
 
 static octave_user_function *
-finish_function (tree_parameter_list *ret_list, octave_user_function *fcn)
+finish_function (tree_parameter_list *ret_list,
+		 octave_user_function *fcn, octave_comment_list *lc)
 {
   ret_list->mark_as_formal_parameters ();
+
+  fcn->stash_leading_comment (lc);
 
   return fcn->define_ret_list (ret_list);
 }
@@ -2785,13 +2865,16 @@ looks_like_octave_copyright (const std::string& s)
 // comments read if it doesn't look like a copyright notice.  If
 // IN_PARTS, consider each block of comments separately; otherwise,
 // grab them all at once.  If UPDATE_POS is TRUE, line and column
-// number information is updated.
+// number information is updated.  If SAVE_COPYRIGHT is TRUE, then
+// comments that are recognized as a copyright notice are saved in the
+// comment buffer.
 
 // XXX FIXME XXX -- grab_help_text() in lex.l duplicates some of this
 // code!
 
 static std::string
-gobble_leading_white_space (FILE *ffile, bool in_parts, bool update_pos)
+gobble_leading_white_space (FILE *ffile, bool in_parts,
+			    bool update_pos, bool save_copyright)
 {
   std::string help_txt;
 
@@ -2893,11 +2976,17 @@ gobble_leading_white_space (FILE *ffile, bool in_parts, bool update_pos)
 
   if (! help_txt.empty ())
     {
-      if (looks_like_octave_copyright (help_txt)) 
-	help_txt.resize (0);
+      if (looks_like_octave_copyright (help_txt))
+	{
+	  if (save_copyright)
+	    octave_comment_buffer::append (help_txt);
+
+	  help_txt.resize (0);
+	}
 
       if (in_parts && help_txt.empty ())
-	help_txt = gobble_leading_white_space (ffile, in_parts, update_pos);
+	help_txt = gobble_leading_white_space (ffile, in_parts,
+					       update_pos, false);
     }
 
   return help_txt;
@@ -2916,7 +3005,7 @@ get_help_from_file (const std::string& path)
 	{
 	  unwind_protect::add (safe_fclose, (void *) fptr);
 
-	  retval = gobble_leading_white_space (fptr, true, true);
+	  retval = gobble_leading_white_space (fptr, true, true, false);
 
 	  unwind_protect::run ();
 	}
@@ -2932,7 +3021,7 @@ is_function_file (FILE *ffile)
 
   long pos = ftell (ffile);
 
-  gobble_leading_white_space (ffile, false, false);
+  gobble_leading_white_space (ffile, false, false, false);
 
   char buf [10];
   fgets (buf, 10, ffile);
@@ -3031,10 +3120,12 @@ parse_fcn_file (const std::string& ff, bool exec_script, bool force_script = fal
 
 	  reset_parser ();
 
-	  help_buf = gobble_leading_white_space (ffile, true, true);
+	  help_buf = gobble_leading_white_space (ffile, true, true, true);
+
+	  octave_comment_buffer::append (help_buf);
 
 	  // XXX FIXME XXX -- this should not be necessary.
-	  gobble_leading_white_space (ffile, false, true);
+	  gobble_leading_white_space (ffile, false, true, false);
 
 	  int status = yyparse ();
 

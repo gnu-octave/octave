@@ -34,6 +34,7 @@ class tree_statement_list;
 
 class tree_walker;
 
+#include "comment-list.h"
 #include "pt-cmd.h"
 
 // If.
@@ -44,13 +45,14 @@ tree_if_clause
 public:
 
   tree_if_clause (void)
-    : expr (0), list (0) { }
+    : expr (0), list (0), lead_comm (0) { }
 
-  tree_if_clause (tree_statement_list *l)
-    : expr (0), list (l) { }
+  tree_if_clause (tree_statement_list *l, octave_comment_list *lc = 0)
+    : expr (0), list (l), lead_comm (lc) { }
 
-  tree_if_clause (tree_expression *e, tree_statement_list *l)
-    : expr (e), list (l) { }
+  tree_if_clause (tree_expression *e, tree_statement_list *l,
+		  octave_comment_list *lc = 0)
+    : expr (e), list (l), lead_comm (lc) { }
 
   ~tree_if_clause (void);
 
@@ -63,6 +65,8 @@ public:
 
   tree_statement_list *commands (void) { return list; }
 
+  octave_comment_list *leading_comment (void) { return lead_comm; }
+
   void accept (tree_walker& tw);
 
 private:
@@ -72,6 +76,9 @@ private:
 
   // The list of statements to evaluate if expr is true.
   tree_statement_list *list;
+
+  // Comment preceding ELSE or ELSEIF token.
+  octave_comment_list *lead_comm;
 
   // No copying!
 
@@ -119,10 +126,11 @@ tree_if_command : public tree_command
 public:
 
   tree_if_command (int l = -1, int c = -1)
-    : tree_command (l, c), list (0) { }
+    : tree_command (l, c), list (0), lead_comm (0), trail_comm (0) { }
 
-  tree_if_command (tree_if_command_list *lst, int l = -1, int c = -1)
-    : tree_command (l, c), list (lst) { }
+  tree_if_command (tree_if_command_list *lst, octave_comment_list *lc,
+		   octave_comment_list *tc, int l = -1, int c = -1)
+    : tree_command (l, c), list (lst), lead_comm (lc), trail_comm (tc) { }
 
   ~tree_if_command (void);
 
@@ -130,12 +138,22 @@ public:
 
   tree_if_command_list *cmd_list (void) { return list; }
 
+  octave_comment_list *leading_comment (void) { return lead_comm; }
+
+  octave_comment_list *trailing_comment (void) { return trail_comm; }
+
   void accept (tree_walker& tw);
 
 private:
 
   // List of if commands (if, elseif, elseif, ... else, endif)
   tree_if_command_list *list;
+
+  // Comment preceding IF token.
+  octave_comment_list *lead_comm;
+
+  // Comment preceding ENDIF token.
+  octave_comment_list *trail_comm;
 
   // No copying!
 
@@ -152,13 +170,14 @@ tree_switch_case
 public:
 
   tree_switch_case (void)
-    : label (0), list (0) { }
+    : label (0), list (0), lead_comm (0) { }
 
-  tree_switch_case (tree_statement_list *l)
-    : label (0), list (l) { }
+  tree_switch_case (tree_statement_list *l, octave_comment_list *lc = 0)
+    : label (0), list (l), lead_comm (lc) { }
 
-  tree_switch_case (tree_expression *e, tree_statement_list *l)
-    : label (e), list (l) { }
+  tree_switch_case (tree_expression *e, tree_statement_list *l,
+		    octave_comment_list *lc = 0)
+    : label (e), list (l), lead_comm (lc) { }
 
   ~tree_switch_case (void);
 
@@ -175,6 +194,8 @@ public:
 
   tree_statement_list *commands (void) { return list; }
 
+  octave_comment_list *leading_comment (void) { return lead_comm; }
+
   void accept (tree_walker& tw);
 
 private:
@@ -184,6 +205,9 @@ private:
 
   // The list of statements to evaluate if the label matches.
   tree_statement_list *list;
+
+  // Comment preceding CASE or OTHERWISE token.
+  octave_comment_list *lead_comm;
 
   // No copying!
 
@@ -231,11 +255,14 @@ tree_switch_command : public tree_command
 public:
 
   tree_switch_command (int l = -1, int c = -1)
-    : tree_command (l, c), expr (0), list (0) { }
+    : tree_command (l, c), expr (0), list (0), lead_comm (0),
+      trail_comm (0) { }
 
   tree_switch_command (tree_expression *e, tree_switch_case_list *lst,
+		       octave_comment_list *lc, octave_comment_list *tc, 
 		       int l = -1, int c = -1)
-    : tree_command (l, c), expr (e), list (lst) { }
+    : tree_command (l, c), expr (e), list (lst), lead_comm (lc),
+      trail_comm (tc) { }
 
   ~tree_switch_command (void);
 
@@ -247,6 +274,10 @@ public:
 
   tree_switch_case_list *case_list (void) { return list; }
 
+  octave_comment_list *leading_comment (void) { return lead_comm; }
+
+  octave_comment_list *trailing_comment (void) { return trail_comm; }
+
   void accept (tree_walker& tw);
 
 private:
@@ -256,6 +287,12 @@ private:
 
   // List of cases (case 1, case 2, ..., default)
   tree_switch_case_list *list;
+
+  // Comment preceding SWITCH token.
+  octave_comment_list *lead_comm;
+
+  // Comment preceding ENDSWITCH token.
+  octave_comment_list *trail_comm;
 
   // No copying!
 

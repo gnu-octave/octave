@@ -29,6 +29,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <string>
 
+#include "comment-list.h"
 #include "pt-walk.h"
 
 class tree_expression;
@@ -167,6 +168,12 @@ private:
   void reset (void);
 
   void print_parens (const tree_expression& expr, const char *txt);
+
+  void print_comment_list (octave_comment_list *comment_list);
+
+  void print_comment_elt (const octave_comment_elt& comment_elt);
+
+  void print_indented_comment (octave_comment_list *comment_list);
 
   // Must create with an output stream!
 

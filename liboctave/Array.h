@@ -164,6 +164,9 @@ public:
   int capacity (void) const { return rep->length (); }
   int length (void) const { return rep->length (); }
 
+  T range_error (const char *fcn, int n) const;
+  T& range_error (const char *fcn, int n);
+
   // No checking, even for multiple references, ever.
 
   T& xelem (int n) { return rep->elem (n); }
@@ -228,9 +231,6 @@ public:
       return *this;
     }
 
-  T range_error (const char *fcn, int n) const;
-  T& range_error (const char *fcn, int n);
-
 #ifdef HEAVYWEIGHT_INDEXING
   void set_max_indices (int mi) { max_indices = mi; }
 
@@ -251,7 +251,8 @@ public:
 };
 
 template <class LT, class RT>
-int assign (Array<LT>& lhs, const Array<RT>& rhs);
+int
+assign (Array<LT>& lhs, const Array<RT>& rhs);
 
 #endif
 

@@ -157,7 +157,8 @@ public:
 };
 
 template <class LT, class RT>
-int assign (Array3<LT>& lhs, const Array3<RT>& rhs);
+int
+assign (Array3<LT>& lhs, const Array3<RT>& rhs);
 
 #endif
 

@@ -31,6 +31,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <string>
 
+#include "comment-list.h"
 #include "oct-obj.h"
 #include "ov-fcn.h"
 #include "ov-typeinfo.h"
@@ -66,6 +67,10 @@ public:
   octave_user_function *define_ret_list (tree_parameter_list *t);
 
   void stash_fcn_file_name (void);
+
+  void stash_leading_comment (octave_comment_list *lc) { lead_comm = lc; }
+
+  void stash_trailing_comment (octave_comment_list *tc) { trail_comm = tc; }
 
   void mark_fcn_file_up_to_date (const octave_time& t) { t_checked = t; }
 
@@ -124,6 +129,10 @@ public:
 
   tree_statement_list *body (void) { return cmd_list; }
 
+  octave_comment_list *leading_comment (void) { return lead_comm; }
+
+  octave_comment_list *trailing_comment (void) { return trail_comm; }
+
   void accept (tree_walker& tw);
 
 private:
@@ -144,6 +153,12 @@ private:
 
   // The local symbol table for this function.
   symbol_table *sym_tab;
+
+  // The comments preceding the FUNCTION token.
+  octave_comment_list *lead_comm;
+
+  // The comments preceding the ENDFUNCTION token.
+  octave_comment_list *trail_comm;
 
   // The name of the file we parsed
   std::string file_name;

@@ -36,6 +36,8 @@ class tree_expression;
 
 class tree_walker;
 
+#include "comment-list.h"
+
 // A statement is either a command to execute or an expression to
 // evaluate.
 
@@ -45,13 +47,13 @@ tree_statement
 public:
 
   tree_statement (void)
-    : cmd (0), expr (0), print_flag (true) { }
+    : cmd (0), expr (0), comm (0), print_flag (true) { }
 
-  tree_statement (tree_command *c)
-    : cmd (c), expr (0), print_flag (true) { }
+  tree_statement (tree_command *c, octave_comment_list *cl)
+    : cmd (c), expr (0), comm (cl), print_flag (true) { }
 
-  tree_statement (tree_expression *e)
-    : cmd (0), expr (e), print_flag (true) { }
+  tree_statement (tree_expression *e, octave_comment_list *cl)
+    : cmd (0), expr (e), comm (cl), print_flag (true) { }
 
   ~tree_statement (void);
 
@@ -77,6 +79,8 @@ public:
 
   tree_expression *expression (void) { return expr; }
 
+  octave_comment_list *comment_text (void) { return comm; }
+
   void accept (tree_walker& tw);
 
 private:
@@ -88,6 +92,9 @@ private:
 
   // Expression to evaluate.
   tree_expression *expr;
+
+  // Comment associated with this statement.
+  octave_comment_list *comm;
 
   // Print result of eval for this command?
   bool print_flag;

@@ -46,6 +46,9 @@ tree_try_catch_command::~tree_try_catch_command (void)
 {
   delete try_code;
   delete catch_code;
+  delete lead_comm;
+  delete mid_comm;
+  delete trail_comm;
 }
 
 static void
@@ -120,6 +123,9 @@ tree_unwind_protect_command::~tree_unwind_protect_command (void)
 {
   delete unwind_protect_code;
   delete cleanup_code;
+  delete lead_comm;
+  delete mid_comm;
+  delete trail_comm;
 }
 
 static void

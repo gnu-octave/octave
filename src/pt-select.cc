@@ -43,6 +43,7 @@ tree_if_clause::~tree_if_clause (void)
 {
   delete expr;
   delete list;
+  delete lead_comm;
 }
 
 int
@@ -90,6 +91,8 @@ tree_if_command_list::accept (tree_walker& tw)
 tree_if_command::~tree_if_command (void)
 {
   delete list;
+  delete lead_comm;
+  delete trail_comm;
 }
 
 void
@@ -115,6 +118,7 @@ tree_switch_case::~tree_switch_case (void)
 {
   delete label;
   delete list;
+  delete lead_comm;
 }
 
 bool
@@ -204,6 +208,8 @@ tree_switch_command::~tree_switch_command (void)
 {
   delete expr;
   delete list;
+  delete lead_comm;
+  delete trail_comm;
 }
 
 void

@@ -76,7 +76,8 @@ octave_user_function::octave_user_function
    tree_statement_list *cl, symbol_table *st)
   : octave_function (std::string (), std::string ()),
     param_list (pl), ret_list (rl), cmd_list (cl),
-    sym_tab (st), file_name (), fcn_name (),
+    sym_tab (st), lead_comm (), trail_comm (),
+    file_name (), fcn_name (),
     t_parsed (static_cast<time_t> (0)),
     t_checked (static_cast<time_t> (0)),
     system_fcn_file (false), call_depth (0),
@@ -100,6 +101,8 @@ octave_user_function::~octave_user_function (void)
   delete sym_tab;
   delete cmd_list;
   delete vr_list;
+  delete lead_comm;
+  delete trail_comm;
 }
 
 octave_user_function *

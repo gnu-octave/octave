@@ -1,3 +1,9 @@
+2000-05-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Array-d.cc: Instantiate ArrayN<double> here too.
+	* Array-idx-vec.cc, ArrayN-idx.h, ArrayN.cc, ArrayN.h: New files.
+	* Makefile.in: Add them to the appropriate lists.
+
 2000-04-06  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Array.cc (Array<T>::operator =): Don't set max_indices to 1 here.

@@ -24,38 +24,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
-// Instantiate Arrays of double values.
+// Instantiate Arrays of integer values.
+
+#include "idx-vector.h"
 
 #include "Array.h"
 #include "Array.cc"
 
-template class Array<double>;
-
-template int assign (Array<double>&, const Array<double>&);
-template int assign (Array<double>&, const Array<int>&);
-template int assign (Array<double>&, const Array<short>&);
-template int assign (Array<double>&, const Array<char>&);
-
-#include "Array2.h"
-#include "Array2.cc"
-
-template class Array2<double>;
-
-template int assign (Array2<double>&, const Array2<double>&);
-template int assign (Array2<double>&, const Array2<int>&);
-template int assign (Array2<double>&, const Array2<short>&);
-template int assign (Array2<double>&, const Array2<char>&);
-
-#include "ArrayN.h"
-#include "ArrayN.cc"
-
-template class ArrayN<double>;
-template std::ostream& operator << (std::ostream&, const ArrayN<double>&);
-
-#include "DiagArray2.h"
-#include "DiagArray2.cc"
-
-template class DiagArray2<double>;
+template class Array<idx_vector>;
 
 /*
 ;;; Local Variables: ***

@@ -42,6 +42,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "lo-error.h"
 
+// Two dimensional array class.
+
 template <class T>
 int
 Array2<T>::get_size (int r, int c) const
@@ -105,8 +107,6 @@ Array2<T>::range_error (const char *fcn, int i, int j)
   static T foo;
   return foo;
 }
-
-// Two dimensional array class.
 
 template <class T>
 void

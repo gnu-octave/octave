@@ -36,6 +36,7 @@ class tree_statement_list;
 
 class tree_walker;
 
+#include "comment-list.h"
 #include "pt-cmd.h"
 
 // While.
@@ -46,14 +47,22 @@ tree_while_command : public tree_command
 public:
 
   tree_while_command (int l = -1, int c = -1)
-    : tree_command (l, c), expr (0), list (0) { }
+    : tree_command (l, c), expr (0), list (0), lead_comm (0),
+      trail_comm (0) { }
 
-  tree_while_command (tree_expression *e, int l = -1, int c = -1)
-    : tree_command (l, c), expr (e), list (0) { }
+  tree_while_command (tree_expression *e,
+		      octave_comment_list *lc = 0,
+		      octave_comment_list *tc = 0,
+		      int l = -1, int c = -1)
+    : tree_command (l, c), expr (e), list (0), lead_comm (lc),
+      trail_comm (tc) { }
 
   tree_while_command (tree_expression *e, tree_statement_list *lst,
+		      octave_comment_list *lc = 0,
+		      octave_comment_list *tc = 0,
 		      int l = -1, int c = -1)
-    : tree_command (l, c), expr (e), list (lst) { }
+    : tree_command (l, c), expr (e), list (lst), lead_comm (lc),
+      trail_comm (tc) { }
 
   ~tree_while_command (void);
 
@@ -65,6 +74,10 @@ public:
 
   tree_statement_list *body (void) { return list; }
 
+  octave_comment_list *leading_comment (void) { return lead_comm; }
+
+  octave_comment_list *trailing_comment (void) { return trail_comm; }
+
   void accept (tree_walker& tw);
 
 protected:
@@ -74,6 +87,12 @@ protected:
 
   // List of commands to execute.
   tree_statement_list *list;
+
+  // Comment preceding WHILE token.
+  octave_comment_list *lead_comm;
+
+  // Comment preceding ENDWHILE token.
+  octave_comment_list *trail_comm;
 
 private:
 
@@ -94,12 +113,17 @@ public:
   tree_do_until_command (int l = -1, int c = -1)
     : tree_while_command (l, c) { }
 
-  tree_do_until_command (tree_expression *e, int l = -1, int c = -1)
-    : tree_while_command (e, l, c) { }
+  tree_do_until_command (tree_expression *e,
+			 octave_comment_list *lc = 0,
+			 octave_comment_list *tc = 0,
+			 int l = -1, int c = -1)
+    : tree_while_command (e, lc, tc, l, c) { }
 
   tree_do_until_command (tree_expression *e, tree_statement_list *lst,
-		      int l = -1, int c = -1)
-    : tree_while_command (e, lst, l, c) { }
+			 octave_comment_list *lc = 0,
+			 octave_comment_list *tc = 0,
+			 int l = -1, int c = -1)
+    : tree_while_command (e, lst, lc, tc, l, c) { }
 
   ~tree_do_until_command (void) { }
 
@@ -126,11 +150,16 @@ tree_simple_for_command : public tree_command
 public:
 
   tree_simple_for_command (int l = -1, int c = -1)
-    : tree_command (l, c), lhs (0), expr (0), list (0) { }
+    : tree_command (l, c), lhs (0), expr (0), list (0), lead_comm (0),
+      trail_comm (0) { }
 
   tree_simple_for_command (tree_expression *le, tree_expression *re,
-			   tree_statement_list *lst, int l = -1, int c = -1)
-    : tree_command (l, c), lhs (le), expr (re), list (lst) { }
+			   tree_statement_list *lst,
+			   octave_comment_list *lc = 0,
+			   octave_comment_list *tc = 0,
+			   int l = -1, int c = -1)
+    : tree_command (l, c), lhs (le), expr (re), list (lst),
+      lead_comm (lc), trail_comm (tc) { }
 
   ~tree_simple_for_command (void);
 
@@ -144,6 +173,10 @@ public:
 
   tree_statement_list *body (void) { return list; }
 
+  octave_comment_list *leading_comment (void) { return lead_comm; }
+
+  octave_comment_list *trailing_comment (void) { return trail_comm; }
+
   void accept (tree_walker& tw);
 
 private:
@@ -156,6 +189,12 @@ private:
 
   // List of commands to execute.
   tree_statement_list *list;
+
+  // Comment preceding FOR token.
+  octave_comment_list *lead_comm;
+
+  // Comment preceding ENDFOR token.
+  octave_comment_list *trail_comm;
 
   void do_for_loop_once (octave_lvalue &ult, const octave_value& rhs,
 			 bool& quit);
@@ -173,11 +212,16 @@ tree_complex_for_command : public tree_command
 public:
 
   tree_complex_for_command (int l = -1, int c = -1)
-    : tree_command (l, c), lhs (0), expr (0), list (0) { }
+    : tree_command (l, c), lhs (0), expr (0), list (0), lead_comm (0),
+      trail_comm (0) { }
 
   tree_complex_for_command (tree_argument_list *le, tree_expression *re,
-			    tree_statement_list *lst, int l = -1, int c = -1)
-    : tree_command (l, c), lhs (le), expr (re), list (lst) { }
+			    tree_statement_list *lst,
+			    octave_comment_list *lc = 0,
+			    octave_comment_list *tc = 0,
+			    int l = -1, int c = -1)
+    : tree_command (l, c), lhs (le), expr (re), list (lst),
+      lead_comm (lc), trail_comm (tc) { }
 
   ~tree_complex_for_command (void);
 
@@ -191,6 +235,10 @@ public:
 
   tree_statement_list *body (void) { return list; }
 
+  octave_comment_list *leading_comment (void) { return lead_comm; }
+
+  octave_comment_list *trailing_comment (void) { return trail_comm; }
+
   void accept (tree_walker& tw);
 
 private:
@@ -203,6 +251,12 @@ private:
 
   // List of commands to execute.
   tree_statement_list *list;
+
+  // Comment preceding FOR token.
+  octave_comment_list *lead_comm;
+
+  // Comment preceding ENDFOR token.
+  octave_comment_list *trail_comm;
 
   void do_for_loop_once (octave_lvalue &val_ref, octave_lvalue &key_ref,
 			 const octave_value& val, const octave_value& key,

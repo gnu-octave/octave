@@ -56,6 +56,7 @@ tree_statement::~tree_statement (void)
 {
   delete cmd;
   delete expr;
+  delete comm;
 }
 
 int

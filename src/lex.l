@@ -44,6 +44,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // because it may not be protected to allow it to be included multiple
 // times.
 
+#include "comment-list.h"
 #include "defun.h"
 #include "error.h"
 #include "input.h"
@@ -187,6 +188,7 @@ static int handle_close_bracket (int spc_gobbled);
 static int handle_identifier (const std::string& tok, int spc_gobbled);
 static bool have_continuation (bool trailing_comments_ok = true);
 static bool have_ellipsis_continuation (bool trailing_comments_ok = true);
+static void scan_for_comments (const char *);
 static yum_yum eat_whitespace (void);
 static yum_yum eat_continuation (void);
 static void maybe_warn_separator_insert (char sep);
@@ -267,6 +269,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %}
 
 <MATRIX>{SNLCMT}*\]{S}* {
+    scan_for_comments (yytext);
     fixup_column_count (yytext);
     int c = yytext[yyleng-1];
     int cont_is_spc = eat_continuation ();
@@ -346,6 +349,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %}
 
 <MATRIX>{SNLCMT}*;{SNLCMT}* {
+    scan_for_comments (yytext);
     fixup_column_count (yytext);
     eat_whitespace ();
     lexer_flags.quote_is_transpose = false;
@@ -362,6 +366,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
 <MATRIX>{S}*{COMMENT}{SNLCMT}* |
 <MATRIX>{S}*{NL}{SNLCMT}* {
+    scan_for_comments (yytext);
     fixup_column_count (yytext);
     eat_whitespace ();
 
@@ -461,6 +466,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
 {CONT}{S}*{NL} |
 {CONT}{S}*{COMMENT} {
+    scan_for_comments (yytext);
     promptflag--;
     current_input_column = 1;
   }
@@ -564,14 +570,28 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 	&& lexer_flags.beginning_of_function
 	&& nesting_level.none ())
       {
-	grab_help_text ();
 	lexer_flags.beginning_of_function = false;
+
+	grab_help_text ();
+
+	octave_comment_buffer::append (help_buf);
       }
     else
       {
+	std::string buf;
+
+	bool begin_comment = true;
+
 	int c;
 	while ((c = yyinput ()) != EOF && c != '\n')
-	  ; // Eat comment.
+	  {
+	    if (begin_comment && (c == '#' || c == '%'))
+	      ; /* Skip leading comment characters. */
+	    else
+	      buf += (char) c;
+	  }
+
+	octave_comment_buffer::append (buf);
       }
 
     current_input_column = 1;
@@ -1188,6 +1208,7 @@ grab_help_text (void)
   bool begin_comment = true;
   bool in_comment = true;
   bool discard_space = true;
+
   int c = 0;
 
   while ((c = yyinput ()) != EOF)
@@ -1459,6 +1480,81 @@ strip_trailing_whitespace (char *s)
   return retval;
 }
 
+static void
+scan_for_comments (const char *text)
+{
+  std::string comment_buf;
+
+  bool in_comment = false;
+  bool beginning_of_comment = false;
+
+  int len = strlen (text);
+  int i = 0;
+
+  while (i < len)
+    {
+      char c = text[i++];
+
+      switch (c)
+	{
+	case '%':
+	case '#':
+	  if (in_comment)
+	    {
+	      if (! beginning_of_comment)
+		comment_buf += (char) c;
+	    }
+	  else
+	    {
+	      in_comment = true;
+	      beginning_of_comment = true;
+	    }
+	  break;
+
+	case '\n':
+	  if (in_comment)
+	    {
+	      comment_buf += (char) c;
+	      octave_comment_buffer::append (comment_buf);
+	      comment_buf.resize (0);
+	      in_comment = false;
+	      beginning_of_comment = false;
+	    }
+	  break;
+
+	case '\r':
+	  if (in_comment)
+	    comment_buf += (char) c;
+	  if (i < len)
+	    {
+	      c = text[i++];
+
+	      if (c == '\n')
+		{
+		  if (in_comment)
+		    {
+		      comment_buf += (char) c;
+		      octave_comment_buffer::append (comment_buf);
+		      in_comment = false;
+		      beginning_of_comment = false;
+		    }
+		}
+	    }
+
+	default:
+	  if (in_comment)
+	    {
+	      comment_buf += (char) c;
+	      beginning_of_comment = false;
+	    }
+	  break;
+	}
+    }
+
+  if (! comment_buf.empty ())
+    octave_comment_buffer::append (comment_buf);
+}
+
 // Discard whitespace, including comments and continuations.
 //
 // Return value is logical OR of the following values:
@@ -1471,8 +1567,14 @@ static yum_yum
 eat_whitespace (void)
 {
   yum_yum retval = ATE_NOTHING;
+
+  std::string comment_buf;
+
   bool in_comment = false;
-  int c;
+  bool beginning_of_comment = false;
+
+  int c = 0;
+
   while ((c = yyinput ()) != EOF)
     {
       current_input_column++;
@@ -1481,23 +1583,48 @@ eat_whitespace (void)
 	{
 	case ' ':
 	case '\t':
+	  if (in_comment)
+	    {
+	      comment_buf += (char) c;
+	      beginning_of_comment = false;
+	    }
 	  retval |= ATE_SPACE_OR_TAB;
 	  break;
 
 	case '\n':
 	  retval |= ATE_NEWLINE;
-	  in_comment = false;
+	  if (in_comment)
+	    {
+	      comment_buf += (char) c;
+	      octave_comment_buffer::append (comment_buf);
+	      comment_buf.resize (0);
+	      in_comment = false;
+	      beginning_of_comment = false;
+	    }
 	  current_input_column = 0;
 	  break;
 
 	case '#':
 	case '%':
-	  in_comment = true;
+	  if (in_comment)
+	    {
+	      if (! beginning_of_comment)
+		comment_buf += (char) c;
+	    }
+	  else
+	    {
+	      in_comment = true;
+	      beginning_of_comment = true;
+	    }
 	  break;
 
 	case '.':
 	  if (in_comment)
-	    break;
+	    {
+	      comment_buf += (char) c;
+	      beginning_of_comment = false;
+	      break;
+	    }
 	  else
 	    {
 	      if (have_ellipsis_continuation ())
@@ -1508,7 +1635,11 @@ eat_whitespace (void)
 
 	case '\\':
 	  if (in_comment)
-	    break;
+	    {
+	      comment_buf += (char) c;
+	      beginning_of_comment = false;
+	      break;
+	    }
 	  else
 	    {
 	      if (have_continuation ())
@@ -1519,11 +1650,18 @@ eat_whitespace (void)
 
 	default:
 	  if (in_comment)
-	    break;
+	    {
+	      comment_buf += (char) c;
+	      beginning_of_comment = false;
+	      break;
+	    }
 	  else
 	    goto done;
 	}
     }
+
+  if (! comment_buf.empty ())
+    octave_comment_buffer::append (comment_buf);
 
  done:
   unput (c);
@@ -1600,8 +1738,13 @@ have_continuation (bool trailing_comments_ok)
 {
   std::ostrstream buf;
 
+  std::string comment_buf;
+
   bool in_comment = false;
-  int c;
+  bool beginning_of_comment = false;
+
+  int c = 0;
+
   while ((c = yyinput ()) != EOF)
     {
       buf << (char) c;
@@ -1610,34 +1753,67 @@ have_continuation (bool trailing_comments_ok)
 	{
 	case ' ':
 	case '\t':
+	  if (in_comment)
+	    {
+	      comment_buf += (char) c;
+	      beginning_of_comment = false;
+	    }
 	  break;
 
 	case '%':
 	case '#':
 	  if (trailing_comments_ok)
-	    in_comment = true;
+	    {
+	      if (in_comment)
+		{
+		  if (! beginning_of_comment)
+		    comment_buf += (char) c;
+		}
+	      else
+		{
+		  in_comment = true;
+		  beginning_of_comment = true;
+		}
+	    }
 	  else
 	    goto cleanup;
 	  break;
 
 	case '\n':
+	  if (in_comment)
+	    {
+	      comment_buf += (char) c;
+	      octave_comment_buffer::append (comment_buf);
+	    }
 	  current_input_column = 0;
 	  promptflag--;
 	  return true;
 
 	case '\r':
+	  if (in_comment)
+	    comment_buf += (char) c;
 	  c = yyinput ();
 	  if (c == EOF)
 	    break;
 	  else if (c == '\n')
 	    {
+	      if (in_comment)
+		{
+		  comment_buf += (char) c;
+		  octave_comment_buffer::append (comment_buf);
+		}
 	      current_input_column = 0;
 	      promptflag--;
 	      return true;
-	    }	  
+	    }
 
 	default:
-	  if (! in_comment)
+	  if (in_comment)
+	    {
+	      comment_buf += (char) c;
+	      beginning_of_comment = false;
+	    }
+	  else
 	    goto cleanup;
 	  break;
 	}
@@ -1694,7 +1870,9 @@ static yum_yum
 eat_continuation (void)
 {
   int retval = ATE_NOTHING;
+
   int c = yyinput ();
+
   if ((c == '.' && have_ellipsis_continuation ())
       || (c == '\\' && have_continuation ()))
     retval = eat_whitespace ();
@@ -2155,9 +2333,15 @@ check_for_garbage_after_fcn_def (void)
   // force the parser to return after reading the function.  Calling
   // unput with EOF does not work.
 
+  std::string comment_buf;
+
   bool in_comment = false;
+  bool beginning_of_comment = true;
+
   int lineno = input_line_number;
-  int c;
+
+  int c = 0;
+
   while ((c = yyinput ()) != EOF)
     {
       switch (c)
@@ -2166,21 +2350,45 @@ check_for_garbage_after_fcn_def (void)
 	case '\t':
 	case ';':
 	case ',':
+	  if (in_comment)
+	    {
+	      comment_buf += (char) c;
+	      beginning_of_comment = false;
+	    }
 	  break;
 
 	case '\n':
 	  if (in_comment)
-	    in_comment = false;
+	    {
+	      comment_buf += (char) c;
+	      octave_comment_buffer::append (comment_buf);
+	      comment_buf.resize (0);
+	      in_comment = false;
+	      beginning_of_comment = false;
+	    }
 	  break;
 
 	case '%':
 	case '#':
-	  in_comment = true;
+	  if (in_comment)
+	    {
+	      if (! beginning_of_comment)
+		comment_buf += (char) c;
+	    }
+	  else
+	    {
+	      in_comment = true;
+	      beginning_of_comment = true;
+	    }
 	  break;
 
 	default:
 	  if (in_comment)
-	    break;
+	    {
+	      comment_buf += (char) c;
+	      beginning_of_comment = false;
+	      break;
+	    }
 	  else
 	    {
 	      warning ("ignoring trailing garbage after end of function\n\
@@ -2191,6 +2399,10 @@ check_for_garbage_after_fcn_def (void)
 	    }
 	}
     }
+
+  if (! comment_buf.empty ())
+    octave_comment_buffer::append (comment_buf);
+
   unput ('\n');
 }
 

@@ -120,6 +120,9 @@ public:
   int cols (void) const { return d2; }
   int columns (void) const { return d2; }
 
+  T range_error (const char *fcn, int i, int j) const;
+  T& range_error (const char *fcn, int i, int j);
+
   // No checking of any kind, ever.
 
   T& xelem (int i, int j) { return Array<T>::xelem (d1*j+i); }
@@ -132,12 +135,7 @@ public:
   T& checkelem (int i, int j)
     {
       if (i < 0 || j < 0 || i >= d1 || j >= d2)
-	{
-	  (*current_liboctave_error_handler)
-	    ("T& Array2<T>::checkelem (%d, %d): range error", i, j);
-	  static T foo;
-	  return foo;
-	}
+	return range_error ("T& Array2<T>::checkelem", i, j);
       else
 	return Array<T>::elem (d1*j+i);
     }
@@ -153,11 +151,7 @@ public:
   T checkelem (int i, int j) const
     {
       if (i < 0 || j < 0 || i >= d1 || j >= d2)
-	{
-	  (*current_liboctave_error_handler)
-	    ("T Array2<T>::checkelem (%d, %d): range error", i, j);
-	  return T ();
-	}
+	return range_error ("T Array2<T>::checkelem", i, j);
       else
 	return Array<T>::elem (d1*j+i);
     }
@@ -169,9 +163,6 @@ public:
 #else
   T operator () (int i, int j) const { return elem (i, j); }
 #endif
-
-  T range_error (const char *fcn, int i, int j) const;
-  T& range_error (const char *fcn, int i, int j);
 
   void resize (int n, int m);
   void resize (int n, int m, const T& val);
@@ -196,7 +187,8 @@ public:
 };
 
 template <class LT, class RT>
-int assign (Array2<LT>& lhs, const Array2<RT>& rhs);
+int
+assign (Array2<LT>& lhs, const Array2<RT>& rhs);
 
 #endif
 

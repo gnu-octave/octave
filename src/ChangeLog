@@ -1,3 +1,9 @@
+2004-11-16  David Bateman  <dbateman@free.fr>
+
+	* ov.h (octave_value::numel): Now virtual.  Call rep->numel ().
+	* ov.cc (octave_value::numel): Delete.
+	* ov-base.h (octave_base_value::numel): New function.
+
 2004-11-12  John W. Eaton  <jwe@octave.org>
 
 	* version.h (OCTAVE_VERSION): Now 2.1.62.

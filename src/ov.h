@@ -360,7 +360,8 @@ public:
 
   int ndims (void) const;
 
-  int numel (void) const;
+  virtual int numel (void) const
+    { return rep->numel (); }
 
   virtual size_t byte_size (void) const
     { return rep->byte_size (); }

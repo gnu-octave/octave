@@ -96,6 +96,8 @@ public:
 
   dim_vector dims (void) const { return dim_vector (-1, -1); }
 
+  int numel (void) const { return dims ().numel (); }
+
   size_t byte_size (void) const { return 0; }
 
   octave_value reshape (const dim_vector&) const;

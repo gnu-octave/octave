@@ -1061,14 +1061,6 @@ octave_value::ndims (void) const
    return n_dims;
 }
 
-int
-octave_value::numel (void) const
-{
-  dim_vector dv = dims ();
-
-  return dv.numel ();
-}
-
 Cell
 octave_value::cell_value (void) const
 {

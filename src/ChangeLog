@@ -1,3 +1,24 @@
+2004-09-21  John W. Eaton  <jwe@octave.org>
+
+	* oct-fstrm.h (octave_fstream::octave_fstream,
+	octave_fstream::create): Set default float format to actual native
+	format, not flt_fmt_native.
+	* oct-iostrm.h (octave_base_iostream::octave_base_iostream,
+	octave_istream::octave_istream, octave_ostream::octave_ostream):
+	Likewise.
+	* oct-prcstrm.h (octave_iprocstream::octave_iprocstream,
+	octave_oprocstream::octave_oprocstream,
+	octave_iprocstream::create, octave_oprocstream::create):
+	Likewise.
+	* oct-stdstrm.h (octave_stdiostream::octave_stdiostream,
+	octave_stdiostream::create):
+	Likewise.
+	* oct-stream.h (octave_base_stream::octave_base_stream):
+	Likewise.
+	* oct-strstrm.h (octave_base_strstream::octave_base_strstream,
+	octave_istrstream::octave_istrstream, octave_istrstream::create):
+	Likewise.
+
 2004-09-21  David Bateman  <dbateman@free.fr>
 
 	* data.cc (Freshape): Allow a single empty dimension argument

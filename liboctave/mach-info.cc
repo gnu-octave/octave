@@ -201,7 +201,7 @@ oct_mach_info::string_to_float_format (const std::string& s)
   oct_mach_info::float_format retval = oct_mach_info::flt_fmt_unknown;
 
   if (s == "native" || s == "n")
-    retval = oct_mach_info::flt_fmt_native;
+    retval = oct_mach_info::native_float_format ();
   else if (s == "ieee-be" || s == "b")
     retval = oct_mach_info::flt_fmt_ieee_big_endian;
   else if (s == "ieee-le" || s == "l")
@@ -228,10 +228,6 @@ oct_mach_info::float_format_as_string (float_format flt_fmt)
 
   switch (flt_fmt)
     {
-    case flt_fmt_native:
-      retval = "native";
-      break;
-
     case flt_fmt_ieee_big_endian:
       retval = "ieee_big_endian";
       break;

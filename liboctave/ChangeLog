@@ -1,3 +1,10 @@
+2004-09-21  John W. Eaton  <jwe@octave.org>
+
+	* mach-info.h (octave_mach_info::flt_fmt_native): Delete.
+	* mach-info.cc (octave_mach_info::string_to_float_format):
+	For "native", set actual native format.
+	(octave_mach_info::float_format_as_string): Delete flt_fmt_native case.
+
 2004-09-17  David Bateman  <dbateman@free.fr>
 
 	* CmplxSCHUR.cc (CmplxSCHUR::init): New arg, calc_unitary to make the

@@ -36,7 +36,6 @@ public:
 
   enum float_format
     {
-      flt_fmt_native,
       flt_fmt_unknown,
       flt_fmt_ieee_little_endian,
       flt_fmt_ieee_big_endian,

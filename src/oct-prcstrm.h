@@ -35,12 +35,13 @@ public:
 
   octave_iprocstream (const std::string& n,
 		      std::ios::openmode arg_md = std::ios::in,
-		      oct_mach_info::float_format flt_fmt =
-		      oct_mach_info::flt_fmt_native);
+		      oct_mach_info::float_format flt_fmt
+		        = oct_mach_info::native_float_format ());
 
   static octave_stream
   create (const std::string& n, std::ios::openmode arg_md = std::ios::in,
-	  oct_mach_info::float_format flt_fmt = oct_mach_info::flt_fmt_native);
+	  oct_mach_info::float_format flt_fmt
+	    = oct_mach_info::native_float_format ());
 
 protected:
 
@@ -62,12 +63,13 @@ public:
 
   octave_oprocstream (const std::string& n,
 		      std::ios::openmode arg_md = std::ios::out,
-		      oct_mach_info::float_format flt_fmt =
-		      oct_mach_info::flt_fmt_native);
+		      oct_mach_info::float_format flt_fmt
+		        = oct_mach_info::native_float_format ());
 
   static octave_stream
   create (const std::string& n, std::ios::openmode arg_md = std::ios::out,
-	  oct_mach_info::float_format flt_fmt = oct_mach_info::flt_fmt_native);
+	  oct_mach_info::float_format flt_fmt
+	    = oct_mach_info::native_float_format ());
 
 protected:
 

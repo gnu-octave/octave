@@ -820,12 +820,24 @@ octave_cell::load_hdf5 (hid_t loc_id, const char *name,
   if (have_h5giterate_bug)
     current_item = 2;   // Skip row/columns items in group
 
+#ifdef HAVE_H5GGET_NUM_OBJS
+  hsize_t num_obj = 0;
+  H5Gget_num_objs (loc_id, &num_obj);
+#endif
+
   for (int j = 0; j < nc; j++)
     {
       for (int i = 0; i < nr; i++)
 	{
-	  retval2 = H5Giterate (loc_id, name, &current_item,
-				hdf5_read_next_data, &dsub);
+
+#ifdef HAVE_H5GGET_NUM_OBJS
+	  if (current_item >= static_cast<int> (num_obj))
+	    retval2 = -1;
+	  else
+#endif
+	    retval2 = H5Giterate (loc_id, name, &current_item,
+				  hdf5_read_next_data, &dsub);
+
 	  if (retval2 <= 0)
 	    break;
 

@@ -444,8 +444,15 @@ read_hdf5_data (std::istream& is, const std::string& /* filename */,
        || (vers_major == 1 && (vers_minor < 2
 			       || (vers_minor == 2 && vers_release < 2))));
 
-  herr_t H5Giterate_retval = H5Giterate (hs.file_id, "/", &hs.current_item,
-					 hdf5_read_next_data, &d);
+  herr_t H5Giterate_retval = -1;
+
+#ifdef HAVE_H5GGET_NUM_OBJS
+  hsize_t num_obj = 0;
+  H5Gget_num_objs (hs.file_id, &num_obj);
+  if (hs.current_item < static_cast<int> (num_obj))
+#endif
+    H5Giterate_retval = H5Giterate (hs.file_id, "/", &hs.current_item,
+				    hdf5_read_next_data, &d);
 
   if (have_h5giterate_bug)
     {

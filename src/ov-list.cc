@@ -677,11 +677,20 @@ octave_list::load_hdf5 (hid_t loc_id,  const char *name,
 
   hdf5_callback_data dsub;
 
-  herr_t retval2;
+  herr_t retval2 = -1;
   octave_value_list lst;
   int current_item = 0;
+#ifdef HAVE_H5GGET_NUM_OBJS
+  hsize_t num_obj = 0;
+  H5Gget_num_objs (loc_id, &num_obj);
+
+  while (current_item < static_cast<int> (num_obj)
+	 && (retval2 = H5Giterate (loc_id, name, &current_item,
+				   hdf5_read_next_data, &dsub)) > 0)
+#else
   while ((retval2 = H5Giterate (loc_id, name, &current_item,
 				hdf5_read_next_data, &dsub)) > 0)
+#endif
     {
       lst.append (dsub.tc);
 

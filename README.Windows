@@ -1,12 +1,12 @@
-The following is my current best set of directions for building Octave
-from sources on a Windows system using the Cygwin tools.  If you
-already have Cygwin installed, you may need to update your
-installation of tools to include those mentioned below.
+The following is my current best set of directions for installing
+Octave on a Windows system using either a binary package or by
+installing from sources using the Cygwin tools.  If you already have
+Cygwin installed, you may need to update your installation of tools to
+include those mentioned below.
 
 Following these steps should give you an Octave installation that
 includes all the necessary tools for building dynamically linked
 functions (.oct files).
-
 
  1. Use your favorite browser to view the page http://www.cygwin.com
 
@@ -48,10 +48,34 @@ functions (.oct files).
  9. Choose a download site.  One that is "near" you on the net is
     probably best.
 
-10. Select packages.  The defaults are not enough to build all of
-    Octave from sources.  In addition to the default set of packages,
-    you should select the following packages from the following
-    categories:
+    If you want to install a binary package of Octave, also add the
+    User URL
+
+	ftp://ftp.octave.org/pub/octave/cygwin
+
+    in the dialog (there is a textbox at the bottom with an Add
+    button to the right -- enter the URL in the textbox and click
+    the Add button).
+
+10. Select packages.
+
+    Binary and Source installations:
+
+      Select the gnuplot package from the Graphics category.  The
+      gnuplot package from ftp.octave.org will give you the Windows
+      binary repackaged for Cygwin.  If you select the gnuplot package
+      from one of the Cygwin mirrors, you will get a recent 3.8 beta
+      version (pre 4.0 release).
+
+    Additional packages for binary install:
+
+      Also select the Octave packages you want from the Math category.
+
+    Additional packages for source compile and install:
+
+    The defaults are not enough to build all of Octave from sources.
+    In addition to the default set of packages, you should select the
+    following packages from the following categories:
 
       Archive: unzip
       Devel:   autoconf, binutils, bison, cvs, dejagnu, flex, gcc,
@@ -70,57 +94,9 @@ functions (.oct files).
     run, displaying some output in a terminal window.  It will take a
     few minutes.
 
-12. Download and install Gnuplot:
+    Skip to step 17 if you are installing the binary package.
 
-    a. Use your favorite browser to go to http://www.gnuplot.info and
-       download a binary package of gnuplot for Windows.  At the time
-       of this writing, it was available from the gnuplot ftp site in
-       the file gp373w32.zip.
-
-    b. When you download the zip file, place it in your Cygwin /tmp
-       directory.  This directory will be called something like
-       c:\cygwin\tmp in Windows (the precise location depends on where
-       you chose to install Cygwin).
-
-    c. After downloading the zip file, start Cygwin (actually a bash
-       shell running in a terminal window) by clicking on the Cygwin
-       desktop icon or use the start menu item that you created when
-       you installed Cygwin.
-
-    d. Run the command
-
-         unzip /tmp/gp373w32.zip
-
-       to unpack the zip archive.  This command should create a
-       subdirectory called gp373w32 in your Cygwin home directory.
-
-    e. Move the gnuplot programs and help file to the Cygwin bin
-       directory:
-
-          mv gp373w32/pgnuplot.exe /usr/local/bin
-          mv gp373w32/wgnupl32.exe /usr/local/bin
-          mv gp373w32/WGNUPLOT.HLP /usr/local/bin
-
-       Make sure that executable files have execute permissions set:
-
-          chmod a+rx /usr/local/bin/pgnuplot.exe
-          chmod a+rx /usr/local/bin/wgnupl32.exe
-
-    f. Test it by typing the command
-
-         wgnupl32
-
-       This command should bring up a gnuplot command window.  Try
-       plotting something by typing
-
-         plot sin(x)
-
-       at the gnuplot prompt.  This command should bring up a plot
-       window displaying a sine wave.
-
-    g. close gnuplot and start the Octave installation.
-
-13. Get the Octave sources, either from a current snapshot
+12. Get the Octave sources, either from a current snapshot
     distribution or from CVS.
 
     You should check the web page http://www.octave.org/download.html
@@ -188,10 +164,8 @@ functions (.oct files).
 
            ./autogen.sh
 
-         then continue with step 14 below.
 
-
-14. Configure Octave by running the command
+13. Configure Octave by running the command
 
       ./configure --enable-shared --disable-static
 
@@ -203,7 +177,7 @@ functions (.oct files).
     files) in addition to shared libraries, but the build will take
     about twice as long to complete.
 
-15. Build the Octave binary by running the command
+14. Build the Octave binary by running the command
 
       make
 
@@ -211,7 +185,7 @@ functions (.oct files).
     that all code is position independent.  You may safely ignore
     these warnings.
 
-16. (OPTIONAL) Run Octave's regression test suite by running the
+15. (OPTIONAL) Run Octave's regression test suite by running the
     command
 
       make check
@@ -221,11 +195,11 @@ functions (.oct files).
     writing, there are 4 "expected" failures related to the try-catch
     and eval commands.  You may safely ignore those failures.
 
-17. Complete the installation by running the command
+16. Complete the installation by running the command
 
       make install
 
-18. Try starting Octave by running the command
+17. Try starting Octave by running the command
 
       octave
 
@@ -235,7 +209,7 @@ functions (.oct files).
 
     at the Octave prompt to see if you can create a plot.
 
-19. Try to build a .oct file and run it:
+18. Try to build a .oct file and run it:
 
       cd examples
       mkoctfile hello.cc
@@ -244,6 +218,10 @@ functions (.oct files).
       octave:1> hello
       Hello, world!
 
+    If you are doing a binary package install, the examples should be
+    installed in the /usr/share/doc/octave/... XXX FIXME XXX
+
+
 
 
 John W. Eaton
@@ -251,4 +229,4 @@ jwe@bevo.che.wisc.edu
 University of Wisconsin-Madison
 Department of Chemical Engineering
 
-Sun Jan 11 12:19:47 2004
+Wed Jan 14 13:37:15 2004

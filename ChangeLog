@@ -1,3 +1,8 @@
+2004-01-14  David Bateman  <dbateman@free.fr>
+
+	* configure.in: Test for the presence of the function 
+	H5Gget_num_objs	in HDF5 library, and define HAVE_H5GGET_NUM_OBJS.
+ 	
 2004-01-06  Per Persson  <persquare@mac.com>
 
 	* aclocal.m4 (OCTAVE_CXX_PREPENDS_UNDERSCORE): Recognize

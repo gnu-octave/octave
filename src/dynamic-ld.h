@@ -38,13 +38,7 @@ extern void init_dynamic_linker (void);
 
 #if 0
 extern void octave_dld_tc2_unlink_by_symbol (const char *name, int hard = 1);
-
 extern void octave_dld_tc2_unlink_by_file (const char *name, int hard = 1);
-
-extern Octave_builtin_fcn octave_dld_tc2 (const char *name);
-
-extern Octave_object octave_dld_tc2_and_go (const Octave_object&,
-					    int nargout, const char *name);
 #endif
 
 #endif

@@ -1,4 +1,4 @@
-#!/bin/sh
+#! /bin/sh
 # Attempt to guess a canonical system name.
 #   Copyright (C) 1992, 1993, 1994, 1995 Free Software Foundation, Inc.
 #
@@ -14,7 +14,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #
 # As a special exception to the GNU General Public License, if you
 # distribute this file as part of a program that contains a
@@ -59,6 +59,12 @@ case "${UNAME_MACHINE}:${UNAME_SYSTEM}:${UNAME_RELEASE}:${UNAME_VERSION}" in
 	# 1.2 uses "1.2" for uname -r.
 	echo alpha-dec-osf${UNAME_RELEASE}
         exit 0 ;;
+    21064:Windows_NT:50:3)
+	echo alpha-dec-winnt3.5
+	exit 0 ;;
+    amiga:NetBSD:*:*)
+      echo m68k-cbm-netbsd${UNAME_RELEASE}
+      exit 0 ;;
     arm:RISC*:1.[012]*:*|arm:riscix:1.[012]*:*)
 	echo arm-acorn-riscix${UNAME_RELEASE}
 	exit 0;;
@@ -71,6 +77,9 @@ case "${UNAME_MACHINE}:${UNAME_SYSTEM}:${UNAME_RELEASE}:${UNAME_VERSION}" in
 	exit 0 ;;
     sun4*:SunOS:5.*:*)
 	echo sparc-sun-solaris2`echo ${UNAME_RELEASE}|sed -e 's/[^.]*//'`
+	exit 0 ;;
+    i86pc:SunOS:5.*:*)
+	echo i386-unknown-solaris2`echo ${UNAME_RELEASE}|sed -e 's/[^.]*//'`
 	exit 0 ;;
     sun4*:SunOS:6*:*)
 	# According to config.sub, this is the proper way to canonicalize
@@ -90,11 +99,23 @@ case "${UNAME_MACHINE}:${UNAME_SYSTEM}:${UNAME_RELEASE}:${UNAME_VERSION}" in
     sun3*:SunOS:*:*)
 	echo m68k-sun-sunos${UNAME_RELEASE}
 	exit 0 ;;
+    atari*:NetBSD:*:*)
+	echo m68k-atari-netbsd${UNAME_RELEASE}
+	exit 0 ;;
+    sun3*:NetBSD:*:*)
+	echo m68k-sun-netbsd${UNAME_RELEASE}
+	exit 0 ;;
+    mac68k:NetBSD:*:*)
+	echo m68k-apple-netbsd${UNAME_RELEASE}
+	exit 0 ;;
     RISC*:ULTRIX:*:*)
 	echo mips-dec-ultrix${UNAME_RELEASE}
 	exit 0 ;;
     VAX*:ULTRIX*:*:*)
 	echo vax-dec-ultrix${UNAME_RELEASE}
+	exit 0 ;;
+    mips:*:4*:UMIPS)
+	echo mips-mips-riscos4sysv
 	exit 0 ;;
     mips:*:5*:RISCos)
 	echo mips-mips-riscos${UNAME_RELEASE}
@@ -129,8 +150,8 @@ case "${UNAME_MACHINE}:${UNAME_SYSTEM}:${UNAME_RELEASE}:${UNAME_VERSION}" in
     Tek43[0-9][0-9]:UTek:*:*) # Tektronix 4300 system running UTek (BSD)
 	echo m68k-tektronix-bsd
 	exit 0 ;;
-    *:IRIX:*:*)
-	echo mips-sgi-irix${UNAME_RELEASE}
+    *:IRIX*:*:*)
+	echo mips-sgi-irix`echo ${UNAME_RELEASE}|sed -e 's/-/_/g'`
 	exit 0 ;;
    ????????:AIX?:[12].1:2)   # AIX 2.2.1 or AIX 2.1.1 is RT/PC AIX.
 	echo romp-ibm-aix      # uname -m gives an 8 hex-code CPU id
@@ -166,10 +187,8 @@ EOF
 	else
 		IBM_ARCH=powerpc
 	fi
-	if grep bos410 /usr/include/stdio.h >/dev/null 2>&1; then
-		IBM_REV=4.1
-	elif grep bos411 /usr/include/stdio.h >/dev/null 2>&1; then
-		IBM_REV=4.1.1
+	if [ -x /usr/bin/oslevel ] ; then
+		IBM_REV=`/usr/bin/oslevel`
 	else
 		IBM_REV=4.${UNAME_RELEASE}
 	fi
@@ -248,6 +267,9 @@ EOF
     hp8??:OSF1:*:*)
 	echo hppa1.0-hp-osf
 	exit 0 ;;
+    parisc*:Lites*:*:*)
+	echo hppa1.1-hp-lites
+	exit 0 ;;
     C1*:ConvexOS:*:* | convex:ConvexOS:C1*:*)
 	echo c1-convex-bsd
         exit 0 ;;
@@ -266,13 +288,16 @@ EOF
     C4*:ConvexOS:*:* | convex:ConvexOS:C4*:*)
 	echo c4-convex-bsd
         exit 0 ;;
-    CRAY*X-MP:UNICOS:*:*)
+    CRAY*X-MP:*:*:*)
 	echo xmp-cray-unicos
         exit 0 ;;
-    CRAY*Y-MP:UNICOS:*:*)
-	echo ymp-cray-unicos
-        exit 0 ;;
-    CRAY-2:UNICOS:*:*)
+    CRAY*Y-MP:*:*:*)
+	echo ymp-cray-unicos${UNAME_RELEASE}
+	exit 0 ;;
+    CRAY*C90:*:*:*)
+	echo c90-cray-unicos${UNAME_RELEASE}
+	exit 0 ;;
+    CRAY-2:*:*:*)
 	echo cray2-cray-unicos
         exit 0 ;;
     hp3[0-9][05]:NetBSD:*:*)
@@ -291,8 +316,39 @@ EOF
 	echo `echo ${UNAME_MACHINE}|sed -e 's,/.*$,,'`-unknown-gnu`echo ${UNAME_RELEASE}|sed -e 's,/.*$,,'`
 	exit 0 ;;
     *:Linux:*:*)
-	echo ${UNAME_MACHINE}-unknown-linux
-	exit 0 ;;
+	# The BFD linker knows what the default object file format is, so
+	# first see if it will tell us.
+	ld_help_string=`ld --help 2>&1`
+	if echo $ld_help_string | grep >/dev/null 2>&1 "supported emulations: elf_i[345]86"; then
+	  echo "${UNAME_MACHINE}-unknown-linux" ; exit 0
+	elif echo $ld_help_string | grep >/dev/null 2>&1 "supported emulations: i[345]86linux"; then
+	  echo "${UNAME_MACHINE}-unknown-linuxaout" ; exit 0
+	elif echo $ld_help_string | grep >/dev/null 2>&1 "supported emulations: i[345]86coff"; then
+	  echo "${UNAME_MACHINE}-unknown-linuxcoff" ; exit 0
+	elif test "${UNAME_MACHINE}" = "alpha" ; then
+	  echo alpha-unknown-linux ; exit 0
+	else
+	  # Either a pre-BFD a.out linker (linuxoldld) or one that does not give us
+	  # useful --help.  Gcc wants to distinguish between linuxoldld and linuxaout.
+	  test ! -d /usr/lib/ldscripts/. \
+	    && echo "${UNAME_MACHINE}-unknown-linuxoldld" && exit 0
+	  # Determine whether the default compiler is a.out or elf
+	  cat >dummy.c <<EOF
+main(argc, argv)
+int argc;
+char *argv[];
+{
+#ifdef __ELF__
+  printf ("%s-unknown-linux\n", argv[1]);
+#else
+  printf ("%s-unknown-linuxaout\n", argv[1]);
+#endif
+  return 0;
+}
+EOF
+	  ${CC-cc} dummy.c -o dummy 2>/dev/null && ./dummy "${UNAME_MACHINE}" && rm dummy.c dummy && exit 0
+	  rm -f dummy.c dummy
+	fi ;;
 # ptx 4.0 does uname -s correctly, with DYNIX/ptx in there.  earlier versions
 # are messed up and put the nodename in both sysname and nodename.
     i[34]86:DYNIX/ptx:4*:*)
@@ -306,13 +362,13 @@ EOF
 	fi
 	exit 0 ;;
     i[34]86:*:3.2:*)
-	if /bin/uname -X 2>/dev/null >/dev/null ; then
+	if test -f /usr/options/cb.name; then
+		UNAME_REL=`sed -n 's/.*Version //p' </usr/options/cb.name`
+		echo ${UNAME_MACHINE}-unknown-isc$UNAME_REL
+	elif /bin/uname -X 2>/dev/null >/dev/null ; then
 		UNAME_REL=`(/bin/uname -X|egrep Release|sed -e 's/.*= //')`
 		(/bin/uname -X|egrep i80486 >/dev/null) && UNAME_MACHINE=i486
 		echo ${UNAME_MACHINE}-unknown-sco$UNAME_REL
-	elif test -f /usr/options/cb.name; then
-		UNAME_REL=`sed -n 's/.*Version //p' </usr/options/cb.name`
-		echo ${UNAME_MACHINE}-unknown-isc$UNAME_REL
 	else
 		echo ${UNAME_MACHINE}-unknown-sysv32
 	fi
@@ -342,19 +398,19 @@ EOF
     3[34]??:*:4.0:* | 3[34]??,*:*:4.0:*)
         uname -p 2>/dev/null | grep 86 >/dev/null \
           && echo i486-ncr-sysv4 && exit 0 ;;
-    m680[234]0:LynxOS:2.2*:*)
+    m680[234]0:LynxOS:2.[23]*:*)
 	echo m68k-lynx-lynxos${UNAME_RELEASE}
 	exit 0 ;;
     mc68030:UNIX_System_V:4.*:*)
 	echo m68k-atari-sysv4
 	exit 0 ;;
-    i[34]86:LynxOS:2.2*:*)
+    i[34]86:LynxOS:2.[23]*:*)
 	echo i386-lynx-lynxos${UNAME_RELEASE}
 	exit 0 ;;
-    TSUNAMI:LynxOS:2.2*:*)
+    TSUNAMI:LynxOS:2.[23]*:*)
 	echo sparc-lynx-lynxos${UNAME_RELEASE}
 	exit 0 ;;
-    rs6000:LynxOS:2.2*:*)
+    rs6000:LynxOS:2.[23]*:*)
 	echo rs6000-lynx-lynxos${UNAME_RELEASE}
 	exit 0 ;;
     RM*:SINIX-*:*:*)
@@ -374,6 +430,10 @@ esac
 #echo "${UNAME_MACHINE}:${UNAME_SYSTEM}:${UNAME_RELEASE}:${UNAME_VERSION}" 1>&2
 
 cat >dummy.c <<EOF
+#ifdef _SEQUENT_
+# include <sys/types.h>
+# include <sys/utsname.h>
+#endif
 main ()
 {
 #if defined (sony)
@@ -437,7 +497,18 @@ main ()
 #endif
 
 #if defined (_SEQUENT_)
-  printf ("i386-sequent-ptx\n"); exit (0);
+    struct utsname un;
+
+    uname(&un);
+
+    if (strncmp(un.version, "V2", 2) == 0) {
+	printf ("i386-sequent-ptx2\n"); exit (0);
+    }
+    if (strncmp(un.version, "V1", 2) == 0) { /* XXX is V1 correct? */
+	printf ("i386-sequent-ptx1\n"); exit (0);
+    }
+    printf ("i386-sequent-ptx\n"); exit (0);
+
 #endif
 
 #if defined (vax)

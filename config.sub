@@ -1,6 +1,6 @@
-#!/bin/sh
+#! /bin/sh
 # Configuration validation subroutine script, version 1.1.
-#   Copyright (C) 1991, 1992, 1993, 1994 Free Software Foundation, Inc.
+#   Copyright (C) 1991, 1992, 1993, 1994, 1995 Free Software Foundation, Inc.
 # This file is (in principle) common to ALL GNU software.
 # The presence of a machine in this file suggests that SOME GNU software
 # can handle that machine.  It does not imply ALL GNU software can. 
@@ -17,7 +17,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+# Foundation, Inc., 59 Temple Place - Suite 330,
+# Boston, MA 02111-1307, USA.
 
 # As a special exception to the GNU General Public License, if you
 # distribute this file as part of a program that contains a
@@ -113,7 +114,7 @@ case $os in
 	-isc*)
 		basic_machine=`echo $1 | sed -e 's/86-.*/86-unknown/'`
 		;;
-	-lynx)
+	-lynx*)
 		os=-lynxos
 		;;
 	-ptx*)
@@ -128,10 +129,11 @@ esac
 case $basic_machine in
 	# Recognize the basic CPU types without company name.
 	# Some are omitted here because they have special meanings below.
-	tahoe | i[345]86 | i860 | m68k | m68000 | m88k | ns32k | arm | pyramid \
+	tahoe | i[345]86 | i860 | m68k | m68000 | m88k | ns32k | arm \
+		| arme[lb] | pyramid \
 		| tron | a29k | 580 | i960 | h8300 | hppa1.0 | hppa1.1 \
 		| alpha | we32k | ns16k | clipper | sparclite | i370 | sh \
-		| powerpc | sparc64 | 1750a | dsp16xx | mips64 | mipsel \
+		| powerpc | powerpcle | sparc64 | 1750a | dsp16xx | mips64 | mipsel \
 		| pdp11 | mips64el | mips64orion | mips64orionel \
 		| sparc)
 		basic_machine=$basic_machine-unknown
@@ -144,11 +146,11 @@ case $basic_machine in
 	# Recognize the basic CPU types with company name.
 	vax-* | tahoe-* | i[345]86-* | i860-* | m68k-* | m68000-* | m88k-* \
 	      | sparc-* | ns32k-* | fx80-* | arm-* | c[123]* \
-	      | mips-* | pyramid-* | tron-* | a29k-* | romp-* | rs6000-* \
+	      | mips-* | pyramid-* | tron-* | a29k-* | romp-* | rs6000-* | power-* \
 	      | none-* | 580-* | cray2-* | h8300-* | i960-* | xmp-* | ymp-* \
 	      | hppa1.0-* | hppa1.1-* | alpha-* | we32k-* | cydra-* | ns16k-* \
 	      | pn-* | np1-* | xps100-* | clipper-* | orion-* | sparclite-* \
-	      | pdp11-* | sh-* | powerpc-* | sparc64-* | mips64-* | mipsel-* \
+	      | pdp11-* | sh-* | powerpc-* | powerpcle-* | sparc64-* | mips64-* | mipsel-* \
 	      | mips64el-* | mips64orion-* | mips64orionel-*)
 		;;
 	# Recognize the various machine names and aliases which stand
@@ -417,16 +419,42 @@ case $basic_machine in
         pc532 | pc532-*)
 		basic_machine=ns32k-pc532
 		;;
-	pentium-*)
-		# We will change tis to say i586 once there has been
-		# time for various packages to start to recognize that.
-		basic_machine=i486-`echo $basic_machine | sed 's/^[^-]*-//'`
+	pentium | p5 | p6)
+		# We don't have specific support for the Intel Pentium (p6) followon yet, so just call it a Pentium
+		basic_machine=i586-intel
+		;;
+	pentium-* | p5-* | p6-*)
+		# We don't have specific support for the Intel Pentium (p6) followon yet, so just call it a Pentium
+		basic_machine=i586-`echo $basic_machine | sed 's/^[^-]*-//'`
+		;;
+	k5)
+		# We don't have specific support for AMD's K5 yet, so just call it a Pentium
+		basic_machine=i586-amd
+		;;
+	nexen)
+		# We don't have specific support for Nexgen yet, so just call it a Pentium
+		basic_machine=i586-nexgen
 		;;
 	pn)
 		basic_machine=pn-gould
 		;;
+	power)	basic_machine=rs6000-ibm
+		;;
+	ppc)	basic_machine=powerpc-unknown
+	        ;;
+	ppc-*)	basic_machine=powerpc-`echo $basic_machine | sed 's/^[^-]*-//'`
+		;;
+	ppcle | powerpclittle | ppc-le | powerpc-little)
+		basic_machine=powerpcle-unknown
+	        ;;
+	ppcle-* | powerpclittle-*)
+		basic_machine=powerpcle-`echo $basic_machine | sed 's/^[^-]*-//'`
+		;;
 	ps2)
 		basic_machine=i386-ibm
+		;;
+	rm[46]00)
+		basic_machine=mips-siemens
 		;;
 	rtpc | rtpc-*)
 		basic_machine=romp-ibm
@@ -472,6 +500,10 @@ case $basic_machine in
 		basic_machine=sparc-sun
 		os=-sunos4
 		;;
+	sun4sol2)
+		basic_machine=sparc-sun
+		os=-solaris2
+		;;
 	sun3 | sun3-*)
 		basic_machine=m68k-sun
 		;;
@@ -510,6 +542,10 @@ case $basic_machine in
 		;;
 	vxworks68)
 		basic_machine=m68k-wrs
+		os=-vxworks
+		;;
+	vxworks29k)
+		basic_machine=a29k-wrs
 		os=-vxworks
 		;;
 	xmp)
@@ -586,12 +622,15 @@ case $os in
 	-solaris)
 		os=-solaris2
 		;;
+	-unixware* | svr4*)
+		os=-sysv4
+		;;
 	-gnu/linux*)
 		os=`echo $os | sed -e 's|gnu/linux|linux|'`
 		;;
 	# First accept the basic system types.
 	# The portable systems comes first.
-	# Each alternative must end in a *, to match a version number.
+	# Each alternative MUST END IN A *, to match a version number.
 	# -sysv* is not here because it comes later, after sysvr4.
 	-gnu* | -bsd* | -mach* | -minix* | -genix* | -ultrix* | -irix* \
 	      | -vms* | -sco* | -esix* | -isc* | -aix* | -sunos | -sunos[345]* \
@@ -601,7 +640,9 @@ case $os in
 	      | -riscos* | -linux* | -uniplus* | -iris* | -rtu* | -xenix* \
 	      | -hiux* | -386bsd* | -netbsd* | -freebsd* | -riscix* \
 	      | -lynxos* | -bosx* | -nextstep* | -cxux* | -aout* | -elf* \
-	      | -ptx* | -coff* | -ecoff* | -winnt* | -domain* | -vsta | -udi)
+	      | -ptx* | -coff* | -ecoff* | -winnt* | -domain* | -vsta* \
+	      | -udi* | -eabi* | -lites* )
+	# Remember, each alternative MUST END IN *, to match a version number.
 		;;
 	-sunos5*)
 		os=`echo $os | sed -e 's|sunos5|solaris2|'`
@@ -626,6 +667,13 @@ case $os in
 		;;
 	-ctix* | -uts*)
 		os=-sysv
+		;;
+	# Preserve the version number of sinix5.
+	-sinix5.*)
+		os=`echo $os | sed -e 's|sinix|sysv|'`
+		;;
+	-sinix*)
+		os=-sysv4
 		;;
 	-triton*)
 		os=-sysv3
@@ -672,6 +720,9 @@ else
 case $basic_machine in
 	*-acorn)
 		os=-riscix1.2
+		;;
+	arm*-semi)
+		os=-aout
 		;;
         pdp11-*)
 		os=-none
@@ -750,6 +801,9 @@ case $basic_machine in
 		;;
         *-sgi)
 		os=-irix
+		;;
+        *-siemens)
+		os=-sysv4
 		;;
 	*-masscomp)
 		os=-rtu

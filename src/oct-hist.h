@@ -30,11 +30,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 extern int default_history_size (void);
 extern string default_history_file (void);
 
-// Nonzero means input is coming from temporary history file.
-extern int input_from_tmp_history_file;
+// TRUE means input is coming from temporary history file.
+extern bool input_from_tmp_history_file;
 
 // TRUE if we are saving history.
-extern int Vsaving_history;
+extern bool Vsaving_history;
 
 #endif
 

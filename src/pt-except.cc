@@ -56,7 +56,7 @@ do_catch_code (void *ptr)
   // Set up for letting the user print any messages from errors that
   // occurred in the body of the try_catch statement.
 
-  buffer_error_messages = 0;
+  buffer_error_messages = false;
   bind_global_error_variable ();
   unwind_protect::add (clear_global_error_variable, 0);
 
@@ -104,8 +104,8 @@ tree_try_catch_command::eval (void)
 
   if (catch_code)
     {
-      unwind_protect_int (buffer_error_messages);
-      buffer_error_messages = 1;
+      unwind_protect_bool (buffer_error_messages);
+      buffer_error_messages = true;
     }
 
   if (try_code)

@@ -50,8 +50,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // SIGPIPES.  We assume that the writer will eventually give up.
 int pipe_handler_error_count = 0;
 
-// Nonzero means we can be interrupted.
-int can_interrupt = 0;
+// TRUE means we can be interrupted.
+bool can_interrupt = false;
 
 // Allow us to save the signal mask and then restore it to the most
 // recently saved value.  This is necessary when using the POSIX

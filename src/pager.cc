@@ -51,8 +51,8 @@ static pid_t octave_pager_pid = -1;
 // Our actual connection to the external pager.
 static oprocstream *external_pager = 0;
 
-// Nonzero means we write to the diary file.
-static int write_to_diary_file = 0;
+// TRUE means we write to the diary file.
+static bool write_to_diary_file = false;
 
 // The name of the current diary file.
 static string diary_file;
@@ -77,9 +77,9 @@ static bool Vpage_screen_output;
 static octave_interrupt_handler saved_interrupt_handler;
 static bool interrupt_handler_saved = false;
 
-static int really_flush_to_pager = 0;
+static bool really_flush_to_pager = false;
 
-static int flushing_output_to_pager = 0;
+static bool flushing_output_to_pager = false;
 
 static void
 clear_external_pager (void)
@@ -306,11 +306,11 @@ flush_octave_stdout (void)
     {
       unwind_protect::begin_frame ("flush_octave_stdout");
 
-      unwind_protect_int (really_flush_to_pager);
-      unwind_protect_int (flushing_output_to_pager);
+      unwind_protect_bool (really_flush_to_pager);
+      unwind_protect_bool (flushing_output_to_pager);
 
-      really_flush_to_pager = 1;
-      flushing_output_to_pager = 1;
+      really_flush_to_pager = true;
+      flushing_output_to_pager = true;
 
       octave_stdout.flush ();
 
@@ -373,13 +373,13 @@ redirect all input and screen output to a file.")
 
 	if (arg == "on")
 	  {
-	    write_to_diary_file = 1;
+	    write_to_diary_file = true;
 	    open_diary_file ();
 	  }	
 	else if (arg == "off")
 	  {
 	    close_diary_file ();
-	    write_to_diary_file = 0;
+	    write_to_diary_file = false;
 	  }
 	else
 	  {

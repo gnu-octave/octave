@@ -49,7 +49,7 @@ int error_state = 0;
 // Tell the error handler whether to print messages, or just store
 // them for later.  Used for handling errors in eval() and
 // the `unwind_protect' statement.
-int buffer_error_messages;
+bool buffer_error_messages;
 
 // The message buffer
 ostrstream *error_message_buffer = 0;
@@ -279,6 +279,31 @@ See also: error, printf")
   return handle_message (usage, "unknown", args);
 }
 
+void
+bind_global_error_variable (void)
+{
+  *error_message_buffer << ends;
+
+  char *error_text = error_message_buffer->str ();
+
+  bind_builtin_variable ("__error_text__", error_text, 1);
+
+  delete [] error_text;
+
+  delete error_message_buffer;
+
+  error_message_buffer = 0;
+}
+
+void
+clear_global_error_variable (void *)
+{
+  delete error_message_buffer;
+  error_message_buffer = 0;
+
+  bind_builtin_variable ("__error_text__", "", 1);
+}
+
 static int
 beep_on_error (void)
 {
@@ -292,6 +317,13 @@ symbols_of_error (void)
 {
   DEFVAR (beep_on_error, 0.0, 0, beep_on_error,
     "if true, beep before printing error messages");
+
+  DEFCONST (error_text, "", 0, 0,
+    "the text of error messages that would have been printed in the\n\
+body of the most recent unwind_protect statement or the TRY part of\n\
+the most recent eval() command.  Outside of unwind_protect and\n\
+eval(), or if no error has ocurred within them, the value of\n\
+__error_text__ is guaranteed to be the empty string.");
 }
 
 /*

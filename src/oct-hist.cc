@@ -64,6 +64,7 @@ Software Foundation, Inc.
 #include "oct-hist.h"
 #include "oct-obj.h"
 #include "pager.h"
+#include "parse.h"
 #include "sighandlers.h"
 #include "sysdep.h"
 #include "toplev.h"
@@ -71,8 +72,8 @@ Software Foundation, Inc.
 #include "utils.h"
 #include "variables.h"
 
-// Nonzero means input is coming from temporary history file.
-int input_from_tmp_history_file = 0;
+// TRUE means input is coming from temporary history file.
+bool input_from_tmp_history_file = false;
 
 // Where history is saved.
 static string Vhistory_file;
@@ -81,7 +82,7 @@ static string Vhistory_file;
 static int Vhistory_size;
 
 // TRUE if we are saving history.
-int Vsaving_history;
+bool Vsaving_history = true;
 
 // Get some default values, possibly reading them from the
 // environment.
@@ -485,10 +486,12 @@ do_edit_history (int argc, const string_vector& argv)
   // sense.
 
   unwind_protect::begin_frame ("do_edit_history");
+
   unwind_protect_int (Vecho_executing_commands);
-  unwind_protect_int (input_from_tmp_history_file);
+  unwind_protect_bool (input_from_tmp_history_file);
+
   Vecho_executing_commands = ECHO_CMD_LINE;
-  input_from_tmp_history_file = 1;
+  input_from_tmp_history_file = true;
 
   parse_and_execute (name);
 
@@ -512,10 +515,12 @@ do_run_history (int argc, const string_vector& argv)
   // sense.
 
   unwind_protect::begin_frame ("do_run_history");
+
   unwind_protect_int (Vecho_executing_commands);
-  unwind_protect_int (input_from_tmp_history_file);
+  unwind_protect_bool (input_from_tmp_history_file);
+
   Vecho_executing_commands = ECHO_CMD_LINE;
-  input_from_tmp_history_file = 1;
+  input_from_tmp_history_file = true;
 
   parse_and_execute (name);
 

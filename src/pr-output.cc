@@ -77,28 +77,28 @@ static char *curr_real_fmt = 0;
 // Current format string for the imaginary part of complex numbers.
 static char *curr_imag_fmt = 0;
 
-// Nonzero means don't do any fancy formatting.
+// TRUE means don't do any fancy formatting.
 static bool free_format = false;
 
-// Nonzero means print plus sign for nonzero, blank for zero.
+// TRUE means print plus sign for nonzero, blank for zero.
 static bool plus_format = false;
 
-// Nonzero means always print like dollars and cents.
+// TRUE means always print like dollars and cents.
 static bool bank_format = false;
 
-// Nonzero means print data in hexadecimal format.
+// TRUE means print data in hexadecimal format.
 static bool hex_format = false;
 
-// Nonzero means print data in binary-bit-pattern format.
+// TRUE means print data in binary-bit-pattern format.
 static int bit_format = 0;
 
-// Nonzero means don't put newlines around the column number headers.
+// TRUE means don't put newlines around the column number headers.
 static bool compact_format = false;
 
-// Nonzero means use an e format.
+// TRUE means use an e format.
 static bool print_e = false;
 
-// Nonzero means print E instead of e for exponent field.
+// TRUE means print E instead of e for exponent field.
 static bool print_big_e = false;
 
 // XXX FIXME XXX -- these should probably be somewhere else.

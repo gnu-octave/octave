@@ -105,7 +105,7 @@ saved_variable::saved_variable (void)
 
 saved_variable::saved_variable (bool *p, bool v)
 {
-  type_tag = integer;
+  type_tag = boolean;
   ptr_to_bool = p;
   bool_value = v;
   size = sizeof (bool);  // Is this necessary?

@@ -42,7 +42,7 @@ extern int error_state;
 // Tell the error handler whether to print messages, or just store
 // them for later.  Used for handling errors in eval() and
 // the `unwind_protect' statement.
-extern int buffer_error_messages;
+extern bool buffer_error_messages;
 
 // The message buffer
 extern ostrstream *error_message_buffer;

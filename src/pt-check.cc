@@ -165,7 +165,7 @@ tree_checker::visit_complex_for_command (tree_complex_for_command& cmd)
     {
       int len = lhs->length ();
 
-      if (len == 0 || lhs > 2)
+      if (len == 0 || len > 2)
 	gripe ("invalid number of output arguments in for command",
 	       cmd.line ());
 

@@ -909,7 +909,7 @@ do_binary_op (octave_value::binary_op op, const octave_value& v1,
 // Current indentation.
 int octave_value::curr_print_indent_level = 0;
 
-// Nonzero means we are at the beginning of a line.
+// TRUE means we are at the beginning of a line.
 bool octave_value::beginning_of_line = true;
 
 // Each print() function should call this before printing anything.

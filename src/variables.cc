@@ -1908,7 +1908,7 @@ With -x, exclude the named variables")
 				       SYMTAB_ALL_SCOPES);
 	}
 
-      for (int k = idx + 1; k < argc; k++)
+      for (int k = idx; k < argc; k++)
 	{
 	  string patstr = argv[k];
 

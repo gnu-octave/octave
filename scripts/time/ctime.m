@@ -27,7 +27,7 @@
 ## @example
 ## @group
 ## ctime (time ())
-##      @result{} "Mon Feb 17 01:15:06 1997"
+##      @result{} "Mon Feb 17 01:15:06 1997\n"
 ## @end group
 ## @end example
 ## @end deftypefn

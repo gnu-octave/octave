@@ -1,3 +1,8 @@
+1999-10-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* sighandlers.cc (sigwinch_handler): New function.
+	(install_signal_handlers): Install it.
+
 Thu Sep 23 19:49:36 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* toplev.cc (Fsystem): For async case, use execl instead of

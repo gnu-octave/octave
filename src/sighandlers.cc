@@ -38,6 +38,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <unistd.h>
 #endif
 
+#include "cmd-edit.h"
+
 #include "error.h"
 #include "load-save.h"
 #include "pager.h"
@@ -267,6 +269,20 @@ sigfpe_handler (int /* sig */)
 }
 #endif
 
+#if defined (SIGWINCH)
+static RETSIGTYPE
+sigwinch_handler (int /* sig */)
+{
+  MAYBE_ACK_SIGNAL (SIGWINCH);
+
+  MAYBE_REINSTALL_SIGHANDLER (SIGWINCH, sigwinch_handler);
+
+  command_editor::resize_terminal ();
+
+  SIGHANDLER_RETURN (0);
+}
+#endif
+
 // Handle SIGINT by restarting the parser (see octave.cc).
 //
 // This also has to work for SIGBREAK (on systems that have it), so we
@@ -475,7 +491,9 @@ install_signal_handlers (void)
   octave_set_signal_handler (SIGIO, SIG_IGN);
 #endif
 
-  // SIGWINCH
+#ifdef SIGWINCH
+  octave_set_signal_handler (SIGWINCH, sigwinch_handler);
+#endif
 
 #ifdef SIGXCPU
   octave_set_signal_handler (SIGXCPU, generic_sig_handler);

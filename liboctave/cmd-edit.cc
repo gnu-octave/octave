@@ -91,6 +91,8 @@ public:
 
   void do_clear_screen (void);
 
+  void do_resize_terminal (void);
+
   string newline_chars (void);
 
   void do_restore_terminal_state (void);
@@ -245,6 +247,12 @@ void
 gnu_readline::do_clear_screen (void)
 {
   rl_clear_screen ();
+}
+
+void
+gnu_readline::do_resize_terminal (void)
+{
+  rl_resize_terminal ();
 }
 
 string
@@ -592,6 +600,13 @@ command_editor::clear_screen (void)
 {
   if (instance_ok ())
     instance->do_clear_screen ();
+}
+
+void
+command_editor::resize_terminal (void)
+{
+  if (instance_ok ())
+    instance->do_resize_terminal ();
 }
 
 string

@@ -1,3 +1,9 @@
+1999-10-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* cmd-edit.h (command_editor::do_resize_terminal): New function.
+	* cmd-edit.cc (command_editor::resize_terminal): New function.
+	(gnu_readline::do_resize_terminal): New function.
+
 Fri Sep  3 12:39:17 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* lo-mappers.cc: Include ieeefp.h and sunmath.h if we have them.

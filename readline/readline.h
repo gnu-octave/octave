@@ -207,6 +207,7 @@ extern char *rl_copy_text ();
 
 /* `Public' utility functions. */
 extern int rl_reset_terminal ();
+extern void rl_resize_terminal ();
 extern int rl_stuff_char ();
 extern int rl_read_key (), rl_getc ();
 

@@ -63,6 +63,8 @@ public:
 
   static void clear_screen (void);
 
+  static void resize_terminal (void);
+
   static string decode_prompt_string (const string& s);
 
   static void restore_terminal_state (void);
@@ -144,6 +146,8 @@ protected:
   virtual int do_terminal_cols (void) { return 80; }
 
   virtual void do_clear_screen (void) { }
+
+  virtual void do_resize_terminal (void) { }
 
   virtual string do_decode_prompt_string (const string&);
 

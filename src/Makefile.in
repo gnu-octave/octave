@@ -112,7 +112,7 @@ OBJECTS = arith-ops.o builtins.o data.o dirfns.o error.o \
 	@DYNAMIC_LD_OBJ@
 
 OCTAVE_LIBS = @LIBOCTDLD@ ../liboctave.a ../libcruft.a ../libinfo.a \
-	../libreadline.a @LIBDLD@
+	../libreadline.a ../libkpathsea.a @LIBDLD@
 
 DISTFILES = Makefile.in mkdefs mkbuiltins \
 	parse.cc lex.cc y.tab.h $(INCLUDES) $(SOURCES)

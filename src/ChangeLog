@@ -1,5 +1,13 @@
 2000-07-28  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* pt-pr-code.h (tree_print_code::curr_print_indent_level,
+	(tree_print_code::beginning_of_line): No longer static.
+	(tree_print_code::tree_print_code): Initialize them here.
+	* pt-pr-code.cc: Not here.
+
+	* pt-stmt.cc (tree_statement::eval): Set curr_statement here.
+	(tree_statement_list::eval): Not here.
+
 	Debug-on-error stuff based on a patch submitted by Paul Kienzle
 	<pkienzle@kienzle.powernet.co.uk> for 2.0.x.
 

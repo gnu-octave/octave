@@ -220,31 +220,43 @@ pr_where_1 (const char *fmt, ...)
 }
 
 static void
-pr_where (void)
+pr_where (const char *name)
 {
   if (curr_statement)
     {
-      std::string fcn_name = curr_function->function_name ();
-      std::string file_name = curr_function->fcn_file_name ();
+      const char *f_nm = 0;
 
-      const char *nm
-	= file_name.empty () ? fcn_name.c_str () : file_name.c_str ();
+      if (curr_function)
+	{
+	  std::string fcn_name = curr_function->function_name ();
+	  std::string file_name = curr_function->fcn_file_name ();
+
+	  f_nm = file_name.empty () ? fcn_name.c_str () : file_name.c_str ();
+	}
 
       int l = curr_statement->line ();
       int c = curr_statement->column ();
 
-      pr_where_1 ("error: in %s near line %d, column %d:", nm, l, c);
+      if (f_nm)
+	pr_where_1 ("%s: in %s near line %d, column %d:", name, f_nm, l, c);
+      else
+	pr_where_1 ("%s: near line %d, column %d:", name, l, c);
 
-      // Oops, note that the column number may not be correct
-      // since the code is being reproduced from the parse tree.
+      // XXX FIXME XXX -- Note that the column number is probably not
+      // going to mean much here since the code is being reproduced
+      // from the parse tree, and we are only showing one statement
+      // even if there were multiple statements on the original source
+      // line.
 
       std::ostrstream output_buf;
 
-      tree_print_code tpc (output_buf, "    ");
+      output_buf << "\n";
+
+      tree_print_code tpc (output_buf, ">>> ");
 
       curr_statement->accept (tpc);
 
-      output_buf << ends;
+      output_buf << "\n" << ends;
 
       char *msg = output_buf.str ();
 
@@ -263,13 +275,13 @@ warning (const char *fmt, ...)
   vwarning ("warning", fmt, args);
   va_end (args);
 
+  pr_where ("warning");
+
   if ((interactive || forced_interactive)
       && Vdebug_on_warning && curr_function)
     {
       unwind_protect_bool (Vdebug_on_warning);
       Vdebug_on_warning = false;
-
-      pr_where ();
 
       do_keyboard (octave_value_list ());
 
@@ -293,7 +305,7 @@ error (const char *fmt, ...)
       unwind_protect_bool (Vdebug_on_error);
       Vdebug_on_error = false;
 
-      pr_where ();
+      pr_where ("error");
 
       error_state = 0;
 

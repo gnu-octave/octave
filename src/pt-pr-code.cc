@@ -1218,12 +1218,6 @@ tree_print_code::visit_do_until_command (tree_do_until_command& cmd)
   newline ();
 }
 
-// Current indentation.
-int tree_print_code::curr_print_indent_level = 0;
-
-// TRUE means we are at the beginning of a line.
-bool tree_print_code::beginning_of_line = true;
-
 // Each print_code() function should call this before printing
 // anything.
 //

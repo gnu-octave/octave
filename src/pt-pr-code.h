@@ -41,9 +41,11 @@ tree_print_code : public tree_walker
 {
 public:
 
-  tree_print_code (std::ostream& os_arg, const std::string& pfx = std::string (),
+  tree_print_code (std::ostream& os_arg,
+		   const std::string& pfx = std::string (),
 		   bool pr_orig_txt = true)
-    : os (os_arg), prefix (pfx), print_original_text (pr_orig_txt) { }
+    : os (os_arg), prefix (pfx), print_original_text (pr_orig_txt),
+      curr_print_indent_level (0), beginning_of_line (true) { }
 
   ~tree_print_code (void) { }
 
@@ -149,8 +151,11 @@ private:
 
   bool print_original_text;
 
-  static int curr_print_indent_level;
-  static bool beginning_of_line;
+  // Current indentation.
+  int curr_print_indent_level;
+
+  // TRUE means we are at the beginning of a line.
+  bool beginning_of_line;
 
   void reset_indent_level (void)
     { curr_print_indent_level = 0; }

@@ -96,6 +96,9 @@ tree_statement::eval (bool silent, int nargout, bool in_function_body)
 
   if (cmd || expr)
     {
+      unwind_protect_ptr (curr_statement);
+      curr_statement = this;
+
       maybe_echo_code (in_function_body);
 
       if (cmd)
@@ -130,6 +133,8 @@ tree_statement::eval (bool silent, int nargout, bool in_function_body)
 	  if (do_bind_ans && ! (error_state || retval.empty ()))
 	    bind_ans (retval(0), pf);
 	}
+
+      unwind_protect::run ();
     }
 
   return retval;
@@ -158,12 +163,7 @@ tree_statement_list::eval (bool silent, int nargout)
 	  bool silent_flag =
 	    silent ? true : (function_body ? Vsilent_functions : false);
 
-	  unwind_protect_ptr (curr_statement);
-	  curr_statement = elt;
-
 	  retval = elt->eval (silent_flag, nargout, function_body);
-
-	  unwind_protect::run ();
 
 	  if (error_state)
 	    break;

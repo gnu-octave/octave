@@ -80,7 +80,6 @@ SVD::init (const Matrix& a, SVD::type svd_type)
   double *tmp_data = atmp.fortran_vec ();
 
   int min_mn = m < n ? m : n;
-  int max_mn = m > n ? m : n;
 
   char jobu = 'A';
   char jobv = 'A';
@@ -131,23 +130,35 @@ SVD::init (const Matrix& a, SVD::type svd_type)
 
   double *vt = right_sm.fortran_vec ();
 
-  int tmp1 = 3*min_mn + max_mn;
-  int tmp2 = 5*min_mn - 4;
-  int lwork = tmp1 > tmp2 ? tmp1 : tmp2;
+  // Ask DGESVD what the dimension of WORK should be.
 
-  Array<double> work (lwork);
-  double *pwork = work.fortran_vec ();
+  int lwork = -1;
+
+  Array<double> work (1);
 
   F77_XFCN (dgesvd, DGESVD, (&jobu, &jobv, m, n, tmp_data, m, s_vec,
-			     u, m, vt, nrow_vt, pwork, lwork, info,
-			     1L, 1L));
+			     u, m, vt, nrow_vt, work.fortran_vec (),
+			     lwork, info, 1L, 1L));
 
   if (f77_exception_encountered)
     (*current_liboctave_error_handler) ("unrecoverable error in dgesvd");
   else
     {
-      if (! (jobv == 'N' || jobv == 'O'))
-	right_sm = right_sm.transpose ();
+      lwork = static_cast<int> (work(0));
+      work.resize (lwork);
+
+      F77_XFCN (dgesvd, DGESVD, (&jobu, &jobv, m, n, tmp_data, m,
+				 s_vec, u, m, vt, nrow_vt,
+				 work.fortran_vec (), lwork, info, 1L,
+				 1L));
+
+      if (f77_exception_encountered)
+	(*current_liboctave_error_handler) ("unrecoverable error in dgesvd");
+      else
+	{
+	  if (! (jobv == 'N' || jobv == 'O'))
+	    right_sm = right_sm.transpose ();
+	}
     }
 
   return info;

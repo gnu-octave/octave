@@ -1,5 +1,8 @@
 1999-11-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* dbleSVD.cc (SVD::init): Let DGESVD determine work space requirement.
+	* CmplxSVD.cc (ComplexSVD::init): Likewise, for complex version.
+
 	* dbleSCHUR.cc (SCHUR::init): IWORK is always referenced by dgeesx.
 	Don't forget to pass length of third string argument to dgeesx.
 

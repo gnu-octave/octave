@@ -131,26 +131,41 @@ ComplexSVD::init (const ComplexMatrix& a, SVD::type svd_type)
 
   Complex *vt = right_sm.fortran_vec ();
 
-  int lwork = 2*min_mn + max_mn;
-
-  Array<Complex> work (lwork);
-  Complex *pwork = work.fortran_vec ();
-
   int lrwork = 5*max_mn;
 
   Array<double> rwork (lrwork);
-  double *prwork = rwork.fortran_vec ();
 
-  F77_XFCN (zgesvd, ZGESVD, (&jobu, &jobv, m, n, tmp_data, m, s_vec, u,
-			     m, vt, nrow_vt, pwork, lwork, prwork, info,
-			     1L, 1L));
+  // Ask ZGESVD what the dimension of WORK should be.
+
+  int lwork = -1;
+
+  Array<Complex> work (1);
+
+  F77_XFCN (zgesvd, ZGESVD, (&jobu, &jobv, m, n, tmp_data, m, s_vec,
+			     u, m, vt, nrow_vt, work.fortran_vec (),
+			     lwork, rwork.fortran_vec (), info, 1L,
+			     1L));
 
   if (f77_exception_encountered)
     (*current_liboctave_error_handler) ("unrecoverable error in zgesvd");
   else
     {
-      if (! (jobv == 'N' || jobv == 'O'))
-	right_sm = right_sm.hermitian ();
+      lwork = static_cast<int> (work(0).real ());
+      work.resize (lwork);
+
+      F77_XFCN (zgesvd, ZGESVD, (&jobu, &jobv, m, n, tmp_data, m,
+				 s_vec, u, m, vt, nrow_vt,
+				 work.fortran_vec (), lwork,
+				 rwork.fortran_vec (),
+				 info, 1L, 1L));
+
+      if (f77_exception_encountered)
+	(*current_liboctave_error_handler) ("unrecoverable error in zgesvd");
+      else
+	{
+	  if (! (jobv == 'N' || jobv == 'O'))
+	    right_sm = right_sm.hermitian ();
+	}
     }
 
   return info;

@@ -780,9 +780,7 @@ check_dimensions (dim_vector& dim, const char *warnfor)
     }
 
   if (neg && Vwarn_neg_dim_as_zero)
-    {
-      warning ("%s: converting negative dimension to zero", warnfor);
-    }
+    warning ("%s: converting negative dimension to zero", warnfor);
 }
 
 

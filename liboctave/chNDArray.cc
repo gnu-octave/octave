@@ -48,6 +48,12 @@ charNDArray::any (int dim) const
   MX_ND_ANY_ALL_REDUCTION (MX_ND_ANY_EVAL (elem (iter_idx) != ' '), false);
 }
 
+bool
+charNDArray::cat (charNDArray& cat_arr, int dim, int add_dim) const
+{
+  MX_ND_CAT;  
+}
+
 charMatrix
 charNDArray::matrix_value (void) const
 {

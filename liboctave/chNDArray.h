@@ -71,7 +71,8 @@ public:
 
   boolNDArray all (int dim = -1) const;
   boolNDArray any (int dim = -1) const;
-
+  bool cat (charNDArray& cat_array, int dim, int add_dim) const;
+ 
   charMatrix matrix_value (void) const;
 
   charNDArray squeeze (void) const { return ArrayN<char>::squeeze (); }

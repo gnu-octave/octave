@@ -1,3 +1,9 @@
+2004-02-13  Petter Risholm  <risholm@stud.ntnu.no>
+
+	* data.cc (Fcat): New function.
+	* data.cc (do_cat): New function.
+	* data.cc (cat_add_dims): New function.
+
 2004-02-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* toplev.cc (main_loop): Call octave_parse, not yyparse.

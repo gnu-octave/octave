@@ -86,7 +86,8 @@ public:
   NDArray prod (int dim = -1) const;
   NDArray sum (int dim = -1) const;  
   NDArray sumsq (int dim = -1) const;
- 
+  bool cat (NDArray& cat_array, int dim, int add_dim) const;
+     
   NDArray abs (void) const;
 
   friend NDArray real (const ComplexNDArray& a);

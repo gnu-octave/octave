@@ -665,6 +665,260 @@ omitted, it defaults to 1 (column-wise products).\n\
   DATA_REDUCTION (prod);
 }
 
+static bool
+cat_add_dims (dim_vector& dv_new, const dim_vector& dv_arg, int dim)
+{
+  // dv_arg is []
+  if (dv_arg.all_zero ())
+    return true;
+  
+  // dv_new is []
+  if (dv_new.all_zero ())
+    {
+      dv_new = dv_arg;
+      return true;
+    }
+  
+  int n_new  = dv_new.length ();
+  int n_args = dv_arg.length ();
+  
+  // Find the max and min value of n_new and n_args
+  int n_max = n_new > n_args ? n_new : n_args;
+  int n_min = n_new < n_args ? n_new : n_args;  
+
+  // The elements of the dimension vectors can only differ
+  // if the dim variable differs from the actual dimension
+  // they differ.
+  for (int i = 0; i < n_min; i++)
+    {
+      if (dv_new(i) != dv_arg(i) && dim != i)
+	{
+	  error ("cat: dimension mismatch");
+	  return false;
+	}
+    }
+  
+  // Ditto
+  for (int i = n_min; i < n_max; i++)
+    {
+      if (n_new > n_min)
+	{
+	  if (dv_new(i) != 1 && dim != i)
+	    {
+	      error ("cat: dimension mismatch");
+	      return false;
+	    }
+	}
+      else 
+	{
+	  if (dv_arg(i) != 1 && dim != i)
+	    {
+	      error ("cat: dimension mismatch");
+	      return false;
+	    }
+	}
+    }
+
+  // If we want to add the dimension vectors at a dimension
+  // larger than both, then we need to set n_max to this number
+  // so that we resize dv_new to the right dimension.
+  n_max = n_max > (dim + 1) ? n_max : (dim + 1);
+  
+  // Resize dv_new to new the appropriate dimensions.
+  if (n_max > n_new)
+    {
+      dv_new.resize (n_max);
+
+      for (int i = n_new; i < n_max; i++)
+	dv_new.elem (i) = 1;
+    }
+  
+  if (dim > n_args)
+    dv_new.elem (dim) = dv_new.elem (dim)++;
+  else
+    dv_new.elem (dim) += dv_arg(dim);
+
+  return true;
+}
+
+static octave_value
+do_cat (const octave_value_list& args)
+{
+  octave_value retval;
+
+  int dim = args(0).int_value () - 1;
+
+  if (error_state)
+    {
+      error ("cat: expecting first argument to be a integer");
+      return retval;
+    }
+
+  if (args.length () > 2 && (dim >= 0))
+    {      
+      dim_vector  dv = args(1).dims ();
+
+      // I need to look into these conversions
+      for (int i = 2; i < args.length (); i++)
+	{
+	  // add_dims constructs a dimension vector which 
+	  // holds the dimensions of the final array after
+	  // concatenation.
+	  if (! cat_add_dims (dv, args(i).dims (), dim))
+	    return retval; // Dimensions do not match
+	}
+
+      NDArray cat_re = NDArray (dv, 0);
+      ComplexNDArray cat_cx;
+      charNDArray cat_ch;
+
+      // The final array can be of three types.
+      // Here is a compatible chart
+      //     re cx ch
+      // --------------
+      // re |re cx ch
+      // cx |cx cx X
+      // ch |ch X  ch
+      // Where X means incompatible
+      enum types { REAL, COMPLEX, CHAR } t = REAL;      
+
+      // Variable which tells us how much we have extended
+      // the variable along the dim dimension.
+      int curr_add_dims = 0;
+
+      // Tells us wether the array we concatenated had less dimensions
+      // than dim, such that we only add one dimension to curr_add_dims.
+      bool extended_dims = false;
+      
+      // Start filling in values
+      for (int i = 1; i < args.length (); i++)
+	{
+	  octave_value tmp = args (i);
+
+	  dim_vector dv_arg = tmp.dims ();
+
+	  // This variable tells us wether the the new value is
+	  // has a number of dimension less than the final value.
+	  extended_dims = false;
+	  
+	  if (t == REAL)
+	    {
+	      if (tmp.is_complex_type ())
+		{
+		  cat_cx = ComplexNDArray (cat_re);
+		  
+		  extended_dims =
+		    tmp.complex_array_value ().cat (cat_cx, dim, curr_add_dims);
+		  
+		  t = COMPLEX;
+		}
+	      else if (tmp.is_string ())
+		{
+		  // This is a hack to be able to convert a dNDArray
+		  // to a chNDArray.
+		  cat_ch = charNDArray (octave_value (cat_re).char_array_value ());
+		  
+		  extended_dims =
+		    tmp.char_array_value ().cat (cat_ch, dim, curr_add_dims);
+		  
+		  t = CHAR;
+		}
+	      else
+		extended_dims = 
+		  tmp.array_value().cat (cat_re, dim, curr_add_dims);
+	    }
+	  else if (t == COMPLEX)
+	    {
+	      extended_dims = 
+		tmp.complex_array_value ().cat (cat_cx, dim, curr_add_dims);
+	    }
+	  else if (t == CHAR)
+	    {
+	      if (tmp.is_complex_type ())
+		{
+		  error ("cannot convert complex type to character type");
+		  return retval;
+		}
+	      else
+		extended_dims =
+		  tmp.char_array_value ().cat (cat_ch, dim, curr_add_dims);
+	    }
+	  
+	  if (error_state) return retval; // Wrong conversion in the last if statement
+
+	  // Keep track of how many dimensions have been added
+	  if (extended_dims)
+	    curr_add_dims++;
+	  else
+	    curr_add_dims += dv_arg (dim);
+	}
+
+      if (t == REAL)
+	retval = octave_value (cat_re);
+      else if (t == COMPLEX)
+	retval = octave_value (cat_cx);
+      else if (t == CHAR)
+	retval = octave_value (cat_ch);
+    }
+  else
+    print_usage ("cat");
+
+  return retval;
+}
+
+DEFUN (cat, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} cat (@var{dim}, @var{array1}, @var{array2}, @dots{}, @var{arrayN})\n\
+Return the concatenation of N-d array objects, @var{array1}, @var{array2}, @dots{}, @var{arrayN} along dimension @var{dim}.\n\
+\n\
+@example\n\
+@group\n\
+A = ones (2, 2);\n\
+B = zeros (2, 2);\n\
+cat (2, A, B)\n\
+@result{} ans =\n\
+\n\
+     1 1 0 0\n\
+     1 1 0 0\n\
+     1 1 0 0\n\
+     1 1 0 0\n\
+@end group\n\
+@end example\n\
+\n\
+Alternatively, we can concatenate @var{A} and @var{B} along the\n\
+second dimension the following way:\n\
+\n\
+@example\n\
+@group\n\
+[A, B].\n\
+@end group\n\
+@end example\n\
+\n\
+@var{dim} can be larger than the dimensions of the N-d array objects\n\
+and the result will thus have @var{dim} dimensions as the\n\
+following example shows:\n\
+@example\n\
+@group\n\
+cat (4, ones(2, 2), zeros (2, 2))\n\
+@result{} ans =\n\
+\n\
+   ans(:,:,1,1) =\n\
+\n\
+     1 1\n\
+     1 1\n\
+\n\
+   ans(:,:,1,2) =\n\
+     0 0\n\
+     0 0\n\
+@end group\n\
+@end example\n\
+\n\
+@seealso{horzcat and vertcat}\n\
+@end deftypefn")
+{
+  return do_cat (args);
+}
+
 static octave_value
 do_permute (const octave_value_list& args, bool inv, const std::string& fname)
 {

@@ -212,6 +212,12 @@ NDArray::sum (int dim) const
   MX_ND_REAL_OP_REDUCTION (+= elem (iter_idx), 0);
 }
 
+bool
+NDArray::cat (NDArray& cat_arr, int dim, int add_dim) const
+{
+  MX_ND_CAT;
+}
+
 NDArray
 real (const ComplexNDArray& a)
 {

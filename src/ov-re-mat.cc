@@ -145,6 +145,19 @@ octave_matrix::complex_array_value (bool) const
   return ComplexNDArray (matrix);
 }
 
+charNDArray
+octave_matrix::char_array_value (bool) const
+{
+  charNDArray retval (dims ());
+
+  int nel = numel ();
+  
+  for (int i = 0; i < nel; i++)
+    retval.elem (i) = static_cast<char>(matrix.elem (i));
+
+  return retval;
+}
+  
 streamoff_array
 octave_matrix::streamoff_array_value (void) const
 {

@@ -1,3 +1,13 @@
+2004-02-13  Petter Risholm  <risholm@stud.ntnu.no>
+
+	* mx-inlines.cc (MX_ND_CAT): New macro.
+	* dNDArray.cc (NDArray::cat): New function.
+	* dNDArray.h: Provide decls.
+	* CNDArray.cc (complexNDArray::cat): New function.
+	* CNDArray.h: Provide decls.
+	* chNDArray.cc (charNDArray::cat): New function.
+	* chNDArray.h: Provide decls.
+
 2004-02-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Array.cc (maybe_delete_elements_2): Allow X(n) = [] for 2-d X.

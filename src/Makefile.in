@@ -366,12 +366,12 @@ mostlyclean:
 
 distclean: clean
 	rm -f Makefile octave .fname so_locations
-	rm -f stamp-prereq
+	rm -f stamp-prereq stamp-oct-links
 .PHONY: distclean
 
 maintainer-clean: distclean
 	rm -f tags TAGS y.tab.c y.tab.h y.output yy.lex.c lex.cc parse.cc
-	rm -f oct-gperf.h stamp-prereq
+	rm -f oct-gperf.h
 .PHONY: maintainer-clean
 
 dist: parse.cc lex.cc oct-gperf.h

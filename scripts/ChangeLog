@@ -1,3 +1,7 @@
+Mon Aug 30 12:07:00 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* statistics/base/mean.m: Use .', not ' to reorient row vectors.
+
 Tue Aug 17 11:11:27 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* miscellaneous/pack.m: New function.

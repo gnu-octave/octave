@@ -17,12 +17,13 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: cond (a)
+## usage: cond (A)
 ##
-## Return the condition number of a, computed using the singular values
-## of a.
+## Return the condition number of A, computed using the singular values
+## of A.  If the maximum and minimum singular values of A are both zero,
+## cond returns Inf rather than NaN.
 ##
-## See also: norm, svd
+## See also: norm, svd, rank
 
 ## Author: jwe
 

@@ -41,7 +41,7 @@ function y = mean (x, opt)
   endif
   
   if (rows (x) == 1)
-    x = x';
+    x = x.';
   endif
   
   if (nargin == 1)

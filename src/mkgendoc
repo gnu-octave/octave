@@ -15,7 +15,7 @@ fi
 cat << \EOF
 // DO NOT EDIT!  Generated automatically by mkgendoc
 
-#include <iostream.h>
+#include <iostream>
 #include <string>
 
 #define XDEFUN_DLD_INTERNAL(name, args_name, nargout_name, is_text_fcn, doc) \
@@ -38,7 +38,7 @@ cat << \EOF
   print_doc_string (#name, doc);
 
 static void
-print_doc_string (const string& name, const string& doc)
+print_doc_string (const string& name, const std::string& doc)
 {
   cout << "";
 

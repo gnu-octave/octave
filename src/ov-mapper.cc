@@ -112,7 +112,9 @@ octave_mapper::apply (const octave_value& arg) const
   // XXX FIXME XXX -- is_real_type can return true.  Should it really
   // work that way?
 
-  if (arg.is_real_type () && ! (arg.is_string () && ch_map_fcn))
+  if (arg.is_real_type ()
+      && (c_c_map_fcn || d_d_map_fcn || d_b_map_fcn)
+      && ! (arg.is_string () && ch_map_fcn))
     {
       if (arg.is_scalar_type ())
 	{

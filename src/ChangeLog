@@ -1,3 +1,8 @@
+2005-01-27  David Bateman  <dbateman@free.fr>
+
+	* ov-mapper.cc (octave_mapper::apply): Only work on real arguments
+	if c_c_map_fcn or d_d_map_fcn or d_b_map_fcn is defined.xo
+
 2005-01-26  Joel Andersson  <snprintf@gmail.com>
 
 	* help.cc (keywords): Document endswitch.

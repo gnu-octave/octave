@@ -51,6 +51,7 @@ Software Foundation, Inc.
 #include "f-dassl.h"
 #include "f-det.h"
 #include "f-eig.h"
+#include "f-expm.h"
 #include "f-fft.h"
 #include "f-fsolve.h"
 #include "f-fsqp.h"
@@ -481,7 +482,11 @@ builtin_expm (tree_constant *args, int nargin, int nargout)
   tree_constant *retval = NULL_TREE_CONST;
 
   if (nargin == 2)
-    retval = matrix_exp (args[1]);
+    DLD_BUILTIN (args, nargin, nargout, matrix_exp,
+		 {
+		   retval = new tree_constant [2];
+		   retval[0] = matrix_exp (args[1]);
+		 })
   else
     usage ("expm (A)");
 

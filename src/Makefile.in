@@ -52,11 +52,11 @@ LIBOBJS = @LIBOBJS@
 	fi
 
 INCLUDES = arith-ops.h builtins.h dynamic-ld.h defaults.h.in error.h \
-	f-balance.h f-colloc.h f-dassl.h f-det.h f-eig.h f-fft.h \
-	f-fsolve.h f-fsqp.h f-givens.h f-hess.h f-ifft.h f-inv.h \
-	f-lpsolve.h f-lsode.h f-lu.h f-npsol.h f-qpsol.h f-qr.h \
-	f-quad.h f-qzval.h f-rand.h f-schur.h f-svd.h f-syl.h \
-	file-io.h g-builtins.h gripes.h help.h \
+	f-balance.h f-colloc.h f-dassl.h f-det.h f-eig.h f-expm.h \
+	f-fft.h f-fsolve.h f-fsqp.h f-givens.h f-hess.h f-ifft.h \
+	f-inv.h f-lpsolve.h f-lsode.h f-lu.h f-npsol.h f-qpsol.h \
+	f-qr.h f-quad.h f-qzval.h f-rand.h f-schur.h f-svd.h \
+	f-syl.h file-io.h g-builtins.h gripes.h help.h \
 	idx-vector.h input.h lex.h mappers.h missing-math.h octave.h \
 	octave-hist.h pager.h parse.h pr-output.h procstream.h \
 	sighandlers.h statdefs.h symtab.h sysdep.h t-builtins.h \
@@ -64,15 +64,15 @@ INCLUDES = arith-ops.h builtins.h dynamic-ld.h defaults.h.in error.h \
 	utils.h variables.h version.h xdiv.h xpow.h SLStack.h Stack.h
 
 SOURCES = arith-ops.cc builtins.cc dynamic-ld.cc error.cc \
-	f-colloc.cc f-balance.cc f-dassl.cc f-det.cc \
-	f-eig.cc tc-extras.cc f-fft.cc f-fsolve.cc f-fsqp.cc \
-	f-givens.cc f-hess.cc f-ifft.cc f-inv.cc f-lpsolve.cc \
-	f-lsode.cc f-lu.cc f-npsol.cc f-qpsol.cc f-qr.cc f-quad.cc \
-	f-qzval.cc f-rand.cc f-schur.cc f-svd.cc f-syl.cc file-io.cc \
-	g-builtins.cc gripes.cc help.cc idx-vector.cc input.cc lex.l \
-	mappers.cc octave.cc octave-hist.cc pager.cc parse.y \
-	pr-output.cc procstream.cc sighandlers.cc symtab.cc \
-	sysdep.cc t-builtins.cc tc-assign.cc tc-index.cc \
+	f-colloc.cc f-balance.cc f-dassl.cc f-det.cc f-eig.cc \
+	f-expm.cc f-fft.cc f-fsolve.cc f-fsqp.cc f-givens.cc \
+	f-hess.cc f-ifft.cc f-inv.cc f-lpsolve.cc f-lsode.cc f-lu.cc \
+	f-npsol.cc f-qpsol.cc f-qr.cc f-quad.cc f-qzval.cc f-rand.cc \
+	f-schur.cc f-svd.cc f-syl.cc file-io.cc	g-builtins.cc \
+	gripes.cc help.cc idx-vector.cc input.cc lex.l mappers.cc \
+	octave.cc octave-hist.cc pager.cc parse.y pr-output.cc \
+	procstream.cc sighandlers.cc symtab.cc sysdep.cc \
+	t-builtins.cc tc-assign.cc tc-extras.cc tc-index.cc \
 	tc-inlines.cc tree.cc tree-const.cc tree-plot.cc \
 	unwind-prot.cc user-prefs.cc utils.cc variables.cc xdiv.cc \
 	xpow.cc
@@ -82,9 +82,10 @@ DEP_SOURCES = $(patsubst %.y, %.cc, $(DEP_SOURCES_1))
 MAKEDEPS = $(patsubst %.cc, %.d, $(DEP_SOURCES))
 
 DLD_OBJECTS = f-balance.o f-colloc.o f-dassl.o f-det.o f-eig.o \
-	f-fft.o f-fsolve.o f-fsqp.o f-givens.o f-hess.o f-ifft.o \
-	f-inv.o f-lpsolve.o f-lsode.o f-lu.o f-npsol.o f-qpsol.o \
-	f-qr.o f-quad.o f-qzval.o f-rand.o f-schur.o f-svd.o f-syl.o
+	f-expm.o f-fft.o f-fsolve.o f-fsqp.o f-givens.o f-hess.o \
+	f-ifft.o f-inv.o f-lpsolve.o f-lsode.o f-lu.o f-npsol.o \
+	f-qpsol.o f-qr.o f-quad.o f-qzval.o f-rand.o f-schur.o \
+	f-svd.o f-syl.o 
 
 OBJECTS = arith-ops.o builtins.o error.o file-io.o g-builtins.o \
 	gripes.o help.o idx-vector.o input.o lex.o mappers.o \

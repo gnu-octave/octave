@@ -476,7 +476,6 @@ public:
 
   friend tree_constant find_nonzero_elem_idx (tree_constant& a);
 
-  friend tree_constant *matrix_exp (tree_constant& a);
   friend tree_constant *matrix_log (tree_constant& a);
   friend tree_constant *matrix_sqrt (tree_constant& a);
 

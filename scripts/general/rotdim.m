@@ -60,7 +60,7 @@ function y = rotdim (x, k, plane)
     usage ("rotdim (x, k, plane)");
   endif
 
-  if (nargin > 1 && !isempty(k))
+  if (nargin > 1 && ! isempty(k))
     if (imag (k) != 0 || fix (k) != k)
       error ("rotdim: k must be an integer");
     endif
@@ -103,7 +103,7 @@ function y = rotdim (x, k, plane)
   if (k == 0)
     y = x;
   elseif (k == 2)
-    y = flipdim (flipdim (x, plane (1)), plane (2));
+    y = flipdim (flipdim (x, plane(1)), plane(2));
   elseif (k == 1 || k == 3)
     perm = 1:nd;
     perm(plane(1)) = plane(2);

@@ -20,7 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} flipdim (@var{x}, @var{dim})
 ## Return a copy of @var{x} flipped about the dimension @var{dim}.
-## For exmaple
+## For example
 ##
 ## @example
 ## @group

@@ -126,6 +126,9 @@ case "$ld_run_path" in
       ld_run_path="-R $ld_run_path"
     fi
   ;;
+  *)
+    ld_run_path=
+  ;;
 esac
 dnl
 flibs=

@@ -10,9 +10,9 @@ Linux distribution.
 If you can, you should probably install Octave from one of the binary
 distributions available from ftp.che.wisc.edu, or using one of the
 Debian or RPM packages that are available at other sites.  For
-example, Dirk Eddelbuettel <edd@rosebud.sps.queensu.ca> maintains the
-Debian Octave package and usually has them ready within a day or so of
-new Octave releases.  They are available via the WWW at
+example, Dirk Eddelbuettel <edd@debian.org> maintains the Debian
+Octave package and usually has them ready within a day or so of new
+Octave releases.  They are available via the WWW at
 http://www.debian.org/Packages/dist/math/octave.html.
 
 If for some reason you can't (or choose not to) install Octave from
@@ -104,7 +104,11 @@ part of egcs (http://www.cygnus.com/egcs).
 Problems with g77 on Debian 1.2 systems (and possibly others)
 -------------------------------------------------------------
 
-The location of the compiler binaries has changed, so the g77 0.5.18
+Your best bet is to upgrade to Debian 1.3 (or some newer version).
+If you choose not to do that, here are some old tips for working
+around the problem.
+
+The location of the compiler binaries changed, so the g77 0.5.18
 package can not be used without modification.  The problem is that the
 Debian package was built for gcc 2.7.2 and not 2.7.2.1 and the f771
 backend is installed in the wrong directory.
@@ -143,4 +147,4 @@ jwe@bevo.che.wisc.edu
 University of Wisconsin-Madison
 Department of Chemical Engineering
 
-Tue Feb  3 02:37:37 1998
+Tue Feb  3 13:08:02 1998

@@ -283,7 +283,7 @@ show_fsolve_option (const string& keyword)
   return retval;
 }
 
-DEFUN_DLD_BUILTIN (fsolve_options, args, nargout,
+DEFUN_DLD_BUILTIN (fsolve_options, args, ,
   "fsolve_options (KEYWORD, VALUE)\n\
 \n\
 Set or show options for fsolve.  Keywords may be abbreviated\n\

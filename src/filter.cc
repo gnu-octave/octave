@@ -38,17 +38,17 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-obj.h"
 #include "help.h"
 
-extern Array<double>
-filter (Array<double>&, Array<double>&, Array<double>&);
+extern MArray<double>
+filter (MArray<double>&, MArray<double>&, MArray<double>&);
 
-extern Array<Complex>
-filter (Array<Complex>&, Array<Complex>&, Array<Complex>&);
+extern MArray<Complex>
+filter (MArray<Complex>&, MArray<Complex>&, MArray<Complex>&);
 
 template <class T>
-Array<T>
-filter (Array<T>& b, Array<T>& a, Array<T>& x, Array<T>& si)
+MArray<T>
+filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si)
 {
-  Array<T> y;
+  MArray<T> y;
 
   int a_len  = a.length ();
   int b_len  = b.length ();
@@ -127,22 +127,24 @@ filter (Array<T>& b, Array<T>& a, Array<T>& x, Array<T>& si)
   return y;
 }
 
-extern Array<double>
-filter (Array<double>&, Array<double>&, Array<double>&, Array<double>&);
+extern MArray<double>
+filter (MArray<double>&, MArray<double>&, MArray<double>&,
+	MArray<double>&);
 
-extern Array<Complex>
-filter (Array<Complex>&, Array<Complex>&, Array<Complex>&, Array<Complex>&);
+extern MArray<Complex>
+filter (MArray<Complex>&, MArray<Complex>&, MArray<Complex>&,
+	MArray<Complex>&);
 
 template <class T>
-Array<T>
-filter (Array<T>& b, Array<T>& a, Array<T>& x)
+MArray<T>
+filter (MArray<T>& b, MArray<T>& a, MArray<T>& x)
 {
   int a_len = a.length ();
   int b_len = b.length ();
 
   int si_len = (a_len > b_len ? a_len : b_len) - 1;
 
-  Array<T> si (si_len, 0.0);
+  MArray<T> si (si_len, 0.0);
 
   return filter (b, a, x, si);
 }
@@ -273,17 +275,19 @@ implementation.")
   return retval;
 }
 
-template Array<double>
-filter (Array<double>&, Array<double>&, Array<double>&, Array<double>&);
+template MArray<double>
+filter (MArray<double>&, MArray<double>&, MArray<double>&,
+	MArray<double>&);
 
-template Array<double>
-filter (Array<double>&, Array<double>&, Array<double>&);
+template MArray<double>
+filter (MArray<double>&, MArray<double>&, MArray<double>&);
 
-template Array<Complex>
-filter (Array<Complex>&, Array<Complex>&, Array<Complex>&, Array<Complex>&);
+template MArray<Complex>
+filter (MArray<Complex>&, MArray<Complex>&, MArray<Complex>&,
+	MArray<Complex>&);
 
-template Array<Complex>
-filter (Array<Complex>&, Array<Complex>&, Array<Complex>&);
+template MArray<Complex>
+filter (MArray<Complex>&, MArray<Complex>&, MArray <Complex>&);
 
 /*
 ;;; Local Variables: ***

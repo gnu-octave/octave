@@ -1,0 +1,128 @@
+#
+# Makefile for octave's src directory
+#
+# John W. Eaton
+# jwe@bevo.che.wisc.edu
+# University of Wisconsin-Madison
+# Department of Chemical Engineering
+
+TARGETS = octave-bug mkoctfile libcruft liboctave kpathsea info dlfcn \
+	src scripts doc check octave.info INSTALL.OCTAVE BUGS \
+	install uninstall tags TAGS dist conf-dist snapshot snapshot-version
+
+NO_DEP_TARGETS = clean mostlyclean distclean maintainer-clean
+
+all: header-msg config-check
+	$(MAKE) -f octMakefile all
+
+$(TARGETS): FORCE
+	$(MAKE) -f octMakefile $@
+
+$(NO_DEP_TARGETS): FORCE
+	$(MAKE) -f octMakefile omit_deps=true $@
+
+install-strip:
+	$(MAKE) -f octMakefile INSTALL_PROGRAM='${INSTALL} -s' install
+
+binary-dist: FORCE
+	@echo "***"
+	@echo "*** you must specify either static or dynamic:"
+	@echo "***"
+	@echo "*** make dynamic-binary-dist"
+	@echo "***"
+	@echo "***   dynamically linked version typically including support"
+	@echo "***   for shared libraried and dynamically linked functions"
+	@echo "***"
+	@echo "*** make static-binary-dist"
+	@echo "***"
+	@echo "***   statically linked version"
+	@echo "***"
+
+static-binary-dist: FORCE
+	$(MAKE) -f octMakefile DIST_TYPE=static binary-dist
+
+dynamic-binary-dist: FORCE
+	$(MAKE) -f octMakefile DIST_TYPE=dynamic binary-dist
+
+# Maybe this message will prevent people from asking why the
+# Makefiles don't work for them.  Maybe not.
+
+header-msg: FORCE
+	@echo ""
+	@echo "**********************************************************"
+	@echo "*                                                        *"
+	@echo "*  To compile Octave, you will need a recent version of  *"
+	@echo "*  GNU Make.                                             *"
+	@echo "*                                                        *"
+	@echo "*  You will also need g++ and libg++.                    *"
+	@echo "*                                                        *"
+	@echo "*  This version of Octave has been developed with        *"
+	@echo "*  version 2.7.2.   You probably won't get very far      *"
+	@echo "*  with earlier versions.  Later versions may work,      *"
+	@echo "*  but C++ is still evolving, so don't be too surprised  *"
+	@echo "*  if you run into some trouble.                         *"
+	@echo "*                                                        *"
+	@echo "*  Now would be a good time to read INSTALL.OCTAVE if    *"
+	@echo "*  you have not done so already.                         *"
+	@echo "*                                                        *"
+	@echo "**********************************************************"
+	@echo ""
+
+help: header-msg
+	@echo ""
+	@echo "For more information, please read the files INSTALL,"
+	@echo "INSTALL.OCTAVE, and any other system-specific README"
+	@echo "files that apply (e.g., README.Linux)."
+	@echo ""
+	@echo "The following targets are available:"
+	@echo ""
+	@echo "  all                  build everything"
+	@echo "  check                run self tests"
+	@echo "  install              install files"
+	@echo "  install-strip        same as install but strip binaries"
+	@echo "  uninstall            delete installed files"
+	@echo ""
+	@echo "  dist                 create a source distribution"
+	@echo "  conf-dist            create a config files distribution"
+	@echo "  static-binary-dist   create a binary distribution"
+	@echo "  dynamic-binary-dist  create a binary distribution"
+	@echo ""
+	@echo "  clean                remove files created by make all"
+	@echo "  mostlyclean          remove most files created by make all"
+	@echo "  distclean            remove all files not in distribution"
+	@echo "  maintainer-clean     clean up everything"
+	@echo ""
+	@echo "  octave-bug           create octave-bug script"
+	@echo "  mkoctfile            create mkoctfile script"
+	@echo "  INSTALL.OCTAVE       create INSTALL.OCTAVE doc file"
+	@echo "  BUGS                 create BUGS doc file"
+	@echo "  tags                 create tags files"
+	@echo "  TAGS                 create TAGS files"
+	@echo ""
+	@echo "  dlfcn                make all in subdirectory dlfcn"
+	@echo "  doc                  make all in subdirectory doc"
+	@echo "  info                 make all in subdirectory info"
+	@echo "  kpathsea             make all in subdirectory kpathsea"
+	@echo "  libcruft             make all in subdirectory libcruft"
+	@echo "  liboctave            make all in subdirectory liboctave"
+	@echo "  scripts              make all in subdirectory scripts"
+	@echo "  src                  make all in subdirectory src"
+	@echo ""
+	@echo "  help                 print this message"
+	@echo ""
+
+config-check:
+	@if test -f octMakefile ; then \
+	  true ; \
+	else \
+	  echo "" ; \
+	  echo "*** You must run configure before running make." ; \
+	  echo "***" ; \
+	  echo "*** Please read the INSTALL and INSTALL.OCTAVE files" ; \
+	  echo "*** for more information about how to configure and" ; \
+	  echo "*** compile Octave." ; \
+	  echo "" ; \
+	  exit 1 ; \
+	fi
+
+FORCE:

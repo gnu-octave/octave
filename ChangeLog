@@ -1,3 +1,10 @@
+2002-12-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* mkoctfile.in: Also define LIBKPATHSEA and include it when
+	linking stand alone files.  Define LIBOCTAVE, LIBOCTINTERP,
+	LIBCRUFT, LIBREADLINE, and LIBKPATHSEA using -lLIB.
+	Include $LIBOCTINTERP in the stand alone link command.
+
 2002-12-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makeconf.in (do-script-install, do-script-uninstall):

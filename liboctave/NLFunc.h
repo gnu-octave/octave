@@ -31,32 +31,60 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class ColumnVector;
 class Matrix;
 
-#ifndef Vector
-#define Vector ColumnVector
-#endif
-
-typedef Vector (*nonlinear_fcn) (const Vector&);
-typedef Matrix (*jacobian_fcn) (const Vector&);
+typedef ColumnVector (*nonlinear_fcn) (const ColumnVector&);
+typedef Matrix (*jacobian_fcn) (const ColumnVector&);
 
 class NLFunc
 {
 public:
 
-  NLFunc (void);
-  NLFunc (const nonlinear_fcn);
-  NLFunc (const nonlinear_fcn, const jacobian_fcn);
+  NLFunc (void)
+    {
+      fun = 0;
+      jac = 0;
+    }
 
-  NLFunc (const NLFunc& a);
+  NLFunc (const nonlinear_fcn f)
+    {
+      fun = f;
+      jac = 0;
+    }
 
-  NLFunc& operator = (const NLFunc& a);
+  NLFunc (const nonlinear_fcn f, const jacobian_fcn j)
+    {
+      fun = f;
+      jac = j;
+    }
 
-  nonlinear_fcn function (void) const;
+  NLFunc (const NLFunc& a)
+    {
+      fun = a.function ();
+      jac = a.jacobian_function ();
+    }
 
-  NLFunc& set_function (const nonlinear_fcn f);
+  NLFunc& operator = (const NLFunc& a)
+    {
+      fun = a.function ();
+      jac = a.jacobian_function ();
 
-  jacobian_fcn jacobian_function (void) const;
+      return *this;
+    }
 
-  NLFunc& set_jacobian_function (const jacobian_fcn j);
+  nonlinear_fcn function (void) const { return fun; }
+
+  NLFunc& set_function (const nonlinear_fcn f)
+    {
+      fun = f;
+      return *this;
+    }
+
+  jacobian_fcn jacobian_function (void) const { return jac; }
+
+  NLFunc& set_jacobian_function (const jacobian_fcn j)
+    {
+      jac = j;
+      return *this;
+    }
 
 protected:
 

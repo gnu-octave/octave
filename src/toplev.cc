@@ -887,7 +887,6 @@ DEFUN (octave_config_info, , ,
   m ["CXXPICFLAG"] = CXXPICFLAG;
   m ["LDFLAGS"] = LDFLAGS;
   m ["LIBFLAGS"] = LIBFLAGS;
-  m ["RLD_FLAG"] = RLD_FLAG;
   m ["CXXLIBS"] = CXXLIBS;
   m ["TERMLIBS"] = TERMLIBS;
   m ["LIBS"] = LIBS;

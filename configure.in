@@ -21,7 +21,7 @@ dnl Copyright (C) 1996 John W. Eaton
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA. 
 
-AC_REVISION($Revision: 1.249 $)
+AC_REVISION($Revision: 1.250 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -724,7 +724,7 @@ AC_CHECK_FUNCS(atexit bcopy bzero dup2 endgrent endpwent execvp fcntl \
   lstat memmove mkdir mkfifo on_exit pipe putenv rename rindex rmdir \
   setgrent setpwent setvbuf sigaction sigpending sigprocmask \
   sigsuspend stat strcasecmp strdup strerror stricmp strncasecmp \
-  strnicmp tempnam umask unlink vfprintf vsprintf waitpid)
+  strnicmp tempnam umask unlink usleep vfprintf vsprintf waitpid)
 
 OCTAVE_SMART_PUTENV
 OCTAVE_PROGRAM_INVOCATION_NAME

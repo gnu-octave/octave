@@ -104,10 +104,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define LIBFLAGS %LIBFLAGS%
 #endif
 
-#ifndef RLD_FLAG
-#define RLD_FLAG %RLD_FLAG%
-#endif
-
 #ifndef CXXLIBS
 #define CXXLIBS %CXXLIBS%
 #endif

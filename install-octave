@@ -226,13 +226,15 @@ do
   cp $f $octfiledir/$file
   chmod 755 $octfiledir/$file
 done
-cat links-to-make | while read src dest
-do
-  if test -n "$src" && test -n "$dest"; then
-    cd $octfiledir
-    ln $src $dest
-  fi
-done
+if test -f links-to-make; then
+  cat links-to-make | while read src dest
+  do
+    if test -n "$src" && test -n "$dest"; then
+      cd $octfiledir
+      ln $src $dest
+    fi
+  done
+fi
 cd $distdir
 
 echo "installing .m files in $fcnfiledir"

@@ -1,5 +1,6 @@
 Mon Jan 27 00:10:10 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* configure.in: Add check for usleep().
 	* Makefile.in: Delete `internal' targets.
 	(static-binary-dist, dynamic-binary-dist): Special cases.
 

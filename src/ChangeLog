@@ -1,3 +1,11 @@
+Mon Jan 27 12:12:03 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* sysdep.cc (Fsleep): New function.
+	(Fusleep): New function.
+
+	* toplev.cc (octave_config_info): Don't include RLD_FLAG.
+	* oct-conf.h.in: Don't define RLD_FLAG
+
 Sun Jan 26 19:41:48 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* sighandlers.cc (sigchld_handler): Block SIGCHLD while

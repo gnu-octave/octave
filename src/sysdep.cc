@@ -521,6 +521,8 @@ DEFUN (pause, args, ,
 	{
 	  if (xisnan (dval))
 	    warning ("pause: NaN is an invalid delay");
+	  else if (xisinf (dval))
+	    kbhit ();
 	  else
 	    {
 	      int delay = NINT (dval);
@@ -530,10 +532,68 @@ DEFUN (pause, args, ,
 	}
     }
   else
+    kbhit ();
+
+  return retval;
+}
+
+DEFUN (sleep, args, ,
+  "sleep (seconds): suspend program execution")
+{
+  octave_value_list retval;
+
+  if (args.length () == 1)
     {
-      if (kbhit () == EOF)
-	clean_up_and_exit (0);
+      double dval = args(0).double_value ();
+
+      if (! error_state)
+	{
+	  if (xisnan (dval))
+	    warning ("sleep: NaN is an invalid delay");
+	  else
+	    {
+	      int delay = NINT (dval);
+	      if (delay > 0)
+		sleep (delay);
+	    }
+	}
     }
+  else
+    print_usage ("sleep");
+
+  return retval;
+}
+
+DEFUN (usleep, args, ,
+  "usleep (microseconds): suspend program execution")
+{
+  octave_value_list retval;
+
+  if (args.length () == 1)
+    {
+      double dval = args(0).double_value ();
+
+      if (! error_state)
+	{
+	  if (xisnan (dval))
+	    warning ("usleep: NaN is an invalid delay");
+	  else
+	    {
+	      int delay = NINT (dval);
+#if defined (HAVE_USLEEP)
+	      if (delay > 0)
+		usleep (delay);
+#else
+	      // Kluge alert.
+
+	      if (delay > 500000)
+		sleep (delay / 1000000);
+#endif
+	    }
+	}
+    }
+  else
+    print_usage ("usleep");
 
   return retval;
 }

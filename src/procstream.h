@@ -66,7 +66,7 @@ private:
 };
 
 class
-iprocstream : public procstreambase, public istream
+iprocstream : public procstreambase, public std::istream
 {
 public:
 
@@ -88,7 +88,7 @@ private:
 };
 
 class
-oprocstream : public procstreambase, public ostream
+oprocstream : public procstreambase, public std::ostream
 {
 public:
  
@@ -110,7 +110,7 @@ private:
 };
 
 class
-procstream : public procstreambase, public iostream
+procstream : public procstreambase, public std::iostream
 {
 public:
 

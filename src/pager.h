@@ -46,7 +46,7 @@ protected:
 };
 
 class
-octave_pager_stream : public ostream
+octave_pager_stream : public std::ostream
 {
 protected:
 
@@ -86,7 +86,7 @@ protected:
 };
 
 class
-octave_diary_stream : public ostream
+octave_diary_stream : public std::ostream
 {
 protected:
 

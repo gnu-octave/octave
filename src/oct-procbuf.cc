@@ -56,7 +56,28 @@ static octave_procbuf *octave_procbuf_list = 0;
 octave_procbuf *
 octave_procbuf::open (const char *command, int mode)
 {
-#if defined (HAVE_SYS_WAIT_H)
+#if defined (__CYGWIN32__)
+
+  if (is_open ()) 
+    return 0;
+
+  f = popen (command, (mode & std::ios::in) ? "r" : "w");
+
+  if (! f)
+    return 0;
+
+  // Oops... popen doesn't return the associated pid, so fake it for now
+
+  proc_pid = 1;
+
+  open_p = true;
+
+  if (mode & std::ios::out)
+    ::setvbuf (f, 0, _IOLBF, 0);
+
+  return this;
+  
+#elif defined (HAVE_SYS_WAIT_H)
 
   int pipe_fds[2];
 
@@ -144,7 +165,19 @@ octave_procbuf::open (const char *command, int mode)
 octave_procbuf *
 octave_procbuf::close (void)
 {
-#if defined (HAVE_SYS_WAIT_H)
+#if defined (__CYGWIN32__)
+
+  if (f)
+    {
+      wstatus = ::pclose (f);
+      f = 0;
+    }
+
+  open_p = false;
+
+  return this;
+  
+#elif defined (HAVE_SYS_WAIT_H)
 
   if (f)
     {

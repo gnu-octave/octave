@@ -138,7 +138,7 @@ install::
 	  $(LN_S) libcruft.$(SHLLIB_VER) $(DESTDIR)$(octlibdir)/libcruft.$(SHLLIB); \
 	  if  test x$(SHLBIN) != x ; then \
 	    rm -f $(DESTDIR)$(bindir)/libcruft.$(SHLBIN); \
-	    $(INSTALL_PROGRAM) \
+	    $(INSTALL) \
 	      libcruft.$(SHLBIN) $(DESTDIR)$(bindir)/libcruft.$(SHLBIN); \
 	  fi; \
 	fi

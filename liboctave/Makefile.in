@@ -253,7 +253,7 @@ install-lib:
 	  $(LN_S) liboctave.$(SHLLIB_VER) $(DESTDIR)$(octlibdir)/liboctave.$(SHLLIB); \
 	  if  test x$(SHLBIN) != x ; then \
 	    rm -f $(DESTDIR)$(bindir)/liboctave.$(SHLBIN); \
-	    $(INSTALL_PROGRAM) \
+	    $(INSTALL) \
 	      liboctave.$(SHLBIN) $(DESTDIR)$(bindir)/liboctave.$(SHLBIN); \
 	  fi; \
 	fi

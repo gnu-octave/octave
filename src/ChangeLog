@@ -1,3 +1,13 @@
+2003-07-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (install-lib): Use $(INSTALL), not
+	$(INSTALL_PROGRAM) for $(SHLBIN) files.
+
+2003-07-29  Paul Kienzle <pkienzle@users.sf.net>
+
+	* Makefile.in: Don't need special system.c for Cygwin.
+	* oct-procbuf.cc: Use popen rather than fork/exec for Windows.
+
 2003-07-28  Paul Kienzle <pkienzle@users.sf.net>
 
 	* sysdep.cc (CYGWIN_init): Convert TMPDIR to system agnostic path.

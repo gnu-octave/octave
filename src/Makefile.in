@@ -129,7 +129,7 @@ DIST_SRC := Cell.cc c-file-ptr-stream.cc comment-list.cc \
 	oct-strstrm.cc oct-lvalue.cc pager.cc parse.y \
 	pr-output.cc procstream.cc sighandlers.cc \
 	siglist.c strcasecmp.c strncase.c strfns.cc symtab.cc \
-	syscalls.cc sysdep.cc system.c token.cc toplev.cc \
+	syscalls.cc sysdep.cc token.cc toplev.cc \
 	unwind-prot.cc utils.cc variables.cc xdiv.cc xpow.cc \
 	$(OV_SRC) \
 	$(PT_SRC)
@@ -372,7 +372,7 @@ install-lib:
 	  $(LN_S) liboctinterp.$(SHLLIB_VER) $(DESTDIR)$(octlibdir)/liboctinterp.$(SHLLIB); \
 	  if  test x$(SHLBIN) != x ; then \
 	    rm -f $(DESTDIR)$(bindir)/liboctinterp.$(SHLBIN); \
-	    $(INSTALL_PROGRAM) \
+	    $(INSTALL) \
 	      liboctinterp.$(SHLBIN) $(DESTDIR)$(bindir)/liboctinterp.$(SHLBIN); \
 	  fi; \
 	fi

@@ -66,22 +66,28 @@ c_file_ptr_buf::overflow (int_type c)
 }
 
 c_file_ptr_buf::int_type
-c_file_ptr_buf::underflow (void)
+c_file_ptr_buf::underflow_common (bool bump)
 {
   if (f)
-    return fgetc (f);
+    {
+      int_type c = fgetc (f);
+
+      if (! bump
+#if defined (CXX_ISO_COMPLIANT_LIBRARY)
+	  && c != traits_type::eof ())
+#else
+	  && c != EOF)
+#endif
+	ungetc (c, f);
+
+      return c;
+    }
   else
 #if defined (CXX_ISO_COMPLIANT_LIBRARY)
     return traits_type::eof ();
 #else
     return EOF;
 #endif
-}
-
-c_file_ptr_buf::int_type
-c_file_ptr_buf::uflow (void)
-{
-  return underflow ();
 }
 
 c_file_ptr_buf::int_type

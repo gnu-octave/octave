@@ -1,3 +1,12 @@
+2003-01-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* c-file-ptr-stream.cc (c_file_ptr_buf::underflow_common): New
+	function.
+	* c-file-ptr-stream.h (c_file_ptr_buf::underflow,
+	c_file_ptr_buf::uflow): Use it.
+	(c_file_ptr_buf): Derive from std::streambuf, not OCTAVE_STD_FILEBUF.
+	Don't cache file descriptor.
+
 2003-01-28  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* DLD-FUNCTIONS/minmax.cc: Move min and max functions from here to

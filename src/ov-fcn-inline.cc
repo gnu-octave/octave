@@ -357,5 +357,3 @@ by replacing all occurrences of @code{*}, @code{/}, etc., with\n\
 ;;; mode: C++ ***
 ;;; End: ***
 */
-
-

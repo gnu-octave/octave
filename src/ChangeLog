@@ -1,5 +1,7 @@
 2004-09-06  John W. Eaton  <jwe@octave.org>
 
+	* ov.cc (install_types): Call octave_fcn_inline::register_type.
+
 	* version.h (OCTAVE_API_VERSION): Now api-v10.
 
 	* OPERATORS/op-b-b.cc, OPERATORS/op-bm-bm.cc: Define and install

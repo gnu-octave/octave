@@ -66,10 +66,11 @@ SOURCES = arith-ops.cc data.cc dirfns.cc dynamic-ld.cc \
 	error.cc file-io.cc fnmatch.c getopt.c getopt1.c gripes.cc \
 	help.cc idx-vector.cc input.cc lex.l mappers.cc octave.cc \
 	oct-obj.cc octave-hist.cc pager.cc parse.y pr-output.cc \
-	procstream.cc sighandlers.cc strcasecmp.c strncase.c symtab.cc \
-	sysdep.cc tc-rep.cc timefns.cc token.cc tree-cmd.cc \
-	tree-const.cc tree-expr.cc tree-plot.cc unwind-prot.cc \
-	user-prefs.cc utils.cc variables.cc xdiv.cc xpow.cc SLStack.cc \
+	procstream.cc sighandlers.cc strcasecmp.c strncase.c \
+	symtab.cc sysdep.cc tc-inlines.cc tc-rep.cc timefns.cc \
+	token.cc tree-cmd.cc tree-const.cc tree-expr.cc tree-plot.cc \
+	unwind-prot.cc user-prefs.cc utils.cc variables.cc xdiv.cc \
+	xpow.cc SLStack.cc \
 	$(DLD_SRC)
 
 # Ugh.

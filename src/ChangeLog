@@ -1,3 +1,8 @@
+2001-01-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* error.cc (pr_where): Call pr_where_1 with two args, not one, to
+	avoid processing format escapes that might appear in formatted code.
+
 2001-01-05  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* error.cc (vwarning): Write to output_buf, then send formatted

@@ -278,17 +278,17 @@ pr_where (const char *name)
 
       std::ostrstream output_buf;
 
-      output_buf << "\n";
+      output_buf << std::endl;
 
       tree_print_code tpc (output_buf, ">>> ");
 
       curr_statement->accept (tpc);
 
-      output_buf << "\n" << ends;
+      output_buf << std::endl << std::ends;
 
       char *msg = output_buf.str ();
 
-      pr_where_1 (msg);
+      pr_where_1 ("%s", msg);
 
       delete [] msg;
     }

@@ -52,22 +52,22 @@ Free Software Foundation, Inc.
 
 // This mess suggested by the autoconf manual.
 // unistd.h defines _POSIX_VERSION on POSIX.1 systems.
-#if defined(DIRENT) || defined(_POSIX_VERSION)
+#if defined (HAVE_DIRENT_H) || defined (_POSIX_VERSION)
 #include <dirent.h>
 #define NLENGTH(dirent) (strlen((dirent)->d_name))
-#else /* not (DIRENT or _POSIX_VERSION) */
+#else
 #define dirent direct
 #define NLENGTH(dirent) ((dirent)->d_namlen)
-#ifdef SYSNDIR
+#if defined (HAVE_SYS_NDIR_H)
 #include <sys/ndir.h>
-#endif /* SYSNDIR */
-#ifdef SYSDIR
+#endif
+#if defined (HAVE_SYS_DIR_H)
 #include <sys/dir.h>
-#endif /* SYSDIR */
-#ifdef NDIR
+#endif
+#if defined (HAVE_NDIR_H)
 #include <ndir.h>
-#endif /* NDIR */
-#endif /* not (DIRENT or _POSIX_VERSION) */
+#endif
+#endif
 
 #include "statdefs.h"
 #include "procstream.h"

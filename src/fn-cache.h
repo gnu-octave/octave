@@ -23,6 +23,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_fn_cache_h)
 #define octave_fn_cache_h 1
 
+#include <ctime>
+
 #include <string>
 
 #include "Map.h"

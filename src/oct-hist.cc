@@ -107,7 +107,10 @@ default_history_file (void)
   if (file.empty ())
     {
       if (! home_directory.empty ())
-	file = home_directory.append ("/.octave_hist");
+	{
+	  file = home_directory;
+	  file.append ("/.octave_hist");
+	}
       else
 	file = ".octave_hist";
     }

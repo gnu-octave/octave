@@ -53,8 +53,10 @@ liboctave.dvi: $(TEXINFO) ../conf.texi
 liboctave.ps: liboctave.dvi
 	-dvips -o liboctave.ps liboctave.dvi
 
+# These option forms are supported by texi2html 1.65 and probably also
+# more recent versions.
 liboctave_toc.html:
-	-texi2html -expandinfo -split_chapter -I $(srcdir)/.. \
+	-texi2html -expand info -split chapter -I $(srcdir)/.. \
 	  $(srcdir)/liboctave.texi
 
 check:

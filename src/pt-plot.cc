@@ -854,7 +854,7 @@ save_in_tmp_file (tree_constant& t, int ndim, int parametric)
 	  switch (ndim)
 	    {
 	    case 2:
-	      save_ascii_data (file, t);
+	      save_ascii_data (file, t, 0, 1);
 	      break;
 
 	    case 3:

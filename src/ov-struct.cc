@@ -115,7 +115,7 @@ octave_struct::subsref (const std::string& type,
 		    idx_vector i = t_idx(0).index_vector ();
 		    octave_value_list t = tmp.index (i);
 
-		    retval = (t.length () == 1) ? t(0) : octave_value (t);
+		    retval = (t.length () == 1) ? t(0) : octave_value (t, true);
 
 		    // We handled two index elements, so tell
 		    // next_subsref to skip both of them.
@@ -145,7 +145,7 @@ octave_struct::subsref (const std::string& type,
       {
 	octave_value_list t = dotref (idx.front ());
 
-	retval = (t.length () == 1) ? t(0) : octave_value (t);
+	retval = (t.length () == 1) ? t(0) : octave_value (t, true);
       }
       break;
 
@@ -422,7 +422,7 @@ octave_struct::print_raw (std::ostream& os, bool) const
 	  std::string key = map.key (p);
 	  octave_value_list val = map.contents (p);
 
-	  octave_value tmp = (n == 1) ? val(0) : octave_value (val);
+	  octave_value tmp = (n == 1) ? val(0) : octave_value (val, true);
 
 	  if (print_keys_only)
 	    {

@@ -99,10 +99,12 @@ public:
 
   bool print_name_tag (std::ostream& os, const std::string& name) const;
 
-private:
+protected:
 
   // The list of Octave values.
   octave_value_list lst;
+
+private:
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 

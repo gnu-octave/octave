@@ -226,8 +226,10 @@ octave_list::print (std::ostream& os, bool) const
   print_raw (os);
 }
 
+#endif
+
 void
-octave_list::print_raw (std::ostream& os, bool) const
+octave_cs_list::print_raw (std::ostream& os, bool) const
 {
   unwind_protect::begin_frame ("octave_list_print");
 
@@ -236,7 +238,7 @@ octave_list::print_raw (std::ostream& os, bool) const
   if (n > 0)
     {
       indent (os);
-      os << "(";
+      os << "(,";
       newline (os);
 
       increment_indent_level ();
@@ -256,15 +258,17 @@ octave_list::print_raw (std::ostream& os, bool) const
       decrement_indent_level ();
 
       indent (os);
-      os << ")";
+      os << ",)";
     }
   else
-    os << "()";
+    os << "(,,)";
 
   newline (os);
 
   unwind_protect::run_frame ("octave_list_print");
 }
+
+#if 0
 
 bool
 octave_list::print_name_tag (std::ostream& os, const std::string& name) const

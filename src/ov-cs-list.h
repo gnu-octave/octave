@@ -94,9 +94,14 @@ public:
 
   void print (std::ostream& os, bool pr_as_read_syntax = false) const;
 
+#endif
+
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
+#if 0
+
   bool print_name_tag (std::ostream& os, const std::string& name) const;
+
 #endif
 
 private:

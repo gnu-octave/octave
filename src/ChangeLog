@@ -1,5 +1,7 @@
 2004-08-02  John W. Eaton  <jwe@octave.org>
 
+	* ov-fcn-handle.cc (octave_value::subsref): New function.
+
 	* ov-cx-mat.cc (try_narrowing_conversion): Also allow complex to
 	real conversion for N-d arrays.
 

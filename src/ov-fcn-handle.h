@@ -148,6 +148,17 @@ public:
   octave_value *clone (void) const { return new octave_fcn_handle (*this); }
   octave_value *empty_clone (void) const { return new octave_fcn_handle (); }
 
+  octave_value subsref (const std::string&,
+			const std::list<octave_value_list>&)
+    {
+      panic_impossible ();
+      return octave_value ();
+    }
+
+  octave_value_list subsref (const std::string& type,
+			     const std::list<octave_value_list>& idx,
+			     int nargout);
+
   bool is_matrix_type (void) const { return false; }
 
   bool is_numeric_type (void) const { return false; }

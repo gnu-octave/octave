@@ -79,6 +79,45 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_fcn_handle,
 				     "function handle",
 				     "function handle");
 
+octave_value_list
+octave_fcn_handle::subsref (const std::string& type,
+			    const std::list<octave_value_list>& idx,
+			    int nargout)
+{
+  octave_value_list retval;
+
+  switch (type[0])
+    {
+    case '(':
+      {
+	octave_function *f = function_value ();
+	retval = f->subsref (type, idx, nargout);
+      }
+      break;
+
+
+    case '{':
+    case '.':
+      {
+	std::string nm = type_name ();
+	error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
+      }
+      break;
+
+    default:
+      panic_impossible ();
+    }
+
+  // XXX FIXME XXX -- perhaps there should be an
+  // octave_value_list::next_subsref member function?  See also
+  // octave_builtin::subsref.
+
+  if (idx.size () > 1)
+    retval = retval(0).next_subsref (type, idx);
+
+  return retval;
+}
+
 octave_function *
 octave_fcn_handle::function_value (bool)
 {

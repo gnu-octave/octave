@@ -1,5 +1,7 @@
 2005-02-21  John W. Eaton  <jwe@octave.org>
 
+	* statistics/base/qqplot.m: Use feval instead of eval.
+
 	* plot/grid.m, plot/plot_border.m, plot/title.m, plot/top_title.m,
 	plot/__axis_label__.m: Issue replot command.
 

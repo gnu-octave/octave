@@ -58,9 +58,7 @@ octave_rl_enable_paren_matching (int val)
 void
 octave_rl_clear_screen (void)
 {
-  extern void _rl_clear_screen ();
-
-  _rl_clear_screen ();
+  rl_clear_screen ();
 }
 
 void

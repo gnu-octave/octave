@@ -1,3 +1,8 @@
+Thu Oct 24 21:31:42 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* config.guess: Update to same version as used in Octave.
+	* config.sub: Likewise.
+
 Mon Oct 14 11:08:04 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (clean targets): Remove stamp-history and

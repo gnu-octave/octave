@@ -672,7 +672,7 @@ Matrix::fourier (void) const
   Array<Complex> wsave (nn);
   Complex *pwsave = wsave.fortran_vec ();
 
-  retval = *this;
+  retval = ComplexMatrix (*this);
   Complex *tmp_data = retval.fortran_vec ();
 
   F77_FCN (cffti, CFFTI) (npts, pwsave);
@@ -709,7 +709,7 @@ Matrix::ifourier (void) const
   Array<Complex> wsave (nn);
   Complex *pwsave = wsave.fortran_vec ();
 
-  retval = *this;
+  retval = ComplexMatrix (*this);
   Complex *tmp_data = retval.fortran_vec ();
 
   F77_FCN (cffti, CFFTI) (npts, pwsave);
@@ -749,7 +749,7 @@ Matrix::fourier2d (void) const
   Array<Complex> wsave (nn);
   Complex *pwsave = wsave.fortran_vec ();
 
-  retval = *this;
+  retval = ComplexMatrix (*this);
   Complex *tmp_data = retval.fortran_vec ();
 
   F77_FCN (cffti, CFFTI) (npts, pwsave);
@@ -809,7 +809,7 @@ Matrix::ifourier2d (void) const
   Array<Complex> wsave (nn);
   Complex *pwsave = wsave.fortran_vec ();
 
-  retval = *this;
+  retval = ComplexMatrix (*this);
   Complex *tmp_data = retval.fortran_vec ();
 
   F77_FCN (cffti, CFFTI) (npts, pwsave);

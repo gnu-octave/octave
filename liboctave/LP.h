@@ -28,7 +28,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "LinConst.h"
 #include "base-min.h"
 
-class LP : public base_minimizer
+class
+LP : public base_minimizer
 {
 public:
 

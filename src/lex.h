@@ -112,7 +112,8 @@ extern void check_for_garbage_after_fcn_def (void);
 
 // For communication between the lexer and parser.
 
-class lexical_feedback
+class
+lexical_feedback
 {
 public:
 

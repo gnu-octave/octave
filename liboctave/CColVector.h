@@ -31,7 +31,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "mx-defs.h"
 
-class ComplexColumnVector : public MArray<Complex>
+class
+ComplexColumnVector : public MArray<Complex>
 {
 friend class ComplexMatrix;
 friend class ComplexRowVector;
@@ -39,11 +40,17 @@ friend class ComplexRowVector;
 public:
 
   ComplexColumnVector (void) : MArray<Complex> () { }
-  ComplexColumnVector (int n) : MArray<Complex> (n) { }
-  ComplexColumnVector (int n, const Complex& val) : MArray<Complex> (n, val) { }
-  ComplexColumnVector (const ColumnVector& a);
-  ComplexColumnVector (const MArray<Complex>& a) : MArray<Complex> (a) { }
+
+  explicit ComplexColumnVector (int n) : MArray<Complex> (n) { }
+
+  ComplexColumnVector (int n, const Complex& val)
+    : MArray<Complex> (n, val) { }
+
   ComplexColumnVector (const ComplexColumnVector& a) : MArray<Complex> (a) { }
+
+  ComplexColumnVector (const MArray<Complex>& a) : MArray<Complex> (a) { }
+
+  explicit ComplexColumnVector (const ColumnVector& a);
 
   ComplexColumnVector& operator = (const ComplexColumnVector& a)
     {

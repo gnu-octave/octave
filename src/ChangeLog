@@ -1,5 +1,9 @@
 2000-02-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* error.cc (panic): Turn off buffering of error messages.
+	Don't call flush_octave_stdout here, verror will do it for us.	
+	(verror): Don't call flush_octave_stdout if buffering error messages.
+
 	* pt-except.cc (tree_try_catch_command::eval): Only restore
 	buffer_error_message value (by running the unwind_protect element
 	for it) if it has been saved.

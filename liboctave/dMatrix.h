@@ -36,24 +36,32 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "data-conv.h"
 #include "mach-info.h"
 
-class Matrix : public MArray2<double>
+class
+Matrix : public MArray2<double>
 {
 public:
 
   typedef void (*solve_singularity_handler) (double rcond);
 
   Matrix (void) : MArray2<double> () { }
-  Matrix (int r, int c) : MArray2<double> (r, c) { }
-  Matrix (int r, int c, double val) : MArray2<double> (r, c, val) { }
-  Matrix (const MArray2<double>& a) : MArray2<double> (a) { }
-  Matrix (const Matrix& a) : MArray2<double> (a) { }
-  Matrix (const RowVector& rv);
-  Matrix (const ColumnVector& cv);
-  //  Matrix (const MDiagArray2<double>& a) : MArray2<double> (a) { }
-  Matrix (const DiagMatrix& a);
 
-  Matrix (const boolMatrix& a);
-  Matrix (const charMatrix& a);
+  Matrix (int r, int c) : MArray2<double> (r, c) { }
+
+  Matrix (int r, int c, double val) : MArray2<double> (r, c, val) { }
+
+  Matrix (const Matrix& a) : MArray2<double> (a) { }
+
+  Matrix (const MArray2<double>& a) : MArray2<double> (a) { }
+
+  explicit Matrix (const RowVector& rv);
+
+  explicit Matrix (const ColumnVector& cv);
+
+  explicit Matrix (const DiagMatrix& a);
+
+  explicit Matrix (const boolMatrix& a);
+
+  explicit Matrix (const charMatrix& a);
 
   Matrix& operator = (const Matrix& a)
     {

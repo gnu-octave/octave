@@ -160,7 +160,7 @@ EIG::symmetric_init (const Matrix& a)
   Matrix atmp = a;
   double *tmp_data = atmp.fortran_vec ();
 
-  Array<double> wr (n);
+  ColumnVector wr (n);
   double *pwr = wr.fortran_vec ();
 
   // XXX FIXME XXX -- it might be possible to choose a better value of
@@ -175,19 +175,12 @@ EIG::symmetric_init (const Matrix& a)
 
   if (f77_exception_encountered || info < 0)
     (*current_liboctave_error_handler) ("unrecoverable error in dsyev");
+  else if (info > 0)
+    (*current_liboctave_error_handler) ("dsyev failed to converge");
   else
     {
-      if (info > 0)
-	(*current_liboctave_error_handler) ("dsyev failed to converge");
-      else
-	{
-	  lambda.resize (n);
-
-	  for (int j = 0; j < n; j++)
-	    lambda.elem (j) = Complex (wr.elem (j));
-
-	  v = atmp;
-	}
+      lambda = ComplexColumnVector (wr);
+      v = ComplexMatrix (atmp);
     }
 
   return info;
@@ -264,8 +257,8 @@ EIG::hermitian_init (const ComplexMatrix& a)
   ComplexMatrix atmp = a;
   Complex *tmp_data = atmp.fortran_vec ();
 
-  ColumnVector w (n);
-  double *pw = w.fortran_vec ();
+  ColumnVector wr (n);
+  double *pwr = wr.fortran_vec ();
 
   // XXX FIXME XXX -- it might be possible to choose a better value of
   // lwork that would result in more efficient computations.
@@ -278,7 +271,7 @@ EIG::hermitian_init (const ComplexMatrix& a)
   Array<double> rwork (lrwork);
   double *prwork = rwork.fortran_vec ();
 
-  F77_XFCN (zheev, ZHEEV, ("V", "U", n, tmp_data, n, pw, pwork,
+  F77_XFCN (zheev, ZHEEV, ("V", "U", n, tmp_data, n, pwr, pwork,
 			   lwork, prwork, info, 1L, 1L));
 
   if (f77_exception_encountered || info < 0)
@@ -287,8 +280,8 @@ EIG::hermitian_init (const ComplexMatrix& a)
     (*current_liboctave_error_handler) ("zheev failed to converge");
   else
     {
-      lambda = w;
-      v = atmp;
+      lambda = ComplexColumnVector (wr);
+      v = ComplexMatrix (atmp);
     }
 
   return info;

@@ -440,7 +440,7 @@ product (const ColumnVector& v, const ComplexColumnVector& a)
   if (len != a_len)
     {
       gripe_nonconformant ("product", len, a_len);
-      return ColumnVector ();
+      return ComplexColumnVector ();
     }
 
   if (len == 0)
@@ -459,7 +459,7 @@ quotient (const ColumnVector& v, const ComplexColumnVector& a)
   if (len != a_len)
     {
       gripe_nonconformant ("quotient", len, a_len);
-      return ColumnVector ();
+      return ComplexColumnVector ();
     }
 
   if (len == 0)
@@ -490,7 +490,7 @@ operator * (const DiagMatrix& m, const ComplexColumnVector& a)
   if (nc != a_len)
     {
       gripe_nonconformant ("operator *", nr, nc, a_len, 1);
-      return ColumnVector ();
+      return ComplexColumnVector ();
     }
 
   if (nc == 0 || nr == 0)

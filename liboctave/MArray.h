@@ -39,7 +39,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 MARRAY_OPS_FORWARD_DECLS (MArray)
 
 template <class T>
-class MArray : public Array<T>
+class
+MArray : public Array<T>
 {
 protected:
 
@@ -48,10 +49,14 @@ protected:
 public:
   
   MArray (void) : Array<T> () { }
-  MArray (int n) : Array<T> (n) { }
+
+  explicit MArray (int n) : Array<T> (n) { }
+
   MArray (int n, const T& val) : Array<T> (n, val) { }
-  MArray (const Array<T>& a) : Array<T> (a) { }
+
   MArray (const MArray<T>& a) : Array<T> (a) { }
+
+  MArray (const Array<T>& a) : Array<T> (a) { }
 
   ~MArray (void) { }
 

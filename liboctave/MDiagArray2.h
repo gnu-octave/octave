@@ -40,7 +40,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 MDIAGARRAY2_OPS_FORWARD_DECLS (MDiagArray2)
 
 template <class T>
-class MDiagArray2 : public DiagArray2<T>
+class
+MDiagArray2 : public DiagArray2<T>
 {
 protected:
 
@@ -49,11 +50,16 @@ protected:
 public:
   
   MDiagArray2 (void) : DiagArray2<T> () { }
+
   MDiagArray2 (int r, int c) : DiagArray2<T> (r, c) { }
+
   MDiagArray2 (int r, int c, const T& val) : DiagArray2<T> (r, c, val) { }
-  MDiagArray2 (const Array<T>& a) : DiagArray2<T> (a) { }
-  MDiagArray2 (const DiagArray2<T>& a) : DiagArray2<T> (a) { }
+
   MDiagArray2 (const MDiagArray2<T>& a) : DiagArray2<T> (a) { }
+
+  MDiagArray2 (const DiagArray2<T>& a) : DiagArray2<T> (a) { }
+
+  explicit MDiagArray2 (const Array<T>& a) : DiagArray2<T> (a) { }
 
   ~MDiagArray2 (void) { }
 

@@ -34,29 +34,41 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "mx-op-defs.h"
 #include "oct-cmplx.h"
 
-class ComplexMatrix : public MArray2<Complex>
+class
+ComplexMatrix : public MArray2<Complex>
 {
 public:
  
   typedef void (*solve_singularity_handler) (double rcond);
 
   ComplexMatrix (void) : MArray2<Complex> () { }
+
   ComplexMatrix (int r, int c) : MArray2<Complex> (r, c) { }
+
   ComplexMatrix (int r, int c, const Complex& val)
     : MArray2<Complex> (r, c, val) { }
-  ComplexMatrix (const Matrix& a);
-  ComplexMatrix (const MArray2<Complex>& a) : MArray2<Complex> (a) { }
-  ComplexMatrix (const ComplexMatrix& a) : MArray2<Complex> (a) { }
-  ComplexMatrix (const RowVector& rv);
-  ComplexMatrix (const ColumnVector& cv);
-  ComplexMatrix (const DiagMatrix& a);
-  //  ComplexMatrix (const MDiagArray2<Complex>& a) : MArray2<Complex> (a) { }
-  ComplexMatrix (const ComplexRowVector& rv);
-  ComplexMatrix (const ComplexColumnVector& cv);
-  ComplexMatrix (const ComplexDiagMatrix& a);
 
-  ComplexMatrix (const boolMatrix& a);
-  ComplexMatrix (const charMatrix& a);
+  ComplexMatrix (const ComplexMatrix& a) : MArray2<Complex> (a) { }
+
+  ComplexMatrix (const MArray2<Complex>& a) : MArray2<Complex> (a) { }
+
+  explicit ComplexMatrix (const Matrix& a);
+
+  explicit ComplexMatrix (const RowVector& rv);
+
+  explicit ComplexMatrix (const ColumnVector& cv);
+
+  explicit ComplexMatrix (const DiagMatrix& a);
+
+  explicit ComplexMatrix (const ComplexRowVector& rv);
+
+  explicit ComplexMatrix (const ComplexColumnVector& cv);
+
+  explicit ComplexMatrix (const ComplexDiagMatrix& a);
+
+  explicit ComplexMatrix (const boolMatrix& a);
+
+  explicit ComplexMatrix (const charMatrix& a);
 
   ComplexMatrix& operator = (const ComplexMatrix& a)
     {
@@ -152,6 +164,13 @@ public:
   ComplexMatrix solve (const ComplexMatrix& b, int& info, double& rcond,
 		       solve_singularity_handler sing_handler) const;
 
+  ComplexColumnVector solve (const ColumnVector& b) const;
+  ComplexColumnVector solve (const ColumnVector& b, int& info) const;
+  ComplexColumnVector solve (const ColumnVector& b, int& info,
+			     double& rcond) const;
+  ComplexColumnVector solve (const ColumnVector& b, int& info, double& rcond,
+			     solve_singularity_handler sing_handler) const;
+
   ComplexColumnVector solve (const ComplexColumnVector& b) const;
   ComplexColumnVector solve (const ComplexColumnVector& b, int& info) const;
   ComplexColumnVector solve (const ComplexColumnVector& b, int& info,
@@ -160,10 +179,19 @@ public:
 			     double& rcond,
 			     solve_singularity_handler sing_handler) const;
 
+  ComplexMatrix lssolve (const Matrix& b) const;
+  ComplexMatrix lssolve (const Matrix& b, int& info) const;
+  ComplexMatrix lssolve (const Matrix& b, int& info, int& rank) const;
+
   ComplexMatrix lssolve (const ComplexMatrix& b) const;
   ComplexMatrix lssolve (const ComplexMatrix& b, int& info) const;
   ComplexMatrix lssolve (const ComplexMatrix& b, int& info,
 			 int& rank) const;
+
+  ComplexColumnVector lssolve (const ColumnVector& b) const;
+  ComplexColumnVector lssolve (const ColumnVector& b, int& info) const;
+  ComplexColumnVector lssolve (const ColumnVector& b, int& info,
+			       int& rank) const;
 
   ComplexColumnVector lssolve (const ComplexColumnVector& b) const;
   ComplexColumnVector lssolve (const ComplexColumnVector& b, int& info) const;

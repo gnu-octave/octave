@@ -569,7 +569,7 @@ OP (const M& m, const DM& dm) \
  \
       if (m_nr > 0 && m_nc > 0) \
 	{ \
-	  r = m; \
+	  r = R (m); \
  \
 	  int len = dm.length (); \
  \
@@ -630,14 +630,12 @@ operator * (const M& m, const DM& dm) \
 
 // diagonal matrix by matrix operations.
 
-// XXX FIXME XXX -- DM - M will not give the correct result.
-
 #define DMM_BIN_OP_DECLS(R, DM, M) \
   BIN_OP_DECL (R, operator +, DM, M); \
   BIN_OP_DECL (R, operator -, DM, M); \
   BIN_OP_DECL (R, operator *, DM, M);
 
-#define DMM_BIN_OP(R, OP, DM, M, OPEQ) \
+#define DMM_BIN_OP(R, OP, DM, M, OPEQ, PREOP) \
 R \
 OP (const DM& dm, const M& m) \
 { \
@@ -655,7 +653,7 @@ OP (const DM& dm, const M& m) \
     { \
       if (m_nr > 0 && m_nc > 0) \
 	{ \
-	  r = m; \
+	  r = R (PREOP m); \
  \
 	  int len = dm.length (); \
  \
@@ -709,9 +707,9 @@ operator * (const DM& dm, const M& m) \
 }
 
 #define DMM_BIN_OPS(R, DM, M, ZERO) \
-  DMM_BIN_OP (R, operator +, DM, M, +=) \
-  DMM_BIN_OP (R, operator -, DM, M, -=) \
-  DMM_MULTIPLY_OP(R, DM, M, ZERO)
+  DMM_BIN_OP (R, operator +, DM, M, +=, ) \
+  DMM_BIN_OP (R, operator -, DM, M, +=, -) \
+  DMM_MULTIPLY_OP (R, DM, M, ZERO)
 
 #define DMM_OP_DECLS(R, DM, M) \
   DMM_BIN_OP_DECLS(R, DM, M)

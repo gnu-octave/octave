@@ -44,7 +44,8 @@ class idx_vector;
 // all the derived classes.
 
 template <class T>
-class Array
+class
+Array
 {
 protected:
 
@@ -64,7 +65,7 @@ protected:
 
     ArrayRep (void) : data (0), len (0), count (1) { }
 
-    ArrayRep (int n) : data (new T [n]), len (n), count (1) { }
+    explicit ArrayRep (int n) : data (new T [n]), len (n), count (1) { }
 
     ArrayRep (const ArrayRep& a)
       : data (new T [a.len]), len (a.len), count (1)
@@ -130,7 +131,7 @@ public:
 #endif
     }
 
-  Array (int n)
+  explicit Array (int n)
     {
       rep = new ArrayRep (n);
 

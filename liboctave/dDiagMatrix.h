@@ -34,7 +34,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "mx-defs.h"
 
-class DiagMatrix : public MDiagArray2<double>
+class
+DiagMatrix : public MDiagArray2<double>
 {
 friend class SVD;
 friend class ComplexSVD;
@@ -42,12 +43,18 @@ friend class ComplexSVD;
 public:
 
   DiagMatrix (void) : MDiagArray2<double> () { }
+
   DiagMatrix (int r, int c) : MDiagArray2<double> (r, c) { }
+
   DiagMatrix (int r, int c, double val) : MDiagArray2<double> (r, c, val) { }
-  DiagMatrix (const RowVector& a) : MDiagArray2<double> (a) { }
-  DiagMatrix (const ColumnVector& a) : MDiagArray2<double> (a) { }
-  DiagMatrix (const MDiagArray2<double>& a) : MDiagArray2<double> (a) { }
+
   DiagMatrix (const DiagMatrix& a) : MDiagArray2<double> (a) { }
+
+  DiagMatrix (const MDiagArray2<double>& a) : MDiagArray2<double> (a) { }
+
+  explicit DiagMatrix (const RowVector& a) : MDiagArray2<double> (a) { }
+
+  explicit DiagMatrix (const ColumnVector& a) : MDiagArray2<double> (a) { }
 
   DiagMatrix& operator = (const DiagMatrix& a)
     {

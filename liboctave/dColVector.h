@@ -31,15 +31,20 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "mx-defs.h"
 
-class ColumnVector : public MArray<double>
+class
+ColumnVector : public MArray<double>
 {
 public:
 
   ColumnVector (void) : MArray<double> () { }
-  ColumnVector (int n) : MArray<double> (n) { }
+
+  explicit ColumnVector (int n) : MArray<double> (n) { }
+
   ColumnVector (int n, double val) : MArray<double> (n, val) { }
-  ColumnVector (const MArray<double>& a) : MArray<double> (a) { }
+
   ColumnVector (const ColumnVector& a) : MArray<double> (a) { }
+
+  ColumnVector (const MArray<double>& a) : MArray<double> (a) { }
 
   ColumnVector& operator = (const ColumnVector& a)
     {

@@ -45,7 +45,8 @@ License as published by the Free Software Foundation.
 #include <Pix.h>
 
 template <class C>
-class Map
+class
+Map
 {
 protected:
   int count;
@@ -112,7 +113,8 @@ struct CHNode
 #endif
 
 template <class C>
-class CHMap : public Map<C>
+class
+CHMap : public Map<C>
 {
 protected:
   CHNode<C> **tab;

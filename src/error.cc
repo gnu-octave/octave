@@ -82,7 +82,8 @@ vwarning (const char *name, const char *fmt, va_list args)
 static void
 verror (const char *name, const char *fmt, va_list args)
 {
-  flush_octave_stdout ();
+  if (! buffer_error_messages)
+    flush_octave_stdout ();
 
   bool to_beep_or_not_to_beep_p = Vbeep_on_error && ! error_state;
 
@@ -222,10 +223,9 @@ parse_error (const char *fmt, ...)
 void
 panic (const char *fmt, ...)
 {
-  flush_octave_stdout ();
-
   va_list args;
   va_start (args, fmt);
+  buffer_error_messages = false;
   verror ("panic", fmt, args);
   va_end (args);
   abort ();

@@ -35,7 +35,8 @@ struct BaseDLNode {
 };
 
 template<class T>
-class DLNode : public BaseDLNode
+class
+DLNode : public BaseDLNode
 {
   public:
     T hd;
@@ -45,7 +46,9 @@ class DLNode : public BaseDLNode
     ~DLNode() { }
 };
 
-class BaseDLList {
+class
+BaseDLList
+{
   protected:
     BaseDLNode *h;
 
@@ -79,7 +82,9 @@ class BaseDLList {
 };
 
 template <class T>
-class DLList : public BaseDLList {
+class
+DLList : public BaseDLList
+{
     //friend class          <T>DLListTrav;
 
     virtual void delete_node(BaseDLNode *node) { delete (DLNode<T>*)node; }

@@ -1350,6 +1350,34 @@ ComplexMatrix::solve (const ComplexMatrix& b, int& info, double& rcond,
 }
 
 ComplexColumnVector
+ComplexMatrix::solve (const ColumnVector& b) const
+{
+  int info;
+  double rcond;
+  return solve (ComplexColumnVector (b), info, rcond, 0);
+}
+
+ComplexColumnVector
+ComplexMatrix::solve (const ColumnVector& b, int& info) const
+{
+  double rcond;
+  return solve (ComplexColumnVector (b), info, rcond, 0);
+}
+
+ComplexColumnVector
+ComplexMatrix::solve (const ColumnVector& b, int& info, double& rcond) const
+{
+  return solve (ComplexColumnVector (b), info, rcond, 0);
+}
+
+ComplexColumnVector
+ComplexMatrix::solve (const ColumnVector& b, int& info, double& rcond,
+		      solve_singularity_handler sing_handler) const
+{
+  return solve (ComplexColumnVector (b), info, rcond, sing_handler);
+}
+
+ComplexColumnVector
 ComplexMatrix::solve (const ComplexColumnVector& b) const
 {
   int info;
@@ -1435,6 +1463,27 @@ ComplexMatrix::solve (const ComplexColumnVector& b, int& info,
 }
 
 ComplexMatrix
+ComplexMatrix::lssolve (const Matrix& b) const
+{
+  int info;
+  int rank;
+  return lssolve (ComplexMatrix (b), info, rank);
+}
+
+ComplexMatrix
+ComplexMatrix::lssolve (const Matrix& b, int& info) const
+{
+  int rank;
+  return lssolve (ComplexMatrix (b), info, rank);
+}
+
+ComplexMatrix
+ComplexMatrix::lssolve (const Matrix& b, int& info, int& rank) const
+{
+  return lssolve (ComplexMatrix (b), info, rank);
+}
+
+ComplexMatrix
 ComplexMatrix::lssolve (const ComplexMatrix& b) const
 {
   int info;
@@ -1514,6 +1563,27 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, int& info, int& rank) const
     }
 
   return retval;
+}
+
+ComplexColumnVector
+ComplexMatrix::lssolve (const ColumnVector& b) const
+{
+  int info;
+  int rank;
+  return lssolve (ComplexColumnVector (b), info, rank);
+}
+
+ComplexColumnVector
+ComplexMatrix::lssolve (const ColumnVector& b, int& info) const
+{
+  int rank;
+  return lssolve (ComplexColumnVector (b), info, rank);
+}
+
+ComplexColumnVector
+ComplexMatrix::lssolve (const ColumnVector& b, int& info, int& rank) const
+{
+  return lssolve (ComplexColumnVector (b), info, rank);
 }
 
 ComplexColumnVector

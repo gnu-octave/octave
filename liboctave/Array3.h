@@ -39,7 +39,8 @@ class idx_vector;
 // Three dimensional array class.
 
 template <class T>
-class Array3 : public Array2<T>
+class
+Array3 : public Array2<T>
 {
 protected:
 

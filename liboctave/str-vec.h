@@ -44,7 +44,7 @@ public:
 
   string_vector (void) : Array<std::string> () { }
 
-  string_vector (int n) : Array<std::string> (n) { }
+  explicit string_vector (int n) : Array<std::string> (n) { }
 
   string_vector (const char *s) : Array<std::string> (1, s) { }
 

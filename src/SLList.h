@@ -28,7 +28,8 @@ Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #include "BaseSLList.h"
 
 template<class T>
-class SLNode : public BaseSLNode
+class
+SLNode : public BaseSLNode
 {
   public:
     T                    hd; // Data part of node
@@ -39,7 +40,8 @@ class SLNode : public BaseSLNode
 };
 
 template <class T>
-class SLList : public BaseSLList
+class
+SLList : public BaseSLList
 {
   private:
     virtual void delete_node(BaseSLNode *node) { delete (SLNode<T>*)node; }

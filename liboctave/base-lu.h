@@ -30,7 +30,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "MArray.h"
 
 template <class lu_type, class lu_elt_type, class p_type, class p_elt_type>
-class base_lu
+class
+base_lu
 {
 public:
 

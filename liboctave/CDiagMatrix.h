@@ -36,25 +36,37 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "mx-defs.h"
 
-class ComplexDiagMatrix : public MDiagArray2<Complex>
+class
+ComplexDiagMatrix : public MDiagArray2<Complex>
 {
 public:
 
   ComplexDiagMatrix (void) : MDiagArray2<Complex> () { }
+
   ComplexDiagMatrix (int r, int c) : MDiagArray2<Complex> (r, c) { }
+
   ComplexDiagMatrix (int r, int c, const Complex& val)
     : MDiagArray2<Complex> (r, c, val) { }
-  ComplexDiagMatrix (const RowVector& a)
+
+  explicit ComplexDiagMatrix (const RowVector& a)
     : MDiagArray2<Complex> (ComplexRowVector (a)) { }
-  ComplexDiagMatrix (const ComplexRowVector& a) : MDiagArray2<Complex> (a) { }
-  ComplexDiagMatrix (const ColumnVector& a)
-    : MDiagArray2<Complex> (ComplexColumnVector (a)) { }
-  ComplexDiagMatrix (const ComplexColumnVector& a)
+
+  explicit ComplexDiagMatrix (const ComplexRowVector& a)
     : MDiagArray2<Complex> (a) { }
-  ComplexDiagMatrix (const DiagMatrix& a);
+
+  explicit ComplexDiagMatrix (const ColumnVector& a)
+    : MDiagArray2<Complex> (ComplexColumnVector (a)) { }
+
+  explicit ComplexDiagMatrix (const ComplexColumnVector& a)
+    : MDiagArray2<Complex> (a) { }
+
+  explicit ComplexDiagMatrix (const DiagMatrix& a);
+
   ComplexDiagMatrix (const MDiagArray2<Complex>& a)
     : MDiagArray2<Complex> (a) { }
-  ComplexDiagMatrix (const ComplexDiagMatrix& a) : MDiagArray2<Complex> (a) { }
+
+  ComplexDiagMatrix (const ComplexDiagMatrix& a)
+    : MDiagArray2<Complex> (a) { }
 
   ComplexDiagMatrix& operator = (const ComplexDiagMatrix& a)
     {

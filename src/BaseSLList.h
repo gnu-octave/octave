@@ -36,7 +36,9 @@ struct BaseSLNode
    void *item() {return (void*)(this+1);} // Return ((SLNode<T>*)this)->hd
 };
 
-class BaseSLList {
+class
+BaseSLList
+{
   protected:
     BaseSLNode *last;
     virtual void delete_node(BaseSLNode*node) = 0;

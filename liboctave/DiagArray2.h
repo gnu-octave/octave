@@ -50,7 +50,8 @@ class idx_vector;
 // GABI Software, Sarl., 8 rue du Faisan, F-67000 Strasbourg, France
 
 template <class T>
-class DiagArray2 : public Array<T>
+class
+DiagArray2 : public Array<T>
 {
 private:
 

@@ -287,7 +287,7 @@ ComplexDiagMatrix::row (int i) const
   if (i < 0 || i >= r)
     {
       (*current_liboctave_error_handler) ("invalid row selection");
-      return RowVector (); 
+      return ComplexRowVector (); 
     }
 
   ComplexRowVector retval (c, 0.0);
@@ -326,7 +326,7 @@ ComplexDiagMatrix::column (int i) const
   if (i < 0 || i >= c)
     {
       (*current_liboctave_error_handler) ("invalid column selection");
-      return ColumnVector (); 
+      return ComplexColumnVector (); 
     }
 
   ComplexColumnVector retval (r, 0.0);
@@ -342,7 +342,7 @@ ComplexDiagMatrix::column (char *s) const
   if (! s)
     {
       (*current_liboctave_error_handler) ("invalid column selection");
-      return ColumnVector (); 
+      return ComplexColumnVector (); 
     }
 
   char c = *s;
@@ -353,7 +353,7 @@ ComplexDiagMatrix::column (char *s) const
   else
     {
       (*current_liboctave_error_handler) ("invalid column selection");
-      return ColumnVector (); 
+      return ComplexColumnVector (); 
     }
 }
 
@@ -372,7 +372,7 @@ ComplexDiagMatrix::inverse (int& info) const
   if (r != c)
     {
       (*current_liboctave_error_handler) ("inverse requires square matrix");
-      return DiagMatrix ();
+      return ComplexDiagMatrix ();
     }
 
   ComplexDiagMatrix retval (r, c);

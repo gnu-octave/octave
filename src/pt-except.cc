@@ -102,6 +102,9 @@ tree_try_catch_command::eval (void)
       // For restoring buffer_error_messages.
       if (catch_code)
 	unwind_protect::run ();
+
+      // Also clear the frame marker.
+      unwind_protect::discard ();
     }
 }
 

@@ -41,7 +41,8 @@ class idx_vector;
 // Two dimensional array class.
 
 template <class T>
-class Array2 : public Array<T>
+class
+Array2 : public Array<T>
 {
 protected:
 

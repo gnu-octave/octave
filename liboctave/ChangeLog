@@ -1,3 +1,33 @@
+2000-02-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* CMatrix.h, CMatrix.cc: Add lssolve methods for real-valued RHS
+	matrix and vector objects.
+
+	* mx-op-defs.h (DMM_BIN_OP): Explicitly request conversion to
+	return type from second arg type.
+	(MDM_BIN_OP): Likewise, for first arg type.
+
+	* dMatrix.cc (Matrix::fourier, Matrix::ifourier,
+	Matrix::fourier2d, Matrix::ifourier2d): Likewise.
+
+	* EIG.cc (EIG::symmetric_init, EIG::hermitian_init): Explicitly
+	request ColumnVector to ComplexColumnVector, and Matrix to
+	ComplexMatrix conversions.
+
+	* CmplxAEPBAL.cc (ComplexAEPBALANCE::init): Give balancing_mat its
+	initial value using ComplexMatrix constructor.
+
+	* CColVector.cc (product, quotient,
+	operator * (const DiagMatrix&, const ComplexColumnVetor&)):
+	Fix type of returned value.
+	* CDiagMatrix.cc (ComplexDiagMatrix::row,
+	ComplexDiagMatrix::column, ComplexDiagMatrix::inverse): Likewise.
+
+	* Array.h, CColVector.h, CDiagMatrix.h, CMatrix.h, CRowVector.h,
+	MArray.h, MDiagArray2.h, dColVector.h, dDiagMatrix.h, dMatrix.h,
+	dRowVector.h: Declare some constructors explicit, to disallow
+	potentially problematic automatic type conversions.
+
 2000-02-05  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* vx-rv-crv.h, vx-cv-ccv.h, vx-crv-rv.h, vx-ccv-cv.h,

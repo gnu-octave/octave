@@ -77,7 +77,7 @@ ComplexAEPBALANCE::init (const ComplexMatrix& a,
     (*current_liboctave_error_handler) ("unrecoverable error in zgebal");
   else
     {
-      balancing_mat = Matrix (n, n, 0.0);
+      balancing_mat = ComplexMatrix (n, n, 0.0);
       for (int i = 0; i < n; i++)
 	balancing_mat.elem (i, i) = 1.0;
 

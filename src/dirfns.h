@@ -33,7 +33,6 @@ extern int absolute_pathname (const string&);
 extern int absolute_program (const string&);
 extern string base_pathname (const string&);
 extern string make_absolute (const string&, const string&);
-extern int is_newer (const string&, time_t);
 extern string get_working_directory (const string&);
 
 #endif

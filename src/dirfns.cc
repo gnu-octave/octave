@@ -239,31 +239,6 @@ make_absolute (const string& s, const string& dot_path)
   return current_path;
 }
 
-// Has file `A' been modified after time `T'?
-//
-// case:
-//
-//   a newer than t         returns    1
-//   a older than t         returns    0
-//   stat on a fails        returns   -1
-
-int
-is_newer (const string& fa, time_t t)
-{
-  struct stat fa_sb;
-  register int fa_stat;
-  register int status = 0;
-
-  fa_stat = stat (fa.c_str (), &fa_sb);
-  if (fa_stat != 0)
-    status = -1;
-
-  if (status != 0)
-    return status;
-
-  return (fa_sb.st_mtime > t);
-}
-
 // Return a consed string which is the current working directory.
 // FOR_WHOM is the name of the caller for error printing.
 

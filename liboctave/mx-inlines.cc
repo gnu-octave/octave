@@ -452,17 +452,8 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
   if (dim > -1) \
     dv(dim) = 1; \
  \
-  /* We need to find the number of elements we need to */ \
-  /* fill in retval. First we need to get last idx of  */ \
-  /* the dimension vector                              */ \
- \
-  Array<int> temp_dv (dv.length (), 0); \
- \
-  for (int x = 0; x < dv.length (); x++) \
-    temp_dv(x) = dv(x) - 1; \
- \
   /* This finds the number of elements in retval */ \
-  int num_iter = compute_index (temp_dv, dv) + 1; \
+  int num_iter = (numel () / dim_length); \
  \
   /* Make sure retval has correct dimensions */ \
   retval.resize (dv, false); \
@@ -582,18 +573,8 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
  \
   dv (dim) = 1; \
  \
-  /* We need to find the number of elements we need to */ \
-  /* fill in retval. First we need to get last idx of  */ \
-  /* the dimension vector                              */ \
- \
-  /* This could be done faster */ \
-  Array<int> temp_dv (dv.length (), 0); \
- \
-  for (int x = 0; x < dv.length (); x++) \
-    temp_dv(x) = dv(x) - 1; \
- \
   /* This finds the number of elements in retval */ \
-  int num_iter = compute_index (temp_dv, dv) + 1; \
+  int num_iter = (numel () / dim_length); \
  \
   Array<int> iter_idx (dv.length (), 0); \
  \

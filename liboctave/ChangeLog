@@ -1,5 +1,8 @@
 2004-01-22  Petter Risholm  <risholm@stud.ntnu.no>
 
+	* mx-inlines.cc	(MX_ND_REDUCTION, MX_ND_CUMULATIVE_OP):
+	Simplify calculation of number of elements in retval.
+
 	* Array.cc (Array<T>::assignN): Eliminate unnecessray code for
 	filling when RHS is scalar and dimension lengths agree.
 

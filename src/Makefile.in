@@ -40,9 +40,9 @@ INCLUDES = arith-ops.h builtins.h dynamic-ld.h defaults.h.in \
 	getopt.h gripes.h help.h idx-vector.h input.h lex.h mappers.h \
 	missing-math.h octave.h octave-hist.h pager.h parse.h \
 	pr-output.h procstream.h sighandlers.h statdefs.h symtab.h \
-	sysdep.h t-builtins.h token.h tree-base.h tree-const.h tree.h \
-	unwind-prot.h user-prefs.h utils.h variables.h version.h \
-	xdiv.h xpow.h SLStack.h Stack.h
+	sysdep.h t-builtins.h token.h tree-base.h tree-const.h \
+	tree-plot.h tree.h unwind-prot.h user-prefs.h utils.h \
+	variables.h version.h xdiv.h xpow.h SLStack.h Stack.h
 
 SOURCES = arith-ops.cc builtins.cc dynamic-ld.cc error.cc f-chol.cc \
 	f-colloc.cc f-balance.cc f-dassl.cc f-det.cc f-eig.cc \
@@ -54,10 +54,9 @@ SOURCES = arith-ops.cc builtins.cc dynamic-ld.cc error.cc f-chol.cc \
 	idx-vector.cc input.cc lex.l mappers.cc octave.cc \
 	octave-hist.cc pager.cc parse.y pr-output.cc procstream.cc \
 	sighandlers.cc strcasecmp.c strncase.c symtab.cc sysdep.cc \
-	t-builtins.cc tc-assign.cc tc-extras.cc tc-index.cc \
-	tc-inlines.cc token.cc tree.cc tree-const.cc tree-plot.cc \
-	unwind-prot.cc user-prefs.cc utils.cc variables.cc xdiv.cc \
-	xpow.cc SLStack.cc
+	t-builtins.cc token.cc tree.cc tree-const.cc tree-plot.cc \
+	tc-extras.cc unwind-prot.cc user-prefs.cc utils.cc \
+	variables.cc xdiv.cc xpow.cc SLStack.cc
 
 DEP_SOURCES_2 = $(patsubst %.l, %.cc, $(SOURCES))
 DEP_SOURCES_1 = $(patsubst %.y, %.cc, $(DEP_SOURCES_2))
@@ -74,10 +73,10 @@ OBJECTS = arith-ops.o builtins.o error.o file-io.o fnmatch.o \
 	g-builtins.o getopt.o getopt1.o gripes.o help.o idx-vector.o \
 	input.o lex.o mappers.o octave.o octave-hist.o pager.o \
 	parse.o pr-output.o procstream.o sighandlers.o strcasecmp.o \
-	strncase.o symtab.o sysdep.o t-builtins.o tc-assign.o \
-	tc-extras.o tc-index.o token.o tree.o tree-const.o tree-plot.o \
-	unwind-prot.o user-prefs.o utils.o variables.o xdiv.o xpow.o \
-	SLStack.o @DYNAMIC_LD_OBJ@
+	strncase.o symtab.o sysdep.o t-builtins.o token.o tree.o \
+	tree-const.o tree-plot.o tc-extras.o unwind-prot.o \
+	user-prefs.o utils.o variables.o xdiv.o xpow.o SLStack.o \
+	@DYNAMIC_LD_OBJ@
 
 OCTAVE_LIBS = ../liboctave.a ../libcruft.a ../libinfo.a \
 	../libreadline.a @LIBDLD@

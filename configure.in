@@ -21,7 +21,7 @@ dnl You should have received a copy of the GNU General Public License
 dnl along with Octave; see the file COPYING.  If not, write to the Free
 dnl Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 dnl
-AC_REVISION($Revision: 1.31 $)dnl
+AC_REVISION($Revision: 1.32 $)dnl
 AC_PREREQ(1.8)dnl
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -407,6 +407,8 @@ $func (1.0);
 ],
       AC_DEFINE(HAVE_[$trfunc], 1), []))dnl
 done
+dnl
+AC_HAVE_FUNCS(infinity quiet_nan)dnl
 dnl
 CFLAGS="$XCFLAGS"
 dnl

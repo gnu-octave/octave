@@ -28,8 +28,8 @@ class tree_constant;
 class ostream;
 
 extern int save_ascii_data (ostream& os, const tree_constant& t,
-			    char *name = 0, int mark_as_global = 0,
-			    int precision = 0);
+			    char *name = 0, int strip_nan_and_inf = 0,
+			    int mark_as_global = 0, int precision = 0);
 
 extern int save_three_d (ostream& os, const tree_constant& t,
 			 int parametric = 0);

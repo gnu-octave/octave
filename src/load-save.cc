@@ -74,6 +74,12 @@ LOSE! LOSE!
 LOSE! LOSE!
 #endif
 
+// Used when converting Inf to something that gnuplot can read.
+
+#ifndef OCT_RBV
+#define OCT_RBV DBL_MAX / 100.0
+#endif
+
 enum load_save_format
   {
     LS_ASCII,
@@ -2489,18 +2495,97 @@ ascii_save_type (ostream& os, char *type, int mark_as_global)
   os << type << "\n";
 }
 
+static Matrix
+strip_infnan (const Matrix& m)
+{
+  int nr = m.rows ();
+  int nc = m.columns ();
+
+  Matrix retval (nr, nc);
+
+  int k = 0;
+  for (int i = 0; i < nr; i++)
+    {
+      for (int j = 0; j < nc; j++)
+	{
+	  double d = m.elem (i, j);
+	  if (xisnan (d))
+	    goto next_row;
+	  else
+	    retval.elem (k, j) = xisinf (d) ? (d > 0 ? OCT_RBV : -OCT_RBV) : d;
+	}
+      k++;
+
+    next_row:
+      continue;
+    }
+
+  if (k > 0)
+    retval.resize (k, nc);
+
+  return retval;
+}
+
+static ComplexMatrix
+strip_infnan (const ComplexMatrix& m)
+{
+  int nr = m.rows ();
+  int nc = m.columns ();
+
+  ComplexMatrix retval (nr, nc);
+
+  int k = 0;
+  for (int i = 0; i < nr; i++)
+    {
+      for (int j = 0; j < nc; j++)
+	{
+	  Complex c = m.elem (i, j);
+	  if (xisnan (c))
+	    goto next_row;
+	  else
+	    {
+	      double re = real (c);
+	      double im = imag (c);
+
+	      re = xisinf (re) ? (re > 0 ? OCT_RBV : -OCT_RBV) : re;
+	      im = xisinf (im) ? (im > 0 ? OCT_RBV : -OCT_RBV) : im;
+
+	      retval.elem (k, j) = Complex (re, im);
+	    }
+	}
+      k++;
+
+    next_row:
+      continue;
+    }
+
+  if (k > 0)
+    retval.resize (k, nc);
+
+  return retval;
+}
+
 // Save the data from TC along with the corresponding NAME, and global
 // flag MARK_AS_GLOBAL on stream OS in the plain text format described
 // above for load_ascii_data.  If NAME is null, the name: line is not
 // generated.  PRECISION specifies the number of decimal digits to print. 
+// If STRIP_NAN_AND_INF is nonzero, rows containing NaNs are deleted,
+// and Infinite values are converted to +/-OCT_RBV (A Real Big Value,
+// but not so big that gnuplot can't handle it when trying to compute
+// axis ranges, etc.).
+//
+// Assumes ranges and strings cannot contain Inf or NaN values.
+//
+// Returns 1 for success and 0 for failure.
 
 // XXX FIXME XXX -- should probably write the help string here too.
 
 int
 save_ascii_data (ostream& os, const tree_constant& tc,
-		 char *name, int mark_as_global, int precision)
+		 char *name, int strip_nan_and_inf,
+		 int mark_as_global, int precision) 
 {
-  int fail = 0;
+  int success = 1;
 
   if (! precision)
     precision = user_pref.save_precision;
@@ -2514,19 +2599,63 @@ save_ascii_data (ostream& os, const tree_constant& tc,
   if (tc.is_real_scalar ())
     {
       ascii_save_type (os, "scalar", mark_as_global);
-      os << tc.double_value () << "\n";
+
+      double d = tc.double_value ();
+      if (strip_nan_and_inf)
+	{
+	  if (xisnan (d))
+	    {
+	      error ("only value to plot is NaN");
+	      success = 0;
+	    }
+	  else
+	    {
+	      d = xisinf (d) ? (d > 0 ? OCT_RBV : -OCT_RBV) : d;
+	      os << d << "\n";
+	    }
+	}
+      else
+	os << d << "\n";
     }
   else if (tc.is_real_matrix ())
     {
       ascii_save_type (os, "matrix", mark_as_global);
       os << "# rows: " << tc.rows () << "\n"
-	 << "# columns: " << tc.columns () << "\n"
-	 << tc.matrix_value () ;
+	 << "# columns: " << tc.columns () << "\n";
+
+      Matrix tmp = tc.matrix_value ();
+      if (strip_nan_and_inf)
+	tmp = strip_infnan (tmp);
+
+      os << tmp;
     }
   else if (tc.is_complex_scalar ())
     {
       ascii_save_type (os, "complex scalar", mark_as_global);
-      os << tc.complex_value () << "\n";
+
+      Complex c = tc.complex_value ();
+      if (strip_nan_and_inf)
+	{
+	  if (xisnan (c))
+	    {
+	      error ("only value to plot is NaN");
+	      success = 0;
+	    }
+	  else
+	    {
+	      double re = real (c);
+	      double im = imag (c);
+
+	      re = xisinf (re) ? (re > 0 ? OCT_RBV : -OCT_RBV) : re;
+	      im = xisinf (im) ? (im > 0 ? OCT_RBV : -OCT_RBV) : im;
+
+	      c = Complex (re, im);
+
+	      os << c << "\n";
+	    }
+	}
+      else
+	os << c << "\n";
     }
   else if (tc.is_complex_matrix ())
     {
@@ -2534,6 +2663,12 @@ save_ascii_data (ostream& os, const tree_constant& tc,
       os << "# rows: " << tc.rows () << "\n"
 	 << "# columns: " << tc.columns () << "\n"
 	 << tc.complex_matrix_value () ;
+
+      ComplexMatrix tmp = tc.matrix_value ();
+      if (strip_nan_and_inf)
+	tmp = strip_infnan (tmp);
+
+      os << tmp;
     }
   else if (tc.is_string ())
     {
@@ -2542,7 +2677,7 @@ save_ascii_data (ostream& os, const tree_constant& tc,
       os << "# length: " << strlen (tmp) << "\n"
 	 << tmp << "\n";
     }
-  else if (tc.is_string ())
+  else if (tc.is_range ())
     {
       ascii_save_type (os, "range", mark_as_global);
       Range tmp = tc.range_value ();
@@ -2554,12 +2689,12 @@ save_ascii_data (ostream& os, const tree_constant& tc,
   else
     {
       gripe_wrong_type_arg ("save", tc);
-      fail = 1;
+      success = 0;
     }
 
   os.precision (old_precision);
 
-  return (os && ! fail);
+  return (os && success);
 }
 
 // Save the info from sr on stream os in the format specified by fmt.
@@ -2585,7 +2720,7 @@ do_save (ostream& os, symbol_record *sr, load_save_format fmt,
   switch (fmt)
     {
     case LS_ASCII:
-      save_ascii_data (os, tc, name, global);
+      save_ascii_data (os, tc, name, 0, global);
       break;
 
     case LS_BINARY:
@@ -2853,6 +2988,9 @@ save_three_d (ostream& os, const tree_constant& tc, int parametric)
 	    warning ("ignoring last %d columns", extras);
 
 	  Matrix tmp = tc.matrix_value ();
+	  tmp = strip_infnan (tmp);
+	  nr = tmp.rows ();
+
 	  for (int i = 0; i < nc-extras; i += 3)
 	    {
 	      os << tmp.extract (0, i, nr-1, i+2);
@@ -2863,6 +3001,9 @@ save_three_d (ostream& os, const tree_constant& tc, int parametric)
       else
 	{
 	  Matrix tmp = tc.matrix_value ();
+	  tmp = strip_infnan (tmp);
+	  nr = tmp.rows ();
+
 	  for (int i = 0; i < nc; i++)
 	    {
 	      os << tmp.extract (0, i, nr-1, i);

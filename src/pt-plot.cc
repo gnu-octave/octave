@@ -482,21 +482,17 @@ plot_range::print_code (ostream& os)
 subplot_using::subplot_using (void)
 {
   qualifier_count = 0;
-  x[0] = 0;
-  x[1] = 0;
-  x[2] = 0;
-  x[3] = 0;
+  x[0] = x[1] = x[2] = x[3] = 0;
   scanf_fmt = 0;
+  have_values = 0;
 }
 
-subplot_using::subplot_using (tree_expression *fmt)
+subplot_using::subplot_using (tree_expression *fmt) : val (4, -1)
 {
   qualifier_count = 0;
-  x[0] = 0;
-  x[1] = 0;
-  x[2] = 0;
-  x[3] = 0;
+  x[0] = x[1] = x[2] = x[3] = 0;
   scanf_fmt = fmt;
+  have_values = 0;
 }
 
 subplot_using::~subplot_using (void)
@@ -523,11 +519,17 @@ subplot_using::add_qualifier (tree_expression *t)
 }
 
 int
-subplot_using::print (int ndim, int n_max, ostrstream& plot_buf)
+subplot_using::eval (int ndim, int n_max)
 {
   if ((ndim == 2 && qualifier_count > 4)
       || (ndim == 3 && qualifier_count > 3))
     return -1;
+
+  if (have_values)
+    return 1;
+
+  if (qualifier_count > 0)
+    val.resize (qualifier_count);
 
   for (int i = 0; i < qualifier_count; i++)
     {
@@ -540,24 +542,22 @@ subplot_using::print (int ndim, int n_max, ostrstream& plot_buf)
 	      return -1;
 	    }
 
-	  double val;
+	  double val_tmp;
 	  if (tmp.is_defined ())
 	    {
-	      val = tmp.double_value ();
-	      if (i == 0)
-		plot_buf << " " << GNUPLOT_COMMAND_USING << " ";
-	      else
-		plot_buf << ":";
+	      val_tmp = tmp.double_value ();
 
-	      int n = NINT (val);
+	      if (error_state)
+		return -1;
 
+	      int n = NINT (val_tmp);
 	      if (n < 1 || n_max > 0 && n > n_max)
 		{
 		  ::error ("using: column %d out of range", n); 
 		  return -1;
 		}
 	      else
-		plot_buf << n;
+		val.elem (i) = n;
 	    }
 	  else
 	    return -1;
@@ -568,6 +568,40 @@ subplot_using::print (int ndim, int n_max, ostrstream& plot_buf)
 
   if (scanf_fmt)
     warning ("ignoring scanf format in plot command");
+
+  have_values = 1;
+
+  return 0;
+}
+
+ColumnVector
+subplot_using::values (int ndim, int n_max)
+{
+  int status = eval (ndim, n_max);
+
+  if (status < 0 || ! have_values)
+    return -1;
+
+  return val;
+}
+
+int
+subplot_using::print (int ndim, int n_max, ostrstream& plot_buf)
+{
+  int status = eval (ndim, n_max);
+
+  if (status < 0 || ! have_values)
+    return -1;
+
+  for (int i = 0; i < qualifier_count; i++)
+    {
+      if (i == 0)
+	plot_buf << " " << GNUPLOT_COMMAND_USING << " ";
+      else
+	plot_buf << ":";
+
+      plot_buf << val.elem (i);
+    }
 
   return 0;
 }
@@ -665,6 +699,14 @@ subplot_style::print (ostrstream& plot_buf)
   return 0;
 }
 
+int
+subplot_style::errorbars (void)
+{
+  return (style
+	  && (almost_match ("errorbars", style, 1, 0)
+	      || almost_match ("boxerrorbars", style, 5, 0)));
+}
+
 void
 subplot_style::print_code (ostream& os)
 {
@@ -683,25 +725,68 @@ subplot_style::print_code (ostream& os)
     }
 }
 
-int
-subplot::print (int ndim, ostrstream& plot_buf)
+tree_constant
+subplot::extract_plot_data (int ndim, tree_constant& data)
 {
-  int nc = 0;
+  tree_constant retval;
+
+  if (using)
+    {
+      ColumnVector val = using->values (ndim);
+
+      Octave_object args;
+      args(1) = val;
+      args(0) = tree_constant::magic_colon_t;
+
+      Octave_object tmp = data.eval (0, 1, args);
+      retval = tmp(0);
+
+      if (error_state)
+	return tree_constant ();
+    }
+  else
+    {
+      retval = data;
+    }
+
+  if (ndim == 2 && style && style->errorbars ())
+    {
+      int nc = retval.columns ();
+
+      if (nc < 3 || nc > 4)
+	{
+	  error ("plots with errorbars require 3 or 4 columns of data");
+	  error ("but %d were provided", nc);
+	  return tree_constant ();
+	}
+    }
+
+  return retval;
+}
+
+int
+subplot::handle_plot_data (int ndim, ostrstream& plot_buf)
+{
   if (plot_data)
     {
       tree_constant data = plot_data->eval (0);
+
       if (! error_state && data.is_defined ())
 	{
 	  char *file = 0;
 	  if (data.is_string ())
 	    {
+// Should really try to look at data file to determine n_max.  Can't
+// do much about other arbitrary gnuplot commands though...
+
+	      int n_max = 0;
+
 	      file = tilde_expand (data.string_value ());
 	      ifstream ftmp (file);
 	      if (ftmp)
 		{
 		  plot_buf << " \"" << file << '"';
 		  free (file);
-		  goto have_existing_file_or_command;
 		}
 	      else
 		{
@@ -711,30 +796,45 @@ subplot::print (int ndim, ostrstream& plot_buf)
 // Opening as a file failed.  Let's try passing it along as a plot
 // command.
 		  plot_buf << " " << data.string_value ();
-		  goto have_existing_file_or_command;
+		}
+
+	      if (using)
+		{
+		  int status = using->print (ndim, n_max, plot_buf);
+		  if (status < 0)
+		    return -1;
 		}
 	    }
-
-	  nc = data.columns ();
-	  switch (ndim)
+	  else
 	    {
-	    case 2:
-	      file = save_in_tmp_file (data, ndim);
-	      break;
+// Eliminate the need for printing a using clause to plot_buf.
 
-	    case 3:
-	      file = save_in_tmp_file (data, ndim, parametric_plot);
-	      break;
+	      tree_constant tmp_data = extract_plot_data (ndim, data);
 
-	    default:
-	      gripe_2_or_3_dim_plot ();
-	      break;
-	    }
+	      if (tmp_data.is_defined ())
+		{
+		  switch (ndim)
+		    {
+		    case 2:
+		      file = save_in_tmp_file (tmp_data, ndim);
+		      break;
 
-	  if (file)
-	    {
-	      mark_for_deletion (file);
-	      plot_buf << " \"" << file << '"';
+		    case 3:
+		      file = save_in_tmp_file (tmp_data, ndim,
+					       parametric_plot);
+		      break;
+
+		    default:
+		      gripe_2_or_3_dim_plot ();
+		      break;
+		    }
+
+		  if (file)
+		    {
+		      mark_for_deletion (file);
+		      plot_buf << " \"" << file << '"';
+		    }
+		}
 	    }
 	}
       else
@@ -743,14 +843,16 @@ subplot::print (int ndim, ostrstream& plot_buf)
   else
     return -1;
 
- have_existing_file_or_command:
+  return 0;
+}
 
-  if (using)
-    {
-      int status = using->print (ndim, nc, plot_buf);
-      if (status < 0)
-	return -1;
-    }
+int
+subplot::print (int ndim, ostrstream& plot_buf)
+{
+  int status = handle_plot_data (ndim, plot_buf);
+
+  if (status < 0)
+    return -1;
 
   if (title)
     {

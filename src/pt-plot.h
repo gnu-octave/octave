@@ -41,6 +41,9 @@ class subplot_list;
 
 #include <SLList.h>
 
+#include "dColVector.h"
+
+#include "idx-vector.h"
 #include "tree-cmd.h"
 #include "tree-expr.h"
 
@@ -117,6 +120,10 @@ public:
 
   subplot_using *add_qualifier (tree_expression *t);
 
+  int eval (int ndim, int n_max);
+
+  ColumnVector values (int ndim, int n_max = 0);
+
   int print (int ndim, int n_max, ostrstream& plot_buf);
 
   void print_code (ostream& os);
@@ -125,6 +132,8 @@ private:
   int qualifier_count;
   tree_expression *x[4];
   tree_expression *scanf_fmt;
+  int have_values;
+  ColumnVector val;
 };
 
 class
@@ -139,6 +148,8 @@ public:
   ~subplot_style (void);
 
   int print (ostrstream& plot_buf);
+
+  int errorbars (void);
 
   void print_code (ostream& os);
 
@@ -189,6 +200,10 @@ public:
     { plot_data = data; }
 
   int print (int ndim, ostrstream& plot_buf);
+
+  tree_constant extract_plot_data (int ndim, tree_constant& data);
+
+  int handle_plot_data (int ndim, ostrstream& plot_buf);
 
   void print_code (ostream& os);
 

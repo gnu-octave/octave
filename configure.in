@@ -21,7 +21,7 @@ dnl You should have received a copy of the GNU General Public License
 dnl along with Octave; see the file COPYING.  If not, write to the Free
 dnl Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 dnl
-AC_REVISION($Revision: 1.40 $)dnl
+AC_REVISION($Revision: 1.41 $)dnl
 AC_PREREQ(1.8)dnl
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -668,6 +668,26 @@ AC_SUBST(UGLY_DEFS)dnl
 dnl
 dnl Maybe add -Wall to compiler flags now that we're done feature
 dnl testing. 
+dnl
+dnl To get gcc and g++ to be really picky, try these adding these
+dnl options to CFLAGS and CXXFLAGS along with -Wall:
+dnl
+dnl   -ansi
+dnl   -pedantic
+dnl   -Wwrite-strings
+dnl   -Wid-clash-31
+dnl   -Wpointer-arith
+dnl   -Wcast-qual
+dnl   -Wenum-clash
+dnl   -Wcast-align
+dnl   -Wtraditional
+dnl   -Wstrict-prototypes
+dnl   -Wmissing-prototypes
+dnl   -Wnested-externs
+dnl   -Woverloaded-virtual
+dnl   -Winline
+dnl   -felide-constructors
+dnl   -fnonnull-objects
 dnl
 if $ADD_CXX_WALL; then
   CXXFLAGS="$CXXFLAGS -Wall"

@@ -30,7 +30,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class ostream;
 class ostrstream;
 
-class tree_command;
+class tree_expression;
 class tree_plot_command;
 class plot_limits;
 class plot_range;
@@ -49,9 +49,7 @@ class tree_walker;
 
 #include "dColVector.h"
 
-#include "idx-vector.h"
 #include "pt-cmd.h"
-#include "pt-exp.h"
 
 class
 tree_plot_command : public tree_command

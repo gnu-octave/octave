@@ -126,29 +126,31 @@ octave_variable_reference::octave_variable_reference (tree_indirect_ref *i)
 }
 
 void
-octave_variable_reference::assign (const octave_value& rhs)
+octave_variable_reference::assign (octave_value::assign_op op,
+				   const octave_value& rhs)
 {
   if (id)
-    id->assign (rhs);
+    id->assign (op, rhs);
   else if (indir)
     {
       octave_value& ult = indir->reference ();
-      ult = rhs;
+      ult.assign (op, rhs);
     }
   else
     panic_impossible ();
 }
 
 void
-octave_variable_reference::assign (const octave_value_list& idx,
+octave_variable_reference::assign (octave_value::assign_op op,
+				   const octave_value_list& idx,
 				   const octave_value& rhs)
 {
   if (id)
-    id->assign (idx, rhs);
+    id->assign (op, idx, rhs);
   else if (indir)
     {
       octave_value& ult = indir->reference ();
-      ult.assign (idx, rhs);
+      ult.assign (op, idx, rhs);
     }
   else
     panic_impossible ();

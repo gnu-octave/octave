@@ -56,8 +56,6 @@ class tree_walker;
 
 #include <SLList.h>
 
-#include "pt-base.h"
-
 // A statement is either a command to execute or an expression to
 // evaluate.
 
@@ -165,14 +163,7 @@ public:
   tree_argument_list (tree_expression *t)
     : SLList<tree_expression *> () { append (t); }
 
-  ~tree_argument_list (void)
-    {
-      while (! empty ())
-	{
-	  tree_expression *t = remove_front ();
-	  delete t;
-	}
-    }
+  ~tree_argument_list (void);
 
   octave_value_list convert_to_const_vector (void);
 

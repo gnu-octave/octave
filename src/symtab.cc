@@ -764,10 +764,12 @@ symbol_record_info::symbol_record_info (const symbol_record& sr)
 
       tree_constant *tmp = static_cast<tree_constant *> (sr.def ());
 
-      const_type = tmp->type_name ();
+      octave_value vtmp = tmp->value ();
 
-      nr = tmp->rows ();
-      nc = tmp->columns ();
+      const_type = vtmp.type_name ();
+
+      nr = vtmp.rows ();
+      nc = vtmp.columns ();
 
       symbol_def *sr_def = sr.definition;
       symbol_def *hidden_def = sr_def->next_elem;

@@ -29,8 +29,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class ostream;
 
-class octave_value_list;
-
 class tree_argument_list;
 class tree_identifier;
 class tree_index_expression;
@@ -41,7 +39,6 @@ class tree_walker;
 
 #include <string>
 
-#include "ov.h"
 #include "pt-mvr-base.h"
 #include "oct-obj.h"
 

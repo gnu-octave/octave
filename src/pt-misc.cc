@@ -40,17 +40,18 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "error.h"
 #include "input.h"
 #include "oct-obj.h"
+#include "ov.h"
 #include "pager.h"
-#include "toplev.h"
 #include "pt-cmd.h"
+#include "pt-const.h"
 #include "pt-exp.h"
 #include "pt-fcn.h"
 #include "pt-fvc.h"
 #include "pt-misc.h"
 #include "pt-mvr.h"
-#include "pt-walk.h"
 #include "pt-pr-code.h"
-#include "ov.h"
+#include "pt-walk.h"
+#include "toplev.h"
 #include "variables.h"
 
 // Nonzero means we're breaking out of a loop or function body.
@@ -214,6 +215,15 @@ tree_statement_list::accept (tree_walker& tw)
   tw.visit_statement_list (*this);
 }
 
+tree_argument_list::~tree_argument_list (void)
+{
+  while (! empty ())
+    {
+      tree_expression *t = remove_front ();
+      delete t;
+    }
+}
+
 octave_value_list
 tree_argument_list::convert_to_const_vector (void)
 {
@@ -312,7 +322,7 @@ tree_parameter_list::initialize_undefined_elements (octave_value& val)
       if (! elt->is_defined ())
 	{
 	  octave_variable_reference tmp (elt);
-	  tmp.assign (val);
+	  tmp.assign (octave_value::asn_eq, val);
 	}
     }
 }

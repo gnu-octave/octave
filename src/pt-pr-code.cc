@@ -32,6 +32,15 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "error.h"
 #include "pr-output.h"
+#include "pt-cmd.h"
+#include "pt-const.h"
+#include "pt-exp.h"
+#include "pt-fcn.h"
+#include "pt-fvc.h"
+#include "pt-mat.h"
+#include "pt-misc.h"
+#include "pt-mvr.h"
+#include "pt-plot.h"
 #include "pt-pr-code.h"
 
 void
@@ -777,7 +786,7 @@ tree_print_code::visit_simple_assignment_expression
 	  os << ")";
 	}
 
-      os << " = ";
+      os << " " << expr.oper () << " ";
     }
 
   tree_expression *rhs = expr.right_hand_side ();

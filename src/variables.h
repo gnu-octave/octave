@@ -68,9 +68,10 @@ public:
 
   ~octave_variable_reference (void) { }
 
-  void assign (const octave_value&);
+  void assign (octave_value::assign_op, const octave_value&);
 
-  void assign (const octave_value_list&, const octave_value&);
+  void assign (octave_value::assign_op, const octave_value_list&,
+	       const octave_value&);
 
   octave_value value (void);
 

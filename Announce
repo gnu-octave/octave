@@ -1,29 +1,22 @@
-Subject: ANNOUNCE: Octave Version 2.0.5 released
+Subject: ANNOUNCE: Octave Version 2.0.6 released
 
-Octave version 2.0.5 is now available for ftp from ftp.che.wisc.edu
+Octave version 2.0.6 is now available for ftp from ftp.che.wisc.edu
 in the directory /pub/octave.  Diffs from the previous release are
 also available in the same directory.
 
-  -rw-r--r--   1 jwe  3313485 Mar  1 17:57 octave-2.0.5.tar.gz
-  -rw-r--r--   1 jwe   101846 Mar  1 17:57 octave-2.0.4-2.0.5.patch.gz
+  -rw-r--r--   1 jwe  3344780 May 27 14:04 octave-2.0.6.tar.gz
+  -rw-r--r--   1 jwe    65152 May 27 14:36 octave-2.0.5-2.0.6.patch.gz
 
-Most bugs reported since the release of version 2.0 have been fixed
-and this will probably be the last in the series of 2.0.x releases
-unless some serious new bugs are found and reported.
+Most bugs reported since the release of version 2.0 have been fixed.
 
 There are two new features:
 
-  * A `switch' statement is now available for compatibility with
-    MATLAB 5.  See the Statements chapter in the manual for details.
+  * The new built-in variable default_eval_print_flag controls whether
+    Octave prints the results of commands executed by eval() that do
+    not end with semicolons.  The default is 1.
 
-  * Commands like ls, save, and cd may now also be used as formal
-    parameters for functions.
-
-Version 2.0.5 also includes about 1400 tests (up from about 560) but
-more are needed.  If you would like to help improve Octave by writing
-additional tests, please contact bug-octave@bevo.che.wisc.edu.  You
-can also help make Octave more reliable by reporting any bugs you find
-to bug-octave@bevo.che.wisc.edu.
+  * The new built-in constant OCTAVE_HOME specifies the top-level
+    directory where Octave is installed.
 
 Octave is a high-level interactive language primarily intended for
 numerical computations.  It is mostly compatible with MATLAB.

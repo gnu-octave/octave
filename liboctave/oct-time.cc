@@ -46,6 +46,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <climits>
 #include <cmath>
 
+#ifdef HAVE_UNISTD_H
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
+#include <unistd.h>
+#endif
+
 #include "lo-error.h"
 #include "lo-utils.h"
 #include "oct-time.h"

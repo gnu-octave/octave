@@ -1,3 +1,7 @@
+2000-03-08  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-time.cc: Include <sys/types.h> and <unistd.h>, if available.
+
 2000-02-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-rl-hist.c (octave_history_list): Do something when not

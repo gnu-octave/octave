@@ -66,11 +66,11 @@ realclean: distclean
 .PHONY: realclean
 
 local-dist:
-	ln $(DISTFILES) ../`cat ../.fname`/scripts
+	ln $(DISTFILES) ../`cat ../.fname`/scripts/polynomial
 	for dir in $(DISTDIRS); do ln -s ../../scripts/$$dir ../`cat ../.fname`/scripts ; done
 .PHONY: local-dist
 
 dist:
-	ln $(DISTFILES) ../`cat ../.fname`/scripts
+	ln $(DISTFILES) ../`cat ../.fname`/scripts/polynomial
 	for dir in $(DISTDIRS); do ln -s ../../scripts/$$dir ../`cat ../.fname`/scripts ; done
 .PHONY: dist

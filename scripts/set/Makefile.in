@@ -66,9 +66,9 @@ realclean: distclean
 .PHONY: realclean
 
 local-dist:
-	ln $(DISTFILES) ../../`cat ../../.fname`/scripts
+	ln $(DISTFILES) ../../`cat ../../.fname`/scripts/set
 .PHONY: local-dist
 
 dist:
-	ln $(DISTFILES) ../../`cat ../../.fname`/scripts
+	ln $(DISTFILES) ../../`cat ../../.fname`/scripts/set
 .PHONY: dist

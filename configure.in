@@ -21,7 +21,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA. 
 
-AC_REVISION($Revision: 1.350 $)
+AC_REVISION($Revision: 1.351 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -734,14 +734,20 @@ fi
 if $SHARED_LIBS; then
   LIBOCTINTERP=-loctinterp
   LIBOCTAVE=-loctave
+  LIBOCT_READLINE=-loct-readline
+  LIBOCT_PATHSEARCH=-loct-pathsearch
   LIBCRUFT=-lcruft
 else
   LIBOCTINTERP='$(TOPDIR)/src/liboctinterp.$(LIBEXT)'
   LIBOCTAVE='$(TOPDIR)/liboctave/liboctave.$(LIBEXT)'
+  LIBOCT_READLINE='$(TOPDIR)/liboctave/liboct-readline.$(LIBEXT)'
+  LIBOCT_PATHSEARCH='$(TOPDIR)/liboctave/liboct-pathsearch.$(LIBEXT)'
   LIBCRUFT='$(TOPDIR)/libcruft/libcruft.$(LIBEXT)'
 fi
 AC_SUBST(LIBOCTINTERP)
 AC_SUBST(LIBOCTAVE)
+AC_SUBST(LIBOCT_READLINE)
+AC_SUBST(LIBOCT_PATHSEARCH)
 AC_SUBST(LIBCRUFT)
 
 use_rpath=true

@@ -1,3 +1,8 @@
+2001-11-06  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	Makefile.in (OCTAVE_LIBS): Add $(LIBOCT_READLINE) and
+	$(LIBOCT_PATHSEARCH) to the list.
+
 2001-10-08  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* DLD-FUNCTIONS/dassl.cc (dassl_user_function): Allow user

@@ -84,21 +84,45 @@ VX_OP_SRC := vx-ccv-s.cc vx-crv-s.cc vx-cs-cv.cc vx-cs-rv.cc vx-cv-cs.cc \
 	vx-rv-cs.cc vx-s-ccv.cc vx-s-crv.cc \
 	vx-rv-crv.cc vx-cv-ccv.cc vx-crv-rv.cc vx-ccv-cv.cc
 
-SOURCES := Bounds.cc CollocWt.cc DAE.cc DASSL.cc FEGrid.cc LinConst.cc \
-	LPsolve.cc LSODE.cc NLEqn.cc Quad.cc Range.cc cmd-edit.cc \
-	cmd-hist.cc data-conv.cc dir-ops.cc f2c-main.c file-ops.cc \
-	file-stat.cc filemode.c getopt.c getopt1.c glob-match.cc \
-	idx-vector.cc lo-cutils.c lo-ieee.cc lo-mappers.cc lo-specfun.cc \
-	lo-sysdep.cc lo-utils.cc mach-info.cc mkdir.c oct-alloc.cc \
-	oct-env.cc oct-fftw.cc oct-getopt.c oct-group.cc oct-kpse.c \
-	oct-passwd.cc oct-rl-edit.c oct-rl-hist.c oct-shlib.cc \
-	oct-syscalls.cc oct-time.cc pathsearch.cc prog-args.cc rename.c \
-	rmdir.c strftime.c strptime.c str-vec.cc tempname.c tempnam.c \
+LIBOCTAVE_CXX_SOURCES := Bounds.cc CollocWt.cc DAE.cc DASSL.cc FEGrid.cc \
+	LinConst.cc LPsolve.cc LSODE.cc NLEqn.cc Quad.cc Range.cc \
+	data-conv.cc dir-ops.cc file-ops.cc \
+	file-stat.cc glob-match.cc \
+	idx-vector.cc lo-ieee.cc lo-mappers.cc lo-specfun.cc \
+	lo-sysdep.cc lo-utils.cc mach-info.cc oct-alloc.cc \
+	oct-env.cc oct-fftw.cc oct-group.cc \
+	oct-passwd.cc oct-shlib.cc \
+	oct-syscalls.cc oct-time.cc prog-args.cc \
+	str-vec.cc \
 	$(TEMPLATE_SRC) \
 	$(TI_SRC) \
 	$(MATRIX_SRC) \
 	$(MX_OP_SRC) \
 	$(VX_OP_SRC)
+
+LIBOCTAVE_C_SOURCES := f2c-main.c filemode.c getopt.c getopt1.c \
+	lo-cutils.c mkdir.c oct-getopt.c rename.c rmdir.c strftime.c \
+	strptime.c tempname.c tempnam.c
+
+LIBOCTAVE_SOURCES := $(LIBOCTAVE_CXX_SOURCES) $(LIBOCTAVE_C_SOURCES)
+
+LIBOCT_READLINE_CXX_SOURCES := cmd-edit.cc cmd-hist.cc
+
+LIBOCT_READLINE_C_SOURCES := oct-rl-edit.c oct-rl-hist.c
+
+LIBOCT_READLINE_SOURCES := $(LIBOCT_READLINE_CXX_SOURCES) $(LIBOCT_READLINE_C_SOURCES)
+
+LIBOCT_PATHSEARCH_CXX_SOURCES := pathsearch.cc
+
+LIBOCT_PATHSEARCH_C_SOURCES := oct-kpse.c
+
+LIBOCT_PATHSEARCH_SOURCES := \
+	$(LIBOCT_PATHSEARCH_C_SOURCES) $(LIBOCT_PATHSEARCH_CXX_SOURCES)
+
+SOURCES := \
+	$(LIBOCTAVE_SOURCES) \
+	$(LIBOCT_READLINE_SOURCES) \
+	$(LIBOCT_PATHSEARCH_SOURCES)
 
 EXTRAS := mx-inlines.cc
 
@@ -114,14 +138,27 @@ endif
 MAKEDEPS_1 := $(patsubst %.cc, %.d, $(SOURCES))
 MAKEDEPS := $(patsubst %.c, %.d, $(MAKEDEPS_1))
 
-OBJECTS_1 := $(patsubst %.cc, %.o, $(SOURCES))
-OBJECTS := $(patsubst %.c, %.o, $(OBJECTS_1))
+LIBOCTAVE_OBJECTS := \
+	$(LIBOCTAVE_CXX_SOURCES:.cc=.o) \
+	$(LIBOCTAVE_C_SOURCES:.c=.o)
+
+LIBOCT_READLINE_OBJECTS := \
+	$(LIBOCT_READLINE_CXX_SOURCES:.cc=.o) \
+	$(LIBOCT_READLINE_C_SOURCES:.c=.o)
+
+LIBOCT_PATHSEARCH_OBJECTS := \
+	$(LIBOCT_PATHSEARCH_CXX_SOURCES:.cc=.o) \
+	$(LIBOCT_PATHSEARCH_C_SOURCES:.c=.o)
 
 ifeq ($(SHARED_LIBS), true)
   ifdef CXXPICFLAG
-    PICOBJ := $(addprefix pic/, $(OBJECTS))
+    LIBOCTAVE_PICOBJ := $(addprefix pic/, $(LIBOCTAVE_OBJECTS))
+    LIBOCT_READLINE_PICOBJ := $(addprefix pic/, $(LIBOCT_READLINE_OBJECTS))
+    LIBOCT_PATHSEARCH_PICOBJ := $(addprefix pic/, $(LIBOCT_PATHSEARCH_OBJECTS))
   else
-    PICOBJ := $(OBJECTS)
+    LIBOCTAVE_PICOBJ := $(LIBOCTAVE_OBJECTS)
+    LIBOCT_READLINE_PICOBJ := $(LIBOCT_READLINE_OBJECTS)
+    LIBOCT_PATHSEARCH_PICOBJ := $(LIBOCT_PATHSEARCH_OBJECTS)
   endif
 endif
 
@@ -148,20 +185,29 @@ pic:
 
 ifeq ($(SHARED_LIBS), true)
   ifeq ($(STATIC_LIBS), true)
-    libraries: liboctave.$(LIBEXT) liboctave.$(SHLEXT)
+    libraries: \
+	liboctave.$(LIBEXT) liboctave.$(SHLEXT) \
+	liboct-readline.$(LIBEXT) liboct-readline.$(SHLEXT) \
+	liboct-pathsearch.$(LIBEXT) liboct-pathsearch.$(SHLEXT)
   else
-    libraries: liboctave.$(SHLEXT)
+    libraries: \
+	liboctave.$(SHLEXT) \
+	liboct-readline.$(SHLEXT) \
+	liboct-pathsearch.$(SHLEXT)
   endif
 else
   ifeq ($(STATIC_LIBS), true)
-    libraries: liboctave.$(LIBEXT)
+    libraries: \
+	liboctave.$(LIBEXT) \
+	liboct-readline.$(LIBEXT) \
+	liboct-pathsearch.$(LIBEXT)
   else
     libraries:
   endif
 endif
 .PHONY: libraries
 
-liboctave.$(LIBEXT): $(OBJECTS)
+liboctave.$(LIBEXT): $(LIBOCTAVE_OBJECTS)
 	rm -f $@
 	$(TEMPLATE_AR) $(TEMPLATE_ARFLAGS) $@ $^
 	$(RANLIB) $@
@@ -170,11 +216,41 @@ liboctave.$(SHLEXT): liboctave.$(SHLEXT_VER)
 	rm -f $@
 	$(LN_S) $< $@
 
-liboctave.$(SHLEXT_VER): $(PICOBJ)
+liboctave.$(SHLEXT_VER): $(LIBOCTAVE_PICOBJ)
 	rm -f $@
 	$(SH_LD) $(SH_LDFLAGS) $(SONAME_FLAGS) -o $@ $^
 
-$(PICOBJ): stmp-pic
+$(LIBOCTAVE_PICOBJ): stmp-pic
+
+liboct-readline.$(LIBEXT): $(LIBOCT_READLINE_OBJECTS)
+	rm -f $@
+	$(TEMPLATE_AR) $(TEMPLATE_ARFLAGS) $@ $^
+	$(RANLIB) $@
+
+liboct-readline.$(SHLEXT): liboct-readline.$(SHLEXT_VER)
+	rm -f $@
+	$(LN_S) $< $@
+
+liboct-readline.$(SHLEXT_VER): $(LIBOCT_READLINE_PICOBJ)
+	rm -f $@
+	$(SH_LD) $(SH_LDFLAGS) $(SONAME_FLAGS) -o $@ $^
+
+$(LIBOCT_READLINE_PICOBJ): stmp-pic
+
+liboct-pathsearch.$(LIBEXT): $(LIBOCT_PATHSEARCH_OBJECTS)
+	rm -f $@
+	$(TEMPLATE_AR) $(TEMPLATE_ARFLAGS) $@ $^
+	$(RANLIB) $@
+
+liboct-pathsearch.$(SHLEXT): liboct-pathsearch.$(SHLEXT_VER)
+	rm -f $@
+	$(LN_S) $< $@
+
+liboct-pathsearch.$(SHLEXT_VER): $(LIBOCT_PATHSEARCH_PICOBJ)
+	rm -f $@
+	$(SH_LD) $(SH_LDFLAGS) $(SONAME_FLAGS) -o $@ $^
+
+$(LIBOCT_PATHSEARCH_PICOBJ): stmp-pic
 
 check: all
 .PHONY: check
@@ -193,14 +269,37 @@ install-lib:
 	  $(INSTALL_DATA) liboctave.$(LIBEXT) \
 	    $(octlibdir)/liboctave.$(LIBEXT); \
 	  $(RANLIB) $(octlibdir)/liboctave.$(LIBEXT); \
+	  rm -f $(octlibdir)/liboct-readline.$(LIBEXT); \
+	  $(INSTALL_DATA) liboct-readline.$(LIBEXT) \
+	    $(octlibdir)/liboct-readline.$(LIBEXT); \
+	  $(RANLIB) $(octlibdir)/liboct-readline.$(LIBEXT); \
+	  rm -f $(octlibdir)/liboct-pathsearch.$(LIBEXT); \
+	  $(INSTALL_DATA) liboct-pathsearch.$(LIBEXT) \
+	    $(octlibdir)/liboct-pathsearch.$(LIBEXT); \
+	  $(RANLIB) $(octlibdir)/liboct-pathsearch.$(LIBEXT); \
 	fi
 	if $(SHARED_LIBS); then \
 	  rm -f $(octlibdir)/liboctave.$(SHLEXT_VER); \
 	  $(INSTALL_PROGRAM) \
 	    liboctave.$(SHLEXT_VER) $(octlibdir)/liboctave.$(SHLEXT_VER); \
 	  cd $(octlibdir); \
-	  rm -f liboctave.$(SHLEXT); \
-	  $(LN_S) liboctave.$(SHLEXT_VER) liboctave.$(SHLEXT); \
+	  rm -f liboct-readline.$(SHLEXT); \
+	  $(LN_S) liboct-readline.$(SHLEXT_VER) liboct-readline.$(SHLEXT); \
+	  rm -f $(octlibdir)/liboct-readline.$(SHLEXT_VER); \
+	  $(INSTALL_PROGRAM) \
+	    liboct-readline.$(SHLEXT_VER) \
+	    $(octlibdir)/liboct-readline.$(SHLEXT_VER); \
+	  cd $(octlibdir); \
+	  rm -f liboct-readline.$(SHLEXT); \
+	  $(LN_S) liboct-readline.$(SHLEXT_VER) liboct-readline.$(SHLEXT); \
+	  rm -f $(octlibdir)/liboct-pathsearch.$(SHLEXT_VER); \
+	  $(INSTALL_PROGRAM) \
+	    liboct-pathsearch.$(SHLEXT_VER) \
+	    $(octlibdir)/liboct-pathsearch.$(SHLEXT_VER); \
+	  cd $(octlibdir); \
+	  rm -f liboct-pathsearch.$(SHLEXT); \
+	  $(LN_S) \
+	    liboct-pathsearch.$(SHLEXT_VER) liboct-pathsearch.$(SHLEXT); \
 	fi
 .PHONY: install-lib
 
@@ -216,6 +315,12 @@ uninstall:
 	rm -f $(octlibdir)/liboctave.$(LIBEXT)
 	rm -f $(octlibdir)/liboctave.$(SHLEXT)
 	rm -f $(octlibdir)/liboctave.$(SHLEXT_VER)
+	rm -f $(octlibdir)/liboct-readline.$(LIBEXT)
+	rm -f $(octlibdir)/liboct-readline.$(SHLEXT)
+	rm -f $(octlibdir)/liboct-readline.$(SHLEXT_VER)
+	rm -f $(octlibdir)/liboct-pathsearch.$(LIBEXT)
+	rm -f $(octlibdir)/liboct-pathsearch.$(SHLEXT)
+	rm -f $(octlibdir)/liboct-pathsearch.$(SHLEXT_VER)
 	for f in $(INCLUDES); do rm -f $(octincludedir)/octave/$$f; done
 .PHONY: uninstall
 

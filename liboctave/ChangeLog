@@ -1,9 +1,11 @@
 2001-11-06  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Makefile.in: Split out readline and pathsearch functionality
+	into separate liboct-readline and liboct-pathsearch libraries.
+
 	* oct-rl-edit.c (octave_rl_clear_screen): Call rl_clear_screen,
-	not _rl_clear_screen.
-	(octave_rl_clear_screen): Temporarily redefine
-	rl_redisplay_function to do nothing.
+	not _rl_clear_screen.  Temporarily redefine rl_redisplay_function
+	to do nothing for this call to rl_clear_screen.
 
 2001-10-08  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

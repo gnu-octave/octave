@@ -182,7 +182,11 @@ public:
     { return rep->try_narrowing_conversion (); }
 
   virtual octave_value index (const octave_value_list& idx) const
-    { return rep->index (idx); }
+    {
+      octave_value retval = rep->index (idx);
+      retval.maybe_mutate ();
+      return retval;
+    }
 
   octave_value& assign (const octave_value_list& idx, const octave_value& rhs);
 

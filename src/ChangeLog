@@ -1,3 +1,8 @@
+Fri Oct 18 13:44:33 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov.h (octave_value::index): Call maybe_mutate() on retval before
+	returning it.
+
 Wed Oct 16 12:00:11 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* ov.h (octave_value::struct_elt_val): New optional arg, silent.

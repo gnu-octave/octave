@@ -49,7 +49,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "unwind-prot.h"
 #include "variables.h"
 
-octave_user_function *
+static octave_user_function *
 get_user_function (std::string str = "")
 {
   octave_user_function *dbg_fcn = NULL;
@@ -75,9 +75,7 @@ get_user_function (std::string str = "")
 	}
     }
   else if (curr_function)
-    {
-      dbg_fcn = curr_function;
-    }
+    dbg_fcn = curr_function;
 
   return dbg_fcn;
 }
@@ -172,6 +170,7 @@ a breakpoint.   If you get the wrong line nothing will happen.\n\
 
   std::string symbol_name = "";
   std::string line_number;
+
   int line = -1;
   int nargin = args.length ();
 
@@ -311,7 +310,7 @@ Show where we are in the code\n\
 // Copied and modified from the do_type command in help.cc
 // Maybe we could share some code?
 void
-do_dbtype(std::ostream& os, const std::string& name, int start, int end)
+do_dbtype (std::ostream& os, const std::string& name, int start, int end)
 {
   std::string ff = fcn_file_in_path (name);
 
@@ -343,10 +342,10 @@ do_dbtype(std::ostream& os, const std::string& name, int start, int end)
 	    }
 	}
       else
-	os << "unable to open `" << ff << "' for reading!\n";
+	os << "dbtype: unable to open `" << ff << "' for reading!\n";
     }
   else
-    os << "unkown function";
+    os << "dbtype: unkown function";
 
 }
 

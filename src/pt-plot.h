@@ -426,8 +426,8 @@ private:
   subplot_list& operator = (const subplot_list&);
 };
 
-extern std::string save_in_tmp_file (octave_value& t, int ndim = 2,
-				bool parametric = false);
+extern std::string save_in_tmp_file (const octave_value& t, int ndim = 2,
+				     bool parametric = false);
 
 extern void mark_for_deletion (const std::string&);
 

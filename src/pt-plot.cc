@@ -845,7 +845,7 @@ subplot_list::accept (tree_walker& tw)
 }
 
 std::string
-save_in_tmp_file (octave_value& t, int ndim, bool parametric)
+save_in_tmp_file (const octave_value& t, int ndim, bool parametric)
 {
   std::string name = file_ops::tempnam ("", "oct-");
 

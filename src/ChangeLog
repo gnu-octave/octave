@@ -1,3 +1,18 @@
+2003-01-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* symtab.cc (symbol_record::define): If definition already exists,
+	redefine it instead of replacing it.
+
+	* variables.cc (symbol_exist): Don't use reference when handling
+	sr->def ().
+
+	* pt-plot.cc (save_in_tmp_file): octave_value arg is now const.
+	* pt-misc.cc (tree_parameter_list::initialize_undefined_elements):
+	Likewise.
+
+	* symtab.cc (symbol_record::clear): Don't do anything if the
+	symbol record is already undefined.
+
 2003-01-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pt-arg-list.cc (tree_argument_list::append): New function.

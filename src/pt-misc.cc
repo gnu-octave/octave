@@ -59,7 +59,7 @@ tree_parameter_list::mark_as_formal_parameters (void)
 }
 
 void
-tree_parameter_list::initialize_undefined_elements (octave_value& val)
+tree_parameter_list::initialize_undefined_elements (const octave_value& val)
 {
   for (iterator p = begin (); p != end (); p++)
     {

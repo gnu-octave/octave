@@ -247,9 +247,10 @@ symbol_record::define (octave_function *f, unsigned int sym_type)
     {
       octave_value tmp (f);
 
-      delete definition;
-
-      definition = new symbol_def (tmp, sym_type);
+      if (! definition)
+	definition = new symbol_def (tmp, sym_type);
+      else
+	definition->define (tmp, sym_type);
 
       retval = true;
     }
@@ -260,16 +261,19 @@ symbol_record::define (octave_function *f, unsigned int sym_type)
 void
 symbol_record::clear (void)
 {
-  if (! tagged_static)
+  if (is_defined ())
     {
-      if (--definition->count <= 0)
-	delete definition;
+      if (! tagged_static)
+	{
+	  if (--definition->count <= 0)
+	    delete definition;
 
-      definition = new symbol_def ();
+	  definition = new symbol_def ();
+	}
+
+      if (linked_to_global)
+	linked_to_global = 0;
     }
-
-  if (linked_to_global)
-    linked_to_global = 0;
 }
 
 void

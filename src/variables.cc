@@ -586,7 +586,7 @@ symbol_exist (const std::string& name, const std::string& type)
 	  && (type == "any" || type == "file")
 	  && (sr->is_user_function () || sr->is_dld_function ()))
 	{
-	  octave_value& t = sr->def ();
+	  octave_value t = sr->def ();
 	  octave_function *f = t.function_value (true);
 	  std::string s = f ? f->fcn_file_name () : std::string ();
 

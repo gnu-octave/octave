@@ -40,16 +40,16 @@ public:
 
   DAE (int);
 
-  DAE (Vector& x, double time, DAEFunc& f);
+  DAE (const Vector& x, double time, DAEFunc& f);
 
-  DAE (Vector& x, Vector& xdot, double time, DAEFunc& f);
+  DAE (const Vector& x, const Vector& xdot, double time, DAEFunc& f);
 
  ~DAE (void);
 
   Vector deriv (void);
 
-  virtual void initialize (Vector& x, double t);
-  virtual void initialize (Vector& x, Vector& xdot, double t);
+  virtual void initialize (const Vector& x, double t);
+  virtual void initialize (const Vector& x, Vector& xdot, double t);
 
   Vector integrate (double t);
 

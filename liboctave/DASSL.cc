@@ -95,7 +95,7 @@ DAE::DAE (int size)
     info [i] = 0;
 }
 
-DAE::DAE (Vector& state, double time, DAEFunc& f)
+DAE::DAE (const Vector& state, double time, DAEFunc& f)
 {
   n = state.capacity ();
   t = time;
@@ -122,7 +122,7 @@ DAE::DAE (Vector& state, double time, DAEFunc& f)
     info [i] = 0;
 }
 
-DAE::DAE (Vector& state, Vector& deriv, double time, DAEFunc& f)
+DAE::DAE (const Vector& state, const Vector& deriv, double time, DAEFunc& f)
 {
   if (deriv.capacity () != state.capacity ())
     {
@@ -169,7 +169,7 @@ DAE::deriv (void)
 }
 
 void
-DAE::initialize (Vector& state, double time)
+DAE::initialize (const Vector& state, double time)
 {
   integration_error = 0;
   restart = 1;
@@ -180,7 +180,7 @@ DAE::initialize (Vector& state, double time)
 }
 
 void
-DAE::initialize (Vector& state, Vector& deriv, double time)
+DAE::initialize (const Vector& state, const Vector& deriv, double time)
 {
   integration_error = 0;
   restart = 1;

@@ -30,10 +30,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "lo-error.h"
 
-// Having this file in this directory is a kluge to avoid unresolved
-// symbol errors when creating shared versions of libcruft.
+/* Having this file in this directory is a kluge to avoid unresolved
+   symbol errors when creating shared versions of libcruft. */
 
-// Pointer to the current error handling function.
+/* Pointer to the current error handling function. */
 liboctave_error_handler current_liboctave_error_handler = liboctave_fatal;
 
 static void

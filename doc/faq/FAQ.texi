@@ -18,7 +18,7 @@
 @titlepage
 @title Octave FAQ
 @subtitle Frequently asked questions about Octave
-@subtitle December 1, 1994
+@subtitle December 14, 1996
 @sp 1
 @author John W. Eaton
 @page
@@ -33,22 +33,22 @@
 
 This is a list of frequently asked questions (FAQ) for Octave users.
 
-Some information in this FAQ was developed for earlier versions of
+Some information in this FAQ was written for earlier versions of
 Octave and may now be obsolete.
 
 I'm looking for new questions (@emph{with} answers), better answers,
 or both.  Please send suggestions to bug-octave@@bevo.che.wisc.edu.
 If you have general questions about Octave, or need help for something
-that is not covered by the FAQ, please use the
+that is not covered by the Octave manual or the FAQ, please use the
 help-octave@@bevo.che.wisc.edu mailing list.
 
 This FAQ is intended to supplement, not replace, the Octave manual.
-Before posting a question to the hlpe-octave mailing list, you should
+Before posting a question to the help-octave mailing list, you should
 first check to see if the topic is covered in the manual.
 
 @menu
 * What is Octave?::             
-* Version 1.1.0::               
+* Version 2.0::               
 * Octave Features::             
 * Documentation::               
 * Getting Octave::              
@@ -60,7 +60,7 @@ first check to see if the topic is covered in the manual.
 * Index::                       
 @end menu
 
-@node What is Octave?, Version 1.1.0, Top, Top
+@node What is Octave?, Version 2.0, Top, Top
 @chapter What is Octave?
 
 Octave is a high-level interactive language, primarily intended for
@@ -97,23 +97,24 @@ Octave is also free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
 Free Software Foundation.
 
-@node Version 1.1.0, Octave Features, What is Octave?, Top
-@chapter What's new in version 1.1.0 of Octave
+@node Version 2.0, Octave Features, What is Octave?, Top
+@chapter What's new in version 2.0 of Octave
 
-The long-awaited version 1.1.0 of Octave has now been released.  Many
+The long-awaited version 2.0 of Octave has now been released.  Many
 bugs have been fixed and lots of new features added.  Octave is now much
 more compatible with @sc{Matlab}.
 
-Version 1.1.0 fixes many bugs, but as with any ``x.y.0'' release there
-will be a few glitches.  You can expect a 1.1.1 shortly.  You can help
-contribute to the quality of Octave by trying it out and submitting bug
-reports where you find them.
+Version 2.0 fixes many bugs, but as with any ``x.y.0'' release there
+will be a few glitches.  There will probably be a 2.0.1 release to fix
+most of these problems.  You can help contribute to the quality of
+Octave by using it and submitting bug reports for the problems you
+encounter.
 
 A list of user-visible changes in recent versions of Octave may be found
 in the file NEWS, distributed in both source and binary releases of
 Octave.
 
-@node Octave Features, Documentation, Version 1.1.0, Top
+@node Octave Features, Documentation, Version 2.0, Top
 @chapter What features are unique to Octave?
 
 @menu
@@ -181,6 +182,7 @@ structures.  Here are some examples of using data structures in Octave.
 @item Elements of structures can be of any value type.
 
 @example
+@group
 octave:1> x.a = 1; x.b = [1, 2; 3, 4]; x.c = "string";
 octave:2> x.a
 x.a = 1
@@ -192,34 +194,62 @@ x.b =
 
 octave:4> x.c
 x.c = string
+@end group
 @end example
 
 @item Structures may be copied.
 
 @example
+@group
 octave:1> y = x
 y =
+@{
+  a = 1
+  b =
 
-<structure: a b c>
+    1  2
+    3  4
+
+  c = string
+  s =
+
+    0.00000  0.00000  0.00000
+    0.00000  5.46499  0.00000
+    0.00000  0.00000  0.36597
+
+  u =
+
+    -0.40455  -0.91451
+    -0.91451   0.40455
+
+  v =
+
+    -0.57605   0.81742
+    -0.81742  -0.57605
+@}
+@end group
 @end example
 
 @item Structure elements may reference other structures.
 
 @example
+@group
 octave:1> x.b.d = 3
 x.b.d = 3
 octave:2> x.b
-x.b =
-
-<structure: d>
-
+ans =
+@{
+  d = 3
+@}
 octave:3> x.b.d
-x.b.d = 3
+ans = 3
+@end group
 @end example
 
 @item Functions can return structures.
 
 @example
+@group
 octave:1> function y = f (x)
 > y.re = real (x);
 > y.im = imag (x);
@@ -227,39 +257,39 @@ octave:1> function y = f (x)
 
 octave:2> f (rand + rand*I);
 ans =
-
-<structure: im re>
-
-octave:3> ans.im, ans.re
-ans.im = 0.93411
-ans.re = 0.56234
+@{
+  im = 0.18033
+  re = 0.19069
+@}
+@end group
 @end example
 
 @item Function return lists can include structure elements, and they may
 be indexed like any other variable.
 
 @example
-octave:1> [x.u, x.s(2:3,2:3), x.v] = svd ([1, 2; 3, 4])
-x.u =
-
-  -0.40455  -0.91451
-  -0.91451   0.40455
-
-x.s =
-
-  0.00000  0.00000  0.00000
-  0.00000  5.46499  0.00000
-  0.00000  0.00000  0.36597
-
-x.v =
-
-  -0.57605   0.81742
-  -0.81742  -0.57605
-
-octave:8> x
+@group
+octave:1> [x.u, x.s(2:3,2:3), x.v] = svd ([1, 2; 3, 4]);
+octave:2> x
 x =
+@{
+  s =
 
-<structure: s u v>
+    0.00000  0.00000  0.00000
+    0.00000  5.46499  0.00000
+    0.00000  0.00000  0.36597
+
+  u =
+
+    -0.40455  -0.91451
+    -0.91451   0.40455
+
+  v =
+
+    -0.57605   0.81742
+    -0.81742  -0.57605
+@}
+@end group
 @end example
 
 @item You can also use the function @code{is_struct} to determine
@@ -362,6 +392,7 @@ Here is an example of a function that uses the new syntax to print a
 header followed by an unspecified number of values:
 
 @example
+@group
 function foo (heading, ...)
   disp (heading);
   va_start ();
@@ -369,6 +400,7 @@ function foo (heading, ...)
     disp (va_arg ());
   endwhile
 endfunction
+@end group
 @end example
 
 Calling @code{va_start()} positions an internal pointer to the first
@@ -398,11 +430,13 @@ Here is an example of a function that uses the new syntax to produce
 @samp{N} values:
 
 @example
+@group
 function [...] = foo (n)
   for i = 1:n
     vr_val (i);
   endfor
 endfunction
+@end group
 @end example
 
 @node Built-in ODE and DAE solvers,  , Variable-length return lists, Octave Features
@@ -411,7 +445,7 @@ endfunction
 @cindex DASSL
 @cindex LSODE
 
-Octave includes LSODE and DASSL for solving systems of stiff 
+Octave includes LSODE and DASSL for solving systems of stiff ordinary
 differential and differential-algebraic equations.  These functions are
 built in to the interpreter.
 
@@ -433,11 +467,10 @@ the Octave manual is also available on line using the GNU Info system
 via the GNU Emacs, info, or xinfo programs, or by using the @samp{help -i} 
 command to start the GNU info browser directly from the Octave prompt.
 
-It is also possible to use WWW browsers such as Mosaic to read the
-Octave manual (or any other Info file) by using Roar Smith's info2www
-program to convert GNU Info files to HTML.  The source for info2www is
-available via anonymous ftp from ftp.che.wisc.edu in the directory
-@file{/pub/www}.
+It is also possible to use your favorite WWW browser to read the Octave
+manual (or any other Info file) by using Roar Smith's info2www program
+to convert GNU Info files to HTML.  The source for info2www is available
+from @url{ftp://ftp.che.wisc.edu/pub/www}.
 
 @node Getting Octave, Installation, Documentation, Top
 @chapter Obtaining Source Code
@@ -522,7 +555,7 @@ Octave to other systems, please contact bug-octave@@bevo.che.wisc.edu.
 
 @cindex Octave, version date
 
-The latest version of Octave is 1.1.0, released January 1995.
+The latest version of Octave is 2.0, released December 1996.
 
 @node Installation, Common problems, Getting Octave, Top
 @chapter Installation Issues and Problems
@@ -611,8 +644,10 @@ If you would like to join the discussion and receive all messages sent
 to the list, please send a short note to
 
 @example
+@group
 help-octave-request@@bevo.che.wisc.edu
             ^^^^^^^
+@end group
 @end example
 
 @strong{Please do not} send requests to be added or removed from the the
@@ -679,66 +714,45 @@ Unknown differences.
 @end enumerate
 
 The first category, irrelevant differences, do not affect computations
-and most likely do not affect the execution of function files.  Some
-examples are:
-
-When typing @samp{help function}, Octave displays the first set of
-comment lines @emph{after} the function declaration, but @sc{Matlab}
-the first set of comment lines starting from the beginning of the file.
+and most likely do not affect the execution of function files.
 
 The differences of the second category are usually because the authors
 of Octave decided on a better (subjective) implementation that the way
 @sc{Matlab} does it, and so introduced ``user preference variables'' so that
 you can customize Octave's behavior to be either @sc{Matlab}-compatible or
 to use Octave's new features.  To make Octave more @sc{Matlab}-compatible,
-put the following statements in your @file{~/.octaverc} file.  This is a
-partial list of the user preference variables that should be changed to
-get @sc{Matlab}-compatible behavior.  (It is partial because not all the
-differences are currently known, and when they become known, this
-document lags behind.)
+put the following statements in your @file{~/.octaverc} file, or use the
+command line option @samp{--traditional}, which implies all of these
+settings.  Note that this list may not be complete, because some new
+variables may have been introduced since this document was last updated.
 
 @example
-  PS1 = '>> ';
-  PS2 = '';
-  default_save_format = 'mat-binary';
-  define_all_return_values = 'true';
-  do_fortran_indexing = 'true';
-  empty_list_elements_ok = 'true';
-  implicit_str_to_num_ok = 'true';
-  ok_to_lose_imaginary_part = 'true';
-  page_screen_output = 'false';
-  prefer_column_vectors = 'false';
-  prefer_zero_one_indexing = 'true';
-  print_empty_dimensions = 'false';
-  treat_neg_dim_as_zero = 'true';
-  warn_function_name_clash = 'false';
-  whitespace_in_literal_matrix = 'traditional';
+@group
+  PS1 = ">> ";
+  PS2 = "";
+  beep_on_error = 1;
+  default_save_format = "mat-binary";
+  define_all_return_values = 1;
+  do_fortran_indexing = 1;
+  empty_list_elements_ok = 1;
+  implicit_str_to_num_ok = 1;
+  ok_to_lose_imaginary_part = 1;
+  page_screen_output = 0;
+  prefer_column_vectors = 0;
+  prefer_zero_one_indexing = 1;
+  print_empty_dimensions = 0;
+  treat_neg_dim_as_zero = 1;
+  warn_function_name_clash = 0;
+  whitespace_in_literal_matrix = "traditional";
+@end group
 @end example
 
 Some other known differences are:
 
 @itemize @bullet
 @item
-String subscripting is not yet implemented in Octave.  For example,
-
-@example
-a = 'reknob';
-a([6,1,5,3,2,4])
-@end example
-
-@noindent
-returns the string @samp{broken} in @sc{Matlab}, but generates an error in
-Octave.  A future release of Octave will fix this along with providing
-a much more complete and powerful set of functions for manipulating strings.
-
-@item
 The Octave plotting functions are mostly compatible with the ones from
 @sc{Matlab} 3.x, but not from @sc{Matlab} 4.x.
-
-@item
-The C-style I/O functions are not completely compatible.  It would be
-useful for someone to explore the differences so that they might be
-fixed, or at least noted in the manual.
 @end itemize
 
 The third category of differences is (hopefully) shrinking.  If you find

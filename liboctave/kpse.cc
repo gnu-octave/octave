@@ -1,7 +1,8 @@
 /* pathsearch.c: look up a filename in a path.
 
-Copyright (C) 1993, 94, 95, 96, 97 Karl Berry.
+Copyright (C) 1993, 94, 95, 96, 97, 98 Karl Berry.
 Copyright (C) 1993, 94, 95, 96, 97 Karl Berry & O. Weber.
+Copyright (C) 1992, 93, 94, 95, 96 Free Software Foundation, Inc.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Library General Public
@@ -25,11 +26,397 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #include "kpse-xfns.h"
 #include "kpse.h"
 
-#include <time.h> /* for `time' */
+/* c-std.h: the first header files.  */
 
-#ifdef __DJGPP__
-#include <sys/stat.h>	/* for stat bits */
+/* Header files that essentially all of our sources need, and
+   that all implementations have.  We include these first, to help with
+   NULL being defined multiple times.  */
+#include <cstdio>
+#include <cstdarg>
+#include <cstdlib>
+#include <cstring>
+#include <climits>
+#include <cerrno>
+#include <cassert>
+
+#ifdef HAVE_UNISTD_H
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>
 #endif
+#include <unistd.h>
+#endif
+
+#ifdef WIN32
+#include <malloc.h>
+#endif /* not WIN32 */
+
+#include "sysdir.h"
+#include "statdefs.h"
+
+/* define NAME_MAX, the maximum length of a single
+   component in a filename.  No such limit may exist, or may vary
+   depending on the filesystem.  */
+
+/* Most likely the system will truncate filenames if it is not POSIX,
+   and so we can use the BSD value here.  */
+#ifndef _POSIX_NAME_MAX
+#define _POSIX_NAME_MAX 255
+#endif
+
+#ifndef NAME_MAX
+#define NAME_MAX _POSIX_NAME_MAX
+#endif
+
+/* c-ctype.h: ASCII-safe versions of the <ctype.h> macros.  */
+
+#include <cctype>
+
+/* What separates elements in environment variable path lists?  */
+#ifndef ENV_SEP
+#ifdef DOSISH
+#define ENV_SEP ';'
+#define ENV_SEP_STRING ";"
+#else
+#define ENV_SEP ':'
+#define ENV_SEP_STRING ":"
+#endif /* not DOS */
+#endif /* not ENV_SEP */
+
+#ifndef IS_ENV_SEP
+#define IS_ENV_SEP(ch) ((ch) == ENV_SEP)
+#endif
+
+/* c-pathmx.h: define PATH_MAX, the maximum length of a filename.
+   Since no such limit may exist, it's preferable to dynamically grow
+   filenames as needed.  */
+
+/* Cheat and define this as a manifest constant no matter what, instead
+   of using pathconf.  I forget why we want to do this.  */
+
+#ifndef _POSIX_PATH_MAX
+#define _POSIX_PATH_MAX 255
+#endif
+
+#ifndef PATH_MAX
+#ifdef MAXPATHLEN
+#define PATH_MAX MAXPATHLEN
+#else
+#define PATH_MAX _POSIX_PATH_MAX
+#endif
+#endif /* not PATH_MAX */
+
+/* debug.h: Runtime tracing.  */
+
+/* If NO_DEBUG is defined (not recommended), skip all this.  */
+#ifndef NO_DEBUG
+
+/* OK, we'll have tracing support.  */
+#define KPSE_DEBUG
+
+/* Set a bit.  */
+#define KPSE_DEBUG_SET(bit) kpathsea_debug |= 1 << (bit)
+
+/* Test if a bit is on.  */
+#define KPSE_DEBUG_P(bit) (kpathsea_debug & (1 << (bit)))
+
+#define KPSE_DEBUG_STAT 0		/* stat calls */
+#define KPSE_DEBUG_HASH 1		/* hash lookups */
+#define KPSE_DEBUG_FOPEN 2		/* fopen/fclose calls */
+#define KPSE_DEBUG_PATHS 3		/* search path initializations */
+#define KPSE_DEBUG_EXPAND 4		/* path element expansion */
+#define KPSE_DEBUG_SEARCH 5		/* searches */
+#define KPSE_DEBUG_VARS 6		/* variable values */
+#define KPSE_LAST_DEBUG KPSE_DEBUG_VARS
+
+/* A printf for the debugging.  */
+#define DEBUGF_START() do { fputs ("kdebug:", stderr)
+#define DEBUGF_END()        fflush (stderr); } while (0)
+
+#define DEBUGF(str)							\
+  DEBUGF_START (); fputs (str, stderr); DEBUGF_END ()
+#define DEBUGF1(str, e1)						\
+  DEBUGF_START (); fprintf (stderr, str, e1); DEBUGF_END ()
+#define DEBUGF2(str, e1, e2)						\
+  DEBUGF_START (); fprintf (stderr, str, e1, e2); DEBUGF_END ()
+#define DEBUGF3(str, e1, e2, e3)					\
+  DEBUGF_START (); fprintf (stderr, str, e1, e2, e3); DEBUGF_END ()
+#define DEBUGF4(str, e1, e2, e3, e4)					\
+  DEBUGF_START (); fprintf (stderr, str, e1, e2, e3, e4); DEBUGF_END ()
+
+#undef fopen
+#define fopen kpse_fopen_trace
+extern FILE *fopen (const char *filename, const char *mode);
+#undef fclose
+#define fclose kpse_fclose_trace
+extern int fclose (FILE *);
+
+#endif /* not NO_DEBUG */
+
+#if defined (WIN32) && !defined (__MINGW32__)
+
+/* System description file for Windows NT.  */
+
+/*
+ *      Define symbols to identify the version of Unix this is.
+ *      Define all the symbols that apply correctly.
+ */
+
+#ifndef DOSISH
+#define DOSISH
+#endif
+
+#ifndef MAXPATHLEN
+#define MAXPATHLEN      _MAX_PATH
+#endif
+
+#define HAVE_DUP2       	1
+#define HAVE_RENAME     	1
+#define HAVE_RMDIR      	1
+#define HAVE_MKDIR      	1
+#define HAVE_GETHOSTNAME	1
+#define HAVE_RANDOM		1
+#define USE_UTIME		1
+#define HAVE_MOUSE		1
+#define HAVE_TZNAME		1
+
+/* These have to be defined because our compilers treat __STDC__ as being
+   defined (most of them anyway). */
+
+#define access  _access
+#define stat    _stat
+#define strcasecmp _stricmp
+#define strdup  _strdup
+#define strncasecmp _strnicmp
+
+#define S_IFMT   _S_IFMT
+#define S_IFDIR  _S_IFDIR
+
+/* Define this so that winsock.h definitions don't get included when
+   windows.h is...  For this to have proper effect, config.h must
+   always be included before windows.h.  */ 
+#define _WINSOCKAPI_    1
+
+#include <windows.h>
+
+/* Defines size_t and alloca ().  */
+#include <malloc.h>
+
+/* For proper declaration of environ.  */
+#include <io.h>
+#include <fcntl.h>
+#include <process.h>
+
+/* ============================================================ */
+
+#endif /* WIN32 */
+
+/* hash.h: declarations for a hash table.  */
+
+/* A single (key,value) pair.  */
+typedef struct hash_element_struct
+{
+  const char *key;
+  const char *value;
+  struct hash_element_struct *next;
+} hash_element_type;
+
+/* The usual arrangement of buckets initialized to null.  */
+typedef struct
+{
+  hash_element_type **buckets;
+  unsigned size;
+} hash_table_type;
+
+static hash_table_type hash_create (unsigned size);
+
+
+#ifdef KPSE_DEBUG
+/* How to print the hash results when debugging.  */
+extern int kpse_debug_hash_lookup_int;
+#endif
+
+/* fn.h: arbitrarily long filenames (or just strings).  */
+
+/* Arbitrarily long filenames; it's inconvenient to use obstacks here,
+   because we want to maintain a null terminator.  Also used for
+   dynamically growing strings even when the null byte isn't necessary,
+   e.g., in `variable.c', since I don't want to pass obstacks around
+   everywhere, and one can't free parts of an obstack arbitrarily.  */
+
+typedef struct
+{
+  char *str;
+  unsigned allocated;
+  unsigned length; /* includes the terminating null byte, if any */
+} fn_type;
+
+#define FN_STRING(fn) ((fn).str)
+#define FN_ALLOCATED(fn) ((fn).allocated)
+#define FN_LENGTH(fn) ((fn).length)
+
+/* lib.h: other stuff.  */
+
+/* Define common sorts of messages.  */
+
+/* This should be called only after a system call fails.  Don't exit
+   with status `errno', because that might be 256, which would mean
+   success (exit statuses are truncated to eight bits).  */
+#define FATAL_PERROR(str) do { \
+  fputs ("pathsearch: ", stderr); \
+  perror (str); exit (EXIT_FAILURE); } while (0)
+
+#define START_FATAL() do { \
+  fputs ("pathsearch: fatal: ", stderr);
+#define END_FATAL() fputs (".\n", stderr); exit (1); } while (0)
+
+#define FATAL(str)							\
+  START_FATAL (); fputs (str, stderr); END_FATAL ()
+#define FATAL1(str, e1)							\
+  START_FATAL (); fprintf (stderr, str, e1); END_FATAL ()
+#define FATAL2(str, e1, e2)						\
+  START_FATAL (); fprintf (stderr, str, e1, e2); END_FATAL ()
+#define FATAL3(str, e1, e2, e3)						\
+  START_FATAL (); fprintf (stderr, str, e1, e2, e3); END_FATAL ()
+#define FATAL4(str, e1, e2, e3, e4)					\
+  START_FATAL (); fprintf (stderr, str, e1, e2, e3, e4); END_FATAL ()
+#define FATAL5(str, e1, e2, e3, e4, e5)					\
+  START_FATAL (); fprintf (stderr, str, e1, e2, e3, e4, e5); END_FATAL ()
+#define FATAL6(str, e1, e2, e3, e4, e5, e6)				\
+  START_FATAL (); fprintf (stderr, str, e1, e2, e3, e4, e5, e6); END_FATAL ()
+
+
+#define START_WARNING() do { fputs ("warning: ", stderr)
+#define END_WARNING() fputs (".\n", stderr); fflush (stderr); } while (0)
+
+#define WARNING(str)							\
+  START_WARNING (); fputs (str, stderr); END_WARNING ()
+#define WARNING1(str, e1)						\
+  START_WARNING (); fprintf (stderr, str, e1); END_WARNING ()
+#define WARNING2(str, e1, e2)						\
+  START_WARNING (); fprintf (stderr, str, e1, e2); END_WARNING ()
+#define WARNING3(str, e1, e2, e3)					\
+  START_WARNING (); fprintf (stderr, str, e1, e2, e3); END_WARNING ()
+#define WARNING4(str, e1, e2, e3, e4)					\
+  START_WARNING (); fprintf (stderr, str, e1, e2, e3, e4); END_WARNING ()
+
+
+/* I find this easier to read.  */
+#define STREQ(s1, s2) (strcmp (s1, s2) == 0)
+#define STRNEQ(s1, s2, n) (strncmp (s1, s2, n) == 0)
+      
+/* Support for FAT/ISO-9660 filesystems.  Theoretically this should be
+   done at runtime, per filesystem, but that's painful to program.  */
+#ifdef MONOCASE_FILENAMES
+#define FILESTRCASEEQ(s1, s2) (strcasecmp (s1, s2) == 0)
+#define FILESTRNCASEEQ(s1, s2, l) (strncasecmp (s1, s2, l) == 0)
+#define FILECHARCASEEQ(c1, c2) (toupper (c1) == toupper (c2))
+#else
+#define FILESTRCASEEQ STREQ
+#define FILESTRNCASEEQ STRNEQ
+#define FILECHARCASEEQ(c1, c2) ((c1) == (c2))
+#endif
+
+/* This is the maximum number of numerals that result when a 64-bit
+   integer is converted to a string, plus one for a trailing null byte,
+   plus one for a sign.  */
+#define MAX_INT_LENGTH 21
+
+/* If the environment variable TEST is set, return it; otherwise,
+   DEFAULT.  This is useful for paths that use more than one envvar.  */
+#define ENVVAR(test, default) (getenv (test) ? (test) : (default))
+
+
+/* (Re)Allocate N items of type T using xmalloc/xrealloc.  */
+#define XTALLOC(n, t) ((t *) xmalloc ((n) * sizeof (t)))
+#define XTALLOC1(t) XTALLOC (1, t)
+#define XRETALLOC(addr, n, t) ((addr) = (t *) xrealloc (addr, (n) * sizeof(t)))
+
+extern "C" char *xbasename (const char *name);
+
+static FILE *xfopen (const char *filename, const char *mode);
+
+static void xfclose (FILE *f, const char *filename);
+
+unsigned long xftell (FILE *f, char *filename);
+
+static void xclosedir (DIR *d);
+
+static void *xmalloc (unsigned size);
+
+static void *xrealloc (void *old_ptr, unsigned size);
+
+static char *xstrdup (const char *s);
+
+extern char *xbasename (const char *name);
+
+static int dir_p (const char *fn);
+
+#ifndef WIN32
+int dir_links (const char *fn);
+#endif
+
+static unsigned hash (hash_table_type table, const char *key);
+
+static void hash_insert (hash_table_type *table, const char *key,
+			 const char *value);
+
+static char **hash_lookup (hash_table_type table, const char *key);
+
+static void hash_print (hash_table_type table, int summary_only);
+
+static char *concat (const char *s1, const char *s2);
+
+static char *concat3 (const char *s1, const char *s2, const char *s3);
+
+static char *concatn (const char *str1, ...);
+
+static char *find_suffix (const char *name);
+
+static char *kpse_truncate_filename (const char *name);
+
+static char *kpse_readable_file (const char *name);
+
+static int kpse_absolute_p (const char *filename, int relative_ok);
+
+static str_list_type str_list_init (void);
+
+static void str_list_add (str_list_type *l, char *s);
+
+static void str_list_concat (str_list_type *target, str_list_type more);
+
+static void str_list_free (str_list_type *l);
+
+static void str_llist_add (str_llist_type *l, char *str);
+
+static void str_llist_float (str_llist_type *l, str_llist_elt_type *mover);
+
+static fn_type fn_init (void);
+
+static fn_type fn_copy0 (const char *s, unsigned len);
+
+static void fn_free (fn_type *f);
+
+static void grow (fn_type *f, unsigned len);
+
+static void fn_1grow (fn_type *f, char c);
+
+static void fn_grow (fn_type *f, void *source, unsigned len);
+
+static void fn_str_grow (fn_type *f, const char *s);
+
+static void fn_shrink_to (fn_type *f, unsigned loc);
+
+static char *kpse_var_value (const char *var);
+
+static void expanding (const char *var, int xp);
+
+static int expanding_p (const char *var);
+
+static void expand (fn_type *expansion, const char *start, const char *end);
+
+static char *kpse_var_expand (const char *src);
+
+#include <ctime> /* for `time' */
 
 /* The very first search is for texmf.cnf, called when someone tries to
    initialize the TFM path or whatever.  init_path calls kpse_cnf_get
@@ -56,7 +443,7 @@ log_search (str_list_type filenames)
     char *log_name = kpse_var_value ("TEXMFLOG");
     first_time = false;
     if (log_name) {
-      log_file = fopen (log_name, FOPEN_A_MODE);
+      log_file = xfopen (log_name, "a");
       if (!log_file)
         perror (log_name);
       free (log_name);
@@ -266,29 +653,6 @@ search (const char *path, const char *original_name,
   char *name;
   bool absolute_p;
 
-#ifdef __DJGPP__
-  /* We will use `stat' heavily, so let's request for
-     the fastest possible version of `stat', by telling
-     it what members of struct stat do we really need.
-
-     We need to set this on each call because this is a
-     library function; the caller might need other options
-     from `stat'.  Thus save the flags and restore them
-     before exit.
-
-     This call tells `stat' that we do NOT need to recognize
-     executable files (neither by an extension nor by a magic
-     signature); that we do NOT need time stamp of root directories;
-     and that we do NOT need the write access bit in st_mode.
-
-     Note that `kpse_set_progname' needs the EXEC bits,
-     but it was already called by the time we get here.  */
-  unsigned short save_djgpp_flags  = _djstat_flags;
-
-  _djstat_flags = _STAT_EXEC_MAGIC | _STAT_EXEC_EXT
-		  | _STAT_ROOT_TIME | _STAT_WRITEBIT;
-#endif
-
   /* Make a leading ~ count as an absolute filename, and expand $FOO's.  */
   name = kpse_expand (original_name);
   
@@ -323,11 +687,6 @@ search (const char *path, const char *original_name,
     if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
       putc ('\n', stderr);
   }  
-
-#ifdef __DJGPP__
-  /* Undo any side effects.  */
-  _djstat_flags = save_djgpp_flags;
-#endif
 
   return STR_LIST (ret_list);
 }
@@ -489,29 +848,6 @@ find_first_of (const char *path, const char **names,
 {
   str_list_type ret_list;
 
-#ifdef __DJGPP__
-  /* We will use `stat' heavily, so let's request for
-     the fastest possible version of `stat', by telling
-     it what members of struct stat do we really need.
-
-     We need to set this on each call because this is a
-     library function; the caller might need other options
-     from `stat'.  Thus save the flags and restore them
-     before exit.
-
-     This call tells `stat' that we do NOT need to recognize
-     executable files (neither by an extension nor by a magic
-     signature); that we do NOT need time stamp of root directories;
-     and that we do NOT need the write access bit in st_mode.
-
-     Note that `kpse_set_progname' needs the EXEC bits,
-     but it was already called by the time we get here.  */
-  unsigned short save_djgpp_flags  = _djstat_flags;
-
-  _djstat_flags = _STAT_EXEC_MAGIC | _STAT_EXEC_EXT
-		  | _STAT_ROOT_TIME | _STAT_WRITEBIT;
-#endif
-
   if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
     {
       const char **p;
@@ -559,11 +895,6 @@ find_first_of (const char *path, const char **names,
     if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
       putc ('\n', stderr);
   }  
-
-#ifdef __DJGPP__
-  /* Undo any side effects.  */
-  _djstat_flags = save_djgpp_flags;
-#endif
 
   return STR_LIST (ret_list);
 }
@@ -1526,7 +1857,7 @@ db_build (hash_table_type *table, const char *db_filename)
   unsigned len = strlen (db_filename) - sizeof (DB_NAME) + 1; /* Keep the /. */
   char *top_dir = (char *) xmalloc (len + 1);
   char *cur_dir = NULL; /* First thing in ls-R might be a filename.  */
-  FILE *db_file = fopen (db_filename, FOPEN_R_MODE);
+  FILE *db_file = xfopen (db_filename, "r");
   
   strncpy (top_dir, db_filename, len);
   top_dir[len] = 0;
@@ -1723,7 +2054,7 @@ alias_build (hash_table_type *table, const char *alias_filename)
 {
   char *line, *real, *alias;
   unsigned count = 0;
-  FILE *alias_file = fopen (alias_filename, FOPEN_R_MODE);
+  FILE *alias_file = xfopen (alias_filename, "r");
 
   if (alias_file) {
     while ((line = read_line (alias_file)) != NULL) {
@@ -1733,13 +2064,13 @@ alias_build (hash_table_type *table, const char *alias_filename)
       } else {
         /* Each line should have two fields: realname aliasname.  */
         real = line;
-        while (*real && ISSPACE (*real))
+        while (*real && isspace (*real))
           real++;
         alias = real;
-        while (*alias && !ISSPACE (*alias))
+        while (*alias && !isspace (*alias))
           alias++;
         *alias++ = 0;
-        while (*alias && ISSPACE (*alias)) 
+        while (*alias && isspace (*alias)) 
           alias++;
         /* Is the check for errors strong enough?  Should we warn the user
            for potential errors?  */
@@ -2428,3 +2759,986 @@ kpse_filename_component (const char *p)
   return element (p, false);
 }
 
+/* xfopen.c: fopen and fclose with error checking.  */
+
+/* These routines just check the return status from standard library
+   routines and abort if an error happens.  */
+
+FILE *
+xfopen (const char *filename, const char *mode)
+{
+  FILE *f;
+  
+  assert (filename && mode);
+  
+  f = fopen (filename, mode);
+  if (f == NULL)
+    FATAL_PERROR (filename);
+
+  return f;
+}
+
+void
+xfclose (FILE *f, const char *filename)
+{
+  assert (f);
+  
+  if (fclose (f) == EOF)
+    FATAL_PERROR (filename);
+}
+
+/* xftell.c: ftell with error checking.  */
+
+unsigned long
+xftell (FILE *f, char *filename)
+{
+  long where = ftell (f);
+
+  if (where < 0)
+    FATAL_PERROR (filename);
+
+  return where;
+}
+
+void
+xclosedir (DIR *d)
+{
+#ifdef CLOSEDIR_VOID
+  closedir (d);
+#else
+  int ret = closedir (d);
+  
+  if (ret != 0)
+    FATAL ("closedir failed");
+#endif
+}
+
+/* xmalloc.c: malloc with error checking.  */
+
+void *
+xmalloc (unsigned size)
+{
+  void *new_mem = (void *) malloc (size);
+
+  if (new_mem == NULL)
+    {
+      fprintf (stderr, "fatal: memory exhausted (xmalloc of %u bytes).\n",
+               size);
+      /* 1 means success on VMS, so pick a random number (ASCII `K').  */
+      exit (75);
+    }
+
+  return new_mem;
+}
+
+/* xrealloc.c: realloc with error checking.  */
+
+extern void *xmalloc (unsigned);
+
+void *
+xrealloc (void *old_ptr, unsigned size)
+{
+  void *new_mem;
+
+  if (old_ptr == NULL)
+    new_mem = xmalloc (size);
+  else
+    {
+      new_mem = (void *) realloc (old_ptr, size);
+      if (new_mem == NULL)
+        {
+          /* We used to print OLD_PTR here using %x, and casting its
+             value to unsigned, but that lost on the Alpha, where
+             pointers and unsigned had different sizes.  Since the info
+             is of little or no value anyway, just don't print it.  */
+          fprintf (stderr, "fatal: memory exhausted (realloc of %u bytes).\n",
+                   size);
+          /* 1 means success on VMS, so pick a random number (ASCII `B').  */
+          exit (66);
+        }
+    }
+
+  return new_mem;
+}
+
+/* xstrdup.c: strdup with error checking.  */
+
+/* Return a copy of S in new storage.  */
+
+char *
+xstrdup (const char *s)
+{
+  char *new_string = (char *) xmalloc (strlen (s) + 1);
+  return strcpy (new_string, s);
+}
+
+/* dir.c: directory operations.  */
+
+/* Return true if FN is a directory or a symlink to a directory,
+   false if not. */
+
+int
+dir_p (const char *fn)
+{
+#ifdef WIN32
+  int fa = GetFileAttributes(fn);
+  return (fa != 0xFFFFFFFF && (fa & FILE_ATTRIBUTE_DIRECTORY));
+#else
+  struct stat stats;
+  return stat (fn, &stats) == 0 && S_ISDIR (stats.st_mode);
+#endif
+}
+
+#ifndef WIN32
+
+/* Return -1 if FN isn't a directory, else its number of links.
+   Duplicate the call to stat; no need to incur overhead of a function
+   call for that little bit of cleanliness. */
+
+int
+dir_links (const char *fn)
+{
+  static hash_table_type link_table;
+  char **hash_ret;
+  long ret;
+  
+  if (link_table.size == 0)
+    link_table = hash_create (457);
+
+#ifdef KPSE_DEBUG
+  /* This is annoying, but since we're storing integers as pointers, we
+     can't print them as strings.  */
+  if (KPSE_DEBUG_P (KPSE_DEBUG_HASH))
+    kpse_debug_hash_lookup_int = 1;
+#endif
+
+  hash_ret = hash_lookup (link_table, fn);
+  
+#ifdef KPSE_DEBUG
+  if (KPSE_DEBUG_P (KPSE_DEBUG_HASH))
+    kpse_debug_hash_lookup_int = 0;
+#endif
+
+  /* Have to cast the int we need to/from the const_string that the hash
+     table stores for values. Let's hope an int fits in a pointer.  */
+  if (hash_ret)
+    ret = (long) *hash_ret;
+  else
+    {
+      struct stat stats;
+      ret = stat (fn, &stats) == 0 && S_ISDIR (stats.st_mode)
+            ? stats.st_nlink : (unsigned) -1;
+
+      /* It's up to us to copy the value.  */
+      hash_insert (&link_table, xstrdup (fn), (const char *) ret);
+      
+#ifdef KPSE_DEBUG
+      if (KPSE_DEBUG_P (KPSE_DEBUG_STAT))
+        DEBUGF2 ("dir_links(%s) => %ld\n", fn, ret);
+#endif
+    }
+
+  return ret;
+}
+
+#endif /* !WIN32 */
+
+/* hash.c: hash table operations.  */
+
+/* The hash function.  We go for simplicity here.  */
+
+/* All our hash tables are related to filenames.  */
+#ifdef MONOCASE_FILENAMES
+#define TRANSFORM(x) toupper (x)
+#else
+#define TRANSFORM(x) (x)
+#endif
+
+static unsigned
+hash (hash_table_type table, const char *key)
+{
+  unsigned n = 0;
+  
+  /* Our keys aren't often anagrams of each other, so no point in
+     weighting the characters.  */
+  while (*key != 0)
+    n = (n + n + TRANSFORM (*key++)) % table.size;
+  
+  return n;
+}
+
+hash_table_type
+hash_create (unsigned size) 
+{
+  /* hash_table_type ret; changed into "static ..." to work around gcc
+     optimizer bug for Alpha.  */
+  static hash_table_type ret;
+  unsigned b;
+  ret.buckets = XTALLOC (size, hash_element_type *);
+  ret.size = size;
+  
+  /* calloc's zeroes aren't necessarily NULL, so be safe.  */
+  for (b = 0; b <ret.size; b++)
+    ret.buckets[b] = NULL;
+    
+  return ret;
+}
+
+/* Whether or not KEY is already in MAP, insert it and VALUE.  Do not
+   duplicate the strings, in case they're being purposefully shared.  */
+
+void
+hash_insert (hash_table_type *table, const char *key, const char *value)
+{
+  unsigned n = hash (*table, key);
+  hash_element_type *new_elt = XTALLOC1 (hash_element_type);
+
+  new_elt->key = key;
+  new_elt->value = value;
+  new_elt->next = NULL;
+  
+  /* Insert the new element at the end of the list.  */
+  if (!table->buckets[n])
+    /* first element in bucket is a special case.  */
+    table->buckets[n] = new_elt;
+  else
+    {
+      hash_element_type *loc = table->buckets[n];
+      while (loc->next)		/* Find the last element.  */
+        loc = loc->next;
+      loc->next = new_elt;	/* Insert the new one after.  */
+    }
+}
+
+/* Look up STR in MAP.  Return a (dynamically-allocated) list of the
+   corresponding strings or NULL if no match.  */ 
+
+#ifdef KPSE_DEBUG
+/* Print the hash values as integers if this is nonzero.  */
+int kpse_debug_hash_lookup_int = 0; 
+#endif
+
+char **
+hash_lookup (hash_table_type table, const char *key)
+{
+  hash_element_type *p;
+  str_list_type ret;
+  unsigned n = hash (table, key);
+  ret = str_list_init ();
+  
+  /* Look at everything in this bucket.  */
+  for (p = table.buckets[n]; p != NULL; p = p->next)
+    if (FILESTRCASEEQ (key, p->key))
+      /* Cast because the general str_list_type shouldn't force const data.  */
+      str_list_add (&ret, (char *) p->value);
+  
+  /* If we found anything, mark end of list with null.  */
+  if (STR_LIST (ret))
+    str_list_add (&ret, NULL);
+
+#ifdef KPSE_DEBUG
+  if (KPSE_DEBUG_P (KPSE_DEBUG_HASH))
+    {
+      DEBUGF1 ("hash_lookup(%s) =>", key);
+      if (!STR_LIST (ret))
+        fputs (" (nil)\n", stderr);
+      else
+        {
+          char **r;
+          for (r = STR_LIST (ret); *r; r++)
+            {
+              putc (' ', stderr);
+              if (kpse_debug_hash_lookup_int)
+                fprintf (stderr, "%ld", (long) *r);
+              else
+                fputs (*r, stderr);
+            }
+          putc ('\n', stderr);
+        }
+      fflush (stderr);
+    }
+#endif
+
+  return STR_LIST (ret);
+}
+
+/* We only print nonempty buckets, to decrease output volume.  */
+
+void
+hash_print (hash_table_type table, int summary_only)
+{
+  unsigned b;
+  unsigned total_elements = 0, total_buckets = 0;
+  
+  for (b = 0; b < table.size; b++) {
+    hash_element_type *bucket = table.buckets[b];
+
+    if (bucket) {
+      unsigned len = 1;
+      hash_element_type *tb;
+
+      total_buckets++;
+      if (!summary_only) fprintf (stderr, "%4d ", b);
+
+      for (tb = bucket->next; tb != NULL; tb = tb->next)
+        len++;
+      if (!summary_only) fprintf (stderr, ":%-5d", len);
+      total_elements += len;
+
+      if (!summary_only) {
+        for (tb = bucket; tb != NULL; tb = tb->next)
+          fprintf (stderr, " %s=>%s", tb->key, tb->value);
+        putc ('\n', stderr);
+      }
+    }
+  }
+  
+  fprintf (stderr,
+          "%u buckets, %u nonempty (%u%%); %u entries, average chain %.1f.\n",
+          table.size,
+          total_buckets,
+          100 * total_buckets / table.size,
+          total_elements,
+          total_buckets ? total_elements / (double) total_buckets : 0.0);
+}
+
+/* concat.c: dynamic string concatenation.  */
+
+/* Return the concatenation of S1 and S2.  See `concatn.c' for a
+   `concatn', which takes a variable number of arguments.  */
+
+char *
+concat (const char *s1, const char *s2)
+{
+  char *answer = (char *) xmalloc (strlen (s1) + strlen (s2) + 1);
+  strcpy (answer, s1);
+  strcat (answer, s2);
+
+  return answer;
+}
+
+/* concat3.c: concatenate three strings.  */
+
+char *
+concat3 (const char *s1, const char *s2, const char *s3)
+{
+  char *answer
+    = (char *) xmalloc (strlen (s1) + strlen (s2) + strlen (s3) + 1);
+  strcpy (answer, s1);
+  strcat (answer, s2);
+  strcat (answer, s3);
+
+  return answer;
+}
+
+/* concatn.c: Concatenate an arbitrary number of strings.  */
+
+/* OK, it would be epsilon more efficient to compute the total length
+   and then do the copying ourselves, but I doubt it matters in reality.  */
+
+char *
+concatn (const char *str1, ...)
+{
+  char *arg;
+  char *ret;
+  va_list ap;
+
+  va_start (ap, str1);
+
+  if (!str1)
+    return NULL;
+  
+  ret = xstrdup (str1);
+  
+  while ((arg = va_arg (ap, char *)) != NULL)
+    {
+      char *temp = concat (ret, arg);
+      free (ret);
+      ret = temp;
+    }
+  va_end (ap);
+  
+  return ret;
+}
+
+/* debug.c: Help the user discover what's going on.  */
+
+#ifdef KPSE_DEBUG
+
+unsigned int kpathsea_debug = 0;
+
+/* If the real definitions of fopen or fclose are macros, we lose -- the
+   #undef won't restore them. */
+
+FILE *
+fopen (const char *filename, const char *mode)
+{
+#undef fopen
+  FILE *ret = fopen (filename, mode);
+
+  if (KPSE_DEBUG_P (KPSE_DEBUG_FOPEN))
+    DEBUGF3 ("fopen(%s, %s) => 0x%lx\n", filename, mode, (unsigned long) ret);
+
+  return ret;
+}
+
+int
+fclose (FILE *f)
+{
+#undef fclose
+  int ret = fclose (f);
+  
+  if (KPSE_DEBUG_P (KPSE_DEBUG_FOPEN))
+    DEBUGF2 ("fclose(0x%lx) => %d\n", (unsigned long) f, ret);
+
+  return ret;
+}
+
+#endif
+
+/* find-suffix.c: return the stuff after a dot.  */
+
+/* Return pointer to first character after `.' in last directory element
+   of NAME.  If the name is `foo' or `/foo.bar/baz', we have no extension.  */
+
+char *
+find_suffix (const char *name)
+{
+  const char *slash_pos;
+  char *dot_pos = strrchr (name, '.');
+  
+  if (dot_pos == NULL)
+    return NULL;
+  
+  for (slash_pos = name + strlen (name);
+       slash_pos > dot_pos && !IS_DIR_SEP (*slash_pos);
+       slash_pos--)
+    ;
+  
+  return slash_pos > dot_pos ? NULL : dot_pos + 1;
+}
+
+/* rm-suffix.c: remove any suffix.  */
+
+/* Generic const warning -- see extend-fname.c.  */
+
+char *
+remove_suffix (const char *s)
+{
+  char *ret;
+  const char *suffix = find_suffix (s);
+  
+  if (suffix)
+    {
+      /* Back up to before the dot.  */
+      suffix--;
+      ret = (char *) xmalloc (suffix - s + 1);
+      strncpy (ret, s, suffix - s);
+      ret[suffix - s] = 0;
+    }
+  else
+    ret = (char *) s;
+    
+  return ret;
+}
+
+/* readable.c: check if a filename is a readable non-directory file.  */
+
+/* Truncate any too-long components in NAME, returning the result.  It's
+   too bad this is necessary.  See comments in readable.c for why.  */
+
+static char *
+kpse_truncate_filename (const char *name)
+{
+  unsigned c_len = 0;        /* Length of current component.  */
+  unsigned ret_len = 0;      /* Length of constructed result.  */
+  
+  /* Allocate enough space.  */
+  char *ret = (char *) xmalloc (strlen (name) + 1);
+
+  for (; *name; name++)
+    {
+      if (IS_DIR_SEP (*name) || IS_DEVICE_SEP (*name))
+        { /* At a directory delimiter, reset component length.  */
+          c_len = 0;
+        }
+      else if (c_len > NAME_MAX)
+        { /* If past the max for a component, ignore this character.  */
+          continue;
+        }
+
+      /* Copy this character.  */
+      ret[ret_len++] = *name;
+      c_len++;
+    }
+  ret[ret_len] = 0;
+
+  return ret;
+}
+
+/* If access can read FN, run stat (assigning to stat buffer ST) and
+   check that fn is not a directory.  Don't check for just being a
+   regular file, as it is potentially useful to read fifo's or some
+   kinds of devices.  */
+
+#ifdef WIN32
+#define READABLE(fn, st) \
+  (GetFileAttributes(fn) != 0xFFFFFFFF && \
+   !(GetFileAttributes(fn) & FILE_ATTRIBUTE_DIRECTORY))
+#else
+#define READABLE(fn, st) \
+  (access (fn, R_OK) == 0 && stat (fn, &(st)) == 0 && !S_ISDIR (st.st_mode))
+#endif
+
+/* POSIX invented the brain-damage of not necessarily truncating
+   filename components; the system's behavior is defined by the value of
+   the symbol _POSIX_NO_TRUNC, but you can't change it dynamically!
+   
+   Generic const return warning.  See extend-fname.c.  */
+
+char *
+kpse_readable_file (const char *name)
+{
+  struct stat st;
+  char *ret;
+  
+  if (READABLE (name, st)) {
+    ret = (char *) name;
+
+#ifdef ENAMETOOLONG
+  } else if (errno == ENAMETOOLONG) {
+    ret = kpse_truncate_filename (name);
+
+    /* Perhaps some other error will occur with the truncated name, so
+       let's call access again.  */
+    if (!READABLE (ret, st))
+      { /* Failed.  */
+        if (ret != name) free (ret);
+        ret = NULL;
+      }
+#endif /* ENAMETOOLONG */
+
+  } else { /* Some other error.  */
+    if (errno == EACCES) { /* Maybe warn them if permissions are bad.  */
+      perror (name);
+    }
+    ret = NULL;
+  }
+  
+  return ret;
+}
+
+/* absolute.c: Test if a filename is absolute or explicitly relative.  */
+
+/* Sorry this is such a system-dependent mess, but I can't see any way
+   to usefully generalize.  */
+
+int
+kpse_absolute_p (const char *filename, int relative_ok)
+{
+  int absolute = IS_DIR_SEP (*filename)
+#ifdef DOSISH
+                     /* Novell allows non-alphanumeric drive letters. */
+                     || (*filename && IS_DEVICE_SEP (filename[1]))
+#endif /* DOSISH */
+#ifdef WIN32
+                     /* UNC names */
+                     || (*filename == '\\' && filename[1] == '\\')
+#endif
+		      ;
+  int explicit_relative
+    = relative_ok
+      && (*filename == '.' && (IS_DIR_SEP (filename[1])
+                         || (filename[1] == '.' && IS_DIR_SEP (filename[2]))));
+
+  return absolute || explicit_relative;
+}
+
+/* str-list.c: define routines for string lists.  */
+
+/* See the lib.h file for comments.  */
+
+str_list_type
+str_list_init (void)
+{
+  str_list_type ret;
+  
+  STR_LIST_LENGTH (ret) = 0;
+  STR_LIST (ret) = NULL;
+  
+  return ret;
+}
+
+void
+str_list_add (str_list_type *l, char *s)
+{
+  STR_LIST_LENGTH (*l)++;
+  XRETALLOC (STR_LIST (*l), STR_LIST_LENGTH (*l), char *);
+  STR_LIST_LAST_ELT (*l) = s;
+}
+
+/* May as well save some reallocations and do everything in a chunk
+   instead of calling str_list_add on each element.  */
+   
+void
+str_list_concat (str_list_type *target, str_list_type more)
+{
+  unsigned e;
+  unsigned prev_len = STR_LIST_LENGTH (*target);
+
+  STR_LIST_LENGTH (*target) += STR_LIST_LENGTH (more);
+  XRETALLOC (STR_LIST (*target), STR_LIST_LENGTH (*target), char *);
+  
+  for (e = 0; e < STR_LIST_LENGTH (more); e++)
+    STR_LIST_ELT (*target, prev_len + e) = STR_LIST_ELT (more, e);
+}
+
+/* Free the list (but not the elements within it).  */
+
+void
+str_list_free (str_list_type *l)
+{
+  if (STR_LIST (*l))
+    {
+      free (STR_LIST (*l));
+      STR_LIST (*l) = NULL;
+    }
+}
+
+/* str-llist.c: Implementation of a linked list of strings.  */
+
+/* Add the new string STR to the end of the list L.  */
+
+void
+str_llist_add (str_llist_type *l, char *str)
+{
+  str_llist_elt_type *e;
+  str_llist_elt_type *new_elt = XTALLOC1 (str_llist_elt_type);
+  
+  /* The new element will be at the end of the list.  */
+  STR_LLIST (*new_elt) = str;
+  STR_LLIST_MOVED (*new_elt) = 0;
+  STR_LLIST_NEXT (*new_elt) = NULL;
+  
+  /* Find the current end of the list.  */
+  for (e = *l; e && STR_LLIST_NEXT (*e); e = STR_LLIST_NEXT (*e))
+    ;
+  
+  if (!e)
+    *l = new_elt;
+  else
+    STR_LLIST_NEXT (*e) = new_elt;
+}
+
+/* Move an element towards the top. The idea is that when a file is
+   found in a given directory, later files will likely be in that same
+   directory, and looking for the file in all the directories in between
+   is thus a waste.  */
+
+void
+str_llist_float (str_llist_type *l, str_llist_elt_type *mover)
+{
+  str_llist_elt_type *last_moved, *unmoved;
+  
+  /* If we've already moved this element, never mind.  */
+  if (STR_LLIST_MOVED (*mover))
+    return;
+  
+  /* Find the first unmoved element (to insert before).  We're
+     guaranteed this will terminate, since MOVER itself is currently
+     unmoved, and it must be in L (by hypothesis).  */
+  for (last_moved = NULL, unmoved = *l; STR_LLIST_MOVED (*unmoved);
+       last_moved = unmoved, unmoved = STR_LLIST_NEXT (*unmoved))
+    ;
+
+  /* If we are the first unmoved element, nothing to relink.  */
+  if (unmoved != mover)
+    { /* Remember `mover's current successor, so we can relink `mover's
+         predecessor to it.  */
+      str_llist_elt_type *before_mover;
+      str_llist_elt_type *after_mover = STR_LLIST_NEXT (*mover);
+      
+      /* Find `mover's predecessor.  */
+      for (before_mover = unmoved; STR_LLIST_NEXT (*before_mover) != mover;
+           before_mover = STR_LLIST_NEXT (*before_mover))
+        ;
+      
+      /* `before_mover' now links to `after_mover'.  */
+      STR_LLIST_NEXT (*before_mover) = after_mover;
+
+      /* Insert `mover' before `unmoved' and after `last_moved' (or at
+         the head of the list).  */
+      STR_LLIST_NEXT (*mover) = unmoved;
+      if (!last_moved)
+        *l = mover;
+      else
+        STR_LLIST_NEXT (*last_moved) = mover;
+    }
+
+  /* We've moved it.  */
+  STR_LLIST_MOVED (*mover) = 1;
+}
+
+/* fn.c: arbitrarily long filenames (or just strings).  */
+
+/* /usr/local/lib/texmf/fonts/public/cm/pk/ljfour/cmr10.300pk is 58
+   chars, so ASCII `K' seems a good choice. */
+#define CHUNK_SIZE 75
+
+fn_type
+fn_init (void)
+{
+  fn_type ret;
+  
+  FN_ALLOCATED (ret) = FN_LENGTH (ret) = 0;
+  FN_STRING (ret) = NULL;
+  
+  return ret;
+}
+
+fn_type
+fn_copy0 (const char *s, unsigned len)
+{
+  fn_type ret;
+  
+  FN_ALLOCATED (ret) = CHUNK_SIZE > len ? CHUNK_SIZE : len + 1;
+  FN_STRING (ret) = (char *) xmalloc (FN_ALLOCATED (ret));
+  
+  strncpy (FN_STRING (ret), s, len);
+  FN_STRING (ret)[len] = 0;
+  FN_LENGTH (ret) = len + 1;
+  
+  return ret;
+}
+
+/* Don't think we ever try to free something that might usefully be
+   empty, so give fatal error if nothing allocated.  */
+
+void
+fn_free (fn_type *f)
+{
+  assert (FN_STRING (*f) != NULL);
+  free (FN_STRING (*f));
+  FN_STRING (*f) = NULL;
+  FN_ALLOCATED (*f) = 0;
+  FN_LENGTH (*f) = 0;
+}
+
+/* An arithmetic increase seems more reasonable than geometric.  We
+   don't increase the length member since it may be more convenient for
+   the caller to add than subtract when appending the stuff that will
+   presumably follow.  */
+
+static void
+grow (fn_type *f, unsigned len)
+{
+  while (FN_LENGTH (*f) + len > FN_ALLOCATED (*f))
+    {
+      FN_ALLOCATED (*f) += CHUNK_SIZE;
+      XRETALLOC (FN_STRING (*f), FN_ALLOCATED (*f), char);
+    }
+}
+
+void
+fn_1grow (fn_type *f, char c)
+{
+  grow (f, 1);
+  FN_STRING (*f)[FN_LENGTH (*f)] = c;
+  FN_LENGTH (*f)++;
+}
+
+void
+fn_grow (fn_type *f, void *source, unsigned len)
+{
+  grow (f, len);
+  strncpy (FN_STRING (*f) + FN_LENGTH (*f), (char *) source, len);
+  FN_LENGTH (*f) += len;
+}
+
+void
+fn_str_grow (fn_type *f, const char *s)
+{
+  unsigned more_len = strlen (s);
+  grow (f, more_len);
+  strcat (FN_STRING (*f), s);
+  FN_LENGTH (*f) += more_len;
+}
+
+void
+fn_shrink_to (fn_type *f, unsigned loc)
+{
+  assert (FN_LENGTH (*f) > loc);
+  FN_STRING (*f)[loc] = 0;
+  FN_LENGTH (*f) = loc + 1;
+}
+
+/* variable.c: variable expansion.  */
+
+/* Here's the simple one, when a program just wants a value.  */
+
+char *
+kpse_var_value (const char *var)
+{
+  char *ret = getenv (var);
+
+  if (ret)
+    ret = kpse_var_expand (ret);
+
+#ifdef KPSE_DEBUG
+  if (KPSE_DEBUG_P (KPSE_DEBUG_VARS))
+    DEBUGF2("variable: %s = %s\n", var, ret ? ret : "(nil)");
+#endif
+
+  return ret;
+}
+
+/* We have to keep track of variables being expanded, otherwise
+   constructs like TEXINPUTS = $TEXINPUTS result in an infinite loop.
+   (Or indirectly recursive variables, etc.)  Our simple solution is to
+   add to a list each time an expansion is started, and check the list
+   before expanding.  */
+
+typedef struct {
+  const char *var;
+  int expanding;
+} expansion_type;
+static expansion_type *expansions; /* The sole variable of this type.  */
+static unsigned expansion_len = 0;
+
+static void
+expanding (const char *var, int xp)
+{
+  unsigned e;
+  for (e = 0; e < expansion_len; e++) {
+    if (STREQ (expansions[e].var, var)) {
+      expansions[e].expanding = xp;
+      return;
+    }
+  }
+
+  /* New variable, add it to the list.  */
+  expansion_len++;
+  XRETALLOC (expansions, expansion_len, expansion_type);
+  expansions[expansion_len - 1].var = xstrdup (var);
+  expansions[expansion_len - 1].expanding = xp;
+}
+
+
+/* Return whether VAR is currently being expanding.  */
+
+static int
+expanding_p (const char *var)
+{
+  unsigned e;
+  for (e = 0; e < expansion_len; e++) {
+    if (STREQ (expansions[e].var, var))
+      return expansions[e].expanding;
+  }
+  
+  return 0;
+}
+
+/* Append the result of value of `var' to EXPANSION, where `var' begins
+   at START and ends at END.  If `var' is not set, do not complain.
+   This is a subroutine for the more complicated expansion function.  */
+
+static void
+expand (fn_type *expansion, const char *start, const char *end)
+{
+  char *value;
+  unsigned len = end - start + 1;
+  char *var = (char *) xmalloc (len + 1);
+  strncpy (var, start, len);
+  var[len] = 0;
+  
+  if (expanding_p (var)) {
+    WARNING1 ("kpathsea: variable `%s' references itself (eventually)", var);
+  } else {
+    /* Check for an environment variable.  */
+    value = getenv (var);
+
+    if (value) {
+      expanding (var, 1);
+      value = kpse_var_expand (value);
+      expanding (var, 0);
+      fn_grow (expansion, value, strlen (value));
+      free (value);
+    }
+
+    free (var);
+  }
+}
+
+/* Can't think of when it would be useful to change these (and the
+   diagnostic messages assume them), but ... */
+#ifndef IS_VAR_START /* starts all variable references */
+#define IS_VAR_START(c) ((c) == '$')
+#endif
+#ifndef IS_VAR_CHAR  /* variable name constituent */
+#define IS_VAR_CHAR(c) (isalnum (c) || (c) == '_')
+#endif
+#ifndef IS_VAR_BEGIN_DELIMITER /* start delimited variable name (after $) */
+#define IS_VAR_BEGIN_DELIMITER(c) ((c) == '{')
+#endif
+#ifndef IS_VAR_END_DELIMITER
+#define IS_VAR_END_DELIMITER(c) ((c) == '}')
+#endif
+
+
+/* Maybe we should support some or all of the various shell ${...}
+   constructs, especially ${var-value}.  */
+
+char *
+kpse_var_expand (const char *src)
+{
+  const char *s;
+  char *ret;
+  fn_type expansion;
+  expansion = fn_init ();
+  
+  /* Copy everything but variable constructs.  */
+  for (s = src; *s; s++) {
+    if (IS_VAR_START (*s)) {
+      s++;
+
+      /* Three cases: `$VAR', `${VAR}', `$<anything-else>'.  */
+      if (IS_VAR_CHAR (*s)) {
+        /* $V: collect name constituents, then expand.  */
+        const char *var_end = s;
+
+        do {
+          var_end++;
+        } while (IS_VAR_CHAR (*var_end));
+
+        var_end--; /* had to go one past */
+        expand (&expansion, s, var_end);
+        s = var_end;
+
+      } else if (IS_VAR_BEGIN_DELIMITER (*s)) {
+        /* ${: scan ahead for matching delimiter, then expand.  */
+        const char *var_end = ++s;
+
+        while (*var_end && !IS_VAR_END_DELIMITER (*var_end))
+          var_end++;
+
+        if (! *var_end) {
+          WARNING1 ("%s: No matching } for ${", src);
+          s = var_end - 1; /* will incr to null at top of loop */
+        } else {
+          expand (&expansion, s, var_end - 1);
+          s = var_end; /* will incr past } at top of loop*/
+        }
+
+      } else {
+        /* $<something-else>: error.  */
+        WARNING2 ("%s: Unrecognized variable construct `$%c'", src, *s);
+        /* Just ignore those chars and keep going.  */
+      }
+    } else
+     fn_1grow (&expansion, *s);
+  }
+  fn_1grow (&expansion, 0);
+          
+  ret = FN_STRING (expansion);
+  return ret;
+}

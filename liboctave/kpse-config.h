@@ -64,12 +64,6 @@ extern "C" {
    from c-auto.in).  We use <...> instead of "..." so that the current
    cpp directory (i.e., kpathsea/) won't be searched. */
 
-#include "kpse-xfns.h"      /* STREQ, etc. */
-
-extern DIR *xopendir (char *dirname);
-
-extern void xclosedir (DIR *d);
-   
 /* If you want to find subdirectories in a directory with non-Unix
    semantics (specifically, if a directory with no subdirectories does
    not have exactly two links), define this.  */

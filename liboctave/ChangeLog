@@ -1,5 +1,9 @@
 2003-04-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* kpse.cc: Move most functions from kpse-xfns.c here and make
+	static.  Include most of kpse-xfns.h directly, removing
+	unnecessary bits.
+
 	* dMatrix.cc (Matrix::pseudo_inverse): Now const.
 	* CMatrix.cc (ComplexMatrix::pseudo_inverse): Likewise.
 

@@ -19,7 +19,36 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #ifndef KPATHSEA_PATHSEARCH_H
 #define KPATHSEA_PATHSEARCH_H
 
-#include "kpse-xfns.h"
+/* Lists of strings; used for, e.g., directory lists.  */
+
+typedef struct
+{
+  unsigned length;
+  char **list;
+} str_list_type;
+
+#define STR_LIST_LENGTH(l) ((l).length)
+#define STR_LIST(l) ((l).list)
+#define STR_LIST_ELT(l, n) STR_LIST (l)[n]
+#define STR_LIST_LAST_ELT(l) STR_LIST_ELT (l, STR_LIST_LENGTH (l) - 1)
+
+/* It's a little bizarre to be using the same type for the list and the
+   elements of the list, but no reason not to in this case, I think --
+   we never need a NULL string in the middle of the list, and an extra
+   NULL/NULL element always at the end is inconsequential.  */
+
+struct str_llist_elt
+{
+  char *str;
+  int moved;
+  struct str_llist_elt *next;
+};
+typedef struct str_llist_elt str_llist_elt_type;
+typedef struct str_llist_elt *str_llist_type;
+
+#define STR_LLIST(sl) ((sl).str)
+#define STR_LLIST_MOVED(sl) ((sl).moved)
+#define STR_LLIST_NEXT(sl) ((sl).next)
 
 /* If PATH is non-null, return its first element (as defined by
    IS_ENV_SEP).  If it's NULL, return the next element in the previous
@@ -125,6 +154,8 @@ extern str_list_type *kpse_db_search (const char *name,
 /* Insert the filename FNAME into the database.
    Called by mktexpk et al.  */
 extern void kpse_db_insert (const char *fname);
+
+extern unsigned int kpathsea_debug;
 
 #endif /* not KPATHSEA_PATHSEARCH_H */
 

@@ -46,11 +46,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #if defined (F77_UPPERCASE_NAMES)
 #define F77_XFCN_ERROR(f, F) \
-  (*current_liboctave_error_handler)
+  (*current_liboctave_error_handler) \
     ("exception encountered in Fortran subroutine %s", F);
 #else
 #define F77_XFCN_ERROR(f, F) \
-  (*current_liboctave_error_handler)
+  (*current_liboctave_error_handler) \
     ("exception encountered in Fortran subroutine %s", f);
 #endif
 

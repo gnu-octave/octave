@@ -1,5 +1,8 @@
 Thu Dec  5 11:05:02 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* octave-bug.in: Prompt for abort, edit, list, or send.
+	Get subject from message in case it has been edited.
+
 	* configure.in: When looking for libf2c, provide definitions for
 	MAIN_ and MAIN__, just in case.
 

@@ -59,6 +59,7 @@ export PATH
 TEMP=/tmp/octave-bug.$$
 
 : ${EDITOR=emacs}
+: ${PAGER=more}
 
 trap 'rm -f $TEMP $TEMP.x; exit 1' 1 2 3 13 15
 trap 'rm -f $TEMP $TEMP.x' 0
@@ -71,6 +72,24 @@ fi
 HAVE_FMT=false
 if (fmt < /dev/null) > /dev/null 2>&1; then
   HAVE_FMT=true
+fi
+
+# Check whether to use -n or \c to keep echo from printing a newline
+# character.  Stolen from autoconf, which borrowed the idea from dist 3.0.
+
+if (echo "testing\c"; echo 1,2,3) | grep c >/dev/null; then
+  # Stardent Vistra SVR4 grep lacks -e, says ghazi@caip.rutgers.edu.
+  if (echo -n testing; echo 1,2,3) | sed s/-n/xn/ | grep xn >/dev/null; then
+    echo_n=
+    echo_c='
+'
+  else
+    echo_n=-n
+    echo_c=
+  fi
+else
+  echo_n=
+  echo_c='\c'
 fi
 
 ss_p=`echo $VERSION | grep "^ss-"`
@@ -183,7 +202,37 @@ cp $TEMP $TEMP.x
 
 status=0
 
-if $EDITOR $TEMP; then
+editing=true
+
+while $editing; do
+  if $EDITOR $TEMP; then
+    while $editing; do
+      echo $echo_n "(a)bort, (e)dit, (l)ist, (s)end? $echo_c"
+      read ans
+      case "$ans" in
+        a* | A*)
+          status=1
+          editing=false
+        ;;
+        e* | E*)
+          break;
+        ;;
+        l* | L*)
+          $PAGER $TEMP
+        ;;
+        s* | S*)
+          editing=false
+        ;;
+      esac
+    done
+  else
+    echo "problems with edit -- no bug report submitted"
+    status=1
+    editing=false
+  fi
+done
+
+if test $status -eq 0; then
   if cmp -s $TEMP $TEMP.x; then
     echo "file not changed -- no bug report submitted"
     status=1
@@ -206,6 +255,12 @@ if $EDITOR $TEMP; then
 
     BUGADDR="$BUGADDR $CC_ADDR"
 
+    TMP_SUB=`sed -e '/^--------[ \t]*$/q' $TEMP | sed -n -e 's/^Subject://p'`
+
+    if test -n "$TMP_SUB"; then
+      SUBJECT="$TMP_SUB"
+    fi
+
 # Delete the `--------' separator in the message.
 
 # Don't pretty-print this.  Odd whitespace kills Ultrix AWK!
@@ -222,27 +277,28 @@ if $EDITOR $TEMP; then
       ( Mail -s "$SUBJECT" $BUGADDR < $TEMP.x ) > /dev/null 2>&1
       status=$?
       if test $status -ne 0; then
-        ( /usr/ucb/mail -s "$SUBJECT" $BUGADDR < $TEMP.x ) > /dev/null 2>&1
-        status=$?
-        if test $status -ne 0; then
-          ( mailx -s "$SUBJECT" $BUGADDR < $TEMP.x ) > /dev/null 2>&1
-          status=$?
-        fi
+	( /usr/ucb/mail -s "$SUBJECT" $BUGADDR < $TEMP.x ) > /dev/null 2>&1
+	status=$?
+	if test $status -ne 0; then
+	  ( mailx -s "$SUBJECT" $BUGADDR < $TEMP.x ) > /dev/null 2>&1
+	  status=$?
+	fi
       fi
     fi
 
     if test $status -ne 0; then
-      echo "unable to send mail -- saving message in \$HOME/dead.octave-bug";
-      cat $TEMP >> $HOME/dead.octave-bug;
-      exit 1
-    else
-      echo "bug report sent to: $TO_ADDR"
-      echo "             cc to: $CC_ADDR"
+      echo "unable to send mail..."
     fi
   fi
+fi
+
+if test $status -ne 0; then
+  echo "saving message in \$HOME/dead.octave-bug";
+  cat $TEMP >> $HOME/dead.octave-bug;
+  exit 1
 else
-  echo "problems with edit -- no bug report submitted"
-  status=1
+  echo "bug report sent to: $TO_ADDR"
+  echo "             cc to: $CC_ADDR"
 fi
 
 exit $status

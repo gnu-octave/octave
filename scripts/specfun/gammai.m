@@ -80,7 +80,7 @@ function y = gammai (a, x)
     error ("gammai: all entries of x must be nonnegative");
   endif
   
-  y = zeros(1, n);
+  y = zeros (1, n);
 
 # For x < a + 1, use summation.  The below choice of k should ensure
 # that the overall error is less than eps ... 
@@ -90,8 +90,8 @@ function y = gammai (a, x)
   if (s > 0)
     k   = ceil (- max ([a(S), x(S)]) * log (eps));
     K   = (1:k)';
-    M   = ones(k, 1);
-    A   = cumprod((M * x(S)) ./ (M * a(S) + K * ones(1, s)));
+    M   = ones (k, 1);
+    A   = cumprod ((M * x(S)) ./ (M * a(S) + K * ones(1, s)));
     y(S) = exp (-x(S) + a(S) .* log (x(S))) .* (1 + sum (A)) ./ gamma (a(S)+1);
   endif
 
@@ -99,11 +99,13 @@ function y = gammai (a, x)
 # Note, however, that this converges MUCH slower than the series
 # expansion for small a and x not too large!
 
-  S = find((x >= a + 1) & (x < Inf));
-  s = length(S);
+  S = find ((x >= a + 1) & (x < Inf));
+  s = length (S);
   if (s > 0)
-    u   = [zeros(1, s); ones(1, s)];
-    v   = [ones(1, s); x(S)];
+    t1 = zeros (1, s);
+    t2 = ones (1, s);
+    u   = [t1; t2];
+    v   = [t2; x(S)];
     c_old = 0;
     c_new = v(1,:) ./ v(2,:);
     n   = 1;

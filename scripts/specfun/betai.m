@@ -16,9 +16,9 @@
 # along with Octave; see the file COPYING.  If not, write to the Free
 # Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-function y = betai(a, b, x)
+function y = betai (a, b, x)
   
-# usage: betai(a, b, x)
+# usage: betai (a, b, x)
 #
 # Returns the incomplete beta function
 #   betai (a, b, x) = BETA(a,b)^(-1) INT_0^x t^(a-1) (1-t)^(b-1) dt.
@@ -37,18 +37,18 @@ function y = betai(a, b, x)
     usage (" betai (a, b, x)");
   endif
 
-  if !((a > 0) && (b > 0))
-    error("betai:  a and b must both be positive.");
+  if (! (a > 0 && b > 0))
+    error ("betai: a and b must both be positive");
   endif
-  [nr, nc] = size(x);
+  [nr, nc] = size (x);
   if (min ([nr, nc]) == 0)
-    error ("betai:  x must not be empty.");
+    error ("betai: x must not be empty.");
   endif
   if (any (x < 0) || any (x > 1))
     error ("betai: all entries of x must be in [0,1].");
   endif
 
-  if ((nr > 1) || (nc > 1))
+  if (nr > 1 || nc > 1)
     
     if (! (is_scalar (a) && is_scalar (b)))
       error ("betai: if x is not a scalar, a and b must be scalars");

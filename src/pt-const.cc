@@ -360,12 +360,12 @@ find_to_fortran_idx (const ColumnVector i_idx, const ColumnVector j_idx,
       }
       break;
     case 3:
-      retval(2) = tree_constant (val, 1);
+      retval(2) = val;
     case 2:
-      retval(0) = tree_constant (tmp, 1);
+      retval(0) = tree_constant (i_idx, 1);
 // If you want this to work more like Matlab, use the following line
 // instead of the previous one.
-//    retval(0) = tree_constant (tmp, (nr != 1));
+//    retval(0) = tree_constant (i_idx, (nr != 1));
       retval(1) = tree_constant (j_idx, 1);
       break;
     default:
@@ -413,7 +413,8 @@ find_nonzero_elem_idx (const Matrix& m, int nargout)
 	  }
       }
 
-  return find_to_fortran_idx (i_idx, j_idx, v, m_nr, m_nc, nargout);
+  tree_constant tmp (v, 1);
+  return find_to_fortran_idx (i_idx, j_idx, tmp, m_nr, m_nc, nargout);
 }
 
 static Octave_object
@@ -453,7 +454,8 @@ find_nonzero_elem_idx (const ComplexMatrix& m, int nargout)
 	  }
       }
 
-  return find_to_fortran_idx (i_idx, j_idx, v, m_nr, m_nc, nargout);
+  tree_constant tmp (v, 1);
+  return find_to_fortran_idx (i_idx, j_idx, tmp, m_nr, m_nc, nargout);
 }
 
 Octave_object

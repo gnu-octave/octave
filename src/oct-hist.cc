@@ -48,6 +48,7 @@ Software Foundation, Inc.
 
 #include "cmd-hist.h"
 #include "file-ops.h"
+#include "oct-env.h"
 #include "str-vec.h"
 
 #include <defaults.h>
@@ -67,9 +68,6 @@ Software Foundation, Inc.
 // Nonzero means input is coming from temporary history file.
 int input_from_tmp_history_file = 0;
 
-// Guess what?
-command_history octave_command_history;
-
 // Get some default values, possibly reading them from the
 // environment.
 
@@ -77,13 +75,17 @@ int
 default_history_size (void)
 {
   int size = 1024;
-  char *env_size = getenv ("OCTAVE_HISTSIZE");
-  if (env_size)
+
+  string env_size = octave_env::getenv ("OCTAVE_HISTSIZE");
+
+  if (! env_size.empty ())
     {
       int val;
-      if (sscanf (env_size, "%d", &val) == 1)
+
+      if (sscanf (env_size.c_str (), "%d", &val) == 1)
 	size = val > 0 ? val : 0;
     }
+
   return size;
 }
 
@@ -92,11 +94,11 @@ default_history_file (void)
 {
   string file;
 
-  char *env_file = getenv ("OCTAVE_HISTFILE");
+  string env_file = octave_env::getenv ("OCTAVE_HISTFILE");
 
-  if (env_file)
+  if (! env_file.empty ())
     {
-      fstream f (env_file, (ios::in | ios::out));
+      fstream f (env_file.c_str (), (ios::in | ios::out));
 
       if (f)
 	{
@@ -107,9 +109,11 @@ default_history_file (void)
 
   if (file.empty ())
     {
-      if (! Vhome_directory.empty ())
+      string home_dir = octave_env::get_home_directory ();
+
+      if (! home_dir.empty ())
 	{
-	  file = Vhome_directory;
+	  file = home_dir;
 	  file.append ("/.octave_hist");
 	}
       else
@@ -140,25 +144,25 @@ do_history (int argc, const string_vector& argv)
 	{
 	  if (i < argc - 1)
 	    {
-	      string file = oct_tilde_expand (argv[i+1]);
-	      octave_command_history.set_file (file);
+	      string file = file_ops::tilde_expand (argv[i+1]);
+	      command_history::set_file (file);
 	    }
 
 	  if (option == "-a")
 	    // Append `new' lines to file.
-	    octave_command_history.append ();
+	    command_history::append ();
 
 	  else if (option == "-w")
 	    // Write entire history.
-	    octave_command_history.write ();
+	    command_history::write ();
 
 	  else if (option == "-r")
 	    // Read entire file.
-	    octave_command_history.read ();
+	    command_history::read ();
 
 	  else if (option == "-n")
 	    // Read `new' history from file.
-	    octave_command_history.read_range ();
+	    command_history::read_range ();
 
 	  else
 	    panic_impossible ();
@@ -194,7 +198,7 @@ do_history (int argc, const string_vector& argv)
 	limit = -limit;
     }
 
-  string_vector hlist = octave_command_history.list (limit, numbered_output);
+  string_vector hlist = command_history::list (limit, numbered_output);
 
   int len = hlist.length ();
 
@@ -267,7 +271,7 @@ edit_history_repl_hist (const string& command)
 {
   if (! command.empty ())
     {
-      string_vector hlist = octave_command_history.list ();
+      string_vector hlist = command_history::list ();
 
       int len = hlist.length ();
 
@@ -275,7 +279,7 @@ edit_history_repl_hist (const string& command)
 	{
 	  int i = len - 1;
 
-	  string histent = octave_command_history.get_entry (i);
+	  string histent = command_history::get_entry (i);
 
 	  if (! histent.empty ())
 	    {
@@ -287,7 +291,7 @@ edit_history_repl_hist (const string& command)
 		cmd.resize (cmd_len - 1);
 
 	      if (! cmd.empty ())
-		octave_command_history.replace_entry (i, cmd);
+		command_history::replace_entry (i, cmd);
 	    }
 	}
     }
@@ -306,7 +310,7 @@ edit_history_add_hist (const string& line)
 	tmp.resize (len - 1);
 
       if (! tmp.empty ())
-	octave_command_history.add (tmp);
+	command_history::add (tmp);
     }
 }
 
@@ -316,7 +320,7 @@ mk_tmp_hist_file (int argc, const string_vector& argv,
 {
   string retval;
 
-  string_vector hlist = octave_command_history.list ();
+  string_vector hlist = command_history::list ();
 
   int hist_count = hlist.length ();
 
@@ -326,7 +330,7 @@ mk_tmp_hist_file (int argc, const string_vector& argv,
   hist_count -= 2;
 
   if (! insert_curr)
-    octave_command_history.remove (hist_count);
+    command_history::remove (hist_count);
 
   hist_count--;
 
@@ -383,7 +387,7 @@ mk_tmp_hist_file (int argc, const string_vector& argv,
       reverse = 1;
     }
 
-  string name = oct_tempnam ();
+  string name = file_ops::tempnam ();
 
   fstream file (name.c_str (), ios::out);
 

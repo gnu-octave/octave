@@ -148,26 +148,15 @@ public:
 
   ~octave_child_list (void) { }
 
+  static bool instance_ok (void);
+
   static void insert (pid_t pid, octave_child::dead_child_handler f);
 
   static void remove (pid_t pid);
 
-  static int length (void) { return instance ? instance->curr_len : 0; }
+  static int length (void);
 
-  static octave_child& elem (int i)
-    {
-      static octave_child foo;
-
-      if (instance)
-	{
-	  int n = length ();
-
-	  if (i >= 0 && i < n)
-	    return instance->list (i);
-	}
-
-      return foo;
-    }
+  static octave_child& elem (int i);
 
 private:
 
@@ -180,6 +169,10 @@ private:
   void do_insert (pid_t pid, octave_child::dead_child_handler f);
 
   void do_remove (pid_t pid);
+
+  int do_length (void) const;
+
+  octave_child& do_elem (int i);
 };
 
 #endif

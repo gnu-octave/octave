@@ -700,7 +700,7 @@ subplot::handle_plot_data (int ndim, ostrstream& plot_buf)
 
 	      int n_max = 0;
 
-	      file = oct_tilde_expand (data.string_value ());
+	      file = file_ops::tilde_expand (data.string_value ());
 
 	      ifstream ftmp (file.c_str ());
 
@@ -850,7 +850,7 @@ subplot_list::accept (tree_walker& tw)
 string
 save_in_tmp_file (octave_value& t, int ndim, bool parametric)
 {
-  string name = oct_tempnam ();
+  string name = file_ops::tempnam ();
 
   if (! name.empty ())
     {

@@ -71,16 +71,11 @@ LOSE! LOSE!
 #include <sys/utsname.h>
 #endif
 
-#if defined (USE_READLINE)
-#include <readline/readline.h>
-#include <readline/tilde.h>
-#endif
-
-extern char *term_clrpag;
-extern "C" void _rl_output_character_function ();
-
+#include "cmd-edit.h"
+#include "file-ops.h"
 #include "lo-mappers.h"
 #include "mach-info.h"
+#include "oct-env.h"
 #include "oct-math.h"
 
 #include "defun.h"
@@ -88,7 +83,6 @@ extern "C" void _rl_output_character_function ();
 #include "help.h"
 #include "input.h"
 #include "oct-obj.h"
-#include "pathlen.h"
 #include "ov.h"
 #include "sysdep.h"
 #include "toplev.h"
@@ -122,9 +116,7 @@ malloc_handler (int code)
   if (code == 5)
     warning ("hopefully recoverable malloc error: freeing wild pointer");
   else
-    {
-      panic ("probably irrecoverable malloc error: code %d", code);
-    }
+    panic ("probably irrecoverable malloc error: code %d", code);
 }
 
 static void
@@ -357,70 +349,12 @@ kbhit (void)
   return c;
 }
 
-string
-octave_getcwd (void)
-{
-  string retval;
-  char buf[MAXPATHLEN];
-
-#if defined (__EMX__)
-  char *tmp = _getcwd2 (buf, MAXPATHLEN);
-#else
-  char *tmp = getcwd (buf, MAXPATHLEN);
-#endif
-
-  if (tmp)
-    retval = tmp;
-
-  return retval;
-}
-
-int
-octave_chdir (const string& path)
-{
-#if defined (__EMX__)
-  int retval = -1;
-
-  char *tmp_path = strsave (path.c_str ());
-
-  if (path.length () == 2 && path[1] == ':')
-    {
-      char *upper_case_dir_name = strupr (tmp_path);
-      _chdrive (upper_case_dir_name[0]);
-      if (_getdrive () == upper_case_dir_name[0])
-	retval = _chdir2 ("/");
-    }
-  else
-    retval = _chdir2 (tmp_path);
-
-  delete [] tmp_path;
-
-  return retval;
-#else
-  return chdir (path.c_str ());
-#endif
-}
-
 DEFUN (clc, , ,
   "clc (): clear screen")
 {
-  octave_value_list retval;
+  command_editor::clear_screen ();
 
-  rl_beg_of_line ();
-  rl_kill_line (1);
-
-#if ! defined (_GO32_)
-  if (term_clrpag)
-    tputs (term_clrpag, 1, _rl_output_character_function);
-  else
-    crlf ();
-#else
-  crlf ();
-#endif
-
-  fflush (rl_outstream);
-
-  return retval;
+  return octave_value_list ();
 }
 
 DEFALIAS (home, clc);
@@ -434,17 +368,10 @@ DEFUN (getenv, args, ,
 
   if (nargin == 1)
     {
-      string tstr = args(0).string_value ();
-      const char *name = tstr.c_str ();
+      string name = args(0).string_value ();
 
       if (! error_state)
-	{
-	  char *value = getenv (name);
-	  if (value)
-	    retval = value;
-	  else
-	    retval = "";
-	}
+	retval = octave_env::getenv (name);
     }
   else
     print_usage ("getenv");
@@ -468,7 +395,7 @@ DEFUN (putenv, args, ,
 	  string val = args(1).string_value (); 
 
 	  if (! error_state)
-	    oct_putenv (var.c_str (), val.c_str ());
+	    octave_env::putenv (var, val);
 	  else
 	    error ("putenv: second argument should be a string");
 	}
@@ -612,66 +539,6 @@ DEFUN (isieee, , ,
 			      || flt_fmt == oct_mach_info::ieee_big_endian);
 }
 
-#if !defined (HAVE_GETHOSTNAME) && defined (HAVE_SYS_UTSNAME_H)
-int
-gethostname (char *name, int namelen)
-{
-  int i;
-  struct utsname ut;
-
-  --namelen;
-
-  uname (&ut);
-  i = strlen (ut.nodename) + 1;
-  strncpy (name, ut.nodename, i < namelen ? i : namelen);
-  name[namelen] = '\0';
-
-  return 0;
-}
-#endif
-
-// The check for error state allows us to do this:
-//
-//   string foo = oct_tilde_expand (args(0).string_value ());
-//
-// without having to use a temporary and check error_state before
-// calling oct_tilde_expand.
-
-string
-oct_tilde_expand (const string& name)
-{
-  string retval;
-
-  if (! error_state)
-    {
-      char *tmp = tilde_expand (name.c_str ());
-      retval = tmp;
-      delete [] tmp;
-    }
-
-  return retval;
-}
-
-// A vector version of the above.
-
-string_vector
-oct_tilde_expand (const string_vector& names)
-{
-  string_vector retval;
-
-  if (! error_state)
-    {
-      int n = names.length ();
-
-      retval.resize (n);
-
-      for (int i = 0; i < n; i++)
-	retval[i] = oct_tilde_expand (names[i]);
-    }
-
-  return retval;
-}
-
 DEFUN (tilde_expand, args, ,
   "tilde_expand (STRING): perform tilde expansion on STRING")
 {
@@ -680,7 +547,7 @@ DEFUN (tilde_expand, args, ,
   int nargin = args.length ();
 
   if (nargin == 1)
-    retval = oct_tilde_expand (args(0).all_strings ());
+    retval = file_ops::tilde_expand (args(0).all_strings ());
   else
     print_usage ("tilde_expand");
 
@@ -690,7 +557,7 @@ DEFUN (tilde_expand, args, ,
 #if defined (__EMX__) && defined (OS2)
 
 DEFUN_TEXT (extproc, , ,
-  "extproc : ignored by Octave")
+  "extproc: ignored by Octave")
 {
   return octave_value_list ();
 }

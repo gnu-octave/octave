@@ -23,8 +23,18 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_liboctave_utils_h)
 #define octave_liboctave_utils_h 1
 
+#include <cstdio>
+
+#include <string>
+
 extern int NINT (double x);
 extern double D_NINT (double x);
+
+extern char *strsave (const char *);
+
+extern void octave_putenv (const string&, const string&);
+
+extern string octave_fgets (FILE *);
 
 #endif
 

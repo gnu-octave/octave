@@ -29,224 +29,43 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cstdlib>
 #include <cstring>
 
-#ifdef HAVE_UNISTD_H
+#include <iostream.h>
+
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
+
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 
-#include "error.h"
+#ifdef HAVE_PWD_H
+#include <pwd.h>
+#endif
+
 #include "file-ops.h"
 #include "lo-error.h"
+#include "oct-env.h"
 #include "statdefs.h"
-
-// These must come after <sys/types.h> and <sys/stat.h>.
-
-#include <safe-lstat.h>
-#include <safe-stat.h>
-
-// XXX FIXME XXX -- the is_* and mode_as_string functions are only valid
-// for initialized objects.  If called for an object that is not
-// initialized, they should throw an exception.
-
-bool
-file_stat::is_blk (void) const
-{
-#ifdef S_ISBLK
-  return S_ISBLK (fs_mode);
-#else
-  return false;
-#endif
-}
-
-bool
-file_stat::is_chr (void) const
-{
-#ifdef S_ISCHR
-  return S_ISCHR (fs_mode);
-#else
-  return false;
-#endif
-}
-
-bool
-file_stat::is_dir (void) const
-{ 
-#ifdef S_ISDIR
-  return S_ISDIR (fs_mode);
-#else
-  return false;
-#endif
-}
-
-bool
-file_stat::is_fifo (void) const
-{ 
-#ifdef S_ISFIFO
-  return S_ISFIFO (fs_mode);
-#else
-  return false;
-#endif
-}
-
-bool
-file_stat::is_lnk (void) const
-{ 
-#ifdef S_ISLNK
-  return S_ISLNK (fs_mode);
-#else
-  return false;
-#endif
-}
-
-bool
-file_stat::is_reg (void) const
-{ 
-#ifdef S_ISREG
-  return S_ISREG (fs_mode);
-#else
-  return false;
-#endif
-}
-
-bool
-file_stat::is_sock (void) const
-{ 
-#ifdef S_ISSOCK
-  return S_ISSOCK (fs_mode);
-#else
-  return false;
-#endif
-}
-
-extern "C" void mode_string ();
-
-string
-file_stat::mode_as_string (void) const
-{
-  char buf[11];
-
-  mode_string (fs_mode, buf);
-
-  buf[10] = '\0';
-
-  return string (buf);
-}
-
-// Private stuff:
-
-void
-file_stat::update_internal (bool force)
-{
-  if (! initialized || force)
-    {
-      initialized = false;
-      fail = false;
-
-      const char *cname = file_name.c_str ();
-
-      struct stat buf;
-
-      int status = follow_links
-	? SAFE_STAT (cname, &buf) : SAFE_LSTAT (cname, &buf);
-
-      if (status < 0)
-	{
-	  fail = true;
-	  errmsg = strerror (errno);
-	}
-      else
-	{
-	  fs_mode = buf.st_mode;
-	  fs_ino = buf.st_ino;
-	  fs_dev = buf.st_dev;
-	  fs_nlink = buf.st_nlink;
-	  fs_uid = buf.st_uid;
-	  fs_gid = buf.st_gid;
-	  fs_size = buf.st_size;
-	  fs_atime = buf.st_atime;
-	  fs_mtime = buf.st_mtime;
-	  fs_ctime = buf.st_ctime;
-
-#if defined (HAVE_ST_RDEV)
-	  fs_rdev = buf.st_rdev;
-#endif
-
-#if defined (HAVE_ST_BLKSIZE)
-	  fs_blksize = buf.st_blksize;
-#endif
-
-#if defined (HAVE_ST_BLOCKS)
-	  fs_blocks = buf.st_blocks;
-#endif
-	}
-
-      initialized = true;
-    }
-}
-
-void
-file_stat::copy (const file_stat& fs)
-{
-  file_name = fs.file_name;
-  follow_links = fs.follow_links;
-  initialized = fs.initialized;
-  fail = fs.fail;
-  errmsg = fs.errmsg;
-  fs_mode = fs.fs_mode;
-  fs_ino = fs.fs_ino;
-  fs_dev = fs.fs_dev;
-  fs_nlink = fs.fs_nlink;
-  fs_uid = fs.fs_uid;
-  fs_gid = fs.fs_gid;
-  fs_size = fs.fs_size;
-  fs_atime = fs.fs_atime;
-  fs_mtime = fs.fs_mtime;
-  fs_ctime = fs.fs_ctime;
-
-#if defined (HAVE_ST_RDEV)
-  fs_rdev = fs.fs_rdev;
-#endif
-
-#if defined (HAVE_ST_BLKSIZE)
-  fs_blksize = fs.fs_blksize;
-#endif
-
-#if defined (HAVE_ST_BLOCKS)
-  fs_blocks = fs.fs_blocks;
-#endif
-}
-
-// Functions for octave.
-
-// Has FILE been modified since TIME?  Returns 1 for yes, 0 for no,
-// and -1 for any error.
-int
-is_newer (const string& file, time_t time)
-{
-  file_stat fs (file);
-
-  return fs ? fs.is_newer (time) : -1;
-}
+#include "str-vec.h"
 
 // We provide a replacement for mkdir().
 
 int
-oct_mkdir (const string& name, mode_t mode)
+file_ops::mkdir (const string& name, mode_t mode)
 {
-  return mkdir (name.c_str (), mode);
+  return ::mkdir (name.c_str (), mode);
 }
 
 int
-oct_mkdir (const string& name, mode_t mode, string& msg)
+file_ops::mkdir (const string& name, mode_t mode, string& msg)
 {
   msg = string ();
 
-  int status = mkdir (name.c_str (), mode);
+  int status = ::mkdir (name.c_str (), mode);
 
   if (status < 0)
-    msg = strerror (errno);
+    msg = ::strerror (errno);
 
   return status;
 }
@@ -254,30 +73,32 @@ oct_mkdir (const string& name, mode_t mode, string& msg)
 // I don't know how to emulate this on systems that don't provide it.
 
 int
-oct_mkfifo (const string& name, mode_t mode)
+file_ops::mkfifo (const string& name, mode_t mode)
 {
 #if defined (HAVE_MKFIFO)
-  return mkfifo (name.c_str (), mode);
+  return ::mkfifo (name.c_str (), mode);
 #else
-  ::error ("mkfifo: not implemented on this system");
+  (*current_liboctave_error_handler)
+    ("mkfifo: not implemented on this system");
   return -1;
 #endif
 }
 
 int
-oct_mkfifo (const string& name, mode_t mode, string& msg)
+file_ops::mkfifo (const string& name, mode_t mode, string& msg)
 {
   msg = string ();
 
 #if defined (HAVE_MKFIFO)
-  int status = mkfifo (name.c_str (), mode);
+  int status = ::mkfifo (name.c_str (), mode);
 
   if (status < 0)
-    msg = strerror (errno);
+    msg = ::strerror (errno);
 
   return status;
 #else
-  ::error ("mkfifo: not implemented on this system");
+  (*current_liboctave_error_handler)
+    ("mkfifo: not implemented on this system");
   return -1;
 #endif
 }
@@ -285,20 +106,20 @@ oct_mkfifo (const string& name, mode_t mode, string& msg)
 // We provide a replacement for rename().
 
 int
-oct_rename (const string& from, const string& to)
+file_ops::rename (const string& from, const string& to)
 {
-  return rename (from.c_str (), to.c_str ());
+  return ::rename (from.c_str (), to.c_str ());
 }
 
 int
-oct_rename (const string& from, const string& to, string& msg)
+file_ops::rename (const string& from, const string& to, string& msg)
 {
   msg = string ();
 
-  int status = rename (from.c_str (), to.c_str ());
+  int status = ::rename (from.c_str (), to.c_str ());
 
   if (status < 0)
-    msg = strerror (errno);
+    msg = ::strerror (errno);
 
   return status;
 }
@@ -306,20 +127,20 @@ oct_rename (const string& from, const string& to, string& msg)
 // We provide a replacement for rmdir().
 
 int
-oct_rmdir (const string& name)
+file_ops::rmdir (const string& name)
 {
-  return rmdir (name.c_str ());
+  return ::rmdir (name.c_str ());
 }
 
 int
-oct_rmdir (const string& name, string& msg)
+file_ops::rmdir (const string& name, string& msg)
 {
   msg = string ();
 
-  int status = rmdir (name.c_str ());
+  int status = ::rmdir (name.c_str ());
 
   if (status < 0)
-    msg = strerror (errno);
+    msg = ::strerror (errno);
 
   return status;
 }
@@ -327,11 +148,11 @@ oct_rmdir (const string& name, string& msg)
 // We provide a replacement for tempnam().
 
 string
-oct_tempnam (void)
+file_ops::tempnam (void)
 {
   string retval;
 
-  char *tmp = tempnam (0, "oct-");
+  char *tmp = ::tempnam (0, "oct-");
 
   if (tmp)
     {
@@ -345,32 +166,119 @@ oct_tempnam (void)
   return retval;
 }
 
+// If NAME has a leading ~ or ~user, Unix-style, expand it to the
+// user's home directory.  If no ~, or no <pwd.h>, just return NAME.
+
+// Mostly stolen from kpathsea.  Readline also has a more complicated
+// tilde-expand function, but we can probalby get by with something a
+// bit simpler.
+
+// XXX FIXME XXX
+#define DIR_SEP_CHAR '/'
+
+string
+file_ops::tilde_expand (const string& name)
+{
+  string expansion = name;
+
+#if defined (HAVE_PWD_H)
+
+  // If no leading tilde, do nothing.
+
+  size_t beg = name.find_first_not_of (" \t");
+
+  if (beg != NPOS && name[beg] == '~')
+    {
+      // If `~' or `~/', use $HOME if it exists, or `.' if it doesn't.
+
+      // If `~user' or `~user/', look up user in the passwd database.
+
+      size_t len = name.length ();
+
+      if (beg == len-1 || name[beg+1] == DIR_SEP_CHAR)
+	{
+	  string home = octave_env::get_home_directory ();
+
+	  if (home.empty ())
+	    home = ".";
+        
+	  expansion = name.substr (0, beg) + home;
+
+	  if (beg < len)
+	    expansion.append (name.substr (beg+1));
+	}
+      else
+	{
+	  size_t end = name.find (DIR_SEP_CHAR, beg);
+
+	  size_t len = end;
+
+	  if (len != NPOS)
+	    len -= beg + 1;
+
+	  string user = name.substr (beg+1, len);
+
+	  struct passwd *p
+	    = static_cast<struct passwd *> (::getpwnam (user.c_str ()));
+
+	  // If no such user, just use `.'.
+
+	  string home = p ? p->pw_dir : ".";
+      
+	  expansion = string (" ", beg) + home;
+
+	  if (end != NPOS)
+	    expansion.append (name.substr (end));
+	}
+    }
+
+#endif
+
+  return expansion;
+}
+
+// A vector version of the above.
+
+string_vector
+file_ops::tilde_expand (const string_vector& names)
+{
+  string_vector retval;
+
+  int n = names.length ();
+
+  retval.resize (n);
+
+  for (int i = 0; i < n; i++)
+    retval[i] = file_ops::tilde_expand (names[i]);
+
+  return retval;
+}
 
 int
-oct_umask (mode_t mode)
+file_ops::umask (mode_t mode)
 {
 #if defined (HAVE_UMASK)
-  return umask (mode);
+  return ::umask (mode);
 #else
   return 0;
 #endif
 }
 
 int
-oct_unlink (const string& name)
+file_ops::unlink (const string& name)
 {
-  return unlink (name.c_str ());
+  return ::unlink (name.c_str ());
 }
 
 int
-oct_unlink (const string& name, string& errmsg)
+file_ops::unlink (const string& name, string& errmsg)
 {
   errmsg = string ();
 
-  int status = unlink (name.c_str ());
+  int status = ::unlink (name.c_str ());
 
   if (status < 0)
-    errmsg = strerror (errno);
+    errmsg = ::strerror (errno);
 
   return status;
 }

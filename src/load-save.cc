@@ -36,9 +36,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "byte-swap.h"
 #include "data-conv.h"
+#include "file-ops.h"
+#include "glob-match.h"
 #include "lo-mappers.h"
 #include "mach-info.h"
-#include "oct-glob.h"
 #include "str-vec.h"
 
 #include "defun.h"
@@ -1662,7 +1663,7 @@ found in the file will be replaced with the values read from the file.")
     }
   else
     {
-      string fname = oct_tilde_expand (argv[i]);
+      string fname = file_ops::tilde_expand (argv[i]);
 
       if (format == LS_UNKNOWN)
 	format = get_file_format (fname, orig_fname);
@@ -2466,7 +2467,7 @@ save variables in a file")
     }
   else
     {
-      string fname = oct_tilde_expand (argv[i]);
+      string fname = file_ops::tilde_expand (argv[i]);
 
       i++;
 

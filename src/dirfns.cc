@@ -20,19 +20,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-/*
-
-The functions listed below were adapted from a similar functions
-from GNU Bash, the Bourne Again SHell, copyright (C) 1987, 1989, 1991
-Free Software Foundation, Inc.
-
-  polite_directory_format  absolute_pathname
-  base_pathname
-  make_absolute            pathname_backup
-  change_to_directory      get_working_directory
-
-*/ 
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -54,19 +41,20 @@ Free Software Foundation, Inc.
 #include <unistd.h>
 #endif
 
-#include "oct-glob.h"
+#include "file-ops.h"
+#include "file-stat.h"
+#include "glob-match.h"
+#include "oct-env.h"
 #include "str-vec.h"
 
 #include "defun.h"
 #include "dir-ops.h"
 #include "dirfns.h"
 #include "error.h"
-#include "file-ops.h"
 #include "gripes.h"
 #include "help.h"
 #include "oct-obj.h"
 #include "pager.h"
-#include "pathlen.h"
 #include "procstream.h"
 #include "pt-plot.h"
 #include "sysdep.h"
@@ -75,239 +63,14 @@ Free Software Foundation, Inc.
 #include "utils.h"
 #include "variables.h"
 
-// The current working directory.
-string Vcurrent_directory;
-
-// Non-zero means follow symbolic links that point to directories just
-// as if they are real directories.
-static int follow_symbolic_links = 1;
-
-// Non-zero means that pwd always give verbatim directory, regardless
-// of symbolic link following.
-static int verbatim_pwd = 1;
-
-// Remove the last N directories from PATH.  Do not PATH blank.
-// PATH must contain enough space for MAXPATHLEN characters.
-
-static void
-pathname_backup (string& path, int n)
-{
-  if (path.empty ())
-    return;
-
-  size_t i = path.length () - 1;
-
-  while (n--)
-    {
-      while (path[i] == '/' && i > 0)
-	i--;
-
-      while (path[i] != '/' && i > 0)
-	i--;
-
-      i++;
-    }
-
-  path.resize (i);
-}
-
-// Return a pretty pathname.  If the first part of the pathname is the
-// same as $HOME, then replace that with `~'.
-
-string
-polite_directory_format (const string& name)
-{
-  string retval;
-
-  size_t len = Vhome_directory.length ();
-
-  if (len > 1 && Vhome_directory.compare (name, 0, len) == 0
-      && (name.length () == len || name[len] == '/'))
-    {
-      retval = "~";
-      retval.append (name.substr (len));
-    }
-  else
-    retval = name;
-
-  return retval;
-}
-
-// Return 1 if STRING contains an absolute pathname, else 0.
-
-static int
-absolute_pathname (const string& s)
-{
-  if (s.empty ())
-    return 0;
-
-  if (s[0] == '/')
-    return 1;
-
-  if (s[0] == '.')
-    {
-      if (s[1] == '\0' || s[1] == '/')
-	return 1;
-
-      if (s[1] == '.')
-	if (s[2] == '\0' || s[2] == '/')
-	  return 1;
-    }
-
-  return 0;
-}
-
-// Return the `basename' of the pathname in STRING (the stuff after
-// the last '/').  If STRING is not a full pathname, simply return it.
-
-string
-base_pathname (const string& s)
-{
-  if (! absolute_pathname (s))
-    return s;
-
-  size_t pos = s.rfind ('/');
-
-  if (pos == NPOS)
-    return s;
-  else
-    return s.substr (pos+1);
-}
-
-// Turn STRING (a pathname) into an absolute pathname, assuming that
-// DOT_PATH contains the symbolic location of '.'.
-
-string
-make_absolute (const string& s, const string& dot_path)
-{
-#if defined (__EMX__)
-  if (s.length () > 1 && s[1] == ':')
-    return s;
-#endif
-
-  if (dot_path.empty () || s[0] == '/' || s.empty ())
-    return s;
-
-  string current_path = dot_path;
-
-  if (current_path.empty ())
-    current_path = "./";
-
-  size_t pos = current_path.length () - 1;
-
-  if (current_path[pos] != '/')
-    current_path.append ("/");
-
-  size_t i = 0;
-  size_t slen = s.length ();
-
-  while (i < slen)
-    {
-      if (s[i] == '.')
-	{
-	  if (i + 1 == slen)
-	    return current_path;
-
-	  if (s[i+1] == '/')
-	    {
-	      i += 2;
-	      continue;
-	    }
-
-	  if (s[i+1] == '.' && (i + 2 == slen || s[i+2] == '/'))
-	    {
-	      i += 2;
-
-	      if (i != slen)
-		i++;
-
-	      pathname_backup (current_path, 1);
-
-	      continue;
-	    }
-	}
-
-      size_t tmp = s.find ('/', i);
-
-      if (tmp == NPOS)
-	{
-	  current_path.append (s, i, tmp-i);
-	  break;
-	}
-      else
-	{
-	  current_path.append (s, i, tmp-i+1);
-	  i = tmp + 1;
-	}
-    }
-
-  return current_path;
-}
-
-// Return a consed string which is the current working directory.
-// FOR_WHOM is the name of the caller for error printing.
-
-string
-get_working_directory (const string& for_whom)
-{
-  if (! follow_symbolic_links)
-    Vcurrent_directory = "";
-
-  if (Vcurrent_directory.empty ())
-    {
-      Vcurrent_directory = octave_getcwd ();
-
-      if (Vcurrent_directory.empty ())
-	warning ("%s: can't find current directory!", for_whom.c_str ());
-    }
-
-  return Vcurrent_directory;
-}
-
-// Do the work of changing to the directory NEWDIR.  Handle symbolic
-// link following, etc.
-
-static int
-change_to_directory (const string& newdir)
-{
-  string tmp;
-
-  if (follow_symbolic_links)
-    {
-      if (Vcurrent_directory.empty ())
-	get_working_directory ("cd_links");
-
-      if (Vcurrent_directory.empty ())
-	tmp = newdir;
-      else
-	tmp = make_absolute (newdir, Vcurrent_directory);
-
-      // Get rid of trailing `/'.
-
-      size_t len = tmp.length ();
-
-      if (len > 1)
-	{
-	  if (tmp[--len] == '/')
-	    tmp.resize (len);
-	}
-
-      if (octave_chdir (tmp) < 0)
-	return 0;
-      else
-	{
-	  Vcurrent_directory = tmp;
-	  return 1;
-	}
-    }
-  else
-    return (octave_chdir (newdir) < 0) ? 0 : 1;
-}
+// XXX FIXME XXX -- changing the plotter directory should be handled
+// by registering a function for octave_env::chdir to call so that
+// this function can be eliminated.
 
 static int
 octave_change_to_directory (const string& newdir)
 {
-  int cd_ok = change_to_directory (newdir);
+  int cd_ok = octave_env::chdir (newdir);
 
   if (cd_ok)
     do_external_plotter_cd (newdir);
@@ -335,7 +98,7 @@ users home directory")
 
   if (argc > 1)
     {
-      string dirname = oct_tilde_expand (argv[1]);
+      string dirname = file_ops::tilde_expand (argv[1]);
 
       if (dirname.length () > 0
 	  && ! octave_change_to_directory (dirname))
@@ -345,15 +108,11 @@ users home directory")
     }
   else
     {
-      if (Vhome_directory.empty ()
-	  || ! octave_change_to_directory (Vhome_directory))
-	{
-	  return retval;
-	}
-    }
+      string home_dir = octave_env::get_home_directory ();
 
-  string directory = get_working_directory ("cd");
-  bind_builtin_variable ("PWD", directory, 1);
+      if (home_dir.empty () || ! octave_change_to_directory (home_dir))
+	return retval;
+    }
 
   return retval;
 }
@@ -386,7 +145,7 @@ print a directory listing")
 
   ls_buf << "ls -C ";
   for (int i = 1; i < argc; i++)
-    ls_buf << oct_tilde_expand (argv[i]) << " ";
+    ls_buf << file_ops::tilde_expand (argv[i]) << " ";
 
   ls_buf << ends;
   char *ls_command = ls_buf.str ();
@@ -417,19 +176,12 @@ DEFUN (pwd, , nargout,
   "pwd (): print current working directory")
 {
   octave_value_list retval;
-  string directory;
 
-  if (verbatim_pwd)
-    {
-      directory = octave_getcwd ();
+  string directory = octave_env::getcwd ();
 
-      if (directory.empty ())
-	warning ("pwd: can't find working directory!");
-    }
+  if (directory.empty ())
+    warning ("pwd: can't find working directory!");
   else
-    directory = get_working_directory ("pwd");
-
-  if (! directory.empty ())
     {
       if (nargout == 0)
 	octave_stdout << directory << "\n";
@@ -463,7 +215,7 @@ STATUS is nonzero and MSG contains a system-dependent error message.")
 	gripe_wrong_type_arg ("readdir", args(0));
       else
 	{
-	  dir_entry dir (oct_tilde_expand (dirname));
+	  dir_entry dir (file_ops::tilde_expand (dirname));
 
 	  if (dir)
 	    {
@@ -509,8 +261,8 @@ STATUS is nonzero and MSG contains a system-dependent error message.")
 	{
 	  string msg;
 
-	  int status = oct_mkdir (oct_tilde_expand (dirname),
-				  0777, msg);
+	  int status = file_ops::mkdir (file_ops::tilde_expand (dirname),
+					0777, msg);
 
 	  retval(0) = static_cast<double> (status);
 
@@ -547,7 +299,7 @@ STATUS is nonzero and MSG contains a system-dependent error message.")
 	{
 	  string msg;
 
-	  int status = oct_rmdir (oct_tilde_expand (dirname), msg);
+	  int status = file_ops::rmdir (file_ops::tilde_expand (dirname), msg);
 
 	  retval(0) = static_cast<double> (status);
 
@@ -590,7 +342,7 @@ STATUS is nonzero and MSG contains a system-dependent error message.")
 	    {
 	      string msg;
 
-	      int status = oct_rename (from, to, msg);
+	      int status = file_ops::rename (from, to, msg);
 
 	      retval(0) = static_cast<double> (status);
 
@@ -623,7 +375,7 @@ matching file names.")
 	gripe_wrong_type_arg ("glob", args(0));
       else
 	{
-	  glob_match pattern (oct_tilde_expand (pat));
+	  glob_match pattern (file_ops::tilde_expand (pat));
 
 	  string_vector list = pattern.glob ();
 
@@ -657,7 +409,7 @@ pattern matching.")
 	gripe_wrong_type_arg ("fnmatch", args(0));
       else
 	{
-	  glob_match pattern (oct_tilde_expand (pat));
+	  glob_match pattern (file_ops::tilde_expand (pat));
 
 	  Array<bool> tmp = pattern.match (str);
 
@@ -675,31 +427,6 @@ pattern matching.")
     print_usage ("fnmatch");
 
   return retval;
-}
-
-static int
-pwd (void)
-{
-  int status = 0;
-
-  string s = builtin_string_variable ("PWD");
-
-  if (s.empty ())
-    {
-      gripe_invalid_value_specified ("PWD");
-      status = -1;
-    }
-  else
-    Vcurrent_directory = s;
-
-  return status;
-}
-
-void
-symbols_of_dirfns (void)
-{
-  DEFCONST (PWD, get_working_directory ("initialize_globals"), 0, pwd,
-    "current working directory");
 }
 
 /*

@@ -44,9 +44,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <fcntl.h>
 #endif
 
+#include "file-ops.h"
+#include "file-stat.h"
+
 #include "defun.h"
 #include "error.h"
-#include "file-ops.h"
 #include "gripes.h"
 #include "help.h"
 #include "lo-utils.h"
@@ -473,7 +475,7 @@ points to.")
 
   if (args.length () == 1)
     {
-      string fname = oct_tilde_expand (args(0).string_value ());
+      string fname = file_ops::tilde_expand (args(0).string_value ());
 
       if (! error_state)
 	{
@@ -526,7 +528,7 @@ STATUS is nonzero and MSG contains a system-dependent error message.")
 
 	      string msg;
 
-	      int status = oct_mkfifo (name, mode, msg);
+	      int status = file_ops::mkfifo (name, mode, msg);
 
 	      retval(0) = static_cast<double> (status);
 
@@ -633,7 +635,7 @@ DEFUN (stat, args, ,
 
   if (args.length () == 1)
     {
-      string fname = oct_tilde_expand (args(0).string_value ());
+      string fname = file_ops::tilde_expand (args(0).string_value ());
 
       if (! error_state)
 	{
@@ -682,7 +684,7 @@ STATUS is nonzero and MSG contains a system-dependent error message.")
 
 	  string msg;
 
-	  int status = oct_unlink (name, msg);
+	  int status = file_ops::unlink (name, msg);
 
 	  retval(0) = static_cast<double> (status);
 

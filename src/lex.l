@@ -37,6 +37,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "SLStack.h"
 
+#include "cmd-edit.h"
+
 // These would be alphabetical, but y.tab.h must be included before
 // oct-gperf.h and y.tab.h must be included after token.h and the tree
 // class declarations.  We can't include y.tab.h in oct-gperf.h
@@ -701,7 +703,7 @@ reset_parser (void)
   if (! (reading_script_file || reading_fcn_file))
     {
       current_input_column = 1;
-      input_line_number = current_command_number - 1;
+      input_line_number = command_editor::current_command_number () - 1;
     }
 
   // Only ask for input from stdin if we are expecting interactive

@@ -28,7 +28,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <iostream.h>
 
-#include "oct-term.h"
+#include "cmd-edit.h"
 #include "str-vec.h"
 
 // Create a string vector from a NULL terminated list of C strings.
@@ -80,7 +80,7 @@ string_vector::list_in_columns (ostream& os) const
 
   // Calculate the maximum number of columns that will fit.
 
-  int line_length = terminal_columns ();
+  int line_length = command_editor::terminal_cols ();
   int cols = line_length / max_name_length;
   if (cols == 0)
     cols = 1;

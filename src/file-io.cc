@@ -49,9 +49,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <unistd.h>
 #endif
 
+#include "file-ops.h"
+
 #include "defun.h"
 #include "error.h"
-#include "file-ops.h"
 #include "help.h"
 #include "lo-ieee.h"
 #include "oct-fstrm.h"
@@ -1279,7 +1280,7 @@ Return unique temporary file name.")
   octave_value retval;
 
   if (args.length () == 0)
-    retval = oct_tempnam ();
+    retval = file_ops::tempnam ();
   else
     print_usage ("tmpnam");
 
@@ -1353,7 +1354,7 @@ printed.")
 	      int oct_mask = convert (mask, 8, 10);
 
 	      if (! error_state)
-		status = convert (oct_umask (oct_mask), 10, 8);
+		status = convert (file_ops::umask (oct_mask), 10, 8);
 	    }
 	}
     }

@@ -20,8 +20,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-#if !defined (octave_oct_glob_h)
-#define octave_oct_glob_h 1
+#if !defined (octave_glob_match_h)
+#define octave_glob_match_h 1
 
 #include <string>
 

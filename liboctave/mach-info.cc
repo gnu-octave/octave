@@ -70,7 +70,7 @@ equiv_compare (const equiv *std, const equiv *v, int len)
 }
 
 void
-oct_mach_info::init_float_format (void)
+oct_mach_info::init_float_format (void) const
 {
   float_params fp[5];
 
@@ -124,7 +124,7 @@ oct_mach_info::init_float_format (void)
 }
 
 void
-oct_mach_info::ten_little_endians (void)
+oct_mach_info::ten_little_endians (void) const
 {
   // Are we little or big endian?  From Harbison & Steele.
 
@@ -145,31 +145,44 @@ oct_mach_info::oct_mach_info (void)
   ten_little_endians ();
 }
 
-oct_mach_info::float_format
-oct_mach_info::native_float_format (void)
+bool
+oct_mach_info::instance_ok (void)
 {
+  bool retval = true;
+
   if (! instance)
     instance = new oct_mach_info ();
 
-  return instance->native_float_fmt;
+  if (! instance)
+    {
+      (*current_liboctave_error_handler)
+	("unable to create command history object!");
+
+      retval = false;
+    }
+
+  return retval;
+}
+
+oct_mach_info::float_format
+oct_mach_info::native_float_format (void)
+{
+  return (instance_ok ())
+    ? instance->native_float_fmt : oct_mach_info::unknown;
 }
 
 bool
 oct_mach_info::words_big_endian (void)
 {
-  if (! instance)
-    instance = new oct_mach_info ();
-
-  return instance->big_chief;
+  return (instance_ok ())
+    ? instance->big_chief : false;
 }
 
 bool
 oct_mach_info::words_little_endian (void)
 {
-  if (! instance)
-    instance = new oct_mach_info ();
-
-  return ! instance->big_chief;
+  return (instance_ok ())
+    ? (! instance->big_chief) : false;
 }
 
 oct_mach_info::float_format

@@ -25,11 +25,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include <cerrno>
+#include <cstdlib>
 #include <cstring>
 
 #include "sysdir.h"
 
 #include "dir-ops.h"
+#include "lo-error.h"
+#include "lo-sysdep.h"
 #include "str-vec.h"
 
 bool

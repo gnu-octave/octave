@@ -35,12 +35,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "CMatrix.h"
 #include "Range.h"
+#include "cmd-edit.h"
 #include "dMatrix.h"
 #include "lo-mappers.h"
 #include "mach-info.h"
 #include "oct-cmplx.h"
 #include "oct-math.h"
-#include "oct-term.h"
 #include "str-vec.h"
 
 #include "defun.h"
@@ -1146,7 +1146,7 @@ octave_print_internal (ostream& os, const Matrix& m, bool pr_as_read_syntax,
       set_format (m, fw);
       int column_width = fw + 2;
       int total_width = nc * column_width;
-      int max_width = terminal_columns ();
+      int max_width = command_editor::terminal_cols ();
 
       if (pr_as_read_syntax)
 	max_width -= 4;
@@ -1299,7 +1299,7 @@ octave_print_internal (ostream& os, const ComplexMatrix& cm,
       int column_width = i_fw + r_fw;
       column_width += (bank_format || hex_format|| bit_format) ? 2 : 7;
       int total_width = nc * column_width;
-      int max_width = terminal_columns ();
+      int max_width = command_editor::terminal_cols ();
 
       if (pr_as_read_syntax)
 	max_width -= 4;
@@ -1447,7 +1447,7 @@ octave_print_internal (ostream& os, const Range& r,
 	{
 	  int column_width = fw + 2;
 	  int total_width = num_elem * column_width;
-	  int max_width = terminal_columns ();
+	  int max_width = command_editor::terminal_cols ();
 
 	  if (free_format)
 	    {

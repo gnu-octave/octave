@@ -32,30 +32,36 @@ octave_dynamic_loader
 {
 protected:
 
-  octave_dynamic_loader (void);
+  octave_dynamic_loader (void) { }
 
 public:
 
   typedef octave_builtin * (*builtin_fcn) (void);
 
-  virtual ~octave_dynamic_loader (void);
+  virtual ~octave_dynamic_loader (void) { }
 
   static int load_fcn_from_dot_oct_file (const string& fcn_name);
 
 private:
-
-  static octave_dynamic_loader *instance;
-
-  virtual builtin_fcn
-  resolve_reference (const string& mangled_name, const string& oct_file);
-
-  string mangle_name (const string& name);
 
   // No copying!
 
   octave_dynamic_loader (const octave_dynamic_loader&);
 
   octave_dynamic_loader& operator = (const octave_dynamic_loader&);
+
+  static octave_dynamic_loader *instance;
+
+  static bool instance_ok (void);
+
+  static void make_dynamic_loader (void);
+
+protected:
+
+  virtual builtin_fcn
+  resolve_reference (const string& mangled_name, const string& oct_file);
+
+  string mangle_name (const string& name);
 };
 
 #endif

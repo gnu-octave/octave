@@ -56,13 +56,28 @@ template class Array3<assign_op_fcn>;
 template class Array<type_conv_fcn>;
 template class Array2<type_conv_fcn>;
 
-int
-octave_value_typeinfo::register_type (const string& name)
+bool
+octave_value_typeinfo::instance_ok (void)
 {
+  bool retval = true;
   if (! instance)
     instance = new octave_value_typeinfo ();
 
-  return instance->do_register_type (name);
+  if (! instance)
+    {
+      ::error ("unable to create value type info object!");
+
+      retval = false;
+    }
+
+  return retval;
+}
+
+int
+octave_value_typeinfo::register_type (const string& name)
+{
+  return (instance_ok ())
+    ? instance->do_register_type (name) : -1;
 }
 
 bool
@@ -70,10 +85,8 @@ octave_value_typeinfo::register_binary_op (octave_value::binary_op op,
 					   int t1, int t2,
 					   binary_op_fcn f)
 {
-  if (! instance)
-    instance = new octave_value_typeinfo ();
-
-  return instance->do_register_binary_op (op, t1, t2, f);
+  return (instance_ok ())
+    ? instance->do_register_binary_op (op, t1, t2, f) : false;
 }
 
 bool
@@ -81,30 +94,24 @@ octave_value_typeinfo::register_assign_op (octave_value::assign_op op,
 					   int t_lhs, int t_rhs,
 					   assign_op_fcn f)
 {
-  if (! instance)
-    instance = new octave_value_typeinfo ();
-
-  return instance->do_register_assign_op (op, t_lhs, t_rhs, f);
+  return (instance_ok ())
+    ? instance->do_register_assign_op (op, t_lhs, t_rhs, f) : -1;
 }
 
 bool
 octave_value_typeinfo::register_pref_assign_conv (int t_lhs, int t_rhs,
 						  int t_result) 
 {
-  if (! instance)
-    instance = new octave_value_typeinfo ();
-
-  return instance->do_register_pref_assign_conv (t_lhs, t_rhs, t_result);
+  return (instance_ok ())
+    ? instance->do_register_pref_assign_conv (t_lhs, t_rhs, t_result) : false;
 }
 
 bool
 octave_value_typeinfo::register_widening_op (int t, int t_result,
 					     type_conv_fcn f)
 {
-  if (! instance)
-    instance = new octave_value_typeinfo ();
-
-  return instance->do_register_widening_op (t, t_result, f);
+  return (instance_ok ())
+    ? instance->do_register_widening_op (t, t_result, f) : false;
 }
 
 int

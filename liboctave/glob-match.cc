@@ -32,7 +32,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string>
 
 #include "file-stat.h"
-#include "oct-glob.h"
+#include "glob-match.h"
 #include "str-vec.h"
 
 bool

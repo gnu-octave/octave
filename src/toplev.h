@@ -52,29 +52,11 @@ main_loop (void);
 extern void
 do_octave_atexit (void);
 
-// argv[0] for this program.
-extern string Vprogram_invocation_name;
-
-// Cleaned-up name of this program, not including path information.
-extern string Vprogram_name;
-
-// Login name for user running this program.
-extern string Vuser_name;
-
-// Name of the host we are running on.
-extern string Vhost_name;
-
-// Home directory for the current user.
-extern string Vhome_directory;
-
 // Nonzero means we are using readline.
-extern int using_readline;
+extern int line_editing;
 
 // Nonzero means we printed messages about reading startup files.
 extern int reading_startup_message_printed;
-
-// Command number, counting from the beginning of this session.
-extern int current_command_number;
 
 // Nonzero means we are exiting via the builtin exit or quit functions.
 extern int quitting_gracefully;

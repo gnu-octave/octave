@@ -41,6 +41,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <unistd.h>
 #endif
 
+#include "oct-env.h"
 #include "str-vec.h"
 
 #include <defaults.h>
@@ -509,9 +510,10 @@ simple_help (void)
 
       if (! names.empty ())
 	{
-	  octave_stdout << "\n*** function files in "
-			<< make_absolute (dirs[i], Vcurrent_directory)
-			<< ":\n\n";
+	  string dir
+	    = octave_env::make_absolute (dirs[i], octave_env::getcwd ());
+
+	  octave_stdout << "\n*** function files in " << dir << ":\n\n";
 
 	  names.list_in_columns (octave_stdout);
 	}

@@ -569,6 +569,52 @@ char *sys_siglist[NSIG + 1] =
 
 octave_child_list *octave_child_list::instance = 0;
 
+bool
+octave_child_list::instance_ok (void)
+{
+  bool retval = true;
+
+  if (! instance)
+    instance = new octave_child_list ();
+
+  if (! instance)
+    {
+      ::error ("unable to create child list object!");
+
+      retval = false;
+    }
+
+  return retval;
+}
+
+void
+octave_child_list::insert (pid_t pid, octave_child::dead_child_handler f)
+{
+  if (instance_ok ())
+    instance->do_insert (pid, f);
+}
+
+void
+octave_child_list::remove (pid_t pid)
+{
+  if (instance_ok ())
+    instance->do_remove (pid);
+}
+
+int
+octave_child_list::length (void)
+{
+  return (instance_ok ()) ? instance->do_length () : 0;
+}
+
+octave_child&
+octave_child_list::elem (int i)
+{
+  static octave_child foo;
+
+  return (instance_ok ()) ? instance->do_elem (i) : foo;
+}
+
 void
 octave_child_list::do_insert (pid_t pid, octave_child::dead_child_handler f)
 {
@@ -607,18 +653,6 @@ octave_child_list::do_insert (pid_t pid, octave_child::dead_child_handler f)
 }
 
 void
-octave_child_list::insert (pid_t pid, octave_child::dead_child_handler f)
-{
-  if (! instance)
-    instance = new octave_child_list ();
-
-  if (instance)
-    instance->do_insert (pid, f);
-  else
-    panic_impossible ();
-}
-
-void
 octave_child_list::do_remove (pid_t pid)
 {
   // Mark the record for PID invalid.
@@ -635,16 +669,23 @@ octave_child_list::do_remove (pid_t pid)
     }
 }
 
-void
-octave_child_list::remove (pid_t pid)
+int
+octave_child_list::do_length (void) const
 {
-  if (! instance)
-    instance = new octave_child_list ();
+  return curr_len;
+}
 
-  if (instance)
-    instance->do_remove (pid);
+octave_child&
+octave_child_list::do_elem (int i)
+{
+  static octave_child foo;
+
+  int n = do_length ();
+
+  if (i >= 0 && i < n)
+    return list (i);
   else
-    panic_impossible ();
+    return foo;
 }
 
 /*

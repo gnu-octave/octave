@@ -44,6 +44,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <unistd.h>
 #endif
 
+#include "cmd-edit.h"
+#include "file-ops.h"
 #include "lo-error.h"
 #include "lo-mappers.h"
 #include "str-vec.h"
@@ -77,21 +79,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "variables.h"
 #include <version.h>
 
-// argv[0] for this program.
-string Vprogram_invocation_name;
-
-// Cleaned-up name of this program, not including path information.
-string Vprogram_name;
-
-// Login name for user running this program.
-string Vuser_name;
-
-// Name of the host we are running on.
-string Vhost_name;
-
-// User's home directory.
-string Vhome_directory;
-
 // Nonzero means we print 
 static bool Vdefault_eval_print_flag = true;
 
@@ -103,16 +90,7 @@ extern int returning;
 
 // Nonzero means we are using readline.
 // (--no-line-editing)
-#if defined (USE_READLINE)
-int using_readline = 1;
-#else
-int using_readline = 0;
-#endif
-
-#if defined (USE_READLINE)
-// This is from readline's rltty.c:
-extern "C" void rl_deprep_terminal (void);
-#endif
+int line_editing = 1;
 
 // Nonzero means we printed messages about reading startup files.
 int reading_startup_message_printed = 0;
@@ -152,10 +130,10 @@ parse_and_execute (FILE *f)
 
   switch_to_buffer (new_buf);
 
-  unwind_protect_int (using_readline);
+  unwind_protect_int (line_editing);
   unwind_protect_int (input_from_command_line_file);
 
-  using_readline = 0;
+  line_editing = 0;
   input_from_command_line_file = 0;
 
   unwind_protect_ptr (curr_sym_tab);
@@ -336,7 +314,7 @@ script file but without requiring the file to be named `FILE.m'.")
 
       if (! error_state)
 	{
-	  file = oct_tilde_expand (file);
+	  file = file_ops::tilde_expand (file);
 
 	  parse_and_execute (file, false, "source");
 
@@ -357,13 +335,12 @@ script file but without requiring the file to be named `FILE.m'.")
 void
 clean_up_and_exit (int retval)
 {
-#if defined (USE_READLINE)
-  rl_deprep_terminal ();
-#else
-  raw_mode (0);
-#endif
+  command_editor::restore_terminal_state ();
 
-  octave_command_history.clean_up_and_save ();
+  // XXX FIXME XXX -- is this needed?  Can it cause any trouble?
+  raw_mode (0);
+
+  command_history::clean_up_and_save ();
 
   close_plot_stream ();
 

@@ -162,7 +162,7 @@ OCTAVE_LFLAGS = -L../liboctave -L../libcruft -L../readline \
 	-L../kpathsea -L../glob -L../dlfcn -L. $(RLD_FLAG)
 
 OCTAVE_LIBS = -loctinterp -loctave -ltinst -lcruft \
-	$(LIBPLPLOT) -lreadline -lkpathsea -lglob $(LIBDLFCN)
+	$(LIBPLPLOT) $(LIBREADLINE) -lkpathsea -lglob $(LIBDLFCN)
 
 LIBS_TO_INSTALL = liboctinterp.a libtinst.a
 
@@ -343,7 +343,7 @@ TAGS: $(SOURCES) $(DLD_SRC) $(TI_SRC)
 
 clean:
 	rm -f *.a *.o *.d *.df *.oct pic/*.o
-	rm -f builtins.cc defaults.h oct-conf.h def-files var-files
+	rm -f builtins.cc ops.cc defaults.h oct-conf.h def-files var-files
 	if $(SHARED_LIBS); then rm -f *.$(SHLEXT); fi
 .PHONY: clean
 

@@ -42,6 +42,8 @@ octave_value_typeinfo
 {
 public:
 
+  static bool instance_ok (void);
+
   static int register_type (const string&);
 
   static bool register_binary_op (octave_value::binary_op, int, int,

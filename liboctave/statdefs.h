@@ -26,7 +26,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
+
+#ifdef HAVE_SYS_STAT_H
 #include <sys/stat.h>
+#endif
 
 #ifndef S_ISREG			/* Doesn't have POSIX.1 stat stuff. */
 #define mode_t unsigned short

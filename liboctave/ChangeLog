@@ -1,3 +1,36 @@
+Sun May  4 22:17:08 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* statdefs.h: Only include sys/types.h if HAVE_SYS_STAT_H is defined.
+
+	* mach-info.h, mach-info.cc: Add missing const qualifiers.
+	(instance_ok ()): New function.
+
+	* glob-match.h, glob-match.cc: Rename from oct-glob.h, oct-glob.cc.
+
+	* cmd-hist.h, cmd-hist.cc: Make it work without GNU readline.
+
+	* lo-utils.h, lo-utils.cc (strsave, octave_putenv): Move here from
+	src/utils.h and src/utils.cc.
+	(octave_fgets): New function, extracted from src/input.cc.
+
+	* cmd-edit.h, cmd-edit.cc: New files.  Provide wrapper class for
+	GNU readline, and allow Octave to work without GNU readline.
+
+	* lo-sysdep.h, lo-sysdep.cc: New files for miscellaneous
+	system-dependent functions.
+
+	* oct-env.h, oct-env.cc: New files for process environment stuff.
+
+	* file-stat.h, file-stat.cc: New files.  Extract file_stat class
+	from file-ops.h and file-ops.cc and move here.
+
+	* file-ops.h, file-ops.cc: Wrap functions in struct.  Move
+	tilde_expand functions here from src/dirfns.cc.
+
+Fri May  2 19:50:12 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pathlen.h: New file, from ../src.
+
 Tue Apr 29 04:39:01 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Array2-idx.h (Array2<T>::maybe_delete_elements): Prevent

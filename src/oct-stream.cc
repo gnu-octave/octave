@@ -2366,6 +2366,92 @@ octave_stream::invalid_stream_error (const char *op) const
 
 octave_stream_list *octave_stream_list::instance = 0;
 
+bool
+octave_stream_list::instance_ok (void)
+{
+  bool retval = true;
+
+  if (! instance)
+    instance = new octave_stream_list ();
+
+  if (! instance)
+    {
+      ::error ("unable to create stream list object!");
+
+      retval = false;
+    }
+
+  return retval;
+}
+
+octave_value
+octave_stream_list::insert (octave_base_stream *obs)
+{
+  return (instance_ok ()) ? instance->do_insert (obs) : octave_value (-1.0);
+}
+
+octave_stream *
+octave_stream_list::lookup (int fid)
+{
+  return (instance_ok ()) ? instance->do_lookup (fid) : 0;
+}
+
+octave_stream *
+octave_stream_list::lookup (const octave_value& fid)
+{
+  return (instance_ok ()) ? instance->do_lookup (fid) : 0;
+}
+
+int
+octave_stream_list::remove (int fid)
+{
+  return (instance_ok ()) ? instance->do_remove (fid) : -1;
+}
+
+int
+octave_stream_list::remove (const octave_value& fid)
+{
+  return (instance_ok ()) ? instance->do_remove (fid) : -1;
+}
+
+void
+octave_stream_list::clear (void)
+{
+  if (instance)
+    instance->do_clear ();
+}
+
+string_vector
+octave_stream_list::get_info (int fid)
+{
+  return (instance_ok ()) ? instance->do_get_info (fid) : string_vector ();
+}
+
+string_vector
+octave_stream_list::get_info (const octave_value& fid)
+{
+  return (instance_ok ()) ? instance->do_get_info (fid) : string_vector ();
+}
+
+string
+octave_stream_list::list_open_files (void)
+{
+  return (instance_ok ()) ? instance->do_list_open_files () : string ();
+}
+
+octave_value
+octave_stream_list::open_file_numbers (void)
+{
+  return (instance_ok ())
+    ? instance->do_open_file_numbers () : octave_value ();
+}
+
+int
+octave_stream_list::get_file_number (const octave_value& fid)
+{
+  return (instance_ok ()) ? instance->do_get_file_number (fid) : -1;
+}
+
 octave_value
 octave_stream_list::do_insert (octave_base_stream *obs)
 {
@@ -2410,22 +2496,6 @@ octave_stream_list::do_insert (octave_base_stream *obs)
   return octave_value (os, stream_number);
 }
 
-octave_value
-octave_stream_list::insert (octave_base_stream *obs)
-{
-  octave_value retval = -1.0;
-
-  if (! instance)
-    instance = new octave_stream_list ();
-
-  if (instance)
-    retval = instance->do_insert (obs);
-  else
-    panic_impossible ();
-
-  return retval;
-}
-
 octave_stream *
 octave_stream_list::do_lookup (int fid) const
 {
@@ -2446,28 +2516,6 @@ octave_stream_list::do_lookup (const octave_value& fid) const
 
   if (! error_state)
     retval = do_lookup (i);
-
-  return retval;
-}
-
-octave_stream *
-octave_stream_list::lookup (int fid)
-{
-  octave_stream *retval = 0;
-
-  if (instance)
-    retval = instance->do_lookup (fid);
-
-  return retval;
-}
-
-octave_stream *
-octave_stream_list::lookup (const octave_value& fid)
-{
-  octave_stream *retval = 0;
-
-  if (instance)
-    retval = instance->do_lookup (fid);
 
   return retval;
 }
@@ -2507,28 +2555,6 @@ octave_stream_list::do_remove (const octave_value& fid)
   return retval;
 }
 
-int
-octave_stream_list::remove (int fid)
-{
-  int retval = -1;
-
-  if (instance)
-    retval = instance->do_remove (fid);
-
-  return retval;
-}
-
-int
-octave_stream_list::remove (const octave_value& fid)
-{
-  int retval = -1;
-
-  if (instance)
-    retval = instance->do_remove (fid);
-
-  return retval;
-}
-
 void
 octave_stream_list::do_clear (void)
 {
@@ -2547,13 +2573,6 @@ octave_stream_list::do_clear (void)
 
       list (i) = 0;
     }
-}
-
-void
-octave_stream_list::clear (void)
-{
-  if (instance)
-    instance->do_clear ();
 }
 
 string_vector
@@ -2590,28 +2609,6 @@ octave_stream_list::do_get_info (const octave_value& fid) const
     retval = do_get_info (int_fid);
   else
     ::error ("file id must be a file object or integer value");
-
-  return retval;
-}
-
-string_vector
-octave_stream_list::get_info (int fid)
-{
-  string_vector retval;
-
-  if (instance)
-    retval = instance->do_get_info (fid);
-
-  return retval;
-}
-
-string_vector
-octave_stream_list::get_info (const octave_value& fid)
-{
-  string_vector retval;
-
-  if (instance)
-    retval = instance->do_get_info (fid);
 
   return retval;
 }
@@ -2658,17 +2655,6 @@ octave_stream_list::do_list_open_files (void) const
   return retval;
 }
 
-string
-octave_stream_list::list_open_files (void)
-{
-  string retval;
-
-  if (instance)
-    retval = instance->do_list_open_files ();
-
-  return retval;
-}
-
 octave_value
 octave_stream_list::do_open_file_numbers (void) const
 {
@@ -2685,17 +2671,6 @@ octave_stream_list::do_open_file_numbers (void) const
     }
 
   retval.resize ((num_open > 0), num_open);
-
-  return retval;
-}
-
-octave_value
-octave_stream_list::open_file_numbers (void)
-{
-  octave_value retval;
-
-  if (instance)
-    retval = instance->do_open_file_numbers ();
 
   return retval;
 }
@@ -2733,17 +2708,6 @@ octave_stream_list::do_get_file_number (const octave_value& fid) const
       else
 	retval = int_fid;
     }
-
-  return retval;
-}
-
-int
-octave_stream_list::get_file_number (const octave_value& fid)
-{
-  int retval = -1;
-
-  if (instance)
-    retval = instance->do_get_file_number (fid);
 
   return retval;
 }

@@ -45,6 +45,8 @@ Software Foundation, Inc.
 #include <unistd.h>
 #endif
 
+#include "oct-env.h"
+
 #include <defaults.h>
 #include "defun.h"
 #include "error.h"
@@ -106,9 +108,9 @@ subst_octave_home (const string& s)
 static void
 set_octave_home (void)
 {
-  char *oh = getenv ("OCTAVE_HOME");
+  string oh = octave_env::getenv ("OCTAVE_HOME");
 
-  Voctave_home = oh ? string (oh) : string (OCTAVE_PREFIX);
+  Voctave_home = oh.empty () ? string (OCTAVE_PREFIX) : oh;
 }
 
 static void
@@ -150,20 +152,20 @@ set_default_lib_dir (void)
 static void
 set_default_exec_path (void)
 {
-  char *octave_exec_path = getenv ("OCTAVE_EXEC_PATH");
+  string octave_exec_path = octave_env::getenv ("OCTAVE_EXEC_PATH");
 
-  if (octave_exec_path)
-    Vexec_path = string (octave_exec_path);
-  else
+  if (octave_exec_path.empty ())
     {
-      char *shell_path = getenv ("PATH");
+      string shell_path = octave_env::getenv ("PATH");
 
-      if (shell_path)
+      if (! shell_path.empty ())
 	{
 	  Vexec_path = string (":");
 	  Vexec_path.append (shell_path);
 	}
     }
+  else
+    Vexec_path = string (octave_exec_path);
 }
 
 // Handle OCTAVE_PATH from the environment like TeX handles TEXINPUTS.
@@ -176,9 +178,9 @@ set_default_path (void)
 {
   string std_path = subst_octave_home (OCTAVE_FCNFILEPATH);
 
-  char *oct_path = getenv ("OCTAVE_PATH");
+  string oct_path = octave_env::getenv ("OCTAVE_PATH");
 
-  Vload_path = oct_path ? string (oct_path) : std_path;
+  Vload_path = oct_path.empty () ? std_path : oct_path;
 }
 
 static void
@@ -186,23 +188,23 @@ set_default_info_file (void)
 {
   string std_info_file = subst_octave_home (OCTAVE_INFOFILE);
 
-  char *oct_info_file = getenv ("OCTAVE_INFO_FILE");
+  string oct_info_file = octave_env::getenv ("OCTAVE_INFO_FILE");
 
-  Vinfo_file = oct_info_file ? string (oct_info_file) : std_info_file;
+  Vinfo_file = oct_info_file.empty () ? std_info_file : oct_info_file;
 }
 
 static void
 set_default_info_prog (void)
 {
-  char *oct_info_prog = getenv ("OCTAVE_INFO_PROGRAM");
+  string oct_info_prog = octave_env::getenv ("OCTAVE_INFO_PROGRAM");
 
-  if (oct_info_prog)
-    Vinfo_prog = string (oct_info_prog);
-  else
+  if (oct_info_prog.empty ())
     {
       Vinfo_prog = Varch_lib_dir;
       Vinfo_prog.append ("/info");
     }
+  else
+    Vinfo_prog = string (oct_info_prog);
 }
 
 static void
@@ -210,10 +212,10 @@ set_default_editor (void)
 {
   Veditor = "vi";
 
-  char *env_editor = getenv ("EDITOR");
+  string env_editor = octave_env::getenv ("EDITOR");
 
-  if (env_editor && *env_editor)
-    Veditor = string (env_editor);
+  if (! env_editor.empty ())
+    Veditor = env_editor;
 }
 
 static void
@@ -326,59 +328,34 @@ exec_path (void)
       std_path.append (SEPCHAR_STR);
       std_path.append (Varch_lib_dir);
 
-      int std_len = std_path.length ();
-
-      static char *putenv_cmd = 0;
-
-      delete [] putenv_cmd;
-
-      putenv_cmd = 0;
+      string path;
 
       int eplen = Vexec_path.length ();
 
       if (eplen > 0)
 	{
-	  int prepend = (Vexec_path[0] == ':');
-	  int append = (eplen > 1 && Vexec_path[eplen-1] == ':');
+	  bool prepend = (Vexec_path[0] == ':');
+	  bool append = (eplen > 1 && Vexec_path[eplen-1] == ':');
 
 	  if (prepend)
 	    {
+	      path = std_path + Vexec_path;
+
 	      if (append)
-		{
-		  putenv_cmd = new char [2 * std_len + eplen + 6];
-		  sprintf (putenv_cmd, "PATH=%s%s%s",
-			   std_path.c_str (), Vexec_path.c_str (),
-			   std_path.c_str ());
-		}
-	      else
-		{
-		  putenv_cmd = new char [std_len + eplen + 6];
-		  sprintf (putenv_cmd, "PATH=%s%s",
-			   std_path.c_str (), Vexec_path.c_str ());
-		}
+		path.append (std_path);
 	    }
 	  else
 	    {
+	      path = Vexec_path;
+
 	      if (append)
-		{
-		  putenv_cmd = new char [std_len + eplen + 6];
-		  sprintf (putenv_cmd, "PATH=%s%s",
-			   Vexec_path.c_str (), std_path.c_str ());
-		}
-	      else
-		{
-		  putenv_cmd = new char [eplen + 6];
-		  sprintf (putenv_cmd, "PATH=%s", Vexec_path.c_str ());
-		}
+		path.append (std_path);
 	    }
 	}
       else
-	{
-	  putenv_cmd = new char [std_len+6];
-	  sprintf (putenv_cmd, "PATH=%s", std_path.c_str ());
-	}
+	path = std_path;
 
-      putenv (putenv_cmd);
+      octave_env::putenv ("PATH", path);
     }
 
   return status;

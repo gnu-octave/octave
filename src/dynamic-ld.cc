@@ -181,33 +181,43 @@ octave_shl_load_dynamic_loader::resolve_reference (const string& name,
 
 #endif
 
-static octave_dynamic_loader *
-make_dynamic_loader (void)
-{
-#if defined (WITH_DL)
-  return new octave_dlopen_dynamic_loader ();
-#elif defined (WITH_SHL)
-  return new octave_sh_load_dynamic_loader ();
-#else
-  return new octave_dynamic_loader ();
-#endif
-}
-
 octave_dynamic_loader *octave_dynamic_loader::instance = 0;
 
-octave_dynamic_loader::octave_dynamic_loader (void)
+bool
+octave_dynamic_loader::instance_ok (void)
 {
+  bool retval = true;
+
+  if (! instance)
+    make_dynamic_loader ();
+
+  if (! instance)
+    {
+      error ("unable to create command history object!");
+
+      retval = false;
+    }
+
+  return retval;
 }
 
-octave_dynamic_loader::~octave_dynamic_loader (void)
+void
+octave_dynamic_loader::make_dynamic_loader (void)
 {
+#if defined (WITH_DL)
+  instance = new octave_dlopen_dynamic_loader ();
+#elif defined (WITH_SHL)
+  instance = new octave_sh_load_dynamic_loader ();
+#else
+  instance = new octave_dynamic_loader ();
+#endif
 }
 
 int
 octave_dynamic_loader::load_fcn_from_dot_oct_file (const string& fcn_name)
 {
-  if (! instance)
-    instance = make_dynamic_loader ();
+  if (! instance_ok ())
+    make_dynamic_loader ();
 
   int retval = 0;
 

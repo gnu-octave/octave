@@ -33,8 +33,6 @@ class ostrstream;
 class octave_value_list;
 class string_vector;
 
-extern char *strsave (const char *);
-
 extern string search_path_for_file (const string&, const string&);
 extern string file_in_path (const string&, const string&);
 extern string fcn_file_in_path (const string&);
@@ -55,8 +53,6 @@ extern int empty_arg (const char *name, int nr, int nc);
 extern const char *undo_string_escape (char c);
 
 extern string undo_string_escapes (const string& s);
-
-extern void oct_putenv (const char *, const char *);
 
 extern int check_preference (const string& var);
 

@@ -494,6 +494,8 @@ public:
 
   ~octave_stream_list (void) { }
 
+  static bool instance_ok (void);
+
   static octave_value insert (octave_base_stream *obs);
 
   static octave_stream *lookup (int fid);

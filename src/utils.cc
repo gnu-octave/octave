@@ -57,8 +57,9 @@ extern "C" int strncasecmp (const char*, const char*, size_t);
 
 #include "SLStack.h"
 
-#include "file-ops.h"
+#include "file-stat.h"
 #include "oct-cmplx.h"
+#include "oct-env.h"
 #include "str-vec.h"
 
 #include <defaults.h>
@@ -81,20 +82,6 @@ extern "C" int strncasecmp (const char*, const char*, size_t);
 
 // Top level context (?)
 extern jmp_buf toplevel;
-
-// Save a string.
-
-char *
-strsave (const char *s)
-{
-  if (! s)
-    return 0;
-
-  int len = strlen (s);
-  char *tmp = new char [len+1];
-  tmp = strcpy (tmp, s);
-  return tmp;
-}
 
 // Return to the main command loop in octave.cc.
 
@@ -245,7 +232,7 @@ search_path_for_file (const string& path, const string& name)
 {
   dir_path p (path);
 
-  return make_absolute (p.find (name), Vcurrent_directory);
+  return octave_env::make_absolute (p.find (name), octave_env::getcwd ());
 }
 
 DEFUN (file_in_path, args, ,
@@ -282,9 +269,6 @@ file_in_path (const string& name, const string& suffix)
 
   if (! suffix.empty ())
     nm.append (suffix);
-
-  if (Vcurrent_directory.empty ())
-    get_working_directory ("file_in_path");
 
   return search_path_for_file (Vload_path, nm);
 }
@@ -401,91 +385,6 @@ DEFUN (undo_string_escapes, args, ,
     print_usage ("undo_string_escapes");
 
   return retval;
-}
-
-// This function was adapted from xputenv from Karl Berry's kpathsearch
-// library.
-
-void
-oct_putenv (const char *var_name, const char *value)
-{
-  static const char **saved_env_items = 0;
-  static unsigned saved_len;
-  char *old_item = 0;
-
-  int new_len = strlen (var_name) + strlen (value) + 2;
-
-  char *new_item = new char [new_len];
-
-  sprintf (new_item, "%s=%s", var_name, value);
-
-#ifndef SMART_PUTENV
-
-  // Check if we have saved anything yet.
-
-  if (! saved_env_items)
-    {
-      saved_env_items = new const char * [1];
-      saved_env_items[0] = var_name;
-      saved_len = 1;
-    }
-  else
-    {
-      // Check if we've assigned VAR_NAME before.
-
-      unsigned len = strlen (var_name);
-
-      for (unsigned i = 0; i < saved_len && ! old_item; i++)
-        {
-          if (strcmp (saved_env_items[i], var_name) == 0)
-            {
-              old_item = getenv (var_name);
-
-              assert (old_item);
-
-              // Back up to the `NAME=' in the environment before the
-	      // value that getenv returns.
-
-              old_item -= (len + 1);
-            }
-        }
-      
-      if (! old_item)
-        {
-          // If we haven't seen VAR_NAME before, save it.  Assume it
-	  // is in safe storage.
-
-          saved_len++;
-
-	  const char **tmp = new const char * [saved_len];
-
-	  for (unsigned i = 0; i < saved_len - 1; i++)
-	    tmp[i] = saved_env_items[i];
-
-	  tmp[saved_len - 1] = var_name;
-
-          delete [] saved_env_items;
-
-	  saved_env_items = tmp;
-        }
-    }
-
-#endif
-
-  // As far as I can see there's no way to distinguish between the
-  // various errors; putenv doesn't have errno values.
-
-  if (putenv (new_item) < 0)
-    error ("putenv (%s) failed", new_item);
-  
-#ifndef SMART_PUTENV
-
-  // Can't free `new_item' because its contained value is now in
-  // `environ', but we can free `old_item', since it's been replaced.
-
-  delete [] old_item;
-
-#endif
 }
 
 static void

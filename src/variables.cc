@@ -41,13 +41,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <unistd.h>
 #endif
 
-#if defined (USE_READLINE)
-#include <readline/readline.h>
-#endif
-
+#include "cmd-edit.h"
+#include "cmd-hist.h"
 #include "file-ops.h"
+#include "file-stat.h"
 #include "lo-mappers.h"
-#include "oct-glob.h"
+#include "oct-env.h"
+#include "glob-match.h"
 #include "str-vec.h"
 
 #include <defaults.h>
@@ -55,27 +55,23 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "dirfns.h"
 #include "dynamic-ld.h"
 #include "error.h"
-#include "file-io.h"
 #include "fn-cache.h"
 #include "gripes.h"
 #include "help.h"
 #include "input.h"
 #include "lex.h"
-#include "load-save.h"
+#include "sysdep.h"
 #include "oct-hist.h"
-#include "toplev.h"
+#include "oct-map.h"
+#include "oct-mapper.h"
+#include "oct-obj.h"
+#include "oct-sym.h"
+#include "ov.h"
 #include "pager.h"
 #include "parse.h"
-#include "symtab.h"
-#include "sysdep.h"
-#include "oct-sym.h"
-#include "oct-builtin.h"
-#include "oct-mapper.h"
-#include "oct-usr-fcn.h"
-#include "oct-obj.h"
 #include "pt-id.h"
 #include "pt-indir.h"
-#include "pr-output.h"
+#include "symtab.h"
 #include "toplev.h"
 #include "unwind-prot.h"
 #include "utils.h"
@@ -586,13 +582,12 @@ returns:\n\
 // Is there a corresponding function file that is newer than the
 // symbol definition?
 
-static int
+static bool
 symbol_out_of_date (symbol_record *sr)
 {
-  if (Vignore_function_time_stamp == 2)
-    return 0;
+  bool retval = false;
 
-  if (sr)
+  if (Vignore_function_time_stamp != 2 && sr)
     {
       octave_symbol *ans = sr->def ();
       if (ans)
@@ -606,19 +601,22 @@ symbol_out_of_date (symbol_record *sr)
 
 	      string fname = fcn_file_in_path (ff);
 
-	      int status = is_newer (fname, tp);
+	      int status = file_stat::is_newer (fname, tp);
 
 	      if (status > 0)
-		return 1;
+		retval = true;
 	    }
 	}
     }
-  return 0;
+
+  return retval;
 }
 
-static int
+static bool
 looks_like_octave_copyright (const string& s)
 {
+  bool retval = false;
+
   string t = s.substr (0, 15);
 
   if (t == " Copyright (C) ")
@@ -637,11 +635,12 @@ looks_like_octave_copyright (const string& s)
 
 	      if (t == " This file is part of Octave."
 		  || t == " This program is free softwar")
-		return 1;
+		retval = true;
 	    }
 	}
     }
-  return 0;
+
+  return retval;
 }
 
 // Eat whitespace and comments from FFILE, returning the text of the
@@ -782,7 +781,7 @@ is_function_file (FILE *ffile)
 static void
 restore_command_history (void *)
 {
-  octave_command_history.ignore_entries (! Vsaving_history);
+  command_history::ignore_entries (! Vsaving_history);
 }
 
 static void
@@ -790,6 +789,12 @@ safe_fclose (void *f)
 {
   if (f)
     fclose (static_cast<FILE *> (f));
+}
+
+static void
+restore_input_stream (void *f)
+{
+  command_editor::set_input_stream (static_cast<FILE *> (f));
 }
 
 static int
@@ -803,15 +808,18 @@ parse_fcn_file (bool exec_script, const string& ff)
 
   int old_reading_fcn_file_state = reading_fcn_file;
 
-  unwind_protect_ptr (rl_instream);
+  FILE *in_stream = command_editor::get_input_stream ();
+
+  add_unwind_protect (restore_input_stream, in_stream);
+
   unwind_protect_ptr (ff_instream);
 
-  unwind_protect_int (using_readline);
+  unwind_protect_int (line_editing);
   unwind_protect_int (input_line_number);
   unwind_protect_int (current_input_column);
   unwind_protect_int (reading_fcn_file);
 
-  using_readline = 0;
+  line_editing = 0;
   reading_fcn_file = 1;
   input_line_number = 0;
   current_input_column = 1;
@@ -828,9 +836,9 @@ parse_fcn_file (bool exec_script, const string& ff)
       if (is_function_file (ffile))
 	{
 	  // XXX FIXME XXX -- we shouldn't need both the
-	  // octave_command_history object and the
+	  // command_history object and the
 	  // Vsaving_history variable...
-	  octave_command_history.ignore_entries ();
+	  command_history::ignore_entries ();
 
 	  add_unwind_protect (restore_command_history, 0);
 
@@ -877,9 +885,9 @@ parse_fcn_file (bool exec_script, const string& ff)
 	  reading_fcn_file = old_reading_fcn_file_state;
 
 	  // XXX FIXME XXX -- we shouldn't need both the
-	  // octave_command_history object and the
+	  // command_history object and the
 	  // Vsaving_history variable...
-	  octave_command_history.ignore_entries ();
+	  command_history::ignore_entries ();
 
 	  add_unwind_protect (restore_command_history, 0);
 
@@ -1728,7 +1736,7 @@ history_size (void)
       if (ival >= 0 && ival == val)
 	{
 	  Vhistory_size = ival;
-	  octave_command_history.set_size (ival);
+	  command_history::set_size (ival);
 	  return 0;
 	}
     }
@@ -1751,7 +1759,7 @@ history_file (void)
   else
     {
       Vhistory_file = s;
-      octave_command_history.set_file (oct_tilde_expand (s));
+      command_history::set_file (file_ops::tilde_expand (s));
     }
 
   return status;
@@ -1782,7 +1790,7 @@ saving_history (void)
 {
   Vsaving_history = check_preference ("saving_history");
 
-  octave_command_history.ignore_entries (! Vsaving_history);
+  command_history::ignore_entries (! Vsaving_history);
 
   return 0;
 }
@@ -1822,11 +1830,12 @@ __error_text__ is guaranteed to be the empty string.");
     "don't check to see if function files have changed since they were\n\
   last compiled.  Possible values are \"system\" and \"all\"");
 
-  DEFCONST (program_invocation_name, Vprogram_invocation_name, 0, 0,
+  DEFCONST (program_invocation_name,
+	    octave_env::get_program_invocation_name (), 0, 0,
     "the full name of the current program or script, including the\n\
 directory specification");
 
-  DEFCONST (program_name, Vprogram_name, 0, 0,
+  DEFCONST (program_name, octave_env::get_program_name (), 0, 0,
     "the name of the current program or script");
 
   DEFVAR (saving_history, 1.0, 0, saving_history,

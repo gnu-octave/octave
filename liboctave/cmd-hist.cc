@@ -26,6 +26,19 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <cstring>
 
+#include <string>
+
+#include "cmd-edit.h"
+#include "cmd-hist.h"
+#include "lo-error.h"
+#include "str-vec.h"
+
+command_history *command_history::instance = 0;
+
+#if defined (USE_READLINE)
+
+#include <cstdlib>
+
 #include <strstream.h>
 
 #ifdef HAVE_FCNTL_H
@@ -41,95 +54,82 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <readline/history.h>
 
-#include "file-ops.h"
-#include "lo-error.h"
-#include "cmd-hist.h"
+#include "file-stat.h"
 
-bool command_history::initialized = false;
-
-command_history::command_history (const string& f, int n)
+class
+gnu_history : public command_history
 {
-  if (initialized)
-    error ("only one history object can be active at once");
-  else
-    {
-      ignoring_additions = false;
+public:
 
-      lines_in_file = 0;
-      lines_this_session = 0;
+  gnu_history (void)
+    : command_history (), mark (0) { }
 
-      xsize = -1;
+  ~gnu_history (void) { }
 
-      if (! f.empty ())
-	{
-	  xfile = f;
+  void do_add (const string&);
 
-	  ::read_history (f.c_str ());
+  void do_remove (int);
 
-	  lines_in_file = where ();
+  int do_where (void);
 
-	  ::using_history ();
-	}
+  int do_length (void);
 
-      if (n > 0)
-	xsize = n;
+  int do_max_input_history (void);
 
-      initialized = true;
-    }
-}
+  int do_base (void);
+
+  int do_current_number (void);
+
+  void do_stifle (int);
+
+  int do_unstifle (void);
+
+  int do_is_stifled (void);
+
+  void do_set_mark (int);
+
+  void do_goto_mark (void);
+
+  void do_read (const string&, bool);
+
+  void do_read_range (const string&, int, int, bool);
+
+  void do_write (const string&);
+
+  void do_append (const string&);
+
+  void do_truncate_file (const string&, int);
+
+  string_vector do_list (int, bool);
+
+  string do_get_entry (int);
+
+  void do_replace_entry (int, const string&);
+
+  void do_clean_up_and_save (const string&, int);
+
+private:
+
+  int mark;
+};
 
 void
-command_history::set_file (const string& f)
+gnu_history::do_add (const string& s)
 {
-  xfile = f;
-}
-
-string
-command_history::file (void)
-{
-  return xfile;
-}
-
-void
-command_history::set_size (int n)
-{
-  xsize = n;
-}
-
-int
-command_history::size (void)
-{
-  return xsize;
-}
-
-void
-command_history::ignore_entries (bool flag)
-{
-  ignoring_additions = flag;
-}
-
-bool
-command_history::ignoring_entries (void)
-{
-  return ignoring_additions;
-}
-
-void
-command_history::add (const string& s)
-{
-  if (! ignoring_entries ())
+  if (! do_ignoring_entries ())
     {
       if (s.empty ()
 	  || (s.length () == 1 && (s[0] == '\r' || s[0] == '\n')))
 	return;
 
       ::add_history (s.c_str ());
+
       lines_this_session++;
     }
 }
 
 void
-command_history::remove (int n)
+gnu_history::do_remove (int n)
 {
   HIST_ENTRY *discard = ::remove_history (n);
 
@@ -143,49 +143,87 @@ command_history::remove (int n)
 }
 
 int
-command_history::where (void)
+gnu_history::do_where (void)
 {
   return ::where_history ();
 }
 
 int
-command_history::base (void)
+gnu_history::do_length (void)
+{
+  return ::history_length;
+}
+
+int
+gnu_history::do_max_input_history (void)
+{
+  return ::max_input_history;
+}
+
+int
+gnu_history::do_base (void)
 {
   return ::history_base;
 }
 
 int
-command_history::current_number (void)
+gnu_history::do_current_number (void)
 {
-  return (xsize > 0) ? base () + where () : -1;
+  return (xsize > 0) ? do_base () + do_where () : -1;
 }
 
 void
-command_history::stifle (int n)
+gnu_history::do_stifle (int n)
 {
   ::stifle_history (n);
 }
 
 int
-command_history::unstifle (void)
+gnu_history::do_unstifle (void)
 {
   return ::unstifle_history ();
 }
 
 int
-command_history::is_stifled (void)
+gnu_history::do_is_stifled (void)
 {
   return ::history_is_stifled ();
 }
 
 void
-command_history::read (bool must_exist)
+gnu_history::do_set_mark (int n)
 {
-  read (xfile, must_exist);
+  mark = n;
 }
 
 void
-command_history::read (const string& f, bool must_exist)
+gnu_history::do_goto_mark (void)
+{
+  HIST_ENTRY *h;
+
+  if (mark)
+    {
+      if (history_set_pos (mark))
+	{
+	  h = ::current_history ();
+
+	  if (h)
+	    {
+	      command_editor::insert_text (h->line);
+
+	      command_editor::clear_undo_list ();
+	    }
+	}
+    }
+
+  mark = 0;
+
+  // XXX FIXME XXX -- for operate_and_get_next.
+  command_editor::restore_startup_hook ();
+}
+
+void
+gnu_history::do_read (const string& f, bool must_exist)
 {
   if (! f.empty ())
     {
@@ -195,24 +233,18 @@ command_history::read (const string& f, bool must_exist)
 	error (status);
       else
 	{
-	  lines_in_file = where ();
+	  lines_in_file = do_where ();
 
 	  ::using_history ();
 	}
     }
   else
-    error ("command_history::read: missing file name");
+    error ("gnu_history::read: missing file name");
 }
 
 void
-command_history::read_range (int from, int to, bool must_exist)
-{
-  read_range (xfile, from, to, must_exist);
-}
-
-void
-command_history::read_range (const string& f, int from, int to,
-			     bool must_exist)
+gnu_history::do_read_range (const string& f, int from, int to,
+			    bool must_exist)
 {
   if (from < 0)
     from = lines_in_file;
@@ -225,17 +257,17 @@ command_history::read_range (const string& f, int from, int to,
 	error (status);
       else
 	{
-	  lines_in_file = where ();
+	  lines_in_file = do_where ();
 
 	  ::using_history ();
 	}
     }
   else
-    error ("command_history::read_range: missing file name");
+    error ("gnu_history::read_range: missing file name");
 }
 
 void
-command_history::write (const string& f_arg)
+gnu_history::do_write (const string& f_arg)
 {
   string f = f_arg;
 
@@ -250,15 +282,15 @@ command_history::write (const string& f_arg)
 	error (status);
     }
   else
-    error ("command_history::write: missing file name");
+    error ("gnu_history::write: missing file name");
 }
 
 void
-command_history::append (const string& f_arg)
+gnu_history::do_append (const string& f_arg)
 {
   if (lines_this_session)
     {
-      if (lines_this_session < where ())
+      if (lines_this_session < do_where ())
 	{
 	  // Create file if it doesn't already exist.
 
@@ -289,13 +321,13 @@ command_history::append (const string& f_arg)
 	      lines_this_session = 0;
 	    }
 	  else
-	    error ("comman_history::append: missing file name");
+	    error ("gnu_history::append: missing file name");
 	}
     }
 }
 
 void
-command_history::truncate_file (const string& f_arg, int n)
+gnu_history::do_truncate_file (const string& f_arg, int n)
 {
   string f = f_arg;
 
@@ -305,11 +337,11 @@ command_history::truncate_file (const string& f_arg, int n)
   if (! f.empty ())
     ::history_truncate_file (f.c_str (), n);
   else
-    error ("command_history::truncate_file: missing file name");
+    error ("gnu_history::truncate_file: missing file name");
 }
 
 string_vector
-command_history::list (int limit, int number_lines)
+gnu_history::do_list (int limit, bool number_lines)
 {
   string_vector retval;
 
@@ -333,7 +365,7 @@ command_history::list (int limit, int number_lines)
 	      ostrstream output_buf;
 
 	      if (number_lines)
-		output_buf.form ("%5d%c", i + ::history_base,
+		output_buf.form ("%5d%c", i + do_base (),
 				 hlist[i]->data ? '*' : ' '); 
 
 	      output_buf << hlist[i]->line << ends;
@@ -351,11 +383,11 @@ command_history::list (int limit, int number_lines)
 }
 
 string
-command_history::get_entry (int n)
+gnu_history::do_get_entry (int n)
 {
   string retval;
 
-  HIST_ENTRY *entry = ::history_get (::history_base + n);
+  HIST_ENTRY *entry = ::history_get (do_base () + n);
 
   if (entry && entry->line)
     retval = entry->line;
@@ -364,7 +396,7 @@ command_history::get_entry (int n)
 }
 
 void
-command_history::replace_entry (int which, const string& line)
+gnu_history::do_replace_entry (int which, const string& line)
 {
   HIST_ENTRY *discard = ::replace_history_entry (which, line.c_str (), 0);
 
@@ -378,7 +410,7 @@ command_history::replace_entry (int which, const string& line)
 }
 
 void
-command_history::clean_up_and_save (const string& f_arg, int n)
+gnu_history::do_clean_up_and_save (const string& f_arg, int n)
 {
   string f = f_arg;
 
@@ -392,9 +424,448 @@ command_history::clean_up_and_save (const string& f_arg, int n)
 
       stifle (n);
 
-      ::write_history (f.c_str ());
+      do_write (f.c_str ());
     }
   else
+    error ("gnu_history::clean_up_and_save: missing file name");
+}
+
+#endif
+
+bool
+command_history::instance_ok (void)
+{
+  bool retval = true;
+
+  if (! instance)
+    make_command_history ();
+
+  if (! instance)
+    {
+      (*current_liboctave_error_handler)
+	("unable to create command history object!");
+
+      retval = false;
+    }
+
+  return retval;
+}
+
+void
+command_history::make_command_history (void)
+{
+#if defined (USE_READLINE)
+  instance = new gnu_history ();
+#else
+  instance = new command_history ();
+#endif
+}
+
+void
+command_history::set_file (const string& f)
+{
+  if (instance_ok ())
+    instance->do_set_file (f);
+}
+
+string
+command_history::file (void)
+{
+  return (instance_ok ())
+    ? instance->do_file () : string ();
+}
+
+void
+command_history::set_size (int n)
+{
+  if (instance_ok ())
+    instance->do_set_size (n);
+}
+
+int
+command_history::size (void)
+{
+  return (instance_ok ())
+    ? instance->do_size () : 0;
+}
+
+void
+command_history::ignore_entries (bool flag)
+{
+  if (instance_ok ())
+    instance->do_ignore_entries (flag);
+}
+
+bool
+command_history::ignoring_entries (void)
+{
+  return (instance_ok ())
+    ? instance->do_ignoring_entries () : false;
+}
+
+void
+command_history::add (const string& s)
+{
+  if (instance_ok ())
+    instance->do_add (s);
+}
+
+void
+command_history::remove (int n)
+{
+  if (instance_ok ())
+    instance->do_remove (n);
+}
+
+int
+command_history::where (void)
+{
+  return (instance_ok ())
+    ? instance->do_where () : 0;
+}
+
+int
+command_history::length (void)
+{
+  return (instance_ok ())
+    ? instance->do_length () : 0;
+}
+
+int
+command_history::max_input_history (void)
+{
+  return (instance_ok ())
+    ? instance->do_max_input_history () : 0;
+}
+
+int
+command_history::base (void)
+{
+  return (instance_ok ())
+    ? instance->do_base () : 0;
+}
+
+int
+command_history::current_number (void)
+{
+  return (instance_ok ())
+    ? instance->do_current_number () : 0;
+}
+
+void
+command_history::stifle (int n)
+{
+  if (instance_ok ())
+    instance->do_stifle (n);
+}
+
+int
+command_history::unstifle (void)
+{
+  return (instance_ok ())
+    ? instance->do_unstifle () : 0;
+}
+
+int
+command_history::is_stifled (void)
+{
+  return (instance_ok ())
+    ? instance->do_is_stifled () : 0;
+}
+
+void
+command_history::set_mark (int n)
+{
+  if (instance_ok ())
+    instance->do_set_mark (n);
+}
+
+int
+command_history::goto_mark (...)
+{
+  if (instance_ok ())
+    instance->do_goto_mark ();
+
+  return 0;
+}
+
+void
+command_history::read (bool must_exist)
+{
+  if (instance_ok ())
+    instance->do_read (must_exist);
+}
+
+void
+command_history::read (const string& f, bool must_exist)
+{
+  if (instance_ok ())
+    instance->do_read (f, must_exist);
+}
+
+void
+command_history::read_range (int from, int to, bool must_exist)
+{
+  if (instance_ok ())
+    instance->do_read_range (from, to, must_exist);
+}
+
+void
+command_history::read_range (const string& f, int from, int to,
+			     bool must_exist) 
+{
+  if (instance_ok ())
+    instance->do_read_range (f, from, to, must_exist);
+}
+
+void
+command_history::write (const string& f)
+{
+  if (instance_ok ())
+    instance->do_write (f);
+}
+
+void
+command_history::append (const string& f)
+{
+  if (instance_ok ())
+    instance->do_append (f);
+}
+
+void
+command_history::truncate_file (const string& f, int n)
+{
+  if (instance_ok ())
+    instance->do_truncate_file (f, n);
+}
+
+string_vector
+command_history::list (int limit, bool number_lines)
+{
+  return (instance_ok ())
+    ? instance->do_list (limit, number_lines) : string_vector ();
+}
+
+string
+command_history::get_entry (int n)
+{
+  return (instance_ok ())
+    ? instance->do_get_entry (n) : string ();
+}
+
+void
+command_history::replace_entry (int which, const string& line)
+{
+  if (instance_ok ())
+    instance->do_replace_entry (which, line);
+}
+
+void
+command_history::clean_up_and_save (const string& f, int n)
+{
+  if (instance_ok ())
+    instance->do_clean_up_and_save (f, n);
+}
+
+void
+command_history::do_set_file (const string& f)
+{
+  xfile = f;
+}
+
+string
+command_history::do_file (void)
+{
+  return xfile;
+}
+
+void
+command_history::do_set_size (int n)
+{
+  xsize = n;
+}
+
+int
+command_history::do_size (void)
+{
+  return xsize;
+}
+
+void
+command_history::do_ignore_entries (bool flag)
+{
+  ignoring_additions = flag;
+}
+
+bool
+command_history::do_ignoring_entries (void)
+{
+  return ignoring_additions;
+}
+
+void
+command_history::do_add (const string&)
+{
+}
+
+void
+command_history::do_remove (int)
+{
+}
+
+int
+command_history::do_where (void)
+{
+  return 0;
+}
+
+int
+command_history::do_length (void)
+{
+  return 0;
+}
+
+int
+command_history::do_max_input_history (void)
+{
+  return 0;
+}
+
+int
+command_history::do_base (void)
+{
+  return 0;
+}
+
+int
+command_history::do_current_number (void)
+{
+  return (xsize > 0) ? do_base () + do_where () : -1;
+}
+
+void
+command_history::do_stifle (int)
+{
+}
+
+int
+command_history::do_unstifle (void)
+{
+  return -1;
+}
+
+int
+command_history::do_is_stifled (void)
+{
+  return 0;
+}
+
+void
+command_history::do_set_mark (int)
+{
+}
+
+void
+command_history::do_goto_mark (void)
+{
+}
+
+void
+command_history::do_read (bool must_exist)
+{
+  do_read (xfile, must_exist);
+}
+
+void
+command_history::do_read (const string& f, bool)
+{
+  if (f.empty ())
+    error ("command_history::read: missing file name");
+}
+
+void
+command_history::do_read_range (int from, int to, bool must_exist)
+{
+  do_read_range (xfile, from, to, must_exist);
+}
+
+void
+command_history::do_read_range (const string& f, int, int, bool)
+{
+  if (f.empty ())
+    error ("command_history::read_range: missing file name");
+}
+
+void
+command_history::do_write (const string& f_arg)
+{
+  string f = f_arg;
+
+  if (f.empty ())
+    f = xfile;
+
+  if (f.empty ())
+    error ("command_history::write: missing file name");
+}
+
+void
+command_history::do_append (const string& f_arg)
+{
+  if (lines_this_session)
+    {
+      if (lines_this_session < do_where ())
+	{
+	  // Create file if it doesn't already exist.
+
+	  string f = f_arg;
+
+	  if (f.empty ())
+	    f = xfile;
+
+	  if (f.empty ())
+	    error ("command_history::append: missing file name");
+	}
+    }
+}
+
+void
+command_history::do_truncate_file (const string& f_arg, int)
+{
+  string f = f_arg;
+
+  if (f.empty ())
+    f = xfile;
+
+  if (f.empty ())
+    error ("command_history::truncate_file: missing file name");
+}
+
+string_vector
+command_history::do_list (int, bool)
+{
+  return string_vector ();
+}
+
+string
+command_history::do_get_entry (int)
+{
+  return string ();
+}
+
+void
+command_history::do_replace_entry (int, const string&)
+{
+}
+
+void
+command_history::do_clean_up_and_save (const string& f_arg, int)
+{
+  string f = f_arg;
+
+  if (f.empty ())
+    f = xfile;
+
+  if (f.empty ())
     error ("command_history::clean_up_and_save: missing file name");
 }
 

@@ -30,67 +30,160 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class
 command_history
 {
+protected:
+
+  command_history (void)
+    : ignoring_additions (false), lines_in_file (0),
+      lines_this_session (0), xfile (), xsize (-1) { }
+
 public:
 
-  command_history (const string& = string (), int = -1);
+  virtual ~command_history (void) { }
 
-  ~command_history (void) { initialized = false; }
+  static void set_file (const string&);
 
-  void set_file (const string&);
+  static string file (void);
 
-  string file (void);
+  static void set_size (int);
 
-  void set_size (int);
+  static int size (void);
 
-  int size (void);
+  static void ignore_entries (bool = true);
 
-  void ignore_entries (bool = true);
+  static bool ignoring_entries (void);
 
-  bool ignoring_entries (void);
+  static void add (const string&);
 
-  void add (const string&);
+  static void remove (int);
 
-  void remove (int);
+  static int where (void);
 
-  int where (void);
+  static int length (void);
 
-  int base (void);
+  static int max_input_history (void);
 
-  int current_number (void);
+  static int base (void);
 
-  void stifle (int);
+  static int current_number (void);
 
-  int unstifle (void);
+  static void stifle (int);
 
-  int is_stifled (void);
+  static int unstifle (void);
 
-  void read (bool = true);
+  static int is_stifled (void);
 
-  void read (const string&, bool = true);
+  static void set_mark (int n);
 
-  void read_range (int = -1, int = -1, bool = true);
+  // Gag.  This declaration has to match the Function typedef in
+  // readline.h.
 
-  void read_range (const string&, int = -1, int = -1,
-		   bool = true);
+  static int goto_mark (...);
 
-  void write (const string& = string ());
+  static void read (bool = true);
 
-  void append (const string& = string ());
+  static void read (const string&, bool = true);
 
-  void truncate_file (const string& = string (), int = -1);
+  static void read_range (int = -1, int = -1, bool = true);
 
-  string_vector list (int = -1, int = 0);
+  static void read_range (const string&, int = -1, int = -1,
+			  bool = true);
 
-  string get_entry (int);
+  static void write (const string& = string ());
 
-  void replace_entry (int, const string&);
+  static void append (const string& = string ());
 
-  void clean_up_and_save (const string& = string (), int = -1);
+  static void truncate_file (const string& = string (), int = -1);
+
+  static string_vector list (int = -1, bool = false);
+
+  static string get_entry (int);
+
+  static void replace_entry (int, const string&);
+
+  static void clean_up_and_save (const string& = string (), int = -1);
 
 private:
 
-  // We can only have one history object in any given program.
-  static bool initialized;
+  // No copying!
+
+  command_history (const command_history&);
+
+  command_history& operator = (const command_history&);
+
+  static bool instance_ok (void);
+
+  static void make_command_history (void);
+
+  // The real thing.
+  static command_history *instance;
+
+protected:
+
+  // To use something other than the GNU history library, derive a new
+  // class from command_history, overload these functions as
+  // necessary, and make instance point to the new class.
+
+  virtual void do_set_file (const string&);
+
+  virtual string do_file (void);
+
+  virtual void do_set_size (int);
+
+  virtual int do_size (void);
+
+  virtual void do_ignore_entries (bool);
+
+  virtual bool do_ignoring_entries (void);
+
+  virtual void do_add (const string&);
+
+  virtual void do_remove (int);
+
+  virtual int do_where (void);
+
+  virtual int do_length (void);
+
+  virtual int do_max_input_history (void);
+
+  virtual int do_base (void);
+
+  virtual int do_current_number (void);
+
+  virtual void do_stifle (int);
+
+  virtual int do_unstifle (void);
+
+  virtual int do_is_stifled (void);
+
+  virtual void do_set_mark (int);
+
+  virtual void do_goto_mark (void);
+
+  virtual void do_read (bool);
+
+  virtual void do_read (const string&, bool);
+
+  virtual void do_read_range (int, int, bool);
+
+  virtual void do_read_range (const string&, int, int, bool);
+
+  virtual void do_write (const string&);
+
+  virtual void do_append (const string&);
+
+  virtual void do_truncate_file (const string&, int);
+
+  virtual string_vector do_list (int, bool);
+
+  virtual string do_get_entry (int);
+
+  virtual void do_replace_entry (int, const string&);
+
+  virtual void do_clean_up_and_save (const string&, int);
+
+  void error (int);
+
+  void error (const string&);
 
   // TRUE means we are ignoring new additions.
   bool ignoring_additions;
@@ -106,14 +199,6 @@ private:
 
   // The number of lines of history to save.
   int xsize;
-
-  void error (int);
-
-  void error (const string&);
-
-  command_history (const command_history&);
-
-  command_history& operator = (const command_history&);
 };
 
 #endif

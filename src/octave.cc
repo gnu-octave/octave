@@ -43,11 +43,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <unistd.h>
 #endif
 
-#ifdef HAVE_PWD_H
-#include <pwd.h>
-#endif
-
+#include "cmd-edit.h"
+#include "file-stat.h"
 #include "lo-error.h"
+#include "oct-env.h"
 #include "str-vec.h"
 
 #include <defaults.h>
@@ -55,7 +54,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "dynamic-ld.h"
 #include "error.h"
 #include "file-io.h"
-#include "file-ops.h"
 #include "help.h"
 #include "input.h"
 #include "lex.h"
@@ -90,11 +88,6 @@ extern char *program_invocation_short_name;
 #else
 char *program_invocation_name;
 char *program_invocation_short_name;
-#endif
-
-#if defined (USE_READLINE)
-// This is from readline's paren.c:
-extern int rl_blink_matching_paren;
 #endif
 
 // The command-line options.
@@ -169,6 +162,18 @@ long_options long_opts[] =
 static void
 intern_argv (int argc, char **argv)
 {
+  octave_env::set_program_name (argv[0]);
+
+  // XXX FIXME XXX -- Kpathsea needs this.
+
+#if ! defined (HAVE_PROGRAM_INVOCATION_NAME)
+  program_invocation_name
+    = strsave (octave_env::get_program_invocation_name () . c_str ());
+
+  program_invocation_short_name
+    = strsave (octave_env::get_program_name () . c_str ());
+#endif
+
   if (argc > 1)
     {
       // Skip program name in argv.
@@ -182,62 +187,28 @@ intern_argv (int argc, char **argv)
   bind_builtin_variable ("nargin", static_cast<double> (argc-1), 1, 1, 0);
 }
 
-// Initialize some global variables for later use.
-
-static void
-initialize_globals (const string& name)
-{
-  // Kpathsea needs this.
-
-#if ! defined (HAVE_PROGRAM_INVOCATION_NAME)
-  program_invocation_name = strsave (name.c_str ());
-  program_invocation_short_name = strrchr (program_invocation_name, '/');
-  if (! program_invocation_short_name)
-    program_invocation_short_name = program_invocation_name;
-#endif
-
-  Vprogram_invocation_name = name;
-  size_t pos = Vprogram_invocation_name.rfind ('/');
-  Vprogram_name = (pos == NPOS)
-    ? Vprogram_invocation_name : Vprogram_invocation_name.substr (pos+1);
-
-  struct passwd *entry = getpwuid (getuid ());
-  Vuser_name = entry ? entry->pw_name : "I have no name!";
-
-  char hostname[256];
-  int status = gethostname (hostname, 255);
-  Vhost_name = (status < 0) ? "I have no host!" : hostname;
-
-  char *hd = getenv ("HOME");
-  Vhome_directory = hd ? hd : "I have no home!";
-
-  install_defaults ();
-}
-
 static void
 initialize_pathsearch (void)
 {
   // This may seem odd, but doing it this way means that we don't have
   // to modify the kpathsea library...
 
-  char *odb = getenv ("OCTAVE_DB_DIR");
+  string odb = octave_env::getenv ("OCTAVE_DB_DIR");
 
-  if (odb)
-    oct_putenv ("TEXMF", odb);
-  else
+  if (odb.empty ())
     {
-      char *oh = getenv ("OCTAVE_HOME");
+      string oh = octave_env::getenv ("OCTAVE_HOME");
 
-      if (oh)
-	{
-	  int len = strlen (oh) + 12;
-	  char *putenv_val = new char [len];
-	  sprintf (putenv_val, "%s/lib/octave", oh);
-	  oct_putenv ("TEXMF", putenv_val);
-	}
+      if (oh.empty ())
+	octave_env::putenv ("TEXMF", OCTAVE_DATADIR "/octave");
       else  
-	oct_putenv ("TEXMF", OCTAVE_DATADIR "/octave");
+	{
+	  oh.append ("/lib/octave");
+	  octave_env::putenv ("TEXMF", oh);
+	}
     }
+  else
+    octave_env::putenv ("TEXMF", odb);
 }
 
 // Initialize by reading startup files.
@@ -276,15 +247,17 @@ execute_startup_files (void)
 
       int home_rc_already_executed = 0;
 
-      const char *initfile = getenv ("OCTAVE_INITFILE");
+      string initfile = octave_env::getenv ("OCTAVE_INITFILE");
 
-      if (! initfile)
+      if (initfile.empty ())
 	initfile = ".octaverc";
 
-      string home_rc = Vhome_directory + "/" + initfile;
+      string home_dir = octave_env::get_home_directory ();
+
+      string home_rc = home_dir + "/" + initfile;
       string local_rc = string ("./") + initfile;
 
-      if (! Vhome_directory.empty ())
+      if (! home_dir.empty ())
 	{
 	  parse_and_execute (home_rc, verbose);
 
@@ -396,7 +369,7 @@ int
 main (int argc, char **argv)
 {
   // The order of these calls is important.  The call to
-  // initialize_globals must come before install_builtins because
+  // install_defaults must come before install_builtins because
   // default variable values must be available for the varaibles to be
   // installed, and the call to install_builtins must come before the
   // options are processed because some command line options override
@@ -406,7 +379,7 @@ main (int argc, char **argv)
 
   initialize_error_handlers ();
 
-  initialize_globals (argv[0]);
+  install_defaults ();
 
   initialize_pathsearch ();
 
@@ -491,7 +464,7 @@ main (int argc, char **argv)
 	  break;
 
 	case NO_LINE_EDITING_OPTION:
-	  using_readline = false;
+	  line_editing = 0;
 	  break;
 
 	case NO_SITE_FILE_OPTION:
@@ -521,7 +494,7 @@ main (int argc, char **argv)
   // These can come after command line args since none of them set any
   // defaults that might be changed by command line options.
 
-  initialize_readline ();
+  initialize_command_input ();
 
   if (! inhibit_startup_message)
     cout << OCTAVE_STARTUP_MESSAGE "\n" << endl;
@@ -531,14 +504,14 @@ main (int argc, char **argv)
 
   execute_startup_files ();
 
-  octave_command_history.read (false);
+  command_history::read (false);
 
   if (! inhibit_startup_message && reading_startup_message_printed)
     cout << endl;
 
   // Avoid counting commands executed from startup files.
 
-  current_command_number = 1;
+  command_editor::reset_current_command_number (1);
 
   // If there is an extra argument, see if it names a file to read.
   // Additional arguments are taken as command line options for the
@@ -570,7 +543,8 @@ main (int argc, char **argv)
 
 	  intern_argv (remaining_args, argv+last_arg_idx);
 
-	  rl_blink_matching_paren = 0;
+	  command_editor::blink_matching_paren (false);
+
 	  switch_to_buffer (create_buffer (infile));
 	}
       else
@@ -593,7 +567,7 @@ main (int argc, char **argv)
 
   if (! interactive && forced_interactive)
     {
-      rl_blink_matching_paren = 0;
+      command_editor::blink_matching_paren (false);
 
       // XXX FIXME XXX -- is this the right thing to do?
 
@@ -602,7 +576,7 @@ main (int argc, char **argv)
     }
 
   if (! interactive)
-    using_readline = 0;
+    line_editing = 0;
 
   int retval = main_loop ();
 

@@ -26,7 +26,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <string>
 
-#include "file-ops.h"
+#include "file-stat.h"
 #include "str-vec.h"
 
 #include <defaults.h>
@@ -84,7 +84,7 @@ octave_fcn_file_name_cache::list (const string& path, bool no_suffix)
   if (instance)
     retval = instance->do_list (path, no_suffix);
   else
-    panic_impossible ();
+    error ("unable to create file name cache object!");
 
   return retval;
 }

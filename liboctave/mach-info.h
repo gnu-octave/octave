@@ -28,6 +28,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class
 oct_mach_info
 {
+protected:
+
+  oct_mach_info (void);
+
 public:
 
   enum float_format
@@ -41,7 +45,7 @@ public:
       cray
     };
 
-  oct_mach_info (void);
+  static bool instance_ok (void);
 
   static float_format native_float_format (void);
 
@@ -57,15 +61,15 @@ private:
 
   static oct_mach_info *instance;
 
-  void init_float_format (void);
+  void init_float_format (void) const;
 
-  void ten_little_endians (void);
+  void ten_little_endians (void) const;
 
   // The floating point format for the current machine.
-  float_format native_float_fmt;
+  mutable float_format native_float_fmt;
 
   // TRUE if the byte order on this system is big endian.
-  bool big_chief;
+  mutable bool big_chief;
 
   // No copying!
 

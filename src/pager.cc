@@ -29,7 +29,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string>
 #include <fstream.h>
 
-#include "oct-term.h"
+#include "cmd-edit.h"
+#include "oct-env.h"
 
 #include "procstream.h"
 
@@ -190,7 +191,7 @@ more_than_a_screenful (const char *s)
 {
   if (s)
     {
-      int available_rows = terminal_rows () - 2;
+      int available_rows = command_editor::terminal_rows () - 2;
 
       int count = 0;
 
@@ -271,7 +272,7 @@ octave_pager_stream::stream (void)
 {
   if (! instance)
     instance = new octave_pager_stream ();
-      
+
   return *instance;
 }
 
@@ -432,14 +433,10 @@ Turn output pagination on or off.")
 static string
 default_pager (void)
 {
-  string pager_binary;
+  string pager_binary = octave_env::getenv ("PAGER");
 
-  char *pgr = getenv ("PAGER");
-
-  if (pgr)
-    pager_binary = string (pgr);
 #ifdef DEFAULT_PAGER
-  else
+  if (pager_binary.empty ())
     {
       pager_binary = string (DEFAULT_PAGER);
 
@@ -447,7 +444,8 @@ default_pager (void)
 	{
 	  pager_binary.append (" -e");
 
-	  if (! getenv ("LESS"))
+	  string lessflags = octave_env::getenv ("LESS");
+	  if (lessflags.empty ())
 	    pager_binary.append
 	      (" -P'-- less ?pB(%pB\\%):--. (f)orward, (b)ack, (q)uit$'");
 	}

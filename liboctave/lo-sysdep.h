@@ -20,18 +20,20 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-#if !defined (octave_sysdep_h)
-#define octave_sysdep_h 1
+#if !defined (octave_liboctave_sysdep_h)
+#define octave_liboctave_sysdep_h 1
 
 #include <string>
 
 #include "lo-ieee.h"
-#include "lo-sysdep.h"
 
-extern void sysdep_init (void);
+extern string octave_getcwd (void);
 
-extern void raw_mode (int);
-extern int kbhit (void);
+extern bool octave_chdir (const string&);
+
+#if ! defined (HAVE_GETHOSTNAME) && defined (HAVE_SYS_UTSNAME_H)
+extern int gethostname (char *, int);
+#endif
 
 #endif
 

@@ -125,7 +125,7 @@ polite_directory_format (const string& name)
 
 // Return 1 if STRING contains an absolute pathname, else 0.
 
-int
+static int
 absolute_pathname (const string& s)
 {
   if (s.empty ())
@@ -151,7 +151,7 @@ absolute_pathname (const string& s)
 // it contains any slashes.  This is used to decide whether or not to
 // look up through $PATH.
 
-int
+static int
 absolute_program (const string& s)
 {
   return (s.find ('/') != NPOS);

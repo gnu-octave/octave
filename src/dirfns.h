@@ -29,8 +29,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string>
 
 extern string polite_directory_format (const string&);
-extern int absolute_pathname (const string&);
-extern int absolute_program (const string&);
 extern string base_pathname (const string&);
 extern string make_absolute (const string&, const string&);
 extern string get_working_directory (const string&);

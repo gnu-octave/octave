@@ -1,3 +1,12 @@
+Wed Feb 11 19:41:22 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makeconf.in (mk-libdir-link): Don't create link if a directory
+	named $(libdir)/octave already exists.
+
+Mon Feb  9 14:47:42 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* octMakefile.in (INSTALL_SUBDIRS): Delete @INFO_DIR@.
+
 Thu Feb  5 03:04:09 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in: Check for vfork.

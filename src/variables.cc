@@ -1827,6 +1827,11 @@ help and usage functions");
 	  1.0, 0, warn_function_name_clash,
     "produce warning if function name conflicts with file name");
 
+  DEFVAR ("warn_missing_semicolon", SBV_warn_missing_semicolon,
+	  0.0, 0, warn_missing_semicolon,
+    "produce a warning if a statement in a script or function file is
+not terminated with a semicolon")
+
   DEFVAR ("whitespace_in_literal_matrix",
 	  SBV_whitespace_in_literal_matrix, "", 0,
 	  whitespace_in_literal_matrix,

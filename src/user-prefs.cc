@@ -515,6 +515,21 @@ warn_function_name_clash (void)
 }
 
 
+// Generate warning if a statement in a function or script file is not
+// terminated with a semicolon.  Useful for checking scripts and
+// functions that should only produce output using explicit printing
+// statements.
+
+int
+warn_missing_semicolon (void)
+{
+  user_pref.warn_missing_semicolon = 
+    check_preference ("warn_missing_semicolon");
+
+  return 0;
+}
+
+
 // Should whitespace in a literal matrix list be automatically
 // converted to commas and semicolons?
 //

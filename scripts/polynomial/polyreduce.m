@@ -32,7 +32,7 @@ function p = polyreduce (p)
 
   if (length (index) != 0)
 
-    index = find (index == 1:length(index));
+    index = find (index == 1:length (index));
 
     if (length (index) != 0)
 

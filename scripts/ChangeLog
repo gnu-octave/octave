@@ -1,3 +1,9 @@
+2000-01-22  Michael Reifenberger <mike@Plaut.de>
+
+	* audio/saveaudio.m: Also accept files with .ul extension.
+	* audio/loadaudio.m: Ditto.
+	* audio/playaudio.m: Ditto.
+
 2000-01-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* statistics/distributions/beta_cdf.m: Texinfoize doc string.

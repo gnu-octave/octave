@@ -65,7 +65,8 @@ function playaudio (name, ext)
     endif
     if (strcmp (ext, "lin") || strcmp (ext, "raw"))
       system (sprintf ("cat %s > /dev/dsp", name));
-    elseif (strcmp (ext, "mu") || strcmp (ext, "au") || strcmp (ext, "snd"))
+    elseif (strcmp (ext, "mu") || strcmp (ext, "au")
+	    || strcmp (ext, "snd") || strcmp (ext, "ul"))
       system (sprintf ("cat %s > /dev/audio", name));
     else
       error ("playaudio does not support given extension");

@@ -75,7 +75,8 @@ function saveaudio (name, X, ext, bit)
     else
       c = fwrite (num, X, "short");
     endif
-  elseif (strcmp (ext, "mu") || strcmp (ext, "au") || strcmp (ext, "snd"))
+  elseif (strcmp (ext, "mu") || strcmp (ext, "au")
+	  || strcmp (ext, "snd") || strcmp (ext, "ul"))
     Y = lin2mu (X);
     c = fwrite (num, Y, "uchar");
   else

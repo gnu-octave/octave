@@ -39,6 +39,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-uint16.h"
 #include "ov-uint32.h"
 #include "ov-uint64.h"
+#include "ov-range.h"
 #include "ov-scalar.h"
 #include "ov-re-mat.h"
 #include "ov-typeinfo.h"
@@ -65,6 +66,16 @@ DEFCONVFN (matrix_to_uint8, matrix, uint8)
 DEFCONVFN (matrix_to_uint16, matrix, uint16)
 DEFCONVFN (matrix_to_uint32, matrix, uint32)
 DEFCONVFN (matrix_to_uint64, matrix, uint64)
+
+DEFCONVFN (range_to_int8, range, int8)
+DEFCONVFN (range_to_int16, range, int16)
+DEFCONVFN (range_to_int32, range, int32)
+DEFCONVFN (range_to_int64, range, int64)
+
+DEFCONVFN (range_to_uint8, range, uint8)
+DEFCONVFN (range_to_uint16, range, uint16)
+DEFCONVFN (range_to_uint32, range, uint32)
+DEFCONVFN (range_to_uint64, range, uint64)
 
 #define INT_CONV_FUNCTIONS(tfrom) \
   DEFCONVFN2 (tfrom ## _scalar_to_int8, tfrom, scalar, int8) \
@@ -116,30 +127,25 @@ INT_CONV_FUNCTIONS (uint64)
   INSTALL_CONVOP (octave_ ## tfrom ## _matrix, octave_uint8_matrix, tfrom ## _matrix_to_uint8) \
   INSTALL_CONVOP (octave_ ## tfrom ## _matrix, octave_uint16_matrix, tfrom ## _matrix_to_uint16) \
   INSTALL_CONVOP (octave_ ## tfrom ## _matrix, octave_uint32_matrix, tfrom ## _matrix_to_uint32) \
-  INSTALL_CONVOP (octave_ ## tfrom ## _matrix, octave_uint64_matrix, tfrom ## _matrix_to_uint64) \
+  INSTALL_CONVOP (octave_ ## tfrom ## _matrix, octave_uint64_matrix, tfrom ## _matrix_to_uint64)
+
+#define INSTALL_CONVOPS(tfrom) \
+  INSTALL_CONVOP (octave_ ## tfrom, octave_int8_matrix, tfrom ## _to_int8) \
+  INSTALL_CONVOP (octave_ ## tfrom, octave_int16_matrix, tfrom ## _to_int16) \
+  INSTALL_CONVOP (octave_ ## tfrom, octave_int32_matrix, tfrom ## _to_int32) \
+  INSTALL_CONVOP (octave_ ## tfrom, octave_int64_matrix, tfrom ## _to_int64) \
+ \
+  INSTALL_CONVOP (octave_ ## tfrom, octave_uint8_matrix, tfrom ## _to_uint8) \
+  INSTALL_CONVOP (octave_ ## tfrom, octave_uint16_matrix, tfrom ## _to_uint16) \
+  INSTALL_CONVOP (octave_ ## tfrom, octave_uint32_matrix, tfrom ## _to_uint32) \
+  INSTALL_CONVOP (octave_ ## tfrom, octave_uint64_matrix, tfrom ## _to_uint64)
 
 void
 install_int_conv_ops (void)
 {
-  INSTALL_CONVOP (octave_scalar, octave_int8_matrix, scalar_to_int8);
-  INSTALL_CONVOP (octave_scalar, octave_int16_matrix, scalar_to_int16);
-  INSTALL_CONVOP (octave_scalar, octave_int32_matrix, scalar_to_int32);
-  INSTALL_CONVOP (octave_scalar, octave_int64_matrix, scalar_to_int64);
-
-  INSTALL_CONVOP (octave_scalar, octave_uint8_matrix, scalar_to_uint8);
-  INSTALL_CONVOP (octave_scalar, octave_uint16_matrix, scalar_to_uint16);
-  INSTALL_CONVOP (octave_scalar, octave_uint32_matrix, scalar_to_uint32);
-  INSTALL_CONVOP (octave_scalar, octave_uint64_matrix, scalar_to_uint64);
-
-  INSTALL_CONVOP (octave_matrix, octave_int8_matrix, matrix_to_int8);
-  INSTALL_CONVOP (octave_matrix, octave_int16_matrix, matrix_to_int16);
-  INSTALL_CONVOP (octave_matrix, octave_int32_matrix, matrix_to_int32);
-  INSTALL_CONVOP (octave_matrix, octave_int64_matrix, matrix_to_int64);
-
-  INSTALL_CONVOP (octave_matrix, octave_uint8_matrix, matrix_to_uint8);
-  INSTALL_CONVOP (octave_matrix, octave_uint16_matrix, matrix_to_uint16);
-  INSTALL_CONVOP (octave_matrix, octave_uint32_matrix, matrix_to_uint32);
-  INSTALL_CONVOP (octave_matrix, octave_uint64_matrix, matrix_to_uint64);
+  INSTALL_CONVOPS (scalar)
+  INSTALL_CONVOPS (matrix)
+  INSTALL_CONVOPS (range)
 
   INSTALL_INT_CONV_FUNCTIONS (int8)
   INSTALL_INT_CONV_FUNCTIONS (int16)

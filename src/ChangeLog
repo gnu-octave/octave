@@ -1,3 +1,7 @@
+2004-06-25  John W. Eaton  <jwe@octave.org>
+
+	* OPERATORS/op-int-conv.cc: Add conversions for range type.
+
 2004-06-17  John W. Eaton  <jwe@octave.org>
 
 	* bitfcns.cc (bitfcns): New file.

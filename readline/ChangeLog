@@ -1,3 +1,101 @@
+Mon Jun 24 02:31:37 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (install): Use INSTALL_PROGRAM instead of
+	INSTALL_DATA for shared libs.
+
+Wed May 22 13:40:26 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in (TERMLIBS, SH_TERMLIBS): Set these variable
+	instead of just checking for -ltermcap.
+	* Makefile.in: Substitute and use them.
+
+Tue May 14 22:32:20 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (clean): Also remove pic/*.o
+	(distclean): Also remove stamp-picdir and pic.
+
+Mon May 13 02:11:40 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (stamp-history): Depend on $(HIST_PICOBJ).
+	(stamp-readline): Likewise, depend on $(PICOBJ).
+	
+Sat Apr  6 22:43:38 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in: Use separate pattern rule for compiling PIC.
+
+Fri Feb  2 22:52:07 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (stamp-readline): Fix typo.
+
+Mon Jan  8 22:58:20 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (clean): If $(SHARED_LIBS), also remove shared libs.
+
+Fri Dec 29 21:37:52 1995  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* config.guess, config.sub: New files.
+
+	* configure.in, Makefile.in:
+	Handle creating shared libraries for Octave.
+
+Wed Oct  4 02:23:52 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (uninstall): For use with Octave, don't do anything.
+
+Fri Sep 22 02:27:37 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ansi_stdlib.h, chardefs.h, history.h, keymaps.h, memalloc.h,
+	posixstat.h, readline.h, rlconf.h, rldefs.h, tilde.h
+	[__cplusplus]:  Surround contents in` extern "C" { }'.
+
+Wed Sep 20 00:06:54 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (HSOURCES): Distribute all the .c and .h files and
+	config.h.in and config.h.
+
+Tue Sep 19 00:27:08 1995  John Eaton  <jwe@bevo.che.wisc.edu>
+
+	* signals.c (rl_set_signals): Call rl_set_sighandler, not signal.
+
+	* parens.c (find_matching_open): Don't assume ' and " are always
+	the only string delimiters.
+	(rl_paren_string_delimiters): New global variable.
+	* readline.h: Provide extern declaration.
+
+	* bind.c, complete.c, display.c, funmap.c, history.c, isearch.c,
+	keymaps.c, parens.c, readline.c, rltty.c, search.c, signals.c,
+	tilde.c, vi_mode.c, xmalloc.c [HAVE_CONFIG_H]: Include config.h.
+
+	* config.h.in: New file.
+	* configure.in: Generate config.h from config.h.in.
+	* Makefile.in (HSOURCES): Add config.h.in to the list.
+
+	* Makefile.in (SUBDIRS, DISTFILES): New macros.
+	(dist, local-dist): New targets.
+
+	* signals.c: Use RETSIGTYPE instead of VOID_SIGHANDLER.
+
+	* parens.c [PAREN_MATCHING]: Try harder to find FD_SET.
+
+	* rlconf.h: #define PAREN_MATCHING.
+
+	* bind.c: Check for strcasecmp and strncasecmp separately.
+
+	* bind.c, complete.c, readline.c, signals.c: Use HAVE_SYS_FILE_H,
+	instead of NO_SYS_FILE.
+
+	* configure.in, Makefile.in: New files, for autoconf.
+
+Wed Apr 26 11:17:32 1995  Ari Mujunen  <amn@bigbang.nfra.nl>
+
+	* complete.c (rl_complete_internal): Add support for a
+	user-selectable character rl_completion_append_character that gets
+	appended when inserting a single matching completion at the end of
+	a line.
+
+	* readline.h (rl_completion_append_character): Add extern
+	declaration.
+
 Tue Mar 23 14:36:51 1993  Brian Fox  (bfox@eos.crseo.ucsb.edu)
 
 	* readline.c (rl_copy): Changed name to rl_copy_text.

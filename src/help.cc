@@ -44,6 +44,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "dirfns.h"
 #include "error.h"
 #include "help.h"
+#include "input.h"
 #include "oct-obj.h"
 #include "pager.h"
 #include "pathsearch.h"
@@ -704,8 +705,8 @@ display the definition of each NAME that refers to a function")
 
   begin_unwind_frame ("Ftype");
 
-  unwind_protect_str (user_pref.ps4);
-  user_pref.ps4 = "";
+  unwind_protect_str (Vps4);
+  Vps4 = "";
 
   int argc = args.length () + 1;
 

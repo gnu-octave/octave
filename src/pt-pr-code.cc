@@ -31,6 +31,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream.h>
 
 #include "error.h"
+#include "input.h"
 #include "pr-output.h"
 #include "pt-pr-code.h"
 #include "user-prefs.h"
@@ -1143,7 +1144,7 @@ tree_print_code::indent (void)
  
   if (beginning_of_line)
     {
-      os.form ("%s%*s", user_pref.ps4.c_str (), curr_print_indent_level, "");
+      os.form ("%s%*s", Vps4.c_str (), curr_print_indent_level, "");
       beginning_of_line = false;
     }
 }

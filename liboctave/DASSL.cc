@@ -397,23 +397,23 @@ DASSL::integrate (const ColumnVector& tout, Matrix& xdot_out,
 	  double next_out;
 	  while (i_out < n_out)
 	    {
-	      int do_restart = 0;
+	      bool do_restart = false;
 
 	      next_out = tout.elem (i_out);
 	      if (i_crit < n_crit)
 		next_crit = tcrit.elem (i_crit);
 
-	      int save_output;
+	      bool save_output;
 	      double t_out;
 
 	      if (next_crit == next_out)
 		{
 		  set_stop_time (next_crit);
 		  t_out = next_out;
-		  save_output = 1;
+		  save_output = true;
 		  i_out++;
 		  i_crit++;
-		  do_restart = 1;
+		  do_restart = true;
 		}
 	      else if (next_crit < next_out)
 		{
@@ -421,15 +421,15 @@ DASSL::integrate (const ColumnVector& tout, Matrix& xdot_out,
 		    {
 		      set_stop_time (next_crit);
 		      t_out = next_crit;
-		      save_output = 0;
+		      save_output = false;
 		      i_crit++;
-		      do_restart = 1;
+		      do_restart = true;
 		    }
 		  else
 		    {
 		      clear_stop_time ();
 		      t_out = next_out;
-		      save_output = 1;
+		      save_output = true;
 		      i_out++;
 		    }
 		}
@@ -437,7 +437,7 @@ DASSL::integrate (const ColumnVector& tout, Matrix& xdot_out,
 		{
 		  set_stop_time (next_crit);
 		  t_out = next_out;
-		  save_output = 1;
+		  save_output = true;
 		  i_out++;
 		}
 

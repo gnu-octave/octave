@@ -139,7 +139,7 @@ private:
   double stop_time;
   int stop_time_set;
 
-  int n;
+  size_t n;
   int integration_error;
   int restart;
   int liw;  

@@ -104,7 +104,7 @@ get_size (double d, const char *warn_for)
 }
 
 static void
-get_size (const Matrix& size, int& nr, int& nc, bool& one_elt_size_spec,
+get_size (const Array<double>& size, int& nr, int& nc, bool& one_elt_size_spec,
 	  const char *warn_for)
 {
   nr = -1;
@@ -115,32 +115,22 @@ get_size (const Matrix& size, int& nr, int& nc, bool& one_elt_size_spec,
   double dnr = -1.0;
   double dnc = -1.0;
 
-  int sz_nr = size.rows ();
-  int sz_nc = size.cols ();
+  int sz_len = size.length ();
 
-  if (sz_nr == 1 && sz_nc == 1)
+  if (sz_len == 1)
     {
       one_elt_size_spec = true;
 
-      dnr = size (0, 0);
+      dnr = size (0);
       dnc = 1.0;
     }
-  else if (sz_nr == 1 && sz_nc > 0)
+  else if (sz_len == 2)
     {
-      dnr = size (0, 0);
+      dnr = size (0);
 
-      if (sz_nc == 2)
-	dnc = size (0, 1);
-      else if (sz_nc > 2)
-	::error ("%s: invalid size specification", warn_for);
-    }
-  else if (sz_nc == 1 && sz_nr > 0)
-    {
-      dnr = size (0, 0);
-
-      if (sz_nr == 2)
-	dnc = size (1, 0);
-      else if (sz_nr > 2)
+      if (! xisinf (dnr))
+	dnc = size (1);
+      else
 	::error ("%s: invalid size specification", warn_for);
     }
   else
@@ -1023,7 +1013,7 @@ octave_base_stream::gets (int max_len, bool& err)
 }
 
 octave_value
-octave_base_stream::read (const Matrix& size,
+octave_base_stream::read (const Array<double>& size,
 			  oct_data_conv::data_type dt, int skip,
 			  oct_mach_info::float_format ffmt,
 			  int& char_count)
@@ -1658,7 +1648,7 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 }
 
 octave_value
-octave_base_stream::scanf (const std::string& fmt, const Matrix& size,
+octave_base_stream::scanf (const std::string& fmt, const Array<double>& size,
 			   int& conversion_count)
 {
   octave_value retval = Matrix ();
@@ -2614,7 +2604,7 @@ octave_stream::close (void)
 }
 
 octave_value
-octave_stream::read (const Matrix& size,
+octave_stream::read (const Array<double>& size,
 		     oct_data_conv::data_type dt, int skip,
 		     oct_mach_info::float_format flt_fmt, int& count)
 {
@@ -2640,7 +2630,8 @@ octave_stream::write (const octave_value& data,
 }
 
 octave_value
-octave_stream::scanf (const std::string& fmt, const Matrix& size, int& count)
+octave_stream::scanf (const std::string& fmt, const Array<double>& size,
+		      int& count)
 {
   octave_value retval;
 

@@ -1,3 +1,14 @@
+2001-03-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DLD-FUNCTIONS/besselj.cc (besselh): Use K arg.
+	From: Thomas Stuart <tstuart@ing.sun.ac.za>.
+
+	* oct-stream.cc (get_size): Don't allow [Inf, N] as a size
+	specification for the read and scanf functions.
+	(get_size): SIZE is now an Array<double> instead of a Matrix object.
+	(read): Likewise.  Change all callers.
+	(scanf): Likewise.  Change all callers.
+
 2001-03-26  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* DLD-FUNCTIONS/det.cc (Fdet): Only return rcond if nargout > 1.

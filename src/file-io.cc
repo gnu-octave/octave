@@ -855,8 +855,8 @@ conversions is returned in @var{count}\n\
 
 		  int count = 0;
 
-		  Matrix size = (nargin == 3)
-		    ? args(2).matrix_value () : Matrix (1, 1, octave_Inf);
+		  Array<double> size = (nargin == 3)
+		    ? args(2).vector_value () : Array<double> (1, octave_Inf);
 
 		  if (! error_state)
 		    {
@@ -938,8 +938,9 @@ string is treated as an end-of-file condition.\n\
 
 		      int count = 0;
 
-		      Matrix size = (nargin == 3)
-			? args(2).matrix_value () : Matrix (1, 1, octave_Inf);
+		      Array<double> size = (nargin == 3)
+			? args(2).vector_value ()
+			: Array<double> (1, octave_Inf);
 
 		      octave_value tmp = os.scanf (fmt, size, count);
 
@@ -999,7 +1000,7 @@ do_fread (octave_stream& os, const octave_value& size_arg,
 
   count = -1;
 
-  Matrix size = size_arg.matrix_value ();
+  Array<double> size = size_arg.vector_value ();
 
   if (! error_state)
     {

@@ -431,7 +431,7 @@ private:
 			int skip, oct_mach_info::float_format flt_fmt,
 			int& count);
 
-  octave_value read (const Matrix& size, oct_data_conv::data_type dt,
+  octave_value read (const Array<double>& size, oct_data_conv::data_type dt,
 		     int skip, oct_mach_info::float_format flt_fmt,
 		     int& count);
 
@@ -444,7 +444,7 @@ private:
   octave_value do_scanf (scanf_format_list& fmt_list, int nr, int nc,
 			 bool one_elt_size_spec, int& count);
 
-  octave_value scanf (const std::string& fmt, const Matrix& size, int& count);
+  octave_value scanf (const std::string& fmt, const Array<double>& size, int& count);
 
   bool do_oscanf (const scanf_format_elt *elt, octave_value&);
 
@@ -454,9 +454,6 @@ private:
   // are those that define os).
 
   int flush (void);
-
-  int do_write (const Matrix& m, oct_data_conv::data_type dt, int skip,
-		oct_mach_info::float_format flt_fmt);
 
   int write (const octave_value& data, oct_data_conv::data_type dt,
 	     int skip, oct_mach_info::float_format flt_fmt);
@@ -513,14 +510,14 @@ public:
 
   void close (void);
 
-  octave_value read (const Matrix& size, oct_data_conv::data_type dt,
+  octave_value read (const Array<double>& size, oct_data_conv::data_type dt,
 		     int skip, oct_mach_info::float_format flt_fmt,
 		     int& count);
 
   int write (const octave_value& data, oct_data_conv::data_type dt,
 	     int skip, oct_mach_info::float_format flt_fmt);
 
-  octave_value scanf (const std::string& fmt, const Matrix& size, int& count);
+  octave_value scanf (const std::string& fmt, const Array<double>& size, int& count);
 
   octave_value_list oscanf (const std::string& fmt);
 

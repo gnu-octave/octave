@@ -332,17 +332,15 @@ See besselj.\n\
 
   int nargin = args.length ();
 
-  int kind = 1;
-
   if (nargin == 2)
     {
       retval = do_bessel (BESSEL_H1, "besselh", args, nargout);
     }
   else if (nargin == 3 || nargin == 4)
     {
-      double d_kind = args(1).double_value ();
+      int kind = args(1).int_value ();
 
-      if (! error_state && D_NINT (d_kind) == d_kind)
+      if (! error_state)
 	{
 	  octave_value_list tmp_args;
 

@@ -31,24 +31,24 @@ function __plt__ (caller, varargin)
 
     k = 1;
     j = 1;
-    x = varargin{k++};
-    nargs -= 2;
-    x_set = 1;
+    nargs -= 1;
+    x_set = 0;
     y_set = 0;
     gp_cmd = "gplot";
     have_gp_cmd = false;
-    fmt = "";
     sep = "";
 
     ## Gather arguments, decode format, gather plot strings, and plot lines.
 
-    while (nargs-- > 0)
+    while ((nargs-- > 0) || x_set)
 
-      new = varargin{k++};
-
-      if (j > 1)
-	sep = ",\\\n";
+      if (k < nargin())
+	new = varargin{k++};
+      else
+	new = ""; ## Force the last plot when input variables run out.
       endif
+
+      queue_plot = false;
 
       if (isstr (new))
 	if (! x_set)
@@ -60,33 +60,13 @@ function __plt__ (caller, varargin)
 	else
 	  [data{j}, fmtstr] = __plt2__ (x, y, fmt);
 	endif
-	if (iscell (data{j}))
-	  for i = 1:length (data{j})
-	    gp_cmd = sprintf ("%s%s data{%d}{%d} %s", gp_cmd, sep,
-			      j, i, fmtstr{i});
-	    sep = ",\\\n";
-	    have_gp_cmd = true;
-	  endfor
-	else
-	  gp_cmd = sprintf ("%s%s data{%d} %s", gp_cmd, sep, j++, fmtstr);
-	  have_gp_cmd = true;
-	endif
+	queue_plot = true;
 	x_set = 0;
 	y_set = 0;
       elseif (x_set)
 	if (y_set)
-	  [data{j}, fmtstr] = __plt2__ (x, y, fmt);
-	  if (iscell (data{j}))
-	    for i = 1:length (data{j})
-	      gp_cmd = sprintf ("%s%s data{%d}{%d} %s", gp_cmd, sep,
-				j, i, fmtstr{i});
-	      sep = ",\\\n";
-	      have_gp_cmd = true;
-	    endfor
-	  else
-	    gp_cmd = sprintf ("%s%s data{%d} %s", gp_cmd, sep, j++, fmtstr);
-	    have_gp_cmd = true;
-	  endif
+	  [data{j}, fmtstr] = __plt2__ (x, y, "");
+	  queue_plot = true;
 	  x = new;
 	  y_set = 0;
 	else
@@ -98,32 +78,27 @@ function __plt__ (caller, varargin)
 	x_set = 1;
       endif
 
-    endwhile
-
-    ## Handle last plot.
-
-    if (x_set)
-      if (y_set)
-	[data{j}, fmtstr] = __plt2__ (x, y, fmt);
-      else
-	[data{j}, fmtstr] = __plt1__ (x, fmt);
-      endif
-      if (iscell (data{j}))
-	for i = 1:length (data{j})
-	  gp_cmd = sprintf ("%s%s data{%d}{%d} %s", gp_cmd, sep,
-			    j, i, fmtstr{i});
+      if (queue_plot)
+	if (iscell (data{j}))
+	  for i = 1:length (data{j})
+	    gp_cmd = sprintf ("%s%s data{%d}{%d} %s", gp_cmd, sep,
+			      j, i, fmtstr{i});
+	    sep = ",\\\n";
+	  endfor
+	  j++;
+	else
+	  gp_cmd = sprintf ("%s%s data{%d} %s", gp_cmd, sep, j++, fmtstr);
 	  sep = ",\\\n";
-	  have_gp_cmd = true;
-	endfor
-      else
-	gp_cmd = sprintf ("%s%s data{%d} %s", gp_cmd, sep, j++, fmtstr);
+	endif
 	have_gp_cmd = true;
       endif
-    endif
+
+    endwhile
 
     if (have_gp_cmd)
       eval (gp_cmd);
     endif
+
   else
     msg = sprintf ("%s (x)\n", caller);
     msg = sprintf ("%s       %s (x, y)\n", msg, caller);

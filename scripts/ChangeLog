@@ -1,6 +1,7 @@
 2005-01-25  Daniel J Sebald  <daniel.sebald@ieee.org>.
 
 	* plot/__plt__.m: Initialize fmt and sep outside of loop.
+	Simplify logic for decoding args.
 
 2005-01-24  John W. Eaton  <jwe@octave.org>
 

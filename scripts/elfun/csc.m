@@ -19,6 +19,8 @@
 
 ## csc (z):  compute the cosecant for each element of z.
 
+## Author: jwe
+
 function w = csc (z)
   
   if (nargin != 1)

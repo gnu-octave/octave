@@ -24,6 +24,8 @@
 ##
 ## See also: rand
 
+## Author: jwe
+
 function picks = texas_lotto ()
 
   if (nargin != 0)

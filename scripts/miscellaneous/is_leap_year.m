@@ -22,6 +22,8 @@
 ## Return 1 if the given year is a leap year; otherwise, return 0.
 ## With no arguments, use the current year.
 
+## Author: jwe
+
 function retval = is_leap_year (year)
 
   if (nargin > 1)

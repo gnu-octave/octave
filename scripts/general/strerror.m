@@ -27,6 +27,8 @@
 ##   npsol : 4.0
 ##   qpsol : 3.2
 
+## Author: jwe
+
 function msg = strerror (name, err)
 
   if (nargin != 2)

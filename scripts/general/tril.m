@@ -24,6 +24,8 @@
 ##
 ## See also: triu, diag
 
+## Author: jwe
+
 function retval = tril (x, k)
 
   if (nargin > 0)

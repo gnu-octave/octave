@@ -22,6 +22,8 @@
 ## Returns the hex number corresponding to the decimal number d.  For
 ## example, dec2hex (2748) returns "abc". 
 
+## Author: jwe
+
 function h = dec2hex (d)
 
 ## Original version by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>.

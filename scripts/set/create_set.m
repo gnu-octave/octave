@@ -23,6 +23,8 @@
 ##
 ## See - union, intersection, complement
 
+## Author: jwe
+
 function y = create_set(x)
 
   if ( nargin != 1)

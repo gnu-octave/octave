@@ -21,6 +21,8 @@
 ##
 ## Remove trailing blanks from the string s.
 
+## Author: jwe
+
 function t = deblank (s)
   
 ## Original version by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>.

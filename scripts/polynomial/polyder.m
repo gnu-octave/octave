@@ -21,6 +21,8 @@
 ##
 ## SEE ALSO: polyderiv
 
+## Author: jwe
+
 function q = polyder (p)
 
   if (nargin == 1)

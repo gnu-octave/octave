@@ -23,6 +23,8 @@
 ##
 ## See also: sprintf, int2str
 
+## Author: jwe
+
 function retval = num2str (x)
 
   if (nargin == 1)

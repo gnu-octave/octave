@@ -24,6 +24,8 @@
 ##
 ## See also: hankel, vander, hadamard, hilb, toeplitz
 
+## Author: jwe
+
 function retval = invhilb (n)
 
   if (nargin != 1)

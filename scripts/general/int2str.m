@@ -23,6 +23,8 @@
 ##
 ## See also: sprintf, num2str 
 
+## Author: jwe
+
 function retval = int2str (x)
 
   ## XXX FIXME XXX -- this will fail for very large values.

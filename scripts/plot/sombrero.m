@@ -24,6 +24,8 @@
 ##
 ##   z = sin (x^2 + y^2) / (x^2 + y^2);
 
+## Author: jwe
+
 function sombrero (n)
 
   if (nargin != 1)

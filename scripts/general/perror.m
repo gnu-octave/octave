@@ -28,6 +28,8 @@
 ##
 ## See also: strerror
 
+## Author: jwe
+
 function perror (name, err)
 
   if (nargin != 2)

@@ -19,6 +19,8 @@
 
 ## cot (z):  compute the cotangent for each element of z.
 
+## Author: jwe
+
 function w = cot (z)
   
   if (nargin != 1)

@@ -23,6 +23,8 @@
 ##
 ## See also: OCTAVE_VERSION
 
+## Author: jwe
+
 function vs = version ()
 
   if (nargin != 0)

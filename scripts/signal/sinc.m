@@ -21,6 +21,8 @@
 ##
 ##        Returns sin(pi*x)/(pi*x).
 
+## Author: jwe
+
 function result = sinc (x)
 
   ## We either need to set the do_fortran_indexing variable to "true"

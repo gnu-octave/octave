@@ -24,6 +24,8 @@
 ##
 ## See also: tic, toc, clock, cputime
 
+## Author: jwe
+
 function secs = etime (t1, t0)
 
   if (nargin != 2)

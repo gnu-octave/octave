@@ -38,6 +38,8 @@
 ##  endwhile
 ##  fclose (out);
 
+## Author: jwe
+
 function [in, out, pid] = popen2 (command, args)
 
   in = -1;

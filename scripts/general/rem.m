@@ -21,6 +21,8 @@
 ##
 ## Return remainder (x, y).
 
+## Author: jwe
+
 function retval = rem (x, y)
 
   if (nargin != 2)

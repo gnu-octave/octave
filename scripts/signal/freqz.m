@@ -35,6 +35,8 @@
 ## [h,w] = freqz(b,a,n,"whole")
 ##   evaluates the response at n frequencies between 0 and 2*pi.
 
+## Author: jwe
+
 function [h, w] = freqz(b,...)
 
   if (nargin == 1)

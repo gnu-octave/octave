@@ -23,6 +23,8 @@
 ## pieces as the rows of M (padded with blanks to form a valid
 ## matrix).
 
+## Author: jwe
+
 function m = split (s, t)
   
 ## Original version by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>.

@@ -28,6 +28,8 @@
 ##
 ## See also: hankel, vander, hadamard, hilb, invhib
 
+## Author: jwe
+
 function retval = toeplitz (c, r)
 
   if (nargin == 1)

@@ -29,6 +29,8 @@
 ## elements corresponding to the rows of the string array?  To be
 ## compatible with Matlab, of course. 
 
+## Author: jwe
+
 function status = strcmp (s1, s2)
 
   if (nargin != 2)

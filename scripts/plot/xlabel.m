@@ -25,6 +25,8 @@
 ## See also: plot, semilogx, semilogy, loglog, polar, mesh, contour,
 ##           bar, stairs, gplot, gsplot, replot, ylabel, title
 
+## Author: jwe
+
 function xlabel (text)
 
   if (nargin != 1)

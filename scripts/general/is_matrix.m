@@ -24,6 +24,8 @@
 ##
 ## See also: size, rows, columns, length, is_scalar, is_vector
 
+## Author: jwe
+
 function retval = is_matrix (x)
 
   if (nargin == 1)

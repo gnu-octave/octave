@@ -29,6 +29,8 @@
 ## See also: plot, semilogy, loglog, polar, mesh, contour, bar, stairs,
 ##           gplot, gsplot, replot, xlabel, ylabel, title 
 
+## Author: jwe
+
 function semilogx (...)
 
   set logscale x;

@@ -23,6 +23,8 @@
 ##
 ## See also: size, columns, length, is_scalar, is_vector, is_matrix
 
+## Author: jwe
+
 function nr = rows (x)
 
   if (nargin != 1)

@@ -23,6 +23,8 @@
 ##
 ## See - create_set, union, complement
 
+## Author: jwe
+
 function y = intersection(a,b)
 
   if (nargin != 2)

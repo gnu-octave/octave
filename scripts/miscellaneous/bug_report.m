@@ -23,6 +23,8 @@
 ## editor, and submit the report to the bug-octave mailing list when
 ## you are finished editing.
 
+## Author: jwe
+
 function bug_report ()
 
   if (nargin != 0)

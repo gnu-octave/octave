@@ -23,6 +23,8 @@
 ## matrix.  Otherwise, return a message indicating whether N is too
 ## large or too small.
 
+## Author: jwe
+
 function retval = nargchk (nargin_min, nargin_max, n)
 
   if (nargin != 3)

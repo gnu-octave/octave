@@ -23,6 +23,8 @@
 ##
 ## See also: toc, clock, etime, cputime
 
+## Author: jwe
+
 function tic ()
 
   if (nargin != 0)

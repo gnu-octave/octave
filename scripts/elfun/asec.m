@@ -19,6 +19,8 @@
 
 ## asec (z):  compute the inverse secant for each element of z.
 
+## Author: jwe
+
 function w = asec (z)
   
   if (nargin != 1)

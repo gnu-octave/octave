@@ -23,6 +23,8 @@
 ##
 ## See also: size, rows, columns, length, is_scalar, is_matrix
 
+## Author: jwe
+
 function retval = is_scalar (x)
 
   if (nargin == 1)

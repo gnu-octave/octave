@@ -26,6 +26,8 @@
 ##
 ## See also: median, std
 
+## Author: jwe
+
 function retval = mean (a)
 
   if (nargin != 1)

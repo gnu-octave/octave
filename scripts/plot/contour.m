@@ -22,6 +22,8 @@
 ## See also: plot, semilogx, semilogy, loglog, polar, mesh, contour,
 ##           bar, stairs, gplot, gsplot, replot, xlabel, ylabel, title 
 
+## Author: jwe
+
 function contour (z, n, x, y)
 
 

@@ -25,6 +25,8 @@
 ##
 ## See also: flipud, fliplr
 
+## Author: jwe
+
 function y = rot90 (x, k)
 
   if (nargin < 2)

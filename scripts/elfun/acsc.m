@@ -19,6 +19,8 @@
 
 ## acsc (z):  compute the inverse cosecant for each element of z.
 
+## Author: jwe
+
 function w = acsc (z)
   
   if (nargin != 1)

@@ -19,6 +19,8 @@
 
 ## sec (z): compute the secant for each element of z.
 
+## Author: jwe
+
 function w = sec (z)
   
   if (nargin != 1)

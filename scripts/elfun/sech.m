@@ -19,6 +19,8 @@
 
 ## sech (z):  compute the hyperbolic secant for each element of z.
 
+## Author: jwe
+
 function w = sech (z)
   
 if (nargin != 1)

@@ -28,6 +28,8 @@
 ## See also: plot, semilogx, semilogy, loglog, polar, mesh, meshdom, contour,
 ##           bar, stairs, gplot, gsplot, replot, xlabel, ylabel, title 
 
+## Author: jwe
+
 function [xx, yy] = meshgrid (x, y)
 
   if (nargin == 1)

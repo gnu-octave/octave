@@ -26,6 +26,8 @@
 ## See also: plot, semilogx, semilogy, loglog, polar, mesh, contour,
 ##           bar, stairs, gplot, gsplot, replot, xlabel, ylabel, title 
 
+## Author: jwe
+
 function grid (x)
 
   if (nargin == 0)

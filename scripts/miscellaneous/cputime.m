@@ -21,6 +21,8 @@
 ##
 ## Get CPU time statistics.
 
+## Author: jwe
+
 function [total, user, system] = cputime ()
 
   if (nargin != 0)

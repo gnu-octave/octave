@@ -21,6 +21,8 @@
 ##
 ## Return current date in a string, in the form `18-Jul-94'.
 
+## Author: jwe
+
 function retval = date ()
 
   retval = strftime ("%d-%b-%y", localtime (time ()));

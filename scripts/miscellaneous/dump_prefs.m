@@ -23,6 +23,8 @@
 ## in a format that can be parsed by Octave later.  If FILE is omitted,
 ## the listing is printed to stdout.
 
+## Author: jwe
+
 function dump_prefs (file)
 
   if (nargin == 0)

@@ -29,6 +29,8 @@
 ## where eps is machine precision and sigma is the largest singular
 ## value of a.
 
+## Author: jwe
+
 function retval = rank (A, tol)
 
   if (nargin == 1)

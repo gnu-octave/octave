@@ -30,6 +30,8 @@
 ##   findstr ("abababa", "aba")     =>  [1, 3, 5]
 ##   findstr ("abababa", "aba", 0)  =>  [1, 5]
 
+## Author: jwe
+
 function v = findstr (s, t, overlap)
 
   ## Original version by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>.

@@ -19,6 +19,8 @@
 
 ## coth (z):  compute the hyperbolic cotangent for each element of z.
 
+## Author: jwe
+
 function w = coth (z)
   
   if (nargin != 1)

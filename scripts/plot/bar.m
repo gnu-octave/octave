@@ -39,6 +39,8 @@
 ## See also: plot, semilogx, semilogy, loglog, polar, mesh, contour,
 ##           stairs, gplot, gsplot, replot, xlabel, ylabel, title 
 
+## Author: jwe
+
 function [xb, yb] = bar (x, y)
 
   if (nargin == 1)

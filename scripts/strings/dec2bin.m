@@ -22,6 +22,8 @@
 ## Returns the binary number corresponding to the nonnegative integer
 ## x.  For example, dec2bin (14) returns "1110".
 
+## Author: jwe
+
 function y = dec2bin (x)
 
   ## Original version by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>.

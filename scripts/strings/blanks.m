@@ -21,6 +21,8 @@
 ##
 ## Returns a string of n blanks.
 
+## Author: jwe
+
 function s = blanks (n)
   
 ## Original version by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>.

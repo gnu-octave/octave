@@ -23,6 +23,8 @@
 ##
 ##   [ year, month, day-of-month, hour, minute, second ]
 
+## Author: jwe
+
 function retval = clock ()
 
   tm = localtime (time ());

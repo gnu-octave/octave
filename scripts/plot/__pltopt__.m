@@ -60,6 +60,8 @@
 ##       5       cyan                house
 ##       6       brown               there exists
 
+## Author: jwe
+
 function fmt = plot_opt (caller, opt)
 
   set_color = 0;

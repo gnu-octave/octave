@@ -39,6 +39,8 @@
 ## See also: plot, semilogx, semilogy, loglog, polar, mesh, contour,
 ##           bar, gplot, gsplot, replot, xlabel, ylabel, title 
 
+## Author: jwe
+
 function [xs, ys] = stairs (x, y)
 
 

@@ -38,6 +38,8 @@
 ##
 ## See also: bar
 
+## Author: jwe
+
 function [nn, xx] = hist (y, x)
 
   if (nargin < 1 || nargin > 2)

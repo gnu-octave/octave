@@ -23,6 +23,8 @@
 ## quotes.  For example, hex2dec ("12B") and hex2dec ("12b") both
 ## return 299.
 
+## Author: jwe
+
 function d = hex2dec (h)
 
   ## Original version by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>.

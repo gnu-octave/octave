@@ -19,6 +19,8 @@
 
 ## log2 (z):  compute the logarithm base 2 for each element of z.
 
+## Author: jwe
+
 function w = log2 (z)
   
 if (nargin != 1)

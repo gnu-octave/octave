@@ -24,6 +24,8 @@
 ##
 ## NOTE: this function does not work for arrays of strings.
 
+## Author: jwe
+
 function n = index (s, t)
 
   ## This is patterned after the AWK function of the same name.

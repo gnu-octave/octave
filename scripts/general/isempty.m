@@ -21,6 +21,8 @@
 ##
 ## Return 1 if the argument is an empty matrix.  Otherwise, return 0.
 
+## Author: jwe
+
 function retval = isempty (var)
 
   if (nargin != 1)

@@ -23,6 +23,8 @@
 ##
 ## See also: hankel, vander, hilb, invhilb, toeplitz
 
+## Author: jwe
+
 function retval = hadamard (k)
 
   if (nargin != 1)

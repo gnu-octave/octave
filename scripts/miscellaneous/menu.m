@@ -21,6 +21,8 @@
 ##
 ## See also: disp, printf, input
 
+## Author: jwe
+
 function num = menu (t, ...)
 
   if (nargin < 2)

@@ -23,6 +23,8 @@
 ##
 ## See also: fliplr, rot90
 
+## Author: jwe
+
 function y = flipud (x)
 
   if (nargin != 1)

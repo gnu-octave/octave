@@ -19,6 +19,8 @@
 
 ## csch (z):  compute the hyperbolic cosecant for each element of z.
 
+## Author: jwe
+
 function w = csch (z)
   
   if (nargin != 1)

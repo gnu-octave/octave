@@ -21,6 +21,8 @@
 ##
 ## Count floating point operations.
 
+## Author: jwe
+
 function retval = flops ()
 
   if (nargin > 0)

@@ -23,6 +23,8 @@
 ##
 ## See also: fputs, printf, fprintf
 
+## Author: jwe
+
 function retval = puts (s)
 
   retval = -1;

@@ -26,6 +26,8 @@
 ##
 ## See also: hankel, vander, hadamard, invhilb, toeplitz
 
+## Author: jwe
+
 function retval = hilb (n)
 
 

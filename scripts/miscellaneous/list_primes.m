@@ -24,6 +24,8 @@
 ##
 ## The algorithm used is from page 218 of the TeXbook.
 
+## Author: jwe
+
 function retval = list_primes (n)
 
   if (nargin > 0)

@@ -43,6 +43,8 @@
 ##
 ## See also: cond, svd
 
+## Author: jwe
+
 function retval = norm (x, p)
 
   if (nargin < 1 || nargin > 2)

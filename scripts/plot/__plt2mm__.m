@@ -17,6 +17,8 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
+## Author: jwe
+
 function plot_2_m_m (x, y, fmt)
 
   if (nargin < 2 || nargin > 3)

@@ -19,6 +19,8 @@
 
 ## asech (z):  compute the inverse hyperbolic secant for each element of z.
 
+## Author: jwe
+
 function w = asech (z)
   
   if (nargin != 1)

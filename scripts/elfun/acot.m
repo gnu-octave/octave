@@ -19,6 +19,8 @@
 
 ## acot (z):  compute the inverse cotangent for each element of z.
 
+## Author: jwe
+
 function w = acot (z)
 
   if (nargin != 1)

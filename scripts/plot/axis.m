@@ -29,6 +29,8 @@
 ## If your plot is already drawn, then you need to REPLOT before 
 ## the new axis limits will take effect.
 
+## Author: jwe
+
 function curr_axis = axis (ax)
 
   ## This may not be correct if someone has used the gnuplot interface

@@ -22,6 +22,8 @@
 ## Returns the substring of S of length LEN starting at index BEG.
 ## If LEN is missing, the substring extends to the end of S.
 
+## Author: jwe
+
 function t = substr (s, beg, len)
 
   ## Original version by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>.

@@ -21,6 +21,8 @@
 ##
 ## See also: gammai
 
+## Author: jwe
+
 function y = gammainc (x, a)
   
   y = gammai (a, x);

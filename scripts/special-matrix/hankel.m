@@ -28,6 +28,8 @@
 ##
 ## See also: vander, hadamard, hilb, invhilb, toeplitz
 
+## Author: jwe
+
 function retval = hankel (c, r)
 
   if (nargin == 1)

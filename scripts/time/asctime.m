@@ -19,6 +19,8 @@
 
 ## usage: asctime (TMSTRUCT)
 
+## Author: jwe
+
 function retval = asctime (t)
 
   if (nargin == 1)

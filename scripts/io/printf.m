@@ -23,6 +23,8 @@
 ##
 ## See also: fprintf sprintf
 
+## Author: jwe
+
 function retval = printf (fmt, ...)
 
   retval = -1;

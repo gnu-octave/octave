@@ -24,6 +24,8 @@
 ##
 ## See also: `:', do_fortran_indexing
 
+## Author: jwe
+
 function retval = reshape (a, m, n)
 
   if (nargin != 3)

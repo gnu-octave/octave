@@ -24,6 +24,8 @@
 ##
 ## See also: norm, svd
 
+## Author: jwe
+
 function retval = cond (a)
 
   if (nargin == 1)

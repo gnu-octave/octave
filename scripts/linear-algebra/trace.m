@@ -21,6 +21,8 @@
 ##
 ## Returns the trace (the sum of the diagonal elements) of x.
 
+## Author: jwe
+
 function y = trace (x)
 
   if (nargin != 1)

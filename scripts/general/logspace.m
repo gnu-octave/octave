@@ -35,6 +35,8 @@
 ##
 ## See also: linspace
 
+## Author: jwe
+
 function retval = logspace (x1, x2, n)
 
   if (nargin == 2)

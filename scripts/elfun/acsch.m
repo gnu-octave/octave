@@ -19,6 +19,8 @@
 
 ## acsch (z):  compute the inverse hyperbolic cosecant for each element of z.
 
+## Author: jwe
+
 function w = acsch (z)
   
   if (nargin != 1)

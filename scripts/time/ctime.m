@@ -19,6 +19,8 @@
 
 ## usage: ctime (TIME)
 
+## Author: jwe
+
 function retval = ctime (t)
 
   if (nargin == 1)

@@ -22,6 +22,8 @@
 ## Forms the matrix M containing the strings S1, ... as its rows.
 ## Each string is padded with blanks in order to form a valid matrix.
 
+## Author: jwe
+
 function m = str2mat (...)
   
   ## Original version by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>.

@@ -1,3 +1,8 @@
+2004-06-08  John W. Eaton  <jwe@octave.org>
+
+	* statistics/tests/kolmogorov_smirnov_test.m: Use func2str to
+	convert function handle to string for eval.
+
 2004-06-04  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* plot/errorbar.m: Remove debugging output.

@@ -78,7 +78,7 @@ function [pval, ks] = kolmogorov_smirnov_test (x, dist, varargin)
         args = sprintf ("%s, %g", args, tmp);
       endif
     endfor
-    z = reshape (eval (sprintf ("%s(s%s);", f, args)), 1, n);
+    z = reshape (eval (sprintf ("%s(s%s);", func2str (f), args)), 1, n);
   endif
 
   if (strcmp (alt, "!=") || strcmp (alt, "<>"))

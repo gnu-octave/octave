@@ -385,25 +385,31 @@ Have Octave ask the system, \"What kind of computer are you?\"")
   return retval;
 }
 
-DEFUN (flops, args, ,
-  "flops (): count floating point operations")
+DEFUN (quit, args, ,
+  "quit (STATUS): exit Octave gracefully, returning STATUS to the system.\n\
+\n\
+STATUS should be an integer value.  If STATUS is missing, 0 is assumed.")
 {
+  Octave_object retval;
+
+  int exit_status = 0;
+
+  quitting_gracefully = 1;
+
   int nargin = args.length ();
 
   if (nargin > 0)
-    print_usage ("flops");
+    {
+      // XXX FIXME XXX -- need a safe uniform way to do this.
 
-  warning ("flops is a flop, always returning zero");
+      double tmp = args(0).double_value ();
 
-  return 0.0;
-}
+      if (! error_state && ! xisnan (tmp))
+	exit_status = NINT (tmp);
+    }
 
-DEFUN (quit, , ,
-  "quit (): exit Octave gracefully")
-{
-  Octave_object retval;
-  quitting_gracefully = 1;
-  clean_up_and_exit (0);
+  clean_up_and_exit (exit_status);
+
   return retval;
 }
 

@@ -68,12 +68,12 @@ function imshow (varargin)
 
   if (mvars != 3)
     I = varargin{1};
-    if iscomplex (I)
-	warning("imshow: displaying real part of complex image");
+    if (iscomplex (I))
+	warning ("imshow: displaying real part of complex image");
 	I = real (I);
     endif      
     if (max (I(:)) <= 1)
-      # image in [0-1]; scale to [0-255]
+      ## image in [0-1]; scale to [0-255]
       I = I * 255;
       M = gray (256);
     endif
@@ -82,7 +82,7 @@ function imshow (varargin)
   if (mvars == 1)
     ## imshow (x)
     ## Grayscale image [0-N] -- estimate gray levels.
-    N = 2^ceil (log2 (max(I(:))));
+    N = 2 ^ ceil (log2 (max (I(:))));
     if (N <= 65536)
       M = gray (N);
     else
@@ -101,9 +101,11 @@ function imshow (varargin)
     g = varargin{2};
     b = varargin{3};
     tmp = [r; g; b];
-    if iscomplex (tmp)
-	warning("imshow: displaying real part of complex rgb image");
-	r = real (r); g = real (g); b = real (b);
+    if (iscomplex (tmp))
+	warning ("imshow: displaying real part of complex rgb image");
+	r = real (r);
+	g = real (g);
+	b = real (b);
     endif    
     if (max (tmp(:)) > 1)
       ## Normalise to [0-1].

@@ -109,8 +109,13 @@ string info_prog;
 // Name of the editor to be invoked by the edit_history command.
 string editor;
 
-// If nonzero, don't do fancy line editing.
-int no_line_editing = 0;
+// Nonzero means we are using readline.
+// (--no-line-editing)
+#if defined (USE_READLINE)
+int using_readline = 1;
+#else
+int using_readline = 0;
+#endif
 
 // If nonzero, print verbose info in some cases.
 // (--verbose; -V)

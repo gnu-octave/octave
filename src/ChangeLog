@@ -1,5 +1,10 @@
 Wed Dec 18 20:17:23 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* file-io.cc (Ffgetl, Ffgets): Also return number of characters	read.
+
+	* ov-range.cc (octave_range::not): New function.
+	* ov-range.h (octave_range::uminus): New function.
+
 	* BaseSLList.cc: Include error.h.
 	(BaseSLList::error): Call ::error() to process error message.
 

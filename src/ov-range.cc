@@ -174,6 +174,13 @@ octave_range::complex_value (bool) const
 }
 
 octave_value
+octave_range::not (void) const
+{
+  Matrix tmp (range.matrix_value ());
+  return (! tmp);
+}
+
+octave_value
 octave_range::transpose (void) const
 {
   Matrix tmp (range.matrix_value ());

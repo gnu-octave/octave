@@ -182,11 +182,14 @@ DEFUN (fflush, args, ,
 }
 
 DEFUN (fgetl, args, ,
-  "STRING = fgetl (FILENUM [, LENGTH])\n\
+  "[STRING, LENGTH] = fgetl (FILENUM [, LENGTH])\n\
 \n\
 read a string from a file")
 {
-  octave_value retval = -1.0;
+  octave_value_list retval;
+
+  retval(1) = 0.0;
+  retval(0) = -1.0;
 
   int nargin = args.length ();
 
@@ -204,7 +207,10 @@ read a string from a file")
 	  string tmp = os->getl (len_arg, err);
 
 	  if (! err)
-	    retval = tmp;
+	    {
+	      retval(1) = (double) tmp.length ();
+	      retval(0) = tmp;
+	    }
 	}
       else
 	gripe_invalid_file_id ("fgetl");
@@ -216,11 +222,14 @@ read a string from a file")
 }
 
 DEFUN (fgets, args, ,
-  "STRING = fgets (FILENUM [, LENGTH])\n\
+  "[STRING, LENGTH] = fgets (FILENUM [, LENGTH])\n\
 \n\
 read a string from a file")
 {
-  octave_value retval = -1.0;
+  octave_value_list retval;
+
+  retval(1) = 0.0;
+  retval(0) = -1.0;
 
   int nargin = args.length ();
 
@@ -238,7 +247,10 @@ read a string from a file")
 	  string tmp = os->gets (len_arg, err);
 
 	  if (! err)
-	    retval = tmp;
+	    {
+	      retval(1) = (double) tmp.length ();
+	      retval(0) = tmp;
+	    }
 	}
       else
 	gripe_invalid_file_id ("fgets");
@@ -338,7 +350,9 @@ DEFUN (fopen, args, ,
   If fopen fails, FILENUM is set to -1 and ERRMSG contains a\n\
   system-dependent error message")
 {
-  octave_value_list retval = -1.0;
+  octave_value_list retval;
+
+  retval(0) = -1.0;
 
   int nargin = args.length ();
 

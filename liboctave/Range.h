@@ -85,6 +85,8 @@ Range
   int nelem_internal (void) const;
 };
 
+extern Range operator - (const Range& r);
+
 #endif
 
 /*

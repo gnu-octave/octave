@@ -1,5 +1,7 @@
 Wed Dec 18 16:18:58 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Range.cc (operator -): New function.
+
 	* lo-ieee.cc: Include <nan.h> on all systems that have it.
 
 Fri Dec 13 02:01:32 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>

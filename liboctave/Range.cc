@@ -150,6 +150,12 @@ operator >> (istream& is, Range& a)
   return is;
 }
 
+Range
+operator - (const Range& r)
+{
+  return Range (-r.base (), -r.limit (), -r.inc ());
+}
+
 // C  See Knuth, Art Of Computer Programming, Vol. 1, Problem 1.2.4-5.
 // C
 // C===Tolerant FLOOR function.

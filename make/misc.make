@@ -19,7 +19,7 @@ distclean:: clean
 # Although we can remake configure and c-auto.h.in, we don't remove
 # them, since many people may lack Autoconf.  Use configclean for that.
 maintainer-clean:: distclean
-	rm -f TAGS *.info*
+	rm -f TAGS *.info* configure stamp-auto
 
 extraclean::
 	rm -f *.aux *.bak *.bbl *.blg *.dvi *.log *.orig *.pl *.rej

@@ -228,10 +228,11 @@ clean maintainer-clean realclean distclean mostlyclean::
 	$(RM) -f stamp-history stamp-readline
 	(if [ -d doc ]; then cd doc; $(MAKE) $(MFLAGS) $@; fi)
 	(if [ -d examples ]; then cd examples; $(MAKE) $(MFLAGS) $@; fi)
-	if $(SHARED_LIBS); then rm -f *.$(SHLEXT); fi
+	if $(SHARED_LIBS); then $(RM) -f *.$(SHLEXT); fi
 
 maintainer-clean realclean distclean::
-	rm -f Makefile config.log config.status stamp-picdir
+	$(RM) -f Makefile config.log config.status stamp-picdir \
+	configure config.h config.h.in
 	-rmdir pic
 
 dist:

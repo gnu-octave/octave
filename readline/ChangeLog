@@ -1,3 +1,8 @@
+Wed Feb 26 12:41:03 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (maintainer-clean): Also remove configure, config.h
+	and ocnfig.h.in.
+
 Thu Feb 20 02:41:02 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in (SH_LDFLAGS): Add -fPIC for HP-UX.

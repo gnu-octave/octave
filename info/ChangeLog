@@ -1,6 +1,6 @@
 Wed Feb 26 12:30:51 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
-	* Makefile.in (maintainer-clean): New taarget.
+	* Makefile.in (maintainer-clean): New target.
 
 Sat Jan 25 22:33:43 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

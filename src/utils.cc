@@ -1197,7 +1197,7 @@ get_m_file_names (int& num, char *dir, int no_suffix)
 		}
 	    }
 	}
-      free (dirp);
+      closedir (dirp);
     }
 
   retval[i] = (char *) NULL;

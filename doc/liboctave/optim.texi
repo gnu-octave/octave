@@ -1,8 +1,17 @@
-@node Optimization
+@node Optimization, Quadrature, Nonlinear Equations, Top
 @chapter Optimization
 @cindex optimization
 
-@node Objective Functions, Quadrature, Nonlinear Functions, Top
+@menu
+* Objective Functions::         
+* Bounds::                      
+* Linear Constraints::          
+* Nonlinear Constraints::       
+* Quadratic Programming::       
+* Nonlinear Programming::       
+@end menu
+
+@node Objective Functions, Bounds, Optimization, Optimization
 @section Objective Functions
 @cindex objective functions
 
@@ -29,7 +38,7 @@
 
 @c ------------------------------------------------------------------------
 
-@node Bounds, Linear Constraints, Objective Functions
+@node Bounds, Linear Constraints, Objective Functions, Optimization
 @section Bounds
 @cindex bounds
 
@@ -80,7 +89,7 @@
 
 @c ------------------------------------------------------------------------
 
-@node Linear Constraints, Nonlinear Constraints, Bounds
+@node Linear Constraints, Nonlinear Constraints, Bounds, Optimization
 @section Linear Constraints
 @cindex linear Constraints
 
@@ -117,7 +126,7 @@
 
 @c ------------------------------------------------------------------------
 
-@node Nonlinear Constraints, Quadratic Programming, Linear Constraints
+@node Nonlinear Constraints, Quadratic Programming, Linear Constraints, Optimization
 @section Nonlinear Constraints
 @cindex nonlinear Constraints
 
@@ -130,7 +139,7 @@
 @deftypefn {} NLConst& {operator =} (const NLConst &@var{a})
 @end deftypefn
 
-@node Quadratic Programming, Nonlinear Programming, Nonlinear Constraints
+@node Quadratic Programming, Nonlinear Programming, Nonlinear Constraints, Optimization
 @section Quadratic Programming
 @cindex QP
 @cindex quadratic programming
@@ -212,7 +221,7 @@
 
 @c ------------------------------------------------------------------------
 
-@node Nonlinear Programming,  , Quadratic Programming
+@node Nonlinear Programming,  , Quadratic Programming, Optimization
 @section Nonlinear Programming
 @cindex NLP
 @cindex nonlinear programming

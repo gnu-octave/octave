@@ -98,9 +98,11 @@ library, and how to report bugs.  It corresponds to Octave version
 * Matrix Factorizations::       
 * Ranges::                      
 * Nonlinear Functions::         
-* Objective Functions::         
+* Nonlinear Equations::         
+* Optimization::                
 * Quadrature::                  
 * Ordinary Differential Equations::  
+* Differential Algebraic Equations::  
 * Error Handling::              
 * Installation::                
 * Bugs::                        
@@ -116,6 +118,19 @@ Acknowledgements
 Arrays
 
 * Constructors and Assignment::  
+
+Optimization
+
+* Objective Functions::         
+* Bounds::                      
+* Linear Constraints::          
+* Nonlinear Constraints::       
+* Quadratic Programming::       
+* Nonlinear Programming::       
+
+Quadrature
+
+* Collocation Weights::         
 @end menu
 
 @include preface.texi

@@ -1,3 +1,3 @@
-@node Error Handling, Installation, Ordinary Differential Equations, Top
+@node Error Handling, Installation, Differential Algebraic Equations, Top
 @chapter Error Handling
 

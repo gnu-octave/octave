@@ -1,4 +1,4 @@
-@node Nonlinear Functions, Objective Functions, Ranges, Top
+@node Nonlinear Functions, Nonlinear Equations, Ranges, Top
 @chapter Nonlinear Functions
 @cindex nonlinear functions
 

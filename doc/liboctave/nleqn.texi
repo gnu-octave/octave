@@ -1,4 +1,4 @@
-@node Nonlinear Equations,  , Nonlinear Functions
+@node Nonlinear Equations, Optimization, Nonlinear Functions, Top
 @chapter Nonlinear Equations
 @cindex nonlinear equations
 

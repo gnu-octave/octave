@@ -1,4 +1,4 @@
-@node Quadrature, Ordinary Differential Equations, Objective Functions, Top
+@node Quadrature, Ordinary Differential Equations, Optimization, Top
 @chapter Quadrature
 @cindex quadrature
 @cindex numerical integration
@@ -55,7 +55,11 @@
 @deftypefnx  {} {}IndefQuad (integrand_fcn @var{fcn}, double @var{abs}, double @var{rel})
 @end deftypefn
 
-@node Collocation Weights,  , Quadrature
+@menu
+* Collocation Weights::         
+@end menu
+
+@node Collocation Weights,  , Quadrature, Quadrature
 @section Collocation Weights
 @cindex orthogonal collocation
 @cindex collocation weights

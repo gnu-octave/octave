@@ -1,4 +1,4 @@
-@node Ordinary Differential Equations, Error Handling, Quadrature, Top
+@node Ordinary Differential Equations, Differential Algebraic Equations, Quadrature, Top
 @chapter Ordinary Differential Equations
 @cindex ODE
 

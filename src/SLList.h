@@ -24,7 +24,8 @@ Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #endif
 
 #include <Pix.h>
-#include <BaseSLList.h>
+
+#include "BaseSLList.h"
 
 template<class T>
 class SLNode : public BaseSLNode

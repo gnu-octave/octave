@@ -1,3 +1,7 @@
+Tue Jan 21 23:02:34 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* SLList.h: Include "BaseSLList.h", not <BaseSLList.h>.
+
 Mon Jan 20 11:11:12 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* lex.l (token_stack): Don't declare static.

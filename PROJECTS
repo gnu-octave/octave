@@ -23,7 +23,11 @@ Numerical:
 
   * Improve logm, and sqrtm.
 
-  * Improve complex mapper functions.
+  * Improve complex mapper functions.  See W. Kahan, ``Branch Cuts for
+    Complex Elementary Functions, or Much Ado About Nothing's Sign
+    Bit'' (in The State of the Art in Numerical Analysis, eds. Iserles
+    and Powell, Clarendon Press, Oxford, 1987) for explicit
+    trigonometric formulae.
 
   * Make functions like gamma() return the right IEEE Inf or NaN
     values for extreme args or other undefined cases.

@@ -136,6 +136,7 @@ static const char *short_opts = "+?Vdfhip:qvx";
 long_options long_opts[] =
   {
     { "debug",            prog_args::no_arg,       0, 'd' },
+    { "braindead",        prog_args::no_arg,       0, TRADITIONAL_OPTION },
     { "echo-commands",    prog_args::no_arg,       0, 'x' },
     { "exec-path",        prog_args::required_arg, 0, EXEC_PATH_OPTION },
     { "help",             prog_args::no_arg,       0, 'h' },

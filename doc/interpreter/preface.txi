@@ -137,7 +137,7 @@ image processing functions as well as most of the original polynomial
 functions.
 
 @item
-R. Bruce Tenison @email{Bruce.Tenison@@eng.auburn.edu} wrote the
+R. Bruce Tenison @email{btenison@@dibbs.net} wrote the
 @code{hess} and @code{schur} functions.
 
 @item

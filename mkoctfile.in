@@ -193,10 +193,12 @@ fi
 ## since on somee systems (HP-UX, maybe others) it is possible to
 ## rename running programs but not remove them.
 
-## $dbg "mv $octfile $octfile.bak"
-## mv $octfile $octfile.bak"
-## $dbg "rm -f $octfile.bak"
-## rm -f $octfile.bak
+## if [ -f "$octfile" ]; then
+##   $dbg "mv $octfile $octfile.bak"
+##   mv $octfile $octfile.bak
+##   $dbg "rm -f $octfile.bak"
+##   rm -f $octfile.bak
+## fi
 
 # Link all the object files.
 

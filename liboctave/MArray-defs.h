@@ -256,8 +256,8 @@
 
 // Instantiate all the MArray friends for MArray element type T.
 #define INSTANTIATE_MARRAY_FRIENDS(T) \
-  MARRAY_OP_ASSIGN_DEFS (MArray, T) \
-  MARRAY_OP_ASSIGN_DEFS (MArray, MArray<T>) \
+  MARRAY_OP_ASSIGN_DEFS (MArray, T, T) \
+  MARRAY_OP_ASSIGN_DEFS (MArray, T, MArray<T>) \
   MARRAY_UNOP_DEFS (MArray, T) \
   MARRAY_BINOP_DEFS (MArray, T)
 
@@ -270,9 +270,9 @@
 
 // Instantiate all the MArray friends for MArray element type T.
 #define INSTANTIATE_MDIAGARRAY2_FRIENDS(T) \
-  MARRAY_OP_ASSIGN_DEFS (MArray2, T, MArray2<T>) \
-  MARRAY_UNOP_DEFS (MArray2, T) \
-  MDIAGARRAY2_BINOP_DEFS (MArray2, T)
+  MARRAY_OP_ASSIGN_DEFS (MDiagArray2, T, MDiagArray2<T>) \
+  MARRAY_UNOP_DEFS (MDiagArray2, T) \
+  MDIAGARRAY2_BINOP_DEFS (MDiagArray2, T)
 
 // Define all the MArray forwarding functions for return type R and
 // MArray element type T

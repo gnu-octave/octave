@@ -303,6 +303,60 @@ public:
     make_unique ();
     rep->chop_trailing_singletons ();
   }
+
+  dim_vector squeeze (void) const
+  {
+    dim_vector new_dims = *this;
+
+    bool dims_changed = 1;
+
+    int k = 0;
+
+    for (int i = 0; i < length (); i++)
+      {
+	if (elem (i) == 1)
+	  dims_changed = true;
+	else
+	  new_dims(k++) = elem (i);
+      }
+
+    if (dims_changed)
+      {
+	if (k == 0)
+	  new_dims = dim_vector (1, 1);
+	else if (k == 1)
+	  {
+	    // There is one non-singleton dimension, so we need
+	    // to decide the correct orientation.
+
+	    if (elem (0) == 1)
+	      {
+		// The original dimension vector had a leading
+		// singleton dimension.
+
+		int tmp = new_dims(0);
+	
+		new_dims.resize (2);
+
+ 		new_dims(0) = 1;
+		new_dims(1) = tmp;
+	      }
+	    else
+	      {
+		// The first element of the original dimension vector
+		// was not a singleton dimension.
+
+		new_dims.resize (2);
+
+		new_dims(1) = 1;
+	      }
+	  }
+	else
+	  new_dims.resize(k);
+      }
+ 
+    return new_dims;
+  }
 };
 
 static inline bool

@@ -1,4 +1,16 @@
+2004-02-05  Petter Risholm  <risholm@stud.ntnu.no>
+
+	* Array.cc (Array<T>::assignN): Accept assignment of a vector
+	oriented differently from the index.
+
+	* dim-vector.h (dim_vector::squeeze): Return value always has at
+	least two dimensions.
+
 2004-02-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* dim-vector.h (dim_vector::squeeze): New function.
+	(Array<T>::assignN): Use it instead of chop_trailing_singltons for
+	deciding whether the assignment conforms.
 
 	* Array.cc (Array<T>::assignN): Simplify dimension check by
 	comparing rhs_dims and frozen_len sans trailing singletons.

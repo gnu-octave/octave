@@ -2746,14 +2746,29 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
     {
       // RHS is matrix or higher dimension.
 
-      // Check that RHS dimensions are the same length as the
-      // corresponding LHS index dimensions.
+      // Check that non-singleton RHS dimensions conform to
+      // non-singleton LHS index dimensions.
 
-      dim_vector t_rhs_dims = rhs_dims;
-      t_rhs_dims.chop_trailing_singletons ();
+      dim_vector t_rhs_dims = rhs_dims.squeeze ();
+      dim_vector t_frozen_len = frozen_len.squeeze ();
 
-      dim_vector t_frozen_len = frozen_len;
-      t_frozen_len.chop_trailing_singletons ();
+      // If after sqeezing out singleton dimensions, RHS is vector
+      // and LHS is vector, force them to have the same orientation
+      // so that operations like
+      //
+      //   a = zeros (3, 3, 3);
+      //   a(1:3,1,1) = [1,2,3];
+      //
+      // will work.
+
+      if (t_rhs_dims.length () == 2 && t_frozen_len.length () == 2
+	  && (t_rhs_dims.elem(1) == 1 && t_frozen_len.elem(0) == 1 
+	      || t_rhs_dims.elem(0) == 1 && t_frozen_len.elem(1) == 1))
+	{
+	  int t0 = t_rhs_dims.elem(0);
+	  t_rhs_dims.elem(0) = t_rhs_dims.elem(1);
+	  t_rhs_dims.elem(1) = t0;
+	}
 
       if (t_rhs_dims != t_frozen_len)
 	(*current_liboctave_error_handler)

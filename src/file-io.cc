@@ -376,7 +376,7 @@ valid_mode (const char *mode)
 }
 
 static Octave_object
-fgets_internal (const Octave_object& args, int nargout)
+fgets_internal (const Octave_object& args, int nargin, int nargout)
 {
   Octave_object retval;
 
@@ -385,41 +385,67 @@ fgets_internal (const Octave_object& args, int nargout)
   if (! p)
     return retval;
 
-
-  double dlen = args(1).double_value ();
-
-  if (error_state)
-    return retval;
-
-  if (xisnan (dlen))
-    {
-      error ("fgets: NaN invalid as length");
-      return retval;
-    }
-
-  int length = NINT (dlen);
-
-  if ((double) length != dlen)
-    {
-      error ("fgets: length not an integer value");
-      return retval;
-    }
-
   file_info file = file_list (p);
 
-  char string [length+1];
-  char *success = fgets (string, length+1, file.fptr ());
+  FILE *fileptr = file.fptr ();
 
-  if (! success)
+  char *string = 0;
+  char *success = 0;
+
+  if (nargin == 2)
     {
-      retval(0) = -1.0;
-      return retval;
+      double dlen = args(1).double_value ();
+
+      if (error_state)
+	return retval;
+
+      if (xisnan (dlen))
+	{
+	  error ("fgets: NaN invalid as length");
+	  return retval;
+	}
+
+      int length = NINT (dlen);
+
+      if ((double) length != dlen)
+	{
+	  error ("fgets: length not an integer value");
+	  return retval;
+	}
+
+      char *string = new char[length+1];
+      char *success = fgets (string, length+1, fileptr);
     }
+  else
+    {
+      ostrstream buf;
+      int c;
+      while ((c = fgetc (fileptr)))
+	{
+	  buf << (char) c;
+	  if (c == '\n')
+	    {
+	      buf << ends;
+	      string = buf.str ();
+	      break;
+	    }
+	}
 
-  if (nargout == 2)
-    retval(1) = (double) strlen (string);
+      if (string && strlen (string) > 0)
+	success = string;
+    }
+  
+  if (success)
+    {
+      if (nargout == 2)
+	retval(1) = (double) strlen (string);
 
-  retval(0) = string;
+      retval(0) = string;
+    }
+  else
+    retval(0) = -1.0;
+
+  delete [] string;
 
   return retval;
 }
@@ -433,10 +459,10 @@ read a string from a file")
 
   int nargin = args.length ();
 
-  if (nargin != 2)
-    print_usage ("fgets");
+  if (nargin == 1 || nargin == 2)
+    retval = fgets_internal (args, nargin, nargout);
   else
-    retval = fgets_internal (args, nargout);
+    print_usage ("fgets");
 
   return retval;
 }

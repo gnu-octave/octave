@@ -1,3 +1,18 @@
+2002-08-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* dasrt/xerrwv.f, odepack/xerrwv.f: Delete.
+	* slatec-err/xerrwd.f (XERRWD): Call XSTOPX instead of using STOP.
+
+	* quadpack/dqagi.f (DQAGI): Replace Hollerith constants with
+	character string constants.
+	* quadpack/dqagp.f (DQAGP): Likewise.
+	* odepack/lsode.f (LSODE): Likewise.
+
+	* odepack/lsode.f (LSODE): Use XERRWD instead of XERRWV.
+	* odepack/intdy.f (INTDY): Likewise.
+	* dasrt/ddasrt.f (DDASRT): Likewise.
+	* quadpack/xerror.f (XERROR): Likewise.
+
 2002-07-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* slatec-fn/xgmainc.f: New file.

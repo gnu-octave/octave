@@ -69,14 +69,14 @@ C
  60     DKY(I) = R*DKY(I)
       RETURN
 C
- 80   CALL XERRWV(30HINTDY--  K (=I1) ILLEGAL      ,
+ 80   CALL XERRWD('INTDY--  K (=I1) ILLEGAL      ',
      1   30, 51, 0, 1, K, 0, 0, 0.0D0, 0.0D0)
       IFLAG = -1
       RETURN
- 90   CALL XERRWV(30HINTDY--  T (=R1) ILLEGAL      ,
+ 90   CALL XERRWD('INTDY--  T (=R1) ILLEGAL      ',
      1   30, 52, 0, 0, 0, 0, 1, T, 0.0D0)
-      CALL XERRWV(
-     1  60H      T NOT IN INTERVAL TCUR - HU (= R1) TO TCUR (=R2)      ,
+      CALL XERRWD(
+     1  '      T NOT IN INTERVAL TCUR - HU (= R1) TO TCUR (=R2)      ',
      1   60, 52, 0, 0, 0, 0, 2, TP, TN) 
       IFLAG = -2
       RETURN

@@ -64,13 +64,18 @@ public:
   ArrayN (const dim_vector& dv, const T& val)
     : Array<T> (dv) { fill (val); }
 
-  ArrayN (const Array2<T>& a) : Array<T> (a, a.dims ()) { }
+  template <class U>
+  explicit ArrayN (const Array2<U>& a) : Array<T> (a, a.dims ()) { }
 
-  ArrayN (const ArrayN<T>& a) : Array<T> (a, a.dims ()) { }
+  template <class U>
+  ArrayN (const ArrayN<U>& a) : Array<T> (a, a.dims ()) { }
 
-  ArrayN (const Array<T>& a) : Array<T> (a) { }
+  template <class U>
+  ArrayN (const Array<U>& a) : Array<T> (a) { }
 
-  ArrayN (const Array<T>& a, const dim_vector& dv) : Array<T> (a, dv) { }
+  template <class U>
+  ArrayN (const Array<U>& a, const dim_vector& dv)
+    : Array<T> (a, dv) { }
 
   ~ArrayN (void) { }
 
@@ -82,6 +87,15 @@ public:
       return *this;
     }
 
+  ArrayN<T> reshape (const dim_vector& new_dims) const
+    { return Array<T>::reshape (new_dims); }
+
+  ArrayN<T> permute (const Array<int>& vec, bool inv = false) const
+    { return Array<T>::permute (vec, inv); }
+
+  ArrayN<T> ipermute (const Array<int>& vec) const
+    { return Array<T>::ipermute (vec); }
+
   void resize (const dim_vector& dv)
     { this->resize_no_fill (dv); }
 
@@ -89,6 +103,8 @@ public:
     { Array<T>::resize (dv, val); }
 
   ArrayN<T> squeeze (void) const { return Array<T>::squeeze (); }
+
+  ArrayN<T> transpose (void) const { return Array<T>::transpose (); }
 
   ArrayN<T>& insert (const ArrayN<T>& a, const dim_vector& dv)
     {

@@ -32,7 +32,9 @@ MATRIX_INC := Array.h Array2.h Array3.h ArrayN.h DiagArray2.h \
 	CmplxSCHUR.h CmplxSVD.h EIG.h boolMatrix.h boolNDArray.h \
 	chMatrix.h chNDArray.h dColVector.h dDiagMatrix.h dMatrix.h \
 	dNDArray.h dRowVector.h dbleAEPBAL.h dbleCHOL.h dbleDET.h \
-	dbleHESS.h dbleLU.h dbleQR.h dbleQRP.h dbleSCHUR.h dbleSVD.h
+	dbleHESS.h dbleLU.h dbleQR.h dbleQRP.h dbleSCHUR.h dbleSVD.h \
+	int8NDArray.h uint8NDArray.h int16NDArray.h uint16NDArray.h \
+	int32NDArray.h uint32NDArray.h int64NDArray.h uint64NDArray.h 
 
 MX_OP_INC := $(shell $(AWK) -f $(srcdir)/mk-ops.awk prefix=mx list_h_files=1 $(srcdir)/mx-ops)
 
@@ -76,10 +78,12 @@ MATRIX_SRC := Array-flags.cc Array-util.cc CColVector.cc \
 	CmplxAEPBAL.cc CmplxCHOL.cc CmplxDET.cc CmplxHESS.cc \
 	CmplxLU.cc CmplxQR.cc CmplxQRP.cc CmplxSCHUR.cc CmplxSVD.cc \
 	EIG.cc boolMatrix.cc boolNDArray.cc chMatrix.cc \
-	chNDArray.cc dColVector.cc  dDiagMatrix.cc dMatrix.cc \
+	chNDArray.cc dColVector.cc dDiagMatrix.cc dMatrix.cc \
 	dNDArray.cc dRowVector.cc dbleAEPBAL.cc dbleCHOL.cc \
 	dbleDET.cc dbleHESS.cc dbleLU.cc dbleQR.cc dbleQRP.cc \
-	dbleSCHUR.cc dbleSVD.cc
+	dbleSCHUR.cc dbleSVD.cc \
+	int8NDArray.cc uint8NDArray.cc int16NDArray.cc uint16NDArray.cc \
+	int32NDArray.cc uint32NDArray.cc int64NDArray.cc uint64NDArray.cc 
 
 MX_OP_SRC := $(shell $(AWK) -f $(srcdir)/mk-ops.awk prefix=mx list_cc_files=1 $(srcdir)/mx-ops)
 

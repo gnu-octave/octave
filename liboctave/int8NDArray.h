@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996, 1997 John W. Eaton
+Copyright (C) 2004 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,47 +20,29 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-#if !defined (octave_mx_base_h)
-#define octave_mx_base_h 1
+#if !defined (octave_int8NDArray_h)
+#define octave_int8NDArray_h 1
 
-// Matrix classes.
+#if defined (__GNUG__) && defined (USE_PRAGMA_INTERFACE_IMPLEMENTATION)
+#pragma interface
+#endif
 
-#include "boolMatrix.h"
-#include "chMatrix.h"
-#include "dMatrix.h"
-#include "CMatrix.h"
+#include "intNDArray.h"
+#include "mx-op-defs.h"
+#include "oct-inttypes.h"
 
-// Column Vector classes.
+typedef intNDArray<octave_int8> int8NDArray;
 
-#include "dColVector.h"
-#include "CColVector.h"
+NDS_CMP_OP_DECLS (int8NDArray, octave_int8)
+NDS_BOOL_OP_DECLS (int8NDArray, octave_int8)
 
-// Row Vector classes.
+SND_CMP_OP_DECLS (octave_int8, int8NDArray)
+SND_BOOL_OP_DECLS (octave_int8, int8NDArray)
 
-#include "dRowVector.h"
-#include "CRowVector.h"
+NDND_CMP_OP_DECLS (int8NDArray, int8NDArray)
+NDND_BOOL_OP_DECLS (int8NDArray, int8NDArray)
 
-// Diagonal Matrix classes.
-
-#include "dDiagMatrix.h"
-#include "CDiagMatrix.h"
-
-// N-d Array classes.
-
-#include "boolNDArray.h"
-#include "chNDArray.h"
-#include "dNDArray.h"
-#include "CNDArray.h"
-
-#include "int8NDArray.h"
-#include "int16NDArray.h"
-#include "int32NDArray.h"
-#include "int64NDArray.h"
-
-#include "uint8NDArray.h"
-#include "uint16NDArray.h"
-#include "uint32NDArray.h"
-#include "uint64NDArray.h"
+MARRAY_FORWARD_DEFS (MArrayN, int8NDArray, octave_int8)
 
 #endif
 

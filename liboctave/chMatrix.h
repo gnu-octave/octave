@@ -60,6 +60,8 @@ public:
   bool operator == (const charMatrix& a) const;
   bool operator != (const charMatrix& a) const;
 
+  charMatrix transpose (void) const { return MArray2<char>::transpose (); }
+
   // destructive insert/delete/reorder operations
 
   charMatrix& insert (const char *s, int r, int c);

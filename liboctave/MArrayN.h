@@ -56,11 +56,14 @@ public:
   
   MArrayN (const dim_vector& dv, const T& val) : ArrayN<T> (dv, val) { }
 
-  MArrayN (const Array2<T>& a) : ArrayN<T> (a) { }
+  template <class U>
+  explicit MArrayN (const Array2<U>& a) : ArrayN<T> (a) { }
 
-  MArrayN (const ArrayN<T>& a) : ArrayN<T> (a) { }
+  template <class U>
+  MArrayN (const ArrayN<U>& a) : ArrayN<T> (a) { }
 
-  MArrayN (const MArrayN<T>& a) : ArrayN<T> (a) { }
+  template <class U>
+  MArrayN (const MArrayN<U>& a) : ArrayN<T> (a) { }
 
   ~MArrayN (void) { }
 
@@ -69,6 +72,17 @@ public:
       ArrayN<T>::operator = (a);
       return *this;
     }
+
+  MArrayN<T> reshape (const dim_vector& new_dims) const
+    { return ArrayN<T>::reshape (new_dims); }
+
+  MArrayN<T> permute (const Array<int>& vec, bool inv = false) const
+    { return ArrayN<T>::permute (vec, inv); }
+
+  MArrayN<T> ipermute (const Array<int>& vec) const
+    { return ArrayN<T>::ipermute (vec); }
+
+  MArrayN squeeze (void) const { return ArrayN<T>::squeeze (); }
 };
 
 #endif

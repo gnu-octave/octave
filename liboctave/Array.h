@@ -133,13 +133,12 @@ protected:
 	rep->fill (val);
     }
 
-  typename Array<T>::ArrayRep *rep;
-
 public:
 
-  // !!! WARNING !!! -- this is public because template friends don't
-  // work properly with versions of gcc earlier than 3.3.  You should
-  // not access this data member directly!
+  // !!! WARNING !!! -- these should be protected, not public.  You
+  // should not access these data members directly!
+
+  typename Array<T>::ArrayRep *rep;
 
   dim_vector dimensions;
 
@@ -166,6 +165,18 @@ private:
       return nr;
     }
 
+  template <class U>
+  T *
+  coerce (const U *a, int len)
+  {
+    T *retval = new T [len];
+
+    for (int i = 0; i < len; i++)
+      retval[i] = T (a[i]);
+
+    return retval;
+  }
+
 public:
 
   Array (void)
@@ -183,6 +194,15 @@ public:
       fill (val);
     }
 
+  // Type conversion case.
+  template <class U>
+  Array (const Array<U>& a)
+    : rep (new typename Array<T>::ArrayRep (coerce (a.data (), a.length ()), a.length ())),
+      dimensions (a.dimensions), idx (0), idx_count (0)
+    {
+    }
+
+  // No type conversion case.
   Array (const Array<T>& a)
     : rep (a.rep), dimensions (a.dimensions), idx (0), idx_count (0)
     {
@@ -240,6 +260,8 @@ public:
   int cols (void) const { return dim2 (); }
   int columns (void) const { return dim2 (); }
   int pages (void) const { return dim3 (); }
+
+  size_t byte_size (void) const { return numel () * sizeof (T); }
 
   dim_vector dims (void) const { return dimensions; }
 

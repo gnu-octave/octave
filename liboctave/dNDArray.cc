@@ -482,20 +482,6 @@ NDArray::ifourierNd (void) const
 
 #endif
 
-NDArray::NDArray (const boolNDArray& a)
-  : MArrayN<double> (a.dims ())
-{
-  for (int i = 0; i < a.length (); i++)
-    elem (i) = a.elem (i);
-}
-
-NDArray::NDArray (const charNDArray& a)
-  : MArrayN<double> (a.dims ())
-{
-  for (int i = 0; i < a.length (); i++)
-    elem (i) = a.elem (i);
-}
-
 // unary operations
 
 boolNDArray

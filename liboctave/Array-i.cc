@@ -24,6 +24,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include "oct-inttypes.h"
+
 // Instantiate Arrays of integer values.
 
 #include "Array.h"
@@ -33,6 +35,26 @@ INSTANTIATE_ARRAY_AND_ASSIGN (int);
 
 INSTANTIATE_ARRAY_ASSIGN (int, short);
 INSTANTIATE_ARRAY_ASSIGN (int, char);
+
+INSTANTIATE_ARRAY_AND_ASSIGN (octave_int8);
+INSTANTIATE_ARRAY_AND_ASSIGN (octave_int16);
+INSTANTIATE_ARRAY_AND_ASSIGN (octave_int32);
+INSTANTIATE_ARRAY_AND_ASSIGN (octave_int64);
+
+INSTANTIATE_ARRAY_AND_ASSIGN (octave_uint8);
+INSTANTIATE_ARRAY_AND_ASSIGN (octave_uint16);
+INSTANTIATE_ARRAY_AND_ASSIGN (octave_uint32);
+INSTANTIATE_ARRAY_AND_ASSIGN (octave_uint64);
+
+INSTANTIATE_ARRAY_CAT (octave_int8);
+INSTANTIATE_ARRAY_CAT (octave_int16);
+INSTANTIATE_ARRAY_CAT (octave_int32);
+INSTANTIATE_ARRAY_CAT (octave_int64);
+
+INSTANTIATE_ARRAY_CAT (octave_uint8);
+INSTANTIATE_ARRAY_CAT (octave_uint16);
+INSTANTIATE_ARRAY_CAT (octave_uint32);
+INSTANTIATE_ARRAY_CAT (octave_uint64);
 
 #include "Array2.h"
 

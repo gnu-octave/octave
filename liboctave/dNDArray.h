@@ -29,6 +29,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "MArrayN.h"
 #include "dMatrix.h"
+#include "intNDArray.h"
 
 #include "mx-defs.h"
 #include "mx-op-defs.h"
@@ -54,11 +55,8 @@ public:
 
   NDArray (const MArrayN<double>& a) : MArrayN<double> (a) { }
 
-  NDArray (const ArrayN<double>& a) : MArrayN<double> (a) { }
-
-  explicit NDArray (const boolNDArray& a);
-
-  explicit NDArray (const charNDArray& a);
+  template <class U>
+  explicit NDArray (const intNDArray<U>& a) : MArrayN<double> (a) { }
 
   NDArray& operator = (const NDArray& a)
     {
@@ -109,7 +107,7 @@ public:
 
   Matrix matrix_value (void) const;
 
-  NDArray squeeze (void) const { return ArrayN<double>::squeeze (); }
+  NDArray squeeze (void) const { return MArrayN<double>::squeeze (); }
 
   static void increment_index (Array<int>& ra_idx,
 			       const dim_vector& dimensions,

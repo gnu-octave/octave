@@ -1,3 +1,56 @@
+2004-06-14  John W. Eaton  <jwe@octave.org>
+
+	* mx-base.h: Include headers for new int types.
+
+	* dNDArray.h, dNDArray.cc (NDArray::NDArray (const boolNDArray&),
+	NDArray::NDArray (const charNDArray&)): Delete.
+	(template <class U> explicit NDArray (const intNDArray<U>&)): New
+	constructor.
+	(NDArray::squeze): Call MArrayN::squeeze, not ArrayN::squeeze.
+
+	* chMatrix.h (CharMatrix::transpose): New forwarding functions for
+	return type conversion.
+
+	* ComplexNDArray.h, ComplexNDArray.cc
+	(ComplexNDArray::ComplexNDArray (const ArrayN<Complex>&),
+	(ComplexNDArray::ComplexNDArray (const NDArray&),
+	(ComplexNDArray::ComplexNDArray (const boolNDArray&),
+	(ComplexNDArray::ComplexNDArray (const charNDArray&)): Delete.
+	
+	(ComplexNDArray::squeze): Call MArrayN::squeeze, not ArrayN::squeeze.
+
+	* MArrayN.h:
+	(template <class U> explicit MArrayN<T>::MArrayN (const Array2<U>&),
+	(template <class U> MArrayN<T>::MArrayN (const ArrayN<U>&),
+	(template <class U> explicit MArrayN<T>::MArrayN (const MArray<U>&)):
+	New constructors.
+	(ArrayN<T>::reshape, ArrayN<T>::permute, ArrayN<T>::ipermute,
+	ArrayN<T>::squeeze):
+	New forwarding functions for return type conversion.
+
+	* ArrayN.h:
+	(template <class U> explicit ArrayN<T>::ArrayN (const Array2<U>&),
+	(template <class U> explicit ArrayN<T>::ArrayN (const ArrayN<U>&),
+	(template <class U> explicit ArrayN<T>::ArrayN (const Array<U>&),
+	(template <class U> explicit ArrayN<T>::ArrayN (const Array<U>&,
+	const dim_vector&)): New constructors.
+	(ArrayN<T>::reshape, ArrayN<T>::permute, ArrayN<T>::ipermute,
+	ArrayN<T>::transpose):
+	New forwarding functions for return type conversion.
+
+	* Array.h (template <class U> Array<T>::Array (const Array<U>&)):
+	New constructor.
+	(Array<T>::coerce, Array<T>::byte_size): New functions.
+
+	* Array-i.cc, MArray-i.cc: Instantiate new integer types.
+
+	* oct-inttypes.h, int16NDArray.h, int32NDArray.h, int64NDArray.h,
+	int8NDArray.h , intNDArray.h, uint16NDArray.h, uint32NDArray.h,
+	uint64NDArray.h, uint8NDArray.h, int16NDArray.cc, int32NDArray.cc,
+	int64NDArray.cc, int8NDArray.cc, intNDArray.cc, uint16NDArray.cc,
+	uint32NDArray.cc, uint64NDArray.cc, uint8NDArray.cc: New files.
+	* Makefile.in: Add them to the appropriate lists.
+
 2004-06-04  John W. Eaton  <jwe@octave.org>
 
 	* mx-inlines.cc (MX_ND_REDUCTION): New arg, RET_ELT_TYPE.  Use

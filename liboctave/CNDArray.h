@@ -54,14 +54,6 @@ public:
 
   ComplexNDArray (const MArrayN<Complex>& a) : MArrayN<Complex> (a) { }
 
-  ComplexNDArray (const ArrayN<Complex>& a) : MArrayN<Complex> (a) { }
-
-  explicit ComplexNDArray (const NDArray& a);
-
-  explicit ComplexNDArray (const boolNDArray& a);
-
-  explicit ComplexNDArray (const charNDArray& a);
-
   ComplexNDArray& operator = (const ComplexNDArray& a)
     {
       MArrayN<Complex>::operator = (a);
@@ -110,7 +102,7 @@ public:
 
   ComplexMatrix matrix_value (void) const;
 
-  ComplexNDArray squeeze (void) const { return ArrayN<Complex>::squeeze (); }
+  ComplexNDArray squeeze (void) const { return MArrayN<Complex>::squeeze (); }
 
   static void increment_index (Array<int>& ra_idx,
 			       const dim_vector& dimensions,

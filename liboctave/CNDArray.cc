@@ -60,30 +60,6 @@ extern "C"
 }
 #endif
 
-// XXX FIXME XXX -- could we use a templated mixed-type copy function
-// here?
-
-ComplexNDArray::ComplexNDArray (const NDArray& a)
-  : MArrayN<Complex> (a.dims ())
-{
-  for (int i = 0; i < a.length (); i++)
-    elem (i) = a.elem (i);
-}
-
-ComplexNDArray::ComplexNDArray (const boolNDArray& a)
-  : MArrayN<Complex> (a.dims ())
-{
-  for (int i = 0; i < a.length (); i++)
-    elem (i) = a.elem (i);
-}
-
-ComplexNDArray::ComplexNDArray (const charNDArray& a)
-  : MArrayN<Complex> (a.dims ())
-{
-  for (int i = 0; i < a.length (); i++)
-    elem (i) = a.elem (i);
-}
-
 #if defined (HAVE_FFTW3)
 ComplexNDArray
 ComplexNDArray::fourier (int dim) const

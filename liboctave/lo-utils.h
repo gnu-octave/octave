@@ -54,8 +54,8 @@ extern "C" char *oct_strptime (const char *buf, const char *format,
 extern double octave_read_double (std::istream& is);
 extern Complex octave_read_complex (std::istream& is);
 
-extern void octave_write_double (std::ostream& os, double d);
-extern void octave_write_complex (std::ostream& os, const Complex& c);
+extern void octave_write_double (std::ostream& os, double dval);
+extern void octave_write_complex (std::ostream& os, const Complex& cval);
 
 #endif
 

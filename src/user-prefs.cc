@@ -43,7 +43,7 @@ void
 init_user_prefs (void)
 {
   user_pref.automatic_replot = 0;
-  user_pref.commas_in_literal_matrix = 0;
+  user_pref.whitespace_in_literal_matrix = 0;
   user_pref.do_fortran_indexing = 0;
   user_pref.empty_list_elements_ok = 0;
   user_pref.ignore_function_time_stamp = 0;
@@ -116,18 +116,24 @@ automatic_replot (void)
 }
 
 
-// Should commas be required to separate elements in a literal matrix
-// list?
+// Should whitespace in a literal matrix list be automatically
+// converted to commas and semicolons?
 //
 //   user specifies   value of pref
 //   --------------   -------------
-//   "required"             2
+//   "ignored"              2
 //   "traditional"          1
 //   anything else          0
 //
 // Octave will never insert a comma in a literal matrix list if the
-// user specifies "required".  For example, the statement [1 2] will
-// result in an error instead of being treated the same as [1, 2].
+// user specifies "ignored".  For example, the statement [1 2] will
+// result in an error instead of being treated the same as [1, 2], and
+// the statement
+//
+//   [ 1, 2,
+//     3, 4 ]
+//
+// will result in the vector [1 2 3 4] instead of a matrix.
 //
 // Traditional behavior makes Octave convert spaces to a comma between
 // identifiers and `('.  For example, the statement
@@ -151,18 +157,18 @@ automatic_replot (void)
 // will result in a call to `eye' with the argument `2'. 
 
 int
-commas_in_literal_matrix (void)
+whitespace_in_literal_matrix (void)
 {
   int pref = 0;
-  char *val = builtin_string_variable ("commas_in_literal_matrix");
+  char *val = builtin_string_variable ("whitespace_in_literal_matrix");
   if (val)
     {
-      if (strncmp (val, "required", 8) == 0)
+      if (strncmp (val, "ignore", 6) == 0)
 	pref = 2;
       else if (strncmp (val, "traditional", 11) == 0)
 	pref = 1;
     }
-  user_pref.commas_in_literal_matrix = pref;
+  user_pref.whitespace_in_literal_matrix = pref;
   return 0;
 }
 

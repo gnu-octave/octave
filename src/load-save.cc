@@ -1923,9 +1923,7 @@ get_file_format (const char *fname, const char *orig_fname)
 {
   load_save_format retval = LS_UNKNOWN;
 
-  ifstream file;
-
-  file.open (fname);
+  ifstream file (fname);
 
   if (! file)
     {

@@ -505,21 +505,38 @@ gobble_leading_white_space (FILE *ffile)
   int c;
   while ((c = getc (ffile)) != EOF)
     {
+      current_input_column++;
       if (in_comment)
 	{
 	  if (c == '\n')
-	    in_comment = 0;
+	    {
+	      input_line_number++;
+	      current_input_column = 0;
+	      in_comment = 0;
+	    }
 	}
       else
 	{
-	  if (c == ' ' || c == '\t' || c == '\n')
-	    continue;
-	  else if (c == '%' || c == '#')
-	    in_comment = 1;
-	  else
+	  switch (c)
 	    {
-	      ungetc (c, ffile);
+	    case ' ':
+	    case '\t':
 	      break;
+
+	    case '\n':
+	      input_line_number++;
+	      current_input_column = 0;
+	      continue;
+
+	    case '%':
+	    case '#':
+	      in_comment = 1;
+	      break;
+
+	    default:
+	      current_input_column--;
+	      ungetc (c, ffile);
+	      return;
 	    }
 	}
     }
@@ -1397,9 +1414,9 @@ install_builtin_variables (void)
 	  0, 0, 1, automatic_replot,
     "if true, auto-insert a replot command when a plot changes");
 
-  DEFVAR ("commas_in_literal_matrix", SBV_commas_in_literal_matrix, "",
-	  0, 0, 1, commas_in_literal_matrix,
-    "control auto-insertion of commas in literal matrices");
+  DEFVAR ("whitespace_in_literal_matrix", SBV_whitespace_in_literal_matrix, "",
+	  0, 0, 1, whitespace_in_literal_matrix,
+    "control auto-insertion of commas and semicolons in literal matrices");
 
   DEFVAR ("default_save_format", SBV_default_save_format, "ascii",
 	  0, 0, 1, sv_default_save_format,

@@ -568,7 +568,9 @@ main (int argc, char **argv)
     }
   else if (remaining_args == 1)
     {
-      FILE *infile = get_input_from_file (argv[optind]);
+      reading_script_file = 1;
+      curr_fcn_file_name = argv[optind];
+      FILE *infile = get_input_from_file (curr_fcn_file_name);
       if (infile)
 	{
 	  rl_blink_matching_paren = 0;

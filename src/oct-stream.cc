@@ -1064,7 +1064,7 @@ octave_base_stream::read (const Matrix& size,
   return retval;
 }
 
-#if defined (__GNUG__) && !CXX_ISO_COMPLIANT_LIBRARY
+#if defined (__GNUG__) && ! defined (CXX_ISO_COMPLIANT_LIBRARY)
 
 #define OCTAVE_SCAN(is, fmt, arg) is.scan ((fmt).text, arg)
 
@@ -1072,40 +1072,42 @@ octave_base_stream::read (const Matrix& size,
 
 #define OCTAVE_SCAN(is, fmt, arg) octave_scan (is, fmt, arg)
 
+// XXX FIXME XXX -- this needs to be fixed to handle formats which
+// specify a maximum width.
+
 template <class T>
 std::istream&
-octave_scan (std::istream& is, const scanf_format_elt& fmt, T valptr)
+octave_scan (std::istream& is, const scanf_format_elt& fmt, T* valptr)
 {
-  // Someone else who cares will have to fix this code.  I refuse to
-  // waste my time working on it when a reasonable alternative like
-  // istream::scan exists in the GNU iostream library.  --jwe
+  T& ref = *valptr;
 
-  error ("formatted input only works when Octave is compiled with G++");
+  switch (fmt.type)
+    {
+    case 'o':
+      is >> std::oct >> ref;
+      break;
 
-  is.setstate (std::ios::failbit);
+    case 'x':
+      is >> std::hex >> ref;
+      break;
+
+    default:
+      is >> ref;
+      break;
+    }
 
   return is;
 }
 
-template std::istream&
-octave_scan (std::istream&, const scanf_format_elt&, char*);
+// Note that this specialization is only used for reading characters, not 
+// character strings. See BEGIN_S_CONVERSION for details.
 
-template std::istream&
-octave_scan (std::istream&, const scanf_format_elt&, int*);
-
-template std::istream&
-octave_scan (std::istream&, const scanf_format_elt&, long int*);
-
-template std::istream&
-octave_scan (std::istream&, const scanf_format_elt&, short int*);
-
-#if 0
-template std::istream&
-octave_scan (std::istream&, const scanf_format_elt&, float*);
-#endif
-
-template std::istream&
-octave_scan (std::istream&, const scanf_format_elt&, double*);
+template<>
+std::istream&
+octave_scan<> (std::istream& is, const scanf_format_elt& fmt, char* valptr)
+{
+  return is >> valptr;
+}
 
 #endif
 
@@ -1254,25 +1256,9 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double*,
 	} \
       else \
 	{ \
-	  std::ostrstream buf; \
- \
-	  int c = EOF; \
- \
-	  while (is && (c = is.get ()) != EOF && isspace (c)) \
-	    /* skip leading whitespace */; \
- \
-	  if (is && c != EOF) \
-	    buf << (char) c; \
- \
-	  while (is && (c = is.get ()) != EOF && ! isspace (c)) \
-	    buf << (char) c; \
- \
-	  if (isspace (c)) \
-	    is.putback (c); \
- \
-	  buf << std::ends; \
- \
-	  tmp = buf.str (); \
+	  std::string buf; \
+	  is >> std::ws >> buf; \
+	  tmp = strsave (buf.c_str()); \
 	} \
     } \
   while (0)
@@ -1512,7 +1498,7 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 		      case 'h':
 			{
 			  short int tmp;
-			  do_scanf_conv (is, fmt, &tmp, mval, data,
+			  do_scanf_conv (is, *elt, &tmp, mval, data,
 					 data_index, conversion_count,
 					 nr, max_size, discard);
 			}
@@ -1521,7 +1507,7 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 		      case 'l':
 			{
 			  long int tmp;
-			  do_scanf_conv (is, fmt, &tmp, mval, data,
+			  do_scanf_conv (is, *elt, &tmp, mval, data,
 					 data_index, conversion_count,
 					 nr, max_size, discard);
 			}
@@ -1530,7 +1516,7 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 		      default:
 			{
 			  int tmp;
-			  do_scanf_conv (is, fmt, &tmp, mval, data,
+			  do_scanf_conv (is, *elt, &tmp, mval, data,
 					 data_index, conversion_count,
 					 nr, max_size, discard);
 			}
@@ -1543,7 +1529,7 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 		  {
 		    double tmp;
 
-		    do_scanf_conv (is, fmt, &tmp, mval, data,
+		    do_scanf_conv (is, *elt, &tmp, mval, data,
 				   data_index, conversion_count,
 				   nr, max_size, discard);
 		  }

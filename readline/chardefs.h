@@ -7,7 +7,7 @@
 
    The GNU Readline Library is free software; you can redistribute it
    and/or modify it under the terms of the GNU General Public License
-   as published by the Free Software Foundation; either version 1, or
+   as published by the Free Software Foundation; either version 2, or
    (at your option) any later version.
 
    The GNU Readline Library is distributed in the hope that it will be
@@ -51,7 +51,7 @@
 #define meta_character_bit 0x080	    /* x0000000, must be on. */
 #define largest_char 255		    /* Largest character value. */
 
-#define CTRL_CHAR(c) ((c) < control_character_threshold && (c) >= 0)
+#define CTRL_CHAR(c) ((c) < control_character_threshold && (((c) & 0x80) == 0))
 #define META_CHAR(c) ((c) > meta_character_threshold && (c) <= largest_char)
 
 #define CTRL(c) ((c) & control_character_mask)
@@ -121,7 +121,20 @@
 #ifdef ESC
 #undef ESC
 #endif
-
 #define ESC CTRL('[')
+
+#ifndef ISOCTAL
+#define ISOCTAL(c)      ((c) >= '0' && (c) <= '7')
+#endif
+#define OCTVALUE(c)     ((c) - '0')
+
+#ifndef isxdigit
+#  define isxdigit(c)   (isdigit((c)) || ((c) >= 'a' && (c) <= 'f') || ((c) >= 'A' && (c) <= 'F'))
+#endif
+
+#define HEXVALUE(c) \
+  (((c) >= 'a' && (c) <= 'f') \
+  	? (c)-'a'+10 \
+  	: (c) >= 'A' && (c) <= 'F' ? (c)-'A'+10 : (c)-'0')
 
 #endif  /* _CHARDEFS_H_ */

@@ -266,7 +266,7 @@ gnu_readline::do_restore_terminal_state (void)
 void
 gnu_readline::do_blink_matching_paren (bool flag)
 {
-  ::octave_set_rl_blink_matching_paren_flag (flag ? 1 : 0);
+  ::octave_rl_enable_paren_matching (flag ? 1 : 0);
 }
 
 void

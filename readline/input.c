@@ -67,44 +67,20 @@ extern int errno;
 /* Some standard library routines. */
 #include "readline.h"
 
+#include "rlprivate.h"
+#include "rlshell.h"
+#include "xmalloc.h"
+
 /* What kind of non-blocking I/O do we have? */
 #if !defined (O_NDELAY) && defined (O_NONBLOCK)
 #  define O_NDELAY O_NONBLOCK	/* Posix style */
 #endif
 
-/* Functions imported from other files in the library. */
-extern char *xmalloc (), *xrealloc ();
-
-/* Variables and functions from macro.c. */
-extern void _rl_add_macro_char ();
-extern void _rl_with_macro_input ();
-extern int _rl_next_macro_key ();
-extern int _rl_defining_kbd_macro;
-
-#if defined (VI_MODE)
-extern void _rl_vi_set_last ();
-extern int _rl_vi_textmod_command ();
-#endif /* VI_MODE */
-
-extern FILE *rl_instream, *rl_outstream;
-extern Function *rl_last_func;
-extern int rl_key_sequence_length;
-extern int rl_pending_input;
-extern int rl_editing_mode;
-
-extern Keymap _rl_keymap;
-
-extern int _rl_convert_meta_chars_to_ascii;
-
-#if defined (__GO32__)
-#  include <pc.h>
-#endif /* __GO32__ */
-
 /* Non-null means it is a pointer to a function to run while waiting for
    character input. */
-Function *rl_event_hook = (Function *)NULL;
+rl_hook_func_t *rl_event_hook = (rl_hook_func_t *)NULL;
 
-Function *rl_getc_function = rl_getc;
+rl_getc_func_t *rl_getc_function = rl_getc;
 
 /* **************************************************************** */
 /*								    */
@@ -124,38 +100,13 @@ _rl_any_typein ()
   return any_typein;
 }
 
-/* Add KEY to the buffer of characters to be read. */
-int
-rl_stuff_char (key)
-     int key;
-{
-  if (key == EOF)
-    {
-      key = NEWLINE;
-      rl_pending_input = EOF;
-    }
-  ibuffer[push_index++] = key;
-  if (push_index >= ibuffer_len)
-    push_index = 0;
-  return push_index;
-}
-
-/* Make C be the next command to be executed. */
-int
-rl_execute_next (c)
-     int c;
-{
-  rl_pending_input = c;
-  return 0;
-}
-
-/* Return the amount of space available in the
-   buffer for stuffing characters. */
+/* Return the amount of space available in the buffer for stuffing
+   characters. */
 static int
 ibuffer_space ()
 {
   if (pop_index > push_index)
-    return (pop_index - push_index);
+    return (pop_index - push_index - 1);
   else
     return (ibuffer_len - (push_index - pop_index));
 }
@@ -201,17 +152,6 @@ rl_unget_char (key)
 static void
 rl_gather_tyi ()
 {
-#if defined (__GO32__)
-  char input;
-
-  if (isatty (0) && kbhit () && ibuffer_space ())
-    {
-      int i;
-      i = (*rl_getc_function) (rl_instream);
-      rl_stuff_char (i);
-    }
-#else /* !__GO32__ */
-
   int tty;
   register int tem, result;
   int chars_avail;
@@ -280,7 +220,6 @@ rl_gather_tyi ()
       if (chars_avail)
 	rl_stuff_char (input);
     }
-#endif /* !__GO32__ */
 }
 
 /* Is there input available to be read on the readline input file
@@ -341,6 +280,47 @@ _rl_insert_typein (c)
   free (string);
 }
 
+/* Add KEY to the buffer of characters to be read.  Returns 1 if the
+   character was stuffed correctly; 0 otherwise. */
+int
+rl_stuff_char (key)
+     int key;
+{
+  if (ibuffer_space () == 0)
+    return 0;
+
+  if (key == EOF)
+    {
+      key = NEWLINE;
+      rl_pending_input = EOF;
+      RL_SETSTATE (RL_STATE_INPUTPENDING);
+    }
+  ibuffer[push_index++] = key;
+  if (push_index >= ibuffer_len)
+    push_index = 0;
+
+  return 1;
+}
+
+/* Make C be the next command to be executed. */
+int
+rl_execute_next (c)
+     int c;
+{
+  rl_pending_input = c;
+  RL_SETSTATE (RL_STATE_INPUTPENDING);
+  return 0;
+}
+
+/* Clear any pending input pushed with rl_execute_next() */
+int
+rl_clear_pending_input ()
+{
+  rl_pending_input = 0;
+  RL_UNSETSTATE (RL_STATE_INPUTPENDING);
+  return 0;
+}
+
 /* **************************************************************** */
 /*								    */
 /*			     Character Input			    */
@@ -358,7 +338,7 @@ rl_read_key ()
   if (rl_pending_input)
     {
       c = rl_pending_input;
-      rl_pending_input = 0;
+      rl_clear_pending_input ();
     }
   else
     {
@@ -389,13 +369,8 @@ int
 rl_getc (stream)
      FILE *stream;
 {
-  int result, flags;
+  int result;
   unsigned char c;
-
-#if defined (__GO32__)
-  if (isatty (0))
-    return (getkey () & 0x7F);
-#endif /* __GO32__ */
 
   while (1)
     {
@@ -409,41 +384,37 @@ rl_getc (stream)
       if (result == 0)
 	return (EOF);
 
+#if defined (__BEOS__)
+      if (errno == EINTR)
+	continue;
+#endif
+
 #if defined (EWOULDBLOCK)
-      if (errno == EWOULDBLOCK)
+#  define X_EWOULDBLOCK EWOULDBLOCK
+#else
+#  define X_EWOULDBLOCK -99
+#endif
+
+#if defined (EAGAIN)
+#  define X_EAGAIN EAGAIN
+#else
+#  define X_EAGAIN -99
+#endif
+
+      if (errno == X_EWOULDBLOCK || errno == X_EAGAIN)
 	{
-	  if ((flags = fcntl (fileno (stream), F_GETFL, 0)) < 0)
+	  if (sh_unset_nodelay_mode (fileno (stream)) < 0)
 	    return (EOF);
-	  if (flags & O_NDELAY)
-	    {
-	      flags &= ~O_NDELAY;
-	      fcntl (fileno (stream), F_SETFL, flags);
-	      continue;
-	    }
 	  continue;
 	}
-#endif /* EWOULDBLOCK */
 
-#if defined (_POSIX_VERSION) && defined (EAGAIN) && defined (O_NONBLOCK)
-      if (errno == EAGAIN)
-	{
-	  if ((flags = fcntl (fileno (stream), F_GETFL, 0)) < 0)
-	    return (EOF);
-	  if (flags & O_NONBLOCK)
-	    {
-	      flags &= ~O_NONBLOCK;
-	      fcntl (fileno (stream), F_SETFL, flags);
-	      continue;
-	    }
-	}
-#endif /* _POSIX_VERSION && EAGAIN && O_NONBLOCK */
+#undef X_EWOULDBLOCK
+#undef X_EAGAIN
 
-#if !defined (__GO32__)
       /* If the error that we received was SIGINT, then try again,
 	 this is simply an interrupted system call to read ().
 	 Otherwise, some error ocurred, also signifying EOF. */
       if (errno != EINTR)
 	return (EOF);
-#endif /* !__GO32__ */
     }
 }

@@ -7,7 +7,7 @@
 
    The Library is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 1, or (at your option)
+   the Free Software Foundation; either version 2, or (at your option)
    any later version.
 
    The Library is distributed in the hope that it will be useful, but
@@ -38,6 +38,9 @@
 #endif /* HAVE_STDLIB_H */
 
 #if defined (HAVE_UNISTD_H)
+#  ifdef _MINIX
+#    include <sys/types.h>
+#  endif
 #  include <unistd.h>
 #endif
 
@@ -50,7 +53,7 @@
 #include "history.h"
 #include "histlib.h"
 
-extern char *xmalloc (), *xrealloc ();
+#include "xmalloc.h"
 
 /* The number of slots to increase the_history by. */
 #define DEFAULT_HISTORY_GROW_SIZE 50
@@ -131,9 +134,7 @@ history_total_bytes ()
 {
   register int i, result;
 
-  result = 0;
-
-  for (i = 0; the_history && the_history[i]; i++)
+  for (i = result = 0; the_history && the_history[i]; i++)
     result += strlen (the_history[i]->line);
 
   return (result);
@@ -214,7 +215,7 @@ history_get (offset)
    is  set to NULL. */
 void
 add_history (string)
-     char *string;
+     const char *string;
 {
   HIST_ENTRY *temp;
 
@@ -274,15 +275,15 @@ add_history (string)
 HIST_ENTRY *
 replace_history_entry (which, line, data)
      int which;
-     char *line;
-     char *data;
+     const char *line;
+     histdata_t data;
 {
-  HIST_ENTRY *temp = (HIST_ENTRY *)xmalloc (sizeof (HIST_ENTRY));
-  HIST_ENTRY *old_value;
+  HIST_ENTRY *temp, *old_value;
 
   if (which >= history_length)
     return ((HIST_ENTRY *)NULL);
 
+  temp = (HIST_ENTRY *)xmalloc (sizeof (HIST_ENTRY));
   old_value = the_history[which];
 
   temp->line = savestring (line);
@@ -300,12 +301,12 @@ remove_history (which)
      int which;
 {
   HIST_ENTRY *return_value;
+  register int i;
 
   if (which >= history_length || !history_length)
     return_value = (HIST_ENTRY *)NULL;
   else
     {
-      register int i;
       return_value = the_history[which];
 
       for (i = which; i < history_length; i++)
@@ -322,13 +323,13 @@ void
 stifle_history (max)
      int max;
 {
+  register int i, j;
+
   if (max < 0)
     max = 0;
 
   if (history_length > max)
     {
-      register int i, j;
-
       /* This loses because we cannot free the data. */
       for (i = 0, j = history_length - max; i < j; i++)
 	{

@@ -7,7 +7,7 @@
 
    The Library is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 1, or (at your option)
+   the Free Software Foundation; either version 2, or (at your option)
    any later version.
 
    The Library is distributed in the hope that it will be useful, but
@@ -32,8 +32,10 @@
 #include <stdio.h>
 
 #include <sys/types.h>
-#include <sys/file.h>
-#include <sys/stat.h>
+#ifndef _MINIX
+#  include <sys/file.h>
+#endif
+#include "posixstat.h"
 #include <fcntl.h>
 
 #if defined (HAVE_STDLIB_H)
@@ -52,15 +54,19 @@
 #  include <strings.h>
 #endif /* !HAVE_STRING_H */
 
+
+/* If we're compiling for __EMX__ (OS/2) or __CYGWIN__ (cygwin32 environment
+   on win 95/98/nt), we want to open files with O_BINARY mode so that there
+   is no \n -> \r\n conversion performed.  On other systems, we don't want to
+   mess around with O_BINARY at all, so we ensure that it's defined to 0. */
 #if defined (__EMX__) || defined (__CYGWIN__)
 #  ifndef O_BINARY
 #    define O_BINARY 0
 #  endif
 #else /* !__EMX__ && !__CYGWIN__ */
-   /* If we're not compiling for __EMX__, we don't want this at all.  Ever. */
 #  undef O_BINARY
 #  define O_BINARY 0
-#endif /* !__EMX__ */
+#endif /* !__EMX__ && !__CYGWIN__ */
 
 #include <errno.h>
 #if !defined (errno)
@@ -70,19 +76,18 @@ extern int errno;
 #include "history.h"
 #include "histlib.h"
 
-/* Functions imported from shell.c */
-extern char *get_env_value ();
-
-extern char *xmalloc (), *xrealloc ();
+#include "rlshell.h"
+#include "xmalloc.h"
 
 /* Return the string that should be used in the place of this
    filename.  This only matters when you don't specify the
    filename to read_history (), or write_history (). */
 static char *
 history_filename (filename)
-     char *filename;
+     const char *filename;
 {
-  char *return_val, *home;
+  char *return_val;
+  const char *home;
   int home_len;
 
   return_val = filename ? savestring (filename) : (char *)NULL;
@@ -90,7 +95,7 @@ history_filename (filename)
   if (return_val)
     return (return_val);
   
-  home = get_env_value ("HOME");
+  home = sh_get_env_value ("HOME");
 
   if (home == 0)
     {
@@ -103,7 +108,11 @@ history_filename (filename)
   return_val = xmalloc (2 + home_len + 8); /* strlen(".history") == 8 */
   strcpy (return_val, home);
   return_val[home_len] = '/';
+#if defined (__MSDOS__)
+  strcpy (return_val + home_len + 1, "_history");
+#else
   strcpy (return_val + home_len + 1, ".history");
+#endif
 
   return (return_val);
 }
@@ -113,7 +122,7 @@ history_filename (filename)
    successful, or errno if not. */
 int
 read_history (filename)
-     char *filename;
+     const char *filename;
 {
   return (read_history_range (filename, 0, -1));
 }
@@ -125,23 +134,37 @@ read_history (filename)
    ~/.history.  Returns 0 if successful, or errno if not. */
 int
 read_history_range (filename, from, to)
-     char *filename;
+     const char *filename;
      int from, to;
 {
   register int line_start, line_end;
-  char *input, *buffer = (char *)NULL;
-  int file, current_line;
+  char *input, *buffer;
+  int file, current_line, chars_read;
   struct stat finfo;
+  size_t file_size;
 
+  buffer = (char *)NULL;
   input = history_filename (filename);
   file = open (input, O_RDONLY|O_BINARY, 0666);
 
   if ((file < 0) || (fstat (file, &finfo) == -1))
     goto error_and_exit;
 
-  buffer = xmalloc ((int)finfo.st_size + 1);
+  file_size = (size_t)finfo.st_size;
 
-  if (read (file, buffer, finfo.st_size) != finfo.st_size)
+  /* check for overflow on very large files */
+  if (file_size != finfo.st_size || file_size + 1 < file_size)
+    {
+#if defined (EFBIG)
+      errno = EFBIG;
+#endif
+      goto error_and_exit;
+    }
+
+  buffer = xmalloc (file_size + 1);
+
+  chars_read = read (file, buffer, file_size);
+  if (chars_read < 0)
     {
   error_and_exit:
       if (file >= 0)
@@ -157,15 +180,15 @@ read_history_range (filename, from, to)
 
   /* Set TO to larger than end of file if negative. */
   if (to < 0)
-    to = finfo.st_size;
+    to = chars_read;
 
   /* Start at beginning of file, work to end. */
   line_start = line_end = current_line = 0;
 
   /* Skip lines until we are at FROM. */
-  while (line_start < finfo.st_size && current_line < from)
+  while (line_start < chars_read && current_line < from)
     {
-      for (line_end = line_start; line_end < finfo.st_size; line_end++)
+      for (line_end = line_start; line_end < chars_read; line_end++)
 	if (buffer[line_end] == '\n')
 	  {
 	    current_line++;
@@ -176,7 +199,7 @@ read_history_range (filename, from, to)
     }
 
   /* If there are lines left to gobble, then gobble them now. */
-  for (line_end = line_start; line_end < finfo.st_size; line_end++)
+  for (line_end = line_start; line_end < chars_read; line_end++)
     if (buffer[line_end] == '\n')
       {
 	buffer[line_end] = '\0';
@@ -202,23 +225,41 @@ read_history_range (filename, from, to)
    If FNAME is NULL, then use ~/.history. */
 int
 history_truncate_file (fname, lines)
-     char *fname;
-     register int lines;
+     const char *fname;
+     int lines;
 {
   register int i;
   int file, chars_read;
   char *buffer, *filename;
   struct stat finfo;
+  size_t file_size;
 
   buffer = (char *)NULL;
   filename = history_filename (fname);
   file = open (filename, O_RDONLY|O_BINARY, 0666);
 
-  if (file == -1 || fstat (file, &finfo) == -1)
-    goto truncate_exit;
+  /* Don't try to truncate non-regular files. */
+  if (file == -1 || fstat (file, &finfo) == -1 || S_ISREG (finfo.st_mode) == 0)
+    {
+      if (file != -1)
+	close (file);
+      goto truncate_exit;
+    }
 
-  buffer = xmalloc ((int)finfo.st_size + 1);
-  chars_read = read (file, buffer, finfo.st_size);
+  file_size = (size_t)finfo.st_size;
+
+  /* check for overflow on very large files */
+  if (file_size != finfo.st_size || file_size + 1 < file_size)
+    {
+      close (file);
+#if defined (EFBIG)
+      errno = EFBIG;
+#endif
+      goto truncate_exit;
+    }
+
+  buffer = xmalloc (file_size + 1);
+  chars_read = read (file, buffer, file_size);
   close (file);
 
   if (chars_read <= 0)
@@ -246,9 +287,15 @@ history_truncate_file (fname, lines)
 
   /* Write only if there are more lines in the file than we want to
      truncate to. */
-  if (i && ((file = open (filename, O_WRONLY|O_TRUNC|O_BINARY, 0666)) != -1))
+  if (i && ((file = open (filename, O_WRONLY|O_TRUNC|O_BINARY, 0600)) != -1))
     {
-      write (file, buffer + i, finfo.st_size - i);
+      write (file, buffer + i, chars_read - i);
+
+#if defined (__BEOS__)
+      /* BeOS ignores O_TRUNC. */
+      ftruncate (file, chars_read - i);
+#endif
+
       close (file);
     }
 
@@ -265,7 +312,7 @@ history_truncate_file (fname, lines)
    wish to replace FILENAME with the entries. */
 static int
 history_do_write (filename, nelements, overwrite)
-     char *filename;
+     const char *filename;
      int nelements, overwrite;
 {
   register int i;
@@ -275,7 +322,7 @@ history_do_write (filename, nelements, overwrite)
   mode = overwrite ? O_WRONLY|O_CREAT|O_TRUNC|O_BINARY : O_WRONLY|O_APPEND|O_BINARY;
   output = history_filename (filename);
 
-  if ((file = open (output, mode, 0666)) == -1)
+  if ((file = open (output, mode, 0600)) == -1)
     {
       FREE (output);
       return (errno);
@@ -323,7 +370,7 @@ history_do_write (filename, nelements, overwrite)
 int
 append_history (nelements, filename)
      int nelements;
-     char *filename;
+     const char *filename;
 {
   return (history_do_write (filename, nelements, HISTORY_APPEND));
 }
@@ -333,7 +380,7 @@ append_history (nelements, filename)
    are as in read_history ().*/
 int
 write_history (filename)
-     char *filename;
+     const char *filename;
 {
   return (history_do_write (filename, history_length, HISTORY_OVERWRITE));
 }

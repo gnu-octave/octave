@@ -1,22 +1,22 @@
 /* fileman.c -- A tiny application which demonstrates how to use the
    GNU Readline library.  This application interactively allows users
    to manipulate files and their modes. */
-/*
- * Remove the next line if you're compiling this against an installed
- * libreadline.a
- */
-#define READLINE_LIBRARY
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <sys/types.h>
 #ifdef HAVE_SYS_FILE_H
-#include <sys/file.h>
+#  include <sys/file.h>
 #endif
 #include <sys/stat.h>
 
+#ifdef HAVE_UNISTD_H
+#  include <unistd.h>
+#endif
+
+#include <fcntl.h>
 #include <stdio.h>
 #include <errno.h>
 
@@ -26,6 +26,10 @@
 #  include <strings.h>
 #endif /* !HAVE_STRING_H */
 
+#ifdef HAVE_STDLIB_H
+#  include <stdlib.h>
+#endif
+
 #ifdef READLINE_LIBRARY
 #  include "readline.h"
 #  include "history.h"
@@ -34,19 +38,25 @@
 #  include <readline/history.h>
 #endif
 
-extern char *getwd ();
 extern char *xmalloc ();
 
 /* The names of functions that actually do the manipulation. */
-int com_list (), com_view (), com_rename (), com_stat (), com_pwd ();
-int com_delete (), com_help (), com_cd (), com_quit ();
+int com_list __P((char *));
+int com_view __P((char *));
+int com_rename __P((char *));
+int com_stat __P((char *));
+int com_pwd __P((char *));
+int com_delete __P((char *));
+int com_help __P((char *));
+int com_cd __P((char *));
+int com_quit __P((char *));
 
 /* A structure which contains information on the commands this program
    can understand. */
 
 typedef struct {
   char *name;			/* User printable name of the function. */
-  Function *func;		/* Function to call to do the job. */
+  rl_icpfunc_t *func;		/* Function to call to do the job. */
   char *doc;			/* Documentation for this function.  */
 } COMMAND;
 
@@ -62,7 +72,7 @@ COMMAND commands[] = {
   { "rename", com_rename, "Rename FILE to NEWNAME" },
   { "stat", com_stat, "Print out statistics on FILE" },
   { "view", com_view, "View the contents of FILE" },
-  { (char *)NULL, (Function *)NULL, (char *)NULL }
+  { (char *)NULL, (rl_icpfunc_t *)NULL, (char *)NULL }
 };
 
 /* Forward declarations. */
@@ -202,8 +212,8 @@ stripwhite (string)
 /*                                                                  */
 /* **************************************************************** */
 
-char *command_generator ();
-char **fileman_completion ();
+char *command_generator __P((const char *, int));
+char **fileman_completion __P((const char *, int, int));
 
 /* Tell the GNU Readline library how to complete.  We want to try to complete
    on command names if this is the first word in the line, or on filenames
@@ -214,7 +224,7 @@ initialize_readline ()
   rl_readline_name = "FileMan";
 
   /* Tell the completer that we want a crack first. */
-  rl_attempted_completion_function = (CPPFunction *)fileman_completion;
+  rl_attempted_completion_function = fileman_completion;
 }
 
 /* Attempt to complete on the contents of TEXT.  START and END bound the
@@ -224,7 +234,7 @@ initialize_readline ()
    or NULL if there aren't any. */
 char **
 fileman_completion (text, start, end)
-     char *text;
+     const char *text;
      int start, end;
 {
   char **matches;
@@ -235,7 +245,7 @@ fileman_completion (text, start, end)
      to complete.  Otherwise it is the name of a file in the current
      directory. */
   if (start == 0)
-    matches = completion_matches (text, command_generator);
+    matches = rl_completion_matches (text, command_generator);
 
   return (matches);
 }
@@ -245,7 +255,7 @@ fileman_completion (text, start, end)
    start at the top of the list. */
 char *
 command_generator (text, state)
-     char *text;
+     const char *text;
      int state;
 {
   static int list_index, len;
@@ -300,7 +310,12 @@ com_view (arg)
   if (!valid_argument ("view", arg))
     return 1;
 
+#if defined (__MSDOS__)
+  /* more.com doesn't grok slashes in pathnames */
+  sprintf (syscom, "less %s", arg);
+#else
   sprintf (syscom, "more %s", arg);
+#endif
   return (system (syscom));
 }
 
@@ -406,7 +421,7 @@ com_pwd (ignore)
 {
   char dir[1024], *s;
 
-  s = getwd (dir);
+  s = getcwd (dir, sizeof(dir) - 1);
   if (s == 0)
     {
       printf ("Error getting pwd: %s\n", dir);

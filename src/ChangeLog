@@ -1,3 +1,11 @@
+2001-02-06  Mumit Khan  <khan@nanotech.wisc.edu>
+
+	* oct-stream.cc (octave_scan): Partially implement and specialize
+	for char*.  Delete the old template instantiations.
+	(BEGIN_S_CONVERSION): Use strings instead of ostrstreambuf.
+	(octave_base_stream::do_scanf): Pass correct parameter to
+	do_scan_conv.
+
 2001-02-05  Mumit Khan  <khan@nanotech.wisc.edu>
 
 	* pr-output.cc (set_format): Add std:: namespace qualifier as

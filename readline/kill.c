@@ -7,7 +7,7 @@
 
    The GNU Readline Library is free software; you can redistribute it
    and/or modify it under the terms of the GNU General Public License
-   as published by the Free Software Foundation; either version 1, or
+   as published by the Free Software Foundation; either version 2, or
    (at your option) any later version.
 
    The GNU Readline Library is distributed in the hope that it will be
@@ -46,17 +46,8 @@
 #include "readline.h"
 #include "history.h"
 
-extern int _rl_last_command_was_kill;
-extern int rl_editing_mode;
-extern int rl_explicit_arg;
-extern Function *rl_last_func;
-
-extern void _rl_init_argument ();
-extern int _rl_set_mark_at_pos ();
-extern void _rl_fix_point ();
-extern void _rl_abort_internal ();
-
-extern char *xmalloc (), *xrealloc ();
+#include "rlprivate.h"
+#include "xmalloc.h"
 
 /* **************************************************************** */
 /*								    */
@@ -273,7 +264,7 @@ rl_backward_kill_line (direction, ignore)
   else
     {
       if (!rl_point)
-	ding ();
+	rl_ding ();
       else
 	{
 	  rl_beg_of_line (1, ignore);
@@ -308,7 +299,7 @@ rl_unix_word_rubout (count, key)
   int orig_point;
 
   if (rl_point == 0)
-    ding ();
+    rl_ding ();
   else
     {
       orig_point = rl_point;
@@ -340,7 +331,7 @@ rl_unix_line_discard (count, key)
      int count, key;
 {
   if (rl_point == 0)
-    ding ();
+    rl_ding ();
   else
     {
       rl_kill_text (rl_point, 0);
@@ -385,10 +376,12 @@ int
 rl_kill_region (count, ignore)
      int count, ignore;
 {
-  int r;
+  int r, npoint;
 
+  npoint = (rl_point < rl_mark) ? rl_point : rl_mark;
   r = region_kill_internal (1);
   _rl_fix_point (1);
+  rl_point = npoint;
   return r;
 }
 
@@ -495,27 +488,38 @@ rl_yank_pop (count, key)
     }
 }
 
-/* Yank the COUNTth argument from the previous history line. */
-int
-rl_yank_nth_arg (count, ignore)
-     int count, ignore;
+/* Yank the COUNTh argument from the previous history line, skipping
+   HISTORY_SKIP lines before looking for the `previous line'. */
+static int
+rl_yank_nth_arg_internal (count, ignore, history_skip)
+     int count, ignore, history_skip;
 {
   register HIST_ENTRY *entry;
   char *arg;
+  int i, pos;
+
+  pos = where_history ();
+
+  if (history_skip)
+    {
+      for (i = 0; i < history_skip; i++)
+	entry = previous_history ();
+    }
 
   entry = previous_history ();
-  if (entry)
-    next_history ();
-  else
+
+  history_set_pos (pos);
+
+  if (entry == 0)
     {
-      ding ();
+      rl_ding ();
       return -1;
     }
 
   arg = history_arg_extract (count, count, entry->line);
   if (!arg || !*arg)
     {
-      ding ();
+      rl_ding ();
       return -1;
     }
 
@@ -538,6 +542,14 @@ rl_yank_nth_arg (count, ignore)
   return 0;
 }
 
+/* Yank the COUNTth argument from the previous history line. */
+int
+rl_yank_nth_arg (count, ignore)
+     int count, ignore;
+{
+  return (rl_yank_nth_arg_internal (count, ignore, 0));
+}
+
 /* Yank the last argument from the previous history line.  This `knows'
    how rl_yank_nth_arg treats a count of `$'.  With an argument, this
    behaves the same as rl_yank_nth_arg. */
@@ -545,8 +557,72 @@ int
 rl_yank_last_arg (count, key)
      int count, key;
 {
-  if (rl_explicit_arg)
-    return (rl_yank_nth_arg (count, key));
+  static int history_skip = 0;
+  static int explicit_arg_p = 0;
+  static int count_passed = 1;
+  static int direction = 1;
+  static int undo_needed = 0;
+  int retval;
+
+  if (rl_last_func != rl_yank_last_arg)
+    {
+      history_skip = 0;
+      explicit_arg_p = rl_explicit_arg;
+      count_passed = count;
+      direction = 1;
+    }
   else
-    return (rl_yank_nth_arg ('$', key));
+    {
+      if (undo_needed)
+	rl_do_undo ();
+      if (count < 1)
+        direction = -direction;
+      history_skip += direction;
+      if (history_skip < 0)
+	history_skip = 0;
+    }
+ 
+  if (explicit_arg_p)
+    retval = rl_yank_nth_arg_internal (count_passed, key, history_skip);
+  else
+    retval = rl_yank_nth_arg_internal ('$', key, history_skip);
+
+  undo_needed = retval == 0;
+  return retval;
 }
+
+/* A special paste command for users of Cygnus's cygwin32. */
+#if defined (__CYGWIN__)
+#include <windows.h>
+
+int
+rl_paste_from_clipboard (count, key)
+     int count, key;
+{
+  char *data, *ptr;
+  int len;
+
+  if (OpenClipboard (NULL) == 0)
+    return (0);
+
+  data = (char *)GetClipboardData (CF_TEXT);
+  if (data)
+    {
+      ptr = strchr (data, '\r');
+      if (ptr)
+	{
+	  len = ptr - data;
+	  ptr = xmalloc (len + 1);
+	  ptr[len] = '\0';
+	  strncpy (ptr, data, len);
+	}
+      else
+        ptr = data;
+      rl_insert_text (ptr);
+      if (ptr != data)
+	free (ptr);
+      CloseClipboard ();
+    }
+  return (0);
+}
+#endif /* __CYGWIN__ */

@@ -8,7 +8,7 @@
 
    The GNU Readline Library is free software; you can redistribute it
    and/or modify it under the terms of the GNU General Public License
-   as published by the Free Software Foundation; either version 1, or
+   as published by the Free Software Foundation; either version 2, or
    (at your option) any later version.
 
    The GNU Readline Library is distributed in the hope that it will be
@@ -47,6 +47,8 @@
 #include "readline.h"
 #include "history.h"
 
+#include "rlprivate.h"
+
 #define SWAP(s, e)  do { int t; t = s; s = e; e = t; } while (0)
 
 /* Non-zero tells rl_delete_text and rl_insert_text to not add to
@@ -84,7 +86,7 @@ rl_add_undo (what, start, end, text)
 
 /* Free the existing undo list. */
 void
-free_undo_list ()
+rl_free_undo_list ()
 {
   while (rl_undo_list)
     {
@@ -116,6 +118,7 @@ rl_do_undo ()
 	return (0);
 
       _rl_doing_an_undo = 1;
+      RL_SETSTATE(RL_STATE_UNDOING);
 
       /* To better support vi-mode, a start or end value of -1 means
 	 rl_point, and a value of -2 means rl_end. */
@@ -150,11 +153,12 @@ rl_do_undo ()
 	  if (waiting_for_begin)
 	    waiting_for_begin--;
 	  else
-	    ding ();
+	    rl_ding ();
 	  break;
 	}
 
       _rl_doing_an_undo = 0;
+      RL_UNSETSTATE(RL_STATE_UNDOING);
 
       release = rl_undo_list;
       rl_undo_list = rl_undo_list->next;
@@ -229,7 +233,7 @@ rl_revert_line (count, key)
      int count, key;
 {
   if (!rl_undo_list)
-    ding ();
+    rl_ding ();
   else
     {
       while (rl_undo_list)
@@ -252,7 +256,7 @@ rl_undo_command (count, key)
 	count--;
       else
 	{
-	  ding ();
+	  rl_ding ();
 	  break;
 	}
     }

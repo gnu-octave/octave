@@ -1358,13 +1358,9 @@ next_token_is_postfix_unary_op (bool spc_prev)
 // spacing only really matters in the cases that can be interpreted
 // either as binary ops or prefix unary ops: currently just +, -).
 //
-// Note that
-//
-//   octave> [a +\
-//   > b]
-//
-// (the characters '[' 'a' ' ' '+' '\' LFD 'b' ']') will cause Octave
-// to treat the + as a binary operator.
+// Note that a line continuation directly following a + or - operator
+// (e.g., the characters '[' 'a' ' ' '+' '\' LFD 'b' ']') will be
+// parsed as a binary operator.
 
 static bool
 next_token_is_bin_op (bool spc_prev)

@@ -33,36 +33,26 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "oct-rl-edit.h"
 
-/* It would be nice if readline.h declared these, I think. */
-
-extern int rl_blink_matching_paren;
-
-extern int screenheight;
-
-extern int screenwidth;
-
 int
 octave_rl_screen_height (void)
 {
-  return screenheight;
+  int rows, cols;
+  rl_get_screen_size (&rows, &cols);
+  return rows;
 }
 
 int
 octave_rl_screen_width (void)
 {
-  return screenwidth;
+  int rows, cols;
+  rl_get_screen_size (&rows, &cols);
+  return cols;
 }
 
 void
-octave_set_rl_blink_matching_paren_flag (int val)
+octave_rl_enable_paren_matching (int val)
 {
-  rl_blink_matching_paren = val;
-}
-
-int
-octave_get_rl_blink_matching_paren_flag (void)
-{
-  return rl_blink_matching_paren;
+  rl_variable_bind ("blink-matching-paren", val ? "1" : "0");
 }
 
 void
@@ -95,7 +85,7 @@ octave_rl_insert_text (const char *s)
 void
 octave_rl_newline (void)
 {
-  rl_newline ();
+  rl_newline (1, '\n');
 }
 
 void
@@ -103,7 +93,7 @@ octave_rl_clear_undo_list (void)
 {
   if (rl_undo_list)
     {
-      free_undo_list ();
+      rl_free_undo_list ();
 
       rl_undo_list = 0;
     }
@@ -130,7 +120,7 @@ octave_rl_set_name (const char *n)
      init file to take advantage of the conditional parsing feature
      based on rl_readline_name; */
 
-  rl_re_read_init_file ();
+  rl_re_read_init_file (0, 0);
 }
 
 char *
@@ -169,7 +159,7 @@ octave_rl_read_init_file (const char *f)
   if (f && *f)
     rl_read_init_file (f);
   else
-    rl_re_read_init_file ();
+    rl_re_read_init_file (0, 0);
 }
 
 void
@@ -231,7 +221,7 @@ octave_rl_get_event_hook (void)
 char **
 octave_rl_completion_matches (const char *text, rl_completer_fcn_ptr f)
 {
-  return completion_matches (text, f);
+  return rl_completion_matches (text, f);
 }
 
 char

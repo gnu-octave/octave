@@ -7,7 +7,7 @@
 
    The GNU Readline Library is free software; you can redistribute it
    and/or modify it under the terms of the GNU General Public License
-   as published by the Free Software Foundation; either version 1, or
+   as published by the Free Software Foundation; either version 2, or
    (at your option) any later version.
 
    The GNU Readline Library is distributed in the hope that it will be
@@ -52,23 +52,10 @@
 /* Some standard library routines. */
 #include "readline.h"
 
+#include "rlprivate.h"
+#include "xmalloc.h"
+
 #define SWAP(s, e)  do { int t; t = s; s = e; e = t; } while (0)
-
-/* Pseudo-globals imported from readline.c */
-extern int readline_echoing_p;
-extern procenv_t readline_top_level;
-extern int rl_line_buffer_len;
-extern Function *rl_last_func;
-
-extern int _rl_defining_kbd_macro;
-extern char *_rl_executing_macro;
-
-/* Pseudo-global functions imported from other library files. */
-extern void _rl_pop_executing_macro ();
-extern void _rl_set_the_line ();
-extern void _rl_init_argument ();
-
-extern char *xmalloc (), *xrealloc ();
 
 /* **************************************************************** */
 /*								    */
@@ -80,10 +67,10 @@ extern char *xmalloc (), *xrealloc ();
    in words, or 1 if it is. */
 
 int _rl_allow_pathname_alphabetic_chars = 0;
-static char *pathname_alphabetic_chars = "/-_=~.#$";
+static const char *pathname_alphabetic_chars = "/-_=~.#$";
 
 int
-alphabetic (c)
+rl_alphabetic (c)
      int c;
 {
   if (ALPHABETIC (c))
@@ -97,16 +84,16 @@ alphabetic (c)
 int
 _rl_abort_internal ()
 {
-  ding ();
+  rl_ding ();
   rl_clear_message ();
   _rl_init_argument ();
-  rl_pending_input = 0;
+  rl_clear_pending_input ();
 
   _rl_defining_kbd_macro = 0;
-  while (_rl_executing_macro)
+  while (rl_executing_macro)
     _rl_pop_executing_macro ();
 
-  rl_last_func = (Function *)NULL;
+  rl_last_func = (rl_command_func_t *)NULL;
   longjmp (readline_top_level, 1);
   return (0);
 }
@@ -124,9 +111,9 @@ rl_tty_status (count, key)
 {
 #if defined (TIOCSTAT)
   ioctl (1, TIOCSTAT, (char *)0);
-  rl_refresh_line ();
+  rl_refresh_line (count, key);
 #else
-  ding ();
+  rl_ding ();
 #endif
   return 0;
 }
@@ -166,6 +153,58 @@ rl_extend_line_buffer (len)
   _rl_set_the_line ();
 }
 
+
+/* A function for simple tilde expansion. */
+int
+rl_tilde_expand (ignore, key)
+     int ignore, key;
+{
+  register int start, end;
+  char *homedir, *temp;
+  int len;
+
+  end = rl_point;
+  start = end - 1;
+
+  if (rl_point == rl_end && rl_line_buffer[rl_point] == '~')
+    {
+      homedir = tilde_expand ("~");
+      _rl_replace_text (homedir, start, end);
+      return (0);
+    }
+  else if (rl_line_buffer[start] != '~')
+    {
+      for (; !whitespace (rl_line_buffer[start]) && start >= 0; start--)
+        ;
+      start++;
+    }
+
+  end = start;
+  do
+    end++;
+  while (whitespace (rl_line_buffer[end]) == 0 && end < rl_end);
+
+  if (whitespace (rl_line_buffer[end]) || end >= rl_end)
+    end--;
+
+  /* If the first character of the current word is a tilde, perform
+     tilde expansion and insert the result.  If not a tilde, do
+     nothing. */
+  if (rl_line_buffer[start] == '~')
+    {
+      len = end - start + 1;
+      temp = xmalloc (len + 1);
+      strncpy (temp, rl_line_buffer + start, len);
+      temp[len] = '\0';
+      homedir = tilde_expand (temp);
+      free (temp);
+
+      _rl_replace_text (homedir, start, end);
+    }
+
+  return (0);
+}
+
 /* **************************************************************** */
 /*								    */
 /*			String Utility Functions		    */
@@ -176,13 +215,13 @@ rl_extend_line_buffer (len)
    match in s1.  The compare is case insensitive. */
 char *
 _rl_strindex (s1, s2)
-     register char *s1, *s2;
+     register const char *s1, *s2;
 {
   register int i, l, len;
 
   for (i = 0, l = strlen (s2), len = strlen (s1); (len - i) >= l; i++)
     if (_rl_strnicmp (s1 + i, s2, l) == 0)
-      return (s1 + i);
+      return ((char *) (s1 + i));
   return ((char *)NULL);
 }
 
@@ -299,4 +338,14 @@ _rl_digit_value (c)
      int c;
 {
   return (isdigit (c) ? c - '0' : c);
+}
+
+/* Backwards compatibility, now that savestring has been removed from
+   all `public' readline header files. */
+#undef _rl_savestring
+char *
+_rl_savestring (s)
+     const char *s;
+{
+  return (strcpy (xmalloc (1 + (int)strlen (s)), (s)));
 }

@@ -7,7 +7,7 @@
 
    The GNU Readline Library is free software; you can redistribute it
    and/or modify it under the terms of the GNU General Public License
-   as published by the Free Software Foundation; either version 1, or
+   as published by the Free Software Foundation; either version 2, or
    (at your option) any later version.
 
    The GNU Readline Library is distributed in the hope that it will be
@@ -27,6 +27,8 @@
 
 #include <sys/types.h>
 
+#include <stdio.h>
+
 #if defined (HAVE_UNISTD_H)
 #  include <unistd.h>
 #endif /* HAVE_UNISTD_H */
@@ -44,13 +46,9 @@
 #include <ctype.h>
 
 #include "rldefs.h"
-
-extern int _rl_convert_meta_chars_to_ascii;
-extern int _rl_output_meta_chars;
-extern int _rl_meta_flag;
-
-/* Functions imported from shell.c */
-extern char *get_env_value ();
+#include "readline.h"
+#include "rlshell.h"
+#include "rlprivate.h"
 
 #if !defined (HAVE_SETLOCALE)    
 /* A list of legal values for the LANG or LC_CTYPE environment variables.
@@ -69,12 +67,12 @@ static char *legal_lang_values[] =
  "iso88598",
  "iso88599",
  "iso885910",
- "koi8r",   
+ "koi8r",
   0
 };
 
-static char *normalize_codeset ();
-static char *find_codeset ();
+static char *normalize_codeset __P((char *));
+static char *find_codeset __P((char *, size_t *));
 #endif /* !HAVE_SETLOCALE */
 
 /* Check for LC_ALL, LC_CTYPE, and LANG and use the first with a value
@@ -107,9 +105,9 @@ _rl_init_eightbit ()
   /* We don't have setlocale.  Finesse it.  Check the environment for the
      appropriate variables and set eight-bit mode if they have the right
      values. */
-  lspec = get_env_value ("LC_ALL");
-  if (lspec == 0) lspec = get_env_value ("LC_CTYPE");
-  if (lspec == 0) lspec = get_env_value ("LANG");
+  lspec = sh_get_env_value ("LC_ALL");
+  if (lspec == 0) lspec = sh_get_env_value ("LC_CTYPE");
+  if (lspec == 0) lspec = sh_get_env_value ("LANG");
   if (lspec == 0 || (t = normalize_codeset (lspec)) == 0)
     return (0);
   for (i = 0; t && legal_lang_values[i]; i++)

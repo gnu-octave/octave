@@ -4,27 +4,31 @@
 /*								    */
 /* **************************************************************** */
 
-/*
- * Remove the next line if you're compiling this against an installed
- * libreadline.a
- */
-#define READLINE_LIBRARY
-
 #if defined (HAVE_CONFIG_H)
 #include <config.h>
 #endif
 
 #include <stdio.h>
 #include <sys/types.h>
-#include "readline.h"
-#include "history.h"
+
+#ifdef READLINE_LIBRARY
+#  include "readline.h"
+#  include "history.h"
+#else
+#  include <readline/readline.h>
+#  include <readline/history.h>
+#endif
+
+extern HIST_ENTRY **history_list ();
 
 main ()
 {
-  HIST_ENTRY **history_list ();
-  char *temp = (char *)NULL;
-  char *prompt = "readline$ ";
-  int done = 0;
+  char *temp, *prompt;
+  int done;
+
+  temp = (char *)NULL;
+  prompt = "readline$ ";
+  done = 0;
 
   while (!done)
     {
@@ -47,18 +51,17 @@ main ()
 
       if (strcmp (temp, "list") == 0)
 	{
-	  HIST_ENTRY **list = history_list ();
+	  HIST_ENTRY **list;
 	  register int i;
+
+	  list = history_list ();
 	  if (list)
 	    {
 	      for (i = 0; list[i]; i++)
-		{
-		  fprintf (stderr, "%d: %s\r\n", i, list[i]->line);
-		  free (list[i]->line);
-		}
-	      free (list);
+		fprintf (stderr, "%d: %s\r\n", i, list[i]->line);
 	    }
 	}
       free (temp);
     }
+  exit (0);
 }

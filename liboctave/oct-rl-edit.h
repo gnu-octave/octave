@@ -42,9 +42,7 @@ extern int octave_rl_screen_height (void);
 
 extern int octave_rl_screen_width (void);
 
-extern void octave_set_rl_blink_matching_paren_flag (int);
-
-extern int octave_get_rl_blink_matching_paren_flag (void);
+extern void octave_rl_enable_paren_matching (int);
 
 extern void octave_rl_init (void);
 

@@ -7,7 +7,7 @@
 
    The GNU Readline Library is free software; you can redistribute it
    and/or modify it under the terms of the GNU General Public License
-   as published by the Free Software Foundation; either version 1, or
+   as published by the Free Software Foundation; either version 2, or
    (at your option) any later version.
 
    The GNU Readline Library is distributed in the hope that it will be
@@ -46,19 +46,10 @@
 #include "readline.h"
 #include "history.h"
 
+#include "rlprivate.h"
+#include "xmalloc.h"
+
 #define SWAP(s, e)  do { int t; t = s; s = e; e = t; } while (0)
-
-/* Forward definitions. */
-void _rl_push_executing_macro (), _rl_pop_executing_macro ();
-void _rl_add_macro_char ();
-
-/* Extern declarations. */
-extern int rl_explicit_arg;
-extern int rl_key_sequence_length;
-
-extern void _rl_abort_internal ();
-
-extern char *xmalloc (), *xrealloc ();
 
 /* **************************************************************** */
 /*								    */
@@ -66,12 +57,12 @@ extern char *xmalloc (), *xrealloc ();
 /*								    */
 /* **************************************************************** */
 
-/* Non-zero means to save keys that we dispatch on in a kbd macro. */
-int _rl_defining_kbd_macro = 0;
-
 /* The currently executing macro string.  If this is non-zero,
    then it is a malloc ()'ed string where input is coming from. */
-char *_rl_executing_macro = (char *)NULL;
+char *rl_executing_macro = (char *)NULL;
+
+/* Non-zero means to save keys that we dispatch on in a kbd macro. */
+int _rl_defining_kbd_macro = 0;
 
 /* The offset in the above string to the next character to be read. */
 static int executing_macro_index;
@@ -104,8 +95,9 @@ _rl_with_macro_input (string)
      char *string;
 {
   _rl_push_executing_macro ();
-  _rl_executing_macro = string;
+  rl_executing_macro = string;
   executing_macro_index = 0;
+  RL_SETSTATE(RL_STATE_MACROINPUT);
 }
 
 /* Return the next character available from a macro, or 0 if
@@ -113,16 +105,16 @@ _rl_with_macro_input (string)
 int
 _rl_next_macro_key ()
 {
-  if (_rl_executing_macro == 0)
+  if (rl_executing_macro == 0)
     return (0);
 
-  if (_rl_executing_macro[executing_macro_index] == 0)
+  if (rl_executing_macro[executing_macro_index] == 0)
     {
       _rl_pop_executing_macro ();
       return (_rl_next_macro_key ());
     }
 
-  return (_rl_executing_macro[executing_macro_index++]);
+  return (rl_executing_macro[executing_macro_index++]);
 }
 
 /* Save the currently executing macro on a stack of saved macros. */
@@ -134,7 +126,7 @@ _rl_push_executing_macro ()
   saver = (struct saved_macro *)xmalloc (sizeof (struct saved_macro));
   saver->next = macro_list;
   saver->sindex = executing_macro_index;
-  saver->string = _rl_executing_macro;
+  saver->string = rl_executing_macro;
 
   macro_list = saver;
 }
@@ -146,20 +138,21 @@ _rl_pop_executing_macro ()
 {
   struct saved_macro *macro;
 
-  if (_rl_executing_macro)
-    free (_rl_executing_macro);
-
-  _rl_executing_macro = (char *)NULL;
+  FREE (rl_executing_macro);
+  rl_executing_macro = (char *)NULL;
   executing_macro_index = 0;
 
   if (macro_list)
     {
       macro = macro_list;
-      _rl_executing_macro = macro_list->string;
+      rl_executing_macro = macro_list->string;
       executing_macro_index = macro_list->sindex;
       macro_list = macro_list->next;
       free (macro);
     }
+
+  if (rl_executing_macro == 0)
+    RL_UNSETSTATE(RL_STATE_MACROINPUT);
 }
 
 /* Add a character to the macro being built. */
@@ -189,14 +182,12 @@ _rl_kill_kbd_macro ()
     }
   current_macro_size = current_macro_index = 0;
 
-  if (_rl_executing_macro)
-    {
-      free (_rl_executing_macro);
-      _rl_executing_macro = (char *) NULL;
-    }
+  FREE (rl_executing_macro);
+  rl_executing_macro = (char *) NULL;
   executing_macro_index = 0;
 
   _rl_defining_kbd_macro = 0;
+  RL_UNSETSTATE(RL_STATE_MACRODEF);
 }
 
 /* Begin defining a keyboard macro.
@@ -224,6 +215,7 @@ rl_start_kbd_macro (ignore1, ignore2)
     current_macro_index = 0;
 
   _rl_defining_kbd_macro = 1;
+  RL_SETSTATE(RL_STATE_MACRODEF);
   return 0;
 }
 
@@ -244,6 +236,7 @@ rl_end_kbd_macro (count, ignore)
   current_macro[current_macro_index] = '\0';
 
   _rl_defining_kbd_macro = 0;
+  RL_UNSETSTATE(RL_STATE_MACRODEF);
 
   return (rl_call_last_kbd_macro (--count, 0));
 }
@@ -259,7 +252,7 @@ rl_call_last_kbd_macro (count, ignore)
 
   if (_rl_defining_kbd_macro)
     {
-      ding ();		/* no recursive macros */
+      rl_ding ();		/* no recursive macros */
       current_macro[--current_macro_index] = '\0';	/* erase this char */
       return 0;
     }

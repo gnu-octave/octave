@@ -10,7 +10,7 @@
 
    The Library is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 1, or (at your option)
+   the Free Software Foundation; either version 2, or (at your option)
    any later version.
 
    The Library is distributed in the hope that it will be useful, but
@@ -29,6 +29,8 @@
 #if defined (HAVE_CONFIG_H)
 #  include "config.h"
 #endif
+
+#include "rlstdc.h"
 
 #if defined (_POSIX_VERSION) && !defined (TERMIOS_MISSING)
 #  define TERMIOS_TTY_DRIVER
@@ -71,7 +73,8 @@ extern char *strchr (), *strrchr ();
 #define _rl_stricmp strcasecmp
 #define _rl_strnicmp strncasecmp
 #else
-extern int _rl_stricmp (), _rl_strnicmp ();
+extern int _rl_stricmp __P((char *, char *);
+extern int _rl_strnicmp __P((char *, char *));
 #endif
 
 #if !defined (emacs_mode)
@@ -87,14 +90,14 @@ extern int _rl_stricmp (), _rl_strnicmp ();
    This is not what is wanted. */
 #if defined (CRAY)
 #  define FUNCTION_TO_KEYMAP(map, key)	(Keymap)((int)map[key].function)
-#  define KEYMAP_TO_FUNCTION(data)	(Function *)((int)(data))
+#  define KEYMAP_TO_FUNCTION(data)	(rl_command_func_t *)((int)(data))
 #else
 #  define FUNCTION_TO_KEYMAP(map, key)	(Keymap)(map[key].function)
-#  define KEYMAP_TO_FUNCTION(data)	(Function *)(data)
+#  define KEYMAP_TO_FUNCTION(data)	(rl_command_func_t *)(data)
 #endif
 
 #ifndef savestring
-extern char *xmalloc ();
+extern char *xmalloc __P((int));
 #define savestring(x) strcpy (xmalloc (1 + strlen (x)), (x))
 #endif
 
@@ -122,7 +125,8 @@ extern char *xmalloc ();
 
 #if !defined (STREQ)
 #define STREQ(a, b)	(((a)[0] == (b)[0]) && (strcmp ((a), (b)) == 0))
-#define STREQN(a, b, n)	(((a)[0] == (b)[0]) && (strncmp ((a), (b), (n)) == 0))
+#define STREQN(a, b, n)	(((n) == 0) ? (1) \
+				    : ((a)[0] == (b)[0]) && (strncmp ((a), (b), (n)) == 0))
 #endif
 
 #if !defined (FREE)

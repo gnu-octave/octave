@@ -12,7 +12,7 @@
 
    The Library is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 1, or (at your option)
+   the Free Software Foundation; either version 2, or (at your option)
    any later version.
 
    The Library is distributed in the hope that it will be useful, but
@@ -48,24 +48,17 @@
 #include "readline.h"
 #include "history.h"
 
+#include "rlprivate.h"
+#include "xmalloc.h"
+
+/* Variables exported to other files in the readline library. */
+unsigned char *_rl_isearch_terminators = (unsigned char *)NULL;
+
 /* Variables imported from other files in the readline library. */
-extern Keymap _rl_keymap;
-extern HIST_ENTRY *saved_line_for_history;
-extern int rl_line_buffer_len;
-extern int rl_point, rl_end;
-extern char *rl_line_buffer;
+extern HIST_ENTRY *_rl_saved_line_for_history;
 
-extern void _rl_save_prompt ();
-extern void _rl_restore_prompt ();
-
-extern int rl_execute_next ();
-extern void rl_extend_line_buffer ();
-
-extern int _rl_input_available ();
-
-extern char *xmalloc (), *xrealloc ();
-
-static int rl_search_history ();
+/* Forward declarations */
+static int rl_search_history __P((int, int));
 
 /* Last line found by the current incremental search, so we don't `find'
    identical lines many times in a row. */
@@ -178,14 +171,23 @@ rl_search_history (direction, invoking_key)
   /* Non-zero if we are doing a reverse search. */
   int reverse;
 
+  /* The list of characters which terminate the search, but are not
+     subsequently executed.  If the variable isearch-terminators has
+     been set, we use that value, otherwise we use ESC and C-J. */
+  unsigned char *isearch_terminators;
+
+  RL_SETSTATE(RL_STATE_ISEARCH);
   orig_point = rl_point;
   last_found_line = orig_line = where_history ();
   reverse = direction < 0;
   hlist = history_list ();
   allocated_line = (char *)NULL;
 
+  isearch_terminators = _rl_isearch_terminators ? _rl_isearch_terminators
+						: (unsigned char *)"\033\012";
+
   /* Create an arrary of pointers to the lines that we want to search. */
-  maybe_replace_line ();
+  rl_maybe_replace_line ();
   i = 0;
   if (hlist)
     for (i = 0; hlist[i]; i++);
@@ -196,8 +198,8 @@ rl_search_history (direction, invoking_key)
   for (i = 0; i < hlen; i++)
     lines[i] = hlist[i]->line;
 
-  if (saved_line_for_history)
-    lines[i] = saved_line_for_history->line;
+  if (_rl_saved_line_for_history)
+    lines[i] = _rl_saved_line_for_history->line;
   else
     {
       /* Keep track of this so we can free it. */
@@ -211,7 +213,7 @@ rl_search_history (direction, invoking_key)
   /* The line where we start the search. */
   i = orig_line;
 
-  _rl_save_prompt ();
+  rl_save_prompt ();
 
   /* Initialize search parameters. */
   search_string = xmalloc (search_string_size = 128);
@@ -231,10 +233,12 @@ rl_search_history (direction, invoking_key)
   found = failed = 0;
   for (;;)
     {
-      Function *f = (Function *)NULL;
+      rl_command_func_t *f = (rl_command_func_t *)NULL;
 
       /* Read a key and decide how to proceed. */
+      RL_SETSTATE(RL_STATE_MOREINPUT);
       c = rl_read_key ();
+      RL_UNSETSTATE(RL_STATE_MOREINPUT);
 
       if (_rl_keymap[c].type == ISFUNC)
 	{
@@ -246,10 +250,18 @@ rl_search_history (direction, invoking_key)
 	    c =  !reverse ? -1 : -2;
 	}
 
+#if 0
       /* Let NEWLINE (^J) terminate the search for people who don't like
 	 using ESC.  ^M can still be used to terminate the search and
 	 immediately execute the command. */
       if (c == ESC || c == NEWLINE)
+#else
+      /* The characters in isearch_terminators (set from the user-settable
+	 variable isearch-terminators) are used to terminate the search but
+	 not subsequently execute the character as a command.  The default
+	 value is "\033\012" (ESC and C-J). */
+      if (strchr (isearch_terminators, c))
+#endif
 	{
 	  /* ESC still terminates the search, but if there is pending
 	     input or if input arrives within 0.1 seconds (on systems
@@ -262,8 +274,10 @@ rl_search_history (direction, invoking_key)
 	  break;
 	}
 
-      if (c >= 0 && (CTRL_CHAR (c) || META_CHAR (c) || c == RUBOUT))
+      if (c >= 0 && (CTRL_CHAR (c) || META_CHAR (c) || c == RUBOUT) && c != CTRL ('G'))
 	{
+	  /* This sets rl_pending_input to c; it will be picked up the next
+	     time rl_read_key is called. */
 	  rl_execute_next (c);
 	  break;
 	}
@@ -278,7 +292,7 @@ rl_search_history (direction, invoking_key)
 	  else if (line_index != sline_len)
 	    ++line_index;
 	  else
-	    ding ();
+	    rl_ding ();
 	  break;
 
 	  /* switch directions */
@@ -291,12 +305,28 @@ rl_search_history (direction, invoking_key)
 	  strcpy (rl_line_buffer, lines[orig_line]);
 	  rl_point = orig_point;
 	  rl_end = strlen (rl_line_buffer);
-	  _rl_restore_prompt();
+	  rl_restore_prompt();
 	  rl_clear_message ();
 	  if (allocated_line)
 	    free (allocated_line);
 	  free (lines);
+	  RL_UNSETSTATE(RL_STATE_ISEARCH);
 	  return 0;
+
+#if 0
+	/* delete character from search string. */
+	case -3:
+	  if (search_string_index == 0)
+	    rl_ding ();
+	  else
+	    {
+	      search_string[--search_string_index] = '\0';
+	      /* This is tricky.  To do this right, we need to keep a
+		 stack of search positions for the current search, with
+		 sentinels marking the beginning and end. */
+	    }
+	  break;
+#endif
 
 	default:
 	  /* Add character to search string and continue search. */
@@ -360,7 +390,7 @@ rl_search_history (direction, invoking_key)
       if (failed)
 	{
 	  /* We cannot find the search string.  Ding the bell. */
-	  ding ();
+	  rl_ding ();
 	  i = last_found_line;
 	  continue; 		/* XXX - was break */
 	}
@@ -394,15 +424,15 @@ rl_search_history (direction, invoking_key)
   /* First put back the original state. */
   strcpy (rl_line_buffer, lines[orig_line]);
 
-  _rl_restore_prompt ();
+  rl_restore_prompt ();
 
   /* Free the search string. */
   free (search_string);
 
   if (last_found_line < orig_line)
-    rl_get_previous_history (orig_line - last_found_line);
+    rl_get_previous_history (orig_line - last_found_line, 0);
   else
-    rl_get_next_history (last_found_line - orig_line);
+    rl_get_next_history (last_found_line - orig_line, 0);
 
   /* If the string was not found, put point at the end of the line. */
   if (line_index < 0)
@@ -413,6 +443,8 @@ rl_search_history (direction, invoking_key)
   if (allocated_line)
     free (allocated_line);
   free (lines);
+
+  RL_UNSETSTATE(RL_STATE_ISEARCH);
 
   return 0;
 }

@@ -1,5 +1,16 @@
 2001-02-06  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* oct-rl-edit.c (octave_rl_newline): Call rl_newline with two args.
+	(octave_rl_set_name): call rl_re_read_init_file with two args.
+	(octave_rl_read_init_file): Ditto.
+	(octave_rl_clear_undo_list): Call rl_free_undo_list, not
+	free_undo_list.
+	(octave_rl_completion_matches): Call rl_completion_matches, not
+	completion_matches.
+	(octave_rl_enable_paren_matching): New function.
+	(octave_rl_set_blink_matching_paren_flag): Delete.
+	(octave_rl_get_blink_matching_paren_flag): Delete.
+
 	* lo-mappers.h, lo-mappers.cc (log10 (const Complex&),
 	tanh (const Complex&)): Declare and define if not 
 	CXX_ISO_COMPLIANT_LIBRARY.

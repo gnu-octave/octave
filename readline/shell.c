@@ -8,7 +8,7 @@
 
    The GNU Readline Library is free software; you can redistribute it
    and/or modify it under the terms of the GNU General Public License
-   as published by the Free Software Foundation; either version 1, or
+   as published by the Free Software Foundation; either version 2, or
    (at your option) any later version.
 
    The GNU Readline Library is distributed in the hope that it will be
@@ -26,6 +26,8 @@
 #  include <config.h>
 #endif
 
+#include <sys/types.h>
+
 #if defined (HAVE_UNISTD_H)
 #  include <unistd.h>
 #endif /* HAVE_UNISTD_H */
@@ -36,32 +38,41 @@
 #  include "ansi_stdlib.h"
 #endif /* HAVE_STDLIB_H */
 
-extern char *xmalloc (), *xrealloc ();
+#if defined (HAVE_STRING_H)
+#  include <string.h>
+#else
+#  include <strings.h>
+#endif /* !HAVE_STRING_H */
 
-#if !defined (SHELL)
+#include <fcntl.h>
+#include <pwd.h>
 
-#ifdef savestring
-#undef savestring
+#include <stdio.h>
+
+#include "rlstdc.h"
+#include "rlshell.h"
+#include "xmalloc.h"
+
+#if !defined (HAVE_GETPW_DECLS)
+extern struct passwd *getpwuid __P((uid_t));
+#endif /* !HAVE_GETPW_DECLS */
+
+#ifndef NULL
+#  define NULL 0
 #endif
 
-/* Backwards compatibility, now that savestring has been removed from
-   all `public' readline header files. */
-char *
-savestring (s)
-     char *s;
-{
-  return ((char *)strcpy (xmalloc (1 + (int)strlen (s)), (s)));
-}
+/* All of these functions are resolved from bash if we are linking readline
+   as part of bash. */
 
 /* Does shell-like quoting using single quotes. */
 char *
-single_quote (string)
+sh_single_quote (string)
      char *string;
 {
   register int c;
   char *result, *r, *s;
 
-  result = (char *)xmalloc (3 + (3 * strlen (string)));
+  result = (char *)xmalloc (3 + (4 * strlen (string)));
   r = result;
   *r++ = '\'';
 
@@ -86,7 +97,7 @@ single_quote (string)
 /* Set the environment variables LINES and COLUMNS to lines and cols,
    respectively. */
 void
-set_lines_and_columns (lines, cols)
+sh_set_lines_and_columns (lines, cols)
      int lines, cols;
 {
   char *b;
@@ -111,19 +122,55 @@ set_lines_and_columns (lines, cols)
 }
 
 char *
-get_env_value (varname)
-     char *varname;
+sh_get_env_value (varname)
+     const char *varname;
 {
   return ((char *)getenv (varname));
 }
 
-#else /* SHELL */
-extern char *get_string_value ();
-
 char *
-get_env_value (varname)
-     char *varname;
+sh_get_home_dir ()
 {
-  return get_string_value (varname);
-}	
-#endif /* SHELL */
+  char *home_dir;
+  struct passwd *entry;
+
+  home_dir = (char *)NULL;
+  entry = getpwuid (getuid ());
+  if (entry)
+    home_dir = entry->pw_dir;
+  return (home_dir);
+}
+
+#if !defined (O_NDELAY)
+#  if defined (FNDELAY)
+#    define O_NDELAY FNDELAY
+#  endif
+#endif
+
+int
+sh_unset_nodelay_mode (fd)
+     int fd;
+{
+  int flags, bflags;
+
+  if ((flags = fcntl (fd, F_GETFL, 0)) < 0)
+    return -1;
+
+  bflags = 0;
+
+#ifdef O_NONBLOCK
+  bflags |= O_NONBLOCK;
+#endif
+
+#ifdef O_NDELAY
+  bflags |= O_NDELAY;
+#endif
+
+  if (flags & bflags)
+    {
+      flags &= ~bflags;
+      return (fcntl (fd, F_SETFL, flags));
+    }
+
+  return 0;
+}

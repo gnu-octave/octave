@@ -6,7 +6,7 @@
 
    The Library is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 1, or (at your option)
+   the Free Software Foundation; either version 2, or (at your option)
    any later version.
 
    The Library is distributed in the hope that it will be useful, but
@@ -22,17 +22,11 @@
 #if !defined (_HISTLIB_H_)
 #define _HISTLIB_H_
 
-/* Function pointers can be declared as (Function *)foo. */
-#if !defined (_FUNCTION_DEF)
-#  define _FUNCTION_DEF
-typedef int Function ();
-typedef void VFunction ();
-typedef char *CPFunction ();
-typedef char **CPPFunction ();
-#endif /* _FUNCTION_DEF */
-
+#if !defined (STREQ)
 #define STREQ(a, b)	(((a)[0] == (b)[0]) && (strcmp ((a), (b)) == 0))
-#define STREQN(a, b, n)	(((a)[0] == (b)[0]) && (strncmp ((a), (b), (n)) == 0))
+#define STREQN(a, b, n) (((n) == 0) ? (1) \
+				    : ((a)[0] == (b)[0]) && (strncmp ((a), (b), (n)) == 0))
+#endif
 
 #ifndef savestring
 #  ifndef strcpy
@@ -69,6 +63,7 @@ extern char *strchr ();
 #define BAD_WORD_SPEC	1
 #define SUBST_FAILED	2
 #define BAD_MODIFIER	3
+#define NO_PREV_SUBST	4
 
 /* Possible definitions for history starting point specification. */
 #define ANCHORED_SEARCH 1
@@ -77,5 +72,8 @@ extern char *strchr ();
 /* Possible definitions for what style of writing the history file we want. */
 #define HISTORY_APPEND 0
 #define HISTORY_OVERWRITE 1
+
+/* Some variable definitions shared across history source files. */
+extern int history_offset;
 
 #endif /* !_HISTLIB_H_ */

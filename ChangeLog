@@ -1,3 +1,7 @@
+2001-02-06  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* readline: Update to new version (4.2-beta1).
+
 2001-02-05  Mumit Khan  <khan@nanotech.wisc.edu>
 
 	* configure.in (TEMPLATE_AR, TEMPLATE_ARFLAGS): New variables.

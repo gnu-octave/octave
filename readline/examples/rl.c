@@ -2,29 +2,31 @@
  * rl - command-line interface to read a line from the standard input
  *      (or another fd) using readline.
  *
- * usage: rl [-p prompt] [-u unit] [-d default]
+ * usage: rl [-p prompt] [-u unit] [-d default] [-n nchars]
  */
-
-/*
- * Remove the next line if you're compiling this against an installed
- * libreadline.a
- */
-#define READLINE_LIBRARY
 
 #if defined (HAVE_CONFIG_H)
-#include <config.h>
+#  include <config.h>
 #endif
 
 #include <stdio.h>
 #include <sys/types.h>
 #include "posixstat.h"
-#include "readline.h"
-#include "history.h"
+
+#if defined (READLINE_LIBRARY)
+#  include "readline.h"
+#  include "history.h"
+#else
+#  include <readline/readline.h>
+#  include <readline/history.h>
+#endif
 
 extern int optind;
 extern char *optarg;
 
+#if !defined (strchr) && !defined (__STDC__)
 extern char *strrchr();
+#endif
 
 static char *progname;
 static char *deftext;
@@ -36,23 +38,26 @@ set_deftext ()
     {
       rl_insert_text (deftext);
       deftext = (char *)NULL;
-      rl_startup_hook = (Function *)NULL;
+      rl_startup_hook = (rl_hook_func_t *)NULL;
     }
+  return 0;
 }
 
+static void
 usage()
 {
-  fprintf (stderr, "%s: usage: %s [-p prompt] [-u unit] [-d default]\n",
+  fprintf (stderr, "%s: usage: %s [-p prompt] [-u unit] [-d default] [-n nchars]\n",
 		progname, progname);
 }
 
+int
 main (argc, argv)
      int argc;
      char **argv;
 {
   char *temp, *prompt;
   struct stat sb;
-  int done, opt, fd;
+  int opt, fd, nch;
   FILE *ifp;
 
   progname = strrchr(argv[0], '/');
@@ -63,10 +68,10 @@ main (argc, argv)
 
   /* defaults */
   prompt = "readline$ ";
-  fd = 0;
+  fd = nch = 0;
   deftext = (char *)0;
 
-  while ((opt = getopt(argc, argv, "p:u:d:")) != EOF)
+  while ((opt = getopt(argc, argv, "p:u:d:n:")) != EOF)
     {
       switch (opt)
 	{
@@ -83,6 +88,14 @@ main (argc, argv)
 	  break;
 	case 'd':
 	  deftext = optarg;
+	  break;
+	case 'n':
+	  nch = atoi(optarg);
+	  if (nch < 0)
+	    {
+	      fprintf (stderr, "%s: bad value for -n: `%s'\n", progname, optarg);
+	      exit (2);
+	    }
 	  break;
 	default:
 	  usage ();
@@ -104,12 +117,15 @@ main (argc, argv)
   if (deftext && *deftext)
     rl_startup_hook = set_deftext;
 
+  if (nch > 0)
+    rl_num_chars_to_read = nch;
+
   temp = readline (prompt);
 
   /* Test for EOF. */
   if (temp == 0)
     exit (1);
 
-  puts (temp);
+  printf ("%s\n", temp);
   exit (0);
 }

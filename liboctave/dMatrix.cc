@@ -2443,6 +2443,16 @@ Matrix::read (std::istream& is, int nr, int nc,
 	      oct_data_conv::data_type dt, int skip,
 	      oct_mach_info::float_format flt_fmt)
 {
+  if (nr == 0 || nc == 0)
+    {
+      if (nr >= 0 && nc >= 0)
+	resize (nr, nc);
+      else
+	resize (0, 0);
+
+      return 0;
+    }
+
   int retval = -1;
 
   bool ok = true;

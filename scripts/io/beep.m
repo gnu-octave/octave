@@ -19,9 +19,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} puts (@var{string})
-## Write a string to the standard output with no formatting.
+## Produce a beep from the speaker (or visual bell).
 ## @end deftypefn
-## @seealso{fputs, printf and fprintf}
+## @seealso{puts, fputs, printf and fprintf}
 
 ## Author: jwe
 

@@ -1,3 +1,8 @@
+2003-01-06  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-stream.cc (get_size): If only one dimension is specified and
+	it is zero, also set the other dimension to zero instead of one.
+
 2003-01-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* sysdep.cc [__DECCXX]: Add a kluge for some missing template

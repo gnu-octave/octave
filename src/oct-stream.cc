@@ -123,7 +123,8 @@ get_size (const Array<double>& size, int& nr, int& nc, bool& one_elt_size_spec,
       one_elt_size_spec = true;
 
       dnr = size (0);
-      dnc = 1.0;
+
+      dnc = (dnr == 0.0) ? 0.0 : 1.0;
     }
   else if (sz_len == 2)
     {

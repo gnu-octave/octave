@@ -26,51 +26,45 @@ DISTFILES = Makefile.in $(SOURCES)
 
 SUBDIRS = control elfun general image linear-algebra miscellaneous \
 	plot polynomial set signal specfun special-matrix startup \
-	statistics strings
+	statistics strings time
 
 DISTSUBDIRS = $(SUBDIRS)
 
 FCN_FILES = # $(wildcard $(srcdir)/*.m)
 FCN_FILES_NO_DIR = # $(notdir $(FCN_FILES))
 
-all:
-	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $@; cd ..; done
+all: $(SUBDIRS)
 .PHONY: all
 
-install:
-	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $@; cd ..; done
+$(SUBDIRS):
+	echo making all in $@
+	cd $@ ; $(MAKE) all
+.PHONY: $(SUBDIRS)
+
+install uninstall clean mostlyclean distclean realclean::
+	$(SUBDIR_FOR_COMMAND)
+.PHONY: install uninstall clean mostlyclean distclean realclean
+
+install::
 	ls -R $(datadir)/octave > $(datadir)/octave/ls-R
-.PHONY: install
 
-uninstall:
-	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $@; cd ..; done
+uninstall::
 	rm -f $(datadir)/octave/ls-R
-.PHONY: uninstall
 
-clean:
-.PHONY: clean
+tags TAGS:: $(SOURCES)
+	$(SUBDIR_FOR_COMMAND)
 
-tags: $(SOURCES)
-	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $@; cd ..; done
+tags::
 	ctags $(SOURCES)
 
-TAGS: $(SOURCES)
-	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $@; cd ..; done
+TAGS:: $(SOURCES)
 	etags $(SOURCES)
 
-mostlyclean: clean
-	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $@; cd ..; done
-.PHONY: mostlyclean
-
-distclean: clean
-	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $@; cd ..; done
+distclean::
 	rm -f Makefile
-.PHONY: distclean
 
-realclean:
-	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $@; cd ..; done
+realclean::
 	rm -f tags TAGS Makefile
-.PHONY: realclean
 
 local-dist:
 	ln $(DISTFILES) ../`cat ../.fname`/scripts

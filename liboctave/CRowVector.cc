@@ -399,25 +399,29 @@ operator / (double s, const ComplexRowVector& a)
 ComplexRowVector
 operator + (const Complex& s, const RowVector& a)
 {
-  return ComplexRowVector ();
+  int a_len = a.length ();
+  return ComplexRowVector (add (a.data (), a_len, s), a_len);
 }
 
 ComplexRowVector
 operator - (const Complex& s, const RowVector& a)
 {
-  return ComplexRowVector ();
+  int a_len = a.length ();
+  return ComplexRowVector (subtract (s, a.data (), a_len), a_len);
 }
 
 ComplexRowVector
 operator * (const Complex& s, const RowVector& a)
 {
-  return ComplexRowVector ();
+  int a_len = a.length ();
+  return ComplexRowVector (multiply (a.data (), a_len, s), a_len);
 }
 
 ComplexRowVector
 operator / (const Complex& s, const RowVector& a)
 {
-  return ComplexRowVector ();
+  int a_len = a.length ();
+  return ComplexRowVector (divide (s, a.data (), a_len), a_len);
 }
 
 // row vector by matrix -> row vector

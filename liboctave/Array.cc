@@ -1007,7 +1007,7 @@ typedef DiagArray<Complex> diag_array_type_complex;
 // For example, if my-types.h contains typedefs for the Array types
 // you are interested in, you might compile this file with the command
 //
-//   g++ -fexternal-templates -DUSER_EXTERNAL_TEMPLATES \
+//   g++ -fexternal-templates -DUSE_EXTERNAL_TEMPLATES \
 //       -DUSER_TYPEDEFS=\"my-types.h\"
 
 #include USER_TYPEDEFS

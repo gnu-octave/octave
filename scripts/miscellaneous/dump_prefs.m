@@ -1,4 +1,4 @@
-# Copyright (C) 1994 John W. Eaton
+# Copyright (C) 1994, 1995 John W. Eaton
 # 
 # This file is part of Octave.
 # 
@@ -42,7 +42,7 @@ function dump_prefs (file)
   dump_1_pref (file, "PS1");
   dump_1_pref (file, "PS2");
   dump_1_pref (file, "automatic_replot");
-  dump_1_pref (file, "commas_in_literal_matrix");
+  dump_1_pref (file, "whitespace_in_literal_matrix");
   dump_1_pref (file, "default_save_format");
   dump_1_pref (file, "do_fortran_indexing");
   dump_1_pref (file, "empty_list_elements_ok");

@@ -488,16 +488,13 @@ Array2<T>::maybe_delete_elements (idx_vector& idx_i, idx_vector& idx_j)
 #define MAYBE_RESIZE_LHS \
   do \
     { \
-      if (liboctave_rre_flag) \
-	{ \
-	  int max_row_idx = idx_i_is_colon ? rhs_nr : idx_i.max () + 1; \
-	  int max_col_idx = idx_j_is_colon ? rhs_nc : idx_j.max () + 1; \
+      int max_row_idx = idx_i_is_colon ? rhs_nr : idx_i.max () + 1; \
+      int max_col_idx = idx_j_is_colon ? rhs_nc : idx_j.max () + 1; \
  \
-	  int new_nr = max_row_idx > lhs_nr ? max_row_idx : lhs_nr; \
-	  int new_nc = max_col_idx > lhs_nc ? max_col_idx : lhs_nc; \
+      int new_nr = max_row_idx > lhs_nr ? max_row_idx : lhs_nr; \
+      int new_nc = max_col_idx > lhs_nc ? max_col_idx : lhs_nc; \
  \
-	  lhs.resize (new_nr, new_nc, rfv); \
-	} \
+      lhs.resize (new_nr, new_nc, rfv); \
     } \
   while (0)
 
@@ -528,9 +525,9 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs, const LT& rfv)
 
   if (n_idx == 2)
     {
-      int n = idx_i.freeze (lhs_nr, "row", liboctave_rre_flag);
+      int n = idx_i.freeze (lhs_nr, "row", true, liboctave_wrore_flag);
 
-      int m = idx_j.freeze (lhs_nc, "column", liboctave_rre_flag);
+      int m = idx_j.freeze (lhs_nc, "column", true, liboctave_wrore_flag);
 
       int idx_i_is_colon = idx_i.is_colon ();
       int idx_j_is_colon = idx_j.is_colon ();
@@ -616,7 +613,7 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs, const LT& rfv)
 	{
 	  int lhs_len = lhs.length ();
 
-	  int n = idx_i.freeze (lhs_len, 0, liboctave_rre_flag);
+	  int n = idx_i.freeze (lhs_len, 0, true, liboctave_wrore_flag);
 
 	  if (idx_i)
 	    {
@@ -674,7 +671,7 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs, const LT& rfv)
 	}
       else if (lhs_nr == 1)
 	{
-	  idx_i.freeze (lhs_nc, "vector", liboctave_rre_flag);
+	  idx_i.freeze (lhs_nc, "vector", true, liboctave_wrore_flag);
 
 	  if (idx_i)
 	    {
@@ -692,7 +689,7 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs, const LT& rfv)
 	}
       else if (lhs_nc == 1)
 	{
-	  idx_i.freeze (lhs_nr, "vector", liboctave_rre_flag);
+	  idx_i.freeze (lhs_nr, "vector", true, liboctave_wrore_flag);
 
 	  if (idx_i)
 	    {

@@ -82,7 +82,6 @@ function dump_prefs (file)
               "print_empty_dimensions";
               "print_rhs_assign_val";
               "propagate_empty_matrices";
-              "resize_on_range_error";
               "return_last_computed_value";
               "save_precision";
               "saving_history";
@@ -103,6 +102,7 @@ function dump_prefs (file)
               "warn_missing_semicolon";
               "warn_neg_dim_as_zero";
               "warn_num_to_str";
+              "warn_resize_on_range_error";
               "warn_str_to_num";
               "warn_variable_switch_label";
               "whitespace_in_literal_matrix"];

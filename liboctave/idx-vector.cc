@@ -612,7 +612,8 @@ IDX_VEC_REP::print (std::ostream& os) const
 }
 
 int
-IDX_VEC_REP::freeze (int z_len, const char *tag, int resize_ok)
+IDX_VEC_REP::freeze (int z_len, const char *tag, bool resize_ok,
+		     bool warn_resize)
 {
   if (frozen)
     return frozen_len;
@@ -655,7 +656,21 @@ IDX_VEC_REP::freeze (int z_len, const char *tag, int resize_ok)
 	      initialized = 0;
 	    }
 	  else
-	    frozen_len = length (z_len);
+	    {
+	      if (warn_resize && max_val >= z_len)
+		{
+		  if (tag)
+		    (*current_liboctave_error_handler)
+		      ("resizing object with %s index = %d out of bounds",
+		       tag, max_val+1);
+		  else
+		    (*current_liboctave_error_handler)
+		      ("resizing object with index = %d out of bounds",
+		       max_val+1);
+		}
+
+	      frozen_len = length (z_len);
+	    }
 	}
     }
 

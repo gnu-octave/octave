@@ -1,10 +1,21 @@
 2003-07-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* ov-list.cc (octave_list::assign): Check
+	Vwarn_resize_on_range_error, not Vresize_on_range_error.
+
+	* ov.cc (Vwarn_resize_on_range_error): New variable.
+	(warn_resize_on_range_error): New function.
+	(symbols_of_ov): Add DEFVAR for warn_resize_on_range_error.
+
+	* ov.cc (Vresize_on_range_error): Delete.
+	(resize_on_range_error): Delete.
+	(symbols_of_ov): Delete DEFVAR for resize_on_range_error.
+
 	* pt-mat.cc (Vwarn_empty_list_elements): New variable.
 	(warn_empty_list_elements): New function.
 	(symbols_of_pt_mat): Add DEFVAR for warn_empty_list_elements.
-	(): Check Vwarn_empty_list_elements, not
-	Vempty_list_elements_ok.
+	(tm_row_const::tm_row_const_rep::init, tm_const::init): 
+	Check Vwarn_empty_list_elements, not Vempty_list_elements_ok.
 
 	* pt-mat.cc (Vempty_list_elements_ok): Delete.
 	(empty_list_elements_ok): Delete.

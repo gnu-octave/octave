@@ -1,8 +1,10 @@
 2003-07-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
-	* emacs/octave-mod.el (octave-variables): Add
-	warn_empty_list_elements to the list.
-	Delete empty_list_elements_ok from the list.
+	* emacs/octave-mod.el (octave-variables):
+	Add warn_empty_list_elements and warn_resize_on_range_error to the
+	list.
+	Delete empty_list_elements_ok and resize_on_range_error from the
+	list.
 
 2003-07-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

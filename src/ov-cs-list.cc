@@ -203,8 +203,13 @@ octave_list::assign (const octave_value_list& idx, const octave_value& rhs)
 	{
 	  int n = lst.length ();
 
-	  if (i > 0 && (Vresize_on_range_error || i <= n))
-	    lst(i-1) = rhs;
+	  if (i > 0)
+	    {
+	      if (Vwarn_resize_on_range_error && i > n)
+		warning ("list index = %d out of range", i);
+
+	      lst(i-1) = rhs;
+	    }
 	  else
 	    error ("list index = %d out of range", i);
 	}

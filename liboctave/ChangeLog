@@ -1,3 +1,20 @@
+2003-07-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Array2-idx.h (assign (Array2<LT>&, const Array2<RT>&, const LT&)):
+	Pass true for resize_ok arg to freeze.
+	* Array-idx.h (assign (Array<LT>&, const Array<RT>&, const LT&)): 
+	Likewise.
+
+	* idx-vector.cc (IDX_VEC_REP::freeze): New arg, warn_resize;
+	resize_ok arg is now bool.
+	* idx-vector.h (idx_vector::freeze): Likewise.
+
+	* Array-flags.cc, Array-flags.h (liboctave_wrore_flag):
+	Rename from liboctave_rre_flag.  Now bool.
+	(liboctave_wfi_flag): Now bool.
+
+	* Array2-idx.h (MAYBE_RESIZE_LHS): Don't check liboctave_rre_flag.
+
 2003-07-11  Russell Standish <R.Standish@unsw.edu.au>
 
 	* Array.h (resize_fill_value): Now a top-level template function.

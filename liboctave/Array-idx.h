@@ -69,8 +69,7 @@ Array<T>::value (void)
 
 template <class T>
 Array<T>
-Array<T>::index (idx_vector& idx_arg, int resize_ok,
-		 const T& resize_fill_value) const
+Array<T>::index (idx_vector& idx_arg, int resize_ok, const T& rfv) const
 {
   Array<T> retval;
 
@@ -102,7 +101,7 @@ Array<T>::index (idx_vector& idx_arg, int resize_ok,
 	    {
 	      int ii = idx_arg.elem (i);
 	      if (ii >= len)
-		retval.elem (i) = resize_fill_value;
+		retval.elem (i) = rfv;
 	      else
 		retval.elem (i) = elem (ii);
 	    }
@@ -181,7 +180,7 @@ Array<T>::maybe_delete_elements (idx_vector& idx_arg)
 
 template <class LT, class RT>
 int
-assign (Array<LT>& lhs, const Array<RT>& rhs, const LT& resize_fill_value)
+assign (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 {
   int retval = 1;
 
@@ -192,15 +191,15 @@ assign (Array<LT>& lhs, const Array<RT>& rhs, const LT& resize_fill_value)
   int lhs_len = lhs.length ();
   int rhs_len = rhs.length ();
 
-  int n = lhs_idx.freeze (lhs_len, "vector", liboctave_rre_flag);
+  int n = lhs_idx.freeze (lhs_len, "vector", true, liboctave_wrore_flag);
 
   if (n != 0)
     {
-      if (liboctave_rre_flag && (rhs_len == n || rhs_len == 1))
+      if (rhs_len == n || rhs_len == 1)
 	{
 	  int max_idx = lhs_idx.max () + 1;
 	  if (max_idx > lhs_len)
-	    lhs.resize (max_idx, resize_fill_value);
+	    lhs.resize (max_idx, rfv);
 	}
 
       if (rhs_len == n)

@@ -22,7 +22,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #if defined (OCTAVE_SOURCE)
 extern int liboctave_wfi_flag;
-extern int liboctave_rre_flag;
+extern int liboctave_wrore_flag;
 #endif
 
 /*

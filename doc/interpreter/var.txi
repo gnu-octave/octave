@@ -321,11 +321,6 @@ Default value: 1.
 
 Default value: 1.
 
-@item resize_on_range_error
-@xref{Index Expressions}.
-
-Default value: 1.
-
 @item return_last_computed_value
 @xref{Returning From a Function}.
 
@@ -430,6 +425,11 @@ Default value: 0.
 @xref{Dynamically Linked Functions}.
 
 Default value: 1.
+
+@item warn_resize_on_range_error
+@xref{Index Expressions}.
+
+Default value: 0.
 
 @item warn_single_quote_string)
 @xref{String Conversions}.

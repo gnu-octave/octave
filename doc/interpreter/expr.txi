@@ -167,7 +167,7 @@ use the function @code{ones} to generate a matrix of the appropriate
 size whose elements are all one, and then to scale it to produce the
 desired result.  @xref{Special Utility Matrices}.
 
-@DOCSTRING(resize_on_range_error)
+@DOCSTRING(warn_resize_on_range_error)
 
 Note that it is quite inefficient to create a vector using a loop like
 the one shown in the example above.  In this particular case, it would

@@ -70,8 +70,7 @@ ArrayN<T>::value (void)
 
 template <class T>
 ArrayN<T>
-ArrayN<T>::index (idx_vector& ra_idx, int resize_ok,
-		  const T& resize_fill_value) const
+ArrayN<T>::index (idx_vector& ra_idx, int resize_ok, const T& rfv) const
 {
   ArrayN<T> retval;
   assert (0);
@@ -200,8 +199,7 @@ get_elt_idx (const Array<idx_vector>& ra_idx, const Array<int>& result_idx)
 
 template <class T>
 ArrayN<T>
-ArrayN<T>::index (Array<idx_vector>& ra_idx, int resize_ok,
-		  const T& resize_fill_value) const
+ArrayN<T>::index (Array<idx_vector>& ra_idx, int resize_ok, const T& rfv) const
 {
   ArrayN<T> retval;
 
@@ -242,7 +240,7 @@ ArrayN<T>::index (Array<idx_vector>& ra_idx, int resize_ok,
 		  Array<int> elt_idx = get_elt_idx (result_idx);
 
 		  if (elt_idx > orig_len)
-		    retval.elem (result_idx) = resize_fill_value;
+		    retval.elem (result_idx) = rfv;
 		  else
 		    retval.elem (result_idx) = elem (elt_idx);
 

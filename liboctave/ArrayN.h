@@ -191,7 +191,7 @@ public:
 
 template <class LT, class RT>
 int
-assign (ArrayN<LT>& lhs, const ArrayN<RT>& rhs, const LT& resize_fill_value);
+assign (ArrayN<LT>& lhs, const ArrayN<RT>& rhs, const LT& rfv);
 
 template <class LT, class RT>
 int

@@ -111,9 +111,9 @@ int Vstruct_levels_to_print;
 // Allow divide by zero errors to be suppressed.
 bool Vwarn_divide_by_zero;
 
-// If TRUE, resize matrices when performing and indexed assignment and
-// the indices are outside the current bounds.
-bool Vresize_on_range_error;
+// If TRUE, print a warning when a matrix is resized by an indexed
+// assignment with indices outside the current bounds.
+bool Vwarn_resize_on_range_error;
 
 // XXX FIXME XXX
 
@@ -1804,11 +1804,12 @@ propagate_empty_matrices (void)
 }
 
 static int
-resize_on_range_error (void)
+warn_resize_on_range_error (void)
 {
-  Vresize_on_range_error = check_preference ("resize_on_range_error");
+  Vwarn_resize_on_range_error
+    = check_preference ("warn_resize_on_range_error");
 
-  liboctave_rre_flag = Vresize_on_range_error;
+  liboctave_wrore_flag = Vwarn_resize_on_range_error;
 
   return 0;
 }
@@ -1864,26 +1865,6 @@ values are printed.  The default value is 1.\n\
 If the value of @code{propagate_empty_matrices} is nonzero,\n\
 functions like @code{inverse} and @code{svd} will return an empty matrix\n\
 if they are given one as an argument.  The default value is 1.\n\
-@end defvr");
-
-  DEFVAR (resize_on_range_error, true, resize_on_range_error,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} resize_on_range_error\n\
-If the value of @code{resize_on_range_error} is nonzero, expressions\n\
-like\n\
-\n\
-@example\n\
-for i = 1:10\n\
-  a (i) = sqrt (i);\n\
-endfor\n\
-@end example\n\
-\n\
-@noindent\n\
-(for @code{a} previously undefined) result in the variable @code{a}\n\
-being resized to be just large enough to hold the new value.  New\n\
-elements that have not been given a value are set to zero.  If the value\n\
-of @code{resize_on_range_error} is 0, an error message is printed and\n\
-control is returned to the top level.  The default value is 1.\n\
 @end defvr");
 
   DEFVAR (silent_functions, false, silent_functions,
@@ -1954,6 +1935,14 @@ numbers in matrix notation.  For example,\n\
 @end example\n\
 elicits a warning if @code{warn_num_to_str} is nonzero.  The default\n\
 value is 1.\n\
+@end defvr");
+
+  DEFVAR (warn_resize_on_range_error, false, warn_resize_on_range_error,
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} warn_resize_on_range_error\n\
+If the value of @code{warn_resize_on_range_error} is nonzero, print a\n\
+warning when a matrix is resized by an indexed assignment with\n\
+indices outside the current bounds.  The default value is 0.\n\
 @end defvr");
 
   DEFVAR (warn_str_to_num, false, warn_str_to_num,

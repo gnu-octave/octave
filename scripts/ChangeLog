@@ -1,5 +1,9 @@
 2003-07-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* miscellaneous/dump_prefs.m: Add warn_resize_on_reange_error to
+	the list.
+	Delete resize_on_range_error from the list.
+
 	* control/base/pzmap.m, control/base/place.m,
 	control/base/__freqresp__.m, control/system/sysappend.m,
 	control/system/syscont.m, control/system/sysdisc.m,

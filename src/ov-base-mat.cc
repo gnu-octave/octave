@@ -79,6 +79,17 @@ octave_base_matrix<MT>::subsasgn (const std::string& type,
       {
 	if (type.length () == 1)
 	  retval = numeric_assign (type, idx, rhs);
+	else if (is_empty ())
+	  {
+	    // Allow conversion of empty matrix to some other type in
+	    // cases like
+	    //
+	    //  x = []; x(i).f = rhs
+
+	    octave_value tmp = octave_value::empty_conv (type, rhs);
+
+	    retval = tmp.subsasgn (type, idx, rhs);
+	  }
 	else
 	  {
 	    std::string nm = type_name ();

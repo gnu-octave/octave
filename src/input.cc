@@ -464,7 +464,7 @@ match_sans_spaces (const string& standard, const string& test)
 // If the user simply hits return, this will produce an empty matrix.
 
 static octave_value_list
-get_user_input (const octave_value_list& args, int debug = 0)
+get_user_input (const octave_value_list& args, bool debug = false)
 {
   octave_value retval;
 
@@ -576,7 +576,7 @@ maybe help in debugging function files")
   int nargin = args.length ();
 
   if (nargin == 0 || nargin == 1)
-    retval = get_user_input (args, 1);
+    retval = get_user_input (args, true);
   else
     print_usage ("keyboard");
 

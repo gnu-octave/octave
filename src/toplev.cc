@@ -562,7 +562,8 @@ eval_string (const string& s, bool silent, int& parse_status)
 
   octave_value_list tmp = eval_string (s, silent, parse_status, 1);
 
-  retval = tmp(0);
+  if (! tmp.empty ())
+    retval = tmp(0);
 
   return retval;
 }

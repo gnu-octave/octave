@@ -46,39 +46,39 @@
 ## @end deftypefn
 ## @seealso {permute, ipermute, shiftdim}
 
-function y  = circshift (x, n)
+function y = circshift (x, n)
 
   if (nargin == 2)
     nd = ndims (x);
     sz = size (x);
 
-    if (!isvector(n) && length(n) > nd)
+    if (! isvector (n) && length (n) > nd)
       error ("circshift: n must be a vector, no longer than the number of dimension in x");
     endif
     
-    if (any(n != floor(n)))
+    if (any (n != floor (n)))
       error ("circshift: all values of n must be integers");
     endif
 
     idx = cell ();
-    for i = 1 : length(n);
+    for i = 1:length (n);
       nn = n(i);
       if (nn < 0)
-	while (sz(i) <= - nn)
+	while (sz(i) <= -nn)
 	  nn = nn + sz(i);
 	endwhile
-	idx {i} = [(1-nn):sz(i),1:-nn];
+	idx{i} = [(1-nn):sz(i), 1:-nn];
       else
 	while (sz(i) <= nn)
 	  nn = nn - sz(i);
 	endwhile
-	idx {i} = [(sz(i)-nn+1):sz(i),1:(sz(i)-nn)];
+	idx{i} = [(sz(i)-nn+1):sz(i), 1:(sz(i)-nn)];
       endif
     endfor
     for i = (length(n) + 1) : nd
       idx{i} = 1:sz(i);
     endfor
-    y = x (idx{:});
+    y = x(idx{:});
   else
     usage ("circshift (x, n)");
   endif

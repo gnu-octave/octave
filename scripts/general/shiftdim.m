@@ -51,7 +51,7 @@
 function [y, ns]  = shiftdim (x, n)
 
   if (nargin == 1)
-    ## Find the first singleton dimension
+    ## Find the first singleton dimension.
     nd = ndims (x);
     orig_dims = size (x);
     ns  = 1;
@@ -61,10 +61,10 @@ function [y, ns]  = shiftdim (x, n)
     if (ns > nd)
       ns = 1;
     endif
-    y = reshape (x, orig_dims ([ns:end]));
+    y = reshape (x, orig_dims(ns:end));
     ns = ns - 1;
   elseif (nargin == 2)
-    if (!isscalar(n) && floor(n) != n)
+    if (! isscalar (n) && floor (n) != n)
       error ("shiftdim: n must be an scalar integer");
     endif
     if (n < 0)

@@ -77,7 +77,14 @@ fi
 
 AC_PROG_CC
 AC_GCC_TRADITIONAL
+
 AC_AIX
+AC_DYNIX_SEQ
+AC_ISC_POSIX
+AC_MINIX
+
+AC_ALLOCA
+AC_CONST
 
 # Do special things for gcc.
 
@@ -220,6 +227,7 @@ AC_SUBST(DEFAULT_DOT_O_FROM_DOT_F)dnl
 AC_PROG_INSTALL
 AC_PROG_RANLIB
 AC_STDC_HEADERS
+AC_HAVE_HEADERS(string.h)
 AC_UNISTD_H
 AC_DIR_HEADER
 
@@ -384,13 +392,13 @@ fi
 AC_SUBST(RUNTEST)dnl
 
 define([tmpa], [libcruft/blas/Makefile libcruft/balgen/Makefile])dnl
-define([tmpb], [libcruft/dassl/Makefile libcruft/fftpack/Makefile])dnl
-define([tmpc], [libcruft/fsqp/Makefile libcruft/lapack/Makefile])dnl
-define([tmpd], [libcruft/linpack/Makefile libcruft/minpack/Makefile])dnl
-define([tmpe], [libcruft/misc/Makefile libcruft/npsol/Makefile])dnl
-define([tmpf], [libcruft/odepack/Makefile libcruft/qpsol/Makefile])dnl
-define([tmpg], [libcruft/quadpack/Makefile libcruft/ranlib/Makefile])dnl
-define([tmph], [libcruft/villad/Makefile])dnl 
+define([tmpb], [libcruft/dassl/Makefile libcruft/eispack/Makefile])dnl
+define([tmpc], [libcruft/fftpack/Makefile libcruft/fsqp/Makefile])dnl
+define([tmpd], [libcruft/lapack/Makefile libcruft/linpack/Makefile])dnl
+define([tmpe], [libcruft/minpack/Makefile libcruft/misc/Makefile])dnl
+define([tmpf], [libcruft/npsol/Makefile libcruft/odepack/Makefile])dnl
+define([tmpg], [libcruft/qpsol/Makefile libcruft/quadpack/Makefile])dnl
+define([tmph], [libcruft/ranlib/Makefile libcruft/villad/Makefile])dnl 
 define([cruftdirs], [tmpa tmpb tmpc tmpd tmpe tmpf tmpg tmph])dnl
 define([tmpA], [Makefile Makeconf libcruft/Makefile libcruft/Makerules])dnl
 define([tmpB], [liboctave/Makefile src/Makefile])dnl

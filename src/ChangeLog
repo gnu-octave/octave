@@ -4,6 +4,9 @@
 	* ov-streamoff.h (octave_streamoff::increment,
 	octave_streamoff::decrement): New functions.
 
+	* ov-streamoff.h, ov-streamoff.cc: Move streamoff_array class to
+	liboctave/so-array.h and liboctave/so-array.cc.
+
 	* oct-stream.cc (octave_stream::seek): Extract std::streamoff from
 	tc_offset instead of int.
 

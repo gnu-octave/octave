@@ -1,3 +1,8 @@
+2004-09-24  John W. Eaton  <jwe@octave.org>
+
+	* version.h (OCTAVE_VERSION): Now 2.1.60.
+	(OCTAVE_API_VERSION): Now api-v11.
+
 2004-09-24  David Bateman  <dbateman@free.fr>
 
 	* ov-fcn-inline (Finline): Attempt better auto-detection of

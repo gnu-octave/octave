@@ -47,7 +47,7 @@ install uninstall clean mostlyclean distclean maintainer-clean::
 .PHONY: install uninstall clean mostlyclean distclean maintainer-clean
 
 install::
-	ls -R $(datadir)/octave > $(datadir)/octave/ls-R
+	cd $(TOPDIR); ls -R $(datadir)/octave > $(datadir)/octave/ls-R
 
 uninstall::
 	rm -f $(datadir)/octave/ls-R

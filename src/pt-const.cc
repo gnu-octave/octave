@@ -4582,13 +4582,29 @@ TC_REP::fortran_style_matrix_assignment (const tree_constant& rhs,
       if (rhs.const_type () == matrix_constant)
 	{
 	  double *cop_out = rhs_m.fortran_vec ();
-	  for (int k = 0; k < len; k++)
-	    {
-	      int ii = fortran_row (i.elem (k) + 1, nr) - 1;
-	      int jj = fortran_column (i.elem (k) + 1, nr) - 1;
 
-	      matrix->elem (ii, jj) = *cop_out++;
+	  if (type_tag == matrix_constant)
+	    {
+	      for (int k = 0; k < len; k++)
+		{
+		  int ii = fortran_row (i.elem (k) + 1, nr) - 1;
+		  int jj = fortran_column (i.elem (k) + 1, nr) - 1;
+
+		  matrix->elem (ii, jj) = *cop_out++;
+		}
 	    }
+	  else if (type_tag == complex_matrix_constant)
+	    {
+	      for (int k = 0; k < len; k++)
+		{
+		  int ii = fortran_row (i.elem (k) + 1, nr) - 1;
+		  int jj = fortran_column (i.elem (k) + 1, nr) - 1;
+
+		  complex_matrix->elem (ii, jj) = *cop_out++;
+		}
+	    }
+	  else
+	    panic_impossible ();
 	}
       else
 	{
@@ -4640,9 +4656,20 @@ TC_REP::fortran_style_matrix_assignment (const tree_constant& rhs,
   if (rhs.const_type () == matrix_constant)
     {
       double *cop_out = rhs_m.fortran_vec ();
-      for (int j = 0; j < nc; j++)
-	for (int i = 0; i < nr; i++)
-	  matrix->elem (i, j) = *cop_out++;
+      if (type_tag == matrix_constant)
+	{
+	  for (int j = 0; j < nc; j++)
+	    for (int i = 0; i < nr; i++)
+	      matrix->elem (i, j) = *cop_out++;
+	}
+      else if (type_tag == complex_matrix_constant)
+	{
+	  for (int j = 0; j < nc; j++)
+	    for (int i = 0; i < nr; i++)
+	      complex_matrix->elem (i, j) = *cop_out++;
+	}
+      else
+	panic_impossible ();
     }
   else
     {

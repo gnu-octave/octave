@@ -23,6 +23,9 @@ Summary of changes for version 2.0.3:
 
     sets z to 1 (not [ 0, 1 ] as in previous versions of Octave).
 
+  * It is now much easier to make binary distributions.  See the
+    Binary Distributions section of the manual for more details.
+
 Summary of changes for version 2.0.2:
 ------------------------------------
 

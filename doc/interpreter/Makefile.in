@@ -65,10 +65,10 @@ all: octave.info octave.dvi octave.ps octave_toc.html
 $(TEXINFO): src-DOCSTRINGS scripts-DOCSTRINGS munge-texi$(BUILD_EXEEXT)
 
 %.o : %.cc
-	$(BUILD_CXX) -c $(INCFLAGS) -DHAVE_CONFIG_H $< -o $@
+	$(BUILD_CXX) -DNO_PRAGMA_INTERFACE_IMPLEMENTATION=1 -c $(INCFLAGS) -DHAVE_CONFIG_H $< -o $@
 
 munge-texi$(BUILD_EXEEXT): munge-texi.o Map-s.o
-	$(BUILD_CXX) -o $@ $^
+	$(BUILD_CXX) -DNO_PRAGMA_INTERFACE_IMPLEMENTATION=1 -o $@ $^
 
 src-DOCSTRINGS:
 	$(MAKE) -C ../../src DOCSTRINGS
@@ -113,7 +113,7 @@ octave.ps: octave.dvi
 # These option forms are supported by texi2html 1.65 and probably also
 # more recent versions.
 octave_toc.html: $(MAIN_TEXINFO) $(SUB_TEXINFO)
-	-texi2html -expand info -split chapter -I $(srcdir)/.. $<
+	-texi2html -expandinfo -split_chapter -I $(srcdir)/.. $<
 
 check: all
 .PHONY: check

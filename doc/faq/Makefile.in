@@ -52,7 +52,7 @@ Octave-FAQ.ps: Octave-FAQ.dvi
 # These option forms are supported by texi2html 1.65 and probably also
 # more recent versions.
 Octave-FAQ_toc.html:
-	-texi2html -expand info -split chapter $(srcdir)/Octave-FAQ.texi
+	-texi2html -expandinfo -split_chapter $(srcdir)/Octave-FAQ.texi
 
 check install install-strip uninstall:
 .PHONY: check install install-strip uninstall

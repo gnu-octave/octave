@@ -1,3 +1,9 @@
+2002-10-25  Per Persson <persquare@mac.com>
+
+	* aclocal.m4 (OCTAVE_CXX_PRAGMA_INTERFACE_IMPLEMENTATION): Fix
+	first test to properly fail on OS X.  Fix typo in final test to
+	set result.
+
 2002-10-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* mk-opts.pl (emit_opt_class_header): Make set_options another

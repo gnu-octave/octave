@@ -1,3 +1,15 @@
+2002-10-25  Paul Kienzle <pkienzle@users.sf.net>
+
+	* interpreter/Makefile.in (octave_toc.html): Use -expandinfo and
+	-split_chapter instead of -expand info and -split chapter.
+	* liboctave/Makefile.in (liboctave_toc.html): Likewisel
+	* faq/Makefile.in (Octave-FAQ_toc.html): Likewise.
+
+2002-10-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* interpreter/Makefile.in (munge-texi$(BUILD_EXEEXT)): Always use
+	-DNO_PRAGMA_INTERFACE_IMPLEMENTATION for compiling and linking.
+
 2002-10-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* interpreter/Makefile.in (%.texi : %.txi):

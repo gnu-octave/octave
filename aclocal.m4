@@ -403,7 +403,7 @@ EOB
     AC_LINK_IFELSE([OCTAVE_LANG_PROG_NO_CONFDEFS([#pragma implementation
 #include "conftest.h"])],
       [octave_pii_test_2=yes], [octave_pii_test_2=no])
-    if test $octave_pii_test_1 = yes && test $octave_pii_test_1 = yes; then
+    if test $octave_pii_test_1 = yes && test $octave_pii_test_2 = yes; then
       octave_cv_cxx_pragma_interface_implementation=yes
     else
       octave_cv_cxx_pragma_interface_implementation=no

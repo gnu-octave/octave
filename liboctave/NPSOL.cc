@@ -403,7 +403,7 @@ NPSOL_options::pass_options_to_npsol (void)
 }
 
 void
-NPSOL_options::set_option (const char *key, int opt)
+NPSOL_options::set_option (const string& key, int opt)
 {
   ostrstream buf;
   buf << key << " " << opt << ends;
@@ -414,7 +414,7 @@ NPSOL_options::set_option (const char *key, int opt)
 }
 
 void
-NPSOL_options::set_option (const char *key, double opt)
+NPSOL_options::set_option (const string& key, double opt)
 {
   ostrstream buf;
   buf << key << " " << opt << ends;

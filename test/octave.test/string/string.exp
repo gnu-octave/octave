@@ -98,30 +98,289 @@ set test isstr-11
 set prog_output "\n... isstr:.*"
 do_test isstr-11.m
 
-# blanks
-# int2str
-# num2str
-# setstr
-# strcat
-# str2mat
-# deblank
-# findstr
-# index
-# rindex
-# split
-# strcmp
-# strrep
-# substr
-# bin2dec
-# dec2bin
-# dec2hex
-# hex2dec
-# str2num
-# undo_string_escapes
+set test blanks-1
+set prog_output "ans = 1"
+do_test blanks-1.m
 
-# toascii
-# tolower
-# toupper
+set test blanks-2
+set prog_output "usage:.*"
+do_test blanks-2.m
+
+set test blanks-3
+set prog_output "usage:.*"
+do_test blanks-3.m
+
+set test int2str-1
+set prog_output "ans = 1"
+do_test int2str-1.m
+
+set test int2str-2
+set prog_output "usage:.*"
+do_test int2str-2.m
+
+set test int2str-3
+set prog_output "usage:.*"
+do_test int2str-3.m
+
+set test num2str-1
+set prog_output "ans = 1"
+do_test num2str-1.m
+
+set test num2str-2
+set prog_output "usage:.*"
+do_test num2str-2.m
+
+set test num2str-3
+set prog_output "usage:.*"
+do_test num2str-3.m
+
+set test setstr-1
+set prog_output "ans = 1"
+do_test setstr-1.m
+
+set test setstr-2
+set prog_output "\n... setstr:.*"
+do_test setstr-2.m
+
+set test setstr-3
+set prog_output "\n... setstr:.*"
+do_test setstr-3.m
+
+set test strcat-
+set prog_output ""
+do_test strcat-.m
+
+set test strcat-2
+set prog_output "usage:.*"
+do_test strcat-2.m
+
+set test strcat-3
+set prog_output "error:.*"
+do_test strcat-3.m
+
+set test strcat-4
+set prog_output "usage:.*"
+do_test strcat-4.m
+
+set test str2mat-1
+set prog_output "ans = 1"
+do_test str2mat-1.m
+
+set test str2mat-2
+set prog_output "usage:.*"
+do_test str2mat-2.m
+
+set test str2mat-3
+set prog_output "error:.*"
+do_test str2mat-3.m
+
+set test deblank-1
+set prog_output "ans = 1"
+do_test deblank-1.m
+
+set test deblank-2
+set prog_output "usage:.*"
+do_test deblank-2.m
+
+set test deblank-3
+set prog_output "usage:.*"
+do_test deblank-3.m
+
+set test deblank-4
+set prog_output "error:.*"
+do_test deblank-4.m
+
+set test findstr-1
+set prog_output "ans = 1"
+do_test findstr-1.m
+
+set test findstr-2
+set prog_output "usage:.*"
+do_test findstr-2.m
+
+set test findstr-3
+set prog_output "usage:.*"
+do_test findstr-3.m
+
+set test index-1
+set prog_output "ans = 1"
+do_test index-1.m
+
+set test index-2
+set prog_output "usage:.*"
+do_test index-2.m
+
+set test index-3
+set prog_output "usage:.*"
+do_test index-3.m
+
+set test rindex-1
+set prog_output "ans = 1"
+do_test rindex-1.m
+
+set test rindex-2
+set prog_output "usage:.*"
+do_test rindex-2.m
+
+set test rindex-3
+set prog_output "usage:.*"
+do_test rindex-3.m
+
+set test split-1
+set prog_output "ans = 1"
+do_test split-1.m
+
+set test split-2
+set prog_output "usage:.*"
+do_test split-2.m
+
+set test split-3
+set prog_output "usage:.*"
+do_test split-3.m
+
+set test strrep-1
+set prog_output "ans = 1"
+do_test strrep-1.m
+
+set test strrep-2
+set prog_output "usage:.*"
+do_test strrep-2.m
+
+set test strrep-3
+set prog_output "usage:.*"
+do_test strrep-3.m
+
+set test substr-1
+set prog_output "ans = 1"
+do_test substr-1.m
+
+set test substr-2
+set prog_output "usage:.*"
+do_test substr-2.m
+
+set test substr-3
+set prog_output "usage:.*"
+do_test substr-3.m
+
+set test strcmp-1
+set prog_output "ans = 1"
+do_test strcmp-1.m
+
+set test strcmp-2
+set prog_output "usage:.*"
+do_test strcmp-2.m
+
+set test strcmp-3
+set prog_output "usage:.*"
+do_test strcmp-3.m
+
+set test bin2dec-1
+set prog_output "ans = 1"
+do_test bin2dec-1.m
+
+set test bin2dec-2
+set prog_output "usage:.*"
+do_test bin2dec-2.m
+
+set test bin2dec-3
+set prog_output "usage:.*"
+do_test bin2dec-3.m
+
+set test dec2bin-1
+set prog_output "ans = 1"
+do_test dec2bin-1.m
+
+set test dec2bin-2
+set prog_output "usage:.*"
+do_test dec2bin-2.m
+
+set test dec2bin-3
+set prog_output "usage:.*"
+do_test dec2bin-3.m
+
+set test dec2hex-1
+set prog_output "ans = 1"
+do_test dec2hex-1.m
+
+set test dec2hex-2
+set prog_output "usage:.*"
+do_test dec2hex-2.m
+
+set test dec2hex-3
+set prog_output "usage:.*"
+do_test dec2hex-3.m
+
+set test hex2dec-1
+set prog_output "ans = 1"
+do_test hex2dec-1.m
+
+set test hex2dec-2
+set prog_output "usage:.*"
+do_test hex2dec-2.m
+
+set test hex2dec-3
+set prog_output "usage:.*"
+do_test hex2dec-3.m
+
+set test str2num-1
+set prog_output "ans = 1"
+do_test str2num-1.m
+
+set test str2num-2
+set prog_output "usage:.*"
+do_test str2num-2.m
+
+set test str2num-3
+set prog_output "usage:.*"
+do_test str2num-3.m
+
+set test undo_string_escapes-1
+set prog_output "ans = 1"
+do_test undo_string_escapes-1.m
+
+set test undo_string_escapes-2
+set prog_output "\n... undo_string_escapes:.*"
+do_test undo_string_escapes-2.m
+
+set test undo_string_escapes-3
+set prog_output "\n... undo_string_escapes:.*"
+do_test undo_string_escapes-3.m
+
+set test toascii-1
+set prog_output "ans = 1"
+do_test toascii-1.m
+
+set test toascii-3
+set prog_output "error:.*"
+do_test toascii-3.m
+
+set test toascii-3
+set prog_output "error:.*"
+do_test toascii-3.m
+
+set test tolower-1
+set prog_output "ans = 1"
+do_test tolower-1.m
+
+set test tolower-3
+set prog_output "error:.*"
+do_test tolower-3.m
+
+set test tolower-3
+set prog_output "error:.*"
+do_test tolower-3.m
+
+set test toupper-1
+set prog_output "ans = 1"
+do_test toupper-1.m
+
+set test toupper-3
+set prog_output "error:.*"
+do_test toupper-3.m
+
+set test toupper-3
+set prog_output "error:.*"
+do_test toupper-3.m
 
 set test isalnum-1
 set prog_output "ans = 1"
@@ -256,13 +515,13 @@ set prog_output "error:.*"
 do_test isupper-3.m
 
 set test isxdigit-1
-set prog_output ""ans = 1
+set prog_output "ans = 1"
 do_test isxdigit-1.m
 
 set test isxdigit-2
-set prog_output ""error:.*
+set prog_output "error:.*"
 do_test isxdigit-2.m
 
 set test isxdigit-3
-set prog_output ""error:.*
+set prog_output "error:.*"
 do_test isxdigit-3.m

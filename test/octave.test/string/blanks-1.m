@@ -1,0 +1,1 @@
+strcmp (blanks (3), "   ")

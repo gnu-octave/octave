@@ -29,6 +29,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #include "kpse-xfns.h"
 #include "kpse.h"
 
+#include "oct-env.h"
+#include "oct-passwd.h"
+
 /* c-std.h: the first header files.  */
 
 /* Header files that essentially all of our sources need, and
@@ -196,7 +199,7 @@ extern int fclose (FILE *);
 
 /* Define this so that winsock.h definitions don't get included when
    windows.h is...  For this to have proper effect, config.h must
-   always be included before windows.h.  */ 
+   always be included before windows.h.  */
 #define _WINSOCKAPI_    1
 
 #include <windows.h>
@@ -282,7 +285,7 @@ static hash_table_type hash_create (unsigned size);
 /* I find this easier to read.  */
 #define STREQ(s1, s2) (strcmp (s1, s2) == 0)
 #define STRNEQ(s1, s2, n) (strncmp (s1, s2, n) == 0)
-      
+
 /* Support for FAT/ISO-9660 filesystems.  Theoretically this should be
    done at runtime, per filesystem, but that's painful to program.  */
 #ifdef MONOCASE_FILENAMES
@@ -295,14 +298,6 @@ static hash_table_type hash_create (unsigned size);
 #define FILECHARCASEEQ(c1, c2) ((c1) == (c2))
 #endif
 
-/* This is the maximum number of numerals that result when a 64-bit
-   integer is converted to a string, plus one for a trailing null byte,
-   plus one for a sign.  */
-#define MAX_INT_LENGTH 21
-
-/* If the environment variable TEST is set, return it; otherwise,
-   DEFAULT.  This is useful for paths that use more than one envvar.  */
-#define ENVVAR(test, default) (getenv (test) ? (test) : (default))
 
 
 /* (Re)Allocate N items of type T using xmalloc/xrealloc.  */
@@ -316,8 +311,6 @@ static FILE *xfopen (const char *filename, const char *mode);
 
 static void xfclose (FILE *f, const char *filename);
 
-unsigned long xftell (FILE *f, char *filename);
-
 #ifndef WIN32
 static void xclosedir (DIR *d);
 #endif
@@ -325,10 +318,6 @@ static void xclosedir (DIR *d);
 static void *xmalloc (unsigned size);
 
 static void *xrealloc (void *old_ptr, unsigned size);
-
-static char *xstrdup (const char *s);
-
-extern char *xbasename (const char *name);
 
 #ifndef WIN32
 int dir_links (const char *fn);
@@ -348,14 +337,6 @@ static char *concat (const char *s1, const char *s2);
 
 static char *concat3 (const char *s1, const char *s2, const char *s3);
 
-static char *find_suffix (const char *name);
-
-static char *kpse_truncate_filename (const char *name);
-
-static char *kpse_readable_file (const char *name);
-
-static bool kpse_absolute_p (const std::string& filename, int relative_ok);
-
 static void str_list_add (string_vector& l, const std::string& s);
 
 static void str_list_concat (string_vector& target, const string_vector& more);
@@ -364,15 +345,174 @@ static void str_llist_add (str_llist_type *l, const std::string& str);
 
 static void str_llist_float (str_llist_type *l, str_llist_elt_type *mover);
 
-static std::string kpse_var_value (const char *var);
-
-static void expanding (const char *var, int xp);
-
-static int expanding_p (const char *var);
-
 static std::string kpse_var_expand (const std::string& src);
 
 #include <ctime> /* for `time' */
+
+/* Return a copy of S in new storage.  */
+
+static char *
+xstrdup (const char *s)
+{
+  char *new_string = (char *) xmalloc (strlen (s) + 1);
+  return strcpy (new_string, s);
+}
+
+/* Here's the simple one, when a program just wants a value.  */
+
+static std::string
+kpse_var_value (const std::string& var)
+{
+  std::string ret;
+
+  std::string tmp = octave_env::getenv (var);
+
+  if (! tmp.empty ())
+    ret = kpse_var_expand (tmp);
+
+#ifdef KPSE_DEBUG
+  if (KPSE_DEBUG_P (KPSE_DEBUG_VARS))
+    DEBUGF2 ("variable: %s = %s\n", var.c_str (),
+	     tmp.empty () ? "(nil)" :  tmp.c_str ());
+#endif
+
+  return ret;
+}
+
+/* Truncate any too-long components in NAME, returning the result.  It's
+   too bad this is necessary.  See comments in readable.c for why.  */
+
+static char *
+kpse_truncate_filename (const char *name)
+{
+  unsigned c_len = 0;        /* Length of current component.  */
+  unsigned ret_len = 0;      /* Length of constructed result.  */
+
+  /* Allocate enough space.  */
+  char *ret = (char *) xmalloc (strlen (name) + 1);
+
+  for (; *name; name++)
+    {
+      if (IS_DIR_SEP (*name) || IS_DEVICE_SEP (*name))
+        {
+	  /* At a directory delimiter, reset component length.  */
+          c_len = 0;
+        }
+      else if (c_len > NAME_MAX)
+        {
+	  /* If past the max for a component, ignore this character.  */
+          continue;
+        }
+
+      /* Copy this character.  */
+      ret[ret_len++] = *name;
+      c_len++;
+    }
+
+  ret[ret_len] = 0;
+
+  return ret;
+}
+
+/* If access can read FN, run stat (assigning to stat buffer ST) and
+   check that fn is not a directory.  Don't check for just being a
+   regular file, as it is potentially useful to read fifo's or some
+   kinds of devices.  */
+
+#ifdef WIN32
+static inline bool
+READABLE (const char *fn, struct stat&)
+{
+  return (GetFileAttributes (fn) != 0xFFFFFFFF
+	  && ! (GetFileAttributes (fn) & FILE_ATTRIBUTE_DIRECTORY));
+}
+#else
+static inline bool
+READABLE (const char *fn, struct stat& st)
+{
+  return (access (fn, R_OK) == 0
+	  && stat (fn, &(st)) == 0
+	  && !S_ISDIR (st.st_mode));
+}
+#endif
+
+/* POSIX invented the brain-damage of not necessarily truncating
+   filename components; the system's behavior is defined by the value of
+   the symbol _POSIX_NO_TRUNC, but you can't change it dynamically!
+
+   Generic const return warning.  See extend-fname.c.  */
+
+static char *
+kpse_readable_file (const char *name)
+{
+  struct stat st;
+  char *ret;
+
+  if (READABLE (name, st))
+    {
+      ret = (char *) name;
+
+#ifdef ENAMETOOLONG
+    }
+  else if (errno == ENAMETOOLONG)
+    {
+      ret = kpse_truncate_filename (name);
+
+      /* Perhaps some other error will occur with the truncated name,
+	 so let's call access again.  */
+
+      if (! READABLE (ret, st))
+	{
+	  /* Failed.  */
+	  if (ret != name)
+	    free (ret);
+
+	  ret = NULL;
+	}
+#endif /* ENAMETOOLONG */
+
+    }
+  else
+    {
+      /* Some other error.  */
+      if (errno == EACCES)
+	{
+	  /* Maybe warn them if permissions are bad.  */
+	  perror (name);
+	}
+      ret = NULL;
+    }
+
+  return ret;
+}
+
+/* Sorry this is such a system-dependent mess, but I can't see any way
+   to usefully generalize.  */
+
+static bool
+kpse_absolute_p (const std::string& filename, int relative_ok)
+{
+  size_t len = filename.length ();
+
+  int absolute = IS_DIR_SEP (len > 0 && filename[0])
+#ifdef DOSISH
+                     /* Novell allows non-alphanumeric drive letters. */
+                     || (len > 0 && IS_DEVICE_SEP (filename[1]))
+#endif /* DOSISH */
+#ifdef WIN32
+                     /* UNC names */
+                     || (len > 1 && filename[0] == '\\' && filename[1] == '\\')
+#endif
+		      ;
+  int explicit_relative
+    = relative_ok
+      && (len > 1
+	  && filename[0] == '.'
+	  && (IS_DIR_SEP (filename[1])
+	      || (len > 2 && filename[1] == '.' && IS_DIR_SEP (filename[2]))));
+
+  return absolute || explicit_relative;
+}
 
 /* The very first search is for texmf.cnf, called when someone tries to
    initialize the TFM path or whatever.  init_path calls kpse_cnf_get
@@ -382,49 +522,51 @@ static std::string kpse_var_expand (const std::string& src);
    configuration files.  */
 static bool first_search = true;
 
-
-
 /* This function is called after every search (except the first, since
    we definitely want to allow enabling the logging in texmf.cnf) to
    record the filename(s) found in $TEXMFLOG.  */
 
 static void
-log_search (string_vector filenames)
+log_search (const string_vector& filenames)
 {
   static FILE *log_file = NULL;
   static bool first_time = true; /* Need to open the log file?  */
-  
-  if (first_time) {
-    /* Get name from either envvar or config file.  */
-    std::string log_name = kpse_var_value ("TEXMFLOG");
-    first_time = false;
-    if (! log_name.empty ()) {
-      log_file = xfopen (log_name.c_str (), "a");
-      if (!log_file)
-        perror (log_name.c_str ());
+
+  if (first_time)
+    {
+      first_time = false;
+
+      /* Get name from either envvar or config file.  */
+      std::string log_name = kpse_var_value ("TEXMFLOG");
+
+      if (! log_name.empty ())
+	{
+	  log_file = xfopen (log_name.c_str (), "a");
+
+	  if (! log_file)
+	    perror (log_name.c_str ());
+	}
     }
-  }
 
-  if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH) || log_file) {
-    int e;
+  if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH) || log_file)
+    {
+      /* FILENAMES should never be null, but safety doesn't hurt.  */
+      for (int e = 0; e < filenames.length () && ! filenames[e].empty (); e++)
+	{
+	  std::string filename = filenames[e];
 
-    /* FILENAMES should never be null, but safety doesn't hurt.  */
-    for (e = 0; e < filenames.length () && ! filenames[e].empty ();
-         e++) {
-      std::string filename = filenames[e];
+	  /* Only record absolute filenames, for privacy.  */
+	  if (log_file && kpse_absolute_p (filename.c_str (), false))
+	    fprintf (log_file, "%lu %s\n", (long unsigned) time (NULL),
+		     filename.c_str ());
 
-      /* Only record absolute filenames, for privacy.  */
-      if (log_file && kpse_absolute_p (filename.c_str (), false))
-        fprintf (log_file, "%lu %s\n", (long unsigned) time (NULL),
-                 filename.c_str ());
-
-      /* And show them online, if debugging.  We've already started
-         the debugging line in `search', where this is called, so
-         just print the filename here, don't use DEBUGF.  */
-      if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
-        fputs (filename.c_str (), stderr);
+	  /* And show them online, if debugging.  We've already started
+	     the debugging line in `search', where this is called, so
+	     just print the filename here, don't use DEBUGF.  */
+	  if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
+	    fputs (filename.c_str (), stderr);
+	}
     }
-  }
 }
 
 /* Concatenate each element in DIRS with NAME (assume each ends with a
@@ -453,27 +595,27 @@ dir_list_search (str_llist_type *dirs, const std::string& name,
     {
       const std::string dir = STR_LLIST (*elt);
       unsigned dir_len = dir.length ();
-      
+
       while (dir_len + name_len + 1 > allocated)
         {
           allocated += allocated;
           XRETALLOC (potential, allocated, char);
         }
-      
+
       strcpy (potential, dir.c_str ());
       strcat (potential, name.c_str ());
-      
+
       if (kpse_readable_file (potential))
-        { 
+        {
           str_list_add (ret, potential);
-          
+
           /* Move this element towards the top of the list.  */
           str_llist_float (dirs, elt);
-          
+
           /* If caller only wanted one file returned, no need to
              terminate the list with NULL; the caller knows to only look
              at the first element.  */
-          if (!search_all)
+          if (! search_all)
             return ret;
 
           /* Start new filename.  */
@@ -481,11 +623,11 @@ dir_list_search (str_llist_type *dirs, const std::string& name,
           potential = (char *) xmalloc (allocated);
         }
     }
-  
+
   /* If we get here, either we didn't find any files, or we were finding
      all the files.  But we're done with the last filename, anyway.  */
   free (potential);
-  
+
   return ret;
 }
 
@@ -498,11 +640,11 @@ absolute_search (const std::string& name_arg)
   string_vector ret_list;
   const char *name = name_arg.c_str ();
   char *found = kpse_readable_file (name);
-  
+
   /* Add `found' to the return list even if it's null; that tells
      the caller we didn't find anything.  */
   str_list_add (ret_list, found);
-  
+
   return ret_list;
 }
 
@@ -550,7 +692,7 @@ path_search (const std::string& path_arg, const std::string& name,
 	  while (IS_DIR_SEP (*elt) && IS_DIR_SEP (*(elt + 1)))
 	    elt++;
 	}
-    
+
       /* Try ls-R, unless we're searching for texmf.cnf.  Our caller
 	 (search), also tests first_search, and does the resetting.  */
       found = first_search
@@ -558,7 +700,7 @@ path_search (const std::string& path_arg, const std::string& name,
 
       /* Search the filesystem if (1) the path spec allows it, and either
          (2a) we are searching for texmf.cnf ; or
-         (2b) no db exists; or 
+         (2b) no db exists; or
          (2c) no db's are relevant to this elt; or
          (3) MUST_EXIST && NAME was not in the db.
 	 In (2*), `found' will be NULL.
@@ -567,9 +709,9 @@ path_search (const std::string& path_arg, const std::string& name,
       if (allow_disk_search && found.empty ())
 	{
 	  str_llist_type *dirs = kpse_element_dirs (elt);
-	  if (dirs && *dirs) {
+
+	  if (dirs && *dirs)
 	    found = dir_list_search (dirs, name, all);
-	  }
 	}
 
       /* Did we find anything anywhere?  */
@@ -591,7 +733,7 @@ path_search (const std::string& path_arg, const std::string& name,
 /* Search PATH for ORIGINAL_NAME.  If ALL is false, or ORIGINAL_NAME is
    absolute_p, check ORIGINAL_NAME itself.  Otherwise, look at each
    element of PATH for the first readable ORIGINAL_NAME.
-   
+
    Always return a list; if no files are found, the list will
    contain just NULL.  If ALL is true, the list will be
    terminated with NULL.  */
@@ -605,32 +747,38 @@ search (const std::string& path, const std::string& original_name,
 
   /* Make a leading ~ count as an absolute filename, and expand $FOO's.  */
   std::string name = kpse_expand (original_name);
-  
+
   /* If the first name is absolute or explicitly relative, no need to
      consider PATH at all.  */
   absolute_p = kpse_absolute_p (name, true);
-  
+
   if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
-    DEBUGF4 ("start search(file=%s, must_exist=%d, find_all=%d, path=%s).\n",
+    DEBUGF4 ("start search (file=%s, must_exist=%d, find_all=%d, path=%s).\n",
              name.c_str (), must_exist, all, path.c_str ());
 
   /* Find the file(s). */
   ret_list = absolute_p ? absolute_search (name)
                         : path_search (path, name, must_exist, all);
-  
+
   /* The very first search is for texmf.cnf.  We can't log that, since
      we want to allow setting TEXMFLOG in texmf.cnf.  */
-  if (first_search) {
-    first_search = false;
-  } else {
-    /* Record the filenames we found, if desired.  And wrap them in a
-       debugging line if we're doing that.  */
-    if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
-      DEBUGF1 ("search(%s) =>", original_name.c_str ());
-    log_search (ret_list);
-    if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
-      putc ('\n', stderr);
-  }  
+  if (first_search)
+    {
+      first_search = false;
+    }
+  else
+    {
+      /* Record the filenames we found, if desired.  And wrap them in a
+	 debugging line if we're doing that.  */
+
+      if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
+	DEBUGF1 ("search (%s) =>", original_name.c_str ());
+
+      log_search (ret_list);
+
+      if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
+	putc ('\n', stderr);
+    }
 
   return ret_list;
 }
@@ -726,7 +874,7 @@ path_find_first_of (const std::string& path_arg, const string_vector& names,
 		 and either
 
 		   (2a) we are searching for texmf.cnf ; or
-		   (2b) no db exists; or 
+		   (2b) no db exists; or
 		   (2c) no db's are relevant to this elt; or
 		   (3) MUST_EXIST && NAME was not in the db.
 
@@ -765,7 +913,7 @@ path_find_first_of (const std::string& path_arg, const string_vector& names,
     }
 
   return ret_list;
-}      
+}
 
 static string_vector
 find_first_of (const std::string& path, const string_vector& names,
@@ -775,8 +923,10 @@ find_first_of (const std::string& path, const string_vector& names,
 
   if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
     {
-      fputs ("start find_first_of((", stderr);
+      fputs ("start find_first_of ((", stderr);
+
       int len = names.length ();
+
       for (int i = 0; i < len; i++)
 	{
 	  if (i == 0)
@@ -784,7 +934,9 @@ find_first_of (const std::string& path, const string_vector& names,
 	  else
 	    fprintf (stderr, ", %s", names[i].c_str ());
 	}
-      fprintf (stderr, "), path=%s, must_exist=%d).\n", path.c_str (), must_exist);
+
+      fprintf (stderr, "), path=%s, must_exist=%d).\n",
+	       path.c_str (), must_exist);
     }
 
   /* Find the file. */
@@ -792,28 +944,36 @@ find_first_of (const std::string& path, const string_vector& names,
 
   /* The very first search is for texmf.cnf.  We can't log that, since
      we want to allow setting TEXMFLOG in texmf.cnf.  */
-  if (first_search) {
-    first_search = false;
-  } else {
-    /* Record the filenames we found, if desired.  And wrap them in a
-       debugging line if we're doing that.  */
-    if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
-      {
-	fputs ("find_first_of(", stderr);
-	int len = names.length ();
-	for (int i = 0; i < len; i++)
-	  {
-	    if (i == 0)
-	      fputs (names[i].c_str (), stderr);
-	    else
-	      fprintf (stderr, ", %s", names[i].c_str ());
-	  }
-	fputs (") =>", stderr);
-      }
-    log_search (ret_list);
-    if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
-      putc ('\n', stderr);
-  }  
+  if (first_search)
+    {
+      first_search = false;
+    }
+  else
+    {
+      /* Record the filenames we found, if desired.  And wrap them in a
+	 debugging line if we're doing that.  */
+
+      if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
+	{
+	  fputs ("find_first_of (", stderr);
+
+	  int len = names.length ();
+
+	  for (int i = 0; i < len; i++)
+	    {
+	      if (i == 0)
+		fputs (names[i].c_str (), stderr);
+	      else
+		fprintf (stderr, ", %s", names[i].c_str ());
+	    }
+	  fputs (") =>", stderr);
+	}
+
+      log_search (ret_list);
+
+      if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
+	putc ('\n', stderr);
+    }
 
   return ret_list;
 }
@@ -845,10 +1005,6 @@ kpse_all_path_find_first_of (const std::string& path,
    code in kpathsea.  The part of the file that I wrote (the first
    couple of functions) is covered by the LGPL.  */
 
-#ifdef HAVE_PWD_H
-#include <pwd.h>
-#endif
-
 /* If NAME has a leading ~ or ~user, Unix-style, expand it to the user's
    home directory, and return a new malloced string.  If no ~, or no
    <pwd.h>, just return NAME.  */
@@ -857,64 +1013,84 @@ static std::string
 kpse_tilde_expand (const std::string& name)
 {
   std::string expansion;
-  
+
   assert (! name.empty ());
-  
+
   /* If no leading tilde, do nothing.  */
-  if (name[0] != '~') {
-    expansion = name;
-  
-  /* If a bare tilde, return the home directory or `.'.  (Very unlikely
-     that the directory name will do anyone any good, but ...  */
-  } else if (name.length () == 1) {
-    char *tmp = getenv ("HOME");
-    expansion = tmp ? tmp : ".";
-  
-  /* If `~/', remove any trailing / or replace leading // in $HOME.
-     Should really check for doubled intermediate slashes, too.  */
-  } else if (IS_DIR_SEP (name[1])) {
-    unsigned c = 1;
-    char *home = getenv ("HOME");
-    if (!home) {
-      home = ".";
+  if (name[0] != '~')
+    {
+      expansion = name;
+
+      /* If a bare tilde, return the home directory or `.'.  (Very
+	 unlikely that the directory name will do anyone any good, but
+	 ...  */
     }
-    if (IS_DIR_SEP (*home) && IS_DIR_SEP (home[1])) {  /* handle leading // */
-      home++;
+  else if (name.length () == 1)
+    {
+      expansion = octave_env::getenv ("HOME");
+
+      if (expansion.empty ())
+	expansion = ".";
+
+      /* If `~/', remove any trailing / or replace leading // in $HOME.
+	 Should really check for doubled intermediate slashes, too.  */
     }
-    if (IS_DIR_SEP (home[strlen (home) - 1])) {        /* omit / after ~ */
-      c++;
+  else if (IS_DIR_SEP (name[1]))
+    {
+      unsigned c = 1;
+      std::string home = octave_env::getenv ("HOME");
+
+      if (home.empty ())
+	home = ".";
+
+      size_t home_len = home.length ();
+
+      /* handle leading // */
+      if (home_len > 1 && IS_DIR_SEP (home[0]) && IS_DIR_SEP (home[1]))
+	home = home.substr (1);
+
+      /* omit / after ~ */
+      if (IS_DIR_SEP (home[home_len - 1]))
+	c++;
+
+      expansion = home + name.substr (c);
+
+      /* If `~user' or `~user/', look up user in the passwd database (but
+	 OS/2 doesn't have this concept.  */
     }
-    expansion = std::string (home) + name.substr (c);
-  
-  /* If `~user' or `~user/', look up user in the passwd database (but
-     OS/2 doesn't have this concept.  */
-  } else
+  else
 #ifdef HAVE_PWD_H
     {
-      struct passwd *p;
       unsigned c = 2;
-      while (!IS_DIR_SEP (name[c]) && name[c] != 0) /* find user name */
+
+      /* find user name */
+      while (name.length () > c && ! IS_DIR_SEP (name[c]))
         c++;
-      
-      std::string user = name.substr (2, c-1);
-      
+
+      std::string user = name.substr (1, c-1);
+
       /* We only need the cast here for (deficient) systems
          which do not declare `getpwnam' in <pwd.h>.  */
-      p = (struct passwd *) getpwnam (user.c_str ());
+      octave_passwd p = octave_passwd::getpwnam (user);
 
       /* If no such user, just use `.'.  */
-      const char *home = p ? p->pw_dir : ".";
-      if (IS_DIR_SEP (*home) && IS_DIR_SEP (home[1])) { /* handle leading // */
-        home++;
-      }
-      if (IS_DIR_SEP (home[strlen (home) - 1]) && name[c] != 0)
-        c++; /* If HOME ends in /, omit the / after ~user. */
+      std::string home = p ? p.dir () : std::string (".");
 
-      expansion = name[c] == 0
-	? std::string (home) : std::string (home) + name.substr (c);
+      if (home.empty ())
+	home = ".";
+
+      /* handle leading // */
+      if (home.length () > 1 && IS_DIR_SEP (home[0]) && IS_DIR_SEP (home[1]))
+        home = home.substr (1);
+
+      /* If HOME ends in /, omit the / after ~user. */
+      if (name.length () > c && IS_DIR_SEP (home[home.length () - 1]))
+        c++;
+
+      expansion = name.length () > c ? home : home + name.substr (c);
     }
 #else /* not HAVE_PWD_H */
-    expansion = name;
+  expansion = name;
 #endif /* not HAVE_PWD_H */
 
   return expansion;
@@ -943,51 +1119,44 @@ kpse_expand_kpse_dot (const std::string& path)
 {
   std::string ret;
   char *elt;
-  char *kpse_dot = getenv("KPSE_DOT");
-#ifdef MSDOS
-  bool malloced_kpse_dot = false;
-#endif
-  
-  if (kpse_dot == NULL)
+  std::string kpse_dot = octave_env::getenv ("KPSE_DOT");
+
+  if (kpse_dot.empty ())
     return path;
 
 #ifdef MSDOS
   /* Some setups of ported Bash force $KPSE_DOT to have the //d/foo/bar
      form (when `pwd' is used), which is not understood by libc and the OS.
      Convert them back to the usual d:/foo/bar form.  */
-  if (kpse_dot[0] == '/' && kpse_dot[1] == '/'
-      && kpse_dot[2] >= 'A' && kpse_dot[2] <= 'z' && kpse_dot[3] == '/') {
-    kpse_dot++;
-    kpse_dot = xstrdup (kpse_dot);
-    kpse_dot[0] = kpse_dot[1];  /* drive letter */
-    kpse_dot[1] = ':';
-    malloced_kpse_dot = true;
-  }
+  if (kpse_dot.len > 3 && kpse_dot[0] == '/' && kpse_dot[1] == '/'
+      && kpse_dot[2] >= 'A' && kpse_dot[2] <= 'z' && kpse_dot[3] == '/')
+    {
+      kpse_dot = kpse_dot.substr (1);
+      kpse_dot = xstrdup (kpse_dot);
+      kpse_dot[0] = kpse_dot[1];  /* drive letter */
+      kpse_dot[1] = ':';
+    }
 #endif
 
   char *tmp = xstrdup (path.c_str ());
 
-  for (elt = kpse_path_element (tmp); elt; elt = kpse_path_element (NULL)) {
-    /* We assume that the !! magic is only used on absolute components.
-       Single "." get special treatment, as does "./" or its equivalent. */
-    if (kpse_absolute_p (elt, false) || (elt[0] == '!' && elt[1] == '!')) {
-      ret += std::string (elt) + ENV_SEP_STRING;
-    } else if (elt[0] == '.' && elt[1] == 0) {
-      ret += std::string (kpse_dot) + ENV_SEP_STRING;
-    } else if (elt[0] == '.' && IS_DIR_SEP(elt[1])) {
-      ret += std::string (kpse_dot) + (elt + 1) + ENV_SEP_STRING;
-    } else {
-      ret += std::string (kpse_dot) + DIR_SEP_STRING + elt + ENV_SEP_STRING;
+  for (elt = kpse_path_element (tmp); elt; elt = kpse_path_element (NULL))
+    {
+      /* We assume that the !! magic is only used on absolute components.
+	 Single "." get special treatment, as does "./" or its  equivalent.  */
+
+      if (kpse_absolute_p (elt, false) || (elt[0] == '!' && elt[1] == '!'))
+	ret += std::string (elt) + ENV_SEP_STRING;
+      else if (elt[0] == '.' && elt[1] == 0)
+	ret += std::string (kpse_dot) + ENV_SEP_STRING;
+      else if (elt[0] == '.' && IS_DIR_SEP (elt[1]))
+	ret += std::string (kpse_dot) + (elt + 1) + ENV_SEP_STRING;
+      else
+	ret += std::string (kpse_dot) + DIR_SEP_STRING + elt + ENV_SEP_STRING;
     }
-  }
-
-  free (tmp);
-
-#ifdef MSDOS
-  if (malloced_kpse_dot) free (kpse_dot);
-#endif
 
   int len = ret.length ();
+
   if (len > 0)
     ret.resize (len - 1);
 
@@ -1006,21 +1175,27 @@ kpse_brace_expand_element (const char *elt)
   char **expansions = brace_expand (elt);
   std::string ret;
 
-  for (i = 0; expansions[i]; i++) {
-    /* Do $ and ~ expansion on each element.  */
-    std::string x = kpse_expand (expansions[i]);
-    if (x != expansions[i]) {
-      /* If we did any expansions, do brace expansion again.  Since
-         recursive variable definitions are not allowed, this recursion
-         must terminate.  (In practice, it's unlikely there will ever be
-         more than one level of recursion.)  */
-      x = kpse_brace_expand_element (x.c_str ());
+  for (i = 0; expansions[i]; i++)
+    {
+      /* Do $ and ~ expansion on each element.  */
+      std::string x = kpse_expand (expansions[i]);
+
+      if (x != expansions[i])
+	{
+	  /* If we did any expansions, do brace expansion again.  Since
+	     recursive variable definitions are not allowed, this recursion
+	     must terminate.  (In practice, it's unlikely there will ever be
+	     more than one level of recursion.)  */
+	  x = kpse_brace_expand_element (x.c_str ());
+	}
+
+      ret += x + ENV_SEP_STRING;
     }
-    ret += x + ENV_SEP_STRING;
-  }
 
   free_array (expansions);
+
   ret.resize (ret.length () - 1);
+
   return ret;
 }
 
@@ -1041,14 +1216,16 @@ kpse_brace_expand (const char *path)
   const char *xpath = tmp.c_str ();
   std::string ret;
 
-  for (elt = kpse_path_element (xpath); elt; elt = kpse_path_element (NULL)) {
-    /* Do brace expansion first, so tilde expansion happens in {~ka,~kb}.  */
-    std::string expansion = kpse_brace_expand_element (elt);
-    ret += expansion + ENV_SEP_STRING;
-  }
+  for (elt = kpse_path_element (xpath); elt; elt = kpse_path_element (NULL))
+    {
+      /* Do brace expansion first, so tilde expansion happens in {~ka,~kb}.  */
+      std::string expansion = kpse_brace_expand_element (elt);
+      ret += expansion + ENV_SEP_STRING;
+    }
 
   /* Waste the last byte by overwriting the trailing env_sep with a null.  */
   len = ret.length ();
+
   if (len > 0)
     ret.resize (len - 1);
 
@@ -1068,60 +1245,73 @@ kpse_path_expand (const char *path)
   ret = (char *) xmalloc (1);
   *ret = 0;
   len = 0;
-  
+
   /* Expand variables and braces first.  */
   std::string tmp = kpse_brace_expand (path);
   const char *xpath = tmp.c_str ();
 
   /* Now expand each of the path elements, printing the results */
-  for (elt = kpse_path_element (xpath); elt; elt = kpse_path_element (NULL)) {
-    str_llist_type *dirs;
+  for (elt = kpse_path_element (xpath); elt; elt = kpse_path_element (NULL))
+    {
+      str_llist_type *dirs;
 
-    /* Skip and ignore magic leading chars.  */
-    if (*elt == '!' && *(elt + 1) == '!')
-      elt += 2;
+      /* Skip and ignore magic leading chars.  */
+      if (*elt == '!' && *(elt + 1) == '!')
+	elt += 2;
 
-    /* Do not touch the device if present */
-    if (NAME_BEGINS_WITH_DEVICE (elt)) {
-      while (IS_DIR_SEP (*(elt + 2)) && IS_DIR_SEP (*(elt + 3))) {
-        *(elt + 2) = *(elt + 1);
-        *(elt + 1) = *elt;
-        elt++;
-      }
-    } else {
-      /* We never want to search the whole disk.  */
-      while (IS_DIR_SEP (*elt) && IS_DIR_SEP (*(elt + 1)))
-        elt++;
-    }
+      /* Do not touch the device if present */
+      if (NAME_BEGINS_WITH_DEVICE (elt))
+	{
+	  while (IS_DIR_SEP (*(elt + 2)) && IS_DIR_SEP (*(elt + 3)))
+	    {
+	      *(elt + 2) = *(elt + 1);
+	      *(elt + 1) = *elt;
+	      elt++;
+	    }
+	}
+      else
+	{
+	  /* We never want to search the whole disk.  */
+	  while (IS_DIR_SEP (*elt) && IS_DIR_SEP (*(elt + 1)))
+	    elt++;
+	}
 
     /* Search the disk for all dirs in the component specified.
        Be faster to check the database, but this is more reliable.  */
-    dirs = kpse_element_dirs (elt); 
-    if (dirs && *dirs) {
-      str_llist_elt_type *dir;
+    dirs = kpse_element_dirs (elt);
 
-      for (dir = *dirs; dir; dir = STR_LLIST_NEXT (*dir)) {
-        const std::string thedir = STR_LLIST (*dir);
-        unsigned dirlen = thedir.length ();
-        char *save_ret = ret;
-        /* Retain trailing slash if that's the root directory.  */
-        if (dirlen == 1 || (dirlen == 3 && NAME_BEGINS_WITH_DEVICE (thedir)
-                            && IS_DIR_SEP (thedir[2]))) {
-          ret = concat3 (ret, thedir.c_str (), ENV_SEP_STRING);
-          len += dirlen + 1;
-          ret[len - 1] = ENV_SEP;
-        } else {
-          ret = concat (ret, thedir.c_str ());
-          len += dirlen;
-          ret [len - 1] = ENV_SEP;
-        }
-        free (save_ret);
+    if (dirs && *dirs)
+      {
+	str_llist_elt_type *dir;
+
+	for (dir = *dirs; dir; dir = STR_LLIST_NEXT (*dir))
+	  {
+	    const std::string thedir = STR_LLIST (*dir);
+	    unsigned dirlen = thedir.length ();
+	    char *save_ret = ret;
+	    /* Retain trailing slash if that's the root directory.  */
+	    if (dirlen == 1 || (dirlen == 3 && NAME_BEGINS_WITH_DEVICE (thedir)
+				&& IS_DIR_SEP (thedir[2])))
+	      {
+		ret = concat3 (ret, thedir.c_str (), ENV_SEP_STRING);
+		len += dirlen + 1;
+		ret[len - 1] = ENV_SEP;
+	      }
+	    else
+	      {
+		ret = concat (ret, thedir.c_str ());
+		len += dirlen;
+		ret [len - 1] = ENV_SEP;
+	      }
+	    free (save_ret);
+	  }
       }
     }
-  }
+
   /* Get rid of trailing ':', if any. */
   if (len != 0)
     ret[len - 1] = 0;
+
   return ret;
 }
 
@@ -1145,8 +1335,7 @@ kpse_path_expand (const char *path)
    Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
    MA 02111-1307, USA.  */
 
-
-#define brace_whitespace(c) (!(c) || (c) == ' ' || (c) == '\t' || (c) == '\n')
+#define brace_whitespace(c) (! (c) || (c) == ' ' || (c) == '\t' || (c) == '\n')
 #define savestring xstrdup
 
 /* Basic idea:
@@ -1155,8 +1344,7 @@ kpse_path_expand (const char *path)
    postamble (stuff after the matching close brace) and amble (stuff after
    preamble, and before postamble).  Expand amble, and then tack on the
    expansions to preamble.  Expand postamble, and tack on the expansions to
-   the result so far.
- */
+   the result so far.  */
 
 /* The character which is used to separate arguments. */
 static int brace_arg_separator = ',';
@@ -1180,10 +1368,11 @@ free_array (char **array)
 {
   register int i = 0;
 
-  if (!array) return;
+  if (! array) return;
 
   while (array[i])
     free (array[i++]);
+
   free (array);
 }
 
@@ -1227,7 +1416,7 @@ brace_expand (const char *text)
   result = (char **) xmalloc (2 * sizeof (char *));
   result[0] = preamble;
   result[1] = NULL;
-  
+
   /* Special case.  If we never found an exciting character, then
      the preamble is all of the text, so just return that. */
   if (c != '{')
@@ -1238,7 +1427,7 @@ brace_expand (const char *text)
   c = brace_gobbler (text, &i, '}');
 
   /* What if there isn't a matching close brace? */
-  if (!c)
+  if (! c)
     {
       WARNING1 ("%s: Unmatched {", text);
       free (preamble);		/* Same as result[0]; see initialization. */
@@ -1295,7 +1484,7 @@ expand_amble (const char *text)
 
       partial = brace_expand (tem);
 
-      if (!result)
+      if (! result)
 	result = partial;
       else
 	{
@@ -1327,10 +1516,10 @@ array_concat (char **arr1, char **arr2)
   register int i, j, len, len1, len2;
   register char **result;
 
-  if (!arr1)
+  if (! arr1)
     return (copy_array (arr2));
 
-  if (!arr2)
+  if (! arr2)
     return (copy_array (arr1));
 
   len1 = array_len (arr1);
@@ -1398,14 +1587,14 @@ brace_gobbler (const char *text, int *indx, int satisfy)
 	  quoted = c;
 	  continue;
 	}
-      
+
       if (c == satisfy && !level && !quoted)
 	{
 	  /* We ignore an open brace surrounded by whitespace, and also
 	     an open brace followed immediately by a close brace, that
 	     was preceded with whitespace.  */
 	  if (c == '{' &&
-	      ((!i || brace_whitespace (text[i - 1])) &&
+	      ((! i || brace_whitespace (text[i - 1])) &&
 	       (brace_whitespace (text[i + 1]) || text[i + 1] == '}')))
 	    continue;
 	  /* If this is being compiled as part of bash, ignore the `{'
@@ -1480,11 +1669,12 @@ static kpse_format_info_type kpse_format_info;
 /* And EXPAND_DEFAULT calls kpse_expand_default on try_path and the
    present info->path.  */
 #define EXPAND_DEFAULT(try_path, source_string)			\
-  if (! try_path.empty ()) {					\
+  if (! try_path.empty ())					\
+    {								\
       info->raw_path = try_path;				\
       info->path = kpse_expand_default (try_path.c_str (), (info->path).c_str ());	\
       info->path_source = source_string;			\
-  }
+    }
 
 /* Find the final search path to use for the format entry INFO, given
    the compile-time default (DEFAULT_PATH), and the environment
@@ -1508,22 +1698,27 @@ init_path (kpse_format_info_type *info, const char *default_path, ...)
      cnf entries simultaneously, to avoid having to go through envvar
      list twice -- because of the PVAR?C macro, that would mean having
      to create a str_list and then use it twice.  Yuck.  */
-  while ((env_name = va_arg (ap, char *)) != NULL) {
-    /* Since sh doesn't like envvar names with `.', check PATH_prog
-       rather than PATH.prog.  */
-    if (!var) {
-      /* Try simply PATH.  */
-      char *env_value = getenv (env_name);
-      if (env_value && *env_value) {
-        var = env_name;        
-      }
+
+  while ((env_name = va_arg (ap, char *)) != NULL)
+    {
+      /* Since sh doesn't like envvar names with `.', check PATH_prog
+	 rather than PATH.prog.  */
+
+      if (! var)
+	{
+	  /* Try simply PATH.  */
+	  std::string env_value = octave_env::getenv (env_name);
+
+	  if (! env_value.empty ())
+	    var = env_name;
+	}
+
+      if (var && ! info->cnf_path.empty ())
+	break;
     }
-    
-    if (var && ! info->cnf_path.empty ())
-      break;
-  }
+
   va_end (ap);
-  
+
   /* Expand any extra :'s.  For each level, we replace an extra : with
      the path at the next lower level.  For example, an extra : in a
      user-set envvar should be replaced with the path from the cnf file.
@@ -1536,14 +1731,13 @@ init_path (kpse_format_info_type *info, const char *default_path, ...)
 
   EXPAND_DEFAULT (info->cnf_path, "texmf.cnf");
   EXPAND_DEFAULT (info->client_path, "program config file");
+
   if (var)
     {
-      char *val = getenv (var);
-      std::string sval;
-      if (val)
-	sval = val;
-      EXPAND_DEFAULT (sval, concat (var, " environment variable"));
+      std::string val = octave_env::getenv (var);
+      EXPAND_DEFAULT (val, concat (var, " environment variable"));
     }
+
   EXPAND_DEFAULT (info->override_path, "application override variable");
   std::string tmp = kpse_brace_expand ((info->path).c_str ());
   info->path = tmp;
@@ -1560,13 +1754,16 @@ add_suffixes (const char ***list, ...)
   va_list ap;
 
   va_start (ap, list);
-  
-  while ((s = va_arg (ap, char *)) != NULL) {
-    count++;
-    XRETALLOC (*list, count + 1, const char *);
-    (*list)[count - 1] = s;
-  }
+
+  while ((s = va_arg (ap, char *)) != NULL)
+    {
+      count++;
+      XRETALLOC (*list, count + 1, const char *);
+      (*list)[count - 1] = s;
+    }
+
   va_end (ap);
+
   (*list)[count] = NULL;
 }
 
@@ -1574,20 +1771,24 @@ add_suffixes (const char ***list, ...)
 static char *
 remove_dbonly (const char *path)
 {
-  char *ret = XTALLOC(strlen (path) + 1, char), *q=ret;
+  char *ret = XTALLOC (strlen (path) + 1, char), *q=ret;
   const char *p=path;
   bool new_elt=true;
 
-  while (*p) {
-    if (new_elt && *p && *p == '!' && *(p+1) == '!')
-      p += 2;
-    else {
-      new_elt = (*p == ENV_SEP);
-      *q++ = *p++;
+  while (*p)
+    {
+      if (new_elt && *p && *p == '!' && *(p+1) == '!')
+	p += 2;
+      else
+	{
+	  new_elt = (*p == ENV_SEP);
+	  *q++ = *p++;
+	}
     }
-  }
+
   *q = '\0';
-  return(ret);
+
+  return ret;
 }
 
 /* Initialize everything for FORMAT.  */
@@ -1598,10 +1799,10 @@ kpse_init_format (void)
   /* If we get called twice, don't redo all the work.  */
   if (! kpse_format_info.path.empty ())
     return kpse_format_info.path;
-    
+
   kpse_format_info.type = "ls-R";
   init_path (&kpse_format_info, DEFAULT_TEXMFDBS, DB_ENVS, NULL);
-  add_suffixes(&kpse_format_info.suffix, "ls-R", NULL);
+  add_suffixes (&kpse_format_info.suffix, "ls-R", NULL);
   kpse_format_info.path = remove_dbonly (kpse_format_info.path.c_str ());
 
 #ifdef KPSE_DEBUG
@@ -1613,37 +1814,64 @@ kpse_init_format (void)
       DEBUGF2 ("Search path for %s files (from %s)\n",
 	       kpse_format_info.type.c_str (),
 	       kpse_format_info.path_source.c_str ());
+
       DEBUGF1 ("  = %s\n", kpse_format_info.path.c_str ());
-      DEBUGF1 ("  before expansion = %s\n", kpse_format_info.raw_path.c_str ());
+
+      DEBUGF1 ("  before expansion = %s\n",
+	       kpse_format_info.raw_path.c_str ());
+
       DEBUGF1 ("  application override path = %s\n", MAYBE (override_path));
+
       DEBUGF1 ("  application config file path = %s\n", MAYBE (client_path));
+
       DEBUGF1 ("  texmf.cnf path = %s\n", MAYBE (cnf_path));
+
       DEBUGF1 ("  compile-time path = %s\n", MAYBE (default_path));
+
       DEBUGF  ("  default suffixes =");
-      if (kpse_format_info.suffix) {
-        const char **ext;
-        for (ext = kpse_format_info.suffix; ext && *ext; ext++) {
-          fprintf (stderr, " %s", *ext);
-        }
-        putc ('\n', stderr);
-      } else {
-        fputs (" (none)\n", stderr);
-      }
+
+      if (kpse_format_info.suffix)
+	{
+	  const char **ext;
+	  for (ext = kpse_format_info.suffix; ext && *ext; ext++)
+	    {
+	      fprintf (stderr, " %s", *ext);
+	    }
+	  putc ('\n', stderr);
+	}
+      else
+	{
+	  fputs (" (none)\n", stderr);
+	}
+
       DEBUGF  ("  other suffixes =");
-      if (kpse_format_info.alt_suffix) {
-        const char **alt;
-        for (alt = kpse_format_info.alt_suffix; alt && *alt; alt++) {
-          fprintf (stderr, " %s", *alt);
-        }
-        putc ('\n', stderr);
-      } else {
-        fputs (" (none)\n", stderr);
-      }
-      DEBUGF1 ("  search only with suffix = %d\n",kpse_format_info.suffix_search_only);
+
+      if (kpse_format_info.alt_suffix)
+	{
+	  const char **alt;
+	  for (alt = kpse_format_info.alt_suffix; alt && *alt; alt++)
+	    {
+	      fprintf (stderr, " %s", *alt);
+	    }
+	  putc ('\n', stderr);
+	}
+      else
+	{
+	  fputs (" (none)\n", stderr);
+	}
+
+      DEBUGF1 ("  search only with suffix = %d\n",
+	       kpse_format_info.suffix_search_only);
+
       DEBUGF1 ("  runtime generation program = %s\n", MAYBE (program));
+
       DEBUGF1 ("  extra program args = %s\n", MAYBE (program_args));
-      DEBUGF1 ("  program enabled = %d\n", kpse_format_info.program_enabled_p);
-      DEBUGF1 ("  program enable level = %d\n", kpse_format_info.program_enable_level);
+
+      DEBUGF1 ("  program enabled = %d\n",
+	       kpse_format_info.program_enabled_p);
+
+      DEBUGF1 ("  program enable level = %d\n",
+	       kpse_format_info.program_enable_level);
     }
 #endif /* KPSE_DEBUG */
 
@@ -1679,13 +1907,14 @@ static bool
 ignore_dir_p (const char *dirname)
 {
   const char *dot_pos = dirname;
-  
-  while ((dot_pos = strchr (dot_pos + 1, '.'))) {
-    /* If / before and no / after, skip it. */
-    if (IS_DIR_SEP (dot_pos[-1]) && dot_pos[1] && !IS_DIR_SEP (dot_pos[1]))
-      return true;
-  }
-  
+
+  while ((dot_pos = strchr (dot_pos + 1, '.')))
+    {
+      /* If / before and no / after, skip it. */
+      if (IS_DIR_SEP (dot_pos[-1]) && dot_pos[1] && !IS_DIR_SEP (dot_pos[1]))
+	return true;
+    }
+
   return false;
 }
 
@@ -1699,12 +1928,12 @@ read_line (FILE *f)
   unsigned limit = BLOCK_SIZE;
   unsigned loc = 0;
   char *line = (char *) xmalloc (limit);
-  
+
   while ((c = getc (f)) != EOF && c != '\n' && c != '\r')
     {
       line[loc] = c;
       loc++;
-      
+
       /* By testing after the assignment, we guarantee that we'll always
          have space for the null we append below.  We know we always
          have room for the first char, since we start with BLOCK_SIZE.  */
@@ -1714,7 +1943,7 @@ read_line (FILE *f)
           line = (char *) xrealloc (line, limit);
         }
     }
-  
+
   /* If we read anything, return it.  This can't represent a last
      ``line'' which doesn't end in a newline, but so what.  */
   if (c != EOF)
@@ -1722,12 +1951,14 @@ read_line (FILE *f)
       /* Terminate the string.  We can't represent nulls in the file,
          either.  Again, it doesn't matter.  */
       line[loc] = 0;
+
       /* Absorb LF of a CRLF pair. */
-      if (c == '\r') {
+      if (c == '\r')
+	{
           c = getc (f);
           if (c != '\n')
-              ungetc (c, f);
-      }
+	    ungetc (c, f);
+	}
     }
   else /* At end of file.  */
     {
@@ -1750,76 +1981,100 @@ db_build (hash_table_type *table, const std::string& db_filename)
   char *top_dir = (char *) xmalloc (len + 1);
   char *cur_dir = NULL; /* First thing in ls-R might be a filename.  */
   FILE *db_file = xfopen (db_filename.c_str (), "r");
-  
+
   strncpy (top_dir, db_filename.c_str (), len);
   top_dir[len] = 0;
-  
-  if (db_file) {
-    while ((line = read_line (db_file)) != NULL) {
-      len = strlen (line);
 
-      /* A line like `/foo:' = new dir foo.  Allow both absolute (/...)
-         and explicitly relative (./...) names here.  It's a kludge to
-         pass in the directory name with the trailing : still attached,
-         but it doesn't actually hurt.  */
-      if (len > 0 && line[len - 1] == ':' && kpse_absolute_p (line, true)) {
-        /* New directory line.  */
-        if (!ignore_dir_p (line)) {
-          /* If they gave a relative name, prepend full directory name now.  */
-          line[len - 1] = DIR_SEP;
-          /* Skip over leading `./', it confuses `match' and is just a
-             waste of space, anyway.  This will lose on `../', but `match'
-             won't work there, either, so it doesn't matter.  */
-          cur_dir = *line == '.' ? concat (top_dir, line + 2) : xstrdup (line);
-          dir_count++;
-        } else {
-          cur_dir = NULL;
-          ignore_dir_count++;
-        }
+  if (db_file)
+    {
+      while ((line = read_line (db_file)) != NULL)
+	{
+	  len = strlen (line);
 
-      /* Ignore blank, `.' and `..' lines.  */
-      } else if (*line != 0 && cur_dir   /* a file line? */
-                 && !(*line == '.'
-                      && (line[1] == '0' || (line[1] == '.' && line[2] == 0))))
-       {/* Make a new hash table entry with a key of `line' and a data
-           of `cur_dir'.  An already-existing identical key is ok, since
-           a file named `foo' can be in more than one directory.  Share
-           `cur_dir' among all its files (and hence never free it). */
-        hash_insert (table, xstrdup (line), cur_dir);
-        file_count++;
+	  /* A line like `/foo:' = new dir foo.  Allow both absolute (/...)
+	     and explicitly relative (./...) names here.  It's a kludge to
+	     pass in the directory name with the trailing : still attached,
+	     but it doesn't actually hurt.  */
+	  if (len > 0 && line[len - 1] == ':' && kpse_absolute_p (line, true))
+	    {
+	      /* New directory line.  */
+	      if (! ignore_dir_p (line))
+		{
+		  /* If they gave a relative name, prepend full
+		     directory name now.  */
+		  line[len - 1] = DIR_SEP;
 
-      } /* else ignore blank lines or top-level files
-           or files in ignored directories*/
+		  /* Skip over leading `./', it confuses `match' and
+		     is just a waste of space, anyway.  This will lose
+		     on `../', but `match' won't work there, either,
+		     so it doesn't matter.  */
 
-      free (line);
-    }
+		  cur_dir = *line == '.'
+		    ? concat (top_dir, line + 2) : xstrdup (line);
 
-    xfclose (db_file, db_filename.c_str ());
+		  dir_count++;
+		}
+	      else
+		{
+		  cur_dir = NULL;
+		  ignore_dir_count++;
+		}
 
-    if (file_count == 0) {
-      WARNING1 ("kpathsea: No usable entries in %s", db_filename.c_str ());
-      WARNING ("kpathsea: See the manual for how to generate ls-R");
-      db_file = NULL;
-    } else {
-      str_list_add (db_dir_list, top_dir);
-    }
+	      /* Ignore blank, `.' and `..' lines.  */
+
+	    }
+	  else if (*line != 0 && cur_dir   /* a file line? */
+		   && !(*line == '.'
+			&& (line[1] == '0'
+			    || (line[1] == '.' && line[2] == 0))))
+
+	    {
+	      /* Make a new hash table entry with a key of `line' and
+		 a data of `cur_dir'.  An already-existing identical
+		 key is ok, since a file named `foo' can be in more
+		 than one directory.  Share `cur_dir' among all its
+		 files (and hence never free it). */
+	      hash_insert (table, xstrdup (line), cur_dir);
+	      file_count++;
+	    }
+	  /* else ignore blank lines or top-level files
+	     or files in ignored directories */
+
+	  free (line);
+	}
+
+      xfclose (db_file, db_filename.c_str ());
+
+      if (file_count == 0)
+	{
+	  WARNING1 ("kpathsea: No usable entries in %s", db_filename.c_str ());
+	  WARNING ("kpathsea: See the manual for how to generate ls-R");
+	  db_file = NULL;
+	}
+      else
+	{
+	  str_list_add (db_dir_list, top_dir);
+	}
 
 #ifdef KPSE_DEBUG
-    if (KPSE_DEBUG_P (KPSE_DEBUG_HASH)) {
-      /* Don't make this a debugging bit, since the output is so
-         voluminous, and being able to specify -1 is too useful.
-         Instead, let people who want it run the program under
-         a debugger and change the variable that way.  */
-      bool hash_summary_only = true;
+      if (KPSE_DEBUG_P (KPSE_DEBUG_HASH))
+	{
+	  /* Don't make this a debugging bit, since the output is so
+	     voluminous, and being able to specify -1 is too useful.
+	     Instead, let people who want it run the program under
+	     a debugger and change the variable that way.  */
+	  bool hash_summary_only = true;
 
-      DEBUGF4 ("%s: %u entries in %d directories (%d hidden).\n",
-               db_filename.c_str (), file_count, dir_count, ignore_dir_count);
-      DEBUGF ("ls-R hash table:");
-      hash_print (*table, hash_summary_only);
-      fflush (stderr);
-    }
+	  DEBUGF4 ("%s: %u entries in %d directories (%d hidden).\n",
+		   db_filename.c_str (), file_count, dir_count,
+		   ignore_dir_count);
+
+	  DEBUGF ("ls-R hash table:");
+	  hash_print (*table, hash_summary_only);
+	  fflush (stderr);
+	}
 #endif /* KPSE_DEBUG */
-  }
+    }
 
   free (top_dir);
 
@@ -1836,23 +2091,24 @@ kpse_db_insert (const char *passed_fname)
 {
   /* We might not have found ls-R, or even had occasion to look for it
      yet, so do nothing if we have no hash table.  */
-  if (db.buckets) {
-    const char *dir_part;
-    char *fname = xstrdup (passed_fname);
-    char *baseptr = xbasename (fname);
-    const char *file_part = xstrdup (baseptr);
+  if (db.buckets)
+    {
+      const char *dir_part;
+      char *fname = xstrdup (passed_fname);
+      char *baseptr = xbasename (fname);
+      const char *file_part = xstrdup (baseptr);
 
-    *baseptr = '\0';  /* Chop off the filename.  */
-    dir_part = fname; /* That leaves the dir, with the trailing /.  */
+      *baseptr = '\0';  /* Chop off the filename.  */
+      dir_part = fname; /* That leaves the dir, with the trailing /.  */
 
-    hash_insert (&db, file_part, dir_part);
-  }
+      hash_insert (&db, file_part, dir_part);
+    }
 }
 
 /* Return true if FILENAME could be in PATH_ELT, i.e., if the directory
    part of FILENAME matches PATH_ELT.  Have to consider // wildcards, but
    $ and ~ expansion have already been done.  */
-     
+
 static bool
 match (const std::string& filename_arg, const std::string& path_elt_arg)
 {
@@ -1861,68 +2117,80 @@ match (const std::string& filename_arg, const std::string& path_elt_arg)
 
   const char *original_filename = filename;
   bool matched = false;
-  
-  for (; *filename && *path_elt; filename++, path_elt++) {
-    if (FILECHARCASEEQ (*filename, *path_elt)) /* normal character match */
-      ;
 
-    else if (IS_DIR_SEP (*path_elt)  /* at // */
-             && original_filename < filename && IS_DIR_SEP (path_elt[-1])) {
-      while (IS_DIR_SEP (*path_elt))
-        path_elt++; /* get past second and any subsequent /'s */
-      if (*path_elt == 0) {
-        /* Trailing //, matches anything. We could make this part of the
-           other case, but it seems pointless to do the extra work.  */
-        matched = true;
-        break;
-      } else {
-        /* Intermediate //, have to match rest of PATH_ELT.  */
-        for (; !matched && *filename; filename++) {
-          /* Try matching at each possible character.  */
-          if (IS_DIR_SEP (filename[-1])
-              && FILECHARCASEEQ (*filename, *path_elt))
-            matched = match (filename, path_elt);
-        }
-        /* Prevent filename++ when *filename='\0'. */
-        break;
-      }
+  for (; *filename && *path_elt; filename++, path_elt++)
+    {
+      if (FILECHARCASEEQ (*filename, *path_elt)) /* normal character match */
+	;
+
+      else if (IS_DIR_SEP (*path_elt)  /* at // */
+	       && original_filename < filename && IS_DIR_SEP (path_elt[-1]))
+	{
+	  while (IS_DIR_SEP (*path_elt))
+	    path_elt++; /* get past second and any subsequent /'s */
+
+	  if (*path_elt == 0)
+	    {
+	      /* Trailing //, matches anything. We could make this
+		 part of the other case, but it seems pointless to do
+		 the extra work.  */
+	      matched = true;
+	      break;
+	    }
+	  else
+	    {
+	      /* Intermediate //, have to match rest of PATH_ELT.  */
+	      for (; !matched && *filename; filename++)
+		{
+		  /* Try matching at each possible character.  */
+		  if (IS_DIR_SEP (filename[-1])
+		      && FILECHARCASEEQ (*filename, *path_elt))
+		    matched = match (filename, path_elt);
+		}
+
+	      /* Prevent filename++ when *filename='\0'. */
+	      break;
+	    }
+	}
+      else
+	/* normal character nonmatch, quit */
+	break;
     }
 
-    else /* normal character nonmatch, quit */
-      break;
-  }
-  
   /* If we've reached the end of PATH_ELT, check that we're at the last
      component of FILENAME, we've matched.  */
-  if (!matched && *path_elt == 0) {
-    /* Probably PATH_ELT ended with `vf' or some such, and FILENAME ends
-       with `vf/ptmr.vf'.  In that case, we'll be at a directory
-       separator.  On the other hand, if PATH_ELT ended with a / (as in
-       `vf/'), FILENAME being the same `vf/ptmr.vf', we'll be at the
-       `p'.  Upshot: if we're at a dir separator in FILENAME, skip it.
-       But if not, that's ok, as long as there are no more dir separators.  */
-    if (IS_DIR_SEP (*filename))
-      filename++;
-      
-    while (*filename && !IS_DIR_SEP (*filename))
-      filename++;
-    matched = *filename == 0;
-  }
-  
+  if (! matched && *path_elt == 0)
+    {
+      /* Probably PATH_ELT ended with `vf' or some such, and FILENAME
+	 ends with `vf/ptmr.vf'.  In that case, we'll be at a
+	 directory separator.  On the other hand, if PATH_ELT ended
+	 with a / (as in `vf/'), FILENAME being the same `vf/ptmr.vf',
+	 we'll be at the `p'.  Upshot: if we're at a dir separator in
+	 FILENAME, skip it.  But if not, that's ok, as long as there
+	 are no more dir separators.  */
+
+      if (IS_DIR_SEP (*filename))
+	filename++;
+
+      while (*filename && !IS_DIR_SEP (*filename))
+	filename++;
+
+      matched = *filename == 0;
+    }
+
   return matched;
 }
-
 
 /* If DB_DIR is a prefix of PATH_ELT, return true; otherwise false.
    That is, the question is whether to try the db for a file looked up
    in PATH_ELT.  If PATH_ELT == ".", for example, the answer is no. If
    PATH_ELT == "/usr/local/lib/texmf/fonts//tfm", the answer is yes.
-   
+
    In practice, ls-R is only needed for lengthy subdirectory
    comparisons, but there's no gain to checking PATH_ELT to see if it is
    a subdir match, since the only way to do that is to do a string
    search in it, which is all we do anyway.  */
-   
+
 static bool
 elt_in_db (const std::string& db_dir, const std::string& path_elt)
 {
@@ -1933,17 +2201,18 @@ elt_in_db (const std::string& db_dir, const std::string& path_elt)
 
   size_t i = 0;
 
-  while (!found && FILECHARCASEEQ (db_dir[i], path_elt[i])) {
-    i++;
-    /* If we've matched the entire db directory, it's good.  */
-    if (i == db_dir_len)
-      found = true;
- 
+  while (! found && FILECHARCASEEQ (db_dir[i], path_elt[i]))
+    {
+      i++;
+      /* If we've matched the entire db directory, it's good.  */
+      if (i == db_dir_len)
+	found = true;
+
     /* If we've reached the end of PATH_ELT, but not the end of the db
        directory, it's no good.  */
-    else if (i == path_elt_len)
-      break;
-  }
+      else if (i == path_elt_len)
+	break;
+    }
 
   return found;
 }
@@ -1957,45 +2226,56 @@ alias_build (hash_table_type *table, const std::string& alias_filename)
   unsigned count = 0;
   FILE *alias_file = xfopen (alias_filename.c_str (), "r");
 
-  if (alias_file) {
-    while ((line = read_line (alias_file)) != NULL) {
-      /* comments or empty */
-      if (*line == 0 || *line == '%' || *line == '#') {
-        ;
-      } else {
-        /* Each line should have two fields: realname aliasname.  */
-        real = line;
-        while (*real && isspace (*real))
-          real++;
-        alias = real;
-        while (*alias && !isspace (*alias))
-          alias++;
-        *alias++ = 0;
-        while (*alias && isspace (*alias)) 
-          alias++;
-        /* Is the check for errors strong enough?  Should we warn the user
-           for potential errors?  */
-        if (strlen (real) != 0 && strlen (alias) != 0) {
-          hash_insert (table, xstrdup (alias), xstrdup (real));
-          count++;
-        }
-      }
-      free (line);
-    }
+  if (alias_file)
+    {
+      while ((line = read_line (alias_file)) != NULL)
+	{
+	  /* comments or empty */
+	  if (*line == 0 || *line == '%' || *line == '#')
+	    /* do nothing */ ;
+	  else
+	    {
+	      /* Each line should have two fields: realname aliasname.  */
+	      real = line;
+
+	      while (*real && isspace (*real))
+		real++;
+
+	      alias = real;
+
+	      while (*alias && !isspace (*alias))
+		alias++;
+
+	      *alias++ = 0;
+
+	      while (*alias && isspace (*alias))
+		alias++;
+
+	      /* Is the check for errors strong enough?  Should we
+		 warn the user for potential errors?  */
+	      if (strlen (real) != 0 && strlen (alias) != 0)
+		{
+		  hash_insert (table, xstrdup (alias), xstrdup (real));
+		  count++;
+		}
+	    }
+	  free (line);
+	}
 
 #ifdef KPSE_DEBUG
-    if (KPSE_DEBUG_P (KPSE_DEBUG_HASH)) {
-      /* As with ls-R above ... */
-      bool hash_summary_only = true;
-      DEBUGF2 ("%s: %u aliases.\n", alias_filename.c_str (), count);
-      DEBUGF ("alias hash table:");
-      hash_print (*table, hash_summary_only);
-      fflush (stderr);
-    }
+      if (KPSE_DEBUG_P (KPSE_DEBUG_HASH))
+	{
+	  /* As with ls-R above ... */
+	  bool hash_summary_only = true;
+	  DEBUGF2 ("%s: %u aliases.\n", alias_filename.c_str (), count);
+	  DEBUGF ("alias hash table:");
+	  hash_print (*table, hash_summary_only);
+	  fflush (stderr);
+	}
 #endif /* KPSE_DEBUG */
 
-    xfclose (alias_file, alias_filename.c_str ());
-  }
+      xfclose (alias_file, alias_filename.c_str ());
+    }
 
   return alias_file != NULL;
 }
@@ -2023,13 +2303,14 @@ kpse_init_db (void)
 	    ok = true;
 	}
     }
-  
-  if (!ok) {
-    /* If db can't be built, leave `size' nonzero (so we don't
-       rebuild it), but clear `buckets' (so we don't look in it).  */
-    free (db.buckets);
-    db.buckets = NULL;
-  }
+
+  if (! ok)
+    {
+      /* If db can't be built, leave `size' nonzero (so we don't
+	 rebuild it), but clear `buckets' (so we don't look in it).  */
+      free (db.buckets);
+      db.buckets = NULL;
+    }
 
   /* Add the content of any alias databases.  There may exist more than
      one alias file along DB_NAME files.  This duplicates the above code
@@ -2049,10 +2330,11 @@ kpse_init_db (void)
 	}
     }
 
-  if (!ok) {
-    free (alias_db.buckets);
-    alias_db.buckets = NULL;
-  }
+  if (! ok)
+    {
+      free (alias_db.buckets);
+      alias_db.buckets = NULL;
+    }
 }
 
 /* Avoid doing anything if this PATH_ELT is irrelevant to the databases. */
@@ -2070,12 +2352,12 @@ kpse_db_search (const std::string& name_arg,
 
   const char *name = name_arg.c_str ();
   const char *orig_path_elt = orig_path_elt_arg.c_str ();
-  
+
   /* If we failed to build the database (or if this is the recursive
      call to build the db path), quit.  */
   if (db.buckets == NULL)
     return ret;
-  
+
   /* When tex-glyph.c calls us looking for, e.g., dpi600/cmr10.pk, we
      won't find it unless we change NAME to just `cmr10.pk' and append
      `/dpi600' to PATH_ELT.  We are justified in using a literal `/'
@@ -2103,7 +2385,7 @@ kpse_db_search (const std::string& name_arg,
   for (int e = 0; !relevant && e < db_dir_list.length (); e++)
     relevant = elt_in_db (db_dir_list[e], path_elt);
 
-  if (!relevant)
+  if (! relevant)
     return ret;
 
   /* If we have aliases for this name, use them.  */
@@ -2138,7 +2420,7 @@ kpse_db_search (const std::string& name_arg,
 
 #ifdef KPSE_DEBUG
 	  if (KPSE_DEBUG_P (KPSE_DEBUG_SEARCH))
-	    DEBUGF3 ("db:match(%s,%s) = %d\n", db_file.c_str (), path_elt, matched);
+	    DEBUGF3 ("db:match (%s,%s) = %d\n", db_file.c_str (), path_elt, matched);
 #endif
 
 	  /* We got a hit in the database.  Now see if the file actually
@@ -2167,7 +2449,7 @@ kpse_db_search (const std::string& name_arg,
 			found = atry;
 		    }
 		}
-          
+
 	      /* If we have a real file, add it to the list, maybe done.  */
 	      if (! found.empty ())
 		{
@@ -2178,7 +2460,7 @@ kpse_db_search (const std::string& name_arg,
 	    }
 	}
     }
-  
+
   /* If we had to break up NAME, free the temporary PATH_ELT.  */
   if (path_elt != orig_path_elt)
     free (path_elt);
@@ -2196,10 +2478,10 @@ kpse_expand_default (const char *path, const char *fallback)
 {
   unsigned path_length;
   char *expansion;
-  
+
   /* The default path better not be null.  */
   assert (fallback);
-  
+
   if (path == NULL)
     expansion = xstrdup (fallback);
 
@@ -2230,11 +2512,11 @@ kpse_expand_default (const char *path, const char *fallback)
           if (IS_ENV_SEP (loc[0]) && IS_ENV_SEP (loc[1]))
             { /* We have a doubled colon.  */
               expansion = (char *) xmalloc (path_length + strlen (fallback) + 1);
-              
+
               /* Copy stuff up to and including the first colon.  */
               strncpy (expansion, path, loc - path + 1);
               expansion[loc - path + 1] = 0;
-              
+
               /* Copy in FALLBACK, and then the rest of PATH.  */
               strcat (expansion, fallback);
               strcat (expansion, loc + 1);
@@ -2243,7 +2525,7 @@ kpse_expand_default (const char *path, const char *fallback)
             }
         }
     }
-  
+
   return expansion;
 }
 
@@ -2264,7 +2546,7 @@ dir_list_add (str_llist_type *l, const std::string& dir)
   std::string saved_dir = dir;
   if (IS_DIR_SEP (last_char) || IS_DEVICE_SEP (last_char))
     saved_dir += DIR_SEP_STRING;
-  
+
   str_llist_add (l, saved_dir);
 }
 
@@ -2275,14 +2557,14 @@ static bool
 dir_p (const std::string& fn)
 {
 #ifdef WIN32
-  unsigned int fa = GetFileAttributes(fn.c_str ());
+  unsigned int fa = GetFileAttributes (fn.c_str ());
   return (fa != 0xFFFFFFFF && (fa & FILE_ATTRIBUTE_DIRECTORY));
 #else
   struct stat stats;
   return stat (fn.c_str (), &stats) == 0 && S_ISDIR (stats.st_mode);
 #endif
 }
- 
+
 /* If DIR is a directory, add it to the list L.  */
 
 static void
@@ -2329,13 +2611,13 @@ static str_llist_type *
 cached (const char *key)
 {
   unsigned p;
-  
+
   for (p = 0; p < cache_length; p++)
     {
       if (FILESTRCASEEQ (the_cache[p].key, key))
         return the_cache[p].value;
     }
-  
+
   return NULL;
 }
 
@@ -2372,11 +2654,11 @@ do_subdir (str_llist_type *str_list_ptr, const char *elt,
 
   assert (IS_DIR_SEP (elt[elt_length - 1])
           || IS_DEVICE_SEP (elt[elt_length - 1]));
-  
+
 #if defined (WIN32)
-  strcpy(dirname, name.c_str ());
-  strcat(dirname, "/*.*");         /* "*.*" or "*" -- seems equivalent. */
-  hnd = FindFirstFile(dirname, &find_file_data);
+  strcpy (dirname, name.c_str ());
+  strcat (dirname, "/*.*");         /* "*.*" or "*" -- seems equivalent. */
+  hnd = FindFirstFile (dirname, &find_file_data);
 
   if (hnd == INVALID_HANDLE_VALUE)
     return;
@@ -2393,22 +2675,25 @@ do_subdir (str_llist_type *str_list_ptr, const char *elt,
     name.resize (elt_length);
   }
   proceed = 1;
-  while (proceed) {
-    if (find_file_data.cFileName[0] != '.') {
-      /* Construct the potential subdirectory name.  */
-      name += find_file_data.cFileName;
-      if (find_file_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
-	/* It's a directory, so append the separator.  */
-	name += DIR_SEP_STRING;
-	unsigned potential_len = name.length ();
-	do_subdir (str_list_ptr, name.c_str (),
-		   potential_len, post);
-      }
-      name.resize (elt_length);
+  while (proceed)
+    {
+      if (find_file_data.cFileName[0] != '.')
+	{
+	  /* Construct the potential subdirectory name.  */
+	  name += find_file_data.cFileName;
+	  if (find_file_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+	    {
+	      /* It's a directory, so append the separator.  */
+	      name += DIR_SEP_STRING;
+	      unsigned potential_len = name.length ();
+	      do_subdir (str_list_ptr, name.c_str (),
+			 potential_len, post);
+	    }
+	  name.resize (elt_length);
+	}
+      proceed = FindNextFile (hnd, &find_file_data);
     }
-    proceed = FindNextFile (hnd, &find_file_data);
-  }
-  FindClose(hnd);
+  FindClose (hnd);
 
 #else /* not WIN32 */
 
@@ -2416,7 +2701,7 @@ do_subdir (str_llist_type *str_list_ptr, const char *elt,
   dir = opendir (name.c_str ());
   if (dir == NULL)
     return;
-  
+
   /* Include top level before subdirectories, if nothing to match.  */
   if (*post == 0)
     dir_list_add (str_list_ptr, name);
@@ -2435,26 +2720,26 @@ do_subdir (str_llist_type *str_list_ptr, const char *elt,
       if (e->d_name[0] != '.')
         {
           int links;
-          
+
           /* Construct the potential subdirectory name.  */
           name += e->d_name;
-          
+
           /* If we can't stat it, or if it isn't a directory, continue.  */
           links = dir_links (name.c_str ());
 
           if (links >= 0)
-            { 
+            {
               /* It's a directory, so append the separator.  */
               name += DIR_SEP_STRING;
               unsigned potential_len = name.length ();
-              
+
               /* Should we recurse?  To see if the subdirectory is a
                  leaf, check if it has two links (one for . and one for
                  ..).  This means that symbolic links to directories do
                  not affect the leaf-ness.  This is arguably wrong, but
                  the only alternative I know of is to stat every entry
                  in the directory, and that is unacceptably slow.
-                 
+
                  The #ifdef here makes all this configurable at
                  compile-time, so that if we're using VMS directories or
                  some such, we can still find subdirectories, even if it
@@ -2483,7 +2768,7 @@ do_subdir (str_llist_type *str_list_ptr, const char *elt,
           name.resize (elt_length);
         }
     }
-  
+
   xclosedir (dir);
 #endif /* not WIN32 */
 }
@@ -2498,7 +2783,7 @@ expand_elt (str_llist_type *str_list_ptr, const char *elt, unsigned start)
 {
   const char *dir = elt + start;
   const char *post;
-  
+
   while (*dir != 0)
     {
       if (IS_DIR_SEP (*dir))
@@ -2513,10 +2798,10 @@ expand_elt (str_llist_type *str_list_ptr, const char *elt, unsigned start)
 
           /* No special stuff at this slash.  Keep going.  */
         }
-      
+
       dir++;
     }
-  
+
   /* When we reach the end of ELT, it will be a normal filename.  */
   checked_dir_list_add (str_list_ptr, elt);
 }
@@ -2529,7 +2814,7 @@ kpse_element_dirs (const char *elt)
   str_llist_type *ret;
 
   /* If given nothing, return nothing.  */
-  if (!elt || !*elt)
+  if (! elt || !*elt)
     return NULL;
 
   /* If we've already cached the answer for ELT, return it.  */
@@ -2591,27 +2876,31 @@ element (const char *passed_path, bool env_p)
   char *ret;
   int brace_level;
   unsigned len;
-  
+
   if (passed_path)
     path = passed_path;
   /* Check if called with NULL, and no previous path (perhaps we reached
      the end).  */
-  else if (!path)
+  else if (! path)
     return NULL;
-  
+
   /* OK, we have a non-null `path' if we get here.  */
   assert (path);
   p = path;
-  
+
   /* Find the next colon not enclosed by braces (or the end of the path).  */
   brace_level = 0;
   while (*p != 0  && !(brace_level == 0
-                       && (env_p ? IS_ENV_SEP (*p) : IS_DIR_SEP (*p)))) {
-    if (*p == '{') ++brace_level;
-    else if (*p == '}') --brace_level;
-    ++p;
-  }
-   
+                       && (env_p ? IS_ENV_SEP (*p) : IS_DIR_SEP (*p))))
+    {
+      if (*p == '{')
+	++brace_level;
+      else if (*p == '}')
+	--brace_level;
+
+      ++p;
+    }
+
   /* Return the substring starting at `path'.  */
   len = p - path;
 
@@ -2656,9 +2945,9 @@ FILE *
 xfopen (const char *filename, const char *mode)
 {
   FILE *f;
-  
+
   assert (filename && mode);
-  
+
   f = fopen (filename, mode);
   if (f == NULL)
     FATAL_PERROR (filename);
@@ -2670,22 +2959,9 @@ void
 xfclose (FILE *f, const char *filename)
 {
   assert (f);
-  
+
   if (fclose (f) == EOF)
     FATAL_PERROR (filename);
-}
-
-/* xftell.c: ftell with error checking.  */
-
-unsigned long
-xftell (FILE *f, char *filename)
-{
-  long where = ftell (f);
-
-  if (where < 0)
-    FATAL_PERROR (filename);
-
-  return where;
 }
 
 #ifndef WIN32
@@ -2696,7 +2972,7 @@ xclosedir (DIR *d)
   closedir (d);
 #else
   int ret = closedir (d);
-  
+
   if (ret != 0)
     FATAL ("closedir failed");
 #endif
@@ -2753,15 +3029,6 @@ xrealloc (void *old_ptr, unsigned size)
 
 /* xstrdup.c: strdup with error checking.  */
 
-/* Return a copy of S in new storage.  */
-
-char *
-xstrdup (const char *s)
-{
-  char *new_string = (char *) xmalloc (strlen (s) + 1);
-  return strcpy (new_string, s);
-}
-
 /* dir.c: directory operations.  */
 
 #ifndef WIN32
@@ -2776,7 +3043,7 @@ dir_links (const char *fn)
   std::map<std::string, long> link_table;
 
   long ret;
-  
+
   if (link_table.find (fn) != link_table.end ())
     ret = link_table[fn];
   else
@@ -2787,10 +3054,10 @@ dir_links (const char *fn)
             ? stats.st_nlink : (unsigned) -1;
 
       link_table[fn] = ret;
-      
+
 #ifdef KPSE_DEBUG
       if (KPSE_DEBUG_P (KPSE_DEBUG_STAT))
-        DEBUGF2 ("dir_links(%s) => %ld\n", fn, ret);
+        DEBUGF2 ("dir_links (%s) => %ld\n", fn, ret);
 #endif
     }
 
@@ -2814,18 +3081,18 @@ static unsigned
 hash (hash_table_type table, const std::string& key)
 {
   unsigned n = 0;
-  
+
   /* Our keys aren't often anagrams of each other, so no point in
      weighting the characters.  */
   size_t len = key.length ();
   for (size_t i = 0; i < len; i++)
     n = (n + n + TRANSFORM (key[i])) % table.size;
-  
+
   return n;
 }
 
 hash_table_type
-hash_create (unsigned size) 
+hash_create (unsigned size)
 {
   /* hash_table_type ret; changed into "static ..." to work around gcc
      optimizer bug for Alpha.  */
@@ -2833,11 +3100,11 @@ hash_create (unsigned size)
   unsigned b;
   ret.buckets = new hash_element_type * [size];
   ret.size = size;
-  
+
   /* calloc's zeroes aren't necessarily NULL, so be safe.  */
   for (b = 0; b <ret.size; b++)
     ret.buckets[b] = NULL;
-    
+
   return ret;
 }
 
@@ -2854,9 +3121,9 @@ hash_insert (hash_table_type *table, const std::string& key,
   new_elt->key = key;
   new_elt->value = value;
   new_elt->next = NULL;
-  
+
   /* Insert the new element at the end of the list.  */
-  if (!table->buckets[n])
+  if (! table->buckets[n])
     /* first element in bucket is a special case.  */
     table->buckets[n] = new_elt;
   else
@@ -2869,7 +3136,7 @@ hash_insert (hash_table_type *table, const std::string& key,
 }
 
 /* Look up STR in MAP.  Return a (dynamically-allocated) list of the
-   corresponding strings or NULL if no match.  */ 
+   corresponding strings or NULL if no match.  */
 
 static string_vector
 hash_lookup (hash_table_type table, const std::string& key)
@@ -2877,17 +3144,17 @@ hash_lookup (hash_table_type table, const std::string& key)
   hash_element_type *p;
   string_vector ret;
   unsigned n = hash (table, key);
-  
+
   /* Look at everything in this bucket.  */
   for (p = table.buckets[n]; p != NULL; p = p->next)
     if (FILESTRCASEEQ (key.c_str (), p->key.c_str ()))
       /* Cast because the general string_vector shouldn't force const data.  */
       str_list_add (ret, p->value);
-  
+
 #ifdef KPSE_DEBUG
   if (KPSE_DEBUG_P (KPSE_DEBUG_HASH))
     {
-      DEBUGF1 ("hash_lookup(%s) =>", key.c_str ());
+      DEBUGF1 ("hash_lookup (%s) =>", key.c_str ());
       if (ret.empty ())
         fputs (" (nil)\n", stderr);
       else
@@ -2914,37 +3181,46 @@ hash_print (hash_table_type table, int summary_only)
 {
   unsigned b;
   unsigned total_elements = 0, total_buckets = 0;
-  
-  for (b = 0; b < table.size; b++) {
-    hash_element_type *bucket = table.buckets[b];
 
-    if (bucket) {
-      unsigned len = 1;
-      hash_element_type *tb;
+  for (b = 0; b < table.size; b++)
+    {
+      hash_element_type *bucket = table.buckets[b];
 
-      total_buckets++;
-      if (!summary_only) fprintf (stderr, "%4d ", b);
+      if (bucket)
+	{
+	  unsigned len = 1;
+	  hash_element_type *tb;
 
-      for (tb = bucket->next; tb != NULL; tb = tb->next)
-        len++;
-      if (!summary_only) fprintf (stderr, ":%-5d", len);
-      total_elements += len;
+	  total_buckets++;
+	  if (! summary_only)
+	    fprintf (stderr, "%4d ", b);
 
-      if (!summary_only) {
-        for (tb = bucket; tb != NULL; tb = tb->next)
-          fprintf (stderr, " %s=>%s", tb->key.c_str (), tb->value.c_str ());
-        putc ('\n', stderr);
-      }
+	  for (tb = bucket->next; tb != NULL; tb = tb->next)
+	    len++;
+
+	  if (! summary_only)
+	    fprintf (stderr, ":%-5d", len);
+
+	  total_elements += len;
+
+	  if (! summary_only)
+	    {
+	      for (tb = bucket; tb != NULL; tb = tb->next)
+		fprintf (stderr, " %s=>%s", tb->key.c_str (),
+			 tb->value.c_str ());
+
+	      putc ('\n', stderr);
+	    }
+	}
     }
-  }
-  
+
   fprintf (stderr,
-          "%u buckets, %u nonempty (%u%%); %u entries, average chain %.1f.\n",
-          table.size,
-          total_buckets,
-          100 * total_buckets / table.size,
-          total_elements,
-          total_buckets ? total_elements / (double) total_buckets : 0.0);
+	   "%u buckets, %u nonempty (%u%%); %u entries, average chain %.1f.\n",
+	   table.size,
+	   total_buckets,
+	   100 * total_buckets / table.size,
+	   total_elements,
+	   total_buckets ? total_elements / (double) total_buckets : 0.0);
 }
 
 /* concat.c: dynamic string concatenation.  */
@@ -2952,7 +3228,7 @@ hash_print (hash_table_type table, int summary_only)
 /* Return the concatenation of S1 and S2.  See `concatn.c' for a
    `concatn', which takes a variable number of arguments.  */
 
-char *
+static char *
 concat (const char *s1, const char *s2)
 {
   char *answer = (char *) xmalloc (strlen (s1) + strlen (s2) + 1);
@@ -2964,7 +3240,7 @@ concat (const char *s1, const char *s2)
 
 /* concat3.c: concatenate three strings.  */
 
-char *
+static char *
 concat3 (const char *s1, const char *s2, const char *s3)
 {
   char *answer
@@ -2992,7 +3268,7 @@ fopen (const char *filename, const char *mode)
   FILE *ret = fopen (filename, mode);
 
   if (KPSE_DEBUG_P (KPSE_DEBUG_FOPEN))
-    DEBUGF3 ("fopen(%s, %s) => 0x%lx\n", filename, mode, (unsigned long) ret);
+    DEBUGF3 ("fopen (%s, %s) => 0x%lx\n", filename, mode, (unsigned long) ret);
 
   return ret;
 }
@@ -3002,190 +3278,20 @@ fclose (FILE *f)
 {
 #undef fclose
   int ret = fclose (f);
-  
+
   if (KPSE_DEBUG_P (KPSE_DEBUG_FOPEN))
-    DEBUGF2 ("fclose(0x%lx) => %d\n", (unsigned long) f, ret);
+    DEBUGF2 ("fclose (0x%lx) => %d\n", (unsigned long) f, ret);
 
   return ret;
 }
 
 #endif
-
-/* find-suffix.c: return the stuff after a dot.  */
-
-/* Return pointer to first character after `.' in last directory element
-   of NAME.  If the name is `foo' or `/foo.bar/baz', we have no extension.  */
-
-char *
-find_suffix (const char *name)
-{
-  const char *slash_pos;
-  char *dot_pos = strrchr (name, '.');
-  
-  if (dot_pos == NULL)
-    return NULL;
-  
-  for (slash_pos = name + strlen (name);
-       slash_pos > dot_pos && !IS_DIR_SEP (*slash_pos);
-       slash_pos--)
-    ;
-  
-  return slash_pos > dot_pos ? NULL : dot_pos + 1;
-}
-
-/* rm-suffix.c: remove any suffix.  */
-
-/* Generic const warning -- see extend-fname.c.  */
-
-char *
-remove_suffix (const char *s)
-{
-  char *ret;
-  const char *suffix = find_suffix (s);
-  
-  if (suffix)
-    {
-      /* Back up to before the dot.  */
-      suffix--;
-      ret = (char *) xmalloc (suffix - s + 1);
-      strncpy (ret, s, suffix - s);
-      ret[suffix - s] = 0;
-    }
-  else
-    ret = (char *) s;
-    
-  return ret;
-}
-
-/* readable.c: check if a filename is a readable non-directory file.  */
-
-/* Truncate any too-long components in NAME, returning the result.  It's
-   too bad this is necessary.  See comments in readable.c for why.  */
-
-static char *
-kpse_truncate_filename (const char *name)
-{
-  unsigned c_len = 0;        /* Length of current component.  */
-  unsigned ret_len = 0;      /* Length of constructed result.  */
-  
-  /* Allocate enough space.  */
-  char *ret = (char *) xmalloc (strlen (name) + 1);
-
-  for (; *name; name++)
-    {
-      if (IS_DIR_SEP (*name) || IS_DEVICE_SEP (*name))
-        { /* At a directory delimiter, reset component length.  */
-          c_len = 0;
-        }
-      else if (c_len > NAME_MAX)
-        { /* If past the max for a component, ignore this character.  */
-          continue;
-        }
-
-      /* Copy this character.  */
-      ret[ret_len++] = *name;
-      c_len++;
-    }
-  ret[ret_len] = 0;
-
-  return ret;
-}
-
-/* If access can read FN, run stat (assigning to stat buffer ST) and
-   check that fn is not a directory.  Don't check for just being a
-   regular file, as it is potentially useful to read fifo's or some
-   kinds of devices.  */
-
-#ifdef WIN32
-static inline bool
-READABLE (const char *fn, struct stat&)
-{
-  return (GetFileAttributes(fn) != 0xFFFFFFFF
-	  && !(GetFileAttributes(fn) & FILE_ATTRIBUTE_DIRECTORY));
-}
-#else
-static inline bool
-READABLE (const char *fn, struct stat& st)
-{
-  return (access (fn, R_OK) == 0
-	  && stat (fn, &(st)) == 0
-	  && !S_ISDIR (st.st_mode));
-}
-#endif
-
-/* POSIX invented the brain-damage of not necessarily truncating
-   filename components; the system's behavior is defined by the value of
-   the symbol _POSIX_NO_TRUNC, but you can't change it dynamically!
-   
-   Generic const return warning.  See extend-fname.c.  */
-
-char *
-kpse_readable_file (const char *name)
-{
-  struct stat st;
-  char *ret;
-  
-  if (READABLE (name, st)) {
-    ret = (char *) name;
-
-#ifdef ENAMETOOLONG
-  } else if (errno == ENAMETOOLONG) {
-    ret = kpse_truncate_filename (name);
-
-    /* Perhaps some other error will occur with the truncated name, so
-       let's call access again.  */
-    if (!READABLE (ret, st))
-      { /* Failed.  */
-        if (ret != name) free (ret);
-        ret = NULL;
-      }
-#endif /* ENAMETOOLONG */
-
-  } else { /* Some other error.  */
-    if (errno == EACCES) { /* Maybe warn them if permissions are bad.  */
-      perror (name);
-    }
-    ret = NULL;
-  }
-  
-  return ret;
-}
-
-/* absolute.c: Test if a filename is absolute or explicitly relative.  */
-
-/* Sorry this is such a system-dependent mess, but I can't see any way
-   to usefully generalize.  */
-
-bool
-kpse_absolute_p (const std::string& filename, int relative_ok)
-{
-  size_t len = filename.length ();
-
-  int absolute = IS_DIR_SEP (len > 0 && filename[0])
-#ifdef DOSISH
-                     /* Novell allows non-alphanumeric drive letters. */
-                     || (len > 0 && IS_DEVICE_SEP (filename[1]))
-#endif /* DOSISH */
-#ifdef WIN32
-                     /* UNC names */
-                     || (len > 1 && filename[0] == '\\' && filename[1] == '\\')
-#endif
-		      ;
-  int explicit_relative
-    = relative_ok
-      && (len > 1
-	  && filename[0] == '.'
-	  && (IS_DIR_SEP (filename[1])
-	      || (len > 2 && filename[1] == '.' && IS_DIR_SEP (filename[2]))));
-
-  return absolute || explicit_relative;
-}
 
 /* str-list.c: define routines for string lists.  */
 
 /* See the lib.h file for comments.  */
 
-void
+static void
 str_list_add (string_vector& l, const std::string& s)
 {
   int len = l.length ();
@@ -3195,7 +3301,7 @@ str_list_add (string_vector& l, const std::string& s)
 
 /* May as well save some reallocations and do everything in a chunk
    instead of calling str_list_add on each element.  */
-   
+
 void
 str_list_concat (string_vector& target, const string_vector& more)
 {
@@ -3204,7 +3310,7 @@ str_list_concat (string_vector& target, const string_vector& more)
   int new_len = prev_len + more.length ();
 
   target.resize (new_len);
-  
+
   for (e = 0; e < more.length (); e++)
     target[prev_len + e] = more[e];
 }
@@ -3218,17 +3324,17 @@ str_llist_add (str_llist_type *l, const std::string& str)
 {
   str_llist_elt_type *e;
   str_llist_elt_type *new_elt = new str_llist_elt_type;
-  
+
   /* The new element will be at the end of the list.  */
   STR_LLIST (*new_elt) = str;
   STR_LLIST_MOVED (*new_elt) = 0;
   STR_LLIST_NEXT (*new_elt) = NULL;
-  
+
   /* Find the current end of the list.  */
   for (e = *l; e && STR_LLIST_NEXT (*e); e = STR_LLIST_NEXT (*e))
     ;
-  
-  if (!e)
+
+  if (! e)
     *l = new_elt;
   else
     STR_LLIST_NEXT (*e) = new_elt;
@@ -3243,11 +3349,11 @@ void
 str_llist_float (str_llist_type *l, str_llist_elt_type *mover)
 {
   str_llist_elt_type *last_moved, *unmoved;
-  
+
   /* If we've already moved this element, never mind.  */
   if (STR_LLIST_MOVED (*mover))
     return;
-  
+
   /* Find the first unmoved element (to insert before).  We're
      guaranteed this will terminate, since MOVER itself is currently
      unmoved, and it must be in L (by hypothesis).  */
@@ -3261,19 +3367,19 @@ str_llist_float (str_llist_type *l, str_llist_elt_type *mover)
          predecessor to it.  */
       str_llist_elt_type *before_mover;
       str_llist_elt_type *after_mover = STR_LLIST_NEXT (*mover);
-      
+
       /* Find `mover's predecessor.  */
       for (before_mover = unmoved; STR_LLIST_NEXT (*before_mover) != mover;
            before_mover = STR_LLIST_NEXT (*before_mover))
         ;
-      
+
       /* `before_mover' now links to `after_mover'.  */
       STR_LLIST_NEXT (*before_mover) = after_mover;
 
       /* Insert `mover' before `unmoved' and after `last_moved' (or at
          the head of the list).  */
       STR_LLIST_NEXT (*mover) = unmoved;
-      if (!last_moved)
+      if (! last_moved)
         *l = mover;
       else
         STR_LLIST_NEXT (*last_moved) = mover;
@@ -3285,25 +3391,6 @@ str_llist_float (str_llist_type *l, str_llist_elt_type *mover)
 
 /* variable.c: variable expansion.  */
 
-/* Here's the simple one, when a program just wants a value.  */
-
-std::string
-kpse_var_value (const char *var)
-{
-  std::string ret;
-
-  char *tmp = getenv (var);
-
-  if (tmp)
-    ret = kpse_var_expand (ret);
-
-#ifdef KPSE_DEBUG
-  if (KPSE_DEBUG_P (KPSE_DEBUG_VARS))
-    DEBUGF2("variable: %s = %s\n", var, tmp ? tmp : "(nil)");
-#endif
-
-  return ret;
-}
 
 /* We have to keep track of variables being expanded, otherwise
    constructs like TEXINPUTS = $TEXINPUTS result in an infinite loop.
@@ -3311,44 +3398,21 @@ kpse_var_value (const char *var)
    add to a list each time an expansion is started, and check the list
    before expanding.  */
 
-typedef struct {
-  const char *var;
-  int expanding;
-} expansion_type;
-static expansion_type *expansions; /* The sole variable of this type.  */
-static unsigned expansion_len = 0;
+static std::map <std::string, bool> expansions;
 
 static void
-expanding (const char *var, int xp)
+expanding (const std::string& var, bool xp)
 {
-  unsigned e;
-  for (e = 0; e < expansion_len; e++) {
-    if (STREQ (expansions[e].var, var)) {
-      expansions[e].expanding = xp;
-      return;
-    }
-  }
-
-  /* New variable, add it to the list.  */
-  expansion_len++;
-  XRETALLOC (expansions, expansion_len, expansion_type);
-  expansions[expansion_len - 1].var = xstrdup (var);
-  expansions[expansion_len - 1].expanding = xp;
+  expansions[var] = xp;
 }
-
 
 /* Return whether VAR is currently being expanding.  */
 
-static int
-expanding_p (const char *var)
+static bool
+expanding_p (const std::string& var)
 {
-  unsigned e;
-  for (e = 0; e < expansion_len; e++) {
-    if (STREQ (expansions[e].var, var))
-      return expansions[e].expanding;
-  }
-  
-  return 0;
+  return (expansions.find (var) != expansions.end ())
+    ? expansions[var] : false;
 }
 
 /* Append the result of value of `var' to EXPANSION, where `var' begins
@@ -3356,28 +3420,26 @@ expanding_p (const char *var)
    This is a subroutine for the more complicated expansion function.  */
 
 static void
-expand (std::string &expansion, const char *start, const char *end)
+expand (std::string &expansion, const std::string& var)
 {
-  unsigned len = end - start + 1;
-  char *var = (char *) xmalloc (len + 1);
-  strncpy (var, start, len);
-  var[len] = 0;
-  
-  if (expanding_p (var)) {
-    WARNING1 ("kpathsea: variable `%s' references itself (eventually)", var);
-  } else {
-    /* Check for an environment variable.  */
-    char *value = getenv (var);
-
-    if (value) {
-      expanding (var, 1);
-      std::string tmp = kpse_var_expand (value);
-      expanding (var, 0);
-      expansion += tmp;
+  if (expanding_p (var))
+    {
+      WARNING1 ("kpathsea: variable `%s' references itself (eventually)",
+		var.c_str ());
     }
+  else
+    {
+      /* Check for an environment variable.  */
+      std::string value = octave_env::getenv (var);
 
-    free (var);
-  }
+      if (! value.empty ())
+	{
+	  expanding (var, true);
+	  std::string tmp = kpse_var_expand (value);
+	  expanding (var, false);
+	  expansion += tmp;
+	}
+    }
 }
 
 /* Can't think of when it would be useful to change these (and the
@@ -3400,53 +3462,66 @@ expand (std::string &expansion, const char *start, const char *end)
    constructs, especially ${var-value}.  */
 
 std::string
-kpse_var_expand (const std::string& src_arg)
+kpse_var_expand (const std::string& src)
 {
-  const char *src = src_arg.c_str ();
-  const char *s = src;
   std::string expansion;
-  
+
+  size_t src_len = src.length ();
+
   /* Copy everything but variable constructs.  */
-  for (s = src; *s; s++) {
-    if (IS_VAR_START (*s)) {
-      s++;
+  for (size_t i = 0; i < src_len; i++)
+    {
+      if (IS_VAR_START (src[i]))
+	{
+	  i++;
 
-      /* Three cases: `$VAR', `${VAR}', `$<anything-else>'.  */
-      if (IS_VAR_CHAR (*s)) {
-        /* $V: collect name constituents, then expand.  */
-        const char *var_end = s;
+	  /* Three cases: `$VAR', `${VAR}', `$<anything-else>'.  */
+	  if (IS_VAR_CHAR (src[i]))
+	    {
+	      /* $V: collect name constituents, then expand.  */
+	      size_t var_end = i;
 
-        do {
-          var_end++;
-        } while (IS_VAR_CHAR (*var_end));
+	      do
+		{
+		  var_end++;
+		}
+	      while (IS_VAR_CHAR (src[var_end]));
 
-        var_end--; /* had to go one past */
-        expand (expansion, s, var_end);
-        s = var_end;
+	      var_end--; /* had to go one past */
+	      expand (expansion, src.substr (i, var_end - i + 1));
+	      i = var_end;
 
-      } else if (IS_VAR_BEGIN_DELIMITER (*s)) {
-        /* ${: scan ahead for matching delimiter, then expand.  */
-        const char *var_end = ++s;
+	    }
+	  else if (IS_VAR_BEGIN_DELIMITER (src[i]))
+	    {
+	      /* ${: scan ahead for matching delimiter, then expand.  */
+	      size_t var_end = ++i;
 
-        while (*var_end && !IS_VAR_END_DELIMITER (*var_end))
-          var_end++;
+	      while (var_end < src_len && !IS_VAR_END_DELIMITER (src[var_end]))
+		var_end++;
 
-        if (! *var_end) {
-          WARNING1 ("%s: No matching } for ${", src);
-          s = var_end - 1; /* will incr to null at top of loop */
-        } else {
-          expand (expansion, s, var_end - 1);
-          s = var_end; /* will incr past } at top of loop*/
-        }
-
-      } else {
-        /* $<something-else>: error.  */
-        WARNING2 ("%s: Unrecognized variable construct `$%c'", src, *s);
-        /* Just ignore those chars and keep going.  */
-      }
-    } else
-      expansion += *s;
-  }
+	      if (var_end == src_len)
+		{
+		  WARNING1 ("%s: No matching } for ${", src.c_str ());
+		  i = var_end - 1; /* will incr to eos at top of loop */
+		}
+	      else
+		{
+		  expand (expansion, src.substr (i, var_end - i));
+		  i = var_end; /* will incr past } at top of loop*/
+		}
+	    }
+	  else
+	    {
+	      /* $<something-else>: error.  */
+	      WARNING2 ("%s: Unrecognized variable construct `$%c'",
+			src.c_str (), src[i]);
+	      /* Just ignore those chars and keep going.  */
+	    }
+	}
+      else
+	expansion += src[i];
+    }
 
   return expansion;
 }

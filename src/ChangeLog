@@ -1,3 +1,8 @@
+2003-04-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DLD-FUNCTIONS/getpwent.cc (Fgetpwnam): Delete unnecessary
+	c_str() method.
+
 2003-04-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* file-io.cc: Include <memory> for auto_ptr.

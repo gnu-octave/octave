@@ -158,7 +158,7 @@ database, @code{getpwname} returns 0.\n\
 	{
 	  std::string msg;
 
-	  retval(0) = mk_pw_map (octave_passwd::getpwnam (s.c_str (), msg));
+	  retval(0) = mk_pw_map (octave_passwd::getpwnam (s, msg));
 	  retval(1) = msg;
 	}
     }

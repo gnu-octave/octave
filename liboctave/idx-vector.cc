@@ -378,7 +378,7 @@ copy_data (const int *d, int l)
 }
 
 int
-IDX_VEC_REP::is_colon_equiv (int n, int sort)
+IDX_VEC_REP::is_colon_equiv (int n, int sort_uniq)
 {
   if (! colon_equiv_checked)
     {
@@ -390,10 +390,14 @@ IDX_VEC_REP::is_colon_equiv (int n, int sort)
 	{
 	  int *tmp_data = copy_data (data, len);
 
-	  if (sort)
-	    sort_data (tmp_data, len);
+	  int tmp_len = len;
 
-	  int tmp_len = make_uniq (tmp_data, len);
+	  if (sort_uniq)
+	    {
+	      sort_data (tmp_data, len);
+
+	      tmp_len = make_uniq (tmp_data, len);
+	    }
 
 	  colon_equiv = ((tmp_len == 0 && n == 0)
 			 || (tmp_len == n

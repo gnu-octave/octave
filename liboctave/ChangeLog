@@ -1,5 +1,9 @@
 Tue Aug 20 17:38:46 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* idx-vector.cc (IDX_VEC_REP::is_colon_equiv): Rename arg sort to
+	sort_uniq.  If sort_uniq is nonzero, sort the elements and make
+	them uniq.
+
 	* CMatrix.cc (ComplexMatrix::row_max, ComplexMatrix::row_min,
 	ComplexMatrix::column_max, ComplexMatrix::column_min):
 	Rewrite.  Also return index as a reference arg.

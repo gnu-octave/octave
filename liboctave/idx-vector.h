@@ -90,7 +90,7 @@ private:
     int ones_count (void) const { return num_ones; }
 
     int is_colon (void) const { return colon; }
-    int is_colon_equiv (int n, int sort);
+    int is_colon_equiv (int n, int sort_uniq);
 
     int orig_rows (void) const { return orig_nr; }
     int orig_columns (void) const { return orig_nc; }
@@ -203,8 +203,8 @@ public:
   int idx_vector::ones_count (void) const { return rep->ones_count (); }
 
   int is_colon (void) const { return rep->is_colon (); }
-  int is_colon_equiv (int n, int sort = 0) const
-    { return rep->is_colon_equiv (n, sort); }
+  int is_colon_equiv (int n, int sort_uniq = 0) const
+    { return rep->is_colon_equiv (n, sort_uniq); }
 
   int orig_rows (void) const { return rep->orig_rows (); }
   int orig_columns (void) const { return rep->orig_columns (); }

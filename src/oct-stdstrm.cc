@@ -85,14 +85,14 @@ octave_base_stdiostream::tell (void) const
 
 octave_stream
 octave_istdiostream::create (const std::string& n, FILE *f,
-			     ios::openmode arg_md,
+			     std::ios::openmode arg_md,
 			     oct_mach_info::float_format flt_fmt)
 {
   return octave_stream (new octave_istdiostream (n, f, arg_md, flt_fmt));
 }
 
 octave_istdiostream::octave_istdiostream (const std::string& n, FILE *f,
-					  ios::openmode arg_md,
+					  std::ios::openmode arg_md,
 					  oct_mach_info::float_format flt_fmt)
   : octave_base_stdiostream (n, f, arg_md, flt_fmt), is (0)
 {
@@ -107,14 +107,14 @@ octave_istdiostream::~octave_istdiostream (void)
 
 octave_stream
 octave_ostdiostream::create (const std::string& n, FILE *f,
-			     ios::openmode arg_md,
+			     std::ios::openmode arg_md,
 			     oct_mach_info::float_format flt_fmt)
 {
   return octave_stream (new octave_ostdiostream (n, f, arg_md, flt_fmt));
 }
 
 octave_ostdiostream::octave_ostdiostream (const std::string& n, FILE *f,
-					  ios::openmode arg_md,
+					  std::ios::openmode arg_md,
 					  oct_mach_info::float_format flt_fmt)
   : octave_base_stdiostream (n, f, arg_md, flt_fmt), os (0)
 {

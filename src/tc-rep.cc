@@ -1784,9 +1784,9 @@ TC_REP::print (ostream& output_buf)
 	unwind_protect_int (structure_indent_level);
 	unwind_protect_int (user_pref.struct_levels_to_print);
 
-	if (user_pref.struct_levels_to_print > 0)
+	if (user_pref.struct_levels_to_print-- > 0)
 	  {
-	    user_pref.struct_levels_to_print--;
+	    output_buf << "{\n";
 
 	    increment_structure_indent_level ();
 
@@ -1798,9 +1798,7 @@ TC_REP::print (ostream& output_buf)
 		output_buf.form ("%*s%s = ", structure_indent_level,
 				 "", key);
 
-		if (print_as_structure (val))
-		  output_buf << "{\n";
-		else if (! print_as_scalar (val))
+		if (! (print_as_scalar (val) || print_as_structure (val))) 
 		  output_buf << "\n";
 
 		val.print (output_buf);

@@ -1,3 +1,8 @@
+1999-10-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* strings/split.m: If the string to be split is empty, just return
+	an empty string.
+
 1999-10-21  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (ALL_M_FILES): New macro.

@@ -37,7 +37,10 @@ function m = split (s, t)
   l_s = length (s);
   l_t = length (t);
 
-  if (l_s < l_t)
+  if (l_s == 0)
+    m = "";
+    return;
+  elseif (l_s < l_t)
     error ("split: s must not be shorter than t");
   endif
 
@@ -69,7 +72,6 @@ function m = split (s, t)
   endfor
 
   m = eval (sprintf ("str2mat (%s);", cmd));
-
 
   else
     error ("split:  both s and t must be strings");

@@ -65,9 +65,8 @@ INCLUDES := arith-ops.h builtins.h defaults.h.in defun.h defun-dld.h \
 	pathlen.h pathsearch.h pr-output.h procstream.h sighandlers.h \
 	statdefs.h symtab.h sysdep.h sysdir.h systime.h syswait.h \
 	token.h tree-base.h tree-cmd.h tree-const.h tree-expr.h \
-	tree-misc.h tree-plot.h tc-inlines.h tc-rep.h unwind-prot.h \
-	user-prefs.h utils.h variables.h version.h xdiv.h xpow.h \
-	Map.h SLStack.h Stack.h 
+	tree-misc.h tree-plot.h unwind-prot.h user-prefs.h utils.h \
+	variables.h version.h xdiv.h xpow.h Map.h SLStack.h Stack.h 
 
 TI_SRC := Array-string.cc Array-tc.cc Map-tc.cc DLList-fi.cc \
 	SLList-expr.cc SLList-misc.cc SLList-plot.cc SLList-tc.cc \
@@ -98,13 +97,13 @@ OBJECTS := $(patsubst %.cc, %.o, $(OBJECTS_1))
 
 # Ugh.
 
-DEP_SOURCES_3 := $(SOURCES) $(TI_SOURCES) builtins.cc
+DEP_SOURCES_3 := $(SOURCES) $(DLD_SRC) $(TI_SRC) builtins.cc
 DEP_SOURCES_2 := $(patsubst %.l, %.cc, $(DEP_SOURCES_3))
 DEP_SOURCES_1 := $(patsubst %.y, %.cc, $(DEP_SOURCES_2))
 DEP_SOURCES := $(patsubst %.c, %.d, $(DEP_SOURCES_1))
 MAKEDEPS := $(patsubst %.cc, %.d, $(DEP_SOURCES))
 
-DEF_FILES_5 := $(SOURCES) $(DLD_SRC)
+DEF_FILES_5 := $(SOURCES) $(DLD_SRC) $(TI_SRC)
 DEF_FILES_4 := $(addprefix $(srcdir)/, $(DEF_FILES_5))
 DEF_FILES_3 := $(notdir $(shell grep -l "^DEFUN" $(DEF_FILES_4)))
 DEF_FILES_2 := $(patsubst %.y, %.def, $(DEF_FILES_3))

@@ -1261,15 +1261,25 @@ tree_index_expression::eval (int print)
 
 	  if (error_state)
 	    eval_error ();
-	  else if (nargin > 0 && all_args_defined (args))
+	  else if (nargin > 0)
 	    {
-	      Octave_object tmp = id->eval (print, 1, args);
+	      if (all_args_defined (args))
+		{
+		  Octave_object tmp = id->eval (print, 1, args);
 
-	      if (error_state)
-		eval_error ();
-	      else if (tmp.length () > 0)
-		retval = tmp(0);
+		  if (error_state)
+		    eval_error ();
+		  else if (tmp.length () > 0)
+		    retval = tmp(0);
+		}
+	      else
+		{
+		  ::error ("undefined arguments found in index expression");
+		  eval_error ();
+		}
 	    }
+	  else
+	    panic_impossible ();  // XXX FIXME XXX -- is this correct?
 	}
     }
   else
@@ -1305,13 +1315,23 @@ tree_index_expression::eval (int print, int nargout, const Octave_object& args)
 
 	  if (error_state)
 	    eval_error ();
-	  else if (nargin > 0 && all_args_defined (args))
+	  else if (nargin > 0)
 	    {
-	      retval = id->eval (print, nargout, args);
+	      if (all_args_defined (args))
+		{
+		  retval = id->eval (print, nargout, args);
 
-	      if (error_state)
-		eval_error ();
+		  if (error_state)
+		    eval_error ();
+		}
+	      else
+		{
+		  ::error ("undefined arguments found in index expression");
+		  eval_error ();
+		}
 	    }
+	  else
+	    panic_impossible ();  // XXX FIXME XXX -- is this correct?
 	}
     }
   else

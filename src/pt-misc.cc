@@ -251,10 +251,12 @@ tree_argument_list::convert_to_const_vector (void)
 	}
       else
 	{
-	  args(j) = tree_constant ();
+	  args(j++) = tree_constant ();
 	  break;
 	}
     }
+
+  args.resize (j);
 
   return args;
 }

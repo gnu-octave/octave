@@ -1874,6 +1874,15 @@ octave_print_internal (std::ostream& os, const Range& r,
 
 		  double val = base + i * increment;
 
+		  if (i == num_elem - 1)
+		    {
+		      // See the comments in Range::matrix_value.
+
+		      if ((increment > 0 && val > limit)
+			  || (increment < 0 && val < limit))
+			val = limit;
+		    }
+
 		  os << "  ";
 
 		  pr_float (os, val, fw, scale);

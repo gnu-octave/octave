@@ -83,13 +83,20 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Write octave-core file if Octave crashes or is killed by a signal.
 static bool Vcrash_dumps_octave_core;
 
+// The maximum amount of memory (in kilobytes) that we will attempt to
+// write to the Octave core file.
+static double Voctave_core_file_limit;
+
+// The name of the Octave core file.
+static std::string Voctave_core_file_name;
+
 // The default output format.  May be one of "binary", "text",
 // "mat-binary", or "hdf5".
 static std::string Vdefault_save_format;
 
-// The output format for octave-core files.  May be one of "binary",
+// The output format for Octave core files.  May be one of "binary",
 // "text", "mat-binary", or "hdf5".
-static std::string Voctave_core_format;
+static std::string Voctave_core_file_format;
 
 // The format string for the comment line at the top of text-format
 // save files.  Passed to strftime.  Should begin with `#' and contain
@@ -738,9 +745,13 @@ variable names if they are invalid Octave identifiers.\n\
 	  i++;
 
 	  std::ios::openmode mode = std::ios::in;
-	  if (format == LS_BINARY ||
-	      format == LS_MAT_BINARY ||
-	      format == LS_MAT5_BINARY)
+
+	  if (format == LS_BINARY
+#ifdef HAVE_HDF5
+	      || format == LS_HDF5
+#endif
+	      || format == LS_MAT_BINARY
+	      || format == LS_MAT5_BINARY)
 	    mode |= std::ios::binary;
 
 	  std::ifstream file (fname.c_str (), mode);
@@ -818,27 +829,12 @@ glob_pattern_p (const std::string& pattern)
   return false;
 }
 
-// Save the info from sr on stream os in the format specified by fmt.
-
-void
-do_save (std::ostream& os, symbol_record *sr, load_save_format fmt,
-	 int save_as_floats, bool& infnan_warned)
+static void
+do_save (std::ostream& os, const octave_value& tc,
+	 const std::string& name, const std::string& help,
+	 int global, load_save_format fmt, bool save_as_floats,
+	 bool& infnan_warned)
 {
-  if (! sr->is_variable ())
-    {
-      error ("save: can only save variables, not functions");
-      return;
-    }
-
-  std::string name = sr->name ();
-  std::string help = sr->help ();
-  int global = sr->is_linked_to_global ();
-
-  octave_value tc = sr->def ();
-
-  if (tc.is_undefined ())
-    return;
-
   switch (fmt)
     {
     case LS_ASCII:
@@ -869,13 +865,39 @@ do_save (std::ostream& os, symbol_record *sr, load_save_format fmt,
     }
 }
 
+// Save the info from SR on stream OS in the format specified by FMT.
+
+void
+do_save (std::ostream& os, symbol_record *sr, load_save_format fmt,
+	 bool save_as_floats, bool& infnan_warned)
+{
+  if (! sr->is_variable ())
+    {
+      error ("save: can only save variables, not functions");
+      return;
+    }
+
+  octave_value tc = sr->def ();
+
+  if (tc.is_defined ())
+    {
+      std::string name = sr->name ();
+      std::string help = sr->help ();
+
+      int global = sr->is_linked_to_global ();
+
+      do_save (os, tc, name, help, global, fmt, save_as_floats,
+	       infnan_warned);
+    }
+}
+
 // Save variables with names matching PATTERN on stream OS in the
 // format specified by FMT.  If SAVE_BUILTINS is TRUE, also save
 // builtin variables with names that match PATTERN.
 
 static int
 save_vars (std::ostream& os, const std::string& pattern, bool save_builtins,
-	   load_save_format fmt, int save_as_floats)
+	   load_save_format fmt, bool save_as_floats)
 {
   Array<symbol_record *> vars = curr_sym_tab->glob
     (pattern, symbol_record::USER_VARIABLE, SYMTAB_ALL_SCOPES);
@@ -886,7 +908,7 @@ save_vars (std::ostream& os, const std::string& pattern, bool save_builtins,
 
   for (int i = 0; i < saved; i++)
     {
-      do_save (os, vars (i), fmt, save_as_floats, infnan_warned);
+      do_save (os, vars(i), fmt, save_as_floats, infnan_warned);
 
       if (error_state)
 	break;
@@ -903,7 +925,7 @@ save_vars (std::ostream& os, const std::string& pattern, bool save_builtins,
 
       for (int i = 0; i < count; i++)
 	{
-	  do_save (os, vars (i), fmt, save_as_floats, infnan_warned);
+	  do_save (os, vars(i), fmt, save_as_floats, infnan_warned);
 
 	  if (error_state)
 	    break;
@@ -1039,23 +1061,79 @@ save_vars (const string_vector& argv, int argv_idx, int argc,
 }
 
 void
-save_user_variables (void)
+dump_octave_core (std::ostream& os, const char *fname, load_save_format fmt)
+{
+  write_header (os, fmt);
+
+  Array<symbol_record *> vars = curr_sym_tab->glob
+    ("*", symbol_record::USER_VARIABLE, SYMTAB_ALL_SCOPES);
+
+  int num_to_save = vars.length ();
+
+  bool infnan_warned = false;
+
+  double save_mem_size = 0;
+
+  for (int i = 0; i < num_to_save; i++)
+    {
+      symbol_record *sr = vars(i);
+
+      if (sr->is_variable ())
+	{
+	  octave_value tc = sr->def ();
+
+	  if (tc.is_defined ())
+	    {
+	      double tc_size = tc.byte_size () / 1024;
+
+	      // XXX FIXME XXX -- maybe we should try to throw out hte
+	      // largest first...
+
+	      if (Voctave_core_file_limit < 0
+		  || save_mem_size + tc_size < Voctave_core_file_limit)
+		{
+		  save_mem_size += tc_size;
+
+		  std::string name = sr->name ();
+		  std::string help = sr->help ();
+
+		  int global = sr->is_linked_to_global ();
+
+		  do_save (os, tc, name, help, global, fmt, false,
+			   infnan_warned);
+
+		  if (error_state)
+		    break;
+		}
+	    }
+	}
+    }
+
+  message (0, "save to `%s' complete", fname);
+}
+
+void
+dump_octave_core (void)
 {
   if (Vcrash_dumps_octave_core)
     {
       // XXX FIXME XXX -- should choose better file name?
 
-      const char *fname = "octave-core";
+      const char *fname = Voctave_core_file_name.c_str ();
 
       message (0, "attempting to save variables to `%s'...", fname);
 
       load_save_format format
-	= get_save_format (Voctave_core_format, LS_BINARY);
+	= get_save_format (Voctave_core_file_format, LS_BINARY);
 
       std::ios::openmode mode = std::ios::out|std::ios::trunc;
-      if (format == LS_BINARY ||
-	  format == LS_MAT_BINARY ||
-	  format == LS_MAT5_BINARY)
+
+      if (format == LS_BINARY
+#ifdef HAVE_HDF5
+	  || format == LS_HDF5
+#endif
+	  || format == LS_MAT_BINARY
+	  || format == LS_MAT5_BINARY)
 	mode |= std::ios::binary;
 
 #ifdef HAVE_HDF5
@@ -1065,10 +1143,7 @@ save_user_variables (void)
 
 	  if (file.file_id >= 0)
 	    {
-	      save_vars (string_vector (), 0, 0, file,
-			 false, format, false, true);
-
-	      message (0, "save to `%s' complete", fname);
+	      dump_octave_core (file, fname, format);
 
 	      file.close ();
 	    }
@@ -1084,9 +1159,8 @@ save_user_variables (void)
 	  
 	  if (file)
 	    {
-	      save_vars (string_vector (), 0, 0, file,
-			 false, format, false, true);
-	      message (0, "save to `%s' complete", fname);
+	      dump_octave_core (file, fname, format);
+
 	      file.close ();
 	    }
 	  else
@@ -1295,9 +1369,13 @@ the file @file{data} in Octave's binary format.\n\
       i++;
 
       std::ios::openmode mode = std::ios::out;
-      if (format == LS_BINARY ||
-	  format == LS_MAT_BINARY ||
-	  format == LS_MAT5_BINARY)
+
+      if (format == LS_BINARY
+#ifdef HAVE_HDF5
+	  || format == LS_HDF5
+#endif
+	  || format == LS_MAT_BINARY
+	  || format == LS_MAT5_BINARY)
 	mode |= std::ios::binary;
 
       mode |= append ? std::ios::ate : std::ios::trunc;
@@ -1374,19 +1452,53 @@ default_save_format (void)
 }
 
 static int
-octave_core_format (void)
+octave_core_file_limit (void)
+{
+  double val;
+
+  if (builtin_real_scalar_variable ("octave_core_file_limit", val))
+    {
+      Voctave_core_file_limit = val;
+      return 0;
+    }
+  else
+    gripe_invalid_value_specified ("octave_core_file_limit");
+
+  return -1;
+}
+
+static int
+octave_core_file_name (void)
 {
   int status = 0;
 
-  std::string s = builtin_string_variable ("octave_core_format");
+  std::string s = builtin_string_variable ("octave_core_file_name");
 
   if (s.empty ())
     {
-      gripe_invalid_value_specified ("octave_core_format");
+      gripe_invalid_value_specified ("octave_core_file_name");
       status = -1;
     }
   else
-    Voctave_core_format = s;
+    Voctave_core_file_name = s;
+
+  return status;
+}
+
+static int
+octave_core_file_format (void)
+{
+  int status = 0;
+
+  std::string s = builtin_string_variable ("octave_core_file_format");
+
+  if (s.empty ())
+    {
+      gripe_invalid_value_specified ("octave_core_file_format");
+      status = -1;
+    }
+  else
+    Voctave_core_file_format = s;
 
   return status;
 }
@@ -1430,6 +1542,7 @@ symbols_of_load_save (void)
 If this variable is set to a nonzero value, Octave tries to save all\n\
 current variables the the file \"octave-core\" if it crashes or receives a\n\
 hangup, terminate or similar signal.  The default value is 1.\n\
+@seealso{octave_core_file_limit, octave_core_file_name, and octave_core_file_format}\n\
 @end defvr");
 
   DEFVAR (default_save_format, "ascii", default_save_format,
@@ -1439,18 +1552,38 @@ This variable specifies the default format for the @code{save} command.\n\
 It should have one of the following values: @code{\"ascii\"},\n\
 @code{\"binary\"}, @code{float-binary}, or @code{\"mat-binary\"}.  The\n\
 initial default save format is Octave's text format.\n\
-@seealso{octave_core_format}\n\
 @end defvr");
 
-  DEFVAR (octave_core_format, "binary", octave_core_format,
+  DEFVAR (octave_core_file_limit, -1.0, octave_core_file_limit,
     "-*- texinfo -*-\n\
-@defvr {Built-in Variable} octave_core_format\n\
+@defvr {Built-in Variable} octave_core_file_limit\n\
+The maximum amount of memory (in kilobytes) of the top-level workspace\n\
+that Octave will attempt to write when saving data to the\n\
+@var{octave_core_file_name}.  If @var{octave_core_file_format} is a\n\
+binary format, then @var{octave_core_file_limit} will be approximately\n\
+the maximum size of the file.  If a text file format is used, then the\n\
+file could be much larger than the limit.\n\
+The default value is -1 (unlimited)\n\
+@seealso{crash_dumps_octave_core, octave_core_file_name, and octave_core_file_format}\n\
+@end defvr");
+
+  DEFVAR (octave_core_file_name, "octave-core", octave_core_file_name,
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} octave_core_file_name\n\
+The name of the file used for saving data from the top-level workspace\n\
+when Octave aborts.  The default value is @code{\"octave-core\"}\n\
+@seealso{crash_dumps_octave_core, octave_core_file_name, and octave_core_file_format}\n\
+@end defvr");
+
+  DEFVAR (octave_core_file_format, "binary", octave_core_file_format,
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} octave_core_file_format\n\
 If Octave aborts, it attempts to save the contents of the top-level\n\
 workspace in a file using this format.  The value of\n\
-@code{octave_core_format} should have one of the following values:\n\
+@code{octave_core_file_format} should have one of the following values:\n\
 @code{\"ascii\"}, @code{\"binary\"}, @code{float-binary}, or\n\
 @code{\"mat-binary\"}.  The default value is Octave's binary format.\n\
-@seealso{default_save_format}\n\
+@seealso{crash_dumps_octave_core, octave_core_file_name, and octave_core_file_limit}\n\
 @end defvr");
 
   DEFVAR (save_header_format_string, default_save_header_format (),

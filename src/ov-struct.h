@@ -88,6 +88,8 @@ public:
 
   dim_vector dims (void) const { return map.dims (); }
 
+  size_t byte_size (void) const;
+
   octave_value reshape (const dim_vector& new_dims) const
     { return map.reshape (new_dims); }
 

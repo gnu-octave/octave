@@ -81,6 +81,8 @@ public:
 
   dim_vector dims (void) const { static dim_vector dv (1, 1); return dv; }
 
+  size_t byte_size (void) const { return sizeof (ST); }
+
   octave_value all (int = 0) const { return (scalar != 0.0); }
 
   octave_value any (int = 0) const { return (scalar != 0.0); }

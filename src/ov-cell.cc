@@ -241,6 +241,17 @@ octave_cell::assign (const octave_value_list& idx, const octave_value& rhs)
     octave_base_matrix<Cell>::assign (idx, Cell (rhs));
 }
 
+size_t
+octave_cell::byte_size (void) const
+{
+  size_t retval = 0;
+
+  for (int i = 0; i < numel (); i++)
+    retval += matrix(i).byte_size ();
+
+  return retval;
+}
+
 octave_value_list
 octave_cell::list_value (void) const
 {

@@ -96,6 +96,8 @@ public:
 
   dim_vector dims (void) const { return dim_vector (-1, -1); }
 
+  size_t byte_size (void) const { return 0; }
+
   octave_value reshape (const dim_vector&) const;
 
   octave_value permute (const Array<int>& vec, bool = false) const;

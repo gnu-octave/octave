@@ -1916,6 +1916,22 @@ install_types (void)
   octave_streamoff::register_type ();
 }
 
+DEFUN (sizeof, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} sizeof (@var{val})\n\
+Return the size of @var{val} in bytes\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 1)
+    retval = args(0).byte_size ();
+  else
+    print_usage ("sizeof");
+
+  return retval;
+}
+
 static int
 warn_fortran_indexing (void)
 {

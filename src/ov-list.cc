@@ -241,6 +241,17 @@ octave_list::assign (const octave_value_list& idx, const octave_value& rhs)
     error ("lists may only be indexed by a single scalar");
 }
 
+size_t
+octave_list::byte_size (void) const
+{
+  size_t retval = 0;
+
+  for (int i = 0; i < numel (); i++)
+    retval += data(i).byte_size ();
+
+  return retval;
+}
+
 octave_value_list
 octave_list::list_value (void) const
 {

@@ -353,6 +353,25 @@ octave_struct::subsasgn (const std::string& type,
   return retval;
 }
 
+size_t
+octave_struct::byte_size (void) const
+{
+  // Neglect the size of the fieldnames.
+
+  size_t retval = 0;
+
+  for (Octave_map::const_iterator p = map.begin (); p != map.end (); p++)
+    {
+      std::string key = map.key (p);
+
+      octave_value val = octave_value (map.contents (p));
+
+      retval += val.byte_size ();
+    }
+
+  return retval;
+}
+
 void
 octave_struct::print (std::ostream& os, bool) const
 {

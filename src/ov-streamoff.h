@@ -63,6 +63,8 @@ public:
   octave_value *clone (void) const { return new octave_streamoff (*this); }
   octave_value *empty_clone (void) const { return new octave_streamoff (); }
 
+  size_t byte_size (void) const { return numel () * sizeof (std::streamoff); }
+
   bool is_defined (void) const { return true; }
 
   bool is_streamoff (void) const { return true; }

@@ -86,6 +86,8 @@ public:
 
   dim_vector dims (void) const { return dim_vector (1, data.length ()); }
 
+  size_t byte_size (void) const;
+
   bool is_defined (void) const { return true; }
 
   bool is_constant (void) const { return true; }

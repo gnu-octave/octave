@@ -1,3 +1,9 @@
+2004-02-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Range.cc (Range::matrix_value, Range::min, Range::max):
+	Don't compute values beyond the limits of the range.
+	(operator << (std::ostream&, const Range&)): Likewise.
+
 2004-02-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-fftw.cc (octave_fftw_planner::create_plan):

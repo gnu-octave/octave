@@ -83,6 +83,8 @@ public:
   octave_value *clone (void) const { return new octave_char_matrix (*this); }
   octave_value *empty_clone (void) const { return new octave_char_matrix (); }
 
+  size_t byte_size (void) const { return numel () * sizeof (char); }
+
   bool is_char_matrix (void) const { return true; }
   bool is_real_matrix (void) const { return true; }
 

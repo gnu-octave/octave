@@ -115,7 +115,7 @@ my_friendly_exit (const char *sig_name, int sig_number,
       std::cerr << "panic: " << sig_name << " -- stopping myself...\n";
 
       if (save_vars)
-	save_user_variables ();
+	dump_octave_core ();
 
       if (sig_number < 0)
 	exit (1);
@@ -259,7 +259,7 @@ sig_hup_or_term_handler (int sig)
     case SIGHUP:
       {
 	if (Vsighup_dumps_octave_core)
-	  save_user_variables ();
+	  dump_octave_core ();
       }
       break;
 #endif
@@ -268,7 +268,7 @@ sig_hup_or_term_handler (int sig)
     case SIGTERM:
       {
 	if (Vsigterm_dumps_octave_core)
-	  save_user_variables ();
+	  dump_octave_core ();
       }
       break;
 #endif
@@ -336,43 +336,11 @@ sigint_handler (int sig)
 	{
 	  octave_interrupt_state++;
 
-	  if (interactive)
-	    {
-	      if (octave_interrupt_state > 3)
-		{
-		  // XXX FIXME XXX -- might want to attempt to flush
-		  // any pending input first...
+	  if (interactive && octave_interrupt_state == 2)
+	    std::cerr << "Press Control-C again to abort." << std::endl;
 
-		  std::cerr << "abort [y/N]? ";
-
-		  int c = octave_kbhit ();
-
-		  std::cerr << static_cast<char> (c) << std::endl;
-
-		  if (c == 'y' || c == 'Y')
-		    {
-		      std::cerr << "save top-level workspace [y/N]? ";
-
-		      c = octave_kbhit ();
-
-		      std::cerr << static_cast<char> (c) << std::endl;
-
-		      my_friendly_exit (sys_siglist[sig], sig,
-					(c == 'y' || c == 'Y'));
-		    }
-		  else
-		    {
-		      // We will still eventually interrupt and jump to
-		      // the top level even if no additional interrupts
-		      // happen, but we will have to wait until it is
-		      // safe to do so.  It will take 3 more
-		      // consecutive interrupts before we offer to
-		      // abort again.
-
-		      octave_interrupt_state = 1;
-		    }
-		}
-	    }
+	  if (octave_interrupt_state >= 3)
+	    my_friendly_exit (sys_siglist[sig], sig, true);
 	}
     }
 

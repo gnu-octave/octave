@@ -108,6 +108,8 @@ public:
       return dim_vector (n > 0, n);
     }
 
+  size_t byte_size (void) const { 3 * sizeof (double); }
+
   octave_value reshape (const dim_vector& new_dims) const
     { return NDArray (matrix_value().reshape (new_dims)); }
 

@@ -1,4 +1,49 @@
+2004-02-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pr-output.cc (octave_print_internal (std::ostream&, const
+	Range&, bool, int)): Don't print values beyond the limits of the
+	range.
+
+	* sighandlers.cc (sigint_handler): Print message after two
+	consecutive interrupts, dump core after three or more.
+
+	* load-save.cc (dump_octave_core): Handle core size limit.
+	Rename from save_user_variables.  Change all callers.
+	(Fload, dump_octave_core, Fsave): Open HDF5 fils in binary mode.
+	(do_save): Extract switch over file types to separate function.
+
+	* load-save.cc (Voctave_core_file_limit): New variable.
+	(octave_core_file_limit): New function.
+	(symbols_of_load_save): Add DEFVAR for octave_core_file_limit.
+
+	* load-save.cc (Voctave_core_file_name): New variable.
+	(octave_core_file_name): New function.
+	(symbols_of_load_save): Add DEFVAR for octave_core_file_name.
+
+	* load-save.cc (Voctave_core_file_format):
+	Rename from Voctave_core_format.
+	(octave_core_file_format): Rename from octave_core_format.
+	(symbols_of_load_save): Fix DEFVAR to match.
+
 2004-02-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov.cc (Fsizeof): New function.
+
+	* ov.h (octave_value::byte_size): New function.
+	* ov-base.h (octave_base_value::byte_size): New function.
+	* ov-base-scalar.h (octave_base_scalar::byte_size): New function.
+	* ov-bool-mat.h (octave_bool_matrix::byte_size): New function.
+	* ov-ch-mat.h (octave_char_matrix::byte_size): New function.
+	* ov-cx-mat.h (octave_complex_matrix::byte_size): New function.
+	* ov-re-mat.h (octave_matrix::byte_size): New function.
+	* ov-range.h (octave_range::byte_size): New function.
+	* ov-cell.cc (octave_cell::byte_size): New function.
+	* ov-cell.h: Provide decl.
+	* ov-struct.cc (octave_struct::byte_size): New function.
+	* ov-struct.h: Provide decl.
+	* ov-streamoff.h (octave_streamoff::byte_size): New function.
+	* ov-list.cc (octave_list::byte_size): New function.
+	* ov-list.h: Provide decl.
 
 	* xpow.cc (elem_xpow (const Matrix&, double)):
 	Convert both operands to Complex if any element of A is negative.

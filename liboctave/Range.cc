@@ -61,7 +61,17 @@ Range::matrix_value (void) const
       double b = rng_base;
       double increment = rng_inc;
       for (int i = 0; i < rng_nelem; i++)
-	retval.elem (0, i) = b + i * increment;
+	retval(i) = b + i * increment;
+
+      // On some machines (x86 with extended precision floating point
+      // arithmetic, for example) it is possible that we can overshoot
+      // the limit by approximately the machine precision even though
+      // we were very careful in our calculation of the number of
+      // elements.
+
+      if ((rng_inc > 0 && retval(rng_nelem-1) > rng_limit)
+	  || (rng_inc < 0 && retval(rng_nelem-1) < rng_limit))
+	retval(rng_nelem-1) = rng_limit;
     }
 
   return retval;
@@ -78,7 +88,15 @@ Range::min (void) const
       if (rng_inc > 0)
 	retval = rng_base;
       else
-	retval = rng_base + (rng_nelem - 1) * rng_inc;
+	{
+	  retval = rng_base + (rng_nelem - 1) * rng_inc;
+
+	  // See the note in the matrix_value method above.
+
+	  if (retval < rng_limit)
+	    retval = rng_limit;
+	}
+
     }
   return retval;
 }
@@ -90,7 +108,14 @@ Range::max (void) const
   if (rng_nelem > 0)
     {
       if (rng_inc > 0)
-	retval = rng_base + (rng_nelem - 1) * rng_inc;
+	{
+	  retval = rng_base + (rng_nelem - 1) * rng_inc;
+
+	  // See the note in the matrix_value method above.
+
+	  if (retval > rng_limit)
+	    retval = rng_limit;
+	}
       else
 	retval = rng_base;
     }
@@ -125,10 +150,13 @@ operator << (std::ostream& os, const Range& a)
   double increment = a.inc ();
   int num_elem = a.nelem ();
 
-  for (int i = 0; i < num_elem; i++)
+  for (int i = 0; i < num_elem-1; i++)
     os << b + i * increment << " ";
 
-  os << "\n";
+  // Prevent overshoot.  See comment in the matrix_value method
+  // above.
+
+  os << (increment > 0 ? a.max () : a.min ()) << "\n";
 
   return os;
 }

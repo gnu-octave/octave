@@ -50,8 +50,7 @@ extern bool
 save_three_d (std::ostream& os, const octave_value& t,
 	      bool parametric = false);
 
-extern void
-save_user_variables (void);
+extern void dump_octave_core (void);
 
 extern int
 read_binary_file_header (std::istream& is, bool& swap,
@@ -66,7 +65,7 @@ do_load (std::istream& stream, const std::string& orig_fname, bool force,
 
 extern void
 do_save (std::ostream& os, symbol_record *sr, load_save_format fmt,
-	 int save_as_floats, bool& infnan_warned);
+	 bool save_as_floats, bool& infnan_warned);
 
 extern void
 write_header (std::ostream& os, load_save_format format);

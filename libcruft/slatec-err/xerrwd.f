@@ -78,7 +78,7 @@ C***FIRST EXECUTABLE STATEMENT  XERRWD
 C
 C  Write the message.
 C
-      WRITE (LUNIT,10)  MSG
+      WRITE (LUNIT,10)  MSG(1:NMES)
  10   FORMAT(1X,A)
       IF (NI .EQ. 1) WRITE (LUNIT, 20) I1
  20   FORMAT(6X,'In above message,  I1 =',I10)

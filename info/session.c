@@ -185,6 +185,11 @@ info_session ()
   display_update_display (windows);
   info_last_executed_command = (VFunction *)NULL;
   info_read_and_dispatch ();
+  /* On program exit, leave the cursor at the bottom of the window, and
+     restore the terminal IO. */
+  terminal_goto_xy (0, screenheight - 1);
+  terminal_clear_to_eol ();
+  fflush (stdout);
   terminal_unprep_terminal ();
   close_dribble_file ();
 }

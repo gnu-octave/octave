@@ -314,7 +314,7 @@ main (argc, argv)
       else
 	{
 	  fprintf (stderr, "no entries found\n");
-	  status = 13;
+	  status = -1;
 	}
 
       close_dribble_file (); 

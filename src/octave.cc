@@ -169,23 +169,24 @@ static const char *usage_string =
 // the real set of options will agree.
 static const char *short_opts = "?Vdfhip:qvx";
 
-// Long options.
+// Long options.  See the comments in getopt.h for the meanings of the
+// fields in this structure.
 #define INFO_FILE_OPTION 1
 static struct option long_opts[] =
   {
-    { "debug", 0, 0, 'd' },
-    { "help", 0, 0, 'h' },
-    { "interactive", 0, 0, 'i' },
-    { "info-file", 1, 0, INFO_FILE_OPTION },
-    { "norc", 0, 0, 'f' },
-    { "ignore-init-file", 0, 0, 'f' },
-    { "path", 1, 0, 'p' },
-    { "quiet", 0, 0, 'q' },
-    { "silent", 0, 0, 'q' },
-    { "verbose", 0, 0, 'V' },
-    { "version", 0, 0, 'v' },
-    { "echo-commands", 0, 0, 'x' },
-    { 0, 0, 0, 0 }
+    { "debug",            no_argument,       0, 'd' },
+    { "help",             no_argument,       0, 'h' },
+    { "interactive",      no_argument,       0, 'i' },
+    { "info-file",        required_argument, 0, INFO_FILE_OPTION },
+    { "norc",             no_argument,       0, 'f' },
+    { "ignore-init-file", no_argument,       0, 'f' },
+    { "path",             required_argument, 0, 'p' },
+    { "quiet",            no_argument,       0, 'q' },
+    { "silent",           no_argument,       0, 'q' },
+    { "verbose",          no_argument,       0, 'V' },
+    { "version",          no_argument,       0, 'v' },
+    { "echo-commands",    no_argument,       0, 'x' },
+    { 0,                  0,                 0, 0 }
   };
 
 // Initialize some global variables for later use.
@@ -313,6 +314,8 @@ parse_and_execute (char *s, int print, int verbose)
 	}
 
       parse_and_execute (f, print);
+
+      fclose (f);
 
       if (verbose)
 	cout << "done." << endl;

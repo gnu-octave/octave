@@ -2350,6 +2350,10 @@ tree_builtin::eval (int print)
       if (tmp.length () > 0)
 	retval = tmp(0);
     }
+  else if (is_mapper)
+    {
+      ::error ("%s: too few arguments", my_name);
+    }
   else
     {
       fcn = load_octave_builtin (my_name);

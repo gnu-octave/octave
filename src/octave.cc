@@ -205,6 +205,19 @@ initialize_globals (char *name)
   else
     home_directory = strsave ("I have no home!");
 
+  char *shell_path = getenv ("PATH");
+  char *arch_dir = octave_arch_lib_dir ();
+  char *tmp = strconcat (shell_path, ":");
+
+  shell_path = shell_path ? strconcat (tmp, arch_dir)
+    : strsave (arch_dir);
+
+  delete [] tmp;
+
+  char *putenv_command = strconcat ("PATH=", shell_path);
+
+  putenv (putenv_command);
+
   raw_prog_name = strsave (name);
   prog_name = strsave ("octave");
 

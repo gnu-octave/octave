@@ -8,6 +8,8 @@
 
 TOPDIR = ..
 
+script_sub_dir = .
+
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
 VPATH = @srcdir@
@@ -22,54 +24,66 @@ SOURCES = *.m
 
 DISTFILES = Makefile.in $(SOURCES)
 
-# Complete directory trees to distribute.
-DISTDIRS = amr-image
+SUBDIRS = control general image linear-algebra miscellaneous plot \
+	polynomial set signal special-matrix statistics
+
+DISTSUBDIRS = $(SUBDIRS)
 
 FCN_FILES = $(wildcard $(srcdir)/*.m)
 FCN_FILES_NO_DIR = $(notdir $(FCN_FILES))
 
 all:
+	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $@; cd ..; done
 .PHONY: all
 
 install: all
-	if test -d $(fcnfiledir) ; then true ; \
-	else $(TOPDIR)/mkpath $(fcnfiledir) ; fi
+	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $@; cd ..; done
+	if test -d $(fcnfiledir)/$(script_sub_dir) ; then true ; \
+	else $(TOPDIR)/mkpath $(fcnfiledir)/$(script_sub_dir) ; fi
 	for f in $(FCN_FILES_NO_DIR) ; do \
-	  rm -f $(fcnfiledir)/$$f ; \
-	  $(INSTALL_DATA) $(srcdir)/$$f $(fcnfiledir)/$$f ; \
+	  rm -f $(fcnfiledir)/$(script_sub_dir)/$$f ; \
+	  $(INSTALL_DATA) $(srcdir)/$$f $(fcnfiledir)/$(script_sub_dir)/$$f ; \
 	done
 .PHONY: install
 
 uninstall:
-	for f in $(FCN_FILES_NO_DIR) ; do rm -f $(fcnfiledir)/$$f ; done
+	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $@; cd ..; done
+	for f in $(FCN_FILES_NO_DIR) ; \
+	  do rm -f $(fcnfiledir)/$(script_sub_dir)/$$f ; \
+	done
 .PHONY: uninstall
 
 clean:
 .PHONY: clean
 
 tags: $(SOURCES)
+	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $@; cd ..; done
 	ctags $(SOURCES)
 
 TAGS: $(SOURCES)
+	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $@; cd ..; done
 	etags $(SOURCES)
 
 mostlyclean: clean
+	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $@; cd ..; done
 .PHONY: mostlyclean
 
 distclean: clean
+	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $@; cd ..; done
 	rm -f Makefile
 .PHONY: distclean
 
 realclean: distclean
+	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $@; cd ..; done
 	rm -f tags TAGS
 .PHONY: realclean
 
 local-dist:
 	ln $(DISTFILES) ../`cat ../.fname`/scripts
-	for dir in $(DISTDIRS); do ln -s ../../scripts/$$dir ../`cat ../.fname`/scripts ; done
+	for dir in $(DISTSUBDIRS); do mkdir `cat .fname`/$$dir; cd $$dir; $(MAKE) $@; cd ..; done
 .PHONY: local-dist
 
 dist:
 	ln $(DISTFILES) ../`cat ../.fname`/scripts
-	for dir in $(DISTDIRS); do ln -s ../../scripts/$$dir ../`cat ../.fname`/scripts ; done
+	for dir in $(DISTSUBDIRS); do mkdir `cat .fname`/$$dir; cd $$dir; $(MAKE) $@; cd ..; done
 .PHONY: dist

@@ -25,8 +25,6 @@ function saveimage(filename,X,img_form,map)
 #
 #SEE ALSO: loadimage, save, load, colormap
 
-  global IMAGEDIR
-
   if(nargin < 2)
     error("usage: saveimage(filename,matrix,[format, [colormap]])");
   elseif(nargin == 2)
@@ -59,12 +57,12 @@ function saveimage(filename,X,img_form,map)
 
   # Convert to another format if requested.
   if (strcmp(img_form,"ppm") == 1)
-    octtopnm = sprintf([IMAGEDIR,"/octtopnm %s > %s"],oct_file,filename);
+    octtopnm = sprintf("octtopnm %s > %s",oct_file,filename);
     rm = sprintf("rm -f %s",oct_file);
     shell_cmd(octtopnm);
     shell_cmd(rm);
   elseif (strcmp(img_form,"ps") == 1)
-    octtopnm = sprintf([IMAGEDIR,"/octtopnm %s"],oct_file);
+    octtopnm = sprintf("octtopnm %s",oct_file);
     ppmtops = sprintf("pnmtops > %s 2> /dev/null", filename);
     octtops = [ octtopnm, " | ", ppmtops ];
     rm = sprintf("rm -f %s",oct_file);

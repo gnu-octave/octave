@@ -333,7 +333,7 @@ octave_info_dir (void)
   return retval;
 }
 
-static char *
+char *
 octave_arch_lib_dir (void)
 {
   static char *retval = subst_octave_home (OCTAVE_ARCHLIBDIR);
@@ -1341,6 +1341,10 @@ install_builtin_variables (void)
 
   DEFVAR ("LOADPATH", SBV_LOADPATH, load_path, 0, 0, 1, sv_loadpath,
     "colon separated list of directories to search for scripts");
+
+  DEFVAR ("IMAGEPATH", SBV_IMAGEPATH, OCTAVE_IMAGEPATH, 0, 0, 1,
+	  sv_imagepath,
+    "colon separated list of directories to search for image files");
 
   DEFVAR ("OCTAVE_VERSION", SBV_version, version_string, 0, 1, 1, 0,
     "Octave version");

@@ -206,6 +206,7 @@ defaults.h: defaults.h.in ../Makeconf Makefile
 	  -e "s;%OCTAVE_OCTFILEDIR%;\"${octfiledir}\";" \
 	  -e "s;%OCTAVE_LOCALOCTFILEPATH%;\"${localoctfilepath}\";" \
 	  -e "s;%OCTAVE_FCNFILEPATH%;\"${fcnfilepath}\";" \
+	  -e "s;%OCTAVE_IMAGEPATH%;\"${imagepath}\";" \
 	  -e "s;%TARGET_HOST_TYPE%;\"${target_host_type}\";")
 	@$(top_srcdir)/move-if-change $@.tmp $@
 

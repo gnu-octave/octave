@@ -45,6 +45,7 @@ extern void discard_until (istream&, char);
 extern char *read_until (istream&, char);
 #endif
 
+extern char *search_path_for_file (const char *, const char *);
 extern char *file_in_path (const char *, const char *);
 extern char *fcn_file_in_path (const char *);
 extern char *oct_file_in_path (const char *);

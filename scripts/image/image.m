@@ -20,11 +20,9 @@ function image(x, zoom)
 # July 1994
 # (Modifications based on suggestions from John Eaton.)
 
-  global IMAGEDIR
- 
   if (nargin == 0)
     # Load Bobbie Jo Richardson (Born 3/16/94)
-    x = loadimage([IMAGEDIR,"/default.img"]);
+    x = loadimage("default.img");
     zoom = 2;
   elseif(nargin == 1)
     zoom = 4;

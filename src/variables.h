@@ -112,6 +112,7 @@ extern void bind_builtin_variable (const char *, tree_constant *,
 extern void install_builtin_variables (void);
 
 extern char *octave_lib_dir (void);
+extern char *octave_arch_lib_dir (void);
 extern char *default_path (void);
 extern char *default_info_file (void);
 extern char *default_editor (void);

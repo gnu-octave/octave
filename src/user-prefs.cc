@@ -552,6 +552,26 @@ sv_gnuplot_binary (void)
 }
 
 int
+sv_imagepath (void)
+{
+  int status = 0;
+
+  char *s = builtin_string_variable ("IMAGEPATH");
+  if (s)
+    {
+      delete [] user_pref.imagepath;
+      user_pref.imagepath = s;
+    }
+  else
+    {
+      warning ("invalid value specified for IMAGEPATH");
+      status = -1;
+    }
+
+  return status;
+}
+
+int
 sv_info_file (void)
 {
   int status = 0;

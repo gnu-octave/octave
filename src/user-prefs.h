@@ -54,6 +54,7 @@ struct user_preferences
   char *default_save_format;
   char *editor;
   char *gnuplot_binary;
+  char *imagepath;
   char *info_file;
   char *loadpath;
   char *pager_binary;
@@ -93,6 +94,7 @@ extern int set_save_precision (void);
 extern int sv_default_save_format (void);
 extern int sv_editor (void);
 extern int sv_gnuplot_binary (void);
+extern int sv_imagepath (void);
 extern int sv_info_file (void);
 extern int sv_loadpath (void);
 extern int sv_pager_binary (void);

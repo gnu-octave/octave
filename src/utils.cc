@@ -89,7 +89,9 @@ LOSE! LOSE!
 #include "user-prefs.h"
 #include "variables.h"
 #include "dirfns.h"
+#include "defun.h"
 #include "error.h"
+#include "help.h"
 #include "gripes.h"
 #include "pager.h"
 #include "utils.h"
@@ -616,11 +618,53 @@ list_in_columns (ostrstream& os, char **list)
 // See if the given file is in the path.
 
 char *
+search_path_for_file (const char *path, const char *name)
+{
+  char *retval = 0;
+
+  char *tmp = kpse_path_search (path, name, kpathsea_true);
+
+  if (tmp)
+    {
+      retval = make_absolute (tmp, the_current_working_directory);
+      free (tmp);
+    }
+
+  return retval;
+}
+
+DEFUN ("file_in_path", Ffile_in_pat, Sfile_in_path, 3, 1,
+  "file_in_path (PATH, NAME)")
+{
+  Octave_object retval;
+
+  DEFINE_ARGV("file_in_path");
+
+  if (argc == 3)
+    {
+      char *fname = search_path_for_file (argv[1], argv[2]);
+
+      if (fname)
+	retval = fname;
+      else
+	retval = Matrix ();
+    }
+  else
+    print_usage ("file_in_path");
+
+  DELETE_ARGV;
+
+  return retval;
+}
+
+
+char *
 file_in_path (const char *name, const char *suffix)
 {
   char *retval = 0;
 
   char *nm = strsave (name);
+
   if (suffix)
     {
       char *tmp = nm;
@@ -631,14 +675,9 @@ file_in_path (const char *name, const char *suffix)
   if (! the_current_working_directory)
     get_working_directory ("file_in_path");
 
-  char *tmp = kpse_path_search (user_pref.loadpath, nm, kpathsea_true);
+  retval = search_path_for_file (user_pref.loadpath, nm);
 
-  if (tmp)
-    {
-      retval = make_absolute (tmp, the_current_working_directory);
-      free (tmp);
-      delete [] nm;
-    }
+  delete [] nm;
 
   return retval;
 }

@@ -7,6 +7,18 @@ function [X, map] = loadimage(filename)
 #
 #SEE ALSO: saveimage, load, save
 
-  eval(['load ', filename]);
+  if (nargin == 0)
+    error ("usage: loadimage (filename)");
+  endif
+
+  file = file_in_path (IMAGEPATH, filename);
+
+  if (isempty (file))
+    error ("loadimage: unable to find image file");
+  endif
+
+# XXX FIXME XXX -- file is assumed to have variables X and map.
+  
+  eval(['load ', file]);
 
 endfunction

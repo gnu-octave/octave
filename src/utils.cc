@@ -402,9 +402,10 @@ get_fcn_file_names (int& num, const char *dir, int no_suffix)
 
 	      if (i == num_max - 1)
 		{
-// Reallocate the array.  Only copy pointers, not the strings they
-// point to, then only delete the original array of pointers, and not
-// the strings they point to.
+		  // Reallocate the array.  Only copy pointers, not
+		  // the strings they point to, then only delete the
+		  // original array of pointers, and not the strings
+		  // they point to.
 
 		  num_max += 256;
 		  char **tmp = new char * [num_max];
@@ -451,9 +452,10 @@ get_fcn_file_names (int& num, int no_suffix)
 
 	      if (i + tmp_num >= num_max - 1)
 		{
-// Reallocate the array.  Only copy pointers, not the strings they
-// point to, then only delete the original array of pointers, and not
-// the strings they point to.
+		  // Reallocate the array.  Only copy pointers, not
+		  // the strings they point to, then only delete the
+		  // original array of pointers, and not the strings
+		  // they point to.
 
 		  num_max += 1024;
 		  char **tmp = new char * [num_max];
@@ -568,7 +570,7 @@ empty_arg (const char *name, int nr, int nc)
 ostrstream&
 list_in_columns (ostrstream& os, char **list)
 {
-// Compute the maximum name length.
+  // Compute the maximum name length.
 
   int max_name_length = 0;
   int total_names = 0;
@@ -581,23 +583,23 @@ list_in_columns (ostrstream& os, char **list)
 	max_name_length = name_length;
     }
 
-// Allow at least two spaces between names.
+  // Allow at least two spaces between names.
 
   max_name_length += 2;
 
-// Calculate the maximum number of columns that will fit.
+  // Calculate the maximum number of columns that will fit.
 
   int line_length = terminal_columns ();
   int cols = line_length / max_name_length;
   if (cols == 0)
     cols = 1;
 
-// Calculate the number of rows that will be in each column except
-// possibly  for a short column on the right.
+  // Calculate the number of rows that will be in each column except
+  // possibly  for a short column on the right.
 
   int rows = total_names / cols + (total_names % cols != 0);
 
-// Recalculate columns based on rows.
+  // Recalculate columns based on rows.
 
   cols = total_names / rows + (total_names % rows != 0);
 
@@ -608,7 +610,7 @@ list_in_columns (ostrstream& os, char **list)
       count = row;
       int pos = 0;
 
-// Print the next row.
+      // Print the next row.
 
       while (1)
 	{

@@ -318,7 +318,8 @@ decode_prompt_string (const char *string)
 #define EFFICIENT
 #ifdef EFFICIENT
 
-// Use the value of PWD because it is much more effecient.
+		// Use the value of PWD because it is much more
+		// effecient.
 
 		temp = user_pref.pwd;
 
@@ -419,7 +420,8 @@ decode_prompt_string (const char *string)
     }
 
 #if 0
-// I don't really think that this is a good idea.  Do you?
+  // I don't really think that this is a good idea.  Do you?
+
   if (! find_variable ("NO_PROMPT_VARS"))
     {
       WORD_LIST *expand_string (), *list;
@@ -563,7 +565,7 @@ octave_read (char *buf, int max_size)
 
       assert (curr_stream);
 
-// Why is this required?
+      // Why is this required?
       buf[0] = '\0';
 
       if (fgets (buf, max_size, curr_stream))
@@ -880,10 +882,12 @@ set_saved_history (void)
 	    {
 	      rl_insert_text (h->line);
 
-// Get rid of any undo list created by the previous insert, so the
-// line won't totally be erased when the edits are undone (they will
-// be normally, because this is a history  line -- cf. readline.c:
-// line 380 or so).
+	      // Get rid of any undo list created by the previous
+	      // insert, so the line won't totally be erased when the
+	      // edits are undone (they will be normally, because this
+	      // is a history  line -- cf. readline.c: line 380 or
+	      // so).
+
 	      if (rl_undo_list)
 		{
 		  free_undo_list ();
@@ -902,10 +906,12 @@ operate_and_get_next (int count, int c)
   int where;
   extern int history_stifled, history_length, max_input_history;
 
-// Accept the current line.
+  // Accept the current line.
+
   rl_newline ();
 
-// Find the current line, and find the next line to use.
+  // Find the current line, and find the next line to use.
+
   where = where_history ();
 
   if (history_stifled && (history_length >= max_input_history))
@@ -920,13 +926,16 @@ operate_and_get_next (int count, int c)
 void
 initialize_readline (void)
 {
-// Allow conditional parsing of the ~/.inputrc file
+  // Allow conditional parsing of the ~/.inputrc file
+
   rl_readline_name = "Octave";
 
-// Tell the completer that we want to try first.
+  // Tell the completer that we want to try first.
+
   rl_attempted_completion_function = (CPPFunction *) command_completer;
 
-// Bind operate-and-get-next.
+  // Bind operate-and-get-next.
+
   rl_add_defun ("operate-and-get-next",
 		(Function *) operate_and_get_next, CTRL ('O'));
 }

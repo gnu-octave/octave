@@ -333,7 +333,8 @@ vector_of_empties (int nargout, const char *fcn_name)
 {
   Octave_object retval;
 
-// Got an empty argument, check if should gripe/return empty values.
+  // Got an empty argument, check if should gripe/return empty
+  // values.
 
   int flag = user_pref.propagate_empty_matrices;
   if (flag != 0)
@@ -1565,8 +1566,9 @@ TC_REP::convert_to_str (void) const
 	  }
 	else
 	  {
+	    // XXX FIXME XXX -- warn about out of range conversions?
+
 	    int i = NINT (d);
-// Warn about out of range conversions?
 	    char s[2];
 	    s[0] = (char) i;
 	    s[1] = '\0';
@@ -1615,7 +1617,8 @@ TC_REP::convert_to_str (void) const
 			  }
 			else
 			  {
-			    // Warn about out of range conversions?
+			    // XXX FIXME XXX -- warn about out of
+			    // range conversions?
 
 			    int ival = NINT (d);
 			    buf[j] = (char) ival;
@@ -1651,8 +1654,10 @@ TC_REP::convert_to_str (void) const
 	      }
 	    else
 	      {
+		// XXX FIXME XXX -- warn about out of range
+		// conversions?
+
 		int ival = NINT (d);
-// Warn about out of range conversions?
 		s[i] = (char) ival;
 	      }
 	  }
@@ -1993,11 +1998,13 @@ TC_REP::maybe_resize (int i, force_orient f_orient)
 
   assert (i >= 0 && (nr <= 1 || nc <= 1));
 
-// This function never reduces the size of a vector, and all vectors
-// have dimensions of at least 0x0.  If i is 0, it is either because
-// a vector has been indexed with a vector of all zeros (in which case
-// the index vector is empty and nothing will happen) or a vector has
-// been indexed with 0 (an error which will be caught elsewhere).
+  // This function never reduces the size of a vector, and all vectors
+  // have dimensions of at least 0x0.  If i is 0, it is either because
+  // a vector has been indexed with a vector of all zeros (in which
+  // case the index vector is empty and nothing will happen) or a
+  // vector has been indexed with 0 (an error which will be caught
+  // elsewhere).
+
   if (i == 0)
     return;
 
@@ -2071,7 +2078,7 @@ TC_REP::maybe_mutate (void)
       break;
     }
 
-// Avoid calling rows() and columns() for things like magic_colon.
+  // Avoid calling rows() and columns() for things like magic_colon.
 
   int nr = 1;
   int nc = 1;
@@ -2154,9 +2161,10 @@ TC_REP::print (ostream& output_buf)
 
     case map_constant:
       {
-// XXX FIXME XXX -- would be nice to print the output in some standard
-// order.  Maybe all substructures first, maybe alphabetize entries,
-// etc.
+	// XXX FIXME XXX -- would be nice to print the output in some
+	// standard order.  Maybe all substructures first, maybe
+	// alphabetize entries, etc.
+
 	begin_unwind_frame ("TC_REP_print");
 
 	unwind_protect_int (structure_indent_level);
@@ -2222,9 +2230,9 @@ TC_REP::print_code (ostream& os)
 	double re = complex_scalar->real ();
 	double im = complex_scalar->imag ();
 
-// If we have the original text and a pure imaginary, just print the
-// original text, because this must be a constant that was parsed as
-// part of a function.
+	// If we have the original text and a pure imaginary, just
+	// print the original text, because this must be a constant
+	// that was parsed as part of a function.
 
 	if (orig_text && re == 0.0 && im > 0.0)
 	  os << orig_text;
@@ -2618,13 +2626,13 @@ TC_REP::do_index (const Octave_object& args)
 
     case string_constant:
       gripe_string_invalid ();
-//      retval = do_string_index (args);
+      //      retval = do_string_index (args);
       break;
 
     default:
 
-// This isn\'t great, but it\'s easier than implementing a lot of
-// other special indexing functions.
+      // This isn't great, but it's easier than implementing a lot
+      // of other special indexing functions.
 
       force_numeric ();
 
@@ -2708,7 +2716,7 @@ TC_REP::do_scalar_index (const Octave_object& args) const
 	      break;
 	  }
 
-// Fall through...
+	  // Fall through...
 
 	case 1:
 	  {
@@ -2756,9 +2764,9 @@ TC_REP::do_scalar_index (const Octave_object& args) const
 	    else
 	      break;
 
-// If only one index, cols will not be set, so we set it.
-// If single index is [], rows will be zero, and we should set cols to
-// zero too.
+	    // If only one index, cols will not be set, so we set it.
+	    // If single index is [], rows will be zero, and we should
+	    // set cols to zero too.
 
 	    if (cols < 0)
 	      {
@@ -3017,7 +3025,8 @@ TC_REP::fortran_style_matrix_index (const tree_constant& i_arg) const
 	  }
 	else
 	  {
-// Yes, we really do want to call this with mi.
+	    // Yes, we really do want to call this with mi.
+
 	    retval = fortran_style_matrix_index (mi);
 	  }
       }
@@ -3076,7 +3085,8 @@ TC_REP::fortran_style_matrix_index (const Matrix& mi) const
 
       int result_size = iv.length ();
 
-// XXX FIXME XXX -- there is way too much duplicate code here...
+      // XXX FIXME XXX -- there is way too much duplicate code
+      // here...
 
       if (iv.one_zero_only ())
 	{
@@ -4143,10 +4153,10 @@ TC_REP::assign (tree_constant& rhs, const Octave_object& args)
   if (error_state)
     return;
 
-// This is easier than actually handling assignments to strings.
-// An assignment to a range will normally require a conversion to a
-// vector since it will normally destroy the equally-spaced property
-// of the range elements.
+  // This is easier than actually handling assignments to strings.  An
+  // assignment to a range will normally require a conversion to a
+  // vector since it will normally destroy the equally-spaced property
+  // of the range elements.
 
   if (is_defined () && ! is_numeric_type ())
     force_numeric ();
@@ -4259,15 +4269,14 @@ TC_REP::do_scalar_assignment (const tree_constant& rhs,
 	  type_tag = matrix_constant;
 	}
 
-// If there is an error, the call to do_matrix_assignment should not
-// destroy the current value.
-// TC_REP::eval(int) will take
-// care of converting single element matrices back to scalars.
+      // If there is an error, the call to do_matrix_assignment should
+      // not destroy the current value.  TC_REP::eval(int) will take
+      // care of converting single element matrices back to scalars.
 
       do_matrix_assignment (rhs, args);
 
-// I don't think there's any other way to revert back to unknown
-// constant types, so here it is.
+      // I don't think there's any other way to revert back to unknown
+      // constant types, so here it is.
 
       if (old_type_tag == unknown_constant && error_state)
 	{
@@ -4321,8 +4330,9 @@ TC_REP::do_matrix_assignment (const tree_constant& rhs,
 
   int nargin = args.length ();
 
-// The do_matrix_assignment functions can't handle empty matrices, so
-// don't let any pass through here.
+  // The do_matrix_assignment functions can't handle empty matrices,
+  // so don't let any pass through here.
+
   switch (nargin)
     {
     case 1:
@@ -4352,9 +4362,10 @@ TC_REP::do_matrix_assignment (const tree_constant& rhs,
 		::error ("in assignment expression, a matrix index is empty");
 		::error ("but the right hand side is not an empty matrix");
 	      }
-// XXX FIXME XXX -- to really be correct here, we should probably
-// check to see if the assignment conforms, but that seems like more
-// work than it's worth right now...
+
+	    // XXX FIXME XXX -- to really be correct here, we should
+	    // probably check to see if the assignment conforms, but
+	    // that seems like more work than it's worth right now...
 	  }
 	else
 	  do_matrix_assignment (rhs, arg_a, arg_b);
@@ -4388,19 +4399,22 @@ TC_REP::do_matrix_assignment (const tree_constant& rhs,
 	      ::error ("in assignment expression, matrix index is empty but");
 	      ::error ("right hand side is not an empty matrix");
 	    }
-// XXX FIXME XXX -- to really be correct here, we should probably
-// check to see if the assignment conforms, but that seems like more
-// work than it's worth right now...
 
-// The assignment functions can't handle empty matrices, so don't let
-// any pass through here.
+	  // XXX FIXME XXX -- to really be correct here, we should
+	  // probably check to see if the assignment conforms, but
+	  // that seems like more work than it's worth right now...
+
+	  // The assignment functions can't handle empty matrices, so
+	  // don't let any pass through here.
+
 	  return;
 	}
 
-// We can't handle the case of assigning to a vector first, since even
-// then, the two operations are not equivalent.  For example, the
-// expression V(:) = M is handled differently depending on whether the
-// user specified do_fortran_indexing = "true".
+      // We can't handle the case of assigning to a vector first,
+      // since even then, the two operations are not equivalent.  For
+      // example, the expression V(:) = M is handled differently
+      // depending on whether the user specified do_fortran_indexing =
+      // "true".
 
       if (user_pref.do_fortran_indexing)
 	fortran_style_matrix_assignment (rhs, i_arg);
@@ -4587,7 +4601,9 @@ TC_REP::fortran_style_matrix_assignment (const tree_constant& rhs,
       break;
 
     case magic_colon:
-// a(:) = [] is equivalent to a(:,:) = [].
+
+      // a(:) = [] is equivalent to a(:,:) = [].
+
       if (rhs_nr == 0 && rhs_nc == 0)
 	do_matrix_assignment (rhs, magic_colon, magic_colon);
       else
@@ -5198,7 +5214,7 @@ TC_REP::do_matrix_assignment (const tree_constant& rhs,
     }
 }
 
-/* MA1 */
+// -*- MA1 -*-
 void
 TC_REP::do_matrix_assignment (const tree_constant& rhs, int i,
 			      const tree_constant& j_arg)
@@ -5353,7 +5369,7 @@ TC_REP::do_matrix_assignment (const tree_constant& rhs, int i,
     }
 }
 
-/* MA2 */
+// -*- MA2 -*-
 void
 TC_REP::do_matrix_assignment (const tree_constant& rhs,
 			      idx_vector& iv, const tree_constant& j_arg)
@@ -5493,7 +5509,7 @@ TC_REP::do_matrix_assignment (const tree_constant& rhs,
     }
 }
 
-/* MA3 */
+// -*- MA3 -*-
 void
 TC_REP::do_matrix_assignment (const tree_constant& rhs, Range& ri,
 			      const tree_constant& j_arg)
@@ -5638,7 +5654,7 @@ TC_REP::do_matrix_assignment (const tree_constant& rhs, Range& ri,
     }
 }
 
-/* MA4 */
+// -*- MA4 -*-
 void
 TC_REP::do_matrix_assignment (const tree_constant& rhs,
 			      TC_REP::constant_type i,
@@ -5828,7 +5844,7 @@ TC_REP::do_matrix_assignment (const tree_constant& rhs,
 //   colon    | 4 | 8 | 12 | 16 |
 //   ---------+---+---+----+----+
 
-/* 1 */
+// -*- 1 -*-
 void
 TC_REP::do_matrix_assignment (const tree_constant& rhs, int i, int j)
 {
@@ -5836,7 +5852,7 @@ TC_REP::do_matrix_assignment (const tree_constant& rhs, int i, int j)
 		   rhs.is_real_type ());
 }
 
-/* 2 */
+// -*- 2 -*-
 void
 TC_REP::do_matrix_assignment (const tree_constant& rhs, int i, idx_vector& jv)
 {
@@ -5847,7 +5863,7 @@ TC_REP::do_matrix_assignment (const tree_constant& rhs, int i, idx_vector& jv)
 		     rhs_cm.elem (0, j), rhs.is_real_type ());
 }
 
-/* 3 */
+// -*- 3 -*-
 void
 TC_REP::do_matrix_assignment (const tree_constant& rhs, int i, Range& rj)
 {
@@ -5865,7 +5881,7 @@ TC_REP::do_matrix_assignment (const tree_constant& rhs, int i, Range& rj)
     }
 }
 
-/* 4 */
+// -*- 4 -*-
 void
 TC_REP::do_matrix_assignment (const tree_constant& rhs, int i,
 			      TC_REP::constant_type mcj)
@@ -5895,7 +5911,7 @@ TC_REP::do_matrix_assignment (const tree_constant& rhs, int i,
     panic_impossible ();
 }
 
-/* 5 */
+// -*- 5 -*-
 void
 TC_REP::do_matrix_assignment (const tree_constant& rhs,
 			      idx_vector& iv, int j)
@@ -5910,7 +5926,7 @@ TC_REP::do_matrix_assignment (const tree_constant& rhs,
     }
 }
 
-/* 6 */
+// -*- 6 -*-
 void
 TC_REP::do_matrix_assignment (const tree_constant& rhs,
 			      idx_vector& iv, idx_vector& jv)
@@ -5929,7 +5945,7 @@ TC_REP::do_matrix_assignment (const tree_constant& rhs,
     }
 }
 
-/* 7 */
+// -*- 7 -*-
 void
 TC_REP::do_matrix_assignment (const tree_constant& rhs,
 			      idx_vector& iv, Range& rj)
@@ -5952,7 +5968,7 @@ TC_REP::do_matrix_assignment (const tree_constant& rhs,
     }
 }
 
-/* 8 */
+// -*- 8 -*-
 void
 TC_REP::do_matrix_assignment (const tree_constant& rhs,
 			      idx_vector& iv, TC_REP::constant_type mcj)
@@ -5981,7 +5997,7 @@ TC_REP::do_matrix_assignment (const tree_constant& rhs,
     }
 }
 
-/* 9 */
+// -*- 9 -*-
 void
 TC_REP::do_matrix_assignment (const tree_constant& rhs, Range& ri, int j)
 {
@@ -5999,7 +6015,7 @@ TC_REP::do_matrix_assignment (const tree_constant& rhs, Range& ri, int j)
     }
 }
 
-/* 10 */
+// -*- 10 -*-
 void
 TC_REP::do_matrix_assignment (const tree_constant& rhs,
 			      Range& ri, idx_vector& jv)
@@ -6022,7 +6038,7 @@ TC_REP::do_matrix_assignment (const tree_constant& rhs,
     }
 }
 
-/* 11 */
+// -*- 11 -*-
 void
 TC_REP::do_matrix_assignment (const tree_constant& rhs,
 			      Range& ri, Range& rj)
@@ -6048,7 +6064,7 @@ TC_REP::do_matrix_assignment (const tree_constant& rhs,
     }
 }
 
-/* 12 */
+// -*- 12 -*-
 void
 TC_REP::do_matrix_assignment (const tree_constant& rhs,
 			      Range& ri, TC_REP::constant_type mcj)
@@ -6079,7 +6095,7 @@ TC_REP::do_matrix_assignment (const tree_constant& rhs,
     }
 }
 
-/* 13 */
+// -*- 13 -*-
 void
 TC_REP::do_matrix_assignment (const tree_constant& rhs,
 			      TC_REP::constant_type mci, int j)
@@ -6109,7 +6125,7 @@ TC_REP::do_matrix_assignment (const tree_constant& rhs,
     panic_impossible ();
 }
 
-/* 14 */
+// -*- 14 -*-
 void
 TC_REP::do_matrix_assignment (const tree_constant& rhs,
 			      TC_REP::constant_type mci, idx_vector& jv)
@@ -6138,7 +6154,7 @@ TC_REP::do_matrix_assignment (const tree_constant& rhs,
     }
 }
 
-/* 15 */
+// -*- 15 -*-
 void
 TC_REP::do_matrix_assignment (const tree_constant& rhs,
 			      TC_REP::constant_type mci, Range& rj)
@@ -6171,7 +6187,7 @@ TC_REP::do_matrix_assignment (const tree_constant& rhs,
     }
 }
 
-/* 16 */
+// -*- 16 -*-
 void
 TC_REP::do_matrix_assignment (const tree_constant& rhs,
 			      TC_REP::constant_type mci,
@@ -6369,7 +6385,8 @@ TC_REP::delete_rows (Range& ri)
   int nr = rows ();
   int nc = columns ();
 
-// If deleting all rows of a column vector, make result 0x0.
+  // If deleting all rows of a column vector, make result 0x0.
+
   if (nc == 1 && num_to_delete == nr)
     nc = 0;
 
@@ -6487,7 +6504,8 @@ TC_REP::delete_columns (idx_vector& jv)
   int nr = rows ();
   int nc = columns ();
 
-// If deleting all columns of a row vector, make result 0x0.
+  // If deleting all columns of a row vector, make result 0x0.
+
   if (nr == 1 && num_to_delete == nc)
     nr = 0;
 
@@ -6551,7 +6569,8 @@ TC_REP::delete_columns (Range& rj)
   int nr = rows ();
   int nc = columns ();
 
-// If deleting all columns of a row vector, make result 0x0.
+  // If deleting all columns of a row vector, make result 0x0.
+
   if (nr == 1 && num_to_delete == nc)
     nr = 0;
 

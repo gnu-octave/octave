@@ -310,7 +310,8 @@ change_to_directory (const char *newdir)
       else
 	t = strsave (newdir);
 
-// Get rid of trailing `/'.
+      // Get rid of trailing `/'.
+
       {
 	register int len_t = strlen (t);
 	if (len_t > 1)

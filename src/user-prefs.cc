@@ -34,7 +34,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "variables.h"
 
 // The list of user preferences.  Values change when global variables
-// change, so we don\'t have to do a variable look up every time we
+// change, so we don't have to do a variable look up every time we
 // need to check a preference.
 user_preferences user_pref;
 
@@ -210,7 +210,7 @@ implicit_str_to_num_ok (void)
 
 
 // Should we allow silent conversion of complex to real when a real
-// type is what we\'re really looking for?
+// type is what we're really looking for?
 
 int
 ok_to_lose_imaginary_part (void)

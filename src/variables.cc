@@ -643,7 +643,7 @@ parse_fcn_file (int exec_script, char *ff)
 
   assert (ff);
 
-// Open function file and parse.
+  // Open function file and parse.
 
   int old_reading_fcn_file_state = reading_fcn_file;
 

@@ -159,10 +159,10 @@ dld_octave_resolve_reference (const char *name, const char *file = 0)
 	return (void *) dld_get_func (name);
     }
 
-// For each library, try to find it in a list of directories, then
-// link to it.  It would have been nice to use the kpathsea functions
-// here too, but calls to them can't be nested as they would need to
-// be here...
+  // For each library, try to find it in a list of directories, then
+  // link to it.  It would have been nice to use the kpathsea
+  // functions here too, but calls to them can't be nested as they
+  // would need to be here...
 
   char **libs = pathstring_to_vector (lib_list);
   char **ptr = libs;
@@ -183,7 +183,7 @@ dld_octave_resolve_reference (const char *name, const char *file = 0)
 	return (void *) dld_get_func (name);
     }
 
-// If we get here, there was a problem.
+  // If we get here, there was a problem.
 
   ostrstream output_buf;
   octave_list_undefined_symbols (output_buf);
@@ -274,9 +274,9 @@ init_dynamic_linker (void)
 void
 octave_dld_tc2_unlink_by_symbol (const char *name, int hard)
 {
-// XXX FIXME XXX -- need to determine the name mangling scheme
-// automatically, in case it changes, or is different on different
-// systems, even if they have g++.
+  // XXX FIXME XXX -- need to determine the name mangling scheme
+  // automatically, in case it changes, or is different on different
+  // systems, even if they have g++.
 
   char *mangled_fcn_name = strconcat (name, "__FRC13Octave_objecti");
 

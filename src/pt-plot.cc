@@ -61,7 +61,7 @@ extern "C"
 #include <readline/tilde.h>
 }
 
-// The number of lines we\'ve plotted so far.
+// The number of lines we've plotted so far.
 static int plot_line_count = 0;
 
 // Is this a parametric plot?  Makes a difference for 3D plotting.
@@ -158,7 +158,8 @@ open_plot_stream (void)
 static int
 send_to_plot_stream (const char *cmd)
 {
-// From sighandlers.cc:
+  // From sighandlers.cc:
+
   extern int pipe_handler_error_count;
 
   if (! plot_stream.is_open ())
@@ -301,9 +302,9 @@ tree_plot_command::eval (void)
 
   plot_buf << "\n" << ends;
 
-// Just testing...
-//  char *message = plot_buf.str ();
-//  cout << "[*]" << message << "[*]\n";
+  // Just testing...
+  //  char *message = plot_buf.str ();
+  //  cout << "[*]" << message << "[*]\n";
 
   if (parametric_plot && ndim == 2)
     {
@@ -845,8 +846,9 @@ subplot::handle_plot_data (int ndim, ostrstream& plot_buf)
 	  char *file = 0;
 	  if (data.is_string ())
 	    {
-// Should really try to look at data file to determine n_max.  Can't
-// do much about other arbitrary gnuplot commands though...
+	      // Should really try to look at data file to determine
+	      // n_max.  Can't do much about other arbitrary gnuplot
+	      // commands though...
 
 	      int n_max = 0;
 
@@ -862,8 +864,9 @@ subplot::handle_plot_data (int ndim, ostrstream& plot_buf)
 		  free (file);
 		  file = 0;
 
-// Opening as a file failed.  Let's try passing it along as a plot
-// command.
+		  // Opening as a file failed.  Let's try passing it
+		  // along as a plot command.
+
 		  plot_buf << " " << data.string_value ();
 		}
 
@@ -876,7 +879,8 @@ subplot::handle_plot_data (int ndim, ostrstream& plot_buf)
 	    }
 	  else
 	    {
-// Eliminate the need for printing a using clause to plot_buf.
+	      // Eliminate the need for printing a using clause to
+	      // plot_buf.
 
 	      tree_constant tmp_data = extract_plot_data (ndim, data);
 
@@ -1092,8 +1096,9 @@ DEFUN ("clearplot", Fclearplot, Sclearplot, 0, 0,
   Octave_object retval;
   send_to_plot_stream ("clear\n");
 
-// XXX FIXME XXX -- instead of just clearing these things, it would be
-// nice if we could reset things to a user-specified default state.
+  // XXX FIXME XXX -- instead of just clearing these things, it would
+  // be nice if we could reset things to a user-specified default
+  // state.
 
   send_to_plot_stream ("set title\n");
   send_to_plot_stream ("set xlabel\n");
@@ -1101,8 +1106,8 @@ DEFUN ("clearplot", Fclearplot, Sclearplot, 0, 0,
   send_to_plot_stream ("set nogrid\n");
   send_to_plot_stream ("set nolabel\n");
 
-// This makes a simple `replot' not work after a `clearplot' command
-// has been issued.
+  // This makes a simple `replot' not work after a `clearplot' command
+  // has been issued.
 
   plot_line_count = 0;
 

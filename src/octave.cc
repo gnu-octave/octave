@@ -159,7 +159,7 @@ static int read_init_files = 1;
 // Nonzero means we printed messages about reading startup files.
 static int reading_startup_message_printed = 0;
 
-// Nonzero means we don\'t print the usual startup message.
+// Nonzero means we don't print the usual startup message.
 // (--quiet; --silent; -q)
 static int inhibit_startup_message = 0;
 
@@ -169,7 +169,7 @@ static const char *usage_string =
        [--info-file file] [--interactive] [--path path] [--silent]\n\
        [--verbose] [--version] [--echo-commands] [file]";
 
-// This is here so that it\'s more likely that the usage message and
+// This is here so that it's more likely that the usage message and
 // the real set of options will agree.
 static const char *short_opts = "?Vdfhip:qvx";
 
@@ -263,8 +263,8 @@ initialize_globals (char *name)
 
   putenv (putenv_cmd);
 
-// This may seem odd, but doing it this way means that we don't have
-// to modify the kpathsea library...
+  // This may seem odd, but doing it this way means that we don't have
+  // to modify the kpathsea library...
 
   char *odb = getenv ("OCTAVE_DB_DIR");
 
@@ -383,13 +383,13 @@ execute_startup_files (void)
 
   int verbose = (verbose_flag && ! inhibit_startup_message);
 
-// Execute commands from the site-wide configuration file.
+  // Execute commands from the site-wide configuration file.
 
   char *sd = get_site_defaults ();
 
   parse_and_execute (sd, 0, verbose);
 
-// Try to execute commands from $HOME/.octaverc and ./.octaverc.
+  // Try to execute commands from $HOME/.octaverc and ./.octaverc.
 
   char *home_rc = 0;
   if (home_directory)
@@ -398,7 +398,7 @@ execute_startup_files (void)
       parse_and_execute (home_rc, 0, verbose);
     }
 
-// Names alone are not enough.
+  // Names alone are not enough.
 
   struct stat home_rc_statbuf;
   stat (home_rc, &home_rc_statbuf);
@@ -472,8 +472,8 @@ clean_up_and_exit (int retval)
 
   exit (retval);
 
-// This is bogus but should prevent g++ from giving a warning saying
-// that this volatile function does return.
+  // This is bogus but should prevent g++ from giving a warning saying
+  // that this volatile function does return.
 
   panic_impossible ();
 }
@@ -498,9 +498,9 @@ initialize_error_handlers ()
 int
 main (int argc, char **argv)
 {
-// The order of these calls is important, and initialize_globals must
-// come before the options are processed because some command line
-// options override defaults.
+  // The order of these calls is important, and initialize_globals
+  // must come before the options are processed because some command
+  // line options override defaults.
 
   init_user_prefs ();
 
@@ -567,14 +567,14 @@ main (int argc, char **argv)
     }
 
 #if defined (HAVE_ATEXIT) || (HAVE_ON_EXIT)
-// Make sure we clean up when we exit.  If we don't have atexit or
-// on_exit, we're going to leave some junk files around if we exit
-// abnormally.
+  // Make sure we clean up when we exit.  If we don't have atexit or
+  // on_exit, we're going to leave some junk files around if we exit
+  // abnormally.
   atexit (cleanup_tmp_files);
 #endif
 
-// These can come after command line args since none of them set any
-// defaults that might be changed by command line options.
+  // These can come after command line args since none of them set any
+  // defaults that might be changed by command line options.
 
   install_signal_handlers ();
 
@@ -603,12 +603,13 @@ main (int argc, char **argv)
   if (! inhibit_startup_message && reading_startup_message_printed)
     cout << endl;
 
-// Avoid counting commands executed from startup files.
+  // Avoid counting commands executed from startup files.
+
   current_command_number = 1;
 
-// If there is an extra argument, see if it names a file to read.
-// Additional arguments are taken as command line options for the
-// script.
+  // If there is an extra argument, see if it names a file to read.
+  // Additional arguments are taken as command line options for the
+  // script.
 
   int remaining_args = argc - optind;
   if (remaining_args > 0)
@@ -641,8 +642,8 @@ main (int argc, char **argv)
       switch_to_buffer (create_buffer (get_input_from_stdin ()));
     }
 
-// Force input to be echoed if not really interactive, but the user
-// has forced interactive behavior.
+  // Force input to be echoed if not really interactive, but the user
+  // has forced interactive behavior.
 
   if (!interactive && forced_interactive)
     {
@@ -653,7 +654,7 @@ main (int argc, char **argv)
   if (! (interactive || forced_interactive))
     using_readline = 0;
 
-// Allow the user to interrupt us without exiting.
+  // Allow the user to interrupt us without exiting.
 
   volatile sig_handler *saved_sigint_handler = signal (SIGINT, SIG_IGN);
 
@@ -668,7 +669,7 @@ main (int argc, char **argv)
 
   signal (SIGINT, saved_sigint_handler);
 
-// The big loop.
+  // The big loop.
 
   int retval;
   do
@@ -865,9 +866,9 @@ eval_string (const char *string, int print, int ans_assign,
 
   parse_status = yyparse ();
 
-// Important to reset the idea of where input is coming from before
-// trying to eval the command we just parsed -- it might contain the
-// name of an function file that still needs to be parsed!
+  // Important to reset the idea of where input is coming from before
+  // trying to eval the command we just parsed -- it might contain the
+  // name of an function file that still needs to be parsed!
 
   tree_statement_list *command = global_command;
 
@@ -909,7 +910,7 @@ eval_string (const tree_constant& arg, int& parse_status, int nargout)
       return -1.0;
     }
 
-// Yes Virginia, we always print here...
+  // Yes Virginia, we always print here...
 
   return eval_string (string, 1, 1, parse_status, nargout);
 }
@@ -990,9 +991,9 @@ DEFUN ("system", Fsystem, Ssystem, 2, 1,
 
       int status = cmd.close ();
 
-// The value in status is as returned by waitpid.  If the process
-// exited normally, extract the actual exit status of the command.
-// Otherwise, return 127 as a failure code.
+      // The value in status is as returned by waitpid.  If the
+      // process exited normally, extract the actual exit status of
+      // the command.  Otherwise, return 127 as a failure code.
 
       if ((status & 0xff) == 0)
 	status = (status & 0xff00) >> 8;

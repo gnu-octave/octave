@@ -403,7 +403,8 @@ symbol_record::define (tree_constant *t)
 
   if (sv_fcn && sv_fcn () < 0)
     {
-// Would be nice to be able to avoid this cast.  XXX FIXME XXX
+      // Would be nice to be able to avoid this cast.  XXX FIXME XXX
+
       definition->define ((tree_constant *) saved_def);
       return 0;
     }
@@ -687,7 +688,8 @@ symbol_record_info::symbol_record_info (const symbol_record& sr)
 
   if (sr.is_variable () && sr.is_defined ())
     {
-// Would be nice to avoid this cast.  XXX FIXME XXX
+      // Would be nice to avoid this cast.  XXX FIXME XXX
+
       tree_constant *tmp = (tree_constant *) sr.def ();
       if (tmp->is_real_scalar ())
 	const_type = SR_INFO_SCALAR;

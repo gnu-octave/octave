@@ -1208,8 +1208,9 @@ TC_REP::convert_to_str (void) const
 	  }
 	else
 	  {
+	    // XXX FIXME XXX -- warn about out of range conversions?
+
 	    int i = NINT (d);
-// Warn about out of range conversions?
 	    char s[2];
 	    s[0] = (char) i;
 	    s[1] = '\0';
@@ -1251,8 +1252,10 @@ TC_REP::convert_to_str (void) const
 		      }
 		    else
 		      {
+			// XXX FIXME XXX -- warn about out of range
+			// conversions?
+
 			int ival = NINT (d);
-// Warn about out of range conversions?
 			s[i] = (char) ival;
 		      }
 		  }
@@ -1283,8 +1286,10 @@ TC_REP::convert_to_str (void) const
 	      }
 	    else
 	      {
+		// XXX FIXME XXX --  warn about out of range
+		// conversions?
+
 		int ival = NINT (d);
-// Warn about out of range conversions?
 		s[i] = (char) ival;
 	      }
 	  }
@@ -1615,11 +1620,13 @@ TC_REP::maybe_resize (int i, force_orient f_orient)
 
   assert (i >= 0 && (nr <= 1 || nc <= 1));
 
-// This function never reduces the size of a vector, and all vectors
-// have dimensions of at least 0x0.  If i is 0, it is either because
-// a vector has been indexed with a vector of all zeros (in which case
-// the index vector is empty and nothing will happen) or a vector has
-// been indexed with 0 (an error which will be caught elsewhere).
+  // This function never reduces the size of a vector, and all vectors
+  // have dimensions of at least 0x0.  If i is 0, it is either because
+  // a vector has been indexed with a vector of all zeros (in which
+  // case the index vector is empty and nothing will happen) or a
+  // vector has been indexed with 0 (an error which will be caught
+  // elsewhere).
+
   if (i == 0)
     return;
 
@@ -1693,7 +1700,7 @@ TC_REP::maybe_mutate (void)
       break;
     }
 
-// Avoid calling rows() and columns() for things like magic_colon.
+  // Avoid calling rows() and columns() for things like magic_colon.
 
   int nr = 1;
   int nc = 1;
@@ -1776,9 +1783,10 @@ TC_REP::print (ostream& output_buf)
 
     case map_constant:
       {
-// XXX FIXME XXX -- would be nice to print the output in some standard
-// order.  Maybe all substructures first, maybe alphabetize entries,
-// etc.
+	// XXX FIXME XXX -- would be nice to print the output in some
+	// standard order.  Maybe all substructures first, maybe
+	// alphabetize entries, etc.
+
 	begin_unwind_frame ("TC_REP_print");
 
 	unwind_protect_int (structure_indent_level);
@@ -1844,9 +1852,9 @@ TC_REP::print_code (ostream& os)
 	double re = complex_scalar->real ();
 	double im = complex_scalar->imag ();
 
-// If we have the original text and a pure imaginary, just print the
-// original text, because this must be a constant that was parsed as
-// part of a function.
+	// If we have the original text and a pure imaginary, just
+	// print the original text, because this must be a constant
+	// that was parsed as part of a function.
 
 	if (orig_text && re == 0.0 && im > 0.0)
 	  os << orig_text;

@@ -907,7 +907,7 @@ static void
 install_loaded_variable (int force, char *name, const tree_constant& tc,
 			 int global, char *doc)
 {
-// Is there already a symbol by this name?  If so, what is it?
+  // Is there already a symbol by this name?  If so, what is it?
 
   symbol_record *lsr = curr_sym_tab->lookup (name, 0, 0);
 
@@ -1241,7 +1241,7 @@ static char *
 read_ascii_data (istream& is, const char *filename, int& global,
 		 tree_constant& tc)
 {
-// Read name for this entry or break on EOF.
+  // Read name for this entry or break on EOF.
 
   char *name = extract_keyword (is, "name");
 
@@ -1263,7 +1263,7 @@ read_ascii_data (istream& is, const char *filename, int& global,
       return 0;
     }
 
-// Look for type keyword
+  // Look for type keyword.
 
   char *tag = extract_keyword (is, "type");
 
@@ -1359,7 +1359,8 @@ read_ascii_data (istream& is, const char *filename, int& global,
 	}
       else if (strncmp (ptr, "range", 5) == 0)
 	{
-// # base, limit, range comment added by save().
+	  // # base, limit, range comment added by save().
+
 	  skip_comments (is);
 	  Range tmp;
 	  is >> tmp;
@@ -1460,8 +1461,8 @@ read_binary_data (istream& is, int swap, floating_point_format fmt,
 
   doc = 0;
 
-// We expect to fail here, at the beginning of a record, so not being
-// able to read another name should not result in an error.
+  // We expect to fail here, at the beginning of a record, so not
+  // being able to read another name should not result in an error.
 
   is.read (&name_len, 4);
   if (! is)
@@ -1668,8 +1669,9 @@ read_mat_file_header (istream& is, int& swap, FOUR_BYTE_INT& mopt,
 {
   swap = 0;
 
-// We expect to fail here, at the beginning of a record, so not being
-// able to read another mopt value should not result in an error. 
+  // We expect to fail here, at the beginning of a record, so not
+  // being able to read another mopt value should not result in an
+  // error.
 
   is.read (&mopt, 4);
   if (! is)
@@ -1701,7 +1703,7 @@ read_mat_file_header (istream& is, int& swap, FOUR_BYTE_INT& mopt,
     swap = 1;
 #endif
 
-// mopt is signed, therefore byte swap may result in negative value.
+  // mopt is signed, therefore byte swap may result in negative value.
 
   if (mopt > 9999 || mopt < 0)
     swap = 1;
@@ -1780,9 +1782,9 @@ static char *
 read_mat_binary_data (istream& is, const char *filename,
 		      tree_constant& tc)
 {
-// These are initialized here instead of closer to where they are
-// first used to avoid errors from gcc about goto crossing
-// initialization of variable.
+  // These are initialized here instead of closer to where they are
+  // first used to avoid errors from gcc about goto crossing
+  // initialization of variable.
 
   Matrix re;
   floating_point_format flt_fmt = OCTAVE_UNKNOWN_FLT_FMT;
@@ -1866,7 +1868,7 @@ read_mat_binary_data (istream& is, const char *filename,
   else
     tc = re;
 
-// XXX FIXME XXX -- this needs to change once strings really work.
+  // XXX FIXME XXX -- this needs to change once strings really work.
 
   if (type == 1 && nr == 1)
     tc = tc.convert_to_str ();
@@ -2115,9 +2117,9 @@ found in the file will be replaced with the values read from the file.")
 
   int force = 0;
 
-// It isn't necessary to have the default load format stored in a user
-// preference variable since we can determine the type of file as we
-// are reading.
+  // It isn't necessary to have the default load format stored in a
+  // user preference variable since we can determine the type of file
+  // as we are reading.
 
   load_save_format format = LS_UNKNOWN;
 
@@ -2186,9 +2188,10 @@ found in the file will be replaced with the values read from the file.")
 
       if (format != LS_UNKNOWN)
 	{
-// XXX FIXME XXX -- if we have already seen EOF on a previous call,
-// how do we fix up the state of cin so that we can get additional
-// input?  I'm afraid that we can't fix this using cin only.
+	  // XXX FIXME XXX -- if we have already seen EOF on a
+	  // previous call, how do we fix up the state of cin so that
+	  // we can get additional input?  I'm afraid that we can't
+	  // fix this using cin only.
 
 	  retval = do_load (cin, orig_fname, force, format, flt_fmt,
 			    list_only, swap, verbose, argv, argc,
@@ -2904,8 +2907,8 @@ save variables in a file")
   argc--;
   argv++;
 
-// Here is where we would get the default save format if it were
-// stored in a user preference variable.
+  // Here is where we would get the default save format if it were
+  // stored in a user preference variable.
 
   int save_builtins = 0;
 
@@ -2970,8 +2973,8 @@ save variables in a file")
       argc--;
       argv++;
 
-// XXX FIXME XXX -- should things intended for the screen end up in a 
-// tree_constant (string)?
+      // XXX FIXME XXX -- should things intended for the screen end up
+      // in a tree_constant (string)?
 
       ostrstream buf;
 

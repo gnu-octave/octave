@@ -125,8 +125,8 @@ sigchld_handler (int i)
 static RETSIGTYPE
 sigint_handler (int i)
 {
-// Can this ever cause trouble on systems that don't forget signal
-// handlers when they are invoked?
+  // Can this ever cause trouble on systems that don't forget signal
+  // handlers when they are invoked?
 
   signal (SIGINT, sigint_handler);
 
@@ -146,15 +146,16 @@ sigint_handler (int i)
 static RETSIGTYPE
 sigpipe_handler (int i)
 {
-// Can this ever cause trouble on systems that don't forget signal
-// handlers when they are invoked?
+  // Can this ever cause trouble on systems that don't forget signal
+  // handlers when they are invoked?
 
   signal (SIGPIPE, sigpipe_handler);
 
   if (pipe_handler_error_count++ == 0)
     message (0, "broken pipe");
 
-// Don\'t loop forever on account of this.
+  // Don't loop forever on account of this.
+
   if (pipe_handler_error_count  > 100)
     jump_to_top_level ();
 

@@ -218,9 +218,9 @@ idx_vector::init_state (const char *rc, int z_len)
       return;
     }
 #if 0
-// Checking max index against size won't work right here unless we
-// also look at resize on range error, and we have to do that later
-// on anyway.
+  // Checking max index against size won't work right here unless we
+  // also look at resize on range error, and we have to do that later
+  // on anyway.
 
   else if (max_val >= z_len)
     {

@@ -1078,7 +1078,7 @@ do_printf (const char *type, const Octave_object& args, int nargout)
       fmt_arg_count++;
     }
 
-// Scan fmt for % escapes and print out the arguments.
+  // Scan fmt for % escapes and print out the arguments.
 
   ostrstream output_buf;
 
@@ -1100,7 +1100,8 @@ do_printf (const char *type, const Octave_object& args, int nargout)
 	  continue;
 	}
 
-// We must be looking at a format specifier.  Extract it or fail.
+      // We must be looking at a format specifier.  Extract it or
+      // fail.
 
       int status = process_printf_format (ptr, args, output_buf, type);
 
@@ -1229,8 +1230,8 @@ process_scanf_format (const char *s, ostrstream& fmt,
   if (*s == '\0')
     goto invalid_format;
 
-// Even if we don't have a place to store them, attempt to convert
-// everything specified by the format string.
+  // Even if we don't have a place to store them, attempt to convert
+  // everything specified by the format string.
 
   if (fmt_arg_count > (nargout ? nargout : 1))
     store_value = 0;
@@ -1267,10 +1268,10 @@ process_scanf_format (const char *s, ostrstream& fmt,
       {
 	if (string_width < 1)
 	  {
-// XXX FIXME XXX -- The code below is miscompiled on the Alpha with
-// gcc 2.6.0, so that string_width is never incremented, even though
-// reading the data works correctly.  One fix is to use a fixed-size
-// buffer...
+	    // XXX FIXME XXX -- The code below is miscompiled on the
+	    // Alpha with gcc 2.6.0, so that string_width is never
+	    // incremented, even though reading the data works
+	    // correctly.  One fix is to use a fixed-size buffer...
 //	    string_width = 8192;
 
 	    string_width = 0;
@@ -1406,9 +1407,10 @@ do_scanf (const char *type, const Octave_object& args, int nargout)
       if (strcmp (type, "scanf") == 0
 	  || (doing_fscanf && file.number () == 0))
 	{
-// XXX FIXME XXX -- this should probably be possible for more than
-// just stdin/stdout pairs, using a list of output streams to flush.
-// The list could be created with a function like iostream's tie().
+	  // XXX FIXME XXX -- this should probably be possible for
+	  // more than just stdin/stdout pairs, using a list of output
+	  // streams to flush.  The list could be created with a
+	  // function like iostream's tie().
 
 	  flush_output_to_pager ();
 
@@ -1454,7 +1456,7 @@ do_scanf (const char *type, const Octave_object& args, int nargout)
       return retval;
     }
 
-// Scan scanf_fmt for % escapes and assign the arguments.
+  // Scan scanf_fmt for % escapes and assign the arguments.
 
   retval.resize (nargout);
 
@@ -1477,7 +1479,8 @@ do_scanf (const char *type, const Octave_object& args, int nargout)
 	  continue;
 	}
 
-// We must be looking at a format specifier.  Extract it or fail.
+      // We must be looking at a format specifier.  Extract it or
+      // fail.
 
       int status = process_scanf_format (ptr, fmt, type, nargout,
 					 fptr, retval);
@@ -1623,7 +1626,8 @@ fread_internal (const Octave_object& args, int nargout)
   if (! p)
     return retval;
 
-// Get type and number of bytes per element to read.
+  // Get type and number of bytes per element to read.
+
   char *prec = "uchar";
   if (nargin > 2)
     {
@@ -1636,14 +1640,12 @@ fread_internal (const Octave_object& args, int nargout)
 	}
     }
 
-// Get file info.
-
   file_info file = file_list (p);
 
   FILE *fptr = file.fptr ();
 
-// Set up matrix to read into.  If specified in arguments use that
-// number, otherwise read everyting left in file.
+  // Set up matrix to read into.  If specified in arguments use that
+  // number, otherwise read everyting left in file.
 
   double dnr = 0.0;
   double dnc = 0.0;
@@ -1734,7 +1736,8 @@ fread_internal (const Octave_object& args, int nargout)
     }
   else
     {
-// No size parameter, read what's left of the file.
+      // No size parameter, read what's left of the file.
+
       nc = 1;
       int n = num_items_remaining (fptr, prec);
       nr = n / nc;
@@ -1744,7 +1747,7 @@ fread_internal (const Octave_object& args, int nargout)
 
   Matrix m (nr, nc, octave_NaN);
 
-// Read data.
+  // Read data.
 
   int count = m.read (fptr, prec);
 
@@ -1810,7 +1813,8 @@ fwrite_internal (const Octave_object& args, int nargout)
   if (! p)
     return retval;
 
-// Get type and number of bytes per element to read.
+  // Get type and number of bytes per element to read.
+
   char *prec = "uchar";
   if (nargin > 2)
     {
@@ -1875,7 +1879,6 @@ feof_internal (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 
-// Get file info.
   Pix p = return_valid_file (args(0));
 
   if (! p)
@@ -1919,7 +1922,6 @@ ferror_internal (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 
-// Get file info.
   Pix p = return_valid_file (args(0));
 
   if (! p)

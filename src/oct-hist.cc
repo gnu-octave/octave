@@ -188,8 +188,9 @@ do_history (int argc, char **argv)
 		  {
 		    if (history_lines_this_session < where_history ())
 		      {
-// If the filename was supplied, then create it if it doesn't already
-// exist.
+			// If the filename was supplied, then create
+			// it if it doesn't already exist.
+
 			if (file)
 			  {
 			    struct stat buf;
@@ -221,7 +222,10 @@ do_history (int argc, char **argv)
 	      break;
 
 	    case 'n':		// Read `new' history from file.
-// Read all of the lines in the file that we haven't already read.
+
+	      // Read all of the lines in the file that we haven't
+	      // already read.
+
 	      using_history ();
 	      result = read_history_range (file, history_lines_in_file, -1);
 	      using_history ();
@@ -341,7 +345,7 @@ edit_history_readline (fstream& stream)
       line = tmp_line;
     }
 
-// Finish with newline if none in file.
+  // Finish with newline if none in file.
 
   line[lindex++] = '\n';
   line[lindex++] = '\0';
@@ -376,9 +380,9 @@ edit_history_repl_hist (char *command)
     ; // Count 'em.
   i--;
 
-// History_get () takes a parameter that should be offset by history_base.
+  // History_get () takes a parameter that should be offset by history_base.
 
-// Don't free this.
+  // Don't free this.
   HIST_ENTRY *histent = history_get (history_base + i);
   if (! histent)
     return;
@@ -437,22 +441,22 @@ mk_tmp_hist_file (int argc, char **argv, int insert_curr, char *warn_for)
   while (hlist[hist_count++])
     ; // Find the number of items in the history list.
 
-// The current command line is already part of the history list by the
-// time we get to this point.  Delete it from the list.
+  // The current command line is already part of the history list by
+  // the time we get to this point.  Delete it from the list.
 
   hist_count -= 2;
   if (! insert_curr)
     remove_history (hist_count);
   hist_count--;
 
-// If no numbers have been specified, the default is to edit the last
-// command in the history list.
+  // If no numbers have been specified, the default is to edit the
+  // last command in the history list.
 
   int hist_end = hist_count;
   int hist_beg = hist_count;
   int reverse = 0;
 
-// Process options
+  // Process options.
 
   int usage_error = 0;
   if (argc == 3)
@@ -534,21 +538,21 @@ do_edit_history (int argc, char **argv)
   if (! name)
     return;
 
-// Call up our favorite editor on the file of commands.
+  // Call up our favorite editor on the file of commands.
 
   ostrstream buf;
   buf << user_pref.editor << " " << name << ends;
   char *cmd = buf.str ();
 
-// Ignore interrupts while we are off editing commands.  Should we
-// maybe avoid using system()?
+  // Ignore interrupts while we are off editing commands.  Should we
+  // maybe avoid using system()?
 
   volatile sig_handler *saved_sigint_handler = signal (SIGINT, SIG_IGN);
   system (cmd);
   signal (SIGINT, saved_sigint_handler);
 
-// Write the commands to the history file since parse_and_execute
-// disables command line history while it executes.
+  // Write the commands to the history file since parse_and_execute
+  // disables command line history while it executes.
 
   fstream file (name, ios::in);
 
@@ -556,8 +560,7 @@ do_edit_history (int argc, char **argv)
   int first = 1;
   while ((line = edit_history_readline (file)) != 0)
     {
-
-// Skip blank lines
+      // Skip blank lines.
 
       if (line[0] == '\n')
 	{
@@ -576,7 +579,8 @@ do_edit_history (int argc, char **argv)
 
   file.close ();
 
-// Turn on command echo, so the output from this will make better sense.
+  // Turn on command echo, so the output from this will make better
+  // sense.
 
   begin_unwind_frame ("do_edit_history");
   unwind_protect_int (echo_input);
@@ -588,8 +592,8 @@ do_edit_history (int argc, char **argv)
 
   run_unwind_frame ("do_edit_history");
 
-// Delete the temporary file.  Should probably be done with an
-// unwind_protect.
+  // Delete the temporary file.  Should probably be done with an
+  // unwind_protect.
 
   unlink (name);
 
@@ -604,7 +608,8 @@ do_run_history (int argc, char **argv)
   if (! name)
     return;
 
-// Turn on command echo, so the output from this will make better sense.
+  // Turn on command echo, so the output from this will make better
+  // sense.
 
   begin_unwind_frame ("do_run_history");
   unwind_protect_int (echo_input);
@@ -616,8 +621,8 @@ do_run_history (int argc, char **argv)
 
   run_unwind_frame ("do_run_history");
 
-// Delete the temporary file.  Should probably be done with an
-// unwind_protect.
+  // Delete the temporary file.  Should probably be done with an
+  // unwind_protect.
 
   unlink (name);
 

@@ -186,8 +186,10 @@ xpow (const Matrix& a, double b)
 	}
       else
 	{
-// Too much copying?
-// XXX FIXME XXX -- we shouldn\'t do this if the exponent is large...
+	  // Too much copying?
+	  // XXX FIXME XXX -- we shouldn't do this if the exponent is
+	  // large...
+
 	  Matrix atmp;
 	  if (btmp < 0)
 	    {
@@ -362,8 +364,10 @@ xpow (const ComplexMatrix& a, double b)
 	}
       else
 	{
-// Too much copying?
-// XXX FIXME XXX -- we shouldn\'t do this if the exponent is large...
+	  // Too much copying?
+	  // XXX FIXME XXX -- we shouldn't do this if the exponent is
+	  // large...
+
 	  ComplexMatrix atmp;
 	  if (btmp < 0)
 	    {
@@ -449,7 +453,8 @@ elem_xpow (double a, const Matrix& b)
   int nr = b.rows ();
   int nc = b.columns ();
 
-// For now, assume the worst.
+  // For now, assume the worst.
+
   if (a < 0.0)
     {
       Complex atmp (a);

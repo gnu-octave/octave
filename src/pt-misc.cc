@@ -208,9 +208,9 @@ tree_argument_list::convert_to_const_vector (void)
 {
   int len = length ();
 
-// XXX FIXME XXX -- would be nice to know in advance how largs args
-// needs to be even when we have a list containing an all_va_args
-// token.
+  // XXX FIXME XXX -- would be nice to know in advance how largs args
+  // needs to be even when we have a list containing an all_va_args
+  // token.
 
   Octave_object args;
   args.resize (len);

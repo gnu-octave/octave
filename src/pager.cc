@@ -122,8 +122,8 @@ maybe_page_output (ostrstream& msg_buf)
 void
 flush_output_to_pager (void)
 {
- // Extract message from buffer, then delete the buffer so that any
- // new messages get sent separately.
+  // Extract message from buffer, then delete the buffer so that any
+  // new messages get sent separately.
 
   *pager_buf << ends;
   char *message = pager_buf->str ();

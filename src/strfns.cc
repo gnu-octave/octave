@@ -85,7 +85,7 @@ DEFUN ("toascii", Ftoascii, Stoascii, 1, 1,
 	  int nr = str.num_strings ();
 	  int nc = str.max_length ();
 
-// XXX FIXME XXX -- should fill with user-specified value.
+	  // XXX FIXME XXX -- should fill with user-specified value.
 
 	  Matrix m (nr, nc, 0);
 

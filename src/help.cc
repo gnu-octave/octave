@@ -461,7 +461,8 @@ simple_help (void)
     } \
   while (0)
 
-// XXX FIXME XXX -- is this distinction needed?
+  // XXX FIXME XXX -- is this distinction needed?
+
   LIST_SYMBOLS (symbol_def::TEXT_FUNCTION,
 		"text functions (these names are also reserved)");
 
@@ -471,10 +472,10 @@ simple_help (void)
 
   LIST_SYMBOLS (symbol_def::BUILTIN_VARIABLE, "builtin variables");
 
-// Also need to list variables and currently compiled functions from
-// the symbol table, if there are any.
+  // Also need to list variables and currently compiled functions from
+  // the symbol table, if there are any.
 
-// Also need to search octave_path for script files.
+  // Also need to search octave_path for script files.
 
   char *path_elt = kpse_path_element (user_pref.loadpath);
 
@@ -728,7 +729,8 @@ display the definition of each NAME that refers to a function")
 
   if (argc > 1)
     {
-// XXX FIXME XXX -- we should really use getopt ()
+      // XXX FIXME XXX -- we should really use getopt ()
+
       int quiet = 0;
       if (argv[1] && strcmp (argv[1], "-q") == 0)
 	{
@@ -772,7 +774,8 @@ display the definition of each NAME that refers to a function")
 		  defn->print_code (output_buf);
 		}
 
-// XXX FIXME XXX -- this code should be shared with Fwhich
+	      // XXX FIXME XXX -- this code should be shared with
+	      // Fwhich.
 
 	      else if (sym_rec->is_text_function ())
 		output_buf << *argv << " is a builtin text-function\n";

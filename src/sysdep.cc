@@ -191,8 +191,8 @@ octave_ieee_init (void)
 
 #else
 
-// This is sort of cheesy, but what can we do, other than blowing it
-// off completely, or writing an entire IEEE emulation package?
+  // This is sort of cheesy, but what can we do, other than blowing it
+  // off completely, or writing an entire IEEE emulation package?
 
   octave_Inf = DBL_MAX;
   octave_NaN = DBL_MAX;
@@ -259,8 +259,8 @@ extern "C"
 int
 matherr (struct exception *x)
 {
-// Possibly print our own message someday.  Should probably be
-// user-switchable.
+  // Possibly print our own message someday.  Should probably be
+  // user-switchable.
 
   switch (x->type)
     {
@@ -274,7 +274,7 @@ matherr (struct exception *x)
       break;
     }
 
-// But don't print the system message.
+  // But don't print the system message.
 
   return 1;
 }
@@ -286,7 +286,7 @@ sysdep_init (void)
 {
 #if defined (__386BSD__) || defined (__FreeBSD__)
 #if defined (HAVE_FLOATINGPOINT_H)
-// Disable trapping on common exceptions.
+  // Disable trapping on common exceptions.
   fpsetmask (~(FP_X_OFL|FP_X_INV|FP_X_DZ|FP_X_DNML|FP_X_UFL|FP_X_IMP));
 #endif
 #endif
@@ -333,18 +333,18 @@ raw_mode (int on)
 
     if (on)
       {
-// Get terminal modes.
+	// Get terminal modes.
 
 	tcgetattr (tty_fd, &s);
 
-// Save modes and set certain variables dependent on modes.
+	// Save modes and set certain variables dependent on modes.
 
 	save_term = s;
 //	ospeed = s.c_cflag & CBAUD;
 //	erase_char = s.c_cc[VERASE];
 //	kill_char = s.c_cc[VKILL];
 
-// Set the modes to the way we want them.
+	// Set the modes to the way we want them.
 
 	s.c_lflag &= ~(ICANON|ECHO|ECHOE|ECHOK|ECHONL);
 	s.c_oflag |=  (OPOST|ONLCR);
@@ -362,7 +362,8 @@ raw_mode (int on)
       }      
     else
       {
-// Restore saved modes.
+	// Restore saved modes.
+
 	s = save_term;
       }
     tcsetattr (tty_fd, TCSAFLUSH, &s);
@@ -374,18 +375,18 @@ raw_mode (int on)
 
     if (on)
       {
-// Get terminal modes.
+	// Get terminal modes.
 
 	ioctl (tty_fd, TCGETA, &s);
 
-// Save modes and set certain variables dependent on modes.
+	// Save modes and set certain variables dependent on modes.
 
 	save_term = s;
 //	ospeed = s.c_cflag & CBAUD;
 //	erase_char = s.c_cc[VERASE];
 //	kill_char = s.c_cc[VKILL];
 
-// Set the modes to the way we want them.
+	// Set the modes to the way we want them.
 
 	s.c_lflag &= ~(ICANON|ECHO|ECHOE|ECHOK|ECHONL);
 	s.c_oflag |=  (OPOST|ONLCR);
@@ -403,7 +404,8 @@ raw_mode (int on)
       }      
     else
       {
-// Restore saved modes.
+	// Restore saved modes.
+
 	s = save_term;
       }
     ioctl (tty_fd, TCSETAW, &s);
@@ -415,25 +417,26 @@ raw_mode (int on)
 
     if (on)
       {
-// Get terminal modes.
+	// Get terminal modes.
 
 	ioctl (tty_fd, TIOCGETP, &s);
 
-// Save modes and set certain variables dependent on modes.
+	// Save modes and set certain variables dependent on modes.
 
 	save_term = s;
 //	ospeed = s.sg_ospeed;
 //	erase_char = s.sg_erase;
 //	kill_char = s.sg_kill;
 
-// Set the modes to the way we want them.
+	// Set the modes to the way we want them.
 
 	s.sg_flags |= CBREAK;
 	s.sg_flags &= ~(ECHO);
       } 
     else
       {
-// Restore saved modes.
+	// Restore saved modes.
+
 	s = save_term;
       }
     ioctl (tty_fd, TIOCSETN, &s);
@@ -544,7 +547,7 @@ DEFUN ("kbhit", Fkbhit, Skbhit, 0, 1,
 {
   Octave_object retval;
 
-// XXX FIXME XXX -- add timeout and default value args?
+  // XXX FIXME XXX -- add timeout and default value args?
 
   if (interactive)
     {

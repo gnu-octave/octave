@@ -83,8 +83,9 @@ list_to_vector (tree *list, int& len)
 
   tree **args = new tree * [len];
 
-// args[0] may eventually hold something useful, like the function
-// name.
+  // args[0] may eventually hold something useful, like the function
+  // name.
+
   tree *tmp_list = list;
   for (int k = 1; k < len; k++)
     {
@@ -297,15 +298,16 @@ tree_matrix::eval (int print)
   if (error_state)
     return retval;
 
-// Just count the elements without looking at them.
+  // Just count the elements without looking at them.
 
   int total_len = length ();
 
-// Easier to deal with this later instead of a tree_matrix structure.
+  // Easier to deal with this later instead of a tree_matrix
+  // structure.
 
   const_matrix_list *list = new const_matrix_list [total_len];
 
-// Stats we want to keep track of.
+  // Stats we want to keep track of.
 
   int all_strings = 1;
 
@@ -324,9 +326,9 @@ tree_matrix::eval (int print)
 
   tree_matrix *ptr = this;
 
-// Stuff for the result matrix or string.  Declared here so that we
-// don't get warnings from gcc about the goto crossing the
-// initialization of these values.
+  // Stuff for the result matrix or string.  Declared here so that we
+  // don't get warnings from gcc about the goto crossing the
+  // initialization of these values.
 
   int put_row = 0;
   int put_col = 0;
@@ -339,7 +341,7 @@ tree_matrix::eval (int print)
 
   Octave_str_obj string;
 
-// Eliminate empties and gather stats.
+  // Eliminate empties and gather stats.
 
   int found_new_row_in_empties = 0;
 
@@ -407,11 +409,11 @@ tree_matrix::eval (int print)
       ptr = ptr->next;
     }
 
-//  if (all_strings)
-//    cerr << "all strings\n";
+  //  if (all_strings)
+  //    cerr << "all strings\n";
 
-// Compute size of result matrix, and check to see that the dimensions
-// of all the elements will match up properly.
+  // Compute size of result matrix, and check to see that the dimensions
+  // of all the elements will match up properly.
 
   for (int i = 0; i < len; i++)
     {
@@ -469,7 +471,7 @@ tree_matrix::eval (int print)
 	}
     }
 
-// Don\'t forget to check to see if the last element will fit.
+  // Don't forget to check to see if the last element will fit.
 
   if (cols_this_row != col_total && ! all_strings)
     {
@@ -477,8 +479,8 @@ tree_matrix::eval (int print)
       goto done;
     }
 
-// Now, extract the values from the individual elements and insert
-// them in the result matrix.
+  // Now, extract the values from the individual elements and insert
+  // them in the result matrix.
 
   if (all_strings)
     string.resize (row_total);
@@ -1008,7 +1010,8 @@ tree_identifier::eval (int print, int nargout, const Octave_object& args)
 	  if (maybe_do_ans_assign && nargout == 1)
 	    {
 
-// Don't count the output arguments that we create automatically.
+	      // Don't count the output arguments that we create
+	      // automatically.
 
 	      nargout = 0;
 
@@ -1232,7 +1235,8 @@ tree_index_expression::eval (int print)
 
   if (list)
     {
-// Extract the arguments into a simple vector.  Don't pass null args.
+      // Extract the arguments into a simple vector.  Don't pass null
+      // args.
 
       Octave_object args = list->convert_to_const_vector ();
 
@@ -1284,7 +1288,8 @@ tree_index_expression::eval (int print, int nargout, const Octave_object& args)
 
   if (list)
     {
-// Extract the arguments into a simple vector.  Don't pass null args.
+      // Extract the arguments into a simple vector.  Don't pass null
+      // args.
 
       Octave_object args = list->convert_to_const_vector ();
 
@@ -1937,7 +1942,7 @@ tree_simple_assignment_expression::eval (int print)
 	}
       else
 	{
-// Extract the arguments into a simple vector.
+	  // Extract the arguments into a simple vector.
 
 	  Octave_object args = index->convert_to_const_vector ();
 
@@ -1975,8 +1980,6 @@ tree_simple_assignment_expression::eval_error (void)
       if (l != -1 && c != -1)
 	::error ("evaluating assignment expression near line %d, column %d",
 		 l, c);
-//      else
-//	::error ("evaluating assignment expression");
     }
 }
 
@@ -2067,8 +2070,9 @@ tree_multi_assignment_expression::eval (int print, int nargout,
 
 	  if (i < nargout)
 	    {
-// XXX FIXME? XXX -- this is apparently the way Matlab works, but
-// maybe we should have the option of skipping the assignment instead.
+	      // XXX FIXME? XXX -- this is apparently the way Matlab
+	      // works, but maybe we should have the option of
+	      // skipping the assignment instead.
 
 	      tree_constant *tmp = 0;
 	      if (results(i).is_undefined ())
@@ -2278,7 +2282,7 @@ tree_colon_expression::print_code (ostream& os)
   if (op1)
     op1->print_code (os);
 
-// Stupid syntax.
+  // Stupid syntax.
 
   if (op3)
     {
@@ -2570,12 +2574,14 @@ tree_function::mark_as_system_fcn_file (void)
 {
   if (file_name)
     {
-// We really should stash the whole path to the file we found, when we
-// looked it up, to avoid possible race conditions...  XXX FIXME XXX
-//
-// We probably also don't need to get the library directory every
-// time, but since this function is only called when the function file
-// is parsed, it probably doesn't matter that much.
+      // We really should stash the whole path to the file we found,
+      // when we looked it up, to avoid possible race conditions...
+      // XXX FIXME XXX
+      //
+      // We probably also don't need to get the library directory
+      // every time, but since this function is only called when the
+      // function file is parsed, it probably doesn't matter that
+      // much.
 
       char *oct_lib = octave_lib_dir ();
       int len = strlen (oct_lib);
@@ -2712,11 +2718,14 @@ tree_function::eval (int print, int nargout, const Octave_object& args)
 
       if (vr_list)
 	{
-// Push new vr_list.
+	  // Push new vr_list.
+
 	  unwind_protect_ptr (vr_list);
 	  vr_list = new tree_va_return_list;
 
-// Clear and delete the new one before restoring the old one.
+	  // Clear and delete the new one before restoring the old
+	  // one.
+
 	  add_unwind_protect (delete_vr_list, (void *) vr_list);
 	}
     }
@@ -2724,11 +2733,12 @@ tree_function::eval (int print, int nargout, const Octave_object& args)
   if (vr_list)
     vr_list->clear ();
 
-// Force symbols to be undefined again when this function exits.
+  // Force symbols to be undefined again when this function exits.
 
   add_unwind_protect (clear_symbol_table, (void *) sym_tab);
 
-// Save old and set current symbol table context, for eval_undefined_error().
+  // Save old and set current symbol table context, for
+  // eval_undefined_error().
 
   unwind_protect_ptr (curr_sym_tab);
   curr_sym_tab = sym_tab;
@@ -2736,7 +2746,8 @@ tree_function::eval (int print, int nargout, const Octave_object& args)
   unwind_protect_ptr (curr_function);
   curr_function = this;
 
-//  unwind_protect_ptr (args_passed);
+  //  unwind_protect_ptr (args_passed);
+
   args_passed = args;
 
   unwind_protect_int (num_args_passed);
@@ -2752,16 +2763,16 @@ tree_function::eval (int print, int nargout, const Octave_object& args)
 	goto abort;
     }
 
-// The following code is in a separate scope to avoid warnings from
-// G++ about `goto abort' crossing the initialization of some
-// variables.
+  // The following code is in a separate scope to avoid warnings from
+  // G++ about `goto abort' crossing the initialization of some
+  // variables.
 
   {
     bind_nargin_and_nargout (nargin, nargout);
       
-// Evaluate the commands that make up the function.  Always turn on
-// printing for commands inside functions.   Maybe this should be
-// toggled by a user-leval variable?
+    // Evaluate the commands that make up the function.  Always turn
+    // on printing for commands inside functions.   Maybe this should
+    // be toggled by a user-leval variable?
 
     int pf = ! user_pref.silent_functions;
     tree_constant last_computed_value = cmd_list->eval (pf);
@@ -2778,7 +2789,7 @@ tree_function::eval (int print, int nargout, const Octave_object& args)
 	goto abort;
       }
     
-// Copy return values out.
+    // Copy return values out.
 
     if (ret_list)
       {

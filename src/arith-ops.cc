@@ -59,7 +59,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   while (0)
 #endif
 
-// But first, some stupid functions that don\'t deserve to be in the
+// But first, some stupid functions that don't deserve to be in the
 // Matrix class...
 
 enum

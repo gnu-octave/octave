@@ -1,3 +1,12 @@
+2004-11-19  John W. Eaton  <jwe@octave.org>
+
+	* ov-str-mat.cc (octave_char_matrix_str::do_index_op):
+	Skip indexing operation if indices are invalid.
+
+	* pr-output.cc (set_range_format, set_complex_matrix_format,
+	set_complex_format, set_real_matrix_format, set_real_format):
+	Also specify std::ios::fixed for bank format.
+
 2004-11-17  John W. Eaton  <jwe@octave.org>
 
 	* version.h (OCTAVE_VERSION): Now 2.1.62.

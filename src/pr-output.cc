@@ -350,7 +350,7 @@ set_real_format (bool sign, int digits, bool inf_or_nan, bool int_only,
       if (print_big_e)
 	fmt.uppercase ();
     }
-  else if (inf_or_nan || int_only)
+  else if (! bank_format && (inf_or_nan || int_only))
     fmt = float_format (fw, rd);
   else
     fmt = float_format (fw, rd, std::ios::fixed);
@@ -497,7 +497,7 @@ set_real_matrix_format (bool sign, int x_max, int x_min,
       if (print_big_e)
 	fmt.uppercase ();
     }
-  else if (int_or_inf_or_nan)
+  else if (! bank_format && int_or_inf_or_nan)
     fmt = float_format (fw, rd);
   else
     fmt = float_format (fw, rd, std::ios::fixed);
@@ -654,7 +654,7 @@ set_complex_format (bool sign, int x_max, int x_min, int r_x,
 	  i_fmt.uppercase ();
 	}
     }
-  else if (inf_or_nan || int_only)
+  else if (! bank_format && (inf_or_nan || int_only))
     {
       r_fmt = float_format (r_fw, rd);
       i_fmt = float_format (i_fw, rd);
@@ -841,7 +841,7 @@ set_complex_matrix_format (bool sign, int x_max, int x_min,
 	  i_fmt.uppercase ();
 	}
     }
-  else if (int_or_inf_or_nan)
+  else if (! bank_format && int_or_inf_or_nan)
     {
       r_fmt = float_format (r_fw, rd);
       i_fmt = float_format (i_fw, rd);
@@ -1005,7 +1005,7 @@ set_range_format (bool sign, int x_max, int x_min, int all_ints, int& fw)
       if (print_big_e)
 	fmt.uppercase ();
     }
-  else if (all_ints)
+  else if (! bank_format && all_ints)
     fmt = float_format (fw, rd);
   else
     fmt = float_format (fw, rd, std::ios::fixed);

@@ -96,8 +96,9 @@ octave_char_matrix_str::do_index_op (const octave_value_list& idx,
 	idx_vector i = idx (0).index_vector ();
 	idx_vector j = idx (1).index_vector ();
 
-	retval = octave_value (charNDArray (matrix.index (i, j, resize_ok)),
-			       true);
+	if (! error_state)
+	  retval = octave_value (charNDArray (matrix.index (i, j, resize_ok)),
+				 true);
       }
       break;
 
@@ -105,8 +106,9 @@ octave_char_matrix_str::do_index_op (const octave_value_list& idx,
       {
 	idx_vector i = idx (0).index_vector ();
 
-	retval = octave_value (charNDArray (matrix.index (i, resize_ok)),
-			       true);
+	if (! error_state)
+	  retval = octave_value (charNDArray (matrix.index (i, resize_ok)),
+				 true);
       }
       break;
 
@@ -117,8 +119,9 @@ octave_char_matrix_str::do_index_op (const octave_value_list& idx,
 	for (int i = 0; i < len; i++)
 	  idx_vec(i) = idx(i).index_vector ();
 
-	retval = octave_value (charNDArray (matrix.index (idx_vec, resize_ok)),
-			       true);
+	if (! error_state)
+	  retval = octave_value (charNDArray (matrix.index (idx_vec, resize_ok)),
+				 true);
       }
       break;
     }

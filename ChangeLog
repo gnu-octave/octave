@@ -1,3 +1,8 @@
+Tue Aug 20 21:40:26 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: Always set FPICFLAG, CPICFLAG, CXXPICFLAG, SHLEXT,
+	RLD_FLAG, DLFCN_DIR, even if SHARED_LIBS is false.
+
 Thu Aug 15 14:39:07 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in (gxx_version, gcc_version): Strip out cygnus- from

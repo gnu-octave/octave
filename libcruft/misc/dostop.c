@@ -40,15 +40,16 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 volatile void
 #if defined (F77_APPEND_UNDERSCORE)
-dostop_ (const char *s, long slen)
+dostop_ (const char *s, const int *slen)
 #else
-dostop (const char *s, long slen)
+dostop (const char *s, const int *slen)
 #endif
 {
-  if (slen > 0)
+  int len = *slen;
+  if (len > 0)
     {
-      char *tmp = malloc (slen + 1);
-      strncpy (tmp, s, slen);
+      char *tmp = malloc (len + 1);
+      strncpy (tmp, s, len);
       (*current_liboctave_error_handler) ("%s", tmp);
       free (tmp);
     }

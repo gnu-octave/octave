@@ -83,7 +83,7 @@ Compile smaller kernel.  This currently requires the dynamic linking
 functions @code{dlopen} or @code{shl_load} and friends so that Octave
 can load functions at run time that are not loaded at compile time.
 
-@item --without-fastblas
+@item --without-blas
 Compile and use the generic BLAS and LAPACK versions included with
 Octave.  By default, configure first looks for BLAS and LAPACK matrix
 libraries on your system, including optimized BLAS implementations such
@@ -91,7 +91,7 @@ as the free ATLAS 3.0, as well as vendor-tuned libraries.  (The use of
 an optimized BLAS will generally result in several-times faster matrix
 operations.)  Only use this option if your system has BLAS/LAPACK
 libraries that cause problems for some reason.  You can also use
-@code{--with-fastblas=lib} to specify a particular BLAS library
+@code{--with-blas=lib} to specify a particular BLAS library
 @code{-llib} that configure doesn't check for automatically.
 
 @item --help

@@ -80,6 +80,9 @@ static bool Vsilent_functions;
 // for A already defined and a matrix type.
 bool Vdo_fortran_indexing;
 
+// Should `[97, 98, 99, "123"]' be a string?
+bool Vimplicit_num_to_str_ok;
+
 // Should we allow things like:
 //
 //   octave> 'abc' + 0
@@ -1723,6 +1726,14 @@ do_fortran_indexing (void)
 }
 
 static int
+implicit_num_to_str_ok (void)
+{
+  Vimplicit_num_to_str_ok = check_preference ("implicit_num_to_str_ok");
+
+  return 0;
+}
+
+static int
 implicit_str_to_num_ok (void)
 {
   Vimplicit_str_to_num_ok = check_preference ("implicit_str_to_num_ok");
@@ -1819,6 +1830,24 @@ If the value of @code{do_fortran_indexing} is nonzero, Octave allows \n\
 you to select elements of a two-dimensional matrix using a single index\n\
 by treating the matrix as a single vector created from the columns of\n\
 the matrix.  The default value is 0. \n\
+@end defvr");
+
+  DEFVAR (implicit_num_to_str_ok, false, implicit_num_to_str_ok,
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} implicit_num_to_str_ok\n\
+If the value of @code{implicit_num_to_str_ok} is nonzero, implicit\n\
+conversions of numbers to their ASCII character equivalents are\n\
+allowed when strings are constructed using a mixture of strings and\n\
+numbers in matrix notation.  Otherwise, an error message is printed and\n\
+control is returned to the top level. The default value is 0.  For\n\
+example,\n\
+\n\
+@example\n\
+@group\n\
+[ \"f\", 111, 111 ]\n\
+     @result{} \"foo\"\n\
+@end group\n\
+@end example\n\
 @end defvr");
 
   DEFVAR (implicit_str_to_num_ok, false, implicit_str_to_num_ok,

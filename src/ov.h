@@ -704,6 +704,9 @@ OV_BINOP_FN (op_struct_ref)
 // for A already defined and a matrix type.
 extern bool Vdo_fortran_indexing;
 
+// Should `[97, 98, 99, "123"]' be a string?
+extern bool Vimplicit_num_to_str_ok;
+
 // Should we allow things like:
 //
 //   octave> 'abc' + 0

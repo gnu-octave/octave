@@ -1,3 +1,21 @@
+2003-01-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-base.cc (octave_base_value::char_matrix_value,
+	octave_base_value::all_strings,	octave_base_value::string_value):
+	Attempt conversions here if Vimplicit_num_to_num_ok is true.
+
+	* ov.cc (Vimplicit_num_to_str_ok): Move here from pt-mat.cc and
+	make extern.
+	* ov.h: Provide decl.
+
+	* oct-stream.cc (printf_value_cache::looking_at_string): Delete.
+	(printf_value_cache::string_value): Just attempt conversion.
+	(octave_base_stream::do_printf): When doing '%s' format,
+	just attempt converstion.
+
+	* file-io.cc (Ffread): Allow size to be omitted even when
+	additional arguments are given.
+
 2002-12-31  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pt-arg-list.cc (F__end__): Fail if rows or columns is negative.

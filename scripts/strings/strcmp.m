@@ -28,21 +28,116 @@
 
 ## Author: jwe
 
-function status = strcmp (s1, s2)
+function retval = strcmp (s1, s2)
 
   if (nargin != 2)
     usage ("strcmp (s, t)");
   endif
 
-  status = 0;
-  if (isstr (s1) && isstr(s2))
+  retval = 0;
+
+  if (isstr (s1))
     [r1, c1] = size (s1);
-    [r2, c2] = size (s2);
-    if (r1 == r2 && c1 == c2)
-      if (c1 == 0)
-        status = 1;
+    if (isstr (s2))
+      [r2, c2] = size (s2);
+      if (r1 == r2 && c1 == c2)
+	if (c1 == 0)
+          retval = 1;
+	else
+          retval = all (all (s1 == s2));
+	endif
+      endif
+    elseif (iscell (s2))
+      [r2, c2] = size (s2);
+      if (r1 == 1)
+	t2 = s2(:);
+	n = length (t2);
+	retval = zeros (n, 1);
+	for i = 1:n
+	  retval(i) = strcmp (s1, t2{i});
+	endfor
+	retval = reshape (retval, r2, c2);
+      elseif (r1 > 1)
+	if (r2 == 1 && c2 == 1)
+	  t2 = s2{1};
+	  retval = zeros (r1, 1);
+	  for i = 1:r1
+	    retval(i) = strcmp (deblank (s1(i,:)), t2);
+	  endfor
+	else
+	  t2 = s2(:);
+	  n = length (t2);
+	  if (n == r1)
+	    retval = zeros (n, 1);
+	    for i = 1:n
+	      retval(i) = strcmp (deblank (s1(i,:)), t2{i});
+	    endfor
+	    retval = reshape (retval, r2, c2);
+	  endif
+	endif
+      endif
+    endif
+  elseif (iscell (s1))
+    [r1, c1] = size (s1);
+    if (isstr (s2))
+      [r2, c2] = size (s2);
+      if (r2 == 1)
+	t1 = s1(:);
+	n = length (t1);
+	retval = zeros (n, 1);
+	for i = 1:n
+	  retval(i) = strcmp (t1{i}, s2);
+	endfor
+	retval = reshape (retval, r1, c1);
+      elseif (r2 > 1)
+	if (r1 == 1 && c1 == 1)
+	  t1 = s1{1};
+	  retval = zeros (r2, 1);
+	  for i = 1:r2
+	    retval(i) = strcmp (t1, deblank (s2(i,:)));
+	  endfor
+	else
+	  t1 = s1(:);
+	  n = length (t1);
+	  if (n == r2)
+	    retval = zeros (n, 1);
+	    for i = 1:n
+	      retval(i) = strcmp (t2{i}, deblank (s2(i,:)));
+	    endfor
+	    retval = reshape (retval, r1, c1);
+	  endif
+	endif
+      endif      
+    elseif (iscell (s2))
+      [r2, c2] = size (s2);
+      if (r1 == 1 && c1 == 1)
+	t1 = s1{:};
+	t2 = s2(:);
+	n = length (t2);
+	retval = zeros (n, 1);
+	for i = 1:n
+	  retval(i) = strcmp (t1, t2{i});
+	endfor
+	retval = reshape (retval, r2, c2);
+      elseif (r2 == 1 && c2 == 1)
+	t1 = s1(:);
+	t2 = s2{:};
+	n = length (t1);
+	retval = zeros (n, 1);
+	for i = 1:n
+	  retval(i) = strcmp (t1{i}, t2);
+	endfor
+	retval = reshape (retval, r1, c1);
+      elseif (r1 == r2 && c1 == c2)
+	t1 = s1(:);
+	t2 = s2(:);
+	n = length (t1);
+	for i = 1:n
+	  retval(i) = strcmp (t1{i}, t2{i});
+	endfor
+	retval = reshape (retval, r1, c1);
       else
-        status = all (all (s1 == s2));
+	error ("strcmp: nonconformant cell arrays");
       endif
     endif
   endif

@@ -2041,8 +2041,6 @@ public:
 
   bool exhausted (void) { return (val_idx >= n_vals); }
 
-  bool looking_at_string (void);
-
 private:
 
   const octave_value_list values;
@@ -2064,19 +2062,6 @@ private:
 
   printf_value_cache& operator = (const printf_value_cache&);
 };
-
-bool
-printf_value_cache::looking_at_string (void)
-{
-  bool retval = false;
-
-  int idx = (elt_idx == 0) ? val_idx : -1;
-
-  if (idx >= 0 && idx < n_vals)
-    retval = values(idx).is_string ();
-
-  return retval;
-}
 
 double
 printf_value_cache::double_value (void)
@@ -2158,31 +2143,29 @@ printf_value_cache::string_value (void)
 {
   std::string retval;
 
-  if (looking_at_string ())
-    {
-      octave_value tval = values (val_idx++);
+  octave_value tval = values (val_idx++);
 
-      if (tval.rows () == 1)
-	retval = tval.string_value ();
-      else
-	{
-	  // In the name of Matlab compatibility.
-
-	  charMatrix chm = tval.char_matrix_value ();
-
-	  int nr = chm.rows ();
-	  int nc = chm.columns ();
-
-	  int k = 0;
-
-	  retval.resize (nr * nc, '\0');
-
-	  for (int j = 0; j < nc; j++)
-	    for (int i = 0; i < nr; i++)
-	      retval[k++] = chm(i,j);
-	}
-    }
+  if (tval.rows () == 1)
+    retval = tval.string_value ();
   else
+    {
+      // In the name of Matlab compatibility.
+
+      charMatrix chm = tval.char_matrix_value ();
+
+      int nr = chm.rows ();
+      int nc = chm.columns ();
+
+      int k = 0;
+
+      retval.resize (nr * nc, '\0');
+
+      for (int j = 0; j < nc; j++)
+	for (int i = 0; i < nr; i++)
+	  retval[k++] = chm(i,j);
+    }
+
+  if (error_state)
     curr_state = conversion_error;
 
   return retval;
@@ -2298,7 +2281,7 @@ octave_base_stream::do_printf (printf_format_list& fmt_list,
 		  os << elt->text;
 		  retval += strlen (elt->text);
 		}	      
-	      else if (elt->type == 's' && val_cache.looking_at_string ())
+	      else if (elt->type == 's')
 		{
 		  std::string val = val_cache.string_value ();
 

@@ -301,8 +301,17 @@ charMatrix
 octave_base_value::char_matrix_value (bool) const
 {
   charMatrix retval;
-  gripe_wrong_type_arg ("octave_base_value::char_matrix_value()",
-			type_name ());
+
+  if (Vimplicit_num_to_str_ok)
+    {
+      octave_value tmp = convert_to_str ();
+
+      if (! error_state)
+	retval = tmp.char_matrix_value ();
+    }
+  else
+    gripe_wrong_type_arg ("octave_base_value::char_matrix_value()",
+			  type_name ());
   return retval;
 }
 
@@ -310,7 +319,17 @@ string_vector
 octave_base_value::all_strings (void) const
 {
   string_vector retval;
-  gripe_wrong_type_arg ("octave_base_value::all_strings()", type_name ());
+
+  if (Vimplicit_num_to_str_ok)
+    {
+      octave_value tmp = convert_to_str ();
+
+      if (! error_state)
+	retval = tmp.all_strings ();
+    }
+  else
+    gripe_wrong_type_arg ("octave_base_value::all_strings()", type_name ());
+
   return retval;
 }
 
@@ -318,7 +337,17 @@ std::string
 octave_base_value::string_value (void) const
 {
   std::string retval;
-  gripe_wrong_type_arg ("octave_base_value::string_value()", type_name ());
+
+  if (Vimplicit_num_to_str_ok)
+    {
+      octave_value tmp = convert_to_str ();
+
+      if (! error_state)
+	retval = tmp.string_value ();
+    }
+  else
+    gripe_wrong_type_arg ("octave_base_value::string_value()", type_name ());
+
   return retval;
 }
 

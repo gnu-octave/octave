@@ -48,9 +48,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Zero means it should be considered an error.
 static int Vempty_list_elements_ok;
 
-// Should `[97, 98, 99, "123"]' be a string?
-static bool Vimplicit_num_to_str_ok;
-
 // The character to fill with when creating string arrays.
 char Vstring_fill_char = ' ';
 
@@ -585,14 +582,6 @@ empty_list_elements_ok (void)
 }
 
 static int
-implicit_num_to_str_ok (void)
-{
-  Vimplicit_num_to_str_ok = check_preference ("implicit_num_to_str_ok");
-
-  return 0;
-}
-
-static int
 string_fill_char (void)
 {
   int status = 0;
@@ -638,24 +627,6 @@ a = [1, [], 3, [], 5]\n\
 and the variable @code{a} will be assigned the value @code{[ 1, 3, 5 ]}.\n\
 \n\
 The default value is 1.\n\
-@end defvr");
-
-  DEFVAR (implicit_num_to_str_ok, false, implicit_num_to_str_ok,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} implicit_num_to_str_ok\n\
-If the value of @code{implicit_num_to_str_ok} is nonzero, implicit\n\
-conversions of numbers to their ASCII character equivalents are\n\
-allowed when strings are constructed using a mixture of strings and\n\
-numbers in matrix notation.  Otherwise, an error message is printed and\n\
-control is returned to the top level. The default value is 0.  For\n\
-example,\n\
-\n\
-@example\n\
-@group\n\
-[ \"f\", 111, 111 ]\n\
-     @result{} \"foo\"\n\
-@end group\n\
-@end example\n\
 @end defvr");
 
   DEFVAR (string_fill_char, " ", string_fill_char,

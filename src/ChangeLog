@@ -1,7 +1,8 @@
 2002-07-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* ov-usr-fcn.cc (Fva_arg, Fva_start, Fvr_val): Warn that these
+	functions are deprecated.
 	* lex.l (EL): Warn that `...' is deprecated.
-
 	* ov-usr-fcn.cc (octave_user_function::varargout_to_vr_val,
 	octave_user_function::has_varargout): New functions.
 	(Fvr_val): Ensure varargout is not defined.

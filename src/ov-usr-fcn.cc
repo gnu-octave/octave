@@ -599,6 +599,8 @@ when ther eare no more arguments available, or in a function that\n\
 has not been declared to take a variable number of parameters.\n\
 @end deftypefn")
 {
+  ::warning ("va_arg is deprecated; use varargin instead");
+
   octave_value_list retval;
 
   int nargin = args.length ();
@@ -633,6 +635,8 @@ arguments.  It is an error to call @code{va_start} in a function\n\
 that has not been declared to take a variable number of parameters.\n\
 @end deftypefn")
 {
+  ::warning ("va_start is deprecated; use varargin instead");
+
   octave_value_list retval;
 
   int nargin = args.length ();
@@ -669,6 +673,8 @@ values.  This function may only be called within functions that have\n\
 been declared to return an unspecified number of output arguments.\n\
 @end deftypefn")
 {
+  ::warning ("vr_val is deprecated; use varargout instead");
+
   octave_value_list retval;
 
   int nargin = args.length ();

@@ -1213,7 +1213,7 @@ is_keyword_token (const std::string& s)
 
   int len = s.length ();
 
-  const octave_kw *kw = octave_kw_lookup (s.c_str (), len);
+  const octave_kw *kw = octave_kw_hash::in_word_set (s.c_str (), len);
 
   if (kw)
     {
@@ -2688,7 +2688,7 @@ lexical_feedback::init (void)
 bool
 is_keyword (const std::string& s)
 {
-  return octave_kw_lookup (s.c_str (), s.length ()) != 0;
+  return octave_kw_hash::in_word_set (s.c_str (), s.length ()) != 0;
 }
 
 DEFCMD (iskeyword, args, ,

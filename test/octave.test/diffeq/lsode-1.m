@@ -20,7 +20,7 @@ x0 = [1; 0];
 xdot0 = [0; 1];
 t = (0:1:10)';
 
-tol = 500 * lsode_options ("absolute tolerance");
+tol = 500 * lsode_options ("relative tolerance");
 
 function xdot = f (x, t)
   xdot = [-x(2); x(1)];

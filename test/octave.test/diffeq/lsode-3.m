@@ -4,7 +4,7 @@ endfunction
 
 x0 = 1;
 t = [0; 1];
-tol = 100 * dassl_options ("absolute tolerance");
+tol = 100 * dassl_options ("relative tolerance");
 
 x = lsode ("f", x0, t);
 

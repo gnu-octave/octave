@@ -23,7 +23,7 @@ x0 = [1; 0];
 xdot0 = [-10; 10];
 t = (0:0.2:1)';
 
-tol = 500 * dassl_options ("absolute tolerance");
+tol = 500 * dassl_options ("relative tolerance");
 
 function res = f (x, xdot, t)
   res = [xdot(1)+10*x(1); x(1)+x(2)-1];

@@ -1,3 +1,11 @@
+2002-04-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* octave.test/diffeq/dassl-1.m (tol): Use relative tolerance for test. 
+	* octave.test/diffeq/dassl-2.m (tol): Likewise.
+	* octave.test/diffeq/lsode-1.m (tol): Likewise.
+	* octave.test/diffeq/lsode-2.m (tol): Likewise.
+	* octave.test/diffeq/lsode-3.m (tol): Likewise.
+
 2002-04-12  Kienzle <pkienzle@jazz.ncnr.nist.gov>
 
 	* config/unix.exp: Allow running of individual tests with

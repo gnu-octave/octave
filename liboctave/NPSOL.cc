@@ -186,7 +186,7 @@ NPSOL::minimize (double& objf, int& inform)
 Vector
 NPSOL::minimize (double& objf, int& inform, Vector& lambda)
 {
-  // Dimensions of various things.
+// Dimensions of various things.
 
   int n     = x.capacity ();
   int nclin = lc.size ();
@@ -195,15 +195,15 @@ NPSOL::minimize (double& objf, int& inform, Vector& lambda)
   int nrowj = 1 > ncnln ? 1 : ncnln;
   int nrowr = n;
 
-  // Informative stuff.
+// Informative stuff.
 
   int iter;
   int *istate = new int [n+nclin+ncnln];
 
-  // User defined function stuff is defined above in the functions
-  // npsol_confun() and npsol_objfun();
+// User defined function stuff is defined above in the functions
+// npsol_confun() and npsol_objfun();
 
-  // Constraint stuff.
+// Constraint stuff.
 
   double dummy;
   double *pclin = &dummy;
@@ -247,30 +247,30 @@ NPSOL::minimize (double& objf, int& inform, Vector& lambda)
       cup[i+n+nclin] = nlc.upper_bound (i);
     }
 
-  double *c = &dummy;
-  double *cjac = &dummy;
+  double *c = 0;
+  double *cjac = 0;
   if (ncnln > 0)
     {
       c = new double [ncnln];
       cjac = new double [nrowj*n];
     }
 
-  // Objective stuff.
+// Objective stuff.
 
   double *objgrd = new double [n];
 
-  // Other stuff.
+// Other stuff.
 
   double *r = new double [n*n];
 
   lambda.resize (n+nclin+ncnln);
   double *pclambda = lambda.fortran_vec ();
 
-  // Decision variable stuff.
+// Decision variable stuff.
 
   double *px = x.fortran_vec ();
 
-  // Workspace parameters.
+// Workspace parameters.
 
   int lenw;
   int leniw = 3 * n + nclin + 2 * ncnln;
@@ -315,7 +315,19 @@ NPSOL::minimize (double& objf, int& inform, Vector& lambda)
 	break;
     }
 
-  // See how it went.
+// Clean up.
+
+  delete [] istate;
+  delete [] clow;
+  delete [] cup;
+  delete [] c;
+  delete [] clin;
+  delete [] objgrd;
+  delete [] r;
+  delete [] iw;
+  delete [] w;
+
+// See how it went.
 
   return x;
 }

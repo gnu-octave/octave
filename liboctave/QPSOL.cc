@@ -168,6 +168,8 @@ QPSOL::minimize (double& objf, int& inform, Vector& lambda)
 		   &cold, &lp, &orthog, istate, px, &inform, &iter,
 		   &objf, pclambda, iw, &leniw, w, &lenw);
 
+  delete [] pbl;
+  delete [] pbu;
   delete [] featol;
   delete [] istate;
   delete [] iw;

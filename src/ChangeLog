@@ -1,5 +1,10 @@
 2003-01-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* oct-stream.cc (octave_base_stream::do_printf): Handle Inf and
+	NaN in int conversions for compatibility with Matlab.
+
+	* data.cc (symbols_of_data): Doc fix for realmin.
+
 	* cutils.c (octave_raw_vsnprintf): New function.
 	* utils.cc (octave_snprintf): Move here from cutils.c.
 	(octave_Vsnprintf): Likewise.  Allow octave_raw_vsnprintf to be

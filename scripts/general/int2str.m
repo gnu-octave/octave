@@ -35,8 +35,29 @@ function retval = int2str (x)
 
   if (nargin == 1)
     x = round (x);
-    fw = max (log10 (abs (x(:))) + 3);
-    fmt = sprintf ("%%%dd", fw);
+    t = abs (x(:));
+    t = t(t != 0);
+    if (isempty (t))
+      ## All zeros.
+      fmt = "%3d";
+    else
+      ## Maybe have some zeros.
+      nan_inf = isinf (t) | isnan (t);
+      if (any (nan_inf))
+	min_fw = 5;
+      else
+	min_fw = 3;
+      endif
+      t = t(! nan_inf);
+      if (isempty (t))
+	## Only zeros, Inf, and NaN.
+	fmt = "%5d";
+      else
+	## Could have anything.
+	fw = max (floor (max (log10 (t) + 3)), min_fw);
+	fmt = sprintf ("%%%dd", fw);
+      endif
+    endif
     fmt = strcat (repmat (fmt, 1, columns (x)), "\n");
     tmp = sprintf (fmt, round (x.'));
     tmp(length (tmp)) = "";

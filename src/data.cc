@@ -1294,7 +1294,7 @@ Internally, @code{pi} is computed as @samp{4.0 * atan (1.0)}.\n\
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} realmax\n\
 The largest floating point number that is representable.  The actual\n\
-value is system-dependent.  On machines that support 64 bit IEEE\n\
+value is system-dependent.  On machines that support 64-bit IEEE\n\
 floating point arithmetic, @code{realmax} is approximately\n\
 @ifinfo\n\
  1.7977e+308\n\
@@ -1309,9 +1309,9 @@ floating point arithmetic, @code{realmax} is approximately\n\
   DEFCONST (realmin, DBL_MIN,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} realmin\n\
-The smallest floating point number that is representable.  The actual\n\
-value is system-dependent.  On machines that support 64 bit IEEE\n\
-floating point arithmetic, @code{realmin} is approximately\n\
+The smallest normalized floating point number that is representable.\n\
+The actual value is system-dependent.  On machines that support\n\
+64-bit IEEE floating point arithmetic, @code{realmin} is approximately\n\
 @ifinfo\n\
  2.2251e-308\n\
 @end ifinfo\n\

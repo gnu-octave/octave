@@ -2298,44 +2298,67 @@ octave_base_stream::do_printf (printf_format_list& fmt_list,
 
 		  if (val_cache)
 		    {
-		      switch (elt->type)
+		      if ((xisnan (val) || xisinf (val)
+			   && (elt->type == 'd'
+			       || elt->type == 'i'
+			       || elt->type == 'c'
+			       || elt->type == 'o'
+			       || elt->type == 'x'
+			       || elt->type == 'X'
+			       || elt->type == 'u')))
 			{
-			case 'd': case 'i': case 'c':
-			  {
-			    if (elt->modifier == 'l')
-			      retval += do_printf_conv
-				(os, fmt, nsa, sa_1, sa_2,
-				 static_cast<long int> (val));
-			    else
-			      retval += do_printf_conv
-				(os, fmt, nsa, sa_1, sa_2,
-				 static_cast<int> (val));
-			  }
-			  break;
+			  std::string tfmt = fmt;
 
-			case 'o': case 'x': case 'X': case 'u':
-			  {
-			    if (elt->modifier == 'l')
-			      retval += do_printf_conv
-				(os, fmt, nsa, sa_1, sa_2,
-				 static_cast<unsigned long int> (val));
-			    else
-			      retval += do_printf_conv
-				(os, fmt, nsa, sa_1, sa_2,
-				 static_cast<unsigned int> (val));
-			  }
-			  break;
+			  tfmt.replace (tfmt.rfind (elt->type), 1, 1, 's');
 
-			case 'f': case 'e': case 'E':
-			case 'g': case 'G':
-			  retval
-			    += do_printf_conv (os, fmt, nsa, sa_1, sa_2, val);
-			  break;
+			  const char *tval = xisinf (val)
+			    ? (val < 0 ? "-Inf" : "Inf") : "NaN";
 
-			default:
-			  error ("fprintf: invalid format specifier");
-			  return -1;
-			  break;
+			  retval += do_printf_conv (os, tfmt.c_str (),
+						    nsa, sa_1, sa_2, tval);
+			}
+		      else
+			{
+			  switch (elt->type)
+			    {
+			    case 'd': case 'i': case 'c':
+			      {
+				if (elt->modifier == 'l')
+				  retval += do_printf_conv
+				    (os, fmt, nsa, sa_1, sa_2,
+				     static_cast<long int> (val));
+				else
+				  retval += do_printf_conv
+				    (os, fmt, nsa, sa_1, sa_2,
+				     static_cast<int> (val));
+			      }
+			      break;
+
+			    case 'o': case 'x': case 'X': case 'u':
+			      {
+				if (elt->modifier == 'l')
+				  retval += do_printf_conv
+				    (os, fmt, nsa, sa_1, sa_2,
+				     static_cast<unsigned long int> (val));
+				else
+				  retval += do_printf_conv
+				    (os, fmt, nsa, sa_1, sa_2,
+				     static_cast<unsigned int> (val));
+			      }
+			      break;
+
+			    case 'f': case 'e': case 'E':
+			    case 'g': case 'G':
+			      retval
+				+= do_printf_conv (os, fmt, nsa, sa_1, sa_2,
+						   val);
+			      break;
+
+			    default:
+			      error ("fprintf: invalid format specifier");
+			      return -1;
+			      break;
+			    }
 			}
 		    }
 		  else

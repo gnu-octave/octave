@@ -27,107 +27,22 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "MArray.cc"
 
 template class MArray<double>;
+
+INSTANTIATE_MARRAY_FRIENDS (double)
+
+#include "MArray2.h"
+#include "MArray2.cc"
+
 template class MArray2<double>;
-template class MDiagArray<double>;
 
-template MArray<double>
-operator + (const MArray<double>& a, const double& s);
+INSTANTIATE_MARRAY2_FRIENDS (double)
 
-template MArray<double>
-operator - (const MArray<double>& a, const double& s);
+#include "MDiagArray2.h"
+#include "MDiagArray2.cc"
 
-template MArray<double>
-operator * (const MArray<double>& a, const double& s);
+template class MDiagArray2<double>;
 
-template MArray<double>
-operator / (const MArray<double>& a, const double& s);
-
-template MArray<double>
-operator + (const double& s, const MArray<double>& a);
-
-template MArray<double>
-operator - (const double& s, const MArray<double>& a);
-
-template MArray<double>
-operator * (const double& s, const MArray<double>& a);
-
-template MArray<double>
-operator / (const double& s, const MArray<double>& a);
-
-template MArray<double>
-operator + (const MArray<double>& a, const MArray<double>& b);
-
-template MArray<double>
-operator - (const MArray<double>& a, const MArray<double>& b);
-
-template MArray<double>
-product (const MArray<double>& a, const MArray<double>& b); 
-
-template MArray<double>
-quotient (const MArray<double>& a, const MArray<double>& b);
-
-template MArray<double>
-operator - (const MArray<double>& a);
-
-template MArray2<double>
-operator + (const MArray2<double>& a, const double& s);
-
-template MArray2<double>
-operator - (const MArray2<double>& a, const double& s);
-
-template MArray2<double>
-operator * (const MArray2<double>& a, const double& s);
-
-template MArray2<double>
-operator / (const MArray2<double>& a, const double& s);
-
-template MArray2<double>
-operator + (const double& s, const MArray2<double>& a);
-
-template MArray2<double>
-operator - (const double& s, const MArray2<double>& a);
-
-template MArray2<double>
-operator * (const double& s, const MArray2<double>& a);
-
-template MArray2<double>
-operator / (const double& s, const MArray2<double>& a);
-
-template MArray2<double>
-operator + (const MArray2<double>& a, const MArray2<double>& b);
-
-template MArray2<double>
-operator - (const MArray2<double>& a, const MArray2<double>& b);
-
-template MArray2<double>
-product (const MArray2<double>& a, const MArray2<double>& b);
-
-template MArray2<double>
-quotient (const MArray2<double>& a, const MArray2<double>& b);
-
-template MArray2<double>
-operator - (const MArray2<double>& a);
-
-template MDiagArray<double>
-operator * (const MDiagArray<double>& a, const double& s);
-
-template MDiagArray<double>
-operator / (const MDiagArray<double>& a, const double& s);
-
-template MDiagArray<double>
-operator * (const double& s, const MDiagArray<double>& a);
-
-template MDiagArray<double>
-operator + (const MDiagArray<double>& a, const MDiagArray<double>& b);
-
-template MDiagArray<double>
-operator - (const MDiagArray<double>& a, const MDiagArray<double>& b);
-
-template MDiagArray<double>
-product (const MDiagArray<double>& a, const MDiagArray<double>& b);
-
-template MDiagArray<double>
-operator - (const MDiagArray<double>& a);
+INSTANTIATE_MDIAGARRAY_FRIENDS (double)
 
 /*
 ;;; Local Variables: ***

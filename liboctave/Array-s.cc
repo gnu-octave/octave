@@ -23,23 +23,26 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // Instantiate Arrays of short int values.
 
-#define NO_DIAG_ARRAY 1
-
 #include "Array.h"
 #include "Array.cc"
 
 template class Array<short>;
-template class Array2<short>;
-
-#ifndef NO_DIAG_ARRAY
-template class DiagArray<short>;
-#endif
 
 template void assign (Array<short>&, const Array<short>&);
 template void assign (Array<short>&, const Array<char>&);
 
+#include "Array2.h"
+#include "Array2.cc"
+
+template class Array2<short>;
+
 template void assign (Array2<short>&, const Array2<short>&);
 template void assign (Array2<short>&, const Array2<char>&);
+
+#include "DiagArray2.h"
+#include "DiagArray2.cc"
+
+template class DiagArray2<short>;
 
 /*
 ;;; Local Variables: ***

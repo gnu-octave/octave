@@ -23,21 +23,24 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // Instantiate Arrays of char values.
 
-#define NO_DIAG_ARRAY 1
-
 #include "Array.h"
 #include "Array.cc"
 
 template class Array<char>;
-template class Array2<char>;
-
-#ifndef NO_DIAG_ARRAY
-template class DiagArray<char>;
-#endif
 
 template void assign (Array<char>&, const Array<char>&);
 
+#include "Array2.h"
+#include "Array2.cc"
+
+template class Array2<char>;
+
 template void assign (Array2<char>&, const Array2<char>&);
+
+#include "DiagArray2.h"
+#include "DiagArray2.cc"
+
+template class DiagArray2<char>;
 
 /*
 ;;; Local Variables: ***

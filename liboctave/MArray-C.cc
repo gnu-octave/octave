@@ -23,17 +23,27 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // Instantiate MArrays of Complex values.
 
+#include "oct-cmplx.h"
+
 #include "MArray.h"
 #include "MArray.cc"
 
-#include "oct-cmplx.h"
-
 template class MArray<Complex>;
-template class MArray2<Complex>;
-template class MDiagArray<Complex>;
 
 INSTANTIATE_MARRAY_FRIENDS (Complex)
+
+#include "MArray2.h"
+#include "MArray2.cc"
+
+template class MArray2<Complex>;
+
 INSTANTIATE_MARRAY2_FRIENDS (Complex)
+
+#include "MDiagArray2.h"
+#include "MDiagArray2.cc"
+
+template class MDiagArray2<Complex>;
+
 INSTANTIATE_MDIAGARRAY_FRIENDS (Complex)
 
 /*

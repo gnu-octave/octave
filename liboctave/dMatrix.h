@@ -31,7 +31,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // For FILE...
 #include <cstdio>
 
-#include "MArray.h"
+#include "MArray2.h"
+#include "MDiagArray2.h"
 
 #include "mx-defs.h"
 
@@ -55,7 +56,7 @@ public:
   Matrix (int r, int c, double val) : MArray2<double> (r, c, val) { }
   Matrix (const MArray2<double>& a) : MArray2<double> (a) { }
   Matrix (const Matrix& a) : MArray2<double> (a) { }
-  Matrix (const MDiagArray<double>& a) : MArray2<double> (a) { }
+  //  Matrix (const MDiagArray2<double>& a) : MArray2<double> (a) { }
   Matrix (const DiagMatrix& a);
 
   Matrix (const charMatrix& a);

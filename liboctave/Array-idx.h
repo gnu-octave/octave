@@ -217,6 +217,7 @@ assign (Array<LT>& lhs, const Array<RT>& rhs)
   return retval;
 }
 
+#if 0 /* XXX */
 template <class T>
 Array2<T>
 Array2<T>::value (void)
@@ -787,6 +788,7 @@ assign (Array3<LT>&, const Array3<RT>&)
   assert (0);
   return 0;
 }
+#endif
 
 /*
 ;;; Local Variables: ***

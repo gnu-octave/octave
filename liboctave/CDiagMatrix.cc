@@ -38,22 +38,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // Complex Diagonal Matrix class
 
-ComplexDiagMatrix::ComplexDiagMatrix (const RowVector& a)
-  : MDiagArray<Complex> (a.length ())
-{
-  for (int i = 0; i < length (); i++)
-    elem (i, i) = a.elem (i);
-}
-
-ComplexDiagMatrix::ComplexDiagMatrix (const ColumnVector& a)
-  : MDiagArray<Complex> (a.length ())
-{
-  for (int i = 0; i < length (); i++)
-    elem (i, i) = a.elem (i);
-}
-
 ComplexDiagMatrix::ComplexDiagMatrix (const DiagMatrix& a)
-  : MDiagArray<Complex> (a.rows (), a.cols ())
+  : MDiagArray2<Complex> (a.rows (), a.cols ())
 {
   for (int i = 0; i < length (); i++)
     elem (i, i) = a.elem (i, i);

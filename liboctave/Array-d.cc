@@ -27,18 +27,26 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Array.cc"
 
 template class Array<double>;
-template class Array2<double>;
-template class DiagArray<double>;
 
 template void assign (Array<double>&, const Array<double>&);
 template void assign (Array<double>&, const Array<int>&);
 template void assign (Array<double>&, const Array<short>&);
 template void assign (Array<double>&, const Array<char>&);
 
+#include "Array2.h"
+#include "Array2.cc"
+
+template class Array2<double>;
+
 template void assign (Array2<double>&, const Array2<double>&);
 template void assign (Array2<double>&, const Array2<int>&);
 template void assign (Array2<double>&, const Array2<short>&);
 template void assign (Array2<double>&, const Array2<char>&);
+
+#include "DiagArray2.h"
+#include "DiagArray2.cc"
+
+template class DiagArray2<double>;
 
 /*
 ;;; Local Variables: ***

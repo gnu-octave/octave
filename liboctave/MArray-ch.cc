@@ -23,22 +23,26 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // Instantiate MArrays of char values.
 
-#define NO_DIAG_ARRAY 1
-
 #include "MArray.h"
 #include "MArray.cc"
 
 template class MArray<char>;
-template class MArray2<char>;
 
 INSTANTIATE_MARRAY_FRIENDS (char)
+
+#include "MArray2.h"
+#include "MArray2.cc"
+
+template class MArray2<char>;
+
 INSTANTIATE_MARRAY2_FRIENDS (char)
 
-#ifndef NO_DIAG_ARRAY
-template class MDiagArray<char>;
+#include "MDiagArray2.h"
+#include "MDiagArray2.cc"
+
+template class MDiagArray2<char>;
 
 INSTANTIATE_MDIAGARRAY_FRIENDS (char)
-#endif
 
 /*
 ;;; Local Variables: ***

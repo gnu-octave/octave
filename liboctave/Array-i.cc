@@ -23,25 +23,28 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // Instantiate Arrays of integer values.
 
-#define NO_DIAG_ARRAY 1
-
 #include "Array.h"
 #include "Array.cc"
 
 template class Array<int>;
-template class Array2<int>;
-
-#ifndef NO_DIAG_ARRAY
-template class DiagArray<int>;
-#endif
 
 template void assign (Array<int>&, const Array<int>&);
 template void assign (Array<int>&, const Array<short>&);
 template void assign (Array<int>&, const Array<char>&);
 
+#include "Array2.h"
+#include "Array2.cc"
+
+template class Array2<int>;
+
 template void assign (Array2<int>&, const Array2<int>&);
 template void assign (Array2<int>&, const Array2<short>&);
 template void assign (Array2<int>&, const Array2<char>&);
+
+#include "DiagArray2.h"
+#include "DiagArray2.cc"
+
+template class DiagArray2<int>;
 
 /*
 ;;; Local Variables: ***

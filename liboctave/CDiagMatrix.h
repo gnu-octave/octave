@@ -28,7 +28,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #pragma interface
 #endif
 
-#include "MArray.h"
+#include "MDiagArray2.h"
 
 #include "dRowVector.h"
 #include "CRowVector.h"
@@ -37,30 +37,29 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "mx-defs.h"
 
-class ComplexDiagMatrix : public MDiagArray<Complex>
+class ComplexDiagMatrix : public MDiagArray2<Complex>
 {
 public:
 
-  ComplexDiagMatrix (void) : MDiagArray<Complex> () { }
-  ComplexDiagMatrix (int n) : MDiagArray<Complex> (n) { }
-  ComplexDiagMatrix (int n, const Complex& val)
-    : MDiagArray<Complex> (n, n, val) { }
-  ComplexDiagMatrix (int r, int c) : MDiagArray<Complex> (r, c) { }
+  ComplexDiagMatrix (void) : MDiagArray2<Complex> () { }
+  ComplexDiagMatrix (int r, int c) : MDiagArray2<Complex> (r, c) { }
   ComplexDiagMatrix (int r, int c, const Complex& val)
-    : MDiagArray<Complex> (r, c, val) { }
-  ComplexDiagMatrix (const RowVector& a);
-  ComplexDiagMatrix (const ComplexRowVector& a) : MDiagArray<Complex> (a) { }
-  ComplexDiagMatrix (const ColumnVector& a);
+    : MDiagArray2<Complex> (r, c, val) { }
+  ComplexDiagMatrix (const RowVector& a)
+    : MDiagArray2<Complex> (ComplexRowVector (a)) { }
+  ComplexDiagMatrix (const ComplexRowVector& a) : MDiagArray2<Complex> (a) { }
+  ComplexDiagMatrix (const ColumnVector& a)
+    : MDiagArray2<Complex> (ComplexColumnVector (a)) { }
   ComplexDiagMatrix (const ComplexColumnVector& a)
-    : MDiagArray<Complex> (a) { }
+    : MDiagArray2<Complex> (a) { }
   ComplexDiagMatrix (const DiagMatrix& a);
-  ComplexDiagMatrix (const MDiagArray<Complex>& a)
-    : MDiagArray<Complex> (a) { }
-  ComplexDiagMatrix (const ComplexDiagMatrix& a) : MDiagArray<Complex> (a) { }
+  ComplexDiagMatrix (const MDiagArray2<Complex>& a)
+    : MDiagArray2<Complex> (a) { }
+  ComplexDiagMatrix (const ComplexDiagMatrix& a) : MDiagArray2<Complex> (a) { }
 
   ComplexDiagMatrix& operator = (const ComplexDiagMatrix& a)
     {
-      MDiagArray<Complex>::operator = (a);
+      MDiagArray2<Complex>::operator = (a);
       return *this;
     }
 
@@ -159,7 +158,7 @@ public:
 private:
 
   ComplexDiagMatrix (Complex *d, int nr, int nc)
-    : MDiagArray<Complex> (d, nr, nc) { }
+    : MDiagArray2<Complex> (d, nr, nc) { }
 };
 
 #endif

@@ -30,15 +30,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "Array.h"
 
-// Classes we declare.
-
-template <class T> class MArray;
-template <class T> class MArray2;
-
-#ifndef NO_DIAG_ARRAY
-template <class T> class MDiagArray;
-#endif
-
 // One dimensional array with math ops.
 
 template <class T>
@@ -53,7 +44,7 @@ public:
   MArray (void) : Array<T> () { }
   MArray (int n) : Array<T> (n) { }
   MArray (int n, const T& val) : Array<T> (n, val) { }
-  MArray (const Array<T>& a) : Array<T> (a) { }
+//  MArray (const Array<T>& a) : Array<T> (a) { }
   MArray (const MArray<T>& a) : Array<T> (a) { }
 
   ~MArray (void) { }
@@ -100,127 +91,20 @@ public:
   friend MArray<T> operator - (const MArray<T>& a);
 };
 
-// Two dimensional array with math ops.
-
-template <class T>
-class MArray2 : public Array2<T>
-{
-protected:
-
-  MArray2 (T *d, int n, int m) : Array2<T> (d, n, m) { }
-
-public:
-
-  MArray2 (void) : Array2<T> () { }
-  MArray2 (int n, int m) : Array2<T> (n, m) { }
-  MArray2 (int n, int m, const T& val) : Array2<T> (n, m, val) { }
-  MArray2 (const Array2<T>& a) : Array2<T> (a) { }
-  MArray2 (const MArray2<T>& a) : Array2<T> (a) { }
-
-#ifndef NO_DIAG_ARRAY
-  MArray2 (const MDiagArray<T>& a);
-#endif
-
-  ~MArray2 (void) { }
-
-  MArray2<T>& operator = (const MArray2<T>& a)
-    {
-      Array2<T>::operator = (a);
-      return *this;
-    }
-
-  // element by element MArray2 by scalar ops
-
-  friend MArray2<T>& operator += (MArray2<T>& a, const T& s);
-  friend MArray2<T>& operator -= (MArray2<T>& a, const T& s);
-
-  // element by element MArray2 by MArray2 ops
-
-  friend MArray2<T>& operator += (MArray2<T>& a, const MArray2<T>& b);
-  friend MArray2<T>& operator -= (MArray2<T>& a, const MArray2<T>& b);
-
-  // element by element MArray2 by scalar ops
-
-  friend MArray2<T> operator + (const MArray2<T>& a, const T& s);
-  friend MArray2<T> operator - (const MArray2<T>& a, const T& s);
-  friend MArray2<T> operator * (const MArray2<T>& a, const T& s);
-  friend MArray2<T> operator / (const MArray2<T>& a, const T& s);
-
-  // element by element scalar by MArray2 ops
-
-  friend MArray2<T> operator + (const T& s, const MArray2<T>& a);
-  friend MArray2<T> operator - (const T& s, const MArray2<T>& a);
-  friend MArray2<T> operator * (const T& s, const MArray2<T>& a);
-  friend MArray2<T> operator / (const T& s, const MArray2<T>& a);
-
-  // element by element MArray2 by MArray2 ops
-
-  friend MArray2<T> operator + (const MArray2<T>& a, const MArray2<T>& b);
-  friend MArray2<T> operator - (const MArray2<T>& a, const MArray2<T>& b);
-
-  friend MArray2<T> product (const MArray2<T>& a, const MArray2<T>& b);
-  friend MArray2<T> quotient (const MArray2<T>& a, const MArray2<T>& b);
-
-  friend MArray2<T> operator - (const MArray2<T>& a);
-};
-
-// Two dimensional diagonal array with math ops.
-
-#ifndef NO_DIAG_ARRAY
-template <class T>
-class MDiagArray : public DiagArray<T>
-{
-protected:
-
-  MDiagArray (T *d, int r, int c) : DiagArray<T> (d, r, c) { }
-
-public:
-  
-  MDiagArray (void) : DiagArray<T> () { }
-  MDiagArray (int n) : DiagArray<T> (n) { }
-//  MDiagArray (int n, const T& val) : DiagArray<T> (n, val) { }
-  MDiagArray (int r, int c) : DiagArray<T> (r, c) { }
-  MDiagArray (int r, int c, const T& val) : DiagArray<T> (r, c, val) { }
-  MDiagArray (const DiagArray<T>& a) : DiagArray<T> (a) { }
-  MDiagArray (const MDiagArray<T>& a) : DiagArray<T> (a) { }
-  MDiagArray (const MArray<T>& a) : DiagArray<T> (a) { }
-
-  ~MDiagArray (void) { }
-
-  MDiagArray<T>& operator = (const MDiagArray<T>& a)
-    {
-      DiagArray<T>::operator = (a);
-      return *this;
-    }
-
-  // element by element MDiagArray by MDiagArray ops
-
-  friend MDiagArray<T>& operator += (MDiagArray<T>& a, const MDiagArray<T>& b);
-  friend MDiagArray<T>& operator -= (MDiagArray<T>& a, const MDiagArray<T>& b);
-
-  // element by element MDiagArray by scalar ops
-
-  friend MDiagArray<T> operator * (const MDiagArray<T>& a, const T& s);
-  friend MDiagArray<T> operator / (const MDiagArray<T>& a, const T& s);
-
-  // element by element scalar by MDiagArray ops
-
-  friend MDiagArray<T> operator * (const T& s, const MDiagArray<T>& a);
-
-  // element by element MDiagArray by MDiagArray ops
-
-  friend MDiagArray<T> operator + (const MDiagArray<T>& a,
-				   const MDiagArray<T>& b); 
-
-  friend MDiagArray<T> operator - (const MDiagArray<T>& a,
-				   const MDiagArray<T>& b);
-
-  friend MDiagArray<T> product (const MDiagArray<T>& a,
-				const MDiagArray<T>& b);
-
-  friend MDiagArray<T> operator - (const MDiagArray<T>& a);
-};
-#endif
+#define INSTANTIATE_MARRAY_FRIENDS(T) \
+  template MArray<T> operator + (const MArray<T>& a, const T& s); \
+  template MArray<T> operator - (const MArray<T>& a, const T& s); \
+  template MArray<T> operator * (const MArray<T>& a, const T& s); \
+  template MArray<T> operator / (const MArray<T>& a, const T& s); \
+  template MArray<T> operator + (const T& s, const MArray<T>& a); \
+  template MArray<T> operator - (const T& s, const MArray<T>& a); \
+  template MArray<T> operator * (const T& s, const MArray<T>& a); \
+  template MArray<T> operator / (const T& s, const MArray<T>& a); \
+  template MArray<T> operator + (const MArray<T>& a, const MArray<T>& b); \
+  template MArray<T> operator - (const MArray<T>& a, const MArray<T>& b); \
+  template MArray<T> product (const MArray<T>& a, const MArray<T>& b); \
+  template MArray<T> quotient (const MArray<T>& a, const MArray<T>& b); \
+  template MArray<T> operator - (const MArray<T>& a);
 
 #endif
 

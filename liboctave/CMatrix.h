@@ -28,7 +28,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #pragma interface
 #endif
 
-#include "MArray.h"
+#include "MArray2.h"
+#include "MDiagArray2.h"
 
 #include "mx-defs.h"
 #include "oct-cmplx.h"
@@ -54,7 +55,7 @@ public:
   ComplexMatrix (const MArray2<Complex>& a) : MArray2<Complex> (a) { }
   ComplexMatrix (const ComplexMatrix& a) : MArray2<Complex> (a) { }
   ComplexMatrix (const DiagMatrix& a);
-  ComplexMatrix (const MDiagArray<Complex>& a) : MArray2<Complex> (a) { }
+  //  ComplexMatrix (const MDiagArray2<Complex>& a) : MArray2<Complex> (a) { }
   ComplexMatrix (const ComplexDiagMatrix& a);
 
   ComplexMatrix (const charMatrix& a);

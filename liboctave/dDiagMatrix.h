@@ -28,34 +28,31 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #pragma interface
 #endif
 
-#include "MArray.h"
+#include "MDiagArray2.h"
 
 #include "dRowVector.h"
 #include "dColVector.h"
 
 #include "mx-defs.h"
 
-class DiagMatrix : public MDiagArray<double>
+class DiagMatrix : public MDiagArray2<double>
 {
 friend class SVD;
 friend class ComplexSVD;
 
 public:
 
-  DiagMatrix (void) : MDiagArray<double> () { }
-  DiagMatrix (int n) : MDiagArray<double> (n) { }
-  DiagMatrix (int n, double val) : MDiagArray<double> (n, n, val) { }
-  DiagMatrix (int r, int c) : MDiagArray<double> (r, c) { }
-  DiagMatrix (int r, int c, double val) : MDiagArray<double> (r, c, val) { }
-  DiagMatrix (const RowVector& a) : MDiagArray<double> (a) { }
-  DiagMatrix (const ColumnVector& a) : MDiagArray<double> (a) { }
-  DiagMatrix (const MDiagArray<double>& a) : MDiagArray<double> (a) { }
-  DiagMatrix (const DiagMatrix& a) : MDiagArray<double> (a) { }
-//  DiagMatrix (double a) : MDiagArray<double> (1, a) { }
+  DiagMatrix (void) : MDiagArray2<double> () { }
+  DiagMatrix (int r, int c) : MDiagArray2<double> (r, c) { }
+  DiagMatrix (int r, int c, double val) : MDiagArray2<double> (r, c, val) { }
+  DiagMatrix (const RowVector& a) : MDiagArray2<double> (a) { }
+  DiagMatrix (const ColumnVector& a) : MDiagArray2<double> (a) { }
+  DiagMatrix (const MDiagArray2<double>& a) : MDiagArray2<double> (a) { }
+  DiagMatrix (const DiagMatrix& a) : MDiagArray2<double> (a) { }
 
   DiagMatrix& operator = (const DiagMatrix& a)
     {
-      MDiagArray<double>::operator = (a);
+      MDiagArray2<double>::operator = (a);
       return *this;
     }
 
@@ -110,7 +107,7 @@ public:
 
 private:
 
-  DiagMatrix (double *d, int nr, int nc) : MDiagArray<double> (d, nr, nc) { }
+  DiagMatrix (double *d, int nr, int nc) : MDiagArray2<double> (d, nr, nc) { }
 };
 
 #endif

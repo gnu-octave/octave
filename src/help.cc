@@ -59,6 +59,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt-pr-code.h"
 #include "sighandlers.h"
 #include "symtab.h"
+#include "syswait.h"
 #include "toplev.h"
 #include "unwind-prot.h"
 #include "utils.h"
@@ -559,8 +560,8 @@ try_info (const string& nm)
 
   octave_set_interrupt_handler (old_interrupt_handler);
 
-  if ((status & 0xff) == 0)
-    status = (status >> 8) & 0xff;
+  if (WIFEXITED (status))
+    status = WEXITSTATUS (status);
   else
     status = 127;
 

@@ -20,6 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} prepad (@var{x}, @var{l}, @var{c})
 ## @deftypefnx {Function File} {} postpad (@var{x}, @var{l}, @var{c})
+## @deftypefnx {Function File} {} postpad (@var{x}, @var{l}, @var{c}, @var{dim})
 ##
 ## Prepends (appends) the scalar value @var{c} to the vector @var{x}
 ## until it is of length @var{l}.  If the third argument is not
@@ -29,6 +30,9 @@
 ## @var{x} are removed until a vector of length @var{l} is obtained.
 ##
 ## If @var{x} is a matrix, elements are prepended or removed from each row.
+##
+## If the optional @var{dim} argument is given, then operate along this
+## dimension.
 ## @end deftypefn
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>

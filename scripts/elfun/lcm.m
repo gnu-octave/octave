@@ -33,36 +33,62 @@
 ## lcm ([a1, ..., ak]).
 ## @end example
 ## @end deftypefn
+##
+## All elements must be the same size or scalar.
 ## @seealso{gcd, min, max, ceil, and floor}
 
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Created: 16 September 1994
 ## Adapted-By: jwe
 
-function l = lcm (a, varargin)
+function l = lcm (varargin)
 
   if (nargin == 0)
     usage ("lcm (a, ...)");
   endif
 
-  if (nargin > 1)
-    k = 1;
-    for i = 2:nargin
-      a = [a, varargin{k++}];
-    endfor
-  endif
+  if (nargin == 1)
+    a = varargin{1};
 
-  if (round (a) != a)
-    error ("lcm: all arguments must be integer");
-  endif
+    if (round (a) != a)
+      error ("lcm: all arguments must be integer");
+    endif
 
-  if (any (a) == 0)
-    l = 0;
+    if (any (a) == 0)
+      l = 0;
+    else
+      a = abs (a);
+      l = a (1);
+      for k = 1:(length (a) - 1)
+	l = l * a(k+1) / gcd (l, a(k+1));
+      endfor
+    endif
   else
-    a = abs (a);
-    l = a (1);
-    for k = 1:(length (a) - 1)
-      l = l * a(k+1) / gcd (l, a(k+1));
+    
+    l = varargin{1};
+    sz = size (l);
+    nel = numel (l);
+
+    for i=2:nargin
+      a = varargin{i};
+
+      if (size (a) != sz)
+	if (nel == 1)
+	  sz = size (a);
+	  nel = numel (a);
+	elseif (numel (a) != 1)
+	  error ("lcm: all arguments must be the same size or scalar");
+	endif
+      endif
+
+      if (round (a) != a)
+	error ("lcm: all arguments must be integer");
+      endif
+
+      idx = find (l == 0 || a == 0);
+      a = abs (a);
+      l = l .* a ./ gcd (l, a);
+      l(idx) = 0;
     endfor
   endif
 

@@ -1,5 +1,7 @@
 2004-04-21  David Bateman  <dbateman@free.fr>
 
+	* scripts/elfun/lcm.m: Make N-d aware.
+
 	* general/diff.m: Make the code N-d array aware.  Allow an
 	optional argument to define the dimension along which to perform
 	the differences and allow the order of the differences to be larger

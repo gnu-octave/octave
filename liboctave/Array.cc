@@ -560,8 +560,6 @@ Array<T>::resize_no_fill (const dim_vector& dv)
   if (same_size)
     return;
 
-  int old_len = length ();
-
   typename Array<T>::ArrayRep *old_rep = rep;
   const T *old_data = data ();
 
@@ -569,16 +567,26 @@ Array<T>::resize_no_fill (const dim_vector& dv)
 
   rep = new typename Array<T>::ArrayRep (ts);
 
+  dim_vector dv_old = dimensions;
+  int dv_old_orig_len = dv_old.length ();
   dimensions = dv;
 
-  if (ts > 0)
+  if (ts > 0 && dv_old_orig_len > 0)
     {
       Array<int> ra_idx (dimensions.length (), 0);
 
-      for (int i = 0; i < old_len; i++)
+      if (n > dv_old_orig_len)
 	{
-	  if (index_in_bounds (ra_idx, dimensions))
-	    xelem (ra_idx) = old_data[i];
+	  dv_old.resize (n);
+
+	  for (int i = dv_old_orig_len; i < n; i++)
+	    dv_old.elem (i) = 1;
+	}
+
+      for (int i = 0; i < ts; i++)
+	{
+	  if (index_in_bounds (ra_idx, dv_old))
+	    rep->elem (i) = old_data[get_scalar_idx (ra_idx, dv_old)];
 
 	  increment_index (ra_idx, dimensions);
 	}
@@ -894,47 +902,39 @@ Array<T>::resize_and_fill (const dim_vector& dv, const T& val)
   typename Array<T>::ArrayRep *old_rep = rep;
   const T *old_data = data ();
 
-  int old_len = length ();
-
   int len = get_size (dv);
 
   rep = new typename Array<T>::ArrayRep (len);
 
   dim_vector dv_old = dimensions;
-
   int dv_old_orig_len = dv_old.length ();
-
-  if (n > dv_old_orig_len)
-    {
-      dv_old.resize (n);
-
-      for (int i = dv_old_orig_len; i < n; i++)
-	dv_old.elem (i) = 1;
-    }
-
   dimensions = dv;
 
-  if (len > 0)
+  if (len > 0 && dv_old_orig_len > 0)
     {
       Array<int> ra_idx (dimensions.length (), 0);
+      
+      if (n > dv_old_orig_len)
+	{
+	  dv_old.resize (n);
 
-      // XXX FIXME XXX -- it is much simpler to fill the whole array
-      // first, but probably slower for large arrays, or if the assignment
-      // operator for the type T is expensive.  OTOH, the logic for
-      // deciding whether an element needs the copied value or the filled
-      // value might be more expensive.
+	  for (int i = dv_old_orig_len; i < n; i++)
+	    dv_old.elem (i) = 1;
+	}
 
       for (int i = 0; i < len; i++)
-	rep->elem (i) = val;
-
-      for (int i = 0; i < old_len; i++)
 	{
 	  if (index_in_bounds (ra_idx, dv_old))
-	    xelem (ra_idx) = old_data[get_scalar_idx (ra_idx, dv_old)];
-
-	  increment_index (ra_idx, dv_old);
+	    rep->elem (i) = old_data[get_scalar_idx (ra_idx, dv_old)];
+	  else
+	    rep->elem (i) = val;
+	  
+	  increment_index (ra_idx, dimensions);
 	}
     }
+  else
+    for (int i = 0; i < len; i++)
+      rep->elem (i) = val;
 
   if (--old_rep->count <= 0)
     delete old_rep;

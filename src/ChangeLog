@@ -1,3 +1,9 @@
+2000-10-30  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* load-save.cc (do_load): Allow result to be returned instead of
+	inserting variables in the symbol table.  Change patterned after
+	patch by Kian Ming Adam Chai <caijianming@yahoo.co.uk>.
+
 2000-10-27  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (ops.cc): Don't substitute BLAS_LIBS and LIBS here.

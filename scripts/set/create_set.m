@@ -45,7 +45,12 @@ function y = create_set(x)
     [nrx, ncx] = size (x);
     nelx = nrx * ncx;
     y = sort (reshape (x, 1, nelx));
-    y = y ([1, (find (y(1:nelx-1) != y(2:nelx)) + 1)]);
+    els = find (y(1:nelx-1) != y(2:nelx));
+    if (isempty (els));
+      y = y(1);
+    else
+      y = y([1, els+1]);
+    endif
   endif
 
 endfunction

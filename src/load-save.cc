@@ -22,6 +22,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // Written by John W. Eaton.
 // HDF5 support by Steven G. Johnson.
+// Matlab v5 support by James R. Van Zandt.
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -2907,13 +2908,15 @@ get_file_format (const std::string& fname, const std::string& orig_fname)
   return retval;
 }
 
-static octave_value_list
+static octave_value
 do_load (std::istream& stream, const std::string& orig_fname, bool force,
 	 load_save_format format, oct_mach_info::float_format flt_fmt,
 	 bool list_only, bool swap, bool verbose, bool import,
 	 const string_vector& argv, int argv_idx, int argc, int nargout)
 {
-  octave_value_list retval;
+  octave_value retval;
+
+  Octave_map retstruct;
 
   std::ostrstream output_buf;
   int count = 0;
@@ -3002,7 +3005,15 @@ do_load (std::istream& stream, const std::string& orig_fname, bool force,
 		    }
 		  else
 		    {
-		      install_loaded_variable (force, name, tc, global, doc);
+		      if (nargout == 1)
+			{
+			  if (format == LS_MAT_ASCII)
+			    retval = tc;
+			  else
+			    retstruct[name] = tc;
+			}
+		      else
+			install_loaded_variable (force, name, tc, global, doc);
 		    }
 		}
 
@@ -3043,6 +3054,8 @@ do_load (std::istream& stream, const std::string& orig_fname, bool force,
 
       delete [] msg;
     }
+  else if (! retstruct.empty ())
+    retval = retstruct;
 
   return retval;
 }
@@ -3082,6 +3095,12 @@ and a local symbol exists, the local symbol is moved to the global\n\
 symbol table and given the value from the file.  Since it seems that\n\
 both of these cases are likely to be the result of some sort of error,\n\
 they will generate warnings.\n\
+\n\
+If invoked with a single output argument, Octave returns data instead\n\
+of inserting variables in the symbol table.  If the data file contains\n\
+only numbers (TAB- or space-delimited columns), a matrix of values is\n\
+returned.  Otherwise, @code{load} returns a structure with members\n\
+ corresponding to the names of the variables in the file.\n\
 \n\
 The @code{load} command can read data stored in Octave's text and\n\
 binary formats, and @sc{Matlab}'s binary format.  It will automatically\n\

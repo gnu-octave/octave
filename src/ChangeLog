@@ -1,3 +1,9 @@
+2003-08-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* utils.cc (octave_vsnprintf): Call octave_raw_vsnprintf instead
+	of calling vsnprintf directly.
+	(octave_vsnprintf) [HAVE_C99_VSNPRINTF]: Declare nchars to be size_t.
+
 2003-08-06  Heine Kolltveit  <kolltvei@idi.ntnu.no>
 
 	* utils.cc (check_dimensions(Array<int>&, char),

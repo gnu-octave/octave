@@ -770,7 +770,6 @@ check_dimensions (Array<int>& dim, const char *warnfor)
 {
   bool neg = false;
 
-  int n = dim.length ();
   for (int i = 0; i < dim.length (); i++)
     {
       if (dim(i) < 0)
@@ -960,7 +959,11 @@ octave_vsnprintf (const char *fmt, va_list args)
 
   static char *buf = 0;
 
+#if defined (HAVE_C99_VSNPRINTF)
+  size_t nchars;
+#else
   int nchars;
+#endif
 
   if (! buf)
     buf = new char [size];
@@ -988,7 +991,7 @@ octave_vsnprintf (const char *fmt, va_list args)
 	{
 	  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_FOR_VSNPRINTF;
 
-	  vsnprintf (buf, size, fmt, args);
+	  octave_raw_vsnprintf (buf, size, fmt, args);
 
 	  END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 	}

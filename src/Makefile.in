@@ -77,8 +77,8 @@ TI_SRC := Array-string.cc Array-tc.cc Map-tc.cc DLList-fi.cc \
 TI_OBJ := $(patsubst %.cc, %.o, $(TI_SRC))
 
 SOURCES := acosh.c arith-ops.cc asinh.c atanh.c data.cc dirfns.cc \
-	dynamic-ld.cc erf.c erfc.c error.cc file-io.cc fnmatch.c \
-	getopt.c getopt1.c gripes.cc help.cc idx-vector.cc \
+	dynamic-ld.cc erf.c erfc.c error.cc file-io.cc filemode.c \
+	fnmatch.c getopt.c getopt1.c gripes.cc help.cc idx-vector.cc \
 	input.cc lex.l load-save.cc mappers.cc octave.cc \
 	octave-hist.cc oct-map.cc oct-obj.cc oct-str.cc pager.cc \
 	parse.y pr-output.cc procstream.cc resource.cc sighandlers.cc \

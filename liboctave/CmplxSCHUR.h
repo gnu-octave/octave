@@ -39,17 +39,20 @@ ComplexSCHUR
 {
 public:
 
-  ComplexSCHUR (void) : schur_mat (), unitary_mat () { }
+  ComplexSCHUR (void)
+    : schur_mat (), unitary_mat () { }
 
   ComplexSCHUR (const ComplexMatrix& a, const string& ord)
-    {
-      init (a,ord);
-    }
+    : schur_mat (), unitary_mat ()
+      {
+        init (a, ord);
+      }
 
   ComplexSCHUR (const ComplexMatrix& a, const string& ord, int& info)
-    {
-      info = init (a,ord);
-    }
+    : schur_mat (), unitary_mat ()
+      {
+        info = init (a,ord);
+      }
 
   ComplexSCHUR (const ComplexSCHUR& a)
     : schur_mat (a.schur_mat), unitary_mat (a.unitary_mat) { }
@@ -64,11 +67,15 @@ public:
       return *this;
     }
 
+  ~ComplexSCHUR (void) { }
+
   ComplexMatrix schur_matrix (void) const { return schur_mat; }
 
   ComplexMatrix unitary_matrix (void) const { return unitary_mat; }
 
   friend ostream& operator << (ostream& os, const ComplexSCHUR& a);
+
+  typedef int (*select_function) (const Complex&);
 
 private:
 

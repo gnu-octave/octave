@@ -37,7 +37,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 extern "C"
 {
   int F77_FCN (zgeesx, ZGEESX) (const char*, const char*,
-				int (*)(const Complex&), 
+				ComplexSCHUR::select_function,
 				const char*, const int&, Complex*,
 				const int&, int&, Complex*, Complex*,
 				const int&, double&, double&,
@@ -46,13 +46,13 @@ extern "C"
 }
 
 static int
-complex_select_ana (const Complex& a)
+select_ana (const Complex& a)
 {
   return a.real () < 0.0;
 }
 
 static int
-complex_select_dig (const Complex& a)
+select_dig (const Complex& a)
 {
   return (abs (a) < 1.0);
 }
@@ -62,6 +62,7 @@ ComplexSCHUR::init (const ComplexMatrix& a, const string& ord)
 {
   int a_nr = a.rows ();
   int a_nc = a.cols ();
+
   if (a_nr != a_nc)
     {
       (*current_liboctave_error_handler)
@@ -70,16 +71,19 @@ ComplexSCHUR::init (const ComplexMatrix& a, const string& ord)
     }
 
   char *jobvs = "V";
-  char *sort;
+  char *sense = "N";
+  char *sort = "N";
 
   char ord_char = ord.empty () ? 'U' : ord[0];
 
   if (ord_char == 'A' || ord_char == 'D' || ord_char == 'a' || ord_char == 'd')
-     sort = "S";
-   else
-     sort = "N";
+    sort = "S";
 
-  char *sense = "N";
+  select_function selector= 0;
+  if (ord_char == 'A' || ord_char == 'a')
+    selector = select_ana;
+  else if (ord_char == 'D' || ord_char == 'd')
+    selector = select_dig;
 
   int n = a_nc;
   int lwork = 8 * n;
@@ -88,49 +92,36 @@ ComplexSCHUR::init (const ComplexMatrix& a, const string& ord)
   double rconde;
   double rcondv;
 
-  double *rwork = new double [n];
+  schur_mat = a;
+  unitary_mat.resize (n, n);
+
+  Complex *s = schur_mat.fortran_vec ();
+  Complex *q = unitary_mat.fortran_vec ();
+
+  Array<double> rwork (n);
+  double *prwork = rwork.fortran_vec ();
+
+  Array<Complex> w (n);
+  Complex *pw = w.fortran_vec ();
+
+  Array<Complex> work (lwork);
+  Complex *pwork = work.fortran_vec ();
 
   // bwork is not referenced for non-ordered Schur.
 
-  int *bwork = 0;
+  Array<int> bwork;
+
   if (ord_char == 'A' || ord_char == 'D' || ord_char == 'a' || ord_char == 'd')
-    bwork = new int [n];
+    bwork.resize (n);
 
-  Complex *s = dup (a.data (), a.length ());
+  int *pbwork = bwork.fortran_vec ();
 
-  Complex *work = new Complex [lwork];
-  Complex *q = new Complex [n*n];
-  Complex *w = new Complex [n];
+  F77_XFCN (zgeesx, ZGEESX, (jobvs, sort, selector, sense, n, s, n,
+			     sdim, pw, q, n, rconde, rcondv, pwork,
+			     lwork, prwork, pbwork, info, 1L, 1L));
 
-  if (ord_char == 'A' || ord_char == 'a')
-    {
-      F77_FCN (zgeesx, ZGEESX) (jobvs, sort, complex_select_ana,
-				sense, n, s, n, sdim, w, q, n, rconde,
-				rcondv, work, lwork, rwork, bwork,
-				info, 1L, 1L);
-    }
-  else if (ord_char == 'D' || ord_char == 'd')
-    {
-      F77_FCN (zgeesx, ZGEESX) (jobvs, sort, complex_select_dig,
-				sense, n, s, n, sdim, w, q, n, rconde,
-				rcondv, work, lwork, rwork, bwork,
-				info, 1L, 1L);
-    }
-  else
-    {
-      F77_FCN (zgeesx, ZGEESX) (jobvs, sort, (void *) 0, sense, n, s,
-				n, sdim, w, q, n, rconde, rcondv,
-				work, lwork, rwork, bwork, info, 1L,
-				1L);
-    }
-
-  schur_mat = ComplexMatrix (s, n, n);
-  unitary_mat = ComplexMatrix (q, n, n);
-
-  delete [] w;
-  delete [] work;
-  delete [] rwork;
-  delete [] bwork;
+  if (f77_exception_encountered)
+    (*current_liboctave_error_handler) ("unrecoverable error in zgeesx");
 
   return info;
 }

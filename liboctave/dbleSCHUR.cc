@@ -39,12 +39,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 extern "C"
 {
   int F77_FCN (dgeesx, DGEESX) (const char*, const char*,
-				int (*)(const double&, const double&),
-				const char*, const int&, double*,
-				const int&, int&, double*, double*,
-				double*, const int&, double&, double&,
-				double*, const int&, int*, const int&,
-				int*, int&, long, long);
+				SCHUR::select_function, const char*,
+				const int&, double*, const int&,
+				int&, double*, double*, double*,
+				const int&, double&, double&, double*,
+				const int&, int*, const int&, int*,
+				int&, long, long);
 }
 
 static int
@@ -64,6 +64,7 @@ SCHUR::init (const Matrix& a, const string& ord)
 {
   int a_nr = a.rows ();
   int a_nc = a.cols ();
+
   if (a_nr != a_nc)
     {
       (*current_liboctave_error_handler) ("SCHUR requires square matrix");
@@ -71,16 +72,19 @@ SCHUR::init (const Matrix& a, const string& ord)
     }
 
   char *jobvs = "V";
-  char *sort;
+  char *sense = "N";
+  char *sort = "N";
 
   char ord_char = ord.empty () ? 'U' : ord[0];
 
   if (ord_char == 'A' || ord_char == 'D' || ord_char == 'a' || ord_char == 'd')
     sort = "S";
-  else
-    sort = "N";
 
-  char *sense = "N";
+  select_function selector = 0;
+  if (ord_char == 'A' || ord_char == 'a')
+    selector = select_ana;
+  else if (ord_char == 'D' || ord_char == 'd')
+    selector = select_dig;
 
   int n = a_nc;
   int lwork = 8 * n;
@@ -90,54 +94,43 @@ SCHUR::init (const Matrix& a, const string& ord)
   double rconde;
   double rcondv;
 
-  double *s = dup (a.data (), a.length ());
+  schur_mat = a;
+  unitary_mat.resize (n, n);
 
-  double *wr = new double [n];
-  double *wi = new double [n];
-  double *q = new double [n*n];
-  double *work = new double [lwork];
+  double *s = schur_mat.fortran_vec ();
+  double *q = unitary_mat.fortran_vec ();
+
+  Array<double> wr (n);
+  double *pwr = wr.fortran_vec ();
+
+  Array<double> wi (n);
+  double *pwi = wi.fortran_vec ();
+
+  Array<double> work (lwork);
+  double *pwork = work.fortran_vec ();
 
   // These are not referenced for the non-ordered Schur routine.
 
-  int *iwork = 0;
-  int *bwork = 0;
+  Array<int> bwork;
+  Array<int> iwork;
+
   if (ord_char == 'A' || ord_char == 'D' || ord_char == 'a' || ord_char == 'd')
     {
-      iwork = new int [liwork];
-      bwork = new int [n];
+      bwork.resize (n);
+      iwork.resize (liwork);
     }
 
-  if (ord_char == 'A' || ord_char == 'a')
-    {
-      F77_FCN (dgeesx, DGEESX) (jobvs, sort, select_ana, sense, n, s,
-				n, sdim, wr, wi, q, n, rconde, rcondv,
-				work, lwork, iwork, liwork, bwork,
-				info, 1L, 1L);
-    }
-  else if (ord_char == 'D' || ord_char == 'd')
-    {
-      F77_FCN (dgeesx, DGEESX) (jobvs, sort, select_dig, sense, n, s,
-				n, sdim, wr, wi, q, n, rconde, rcondv,
-				work, lwork, iwork, liwork, bwork,
-				info, 1L, 1L);
-      
-    }
-  else
-    {
-      F77_FCN (dgeesx, DGEESX) (jobvs, sort, (void *) 0, sense, n, s,
-				n, sdim, wr, wi, q, n, rconde, rcondv,
-				work, lwork, iwork, liwork, bwork,
-				info, 1L, 1L);
-    }
+  int *pbwork = bwork.fortran_vec ();
+  int *piwork = iwork.fortran_vec ();
 
-  schur_mat = Matrix (s, n, n);
-  unitary_mat = Matrix (q, n, n);
 
-  delete [] wr;
-  delete [] wi;
-  delete [] work;
-  delete [] iwork;
-  delete [] bwork;
+  F77_XFCN (dgeesx, DGEESX, (jobvs, sort, selector, sense, n, s,
+			     n, sdim, pwr, pwi, q, n, rconde, rcondv,
+			     pwork, lwork, piwork, liwork, pbwork,
+			     info, 1L, 1L));
+
+  if (f77_exception_encountered)
+    (*current_liboctave_error_handler) ("unrecoverable error in dgeesx");
 
   return info;
 }

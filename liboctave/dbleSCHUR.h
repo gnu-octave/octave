@@ -39,14 +39,20 @@ SCHUR
 {
 public:
 
-  SCHUR (void) : schur_mat (), unitary_mat () { }
+  SCHUR (void)
+    : schur_mat (), unitary_mat () { }
 
-  SCHUR (const Matrix& a, const string& ord) { init (a, ord); }
+  SCHUR (const Matrix& a, const string& ord)
+    : schur_mat (), unitary_mat ()
+      {
+        init (a, ord);
+      }
 
   SCHUR (const Matrix& a, const string& ord, int& info)
-    {
-      info = init (a, ord);
-    }
+    : schur_mat (), unitary_mat ()
+      {
+        info = init (a, ord);
+      }
 
   SCHUR (const SCHUR& a)
     : schur_mat (a.schur_mat), unitary_mat (a.unitary_mat) { }
@@ -61,11 +67,15 @@ public:
       return *this;
     }
 
+  ~SCHUR (void) { }
+
   Matrix schur_matrix (void) const { return schur_mat; }
 
   Matrix unitary_matrix (void) const { return unitary_mat; }
 
   friend ostream& operator << (ostream& os, const SCHUR& a);
+
+  typedef int (*select_function) (const double&, const double&);
 
 private:
 

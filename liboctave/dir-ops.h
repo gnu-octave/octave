@@ -28,8 +28,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "str-vec.h"
 
-struct DIR;
-
 class
 dir_entry
 {
@@ -45,7 +43,9 @@ public:
 
   dir_entry& operator = (const dir_entry& d)
     {
-      copy (d);
+      if (this != &d)
+	copy (d);
+
       return *this;
     }
 
@@ -68,8 +68,10 @@ private:
   // Name of the directory.
   string name;
 
-  // A pointer to the contents of the directory.
-  DIR *dir;
+  // A pointer to the contents of the directory.  We use void here to
+  // avoid possible conflicts with the way some systems declare the
+  // type DIR.
+  void *dir;
 
   // TRUE means the open for this directory failed.
   bool fail;

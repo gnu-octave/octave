@@ -4,7 +4,7 @@
 *  -- LAPACK auxiliary routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     October 31, 1999
+*     May 17, 2000
 *
 *     .. Scalar Arguments ..
       LOGICAL            IEEE
@@ -32,7 +32,7 @@
 *         Last index.
 *
 *  Z      (input) DOUBLE PRECISION array, dimension ( 4*N )
-*         Z holds the qd array. 
+*         Z holds the qd array.
 *
 *  PP     (input) INTEGER
 *         PP=0 for ping, PP=1 for pong.
@@ -47,7 +47,7 @@
 *         Lower order part of SIGMA
 *
 *  QMAX   (input) DOUBLE PRECISION
-*         Maximum value of q.        
+*         Maximum value of q.
 *
 *  NFAIL  (output) INTEGER
 *         Number of times shift was too big.
@@ -75,7 +75,7 @@
 *     ..
 *     .. Local Scalars ..
       INTEGER            IPN4, J4, N0IN, NN, TTYPE
-      DOUBLE PRECISION   DMIN1, DMIN2, DN, DN1, DN2, EPS, S, SAFMIN, T, 
+      DOUBLE PRECISION   DMIN1, DMIN2, DN, DN1, DN2, EPS, S, SAFMIN, T,
      $                   TAU, TEMP, TOL, TOL2
 *     ..
 *     .. External Subroutines ..
@@ -105,16 +105,16 @@
       TOL = EPS*HUNDRD
       TOL2 = TOL**2
 *
-*     Check for deflation. 
+*     Check for deflation.
 *
    10 CONTINUE
 *
       IF( N0.LT.I0 )
      $   RETURN
-      IF( N0.EQ.I0 ) 
+      IF( N0.EQ.I0 )
      $   GO TO 20
       NN = 4*N0 + PP
-      IF( N0.EQ.( I0+1 ) ) 
+      IF( N0.EQ.( I0+1 ) )
      $   GO TO 40
 *
 *     Check whether E(N0-1) is negligible, 1 eigenvalue.
@@ -217,57 +217,39 @@
          NDIV = NDIV + ( N0-I0+2 )
          ITER = ITER + 1
 *
-         IF( DMIN.NE.DMIN ) THEN
+*        Check status.
 *
-*           Check for NaN: "DMIN.NE.DMIN" 
+         IF( DMIN.GE.ZERO .AND. DMIN1.GT.ZERO ) THEN
 *
-            Z( 4*N0+PP-1 ) = ZERO
-            GO TO 70
-         ELSE IF( Z( 4*N0+PP ).LE.ZERO ) THEN
+*           Success.
 *
-*           Possible unnecessary underflow in the e's.
-*           Call safe dqd.
+            GO TO 100
 *
-            Z( 4*N0+PP-1 ) = ZERO
-            DMIN = ZERO
-            GO TO 70
-         ELSE IF( DMIN.EQ.ZERO .AND. DMIN1.LE.ZERO ) THEN
+         ELSE IF( DMIN.LT.ZERO .AND. DMIN1.GT.ZERO .AND.
+     $            Z( 4*( N0-1 )-PP ).LT.TOL*( SIGMA+DN1 ) .AND.
+     $            ABS( DN ).LT.TOL*SIGMA ) THEN
 *
-*           Possible unnecessary underflow in the d's.
-*           Call safe dqd.
+*           Convergence hidden by negative DN.
 *
-            Z( 4*N0+PP-1 ) = ZERO
-            GO TO 70
-         END IF
-*
-*        Check for convergence hidden by negative DN.
-*
-         IF( DMIN.LT.ZERO .AND. DMIN1.GT.ZERO .AND. Z( 4*( N0-1 )-PP ) 
-     $       .LT.TOL*( SIGMA+DN1 ) .AND. ABS( DN ).LT.TOL*SIGMA ) THEN
             Z( 4*( N0-1 )-PP+2 ) = ZERO
-            DMIN = ABS( DMIN )
-         END IF
+            DMIN = ZERO
+            GO TO 100
+         ELSE IF( DMIN.LT.ZERO ) THEN
 *
-         IF( DMIN.LT.ZERO ) THEN
-*
-*           Failure. Select new TAU and try again.
+*           TAU too big. Select new TAU and try again.
 *
             NFAIL = NFAIL + 1
-*
-*           Failed twice. Play it safe.
-*
             IF( TTYPE.LT.-22 ) THEN
-               Z( 4*N0+PP-1 ) = ZERO
-               DMIN = ZERO
-               GO TO 70
-            END IF
 *
-            IF( DMIN1.GT.ZERO ) THEN
+*              Failed twice. Play it safe.
+*
+               TAU = ZERO
+            ELSE IF( DMIN1.GT.ZERO ) THEN
 *
 *              Late failure. Gives excellent shift.
 *
-               TAU = ( TAU+DMIN )*( ONE-TWO*EPS ) 
-               TTYPE = TTYPE - 11 
+               TAU = ( TAU+DMIN )*( ONE-TWO*EPS )
+               TTYPE = TTYPE - 11
             ELSE
 *
 *              Early failure. Divide by 4.
@@ -276,17 +258,32 @@
                TTYPE = TTYPE - 12
             END IF
             GO TO 80
+         ELSE IF( DMIN.NE.DMIN ) THEN
+*
+*           NaN.
+*
+            TAU = ZERO
+            GO TO 80
+         ELSE
+*
+*           Possible underflow. Play it safe.
+*
+            GO TO 90
          END IF
-      ELSE
-         CALL DLASQ6( I0, N0, Z, PP, DMIN, DMIN1, DMIN2, DN, DN1, DN2 )
-         NDIV = NDIV + ( N0-I0 )
-         ITER = ITER + 1
-         TAU = ZERO
       END IF
 *
+*     Risk of underflow.
+*
+   90 CONTINUE
+      CALL DLASQ6( I0, N0, Z, PP, DMIN, DMIN1, DMIN2, DN, DN1, DN2 )
+      NDIV = NDIV + ( N0-I0+2 )
+      ITER = ITER + 1
+      TAU = ZERO
+*
+  100 CONTINUE
       IF( TAU.LT.SIGMA ) THEN
          DESIG = DESIG + TAU
-         T = SIGMA + DESIG 
+         T = SIGMA + DESIG
          DESIG = DESIG - ( T-SIGMA )
       ELSE
          T = SIGMA + TAU

@@ -1,3 +1,8 @@
+2001-08-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lapack/dlasq3.f: Update from netlib.
+	* lapack/dlasq5.f: Ditto.
+
 2001-05-02  Mumit Khan  <khan@nanotech.wisc.edu>
 
 	* Makefile.in (CRUFT_DIRS): Substitute @FFT_DIR@. 

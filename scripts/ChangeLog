@@ -1,3 +1,8 @@
+1999-12-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* mkdoc: Only delete spaces before @ characters at the beginning
+	of a line.
+
 1999-12-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* control/bddemo.m: Make it more likely to work with any value of

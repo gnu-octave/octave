@@ -7,5 +7,5 @@ else
 fi
 
 find $d -name '*.m' | \
-  sed "s,\(.*\)/\(.*\)\.m,./gethelp \2 < & | sed 's/ *@/@/'," | \
+  sed "s,\(.*\)/\(.*\)\.m,./gethelp \2 < & | sed 's/^ *@/@/'," | \
   /bin/sh

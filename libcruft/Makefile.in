@@ -67,7 +67,7 @@ libcruft.a: $(CRUFT_OBJ)
 stamp-shared: $(CRUFT_PICOBJ)
 	if $(SHARED_LIBS); then \
 	  $(CC) -shared -o libcruft.$(SHLEXT) $(CRUFT_PICOBJ) \
-	  $(SHARED_FLIBS); \
+	  $(SH_FLIBS); \
 	else true; fi
 	touch stamp-shared
 

@@ -204,7 +204,7 @@ stamp-interp: $(PICOBJ)
 	  $(CXX) -shared -o liboctinterp.$(SHLEXT) $(PICOBJ) \
 	    $(OCTAVE_LFLAGS) \
 	    -loctave -lcruft -ltinst -lreadline -lkpathsea \
-	    $(TERMLIBS) $(LIBS) -lg++; \
+	    $(SH_TERMLIBS) $(SH_LIBS) -lg++; \
 	else true; fi
 	touch stamp-interp
 
@@ -213,7 +213,7 @@ stamp-tinst: $(TI_PICOBJ)
 	  $(CXX) -shared -o libtinst.$(SHLEXT) $(TI_PICOBJ) \
 	    $(OCTAVE_LFLAGS) \
 	    -loctinterp -loctave -lcruft -lreadline -lkpathsea \
-	    $(TERMLIBS) $(LIBS) -lg++; \
+	    $(SH_TERMLIBS) $(SH_LIBS) -lg++; \
 	else true; fi
 	touch stamp-tinst
 

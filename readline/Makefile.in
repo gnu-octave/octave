@@ -21,7 +21,7 @@ SHLEXT = @SHLEXT@
 SHARED_LIBS = @SHARED_LIBS@
 
 TERMLIBS = @TERMLIBS@
-SHARED_TERMLIBS = @SHARED_TERMLIBS@
+SH_TERMLIBS = @SH_TERMLIBS@
 
 LIBS_TO_INSTALL = libreadline.a libhistory.a \
 	libreadline.$(SHLEXT) libhistory.$(SHLEXT)
@@ -148,7 +148,7 @@ libhistory.a: history.o
 stamp-readline: $(PICOBJ)
 	if $(SHARED_LIBS); then \
 	  $(CC) -shared -o libreadline.$(SHLEXT) $(PICOBJ) \
-	  $(SHARED_TERMLIBS); \
+	  $(SH_TERMLIBS); \
 	fi
 	touch stamp-readline
 

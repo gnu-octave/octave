@@ -73,14 +73,14 @@ for termlib in termcap terminfo curses termlib; do
 done
 AC_SUBST(TERMLIBS)
 
-SHARED_TERMLIBS="$TERMLIBS"
+SH_TERMLIBS="$TERMLIBS"
 case "$canonical_host_type" in
   *-*-sunos4*)
-    SHARED_TERMLIBS=
+    SH_TERMLIBS=
   ;;
 esac
-AC_MSG_RESULT([defining SHARED_TERMLIBS to be $SHARED_TERMLIBS])
-AC_SUBST(SHARED_TERMLIBS)
+AC_MSG_RESULT([defining SH_TERMLIBS to be $SH_TERMLIBS])
+AC_SUBST(SH_TERMLIBS)
 
 AC_HEADER_DIRENT
 AC_HEADER_STDC

@@ -1,3 +1,8 @@
+2004-02-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-fftw.cc (convert_packcomplex_1d, convert_packcomplex_Nd): 
+	Sprinkle with OCTAVE_QUIT.
+
 2004-02-16  David Bateman <dbateman@free.fr>
 
 	* oct-fftw.cc (octave_fftw_planner::create_plan, octave_fftw::fftNd):

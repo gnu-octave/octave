@@ -215,10 +215,15 @@ static inline void
 convert_packcomplex_1d (Complex *out, size_t nr, size_t nc,
 			int stride, int dist)
 {
-  // Fill in the missing data
+  OCTAVE_QUIT;
+
+  // Fill in the missing data.
+
   for (size_t i = 0; i < nr; i++)
     for (size_t j = nc/2+1; j < nc; j++)
       out[j*stride + i*dist] = conj(out[(nc - j)*stride + i*dist]);
+
+  OCTAVE_QUIT;
 }
 
 static inline void
@@ -230,7 +235,10 @@ convert_packcomplex_Nd (Complex *out, const dim_vector &dv)
   size_t nrp = nr * np;
   Complex *ptr1, *ptr2;
 
-  // Create space for the missing elements
+  OCTAVE_QUIT;
+
+  // Create space for the missing elements.
+
   for (size_t i = 0; i < nrp; i++)
     {
       ptr1 = out + i * (nc/2 + 1) + nrp*((nc-1)/2);
@@ -239,7 +247,10 @@ convert_packcomplex_Nd (Complex *out, const dim_vector &dv)
 	*ptr2++ = *ptr1++;
     }
 
-  // Fill in the missing data for the rank = 2 case directly for speed
+  OCTAVE_QUIT;
+
+  // Fill in the missing data for the rank = 2 case directly for speed.
+
   for (size_t i = 0; i < np; i++)
     {
       for (size_t j = 1; j < nr; j++)
@@ -250,10 +261,14 @@ convert_packcomplex_Nd (Complex *out, const dim_vector &dv)
 	out[j + i*nr*nc] = conj(out[(i*nr+1)*nc - j]);
     }
 
-  // Now do the permutations needed for rank > 2 cases
+  OCTAVE_QUIT;
+
+  // Now do the permutations needed for rank > 2 cases.
+
   size_t jstart = dv(0) * dv(1);
   size_t kstep = dv(0);
   size_t nel = dv.numel ();
+
   for (int inner = 2; inner < dv.length(); inner++) 
     {
       size_t jmax = jstart * dv(inner);
@@ -269,6 +284,8 @@ convert_packcomplex_Nd (Complex *out, const dim_vector &dv)
 	      }
       jstart = jmax;
     }
+
+  OCTAVE_QUIT;
 }
 
 int

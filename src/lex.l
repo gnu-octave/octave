@@ -2304,7 +2304,7 @@ symbols_of_lex (void)
   DEFVAR (warn_separator_insert, 0.0, warn_separator_insert,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} warn_separator_insert\n\
-Print warning if commas or semicolons that might be inserted\n\
+Print warning if commas or semicolons might be inserted\n\
 automatically in literal matrices.\n\
 @end defvr");
 

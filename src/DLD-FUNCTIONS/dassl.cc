@@ -26,6 +26,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <string>
 
+#include <iomanip>
 #include <iostream>
 
 #include "DASSL.h"
@@ -314,7 +315,11 @@ print_dassl_option_list (std::ostream& os)
   const char *keyword;
   while ((keyword = list->keyword) != 0)
     {
-      os.form ("  %-40s ", keyword);
+      os << std::setw (40)
+	 << std::setfill (' ')
+	 << std::setiosflags (std::ios::left)
+	 << "  " << keyword << " "
+	 << std::resetiosflags (std::ios::left);
 
       double val = (dassl_opts.*list->d_get_fcn) ();
       if (val < 0.0)

@@ -57,15 +57,19 @@ function subplot (rows, columns, index)
 
 # Written by Vinayak Dutt, Dutt.Vinayak@mayo.EDU
 
-# global variables to keep track of multiplot options
+  if (! gnuplot_has_multiplot)
+    error ("subplot: gnuplot does not appear to support this feature");
+  endif
+
+  # global variables to keep track of multiplot options
 
   global multiplot_mode 
   global multiplot_xsize multiplot_ysize 
   global multiplot_xn multiplot_yn
   global multiplot_xi multiplot_yi
 
-# This is a real kludge.  We gnuplot should be made so that replot can
-# be executed while doing multiple plots...
+  # This is a real kludge.  We gnuplot should be made so that replot can
+  # be executed while doing multiple plots...
 
   global multiplot_save_auto_replot = automatic_replot
 
@@ -74,7 +78,7 @@ function subplot (rows, columns, index)
   endif
 
   if ((isstr (automatic_replot) && strcmp (automatic_replot, "true"))
-       || automatic_replot)
+      || automatic_replot)
     warning ("turning off automatic replot for multiplot mode");
     multiplot_save_auto_replot = automatic_replot;
     automatic_replot = 0;
@@ -111,7 +115,7 @@ function subplot (rows, columns, index)
 
   if (columns*rows == 1)
 
-# switching to single plot ?
+    # switching to single plot ?
 
     set nomultiplot;
     set size 1, 1;
@@ -121,7 +125,7 @@ function subplot (rows, columns, index)
     multiplot_yn = 1;
     multiplot_mode = 0;
 
-# Someone may have reset it betweeen calls...
+    # Someone may have reset it betweeen calls...
 
     if (! isstr (automatic_replot) && ! automatic_replot)
       automatic_replot = multiplot_save_auto_replot;
@@ -129,7 +133,7 @@ function subplot (rows, columns, index)
 
   else
 
-# doing multiplot plots
+    # doing multiplot plots
 
     doagain = 0;
 
@@ -154,14 +158,14 @@ function subplot (rows, columns, index)
 
     endif
 
-# get the sub plot location
+    # get the sub plot location
 
     yp = fix ((index-1)/columns);
     xp = index - yp*columns - 1;
     multiplot_xi = ++xp;
     multiplot_yi = ++yp;
 
-# set the origin
+    # set the origin
 
     xo = (xp - 1.0)*multiplot_xsize;
     yo = (rows - yp)*multiplot_ysize;

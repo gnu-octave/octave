@@ -28,6 +28,10 @@ function top_title (text)
 
 # Written by Vinayak Dutt, Dutt.Vinayak@mayo.EDU  3 Jul 95 
 
+  if (! gnuplot_has_multiplot)
+    error ("top_title: gnuplot does not appear to support this feature");
+  endif
+
   if (nargin != 1)
     usage ("top_title (text)");
   endif

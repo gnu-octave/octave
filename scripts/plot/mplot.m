@@ -35,15 +35,19 @@ function mplot (...)
 
 # Written by Vinayak Dutt, Dutt.Vinayak@mayo.EDU
 
-# global variables to keep track of multiplot options
+  if (! gnuplot_has_multiplot)
+    error ("mplot: gnuplot does not appear to support this feature");
+  endif
+
+  # global variables to keep track of multiplot options
 
   global multiplot_mode
   global multiplot_xsize multiplot_ysize
   global multiplot_xn multiplot_yn
   global multiplot_xi multiplot_yi
 
-# This is a real kludge.  We gnuplot should be made so that replot can
-# be executed while doing multiple plots...
+  # This is a real kludge.  We gnuplot should be made so that replot can
+  # be executed while doing multiple plots...
 
   global multiplot_save_auto_replot = automatic_replot
 
@@ -59,7 +63,7 @@ function mplot (...)
 
   plot_int ("plot", all_va_args);
 
-# update the plot position
+  # update the plot position
 
   if (multiplot_mode)
 

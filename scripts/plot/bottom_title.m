@@ -30,6 +30,10 @@ function bottom_title (text)
 
 # Written by Vinayak Dutt, Dutt.Vinayak@mayo.EDU
 
+  if (! gnuplot_has_multiplot)
+    error ("bottom_title: gnuplot does not appear to support this feature");
+  endif
+    
   if (nargin != 1)
     usage ("bottom_title (text)");
   endif

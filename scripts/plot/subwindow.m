@@ -30,19 +30,23 @@ function subwindow (xn, yn)
 
 # Written by Vinayak Dutt, Dutt.Vinayak@mayo.EDU  3 Jul 95 
 
-# global variables to keep track of multiplot options
+  if (! gnuplot_has_multiplot)
+    error ("subwindow: gnuplot does not appear to support this feature");
+  endif
+
+  # global variables to keep track of multiplot options
 
   global multiplot_mode 
   global multiplot_xsize multiplot_ysize 
   global multiplot_xn multiplot_yn
 
-# check calling argument count
+  # check calling argument count
 
   if (nargin != 2)
     usage ("subwindow (xn, yn)");
   endif
 
-# check for scalar inputs
+  # check for scalar inputs
 
   if (! (is_scalar (xn) && is_scalar (yn)))
     error ("subwindow: xn and yn have to be scalars");
@@ -51,15 +55,15 @@ function subwindow (xn, yn)
   xn = round (xn);
   yn = round (yn);
 
-# switch to multiplot mode if not already in, and use the args as the
-# args to multiplot() 
+  # switch to multiplot mode if not already in, and use the args as the
+  # args to multiplot() 
 
   if (multiplot_mode != 1)
     multiplot (xn, yn);
     return;
   endif
 
-# get the sub plot location
+  # get the sub plot location
 
   if (xn < 1 || xn > multiplot_xn || yn < 1 || yn > multiplot_yn)
     error ("subwindow: incorrect xn and yn");
@@ -69,5 +73,5 @@ function subwindow (xn, yn)
   yo = (multiplot_yn - yn)*multiplot_ysize;
 
   eval (sprintf ("set origin %g, %g", xo, yo));
-
+      
 endfunction

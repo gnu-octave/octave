@@ -32,15 +32,19 @@ function multiplot (xn, yn)
 
 # Written by Vinayak Dutt, Dutt.Vinayak@mayo.EDU  3 Jul 95 
 
-# global variables to keep track of multiplot options
+  if (! gnuplot_has_multiplot)
+    error ("multiplot: gnuplot does not appear to support this feature");
+  endif
+    
+  # global variables to keep track of multiplot options
 
   global multiplot_mode
   global multiplot_xsize multiplot_ysize
   global multiplot_xn multiplot_yn
   global multiplot_xi multiplot_yi
 
-# This is a real kludge.  We gnuplot should be made so that replot can
-# be executed while doing multiple plots...
+  # This is a real kludge.  We gnuplot should be made so that replot can
+  # be executed while doing multiple plots...
 
   global multiplot_save_auto_replot = automatic_replot
 
@@ -76,7 +80,7 @@ function multiplot (xn, yn)
     multiplot_xi = 1;
     multiplot_yi = 1;
 
-# Someone may have reset it betweeen calls...
+    # Someone may have reset it betweeen calls...
 
     if (! isstr (automatic_replot) && ! automatic_replot)
       automatic_replot = multiplot_save_auto_replot;

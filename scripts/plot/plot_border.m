@@ -40,6 +40,10 @@ function plot_border (...)
 
 # Written by Vinayak Dutt, Dutt.Vinayak@mayo.EDU  3 Jul 95 
 
+  if (! gnuplot_has_multiplot)
+    error ("plot_border: gnuplot does not appear to support this feature");
+  endif
+    
   south = 0;
   west = 0;
   north = 0;
@@ -57,8 +61,8 @@ function plot_border (...)
       error ("plot_border: input not a string");
     endif
 
-# The effect of the arguments in cumulative.  If something is found
-# after "b", do that and ignore "b".
+    # The effect of the arguments in cumulative.  If something is found
+    # after "b", do that and ignore "b".
 
     if (strcmp (arg, "blank") || strcmp (arg, "BLANK")
         || strcmp (arg, "b") || strcmp (arg, "B"))

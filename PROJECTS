@@ -72,10 +72,6 @@ Numerical:
 
   * Check matrix classes for proper handling of empty matrices.
 
-  * Force all empty matrices to be 0x0 even when other dimensions have
-    been speicified, for compatibility with Matlab, at least when some
-    preference variable is set.
-
   * Make operations with empty matrices produce empty matrices, for
     compatibility with Matlab (but only if Matlab 5 still does things
     this way). For example:  [1, 2] * [] ==> [].
@@ -94,8 +90,6 @@ Numerical:
     M by elements of v.  Similarly, if w is a row vector with as many
     columns as M, then either w .* M or M .* w scales the columns of
     M.
-
-  * Add support for +=, -=, etc.
 
   * Given two vectors x and y of length m and n, implement a function
     outer (x, y, f) that returns an m-by-n matrix with entries
@@ -120,7 +114,8 @@ Numerical:
     lapack code yet).
 
   * Consider making the behavior of the / and \ operators for
-    non-square systems compatible with Matlab.
+    non-square systems compatible with Matlab.  Currently, they return
+    the minimum norm solution from DGELSS, which behaves differently.
 
 --------
 Graphics:
@@ -234,13 +229,9 @@ Input/Output:
   * Make the cutoff point for changing to packed storage a
     user-preference variable with default value 8192.
 
-  * Save image data in binary format to save space.
-
   * Make it possible to load other image formats (ppm, pbm, etc. would
     probably be best since there are already filters to convert to
     these formats from others.)
-
-  * Use HDF for binary data.
 
   * Make ascii load and save work for Inf and NaN.  (This is really a
     problem with the functions for reading floats in the GNU iolib.)
@@ -306,8 +297,6 @@ Interpreter:
     (Fix whatever it is that is happening with clear for built-in
     variables.)
 
-  * Make it possible to check if a variable is complex.
-
   * Consider making linspace() and logspace() return the value
     corresponding to the first argument if the number of requested
     points is 1.
@@ -369,8 +358,6 @@ Interpreter:
   * Make LEXICAL_ERROR have a value that is the error message for
     parse_error() to print?
 
-  * Make it possible to clear dynamically loaded functions.
-
   * Add a run-time alias mechanism that would allow things like
 
       alias fun function_with_a_very_long_name 
@@ -391,8 +378,8 @@ Interpreter:
     would be equivalent to
 
       function f ()
+        save_prefer_column_vectors = prefer_column_vectors;
 	unwind_protect
-	  save_prefer_column_vectors = prefer_column_vectors;
 	  prefer_column_vectors = something;
 	  ...
 	unwind_protect_cleanup
@@ -418,8 +405,6 @@ Interpreter:
     passed through the pager.
 
   * Attempt to recognize common subexpressions in the parser.
-
-  * Remove the buffer size limit in octave_read() in input.cc.
 
   * Handle arrays with more than two dimensions.
 
@@ -447,18 +432,16 @@ Interpreter:
 
       foo ("bar", "baz")
 
-    This is pretty ugly and introduces some conflicts.
+    This is pretty ugly and introduces some conflicts, so I don't
+    think it is a good idea.
 
   * Add a command that works like bash's `builtin' command.
 
-  * Handle comments in parse trees for use with the type command.
+  * Handle end-of-line comments correctly in parse trees for use with
+    the type command.
 
-  * Make the type command handle script files too, by just reading and
-    printing them.
-
-  * The which and type commands should distinguish between dynamically
-    linked functions and built-in functions.  For dynamically linked
-    functions, the location of the .oct file should be displayed.
+  * For dynamically linked functions, the which and type commands
+    should display the location of the .oct file.
 
   * Clean up eye, eval, feval, keyboard, input, ones, zeros.
 

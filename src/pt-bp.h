@@ -189,7 +189,7 @@ extern bool octave_debug_on_interrupt_state;
           tree::break_next = false; \
  \
           if (curr_function) \
-            octave_stdout << curr_function->function_name () << ": ";  \
+            octave_stdout << curr_function->name () << ": ";  \
  \
           octave_stdout << "line " << line () << ", " \
 			<< "column " << column () \

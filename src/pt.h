@@ -31,7 +31,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <iostream>
 
-class octave_user_function;
+class octave_function;
 class tree_walker;
 
 // Base class for the parse tree.
@@ -75,7 +75,7 @@ public:
   static int last_line; 
 
   // The function where the last breakpoint occurred.
-  static const octave_user_function *break_function;
+  static const octave_function *break_function;
 
   // The statement where the last breakpoint occurred.
   static const tree *break_statement;

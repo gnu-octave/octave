@@ -33,6 +33,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "lo-sstream.h"
 
+#include "ov-fcn.h"
 #include "pt.h"
 #include "pt-pr-code.h"
 
@@ -43,7 +44,7 @@ bool tree::break_next = false;
 int tree::last_line = 0;
 
 // The function where the last breakpoint occurred.
-const octave_user_function *tree::break_function = 0;
+const octave_function *tree::break_function = 0;
 
 // The statement where the last breakpoint occurred.
 const tree *tree::break_statement = 0;

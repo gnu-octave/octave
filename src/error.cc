@@ -322,7 +322,7 @@ pr_where (const char *name, bool print_code = true)
 
       if (curr_function)
 	{
-	  std::string fcn_name = curr_function->function_name ();
+	  std::string fcn_name = curr_function->name ();
 	  std::string file_name = curr_function->fcn_file_name ();
 
 	  f_nm = file_name.empty () ? fcn_name.c_str () : file_name.c_str ();

@@ -91,10 +91,10 @@ bool octave_initialized = false;
 tree_statement_list *global_command = 0;
 
 // Pointer to function that is currently being evaluated.
-octave_user_function *curr_function = 0;
+octave_function *curr_function = 0;
 
 // Pointer to parent function that is currently being evaluated.
-octave_user_function *curr_parent_function = 0;
+octave_function *curr_parent_function = 0;
 
 static void
 recover_from_exception (void)

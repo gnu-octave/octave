@@ -95,6 +95,8 @@ public:
 
   bool is_system_fcn_file (void) const { return system_fcn_file; }
 
+  bool is_user_function (void) const { return true; }
+
   bool takes_varargs (void) const;
 
   void octave_va_start (void) { curr_va_arg_number = num_named_args; }
@@ -111,9 +113,7 @@ public:
 
   bool has_varargout (void) const;
 
-  void stash_function_name (const std::string& s);
-
-  std::string function_name (void) const { return fcn_name; }
+  void stash_function_name (const std::string& s) { my_name = s; }
 
   void mark_as_nested_function (void) { nested_function = true; }
 
@@ -191,9 +191,6 @@ private:
 
   // The name of the file we parsed
   std::string file_name;
-
-  // The name of the function.
-  std::string fcn_name;
 
   // The time the file was parsed.
   octave_time t_parsed;

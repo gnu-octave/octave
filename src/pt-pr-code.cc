@@ -331,7 +331,7 @@ tree_print_code::visit_octave_user_function_header (octave_user_function& fcn)
       os << " = ";
     }
 
-  std::string fcn_name = fcn.function_name ();
+  std::string fcn_name = fcn.name ();
 
   os << (fcn_name.empty () ? std::string ("(empty)") : fcn_name) << " ";
 

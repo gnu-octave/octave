@@ -73,8 +73,8 @@ get_user_function (std::string str = "")
 	    }
 	}
     }
-  else if (curr_function)
-    dbg_fcn = curr_function;
+  else if (curr_function && curr_function->is_user_function ())
+    dbg_fcn = dynamic_cast<octave_user_function *> (curr_function);
 
   return dbg_fcn;
 }
@@ -282,11 +282,14 @@ Show where we are in the code\n\
 {
   octave_value retval;
 
-  octave_user_function *dbg_fcn = curr_function;
+  octave_user_function *dbg_fcn = 0;
+
+  if (curr_function && curr_function->is_user_function ())
+    dbg_fcn = dynamic_cast<octave_user_function *> (curr_function);
 
   if (dbg_fcn)
     {
-      std::string name = dbg_fcn->function_name ();
+      std::string name = dbg_fcn->name ();
 
       octave_stdout << name << ":";
 
@@ -369,7 +372,7 @@ List script file with line numbers.\n\
 	  dbg_fcn = get_user_function ();
 
 	  if (dbg_fcn)
-	    do_dbtype (octave_stdout, dbg_fcn->function_name (), 0, INT_MAX);
+	    do_dbtype (octave_stdout, dbg_fcn->name (), 0, INT_MAX);
 	  else
 	    error ("dbtype: must be in a user function to give no arguments to dbtype\n");
 	  break;
@@ -378,7 +381,7 @@ List script file with line numbers.\n\
 	  dbg_fcn = get_user_function (argv[1]);
 
 	  if (dbg_fcn)
-	    do_dbtype (octave_stdout, dbg_fcn->function_name (), 0, INT_MAX);
+	    do_dbtype (octave_stdout, dbg_fcn->name (), 0, INT_MAX);
 	  else
 	    {
 	      dbg_fcn = get_user_function ("");
@@ -399,7 +402,7 @@ List script file with line numbers.\n\
 		
 		      if (start < end)
 			do_dbtype (octave_stdout,
-				   dbg_fcn->function_name (), start, end);
+				   dbg_fcn->name (), start, end);
 		      else
 			error ("dbtype: the start line must be less than the end line\n");
 		    }
@@ -428,7 +431,7 @@ List script file with line numbers.\n\
 		
 		  if (start < end)
 		    do_dbtype (octave_stdout,
-			       dbg_fcn->function_name (), start, end);
+			       dbg_fcn->name (), start, end);
 		  else
 		    error ("dbtype: the start line must be less than the end line\n");
 		}

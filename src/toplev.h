@@ -46,10 +46,10 @@ do_octave_atexit (void);
 extern tree_statement_list *global_command;
 
 // Pointer to function that is currently being evaluated.
-extern octave_user_function *curr_function;
+extern octave_function *curr_function;
 
 // Pointer to parent function that is currently being evaluated.
-extern octave_user_function *curr_parent_function;
+extern octave_function *curr_parent_function;
 
 // TRUE means we are ready to interpret commands, but not everything
 // is ready for interactive use.

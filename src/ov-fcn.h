@@ -33,6 +33,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "str-vec.h"
 
 #include "oct-alloc.h"
+#include "oct-obj.h"
 #include "ov-base.h"
 #include "ov-typeinfo.h"
 
@@ -71,6 +72,23 @@ public:
     { return octave_time (static_cast<time_t> (0)); }
 
   virtual bool is_nested_function (void) const { return false; }
+
+  virtual bool is_user_function (void) const { return false; }
+
+  virtual bool takes_varargs (void) const { return false; }
+
+  virtual void octave_va_start (void) { }
+
+  virtual octave_value octave_va_arg (void) const { return octave_value (); }
+
+  virtual octave_value_list octave_all_va_args (void)
+    { return octave_value_list (); }
+
+  virtual bool takes_var_return (void) const { return false; }
+
+  virtual void octave_vr_val (const octave_value& val) { }
+
+  virtual bool has_varargout (void) const { return false; }
 
   std::string name (void) const { return my_name; }
 

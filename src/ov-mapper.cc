@@ -35,6 +35,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-obj.h"
 #include "ov-mapper.h"
 #include "ov.h"
+#include "toplev.h"
+#include "unwind-prot.h"
 
 DEFINE_OCTAVE_ALLOCATOR (octave_mapper);
 
@@ -284,7 +286,14 @@ octave_mapper::do_multi_index_op (int, const octave_value_list& args)
   else
     {
       if (args(0).is_defined ())
-	retval = apply (args(0));
+	{
+	  unwind_protect_ptr (curr_function);
+	  curr_function = this;
+
+	  retval = apply (args(0));
+
+	  unwind_protect::run ();
+	}
       else
 	::error ("%s: argument undefined", name().c_str ());
     }

@@ -32,6 +32,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-obj.h"
 #include "ov-builtin.h"
 #include "ov.h"
+#include "toplev.h"
+#include "unwind-prot.h"
 
 DEFINE_OCTAVE_ALLOCATOR (octave_builtin);
 
@@ -105,7 +107,14 @@ octave_builtin::do_multi_index_op (int nargout, const octave_value_list& args)
   if (any_arg_is_magic_colon (args))
     ::error ("invalid use of colon in function argument list");
   else
-    retval = (*f) (args, nargout);
+    {
+      unwind_protect_ptr (curr_function);
+      curr_function = this;
+
+      retval = (*f) (args, nargout);
+
+      unwind_protect::run ();
+    }
 
   return retval;
 }

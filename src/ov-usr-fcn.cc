@@ -70,8 +70,7 @@ octave_user_function::octave_user_function
    tree_statement_list *cl, symbol_table *st)
   : octave_function (std::string (), std::string ()),
     param_list (pl), ret_list (rl), cmd_list (cl),
-    sym_tab (st), lead_comm (), trail_comm (),
-    file_name (), fcn_name (),
+    sym_tab (st), lead_comm (), trail_comm (), file_name (),
     t_parsed (static_cast<time_t> (0)),
     t_checked (static_cast<time_t> (0)),
     system_fcn_file (false), call_depth (0),
@@ -240,12 +239,6 @@ octave_user_function::has_varargout (void) const
     }
 
   return retval;
-}
-
-void
-octave_user_function::stash_function_name (const std::string& s)
-{
-  fcn_name = s;
 }
 
 // For unwind protect.
@@ -485,8 +478,7 @@ octave_user_function::do_multi_index_op (int nargout,
 
     if (ret_list)
       {
-	ret_list->initialize_undefined_elements (function_name (),
-						 nargout, Matrix ());
+	ret_list->initialize_undefined_elements (my_name, nargout, Matrix ());
 
 	if (has_varargout ())
 	  varargout_to_vr_val ();
@@ -507,7 +499,7 @@ octave_user_function::traceback_error (void) const
   if (error_state >= 0)
     error_state = -1;
 
-  if (fcn_name.empty ())
+  if (my_name.empty ())
     {
       if (file_name.empty ())
 	::error ("called from `?unknown?'");
@@ -517,10 +509,10 @@ octave_user_function::traceback_error (void) const
   else
     {
       if (file_name.empty ())
-	::error ("called from `%s'", fcn_name.c_str ());
+	::error ("called from `%s'", my_name.c_str ());
       else 
 	::error ("called from `%s' in file `%s'",
-		 fcn_name.c_str (), file_name.c_str ());
+		 my_name.c_str (), file_name.c_str ());
     }
 }
 
@@ -536,7 +528,7 @@ octave_user_function::print_symtab_info (std::ostream& os) const
   if (sym_tab)
     sym_tab->print_info (os);
   else
-    warning ("%s: no symbol table info!", fcn_name.c_str ());
+    warning ("%s: no symbol table info!", my_name.c_str ());
 }
 
 void

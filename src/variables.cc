@@ -820,7 +820,7 @@ lookup_function (const std::string& nm)
 
   if (curr_parent_function)
     {
-      std::string parent = curr_parent_function->function_name ();
+      std::string parent = curr_parent_function->name ();
 
       sr = fbi_sym_tab->lookup (parent + ":" + nm);
     }
@@ -853,7 +853,7 @@ lookup_user_function (const std::string& nm)
 
   if (curr_parent_function)
     {
-      std::string parent = curr_parent_function->function_name ();
+      std::string parent = curr_parent_function->name ();
 
       sr = fbi_sym_tab->lookup (parent + ":" + nm);
     }
@@ -1027,7 +1027,7 @@ link_to_builtin_or_function (symbol_record *sr)
 
   if (curr_parent_function)
     {
-      std::string parent = curr_parent_function->function_name ();
+      std::string parent = curr_parent_function->name ();
 
       tmp_sym = fbi_sym_tab->lookup (parent + ":" + nm);
     }
@@ -1496,7 +1496,7 @@ then lock in the current function.\n\
   else if (args.length () == 0)
     {
       if (curr_function)
-        mlock (curr_function->function_name ());
+        mlock (curr_function->name ());
       else
         error ("mlock: invalid use outside a function");
     }
@@ -1528,7 +1528,7 @@ then unlock the current function.\n\
   else if (args.length () == 0)
     {
       if (curr_function)
-        mlock (curr_function->function_name ());
+        mlock (curr_function->name ());
       else
         error ("munlock: invalid use outside a function");
     }
@@ -1561,7 +1561,7 @@ then return true if the current function is locked.\n\
   else if (args.length () == 0)
     {
       if (curr_function)
-        retval = mislocked (curr_function->function_name ());
+        retval = mislocked (curr_function->name ());
       else
         error ("mislocked: invalid use outside a function");
     }

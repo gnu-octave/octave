@@ -72,13 +72,25 @@ liboctave.ps: liboctave.dvi
 	-makeinfo --no-header -I$(srcdir)/doc bugs1.texi
 	-mv BUGS ../BUGS
 
+# This mess is supposed to prevent us from making info files
+# unnecessarily when building Octave in a subdirectory.
+
 conf.texi: $(srcdir)/../src/version.h ../Makeconf Makefile conf.texi.in
 	@echo "Making conf.texi from conf.texi.in..."
 	@(version_val=${version}; \
 	sed < $(srcdir)/conf.texi.in > conf.texi.tmp \
 	-e "s;%OCTAVE_VERSION%;$$version_val;" \
 	-e "s;%OCTAVE_HOME%;${prefix};")
-	@$(srcdir)/../src/move-if-change conf.texi.tmp conf.texi
+	@if test "$(srcdir)" = "." ; then \
+	  $(srcdir)/../src/move-if-change conf.texi.tmp conf.texi; \
+	else \
+	  if cmp conf.texi.tmp $(srcdir)/conf.texi > /dev/null; then \
+	    echo conf.texi is unchanged; \
+	    rm -f conf.texi.tmp; \
+	  else \
+	    mv -f conf.texi.tmp conf.texi; \
+	  fi; \
+	fi
 
 check: all
 .PHONY: check

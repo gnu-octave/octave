@@ -437,6 +437,14 @@ read_doubles (istream& is, double *data, save_type type, int len,
       LS_DO_READ (unsigned TWO_BYTE_INT, data, 2, len, is);
       break;
 
+    case LS_U_INT:
+      LS_DO_READ (unsigned FOUR_BYTE_INT, data, 4, len, is);
+      break;
+
+    case LS_CHAR:
+      LS_DO_READ (signed char, data, 1, len, is);
+      break;
+
     case LS_SHORT:
       LS_DO_READ (TWO_BYTE_INT, data, 2, len, is);
       break;
@@ -1879,6 +1887,9 @@ glob_pattern_p (char *pattern)
   return 0;
 }
 
+// MAX_VAL and MIN_VAL are assumed to have integral values even though
+// they are stored in doubles.
+
 static save_type
 get_save_type (double max_val, double min_val)
 {
@@ -1888,6 +1899,10 @@ get_save_type (double max_val, double min_val)
     st = LS_U_CHAR;
   else if (max_val < 65536 && min_val > -1)
     st = LS_U_SHORT;
+  else if (max_val < 4294967295 && min_val > -1)
+    st = LS_U_INT;
+  else if (max_val < 128 && min_val >= -128)
+    st = LS_CHAR;
   else if (max_val < 32768 && min_val >= -32768)
     st = LS_SHORT;
   else if (max_val < 2147483648 && min_val > -2147483648)

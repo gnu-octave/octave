@@ -1,5 +1,7 @@
 2003-01-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* data.cc (Ffmod): New function.
+
 	* c-file-ptr-stream.cc (c_file_ptr_buf::underflow_common): New
 	function.
 	* c-file-ptr-stream.h (c_file_ptr_buf::underflow,

@@ -271,6 +271,97 @@ and @var{x}.  The result is in range -pi to pi.\n\
   return retval;
 }
 
+DEFUN (fmod, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Mapping Function} {} fmod (@var{x}, @var{y})\n\
+Compute the floating point remainder of @var{y} / @var{x} using the C\n\
+library function @code{fmod}.  The result has the same sign as @var{x}.\n\
+If @var{y} is zero, the result implementation-defined.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 2 && args(0).is_defined () && args(1).is_defined ())
+    {
+      octave_value arg_x = args(0);
+      octave_value arg_y = args(1);
+
+      int y_nr = arg_y.rows ();
+      int y_nc = arg_y.columns ();
+
+      int x_nr = arg_x.rows ();
+      int x_nc = arg_x.columns ();
+
+      int arg_y_empty = empty_arg ("fmod", y_nr, y_nc);
+      int arg_x_empty = empty_arg ("fmod", x_nr, x_nc);
+
+      if (arg_y_empty > 0 && arg_x_empty > 0)
+	return octave_value (Matrix ());
+      else if (arg_y_empty || arg_x_empty)
+	return retval;
+
+      int y_is_scalar = (y_nr == 1 && y_nc == 1);
+      int x_is_scalar = (x_nr == 1 && x_nc == 1);
+
+      if (y_is_scalar && x_is_scalar)
+	{
+	  double y = arg_y.double_value ();
+
+	  if (! error_state)
+	    {
+	      double x = arg_x.double_value ();
+
+	      if (! error_state)
+		retval = fmod (x, y);
+	    }
+	}
+      else if (y_is_scalar)
+	{
+	  double y = arg_y.double_value ();
+
+	  if (! error_state)
+	    {
+	      Matrix x = arg_x.matrix_value ();
+
+	      if (! error_state)
+		retval = map_m_d (fmod, x, y);
+	    }
+	}
+      else if (x_is_scalar)
+	{
+	  Matrix y = arg_y.matrix_value ();
+
+	  if (! error_state)
+	    {
+	      double x = arg_x.double_value ();
+
+	      if (! error_state)
+		retval = map_d_m (fmod, x, y);
+	    }
+	}
+      else if (y_nr == x_nr && y_nc == x_nc)
+	{
+	  Matrix y = arg_y.matrix_value ();
+
+	  if (! error_state)
+	    {
+	      Matrix x = arg_x.matrix_value ();
+
+	      if (! error_state)
+		retval = map_m_m (fmod, x, y);
+	    }
+	}
+      else
+	error ("fmod: nonconformant matrices");
+    }
+  else
+    print_usage ("fmod");
+
+  return retval;
+}
+
 #define DATA_REDUCTION(FCN) \
  \
   octave_value retval; \

@@ -111,7 +111,7 @@ SVD::init (const Matrix& a, SVD::type svd_type)
   type_computed = svd_type;
 
   if (jobu != 'N')
-    left_sm.resize (n, ncol_u);
+    left_sm.resize (m, ncol_u);
 
   double *u = left_sm.fortran_vec ();
 

@@ -798,7 +798,7 @@ subplot_list::print_code (ostream& os)
 char *
 save_in_tmp_file (tree_constant& t, int ndim, int parametric)
 {
-  char *name = strsave (tmpnam (0));
+  char *name = strsave (octave_tmp_file_name ());
   if (name)
     {
       ofstream file (name);

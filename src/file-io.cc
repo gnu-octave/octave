@@ -1392,7 +1392,7 @@ do_scanf (const char *type, const Octave_object& args, int nargout)
       else
 	string = args(1).string_value ();
 
-      tmp_file = tmpnam (0);
+      tmp_file = octave_tmp_file_name ();
 
       fptr = fopen (tmp_file, "w+");
       if (! fptr)

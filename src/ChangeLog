@@ -1,5 +1,7 @@
 2002-10-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* version.h (OCTAVE_VERSION): Now 2.1.38.
+
 	* DLD-FUNCTIONS/fsolve.cc (Ffsolve): Always return solution.
 	Don't barf on nargout == 3.
 

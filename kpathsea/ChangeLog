@@ -1,3 +1,8 @@
+Thu Mar 13 13:08:05 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: Don't set special PIC options on SGI systems,
+	since PIC is apparently the default.
+
 Wed Mar 12 17:00:16 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (install-strip): New target.

@@ -181,6 +181,25 @@ ComplexMatrix::operator != (const ComplexMatrix& a) const
   return !(*this == a);
 }
 
+bool
+ComplexMatrix::is_hermitian (void) const
+{
+  int nr = rows ();
+  int nc = cols ();
+
+  if (is_square () && nr > 0)
+    {
+      for (int i = 0; i < nr; i++)
+	for (int j = i; j < nc; j++)
+	  if (elem (i, j) != conj (elem (j, i)))
+	    return false;
+
+      return true;
+    }
+
+  return false;
+}
+
 // destructive insert/delete/reorder operations
 
 ComplexMatrix&

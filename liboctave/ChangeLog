@@ -1,3 +1,17 @@
+Fri Mar 14 00:29:46 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* EIG.cc (EIG::hermitian_init (const ComplexMatrix&)): New function.
+	(EIG::init (const ComplexMatrix&)): Call it if arg is hermitian.
+	(EIG::symmetric_init (const Matrix&)): New function.
+	(EIG::init (const Matrix&)): Call it if arg is symmetric.
+
+	* CMatrix.cc (ComplexMatrix::is_hermitian): New function.
+
+Thu Mar 13 17:04:26 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Array2.cc (is_symmetric): New function.
+	* Array2.h (is_square): New function.
+
 Wed Mar 12 16:59:49 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (install-strip): New target.

@@ -1,5 +1,8 @@
 Thu Mar 13 11:43:35 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* configure.in: Don't set special PIC options on SGI systems,
+	since PIC is apparently the default.
+
 	* Makefile.in (realclean, distclean): Don't remove configure or
 	config.h.in.
 

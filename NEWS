@@ -11,6 +11,10 @@ Summary of changes for version 2.0.6:
       function y = f (x) y = sqrt (x); endfunction
       quad ("f", 0, 1)
 
+  * If the argument to eig() is symmetric, Octave uses the specialized
+    Lapack subroutine for symmetric matrices for a significant
+    increase in performance.
+
 Summary of changes for version 2.0.5:
 ------------------------------------
 

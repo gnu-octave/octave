@@ -72,6 +72,8 @@ public:
   bool operator == (const ComplexMatrix& a) const;
   bool operator != (const ComplexMatrix& a) const;
 
+  bool is_hermitian (void) const;
+
   // destructive insert/delete/reorder operations
 
   ComplexMatrix& insert (const Matrix& a, int r, int c);

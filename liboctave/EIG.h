@@ -80,6 +80,9 @@ private:
 
   int init (const Matrix& a);
   int init (const ComplexMatrix& a);
+
+  int symmetric_init (const Matrix& a);
+  int hermitian_init (const ComplexMatrix& a);
 };
 
 #endif

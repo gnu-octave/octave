@@ -49,6 +49,9 @@ case "$canonical_host_type" in
     SHLEXT=sl
     SH_LDFLAGS="-shared -fPIC"
   ;;
+  *-sgi-*)
+    CPICFLAG=
+  ;;
 esac
 AC_MSG_RESULT([defining CPICFLAG to be $CPICFLAG])
 AC_MSG_RESULT([defining SHLEXT to be $SHLEXT])

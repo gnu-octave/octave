@@ -136,7 +136,7 @@ fsolve_user_function (const ColumnVector& x)
 #define FSOLVE_ABORT1(msg) \
   do \
     { \
-      ::error ("fsolve: " ## msg); \
+      ::error ("fsolve: " msg); \
       FSOLVE_ABORT (); \
     } \
   while (0)
@@ -144,7 +144,7 @@ fsolve_user_function (const ColumnVector& x)
 #define FSOLVE_ABORT2(fmt, arg) \
   do \
     { \
-      ::error ("fsolve: " ## fmt, arg); \
+      ::error ("fsolve: " fmt, arg); \
       FSOLVE_ABORT (); \
     } \
   while (0)

@@ -1,3 +1,26 @@
+2000-12-06  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DLD-FUNCTIONS/minmax.cc (EMPTY_RETURN_CHECK): New macro.
+	(min, max): Use it.
+
+	* DLD-FUNCTIONS/minmax.cc (MINMAX_BODY): New macro.  If single arg
+	is empty, return empty matrix result and empty matrix for index.
+	(Fmin, Fmax): Use MINMAX_BODY, so we have consistent definition
+	for min and max functions.
+
+2000-11-30  Joerg Specht  <joerg.specht@ins.uni-stuttgart.de>
+
+	* help.cc (display_help_text): Append new line at end of doc string.
+
+2000-11-30  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DLD-FUNCTIONS/lsode.cc (LSODE_ABORT1, LSODE_ABORT2): Omit `##'
+	in macro definition since they are not needed to paste strings
+	together and picky compilers choke on them.
+	* DLD-FUNCTIONS/quad.cc (QUAD_ABORT1, QUAD_ABORT2): Likewise.
+	* DLD-FUNCTIONS/fsolve.cc (FSOLVE_ABORT1, FSOLVE_ABORT2): Likewise.
+	* DLD-FUNCTIONS/dassl.cc (DASSL_ABORT1, DASSL_ABORT2): Likewise.
+
 2000-11-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* mkbuiltins (XDEFUNX_INTERNAL): New macro.

@@ -37,11 +37,17 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // XXX FIXME XXX -- it would be nice to share code among the min/max
 // functions below.
 
+#define EMPTY_RETURN_CHECK(T) \
+  if (nr == 0 || nc == 0) \
+    return T (0, 0)
+
 static Matrix
 min (double d, const Matrix& m)
 {
   int nr = m.rows ();
   int nc = m.columns ();
+
+  EMPTY_RETURN_CHECK (Matrix);
 
   Matrix result (nr, nc);
 
@@ -58,6 +64,8 @@ min (const Matrix& m, double d)
   int nr = m.rows ();
   int nc = m.columns ();
 
+  EMPTY_RETURN_CHECK (Matrix);
+
   Matrix result (nr, nc);
 
   for (int j = 0; j < nc; j++)
@@ -72,6 +80,8 @@ min (const Complex& c, const ComplexMatrix& m)
 {
   int nr = m.rows ();
   int nc = m.columns ();
+
+  EMPTY_RETURN_CHECK (ComplexMatrix);
 
   ComplexMatrix result (nr, nc);
 
@@ -88,6 +98,8 @@ min (const ComplexMatrix& m, const Complex& c)
   int nr = m.rows ();
   int nc = m.columns ();
 
+  EMPTY_RETURN_CHECK (ComplexMatrix);
+
   ComplexMatrix result (nr, nc);
 
   for (int j = 0; j < nc; j++)
@@ -102,11 +114,14 @@ min (const Matrix& a, const Matrix& b)
 {
   int nr = a.rows ();
   int nc = a.columns ();
+
   if (nr != b.rows () || nc != b.columns ())
     {
       error ("two-arg min expecting args of same size");
       return Matrix ();
     }
+
+  EMPTY_RETURN_CHECK (Matrix);
 
   Matrix result (nr, nc);
 
@@ -122,11 +137,14 @@ min (const ComplexMatrix& a, const ComplexMatrix& b)
 {
   int nr = a.rows ();
   int nc = a.columns ();
+
   if (nr != b.rows () || nc != b.columns ())
     {
       error ("two-arg min expecting args of same size");
       return ComplexMatrix ();
     }
+
+  EMPTY_RETURN_CHECK (ComplexMatrix);
 
   ComplexMatrix result (nr, nc);
 
@@ -161,6 +179,8 @@ max (double d, const Matrix& m)
   int nr = m.rows ();
   int nc = m.columns ();
 
+  EMPTY_RETURN_CHECK (Matrix);
+
   Matrix result (nr, nc);
 
   for (int j = 0; j < nc; j++)
@@ -175,6 +195,8 @@ max (const Matrix& m, double d)
 {
   int nr = m.rows ();
   int nc = m.columns ();
+
+  EMPTY_RETURN_CHECK (Matrix);
 
   Matrix result (nr, nc);
 
@@ -191,6 +213,8 @@ max (const Complex& c, const ComplexMatrix& m)
   int nr = m.rows ();
   int nc = m.columns ();
 
+  EMPTY_RETURN_CHECK (ComplexMatrix);
+
   ComplexMatrix result (nr, nc);
 
   for (int j = 0; j < nc; j++)
@@ -206,6 +230,8 @@ max (const ComplexMatrix& m, const Complex& c)
   int nr = m.rows ();
   int nc = m.columns ();
 
+  EMPTY_RETURN_CHECK (ComplexMatrix);
+
   ComplexMatrix result (nr, nc);
 
   for (int j = 0; j < nc; j++)
@@ -220,11 +246,14 @@ max (const Matrix& a, const Matrix& b)
 {
   int nr = a.rows ();
   int nc = a.columns ();
+
   if (nr != b.rows () || nc != b.columns ())
     {
       error ("two-arg max expecting args of same size");
       return Matrix ();
     }
+
+  EMPTY_RETURN_CHECK (Matrix);
 
   Matrix result (nr, nc);
 
@@ -240,11 +269,14 @@ max (const ComplexMatrix& a, const ComplexMatrix& b)
 {
   int nr = a.rows ();
   int nc = a.columns ();
+
   if (nr != b.rows () || nc != b.columns ())
     {
       error ("two-arg max expecting args of same size");
       return ComplexMatrix ();
     }
+
+  EMPTY_RETURN_CHECK (ComplexMatrix);
 
   ComplexMatrix result (nr, nc);
 
@@ -273,6 +305,239 @@ max (const ComplexMatrix& a, const ComplexMatrix& b)
   return result;
 }
 
+#define MINMAX_BODY(FCN) \
+ \
+  octave_value_list retval;  \
+ \
+  int nargin = args.length (); \
+ \
+  if (nargin < 1 || nargin > 2 || nargout > 2) \
+    { \
+      print_usage (#FCN); \
+      return retval; \
+    } \
+ \
+  octave_value arg1; \
+  octave_value arg2; \
+ \
+  switch (nargin) \
+    { \
+    case 2: \
+      arg2 = args(1); \
+ \
+    case 1: \
+      arg1 = args(0); \
+      break; \
+ \
+    default: \
+      panic_impossible (); \
+      break; \
+    } \
+ \
+  if (nargin == 1 && (nargout == 1 || nargout == 0)) \
+    { \
+      if (arg1.is_real_type ()) \
+	{ \
+	  Matrix m = arg1.matrix_value (); \
+ \
+	  if (! error_state) \
+	    { \
+	      if (m.rows () == 1) \
+		retval(0) = m.row_ ## FCN (); \
+	      else \
+		{ \
+		  if (m.rows () == 0 || m.columns () == 0) \
+		    retval(0) = Matrix (); \
+		  else \
+		    retval(0) = m.column_ ## FCN (); \
+		} \
+	    } \
+	} \
+      else if (arg1.is_complex_type ()) \
+	{ \
+	  ComplexMatrix m = arg1.complex_matrix_value (); \
+ \
+	  if (! error_state) \
+	    { \
+	      if (m.rows () == 1) \
+		retval(0) = m.row_ ## FCN (); \
+	      else \
+		{ \
+		  if (m.rows () == 0 || m.columns () == 0) \
+		    retval(0) = Matrix (); \
+		  else \
+		    retval(0) = m.column_ ## FCN (); \
+		} \
+	    } \
+	} \
+      else \
+	gripe_wrong_type_arg (#FCN, arg1); \
+    } \
+  else if (nargin == 1 && nargout == 2) \
+    { \
+      Array<int> index; \
+ \
+      if (arg1.is_real_type ()) \
+	{ \
+	  Matrix m = arg1.matrix_value (); \
+ \
+	  if (! error_state) \
+	    { \
+	      retval.resize (2); \
+ \
+	      if (m.rows () == 1) \
+		retval(0) = m.row_ ## FCN (index); \
+	      else \
+		{ \
+		  if (m.rows () == 0 || m.columns () == 0) \
+		    retval(0) = Matrix (); \
+		  else \
+		    retval(0) = m.column_ ## FCN (index); \
+		} \
+	    } \
+	} \
+      else if (arg1.is_complex_type ()) \
+	{ \
+	  ComplexMatrix m = arg1.complex_matrix_value (); \
+ \
+	  if (! error_state) \
+	    { \
+	      retval.resize (2); \
+ \
+	      if (m.rows () == 1) \
+		retval(0) = m.row_ ## FCN (index); \
+	      else \
+		{ \
+		  if (m.rows () == 0 || m.columns () == 0) \
+		    retval(0) = Matrix (); \
+		  else \
+		    retval(0) = m.column_ ## FCN (index); \
+		} \
+	    } \
+	} \
+      else \
+	gripe_wrong_type_arg (#FCN, arg1); \
+ \
+      int len = index.length (); \
+ \
+      if (len > 0) \
+	{ \
+	  RowVector idx (len); \
+ \
+	  for (int i = 0; i < len; i++) \
+	    { \
+	      int tmp = index.elem (i) + 1; \
+	      idx.elem (i) = (tmp <= 0) \
+		? octave_NaN : static_cast<double> (tmp); \
+	    } \
+ \
+	  retval(1) = idx; \
+	} \
+      else \
+	retval(1) = Matrix (); \
+    } \
+  else if (nargin == 2) \
+    { \
+      int arg1_is_scalar = arg1.is_scalar_type (); \
+      int arg2_is_scalar = arg2.is_scalar_type (); \
+ \
+      int arg1_is_complex = arg1.is_complex_type (); \
+      int arg2_is_complex = arg2.is_complex_type (); \
+ \
+      if (arg1_is_scalar) \
+	{ \
+	  if (arg1_is_complex || arg2_is_complex) \
+	    { \
+	      Complex c1 = arg1.complex_value (); \
+	      ComplexMatrix m2 = arg2.complex_matrix_value (); \
+	      if (! error_state) \
+		{ \
+		  ComplexMatrix result = FCN (c1, m2); \
+		  if (! error_state) \
+		    retval(0) = result; \
+		} \
+	    } \
+	  else \
+	    { \
+	      double d1 = arg1.double_value (); \
+	      Matrix m2 = arg2.matrix_value (); \
+ \
+	      if (! error_state) \
+		{ \
+		  Matrix result = FCN (d1, m2); \
+		  if (! error_state) \
+		    retval(0) = result; \
+		} \
+	    } \
+	} \
+      else if (arg2_is_scalar) \
+	{ \
+	  if (arg1_is_complex || arg2_is_complex) \
+	    { \
+	      ComplexMatrix m1 = arg1.complex_matrix_value (); \
+ \
+	      if (! error_state) \
+		{ \
+		  Complex c2 = arg2.complex_value (); \
+		  ComplexMatrix result = FCN (m1, c2); \
+		  if (! error_state) \
+		    retval(0) = result; \
+		} \
+	    } \
+	  else \
+	    { \
+	      Matrix m1 = arg1.matrix_value (); \
+ \
+	      if (! error_state) \
+		{ \
+		  double d2 = arg2.double_value (); \
+		  Matrix result = FCN (m1, d2); \
+		  if (! error_state) \
+		    retval(0) = result; \
+		} \
+	    } \
+	} \
+      else \
+	{ \
+	  if (arg1_is_complex || arg2_is_complex) \
+	    { \
+	      ComplexMatrix m1 = arg1.complex_matrix_value (); \
+ \
+	      if (! error_state) \
+		{ \
+		  ComplexMatrix m2 = arg2.complex_matrix_value (); \
+ \
+		  if (! error_state) \
+		    { \
+		      ComplexMatrix result = FCN (m1, m2); \
+		      if (! error_state) \
+			retval(0) = result; \
+		    } \
+		} \
+	    } \
+	  else \
+	    { \
+	      Matrix m1 = arg1.matrix_value (); \
+ \
+	      if (! error_state) \
+		{ \
+		  Matrix m2 = arg2.matrix_value (); \
+ \
+		  if (! error_state) \
+		    { \
+		      Matrix result = FCN (m1, m2); \
+		      if (! error_state) \
+			retval(0) = result; \
+		    } \
+		} \
+	    } \
+	} \
+    } \
+  else \
+    panic_impossible (); \
+ \
+  return retval
+
 DEFUN_DLD (min, args, nargout,
   "-*- texinfo -*-\n\
 For a vector argument, return the minimum value.  For a matrix\n\
@@ -298,215 +563,7 @@ minimum value(s). Thus,\n\
 @noindent\n\
 returns @var{x} = 0 and @var{ix} = 3.")
 {
-  octave_value_list retval;
-
-  int nargin = args.length ();
-
-  if (nargin < 1 || nargin > 2 || nargout > 2)
-    {
-      print_usage ("min");
-      return retval;
-    }
-
-  octave_value arg1;
-  octave_value arg2;
-
-  switch (nargin)
-    {
-    case 2:
-      arg2 = args(1);
-      // Fall through...
-
-    case 1:
-      arg1 = args(0);
-      break;
-
-    default:
-      panic_impossible ();
-      break;
-    }
-
-  if (nargin == 1 && (nargout == 1 || nargout == 0))
-    {
-      if (arg1.is_real_type ())
-	{
-	  Matrix m = arg1.matrix_value ();
-
-	  if (! error_state)
-	    {
-	      if (m.rows () == 1)
-		retval(0) = m.row_min ();
-	      else
-		retval(0) = m.column_min ();
-	    }
-	}
-      else if (arg1.is_complex_type ())
-	{
-	  ComplexMatrix m = arg1.complex_matrix_value ();
-
-	  if (! error_state)
-	    {
-	      if (m.rows () == 1)
-		retval(0) = m.row_min ();
-	      else
-		retval(0) = m.column_min ();
-	    }
-	}
-      else
-	gripe_wrong_type_arg ("min", arg1);
-    }
-  else if (nargin == 1 && nargout == 2)
-    {
-      Array<int> index;
-
-      if (arg1.is_real_type ())
-	{
-	  Matrix m = arg1.matrix_value ();
-
-	  if (! error_state)
-	    {
-	      retval.resize (2);
-
-	      if (m.rows () == 1)
-		retval(0) = m.row_min (index);
-	      else
-		retval(0) = m.column_min (index);
-	    }
-	}
-      else if (arg1.is_complex_type ())
-	{
-	  ComplexMatrix m = arg1.complex_matrix_value ();
-
-	  if (! error_state)
-	    {
-	      retval.resize (2);
-
-	      if (m.rows () == 1)
-		retval(0) = m.row_min (index);
-	      else
-		retval(0) = m.column_min (index);
-	    }
-	}
-      else
-	gripe_wrong_type_arg ("min", arg1);
-
-      int len = index.length ();
-
-      if (len > 0)
-	{
-	  RowVector idx (len);
-
-	  for (int i = 0; i < len; i++)
-	    {
-	      int tmp = index.elem (i) + 1;
-	      idx.elem (i) = (tmp <= 0)
-		? octave_NaN : static_cast<double> (tmp);
-	    }
-
-	  retval(1) = idx;
-	}
-    }
-  else if (nargin == 2)
-    {
-      int arg1_is_scalar = arg1.is_scalar_type ();
-      int arg2_is_scalar = arg2.is_scalar_type ();
-
-      int arg1_is_complex = arg1.is_complex_type ();
-      int arg2_is_complex = arg2.is_complex_type ();
-
-      if (arg1_is_scalar)
-	{
-	  if (arg1_is_complex || arg2_is_complex)
-	    {
-	      Complex c1 = arg1.complex_value ();
-	      ComplexMatrix m2 = arg2.complex_matrix_value ();
-	      if (! error_state)
-		{
-		  ComplexMatrix result = min (c1, m2);
-		  if (! error_state)
-		    retval(0) = result;
-		}
-	    }
-	  else
-	    {
-	      double d1 = arg1.double_value ();
-	      Matrix m2 = arg2.matrix_value ();
-
-	      if (! error_state)
-		{
-		  Matrix result = min (d1, m2);
-		  if (! error_state)
-		    retval(0) = result;
-		}
-	    }
-	}
-      else if (arg2_is_scalar)
-	{
-	  if (arg1_is_complex || arg2_is_complex)
-	    {
-	      ComplexMatrix m1 = arg1.complex_matrix_value ();
-
-	      if (! error_state)
-		{
-		  Complex c2 = arg2.complex_value ();
-		  ComplexMatrix result = min (m1, c2);
-		  if (! error_state)
-		    retval(0) = result;
-		}
-	    }
-	  else
-	    {
-	      Matrix m1 = arg1.matrix_value ();
-
-	      if (! error_state)
-		{
-		  double d2 = arg2.double_value ();
-		  Matrix result = min (m1, d2);
-		  if (! error_state)
-		    retval(0) = result;
-		}
-	    }
-	}
-      else
-	{
-	  if (arg1_is_complex || arg2_is_complex)
-	    {
-	      ComplexMatrix m1 = arg1.complex_matrix_value ();
-
-	      if (! error_state)
-		{
-		  ComplexMatrix m2 = arg2.complex_matrix_value ();
-
-		  if (! error_state)
-		    {
-		      ComplexMatrix result = min (m1, m2);
-		      if (! error_state)
-			retval(0) = result;
-		    }
-		}
-	    }
-	  else
-	    {
-	      Matrix m1 = arg1.matrix_value ();
-
-	      if (! error_state)
-		{
-		  Matrix m2 = arg2.matrix_value ();
-
-		  if (! error_state)
-		    {
-		      Matrix result = min (m1, m2);
-		      if (! error_state)
-			retval(0) = result;
-		    }
-		}
-	    }
-	}
-    }
-  else
-    panic_impossible ();
-
-  return retval;
+  MINMAX_BODY (min);
 }
 
 DEFUN_DLD (max, args, nargout,
@@ -534,215 +591,7 @@ maximum value(s). Thus,\n\
 @noindent\n\
 returns @var{x} = 5 and @var{ix} = 3.")
 {
-  octave_value_list retval;
-
-  int nargin = args.length ();
-
-  if (nargin < 1 || nargin > 2 || nargout > 2)
-    {
-      print_usage ("max");
-      return retval;
-    }
-
-  octave_value arg1;
-  octave_value arg2;
-
-  switch (nargin)
-    {
-    case 2:
-      arg2 = args(1);
-      // Fall through...
-
-    case 1:
-      arg1 = args(0);
-      break;
-
-    default:
-      panic_impossible ();
-      break;
-    }
-
-  if (nargin == 1 && (nargout == 1 || nargout == 0))
-    {
-      if (arg1.is_real_type ())
-	{
-	  Matrix m = arg1.matrix_value ();
-
-	  if (! error_state)
-	    {
-	      if (m.rows () == 1)
-		retval(0) = m.row_max ();
-	      else
-		retval(0) = m.column_max ();
-	    }
-	}
-      else if (arg1.is_complex_type ())
-	{
-	  ComplexMatrix m = arg1.complex_matrix_value ();
-
-	  if (! error_state)
-	    {
-	      if (m.rows () == 1)
-		retval(0) = m.row_max ();
-	      else
-		retval(0) = m.column_max ();
-	    }
-	}
-      else
-	gripe_wrong_type_arg ("max", arg1);
-    }
-  else if (nargin == 1 && nargout == 2)
-    {
-      Array<int> index;
-
-      if (arg1.is_real_type ())
-	{
-	  Matrix m = arg1.matrix_value ();
-
-	  if (! error_state)
-	    {
-	      retval.resize (2);
-
-	      if (m.rows () == 1)
-		retval(0) = m.row_max (index);
-	      else
-		retval(0) = m.column_max (index);
-	    }
-	}
-      else if (arg1.is_complex_type ())
-	{
-	  ComplexMatrix m = arg1.complex_matrix_value ();
-
-	  if (! error_state)
-	    {
-	      retval.resize (2);
-
-	      if (m.rows () == 1)
-		retval(0) = m.row_max (index);
-	      else
-		retval(0) = m.column_max (index);
-	    }
-	}
-      else
-	gripe_wrong_type_arg ("max", arg1);
-
-      int len = index.length ();
-
-      if (len > 0)
-	{
-	  RowVector idx (len);
-
-	  for (int i = 0; i < len; i++)
-	    {
-	      int tmp = index.elem (i) + 1;
-	      idx.elem (i) = (tmp <= 0)
-		? octave_NaN : static_cast<double> (tmp);
-	    }
-
-	  retval(1) = idx;
-	}
-    }
-  else if (nargin == 2)
-    {
-      int arg1_is_scalar = arg1.is_scalar_type ();
-      int arg2_is_scalar = arg2.is_scalar_type ();
-
-      int arg1_is_complex = arg1.is_complex_type ();
-      int arg2_is_complex = arg2.is_complex_type ();
-
-      if (arg1_is_scalar)
-	{
-	  if (arg1_is_complex || arg2_is_complex)
-	    {
-	      Complex c1 = arg1.complex_value ();
-	      ComplexMatrix m2 = arg2.complex_matrix_value ();
-	      if (! error_state)
-		{
-		  ComplexMatrix result = max (c1, m2);
-		  if (! error_state)
-		    retval(0) = result;
-		}
-	    }
-	  else
-	    {
-	      double d1 = arg1.double_value ();
-	      Matrix m2 = arg2.matrix_value ();
-
-	      if (! error_state)
-		{
-		  Matrix result = max (d1, m2);
-		  if (! error_state)
-		    retval(0) = result;
-		}
-	    }
-	}
-      else if (arg2_is_scalar)
-	{
-	  if (arg1_is_complex || arg2_is_complex)
-	    {
-	      ComplexMatrix m1 = arg1.complex_matrix_value ();
-
-	      if (! error_state)
-		{
-		  Complex c2 = arg2.complex_value ();
-		  ComplexMatrix result = max (m1, c2);
-		  if (! error_state)
-		    retval(0) = result;
-		}
-	    }
-	  else
-	    {
-	      Matrix m1 = arg1.matrix_value ();
-
-	      if (! error_state)
-		{
-		  double d2 = arg2.double_value ();
-		  Matrix result = max (m1, d2);
-		  if (! error_state)
-		    retval(0) = result;
-		}
-	    }
-	}
-      else
-	{
-	  if (arg1_is_complex || arg2_is_complex)
-	    {
-	      ComplexMatrix m1 = arg1.complex_matrix_value ();
-
-	      if (! error_state)
-		{
-		  ComplexMatrix m2 = arg2.complex_matrix_value ();
-
-		  if (! error_state)
-		    {
-		      ComplexMatrix result = max (m1, m2);
-		      if (! error_state)
-			retval(0) = result;
-		    }
-		}
-	    }
-	  else
-	    {
-	      Matrix m1 = arg1.matrix_value ();
-
-	      if (! error_state)
-		{
-		  Matrix m2 = arg2.matrix_value ();
-
-		  if (! error_state)
-		    {
-		      Matrix result = max (m1, m2);
-		      if (! error_state)
-			retval(0) = result;
-		    }
-		}
-	    }
-	}
-    }
-  else
-    panic_impossible ();
-
-  return retval;
+  MINMAX_BODY (max);
 }
 
 /*

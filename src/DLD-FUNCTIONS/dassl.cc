@@ -120,7 +120,7 @@ dassl_user_function (const ColumnVector& x, const ColumnVector& xdot, double t)
 #define DASSL_ABORT1(msg) \
   do \
     { \
-      ::error ("dassl: " ## msg); \
+      ::error ("dassl: " msg); \
       DASSL_ABORT (); \
     } \
   while (0)
@@ -128,7 +128,7 @@ dassl_user_function (const ColumnVector& x, const ColumnVector& xdot, double t)
 #define DASSL_ABORT2(fmt, arg) \
   do \
     { \
-      ::error ("dassl: " ## fmt, arg); \
+      ::error ("dassl: " fmt, arg); \
       DASSL_ABORT (); \
     } \
   while (0)

@@ -1,5 +1,10 @@
 2003-01-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* pt-plot.cc (subplot::extract_plot_data): Call single_subsref,
+	not subsref.
+	* ov.h, ov.cc (single_subsref (const std::string&, const
+	octave_value_list&)): Rename from subsref.
+
 	* symtab.cc (symbol_table::rename): Explicitly convert C string to
 	std::string so type of second arg of ?: matches third.
 	(symbol_table::lookup): Likewise.

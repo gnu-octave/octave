@@ -250,11 +250,12 @@ public:
   virtual octave_value *try_narrowing_conversion (void)
     { return rep->try_narrowing_conversion (); }
 
+  octave_value single_subsref (const std::string& type,
+			       const octave_value_list& idx);
+
   virtual octave_value subsref (const std::string& type,
 				const std::list<octave_value_list>& idx)
     { return rep->subsref (type, idx); }
-
-  octave_value subsref (const std::string& type, const octave_value_list& idx);
 
   virtual octave_value_list subsref (const std::string& type,
 				     const std::list<octave_value_list>& idx,

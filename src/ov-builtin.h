@@ -50,6 +50,13 @@ public:
 
   ~octave_builtin (void) { }
 
+  octave_value subsref (const std::string& type,
+			const std::list<octave_value_list>& idx)
+    {
+      panic_impossible ();
+      return octave_value ();
+    }
+
   octave_value_list subsref (const std::string& type,
 			     const std::list<octave_value_list>& idx,
 			     int nargout);

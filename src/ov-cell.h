@@ -76,6 +76,14 @@ public:
   octave_value subsref (const std::string& type,
 			const std::list<octave_value_list>& idx);
 
+  octave_value_list subsref (const std::string& type,
+			     const std::list<octave_value_list>& idx,
+    			     int nargout)
+    {
+      panic_impossible ();
+      return octave_value_list ();
+    }
+
   octave_value subsasgn (const std::string& type,
 			 const std::list<octave_value_list>& idx,
 			 const octave_value& rhs);

@@ -612,7 +612,8 @@ octave_value::maybe_mutate (void)
 }
 
 octave_value
-octave_value::subsref (const std::string& type, const octave_value_list& idx)
+octave_value::single_subsref (const std::string& type,
+			      const octave_value_list& idx)
 {
   std::list<octave_value_list> i;
 

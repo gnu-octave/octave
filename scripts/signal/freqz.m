@@ -63,11 +63,14 @@
 ## @var{Fs}.  If you are evaluating the response at specific frequencies 
 ## @var{w}, those frequencies should be requested in Hz rather than radians.
 ##
+## @deftypefnx {Function File} freqz(@dots{})
+## Plot the pass band, stop band and phase response of @var{h} rather
+## than returning them.
 ## @end deftypefn
 
 ## Author: jwe ???
 
-function [h, w] = freqz (b, a, n, region, Fs)
+function [h_r, w_r] = freqz (b, a, n, region, Fs)
 
   if (nargin < 1 || nargin > 5)
     usage ("[h, w] = freqz (b, a, n [, \"whole\"] [, Fs])");
@@ -152,5 +155,12 @@ function [h, w] = freqz (b, a, n, region, Fs)
   endif
   h = hb ./ ha;
   w = Fs * w / (2*pi);
+
+  if (nargout != 0), # return values and don't plot
+    h_r = h;
+    w_r = w;
+  else             # plot and don't return values
+    freqz_plot (w, h);
+  end
 
 endfunction

@@ -305,7 +305,7 @@ empty_arg (const char *name, int nr, int nc)
 
   if (nr == 0 || nc == 0)
     {
-      int flag = user_pref.propagate_empty_matrices;
+      int flag = Vpropagate_empty_matrices;
 
       if (flag < 0)
 	{

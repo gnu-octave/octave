@@ -53,7 +53,7 @@ tree_expression::is_logically_true (const char *warn_for)
 	  if (t1.rows () == 0 || t1.columns () == 0)
 	    {
 	      t1 = 0.0;
-	      int flag = user_pref.propagate_empty_matrices;
+	      int flag = Vpropagate_empty_matrices;
 	      if (flag < 0)
 		warning ("%s: empty matrix used in conditional expression",
 			 warn_for);

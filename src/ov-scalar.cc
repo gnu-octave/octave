@@ -32,6 +32,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gripes.h"
 #include "oct-obj.h"
 #include "ov-scalar.h"
+#include "ov-re-mat.h"
 #include "ov-typeinfo.h"
 #include "pr-output.h"
 #include "xdiv.h"
@@ -68,7 +69,11 @@ octave_scalar::index (const octave_value_list& idx) const
       //
       // and similar constructions.  Hmm...
 
-      octave_value tmp (matrix_value ());
+      // XXX FIXME XXX -- using this constructor avoids narrowing the
+      // 1x1 matrix back to a scalar value.  Need a better solution
+      // to this problem.
+
+      octave_value tmp (new octave_matrix (matrix_value ()));
 
       retval = tmp.index (idx);
     }

@@ -222,40 +222,88 @@ octave_value::octave_value (double d)
   : rep (new octave_scalar (d)) { rep->count = 1; }
 
 octave_value::octave_value (const Matrix& m)
-  : rep (new octave_matrix (m)) { rep->count = 1; }
+  : rep (new octave_matrix (m))
+{
+  rep->count = 1;
+  maybe_mutate ();
+}
 
 octave_value::octave_value (const DiagMatrix& d)
-  : rep (new octave_matrix (d)) { rep->count = 1; }
+  : rep (new octave_matrix (d))
+{
+  rep->count = 1;
+  maybe_mutate ();
+}
 
 octave_value::octave_value (const RowVector& v, int pcv)
-  : rep (new octave_matrix (v, pcv)) { rep->count = 1; }
+  : rep (new octave_matrix (v, pcv))
+{
+  rep->count = 1;
+  maybe_mutate ();
+}
 
 octave_value::octave_value (const ColumnVector& v, int pcv)
-  : rep (new octave_matrix (v, pcv)) { rep->count = 1; }
+  : rep (new octave_matrix (v, pcv))
+{
+  rep->count = 1;
+  maybe_mutate ();
+}
 
 octave_value::octave_value (const Complex& C)
-  : rep (new octave_complex (C)) { rep->count = 1; }
+  : rep (new octave_complex (C))
+{
+  rep->count = 1;
+  maybe_mutate ();
+}
 
 octave_value::octave_value (const ComplexMatrix& m)
-  : rep (new octave_complex_matrix (m)) { rep->count = 1; }
+  : rep (new octave_complex_matrix (m))
+{
+  rep->count = 1;
+  maybe_mutate ();
+}
 
 octave_value::octave_value (const ComplexDiagMatrix& d)
-  : rep (new octave_complex_matrix (d)) { rep->count = 1; }
+  : rep (new octave_complex_matrix (d))
+{
+  rep->count = 1;
+  maybe_mutate ();
+}
 
 octave_value::octave_value (const ComplexRowVector& v, int pcv)
-  : rep (new octave_complex_matrix (v, pcv)) { rep->count = 1; }
+  : rep (new octave_complex_matrix (v, pcv))
+{
+  rep->count = 1;
+  maybe_mutate ();
+}
 
 octave_value::octave_value (const ComplexColumnVector& v, int pcv)
-  : rep (new octave_complex_matrix (v, pcv)) { rep->count = 1; }
+  : rep (new octave_complex_matrix (v, pcv))
+{
+  rep->count = 1;
+  maybe_mutate ();
+}
 
 octave_value::octave_value (const char *s)
-  : rep (new octave_char_matrix_str (s)) { rep->count = 1; }
+  : rep (new octave_char_matrix_str (s))
+{
+  rep->count = 1;
+  maybe_mutate ();
+}
 
 octave_value::octave_value (const string& s)
-  : rep (new octave_char_matrix_str (s)) { rep->count = 1; }
+  : rep (new octave_char_matrix_str (s))
+{
+  rep->count = 1;
+  maybe_mutate ();
+}
 
 octave_value::octave_value (const string_vector& s)
-  : rep (new octave_char_matrix_str (s)) { rep->count = 1; }
+  : rep (new octave_char_matrix_str (s))
+{
+  rep->count = 1;
+  maybe_mutate ();
+}
 
 octave_value::octave_value (const charMatrix& chm, bool is_string)
   : rep (0)
@@ -266,13 +314,22 @@ octave_value::octave_value (const charMatrix& chm, bool is_string)
     rep = new octave_char_matrix (chm);
 
   rep->count = 1;
+  maybe_mutate ();
 }
 
 octave_value::octave_value (double base, double limit, double inc)
-  : rep (new octave_range (base, limit, inc)) { rep->count = 1; }
+  : rep (new octave_range (base, limit, inc))
+{
+  rep->count = 1;
+  maybe_mutate ();
+}
 
 octave_value::octave_value (const Range& r)
-  : rep (new octave_range (r)) { rep->count = 1; }
+  : rep (new octave_range (r))
+{
+  rep->count = 1;
+  maybe_mutate ();
+}
 
 octave_value::octave_value (const Octave_map& m)
   : rep (new octave_struct (m)) { rep->count = 1; }

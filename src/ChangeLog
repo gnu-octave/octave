@@ -1,5 +1,13 @@
 Fri Oct 18 13:44:33 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* ov.h (octave_value::index): Undo previous change.
+	* ov.cc (octave_value constructors): Call maybe_mutate() in most
+	cases.
+
+	* ov-complex.cc (octave_complex::index): Avoid implicit type
+	conversion back to scalar type.
+	* ov-scalar.cc (octave_scalar::index): Likewise.
+
 	* ov.h (octave_value::index): Call maybe_mutate() on retval before
 	returning it.
 

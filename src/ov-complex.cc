@@ -33,6 +33,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-obj.h"
 #include "ops.h"
 #include "ov-complex.h"
+#include "ov-cx-mat.h"
 #include "ov-scalar.h"
 #include "gripes.h"
 #include "pr-output.h"
@@ -79,7 +80,11 @@ octave_complex::index (const octave_value_list& idx) const
       //
       // and similar constructions.  Hmm...
 
-      octave_value tmp (complex_matrix_value ());
+      // XXX FIXME XXX -- using this constructor avoids narrowing the
+      // 1x1 matrix back to a scalar value.  Need a better solution
+      // to this problem.
+
+      octave_value tmp (new octave_complex_matrix (complex_matrix_value ()));
 
       retval = tmp.index (idx);
     }

@@ -140,13 +140,16 @@ DEFUN_DLD_BUILTIN ("expm", Fexpm, Sexpm, 10,
 					   m.fortran_vec (), nc,
 					   work.fortran_vec ());
 
-      sqpow = (int) (1.0 + log (inf_norm) / log (2.0));
+      sqpow = (int) (inf_norm > 0.0
+		     ? (1.0 + log (inf_norm) / log (2.0))
+		     : 0.0);
 
       // Check whether we need to square at all.
 
       if (sqpow < 0)
 	sqpow = 0;
-      else
+
+      if (sqpow > 0)
 	{
 	  for (inf_norm = 1.0, i = 0; i < sqpow; i++)
 	    inf_norm *= 2.0;
@@ -234,13 +237,16 @@ DEFUN_DLD_BUILTIN ("expm", Fexpm, Sexpm, 10,
 					   m.fortran_vec (), nc,
 					   work.fortran_vec ());
 
-      sqpow = (int) (1.0 + log (inf_norm) / log (2.0));
+      sqpow = (int) (inf_norm > 0.0
+		     ? (1.0 + log (inf_norm) / log (2.0))
+		     : 0.0);
 
       // Check whether we need to square at all.
 
       if (sqpow < 0)
 	sqpow = 0;
-      else
+
+      if (sqpow > 0)
 	{
 	  for (inf_norm = 1.0, i = 0; i < sqpow; i++)
 	    inf_norm *= 2.0;

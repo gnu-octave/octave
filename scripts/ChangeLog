@@ -1,3 +1,13 @@
+2002-04-02  Paul Kienzle <pkienzle@users.sf.net>
+
+	* plot/contour.m: Set default number of levels for contour(x,y,z).
+
+	* control/system/starp.m: Leave more of the documentation
+	processing to texinfo and less to the @format block.
+
+	* image/imagesc.m: Only display image if no output is requested.
+	Code tidying.
+
 2002-03-07  Paul Kienzle  <pkienzle@kienzle.powernet.co.uk>
  
  	* statistics/base/center.m: Accept and return empty matrix.

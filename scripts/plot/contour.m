@@ -62,7 +62,10 @@ function contour (x, y, z, n)
     else
       error ("contour: argument must be a matrix");
     endif
-  elseif (nargin == 4)
+  elseif (nargin == 3 || nargin == 4)
+    if (nargin == 3)
+      n = 10;
+    endif
     if (is_vector (x) && is_vector (y) && is_matrix (z))
       xlen = length (x);
       ylen = length (y);
@@ -104,7 +107,7 @@ function contour (x, y, z, n)
       error ("contour: x and y must be vectors and z must be a matrix");
     endif
   else
-    usage ("contour (z, levels, x, y)");
+    usage ("contour (z, x, y, levels)");
   endif
 
 endfunction

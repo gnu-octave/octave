@@ -34,7 +34,7 @@
 ## Created: July 1994
 ## Adapted-By: jwe
 
-function B = imagesc (x, y, A, zoom)
+function ret = imagesc (x, y, A, zoom)
 
   if (nargin < 1 || nargin > 4)
     usage ("imagesc (matrix, zoom) or imagesc (x, y, matrix, zoom)");
@@ -50,21 +50,20 @@ function B = imagesc (x, y, A, zoom)
     zoom = [];
   endif
 
-  [high, wide] = size (A);
-
-  maxval = max (max (A));
-  minval = min (min (A));
-
-  ## Rescale matrix so that all values are in the range 0 to
-  ## length (colormap) inclusive.
+  maxval = max (A(:));
+  minval = min (A(:));
 
   if (maxval == minval)
-    B = ones (high, wide);
+    B = ones (size (A));
   else
     ## Rescale values to between 1 and length (colormap) inclusive.
     B = round ((A - minval) / (maxval - minval) * (rows (colormap) - 1)) + 1;
   endif
 
-  image (x, y, B, zoom);
+  if (nargout == 0)
+    image (x, y, B, zoom);
+  else
+    ret = B;
+  endif
 
 endfunction

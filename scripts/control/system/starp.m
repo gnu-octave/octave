@@ -17,10 +17,8 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} starp (@var{inputs})
+## @deftypefn {Function File} {} starp (@var{P}, @var{K}, @var{ny}, @var{nu})
 ## @format
-##
-## sys = starp(P, K, ny, nu)
 ##
 ## Redheffer star product or upper/lower LFT, respectively.
 ##

@@ -26,24 +26,24 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "dColVector.h"
 
-class base_minimizer
+class
+base_minimizer
 {
 public:
 
-  base_minimizer (void)
-    : x () { }
+  base_minimizer (void) : x () { }
 
-  base_minimizer (const ColumnVector& xx)
-    : x (xx) { }
+  base_minimizer (const ColumnVector& xx) : x (xx) { }
 
-  base_minimizer (const base_minimizer& a)
-    : x (a.x) { }
+  base_minimizer (const base_minimizer& a) : x (a.x) { }
 
   virtual ~base_minimizer (void) { }
 
   base_minimizer& operator = (const base_minimizer& a)
     {
-      x = a.x;
+      if (this != &a)
+	x = a.x;
+
       return *this;
     }
 

@@ -40,15 +40,22 @@ class
 string_vector : public Array<string>
 {
 public:
+
   string_vector (void) : Array<string> () { }
+
   string_vector (int n) : Array<string> (n) { }
+
   string_vector (const char *s) : Array<string> (1, s) { }
+
   string_vector (const string& s) : Array<string> (1, s) { }
+
   string_vector (const string_vector& s) : Array<string> (s) { }
 
   string_vector& operator = (const string_vector& s)
     {
-      Array<string>::operator = (s);
+      if (this != &s)
+	Array<string>::operator = (s);
+
       return *this;
     }
 

@@ -42,7 +42,9 @@ public:
 
   file_stat& operator = (const file_stat& f)
     {
-      copy (f);
+      if (this != &f)
+	copy (f);
+
       return *this;
     }
 

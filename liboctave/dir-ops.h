@@ -36,10 +36,10 @@ dir_entry
 public:
 
   dir_entry (const string& n = string ()) : name (n), dir (0)
-      {
-	if (! name.empty ())
-	  open ();
-      }
+    {
+      if (! name.empty ())
+        open ();
+    }
 
   dir_entry (const dir_entry& d) { copy (d); }
 

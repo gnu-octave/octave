@@ -27,18 +27,16 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "dColVector.h"
 #include "dMatrix.h"
 
-class base_diff_eqn
+class
+base_diff_eqn
 {
 public:
 
-  base_diff_eqn (void)
-    : x (), t (0.0) { }
+  base_diff_eqn (void) : x (), t (0.0) { }
 
-  base_diff_eqn (const ColumnVector& xx, double tt)
-    : x (xx), t (tt) { }
+  base_diff_eqn (const ColumnVector& xx, double tt) : x (xx), t (tt) { }
 
-  base_diff_eqn (const base_diff_eqn& a)
-    : x (a.x), t (a.t) { }
+  base_diff_eqn (const base_diff_eqn& a) : x (a.x), t (a.t) { }
 
   virtual ~base_diff_eqn (void) { }
 

@@ -46,8 +46,11 @@ public:
 
   glob_match& operator = (const glob_match& gm)
     {
-      pat = gm.pat;
-      flags = gm.flags;
+      if (this != &gm)
+	{
+	  pat = gm.pat;
+	  flags = gm.flags;
+	}
       return *this;
     }
 

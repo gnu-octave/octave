@@ -1,3 +1,7 @@
+2003-11-18  Danilo Piazzalunga  <danilopiazza@libero.it>
+
+	* statistics/base/iqr.m: Handle matrices.
+
 2003-11-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* general/issymmetric.m: Don't fail if norm (x) == 0.

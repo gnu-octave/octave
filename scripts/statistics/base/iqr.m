@@ -34,6 +34,15 @@ function y = iqr (x)
     usage ("iqr (x)");
   endif
 
-  y = empirical_inv (3/4, x) - empirical_inv (1/4, x);
+ Å†if (rows (x) == 1)
+ Å† Å†x = x.';
+ Å†endif
+
+ Å†[r, c] = size (x);
+ Å†y = zeros (1, c);
+
+ Å†for i = 1:c;
+ Å† Å†y(i) = empirical_inv (3/4, x(:,i)) - empirical_inv (1/4, x(:,i));
+ Å†endfor
 
 endfunction

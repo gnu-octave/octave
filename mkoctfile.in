@@ -46,7 +46,7 @@ octfiles=
 octfile=
 ldflags=
 dbg=:
-strip=
+strip=false
 
 if [ $# -eq 0 ]; then
   echo $usage_msg
@@ -72,7 +72,7 @@ while [ $# -gt 0 ]; do
       file=$1
       objfiles="$objfiles $file"
     ;;
-    -d | --debug)
+    -d | --debug | -v | --verbose)
       dbg=echo
     ;;
     -h | -? | --help)
@@ -82,9 +82,10 @@ while [ $# -gt 0 ]; do
 Options:
 
   -h, -? --help           Print this message.
-  -v, --verbose           Echo commands as they are executed.
-  -o FILE, --output FILE  Output file name.  Default extension is .oct.
   -lLIB                   Add library LIB to link command.
+  -o FILE, --output FILE  Output file name.  Default extension is .oct.
+  -s, --strip             Strip output file.
+  -v, --verbose           Echo commands as they are executed.
 
   FILE                    Compile or link FILE.  Recognized file types are:
 
@@ -99,6 +100,11 @@ Options:
 EOF
       exit 0
     ;;
+    -l*)
+      ldflags="$ldflags $1";;
+    "")
+      break
+    ;;
     -o | --output)
       shift
       if [ $# -gt 0 ]; then
@@ -107,10 +113,8 @@ EOF
         echo "mkoctfile: output file name missing"
       fi
     ;;
-    -*)
-      ldflags="$ldflags $1";;
-    "")
-      break
+    -s | --strip)
+      strip=true
     ;;
     *)
       echo "mkoctfile: unrecognized argument $1"
@@ -179,3 +183,12 @@ fi
 
 $dbg $SH_LD $SH_LDFLAGS -o $octfile $objfiles
 eval $SH_LD $SH_LDFLAGS -o $octfile $objfiles
+
+# Maybe strip it.
+
+if $strip; then
+  $dbg strip $octfile
+  eval strip $octfile
+fi
+
+exit 0

@@ -1,3 +1,8 @@
+1999-10-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* parse.y (fold (tree_unary_expression *)): New function.
+	(make_prefix_op, make_postfix_op): Use it.
+
 1999-10-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (oct-gperf.h): Ask for ANSI-C output from gperf

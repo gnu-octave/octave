@@ -1556,7 +1556,7 @@ fold (tree_binary_expression *e)
 {
   tree_expression *retval = e;
 
-  unwind_protect::begin_frame ("fold");
+  unwind_protect::begin_frame ("fold_binary_expression");
 
   unwind_protect_int (error_state);
 
@@ -1596,7 +1596,56 @@ fold (tree_binary_expression *e)
 	}
     }
 
-  unwind_protect::run_frame ("fold");
+  unwind_protect::run_frame ("fold_binary_expression");
+
+  return retval;
+}
+
+static tree_expression *
+fold (tree_unary_expression *e)
+{
+  tree_expression *retval = e;
+
+  unwind_protect::begin_frame ("fold_unary_expression");
+
+  unwind_protect_int (error_state);
+
+  unwind_protect_bool (buffer_error_messages);
+  buffer_error_messages = true;
+
+  unwind_protect::add (clear_global_error_variable, 0);
+
+  tree_expression *op = e->operand ();
+
+  if (op->is_constant ())
+    {
+      octave_value tmp = e->rvalue ();
+
+      if (! error_state)
+	{
+	  tree_constant *tc_retval = new tree_constant (tmp);
+
+	  ostrstream buf;
+
+	  tree_print_code tpc (buf);
+
+	  e->accept (tpc);
+
+	  buf << ends;
+
+	  char *s = buf.str ();
+
+	  tc_retval->stash_original_text (s);
+
+	  delete [] s;
+
+	  delete e;
+
+	  retval = tc_retval;
+	}
+    }
+
+  unwind_protect::run_frame ("fold_unary_expression");
 
   return retval;
 }
@@ -1882,9 +1931,10 @@ make_prefix_op (int op, tree_expression *op1, token *tok_val)
   int l = tok_val->line ();
   int c = tok_val->column ();
 
-  // XXX FIXME XXX -- what about constant folding here?
+  tree_prefix_expression *e
+    = new tree_prefix_expression (op1, l, c, t);
 
-  return new tree_prefix_expression (op1, l, c, t);
+  return fold (e);
 }
 
 // Build a postfix expression.
@@ -1920,9 +1970,10 @@ make_postfix_op (int op, tree_expression *op1, token *tok_val)
   int l = tok_val->line ();
   int c = tok_val->column ();
 
-  // XXX FIXME XXX -- what about constant folding here?
+  tree_postfix_expression *e
+    = new tree_postfix_expression (op1, l, c, t);
 
-  return new tree_postfix_expression (op1, l, c, t);
+  return fold (e);
 }
 
 // Build an unwind-protect command.

@@ -670,6 +670,115 @@ Matrix::ifourier (void) const
   return ComplexMatrix (tmp_data, nr, nc);
 }
 
+ComplexMatrix
+Matrix::fourier2d (void) const
+{
+  int nr = rows ();
+  int nc = cols ();
+  int npts, nsamples;
+  if (nr == 1 || nc == 1)
+    {
+      npts = nr > nc ? nr : nc;
+      nsamples = 1;
+    }
+  else
+    {
+      npts = nr;
+      nsamples = nc;
+    }
+
+  int nn = 4*npts+15;
+  Complex *wsave = new Complex [nn];
+  Complex *tmp_data = make_complex (data (), length ());
+
+  F77_FCN (cffti) (&npts, wsave);
+
+  for (int j = 0; j < nsamples; j++)
+    F77_FCN (cfftf) (&npts, &tmp_data[npts*j], wsave);
+
+  delete [] wsave;
+
+  npts = nc;
+  nsamples = nr;
+  nn = 4*npts+15;
+  wsave = new Complex [nn];
+  Complex *row = new Complex[npts];
+
+  F77_FCN (cffti) (&npts, wsave);
+
+  for (j = 0; j < nsamples; j++)
+    {
+      for (int i = 0; i < npts; i++)
+	row[i] = tmp_data[i*nr + j];
+
+      F77_FCN (cfftf) (&npts, row, wsave);
+
+      for (i = 0; i < npts; i++)
+	tmp_data[i*nr + j] = row[i];
+    }
+
+  delete [] wsave;
+  delete [] row;
+
+  return ComplexMatrix (tmp_data, nr, nc);
+}
+
+ComplexMatrix
+Matrix::ifourier2d (void) const
+{
+  int nr = rows ();
+  int nc = cols ();
+  int npts, nsamples;
+  if (nr == 1 || nc == 1)
+    {
+      npts = nr > nc ? nr : nc;
+      nsamples = 1;
+    }
+  else
+    {
+      npts = nr;
+      nsamples = nc;
+    }
+
+  int nn = 4*npts+15;
+  Complex *wsave = new Complex [nn];
+  Complex *tmp_data = make_complex (data (), length ());
+
+  F77_FCN (cffti) (&npts, wsave);
+
+  for (int j = 0; j < nsamples; j++)
+    F77_FCN (cfftb) (&npts, &tmp_data[npts*j], wsave);
+
+  delete [] wsave;
+
+  for (j = 0; j < npts*nsamples; j++)
+    tmp_data[j] = tmp_data[j] / (double) npts;
+
+  npts = nc;
+  nsamples = nr;
+  nn = 4*npts+15;
+  wsave = new Complex [nn];
+  Complex *row = new Complex[npts];
+
+  F77_FCN (cffti) (&npts, wsave);
+
+  for (j = 0; j < nsamples; j++)
+    {
+      for (int i = 0; i < npts; i++)
+	row[i] = tmp_data[i*nr + j];
+
+      F77_FCN (cfftb) (&npts, row, wsave);
+
+      for (i = 0; i < npts; i++)
+	tmp_data[i*nr + j] = row[i] / (double) npts;
+    }
+
+  delete [] wsave;
+  delete [] row;
+
+  return ComplexMatrix (tmp_data, nr, nc);
+}
+
 DET
 Matrix::determinant (void) const
 {

@@ -36,12 +36,16 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "help.h"
 #include "defun-dld.h"
 
-DEFUN_DLD ("ifft", Fifft, Sifft,2, 1,
-  "ifft (X): inverse fast fourier transform of a vector")
+// This function should be merged with Ffft.
+
+DEFUN_DLD ("ifft", Fifft, Sifft, 3, 1,
+  "ifft (X [, N]): inverse fast fourier transform of a vector")
 {
   Octave_object retval;
 
-  if (args.length () != 2)
+  int nargin = args.length ();
+
+  if (nargin < 2 || nargin > 3)
     {
       print_usage ("ifft");
       return retval;
@@ -49,8 +53,25 @@ DEFUN_DLD ("ifft", Fifft, Sifft,2, 1,
 
   tree_constant arg = args(1);
     
-  if (empty_arg ("ifft", arg.rows (), arg.columns ()) < 0)
+  int n_points = arg.rows ();
+  if (nargin == 3)
+    n_points = NINT (args(2).double_value ());
+
+  if (error_state)
     return retval;
+
+  if (n_points < 0)
+    {
+      error ("ifft: number of points must be greater than zero");
+      return retval;
+    }
+
+  int arg_is_empty = empty_arg ("ifft", arg.rows (), arg.columns ());
+
+  if (arg_is_empty < 0)
+    return retval;
+  else if (arg_is_empty || n_points == 0)
+    return Matrix ();
 
   if (arg.is_real_type ())
     {
@@ -58,8 +79,8 @@ DEFUN_DLD ("ifft", Fifft, Sifft,2, 1,
 
       if (! error_state)
 	{
-	  ComplexMatrix mifft = m.ifourier ();
-	  retval = mifft;
+	  m.resize (n_points, m.columns (), 0.0);
+	  retval = m.ifourier ();
 	}
     }
   else if (arg.is_complex_type ())
@@ -68,8 +89,8 @@ DEFUN_DLD ("ifft", Fifft, Sifft,2, 1,
 
       if (! error_state)
 	{
-	  ComplexMatrix mifft = m.ifourier ();
-	  retval = mifft;
+	  m.resize (n_points, m.columns (), 0.0);
+	  retval = m.ifourier ();
 	}
     }
   else

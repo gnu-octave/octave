@@ -112,6 +112,9 @@ public:
   ComplexMatrix fourier (void) const;
   ComplexMatrix ifourier (void) const;
 
+  ComplexMatrix fourier2d (void) const;
+  ComplexMatrix ifourier2d (void) const;
+
   DET determinant (void) const;
   DET determinant (int& info) const;
   DET determinant (int& info, double& rcond) const;

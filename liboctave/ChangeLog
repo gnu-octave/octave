@@ -1,3 +1,10 @@
+2003-10-28  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* dim-vector.h (dim_vector::any_zero): New function.
+	(dim_vector::str): New default arg, sep.
+
+	* Array.h (Array<T>::numel): New function.
+
 2003-10-27  Petter Risholm  <risholm@stud.ntnu.no>
 
 	* mx-inlines.cc (MX_ND_ALL_EXPR, MX_ND_ANY_EXPR,

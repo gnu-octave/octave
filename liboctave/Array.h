@@ -234,6 +234,7 @@ public:
   int capacity (void) const { return rep->length (); }
   int length (void) const { return capacity (); }
   int nelem (void) const { return capacity (); }
+  int numel (void) const { return nelem (); }
 
   int dim1 (void) const { return dimensions(0); }
   int dim2 (void) const { return dimensions(1); }
@@ -440,6 +441,8 @@ public:
   Array<T>& insert (const Array<T>& a, const Array<int>& dims);
 
   bool is_square (void) const { return (dim1 () == dim2 ()); }
+
+  bool is_empty (void) const { return numel () == 0; }
 
   Array<T> transpose (void) const;
 

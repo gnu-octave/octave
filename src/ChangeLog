@@ -1,3 +1,18 @@
+2003-10-28  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pr-output.cc 	(print_empty_nd_array): New static function.
+	(PRINT_ND_ARRAY): Use it.
+
+	* ov.h (octave_value::is_empty): No longer virtual.  Return value
+	based on numel.
+	* data.cc (Fisempty): Use it.
+	(Fnumel): New function.
+
+	* ov.h (octave_value::numel): New function.
+	* ov-base.h (octave_base_value::numel): Likewise.
+	* ov-base-mat.h (octave_base_matrix<T>::numel): Likewise.
+	* ov-base-scalar.h  (octave_base_scalar<T>::numel): Likewise.
+
 2003-10-27  Petter Risholm  <risholm@stud.ntnu.no>
 
 	* ov-base-mat.cc (octave_base_matrix<MT>::is_true):

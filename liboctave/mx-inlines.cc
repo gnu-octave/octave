@@ -384,12 +384,13 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
  \
   dim_vector dv = dims (); \
  /* Check to see if we have a empty matrix: [] */ \
-  if (dv.length () == 2 && dv (0) == 0 && dv (1) == 0) \
-    { \
-      dim_vector dv_temp (1,1); \
-      retval.resize (dv_temp,false); \
-      return retval; \
-    } \
+  for (int i = 0; i < dv.length (); i++)\
+    if (dv (i) == 0) \
+      { \
+        dim_vector dv_temp (1, 1); \
+        retval.resize (dv_temp, false); \
+        return retval; \
+      } \
   if (dim == -1)/* We need to find first non-singleton dim */ \
     { \
       /* Be sure to return a scalar if we have a vector */ \

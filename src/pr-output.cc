@@ -1273,8 +1273,26 @@ print_empty_matrix (std::ostream& os, int nr, int nc, bool pr_as_read_syntax)
   else
     {
       os << "[]";
+
       if (Vprint_empty_dimensions)
 	os << "(" << nr << "x" << nc << ")";
+    }
+}
+
+static void
+print_empty_nd_array (std::ostream& os, const dim_vector& dims,
+		      bool pr_as_read_syntax)
+{
+  assert (dims.any_zero ());
+
+  if (pr_as_read_syntax)
+    os << "zeros (" << dims.str (',') << ")";
+  else
+    {
+      os << "[]";
+
+      if (Vprint_empty_dimensions)
+	os << "(" << dims.str () << ")";
     }
 }
 
@@ -1488,63 +1506,69 @@ octave_print_internal (std::ostream& os, const Matrix& m,
 #define PRINT_ND_ARRAY(os, nda, NDA_T, ELT_T, MAT_T) \
   do \
     { \
-      int ndims = nda.ndims (); \
+      if (nda.is_empty ()) \
+        print_empty_nd_array (os, nda.dims (), pr_as_read_syntax); \
+      else \
+        { \
  \
-      dim_vector dims = nda.dims (); \
+          int ndims = nda.ndims (); \
  \
-      Array<int> ra_idx (ndims, 0); \
+          dim_vector dims = nda.dims (); \
  \
-      int m = 1; \
+          Array<int> ra_idx (ndims, 0); \
  \
-      for (int i = 2; i < ndims; i++) \
-	m *= dims(i); \
+          int m = 1; \
  \
-      int nr = dims(0); \
-      int nc = dims(1); \
+          for (int i = 2; i < ndims; i++) \
+            m *= dims(i); \
  \
-      for (int i = 0; i < m; i++) \
-	{ \
-	  std::string nm = "ans"; \
+          int nr = dims(0); \
+          int nc = dims(1); \
  \
-	  if (m > 1) \
-	    { \
-	      nm += "(:,:,"; \
+          for (int i = 0; i < m; i++) \
+            { \
+              std::string nm = "ans"; \
  \
-	      OSSTREAM buf; \
+              if (m > 1) \
+                { \
+                  nm += "(:,:,"; \
  \
-	      for (int k = 2; k < ndims; k++) \
-		{ \
-		  buf << ra_idx(k) + 1; \
+                  OSSTREAM buf; \
  \
-		  if (k < ndims - 1) \
-		    buf << ","; \
-		  else \
-		    buf << ")"; \
-		} \
+                  for (int k = 2; k < ndims; k++) \
+                    { \
+                      buf << ra_idx(k) + 1; \
  \
-	      buf << OSSTREAM_ENDS; \
+                      if (k < ndims - 1) \
+                        buf << ","; \
+                      else \
+                        buf << ")"; \
+                    } \
  \
-	      nm += OSSTREAM_STR (buf); \
+                  buf << OSSTREAM_ENDS; \
  \
-	      OSSTREAM_FREEZE (buf); \
-	    } \
+                  nm += OSSTREAM_STR (buf); \
  \
-	  Array<idx_vector> idx (ndims); \
+                  OSSTREAM_FREEZE (buf); \
+                } \
  \
-	  idx(0) = idx_vector (':'); \
-	  idx(1) = idx_vector (':'); \
+              Array<idx_vector> idx (ndims); \
  \
-	  for (int k = 2; k < ndims; k++) \
-	    idx(k) = idx_vector (ra_idx(k) + 1); \
+              idx(0) = idx_vector (':'); \
+              idx(1) = idx_vector (':'); \
  \
-          octave_value page \
-            = MAT_T (Array2<ELT_T> (nda.index (idx), nr, nc)); \
+              for (int k = 2; k < ndims; k++) \
+                idx(k) = idx_vector (ra_idx(k) + 1); \
  \
-	  page.print_with_name (os, nm); \
+              octave_value page \
+                = MAT_T (Array2<ELT_T> (nda.index (idx), nr, nc)); \
  \
-	  if (i < m) \
-	    NDA_T::increment_index (ra_idx, dims, 2); \
-	} \
+              page.print_with_name (os, nm); \
+ \
+              if (i < m) \
+                NDA_T::increment_index (ra_idx, dims, 2); \
+            } \
+        } \
     } \
   while (0)
 

@@ -87,6 +87,8 @@ public:
 
   int length (void) const { return lst.length (); }
 
+  int nelem (void) const { return length (); }
+
   bool is_defined (void) const { return true; }
 
   bool is_constant (void) const { return true; }

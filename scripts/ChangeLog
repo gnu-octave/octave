@@ -1,3 +1,7 @@
+2003-10-28  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* general/numel.m: Delete.
+
 2003-10-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* miscellaneous/horzcat.m, miscellaneous/vartcat.m: New files.

@@ -99,7 +99,10 @@ public:
   octave_value any (int dim = 0) const { return matrix.any (dim); }
 
   int length (void) const;
+
   int ndims (void) const;
+
+  int numel (void) const { return matrix.numel (); }
 
   bool is_matrix_type (void) const { return true; }
 

@@ -82,6 +82,8 @@ public:
 
   int ndims (void) const { return 2; }
 
+  int numel (void) const { return 1; }
+
   bool is_constant (void) const { return true; }
 
   bool is_defined (void) const { return true; }

@@ -215,7 +215,8 @@ octave_base_matrix<MT>::ndims (void) const
 
   int n_dims = dv.length ();
      
-   // Remove trailing singleton dimensions
+   // Remove trailing singleton dimensions.
+
    for (int i = n_dims; i > 2; i--)
      {
        if (dv(i-1) == 1)
@@ -224,7 +225,8 @@ octave_base_matrix<MT>::ndims (void) const
 	 break;
      }
    
-   // The result is always >= 2
+   // The result is always >= 2.
+
    if (n_dims < 2)
      n_dims = 2;
 

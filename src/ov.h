@@ -331,6 +331,9 @@ public:
   virtual int ndims (void) const
     { return rep->ndims (); }
 
+  virtual int numel (void) const
+    { return rep->numel (); }
+
   // Does this constant have a type?  Both of these are provided since
   // it is sometimes more natural to write is_undefined() instead of
   // ! is_defined().
@@ -340,6 +343,9 @@ public:
 
   bool is_undefined (void) const
     { return ! is_defined (); }
+
+  bool is_empty (void) const
+    { return numel () == 0; }
 
   virtual bool is_cell (void) const
     { return rep->is_cell (); }
@@ -424,11 +430,6 @@ public:
 
   virtual bool is_true (void) const
     { return rep->is_true (); }
-
-  // Is at least one of the dimensions of this constant zero?
-
-  virtual bool is_empty (void) const
-    { return rep->is_empty (); }
 
   // Are the dimensions of this constant zero by zero?
 

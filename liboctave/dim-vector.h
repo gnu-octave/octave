@@ -199,7 +199,7 @@ public:
   }
 
 
-  std::string str (void) const
+  std::string str (char sep = 'x') const
   {
     OSSTREAM buf;
 
@@ -208,7 +208,7 @@ public:
 	buf << elem (i);
 
 	if (i < length () - 1)
-	  buf << "x";
+	  buf << sep;
       }
 
     buf << OSSTREAM_ENDS;
@@ -229,6 +229,22 @@ public:
 	if (elem (i) != 0)
 	  {
 	    retval = false;
+	    break;
+	  }
+      }
+
+    return retval;
+  }
+
+  bool any_zero (void) const
+  {
+    bool retval = false;
+
+    for (int i = 0; i < length (); i++)
+      {
+	if (elem (i) == 0)
+	  {
+	    retval = true;
 	    break;
 	  }
       }
@@ -275,4 +291,3 @@ operator != (const dim_vector& a, const dim_vector& b)
 ;;; mode: C++ ***
 ;;; End: ***
 */
-

@@ -711,6 +711,32 @@ Trailing singleton dimensions are not counted.\n\
   return retval;
 }
 
+DEFUN (numel, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} numel (@var{a})\n\
+Returns the number of elements in the object @var{a}.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 1)
+    {
+      int numel = args(0).numel ();
+
+      if (! error_state)
+	{
+	  if (numel < 0)
+	    numel = 0;
+
+	  retval = numel;
+	}
+    }
+  else
+    print_usage ("numel");
+
+  return retval;
+}
+
 DEFUN (size, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} size (@var{a}, @var{n})\n\
@@ -877,14 +903,7 @@ the number of columns, or both are zero).  Otherwise, return 0.\n\
   octave_value retval = false;
 
   if (args.length () == 1)
-    {
-      octave_value arg = args(0);
-
-      if (arg.is_matrix_type ())
-	retval = (arg.rows () == 0 || arg.columns () == 0);
-      else if (arg.is_list () || arg.is_string ())
-	retval = (arg.length () == 0);
-    }
+    retval = args(0).is_empty ();
   else
     print_usage ("isempty");
 

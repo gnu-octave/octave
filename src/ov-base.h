@@ -104,6 +104,8 @@ public:
 
   int ndims (void) const { return -1; }
 
+  int numel (void) const { return -1; }
+
   bool is_defined (void) const { return false; }
 
   bool is_cell (void) const { return false; }
@@ -159,9 +161,6 @@ public:
   bool valid_as_zero_index (void) const { return false; }
 
   bool is_true (void) const { return false; }
-
-  bool is_empty (void) const
-    { return (rows () == 0 || columns () == 0); }
 
   bool is_zero_by_zero (void) const
     { return (rows () == 0 && columns () == 0); }

@@ -500,13 +500,13 @@ initialize_command_input (void)
 }
 
 static bool
-match_sans_spaces (const std::string& standard, const std::string& test)
+match_sans_spaces_semi (const std::string& standard, const std::string& test)
 {
   size_t beg = test.find_first_not_of (" \t");
 
   if (beg != NPOS)
     {
-      size_t end = test.find_last_not_of (" \t");
+      size_t end = test.find_last_not_of ("; \t");
 
       size_t len = end == NPOS ? NPOS : end - beg + 1;
 
@@ -571,14 +571,14 @@ get_user_input (const octave_value_list& args, bool debug, int nargout)
 
       if (debug)
 	{
-	  if (match_sans_spaces ("exit", input_buf)
-	      || match_sans_spaces ("quit", input_buf)
-	      || match_sans_spaces ("return", input_buf)
-	      || match_sans_spaces ("dbg_cont", input_buf))
+	  if (match_sans_spaces_semi ("exit", input_buf)
+	      || match_sans_spaces_semi ("quit", input_buf)
+	      || match_sans_spaces_semi ("return", input_buf)
+	      || match_sans_spaces_semi ("dbg_cont", input_buf))
 	    {
 	      return retval;
 	    }
-	  else if (match_sans_spaces ("dbg_step", input_buf))
+	  else if (match_sans_spaces_semi ("dbg_step", input_buf))
 	    {
 	      tree::break_next = true;
 
@@ -588,7 +588,7 @@ get_user_input (const octave_value_list& args, bool debug, int nargout)
 
 	      return retval;
 	    }
-	  else if (match_sans_spaces ("dbg_next", input_buf))
+	  else if (match_sans_spaces_semi ("dbg_next", input_buf))
 	    {
 	      tree::break_next = true;
 

@@ -1,3 +1,8 @@
+2002-11-12  Joseph P. Skudlarek  <jskud@jskud.com>
+
+	* input.cc (match_sans_spaces_semi): Rename from match_sans_spaces.
+	Ignore trailing semicolons too.  Change all callers.
+
 2002-11-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* octave.gperf: Allow "persistent" as a synonym for static.

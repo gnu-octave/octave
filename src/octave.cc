@@ -135,6 +135,10 @@ int input_from_startup_file = 0;
 // The command-line options.
 Octave_str_obj octave_argv;
 
+// Nonzero means that input is coming from a file that was named on
+// the command line.
+int input_from_command_line_file = 1;
+
 // Top level context (?)
 jmp_buf toplevel;
 
@@ -314,10 +318,12 @@ parse_and_execute (FILE *f, int print)
   unwind_protect_int (echo_input);
   unwind_protect_int (using_readline);
   unwind_protect_int (saving_history);
+  unwind_protect_int (input_from_command_line_file);
 
   echo_input = 0;
   using_readline = 0;
   saving_history = 0;
+  input_from_command_line_file = 0;
 
   unwind_protect_ptr (curr_sym_tab);
 
@@ -663,6 +669,8 @@ main (int argc, char **argv)
 
       if (infile)
 	{
+	  input_from_command_line_file = 1;
+
 	  bind_builtin_variable ("program_invocation_name",
 				 curr_fcn_file_name);
 
@@ -896,10 +904,12 @@ eval_string (const char *string, int print, int& parse_status,
   begin_unwind_frame ("eval_string");
 
   unwind_protect_int (get_input_from_eval_string);
+  unwind_protect_int (input_from_command_line_file);
   unwind_protect_ptr (global_command);
   unwind_protect_ptr (current_eval_string);
 
   get_input_from_eval_string = 1;
+  input_from_command_line_file = 0;
   current_eval_string = string;
 
   YY_BUFFER_STATE old_buf = current_buffer ();

@@ -706,10 +706,12 @@ parse_fcn_file (int exec_script, char *ff)
 	  unwind_protect_int (echo_input);
 	  unwind_protect_int (saving_history);
 	  unwind_protect_int (reading_fcn_file);
+	  unwind_protect_int (input_from_command_line_file);
 
 	  echo_input = 0;
 	  saving_history = 0;
 	  reading_fcn_file = 1;
+	  input_from_command_line_file = 0;
 
 	  YY_BUFFER_STATE old_buf = current_buffer ();
 	  YY_BUFFER_STATE new_buf = create_buffer (ffile);

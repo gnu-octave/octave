@@ -90,6 +90,10 @@ extern int input_from_startup_file;
 // The command-line options.
 extern Octave_str_obj octave_argv;
 
+// Nonzero means that input is coming from a file that was named on
+// the command line.
+extern int input_from_command_line_file;
+
 #endif
 
 /*

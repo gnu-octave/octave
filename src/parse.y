@@ -228,6 +228,9 @@ static tree_expression *finish_matrix (tree_matrix *m);
 // Maybe print a warning.  Duh.
 static void maybe_warn_missing_semi (tree_statement_list *);
 
+// Set the print flag for a statement based on the separator type.
+static void set_stmt_print_flag (tree_statement_list *, char, bool);
+
 #define ABORT_PARSE \
   do \
     { \
@@ -250,6 +253,7 @@ static void maybe_warn_missing_semi (tree_statement_list *);
   token *tok_val;
 
 // Types for the nonterminals we generate.
+  char sep_type;
   tree *tree_type;
   tree_matrix *tree_matrix_type;
   tree_matrix_row *tree_matrix_row_type;
@@ -310,6 +314,7 @@ static void maybe_warn_missing_semi (tree_statement_list *);
 %token USING TITLE WITH COLON OPEN_BRACE CLOSE_BRACE CLEAR
 
 // Nonterminals we construct.
+%type <sep_type> sep_no_nl opt_sep_no_nl sep opt_sep
 %type <tree_type> input
 %type <tree_matrix_type> rows rows1
 %type <tree_matrix_row_type> matrix_row matrix_row1
@@ -398,60 +403,21 @@ parse_error	: LEXICAL_ERROR
 		| error
 		;
 
-simple_list	: semi_comma
-		  { $$ = 0; }
-		| comma_semi
-		  { $$ = 0; }
-		| simple_list1
-		  { $$ = $1; }
-		| simple_list1 comma_semi
-		  { $$ = $1; }
-		| simple_list1 semi_comma
+simple_list	: simple_list1 opt_sep_no_nl
 		  {
-		    tree_statement *tmp = $1->rear ();
-		    tmp->set_print_flag (0);
+		    set_stmt_print_flag ($1, $2, false);
 		    $$ = $1;
 		  }
 		;
 
 simple_list1	: statement
 		  { $$ = new tree_statement_list ($1); }
-		| semi_comma statement
-		  { $$ = new tree_statement_list ($2); }
-		| comma_semi statement
-		  { $$ = new tree_statement_list ($2); }
-		| simple_list1 semi_comma statement
+		| simple_list1 sep_no_nl statement
 		  {
-		    tree_statement *tmp = $1->rear ();
-		    tmp->set_print_flag (0);
+		    set_stmt_print_flag ($1, $2, false);
 		    $1->append ($3);
 		    $$ = $1;
 		  }
-		| simple_list1 comma_semi statement
-		  {
-		    $1->append ($3);
-		    maybe_warn_missing_semi ($1);
-		    $$ = $1;
-		  }
-		;
-
-semi_comma	: ';'
-		| semi_comma ','
-		| semi_comma ';'
-		;
-
-comma_semi	: ','
-		| comma_semi ';'
-		| comma_semi ','
-		;
-
-comma_nl_sep	: ','
-		| '\n'
-		| comma_nl_sep sep
-		;
-
-semi_sep	: ';'
-		| semi_sep sep
 		;
 
 opt_list	: // empty
@@ -460,20 +426,9 @@ opt_list	: // empty
 		  { $$ = $1; }
 		;
 
-list		: list1
+list		: list1 opt_sep
 		  {
-		    maybe_warn_missing_semi ($1);
-		    $$ = $1;
-		  }
-		| list1 comma_nl_sep
-		  {
-		    maybe_warn_missing_semi ($1);
-		    $$ = $1;
-		  }
-		| list1 semi_sep
-		  {
-		    tree_statement *tmp = $1->rear ();
-		    tmp->set_print_flag (0);
+		    set_stmt_print_flag ($1, $2, true);
 		    $$ = $1;
 		  }
 		;
@@ -483,16 +438,9 @@ list1		: statement
 		    lexer_flags.beginning_of_function = 0;
 		    $$ = new tree_statement_list ($1);
 		  }
-		| list1 comma_nl_sep statement
+		| list1 sep statement
 		  {
-		    maybe_warn_missing_semi ($1);
-		    $1->append ($3);
-		    $$ = $1;
-		  }
-		| list1 semi_sep statement
-		  {
-		    tree_statement *tmp = $1->rear ();
-		    tmp->set_print_flag (0);
+		    set_stmt_print_flag ($1, $2, true);
 		    $1->append ($3);
 		    $$ = $1;
 		  }
@@ -677,28 +625,28 @@ command		: plot_command
 		    lexer_flags.iffing--;
 		    $$ = $1;
 		  }
-		| UNWIND optsep opt_list CLEANUP optsep opt_list END
+		| UNWIND opt_sep opt_list CLEANUP opt_sep opt_list END
 		  {
 		    if (! ($$ = make_unwind_command ($1, $3, $6, $7)))
 		      ABORT_PARSE;
 		  }
-		| TRY optsep opt_list CATCH optsep opt_list END
+		| TRY opt_sep opt_list CATCH opt_sep opt_list END
 		  {
 		    if (! ($$ = make_try_command ($1, $3, $6, $7)))
 		      ABORT_PARSE;
 		  }
-		| WHILE expression optsep opt_list END
+		| WHILE expression opt_sep opt_list END
 		  {
 		    if (! ($$ = make_while_command ($1, $2, $4, $5)))
 		      ABORT_PARSE;
 		  }
-		| FOR variable '=' expression optsep opt_list END
+		| FOR variable '=' expression opt_sep opt_list END
 		  {
 		    if (! ($$ = make_for_command ($1, $2, $4, $6, $7)))
 		      ABORT_PARSE;
 		  }
 		| FOR '[' screwed_again matrix_row SCREW_TWO '='
-		    expression optsep opt_list END
+		    expression opt_sep opt_list END
 		  {
 		    if (! ($$ = make_for_command ($1, $4, $7, $9, $10)))
 		      ABORT_PARSE;
@@ -736,7 +684,7 @@ if_cmd_list	: if_cmd_list1
 		  }
 		;
 
-if_cmd_list1	: expression optsep opt_list
+if_cmd_list1	: expression opt_sep opt_list
 		  { $$ = start_if_command ($1, $3); }
 		| if_cmd_list1 elseif_clause
 		  {
@@ -745,24 +693,12 @@ if_cmd_list1	: expression optsep opt_list
 		  }
 		;
 
-elseif_clause	: ELSEIF optsep expression optsep opt_list
+elseif_clause	: ELSEIF opt_sep expression opt_sep opt_list
 		  { $$ = make_elseif_clause ($3, $5); }
 		;
 
-else_clause	: ELSE optsep opt_list
+else_clause	: ELSE opt_sep opt_list
 		  { $$ = new tree_if_clause ($3); }
-		;
-
-optsep		: // empty
-		| sep
-		;
-
-sep		: ','
-		| ';'
-		| '\n'
-		| sep ','
-		| sep ';'
-		| sep '\n'
 		;
 
 screwed_again	: // empty
@@ -995,9 +931,9 @@ func_def2	: identifier safe local_symtab func_def3
 		  }
 		;
 
-func_def3	: param_list optsep opt_list fcn_end_or_eof
+func_def3	: param_list opt_sep opt_list fcn_end_or_eof
 		  { $$ = start_function_def ($1, $3); }
-		| optsep opt_list fcn_end_or_eof
+		| opt_sep opt_list fcn_end_or_eof
 		  { $$ = start_function_def (0, $2); }
 		;
 
@@ -1169,6 +1105,42 @@ matrix_row1	: expression		// First element on row.
 		    $1->append ($3);
 		    $$ = $1;
 		  }
+		;
+
+sep_no_nl	: ','
+		  { $$ = ','; }
+		| ';'
+		  { $$ = ';'; }
+		| sep_no_nl ','
+		  { $$ = $1; }
+		| sep_no_nl ';'
+		  { $$ = $1; }
+		;
+
+opt_sep_no_nl	: // empty
+		  { $$ = 0; }
+		| sep_no_nl
+		  { $$ = $1; }
+		;
+
+sep		: ','
+		  { $$ = ','; }
+		| ';'
+		  { $$ = ';'; }
+		| '\n'
+		  { $$ = '\n'; }
+		| sep ','
+		  { $$ = $1; }
+		| sep ';'
+		  { $$ = $1; }
+		| sep '\n'
+		  { $$ = $1; }
+		;
+
+opt_sep		: // empty
+		  { $$ = 0; }
+		| sep
+		  { $$ = $1; }
 		;
 
 %%
@@ -2134,6 +2106,32 @@ maybe_warn_missing_semi (tree_statement_list *t)
 	warning ("missing semicolon near line %d, column %d in file `%s'",
 		 tmp->line (), tmp->column (),
 		 curr_fcn_file_full_name.c_str ());
+    }
+}
+
+static void
+set_stmt_print_flag (tree_statement_list *list, char sep,
+		     bool warn_missing_semi)
+{
+  switch (sep)
+    {
+    case ';':
+      {
+	tree_statement *tmp = list->rear ();
+	tmp->set_print_flag (0);
+      }
+      break;
+
+    case 0:
+    case ',':
+    case '\n':
+      if (warn_missing_semi)
+	maybe_warn_missing_semi (list);
+      break;
+
+    default:
+      warning ("unrecognized separator type!");
+      break;
     }
 }
 

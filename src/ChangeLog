@@ -1,5 +1,11 @@
 Sun Nov 17 14:14:48 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* parse.y (set_stmt_print_flag): New function.
+	(sep_type): New member for bison %union declaration.
+	Simplify rules for statement lists keeping track of the type of
+	the first separator in the values associated with the
+	nonterminals for the separators.
+
 	* lex.l (handle_identifier): Set lexer_flags.doing_set if the
 	token is "gset", not "set".
 

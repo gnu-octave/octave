@@ -83,10 +83,10 @@ SOURCES := arith-ops.cc data.cc dirfns.cc dynamic-ld.cc \
 	octave.cc octave-hist.cc oct-obj.cc pager.cc parse.y \
 	pr-output.cc procstream.cc sighandlers.cc strcasecmp.c \
 	strncase.c strfns.cc symtab.cc sysdep.cc tc-rep.cc \
-	tc-rep-ass.cc tc-rep-idx.cc timefns.cc token.cc tree-base.cc \
-	tree-cmd.cc tree-const.cc tree-expr.cc tree-misc.cc \
-	tree-plot.cc unwind-prot.cc user-prefs.cc utils.cc \
-	variables.cc xdiv.cc xpow.cc Map.cc SLStack.cc \
+	tc-rep-ass.cc tc-rep-idx.cc tempname.c timefns.cc tmpnam.c \
+	token.cc tree-base.cc tree-cmd.cc tree-const.cc tree-expr.cc \
+	tree-misc.cc tree-plot.cc unwind-prot.cc user-prefs.cc \
+	utils.cc variables.cc xdiv.cc xpow.cc Map.cc SLStack.cc
 
 OBJECTS_4 := $(SOURCES) builtins.o
 OBJECTS_3 := $(patsubst %.l, %.o, $(OBJECTS_4))

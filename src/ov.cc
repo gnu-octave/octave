@@ -258,14 +258,15 @@ octave_value::octave_value (const string_vector& s)
   : rep (new octave_char_matrix_str (s)) { rep->count = 1; }
 
 octave_value::octave_value (const charMatrix& chm, bool is_string)
-  {
-    if (is_string)
-      rep = new octave_char_matrix_str (chm);
-    else
-      rep = new octave_char_matrix (chm);
+  : rep (0)
+{
+  if (is_string)
+    rep = new octave_char_matrix_str (chm);
+  else
+    rep = new octave_char_matrix (chm);
 
-    rep->count = 1;
-  }
+  rep->count = 1;
+}
 
 octave_value::octave_value (double base, double limit, double inc)
   : rep (new octave_range (base, limit, inc)) { rep->count = 1; }
@@ -299,6 +300,21 @@ octave_value::~octave_value (void)
     }
 }
 
+void
+octave_value::maybe_mutate (void)
+{
+  octave_value *tmp = rep->try_narrow_conversion ();
+
+  if (tmp && tmp != rep)
+    {
+      if (--rep->count == 0)
+	delete rep;
+
+      rep = tmp;
+      rep->count = 1;
+    }    
+}
+
 static void
 gripe_indexed_assignment (const string& tn1, const string& tn2)
 {
@@ -320,10 +336,110 @@ gripe_conversion_failed (const string& tn1, const string& tn2)
 	 tn2.c_str (), tn1.c_str ());
 }
 
-octave_value&
-octave_value::assign (const octave_value_list& idx, const octave_value& rhs)
+bool
+octave_value::convert_and_assign (const octave_value_list& idx,
+				  const octave_value& rhs)
 {
-  make_unique ();
+  bool assignment_ok = false;
+
+  int t_lhs = type_id ();
+  int t_rhs = rhs.type_id ();
+
+  int t_result
+    = octave_value_typeinfo::lookup_pref_assign_conv (t_lhs, t_rhs);
+
+  if (t_result >= 0)
+    {
+      octave_value::type_conv_fcn cf
+	= octave_value_typeinfo::lookup_widening_op (t_lhs, t_result);
+
+      if (cf)
+	{
+	  octave_value *tmp = cf (*rep);
+
+	  if (tmp)
+	    {
+	      if (tmp != rep)
+		{
+		  if (--rep->count == 0)
+		    delete rep;
+
+		  rep = tmp;
+		  rep->count = 1;
+		}
+	      else
+		delete tmp;
+
+	      assignment_ok = try_assignment (idx, rhs);
+	    }
+	  else
+	    gripe_conversion_failed (type_name (), rhs.type_name ());
+	}
+      else
+	gripe_indexed_assignment (type_name (), rhs.type_name ());
+    }
+
+  return (assignment_ok && ! error_state);
+}
+
+bool
+octave_value::try_assignment_with_conversion (const octave_value_list& idx,
+					      const octave_value& rhs)
+{
+  bool assignment_ok = convert_and_assign (idx, rhs);
+
+  if (! (error_state || assignment_ok))
+    {
+      octave_value tmp_rhs;
+      octave_value::type_conv_fcn cf_rhs = rhs.numeric_conversion_function ();
+
+      if (cf_rhs)
+	tmp_rhs = octave_value (cf_rhs (*rhs.rep));
+      else
+	tmp_rhs = rhs;
+
+      octave_value *old_rep = 0;
+      octave_value::type_conv_fcn cf_this = numeric_conversion_function ();
+
+      if (cf_this)
+	{
+	  old_rep = rep;
+	  rep = cf_this (*rep);
+	  rep->count = 1;
+	}
+
+      cerr << type_name () << "\n";
+      cerr << tmp_rhs.type_name () << "\n";
+
+      if (cf_this || cf_rhs)
+	{
+	  assignment_ok = try_assignment (idx, tmp_rhs);
+
+	  if (! (error_state || assignment_ok))
+	    assignment_ok = convert_and_assign (idx, tmp_rhs);
+	}
+
+      if (! assignment_ok && old_rep)
+	{
+	  if (--rep->count == 0)
+	    delete rep;
+
+	  rep = old_rep;
+	  old_rep = 0;
+	}
+
+      if (old_rep && --old_rep->count == 0)
+	delete old_rep;
+    }
+
+  return (assignment_ok && ! error_state);
+}
+
+bool
+octave_value::try_assignment (const octave_value_list& idx,
+			      const octave_value& rhs)
+{
+  bool retval = false;
 
   int t_lhs = type_id ();
   int t_rhs = rhs.type_id ();
@@ -332,47 +448,32 @@ octave_value::assign (const octave_value_list& idx, const octave_value& rhs)
     = octave_value_typeinfo::lookup_assign_op (t_lhs, t_rhs);
 
   if (f)
-    f (*(this->rep), idx, *(rhs.rep));
-  else
     {
-      int t_result
-	= octave_value_typeinfo::lookup_pref_assign_conv (t_lhs, t_rhs);
+      f (*rep, idx, *(rhs.rep));
 
-      if (t_result >= 0)
-	{
-	  octave_value::widening_op_fcn wf
-	    = octave_value_typeinfo::lookup_widening_op (t_lhs, t_result);
+      retval = (! error_state);
+    }
 
-	  if (wf)
-	    {
-	      octave_value *tmp = wf (*(this->rep));
+  return retval;
+}
 
-	      if (tmp && tmp != rep)
-		{
-		  if (--rep->count == 0)
-		    delete rep;
+octave_value&
+octave_value::assign (const octave_value_list& idx, const octave_value& rhs)
+{
+  make_unique ();
 
-		  rep = tmp;
-		  rep->count = 1;
+  bool assignment_ok = try_assignment (idx, rhs);
 
-		  t_lhs = type_id ();
+  if (! (error_state || assignment_ok))
+    {
+      assignment_ok = try_assignment_with_conversion (idx, rhs);
 
-		  f = octave_value_typeinfo::lookup_assign_op (t_lhs, t_rhs);
-
-		  if (f)
-		    f (*(this->rep), idx, *(rhs.rep));
-		  else
-		    gripe_indexed_assignment (type_name (), rhs.type_name ());
-		}
-	      else
-		gripe_conversion_failed (type_name (), rhs.type_name ());
-	    }
-	  else
-	    gripe_indexed_assignment (type_name (), rhs.type_name ());
-	}
-      else
+      if (! (error_state || assignment_ok))
 	gripe_no_conversion (type_name (), rhs.type_name ());
     }
+
+  if (! error_state)
+    maybe_mutate ();
 
   return *this;
 }
@@ -549,7 +650,7 @@ do_binary_op (octave_value::binary_op op, const octave_value& v1,
   else
     {
       octave_value tv1;
-      octave_value::numeric_conv_fcn cf1 = v1.numeric_conversion_function ();
+      octave_value::type_conv_fcn cf1 = v1.numeric_conversion_function ();
 
       if (cf1)
 	{
@@ -560,7 +661,7 @@ do_binary_op (octave_value::binary_op op, const octave_value& v1,
 	tv1 = v1;
 
       octave_value tv2;
-      octave_value::numeric_conv_fcn cf2 = v2.numeric_conversion_function ();
+      octave_value::type_conv_fcn cf2 = v2.numeric_conversion_function ();
 
       if (cf2)
 	{

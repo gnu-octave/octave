@@ -326,6 +326,9 @@ public:
   void convert_to_row_or_column_vector (void)
     { val.convert_to_row_or_column_vector (); }
 
+  void maybe_mutate (void)
+    { val.maybe_mutate (); }
+
   // Increment or decrement this constant.
 
   void increment (void) { val.increment (); }

@@ -70,9 +70,7 @@ public:
   typedef octave_value (*assign_op_fcn)
     (octave_value&, const octave_value_list&, const octave_value&);
 
-  typedef octave_value * (*widening_op_fcn) (const octave_value&);
-
-  typedef octave_value * (*numeric_conv_fcn) (const octave_value&);
+  typedef octave_value * (*type_conv_fcn) (const octave_value&);
 
   enum binary_op
   {
@@ -175,11 +173,25 @@ public:
       return *this;
     }
 
-  virtual numeric_conv_fcn numeric_conversion_function (void) const
+  virtual type_conv_fcn numeric_conversion_function (void) const
     { return rep->numeric_conversion_function (); }
+
+  void maybe_mutate (void);
+
+  virtual octave_value *try_narrow_conversion (void)
+    { return rep->try_narrow_conversion (); }
 
   virtual octave_value index (const octave_value_list& idx) const
     { return rep->index (idx); }
+
+  bool convert_and_assign (const octave_value_list& idx,
+			   const octave_value& rhs);
+
+  bool try_assignment_with_conversion (const octave_value_list& idx,
+				       const octave_value& rhs);
+
+  bool try_assignment (const octave_value_list& idx,
+		       const octave_value& rhs);
 
   octave_value& assign (const octave_value_list& idx, const octave_value& rhs);
 

@@ -558,6 +558,46 @@ DEFUN ("getenv", Fgetenv, Sgetenv, 10,
   return retval;
 }
 
+// XXX FIXME XXX -- this should be smart, like the xputenv function in
+// the kpathsea library.
+
+DEFUN ("putenv", Fputenv, Sputenv, 10,
+  "putenv (VAR, VALUE): define environment variable VAR=VALUE")
+{
+  Octave_object retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 2)
+    {
+      const char *var = args(0).string_value (); 
+
+      if (! error_state)
+	{
+	  const char *val = args(1).string_value (); 
+
+	  if (! error_state)
+	    {
+	      int buflen = strlen (var) + strlen (val) + 2;
+
+	      char *buf = new char [buflen];
+
+	      sprintf (buf, "%s=%s", var, val);
+
+	      putenv (buf);
+	    }
+	  else
+	    error ("putenv: second argument should be a string");
+	}
+      else
+	error ("putenv: first argument should be a string");
+    }
+  else
+    print_usage ("putenv");
+
+  return retval;
+}
+
 DEFUN ("kbhit", Fkbhit, Skbhit, 00,
   "kbhit: get a single character from the terminal")
 {

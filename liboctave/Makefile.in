@@ -269,10 +269,12 @@ install-lib:
 	  $(INSTALL_DATA) liboctave.$(LIBEXT) \
 	    $(octlibdir)/liboctave.$(LIBEXT); \
 	  $(RANLIB) $(octlibdir)/liboctave.$(LIBEXT); \
+	    \
 	  rm -f $(octlibdir)/liboct-readline.$(LIBEXT); \
 	  $(INSTALL_DATA) liboct-readline.$(LIBEXT) \
 	    $(octlibdir)/liboct-readline.$(LIBEXT); \
 	  $(RANLIB) $(octlibdir)/liboct-readline.$(LIBEXT); \
+	    \
 	  rm -f $(octlibdir)/liboct-pathsearch.$(LIBEXT); \
 	  $(INSTALL_DATA) liboct-pathsearch.$(LIBEXT) \
 	    $(octlibdir)/liboct-pathsearch.$(LIBEXT); \
@@ -282,24 +284,25 @@ install-lib:
 	  rm -f $(octlibdir)/liboctave.$(SHLEXT_VER); \
 	  $(INSTALL_PROGRAM) \
 	    liboctave.$(SHLEXT_VER) $(octlibdir)/liboctave.$(SHLEXT_VER); \
-	  cd $(octlibdir); \
-	  rm -f liboct-readline.$(SHLEXT); \
-	  $(LN_S) liboct-readline.$(SHLEXT_VER) liboct-readline.$(SHLEXT); \
+	  ( cd $(octlibdir); \
+	    rm -f liboctave.$(SHLEXT); \
+	    $(LN_S) liboctave.$(SHLEXT_VER) liboctave.$(SHLEXT); ); \
 	  rm -f $(octlibdir)/liboct-readline.$(SHLEXT_VER); \
 	  $(INSTALL_PROGRAM) \
 	    liboct-readline.$(SHLEXT_VER) \
 	    $(octlibdir)/liboct-readline.$(SHLEXT_VER); \
-	  cd $(octlibdir); \
-	  rm -f liboct-readline.$(SHLEXT); \
-	  $(LN_S) liboct-readline.$(SHLEXT_VER) liboct-readline.$(SHLEXT); \
+	  ( cd $(octlibdir); \
+	    rm -f liboct-readline.$(SHLEXT); \
+	    $(LN_S) \
+	      liboct-readline.$(SHLEXT_VER) liboct-readline.$(SHLEXT); ); \
 	  rm -f $(octlibdir)/liboct-pathsearch.$(SHLEXT_VER); \
 	  $(INSTALL_PROGRAM) \
 	    liboct-pathsearch.$(SHLEXT_VER) \
 	    $(octlibdir)/liboct-pathsearch.$(SHLEXT_VER); \
-	  cd $(octlibdir); \
-	  rm -f liboct-pathsearch.$(SHLEXT); \
-	  $(LN_S) \
-	    liboct-pathsearch.$(SHLEXT_VER) liboct-pathsearch.$(SHLEXT); \
+	  ( cd $(octlibdir); \
+	    rm -f liboct-pathsearch.$(SHLEXT); \
+	    $(LN_S) \
+	      liboct-pathsearch.$(SHLEXT_VER) liboct-pathsearch.$(SHLEXT); ); \
 	fi
 .PHONY: install-lib
 

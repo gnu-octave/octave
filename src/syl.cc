@@ -50,34 +50,6 @@ extern "C"
 			long, long);
 }
 
-// Local function: construct return vector of empty matrices.  Return
-// empty matrices and/or gripe when appropriate.  Probably should make
-// this available elsewhere, since tc-xxx functions do this a lot.
-
-tree_constant *
-empty_tree (int nargout, char* fcn_name)
-{
-  tree_constant *retval = NULL_TREE_CONST;
-
-// Got an empty argument, check if should gripe/return empty values.
-
-  int flag = user_pref.propagate_empty_matrices;
-  if (flag != 0)
-    {
-      if (flag < 0)
-	gripe_empty_arg (fcn_name, 0);
-
-      Matrix m;
-      retval = new tree_constant [nargout+1];
-      for (int i = 0; i < nargout; i++)
-	retval[i] = tree_constant (m);
-    }
-  else
-    gripe_empty_arg (fcn_name, 1);
-
-  return retval;
-}
-
 // Return value of tree_constant argument as ComplexMatrix.
 
 ComplexMatrix
@@ -134,7 +106,7 @@ syl (tree_constant *args, int nargin, int nargout)
   tree_constant argc = args[3].make_numeric ();
 
   if (arga.is_empty () || argb.is_empty () || argc.is_empty ())
-    retval = empty_tree (nargout, "syl");
+    retval = vector_of_empties (nargout, "syl");
   else
     {
 

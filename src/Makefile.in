@@ -50,9 +50,9 @@ XALL_CXXFLAGS = $(subst -fexternal-templates, , $(ALL_CXXFLAGS))
 	fi
 
 DLD_SRC = f-balance.cc f-chol.cc f-colloc.cc f-dassl.cc f-det.cc \
-	f-eig.cc f-expm.cc f-fft.cc f-find.cc \
+	f-eig.cc f-expm.cc f-fft.cc f-fft2.cc f-find.cc \
 	f-fsolve.cc f-fsqp.cc f-givens.cc f-hess.cc f-ifft.cc \
-	f-inv.cc f-log.cc f-lpsolve.cc f-lsode.cc f-lu.cc \
+	f-ifft2.cc f-inv.cc f-log.cc f-lpsolve.cc f-lsode.cc f-lu.cc \
 	f-minmax.cc f-npsol.cc f-qpsol.cc f-qr.cc f-quad.cc f-qzval.cc \
 	f-rand.cc f-schur.cc f-sort.cc f-svd.cc f-syl.cc
 

@@ -120,9 +120,8 @@ tree_while_command::eval (void)
 void
 tree_while_command::eval_error (void)
 {
-  if (error_state > 0)
-    ::error ("evaluating while command near line %d, column %d",
-	     line (), column ());
+  ::error ("evaluating while command near line %d, column %d",
+	   line (), column ());
 }
 
 void
@@ -174,9 +173,8 @@ tree_do_until_command::eval (void)
 void
 tree_do_until_command::eval_error (void)
 {
-  if (error_state > 0)
-    ::error ("evaluating do-until command near line %d, column %d",
-	     line (), column ());
+  ::error ("evaluating do-until command near line %d, column %d",
+	   line (), column ());
 }
 
 void
@@ -399,9 +397,8 @@ tree_simple_for_command::eval (void)
 void
 tree_simple_for_command::eval_error (void)
 {
-  if (error_state > 0)
-    ::error ("evaluating for command near line %d, column %d",
-	     line (), column ());
+  ::error ("evaluating for command near line %d, column %d",
+	   line (), column ());
 }
 
 void
@@ -507,9 +504,8 @@ tree_complex_for_command::eval (void)
 void
 tree_complex_for_command::eval_error (void)
 {
-  if (error_state > 0)
-    ::error ("evaluating for command near line %d, column %d",
-	     line (), column ());
+  ::error ("evaluating for command near line %d, column %d",
+	   line (), column ());
 }
 
 void

@@ -110,6 +110,8 @@ tree_prefix_expression::rvalue (void)
 	    eval_error ();
 	}
     }
+  else
+    eval_error ();
 
   return retval;
 }
@@ -117,9 +119,8 @@ tree_prefix_expression::rvalue (void)
 void
 tree_prefix_expression::eval_error (void)
 {
-  if (error_state > 0)
-    ::error ("evaluating prefix operator `%s' near line %d, column %d",
-	     oper () . c_str (), line (), column ());
+  ::error ("evaluating prefix operator `%s' near line %d, column %d",
+	   oper () . c_str (), line (), column ());
 }
 
 void
@@ -203,9 +204,8 @@ tree_postfix_expression::rvalue (void)
 void
 tree_postfix_expression::eval_error (void)
 {
-  if (error_state > 0)
-    ::error ("evaluating postfix operator `%s' near line %d, column %d",
-	     oper () . c_str (), line (), column ());
+  ::error ("evaluating postfix operator `%s' near line %d, column %d",
+	   oper () . c_str (), line (), column ());
 }
 
 void

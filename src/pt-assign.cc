@@ -152,15 +152,12 @@ tree_simple_assignment::rvalue (void)
 void
 tree_simple_assignment::eval_error (void)
 {
-  if (error_state > 0)
-    {
-      int l = line ();
-      int c = column ();
+  int l = line ();
+  int c = column ();
 
-      if (l != -1 && c != -1)
-	::error ("evaluating assignment expression near line %d, column %d",
-		 l, c);
-    }
+  if (l != -1 && c != -1)
+    ::error ("evaluating assignment expression near line %d, column %d",
+	     l, c);
 }
 
 std::string
@@ -301,15 +298,12 @@ tree_multi_assignment::rvalue (int)
 void
 tree_multi_assignment::eval_error (void)
 {
-  if (error_state > 0)
-    {
-      int l = line ();
-      int c = column ();
+  int l = line ();
+  int c = column ();
 
-      if (l != -1 && c != -1)
-	::error ("evaluating assignment expression near line %d, column %d",
-		 l, c);
-    }
+  if (l != -1 && c != -1)
+    ::error ("evaluating assignment expression near line %d, column %d",
+	     l, c);
 }
 
 std::string

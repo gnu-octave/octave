@@ -103,7 +103,7 @@ tree_if_command::eval (void)
   if (list)
     list->eval ();
 
-  if (error_state > 0)
+  if (error_state)
     ::error ("evaluating if command near line %d, column %d",
 	     line (), column ());
 }

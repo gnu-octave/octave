@@ -1,3 +1,18 @@
+2002-06-28  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pt-decl.cc (tree_static_command::eval, tree_global_command::eval):
+	Call error for any non-zero value of error_state.
+	* pt-select.cc (tree_if_command::eval): Likewise.
+	* pt-loop.cc (tree_while_command::eval_error): Don't check error_state.
+	(tree_do_until_command::eval_error): Likewise.
+	(tree_simple_for_command::eval_error): Likewise.
+	(tree_complex_for_command::eval_error): Likewise.
+	* pt-assign.cc (tree_multi_assignment::eval_error): Likewise.
+	(tree_simple_assignment::eval_error): Likewise.
+	* pt-idx.cc (tree_index_expression::eval_error): Likewise.
+	* pt-colon.cc (tree_colon_expression::eval_error): Likewise.
+	(tree_colon_expression::rvalue): Delete rendundant error_state check.
+
 2002-06-26  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* ov-mapper.cc (MAPPER_LOOP, MAPPER_LOOP_1, MAPPER_LOOP_2): New	macros.

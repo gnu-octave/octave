@@ -130,7 +130,7 @@ tree_global_command::eval (void)
       initialized = true;
     }
 
-  if (error_state > 0)
+  if (error_state)
     ::error ("evaluating global command near line %d, column %d",
 	     line (), column ());
 }
@@ -170,7 +170,7 @@ tree_static_command::eval (void)
 
       initialized = true;
 
-      if (error_state > 0)
+      if (error_state)
 	::error ("evaluating static command near line %d, column %d",
 		 line (), column ());
     }

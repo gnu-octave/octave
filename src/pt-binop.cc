@@ -98,9 +98,8 @@ tree_binary_expression::rvalue (void)
 void
 tree_binary_expression::eval_error (void)
 {
-  if (error_state > 0)
-    ::error ("evaluating binary operator `%s' near line %d, column %d",
-	     oper () . c_str (), line (), column ());
+  ::error ("evaluating binary operator `%s' near line %d, column %d",
+	   oper () . c_str (), line (), column ());
 }
 
 std::string

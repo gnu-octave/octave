@@ -317,25 +317,22 @@ tree_index_expression::lvalue (void)
 void
 tree_index_expression::eval_error (void)
 {
-  if (error_state > 0)
-    {
-      int l = line ();
-      int c = column ();
+  int l = line ();
+  int c = column ();
 
-      const char *type_str;
+  const char *type_str;
 
-      if (type[0] == '.')
-	type_str = "structure reference operator";
-      else if (args.front ())
-	type_str = "index expression";
-      else
-	type_str = "expression";
+  if (type[0] == '.')
+    type_str = "structure reference operator";
+  else if (args.front ())
+    type_str = "index expression";
+  else
+    type_str = "expression";
 
-      if (l != -1 && c != -1)
-	::error ("evaluating %s near line %d, column %d", type_str, l, c);
-      else
-	::error ("evaluating %s", type_str);
-    }
+  if (l != -1 && c != -1)
+    ::error ("evaluating %s near line %d, column %d", type_str, l, c);
+  else
+    ::error ("evaluating %s", type_str);
 }
 
 void

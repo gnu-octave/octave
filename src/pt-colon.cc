@@ -151,10 +151,8 @@ tree_colon_expression::rvalue (void)
 
   if (error_state)
     {
-      if (error_state)
-	eval_error ();
-
-      return octave_value ();
+      retval = octave_value ();
+      eval_error ();
     }
 
   return retval;
@@ -163,14 +161,11 @@ tree_colon_expression::rvalue (void)
 void
 tree_colon_expression::eval_error (const std::string& s)
 {
-  if (error_state > 0)
-    {
-      if (! s.empty ())
-	::error ("%s", s.c_str ());
+  if (! s.empty ())
+    ::error ("%s", s.c_str ());
 
-      ::error ("evaluating colon expression near line %d column %d",
-	       line (), column ());
-    }
+  ::error ("evaluating colon expression near line %d column %d",
+	   line (), column ());
 }
 
 void

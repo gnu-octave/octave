@@ -153,7 +153,13 @@ xlgamma (double x)
 {
   double result;
   double sgngam;
+
+  if (x < 0)
+    (*current_liboctave_error_handler)
+      ("xlgamma: argument must be nonnegative");
+
   F77_FUNC (dlgams, DLGAMS) (x, result, sgngam);
+
   return result;
 }
 

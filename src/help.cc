@@ -1,7 +1,7 @@
 // help.cc                                             -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993 John W. Eaton
+Copyright (C) 1992, 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -103,7 +103,7 @@ transpose, *not* the complex conjugate transpose.  See also `''.\n", },
     "Element by element division operator.  See also `/' and `\\'.\n", },
 
   { ".^",
-    "Element by element division operator.  See also `/' and `\\'.\n", },
+    "Element by element power operator.  See also `**', `^', and `.^'.\n", },
 
   { "/",
     "Right division.  See also `\\' and `./'.\n", },

@@ -1,5 +1,7 @@
 2003-09-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* chNDArray.h, chNDArray.cc, boolNDArray.h, boolNDArray.cc: New files.
+
 	* Array.h, Array-idx.h, Array.cc: Fold all N-d functionality here.
 	Turn inheritance hierarchy upside down (2-d and 3-d arrays are now
 	just special cases of the general purpose N-d Array object).

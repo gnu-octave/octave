@@ -34,7 +34,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <iostream.h>
 
-#include <sys/types.h> // XXX FIXME XXX
+#ifdef HAVE_UNISTD_H
+#include <sys/types.h>
+#include <unistd.h>
+#endif
 
 #include <Complex.h>
 

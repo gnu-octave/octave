@@ -1,5 +1,9 @@
 Wed Oct 30 01:04:13 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* config.h.bot (GCC_ATTR_NORETURN): Rename from NORETURN.
+	(GCC_ATTR_UNUSED): Rename from GCC_ATTRIBUTE_UNUSED.
+	(NPOS): Define if using gcc 2.8.x or later.
+
 	* octMakefile.in (DIRS_TO_MAKE): Add localarchlibdir to list.
 
 	* configure.in (localarchlibdir): New variable.

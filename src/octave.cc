@@ -43,7 +43,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <unistd.h>
 #endif
 
+#ifdef HAVE_PWD_H
 #include <pwd.h>
+#endif
 
 #include "lo-error.h"
 #include "str-vec.h"

@@ -398,7 +398,7 @@ List script file with line numbers.\n\
 
 	      if (dbg_fcn)
 		{
-		  char *str = malloc (strlen (argv[1].c_str ()) + 1);
+		  char *str = (char *) malloc (strlen (argv[1].c_str ()) + 1);
 
 		  if (str)
 		    memcpy (str, argv[1].c_str (),
@@ -442,7 +442,7 @@ List script file with line numbers.\n\
 	  if (dbg_fcn)
 	    {
 	
-	      char *str = malloc (strlen (argv[2].c_str ()) + 1);
+	      char *str = (char *) malloc (strlen (argv[2].c_str ()) + 1);
 
 	      if (str)
 		memcpy (str, argv[2].c_str (), strlen (argv[2].c_str ()) + 1);

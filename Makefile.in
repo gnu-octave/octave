@@ -26,133 +26,16 @@ all: FORCE
 	@echo ""
 	$(MAKE) -f octMakefile all
 
-octave-bug: FORCE
-	$(MAKE) -f octMakefile octave-bug
+TARGETS = octave-bug libcruft liboctave kpathsea dld info readline \
+	src scripts doc check octave.info INSTALL.info BUGS.info \
+	install uninstall tags TAGS clean mostlyclean distclean \
+	realclean clean-tar dist-z links-for-dist dist-tar \
+	clean-dist-tar dist links-for-bin-dist bin-dist-tar \
+	clean-bin-dist-tar binary-dist doc-dist-tar clean-doc-dist-tar \
+	doc-dist local-dist-tar clean-local-dist-tar local-dist \
+	split-dist split-local-dist snapshot-z snapshot snapshot-version
 
-libcruft: FORCE
-	$(MAKE) -f octMakefile libcruft
+$(TARGETS): FORCE
+	$(MAKE) -f octMakefile $@
 
-liboctave: FORCE
-	$(MAKE) -f octMakefile liboctave
-
-kpathsea: FORCE
-	$(MAKE) -f octMakefile kpathsea
-
-dld: FORCE
-	$(MAKE) -f octMakefile dld
-
-info: FORCE
-	$(MAKE) -f octMakefile info
-
-readline: FORCE
-	$(MAKE) -f octMakefile readline
-
-src: FORCE
-	$(MAKE) -f octMakefile src
-
-scripts: FORCE
-	$(MAKE) -f octMakefile scripts
-
-doc: FORCE
-	$(MAKE) -f octMakefile doc
-
-check: FORCE
-	$(MAKE) -f octMakefile check
-
-octave.info: FORCE
-	$(MAKE) -f octMakefile octave.info
-
-INSTALL.info: FORCE
-	$(MAKE) -f octMakefile INSTALL.info
-
-BUGS.info: FORCE
-	$(MAKE) -f octMakefile BUGS.info
-
-install: FORCE
-	$(MAKE) -f octMakefile install
-
-uninstall: FORCE
-	$(MAKE) -f octMakefile uninstall
-
-tags: FORCE
-	$(MAKE) -f octMakefile tags
-
-TAGS: FORCE
-	$(MAKE) -f octMakefile TAGS
-
-clean: FORCE
-	$(MAKE) -f octMakefile clean
-
-mostlyclean: FORCE
-	$(MAKE) -f octMakefile mostlyclean
-
-distclean: FORCE
-	$(MAKE) -f octMakefile distclean
-
-realclean: FORCE
-	$(MAKE) -f octMakefile realclean
-
-clean-tar: FORCE
-	$(MAKE) -f octMakefile clean-tar
-
-dist-z: FORCE
-	$(MAKE) -f octMakefile dist-z
-
-links-for-dist: FORCE
-	$(MAKE) -f octMakefile links-for-dist
-
-dist-tar: FORCE
-	$(MAKE) -f octMakefile dist-tar
-
-clean-dist-tar: FORCE
-	$(MAKE) -f octMakefile clean-dist-tar
-
-dist: FORCE
-	$(MAKE) -f octMakefile dist
-
-links-for-bin-dist: FORCE
-	$(MAKE) -f octMakefile links-for-bin-dist
-
-bin-dist-tar: FORCE
-	$(MAKE) -f octMakefile bin-dist-tar
-
-clean-bin-dist-tar: FORCE
-	$(MAKE) -f octMakefile clean-bin-dist-tar
-
-binary-dist: FORCE
-	$(MAKE) -f octMakefile binary-dist
-
-doc-dist-tar: FORCE
-	$(MAKE) -f octMakefile doc-dist-tar
-
-clean-doc-dist-tar: FORCE
-	$(MAKE) -f octMakefile clean-doc-dist-tar
-
-doc-dist: FORCE
-	$(MAKE) -f octMakefile doc-dist
-
-local-dist-tar: FORCE
-	$(MAKE) -f octMakefile local-dist-tar
-
-clean-local-dist-tar: FORCE
-	$(MAKE) -f octMakefile clean-local-dist-tar
-
-local-dist: FORCE
-	$(MAKE) -f octMakefile local-dist
-
-split-dist: FORCE
-	$(MAKE) -f octMakefile split-dist
-
-split-local-dist: FORCE
-	$(MAKE) -f octMakefile split-local-dist
-
-snapshot-z: FORCE
-	$(MAKE) -f octMakefile snapshot-z
-
-snapshot: FORCE
-	$(MAKE) -f octMakefile snapshot
-
-snapshot-version: FORCE
-	$(MAKE) -f octMakefile snapshot-version
-
-FORCE:
+FORCE:  

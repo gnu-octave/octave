@@ -21,10 +21,10 @@ dnl Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
 ### along with Octave; see the file COPYING.  If not, write to the Free
 ### Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
-AC_REVISION($Revision: 1.96 $)
+AC_REVISION($Revision: 1.97 $)
 AC_PREREQ(2.0)
 AC_INIT(src/octave.cc)
-AC_CONFIG_HEADER(config.h kpathsea/c-auto.h)
+AC_CONFIG_HEADER(config.h)
 
 AC_DEFINE(OCTAVE_SOURCE, 1)
 
@@ -375,17 +375,6 @@ esac
 ### Does the C compiler handle alloca() and const correctly?
 
 AC_ALLOCA
-
-### This one is for kpathsea.
-###
-### It would be nicer to test for the requisite putenv features directly,
-### but can't figure out how to do that.
-
-if test "`(uname) 2>/dev/null`" = NetBSD \
-   || test "`(uname) 2>/dev/null`" = FreeBSD; then
-  AC_DEFINE(SMART_PUTENV)
-fi
-
 AC_C_CONST
 
 ### If we haven't been forced to use f2c, try to find a Fortran compiler
@@ -782,6 +771,10 @@ if $ADD_CC_WALL; then
   AC_MSG_RESULT([adding -Wall to CFLAGS])
 fi
 
+### Run configure in subdirectories.
+
+AC_CONFIG_SUBDIRS(kpathsea)
+
 ### Do the substitutions in all the Makefiles.
 
 define([tmpA], [Makefile octMakefile Makeconf])dnl
@@ -789,7 +782,7 @@ define([tmpB], [libcruft/Makefile libcruft/Makerules])dnl
 define([tmpC], [liboctave/Makefile src/Makefile dld/Makefile])dnl
 define([tmpD], [info/Makefile readline/Makefile readline/doc/Makefile])dnl
 define([tmpE], [readline/examples/Makefile doc/Makefile])dnl
-define([tmpF], [test/Makefile kpathsea/Makefile])dnl
+define([tmpF], [test/Makefile])dnl
 define([srcdirs], [tmpA tmpB tmpC tmpD tmpE tmpF])dnl
 
 define([tmpa], [libcruft/blas/Makefile libcruft/balgen/Makefile])dnl

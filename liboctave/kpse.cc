@@ -1303,9 +1303,8 @@ kpse_expand_kpse_dot (const std::string& path)
     }
 
   int len = ret.length ();
-
   if (len > 0)
-    ret.resize (len - 1);
+    ret.resize (len-1);
 
   return ret;
 }
@@ -1372,11 +1371,9 @@ kpse_brace_expand (const std::string& path_arg)
       ret += expansion + ENV_SEP_STRING;
     }
 
-  /* Waste the last byte by overwriting the trailing env_sep with a null.  */
   size_t len = ret.length ();
-
   if (len > 0)
-    ret.resize (len - 1);
+    ret.resize (len-1);
 
   return kpse_expand_kpse_dot (ret);
 }
@@ -1439,28 +1436,25 @@ kpse_path_expand (const std::string& path_arg)
 	      const std::string thedir = STR_LLIST (*dir);
 	      unsigned dirlen = thedir.length ();
 
+	      ret += thedir;
+	      len += dirlen;
+
 	      /* Retain trailing slash if that's the root directory.  */
 	      if (dirlen == 1
 		  || (dirlen == 3 && NAME_BEGINS_WITH_DEVICE (thedir)
 		      && IS_DIR_SEP (thedir[2])))
 		{
-		  ret += thedir + ENV_SEP_STRING;
-		  len += dirlen + 1;
-		  ret[len - 1] = ENV_SEP;
+		  ret += ENV_SEP_STRING;
+		  len++;
 		}
-	      else
-		{
-		  ret += thedir;
-		  len += dirlen;
-		  ret [len - 1] = ENV_SEP;
-		}
+
+	      ret[len-1] = ENV_SEP;
 	    }
 	}
     }
 
-  /* Get rid of trailing ':', if any. */
-  if (len != 0)
-    ret[len - 1] = 0;
+  if (len > 0)
+    ret.resize (len-1);
 
   return ret;
 }

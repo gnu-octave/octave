@@ -128,14 +128,8 @@ dir_path::init (void)
       octave_kpathsea_initialized = true;
     }
 
-  if (p_default.empty ())
-    p = kpse_path_expand (p_orig);
-  else
-    {
-      std::string s = kpse_expand_default (p_orig, p_default);
-
-      p = kpse_path_expand (s);
-    }
+  p = kpse_path_expand (p_default.empty ()
+			? p_orig : kpse_expand_default (p_orig, p_default));
 
   int count = 0;
   for (kpse_path_iterator pi (p); pi != NPOS; pi++)
@@ -146,10 +140,7 @@ dir_path::init (void)
   kpse_path_iterator pi (p);
 
   for (int i = 0; i < count; i++)
-    {
-      pv[i] = *pi++;
-      std::cerr << pv[i] << std::endl;
-    }
+    pv[i] = *pi++;
 
   initialized = true;
 }

@@ -1,3 +1,8 @@
+2001-04-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (install-lib): Don't use mk-libdir-link.
+	(install-inc): Don't use mk-includedir-link.
+
 2001-02-28  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* lo-cutils.c (octave_gethostname): New function.

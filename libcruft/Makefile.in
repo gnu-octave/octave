@@ -127,7 +127,6 @@ install::
 	  rm -f libcruft.$(SHLEXT); \
 	  $(LN_S) libcruft.$(SHLEXT_VER) libcruft.$(SHLEXT); \
 	fi
-	$(mk-libdir-link)
 
 install-strip::
 	$(MAKE) INSTALL_PROGRAM="$(INSTALL_PROGRAM) -s" install

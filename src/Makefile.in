@@ -358,7 +358,6 @@ install-lib:
 	  rm -f liboctinterp.$(SHLEXT); \
 	  $(LN_S) liboctinterp.$(SHLEXT_VER) liboctinterp.$(SHLEXT); \
 	fi
-	$(mk-libdir-link)
 .PHONY: install-lib
 
 install-inc:
@@ -375,7 +374,6 @@ install-inc:
 	    $(INSTALL_DATA) $(srcdir)/$$f $(octincludedir)/octave/$$f ; \
 	  fi ; \
 	done
-	$(mk-includedir-link)
 .PHONY: install-inc
 
 uninstall:

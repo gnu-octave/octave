@@ -1,6 +1,7 @@
 2001-04-24  Christoph Spiel <cspiel@hammersmith-consulting.com>
 
 	* Makefile.in (check): Allow user to specify which .exp file to run.
+	* octave.test/try, octave.test/eval-catch: New directories and tests.
 
 2000-06-07  Ben Sapp <bsapp@nua.lampf.lanl.gov>
 

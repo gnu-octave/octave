@@ -202,7 +202,6 @@ install-lib:
 	  rm -f liboctave.$(SHLEXT); \
 	  $(LN_S) liboctave.$(SHLEXT_VER) liboctave.$(SHLEXT); \
 	fi
-	$(mk-libdir-link)
 .PHONY: install-lib
 
 install-inc:
@@ -211,7 +210,6 @@ install-inc:
 	  rm -f $(octincludedir)/octave/$$f; \
 	  $(INSTALL_DATA) $(srcdir)/$$f $(octincludedir)/octave/$$f; \
 	done
-	$(mk-includedir-link)
 .PHONY: install-inc
 
 uninstall:

@@ -1,3 +1,7 @@
+2001-04-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (install): Don't use mk-libdir-link.
+
 2001-04-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* misc/Makefile.in (CPICDEP): Remove pic/dostop.o from the list.

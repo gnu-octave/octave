@@ -111,7 +111,6 @@ install install-strip ::
 	$(INSTALL_SCRIPT) mkoctfile $(bindir)/mkoctfile-$(version)
 	cd $(bindir); $(LN_S) mkoctfile-$(version) mkoctfile
 	$(INSTALL_DATA) config.h $(octincludedir)/octave/config.h
-	$(mk-includedir-link)
 
 maintainer-clean::
 	@echo ""

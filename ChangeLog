@@ -1,3 +1,13 @@
+2001-04-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* octMakefile.in (install, install-strip): Don't use mk-includedir-link
+
+	* Makeconf.in (mk-includedir-link, mk-libdir-link): Delete definitions.
+
+2001-04-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makeconf.in (mk-libdir-link): Undo previous change
+
 2001-04-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in: Only check for libz if checking for HDF5 libraries.

@@ -16,26 +16,34 @@ include $(TOPDIR)/Makeconf
 SOURCES =
 
 TEXINFO = ack.texi amuse.texi arith.texi bugs.texi bugs1.texi \
-	control.texi cp-idx.texi diffeq.texi expr.texi extend.texi \
-	fcn.texi fn-idx.texi gpl.texi help.texi history.texi \
-	hsuser.texi install.texi install1.texi intro.texi invoke.texi \
-	io.texi linalg.texi matrix.texi nonlin.texi octave.texi \
-	op-idx.texi optim.texi plot.texi program.texi quad.texi \
-	rluser.texi signal.texi special.texi stats.texi stmt.texi \
-	strings.texi system.texi using.texi var.texi vr-idx.texi
+	conf.texi control.texi cp-idx.texi diffeq.texi expr.texi \
+	extend.texi fcn.texi fn-idx.texi gpl.texi help.texi \
+	history.texi hsuser.texi install.texi install1.texi \
+	intro.texi invoke.texi io.texi linalg.texi matrix.texi \
+	nonlin.texi octave.texi op-idx.texi optim.texi plot.texi \
+	program.texi quad.texi rluser.texi signal.texi special.texi \
+	stats.texi stmt.texi strings.texi system.texi using.texi \
+	var.texi vr-idx.texi
 
-FORMATTED =  octave.dvi octave.ps octave.info octave.info-[0-9]*
+LIB_TEXINFO = liboctave.texi
 
-DISTFILES = Makefile.in $(TEXINFO) $(FORMATTED) texinfo.tex
+ALL_TEXINFO = $(TEXINFO) $(LIB_TEXINFO)
 
-SPELL = $(patsubst %.texi, %.spell, $(TEXINFO))
+FORMATTED =  octave.dvi octave.ps octave.info octave.info-[0-9]* \
+	liboctave.info liboctave.info-[0-9]*
+
+DISTFILES = Makefile.in conf.texi.in texinfo.tex \
+	$(ALL_TEXINFO) $(FORMATTED)
+
+SPELL = $(patsubst %.texi, %.spell, $(ALL_TEXINFO))
 
 %.spell : %.texi
 	rm -f $@
 	sed -e 's/@@/ at /g' -e 's/@[a-zA-Z]*//g' $< | spell > $@.tmp
 	mv $@.tmp $@
 
-all: octave.info octave.dvi octave.ps
+all: octave.info octave.dvi octave.ps \
+	liboctave.info liboctave.dvi liboctave.ps
 .PHONY: all
 
 octave.info: $(TEXINFO)
@@ -47,6 +55,15 @@ octave.dvi: $(TEXINFO)
 octave.ps: octave.dvi
 	dvips -o octave.ps octave.dvi
 
+liboctave.info: $(LIB_TEXINFO)
+	-makeinfo -I$(srcdir) liboctave.texi
+
+liboctave.dvi: $(LIB_TEXINFO)
+	texi2dvi $(srcdir)/liboctave.texi
+
+liboctave.ps: liboctave.dvi
+	dvips -o liboctave.ps liboctave.dvi
+
 ../INSTALL.OCTAVE: install1.texi install.texi
 	-makeinfo --no-header -I$(srcdir)/doc install1.texi
 	-mv INSTALL ../INSTALL.OCTAVE
@@ -54,6 +71,14 @@ octave.ps: octave.dvi
 ../BUGS: bugs1.texi bugs.texi
 	-makeinfo --no-header -I$(srcdir)/doc bugs1.texi
 	-mv BUGS ../BUGS
+
+conf.texi: $(srcdir)/../src/version.h ../Makeconf Makefile conf.texi.in
+	@echo "Making conf.texi from conf.texi.in..."
+	@(version_val=${version}; \
+	sed < $(srcdir)/conf.texi.in > conf.texi.tmp \
+	-e "s;%OCTAVE_VERSION%;$$version_val;" \
+	-e "s;%OCTAVE_HOME%;${prefix};")
+	@$(srcdir)/../src/move-if-change conf.texi.tmp conf.texi
 
 check: all
 .PHONY: check
@@ -72,11 +97,21 @@ install: all
 	      $(INSTALL_DATA) $$f $(infodir)/`basename $$f` ; \
 	    done ; \
 	  fi ; \
+	  rm -f $(infodir)/liboctave.info* ; \
+	  if test -f liboctave.info ; then \
+	    for f in liboctave.info* ; do \
+	      $(INSTALL_DATA) $$f $(infodir)/$$f ; \
+	    done ; \
+	  else \
+	    for f in $(srcdir)/liboctave.info* ; do \
+	      $(INSTALL_DATA) $$f $(infodir)/`basename $$f` ; \
+	    done ; \
+	  fi ; \
 	fi
 .PHONY: install
 
 uninstall:
-	rm -f $(infodir)/octave.info*
+	rm -f $(infodir)/octave.info* $(infodir)/liboctave.info*
 .PHONY: uninstall
 
 tags: $(SOURCES)
@@ -91,7 +126,9 @@ spell: $(SPELL)
 clean:
 	rm -f *.info *.info-* octave.cp octave.fn octave.ky \
 	octave.pg octave.tp octave.vr octave.aux octave.log \
-	octave.toc octave.dvi octave.ps
+	octave.toc octave.dvi octave.ps liboctave.cp liboctave.fn \
+	liboctave.pg liboctave.tp liboctave.aux liboctave.log \
+	liboctave.toc liboctave.dvi liboctave.ps
 .PHONY: clean
 
 mostlyclean:

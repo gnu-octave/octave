@@ -59,7 +59,8 @@ clean glob-clean distclean glob-maintainer-clean::
 	-rm -f libglob.a *.o core
 
 distclean glob-maintainer-clean::
-	-rm -f TAGS tags Makefile config.status config.h config.log
+	-rm -f TAGS tags Makefile config.status config.cache \
+	config.h config.log
 
 maintainer-clean::
 	-rm -f TAGS tags Makefile config.status config.h config.log configure

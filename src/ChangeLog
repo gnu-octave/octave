@@ -5,6 +5,9 @@
 
 2004-01-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* version.h (OCTAVE_VERSION): Now 2.1.53.
+	(OCTAVE_API_VERSION): Now api-v4.
+
 	* error.cc (pr_where): New arg, print_code with default value true.
 	(warning): Call pr_where with second arg false.
 

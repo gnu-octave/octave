@@ -15,16 +15,21 @@ function [R G B] = ind2rgb(X,map)
   [hi wi] = size(X);
 
   pref = do_fortran_indexing;
-  do_fortran_indexing = "true";
 
-  R = map(X(:),1);
-  G = map(X(:),2);
-  B = map(X(:),3);
+  unwind_protect
 
-  R = reshape(R,hi,wi);
-  G = reshape(G,hi,wi);
-  B = reshape(B,hi,wi);
+    do_fortran_indexing = "true";
 
-  do_fortran_indexing = pref;
+    R = map(X(:),1);
+    G = map(X(:),2);
+    B = map(X(:),3);
+
+    R = reshape(R,hi,wi);
+    G = reshape(G,hi,wi);
+    B = reshape(B,hi,wi);
+
+  unwind_protect_cleanup
+    do_fortran_indexing = pref;
+  end_unwind_protect
 
 endfunction

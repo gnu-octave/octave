@@ -34,36 +34,43 @@ function num = menu (t, ...)
 # major confusion.
 
   save_page_screen_output = page_screen_output;
-  page_screen_output = "false";
 
-  if (! isempty (t))
-    disp (t);
-    printf ("\n");
-  endif
+  unwind_protect
 
-  nopt = nargin - 1;
+    page_screen_output = "false";
 
-  while (1)
-    va_start ();
-    for i = 1:nopt
-      printf ("  [%2d] ", i);
-      disp (va_arg ());
-    endfor
-    printf ("\n");
-    s = "";
-    s = input ("pick a number, any number: ", "s");
-    if (strcmp (s, ""))
+    if (! isempty (t))
+      disp (t);
       printf ("\n");
-      continue;
     endif
-    eval (sprintf ("num = %s;", s));
-    if (! is_scalar (num) || num < 1 || num > nopt)
-      printf ("\nerror: input invalid or out of range\n\n");
-    else
-      break;
-    endif
-  endwhile
 
-  page_screen_output = save_page_screen_output;
+    nopt = nargin - 1;
+
+    while (1)
+      va_start ();
+      for i = 1:nopt
+	printf ("  [%2d] ", i);
+	disp (va_arg ());
+      endfor
+      printf ("\n");
+      s = "";
+      s = input ("pick a number, any number: ", "s");
+      if (strcmp (s, ""))
+	printf ("\n");
+	continue;
+      endif
+      eval (sprintf ("num = %s;", s));
+      if (! is_scalar (num) || num < 1 || num > nopt)
+	printf ("\nerror: input invalid or out of range\n\n");
+      else
+	break;
+      endif
+    endwhile
+
+  unwind_protect_cleanup
+
+    page_screen_output = save_page_screen_output;
+
+  end_unwind_protect
 
 endfunction

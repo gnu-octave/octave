@@ -19,18 +19,24 @@ function Y = ind2gray(X,map)
   yiq = rgb2ntsc(map);
   y = yiq(:,1);
 
-  # We need Fortran indexing capability, but be sure to save the user's
-  # preference.
+# We need Fortran indexing capability, but be sure to save the user's
+# preference.
+
   pref = do_fortran_indexing;
-  do_fortran_indexing = "true";
 
-  # Replace indices in the input matrix with indexed values in the output
-  # matrix.
-  [rows, cols] = size(X);
-  Y = y(X(:));
-  Y = reshape(Y,rows,cols);
+  unwind_protect
 
-  # Restore the user's preference.
-  do_fortran_indexing = pref;
+    do_fortran_indexing = "true";
+
+# Replace indices in the input matrix with indexed values in the output
+# matrix.
+
+    [rows, cols] = size(X);
+    Y = y(X(:));
+    Y = reshape(Y,rows,cols);
+
+  unwind_protect_cleanup
+    do_fortran_indexing = pref;
+  end_unwind_protect
 
 endfunction

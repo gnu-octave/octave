@@ -109,12 +109,12 @@ refcard-letter.ps: refcard-letter.dvi
 	-dvips -T 11in,8.5in -o refcard-letter.ps refcard-letter.dvi
 
 ../INSTALL.OCTAVE: install1.texi install.texi
-	-makeinfo --no-header -I$(srcdir)/doc install1.texi
-	-mv INSTALL ../INSTALL.OCTAVE
+	-makeinfo --no-header --output INSTALL \
+	  -I$(srcdir)/doc install1.texi && mv INSTALL ../INSTALL.OCTAVE
 
 ../BUGS: bugs1.texi bugs.texi
-	-makeinfo --no-header -I$(srcdir)/doc bugs1.texi
-	-mv BUGS ../BUGS
+	-makeinfo --no-header --output BUGS \
+	  -I$(srcdir)/doc bugs1.texi && mv BUGS ../BUGS
 
 # This mess is supposed to prevent us from making info files
 # unnecessarily when building Octave in a subdirectory.

@@ -1,5 +1,10 @@
 2004-12-02  David Bateman  <dbateman@free.fr>
 
+	* input.cc (get_user_input): Only set nm and line for debugging if
+	both debug is true and curr_caller_function is non-null.
+
+2004-12-02  David Bateman  <dbateman@free.fr>
+
 	* ls-mat5.cc (arrayclasstype): Add mxINT64_CLASS, mxUINT64_CLASS,
 	mxFUNCTION_CLASS enum values.
 	(read_mat5_integer_data): New template function.

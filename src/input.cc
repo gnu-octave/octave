@@ -541,7 +541,7 @@ get_user_input (const octave_value_list& args, bool debug, int nargout)
   // We look at curr_caller_function because curr_function is always
   // "keyboard".
 
-  if (curr_caller_function)
+  if (debug && curr_caller_function)
     {
       nm = curr_caller_function->fcn_file_name ();
 

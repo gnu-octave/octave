@@ -228,25 +228,35 @@ octave_env::do_polite_directory_format (const std::string& name) const
   return retval;
 }
 
-// Return 1 if STRING contains an absolute pathname, else 0.
+#if defined (__CYGWIN__)
+#define IS_DIR_SEP(c) (c == '/' || c == '\\')
+#else
+#define IS_DIR_SEP(c) (c == '/')
+#endif
 
 bool
 octave_env::do_absolute_pathname (const std::string& s) const
 {
-  if (s.empty ())
-    return 0;
+  size_t len = s.length ();
+
+  if (len == 0)
+    return false;
 
   if (s[0] == '/')
     return true;
 
+#if defined (__CYGWIN__)
+  if (len > 2 && isalpha (s[0]) && s[1] == ':' && IS_DIR_SEP (s[2]))
+    return true;
+#endif
+
   if (s[0] == '.')
     {
-      if (s[1] == '\0' || s[1] == '/')
+      if (len == 1 || IS_DIR_SEP (s[1]))
 	return true;
 
-      if (s[1] == '.')
-	if (s[2] == '\0' || s[2] == '/')
-	  return true;
+      if (s[1] == '.' && (len == 2 || IS_DIR_SEP (s[2])))
+	return true;
     }
 
   return false;
@@ -281,7 +291,7 @@ octave_env::do_make_absolute (const std::string& s,
     return s;
 #endif
 
-  if (dot_path.empty () || s[0] == '/' || s.empty ())
+  if (dot_path.empty () || s.empty () || do_absolute_pathname (s))
     return s;
 
   std::string current_path = dot_path;

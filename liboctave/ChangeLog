@@ -1,3 +1,10 @@
+2002-10-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-env.cc (octave_env::do_absolute_pathname): Handle Windows
+	filenames.
+	(octave_env::do_make_absolute): Check for absolute name with
+	do_absolute_path.
+
 2002-10-03  Paul Kienzle <pkienzle@users.sf.net>
 
 	* oct-time.cc (octave_time::stamp): Better resolution for Windows

@@ -36,22 +36,36 @@
 
 ## Author: jwe
 
-function p = path (varargin)
+function retval = path (varargin)
 
-  if (nargin == 0)
-    if (nargout == 0)
-      puts ("\nLOADPATH contains the following directories:\n\n  ");
-      puts (strrep (DEFAULT_LOADPATH, ":", "\n  "));
-      puts ("\n\n");
-    else
-      p = LOADPATH;
-    endif
-  else
+  if (nargin > 0)
     p = varargin{1};
     for i = 2:nargin
       p = sprintf ("%s:%s", p, varargin{i});
     endfor
     LOADPATH = p;
+  endif
+
+  if (LOADPATH(1) == ":")
+    p = strcat (DEFAULT_LOADPATH, LOADPATH);
+  else
+    t = findstr (LOADPATH, "::");
+    if (any (t))
+      loc = t(1);
+      p = strcat (LOADPATH(1:loc), DEFAULT_LOADPATH, LOADPATH(loc+1:end));
+    elseif (LOADPATH(end) == ":")
+      p = strcat (LOADPATH, DEFAULT_LOADPATH);
+    else
+      p = LOADPATH;
+    endif
+  endif
+
+  if (nargin == 0 && nargout == 0)
+    puts ("\nOctave's search path contains the following directories:\n\n  ");
+    puts (strrep (p, ":", "\n  "));
+    puts ("\n\n");
+  else
+    retval = p;
   endif
 
 endfunction

@@ -255,8 +255,8 @@ NPSOL::minimize (double& objf, int& inform, Vector& lambda)
   else if (user_jac != NULL && user_grad != NULL)
     F77_FCN (npoptn) ("Derivative Level = 3", 20L);
 
-  int try = 0;
-  while (try++ < 5)
+  int attempt = 0;
+  while (attempt++ < 5)
     {
 
       F77_FCN (npsol) (&n, &nclin, &ncnln, &nrowa, &nrowj, &nrowr, pclin,

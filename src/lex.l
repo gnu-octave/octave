@@ -215,15 +215,19 @@ private:
 
   std::stack<int> context;
 
-  static const int BRACKET = 1;
-  static const int BRACE = 2;
-  static const int PAREN = 3;
+  static const int BRACKET;
+  static const int BRACE;
+  static const int PAREN;
 
   bracket_brace_paren_nesting_level (const bracket_brace_paren_nesting_level&);
 
   bracket_brace_paren_nesting_level&
   operator = (const bracket_brace_paren_nesting_level&);
 };
+
+const int bracket_brace_paren_nesting_level::BRACKET = 1;
+const int bracket_brace_paren_nesting_level::BRACE = 2;
+const int bracket_brace_paren_nesting_level::PAREN = 3;
 
 static bracket_brace_paren_nesting_level nesting_level;
 

@@ -119,8 +119,8 @@ carriage return.
 @node Simple File I/O
 @subsection Simple File I/O
 
-@cindex{saving data}
-@cindex{loading data}
+@cindex saving data
+@cindex loading data
 The @code{save} and @code{load} commands allow data to be written to and
 read from disk files in various formats.  The default format of files
 written by the @code{save} command can be controlled using the built-in

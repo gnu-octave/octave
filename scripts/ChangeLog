@@ -1,3 +1,7 @@
+2003-01-05  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (DISTFILES): Don't forget mkpkgadd.
+
 2003-01-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* gethelp.cc: Define __USE_STD_IOSTREAM if using Compaq C++.

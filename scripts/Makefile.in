@@ -26,7 +26,7 @@ ALL_M_FILES1 := $(shell find $(srcdir) -name '*.m' -print)
 ALL_M_FILES := $(patsubst $(srcdir)/%, %, $(ALL_M_FILES1))
 
 DISTFILES = Makefile.in ChangeLog $(SOURCES) configure.in \
-	configure mkinstalldirs mkdoc gethelp.cc \
+	configure mkinstalldirs mkdoc mkpkgadd gethelp.cc \
 	skip-autoheader DOCSTRINGS
 
 SUBDIRS = audio control deprecated elfun finance general image io \

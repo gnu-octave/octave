@@ -412,7 +412,12 @@ symbol_record::save (ostream& os, int mark_as_global = 0)
   else if (fcn != (symbol_def *) NULL)
     message ("save", "sorry, can't save functions yet");
   else
-    message ("save", "can't save undefined symbols!");
+    {
+// Kludge!  We probably don't want to print warnings for ans, but it
+// does seem reasonable to print them for other undefined variables.
+      if (strcmp (nm, "ans") != 0)
+	warning ("not saving undefined symbol `%s'", nm);
+    }
 
   return status;
 }
@@ -653,10 +658,16 @@ int
 symbol_table::save (ostream& os, int mark_as_global = 0)
 {
   int status = 0;
-  for (char **names = sorted_var_list (); *names != (char *) NULL; names++)
+  char **names = sorted_var_list ();
+  if (names != (char **) NULL)
     {
-      if (save (os, *names, mark_as_global))
-	status++;
+      while (*names != (char *) NULL)
+	{
+	  if (save (os, *names, mark_as_global))
+	    status++;
+
+	  names++;
+	}
     }
   return status;
 }

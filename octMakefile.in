@@ -185,7 +185,11 @@ dist: dist-info-files
 	chmod -R a+rwX `cat .fname`
 	tar cf `cat .fname`.tar `cat .fname`
 	rm -rf `cat .fname`
-	gzip --best `cat .fname`.tar
+	gzip --best --stdout `cat .fname`.tar > `cat .fname`.tar.gz
+	bzip2 --best --stdout `cat .fname`.tar > `cat .fname`.tar.bz2
+	date -u > md5sum
+	md5sum `cat .fname`.tar.gz `cat .fname`.tar.bz2 >> md5sum
+	touch `cat .fname`.tar.gz `cat .fname`.tar.bz2 md5sum
 	rm -f .fname
 	@echo "*******************"
 	@echo "Tag the CVS archive"

@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.449 $)
+AC_REVISION($Revision: 1.450 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -161,7 +161,12 @@ gxx_version=`$CXX -v 2>&1 | grep "^.*g.. version" | \
 
 case "$gxx_version" in
   1.* | 2.[[012345678]].*)
-    AC_MSG_ERROR([g++ version $gxx_version will probably fail to compile Octave])
+    AC_MSG_ERROR([g++ version $gxx_version will probably fail to compile Octave]
+)
+  ;;
+  2.9*)
+    warn_gxx_version="g++ version $gxx_version is likely to cause problems"
+    AC_MSG_WARN($warn_gxx_version)
   ;;
 esac
 

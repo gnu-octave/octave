@@ -1,3 +1,12 @@
+2004-04-02  David Bateman  <dbateman@free.fr>
+
+	* configure.in: Warn about g++ 2.9x versions.
+
+2004-04-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* octMakefile.in (dist): Also make bz2 file and compute md5
+	checksums of both gz and bz2 files.
+
 2004-03-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in: No longer accept --with-g77 (it is still possible

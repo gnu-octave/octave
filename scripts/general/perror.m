@@ -21,11 +21,6 @@
 ##
 ## Print an error message for error number `err' from function "name".
 ##
-## Messages correspond to the following subroutine versions:
-##
-##   npsol : 4.0
-##   qpsol : 3.2
-##
 ## See also: strerror
 
 ## Author: jwe

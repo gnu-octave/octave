@@ -21,11 +21,6 @@
 ##
 ## Return the text of an error message for error number `err' from
 ## function "name".
-##
-## Messages correspond to the following subroutine versions:
-##
-##   npsol : 4.0
-##   qpsol : 3.2
 
 ## Author: jwe
 
@@ -57,54 +52,6 @@ function msg = strerror (name, err)
       msg = "iteration is not making good progress\n";
     else
       error ("strerror: unrecognized error code for fsolve");
-    endif
-
-  elseif (strcmp (name, "npsol"))
-
-    if (err == 0)
-      msg = "optimal solution found\n";
-    elseif (err == 1)
-      msg = "weak local solution found\n";
-    elseif (err == 2)
-      msg = "no feasible point for linear constraints and bounds\n";
-    elseif (err == 3)
-      msg = "no feasible point found for nonlinear constraints\n";
-    elseif (err == 4)
-      msg = "iteration limit reached\n";
-    elseif (err == 6)
-      msg = "current point cannot be improved upon\n";
-    elseif (err == 7)
-      msg = "user-supplied derivatives appear to be incorrect\n";
-    elseif (err == 9)
-      msg = "internal error: invalid input parameter\n";
-    else
-      error ("strerror: unrecognized error code for npsol");
-    endif
-
-  elseif (strcmp (name, "qpsol"))
-
-    if (err == 0)
-      msg = "optimal solution found\n";
-    elseif (err == 1)
-      msg = "weak local solution found\n";
-    elseif (err == 2)
-      msg = "solution appears to be unbounded\n";
-    elseif (err == 3)
-      msg = "solution appears optimal, but optimality can't be verified\n";
-    elseif (err == 4)
-      msg = "iterates of the QP phase appear to be cycling\n";
-    elseif (err == 5)
-      msg = "iteration limit reached during QP phase\n";
-    elseif (err == 6)
-      msg = "no feasible point found during LP phase\n";
-    elseif (err == 7)
-      msg = "iterates of the LP phase appear to be cycling\n";
-    elseif (err == 8)
-      msg = "iteration limit reached during LP phase\n";
-    elseif (err == 9)
-      msg = "internal error: invalid input parameter\n";
-    else
-      error ("strerror: unrecognized error code for qpsol");
     endif
 
   else

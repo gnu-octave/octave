@@ -113,8 +113,8 @@ esac
 AC_SUBST(CFLAGS)dnl
 AC_SUBST(LDFLAGS)dnl
 
-AC_PROGRAM_CHECK(GXX, g++, g++, [])dnl
-if test "$GXX" = g++ ; then
+AC_PROGRAM_CHECK(CXX, g++, g++, [])dnl
+if test "$CXX" = g++ ; then
   CXXFLAGS="-g -O -Wall"
   gxx_version=`g++ -v 2>&1 | grep "^g.. version" | sed 's/^g.. version *//'`
   case "$gxx_version" in
@@ -422,6 +422,5 @@ define([tmpB], [liboctave/Makefile src/Makefile dld/Makefile])dnl
 define([tmpC], [info/Makefile readline/Makefile readline/doc/Makefile])dnl
 define([tmpD], [readline/examples/Makefile doc/Makefile])dnl
 define([tmpE], [scripts/Makefile test/Makefile])dnl
-define([tmpF], [test/config/Makefile test/octave/Makefile])dnl
-define([srcdirs], [tmpA tmpB tmpC tmpD tmpE tmpF])dnl
+define([srcdirs], [tmpA tmpB tmpC tmpD tmpE])dnl
 AC_OUTPUT([srcdirs cruftdirs])dnl

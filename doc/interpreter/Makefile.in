@@ -178,10 +178,14 @@ distclean: clean
 
 maintainer-clean: distclean
 	rm -f tags TAGS octave.info octave.info-* octave.dvi octave.ps
-	rm -f octave_*.html
+	rm -f octave_*.html $(TEXINFO)
 .PHONY: maintainer-clean
 
-dist: all
+clean-texi:
+	rm -f $(TEXINFO)
+.PHONY: clean-texi
+
+dist: clean-texi all
 	ln $(DISTFILES) ../../`cat ../../.fname`/doc/interpreter
 .PHONY: dist
 

@@ -389,6 +389,8 @@ DEFUN ("clc", Fclc, Sclc, 1, 0,
   return retval;
 }
 
+DEFALIAS (home, clc);
+
 DEFUN ("getenv", Fgetenv, Sgetenv, 2, 1,
   "getenv (STRING): get environment variable values")
 {
@@ -409,8 +411,6 @@ DEFUN ("getenv", Fgetenv, Sgetenv, 2, 1,
 
   return retval;
 }
-
-DEFALIAS (home, clc);
 
 DEFUN ("kbhit", Fkbhit, Skbhit, 1, 1,
   "kbhit: get a single character from the terminal")

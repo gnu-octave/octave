@@ -204,6 +204,21 @@ install_builtin_variable_as_function (const char *name, tree_constant *val,
 }
 
 void
+alias_builtin (const char *alias, const char *name)
+{
+  symbol_record *sr_name = global_sym_tab->lookup (name, 0, 0);
+  if (! sr_name)
+    panic ("can't alias to undefined name!");
+
+  symbol_record *sr_alias = global_sym_tab->lookup (alias, 1, 0);
+
+  if (sr_alias)
+    sr_alias->alias (sr_name);
+  else
+    panic_impossible ();
+}
+
+void
 bind_nargin_and_nargout (symbol_table *sym_tab, int nargin, int nargout)
 {
   tree_constant *tmp;
@@ -1399,6 +1414,13 @@ glob_pattern_p (char *pattern)
   return 0;
 }
 
+static int
+is_globally_visible (const char *name)
+{
+  symbol_record *sr = curr_sym_tab->lookup (name, 0, 0);
+  return (sr && sr->is_linked_to_global ());
+}
+
 DEFUN_TEXT ("save", Fsave, Ssave, -1, 1,
   "save file [var ...]\n\
 \n\
@@ -1406,7 +1428,6 @@ save variables in a file")
 {
   Octave_object retval;
 
-#if 0
   DEFINE_ARGV("save");
 
   if (argc < 2)
@@ -1505,7 +1526,6 @@ save variables in a file")
     file.close ();
 
   DELETE_ARGV;
-#endif
 
   return retval;
 }

@@ -411,8 +411,6 @@ users home directory")
   return retval;
 }
 
-DEFALIAS (dir, ls);
-
 /*
  * Get a directory listing.
  */
@@ -452,6 +450,8 @@ print a directory listing")
 
   return retval;
 }
+
+DEFALIAS (dir, ls);
 
 DEFUN ("pwd", Fpwd, Spwd, 1, 0,
   "pwd (): print current working directory")

@@ -579,8 +579,6 @@ DEFUN_TEXT ("casesen", Fcasesen, Scasesen, 2, 1,
   return retval;
 }
 
-DEFALIAS (exit, quit);
-
 DEFUN ("flops", Fflops, Sflops, 2, 1,
   "flops (): count floating point operations")
 {
@@ -602,6 +600,8 @@ DEFUN ("quit", Fquit, Squit, 1, 0,
   clean_up_and_exit (0);
   return retval;
 }
+
+DEFALIAS (exit, quit);
 
 DEFUN ("warranty", Fwarranty, Swarranty, 1, 0,
   "warranty (): describe copying conditions")

@@ -82,23 +82,28 @@ DefQuad::integrate (int& ier, int& neval, double& abserr)
   int npts = singularities.capacity () + 2;
   double *points = singularities.fortran_vec ();
   double result = 0.0;
+
   int leniw = 183*npts - 122;
+  Array<int> iwork (leniw);
+  int *piwork = iwork.fortran_vec ();
+
   int lenw = 2*leniw - npts;
-  int *iwork = new int [leniw];
-  double *work = new double [lenw];
+  Array<double> work (lenw);
+  double *pwork = work.fortran_vec ();
+
   user_fcn = f;
   int last;
 
   double abs_tol = absolute_tolerance ();
   double rel_tol = relative_tolerance ();
 
-  F77_FCN (dqagp, DQAGP) (user_function, lower_limit, upper_limit,
-			  npts, points, abs_tol, rel_tol, result,
-			  abserr, neval, ier, leniw, lenw, last,
-			  iwork, work);
+  F77_XFCN (dqagp, DQAGP, (user_function, lower_limit, upper_limit,
+			   npts, points, abs_tol, rel_tol, result,
+			   abserr, neval, ier, leniw, lenw, last,
+			   piwork, pwork));
 
-  delete [] iwork;
-  delete [] work;
+  if (f77_exception_encountered)
+    (*current_liboctave_error_handler) ("unrecoverable error in dqagp");
 
   return result;
 }
@@ -107,10 +112,15 @@ double
 IndefQuad::integrate (int& ier, int& neval, double& abserr)
 {
   double result = 0.0;
+
   int leniw = 128;
+  Array<int> iwork (leniw);
+  int *piwork = iwork.fortran_vec ();
+
   int lenw = 8*leniw;
-  int *iwork = new int [leniw];
-  double *work = new double [lenw];
+  Array<double> work (lenw);
+  double *pwork = work.fortran_vec ();
+
   user_fcn = f;
   int last;
 
@@ -137,12 +147,12 @@ IndefQuad::integrate (int& ier, int& neval, double& abserr)
   double abs_tol = absolute_tolerance ();
   double rel_tol = relative_tolerance ();
 
-  F77_FCN (dqagi, DQAGI) (user_function, bound, inf, abs_tol, rel_tol,
-			  result, abserr, neval, ier, leniw, lenw,
-			  last, iwork, work);
+  F77_XFCN (dqagi, DQAGI, (user_function, bound, inf, abs_tol, rel_tol,
+			   result, abserr, neval, ier, leniw, lenw,
+			   last, piwork, pwork));
 
-  delete [] iwork;
-  delete [] work;
+  if (f77_exception_encountered)
+    (*current_liboctave_error_handler) ("unrecoverable error in dqagi");
 
   return result;
 }

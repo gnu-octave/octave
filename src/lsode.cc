@@ -29,7 +29,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <strstream.h>
 
-#include "ODE.h"
+#include "LSODE.h"
 
 #include "defun-dld.h"
 #include "error.h"
@@ -43,7 +43,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Global pointer for user defined function required by lsode.
 static tree_fvc *lsode_fcn;
 
-static ODE_options lsode_opts;
+static LSODE_options lsode_opts;
 
 ColumnVector
 lsode_user_function (const ColumnVector& x, double t)
@@ -154,7 +154,7 @@ where xdot and x are vectors and t is a scalar.\n")
   int nsteps = out_times.capacity ();
 
   ODEFunc func (lsode_user_function);
-  ODE ode (state, tzero, func);
+  LSODE ode (state, tzero, func);
   ode.copy (lsode_opts);
 
   int nstates = state.capacity ();
@@ -170,12 +170,12 @@ where xdot and x are vectors and t is a scalar.\n")
   return retval;
 }
 
-typedef void (ODE_options::*d_set_opt_mf) (double);
-typedef double (ODE_options::*d_get_opt_mf) (void);
+typedef void (LSODE_options::*d_set_opt_mf) (double);
+typedef double (LSODE_options::*d_get_opt_mf) (void);
 
 #define MAX_TOKENS 3
 
-struct ODE_OPTIONS
+struct LSODE_OPTIONS
 {
   const char *keyword;
   const char *kw_tok[MAX_TOKENS + 1];
@@ -185,37 +185,37 @@ struct ODE_OPTIONS
   d_get_opt_mf d_get_fcn;
 };
 
-static ODE_OPTIONS lsode_option_table [] =
+static LSODE_OPTIONS lsode_option_table [] =
 {
   { "absolute tolerance",
     { "absolute", "tolerance", 0, 0, },
     { 1, 0, 0, 0, }, 1,
-    ODE_options::set_absolute_tolerance,
-    ODE_options::absolute_tolerance, },
+    LSODE_options::set_absolute_tolerance,
+    LSODE_options::absolute_tolerance, },
 
   { "initial step size",
     { "initial", "step", "size", 0, },
     { 1, 0, 0, 0, }, 1,
-    ODE_options::set_initial_step_size,
-    ODE_options::initial_step_size, },
+    LSODE_options::set_initial_step_size,
+    LSODE_options::initial_step_size, },
 
   { "maximum step size",
     { "maximum", "step", "size", 0, },
     { 2, 0, 0, 0, }, 1,
-    ODE_options::set_maximum_step_size,
-    ODE_options::maximum_step_size, },
+    LSODE_options::set_maximum_step_size,
+    LSODE_options::maximum_step_size, },
 
   { "minimum step size",
     { "minimum", "step", "size", 0, },
     { 2, 0, 0, 0, }, 1,
-    ODE_options::set_minimum_step_size,
-    ODE_options::minimum_step_size, },
+    LSODE_options::set_minimum_step_size,
+    LSODE_options::minimum_step_size, },
 
   { "relative tolerance",
     { "relative", "tolerance", 0, 0, },
     { 1, 0, 0, 0, }, 1,
-    ODE_options::set_relative_tolerance,
-    ODE_options::relative_tolerance, },
+    LSODE_options::set_relative_tolerance,
+    LSODE_options::relative_tolerance, },
 
   { 0,
     { 0, 0, 0, 0, },
@@ -235,7 +235,7 @@ print_lsode_option_list (void)
 	     << "  keyword                                  value\n"
 	     << "  -------                                  -----\n\n";
 
-  ODE_OPTIONS *list = lsode_option_table;
+  LSODE_OPTIONS *list = lsode_option_table;
 
   const char *keyword;
   while ((keyword = list->keyword) != 0)
@@ -259,7 +259,7 @@ print_lsode_option_list (void)
 static void
 set_lsode_option (const string& keyword, double val)
 {
-  ODE_OPTIONS *list = lsode_option_table;
+  LSODE_OPTIONS *list = lsode_option_table;
 
   while (list->keyword != 0)
     {
@@ -281,7 +281,7 @@ show_lsode_option (const string& keyword)
 {
   Octave_object retval;
 
-  ODE_OPTIONS *list = lsode_option_table;
+  LSODE_OPTIONS *list = lsode_option_table;
 
   while (list->keyword != 0)
     {

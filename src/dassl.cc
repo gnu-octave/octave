@@ -29,7 +29,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <strstream.h>
 
-#include "DAE.h"
+#include "DASSL.h"
 
 #include "defun-dld.h"
 #include "error.h"
@@ -43,7 +43,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Global pointer for user defined function required by dassl.
 static tree_fvc *dassl_fcn;
 
-static ODE_options dassl_opts;
+static DASSL_options dassl_opts;
 
 ColumnVector
 dassl_user_function (const ColumnVector& x, const ColumnVector& xdot, double t)
@@ -178,7 +178,7 @@ where x, xdot, and res are vectors, and t is a scalar.")
   double tzero = out_times.elem (0);
 
   DAEFunc func (dassl_user_function);
-  DAE dae (state, deriv, tzero, func);
+  DASSL dae (state, deriv, tzero, func);
   dae.copy (dassl_opts);
 
   Matrix output;
@@ -195,12 +195,12 @@ where x, xdot, and res are vectors, and t is a scalar.")
   return retval;
 }
 
-typedef void (ODE_options::*d_set_opt_mf) (double);
-typedef double (ODE_options::*d_get_opt_mf) (void);
+typedef void (DASSL_options::*d_set_opt_mf) (double);
+typedef double (DASSL_options::*d_get_opt_mf) (void);
 
 #define MAX_TOKENS 3
 
-struct DAE_OPTIONS
+struct DASSL_OPTIONS
 {
   const char *keyword;
   const char *kw_tok[MAX_TOKENS + 1];
@@ -210,31 +210,31 @@ struct DAE_OPTIONS
   d_get_opt_mf d_get_fcn;
 };
 
-static DAE_OPTIONS dassl_option_table [] =
+static DASSL_OPTIONS dassl_option_table [] =
 {
   { "absolute tolerance",
     { "absolute", "tolerance", 0, 0, },
     { 1, 0, 0, 0, }, 1,
-    ODE_options::set_absolute_tolerance,
-    ODE_options::absolute_tolerance, },
+    DASSL_options::set_absolute_tolerance,
+    DASSL_options::absolute_tolerance, },
 
   { "initial step size",
     { "initial", "step", "size", 0, },
     { 1, 0, 0, 0, }, 1,
-    ODE_options::set_initial_step_size,
-    ODE_options::initial_step_size, },
+    DASSL_options::set_initial_step_size,
+    DASSL_options::initial_step_size, },
 
   { "maximum step size",
     { "maximum", "step", "size", 0, },
     { 2, 0, 0, 0, }, 1,
-    ODE_options::set_maximum_step_size,
-    ODE_options::maximum_step_size, },
+    DASSL_options::set_maximum_step_size,
+    DASSL_options::maximum_step_size, },
 
   { "relative tolerance",
     { "relative", "tolerance", 0, 0, },
     { 1, 0, 0, 0, }, 1,
-    ODE_options::set_relative_tolerance,
-    ODE_options::relative_tolerance, },
+    DASSL_options::set_relative_tolerance,
+    DASSL_options::relative_tolerance, },
 
   { 0,
     { 0, 0, 0, 0, },
@@ -254,7 +254,7 @@ print_dassl_option_list (void)
 	     << "  keyword                                  value\n"
 	     << "  -------                                  -----\n\n";
 
-  DAE_OPTIONS *list = dassl_option_table;
+  DASSL_OPTIONS *list = dassl_option_table;
 
   const char *keyword;
   while ((keyword = list->keyword) != 0)
@@ -278,7 +278,7 @@ print_dassl_option_list (void)
 static void
 set_dassl_option (const string& keyword, double val)
 {
-  DAE_OPTIONS *list = dassl_option_table;
+  DASSL_OPTIONS *list = dassl_option_table;
 
   while (list->keyword != 0)
     {
@@ -300,7 +300,7 @@ show_dassl_option (const string& keyword)
 {
   Octave_object retval;
 
-  DAE_OPTIONS *list = dassl_option_table;
+  DASSL_OPTIONS *list = dassl_option_table;
 
   while (list->keyword != 0)
     {

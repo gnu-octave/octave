@@ -1,3 +1,14 @@
+2002-08-08  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lo-ieee.cc (lo_ieee_is_NA): New function.
+	(lo_ieee_is_NaN_or_NA): New function.
+	(octave_NA): New global value.
+	(octave_ieee_init): Initialize it.
+	* lo-mappers.cc (octave_is_NA): New function.
+	(octave_is_NaN_or_NA): New function.
+	(xisnan): Return false if NaN looks like a missing value.
+	(xisnan (const Complex&)): Use xisnan here.
+
 2002-08-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* CMatrix.h (ComplexMatrix::all, ComplexMatrix::any,

@@ -46,12 +46,28 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include "lo-ieee.h"
+#include "mach-info.h"
 
 // Octave's idea of infinity.
 double octave_Inf;
 
 // Octave's idea of not a number.
 double octave_NaN;
+
+// Octave's idea of a missing value.
+double octave_NA;
+
+static int hw;
+static int lw;
+
+typedef union
+{
+  double value;
+  unsigned int word[2];
+} ieee_double;
+
+#define NA_HW 0x7ff00000
+#define NA_LW 1954
 
 void
 octave_ieee_init (void)
@@ -90,6 +106,27 @@ octave_ieee_init (void)
   octave_NaN = octave_Inf / octave_Inf;
 #endif
 
+  // This is patterned after code in R.
+
+  oct_mach_info::float_format ff = oct_mach_info::native_float_format ();
+
+  if (ff == oct_mach_info::ieee_big_endian)
+    {
+      hw = 0;
+      lw = 1;
+    }
+  else
+    {
+      hw = 1;
+      lw = 0;
+    }
+
+  ieee_double t;
+  t.word[hw] = NA_HW;
+  t.word[lw] = NA_LW;
+
+  octave_NA = t.value;
+
 #endif
 }
 
@@ -108,6 +145,20 @@ isinf (double x)
 }
 
 #endif
+
+extern "C" int
+lo_ieee_is_NA (double x)
+{
+  ieee_double t;
+  t.value = x;
+  return (isnan (x) && t.word[lw] == NA_LW) ? 1 : 0;
+}
+
+extern "C" int
+lo_ieee_is_NaN_or_NA (double x)
+{
+  return isnan (x);
+}
 
 /*
 ;;; Local Variables: ***

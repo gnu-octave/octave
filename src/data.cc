@@ -1193,6 +1193,12 @@ find NaN values, you must use the @code{isnan} function.\n\
   DEFCONST (J, Complex (0.0, 1.0),
     IMAGINARY_DOC_STRING);
 
+  DEFCONST (NA, octave_NA,
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} NA\n\
+Missing value.\n\
+@end defvr");
+
   DEFCONST (NaN, octave_NaN,
     NAN_DOC_STRING);
 

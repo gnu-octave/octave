@@ -998,7 +998,7 @@ case_list1	: switch_case
 		  }
 		;
 
-switch_case	: CASE stash_comment opt_sep expression opt_sep list
+switch_case	: CASE stash_comment opt_sep expression opt_sep opt_list
 		  { $$ = make_switch_case ($4, $6, $2); }
 		;
 

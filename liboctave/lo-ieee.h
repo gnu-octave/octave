@@ -29,7 +29,13 @@ extern double octave_Inf;
 // Octave's idea of not a number.
 extern double octave_NaN;
 
+// Octave's idea of a missing value.
+extern double octave_NA;
+
 extern void octave_ieee_init (void);
+
+extern "C" int lo_ieee_is_NA (double);
+extern "C" int lo_ieee_is_NaN_or_NA (double);
 
 #if defined (SCO)
 extern "C" int isnan (double);

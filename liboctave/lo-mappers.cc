@@ -143,7 +143,7 @@ bool
 xisnan (double x)
 {
 #if defined (HAVE_ISNAN)
-  return isnan (x) != 0;
+  return isnan (x) ? ! lo_ieee_is_NA (x) : false;
 #else
   return false;
 #endif
@@ -153,11 +153,11 @@ bool
 xfinite (double x)
 {
 #if defined (HAVE_FINITE)
-  return finite (x) != 0;
-#elif defined (HAVE_ISINF) && defined (HAVE_ISNAN)
-  return (! isinf (x) && ! isnan (x));
+  return finite (x) != 0 && ! octave_is_NaN_or_NA (x);
+#elif defined (HAVE_ISINF)
+  return (! isinf (x) && ! octave_is_NaN_or_NA (x));
 #else
-  return true;
+  return ! octave_is_NaN_or_NA (x);
 #endif
 }
 
@@ -166,14 +166,28 @@ xisinf (double x)
 {
 #if defined (HAVE_ISINF)
   return isinf (x);
-#elif defined (HAVE_FINITE) && defined (HAVE_ISNAN)
-  return (! (finite (x) || isnan (x)));
+#elif defined (HAVE_FINITE)
+  return (! (finite (x) || octave_is_NaN_or_NA (x)));
 #else
   return false;
 #endif
 }
 
+bool
+octave_is_NA (double x)
+{
+  return lo_ieee_is_NA (x);
+}
+
+bool
+octave_is_NaN_or_NA (double x)
+{
+  return lo_ieee_is_NaN_or_NA (x);
+}
+
 // (double, double) -> double mappers.
+
+// XXX FIXME XXX -- need to handle NA too?
 
 double
 xmin (double x, double y)
@@ -288,17 +302,17 @@ signum (const Complex& x)
 bool
 xisnan (const Complex& x)
 {
-#if defined (HAVE_ISNAN)
-  return (isnan (real (x)) || isnan (imag (x)));
-#else
-  return false;
-#endif
+  return (xisnan (real (x)) || xisnan (imag (x)));
 }
 
 bool
 xfinite (const Complex& x)
 {
-  return (xfinite (real (x)) && xfinite (imag (x)));
+  double rx = real (x);
+  double ix = imag (x);
+
+  return (xfinite (rx) && ! octave_is_NaN_or_NA (rx)
+	  && xfinite (ix) && ! octave_is_NaN_or_NA (ix));
 }
 
 bool
@@ -307,7 +321,21 @@ xisinf (const Complex& x)
   return (xisinf (real (x)) || xisinf (imag (x)));
 }
 
+bool
+octave_is_NA (const Complex& x)
+{
+  return (octave_is_NA (real (x)) || octave_is_NA (imag (x)));
+}
+
+bool
+octave_is_NaN_or_NA (const Complex& x)
+{
+  return (octave_is_NaN_or_NA (real (x)) || octave_is_NaN_or_NA (imag (x)));
+}
+
 // (complex, complex) -> complex mappers.
+
+// XXX FIXME XXX -- need to handle NA too?
 
 Complex
 xmin (const Complex& x, const Complex& y)

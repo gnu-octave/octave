@@ -215,7 +215,7 @@ pr_max_internal (const Matrix& m)
     for (int i = 0; i < nr; i++)
       {
 	double val = m(i,j);
-	if (xisinf (val) || xisnan (val))
+	if (xisinf (val) || octave_is_NaN_or_NA (val))
 	  continue;
 
 	if (val > result)
@@ -237,7 +237,7 @@ pr_min_internal (const Matrix& m)
     for (int i = 0; i < nr; i++)
       {
 	double val = m(i,j);
-	if (xisinf (val) || xisnan (val))
+	if (xisinf (val) || octave_is_NaN_or_NA (val))
 	  continue;
 
 	if (val < result)
@@ -1137,6 +1137,13 @@ pr_any_float (const float_format *fmt, std::ostream& os, double d, int fw = 0)
 	    os << std::setw (fw) << s;
 	  else
 	    os << s;
+	}
+      else if (octave_is_NA (d))
+	{
+	  if (fw > 0)
+	    os << std::setw (fw) << "NA";
+	  else
+	    os << "NA";
 	}
       else if (xisnan (d))
 	{
@@ -2102,7 +2109,7 @@ output_max_field_width (void)
 {
   double val;
   if (builtin_real_scalar_variable ("output_max_field_width", val)
-      && ! xisnan (val))
+      && ! octave_is_NaN_or_NA (val))
     {
       int ival = NINT (val);
       if (ival > 0 && ival == val)
@@ -2120,7 +2127,7 @@ output_precision (void)
 {
   double val;
   if (builtin_real_scalar_variable ("output_precision", val)
-      && ! xisnan (val))
+      && ! octave_is_NaN_or_NA (val))
     {
       int ival = NINT (val);
       if (ival >= 0 && ival == val)

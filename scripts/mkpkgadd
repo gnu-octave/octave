@@ -1,0 +1,16 @@
+#! /bin/sh
+
+if [ $# -eq 1 ]; then
+  dir="$1"
+else
+  echo "usage: mkpkgadd directory" 1>&2
+  exit 1
+fi
+
+cd $dir
+
+files=`ls *.m`
+
+if [ -n "$files" ]; then
+  sed -n 's/^[#%][#%]* *PKG_ADD: *//p' $files
+fi

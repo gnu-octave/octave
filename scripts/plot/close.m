@@ -25,7 +25,7 @@
 
 ## Author: jwe
 
-## mark_as_command: close
+## PKG_ADD: mark_as_command close
 
 function retval = close (arg1, arg2)
 

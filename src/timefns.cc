@@ -25,8 +25,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "config.h"
 #endif
 
-#include "dMatrix.h"
-
 #include "tree-const.h"
 #include "oct-obj.h"
 #include "systime.h"
@@ -35,47 +33,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "utils.h"
 #include "help.h"
 
-#ifdef HAVE_SYS_RESOURCE_H
-extern "C"
-{
-#include <sys/resource.h>
-}
-#endif
-
-#ifndef RUSAGE_SELF
-#define RUSAGE_SELF 0
-#endif
-
-// CPU time functions.
-
-DEFUN ("cputime", Fcputime, Scputime, 0, 0,
-  "[total, user, system] = cputime ()\n\
-\n\
-Return CPU time statistics.")
-{
-  Octave_object retval (3, Matrix (1, 1, 0.0));
-
-#if defined (HAVE_GETRUSAGE)
-
-  struct rusage resource_stats;
-
-  getrusage (RUSAGE_SELF, &resource_stats);
-
-  struct timeval usr = resource_stats.ru_utime;
-  struct timeval sys = resource_stats.ru_stime;
-
-  double usr_time = usr.tv_sec + usr.tv_usec / 1e6;
-  double sys_time = sys.tv_sec + sys.tv_usec / 1e6;
-
-  retval (2) = sys_time;
-  retval (1) = usr_time;
-  retval (0) = usr_time + sys_time;
-
-#endif
-
-  return retval;
-}
-
 // Date and time functions.
 
 static Octave_map
@@ -83,15 +40,15 @@ mk_tm_map (struct tm *tm, double fraction)
 {
   Octave_map m;
 
-  m ["tm_usec"]  = fraction * 1e6;
-  m ["tm_sec"]   = (double) tm->tm_sec;
-  m ["tm_min"]   = (double) tm->tm_min;
-  m ["tm_hour"]  = (double) tm->tm_hour;
-  m ["tm_mday"]  = (double) tm->tm_mday;
-  m ["tm_mon"]   = (double) tm->tm_mon;
-  m ["tm_year"]  = (double) tm->tm_year;
-  m ["tm_wday"]  = (double) tm->tm_wday;
-  m ["tm_yday"]  = (double) tm->tm_yday;
+  m ["tm_usec"] = fraction * 1e6;
+  m ["tm_sec"] = (double) tm->tm_sec;
+  m ["tm_min"] = (double) tm->tm_min;
+  m ["tm_hour"] = (double) tm->tm_hour;
+  m ["tm_mday"] = (double) tm->tm_mday;
+  m ["tm_mon"] = (double) tm->tm_mon;
+  m ["tm_year"] = (double) tm->tm_year;
+  m ["tm_wday"] = (double) tm->tm_wday;
+  m ["tm_yday"] = (double) tm->tm_yday;
   m ["tm_isdst"] = (double) tm->tm_isdst;
 #if defined (HAVE_TM_ZONE)
   m ["tm_zone"]  = tm->tm_zone;
@@ -108,11 +65,11 @@ mk_tm_map (struct tm *tm, double fraction)
 }
 
 static struct tm*
-extract_tm (Octave_map &m, double &fraction)
+extract_tm (Octave_map &m, double& fraction)
 {
   static struct tm tm;
 
-  fraction = NINT (m ["tm_usec"] . double_value ());
+  fraction = (m ["tm_usec"] . double_value ()) / 1e6;
   tm.tm_sec = NINT (m ["tm_sec"] . double_value ());
   tm.tm_min = NINT (m ["tm_min"] . double_value ());
   tm.tm_hour = NINT (m ["tm_hour"] . double_value ());
@@ -122,7 +79,9 @@ extract_tm (Octave_map &m, double &fraction)
   tm.tm_wday = NINT (m ["tm_wday"] . double_value ());
   tm.tm_yday = NINT (m ["tm_yday"] . double_value ());
   tm.tm_isdst = NINT (m ["tm_isdst"] . double_value ());
+#ifdef HAVE_TMZONE
   tm.tm_zone = (m ["tm_zone"] . string_value ());
+#endif
 
   return &tm;
 }

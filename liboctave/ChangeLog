@@ -1,5 +1,8 @@
 2003-12-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* mx-ops: Delete bnda x bnda, b x bnda, and bnda x b ops since
+	they are already defined in boolNDArray.cc.
+
 	* Array-util.cc (get_zero_len_size): Delete.
 	* Array.cc (Array<T>::index (Array<idx_vector>&, int, const T&)):
 	Handle zero-length result dimensions the same as empty original

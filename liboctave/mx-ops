@@ -11,9 +11,6 @@ m Matrix M dMatrix.h YES
 nda NDArray ND dNDArray.h YES
 s double S NONE NO
 # ops
-bnda bnda bnda L false
-bnda b bnda L false
-bnda bnda b L false
 cdm cdm dm B
 cdm dm cdm B
 cm cs cdm B

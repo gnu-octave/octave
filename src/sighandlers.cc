@@ -464,11 +464,11 @@ octave_child_list::do_insert (pid_t pid, octave_child::dead_child_handler f)
 
   for (int i = 0; i < curr_len; i++)
     {
-      octave_child& tmp = list.elem (i);
+      octave_child& tmp = list (i);
 
       if (tmp.pid < 0)
 	{
-	  list.elem (i) = octave_child (pid, f);
+	  list (i) = octave_child (pid, f);
 	  enlarge = false;
 	  break;
 	}
@@ -486,7 +486,7 @@ octave_child_list::do_insert (pid_t pid, octave_child::dead_child_handler f)
 	    list.resize (total_len * 2);
 	}
 
-      list.elem (curr_len) = octave_child (pid, f);
+      list (curr_len) = octave_child (pid, f);
       curr_len++;
     }
 }
@@ -512,7 +512,7 @@ octave_child_list::do_remove (pid_t pid)
 
   for (int i = 0; i < curr_len; i++)
     {
-      octave_child& tmp = list.elem (i);
+      octave_child& tmp = list (i);
 
       if (tmp.pid == pid)
 	{

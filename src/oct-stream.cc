@@ -114,19 +114,19 @@ get_size (const Matrix& size, int& nr, int& nc, const char *warn_for)
 
   if (size.rows () == 1 && size.cols () > 0)
     {
-      dnr = size.elem (0, 0);
+      dnr = size (0, 0);
 
       if (size.cols () == 2)
-	dnc = size.elem (0, 1);
+	dnc = size (0, 1);
       else if (size.cols () > 2)
 	::error ("%s: invalid size specification", warn_for);
     }
   else if (size.cols () == 1 && size.rows () > 0)
     {
-      dnr = size.elem (0, 0);
+      dnr = size (0, 0);
 
       if (size.rows () == 2)
-	dnc = size.elem (1, 0);
+	dnc = size (1, 0);
       else if (size.rows () > 2)
 	::error ("%s: invalid size specification", warn_for);
     }
@@ -201,7 +201,7 @@ scanf_format_list::~scanf_format_list (void)
 
   for (int i = 0; i < n; i++)
     {
-      scanf_format_elt *elt = list.elem (i);
+      scanf_format_elt *elt = list (i);
       delete elt;
     }	
 }
@@ -226,7 +226,7 @@ scanf_format_list::add_elt_to_list (int width, bool discard, char type,
 	      if (num_elts == list.length ())
 		list.resize (2 * num_elts);
 
-	      list.elem (num_elts++) = elt;
+	      list (num_elts++) = elt;
 	    }
 	  else
 	    delete [] text;
@@ -395,7 +395,7 @@ scanf_format_list::printme (void) const
 
   for (int i = 0; i < n; i++)
     {
-      scanf_format_elt *elt = list.elem (i);
+      scanf_format_elt *elt = list (i);
 
       cerr << elt->width << "\t"
 	   << elt->discard << "\t"
@@ -414,7 +414,7 @@ scanf_format_list::all_character_conversions (void)
     {
       for (int i = 0; i < n; i++)
 	{
-	  scanf_format_elt *elt = list.elem (i);
+	  scanf_format_elt *elt = list (i);
 
 	  switch (elt->type)
 	    {
@@ -442,7 +442,7 @@ scanf_format_list::all_numeric_conversions (void)
     {
       for (int i = 0; i < n; i++)
 	{
-	  scanf_format_elt *elt = list.elem (i);
+	  scanf_format_elt *elt = list (i);
 
 	  switch (elt->type)
 	    {
@@ -522,7 +522,7 @@ printf_format_list::~printf_format_list (void)
 
   for (int i = 0; i < n; i++)
     {
-      printf_format_elt *elt = list.elem (i);
+      printf_format_elt *elt = list (i);
       delete elt;
     }	
 }
@@ -547,7 +547,7 @@ printf_format_list::add_elt_to_list (int args, char type, char modifier,
 	      if (num_elts == list.length ())
 		list.resize (2 * num_elts);
 
-	      list.elem (num_elts++) = elt;
+	      list (num_elts++) = elt;
 	    }
 	  else
 	    delete [] text;
@@ -706,7 +706,7 @@ printf_format_list::printme (void) const
 
   for (int i = 0; i < n; i++)
     {
-      printf_format_elt *elt = list.elem (i);
+      printf_format_elt *elt = list (i);
 
       cerr << elt->args<< "\t"
 	   << elt->type << "\t"
@@ -2669,11 +2669,11 @@ octave_stream_list::do_insert (octave_base_stream *obs)
 
       for (int i = 0; i < curr_len; i++)
 	{
-	  octave_stream *tmp = list.elem (i);
+	  octave_stream *tmp = list (i);
 
 	  if (! tmp)
 	    {
-	      list.elem (i) = os;
+	      list (i) = os;
 	      retval = i;
 	      break;
 	    }
@@ -2686,7 +2686,7 @@ octave_stream_list::do_insert (octave_base_stream *obs)
 	  if (curr_len == total_len)
 	    list.resize (total_len * 2);
 
-	  list.elem (curr_len) = os;
+	  list (curr_len) = os;
 	  retval = curr_len;
 	  curr_len++;
 	}
@@ -2719,7 +2719,7 @@ octave_stream_list::do_lookup (int fid) const
   octave_stream *retval = 0;
 
   if (fid >= 0 && fid < curr_len)
-    retval = list.elem (fid);
+    retval = list (fid);
 
   return retval;
 }
@@ -2768,12 +2768,12 @@ octave_stream_list::do_remove (int fid)
 
   if (fid > 2 && fid < curr_len)
     {
-      octave_stream *os = list.elem (fid);
+      octave_stream *os = list (fid);
 
       if (os)
 	{
 	  delete os;
-	  list.elem (fid) = 0;
+	  list (fid) = 0;
 	  retval = 0;
 	}
     }
@@ -2821,18 +2821,18 @@ octave_stream_list::do_clear (void)
 {
   // Do flush stdout and stderr.
 
-  list.elem (0) -> flush ();
-  list.elem (1) -> flush ();
+  list (0) -> flush ();
+  list (1) -> flush ();
 
   // But don't delete them or stdin.
 
   for (int i = 3; i < curr_len; i++)
     {
-      octave_stream *os = list.elem (i);
+      octave_stream *os = list (i);
 
       delete os;
 
-      list.elem (i) = 0;
+      list (i) = 0;
     }
 }
 
@@ -2918,7 +2918,7 @@ octave_stream_list::do_list_open_files (void) const
 
   for (int i = 0; i < curr_len; i++)
     {
-      octave_stream *os = list.elem (i);
+      octave_stream *os = list (i);
 
       if (os)
 	{
@@ -2964,7 +2964,7 @@ octave_stream_list::do_open_file_numbers (void) const
 
   for (int i = 3; i < curr_len; i++)
     {
-      if (list.elem (i))
+      if (list (i))
 	retval (0, num_open++) = i;
     }
 
@@ -2997,7 +2997,7 @@ octave_stream_list::get_file_number (const octave_value& fid) const
 
       for (int i = 3; i < curr_len; i++)
 	{
-	  octave_stream *os = list.elem (i);
+	  octave_stream *os = list (i);
 
 	  if (os && os->name () == nm)
 	    {

@@ -93,11 +93,11 @@ DEFUN_DLD_BUILTIN (logm, args, ,
 
 	      for (int i = 0; i < nr; i++)
 		{
-		  Complex elt = lambda.elem (i);
+		  Complex elt = lambda (i);
 		  if (imag (elt) == 0.0 && real (elt) > 0.0)
-		    lambda.elem (i) = log (real (elt));
+		    lambda (i) = log (real (elt));
 		  else
-		    lambda.elem (i) = log (elt);
+		    lambda (i) = log (elt);
 		}
 
 	      ComplexDiagMatrix D (lambda);
@@ -126,11 +126,11 @@ DEFUN_DLD_BUILTIN (logm, args, ,
 
 	      for (int i = 0; i < nr; i++)
 		{
-		  Complex elt = lambda.elem (i);
+		  Complex elt = lambda (i);
 		  if (imag (elt) == 0.0 && real (elt) > 0.0)
-		    lambda.elem (i) = log (real (elt));
+		    lambda (i) = log (real (elt));
 		  else
-		    lambda.elem (i) = log (elt);
+		    lambda (i) = log (elt);
 		}
 
 	      ComplexDiagMatrix D (lambda);
@@ -205,11 +205,11 @@ DEFUN_DLD_BUILTIN (sqrtm, args, ,
 
 	      for (int i = 0; i < nr; i++)
 		{
-		  Complex elt = lambda.elem (i);
+		  Complex elt = lambda (i);
 		  if (imag (elt) == 0.0 && real (elt) > 0.0)
-		    lambda.elem (i) = sqrt (real (elt));
+		    lambda (i) = sqrt (real (elt));
 		  else
-		    lambda.elem (i) = sqrt (elt);
+		    lambda (i) = sqrt (elt);
 		}
 
 	      ComplexDiagMatrix D (lambda);
@@ -238,11 +238,11 @@ DEFUN_DLD_BUILTIN (sqrtm, args, ,
 
 	      for (int i = 0; i < nr; i++)
 		{
-		  Complex elt = lambda.elem (i);
+		  Complex elt = lambda (i);
 		  if (imag (elt) == 0.0 && real (elt) > 0.0)
-		    lambda.elem (i) = sqrt (real (elt));
+		    lambda (i) = sqrt (real (elt));
 		  else
-		    lambda.elem (i) = sqrt (elt);
+		    lambda (i) = sqrt (elt);
 		}
 
 	      ComplexDiagMatrix D (lambda);

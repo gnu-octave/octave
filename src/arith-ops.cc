@@ -226,35 +226,35 @@ mx_stupid_bool_op (Matrix_bool_op op, double s, const Matrix& a)
 	switch (op)
 	  {
 	  case Matrix_LT:
-	    t.elem (i,j) = s < a.elem (i,j);
+	    t (i,j) = s < a (i,j);
 	    break;
 
 	  case Matrix_LE:
-	    t.elem (i,j) = s <= a.elem (i,j);
+	    t (i,j) = s <= a (i,j);
 	    break;
 
 	  case Matrix_EQ:
-	    t.elem (i,j) = s == a.elem (i,j);
+	    t (i,j) = s == a (i,j);
 	    break;
 
 	  case Matrix_GE:
-	    t.elem (i,j) = s >= a.elem (i,j);
+	    t (i,j) = s >= a (i,j);
 	    break;
 
 	  case Matrix_GT:
-	    t.elem (i,j) = s > a.elem (i,j);
+	    t (i,j) = s > a (i,j);
 	    break;
 
 	  case Matrix_NE:
-	    t.elem (i,j) = s != a.elem (i,j);
+	    t (i,j) = s != a (i,j);
 	    break;
 
 	  case Matrix_AND:
-	    t.elem (i,j) = s && a.elem (i,j);
+	    t (i,j) = s && a (i,j);
 	    break;
 
 	  case Matrix_OR:
-	    t.elem (i,j) = s || a.elem (i,j);
+	    t (i,j) = s || a (i,j);
 	    break;
 
 	  default:
@@ -289,35 +289,35 @@ mx_stupid_bool_op (Matrix_bool_op op, double s, const ComplexMatrix& a)
 	switch (op)
 	  {
 	  case Matrix_LT:
-	    t.elem (i,j) = s < real (a.elem (i,j));
+	    t (i,j) = s < real (a (i,j));
 	    break;
 
 	  case Matrix_LE:
-	    t.elem (i,j) = s <= real (a.elem (i,j));
+	    t (i,j) = s <= real (a (i,j));
 	    break;
 
 	  case Matrix_EQ:
-	    t.elem (i,j) = s == a.elem (i,j);
+	    t (i,j) = s == a (i,j);
 	    break;
 
 	  case Matrix_GE:
-	    t.elem (i,j) = s >= real (a.elem (i,j));
+	    t (i,j) = s >= real (a (i,j));
 	    break;
 
 	  case Matrix_GT:
-	    t.elem (i,j) = s > real (a.elem (i,j));
+	    t (i,j) = s > real (a (i,j));
 	    break;
 
 	  case Matrix_NE:
-	    t.elem (i,j) = s != a.elem (i,j);
+	    t (i,j) = s != a (i,j);
 	    break;
 
 	  case Matrix_AND:
-	    t.elem (i,j) = s && (a.elem (i,j) != 0.0);
+	    t (i,j) = s && (a (i,j) != 0.0);
 	    break;
 
 	  case Matrix_OR:
-	    t.elem (i,j) = s || (a.elem (i,j) != 0.0);
+	    t (i,j) = s || (a (i,j) != 0.0);
 	    break;
 
 	  default:
@@ -352,35 +352,35 @@ mx_stupid_bool_op (Matrix_bool_op op, const Matrix& a, double s)
 	switch (op)
 	  {
 	  case Matrix_LT:
-	    t.elem (i,j) = a.elem (i,j) < s;
+	    t (i,j) = a (i,j) < s;
 	    break;
 
 	  case Matrix_LE:
-	    t.elem (i,j) = a.elem (i,j) <= s;
+	    t (i,j) = a (i,j) <= s;
 	    break;
 
 	  case Matrix_EQ:
-	    t.elem (i,j) = a.elem (i,j) == s;
+	    t (i,j) = a (i,j) == s;
 	    break;
 
 	  case Matrix_GE:
-	    t.elem (i,j) = a.elem (i,j) >= s;
+	    t (i,j) = a (i,j) >= s;
 	    break;
 
 	  case Matrix_GT:
-	    t.elem (i,j) = a.elem (i,j) > s;
+	    t (i,j) = a (i,j) > s;
 	    break;
 
 	  case Matrix_NE:
-	    t.elem (i,j) = a.elem (i,j) != s;
+	    t (i,j) = a (i,j) != s;
 	    break;
 
 	  case Matrix_AND:
-	    t.elem (i,j) = a.elem (i,j) && s;
+	    t (i,j) = a (i,j) && s;
 	    break;
 
 	  case Matrix_OR:
-	    t.elem (i,j) = a.elem (i,j) || s;
+	    t (i,j) = a (i,j) || s;
 	    break;
 
 	  default:
@@ -415,35 +415,35 @@ mx_stupid_bool_op (Matrix_bool_op op, const Matrix& a, const Complex& s)
 	switch (op)
 	  {
 	  case Matrix_LT:
-	    t.elem (i,j) = a.elem (i,j) < real (s);
+	    t (i,j) = a (i,j) < real (s);
 	    break;
 
 	  case Matrix_LE:
-	    t.elem (i,j) = a.elem (i,j) <= real (s);
+	    t (i,j) = a (i,j) <= real (s);
 	    break;
 
 	  case Matrix_EQ:
-	    t.elem (i,j) = a.elem (i,j) == s;
+	    t (i,j) = a (i,j) == s;
 	    break;
 
 	  case Matrix_GE:
-	    t.elem (i,j) = a.elem (i,j) >= real (s);
+	    t (i,j) = a (i,j) >= real (s);
 	    break;
 
 	  case Matrix_GT:
-	    t.elem (i,j) = a.elem (i,j) > real (s);
+	    t (i,j) = a (i,j) > real (s);
 	    break;
 
 	  case Matrix_NE:
-	    t.elem (i,j) = a.elem (i,j) != s;
+	    t (i,j) = a (i,j) != s;
 	    break;
 
 	  case Matrix_AND:
-	    t.elem (i,j) = a.elem (i,j) && (s != 0.0);
+	    t (i,j) = a (i,j) && (s != 0.0);
 	    break;
 
 	  case Matrix_OR:
-	    t.elem (i,j) = a.elem (i,j) || (s != 0.0);
+	    t (i,j) = a (i,j) || (s != 0.0);
 	    break;
 
 	  default:
@@ -481,35 +481,35 @@ mx_stupid_bool_op (Matrix_bool_op op, const Matrix& a, const Matrix& b)
 	switch (op)
 	  {
 	  case Matrix_LT:
-	    c.elem (i, j) = a.elem (i, j) <  b.elem (i, j);
+	    c (i, j) = a (i, j) <  b (i, j);
 	    break;
 
 	  case Matrix_LE:
-	    c.elem (i, j) = a.elem (i, j) <= b.elem (i, j);
+	    c (i, j) = a (i, j) <= b (i, j);
 	    break;
 
 	  case Matrix_EQ:
-	    c.elem (i, j) = a.elem (i, j) == b.elem (i, j);
+	    c (i, j) = a (i, j) == b (i, j);
 	    break;
 
 	  case Matrix_GE:
-	    c.elem (i, j) = a.elem (i, j) >= b.elem (i, j);
+	    c (i, j) = a (i, j) >= b (i, j);
 	    break;
 
 	  case Matrix_GT:
-	    c.elem (i, j) = a.elem (i, j) >  b.elem (i, j);
+	    c (i, j) = a (i, j) >  b (i, j);
 	    break;
 
 	  case Matrix_NE:
-	    c.elem (i, j) = a.elem (i, j) != b.elem (i, j);
+	    c (i, j) = a (i, j) != b (i, j);
 	    break;
 
 	  case Matrix_AND:
-	    c.elem (i, j) = a.elem (i, j) && b.elem (i, j);
+	    c (i, j) = a (i, j) && b (i, j);
 	    break;
 
 	  case Matrix_OR:
-	    c.elem (i, j) = a.elem (i, j) || b.elem (i, j);
+	    c (i, j) = a (i, j) || b (i, j);
 	    break;
 
 	  default:
@@ -547,35 +547,35 @@ mx_stupid_bool_op (Matrix_bool_op op, const Matrix& a, const ComplexMatrix& b)
 	switch (op)
 	  {
 	  case Matrix_LT:
-	    c.elem (i, j) = a.elem (i, j) <  real (b.elem (i, j));
+	    c (i, j) = a (i, j) <  real (b (i, j));
 	    break;
 
 	  case Matrix_LE:
-	    c.elem (i, j) = a.elem (i, j) <= real (b.elem (i, j));
+	    c (i, j) = a (i, j) <= real (b (i, j));
 	    break;
 
 	  case Matrix_EQ:
-	    c.elem (i, j) = a.elem (i, j) == b.elem (i, j);
+	    c (i, j) = a (i, j) == b (i, j);
 	    break;
 
 	  case Matrix_GE:
-	    c.elem (i, j) = a.elem (i, j) >= real (b.elem (i, j));
+	    c (i, j) = a (i, j) >= real (b (i, j));
 	    break;
 
 	  case Matrix_GT:
-	    c.elem (i, j) = a.elem (i, j) >  real (b.elem (i, j));
+	    c (i, j) = a (i, j) >  real (b (i, j));
 	    break;
 
 	  case Matrix_NE:
-	    c.elem (i, j) = a.elem (i, j) != b.elem (i, j);
+	    c (i, j) = a (i, j) != b (i, j);
 	    break;
 
 	  case Matrix_AND:
-	    c.elem (i, j) = a.elem (i, j) && (b.elem (i, j) != 0.0);
+	    c (i, j) = a (i, j) && (b (i, j) != 0.0);
 	    break;
 
 	  case Matrix_OR:
-	    c.elem (i, j) = a.elem (i, j) || (b.elem (i, j) != 0.0);
+	    c (i, j) = a (i, j) || (b (i, j) != 0.0);
 	    break;
 
 	  default:
@@ -609,35 +609,35 @@ mx_stupid_bool_op (Matrix_bool_op op, const Complex& s, const Matrix& a)
 	switch (op)
 	  {
 	  case Matrix_LT:
-	    t.elem (i,j) = real (s) < a.elem (i,j);
+	    t (i,j) = real (s) < a (i,j);
 	    break;
 
 	  case Matrix_LE:
-	    t.elem (i,j) = real (s) <= a.elem (i,j);
+	    t (i,j) = real (s) <= a (i,j);
 	    break;
 
 	  case Matrix_EQ:
-	    t.elem (i,j) = s == a.elem (i,j);
+	    t (i,j) = s == a (i,j);
 	    break;
 
 	  case Matrix_GE:
-	    t.elem (i,j) = real (s) >= a.elem (i,j);
+	    t (i,j) = real (s) >= a (i,j);
 	    break;
 
 	  case Matrix_GT:
-	    t.elem (i,j) = real (s) > a.elem (i,j);
+	    t (i,j) = real (s) > a (i,j);
 	    break;
 
 	  case Matrix_NE:
-	    t.elem (i,j) = s != a.elem (i,j);
+	    t (i,j) = s != a (i,j);
 	    break;
 
 	  case Matrix_AND:
-	    t.elem (i,j) = (s != 0.0) && a.elem (i,j);
+	    t (i,j) = (s != 0.0) && a (i,j);
 	    break;
 
 	  case Matrix_OR:
-	    t.elem (i,j) = (s != 0.0) || a.elem (i,j);
+	    t (i,j) = (s != 0.0) || a (i,j);
 	    break;
 
 	  default:
@@ -672,35 +672,35 @@ mx_stupid_bool_op (Matrix_bool_op op, const Complex& s, const ComplexMatrix& a)
 	switch (op)
 	  {
 	  case Matrix_LT:
-	    t.elem (i,j) = real (s) < real (a.elem (i,j));
+	    t (i,j) = real (s) < real (a (i,j));
 	    break;
 
 	  case Matrix_LE:
-	    t.elem (i,j) = real (s) <= real (a.elem (i,j));
+	    t (i,j) = real (s) <= real (a (i,j));
 	    break;
 
 	  case Matrix_EQ:
-	    t.elem (i,j) = s == a.elem (i,j);
+	    t (i,j) = s == a (i,j);
 	    break;
 
 	  case Matrix_GE:
-	    t.elem (i,j) = real (s) >= real (a.elem (i,j));
+	    t (i,j) = real (s) >= real (a (i,j));
 	    break;
 
 	  case Matrix_GT:
-	    t.elem (i,j) = real (s) > real (a.elem (i,j));
+	    t (i,j) = real (s) > real (a (i,j));
 	    break;
 
 	  case Matrix_NE:
-	    t.elem (i,j) = s != a.elem (i,j);
+	    t (i,j) = s != a (i,j);
 	    break;
 
 	  case Matrix_AND:
-	    t.elem (i,j) = (s != 0.0) && (a.elem (i,j) != 0.0);
+	    t (i,j) = (s != 0.0) && (a (i,j) != 0.0);
 	    break;
 
 	  case Matrix_OR:
-	    t.elem (i,j) = (s != 0.0) || (a.elem (i,j) != 0.0);
+	    t (i,j) = (s != 0.0) || (a (i,j) != 0.0);
 	    break;
 
 	  default:
@@ -735,35 +735,35 @@ mx_stupid_bool_op (Matrix_bool_op op, const ComplexMatrix& a, double s)
 	switch (op)
 	  {
 	  case Matrix_LT:
-	    t.elem (i,j) = real (a.elem (i,j)) < s;
+	    t (i,j) = real (a (i,j)) < s;
 	    break;
 
 	  case Matrix_LE:
-	    t.elem (i,j) = real (a.elem (i,j)) <= s;
+	    t (i,j) = real (a (i,j)) <= s;
 	    break;
 
 	  case Matrix_EQ:
-	    t.elem (i,j) = a.elem (i,j) == s;
+	    t (i,j) = a (i,j) == s;
 	    break;
 
 	  case Matrix_GE:
-	    t.elem (i,j) = real (a.elem (i,j)) >= s;
+	    t (i,j) = real (a (i,j)) >= s;
 	    break;
 
 	  case Matrix_GT:
-	    t.elem (i,j) = real (a.elem (i,j)) > s;
+	    t (i,j) = real (a (i,j)) > s;
 	    break;
 
 	  case Matrix_NE:
-	    t.elem (i,j) = a.elem (i,j) != s;
+	    t (i,j) = a (i,j) != s;
 	    break;
 
 	  case Matrix_AND:
-	    t.elem (i,j) = (a.elem (i,j) != 0.0) && s;
+	    t (i,j) = (a (i,j) != 0.0) && s;
 	    break;
 
 	  case Matrix_OR:
-	    t.elem (i,j) = (a.elem (i,j) != 0.0) || s;
+	    t (i,j) = (a (i,j) != 0.0) || s;
 	    break;
 
 	  default:
@@ -798,35 +798,35 @@ mx_stupid_bool_op (Matrix_bool_op op, const ComplexMatrix& a, const Complex& s)
 	switch (op)
 	  {
 	  case Matrix_LT:
-	    t.elem (i,j) = real (a.elem (i,j)) < real (s);
+	    t (i,j) = real (a (i,j)) < real (s);
 	    break;
 
 	  case Matrix_LE:
-	    t.elem (i,j) = real (a.elem (i,j)) <= real (s);
+	    t (i,j) = real (a (i,j)) <= real (s);
 	    break;
 
 	  case Matrix_EQ:
-	    t.elem (i,j) = a.elem (i,j) == s;
+	    t (i,j) = a (i,j) == s;
 	    break;
 
 	  case Matrix_GE:
-	    t.elem (i,j) = real (a.elem (i,j)) >= real (s);
+	    t (i,j) = real (a (i,j)) >= real (s);
 	    break;
 
 	  case Matrix_GT:
-	    t.elem (i,j) = real (a.elem (i,j)) > real (s);
+	    t (i,j) = real (a (i,j)) > real (s);
 	    break;
 
 	  case Matrix_NE:
-	    t.elem (i,j) = a.elem (i,j) != s;
+	    t (i,j) = a (i,j) != s;
 	    break;
 
 	  case Matrix_AND:
-	    t.elem (i,j) = (a.elem (i,j) != 0.0) && (s != 0.0);
+	    t (i,j) = (a (i,j) != 0.0) && (s != 0.0);
 	    break;
 
 	  case Matrix_OR:
-	    t.elem (i,j) = (a.elem (i,j) != 0.0) || (s != 0.0);
+	    t (i,j) = (a (i,j) != 0.0) || (s != 0.0);
 	    break;
 
 	  default:
@@ -864,35 +864,35 @@ mx_stupid_bool_op (Matrix_bool_op op, const ComplexMatrix& a, const Matrix& b)
 	switch (op)
 	  {
 	  case Matrix_LT:
-	    c.elem (i, j) = real (a.elem (i, j)) <  b.elem (i, j);
+	    c (i, j) = real (a (i, j)) <  b (i, j);
 	    break;
 
 	  case Matrix_LE:
-	    c.elem (i, j) = real (a.elem (i, j)) <= b.elem (i, j);
+	    c (i, j) = real (a (i, j)) <= b (i, j);
 	    break;
 
 	  case Matrix_EQ:
-	    c.elem (i, j) = a.elem (i, j) == b.elem (i, j);
+	    c (i, j) = a (i, j) == b (i, j);
 	    break;
 
 	  case Matrix_GE:
-	    c.elem (i, j) = real (a.elem (i, j)) >= b.elem (i, j);
+	    c (i, j) = real (a (i, j)) >= b (i, j);
 	    break;
 
 	  case Matrix_GT:
-	    c.elem (i, j) = real (a.elem (i, j)) >  b.elem (i, j);
+	    c (i, j) = real (a (i, j)) >  b (i, j);
 	    break;
 
 	  case Matrix_NE:
-	    c.elem (i, j) = a.elem (i, j) != b.elem (i, j);
+	    c (i, j) = a (i, j) != b (i, j);
 	    break;
 
 	  case Matrix_AND:
-	    c.elem (i, j) = (a.elem (i, j) != 0.0)  && b.elem (i, j);
+	    c (i, j) = (a (i, j) != 0.0)  && b (i, j);
 	    break;
 
 	  case Matrix_OR:
-	    c.elem (i, j) = (a.elem (i, j) != 0.0) || b.elem (i, j);
+	    c (i, j) = (a (i, j) != 0.0) || b (i, j);
 	    break;
 
 	  default:
@@ -930,35 +930,35 @@ mx_stupid_bool_op (Matrix_bool_op op, const ComplexMatrix& a,
 	switch (op)
 	  {
 	  case Matrix_LT:
-	    c.elem (i, j) = real (a.elem (i, j)) <  real (b.elem (i, j));
+	    c (i, j) = real (a (i, j)) <  real (b (i, j));
 	    break;
 
 	  case Matrix_LE:
-	    c.elem (i, j) = real (a.elem (i, j)) <= real (b.elem (i, j));
+	    c (i, j) = real (a (i, j)) <= real (b (i, j));
 	    break;
 
 	  case Matrix_EQ:
-	    c.elem (i, j) = a.elem (i, j) == b.elem (i, j);
+	    c (i, j) = a (i, j) == b (i, j);
 	    break;
 
 	  case Matrix_GE:
-	    c.elem (i, j) = real (a.elem (i, j)) >= real (b.elem (i, j));
+	    c (i, j) = real (a (i, j)) >= real (b (i, j));
 	    break;
 
 	  case Matrix_GT:
-	    c.elem (i, j) = real (a.elem (i, j)) >  real (b.elem (i, j));
+	    c (i, j) = real (a (i, j)) >  real (b (i, j));
 	    break;
 
 	  case Matrix_NE:
-	    c.elem (i, j) = a.elem (i, j) != b.elem (i, j);
+	    c (i, j) = a (i, j) != b (i, j);
 	    break;
 
 	  case Matrix_AND:
-	    c.elem (i, j) = (a.elem (i, j) != 0.0) && (b.elem (i, j) != 0.0);
+	    c (i, j) = (a (i, j) != 0.0) && (b (i, j) != 0.0);
 	    break;
 
 	  case Matrix_OR:
-	    c.elem (i, j) = (a.elem (i, j) != 0.0) || (b.elem (i, j) != 0.0);
+	    c (i, j) = (a (i, j) != 0.0) || (b (i, j) != 0.0);
 	    break;
 
 	  default:

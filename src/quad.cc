@@ -196,10 +196,10 @@ integrand is singular.")
       switch (tol.capacity ())
 	{
 	case 2:
-	  reltol = tol.elem (1);
+	  reltol = tol (1);
 
 	case 1:
-	  abstol = tol.elem (0);
+	  abstol = tol (0);
 	  break;
 
 	default:

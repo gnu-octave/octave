@@ -58,13 +58,13 @@ lsode_user_function (const ColumnVector& x, double t)
     {
       Matrix m (nstates, 1);
       for (int i = 0; i < nstates; i++)
-	m (i, 0) = x.elem (i);
+	m (i, 0) = x (i);
       octave_value state (m);
       args(0) = state;
     }
   else
     {
-      double d = x.elem (0);
+      double d = x (0);
       octave_value state (d);
       args(0) = state;
     }
@@ -149,7 +149,7 @@ where xdot and x are vectors and t is a scalar.\n")
       crit_times_set = 1;
     }
 
-  double tzero = out_times.elem (0);
+  double tzero = out_times (0);
   int nsteps = out_times.capacity ();
 
   ODEFunc func (lsode_user_function);

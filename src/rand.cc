@@ -234,13 +234,13 @@ do_rand (const octave_value_list& args, int nargin)
 
 	  if (n == 1 && m == 2)
 	    {
-	      n = NINT (a.elem (0, 0));
-	      m = NINT (a.elem (0, 1));
+	      n = NINT (a (0, 0));
+	      m = NINT (a (0, 1));
 	    }
 	  else if (n == 2 && m == 1)
 	    {
-	      n = NINT (a.elem (0, 0));
-	      m = NINT (a.elem (1, 0));
+	      n = NINT (a (0, 0));
+	      m = NINT (a (1, 0));
 	    }
 	  else
 	    warning ("rand (A): use rand (size (A)) instead");
@@ -308,12 +308,12 @@ do_rand (const octave_value_list& args, int nargin)
 	      {
 	      case uniform_dist:
 		F77_FCN (dgenunf, DGENUNF) (0.0, 1.0, val);
-		rand_mat.elem (i, j) = val;
+		rand_mat (i, j) = val;
 		break;
 
 	      case normal_dist:
 		F77_FCN (dgennor, DGENNOR) (0.0, 1.0, val);
-		rand_mat.elem (i, j) = val;
+		rand_mat (i, j) = val;
 		break;
 
 	      default:

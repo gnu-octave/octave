@@ -108,7 +108,7 @@ any_element_is_negative (const Matrix& a)
   int nc = a.columns ();
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      if (a.elem (i, j) < 0.0)
+      if (a (i, j) < 0.0)
 	return 1;
   return 0;
 }
@@ -123,7 +123,7 @@ any_element_is_inf_or_nan (const Matrix& a)
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
       {
-	double val = a.elem (i, j);
+	double val = a (i, j);
 	if (xisinf (val) || xisnan (val))
 	  return 1;
       }
@@ -138,7 +138,7 @@ any_element_is_inf_or_nan (const ComplexMatrix& a)
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
       {
-	Complex val = a.elem (i, j);
+	Complex val = a (i, j);
 	if (xisinf (val) || xisnan (val))
 	  return 1;
       }
@@ -153,7 +153,7 @@ all_elements_are_int_or_inf_or_nan (const Matrix& a)
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
       {
-	double val = a.elem (i, j);
+	double val = a (i, j);
 	if (xisnan (val) || D_NINT (val) == val)
 	  continue;
 	else
@@ -170,7 +170,7 @@ abs (const Matrix& a)
   Matrix retval (nr, nc);
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      retval.elem (i, j) = fabs (a.elem (i, j));
+      retval (i, j) = fabs (a (i, j));
   return retval;
 }
 
@@ -185,7 +185,7 @@ pr_max_internal (const Matrix& m)
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
       {
-	double val = m.elem (i, j);
+	double val = m (i, j);
 	if (xisinf (val) || xisnan (val))
 	  continue;
 
@@ -206,7 +206,7 @@ pr_min_internal (const Matrix& m)
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
       {
-	double val = m.elem (i, j);
+	double val = m (i, j);
 	if (xisinf (val) || xisnan (val))
 	  continue;
 
@@ -1191,7 +1191,7 @@ octave_print_internal (ostream& os, const Matrix& m, bool pr_as_read_syntax,
 	      if (j == 0)
 		os << "  ";
 
-	      if (m.elem (i, j) == 0.0)
+	      if (m (i, j) == 0.0)
 		os << " ";
 	      else
 		os << "+";
@@ -1257,7 +1257,7 @@ octave_print_internal (ostream& os, const Matrix& m, bool pr_as_read_syntax,
 			    os << "  ";
 			}
 
-		      pr_float (os, m.elem (i, j));
+		      pr_float (os, m (i, j));
 		    }
 
 		  col += inc;
@@ -1291,7 +1291,7 @@ octave_print_internal (ostream& os, const Matrix& m, bool pr_as_read_syntax,
 		    {
 		      os << "  ";
 
-		      pr_float (os, m.elem (i, j), fw);
+		      pr_float (os, m (i, j), fw);
 		    }
 
 		  os << "\n";
@@ -1343,7 +1343,7 @@ octave_print_internal (ostream& os, const ComplexMatrix& cm,
 	      if (j == 0)
 		os << "  ";
 
-	      if (cm.elem (i, j) == 0.0)
+	      if (cm (i, j) == 0.0)
 		os << " ";
 	      else
 		os << "+";
@@ -1410,7 +1410,7 @@ octave_print_internal (ostream& os, const ComplexMatrix& cm,
 			    os << "  ";
 			}
 
-		      pr_complex (os, cm.elem (i, j));
+		      pr_complex (os, cm (i, j));
 		    }
 
 		  col += inc;
@@ -1444,7 +1444,7 @@ octave_print_internal (ostream& os, const ComplexMatrix& cm,
 		    {
 		      os << "  ";
 
-		      pr_complex (os, cm.elem (i, j));
+		      pr_complex (os, cm (i, j));
 		    }
 		  os << "\n";
 		}

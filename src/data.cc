@@ -107,7 +107,7 @@ map (d_dd_fcn f, double x, const Matrix& y)
 
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      retval.elem (i, j) = f (x, y.elem (i, j));
+      retval (i, j) = f (x, y (i, j));
 
   return retval;
 }
@@ -122,7 +122,7 @@ map (d_dd_fcn f, const Matrix& x, double y)
 
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      retval.elem (i, j) = f (x.elem (i, j), y);
+      retval (i, j) = f (x (i, j), y);
 
   return retval;
 }
@@ -142,7 +142,7 @@ map (d_dd_fcn f, const Matrix& x, const Matrix& y)
 
   for (int j = 0; j < x_nc; j++)
     for (int i = 0; i < x_nr; i++)
-      retval.elem (i, j) = f (x.elem (i, j), y.elem (i, j));
+      retval (i, j) = f (x (i, j), y (i, j));
 
   return retval;
 }
@@ -334,7 +334,7 @@ make_diag (const Matrix& v, int k)
       int n = nc + ABS (k);
       Matrix m (n, n, 0.0);
       for (int i = 0; i < nc; i++)
-	m.elem (i+roff, i+coff) = v.elem (0, i);
+	m (i+roff, i+coff) = v (0, i);
       retval = octave_value (m);
     }
   else
@@ -342,7 +342,7 @@ make_diag (const Matrix& v, int k)
       int n = nr + ABS (k);
       Matrix m (n, n, 0.0);
       for (int i = 0; i < nr; i++)
-	m.elem (i+roff, i+coff) = v.elem (i, 0);
+	m (i+roff, i+coff) = v (i, 0);
       retval = octave_value (m);
     }
 
@@ -376,7 +376,7 @@ make_diag (const ComplexMatrix& v, int k)
       int n = nc + ABS (k);
       ComplexMatrix m (n, n, 0.0);
       for (int i = 0; i < nc; i++)
-	m.elem (i+roff, i+coff) = v.elem (0, i);
+	m (i+roff, i+coff) = v (0, i);
       retval = octave_value (m);
     }
   else
@@ -384,7 +384,7 @@ make_diag (const ComplexMatrix& v, int k)
       int n = nr + ABS (k);
       ComplexMatrix m (n, n, 0.0);
       for (int i = 0; i < nr; i++)
-	m.elem (i+roff, i+coff) = v.elem (i, 0);
+	m (i+roff, i+coff) = v (i, 0);
       retval = octave_value (m);
     }
 
@@ -475,13 +475,13 @@ make_diag (const octave_value& a, const octave_value& b)
 	  else if (k > 0)
 	    {
 	      Matrix m (n, n, 0.0);
-	      m.elem (0, k) = d;
+	      m (0, k) = d;
 	      retval = m;
 	    }
 	  else if (k < 0)
 	    {
 	      Matrix m (n, n, 0.0);
-	      m.elem (-k, 0) = d;
+	      m (-k, 0) = d;
 	      retval = m;
 	    }
 	}
@@ -516,13 +516,13 @@ make_diag (const octave_value& a, const octave_value& b)
 	  else if (k > 0)
 	    {
 	      ComplexMatrix m (n, n, 0.0);
-	      m.elem (0, k) = c;
+	      m (0, k) = c;
 	      retval = m;
 	    }
 	  else if (k < 0)
 	    {
 	      ComplexMatrix m (n, n, 0.0);
-	      m.elem (-k, 0) = c;
+	      m (-k, 0) = c;
 	      retval = m;
 	    }
 	}
@@ -626,8 +626,8 @@ m = size (x, 2): return number of columns in x")
       if (nargout == 0 || nargout == 1)
 	{
 	  Matrix m (1, 2);
-	  m.elem (0, 0) = nr;
-	  m.elem (0, 1) = nc;
+	  m (0, 0) = nr;
+	  m (0, 1) = nc;
 	  retval = m;
 	}
       else if (nargout == 2)
@@ -845,8 +845,8 @@ get_dimensions (const octave_value& a, const char *warn_for,
 	  if (error_state)
 	    return;
 
-	  nr = NINT (v.elem (0));
-	  nc = NINT (v.elem (1));
+	  nr = NINT (v (0));
+	  nc = NINT (v (1));
 	}
       else
 	warning ("%s (A): use %s (size (A)) instead", warn_for, warn_for);
@@ -970,7 +970,7 @@ identity_matrix (const octave_value& a)
     {
       int n = MIN (nr, nc);
       for (int i = 0; i < n; i++)
-	m.elem (i, i) = 1.0;
+	m (i, i) = 1.0;
     }
 
   return m;
@@ -991,7 +991,7 @@ identity_matrix (const octave_value& a, const octave_value& b)
     {
       int n = MIN (nr, nc);
       for (int i = 0; i < n; i++)
-	m.elem (i, i) = 1.0;
+	m (i, i) = 1.0;
     }
 
   return m;

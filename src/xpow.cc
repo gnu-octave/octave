@@ -50,7 +50,7 @@ any_element_is_negative (const Matrix& a)
   int nc = a.columns ();
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      if (a.elem (i, j) < 0.0)
+      if (a (i, j) < 0.0)
 	return 1;
   return 0;
 }
@@ -110,11 +110,11 @@ xpow (double a, const Matrix& b)
 
       for (int i = 0; i < nr; i++)
 	{
-	  Complex elt = lambda.elem (i);
+	  Complex elt = lambda (i);
 	  if (imag (elt) == 0.0)
-	    lambda.elem (i) = pow (a, real (elt));
+	    lambda (i) = pow (a, real (elt));
 	  else
-	    lambda.elem (i) = pow (a, elt);
+	    lambda (i) = pow (a, elt);
 	}
       ComplexDiagMatrix D (lambda);
 
@@ -155,11 +155,11 @@ xpow (double a, const ComplexMatrix& b)
 
       for (int i = 0; i < nr; i++)
 	{
-	  Complex elt = lambda.elem (i);
+	  Complex elt = lambda (i);
 	  if (imag (elt) == 0.0)
-	    lambda.elem (i) = pow (a, real (elt));
+	    lambda (i) = pow (a, real (elt));
 	  else
-	    lambda.elem (i) = pow (a, elt);
+	    lambda (i) = pow (a, elt);
 	}
       ComplexDiagMatrix D (lambda);
 
@@ -228,7 +228,7 @@ xpow (const Matrix& a, double b)
 	  ComplexMatrix Q (a_eig.eigenvectors ());
 
 	  for (int i = 0; i < nr; i++)
-	    lambda.elem (i) = pow (lambda.elem (i), b);
+	    lambda (i) = pow (lambda (i), b);
 
 	  ComplexDiagMatrix D (lambda);
 
@@ -259,7 +259,7 @@ xpow (const Matrix& a, const Complex& b)
       ComplexMatrix Q (a_eig.eigenvectors ());
 
       for (int i = 0; i < nr; i++)
-	lambda.elem (i) = pow (lambda.elem (i), b);
+	lambda (i) = pow (lambda (i), b);
 
       ComplexDiagMatrix D (lambda);
 
@@ -304,11 +304,11 @@ xpow (const Complex& a, const Matrix& b)
 
       for (int i = 0; i < nr; i++)
 	{
-	  Complex elt = lambda.elem (i);
+	  Complex elt = lambda (i);
 	  if (imag (elt) == 0.0)
-	    lambda.elem (i) = pow (a, real (elt));
+	    lambda (i) = pow (a, real (elt));
 	  else
-	    lambda.elem (i) = pow (a, elt);
+	    lambda (i) = pow (a, elt);
 	}
       ComplexDiagMatrix D (lambda);
 
@@ -348,11 +348,11 @@ xpow (const Complex& a, const ComplexMatrix& b)
 
       for (int i = 0; i < nr; i++)
 	{
-	  Complex elt = lambda.elem (i);
+	  Complex elt = lambda (i);
 	  if (imag (elt) == 0.0)
-	    lambda.elem (i) = pow (a, real (elt));
+	    lambda (i) = pow (a, real (elt));
 	  else
-	    lambda.elem (i) = pow (a, elt);
+	    lambda (i) = pow (a, elt);
 	}
       ComplexDiagMatrix D (lambda);
 
@@ -421,7 +421,7 @@ xpow (const ComplexMatrix& a, double b)
 	  ComplexMatrix Q (a_eig.eigenvectors ());
 
 	  for (int i = 0; i < nr; i++)
-	    lambda.elem (i) = pow (lambda.elem (i), b);
+	    lambda (i) = pow (lambda (i), b);
 
 	  ComplexDiagMatrix D (lambda);
 
@@ -452,7 +452,7 @@ xpow (const ComplexMatrix& a, const Complex& b)
       ComplexMatrix Q (a_eig.eigenvectors ());
 
       for (int i = 0; i < nr; i++)
-	lambda.elem (i) = pow (lambda.elem (i), b);
+	lambda (i) = pow (lambda (i), b);
 
       ComplexDiagMatrix D (lambda);
 
@@ -494,7 +494,7 @@ elem_xpow (double a, const Matrix& b)
       ComplexMatrix result (nr, nc);
       for (int j = 0; j < nc; j++)
 	for (int i = 0; i < nr; i++)
-	  result.elem (i, j) = pow (atmp, b.elem (i, j));
+	  result (i, j) = pow (atmp, b (i, j));
 
       retval = result;
     }
@@ -503,7 +503,7 @@ elem_xpow (double a, const Matrix& b)
       Matrix result (nr, nc);
       for (int j = 0; j < nc; j++)
 	for (int i = 0; i < nr; i++)
-	  result.elem (i, j) = pow (a, b.elem (i, j)); 
+	  result (i, j) = pow (a, b (i, j)); 
 
       retval = result;
     }
@@ -521,7 +521,7 @@ elem_xpow (double a, const ComplexMatrix& b)
   ComplexMatrix result (nr, nc);
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      result.elem (i, j) = pow (a, b.elem (i, j));
+      result (i, j) = pow (a, b (i, j));
 
   return result;
 }
@@ -541,8 +541,8 @@ elem_xpow (const Matrix& a, double b)
       for (int j = 0; j < nc; j++)
 	for (int i = 0; i < nr; i++)
 	  {
-	    Complex atmp (a.elem (i, j));
-	    result.elem (i, j) = pow (atmp, b);
+	    Complex atmp (a (i, j));
+	    result (i, j) = pow (atmp, b);
 	  }
 
       retval = result;
@@ -552,7 +552,7 @@ elem_xpow (const Matrix& a, double b)
       Matrix result (nr, nc);
       for (int j = 0; j < nc; j++)
 	for (int i = 0; i < nr; i++)
-	  result.elem (i, j) = pow (a.elem (i, j), b);
+	  result (i, j) = pow (a (i, j), b);
 
       retval = result;
     }
@@ -575,8 +575,8 @@ elem_xpow (const Matrix& a, const Matrix& b)
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
       {
-	double atmp = a.elem (i, j);
-	double btmp = b.elem (i, j);
+	double atmp = a (i, j);
+	double btmp = b (i, j);
 	if (atmp < 0.0 && (int) btmp != btmp)
 	  {
 	    convert_to_complex = 1;
@@ -593,9 +593,9 @@ elem_xpow (const Matrix& a, const Matrix& b)
       for (int j = 0; j < nc; j++)
 	for (int i = 0; i < nr; i++)
 	  {
-	    Complex atmp (a.elem (i, j));
-	    Complex btmp (b.elem (i, j));
-	    complex_result.elem (i, j) = pow (atmp, btmp);
+	    Complex atmp (a (i, j));
+	    Complex btmp (b (i, j));
+	    complex_result (i, j) = pow (atmp, btmp);
 	  }
 
       retval = complex_result;
@@ -606,7 +606,7 @@ elem_xpow (const Matrix& a, const Matrix& b)
 
       for (int j = 0; j < nc; j++)
 	for (int i = 0; i < nr; i++)
-	  result.elem (i, j) = pow (a.elem (i, j), b.elem (i, j));
+	  result (i, j) = pow (a (i, j), b (i, j));
 
       retval = result;
     }
@@ -624,7 +624,7 @@ elem_xpow (const Matrix& a, const Complex& b)
   ComplexMatrix result (nr, nc);
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      result.elem (i, j) = pow (a.elem (i, j), b);
+      result (i, j) = pow (a (i, j), b);
 
   return result;
 }
@@ -641,7 +641,7 @@ elem_xpow (const Matrix& a, const ComplexMatrix& b)
   ComplexMatrix result (nr, nc);
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      result.elem (i, j) = pow (a.elem (i, j), b.elem (i, j));
+      result (i, j) = pow (a (i, j), b (i, j));
 
   return result;
 }
@@ -657,11 +657,11 @@ elem_xpow (const Complex& a, const Matrix& b)
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
       {
-	double btmp = b.elem (i, j);
+	double btmp = b (i, j);
 	if (xisint (btmp))
-	  result.elem (i, j) = pow (a, (int) btmp);
+	  result (i, j) = pow (a, (int) btmp);
 	else
-	  result.elem (i, j) = pow (a, btmp);
+	  result (i, j) = pow (a, btmp);
       }
 
   return result;
@@ -677,7 +677,7 @@ elem_xpow (const Complex& a, const ComplexMatrix& b)
   ComplexMatrix result (nr, nc);
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      result.elem (i, j) = pow (a, b.elem (i, j));
+      result (i, j) = pow (a, b (i, j));
 
   return result;
 }
@@ -695,13 +695,13 @@ elem_xpow (const ComplexMatrix& a, double b)
     {
       for (int j = 0; j < nc; j++)
 	for (int i = 0; i < nr; i++)
-	  result.elem (i, j) = pow (a.elem (i, j), (int) b);
+	  result (i, j) = pow (a (i, j), (int) b);
     }
   else
     {
       for (int j = 0; j < nc; j++)
 	for (int i = 0; i < nr; i++)
-	  result.elem (i, j) = pow (a.elem (i, j), b);
+	  result (i, j) = pow (a (i, j), b);
     }
 
   return result;
@@ -720,11 +720,11 @@ elem_xpow (const ComplexMatrix& a, const Matrix& b)
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
       {
-	double btmp = b.elem (i, j);
+	double btmp = b (i, j);
 	if (xisint (btmp))
-	  result.elem (i, j) = pow (a.elem (i, j), (int) btmp);
+	  result (i, j) = pow (a (i, j), (int) btmp);
 	else
-	  result.elem (i, j) = pow (a.elem (i, j), btmp);
+	  result (i, j) = pow (a (i, j), btmp);
       }
 
   return result;
@@ -740,7 +740,7 @@ elem_xpow (const ComplexMatrix& a, const Complex& b)
   ComplexMatrix result (nr, nc);
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      result.elem (i, j) = pow (a.elem (i, j), b);
+      result (i, j) = pow (a (i, j), b);
 
   return result;
 }
@@ -756,7 +756,7 @@ elem_xpow (const ComplexMatrix& a, const ComplexMatrix& b)
 
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      result.elem (i, j) = pow (a.elem (i, j), b.elem (i, j));
+      result (i, j) = pow (a (i, j), b (i, j));
 
   return result;
 }

@@ -203,7 +203,7 @@ x_el_div (double a, const Matrix& b)
 
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      result.elem (i, j) = a / b.elem (i, j);
+      result (i, j) = a / b (i, j);
 
   return result;
 }
@@ -218,7 +218,7 @@ x_el_div (double a, const ComplexMatrix& b)
 
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      result.elem (i, j) = a / b.elem (i, j);
+      result (i, j) = a / b (i, j);
 
   return result;
 }
@@ -233,7 +233,7 @@ x_el_div (const Complex a, const Matrix& b)
 
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      result.elem (i, j) = a / b.elem (i, j);
+      result (i, j) = a / b (i, j);
 
   return result;
 }
@@ -248,7 +248,7 @@ x_el_div (const Complex a, const ComplexMatrix& b)
 
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      result.elem (i, j) = a / b.elem (i, j);
+      result (i, j) = a / b (i, j);
 
   return result;
 }

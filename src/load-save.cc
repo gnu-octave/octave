@@ -1145,7 +1145,7 @@ read_mat_binary_data (istream& is, const string& filename,
 
       for (int j = 0; j < nc; j++)
 	for (int i = 0; i < nr; i++)
-	  ctmp.elem (i, j) = Complex (re.elem (i, j), im.elem (i, j));
+	  ctmp (i, j) = Complex (re (i, j), im (i, j));
 
       tc = ctmp;
     }
@@ -1823,11 +1823,11 @@ strip_infnan (const Matrix& m)
     {
       for (int j = 0; j < nc; j++)
 	{
-	  double d = m.elem (i, j);
+	  double d = m (i, j);
 	  if (xisnan (d))
 	    goto next_row;
 	  else
-	    retval.elem (k, j) = xisinf (d) ? (d > 0 ? OCT_RBV : -OCT_RBV) : d;
+	    retval (k, j) = xisinf (d) ? (d > 0 ? OCT_RBV : -OCT_RBV) : d;
 	}
       k++;
 
@@ -1854,7 +1854,7 @@ strip_infnan (const ComplexMatrix& m)
     {
       for (int j = 0; j < nc; j++)
 	{
-	  Complex c = m.elem (i, j);
+	  Complex c = m (i, j);
 	  if (xisnan (c))
 	    goto next_row;
 	  else
@@ -1865,7 +1865,7 @@ strip_infnan (const ComplexMatrix& m)
 	      re = xisinf (re) ? (re > 0 ? OCT_RBV : -OCT_RBV) : re;
 	      im = xisinf (im) ? (im > 0 ? OCT_RBV : -OCT_RBV) : im;
 
-	      retval.elem (k, j) = Complex (re, im);
+	      retval (k, j) = Complex (re, im);
 	    }
 	}
       k++;

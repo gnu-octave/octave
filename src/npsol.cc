@@ -58,12 +58,12 @@ npsol_objective_function (const ColumnVector& x)
     {
       Matrix m (n, 1);
       for (int i = 0; i < n; i++)
-	m (i, 0) = x.elem (i);
+	m (i, 0) = x (i);
       decision_vars = m;
     }
   else
     {
-      double d = x.elem (0);
+      double d = x (0);
       decision_vars = d;
     }
 
@@ -99,7 +99,7 @@ npsol_objective_function (const ColumnVector& x)
     {
       Matrix m = objective_value.matrix_value ();
       if (m.rows () == 1 && m.columns () == 1)
-	retval = m.elem (0, 0);
+	retval = m (0, 0);
       else
 	{
 	  gripe_user_returned_invalid ("npsol_objective");
@@ -131,12 +131,12 @@ npsol_constraint_function (const ColumnVector& x)
     {
       Matrix m (n, 1);
       for (int i = 0; i < n; i++)
-	m (i, 0) = x.elem (i);
+	m (i, 0) = x (i);
       decision_vars = m;
     }
   else
     {
-      double d = x.elem (0);
+      double d = x (0);
       decision_vars = d;
     }
 

@@ -43,14 +43,14 @@ create_index_array (int n)
 {
   Array<int> l (n+2);
 
-  l.elem (0) = 1;
+  l (0) = 1;
 
   for (int i = 1; i < n - 1; i++)
-    l.elem (i) = -(i+2);
+    l (i) = -(i+2);
 
-  l.elem (n-1) = 0;
-  l.elem (n) = 0;
-  l.elem (n+1) = 2;
+  l (n-1) = 0;
+  l (n) = 0;
+  l (n+1) = 2;
 
   return l;
 }
@@ -58,8 +58,8 @@ create_index_array (int n)
 #define SORT_INIT_PHASE(n) \
   int s = 0; \
   int t = n + 1; \
-  int p = l.elem (s); \
-  int q = l.elem (t); \
+  int p = l (s); \
+  int q = l (t); \
   if (q == 0) \
      break
 
@@ -68,46 +68,46 @@ create_index_array (int n)
   q = -q; \
   if (q == 0) \
     { \
-      l.elem (s) = (l.elem (s) < 0) \
+      l (s) = (l (s) < 0) \
 	? ((p < 0) ? p : -p) \
 	  : ((p >= 0) ? p : -p); \
-      l.elem (t) = 0; \
+      l (t) = 0; \
       break; \
     } \
 
 #define SORT_REORDER_PHASE_ONE \
-  l.elem (s) = (l.elem (s) < 0) \
+  l (s) = (l (s) < 0) \
     ? ((q < 0) ? q : -q) \
       : ((q >= 0) ? q : -q); \
   s = q; \
-  q = l.elem (q); \
+  q = l (q); \
   if (q <= 0) \
     { \
-      l.elem (s) = p; \
+      l (s) = p; \
       s = t; \
       do \
 	{ \
 	  t = p; \
-	  p = l.elem (p); \
+	  p = l (p); \
 	} \
       while (p > 0); \
       SORT_COMMON_CODE; \
     } \
 
 #define SORT_REORDER_PHASE_TWO \
-  l.elem (s) = (l.elem (s) < 0) \
+  l (s) = (l (s) < 0) \
     ? ((p < 0) ? p : -p) \
       : ((p >= 0) ? p : -p); \
   s = p; \
-  p = l.elem (p); \
+  p = l (p); \
   if (p <= 0) \
     { \
-      l.elem (s) = q; \
+      l (s) = q; \
       s = t; \
       do \
 	{ \
 	  t = q; \
-	  q = l.elem (q); \
+	  q = l (q); \
 	} \
       while (q > 0); \
       SORT_COMMON_CODE; \
@@ -131,25 +131,25 @@ create_index_array (int n)
     }
 
 #define VECTOR_CREATE_RETURN_VALUES(vs, v) \
-  int k = l.elem (0); \
-  idx.elem (0) = k; \
-  vs.elem (0) = v.elem (k-1); \
+  int k = l (0); \
+  idx (0) = k; \
+  vs (0) = v (k-1); \
   for (int i = 1; i < n; i++) \
     { \
-      k = l.elem ((int) idx.elem (i-1)); \
-      idx.elem (i) = k; \
-      vs.elem (i) = v.elem (k-1); \
+      k = l ((int) idx (i-1)); \
+      idx (i) = k; \
+      vs (i) = v (k-1); \
     }
 
 #define MATRIX_CREATE_RETURN_VALUES(ms, m) \
-  int k = l.elem (0); \
-  idx.elem (0, j) = k; \
-  ms.elem (0, j) = m.elem (k-1, j); \
+  int k = l (0); \
+  idx (0, j) = k; \
+  ms (0, j) = m (k-1, j); \
   for (int i = 1; i < nr; i++) \
     { \
-      k = l.elem ((int) idx.elem (i-1, j)); \
-      idx.elem (i, j) = k; \
-      ms.elem (i, j) = m.elem (k-1, j); \
+      k = l ((int) idx (i-1, j)); \
+      idx (i, j) = k; \
+      ms (i, j) = m (k-1, j); \
     }
 
 static octave_value_list
@@ -176,7 +176,7 @@ mx_sort (const Matrix& m)
 	{
 	  Array<int> l = create_index_array (nr);
 
-	  DO_SORT (nr, (m.elem (p-1, j) > m.elem (q-1, j)));
+	  DO_SORT (nr, (m (p-1, j) > m (q-1, j)));
 
 	  MATRIX_CREATE_RETURN_VALUES (ms, m);
 	}
@@ -209,7 +209,7 @@ mx_sort (const RowVector& v)
     {
       Array<int> l = create_index_array (n);
 
-      DO_SORT (n, (v.elem (p-1) > v.elem (q-1)));
+      DO_SORT (n, (v (p-1) > v (q-1)));
 
       VECTOR_CREATE_RETURN_VALUES (vs, v);
     }
@@ -246,15 +246,15 @@ mx_sort (const ComplexMatrix& cm)
 
 	  int all_elts_real = 1;
 	  for (int i = 0; i < nr; i++)
-	    if (imag (cm.elem (i, j)) != 0.0)
+	    if (imag (cm (i, j)) != 0.0)
 	      {
 		all_elts_real = 0;
 		break;
 	      }
 
 	  DO_SORT (nr, ((all_elts_real
-			 && real (cm.elem (p-1, j)) > real (cm.elem (q-1, j)))
-			|| abs (cm.elem (p-1, j)) > abs (cm.elem (q-1, j))));
+			 && real (cm (p-1, j)) > real (cm (q-1, j)))
+			|| abs (cm (p-1, j)) > abs (cm (q-1, j))));
 
 	  MATRIX_CREATE_RETURN_VALUES (cms, cm);
 	}
@@ -289,15 +289,15 @@ mx_sort (ComplexRowVector& cv)
 
       int all_elts_real = 1;
       for (int i = 0; i < n; i++)
-	if (imag (cv.elem (i)) != 0.0)
+	if (imag (cv (i)) != 0.0)
 	  {
 	    all_elts_real = 0;
 	    break;
 	  }
 
       DO_SORT (n, ((all_elts_real
-		    && real (cv.elem (p-1)) > real (cv.elem (q-1)))
-		   || abs (cv.elem (p-1)) > abs (cv.elem (q-1))));
+		    && real (cv (p-1)) > real (cv (q-1)))
+		   || abs (cv (p-1)) > abs (cv (q-1))));
 
       VECTOR_CREATE_RETURN_VALUES (cvs, cv);
     }
@@ -342,7 +342,7 @@ sort the columns of X, optionally return sort index")
 	      int nc = m.columns ();
 	      RowVector v (nc);
 	      for (int i = 0; i < nc; i++)
-		v.elem (i) = m.elem (0, i);
+		v (i) = m (0, i);
 
 	      retval = mx_sort (v);
 	    }
@@ -361,7 +361,7 @@ sort the columns of X, optionally return sort index")
 	      int nc = cm.columns ();
 	      ComplexRowVector cv (nc);
 	      for (int i = 0; i < nc; i++)
-		cv.elem (i) = cm.elem (0, i);
+		cv (i) = cm (0, i);
 
 	      retval = mx_sort (cv);
 	    }

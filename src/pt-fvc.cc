@@ -54,7 +54,7 @@ any_element_less_than (const Matrix& a, double val)
 
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      if (a.elem (i, j) < val)
+      if (a (i, j) < val)
 	return true;
 
   return false;
@@ -68,7 +68,7 @@ any_element_greater_than (const Matrix& a, double val)
 
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      if (a.elem (i, j) > val)
+      if (a (i, j) > val)
 	return true;
 
   return false;
@@ -669,8 +669,8 @@ apply_mapper_fcn (const octave_value& arg, builtin_mapper_function& m_fcn,
 
 		    for (int j = 0; j < nc; j++)
 		      for (int i = 0; i < nr; i++)
-			result.elem (i, j)
-			  = (*m_fcn.ch_mapper) (chm.elem (i, j)) ? 1 : 0;
+			result (i, j)
+			  = (*m_fcn.ch_mapper) (chm (i, j)) ? 1 : 0;
 
 		    retval = result;
 		  }
@@ -682,8 +682,8 @@ apply_mapper_fcn (const octave_value& arg, builtin_mapper_function& m_fcn,
 
 		    for (int j = 0; j < nc; j++)
 		      for (int i = 0; i < nr; i++)
-			result.elem (i, j)
-			  = (*m_fcn.ch_mapper) (chm.elem (i, j));
+			result (i, j)
+			  = (*m_fcn.ch_mapper) (chm (i, j));
 
 		    retval = result;
 		  }
@@ -695,8 +695,8 @@ apply_mapper_fcn (const octave_value& arg, builtin_mapper_function& m_fcn,
 
 		    for (int j = 0; j < nc; j++)
 		      for (int i = 0; i < nr; i++)
-			result.elem (i, j)
-			  = (*m_fcn.ch_mapper) (chm.elem (i, j));
+			result (i, j)
+			  = (*m_fcn.ch_mapper) (chm (i, j));
 
 		    retval = octave_value (result, true);
 		  }

@@ -87,7 +87,7 @@ find_nonzero_elem_idx (const Matrix& m, int nargout)
   int i, j;
   for (j = 0; j < m_nc; j++)
     for (i = 0; i < m_nr; i++)
-      if (m.elem (i, j) != 0.0)
+      if (m (i, j) != 0.0)
 	count++;
 
   octave_value_list retval (((nargout == 0) ? 1 : nargout), Matrix ());
@@ -103,7 +103,7 @@ find_nonzero_elem_idx (const Matrix& m, int nargout)
   for (j = 0; j < m_nc; j++)
     for (i = 0; i < m_nr; i++)
       {
-	double d = m.elem (i, j);
+	double d = m (i, j);
 	if (d != 0.0)
 	  {
 	    i_idx (count) = i + 1;
@@ -127,7 +127,7 @@ find_nonzero_elem_idx (const ComplexMatrix& m, int nargout)
   int i, j;
   for (j = 0; j < m_nc; j++)
     for (i = 0; i < m_nr; i++)
-      if (m.elem (i, j) != 0.0)
+      if (m (i, j) != 0.0)
 	count++;
 
   octave_value_list retval (((nargout == 0) ? 1 : nargout), Matrix ());
@@ -143,7 +143,7 @@ find_nonzero_elem_idx (const ComplexMatrix& m, int nargout)
   for (j = 0; j < m_nc; j++)
     for (i = 0; i < m_nr; i++)
       {
-	Complex c = m.elem (i, j);
+	Complex c = m (i, j);
 	if (c != 0.0)
 	  {
 	    i_idx (count) = i + 1;

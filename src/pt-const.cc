@@ -162,7 +162,7 @@ any_element_is_complex (const ComplexMatrix& a)
 
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      if (imag (a.elem (i, j)) != 0.0)
+      if (imag (a (i, j)) != 0.0)
 	return true;
 
   return false;
@@ -485,7 +485,7 @@ OCT_VAL_REP::octave_value_rep (const Matrix& m)
 {
   if (m.rows () == 1 && m.columns () == 1)
     {
-      scalar = m.elem (0, 0);
+      scalar = m (0, 0);
       type_tag = scalar_constant;
     }
   else
@@ -499,7 +499,7 @@ OCT_VAL_REP::octave_value_rep (const DiagMatrix& d)
 {
   if (d.rows () == 1 && d.columns () == 1)
     {
-      scalar = d.elem (0, 0);
+      scalar = d (0, 0);
       type_tag = scalar_constant;
     }
   else
@@ -514,7 +514,7 @@ OCT_VAL_REP::octave_value_rep (const RowVector& v, int prefer_column_vector)
   int len = v.capacity ();
   if (len == 1)
     {
-      scalar = v.elem (0);
+      scalar = v (0);
       type_tag = scalar_constant;
     }
   else
@@ -527,7 +527,7 @@ OCT_VAL_REP::octave_value_rep (const RowVector& v, int prefer_column_vector)
 	{
 	  Matrix m (len, 1);
 	  for (int i = 0; i < len; i++)
-	    m.elem (i, 0) = v.elem (i);
+	    m (i, 0) = v (i);
 	  matrix = new Matrix (m);
 	  type_tag = matrix_constant;
 	}
@@ -535,7 +535,7 @@ OCT_VAL_REP::octave_value_rep (const RowVector& v, int prefer_column_vector)
 	{
 	  Matrix m (1, len);
 	  for (int i = 0; i < len; i++)
-	    m.elem (0, i) = v.elem (i);
+	    m (0, i) = v (i);
 	  matrix = new Matrix (m);
 	  type_tag = matrix_constant;
 	}
@@ -547,7 +547,7 @@ OCT_VAL_REP::octave_value_rep (const ColumnVector& v, int prefer_column_vector)
   int len = v.capacity ();
   if (len == 1)
     {
-      scalar = v.elem (0);
+      scalar = v (0);
       type_tag = scalar_constant;
     }
   else
@@ -560,7 +560,7 @@ OCT_VAL_REP::octave_value_rep (const ColumnVector& v, int prefer_column_vector)
 	{
 	  Matrix m (len, 1);
 	  for (int i = 0; i < len; i++)
-	    m.elem (i, 0) = v.elem (i);
+	    m (i, 0) = v (i);
 	  matrix = new Matrix (m);
 	  type_tag = matrix_constant;
 	}
@@ -568,7 +568,7 @@ OCT_VAL_REP::octave_value_rep (const ColumnVector& v, int prefer_column_vector)
 	{
 	  Matrix m (1, len);
 	  for (int i = 0; i < len; i++)
-	    m.elem (0, i) = v.elem (i);
+	    m (0, i) = v (i);
 	  matrix = new Matrix (m);
 	  type_tag = matrix_constant;
 	}
@@ -593,7 +593,7 @@ OCT_VAL_REP::octave_value_rep (const ComplexMatrix& m)
 {
   if (m.rows () == 1 && m.columns () == 1)
     {
-      Complex c = m.elem (0, 0);
+      Complex c = m (0, 0);
 
       if (::imag (c) == 0.0)
 	{
@@ -617,7 +617,7 @@ OCT_VAL_REP::octave_value_rep (const ComplexDiagMatrix& d)
 {
   if (d.rows () == 1 && d.columns () == 1)
     {
-      Complex c = d.elem (0, 0);
+      Complex c = d (0, 0);
 
       if (::imag (c) == 0.0)
 	{
@@ -643,7 +643,7 @@ OCT_VAL_REP::octave_value_rep (const ComplexRowVector& v,
   int len = v.capacity ();
   if (len == 1)
     {
-      Complex c = v.elem (0);
+      Complex c = v (0);
 
       if (::imag (c) == 0.0)
 	{
@@ -666,7 +666,7 @@ OCT_VAL_REP::octave_value_rep (const ComplexRowVector& v,
 	{
 	  ComplexMatrix m (len, 1);
 	  for (int i = 0; i < len; i++)
-	    m.elem (i, 0) = v.elem (i);
+	    m (i, 0) = v (i);
 	  complex_matrix = new ComplexMatrix (m);
 	  type_tag = complex_matrix_constant;
 	}
@@ -674,7 +674,7 @@ OCT_VAL_REP::octave_value_rep (const ComplexRowVector& v,
 	{
 	  ComplexMatrix m (1, len);
 	  for (int i = 0; i < len; i++)
-	    m.elem (0, i) = v.elem (i);
+	    m (0, i) = v (i);
 	  complex_matrix = new ComplexMatrix (m);
 	  type_tag = complex_matrix_constant;
 	}
@@ -687,7 +687,7 @@ OCT_VAL_REP::octave_value_rep (const ComplexColumnVector& v, int
   int len = v.capacity ();
   if (len == 1)
     {
-      Complex c = v.elem (0);
+      Complex c = v (0);
 
       if (::imag (c) == 0.0)
 	{
@@ -710,7 +710,7 @@ OCT_VAL_REP::octave_value_rep (const ComplexColumnVector& v, int
 	{
 	  ComplexMatrix m (len, 1);
 	  for (int i = 0; i < len; i++)
-	    m.elem (i, 0) = v.elem (i);
+	    m (i, 0) = v (i);
 	  complex_matrix = new ComplexMatrix (m);
 	  type_tag = complex_matrix_constant;
 	}
@@ -718,7 +718,7 @@ OCT_VAL_REP::octave_value_rep (const ComplexColumnVector& v, int
 	{
 	  ComplexMatrix m (1, len);
 	  for (int i = 0; i < len; i++)
-	    m.elem (0, i) = v.elem (i);
+	    m (0, i) = v (i);
 	  complex_matrix = new ComplexMatrix (m);
 	  type_tag = complex_matrix_constant;
 	}
@@ -746,7 +746,7 @@ OCT_VAL_REP::octave_value_rep (const string_vector& s)
     {
       nc = s[i].length ();
       for (int j = 0; j < nc; j++)
-	char_matrix->elem (i, j) = s[i][j];
+	(*char_matrix) (i, j) = s[i][j];
     }
   type_tag = char_matrix_constant_str;
 }
@@ -1161,7 +1161,7 @@ OCT_VAL_REP::is_true (void) const
 	Matrix m = (matrix->all ()) . all ();
 	retval = (m.rows () == 1
 		  && m.columns () == 1
-		  && m.elem (0, 0) != 0.0);
+		  && m (0, 0) != 0.0);
       }
       break;
 
@@ -1174,7 +1174,7 @@ OCT_VAL_REP::is_true (void) const
 	Matrix m = (complex_matrix->all ()) . all ();
 	retval = (m.rows () == 1
 		  && m.columns () == 1
-		  && m.elem (0, 0) != 0.0);
+		  && m (0, 0) != 0.0);
       }
       break;
 
@@ -1208,7 +1208,7 @@ OCT_VAL_REP::double_value (bool force_string_conv) const
     case matrix_constant:
       {
 	if (Vdo_fortran_indexing && rows () > 0 && columns () > 0)
-	  retval = matrix->elem (0, 0);
+	  retval = (*matrix) (0, 0);
 	else
 	  gripe_invalid_conversion ("real matrix", "real scalar");
       }
@@ -1230,7 +1230,7 @@ OCT_VAL_REP::double_value (bool force_string_conv) const
 	      {
 		if (Vdo_fortran_indexing
 		    && rows () > 0 && columns () > 0)
-		  retval = ::real (complex_matrix->elem (0, 0));
+		  retval = ::real ((*complex_matrix) (0, 0));
 		else
 		  gripe_invalid_conversion ("complex matrix", "real scalar");
 	      }
@@ -1247,7 +1247,7 @@ OCT_VAL_REP::double_value (bool force_string_conv) const
 	int len = char_matrix->rows ();
 	if ((char_matrix->rows () == 1 && len == 1)
 	    || (len > 1 && Vdo_fortran_indexing))
-	  retval = toascii ((int) char_matrix->elem (0, 0));
+	  retval = toascii ((int) (*char_matrix) (0, 0));
 	else
 	  gripe_invalid_conversion ("char matrix", "real scalar");
       }
@@ -1266,7 +1266,7 @@ OCT_VAL_REP::double_value (bool force_string_conv) const
 	if (flag
 	    && ((char_matrix->rows () == 1 && len == 1)
 		|| (len > 1 && Vdo_fortran_indexing)))
-	  retval = toascii ((int) char_matrix->elem (0, 0));
+	  retval = toascii ((int) (*char_matrix) (0, 0));
 	else
 	  gripe_invalid_conversion ("string", "real scalar");
       }
@@ -1379,9 +1379,9 @@ OCT_VAL_REP::complex_value (bool force_string_conv) const
 	if (Vdo_fortran_indexing && rows () > 0 && columns () > 0)
 	  {
 	    if (type_tag == complex_matrix_constant)
-	      retval = complex_matrix->elem (0, 0);
+	      retval = (*complex_matrix) (0, 0);
 	    else
-	      retval = matrix->elem (0, 0);
+	      retval = (*matrix) (0, 0);
 	  }
 	else
 	  gripe_invalid_conversion ("real matrix", "real scalar");
@@ -1393,7 +1393,7 @@ OCT_VAL_REP::complex_value (bool force_string_conv) const
 	int len = char_matrix->cols ();
 	if ((char_matrix->rows () == 1 && len == 1)
 	    || (len > 1 && Vdo_fortran_indexing))
-	  retval = toascii ((int) char_matrix->elem (0, 0));
+	  retval = toascii ((int) (*char_matrix) (0, 0));
 	else
 	  gripe_invalid_conversion ("char matrix", "complex scalar");
       }
@@ -1412,7 +1412,7 @@ OCT_VAL_REP::complex_value (bool force_string_conv) const
 	if (flag
 	    && ((char_matrix->rows () == 1 && len == 1)
 		|| (len > 1 && Vdo_fortran_indexing)))
-	  retval = toascii ((int) char_matrix->elem (0, 0));
+	  retval = toascii ((int) (*char_matrix) (0, 0));
 	else
 	  gripe_invalid_conversion ("string", "complex scalar");
       }
@@ -1599,13 +1599,13 @@ OCT_VAL_REP::vector_value (bool force_string_conv,
     {
       retval.resize (nc);
       for (int i = 0; i < nc; i++)
-	retval.elem (i) = m (0, i);
+	retval (i) = m (0, i);
     }
   else if (nc == 1)
     {
       retval.resize (nr);
       for (int i = 0; i < nr; i++)
-	retval.elem (i) = m.elem (i, 0);
+	retval (i) = m (i, 0);
     }
   else if (nr > 0 && nc > 0
 	   && (Vdo_fortran_indexing || force_vector_conversion))
@@ -1614,7 +1614,7 @@ OCT_VAL_REP::vector_value (bool force_string_conv,
       int k = 0;
       for (int j = 0; j < nc; j++)
 	for (int i = 0; i < nr; i++)
-	  retval.elem (k++) = m.elem (i, j);
+	  retval (k++) = m (i, j);
     }
   else
     gripe_invalid_conversion ("real matrix", "real vector");
@@ -1643,13 +1643,13 @@ OCT_VAL_REP::complex_vector_value (bool force_string_conv,
     {
       retval.resize (nc);
       for (int i = 0; i < nc; i++)
-	retval.elem (i) = m (0, i);
+	retval (i) = m (0, i);
     }
   else if (nc == 1)
     {
       retval.resize (nr);
       for (int i = 0; i < nr; i++)
-	retval.elem (i) = m.elem (i, 0);
+	retval (i) = m (i, 0);
     }
   else if (nr > 0 && nc > 0
 	   && (Vdo_fortran_indexing || force_vector_conversion))
@@ -1658,7 +1658,7 @@ OCT_VAL_REP::complex_vector_value (bool force_string_conv,
       int k = 0;
       for (int j = 0; j < nc; j++)
 	for (int i = 0; i < nr; i++)
-	  retval.elem (k++) = m.elem (i, j);
+	  retval (k++) = m (i, j);
     }
   else
     gripe_invalid_conversion ("complex matrix", "complex vector");
@@ -1724,7 +1724,7 @@ OCT_VAL_REP::convert_to_str (void) const
 		  {
 		    for (int i = 0; i < nr; i++)
 		      {
-			double d = m.elem (i, j);
+			double d = m (i, j);
 
 			if (xisnan (d))
 			  {
@@ -1737,7 +1737,7 @@ OCT_VAL_REP::convert_to_str (void) const
 			    // range conversions?
 
 			    int ival = NINT (d);
-			    chm.elem (i, j) = (char) ival;
+			    chm (i, j) = (char) ival;
 			  }
 		      }
 		  }
@@ -1828,9 +1828,9 @@ OCT_VAL_REP::convert_to_row_or_column_vector (void)
       for (int i = 0; i < len; i++)
 	{
 	  if (new_nr == 1)
-	    m->elem (0, i) = *cop_out++;
+	    (*m) (0, i) = *cop_out++;
 	  else
-	    m->elem (i, 0) = *cop_out++;
+	    (*m) (i, 0) = *cop_out++;
 	}
 
       delete matrix;
@@ -1845,9 +1845,9 @@ OCT_VAL_REP::convert_to_row_or_column_vector (void)
       for (int i = 0; i < len; i++)
 	{
 	  if (new_nr == 1)
-	    cm->elem (0, i) = *cop_out++;
+	    (*cm) (0, i) = *cop_out++;
 	  else
-	    cm->elem (i, 0) = *cop_out++;
+	    (*cm) (i, 0) = *cop_out++;
 	}
 
       delete complex_matrix;
@@ -1951,7 +1951,7 @@ OCT_VAL_REP::force_numeric (bool force_string_conv)
 	if (nr == 1 && nc == 1)
 	  {
 	    type_tag = scalar_constant;
-	    double tmp = toascii ((int) char_matrix->elem (0, 0));
+	    double tmp = toascii ((int) (*char_matrix) (0, 0));
 	    delete char_matrix;
 	    scalar = tmp;
 	  }
@@ -1971,8 +1971,8 @@ OCT_VAL_REP::force_numeric (bool force_string_conv)
 	      {
 		for (int j = 0; j < nc; j++)
 		  {
-		    int c = (int) char_matrix->elem (i, j);
-		    tm->elem (i, j) = toascii (c);
+		    int c = (int) (*char_matrix) (i, j);
+		    (*tm) (i, j) = toascii (c);
 		  }
 	      }
 	    delete char_matrix;
@@ -1993,7 +1993,7 @@ OCT_VAL_REP::force_numeric (bool force_string_conv)
 	    double b = range->base ();
 	    double increment = range->inc ();
 	    for (int i = 0; i < len; i++)
-	      tm->elem (0, i) = b + i * increment;
+	      (*tm) (0, i) = b + i * increment;
 	    delete range;
 	    matrix = tm;
 	  }
@@ -2223,7 +2223,7 @@ OCT_VAL_REP::maybe_mutate (void)
     case matrix_constant:
       if (nr == 1 && nc == 1)
 	{
-	  double d = matrix->elem (0, 0);
+	  double d = (*matrix) (0, 0);
 	  delete matrix;
 	  scalar = d;
 	  type_tag = scalar_constant;
@@ -2233,7 +2233,7 @@ OCT_VAL_REP::maybe_mutate (void)
     case complex_matrix_constant:
       if (nr == 1 && nc == 1)
 	{
-	  Complex c = complex_matrix->elem (0, 0);
+	  Complex c = (*complex_matrix) (0, 0);
 	  delete complex_matrix;
 	  complex_scalar = new Complex (c);
 	  type_tag = complex_scalar_constant;

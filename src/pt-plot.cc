@@ -479,7 +479,7 @@ subplot_using::eval (int ndim, int n_max)
 		  return -1;
 		}
 	      else
-		val.elem (i) = n;
+		val (i) = n;
 	    }
 	  else
 	    return -1;
@@ -520,7 +520,7 @@ subplot_using::print (int ndim, int n_max, ostrstream& plot_buf)
       else
 	plot_buf << ":";
 
-      plot_buf << val.elem (i);
+      plot_buf << val (i);
     }
 
   return 0;

@@ -201,8 +201,8 @@ where OPT is an optional single character argument as follows: \n\
 	    for (int i = 0; i < a_nr; i++)
 	      for (int j = 0; j < a_nc; j++)
 		{
-		  aa.elem (i, j) = abs (caa.elem (i, j));
-		  bb.elem (i, j) = abs (cbb.elem (i, j));
+		  aa (i, j) = abs (caa (i, j));
+		  bb (i, j) = abs (cbb (i, j));
 		}
 	  }
 

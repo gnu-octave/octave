@@ -158,7 +158,7 @@ DEFUN(exec, args, ,
 		      exec_args[i+1] = new char [nc+1];
 
 		      for (int j = 0; j < nc; j++)
-			exec_args[i+1][j] = chm.elem (i, j);
+			exec_args[i+1][j] = chm (i, j);
 
 		      exec_args[i+1][nc] = '\0';
 		    }
@@ -407,8 +407,8 @@ DEFUN (pipe, args, ,
 
 	  Matrix file_ids (1, 2);
 
-	  file_ids.elem (0, 0) = octave_stream_list::insert (is);
-	  file_ids.elem (0, 1) = octave_stream_list::insert (os);
+	  file_ids (0, 0) = octave_stream_list::insert (is);
+	  file_ids (0, 1) = octave_stream_list::insert (os);
 
           retval(0) = file_ids;
 	  retval(1) = 0.0;

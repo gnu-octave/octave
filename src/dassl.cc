@@ -62,8 +62,8 @@ dassl_user_function (const ColumnVector& x, const ColumnVector& xdot, double t)
       Matrix m2 (nstates, 1);
       for (int i = 0; i < nstates; i++)
 	{
-	  m1 (i, 0) = x.elem (i);
-	  m2 (i, 0) = xdot.elem (i);
+	  m1 (i, 0) = x (i);
+	  m2 (i, 0) = xdot (i);
 	}
       octave_value state (m1);
       octave_value deriv (m2);
@@ -72,8 +72,8 @@ dassl_user_function (const ColumnVector& x, const ColumnVector& xdot, double t)
     }
   else
     {
-      double d1 = x.elem (0);
-      double d2 = xdot.elem (0);
+      double d1 = x (0);
+      double d2 = xdot (0);
       octave_value state (d1);
       octave_value deriv (d2);
       args(1) = deriv;
@@ -174,7 +174,7 @@ where x, xdot, and res are vectors, and t is a scalar.")
       return retval;
     }
 
-  double tzero = out_times.elem (0);
+  double tzero = out_times (0);
 
   DAEFunc func (dassl_user_function);
   DASSL dae (state, deriv, tzero, func);

@@ -65,7 +65,7 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si)
       return y;
     }
 
-  T norm = a.elem (0);
+  T norm = a (0);
 
   if (norm == 0.0)
     {
@@ -87,41 +87,41 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si)
 
       for (int i = 0; i < x_len; i++)
 	{
-	  y.elem (i) = si.elem (0) + b.elem (0) * x.elem (i);
+	  y (i) = si (0) + b (0) * x (i);
 
 	  if (si_len > 1)
 	    {
 	      for (int j = 0; j < si_len - 1; j++)
-		si.elem (j) = si.elem (j+1) - a.elem (j+1) * y.elem (i)
-		  + b.elem (j+1) * x.elem (i);
+		si (j) = si (j+1) - a (j+1) * y (i)
+		  + b (j+1) * x (i);
 
-	      si.elem (si_len-1) = b.elem (si_len) * x.elem (i)
-		- a.elem (si_len) * y.elem (i);
+	      si (si_len-1) = b (si_len) * x (i)
+		- a (si_len) * y (i);
 	    }
 	  else
-	    si.elem (0) = b.elem (si_len) * x.elem (i)
-	      - a.elem (si_len) * y.elem (i);
+	    si (0) = b (si_len) * x (i)
+	      - a (si_len) * y (i);
 	}
     }
   else if (si_len > 0)
     {
       for (int i = 0; i < x_len; i++)
 	{
-	  y.elem (i) = si.elem (0) + b.elem (0) * x.elem (i);
+	  y (i) = si (0) + b (0) * x (i);
 
 	  if (si_len > 1)
 	    {
 	      for (int j = 0; j < si_len - 1; j++)
-		si.elem (j) = si.elem (j+1) + b.elem (j+1) * x.elem (i);
+		si (j) = si (j+1) + b (j+1) * x (i);
 
-	      si.elem (si_len-1) = b.elem (si_len) * x.elem (i);
+	      si (si_len-1) = b (si_len) * x (i);
 	    }
 	  else
-	    si.elem (0) = b.elem (1) * x.elem (i);
+	    si (0) = b (1) * x (i);
 	}
     }
   else
-    y = b.elem (0) * x;
+    y = b (0) * x;
 
   return y;
 }

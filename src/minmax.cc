@@ -54,8 +54,8 @@ min (double d, const Matrix& m)
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
       {
-	double m_elem = m.elem (i, j);
-	result.elem (i, j) = MIN (d, m_elem);
+	double m_elem = m (i, j);
+	result (i, j) = MIN (d, m_elem);
       }
 
   return result;
@@ -72,8 +72,8 @@ min (const Matrix& m, double d)
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
       {
-	double m_elem = m.elem (i, j);
-	result.elem (i, j) = MIN (m_elem, d);
+	double m_elem = m (i, j);
+	result (i, j) = MIN (m_elem, d);
       }
 
   return result;
@@ -93,11 +93,11 @@ min (const Complex& c, const ComplexMatrix& m)
     {
       for (int i = 0; i < nr; i++)
 	{
-	  double abs_m_elem = abs (m.elem (i, j));
+	  double abs_m_elem = abs (m (i, j));
 	  if (abs_c < abs_m_elem)
-	    result.elem (i, j) = c;
+	    result (i, j) = c;
 	  else
-	    result.elem (i, j) = m.elem (i, j);
+	    result (i, j) = m (i, j);
 	}
     }
 
@@ -117,11 +117,11 @@ min (const ComplexMatrix& m, const Complex& c)
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
       {
-	double abs_m_elem = abs (m.elem (i, j));
+	double abs_m_elem = abs (m (i, j));
 	if (abs_m_elem < abs_c)
-	  result.elem (i, j) = m.elem (i, j);
+	  result (i, j) = m (i, j);
 	else
-	  result.elem (i, j) = c;
+	  result (i, j) = c;
       }
 
   return result;
@@ -143,9 +143,9 @@ min (const Matrix& a, const Matrix& b)
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
       {
-	double a_elem = a.elem (i, j);
-	double b_elem = b.elem (i, j);
-	result.elem (i, j) = MIN (a_elem, b_elem);
+	double a_elem = a (i, j);
+	double b_elem = b (i, j);
+	result (i, j) = MIN (a_elem, b_elem);
       }
 
   return result;
@@ -168,7 +168,7 @@ min (const ComplexMatrix& a, const ComplexMatrix& b)
     {
       int columns_are_real_only = 1;
       for (int i = 0; i < nr; i++)
-	if (imag (a.elem (i, j)) != 0.0 && imag (b.elem (i, j)) != 0.0)
+	if (imag (a (i, j)) != 0.0 && imag (b (i, j)) != 0.0)
 	  {
 	    columns_are_real_only = 0;
 	    break;
@@ -178,24 +178,24 @@ min (const ComplexMatrix& a, const ComplexMatrix& b)
 	{
 	  for (int i = 0; i < nr; i++)
 	    {
-	      double a_elem = real (a.elem (i, j));
-	      double b_elem = real (b.elem (i, j));
+	      double a_elem = real (a (i, j));
+	      double b_elem = real (b (i, j));
 	      if (a_elem < b_elem)
-		result.elem (i, j) = a_elem;
+		result (i, j) = a_elem;
 	      else
-		result.elem (i, j) = b_elem;
+		result (i, j) = b_elem;
 	    }
 	}
       else
 	{
 	  for (int i = 0; i < nr; i++)
 	    {
-	      double abs_a_elem = abs (a.elem (i, j));
-	      double abs_b_elem = abs (b.elem (i, j));
+	      double abs_a_elem = abs (a (i, j));
+	      double abs_b_elem = abs (b (i, j));
 	      if (abs_a_elem < abs_b_elem)
-		result.elem (i, j) = a.elem (i, j);
+		result (i, j) = a (i, j);
 	      else
-		result.elem (i, j) = b.elem (i, j);
+		result (i, j) = b (i, j);
 	    }
 	}
     }
@@ -214,8 +214,8 @@ max (double d, const Matrix& m)
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
       {
-	double m_elem = m.elem (i, j);
-	result.elem (i, j) = MAX (d, m_elem);
+	double m_elem = m (i, j);
+	result (i, j) = MAX (d, m_elem);
       }
 
   return result;
@@ -232,8 +232,8 @@ max (const Matrix& m, double d)
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
       {
-	double m_elem = m.elem (i, j);
-	result.elem (i, j) = MAX (m_elem, d);
+	double m_elem = m (i, j);
+	result (i, j) = MAX (m_elem, d);
       }
 
   return result;
@@ -252,11 +252,11 @@ max (const Complex& c, const ComplexMatrix& m)
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
       {
-	double abs_m_elem = abs (m.elem (i, j));
+	double abs_m_elem = abs (m (i, j));
 	if (abs_c > abs_m_elem)
-	  result.elem (i, j) = c;
+	  result (i, j) = c;
 	else
-	  result.elem (i, j) = m.elem (i, j);
+	  result (i, j) = m (i, j);
       }
 
   return result;
@@ -275,11 +275,11 @@ max (const ComplexMatrix& m, const Complex& c)
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
       {
-	double abs_m_elem = abs (m.elem (i, j));
+	double abs_m_elem = abs (m (i, j));
 	if (abs_m_elem > abs_c)
-	  result.elem (i, j) = m.elem (i, j);
+	  result (i, j) = m (i, j);
 	else
-	  result.elem (i, j) = c;
+	  result (i, j) = c;
       }
 
   return result;
@@ -301,9 +301,9 @@ max (const Matrix& a, const Matrix& b)
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
       {
-	double a_elem = a.elem (i, j);
-	double b_elem = b.elem (i, j);
-	result.elem (i, j) = MAX (a_elem, b_elem);
+	double a_elem = a (i, j);
+	double b_elem = b (i, j);
+	result (i, j) = MAX (a_elem, b_elem);
       }
 
   return result;
@@ -326,7 +326,7 @@ max (const ComplexMatrix& a, const ComplexMatrix& b)
     {
       int columns_are_real_only = 1;
       for (int i = 0; i < nr; i++)
-	if (imag (a.elem (i, j)) != 0.0 && imag (b.elem (i, j)) != 0.0)
+	if (imag (a (i, j)) != 0.0 && imag (b (i, j)) != 0.0)
 	  {
 	    columns_are_real_only = 0;
 	    break;
@@ -336,24 +336,24 @@ max (const ComplexMatrix& a, const ComplexMatrix& b)
 	{
 	  for (int i = 0; i < nr; i++)
 	    {
-	      double a_elem = real (a.elem (i, j));
-	      double b_elem = real (b.elem (i, j));
+	      double a_elem = real (a (i, j));
+	      double b_elem = real (b (i, j));
 	      if (a_elem > b_elem)
-		result.elem (i, j) = a_elem;
+		result (i, j) = a_elem;
 	      else
-		result.elem (i, j) = b_elem;
+		result (i, j) = b_elem;
 	    }
 	}
       else
 	{
 	  for (int i = 0; i < nr; i++)
 	    {
-	      double abs_a_elem = abs (a.elem (i, j));
-	      double abs_b_elem = abs (b.elem (i, j));
+	      double abs_a_elem = abs (a (i, j));
+	      double abs_b_elem = abs (b (i, j));
 	      if (abs_a_elem > abs_b_elem)
-		result.elem (i, j) = a.elem (i, j);
+		result (i, j) = a (i, j);
 	      else
-		result.elem (i, j) = b.elem (i, j);
+		result (i, j) = b (i, j);
 	    }
 	}
     }

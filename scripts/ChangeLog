@@ -1,3 +1,7 @@
+2004-12-02  Balint Reczey  <balint_reczey@yahoo.com>
+
+	* statistics/base/moment.m: Fix argument parsing for N-d arrays.
+
 2004-11-09  John W. Eaton  <jwe@octave.org>
 
 	* miscellaneous/fileparts.m: Allow filenames with no extension.

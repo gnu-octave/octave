@@ -53,10 +53,10 @@ function m = moment (x, p, opt1, opt2)
 
   need_dim = 0;
 
-  if (nargin == 1)
+  if (nargin == 2)
     opt = "";
     need_dim = 1;
-  elseif (nargin == 2)
+  elseif (nargin == 3)
     if (isstr (opt1))
       opt = opt1;
       need_dim = 1;
@@ -64,7 +64,7 @@ function m = moment (x, p, opt1, opt2)
       dim = opt1;
       opt = "";
     endif
-  elseif (nargin == 3)
+  elseif (nargin == 4)
     if (isstr (opt1))
       opt = opt1;
       dim = opt2;
@@ -78,9 +78,6 @@ function m = moment (x, p, opt1, opt2)
     usage ("moment (x, p, dim, opt) or moment (x, p, dim, opt)");
   endif
 
-  sz = size(x);
-  n = sz (dim);
-
   if (need_dim)
     t = find (size (x) != 1);
     if (isempty (t))
@@ -93,7 +90,7 @@ function m = moment (x, p, opt1, opt2)
   sz = size (x);
   n = sz (dim);
 
-  if (numels (x) < 1)
+  if (numel (x) < 1)
     error ("moment: x must not be empty");
   endif
 

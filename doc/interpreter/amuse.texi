@@ -1,0 +1,27 @@
+@c Copyright (C) 1996 John W. Eaton
+@c This is part of the Octave manual.
+@c For copying conditions, see the file gpl.texi.
+
+@cindex amusements
+@node Amusements, Emacs, Programming Utilities, Top
+@chapter Amusements
+
+@findex texas_lotto
+@cindex lottery numbers
+@cindex numbers, lottery
+Octave cannot promise that you will actually win the lotto, but it can
+pick your numbers for you.  The function @code{texas_lotto} will select
+six numbers between 1 and 50.
+
+@findex list_primes
+@cindex prime numbers
+@cindex numbers, prime
+The function @code{list_primes (@var{n})} uses a brute-force algorithm to
+compute the first @var{n} primes.
+
+@findex casesen
+@findex flops
+@findex exit
+@findex quit
+Other amusing functions include @code{casesen}, @code{flops},
+@code{sombrero}, @code{exit}, and @code{quit}.

@@ -1,0 +1,99 @@
+@c Copyright (C) 1996 John W. Eaton
+@c This is part of the Octave manual.
+@c For copying conditions, see the file gpl.texi.
+
+@node Nonlinear Equations, Differential Equations, Polynomial Manipulations, Top
+@chapter Nonlinear Equations
+@cindex nonlinear equations
+@cindex equations, nonlinear
+
+@findex fsolve
+
+Octave can solve sets of nonlinear equations of the form
+@iftex
+@tex
+$$
+ f (x) = 0
+$$
+@end tex
+@end iftex
+@ifinfo
+
+@example
+F (x) = 0
+@end example
+@end ifinfo
+
+@noindent
+using the function @code{fsolve}, which is based on the MINPACK
+subroutine @code{hybrd}.
+
+For example, to solve the set of equations
+@iftex
+@tex
+$$
+ \eqalign{-2x^2 + 3xy + 4\sin(y) - 6 &= 0\cr
+           3x^2 - 2xy^2 + 3\cos(x) + 4 &= 0}
+$$
+@end tex
+@end iftex
+@ifinfo
+
+@example
+-2x^2 + 3xy   + 4 sin(y) = 6
+ 3x^2 - 2xy^2 + 3 cos(x) = -4
+@end example
+@end ifinfo
+
+@noindent
+you first need to write a function to compute the value of the given
+function.  For example:
+
+@example
+function y = f (x)
+
+  y(1) = -2*x(1)^2 + 3*x(1)*x(2)   + 4*sin(x(2)) - 6;
+  y(2) =  3*x(1)^2 - 2*x(1)*x(2)^2 + 3*cos(x(1)) + 4;
+
+endfunction
+@end example
+
+Then, call @code{fsolve} with a specified initial condition to find the
+roots of the system of equations.  For example, given the function
+@code{f} defined above,
+
+@example
+[x, info] = fsolve ("f", [1; 2])
+@end example
+
+@noindent
+results in the solution
+
+@example
+x =
+
+  0.57983
+  2.54621
+
+info = 1
+@end example
+
+A value of @code{info = 1} indicates that the solution has converged.
+
+The function @code{perror} may be used to print English messages
+corresponding to the numeric error codes.  For example,
+
+@example
+perror ("fsolve", 1)
+@end example
+
+@noindent
+prints
+
+@example
+solution converged to requested tolerance
+@end example
+
+@findex fsolve_options
+Tolerances and other options for @code{fsolve} may be specified using the
+function @code{fsolve_options}.

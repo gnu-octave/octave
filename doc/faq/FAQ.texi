@@ -1,0 +1,759 @@
+\input texinfo.tex      @c -*-texinfo-*-
+
+@setfilename FAQ.info
+@settitle Frequently asked questions about Octave (with answers)
+
+@c Smaller amounts of whitespace for the 8.5 by 11 inch format.
+@tex
+\global\chapheadingskip = 15pt plus 4pt minus 2pt 
+\global\secheadingskip = 12pt plus 3pt minus 2pt
+\global\subsecheadingskip = 9pt plus 2pt minus 2pt
+\global\parskip 5pt plus 1pt
+
+@finalout
+@end tex
+
+@setchapternewpage off
+
+@titlepage
+@title Octave FAQ
+@subtitle Frequently asked questions about Octave
+@subtitle December 1, 1994
+@sp 1
+@author John W. Eaton
+@page
+@end titlepage
+
+@ifinfo
+@node Top, What is Octave?, (dir), (dir)
+@top
+@unnumbered Preface
+@cindex FAQ for Octave, latest version
+@end ifinfo
+
+This is a list of frequently asked questions (FAQ) for Octave users.
+
+Some information in this FAQ was developed for earlier versions of
+Octave and may now be obsolete.
+
+I'm looking for new questions (@emph{with} answers), better answers,
+or both.  Please send suggestions to bug-octave@@bevo.che.wisc.edu.
+If you have general questions about Octave, or need help for something
+that is not covered by the FAQ, please use the
+help-octave@@bevo.che.wisc.edu mailing list.
+
+This FAQ is intended to supplement, not replace, the Octave manual.
+Before posting a question to the hlpe-octave mailing list, you should
+first check to see if the topic is covered in the manual.
+
+@menu
+* What is Octave?::             
+* Version 1.1.0::               
+* Octave Features::             
+* Documentation::               
+* Getting Octave::              
+* Installation::                
+* Common problems::             
+* Getting additional help::     
+* Bug reports::                 
+* MATLAB compatibility::        
+* Index::                       
+@end menu
+
+@node What is Octave?, Version 1.1.0, Top, Top
+@chapter What is Octave?
+
+Octave is a high-level interactive language, primarily intended for
+numerical computations that is mostly compatible with
+@sc{Matlab}.@footnote{@sc{Matlab} is a registered trademark of The MathWorks,
+Inc.}
+
+Octave can do arithmetic for real and complex scalars and matrices,
+solve sets of nonlinear algebraic equations, integrate functions over
+finite and infinite intervals, and integrate systems of ordinary
+differential and differential-algebraic equations.
+
+Octave uses the GNU readline library to handle reading and editing
+input.  By default, the line editing commands are similar to the
+cursor movement commands used by GNU Emacs, and a vi-style line
+editing interface is also available.  At the end of each session, the
+command history is saved, so that commands entered during previous
+sessions are not lost.
+
+The Octave distribution includes a 200+ page Texinfo manual.  Access
+to the complete text of the manual is available via the help command
+at the Octave prompt.
+
+Two and three dimensional plotting is fully supported using gnuplot.
+
+The underlying numerical solvers are currently standard Fortran ones
+like Lapack, Linpack, Odepack, the Blas, etc., packaged in a library
+of C++ classes.  If possible, the Fortran subroutines are compiled
+with the system's Fortran compiler, and called directly from the C++
+functions.  If that's not possible, you can still compile Octave if
+you have the free Fortran to C translator f2c.
+
+Octave is also free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation.
+
+@node Version 1.1.0, Octave Features, What is Octave?, Top
+@chapter What's new in version 1.1.0 of Octave
+
+The long-awaited version 1.1.0 of Octave has now been released.  Many
+bugs have been fixed and lots of new features added.  Octave is now much
+more compatible with @sc{Matlab}.
+
+Version 1.1.0 fixes many bugs, but as with any ``x.y.0'' release there
+will be a few glitches.  You can expect a 1.1.1 shortly.  You can help
+contribute to the quality of Octave by trying it out and submitting bug
+reports where you find them.
+
+A list of user-visible changes in recent versions of Octave may be found
+in the file NEWS, distributed in both source and binary releases of
+Octave.
+
+@node Octave Features, Documentation, Version 1.1.0, Top
+@chapter What features are unique to Octave?
+
+@menu
+* Command and variable name completion::  
+* Command history::             
+* Data structures::             
+* Short-circuit boolean operators::  
+* Increment and decrement operators::  
+* Unwind-protect::              
+* Variable-length argument lists::  
+* Variable-length return lists::  
+* Built-in ODE and DAE solvers::  
+@end menu
+
+@node Command and variable name completion, Command history, Octave Features, Octave Features
+@section Command and variable name completion
+
+@cindex Command completion
+@cindex Function name completion
+@cindex Variable name completion
+@cindex Name completion
+
+Typing a TAB character (ASCII code 9) on the command line causes Octave
+to attempt to complete variable, function, and file names.  Octave uses
+the text before the cursor as the initial portion of the name to
+complete.
+
+For example, if you type @samp{fu} followed by TAB at the Octave prompt,
+Octave will complete the rest of the name @samp{function} on the command
+line (unless you have other variables or functions defined that begin
+with the characters @samp{fu}).  If there is more than one possible
+completion, Octave will ring the terminal bell to let you know that your
+initial sequence of characters is not enough to specify a unique name.
+To complete the name, you may either edit the initial character sequence
+(usually adding more characters until completion is possible) or type
+another TAB to cause Octave to display the list of possible completions.
+
+@node Command history, Data structures, Command and variable name completion, Octave Features
+@section Command history
+
+@cindex Command history
+@cindex History
+
+When running interactively, Octave saves the commands you type in an
+internal buffer so that you can recall and edit them.  Emacs and vi
+editing modes are available with Emacs keybindings enabled by default.
+
+When Octave exits, the current command history is saved to the file
+@file{~/.octave_hist}, and each time Octave starts, it inserts the
+contents of the @file{~/.octave_hist} file in the history list so that
+it is easy to begin working where you left off.
+
+@node Data structures, Short-circuit boolean operators, Command history, Octave Features
+@section Data structures
+
+@cindex Data structures
+@cindex Structures
+
+Octave includes a limited amount of support for organizing data in
+structures.  The current implementation uses an associative array
+with indices limited to strings, but the syntax is more like C-style
+structures.  Here are some examples of using data structures in Octave.
+
+@itemize @bullet
+@item Elements of structures can be of any value type.
+
+@example
+octave:1> x.a = 1; x.b = [1, 2; 3, 4]; x.c = "string";
+octave:2> x.a
+x.a = 1
+octave:3> x.b
+x.b =
+
+  1  2
+  3  4
+
+octave:4> x.c
+x.c = string
+@end example
+
+@item Structures may be copied.
+
+@example
+octave:1> y = x
+y =
+
+<structure: a b c>
+@end example
+
+@item Structure elements may reference other structures.
+
+@example
+octave:1> x.b.d = 3
+x.b.d = 3
+octave:2> x.b
+x.b =
+
+<structure: d>
+
+octave:3> x.b.d
+x.b.d = 3
+@end example
+
+@item Functions can return structures.
+
+@example
+octave:1> function y = f (x)
+> y.re = real (x);
+> y.im = imag (x);
+> endfunction
+
+octave:2> f (rand + rand*I);
+ans =
+
+<structure: im re>
+
+octave:3> ans.im, ans.re
+ans.im = 0.93411
+ans.re = 0.56234
+@end example
+
+@item Function return lists can include structure elements, and they may
+be indexed like any other variable.
+
+@example
+octave:1> [x.u, x.s(2:3,2:3), x.v] = svd ([1, 2; 3, 4])
+x.u =
+
+  -0.40455  -0.91451
+  -0.91451   0.40455
+
+x.s =
+
+  0.00000  0.00000  0.00000
+  0.00000  5.46499  0.00000
+  0.00000  0.00000  0.36597
+
+x.v =
+
+  -0.57605   0.81742
+  -0.81742  -0.57605
+
+octave:8> x
+x =
+
+<structure: s u v>
+@end example
+
+@item You can also use the function @code{is_struct} to determine
+whether a given value is a data structure.  For example
+
+@example
+is_struct (x)
+@end example
+
+@noindent
+returns 1 if the value of the variable @var{x} is a data structure.
+@end itemize
+
+This feature should be considered experimental, but you should expect it
+to work.  Suggestions for ways to improve it are welcome.
+
+@node Short-circuit boolean operators, Increment and decrement operators, Data structures, Octave Features
+@section Short-circuit boolean operators
+
+@cindex Boolean operators, short-circuit
+@cindex Logical operators, short-circuit
+@cindex Short-circuit boolean operators
+@cindex Operators, boolean
+
+Octave's @samp{&&} and @samp{||} logical operators are evaluated in
+a short-circuit fashion (like the corresponding operators in the C
+language) and work differently than the element by element operators
+@samp{&} and @samp{|}.
+
+@node Increment and decrement operators, Unwind-protect, Short-circuit boolean operators, Octave Features
+@section Increment and decrement operators
+
+@cindex Increment operators
+@cindex Decrement operators
+@cindex Operators, increment
+@cindex Operators, decrement
+
+Octave includes the C-like increment and decrement operators @samp{++}
+and @samp{--} in both their prefix and postfix forms.
+
+For example, to pre-increment the variable @var{x}, you would write
+@code{++@var{x}}.  This would add one to @var{x} and then return the new
+value of @var{x} as the result of the expression.  It is exactly the
+same as the expression @code{@var{x} = @var{x} + 1}.
+
+To post-increment a variable @var{x}, you would write @code{@var{x}++}.
+This adds one to the variable @var{x}, but returns the value that
+@var{x} had prior to incrementing it.  For example, if @var{x} is equal
+to 2, the result of the expression @code{@var{x}++} is 2, and the new
+value of @var{x} is 3.
+
+For matrix and vector arguments, the increment and decrement operators
+work on each element of the operand.
+
+It is not currently possible to increment index expressions.  For
+example, you might expect that the expression @code{@var{v}(4)++} would
+increment the fourth element of the vector @var{v}, but instead it
+results in a parse error.  This problem may be fixed in a future
+release of Octave.
+
+@node Unwind-protect, Variable-length argument lists, Increment and decrement operators, Octave Features
+@section Unwind-protect
+
+@cindex Unwind-protect
+
+Octave supports a limited form of exception handling modelled after the
+unwind-protect form of Lisp.  The general form of an
+@code{unwind_protect} block looks like this:
+
+@example
+@group
+unwind_protect
+  @var{body}
+unwind_protect_cleanup
+  @var{cleanup}
+end_unwind_protect
+@end group
+@end example
+
+@noindent
+Where @var{body} and @var{cleanup} are both optional and may contain any
+Octave expressions or commands.  The statements in @var{cleanup} are 
+guaranteed to be executed regardless of how control exits @var{body}.
+
+The @code{unwind_protect} statement is often used to reliably restore
+the values of global variables that need to be temporarily changed.
+
+@node Variable-length argument lists, Variable-length return lists, Unwind-protect, Octave Features
+@section Variable-length argument lists
+
+@cindex Variable-length argument lists
+@cindex Argument lists, variable-length
+
+Octave has a real mechanism for handling functions that take an
+unspecified number of arguments, so it is no longer necessary to place
+an upper bound on the number of optional arguments that a function can
+accept.
+
+Here is an example of a function that uses the new syntax to print a
+header followed by an unspecified number of values:
+
+@example
+function foo (heading, ...)
+  disp (heading);
+  va_start ();
+  while (--nargin)
+    disp (va_arg ());
+  endwhile
+endfunction
+@end example
+
+Calling @code{va_start()} positions an internal pointer to the first
+unnamed argument and allows you to cycle through the arguments more than
+once.  It is not necessary to call @code{va_start()} if you do not plan
+to cycle through the arguments more than once.
+
+The function @code{va_arg()} returns the value of the next available
+argument and moves the internal pointer to the next argument.  It is an
+error to call @code{va_arg()} when there are no more arguments
+available.
+
+It is also possible to use the keyword @var{all_va_args} to pass all
+unnamed arguments to another function.
+
+@node Variable-length return lists, Built-in ODE and DAE solvers, Variable-length argument lists, Octave Features
+@section Variable-length return lists
+
+@cindex Variable-length return lists
+@cindex Return lists, variable-length
+
+Octave also has a real mechanism for handling functions that return an
+unspecified number of values, so it is no longer necessary to place an
+upper bound on the number of outputs that a function can produce.
+
+Here is an example of a function that uses the new syntax to produce
+@samp{N} values:
+
+@example
+function [...] = foo (n)
+  for i = 1:n
+    vr_val (i);
+  endfor
+endfunction
+@end example
+
+@node Built-in ODE and DAE solvers,  , Variable-length return lists, Octave Features
+@section Built-in ODE and DAE solvers
+
+@cindex DASSL
+@cindex LSODE
+
+Octave includes LSODE and DASSL for solving systems of stiff 
+differential and differential-algebraic equations.  These functions are
+built in to the interpreter.
+
+@node Documentation, Getting Octave, Octave Features, Top
+@chapter What documentation exists for Octave?
+
+@cindex Octave, documentation
+
+The Octave distribution includes a 220+ page manual that is also
+distributed under the terms of the GNU GPL.
+
+The Octave manual is intended to be a complete reference for Octave, but
+it is not a finished document.  If you have problems using it, or find
+that some topic is not adequately explained, indexed, or
+cross-referenced, please send a bug report to bug-octave@@bevo.che.wisc.edu.
+
+Because the Octave manual is written using Texinfo, the complete text of
+the Octave manual is also available on line using the GNU Info system
+via the GNU Emacs, info, or xinfo programs, or by using the @samp{help -i} 
+command to start the GNU info browser directly from the Octave prompt.
+
+It is also possible to use WWW browsers such as Mosaic to read the
+Octave manual (or any other Info file) by using Roar Smith's info2www
+program to convert GNU Info files to HTML.  The source for info2www is
+available via anonymous ftp from ftp.che.wisc.edu in the directory
+@file{/pub/www}.
+
+@node Getting Octave, Installation, Documentation, Top
+@chapter Obtaining Source Code
+
+@cindex Source code
+
+@menu
+* Octave for Unix::             
+* Octave for other platforms::  
+* latest versions::             
+@end menu
+
+@node Octave for Unix, Octave for other platforms, Getting Octave, Getting Octave
+@section How do I get a copy of Octave for Unix?
+
+You can get Octave from a friend who has a copy, by anonymous FTP, or by
+ordering a tape or CD-ROM from the Free Software Foundation (FSF).
+
+@cindex Octave, ordering
+@cindex Octave, getting a copy
+
+Octave was not developed by the FSF, but the FSF does distribute Octave,
+and the developers of Octave support the efforts of the FSF by
+encouraging users of Octave to order Octave on tape or CD directly from
+the FSF.
+
+The FSF is a nonprofit organization that distributes software and
+manuals to raise funds for more GNU development.  Buying a tape or CD
+from the FSF contributes directly to paying staff to develop GNU
+software.  CD-ROMs cost $400 if an organization is buying, or $100 if an
+individual is buying.  Tapes cost around $200 depending on media type.
+
+The FSF only makes new CD releases a few times a year, so if you are
+interested specifically in Octave, I recommend asking for the latest
+release on tape.
+
+@cindex FSF [Free Software Foundation]
+@cindex GNU [GNU's not unix]
+
+For more information about ordering from the FSF, contact
+gnu@@prep.ai.mit.edu, phone (617) 542-5942 or anonymous ftp file
+@file{/pub/gnu/GNUinfo/ORDERS} from prep.ai.mit.edu or one of the sites
+listed below.
+
+@cindex FSF, contact <gnu@@prep.ai.mit.edu>
+@cindex GNUware, anonymous FTP sites
+
+If you are on the Internet, you can copy the latest distribution
+version of Octave from the file @file{/pub/octave/octave-M.N.tar.gz}, on
+the host @file{ftp.che.wisc.edu}.  This tar file has been compressed
+with GNU gzip, so be sure to use binary mode for the transfer.  @samp{M}
+and @samp{N} stand for version numbers; look at a listing of the
+directory through ftp to see what version is available.  After you
+unpack the distribution, be sure to look at the files @file{README} and
+@file{INSTALL}.
+
+Binaries for several popular systems are also available.  If you would
+like help out by making binaries available for other systems, please
+contact bug-octave@@bevo.che.wisc.edu.
+
+A list of user-visible changes since the last release is available in
+the file @file{NEWS}.  The file @file{ChangeLog} in the source
+distribution contains a more detailed record of changes made since the
+last release.
+
+@node Octave for other platforms, latest versions, Octave for Unix, Getting Octave
+@section How do I get a copy of Octave for (some other platform)?
+
+@cindex VMS support
+@cindex VAX
+@cindex MS-DOS support
+@cindex DJGPP
+@cindex EMX
+@cindex OS/2 support
+
+Octave currently runs on Unix-like systems only.  It should be possible
+to make Octave work on other systems.  If you are interested in porting
+Octave to other systems, please contact bug-octave@@bevo.che.wisc.edu.
+
+@node latest versions,  , Octave for other platforms, Getting Octave
+@section What is the latest version of Octave
+
+@cindex Octave, version date
+
+The latest version of Octave is 1.1.0, released January 1995.
+
+@node Installation, Common problems, Getting Octave, Top
+@chapter Installation Issues and Problems
+
+@cindex Octave, building 
+
+Octave requires approximately 50MB of disk storage to unpack and
+install (significantly less if you don't compile with debugging
+symbols).
+
+Octave has been compiled and tested with g++ and libg++ on a
+SPARCstation 2 running SunOS 4.1.2, an IBM RS/6000 running AIX 3.2.5,
+DEC Alpha systems running OSF/1 1.3 and 3.0, a DECstation 5000/240
+running Ultrix 4.2a, and i486 systems running Linux.  It should work on
+most other Unix systems that have a working port of g++ and libg++.
+
+@menu
+* What else do I need?::        
+* Other C++ compilers?::        
+@end menu
+
+@node What else do I need?, Other C++ compilers?, Installation, Installation
+@section What else do I need?
+
+@cindex GNU gcc
+@cindex GNU g++
+@cindex libg++
+@cindex GNU Make
+@cindex Flex
+@cindex GNU Bison
+
+  In order to build Octave, you will need a current version
+of g++, libg++, and GNU make.  If you don't have these tools, you can
+get them from many anonymous ftp archives, including ftp.che.wisc.edu,
+ftp.uu.net, prep.ai.mit.edu, and wuarchive.wustl.edu, or by writing to
+the FSF at 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+@node Other C++ compilers?,  , What else do I need?, Installation
+@section Can I compile Octave with another C++ compiler?
+
+Currently, Octave can only be compiled with the GNU C++ compiler.  It
+would be nice to make it possible to compile Octave with other C++
+compilers, but the maintainers do not have sufficient time to devote to
+this.  If you are interested in working to make Octave portable to other
+compilers, please contact bug-octave@@bevo.che.wisc.edu.
+
+@node Common problems, Getting additional help, Installation, Top
+@chapter Common problems
+
+This list is probably far too short.  Feel free to suggest additional
+questions (preferably with answers!)
+
+@itemize @bullet
+@item
+Octave takes a long time to find symbols.
+
+Octave is probably spending this time recursively searching directories
+for function files.  Check the value of your LOADPATH.  For those
+elements that end in @samp{//}, do any name a very large directory tree?
+Does it contain directories that have a mixture of files and
+directories?  In order for the recursive directory searching code to
+work efficiently, directories that are to be searched recursively should
+have either function files only, or subdirectories only, but not a
+mixture of both.  Check to make sure that Octave's standard set of
+function files is installed this way.
+@end itemize
+
+@node Getting additional help, Bug reports, Common problems, Top
+@chapter Getting additional help
+
+@cindex Additional help
+@cindex Mailing lists, help-octave
+
+The mailing list
+
+@example
+help-octave@@bevo.che.wisc.edu
+@end example
+
+@noindent
+is available for questions related to using, installing, and porting
+Octave that are not adequately answered by the Octave manual or by this
+document.
+
+If you would like to join the discussion and receive all messages sent
+to the list, please send a short note to
+
+@example
+help-octave-request@@bevo.che.wisc.edu
+            ^^^^^^^
+@end example
+
+@strong{Please do not} send requests to be added or removed from the the
+mailing list, or other administrative trivia to the list itself.
+
+An archive of old postings to the help-octave mailing list is maintained
+on ftp.che.wisc.edu in the directory @file{/pub/octave/MAILING-LISTS}.
+
+@node Bug reports, MATLAB compatibility, Getting additional help, Top
+@chapter I think I have found a bug in Octave.
+
+@cindex Bug in Octave, newly found
+
+``I think I have found a bug in Octave, but I'm not sure.  How do I know,
+and who should I tell?''
+
+@cindex Manual, for Octave
+
+First, see the section on bugs and bug reports in the Octave manual.
+The Octave manual is included in the Octave distribution.
+
+When you report a bug, make sure to describe the type of computer you
+are using, the version of the operating system it is running, and the
+version of Octave that you are using.  Also provide enough code so that
+the Octave maintainers can duplicate your bug.
+
+If you have Octave working at all, the easiest way to do this is to use
+the Octave function @code{bug_report}.  When you execute this function,
+Octave will prompt you for a subject and then invoke the editor on a
+file that already contains all the configuration information.  When you
+exit the editor, Octave will mail the bug report for you.
+
+@cindex Octave bug report
+@cindex Mailing lists, bug-octave
+
+If for some reason you cannot use Octave's @code{bug_report} function,
+mail your bug report to "bug-octave@@bevo.che.wisc.edu".  Your message
+needs to include enough information to allow the maintainers of Octave
+to fix the bug.  Please read the section on bugs and bug reports in the
+Octave manual for a list of things that should be included in every bug
+report.
+
+@node MATLAB compatibility, Index, Bug reports, Top
+@chapter Porting programs from @sc{Matlab} to Octave
+
+@cindex @sc{Matlab} compatibility
+@cindex Compatibility with @sc{Matlab}
+
+``I wrote some code for @sc{Matlab}, and I want to get it running under
+Octave.  Is there anything I should watch out for?''
+
+The differences between Octave and @sc{Matlab} typically fall into one of
+three categories:
+
+@enumerate
+@item
+Irrelevant.
+
+@item
+Known differences, perhaps configurable with a user preference variable.
+
+@item
+Unknown differences.
+@end enumerate
+
+The first category, irrelevant differences, do not affect computations
+and most likely do not affect the execution of function files.  Some
+examples are:
+
+When typing @samp{help function}, Octave displays the first set of
+comment lines @emph{after} the function declaration, but @sc{Matlab}
+the first set of comment lines starting from the beginning of the file.
+
+The differences of the second category are usually because the authors
+of Octave decided on a better (subjective) implementation that the way
+@sc{Matlab} does it, and so introduced ``user preference variables'' so that
+you can customize Octave's behavior to be either @sc{Matlab}-compatible or
+to use Octave's new features.  To make Octave more @sc{Matlab}-compatible,
+put the following statements in your @file{~/.octaverc} file.  This is a
+partial list of the user preference variables that should be changed to
+get @sc{Matlab}-compatible behavior.  (It is partial because not all the
+differences are currently known, and when they become known, this
+document lags behind.)
+
+@example
+  PS1 = '>> ';
+  PS2 = '';
+  default_save_format = 'mat-binary';
+  define_all_return_values = 'true';
+  do_fortran_indexing = 'true';
+  empty_list_elements_ok = 'true';
+  implicit_str_to_num_ok = 'true';
+  ok_to_lose_imaginary_part = 'true';
+  page_screen_output = 'false';
+  prefer_column_vectors = 'false';
+  prefer_zero_one_indexing = 'true';
+  print_empty_dimensions = 'false';
+  treat_neg_dim_as_zero = 'true';
+  warn_function_name_clash = 'false';
+  whitespace_in_literal_matrix = 'traditional';
+@end example
+
+Some other known differences are:
+
+@itemize @bullet
+@item
+String subscripting is not yet implemented in Octave.  For example,
+
+@example
+a = 'reknob';
+a([6,1,5,3,2,4])
+@end example
+
+@noindent
+returns the string @samp{broken} in @sc{Matlab}, but generates an error in
+Octave.  A future release of Octave will fix this along with providing
+a much more complete and powerful set of functions for manipulating strings.
+
+@item
+The Octave plotting functions are mostly compatible with the ones from
+@sc{Matlab} 3.x, but not from @sc{Matlab} 4.x.
+
+@item
+The C-style I/O functions are not completely compatible.  It would be
+useful for someone to explore the differences so that they might be
+fixed, or at least noted in the manual.
+@end itemize
+
+The third category of differences is (hopefully) shrinking.  If you find
+a difference between Octave behavior and @sc{Matlab}, then you should send a
+description of this difference (with code illustrating the difference,
+if possible) to bug-octave@@bevo.che.wisc.edu.
+
+An archive of old postings to the Octave mailing lists is maintained
+on ftp.che.wisc.edu in the directory @file{/pub/octave/MAILING-LISTS}.
+
+@node Index,  , MATLAB compatibility, Top
+@appendix Concept Index
+
+@printindex cp
+
+@page
+@contents
+@bye

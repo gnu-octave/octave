@@ -1,0 +1,8 @@
+@c Copyright (C) 1996 John W. Eaton
+@c This is part of the Octave manual.
+@c For copying conditions, see the file gpl.texi.
+
+@node Readline Index, Info Index, Operator Index, Top
+@unnumbered Readline Index
+
+@printindex rd

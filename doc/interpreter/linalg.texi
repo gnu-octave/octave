@@ -1,0 +1,786 @@
+@c Copyright (C) 1996 John W. Eaton
+@c This is part of the Octave manual.
+@c For copying conditions, see the file gpl.texi.
+
+@node Linear Algebra, Polynomial Manipulations, Arithmetic, Top
+@chapter Linear Algebra
+
+This chapter documents the linear algebra functions of Octave.
+Reference material for many of these options may be found in
+Golub and Van Loan, @cite{Matrix Computations, 2nd Ed.}, Johns Hopkins,
+1989, and in @cite{LAPACK Users' Guide}, SIAM, 1992.
+
+@menu
+* Basic Matrix Functions::      
+* Matrix Factorizations::       
+* Functions of a Matrix::       
+@end menu
+
+@node Basic Matrix Functions, Matrix Factorizations, Linear Algebra, Linear Algebra
+@section Basic Matrix Functions
+
+@ftable @code
+@item balance
+
+@example
+aa = balance (a, opt)
+[dd, aa] =  balance(a, opt)
+[dd, aa] = balance (a, opt)
+[cc, dd, aa, bb] = balance (a, b, opt)
+@end example
+
+@code{[dd, aa] = balance (a)} returns @code{aa = dd \ a * dd}.
+@code{aa} is a matrix whose row/column norms are roughly equal in
+magnitude, and @code{dd} = @code{p * d}, where @code{p} is a permutation
+matrix and @code{d} is a diagonal matrix of powers of two.  This allows
+the equilibration to be computed without roundoff.  Results of
+eigenvalue calculation are typically improved by balancing first.
+
+@code{[cc, dd, aa, bb] = balance (a, b)}  returns @code{aa} (@code{bb})
+@code{= cc*a*dd (cc*b*dd)}), where @code{aa} and @code{bb} have
+non-zero elements of approximately the same magnitude and @code{cc}
+and @code{dd}  are permuted diagonal matrices as in @code{dd} for
+the algebraic eigenvalue problem.
+
+The eigenvalue balancing option @code{opt} is selected as follows:
+
+@table @asis
+@item @code{"N"}, @code{"n"}
+No balancing; arguments copied, transformation(s) set to identity.
+
+@item @code{"P"}, @code{"p"}
+Permute argument(s) to isolate eigenvalues where possible.
+
+@item @code{"S"}, @code{"s"}
+Scale to improve accuracy of computed eigenvalues.
+
+@item @code{"B"}, @code{"b"}
+Permute and scale, in that order. Rows/columns of a (and b)
+that are isolated by permutation are not scaled.  This is the default
+behavior.
+@end table
+
+Algebraic eigenvalue balancing uses standard LAPACK routines.
+
+Generalized eigenvalue problem balancing uses Ward's algorithm
+(SIAM Journal on Scientific and Statistical Computing, 1981).
+
+@item cond (@var{a})
+Compute the (two-norm) condition number of a matrix. @code{cond (a)} is
+defined as @code{norm (a) * norm (inv (a))}, and is computed via a
+singular value decomposition.
+
+@item det (@var{a})
+Compute the determinant of @var{a} using LINPACK.
+
+@item eig
+
+@example
+            = eig (a)
+[v, lambda] = eig (a)
+@end example
+
+The eigenvalues (and eigenvectors) of a matrix are computed in a several
+step process which begins with a Hessenberg decomposition (see
+@code{hess}), followed by a Schur decomposition (see @code{schur}), from
+which the eigenvalues are apparent.  The eigenvectors, when desired, are
+computed by further manipulations of the Schur decomposition.
+
+See also: @code{hess}, @code{schur}.
+
+@item givens
+
+@example
+[c, s] = givens (x, y)
+G = givens (x, y)
+@end example
+
+@code{G = givens(x, y)} returns a
+@iftex
+@tex
+$2\times 2$
+@end tex
+@end iftex
+@ifinfo
+2 x 2
+@end ifinfo
+orthogonal matrix @code{G = [c s; -s' c]} such that
+@code{G [x; y] = [*; 0]}  (x, y scalars)
+
+@item inv (@var{a})
+@itemx inverse (@var{a})
+Compute the inverse of the square matrix @var{a}.
+
+@item norm (@var{a}, @var{p})
+Compute the p-norm of the matrix @var{a}.  If the second argument is
+missing, @code{p = 2} is assumed.
+
+If @var{a} is a matrix:
+
+@table @asis
+@item @var{p} = @code{1}
+1-norm, the largest column sum of @var{a}.
+
+@item @var{p} = @code{2}
+Largest singular value of @var{a}.
+
+@item @var{p} = @code{Inf}
+Infinity norm, the largest row sum of @var{a}.
+
+@item @var{p} = @code{"fro"}
+Frobenius norm of @var{a}, @code{sqrt (sum (diag (a' * a)))}.
+@end table
+
+If @var{a} is a vector or a scalar:
+
+@table @asis
+@item @var{p} = @code{Inf}
+@code{max (abs (a))}.
+
+@item @var{p} = @code{-Inf}
+@code{min (abs (a))}.
+
+@item other
+p-norm of @var{a}, @code{(sum (abs (a) .^ p)) ^ (1/p)}.
+@end table
+
+@item null (@var{a}, @var{tol})
+Returns an orthonormal basis of the null space of @var{a}.
+
+The dimension of the null space is taken as the number of singular
+values of @var{a} not greater than @var{tol}.  If the argument @var{tol}
+is missing, it is computed as
+
+@example
+max (size (a)) * max (svd (a)) * eps
+@end example
+
+@item orth (@var{a}, @var{tol})
+Returns an orthonormal basis of the range of @var{a}.
+
+The dimension of the range space is taken as the number of singular
+values of @var{a} greater than @var{tol}.  If the argument @var{tol} is
+missing, it is computed as
+
+@example
+max (size (a)) * max (svd (a)) * eps
+@end example
+
+@item pinv (@var{X}, @var{tol})
+Returns the pseudoinverse of @var{X}.  Singular values less than
+@var{tol} are ignored. 
+
+If the second argument is omitted, it is assumed that
+
+@example
+tol = max (size (X)) * sigma_max (X) * eps,
+@end example
+
+@noindent
+where @code{sigma_max (@var{X})} is the maximal singular value of @var{X}.
+
+@item rank (@var{a}, @var{tol})
+Compute the rank of @var{a}, using the singular value decomposition.
+The rank is taken to be the number  of singular values of @var{a} that
+are greater than the specified tolerance @var{tol}.  If the second
+argument is omitted, it is taken to be
+
+@example
+tol =  max (size (a)) * sigma (1) * eps;
+@end example
+
+@noindent
+where @code{eps} is machine precision and @code{sigma} is the largest
+singular value of @code{a}.
+
+@item trace (@var{a})
+Compute the trace of @var{a}, @code{sum (diag (a))}.
+
+@end ftable
+
+@node Matrix Factorizations, Functions of a Matrix, Basic Matrix Functions, Linear Algebra
+@section Matrix Factorizations
+
+@ftable @code
+@item chol (@var{a})
+Compute the Cholesky factor, @var{r}, of the symmetric positive definite
+matrix @var{a}, where
+@iftex
+@tex
+$ R^T R = A $.
+@end tex
+@end iftex
+@ifinfo
+
+@example
+r' * r = a.
+@end example
+@end ifinfo
+
+@item hess (@var{a})
+Compute the Hessenberg decomposition of the matrix @var{a}.
+
+@example
+     h = hess (a)
+[p, h] = hess (a)
+@end example
+
+The Hessenberg decomposition is usually used as the first step in an
+eigenvalue computation, but has other applications as well (see Golub,
+Nash, and Van Loan, IEEE Transactions on Automatic Control, 1979.  The
+Hessenberg decomposition is @code{p * h * p' = a} where @code{p} is a
+square unitary matrix (@code{p' * p = I}, using complex-conjugate
+transposition) and @code{h} is upper Hessenberg
+(@code{i >= j+1 => h (i, j) = 0}).
+
+@item lu (@var{a})
+Compute the LU decomposition of @var{a}, using subroutines from
+LAPACK.  The result is returned in a permuted form, according to
+the optional return value @var{p}.  For example, given the matrix
+@code{a = [1, 2; 3, 4]},
+
+@example
+[l, u, p] = lu (a)
+@end example
+
+@noindent
+returns
+
+@example
+l =
+
+  1.00000  0.00000
+  0.33333  1.00000
+
+u =
+
+  3.00000  4.00000
+  0.00000  0.66667
+
+p =
+
+  0  1
+  1  0
+@end example
+
+@item qr (@var{a})
+Compute the QR factorization of @var{a}, using standard LAPACK
+subroutines.  For example, given the matrix @code{a = [1, 2; 3, 4]},
+
+@example
+[q, r] = qr (a)
+@end example
+
+@noindent
+returns
+
+@example
+q =
+
+  -0.31623  -0.94868
+  -0.94868   0.31623
+
+r =
+
+  -3.16228  -4.42719
+   0.00000  -0.63246
+@end example
+
+The @code{qr} factorization has applications in the solution of least
+squares problems
+@iftex
+@tex
+$$
+\min_x \left\Vert A x - b \right\Vert_2
+$$
+@end tex
+@end iftex
+@ifinfo
+
+@example
+@code{min norm(A x - b)}
+@end example
+
+@end ifinfo
+for overdetermined systems of equations (i.e.,
+@iftex
+@tex
+$A$
+@end tex
+@end iftex
+@ifinfo
+@code{a}
+@end ifinfo
+ is a tall, thin matrix).  The @code{qr} factorization is @code{q * r = a}
+where @code{q} is an orthogonal matrix and @code{r} is upper triangular.
+
+The permuted @code{qr} factorization @code{[q, r, pi] = qr (a)} forms
+the @code{qr} factorization such that the diagonal entries of @code{r}
+are decreasing in magnitude order.  For example, given the matrix
+@code{a = [1, 2; 3, 4]},
+
+@example
+[q, r, pi] = qr(a)
+@end example
+
+@noindent
+returns
+
+@example
+q = 
+
+  -0.44721  -0.89443
+  -0.89443   0.44721
+
+r =
+
+  -4.47214  -3.13050
+   0.00000   0.44721
+
+p =
+
+   0  1
+   1  0
+@end example
+
+The permuted @code{qr} factorization @code{[q, r, pi] = qr (a)}
+factorization allows the construction of an orthogonal basis of
+@code{span (a)}.
+
+@item schur
+
+@example
+[u, s] = schur (a, opt)   opt = "a", "d", or "u"
+     s = schur (a)
+@end example
+
+The Schur decomposition is used to compute eigenvalues of a
+square matrix, and has applications in the solution of algebraic
+Riccati equations in control (see @code{are} and @code{dare}).
+@code{schur} always returns
+@iftex
+@tex
+$S = U^T A U$
+@end tex
+@end iftex
+@ifinfo
+@code{s = u' * a * u}
+@end ifinfo
+where
+@iftex
+@tex
+$U$
+@end tex
+@end iftex
+@ifinfo
+@code{u}
+@end ifinfo
+ is a unitary matrix
+@iftex
+@tex
+($U' U$
+@end tex
+@end iftex
+@ifinfo
+(@code{u'* u}
+@end ifinfo
+ is identity)
+and
+@iftex
+@tex
+$S$
+@end tex
+@end iftex
+@ifinfo
+@code{s}
+@end ifinfo
+is upper triangular.  The eigenvalues of
+@iftex
+@tex
+$A$ (and $S$)
+@end tex
+@end iftex
+@ifinfo
+@code{a} (and @code{s})
+@end ifinfo
+are the diagonal elements of
+@iftex
+@tex
+$S$
+@end tex
+@end iftex
+@ifinfo
+@code{s}
+@end ifinfo
+If the matrix
+@iftex
+@tex
+$A$
+@end tex
+@end iftex
+@ifinfo
+@code{a}
+@end ifinfo
+is real, then the real Schur decomposition is computed, in which the
+matrix
+@iftex
+@tex
+$U$
+@end tex
+@end iftex
+@ifinfo
+@code{u}
+@end ifinfo
+is orthogonal and
+@iftex
+@tex
+$S$
+@end tex
+@end iftex
+@ifinfo
+@code{s}
+@end ifinfo
+is block upper triangular
+with blocks of size at most
+@iftex
+@tex
+$2\times 2$
+@end tex
+@end iftex
+@ifinfo
+@code{2 x 2}
+@end ifinfo
+blocks along the diagonal.  The diagonal elements of
+@iftex
+@tex
+$S$
+@end tex
+@end iftex
+@ifinfo
+@code{s}
+@end ifinfo
+(or the eigenvalues of the
+@iftex
+@tex
+$2\times 2$
+@end tex
+@end iftex
+@ifinfo
+@code{2 x 2}
+@end ifinfo
+blocks, when
+appropriate) are the eigenvalues of
+@iftex
+@tex
+$A$
+@end tex
+@end iftex
+@ifinfo
+@code{a}
+@end ifinfo
+and
+@iftex
+@tex
+$S$.
+@end tex
+@end iftex
+@ifinfo
+@code{s}.
+@end ifinfo
+
+The eigenvalues are optionally ordered along the diagonal according to
+the value of @code{opt}.  @code{opt = "a"} indicates that all
+eigenvalues with negative real parts should be moved to the leading
+block of
+@iftex
+@tex
+$S$
+@end tex
+@end iftex
+@ifinfo
+@code{s}
+@end ifinfo
+(used in @code{are}), @code{opt = "d"} indicates that all eigenvalues
+with magnitude less than one should be moved to the leading block of
+@iftex
+@tex
+$S$
+@end tex
+@end iftex
+@ifinfo
+@code{s}
+@end ifinfo
+(used in @code{dare}), and @code{opt = "u"}, the default, indicates that
+no ordering of eigenvalues should occur.  The leading
+@iftex
+@tex
+$k$
+@end tex
+@end iftex
+@ifinfo
+@code{k}
+@end ifinfo
+columns of
+@iftex
+@tex
+$U$
+@end tex
+@end iftex
+@ifinfo
+@code{u}
+@end ifinfo
+always span the
+@iftex
+@tex
+$A$-invariant
+@end tex
+@end iftex
+@ifinfo
+@code{a}-invariant
+@end ifinfo
+subspace corresponding to the
+@iftex
+@tex
+$k$
+@end tex
+@end iftex
+@ifinfo
+@code{k}
+@end ifinfo
+leading eigenvalues of
+@iftex
+@tex
+$S$.
+@end tex
+@end iftex
+@ifinfo
+@code{s}.
+@end ifinfo
+
+@item svd (@var{a})
+Compute the singular value decomposition of @var{a}
+@iftex
+@tex
+$$
+ A = U\Sigma V^H
+$$
+@end tex
+@end iftex
+@ifinfo
+
+@example
+a = u * sigma * v'
+@end example
+@end ifinfo
+
+The function @code{svd} normally returns the vector of singular values.
+If asked for three return values, it computes
+@iftex
+@tex
+$U$, $S$, and $V$.
+@end tex
+@end iftex
+@ifinfo
+U, S, and V.
+@end ifinfo
+For example,
+
+@example
+svd (hilb (3))
+@end example
+
+@noindent
+returns
+
+@example
+ans =
+
+  1.4083189
+  0.1223271
+  0.0026873
+@end example
+
+@noindent
+and
+
+@example
+[u, s, v] = svd (hilb (3))
+@end example
+
+@noindent
+returns
+
+@example
+u =
+
+  -0.82704   0.54745   0.12766
+  -0.45986  -0.52829  -0.71375
+  -0.32330  -0.64901   0.68867
+
+s =
+
+  1.40832  0.00000  0.00000
+  0.00000  0.12233  0.00000
+  0.00000  0.00000  0.00269
+
+v =
+
+  -0.82704   0.54745   0.12766
+  -0.45986  -0.52829  -0.71375
+  -0.32330  -0.64901   0.68867
+@end example
+
+If given a second argument, @code{svd} returns an economy-sized
+decomposition, eliminating the unnecessary rows or columns of @var{u} or
+@var{v}.
+@end ftable
+
+@node Functions of a Matrix,  , Matrix Factorizations, Linear Algebra
+@section Functions of a Matrix
+
+@ftable @code
+@item expm
+
+@example
+expm (a)
+@end example
+
+Returns the exponential of a matrix, defined as the
+infinite Taylor series
+@iftex
+@tex
+$$
+ \exp (A) = I + A + {A^2 \over 2!} + {A^3 \over 3!} + \cdots
+$$
+@end tex
+@end iftex
+@ifinfo
+
+@example
+expm(a) = I + a + a^2/2! + a^3/3! + ...
+@end example
+
+@end ifinfo
+The Taylor series is @emph{not} the way to compute the matrix
+exponential; see Moler and Van Loan, @cite{Nineteen Dubious Ways to
+Compute the Exponential of a Matrix}, SIAM Review, 1978.  This routine
+uses Ward's diagonal
+@iftex
+@tex
+Pad\'e
+@end tex
+@end iftex
+@ifinfo
+Pade'
+@end ifinfo
+approximation method with
+three step preconditioning (SIAM Journal on Numerical Analysis, 1977).
+
+Diagonal
+@iftex
+@tex
+Pad\'e
+@end tex
+@end iftex
+@ifinfo
+Pade'
+@end ifinfo
+ approximations are rational polynomials of matrices
+@iftex
+@tex
+$D_q(a)^{-1}N_q(a)$
+@end tex
+@end iftex
+@ifinfo
+
+@example
+     -1
+D (a)   N (a)
+@end example
+
+@end ifinfo
+ whose Taylor series matches the first
+@iftex
+@tex
+$2 q + 1 $
+@end tex
+@end iftex
+@ifinfo
+@code{2q+1}
+@end ifinfo
+terms of the Taylor series above; direct evaluation of the Taylor series
+(with the same preconditioning steps) may be desirable in lieu of the
+@iftex
+@tex
+Pad\'e
+@end tex
+@end iftex
+@ifinfo
+Pade'
+@end ifinfo
+approximation when
+@iftex
+@tex
+$D_q(a)$
+@end tex
+@end iftex
+@ifinfo
+@code{Dq(a)}
+@end ifinfo
+is ill-conditioned.
+
+@item logm (@var{a})
+Compute the matrix logarithm of the square matrix @var{a}.  Note that
+this is currently implemented in terms of an eigenvalue expansion and
+needs to be improved to be more robust.
+
+@item sqrtm (@var{a})
+Compute the matrix square root of the square matrix @var{a}.  Note that
+this is currently implemented in terms of an eigenvalue expansion and
+needs to be improved to be more robust.
+
+@item kron (@var{a}, @var{b})
+
+Form the kronecker product of two matrices, defined block by block as
+
+@example
+x = [a(i, j) b]
+@end example
+
+@item qzhess (@var{a}, @var{b})
+Compute the Hessenberg-triangular decomposition of the matrix pencil
+@code{(a, b)}.  This function returns @code{aa = q * a * z},
+@code{bb = q * b * z}, @code{q}, @code{z} orthogonal.  For example,
+
+@example
+[aa, bb, q, z] = qzhess (a, b)
+@end example
+
+The Hessenberg-triangular decomposition is the first step in
+Moler and Stewart's QZ decomposition algorithm.  (The QZ decomposition
+will be included in a later release of Octave.)
+
+Algorithm taken from Golub and Van Loan, @cite{Matrix Computations, 2nd
+edition}.
+
+@item qzval (@var{a}, @var{b})
+Compute generalized eigenvalues.
+
+@item syl (@var{a}, @var{b}, @var{c})
+Solve the Sylvester equation
+@iftex
+@tex
+$$
+ A X + X B + C = 0
+$$
+@end tex
+@end iftex
+@ifinfo
+
+@example
+A X + X B + C = 0
+@end example
+
+@end ifinfo
+using standard LAPACK subroutines.
+@end ftable

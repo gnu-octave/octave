@@ -1,0 +1,577 @@
+@c Copyright (C) 1996 John W. Eaton
+@c This is part of the Octave manual.
+@c For copying conditions, see the file gpl.texi.
+
+@node System Utilities, Command History Functions, String Functions, Top
+@chapter System Utilities
+
+This chapter describes the functions that are available to allow you to
+get information about what is happening outside of Octave, while it is
+still running, and use this information in your program.  For example,
+you can get information about environment variables, the current time,
+and even start other programs from the Octave prompt.
+
+@menu
+* Timing Utilities::            
+* Filesystem Utilities::        
+* Interacting with the OS::     
+* System Information::          
+* Other Functions::             
+@end menu
+
+@node Timing Utilities, Filesystem Utilities, System Utilities, System Utilities
+@section Timing Utilities
+
+@findex time
+
+The function @code{time} returns the current time as the number of
+seconds since the epoch.  The epoch is referenced to 00:00:00 CUT
+(Coordinated Universal Time) 1 Jan 1970.
+
+Several of Octave's time functions a data structure for time that
+includes the following elements:
+
+@table @code
+@item usec
+Microseconds after the second (0-999999).
+
+@item sec
+Seconds after the minute (0-61).  This number can be 61 to account
+for leap seconds.
+
+@item min
+Minutes after the hour (0-59).
+
+@item hour
+Hours since midnight (0-23).
+
+@item mday
+Day of the month (1-31).
+
+@item mon
+Months since January (0-11).
+
+@item year
+Years since 1900.
+
+@item wday
+Days since Sunday (0-6).
+
+@item yday
+Days since January 1 (0-365).
+
+@item isdst
+Daylight Savings Time flag.
+
+@item zone
+Time zone.
+@end table
+
+@findex localtime
+@findex gmtime
+
+Given a value returned from time (or any nonnegative integer) the
+function @code{localtime} returns a time structure corresponding to the
+local time zone, and @code{gmtime} returns a time structure
+corresponding to CUT.
+
+@findex asctime
+@findex ctime
+
+The function @code{asctime} formats a time structure the following
+five-field format: Thu Mar 28 08:40:14 1996.  The function
+@code{ctime (time)} is equivalent to @code{asctime (localtime (time))}.
+
+@findex strftime
+
+The function @code{strftime} can be used to format a time structure in a
+very flexible way using @samp{%} substitutions similar to those in printf.
+Except where noted, substituted fields have a fixed size; numeric fields
+are padded if necessary.  Padding is with zeros by default; for fields
+that display a single number, padding can be changed or inhibited by
+following the @samp{%} with one of the modifiers described below.  Unknown
+field specifiers are copied as normal characters.  All other characters
+are copied to the output without change.
+
+Octave's @code{strftime} function supports a superset of the ANSI C
+field specifiers.
+
+@noindent
+Literal character fields:
+
+@table @code
+@item %
+% character.
+
+@item n
+Newline character.
+
+@item t
+Tab character.
+@end table
+
+@noindent
+Numeric modifiers (a nonstandard extension):
+
+@table @code
+@item -
+Do not pad the field.
+
+@item _
+Pad the field with spaces.
+@end table
+
+@noindent
+Time fields:
+
+@table @code
+@item %H
+Hour (00-23).
+
+@item %I
+Hour (01-12).
+
+@item %k
+Hour (0-23).
+
+@item %l
+Hour (1-12).
+
+@item %M
+Minute (00-59).
+
+@item %p
+Locale's AM or PM.
+
+@item %r
+Time, 12-hour (hh:mm:ss [AP]M).
+
+@item %R
+Time, 24-hour (hh:mm).
+
+@item %s
+Time in seconds since 00:00:00, Jan 1, 1970 (a nonstandard extension).
+
+@item %S
+Second (00-61).
+
+@item %T
+Time, 24-hour (hh:mm:ss).
+
+@item %X
+Locale's time representation (%H:%M:%S).
+
+@item %Z
+Time zone (EDT), or nothing if no time zone is determinable.
+@end table
+
+@noindent
+Date fields:
+
+@table @code
+@item %a
+Locale's abbreviated weekday name (Sun-Sat).
+
+@item %A
+Locale's full weekday name, variable length (Sunday-Saturday).
+
+@item %b
+Locale's abbreviated month name (Jan-Dec).
+
+@item %B
+Locale's full month name, variable length (January-December).
+
+@item %c
+Locale's date and time (Sat Nov 04 12:02:33 EST 1989).
+
+@item %C
+Century (00-99).
+
+@item %d
+Day of month (01-31).
+
+@item %e
+Day of month ( 1-31).
+
+@item %D
+Date (mm/dd/yy).
+
+@item %h
+Same as %b.
+
+@item %j
+Day of year (001-366).
+
+@item %m
+Month (01-12).
+
+@item %U
+Week number of year with Sunday as first day of week (00-53).
+
+@item %w
+Day of week (0-6).
+
+@item %W
+Week number of year with Monday as first day of week (00-53).
+
+@item %x
+Locale's date representation (mm/dd/yy).
+
+@item %y
+Last two digits of year (00-99).
+
+@item %Y
+Year (1970-).
+@end table
+
+@findex clock
+
+The function @code{clock} returns a vector containing the current year,
+month (1-12), day (1-31), hour (0-23), minute (0-59) and second (0-61).
+For example,
+
+@example
+octave:13> clock
+ans =
+
+  1993     8    20     4    56     1
+@end example
+
+The function clock is more accurate on systems that have the
+@code{gettimeofday} function.
+
+@findex date
+
+To get the date as a character string in the form DD-MMM-YY, use
+the command @code{date}.  For example,
+
+@example
+octave:13> date
+ans = 20-Aug-93
+@end example
+
+@findex tic
+@findex toc
+@findex etime
+
+Octave also has functions for computing time intervals and CPU time
+used.  The functions @code{tic} and @code{toc} can be used to set and
+check a wall-clock timer.  For example,
+
+@example
+tic ();
+# many computations later...
+elapsed_time = toc ();
+@end example
+
+@noindent
+will set the variable @code{elapsed_time} to the number of seconds since
+the most recent call to the function @code{tic}.
+
+The function @code{etime} provides another way to get elapsed wall-clock
+time by returning the difference (in seconds) between two time values
+returned from @code{clock}.  For example:
+
+@example
+t0 = clock ();
+# many computations later...
+elapsed_time = etime (clock (), t0);
+@end example
+
+@noindent
+will set the variable @code{elapsed_time} to the number of seconds since
+the variable @code{t0} was set.
+
+@findex cputime
+
+The function @code{cputime} allows you to obtain information about the
+amount of CPU time your Octave session is using.  For example,
+
+@example
+[total, user, system] = cputime ();
+@end example
+
+@noindent
+returns the CPU time used by your Octave session.  The first output is
+the total time spent executing your process and is equal to the sum of
+second and third outputs, which are the number of CPU seconds spent
+executing in user mode and the number of CPU seconds spent executing in
+system mode, respectively.  If your system does not have a way to report
+CPU time usage, @code{cputime} returns 0 for each of its output values.
+
+@findex is_leap_year
+
+Finally, Octave's function @code{is_leap_year} returns 1 if the given
+year is a leap year and 0 otherwise.  If no arguments are provided,
+@code{is_leap_year} will use the current year.  For example,
+
+@example
+octave:13> is_leap_year (2000)
+ans = 1
+@end example
+
+@noindent
+Contrary to what many people who post misinformation to Usenet
+apparently believe, Octave knows that the year 2000 will be a leap year.
+
+@node Filesystem Utilities, Interacting with the OS, Timing Utilities, System Utilities
+@section Filesystem Utilities
+
+Octave includes the following functions for renaming and deleting files,
+creating, deleting, and reading directories, and for getting information
+about the status of files.
+
+@ftable @code
+@item rename (@var{from}, @var{to})
+Rename a file.
+
+@item unlink (@var{file})
+Delete a file.
+
+@item readdir (@var{dir})
+Returns names of files in the directory @var{dir} as an array of
+strings.
+
+@item mkdir (@var{dir})
+Create a directory
+
+@item rmdir (@var{dir})
+Remove a directory.
+
+@item umask (@var{mask})
+Set permission mask for file creation.
+@c XXX FIXME XXX -- this needs to be explained, but I don't feel up to
+@c it just now...
+
+@item stat (@var{file})
+Get information about a file.  If @var{file} is a symbolic link,
+@code{stat} returns information about the file that the symbolic link
+references.
+
+@item lstat (@var{file})
+Get information about a symbolic link.  If @var{file} is not a symbolic
+link, @code{lstat} is equivalent to @code{stat}.
+@end ftable
+
+@node Interacting with the OS, System Information, Filesystem Utilities, System Utilities
+@section Interacting with the OS
+
+@findex shell_cmd
+@findex system
+
+You can execute any shell command using the function
+@code{system (@var{cmd}, @var{flag})}.  The second argument is optional.
+If it is present, the output of the command is returned by
+@code{system} as a string.  If it is not supplied, any output from
+the command is printed, with the standard output filtered through the
+pager.  For example,
+
+@c XXX FIXME XXX -- perhaps there should be another possible value for
+@c the second argument, to indicate that the command is to be run
+@c interactively, with the standard input and output connected to
+@c /dev/tty.
+
+@example
+users = system ("finger", 1)
+@end example
+
+@noindent
+places the output of the command @code{finger} in the variable
+@code{users}.
+
+If you want to execute a shell command and have it behave as if it were
+typed directly from the shell prompt, you may need to specify extra
+arguments for the command.  For example, to get @code{bash} to behave as
+an interactive shell, you can type
+
+@example
+system ("bash -i >/dev/tty");
+@end example
+
+The first argument, @samp{-i}, tells @code{bash} to behave as an
+interactive shell, and the redirection of the standard output stream
+prevents any output produced by @code{bash} from being sent back to
+Octave, where it would be buffered until Octave displays another prompt.
+
+The @code{system} function can return two values.  The first is any
+output from the command that was written to the standard output stream,
+and the second is the output status of the command.  For example,
+
+@example
+[output, status] = system ("echo foo; exit 2");
+@end example
+
+@noindent
+will set the variable @code{output} to the string @samp{foo}, and the
+variable @code{status} to the integer @samp{2}.
+
+The name @code{shell_cmd} exists for compatibility with earlier versions
+of Octave.
+
+@findex getenv
+
+You can find the values of environment variables using the function
+@code{getenv}.  For example,
+
+@example
+getenv ("PATH")
+@end example
+
+@noindent
+returns a string containing the value of your path.
+
+@findex putenv
+
+The function @code{putenv (@var{var}, @var{value})} sets the value of
+the environment variable @var{var} to @var{value}.
+
+@findex clc
+@findex home
+
+The functions @code{clc}, and @code{home} clear your
+terminal screen and move the cursor to the upper left corner.
+
+@findex cd
+
+You can change the current working directory using the @code{cd}
+command.  Tilde expansion is performed on the path.  For example,
+
+@example
+cd ~/octave
+@end example
+
+@noindent
+Changes the current working directory to @file{~/octave}.  If the
+directory does not exist, an error message is printed and the working
+directory is not changed.
+
+@findex chdir
+
+The name @code{chdir} is an alias for @code{cd}.
+
+@findex pwd
+
+The command @code{pwd} prints the current working directory.
+
+@findex dir
+@findex ls
+
+The functions @code{dir} and @code{ls} list directory contents.  For
+example,
+
+@example
+octave:13> ls -l
+total 12
+-rw-r--r--   1 jwe      users        4488 Aug 19 04:02 foo.m
+-rw-r--r--   1 jwe      users        1315 Aug 17 23:14 bar.m
+@end example
+
+The @code{dir} and @code{ls} commands are implemented by calling your
+system's directory listing command, so the available options may vary
+from system to system.
+
+@node System Information, Other Functions, Interacting with the OS, System Utilities
+@section System Information
+
+@findex computer
+
+If possible, @code{computer} prints a string of the form
+@var{cpu}-@var{vendor}-@var{os} that identifies the kind of computer
+Octave is running on.  For example,
+
+@example
+octave:13> computer
+sparc-sun-sunos4.1.2
+@end example
+
+@findex isieee
+
+The function @code{isieee} returns 1 if your computer claims to conform
+to the IEEE standard for floating point calculations.
+
+@findex version
+The function @code{version} returns Octave's version number as a string.
+This is also the value of the built-in variable @code{OCTAVE_VERSION}.
+@xref{Built-in Variables}.
+
+@findex getrusage
+
+The function @code{getrusage} returns a structure containing a number of
+statistics about the current Octave process.  Not all fields are
+available on all systems.  If it is not possible to get CPU time
+statistics, the CPU time slots are set to zero.  Other missing data are
+replaced by NaN.  Here is a list of all the possible fields that can be
+present in the structure returned by @code{getrusage}:
+
+@table @code
+@item 
+@item idrss
+Unshared data size.
+
+@item inblock
+Number of block input operations.
+
+@item isrss
+Unshared stack size.
+
+@item ixrss
+Shared memory size.
+
+@item majflt
+Number of major page faults.
+
+@item maxrss
+Maximum data size.
+
+@item minflt
+Number of minor page faults.
+
+@item msgrcv
+Number of messages received.
+
+@item msgsnd
+Number of messages sent.
+
+@item nivcsw
+Number of involuntary context switches.
+
+@item nsignals
+Number of signals received.
+
+@item nswap
+Number of swaps.
+
+@item nvcsw
+Number of voluntary context switches.
+
+@item oublock
+Number of block output operations.
+
+@item stime
+A structure containing the system CPU time used.  The structure has the
+elements @code{sec} (seconds) @code{usec} (microseconds).
+
+@item utime
+A structure containing the user CPU time used.  The structure has the
+elements @code{sec} (seconds) @code{usec} (microseconds).
+@end table
+
+@node Other Functions,  , System Information, System Utilities
+@section Other Functions
+
+@findex tilde_expand
+
+The function @code{tilde_expand (@var{string})} performs tilde expansion
+on @var{string}.
+
+@findex pause
+
+The function @code{pause} allows you to suspend the execution of a
+program.  If invoked without any arguments, Octave waits until you type
+a character.  With a numeric argument, it pauses for the given number of
+seconds.  For example, the following statement prints a message and then
+waits 5 seconds before clearing the screen.
+
+@example
+fprintf (stderr, "wait please...\n"), pause (5), clc
+@end example

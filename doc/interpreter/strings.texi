@@ -1,0 +1,271 @@
+@c Copyright (C) 1996 John W. Eaton
+@c This is part of the Octave manual.
+@c For copying conditions, see the file gpl.texi.
+
+@cindex strings
+
+@node String Functions, System Utilities, Matrix Manipulation, Top
+@chapter String Functions
+
+Octave currently has a limited ability to work with strings.
+
+@findex strcmp
+
+The function @code{strcmp (@var{s1}, @var{s2})} compares two strings,
+returning 1 if they are the same, and 0 otherwise.
+
+@strong{Note: For compatibility with @sc{Matlab}, Octave's strcmp
+function returns 1 if the strings are equal, and 0 otherwise.  This is
+just the opposite of the corresponding C library function.}
+
+@findex int2str
+@findex num2str
+
+The functions @code{int2str} and @code{num2str} convert a numeric
+argument to a string.  These functions are not very flexible, but are
+provided for compatibility with @sc{Matlab}.  For better control over
+the results, use @code{sprintf} (@pxref{Formatted Output}).
+
+@findex setstr
+
+The function @code{setstr} can be used to convert a vector to a string.
+Each element of the vector is converted to the corresponding ASCII
+character.  For example,
+
+@example
+setstr ([97, 98, 99])
+@end example
+
+@noindent
+creates the string
+
+@example
+abc
+@end example
+
+@findex undo_string_escapes
+
+The function @code{undo_string_escapes (@var{string})} converts special
+characters in strings back to their escaped forms.  For example, the
+expression
+
+@example
+bell = "\a";
+@end example
+
+@noindent
+assigns the value of the alert character (control-g, ASCII code 7) to
+the string variable @var{bell}.  If this string is printed, the
+system will ring the terminal bell (if it is possible).  This is
+normally the desired outcome.  However, sometimes it is useful to be
+able to print the original representation of the string, with the
+special characters replaced by their escape sequences.  For example,
+
+@example
+octave:13> undo_string_escapes (bell)
+ans = \a
+@end example
+
+@noindent
+replaces the unprintable alert character with its printable
+representation.  @xref{String Constants}, for a description of string
+escapes.
+
+Here is a list of some other string functions.
+
+@ftable @code
+@item bin2dec
+Given a binary number @var{x} represented as a 0/1-string,
+@code{bin2dec (@var{x})} returns the decimal number represented by
+@var{x}.  
+@example
+bin2dec ("1110")
+   @result{} 14
+@end example
+
+@item blanks
+@code{blanks (@var{n})} returns a string of @var{n} blanks.
+
+@item deblank
+@code{deblank (@var{s})} removes the trailing blanks from the string
+@var{s}. 
+
+@item dec2bin
+If @var{x} is a nonnegative integer, @kbd{bin2dec (@var{x})} returns the
+binary number corresponding to @var{x}.
+
+For example, 
+@example
+dec2bin (14)
+  @result{} "1110"
+@end example
+
+@item dec2hex
+If @var{x} is a nonnegative integer, @kbd{dec2hex (@var{x})} returns the
+hex number corresponding to @var{x}.
+
+For example,
+@example
+dec2hex (2748)
+   @result{} "abc"
+@end example
+
+@item findstr
+@kbd{findstr (@var{s}, @var{t} [,@var{overlap}])} returns the vector of
+all positions in the longer of the two strings @var{s} and @var{t} where
+an occurence of the shorter of the two starts.
+
+If the optional argument @var{overlap} is nonzero, the returned vector
+can include overlapping positions (this is the default).
+
+For example,
+@example
+findstr ("ababab", "a")
+   @result{} [1  3  5]
+findstr ("abababa", "aba", 0)
+   @result{} [1, 5]
+@end example
+
+@item hex2dec
+For a hex number @var{x} represented as a hex string, @kbd{hex2dec
+(@var{x})} returns the decimal number corresponding to @var{x}.
+
+For example,
+@example
+hex2dec ("12B")
+   @result{} 299
+hex2dec ("12b")
+   @result{} 299
+@end example
+
+@item index
+@kbd{index (@var{s}, @var{t})} returns the position of the first
+occurence of the string @var{t} in the string @var{s}, or 0 if no
+occurence is found.
+
+For example,
+@example
+index ("Teststring", "t")
+   @result{} 4
+@end example
+
+@strong{Note:}  This function does not work for arrays of strings.
+
+@item rindex
+@kbd{rindex (@var{s}, @var{t})} returns the position of the last
+occurence of the string @var{t} in the string @var{s}, or 0 if no
+occurence is found.
+
+For example,
+@example
+rindex ("Teststring", "t")
+   @result{} 6
+@end example
+
+@strong{Note:}  This function does not work for arrays of strings.
+
+@item split
+@kbd{@var{m} = split (@var{s}, @var{t})} divides the string @var{s} into
+pieces separated by @var{t}, and stores the pieces as the rows of @var{m}
+(padded with blanks to form a valid matrix). 
+
+For example,
+@example
+split ("Test string", "t")
+   @result{} Tes 
+       s  
+      ring
+@end example
+
+@item str2mat
+@kbd{str2mat (@var{s_1}, @dots{}, @var{s_n})} returns a matrix
+containing the strings @var{s_1}, @dots{}, @var{s_n} as its rows.
+Each string is padded with blanks in order to form a valid matrix.
+
+@quotation
+@strong{Note:}
+This function is modelled after @sc{MATLAB}.  In Octave, you can create
+a matrix of strings by @kbd{[@var{s_1}; @dots{}; @var{s_n}]}.
+@end quotation
+
+@item strrep
+@kbd{strrep (@var{s}, @var{x}, @var{y})} replaces all occurences of the
+substring @var{x} of the string @var{s} with the string @var{y}.
+
+For example,
+@example
+strrep ("This is a test string", "is", "&%$")
+   @result{} Th&%$ &%$ a test string
+@end example
+
+@item substr
+@kbd{substr (@var{s}, @var{beg}, @var{len})} returns the substring of
+@var{s} which starts at character number @var{beg} and is @var{len}
+characters long.
+
+@quotation
+@strong{Note:}
+This function is patterned after AWK.  You can get the same result by
+@kbd{@var{s} (@var{beg} : (@var{beg} + @var{len} - 1))}.  
+@end quotation
+
+For example,
+@example
+substr ("This is a test string", 6, 9)
+   @result{} is a test
+@end example
+
+@item tolower
+@kbd{tolower (@var{s})} returns a copy of the string @var{s}, with each
+upper-case character replaced by the corresponding lower-case one;
+nonalphabetic characters are left unchanged.
+
+For example,
+@example
+tolower ("MiXeD cAsE 123")
+   @result{} "mixed case 123"
+@end example
+
+@item toupper
+@kbd{toupper (@var{s})} returns a copy of the string @var{s}, with each 
+lower-case character replaced by the corresponding upper-case one;
+nonalphabetic characters are left unchanged.
+
+For example,
+@example
+toupper ("MiXeD cAsE 123")
+   @result{} "MIXED CASE 123"
+@end example
+@end ftable
+
+Octave also provides the following C-type character class test
+functions.  They all operate on string arrays and return matrices of
+zeros and ones.  Elements that are nonzero indicate that the condition
+was true for the corresponding character in the string array.
+
+@ftable @code
+@item isalnum
+letter or a digit
+@item isalpha   
+letter
+@item isascii   
+ascii
+@item iscntrl   
+control character
+@item isdigit   
+digit
+@item isgraph   
+printable (but not space character)
+@item islower   
+lower case
+@item isprint   
+printable (including space character)
+@item ispunct   
+punctuation
+@item isspace   
+whitespace
+@item isupper   
+upper case
+@item isxdigit  
+hexadecimal digit
+@end ftable

@@ -1,0 +1,4 @@
+@node Function Index, , Concept Index, Top
+@unnumbered Function Index
+
+@printindex fn

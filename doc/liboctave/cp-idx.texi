@@ -1,0 +1,4 @@
+@node Concept Index, Function Index, Bugs, Top
+@unnumbered Concept Index
+
+@printindex cp

@@ -1,0 +1,1153 @@
+@c Copyright (C) 1996 John W. Eaton
+@c This is part of the Octave manual.
+@c For copying conditions, see the file gpl.texi.
+
+@node Input and Output, Special Matrices, Audio Processing, Top
+@chapter Input and Output
+
+There are two distinct classes of input and output functions.  The first
+set are modeled after the functions available in @sc{Matlab}.  The
+second set are modeled after the standard I/O library used by the C
+programming language.  The C-style I/O functions offer more flexibility
+and control over the output, but are not quite as easy to use as the
+simpler @sc{Matlab}-style I/O functions.
+
+When running interactively, Octave normally sends any output intended
+for your terminal that is more than one screen long to a paging program,
+such as @code{less} or @code{more}.  This avoids the problem of having
+a large volume of output stream by before you can read it.  With
+@code{less} (and some versions of @code{more}) it also allows you to
+scan forward and backward, and search for specific items.
+
+@findex fflush
+No output is displayed by the pager until just before Octave is ready to
+print the top level prompt, or read from the standard input using the
+@code{fscanf} or @code{scanf} functions.  This means that there may be
+some delay before any output appears on your screen if you have asked
+Octave to perform a significant amount of work with a single command
+statement.  The function @code{fflush} may be used to force output to be
+sent to the pager immediately.  @xref{C-Style I/O Functions}.
+
+You can select the program to run as the pager by setting the variable
+@code{PAGER}, and you can turn paging off by setting the value of the
+variable @code{page_screen_output} to the string @samp{"false"}.
+@xref{User Preferences}.
+
+@menu
+* Basic Input and Output::      
+* C-Style I/O Functions::       
+@end menu
+
+@node Basic Input and Output, C-Style I/O Functions, Input and Output, Input and Output
+@section Basic Input and Output
+
+Since Octave normally prints the value of an expression as soon as it
+has been evaluated, the simplest of all I/O functions is a simple
+expression.  For example, the following expression will display the
+value of pi
+
+@example
+octave:13> pi
+pi = 3.1416
+@end example
+
+This works well as long as it is acceptable to have the name of the
+variable (or @samp{ans}) printed along with the value.  To print the
+value of a variable without printing its name, use the function
+@code{disp}.  For example, the following expression
+
+@findex disp
+
+@example
+disp ("The value of pi is:"), disp (pi)
+@end example
+
+@noindent
+will print
+
+@example
+The value of pi is:
+3.1416
+@end example
+
+@noindent
+Note that the output from @code{disp} always ends with a newline.
+
+A simple way to control the output format is with the @code{format}
+statement.  For example, to print more digits for pi you can use the
+command
+
+@example
+format long
+@end example
+
+@noindent
+Then the expression above will print
+
+@example
+The value of pi is:
+3.14159265358979
+@end example
+
+@findex format
+
+Here is a summary of the options for @code{format}:
+
+@table @code
+@item short
+This is the default format.  Octave will try to print numbers with at
+least 5 significant figures within a field that is a maximum of 10
+characters wide.
+
+If Octave is unable to format a matrix so that columns line up on the
+decimal point and all the numbers fit within the maximum field width,
+it switches to an @samp{e} format.
+
+@item long
+Octave will try to print numbers with at least 15 significant figures
+within a field that is a maximum of 24 characters wide.
+
+As will the @samp{short} format, Octave will switch to an @samp{e}
+format if it is unable to format a matrix so that columns line up on the
+decimal point and all the numbers fit within the maximum field width.
+
+@item long e
+@itemx short e
+The same as @samp{format long} or @samp{format short} but always display
+output with an @samp{e} format.  For example, with the @samp{short e}
+format, pi is displayed as
+
+@example
+ 3.14e+00
+@end example
+
+@item long E
+@itemx short E
+The same as @samp{format long e} or @samp{format short e} but always
+display output with an uppercase @samp{E} format.  For example, with
+the @samp{long E} format, pi is displayed as
+
+@example
+ 3.14159265358979E+00
+@end example
+
+@item free
+@itemx none
+Print output in free format, without trying to line up columns of
+matrices on the decimal point.  This also causes complex numbers to be
+formatted like this @samp{(0.604194, 0.607088)} instead of like this
+@samp{0.60419 + 0.60709i}.
+
+@item bank
+Print in a fixed format with two places to the right of the decimal
+point.
+
+@item +
+Print a @samp{+} symbol for nonzero matrix elements and a space for zero
+matrix elements.  This format can be very useful for examining the
+structure of a large matrix.
+
+@item hex
+Print the hexadecimal representation numbers as they are stored in
+memory.  For example, on a workstation which stores 8 byte real values
+in IEEE format with the least significant byte first, the value of
+@code{pi} when printed in @code{hex} format is @code{400921fb54442d18}.
+This format only works for numeric values.
+
+@item bit
+Print the bit representation of numbers as stored in memory.
+For example, the value of @code{pi} is
+@code{0100000000001001001000011111101101010100010001000010110100011000}
+when printed in bit format on a workstation which stores 8 byte real
+values in IEEE format with the least significant byte first.
+This format only works for numeric types.
+@end table
+
+The @code{input} function may be used for prompting the user for a
+value and storing the result in a variable.  For example,
+@findex input
+
+@example
+input ("Pick a number, any number! ")
+@end example
+
+@noindent
+prints the prompt
+
+@example
+Pick a number, any number!
+@end example
+
+@noindent
+and waits for the user to enter a value.  The string entered by the user
+is evaluated as an expression, so it may be a literal constant, a
+variable name, or any other valid expression.
+
+Currently, @code{input} only returns one value, regardless of the number
+of values produced by the evaluation of the expression.
+
+If you are only interested in getting a literal string value, you can
+call @code{input} with the character string @samp{s} as the second
+argument.  This tells Octave to return the string entered by the user
+directly, without evaluating it first.
+
+Because there may be output waiting to be displayed by the pager, it is
+a good idea to always call @code{fflush (stdout)} before calling
+@code{input}.  This will ensure that all pending output is written to
+the screen before your prompt.  @xref{C-Style I/O Functions}.
+
+@findex keyboard
+
+The second input function, @code{keyboard}, is normally used for simple
+debugging.  Using @code{keyboard}, it is possible to examine the values
+of variables within a function, and to assign newassign new variables
+Like @code{input}, it prompts the user for input, but no value is
+returned, and it continues to prompt for input until the user types
+@samp{quit}, or @samp{exit}.
+
+If @code{keyboard} is invoked without any arguments, a default prompt of
+@samp{debug> } is used.
+
+For both of these functions, the normal command line history and editing
+functions are available at the prompt.
+
+@findex save
+To save variables in a file, use the @code{save} command.  For example,
+the command
+
+@example
+save data a b c
+@end example
+
+@noindent
+saves the variables @samp{a}, @samp{b}, and @samp{c} in the file
+@file{data}.
+
+@vindex default_save_format
+The @var{save} command can read files in Octave's text and binary
+formats as well as @sc{Matlab}'s binary format.  You can specify the default
+format with the built-in variable @var{default_save_format} using one of
+the following values: @code{"binary"} or @code{"mat-binary"}.  The
+initial default save format is Octave's text format.
+
+@vindex save_precision
+You can use the built-in variable @code{save_precision} to specify the
+number of digits to keep when saving data in text format.
+
+The list of variables to save may include wildcard patterns containing
+the following special characters:
+@table @code
+@item ?
+Match any single character.
+
+@item *
+Match zero or more characters.
+
+@item [ @var{list} ]
+Match the list of characters specified by @var{list}.  If the first
+character is @code{!} or @code{^}, match all characters except those
+specified by @var{list}.  For example, the pattern @samp{[a-zA-Z]} will
+match all lower and upper case alphabetic characters. 
+@end table
+
+The following options may be specified for @code{save}.
+
+@ftable @code
+@item -ascii
+Save the data in Octave's text data format.  Using this flag overrides
+the value of the built-in variable @code{default_save_format}.
+
+@item -binary
+Save the data in Octave's binary data format.  Using this flag overrides
+the value of the built-in variable @code{default_save_format}.
+
+@item -float-binary
+Save the data in Octave's binary data format but only using single
+precision.  Using this flag overrides the value of the built-in variable
+@code{default_save_format}.  You should use this format only if you
+know that all the values to be saved can be represented in single
+precision.
+
+@item -mat-binary
+Save the data in @sc{Matlab}'s binary data format.  Using this flag overrides
+the value of the built-in variable @code{default_save_format}.
+
+@item -save-builtins
+Force Octave to save the values of built-in variables too.  By default,
+Octave does not save built-in variables.
+@end ftable
+
+@findex load
+Saving global variables also saves the global status of the variable, so
+that if it is restored at a later time using @samp{load}, it will be
+restored as a global variable.
+
+To restore the values from a file, use the @code{load} command.  For
+example, to restore the variables saved in the file @file{data}, use the
+command
+
+@example
+load data
+@end example
+
+Octave will refuse to overwrite existing variables unless you use the
+option @samp{-force}.
+
+If a variable that is not marked as global is loaded from a file when a
+global symbol with the same name already exists, it is loaded in the
+global symbol table.  Also, if a variable is marked as global in a file
+and a local symbol exists, the local symbol is moved to the global
+symbol table and given the value from the file.  Since it seems that
+both of these cases are likely to be the result of some sort of error,
+they will generate warnings.
+
+As with @code{save}, you may specify a list of variables and @code{load}
+will only extract those variables with names that match.
+
+The @code{load} command can read data stored in Octave's text and
+binary formats, and @sc{Matlab}'s binary format.  It will automatically
+detect the type of file and do conversion from different floating point
+formats (currently only IEEE big and little endian, though other formats
+may added in the future).
+
+The following options may be specified for @code{load}.
+
+@ftable @code
+@item -force
+Force variables currently in memory to be overwritten by variables with
+the same name found in the file.
+
+@item -ascii
+Force Octave to assume the file is in Octave's text format.
+
+@item -binary
+Force Octave to assume the file is in Octave's binary format.
+
+@item -mat-binary
+Force Octave to assume the file is in @sc{Matlab}'s binary format.
+@end ftable
+
+@node C-Style I/O Functions,  , Basic Input and Output, Input and Output
+@section C-Style I/O Functions
+
+The C-style input and output functions provide most of the functionality
+of the C programming language's standard I/O library.  The argument
+lists for some of the input functions are slightly different, however,
+because Octave has no way of passing arguments by reference.
+
+In the following, @var{file} refers either to an integer file number
+(as returned by @file{fopen}) or a file name.
+
+There are three files that are always available:
+
+@table @code
+@item stdin
+The standard input stream (file number 0).  When Octave is used
+interactively, this is filtered through the command line editing
+functions.
+
+@item stdout
+The standard output stream (file number 1).  Data written to the
+standard output is normally filtered through the pager.
+
+@item stderr
+The standard error stream (file number 2).  Even if paging is turned on,
+the standard error is not sent to the pager.  It is useful for error
+messages and prompts.
+@end table
+
+You should always use the symbolic names given in the table above,
+rather than referring to these files by number, since it will make
+your programs clearer.
+
+@menu
+* Opening and Closing Files::   
+* Formatted Output::            
+* Output Conversion Syntax::    
+* Table of Output Conversions::  
+* Integer Conversions::         
+* Floating-Point Conversions::  
+* Other Output Conversions::    
+* Formatted Input::             
+* Input Conversion Syntax::     
+* Table of Input Conversions::  
+* Numeric Input Conversions::   
+* String Input Conversions::    
+* Binary I/O::                  
+* Other I/O Functions::         
+@end menu
+
+@node Opening and Closing Files, Formatted Output, C-Style I/O Functions, C-Style I/O Functions
+@subsection Opening and Closing Files
+
+@findex fopen
+To open a file, use the function @code{fopen (name, mode)}.  It returns
+an integer value that may be used to refer to the file later.  The
+second argument is a one or two character string that specifies whether
+the file is to be opened for reading, writing, or both.
+
+For example,
+
+@example
+myfile = fopen ("splat.dat", "r");
+@end example
+
+@noindent
+opens the file @file{splat.dat} for reading.  Opening a file that is
+already open has no effect.
+
+@c XXX FIXME XXX -- There still seem to be some minor bugs with fopen.
+@c You should probably get an error if you try to reopen a file with a
+@c different mode.  You should probably get a warning if the file is
+@c already open, etc.
+
+
+The possible values @samp{mode} may have are
+
+@table @asis
+@item @samp{r}
+Open a file for reading.
+
+@item @samp{w}
+Open a file for writing.  The previous contents are discared.
+
+@item @samp{a}
+Open or create a file for writing at the end of the file.
+
+@item @samp{r+}
+Open an existing file for reading and writing.
+
+@item @samp{w+}
+Open a file for reading or writing.  The previous contents are
+discared.
+
+@item @samp{a+}
+Open or create a file for reading or writing at the end of the
+file.
+@end table
+
+@findex fclose
+To close a file once you are finished with it, use the function
+@code{fclose (@var{file})}.  If an error is encountered while trying to close
+the file, an error message is printed and @code{fclose} returns 0.
+Otherwise, it returns 1.
+
+@node Formatted Output, Output Conversion Syntax, Opening and Closing Files, C-Style I/O Functions
+@subsection Formatted Output
+
+This section describes how to call @code{printf} and related functions.
+
+The following functions are available for formatted output.  They are
+modelled after the C language functions of the same name.
+
+@ftable @code
+@item printf (@var{template}, ...)
+The @code{printf} function prints the optional arguments under the
+control of the template string @var{template} to the stream
+@code{stdout}.
+
+@item fprintf (@var{file}, @var{template}, ...)
+This function is just like @code{printf}, except that the output is
+written to the stream @var{file} instead of @code{stdout}.
+
+@item sprintf (@var{template}, ...)
+This is like @code{printf}, except that the output is written to a
+string.  Unlike the C library function, which requires you to provide a
+suitably sized string as an argument, Octave's @code{sprintf} function
+returns the string, automatically sized to hold all of the items
+converted.
+@end ftable
+
+The @code{printf} function can be used to print any number of arguments.
+The template string argument you supply in a call provides
+information not only about the number of additional arguments, but also
+about their types and what style should be used for printing them.
+
+Ordinary characters in the template string are simply written to the
+output stream as-is, while @dfn{conversion specifications} introduced by
+a @samp{%} character in the template cause subsequent arguments to be
+formatted and written to the output stream.  For example,
+@cindex conversion specifications (@code{printf})
+
+@smallexample
+pct = 37;
+filename = "foo.txt";
+printf ("Processing of `%s' is %d%% finished.\nPlease be patient.\n",
+        filename, pct);
+@end smallexample
+
+@noindent
+produces output like
+
+@smallexample
+Processing of `foo.txt' is 37% finished.
+Please be patient.
+@end smallexample
+
+This example shows the use of the @samp{%d} conversion to specify that a
+scalar argument should be printed in decimal notation, the @samp{%s}
+conversion to specify printing of a string argument, and the @samp{%%}
+conversion to print a literal @samp{%} character.
+
+There are also conversions for printing an integer argument as an
+unsigned value in octal, decimal, or hexadecimal radix (@samp{%o},
+@samp{%u}, or @samp{%x}, respectively); or as a character value
+(@samp{%c}).
+
+Floating-point numbers can be printed in normal, fixed-point notation
+using the @samp{%f} conversion or in exponential notation using the
+@samp{%e} conversion.  The @samp{%g} conversion uses either @samp{%e}
+or @samp{%f} format, depending on what is more appropriate for the
+magnitude of the particular number.
+
+You can control formatting more precisely by writing @dfn{modifiers}
+between the @samp{%} and the character that indicates which conversion
+to apply.  These slightly alter the ordinary behavior of the conversion.
+For example, most conversion specifications permit you to specify a
+minimum field width and a flag indicating whether you want the result
+left- or right-justified within the field.
+
+The specific flags and modifiers that are permitted and their
+interpretation vary depending on the particular conversion.  They're all
+described in more detail in the following sections.
+
+@node Output Conversion Syntax, Table of Output Conversions, Formatted Output, C-Style I/O Functions
+@subsection Output Conversion Syntax
+
+This section provides details about the precise syntax of conversion
+specifications that can appear in a @code{printf} template
+string.
+
+Characters in the template string that are not part of a
+conversion specification are printed as-is to the output stream.
+
+The conversion specifications in a @code{printf} template string have
+the general form:
+
+@smallexample
+% @var{flags} @var{width} @r{[} . @var{precision} @r{]} @var{type} @var{conversion}
+@end smallexample
+
+For example, in the conversion specifier @samp{%-10.8ld}, the @samp{-}
+is a flag, @samp{10} specifies the field width, the precision is
+@samp{8}, the letter @samp{l} is a type modifier, and @samp{d} specifies
+the conversion style.  (This particular type specifier says to print a
+numeric argument in decimal notation, with a minimum of 8 digits
+left-justified in a field at least 10 characters wide.)
+
+In more detail, output conversion specifications consist of an
+initial @samp{%} character followed in sequence by:
+
+@itemize @bullet
+@item 
+Zero or more @dfn{flag characters} that modify the normal behavior of
+the conversion specification.
+@cindex flag character (@code{printf})
+
+@item 
+An optional decimal integer specifying the @dfn{minimum field width}.
+If the normal conversion produces fewer characters than this, the field
+is padded with spaces to the specified width.  This is a @emph{minimum}
+value; if the normal conversion produces more characters than this, the
+field is @emph{not} truncated.  Normally, the output is right-justified
+within the field.
+@cindex minimum field width (@code{printf})
+
+You can also specify a field width of @samp{*}.  This means that the
+next argument in the argument list (before the actual value to be
+printed) is used as the field width.  The value is rounded to the
+nearest integer.  If the value is negative, this means to set the
+@samp{-} flag (see below) and to use the absolute value as the field
+width.
+
+@item 
+An optional @dfn{precision} to specify the number of digits to be
+written for the numeric conversions.  If the precision is specified, it
+consists of a period (@samp{.}) followed optionally by a decimal integer
+(which defaults to zero if omitted).
+@cindex precision (@code{printf})
+
+You can also specify a precision of @samp{*}.  This means that the next
+argument in the argument list (before the actual value to be printed) is
+used as the precision.  The value must be an integer, and is ignored
+if it is negative.
+
+@item
+An optional @dfn{type modifier character}.  This character is ignored by
+Octave's @code{printf} function, but is recognized to provide
+compatibility with the C language @code{printf}.
+
+@item
+A character that specifies the conversion to be applied.
+@end itemize
+
+The exact options that are permitted and how they are interpreted vary 
+between the different conversion specifiers.  See the descriptions of the
+individual conversions for information about the particular options that
+they use.
+
+@node Table of Output Conversions, Integer Conversions, Output Conversion Syntax, C-Style I/O Functions
+@subsection Table of Output Conversions
+@cindex output conversions, for @code{printf}
+
+Here is a table summarizing what all the different conversions do:
+
+@table @asis
+@item @samp{%d}, @samp{%i}
+Print an integer as a signed decimal number.  @xref{Integer
+Conversions}, for details.  @samp{%d} and @samp{%i} are synonymous for
+output, but are different when used with @code{scanf} for input
+(@pxref{Table of Input Conversions}).
+
+@item @samp{%o}
+Print an integer as an unsigned octal number.  @xref{Integer
+Conversions}, for details.
+
+@item @samp{%u}
+Print an integer as an unsigned decimal number.  @xref{Integer
+Conversions}, for details.
+
+@item @samp{%x}, @samp{%X}
+Print an integer as an unsigned hexadecimal number.  @samp{%x} uses
+lower-case letters and @samp{%X} uses upper-case.  @xref{Integer
+Conversions}, for details.
+
+@item @samp{%f}
+Print a floating-point number in normal (fixed-point) notation.
+@xref{Floating-Point Conversions}, for details.
+
+@item @samp{%e}, @samp{%E}
+Print a floating-point number in exponential notation.  @samp{%e} uses
+lower-case letters and @samp{%E} uses upper-case.  @xref{Floating-Point
+Conversions}, for details.
+
+@item @samp{%g}, @samp{%G}
+Print a floating-point number in either normal or exponential notation,
+whichever is more appropriate for its magnitude.  @samp{%g} uses
+lower-case letters and @samp{%G} uses upper-case.  @xref{Floating-Point
+Conversions}, for details.
+
+@item @samp{%c}
+Print a single character.  @xref{Other Output Conversions}.
+
+@item @samp{%s}
+Print a string.  @xref{Other Output Conversions}.
+
+@item @samp{%%}
+Print a literal @samp{%} character.  @xref{Other Output Conversions}.
+@end table
+
+If the syntax of a conversion specification is invalid, unpredictable
+things will happen, so don't do this.  If there aren't enough function
+arguments provided to supply values for all the conversion
+specifications in the template string, or if the arguments are not of
+the correct types, the results are unpredictable.  If you supply more
+arguments than conversion specifications, the extra argument values are
+simply ignored; this is sometimes useful.
+
+@node Integer Conversions, Floating-Point Conversions, Table of Output Conversions, C-Style I/O Functions
+@subsection Integer Conversions
+
+This section describes the options for the @samp{%d}, @samp{%i},
+@samp{%o}, @samp{%u}, @samp{%x}, and @samp{%X} conversion
+specifications.  These conversions print integers in various formats.
+
+The @samp{%d} and @samp{%i} conversion specifications both print an
+numeric argument as a signed decimal number; while @samp{%o},
+@samp{%u}, and @samp{%x} print the argument as an unsigned octal,
+decimal, or hexadecimal number (respectively).  The @samp{%X} conversion
+specification is just like @samp{%x} except that it uses the characters
+@samp{ABCDEF} as digits instead of @samp{abcdef}.
+
+The following flags are meaningful:
+
+@table @asis
+@item @samp{-}
+Left-justify the result in the field (instead of the normal
+right-justification).
+
+@item @samp{+}
+For the signed @samp{%d} and @samp{%i} conversions, print a
+plus sign if the value is positive.
+
+@item @samp{ }
+For the signed @samp{%d} and @samp{%i} conversions, if the result
+doesn't start with a plus or minus sign, prefix it with a space
+character instead.  Since the @samp{+} flag ensures that the result
+includes a sign, this flag is ignored if you supply both of them.
+
+@item @samp{#}
+For the @samp{%o} conversion, this forces the leading digit to be
+@samp{0}, as if by increasing the precision.  For @samp{%x} or
+@samp{%X}, this prefixes a leading @samp{0x} or @samp{0X} (respectively)
+to the result.  This doesn't do anything useful for the @samp{%d},
+@samp{%i}, or @samp{%u} conversions.
+
+@item @samp{0}
+Pad the field with zeros instead of spaces.  The zeros are placed after
+any indication of sign or base.  This flag is ignored if the @samp{-}
+flag is also specified, or if a precision is specified.
+@end table
+
+If a precision is supplied, it specifies the minimum number of digits to
+appear; leading zeros are produced if necessary.  If you don't specify a
+precision, the number is printed with as many digits as it needs.  If
+you convert a value of zero with an explicit precision of zero, then no
+characters at all are produced.
+
+@node Floating-Point Conversions, Other Output Conversions, Integer Conversions, C-Style I/O Functions
+@subsection Floating-Point Conversions
+
+This section discusses the conversion specifications for floating-point
+numbers: the @samp{%f}, @samp{%e}, @samp{%E}, @samp{%g}, and @samp{%G}
+conversions.
+
+The @samp{%f} conversion prints its argument in fixed-point notation,
+producing output of the form
+@w{[@code{-}]@var{ddd}@code{.}@var{ddd}},
+where the number of digits following the decimal point is controlled
+by the precision you specify.
+
+The @samp{%e} conversion prints its argument in exponential notation,
+producing output of the form
+@w{[@code{-}]@var{d}@code{.}@var{ddd}@code{e}[@code{+}|@code{-}]@var{dd}}.
+Again, the number of digits following the decimal point is controlled by
+the precision.  The exponent always contains at least two digits.  The
+@samp{%E} conversion is similar but the exponent is marked with the letter
+@samp{E} instead of @samp{e}.
+
+The @samp{%g} and @samp{%G} conversions print the argument in the style
+of @samp{%e} or @samp{%E} (respectively) if the exponent would be less
+than -4 or greater than or equal to the precision; otherwise they use the
+@samp{%f} style.  Trailing zeros are removed from the fractional portion
+of the result and a decimal-point character appears only if it is
+followed by a digit.
+
+The following flags can be used to modify the behavior:
+
+@c Not @samp so we can have ` ' as an item.
+@table @asis
+@item @samp{-}
+Left-justify the result in the field.  Normally the result is
+right-justified.
+
+@item @samp{+}
+Always include a plus or minus sign in the result.
+
+@item @samp{ }
+If the result doesn't start with a plus or minus sign, prefix it with a
+space instead.  Since the @samp{+} flag ensures that the result includes
+a sign, this flag is ignored if you supply both of them.
+
+@item @samp{#}
+Specifies that the result should always include a decimal point, even
+if no digits follow it.  For the @samp{%g} and @samp{%G} conversions,
+this also forces trailing zeros after the decimal point to be left
+in place where they would otherwise be removed.
+
+@item @samp{0}
+Pad the field with zeros instead of spaces; the zeros are placed
+after any sign.  This flag is ignored if the @samp{-} flag is also
+specified.
+@end table
+
+The precision specifies how many digits follow the decimal-point
+character for the @samp{%f}, @samp{%e}, and @samp{%E} conversions.  For
+these conversions, the default precision is @code{6}.  If the precision
+is explicitly @code{0}, this suppresses the decimal point character
+entirely.  For the @samp{%g} and @samp{%G} conversions, the precision
+specifies how many significant digits to print.  Significant digits are
+the first digit before the decimal point, and all the digits after it.
+If the precision is @code{0} or not specified for @samp{%g} or
+@samp{%G}, it is treated like a value of @code{1}.  If the value being
+printed cannot be expressed precisely in the specified number of digits,
+the value is rounded to the nearest number that fits.
+
+@node Other Output Conversions, Formatted Input, Floating-Point Conversions, C-Style I/O Functions
+@subsection Other Output Conversions
+
+This section describes miscellaneous conversions for @code{printf}.
+
+The @samp{%c} conversion prints a single character.  The @samp{-} 
+flag can be used to specify left-justification in the field, but no
+other flags are defined, and no precision or type modifier can be given.
+For example:
+
+@smallexample
+printf ("%c%c%c%c%c", "h", "e", "l", "l", "o");
+@end smallexample
+
+@noindent
+prints @samp{hello}.
+
+The @samp{%s} conversion prints a string.  The corresponding argument
+must be a string.  A precision can be specified to indicate the maximum
+number of characters to write; otherwise characters in the string up to
+but not including the terminating null character are written to the
+output stream.  The @samp{-} flag can be used to specify
+left-justification in the field, but no other flags or type modifiers
+are defined for this conversion.  For example:
+
+@smallexample
+printf ("%3s%-6s", "no", "where");
+@end smallexample
+
+@noindent
+prints @samp{ nowhere }.
+
+@node Formatted Input, Input Conversion Syntax, Other Output Conversions, C-Style I/O Functions
+@subsection Formatted Input
+
+Here are the descriptions of the functions for performing formatted
+input.
+
+@ftable @code
+@item scanf (@var{template})
+The @code{scanf} function reads formatted input from the stream
+@code{stdin} under the control of the template string @var{template}.
+The resulting values are returned.
+
+@item fscanf (@var{file}, @var{template})
+This function is just like @code{scanf}, except that the input is read
+from the stream @var{file} instead of @code{stdin}.
+
+@item sscanf (@var{string}, @var{template})
+This is like @code{scanf}, except that the characters are taken from the
+string @var{string} instead of from a stream.  Reaching the end of the
+string is treated as an end-of-file condition.
+@end ftable
+
+Calls to @code{scanf} are superficially similar to calls to
+@code{printf} in that arbitrary arguments are read under the control of
+a template string.  While the syntax of the conversion specifications in
+the template is very similar to that for @code{printf}, the
+interpretation of the template is oriented more towards free-format
+input and simple pattern matching, rather than fixed-field formatting.
+For example, most @code{scanf} conversions skip over any amount of
+``white space'' (including spaces, tabs, and newlines) in the input
+file, and there is no concept of precision for the numeric input
+conversions as there is for the corresponding output conversions.
+Ordinarily, non-whitespace characters in the template are expected to
+match characters in the input stream exactly.
+@cindex conversion specifications (@code{scanf})
+
+When a @dfn{matching failure} occurs, @code{scanf} returns immediately,
+leaving the first non-matching character as the next character to be
+read from the stream, and @code{scanf} returns all the items that were
+successfully converted.
+@cindex matching failure, in @code{scanf}
+
+The formatted input functions are not used as frequently as the
+formatted output functions.  Partly, this is because it takes some care
+to use them properly.  Another reason is that it is difficult to recover
+from a matching error.
+
+@node Input Conversion Syntax, Table of Input Conversions, Formatted Input, C-Style I/O Functions
+@subsection Input Conversion Syntax
+
+A @code{scanf} template string is a string that contains ordinary
+multibyte characters interspersed with conversion specifications that
+start with @samp{%}.
+
+Any whitespace character in the template causes any number of whitespace
+characters in the input stream to be read and discarded.  The whitespace
+characters that are matched need not be exactly the same whitespace
+characters that appear in the template string.  For example, write
+@samp{ , } in the template to recognize a comma with optional whitespace
+before and after.
+
+Other characters in the template string that are not part of conversion
+specifications must match characters in the input stream exactly; if
+this is not the case, a matching failure occurs.
+
+The conversion specifications in a @code{scanf} template string
+have the general form:
+
+@smallexample
+% @var{flags} @var{width} @var{type} @var{conversion}
+@end smallexample
+
+In more detail, an input conversion specification consists of an initial
+@samp{%} character followed in sequence by:
+
+@itemize @bullet
+@item
+An optional @dfn{flag character} @samp{*}, which says to ignore the text
+read for this specification.  When @code{scanf} finds a conversion
+specification that uses this flag, it reads input as directed by the
+rest of the conversion specification, but it discards this input, does
+not use a pointer argument, and does not increment the count of
+successful assignments.
+@cindex flag character (@code{scanf})
+
+@item
+An optional decimal integer that specifies the @dfn{maximum field
+width}.  Reading of characters from the input stream stops either when
+this maximum is reached or when a non-matching character is found,
+whichever happens first.  Most conversions discard initial whitespace
+characters (those that don't are explicitly documented), and these
+discarded characters don't count towards the maximum field width.
+@cindex maximum field width (@code{scanf})
+
+@item
+An optional type modifier character.  This character is ignored by
+Octave's @code{scanf} function, but is recognized to provide
+compatibility with the C language @code{scanf}.
+
+@item
+A character that specifies the conversion to be applied.
+@end itemize
+
+The exact options that are permitted and how they are interpreted vary 
+between the different conversion specifiers.  See the descriptions of the
+individual conversions for information about the particular options that
+they allow.
+
+@node Table of Input Conversions, Numeric Input Conversions, Input Conversion Syntax, C-Style I/O Functions
+@subsection Table of Input Conversions
+@cindex input conversions, for @code{scanf}
+
+Here is a table that summarizes the various conversion specifications:
+
+@table @asis
+@item @samp{%d}
+Matches an optionally signed integer written in decimal.  @xref{Numeric
+Input Conversions}.
+
+@item @samp{%i}
+Matches an optionally signed integer in any of the formats that the C
+language defines for specifying an integer constant.  @xref{Numeric
+Input Conversions}.
+
+@item @samp{%o}
+Matches an unsigned integer written in octal radix.
+@xref{Numeric Input Conversions}.
+
+@item @samp{%u}
+Matches an unsigned integer written in decimal radix.
+@xref{Numeric Input Conversions}.
+
+@item @samp{%x}, @samp{%X}
+Matches an unsigned integer written in hexadecimal radix.
+@xref{Numeric Input Conversions}.
+
+@item @samp{%e}, @samp{%f}, @samp{%g}, @samp{%E}, @samp{%G}
+Matches an optionally signed floating-point number.  @xref{Numeric Input
+Conversions}.
+
+@item @samp{%s}
+Matches a string containing only non-whitespace characters.
+@xref{String Input Conversions}.
+
+@item @samp{%c}
+Matches a string of one or more characters; the number of characters
+read is controlled by the maximum field width given for the conversion.
+@xref{String Input Conversions}.
+
+@item @samp{%%}
+This matches a literal @samp{%} character in the input stream.  No
+corresponding argument is used.
+@end table
+
+If the syntax of a conversion specification is invalid, the behavior is
+undefined.  If there aren't enough function arguments provided to supply
+addresses for all the conversion specifications in the template strings
+that perform assignments, or if the arguments are not of the correct
+types, the behavior is also undefined.  On the other hand, extra
+arguments are simply ignored.
+
+@node Numeric Input Conversions, String Input Conversions, Table of Input Conversions, C-Style I/O Functions
+@subsection Numeric Input Conversions
+
+This section describes the @code{scanf} conversions for reading numeric
+values.
+
+The @samp{%d} conversion matches an optionally signed integer in decimal
+radix.
+
+The @samp{%i} conversion matches an optionally signed integer in any of
+the formats that the C language defines for specifying an integer
+constant.
+
+For example, any of the strings @samp{10}, @samp{0xa}, or @samp{012}
+could be read in as integers under the @samp{%i} conversion.  Each of
+these specifies a number with decimal value @code{10}.
+
+The @samp{%o}, @samp{%u}, and @samp{%x} conversions match unsigned
+integers in octal, decimal, and hexadecimal radices, respectively.
+
+The @samp{%X} conversion is identical to the @samp{%x} conversion.  They
+both permit either uppercase or lowercase letters to be used as digits.
+
+Unlike the C language @code{scanf}, Octave ignores the @samp{h},
+@samp{l}, and @samp{L} modifiers.
+
+@node String Input Conversions, Binary I/O, Numeric Input Conversions, C-Style I/O Functions
+@subsection String Input Conversions
+
+This section describes the @code{scanf} input conversions for reading
+string and character values: @samp{%s} and @samp{%c}.  
+
+The @samp{%c} conversion is the simplest: it matches a fixed number of
+characters, always.  The maximum field with says how many characters to
+read; if you don't specify the maximum, the default is 1.  This
+conversion does not skip over initial whitespace characters.  It reads
+precisely the next @var{n} characters, and fails if it cannot get that
+many.
+
+The @samp{%s} conversion matches a string of non-whitespace characters.
+It skips and discards initial whitespace, but stops when it encounters
+more whitespace after having read something.
+
+For example, reading the input:
+
+@smallexample
+ hello, world
+@end smallexample
+
+@noindent
+with the conversion @samp{%10c} produces @code{" hello, wo"}, but
+reading the same input with the conversion @samp{%10s} produces
+@code{"hello,"}.
+
+@node Binary I/O, Other I/O Functions, String Input Conversions, C-Style I/O Functions
+@subsection Binary I/O
+
+Octave has to C-style functions for reading and writing binary data.
+They are @code{fread} and @code{fwrite} and are patterned after the
+standard C functions with the same names.
+
+@ftable @code
+@item fread (@var{file}, @var{size}, @var{precision})
+This function reads data in binary form of type @var{precision} from the
+specified @var{file}, which may be either a file name, or a file number
+as returned from @code{fopen}.
+
+The argument @var{size} specifies the size of the matrix to return.  It
+may be a scalar or a two-element vector.  If it is a scalar,
+@code{fread} returns a column vector of the specified length.  If it is
+a two-element vector, it specifies the number of rows and columns of the
+result matrix, and @code{fread} fills the elements of the matrix in
+column-major order.
+
+The argument @var{precision} is a string specifying the type of data to
+read and may be one of @code{"char"}, @code{"schar"}, @code{"short"},
+@code{"int"}, @code{"long"}, @code{"float"}, @code{"double"},
+@code{"uchar"}, @code{"ushort"}, @code{"uint"}, or @code{"ulong"}.  The
+default precision is @code{"uchar"}.
+
+The @code{fread} function returns two values, @code{data}, which is the
+data read from the file, and @code{count}, which is the number of
+elements read.
+
+@item fwrite (@var{file}, @var{data}, @var{precision})
+This function writes data in binary form of type @var{precision} to the
+specified @var{file}, which may be either a file name, or a file number
+as returned from @code{fopen}.
+
+The argument @var{data} is a matrix of values that are to be written to
+the file.  The values are extracted in column-major order.
+
+The argument @var{precision} is a string specifying the type of data to
+read and may be one of @code{"char"}, @code{"schar"}, @code{"short"},
+@code{"int"}, @code{"long"}, @code{"float"}, @code{"double"},
+@code{"uchar"}, @code{"ushort"}, @code{"uint"}, or @code{"ulong"}.  The
+default precision is @code{"uchar"}.
+
+The @code{fwrite} function returns the number of elements written.
+
+The behavior of @code{fwrite} is undefined if the values in @var{data}
+are too large to fit in the specified precision.
+@end ftable
+
+@node Other I/O Functions,  , Binary I/O, C-Style I/O Functions
+@subsection Other I/O Functions
+
+@findex fgets
+@example
+fgets (@var{file}, len)
+@end example
+Read @samp{len} characters from a file.
+
+To flush output to a stream, use the function @code{fflush (@var{file})}.
+This is useful for ensuring that all pending output makes it to the
+screen before some other event occurs.  For example, it is always a good
+idea to flush the standard output stream before calling @code{input}.
+
+Three functions are available for setting and determining the position of
+the file pointer for a given file.
+
+@findex ftell
+The position of the file pointer (as the number of characters from the
+beginning of the file) can be obtained using the the function
+@code{ftell (@var{file})}.
+
+@findex fseek
+To set the file pointer to any location within the file, use the
+function @code{fseek (@var{file}, offset, origin)}.  The pointer is placed
+@code{offset} characters from the @code{origin}, which may be one of the
+predefined variables @code{SEEK_CUR} (current position), @code{SEEK_SET}
+(beginning), or @code{SEEK_END} (end of file). If @code{origin} is
+omitted, @code{SEEK_SET} is assumed.  The offset must be zero, or a
+value returned by @code{ftell} (in which case @code{origin} must be
+@code{SEEK_SET}.  @xref{Predefined Constants}.
+
+@findex frewind
+The function @code{frewind (@var{file})} moves the file pointer to the
+beginning of a file, returning 1 for success, and 0 if an error was
+encountered.  It is equivalent to @code{fseek (@var{file}, 0, SEEK_SET)}.
+
+The following example stores the current file position in the variable
+@samp{marker}, moves the pointer to the beginning of the file, reads
+four characters, and then returns to the original position.
+
+@example
+marker = ftell (myfile);
+frewind (myfile);
+fourch = fgets (myfile, 4);
+fseek (myfile, marker, SEEK_SET);
+@end example
+
+@findex feof
+The function @code{feof (@var{file})} allows you to find out if an
+end-of-file condition has been encountered for a given file.  Note that
+it will only return 1 if the end of the file has already been
+encountered, not if the next read operation will result in an
+end-of-file condition.
+
+@findex ferror
+Similarly, the function @code{ferror (@var{file})} allows you to find
+out if an error condition has been encountered for a given file.  Note
+that it will only return 1 if an error has already been encountered, not
+if the next operation will result in an error condition.
+
+@findex kbhit
+The function @code{kbhit} may be usd to read a single keystroke from the
+keyboard.  For example,
+
+@example
+x = kbhit ();
+@end example
+
+@noindent
+will set @var{x} to the next character typed at the keyboard, without
+requiring a carriage return to be typed.
+
+@findex freport
+Finally, it is often useful to know exactly which files have been
+opened, and whether they are open for reading, writing, or both.  The
+command @code{freport} prints this information for all open files.  For
+example,
+
+@example
+@group
+octave:13> freport
+
+ number  mode  name
+
+      0     r  stdin
+      1     w  stdout
+      2     w  stderr
+      3     r  myfile
+@end group
+@end example

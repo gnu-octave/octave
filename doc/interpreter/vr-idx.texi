@@ -1,0 +1,8 @@
+@c Copyright (C) 1996 John W. Eaton
+@c This is part of the Octave manual.
+@c For copying conditions, see the file gpl.texi.
+
+@node Variable Index, Function Index, Concept Index, Top
+@unnumbered Variable Index
+
+@printindex vr

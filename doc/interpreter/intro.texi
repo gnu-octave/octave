@@ -1,0 +1,548 @@
+@c Copyright (C) 1996 John W. Eaton
+@c This is part of the Octave manual.
+@c For copying conditions, see the file gpl.texi.
+
+@node Introduction, Invoking Octave, Copying, Top
+@chapter A Brief Introduction to Octave
+@cindex introduction
+
+This manual documents how to run, install and port Octave, and how
+to report bugs.
+
+Octave is a high-level language, primarily intended for numerical
+computations.  It provides a convenient command line interface for
+solving linear and nonlinear problems numerically, and for performing
+other numerical experiments.  It may also be used as a batch-oriented
+language.
+
+This document corresponds to Octave version @value{VERSION}.
+
+@c XXX FIXME XXX -- add explanation about how and why Octave was written.
+@c
+@c XXX FIXME XXX -- add a sentence or two explaining that we could
+@c                  always use more funding.
+
+@menu
+* Running Octave::              
+* Simple Examples::             
+* Executable Octave Programs::  
+* Comments::                    
+* Errors::                      
+@end menu
+
+@node Running Octave, Simple Examples, Introduction, Introduction
+@section Running Octave
+
+On most systems, the way to invoke Octave is with the shell command
+@samp{octave}.  Octave displays an initial message and then a prompt
+indicating it is ready to accept input.  You can begin typing Octave
+commands immediately afterward.
+
+If you get into trouble, you can usually interrupt Octave by typing
+@kbd{Control-C} (usually written @kbd{C-c} for short).  @kbd{C-c} gets
+its name from the fact that you type it by holding down the @kbd{CTRL}
+key and then pressing @kbd{c}.  Doing this will normally return you to
+Octave's prompt.
+
+To exit Octave, type @samp{quit}, or @samp{exit} at the Octave prompt.
+
+@cindex exiting octave
+@cindex quitting octave
+@findex exit
+@findex quit
+
+On systems that support job control, you can suspend Octave by sending
+it a @code{SIGTSTP} signal, usually by typing @kbd{C-z}.
+
+@node Simple Examples, Executable Octave Programs, Running Octave, Introduction
+@section Simple Examples
+
+The following chapters describe all of Octave's features in detail, but
+before doing that, it might be helpful to give a sampling of some of its
+capabilities.
+
+If you are new to Octave, I recommend that you try these examples to
+begin learning Octave by using it.  Lines marked with @samp{octave:13>}
+are lines you type, ending each with a carriage return.  Octave will
+respond with an answer, or by displaying a graph.
+
+@unnumberedsubsec Creating a Matrix
+
+To create a new matrix and store it in a variable so that it you can
+refer to it later, type the command
+
+@example
+octave:1> a = [ 1, 1, 2; 3, 5, 8; 13, 21, 34 ]
+@end example
+
+@noindent
+Octave will respond by printing the matrix in neatly aligned columns.
+Ending a command with a semicolon tells Octave to not print the result
+of a command.  For example
+
+@example
+octave:2> b = rand (3, 2);
+@end example
+
+@noindent
+will create a 3 row, 2 column matrix with each element set to a random
+value between zero and one.
+
+To display the value of any variable, simply type the name of the
+variable.  For example, to display the value stored in the matrix
+@samp{b}, type the command
+
+@example
+octave:3> b
+@end example
+
+@unnumberedsubsec Matrix Arithmetic
+
+Octave has a convenient operator notation for performing matrix
+arithmetic.  For example, to multiply the matrix @code{a} by a scalar
+value, type the command
+
+@example
+octave:4> 2 * a
+@end example
+
+To multiply the two matrices @var{a} and @var{b}, type the command
+
+@example
+octave:5> a * b
+@end example
+
+To form the matrix product
+@iftex
+@tex
+ $a^Ta$,
+@end tex
+@end iftex
+@ifinfo
+ @code{transpose (a) * a},
+@end ifinfo
+type the command
+
+@example
+octave:6> a' * a
+@end example
+
+@unnumberedsubsec Solving Linear Equations
+
+To solve the set of linear equations
+@iftex
+@tex
+ ${\bf Ax} = {\bf b}$,
+@end tex
+@end iftex
+@ifinfo
+@code{Ax = b},
+@end ifinfo
+use the left division operator, @samp{\}:
+
+@example
+octave:7> a \ b
+@end example
+
+@noindent
+This is conceptually equivalent to
+@iftex
+@tex
+ ${\bf A}^{-1}{\bf b}$,
+@end tex
+@end iftex
+@ifinfo
+inv (A) * b,
+@end ifinfo
+but avoids computing the inverse of a matrix directly.
+
+If the coefficient matrix is singular, Octave will print a warning
+message and compute a minimum norm solution.
+
+@unnumberedsubsec Integrating Differential Equations
+
+Octave has built-in functions for solving nonlinear differential
+equations of the form
+@iftex
+@tex
+$$
+ {dx \over dt} = f(x,t), \qquad {\rm with} x(t=t_0) = x_0
+$$
+@end tex
+@end iftex
+@ifinfo
+
+@example
+dx
+-- = f (x, t)
+dt
+@end example
+
+@noindent
+with the initial condition
+
+@example
+x(t = t0) = x0
+@end example
+@end ifinfo
+
+@noindent
+For Octave to integrate equations of this form, you must first provide a
+definition of the function
+@iftex
+@tex
+$f (x, t)$.
+@end tex
+@end iftex
+@ifinfo
+@code{f(x,t)}.
+@end ifinfo
+This is straightforward, and may be accomplished by entering the
+function body directly on the command line.  For example, the following
+commands define the right hand side function for an interesting pair of
+nonlinear differential equations.  Note that while you are entering a
+function, Octave responds with a different prompt, to indicate that it
+is waiting for you to complete your input.
+
+@example
+octave:8> function xdot = f (x, t) 
+>
+>  r = 0.25;
+>  k = 1.4;
+>  a = 1.5;
+>  b = 0.16;
+>  c = 0.9;
+>  d = 0.8;
+>
+>  xdot(1) = r*x(1)*(1 - x(1)/k) - a*x(1)*x(2)/(1 + b*x(1));
+>  xdot(2) = c*a*x(1)*x(2)/(1 + b*x(1)) - d*x(2);
+>
+> endfunction
+@end example
+
+@noindent
+Given the initial condition
+
+@example
+x0 = [1; 2];
+@end example
+
+@noindent
+and the set of output times as a column vector (note that the first
+output time corresponds to the initial condition given above)
+
+@example
+t = linspace (0, 50, 200)';
+@end example
+
+@noindent
+it is easy to integrate the set of differential equations:
+
+@example
+x = lsode ("f", x0, t);
+@end example
+
+@noindent
+The function @samp{lsode} uses the Livermore Solver for Ordinary
+Differential Equations, described in A. C. Hindmarsh, @cite{ODEPACK, a
+Systematized Collection of ODE Solvers}, in: Scientific Computing, R. S.
+Stepleman et al. (Eds.), North-Holland, Amsterdam, 1983, pages 55--64.
+
+@unnumberedsubsec Producing Graphical Output
+
+To display the solution of the previous example graphically, use the
+command
+
+@example
+plot (t, x)
+@end example
+
+If you are using the X Window System, Octave will automatically create
+a separate window to display the plot.  If you are using a terminal that
+supports some other graphics commands, you will need to tell Octave what
+kind of terminal you have.  Type the command
+
+@example
+set term
+@end example
+
+@noindent
+to see a list of the supported terminal types.  Octave uses
+@code{gnuplot} to display graphics, and can display graphics on any
+terminal that is supported by @code{gnuplot}.
+
+To capture the output of the plot command in a file rather than sending
+the output directly to your terminal, you can use a set of commands like
+this
+
+@example
+@group
+set term postscript
+set output "foo.ps"
+replot
+@end group
+@end example
+
+@noindent
+This will work for other types of output devices as well.  Octave's
+@samp{set} command is really just piped to the @code{gnuplot}
+subprocess, so that once you have a plot on the screen that you like,
+you should be able to do something like this to create an output file
+suitable for your graphics printer.
+
+Or, you can eliminate the intermediate file by using commands like this
+
+@example
+@group
+set term postscript
+set output "|lpr -Pname_of_your_graphics_printer"
+replot
+@end group
+@end example
+
+@unnumberedsubsec Editing What You Have Typed
+
+At the Octave prompt, you can recall, edit, and reissue previous
+commands using Emacs- or vi-style editing commands.  The default
+keybindings use Emacs-style commands.  For example, to recall the
+previous command, type @kbd{Control-P} (usually written @kbd{C-p} for
+short).  @kbd{C-p} gets  its name from the fact that you type it by
+holding down the @kbd{CTRL} key and then pressing @kbd{p}.  Doing this
+will normally bring back the previous line of input.  @kbd{C-n} will
+bring up the next line of input, @kbd{C-b} will move the cursor backward
+on the line, @kbd{C-f} will move the cursor forward on the line, etc.
+
+A complete description of the command line editing capability is given
+in this manual in @ref{Command Line Editing}.
+
+@unnumberedsubsec Getting Help
+
+Octave has an extensive help facility.  The same documentation that is
+available in printed form is also available from the Octave prompt,
+because both forms of the documentation are created from the same input
+file.
+
+In order to get good help you first need to know the name of the command
+that you want to use.  This name of the function may not always be
+obvious, but a good place to start is to just type @code{help}.
+This will show you all the operators, reserved words, functions,
+built-in variables, and function files.  You can then get more
+help on anything that is listed by simply including the name as an
+argument to help.  For example,
+
+@example
+help plot
+@end example
+
+@noindent
+will display the help text for the @code{plot} function.
+
+Octave sends output that is too long to fit on one screen through a
+pager like @code{less} or @code{more}.  Type a carriage return to
+advance one line, a space character to advance one page, and @samp{q} to
+exit the pager.
+
+@unnumberedsubsubsec Help via Info
+
+The part of Octave's help facility that allows you to read the complete
+text of the printed manual from within Octave uses a program called
+Info.  When you invoke Info you will be put into a menu driven program
+that contains the entire Octave manual.  Help for using Info is provided
+in this manual in @ref{Using Info}.
+
+@node Executable Octave Programs, Comments, Simple Examples, Introduction
+@section Executable Octave Programs
+@cindex executable scripts
+@cindex scripts, executable
+@cindex self contained programs
+@cindex program, self contained
+@cindex @samp{#!}
+
+Once you have learned Octave, you may want to write self-contained
+Octave scripts, using the @samp{#!} script mechanism.  You can do this
+on many Unix systems @footnote{The @samp{#!} mechanism works on Unix
+systems derived from Berkeley Unix, System V Release 4, and some System
+V Release 3 systems.} (and someday on GNU).
+
+For example, you could create a text file named @file{hello}, containing
+the following lines:
+
+@example
+#! /usr/local/bin/octave -qf
+
+# a sample Octave program
+printf ("Hello, world!\n");
+@end example
+
+@noindent
+After making this file executable (with the @code{chmod} command), you
+can simply type:
+
+@example
+hello
+@end example
+
+@noindent
+at the shell, and the system will arrange to run Octave @footnote{The
+line beginning with @samp{#!} lists the full file name of an interpreter
+to be run, and an optional initial command line argument to pass to that
+interpreter.  The operating system then runs the interpreter with the
+given argument and the full argument list of the executed program.  The
+first argument in the list is the full file name of the Octave program.
+The rest of the argument list will either be options to Octave, or data
+files, or both.  The @code{-qf} option is usually specified in
+stand-alone Octave programs to prevent them from printing the normal
+startup message, and to keep them from behaving differently depending on
+the contents of a particular user's @file{~/.octaverc} file.
+@xref{Invoking Octave}.} as if you had typed:
+
+@example
+octave hello
+@end example
+
+@noindent
+Self-contained Octave scripts are useful when you want to write a
+program which users can invoke without knowing that the program is
+written in the Octave language.
+
+@node Comments, Errors, Executable Octave Programs, Introduction
+@section Comments in Octave Programs
+@cindex @samp{#}
+@cindex @samp{%}
+@cindex comments
+@cindex use of comments
+@cindex documenting Octave programs
+@cindex programs, documenting
+
+A @dfn{comment} is some text that is included in a program for the sake
+of human readers, and that is not really part of the program.  Comments
+can explain what the program does, and how it works.  Nearly all
+programming languages have provisions for comments, because programs are
+typically hard to understand without them.
+
+In the Octave language, a comment starts with either the sharp sign
+character, @samp{#}, or the percent symbol @samp{%} and continues to the
+end of the line.  The Octave interpreter ignores the rest of a
+line following a sharp sign or percent symbol.  For example, we could
+have put the following into the function @code{f}:
+
+@smallexample
+function xdot = f (x, t)
+
+# usage: f (x, t)
+#
+# This function defines the right-hand-side functions for a set of
+# nonlinear differential equations.
+
+  r = 0.25
+
+  and so on...
+
+endfunction
+@end smallexample
+
+The @code{help} command (@pxref{Help}) is able to find the first block
+of comments in a function (even those that are composed directly on the
+command line).  This means that users of Octave can use the same
+commands to get help for built-in functions, and for functions that you
+have defined.  For example, after defining the function @code{f} above,
+the command
+
+@example
+help f
+@end example
+
+@noindent
+produces the output
+
+@smallexample
+ usage: f (x, t)
+
+ This function defines the right-hand-side functions for a set of
+ nonlinear differential equations.
+@end smallexample
+
+Although it is possible to put comment lines into keyboard-composed
+throw-away Octave programs, it usually isn't very useful, because the
+purpose of a comment is to help you or another person understand the
+program at a later time.
+
+@node Errors,  , Comments, Introduction
+@section Errors
+
+There are two classes of errors that Octave produces when it encounters
+input that it is unable to understand, or when it is unable to perform
+an action.
+
+A @dfn{parse error} occurs if Octave cannot understand something you
+have typed.  For example, if you misspell a keyword,
+
+@example
+octave:13> functon y = f (x) y = x^2; endfunction
+@end example
+
+@noindent
+Octave will respond immediately with a message like this:
+
+@example
+parse error:
+
+  functon y = f (x) y = x^2; endfunction
+          ^
+@end example
+
+@noindent
+For most parse errors, Octave uses a caret (@samp{^}) to mark the point
+on the line where it was unable to make sense of your input.  In this
+case, Octave generated an error message because the keyword
+@code{function} was misspelled.  Instead of seeing @samp{function f},
+Octave saw two consecutive variable names, which is invalid in this
+context.  It marked the error at the @code{y} because the first name by
+itself was accepted as valid input.
+
+Another class of error message occurs occurs at evaluation time.  These
+errors are called @dfn{run-time errors}, or sometimes
+@dfn{evaluation errors} because they occur when your program is being
+@dfn{run}, or @dfn{evaluated}.  For example, if after correcting the
+mistake in the previous function definition, you type
+
+@example
+octave:13> f ()
+@end example
+
+@noindent
+Octave will respond with
+
+@example
+error: `x' undefined near line 1 column 24
+error: evaluating expression near line 1, column 24
+error: evaluating assignment expression near line 1, column 22
+error: called from `f'
+@end example
+
+This error message has several parts, and gives you quite a bit of
+information to help you locate the source of the error.  The messages
+are generated from the point of the innermost error, and provide a
+traceback of enclosing expression and function calls.
+
+In the example above, the first line indicates that a variable named
+@samp{x} was found to be undefined near line 1 and column 24 of some
+function or expression.  For errors occurring within functions, lines
+are numbered beginning with the line containing the @samp{function}
+keyword.  For errors occurring at the top level, the line number
+indicates the input line number, which is usually displayed in the
+prompt string.
+
+The second and third lines in the example indicate that the error
+occurred within an assignment expression, and the last line of the error
+message indicates that the error occurred within the function @samp{f}.
+If the function @samp{f} had been called from another function, say
+@samp{g}, the list of errors would have ended with one more line:
+
+@example
+error: called from `g'
+@end example
+
+These lists of function calls usually make it fairly easy to trace the
+path your program took before the error occurred, and to correct the
+error before trying again.

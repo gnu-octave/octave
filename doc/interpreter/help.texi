@@ -1,0 +1,36 @@
+@c Copyright (C) 1996 John W. Eaton
+@c This is part of the Octave manual.
+@c For copying conditions, see the file gpl.texi.
+
+@node Help, Programming Utilities, Command History Functions, Top
+@chapter Help
+
+@findex help
+
+Octave's @code{help} command can be used to print brief usage-style
+messages, or to display information directly from an on-line version of
+the printed manual, using the GNU Info browser.  If invoked without any
+arguments, @code{help} prints a list of all the available operators,
+functions, and built-in variables.  If the first argument is @code{-i},
+the @code{help} command searches the index of the on-line version of
+this manual for the given topics.
+
+For example, the command
+
+@example
+help help
+@end example
+
+@noindent
+prints a short message describing the @code{help} command, and
+
+@example
+help -i help
+@end example
+
+@noindent
+starts the GNU Info browser at this node in the on-line version of the
+manual.
+
+@xref{Using Info}, for complete details about how to use the GNU Info
+browser to read the on-line version of the manual.

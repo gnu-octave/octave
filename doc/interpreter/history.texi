@@ -1,0 +1,109 @@
+@c Copyright (C) 1996 John W. Eaton
+@c This is part of the Octave manual.
+@c For copying conditions, see the file gpl.texi.
+
+@node Command History Functions, Help, System Utilities, Top
+@chapter Command History Functions
+
+@findex edit_history
+@findex run_history
+@findex history
+
+Octave provides three functions for viewing, editing, and re-running
+chunks of commands from the history list.
+
+The function @code{history} displays a list of commands that you have
+executed.  It also allows you to write the current history to a file for
+safe keeping, and to replace the history list with the commands stored
+in a named file.  Valid arguments are:
+
+@table @code
+@item -w file
+Write the current history to the named file.  If the name is omitted,
+use the default history file (normally @file{~/.octave_hist}).
+
+@item -r file
+Read the named file, replacing the current history list with its
+contents.  If the name is omitted, use the default history file
+(normally @file{~/.octave_hist}).
+
+@item N
+Only display the most recent @code{N} lines of history.
+
+@item -q
+Don't number the displayed lines of history.  This is useful for cutting
+and pasting commands if you are using the X Window System.
+@end table
+
+For example, to display the five most recent commands that you have
+typed without displaying line numbers, use the command
+@samp{history -q 5}.
+
+The function @code{edit_history} allows you to edit a block of commands
+from the history list using the editor named by the environment
+variable @code{EDITOR}, or the default editor (normally @code{vi}).  It
+is often more convenient to use @code{edit_history} to define functions
+rather than attempting to enter them directly on the command line.
+By default, the block of commands is executed as soon as you exit the
+editor.  To avoid executing any commands, simply delete all the lines
+from the buffer before exiting the editor.
+
+The @code{edit_history} command takes two optional arguments specifying
+the history numbers of first and last commands to edit.  For example,
+the command
+
+@example
+edit_history 13
+@end example
+
+@noindent
+extracts all the commands from the 13th through the last in the history
+list.  The command
+
+@example
+edit_history 13 169
+@end example
+
+@noindent
+only extracts commands 13 through 169.  Specifying a larger number for
+the first command than the last command reverses the list of commands
+before placing them in the buffer to be edited.  If both arguments are
+omitted, the previous command in the history list is used.
+
+The command @code{run_history} is like @code{edit_history}, except that
+the editor is not invoked, and the commands are simply executed as they
+appear in the history list.
+
+@findex diary
+
+The @code{diary} command allows you to create a list of all commands
+@emph{and} the output they produce, mixed together just as you see them
+on your terminal.
+
+For example, the command
+
+@example
+diary on
+@end example
+
+@noindent
+tells Octave to start recording your session in a file called
+@file{diary} in your current working directory.  To give Octave the name
+of the file write to, use the a command like
+
+@example
+diary my-diary.txt
+@end example
+
+@noindent
+Then Octave will write all of your commands to the file
+@file{my-diary.txt}.
+
+To stop recording your session, use the command
+
+@example
+diary off
+@end example
+
+@noindent
+Without any arguments, @code{diary} toggles the current diary state.

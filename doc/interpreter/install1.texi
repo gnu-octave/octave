@@ -1,0 +1,22 @@
+@c Copyright (C) 1996 John W. Eaton
+@c This is part of the Octave manual.
+@c For copying conditions, see the file gpl.texi.
+
+@setfilename INSTALL
+@set INSTALLONLY
+
+@include conf.texi
+
+@c The immediately following lines apply to the INSTALL file
+@c which is generated using this file.
+
+This file documents the installation of Octave.
+
+Octave is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation.
+
+@node Installation, Installation, Installation, (dir)
+@chapter Installing Octave
+@include install.texi
+@bye

@@ -1,0 +1,6 @@
+@c Copyright (C) 1996 John W. Eaton
+@c This is part of the Octave manual.
+@c For copying conditions, see the file gpl.texi.
+
+@set VERSION %OCTAVE_VERSION%
+@set OCTAVEHOME %OCTAVE_HOME%

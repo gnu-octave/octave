@@ -1,0 +1,500 @@
+@c Copyright (C) 1996 John W. Eaton
+@c This is part of the Octave manual.
+@c For copying conditions, see the file gpl.texi.
+
+@c The text of this file will eventually appear in the file INSTALL
+@c in the Octave distribution, as well as in the Octave manual.
+
+@ifclear INSTALLONLY
+@node Installation, Trouble, Emacs, Top
+@appendix Installing Octave
+@end ifclear
+@cindex installing Octave
+
+Here is the procedure for installing Octave from scratch on a Unix
+system.  For instructions on how to install the binary distributions of
+Octave, see @ref{Binary Distributions}.
+
+@itemize @bullet
+@item
+Run the shell script @file{configure}.  This will determine the features
+your system has (or doesn't have) and create a file named Makefile from
+each of the files named Makefile.in.
+
+Here is a summary of the configure options that are most frequently used
+when building Octave:
+
+@table @code
+@item --prefix=@var{prefix}
+Install Octave in subdirectories below @var{prefix}.  The default value
+of @var{prefix} is @file{/usr/local}.
+
+@item --srcdir=@var{dir}
+Look for Octave sources in the directory @var{dir}.
+
+@item --with-f2c
+Use f2c even if Fortran compiler is available.
+
+@item --enable-dld
+Use DLD to make Octave capable of dynamically linking
+externally compiled functions.  This only works on systems that have a
+working port of DLD.
+
+@item --enable-lite-kernel
+Compile smaller kernel.  This currently requires DLD so that Octave can
+load functions at run time that are not loaded at compile time.
+
+@item --help
+Print a summary of the options recognized by the configure script.
+@end table
+
+See the file INSTALL for more information about the command line options
+used by configure.  That file also contains instructions for compiling
+in a directory other than where the source is located.
+
+@item
+Run make.
+
+You will need a recent version of GNU make.  Modifying Octave's
+Makefiles to work with other make programs is probably not worth
+your time.  We recommend you get and compile GNU make instead.
+
+For plotting, you will need to have gnuplot installed on your system.
+Gnuplot is a command-driven interactive function plotting program.
+Gnuplot is copyrighted, but freely distributable.  The `gnu' in gnuplot
+is a coincidence---it is not related to the GNU project or the FSF in
+any but the most peripheral sense.
+
+For version @value{VERSION}, you must have the GNU C++ compiler (gcc)
+version 2.6.3 or later to compile Octave.  You will also need version
+2.6.1 of the GNU C++ class library (libg++).  If you plan to modify the
+parser you will also need GNU bison and fles.  If you modify the
+documentation, you will need GNU Texinfo, along with the patch for the
+makeinfo program that is distributed with Octave.
+
+GNU make, gcc, and libg++, gnuplot, bison, flex, and Texinfo are all
+available from many anonymous ftp archives.  The primary site is
+prep.ai.mit.edu, but it is often very busy.  A list of sites that mirror
+the software on prep is available by anonymous ftp from prep.ai.mit.edu
+in the file /pub/gnu/GNUinfo/FTP, or by fingering fsf@@prep.ai.mit.edu.
+
+If you don't have a Fortran compiler, or if your Fortran compiler
+doesn't work like the traditional Unix f77, you will need to have the
+Fortran to C translator f2c.  You can get f2c from any
+number of anonymous ftp archives.  The most recent version of f2c
+is always available from netlib.att.com.
+
+On an otherwise idle SPARCstation II, it will take somewhere between 60
+and 90 minutes to compile everything, depending on whether you are
+compiling the Fortran libraries with f2c or using the Fortran compiler
+directly.  You will need about 50 megabytes of disk storage to work with
+(considerably less if you don't compile with debugging symbols).  To do
+that, use the command
+
+@example
+make CFLAGS=-O CXXFLAGS=-O LDFLAGS=
+@end example
+
+@noindent
+instead of just @samp{make}.
+
+@item
+If you encounter errors while compiling Octave, first check the list of
+known problems below to see if there is a workaround or solution for
+your problem.  If not,
+@ifclear INSTALLONLY
+see @ref{Trouble},
+@end ifclear
+@ifset INSTALLONLY
+see the file BUGS
+@end ifset
+for information about how to report bugs.
+
+@item
+Once you have successfully compiled Octave, run @samp{make install}.
+
+This will install a copy of octave, its libraries, and its documentation
+in the destination directory.  As distributed, Octave is installed in
+the following directories:
+
+@table @file
+@item @var{prefix}/bin
+Octave and other binaries that people will want to run directly.
+
+@item @var{prefix}/lib
+Libraries like libcruft.a and liboctave.a.
+
+@item @var{prefix}/include/octave
+Include files distributed with Octave.
+
+@item @var{prefix}/man/man1
+Unix-style man pages describing Octave.
+
+@item @var{prefix}/info
+Info files describing Octave.
+
+@item @var{prefix}/lib/octave/@var{version}/m
+Function files distributed with Octave.  This includes the Octave
+version, so that multiple versions of Octave may be installed at the
+same time.
+
+@item @var{prefix}/lib/octave/@var{version}/exec/@var{host_type}
+Executables to be run by Octave rather than the user.
+
+@item @var{prefix}/lib/octave/@var{version}/oct/@var{host_type}
+Object files that will be dynamically loaded.
+
+@item @var{prefix}/lib/octave/@var{version}/imagelib
+Image files that are distributed with Octave.
+@end table
+
+@noindent
+where @var{prefix} defaults to @file{/usr/local}, @var{version}
+stands for the current version number of the interpreter, and
+@var{host_type} is the type of computer on which Octave is installed
+(for example, @samp{i486-unknown-gnu}).
+@end itemize
+
+@menu
+* Installation Problems::       
+* Binary Distributions::        
+@end menu
+
+@node Installation Problems, Binary Distributions, Installation, Installation
+@appendixsec Installation Problems
+	
+This section contains a list of problems (and some apparent problems
+that don't really mean anything is wrong) that may show up during
+installation of Octave.
+
+@c XXX FIXME XXX --- this might be a good place to explain the terms for
+@c FSQP and NPSOL.
+
+@itemize @bullet
+@item
+If @code{configure} fails when trying to create its output files, you
+may have found a limitation in the version of @code{sed} on your
+system.  Using GNU @code{sed} avoids the problem.
+
+@item
+You may need to edit some files in the gcc include subdirectory to add
+prototypes for functions there.  For example, Ultrix 4.2 needs proper
+declarations for the @code{signal()} and the @code{SIG_IGN} macro in the
+file @file{signal.h}.
+
+On some systems the @code{SIG_IGN} macro is defined to be something like
+this:
+
+@example
+#define  SIG_IGN  (void (*)())1
+@end example
+
+@noindent
+when it should really be something like:
+
+@example
+#define  SIG_IGN  (void (*)(int))1
+@end example
+
+@noindent
+to match the prototype declaration for @code{signal()}.
+
+The gcc fixincludes/fixproto script should probably fix this when gcc
+installs its modified set of header files, but I don't think that's
+been done yet.
+
+@item
+There is a bug with the makeinfo program that is distributed with
+texinfo-3.1 that causes the indices in Octave's on-line manual to be
+generated incorrectly.  If you need to recreate the on-line
+documentation, you should get the makeinfo program that is distributed
+with texinfo-3.1 and apply the patch for makeinfo that is distributed
+with Octave.  See the file MAKEINFO.PATCH for more details.
+
+@item
+If you don't have NPSOL but you still want to be able to solve NLPs, or
+if you don't have QPSOL but you still want to solve QPs, you'll need to
+find replacements or order them from Stanford.  If you know of a freely
+redistributable replacement, please let us know---we might be interested
+in distributing it with Octave.
+
+You can get more information about NPSOL and QPSOL from
+
+@quotation
+Stanford Business Sofrtware, Inc.@*
+2680 Bayshore Parkway, Suite 304@*
+Mountain View, CA 94043@*
+Tel: (415) 962-8719@*
+Fax: (415) 962-1869
+@end quotation
+
+Octave may soon support FSQP, an NLP solver from Andre Tits
+(andre@@src.umd.edu) of the University of Maryland.  FSQP is available
+free of charge to academic sites, but can not be redistributed to third
+parties.
+
+@item
+Some of the Fortran subroutines may fail to compile with older versions
+of the Sun Fortran compiler.  If you get errors like
+
+@example
+zgemm.f:
+	zgemm:
+warning: unexpected parent of complex expression subtree
+zgemm.f, line 245: warning: unexpected parent of complex expression subtree
+warning: unexpected parent of complex expression subtree
+zgemm.f, line 304: warning: unexpected parent of complex expression subtree
+warning: unexpected parent of complex expression subtree
+zgemm.f, line 327: warning: unexpected parent of complex expression subtree
+pcc_binval: missing IR_CONV in complex op
+make[2]: *** [zgemm.o] Error 1
+@end example
+
+@noindent
+when compiling the Fortran subroutines in the @file{libcruft}
+subdirectory, you should either upgrade your compiler or try compiling
+with optimization turned off.
+
+@item
+On NeXT systems, if you get errors like this:
+
+@example
+/usr/tmp/cc007458.s:unknown:Undefined local symbol LBB7656
+/usr/tmp/cc007458.s:unknown:Undefined local symbol LBE7656
+@end example
+
+@noindent
+when compiling @file{Array.cc} and @file{Matrix.cc}, try recompiling
+these files without @code{-g}.
+
+@item
+Some people have reported that calls to shell_cmd and the pager do not
+work on SunOS systems.  This is apparently due to having
+@code{G_HAVE_SYS_WAIT} defined to be 0 instead of 1 when compiling
+libg++.
+
+@item
+On NeXT systems, linking to @file{libsys_s.a} may fail to resolve the
+following functions
+
+@example
+_tcgetattr
+_tcsetattr
+_tcflow
+@end example
+
+@noindent
+which are part of @file{libposix.a}.  Unfortunately, linking Octave with
+@code{-posix} results in the following undefined symbols.
+
+@example
+.destructors_used
+.constructors_used
+_objc_msgSend
+_NXGetDefaultValue
+_NXRegisterDefaults
+.objc_class_name_NXStringTable
+.objc_class_name_NXBundle
+@end example
+
+One kludge around this problem is to extract @file{termios.o} from
+@file{libposix.a}, put it in Octave's @file{src} directory, and add it
+to the list of files to link together in the Makefile.  Suggestions for
+better ways to solve this problem are welcome!
+
+@item
+With g++ 2.6.3 (and possibly other 2.6.x versions) on some Intel x86
+systems, compiling @file{Array-d.cc} fails with the messages like
+
+@example
+as: /tmp/cc005254.s:4057: Local symbol LBB103 never defined.
+as: /tmp/cc005254.s:4057: Local symbol LBE103 never defined.
+@end example
+
+@noindent
+A possible workaround for this is to compile without @code{-g}.
+
+@item
+If Octave crashes immediately with a floating point exception, it is
+likely that it is failing to initialize the IEEE floating point values
+for infinity and NaN.
+
+If your system actually does support IEEE arithmetic, you should be able
+to fix this problem by modifying the function @code{octave_ieee_init} in
+the file @file{sysdep.cc} to correctly initialize Octave's internal
+infinity and NaN variables.
+
+If your system does not support IEEE arithmetic but Octave's configure
+script incorrectly determined that it does, you can work around the
+problem by editing the file @file{config.h} to not define
+@code{HAVE_ISINF}, @code{HAVE_FINITE}, and @code{HAVE_ISNAN}.
+
+In any case, please report this as a bug since it might be possible to
+modify Octave's configuration script to automatically determine the
+proper thing to do.
+
+@item
+Using the -O flag with old versions of the Sun Fortran compiler
+apparently prevents if from compiling some of the Fortran subroutines
+that Octave uses.  The workaround is to not use -O for those
+subroutines.
+
+@ignore
+@c These next two items should no longer be problems, since g++ and
+@c libg++ use a different method for installing an appropriate set of
+@c header files.
+@item
+Problems with finite and isinf on systems that don't have @code{isinf()}
+but do have @code{finite()}.
+
+The copy of @file{math.h} supplied with libg++ version 2.3 (and possibly
+other versions as well) declares @code{finite()} as
+
+@example
+double finite (double);
+@end example
+
+@noindent
+even though some (many? all?) systems declare it as
+
+@example
+int finite (double);
+@end example
+
+If the copy of @file{math.h} from libg++ was installed, you should edit
+it so that the libg++ declaration of @samp{finite()} matches the
+system's.
+
+@item
+Problems compiling octave.cc on RS/6000 (and possibly other)
+systems:
+
+If octave.cc fails to compile due to parse errors in system include
+files and undeclared subroutines like `gethostname' and `endpwent',
+it is probably because not all of the libg++ include files have been
+installed.  This appears to be a problem with libg++ version 2.3.
+Here's a fix:
+
+Apply the following patch to @file{libg++/config/rs6000.mh} and re-run
+make install for libg++.
+
+@example
+*** rs6000.mh~  Mon Aug 17 19:18:44 1992
+--- rs6000.mh   Mon Dec 28 23:54:57 1992
+***************
+*** 3,6 ****
+  # /usr/include/unistd.h has write(int, char*, unsigned) instead
+  # of write(int, const void*, size_t).  This causes problems due
+  # to g++ new pedantic dis-allowal of void* -> char* conversions.
+! G_CONFIG_ARGS = "HAVE_UNISTD=0 /*broken*/"
+--- 3,12 ----
+  # /usr/include/unistd.h has write(int, char*, unsigned) instead
+  # of write(int, const void*, size_t).  This causes problems due
+  # to g++ new pedantic dis-allowal of void* -> char* conversions.
+! G_CONFIG_ARGS = "HAVE_UNISTD=0 /*broken*/"
+! 
+! # If the C include files are C++-ready (with extern "C"),
+! # define: HAVE_CPLUS_EXTERN = 1 and: WRAP_C_INCLUDES =
+! # If not, define HAVE_CPLUS_EXTERN = 0, and do not define
+! # WRAP_C_INCLUDES here.
+! HAVE_CPLUS_EXTERN = 0
+@end example
+@end ignore
+@end itemize
+
+@node Binary Distributions,  , Installation Problems, Installation
+@appendixsec Binary Distributions
+
+This section contains instructions for creating and installing a
+binary distribution.
+
+@menu
+* Installing Octave from a Binary Distribution::  
+* Creating a Binary Distribution::  
+@end menu
+
+@node Installing Octave from a Binary Distribution, Creating a Binary Distribution, Binary Distributions, Binary Distributions
+@appendixsubsec Installing Octave from a Binary Distribution
+
+@itemize @bullet
+@item
+To install Octave from a binary distribution, execute the command
+
+@example
+sh ./doinstall.sh
+@end example
+
+@noindent
+in the top level directory of the distribution.
+
+Binary distributions are normally compiled assuming that Octave will be
+installed in the following subdirectories of @file{/usr/local}.
+
+@table @file
+@item bin
+Octave and other binaries that people will want to run directly.
+
+@item man/man1
+Unix-style man pages describing Octave.
+
+@item info
+Info files describing Octave.
+
+@item lib/octave/@var{version}/m
+Function files distributed with Octave.  This includes the Octave
+version, so that multiple versions of Octave may be installed at the
+same time.
+
+@item lib/octave/@var{version}/exec/@var{host_type}
+Executables to be run by Octave rather than the user.
+
+@ignore
+@item lib/octave/@var{version}/oct/@var{host_type}
+Object files that will be dynamically loaded.
+@end ignore
+
+@item lib/octave/@var{version}/imagelib
+Image files that are distributed with Octave.
+@end table
+
+@noindent
+where @var{version} stands for the current version number of the
+interpreter, and @var{host_type} is the type of computer on which Octave
+is installed (for example, @samp{i486-unknown-gnu}).
+
+If these directories don't exist, the script @file{doinstall.sh} will
+create them for you.
+
+If this is possible for you to install Octave in @file{/usr/local}, or
+if you would prefer to install it in a different directory, you can
+specify the name of the top level directory as an argument to the
+doinstall.sh script.  For example:
+
+@example
+sh ./doinstall.sh /some/other/directory
+@end example
+
+@noindent
+Octave will then be installed in subdirectories of the directory @file{/some/other/directory}
+@end itemize
+
+@node Creating a Binary Distribution,  , Installing Octave from a Binary Distribution, Binary Distributions
+@appendixsubsec Creating a Binary Distribution
+
+Here is how to build a binary distribution for others.
+
+@itemize @bullet
+@item
+Build Octave in the same directory as the source.  This is required
+since the @samp{binary-dist} targets in the Makefiles will not work if
+you compile outside the source tree.
+
+@item
+Use @samp{CFLAGS=-O CXXFLAGS=-O LDFLAGS=} as arguments for Make because
+most people who get the binary distributions are probably not going to
+be interested in debugging Octave.
+
+@item
+Type @samp{make binary-dist}.  This will build everything and then pack
+it up for distribution.
+@end itemize

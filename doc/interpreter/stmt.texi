@@ -1,0 +1,543 @@
+@c Copyright (C) 1996 John W. Eaton
+@c This is part of the Octave manual.
+@c For copying conditions, see the file gpl.texi.
+
+@node Statements, Functions and Scripts, Expressions, Top
+@chapter Statements
+@cindex statements
+
+@dfn{Control statements} such as @code{if}, @code{while}, and so on
+control the flow of execution in Octave programs.  All the control
+statements start with special keywords such as @code{if} and
+@code{while}, to distinguish them from simple expressions.
+
+@cindex @code{end} statement
+Many control statements contain other statements; for example, the
+@code{if} statement contains another statement which may or may not be
+executed.  Each control statement has a corresponding @dfn{end}
+statement that marks the end of the end of the control statement.  For
+example, the keyword @code{endif} marks the end of an @code{if}
+statement, and @code{endwhile} marks the end of a @code{while}
+statement.  You can use the keyword @code{end} anywhere a more specific
+end keyword is expected, but using the more specific keywords is
+preferred because if you use them, Octave is able to provide better
+diagnostics for mismatched or missing end tokens.
+
+The list of statements contained between keywords like @code{if} or
+@code{while} and the corresponding end statement is called the
+@dfn{body} of a control statement.
+
+@menu
+* The if Statement::            
+* The while Statement::         
+* The for Statement::           
+* The break Statement::         
+* The continue Statement::      
+* The unwind_protect Statement::  
+* The try Statement::           
+* Continuation Lines::          
+@end menu
+
+@node The if Statement, The while Statement, Statements, Statements
+@section The @code{if} Statement
+@cindex @code{if} statement
+@cindex @code{else} statement
+@cindex @code{elseif} statement
+@cindex @code{endif} statement
+
+The @code{if} statement is Octave's decision-making statement.  There
+are three basic forms of an @code{if} statement.  In its simplest form,
+it looks like this:
+
+@example
+if (@var{condition}) @var{then-body} endif
+@end example
+
+@noindent
+@var{condition} is an expression that controls what the rest of the
+statement will do.  The @var{then-body} is executed only if
+@var{condition} is true.
+
+The condition in an @code{if} statement is considered true if its value
+is non-zero, and false if its value is zero.  If the value of the
+conditional expression in an @code{if} statement is a vector or a
+matrix, it is considered true only if @emph{all} of the elements are
+non-zero.
+
+The second form of an if statement looks like this:
+
+@example
+if (@var{condition}) @var{then-body} else @var{else-body} endif
+@end example
+
+@noindent
+If @var{condition} is true, @var{then-body} is executed; otherwise,
+@var{else-body} is executed.
+
+Here is an example:
+
+@example
+@group
+if (rem (x, 2) == 0)
+  printf ("x is even\n");
+else
+  printf ("x is odd\n");
+endif
+@end group
+@end example
+
+In this example, if the expression @code{rem (x, 2) == 0} is true (that
+is, the value of @code{x} is divisible by 2), then the first
+@code{printf} statement is evaluated, otherwise the second @code{printf}
+statement is evaluated.
+
+The third and most general form of the @code{if} statement allows
+multiple decisions to be combined in a single statement.  It looks like
+this:
+
+@example
+if (@var{condition}) @var{then-body} elseif (@var{condition}) @var{elseif-body} else @var{else-body} endif
+@end example
+
+@noindent
+Any number of @code{elseif} clauses may appear.  Each condition is
+tested in turn, and if one is found to be true, its corresponding
+@var{body} is executed.  If none of the conditions are true and the
+@code{else} clause is present, its body is executed.  Only one
+@code{else} clause may appear, and it must be the last part of the
+satement.
+
+In the following example, if the first condition is true (that is, the
+value of @code{x} is divisible by 2), then the first @code{printf}
+statement is executed.  If it is false, then the second condition is
+tested, and if it is true (that is, the value of @code{x} is divisible
+by 3), then the second @code{printf} statement is executed.  Otherwise,
+the third @code{printf} statement is performed.
+
+@example
+@group
+if (rem (x, 2) == 0)
+  printf ("x is even\n");
+elseif (rem (x, 3) == 0)
+  printf ("x is odd and divisible by 3\n");
+else
+  printf ("x is odd\n");
+endif
+@end group
+@end example
+
+Note that the @code{elseif} keyword must not be spelled @code{else if},
+as is allowed in Fortran.  If it is, the space between the @code{else}
+and @code{if} will tell Octave to treat this as a new @code{if}
+statement within another @code{if} statement's @code{else} clause.  For
+example, if you write
+
+@example
+@group
+if (@var{c1})
+  @var{body-1}
+else if (@var{c2})
+  @var{body-2}
+endif
+@end group
+@end example
+
+@noindent
+Octave will expect additional input to complete the first @code{if}
+statement.  If you are using Octave interactively, it will continue to
+prompt you for additional input.  If Octave is reading this input from a
+file, it may complain about missing or mismatched @code{end} statements,
+or, if you have not used the more specific @code{end} statements
+(@code{endif}, @code{endfor}, etc.), it may simply produce incorrect
+results, without producing any warning messages.
+
+It is much easier to see the error if we rewrite the statements above
+like this,
+
+@example
+@group
+if (@var{c1})
+  @var{body-1}
+else
+  if (@var{c2})
+    @var{body-2}
+  endif
+@end group
+@end example
+
+@noindent
+using the indentation to show how Octave groups the statements.
+@xref{Functions and Scripts}.
+
+@node The while Statement, The for Statement, The if Statement, Statements
+@section The @code{while} Statement
+@cindex @code{while} statement
+@cindex @code{endwhile} statement
+@cindex loop
+@cindex body of a loop
+
+In programming, a @dfn{loop} means a part of a program that is (or at least can
+be) executed two or more times in succession.
+
+The @code{while} statement is the simplest looping statement in Octave.
+It repeatedly executes a statement as long as a condition is true.  As
+with the condition in an @code{if} statement, the condition in a
+@code{while} statement is considered true if its value is non-zero, and
+false if its value is zero.  If the value of the conditional expression
+in an @code{if} statement is a vector or a matrix, it is considered true
+only if @emph{all} of the elements are non-zero.
+
+Octave's @code{while} statement looks like this:
+
+@example
+@group
+while (@var{condition})
+  @var{body}
+endwhile
+@end group
+@end example
+
+@noindent
+Here @var{body} is a statement or list of statements that we call the
+@dfn{body} of the loop, and @var{condition} is an expression that
+controls how long the loop keeps running.
+
+The first thing the @code{while} statement does is test @var{condition}.
+If @var{condition} is true, it executes the statement @var{body}.  After
+@var{body} has been executed, @var{condition} is tested again, and if it
+is still true, @var{body} is executed again.  This process repeats until
+@var{condition} is no longer true.  If @var{condition} is initially
+false, the body of the loop is never executed.
+
+This example creates a variable @code{fib} that contains the elements of
+the Fibonacci sequence.
+
+@example
+@group
+fib = ones (1, 10);
+i = 3;
+while (i <= 10)
+  fib (i) = fib (i-1) + fib (i-2);
+  i++;
+endwhile
+@end group
+@end example
+
+@noindent
+Here the body of the loop contains two statements.
+
+The loop works like this: first, the value of @code{i} is set to 3.
+Then, the @code{while} tests whether @code{i} is less than or equal to
+10.  This is the case when @code{i} equals 3, so the value of the
+@code{i}-th element of @code{fib} is set to the sum of the previous two
+values in the sequence.  Then the @code{i++} increments the value of
+@code{i} and the loop repeats.  The loop terminates when @code{i}
+reaches 11.
+
+A newline is not required between the condition and the
+body; but using one makes the program clearer unless the body is very
+simple.
+
+@node The for Statement, The break Statement, The while Statement, Statements
+@section The @code{for} Statement
+@cindex @code{for} statement
+@cindex @code{endfor} statement
+
+The @code{for} statement makes it more convenient to count iterations of a
+loop.  The general form of the @code{for} statement looks like this:
+
+@example
+@group
+for @var{var} = @var{expression}
+  @var{body}
+endfor
+@end group
+@end example
+
+@noindent
+The assignment expression in the @code{for} statement works a bit
+differently than Octave's normal assignment statement.  Instead of
+assigning the complete result of the expression, it assigns each column
+of the expression to @var{var} in turn.  If @var{expression} is either
+a row vector or a scalar, the value of @var{var} will be a scalar each
+time the loop body is executed.  If @var{var} is a column vector or a
+matrix, @var{var} will be a column vector each time the loop body is
+executed.
+
+The following example shows another way to create a vector containing
+the first ten elements of the Fibonacci sequence, this time using the
+@code{for} statement:
+
+@example
+@group
+fib = ones (1, 10);
+for i = 3:10
+  fib (i) = fib (i-1) + fib (i-2);
+endfor
+@end group
+@end example
+
+@noindent
+This code works by first evaluating the expression @samp{3:10}, to
+produce a range of values from 3 to 10 inclusive.  Then the variable
+@code{i} is assigned the first element of the range and the body of the
+loop is executed once.  When the end of the loop body is reached, the
+next value in the range is assigned to the variable @code{i}, and the
+loop body is executed again.  This process continues until there are no
+more elements to assign.
+
+In the @code{for} statement, @var{body} stands for any statement or list
+of statements.
+
+Although it is possible to rewrite all @code{for} loops as @code{while}
+loops, the Octave language has both statements because often a
+@code{for} loop is both less work to type and more natural to think of.
+Counting the number of iterations is very common in loops and it can be
+easier to think of this counting as part of looping rather than as
+something to do inside the loop.
+
+@node The break Statement, The continue Statement, The for Statement, Statements
+@section The @code{break} Statement
+@cindex @code{break} statement
+
+The @code{break} statement jumps out of the innermost @code{for} or
+@code{while} loop that encloses it.  The @code{break} statement may only
+be used within the body of a loop.  The following example finds the
+smallest divisor of a given integer, and also identifies prime numbers:
+
+@example
+@group
+num = 103;
+div = 2;
+while (div*div <= num)
+  if (rem (num, div) == 0)
+    break;
+  endif
+  div++;
+endwhile
+if (rem (num, div) == 0)
+  printf ("Smallest divisor of %d is %d\n", num, div)
+else
+  printf ("%d is prime\n", num);
+endif
+@end group
+@end example
+
+When the remainder is zero in the first @code{while} statement, Octave
+immediately @dfn{breaks out} of the loop.  This means that Octave
+proceeds immediately to the statement following the loop and continues
+processing.  (This is very different from the @code{exit} statement
+which stops the entire Octave program.)
+
+Here is another program equivalent to the previous one.  It illustrates
+how the @var{condition} of a @code{while} statement could just as well
+be replaced with a @code{break} inside an @code{if}:
+
+@example
+@group
+@group
+num = 103;
+div = 2;
+while (1)
+  if (rem (num, div) == 0)
+    printf ("Smallest divisor of %d is %d\n", num, div);
+    break;
+  endif
+  div++;
+  if (div*div > num)
+    printf ("%d is prime\n", num);
+    break;
+  endif
+endwhile
+@end group
+@end group
+@end example
+
+@node The continue Statement, The unwind_protect Statement, The break Statement, Statements
+@section The @code{continue} Statement
+@cindex @code{continue} statement
+
+The @code{continue} statement, like @code{break}, is used only inside
+@code{for} or @code{while} loops.  It skips over the rest of the loop
+body, causing the next cycle around the loop to begin immediately.
+Contrast this with @code{break}, which jumps out of the loop altogether.
+Here is an example:
+
+@example
+@group
+# print elements of a vector of random
+# integers that are even.
+
+# first, create a row vector of 10 random
+# integers with values between 0 and 100:
+
+vec = round (rand (1, 10) * 100);
+
+# print what we're interested in:
+
+for x = vec
+  if (rem (x, 2) != 0)
+    continue;
+  endif
+  printf ("%d\n", x);
+endfor
+@end group
+@end example
+
+If one of the elements of @var{vec} is an odd number, this example skips
+the print statement for that element, and continues back to the first
+statement in the loop.
+
+This is not a practical example of the @code{continue} statement, but it
+should give you a clear understanding of how it works.  Normally, one
+would probably write the loop like this:
+
+@example
+@group
+for x = vec
+  if (rem (x, 2) == 0)
+    printf ("%d\n", x);
+  endif
+endfor
+@end group
+@end example
+
+@node The unwind_protect Statement, The try Statement, The continue Statement, Statements
+@section The @code{unwind_protect} Statement
+@cindex @code{unwind_protect} statement
+@cindex @code{unwind_protect_cleanup}
+@cindex @code{end_unwind_protect}
+
+Octave supports a limited form of exception handling modelled after the
+unwind-protect form of Lisp.  
+
+The general form of an @code{unwind_protect} block looks like this:
+
+@example
+@group
+unwind_protect
+  @var{body}
+unwind_protect_cleanup
+  @var{cleanup}
+end_unwind_protect
+@end group
+@end example
+
+@noindent
+Where @var{body} and @var{cleanup} are both optional and may contain any
+Octave expressions or commands.  The statements in @var{cleanup} are 
+guaranteed to be executed regardless of how control exits @var{body}.
+
+This is useful to protect temporary changes to global variables from
+possible errors.  For example, the following code will always restore
+the original value of the built-in variable @code{do_fortran_indexing}
+even if an error occurs while performing the indexing operation.
+
+@example
+save_do_fortran_indexing = do_fortran_indexing;
+unwind_protect
+  do_fortran_indexing = "true";
+  elt = a (idx)
+unwind_protect_cleanup
+  do_fortran_indexing = save_do_fortran_indexing;
+end_unwind_protect
+@end example
+
+Without @code{unwind_protect}, the value of @var{do_fortran_indexing}
+would not be restored if an error occurs while performing the indexing
+operation because evaluation would stop at the point of the error and
+the statement to restore the value would not be executed.
+
+@node The try Statement, Continuation Lines, The unwind_protect Statement, Statements
+@section The @code{try} Statement
+@cindex @code{try} statement
+@cindex @code{catch}
+@cindex @code{end_try_catch}
+
+In addition to unwind_protect, Octave supports another limited form of
+exception handling.
+
+The general form of a @code{try} block looks like this:
+
+@example
+@group
+try
+  @var{body}
+catch
+  @var{cleanup}
+end_try_catch
+@end group
+@end example
+
+Where @var{body} and @var{cleanup} are both optional and may contain any
+Octave expressions or commands.  The statements in @var{cleanup} are
+only executed if an error occurs in @var{body}.
+
+No warnings or error messages are printed while @var{body} is
+executing.  If an error does occur during the execution of @var{body},
+@var{cleanup} can access the text of the message that would have been
+printed in the builtin constant @code{__error_text__}.  This is the same
+as @code{eval (@var{try}, @var{catch})} (which may now also use
+@code{__error_text__}) but it is more efficient since the commands do
+not need to be parsed each time the @var{try} and @var{catch} statements
+are evaluated.
+
+Octave's @var{try} block is a very limited variation on the Lisp
+condition-case form (limited because it cannot handle different classes
+of errors separately).  Perhaps at some point Octave can have some sort
+of classification of errors and try-catch can be improved to be as
+powerful as condition-case in Lisp.
+
+@cindex continuation lines
+@cindex @code{...} continuation marker
+@cindex @code{\} continuation marker
+
+@node Continuation Lines,  , The try Statement, Statements
+@section Continuation Lines
+
+In the Octave language, most statements end with a newline character and
+you must tell Octave to ignore the newline character in order to
+continue a statement from one line to the next.  Lines that end with the
+characters @code{...} or @code{\} are joined with the following line
+before they are divided into tokens by Octave's parser.  For example,
+the lines
+
+@example
+x = long_variable_name ...
+    + longer_variable_name \
+    - 42
+@end example
+
+@noindent
+form a single statement.  The backslash character on the second line
+above is interpreted a continuation character, @emph{not} as a division
+operator.
+
+For continuation lines that do not occur inside string constants,
+whitespace and comments may appear between the continuation marker and
+the newline character.  For example, the statement
+
+@example
+x = long_variable_name ...     % comment one
+    + longer_variable_name \   % comment two
+    - 42                       % last comment
+@end example
+
+@noindent
+is equivalent to the one shown above.
+
+In some cases, Octave will allow you to continue lines without having to
+specify continuation characters.  For example, it is possible to write
+statements like
+
+@example
+if (big_long_variable_name == other_long_variable_name
+    || not_so_short_variable_name > 4
+    && y > x)
+  some (code, here);
+endif
+@end example
+
+@noindent
+without having to clutter up the if statement with continuation
+characters.

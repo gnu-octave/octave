@@ -1,0 +1,23 @@
+@c Copyright (C) 1996 John W. Eaton
+@c This is part of the Octave manual.
+@c For copying conditions, see the file gpl.texi.
+
+@setfilename BUGS
+@set BUGSONLY
+
+@include conf.texi
+
+@c The immediately following lines apply to the BUGS file
+@c which is generated using this file.
+
+This file documents known bugs in Octave and describes where and how to
+report any bugs that you may find.
+
+Copyright (C) 1996 John W. Eaton.  You may copy, distribute, and
+modify it freely as long as you preserve this copyright notice and
+permission notice.
+
+@node Trouble,,, (dir)
+@chapter Known Causes of Trouble with Octave
+@include bugs.texi
+@bye

@@ -1,0 +1,6 @@
+@node Bugs, Concept Index, Installation, Top
+@chapter Bugs
+@cindex bugs, known
+@cindex installation trouble
+@cindex known causes of trouble
+@cindex troubleshooting

@@ -1,0 +1,156 @@
+@c Copyright (C) 1996 John W. Eaton
+@c This is part of the Octave manual.
+@c For copying conditions, see the file gpl.texi.
+
+@node Adding New Functions
+@chapter Adding New Functions
+@cindex Functions
+
+The following is not complete, but should help get you started and
+give you some idea about why things are they way they are.
+
+Here's what you need to do to add a new function (I'll use svd() as an
+example):
+
+  1. Add the name of the new function to the general_functions list in
+     builtins.cc:
+
+       static builtin_general_functions general_functions[] =
+       {
+	 ...
+
+	 { "svd", 2, 3, builtin_svd,
+	   "[U, S, V] = svd (X): return SVD of X\n", },
+
+	 ...
+	};
+
+     The builtin_general_functions struct is defined in builtns.h:
+
+       struct builtin_general_functions
+       {
+	 char *name;
+	 int nargin_max;
+	 int nargout_max;
+	 General_fcn general_fcn;
+	 char *help_string;
+       };
+
+     name is what the user types (e.g. `svd');
+
+     nargin_max and nargout_max are the maximum number of input and
+     output arguments.  These are not really important.  I had
+     originally planned to use them to allow Octave to do some
+     checking to see if the user had supplied the correct number of
+     arguments, but that doesn't really work very well.  It seems
+     better to have each function check (since different numbers of
+     input arguments may mean different things).
+
+     Note: nargin == 1 means that the function takes no arguments (just
+     like C, the first argument is (or should be, anyway) the function
+     name).  Also, -1 is shorthand for infinity.
+
+     general_fcn is the function you need to define to do the real
+     work.  Usually called builtin_foo, for function foo.  More about
+     the form of this function is given below.
+
+     help_string is the message that the user will get if he types
+     `help svd'.
+
+     Yes, the initialization of this structure is a bit clumsy.  I'm
+     probably going to try to fix that at some point, but don't really
+     know exactly how and haven't had time to do it right yet.
+
+  2. Write the function that does all the work.  I've adopted the
+     following convention:
+
+       * Declare the function in g-builtins.h.  All `general'
+         functions take the same arguments:
+
+           builtin_svd (const tree_constant *args, int nargin, int nargout)
+
+           - args:  a vector of tree_constants, which is the basic
+             data structure for values in Octave.  Currently, a
+             tree_constant can be a real or complex scalar or matrix,
+             a range, or a string.
+
+           - nargin:  the number of arguments the user provided plus
+             one.  args[0] is supposed to hold the function name, but
+             I'm not sure that that's always true yet.
+
+           - nargout:  the number of arguments the user provided on
+             the left side of an assignment, or one if no assignment
+             is being done (because of the implicit assignment to ans
+             that will occur).
+
+       * Define the function in g-builtins.cc.  Usually, the function
+         in g-builtins.cc only contains simple checks to see if the
+         correct number of arguments have been supplied and then a
+         call to the function that REALLY :-) does all the work.
+
+         If the function is small, it's probably reasonable to define
+         it in tc-extras.cc.
+
+         If the function is not small, or if it depends on external
+         fortran code, it is probably best to put it in its own file
+         (for example, f-svd.cc).  If dynamic linking is ever really
+         made to work, it will be important for functions to be
+         implemented this way.
+
+         To make it easier to make all of this work in the future,
+         calls are written using the DLD_FUNC macro defined at the top
+         of g-builtins.cc.  For example:
+
+           DLD_BUILTIN (args, nargin, nargout, svd,
+	     retval = svd (args, nargin, nargout);)
+
+         If dynamic linking is being used, this expands to
+
+             return octave_dld_tc2_and_go (args, nargin, nargout, "svd", \
+		      "builtin_svd_2", "f-svd.o"));
+
+         which is a call to a function that will take care of patching
+         in the function builtin_svd_2, which is defined in the file
+         f-svd.cc (corresponding to the object file f-svd.o).
+
+         Otherwise, it simply expands to
+
+           retval = svd (args, nargin, nargout);
+
+         (a function that is also defined in f-svd.cc).
+
+       * If the function is defined in a separate file, like f-svd.cc,
+         it should be implemented like the others that already exist.
+         The code like
+
+	   #ifdef WITH_DLD
+	   tree_constant *
+	   builtin_svd_2 (tree_constant *args, int nargin, int nargout)
+	   {
+	     return svd (args, nargin, nargout);
+	   }
+	   #endif
+
+         is just a hook for dynamic loading.  It was implemented this
+         way so that the names of all the functions that are to be
+         loaded dynamically would have consistent form (so that they
+         could easily be constructed from the name that the user
+         types).
+
+         The rest of the code defined in this file does the real
+         work.  In the case of svd, it uses some C++ classes to call
+         the required Fortran subroutines.  The class interfaces are
+         defined in liboctave/Matrix.h, and the class definitions are
+         (for things like SVD, HESS, LU, EIG, etc.) are in
+         Matrix-ext.cc.
+
+  3. If you add a new file (like f-svd.cc), don't forget to add it to
+     the list of files in Makefile.in, then use configure to update
+     the Makefile.
+
+
+You should use the error reporting functions defined in error.{h,cc}
+instead of writing messages directly to cout or cerr.
+
+That way, it will be easier to maintain a consistent look to the
+warning and error messages.

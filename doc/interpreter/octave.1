@@ -1,0 +1,82 @@
+.\" Man page for Octave
+.\"
+.\" Copyright (C) 1996 John W. Eaton
+.\"
+.\" This file is part of Octave.
+.\"
+.\" Octave is free software; you can redistribute it and/or modify it
+.\" under the terms of the GNU General Public License as published by the
+.\" Free Software Foundation; either version 2, or (at your option) any
+.\" later version.
+.\"
+.\" Octave is distributed in the hope that it will be useful, but WITHOUT
+.\" ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+.\" FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+.\" for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with Octave; see the file COPYING.  If not, write to the Free
+.\" Software Foundation, 59 Temple Place - Suite 330, Boston, MA
+.\" 02111-1307, USA. 
+.\"
+.TH Octave 1 "Jan 8 1996"
+.LO 1
+.SH NAME
+Octave \- A high-level interactive language for numerical computations.
+.SH SYNOPSIS
+.nf
+octave [options]
+.fi
+.SH OPTIONS
+The complete set of command-line options for octave is available by
+running the command
+.nf
+
+    octave --help
+
+.fi
+.SH DESCRIPTION
+Octave is a high-level language, primarily intended for numerical
+computations.  It provides a convenient command line interface for
+solving linear and nonlinear problems numerically.
+.SH DOCUMENTATION
+The primary documentation for Octave is written using Texinfo, the GNU
+documentation system, which allows the same source files to be used to
+produce on-line and printed versions of the manual.
+.PP
+You can read the on-line copy of the Octave documentation by issuing
+the command
+.nf
+
+    octave:13> help -i
+
+.fi
+while running Octave interactively, by using the GNU Emacs info mode,
+or by running standalone programs like info or xinfo.
+.SH BUGS
+The best way to submit a bug report for Octave is to use the command
+.nf
+
+     octave:13> bug_report
+
+.fi
+while running Octave interactively.  This will create a template bug
+report file and start an editor on that file.  Your 
+message will be sent to the bug-octave mailing list
+once you are finished editing the template.
+.PP
+If you are unable to use the bug_report command, send your message
+to the
+.B bug-octave@bevo.che.wisc.edu
+mailing list by some other means.  Please read the `Bugs' chapter in
+the Octave manual to find out how to submit a bug report that will
+enable the Octave maintainers to fix the problem.
+.SH AUTHOR
+.nf
+John W. Eaton
+Department of Chemical Engineering
+University of Wisconsin-Madison
+Madison, WI 53706
+USA
+<jwe@bevo.che.wisc.edu>
+.fi

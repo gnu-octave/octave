@@ -1,0 +1,131 @@
+@c Copyright (C) 1996 John W. Eaton
+@c This is part of the Octave manual.
+@c For copying conditions, see the file gpl.texi.
+
+@node Image Processing, Audio Processing, Plotting, Top
+@chapter Image Processing
+
+To display images using these functions, you must be using Octave with
+the X Window System, and you must have either @code{xloadimage} or
+@code{xv} installed.  You do not need to be running X in order to
+manipulate images, however, so some of these functions may be useful
+even if you are not able to view the results.
+
+@ftable @code
+@item colormap
+Set the current colormap.
+
+@code{colormap (@var{map})} sets the current colormap to @var{map}.  The
+color map should be an @var{n} row by 3 column matrix.  The columns
+contain red, green, and blue intensities respectively.  All entries
+should be between 0 and 1 inclusive.  The new colormap is returned.
+
+@code{colormap ("default")} restores the default colormap (a gray scale
+colormap with 64 entries).  The default colormap is returned.
+
+With no arguments, @code{colormap} returns the current color map.
+
+@item gray (@var{n})
+Create a gray colormap with values from 0 to @var{n}.  The argument
+@var{n} should be a scalar.  If it is omitted, 64 is assumed.
+
+@item gray2ind
+Convert a gray scale intensity image to an Octave indexed image.
+
+@item image
+Display an Octave image matrix.
+
+@code{image (@var{x})} displays a matrix as a color image.  The elements
+of @var{x} are indices into the current colormap and should have values
+between 1 and the length of the colormap.
+
+@code{image (@var{x}, @var{zoom})} changes the zoom factor.  The default
+value is 4.
+
+@item imagesc
+Scale and display a matrix as an image.
+
+@code{imagesc (@var{x})} displays a scaled version of the matrix
+@var{x}.  The matrix is scaled so that its entries are indices into the
+current colormap.  The scaled matrix is returned.
+
+@code{imagesc (@var{x}, @var{zoom})} sets the magnification, the default
+value is 4.
+
+@item imshow
+Display images.
+
+@code{imshow (@var{x})} displays an indexed image using the current
+colormap.
+
+@code{imshow (@var{x}, @var{map})} displays an indexed image using the
+specified colormap.
+
+@code{imshow (@var{i}, @var{n})} displays a gray scale intensity image.
+
+@code{imshow (@var{r}, @var{g}, @var{b})} displays an RGB image.
+
+@item ind2gray
+Convert an Octave indexed image to a gray scale intensity image.
+
+@code{@var{y} = ind2gray (@var{x})} converts an indexed image to a gray
+scale intensity image.  The current colormap is used to determine the
+intensities.  The intensity values lie between 0 and 1 inclusive.
+
+@code{@var{y} = ind2gray (@var{x}, @var{map})} uses the specified
+colormap instead of the current one in the conversion process.
+
+@item ind2rgb
+Convert an indexed image to red, green, and blue color components.
+
+@code{[@var{r}, @var{g}, @var{b}] = ind2rgb (@var{x})} uses the current
+colormap for the conversion.
+
+@code{[@var{r}, @var{g}, @var{b}] = ind2rgb (@var{x}, @var{map})} uses
+the specified colormap.
+
+@item loadimage
+Load an image file.
+
+@code{[@var{x}, @var{map}] = loadimage (@var{file})} loads an image and
+it's associated color map from the specified @var{file}.  The image must
+be stored in Octave's image format.
+
+@c @item rgb2ntsc
+@c @item ntsc2rgb
+
+@item ocean (@var{n})
+Create color colormap.  The argument @var{n} should be a scalar.  If it
+is omitted, 64 is assumed.
+
+@item rgb2ind
+Convert and RGB image to an Octave indexed image.
+
+@code{[@var{x}, @var{map}] = rgb2ind (@var{r}, @var{g}, @var{b})}
+
+@item saveimage
+Save a matrix to disk in image format.
+
+@code{saveimage (@var{file}, @var{x})} saves matrix @var{x} to @var{file}
+in Octave's image format.  The current colormap is also saved in the file.
+
+@code{saveimage (@var{file}, @var{x}, "img")} saves the image in the
+default format and is the same as @code{saveimage (@var{file}, @var{x})}.
+
+@code{saveimage (@var{file}, @var{x}, "ppm")} saves the image in ppm
+format instead of the default Octave image format.
+
+@code{saveimage (@var{file}, @var{x}, "ps")} saves the image in
+PostScript format instead of the default Octave image format.  (Note:
+images saved in PostScript format can not be read back into Octave with
+loadimage.)
+
+@code{saveimage (@var{file}, @var{x}, @var{fmt}, @var{map})} saves the
+image along with the specified colormap in the specified format.
+
+Note: if the colormap contains only two entries and these entries are
+black and white, the bitmap ppm and PostScript formats are used.  If the
+image is a gray scale image (the entries within each row of the colormap
+are equal) the gray scale ppm and PostScript image formats are used,
+otherwise the full color formats are used.
+@end ftable

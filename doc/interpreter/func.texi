@@ -1,0 +1,736 @@
+@c Copyright (C) 1996 John W. Eaton
+@c This is part of the Octave manual.
+@c For copying conditions, see the file gpl.texi.
+
+@node Functions and Scripts, Built-in Variables, Statements, Top
+@chapter Functions and Script Files
+@cindex defining functions
+@cindex user-defined functions
+@cindex functions, user-defined
+@cindex script files
+
+Complicated Octave programs can often be simplified by defining
+functions.  Functions can be defined directly on the command line during
+interactive Octave sessions, or in external files, and can be called just
+like built-in ones. 
+
+@menu
+* Defining Functions::          
+* Multiple Return Values::      
+* Variable-length Argument Lists::  
+* Variable-length Return Lists::  
+* Returning From a Function::   
+* Function Files::              
+* Script Files::                
+* Dynamically Linked Functions::  
+* Organization of Functions::   
+@end menu
+
+@node Defining Functions, Multiple Return Values, Functions and Scripts, Functions and Scripts
+@section Defining Functions
+
+In its simplest form, the definition of a function named @var{name}
+looks like this:
+
+@example
+@group
+function @var{name}
+  @var{body}
+endfunction
+@end group
+@end example
+
+@noindent
+A valid function name is like a valid variable name: a sequence of
+letters, digits and underscores, not starting with a digit.  Functions
+share the same pool of names as variables.
+
+The function @var{body} consists of Octave statements.  It is the
+most important part of the definition, because it says what the function
+should actually @emph{do}.
+
+For example, here is a function that, when executed, will ring the bell
+on your terminal (assuming that it is possible to do so):
+
+@example
+@group
+function wakeup
+  printf ("\a");
+endfunction
+@end group
+@end example
+
+The @code{printf} statement (@pxref{Input and Output}) simply tells
+Octave to print the string @code{"\a"}.  The special character @samp{\a}
+stands for the alert character (ASCII 7).  @xref{String Constants}.
+
+Once this function is defined, you can ask Octave to evaluate it by
+typing the name of the function.
+
+Normally, you will want to pass some information to the functions you
+define.  The syntax for passing parameters to a function in Octave is
+
+@example
+@group
+function @var{name} (@var{arg-list})
+  @var{body}
+endfunction
+@end group
+@end example
+
+@noindent
+where @var{arg-list} is a comma-separated list of the function's
+arguments.  When the function is called, the argument names are used to
+hold the argument values given in the call.  The list of arguments may
+be empty, in which case this form is equivalent to the one shown above.
+
+To print a message along with ringing the bell, you might modify the
+@code{beep} to look like this:
+
+@example
+@group
+function wakeup (message)
+  printf ("\a%s\n", message);
+endfunction
+@end group
+@end example
+
+Calling this function using a statement like this
+
+@example
+wakeup ("Rise and shine!");
+@end example
+
+@noindent
+will cause Octave to ring your terminal's bell and print the message
+@samp{Rise and shine!}, followed by a newline character (the @samp{\n}
+in the first argument to the @code{printf} statement).
+
+In most cases, you will also want to get some information back from the
+functions you define.  Here is the syntax for writing a function that
+returns a single value:
+
+@example
+@group
+function @var{ret-var} = @var{name} (@var{arg-list})
+  @var{body}
+endfunction
+@end group
+@end example
+
+@noindent
+The symbol @var{ret-var} is the name of the variable that will hold the
+value to be returned by the function.  This variable must be defined
+before the end of the function body in order for the function to return
+a value.
+
+For example, here is a function that computes the average of the
+elements of a vector:
+
+@example
+@group
+function retval = avg (v)
+  retval = sum (v) / length (v);
+endfunction
+@end group
+@end example
+
+If we had written @code{avg} like this instead,
+
+@example
+@group
+function retval = avg (v)
+  if (is_vector (v))
+    retval = sum (v) / length (v);
+  endif
+endfunction
+@end group
+@end example
+
+@noindent
+and then called the function with a matrix instead of a vector as the
+argument, Octave would have printed an error message like this:
+
+@example
+@group
+error: `retval' undefined near line 1 column 10
+error: evaluating index expression near line 7, column 1
+@end group
+@end example
+
+@noindent
+because the body of the @code{if} statement was never executed, and
+@code{retval} was never defined.  To prevent obscure errors like this,
+it is a good idea to always make sure that the return variables will
+always have values, and to produce meaningful error messages when
+problems are encountered.  For example, @code{avg} could have been
+written like this:
+
+@example
+@group
+function retval = avg (v)
+  retval = 0;
+  if (is_vector (v))
+    retval = sum (v) / length (v);
+  else
+    error ("avg: expecting vector argument");
+  endif
+endfunction
+@end group
+@end example
+
+There is still one additional problem with this function.  What if it is
+called without an argument?  Without additional error checking, Octave
+will probably print an error message that won't really help you track
+down the source of the error.  To allow you to catch errors like this,
+Octave provides each function with an automatic variable called
+@code{nargin}.  Each time a function is called, @code{nargin} is
+automatically initialized to the number of arguments that have actually
+been passed to the function.  For example, we might rewrite the
+@code{avg} function like this:
+@vindex nargout
+
+@example
+@group
+function retval = avg (v)
+  retval = 0;
+  if (nargin != 1)
+    error ("usage: avg (vector)");
+  endif
+  if (is_vector (v))
+    retval = sum (v) / length (v);
+  else
+    error ("avg: expecting vector argument");
+  endif
+endfunction
+@end group
+@end example
+
+Although Octave does not automatically report an error if you call a
+function with more arguments than expected, doing so probably indicates
+that something is wrong.  Octave also does not automatically report an
+error if a function is called with too few arguments, but any attempt to
+use a variable that has not been given a value will result in an error.
+To avoid such problems and to provide useful messages, we check for both
+possibilities and issue our own error message.
+
+The body of a user-defined function can contain a @code{return}
+statement.  This statement returns control to the rest of the Octave
+program.  A @code{return} statement is assumed at the end of every
+function definition.
+
+@node Multiple Return Values, Variable-length Argument Lists, Defining Functions, Functions and Scripts
+@section Multiple Return Values
+
+Unlike many other computer languages, Octave allows you to define
+functions that return more than one value.  The syntax for defining
+functions that return multiple values is
+
+@example
+function [@var{ret-list}] = @var{name} (@var{arg-list})
+  @var{body}
+endfunction
+@end example
+
+@noindent
+where @var{name}, @var{arg-list}, and @var{body} have the same meaning
+as before, and @var{ret-list} is a comma-separated list of variable
+names that will hold the values returned from the function.  The list of
+return values must have at least one element.  If @var{ret-list} has
+only one element, this form of the @code{function} statement is
+equivalent to the form described in the previous section.
+
+Here is an example of a function that returns two values, the maximum
+element of a vector and the index of its first occurrence in the vector.
+
+@example
+@group
+function [max, idx] = vmax (v)
+  idx = 1;
+  max = v (idx);
+  for i = 2:length (v)
+    if (v (i) > max)
+      max = v (i);
+      idx = i;
+    endif
+  endfor
+endfunction
+@end group
+@end example
+
+In this particular case, the two values could have been returned as
+elements of a single array, but that is not always possible or
+convenient.  The values to be returned may not have compatible
+dimensions, and it is often desirable to give the individual return
+values distinct names.
+
+In addition to setting @code{nargin} each time a function is called,
+Octave also automatically initializes @code{nargout} to the number of
+values that are expected to be returned.  This allows you to write
+functions that behave differently depending on the number of values that
+the user of the function has requested.  The implicit assignment to the
+built-in variable @code{ans} does not figure in the count of output
+arguments, so the value of @code{nargout} may be zero.
+
+The @code{svd} and @code{lu} functions are examples of built-in
+functions that behave differently depending on the value of
+@code{nargout}.
+
+It is possible to write functions that only set some return values.  For
+example, calling the function
+
+@example
+function [x, y, z] = f ()
+  x = 1;
+  z = 2;
+endfunction
+@end example
+
+@noindent
+as
+
+@example
+[a, b, c] = f ()
+@end example
+
+@noindent
+produces:
+
+@example
+a = 1
+
+b = [](0x0)
+
+c = 2
+@end example
+
+@noindent
+provided that the built-in variable @code{define_all_return_values} is
+nonzero.  @xref{Built-in Variables}.
+
+@node Variable-length Argument Lists, Variable-length Return Lists, Multiple Return Values, Functions and Scripts
+@section Variable-length Argument Lists
+@cindex Variable-length argument lists
+@cindex @code{...}
+@findex va_arg
+@findex va_start
+
+Octave has a real mechanism for handling functions that take an
+unspecified number of arguments, so it is not necessary to place an
+upper bound on the number of optional arguments that a function can
+accept.
+
+Here is an example of a function that uses the new syntax to print a
+header followed by an unspecified number of values:
+
+@example
+function foo (heading, ...)
+  disp (heading);
+  va_start ();
+  while (--nargin)
+    disp (va_arg ());
+  endwhile
+endfunction
+@end example
+
+The ellipsis that marks the variable argument list may only appear once
+and must be the last element in the list of arguments.
+
+Calling @code{va_start()} positions an internal pointer to the first
+unnamed argument and allows you to cycle through the arguments more than
+once.  It is not necessary to call @code{va_start()} if you do not plan
+to cycle through the arguments more than once.
+
+The function @code{va_arg()} returns the value of the next available
+argument and moves the internal pointer to the next argument.  It is an
+error to call @code{va_arg()} when there are no more arguments
+available.
+
+Sometimes it is useful to be able to pass all unnamed arguments to
+another function.  The keyword @var{all_va_args} makes this very easy to
+do.  For example, given the functions
+
+@example
+function f (...)
+  while (nargin--)
+    disp (va_arg ())
+  endwhile
+endfunction
+function g (...)
+  f ("begin", all_va_args, "end")
+endfunction
+@end example
+
+@noindent
+the statement
+
+@example
+g (1, 2, 3)
+@end example
+
+@noindent
+prints
+
+@example
+begin
+1
+2
+3
+end
+@end example
+
+The keyword @code{all_va_args} always stands for the entire list of
+optional argument, so it is possible to use it more than once within the
+same function without having to call @code{va_start ()}.  It can only
+be used within functions that take a variable number of arguments.  It
+is an error to use it in other contexts.
+
+@node Variable-length Return Lists, Returning From a Function, Variable-length Argument Lists, Functions and Scripts
+@section Variable-length Return Lists
+@cindex Variable-length return lists
+@cindex @code{...}
+@findex vr_val
+
+Octave also has a real mechanism for handling functions that return an
+unspecified number of values, so it is no longer necessary to place an
+upper bound on the number of outputs that a function can produce.
+
+Here is an example of a function that uses the new syntax to produce
+@var{n} values:
+
+@example
+function [...] = foo (n, x)
+  for i = 1:n
+    vr_val (i * x);
+  endfor
+endfunction
+@end example
+
+Each time @code{vr_val()} is called, it places the value of its argument
+at the end of the list of values to return from the function.  Once
+@code{vr_val()} has been called, there is no way to go back to the
+beginning of the list and rewrite any of the return values.
+
+As with variable argument lists, the ellipsis that marks the variable
+return list may only appear once and must be the last element in the
+list of returned values.
+
+@node Returning From a Function, Function Files, Variable-length Return Lists, Functions and Scripts
+@section Returning From a Function
+
+The body of a user-defined function can contain a @code{return} statement.
+This statement returns control to the rest of the Octave program.  It
+looks like this:
+
+@example
+return
+@end example
+
+Unlike the @code{return} statement in C, Octave's @code{return}
+statement cannot be used to return a value from a function.  Instead,
+you must assign values to the list of return variables that are part of
+the @code{function} statement.  The @code{return} statement simply makes
+it easier to exit a function from a deeply nested loop or conditional
+statement.
+
+Here is an example of a function that checks to see if any elements of a
+vector are nonzero.
+
+@example
+@group
+function retval = any_nonzero (v)
+  retval = 0;
+  for i = 1:length (v)
+    if (v (i) != 0)
+      retval = 1;
+      return;
+    endif
+  endfor
+  printf ("no nonzero elements found\n");
+endfunction
+@end group
+@end example
+
+Note that this function could not have been written using the
+@code{break} statement to exit the loop once a nonzero value is found
+without adding extra logic to avoid printing the message if the vector
+does contain a nonzero element.
+
+@node Function Files, Script Files, Returning From a Function, Functions and Scripts
+@section Function Files
+@cindex function file
+
+Except for simple one-shot programs, it is not practical to have to
+define all the functions you need each time you need them.  Instead, you
+will normally want to save them in a file so that you can easily edit
+them, and save them for use at a later time.
+
+Octave does not require you to load function definitions from files
+before using them.  You simply need to put the function definitions in a
+place where Octave can find them.
+
+When Octave encounters an identifier that is undefined, it first looks
+for variables or functions that are already compiled and currently
+listed in its symbol table.  If it fails to find a definition there, it
+searches the list of directories specified by the built-in variable
+@code{LOADPATH} for files ending in @file{.m} that have the same base
+name as the undefined identifier.@footnote{The @samp{.m} suffix was
+chosen for compatibility with @sc{Matlab}.}  @xref{User Preferences}
+for a description of @code{LOADPATH}.  Once Octave finds a file
+with a name that matches, the contents of the file are read.  If it
+defines a @emph{single} function, it is compiled and executed.
+@xref{Script Files}, for more information about how you can define more
+than one function in a single file.
+
+When Octave defines a function from a function file, it saves the full
+name of the file it read and the time stamp on the file.  After
+that, it checks the time stamp on the file every time it needs the
+function.  If the time stamp indicates that the file has changed since
+the last time it was read, Octave reads it again.
+
+Checking the time stamp allows you to edit the definition of a function
+while Octave is running, and automatically use the new function
+definition without having to restart your Octave session.  Checking the
+time stamp every time a function is used is rather inefficient, but it
+has to be done to ensure that the correct function definition is used.
+
+Octave assumes that function files in the
+@file{/usr/local/lib/octave/@value{VERSION}/m} directory tree will not
+change, so it doesn't have to check their time stamps every time the
+functions defined in those files are used.  This is normally a very good
+assumption and provides a significant improvement in performance for the
+function files that are distributed with Octave.
+
+If you know that your own function files will not change while you are
+running Octave, you can improve performance by setting the variable
+@code{ignore_function_time_stamp} to @code{"all"}, so that Octave will
+ignore the time stamps for all function files.  Setting it to
+@code{"system"} gives the default behavior.  If you set it to anything
+else, Octave will check the time stamps on all function files.
+
+@node Script Files, Dynamically Linked Functions, Function Files, Functions and Scripts
+@section Script Files
+
+A script file is a file containing (almost) any sequence of Octave
+commands.  It is read and evaluated just as if you had typed each
+command at the Octave prompt, and provides a convenient way to perform a
+sequence of commands that do not logically belong inside a function.
+
+Unlike a function file, a script file must @emph{not} begin with the
+keyword @code{function}.  If it does, Octave will assume that it is a
+function file, and that it defines a single function that should be
+evaluated as soon as it is defined.
+
+A script file also differs from a function file in that the variables
+named in a script file are not local variables, but are in the same
+scope as the other variables that are visible on the command line.
+
+Even though a script file may not begin with the @code{function}
+keyword, it is possible to define more than one function in a single
+script file and load (but not execute) all of them at once.  To do 
+this, the first token in the file (ignoring comments and other white
+space) must be something other than @code{function}.  If you have no
+other statements to evaluate, you can use a statement that has no
+effect, like this:
+
+@example
+@group
+# Prevent Octave from thinking that this
+# is a function file:
+
+1;
+
+# Define function one:
+
+function one ()
+  ...
+@end group
+@end example
+
+To have Octave read and compile these functions into an internal form,
+you need to make sure that the file is in Octave's @code{LOADPATH}, then
+simply type the base name of the file that contains the commands.
+(Octave uses the same rules to search for script files as it does to
+search for function files.)
+
+If the first token in a file (ignoring comments) is @code{function},
+Octave will compile the function and try to execute it, printing a
+message warning about any non-whitespace characters that appear after
+the function definition.
+
+Note that Octave does not try to lookup the definition of any identifier
+until it needs to evaluate it.  This means that Octave will compile the
+following statements if they appear in a script file, or are typed at
+the command line,
+
+@example
+@group
+# not a function file:
+1;
+function foo ()
+  do_something ();
+endfunction
+function do_something ()
+  do_something_else ();
+endfunction
+@end group
+@end example
+
+@noindent
+even though the function @code{do_something} is not defined before it is
+referenced in the function @code{foo}.  This is not an error because the
+Octave does not need to resolve all symbols that are referenced by a
+function until the function is actually evaluated.
+
+Since Octave doesn't look for definitions until they are needed, the
+following code will always print @samp{bar = 3} whether it is typed
+directly on the command line, read from a script file, or is part of a
+function body, even if there is a function or script file called
+@file{bar.m} in Octave's @code{LOADPATH}.
+
+@example
+@group
+eval ("bar = 3");
+bar
+@end group
+@end example
+
+Code like this appearing within a function body could fool Octave if
+definitions were resolved as the function was being compiled.  It would
+be virtually impossible to make Octave clever enough to evaluate this
+code in a consistent fashion.  The parser would have to be able to
+perform the @samp{eval ()} statement at compile time, and that would be
+impossible unless all the references in the string to be evaluated could
+also be resolved, and requiring that would be too restrictive (the
+string might come from user input, or depend on things that are not
+known until the function is evaluated).
+
+@node Dynamically Linked Functions, Organization of Functions, Script Files, Functions and Scripts
+@section Dynamically Linked Functions
+
+On some systems, Octave can dynamically load and execute functions
+written in C++ or other compiled languages.  This currently only works
+on systems that have a working version of the GNU dynamic linker,
+@code{dld}. Unfortunately, @code{dld} does not work on very many
+systems, but someone is working on making @code{dld} use the GNU Binary
+File Descriptor library, @code{BFD}, so that may soon change.  In any
+case, it should not be too hard to make Octave's dynamic linking
+features work on other systems using system-specific dynamic linking
+facilities.
+
+Here is an example of how to write a C++ function that Octave can load.
+
+@example
+#include <iostream.h>
+
+#include "defun-dld.h"
+#include "tree-const.h"
+
+DEFUN_DLD ("hello", Fhello, Shello, -1, -1,
+  "hello (...)\n\
+\n\
+Print greeting followed by the values of all the arguments passed.\n\
+Returns all the arguments passed.")
+@{
+  Octave_object retval;
+  cerr << "Hello, world!\n";
+  int nargin = args.length ();
+  for (int i = 1; i < nargin; i++)
+    retval (nargin-i-1) = args(i).eval (1);
+  return retval;
+@}
+@end example
+
+Octave's dynamic linking features currently have the following
+limitations.
+
+@itemize @bullet
+@item
+Dynamic linking only works on systems that support the GNU dynamic
+linker, @code{dld}.
+@item
+Clearing dynamically linked functions doesn't work.
+
+@item
+Configuring Octave with @code{--enable-lite-kernel} seems to mostly work
+to make nonessential built-in functions dynamically loaded, but there
+also seem to be some problems.  For example, fsolve seems to always
+return @code{info == 3}.  This is difficult to debug since @code{gdb}
+won't seem to allow breakpoints to be set inside dynamically loaded
+functions.
+
+@item
+Octave uses a lot of memory if the dynamically linked functions are
+compiled to include debugging symbols.  This appears to be a limitation
+with @code{dld}, and can be avoided by not using @code{-g} to compile
+functions that will be linked dynamically.
+@end itemize
+
+If you would like to volunteer to help improve Octave's ability to
+dynamically link externally compiled functions, please contact
+@code{bug-octave@@bevo.che.wisc.edu}.
+
+@node Organization of Functions,  , Dynamically Linked Functions, Functions and Scripts
+@section Organization of Functions Distributed with Octave
+
+Many of Octave's standard functions are distributed as function files.
+They are loosely organized by topic, in subdirectories of
+@file{OCTAVE_HOME/lib/octave/VERSION/m}, to make it easier to find
+them.
+
+The following is a list of all the function file subdirectories, and the
+types of functions you will find there.
+
+@table @file
+@item control
+Functions for design and simulation of automatic control systems.
+
+@item elfun
+Elementary functions.
+
+@item general
+Miscellaneous matrix manipulations, like @code{flipud}, @code{rot90},
+and @code{triu}, as well as other basic functions, like
+@code{is_matrix}, @code{nargchk}, etc.
+
+@item image
+Image processing tools.  These functions require the X Window System.
+
+@item linear-algebra
+Functions for linear algebra.
+
+@item miscellaneous
+Functions that don't really belong anywhere else.
+
+@item plot
+A set of functions that implement the @sc{Matlab}-like plotting functions.
+
+@item polynomial
+Functions for manipulating polynomials.
+
+@item set
+Functions for creating and manipulating sets of unique values.
+
+@item signal
+Functions for signal processing applications.
+
+@item specfun
+Special functions.
+
+@item special-matrix
+Functions that create special matrix forms.
+
+@item startup
+Octave's system-wide startup file.
+
+@item statistics
+Statistical functions.
+
+@item strings
+Miscellaneous string-handling functions.
+@end table
+
+@xref{User Preferences} for an explanation of the built-in variable
+@code{LOADPATH}, and @ref{Function Files} for a description of the way
+Octave resolves undefined variable and function names.
+

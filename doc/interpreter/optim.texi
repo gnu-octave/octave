@@ -1,0 +1,148 @@
+@c Copyright (C) 1996 John W. Eaton
+@c This is part of the Octave manual.
+@c For copying conditions, see the file gpl.texi.
+
+@node Optimization, Quadrature, Differential Equations, Top
+@chapter Optimization
+
+@menu
+* Quadratic Programming::       
+* Nonlinear Programming::       
+* Linear Least Squares::        
+@end menu
+
+@c @cindex linear programming
+@cindex quadratic programming
+@cindex nonlinear programming
+@cindex optimization
+@cindex LP
+@cindex QP
+@cindex NLP
+
+@node Quadratic Programming, Nonlinear Programming, Optimization, Optimization
+@section Quadratic Programming
+
+@ftable @code
+@item qpsol
+
+@example
+[x, obj, info, lambda]
+   = qpsol (x, H, c, lb, ub, lb, A, ub)
+@end example
+Solve quadratic programs using Gill and Murray's QPSOL.  Because QPSOL
+is not freely redistributable, this function is only available if you
+have obtained your own copy of QPSOL.  @xref{Installation}.
+@end ftable
+
+@findex qpsol_options
+Tolerances and other options for @code{qpsol} may be specified using the
+function @code{qpsol_options}.
+
+@node Nonlinear Programming, Linear Least Squares, Quadratic Programming, Optimization
+@section Nonlinear Programming
+
+@ignore
+@ftable @code
+@item fsqp
+
+@example
+fsqp ()
+@end example
+
+@findex fsqp_options
+Tolerances and other options for @code{fsqp} may be specified using the
+function @code{fsqp_options}.
+
+Sorry, this hasn't been implemented yet.
+@end ignore
+
+@ftable @code
+@item npsol
+
+@example
+[x, obj, info, lambda]
+   = npsol (x, 'phi', lb, ub, lb, A, ub, lb, 'g', ub)
+@end example
+Solve nonlinear programs using Gill and Murray's NPSOL.  Because NPSOL
+is not freely redistributable, this function is only available if you
+have obtained your own copy of NPSOL.  @xref{Installation}.
+
+The second argument is a string containing the name of the objective
+function to call.  The objective function must be of the form
+
+@example
+y = phi (x)
+@end example
+
+@noindent
+where x is a vector and y is a scalar.
+@end ftable
+
+@findex npsol_options
+Tolerances and other options for @code{npsol} may be specified using the
+function @code{npsol_options}.
+
+@node Linear Least Squares,  , Nonlinear Programming, Optimization
+@section Linear Least Squares
+
+@ftable @code
+@item gls (@var{Y}, @var{X}, @var{O})
+Generalized least squares (GLS) estimation for the multivariate model
+
+@example
+Y = X * B + E,  mean(E) = 0,  cov(vec(E)) = (s^2)*O
+@end example
+
+@noindent
+with
+
+@example
+Y an T x p matrix
+X an T x k matrix
+B an k x p matrix
+E an T x p matrix
+O an Tp x Tp matrix
+@end example
+
+@noindent
+Each row of Y and X is an observation and each column a variable.
+
+Returns BETA, v, and, R, where BETA is the GLS estimator for B, v is the
+GLS estimator for s^2, and R = Y - X*BETA is the matrix of GLS residuals.
+
+@item ols (@var{Y}, @var{X})
+Ordinary Least Squares (OLS) estimation for the multivariate model
+
+@example
+Y = X*B + E,  mean (E) = 0,  cov (vec (E)) = kron (S, I)
+@end example
+
+@noindent
+with
+
+@example
+Y an T x p matrix
+X an T x k matrix
+B an k x p matrix
+E an T x p matrix
+@end example
+
+@noindent
+Each row of Y and X is an observation and each column a variable.
+
+Returns BETA, SIGMA, and R, where BETA is the OLS estimator for B, i.e.
+
+@example
+BETA = pinv(X)*Y,
+@end example
+
+@noindent
+where pinv(X) denotes the pseudoinverse of X, SIGMA is the OLS estimator
+for the matrix S, i.e.
+
+@example
+SIGMA = (Y - X*BETA)'*(Y - X*BETA) / (T - rank(X))
+@end example
+
+and R = Y - X*BETA is the matrix of OLS residuals.
+@end ftable

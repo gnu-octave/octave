@@ -1,0 +1,108 @@
+@c Copyright (C) 1996 John W. Eaton
+@c Written by Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at> on 1996/05/14
+@c This is part of the Octave manual.
+@c For copying conditions, see the file gpl.texi.
+
+@node Audio Processing, Input and Output, Image Processing, Top
+@chapter Audio Processing
+
+Octave provides a few functions for dealing with audio data.  An audio
+`sample' is a single output value from an A/D converter, i.e., a small
+integer number (usually 8 or 16 bits), and audio data is just a series
+of such samples.  It can be characterized by three parameters:  the
+sampling rate (measured in samples per second or Hz, e.g. 8000 or
+44100), the number of bits per sample (e.g. 8 or 16), and the number of
+channels (1 for mono, 2 for stereo, etc.).
+
+There are many different formats for representing such data.  Currently,
+only the two most popular, @emph{linear encoding} and @emph{mu-law
+encoding}, are supported by Octave.  There is an excellent FAQ on audio
+formats by Guido van Rossum <guido@@cwi.nl> which can be found at any
+FAQ ftp site, in particular in the directory
+@file{/pub/usenet/news.answers/audio-fmts} of the archive site
+@code{rtfm.mit.edu}.
+
+Octave simply treats audio data as vectors of samples (non-mono data are
+not supported yet).  It is assumed that audio files using linear
+encoding have one of the extensions @file{lin} or @file{raw}, and that
+files holding data in mu-law encoding end in @file{au}, @file{mu}, or
+@file{snd}.
+
+The basic functions are as follows.
+
+@ftable @code
+@item lin2mu
+If the vector @var{x} represents mono audio data in 8- or 16-bit
+linear encoding, @kbd{lin2mu (@var{x})} is the correspoding mu-law
+encoding.
+
+@item mu2lin
+If the vector @var{x} represents mono audio data in mu-law encoding,
+@code{mu2lin (@var{x} [, @var{bps}])} converts it to linear encoding.
+The optional argument @var{bps} specifies whether the input data uses
+8 bit per sample (default) or 16 bit.
+
+@item loadaudio
+@kbd{@var{x} = loadaudio (@var{name} [, @var{ext} [, @var{bps}]])} loads
+audio data from the file @file{@var{name}.@var{ext}} into the vector
+@var{x}.  
+
+The extension @var{ext} determines how the data in the audio file is
+interpreted;  the extensions @file{lin} (default) and @file{raw}
+correspond to linear, the extensions @file{au}, @file{mu}, or @file{snd}
+to mu-law encoding.
+
+The argument @var{bps} can be either 8 (default) or 16, and specifies
+the number of bits per sample used in the audio file.
+
+@item saveaudio
+@kbd{saveaudio (@var{name}, @var{x}, [, @var{ext} [, @var{bps}]])} saves
+a vector @var{x} of audio data to the file @file{@var{name}.@var{ext}}.
+The optional parameters @var{ext} and @var{bps} determine the encoding
+and the number of bits per sample used in the audio file (see
+@code{loadaudio});  defaults are @file{lin} and 8, respectively.
+@end ftable
+
+The following functions for audio I/O require special A/D hardware and
+operating system support.  It is assumed that audio data in linear
+encoding can be played and recorded by reading from and writing to
+@file{/dev/dsp}, and that similarly @file{/dev/audio} is used for mu-law
+encoding.  This definitely works on Linux systems, and should also work
+on Suns.  If your hardware is accessed differently, please contact
+Andreas Weingessel <Andreas.Weingessel@@ci.tuwien.ac.at>.
+
+@ftable @code
+@item playaudio
+@kbd{playaudio (@var{name} [, @var{ext}])} plays the audio file
+@file{@var{name}.@var{ext}}.
+
+@kbd{playaudio (@var{x})} plays the audio data contained in the vector
+@var{x}. 
+
+@item record
+@kbd{@var{x} = record (@var{sec} [, @var{sampling_rate}])} records
+@var{sec} seconds of audio input into the vector @var{x}.  The default
+value for @var{sampling_rate} is 8000 samples per second, or 8kHz.  The
+program waits until the @key{ENTER} key is hit, and then immediately
+starts to record.
+
+@item setaudio
+@kbd{setaudio ([@var{type}])} displays the current value of the
+@var{type} property of your mixer hardware.
+
+@kbd{setaudio ([@var{type} [, @var{value}]])} sets the @var{type}
+property to @var{value}.
+
+For example, if @code{vol} corresponds to the volume property, you can
+set it to 50 (percent) by @code{setaudio ("vol", 50)}.
+
+This is an simple experimental program to control the audio hardware
+settings.  It assumes that there is a @code{mixer} program which can be
+used as @kbd{mixer @var{type} @var{value}}, and simply executes
+@kbd{system ("mixer @var{type} @var{value}")}.  Future releases might
+get rid of this assumption by using the @code{fcntl} interface.
+@end ftable
+
+@c Local Variables:
+@c TeX-command-default: "Texinfo"
+@c End:

@@ -1,0 +1,476 @@
+@c Copyright (C) 1996 John W. Eaton
+@c This is part of the Octave manual.
+@c For copying conditions, see the file gpl.texi.
+
+@c The text of this file will eventually appear in the file BUGS
+@c in the Octave distribution, as well as in the Octave manual.
+
+@ifclear BUGSONLY
+@node Trouble, Command Line Editing, Installation, Top
+@appendix Known Causes of Trouble with Octave
+@end ifclear
+@cindex bugs, known
+@cindex installation trouble
+@cindex known causes of trouble
+@cindex troubleshooting
+
+This section describes known problems that affect users of Octave.  Most
+of these are not Octave bugs per se---if they were, we would fix them.
+But the result for a user may be like the result of a bug.
+
+Some of these problems are due to bugs in other software, some are
+missing features that are too much work to add, and some are places
+where people's opinions differ as to what is best.
+
+@menu
+* Actual Bugs::                 Bugs we will fix later.
+* Reporting Bugs::              
+* Bug Criteria::                
+* Bug Lists::                   
+* Bug Reporting::               
+* Sending Patches::             
+* Service::                     
+@end menu
+
+@node Actual Bugs, Reporting Bugs, Trouble, Trouble
+@appendixsec Actual Bugs We Haven't Fixed Yet
+
+@itemize @bullet
+@item
+Output that comes directly from Fortran functions is not sent through
+the pager and may appear out of sequence with other output that is sent
+through the pager.  One way to avoid this is to force pending output to
+be flushed before calling a function that will produce output from
+within Fortran functions.  To do this, use the command
+
+@example
+fflush (stdout)
+@end example
+
+Another possible workaround is to use the command
+
+@example
+page_screen_output = "false"
+@end example
+
+@noindent
+to turn the pager off.
+
+@item
+Control-C doesn't work properly in the pager on DEC Alpha systems
+running OSF/1 3.0.
+
+This appears to be a bug in the OSF/1 3.0 Bourne shell.  The problem
+doesn't appear on systems running OSF/1 1.3.
+
+@item
+If you get messages like
+
+@example
+Input line too long
+@end example
+
+when trying to plot many lines on one graph, you have probably generated
+a plot command that is too larger for @code{gnuplot}'s fixed-length
+buffer for commands.  Splitting up the plot command doesn't help because
+replot is implemented in gnuplot by simply appending the new plotting
+commands to the old command line and then evaluating it again.
+
+You can demonstrate this `feature' by running gnuplot and doing
+something like
+
+@example
+  plot sin (x), sin (x), sin (x), ... lots more ..., sin (x)
+@end example
+
+@noindent
+and then
+
+@example
+  replot sin (x), sin (x), sin (x), ... lots more ..., sin (x)
+@end example
+
+@noindent
+after repeating the replot command a few times, gnuplot will give you
+an error.
+
+Also, it doesn't help to use backslashes to enter a plot command over
+several lines, because the limit is on the overall command line
+length, once the backslashed lines are all pasted together.
+
+Because of this, Octave tries to use as little of the command-line
+length as possible by using the shortest possible abbreviations for
+all the plot commands and options.  Unfortunately, the length of the
+temporary file names is probably what is taking up the most space on
+the command line.
+
+You can buy a little bit of command line space by setting the
+environment variable @code{TMPDIR} to be "." before starting Octave, or
+you can increase the maximum command line length in gnuplot by changing
+the following limits in the file plot.h in the gnuplot distribution and
+recompiling gnuplot.
+
+@example
+#define MAX_LINE_LEN 32768  /* originally 1024 */
+#define MAX_TOKENS 8192     /* originally 400 */
+@end example  
+
+Of course, this doesn't really fix the problem, but it does make it
+much less likely that you will run into trouble unless you are putting
+a very large number of lines on a given plot.
+
+@item
+String handling could use some work.
+@end itemize
+
+A list of ideas for future enhancements is distributed with Octave.  See
+the file @file{PROJECTS} in the top level directory in the source
+distribution.
+
+@node Reporting Bugs, Bug Criteria, Actual Bugs, Trouble
+@appendixsec Reporting Bugs
+@cindex bugs
+@cindex reporting bugs
+
+Your bug reports play an essential role in making Octave reliable.
+
+When you encounter a problem, the first thing to do is to see if it is
+already known.  @xref{Trouble}.  If it isn't known, then you should
+report the problem.
+
+Reporting a bug may help you by bringing a solution to your problem, or
+it may not.  In any case, the principal function of a bug report is
+to help the entire community by making the next version of Octave work
+better.  Bug reports are your contribution to the maintenance of Octave.
+
+In order for a bug report to serve its purpose, you must include the
+information that makes it possible to fix the bug.
+
+@findex bug_report
+
+If you have Octave working at all, the easiest way to prepare a complete
+bug report is to use the Octave function @code{bug_report}.  When you
+execute this function, Octave will prompt you for a subject and then
+invoke the editor on a file that already contains all the configuration
+information.  When you exit the editor, Octave will mail the bug report
+for you.
+
+@menu
+* Bug Criteria::                
+* Where: Bug Lists.             Where to send your bug report.
+* Reporting: Bug Reporting.     How to report a bug effectively.
+* Patches: Sending Patches.     How to send a patch for Octave.
+@end menu
+
+@node Bug Criteria, Bug Lists, Reporting Bugs, Trouble
+@appendixsec Have You Found a Bug?
+@cindex bug criteria
+
+If you are not sure whether you have found a bug, here are some guidelines:
+
+@itemize @bullet
+@cindex fatal signal
+@cindex core dump
+@item
+If Octave gets a fatal signal, for any input whatever, that is
+a bug.  Reliable interpreters never crash.
+
+@cindex incorrect output
+@cindex incorrect results
+@cindex results, incorrect
+@cindex answers, incorrect
+@cindex erroneous results
+@cindex wrong answers
+@item
+If Octave produces incorrect results, for any input whatever,
+that is a bug.
+
+@cindex undefined behavior
+@cindex undefined function value
+@item
+Some output may appear to be incorrect when it is in fact due to a
+program whose behavior is undefined, which happened by chance to give
+the desired results on another system.  For example, the range operator
+may produce different results because of differences in the way floating
+point arithmetic is handled on various systems.
+
+@cindex erroneous messages
+@cindex incorrect error messages
+@cindex error messages, incorrect
+@item
+If Octave produces an error message for valid input, that is a bug.
+
+@cindex invalid input
+@item
+If Octave does not produce an error message for invalid input, that is
+a bug.  However, you should note that your idea of ``invalid input''
+might be my idea of ``an extension'' or ``support for traditional
+practice''.
+
+@cindex improving Octave
+@cindex suggestions
+@item
+If you are an experienced user of programs like Octave, your suggestions
+for improvement are welcome in any case.
+@end itemize
+
+@node Bug Lists, Bug Reporting, Bug Criteria, Trouble
+@appendixsec Where to Report Bugs
+@cindex bug report mailing lists
+@cindex reporting bugs
+@cindex bugs, reporting
+
+@findex bug_report
+
+If you have Octave working at all, the easiest way to prepare a complete
+bug report is to use the Octave function @code{bug_report}.  When you
+execute this function, Octave will prompt you for a subject and then
+invoke the editor on a file that already contains all the configuration
+information.  When you exit the editor, Octave will mail the bug report
+for you.
+
+If for some reason you cannot use Octave's @code{bug_report} function,
+send bug reports for Octave to:
+
+@example
+bug-octave@@bevo.che.wisc.edu
+@end example
+
+@strong{Do not send bug reports to @samp{help-octave}}.  Most users of
+Octave do not want to receive bug reports.  Those that do have asked to
+be on @samp{bug-octave}.
+
+As a last resort, send bug reports on paper to:
+
+@example
+Octave Bugs c/o John W. Eaton
+University of Wisconsin-Madison
+Department of Chemical Engineering
+1415 Engineering Drive
+Madison, Wisconsin 53706  USA
+@end example
+
+@node Bug Reporting, Sending Patches, Bug Lists, Trouble
+@appendixsec How to Report Bugs
+@cindex bugs, reporting
+
+The fundamental principle of reporting bugs usefully is this:
+@strong{report all the facts}.  If you are not sure whether to state a
+fact or leave it out, state it!
+
+Often people omit facts because they think they know what causes the
+problem and they conclude that some details don't matter.  Thus, you might
+assume that the name of the variable you use in an example does not matter.
+Well, probably it doesn't, but one cannot be sure.  Perhaps the bug is a
+stray memory reference which happens to fetch from the location where that
+name is stored in memory; perhaps, if the name were different, the contents
+of that location would fool the interpreter into doing the right thing
+despite the bug.  Play it safe and give a specific, complete example.
+
+Keep in mind that the purpose of a bug report is to enable someone to
+fix the bug if it is not known. Always write your bug reports on
+the assumption that the bug is not known.
+
+Sometimes people give a few sketchy facts and ask, ``Does this ring a
+bell?''  This cannot help us fix a bug.  It is better to send a complete
+bug report to begin with.
+
+Try to make your bug report self-contained.  If we have to ask you for
+more information, it is best if you include all the previous information
+in your response, as well as the information that was missing.
+
+To enable someone to investigate the bug, you should include all these
+things:
+
+@itemize @bullet
+@item
+The version of Octave.  You can get this by noting the version number
+that is printed when Octave starts, or running it with the @samp{-v}
+option.
+
+@item
+A complete input file that will reproduce the bug.
+
+A single statement may not be enough of an example---the bug might
+depend on other details that are missing from the single statement where
+the error finally occurs.
+
+@item
+The command arguments you gave Octave to execute that example
+and observe the bug.  To guarantee you won't omit something important,
+list all the options. 
+
+If we were to try to guess the arguments, we would probably guess wrong
+and then we would not encounter the bug.
+
+@item
+The type of machine you are using, and the operating system name and
+version number.
+
+@item
+The command-line arguments you gave to the @code{configure} command when
+you installed the interpreter.
+
+@item
+A complete list of any modifications you have made to the interpreter
+source.
+
+Be precise about these changes---show a context diff for them.
+
+@item
+Details of any other deviations from the standard procedure for installing
+Octave.
+
+@cindex incorrect output
+@cindex incorrect results
+@cindex results, incorrect
+@cindex answers, incorrect
+@cindex erroneous results
+@cindex wrong answers
+@item
+A description of what behavior you observe that you believe is
+incorrect.  For example, "The interpreter gets a fatal signal," or, "The
+output produced at line 208 is incorrect."
+
+Of course, if the bug is that the interpreter gets a fatal signal, then
+one can't miss it.  But if the bug is incorrect output, we might not
+notice unless it is glaringly wrong.
+
+Even if the problem you experience is a fatal signal, you should still
+say so explicitly.  Suppose something strange is going on, such as, your
+copy of the interpreter is out of synch, or you have encountered a bug
+in the C library on your system.  Your copy might crash and the copy
+here would not.  If you said to expect a crash, then when the
+interpreter here fails to crash, we would know that the bug was not
+happening.  If you don't say to expect a crash, then we would not know
+whether the bug was happening.  We would not be able to draw any
+conclusion from our observations.
+
+Often the observed symptom is incorrect output when your program is run.
+Unfortunately, this is not enough information unless the program is
+short and simple.  It is very helpful if you can include an explanation
+of the expected output, and why the actual output is incorrect.
+
+@item
+If you wish to suggest changes to the Octave source, send them as
+context diffs.  If you even discuss something in the Octave source,
+refer to it by context, not by line number, because the line numbers in
+the development sources probalby won't match those in your sources.
+@end itemize
+
+Here are some things that are not necessary:
+
+@itemize @bullet
+@cindex bugs, investigating
+@item
+A description of the envelope of the bug.
+
+Often people who encounter a bug spend a lot of time investigating which
+changes to the input file will make the bug go away and which changes
+will not affect it.  Such information is usually not necessary to enable
+us to fix bugs in Octave, but if you can find a simpler example to
+report @emph{instead} of the original one, that is a convenience.
+Errors in the output will be easier to spot, running under the debugger
+will take less time, etc. Most Octave bugs involve just one function, so
+the most straightforward way to simplify an example is to delete all the
+function definitions except the one in which the bug occurs.
+
+However, simplification is not vital; if you don't want to do
+this, report the bug anyway and send the entire test case you
+used.
+
+@item
+A patch for the bug.  Patches can be helpful, but if you find a bug, you
+should report it, even if you cannot send a fix for the problem.
+@end itemize
+
+@node Sending Patches, Service, Bug Reporting, Trouble
+@appendixsec Sending Patches for Octave
+@cindex improving Octave
+@cindex diffs, submitting
+@cindex patches, submitting
+@cindex submitting diffs
+@cindex submitting patches
+
+If you would like to write bug fixes or improvements for Octave, that is
+very helpful.  When you send your changes, please follow these
+guidelines to avoid causing extra work for us in studying the patches.
+
+If you don't follow these guidelines, your information might still be
+useful, but using it will take extra work.  Maintaining Octave is a lot
+of work in the best of circumstances, and we can't keep up unless you do
+your best to help.
+
+@itemize @bullet
+@item
+Send an explanation with your changes of what problem they fix or what
+improvement they bring about.  For a bug fix, just include a copy of the
+bug report, and explain why the change fixes the bug.
+
+@item
+Always include a proper bug report for the problem you think you have
+fixed.  We need to convince ourselves that the change is right before
+installing it.  Even if it is right, we might have trouble judging it if
+we don't have a way to reproduce the problem.
+
+@item
+Include all the comments that are appropriate to help people reading the
+source in the future understand why this change was needed.
+
+@item
+Don't mix together changes made for different reasons.
+Send them @emph{individually}.
+
+If you make two changes for separate reasons, then we might not want to
+install them both.  We might want to install just one.
+
+@item
+Use @samp{diff -c} to make your diffs.  Diffs without context are hard
+for us to install reliably.  More than that, they make it hard for us to
+study the diffs to decide whether we want to install them.  Unidiff
+format is better than contextless diffs, but not as easy to read as
+@samp{-c} format.
+
+If you have GNU diff, use @samp{diff -cp}, which shows the name of the
+function that each change occurs in.
+
+@item
+Write the change log entries for your changes.
+
+Read the @file{ChangeLog} file to see what sorts of information to put
+in, and to learn the style that we use.  The purpose of the change log
+is to show people where to find what was changed.  So you need to be
+specific about what functions you changed; in large functions, it's
+often helpful to indicate where within the function the change was made.
+
+On the other hand, once you have shown people where to find the change,
+you need not explain its purpose. Thus, if you add a new function, all
+you need to say about it is that it is new.  If you feel that the
+purpose needs explaining, it probably does---but the explanation will be
+much more useful if you put it in comments in the code.
+
+If you would like your name to appear in the header line for who made
+the change, send us the header line.
+@end itemize
+
+@node Service,  , Sending Patches, Trouble
+@appendixsec How To Get Help with Octave
+@cindex help, where to find
+
+If you need help installing, using or changing Octave, the mailing list
+
+@example
+help-octave@@bevo.che.wisc.edu
+@end example
+
+exists for the discussion of Octave matters related to using,
+installing, and porting Octave.  If you would like to join the
+discussion, please send a short note to
+
+@example
+help-octave-request@@bevo.che.wisc.edu
+            ^^^^^^^
+@end example
+
+@strong{Please do not} send requests to be added or removed from the the
+mailing list, or other administrative trivia to the list itself.

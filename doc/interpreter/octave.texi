@@ -1,0 +1,480 @@
+% Copyright (C) 1996 John W. Eaton
+% This is part of the Octave manual.
+% For copying conditions, see the file gpl.texi.
+
+\input texinfo
+@setfilename octave.info
+
+@c Settings for printing on 8-1/2 by 11 inch paper:
+@c -----------------------------------------------
+
+@setchapternewpage odd
+@iftex
+@tex
+\global\chapheadingskip = 15pt plus 4pt minus 2pt 
+\global\secheadingskip = 12pt plus 3pt minus 2pt
+\global\subsecheadingskip = 9pt plus 2pt minus 2pt
+\global\parskip 5pt plus 1pt
+@end tex
+@end iftex
+
+@c Settings for small book format:
+@c ------------------------------
+@c
+@c @smallbook
+@c @setchapternewpage odd
+@c @finalout
+@c @iftex
+@c @cropmarks
+@c @end iftex
+
+@defindex op
+
+@c Things like the Octave version number are defined in conf.texi.
+@c This file doesn't include a chapter, so it must not be included
+@c if you want to run the Emacs function texinfo-multiple-files-update.
+
+@include conf.texi
+
+@settitle Octave
+
+@ifinfo
+
+Copyright (C) 1996 John W. Eaton.
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+@ignore
+Permission is granted to process this file through Tex and print the
+results, provided the printed document carries copying permission
+notice identical to this one except for the removal of this paragraph
+(this paragraph not being relevant to the printed manual).
+
+@end ignore
+Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided that
+the entire resulting derived work is distributed under the terms of
+a permission notice identical to this one.
+
+Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for
+modified versions.
+@end ifinfo
+
+@titlepage
+@title{Octave}
+@subtitle{A high-level interactive language for numerical computations}
+@subtitle{Edition 1.1 for Octave version @value{VERSION}}
+@subtitle{January 1995}
+@author{John W. Eaton}
+@page
+@vskip 0pt plus 1filll
+Copyright @copyright{} 1996 John W. Eaton.
+
+This is the first edition of the Octave documentation,
+and is consistent with version @value{VERSION} of Octave.
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the same conditions as for modified versions.
+@end titlepage
+
+@ifinfo
+@node Top, Preface, (dir), (dir)
+@top
+
+This manual documents how to run, install and port Octave, as well as
+its new features and incompatibilities, and how to report bugs.
+It corresponds to Octave version @value{VERSION}.
+@end ifinfo
+
+@menu
+* Preface::                     
+* Copying::                     
+* Introduction::                A brief introduction to Octave.
+* Invoking Octave::             Command options supported by Octave.
+* Expressions::                 Expressions.
+* Statements::                  Looping and program flow control.
+* Functions and Scripts::       
+* Built-in Variables::          Descriptions of all built-in variables.
+* Arithmetic::                  
+* Linear Algebra::              
+* Polynomial Manipulations::    
+* Nonlinear Equations::         
+* Differential Equations::      
+* Optimization::                
+* Quadrature::                  
+* Control Theory::              
+* Signal Processing::           
+* Sets::                        
+* Statistics::                  
+* Plotting::                    
+* Image Processing::            
+* Audio Processing::            
+* Input and Output::            
+* Special Matrices::            
+* Matrix Manipulation::         
+* String Functions::            
+* System Utilities::            
+* Command History Functions::   
+* Help::                        
+* Programming Utilities::       
+* Amusements::                  
+* Emacs::                       
+* Installation::                How to configure, compile and install Octave.
+* Trouble::                     If you have trouble installing Octave.
+* Command Line Editing::        Command history and editing.
+* Using Info::                  
+* Concept Index::               An item for each concept.
+* Variable Index::              An item for each documented variable.
+* Function Index::              An item for each documented function.
+* Operator Index::              An item for each documented operator.
+* Readline Index::              An index for readline commands.
+* Info Index::                  An index for info commands.
+
+ --- The Detailed Node Listing ---
+
+A Brief Introduction to Octave
+
+* Running Octave::              
+* Simple Examples::             
+* Executable Octave Programs::  
+* Comments::                    
+* Errors::                      
+
+Invoking Octave
+
+* Command Line Options::        
+* Startup Files::               
+
+Expressions
+
+* Constant Expressions::        
+* Matrices::                    
+* Ranges::                      
+* Variables::                   
+* Index Expressions::           
+* Data Structures::             
+* Calling Functions::           
+* Global Variables::            
+* Keywords::                    
+* Arithmetic Ops::              
+* Comparison Ops::              
+* Boolean Expressions::         
+* Assignment Ops::              
+* Increment Ops::               
+* Operator Precedence::         
+
+Constant Expressions
+
+* Numeric Constants::           
+* String Constants::            
+
+Matrices
+
+* Empty Matrices::              
+
+Calling Functions
+
+* Call by Value::               
+* Recursion::                   
+
+Boolean Expressions
+
+* Element-by-element Boolean Operators::  
+* Short-circuit Boolean Operators::  
+
+Statements
+
+* The if Statement::            
+* The while Statement::         
+* The for Statement::           
+* The break Statement::         
+* The continue Statement::      
+* The unwind_protect Statement::  
+* The try Statement::           
+* Continuation Lines::          
+
+Functions and Script Files
+
+* Defining Functions::          
+* Multiple Return Values::      
+* Variable-length Argument Lists::  
+* Variable-length Return Lists::  
+* Returning From a Function::   
+* Function Files::              
+* Script Files::                
+* Dynamically Linked Functions::  
+* Organization of Functions::   
+
+Built-in Variables
+
+* Predefined Constants::        
+* User Preferences::            
+* Other Built-in Variables::    
+* Summary of Preference Variables::  
+
+Arithmetic
+
+* Utility Functions::           
+* Complex Arithmetic::          
+* Trigonometry::                
+* Sums and Products::           
+* Special Functions::           
+
+Linear Algebra
+
+* Basic Matrix Functions::      
+* Matrix Factorizations::       
+* Functions of a Matrix::       
+
+Differential Equations
+
+* Ordinary Differential Equations::  
+* Differential-Algebraic Equations::  
+
+Optimization
+
+* Quadratic Programming::       
+* Nonlinear Programming::       
+* Linear Least Squares::        
+
+Quadrature
+
+* Functions of one Variable::   
+* Orthogonal Collocation::      
+
+Plotting
+
+* Two-Dimensional Plotting::    
+* Three-Dimensional Plotting::  
+* Miscellaneous Plotting Functions::  
+
+Input and Output
+
+* Basic Input and Output::      
+* C-Style I/O Functions::       
+
+C-Style I/O Functions
+
+* Opening and Closing Files::   
+* Formatted Output::            
+* Output Conversion Syntax::    
+* Table of Output Conversions::  
+* Integer Conversions::         
+* Floating-Point Conversions::  
+* Other Output Conversions::    
+* Formatted Input::             
+* Input Conversion Syntax::     
+* Table of Input Conversions::  
+* Numeric Input Conversions::   
+* String Input Conversions::    
+* Binary I/O::                  
+* Other I/O Functions::         
+
+Special Matrices
+
+* Special Utility Matrices::    
+* Famous Matrices::             
+
+Matrix Manipulation
+
+* Finding Elements and Checking Conditions::  
+* Rearranging Matrices::        
+
+System Utilities
+
+* Timing Utilities::            
+* Filesystem Utilities::        
+* Interacting with the OS::     
+* System Information::          
+* Other Functions::             
+
+Programming Utilities
+
+* Evaluating Strings as Commands::  
+* Miscellaneous Utilities::     
+
+Using Emacs With Octave
+
+* Setting Up Octave Mode::      
+* Using Octave Mode::           
+* GIM::                         
+
+Installing Octave
+
+* Installation Problems::       
+* Binary Distributions::        
+
+Binary Distributions
+
+* Installing Octave from a Binary Distribution::  
+* Creating a Binary Distribution::  
+
+Known Causes of Trouble with Octave
+
+* Actual Bugs::                 Bugs we will fix later.
+* Reporting Bugs::              
+* Bug Criteria::                
+* Bug Lists::                   
+* Bug Reporting::               
+* Sending Patches::             
+* Service::                     
+
+Reporting Bugs
+
+* Bug Criteria::                
+* Where: Bug Lists.             Where to send your bug report.
+* Reporting: Bug Reporting.     How to report a bug effectively.
+* Patches: Sending Patches.     How to send a patch for Octave.
+
+Command Line Editing
+
+* Introduction and Notation::   Notation used in this text.
+* Readline Interaction::        The minimum set of commands for editing a line.
+* Readline Bare Essentials::    
+* Readline Movement Commands::  
+* Readline Killing Commands::   
+* Readline Arguments::          
+* Readline Init File::          Customizing Readline from a user's view.
+* Readline Init Syntax::        
+* Readline Vi Mode::            
+
+Readline Interaction
+
+* Readline Bare Essentials::    The least you need to know about Readline.
+* Readline Movement Commands::  Moving about the input line.
+* Readline Killing Commands::   How to delete text, and how to get it back!
+* Readline Arguments::          Giving numeric arguments to commands.
+
+Readline Init File
+
+* Readline Init Syntax::        Syntax for the commands in @file{~/.inputrc}.
+* Readline Vi Mode::            Switching to @code{vi} mode in Readline.
+
+Readline Init Syntax
+
+* Commands For Moving::         Moving about the line.
+* Commands For History::        Getting at previous lines.
+* Commands For Text::           Commands for changing text.
+* Commands For Killing::        Commands for killing and yanking.
+* Numeric Arguments::           Specifying numeric arguments, repeat counts.
+* Commands For Completion::     Getting Readline to do the typing for you.
+* Miscellaneous Commands::      Other miscellaneous commands.
+
+Using Info
+
+* Cursor Commands::             
+* Scrolling Commands::          
+* Node Commands::               
+* Searching Commands::          
+* Xref Commands::               
+* Window Commands::             
+* Printing Nodes::              
+* Other Info Commands::         
+* Info Variables::              
+
+Using Info
+
+* Cursor Commands::	    Commands which move the cursor within a node.
+* Scrolling Commands::	    Commands for moving the node around in a window.
+* Node Commands::	    Commands for selecting a new node.
+* Searching Commands::	    Commands for searching an info file.
+* Xref Commands::	    Commands for selecting cross references.
+* Window Commands::	    Commands which manipulate multiple windows.
+* Printing Nodes::	    How to print out the contents of a node.
+* Other Info Commands::     A few commands that defy categories.
+* Info Variables::	    How to change the default behavior of Info.
+
+Selecting Cross References
+
+* Parts of an Xref::            What a cross reference is made of.
+* Selecting Xrefs::             Commands for selecting menu or note items.
+
+Manipulating Multiple Windows
+
+* The Mode Line::               What appears in the mode line?
+* Basic Windows::               Manipulating windows in Info.
+* The Echo Area::               Used for displaying errors and reading input.
+@end menu
+
+@include preface.texi
+@include gpl.texi
+@include intro.texi
+@include invoke.texi
+@include expr.texi
+@include stmt.texi
+@include func.texi
+@include var.texi
+@include arith.texi
+@include linalg.texi
+@include poly.texi
+@include nonlin.texi
+@include diffeq.texi
+@include optim.texi
+@include quad.texi
+@include control.texi
+@include signal.texi
+@include set.texi
+@include stats.texi
+@include plot.texi
+@include image.texi
+@include audio.texi
+@include io.texi
+@include special.texi
+@include matrix.texi
+@include strings.texi
+@include system.texi
+@include history.texi
+@include help.texi
+@include program.texi
+@include amuse.texi
+
+@c Appendices start here.  Installation and bugs have to go before the
+@c readline and Info appendices because we want to have separate indices
+@c for them, and there appears to be no way to go back to the original
+@c set of indices once a redirection has taken place.
+
+@include emacs.texi
+@include install.texi
+@include bugs.texi
+
+@c Make a separate index for all readline commands, functions, and
+@c concepts.
+@defindex rd
+@syncodeindex cp rd
+@syncodeindex fn rd
+@syncodeindex ky rd
+@syncodeindex vr rd
+
+@include rluser.texi
+
+@c Make a separate index for all Info commands, functions, and concepts.
+@defindex in
+@syncodeindex cp in
+@syncodeindex fn in
+@syncodeindex ky in
+@syncodeindex vr in
+
+@include gnuinfo.texi
+
+@include cp-idx.texi
+@include vr-idx.texi
+@include fn-idx.texi
+@include op-idx.texi
+@include rd-idx.texi
+@include in-idx.texi
+
+@contents
+
+@bye

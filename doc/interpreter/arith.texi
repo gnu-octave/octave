@@ -1,0 +1,420 @@
+@c Copyright (C) 1996 John W. Eaton
+@c This is part of the Octave manual.
+@c For copying conditions, see the file gpl.texi.
+
+@node Arithmetic, Linear Algebra, Built-in Variables, Top
+@chapter Arithmetic
+
+Unless otherwise noted, all of the functions described in this chapter
+will work for real and complex scalar or matrix arguments.
+
+@menu
+* Utility Functions::           
+* Complex Arithmetic::          
+* Trigonometry::                
+* Sums and Products::           
+* Special Functions::           
+@end menu
+
+@node Utility Functions, Complex Arithmetic, Arithmetic, Arithmetic
+@section Utility Functions
+
+The following functions are available for working with complex numbers.
+Each expects a single argument, and given a matrix, they work on an
+element by element basis.
+
+@ftable @code
+@item ceil (@var{x})
+Return the smallest integer not less than @var{x}.  If @var{x} is
+complex, return @code{ceil (real (@var{x})) + ceil (imag (@var{x})) * I}.
+
+@item floor (@var{x})
+Return the largest integer not greater than @var{x}.  If @var{x} is
+complex, return @code{floor (real (@var{x})) + floor (imag (@var{x})) * I}.
+
+@item fix (@var{x})
+Truncate @var{x} toward zero.  If @var{x} is complex, return
+@code{fix (real (@var{x})) + fix (imag (@var{x})) * I}.
+
+@item round (@var{x})
+Return the integer nearest to @var{x}.  If @var{x} is complex, return
+@code{round (real (@var{x})) + round (imag (@var{x})) * I}.
+
+@item sign (@var{x})
+Compute the @dfn{signum} function, which is defined as
+@iftex
+@tex
+$$
+{\rm sign} (@var{x}) = \cases{1,&$x>0$;\cr 0,&$x=0$;\cr -1,&$x<0$.\cr}
+$$
+@end tex
+@end iftex
+@ifinfo
+
+@example
+           -1, x < 0;
+sign (x) =  0, x = 0;
+            1, x > 0.
+@end example
+@end ifinfo
+
+For complex arguments, @code{sign} returns @code{x ./ abs (@var{x})}.
+
+@item exp (@var{x})
+Compute the exponential of @var{x}.  To compute the matrix exponential,
+see @ref{Linear Algebra}.
+
+@item gcd (@var{x}, @code{...})
+Compute the greatest common divisor of the elements of @var{x}, or the
+list of all the arguments.  For example, 
+
+@example
+gcd (a1, ..., ak)
+@end example
+
+@noindent
+is the same as
+
+@example
+gcd ([a1, ..., ak])
+@end example
+
+An optional second return value, @var{v}
+contains an integer vector such that
+
+@example
+g = v(1) * a(k) + ... + v(k) * a(k)
+@end example
+
+@item lcm (@var{x}, @code{...})
+Compute the least common multiple of the elements elements of @var{x}, or
+the list of all the arguments.  For example, 
+
+@example
+lcm (a1, ..., ak)
+@end example
+
+@noindent
+is the same as
+
+@example
+lcm ([a1, ..., ak]).
+@end example
+
+@item log (@var{x})
+Compute the natural logarithm of @var{x}.  To compute the matrix logarithm, 
+see @ref{Linear Algebra}.
+
+@item log2 (@var{x})
+Compute the base-2 logarithm of @var{x}.
+
+@item log10 (@var{x})
+Compute the base-10 logarithm of @var{x}.
+
+@item sqrt (@var{x})
+Compute the square root of @var{x}.  To compute the matrix square root,
+see @ref{Linear Algebra}.
+
+@item max (@var{x})
+For a vector argument, return the maximum value.  For a matrix argument,
+return the maximum value from each column, as a row vector.  Thus,
+
+@example
+max (max (@var{x}))
+@end example
+
+@noindent
+returns the largest element of @var{x}.
+
+For complex arguments, the magnitude of the elements are used for
+comparison.
+
+@item min (@var{x})
+Like @code{max}, but return the minimum value.
+
+@item rem (@var{x}, @var{y})
+Return the remainder of @code{@var{x} / @var{y}}, computed using the
+expression
+
+@example
+x - y .* fix (x ./ y)
+@end example
+
+An error message is printed if the dimensions of the arguments do not
+agree, or if either of the arguments is complex.
+@end ftable
+
+@node Complex Arithmetic, Trigonometry, Utility Functions, Arithmetic
+@section Complex Arithmetic
+
+The following functions are available for working with complex
+numbers.  Each expects a single argument.  Given a matrix they work on
+an element by element basis.
+
+@ftable @code
+@item abs (@var{x})
+Compute the magnitude of @var{x}.
+
+@item angle (@var{x})
+@itemx arg (@var{x})
+Compute the argument of @var{x}.
+
+@item conj (@var{x})
+Return the complex conjugate of @var{x}.
+
+@item imag (@var{x})
+Return the imaginary part of @var{x}.
+
+@item real (@var{x})
+Return the real part of @var{x}.
+@end ftable
+
+@node Trigonometry, Sums and Products, Complex Arithmetic, Arithmetic
+@section Trigonometry
+
+Octave provides the following trigonometric functions:
+
+@example
+sin    asin    sinh    asinh
+cos    acos    cosh    acosh
+tan    atan    tanh    atanh
+
+sec    asec    sech    asech
+csc    acsc    csch    acsch
+cot    acot    coth    acoth
+@end example
+
+@findex sin
+@findex cos
+@findex tan
+@findex asin
+@findex acos
+@findex atan
+@findex sinh
+@findex cosh
+@findex tanh
+@findex asinh
+@findex acosh
+@findex atanh
+@findex sec
+@findex csc
+@findex cot
+@findex asec
+@findex acsc
+@findex acot
+@findex sech
+@findex csch
+@findex coth
+@findex asech
+@findex acsch
+@findex acoth
+
+@noindent
+Each of these functions expect a single argument.  For matrix arguments,
+they work on an element by element basis.  For example, the expression
+
+@example
+sin ([1, 2; 3, 4])
+@end example
+
+@noindent
+produces
+
+@example
+ans =
+
+   0.84147   0.90930
+   0.14112  -0.75680
+@end example
+
+@findex atan2
+In addition, the function @code{atan2 (@var{y}, @var{x})} computes the
+arctangent of @var{y}/@var{x} and uses the signs of the arguments to
+determine the quadrant of the result, which is in the range
+@iftex
+@tex
+$\pi$ to $-\pi$.
+@end tex
+@end iftex
+@ifinfo
+@code{pi} to -@code{pi}.
+@end ifinfo
+
+@node Sums and Products, Special Functions, Trigonometry, Arithmetic
+@section Sums and Products
+
+@ftable @code
+@item sum (@var{x})
+For a vector argument, return the sum of all the elements.  For a matrix
+argument, return the sum of the elements in each column, as a row
+vector.  The sum of an empty matrix is 0 if it has no columns, or a
+vector of zeros if it has no rows (@pxref{Empty Matrices}).
+
+@item prod (@var{x})
+For a vector argument, return the product of all the elements.  For a
+matrix argument, return the product of the elements in each column, as a
+row vector.  The product of an empty matrix is 1 if it has no columns,
+or a vector of ones if it has no rows (@pxref{Empty Matrices}).
+
+@item cumsum (@var{x})
+Return the cumulative sum of each column of @var{x}.  For example,
+
+@example
+cumsum ([1, 2; 3, 4])
+@end example
+
+@noindent
+produces
+
+@example
+ans =
+
+  1  2
+  4  6
+@end example
+
+@item cumprod (@var{x})
+Return the cumulative product of each column of @var{x}.  For example,
+
+@example
+cumprod ([1, 2; 3, 4])
+@end example
+
+@noindent
+produces
+
+@example
+ans =
+
+  1  2
+  3  8
+@end example
+
+@item sumsq (@var{x})
+For a vector argument, return the sum of the squares of all the
+elements.  For a matrix argument, return the sum of the squares of the
+elements in each column, as a row vector.
+@end ftable
+
+@node Special Functions,  , Sums and Products, Arithmetic
+@section Special Functions
+
+@ftable @code
+@item beta
+Returns the Beta function,
+@iftex
+@tex
+$$
+ B (a, b) = {\Gamma (a) \Gamma (b) \over \Gamma (a + b)}.
+$$
+@end tex
+@end iftex
+@ifinfo
+
+@example
+beta (a, b) = gamma (a) * gamma (b) / gamma (a + b).
+@end example
+@end ifinfo
+
+@item betai (@var{a}, @var{b}, @var{x})
+Returns the incomplete Beta function,
+@iftex
+@tex
+$$
+ \beta (a, b, x) = B (a, b)^{-1} \int_0^x t^{(a-z)} (1-t)^{(b-1)} dt.
+$$
+@end tex
+@end iftex
+@ifinfo
+
+@smallexample
+                                    x
+                                   /
+betai (a, b, x) = beta (a, b)^(-1) | t^(a-1) (1-t)^(b-1) dt.
+                                   /
+                                t=0
+@end smallexample
+@end ifinfo
+
+If x has more than one component, both @var{a} and @var{b} must be
+scalars.  If @var{x} is a scalar, @var{a} and @var{b} must be of
+compatible dimensions.
+
+@item erf
+Computes the error function,
+@iftex
+@tex
+$$
+ {\rm erf} (z) = {2 \over \sqrt{\pi}}\int_0^z e^{-t^2} dt
+$$
+@end tex
+@end iftex
+@ifinfo
+
+@smallexample
+                         z
+                        /
+erf (z) = (2/sqrt (pi)) | e^(-t^2) dt
+                        /
+                     t=0
+@end smallexample
+@end ifinfo
+
+@item erfc (@var{z})
+Computes the complementary error function, @code{1 - erf (@var{z})}.
+
+@c XXX FIXME XXX -- this isn't actually distributed with Octave yet.
+@c
+@c @item erfinv
+@c Computes the inverse of the error function.
+
+@item gamma (@var{z})
+Computes the Gamma function,
+@iftex
+@tex
+$$
+ \Gamma (z) = \int_0^\infty t^{z-1} e^{-t} dt.
+$$
+@end tex
+@end iftex
+@ifinfo
+
+@example
+            infinity
+            /
+gamma (z) = | t^(z-1) exp (-t) dt.
+            /
+         t=0
+@end example
+@end ifinfo
+
+@item gammai (@var{a}, @var{x})
+Computes the incomplete gamma function,
+@iftex
+@tex
+$$
+ \gamma (a, x) = {\int_0^x e^{-t} t^{a-1} dt \over \Gamma (a)}
+$$
+@end tex
+@end iftex
+@ifinfo
+
+@smallexample
+                              x
+                    1        /
+gammai (a, x) = ---------    | exp (-t) t^(a-1) dt
+                gamma (a)    /
+                          t=0
+@end smallexample
+@end ifinfo
+
+If @var{a} is scalar, then @code{gammai (@var{a}, @var{x})} is returned
+for each element of @var{x} and vice versa.
+
+If neither @var{a} nor @var{x} is scalar, the sizes of @var{a} and
+@var{x} must agree, and @var{gammai} is applied element-by-element.
+
+@item lgamma
+Returns the natural logarithm of the gamma function.
+@end ftable
+

@@ -1,0 +1,6 @@
+@node Introduction, Arrays, Copying, Top
+@chapter A Brief Introduction to Octave
+@cindex introduction
+
+This manual documents how to run, install and port Octave's C++ classes,
+and how to report bugs.

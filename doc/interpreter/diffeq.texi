@@ -1,0 +1,167 @@
+@c Copyright (C) 1996 John W. Eaton
+@c This is part of the Octave manual.
+@c For copying conditions, see the file gpl.texi.
+
+@node Differential Equations, Optimization, Nonlinear Equations, Top
+@chapter Differential Equations
+
+Octave has two built-in functions for solving differential equations.
+Both are based on reliable ODE solvers written in Fortran.
+
+@menu
+* Ordinary Differential Equations::  
+* Differential-Algebraic Equations::  
+@end menu
+
+@cindex Differential Equations
+@cindex ODE
+@cindex DAE
+
+@node Ordinary Differential Equations, Differential-Algebraic Equations, Differential Equations, Differential Equations
+@section Ordinary Differential Equations
+
+@findex lsode
+The function @code{lsode} can be used Solve ODEs of the form
+@iftex
+@tex
+$$
+ {dx\over dt} = f (x, t)
+$$
+@end tex
+@end iftex
+@ifinfo
+
+@example
+dx
+-- = f (x, t)
+dt
+@end example
+@end ifinfo
+
+@noindent
+using Hindmarsh's ODE solver LSODE.
+
+@example
+lsode (@var{fcn}, @var{x0}, @var{t_out}, @var{t_crit})
+@end example
+
+The first argument is the name of the function to call to
+compute the vector of right hand sides.  It must have the form
+
+@example
+@var{xdot} = f (@var{x}, @var{t})
+@end example
+
+@noindent
+where @var{xdot} and @var{x} are vectors and @var{t} is a scalar.
+
+The second argument specifies the initial condition, and the third
+specifies a vector of output times at which the solution is desired,
+including the time corresponding to the initial condition.
+
+The fourth argument is optional, and may be used to specify a set of
+times that the ODE solver should not integrate past.  It is useful for
+avoiding difficulties with singularities and points where there is a
+discontinuity in the derivative.
+
+@findex lsode_options
+Tolerances and other options for @code{lsode} may be specified using the
+function @code{lsode_options}.
+
+Here is an example of solving a set of two differential equations using
+@code{lsode}.  The function
+
+@example
+function xdot = f (x, t) 
+
+  r = 0.25;
+  k = 1.4;
+  a = 1.5;
+  b = 0.16;
+  c = 0.9;
+  d = 0.8;
+
+  xdot(1) = r*x(1)*(1 - x(1)/k) - a*x(1)*x(2)/(1 + b*x(1));
+  xdot(2) = c*a*x(1)*x(2)/(1 + b*x(1)) - d*x(2);
+
+endfunction
+@end example
+
+@noindent
+is integrated with the command
+
+@example
+x = lsode ("f", [1; 2], (t = linspace (0, 50, 200)'));
+@end example
+
+@noindent
+producing a set of 200 values stored in the variable @var{x}.  Note that
+this example takes advantage of the fact that an assignment produces a
+value to store the values of the output times in the variable @var{t}
+directly in the function call   The results can then be plotted using
+the command
+
+@example
+plot (t, x)
+@end example
+
+See Alan C. Hindmarsh, @cite{ODEPACK, A Systematized Collection of ODE
+Solvers}, in Scientific Computing, R. S. Stepleman, editor, (1983) for
+more information about this family of ODE solvers.
+
+@node Differential-Algebraic Equations,  , Ordinary Differential Equations, Differential Equations
+@section Differential-Algebraic Equations
+
+@findex dassl
+The function @code{dassl} can be used Solve DAEs of the form
+@iftex
+@tex
+$$
+ 0 = f (\dot{x}, x, t), \qquad x(t=0) = x_0, \dot{x}(t=0) = \dot{x}_0
+$$
+@end tex
+@end iftex
+@ifinfo
+
+@example
+0 = f (x-dot, x, t),    x(t=0) = x_0, x-dot(t=0) = x-dot_0
+@end example
+@end ifinfo
+
+@example
+dassl (@var{fcn}, @var{x_0}, @var{xdot_0}, @var{t_out}, @var{t_crit})
+@end example
+
+The first argument is the name of the function to call to
+compute the vector of residuals.  It must have the form
+
+@example
+@var{res} = f (@var{x}, @var{xdot}, @var{t})
+@end example
+
+@noindent
+where @var{x}, @var{xdot}, and @var{res} are vectors, and @var{t} is a
+scalar.
+
+The second and third arguments to @code{dassl} specify the initial
+condition of the states and their derivatives, and the fourth argument
+specifies a vector of output times at which the solution is desired, 
+including the time corresponding to the initial condition.
+
+The set of initial states and derivatives are not strictly required to
+be consistent.  In practice, however, DASSL is not very good at
+determining a consistent set for you, so it is best if you ensure that
+the initial values result in the function evaluating to zero.
+
+The fifth argument is optional, and may be used to specify a set of
+times that the DAE solver should not integrate past.  It is useful for
+avoiding difficulties with singularities and points where there is a
+discontinuity in the derivative.
+
+@findex dassl_options
+Tolerances and other options for @code{dassl} may be specified using the
+function @code{dassl_options}.
+
+See K. E. Brenan, et al., @cite{Numerical Solution of Initial-Value
+Problems in Differential-Algebraic Equations}, North-Holland (1989) for
+more information about the implementation of DASSL.

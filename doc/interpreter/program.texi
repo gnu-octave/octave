@@ -1,0 +1,390 @@
+@c Copyright (C) 1996 John W. Eaton
+@c This is part of the Octave manual.
+@c For copying conditions, see the file gpl.texi.
+
+@node Programming Utilities, Amusements, Help, Top
+@chapter Programming Utilities
+
+@menu
+* Evaluating Strings as Commands::  
+* Miscellaneous Utilities::     
+@end menu
+
+@node Evaluating Strings as Commands, Miscellaneous Utilities, Programming Utilities, Programming Utilities
+@section Evaluating Strings as Commands
+
+@findex eval
+
+It is often useful to evaluate a string as if it were an Octave program,
+or use a string as the name of a function to call.  These functions are
+necessary in order to evaluate commands that are not known until run
+time, or to write functions that will need to call user-supplied
+functions.
+
+The function @code{eval (@var{command})} parses @var{command} and
+evaluates it as if it were an Octave program, returning the last value
+computed.  The @var{command} is evaluated in the current context, so any
+results remain available after @code{eval} returns.  For example,
+
+@example
+octave:13> a
+error: `a' undefined
+octave:14> eval ("a = 13")
+a = 13
+ans = 13
+octave:15> a
+a = 13
+@end example
+
+In this case, two values are printed:  one for the expression that was
+evaluated, and one for the value returned from @code{eval}.  Just as
+with any other expression, you can turn printing off by ending the
+expression in a semicolon.  For example,
+
+@example
+octave:13> a
+error: `a' undefined
+octave:14> eval ("a = 13;")
+ans = 13
+octave:15> a
+a = 13
+@end example
+
+@findex feval
+
+The function @code{feval (@var{name}, ...)} can be used to evaluate
+the function named @var{name}.  Any arguments after the first are passed
+on to the named function.  For example,
+
+@example
+octave:12> feval ("acos", -1)
+ans = 3.1416
+@end example
+
+@noindent
+calls the function @code{acos} with the argument @samp{-1}.
+
+The function @code{feval} is necessary in order to be able to write
+functions that call user-supplied functions, because Octave does not
+have a way to declare a pointer to a function (like C) or to declare a
+special kind of variable that can be used to hold the name of a function
+(like @code{EXTERNAL} in Fortran).  Instead, you must refer to functions
+by name, and use @code{feval} to call them.
+
+For example, here is a
+simple-minded function for finding the root of a function of one
+variable:
+
+@cindex Fordyce, A. P.
+@findex newtroot
+
+@example
+@group
+function result = newtroot (fname, x)
+
+# usage: newtroot (fname, x)
+#
+#   fname : a string naming a function f(x).
+#   x     : initial guess
+
+  delta = tol = sqrt (eps);
+  maxit = 200;
+  fx = feval (fname, x);
+  for i = 1:maxit
+    if (abs (fx) < tol)
+      result = x;
+      return;
+    else
+      fx_new = feval (fname, x + delta);
+      deriv = (fx_new - fx) / delta;
+      x = x - fx / deriv;
+      fx = fx_new;
+    endif
+  endfor
+
+  result = x;
+
+endfunction
+@end group
+@end example
+
+Note that this is only meant to be an example of calling user-supplied
+functions and should not be taken too seriously.  In addition to using a
+more robust algorithm, any serious code would check the number and type
+of all the arguments, ensure that the supplied function really was a
+function, etc.
+
+@node Miscellaneous Utilities,  , Evaluating Strings as Commands, Programming Utilities
+@section Miscellaneous Utilities
+
+The following functions allow you to determine the size of a variable or
+expression, find out whether a variable exists, print error messages, or
+delete variable names from the symbol table.
+
+@ftable @code
+@item columns (@var{a})
+Return the number of columns of @var{a}.
+
+@item rows (@var{a})
+Return the number of rows of @var{a}.
+
+@item length (@var{a})
+Return the number of rows of @var{a} or the number of columns of
+@var{a}, whichever is larger.
+
+@item size (@var{a} [, @var{n}])
+Return the number rows and columns of @var{a}.
+
+With one input argument and one output argument, the result is returned
+in a 2 element row vector.  If there are two output arguments, the
+number of rows is assigned to the first, and the number of columns to
+the second.  For example,
+
+@example
+@group
+octave:13> size ([1, 2; 3, 4; 5, 6])
+ans =
+
+  3  2
+
+octave:14> [nr, nc] = size ([1, 2; 3, 4; 5, 6])
+nr = 3
+
+nc = 2
+@end group
+@end example
+
+If given a second argument of either 1 or 2, @code{size} will return
+only the row or column dimension.  For example
+
+@example
+octave:15> size ([1, 2; 3, 4; 5, 6], 2)
+ans = 2
+@end example
+
+@noindent
+returns the number of columns in the given matrix.
+
+@item is_global (@var{a})
+Return 1 if @var{a} is globally visible.  Otherwise, return 0.
+
+@item is_matrix (@var{a})
+Return 1 if @var{a} is a matrix.  Otherwise, return 0.
+
+@item is_vector (@var{a})
+Return 1 if @var{a} is a vector.  Otherwise, return 0.
+
+@item is_scalar (@var{a})
+Return 1 if @var{a} is a scalar.  Otherwise, return 0.
+
+@item is_square (@var{x})
+If @var{x} is a square matrix, then return the dimension of @var{x}.
+Otherwise, return 0.
+
+@item is_symmetric (@var{x}, @var{tol})
+If @var{x} is symmetric within the tolerance specified by @var{tol}, 
+then return the dimension of @var{x}.  Otherwise, return 0.  If
+@var{tol} is omitted, use a tolerance equal to the machine precision.
+
+@item isstr (@var{a})
+Return 1 if @var{a} is a string.  Otherwise, return 0.
+
+@item isempty (@var{a})
+Return 1 if @var{a} is an empty matrix (either the number of rows, or
+the number of columns, or both are zero).  Otherwise, return 0.
+
+@item clear @var{pattern} ...
+Delete the names matching the given patterns from the symbol table.  The
+pattern may contain the following special characters:
+@table @code
+@item ?
+Match any single character.
+
+@item *
+Match zero or more characters.
+
+@item [ @var{list} ]
+Match the list of characters specified by @var{list}.  If the first
+character is @code{!} or @code{^}, match all characters except those
+specified by @var{list}.  For example, the pattern @samp{[a-zA-Z]} will
+match all lower and upper case alphabetic characters. 
+@end table
+
+For example, the command
+
+@example
+clear foo b*r
+@end example
+
+@noindent
+clears the name @code{foo} and all names that begin with the letter
+@code{b} and end with the letter @code{r}.
+
+If @code{clear} is called without any arguments, all user-defined
+variables (local and global) are cleared from the symbol table.  If
+@code{clear} is called with at least one argument, only the visible
+names matching the arguments are cleared.  For example, suppose you have
+defined a function @code{foo}, and then hidden it by performing the
+assignment @code{foo = 2}.  Executing the command @samp{clear foo} once
+will clear the variable definition and restore the definition of
+@code{foo} as a function.  Executing @samp{clear foo} a second time will
+clear the function definition.
+
+This command may not be used within a function body.
+
+@item who @var{options} @var{pattern} ...
+List currently defined symbols matching the given patterns.  The
+following are valid options.  They may be shortened to one character but
+may not be combined.
+
+@table @code
+@item -all
+List all currently defined symbols.
+
+@item -builtins
+List built-in variables and functions.  This includes all currently
+compiled function files, but does not include all function files that
+are in the @code{LOADPATH}.
+
+@item -functions
+List user-defined functions.
+
+@item -long
+Print a long listing including the type and dimensions of any symbols.
+The symbols in the first column of output indicate whether it is
+possible to redefine the symbol, and whether it is possible for it to be
+cleared.
+
+@item -variables
+List user-defined variables.
+@end table
+
+Valid patterns are the same as described for the @code{clear} command
+above.  If no patterns are supplied, all symbols from the given category
+are listed.  By default, only user defined functions and variables
+visible in the local scope are displayed.
+
+@findex whos
+
+The command @code{whos} is equivalent to @code{who -long}.
+
+@item exist (@var{name})
+Return 1 if the name exists as a variable, and 2 if the name (after
+appending @samp{.m}) is a function file in the path.  Otherwise, return
+0.
+
+@item error (@var{msg})
+Print the message @var{msg}, prefixed by the string @samp{error: }, and
+set Octave's internal error state such that control will return to the
+top level without evaluating any more commands.  This is useful for
+aborting from functions.
+
+If @var{msg} does not end with a new line character, Octave will print a
+traceback of all the function calls leading to the error.  For example,
+
+@example
+function f () g () end
+function g () h () end
+function h () nargin == 1 || error ("nargin != 1"); end
+f ()
+error: nargin != 1
+error: evaluating index expression near line 1, column 30
+error: evaluating binary operator `||' near line 1, column 27
+error: called from `h'
+error: called from `g'
+error: called from `f'
+@end example
+
+@noindent
+produces a list of messages that can help you to quickly locate the
+exact location of the error.
+
+If @var{msg} ends in a new line character, Octave will only print
+@var{msg} and will not display any traceback messages as it returns
+control to the top level.  For example, modifying the error message
+in the previous example to end in a new line causes Octave to only print
+a single message:
+
+@example
+function h () nargin == 1 || error ("nargin != 1\n"); end
+f ()
+error: nargin != 1
+@end example
+
+@item warning (@var{msg})
+Print the message @var{msg} prefixed by the string @samp{warning: }.
+
+@item usage (@var{msg})
+Print the message @var{msg}, prefixed by the string @samp{usage: }, and
+set Octave's internal error state such that control will return to the
+top level without evaluating any more commands.  This is useful for
+aborting from functions.
+
+After @code{usage} is evaluated, Octave will print a traceback of all
+the function calls leading to the usage message.
+
+@item perror (@var{name}, @var{num})
+Print the error message for function @var{name} corresponding to the
+error number @var{num}.  This function is intended to be used to print
+useful error messages for those functions that return numeric error
+codes.
+
+@item menu (@var{title}, @var{opt1}, @dots{})
+Print a title string followed by a series of options.  Each option will
+be printed along with a number.  The return value is the number of the
+option selected by the user.  This function is useful for interactive
+programs.  There is no limit to the number of options that may be passed
+in, but it may be confusing to present more than will fit easily on one
+screen.
+
+@item document @var{symbol} @var{text}
+Set the documentation string for @var{symbol} to @var{text}.
+
+@item file_in_path (@var{path}, @var{file})
+Return the absolute name name of @var{file} if it can be found in
+@var{path}.  The value of @var{path} should be a colon-separated list of
+directories in the format described for the built-in variable
+@code{LOADPATH}.
+
+If the file cannot be found in the path, an empty matrix is returned.
+For example,
+
+@example
+octave:13> file_in_path (LOADPATH, "nargchk.m")
+ans = /usr/local/lib/octave/1.1.0/m/general/nargchk.m
+@end example
+
+@item nargchk (@var{nargin_min}, @var{nargin_max}, @var{n})
+If @var{n} is in the range @var{nargin_min} through @var{nargin_max}
+inclusive, return the empty matrix.  Otherwise, return a message
+indicating whether @var{n} is too large or too small.
+
+This is useful for checking to see that the number of arguments supplied
+to a function is within an acceptable range.
+
+@item octave_tmp_file_name
+Return a unique temporary file name.
+
+Since the named file is not opened, by @code{octave_tmp_file_name}, it
+is possible (though relatively unlikely) that it will not be available
+by the time your program attempts to open it.
+
+@item type @var{name} ...
+@item type [-q] @var{name} ...
+Display the definition of each @var{name} that refers to a function.
+
+Normally also displays if each @var{name} is user-defined or builtin;
+the @code{-q} option suppresses this behaviour.
+
+Currently, Octave can only display functions that can be compiled
+cleanly, because it uses its internal representation of the function to
+recreate the program text.
+
+Comments are not displayed because Octave's parser currently discards
+them as it converts the text of a function file to its internal
+representation.  This problem may be fixed in a future release.
+
+@item which @var{name} ...
+Display the type of each @var{name}.  If @var{name} is defined from a
+function file, the full name of the file is also displayed.
+@end ftable

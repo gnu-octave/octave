@@ -1,0 +1,78 @@
+@node Nonlinear Functions, Objective Functions, Ranges, Top
+@chapter Nonlinear Functions
+@cindex nonlinear functions
+
+@deftypefn  {} {}NLFunc (void)
+@deftypefnx  {} {}NLFunc (const @var{nonlinear_fcn})
+@deftypefnx  {} {}NLFunc (const @var{nonlinear_fcn}, const @var{jacobian_fcn})
+@deftypefnx  {} {}NLFunc (const NLFunc &@var{a})
+@end deftypefn
+
+@deftypefn {} NLFunc& {operator =} (const NLFunc &@var{a})
+@end deftypefn
+
+@deftypefn {} nonlinear_fcn function (void) const;
+@end deftypefn
+
+@deftypefn {} NLFunc& set_function (const nonlinear_fcn @var{f})
+@end deftypefn
+
+@deftypefn {} jacobian_fcn jacobian_function (void) const;
+@end deftypefn
+
+@deftypefn {} NLFunc& set_jacobian_function (const jacobian_fcn @var{j})
+@end deftypefn
+
+@node Nonlinear Equations,  , Nonlinear Functions
+@chapter Nonlinear Equations
+@cindex nonlinear equations
+
+@deftypefn  {} {}NLEqn_options (void)
+@deftypefnx  {} {}NLEqn_options (const NLEqn_options &@var{opt})
+@end deftypefn
+
+@deftypefn {} NLEqn_options& {operator =} (const NLEqn_options &@var{opt})
+@end deftypefn
+
+@deftypefn {} void init (void)
+@end deftypefn
+
+@deftypefn {} void copy (const NLEqn_options &@var{opt})
+@end deftypefn
+
+@deftypefn {} void set_default_options (void)
+@end deftypefn
+
+@deftypefn {} void set_tolerance (double @var{val})
+@end deftypefn
+
+@deftypefn {} double tolerance (void)
+@end deftypefn
+
+@deftypefn  {} {}NLEqn (void)
+@deftypefnx  {} {}NLEqn (const ColumnVector&, const @var{NLFunc})
+@deftypefnx  {} {}NLEqn (const NLEqn &@var{a})
+@end deftypefn
+
+@deftypefn {} NLEqn& {operator =} (const NLEqn &@var{a})
+@end deftypefn
+
+@deftypefn {} void resize (int @var{n})
+@end deftypefn
+
+@deftypefn {} void set_states (const ColumnVector &@var{x})
+@end deftypefn
+
+@deftypefn {} ColumnVector states (void) const
+@end deftypefn
+
+@deftypefn {} int size (void) const
+@end deftypefn
+
+@deftypefn {} ColumnVector solve (void)
+@deftypefnx {} ColumnVector solve (const ColumnVector &@var{x})
+@end deftypefn
+
+@deftypefn {} ColumnVector solve (int &@var{info})
+@deftypefnx{} ColumnVector solve (const ColumnVector &@var{x}, int &@var{info})
+@end deftypefn

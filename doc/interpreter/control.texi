@@ -1,0 +1,471 @@
+@c Copyright (C) 1996 John W. Eaton
+@c This is part of the Octave manual.
+@c For copying conditions, see the file gpl.texi.
+
+@node Control Theory, Signal Processing, Quadrature, Top
+@chapter Control Theory
+
+@ftable @code
+@item abcddim (@var{a}, @var{b}, @var{c}, @var{d})
+
+Check for compatibility of the dimensions of the matrices defining
+the linear system [A, B, C, D] corresponding to
+@iftex
+@tex
+$$
+ {dx\over dt} = A x + B u
+$$
+$$
+ y = C x + D u
+$$
+@end tex
+@end iftex
+@ifinfo
+
+@example
+dx/dt = a x + b u
+y = c x + d u
+@end example
+
+@end ifinfo
+or a similar discrete-time system.
+
+If the matrices are compatibly dimensioned, then @code{abcddim} returns
+@var{n} = number of system states, @var{m} = number of system inputs,
+and @var{p} = number of system outputs.  Otherwise @code{abcddim}
+returns @var{n} = @var{m} = @var{p} = @minus{}1.
+
+@item are (@var{a}, @var{b}, @var{c}, @var{opt})
+
+Returns the solution, @var{x}, of the algebraic Riccati equation
+
+@example
+a' x + x a - x b x + c = 0
+@end example
+
+@noindent
+for identically dimensioned square matrices @var{a}, @var{b}, @var{c}.
+If @var{b} (@var{c}) is not square, then the function attempts to use
+@code{@var{b}*@var{b}'} (@code{@var{c}'*@var{c}}) instead.
+
+Solution method: apply Laub's Schur method (IEEE Transactions on
+Automatic Control, 1979) to the appropriate Hamiltonian matrix.
+
+@var{opt} is an option passed to the eigenvalue balancing routine.
+Default is @code{"B"}.
+
+@item c2d (@var{a}, @var{b}, @var{t})
+Converts the continuous time system described by:
+@iftex
+@tex
+$$
+ {dx\over dt} = A x + B u
+$$
+@end tex
+@end iftex
+@ifinfo
+
+@example
+dx/dt = a x + b u
+@end example
+
+@end ifinfo
+into a discrete time equivalent model
+@iftex
+@tex
+$$
+ x_{k+1} = A_d x_k + B_d u_k
+$$
+@end tex
+@end iftex
+@ifinfo
+
+@example
+x[k+1] = Ad x[k] + Bd u[k]
+@end example
+@end ifinfo
+
+@noindent
+via the matrix exponential assuming a zero-order hold on the input and
+sample time @var{t}.
+
+@item dare (@var{a}, @var{b}, @var{c}, @var{r}, @var{opt})
+
+Returns the solution, @var{x} of the discrete-time algebraic Riccati
+equation
+
+@example
+a' x a - x + a' x b (r + b' x b)^(-1) b' x a + c = 0
+@end example
+
+@noindent
+for matrices with dimensions:
+
+@example
+@var{a}: @var{n} by @var{n}
+@var{b}: @var{n} by @var{m}
+@var{c}: @var{n} by @var{n}, symmetric positive semidefinite
+@var{r}: @var{m} by @var{m}, symmetric positive definite (invertible)
+@end example
+
+If @var{c} is not square, then the function attempts to use
+@code{@var{c}'*@var{c}} instead.
+
+Solution method: Laub's Schur method (IEEE Transactions on Automatic
+Control, 1979) is applied to the appropriate symplectic matrix.
+
+See also: Ran and Rodman, @cite{Stable Hermitian Solutions of Discrete
+Algebraic Riccati Equations}, Mathematics of Control, Signals and 
+Systems, Volume 5, Number 2 (1992).
+
+@var{opt} is an option passed to the eigenvalue balancing routine.
+The default is @code{"B"}.
+
+@item dgram (@var{a}, @var{b})
+Returns the discrete controllability and observability gramian for the
+discrete time system described by
+@iftex
+@tex
+$$
+ x_{k+1} = A x_k + B u_k
+$$
+$$
+ y_k = C x_k + D u_k
+$$
+@end tex
+@end iftex
+@ifinfo
+
+@example
+x[k+1] = A x[k] + B u[k]
+  y[k] = C x[k] + D u[k]
+@end example
+@end ifinfo
+
+@code{dgram (@var{a}, @var{b})} returns the discrete controllability
+gramian and @code{dgram (@var{a}', @var{c}')} returns the observability
+gramian.
+
+@item dlqe (@var{a}, @var{g}, @var{c}, @var{sigw}, @var{sigv} [, @var{z}])
+Linear quadratic estimator (Kalman filter) design for the discrete time
+system
+@iftex
+@tex
+$$
+ x_{k+1} = A x_k + B u_k + G w_k
+$$
+$$
+ y_k = C x_k + D u_k + w_k
+$$
+@end tex
+@end iftex
+@ifinfo
+
+@example
+x[k+1] = A x[k] + B u[k] + G w[k]
+  y[k] = C x[k] + D u[k] + w[k]
+@end example
+
+@end ifinfo
+where @var{w}, @var{v} are zero-mean gaussian noise processes with
+respective intensities @code{@var{sigw} = cov (@var{w}, @var{w})} and
+@code{@var{sigv} = cov (@var{v}, @var{v})}.
+
+If specified, @var{z} is @code{cov (@var{w}, @var{v})}.  Otherwise
+@code{cov (@var{w}, @var{v}) = 0}.
+
+The observer structure is
+@iftex
+@tex
+$$
+ z_{k+1} = A z_k + B u_k + k(y_k - C z_k - D u_k)
+$$
+@end tex
+@end iftex
+@ifinfo
+
+@example
+z[k+1] = A z[k] + B u[k] + k(y[k] - C z[k] - D u[k])
+@end example
+@end ifinfo
+
+@noindent
+Returns:
+
+@var{l} is the observer gain, @code{(A - A L C)} is stable.
+
+@var{m} is the Ricatti equation solution.
+
+@var{p} is the estimate error covariance after the measurement update.
+
+@var{e} are the closed loop poles of @code{(A - A L C)}.
+
+
+@item dlqr (@var{a}, @var{b}, @var{q}, @var{r} [, @var{z}])
+Linear quadratic regulator design for the discrete time system
+@iftex
+@tex
+$$
+ x_{k+1} = A x_k + B u_k
+$$
+@end tex
+@end iftex
+@ifinfo
+
+@example
+x[k+1] = A x[k] + B u[k]
+@end example
+
+@end ifinfo
+to minimize the cost functional
+
+@example
+J = Sum [ x' Q x + u' R u ],              Z omitted
+@end example
+
+@noindent
+or
+
+@example
+J = Sum [ x' Q x + u' R u +2 x' Z u ],    Z included
+@end example
+
+@noindent
+Returns:
+
+@var{k} is the state feedback gain, @code{(A - B K)} is stable.
+
+@var{p} is the solution of algebraic Riccati equation.
+
+@var{e} are the closed loop poles of @var{(A - B K)}.
+
+@item dlyap (@var{a}, @var{b})
+Solve the discrete-time Lyapunov equation
+
+@example
+a x a' - x + b = 0
+@end example
+
+@noindent
+for square matrices @var{a}, @var{b}.  If @var{b} is not square, then the
+function attempts to solve either
+
+@example
+a x a' - x + b b' = 0
+@end example
+
+@noindent
+or
+
+@example
+a' x a - x + b' b = 0
+@end example
+
+@noindent
+whichever is appropriate.
+
+Uses Schur decomposition method as in Kitagawa, International Journal of
+Control (1977); column-by-column solution method as suggested in
+Hammarling, IMA Journal of Numerical Analysis, (1982).
+
+@item is_controllable (@var{a}, @var{b}, @var{tol})
+
+If the pair (a, b) is controllable, then return value 1.
+Otherwise, returns a value of 0.
+
+@var{tol} is a roundoff parameter, set to @code{2*eps} if omitted.
+
+Currently just constructs the controllability matrix and checks rank.
+A better method is as follows (Boley and Golub, Systems and Control
+Letters, 1984):  Controllability is determined by applying Arnoldi
+iteration with complete re-orthogonalization to obtain an orthogonal
+basis of the Krylov subspace
+@iftex
+@tex
+$$
+ {\rm span} \left(\left[b~ab~\ldots~a^{n-1}b\right]\right)
+$$
+@end tex
+@end iftex
+@ifinfo
+
+@example
+                      n-1
+ span ([b, a*b, ..., a^   *b]).
+@end example
+@end ifinfo
+
+@item is_observable (@var{a}, @var{c}, @var{tol})
+
+Returns 1 if the pair @code{(a, c)} is observable.
+Otherwise, returns a value of 0.
+
+@item lqe (@var{a}, @var{g}, @var{c}, @var{sigw}, @var{sigv}, @var{z})
+
+@example
+[k, p, e] = lqe (a, g, c, sigw, sigv, z)
+@end example
+
+Linear quadratic estimator (Kalman filter) design for the continuous
+time system
+@iftex
+@tex
+$$
+ {dx\over dt} = A x + B u
+$$
+$$
+ y = C x + D u
+$$
+@end tex
+@end iftex
+@ifinfo
+
+@example
+dx
+-- = a x + b u
+dt
+
+y = c x + d u
+@end example
+
+@end ifinfo
+where @var{w}, @var{v} are zero-mean gaussian noise processes with
+respective intensities
+
+@example
+sigw = cov (w, w)
+sigv = cov (v, v)
+@end example
+
+@noindent
+@var{z} (if specified) is the cross-covariance
+@code{cov (@var{w}, @var{v})}; the default value is
+@code{cov (@var{w}, @var{v}) = 0}. 
+
+Observer structure is @code{dz/dt = A z + B u + k (y - C z - D u)}
+
+returns:
+
+@var{k} is observer gain:  @code{(A - K C)} is stable.
+
+@var{p} is solution of algebraic Riccati equation.
+
+@var{e} is the vector of closed loop poles of @code{(A - K C)}.
+
+@item lqr (@var{a}, @var{b}, @var{q}, @var{r}, @var{z})
+@itemx [@var{k}, @var{p}, @var{e}] = lqr (@var{a}, @var{b}, @var{q}, @var{r}, @var{z})
+Linear quadratic regulator design for the continuous time system
+@iftex
+@tex
+$$
+ {dx\over dt} = A x + B u
+$$
+@end tex
+@end iftex
+@ifinfo
+
+@example
+dx
+-- = A x + B u
+dt
+@end example
+
+@end ifinfo
+to minimize the cost functional
+@iftex
+@tex
+$$
+ J = \int_0^\infty x' Q x + u' R u
+$$
+@end tex
+@end iftex
+@ifinfo
+
+@example
+      infinity
+      /
+  J = |  x' Q x + u' R u
+     /
+    t=0
+@end example
+@end ifinfo
+
+@noindent
+@var{z} omitted or
+@iftex
+@tex
+$$
+ J = \int_0^\infty x' Q x + u' R u + 2 x' Z u
+$$
+@end tex
+@end iftex
+@ifinfo
+
+@example
+      infinity
+      /
+  J = |  x' Q x + u' R u + 2 x' Z u
+     /
+    t=0
+@end example
+
+@end ifinfo
+@var{z} included
+
+@noindent
+Returns:
+
+@var{k} is state feedback gain:  @code{(A - B K)} is stable.
+
+@var{p} is the stabilizing solution of appropriate algebraic Riccati
+equation.
+
+@var{e} is the vector of the closed loop poles of @code{(A - B K)}.
+
+@item lyap (@var{a}, @var{b}, @var{c})
+
+Solve the Lyapunov (or Sylvester) equation via the Bartels-Stewart
+algorithm (Communications of the ACM, 1972).
+
+If @code{(a, b, c)} are specified, then @code{lyap} returns the solution
+of the  Sylvester equation
+
+@example
+a x + x b + c = 0
+@end example
+
+If only @code{(a, b)} are specified, then @code{lyap} returns the
+solution of the Lyapunov equation
+
+@example
+a' x + x a + b = 0
+@end example
+
+If @var{b} is not square, then @code{lyap} returns the solution of either
+
+@example
+a' x + x a + b' b = 0
+@end example
+
+@noindent
+or
+
+@example
+a x + x a' + b b' = 0
+@end example
+
+@noindent
+whichever is appropriate.
+
+Solves by using the Bartels-Stewart algorithm (1972).
+
+@item tzero (@var{a}, @var{b}, @var{c}, @var{d}, @var{bal})
+
+Compute the transmission zeros of [A, B, C, D].
+
+@var{bal} = balancing option (see balance); default is @code{"B"}.
+
+Needs to incorporate @code{mvzero} algorithm to isolate finite zeros;
+see Hodel, @cite{Computation of System Zeros with Balancing}, Linear
+Algebra and its Applications, July 1993.
+@end ftable

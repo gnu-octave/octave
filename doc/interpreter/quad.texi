@@ -1,0 +1,72 @@
+@c Copyright (C) 1996 John W. Eaton
+@c This is part of the Octave manual.
+@c For copying conditions, see the file gpl.texi.
+
+@node Quadrature, Control Theory, Optimization, Top
+@chapter Quadrature
+
+@menu
+* Functions of one Variable::   
+* Orthogonal Collocation::      
+@end menu
+
+@node Functions of one Variable, Orthogonal Collocation, Quadrature, Quadrature
+@section Functions of one Variable
+
+@ftable @code
+@item quad
+
+@example
+[v, ier, nfun] = quad ("f", a, b)
+[v, ier, nfun] = quad ("f", a, b, tol)
+[v, ier, nfun] = quad ("f", a, b, tol, sing)
+@end example
+
+Integrate a nonlinear function of one variable using Quadpack.
+
+Where the first argument is the name of the  function to call to
+compute the value of the integrand.  It must have the form
+
+@example
+y = f (x)
+@end example
+
+@noindent
+where y and x are scalars.
+
+The second and third arguments are limits of integration.  Either or
+both may be infinite.
+
+The optional argument tol is a vector that specifies the desired
+accuracy of the result.  The first element of the vector is the desired
+absolute tolerance, and the second element is the desired relative
+tolerance.  To choose a relative test only, set the absolute
+tolerance to zero.  To choose an absolute test only, set the relative
+tolerance to zero. 
+
+The optional argument @var{sing} is a vector of values at which the
+integrand is singular.
+
+@findex quad_options
+Tolerances and other options for @code{quad} may be specified using the
+function @code{quad_options}.
+
+@end ftable
+
+@node Orthogonal Collocation,  , Functions of one Variable, Quadrature
+@section Orthogonal Collocation
+
+@ftable @code
+@item colloc
+
+@example
+[r, A, B, q] = colloc (n)
+[r, A, B, q] = colloc (n, "left")
+[r, A, B, q] = colloc (n, "left", "right")
+@end example
+
+Compute derivative and integral weight matrices for orthogonal
+collocation using the subroutines given in J. Villadsen and
+M. L. Michelsen, @cite{Solution of Differential Equation Models by
+Polynomial Approximation}.
+@end ftable

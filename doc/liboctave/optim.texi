@@ -1,0 +1,351 @@
+@node Objective Functions, Quadrature, Nonlinear Functions, Top
+@chapter Objective Functions
+@cindex objective functions
+
+@deftypefn  {} {}Objective (void)
+@deftypefnx  {} {}Objective (const @var{objective_fcn})
+@deftypefnx  {} {}Objective (const @var{objective_fcn}, const @var{gradient_fcn})
+@deftypefnx  {} {}Objective (const Objective &@var{a})
+@end deftypefn
+
+@deftypefn {} Objective& {operator =} (const Objective &@var{a})
+@end deftypefn
+
+@deftypefn {} objective_fcn objective_function (void) const;
+@end deftypefn
+
+@deftypefn {} Objective& set_objective_function (const @var{objective_fcn})
+@end deftypefn
+
+@deftypefn {} gradient_fcn gradient_function (void) const;
+@end deftypefn
+
+@deftypefn {} Objective& set_gradient_function (const @var{gradient_fcn})
+@end deftypefn
+
+@c ------------------------------------------------------------------------
+
+@node Bounds, Linear Constraints, Objective Functions
+@chapter Bounds
+@cindex bounds
+
+@deftypefn  {} {}Bounds (void)
+@deftypefnx  {} {}Bounds (int @var{n})
+@deftypefnx  {} {}Bounds (const ColumnVector @var{lb}, const ColumnVector @var{ub})
+@deftypefnx  {} {}Bounds (const Bounds &@var{a})
+@end deftypefn
+
+@deftypefn {} Bounds& {operator =} (const Bounds &@var{a})
+@end deftypefn
+
+@deftypefn {} Bounds& resize (int @var{n})
+@end deftypefn
+
+@deftypefn {} double lower_bound (int @var{index}) const;
+@deftypefnx {} double upper_bound (int @var{index}) const;
+@end deftypefn
+
+@deftypefn {} ColumnVector lower_bounds (void) const;
+@deftypefnx {} ColumnVector upper_bounds (void) const;
+@end deftypefn
+
+@deftypefn {} int size (void) const;
+@end deftypefn
+
+@deftypefn {} Bounds& set_bound (int @var{index}, double @var{low}, double @var{high})
+@end deftypefn
+
+@deftypefn {} Bounds& set_bounds (double @var{low}, double @var{high})
+@deftypefnx {} Bounds& set_bounds (const ColumnVector @var{lb}, const ColumnVector @var{ub})
+@end deftypefn
+
+@deftypefn {} Bounds& set_lower_bound (int @var{index}, double @var{low})
+@deftypefnx {} Bounds& set_upper_bound (int @var{index}, double @var{high})
+@end deftypefn
+
+@deftypefn {} Bounds& set_lower_bounds (double @var{low})
+@deftypefnx {} Bounds& set_upper_bounds (double @var{high})
+@end deftypefn
+
+@deftypefn {} Bounds& set_lower_bounds (const ColumnVector @var{lb})
+@deftypefnx {} Bounds& set_upper_bounds (const ColumnVector @var{ub})
+@end deftypefn
+
+@deftypefn {} {ostream&} {operator <<} (ostream &@var{os}, const Bounds &@var{b})
+@end deftypefn
+
+@c ------------------------------------------------------------------------
+
+@node Linear Constraints, Nonlinear Constraints, Bounds
+@chapter Linear Constraints
+@cindex linear Constraints
+
+@deftypefn  {} {}LinConst (void)
+@deftypefnx  {} {}LinConst (int @var{nclin}, int @var{nx})
+@deftypefnx  {} {}LinConst (int @var{nclin_eq}, int @var{nclin_ineq}, int @var{nx})
+@deftypefnx  {} {}LinConst (const ColumnVector &@var{lb}, const Matrix &@var{A}, const ColumnVector &@var{ub})
+@deftypefnx  {} {}LinConst (const Matrix &@var{A_eq}, const ColumnVector &@var{b_eq}, const Matrix &@var{A_ineq}, const ColumnVector &@var{b_ineq})
+@deftypefnx  {} {}LinConst (const LinConst &@var{a})
+@end deftypefn
+
+@deftypefn {} LinConst& {operator =} (const LinConst &@var{a})
+@end deftypefn
+
+@deftypefn {} LinConst& resize (int @var{nclin}, int @var{n})
+@end deftypefn
+
+@deftypefn {} Matrix constraint_matrix (void) const;
+@end deftypefn
+
+@deftypefn {} LinConst& set_constraint_matrix (const Matrix &@var{A})
+@end deftypefn
+
+@deftypefn {} Matrix eq_constraint_matrix (void) const;
+@deftypefnx {} Matrix ineq_constraint_matrix (void) const;
+@end deftypefn
+
+@deftypefn {} ColumnVector eq_constraint_vector (void) const;
+@deftypefnx {} ColumnVector ineq_constraint_vector (void) const;
+@end deftypefn
+
+@deftypefn {} {ostream&} {operator <<} (ostream &@var{os}, const LinConst &@var{b})
+@end deftypefn
+
+@c ------------------------------------------------------------------------
+
+@node Nonlinear Constraints, Quadratic Programming, Linear Constraints
+@chapter Nonlinear Constraints
+@cindex nonlinear Constraints
+
+@deftypefn  {} {}NLConst (void)
+@deftypefnx  {} {}NLConst (int @var{n})
+@deftypefnx  {} {}NLConst (const ColumnVector @var{lb}, const NLFunc @var{f}, const ColumnVector @var{ub})
+@deftypefnx  {} {}NLConst (const NLConst &@var{a})
+@end deftypefn
+
+@deftypefn {} NLConst& {operator =} (const NLConst &@var{a})
+@end deftypefn
+
+@node Quadratic Programming, Nonlinear Programming, Nonlinear Constraints
+@chapter Quadratic Programming
+@cindex QP
+@cindex quadratic programming
+
+@deftypefn  {} {}QP (void)
+@deftypefnx  {} {}QP (const ColumnVector &@var{x}, const Matrix &@var{H})
+@deftypefnx  {} {}QP (const ColumnVector &@var{x}, const Matrix &@var{H}, const ColumnVector &@var{c})
+@deftypefnx  {} {}QP (const ColumnVector &@var{x}, const Matrix &@var{H}, const Bounds &@var{b})
+@deftypefnx  {} {}QP (const ColumnVector &@var{x}, const Matrix &@var{H}, const LinConst &@var{lc})
+@deftypefnx  {} {}QP (const ColumnVector &@var{x}, const Matrix &@var{H}, const ColumnVector &@var{c}, const Bounds &@var{b})
+@deftypefnx  {} {}QP (const ColumnVector &@var{x}, const Matrix &@var{H}, const ColumnVector &@var{c}, const LinConst &@var{lc})
+@deftypefnx  {} {}QP (const ColumnVector &@var{x}, const Matrix &@var{H}, const Bounds &@var{b}, const LinConst &@var{lc})
+@deftypefnx  {} {}QP (const ColumnVector &@var{x}, const Matrix &@var{H}, const ColumnVector &@var{c}, const Bounds &@var{b}, const LinConst &@var{lc})
+@end deftypefn
+
+@deftypefn {} {virtual ColumnVector} minimize (void)
+@deftypefnx {} {virtual ColumnVector} minimize (double &@var{objf})
+@deftypefnx {} {virtual ColumnVector} minimize (double &@var{objf}, int &@var{inform})
+@deftypefnx {} {virtual ColumnVector} minimize (double &@var{objf}, int &@var{inform}, ColumnVector &@var{lambda}) = 0;
+@end deftypefn
+
+@deftypefn {} {virtual ColumnVector} minimize (const ColumnVector &@var{x})
+@deftypefnx {} {virtual ColumnVector} minimize (const ColumnVector &@var{x}, double &@var{objf})
+@deftypefnx {} {virtual ColumnVector} minimize (const ColumnVector &@var{x}, double &@var{objf}, int &@var{inform})
+@deftypefnx {} {virtual ColumnVector} minimize (const ColumnVector &@var{x}, double &@var{objf}, int &@var{inform}, ColumnVector &@var{lambda})
+@end deftypefn
+
+@deftypefn  {} {}QPSOL_options (void)
+@deftypefnx  {} {}QPSOL_options (const QPSOL_options &@var{opt})
+@end deftypefn
+
+@deftypefn {} QPSOL_options& {operator =} (const QPSOL_options &@var{opt})
+@end deftypefn
+
+@deftypefn {} void init (void)
+@end deftypefn
+
+@deftypefn {} void copy (const QPSOL_options &@var{opt})
+@end deftypefn
+
+@deftypefn {} void set_default_options (void)
+@end deftypefn
+
+@deftypefn {} void set_feasibility_tolerance (double @var{val})
+@end deftypefn
+
+@deftypefn {} void set_infinite_bound (double @var{val})
+@end deftypefn
+
+@deftypefn {} void set_iteration_limit (int @var{val})
+@end deftypefn
+
+@deftypefn {} void set_print_level (int @var{val})
+@end deftypefn
+
+@deftypefn {} double feasibility_tolerance (void)
+@deftypefnx {} double infinite_bound (void)
+@deftypefnx {} int iteration_limit (void)
+@deftypefnx {} int print_level (void)
+@end deftypefn
+
+@deftypefn  {} {}QPSOL (void)
+@deftypefnx  {} {}QPSOL (const ColumnVector &@var{x}, const Matrix &@var{H})
+@deftypefnx  {} {}QPSOL (const ColumnVector &@var{x}, const Matrix &@var{H}, const ColumnVector &@var{c})
+@deftypefnx  {} {}QPSOL (const ColumnVector &@var{x}, const Matrix &@var{H}, const Bounds &@var{b})
+@deftypefnx  {} {}QPSOL (const ColumnVector &@var{x}, const Matrix &@var{H}, const LinConst &@var{lc})
+@deftypefnx  {} {}QPSOL (const ColumnVector &@var{x}, const Matrix &@var{H}, const ColumnVector &@var{c}, const Bounds &@var{b})
+@deftypefnx  {} {}QPSOL (const ColumnVector &@var{x}, const Matrix &@var{H}, const ColumnVector &@var{c}, const LinConst &@var{lc})
+@deftypefnx  {} {}QPSOL (const ColumnVector &@var{x}, const Matrix &@var{H}, const Bounds &@var{b}, const LinConst &@var{lc})
+@deftypefnx  {} {}QPSOL (const ColumnVector &@var{x}, const Matrix &@var{H}, const ColumnVector &@var{c}, const Bounds &@var{b}, const LinConst &@var{lc})
+@deftypefnx  {} {}QPSOL (const QPSOL &@var{a})
+@end deftypefn
+
+@deftypefn {} QPSOL& {operator =} (const QPSOL &@var{a})
+@end deftypefn
+
+@deftypefn {} ColumnVector minimize (double &@var{objf}, int &@var{inform}, ColumnVector &@var{lambda})
+@end deftypefn
+
+@c ------------------------------------------------------------------------
+
+@node Nonlinear Programming,  , Quadratic Programming
+@chapter Nonlinear Programming
+@cindex NLP
+@cindex nonlinear programming
+
+@deftypefn  {} {}NLP (void)
+@deftypefnx  {} {}NLP (const ColumnVector &@var{x}, const Objective &@var{phi})
+@deftypefnx  {} {}NLP (const ColumnVector &@var{x}, const Objective &@var{phi}, const Bounds &@var{b})
+@deftypefnx  {} {}NLP (const ColumnVector &@var{x}, const Objective &@var{phi}, const Bounds &@var{b}, const LinConst &@var{lc})
+@deftypefnx  {} {}NLP (const ColumnVector &@var{x}, const Objective &@var{phi}, const Bounds &@var{b}, const LinConst &@var{lc}, const NLConst &@var{nlc})
+@deftypefnx  {} {}NLP (const ColumnVector &@var{x}, const Objective &@var{phi}, const LinConst &@var{lc})
+@deftypefnx  {} {}NLP (const ColumnVector &@var{x}, const Objective &@var{phi}, const LinConst &@var{lc}, const NLConst &@var{nlc})
+@deftypefnx  {} {}NLP (const ColumnVector &@var{x}, const Objective &@var{phi}, const NLConst &@var{nlc})
+@deftypefnx  {} {}NLP (const ColumnVector &@var{x}, const Objective &@var{phi}, const Bounds &@var{b}, const NLConst &@var{nlc})
+@end deftypefn
+
+@deftypefn {} NLP& {operator =} (const NLP &@var{a})
+@end deftypefn
+
+@deftypefn {} int size (void) const
+@end deftypefn
+
+@deftypefn  {} {}NPSOL_options (void)
+@deftypefnx  {} {}NPSOL_options (const NPSOL_options &@var{opt})
+@end deftypefn
+
+@deftypefn {} NPSOL_options& {operator =} (const NPSOL_options &@var{opt})
+@end deftypefn
+
+@deftypefn {} void init (void)
+@deftypefnx {} void copy (const NPSOL_options &@var{opt})
+@end deftypefn
+
+@deftypefn {} void set_default_options (void)
+@end deftypefn
+
+@deftypefn {} void set_central_difference_interval (double @var{val})
+@end deftypefn
+
+@deftypefn {} void set_crash_tolerance (double @var{val})
+@end deftypefn
+
+@deftypefn {} void set_difference_interval (double @var{val})
+@end deftypefn
+
+@deftypefn {} void set_function_precision (double @var{val})
+@end deftypefn
+
+@deftypefn {} void set_infinite_bound (double @var{val})
+@end deftypefn
+
+@deftypefn {} void set_infinite_step (double @var{val})
+@end deftypefn
+
+@deftypefn {} void set_linear_feasibility_tolerance (double @var{val})
+@end deftypefn
+
+@deftypefn {} void set_linesearch_tolerance (double @var{val})
+@end deftypefn
+
+@deftypefn {} void set_nonlinear_feasibility_tolerance (double @var{val})
+@end deftypefn
+
+@deftypefn {} void set_optimality_tolerance (double @var{val})
+@end deftypefn
+
+@deftypefn {} void set_derivative_level (int @var{val})
+@end deftypefn
+
+@deftypefn {} void set_major_iteration_limit (int @var{val})
+@end deftypefn
+
+@deftypefn {} void set_minor_iteration_limit (int @var{val})
+@end deftypefn
+
+@deftypefn {} void set_major_print_level (int @var{val})
+@end deftypefn
+
+@deftypefn {} void set_minor_print_level (int @var{val})
+@end deftypefn
+
+@deftypefn {} void set_start_objective_check (int @var{val})
+@end deftypefn
+
+@deftypefn {} void set_start_constraint_check (int @var{val})
+@end deftypefn
+
+@deftypefn {} void set_stop_objective_check (int @var{val})
+@end deftypefn
+
+@deftypefn {} void set_stop_constraint_check (int @var{val})
+@end deftypefn
+
+@deftypefn {} void set_verify_level (int @var{val})
+@end deftypefn
+
+@deftypefn {} double central_difference_interval (void) const
+@deftypefnx {} double crash_tolerance (void) const
+@deftypefnx {} double difference_interval (void) const
+@deftypefnx {} double function_precision (void) const
+@deftypefnx {} double infinite_bound (void) const
+@deftypefnx {} double infinite_step (void) const
+@deftypefnx {} double linear_feasibility_tolerance (void) const
+@deftypefnx {} double linesearch_tolerance (void) const
+@deftypefnx {} double nonlinear_feasibility_tolerance (void) const
+@deftypefnx {} double optimality_tolerance (void) const
+@deftypefnx {} int derivative_level (void) const
+@deftypefnx {} int major_iteration_limit (void) const
+@deftypefnx {} int minor_iteration_limit (void) const
+@deftypefnx {} int major_print_level (void) const
+@deftypefnx {} int minor_print_level (void) const
+@deftypefnx {} int start_objective_check (void) const
+@deftypefnx {} int start_constraint_check (void) const
+@deftypefnx {} int stop_objective_check (void) const
+@deftypefnx {} int stop_constraint_check (void) const
+@deftypefnx {} int verify_level (void) const
+@end deftypefn
+
+@deftypefn  {} {}NPSOL (void)
+@deftypefnx  {} {}NPSOL (const ColumnVector &@var{x}, const Objective &@var{phi})
+@deftypefnx  {} {}NPSOL (const ColumnVector &@var{x}, const Objective &@var{phi}, const Bounds &@var{b})
+@deftypefnx  {} {}NPSOL (const ColumnVector &@var{x}, const Objective &@var{phi}, const Bounds &@var{b}, const LinConst &@var{lc})
+@deftypefnx  {} {}NPSOL (const ColumnVector &@var{x}, const Objective &@var{phi}, const Bounds &@var{b}, const LinConst &@var{lc}, const NLConst &@var{nlc})
+@deftypefnx  {} {}NPSOL (const ColumnVector &@var{x}, const Objective &@var{phi}, const LinConst &@var{lc})
+@deftypefnx  {} {}NPSOL (const ColumnVector &@var{x}, const Objective &@var{phi}, const LinConst &@var{lc}, const NLConst &@var{nlc})
+@deftypefnx  {} {}NPSOL (const ColumnVector &@var{x}, const Objective &@var{phi}, const NLConst &@var{nlc})
+@deftypefnx  {} {}NPSOL (const ColumnVector &@var{x}, const Objective &@var{phi}, const Bounds &@var{b}, const NLConst &@var{nlc})
+@deftypefnx  {} {}NPSOL (const NPSOL &@var{a})
+@end deftypefn
+
+@deftypefn {} ColumnVector minimize (void)
+@deftypefnx {} ColumnVector minimize (double &@var{objf})
+@deftypefnx {} ColumnVector minimize (double &@var{objf}, int &@var{inform})
+@deftypefnx {} ColumnVector minimize (double &@var{objf}, int &@var{inform}, ColumnVector &@var{lambda})
+@end deftypefn
+
+@deftypefn {} ColumnVector minimize (const ColumnVector &@var{x})
+@deftypefnx {} ColumnVector minimize (const ColumnVector &@var{x}, double &@var{objf})
+@deftypefnx {} ColumnVector minimize (const ColumnVector &@var{x}, double &@var{objf}, int &@var{inform})
+@deftypefnx {} ColumnVector minimize (const ColumnVector &@var{x}, double &@var{objf}, int &@var{inform}, ColumnVector &@var{lambda})
+@end deftypefn

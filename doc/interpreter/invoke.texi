@@ -1,0 +1,203 @@
+@c Copyright (C) 1996 John W. Eaton
+@c This is part of the Octave manual.
+@c For copying conditions, see the file gpl.texi.
+
+@node Invoking Octave, Expressions, Introduction, Top
+@chapter Invoking Octave
+
+Normally, Octave is used interactively by running the program
+@samp{octave} without any arguments.  Once started, Octave reads
+commands from the terminal until you tell it to exit.
+
+You can also specify the name of a file on the command line, and Octave
+will read and execute the commands from the named file and then exit
+when it is finished.
+
+You can further control how Octave starts up by using the command-line
+options described in the next section, and Octave itself can remind you
+of the options available.  Type
+
+@example
+octave --help
+@end example
+
+@noindent
+to display all available options and briefly describe their use
+(@samp{octave -h} is a shorter equivalent).
+
+@menu
+* Command Line Options::        
+* Startup Files::               
+@end menu
+
+@node Command Line Options, Startup Files, Invoking Octave, Invoking Octave
+@section Command Line Options
+@cindex Octave command options
+@cindex command options
+@cindex options, Octave command
+
+@table @code
+@item --debug
+@itemx -d
+@cindex @code{--debug}
+@cindex @code{-d}
+Enter parser debugging mode.  Using this option will cause Octave's
+parser to print a lot of information about the commands it reads, and is
+probably only useful if you are actually trying to debug the parser.
+
+@item --echo-commands
+@itemx -x
+@cindex @code{--echo-commands}
+@cindex @code{-x}
+Echo commands as they are executed.
+
+@item --exec-path @var{path}
+@cindex @code{--exec-path @var{path}}
+Specify the path to search for programs to run.  The value of @var{path}
+specified on the command line will override any value of
+@samp{OCTAVE_EXEC_PATH} found in the environment, but not any 
+@samp{EXEC_PATH = "path"} commands found in the system or user startup
+files.
+
+@item --help
+@itemx -h
+@itemx -?
+@cindex @code{--help}
+@cindex @code{-h}
+@cindex @code{-?}
+Print short help message and exit.
+
+@item --ignore-init-file
+@itemx --norc
+@itemx -f
+@cindex @code{--ignore-init-file}
+@cindex @code{--norc}
+@cindex @code{-f}
+Don't read any of the system or user initialization files at startup.
+
+@item --info-file @var{filename}
+@cindex @code{--info-file @var{filename}}
+Specify the name of the info file to use.  The value of @var{filename}
+specified on the command line will override any value of
+@samp{OCTAVE_INFO_FILE} found in the environment, but not any
+@samp{INFO_FILE = "filename"} commands found in the system or user
+startup files.
+
+@item --info-program @var{program}
+@cindex @code{--info-program @var{program}}
+Specify the name of the info program to use.  The value of @var{program}
+specified on the command line will override any value of
+@samp{OCTAVE_INFO_PROGRAM} found in the environment, but not any
+@samp{INFO_PROGRAM = "program"} commands found in the system or user
+startup files.
+
+@item --interactive
+@itemx -i
+@cindex @code{--interactive}
+@cindex @code{-i}
+Force interactive behavior.
+
+@item --no-line-editing
+@cindex @code{--no-line-editing}
+Disable command-line editing and history.
+
+@item --path @var{path}
+@itemx -p @var{path}
+@cindex @code{--path @var{path}}
+@cindex @code{-p @var{path}}
+Specify the path to search for function files.  The value of @var{path}
+specified on the command line will override any value of
+@samp{OCTAVE_PATH} found in the environment, but not any
+@samp{LOADPATH = "path"} commands found in the system or user startup
+files.
+
+@item --silent
+@itemx --quiet
+@itemx -q
+@cindex @code{--silent}
+@cindex @code{--quiet}
+@cindex @code{-q}
+Don't print message at startup.
+
+@item --traditional
+@cindex @code{--traditional}
+Set initial values for user-preference variables to the following
+values for compatibility with Matlab.
+
+@example
+PS1                           = ">> "
+PS2                           = ""
+beep_on_error                 = 1
+default_save_format           = "mat-binary"
+define_all_return_values      = 1
+do_fortran_indexing           = 1
+empty_list_elements_ok        = 1
+implicit_str_to_num_ok        = 1
+ok_to_lose_imaginary_part     = 1
+page_screen_output            = 0
+prefer_column_vectors         = 0
+prefer_zero_one_indexing      = 1
+print_empty_dimensions        = 0
+treat_neg_dim_as_zero         = 1
+warn_function_name_clash      = 0
+whitespace_in_literal_matrix  = "traditional"
+@end example
+
+@item --verbose
+@itemx -V
+@cindex @code{--verbose}
+@cindex @code{-V}
+Turn on verbose output.
+
+@item --version
+@itemx -v
+@cindex @code{--version}
+@cindex @code{-v}
+Print the program version number and exit.
+
+@item @var{file}
+Execute commands from @var{file}.
+@end table
+
+@node Startup Files,  , Command Line Options, Invoking Octave
+@section Startup Files
+@cindex initialization
+@cindex startup
+
+When Octave starts, it looks for commands to execute from the following
+files:
+
+@cindex startup files
+
+@table @code
+@item OCTAVE_HOME/lib/octave/VERSION/m/startup/octaverc
+Where @code{OCTAVE_HOME} is the directory in which all of Octave is
+installed (the default is @file{/usr/local}), and @code{VERSION} is the
+version number of Octave.  This file is provided so that changes to the
+default Octave environment can be made globally for all users.  Some
+care should be taken when making changes to this file, since all users
+of Octave at your site will be affected.
+
+@item ~/.octaverc
+@cindex @code{~/.octaverc}
+This file is normally used to make personal changes to the default
+Octave environment.
+
+@item .octaverc
+@cindex @code{.octaverc}
+This file can be used to make changes to the default Octave environment
+for a particular project.  Octave searches for this file after it reads
+@file{~/.octaverc}, so any use of the @code{cd} command in the
+@file{~/.octaverc} file will affect the directory that Octave searches
+for the file @file{.octaverc}.
+
+If you start Octave in your home directory, commands from from the file
+@file{~/.octaverc} will only be executed once.
+@end table
+
+A message will be displayed as each of these files is read if you invoke
+Octave with the @code{--verbose} option but without the @code{--silent}
+option.
+
+Startup files may contain any valid Octave commands, including multiple
+function definitions.

@@ -1,0 +1,335 @@
+@c Copyright (C) 1996 John W. Eaton
+@c This is part of the Octave manual.
+@c For copying conditions, see the file gpl.texi.
+
+@node Matrix Manipulation, String Functions, Special Matrices, Top
+@chapter Matrix Manipulation
+
+There are a number of functions available for checking to see if the
+elements of a matrix meet some condition, and for rearranging the
+elements of a matrix.  For example, Octave can easily tell you if all
+the elements of a matrix are finite, or are less than some specified
+value.  Octave can also rotate the elements, extract the upper- or
+lower-triangular parts, or sort the columns of a matrix.
+
+@menu
+* Finding Elements and Checking Conditions::  
+* Rearranging Matrices::        
+@end menu
+
+@node Finding Elements and Checking Conditions, Rearranging Matrices, Matrix Manipulation, Matrix Manipulation
+@section Finding Elements and Checking Conditions
+
+@findex any
+@findex all
+
+The functions @code{any} and @code{all} are useful for determining
+whether any or all of the elements of a matrix satisfy some condition.
+The @code{find} function is also useful in determining which elements of
+a matrix meet a specified condition.
+
+Given a vector, the function @code{any} returns 1 if any element of the
+vector is nonzero.
+
+For a matrix argument, @code{any} returns a row vector of ones and
+zeros with each element indicating whether any of the elements of the
+corresponding column of the matrix are nonzero.  For example,
+
+@example
+octave:13> any (eye (2, 4))
+ans =
+
+  1  1  0  0
+@end example
+
+To see if any of the elements of a matrix are nonzero, you can use a
+statement like
+
+@example
+any (any (a))
+@end example
+
+The function @code{all} behaves like the function @code{any}, except
+that it returns true only if all the elements of a vector, or all the
+elements in a column of a matrix, are nonzero.
+
+Since the comparison operators (@pxref{Comparison Ops}) return matrices
+of ones and zeros, it is easy to test a matrix for many things, not just
+whether the elements are nonzero.  For example, 
+
+@example
+octave:13> all (all (rand (5) < 0.9))
+ans = 0
+@end example
+
+@noindent
+tests a random 5 by 5 matrix to see if all of it's elements are less
+than 0.9.
+
+Note that in conditional contexts (like the test clause of @code{if} and
+@code{while} statements) Octave treats the test as if you had typed
+@code{all (all (condition))}.
+
+@findex isinf
+@findex finite
+@findex isnan
+
+The functions @code{isinf}, @code{finite}, and @code{isnan} return 1 if
+their arguments are infinite, finite, or not a number, respectively, and
+return 0 otherwise.  For matrix values, they all work on an element by
+element basis.  For example, evaluating the expression
+
+@example
+isinf ([1, 2; Inf, 4])
+@end example
+
+@noindent
+produces the matrix
+
+@example
+ans =
+
+  0  0
+  1  0
+@end example
+
+@findex find
+
+The function @code{find} returns a vector of indices of nonzero elements
+of a matrix.  To obtain a single index for each matrix element, Octave
+pretends that the columns of a matrix form one long vector (like Fortran
+arrays are stored).  For example,
+
+@example
+octave:13> find (eye (2))
+ans =
+
+  1
+  4
+@end example
+
+If two outputs are requested, @code{find} returns the row and column
+indices of nonzero elements of a matrix.  For example,
+
+@example
+octave:13> [i, j] = find (eye (2))
+i =
+
+  1
+  2
+
+j =
+
+  1
+  2
+@end example
+
+If three outputs are requested, @code{find} also returns the nonzero
+values in a vector.
+        
+@node Rearranging Matrices,  , Finding Elements and Checking Conditions, Matrix Manipulation
+@section Rearranging Matrices
+
+@findex fliplr
+@findex flipud
+
+The function @code{fliplr} reverses the order of the columns in a
+matrix, and @code{flipud} reverses the order of the rows.  For example,
+
+@example
+octave:13> fliplr ([1, 2; 3, 4])
+ans =
+
+  2  1
+  4  3
+
+octave:13> flipud ([1, 2; 3, 4])
+ans =
+
+  3  4
+  1  2
+@end example
+
+@findex rot90
+
+The function @code{rot90 (@var{a}, @var{n})} rotates a matrix
+counterclockwise in 90-degree increments.  The second argument is
+optional, and specifies how many 90-degree rotations are to be applied
+(the default value is 1).  Negative values of @var{n} rotate the matrix
+in a clockwise direction.  For example,
+
+@example
+rot90 ([1, 2; 3, 4], -1)
+ans =
+
+  3  1
+  4  2
+@end example
+
+@noindent
+rotates the given matrix clockwise by 90 degrees.  The following are all
+equivalent statements:
+
+@example
+rot90 ([1, 2; 3, 4], -1)
+rot90 ([1, 2; 3, 4], 3)
+rot90 ([1, 2; 3, 4], 7)
+@end example
+
+@findex reshape
+
+The function @code{reshape (@var{a}, @var{m}, @var{n})} returns a matrix
+with @var{m} rows and @var{n} columns whose elements are taken from the
+matrix @var{a}.  To decide how to order the elements, Octave pretends
+that the elements of a matrix are stored in column-major order (like
+Fortran arrays are stored).
+
+For example,
+
+@example
+octave:13> reshape ([1, 2, 3, 4], 2, 2)
+ans =
+
+  1  3
+  2  4
+@end example
+
+If the variable @code{do_fortran_indexing} is @code{"true"}, the
+@code{reshape} function is equivalent to
+
+@example
+retval = zeros (m, n);
+retval (:) = a;
+@end example
+
+@noindent
+but it is somewhat less cryptic to use @code{reshape} instead of the
+colon operator.  Note that the total number of elements in the original
+matrix must match the total number of elements in the new matrix.
+
+@findex sort
+
+The function @samp{sort} can be used to arrange the elements of a vector
+in increasing order.  For matrices, @code{sort} orders the elements in
+each column.
+
+For example,
+
+@example
+octave:13> sort (rand (4))
+ans =
+
+  0.065359  0.039391  0.376076  0.384298
+  0.111486  0.140872  0.418035  0.824459
+  0.269991  0.274446  0.421374  0.938918
+  0.580030  0.975784  0.562145  0.954964
+@end example
+
+The @code{sort} function may also be used to produce a matrix
+containing the original row indices of the elements in the sorted
+matrix.  For example,
+
+@example
+s =
+
+  0.051724  0.485904  0.253614  0.348008
+  0.391608  0.526686  0.536952  0.600317
+  0.733534  0.545522  0.691719  0.636974
+  0.986353  0.976130  0.868598  0.713884
+
+i =
+
+  2  4  2  3
+  4  1  3  4
+  1  2  4  1
+  3  3  1  2
+@end example
+
+@noindent
+These values may be used to recover the original matrix from the sorted
+version.  For example,
+
+@example
+@end example
+
+The @code{sort} function does not allow sort keys to be specified, so it
+can't be used to order the rows of a matrix according to the values of
+the elements in various columns@footnote{For example, to first sort
+based on the values in column 1, and then, for any values that are
+repeated in column 1, sort based on the values found in column 2, etc.}
+in a single call.  Using the second output, however, it is possible to
+sort all rows based on the values in a given column.  Here's an example
+that sorts the rows of a matrix based on the values in the third column.
+
+@example
+octave:13> a = rand (4) 
+a =
+
+  0.080606  0.453558  0.835597  0.437013
+  0.277233  0.625541  0.447317  0.952203
+  0.569785  0.528797  0.319433  0.747698
+  0.385467  0.124427  0.883673  0.226632
+
+octave:14> [s, i] = sort (a (:, 3));
+octave:15> a (i, :)
+ans =
+
+  0.569785  0.528797  0.319433  0.747698
+  0.277233  0.625541  0.447317  0.952203
+  0.080606  0.453558  0.835597  0.437013
+  0.385467  0.124427  0.883673  0.226632
+@end example
+
+@findex triu
+@findex tril
+
+The functions @code{triu (@var{a}, @var{k})} and @code{tril (@var{a},
+@var{k})} extract the upper or lower triangular part of the matrix
+@var{a}, and set all other elements to zero.  The second argument is
+optional, and specifies how many diagonals above or below the main
+diagonal should also be set to zero.
+
+The default value of @var{k} is zero, so that @code{triu} and
+@code{tril} normally include the main diagonal as part of the result
+matrix.
+
+If the value of @var{k} is negative, additional elements above (for
+@code{tril}) or below (for @code{triu}) the main diagonal are also
+selected.
+
+The absolute value of @var{k} must not be greater than the number of
+sub- or super-diagonals.
+
+For example,
+
+@example
+@group
+octave:13> tril (rand (4), -1)
+ans =
+
+  0.00000  0.00000  0.00000  0.00000
+  0.09012  0.00000  0.00000  0.00000
+  0.01215  0.34768  0.00000  0.00000
+  0.00302  0.69518  0.91940  0.00000
+@end group
+@end example
+
+@noindent
+forms a lower triangular matrix from a random 4 by 4 matrix, omitting
+the main diagonal, and
+
+@example
+@group
+octave:13> tril (rand (4), 1)
+ans =
+
+  0.06170  0.51396  0.00000  0.00000
+  0.96199  0.11986  0.35714  0.00000
+  0.16185  0.61442  0.79343  0.52029
+  0.68016  0.48835  0.63609  0.72113
+@end group
+@end example
+
+@noindent
+forms a lower triangular matrix from a random 4 by 4 matrix, including
+the main diagonal and the first super-diagonal.

@@ -1,0 +1,15 @@
+@node Acknowledgements, Copying, Top, Top
+@chapter Acknowledgements
+@cindex acknowledgements
+
+@menu
+* Contributors::                People who contributed to developing of Octave.
+@end menu
+
+@node Contributors,  , Acknowledgements, Acknowledgements
+@unnumberedsec Contributors to Octave
+@cindex contributors
+
+In addition to John W. Eaton, several people have written parts
+of liboctave.  (This has been removed because it is the same as what is
+in the Octave manual.)

@@ -47,6 +47,7 @@ Free Software Foundation, Inc.
 #include <iostream.h>
 #include <string.h>
 #include <assert.h>
+#include <signal.h>
 
 // This must come before anything that includes iostream.h...
 extern "C"

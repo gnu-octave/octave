@@ -1,3 +1,8 @@
+Fri Nov 28 14:05:12 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* specfun: New subdirectory.
+	* Makefile.in (CRUFT_DIRS): Add specfun.
+
 Wed Nov 26 01:49:47 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* slatec-fn/d9gmit.f, slatec-fn/d9lgic.f, slatec-fn/d9lgit.f,

@@ -1673,9 +1673,9 @@ default_return_value");
     "path to gnuplot binary");
 
 #ifdef GNUPLOT_HAS_MULTIPLOT
-  char *with_multiplot = 1.0;
+  double with_multiplot = 1.0;
 #else
-  char *with_multiplot = 0.0;
+  double with_multiplot = 0.0;
 #endif
 
   DEFVAR ("gnuplot_has_multiplot", SBV_gnuplot_has_multiplot,

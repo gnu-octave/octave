@@ -89,7 +89,7 @@ private:
   dim_vector n[2];
 
   bool simd_align[2];
-
+  bool inplace[2];
 
   // Plan for fft of real values
   fftw_plan rplan;
@@ -119,13 +119,14 @@ octave_fftw_planner::octave_fftw_planner (void)
   plan[0] = plan[1] = 0;
   d[0] = d[1] = s[0] = s[1] = r[0] = r[1] = h[0] = h[1] = 0;
   simd_align[0] = simd_align[1] = false;
+  inplace[0] = inplace[1] = false;
   n[0] = n[1] = dim_vector ();
 
   rplan = 0;
   rd = rs = rr = rh = 0;
   rsimd_align = false;
   rn = dim_vector ();
-
+  
   // If we have a system wide wisdom file, import it.
   fftw_import_system_wisdom ();
 }
@@ -143,13 +144,15 @@ octave_fftw_planner::create_plan (int dir, const int rank,
   fftw_plan *cur_plan_p = &plan[which];
   bool create_new_plan = false;
   bool ioalign = CHECK_SIMD_ALIGNMENT (in) && CHECK_SIMD_ALIGNMENT (out);
+  bool ioinplace = (in == out);
 
   // Don't create a new plan if we have a non SIMD plan already but
   // can do SIMD.  This prevents endlessly recreating plans if we
   // change the alignment.
 
   if (plan[which] == 0 || d[which] != dist || s[which] != stride
-      || r[which] != rank || h[which] != howmany
+      || r[which] != rank || h[which] != howmany 
+      || ioinplace != inplace[which]
       || ((ioalign != simd_align[which]) ? !ioalign : false))
     create_new_plan = true;
   else
@@ -171,6 +174,7 @@ octave_fftw_planner::create_plan (int dir, const int rank,
       r[which] = rank;
       h[which] = howmany;
       simd_align[which] = ioalign;
+      inplace[which] = ioinplace;
       n[which] = dims;
 
       if (ioalign)

@@ -1,3 +1,10 @@
+2004-10-11  David Bateman <dbateman@free.fr>
+
+	* oct-fftw.cc (class octave_fftw_planner): Add inplace[2] to
+	flag whether transform in- or out-of-place.
+	(octave_fftw_planner::octave_fftw_planner): Initialize it.
+	(octave_fftw_planner::create_plan): Use it.
+
 2004-09-24  John W. Eaton  <jwe@octave.org>
 
 	* Array.cc (assign2, assignN): If index is empty, allow RHS to be

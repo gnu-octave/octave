@@ -21,21 +21,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-#include "error.h"
+#include "Array-flags.h"
 #include "idx-vector.h"
 #include "lo-error.h"
-
-#if defined (OCTAVE_SOURCE)
-extern int& dfi_flag;
-extern int& pcv_flag;
-extern int& pzo_flag;
-extern int& rre_flag;
-#else
-extern int dfi_flag;
-extern int pcv_flag;
-extern int pzo_flag;
-extern int rre_flag;
-#endif
 
 template <class T>
 void
@@ -77,7 +65,7 @@ Array<T>::value (void)
 
   int len = length ();
 
-  int n = idx.freeze (len, "vector", pzo_flag);
+  int n = idx.freeze (len, "vector", liboctave_pzo_flag);
 
   if (idx)
     {
@@ -178,11 +166,12 @@ assign (Array<LT>& lhs, const Array<RT>& rhs)
   int lhs_len = lhs.length ();
   int rhs_len = rhs.length ();
 
-  int n = idx.freeze (lhs_len, "vector", pzo_flag, rre_flag);
+  int n = idx.freeze (lhs_len, "vector", liboctave_pzo_flag,
+		      liboctave_rre_flag);
 
   if (n != 0)
     {
-      if (rre_flag)
+      if (liboctave_rre_flag)
 	{
 	  int max_idx = idx.max () + 1;
 	  if (max_idx > lhs_len)
@@ -245,8 +234,8 @@ Array2<T>::value (void)
       idx_vector idx_i = tmp[0];
       idx_vector idx_j = tmp[1];
 
-      int n = idx_i.freeze (nr, "row", pzo_flag);
-      int m = idx_j.freeze (nc, "column", pzo_flag);
+      int n = idx_i.freeze (nr, "row", liboctave_pzo_flag);
+      int m = idx_j.freeze (nc, "column", liboctave_pzo_flag);
 
       if (idx_i && idx_j)
 	{
@@ -299,7 +288,7 @@ Array2<T>::value (void)
 	    retval = Array2<T> (0, 0);
 	  else
 	    {
-	      if (pcv_flag)
+	      if (liboctave_pcv_flag)
 		retval = Array2<T> (tmp, len, 1);
 	      else
 		retval = Array2<T> (tmp, 1, len);
@@ -309,7 +298,7 @@ Array2<T>::value (void)
 	{
 	  int result_is_column_vector = (nc == 1);
 
-	  if (dfi_flag)
+	  if (liboctave_dfi_flag)
 	    {
 	      idx_vector *tmp = get_idx ();
 	      idx_vector idx = tmp[0];
@@ -332,7 +321,7 @@ Array2<T>::value (void)
 		retval = Array2<T> (tmp, 1, len);
 	    }
 	}
-      else if (dfi_flag)
+      else if (liboctave_dfi_flag)
 	{
 	  // This code is only for indexing matrices.  The vector
 	  // cases are handled above.
@@ -340,7 +329,7 @@ Array2<T>::value (void)
 	  idx_vector *tmp = get_idx ();
 	  idx_vector idx = tmp[0];
 
-	  idx.freeze (nr * nc, "matrix", pzo_flag);
+	  idx.freeze (nr * nc, "matrix", liboctave_pzo_flag);
 
 	  if (idx)
 	    {
@@ -518,8 +507,11 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs)
       idx_vector idx_i = tmp[0];
       idx_vector idx_j = tmp[1];
 
-      int n = idx_i.freeze (lhs_nr, "row", pzo_flag, rre_flag);
-      int m = idx_j.freeze (lhs_nc, "column", pzo_flag, rre_flag);
+      int n = idx_i.freeze (lhs_nr, "row", liboctave_pzo_flag,
+			    liboctave_rre_flag);
+
+      int m = idx_j.freeze (lhs_nc, "column", liboctave_pzo_flag,
+			    liboctave_rre_flag);
 
       int idx_i_is_colon = idx_i.is_colon ();
       int idx_j_is_colon = idx_j.is_colon ();
@@ -538,7 +530,7 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs)
 	    }
 	  else
 	    {
-	      if (rre_flag)
+	      if (liboctave_rre_flag)
 		{
 		  int max_row_idx = idx_i_is_colon ? rhs_nr : idx_i.max () + 1;
 		  int max_col_idx = idx_j_is_colon ? rhs_nc : idx_j.max () + 1;
@@ -601,7 +593,8 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs)
 
 	  int lhs_len = lhs.length ();
 
-	  int n = idx.freeze (lhs_len, 0, pzo_flag, rre_flag);
+	  int n = idx.freeze (lhs_len, 0, liboctave_pzo_flag,
+			      liboctave_rre_flag);
 
 	  if (idx)
 	    {
@@ -624,9 +617,10 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs)
 			  int idx_nr = idx.orig_rows ();
 			  int idx_nc = idx.orig_columns ();
 
-			  if (dfi_flag || (idx_nr == 1 && idx_nc == 1))
+			  if (liboctave_dfi_flag
+			      || (idx_nr == 1 && idx_nc == 1))
 			    {
-			      if (pcv_flag)
+			      if (liboctave_pcv_flag)
 				{
 				  lhs.d1 = lhs.length ();
 				  lhs.d2 = 1;
@@ -669,7 +663,8 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs)
 
 	  idx_vector idx = tmp[0];
 
-	  idx.freeze (lhs_nc, "vector", pzo_flag, rre_flag);
+	  idx.freeze (lhs_nc, "vector", liboctave_pzo_flag,
+		      liboctave_rre_flag);
 
 	  if (idx)
 	    {
@@ -694,7 +689,8 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs)
 
 	  idx_vector idx = tmp[0];
 
-	  idx.freeze (lhs_nr, "vector", pzo_flag, rre_flag);
+	  idx.freeze (lhs_nr, "vector", liboctave_pzo_flag,
+		      liboctave_rre_flag);
 
 	  if (idx)
 	    {
@@ -713,12 +709,13 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs)
 	    }
 	  // idx_vector::freeze() printed an error message for us.
 	}
-      else if (dfi_flag)
+      else if (liboctave_dfi_flag)
 	{
 	  idx_vector *tmp = lhs.get_idx ();
 	  idx_vector idx = tmp[0];
 
-	  int len = idx.freeze (lhs_nr * lhs_nc, "matrix", pzo_flag);
+	  int len = idx.freeze (lhs_nr * lhs_nc, "matrix",
+				liboctave_pzo_flag);
 
 	  if (idx)
 	    {

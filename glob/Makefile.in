@@ -61,12 +61,12 @@ clean glob-clean:
 	-rm -f libglob.a *.o core
 
 distclean glob-maintainer-clean: clean
-	-rm -f TAGS tags Makefile config.status config.cache \
-	config.h config.log
+	-rm -f Makefile config.status config.cache config.h config.log
+	-rm -f TAGS tags
 	-rm -rf autom4te.cache
 
 maintainer-clean: distclean
-	-rm -f configure
+	-rm -f configure config.h.in
 
 realclean: distclean
 

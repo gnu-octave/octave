@@ -80,7 +80,7 @@ distclean: clean
 maintainer-clean: distclean
 	rm -f tags TAGS Octave-FAQ.info Octave-FAQ.info-*
 	rm -f Octave-FAQ.dvi Octave-FAQ.ps
-	rm -f Octave-FAQ_*.html
+	rm -f Octave-FAQ*.html
 .PHONY: maintainer-clean
 
 dist: all

@@ -1,3 +1,8 @@
+2004-01-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (distclean): Remove DOCSTRINGS.
+	(maintainer-clean): Remove $(OPT_HANDLERS).
+
 2004-01-21  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* ov-cell.cc (octave_cell::subsref): Make '{' case N-d aware.

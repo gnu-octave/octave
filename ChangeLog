@@ -1,3 +1,8 @@
+2004-01-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* octMakefile.in (maintainer-clean, distclean):
+	Remove Makefile and autom4te.cache.
+
 2004-01-14  David Bateman  <dbateman@free.fr>
 
 	* configure.in: Test for the presence of the function 

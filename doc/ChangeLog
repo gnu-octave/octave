@@ -1,3 +1,13 @@
+2004-01-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* faq/Makefile.in (maintainer-clean): Remove Octave-FAQ*.html
+	instead of just Octave-FAQ_*.html.
+
+	* liboctave/Makefile.in (maintainer-clean): Remove liboctave*.html
+	instead of just liboctave_*.html.
+
+	* refcard/Makefile.in (maintainer-clean): Remove refcard-*.pdf.
+
 2003-12-09  Eric S. Raymond  <esr@thyrsus.com>
 
 	* interpreter/mkoctfile.1: Use .I instead of .f for markup of ".oct".

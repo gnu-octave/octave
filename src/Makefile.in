@@ -434,12 +434,12 @@ mostlyclean: clean
 distclean: clean
 	rm -f Makefile octave$(EXEEXT) .fname so_locations
 	rm -f stamp-prereq stamp-liboctave-prereq stamp-oct-links
-	rm -f doc-files gendoc.cc
+	rm -f doc-files gendoc.cc DOCSTRINGS
 .PHONY: distclean
 
 maintainer-clean: distclean
 	rm -f tags TAGS y.tab.c y.tab.h y.output yy.lex.c lex.cc parse.cc
-	rm -f oct-gperf.h
+	rm -f oct-gperf.h $(OPT_HANDLERS)
 .PHONY: maintainer-clean
 
 dist: parse.cc lex.cc oct-gperf.h

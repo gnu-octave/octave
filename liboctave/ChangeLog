@@ -1,3 +1,8 @@
+2004-01-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (distclean): Remove $(MX_OP_INC), $(VX_OP_INC),
+	and $(OPTS_INC).
+
 2004-01-22  Petter Risholm  <risholm@stud.ntnu.no>
 
 	* Array.cc (Array<T>::resize_and_fill): Correctly copy old elements.

@@ -291,6 +291,7 @@ mostlyclean: clean
 
 distclean: clean
 	rm -f Makefile so_locations stamp-prereq
+	rm -f $(MX_OP_INC) $(VX_OP_INC) $(OPTS_INC)
 .PHONY: distclean
 
 maintainer-clean: distclean

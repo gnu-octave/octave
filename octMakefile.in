@@ -146,9 +146,10 @@ clean mostlyclean distclean maintainer-clean::
 .PHONY: clean mostlyclean distclean maintainer-clean
 
 maintainer-clean distclean::
-	rm -f octMakefile octave-bug octave-config Makeconf config.cache \
-	config.h config.log config.status Makerules.f77 mk-oct-links \
-	mkoctfile Makefrag.f77 install-octave
+	rm -f octMakefile Makefile Makeconf Makefrag.f77 Makerules.f77
+	rm -f octave-bug octave-config mk-oct-links mkoctfile install-octave
+	rm -f config.cache config.h config.log config.status
+	rm -rf autom4te.cache
 
 maintainer-clean::
 	rm -f configure config.h.in BUGS INSTALL.OCTAVE

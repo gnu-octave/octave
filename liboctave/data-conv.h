@@ -85,22 +85,22 @@ public:
   static data_type string_to_data_type (const std::string& s);
 };
 
+// Add new entries to the end of this enum, otherwise Octave will not
+// be able to read binary data files stored in Octave's binary data
+// format that were created with previous versions of Octave.
+
 enum save_type
   {
-    LS_U_CHAR,
-    LS_U_SHORT,
-    LS_U_INT,
-#ifdef EIGHT_BYTE_INT
-    LS_U_LONG,
-#endif
-    LS_CHAR,
-    LS_SHORT,
-    LS_INT,
-#ifdef EIGHT_BYTE_INT
-    LS_LONG,
-#endif
-    LS_FLOAT,
-    LS_DOUBLE
+    LS_U_CHAR  = 0,
+    LS_U_SHORT = 1,
+    LS_U_INT   = 2,
+    LS_CHAR    = 3,
+    LS_SHORT   = 4,
+    LS_INT     = 5,
+    LS_FLOAT   = 6,
+    LS_DOUBLE  = 7,
+    LS_U_LONG  = 8,
+    LS_LONG    = 9
   };
 
 extern void

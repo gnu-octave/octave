@@ -1,3 +1,8 @@
+2000-11-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* data-conv.h (enum save_type): Move LS_U_LONG and LS_LONG to the
+	end of the list, to be compatible with previous versions of Octave.
+
 2000-11-16  Paul Kienzle  <pkienzle@kienzle.powernet.co.uk>
 
 	* oct-time.cc (DEFINE_SET_INT_FIELD_FCN): Don't check limits here,

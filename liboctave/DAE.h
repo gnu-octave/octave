@@ -68,6 +68,7 @@ protected:
 
 private:
 
+  int integration_error;
   int restart;
   int liw;  
   int lrw;

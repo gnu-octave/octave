@@ -46,12 +46,8 @@ CC = @CC@
 CFLAGS = @CFLAGS@
 ALL_CFLAGS = $(INCFLAGS) $(DEFS) $(CFLAGS)
 
-ifeq ($(CXX), )
-  CXX = $(C++)
-endif
-
-CXXFLAGS = @CXXFLAGS@   # GNU Make 3.63 and beyond
-C++FLAGS = $(CXXFLAGS)  # backward compatibility
+CXX = @CXX@
+CXXFLAGS = @CXXFLAGS@
 ALL_CXXFLAGS = $(INCFLAGS) $(DEFS) $(CXXFLAGS)
 
 LDFLAGS = @LDFLAGS@

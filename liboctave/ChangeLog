@@ -1,3 +1,8 @@
+Tue Nov 12 11:11:21 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* idx-vector.cc (idx_is_inf_or_nan): New function.
+	(IDX_VEC_REP::idx_vector_rep): Use it.
+
 Sun Nov 10 17:09:24 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* str-vec.h, str-vec.cc: Add constructors to make string vectors

@@ -38,6 +38,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "idx-vector.h"
 #include "lo-error.h"
+#include "lo-mappers.h"
 
 #define IDX_VEC_REP idx_vector::idx_vector_rep
 
@@ -73,10 +74,26 @@ IDX_VEC_REP::idx_vector_rep (const IDX_VEC_REP& a)
 static inline int
 tree_to_mat_idx (double x)
 {
-  if (x > 0)
-    return ((int) (x + 0.5) - 1);
-  else
-    return ((int) (x - 0.5) - 1);
+  return (x > 0) ? ((int) (x + 0.5) - 1) : ((int) (x - 0.5) - 1);
+}
+
+static inline bool
+idx_is_inf_or_nan (double x)
+{
+  bool retval = false;
+
+  if (xisnan (x))
+    {
+      (*current_liboctave_error_handler) ("NaN invalid as index");
+      retval = true;
+    }
+  else if (xisinf (x))
+    {
+      (*current_liboctave_error_handler) ("Inf invalid as index");
+      retval = true;
+    }
+
+  return retval;
 }
 
 IDX_VEC_REP::idx_vector_rep (const ColumnVector& v)
@@ -106,8 +123,16 @@ IDX_VEC_REP::idx_vector_rep (const ColumnVector& v)
   else
     {
       data = new int [len];
+
       for (int i = 0; i < len; i++)
-	data[i] = tree_to_mat_idx (v.elem (i));
+	{
+	  double d = v.elem (i);
+
+	  if (idx_is_inf_or_nan (d))
+	    return;
+	  else
+	    data[i] = tree_to_mat_idx (d);
+	}
     }
 
   init_state ();
@@ -141,9 +166,17 @@ IDX_VEC_REP::idx_vector_rep (const Matrix& m)
     {
       int k = 0;
       data = new int [len];
+
       for (int j = 0; j < orig_nc; j++)
 	for (int i = 0; i < orig_nr; i++)
-	  data[k++] = tree_to_mat_idx (m.elem (i, j));
+	  {
+	    double d = m.elem (i, j);
+
+	    if (idx_is_inf_or_nan (d))
+	      return;
+	    else
+	      data[k++] = tree_to_mat_idx (d);
+	  }
     }
 
   init_state ();
@@ -163,11 +196,14 @@ IDX_VEC_REP::idx_vector_rep (double d)
   orig_nr = 1;
   orig_nc = 1;
 
-  data = new int [len];
+  if (idx_is_inf_or_nan (d))
+    return;
+  else
+    {
+      data = new int [len];
 
-  data[0] = tree_to_mat_idx (d);
-
-  init_state ();
+      data[0] = tree_to_mat_idx (d);
+    }
 }
 
 IDX_VEC_REP::idx_vector_rep (const Range& r)
@@ -208,7 +244,11 @@ IDX_VEC_REP::idx_vector_rep (const Range& r)
   for (int i = 0; i < len; i++)
     {
       double val = b + i * step;
-      data[i] = tree_to_mat_idx (val);
+
+      if (idx_is_inf_or_nan (val))
+	return;
+      else
+	data[i] = tree_to_mat_idx (val);
     }
 
   init_state ();

@@ -8,7 +8,7 @@
 	* toplev.cc (main_loop): Don't use octave_set_current_context here.
 
 	* pt-loop.cc (simple_for_loop::eval): In for i = matrix ... end,
-	skip loop if matrix is empty.
+	skip loop if matrix is empty.  Likewise for cell arrays.
 
 2005-03-24  John W. Eaton  <jwe@octave.org>
 

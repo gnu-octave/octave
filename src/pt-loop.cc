@@ -415,8 +415,11 @@ tree_simple_for_command::eval (void)
     else if (rhs.is_cell ())
       {
 	Cell c_tmp = rhs.cell_value ();
+
 	dim_vector dv = c_tmp.dims ();
-	DO_ND_LOOP(c_tmp);
+
+	if (dv.numel () > 0)
+	  DO_ND_LOOP(c_tmp);
       }
     else
       {

@@ -165,6 +165,20 @@ public:
   octave_value (unsigned int i);
   octave_value (long int i);
   octave_value (unsigned long int i);
+
+  // XXX FIXME XXX -- these are kluges.  They turn into doubles
+  // internally, which will break for very large values.  We just use
+  // them to store things like 64-bit ino_t, etc, and hope that those
+  // values are never actually larger than can be represented exactly
+  // in a double.
+
+#if defined (HAVE_LONG_LONG_INT)
+  octave_value (long long int i);
+#endif
+#if defined (HAVE_UNSIGNEDLONG_LONG_INT)
+  octave_value (unsigned long long int i);
+#endif
+
   octave_value (octave_time t);
   octave_value (double d);
   octave_value (const Cell& m);

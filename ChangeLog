@@ -1,5 +1,12 @@
 2003-02-21  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* configure.in: Allow RLD_FLAG to be set using --enable-rpath arg.
+
+	* configure.in: Fix default RLD_FLAG value for *-sgi-*.  From 
+	Paul Kienzle <pkienzle@users.sf.net>.
+
+	* configure.in: Check for long long int and unsigned long long int.
+
 	* configure.in (AH_BOTTOM): Define HAVE_PLACEMENT_DELETE for gcc
 	3.2 and later.
 

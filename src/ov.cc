@@ -383,6 +383,22 @@ octave_value::octave_value (unsigned long int i)
   rep->count = 1;
 }
 
+#if defined (HAVE_LONG_LONG_INT)
+octave_value::octave_value (long long int i)
+  : rep (new octave_scalar (i))
+{
+  rep->count = 1;
+}
+#endif
+
+#if defined (HAVE_UNSIGNEDLONG_LONG_INT)
+octave_value::octave_value (unsigned long long int i)
+  : rep (new octave_scalar (i))
+{
+  rep->count = 1;
+}
+#endif
+
 octave_value::octave_value (octave_time t)
   : rep (new octave_scalar (t))
 {

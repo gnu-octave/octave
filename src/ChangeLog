@@ -1,5 +1,8 @@
 2003-02-21  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* ov.h, ov.cc (octave_value (long long int)): New constructor.
+	(octave_value (unsigned long long int)): Likewise.
+
 	* oct-obj.h (octave_value_list::operator delete): Handle systems
 	with or without placement delete.
 

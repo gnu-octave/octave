@@ -54,6 +54,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-va-args.h"
 #include "ov-builtin.h"
 #include "ov-mapper.h"
+#include "ov-dld-fcn.h"
 #include "ov-usr-fcn.h"
 #include "ov-fcn-handle.h"
 #include "ov-typeinfo.h"
@@ -1898,6 +1899,7 @@ install_types (void)
   octave_builtin::register_type ();
   octave_mapper::register_type ();
   octave_user_function::register_type ();
+  octave_dld_function::register_type ();
   octave_fcn_handle::register_type ();
   octave_streamoff::register_type ();
 }

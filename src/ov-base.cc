@@ -33,6 +33,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream>
 
 #include "lo-ieee.h"
+#include "so-array.h"
 
 #include "gripes.h"
 #include "oct-map.h"
@@ -50,7 +51,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-re-mat.h"
 #include "ov-scalar.h"
 #include "ov-str-mat.h"
-#include "ov-streamoff.h"
 #include "ov-fcn-handle.h"
 #include "variables.h"
 
@@ -469,7 +469,7 @@ octave_base_value::stream_value (void) const
 std::streamoff
 octave_base_value::streamoff_value (void) const
 {
-  std::streamoff retval;
+  std::streamoff retval (-1);
   gripe_wrong_type_arg ("octave_base_value::streamoff_value()", type_name ());
   return retval;
 }

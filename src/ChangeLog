@@ -1,5 +1,7 @@
 2003-11-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* ov.cc (install_types): Also register dld function type.
+
 	* OPERATORS/op-streamoff.cc: Install increment and decrement operators.
 	* ov-streamoff.h (octave_streamoff::increment,
 	octave_streamoff::decrement): New functions.

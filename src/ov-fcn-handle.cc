@@ -54,7 +54,7 @@ void
 octave_fcn_handle::print_raw (std::ostream& os, bool pr_as_read_syntax) const
 {
   indent (os);
-  os << "@" << name ();
+  os << name ();
 }
 
 octave_value
@@ -97,7 +97,9 @@ Return a struct containing information about the function handle\n\
 	    {
 	      Octave_map m;
 
-	      m ["function"](0) = fh->name ();
+	      std::string fh_nm = fh->name ();
+
+	      m ["function"](0) = fh_nm.substr (1);
 
 	      if (fcn->is_nested_function ())
 		m ["type"](0) = "subfunction";
@@ -139,7 +141,10 @@ the function handle @var{fcn_handle}.\n\
       octave_fcn_handle *fh = args(0).fcn_handle_value ();
 
       if (! error_state && fh)
-	retval = fh->name ();
+	{
+	  std::string fh_nm = fh->name ();
+	  retval = fh_nm.substr (1);
+	}
       else
 	error ("func2str: expecting valid function handle as first argument");
     }

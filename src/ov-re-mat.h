@@ -34,12 +34,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "mx-base.h"
 #include "oct-alloc.h"
+#include "so-array.h"
 #include "str-vec.h"
 
 #include "error.h"
 #include "ov-base.h"
 #include "ov-base-mat.h"
-#include "ov-streamoff.h"
 #include "ov-typeinfo.h"
 
 class Octave_map;

@@ -43,10 +43,10 @@ octave_fcn_handle : public octave_base_value
 {
 public:
 
-  octave_fcn_handle (void) : fcn (0), nm () { }
+  octave_fcn_handle (void) : fcn (0), nm ("[]") { }
 
   octave_fcn_handle (octave_function *f, const std::string& n)
-    : fcn (f), nm (n) { }
+    : fcn (f), nm (std::string ("@") + n) { }
 
   octave_fcn_handle (const octave_fcn_handle& fh)
     : fcn (fh.fcn), nm (fh.nm) { }
@@ -83,7 +83,7 @@ private:
   // The function we are handling.
   octave_function *fcn;
 
-  // The name of the handle.
+  // The name of the handle, including the "@".
   std::string nm;
 
   DECLARE_OCTAVE_ALLOCATOR

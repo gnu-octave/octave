@@ -163,19 +163,25 @@ static int reading_startup_message_printed = 0;
 // (--quiet; --silent; -q)
 static int inhibit_startup_message = 0;
 
+// Nonzero means we turn on compatibility options.
+// (--traditional)
+static int traditional = 0;
+
 // Usage message
 static const char *usage_string = 
   "octave [-?Vdfhiqvx] [-p path] [--debug] [--help] [--ignore-init-file]\n\
        [--info-file file] [--interactive] [--path path] [--silent]\n\
-       [--verbose] [--version] [--echo-commands] [file]";
+       [--traditional] [--verbose] [--version] [--echo-commands] [file]";
 
 // This is here so that it's more likely that the usage message and
-// the real set of options will agree.
-static const char *short_opts = "?Vdfhip:qvx";
+// the real set of options will agree.  Note: the `+' must come first
+// to prevent getopt from permuting arguments!
+static const char *short_opts = "+?Vdfhip:qvx";
 
 // Long options.  See the comments in getopt.h for the meanings of the
 // fields in this structure.
 #define INFO_FILE_OPTION 1
+#define TRADITIONAL_OPTION 2
 static struct option long_opts[] =
   {
     { "debug",            no_argument,       0, 'd' },
@@ -187,6 +193,7 @@ static struct option long_opts[] =
     { "path",             required_argument, 0, 'p' },
     { "quiet",            no_argument,       0, 'q' },
     { "silent",           no_argument,       0, 'q' },
+    { "traditional",      no_argument,       0, TRADITIONAL_OPTION },
     { "verbose",          no_argument,       0, 'V' },
     { "version",          no_argument,       0, 'v' },
     { "echo-commands",    no_argument,       0, 'x' },
@@ -428,6 +435,7 @@ Usage: " << usage_string << "\n\
   --info-file FILE        use top-level info file FILE\n\
   -p PATH, --path PATH    set initial LOADPATH to PATH\n\
   -q, --silent            don't print message at startup\n\
+  --traditional           set compatibility variables\n\
   -V, --verbose           enable verbose output in some cases\n\
   -v, --version           print version number and exit\n\
   -x, --echo-commands     echo commands as they are executed\n\
@@ -491,6 +499,28 @@ initialize_error_handlers ()
   set_Complex_error_handler (octave_Complex_error_handler);
 
   set_liboctave_error_handler (error);
+}
+
+// What happens on --traditional.
+
+static void
+maximum_braindamage (void)
+{
+  bind_builtin_variable ("PS1", ">> ");
+  bind_builtin_variable ("PS2", "");
+  bind_builtin_variable ("default_save_format", "mat-binary");
+  bind_builtin_variable ("define_all_return_values", "true");
+  bind_builtin_variable ("do_fortran_indexing", "true");
+  bind_builtin_variable ("empty_list_elements_ok", "true");
+  bind_builtin_variable ("implicit_str_to_num_ok", "true");
+  bind_builtin_variable ("ok_to_lose_imaginary_part", "true");
+  bind_builtin_variable ("page_screen_output", "false");
+  bind_builtin_variable ("prefer_column_vectors", "false");
+  bind_builtin_variable ("prefer_zero_one_indexing", "true");
+  bind_builtin_variable ("print_empty_dimensions", "false");
+  bind_builtin_variable ("treat_neg_dim_as_zero", "true");
+  bind_builtin_variable ("warn_function_name_clash", "false");
+  bind_builtin_variable ("whitespace_in_literal_matrix", "traditional");
 }
 
 // You guessed it.
@@ -560,6 +590,10 @@ main (int argc, char **argv)
 	    info_file = strsave (optarg);
 	  break;
 
+	case TRADITIONAL_OPTION:
+	  traditional = 1;
+	  break;
+
 	default:
 	  usage ();
 	  break;
@@ -592,6 +626,9 @@ main (int argc, char **argv)
 
   if (! inhibit_startup_message)
     cout << OCTAVE_STARTUP_MESSAGE "\n" << endl;
+
+  if (traditional)
+    maximum_braindamage ();
 
   if (read_init_files)
     {
@@ -651,7 +688,7 @@ main (int argc, char **argv)
       echo_input = 1;
     }
 
-  if (! (interactive || forced_interactive))
+  if (! interactive)
     using_readline = 0;
 
   // Allow the user to interrupt us without exiting.

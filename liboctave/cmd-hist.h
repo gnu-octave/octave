@@ -77,7 +77,7 @@ public:
   // Gag.  This declaration has to match the Function typedef in
   // readline.h.
 
-  static int goto_mark (...);
+  static void goto_mark (void);
 
   static void read (bool = true);
 

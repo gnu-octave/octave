@@ -54,7 +54,7 @@ command_history *command_history::instance = 0;
 #include <unistd.h>
 #endif
 
-#include <readline/history.h>
+#include "oct-rl-hist.h"
 
 #include "file-stat.h"
 
@@ -124,7 +124,7 @@ gnu_history::do_add (const std::string& s)
 	  || (s.length () == 1 && (s[0] == '\r' || s[0] == '\n')))
 	return;
 
-      ::add_history (s.c_str ());
+      ::octave_add_history (s.c_str ());
 
       lines_this_session++;
     }
@@ -133,39 +133,31 @@ gnu_history::do_add (const std::string& s)
 void
 gnu_history::do_remove (int n)
 {
-  HIST_ENTRY *discard = ::remove_history (n);
-
-  if (discard)
-    {
-      if (discard->line)
-	::free (discard->line);
-
-      ::free (discard);
-    }
+  ::octave_remove_history (n);
 }
 
 int
 gnu_history::do_where (void)
 {
-  return ::where_history ();
+  return ::octave_where_history ();
 }
 
 int
 gnu_history::do_length (void)
 {
-  return ::history_length;
+  return ::octave_history_length ();
 }
 
 int
 gnu_history::do_max_input_history (void)
 {
-  return ::max_input_history;
+  return ::octave_max_input_history ();
 }
 
 int
 gnu_history::do_base (void)
 {
-  return ::history_base;
+  return ::octave_history_base ();
 }
 
 int
@@ -177,19 +169,19 @@ gnu_history::do_current_number (void)
 void
 gnu_history::do_stifle (int n)
 {
-  ::stifle_history (n);
+  ::octave_stifle_history (n);
 }
 
 int
 gnu_history::do_unstifle (void)
 {
-  return ::unstifle_history ();
+  return ::octave_unstifle_history ();
 }
 
 int
 gnu_history::do_is_stifled (void)
 {
-  return ::history_is_stifled ();
+  return ::octave_history_is_stifled ();
 }
 
 void
@@ -201,20 +193,15 @@ gnu_history::do_set_mark (int n)
 void
 gnu_history::do_goto_mark (void)
 {
-  HIST_ENTRY *h;
-
   if (mark)
     {
-      if (history_set_pos (mark))
+      char *line = ::octave_history_goto_mark (mark);
+
+      if (line)
 	{
-	  h = ::current_history ();
+	  command_editor::insert_text (line);
 
-	  if (h)
-	    {
-	      command_editor::insert_text (h->line);
-
-	      command_editor::clear_undo_list ();
-	    }
+	  command_editor::clear_undo_list ();
 	}
     }
 
@@ -229,7 +216,7 @@ gnu_history::do_read (const std::string& f, bool must_exist)
 {
   if (! f.empty ())
     {
-      int status = ::read_history (f.c_str ());
+      int status = ::octave_read_history (f.c_str ());
 
       if (status != 0 && must_exist)
 	error (status);
@@ -237,7 +224,7 @@ gnu_history::do_read (const std::string& f, bool must_exist)
 	{
 	  lines_in_file = do_where ();
 
-	  ::using_history ();
+	  ::octave_using_history ();
 	}
     }
   else
@@ -253,7 +240,7 @@ gnu_history::do_read_range (const std::string& f, int from, int to,
 
   if (! f.empty ())
     {
-      int status = ::read_history_range (f.c_str (), from, to);
+      int status = ::octave_read_history_range (f.c_str (), from, to);
 
       if (status != 0 && must_exist)
 	error (status);
@@ -261,7 +248,7 @@ gnu_history::do_read_range (const std::string& f, int from, int to,
 	{
 	  lines_in_file = do_where ();
 
-	  ::using_history ();
+	  ::octave_using_history ();
 	}
     }
   else
@@ -278,7 +265,7 @@ gnu_history::do_write (const std::string& f_arg)
 
   if (! f.empty ())
     {
-      int status = ::write_history (f.c_str ());
+      int status = ::octave_write_history (f.c_str ());
 
       if (status != 0)
 	error (status);
@@ -313,7 +300,8 @@ gnu_history::do_append (const std::string& f_arg)
 		  close (tem);
 		}
 
-	      int status = ::append_history (lines_this_session, f.c_str ());
+	      int status
+		= ::octave_append_history (lines_this_session, f.c_str ());
 
 	      if (status != 0)
 		error (status);
@@ -337,7 +325,7 @@ gnu_history::do_truncate_file (const std::string& f_arg, int n)
     f = xfile;
 
   if (! f.empty ())
-    ::history_truncate_file (f.c_str (), n);
+    ::octave_history_truncate_file (f.c_str (), n);
   else
     error ("gnu_history::truncate_file: missing file name");
 }
@@ -348,38 +336,7 @@ gnu_history::do_list (int limit, bool number_lines)
   string_vector retval;
 
   if (limit)
-    {
-      HIST_ENTRY **hlist = ::history_list ();
-
-      if (hlist)
-	{
-	  int end = 0;
-	  while (hlist[end])
-	    end++;
-
-	  int beg = (limit < 0 || end < limit) ? 0 : (end - limit);
-
-	  retval.resize (end - beg);
-
-	  int k = 0;
-	  for (int i = beg; i < end; i++)
-	    {
-	      std::ostrstream output_buf;
-
-	      if (number_lines)
-		output_buf.form ("%5d%c", i + do_base (),
-				 hlist[i]->data ? '*' : ' '); 
-
-	      output_buf << hlist[i]->line << std::ends;
-
-	      const char *tmp = output_buf.str ();
-
-	      retval[k++] = tmp;
-
-	      delete [] tmp;  
-	    }
-	}
-    }
+    retval = ::octave_history_list (limit, number_lines);
 
   return retval;
 }
@@ -389,10 +346,10 @@ gnu_history::do_get_entry (int n)
 {
   std::string retval;
 
-  HIST_ENTRY *entry = ::history_get (do_base () + n);
+  char *line = ::octave_history_get (do_base () + n);
 
-  if (entry && entry->line)
-    retval = entry->line;
+  if (line)
+    retval = line;
 
   return retval;
 }
@@ -400,15 +357,7 @@ gnu_history::do_get_entry (int n)
 void
 gnu_history::do_replace_entry (int which, const std::string& line)
 {
-  HIST_ENTRY *discard = ::replace_history_entry (which, line.c_str (), 0);
-
-  if (discard)
-    {
-      if (discard->line)
-	::free (discard->line);
-
-      ::free (discard);
-    }
+  ::octave_replace_history_entry (which, line.c_str ());
 }
 
 void
@@ -582,13 +531,11 @@ command_history::set_mark (int n)
     instance->do_set_mark (n);
 }
 
-int
-command_history::goto_mark (...)
+void
+command_history::goto_mark (void)
 {
   if (instance_ok ())
     instance->do_goto_mark ();
-
-  return 0;
 }
 
 void

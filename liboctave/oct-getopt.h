@@ -23,6 +23,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_getopt_h)
 #define octave_getopt_h 1
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 extern int
 octave_getopt (int, char *const *, const char *);
 
@@ -33,6 +38,10 @@ octave_getopt_long (int, char *const *, const char *,
 extern char *optarg;
 
 extern int optind;
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 

@@ -882,15 +882,13 @@ Read the readline library initialiazation file @var{file}.  If\n\
 static string hook_fcn;
 static octave_value user_data;
 
-static int
-input_event_hook (...)
+static void
+input_event_hook (void)
 {
   if (user_data.is_defined ())
     feval (hook_fcn, user_data, 0);
   else
     feval (hook_fcn, octave_value_list (), 0);
-
-  return 0;
 }
 
 DEFUN (input_event_hook, args, ,

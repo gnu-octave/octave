@@ -50,22 +50,16 @@ command_editor *command_editor::instance = 0;
 #include <cstdio>
 #include <cstdlib>
 
-#include <readline/readline.h>
-
-// It would be nice if readline.h declared these, I think.
-
-extern int rl_blink_matching_paren;
-
-extern int screenheight;
-
-extern int screenwidth;
+#include "oct-rl-edit.h"
 
 class
 gnu_readline : public command_editor
 {
 public:
 
-  typedef command_editor::fcn fcn;
+  typedef command_editor::startup_hook_fcn startup_hook_fcn;
+
+  typedef command_editor::event_hook_fcn event_hook_hook_fcn;
 
   typedef command_editor::completion_fcn completion_fcn;
 
@@ -113,71 +107,69 @@ public:
 
   void do_clear_undo_list (void);
 
-  void do_set_startup_hook (fcn f);
+  void do_set_startup_hook (startup_hook_fcn f);
 
   void do_restore_startup_hook (void);
 
-  void do_set_event_hook (fcn f);
+  void do_set_event_hook (event_hook_fcn f);
 
   void do_restore_event_hook (void);
 
   void do_read_init_file (const std::string& file);
 
-  static void operate_and_get_next (int, int);
+  static int operate_and_get_next (int, int);
 
 private:
 
-  fcn previous_startup_hook;
+  startup_hook_fcn previous_startup_hook;
 
-  fcn previous_event_hook;
+  event_hook_fcn previous_event_hook;
 
   completion_fcn completion_function;
 
   static char *command_generator (const char *text, int state);
 
-  static char **command_completer (char *text, int start, int end);
+  static char **command_completer (const char *text, int start, int end);
 };
 
 gnu_readline::gnu_readline ()
   : command_editor (), previous_startup_hook (0),
     previous_event_hook (0), completion_function (0)
 {
-  rl_terminal_name = ::getenv ("TERM");
+  // XXX FIXME XXX -- need interface to rl_add_defun, rl_initialize, and
+  // a function to set rl_terminal_name
 
-  rl_initialize ();
+  string term = octave_env::getenv ("TERM");
+
+  octave_rl_set_terminal_name (term.c_str ());
+
+  octave_rl_initialize ();
 
   do_blink_matching_paren (true);
 
-  // Bind operate-and-get-next.
+  /* Bind operate-and-get-next. */
 
-  rl_add_defun ("operate-and-get-next",
-		gnu_readline::operate_and_get_next, CTRL ('O'));
+  octave_rl_add_defun ("operate-and-get-next",
+		       gnu_readline::operate_and_get_next,
+		       octave_rl_ctrl ('O'));
 
-  // And the history search functions.
+  /* And the history search functions. */
 
-  rl_add_defun ("history-search-backward",
-		rl_history_search_backward, META ('p'));
+  octave_rl_add_defun ("history-search-backward",
+		       octave_rl_history_search_backward,
+		       octave_rl_meta ('P'));
 
-  rl_add_defun ("history-search-forward",
-		rl_history_search_forward, META ('n'));
+  octave_rl_add_defun ("history-search-forward",
+		       octave_rl_history_search_forward,
+		       octave_rl_meta ('N'));
 }
 
+
+
 void
-gnu_readline::do_set_name (const std::string& n)
+gnu_readline::do_set_name (const std::string& nm)
 {
-  static char *nm = 0;
-
-  delete [] nm;
-
-  nm = strsave (n.c_str ());
-
-  rl_readline_name = nm;
-
-  // Since we've already called rl_initialize, we need to re-read the
-  // init file to take advantage of the conditional parsing feature
-  // based on rl_readline_name;
-
-  rl_re_read_init_file ();
+  ::octave_rl_set_name (nm.c_str ());
 }
 
 std::string
@@ -187,7 +179,7 @@ gnu_readline::do_readline (const std::string& prompt, bool& eof)
 
   eof = false;
 
-  char *line = ::readline (prompt.c_str ());
+  char *line = ::octave_rl_readline (prompt.c_str ());
 
   if (line)
     {
@@ -204,25 +196,25 @@ gnu_readline::do_readline (const std::string& prompt, bool& eof)
 void
 gnu_readline::do_set_input_stream (FILE *f)
 {
-  rl_instream = f;
+  ::octave_rl_set_input_stream (f);
 }
 
 FILE *
 gnu_readline::do_get_input_stream (void)
 {
-  return rl_instream;
+  return ::octave_rl_get_input_stream ();
 }
 
 void
 gnu_readline::do_set_output_stream (FILE *f)
 {
-  rl_outstream = f;
+  ::octave_rl_set_output_stream (f);
 }
 
 FILE *
 gnu_readline::do_get_output_stream (void)
 {
-  return rl_outstream;
+  return ::octave_rl_get_output_stream ();
 }
 
 // GNU readline handles SIGWINCH, so these values have a good chance
@@ -234,25 +226,29 @@ gnu_readline::do_get_output_stream (void)
 int
 gnu_readline::do_terminal_rows (void)
 {
-  return screenheight > 0 ? screenheight : 24;
+  int sh = ::octave_rl_screen_height ();
+
+  return sh > 0 ? sh : 24;
 }
 
 int
 gnu_readline::do_terminal_cols (void)
 {
-  return screenwidth > 0 ? screenwidth : 80;
+  int sw = ::octave_rl_screen_width ();
+
+  return sw > 0 ? sw : 80;
 }
 
 void
 gnu_readline::do_clear_screen (void)
 {
-  rl_clear_screen ();
+  ::octave_rl_clear_screen ();
 }
 
 void
 gnu_readline::do_resize_terminal (void)
 {
-  rl_resize_terminal ();
+  ::octave_rl_resize_terminal ();
 }
 
 std::string
@@ -264,32 +260,25 @@ gnu_readline::newline_chars (void)
 void
 gnu_readline::do_restore_terminal_state (void)
 {
-  if (rl_deprep_term_function)
-    rl_deprep_term_function ();
+  ::octave_rl_restore_terminal_state ();
 }
 
 void
 gnu_readline::do_blink_matching_paren (bool flag)
 {
-  rl_blink_matching_paren = flag ? 1 : 0;
+  ::octave_set_rl_blink_matching_paren_flag (flag ? 1 : 0);
 }
 
 void
 gnu_readline::do_set_basic_quote_characters (const std::string& s)
 {
-  static char *ss = 0;
-
-  delete [] ss;
-
-  ss = strsave (s.c_str ());
-
-  rl_basic_quote_characters = ss;
+  ::octave_rl_set_basic_quote_characters (s.c_str ());
 }
 
 void
 gnu_readline::do_set_completion_append_character (char c)
 {
-  rl_completion_append_character = c;
+  ::octave_rl_set_completion_append_character (c);
 }
 
 void
@@ -297,11 +286,10 @@ gnu_readline::do_set_completion_function (completion_fcn f)
 {
   completion_function = f;
 
-  typedef char** (*foo) (...);
+  rl_attempted_completion_fcn_ptr fp
+    = f ? gnu_readline::command_completer : 0;
 
-  rl_attempted_completion_function
-    = completion_function
-    ? reinterpret_cast<foo> (gnu_readline::command_completer) : 0;
+  ::octave_rl_set_completion_function (fp);
 }
 
 gnu_readline::completion_fcn
@@ -313,64 +301,56 @@ gnu_readline::do_get_completion_function (void) const
 void
 gnu_readline::do_insert_text (const std::string& text)
 {
-  rl_insert_text (text.c_str ());
+  ::octave_rl_insert_text (text.c_str ());
 }
 
 void
 gnu_readline::do_newline (void)
 {
-  rl_newline ();
+  ::octave_rl_newline ();
 }
 
 void
 gnu_readline::do_clear_undo_list ()
 {
-  if (rl_undo_list)
-    {
-      free_undo_list ();
-
-      rl_undo_list = 0;
-    }
+  ::octave_rl_clear_undo_list ();
 }
 
 void
-gnu_readline::do_set_startup_hook (fcn f)
+gnu_readline::do_set_startup_hook (startup_hook_fcn f)
 {
-  previous_startup_hook = rl_startup_hook;
+  previous_startup_hook = ::octave_rl_get_startup_hook ();
 
-  rl_startup_hook = f;
+  ::octave_rl_set_startup_hook (f);
 }
 
 void
 gnu_readline::do_restore_startup_hook (void)
 {
-  rl_startup_hook = previous_startup_hook;
+  ::octave_rl_set_startup_hook (previous_startup_hook);
 }
 
 void
-gnu_readline::do_set_event_hook (fcn f)
+gnu_readline::do_set_event_hook (event_hook_fcn f)
 {
-  previous_event_hook = rl_event_hook;
+  previous_event_hook = octave_rl_get_event_hook ();
 
-  rl_event_hook = f;
+  ::octave_rl_set_event_hook (f);
 }
 
 void
 gnu_readline::do_restore_event_hook (void)
 {
-  rl_event_hook = previous_event_hook;
+  ::octave_rl_set_event_hook (previous_event_hook);
 }
 
 void
 gnu_readline::do_read_init_file (const std::string& file)
 {
-  if (file.empty ())
-    rl_re_read_init_file ();
-  else
-    rl_read_init_file (file.c_str ());
+  ::octave_rl_read_init_file (file.c_str ());
 }
 
-void
+int
 gnu_readline::operate_and_get_next (int /* count */, int /* c */)
 {
   // Accept the current line.
@@ -391,6 +371,8 @@ gnu_readline::operate_and_get_next (int /* count */, int /* c */)
     command_history::set_mark (x_where + 1);
 
   command_editor::set_startup_hook (command_history::goto_mark);
+
+  return 0;
 }
 
 char *
@@ -415,10 +397,11 @@ gnu_readline::command_generator (const char *text, int state)
 }
 
 char **
-gnu_readline::command_completer (char *text, int /* start */, int /* end */)
+gnu_readline::command_completer (const char *text, int, int)
 {
   char **matches = 0;
-  matches = completion_matches (text, gnu_readline::command_generator);
+  matches
+    = ::octave_rl_completion_matches (text, gnu_readline::command_generator);
   return matches;
 }
 
@@ -701,7 +684,7 @@ command_editor::clear_undo_list (void)
 }
 
 void
-command_editor::set_startup_hook (fcn f)
+command_editor::set_startup_hook (startup_hook_fcn f)
 {
   if (instance_ok ())
     instance->do_set_startup_hook (f);
@@ -715,7 +698,7 @@ command_editor::restore_startup_hook (void)
 }
 
 void
-command_editor::set_event_hook (fcn f)
+command_editor::set_event_hook (event_hook_fcn f)
 {
   if (instance_ok ())
     instance->do_set_event_hook (f);
@@ -912,8 +895,8 @@ command_editor::do_decode_prompt_string (const std::string& s)
 
 		temp[0] = '\001';
 		temp[1] = ((c == '[')
-			   ? RL_PROMPT_START_IGNORE
-			   : RL_PROMPT_END_IGNORE);
+			   ? ::octave_rl_prompt_start_ignore ()
+			   : ::octave_rl_prompt_end_ignore ());
 
 		goto add_string;
 	      }

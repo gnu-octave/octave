@@ -37,7 +37,9 @@ protected:
 
 public:
 
-  typedef int (*fcn) (...);
+  typedef void (*startup_hook_fcn) (void);
+
+  typedef void (*event_hook_fcn) (void);
 
   typedef std::string (*completion_fcn) (const std::string&, int);
 
@@ -85,11 +87,11 @@ public:
 
   static void clear_undo_list (void);
 
-  static void set_startup_hook (fcn f);
+  static void set_startup_hook (startup_hook_fcn f);
 
   static void restore_startup_hook (void);
 
-  static void set_event_hook (fcn f);
+  static void set_event_hook (event_hook_fcn f);
 
   static void restore_event_hook (void);
 
@@ -171,11 +173,11 @@ protected:
 
   virtual void do_clear_undo_list (void) { }
 
-  virtual void do_set_startup_hook (fcn) { }
+  virtual void do_set_startup_hook (startup_hook_fcn) { }
 
   virtual void do_restore_startup_hook (void) { }
 
-  virtual void do_set_event_hook (fcn) { }
+  virtual void do_set_event_hook (event_hook_fcn) { }
 
   virtual void do_restore_event_hook (void) { }
 

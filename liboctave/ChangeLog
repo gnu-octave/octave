@@ -1,5 +1,13 @@
 2000-02-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* oct-rl-edit.c, oct-rl-edit.h: New files for interface to GNU
+	readline library.
+	* Makefile.in: Add them to the appropriate lists.
+
+	* oct-rl-hist.c, oct-rl-hist.h: New files for interface to GNU
+	readline history library.
+	* Makefile.in: Add them to the appropriate lists.
+
 	* data-conv.cc (LS_DO_WRITE): Cast arg to ostream::write to char*.
 	(LS_DO_READ): Likewise, for istream::read.
 	(write_doubles): Likewise.
@@ -24,8 +32,10 @@
 	* NLEqn.cc (hybrd1_fcn_ptr, hybrj1_fcn_ptr): Ditto.
 
 	* oct-getopt.h, oct-getopt.c: New files for interface to getopt.
+	* Makefile.in: Add them to the appropriate lists.
 
 	* oct-kpse.h, oct-kpse.c: New files for interface to kpathsearch.
+	* Makefile.in: Add them to the appropriate lists.
 
 	* dMatrix.cc (write_int, read_int): No longer declared static.
 

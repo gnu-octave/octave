@@ -369,6 +369,13 @@ DASSL::integrate (const ColumnVector& tout, Matrix& xdot_out)
 }
 
 Matrix
+DASSL::do_integrate (const ColumnVector& tout, const ColumnVector& tcrit)
+{
+  Matrix dummy;
+  return integrate (tout, dummy, tcrit);
+}
+
+Matrix
 DASSL::integrate (const ColumnVector& tout, Matrix& xdot_out,
 		  const ColumnVector& tcrit) 
 {

@@ -129,6 +129,8 @@ public:
 
   Matrix do_integrate (const ColumnVector& tout);
 
+  Matrix do_integrate (const ColumnVector& tout, const ColumnVector& tcrit); 
+
   Matrix integrate (const ColumnVector& tout, Matrix& xdot_out);
 
   Matrix integrate (const ColumnVector& tout, Matrix& xdot_out,

@@ -47,10 +47,10 @@ INCLUDES := Bounds.h CollocWt.h DAE.h DAEFunc.h DASSL.h FEGrid.h \
 	dir-ops.h file-ops.h file-stat.h getopt.h glob-match.h \
 	idx-vector.h lo-ieee.h lo-mappers.h lo-specfun.h lo-sysdep.h \
 	lo-utils.h mach-info.h oct-alloc.h oct-cmplx.h oct-env.h \
-	oct-getopt.h oct-group.h oct-kpse.h oct-passwd.h \
-	oct-shlib.h oct-syscalls.h oct-time.h pathlen.h pathsearch.h \
-	prog-args.h statdefs.h str-vec.h sun-utils.h sysdir.h systime.h \
-	syswait.h \
+	oct-getopt.h oct-group.h oct-kpse.h oct-passwd.h oct-rl-edit.h \
+	oct-rl-hist.h oct-shlib.h oct-syscalls.h oct-time.h pathlen.h \
+	pathsearch.h prog-args.h statdefs.h str-vec.h sun-utils.h \
+	sysdir.h systime.h syswait.h \
 	$(MATRIX_INC) \
 	$(MX_OP_INC)
 
@@ -82,9 +82,9 @@ SOURCES := Bounds.cc CollocWt.cc DAE.cc DASSL.cc FEGrid.cc LinConst.cc \
 	idx-vector.cc lo-ieee.cc lo-mappers.cc lo-specfun.cc \
 	lo-sysdep.cc lo-utils.cc mach-info.cc mkdir.c oct-alloc.cc \
 	oct-env.cc oct-getopt.c oct-group.cc oct-kpse.c oct-passwd.cc \
-	oct-shlib.cc oct-syscalls.cc oct-time.cc \
-	pathsearch.cc prog-args.cc rename.c rmdir.c strftime.c \
-	strptime.c str-vec.cc tempname.c tempnam.c \
+	oct-rl-edit.c oct-rl-hist.c oct-shlib.cc oct-syscalls.cc \
+	oct-time.cc pathsearch.cc prog-args.cc rename.c rmdir.c \
+	strftime.c strptime.c str-vec.cc tempname.c tempnam.c \
 	$(TEMPLATE_SRC) \
 	$(TI_SRC) \
 	$(MATRIX_SRC) \

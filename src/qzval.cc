@@ -44,14 +44,14 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 extern "C"
 {
-  int F77_FCN (qzhes) (const int*, const int*, double*, double*, const
-		       long*, double*);
+  int F77_FCN (qzhes) (const int&, const int&, double*, double*,
+		       const long&, double*);
  
-  int F77_FCN (qzit) (const int*, const int*, double*, double*, const
-		      double*, const long*, double*, int*);
+  int F77_FCN (qzit) (const int&, const int&, double*, double*,
+		      const double&, const long&, double*, int&);
  
-  int F77_FCN (qzval) (const int*, const int*, double*, double*,
-		       double*, double*, double*, const long*, double*);
+  int F77_FCN (qzval) (const int&, const int&, double*, double*,
+		       double*, double*, double*, const long&, double*);
 }
 
 DEFUN_DLD_BUILTIN ("qzval", Fqzval, Sqzval, 3, 1,
@@ -135,20 +135,20 @@ A and B must be real matrices.")
 
 // Use EISPACK qz functions.
 
-  F77_FCN (qzhes) (&a_nr, &a_nr, ca.fortran_vec (),
-		   cb.fortran_vec (), &matz, jnk.fortran_vec ());
+  F77_FCN (qzhes) (a_nr, a_nr, ca.fortran_vec (),
+		   cb.fortran_vec (), matz, jnk.fortran_vec ());
 
-  F77_FCN (qzit) (&a_nr, &a_nr, ca.fortran_vec (),
-		  cb.fortran_vec (), &eps, &matz,
-		  jnk.fortran_vec (), &info);  
+  F77_FCN (qzit) (a_nr, a_nr, ca.fortran_vec (),
+		  cb.fortran_vec (), eps, matz,
+		  jnk.fortran_vec (), info);  
 
   if (info)
     error ("qzval: trouble in qzit, info = %d", info);
 
-  F77_FCN (qzval) (&a_nr, &a_nr, ca.fortran_vec (),
+  F77_FCN (qzval) (a_nr, a_nr, ca.fortran_vec (),
 		   cb.fortran_vec (), alfr.fortran_vec (),
 		   alfi.fortran_vec (), beta.fortran_vec (),
-		   &matz, jnk.fortran_vec ());
+		   matz, jnk.fortran_vec ());
 
 // Count and extract finite generalized eigenvalues.
 

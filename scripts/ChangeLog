@@ -8,11 +8,48 @@
 	* statistics/base/kurtosis: Ditto.
 	* statistics/base/mahalanobis: Ditto.
 	* statistics/base/skewness: Ditto.
+	* statistics/base/gls.m: Ditto.
+	* statistics/base/ols.m: Ditto.
 	* signal/detrend.m: Ditto.
 	* signal/freqz.m: Ditto.
 	* signal/sinc.m: Ditto.
 	* signal/fftconv.m: Ditto.
 	* signal/fftfilt.m: Ditto.
+	* set/create_set.m: Ditto.
+	* set/union.m: Ditto.
+	* set/intersection.m: Ditto.
+	* set/complement.m: Ditto.
+	* poly/compan.m: Ditto.
+	* poly/conv: Ditto.
+	* poly/deconv: Ditto.
+	* poly/poly: Ditto.
+	* poly/polyderiv: Ditto.
+	* poly/polyfit: Ditto.
+	* poly/polyinteg: Ditto.
+	* poly/polyreduce: Ditto.
+	* poly/polyval: Ditto.
+	* poly/polyvalm: Ditto.
+	* poly/residue: Ditto.
+	* poly/roots: Ditto.
+	* plot/top_title.m: Ditto
+	* plot/subwindow.m: Ditto
+	* plot/subplot.m: Ditto
+	* plot/plot_border.m: Ditto
+	* plot/oneplot.m: Ditto
+	* plot/multiplot.m: Ditto
+	* plot/mplot.m: Ditto
+	* plot/xlabel.m: Ditto
+	* plot/figure.m: Ditto
+	* plot/meshdom.m: Ditto
+	* plot/mesh.m: Ditto
+	* plot/stairs.m: Ditto
+	* plot/polar.m: Ditto
+	* plot/loglog.m: Ditto
+	* plot/hist.m: Ditto
+	* plot/contour.m: Ditto
+	* plot/bar.m: Ditto
+	* plot/axis.m: Ditto
+	* plot/plot.m: Ditto.
 
 1999-11-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

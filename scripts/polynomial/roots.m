@@ -17,10 +17,25 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: roots (v)
-##
-## For a vector v with n components, return the roots of the
-## polynomial v(1) * z^(n-1) + ... + v(n-1) * z + v(n).
+## -*- texinfo -*-
+## @deftypefn {Function File} {} roots (@var{v})
+## 
+## For a vector @var{v} with @var{N} components, return
+## the roots of the polynomial
+## @iftex
+## @tex
+## $$
+## v_1 z^{N-1} + \cdots + v_{N-1} z + v_N.
+## $$
+## @end tex
+## @end iftex
+## @ifinfo
+## 
+## @example
+## v(1) * z^(N-1) + ... + v(N-1) * z + v(N).
+## @end example
+## @end ifinfo
+## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Created: 24 December 1993

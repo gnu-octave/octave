@@ -556,12 +556,7 @@ re-running chunks of commands from the history list.
 
 @DOCSTRING(run_history)
 
-@defvr {Built-in Variable} EDITOR
-A string naming the editor to use with the @code{edit_history} command.
-If the environment variable @code{EDITOR} is set when Octave starts, its
-value is used as the default.  Otherwise, @code{EDITOR} is set to
-@code{"emacs"}.
-@end defvr
+@DOCSTRING(EDITOR)
 
 @DOCSTRING(history_file)
 

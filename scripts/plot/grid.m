@@ -17,12 +17,13 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: grid ("on" | "off")
-##
-## Turn grid lines on or off for plotting.
-##
-## If the argument is omitted, "on" is assumed.
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {} grid (@var{arg})
+## For two-dimensional plotting, force the display of a grid on the plot.
+## The argument may be either @code{"on"} or @code{"off"}.  If it is
+## omitted, @code{"on"} is assumed.
+## @end deftypefn
+
 ## See also: plot, semilogx, semilogy, loglog, polar, mesh, contour,
 ##           bar, stairs, gplot, gsplot, replot, xlabel, ylabel, title
 

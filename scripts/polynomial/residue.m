@@ -17,49 +17,90 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: [r, p, k, e] = residue (b, a)
-##
-## If b and a are vectors of polynomial coefficients, then residue
-## calculates the partial fraction expansion corresponding to the
-## ratio of the two polynomials. The vector r contains the residue
-## terms, p contains the pole values, k contains the coefficients of
-## a direct polynomial term (if it exists) and e is a vector containing
-## the powers of the denominators in the partial fraction terms.
-## Assuming b and a represent polynomials P(s) and Q(s) we have:
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {} residue (@var{b}, @var{a}, @var{tol})
+## If @var{b} and @var{a} are vectors of polynomial coefficients, then
+## residue calculates the partial fraction expansion corresponding to the
+## ratio of the two polynomials.
+## @cindex partial fraction expansion
+## 
+## The function @code{residue} returns @var{r}, @var{p}, @var{k}, and
+## @var{e}, where the vector @var{r} contains the residue terms, @var{p}
+## contains the pole values, @var{k} contains the coefficients of a direct
+## polynomial term (if it exists) and @var{e} is a vector containing the
+## powers of the denominators in the partial fraction terms.
+## 
+## Assuming @var{b} and @var{a} represent polynomials
+## @iftex
+## @tex
+## $P(s)$ and $Q(s)$
+## @end tex
+## @end iftex
+## @ifinfo
+##  P (s) and Q(s)
+## @end ifinfo
+##  we have:
+## @iftex
+## @tex
+## $$
+## {P(s)\over Q(s)} = \sum_{m=1}^M {r_m\over (s-p_m)^e_m}
+##   + \sum_{i=1}^N k_i s^{N-i}.
+## $$
+## @end tex
+## @end iftex
+## @ifinfo
+## 
+## @example
 ##  P(s)    M       r(m)         N
-##  ---- =  #  -------------  +  # k(n)*s^(N-n)
-##  Q(s)   m=1 (s-p(m))^e(m)    n=1
-##
-## (# represents summation) where M is the number of poles (the length of
-## the r, p, and e vectors) and N is the length of the k vector.
-##
-## [r p k e] = residue(b,a,tol)
-##
-## This form of the function call may be used to set a tolerance value.
-## The default value is 0.001. The tolerance value is used to determine
-## whether poles with small imaginary components are declared real. It is
-## also used to determine if two poles are distinct. If the ratio of the
-## imaginary part of a pole to the real part is less than tol, the
-## imaginary part is discarded. If two poles are farther apart than tol
-## they are distinct.
-##
-## Example:
-##  b = [1,  1, 1];
+##  ---- = SUM -------------  + SUM k(i)*s^(N-i)
+##  Q(s)   m=1 (s-p(m))^e(m)    i=1
+## @end example
+## @end ifinfo
+## 
+## @noindent
+## where @var{M} is the number of poles (the length of the @var{r},
+## @var{p}, and @var{e} vectors) and @var{N} is the length of the @var{k}
+## vector.
+## 
+## The argument @var{tol} is optional, and if not specified, a default
+## value of 0.001 is assumed.  The tolerance value is used to determine
+## whether poles with small imaginary components are declared real.  It is
+## also used to determine if two poles are distinct.  If the ratio of the
+## imaginary part of a pole to the real part is less than @var{tol}, the
+## imaginary part is discarded.  If two poles are farther apart than
+## @var{tol} they are distinct.  For example,
+## 
+## @example
+## @group
+##  b = [1, 1, 1];
 ##  a = [1, -5, 8, -4];
-##
-##  [r, p, k, e] = residue (b, a)
-##
-##  returns
-##
-##  r = [-2, 7, 3]; p = [2, 2, 1]; k = []; e = [1, 2, 1];
-##
-##  which implies the following partial fraction expansion
-##
-##        s^2 + s + 1         -2       7        3
+##  [r, p, k, e] = residue (b, a);
+##      @result{} r = [-2, 7, 3]
+##      @result{} p = [2, 2, 1]
+##      @result{} k = [](0x0)
+##      @result{} e = [1, 2, 1]
+## @end group
+## @end example
+## 
+## @noindent
+## which implies the following partial fraction expansion
+## @iftex
+## @tex
+## $$
+## {s^2+s+1\over s^3-5s^2+8s-4} = {-2\over s-2} + {7\over (s-2)^2} + {3\over s-1}
+## $$
+## @end tex
+## @end iftex
+## @ifinfo
+## 
+## @example
+##         s^2 + s + 1       -2        7        3
 ##    ------------------- = ----- + ------- + -----
 ##    s^3 - 5s^2 + 8s - 4   (s-2)   (s-2)^2   (s-1)
-##
+## @end example
+## @end ifinfo
+## @end deftypefn
+
 ## SEE ALSO: poly, roots, conv, deconv, polyval, polyderiv, polyinteg
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>

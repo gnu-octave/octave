@@ -17,21 +17,51 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: [BETA, v [,R]] = gls (Y, X, O)
-##
-## Generalized Least Squares (GLS) estimation for the multivariate model
-##
-##   Y = X*B + E,  mean(E) = 0,  cov(vec(E)) = (s^2)*O
-##
-## with Y ...  T x p      As usual, each row of Y and X is an observation
-##      X ...  T x k      and each column a variable.
-##      B ...  k x p
-##      E ...  T x p
-##      O ... Tp x Tp.
-##
-## BETA is the GLS estimator for B.
-## v is the GLS estimator for s^2.
-## R = Y - X*BETA is the matrix of GLS residuals.
+## @deftypefn {Function File} {[@var{beta}, @var{v}, @var{r}] =} gls (@var{y}, @var{x}, @var{o})
+## Generalized least squares estimation for the multivariate model
+## @iftex
+## @tex
+## $y = x b + e$
+## with $\bar{e} = 0$ and cov(vec($e$)) = $(s^2)o$,
+## @end tex
+## @end iftex
+## @ifinfo
+## @code{@var{y} = @var{x} * @var{b} + @var{e}} with @code{mean (@var{e}) =
+## 0} and @code{cov (vec (@var{e})) = (@var{s}^2)*@var{o}},
+## @end ifinfo
+##  where
+## @iftex
+## @tex 
+## $y$ is a $t \times p$ matrix, $x$ is a $t \times k$ matrix, $b$ is a $k
+## \times p$ matrix, $e$ is a $t \times p$ matrix, and $o$ is a $tp \times
+## tp$ matrix.
+## @end tex
+## @end iftex
+## @ifinfo
+## @var{Y} is a @var{T} by @var{p} matrix, @var{X} is a @var{T} by @var{k}
+## matrix, @var{B} is a @var{k} by @var{p} matrix, @var{E} is a @var{T} by
+## @var{p} matrix, and @var{O} is a @var{T}@var{p} by @var{T}@var{p}
+## matrix.
+## @end ifinfo
+## 
+## @noindent
+## Each row of Y and X is an observation and each column a variable.
+## 
+## The return values @var{beta}, @var{v}, and @var{r} are defined as
+## follows.
+## 
+## @table @var
+## @item beta
+## The GLS estimator for @var{b}.
+## 
+## @item v
+## The GLS estimator for @code{@var{s}^2}.
+## 
+## @item r
+## The matrix of GLS residuals, @code{@var{r} = @var{y} - @var{x} *
+## @var{beta}}.
+## @end table
+## @end deftypefn
 
 ## Author: Teresa Twaroch <twaroch@ci.tuwien.ac.at>
 ## Created: May 1993

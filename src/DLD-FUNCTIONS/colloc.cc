@@ -35,7 +35,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 
 DEFUN_DLD (colloc, args, ,
-  "[R, A, B, Q] = colloc (N [, \"left\"] [, \"right\"]): collocation weights")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {[@var{r}, @var{A}, @var{B}, @var{q}] =} colloc (@var{n}, \"left\", \"right\")\n\
+Compute derivative and integral weight matrices for orthogonal\n\
+collocation using the subroutines given in J. Villadsen and\n\
+M. L. Michelsen, @cite{Solution of Differential Equation Models by\n\
+Polynomial Approximation}.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 

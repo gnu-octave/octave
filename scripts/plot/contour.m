@@ -17,8 +17,13 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: contour (z, n, x, y)
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {} contour (@var{z}, @var{n}, @var{x}, @var{y})
+## Make a contour plot of the three-dimensional surface described by
+## @var{z}.  Someone needs to improve @code{gnuplot}'s contour routines
+## before this will be very useful.
+## @end deftypefn
+
 ## See also: plot, semilogx, semilogy, loglog, polar, mesh, contour,
 ##           bar, stairs, gplot, gsplot, replot, xlabel, ylabel, title
 

@@ -937,7 +937,18 @@ do_external_plotter_cd (const string& newdir)
 }
 
 DEFUN (clearplot, , ,
-  "clearplot (): clear the plot window")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} clearplot\n\
+@deftypefnx {Built-in Function} {} clg\n\
+Clear the plot window and any titles or axis labels.  The name\n\
+@code{clg} is aliased to @code{clearplot} for compatibility with\n\
+@sc{Matlab}.\n\
+\n\
+The commands @kbd{gplot clear}, @kbd{gsplot clear}, and @kbd{replot\n\
+clear} are equivalent to @code{clearplot}.  (Previously, commands like\n\
+@kbd{gplot clear} would evaluate @code{clear} as an ordinary expression\n\
+and clear all the visible variables.)\n\
+@end deftypefn")
 {
   octave_value_list retval;
   send_to_plot_stream ("clear\n");
@@ -963,7 +974,11 @@ DEFUN (clearplot, , ,
 DEFALIAS (clg, clearplot);
 
 DEFUN (closeplot, , ,
-  "closeplot (): close the stream to plotter")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} closeplot\n\
+Close stream to the @code{gnuplot} subprocess.  If you are using X11,\n\
+this will close the plot window.\n\
+@end deftypefn")
 {
   octave_value_list retval;
   close_plot_stream ();
@@ -971,10 +986,22 @@ DEFUN (closeplot, , ,
 }
 
 DEFUN_TEXT (hold, args, ,
-  "hold [on|off]\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} hold @var{args}\n\
+Tell Octave to `hold' the current data on the plot when executing\n\
+subsequent plotting commands.  This allows you to execute a series of\n\
+plot commands and have all the lines end up on the same figure.  The\n\
+default is for each new plot command to clear the plot device first.\n\
+For example, the command\n\
 \n\
-determine whether the plot window is cleared before the next line is\n\
-drawn.  With no argument, toggle the current state.") 
+@example\n\
+hold on\n\
+@end example\n\
+\n\
+@noindent\n\
+turns the hold state on.  An argument of @code{off} turns the hold state\n\
+off, and @code{hold} with no arguments toggles the current hold state.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -1009,15 +1036,28 @@ drawn.  With no argument, toggle the current state.")
 }
 
 DEFUN (ishold, , ,
-  "ishold\n\
-\n\
-Return 1 if hold is on, otherwise return 0.")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} ishold\n\
+Return 1 if the next line will be added to the current plot, or 0 if\n\
+the plot device will be cleared before drawing the next line.\n\
+@end deftypefn")
 {
   return static_cast<double> (! clear_before_plotting);
 }
 
 DEFUN (purge_tmp_files, , ,
-  "delete temporary data files used for plotting")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} purge_tmp_files\n\
+Delete the temporary files created by the plotting commands.\n\
+\n\
+Octave creates temporary data files for @code{gnuplot} and then sends\n\
+commands to @code{gnuplot} through a pipe.  Octave will delete the\n\
+temporary files on exit, but if you are doing a lot of plotting you may\n\
+want to clean up in the middle of a session.\n\
+\n\
+A future version of Octave will eliminate the need to use temporary\n\
+files to hold the plot data.\n\
+@end deftypefn")
 {
   octave_value_list retval;
   cleanup_tmp_files ();
@@ -1241,10 +1281,20 @@ void
 symbols_of_pt_plot (void)
 {
   DEFVAR (automatic_replot, 0.0, automatic_replot,
-    "if true, auto-insert a replot command when a plot changes");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} automatic_replot\n\
+You can tell Octave to redisplay the plot each time anything about it\n\
+changes by setting the value of the builtin variable\n\
+@code{automatic_replot} to a nonzero value.  Since this is fairly\n\
+inefficient, the default value is 0.\n\
+@end defvr");
 
   DEFVAR (gnuplot_binary, "gnuplot", gnuplot_binary,
-    "path to gnuplot binary");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} gnuplot_binary\n\
+The name of the program invoked by the plot command.  The default value\n\
+is @code{\"gnuplot\"}.  @xref{Installation}.\n\
+@end defvr");
 
   DEFVAR (gnuplot_command_plot, "pl", gnuplot_command_plot,
     "");
@@ -1277,7 +1327,14 @@ symbols_of_pt_plot (void)
 #endif
 
   DEFVAR (gnuplot_has_frames, with_frames, gnuplot_has_frames,
-    "true if gnuplot supports multiple plot windows on X11, false otherwise");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} gnuplot_has_frames\n\
+If the value of this variable is nonzero, Octave assumes that your copy\n\
+of gnuplot has support for multiple frames that is included in recent\n\
+3.6beta releases.  It's initial value is determined by configure, but it\n\
+can be changed in your startup script or at the command line in case\n\
+configure got it wrong, or if you upgrade your gnuplot installation.\n\
+@end defvr");
 
 #ifdef GNUPLOT_HAS_MULTIPLOT
   double with_multiplot = 1.0;
@@ -1286,7 +1343,15 @@ symbols_of_pt_plot (void)
 #endif
 
   DEFVAR (gnuplot_has_multiplot, with_multiplot, gnuplot_has_multiplot,
-    "true if gnuplot supports multiplot, false otherwise");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} gnuplot_has_multiplot\n\
+If the value of this variable is nonzero, Octave assumes that your copy\n\
+of gnuplot has the multiplot support that is included in recent\n\
+3.6beta releases.  It's initial value is determined by configure, but it\n\
+can be changed in your startup script or at the command line in case\n\
+configure got it wrong, or if you upgrade your gnuplot installation.\n\
+@end defvr");
+
 }
 
 /*

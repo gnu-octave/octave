@@ -8,50 +8,10 @@
 Octave has a limited set of functions for managing sets of data, where a
 set is defined as a collection unique elements.
 
-@deftypefn {Function File} {} create_set (@var{x})
-Return a row vector containing the unique values in @var{x}, sorted in
-ascending order.  For example,
+@DOCSTRING(create_set)
 
-@example
-@group
-create_set ([ 1, 2; 3, 4; 4, 2 ])
-     @result{} [ 1, 2, 3, 4 ]
-@end group
-@end example
-@end deftypefn
+@DOCSTRING(union)
 
-@deftypefn {Function File} {} union (@var{x}, @var{y})
-Return the set of elements that are in either of the sets @var{x} and
-@var{y}.  For example,
+@DOCSTRING(intersection)
 
-@example
-@group
-union ([ 1, 2, 4 ], [ 2, 3, 5 ])
-     @result{} [ 1, 2, 3, 4, 5 ]
-@end group
-@end example
-@end deftypefn
-
-@deftypefn {Function File} {} intersection (@var{x}, @var{y})
-Return the set of elements that are in both sets @var{x} and @var{y}.
-For example,
-
-@example
-@group
-intersection ([ 1, 2, 3 ], [ 2, 3, 5 ])
-     @result{} [ 2, 3 ]
-@end group
-@end example
-@end deftypefn
-
-@deftypefn {Function File} {} complement (@var{x}, @var{y})
-Return the elements of set @var{y} that are not in set @var{x}.  For
-example,
-
-@example
-@group
-complement ([ 1, 2, 3 ], [ 2, 3, 5 ])
-     @result{} 5
-@end group
-@end example
-@end deftypefn
+@DOCSTRING(complement)

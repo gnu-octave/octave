@@ -17,11 +17,20 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: union(a,b)
-##
-## Returns the union of sets a and b.
-##
-## See - create_set, intersection, complement
+## -*- texinfo -*-
+## @deftypefn {Function File} {} union (@var{x}, @var{y})
+## Return the set of elements that are in either of the sets @var{x} and
+## @var{y}.  For example,
+## 
+## @example
+## @group
+## union ([ 1, 2, 4 ], [ 2, 3, 5 ])
+##      @result{} [ 1, 2, 3, 4, 5 ]
+## @end group
+## @end example
+## @end deftypefn
+
+## See also: create_set, intersection, complement
 
 ## Author: jwe
 

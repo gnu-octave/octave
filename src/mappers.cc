@@ -560,7 +560,7 @@ tolower (\"MiXeD cAsE 123\")\n\
 
   DEFUN_MAPPER (toupper, xtoupper, 0, 0, 0, 0, 0, 0.0, 0.0, 2,
     "-*- texinfo -*-\n\
-@deftypefn {Function File} {} toupper (@var{s})\n\
+@deftypefn {Built-in Function} {} toupper (@var{s})\n\
 Return a copy of the string @var{s}, with each  lower-case character\n\
 replaced by the corresponding upper-case one; nonalphabetic characters\n\
 are left unchanged.  For example,\n\

@@ -17,24 +17,35 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: plot_border (...)
-##
-## NOTE: this will work only with gnuplot installed with
-##       multiplot patch
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {} plot_border (...)
 ## Multiple arguments allowed to specify the sides on which the border
-## is shown. allowed strings:
-##
-## allowed input strings:
-##
-##  "blank", "BLANK", "b", "B",   --->  No borders displayed
-##    "all",   "ALL", "a", "A",   ---> All borders displayed
-##  "north", "NORTH", "n", "N",   ---> North Border
-##  "south", "SOUTH", "s", "S",   ---> South Border
-##   "east",  "EAST", "e", "E",   --->  East Border
-##   "west",  "WEST", "w", "W",   --->  West Border
-##
-## Without any arguments, turns borders off.
+## is shown.  Allowed arguments include:
+## 
+## @table @code
+## @item "blank"
+## No borders displayed.
+## 
+## @item "all"
+## All borders displayed
+## 
+## @item "north"
+## North Border
+## 
+## @item "south"
+## South Border
+## 
+## @item "east"
+## East Border
+## 
+## @item "west"
+## West Border
+## @end table
+## 
+## @noindent
+## The arguments may be abbreviated to single characters.  Without any
+## arguments, @code{plot_border} turns borders off.
+## @end deftypefn
 
 ## Author: Vinayak Dutt <Dutt.Vinayak@mayo.EDU>
 ## Created: 3 July 95

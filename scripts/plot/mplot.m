@@ -17,18 +17,17 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: mplot (x, y)
-##        mplot (x1, y1, x2, y2, ...)
-##        mplot (x, y, fmt)
-##
-## This is a modified version of plot() command to work with
-## multiplot version of gnuplot to plot multiple plots per page.
-## This plot version automatically updates the plot position to
-## next plot position after making the plot in the given subplot
-## position.
-##
-## See command plot() for the various options to this command
-## as this is just mulitplot version of the same command.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} mplot (@var{x}, @var{y})
+## @deftypefnx {Function File} {} mplot (@var{x}, @var{y}, @var{fmt})
+## @deftypefnx {Function File} {} mplot (@var{x1}, @var{y1}, @var{x2}, @var{y2})
+## This is a modified version of the @code{plot} function that works with
+## the multiplot version of @code{gnuplot} to plot multiple plots per page. 
+## This plot version automatically advances to the next subplot position
+## after each set of arguments are processed.
+## 
+## See the description of the @var{plot} function for the various options.
+## @end deftypefn
 
 ## Author: Vinayak Dutt <Dutt.Vinayak@mayo.EDU>
 ## Adapted-By: jwe

@@ -416,7 +416,13 @@ void
 symbols_of_defaults (void)
 {
   DEFVAR (EDITOR, Veditor, editor,
-    "name of the editor to be invoked by the edit_history command");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} EDITOR\n\
+A string naming the editor to use with the @code{edit_history} command.\n\
+If the environment variable @code{EDITOR} is set when Octave starts, its\n\
+value is used as the default.  Otherwise, @code{EDITOR} is set to\n\
+@code{\"emacs\"}.\n\
+@end defvr");
 
   DEFVAR (EXEC_PATH, Vexec_path, exec_path,
     "-*- texinfo -*-\n\

@@ -26,19 +26,9 @@ F (x) = 0
 using the function @code{fsolve}, which is based on the @sc{Minpack}
 subroutine @code{hybrd}.
 
-@deftypefn {Loadable Function} {[@var{x}, @var{info}] =} fsolve (@var{fcn}, @var{x0})
-Given @var{fcn}, the name of a function of the form @code{f (@var{x})}
-and an initial starting point @var{x0}, @code{fsolve} solves the set of
-equations such that @code{f(@var{x}) == 0}.
-@end deftypefn
+@DOCSTRING(fsolve)
 
-@deftypefn {Loadable Function} {} fsolve_options (@var{opt}, @var{val})
-When called with two arguments, this function allows you set options
-parameters for the function @code{fsolve}.  Given one argument,
-@code{fsolve_options} returns the value of the corresponding option.  If
-no arguments are supplied, the names of all the available options and
-their current values are displayed.
-@end deftypefn
+@DOCSTRING(fsolve_options)
 
 Here is a complete example.  To solve the set of equations
 @iftex

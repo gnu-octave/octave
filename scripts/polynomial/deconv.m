@@ -17,19 +17,19 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: deconv (y, a)
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {} deconv (@var{y}, @var{a})
 ## Deconvolve two vectors.
-##
-## [b, r] = deconv (y, a) solves for b and r such that
-##    y = conv(a,b) + r
-##
-## If y and a are polynomial coefficient vectors, b will contain the
-## coefficients of the polynomial quotient and r will be a remander
-## polynomial of lowest order.
-##
-## SEE ALSO: conv, poly, roots, residue, polyval, polyderiv,
-## polyinteg
+## 
+## @code{[b, r] = deconv (y, a)} solves for @var{b} and @var{r} such that
+## @code{y = conv (a, b) + r}.
+## 
+## If @var{y} and @var{a} are polynomial coefficient vectors, @var{b} will
+## contain the coefficients of the polynomial quotient and @var{r} will be
+## a remander polynomial of lowest order.
+## @end deftypefn
+
+## SEE ALSO: conv, poly, roots, residue, polyval, polyderiv, polyinteg
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>
 ## Created: June 1994

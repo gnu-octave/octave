@@ -149,16 +149,12 @@ fsolve_user_function (const ColumnVector& x)
   while (0)
 
 DEFUN_DLD (fsolve, args, nargout,
-  "Solve nonlinear equations using Minpack.  Usage:\n\
-\n\
-  [X, INFO] = fsolve (F, X0)\n\
-\n\
-Where the first argument is the name of the  function to call to\n\
-compute the vector of function values.  It must have the form\n\
-\n\
-  y = f (x)\n\
-\n\
-where y and x are vectors.")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {[@var{x}, @var{info}] =} fsolve (@var{fcn}, @var{x0})\n\
+Given @var{fcn}, the name of a function of the form @code{f (@var{x})}\n\
+and an initial starting point @var{x0}, @code{fsolve} solves the set of\n\
+equations such that @code{f(@var{x}) == 0}.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -322,10 +318,14 @@ show_fsolve_option (const string& keyword)
 }
 
 DEFUN_DLD (fsolve_options, args, ,
-  "fsolve_options (KEYWORD, VALUE)\n\
-\n\
-Set or show options for fsolve.  Keywords may be abbreviated\n\
-to the shortest match.")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} fsolve_options (@var{opt}, @var{val})\n\
+When called with two arguments, this function allows you set options\n\
+parameters for the function @code{fsolve}.  Given one argument,\n\
+@code{fsolve_options} returns the value of the corresponding option.  If\n\
+no arguments are supplied, the names of all the available options and\n\
+their current values are displayed.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 

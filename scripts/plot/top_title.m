@@ -17,12 +17,11 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: top_title (text)
-##
-## NOTE: this will work only with gnuplot installed with
-##       multiplot patch
-##
-## makes a title with text "text" at the top of the plot
+## -*- texinfo -*-
+## @deftypefn {Function File} {} top_title (@var{string})
+## @deftypefnx {Function File} {} bottom_title (@var{string})
+## Makes a title with text @var{string} at the top (bottom) of the plot.
+## @end deftypefn
 
 ## Author: Vinayak Dutt <Dutt.Vinayak@mayo.EDU>
 ## Created: 3 July 95

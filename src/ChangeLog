@@ -1,10 +1,17 @@
 1999-11-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
-	* DLD-FUNCTIONS/fft.cc: Texinfoize doc string.
-	* DLD-FUNCTIONS/ifft.cc: Ditto.
-	* DLD-FUNCTIONS/fft2.cc: Ditto.
-	* DLD-FUNCTIONS/ifft2.cc: Ditto.
-	* DLD-FUNCTIONS/filter.cc: Ditto.
+	* DLD-FUNCTIONS/fft.cc (Ffft): Texinfoize doc string.
+	* DLD-FUNCTIONS/ifft.cc (Fifft): Ditto.
+	* DLD-FUNCTIONS/fft2.cc (Ffft2): Ditto.
+	* DLD-FUNCTIONS/ifft2.cc (Fifft2): Ditto.
+	* DLD-FUNCTIONS/filter.cc (Ffilter): Ditto.
+	* DLD-FUNCTIONS/quad.cc (Fquad, Fquad_options): Ditto.
+	* DLD-FUNCTIONS/colloc.cc (Fcolloc): Ditto.
+	* DLD-FUNCTIONS/fsolve.cc (Ffsolve, Ffsolve_options): Ditto.
+	* defaults.cc (Veditor): Ditto.
+	* pt-plot.cc (Vautomatic_replot, Vgnuplot_binary,
+	Vgnuplot_has_frames, Vgnuplot_has_multiplot, Fclearplot,
+	Fcloseplot, Fpurge_tmp_files, Fishold, Fhold): 
 
 	* Makefile.in (parse.cc): Expect 11 shift/reduce conflicts now.
 

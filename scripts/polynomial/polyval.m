@@ -17,21 +17,17 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: polyval (c, x)
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {} polyval (@var{c}, @var{x})
 ## Evaluate a polynomial.
-##
-## In octave, a polynomial is represented by it's coefficients (arranged
-## in descending order). For example a vector c of length n+1 corresponds
-## to the following nth order polynomial
-##
-##   p(x) = c(1) x^n + ... + c(n) x + c(n+1).
-##
-## polyval(c,x) will evaluate the polynomial at the specified value of x.
-##
-## If x is a vector or matrix, the polynomial is evaluated at each of the
-## elements of x.
-##
+## 
+## @code{polyval (@var{c}, @var{x})} will evaluate the polynomial at the
+## specified value of @var{x}.
+## 
+## If @var{x} is a vector or matrix, the polynomial is evaluated at each of
+## the elements of @var{x}.
+## @end deftypefn
+
 ## SEE ALSO: polyvalm, poly, roots, conv, deconv, residue, filter,
 ##           polyderiv, polyinteg
 

@@ -17,12 +17,14 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: polar (theta, rho, fmt)
-##
-## Make a 2D plot given polar the coordinates theta and rho.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} polar (@var{theta}, @var{rho}, @var{fmt})
+## Make a two-dimensional plot given polar the coordinates @var{theta} and
+## @var{rho}.
 ##
 ## The optional third argument specifies the line type.
-##
+## @end deftypefn
+
 ## See also: plot, semilogx, semilogy, loglog, mesh, contour, bar,
 ##           stairs, gplot, gsplot, replot, xlabel, ylabel, title
 

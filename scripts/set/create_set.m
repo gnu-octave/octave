@@ -17,11 +17,20 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: create_set(x)
-##
-## Returns the unique elements of x, sorted in ascending order.
-##
-## See - union, intersection, complement
+## -*- texinfo -*-
+## @deftypefn {Function File} {} create_set (@var{x})
+## Return a row vector containing the unique values in @var{x}, sorted in
+## ascending order.  For example,
+## 
+## @example
+## @group
+## create_set ([ 1, 2; 3, 4; 4, 2 ])
+##      @result{} [ 1, 2, 3, 4 ]
+## @end group
+## @end example
+## @end deftypefn
+
+## See also: union, intersection, complement
 
 ## Author: jwe
 

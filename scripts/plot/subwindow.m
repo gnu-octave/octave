@@ -17,14 +17,13 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: subwindow (xn, yn)
-##
-## NOTE: this will work only with gnuplot installed with
-##       multiplot patch
-##
-## Sets subwindow position in multiplot mode for next plot. The
-## multiplot mode has to be previously initialized using multiplot()
-## command, else this command just becomes an aliad to multiplot()
+## -*- texinfo -*-
+## @deftypefn {Function File} {} subwindow (@var{xn}, @var{yn})
+## Sets the subwindow position in multiplot mode for the next plot.  The
+## multiplot mode has to be previously initialized using the
+## @code{multiplot} function, otherwise this command just becomes an alias
+## to @code{multiplot}
+## @end deftypefn
 
 ## Author: Vinayak Dutt <Dutt.Vinayak@mayo.EDU>
 ## Created: 3 July 95

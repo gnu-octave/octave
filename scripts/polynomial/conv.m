@@ -17,16 +17,16 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: conv (a, b)
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {} conv (@var{a}, @var{b})
 ## Convolve two vectors.
-##
-## y = conv (a, b) returns a vector of length equal to length (a) +
-## length (b) -1.
-##
-## If a and b are polynomial coefficient vectors, conv returns the
-## coefficients of the product polynomial.
-##
+## 
+## @code{y = conv (a, b)} returns a vector of length equal to
+## @code{length (a) + length (b) - 1}.
+## If @var{a} and @var{b} are polynomial coefficient vectors, @code{conv}
+## returns the coefficients of the product polynomial.
+## @end deftypefn
+
 ## SEE ALSO: deconv, poly, roots, residue, polyval, polyderiv, polyinteg
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>

@@ -17,14 +17,25 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage:  [p, yf] = polyfit (x, y, n)
-##
-## Returns the coefficients of a polynomial p(x) of degree n that
-## minimizes sumsq (p(x(i)) - y(i)), i.e., that best fits the data
-## in the least squares sense.
-##
-## If two outputs are requested, also return the values of the
-## polynomial for each value of x.
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{p}, @var{yf}] =} polyfit (@var{x}, @var{y}, @var{n})
+## Return the coefficients of a polynomial @var{p}(@var{x}) of degree
+## @var{n} that minimizes 
+## @iftex
+## @tex
+## $$
+## \sum_{i=1}^N (p(x_i) - y_i)^2
+## $$
+## @end tex
+## @end iftex
+## @ifinfo
+## @code{sumsq (p(x(i)) - y(i))},
+## @end ifinfo
+##  to best fit the data in the least squares sense.
+## 
+## If two output arguments are requested, the second contains the values of
+## the polynomial for each value of @var{x}.
+## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Created: 13 December 1994

@@ -17,11 +17,12 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: polyderiv (p)
-##
-## Returns the coefficients of the derivative of the polynomial whose
-## coefficients are given by vector p.
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {} polyderiv (@var{c})
+## Return the coefficients of the derivative of the polynomial whose
+## coefficients are given by vector @var{c}.
+## @end deftypefn
+
 ## SEE ALSO: poly, polyinteg, polyreduce, roots, conv, deconv, residue,
 ##           filter, polyval, polyvalm
 

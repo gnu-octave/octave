@@ -17,10 +17,17 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: [xx, yy] = meshdom (x, y)
+## -*- texinfo -*-
+## @deftypefn {Function File} {} meshdom (@var{x}, @var{y})
+## Given vectors of @var{x} and @var{y} coordinates, return two matrices
+## corresponding to the @var{x} and @var{y} coordinates of the mesh.
+## 
+## See the file @file{sombrero.m} for an example of using @code{mesh} and
+## @code{meshdom}.
 ##
 ## Note: this function is provided for compatibility with older versions
-## of Matlab.  You should use meshgrid() instead.
+## of @sc{Matlab}.  You should use @code{meshgrid} instead.
+## @end deftypefn
 
 ## Author: jwe
 

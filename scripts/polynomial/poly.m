@@ -17,14 +17,14 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: poly (x)
-##
-## If A is a square n-by-n matrix, poly (A) is the row vector of
-## the coefficients of det (z * eye(n) - A), the characteristic
-## polynomial of A.
-##
-## If x is a vector, poly (x) is a vector of coefficients of the
-## polynomial whose roots are the elements of x.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} poly (@var{a})
+## If @var{a} is a square @var{N}-by-@var{N} matrix, @code{poly (@var{a})}
+## is the row vector of the coefficients of @code{det (z * eye (N) - a)},
+## the characteristic polynomial of @var{a}.  If @var{x} is a vector,
+## @code{poly (@var{x})} is a vector of coefficients of the polynomial
+## whose roots are the elements of @var{x}.
+## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@neuro.tuwien.ac.at>
 ## Created: 24 December 1993

@@ -17,11 +17,20 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: intersection(a,b)
-##
-## Returns the intersection of sets a and b.
-##
-## See - create_set, union, complement
+## -*- texinfo -*-
+## @deftypefn {Function File} {} intersection (@var{x}, @var{y})
+## Return the set of elements that are in both sets @var{x} and @var{y}.
+## For example,
+## 
+## @example
+## @group
+## intersection ([ 1, 2, 3 ], [ 2, 3, 5 ])
+##      @result{} [ 2, 3 ]
+## @end group
+## @end example
+## @end deftypefn
+
+## See also: create_set, union, complement
 
 ## Author: jwe
 

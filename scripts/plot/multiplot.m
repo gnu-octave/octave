@@ -17,16 +17,15 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: multiplot (xn, yn)
-##
-## Sets and resets multiplot mode
-##
-## If multiplot(0,0) then it will close multiplot mode and and if
-## arguments are non-zero, then it will set up multiplot mode with
-## xn,yn subplots along x and y axes.
-##
-## NOTE: this will work only with gnuplot installed with
-##       multiplot patch
+## -*- texinfo -*-
+## @deftypefn {Function File} {} multiplot (@var{xn}, @var{yn})
+## Sets and resets multiplot mode.
+## 
+## If the arguments are non-zero, @code{multiplot} will set up multiplot
+## mode with @var{xn}, @var{yn} subplots along the @var{x} and @var{y}
+## axes.  If both arguments are zero, @code{multiplot} closes multiplot
+## mode.
+## @end deftypefn
 
 ## Author: Vinayak Dutt, Dutt.Vinayak@mayo.EDU
 ## Created: 3 July 95

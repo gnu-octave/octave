@@ -17,41 +17,57 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: subplot (rows, columns, index)
-##        subplot (rcn)
-##
-## NOTE: this will work only with gnuplot installed with
-##       multiplot patch (or version 3.6 beta)
-##
-## Sets gnuplot in multiplot mode and plots in location
-## given by index (there are columns X rows subwindows)
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {} subplot (@var{rows}, @var{cols}, @var{index})
+## @deftypefnx {Function File} {} subplot (@var{rcn})
+## Sets @code{gnuplot} in multiplot mode and plots in location
+## given by index (there are @var{cols} by @var{rows} subwindows).
+## 
 ## Input:
-##
-##   rows   : number of rows in subplot grid
-##   columns: number of columns in subplot grid
-##   index  : index of subplot where to make the next plot
-##
-## If only one arg, then it (crn) has to be three digit value
-## specifying the location in digit 1 (rows) and 2 (columns) and digit
-## 3 is the plot index
-##
-## The plot index runs row-wise,i.e., first all the columns in a row
-## are filled and then the next row is filled
-##
-## For example, plot with 4 X 2 grid, will have plot indices running as
+## 
+## @table @var
+## @item rows
+## Number of rows in subplot grid.
+## 
+## @item columns
+## Number of columns in subplot grid.
+## 
+## @item index
+## Index of subplot where to make the next plot.
+## @end table
+## 
+## If only one argument is supplied, then it must be a three digit value
+## specifying the location in digits 1 (rows) and 2 (columns) and the plot
+## index in digit 3.
+## 
+## The plot index runs row-wise.  First all the columns in a row are filled
+## and then the next row is filled.
+## 
+## For example, a plot with 4 by 2 grid will have plot indices running as
 ## follows:
-##
-##   -----------------------------------
-##   |        |       |       |        |
-##   |    1   |    2  |    3  |    4   |
-##   |        |       |       |        |
-##   -----------------------------------
-##   |        |       |       |        |
-##   |    5   |    6  |    7  |    8   |
-##   |        |       |       |        |
-##   -----------------------------------
-##
+## @iftex
+## @tex
+## \vskip 10pt
+## \hfil\vbox{\offinterlineskip\hrule
+## \halign{\vrule#&&\qquad\hfil#\hfil\qquad\vrule\cr
+## height13pt&1&2&3&4\cr height12pt&&&&\cr\noalign{\hrule}
+## height13pt&5&6&7&8\cr height12pt&&&&\cr\noalign{\hrule}}}
+## \hfil
+## \vskip 10pt
+## @end tex
+## @end iftex
+## @ifinfo
+## @display
+## @group
+## +-----+-----+-----+-----+
+## |  1  |  2  |  3  |  4  |
+## +-----+-----+-----+-----+
+## |  5  |  6  |  7  |  8  |
+## +-----+-----+-----+-----+
+## @end group
+## @end display
+## @end ifinfo
+## @end deftypefn
 
 ## Author: Vinayak Dutt <Dutt.Vinayak@mayo.EDU>
 ## Adapted-By: jwe

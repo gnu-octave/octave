@@ -37,223 +37,26 @@ p(x) = @var{c}(1) x^@var{N} + ... + @var{c}(@var{N}) x + @var{c}(@var{N}+1).
 @end example
 @end ifinfo
 
-@deftypefn {Function File} {} compan (@var{c})
-Compute the companion matrix corresponding to polynomial coefficient
-vector @var{c}.
+@DOCSTRING(compan)
 
-The companion matrix is
-@iftex
-@tex
-$$
-A = \left[\matrix{
- -c_2/c_1 & -c_3/c_1 & \cdots & -c_N/c_1 & -c_{N+1}/c_1\cr  
-     1    &     0    & \cdots &     0    &         0   \cr
-     0    &     1    & \cdots &     0    &         0   \cr
-  \vdots  &   \vdots & \ddots &  \vdots  &      \vdots \cr
-     0    &     0    & \cdots &     1    &         0}\right].
-$$
-@end tex
-@end iftex
-@ifinfo
+@DOCSTRING(conv)
 
-@smallexample
-     _                                                        _
-    |  -c(2)/c(1)   -c(3)/c(1)  ...  -c(N)/c(1)  -c(N+1)/c(1)  |
-    |       1            0      ...       0             0      |
-    |       0            1      ...       0             0      |
-A = |       .            .   .            .             .      |
-    |       .            .       .        .             .      |
-    |       .            .           .    .             .      |
-    |_      0            0      ...       1             0     _|
-@end smallexample
-@end ifinfo
+@DOCSTRING(deconv)
 
-The eigenvalues of the companion matrix are equal to the roots of the
-polynomial.
-@end deftypefn
+@DOCSTRING(poly)
 
-@deftypefn {Function File} {} conv (@var{a}, @var{b})
-Convolve two vectors.
+@DOCSTRING(polyderiv)
 
-@code{y = conv (a, b)} returns a vector of length equal to
-@code{length (a) + length (b) - 1}.
-If @var{a} and @var{b} are polynomial coefficient vectors, @code{conv}
-returns the coefficients of the product polynomial.
-@end deftypefn
+@DOCSTRING(polyfit)
 
-@deftypefn {Function File} {} deconv (@var{y}, @var{a})
-Deconvolve two vectors.
+@DOCSTRING(polyinteg)
 
-@code{[b, r] = deconv (y, a)} solves for @var{b} and @var{r} such that
-@code{y = conv (a, b) + r}.
+@DOCSTRING(polyreduce)
 
-If @var{y} and @var{a} are polynomial coefficient vectors, @var{b} will
-contain the coefficients of the polynomial quotient and @var{r} will be
-a remander polynomial of lowest order.
-@end deftypefn
+@DOCSTRING(polyval)
 
-@deftypefn {Function File} {} poly (@var{a})
-If @var{a} is a square @var{N}-by-@var{N} matrix, @code{poly (@var{a})}
-is the row vector of the coefficients of @code{det (z * eye (N) - a)},
-the characteristic polynomial of @var{a}.  If @var{x} is a vector,
-@code{poly (@var{x})} is a vector of coefficients of the polynomial
-whose roots are the elements of @var{x}.
-@end deftypefn
+@DOCSTRING(polyvalm)
 
-@deftypefn {Function File} {} polyderiv (@var{c})
-Return the coefficients of the derivative of the polynomial whose
-coefficients are given by vector @var{c}.
-@end deftypefn
+@DOCSTRING(residue)
 
-@deftypefn {Function File} {[@var{p}, @var{yf}] =} polyfit (@var{x}, @var{y}, @var{n})
-Return the coefficients of a polynomial @var{p}(@var{x}) of degree
-@var{n} that minimizes 
-@iftex
-@tex
-$$
-\sum_{i=1}^N (p(x_i) - y_i)^2
-$$
-@end tex
-@end iftex
-@ifinfo
-@code{sumsq (p(x(i)) - y(i))},
-@end ifinfo
- to best fit the data in the least squares sense.
-@end deftypefn
-
-If two output arguments are requested, the second contains the values of
-the polynomial for each value of @var{x}.
-
-@deftypefn {Function File} {} polyinteg (@var{c})
-Return the coefficients of the integral of the polynomial whose
-coefficients are represented by the vector @var{c}.
-
-The constant of integration is set to zero.
-@end deftypefn
-
-@deftypefn {Function File} {} polyreduce (@var{c})
-Reduces a polynomial coefficient vector to a minimum number of terms by
-stripping off any leading zeros.
-@end deftypefn
-
-@deftypefn {Function File} {} polyval (@var{c}, @var{x})
-Evaluate a polynomial.
-
-@code{polyval (@var{c}, @var{x})} will evaluate the polynomial at the
-specified value of @var{x}.
-
-If @var{x} is a vector or matrix, the polynomial is evaluated at each of
-the elements of @var{x}.
-@end deftypefn
-
-@deftypefn {Function File} {} polyvalm (@var{c}, @var{x})
-Evaluate a polynomial in the matrix sense.
-
-@code{polyvalm (@var{c}, @var{x})} will evaluate the polynomial in the
-matrix sense, i.e. matrix multiplication is used instead of element by
-element multiplication as is used in polyval.
-
-The argument @var{x} must be a square matrix.
-@end deftypefn
-
-@deftypefn {Function File} {} residue (@var{b}, @var{a}, @var{tol})
-If @var{b} and @var{a} are vectors of polynomial coefficients, then
-residue calculates the partial fraction expansion corresponding to the
-ratio of the two polynomials.
-@cindex partial fraction expansion
-
-The function @code{residue} returns @var{r}, @var{p}, @var{k}, and
-@var{e}, where the vector @var{r} contains the residue terms, @var{p}
-contains the pole values, @var{k} contains the coefficients of a direct
-polynomial term (if it exists) and @var{e} is a vector containing the
-powers of the denominators in the partial fraction terms.
-
-Assuming @var{b} and @var{a} represent polynomials
-@iftex
-@tex
-$P(s)$ and $Q(s)$
-@end tex
-@end iftex
-@ifinfo
- P (s) and Q(s)
-@end ifinfo
- we have:
-@iftex
-@tex
-$$
-{P(s)\over Q(s)} = \sum_{m=1}^M {r_m\over (s-p_m)^e_m}
-  + \sum_{i=1}^N k_i s^{N-i}.
-$$
-@end tex
-@end iftex
-@ifinfo
-
-@example
- P(s)    M       r(m)         N
- ---- = SUM -------------  + SUM k(i)*s^(N-i)
- Q(s)   m=1 (s-p(m))^e(m)    i=1
-@end example
-@end ifinfo
-
-@noindent
-where @var{M} is the number of poles (the length of the @var{r},
-@var{p}, and @var{e} vectors) and @var{N} is the length of the @var{k}
-vector.
-
-The argument @var{tol} is optional, and if not specified, a default
-value of 0.001 is assumed.  The tolerance value is used to determine
-whether poles with small imaginary components are declared real.  It is
-also used to determine if two poles are distinct.  If the ratio of the
-imaginary part of a pole to the real part is less than @var{tol}, the
-imaginary part is discarded.  If two poles are farther apart than
-@var{tol} they are distinct.  For example,
-
-@example
-@group
- b = [1, 1, 1];
- a = [1, -5, 8, -4];
- [r, p, k, e] = residue (b, a);
-     @result{} r = [-2, 7, 3]
-     @result{} p = [2, 2, 1]
-     @result{} k = [](0x0)
-     @result{} e = [1, 2, 1]
-@end group
-@end example
-
-@noindent
-which implies the following partial fraction expansion
-@iftex
-@tex
-$$
-{s^2+s+1\over s^3-5s^2+8s-4} = {-2\over s-2} + {7\over (s-2)^2} + {3\over s-1}
-$$
-@end tex
-@end iftex
-@ifinfo
-
-@example
-        s^2 + s + 1       -2        7        3
-   ------------------- = ----- + ------- + -----
-   s^3 - 5s^2 + 8s - 4   (s-2)   (s-2)^2   (s-1)
-@end example
-@end ifinfo
-@end deftypefn
-
-@deftypefn {Function File} {} roots (@var{v})
-
-For a vector @var{v} with @var{N} components, return
-the roots of the polynomial
-@iftex
-@tex
-$$
-v_1 z^{N-1} + \cdots + v_{N-1} z + v_N.
-$$
-@end tex
-@end iftex
-@ifinfo
-
-@example
-v(1) * z^(N-1) + ... + v(N-1) * z + v(N).
-@end example
-@end ifinfo
-@end deftypefn
+@DOCSTRING(roots)

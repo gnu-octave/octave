@@ -17,11 +17,15 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: xlabel (text)
-##
-## Defines a label for the x-axis of a plot.  The label will appear the
-## next time a plot is displayed.
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {} xlabel (@var{string})
+## @deftypefnx {Function File} {} ylabel (@var{string})
+## @deftypefnx {Function File} {} zlabel (@var{string})
+## Specify x, y, and z axis labels for the plot.  If you already have a plot
+## displayed, use the command @code{replot} to redisplay it with the new
+## labels.
+## @end deftypefn
+
 ## See also: plot, semilogx, semilogy, loglog, polar, mesh, contour,
 ##           bar, stairs, gplot, gsplot, replot, ylabel, title
 

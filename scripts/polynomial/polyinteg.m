@@ -17,13 +17,14 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: polyinteg (p)
-##
-## Returns the coefficients of the integral the polynomial whose coefficients
-## are represented by the vector p.
-##
-## The constant of integration is zero.
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {} polyinteg (@var{c})
+## Return the coefficients of the integral of the polynomial whose
+## coefficients are represented by the vector @var{c}.
+## 
+## The constant of integration is set to zero.
+## @end deftypefn
+
 ## SEE ALSO: poly, polyderiv, polyreduce, roots, conv, deconv, residue,
 ##           filter, polyval, polyvalm
 

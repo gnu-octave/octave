@@ -17,13 +17,10 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: oneplot
-##
-## NOTE: this will work only with gnuplot installed with
-##       multiplot patch
-##
-## Switches from multiplot (if in multiplot mode) to single plot
-## mode
+## -*- texinfo -*-
+## @deftypefn {Function File} {} oneplot ()
+## If in multiplot mode, switches to single plot mode.
+## @end deftypefn
 
 ## Author: Vinayak Dutt <Dutt.Vinayak@mayo.EDU>
 ## Created: 3 July 95

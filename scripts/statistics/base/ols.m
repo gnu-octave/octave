@@ -17,27 +17,62 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: [BETA, SIGMA [, R]] = ols (Y, X)
-##
-## Ordinary Least Squares (OLS) estimation for the multivariate model
-##
-##     Y = X*B + E,  mean(E) = 0,  cov(vec(E)) = kron(S,I)
-##
-## with Y ... T x p     As usual, each row of Y and X is an observation
-##      X ... T x k     and each column a variable.
-##      B ... k x p
-##      E ... T x p.
-##
-## BETA is the OLS estimator for B, i.e.
-##
-##   BETA = pinv(X)*Y,
-##
-## where pinv(X) denotes the pseudoinverse of X.
-## SIGMA is the OLS estimator for the matrix S, i.e.
-##
-##   SIGMA = (Y - X*BETA)'*(Y - X*BETA) / (T - rank(X)).
-##
-## R = Y - X*BETA is the matrix of OLS residuals.
+##  -*- texinfo -*-
+## @deftypefn {Function File} {[@var{beta}, @var{sigma}, @var{r}] =} ols (@var{y}, @var{x})
+## Ordinary least squares estimation for the multivariate model
+## @iftex
+## @tex
+## $y = x b + e$
+## with
+## $\bar{e} = 0$, and cov(vec($e$)) = kron ($s, I$)
+## @end tex
+## @end iftex
+## @ifinfo
+## @code{@var{y} = @var{x}*@var{b} + @var{e}} with
+## @code{mean (@var{e}) = 0} and @code{cov (vec (@var{e})) = kron (@var{s},
+## @var{I})}.
+## @end ifinfo
+##  where
+## @iftex
+## @tex
+## $y$ is a $t \times p$ matrix, $x$ is a $t \times k$ matrix, 
+## $b$ is a $k \times p$ matrix, and $e$ is a $t \times p$ matrix.
+## @end tex
+## @end iftex
+## @ifinfo
+## @var{y} is a @var{t} by @var{p} matrix, @var{X} is a @var{t} by @var{k}
+## matrix, @var{B} is a @var{k} by @var{p} matrix, and @var{e} is a @var{t}
+## by @var{p} matrix.
+## @end ifinfo
+## 
+## Each row of @var{y} and @var{x} is an observation and each column a
+## variable.
+## 
+## The return values @var{beta}, @var{sigma}, and @var{r} are defined as
+## follows.
+## 
+## @table @var
+## @item beta
+## The OLS estimator for @var{b}, @code{@var{beta} = pinv (@var{x}) *
+## @var{y}}, where @code{pinv (@var{x})} denotes the pseudoinverse of
+## @var{x}.
+## 
+## @item sigma
+## The OLS estimator for the matrix @var{s},
+## 
+## @example
+## @group
+## @var{sigma} = (@var{y}-@var{x}*@var{beta})'
+##   * (@var{y}-@var{x}*@var{beta})
+##   / (@var{t}-rank(@var{x}))
+## @end group
+## @end example
+## 
+## @item r
+## The matrix of OLS residuals, @code{@var{r} = @var{y} - @var{x} *
+## @var{beta}}.
+## @end table
+## @end deftypefn
 
 ## Author: Teresa Twaroch <twaroch@ci.tuwien.ac.at>
 ## Created: May 1993

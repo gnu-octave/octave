@@ -17,12 +17,10 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: zlabel (text)
-##
-## Defines a label for the z-axis of a plot.  The label will appear the
-## next time a plot is displayed.
-##
-## See other plotting commands also.
+## See xlabel.
+
+## See also: plot, semilogx, semilogy, loglog, polar, mesh, contour,
+##           bar, stairs, gplot, gsplot, replot, xlabel, title
 
 ## Author: Vinayak Dutt <Dutt.Vinayak@mayo.EDU>
 ## Created: 3 July 95

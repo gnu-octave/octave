@@ -13,45 +13,9 @@
 @node Functions of One Variable, Orthogonal Collocation, Quadrature, Quadrature
 @section Functions of One Variable
 
-@deftypefn {Loadable Function} {[@var{v}, @var{ier}, @var{nfun}, @var{err}] =} quad (@var{f}, @var{a}, @var{b}, @var{tol}, @var{sing})
-Integrate a nonlinear function of one variable using Quadpack.
-The first argument is the name of the  function to call to compute the
-value of the integrand.  It must have the form
+@DOCSTRING(quad)
 
-@example
-y = f (x)
-@end example
-
-@noindent
-where @var{y} and @var{x} are scalars.
-
-The second and third arguments are limits of integration.  Either or
-both may be infinite.
-
-The optional argument @var{tol} is a vector that specifies the desired
-accuracy of the result.  The first element of the vector is the desired
-absolute tolerance, and the second element is the desired relative
-tolerance.  To choose a relative test only, set the absolute
-tolerance to zero.  To choose an absolute test only, set the relative
-tolerance to zero. 
-
-The optional argument @var{sing} is a vector of values at which the
-integrand is known to be singular.
-
-The result of the integration is returned in @var{v} and @var{ier}
-contains an integer error code (0 indicates a successful integration).
-The value of @var{nfun} indicates how many function evaluations were
-required, and @var{err} contains an estimate of the error in the
-solution.
-@end deftypefn
-
-@deftypefn {Loadable Function} {} quad_options (@var{opt}, @var{val})
-When called with two arguments, this function allows you set options
-parameters for the function @code{quad}.  Given one argument,
-@code{quad_options} returns the value of the corresponding option.  If
-no arguments are supplied, the names of all the available options and
-their current values are displayed.
-@end deftypefn
+@DOCSTRING(quad_options)
 
 Here is an example of using @code{quad} to integrate the function
 @iftex
@@ -109,12 +73,7 @@ if you move the lower bound to 0.1, then 0.01, then 0.001, etc.).
 @node Orthogonal Collocation,  , Functions of One Variable, Quadrature
 @section Orthogonal Collocation
 
-@deftypefn {Loadable Function} {[@var{r}, @var{A}, @var{B}, @var{q}] =} colloc (@var{n}, "left", "right")
-Compute derivative and integral weight matrices for orthogonal
-collocation using the subroutines given in J. Villadsen and
-M. L. Michelsen, @cite{Solution of Differential Equation Models by
-Polynomial Approximation}.
-@end deftypefn
+@DOCSTRING(colloc)
 
 Here is an example of using @code{colloc} to generate weight matrices
 for solving the second order differential equation

@@ -369,10 +369,6 @@ References:
 
 @DOCSTRING(pzmap)
 
-@deftypefn{Function File} {outputs = } synKnames (inputs)
-Return controller signal names based in plant signal names and dimensions
-@end deftypefn
-
 @DOCSTRING(is_abcd)
 
 @DOCSTRING(is_controllable)
@@ -455,54 +451,6 @@ Return controller signal names based in plant signal names and dimensions
 
 @DOCSTRING(hinfsyn)
 
-@DOCSTRING(hinfsyn_c)
-@deftypefn {Function File } {[@var{xx}, @var{err}] =} hinfsyn_c (@var{nn}, @var{ptol}, @var{s1}@{, @var{s2}@})
-used internally in hinfsyn to evaluate hamiltonian/symplectic
- eigenvalue problems.
-
-@strong{WARNING} Argument checking not performed.
-
-@strong{Inputs}
-@table @var
-@item  s1 @r{(alone)}
-hamiltonian matrix
-@item (s1,s2) @r{ as a pair}
-symplectic matrix pencil
-@end table
-@strong{Outputs}
-@table @var
-@item   xx: positive (semi-)definite solution of DARE (set to 0 if err <=2)
-@item   code:  error:
-@table @strong
-@item 0
-no error 
-@item 1
-   (s1): eigenvalues on imaginary axis
-
-          (s1,s2): gen. eigenvalues on unit circle
-@item 2
-   unequal number of stable/antistable (generalized) eigenvalues
-@item 3
-(s1): infinite entries in solution x 
-
-(s1,s2): infinite entires in solution x or (I + R X) singular
-@item 4
-x is not symmetric
-@item 5
-x has negative eigenvalues
-@end table
-@end table
-
-Solution method: Either Laub's schur method or Symplectic GEP approach; 
-uses Van Dooren's code to re-order qz decompostion 
-(www.netlib.com - toms/590)
-
-See also: Ran and Rodman, "Stable Hermitian Solutions of Discrete
- Algebraic Riccati Equations," Mathematics of Control, Signals and
- Systems, Vol 5, no 2 (1992)  pp 165-194.
-
-@end deftypefn
-
 @DOCSTRING(hinfsyn_chk)
 
 @DOCSTRING(lqe)
@@ -519,14 +467,6 @@ See also: Ran and Rodman, "Stable Hermitian Solutions of Discrete
 @section Miscellaneous Functions (Not yet properly filed/documented)
 
 @DOCSTRING(axis2dlim)
-
-@deftypefn {Function File } { outputs =} mb ( inputs ) 
-@format
- $Revision: 1.9 $
-
-
-@end format
-@end deftypefn
 
 @DOCSTRING(moddemo)
 

@@ -17,11 +17,20 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: complement (a, b)
-##
-## Returns the elements of set b that are not in set a.
-##
-## See - create_set, union, intersection
+## -*- texinfo -*-
+## @deftypefn {Function File} {} complement (@var{x}, @var{y})
+## Return the elements of set @var{y} that are not in set @var{x}.  For
+## example,
+## 
+## @example
+## @group
+## complement ([ 1, 2, 3 ], [ 2, 3, 5 ])
+##      @result{} 5
+## @end group
+## @end example
+## @end deftypefn
+
+## See also: create_set, union, intersection
 
 ## Author: jwe
 

@@ -117,25 +117,38 @@ quad_user_function (double x)
   while (0)
 
 DEFUN_DLD (quad, args, nargout,
-  "[V, IER, NFUN] = quad (F, A, B [, TOL] [, SING])\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {[@var{v}, @var{ier}, @var{nfun}, @var{err}] =} quad (@var{f}, @var{a}, @var{b}, @var{tol}, @var{sing})\n\
+Integrate a nonlinear function of one variable using Quadpack.\n\
+The first argument is the name of the  function to call to compute the\n\
+value of the integrand.  It must have the form\n\
 \n\
-Where the first argument is the name of the  function to call to\n\
-compute the value of the integrand.  It must have the form\n\
+@example\n\
+y = f (x)\n\
+@end example\n\
 \n\
-  y = f (x)\n\
-\n\
-where y and x are scalars.\n\
+@noindent\n\
+where @var{y} and @var{x} are scalars.\n\
 \n\
 The second and third arguments are limits of integration.  Either or\n\
 both may be infinite.\n\
 \n\
-The optional argument tol is a vector that specifies the desired\n\
+The optional argument @var{tol} is a vector that specifies the desired\n\
 accuracy of the result.  The first element of the vector is the desired\n\
 absolute tolerance, and the second element is the desired relative\n\
-tolerance.\n\
+tolerance.  To choose a relative test only, set the absolute\n\
+tolerance to zero.  To choose an absolute test only, set the relative\n\
+tolerance to zero. \n\
 \n\
 The optional argument @var{sing} is a vector of values at which the\n\
-integrand is singular.")
+integrand is known to be singular.\n\
+\n\
+The result of the integration is returned in @var{v} and @var{ier}\n\
+contains an integer error code (0 indicates a successful integration).\n\
+The value of @var{nfun} indicates how many function evaluations were\n\
+required, and @var{err} contains an estimate of the error in the\n\
+solution.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -379,10 +392,14 @@ show_quad_option (const string& keyword)
 }
 
 DEFUN_DLD (quad_options, args, ,
-  "quad_options (KEYWORD, VALUE)\n\
-\n\
-Set or show options for quad.  Keywords may be abbreviated\n\
-to the shortest match.")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} quad_options (@var{opt}, @var{val})\n\
+When called with two arguments, this function allows you set options\n\
+parameters for the function @code{quad}.  Given one argument,\n\
+@code{quad_options} returns the value of the corresponding option.  If\n\
+no arguments are supplied, the names of all the available options and\n\
+their current values are displayed.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 

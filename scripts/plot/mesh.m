@@ -17,14 +17,16 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: mesh (x, y, z)
-##
-## Surface plot.  If x, y, and z are matrices with the same dimensions,
-## then corresponding elements represent vertices of the plot.  If x and
-## y are vectors, then a typical vertex is (x(j), y(i), z(i,j)).  Thus,
-## columns of z correspond to different x values and rows of z correspond
-## to different y values.
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {} mesh (@var{x}, @var{y}, @var{z})
+## Plot a mesh given matrices @code{x}, and @var{y} from @code{meshdom} and
+## a matrix @var{z} corresponding to the @var{x} and @var{y} coordinates of
+## the mesh.  If @var{x} and @var{y} are vectors, then a typical vertex
+## is (@var{x}(j), @var{y}(i), @var{z}(i,j)).  Thus, columns of @var{z}
+## correspond to different @var{x} values and rows of @var{z} correspond
+## to different @var{y} values.
+## @end deftypefn
+
 ## See also: plot, semilogx, semilogy, loglog, polar, meshgrid, meshdom,
 ##           contour, bar, stairs, gplot, gsplot, replot, xlabel, ylabel, title
 

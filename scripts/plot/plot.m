@@ -17,47 +17,145 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: plot (x, y)
-##        plot (x1, y1, x2, y2, ...)
-##        plot (x, y, fmt)
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {} plot (@var{args})
+## This function produces two-dimensional plots.  Many different
+## combinations of arguments are possible.  The simplest form is
+## 
+## @example
+## plot (@var{y})
+## @end example
+## 
+## @noindent
+## where the argument is taken as the set of @var{y} coordinates and the
+## @var{x} coordinates are taken to be the indices of the elements,
+## starting with 1.
+## 
+## If more than one argument is given, they are interpreted as
+## 
+## @example
+## plot (@var{x}, @var{y}, @var{fmt} ...)
+## @end example
+## 
+## @noindent
+## where @var{y} and @var{fmt} are optional, and any number of argument
+## sets may appear.  The @var{x} and @var{y} values are
+## interpreted as follows:
+## 
+## @itemize @bullet
+## @item
+## If a single data argument is supplied, it is taken as the set of @var{y}
+## coordinates and the @var{x} coordinates are taken to be the indices of
+## the elements, starting with 1.
+## 
+## @item
 ## If the first argument is a vector and the second is a matrix, the
 ## the vector is plotted versus the columns (or rows) of the matrix.
 ## (using whichever combination matches, with columns tried first.)
-##
+## 
+## @item
 ## If the first argument is a matrix and the second is a vector, the
 ## the columns (or rows) of the matrix are plotted versus the vector.
 ## (using whichever combination matches, with columns tried first.)
-##
-## If both arguments are vectors, the elements of y are plotted versus
-## the elements of x.
-##
-## If both arguments are matrices, the columns of y are plotted versus
-## the columns of x.  In this case, both matrices must have the same
-## number of rows and columns and no attempt is made to transpose the
-## arguments to make the number of rows match.
-##
+## 
+## @item
+## If both arguments are vectors, the elements of @var{y} are plotted versus
+## the elements of @var{x}.
+## 
+## @item
+## If both arguments are matrices, the columns of @var{y} are plotted
+## versus the columns of @var{x}.  In this case, both matrices must have
+## the same number of rows and columns and no attempt is made to transpose
+## the arguments to make the number of rows match.
+## 
 ## If both arguments are scalars, a single point is plotted.
-##
-## If only one argument is given, it is taken as the set of y
-## coordinates and the x coordinates are taken to be the indices of the
-## elements, starting with 1.
-##
-## To see possible options for FMT please see __pltopt__.
-##
-## Examples:
-##
-##   plot (x, y, "@12", x, y2, x, y3, "4", x, y4, "+")
-##
-##     y will be plotted with points of type 2 ("+") and color 1 (red).
-##     y2 will be plotted with lines.
-##     y3 will be plotted with lines of color 4.
-##     y4 will be plotted with points which are "+"s.
-##
-##   plot (b, "*")
-##
-##     b will be plotted with points of type "*".
-##
+## @end itemize
+## 
+## If the @var{fmt} argument is supplied, it is interpreted as
+## follows.  If @var{fmt} is missing, the default gnuplot line style
+## is assumed.
+## 
+## @table @samp
+## @item -
+## Set lines plot style (default).
+## 
+## @item .
+## Set dots plot style.
+## 
+## @item @@
+## Set points plot style.
+## 
+## @item -@@
+## Set linespoints plot style.
+## 
+## @item ^
+## Set impulses plot style.
+## 
+## @item L
+## Set steps plot style.
+## 
+## @item #
+## Set boxes plot style.
+## 
+## @item ~
+## Set errorbars plot style.
+## 
+## @item #~
+## Set boxerrorbars plot style.
+## 
+## @item @var{n}
+## Interpreted as the plot color if @var{n} is an integer in the range 1 to
+## 6.
+## 
+## @item @var{nm}
+## If @var{nm} is a two digit integer and @var{m} is an integer in the
+## range 1 to 6, @var{m} is interpreted as the point style.  This is only
+## valid in combination with the @code{@@} or @code{-@@} specifiers.
+## 
+## @item @var{c}
+## If @var{c} is one of @code{"r"}, @code{"g"}, @code{"b"}, @code{"m"},
+## @code{"c"}, or @code{"w"}, it is interpreted as the plot color (red,
+## green, blue, magenta, cyan, or white).
+## 
+## @item +
+## @itemx *
+## @itemx o
+## @itemx x
+## Used in combination with the points or linespoints styles, set the point
+## style.
+## @end table
+## 
+## The color line styles have the following meanings on terminals that
+## support color.
+## 
+## @example
+## Number  Gnuplot colors  (lines)points style
+##   1       red                   *
+##   2       green                 +
+##   3       blue                  o
+##   4       magenta               x
+##   5       cyan                house
+##   6       brown            there exists
+## @end example
+## 
+## Here are some plot examples:
+## 
+## @example
+## plot (x, y, "@@12", x, y2, x, y3, "4", x, y4, "+")
+## @end example
+## 
+## This command will plot @code{y} with points of type 2 (displayed as
+## @samp{+}) and color 1 (red), @code{y2} with lines, @code{y3} with lines of
+## color 4 (magenta) and @code{y4} with points displayed as @samp{+}.
+## 
+## @example
+## plot (b, "*")
+## @end example
+## 
+## This command will plot the data in the variable @code{b} will be plotted
+## with points displayed as @samp{*}.
+## @end deftypefn
+
 ## See also: semilogx, semilogy, loglog, polar, mesh, contour, __pltopt__
 ##           bar, stairs, gplot, gsplot, replot, xlabel, ylabel, title
 

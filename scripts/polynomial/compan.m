@@ -17,29 +17,42 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: compan (c)
-##
-## Compute the companion matrix corresponding to polynomial vector c.
-##
-## In octave a polynomial is represented by it's coefficients (arranged
-## in descending order). For example a vector c of length n+1 corresponds
-## to the following nth order polynomial
-##
-##   p(x) = c(1) x^n + ... + c(n) x + c(n+1).
-##
-## The corresponding companion matrix is
-##         _                                                        _
-##        |  -c(2)/c(1)   -c(3)/c(1)  ...  -c(n)/c(1)  -c(n+1)/c(1)  |
-##        |       1            0      ...       0             0      |
-##        |       0            1      ...       0             0      |
-##    A = |       .            .   .            .             .      |
-##        |       .            .       .        .             .      |
-##        |       .            .           .    .             .      |
-##        |_      0            0      ...       1             0     _|
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {} compan (@var{c})
+## Compute the companion matrix corresponding to polynomial coefficient
+## vector @var{c}.
+## 
+## The companion matrix is
+## @iftex
+## @tex
+## $$
+## A = \left[\matrix{
+##  -c_2/c_1 & -c_3/c_1 & \cdots & -c_N/c_1 & -c_{N+1}/c_1\cr
+##      1    &     0    & \cdots &     0    &         0   \cr
+##      0    &     1    & \cdots &     0    &         0   \cr
+##   \vdots  &   \vdots & \ddots &  \vdots  &      \vdots \cr
+##      0    &     0    & \cdots &     1    &         0}\right].
+## $$
+## @end tex
+## @end iftex
+## @ifinfo
+## 
+## @smallexample
+##      _                                                        _
+##     |  -c(2)/c(1)   -c(3)/c(1)  ...  -c(N)/c(1)  -c(N+1)/c(1)  |
+##     |       1            0      ...       0             0      |
+##     |       0            1      ...       0             0      |
+## A = |       .            .   .            .             .      |
+##     |       .            .       .        .             .      |
+##     |       .            .           .    .             .      |
+##     |_      0            0      ...       1             0     _|
+## @end smallexample
+## @end ifinfo
+## 
 ## The eigenvalues of the companion matrix are equal to the roots of the
 ## polynomial.
-##
+## @end deftypefn
+
 ## SEE ALSO: poly, roots, residue, conv, deconv, polyval, polyderiv, polyinteg
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>

@@ -17,10 +17,12 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: figure (n)
-##
-## Set the current plot window to plot window N.  This function
-## currently requires X11 and a recent version of gnuplot.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} figure (@var{n})
+## Set the current plot window to plot window @var{n}.  This function
+## currently requires X11 and a version of gnuplot that supports multiple
+## frames.
+## @end deftypefn
 
 ## Author: jwe
 

@@ -17,25 +17,32 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: [xb, yb] = bar (x, y)
-##
-## Given two vectors of x-y data, bar produces a `bar' graph.
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {} bar (@var{x}, @var{y})
+## Given two vectors of x-y data, @code{bar} produces a bar graph.
+## 
 ## If only one argument is given, it is taken as a vector of y-values
 ## and the x coordinates are taken to be the indices of the elements.
-##
+## 
 ## If two output arguments are specified, the data are generated but
 ## not plotted.  For example,
-##
-##   bar (x, y);
-##
+## 
+## @example
+## bar (x, y);
+## @end example
+## 
+## @noindent
 ## and
-##
-##   [xb, yb] = bar (x, y);
-##   plot (xb, yb);
-##
+## 
+## @example
+## [xb, yb] = bar (x, y);
+## plot (xb, yb);
+## @end example
+## 
+## @noindent
 ## are equivalent.
-##
+## @end deftypefn
+
 ## See also: plot, semilogx, semilogy, loglog, polar, mesh, contour,
 ##           stairs, gplot, gsplot, replot, xlabel, ylabel, title
 

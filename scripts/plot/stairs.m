@@ -17,25 +17,32 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: [xs, ys] = stairs (x, y)
-##
-## Given two vectors of x-y data, stairs produces a `stairstep' plot.
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {} stairs (@var{x}, @var{y})
+## Given two vectors of x-y data, bar produces a `stairstep' plot.
+## 
 ## If only one argument is given, it is taken as a vector of y-values
-## and the x coordiates are taken to be the indices of the elements.
-##
+## and the x coordinates are taken to be the indices of the elements.
+## 
 ## If two output arguments are specified, the data are generated but
 ## not plotted.  For example,
-##
-##   stairs (x, y);
-##
+## 
+## @example
+## stairs (x, y);
+## @end example
+## 
+## @noindent
 ## and
-##
-##   [xs, ys] = stairs (x, y);
-##   plot (xs, ys);
-##
+## 
+## @example
+## [xs, ys] = stairs (x, y);
+## plot (xs, ys);
+## @end example
+## 
+## @noindent
 ## are equivalent.
-##
+## @end deftypefn
+
 ## See also: plot, semilogx, semilogy, loglog, polar, mesh, contour,
 ##           bar, gplot, gsplot, replot, xlabel, ylabel, title
 

@@ -21,7 +21,7 @@ dnl Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
 ### along with Octave; see the file COPYING.  If not, write to the Free
 ### Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
-AC_REVISION($Revision: 1.106 $)
+AC_REVISION($Revision: 1.107 $)
 AC_PREREQ(2.0)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -241,7 +241,7 @@ AC_PROG_CXXCPP
 
 ADD_CXX_WALL=false
 NO_IMPLICIT_TEMPLATES=
-gxx_version=`$CXX -v 2>&1 | grep "^g.. version" | sed 's/^g.. version *//'`
+gxx_version=`$CXX -v 2>&1 | grep "^.*g.. version" | sed 's/^.*g.. version *//'`
 case "$gxx_version" in
 changequote(,)dnl
   2.[6789].*|2.[123456789][0123456789].*)
@@ -300,7 +300,7 @@ AC_PROG_GCC_TRADITIONAL
 ### Do special things for gcc.
 
 ADD_CC_WALL=false
-gcc_version=`$CC -v 2>&1 | grep "^gcc version" | sed 's/^gcc version *//'`
+gcc_version=`$CC -v 2>&1 | grep "^.*gcc version" | sed 's/^.*gcc version *//'`
 case "$gcc_version" in
   2.*)
     if test -z "$CFLAGS"; then

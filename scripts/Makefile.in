@@ -18,6 +18,7 @@ SOURCES = computer.in *.m
 
 DISTFILES = Makefile.in $(SOURCES)
 
+# Complete directory trees to distribute.
 DISTDIRS = amr-image
 
 MFILES = $(wildcard $(srcdir)/*.m)

@@ -419,7 +419,30 @@ symbols_of_defaults (void)
     "name of the editor to be invoked by the edit_history command");
 
   DEFVAR (EXEC_PATH, Vexec_path, exec_path,
-    "colon separated list of directories to search for programs to run");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} EXEC_PATH\n\
+The variable @code{EXEC_PATH} is a colon separated list of directories\n\
+to search when executing subprograms.  Its initial value is taken from\n\
+the environment variable @code{OCTAVE_EXEC_PATH} (if it exists) or\n\
+@code{PATH}, but that value can be overridden by the command line\n\
+argument @code{--exec-path PATH}, or by setting the value of\n\
+@code{EXEC_PATH} in a startup script.  If the value of @code{EXEC_PATH}\n\
+begins (ends) with a colon, the directories\n\
+\n\
+@example\n\
+@group\n\
+@var{octave-home}/libexec/octave/site/exec/@var{arch}\n\
+@var{octave-home}/libexec/octave/@var{version}/exec/@var{arch}\n\
+@end group\n\
+@end example\n\
+\n\
+@noindent\n\
+are prepended (appended) to @code{EXEC_PATH}, where @var{octave-home}\n\
+is the top-level directory where all of Octave is installed\n\
+(the default value is @file{@value{OCTAVEHOME}}).  If you don't specify\n\
+a value for @code{EXEC_PATH} explicitly, these special directories are\n\
+prepended to your shell path.\n\
+@end defvr");
 
   DEFVAR (LOADPATH, Vload_path, loadpath,
     "colon separated list of directories to search for scripts.\n\
@@ -437,7 +460,10 @@ the built-in constant DEFAULT_LOADPATH");
     "top-level Octave installation directory");
 
   DEFCONSTX ("OCTAVE_VERSION", SBV_OCTAVE_VERSION, OCTAVE_VERSION,
-    "Octave version");
+    "-*- texinfo -*-\n\
+@defvr\n\
+The version number of Octave, as a string.\n\
+@end defvr");
 }
 
 DEFUN (rehash, , ,

@@ -65,9 +65,11 @@ mk_gr_map (const octave_group& gr)
 }
 
 DEFUN_DLD (getgrent, args, ,
- "getgrent ()\n\
-\n\
-Read an entry from the group-file stream, opening it if necessary.")
+ "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{grp_struct} =} getgrent ()\n\
+Return an entry from the group database, opening it if necessary.\n\
+Once the end of the data has been reached, @code{getgrent} returns 0.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -90,9 +92,12 @@ Read an entry from the group-file stream, opening it if necessary.")
 }
 
 DEFUN_DLD (getgrgid, args, ,
-  "getgrgid (GID)\n\
-\n\
-Search for a group entry with a matching group ID.")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{grp_struct} =} getgrgid (@var{gid}).\n\
+Return the first entry from the group database with the group ID\n\
+@var{gid}.  If the group ID does not exist in the database,\n\
+@code{getgrgid} returns 0.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -127,9 +132,12 @@ Search for a group entry with a matching group ID.")
 }
 
 DEFUN_DLD (getgrnam, args, ,
-  "getgrnam (NAME)\n\
-\n\
-Search for group entry with a matching group name.")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{grp_struct} =} getgrnam (@var{name})\n\
+Return the first entry from the group database with the group name\n\
+@var{name}.  If the group name does not exist in the database,\n\
+@code{getgrname} returns 0.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -157,9 +165,10 @@ Search for group entry with a matching group name.")
 }
 
 DEFUN_DLD (setgrent, args, ,
-  "setgrent ()\n\
-\n\
-Rewind the group-file stream.")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} setgrent ()\n\
+Return the internal pointer to the beginning of the group database.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -182,9 +191,10 @@ Rewind the group-file stream.")
 }
 
 DEFUN_DLD (endgrent, args, ,
-  "endgrent ()\n\
-\n\
-Close the group-file stream.")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} endgrent ()\n\
+Close the group database.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 

@@ -1,5 +1,32 @@
 1999-10-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Makefile.in (stmp-pic): New target.
+	($(PICOBJS)): Depend on stmp-pic, not pic.
+
+	* ov.h (get_rep): New function.
+
+	* help.cc (display_help_text): Pass definitions for VERSION,
+	OCTAVE_HOME, and TARGETHOSTTYPE to makeinfo.
+
+	* DLD-FUNCTIONS/getgrent.cc: Texinfoize all doc strings.
+	* DLD-FUNCTIONS/getpwent.cc: Ditto.
+	* DLD-FUNCTIONS/getrusage.cc: Ditto.
+	* DLD-FUNCTIONS/time.cc: Ditto.
+
+	* defaults.cc (EXEC_PATH, OCTAVE_VERSION): Texinfoize doc strings.
+	* dirfns.cc (Fcd, Fls, Fpwd, Freaddir, Fmkdir, Frmdir, Frename,
+	Fglob, Ffnmatch): Ditto.
+	* file-io.cc (Fpopen, Fpclose, Fumask): Ditto.
+	* sysdep.cc (Fgetenv, Fputenv, Fpause, Fsleep, Fusleep, Fisieee,
+	Ftilde_expand): Ditto.
+	* toplev.cc (Fcomputer, Fsystem, Foctave_config_info): Ditto.
+	* utils.cc (Ffile_in_path): Ditto.
+	* syscalls.cc (Fdup2, Fexec, Ffcntl, Ffork, Fgetpgrp, Fgetpid,
+	Fgetppid, Fgetegid, Fgetgid, Fgeteuid, Fgetuid, Fmkfifo, Fpipe,
+	Fstat, Funlink, Fwaitpid, F): Ditto.
+	(Flstat): Refer to stat for doc.
+
+
 	* help.cc (looks_like_texinfo): New function.
 	(display_help_text): Use it to see if the doc string looks like
 	Texinfo source.  If so, use makeinfo to format the text before

@@ -259,7 +259,21 @@ Look up NAME in LOADPATH.  See also file_in_path")
 }
 
 DEFUN (file_in_path, args, ,
-  "file_in_path (PATH, NAME)")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} file_in_path (@var{path}, @var{file})\n\
+Return the absolute name name of @var{file} if it can be found in\n\
+@var{path}.  The value of @var{path} should be a colon-separated list of\n\
+directories in the format described for the built-in variable\n\
+@code{LOADPATH}.\n\
+\n\
+If the file cannot be found in the path, an empty matrix is returned.\n\
+For example,\n\
+\n\
+@example\n\
+file_in_path (LOADPATH, \"nargchk.m\")\n\
+     @result{} \"@value{OCTAVEHOME}/share/octave/2.0/m/general/nargchk.m\"\n\
+@end example\n\
+@end deftypefn")
 {
   octave_value_list retval;
 

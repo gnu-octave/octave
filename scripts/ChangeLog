@@ -1,5 +1,16 @@
 1999-10-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* time/asctime.m: Texinfoize help text.
+	* time/clock.m: Ditto.
+	* time/date.m: Ditto.
+	* miscellaneous/cputime.m: Ditto.
+	* miscellaneous/etime.m: Ditto.
+	* miscellaneous/is_leap_year.m: Ditto.
+	* miscellaneous/popen2.m: Ditto.
+	* miscellaneous/version.m: Ditto.
+	* miscellaneous/tic.m: Ditto.
+	* miscellaneous/toc.m: Just refer to tic.m.
+
 	* Makefile.in (dist, bin-dist): Use `$(MAKE) -C dir' instead of
 	`cd dir; $(MAKE); cd ..'.
 	($(SUBDIRS)): Likewise.

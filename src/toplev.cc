@@ -196,9 +196,23 @@ DEFUN_TEXT (casesen, args, ,
 }
 
 DEFUN (computer, args, nargout,
-  "computer ():\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} computer ()\n\
+Print or return a string of the form @var{cpu}-@var{vendor}-@var{os}\n\
+that identifies the kind of computer Octave is running on.  If invoked\n\
+with an output argument, the value is returned instead of printed.  For\n\
+example,\n\
 \n\
-Have Octave ask the system, \"What kind of computer are you?\"")
+@example\n\
+@group\n\
+computer ()\n\
+     @print{} i586-pc-linux-gnu\n\
+\n\
+x = computer ()\n\
+     @result{} x = \"i586-pc-linux-gnu\"\n\
+@end group\n\
+@end example\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -357,27 +371,46 @@ run_command_and_return_output (const string& cmd_str)
 }
 
 DEFUN (system, args, nargout,
-  "system (STRING [, RETURN_OUTPUT] [, TYPE])\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} system (@var{string}, @var{return_output}, @var{type})\n\
+Execute a shell command specified by @var{string}.  The second\n\
+argument is optional.  If @var{type} is @code{\"async\"}, the process\n\
+is started in the background and the process id of the child process\n\
+is returned immediately.  Otherwise, the process is started, and\n\
+Octave waits until it exits.  If @var{type} argument is omitted, a\n\
+value of @code{\"sync\"} is assumed.\n\
 \n\
-Execute the shell command specified by STRING.\n\
-\n\
-If TYPE is \"async\", the process is started in the background and the\n\
-pid of the child proces is returned immediately.  Otherwise, the\n\
-process is started, and Octave waits until it exits.  If TYPE argument\n\
-is omitted, a value of \"sync\" is assumed.\n\
-\n\
-If NARGIN == 2 (the actual value of RETURN_OUTPUT is irrelevant) and\n\
-the subprocess is started synchronously, or if system() is called with\n\
-NARGIN == 1 and NARGOUT > 0, the output from the command is returned.\n\
+If two input arguments are given (the actual value of\n\
+@var{return_output} is irrelevant) and the subprocess is started\n\
+synchronously, or if @var{system} is called with one input argument and\n\
+one or more output arguments, the output from the command is returned.\n\
 Otherwise, if the subprocess is executed synchronously, it's output is\n\
 sent to the standard output.  To send the output of a command executed\n\
-with system() through the pager, use a command like\n\
+with @var{system} through the pager, use a command like\n\
 \n\
-   disp (system (CMD, 1));\n\
+@example\n\
+disp (system (cmd, 1));\n\
+@end example\n\
 \n\
+@noindent\n\
 or\n\
 \n\
-   printf (\"%s\\n\", system (CMD, 1));")
+@example\n\
+printf (\"%s\n\", system (cmd, 1));\n\
+@end example\n\
+\n\
+The @code{system} function can return two values.  The first is any\n\
+output from the command that was written to the standard output stream,\n\
+and the second is the output status of the command.  For example,\n\
+\n\
+@example\n\
+[output, status] = system (\"echo foo; exit 2\");\n\
+@end example\n\
+\n\
+@noindent\n\
+will set the variable @code{output} to the string @samp{foo}, and the\n\
+variable @code{status} to the integer @samp{2}.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -533,13 +566,15 @@ which they were registered with atexit()")
 }
 
 DEFUN (octave_config_info, args, ,
-  "octave_config_info (OPTION)\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} octave_config_info (@var{option})\n\
+Return a structure containing configuration and installation\n\
+information for Octave.\n\
 \n\
-If OPTION is a string, return the configuration information for the\n\
+if @var{option} is a string, return the configuration information for the\n\
 specified option.\n\
 \n\
-With no arguments, return a structure containing configuration\n\
-information.")
+@end deftypefn")
 {
   octave_value retval;
 

@@ -330,7 +330,17 @@ DEFUN (clc, , ,
 DEFALIAS (home, clc);
 
 DEFUN (getenv, args, ,
-  "getenv (STRING): get environment variable values")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} getenv (@var{var})\n\
+Return the value of the environment variable @var{var}.  For example,\n\
+\n\
+@example\n\
+getenv (\"PATH\")\n\
+@end example\n\
+\n\
+@noindent\n\
+returns a string containing the value of your path.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -350,7 +360,10 @@ DEFUN (getenv, args, ,
 }
 
 DEFUN (putenv, args, ,
-  "putenv (VAR, VALUE): define environment variable VAR=VALUE")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} putenv (@var{var}, @var{value})\n\
+Set the value of the environment variable @var{var} to @var{value}.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -398,7 +411,22 @@ DEFUN (kbhit, , ,
 }
 
 DEFUN (pause, args, ,
-  "pause (seconds): suspend program execution")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} pause (@var{seconds})\n\
+Suspend the execution of the program.  If invoked without any arguments,\n\
+Octave waits until you type a character.  With a numeric argument, it\n\
+pauses for the given number of seconds.  For example, the following\n\
+statement prints a message and then waits 5 seconds before clearing the\n\
+screen.\n\
+\n\
+@example\n\
+@group\n\
+fprintf (stderr, \"wait please...\n\");\n\
+pause (5);\n\
+clc;\n\
+@end group\n\
+@end example\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -441,7 +469,10 @@ DEFUN (pause, args, ,
 }
 
 DEFUN (sleep, args, ,
-  "sleep (seconds): suspend program execution")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} sleep (@var{seconds})\n\
+Suspend the execution of the program for the given number of seconds.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -468,7 +499,13 @@ DEFUN (sleep, args, ,
 }
 
 DEFUN (usleep, args, ,
-  "usleep (microseconds): suspend program execution")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} usleep (@var{microseconds})\n\
+Suspend the execution of the program for the given number of\n\
+microseconds.  On systems where it is not possible to sleep for periods\n\
+of time less than one second, @code{usleep} will pause the execution for\n\
+@code{round (@var{microseconds} / 1e6)} seconds.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -506,7 +543,11 @@ DEFUN (usleep, args, ,
 // point functions really work.
 
 DEFUN (isieee, , ,
-  "isieee (): return 1 if host uses IEEE floating point")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} isieee ()\n\
+Return 1 if your computer claims to conform to the IEEE standard for\n\
+floating point calculations.\n\
+@end deftypefn")
 {
   oct_mach_info::float_format flt_fmt =
     oct_mach_info::native_float_format ();
@@ -516,7 +557,25 @@ DEFUN (isieee, , ,
 }
 
 DEFUN (tilde_expand, args, ,
-  "tilde_expand (STRING): perform tilde expansion on STRING")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} tilde_expand (@var{string})\n\
+Performs tilde expansion on @var{string}.  If @var{string} begins with a\n\
+tilde character, (@samp{~}), all of the characters preceding the first\n\
+slash (or all characters, if there is no slash) are treated as a\n\
+possible user name, and the tilde and the following characters up to the\n\
+slash are replaced by the home directory of the named user.  If the\n\
+tilde is followed immediately by a slash, the tilde is replaced by the\n\
+home directory of the user running Octave.  For example,\n\
+\n\
+@example\n\
+@group\n\
+tilde_expand (\"~joeuser/bin\")\n\
+     @result{} \"/home/joeuser/bin\"\n\
+tilde_expand (\"~/bin\")\n\
+     @result{} \"/home/jwe/bin\"\n\
+@end group\n\
+@end example\n\
+@end deftypefn")
 {
   octave_value_list retval;
 

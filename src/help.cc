@@ -68,6 +68,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
+#include "version.h"
 
 // Name of the info file specified on command line.
 // (--info-file file)
@@ -704,10 +705,16 @@ display_help_text (ostream& os, const string& msg)
 	cols = 72;
 
       ostrstream buf;
-      buf << "sed 's/^[#%]+ *//'"
-	  << " | makeinfo --fill-column " << cols
-	  << " --no-warn --no-validate --no-headers --force --output "
-	  << tmp_file_name
+      buf << "sed 's/^[#%]+ *//' | makeinfo"
+	  << " -D VERSION \"" << OCTAVE_VERSION << "\""
+	  << " -D OCTAVE_HOME \"" << OCTAVE_PREFIX << "\""
+	  << " -D TARGETHOSTTYPE \"" << CANONICAL_HOST_TYPE << "\""
+	  << " --fill-column " << cols
+	  << " --no-warn"
+	  << " --no-validate"
+	  << " --no-headers"
+	  << " --force"
+	  << " --output " << tmp_file_name
 	  << ends;
 
       char *cmd = buf.str ();

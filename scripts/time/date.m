@@ -17,9 +17,18 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: date ()
-##
-## Return current date in a string, in the form `18-Jul-94'.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} date ()
+## Return the date as a character string in the form DD-MMM-YY.  For
+## example,
+## 
+## @example
+## @group
+## date ()
+##      @result{} "20-Aug-93"
+## @end group
+## @end example
+## @end deftypefn
 
 ## Author: jwe
 

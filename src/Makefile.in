@@ -223,6 +223,14 @@ octave: octave.o builtins.o ops.o $(DLD_STATIC_OBJ) libraries
 	$(OCTAVE_LIBS) \
 	$(FLIBS) $(LEXLIB) $(TERMLIBS) $(LIBS)
 
+stmp-pic: pic
+	@if [ -f stmp-pic ]; then \
+	  true; \
+	else \
+	  echo "touch stmp-pic"; \
+	  touch stmp-pic; \
+	fi
+
 pic:
 	@if [ -d pic ]; then \
 	  true; \
@@ -257,7 +265,7 @@ liboctinterp.$(SHLEXT): liboctinterp.$(SHLEXT_VER)
 liboctinterp.$(SHLEXT_VER): $(PICOBJ)
 	$(SH_LD) $(SH_LDFLAGS) $(SONAME_FLAGS) -o $@ $^
 
-$(PICOBJ): pic
+$(PICOBJ): stmp-pic
 
 builtins.cc: $(DEF_FILES) mkbuiltins
 	@echo making $@
@@ -372,15 +380,13 @@ TAGS: $(SOURCES) $(DLD_SRC)
 	etags $(SOURCES) $(DLD_SRC)
 
 clean:
-	rm -f *.$(LIBEXT) *.o *.d *.df *.oct pic/*.o
+	rm -f *.$(LIBEXT) *.o *.d *.df *.oct pic/*.o stmp-pic
 	rm -f builtins.cc ops.cc defaults.h oct-conf.h def-files var-files
 	-rmdir pic
 	if $(SHARED_LIBS); then rm -f *.$(SHLEXT_VER) *.$(SHLEXT); fi
 .PHONY: clean
 
-mostlyclean:
-	rm -f *.o pic/*.o
-	-rmdir pic
+mostlyclean: clean
 .PHONY: mostlyclean
 
 distclean: clean

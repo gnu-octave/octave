@@ -80,11 +80,22 @@ octave_change_to_directory (const string& newdir)
 }
 
 DEFUN_TEXT (cd, args, ,
-  "cd [dir]\n\
+  "-*- texinfo -*-\n\
+@deffn {Command} cd dir\n\
+@deffnx {Command} chdir dir\n\
+Change the current working directory to @var{dir}.  If @var{dir} is\n\
+omitted, the current directory is changed to the users home\n\
+directory.  For example,\n\
 \n\
-change current working directory\n\
-if no arguments are given, the current directory is changed to the\n\
-users home directory")
+@example\n\
+cd ~/octave\n\
+@end example\n\
+\n\
+@noindent\n\
+Changes the current working directory to @file{~/octave}.  If the\n\
+directory does not exist, an error message is printed and the working\n\
+directory is not changed.\n\
+@end deffn")
 {
   octave_value_list retval;
 
@@ -127,9 +138,22 @@ cleanup_iprocstream (void *p)
 }
 
 DEFUN_TEXT (ls, args, ,
-  "ls [options]\n\
+  "-*- texinfo -*-\n\
+@deffn {Command} ls options\n\
+@deffnx {Command} dir options\n\
+List directory contents.  For example,\n\
 \n\
-print a directory listing")
+@example\n\
+ls -l\n\
+     @print{} total 12\n\
+     @print{} -rw-r--r--   1 jwe  users  4488 Aug 19 04:02 foo.m\n\
+     @print{} -rw-r--r--   1 jwe  users  1315 Aug 17 23:14 bar.m\n\
+@end example\n\
+\n\
+The @code{dir} and @code{ls} commands are implemented by calling your\n\
+system's directory listing command, so the available options may vary\n\
+from system to system.\n\
+@end deffn")
 {
   octave_value_list retval;
 
@@ -194,7 +218,10 @@ print a directory listing")
 DEFALIAS (dir, ls);
 
 DEFUN (pwd, , nargout,
-  "pwd (): print current working directory")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} pwd ()\n\
+Return the current working directory.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -214,13 +241,15 @@ DEFUN (pwd, , nargout,
 }
 
 DEFUN (readdir, args, ,
-  "[FILES, STATUS, MSG] = readdir (NAME)\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {[@var{files}, @var{err}, @var{msg}] =} readdir (@var{dir})\n\
+Return names of the files in the directory @var{dir} as an array of\n\
+strings.  If an error occurs, return an empty matrix in @var{files}.\n\
 \n\
-Return an array of strings containing the list of all files in the\n\
-named directory in FILES, or an empty matrix if an error occurs\n\
-\n\
-If successful, STATUS is 0 and MSG is an empty string.  Otherwise,\n\
-STATUS is nonzero and MSG contains a system-dependent error message.")
+If successful, @var{err} is 0 and @var{msg} is an empty string.\n\
+Otherwise, @var{err} is nonzero and @var{msg} contains a\n\
+system-dependent error message.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -260,12 +289,14 @@ STATUS is nonzero and MSG contains a system-dependent error message.")
 // mode.
 
 DEFUN (mkdir, args, ,
-  "[STATUS, MSG] = mkdir (NAME)\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {[@var{err}, @var{msg}] =} mkdir (@var{dir})\\n\
+Create a directory named @var{dir}.\n\
 \n\
-Create the directory named by NAME.\n\
-\n\
-If successful, STATUS is 0 and MSG is an empty string.  Otherwise,\n\
-STATUS is nonzero and MSG contains a system-dependent error message.")
+If successful, @var{err} is 0 and @var{msg} is an empty string.\n\
+Otherwise, @var{err} is nonzero and @var{msg} contains a\n\
+system-dependent error message.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -298,12 +329,14 @@ STATUS is nonzero and MSG contains a system-dependent error message.")
 }
 
 DEFUN (rmdir, args, ,
-  "[STATUS, MSG] = rmdir (NAME)\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {[@var{err}, @var{msg}] =} rmdir (@var{dir})\n\
+Remove the directory named @var{dir}.\n\
 \n\
-Remove the directory named by NAME.\n\
-\n\
-If successful, STATUS is 0 and MSG is an empty string.  Otherwise,\n\
-STATUS is nonzero and MSG contains a system-dependent error message.")
+If successful, @var{err} is 0 and @var{msg} is an empty string.\n\
+Otherwise, @var{err} is nonzero and @var{msg} contains a\n\
+system-dependent error message.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -335,12 +368,14 @@ STATUS is nonzero and MSG contains a system-dependent error message.")
 }
 
 DEFUN (rename, args, ,
-  "[STATUS, MSG] = rename (FROM, TO)\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {[@var{err}, @var{msg}] =} rename (@var{old}, @var{new})\n\
+Change the name of file @var{old} to @var{new}.\n\
 \n\
-Rename a file.\n\
-\n\
-If successful, STATUS is 0 and MSG is an empty string.  Otherwise,\n\
-STATUS is nonzero and MSG contains a system-dependent error message.")
+If successful, @var{err} is 0 and @var{msg} is an empty string.\n\
+Otherwise, @var{err} is nonzero and @var{msg} contains a\n\
+system-dependent error message.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -379,12 +414,23 @@ STATUS is nonzero and MSG contains a system-dependent error message.")
 }
 
 DEFUN (glob, args, ,
-  "glob (PATTERN)\n\
-\n\
-Given an array of strings in PATTERN, return the list of file names\n\
-that any of them, or an empty string if no patterns match.  Tilde\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} glob (@var{pattern})\n\
+Given an array of strings in @var{pattern}, return the list of file\n\
+names that any of them, or an empty string if no patterns match.  Tilde\n\
 expansion is performed on each of the patterns before looking for\n\
-matching file names.")
+matching file names.  For example,\n\
+\n\
+@example\n\
+@group\n\
+glob (\"/vm*\")\n\
+     @result{} \"/vmlinuz\"\n\
+@end group\n\
+@end example\n\
+\n\
+Note that multiple values are returned in a string matrix with the fill\n\
+character set to ASCII NUL.\n\
+@end deftypefn")
 {
   octave_value retval;
 
@@ -413,11 +459,19 @@ matching file names.")
 }
 
 DEFUN (fnmatch, args, ,
-  "fnmatch (PATTERN, STRING)\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} fnmatch (@var{pattern}, @var{string})\n\
+Return 1 or zero for each element of @var{string} that matches any of\n\
+the elements of the string array @var{pattern}, using the rules of\n\
+filename pattern matching.  For example,\n\
 \n\
-Return 1 or zero for each element of STRING that matches any of the\n\
-elements of the string array PATTERN, using the rules of filename\n\
-pattern matching.")
+@example\n\
+@group\n\
+fnmatch (\"a*b\", [\"ab\"; \"axyzb\"; \"xyzab\"])\n\
+     @result{} [ 1; 1; 0 ]\n\
+@end group\n\
+@end example\n\
+@end deftypefn")
 {
   octave_value retval;
 

@@ -17,26 +17,34 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: [IN, OUT, PID] = popen2 (COMMAND, ARGS)
-##
-## Start a subprocess with two-way communication.  COMMAND specifies
-## the name of the command to start.  ARGS is an array of strings
-## containing options for COMMAND.  IN and out are the file ids of the
-## input and streams for the subprocess, and PID is the process id of
-## the subprocess, or -1 if COMMAND could not be executed.
-##
-## Example:
-##
-##  [in, out, pid] = popen2 ("sort", "-nr");
-##  fputs (in, "these\n");
-##  fputs (in, "are\n");
-##  fputs (in, "some\n");
-##  fputs (in, "strings\n");
-##  fclose (in);
-##  while (isstr (s = fgets (out)))
-##    fputs (stdout, s);
-##  endwhile
-##  fclose (out);
+## -*- texinfo -*-
+## @deftypefn {Built-in Function} {[@var{in}, @var{out}, @var{pid}] =} popen2 (@var{command}, @var{args})
+## Start a subprocess with two-way communication.  The name of the process
+## is given by @var{command}, and @var{args} is an array of strings
+## containing options for the command.  The file identifiers for the input
+## and output streams of the subprocess are returned in @var{in} and
+## @var{out}.  If execution of the command is successful, @var{pid}
+## contains the process ID of the subprocess.  Otherwise, @var{pid} is
+## @minus{}1.
+## 
+## For example,
+## 
+## @example
+## @group
+## [in, out, pid] = popen2 ("sort", "-nr");
+## fputs (in, "these\nare\nsome\nstrings\n");
+## fclose (in);
+## while (isstr (s = fgets (out)))
+##   fputs (stdout, s);
+## endwhile
+## fclose (out);
+##      @print{} are
+##      @print{} some
+##      @print{} strings
+##      @print{} these
+## @end group
+## @end example
+## @end deftypefn
 
 ## Author: jwe
 

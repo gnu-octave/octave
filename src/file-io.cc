@@ -1205,12 +1205,37 @@ DEFUN (ferror, args, ,
 }
 
 DEFUN (popen, args, ,
-  "FILENUM = popen (FILENAME, MODE)\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {fid =} popen (@var{command}, @var{mode})\n\
+Start a process and create a pipe.  The name of the command to run is\n\
+given by @var{command}.  The file identifier corresponding to the input\n\
+or output stream of the process is returned in @var{fid}.  The argument\n\
+@var{mode} may be\n\
 \n\
-  start a process and create a pipe.  Valid values for mode are:\n\
+@table @code\n\
+@item \"r\"\n\
+The pipe will be connected to the standard output of the process, and\n\
+open for reading.\n\
 \n\
-  \"r\" : connect stdout of process to pipe\n\
-  \"w\" : connect stdin of process to pipe")
+@item \"w\"\n\
+The pipe will be connected to the standard input of the process, and\n\
+open for writing.\n\
+@end table\n\
+\n\
+For example,\n\
+\n\
+@example\n\
+@group\n\
+fid = popen (\"ls -ltr / | tail -3\", \"r\");\n\
+while (isstr (s = fgets (fid)))\n\
+  fputs (stdout, s);\n\
+endwhile\n\
+     @print{} drwxr-xr-x  33 root  root  3072 Feb 15 13:28 etc\n\
+     @print{} drwxr-xr-x   3 root  root  1024 Feb 15 13:28 lib\n\
+     @print{} drwxrwxrwt  15 root  root  2048 Feb 17 14:53 tmp\n\
+@end group\n\
+@end example\n\
+@end deftypefn")
 {
   octave_value retval = -1.0;
 
@@ -1254,9 +1279,11 @@ DEFUN (popen, args, ,
 }
 
 DEFUN (pclose, args, ,
-  "pclose (FILENUM)\n\
-\n\
-  Close a pipe and terminate the associated process")
+  "-*- texifno -*-\n\
+@deftypefn {Built-in Function} {} pclose (@var{fid})\n\
+Close a file identifier that was opened by @code{popen}.  You may also\n\
+use @code{fclose} for the same purpose.\n\
+@end deftypefn")
 {
   double retval = -1.0;
 
@@ -1329,13 +1356,13 @@ convert (int x, int ibase, int obase)
 }
 
 DEFUN (umask, args, ,
-  "umask (MASK)\n\
-\n\
-Change the file permission mask for file creation for the current\n\
-process.  MASK is an integer, interpreted as an octal number.  If\n\
-successful, returns the previous value of the mask (as an integer to\n\
-be interpreted as an octal number); otherwise an error message is\n\
-printed.")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} umask (@var{mask})\n\
+Set the permission mask for file creation.  The parameter @var{mask}\n\
+ is an integer, interpreted as an octal number.  If successful,\n\
+ returns the previous value of the mask (as an integer to be\n\
+ interpreted as an octal number); otherwise an error message is printed.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 

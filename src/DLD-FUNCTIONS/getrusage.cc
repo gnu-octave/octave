@@ -67,9 +67,67 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // System resource functions.
 
 DEFUN_DLD (getrusage, , ,
-  "getrusage ()\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} getrusage ()\n\
+Return a structure containing a number of statistics about the current\n\
+Octave process.  Not all fields are available on all systems.  If it is\n\
+not possible to get CPU time statistics, the CPU time slots are set to\n\
+zero.  Other missing data are replaced by NaN.  Here is a list of all\n\
+the possible fields that can be present in the structure returned by\n\
+@code{getrusage}:\n\
 \n\
-Return system resource statistics.")
+@table @code\n\
+@item idrss\n\
+Unshared data size.\n\
+\n\
+@item inblock\n\
+Number of block input operations.\n\
+\n\
+@item isrss\n\
+Unshared stack size.\n\
+\n\
+@item ixrss\n\
+Shared memory size.\n\
+\n\
+@item majflt\n\
+Number of major page faults.\n\
+\n\
+@item maxrss\n\
+Maximum data size.\n\
+\n\
+@item minflt\n\
+Number of minor page faults.\n\
+\n\
+@item msgrcv\n\
+Number of messages received.\n\
+\n\
+@item msgsnd\n\
+Number of messages sent.\n\
+\n\
+@item nivcsw\n\
+Number of involuntary context switches.\n\
+\n\
+@item nsignals\n\
+Number of signals received.\n\
+\n\
+@item nswap\n\
+Number of swaps.\n\
+\n\
+@item nvcsw\n\
+Number of voluntary context switches.\n\
+\n\
+@item oublock\n\
+Number of block output operations.\n\
+\n\
+@item stime\n\
+A structure containing the system CPU time used.  The structure has the\n\
+elements @code{sec} (seconds) @code{usec} (microseconds).\n\
+\n\
+@item utime\n\
+A structure containing the user CPU time used.  The structure has the\n\
+elements @code{sec} (seconds) @code{usec} (microseconds).\n\
+@end table\n\
+@end deftypefn")
 {
   Octave_map m;
   Octave_map tv_tmp;

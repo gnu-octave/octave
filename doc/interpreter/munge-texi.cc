@@ -1,6 +1,7 @@
 #include <iostream.h>
 #include <fstream.h>
 #include <string>
+#include <cctype>
 #include <map>
 
 static const char doc_delim = '';
@@ -114,7 +115,25 @@ process_texi_input_file (istream& is, ostream& os)
 		  if (is.eof ())
 		    fatal ("end of file while reading @DOCSTRING command");
 		  else
-		    os << help_text[symbol_name];
+		    {
+		      string doc_string = help_text[symbol_name];
+
+		      int i = 0;
+		      while (doc_string[i] == ' ')
+			i++;
+
+		      if (doc_string.substr (i, 15) == "-*- texinfo -*-")
+			{
+			  i += 15;
+
+			  while (isspace (doc_string[i]))
+			    i++;
+
+			  os << doc_string.substr (i);
+			}
+		      else
+			os << doc_string;
+		    }
 		}
 	      else
 		{

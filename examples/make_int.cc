@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996, 1997 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -28,6 +28,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class ostream;
 
+#include <octave/lo-mappers.h>
 #include <octave/lo-utils.h>
 #include <octave/mx-base.h>
 #include <octave/str-vec.h>
@@ -35,7 +36,6 @@ class ostream;
 #include <octave/defun-dld.h>
 #include <octave/error.h>
 #include <octave/gripes.h>
-#include <octave/lo-mappers.h>
 #include <octave/oct-obj.h>
 #include <octave/ops.h>
 #include <octave/ov-base.h>
@@ -85,8 +85,8 @@ public:
   bool is_defined (void) const { return true; }
   bool is_real_scalar (void) const { return true; }
 
-  octave_value all (void) const { return (scalar != 0); }
-  octave_value any (void) const { return (scalar != 0); }
+  octave_value all (void) const { return (double) (scalar != 0); }
+  octave_value any (void) const { return (double) (scalar != 0); }
 
   bool is_real_type (void) const { return true; }
   bool is_scalar_type (void) const { return true; }
@@ -111,76 +111,54 @@ public:
   ComplexMatrix complex_matrix_value (bool = false) const
     { return  ComplexMatrix (1, 1, Complex (scalar)); }
 
-  octave_value not (void) const { return octave_value (! scalar); }
+  octave_value not (void) const { return octave_value ((double) ! scalar); }
 
-  octave_value uminus (void) const { return octave_value (- scalar); }
+  octave_value uminus (void) const { return new octave_integer (- scalar); }
 
-  octave_value transpose (void) const { return octave_value (scalar); }
+  octave_value transpose (void) const { return new octave_integer (scalar); }
 
-  octave_value hermitian (void) const { return octave_value (scalar); }
+  octave_value hermitian (void) const { return new octave_integer (scalar); }
 
   void increment (void) { ++scalar; }
 
   void decrement (void) { --scalar; }
 
-  void print (ostream& os);
-
-  int type_id (void) const { return t_id; }
-
-  string type_name (void) const { return t_name; }
-
-  static int static_type_id (void) { return t_id; }
-
-  static void register_type (void)
-    { t_id = octave_value_typeinfo::register_type (t_name); }
+  void print (ostream& os, bool pr_as_read_syntax = false) const;
 
 private:
 
   int scalar;
 
-  static int t_id;
+  DECLARE_OCTAVE_ALLOCATOR
 
-  static const string t_name;
+  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
 
-int octave_integer::t_id = -1;
-
-const string octave_integer::t_name ("integer");
-
 void
-octave_integer::print (ostream& os)
+octave_integer::print (ostream& os, bool pr_as_read_syntax) const
 {
-  octave_print_internal (os, scalar, false);
+  octave_print_internal (os, scalar, pr_as_read_syntax);
 }
+
+#ifdef DEFBINOP_OP
+#undef DEFBINOP_OP
+#endif
+
+#define DEFBINOP_OP(name, t1, t2, op) \
+  BINOPDECL (name, a1, a2) \
+  { \
+    CAST_BINOP_ARGS (const octave_ ## t1&, const octave_ ## t2&); \
+    return octave_value \
+      (new octave_integer (v1.t1 ## _value () op v2.t2 ## _value ())); \
+  }
 
 // integer by integer ops.
 
-static octave_value
-add (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_integer&, const octave_integer&);
+DEFBINOP_OP (add, integer, integer, +)
+DEFBINOP_OP (sub, integer, integer, -)
+DEFBINOP_OP (mul, integer, integer, *)
 
-  return new octave_integer (v1.integer_value () + v2.integer_value ());
-}
-
-static octave_value
-sub (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_integer&, const octave_integer&);
-
-  return new octave_integer (v1.integer_value () - v2.integer_value ());
-}
-
-static octave_value
-mul (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_integer&, const octave_integer&);
-
-  return new octave_integer (v1.integer_value () * v2.integer_value ());
-}
-
-static octave_value
-div (const octave_value& a1, const octave_value& a2)
+DEFBINOP (div, integer, integer)
 {
   CAST_BINOP_ARGS (const octave_integer&, const octave_integer&);
 
@@ -192,8 +170,8 @@ div (const octave_value& a1, const octave_value& a2)
   return new octave_integer (v1.integer_value () / d);
 }
 
-static octave_value
-i_s_div (const octave_value& a1, const octave_value& a2)
+
+DEFBINOP (i_s_div, integer, scalar)
 {
   CAST_BINOP_ARGS (const octave_integer&, const octave_scalar&);
 
@@ -205,8 +183,7 @@ i_s_div (const octave_value& a1, const octave_value& a2)
   return new octave_scalar (v1.double_value () / d);
 }
 
-static octave_value
-ldiv (const octave_value& a1, const octave_value& a2)
+DEFBINOP (ldiv, integer, integer)
 {
   CAST_BINOP_ARGS (const octave_integer&, const octave_integer&);
 
@@ -218,64 +195,16 @@ ldiv (const octave_value& a1, const octave_value& a2)
   return new octave_integer (v2.integer_value () / d);
 }
 
-static octave_value
-lt (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_integer&, const octave_integer&);
+DEFBINOP_OP (lt, integer, integer, <)
+DEFBINOP_OP (le, integer, integer, <=)
+DEFBINOP_OP (eq, integer, integer, ==)
+DEFBINOP_OP (ge, integer, integer, >=)
+DEFBINOP_OP (gt, integer, integer, >)
+DEFBINOP_OP (ne, integer, integer, !=)
 
-  return new octave_integer (v1.integer_value () < v2.integer_value ());
-}
+DEFBINOP_OP (el_mul, integer, integer, !=)
 
-static octave_value
-le (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_integer&, const octave_integer&);
-
-  return new octave_integer (v1.integer_value () <= v2.integer_value ());
-}
-
-static octave_value
-eq (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_integer&, const octave_integer&);
-
-  return new octave_integer (v1.integer_value () == v2.integer_value ());
-}
-
-static octave_value
-ge (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_integer&, const octave_integer&);
-
-  return new octave_integer (v1.integer_value () >= v2.integer_value ());
-}
-
-static octave_value
-gt (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_integer&, const octave_integer&);
-
-  return new octave_integer (v1.integer_value () > v2.integer_value ());
-}
-
-static octave_value
-ne (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_integer&, const octave_integer&);
-
-  return new octave_integer (v1.integer_value () != v2.integer_value ());
-}
-
-static octave_value
-el_mul (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_integer&, const octave_integer&);
-
-  return new octave_integer (v1.integer_value () * v2.integer_value ());
-}
-
-static octave_value
-el_div (const octave_value& a1, const octave_value& a2)
+DEFBINOP (el_div, integer, integer)
 {
   CAST_BINOP_ARGS (const octave_integer&, const octave_integer&);
 
@@ -287,8 +216,7 @@ el_div (const octave_value& a1, const octave_value& a2)
   return new octave_integer (v1.integer_value () / d);
 }
 
-static octave_value
-el_ldiv (const octave_value& a1, const octave_value& a2)
+DEFBINOP (el_ldiv, integer, integer)
 {
   CAST_BINOP_ARGS (const octave_integer&, const octave_integer&);
 
@@ -300,21 +228,8 @@ el_ldiv (const octave_value& a1, const octave_value& a2)
   return new octave_integer (v2.integer_value () / d);
 }
 
-static octave_value
-el_and (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_integer&, const octave_integer&);
-
-  return new octave_integer (v1.integer_value () && v2.integer_value ());
-}
-
-static octave_value
-el_or (const octave_value& a1, const octave_value& a2)
-{
-  CAST_BINOP_ARGS (const octave_integer&, const octave_integer&);
-
-  return new octave_integer (v1.integer_value () || v2.integer_value ());
-}
+DEFBINOP_OP (el_and, integer, integer, &&)
+DEFBINOP_OP (el_or, integer, integer, ||)
 
 DEFUN_DLD (make_int, args, ,
   "int_val = make_int (val)\n\
@@ -364,6 +279,33 @@ Creates an integer variable from VAL.")
 
   return retval;
 }
+
+DEFUN_DLD (doit, args, ,
+  "doit (I)")
+{
+  octave_value_list retval;
+
+  if (args(0).type_name () == "integer")
+    {
+      // At this point, we know we have a handle for an octave_integer
+      // object, so we can peek at the representation and extract the
+      // data.
+
+      const octave_value& rep = args(0).get_rep ();
+
+      int my_value = ((const octave_integer&) rep) . integer_value ();
+
+      message ("doit", "your lucky number is: %d", my_value);
+    }
+  else
+    gripe_wrong_type_arg ("doit", args(0));
+
+  return retval;
+}
+
+DEFINE_OCTAVE_ALLOCATOR (octave_integer);
+
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_integer, "integer");
 
 /*
 ;;; Local Variables: ***

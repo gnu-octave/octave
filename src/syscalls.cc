@@ -90,12 +90,14 @@ mk_stat_map (const file_stat& fs)
 }
 
 DEFUN (dup2, args, ,
- "[FID, MSG] = dup2 (OLD, NEW)\n\
-\n\
+ "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {[@var{fid}, @var{msg}] =} dup2 (@var{old}, @var{new})\n\
 Duplicate a file descriptor.\n\
 \n\
-If successful, FID is greater than zero and contains the new file ID.\n\
-Otherwise, FID is negative and MSG contains a system-dependent error message.")
+If successful, @var{fid} is greater than zero and contains the new file\n\
+ID.  Otherwise, @var{fid} is negative and @var{msg} contains a\n\
+system-dependent error message.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -136,12 +138,23 @@ Otherwise, FID is negative and MSG contains a system-dependent error message.")
 }
 
 DEFUN (exec, args, ,
- "[STATUS, MSG] = exec (FILE, ARGS)\n\
+ "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {[@var{err}, @var{msg}] =} exec (@var{file}, @var{args})\n\
+Replace current process with a new process.  Calling @code{exec} without\n\
+first calling @code{fork} will terminate your current Octave process and\n\
+replace it with the program named by @var{file}.  For example,\n\
 \n\
-Replace current process with a new process.\n\
+@example\n\
+exec (\"ls\" \"-l\")\n\
+@end example\n\
 \n\
-If successful, exec does not return.  If exec does return, status will\n\
-be nonzero, and MSG will contain a system-dependent error message.")
+@noindent\n\
+will run @code{ls} and return you to your shell prompt.\n\
+\n\
+If successful, @code{exec} does not return.  If @code{exec} does return,\n\
+@var{err} will be nonzero, and @var{msg} will contain a system-dependent\n\
+error message.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -203,12 +216,58 @@ be nonzero, and MSG will contain a system-dependent error message.")
 }
 
 DEFUN (fcntl, args, ,
- "[STATUS, MSG] = fcntl (FID, REQUEST, ARGUMENT)\n\
+ "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {[@var{err}, @var{msg}] =} fcntl (@var{fid}, @var{request}, @var{arg})\n\
+Change the properties of the open file @var{fid}.  The following values\n\
+may be passed as @var{request}:\n\
 \n\
-Control open file descriptors.\n\
+@vtable @code\n\
+@item F_DUPFD\n\
+Return a duplicate file descriptor.\n\
 \n\
-If successful, STATUS is 0 and MSG is an empty string.  Otherwise,\n\
-STATUS is nonzero and MSG contains a system-dependent error message.")
+@item F_GETFD\n\
+Return the file descriptor flags for @var{fid}.\n\
+\n\
+@item F_SETFD\n\
+Set the file descriptor flags for @var{fid}.\n\
+\n\
+@item F_GETFL\n\
+Return the file status flags for @var{fid}.  The following codes may be\n\
+returned (some of the flags may be undefined on some systems).\n\
+\n\
+@vtable @code\n\
+@item O_RDONLY\n\
+Open for reading only.\n\
+\n\
+@item O_WRONLY\n\
+Open for writing only.\n\
+\n\
+@item O_RDWR\n\
+Open for reading and writing.\n\
+\n\
+@item O_APPEND\n\
+Append on each write.\n\
+\n\
+@item O_NONBLOCK\n\
+Nonblocking mode.\n\
+\n\
+@item O_SYNC\n\
+Wait for writes to complete.\n\
+\n\
+@item O_ASYNC\n\
+Asynchronous I/O.\n\
+@end vtable\n\
+\n\
+@item F_SETFL\n\
+Set the file status flags for @var{fid} to the value specified by\n\
+@var{arg}.  The only flags that can be changed are @code{O_APPEND} and\n\
+@code{O_NONBLOCK}.\n\
+@end vtable\n\
+\n\
+If successful, @var{err} is 0 and @var{msg} is an empty string.\n\
+Otherwise, @var{err} is nonzero and @var{msg} contains a\n\
+system-dependent error message.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -248,13 +307,27 @@ STATUS is nonzero and MSG contains a system-dependent error message.")
 }
 
 DEFUN (fork, args, ,
- "[PID, MSG] = fork ()\n\
-\n\
+ "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {[@var{pid}, @var{msg}] =} fork ()\n\
 Create a copy of the current process.\n\
 \n\
-If successful, PID is either the process ID and you are in the parent,\n\
-or 0, and you are in the child.  If PID is less than zero, an error\n\
-has occured, and MSG contains a system-dependent error message.")
+Fork can return one of the following values:\n\
+\n\
+@table @asis\n\
+@item > 0\n\
+You are in the parent process.  The value returned from @code{fork} is\n\
+the process id of the child process.  You should probably arrange to\n\
+wait for any child processes to exit.\n\
+\n\
+@item 0\n\
+You are in the child process.  You can call @code{exec} to start another\n\
+process.  If that fails, you should probably call @code{exit}.\n\
+\n\
+@item < 0\n\
+The call to @code{fork} failed for some reason.  You must take evasive\n\
+action.  A system dependent error message will be waiting in @var{msg}.\n\
+@end table\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -279,7 +352,10 @@ has occured, and MSG contains a system-dependent error message.")
 }
 
 DEFUN (getpgrp, args, ,
-  "pgid = getpgrp (): return the process group id of the current process")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {pgid =} getpgrp ()\n\
+Return the process group id of the current process.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -302,7 +378,10 @@ DEFUN (getpgrp, args, ,
 }
 
 DEFUN (getpid, args, ,
-  "pid = getpid (): return the process id of the current process")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {pid =} getpid ()\n\
+Return the process id of the current process.\n\
+@end deftypefn")
 {
   double retval = -1.0;
 
@@ -317,7 +396,10 @@ DEFUN (getpid, args, ,
 }
 
 DEFUN (getppid, args, ,
-  "pid = getppid (): return the process id of the parent process")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {pid =} getppid ()\n\
+Return the process id of the parent process.\n\
+@end deftypefn")
 {
   double retval = -1.0;
 
@@ -332,7 +414,10 @@ DEFUN (getppid, args, ,
 }
 
 DEFUN (getegid, args, ,
-  "gid = getegid (): return the effective group id of the current process")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {egid =} getegid ()\n\
+Return the effective group id of the current process.\n\
+@end deftypefn")
 {
   double retval = -1.0;
 
@@ -347,7 +432,10 @@ DEFUN (getegid, args, ,
 }
 
 DEFUN (getgid, args, ,
-  "gid = getgid (): return the real group id of the current process")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {gid =} getgid ()\n\
+Return the real group id of the current process.\n\
+@end deftypefn")
 {
   double retval = -1.0;
 
@@ -362,7 +450,10 @@ DEFUN (getgid, args, ,
 }
 
 DEFUN (geteuid, args, ,
-  "uid = geteuid (): return the effective user id of the current process")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {euid =} geteuid ()\n\
+Return the effective user id of the current process.\n\
+@end deftypefn")
 {
   double retval = -1.0;
 
@@ -377,7 +468,10 @@ DEFUN (geteuid, args, ,
 }
 
 DEFUN (getuid, args, ,
-  "uid = getuid (): return the real user id of the current process")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {uid =} getuid ()\n\
+Return the real user id of the current process.\n\
+@end deftypefn")
 {
   double retval = -1.0;
 
@@ -392,11 +486,7 @@ DEFUN (getuid, args, ,
 }
 
 DEFUN (lstat, args, ,
-  "[S, ERR, MSG] = lstat (NAME)\n\
-\n\
-Like [S, ERR, MSG] = stat (NAME), but if NAME refers to a symbolic\n\
-link, returns information about the link itself, not the file that it\n\
-points to.")
+  "See stat.")
 {
   octave_value_list retval;
 
@@ -428,13 +518,16 @@ points to.")
   return retval;
 }
 
+
+
 DEFUN (mkfifo, args, ,
-  "[STATUS, MSG] = mkfifo (NAME, MODE)\n\
+  "@deftypefn {Built-in Function} {[@var{err}, @var{msg}] =} mkfifo (@var{name})\n\
+Create a @var{fifo} special file named @var{name} with file mode @var{mode}\n\\n\
 \n\
-Create a FIFO special file named NAME with file mode MODE\n\
-\n\
-If successful, STATUS is 0 and MSG is an empty string.  Otherwise,\n\
-STATUS is nonzero and MSG contains a system-dependent error message.")
+If successful, @var{err} is 0 and @var{msg} is an empty string.\n\
+Otherwise, @var{err} is nonzero and @var{msg} contains a\n\
+system-dependent error message.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -475,13 +568,15 @@ STATUS is nonzero and MSG contains a system-dependent error message.")
 }
 
 DEFUN (pipe, args, ,
-  "[FILE_LIST, STATUS, MSG] = pipe (): create an interprocess channel.\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {[@var{file_ids}, @var{err}, @var{msg}] =} pipe ()\n\
+Create a pipe and return the vector @var{file_ids}, which corresponding\n\
+to the reading and writing ends of the pipe.\n\
 \n\
-Return the file objects corresponding to the reading and writing ends of\n\
-the pipe, as a two-element list.\n\
-\n\
-If successful, STATUS is 0 and MSG is an empty string.  Otherwise,\n\
-STATUS is nonzero and MSG contains a system-dependent error message.")
+If successful, @var{err} is 0 and @var{msg} is an empty string.\n\
+Otherwise, @var{err} is nonzero and @var{msg} contains a\n\
+system-dependent error message.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -528,30 +623,92 @@ STATUS is nonzero and MSG contains a system-dependent error message.")
 }
 
 DEFUN (stat, args, ,
-  "[S, ERR, MSG] = stat (NAME)\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {[@var{info}, @var{err}, @var{msg}] =} stat (@var{file})\n\
+@deftypefnx {Built-in Function} {[@var{info}, @var{err}, @var{msg}] =} lstat (@var{file})\n\
+Return a structure @var{s} containing the following information about\n\
+@var{file}.\n\
 \n\
-  Given the name of a file, return a structure S with the following\n\
-  elements:\n\
+@table @code\n\
+@item dev\n\
+ID of device containing a directory entry for this file.\n\
 \n\
-    dev     : id of device containing a directory entry for this file\n\
-    ino     : file number of the file\n\
-    modestr : file mode, as a string of ten letters or dashes as in ls -l\n\
-    nlink   : number of links\n\
-    uid     : user id of file's owner\n\
-    gid     : group id of file's group \n\
-    rdev    : id of device for block or character special files\n\
-    size    : size in bytes\n\
-    atime   : time of last access\n\
-    mtime   : time of last modification\n\
-    ctime   : time of last file status change\n\
-    blksize : size of blocks in the file\n\
-    blocks  : number of blocks allocated for file\n\
+@item ino\n\
+File number of the file.\n\
 \n\
-  If the call is successful, ERR is 0 and MSG is an empty string.\n\
+@item modestr\n\
+File mode, as a string of ten letters or dashes as would be returned by\n\
+@kbd{ls -l}.\n\
 \n\
-  If the file does not exist, or some other error occurs, S is an\n\
-  empty matrix, ERR is -1, and MSG contains the corresponding\n\
-  system error message.")
+@item nlink\n\
+Number of links.\n\
+\n\
+@item uid\n\
+User ID of file's owner.\n\
+\n\
+@item gid\n\
+Group ID of file's group.\n\
+\n\
+@item rdev\n\
+ID of device for block or character special files.\n\
+\n\
+@item size\n\
+Size in bytes.\n\
+\n\
+@item atime\n\
+Time of last access in the same form as time values returned from\n\
+@code{time}.  @xref{Timing Utilities}.\n\
+\n\
+@item mtime\n\
+Time of last modification in the same form as time values returned from\n\
+@code{time}.  @xref{Timing Utilities}.\n\
+\n\
+@item ctime\n\
+Time of last file status change in the same form as time values\n\
+returned from @code{time}.  @xref{Timing Utilities}.\n\
+\n\
+@item blksize\n\
+Size of blocks in the file.\n\
+\n\
+@item blocks\n\
+Number of blocks allocated for file.\n\
+@end table\n\
+\n\
+If the call is successful @var{err} is 0 and @var{msg} is an empty\n\
+string.  If the file does not exist, or some other error occurs, @var{s}\n\
+is an empty matrix, @var{err} is @minus{}1, and @var{msg} contains the\n\
+corresponding system error message.\n\
+\n\
+If @var{file} is a symbolic link, @code{stat} will return information\n\
+about the actual file the is referenced by the link.  Use @code{lstat}\n\
+if you want information about the symbolic link itself.\n\
+\n\
+For example,\n\
+\n\
+@example\n\
+@group\n\
+[s, err, msg] = stat (\"/vmlinuz\")\n\
+      @result{} s =\n\
+        @{\n\
+          atime = 855399756\n\
+          rdev = 0\n\
+          ctime = 847219094\n\
+          uid = 0\n\
+          size = 389218\n\
+          blksize = 4096\n\
+          mtime = 847219094\n\
+          gid = 6\n\
+          nlink = 1\n\
+          blocks = 768\n\
+          modestr = -rw-r--r--\n\
+          ino = 9316\n\
+          dev = 2049\n\
+        @}\n\
+     @result{} err = 0\n\
+     @result{} msg = \n\
+@end group\n\
+@end example\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -584,12 +741,14 @@ DEFUN (stat, args, ,
 }
 
 DEFUN (unlink, args, ,
-  "[STATUS, MSG] = unlink (NAME)\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {[@var{err}, @var{msg}] =} unlink (@var{file})\n\
+Delete the file named @var{file}.\n\
 \n\
-Delete the file NAME\n\
-\n\
-If successful, STATUS is 0 and MSG is an empty string.  Otherwise,\n\
-STATUS is nonzero and MSG contains a system-dependent error message.")
+If successful, @var{err} is 0 and @var{msg} is an empty string.\n\
+Otherwise, @var{err} is nonzero and @var{msg} contains a\n\
+system-dependent error message.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -621,31 +780,45 @@ STATUS is nonzero and MSG contains a system-dependent error message.")
 }
 
 DEFUN (waitpid, args, ,
-  "[PID, MSG] = waitpid (PID, OPTIONS)\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {[@var{pid}, @var{msg}] =} waitpid (@var{pid}, @var{options})\n\
+Wait for process @var{pid} to terminate.  The @var{pid} argument can be:\n\
 \n\
-Wait for process PID to terminate\n\
+@table @asis\n\
+@item @minus{}1\n\
+Wait for any child process.\n\
 \n\
-  PID can be:\n\
+@item 0\n\
+Wait for any child process whose process group ID is equal to that of\n\
+the Octave interpreter process.\n\
 \n\
-     -1 : wait for any child process\n\
-      0 : wait for any child process whose process group ID is equal to\n\
-          that of the Octave interpreter process.\n\
-    > 0 : wait for termination of the child process with ID PID.\n\
+@item > 0\n\
+Wait for termination of the child process with ID @var{pid}.\n\
+@end table\n\
 \n\
-  OPTIONS is:\n\
+The @var{options} argument can be:\n\
 \n\
-     0 : wait until signal is received or a child process exits (this\n\
-         is the default if the OPTIONS argument is missing) \n\
-     1 : do not hang if status is not immediately available\n\
-     2 : report the status of any child processes that are\n\
-         stopped, and whose status has not yet been reported\n\
-         since they stopped\n\
-     3 : implies both 1 and 2\n\
+@table @asis\n\
+@item 0\n\
+Wait until signal is received or a child process exits (this is the\n\
+default if the @var{options} argument is missing).\n\
 \n\
-If successful, PID is greater than 0 and contains the process ID of\n\
-the child process that exited and MSG is an empty string.\n\
-Otherwise, PID is less than zero and MSG contains a system-dependent\n\
-error message.")
+@item 1\n\
+Do not hang if status is not immediately available.\n\
+\n\
+@item 2\n\
+Report the status of any child processes that are stopped, and whose\n\
+status has not yet been reported since they stopped.\n\
+\n\
+@item 3\n\
+Implies both 1 and 2.\n\
+@end table\n\
+\n\
+If the returned value of @var{pid} is greater than 0, it is the process\n\
+ID of the child process that exited.  If an error occurs, @var{pid} will\n\
+be less than zero and @var{msg} will contain a system-dependent error\n\
+message.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 

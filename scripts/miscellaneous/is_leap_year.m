@@ -17,10 +17,19 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: is_leap_year (year)
-##
-## Return 1 if the given year is a leap year; otherwise, return 0.
-## With no arguments, use the current year.
+## -*- texinfo -*-
+## @deftypefn {Function File} {} is_leap_year (@var{year})
+## Return 1 if the given year is a leap year and 0 otherwise.  If no
+## arguments are provided, @code{is_leap_year} will use the current year.
+## For example,
+## 
+## @example
+## @group
+## is_leap_year (2000)
+##      @result{} 1
+## @end group
+## @end example
+## @end deftypefn
 
 ## Author: jwe
 

@@ -76,10 +76,13 @@ extract_tm (Octave_map &m)
 }
 
 DEFUN_DLD (time, args, ,
-  "time ()\n\
-\n\
-Return current time.  On Unix systems, this is the number of\n\
-seconds since the epoch.")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} time ()\n\
+Return the current time as the number of seconds since the epoch.  The\n\
+epoch is referenced to 00:00:00 CUT (Coordinated Universal Time) 1 Jan\n\
+1970.  For example, on Monday February 17, 1997 at 07:15:06 CUT, the\n\
+value returned by @code{time} was 856163706.\n\
+@end deftypefn")
 {
   octave_value retval;
 
@@ -92,11 +95,30 @@ seconds since the epoch.")
 }
 
 DEFUN_DLD (gmtime, args, ,
-  "gmtime (TIME)\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} gmtime (@var{t})\n\
+Given a value returned from time (or any nonnegative integer),\n\
+return a time structure corresponding to CUT.  For example,\n\
 \n\
-Given a value returned from time(), return a structure like that\n\
-returned from localtime() but with values corresponding to\n\
-Coordinated Universal Time (UTC).")
+@example\n\
+@group\n\
+gmtime (time ())\n\
+     @result{} @{\n\
+           usec = 0\n\
+           year = 97\n\
+           mon = 1\n\
+           mday = 17\n\
+           sec = 6\n\
+           zone = CST\n\
+           min = 15\n\
+           wday = 1\n\
+           hour = 7\n\
+           isdst = 0\n\
+           yday = 47\n\
+         @}\n\
+@end group\n\
+@end example\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -114,22 +136,30 @@ Coordinated Universal Time (UTC).")
 }
 
 DEFUN_DLD (localtime, args, ,
-  "localtime (TIME)\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} localtime (@var{t})\n\
+Given a value returned from time (or any nonnegative integer),\n\
+return a time structure corresponding to the local time zone.\n\
 \n\
-Given a value returned from time(), return a structure with\n\
-the following elements:\n\
-\n\
-  usec  : microseconds after the second (0, 999999)\n\
-  sec   : seconds after the minute (0, 61)\n\
-  min   : minutes after the hour (0, 59)\n\
-  hour  : hours since midnight (0, 23)\n\
-  mday  : day of the month (1, 31)\n\
-  mon   : months since January (0, 11)\n\
-  year  : years since 1900\n\
-  wday  : days since Sunday (0, 6)\n\
-  yday  : days since January 1 (0, 365)\n\
-  isdst : daylight savings time flag\n\
-  zone  : time zone")
+@example\n\
+@group\n\
+localtime (time ())\n\
+     @result{} @{\n\
+           usec = 0\n\
+           year = 97\n\
+           mon = 1\n\
+           mday = 17\n\
+           sec = 6\n\
+           zone = CST\n\
+           min = 15\n\
+           wday = 1\n\
+           hour = 1\n\
+           isdst = 0\n\
+           yday = 47\n\
+         @}\n\
+@end group\n\
+@end example\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -147,7 +177,18 @@ the following elements:\n\
 }
 
 DEFUN_DLD (mktime, args, ,
-  "mktime (TMSTRUCT)")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} mktime (@var{tm_struct})\n\
+Convert a time structure corresponding to the local time to the number\n\
+of seconds since the epoch.  For example,\n\
+\n\
+@example\n\
+@group\n\
+mktime (localtime (time ())\n\
+     @result{} 856163706\n\
+@end group\n\
+@end example\n\
+@end deftypefn")
 {
   octave_value_list retval;
 

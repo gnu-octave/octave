@@ -1,5 +1,8 @@
 1999-10-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* interpreter/munge-texi.cc: Strip the "-*- texinfo -*-" marker
+	when including help text.
+
 	* interpreter/Makefile.in ($(TEXINFO)): Depend on $(DOCSTRINGS).
 	($(DOCSTRINGS)): New rule.
 

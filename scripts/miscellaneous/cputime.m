@@ -17,9 +17,18 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: cputime
-##
-## Get CPU time statistics.
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{total}, @var{user}, @var{system}] =} cputime ();
+## Return the CPU time used by your Octave session.  The first output is
+## the total time spent executing your process and is equal to the sum of
+## second and third outputs, which are the number of CPU seconds spent
+## executing in user mode and the number of CPU seconds spent executing in
+## system mode, respectively.  If your system does not have a way to report
+## CPU time usage, @code{cputime} returns 0 for each of its output values.
+## Note that because Octave used some CPU time to start, it is reasonable
+## to check to see if @code{cputime} works by checking to see if the total
+## CPU time used is nonzero.
+## @end deftypefn
 
 ## Author: jwe
 

@@ -17,11 +17,11 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: version
-##
-## Return the Octave version number as a string.
-##
-## See also: OCTAVE_VERSION
+## -*- texinfo -*-
+## @deftypefn {Function File} {} version ()
+## Return Octave's version number as a string.  This is also the value of
+## the built-in variable @code{OCTAVE_VERSION}.
+## @end deftypefn
 
 ## Author: jwe
 

@@ -68,9 +68,12 @@ mk_pw_map (const octave_passwd& pw)
 }
 
 DEFUN_DLD (getpwent, args, ,
- "getpwent ()\n\
-\n\
-Read an entry from the password-file stream, opening it if necessary.")
+ "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{pw_struct} = } getpwent ()\n\
+Return a structure containing an entry from the password database,\n\
+opening it if necessary. Once the end of the data has been reached,\n\
+@code{getpwent} returns 0.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -93,9 +96,12 @@ Read an entry from the password-file stream, opening it if necessary.")
 }
 
 DEFUN_DLD (getpwuid, args, ,
-  "getpwuid (UID)\n\
-\n\
-Search for a password entry with a matching user ID.")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{pw_struct} = } getpwuid (@var{uid}).\n\
+Return a structure containing the first entry from the password database\n\
+with the user ID @var{uid}.  If the user ID does not exist in the\n\
+database, @code{getpwuid} returns 0.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -130,9 +136,12 @@ Search for a password entry with a matching user ID.")
 }
 
 DEFUN_DLD (getpwnam, args, ,
-  "getpwnam (NAME)\n\
-\n\
-Search for password entry with a matching username.")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{pw_struct} = } getpwnam (@var{name})\n\
+Return a structure containing the first entry from the password database\n\
+with the user name @var{name}.  If the user name does not exist in the\n\
+database, @code{getpwname} returns 0.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -160,9 +169,10 @@ Search for password entry with a matching username.")
 }
 
 DEFUN_DLD (setpwent, args, ,
-  "setpwent ()\n\
-\n\
-Rewind the password-file stream.")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} setpwent ()\n\
+Return the internal pointer to the beginning of the password database.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 
@@ -185,9 +195,10 @@ Rewind the password-file stream.")
 }
 
 DEFUN_DLD (endpwent, args, ,
-  "endpwent ()\n\
-\n\
-Close the password-file stream.")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} endpwent ()\n\
+Close the password database.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 

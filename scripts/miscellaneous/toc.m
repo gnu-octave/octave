@@ -17,12 +17,7 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## usage: toc
-##
-## Return the difference between the current wall-clock time and the
-## time that the function tic () was last called, in seconds.
-##
-## See also: tic, clock, etime, cputime
+## See tic.
 
 ## Author: jwe
 

@@ -1853,7 +1853,7 @@ tree_constant_rep::delete_row (int idx)
 void
 tree_constant_rep::delete_rows (idx_vector& iv)
 {
-  iv.sort ();
+  iv.sort_uniq ();
   int num_to_delete = iv.length ();
 
   if (type_tag == matrix_constant)
@@ -2023,7 +2023,7 @@ tree_constant_rep::delete_column (int idx)
 void
 tree_constant_rep::delete_columns (idx_vector& jv)
 {
-  jv.sort ();
+  jv.sort_uniq ();
   int num_to_delete = jv.length ();
 
   if (type_tag == matrix_constant)

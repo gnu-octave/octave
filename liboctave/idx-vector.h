@@ -62,6 +62,7 @@ public:
   int ones_count (void) const;
 
   void sort (void);
+  void sort_uniq (void);
 
 // i/o
 

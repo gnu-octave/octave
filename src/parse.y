@@ -1146,12 +1146,19 @@ matrix		: '[' screwed_again rows ']'
 		  }
 		;
 
-rows		: matrix_row
-		| rows ';'	// Ignore trailing semicolon.
-		| rows ';' matrix_row
+rows		: rows1
+		| rows1 ';'	// Ignore trailing semicolon.
 		;
 
-matrix_row	: expression		// First element on row.
+rows1		: matrix_row
+		| rows1 ';' matrix_row
+		;
+
+matrix_row	: matrix_row1
+		| matrix_row1 ','	// Ignore trailing comma.
+		;
+
+matrix_row1	: expression		// First element on row.
 		  {
 		    if (mlnm.top ())
 		      {
@@ -1168,8 +1175,7 @@ matrix_row	: expression		// First element on row.
 			ml.push (tmp);
 		      }
 		  }
-		| matrix_row ','		// Ignore trailing comma.
-		| matrix_row ',' expression
+		| matrix_row1 ',' expression
 		  {
 		    tree_matrix *tmp = ml.pop ();
 		    tmp = tmp->chain ($3, tree_matrix::md_right);

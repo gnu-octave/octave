@@ -1,5 +1,10 @@
 Wed Oct 30 11:42:58 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* CMatrix.cc, cmd-hist.cc, file-ops.cc, file-ops.h, filemode.c,
+	mkdir.c, rename.c, rmdir.c, safe-lstat.h, safe-stat.h,
+	safe-xstat.cin, statdefs.h, sysdir.h, tempname.c, utils.cc: Only
+	include sys/types.h if HAVE_SYS_TYPES_H.
+
 	* Array3.h (T Array3<T>::checkelem): Return T() for bogus value,
 	since that is now accepatble syntax, even for built-in types.
 	* Array2.h (T Array2<T>::checkelem): Likewise

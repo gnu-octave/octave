@@ -33,7 +33,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <iostream.h>
 
-#include <sys/types.h> // XXX FIXME XXX
+// XXX FIXME XXX
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
 
 #include "CmplxAEPBAL.h"
 #include "CmplxDET.h"

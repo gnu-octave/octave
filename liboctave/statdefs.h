@@ -23,7 +23,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_statdefs_h)
 #define octave_statdefs_h 1
 
+#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
+#endif
 #include <sys/stat.h>
 
 #ifndef S_ISREG			/* Doesn't have POSIX.1 stat stuff. */

@@ -135,11 +135,9 @@ do_history (int argc, const string_vector& argv)
 	  && (argv[i][1] == 'r' || argv[i][1] == 'w'
 	      || argv[i][1] == 'a' || argv[i][1] == 'n'))
 	{
-	  string file;
-
 	  if (i < argc - 1)
 	    {
-	      file = oct_tilde_expand (argv[i+1]);
+	      string file = oct_tilde_expand (argv[i+1]);
 	      octave_command_history.set_file (file);
 	    }
 
@@ -202,7 +200,7 @@ do_history (int argc, const string_vector& argv)
 
 // Read the edited history lines from STREAM and return them
 // one at a time.  This can read unlimited length lines.  The
-//  caller should free the storage.
+// caller should free the storage.
 
 static char *
 edit_history_readline (fstream& stream)

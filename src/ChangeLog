@@ -1,5 +1,8 @@
 Sat Oct 26 10:40:05 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* oct-hist.cc (do_history): Move declaration of file inside
+	conditional.
+
 	* defun.h (DEFVAR_INT): Set eternal flag with (svc_fcn != 0)
 	instead of (sv_fcn ? 1 : 0)
 

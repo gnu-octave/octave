@@ -1,3 +1,17 @@
+Tue Feb 11 19:44:28 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lo-ieee.cc: Declare quiet_nan() and infinity().
+
+Mon Feb 10 01:17:45 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* file-ops.cc (oct_unlink (const string&, string&)):
+	New two-arg version.
+	(oct_rmdir (const string&, string&)): New two-arg version.
+	(oct_mkdir (const string&, mode_t, string&)): New three-arg version.
+	(oct_mkfifo (const string&, mode_t, string&)): New three-arg version.
+	(oct_rename (const string&, const string&, string&)):
+	New three-arg version.
+
 Fri Feb  7 13:15:55 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* idx-vector.h (idx_vector::orig_empty): New function.

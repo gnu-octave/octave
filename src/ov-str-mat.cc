@@ -38,9 +38,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gripes.h"
 #include "pr-output.h"
 
-int octave_char_matrix_str::t_id = -1;
+int
+octave_char_matrix_str::t_id (-1);
 
-const string octave_char_matrix_str::t_name ("string");
+const string
+octave_char_matrix_str::t_name ("string");
 
 static octave_value *
 default_numeric_conversion_function (const octave_value& a)

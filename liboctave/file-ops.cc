@@ -238,6 +238,19 @@ oct_mkdir (const string& name, mode_t mode)
   return mkdir (name.c_str (), mode);
 }
 
+int
+oct_mkdir (const string& name, mode_t mode, string& msg)
+{
+  msg = string ();
+
+  int status = mkdir (name.c_str (), mode);
+
+  if (status < 0)
+    msg = strerror (errno);
+
+  return status;
+}
+
 // I don't know how to emulate this on systems that don't provide it.
 
 int
@@ -245,6 +258,24 @@ oct_mkfifo (const string& name, mode_t mode)
 {
 #if defined (HAVE_MKFIFO)
   return mkfifo (name.c_str (), mode);
+#else
+  ::error ("mkfifo: not implemented on this system");
+  return -1;
+#endif
+}
+
+int
+oct_mkfifo (const string& name, mode_t mode, string& msg)
+{
+  msg = string ();
+
+#if defined (HAVE_MKFIFO)
+  int status = mkfifo (name.c_str (), mode);
+
+  if (status < 0)
+    msg = strerror (errno);
+
+  return status;
 #else
   ::error ("mkfifo: not implemented on this system");
   return -1;
@@ -259,12 +290,38 @@ oct_rename (const string& from, const string& to)
   return rename (from.c_str (), to.c_str ());
 }
 
+int
+oct_rename (const string& from, const string& to, string& msg)
+{
+  msg = string ();
+
+  int status = rename (from.c_str (), to.c_str ());
+
+  if (status < 0)
+    msg = strerror (errno);
+
+  return status;
+}
+
 // We provide a replacement for rmdir().
 
 int
 oct_rmdir (const string& name)
 {
   return rmdir (name.c_str ());
+}
+
+int
+oct_rmdir (const string& name, string& msg)
+{
+  msg = string ();
+
+  int status = rmdir (name.c_str ());
+
+  if (status < 0)
+    msg = strerror (errno);
+
+  return status;
 }
 
 // We provide a replacement for tempnam().
@@ -303,6 +360,19 @@ int
 oct_unlink (const string& name)
 {
   return unlink (name.c_str ());
+}
+
+int
+oct_unlink (const string& name, string& errmsg)
+{
+  errmsg = string ();
+
+  int status = unlink (name.c_str ());
+
+  if (status < 0)
+    errmsg = strerror (errno);
+
+  return status;
 }
 
 /*

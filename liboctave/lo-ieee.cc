@@ -41,6 +41,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 #endif
 
+#if defined (HAVE_INFINITY)
+#extern "C" double infinity ();
+#endif
+
+#if defined (HAVE_QUIET_NAN)
+#extern "C" double quiet_nan (long);
+#endif
+
 #include "lo-ieee.h"
 
 // Octave's idea of infinity.
@@ -58,7 +66,7 @@ octave_ieee_init (void)
 // trying to make Inf and NaN.
 
 #if defined (HAVE_INFINITY)
-  octave_Inf = (double) infinity ();
+  octave_Inf = infinity ();
 #elif defined (linux)
   octave_Inf = HUGE_VAL;
 #elif defined (__alpha__)
@@ -84,7 +92,7 @@ octave_ieee_init (void)
 #if defined (HAVE_ISNAN)
 
 #if defined (HAVE_QUIET_NAN)
-  octave_NaN = (double) quiet_nan ();
+  octave_NaN = quiet_nan (0L);
 #elif defined (linux)
   octave_NaN = NAN;
 #elif defined (__alpha__)

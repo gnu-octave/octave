@@ -1490,7 +1490,7 @@ install_builtin_variables (void)
 	  sv_imagepath,
     "colon separated list of directories to search for image files");
 
-  DEFVAR ("OCTAVE_VERSION", SBV_version, version_string, 0, 1, 1, 0,
+  DEFVAR ("OCTAVE_VERSION", SBV_version, OCTAVE_VERSION, 0, 1, 1, 0,
     "Octave version");
 
   DEFVAR ("PAGER", SBV_PAGER, default_pager (), 0, 0, 1, sv_pager_binary,

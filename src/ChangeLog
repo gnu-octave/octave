@@ -1,3 +1,8 @@
+Sat Oct 26 10:40:05 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* defun.h (DEFVAR_INT): Set eternal flag with (svc_fcn != 0)
+	instead of (sv_fcn ? 1 : 0)
+
 Fri Oct 25 01:10:51 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* ov-ch-mat.h (octave_char_matrix::any): Return 0.0 instead of false.

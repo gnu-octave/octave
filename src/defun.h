@@ -78,7 +78,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   do \
     { \
       builtin_variable sname (name, octave_value (defn), inst_as_fcn, \
-			      protect, (sv_fcn ? 1 : 0), sv_fcn, doc); \
+			      protect, (sv_fcn != 0), sv_fcn, doc); \
       install_builtin_variable (sname); \
     } \
   while (0)

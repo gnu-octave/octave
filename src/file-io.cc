@@ -343,9 +343,7 @@ DEFUN (fopen, args, ,
   if (nargin == 1)
     {
       if (args(0).is_string () && args(0).string_value () == "all")
-	{
-	  return octave_stream_list::open_file_numbers ();
-	}
+	retval(0) = octave_stream_list::open_file_numbers ();
       else
 	{
 	  string_vector tmp = octave_stream_list::get_info (args(0));
@@ -356,9 +354,9 @@ DEFUN (fopen, args, ,
 	      retval(1) = tmp(1);
 	      retval(0) = tmp(0);
 	    }
-
-	  return retval;
 	}
+
+      return retval;
     }
 
   if (nargin > 0 && nargin < 4)

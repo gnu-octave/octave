@@ -39,7 +39,11 @@ file_name_cache_elt
 {
 public:
 
-  file_name_cache_elt (const string& dir_name = string ())
+  file_name_cache_elt (void)
+    : timestamp (0), fcn_file_names (), fcn_file_names_no_suffix ()
+      { update (string ()); }
+
+  file_name_cache_elt (const string& dir_name)
     : timestamp (0), fcn_file_names (), fcn_file_names_no_suffix ()
       { update (dir_name); }
 
@@ -85,13 +89,13 @@ protected:
 
   octave_fcn_file_name_cache (void)
     : cache (file_name_cache_elt ())
-      { update (); }
+      { update (string ()); }
 
 public:
 
   ~octave_fcn_file_name_cache (void) { }
 
-  bool update (const string& path = string ());
+  bool update (const string& path);
 
   static string_vector list (bool no_suffix = false)
     { return list (string (), no_suffix); }

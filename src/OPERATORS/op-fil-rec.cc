@@ -68,7 +68,7 @@ DEFBINOP (lshift, file, struct)
 void
 install_fil_rec_ops (void)
 {
-  INSTALL_BINOP (lshift, octave_file, octave_struct, lshift);
+  INSTALL_BINOP (op_lshift, octave_file, octave_struct, lshift);
 }
 
 /*

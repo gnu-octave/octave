@@ -47,7 +47,7 @@ tree::str_print_code (void)
 
   accept (tpc);
 
-  buf << ends;
+  buf << std::ends;
 
   const char *s = buf.str ();
 

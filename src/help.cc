@@ -521,7 +521,7 @@ try_info (const std::string& nm)
   if (nm.length () > 0)
     cmd_buf << " --index-search " << nm;
 
-  cmd_buf << ends;
+  cmd_buf << std::ends;
 
   cmd_str = cmd_buf.str ();
 
@@ -621,7 +621,7 @@ display_help_text (std::ostream& os, const std::string& msg)
 	  << " --force"
 	  << " --output " << tmp_file_name
 	  << " > /dev/null 2>&1"
-	  << ends;
+	  << std::ends;
 
       char *cmd = buf.str ();
 
@@ -813,7 +813,7 @@ do_type (std::ostream& os, const std::string& name, bool pr_type_info,
 
       if (! ff.empty ())
 	{
-	  std::ifstream fs (ff.c_str (), ios::in);
+	  std::ifstream fs (ff.c_str (), std::ios::in);
 
 	  if (fs)
 	    {
@@ -899,7 +899,7 @@ representation.  This problem may be fixed in a future release.\n\
 
 	      if (nargout == 0)
 		{
-		  output_buf << ends;
+		  output_buf << std::ends;
 
 		  char *s = output_buf.str ();
 

@@ -115,7 +115,7 @@ tree_global_command::do_init (tree_decl_elt& elt)
 	  else if (Vinitialize_global_variables)
 	    init_val = builtin_any_variable ("default_global_variable_value");
 
-	  ult.assign (octave_value::asn_eq, init_val);
+	  ult.assign (octave_value::op_asn_eq, init_val);
 	}
     }
 }
@@ -154,7 +154,7 @@ tree_static_command::do_init (tree_decl_elt& elt)
 
 	  octave_lvalue ult = id->lvalue ();
 
-	  ult.assign (octave_value::asn_eq, init_val);
+	  ult.assign (octave_value::op_asn_eq, init_val);
 	}
     }
 }

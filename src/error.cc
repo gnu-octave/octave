@@ -75,8 +75,8 @@ vwarning (const char *name, const char *fmt, va_list args)
   octave_diary.vform (fmt, args);
   std::cerr.vform (fmt, args);
 
-  octave_diary << endl;
-  std::cerr << endl;
+  octave_diary << std::endl;
+  std::cerr << std::endl;
 }
 
 static void
@@ -93,7 +93,7 @@ verror (const char *name, const char *fmt, va_list args)
   if (name)
     output_buf << name << ": ";
   output_buf.vform (fmt, args);
-  output_buf << endl << ends;
+  output_buf << std::endl << std::ends;
 
   char *msg = output_buf.str ();
 
@@ -399,7 +399,7 @@ bind_global_error_variable (void)
 {
   if (error_message_buffer)
     {
-      *error_message_buffer << ends;
+      *error_message_buffer << std::ends;
 
       char *error_text = error_message_buffer->str ();
 

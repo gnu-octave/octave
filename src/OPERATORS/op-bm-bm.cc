@@ -55,12 +55,12 @@ DEFBINOP_OP (ne, bool_matrix, bool_matrix, !=)
 void
 install_bm_bm_ops (void)
 {
-  INSTALL_UNOP (not, octave_bool_matrix, not);
-  INSTALL_UNOP (transpose, octave_bool_matrix, transpose);
-  INSTALL_UNOP (hermitian, octave_bool_matrix, transpose);
+  INSTALL_UNOP (op_not, octave_bool_matrix, not);
+  INSTALL_UNOP (op_transpose, octave_bool_matrix, transpose);
+  INSTALL_UNOP (op_hermitian, octave_bool_matrix, transpose);
 
-  INSTALL_BINOP (eq, octave_bool_matrix, octave_bool_matrix, eq);
-  INSTALL_BINOP (ne, octave_bool_matrix, octave_bool_matrix, ne);
+  INSTALL_BINOP (op_eq, octave_bool_matrix, octave_bool_matrix, eq);
+  INSTALL_BINOP (op_ne, octave_bool_matrix, octave_bool_matrix, ne);
 }
 
 /*

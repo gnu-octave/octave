@@ -1438,7 +1438,7 @@ yyerror (const char *s)
       output_buf << "^";
     }
 
-  output_buf << "\n" << ends;
+  output_buf << "\n" << std::ends;
 
   char *msg = output_buf.str ();
 
@@ -1632,7 +1632,7 @@ fold (tree_binary_expression *e)
 
 	  e->accept (tpc);
 
-	  buf << ends;
+	  buf << std::ends;
 
 	  char *s = buf.str ();
 
@@ -1681,7 +1681,7 @@ fold (tree_unary_expression *e)
 
 	  e->accept (tpc);
 
-	  buf << ends;
+	  buf << std::ends;
 
 	  char *s = buf.str ();
 
@@ -1739,7 +1739,7 @@ finish_colon_expression (tree_colon_expression *e)
 
 		  e->accept (tpc);
 
-		  buf << ends;
+		  buf << std::ends;
 
 		  char *s = buf.str ();
 
@@ -2571,7 +2571,7 @@ finish_matrix (tree_matrix *m)
 
 	  m->accept (tpc);
 
-	  buf << ends;
+	  buf << std::ends;
 
 	  char *s = buf.str ();
 
@@ -2742,7 +2742,7 @@ parse_and_execute (const std::string& s, bool verbose, const char *warn_for)
       parse_and_execute (f);
 
       if (verbose)
-	std::cout << "done." << endl;
+	std::cout << "done." << std::endl;
     }
   else if (warn_for)
     error ("%s: unable to open file `%s'", warn_for, s.c_str ());

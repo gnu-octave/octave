@@ -68,7 +68,7 @@ DEFBINOP (lshift, file, complex)
 void
 install_fil_cs_ops (void)
 {
-  INSTALL_BINOP (lshift, octave_file, octave_complex, lshift);
+  INSTALL_BINOP (op_lshift, octave_file, octave_complex, lshift);
 }
 
 /*

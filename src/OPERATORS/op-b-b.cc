@@ -52,12 +52,12 @@ DEFBINOP_OP (ne, bool, bool, !=)
 void
 install_b_b_ops (void)
 {
-  INSTALL_UNOP (not, octave_bool, not);
-  INSTALL_UNOP (transpose, octave_bool, transpose);
-  INSTALL_UNOP (hermitian, octave_bool, hermitian);
+  INSTALL_UNOP (op_not, octave_bool, not);
+  INSTALL_UNOP (op_transpose, octave_bool, transpose);
+  INSTALL_UNOP (op_hermitian, octave_bool, hermitian);
 
-  INSTALL_BINOP (eq, octave_bool, octave_bool, eq);
-  INSTALL_BINOP (ne, octave_bool, octave_bool, ne);
+  INSTALL_BINOP (op_eq, octave_bool, octave_bool, eq);
+  INSTALL_BINOP (op_ne, octave_bool, octave_bool, ne);
 }
 
 /*

@@ -113,13 +113,13 @@ DEFASSIGNOP (assign, char_matrix_str, char_matrix_str)
 void
 install_str_str_ops (void)
 {
-  INSTALL_UNOP (transpose, octave_char_matrix_str, transpose);
-  INSTALL_UNOP (hermitian, octave_char_matrix_str, transpose);
+  INSTALL_UNOP (op_transpose, octave_char_matrix_str, transpose);
+  INSTALL_UNOP (op_hermitian, octave_char_matrix_str, transpose);
 
-  INSTALL_BINOP (eq, octave_char_matrix_str, octave_char_matrix_str, eq);
-  INSTALL_BINOP (ne, octave_char_matrix_str, octave_char_matrix_str, ne);
+  INSTALL_BINOP (op_eq, octave_char_matrix_str, octave_char_matrix_str, eq);
+  INSTALL_BINOP (op_ne, octave_char_matrix_str, octave_char_matrix_str, ne);
 
-  INSTALL_ASSIGNOP (asn_eq, octave_char_matrix_str, octave_char_matrix_str, assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_char_matrix_str, octave_char_matrix_str, assign);
 }
 
 /*

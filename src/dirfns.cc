@@ -173,7 +173,7 @@ from system to system.\n\
   for (int i = 1; i < argc; i++)
     ls_buf << file_ops::tilde_expand (argv[i]) << " ";
 
-  ls_buf << ends;
+  ls_buf << std::ends;
   char *ls_command = ls_buf.str ();
 
   iprocstream *cmd = new iprocstream (ls_command);

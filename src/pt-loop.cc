@@ -173,7 +173,7 @@ tree_simple_for_command::do_for_loop_once (octave_lvalue& ult,
 {
   quit = false;
 
-  ult.assign (octave_value::asn_eq, rhs);
+  ult.assign (octave_value::op_asn_eq, rhs);
 
   if (! error_state)
     {
@@ -375,8 +375,8 @@ tree_complex_for_command::do_for_loop_once (octave_lvalue &val_ref,
 {
   quit = false;
 
-  val_ref.assign (octave_value::asn_eq, val);
-  key_ref.assign (octave_value::asn_eq, key);
+  val_ref.assign (octave_value::op_asn_eq, val);
+  key_ref.assign (octave_value::op_asn_eq, key);
 
   if (! error_state)
     {

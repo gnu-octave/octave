@@ -142,36 +142,36 @@ DEFCONV (matrix_conv, scalar, matrix)
 void
 install_s_s_ops (void)
 {
-  INSTALL_UNOP (not, octave_scalar, not);
-  INSTALL_UNOP (uminus, octave_scalar, uminus);
-  INSTALL_UNOP (transpose, octave_scalar, transpose);
-  INSTALL_UNOP (hermitian, octave_scalar, hermitian);
+  INSTALL_UNOP (op_not, octave_scalar, not);
+  INSTALL_UNOP (op_uminus, octave_scalar, uminus);
+  INSTALL_UNOP (op_transpose, octave_scalar, transpose);
+  INSTALL_UNOP (op_hermitian, octave_scalar, hermitian);
 
-  INSTALL_NCUNOP (incr, octave_scalar, incr);
-  INSTALL_NCUNOP (decr, octave_scalar, decr);
+  INSTALL_NCUNOP (op_incr, octave_scalar, incr);
+  INSTALL_NCUNOP (op_decr, octave_scalar, decr);
 
-  INSTALL_BINOP (add, octave_scalar, octave_scalar, add);
-  INSTALL_BINOP (sub, octave_scalar, octave_scalar, sub);
-  INSTALL_BINOP (mul, octave_scalar, octave_scalar, mul);
-  INSTALL_BINOP (div, octave_scalar, octave_scalar, div);
-  INSTALL_BINOP (pow, octave_scalar, octave_scalar, pow);
-  INSTALL_BINOP (ldiv, octave_scalar, octave_scalar, ldiv);
-  INSTALL_BINOP (lt, octave_scalar, octave_scalar, lt);
-  INSTALL_BINOP (le, octave_scalar, octave_scalar, le);
-  INSTALL_BINOP (eq, octave_scalar, octave_scalar, eq);
-  INSTALL_BINOP (ge, octave_scalar, octave_scalar, ge);
-  INSTALL_BINOP (gt, octave_scalar, octave_scalar, gt);
-  INSTALL_BINOP (ne, octave_scalar, octave_scalar, ne);
-  INSTALL_BINOP (el_mul, octave_scalar, octave_scalar, el_mul);
-  INSTALL_BINOP (el_div, octave_scalar, octave_scalar, el_div);
-  INSTALL_BINOP (el_pow, octave_scalar, octave_scalar, el_pow);
-  INSTALL_BINOP (el_ldiv, octave_scalar, octave_scalar, el_ldiv);
-  INSTALL_BINOP (el_and, octave_scalar, octave_scalar, el_and);
-  INSTALL_BINOP (el_or, octave_scalar, octave_scalar, el_or);
+  INSTALL_BINOP (op_add, octave_scalar, octave_scalar, add);
+  INSTALL_BINOP (op_sub, octave_scalar, octave_scalar, sub);
+  INSTALL_BINOP (op_mul, octave_scalar, octave_scalar, mul);
+  INSTALL_BINOP (op_div, octave_scalar, octave_scalar, div);
+  INSTALL_BINOP (op_pow, octave_scalar, octave_scalar, pow);
+  INSTALL_BINOP (op_ldiv, octave_scalar, octave_scalar, ldiv);
+  INSTALL_BINOP (op_lt, octave_scalar, octave_scalar, lt);
+  INSTALL_BINOP (op_le, octave_scalar, octave_scalar, le);
+  INSTALL_BINOP (op_eq, octave_scalar, octave_scalar, eq);
+  INSTALL_BINOP (op_ge, octave_scalar, octave_scalar, ge);
+  INSTALL_BINOP (op_gt, octave_scalar, octave_scalar, gt);
+  INSTALL_BINOP (op_ne, octave_scalar, octave_scalar, ne);
+  INSTALL_BINOP (op_el_mul, octave_scalar, octave_scalar, el_mul);
+  INSTALL_BINOP (op_el_div, octave_scalar, octave_scalar, el_div);
+  INSTALL_BINOP (op_el_pow, octave_scalar, octave_scalar, el_pow);
+  INSTALL_BINOP (op_el_ldiv, octave_scalar, octave_scalar, el_ldiv);
+  INSTALL_BINOP (op_el_and, octave_scalar, octave_scalar, el_and);
+  INSTALL_BINOP (op_el_or, octave_scalar, octave_scalar, el_or);
 
   INSTALL_ASSIGNCONV (octave_scalar, octave_scalar, octave_matrix);
 
-  INSTALL_WIDENOP (octave_scalar, octave_matrix, matrix_conv);
+  INSTALL_WIDENOP (op_octave_scalar, octave_matrix, matrix_conv);
 }
 
 /*

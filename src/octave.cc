@@ -489,7 +489,7 @@ main (int argc, char **argv)
   initialize_command_input ();
 
   if (! inhibit_startup_message)
-    std::cout << OCTAVE_STARTUP_MESSAGE "\n" << endl;
+    std::cout << OCTAVE_STARTUP_MESSAGE "\n" << std::endl;
 
   if (traditional)
     maximum_braindamage ();
@@ -499,7 +499,7 @@ main (int argc, char **argv)
   command_history::read (false);
 
   if (! inhibit_startup_message && reading_startup_message_printed)
-    std::cout << endl;
+    std::cout << std::endl;
 
   // Avoid counting commands executed from startup files.
 

@@ -249,7 +249,7 @@ scanf_format_list::add_elt_to_list (int width, bool discard, char type,
 {
   if (buf)
     {
-      *buf << ends;
+      *buf << std::ends;
 
       char *text = buf->str ();
 
@@ -644,7 +644,7 @@ printf_format_list::add_elt_to_list (int args, char type, char modifier,
 {
   if (buf)
     {
-      *buf << ends;
+      *buf << std::ends;
 
       char *text = buf->str ();
 
@@ -936,7 +936,7 @@ octave_base_stream::do_gets (int max_len, bool& err,
 	}
       else
 	{
-	  buf << ends;
+	  buf << std::ends;
 	  char *tmp = buf.str ();
 	  retval = tmp;
 	  delete [] tmp;
@@ -1092,12 +1092,12 @@ do_scanf_conv (std::istream&, const char*, double*, Matrix&, double*, int&,
 	} \
  \
       if (i != n) \
-	is.setstate (ios::failbit); \
+	is.setstate (std::ios::failbit); \
     } \
   while (0)
 
 #define BEGIN_C_CONVERSION() \
-  is.unsetf (ios::skipws); \
+  is.unsetf (std::ios::skipws); \
  \
   int width = elt->width ? elt->width : 1; \
  \
@@ -1146,7 +1146,7 @@ do_scanf_conv (std::istream&, const char*, double*, Matrix&, double*, int&,
 	  if (isspace (c)) \
 	    is.putback (c); \
  \
-	  buf << ends; \
+	  buf << std::ends; \
  \
 	  tmp = buf.str (); \
 	} \
@@ -1193,12 +1193,12 @@ do_scanf_conv (std::istream&, const char*, double*, Matrix&, double*, int&,
 	  if (c != EOF) \
 	    is.putback (c); \
  \
-	  buf << ends; \
+	  buf << std::ends; \
  \
 	  tmp = buf.str (); \
  \
 	  if (strlen (tmp) == 0) \
-	    is.setstate (ios::failbit); \
+	    is.setstate (std::ios::failbit); \
 	} \
     } \
   while (0)
@@ -1323,7 +1323,7 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 
       const scanf_format_elt *elt = fmt_list.first ();
 
-      ios::fmtflags flags = is.flags ();
+      std::ios::fmtflags flags = is.flags ();
 
       for (;;)
 	{
@@ -1508,8 +1508,8 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 		  // If it looks like we have a matching failure, then
 		  // reset the failbit in the stream state.
 
-		  if (is.rdstate () & ios::failbit)
-		    is.clear (is.rdstate () & (~ios::failbit));
+		  if (is.rdstate () & std::ios::failbit)
+		    is.clear (is.rdstate () & (~std::ios::failbit));
 
 		  // XXX FIXME XXX -- is this the right thing to do?
 
@@ -1586,8 +1586,8 @@ octave_base_stream::scanf (const string& fmt, const Matrix& size,
 		    // If it looks like we have a matching failure, then
 		    // reset the failbit in the stream state.
 
-		    if (is.rdstate () & ios::failbit)
-		      is.clear (is.rdstate () & (~ios::failbit));
+		    if (is.rdstate () & std::ios::failbit)
+		      is.clear (is.rdstate () & (~std::ios::failbit));
 		    else
 		      error ("fscanf: read error");
 
@@ -1640,7 +1640,7 @@ octave_base_stream::do_oscanf (const scanf_format_elt *elt,
     {
       std::istream& is = *isp;
 
-      ios::fmtflags flags = is.flags ();
+      std::ios::fmtflags flags = is.flags ();
 
       if (elt)
 	{
@@ -2367,7 +2367,7 @@ octave_base_stream::puts (const std::string& s)
 int
 octave_base_stream::rewind (void)
 {
-  return seek (0, ios::beg);
+  return seek (0, std::ios::beg);
 }
 
 // Return current error message for this stream.
@@ -2509,7 +2509,7 @@ octave_stream::gets (const octave_value& tc_max_len, bool& err)
 }
 
 int
-octave_stream::seek (streamoff offset, ios::seek_dir origin)
+octave_stream::seek (streamoff offset, std::ios::seek_dir origin)
 {
   int retval = -1;
 
@@ -2531,18 +2531,18 @@ octave_stream::seek (const octave_value& tc_offset,
 
   if (! conv_err)
     {
-      ios::seek_dir origin = ios::beg;
+      std::ios::seek_dir origin = std::ios::beg;
 
       if (tc_origin.is_string ())
 	{
 	  std::string xorigin = tc_origin.string_value ();
 
 	  if (xorigin == "bof")
-	    origin = ios::beg;
+	    origin = std::ios::beg;
 	  else if (xorigin == "cof")
-	    origin = ios::cur;
+	    origin = std::ios::cur;
 	  else if (xorigin == "eof")
-	    origin = ios::end;
+	    origin = std::ios::end;
 	  else
 	    conv_err = -1;
 	}
@@ -2553,11 +2553,11 @@ octave_stream::seek (const octave_value& tc_offset,
 	  if (! conv_err)
 	    {
 	      if (xorigin == -1)
-		origin = ios::beg;
+		origin = std::ios::beg;
 	      else if (xorigin == 0)
-		origin = ios::cur;
+		origin = std::ios::cur;
 	      else if (xorigin == 1)
-		origin = ios::end;
+		origin = std::ios::end;
 	      else
 		conv_err = -1;
 	    }
@@ -2764,53 +2764,53 @@ octave_stream::mode_as_string (int mode)
 
   switch (mode)
     {
-    case ios::in:
+    case std::ios::in:
       retval = "r";
       break;
 
-    case ios::out:
-    case ios::out | ios::trunc:
+    case std::ios::out:
+    case std::ios::out | std::ios::trunc:
       retval = "w";
       break;
 
-    case ios::out | ios::app:
+    case std::ios::out | std::ios::app:
       retval = "a";
       break;
 
-    case ios::in | ios::out:
+    case std::ios::in | std::ios::out:
       retval = "r+";
       break;
 
-    case ios::in | ios::out | ios::trunc:
+    case std::ios::in | std::ios::out | std::ios::trunc:
       retval = "w+";
       break;
 
-    case ios::in | ios::out | ios::app:
+    case std::ios::in | std::ios::out | std::ios::app:
       retval = "a+";
       break;
 
-    case ios::in | ios::bin:
+    case std::ios::in | std::ios::bin:
       retval = "rb";
       break;
 
-    case ios::out | ios::bin:
-    case ios::out | ios::trunc | ios::bin:
+    case std::ios::out | std::ios::bin:
+    case std::ios::out | std::ios::trunc | std::ios::bin:
       retval = "wb";
       break;
 
-    case ios::out | ios::app | ios::bin:
+    case std::ios::out | std::ios::app | std::ios::bin:
       retval = "ab";
       break;
 
-    case ios::in | ios::out | ios::bin:
+    case std::ios::in | std::ios::out | std::ios::bin:
       retval = "r+b";
       break;
 
-    case ios::in | ios::out | ios::trunc | ios::bin:
+    case std::ios::in | std::ios::out | std::ios::trunc | std::ios::bin:
       retval = "w+b";
       break;
 
-    case ios::in | ios::out | ios::app | ios::bin:
+    case std::ios::in | std::ios::out | std::ios::app | std::ios::bin:
       retval = "a+b";
       break;
 
@@ -3107,16 +3107,16 @@ octave_stream_list::do_list_open_files (void) const
 	  std::string name = os.name ();
 
 	  buf << "  "
-	      << setiosflags (ios::right)
+	      << setiosflags (std::ios::right)
 	      << setw (4) << i << "     "
-	      << setiosflags (ios::left)
+	      << setiosflags (std::ios::left)
 	      << setw (3) << mode.c_str () << "  "
 	      << setw (9) << arch.c_str () << "  "
 	      << name << "\n";
 	}
     }
 
-  buf << "\n" << ends;
+  buf << "\n" << std::ends;
 
   char *tmp = buf.str ();
 

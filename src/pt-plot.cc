@@ -309,7 +309,7 @@ tree_plot_command::eval (void)
 	return;
     }
 
-  plot_buf << Vgnuplot_command_end << ends;
+  plot_buf << Vgnuplot_command_end << std::ends;
 
   // Just testing...
   //  char *message = plot_buf.str ();
@@ -928,7 +928,7 @@ do_external_plotter_cd (const std::string& newdir)
   if (plot_stream && *plot_stream)
     {
       std::ostrstream plot_buf;
-      plot_buf << "cd \"" << newdir << "\"" << Vgnuplot_command_end << ends;
+      plot_buf << "cd \"" << newdir << "\"" << Vgnuplot_command_end << std::ends;
       char *message = plot_buf.str ();
       send_to_plot_stream (message);
       delete [] message;
@@ -1124,7 +1124,7 @@ Set plotting options for gnuplot\n\
 	    buf << argv[i] << " ";
 	  if (i < argc)
 	    buf << argv[i];
-	  buf << Vgnuplot_command_end << ends;
+	  buf << Vgnuplot_command_end << std::ends;
 	  gnuplot_terminal_type = buf.str ();
 	}
     }
@@ -1136,7 +1136,7 @@ Set plotting options for gnuplot\n\
   if (i < argc)
     plot_buf << argv[i];
 
-  plot_buf << Vgnuplot_command_end << ends;
+  plot_buf << Vgnuplot_command_end << std::ends;
 
   char *plot_command = plot_buf.str ();
   send_to_plot_stream (plot_command);
@@ -1177,7 +1177,7 @@ Show plotting options.\n\
   if (i < argc)
     plot_buf << argv[i];
 
-  plot_buf << Vgnuplot_command_end << ends;
+  plot_buf << Vgnuplot_command_end << std::ends;
 
   char *plot_command = plot_buf.str ();
   send_to_plot_stream (plot_command);

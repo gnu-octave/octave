@@ -297,7 +297,7 @@ extract_keyword (std::istream& is, const char *keyword)
 	  while (is.get (c) && isalpha (c))
 	    buf << c;
 
-	  buf << ends;
+	  buf << std::ends;
 	  char *tmp = buf.str ();
 	  int match = (strncmp (tmp, keyword, strlen (keyword)) == 0);
 	  delete [] tmp;
@@ -314,7 +314,7 @@ extract_keyword (std::istream& is, const char *keyword)
 		  while (is.get (c) && c != '\n')
 		    value << c;
 		}
-	      value << ends;
+	      value << std::ends;
 	      retval = value.str ();
 	      break;
 	    }
@@ -365,7 +365,7 @@ extract_keyword (std::istream& is, const char *keyword, int& value)
 	  while (is.get (c) && isalpha (c))
 	    buf << c;
 
-	  buf << ends;
+	  buf << std::ends;
 	  char *tmp = buf.str ();
 	  int match = (strncmp (tmp, keyword, strlen (keyword)) == 0);
 	  delete [] tmp;
@@ -1036,7 +1036,7 @@ get_lines_and_columns (std::istream& is, const std::string& filename, int& nr, i
     error ("load: file `%s' seems to be empty!", filename.c_str ());
 
   is.clear ();
-  is.seekg (pos, ios::beg);
+  is.seekg (pos, std::ios::beg);
 }
 
 // Extract a matrix from a file of numbers only.
@@ -1082,7 +1082,7 @@ read_mat_ascii_data (std::istream& is, const std::string& filename,
 	  Matrix tmp (nr, nc);
 
 	  if (nr < 1 || nc < 1)
-	    is.clear (ios::badbit);
+	    is.clear (std::ios::badbit);
 	  else
 	    {
 	      double d;
@@ -1515,7 +1515,7 @@ get_file_format (const std::string& fname, const std::string& orig_fname)
     retval = LS_BINARY;
   else
     {
-      file.seekg (0, ios::beg);
+      file.seekg (0, std::ios::beg);
 
       FOUR_BYTE_INT mopt, nr, nc, imag, len;
 
@@ -1526,7 +1526,7 @@ get_file_format (const std::string& fname, const std::string& orig_fname)
       else
 	{
 	  file.clear ();
-	  file.seekg (0, ios::beg);
+	  file.seekg (0, std::ios::beg);
 
 	  char *tmp = extract_keyword (file, "name");
 
@@ -1631,9 +1631,9 @@ do_load (std::istream& stream, const std::string& orig_fname, bool force,
 			      << "====               ====   ====   ====\n";
 
 			  output_buf
-			    << setiosflags (ios::left)
+			    << setiosflags (std::ios::left)
 			    << setw (16) << tc.type_name () . c_str ()
-			    << setiosflags (ios::right)
+			    << setiosflags (std::ios::right)
 			    << setw (7) << tc.rows ()
 			    << setw (7) << tc.columns ()
 			    << "   ";
@@ -1672,7 +1672,7 @@ do_load (std::istream& stream, const std::string& orig_fname, bool force,
 
   if (list_only && count)
     {
-      output_buf << ends;
+      output_buf << std::ends;
 
       char *msg = output_buf.str ();
 
@@ -1825,9 +1825,9 @@ Force Octave to assume the file is in @sc{Matlab}'s binary format.\n\
 	{
 	  i++;
 
-	  unsigned mode = ios::in;
+	  unsigned mode = std::ios::in;
 	  if (format == LS_BINARY || format == LS_MAT_BINARY)
-	    mode |= ios::bin;
+	    mode |= std::ios::bin;
 
 	  std::ifstream file (fname.c_str (), mode);
 
@@ -2539,9 +2539,9 @@ save_user_variables (void)
 
       load_save_format format = get_default_save_format ();
 
-      unsigned mode = ios::out|ios::trunc;
+      unsigned mode = std::ios::out|std::ios::trunc;
       if (format == LS_BINARY || format == LS_MAT_BINARY)
-	mode |= ios::bin;
+	mode |= std::ios::bin;
 
       std::ofstream file (fname, mode);
 
@@ -2706,18 +2706,18 @@ the file @file{data} in Octave's binary format.\n\
 
       i++;
 
-      unsigned mode = ios::out;
+      unsigned mode = std::ios::out;
       if (format == LS_BINARY || format == LS_MAT_BINARY)
-	mode |= ios::bin;
+	mode |= std::ios::bin;
 
-      mode |= append ? ios::ate : ios::trunc;
+      mode |= append ? std::ios::ate : std::ios::trunc;
 
       std::ofstream file (fname.c_str (), mode);
 
       if (file)
 	{
 	  bool write_header_info
-	    = ((file.rdbuf ())->seekoff (0, ios::cur) == 0);
+	    = ((file.rdbuf ())->seekoff (0, std::ios::cur) == 0);
 
 	  save_vars (argv, i, argc, file, save_builtins, format,
 		     save_as_floats, write_header_info);

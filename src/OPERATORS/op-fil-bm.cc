@@ -68,7 +68,7 @@ DEFBINOP (lshift, file, bool_matrix)
 void
 install_fil_bm_ops (void)
 {
-  INSTALL_BINOP (lshift, octave_file, octave_bool_matrix, lshift);
+  INSTALL_BINOP (op_lshift, octave_file, octave_bool_matrix, lshift);
 }
 
 /*

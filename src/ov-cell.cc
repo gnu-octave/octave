@@ -135,7 +135,7 @@ octave_cell::print_raw (std::ostream& os, bool) const
 	  for (int i = 0; i < nr; i++)
 	    {
 	      std::ostrstream buf;
-	      buf << "[" << i+1 << "," << j+1 << "]" << ends;
+	      buf << "[" << i+1 << "," << j+1 << "]" << std::ends;
 	      const char *nm = buf.str ();
 
 	      octave_value val = cell_val(i,j);

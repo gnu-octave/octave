@@ -975,8 +975,8 @@ pr_any_float (const char *fmt, std::ostream& os, double d, int fw = 0)
 
 	  char ofill = os.fill ('0');
 
-	  ios::fmtflags oflags = os.setf (ios::right);
-	  os.setf (ios::hex, ios::basefield);
+	  std::ios::fmtflags oflags = os.setf (std::ios::right);
+	  os.setf (std::ios::hex, std::ios::basefield);
 
 	  if (hex_format > 1
 	      || flt_fmt == oct_mach_info::ieee_big_endian

@@ -356,7 +356,7 @@ run_command_and_return_output (const std::string& cmd_str)
 	  else
 	    cmd_status = 127;
 
-	  output_buf << ends;
+	  output_buf << std::ends;
 
 	  char *msg = output_buf.str ();
 
@@ -690,7 +690,7 @@ __builtin_new (size_t sz)
     }
 
   if (debug_new_delete)
-    std::cout << "__builtin_new: " << p << endl;
+    std::cout << "__builtin_new: " << p << std::endl;
 
   return p;
 }
@@ -699,7 +699,7 @@ void
 __builtin_delete (void *ptr)
 {
   if (debug_new_delete)
-    std::cout << "__builtin_delete: " << ptr << endl;
+    std::cout << "__builtin_delete: " << ptr << std::endl;
 
   if (ptr)
     free (ptr);

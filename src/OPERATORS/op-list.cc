@@ -41,7 +41,7 @@ DEFASSIGNANYOP_FN (assign, list, assign);
 void
 install_list_ops (void)
 {
-  INSTALL_ASSIGNANYOP (asn_eq, octave_list, assign);
+  INSTALL_ASSIGNANYOP (op_asn_eq, octave_list, assign);
 }
 
 /*

@@ -70,7 +70,7 @@ tree_parameter_list::initialize_undefined_elements (octave_value& val)
 	{
 	  octave_lvalue tmp = elt->lvalue ();
 
-	  tmp.assign (octave_value::asn_eq, val);
+	  tmp.assign (octave_value::op_asn_eq, val);
 	}
     }
 }
@@ -101,10 +101,10 @@ tree_parameter_list::define_from_arg_vector (const octave_value_list& args)
 	      return;
 	    }
 
-	  ref.assign (octave_value::asn_eq, args(i));
+	  ref.assign (octave_value::op_asn_eq, args(i));
 	}
       else
-	ref.assign (octave_value::asn_eq, octave_value ());
+	ref.assign (octave_value::op_asn_eq, octave_value ());
 
       next (p);
     }
@@ -123,7 +123,7 @@ tree_parameter_list::clear (void)
 
       octave_lvalue ref = elt->lvalue ();
 
-      ref.assign (octave_value::asn_eq, octave_value ());
+      ref.assign (octave_value::op_asn_eq, octave_value ());
 
       next (p);
     }

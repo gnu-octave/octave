@@ -46,8 +46,8 @@ DEFUNOP (transpose, char_matrix)
 void
 install_chm_ops (void)
 {
-  INSTALL_UNOP (transpose, octave_char_matrix, transpose);
-  INSTALL_UNOP (hermitian, octave_char_matrix, transpose);
+  INSTALL_UNOP (op_transpose, octave_char_matrix, transpose);
+  INSTALL_UNOP (op_hermitian, octave_char_matrix, transpose);
 }
 
 /*

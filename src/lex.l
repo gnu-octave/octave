@@ -1641,7 +1641,7 @@ have_continuation (bool trailing_comments_ok)
   return false;
 
 cleanup:
-  buf << ends;
+  buf << std::ends;
   char *s = buf.str ();
   if (s)
     {
@@ -1751,7 +1751,7 @@ handle_string (char delim, int text_style)
 	      else
 		{
 		  unput (c);
-		  buf << ends;
+		  buf << std::ends;
 		  char *t = buf.str ();
 		  std::string s = do_string_escapes (t);
 		  delete [] t;

@@ -28,6 +28,9 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #endif
 
 #include <sys/types.h>
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 #include <sys/stat.h>
 #include <time.h>
 #include <pwd.h>
@@ -38,7 +41,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <assert.h>
 #include <iostream.h>
 #include <fstream.h>
-#include <GetOpt.h>
+
+#include "getopt.h"
 
 #include "sighandlers.h"
 #include "variables.h"
@@ -116,11 +120,28 @@ static int read_init_files = 1;
 static int inhibit_startup_message = 0;
 
 // Usage message
-static const char *usage_string = "octave [-?dfhiqvx] [-p path] [file]";
+static const char *usage_string = 
+  "octave [-?dfhiqvx] [-p path] [--debug] [--help] [--interactive]\n\
+         [--norc] [--path path] [--quiet] [--version] [--echo-commands]\n\
+         [file]";
 
 // This is here so that it\'s more likely that the usage message and
 // the real set of options will agree.
-static const char *getopt_option_string = "?dfhip:qvx";
+static const char *short_opts = "?dfhip:qvx";
+
+// Long options.
+static struct option long_opts[] =
+  {
+    { "debug", 0, 0, 'd' },
+    { "help", 0, 0, 'h' },
+    { "interactive", 0, 0, 'i' },
+    { "norc", 0, 0, 'f' },
+    { "path", 1, 0, 'p' },
+    { "quiet", 0, 0, 'q' },
+    { "version", 0, 0, 'v' },
+    { "echo-commands", 0, 0, 'x' },
+    { 0, 0, 0, 0 }
+  };
 
 /*
  * Initialize some global variables for later use.
@@ -262,13 +283,14 @@ verbose_usage (void)
        << ".  Copyright (C) 1992, 1993, John W. Eaton.\n"
        << "  This is free software with ABSOLUTELY NO WARRANTY.\n"
        << "\n"
-       << "  " << usage_string
-       << "\n"
+       << "  usage: " << usage_string
+       << "\n\n"
        << "     d : enter parser debugging mode\n"
        << "     f : don't read ~/.octaverc or .octaverc at startup\n"
        << "   h|? : print short help message and exit\n"
        << "     i : force interactive behavior\n"
        << "     q : don't print message at startup\n"
+       << "     v : print version number and exit\n"
        << "     x : echo commands as they are executed\n"
        << "\n"
        << "  file : execute commands from named file\n"
@@ -283,7 +305,7 @@ verbose_usage (void)
 static void
 usage (void)
 {
-  usage (usage_string);
+  cerr << "usage: " << usage_string << "\n";
   exit (1);
 }
 
@@ -328,13 +350,10 @@ main (int argc, char **argv)
 // defaults.
   initialize_globals (argv[0]);
 
-// If the 
-  GetOpt getopt (argc, argv, getopt_option_string);
-  int option_char;
-
-  while ((option_char = getopt ()) != EOF)
+  int optc;
+  while ((optc = getopt_long (argc, argv, short_opts, long_opts, 0)) != EOF)
     {
-      switch (option_char)
+      switch (optc)
 	{
 	case 'd':
 	  yydebug++;
@@ -350,8 +369,8 @@ main (int argc, char **argv)
 	  forced_interactive = 1;
 	  break;
 	case 'p':
-	  if (getopt.optarg != (char *) NULL)
-	    load_path = strsave (getopt.optarg);
+	  if (optarg != (char *) NULL)
+	    load_path = strsave (optarg);
 	  break;
 	case 'q':
 	  inhibit_startup_message = 1;
@@ -408,9 +427,9 @@ main (int argc, char **argv)
 
 // If there is an extra argument, see if it names a file to read.
 
-  if (getopt.optind != argc)
+  if (optind != argc)
     {
-      FILE *infile = get_input_from_file (argv[getopt.optind]);
+      FILE *infile = get_input_from_file (argv[optind]);
       if (infile == (FILE *) NULL)
 	clean_up_and_exit (1);
       else

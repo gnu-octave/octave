@@ -75,7 +75,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   while (0)
 
 /* For setjmp/longjmp. */
-jmp_buf f77_context;
+extern jmp_buf f77_context;
 
 /* Defining this as a separate function allows us to avoid having to
    include string.h in this file. */

@@ -1604,16 +1604,15 @@ ComplexMatrix::expm (void) const
   // code follows development in AEPBAL
 
   Complex *mp = m.fortran_vec ();
-  int ilo, ihi, info;
+
+  int info, ilo, ihi,ilos,ihis;
+  Array<double> dpermute(nc);
+  Array<double> dscale(nc);
 
   // FIXME: should pass job as a parameter in expm
-  char job = 'B';
-
-  Array<double> scale(nc);
-  double *pscale = scale.fortran_vec ();
-
-  F77_XFCN (zgebal, ZGEBAL, (&job, nc, mp, nc, ilo, ihi, pscale, info,
-			     1L, 1L));
+  char job = 'P';       // Permute first
+  F77_XFCN (zgebal, ZGEBAL, (&job, nc, mp, nc, ilo, ihi,
+            dpermute.fortran_vec(), info, 1L, 1L));
 
   if (f77_exception_encountered)
     {
@@ -1621,33 +1620,13 @@ ComplexMatrix::expm (void) const
       return retval;
     }
 
-  // construct balancing matrices dmat, dinv
-
-  Matrix dmat = Matrix (nc, nc, 0.0);
-  Matrix dinv = Matrix (nc, nc, 0.0);
-
-  for (int i = 0; i < nc; i++)
-    dmat(i,i) = dinv(i,i) = 1.0;
-
-  // pscale contains real data, so just use dgebak, dside=R => dmat := D*dmat
-  char dside = 'R';
-  F77_XFCN (dgebak, DGEBAK, (&job, &dside, nc, ilo, ihi, pscale, nc,
-			     dmat.fortran_vec(), nc, info, 1L, 1L));
+  job = 'S';            // then scale
+  F77_XFCN (zgebal, ZGEBAL, (&job, nc, mp, nc, ilos, ihis,
+            dscale.fortran_vec(), info, 1L, 1L));
 
   if (f77_exception_encountered)
     {
-      (*current_liboctave_error_handler) ("unrecoverable error in dgebak");
-      return retval;
-    }
-
-  // dgebak, dside=L => dinv := dinv*D^{-1}
-  dside = 'L';
-  F77_XFCN (dgebak, DGEBAK, (&job, &dside, nc, ilo, ihi, pscale, nc,
-			     dinv.fortran_vec(), nc, info, 1L, 1L));
-
-  if (f77_exception_encountered)
-    {
-      (*current_liboctave_error_handler) ("unrecoverable error in dgebak");
+      (*current_liboctave_error_handler) ("unrecoverable error in zgebal");
       return retval;
     }
 
@@ -1719,10 +1698,46 @@ ComplexMatrix::expm (void) const
     }
 
   // Reverse preconditioning step 2: inverse balancing.
-  // FIXME: need to figure out how to get dgebak to do
-  // dmat*retval*dinv instead of dinv*retval*dmat
-  // This works for now
-  retval = dmat*retval*dinv;
+  // Done in two steps: inverse scaling, then inverse permutation
+
+  // inverse scaling (diagonal transformation)
+  int ii, jj;
+  for(ii = 0; ii < nc ; ii++)
+    for(jj=0; jj < nc ; jj++)
+       retval(ii,jj) *= dscale(ii)/dscale(jj);
+
+  // construct balancing permutation vector
+  Array<int> ipermute(nc);
+  for(ii=0 ; ii < nc ; ii++)
+    ipermute(ii) = ii;  // initialize to identity permutation
+
+  // leading permutations in forward order
+  for( ii = 0 ; ii < (ilo-1) ; ii++)
+  {
+    int swapidx = ( (int) dpermute(ii) ) -1;
+    int tmp = ipermute(ii);
+    ipermute(ii) = ipermute( swapidx );
+    ipermute(swapidx) = tmp;
+  }
+
+  // trailing permutations must be done in reverse order
+  for( ii = nc-1 ; ii >= ihi ; ii--)
+  {
+    int swapidx = ( (int) dpermute(ii) ) -1;
+    int tmp = ipermute(ii);
+    ipermute(ii) = ipermute( swapidx );
+    ipermute(swapidx) = tmp;
+  }
+
+  // construct inverse balancing permutation vector
+  Array<int> invpvec(nc);
+  for( ii = 0 ; ii < nc ; ii++)
+    invpvec(ipermute(ii)) = ii ;     // Thanks to R. A. Lippert for this method
+
+  ComplexMatrix tmpMat = retval;
+  for( ii = 0 ; ii < nc ; ii ++)
+    for( jj= 0 ; jj < nc ; jj++ )
+      retval(ii,jj) = tmpMat(invpvec(ii),invpvec(jj));
 
   // Reverse preconditioning step 1: fix trace normalization.
 

@@ -9,6 +9,17 @@ I hope that someday Octave will include more signal processing
 functions.  If you would like to help improve Octave in this area,
 please contact @code{bug-octave@@bevo.che.wisc.edu}.
 
+@deftypefn {Function File} {} detrend (@var{x}, @var{p})
+If @var{x} is a vector, @code{detrend (@var{x}, @var{p})} removes the
+best fit of a polynomial of order @var{p} from the data @var{x}.
+
+If @var{x} is a matrix, @code{detrend (@var{x}, @var{p})} does the same
+for each column in @var{x}.
+
+The second argument is optional.  If it is not specified, a value of 1
+is assumed.  This corresponds to removing a linear trend.
+@end deftypefn
+
 @deftypefn {Function} {} fft (@var{a} [, @var{n}])
 Compute the FFT of @var{a} using subroutines from FFTPACK.  If @var{a}
 is a matrix, @code{fft} computes the FFT for each column of @var{a}.

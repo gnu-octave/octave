@@ -115,12 +115,44 @@ Compute the natural logarithm of @var{x}.  To compute the matrix logarithm,
 see @ref{Linear Algebra}.
 @end deftypefn
 
-@deftypefn {Mapping Function} {} log2 (@var{x})
-Compute the base-2 logarithm of @var{x}.
+@deftypefn {Mapping Function} {@var{y} =} log2 (@var{x})
+@deftypefnx {Mapping Function} {[@var{f}, @var{e}]} log2 (@var{x})
+Compute the base-2 logarithm of @var{x}.  With two outputs, returns
+@var{f} and @var{e} such that
+@iftex
+@tex
+ $1/2 <= |f| < 1$ and $x = f * 2^e$.
+@end tex
+@end iftex
+@ifinfo
+ 1/2 <= abs(f) < 1 and x = f * 2^e.
+@end ifinfo
 @end deftypefn
 
 @deftypefn {Mapping Function} {} log10 (@var{x})
 Compute the base-10 logarithm of @var{x}.
+@end deftypefn
+
+@deftypefn {Mapping Function} {} pow2 (@var{x})
+@deftypefnx {Mapping Function} {} pow2 (@var{f}, @var{e})
+With one argument, computes
+@iftex
+@tex
+ $2^x$
+@end tex
+@end iftex
+@ifinfo
+ 2 .^ x
+@end ifinfo
+for each element of @var{x}.  With two arguments, returns
+@iftex
+@tex
+ $f 2^e$.
+@end tex
+@end iftex
+@ifinfo
+ f .* (2 .^ e).
+@end ifinfo
 @end deftypefn
 
 @deftypefn {Mapping Function} {} sqrt (@var{x})
@@ -157,6 +189,13 @@ x - y .* fix (x ./ y)
 
 An error message is printed if the dimensions of the arguments do not
 agree, or if either of the arguments is complex.
+@end deftypefn
+
+@deftypefn {Mapping Function} {} xor (@var{x}, @var{y})
+Return the `exclusive or' of the entries of @var{x} and @var{y}.
+For boolean expressions @var{x} and @var{y},
+@code{xor (@var{x}, @var{y})} is true if and only if either @var{x} or
+@var{y} is true.
 @end deftypefn
 
 @node Complex Arithmetic, Trigonometry, Utility Functions, Arithmetic
@@ -344,6 +383,10 @@ scalars.  If @var{x} is a scalar, @var{a} and @var{b} must be of
 compatible dimensions.
 @end deftypefn
 
+@deftypefn {Mapping Function} {} bincoeff (@var{n}, @var{k})
+Returns the binomial coefficient of @var{n} and @var{k}.
+@end deftypefn
+
 @deftypefn {Mapping Function} {} erf (@var{z})
 Computes the error function,
 @iftex
@@ -369,10 +412,9 @@ erf (z) = (2/sqrt (pi)) | e^(-t^2) dt
 Computes the complementary error function, @code{1 - erf (@var{z})}.
 @end deftypefn
 
-@c XXX FIXME XXX -- this isn't actually distributed with Octave yet.
-@c
-@c @item erfinv
-@c Computes the inverse of the error function.
+@deftypefn {Mapping Function} {} erfinv (@var{z})
+Computes the inverse of the error function.
+@end deftypefn
 
 @deftypefn {Mapping Function} {} gamma (@var{z})
 Computes the Gamma function,

@@ -32,10 +32,10 @@ CXXFLAGS_NO_PT_FLAGS = $(filter-out $(PT_FLAGS), $(ALL_CXXFLAGS))
 ifeq ($(OCTAVE_LITE), true)
   ifdef CXXPICFLAG
     %.oct : pic/%.o
-	  $(CXX) -shared -o $@ $<
+	  $(CXX) $(SH_LDFLAGS) -o $@ $<
   else
     %.oct : %.o
-	  $(CXX) -shared -o $@ $<
+	  $(CXX) $(SH_LDFLAGS) -o $@ $<
   endif
 endif
 

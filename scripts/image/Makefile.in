@@ -43,10 +43,10 @@ install: all
 	  rm -f $(fcnfiledir)/$(script_sub_dir)/$$f ; \
 	  $(INSTALL_DATA) $(srcdir)/$$f $(fcnfiledir)/$(script_sub_dir)/$$f ; \
 	done
-	$(top_srcdir)/mkinstalldirs $(fcnfiledir)/imagelib
+	$(top_srcdir)/mkinstalldirs $(imagedir)
 	for f in $(IMAGE_FILES_NO_DIR) ; do \
-	  rm -f $(fcnfiledir)/imagelib/$$f ; \
-	  $(INSTALL_DATA) $(srcdir)/$$f $(fcnfiledir)/imagelib/$$f ; \
+	  rm -f $(imagedir)/$$f ; \
+	  $(INSTALL_DATA) $(srcdir)/$$f $(imagedir)/$$f ; \
 	done
 	$(top_srcdir)/mkinstalldirs $(archlibdir)
 	$(INSTALL_PROGRAM) octtopnm $(archlibdir)/octtopnm
@@ -57,7 +57,7 @@ uninstall:
 	  do rm -f $(fcnfiledir)/$(script_sub_dir)/$$f ; \
 	done
 	for f in $(IMAGE_FILES_NO_DIR) ; \
-	  do rm -f $(fcnfiledir)/imagelib/$$f ; \
+	  do rm -f $(imagedir)/$$f ; \
 	done
 	rm -f $(archlibdir)/octtopnm
 .PHONY: uninstall

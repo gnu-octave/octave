@@ -1,3 +1,4 @@
+# @configure_input@
 #
 # Common configuration rules for all of octave's Makefiles.
 #

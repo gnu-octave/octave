@@ -39,19 +39,10 @@ all:
 
 install: all
 	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $@; cd ..; done
-#	if test -d $(fcnfiledir)/$(script_sub_dir) ; then true ; \
-#	else $(TOPDIR)/mkpath $(fcnfiledir)/$(script_sub_dir) ; fi
-#	for f in $(FCN_FILES_NO_DIR) ; do \
-#	  rm -f $(fcnfiledir)/$(script_sub_dir)/$$f ; \
-#	  $(INSTALL_DATA) $(srcdir)/$$f $(fcnfiledir)/$(script_sub_dir)/$$f ; \
-#	done
 .PHONY: install
 
 uninstall:
 	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $@; cd ..; done
-#	for f in $(FCN_FILES_NO_DIR) ; \
-#	  do rm -f $(fcnfiledir)/$(script_sub_dir)/$$f ; \
-#	done
 .PHONY: uninstall
 
 clean:

@@ -1,3 +1,4 @@
+# @configure_input@
 #
 # Common rules for octave's libcruft directories.
 #

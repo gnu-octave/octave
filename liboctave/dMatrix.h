@@ -31,6 +31,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "MDiagArray2.h"
 
 #include "mx-defs.h"
+#include "mx-op-defs.h"
 
 #include "data-conv.h"
 #include "mach-info.h"
@@ -236,6 +237,15 @@ extern Matrix Sylvester (const Matrix&, const Matrix&, const Matrix&);
 extern ComplexColumnVector Qzval (const Matrix& a, const Matrix& b);
 
 extern Matrix operator * (const Matrix& a, const Matrix& b);
+
+MS_CMP_OP_DECLS (Matrix, double)
+MS_BOOL_OP_DECLS (Matrix, double)
+
+SM_CMP_OP_DECLS (double, Matrix)
+SM_BOOL_OP_DECLS (double, Matrix)
+
+MM_CMP_OP_DECLS (Matrix, Matrix)
+MM_BOOL_OP_DECLS (Matrix, Matrix)
 
 #endif
 

@@ -3049,6 +3049,15 @@ operator * (const Matrix& m, const Matrix& a)
   return retval;
 }
 
+MS_CMP_OPS(Matrix, , double, )
+MS_BOOL_OPS(Matrix, double)
+
+SM_CMP_OPS(double, , Matrix, )
+SM_BOOL_OPS(double, Matrix)
+
+MM_CMP_OPS(Matrix, , Matrix, )
+MM_BOOL_OPS(Matrix, Matrix)
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

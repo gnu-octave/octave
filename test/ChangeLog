@@ -1,3 +1,9 @@
+Wed Apr  2 21:59:15 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* octave.test/prefer/prefer.exp: Delete prefer-36 and prefer-37.
+	* octave.test/prefer/prefer-36.m, octave.test/prefer/prefer-37.m:
+	Delete test files.
+
 Wed Mar 12 16:56:41 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (install-strip): New target.

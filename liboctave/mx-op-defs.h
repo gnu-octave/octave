@@ -28,48 +28,123 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define BIN_OP_DECL(R, OP, X, Y) \
   extern R OP (const X&, const Y&)
 
-#define MS_OP_DECLS(R, M, S) \
+class boolMatrix;
+
+#define CMP_OP_DECL(OP, X, Y) \
+  extern boolMatrix OP (const X&, const Y&)
+
+#define BOOL_OP_DECL(OP, X, Y) \
+  extern boolMatrix OP (const X&, const Y&)
+
+#define TBM boolMatrix (1, 1, true)
+#define FBM boolMatrix (1, 1, false)
+#define NBM boolMatrix ()
+
+#if 0
+
+// vector by scalar operations.
+
+#define VS_BIN_OP_DECLS(R, V, S) \
+  BIN_OP_DECL (R, operator +, V, S); \
+  BIN_OP_DECL (R, operator -, V, S); \
+  BIN_OP_DECL (R, operator *, V, S); \
+  BIN_OP_DECL (R, operator /, V, S);
+
+#define VS_BIN_OP(R, F, OP, V, S) \
+  R \
+  F (const V& v, const S& s) \
+  { \
+    int len = v.length (); \
+ \
+    R r (len); \
+ \
+    for (size_t i = 0; i < len; i++) \
+      r.elem(i) = v.elem(i) OP s; \
+ \
+    return r; \
+  }
+
+#define VS_BIN_OPS(R, V, S) \
+  VS_BIN_OP (R, operator +, +, V, S) \
+  VS_BIN_OP (R, operator -, -, V, S) \
+  VS_BIN_OP (R, operator *, *, V, S) \
+  VS_BIN_OP (R, operator /, /, V, S)
+
+// scalar by vector by operations.
+
+#define SV_BIN_OP_DECLS(R, S, V) \
+  BIN_OP_DECL (R, operator +, S, V); \
+  BIN_OP_DECL (R, operator -, S, V); \
+  BIN_OP_DECL (R, operator *, S, V); \
+  BIN_OP_DECL (R, operator /, S, V);
+
+#define SV_BIN_OP(R, F, OP, S, V) \
+  R \
+  F (const S& s, const V& v) \
+  { \
+    int len = v.length (); \
+ \
+    R r (len); \
+ \
+    for (size_t i = 0; i < len; i++) \
+      r.elem(i) = s OP v.elem(i); \
+ \
+    return r; \
+  }
+
+#define SV_BIN_OPS(R, S, V) \
+  SV_BIN_OP (R, operator +, +, S, V) \
+  SV_BIN_OP (R, operator -, -, S, V) \
+  SV_BIN_OP (R, operator *, *, S, V) \
+  SV_BIN_OP (R, operator /, /, S, V)
+
+// vector by vector operations.
+
+#define VV_BIN_OP_DECLS(R, V1, V2) \
+  BIN_OP_DECL (R, operator +, V1, V2); \
+  BIN_OP_DECL (R, operator -, V1, V2); \
+  BIN_OP_DECL (R, product,    V1, V2); \
+  BIN_OP_DECL (R, quotient,   V1, V2);
+
+#define VV_BIN_OP(R, F, OP, V1, V2) \
+  R \
+  F (const V1& v1, const V2& v2) \
+  { \
+    R r; \
+ \
+    int v1_len = v1.length (); \
+    int v2_len = v2.length (); \
+ \
+    if (v1_len != v2_len) \
+      gripe_nonconformant (#OP, v1_len, v2_len); \
+    else \
+      { \
+	r.resize (v1_len); \
+ \
+	for (size_t i = 0; i < v1_len; i++) \
+	  r.elem(i) = v1.elem(i) OP v2.elem(i); \
+      } \
+ \
+    return r; \
+  }
+
+#define VV_BIN_OPS(R, V1, V2) \
+  VV_BIN_OP (R, operator +, +, V1, V2) \
+  VV_BIN_OP (R, operator -, -, V1, V2) \
+  VV_BIN_OP (R, product,    *, V1, V2) \
+  VV_BIN_OP (R, quotient,   /, V1, V2)
+
+#endif
+
+// matrix by scalar operations.
+
+#define MS_BIN_OP_DECLS(R, M, S) \
   BIN_OP_DECL (R, operator +, M, S); \
   BIN_OP_DECL (R, operator -, M, S); \
   BIN_OP_DECL (R, operator *, M, S); \
   BIN_OP_DECL (R, operator /, M, S);
 
-#define SM_OP_DECLS(R, S, M) \
-  BIN_OP_DECL (R, operator +, S, M); \
-  BIN_OP_DECL (R, operator -, S, M); \
-  BIN_OP_DECL (R, operator *, S, M); \
-  BIN_OP_DECL (R, operator /, S, M);
-
-#define MM_OP_DECLS(R, M1, M2) \
-  BIN_OP_DECL (R, operator +, M1, M2); \
-  BIN_OP_DECL (R, operator -, M1, M2); \
-  BIN_OP_DECL (R, product,    M1, M2); \
-  BIN_OP_DECL (R, quotient,   M1, M2);
-
-#define SDM_OP_DECLS(R, S, DM) \
-  BIN_OP_DECL (R, operator +, S, DM); \
-  BIN_OP_DECL (R, operator -, S, DM);
-
-#define DMS_OP_DECLS(R, DM, S) \
-  BIN_OP_DECL (R, operator +, DM, S); \
-  BIN_OP_DECL (R, operator -, DM, S);
-
-#define MDM_OP_DECLS(R, M, DM) \
-  BIN_OP_DECL (R, operator +, M, DM); \
-  BIN_OP_DECL (R, operator -, M, DM); \
-  BIN_OP_DECL (R, operator *, M, DM);
-
-#define DMM_OP_DECLS(R, DM, M) \
-  BIN_OP_DECL (R, operator +, DM, M); \
-  BIN_OP_DECL (R, operator -, DM, M); \
-  BIN_OP_DECL (R, operator *, DM, M);
-
-#define DMDM_OP_DECLS(R, DM1, DM2) \
-  BIN_OP_DECL (R, operator +, DM1, DM2); \
-  BIN_OP_DECL (R, operator -, DM1, DM2); \
-  BIN_OP_DECL (R, product, DM1, DM2);
-
-#define MS_OP(R, OP, M, S, F) \
+#define MS_BIN_OP(R, OP, M, S, F) \
   R \
   OP (const M& m, const S& s) \
   { \
@@ -84,13 +159,94 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
     return r; \
   }
 
-#define MS_OPS(R, M, S) \
-  MS_OP (R, operator +, M, S, add) \
-  MS_OP (R, operator -, M, S, subtract) \
-  MS_OP (R, operator *, M, S, multiply) \
-  MS_OP (R, operator /, M, S, divide)
+#define MS_BIN_OPS(R, M, S) \
+  MS_BIN_OP (R, operator +, M, S, add) \
+  MS_BIN_OP (R, operator -, M, S, subtract) \
+  MS_BIN_OP (R, operator *, M, S, multiply) \
+  MS_BIN_OP (R, operator /, M, S, divide)
 
-#define SM_OP(R, OP, S, M, F) \
+#define MS_CMP_OP_DECLS(M, S) \
+  CMP_OP_DECL (mx_el_lt, M, S); \
+  CMP_OP_DECL (mx_el_le, M, S); \
+  CMP_OP_DECL (mx_el_ge, M, S); \
+  CMP_OP_DECL (mx_el_gt, M, S); \
+  CMP_OP_DECL (mx_el_eq, M, S); \
+  CMP_OP_DECL (mx_el_ne, M, S);
+
+#define MS_CMP_OP(F, OP, M, MC, S, SC, EMPTY_RESULT) \
+  boolMatrix \
+  F (const M& m, const S& s) \
+  { \
+    boolMatrix r; \
+ \
+    int nr = m.rows (); \
+    int nc = m.cols (); \
+ \
+    if (nr == 0 || nc == 0) \
+      r = EMPTY_RESULT; \
+    else \
+      { \
+        r.resize (nr, nc); \
+ \
+        for (int j = 0; j < nc; j++) \
+          for (int i = 0; i < nr; i++) \
+	    r.elem(i, j) = MC (m.elem(i, j)) OP SC (s); \
+      } \
+ \
+    return r; \
+  }
+
+#define MS_CMP_OPS(M, CM, S, CS) \
+  MS_CMP_OP (mx_el_lt, <,  M, CM, S, CS, NBM) \
+  MS_CMP_OP (mx_el_le, <=, M, CM, S, CS, NBM) \
+  MS_CMP_OP (mx_el_ge, >=, M, CM, S, CS, NBM) \
+  MS_CMP_OP (mx_el_gt, >,  M, CM, S, CS, NBM) \
+  MS_CMP_OP (mx_el_eq, ==, M,   , S,   , FBM) \
+  MS_CMP_OP (mx_el_ne, !=, M,   , S,   , TBM)
+
+#define MS_BOOL_OP_DECLS(M, S) \
+  BOOL_OP_DECL (mx_el_and, M, S); \
+  BOOL_OP_DECL (mx_el_or,  M, S); \
+
+#define MS_BOOL_OP(F, OP, M, S) \
+  boolMatrix \
+  F (const M& m, const S& s) \
+  { \
+    boolMatrix r; \
+ \
+    int nr = m.rows (); \
+    int nc = m.cols (); \
+ \
+    if (nr != 0 && nc != 0) \
+      { \
+        r.resize (nr, nc); \
+ \
+        for (int j = 0; j < nc; j++) \
+          for (int i = 0; i < nr; i++) \
+	    r.elem(i, j) = (m.elem(i, j) != 0) OP (s != 0); \
+      } \
+ \
+    return r; \
+  }
+
+#define MS_BOOL_OPS(M, S) \
+  MS_BOOL_OP (mx_el_and, &&, M, S) \
+  MS_BOOL_OP (mx_el_or,  ||, M, S)
+
+#define MS_OP_DECLS(R, M, S) \
+  MS_BIN_OP_DECLS (R, M, S) \
+  MS_CMP_OP_DECLS (M, S) \
+  MS_BOOL_OP_DECLS (M, S) \
+
+// scalar by matrix operations.
+
+#define SM_BIN_OP_DECLS(R, S, M) \
+  BIN_OP_DECL (R, operator +, S, M); \
+  BIN_OP_DECL (R, operator -, S, M); \
+  BIN_OP_DECL (R, operator *, S, M); \
+  BIN_OP_DECL (R, operator /, S, M);
+
+#define SM_BIN_OP(R, OP, S, M, F) \
   R \
   OP (const S& s, const M& m) \
   { \
@@ -105,13 +261,94 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
     return r; \
   }
 
-#define SM_OPS(R, S, M) \
-  SM_OP (R, operator +, S, M, add) \
-  SM_OP (R, operator -, S, M, subtract) \
-  SM_OP (R, operator *, S, M, multiply) \
-  SM_OP (R, operator /, S, M, divide)
+#define SM_BIN_OPS(R, S, M) \
+  SM_BIN_OP (R, operator +, S, M, add) \
+  SM_BIN_OP (R, operator -, S, M, subtract) \
+  SM_BIN_OP (R, operator *, S, M, multiply) \
+  SM_BIN_OP (R, operator /, S, M, divide)
 
-#define MM_OP(R, OP, M1, M2, F) \
+#define SM_CMP_OP_DECLS(S, M) \
+  CMP_OP_DECL (mx_el_lt, S, M); \
+  CMP_OP_DECL (mx_el_le, S, M); \
+  CMP_OP_DECL (mx_el_ge, S, M); \
+  CMP_OP_DECL (mx_el_gt, S, M); \
+  CMP_OP_DECL (mx_el_eq, S, M); \
+  CMP_OP_DECL (mx_el_ne, S, M);
+
+#define SM_CMP_OP(F, OP, S, SC, M, MC, EMPTY_RESULT) \
+  boolMatrix \
+  F (const S& s, const M& m) \
+  { \
+    boolMatrix r; \
+ \
+    int nr = m.rows (); \
+    int nc = m.cols (); \
+ \
+    if (nr == 0 || nc == 0) \
+      r = EMPTY_RESULT; \
+    else \
+      { \
+        r.resize (nr, nc); \
+ \
+        for (int j = 0; j < nc; j++) \
+          for (int i = 0; i < nr; i++) \
+	    r.elem(i, j) = SC (s) OP MC (m.elem(i, j)); \
+      } \
+ \
+    return r; \
+  }
+
+#define SM_CMP_OPS(S, CS, M, CM) \
+  SM_CMP_OP (mx_el_lt, <,  S, CS, M, CM, NBM) \
+  SM_CMP_OP (mx_el_le, <=, S, CS, M, CM, NBM) \
+  SM_CMP_OP (mx_el_ge, >=, S, CS, M, CM, NBM) \
+  SM_CMP_OP (mx_el_gt, >,  S, CS, M, CM, NBM) \
+  SM_CMP_OP (mx_el_eq, ==, S,   , M,   , FBM) \
+  SM_CMP_OP (mx_el_ne, !=, S,   , M,   , TBM)
+
+#define SM_BOOL_OP_DECLS(S, M) \
+  BOOL_OP_DECL (mx_el_and, S, M); \
+  BOOL_OP_DECL (mx_el_or,  S, M); \
+
+#define SM_BOOL_OP(F, OP, S, M) \
+  boolMatrix \
+  F (const S& s, const M& m) \
+  { \
+    boolMatrix r; \
+ \
+    int nr = m.rows (); \
+    int nc = m.cols (); \
+ \
+    if (nr != 0 && nc != 0) \
+      { \
+        r.resize (nr, nc); \
+ \
+        for (int j = 0; j < nc; j++) \
+          for (int i = 0; i < nr; i++) \
+	    r.elem(i, j) = (s != 0) OP (m.elem(i, j) != 0); \
+      } \
+ \
+    return r; \
+  }
+
+#define SM_BOOL_OPS(S, M) \
+  SM_BOOL_OP (mx_el_and, &&, S, M) \
+  SM_BOOL_OP (mx_el_or,  ||, S, M)
+
+#define SM_OP_DECLS(R, S, M) \
+  SM_BIN_OP_DECLS (R, S, M) \
+  SM_CMP_OP_DECLS (S, M) \
+  SM_BOOL_OP_DECLS (S, M) \
+
+// matrix by matrix operations.
+
+#define MM_BIN_OP_DECLS(R, M1, M2) \
+  BIN_OP_DECL (R, operator +, M1, M2); \
+  BIN_OP_DECL (R, operator -, M1, M2); \
+  BIN_OP_DECL (R, product,    M1, M2); \
+  BIN_OP_DECL (R, quotient,   M1, M2);
+
+#define MM_BIN_OP(R, OP, M1, M2, F) \
   R \
   OP (const M1& m1, const M2& m2) \
   { \
@@ -136,13 +373,116 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
     return r; \
   }
 
-#define MM_OPS(R, M1, M2) \
-  MM_OP (R, operator +, M1, M2, add) \
-  MM_OP (R, operator -, M1, M2, subtract) \
-  MM_OP (R, product,    M1, M2, multiply) \
-  MM_OP (R, quotient,   M1, M2, divide)
+#define MM_BIN_OPS(R, M1, M2) \
+  MM_BIN_OP (R, operator +, M1, M2, add) \
+  MM_BIN_OP (R, operator -, M1, M2, subtract) \
+  MM_BIN_OP (R, product,    M1, M2, multiply) \
+  MM_BIN_OP (R, quotient,   M1, M2, divide)
 
-#define SDM_OP(R, OP, S, DM, OPEQ) \
+#define MM_CMP_OP_DECLS(M1, M2) \
+  CMP_OP_DECL (mx_el_lt, M1, M2); \
+  CMP_OP_DECL (mx_el_le, M1, M2); \
+  CMP_OP_DECL (mx_el_ge, M1, M2); \
+  CMP_OP_DECL (mx_el_gt, M1, M2); \
+  CMP_OP_DECL (mx_el_eq, M1, M2); \
+  CMP_OP_DECL (mx_el_ne, M1, M2);
+
+#define MM_CMP_OP(F, OP, M1, C1, M2, C2, ONE_MT_RESULT, TWO_MT_RESULT) \
+  boolMatrix \
+  F (const M1& m1, const M2& m2) \
+  { \
+    boolMatrix r; \
+ \
+    int m1_nr = m1.rows (); \
+    int m1_nc = m1.cols (); \
+ \
+    int m2_nr = m2.rows (); \
+    int m2_nc = m2.cols (); \
+ \
+    if (m1_nr == m2_nr && m1_nc == m2_nc) \
+      { \
+	if (m1_nr == 0 && m1_nc == 0) \
+	  r = TWO_MT_RESULT; \
+	else \
+	  { \
+	    r.resize (m1_nr, m1_nc); \
+ \
+	    for (int j = 0; j < m1_nc; j++) \
+	      for (int i = 0; i < m1_nr; i++) \
+		r.elem(i, j) = C1 (m1.elem(i, j)) OP C2 (m2.elem(i, j)); \
+	  } \
+      } \
+    else \
+      { \
+	if ((m1_nr == 0 && m1_nc == 0) || (m2_nr == 0 && m2_nc == 0)) \
+	  r = ONE_MT_RESULT; \
+	else \
+	  gripe_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
+      } \
+ \
+    return r; \
+  }
+
+#define MM_CMP_OPS(M1, C1, M2, C2) \
+  MM_CMP_OP (mx_el_lt, <,  M1, C1, M2, C2, NBM, NBM) \
+  MM_CMP_OP (mx_el_le, <=, M1, C1, M2, C2, NBM, NBM) \
+  MM_CMP_OP (mx_el_ge, >=, M1, C1, M2, C2, NBM, NBM) \
+  MM_CMP_OP (mx_el_gt, >,  M1, C1, M2, C2, NBM, NBM) \
+  MM_CMP_OP (mx_el_eq, ==, M1,   , M2,   , FBM, TBM) \
+  MM_CMP_OP (mx_el_ne, !=, M1,   , M2,   , TBM, FBM)
+
+#define MM_BOOL_OP_DECLS(M1, M2) \
+  BOOL_OP_DECL (mx_el_and, M1, M2); \
+  BOOL_OP_DECL (mx_el_or,  M1, M2);
+
+#define MM_BOOL_OP(F, OP, M1, M2) \
+  boolMatrix \
+  F (const M1& m1, const M2& m2) \
+  { \
+    boolMatrix r; \
+ \
+    int m1_nr = m1.rows (); \
+    int m1_nc = m1.cols (); \
+ \
+    int m2_nr = m2.rows (); \
+    int m2_nc = m2.cols (); \
+ \
+    if (m1_nr == m2_nr && m1_nc == m2_nc) \
+      { \
+	if (m1_nr != 0 || m1_nc != 0) \
+	  { \
+	    r.resize (m1_nr, m1_nc); \
+ \
+	    for (int j = 0; j < m1_nc; j++) \
+	      for (int i = 0; i < m1_nr; i++) \
+		r.elem(i, j) = (m1.elem(i, j) != 0) OP (m2.elem(i, j) != 0); \
+	  } \
+      } \
+    else \
+      { \
+	if ((m1_nr != 0 || m1_nc != 0) && (m2_nr != 0 || m2_nc != 0)) \
+	  gripe_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
+      } \
+ \
+    return r; \
+  }
+
+#define MM_BOOL_OPS(M1, M2) \
+  MM_BOOL_OP (mx_el_and, &&, M1, M2) \
+  MM_BOOL_OP (mx_el_or,  ||, M1, M2)
+
+#define MM_OP_DECLS(R, M1, M2) \
+  MM_BIN_OP_DECLS (R, M1, M2) \
+  MM_CMP_OP_DECLS (M1, M2) \
+  MM_BOOL_OP_DECLS (M1, M2)
+
+// scalar by diagonal matrix operations.
+
+#define SDM_BIN_OP_DECLS(R, S, DM) \
+  BIN_OP_DECL (R, operator +, S, DM); \
+  BIN_OP_DECL (R, operator -, S, DM);
+
+#define SDM_BIN_OP(R, OP, S, DM, OPEQ) \
   R \
   OP (const S& s, const DM& dm) \
   { \
@@ -154,16 +494,25 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
     int len = dm.length (); \
  \
     for (int i = 0; i < len; i++) \
-      r.elem (i, i) OPEQ dm.elem (i, i); \
+      r.elem(i, i) OPEQ dm.elem(i, i); \
  \
     return r; \
 }
 
-#define SDM_OPS(R, S, DM) \
-  SDM_OP (R, operator +, S, DM, +=) \
-  SDM_OP (R, operator -, S, DM, -=)
+#define SDM_BIN_OPS(R, S, DM) \
+  SDM_BIN_OP (R, operator +, S, DM, +=) \
+  SDM_BIN_OP (R, operator -, S, DM, -=)
 
-#define DMS_OP(R, OP, DM, S, SGN) \
+#define SDM_OP_DECLS(R, S, DM) \
+  SDM_BIN_OP_DECLS(R, S, DM)
+
+// diagonal matrix by scalar operations.
+
+#define DMS_BIN_OP_DECLS(R, DM, S) \
+  BIN_OP_DECL (R, operator +, DM, S); \
+  BIN_OP_DECL (R, operator -, DM, S);
+
+#define DMS_BIN_OP(R, OP, DM, S, SGN) \
   R \
   OP (const DM& dm, const S& s) \
   { \
@@ -175,16 +524,26 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
     int len = dm.length (); \
  \
     for (int i = 0; i < len; i++) \
-      r.elem (i, i) += dm.elem (i, i); \
+      r.elem(i, i) += dm.elem(i, i); \
  \
     return r; \
   }
 
-#define DMS_OPS(R, DM, S) \
-  DMS_OP (R, operator +, DM, S, ) \
-  DMS_OP (R, operator -, DM, S, -)
+#define DMS_BIN_OPS(R, DM, S) \
+  DMS_BIN_OP (R, operator +, DM, S, ) \
+  DMS_BIN_OP (R, operator -, DM, S, -)
 
-#define MDM_OP(R, OP, M, DM, OPEQ) \
+#define DMS_OP_DECLS(R, DM, S) \
+  DMS_BIN_OP_DECLS(R, DM, S)
+
+// matrix by diagonal matrix operations.
+
+#define MDM_BIN_OP_DECLS(R, M, DM) \
+  BIN_OP_DECL (R, operator +, M, DM); \
+  BIN_OP_DECL (R, operator -, M, DM); \
+  BIN_OP_DECL (R, operator *, M, DM);
+
+#define MDM_BIN_OP(R, OP, M, DM, OPEQ) \
 R \
 OP (const M& m, const DM& dm) \
 { \
@@ -209,7 +568,7 @@ OP (const M& m, const DM& dm) \
 	  int len = dm.length (); \
  \
 	  for (int i = 0; i < len; i++) \
-	    r.elem (i, i) OPEQ dm.elem (i, i); \
+	    r.elem(i, i) OPEQ dm.elem(i, i); \
 	} \
     } \
  \
@@ -238,15 +597,15 @@ operator * (const M& m, const DM& dm) \
 	{ \
 	  for (int j = 0; j < dm.length (); j++) \
 	    { \
-	      if (dm.elem (j, j) == 1.0) \
+	      if (dm.elem(j, j) == 1.0) \
 		{ \
 		  for (int i = 0; i < m_nr; i++) \
-		    r.elem (i, j) = m.elem (i, j); \
+		    r.elem(i, j) = m.elem(i, j); \
 		} \
-	      else if (dm.elem (j, j) != 0.0) \
+	      else if (dm.elem(j, j) != 0.0) \
 		{ \
 		  for (int i = 0; i < m_nr; i++) \
-		    r.elem (i, j) = dm.elem (j, j) * m.elem (i, j); \
+		    r.elem(i, j) = dm.elem(j, j) * m.elem(i, j); \
 		} \
 	    } \
 	} \
@@ -255,14 +614,24 @@ operator * (const M& m, const DM& dm) \
   return r; \
 }
 
-#define MDM_OPS(R, M, DM) \
-  MDM_OP (R, operator +, M, DM, +=) \
-  MDM_OP (R, operator -, M, DM, -=) \
+#define MDM_BIN_OPS(R, M, DM) \
+  MDM_BIN_OP (R, operator +, M, DM, +=) \
+  MDM_BIN_OP (R, operator -, M, DM, -=) \
   MDM_MULTIPLY_OP (R, M, DM)
+
+#define MDM_OP_DECLS(R, M, DM) \
+  MDM_BIN_OP_DECLS(R, M, DM)
+
+// diagonal matrix by matrix operations.
 
 // XXX FIXME XXX -- DM - M will not give the correct result.
 
-#define DMM_OP(R, OP, DM, M, OPEQ) \
+#define DMM_BIN_OP_DECLS(R, DM, M) \
+  BIN_OP_DECL (R, operator +, DM, M); \
+  BIN_OP_DECL (R, operator -, DM, M); \
+  BIN_OP_DECL (R, operator *, DM, M);
+
+#define DMM_BIN_OP(R, OP, DM, M, OPEQ) \
 R \
 OP (const DM& dm, const M& m) \
 { \
@@ -285,7 +654,7 @@ OP (const DM& dm, const M& m) \
 	  int len = dm.length (); \
  \
 	  for (int i = 0; i < len; i++) \
-	    r.elem (i, i) OPEQ dm.elem (i, i); \
+	    r.elem(i, i) OPEQ dm.elem(i, i); \
 	} \
       else \
 	r.resize (m_nr, m_nc); \
@@ -316,15 +685,15 @@ operator * (const DM& dm, const M& m) \
 	{ \
 	  for (int i = 0; i < dm.length (); i++) \
 	    { \
-	      if (dm.elem (i, i) == 1.0) \
+	      if (dm.elem(i, i) == 1.0) \
 		{ \
 		  for (int j = 0; j < m_nc; j++) \
-		    r.elem (i, j) = m.elem (i, j); \
+		    r.elem(i, j) = m.elem(i, j); \
 		} \
-	      else if (dm.elem (i, i) != 0.0) \
+	      else if (dm.elem(i, i) != 0.0) \
 		{ \
 		  for (int j = 0; j < m_nc; j++) \
-		    r.elem (i, j) = dm.elem (i, i) * m.elem (i, j); \
+		    r.elem(i, j) = dm.elem(i, i) * m.elem(i, j); \
 		} \
 	    } \
 	} \
@@ -333,37 +702,22 @@ operator * (const DM& dm, const M& m) \
   return r; \
 }
 
-#define DMM_OPS(R, DM, M) \
-  DMM_OP (R, operator +, DM, M, +=) \
-  DMM_OP (R, operator -, DM, M, -=) \
+#define DMM_BIN_OPS(R, DM, M) \
+  DMM_BIN_OP (R, operator +, DM, M, +=) \
+  DMM_BIN_OP (R, operator -, DM, M, -=) \
   DMM_MULTIPLY_OP(R, DM, M)
 
-#define MM_OP(R, OP, M1, M2, F) \
-  R \
-  OP (const M1& m1, const M2& m2) \
-  { \
-    R r; \
- \
-    int m1_nr = m1.rows (); \
-    int m1_nc = m1.cols (); \
- \
-    int m2_nr = m2.rows (); \
-    int m2_nc = m2.cols (); \
- \
-    if (m1_nr != m2_nr || m1_nc != m2_nc) \
-      gripe_nonconformant (#OP, m1_nr, m1_nc, m2_nr, m2_nc); \
-    else \
-      { \
-	r.resize (m1_nr, m1_nc); \
- \
-	if (m1_nr > 0 && m1_nc > 0) \
-	  F ## _vv (r.fortran_vec (), m1.data (), m2.data (), m1_nr * m1_nc); \
-      } \
- \
-    return r; \
-  }
+#define DMM_OP_DECLS(R, DM, M) \
+  DMM_BIN_OP_DECLS(R, DM, M)
 
-#define DMDM_OP(R, OP, DM1, DM2, F) \
+// diagonal matrix by diagonal matrix operations.
+
+#define DMDM_BIN_OP_DECLS(R, DM1, DM2) \
+  BIN_OP_DECL (R, operator +, DM1, DM2); \
+  BIN_OP_DECL (R, operator -, DM1, DM2); \
+  BIN_OP_DECL (R, product, DM1, DM2);
+
+#define DMDM_BIN_OP(R, OP, DM1, DM2, F) \
   R \
   OP (const DM1& dm1, const DM2& dm2) \
   { \
@@ -389,10 +743,13 @@ operator * (const DM& dm, const M& m) \
     return r; \
   }
 
-#define DMDM_OPS(R, DM1, DM2) \
-  DMDM_OP (R, operator +, DM1, DM2, add) \
-  DMDM_OP (R, operator -, DM1, DM2, subtract) \
-  DMDM_OP (R, product,    DM1, DM2, multiply)
+#define DMDM_BIN_OPS(R, DM1, DM2) \
+  DMDM_BIN_OP (R, operator +, DM1, DM2, add) \
+  DMDM_BIN_OP (R, operator -, DM1, DM2, subtract) \
+  DMDM_BIN_OP (R, product,    DM1, DM2, multiply)
+
+#define DMDM_OP_DECLS(R, DM1, DM2) \
+  DMDM_BIN_OP_DECLS (R, DM1, DM2)
 
 #endif
 

@@ -26,9 +26,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "mx-cm-s.h"
 
+#include "boolMatrix.h"
 #include "CMatrix.h"
 
-MS_OPS (ComplexMatrix, ComplexMatrix, double)
+MS_BIN_OPS (ComplexMatrix, ComplexMatrix, double)
+
+MS_CMP_OPS (ComplexMatrix, real, double, )
+
+MS_BOOL_OPS (ComplexMatrix, double)
 
 /*
 ;;; Local Variables: ***

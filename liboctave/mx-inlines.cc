@@ -36,10 +36,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
       r[i] = v[i] OP s; \
   }
 
-VS_OP_FCN(add, +)
-VS_OP_FCN(subtract, -)
-VS_OP_FCN(multiply, *)
-VS_OP_FCN(divide, /)
+VS_OP_FCN (add,      +)
+VS_OP_FCN (subtract, -)
+VS_OP_FCN (multiply, *)
+VS_OP_FCN (divide,   /)
 
 #define VS_OP(F, OP, R, V, S) \
   extern template void F ## _vs (R *, const V *, size_t, S); \
@@ -56,10 +56,10 @@ VS_OP_FCN(divide, /)
   }
 
 #define VS_OPS(R, V, S) \
-  VS_OP (add, +, R, S, V) \
-  VS_OP (subtract, -, R, S, V) \
-  VS_OP (multiply, *, R, S, V) \
-  VS_OP (divide, /, R, S, V)
+  VS_OP (add,      +, R, V, S) \
+  VS_OP (subtract, -, R, V, S) \
+  VS_OP (multiply, *, R, V, S) \
+  VS_OP (divide,   /, R, V, S)
 
 VS_OPS (double,  double,  double)
 VS_OPS (Complex, double,  Complex)
@@ -75,10 +75,10 @@ VS_OPS (Complex, Complex, Complex)
       r[i] = s OP v[i]; \
   } \
 
-SV_OP_FCN(add, +)
-SV_OP_FCN(subtract, -)
-SV_OP_FCN(multiply, *)
-SV_OP_FCN(divide, /)
+SV_OP_FCN (add,      +)
+SV_OP_FCN (subtract, -)
+SV_OP_FCN (multiply, *)
+SV_OP_FCN (divide,   /)
 
 #define SV_OP(F, OP, R, S, V) \
   extern template void F ## _sv (R *, S, const V *, size_t); \
@@ -95,10 +95,10 @@ SV_OP_FCN(divide, /)
   }
 
 #define SV_OPS(R, S, V) \
-  SV_OP (add,      +, R, V, S) \
-  SV_OP (subtract, -, R, V, S) \
-  SV_OP (multiply, *, R, V, S) \
-  SV_OP (divide,   /, R, V, S)
+  SV_OP (add,      +, R, S, V) \
+  SV_OP (subtract, -, R, S, V) \
+  SV_OP (multiply, *, R, S, V) \
+  SV_OP (divide,   /, R, S, V)
 
 SV_OPS (double,  double,  double)
 SV_OPS (Complex, double,  Complex)
@@ -114,10 +114,10 @@ SV_OPS (Complex, Complex, Complex)
       r[i] = v1[i] OP v2[i]; \
   } \
 
-VV_OP_FCN(add, +)
-VV_OP_FCN(subtract, -)
-VV_OP_FCN(multiply, *)
-VV_OP_FCN(divide, /)
+VV_OP_FCN (add,      +)
+VV_OP_FCN (subtract, -)
+VV_OP_FCN (multiply, *)
+VV_OP_FCN (divide,   /)
 
 #define VV_OP(F, OP, R, T1, T2) \
   extern template void F ## _vv (R *, const T1 *, const T2 *, size_t); \

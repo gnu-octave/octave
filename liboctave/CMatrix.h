@@ -31,6 +31,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "MDiagArray2.h"
 
 #include "mx-defs.h"
+#include "mx-op-defs.h"
 #include "oct-cmplx.h"
 
 class ComplexMatrix : public MArray2<Complex>
@@ -258,6 +259,15 @@ ComplexMatrix Sylvester (const ComplexMatrix&, const ComplexMatrix&,
 extern ComplexMatrix operator * (const Matrix&,        const ComplexMatrix&);
 extern ComplexMatrix operator * (const ComplexMatrix&, const Matrix&);
 extern ComplexMatrix operator * (const ComplexMatrix&, const ComplexMatrix&);
+
+MS_CMP_OP_DECLS (ComplexMatrix, Complex)
+MS_BOOL_OP_DECLS (ComplexMatrix, Complex)
+
+SM_CMP_OP_DECLS (Complex, ComplexMatrix)
+SM_BOOL_OP_DECLS (Complex, ComplexMatrix)
+
+MM_CMP_OP_DECLS (ComplexMatrix, ComplexMatrix)
+MM_BOOL_OP_DECLS (ComplexMatrix, ComplexMatrix)
 
 #endif
 

@@ -2878,6 +2878,15 @@ operator * (const ComplexMatrix& m, const ComplexMatrix& a)
   return retval;
 }
 
+MS_CMP_OPS(ComplexMatrix, real, Complex, real)
+MS_BOOL_OPS(ComplexMatrix, Complex)
+
+SM_CMP_OPS(Complex, real, ComplexMatrix, real)
+SM_BOOL_OPS(Complex, ComplexMatrix)
+
+MM_CMP_OPS(ComplexMatrix, real, ComplexMatrix, real)
+MM_BOOL_OPS(ComplexMatrix, ComplexMatrix)
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

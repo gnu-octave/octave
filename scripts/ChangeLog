@@ -1,3 +1,7 @@
+Wed Apr  2 22:04:03 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* miscellaneous/xor.m: Make type of return value logical.
+
 Fri Mar 28 16:19:53 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* miscellaneous/dump_prefs.m: Delete call to dump_1_pref for

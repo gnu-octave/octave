@@ -1,0 +1,83 @@
+#
+# Makefile for octave's dlfcn directory
+#
+# John W. Eaton
+# jwe@bevo.che.wisc.edu
+# University of Wisconsin-Madison
+# Department of Chemical Engineering
+
+TOPDIR = ..
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+
+include $(TOPDIR)/Makeconf
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
+
+INCLUDES := dlfcn.h
+
+SOURCES := dlfcn.c
+
+OBJECTS := $(SOURCES:.c=.o)
+
+MAKEDEPS := $(SOURCES:.c=.d)
+
+DISTFILES := $(SOURCES) $(INCLUDES) README dl.exp Makefile.in Makefile.orig
+
+all: dlfcn.a
+.PHONY: all
+
+dlfcn.a: $(OBJECTS)
+	$(AR) $(ARFLAGS) dlfcn.a $(OBJECTS)
+	$(RANLIB) dlfcn.a
+
+check: all
+.PHONY: check
+
+install: all
+.PHONY: install
+
+uninstall:
+.PHONY: uninstall
+
+tags: $(SOURCES)
+	ctags $(SOURCES)
+
+TAGS: $(SOURCES)
+	etags $(SOURCES)
+
+clean:
+	rm -f *.a *.o *.d
+.PHONY: clean
+
+mostlyclean:
+	rm -f *.o
+.PHONY: mostlyclean
+
+distclean: clean
+	rm -f Makefile
+.PHONY: distclean
+
+maintainer-clean: distclean
+	rm -f tags TAGS
+.PHONY: maintainer-clean
+
+local-dist:
+	ln $(DISTFILES) ../`cat ../.fname`/dlfcn
+.PHONY: local-dist
+
+dist:
+	ln $(DISTFILES) ../`cat ../.fname`/dlfcn
+.PHONY: dist
+
+conf-dist:
+	ln octave.cc Makefile.in ../`cat ../.fname`/dlfcn
+.PHONY: conf-dist
+
+ifndef omit_deps
+-include $(MAKEDEPS)
+endif

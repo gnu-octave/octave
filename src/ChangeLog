@@ -1,5 +1,7 @@
 Sun Jun 15 16:11:13 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* OPERATORS/op-cs-s.cc (ldiv): Doh, v1 is complex, v2 is real.
+
 	* Makefile.in (DISTFILES): Add mkops to the list.
 	(dist): Correctly link files in DLD-FUNCTIONS, OPERATORS, and
 	TEMPLATE-INST subdirectories.

@@ -31,7 +31,7 @@ DISTFILES = $(CONF_DISTFILES) \
 	ChangeLog ChangeLog.[0-9]
 
 # Complete directory trees to distribute.
-DISTDIRS = glob kpathsea # plplot
+DISTDIRS = glob kpathsea kpathsea # plplot
 
 # Subdirectories in which to run `make all'.
 SUBDIRS = @INFO_DIR@ @PLPLOT_DIR@ @READLINE_DIR@ @DLFCN_DIR@ glob \
@@ -45,7 +45,7 @@ INSTALL_SUBDIRS = @INFO_DIR@ libcruft liboctave src scripts doc examples
 CONF_DISTSUBDIRS = src
 
 # Subdirectories in which to run `make dist'.
-DISTSUBDIRS = libcruft liboctave info readline dlfcn src scripts \
+DISTSUBDIRS = libcruft liboctave info dlfcn src scripts \
 	test doc emacs examples
 
 XBINDISTFILES = BUGS COPYING INSTALL INSTALL.OCTAVE NEWS NEWS.[0-9] \
@@ -57,8 +57,7 @@ BINDISTFILES = $(addprefix $(srcdir)/, $(XBINDISTFILES)) \
 	octave-bug config.status config.h VERSION ARCH
 
 # Subdirectories in which to run `make bin-dist'.
-BINDISTSUBDIRS = libcruft liboctave src kpathsea readline info \
-	scripts doc emacs examples
+BINDISTSUBDIRS = libcruft liboctave src info scripts doc emacs examples
 
 # Subdirectories in which to run clean targets.
 CLEANSUBDIRS = $(DISTSUBDIRS) glob kpathsea

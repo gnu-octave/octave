@@ -10,6 +10,9 @@ SHELL = /bin/sh
 
 #### Start of system configuration section. ####
 
+# The top of the directory tree where the sources live.
+root_srcdir = @root_srcdir@
+
 LEX = @LEX@
 LFLAGS = @LFLAGS@
 LEXLIB = @LEXLIB@
@@ -38,17 +41,35 @@ FFLAGS = @FFLAGS@
 
 # cc and associated flags.
 
-INCFLAGS = -I. -I$(srcdir)
+# Clean up INCFLAGS a bit if we are not compiling in a separate
+# directory.
+ifeq ($(srcdir),.)
+  TMP_IF_1 = -I.
+else
+  TMP_IF_1 = -I. -I$(srcdir)
+endif
+ifeq ($(TOPDIR),$(root_srcdir))
+  TMP_IF_2 = -I$(TOPDIR) -I$(TOPDIR)/liboctave
+else
+  TMP_IF_2 = -I$(TOPDIR) -I$(TOPDIR)/liboctave \
+	-I$(root_srcdir) -I$(root_srcdir)/liboctave 
+endif
+INCFLAGS = $(TMP_IF_1) $(TMP_IF_2)
+
 LIBFLAGS = -L$(TOPDIR)
+
 DEFS = @DEFS@
+UGLY_DEFS = @UGLY_DEFS@
 
 CC = @CC@
 CFLAGS = @CFLAGS@
 ALL_CFLAGS = $(INCFLAGS) $(DEFS) $(CFLAGS)
+UGLY_ALL_CFLAGS = $(INCFLAGS) $(UGLY_DEFS) $(CFLAGS)
 
 CXX = @CXX@
 CXXFLAGS = @CXXFLAGS@
 ALL_CXXFLAGS = $(INCFLAGS) $(DEFS) $(CXXFLAGS)
+UGLY_ALL_CXXFLAGS = $(INCFLAGS) $(UGLY_DEFS) $(CXXFLAGS)
 
 LDFLAGS = @LDFLAGS@
 ALL_LDFLAGS = $(LIBFLAGS) $(LDFLAGS)

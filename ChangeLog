@@ -1,3 +1,8 @@
+Mon Jun  2 13:56:26 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: Move checks for RANLIB, AR, and ARFLAGS before
+	checks for libf2c.
+
 Fri May 30 14:59:59 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in: Fix typo in check for $with_f77.

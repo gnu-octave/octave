@@ -21,7 +21,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA. 
 
-AC_REVISION($Revision: 1.269 $)
+AC_REVISION($Revision: 1.270 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -311,6 +311,20 @@ if test -n "$LD_STATIC_FLAG"; then
 fi
 AC_SUBST(LD_STATIC_FLAG)
 
+### We need these before trying to find libf2c.
+
+if test -z "$AR"; then
+  AR=ar
+fi
+AC_SUBST(AR)
+
+if test -z "$ARFLAGS"; then
+  ARFLAGS="rc"
+fi
+AC_SUBST(ARFLAGS)
+
+AC_PROG_RANLIB
+
 ### If we haven't been forced to use a particular Fortran compiler,
 ### try to find one using any one of several common Un*x Fortran
 ### compiler names.  Put fc last to avoid confusion with some vendor's
@@ -409,7 +423,6 @@ else
     fi
   fi
 fi
-
 
 f77_rules_frag=/dev/null
 if $have_fortran_compiler; then
@@ -660,20 +673,6 @@ AC_C_CONST
 ### See if we should define NPOS.
 
 OCTAVE_STRING_NPOS
-
-### We need these before trying to find libf2c.
-
-if test -z "$AR"; then
-  AR=ar
-fi
-AC_SUBST(AR)
-
-if test -z "$ARFLAGS"; then
-  ARFLAGS="rc"
-fi
-AC_SUBST(ARFLAGS)
-
-AC_PROG_RANLIB
 
 ### Checks for header files.
 

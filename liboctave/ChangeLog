@@ -1,3 +1,7 @@
+Mon Jun  2 12:44:14 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lo-mappers.cc (fix): Use floor and ceil instead of casting to int.
+
 Thu May 22 16:20:43 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* cmd-edit.h, cmd-edit.cc: Rename set_paren_string_delimiters to

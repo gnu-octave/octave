@@ -83,7 +83,7 @@ conj (double x)
 double
 fix (double x)
 {
-  return static_cast<int> (x);
+  return x > 0 ? floor (x) : ceil (x);
 }
 
 double
@@ -277,8 +277,7 @@ ceil (const Complex& x)
 Complex
 fix (const Complex& x)
 {
-  return Complex (static_cast<int> (real (x)),
-		  static_cast<int> (imag (x)));
+  return Complex (fix (real (x)), fix (imag (x)));
 }
 
 Complex

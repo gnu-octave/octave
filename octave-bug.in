@@ -1,0 +1,140 @@
+#! /bin/sh -
+#
+# octave-bug - create a bug report and mail it to the bug-octave
+# mailing list.
+#
+# Patterned after the bashbug script from bash 1.14.
+#
+# John W. Eaton
+# jwe@che.utexas.edu
+# Department of Chemical Engineering
+# The University of Texas at Austin
+
+# Configuration:  these variables are filled in at configuration time.
+
+VERSION="%VERSION%"
+MACHINE="%TARGET_HOST_TYPE%"
+F77="%F77%"
+FFLAGS="%FFLAGS%"
+CC="%CC%"
+CFLAGS="%CFLAGS%"
+CXX="%CXX%"
+CXXFLAGS="%CXXFLAGS%"
+DEFS="%DEFS%"
+
+PATH=/bin:/usr/bin:/usr/local/bin:$PATH
+export PATH
+
+TEMP=/tmp/octave-bug.$$
+
+: ${EDITOR=emacs}
+
+trap 'rm -f $TEMP $TEMP.x; exit 1' 1 2 3 13 15
+trap 'rm -f $TEMP $TEMP.x' 0
+
+UN=
+if (uname) > /dev/null 2>&1
+then
+  UN=`uname -a`
+fi
+
+HAVE_FMT=false
+if (fmt < /dev/null) > /dev/null 2>&1
+then
+  HAVE_FMT=true
+fi
+
+# BUGADDR="bug-octave@che.utexas.edu"
+BUGADDR="jwe@che.utexas.edu"
+
+SUBJECT="[50 character or so descriptive subject here (for reference)]"
+if test $# -gt 0
+then
+  case "$1" in
+    -s)
+      shift;
+      if test $# -gt 0
+      then
+        SUBJECT="$1"
+      else
+        echo "usage: octave-bug [-s subject]"
+        exit 1
+      fi
+    ;;
+    *)
+      echo "usage: octave-bug [-s subject]"
+      exit 1
+    ;;
+  esac
+fi
+
+cat > $TEMP << EOF
+To: $BUGADDR
+Subject: $SUBJECT
+
+Configuration (please do not edit this section):
+-----------------------------------------------
+
+Bug report for Octave $VERSION configured for $MACHINE
+
+uname output:     $UN
+Fortran compiler: $F77
+FFLAGS:           $FFLAGS
+C compiler:       $CC
+CFLAGS:           $CFLAGS
+C++ compiler:     $CXX
+CXXFLAGS:         $CXXFLAGS
+DEFS:
+
+EOF
+
+if $HAVE_FMT
+then
+  echo $DEFS | fmt | sed 's/^/  /' >> $TEMP
+else
+  echo $DEFS >> $TEMP
+fi
+
+cat >> $TEMP << EOF
+
+Description:
+-----------
+
+  * Please replace this item with a detailed description of the
+    problem.  Suggestions or general comments are also welcome.
+
+Repeat-By:
+---------
+
+  * Please replace this item with a description of the sequence of
+    events that causes the problem to occur. 
+
+Fix:
+---
+
+  * If possible, replace this item with a description of how to
+    fix the problem (if you don't have a fix for the problem, don't
+    include this section, but please do submit your report anyway).
+
+EOF
+
+chmod u+w $TEMP
+cp $TEMP $TEMP.x
+
+status=0
+
+if $EDITOR $TEMP
+then
+  if cmp -s $TEMP $TEMP.x
+  then
+    echo "file not changed -- no bug report submitted"
+    status=1
+  else
+    rmail $BUGADDR < $TEMP || cat $TEMP >> $HOME/dead.octave-bug
+  fi
+else
+  echo "problems with edit -- no bug report submitted"
+  status=1
+fi
+
+exit $status

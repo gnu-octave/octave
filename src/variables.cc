@@ -1308,6 +1308,9 @@ install_builtin_variables (void)
   DEFVAR ("LOADPATH", SBV_LOADPATH, load_path, 0, 0, 1, sv_loadpath,
     "colon separated list of directories to search for scripts");
 
+  DEFVAR ("OCTAVE_VERSION", SBV_version, version_string, 0, 1, 1, 0,
+    "Octave version");
+
   DEFVAR ("PAGER", SBV_PAGER, default_pager (), 0, 0, 1, sv_pager_binary,
     "path to pager binary");
 

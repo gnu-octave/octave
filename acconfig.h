@@ -137,3 +137,27 @@
    If you're adding to this file, keep in mind:
    The entries are in sort -df order: alphabetical, case insensitive,
    ignoring punctuation (such as underscores).  */
+
+@BOTTOM@
+
+#if defined (__GNUC__)
+#define GCC_ATTR_NORETURN __attribute__ ((__noreturn__))
+#define GCC_ATTR_UNUSED __attribute__ ((__unused__))
+#else
+#define GCC_ATTR_NORETURN
+#define GCC_ATTR_UNUSED
+#endif
+
+#define CONST_CAST(T, E) (T) (E)
+
+#define DYNAMIC_CAST(T, E) (T) (E)
+
+#define REINTERPRET_CAST(T, E) (T) (E)
+
+#define STATIC_CAST(T, E) (T) (E)
+
+#define X_CAST(T, E) (T) (E)
+
+#define HEAVYWEIGHT_INDEXING 1
+
+#define WITH_KPATHSEARCH 1

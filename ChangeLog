@@ -1,5 +1,8 @@
 2001-02-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* acconfig.h: Merge contents of config.h.bot.
+	* config.h.bot: Delete.
+
 	* autogen.sh: Allow running of autoconf or autoheader to be skipped.
 
 2001-02-06  John W. Eaton  <jwe@bevo.che.wisc.edu>

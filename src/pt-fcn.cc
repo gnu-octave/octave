@@ -244,6 +244,13 @@ clear_symbol_table (void *table)
   tmp->clear ();
 }
 
+static void
+unprotect_function (void *sr_arg)
+{
+  symbol_record *sr = (symbol_record *) sr_arg;
+  sr->unprotect ();
+}
+
 octave_value_list
 tree_function::eval (bool /* print */, int nargout, const octave_value_list& args)
 {
@@ -261,6 +268,12 @@ tree_function::eval (bool /* print */, int nargout, const octave_value_list& arg
 
   unwind_protect_int (call_depth);
   call_depth++;
+
+  if (symtab_entry && ! symtab_entry->is_read_only ())
+    {
+      symtab_entry->protect ();
+      add_unwind_protect (unprotect_function, (void *) symtab_entry);
+    }
 
   if (call_depth > 1)
     {

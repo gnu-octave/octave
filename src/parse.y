@@ -2199,6 +2199,13 @@ frob_function_def (tree_identifier *id, tree_function *fcn)
 
   top_level_sym_tab->clear (id_name);
 
+  symbol_record *sr = global_sym_tab->lookup (id_name, 0, 0);
+
+  if (sr)
+    fcn->stash_symtab_ptr (sr);
+  else
+    panic_impossible ();
+
   id->define (fcn);
 
   id->document (help_buf);

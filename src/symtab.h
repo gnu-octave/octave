@@ -207,7 +207,7 @@ private:
 
   void init_state (void);
 
-  int read_only_error (void);
+  int read_only_error (const char *action);
 
   void push_def (symbol_def *sd);
   symbol_def *pop_def (void);

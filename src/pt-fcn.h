@@ -74,6 +74,9 @@ public:
   void stash_fcn_file_time (time_t t)
     { t_parsed = t; }
 
+  void stash_symtab_ptr (symbol_record *sr)
+    { symtab_entry = sr; }
+
   string fcn_file_name (void)
     { return file_name; }
 
@@ -165,6 +168,9 @@ private:
   // returned.
   tree_va_return_list *vr_list;
 
+  // The symbol record for this function.
+  symbol_record *symtab_entry;
+
   // The symbol record for nargin in the local symbol table.
   symbol_record *nargin_sr;
 
@@ -191,6 +197,7 @@ private:
       num_args_passed = 0;
       curr_va_arg_number = 0;
       vr_list = 0;
+      symtab_entry = 0;
     }
 };
 

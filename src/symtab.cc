@@ -266,7 +266,8 @@ symbol_record::def (void) const
 void
 symbol_record::rename (const string& new_name)
 {
-  nm = new_name;
+  if (! read_only_error ("rename"))
+    nm = new_name;
 }
 
 int
@@ -388,7 +389,7 @@ symbol_record::set_sv_function (sv_Function f)
 int
 symbol_record::define (tree_constant *t)
 {
-  if (is_variable () && read_only_error ())
+  if (is_variable () && read_only_error ("redefine"))
     return 0;
 
   tree_fvc *saved_def = 0;
@@ -433,7 +434,7 @@ symbol_record::define (const octave_value& v)
 int
 symbol_record::define (tree_builtin *t, int text_fcn)
 {
-  if (read_only_error ())
+  if (read_only_error ("redefine"))
     return 0;
 
   if (is_variable ())
@@ -462,7 +463,7 @@ symbol_record::define (tree_builtin *t, int text_fcn)
 int
 symbol_record::define (tree_function *t, int text_fcn)
 {
-  if (read_only_error ())
+  if (read_only_error ("redefine"))
     return 0;
 
   if (is_variable ())
@@ -490,7 +491,7 @@ symbol_record::define (tree_function *t, int text_fcn)
 int
 symbol_record::define_as_fcn (const octave_value& v)
 {
-  if (is_variable () && read_only_error ())
+  if (is_variable () && read_only_error ("redefine"))
     return 0;
 
   if (is_variable ())
@@ -682,21 +683,21 @@ symbol_record::pop_context (void)
 }
 
 int
-symbol_record::read_only_error (void)
+symbol_record::read_only_error (const char *action)
 {
   if (is_read_only ())
     {
       if (is_variable ())
 	{
-	  ::error ("can't redefine read-only constant `%s'", nm.c_str ());
+	  ::error ("can't %s read-only constant `%s'", action, nm.c_str ());
 	}
       else if (is_function ())
 	{
-	  ::error ("can't redefine read-only function `%s'", nm.c_str ());
+	  ::error ("can't %s read-only function `%s'", action, nm.c_str ());
 	}
       else
 	{
-	  ::error ("can't redefine read-only symbol `%s'", nm.c_str ());
+	  ::error ("can't %s read-only symbol `%s'", action, nm.c_str ());
 	}
 
       return 1;
@@ -914,13 +915,19 @@ symbol_table::rename (const string& old_name, const string& new_name)
     {
       if (ptr->name () == old_name)
 	{
-	  prev->chain (ptr->next ());
-
-	  index = hash (new_name) & HASH_MASK;
-	  table[index].chain (ptr);
 	  ptr->rename (new_name);
 
-	  return;
+	  if (! error_state)
+	    {
+	      prev->chain (ptr->next ());
+
+	      index = hash (new_name) & HASH_MASK;
+	      table[index].chain (ptr);
+
+	      return;
+	    }
+
+	  break;
 	}
 
       prev = ptr;

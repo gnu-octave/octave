@@ -1,5 +1,18 @@
 Tue Mar  4 20:36:53 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* pt-fcn.cc (tree_function::eval): Protect function from being
+	redefined while it is being evaluated.
+	(unprotect_function): New function, for use with unwind_protect stuff.
+	* pt-fcn.h (tree_function::symtab_entry): New data member.
+	(tree_function::init): Initialize it to 0.
+	(tree_function::stash_symtab_ptr): New function.
+	* parse.y (frob_function_def): Stash pointer to function's
+	symbol_record in the function definition.
+
+	* symtab.cc (symbol_record::read_only_error): New argument,
+	action.  Change all callers.
+	(symbol_record::rename): Don't allow read-only symbols to be renamed.
+
 	* variables.cc (Fexist): Don't let files with `.' in their names
 	confuse us.
 

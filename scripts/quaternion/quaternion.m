@@ -85,7 +85,7 @@ function [a, b, c, d] = quaternion (w, x, y, z)
     elseif (! is_scalar (theta))
       error ("theta must be a scalar");
     elseif (norm (vv) == 0)
-      error ("quaternion: vv is zero.");
+      error ("quaternion: vv is zero");
     elseif (abs (norm (vv) - 1) > 1e-12)
       warning ("quaternion: ||vv|| != 1, normalizing")
       vv = vv / norm (vv);
@@ -104,7 +104,7 @@ function [a, b, c, d] = quaternion (w, x, y, z)
       usage ("w = quaterion (a, b, c, d)");
     endif
     if (! (is_scalar (w) && is_scalar (x) && is_scalar (y) && is_scalar (z)))
-      error ("input values must be scalars.");
+      error ("input values must be scalars");
     endif
     a = [w, x, y, z];
 

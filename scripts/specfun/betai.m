@@ -17,10 +17,14 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
+## -*- texinfo -*-
+## @deftypefn {Function File} {} betai (@var{a}, @var{b}, @var{x})
 ## This function is provided for compatibility with older versions of
 ## Octave.  New programs should use betainc instead.
 ##
-## betai (a, b, x) is the same as betainc (x, a, b).
+## @code{betai (@var{a}, @var{b}, @var{x})} is the same as @code{betainc
+## (@var{x}, @var{a}, @var{b})}. 
+## @end deftypefn
 
 ## Author: jwe
 ## Created: 30 Jan 1998

@@ -30,8 +30,8 @@
 ## @end deftypefn
 ## @seealso{irr and pv}
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Net present value of a series of payments
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Net present value of a series of payments
 
 function v = npv (r, p, i)
 
@@ -40,14 +40,14 @@ function v = npv (r, p, i)
   endif
 
   if (! (is_vector (p)))
-    error ("npv:  p has to be a vector");
+    error ("npv: p has to be a vector");
   else
     n = length (p);
     p = reshape (p, 1, n);
   endif
 
   if (any (any (r <= -1)))
-    error ("npv:  all interest rates must be > -1");
+    error ("npv: all interest rates must be > -1");
   endif
   if (is_scalar (r))
     d = 1 ./ (1 + r) .^ (0 : n);
@@ -59,7 +59,7 @@ function v = npv (r, p, i)
 
   if (nargin == 3)
     if (! is_scalar (i))
-      error ("npv:  I_0 must be a scalar");
+      error ("npv: I_0 must be a scalar");
     endif
   else
     i = 0;

@@ -28,8 +28,8 @@
 ## @end deftypefn
 ## @seealso{pv, nper, and rate}
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Amount of periodic payment needed to amortize a loan
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Amount of periodic payment needed to amortize a loan
 
 function p = pmt (r, n, a, l, m)
 
@@ -38,16 +38,16 @@ function p = pmt (r, n, a, l, m)
   endif
 
   if (! (is_scalar (r) && (r > -1)))
-    error ("pmt:  rate must be a scalar > -1");
+    error ("pmt: rate must be a scalar > -1");
   elseif (! (is_scalar (n) && (n > 0)))
-    error ("pmt:  n must be a positive scalar");
+    error ("pmt: n must be a positive scalar");
   elseif (! (is_scalar (a) && (a > 0)))
-    error ("pmt:  a must be a positive scalar.");
+    error ("pmt: a must be a positive scalar");
   endif
 
   if (nargin == 5)
     if (! isstr (m))
-      error ("pmt:  `method' must be a string");
+      error ("pmt: `method' must be a string");
     endif
   elseif (nargin == 4)
     if (isstr (l))

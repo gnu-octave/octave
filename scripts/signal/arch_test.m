@@ -81,7 +81,7 @@ function [pval, lm] = arch_test (y, X, p)
     error ("arch_test: either rows(X) == length(y), or X is a scalar");
   endif
   if (! (is_scalar(p) && (rem(p, 1) == 0) && (p > 0)))
-    error ("arch_test: p must be a positive integer.");
+    error ("arch_test: p must be a positive integer");
   endif
 
   [b, v_b, e] = ols (y, X);

@@ -17,7 +17,7 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-##  -*- texinfo -*-
+## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{beta}, @var{sigma}, @var{r}] =} ols (@var{y}, @var{x})
 ## Ordinary least squares estimation for the multivariate model
 ## @iftex

@@ -64,7 +64,7 @@ function retval = skewness (x)
     ind    = find (s > 0);
     retval (ind) = sum (x (:, ind) .^ 3) ./ (nr * s (ind) .^ 3);
   else
-    error ("skewness: x has to be a matrix or a vector.");
+    error ("skewness: x has to be a matrix or a vector");
   endif
 
 endfunction

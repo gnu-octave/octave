@@ -1586,10 +1586,16 @@ used with fseek to position file relative to the end.\n\
 @end defvr");
 
   DEFCONSTX ("SEEK_CUR", SBV_SEEK_CUR, 0.0,
-    "See SEEK_SET");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} SEEK_CUR\n\
+See SEEK_SET.\n\
+@end defvr");
 
   DEFCONSTX ("SEEK_END", SBV_SEEK_END, 1.0,
-    "See SEEK_SET");
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} SEEK_END\n\
+See SEEK_SET.\n\
+@end defvr");
 
   DEFCONSTX ("stdin", SBV_stdin, stdin_file,
     "-*- texinfo -*-\n\

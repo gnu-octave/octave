@@ -42,7 +42,7 @@ function c = cov (x, y)
       y = y';
     endif
     if (rows (y) != n)
-      error ("cov: x and y must have the same number of observations.");
+      error ("cov: x and y must have the same number of observations");
     endif
     x = x - ones (n, 1) * sum (x) / n;
     y = y - ones (n, 1) * sum (y) / n;

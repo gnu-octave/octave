@@ -35,7 +35,7 @@ function v = vech (x)
   endif
 
   if (! is_square (x))
-    error ("vech:  x must be square");
+    error ("vech: x must be square");
   endif
 
   ## This should be quicker than having an inner `for' loop as well.

@@ -20,8 +20,8 @@
 ## @code{diag (@var{a}) * @var{b}} (but computed much more efficiently).
 ## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Rescale the rows of a matrix
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Rescale the rows of a matrix
 
 function M = dmult (a, B)
 
@@ -31,7 +31,7 @@ function M = dmult (a, B)
 
   s = size (a);
   if ((min (s) > 1) || (max (s) != rows (B)))
-    error ("dmult:  a must be a vector of length rows (B)");
+    error ("dmult: a must be a vector of length rows (B)");
   endif
 
   M = (reshape (a, max (s), 1) * ones (1, columns (B))) .* B;

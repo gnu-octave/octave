@@ -47,7 +47,7 @@ function [p, y] = ppplot (x, dist, ...)
   endif
 
   if (! is_vector (x))
-    error ("ppplot: x must be a vector.");
+    error ("ppplot: x must be a vector");
   endif
 
   s = sort (x);

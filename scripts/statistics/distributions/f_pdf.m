@@ -27,7 +27,7 @@
 function pdf = f_pdf (x, m, n)
 
   if (nargin != 3)
-    usage ("f_pdf (x, m, n).");
+    usage ("f_pdf (x, m, n)");
   endif
 
   [retval, x, m, n] = common_size (x, m, n);

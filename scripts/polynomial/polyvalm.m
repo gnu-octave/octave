@@ -41,11 +41,11 @@ function y = polyvalm (c, x)
   endif
 
   if (! (is_vector (c) || isempty (c)))
-    error ("polyvalm: first argument must be a vector.");
+    error ("polyvalm: first argument must be a vector");
   endif
 
   if (! is_square (x))
-    error("polyvalm: second argument must be a square matrix.");
+    error ("polyvalm: second argument must be a square matrix");
   endif
 
   if (isempty (c))

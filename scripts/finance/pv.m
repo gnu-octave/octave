@@ -31,8 +31,8 @@
 ## @end deftypefn
 ## @seealso{pmt, nper, rate, and npv}
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Present value of an investment
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Present value of an investment
 
 function v = pv (r, n, p, l, m)
 
@@ -41,11 +41,11 @@ function v = pv (r, n, p, l, m)
   endif
 
   if (! (is_scalar (r) && (r > -1)))
-    error ("pv:  r must be a scalar > -1");
+    error ("pv: r must be a scalar > -1");
   elseif (! (is_scalar (n) && (n > 0)))
-    error ("pv:  n must be a positive scalar");
+    error ("pv: n must be a positive scalar");
   elseif (! is_scalar (p))
-    error ("pv:  p must be a scalar.");
+    error ("pv: p must be a scalar");
   endif
 
   if (r != 0)
@@ -57,7 +57,7 @@ function v = pv (r, n, p, l, m)
   if (nargin > 3)
     if (nargin == 5)
       if (! isstr (m))
-        error ("pv:  `method' must be a string");
+        error ("pv: `method' must be a string");
       endif
     elseif (isstr (l))
       m = l;
@@ -71,7 +71,7 @@ function v = pv (r, n, p, l, m)
     if (is_scalar (l))
       v = v + pvl (r, n, l);
     else
-      error ("pv:  l must be a scalar");
+      error ("pv: l must be a scalar");
     endif
   endif
 

@@ -28,8 +28,8 @@
 ## @end deftypefn
 ## @seealso{pv, pmt, nper, and npv}
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Rate of return of an investment
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Rate of return of an investment
 
 function r = rate (n, p, v, l, m)
 
@@ -38,16 +38,16 @@ function r = rate (n, p, v, l, m)
   endif
 
   if (! (is_scalar (n) && (n > 0)))
-    error ("rate:  n must be a positive scalar");
+    error ("rate: n must be a positive scalar");
   elseif (! is_scalar (p))
-    error ("rate:  p must be a scalar");
+    error ("rate: p must be a scalar");
   elseif (! is_scalar (v))
-    error ("rate:  p must be a scalar");
+    error ("rate: p must be a scalar");
   endif
 
   if (nargin == 5)
     if (! isstr (m))
-      error ("rate:  `method' must be a string");
+      error ("rate: `method' must be a string");
     endif
   elseif (nargin == 4)
     if (isstr (l))
@@ -62,7 +62,7 @@ function r = rate (n, p, v, l, m)
   endif
 
   if (! is_scalar (l))
-    error ("rate:  l must be a scalar");
+    error ("rate: l must be a scalar");
   endif
 
   [r, info] = fsolve (sprintf ("pv (x, %g, %g, %g, \"%s\") - %g",

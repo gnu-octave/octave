@@ -49,7 +49,7 @@ function [q, s] = qqplot (x, dist, ...)
   endif
 
   if (! (is_vector(x)))
-    error ("qqplot: x must be a vector.");
+    error ("qqplot: x must be a vector");
   endif
 
   s = sort (x);

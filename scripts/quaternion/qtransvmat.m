@@ -33,7 +33,7 @@ function Aib = qtransvmat (qib)
     error ("qtransvmat: q(%d,%d) must be a quaternion", rows (qib), \
 	   columns (qib));
   elseif (max (abs (imag (qib))) != 0)
-    error("qtransvmat: input values must be real.");
+    error ("qtransvmat: input values must be real");
   endif
 
   Aib = [(2.*(qib(1)^2 + qib(4)^2) -1.),

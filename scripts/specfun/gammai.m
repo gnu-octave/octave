@@ -17,10 +17,14 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
+## -*- texinfo -*-
+## @deftypefn {Function File} {} gammai (@var{a}, @var{x})
 ## This function is provided for compatibility with older versions of
-## Octave.  New programs should use gammainc instead.
+## Octave.  New programs should use @code{gammainc} instead.
 ##
-## gammai (a, x) is the same as gammainc (x, a).
+## @code{gammai (@var{a}, @var{x})} is the same as @code{gammainc
+## (@var{x}, @var{a})}.
+## @end deftypefn
 
 ## Author: jwe
 ## Created: 30 Jan 1998

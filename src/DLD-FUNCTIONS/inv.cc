@@ -110,7 +110,10 @@ Compute the inverse of the square matrix @var{a}.\n\
 // dynamic linking.
 
 DEFUN_DLD (inverse, args, nargout,
-  "inverse (X): inverse of a square matrix")
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} inverse (@var{a})\n\
+See inv.\n\
+@end deftypefn")
 {
   return Finv (args, nargout);
 }

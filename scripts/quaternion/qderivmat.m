@@ -46,7 +46,7 @@ function Dmat = qderivmat (Omega)
   Omega = vec (Omega);
 
   if (length (Omega) != 3)
-    error ("qderivmat: Omega must be a length 3 vector.");
+    error ("qderivmat: Omega must be a length 3 vector");
   endif
 
   Dmat = 0.5 * [      0.0,  Omega(3), -Omega(2),  Omega(1);

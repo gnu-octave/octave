@@ -167,11 +167,15 @@ Compute the inverse hyperbolic cosine of each element of @var{x}.\n\
 @end deftypefn");
 
   DEFUN_MAPPER (angle, 0, 0, 0, arg, arg, 0, 0.0, 0.0, 0,
-    "See arg.");
+    "-*- texinfo -*-\n\
+@deftypefn {Mapping Function} {} angle (@var{z})\n\
+See arg.\n\
+@end deftypefn");
 
   DEFUN_MAPPER (arg, 0, 0, 0, arg, arg, 0, 0.0, 0.0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} arg (@var{z})\n\
+@deftypefnx {Mapping Function} {} angle (@var{z})\n\
 Compute the argument of @var{z}, defined as\n\
 @iftex\n\
 @tex\n\

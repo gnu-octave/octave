@@ -961,10 +961,10 @@ The command @kbd{whos} is equivalent to @kbd{who -long}.\n\
 }
 
 DEFUN_TEXT (whos, args, ,
-  "whos [-all] [-builtins] [-functions] [-long] [-variables]\n\
-\n\
-List currently defined symbol(s).  Options may be shortened to one\n\
-character, but may not be combined.")
+  "-*- texinfo -*-\n\
+@deffn {Command} whos options pattern @dots{}\n\
+See who.\n\
+@end deffn")
 {
   octave_value_list retval;
 

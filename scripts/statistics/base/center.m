@@ -34,7 +34,7 @@ function retval = center (x)
   elseif is_matrix (x)
     retval = x - ones (rows (x), 1) * mean(x);
   else
-    error ("center: x must be a vector or a matrix.");
+    error ("center: x must be a vector or a matrix");
   endif
 
 endfunction

@@ -41,7 +41,7 @@ function vi = qtransv (vb, qib)
   elseif (! is_vector (qib) || length (qib) != 4)
     error ("qtransv: q(%d,%d) must be a quaternion", rows (qib), columns (qib));
   elseif (max (abs (imag (vb))) + max (abs (imag (qib))) != 0)
-    error ("qtransv: input values must be real.");
+    error ("qtransv: input values must be real");
   endif
 
   qr = qib(4);

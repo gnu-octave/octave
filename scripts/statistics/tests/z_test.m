@@ -46,13 +46,13 @@ function [pval, z] = z_test (x, m, v, alt)
   endif
 
   if (! is_vector (x))
-    error ("z_test: x must be a vector.");
+    error ("z_test: x must be a vector");
   endif
   if (! is_scalar (m))
-    error ("z_test: m must be a scalar.");
+    error ("z_test: m must be a scalar");
   endif
   if (! (is_scalar (v) && (v > 0)))
-    error ("z_test: v must be a positive scalar.");
+    error ("z_test: v must be a positive scalar");
   endif
 
   n = length (x);

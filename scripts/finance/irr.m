@@ -23,8 +23,8 @@
 ## @end deftypefn
 ## @seealso{npv, pv, and rate}
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Internal rate of return of an investment
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Internal rate of return of an investment
 
 function r = irr (p, i)
 
@@ -35,13 +35,13 @@ function r = irr (p, i)
   endif
 
   if (! (is_vector (p)))
-    error ("irr:  p must be a vector");
+    error ("irr: p must be a vector");
   else
     p_string = strcat ("[", sprintf ("%.15f, ", p), "]");
   endif
 
   if (! is_scalar (i))
-    error ("irr:  i must be a scalar");
+    error ("irr: i must be a scalar");
   endif
 
   r = fsolve (sprintf ("npv (x, %s) - %g", p_string, i), 0.01);

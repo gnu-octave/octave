@@ -82,7 +82,7 @@ function m = split (s, t)
   m = eval (sprintf ("str2mat (%s);", cmd));
 
   else
-    error ("split:  both s and t must be strings");
+    error ("split: both s and t must be strings");
   endif
 
 endfunction

@@ -25,8 +25,8 @@
 ## volatility from @code{n*m} to @var{t}.
 ## @end deftypefn
 
-## Author:  FL <Friedrich.Leisch@ci.tuwien.ac.at>
-## Description:  Volatility of financial time series data
+## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>
+## Description: Volatility of financial time series data
 
 function retval = vol (X, m, n)
 
@@ -38,12 +38,12 @@ function retval = vol (X, m, n)
 
   if (nargin > 2)
     if (n * m > xr)
-      error ("vol:  I need more data!");
+      error ("vol: I need more data!");
     endif
   else
     n = 1;
     if (n * m > xr)
-      error ("vol:  I need more data!");
+      error ("vol: I need more data!");
     endif
   endif
 
@@ -52,7 +52,7 @@ function retval = vol (X, m, n)
   if (all (X))
     U = X ((2 : xr), :) ./ X((1 : (xr-1)), :);
   else
-    error ("vol:  zero element in X");
+    error ("vol: zero element in X");
   endif
 
   U = log(U);

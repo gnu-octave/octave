@@ -42,7 +42,7 @@ function t = studentize (x)
     t = x - l * mean (x);
     t = t ./ (l * max ([(std (t)); (! any (t))]));
   else
-    error ("studentize: x must be a vector or a matrix.");
+    error ("studentize: x must be a vector or a matrix");
   endif
 
 endfunction

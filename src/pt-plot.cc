@@ -1141,7 +1141,8 @@ Set plotting options for gnuplot\n\
 }
 
 DEFUN_TEXT (set, args, nargout,
-  "This command is has been replaced by `gset'.")
+  "-*- texinfo -*-\n\
+This command is has been replaced by @code{gset}.")
 {
   warning ("set is obsolete -- use gset instead");
   return Fgset (args, nargout);
@@ -1178,7 +1179,8 @@ Show plotting options.\n\
 }
 
 DEFUN_TEXT (show, args, nargout,
-  "This command is has been replaced by `gshow'.")
+  "-*- texinfo -*-\n\
+This command is has been replaced by @code{gshow}.")
 {
   warning ("show is obsolete -- use gshow instead");
   return Fgshow (args, nargout);

@@ -31,8 +31,8 @@
 ## @end deftypefn
 ## @seealso{pv, pmt, rate, and npv}
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Number of payments needed for amortizing a loan
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Number of payments needed for amortizing a loan
 
 function n = nper (r, p, a, l, m)
 
@@ -41,16 +41,16 @@ function n = nper (r, p, a, l, m)
   endif
 
   if (! (is_scalar (r) && (r > -1)))
-    error ("nper:  r must be a scalar > -1");
+    error ("nper: r must be a scalar > -1");
   elseif (! is_scalar (p))
-    error ("nper:  p must be a scalar");
+    error ("nper: p must be a scalar");
   elseif (! is_scalar (a))
-    error ("nper:  a must be a scalar");
+    error ("nper: a must be a scalar");
   endif
 
   if (nargin == 5)
     if (! isstr (m))
-      error ("nper:  `method' must be a string");
+      error ("nper: `method' must be a string");
     endif
   elseif (nargin == 4)
     if (isstr (l))

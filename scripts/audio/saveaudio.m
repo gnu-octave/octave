@@ -53,7 +53,7 @@ function saveaudio (name, X, ext, bit)
       X = X';
       nr = nc;
     else
-      error ("saveaudio: X must be a vector.");
+      error ("saveaudio: X must be a vector");
     endif
   endif
 

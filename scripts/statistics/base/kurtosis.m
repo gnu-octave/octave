@@ -64,7 +64,7 @@ function retval = kurtosis (x)
     ind    = find (s > 0);
     retval (ind) = sum (x (:, ind) .^ 4) ./ (nr * s (ind) .^ 4) - 3;
   else
-    error ("kurtosis: x has to be a matrix or a vector.");
+    error ("kurtosis: x has to be a matrix or a vector");
   endif
 
 endfunction

@@ -66,7 +66,7 @@ function A = compan (c)
   endif
 
   if (! is_vector (c))
-    error("compan: expecting a vector argument.");
+    error ("compan: expecting a vector argument");
   endif
 
   ## Ensure that c is a row vector.

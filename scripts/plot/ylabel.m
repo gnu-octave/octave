@@ -17,7 +17,10 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
+## -*- texinfo -*-
+## @deftypefn {Function File} {} ylabel (@var{string})
 ## See xlabel.
+## @end deftypefn
 
 ## Author: jwe
 

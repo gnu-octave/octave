@@ -53,7 +53,7 @@ function l = lcm (a, ...)
   endif
 
   if (round (a) != a)
-    error ("lcm:  all arguments must be integer");
+    error ("lcm: all arguments must be integer");
   endif
 
   if (any (a) == 0)

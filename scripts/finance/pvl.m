@@ -24,8 +24,8 @@
 ## not 5 percent).
 ## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Present value of an investment that pays off at the end
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Present value of an investment that pays off at the end
 
 function v = pvl (r, n, p)
 
@@ -34,11 +34,11 @@ function v = pvl (r, n, p)
   endif
 
   if (! (is_scalar (r) && (r > -1)))
-    error ("pvl:  r has to be a scalar > -1");
+    error ("pvl: r has to be a scalar > -1");
   elseif (! (is_scalar (n) && (n > 0)))
-    error ("pvl:  n has to be a positive scalar");
+    error ("pvl: n has to be a positive scalar");
   elseif (! is_scalar (p))
-    error ("pvl:  p has to be a scalar");
+    error ("pvl: p has to be a scalar");
   endif
 
   v = p / (1 + r)^n;

@@ -26,13 +26,6 @@
 ## @end deftypefn
 ## @seealso{lin2mu, mu2lin, loadaudio, saveaudio, playaudio, and setaudio}
 
-## usage:  X = record (sec [, sampling_rate])
-##
-## Records sec seconds of audio into the vector X.
-## The default value for the sampling_rate is 8000, ie. 8kHz.
-## The program waits for you to hit the ENTER key, then the recording
-## starts immediatly.
-
 ## Author: AW <Andreas.Weingessel@ci.tuwien.ac.at>
 ## Created: 19 September 1994
 ## Adapted-By: jwe

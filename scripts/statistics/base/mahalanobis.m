@@ -39,7 +39,7 @@ function retval = mahalanobis (X, Y)
   [yr, yc] = size (Y);
 
   if (xc != yc)
-    error ("mahalanobis: X and Y must have the same number of columns.");
+    error ("mahalanobis: X and Y must have the same number of columns");
   endif
 
   Xm = sum (X) / xr;

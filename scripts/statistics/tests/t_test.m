@@ -46,10 +46,10 @@ function [pval, t, df] = t_test (x, m, alt)
   endif
 
   if (! is_vector (x))
-    error ("t_test: x must be a vector.");
+    error ("t_test: x must be a vector");
   endif
   if (! is_scalar (m))
-    error ("t_test: m must be a scalar.");
+    error ("t_test: m must be a scalar");
   endif
 
   n   = length (x);

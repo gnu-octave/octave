@@ -490,7 +490,10 @@ Return the real user id of the current process.\n\
 }
 
 DEFUN (lstat, args, ,
-  "See stat.")
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {[@var{info}, @var{err}, @var{msg}] =} lstat (@var{file})\n\
+See stat.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 

@@ -24,8 +24,8 @@
 ## not 5 percent).
 ## @end deftypefn
 
-## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
-## Description:  Future value of an initial lump sum investment
+## Author: KH <Kurt.Hornik@ci.tuwien.ac.at>
+## Description: Future value of an initial lump sum investment
 
 function v = fvl (r, n, l)
 
@@ -34,11 +34,11 @@ function v = fvl (r, n, l)
   endif
 
   if (! (is_scalar (r) && (r > -1)))
-    error ("fvl:  r has to be a scalar > -1");
+    error ("fvl: r has to be a scalar > -1");
   elseif (! (is_scalar (n) && (n > 0)))
-    error ("fvl:  n has to be a positive scalar");
+    error ("fvl: n has to be a positive scalar");
   elseif (! is_scalar (l))
-    error ("fvl:  l has to be a scalar");
+    error ("fvl: l has to be a scalar");
   endif
 
   v = l * (1 + r)^n;

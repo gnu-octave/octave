@@ -49,7 +49,7 @@ function [pval, Tsq] = hotelling_test_2 (x, y)
   if (is_vector (x))
     n_x = length (x);
     if (! is_vector (y))
-      error ("hotelling_test_2: If x is a vector, y must be too.");
+      error ("hotelling_test_2: if x is a vector, y must also be a vector");
     else
       n_y = length (y);
       p   = 1;

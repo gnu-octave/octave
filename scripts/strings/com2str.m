@@ -41,7 +41,7 @@ function retval = com2str (zz, flg)
   endif
 
   if (! (is_scalar (zz) && is_scalar (flg)))
-    error("com2str: arguments must be a scalar.");
+    error ("com2str: arguments must be a scalar");
   endif
 
   if (flg != 0 && flg != 1)

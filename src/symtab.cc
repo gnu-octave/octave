@@ -1522,7 +1522,11 @@ symbol_table::maybe_list (const char *header, const string_vector& argv,
 
       if (len > 0)
 	{
-	  int bytes = 0, elements = 0, i;
+	  size_t bytes = 0;
+	  size_t elements = 0;
+
+	  int i;
+
 	  std::list<whos_parameter> params;
 
 	  // Joining symbolic tables.
@@ -1549,9 +1553,11 @@ symbol_table::maybe_list (const char *header, const string_vector& argv,
 	      bytes += symbols(j)->byte_size ();
 	    }
 
-	  os << "\nTotal is " << elements
-	     << " element" << ((elements > 1) ? "s" : "") << " using "
-	     << bytes << " byte" << ((bytes > 1) ? "s" : "") << "\n";
+	  os << "\nTotal is "
+	     << elements << (elements > 1 ? " elements" : "element")
+	     << " using "
+	     << bytes << (bytes > 1 ? " bytes" : "byte")
+	     << "\n";
 
 	  status = 1;
 	}

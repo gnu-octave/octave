@@ -1,5 +1,7 @@
 2004-09-16  John W. Eaton  <jwe@octave.org>
 
+	* symtab.cc (maybe_list): Count sizes using size_t, not int.
+
 	* variables.cc (symbol_out_of_date): Always look in LOADPATH.
 
 2004-09-15  John W. Eaton  <jwe@octave.org>

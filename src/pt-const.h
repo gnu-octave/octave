@@ -40,6 +40,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "oct-obj.h"
 
 class idx_vector;
+class Octave_map;
 
 struct Mapper_fcn;
 
@@ -123,6 +124,9 @@ public:
   tree_constant (const Range& r) : tree_fvc ()
     { rep = new tree_constant_rep (r); rep->count = 1; }
 
+  tree_constant (const Octave_map& m) : tree_fvc ()
+    { rep = new tree_constant_rep (m); rep->count = 1; }
+
   tree_constant (tree_constant::magic_colon t) : tree_fvc ()
     {
       tree_constant_rep::constant_type tmp;
@@ -148,19 +152,11 @@ public:
 
 // Simple assignment.
 
-  tree_constant operator = (const tree_constant& a)
-    {
-      if (--rep->count <= 0 && rep != a.rep)
-	delete rep;
-
-      rep = a.rep;
-      rep->count++;
-      return *this;  
-    }
+  tree_constant operator = (const tree_constant& a);
 
 // Indexed assignment.
 
-  tree_constant assign (tree_constant& rhs, const Octave_object& args)
+  tree_constant assign (const tree_constant& rhs, const Octave_object& args)
     {
       if (rep->count > 1)
 	{
@@ -171,6 +167,15 @@ public:
       rep->assign (rhs, args);
       return *this;
     }
+
+// Simple structure assignment.
+
+  tree_constant assign_map_element (SLList<char*>& list, tree_constant& rhs);
+
+// Indexed structure assignment.
+
+  tree_constant assign_map_element (SLList<char*>& list, tree_constant& rhs,
+				    const Octave_object& args);
 
 // Type.  It would be nice to eliminate the need for this.
 
@@ -197,6 +202,7 @@ public:
   int is_complex_matrix (void) const { return rep->is_complex_matrix (); }
   int is_string (void) const { return rep->is_string (); }
   int is_range (void) const { return rep->is_range (); }
+  int is_map (void) const { return rep->is_map (); }
   int is_magic_colon (void) const { return rep->is_magic_colon (); }
 
 // Are any or all of the elements in this constant nonzero?
@@ -263,6 +269,10 @@ public:
 
   Range range_value (void) const
     { return rep->range_value (); }
+
+  Octave_map map_value (void) const;
+
+  tree_constant lookup_map_element (SLList<char*>& list);
 
   ColumnVector vector_value (int force_string_conversion = 0,
 			     int force_vector_conversion = 0) const 
@@ -338,6 +348,16 @@ public:
 
   char *type_as_string (void) const
     { return rep->type_as_string (); }
+
+// We really do need this, and it should be private:
+
+private:
+
+  void make_unique (void);
+
+  tree_constant_rep *make_unique_map (void);
+
+public:
 
 // -------------------------------------------------------------------
 

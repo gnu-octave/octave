@@ -685,6 +685,9 @@ reset_parser (void)
   in_plot_style = 0;
   doing_set = 0;
 
+// Not initially looking at indirect references.
+  looking_at_indirect_ref = 0;
+
 // Error may have occurred inside some parentheses or braces.
   in_brace_or_paren.clear ();
 
@@ -1357,6 +1360,16 @@ strip_trailing_whitespace (char *s)
 static int
 handle_identifier (char *tok, int next_tok_is_eq)
 {
+// If we are expecting a structure element, we just want to return
+// TEXT_ID, which is a string that is also a valid identifier.
+
+  if (looking_at_indirect_ref)
+    {
+      yylval.tok_val = new token (tok);
+      token_stack.push (yylval.tok_val);
+      TOK_RETURN (TEXT_ID);
+    }
+
 // If we have a regular keyword, or a plot STYLE, return it.  STYLE is
 // special only because it can't be followed by an identifier.
 
@@ -1469,7 +1482,7 @@ handle_identifier (char *tok, int next_tok_is_eq)
 
       int c1 = yyinput ();
       unput (c1);
-      int other_op = match_any (c1, ",;\n]");
+      int other_op = match_any (c1, ".,;\n]");
       int index_op = (c1 == '('
 		      && (user_pref.commas_in_literal_matrix == 0
 			  || ! spc_prev));

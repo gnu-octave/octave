@@ -35,6 +35,13 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "error.h"
 #include "gripes.h"
 #include "user-prefs.h"
+#include "oct-map.h"
+
+Octave_map
+tree_constant::map_value (void) const
+{
+  return rep->map_value ();
+}
 
 tree_constant::~tree_constant (void)
 {
@@ -67,6 +74,170 @@ tree_constant::operator delete (void *p, size_t size)
 }
 #endif
 
+// Simple assignment.
+
+tree_constant
+tree_constant::operator = (const tree_constant& a)
+{
+  if (rep != a.rep)
+    {
+      if (--rep->count <= 0)
+	delete rep;
+      rep = a.rep;
+      rep->count++;
+    }
+  return *this;  
+}
+
+tree_constant
+tree_constant::lookup_map_element (SLList<char*>& list)
+{
+  tree_constant retval;
+
+  tree_constant_rep *tmp_rep = rep;
+
+  Pix p = list.first ();
+  while (p)
+    {
+      char *elt = list (p);
+
+      list.next (p);
+
+      tree_constant tmp = tmp_rep->lookup_map_element (elt);
+
+      if (error_state)
+	break;
+
+      tmp_rep = tmp.rep;
+
+      if (! p)
+	retval = tmp;
+    }
+
+  return retval;
+}
+
+// Simple structure assignment.
+
+void
+tree_constant::make_unique (void)
+{
+  if (rep->count > 1)
+    {
+      --rep->count;
+      rep = new tree_constant_rep (*rep);
+      rep->count = 1;
+    }
+
+  if (rep->is_map ())
+    {
+      for (Pix p = rep->a_map->first (); p != 0; rep->a_map->next (p))
+	{
+	  rep->a_map->contents (p) . make_unique ();
+	}
+    }
+}
+
+tree_constant::tree_constant_rep *
+tree_constant::make_unique_map (void)
+{
+  if (! rep->is_map ())
+    {
+      if (--rep->count <= 0)
+	delete rep;
+
+      Octave_map m;
+      rep = new tree_constant_rep (m);
+      rep->count = 1;
+    }
+
+  make_unique ();
+
+  return rep;
+}
+
+tree_constant
+tree_constant::assign_map_element (SLList<char*>& list, tree_constant& rhs)
+{
+  tree_constant_rep *tmp_rep = make_unique_map ();
+
+  if (rhs.is_map ())
+    rhs.make_unique ();
+
+  Pix p = list.first ();
+  while (p)
+    {
+      char *elt = list (p);
+
+      list.next (p);
+
+      tree_constant& tmp = tmp_rep->lookup_map_element (elt, 1);
+
+      if (! p)
+	{
+	  tmp = rhs;
+	  return tmp;
+	}
+
+      tmp_rep = tmp.make_unique_map ();
+    }
+
+  return tree_constant ();
+}
+
+// Indexed structure assignment.
+
+tree_constant
+tree_constant::assign_map_element (SLList<char*>& list, tree_constant& rhs,
+				   const Octave_object& args)
+{
+  tree_constant_rep *tmp_rep = make_unique_map ();
+
+  if (rhs.is_map ())
+    rhs.make_unique ();
+
+  Pix p = list.first ();
+  while (p)
+    {
+      char *elt = list (p);
+
+      list.next (p);
+
+      tree_constant& tmp = tmp_rep->lookup_map_element (elt, 1);
+
+      if (! p)
+	{
+	  tmp.assign (rhs, args);
+	  return tmp;
+	}
+
+      tmp_rep = tmp.make_unique_map ();
+    }
+
+  return tree_constant ();
+}
+
+void
+tree_constant::print_code (ostream& os)
+{
+  print_code_indent (os);
+
+  if (in_parens)
+    os << "(";
+
+  if (rep)
+    rep->print_code (os);
+
+  if (in_parens)
+    os << ")";
+}
+
+void
+gripe_wrong_type_arg (const char *name, const tree_constant& tc)
+{
+  error ("%s: wrong type argument `%s'", name, tc.type_as_string ());
+}
+
 // Construct return vector of empty matrices.  Return empty matrices
 // and/or gripe when appropriate.
 
@@ -92,27 +263,6 @@ vector_of_empties (int nargout, const char *fcn_name)
     gripe_empty_arg (fcn_name, 1);
 
   return retval;
-}
-
-void
-tree_constant::print_code (ostream& os)
-{
-  print_code_indent (os);
-
-  if (in_parens)
-    os << "(";
-
-  if (rep)
-    rep->print_code (os);
-
-  if (in_parens)
-    os << ")";
-}
-
-void
-gripe_wrong_type_arg (const char *name, const tree_constant& tc)
-{
-  error ("%s: wrong type argument `%s'", name, tc.type_as_string ());
 }
 
 /*

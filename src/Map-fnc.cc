@@ -22,8 +22,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // Instantiate Maps of file_name_cache_elts.
 
+#include <string>
+
 #include "Map.h"
 #include "Map.cc"
+
+#include "str-vec.h"
 
 #include "fn-cache.h"
 

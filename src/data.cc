@@ -58,6 +58,12 @@ Software Foundation, Inc.
 #define ABS(x) (((x) < 0) ? (-x) : (x))
 #endif
 
+// Should expressions like ones (-1, 5) result in an empty matrix or
+// an error?  A positive value means yes.  A negative value means
+// yes, but print a warning message.  Zero means it should be
+// considered an error.
+static int Vtreat_neg_dim_as_zero;
+
 DEFUN (all, args, ,
   "all (X): are all elements of X nonzero?")
 {
@@ -804,12 +810,12 @@ check_dimensions (int& nr, int& nc, const char *warnfor)
 {
   if (nr < 0 || nc < 0)
     {
-      if (user_pref.treat_neg_dim_as_zero)
+      if (Vtreat_neg_dim_as_zero)
 	{
 	  nr = (nr < 0) ? 0 : nr;
 	  nc = (nc < 0) ? 0 : nc;
 
-	  if (user_pref.treat_neg_dim_as_zero < 0)
+	  if (Vtreat_neg_dim_as_zero < 0)
 	    warning ("%s: converting negative dimension to zero",
 		     warnfor);
 	}
@@ -1094,6 +1100,14 @@ See also: logspace")
   return retval;
 }
 
+static int
+treat_neg_dim_as_zero (void)
+{
+  Vtreat_neg_dim_as_zero = check_preference ("treat_neg_dim_as_zero");
+
+  return 0;
+}
+
 void
 symbols_of_data (void)
 {
@@ -1147,6 +1161,9 @@ symbols_of_data (void)
 
   DEFCONST (realmin, DBL_MIN, 0, 0,
     "realmin (): return smallest representable floating point number");
+
+  DEFVAR (treat_neg_dim_as_zero, 0.0, 0, treat_neg_dim_as_zero,
+    "convert negative dimensions to zero");
 }
 
 /*

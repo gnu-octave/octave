@@ -89,20 +89,27 @@ Array2<T>::index (idx_vector& idx_arg, int resize_ok,
     }
   else if (nr == 1 || nc == 1)
     {
-      int result_is_column_vector = (nc == 1);
+      // If indexing a vector with a matrix, return value has same
+      // shape as the index.  Otherwise, it has same orientation as
+      // indexed object.
 
       Array<T> tmp = Array<T>::index (idx_arg, resize_ok);
 
       int len = tmp.length ();
 
       if (len == 0)
-	retval = Array2<T> (0, 0);
+	retval = Array2<T> (idx_orig_rows, idx_orig_columns);
       else
 	{
-	  if (result_is_column_vector)
-	    retval = Array2<T> (tmp, len, 1);
+	  if (idx_orig_rows == 1 || idx_orig_columns == 1)
+	    {
+	      if (nr == 1)
+		retval = Array2<T> (tmp, 1, len);
+	      else
+		retval = Array2<T> (tmp, len, 1);
+	    }
 	  else
-	    retval = Array2<T> (tmp, 1, len);
+	    retval = Array2<T> (tmp, idx_orig_rows, idx_orig_columns);
 	}
     }
   else if (liboctave_dfi_flag

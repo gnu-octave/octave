@@ -251,6 +251,9 @@ Open for reading and writing.\n\
 @item O_APPEND\n\
 Append on each write.\n\
 \n\
+@item O_CREAT\n\
+Create the file if it does not exist.\n\
+\n\
 @item O_NONBLOCK\n\
 Nonblocking mode.\n\
 \n\
@@ -950,6 +953,7 @@ symbols_of_syscalls (void)
   DEFCONSTX ("F_DUPFD", SBV_F_DUPFD, F_DUPFD,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} F_DUPFD\n\
+Request to @code{fcntl} to return a duplicate file descriptor.\n\
 @end defvr");
 #endif
 
@@ -957,6 +961,7 @@ symbols_of_syscalls (void)
   DEFCONSTX ("F_GETFD", SBV_F_GETFD, F_GETFD,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} F_GETFD\n\
+Request to @code{fcntl} to return the file descriptor flags.\n\
 @end defvr");
 #endif
 
@@ -964,6 +969,7 @@ symbols_of_syscalls (void)
   DEFCONSTX ("F_GETFL", SBV_F_GETFL, F_GETFL,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} F_GETFL\n\
+Request to @code{fcntl} to return the file status flags.\n\
 @end defvr");
 #endif
 
@@ -971,6 +977,7 @@ symbols_of_syscalls (void)
   DEFCONSTX ("F_SETFD", SBV_F_SETFD, F_SETFD,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} F_SETFD\n\
+Request to @code{fcntl} to set the file descriptor flags.\n\
 @end defvr");
 #endif
 
@@ -978,6 +985,7 @@ symbols_of_syscalls (void)
   DEFCONSTX ("F_SETFL", SBV_F_SETFL, F_SETFL,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} F_SETFL\n\
+Request to @code{fcntl} to set the file status flags.\n\
 @end defvr");
 #endif
 
@@ -985,6 +993,7 @@ symbols_of_syscalls (void)
   DEFCONSTX ("O_APPEND", SBV_O_APPEND, O_APPEND,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} O_APPEND\n\
+File status flag, append on each write.\n\
 @end defvr");
 #endif
 
@@ -992,6 +1001,7 @@ symbols_of_syscalls (void)
   DEFCONSTX ("O_ASYNC", SBV_O_ASYNC, O_ASYNC,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} O_ASYNC\n\
+File status flag, asynchronous I/O.\n\
 @end defvr");
 #endif
 
@@ -999,6 +1009,7 @@ symbols_of_syscalls (void)
   DEFCONSTX ("O_CREAT", SBV_O_CREAT, O_CREAT,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} O_CREAT\n\
+File status flag, create file if it does not exist.\n\
 @end defvr");
 #endif
 
@@ -1006,6 +1017,7 @@ symbols_of_syscalls (void)
   DEFCONSTX ("O_EXCL", SBV_O_EXCL, O_EXCL,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} O_EXCL\n\
+File status flag, file locking.\n\
 @end defvr");
 #endif
 
@@ -1013,6 +1025,7 @@ symbols_of_syscalls (void)
   DEFCONSTX ("O_NONBLOCK", SBV_O_NONBLOCK, O_NONBLOCK,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} O_NONBLOCK\n\
+File status flag, non-blocking I/O.\n\
 @end defvr");
 #endif
 
@@ -1020,6 +1033,7 @@ symbols_of_syscalls (void)
   DEFCONSTX ("O_RDONLY", SBV_O_RDONLY, O_RDONLY,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} O_RDONLY\n\
+File status flag, file opened for reading only.\n\
 @end defvr");
 #endif
 
@@ -1027,6 +1041,7 @@ symbols_of_syscalls (void)
   DEFCONSTX ("O_RDWR", SBV_O_RDWR, O_RDWR,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} O_RDWR\n\
+File status flag, file open for both reading and writing.\n\
 @end defvr");
 #endif
 
@@ -1034,6 +1049,7 @@ symbols_of_syscalls (void)
   DEFCONSTX ("O_SYNC", SBV_O_SYNC, O_SYNC,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} O_SYNC\n\
+File status flag, file opened for synchronous I/O.\n\
 @end defvr");
 #endif
 
@@ -1041,6 +1057,7 @@ symbols_of_syscalls (void)
   DEFCONSTX ("O_TRUNC", SBV_O_TRUNC, O_TRUNC,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} O_TRUNC\n\
+File status flag, if file exists, truncate it when writing.\n\
 @end defvr");
 #endif
 
@@ -1048,6 +1065,7 @@ symbols_of_syscalls (void)
   DEFCONSTX ("O_WRONLY", SBV_O_WRONLY, O_WRONLY,
     "-*- texinfo -*-\n\
 @defvr {Built-in Variable} O_WRONLY\n\
+File status flag, file opened for writing only.\n\
 @end defvr");
 #endif
 

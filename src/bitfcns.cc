@@ -492,6 +492,30 @@ value.  On IEEE-754 compatiable systems, @code{bitmax} is @code{2^53 - 1}.\n\
 DEFUN (intmax, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} intmax (@var{type})\n\
+Return the largest integer that can be represented in an integer type.\n\
+The variable @var{type} can be\n\
+\n\
+@table @code\n\
+@item int8\n\
+signed 8-bit integer.\n\
+@item int16\n\
+signed 16-bit integer.\n\
+@item int32\n\
+signed 32-bit integer.\n\
+@item int64\n\
+signed 64-bit integer.\n\
+@item uint8\n\
+unsigned 8-bit integer.\n\
+@item uint16\n\
+unsigned 16-bit integer.\n\
+@item uint32\n\
+unsigned 32-bit integer.\n\
+@item uint64\n\
+unsigned 64-bit integer.\n\
+@end table\n\
+\n\
+The default for @var{type} is @code{uint32}.\n\
+@seealso{intmin,bitmax}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -531,6 +555,30 @@ DEFUN (intmax, args, ,
 DEFUN (intmin, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} intmin (@var{type})\n\
+Return the smallest integer that can be represented in an integer type.\n\
+The variable @var{type} can be\n\
+\n\
+@table @code\n\
+@item int8\n\
+signed 8-bit integer.\n\
+@item int16\n\
+signed 16-bit integer.\n\
+@item int32\n\
+signed 32-bit integer.\n\
+@item int64\n\
+signed 64-bit integer.\n\
+@item uint8\n\
+unsigned 8-bit integer.\n\
+@item uint16\n\
+unsigned 16-bit integer.\n\
+@item uint32\n\
+unsigned 32-bit integer.\n\
+@item uint64\n\
+unsigned 64-bit integer.\n\
+@end table\n\
+\n\
+The default for @var{type} is @code{uint32}.\n\
+@seealso{intmax,bitmax}\n\
 @end deftypefn")
 {
   octave_value retval;

@@ -226,13 +226,22 @@ static help_list keywords[] =
     "Pass all unnamed arguments to another function call.", },
 
   { "break",
-    "Exit the innermost enclosing while or for loop.", },
+    "Exit the innermost enclosing do, while or for loop.", },
+
+  { "case",
+    "A case statement in an switch. Octave cases are exclusive and do not\n\
+fall-through as do C-language cases. A switch statement must have at least\n\
+one case.",},
 
   { "catch",
     "begin the cleanup part of a try-catch block", },
 
   { "continue",
-    "Jump to the end of the innermost enclosing while or for loop.", },
+    "Jump to the end of the innermost enclosing do, while or for loop.", },
+
+  { "do",
+    "Begin a do-until loop. This differs from a do-while loop in that the\n\
+body of the loop is executed at least once.",},
 
   { "else",
     "Alternate action for an if block.", },
@@ -241,7 +250,7 @@ static help_list keywords[] =
     "Alternate conditional test for an if block.", },
 
   { "end",
-    "Mark the end of any for, if, while, or function block.", },
+    "Mark the end of any for, if, do, while, or function block.", },
 
   { "end_try_catch",
     "Mark the end of an try-catch block.", }, 
@@ -279,20 +288,41 @@ static help_list keywords[] =
   { "if",
     "Begin an if block.", },
 
+  { "otherwise",
+    "The default statement in a switch block.", },
+
   { "persistent",
     "Declare variables as persistent.", },
+
+  { "replot",
+    "Replot a graphic.", },
 
   { "return",
     "Return from a function.", },
 
+  { "static",
+    "Declare variables as persistent.", },
+
+  { "switch",
+    "Begin a switch statement.",},
+
   { "try",
     "Begin a try-catch block.", }, 
+
+  { "until",
+    "End a do-until loop.",},
 
   { "unwind_protect",
     "Begin an unwind_protect block.", }, 
 
   { "unwind_protect_cleanup",
     "Begin the cleanup section of an unwind_protect block.", }, 
+
+  { "varargin",
+    "Pass an arbitrary number of arguments into a function.",},
+
+  { "varargout",
+    "Pass an arbitrary number of arguments out of a function.",},
 
   { "while",
     "Begin a while loop.", },

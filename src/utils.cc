@@ -100,7 +100,8 @@ valid_identifier (const std::string& s)
 }
 
 DEFCMD (isvarname, args, ,
-  "@deftypefn {Built-in Function} {} isvarname (@var{name})\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} isvarname (@var{name})\n\
 Return true if @var{name} is a valid variable name\n\
 @end deftypefn")
 {

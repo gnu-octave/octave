@@ -1,3 +1,11 @@
+Thu Sep  9 19:31:58 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* image/saveimage.m: Initialize scale.
+
+Sun Sep  5 22:13:47 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* general/reshape.m: Allow reshape (a, size (b)).
+
 Fri Sep  3 00:01:38 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* specfun/erfinv.m: Improve stopping criterion.

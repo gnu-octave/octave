@@ -27,6 +27,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cfloat>
 #include <cmath>
 
+#if defined (HAVE_IEEEFP_H)
+#include <ieeefp.h>
+#endif
+
+#if defined (HAVE_SUNMATH_H)
+#include <sunmath.h>
+#endif
+
 #include "lo-error.h"
 #include "lo-ieee.h"
 #include "lo-mappers.h"

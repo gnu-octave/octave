@@ -318,7 +318,7 @@ private:
 			      int nr, int nc, int& count);
 
   octave_value do_scanf (scanf_format_list& fmt_list, int nr, int nc,
-			 int& count);
+			 bool one_elt_size_spec, int& count);
 
   octave_value scanf (const string& fmt, const Matrix& size, int& count);
 

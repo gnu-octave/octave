@@ -238,6 +238,7 @@ function saveimage (filename, img, img_form, map)
 
     scols = img_nr * pixfac;
     srows = img_nc * pixfac;
+    scale = 1;
 
     if (scols > pagewid * MARGIN || srows > pagehgt * MARGIN)
       if (scols > pagewid * MARGIN)

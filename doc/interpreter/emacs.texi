@@ -345,7 +345,7 @@ the shell script @code{otags} that is installed alongside your copy of
 Octave.
 
 Customization of Octave mode can be performed by modification of the
-variable @code{octave-mode-hook}.  It the value of this variable is
+variable @code{octave-mode-hook}.  If the value of this variable is
 non-@code{nil}, turning on Octave mode calls its value.
 
 If you discover a problem with Octave mode, you can conveniently send a

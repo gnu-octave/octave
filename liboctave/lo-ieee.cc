@@ -31,6 +31,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <floatingpoint.h>
 #endif
 
+#if defined (HAVE_IEEEFP_H)
+#include <ieeefp.h>
+#endif
+
+#if defined (HAVE_SUNMATH_H)
+#include <sunmath.h>
+#endif
+
 #if defined (HAVE_NAN_H)
 #if defined (SCO)
 #define _IEEE 1
@@ -39,14 +47,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if defined (SCO)
 #undef _IEEE
 #endif
-#endif
-
-#if defined (HAVE_INFINITY)
-extern "C" double infinity ();
-#endif
-
-#if defined (HAVE_QUIET_NAN)
-extern "C" double quiet_nan (long);
 #endif
 
 #include "lo-ieee.h"

@@ -1,3 +1,21 @@
+Thu Sep  9 17:09:23 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-stream.cc (get_size): Allow zero values.
+	(get_size): New arg, one_elt_size_spec.
+	(do_scanf_conv): New arg, `conv_count'.  Change instantiation
+	requests and all callers.
+	(octave_base_stream::do_scanf): Improve scanning of strings.
+	(octave_base_stream::do_oscanf): Remove size limit on %s conversions.
+
+	* oct-stream.cc (scanf_format_list::all_character_conversions):
+	Don't count %p as a character conversion.
+
+Tue Sep  7 08:31:04 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pr-output.cc (set_real_matrix_format, set_complex_matrix_format): 
+	Move check for fixed_point_format ahead of check for
+	int_or_inf_or_nan.
+
 Thu Sep  2 11:54:51 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-obj.cc (make_argv): Correctly handle empty strings as args.

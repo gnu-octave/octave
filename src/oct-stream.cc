@@ -24,6 +24,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include <cassert>
 #include <cstring>
 
 #include <iomanip.h>
@@ -83,7 +84,7 @@ get_size (double d, const char *warn_for)
     {
       if (! xisinf (d))
 	{
-	  if (d > 0.0)
+	  if (d >= 0.0)
 	    retval = NINT (d);
 	  else
 	    ::error ("%s: negative value invalid as size specification",
@@ -99,10 +100,13 @@ get_size (double d, const char *warn_for)
 }
 
 static void
-get_size (const Matrix& size, int& nr, int& nc, const char *warn_for)
+get_size (const Matrix& size, int& nr, int& nc, bool& one_elt_size_spec,
+	  const char *warn_for)
 {
   nr = -1;
   nc = -1;
+
+  one_elt_size_spec = false;
 
   double dnr = -1.0;
   double dnc = -1.0;
@@ -112,6 +116,8 @@ get_size (const Matrix& size, int& nr, int& nc, const char *warn_for)
 
   if (sz_nr == 1 && sz_nc == 1)
     {
+      one_elt_size_spec = true;
+
       dnr = size (0, 0);
       dnc = 1.0;
     }
@@ -140,7 +146,7 @@ get_size (const Matrix& size, int& nr, int& nc, const char *warn_for)
     {
       nr = get_size (dnr, warn_for);
 
-      if (! error_state && dnc > 0.0)
+      if (! error_state && dnc >= 0.0)
 	nc = get_size (dnc, warn_for);
     }
 }
@@ -874,7 +880,9 @@ octave_base_stream::read (const Matrix& size,
       int nr = -1;
       int nc = -1;
 
-      get_size (size, nr, nc, "fread");
+      bool ignore;
+
+      get_size (size, nr, nc, ignore, "fread");
 
       if (! error_state)
 	{
@@ -898,8 +906,8 @@ octave_base_stream::read (const Matrix& size,
 template <class T>
 void
 do_scanf_conv (istream& is, const char *fmt, T valptr, Matrix& mval,
-	       double *data, int& idx, int nr, int max_size,
-	       bool discard) 
+	       double *data, int& idx, int& conv_count, int nr,
+	       int max_size, bool discard) 
 {
   is.scan (fmt, valptr);
 
@@ -918,40 +926,54 @@ do_scanf_conv (istream& is, const char *fmt, T valptr, Matrix& mval,
 	}
 
       if (! discard)
-	data[idx++] = *(valptr);
+	{
+	  conv_count++;
+	  data[idx++] = *(valptr);
+	}
     }
 }
 
 template void
 do_scanf_conv (istream&, const char*, int*, Matrix&, double*, int&,
-	       int, int, bool);
+	       int&, int, int, bool);
 
 template void
 do_scanf_conv (istream&, const char*, long int*, Matrix&, double*, int&,
-	       int, int, bool);
+	       int&, int, int, bool);
 
 template void
 do_scanf_conv (istream&, const char*, short int*, Matrix&, double*, int&,
-	       int, int, bool);
+	       int&, int, int, bool);
 
 #if 0
 template void
 do_scanf_conv (istream&, const char*, float*, Matrix&, double*, int&,
-	       int, int, bool);
+	       int&, int, int, bool);
 #endif
 
 template void
 do_scanf_conv (istream&, const char*, double*, Matrix&, double*, int&,
-	       int, int, bool);
+	       int&, int, int, bool);
 
 
 octave_value
 octave_base_stream::do_scanf (scanf_format_list& fmt_list,
-			      int nr, int nc, int& count)
+			      int nr, int nc, bool one_elt_size_spec,
+			      int& conversion_count)
 {
-  count = 0;
+  conversion_count = 0;
+
+  int data_index = 0;
 
   octave_value retval = Matrix ();
+
+  if (nr == 0 || nc == 0)
+    {
+      if (one_elt_size_spec)
+	nc = 0;
+
+      return Matrix (nr, nc, 0.0);
+    }
 
   istream *isp = input_stream ();
 
@@ -960,17 +982,40 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
   Matrix mval;
   double *data = 0;
   int max_size = 0;
+  int max_conv = 0;
 
   int final_nr = 0;
   int final_nc = 0;
 
-  if (nr > 0)
+  if (all_char_conv)
+    {
+      if (one_elt_size_spec)
+	{
+	  mval.resize (1, 512, 0.0);
+	  data = mval.fortran_vec ();
+	  max_size = 512;
+	  
+	  if (nr > 0)
+	    max_conv = nr;
+	}
+      else if (nr > 0 && nc > 0)
+	{
+	  mval.resize (nr, 32, 0.0);
+	  data = mval.fortran_vec ();
+	  max_size = nr * 32;
+
+	  max_conv = nr * nc;
+	}
+    }
+  else if (nr > 0)
     {
       if (nc > 0)
 	{
 	  mval.resize (nr, nc, 0.0);
 	  data = mval.fortran_vec ();
 	  max_size = nr * nc;
+
+	  max_conv = max_size;
 	}
       else
 	{
@@ -998,27 +1043,32 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 	{
 	  if (elt)
 	    {
-	      if (count == max_size)
+	      if (max_conv > 0 && conversion_count == max_conv)
 		{
-		  if (nr > 0)
+		  if (all_char_conv && one_elt_size_spec)
 		    {
-		      if (nc > 0)
-			{
-			  final_nr = nr;
-			  final_nc = nc;
-
-			  break;
-			}
-		      else
-			{
-			  max_size *= 2;
-			  mval.resize (nr, max_size / nr, 0.0);
-			  data = mval.fortran_vec ();
-			}
+		      final_nr = 1;
+		      final_nc = data_index;
 		    }
 		  else
 		    {
-		      max_size *=2;
+		      final_nr = nr;
+		      final_nc = (data_index - 1) / nr + 1;
+		    }
+
+		  break;
+		}
+	      else if (data_index == max_size)
+		{
+		  if (nr > 0)
+		    {
+		      max_size *= 2;
+		      mval.resize (nr, max_size / nr, 0.0);
+		      data = mval.fortran_vec ();
+		    }
+		  else
+		    {
+		      max_size *= 2;
 		      mval.resize (max_size, 1, 0.0);
 		      data = mval.fortran_vec ();
 		    }
@@ -1045,7 +1095,8 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 		      case 'h':
 			{
 			  short int tmp;
-			  do_scanf_conv (is, fmt, &tmp, mval, data, count,
+			  do_scanf_conv (is, fmt, &tmp, mval, data,
+					 data_index, conversion_count,
 					 nr, max_size, discard);
 			}
 		      break;
@@ -1053,7 +1104,8 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 		      case 'l':
 			{
 			  long int tmp;
-			  do_scanf_conv (is, fmt, &tmp, mval, data, count,
+			  do_scanf_conv (is, fmt, &tmp, mval, data,
+					 data_index, conversion_count,
 					 nr, max_size, discard);
 			}
 		      break;
@@ -1061,7 +1113,8 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 		      default:
 			{
 			  int tmp;
-			  do_scanf_conv (is, fmt, &tmp, mval, data, count,
+			  do_scanf_conv (is, fmt, &tmp, mval, data,
+					 data_index, conversion_count,
 					 nr, max_size, discard);
 			}
 		      break;
@@ -1073,7 +1126,8 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 		  {
 		    double tmp;
 
-		    do_scanf_conv (is, fmt, &tmp, mval, data, count,
+		    do_scanf_conv (is, fmt, &tmp, mval, data,
+				   data_index, conversion_count,
 				   nr, max_size, discard);
 		  }
 		break;
@@ -1084,21 +1138,46 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 
 		case 's':
 		  {
-		    int len = strlen (fmt);
-		    char *tmp_fmt = new char [len+1];
-		    strcpy (tmp_fmt, fmt);
-		    if (tmp_fmt[len-1] == 's')
-		      tmp_fmt[len-1] = 'c';
+		    int width = elt->width;
 
-		    int width = elt->width ? elt->width : 1;
+		    if (elt->type == 'c' && width == 0)
+		      width = 1;
 
-		    char *tmp = new char [width+1];
+		    char *tmp = 0;
 
-		    is.scan (tmp_fmt, tmp);
+		    if (width)
+		      {
+			tmp = new char [width+1];
 
-		    delete [] tmp_fmt;
+			is.scan (fmt, tmp);
 
-		    tmp[width] = '\0';
+			tmp[width] = '\0';
+		      }
+		    else
+		      {
+			// We're looking at a `%s' format.  We have to
+			// skip initial whitespace and then read until
+			// the next whitespace character.
+
+			ostrstream buf;
+
+			int c = EOF;
+
+			while (is && (c = is.get ()) != EOF && isspace (c))
+			  /* skip leading whitespace */;
+
+			if (is && c != EOF)
+			  buf << (char) c;
+			  
+			while (is && (c = is.get ()) != EOF && ! isspace (c))
+			  buf << (char) c;
+
+			buf << ends;
+
+			tmp = buf.str ();
+		      }
+
+		    width = strlen (tmp);
 
 		    if (is)
 		      {
@@ -1106,9 +1185,11 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 
 			if (! discard)
 			  {
+			    conversion_count++;
+
 			    while (i < width && tmp[i] != '\0')
 			      {
-				if (count == max_size)
+				if (data_index == max_size)
 				  {
 				    max_size *= 2;
 
@@ -1120,7 +1201,7 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 				    data = mval.fortran_vec ();
 				  }
 
-				data[count++] = tmp[i++];
+				data[data_index++] = tmp[i++];
 			      }
 			  }
 		      }
@@ -1146,22 +1227,40 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 		}
 	      else if (! is)
 		{
-		  if (nr > 0)
+		  if (all_char_conv)
 		    {
-		      if (count > nr)
+		      if (one_elt_size_spec)
+			{
+			  final_nr = 1;
+			  final_nc = data_index;
+			}
+		      else if (data_index > nr)
 			{
 			  final_nr = nr;
-			  final_nc = (count - 1) / nr + 1;
+			  final_nc = (data_index - 1) / nr + 1;
 			}
 		      else
 			{
-			  final_nr = count;
+			  final_nr = data_index;
+			  final_nc = 1;
+			}
+		    }
+		  else if (nr > 0)
+		    {
+		      if (data_index > nr)
+			{
+			  final_nr = nr;
+			  final_nc = (data_index - 1) / nr + 1;
+			}
+		      else
+			{
+			  final_nr = data_index;
 			  final_nc = 1;
 			}
 		    }
 		  else
 		    {
-		      final_nr = count;
+		      final_nr = data_index;
 		      final_nc = 1;
 		    }
 
@@ -1194,17 +1293,10 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
     {
       mval.resize (final_nr, final_nc, 0.0);
 
+      retval = mval;
+
       if (all_char_conv)
-	{
-	  if (nr < 0)
-	    mval = mval.transpose ();
-
-	  retval = mval;
-
-	  retval = retval.convert_to_str ();
-	}
-      else
-	retval = mval;
+	retval = retval.convert_to_str ();
     }
 
   return retval;
@@ -1267,10 +1359,12 @@ octave_base_stream::scanf (const string& fmt, const Matrix& size,
 	    int nr = -1;
 	    int nc = -1;
 
-	    get_size (size, nr, nc, "fscanf");
+	    bool one_elt_size_spec;
+
+	    get_size (size, nr, nc, one_elt_size_spec, "fscanf");
 
 	    if (! error_state)
-	      retval = do_scanf (fmt_list, nr, nc, count);
+	      retval = do_scanf (fmt_list, nr, nc, one_elt_size_spec, count);
 	  }
 	  break;
 	}
@@ -1367,23 +1461,49 @@ octave_base_stream::do_oscanf (const scanf_format_elt *elt,
 
 	    case 's':
 	      {
-		// XXX FIXME XXX -- this must be fixed!
+		int width = elt->width;
 
-		int width = elt->width ? elt->width : 65535;
-		char *tmp = new char [width+1];
+		char *tmp = 0;
 
-		if (is.scan (fmt, tmp))
+		if (width)
 		  {
-		    if (! discard)
-		      {
-			tmp[width] = '\0';
-			retval = tmp;
-		      }
+		    tmp = new char [width+1];
+
+		    is.scan (fmt, tmp);
+
+		    tmp[width] = '\0';
 		  }
 		else
-		  quit = true;
+		  {
+		    // We're looking at a `%s' format.  We have to
+		    // skip initial whitespace and then read until
+		    // the next whitespace character.
+
+		    ostrstream buf;
+
+		    int c = EOF;
+
+		    while (is && (c = is.get ()) != EOF && isspace (c))
+		      /* skip leading whitespace */;
+
+		    if (is && c != EOF)
+		      buf << (char) c;
+			  
+		    while (is && (c = is.get ()) != EOF && ! isspace (c))
+		      buf << (char) c;
+
+		    buf << ends;
+
+		    tmp = buf.str ();
+
+		    if (! discard)
+		      retval = tmp;
+		  }
 
 		delete [] tmp;
+
+		if (! is)
+		  quit = true;
 	      }
 	      break;
 

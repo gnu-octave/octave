@@ -1,3 +1,9 @@
+Fri Sep  3 12:39:17 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lo-mappers.cc: Include ieeefp.h and sunmath.h if we have them.
+	* lo-ieee.c: Likewise.
+	Delete extern "C" declarations for infinity and quiet_nan.
+
 Fri Aug 20 07:58:00 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* mx-inlines.cc (VS_OP, SV_OP, VV_OP): Delete `extern template' decls.

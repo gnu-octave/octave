@@ -28,9 +28,13 @@
 
 function retval = reshape (a, m, n)
 
-  if (nargin != 3)
-    usage ("reshape (a, m, n)");
-  else
+  if (nargin == 2 && prod (size (m)) == 2)
+    n = m(2);
+    m = m(1);
+    nargin = 3;
+  endif
+
+  if (nargin == 3)
     [nr, nc] = size (a);
     if (nr * nc == m * n)
       dfi = do_fortran_indexing;
@@ -50,6 +54,8 @@ function retval = reshape (a, m, n)
     else
       error ("reshape: sizes must match");
     endif
+  else
+    usage ("reshape (a, m, n) or reshape (a, size (b))");
   endif
 
 endfunction

@@ -293,6 +293,14 @@ set_real_matrix_format (bool sign, int x_max, int x_min,
       fw = 8 * sizeof (double);
       rd = 0;
     }
+  else if (Vfixed_point_format)
+    {
+      rd = prec;
+      fw = rd + 2;
+      if (inf_or_nan && fw < 3)
+	fw = 3;
+      fw += sign;
+    }
   else if (int_or_inf_or_nan)
     {
       int digits = x_max > x_min ? x_max : x_min;
@@ -301,14 +309,6 @@ set_real_matrix_format (bool sign, int x_max, int x_min,
 	fw = 3;
       fw += sign;
       rd = 0;
-    }
-  else if (Vfixed_point_format)
-    {
-      rd = prec;
-      fw = rd + 2;
-      if (inf_or_nan && fw < 3)
-	fw = 3;
-      fw += sign;
     }
   else
     {
@@ -613,6 +613,14 @@ set_complex_matrix_format (bool sign, int x_max, int x_min,
       i_fw = 8 * sizeof (double);
       rd = 0;
     }
+  else if (Vfixed_point_format)
+    {
+      rd = prec;
+      i_fw = r_fw = rd + 2;
+      if (inf_or_nan && i_fw < 3)
+	i_fw = r_fw = 3;
+      r_fw += sign;
+    }
   else if (int_or_inf_or_nan)
     {
       int digits = x_max > x_min ? x_max : x_min;
@@ -621,14 +629,6 @@ set_complex_matrix_format (bool sign, int x_max, int x_min,
 	i_fw = r_fw = 3;
       r_fw += sign;
       rd = 0;
-    }
-  else if (Vfixed_point_format)
-    {
-      rd = prec;
-      i_fw = r_fw = rd + 2;
-      if (inf_or_nan && i_fw < 3)
-	i_fw = r_fw = 3;
-      r_fw += sign;
     }
   else
     {

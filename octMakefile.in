@@ -239,11 +239,7 @@ doc-dist-tar:
 	rm -rf `cat .fname`
 .PHONY: doc-dist-tar
 
-clean-doc-dist-tar: doc-dist-tar
-	$(MAKE) clean-tar
-.PHONY: clean-doc-dist-tar
-
-doc-dist: clean-doc-dist-tar
+doc-dist: doc-dist-tar
 .PHONY: doc-dist
 
 # Rules for making a distribution for local use.

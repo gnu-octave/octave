@@ -1,3 +1,8 @@
+2001-11-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* octMakefile.in (dist): Omit long-gone info subdir.
+	Fix find command for removing Makefile in kpathsea and glob subdirs.
+
 2001-08-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* mkoctfile.in: Substitute F2C and F2CFLAGS. Make it possible to

@@ -169,9 +169,9 @@ dist: dist-info-files
 	  -o -name config.status -o -name config.cache -o -name stamp-h \
 	  -o -name klibtool.config -o -name stamp-auto \
 	  -o -name c-auto.h \) -print | xargs rm -rf
-	find `cat .fname`/kpathsea `cat .fname`/glob 
+	find `cat .fname`/kpathsea `cat .fname`/glob \
 	  -name Makefile | xargs rm -f
-	find `cat .fname`/info `cat .fname`/glob -name config.h | xargs rm -f
+	find `cat .fname`/glob -name config.h | xargs rm -f
 	rm -f `cat .fname`/test/octave.test/*.m
 	chmod -R a+rwX `cat .fname`
 	tar cf `cat .fname`.tar `cat .fname`

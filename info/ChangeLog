@@ -1,3 +1,7 @@
+Sun Nov 24 21:24:39 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in (TERMLIBS): Look for ncurses too.
+
 Tue Nov 12 14:44:00 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (VPATH): Don't include $(common).

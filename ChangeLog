@@ -1,3 +1,13 @@
+Sun Nov 24 21:40:25 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: Set GCC_IEEE_FP_FLAG to -mieee-fp on all x86
+	systems, not just those running Linux.
+
+Fri Nov 22 15:10:34 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* emacs/octave.el: Update from Kurt Hornik to with fixes for
+	fill-paragraph.
+
 Wed Nov 20 00:33:03 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Version 1.93.

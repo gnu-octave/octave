@@ -21,7 +21,7 @@ dnl Copyright (C) 1996 John W. Eaton
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA. 
 
-AC_REVISION($Revision: 1.235 $)
+AC_REVISION($Revision: 1.236 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -296,15 +296,15 @@ if test -n "$gcc_version"; then
 fi
 AC_SUBST(CC_VERSION)
 
-### On Linux systems we need to compile with -mieee-fp to get full
-### support for IEEE floating point.
+### On Intel systems with gcc, we need to compile with -mieee-fp to
+### get full support for IEEE floating point.
 ###
 ### On Alpha/OSF systems, wee need -mieee-with-inexact, but that also
 ### requires gcc 2.8.x or later.
 
 case "$canonical_host_type" in
 changequote(,)dnl
-  i[3456789]86-*-linux*)
+  i[3456789]86-*-*)
 changequote([,])dnl
     GCC_IEEE_FP_FLAG="-mieee-fp"
     AC_MSG_RESULT([defining GCC_IEEE_FP_FLAG to be $GCC_IEEE_FP_FLAG])

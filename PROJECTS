@@ -606,8 +606,6 @@ Miscellaneous:
     strftime().  A C version is apparently in recent releases of the
     Linux C library.
 
-  * Merge OS/2 changes.
-
 ------
 Always:
 ------

@@ -1,3 +1,7 @@
+Sun Dec  1 20:55:34 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* strings/str2num.m: New file.
+
 Wed Nov 20 01:00:24 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Version 1.93.

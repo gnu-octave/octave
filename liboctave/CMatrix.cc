@@ -1416,7 +1416,9 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, int& info, int& rank) const
       int len_s = m < n ? m : n;
       Array<double> s (len_s);
       double *ps = s.fortran_vec ();
+
       double rcond = -1.0;
+
       int lwork;
       if (m < n)
 	lwork = 2*m + (nrhs > n ? nrhs : n);
@@ -1439,7 +1441,7 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, int& info, int& rank) const
 	(*current_liboctave_error_handler) ("unrecoverable error in zgelss");
       else
 	{
-	  ComplexMatrix retval (n, nrhs);
+	  retval.resize (n, nrhs);
 	  for (int j = 0; j < nrhs; j++)
 	    for (int i = 0; i < n; i++)
 	      retval.elem (i, j) = result.elem (i, j);
@@ -1519,7 +1521,7 @@ ComplexMatrix::lssolve (const ComplexColumnVector& b, int& info,
 	(*current_liboctave_error_handler) ("unrecoverable error in zgelss");
       else
 	{
-	  ComplexColumnVector retval (n);
+	  retval.resize (n);
 	  for (int i = 0; i < n; i++)
 	    retval.elem (i) = result.elem (i);
 	}

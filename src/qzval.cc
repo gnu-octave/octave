@@ -53,7 +53,12 @@ A and B must be real matrices.")
       Matrix b = arg_b.matrix_value ();
 
       if (! error_state)
-	retval = Qzval (a, b);
+	{
+	  ComplexColumnVector tmp = Qzval (a, b);
+
+	  if (! error_state)
+	    retval = tmp;
+	}
     }
   else
     print_usage ("qzval");

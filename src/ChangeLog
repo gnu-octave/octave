@@ -1,3 +1,7 @@
+Tue Dec  3 23:47:09 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* op-str-str.cc (eq, ne): Handle operations with scalars.
+
 Thu Nov 21 12:30:36 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* ov-str-mat.h (octave_char_matrix_str): Provide transpose and

@@ -336,7 +336,7 @@ DEFUN_DLD (doit, args, ,
 
 DEFINE_OCTAVE_ALLOCATOR (octave_integer);
 
-DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_integer, "integer");
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_integer, "integer", "integer");
 
 /*
 ;;; Local Variables: ***

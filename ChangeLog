@@ -1,4 +1,7 @@
-2005-03-01  John W. Eaton  <jwe@octave.org>
+2005-03-01  Todd Neal  <tolchz@gmail.com>
+
+	* examples/make_int.cc: DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA now
+	takes three arguments.
 
 	* octMakefile.in (SUBDIRS, CLEANSUBDIRS):
 	Remove @GLOB_DIR@ from the list.

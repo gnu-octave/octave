@@ -698,6 +698,28 @@ DEFUN ("sumsq", Fsumsq, Ssumsq, 1, 1,
   return retval;
 }
 
+DEFUN ("is_struct", Fis_struct, Sis_struct, 1, 1,
+  "is_struct (x): return nonzero if x is a structure")
+{
+  Octave_object retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 1)
+    {
+      tree_constant arg = args(0);
+
+      if (arg.is_map ())
+	retval = 1.0;
+      else
+	retval = 0.0;
+    }
+  else
+    print_usage ("is_struct");
+
+  return retval;
+}
+
 static void
 check_dimensions (int& nr, int& nc, const char *warnfor)
 {

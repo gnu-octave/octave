@@ -27,7 +27,9 @@ RUNTEST = @RUNTEST@
 
 DEFAULT_PAGER = @DEFAULT_PAGER@
 
+WITH_DL = @use_dl@
 WITH_DLD = @use_dld@
+WITH_SHL = @use_shl@
 
 OCTAVE_LITE = @lite_kernel@
 

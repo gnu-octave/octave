@@ -1,3 +1,8 @@
+2003-06-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* load-save.cc (get_save_type): Avoid all save types other than
+	LS_DOUBLE to avoid apparent Matlab bugs.
+
 2003-06-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* parse.y (frob_function, parse_fcn_file): Handle help_buf as

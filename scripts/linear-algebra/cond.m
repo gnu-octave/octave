@@ -30,7 +30,7 @@
 function retval = cond (a)
 
   if (nargin == 1)
-    if (ndims (x) > 2)
+    if (ndims (a) > 2)
       error ("cond: Only valid on 2-D objects")
     endif
 

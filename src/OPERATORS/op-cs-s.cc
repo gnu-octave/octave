@@ -62,7 +62,7 @@ DEFBINOP (ldiv, complex, scalar)
 {
   CAST_BINOP_ARGS (const octave_complex&, const octave_scalar&);
 
-  double d = v1.complex_value ();
+  Complex d = v1.complex_value ();
 
   if (d == 0.0)
     gripe_divide_by_zero ();

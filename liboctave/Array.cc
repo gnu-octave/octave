@@ -2539,53 +2539,57 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
     {
       lhs.maybe_delete_elements (idx, rfv);
     }
-  else if (rhs_is_scalar)
+  else if (n_idx == 1)
     {
-      if (n_idx == 0)
-	(*current_liboctave_error_handler)
-	  ("number of indices is zero");
-      else if (n_idx == 1)
+      idx_vector iidx = idx(0);
+
+      if (liboctave_wfi_flag
+	  && ! (iidx.is_colon ()
+		|| (iidx.one_zero_only ()
+		    && iidx.orig_dimensions () == lhs.dims ())))
+	(*current_liboctave_warning_handler)
+	  ("single index used for n-d array");
+
+      int lhs_len = lhs.length ();
+
+      int len = iidx.freeze (lhs_len, "n-d arrray");
+
+      if (iidx)
 	{
-	  idx_vector iidx = idx(0);
-
-	  if (liboctave_wfi_flag
-	      && ! (iidx.is_colon ()
-		    || (iidx.one_zero_only ()
-			&& iidx.orig_dimensions () == lhs.dims ())))
-	    (*current_liboctave_warning_handler)
-	      ("single index used for n-d array");
-
-	  int lhs_len = lhs.length ();
-
-	  int len = iidx.freeze (lhs_len, "n-d arrray");
-
-	  if (iidx)
+	  if (len == 0)
 	    {
-	      if (len == 0)
+	      if (! (rhs_dims.all_ones () || rhs_dims.all_zero ()))
+		(*current_liboctave_error_handler)
+		  ("A([]) = X: X must be an empty matrix or scalar");
+	    }
+	  else if (len == rhs.length ())
+	    {
+	      for (int i = 0; i < len; i++)
 		{
-		  if (! (rhs_dims.all_ones () || rhs_dims.all_zero ()))
-		    (*current_liboctave_error_handler)
-		      ("A([]) = X: X must be an empty matrix or scalar");
-		}
-	      else if (len <= lhs_len)
-		{
-		  RT scalar = rhs.elem (0);
+		  int ii = iidx.elem (i);
 
-		  for (int i = 0; i < len; i++)
-		    {
-		      int ii = iidx.elem (i);
-
-		      lhs.elem (ii) = scalar;
-		    }
-		}
-	      else
-		{
-		  (*current_liboctave_error_handler)
-      ("A(I) = X: X must be a scalar or a matrix with the same size as I");
-
-		  retval = 0;
+		  lhs.elem (ii) = rhs.elem (i);
 		}
 	    }
+	  else if (rhs_is_scalar && len <= lhs_len)
+	    {
+	      RT scalar = rhs.elem (0);
+
+	      for (int i = 0; i < len; i++)
+		{
+		  int ii = iidx.elem (i);
+
+		  lhs.elem (ii) = scalar;
+		}
+	    }
+	  else
+	    {
+	      (*current_liboctave_error_handler)
+	("A(I) = X: X must be a scalar or a matrix with the same size as I");
+	      
+	      retval = 0;
+	    }
+
 	  // idx_vector::freeze() printed an error message for us.
 	}
       else if (n_idx < lhs_dims.length ())
@@ -2839,7 +2843,7 @@ Array<T>::print_info (std::ostream& os, const std::string& prefix) const
 
   // 2D info:
   //
-  //     << prefix << "rows: " << rows () << "\n"
+  //     << pefix << "rows: " << rows () << "\n"
   //     << prefix << "cols: " << cols () << "\n";
 }
 

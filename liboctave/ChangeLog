@@ -1,6 +1,6 @@
 2003-11-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
-	* Array.cc (assignN): Allow single indexing to work for scalar RHS.
+	* Array.cc (assignN): Allow single indexing to work.
 
 	* dim-vector.h (dim_vector::all_ones): New function.
 

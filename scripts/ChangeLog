@@ -1,3 +1,7 @@
+Fri Nov 14 10:53:11 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* plot/__pltopt__.m: Use sprintf instead of strcat when adding TITLE.
+
 Fri Oct 10 11:18:10 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* specfun/gammai.m: Avoid problems with whitespace when

@@ -250,6 +250,6 @@ function fmt = __pltopt__ (caller, opt)
   endif
 
   if (set_key)
-    fmt = strcat (fmt, " ", TITLE, ' "', key_title, '" ');
+    fmt = sprintf ("%s %s \"%s\" ", fmt, TITLE, key_title);
   endif
 endfunction

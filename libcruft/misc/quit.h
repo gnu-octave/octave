@@ -87,9 +87,6 @@ extern void octave_throw_bad_alloc (void) GCC_ATTR_NORETURN;
     } \
   while (0)
 
-extern void (*octave_interrupt_hook) (void);
-extern void (*octave_bad_alloc_hook) (void);
-
 /* Normally, you just want to use
 
      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
@@ -136,6 +133,9 @@ extern void (*octave_bad_alloc_hook) (void);
   while (0)
 
 #ifdef __cplusplus
+
+extern void (*octave_interrupt_hook) (void);
+extern void (*octave_bad_alloc_hook) (void);
 
 #define BEGIN_INTERRUPT_WITH_EXCEPTIONS \
   sig_atomic_t saved_octave_interrupt_immediately = octave_interrupt_immediately; \

@@ -29,6 +29,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <iomanip>
 #include <strstream>
+#include <fstream>
 #include <string>
 
 #include "lo-ieee.h"
@@ -1008,7 +1009,7 @@ octave_base_stream::read (const Matrix& size,
 template <class T>
 void
 do_scanf_conv (std::istream& is, const char *fmt, T valptr, Matrix& mval,
-	       double *data, int& idx, int& conv_count, int nr,
+	       double *data, int& idx, int& conversion_count, int nr,
 	       int max_size, bool discard) 
 {
   is.scan (fmt, valptr);
@@ -1029,7 +1030,7 @@ do_scanf_conv (std::istream& is, const char *fmt, T valptr, Matrix& mval,
 
       if (! discard)
 	{
-	  conv_count++;
+	  conversion_count++;
 	  data[idx++] = *(valptr);
 	}
     }
@@ -1552,11 +1553,11 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 
 octave_value
 octave_base_stream::scanf (const std::string& fmt, const Matrix& size,
-			   int& count)
+			   int& conversion_count)
 {
   octave_value retval = Matrix ();
 
-  count = 0;
+  conversion_count = 0;
 
   std::istream *isp = input_stream ();
 
@@ -1618,7 +1619,8 @@ octave_base_stream::scanf (const std::string& fmt, const Matrix& size,
 	    get_size (size, nr, nc, one_elt_size_spec, "fscanf");
 
 	    if (! error_state)
-	      retval = do_scanf (fmt_list, nr, nc, one_elt_size_spec, count);
+	      retval = do_scanf (fmt_list, nr, nc, one_elt_size_spec,
+				 conversion_count);
 	  }
 	  break;
 	}
@@ -3108,11 +3110,11 @@ octave_stream_list::do_list_open_files (void) const
 	  std::string name = os.name ();
 
 	  buf << "  "
-	      << setiosflags (std::ios::right)
-	      << setw (4) << i << "     "
-	      << setiosflags (std::ios::left)
-	      << setw (3) << mode.c_str () << "  "
-	      << setw (9) << arch.c_str () << "  "
+	      << std::setiosflags (std::ios::right)
+	      << std::setw (4) << i << "     "
+	      << std::setiosflags (std::ios::left)
+	      << std::setw (3) << mode.c_str () << "  "
+	      << std::setw (9) << arch.c_str () << "  "
 	      << name << "\n";
 	}
     }

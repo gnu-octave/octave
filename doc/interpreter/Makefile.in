@@ -17,23 +17,25 @@ SOURCES =
 
 TEXINFO = ack.texi amuse.texi arith.texi bugs.texi bugs1.texi \
 	control.texi cp-idx.texi diffeq.texi expr.texi \
-	extend.texi fcn.texi fn-idx.texi gpl.texi help.texi \
-	history.texi hsuser.texi install.texi install1.texi \
-	intro.texi invoke.texi io.texi linalg.texi matrix.texi \
-	nonlin.texi octave.texi op-idx.texi optim.texi plot.texi \
-	program.texi quad.texi rluser.texi signal.texi special.texi \
-	stats.texi stmt.texi strings.texi system.texi using.texi \
-	var.texi vr-idx.texi
+	extend.texi fcn.texi fn-idx.texi gnuinfo.texi gpl.texi \
+	help.texi history.texi hsuser.texi in-idx.texi \
+	install.texi install1.texi intro.texi invoke.texi io.texi \
+	linalg.texi matrix.texi nonlin.texi octave.texi op-idx.texi \
+	optim.texi plot.texi program.texi quad.texi rd-idx.texi \
+	rluser.texi signal.texi special.texi stats.texi stmt.texi \
+	strings.texi system.texi var.texi vr-idx.texi
 
 LIB_TEXINFO = liboctave.texi
 
 ALL_TEXINFO = $(TEXINFO) $(LIB_TEXINFO)
 
+REFCARD = refcard.tex refcard.dvi refcard.ps
+
 FORMATTED =  octave.dvi octave.ps octave.info octave.info-[0-9]*
 #	liboctave.info liboctave.info-[0-9]*
 
 DISTFILES = Makefile.in conf.texi.in conf.texi texinfo.tex \
-	$(ALL_TEXINFO) $(FORMATTED)
+	$(REFCARD) $(ALL_TEXINFO) $(FORMATTED)
 
 SPELL = $(patsubst %.texi, %.spell, $(ALL_TEXINFO))
 
@@ -42,7 +44,7 @@ SPELL = $(patsubst %.texi, %.spell, $(ALL_TEXINFO))
 	sed -e 's/@@/ at /g' -e 's/@[a-zA-Z]*//g' $< | spell > $@.tmp
 	mv $@.tmp $@
 
-all: octave.info octave.dvi octave.ps
+all: octave.info octave.dvi octave.ps refcard.dvi refcard.ps
 #	liboctave.info liboctave.dvi liboctave.ps
 .PHONY: all
 
@@ -63,6 +65,12 @@ liboctave.dvi: $(LIB_TEXINFO) conf.texi
 
 liboctave.ps: liboctave.dvi
 	dvips -o liboctave.ps liboctave.dvi
+
+refcard.dvi: refcard.tex
+	tex refcard.tex
+
+refcard.ps: refcard.dvi
+	dvips -t landscape -o refcard.ps refcard.dvi
 
 ../INSTALL.OCTAVE: install1.texi install.texi
 	-makeinfo --no-header -I$(srcdir)/doc install1.texi
@@ -133,7 +141,7 @@ clean:
 	octave.ps liboctave.cp liboctave.fn liboctave.pg \
 	liboctave.tp liboctave.cps liboctave.fns liboctave.pgs \
 	liboctave.tps liboctave.aux liboctave.log liboctave.toc \
-	liboctave.dvi liboctave.ps
+	liboctave.dvi liboctave.ps refcard.dvi refcard.ps
 .PHONY: clean
 
 mostlyclean:

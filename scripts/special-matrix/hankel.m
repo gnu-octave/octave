@@ -43,11 +43,11 @@ function retval = hankel (c, r)
   endif
 
   if (c_nc != 1)
-    c = c';
+    c = c.';
   endif
 
   if (r_nr != 1)
-    r = r';
+    r = r.';
   endif
 
   if (r (1) != c (1))

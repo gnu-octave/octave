@@ -155,6 +155,9 @@ DEFUN_DLD (fsolve, args, nargout,
 Given @var{fcn}, the name of a function of the form @code{f (@var{x})}\n\
 and an initial starting point @var{x0}, @code{fsolve} solves the set of\n\
 equations such that @code{f(@var{x}) == 0}.\n\
+\n\
+You can use the function @code{fsolve_options} to set optional\n\
+parameters for @code{fsolve}.\n\
 @end deftypefn")
 {
   octave_value_list retval;

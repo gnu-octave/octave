@@ -182,6 +182,9 @@ The fourth argument is optional, and may be used to specify a set of\n\
 times that the ODE solver should not integrate past.  It is useful for\n\
 avoiding difficulties with singularities and points where there is a\n\
 discontinuity in the derivative.\n\
+\n\
+You can use the function @code{lsode_options} to set optional\n\
+parameters for @code{lsode}.\n\
 @end deftypefn")
 {
   octave_value_list retval;

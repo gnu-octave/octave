@@ -149,6 +149,9 @@ contains an integer error code (0 indicates a successful integration).\n\
 The value of @var{nfun} indicates how many function evaluations were\n\
 required, and @var{err} contains an estimate of the error in the\n\
 solution.\n\
+\n\
+You can use the function @code{quad_options} to set optional\n\
+parameters for @code{quad}.\n\
 @end deftypefn")
 {
   octave_value_list retval;

@@ -36,10 +36,9 @@ function t = deblank (s)
     if (len == 0)
       t = s;
     else
-      s = toascii (s);
       s = reshape (s, 1, len);
-      k = max (find (s != toascii (" ")));
-      t = setstr (s (1:k));
+      k = max (find (s != " "));
+      t = s (1:k);
     endif
 
   else

@@ -3055,7 +3055,7 @@ OCT_VAL_REP::assign (octave_value& rhs, const octave_value_list& args)
 	 && (rhs_tmp.is_string ()
 	     || rhs_tmp.is_zero_by_zero ())))
     {
-      rhs_tmp.force_numeric ();
+      rhs_tmp = rhs_tmp.make_numeric ();
 
       if (error_state)
 	return;
@@ -3065,7 +3065,7 @@ OCT_VAL_REP::assign (octave_value& rhs, const octave_value_list& args)
       && rhs_tmp.rows () == 1
       && rhs_tmp.columns () == 0)
     {
-      rhs_tmp.force_numeric (1);
+      rhs_tmp = rhs_tmp.make_numeric (1);
 
       if (error_state)
 	return;

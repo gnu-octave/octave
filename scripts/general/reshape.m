@@ -30,13 +30,19 @@ function retval = reshape (a, m, n)
   else
     [nr, nc] = size (a);
     if (nr * nc == m * n)
-      tmp = do_fortran_indexing;
+      dfi = do_fortran_indexing;
+      istno = implicit_str_to_num_ok;
       unwind_protect
-        do_fortran_indexing = "true";
+        do_fortran_indexing = 1;
+	implicit_str_to_num_ok = 1;
         retval = zeros (m, n);
         retval (:) = a;
+	if (isstr (a))
+	  retval = setstr (retval);
+	endif
       unwind_protect_cleanup
-        do_fortran_indexing = tmp;
+        do_fortran_indexing = dfi;
+	implicit_str_to_num_ok = istno;
       end_unwind_protect
     else
       error ("reshape: sizes must match");

@@ -14,7 +14,7 @@ VPATH = @srcdir@
 
 SPECIAL = gen-d1mach.c d1mach-tst.for dostop.c f77-fcn.c
 
-SPECIAL_DEPEND = d1mach.o dostop.o
+SPECIAL_DEPEND = d1mach.o dostop.o f77-fcn.o
 
 DISTFILES = $(subst d1mach.f, , $(DISTFILES))
 

@@ -390,7 +390,7 @@ tree_for_command::eval (void)
 	ident = idr->ident ();
     }
 
-  if (id_list && ! ident && ! tmp_expr->is_map ())
+  if (id_list && ! ident && ! tmp_expr.is_map ())
     {
       error ("in statement `for [X, Y] = VAL', VAL must be a structure");
       return;

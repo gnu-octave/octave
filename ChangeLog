@@ -1,3 +1,19 @@
+2002-11-21  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in (do-subst-config-vals): Substitute OCTAVE_BINDIR.
+
+	* configure.in (MKOCTFILE_SH_LDFLAGS): New variable.
+	* Makeconf.in (do-subst-config-vals): Substitute
+	OCTAVE_CONF version of this variable.
+
+	* mkoctfile.in: Set SH_LDFLAGS from MKOCTFILE_SH_LDFLAGS, not
+	SH_LDFLAGS.
+	(VERSION): Substitute value of OCTAVE_CONF_VERSION.
+
+	* configure.in (NO_OCT_FILE_STRIP): New variable.
+	* Makeconf.in (do-subst-config-vals): Substitute it.
+	* mkoctfile.in (no_oct_file_strip_on_this_platform): New variable.
+
 2002-11-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in (OCTAVE_CXX_PRAGMA_INTERFACE_IMPLEMENTATION):

@@ -285,6 +285,10 @@ MKOCTFILE_INCFLAGS = \
 # The -L flags to use for the mkoctfile scrip (for --link-stand-alone)
 MKOCTFILE_LFLAGS = -L$(octlibdir)
 
+MKOCTFILE_SH_LDFLAGS = @MKOCTFILE_SH_LDFLAGS@
+
+NO_OCT_FILE_STRIP = @NO_OCT_FILE_STRIP@
+
 # The following pattern rules and the substitution functions require
 # GNU make.  If you don't have it, get it!
 
@@ -354,6 +358,8 @@ endef
 define do-subst-config-vals
 echo "making $@ from $<"
 $(SED) < $< \
+  -e "s;%NO_OCT_FILE_STRIP%;${NO_OCT_FILE_STRIP};" \
+  -e "s;%OCTAVE_BINDIR%;\"${bindir}\";" \
   -e "s;%OCTAVE_CONF_ALL_CFLAGS%;\"${ALL_CFLAGS}\";" \
   -e "s;%OCTAVE_CONF_ALL_CXXFLAGS%;\"${ALL_CXXFLAGS}\";" \
   -e "s;%OCTAVE_CONF_ALL_FFLAGS%;\"${ALL_FFLAGS}\";" \
@@ -408,6 +414,7 @@ $(SED) < $< \
   -e "s;%OCTAVE_CONF_LN_S%;\"${LN_S}\";" \
   -e "s;%OCTAVE_CONF_MKOCTFILE_INCFLAGS%;\"${MKOCTFILE_INCFLAGS}\";" \
   -e "s;%OCTAVE_CONF_MKOCTFILE_LFLAGS%;\"${MKOCTFILE_LFLAGS}\";" \
+  -e "s;%OCTAVE_CONF_MKOCTFILE_SH_LDFLAGS%;\"${MKOCTFILE_SH_LDFLAGS}\";" \
   -e "s;%OCTAVE_CONF_RANLIB%;\"${RANLIB}\";" \
   -e "s;%OCTAVE_CONF_RDYNAMIC_FLAG%;\"${RDYNAMIC_FLAG}\";" \
   -e "s;%OCTAVE_CONF_RLD_FLAG%;\"${RLD_FLAG}\";" \

@@ -1,5 +1,11 @@
 2002-11-21  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* oct-conf.h.in (OCTAVE_CONF_MKOCTFILE_SH_LDFLAGS): New macro.
+	* toplev.cc (octave_config_info): Add it to the struct.
+
+	* lex.l (<TEXT_FCN>): If yytext begins with # or %, don't
+	recognize it as a string.
+
 	* oct-map.h (Octave_map::operator[]): New const version.
 	* oct-map.cc (equiv_keys): New function.
 	(assign (const idx_vector&, const Octave_map&)): New function.

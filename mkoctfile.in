@@ -7,6 +7,13 @@
 
 set -e
 
+# These need to be set first, but you shouldn't change them unless
+# you are sure you know what you are doing.
+
+VERSION=%OCTAVE_CONF_VERSION%
+EXEEXT=%OCTAVE_CONF_EXEEXT%
+BINDIR=%OCTAVE_BINDIR%
+
 # Default values for these variables are filled in when Octave is
 # compiled. 
 
@@ -32,7 +39,7 @@ set -e
 : ${DEPEND_EXTRA_SED_PATTERN=%OCTAVE_CONF_DEPEND_EXTRA_SED_PATTERN%}
 
 : ${SH_LD=%OCTAVE_CONF_SH_LD%}
-: ${SH_LDFLAGS=%OCTAVE_CONF_SH_LDFLAGS%}
+: ${SH_LDFLAGS=%OCTAVE_CONF_MKOCTFILE_SH_LDFLAGS%}
 
 : ${RLD_FLAG=%OCTAVE_CONF_RLD_FLAG%}
 : ${RDYNAMIC_FLAG=%OCTAVE_CONF_RDYNAMIC_FLAG%}
@@ -76,6 +83,7 @@ defs=
 ldflags=
 dbg=:
 strip=false
+no_oct_file_strip_on_this_platform=%NO_OCT_FILE_STRIP%
 link=true
 link_stand_alone=false
 depend=false
@@ -207,7 +215,11 @@ EOF
       fi
     ;;
     -s | --strip)
-      strip=true
+      if $no_oct_file_strip_on_this_platform; then
+        echo "mkoctfile: stripping disabled on this platform" 1>&2
+      else
+        strip=true
+      fi
     ;;
     -c | --compile)
       link=false

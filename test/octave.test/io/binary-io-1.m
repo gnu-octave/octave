@@ -9,7 +9,7 @@ n = rows (type_list);
 
 nm = tmpnam ();
 
-id = fopen (nm, "w");
+id = fopen (nm, "wb");
 
 if (id > 0)
 
@@ -19,7 +19,7 @@ if (id > 0)
 
   fclose (id);
 
-  id = fopen (nm, "r");
+  id = fopen (nm, "rb");
 
   if (id > 0)
 

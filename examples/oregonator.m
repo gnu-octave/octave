@@ -1,4 +1,11 @@
 ## The `oregonator'.
+##
+## Reference:
+##
+##   Oscillations in chemical systems.  IV.  Limit cycle behavior in a
+##   model of a real chemical reaction. Richard J. Field and Richard
+##   M. Noyes, The Journal of Chemical Physics, Volume 60 Number 5,
+##   March 1974.
 
 function dx = oregonator (x, t)
 

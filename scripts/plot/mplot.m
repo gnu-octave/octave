@@ -62,7 +62,7 @@ function mplot (...)
       __multiplot_xi__++;
     else
       __multiplot_xi__ = 1;
-      if (__multiplot_yi__ < multiplot_xn__)
+      if (__multiplot_yi__ < __multiplot_yn__)
 	__multiplot_yi__++;
       else
 	__multiplot_yi__ = 1;
@@ -70,11 +70,9 @@ function mplot (...)
     endif
 
     xo = (__multiplot_xi__ - 1.0) * __multiplot_xsize__;
-    yo = (__multiplot_yn__ - __multiplot_yi) * __multiplot_ysize__;
+    yo = (__multiplot_yn__ - __multiplot_yi__) * __multiplot_ysize__;
 
     eval (sprintf ("gset origin %g, %g", xo, yo));
-
-    clearplot;
 
   endif
 

@@ -94,7 +94,7 @@ tree_argument_list::convert_to_const_vector (void)
 
 	  if (error_state)
 	    {
-	      ::error ("evaluating argument list element number %d", k);
+	      ::error ("evaluating argument list element number %d", k+1);
 	      args = octave_value_list ();
 	      break;
 	    }

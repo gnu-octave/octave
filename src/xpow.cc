@@ -446,6 +446,20 @@ xpow (const ComplexMatrix& a, const Complex& b)
 //
 //   * -> not needed.
 
+// XXX FIXME XXX -- these functions need to be fixed so that things
+// like
+//
+//   a = -1; b = [ 0, 0.5, 1 ]; r = a .^ b
+//
+// and
+//
+//   a = -1; b = [ 0, 0.5, 1 ]; for i = 1:3, r(i) = a .^ b(i), end
+//
+// produce identical results.  Also, it would be nice if -1^0.5
+// produced a pure imaginary result instead of a complex number with a
+// small real part.  But perhaps that's really a problem with the math
+// library...
+
 // -*- 1 -*-
 octave_value
 elem_xpow (double a, const Matrix& b)
@@ -455,9 +469,9 @@ elem_xpow (double a, const Matrix& b)
   int nr = b.rows ();
   int nc = b.cols ();
 
-  // For now, assume the worst.
+  double d1, d2;
 
-  if (a < 0.0)
+  if (a < 0.0 && ! b.all_integers (d1, d2))
     {
       Complex atmp (a);
       ComplexMatrix result (nr, nc);

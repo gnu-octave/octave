@@ -181,7 +181,7 @@ endfor
 
 @noindent
 (for @code{a} previously  undefined) produce column vectors.  Otherwise, row
-vectors are preferred.  The default value is 0.
+vectors are preferred.  The default value is 1.
 
 If a variable is already defined to be a vector (a matrix with a single
 row or column), the original orientation is respected, regardless of the

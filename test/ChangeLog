@@ -1,3 +1,12 @@
+Thu Mar  5 20:35:26 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* octave.test/system/gmtime-1.m, octave.test/system/localtime-1.m:
+	Not all systems have time zone info in the struct.
+
+Mon Mar  2 14:36:50 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* octave.test/io/binary-io-1.m (id): Use binary flag in fopen call.
+
 Wed Apr  2 21:59:15 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* octave.test/prefer/prefer.exp: Delete prefer-36 and prefer-37.

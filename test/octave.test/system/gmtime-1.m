@@ -5,7 +5,6 @@ ts = gmtime (time ());
  && struct_contains (ts, "mon")
  && struct_contains (ts, "mday")
  && struct_contains (ts, "sec")
- && struct_contains (ts, "zone")
  && struct_contains (ts, "min")
  && struct_contains (ts, "wday")
  && struct_contains (ts, "hour")

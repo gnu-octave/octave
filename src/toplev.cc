@@ -167,7 +167,7 @@ main_loop (void)
 // Fix up things before exiting.
 
 void
-clean_up_and_exit (int retval)
+clean_up_for_exit (void)
 {
   command_editor::restore_terminal_state ();
 
@@ -184,16 +184,14 @@ clean_up_and_exit (int retval)
 
   if (!quitting_gracefully && (interactive || forced_interactive))
     cout << "\n";
+}
 
-  if (retval == EOF)
-    retval = 0;
+void
+clean_up_and_exit (int retval)
+{
+  clean_up_for_exit ();
 
-  exit (retval);
-
-  // This is bogus but should prevent g++ from giving a warning saying
-  // that this volatile function does return.
-
-  panic_impossible ();
+  exit (retval == EOF ? 0 : retval);
 }
 
 DEFUN_TEXT (casesen, args, ,

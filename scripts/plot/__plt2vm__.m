@@ -25,8 +25,8 @@ function __plt2vm__ (x, y, fmt)
     msg = sprintf ("__plt2vm__ (x, y)\n");
     msg = sprintf ("%s              __plt2vm__ (x, y, fmt)", msg);
     usage (msg);
-  elseif (nargin == 2)
-    fmt = "";
+  elseif (nargin == 2 || fmt == "")
+    fmt = " ";  ## Yes, this is intentionally not an empty string!
   endif
 
   [x_nr, x_nc] = size (x);
@@ -50,11 +50,21 @@ function __plt2vm__ (x, y, fmt)
     error ("__plt2vm__: matrix dimensions must match");
   endif
 
+  k = 1;
+  fmt_nr = rows (fmt);
   if (y_nc > 0)
     tmp = [x, y];
-    cmd = sprintf ("gplot tmp(:,%d:%d:%d) %s", 1, x_nc, x_nc+1, fmt);
+    cmd = sprintf ("gplot tmp(:,%d:%d:%d) %s", 1, x_nc, x_nc+1,
+		   deblank (fmt (k, :)));
+    if (k < fmt_nr)
+      k++;
+    endif
     for i = 2:y_nc
-      cmd = sprintf ("%s, tmp(:,%d:%d:%d) %s", cmd, 1, i, i+1, fmt);
+      cmd = sprintf ("%s, tmp(:,%d:%d:%d) %s", cmd, 1, i, i+1,
+		     deblank (fmt (k, :)));
+      if (k < fmt_nr)
+      	k++;
+      endif
     endfor
     eval (cmd);
   else

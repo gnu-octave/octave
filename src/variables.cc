@@ -26,6 +26,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <cstdio>
 #include <cstring>
+#include <ctime>
 
 #include <string>
 
@@ -513,9 +514,9 @@ symbol_out_of_date (symbol_record *sr)
 
 	      string fname = fcn_file_in_path (ff);
 
-	      int status = file_stat::is_newer (fname, tp);
+	      file_stat fs (fname);
 
-	      if (status > 0)
+	      if (fs && fs.is_newer (tp))
 		retval = true;
 	    }
 	}

@@ -102,6 +102,8 @@ tree_try_catch_command::eval (void)
 
   unwind_protect::add (do_catch_code, catch_code);
 
+  bool old_buffer_error_messages = buffer_error_messages;
+
   if (catch_code)
     {
       unwind_protect_bool (buffer_error_messages);
@@ -119,6 +121,7 @@ tree_try_catch_command::eval (void)
   else
     {
       error_state = 0;
+      buffer_error_messages = old_buffer_error_messages;
       unwind_protect::discard_frame ("tree_try_catch::eval");
     }
 }

@@ -1,3 +1,54 @@
+Wed Apr  8 01:00:58 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* parse.y (Vwarn_future_time_stamp): New variable.
+	(symbols_of_parse): Add DEFVAR for it.
+	(warn_future_time_stamp): New function.
+	(frob_function_def): Maybe warn about files with future time stamps.
+
+Thu Apr  2 20:43:45 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pt-arg-list.cc (tree_argument_list::convert_to_const_vector): In
+	error messages, print element numbers starting with 1, not 0.
+
+Sat Mar 28 15:25:44 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* toplev.cc (clean_up_for_exit): New function.
+	(clean_up_and_exit): Use it.
+	* sighandlers.cc (my_friendly_exit): Call it instead of
+	clean_up_and_exit, then do default action for signal.
+
+	* sighandlers.cc (octave_new_handler): Call my_friendly_exit with
+	signal set to SIGABRT if it is defined, or -1 otherwise.
+
+	* error.cc (verror): Fix thinko in attempt to skip `error: ' tag
+	when buffering error messages.
+	* pt-except.cc (tree_try_catch::eval): Reset buffer_error_messages
+	here if	just discarding unwind_protect frame.
+
+Wed Mar 18 12:35:18 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* xpow.cc (elem_xpow): For real-scalar .^ matrix case, result is
+	complex only if real-scalar is negative and matrix has some
+	non-integer values.
+
+Tue Mar 17 17:47:50 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pt-plot.cc (Vgnuplot_command_plot, Vgnuplot_command_replot,
+	Vgnuplot_command_splot, Vgnuplot_command_using,
+	Vgnuplot_command_with, Vgnuplot_command_title,
+	Vgnuplot_command_end): New static variables.
+	(symbols_of_pt_plot): DEFVAR them.
+	(gnuplot_command_plot, gnuplot_command_replot,
+	gnuplot_command_splot, gnuplot_command_using,
+	gnuplot_command_with, gnuplot_command_title,
+	gnuplot_command_end): New functions.
+	(open_plot_stream, send_to_plot_stream, tree_plot_command::eval,
+	subplot_using::print, subplot_style::print, subplot::print, 
+	do_external_plotter_cd, Fgset, Fgshow): Use them instead of the
+	GPLOT_CMD_PLOT, GPLOT_CMD_REPLOT, GPLOT_CMD_SPLOT,
+	GPLOT_CMD_USING, GPLOT_CMD_WITH, GPLOT_CMD_TITLE, and
+	GPLOT_CMD_END macros.
+
 Fri Feb 27 12:25:27 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* help.cc (additional_help_message): Fix www address.

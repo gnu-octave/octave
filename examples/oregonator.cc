@@ -1,9 +1,14 @@
 #include <octave/oct.h>
 
-#include <iostream.h>
-
 DEFUN_DLD (oregonator, args, ,
-  "The `oregonator'.")
+  "The `oregonator'.\n\
+\n\
+Reference:\n\
+\n\
+  Oscillations in chemical systems.  IV.  Limit cycle behavior in a\n\
+  model of a real chemical reaction. Richard J. Field and Richard\n\
+  M. Noyes, The Journal of Chemical Physics, Volume 60 Number 5,\n\
+  March 1974.")
 {
   ColumnVector dx (3);
 

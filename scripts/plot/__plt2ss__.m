@@ -27,6 +27,8 @@ function __plt2ss__ (x, y, fmt)
     usage (msg);
   elseif (nargin == 2)
     fmt = "";
+  elseif (rows (fmt) > 1)
+    fmt = fmt (1, :);
   endif
 
   [x_nr, x_nc] = size (x);

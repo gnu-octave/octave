@@ -130,6 +130,8 @@ function subplot (rows, columns, index)
       __multiplot_xsize__ = 1.0 ./ columns;
       __multiplot_ysize__ = 1.0 ./ rows;
 
+      gnuplot_command_replot = "cle;rep";
+
       gset multiplot;
 
       eval (sprintf ("gset size %g, %g", __multiplot_xsize__,

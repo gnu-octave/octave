@@ -360,13 +360,13 @@ else
   [trap 'rm -f ftest* ctest* core; exit 1' 1 3 15
   octave_cv_f2c_f77_compat=no
   cat > ftest.f <<EOF
-      INTEGER FUNCTION FORSUB (C, D)
+      SUBROUTINE FORSUB (C, I, D)
       CHARACTER *(*) C
-      INTEGER L
+      INTEGER L, I
       DOUBLE PRECISION D
       L = LEN (C)
       WRITE (*, '(A,1X,I2)') C(1:L), INT (D)
-      FORSUB = 1
+      I = 0
       RETURN
       END
 EOF
@@ -374,18 +374,24 @@ EOF
   changequote(, )
   cat > ctest.c <<EOF
 #include "confdefs.h"
+#ifdef F77_APPEND_UNDERSCORE
+extern int forsub_ (const char*, int*, double*, long int);
+#else
+extern int forsub (const char*, int*, double*, long int);
+#endif
 static char s[14];
 int main ()
 {
   double d = 10.0;
-  int len;
+  int len, i = 1;
   strcpy (s, "FOO-I-HITHERE");
   len = strlen (s);
 #ifdef F77_APPEND_UNDERSCORE
-  return (! forsub_ (s, &d, len));
+  forsub_ (s, &i, &d, len);
 #else
-  return (! forsub (s, &d, len));
+  forsub (s, &i, &d, len);
 #endif
+  return i;
 }
 #if defined (sun)
 int MAIN_ () { return 0; }

@@ -82,6 +82,9 @@ static bool Vwarn_variable_switch_label;
 // the name of the file in which it is defined.
 static bool Vwarn_function_name_clash;
 
+// TRUE means warn about function files that have time stamps in the future.
+bool Vwarn_future_time_stamp;
+
 // If TRUE, generate warning if a statement in a function is not
 // terminated with a semicolon.  Useful for checking functions that
 // should only produce output using explicit printing statements.
@@ -2201,10 +2204,22 @@ frob_function (tree_identifier *id, octave_user_function *fcn)
 	  id_name = id->name ();
 	}
 
+      time_t now = time (0);
+
       fcn->stash_function_name (id_name);
       fcn->stash_fcn_file_name ();
-      fcn->stash_fcn_file_time (time (0));
+      fcn->stash_fcn_file_time (now);
       fcn->mark_as_system_fcn_file ();
+
+      if (Vwarn_future_time_stamp)
+	{
+	  string nm = fcn->fcn_file_name ();
+
+	  file_stat fs (nm);
+
+	  if (fs && fs.is_newer (now))
+	    warning ("time stamp for `%s' is in the future", nm.c_str ());
+	}
     }
   else if (! (input_from_tmp_history_file || input_from_startup_file)
 	   && reading_script_file
@@ -3128,6 +3143,14 @@ warn_function_name_clash (void)
 }
 
 static int
+warn_future_time_stamp (void)
+{
+  Vwarn_future_time_stamp = check_preference ("warn_future_time_stamp");
+
+  return 0;
+}
+
+static int
 warn_missing_semicolon (void)
 {
   Vwarn_missing_semicolon = check_preference ("warn_missing_semicolon");
@@ -3156,6 +3179,9 @@ results of commands executed by eval() that do not end with semicolons.");
 
   DEFVAR (warn_function_name_clash, 1.0, 0, warn_function_name_clash,
     "produce warning if function name conflicts with file name");
+
+  DEFVAR (warn_future_time_stamp, 1.0, 0, warn_future_time_stamp,
+    "warn if a function file has a time stamp that is in the future");
 
   DEFVAR (warn_missing_semicolon, 0.0, 0, warn_missing_semicolon,
     "produce a warning if a statement in a function file is not\n\

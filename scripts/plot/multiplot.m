@@ -98,6 +98,8 @@ function multiplot (xn, yn)
     __multiplot_xi__ = 1;
     __multiplot_yi__ = 1;
 
+    gnuplot_command_replot = "cle;rep";
+
     clearplot;
 
   endif

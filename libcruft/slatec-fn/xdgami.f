@@ -1,5 +1,5 @@
-      subroutine xdgami (x, a, result)
-      double precision x, a, result, dgami
-      result = dgami (x, a)
+      subroutine xdgami (a, x, result)
+      double precision a, x, result, dgami
+      result = dgami (a, x)
       return
       end

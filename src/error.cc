@@ -87,8 +87,15 @@ verror (const char *name, const char *fmt, va_list args)
 	  // from printing `error: ' twice.  Assumes that the NAME we
 	  // have been given doesn't contain `:'.
 
-	  ptr = strchr (msg, ':') + 2;
-	  ptr = ptr ? ptr : msg;	  
+	  ptr = strchr (msg, ':');
+
+	  if (ptr)
+	    {
+	      if (*++ptr != '\0')
+		++ptr;
+	    }
+	  else
+	    ptr = msg;
 	}
 
       *error_message_buffer << ptr;

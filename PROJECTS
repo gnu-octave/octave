@@ -1,3 +1,5 @@
+<html>
+<pre>
 Octave PROJECTS                                          -*- text -*-
 ===============
 
@@ -249,6 +251,17 @@ Input/Output:
 Interpreter:
 -----------
 
+  * Allow customization of the debug prompt.
+
+  * For the keyboard function, parse return (or quit) more
+    intelligently so that something like
+
+      debug> x = 1; return
+
+    will work as expected.
+
+  * Warn about M-files with timestamps in the future.
+
   * Fix the parser so that
 
       function foo ()
@@ -355,6 +368,9 @@ Interpreter:
 
   * Input stream class for parser files -- must manage buffers for
     flex and context for global variable settings.
+
+  * make parser do more semantic checking, continue after errors when
+    compiling functions, etc.
 
   * Make LEXICAL_ERROR have a value that is the error message for
     parse_error() to print?
@@ -752,3 +768,5 @@ Always:
   * Squash bugs.
 
 				--30--
+</pre>
+</html>

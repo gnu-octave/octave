@@ -25,19 +25,29 @@ function __plt2mm__ (x, y, fmt)
     msg = sprintf ("__plt2mm__ (x, y)\n");
     msg = sprintf ("%s              __plt2mm__ (x, y, fmt)", msg);
     usage (msg);
-  elseif (nargin == 2)
-    fmt = "";
+  elseif (nargin == 2 || fmt == "")
+    fmt = " ";  ## Yes, this is intentionally not an empty string!
   endif
 
   [x_nr, x_nc] = size (x);
   [y_nr, y_nc] = size (y);
 
+  k = 1;
+  fmt_nr = rows (fmt);
   if (x_nr == y_nr && x_nc == y_nc)
     if (x_nc > 0)
       tmp = [x, y];
-      cmd = sprintf ("gplot tmp(:,%d:%d:%d) %s", 1, x_nc, x_nc+1, fmt);
+      cmd = sprintf ("gplot tmp(:,%d:%d:%d) %s", 1, x_nc, x_nc+1,
+		     deblank (fmt (k, :)));
+      if (k < fmt_nr)
+      	k++;
+      endif
       for i = 2:x_nc
-        cmd = sprintf ("%s, tmp(:,%d:%d:%d) %s", cmd, i, x_nc, x_nc+i, fmt);
+        cmd = sprintf ("%s, tmp(:,%d:%d:%d) %s", cmd, i, x_nc, x_nc+i,
+		       deblank (fmt (k, :)));
+	if (k < fmt_nr)
+	  k++;
+	endif
       endfor
       eval (cmd);
     else

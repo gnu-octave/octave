@@ -279,9 +279,11 @@ cd $distdir
 
 echo "creating ls-R file in $datadir/octave"
 ls -LR $datadir/octave > $datadir/octave/ls-R
+chmod 644 $datadir/octave/ls-R
 
 echo "creating ls-R file in $libexecdir/octave"
 ls -LR $libexecdir/octave > $libexecdir/octave/ls-R
+chmod 644 $libexecdir/octave/ls-R
 
 echo "installing info files in $infodir"
 for f in doc/interpreter/octave.info*

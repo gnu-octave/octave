@@ -89,6 +89,12 @@ static sigset_t octave_signal_mask;
   do { } while (0)
 #endif
 
+#if defined (SIGABRT)
+#define OCTAVE_MEMORY_EXHAUSTED_ERROR SIGABRT
+#else
+#define OCTAVE_MEMORY_EXHAUSTED_ERROR (-1)
+#endif
+
 void
 octave_save_signal_mask (void)
 {
@@ -128,7 +134,14 @@ my_friendly_exit (const char *sig_name, int sig_number)
 
       save_user_variables ();
 
-      clean_up_and_exit (sig_number);
+      if (sig_number < 0)
+	exit (1);
+      else
+	{
+	  octave_set_signal_handler (sig_number, SIG_DFL);
+
+	  kill (getpid (), sig_number);
+	}
     }
 }
 
@@ -145,7 +158,7 @@ octave_new_handler (void)
       panic_impossible ();
     }
   else
-    my_friendly_exit ("operator new", 1);
+    my_friendly_exit ("operator new", OCTAVE_MEMORY_EXHAUSTED_ERROR);
 }
 
 sig_handler *

@@ -476,7 +476,7 @@ double
 gammainc (double x, double a)
 {
   double retval;
-  F77_XFCN (xdgami, XDGAMI, (x, a, retval));
+  F77_XFCN (xdgami, XDGAMI, (a, x, retval));
   return retval;
 }
 

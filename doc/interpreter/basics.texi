@@ -112,7 +112,7 @@ Don't read the @file{~/.octaverc} or @file{.octaverc} files.
 
 @item --no-line-editing
 @cindex @code{--no-line-editing}
-Disable command-line editing and history.
+Disable command-line editing.
 
 @item --no-site-file
 @cindex @code{--no-site-file}
@@ -942,7 +942,7 @@ Octave saw two consecutive variable names, which is invalid in this
 context.  It marked the error at the @code{y} because the first name by
 itself was accepted as valid input.
 
-Another class of error message occurs occurs at evaluation time.  These
+Another class of error message occurs at evaluation time.  These
 errors are called @dfn{run-time errors}, or sometimes
 @dfn{evaluation errors} because they occur when your program is being
 @dfn{run}, or @dfn{evaluated}.  For example, if after correcting the

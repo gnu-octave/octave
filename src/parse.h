@@ -69,6 +69,9 @@ extern bool input_from_startup_file;
 // the command line.
 extern bool input_from_command_line_file;
 
+// TRUE means warn about function files that have time stamps in the future.
+extern bool Vwarn_future_time_stamp;
+
 extern void
 parse_and_execute (FILE *f);
 

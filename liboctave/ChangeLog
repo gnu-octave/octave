@@ -1,3 +1,7 @@
+Mon Apr  6 00:27:06 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lo-specfun.cc (gammainc): Reorder args in call to xdgami.
+
 Thu Feb 19 01:16:38 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* lo-specfun.cc (xgamma, xlgamma): Define here.

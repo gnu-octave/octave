@@ -34,6 +34,9 @@ class charMatrix;
 #include <string>
 
 extern void
+clean_up_and_exit (void);
+
+extern void
 clean_up_and_exit (int) GCC_ATTR_NORETURN;
 
 extern int

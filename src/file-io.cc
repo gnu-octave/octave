@@ -413,8 +413,9 @@ DEFUN (fopen, args, ,
 	    }
 	  else
 	    {
-	      int errno = 0;
-	      retval(1) = os->error (false, errno);
+	      int error_number = 0;
+
+	      retval(1) = os->error (false, error_number);
 	      retval(0) = -1.0;
 	    }
 	}

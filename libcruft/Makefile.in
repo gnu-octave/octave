@@ -80,11 +80,11 @@ TAGS:: $(SOURCES)
 clean mostlyclean::
 	rm -f *.a *.o
 
-distclean::
-	rm -f *.a *.o Makefile
+distclean:: clean
+	rm -f Makefile Makerules config.log config.status
 
-maintainer-clean::
-	rm -f *.a *.o tags TAGS Makefile
+maintainer-clean:: distclean
+	rm -f tags TAGS
 
 local-dist:
 	for dir in $(SUBDIRS); do mkdir ../`cat ../.fname`/libcruft/$$dir; cd $$dir; $(MAKE) $@; cd ..; done

@@ -34,16 +34,20 @@ tags: $(SOURCES)
 TAGS: $(SOURCES)
 	etags $(SOURCES)
 
-clean:
+clean::
 	rm -f *.a *.o
 .PHONY: clean
 
-mostlyclean:
+mostlyclean::
 	rm -f *.o
 .PHONY: mostlyclean
 
-maintainer-clean: clean
-	rm -f tags TAGS Makefile
+distclean:: clean
+	rm -f Makefile
+.PHONY: distclean
+	
+maintainer-clean:: distclean
+	rm -f tags TAGS
 .PHONY: maintainer-clean
 
 local-dist:

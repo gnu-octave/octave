@@ -2,9 +2,9 @@
 # Makefile for octave's test directory
 #
 # John W. Eaton
-# jwe@che.utexas.edu
+# jwe@bevo.che.wisc.edu
+# University of Wisconsin-Madison
 # Department of Chemical Engineering
-# The University of Texas at Austin
 
 TOPDIR = ..
 
@@ -63,7 +63,7 @@ mostlyclean:
 .PHONY: mostlyclean
 
 distclean: clean
-	rm -f Makefile
+	rm -f Makefile octave.log octave.sum
 .PHONY: distclean
 
 maintainer-clean: distclean

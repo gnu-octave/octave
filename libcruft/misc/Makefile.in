@@ -2,9 +2,9 @@
 # Makefile for octave's libcruft/misc directory
 #
 # John W. Eaton
-# jwe@che.utexas.edu
+# jwe@bevo.che.wisc.edu
+# University of Wisconsin-Madison
 # Department of Chemical Engineering
-# The University of Texas at Austin
 
 TOPDIR = ../..
 
@@ -33,3 +33,6 @@ XCC = $(patsubst -O%, , $(CC))
 
 gen-d1mach: $(srcdir)/gen-d1mach.c
 	$(XCC) -DDP -o gen-d1mach $(srcdir)/gen-d1mach.c -lm
+
+distclean::
+	rm -f d1mach.f gen-d1mach

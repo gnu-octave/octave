@@ -134,8 +134,7 @@ distclean: clean texclean
 mostlyclean: clean
 
 maintainer-clean: distclean
-	rm -f funs.h doc.c
-	rm -f info.info info-stnd.info
+	rm -f funs.h doc.c config.h info.info info-stnd.info
 
 local-dist:
 	ln $(DISTFILES) ../`cat ../.fname`/info

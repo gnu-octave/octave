@@ -61,10 +61,10 @@ TAGS:: $(SOURCES)
 	etags $(SOURCES)
 
 distclean::
-	rm -f Makefile
+	rm -f Makefile config.log config.status
 
-maintainer-clean::
-	rm -f tags TAGS Makefile
+maintainer-clean:: distclean
+	rm -f tags TAGS
 
 local-dist:
 	ln $(DISTFILES) ../`cat ../.fname`/scripts

@@ -51,10 +51,10 @@ $(TEXINDEX):
 
 distclean mostlyclean clean:
 	rm -f *.aux *.cp *.fn *.ky *.log *.pg *.toc *.tp *.vr *.cps *.pgs \
-	      *.fns *.kys *.tps *.vrs *.o core
+	      *.fns *.kys *.tps *.vrs *.o core Makefile
 
 maintainer-clean realclean:	clean
-	rm -f *.dvi *.info *.info-*  *.ps
+	rm -f *.dvi *.info *.info-* *.ps Makefile
 
 local-dist:
 	ln $(DISTFILES) ../../`cat ../../.fname`/readline/doc

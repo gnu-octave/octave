@@ -19,3 +19,8 @@ local-dist:
 dist:
 	ln $(DISTFILES) ../../`cat ../../.fname`/readline/examples
 .PHONY: dist
+
+clean:
+
+distclean mostlyclean maintainer-clean:
+	rm -f Makefile

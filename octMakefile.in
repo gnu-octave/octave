@@ -106,11 +106,9 @@ install uninstall tags TAGS clean mostlyclean distclean maintainer-clean::
 	$(SUBDIR_FOR_COMMAND)
 .PHONY: install uninstall tags clean mostlyclean distclean maintainer-clean
 
-distclean::
-	rm -f Makefile config.cache config.log config.status
-
-maintainer-clean::
-	rm -f Makefile config.status
+maintainer-clean distclean::
+	rm -f octMakefile octave-bug Makefile Makeconf config.cache \
+	config.h config.log config.status 
 
 # Now that things are under RCS control, we need to do the recursive
 # chmod so that the distributed files end up with reasonable modes.

@@ -122,6 +122,7 @@ clean:
 
 maintainer-clean realclean distclean mostlyclean: clean
 	(if [ -d doc ]; then cd doc; $(MAKE) $(MFLAGS) $@; fi)
+	rm -f Makefile config.log config.status
 
 local-dist:
 	for dir in $(SUBDIRS); do mkdir ../`cat ../.fname`/readline/$$dir; cd $$dir; $(MAKE) $@; cd ..; done

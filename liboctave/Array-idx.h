@@ -41,8 +41,6 @@ template <class T>
 void
 Array<T>::clear_index (void)
 {
-  cerr << "clearing index for " << this << "\n";
-
   delete [] idx;
   idx = 0;
   idx_count = 0;
@@ -52,8 +50,6 @@ template <class T>
 void
 Array<T>::set_index (const idx_vector& i)
 {
-  cerr << "setting index for " << this << "\n";
-
   if (! idx)
     idx = new idx_vector [max_indices];
 

@@ -37,6 +37,47 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 // need to check a preference.
 user_preferences user_pref;
 
+// Initialize global user_pref structure.
+
+int
+init_user_prefs (void)
+{
+  user_pref.automatic_replot = 0;
+  user_pref.commas_in_literal_matrix = 0;
+  user_pref.do_fortran_indexing = 0;
+  user_pref.empty_list_elements_ok = 0;
+  user_pref.ignore_function_time_stamp = 0;
+  user_pref.implicit_str_to_num_ok = 0;
+  user_pref.ok_to_lose_imaginary_part = 0;
+  user_pref.output_max_field_width = 0;
+  user_pref.output_precision = 0;
+  user_pref.page_screen_output = 0;
+  user_pref.prefer_column_vectors = 0;
+  user_pref.prefer_zero_one_indexing = 0;
+  user_pref.print_answer_id_name = 0;
+  user_pref.print_empty_dimensions = 0;
+  user_pref.propagate_empty_matrices = 0;
+  user_pref.resize_on_range_error = 0;
+  user_pref.return_last_computed_value = 0;
+  user_pref.save_precision = 0;
+  user_pref.silent_functions = 0;
+  user_pref.split_long_rows = 0;
+  user_pref.treat_neg_dim_as_zero = 0;
+  user_pref.warn_assign_as_truth_value = 0;
+  user_pref.warn_comma_in_global_decl = 0;
+  user_pref.warn_divide_by_zero = 0;
+
+  user_pref.default_save_format = 0;
+  user_pref.editor = 0;
+  user_pref.gnuplot_binary = 0;
+  user_pref.imagepath = 0;
+  user_pref.info_file = 0;
+  user_pref.loadpath = 0;
+  user_pref.pager_binary = 0;
+  user_pref.ps1 = 0;
+  user_pref.ps2 = 0;
+  user_pref.pwd = 0;
+}
 
 // Check the value of a string variable to see if it it's ok to do
 // something.

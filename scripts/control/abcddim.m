@@ -32,7 +32,7 @@ function [n, m, p] = abcddim (a, b, c, d)
 # Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
 
   if (nargin != 4)
-    error ("abcddim: invalid number of arguments.  need four.")
+    error ("usage: abcddim (a, b, c, d)");
   endif
 
   n = m = p = -1;

@@ -34,7 +34,7 @@ function retval = tril (x, k)
     k = 0;
   elseif (nargin == 2)
     if ((k > 0 && k > nc) || (k < 0 && k < -nr))
-      error ("tril: requested diagonal out of range")
+      error ("tril: requested diagonal out of range");
     endif
   else
     usage ("tril (x [, k])");

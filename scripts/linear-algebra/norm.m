@@ -45,7 +45,7 @@ function retval = norm (x, p)
 # See also: cond, svd
 
   if (nargin < 1 || nargin > 2)
-    error ("usage: norm (x [, p])")
+    error ("usage: norm (x [, p])");
   endif
 
   if (isempty (x))

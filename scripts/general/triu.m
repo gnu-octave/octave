@@ -34,7 +34,7 @@ function retval = triu (x, k)
     k = 0;
   elseif (nargin == 2)
     if ((k > 0 && k > nc) || (k < 0 && k < -nr))
-      error ("triu: requested diagonal out of range")
+      error ("triu: requested diagonal out of range");
     endif
   else
     usage ("triu (x [, k])");

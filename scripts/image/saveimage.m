@@ -170,7 +170,6 @@ function saveimage (filename, img, img_form, map)
       for i = 2:n_long
 	tmp = tmp + img (i:8:img_sz) * 2^(8-i);
       endfor
-      size (tmp)
       for i = (n_long+1):8
 	tmp(1:s_len) = tmp(1:s_len) + img (i:8:img_sz) * 2^(8-i);
       endfor
@@ -216,7 +215,7 @@ function saveimage (filename, img, img_form, map)
   elseif (strcmp (img_form, "ps") == 1)
 
     if (! grey)
-      error ("must have a greyscale color map for conversion to PostScript")
+      error ("must have a greyscale color map for conversion to PostScript");
     endif
 
     bps = 8;
@@ -285,7 +284,7 @@ function saveimage (filename, img, img_form, map)
 
     count = 0;
     for i = 1:img_sz
-      fprintf (fid, "%x", img (i))
+      fprintf (fid, "%x", img (i));
       if (++count == 30)
 	count = 0;
 	fprintf (fid, "\n");

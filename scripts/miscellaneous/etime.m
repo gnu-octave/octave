@@ -32,7 +32,7 @@ function secs = etime (t1, t0)
   if (is_vector (t1) && length (t1) == 6 && is_vector (t0) && length (t0) == 6)
 
     if (t1 (1) != t0 (1))
-      error ("etime: can't handle timings over year boundaries yet")
+      error ("etime: can't handle timings over year boundaries yet");
     endif
 
 # XXX FIXME XXX -- could check here to ensure that t1 and t0 really do

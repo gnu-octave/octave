@@ -36,7 +36,7 @@ function x = kron (a, b)
 
     x = a (1, 1) * b;
     for ii = 2:ma
-      tmp = a (ii, 1) * b
+      tmp = a (ii, 1) * b;
       x = [x; tmp];
     endfor
 

@@ -47,17 +47,17 @@ function plot_int (caller, ...)
 	  endif
 	  fmt = plot_opt (caller, new);
 	  if (! y_set)
-	    plot_int_1 (x, fmt)
+	    plot_int_1 (x, fmt);
 	  else
-	    plot_int_2 (x, y, fmt)
+	    plot_int_2 (x, y, fmt);
 	  endif
-	  hold on
+	  hold on;
 	  x_set = 0;
 	  y_set = 0;
 	elseif (x_set)
 	  if (y_set)
 	    plot_int_2 (x, y, fmt);
-	    hold on
+	    hold on;
 	    x = new;
 	    y_set = 0;
 	  else
@@ -84,7 +84,7 @@ function plot_int (caller, ...)
     unwind_protect_cleanup
 
       if (! hold_state)
-        hold off
+        hold off;
       endif
 
     end_unwind_protect

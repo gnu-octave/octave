@@ -21,7 +21,7 @@ function polar_int (theta, rho, fmt)
   if (nargin == 1)
     [nr, nc] = size (theta);
     if (nr == 1)
-      theta = theta';
+      theta = theta.';
       tmp = nr;
       nr = nc;
       nc = tmp;
@@ -55,10 +55,10 @@ function polar_int (theta, rho, fmt)
           error ("polar: vector lengths must match");
         endif
         if (rows (rho) == 1)
-          rho = rho';
+          rho = rho.';
         endif
         if (rows (theta) == 1)
-          theta = theta';
+          theta = theta.';
         endif
         x = rho .* cos (theta);
         y = rho .* sin (theta);
@@ -66,14 +66,14 @@ function polar_int (theta, rho, fmt)
       elseif (is_matrix (rho))
         [t_nr, t_nc] = size (theta);
         if (t_nr == 1)
-          theta = theta';
+          theta = theta.';
           tmp = t_nr;
           t_nr = t_nc;
           t_nc = tmp;
         endif
         [r_nr, r_nc] = size (rho);
         if (t_nr != r_nr)
-          rho = rho'
+          rho = rho.';
           tmp = r_nr;
           r_nr = r_nc;
           r_nc = tmp;
@@ -89,14 +89,14 @@ function polar_int (theta, rho, fmt)
       if (is_vector (rho))
         [r_nr, r_nc] = size (rho);
         if (r_nr == 1)
-          rho = rho';
+          rho = rho.';
           tmp = r_nr;
           r_nr = r_nc;
           r_nc = tmp;
         endif
         [t_nr, t_nc] = size (theta);
         if (r_nr != t_nr)
-          theta = rho'
+          theta = rho.';
           tmp = t_nr;
           t_nr = t_nc;
           t_nc = tmp;

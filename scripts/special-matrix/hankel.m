@@ -39,7 +39,7 @@ function retval = hankel (c, r)
   [r_nr, r_nc] = size (r);
 
   if ((c_nr != 1 && c_nc != 1) || (r_nr != 1 && r_nc != 1))
-    error ("hankel: expecting vector arguments")
+    error ("hankel: expecting vector arguments");
   endif
 
   if (nargin == 1) 

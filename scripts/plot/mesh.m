@@ -31,7 +31,7 @@ function mesh (x, y, z)
       set surface;
       set nocontour;
       set noparametric;
-      set view 60, 30, 1, 1
+      set view 60, 30, 1, 1;
       gsplot (z);
     else
       error ("mesh: argument must be a matrix");
@@ -58,7 +58,7 @@ function mesh (x, y, z)
         set surface;
         set nocontour;
 	set parametric;
-        set view 60, 30, 1, 1
+        set view 60, 30, 1, 1;
 	gsplot (zz);
       else
         msg = "mesh: rows (z) must be the same as length (x) and";

@@ -39,7 +39,7 @@ function retval = toeplitz (c, r)
   [r_nr, r_nc] = size (r);
 
   if ((c_nr != 1 && c_nc != 1) || (r_nr != 1 && r_nc != 1))
-    error ("toeplitz: expecting vector arguments")
+    error ("toeplitz: expecting vector arguments");
   endif
 
   if (c_nc != 1)

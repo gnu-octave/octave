@@ -67,11 +67,11 @@ extern std::string undo_string_escapes (const std::string& s);
 extern int check_preference (const std::string& var);
 
 extern void
-check_dimensions (Array<int>& dim, const char *warnfor);
+check_dimensions (dim_vector& dim, const char *warnfor);
 
 extern void
 get_dimensions (const octave_value& a, const char *warn_for,
-                Array<int>& dim);
+                dim_vector& dim);
 
 extern void
 get_dimensions (const octave_value& a, const octave_value& b,

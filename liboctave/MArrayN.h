@@ -29,13 +29,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define octave_MArrayN_h 1
 
 #include "ArrayN.h"
-// Two dimensional array with math ops.
+#include "MArray2.h"
+#include "dim-vector.h"
+
+// N-dimensional array with math ops.
 
 // But first, some preprocessor abuse...
 
 #include "MArray-defs.h"
-
-class Matrix;
 
 MARRAY_OPS_FORWARD_DECLS (MArrayN)
 
@@ -43,28 +44,23 @@ template <class T>
 class
 MArrayN : public ArrayN<T>
 {
- protected:
+protected:
 
-  MArrayN (T *d, const Array<int>& dims) : ArrayN<T> (d, dims)
-    { }
+  MArrayN (T *d, const dim_vector& dims) : ArrayN<T> (d, dims) { }
 
- public:
+public:
   
   MArrayN (void) : ArrayN<T> () {}
   
-  MArrayN (const Array<int>& dims) : ArrayN<T> (dims)
-    { }
+  MArrayN (const dim_vector& dims) : ArrayN<T> (dims) { }
   
-  MArrayN (const Array<int>& dims, const T& val) 
-    : ArrayN<T> (dims, val) { }
+  MArrayN (const dim_vector& dims, const T& val) : ArrayN<T> (dims, val) { }
+
+  MArrayN (const Array2<T>& a) : ArrayN<T> (a) { }
 
   MArrayN (const ArrayN<T>& a) : ArrayN<T> (a) { }
 
-  //MArrayN (const Array<T>& a) : ArrayN<T> (a) { }
-
   MArrayN (const MArrayN<T>& a) : ArrayN<T> (a) { }
-
-  MArrayN (const Matrix& m) : ArrayN<T> (m) { }
 
   ~MArrayN (void) { }
 
@@ -73,10 +69,15 @@ MArrayN : public ArrayN<T>
       ArrayN<T>::operator = (a);
       return *this;
     }
-
 };
 
 extern void
-gripe_nonconformant (const char *op, Array<int>& op1_dims, Array<int>& op2_dims);
+gripe_nonconformant (const char *op, dim_vector& op1_dims, dim_vector& op2_dims);
 
 #endif
+
+/*
+;;; Local Variables: ***
+;;; mode: C++ ***
+;;; End: ***
+*/

@@ -38,6 +38,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "error.h"
 #include "ov-base.h"
+
 #include "ov-base-mat.h"
 #include "ov-typeinfo.h"
 
@@ -49,30 +50,33 @@ class tree_walker;
 // Character matrix values.
 
 class
-octave_char_matrix : public octave_base_matrix<charMatrix>
+octave_char_matrix : public octave_base_matrix<charNDArray>
 {
 public:
 
   octave_char_matrix (void)
-    : octave_base_matrix<charMatrix> () { }
+    : octave_base_matrix<charNDArray> () { }
 
   octave_char_matrix (const charMatrix& chm, bool = false)
-    : octave_base_matrix<charMatrix> (chm) { }
+    : octave_base_matrix<charNDArray> (chm) { }
+
+  octave_char_matrix (const charNDArray& chm, bool = false)
+    : octave_base_matrix<charNDArray> (chm) { }
 
   octave_char_matrix (char c)
-    : octave_base_matrix<charMatrix> (c) { }
+    : octave_base_matrix<charNDArray> (c) { }
 
   octave_char_matrix (const char *s)
-    : octave_base_matrix<charMatrix> (s) { }
+    : octave_base_matrix<charNDArray> (s) { }
 
   octave_char_matrix (const std::string& s)
-    : octave_base_matrix<charMatrix> (s) { }
+    : octave_base_matrix<charNDArray> (s) { }
 
   octave_char_matrix (const string_vector& s)
-    : octave_base_matrix<charMatrix> (s) { }
+    : octave_base_matrix<charNDArray> (s) { }
 
   octave_char_matrix (const octave_char_matrix& chm)
-    : octave_base_matrix<charMatrix> (chm) { }
+    : octave_base_matrix<charNDArray> (chm) { }
 
   ~octave_char_matrix (void) { }
 
@@ -91,18 +95,19 @@ public:
   double scalar_value (bool frc_str_conv = false) const
     { return double_value (frc_str_conv); }
 
-  Matrix matrix_value (bool = false) const { return Matrix (matrix); }
+  Matrix matrix_value (bool = false) const
+    { return Matrix (matrix.matrix_value ()); }
 
   Complex complex_value (bool = false) const;
 
   ComplexMatrix complex_matrix_value (bool = false) const
-    { return ComplexMatrix (matrix); }
+    { return ComplexMatrix (matrix.matrix_value ()); }
 
   charMatrix char_matrix_value (bool = false) const
-    { return matrix; }
+    { return matrix.matrix_value (); }
 
   octave_value convert_to_str_internal (bool, bool) const
-    { return octave_value (matrix, true); }
+    { return octave_value (matrix.matrix_value (), true); }
 
 protected:
 

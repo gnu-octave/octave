@@ -726,22 +726,25 @@ returns the number of columns in the given matrix.\n\
 
   int nargin = args.length ();
 
-  if (nargin == 1 && nargout < 3)
+  if (nargin == 1)
     {
-      int nr = args(0).rows ();
-      int nc = args(0).columns ();
+      dim_vector dimensions = args(0).dims ();
 
-      if (nargout == 0 || nargout == 1)
+      int ndims = dimensions.length ();
+
+      Matrix m (1, ndims);
+
+      if (nargout > 1)
 	{
-	  Matrix m (1, 2);
-	  m (0, 0) = nr;
-	  m (0, 1) = nc;
-	  retval(0) = m;
+	  while (ndims--)
+	    retval(ndims) = dimensions(ndims);
 	}
-      else if (nargout == 2)
+      else
 	{
-	  retval(1) = nc;
-	  retval(0) = nr;
+	  for (int i = 0; i < ndims; i++)
+	    m(0, i) = dimensions(i);
+
+	  retval(0) = m;
 	}
     }
   else if (nargin == 2 && nargout < 2)
@@ -931,7 +934,7 @@ fill_matrix (const octave_value_list& args, double val, const char *fcn)
   int ndim = 0;
   int type = 0;
 
-  Array<int> dims;
+  dim_vector dims;
   
   // Check for type information.
 

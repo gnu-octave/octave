@@ -327,46 +327,65 @@ octave_cell::print (std::ostream& os, bool) const
 void
 octave_cell::print_raw (std::ostream& os, bool) const
 {
-  int nr = rows ();
-  int nc = columns ();
+  int ndims = matrix.ndims ();
 
-  if (nr > 0 && nc > 0)
+  if (ndims == 2)
     {
-      indent (os);
-      os << "{";
-      newline (os);
+      int nr = rows ();
+      int nc = columns ();
 
-      increment_indent_level ();
-
-      for (int j = 0; j < nc; j++)
+      if (nr > 0 && nc > 0)
 	{
-	  for (int i = 0; i < nr; i++)
+	  indent (os);
+	  os << "{";
+	  newline (os);
+
+	  increment_indent_level ();
+
+	  for (int j = 0; j < nc; j++)
 	    {
-	      OCTAVE_QUIT;
+	      for (int i = 0; i < nr; i++)
+		{
+		  OCTAVE_QUIT;
 
-	      OSSTREAM buf;
-	      buf << "[" << i+1 << "," << j+1 << "]" << OSSTREAM_ENDS;
+		  OSSTREAM buf;
+		  buf << "[" << i+1 << "," << j+1 << "]" << OSSTREAM_ENDS;
 
-	      octave_value val = matrix(i,j);
+		  octave_value val = matrix(i,j);
 
-	      val.print_with_name (os, OSSTREAM_STR (buf));
+		  val.print_with_name (os, OSSTREAM_STR (buf));
 
-	      OSSTREAM_FREEZE (buf);
+		  OSSTREAM_FREEZE (buf);
+		}
 	    }
+
+	  decrement_indent_level ();
+
+	  indent (os);
+	  os << "}";
+	  newline (os);
 	}
-
-      decrement_indent_level ();
-
-      indent (os);
-      os << "}";
-      newline (os);
+      else
+	{
+	  os << "{}";
+	  if (nr > 0 || nc > 0)
+	    os << "(" << nr << "x" << nc << ")";
+	  os << "\n";
+	}
     }
   else
     {
-      os << "{}";
-      if (nr > 0 || nc > 0)
-	os << "(" << nr << "x" << nc << ")";
-      os << "\n";
+      indent (os);
+      os << "{";
+      dim_vector dv = matrix.dims ();
+      for (int i = 0; i < ndims; i++)
+	{
+	  if (i > 0)
+	    os << "x";
+	  os << dv(i);
+	}
+      os << " Cell Array}";
+      newline (os);
     }
 }
 

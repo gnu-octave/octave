@@ -766,7 +766,7 @@ check_dimensions (int& nr, int& nc, const char *warnfor)
 }
 
 void
-check_dimensions (Array<int>& dim, const char *warnfor)
+check_dimensions (dim_vector& dim, const char *warnfor)
 {
   bool neg = false;
 
@@ -788,7 +788,7 @@ check_dimensions (Array<int>& dim, const char *warnfor)
 
 void
 get_dimensions (const octave_value& a, const char *warn_for,
-                Array<int>& dim)
+                dim_vector& dim)
 {
   if (a.is_scalar_type ())
     {

@@ -29,36 +29,70 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <string>
 
-#include "Array2.h"
+#include "ArrayN.h"
 #include "oct-alloc.h"
 #include "str-vec.h"
 
 #include "oct-obj.h"
 
 class
-Cell : public Array2<octave_value>
+Cell : public ArrayN<octave_value>
 {
 public:
 
   Cell (void)
-    : Array2<octave_value> () { }
+    : ArrayN<octave_value> () { }
 
   Cell (const octave_value& val)
-    : Array2<octave_value> (1, 1, val) { }
+    : ArrayN<octave_value> (dim_vector (1, 1), val) { }
+
+  Cell (const octave_value_list& ovl)
+    : ArrayN<octave_value> (dim_vector (ovl.length (), 1))
+    {
+      for (int i = 0; i < ovl.length (); i++)
+	elem (i) = ovl (i);
+    }
 
   Cell (int n, int m, const octave_value& val = resize_fill_value ())
-    : Array2<octave_value> (n, m, val) { }
+    : ArrayN<octave_value> (dim_vector (n, m), val) { }
 
-  Cell (const Array2<octave_value>& c)
-    : Array2<octave_value> (c) { }
+  Cell (const ArrayN<octave_value>& c)
+    : ArrayN<octave_value> (c) { }
 
   Cell (const Array<octave_value>& c, int nr, int nc)
-    : Array2<octave_value> (c, nr, nc) { }
+    : ArrayN<octave_value> (c, dim_vector (nr, nc)) { }
 
   Cell (const string_vector& sv);
 
   Cell (const Cell& c)
-    : Array2<octave_value> (c) { }
+    : ArrayN<octave_value> (c) { }
+
+  Cell index (const octave_value_list& idx, bool resize_ok = false) const;
+
+  Cell index (idx_vector& i, int resize_ok = 0,
+	      const octave_value& rfv = resize_fill_value ()) const
+    { return ArrayN<octave_value>::index (i, resize_ok, rfv); }
+
+  Cell index (idx_vector& i, idx_vector& j, int resize_ok = 0,
+	      const octave_value& rfv = resize_fill_value ()) const
+    { return ArrayN<octave_value>::index (i, j, resize_ok, rfv); }
+
+  Cell index (Array<idx_vector>& ra_idx, int resize_ok = 0,
+	      const octave_value& rfv = resize_fill_value ()) const
+    { return ArrayN<octave_value>::index (ra_idx, resize_ok, rfv); }
+
+  Cell& assign (const octave_value_list& idx, const Cell& rhs,
+		const octave_value& fill_val = octave_value ());
+
+  octave_value& operator () (int i) { return elem_internal (i); }
+
+  octave_value operator () (int i) const { return elem_internal (i); }
+
+  octave_value& operator () (int i, int j)
+    { return ArrayN<octave_value>::operator () (i, j); }
+
+  octave_value operator () (int i, int j) const
+    { return ArrayN<octave_value>::operator () (i, j); }
 
   // XXX FIXME XXX
   boolMatrix all (int dim = 0) const { return boolMatrix (); }
@@ -70,6 +104,28 @@ public:
   bool is_true (void) const { return false; }
 
   static octave_value resize_fill_value (void) { return Matrix (); }
+
+private:
+
+  // XXX FIXME XXX -- we need to do something intelligent if there is
+  // more than one dimension, but for now this is all we need...
+
+  void maybe_resize (int n)
+    {
+      if (n >= rows ())
+	resize (dim_vector (n + 1, 1), octave_value ());
+    }
+
+  octave_value& elem_internal (int n)
+    {
+      maybe_resize (n);
+      return elem (n);
+    }
+
+  octave_value elem_internal (int n) const
+    {
+      return elem (n);
+    }
 };
 
 #endif

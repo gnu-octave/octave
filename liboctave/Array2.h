@@ -46,58 +46,23 @@ Array2 : public Array<T>
 {
 protected:
 
-  int get_size (int r, int c) const;
+  static int get_size (int r, int c) { return Array<T>::get_size (r, c); }
 
-  Array2 (T *d, int n, int m) : Array<T> (d, get_size (n, m))
-    {
-      d1 = n;
-      d2 = m;
-      set_max_indices (2);
-    }
+  Array2 (T *d, int r, int c) : Array<T> (d, dim_vector (r, c)) { }
 
 public:
 
-  // These really need to be protected (and they will be in the
-  // future, so don't depend on them being here!), but they can't be
-  // until template friends work correctly in g++.
+  Array2 (void) : Array<T> (dim_vector (0, 0)) { }
 
-  int d1;
-  int d2;
+  Array2 (int r, int c) : Array<T> (dim_vector (r, c)) { }
 
-  Array2 (void) : Array<T> ()
-    {
-      d1 = 0;
-      d2 = 0;
-      set_max_indices (2);
-    }
+  Array2 (int r, int c, const T& val)
+    : Array<T> (dim_vector (r, c), val) { }
 
-  Array2 (int n, int m) : Array<T> (get_size (n, m))
-    {
-      d1 = n;
-      d2 = m;
-      set_max_indices (2);
-    }
+  Array2 (const Array2<T>& a) : Array<T> (a, a.dims ()) { }
 
-  Array2 (int n, int m, const T& val) : Array<T> (get_size (n, m), val)
-    {
-      d1 = n;
-      d2 = m;
-      set_max_indices (2);
-    }
-
-  Array2 (const Array2<T>& a) : Array<T> (a)
-    {
-      d1 = a.d1;
-      d2 = a.d2;
-      set_max_indices (2);
-    }
-
-  Array2 (const Array<T>& a, int n, int m) : Array<T> (a)
-    {
-      d1 = n;
-      d2 = m;
-      set_max_indices (2);
-    }
+  Array2 (const Array<T>& a, int r, int c)
+    : Array<T> (a, dim_vector (r, c)) { }
 
   ~Array2 (void) { }
 
@@ -106,102 +71,43 @@ public:
       if (this != &a)
 	{
 	  Array<T>::operator = (a);
-	  d1 = a.d1;
-	  d2 = a.d2;
+
+	  dimensions = a.dimensions;
 	}
 
       return *this;
     }
 
-  int dim1 (void) const { return d1; }
-  int dim2 (void) const { return d2; }
+  void resize (int r, int c) { resize_no_fill (r, c); }
 
-  int rows (void) const { return d1; }
-  int cols (void) const { return d2; }
-  int columns (void) const { return d2; }
+  void resize (int r, int c, const T& val) { resize_and_fill (r, c, val); }
 
-  T range_error (const char *fcn, int i, int j) const;
-  T& range_error (const char *fcn, int i, int j);
-
-  // No checking of any kind, ever.
-
-  T& xelem (int i, int j) { return Array<T>::xelem (d1*j+i); }
-  T xelem (int i, int j) const { return Array<T>::xelem (d1*j+i); }
-
-  // Note that the following element selection methods don't use
-  // xelem() because they need to make use of the code in
-  // Array<T>::elem() that checks the reference count.
-
-  T& checkelem (int i, int j)
+  Array2<T>& insert (const Array2<T>& a, int r, int c)
     {
-      if (i < 0 || j < 0 || i >= d1 || j >= d2)
-	return range_error ("T& Array2<T>::checkelem", i, j);
-      else
-	return Array<T>::elem (d1*j+i);
+      Array<T>::insert (a, r, c);
+      return *this;
     }
 
-  T& elem (int i, int j) { return Array<T>::elem (d1*j+i); }
-
-#if defined (BOUNDS_CHECKING)
-  T& operator () (int i, int j) { return checkelem (i, j); }
-#else
-  T& operator () (int i, int j) { return elem (i, j); }
-#endif
-
-  T checkelem (int i, int j) const
+  Array2<T> transpose (void) const
     {
-      if (i < 0 || j < 0 || i >= d1 || j >= d2)
-	return range_error ("T Array2<T>::checkelem", i, j);
-      else
-	return Array<T>::elem (d1*j+i);
+      Array<T> tmp = Array<T>::transpose ();
+      return Array2<T> (tmp, tmp.rows (), tmp.columns ());
     }
-
-  T elem (int i, int j) const { return Array<T>::elem (d1*j+i); }
-
-#if defined (BOUNDS_CHECKING)
-  T operator () (int i, int j) const { return checkelem (i, j); }
-#else
-  T operator () (int i, int j) const { return elem (i, j); }
-#endif
-
-  void resize (int n, int m);
-  void resize (int n, int m, const T& val);
-
-  Array2<T>& insert (const Array2<T>& a, int r, int c);
-
-  bool is_square (void) const { return (d1 == d2); }
-
-  Array2<T> transpose (void) const;
-
-#ifdef HEAVYWEIGHT_INDEXING
-
-  void maybe_delete_elements (idx_vector& i);
-
-  void maybe_delete_elements (idx_vector& i, idx_vector& j);
-
-  Array2<T> value (void);
 
   Array2<T> index (idx_vector& i, int resize_ok = 0,
-		   const T& rfv = resize_fill_value (T ())) const;
+		   const T& rfv = resize_fill_value (T ())) const
+    {
+      Array<T> tmp = Array<T>::index (i, resize_ok, rfv);
+      return Array2<T> (tmp, tmp.rows (), tmp.columns ());
+    }
 
   Array2<T> index (idx_vector& i, idx_vector& j, int resize_ok = 0,
-		   const T& rfv = resize_fill_value (T ())) const;
-
-#endif
-
-  void print_info (std::ostream& os, const std::string& prefix) const;
+		   const T& rfv = resize_fill_value (T ())) const
+    {
+      Array<T> tmp = Array<T>::index (i, j, resize_ok, rfv);
+      return Array2<T> (tmp, tmp.rows (), tmp.columns ());
+    }
 };
-
-template <class LT, class RT>
-int
-assign (Array2<LT>& lhs, const Array2<RT>& rhs, const LT& rfv);
-
-template <class LT, class RT>
-int
-assign (Array2<LT>& lhs, const Array2<RT>& rhs)
-{
-  return assign (lhs, rhs, resize_fill_value (LT ()));
-}
 
 #endif
 

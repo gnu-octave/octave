@@ -545,7 +545,8 @@ ComplexDiagMatrix::diag (int k) const
 	}
     }
   else
-    std::cerr << "diag: requested diagonal out of range\n";
+    (*current_liboctave_error_handler)
+      ("diag: requested diagonal out of range");
 
   return d;
 }

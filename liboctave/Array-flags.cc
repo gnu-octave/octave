@@ -28,12 +28,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // These have to be defined somewhere, but only once.
 
-#if defined (HEAVYWEIGHT_INDEXING)
-
 bool liboctave_wfi_flag = false;
 bool liboctave_wrore_flag = false;
-
-#endif
 
 /*
 ;;; Local Variables: ***

@@ -45,7 +45,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-scalar.h"
 #include "pr-output.h"
 
-template class octave_base_matrix<ComplexMatrix>;
+template class octave_base_matrix<ComplexNDArray>;
 
 DEFINE_OCTAVE_ALLOCATOR (octave_complex_matrix);
 
@@ -56,22 +56,27 @@ octave_complex_matrix::try_narrowing_conversion (void)
 {
   octave_value *retval = 0;
 
-  int nr = matrix.rows ();
-  int nc = matrix.cols ();
-
-  if (nr == 1 && nc == 1)
+  if (matrix.ndims () == 2)
     {
-      Complex c = matrix (0, 0);
+      ComplexMatrix cm = matrix.matrix_value ();
 
-      if (imag (c) == 0.0)
-	retval = new octave_scalar (std::real (c));
-      else
-	retval = new octave_complex (c);
+      int nr = cm.rows ();
+      int nc = cm.cols ();
+
+      if (nr == 1 && nc == 1)
+	{
+	  Complex c = matrix (0, 0);
+
+	  if (imag (c) == 0.0)
+	    retval = new octave_scalar (std::real (c));
+	  else
+	    retval = new octave_complex (c);
+	}
+      else if (nr == 0 || nc == 0)
+	retval = new octave_matrix (Matrix (nr, nc));
+      else if (cm.all_elements_are_real ())
+	retval = new octave_matrix (::real (cm));
     }
-  else if (nr == 0 || nc == 0)
-    retval = new octave_matrix (Matrix (nr, nc));
-  else if (matrix.all_elements_are_real ())
-    retval = new octave_matrix (::real (matrix));
 
   return retval;
 }
@@ -80,7 +85,7 @@ void
 octave_complex_matrix::assign (const octave_value_list& idx,
 			       const ComplexMatrix& rhs)
 {
-  octave_base_matrix<ComplexMatrix>::assign (idx, rhs);
+  octave_base_matrix<ComplexNDArray>::assign (idx, rhs);
 }
 
 void
@@ -89,35 +94,10 @@ octave_complex_matrix::assign (const octave_value_list& idx,
 {
   int len = idx.length ();
 
-  switch (len)
-    {
-    case 2:
-      {
-	idx_vector i = idx (0).index_vector ();
-	idx_vector j = idx (1).index_vector ();
+  for (int i = 0; i < len; i++)
+    matrix.set_index (idx(i).index_vector ());
 
-	matrix.set_index (i);
-	matrix.set_index (j);
-
-	::assign (matrix, rhs);
-      }
-      break;
-
-    case 1:
-      {
-	idx_vector i = idx (0).index_vector ();
-
-	matrix.set_index (i);
-
-	::assign (matrix, rhs);
-      }
-      break;
-
-    default:
-      error ("invalid number of indices (%d) for indexed matrix assignment",
-	     len);
-      break;
-    }
+  ::assign (matrix, rhs);
 }
 
 bool
@@ -158,7 +138,7 @@ octave_complex_matrix::matrix_value (bool force_conversion) const
   if (! force_conversion && Vwarn_imag_to_real)
     gripe_implicit_conversion ("complex matrix", "real matrix");
 
-  retval = ::real (matrix);
+  retval = ::real (matrix.matrix_value ());
 
   return retval;
 }
@@ -188,7 +168,7 @@ octave_complex_matrix::complex_value (bool) const
 ComplexMatrix
 octave_complex_matrix::complex_matrix_value (bool) const
 {
-  return matrix;
+  return matrix.matrix_value ();
 }
 
 /*

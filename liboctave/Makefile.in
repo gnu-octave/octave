@@ -26,15 +26,17 @@ ifeq ($(INCLUDE_LINK_DEPS), true)
 endif
 
 MATRIX_INC := Array.h Array2.h Array3.h ArrayN.h DiagArray2.h \
-	Array-flags.h Array-idx.h Array2-idx.h Array3-idx.h \
+	Array-flags.h Array-idx.h \
 	ArrayN-idx.h ArrayN-inlines.h MArray-defs.h MArray.h \
-	MArray2.h MDiagArray2.h Matrix.h MArrayN.h NDArray.h \
-	base-lu.h mx-base.h mx-op-defs.h mx-ops.h mx-defs.h mx-ext.h \
-	CColVector.h CDiagMatrix.h CMatrix.h CRowVector.h CmplxAEPBAL.h \
-	CmplxCHOL.h CmplxDET.h CmplxHESS.h CmplxLU.h CmplxQR.h \
-	CmplxQRP.h CmplxSCHUR.h CmplxSVD.h EIG.h boolMatrix.h chMatrix.h \
-	dColVector.h dDiagMatrix.h dMatrix.h dRowVector.h dbleAEPBAL.h \
-	dbleCHOL.h dbleDET.h dbleHESS.h dbleLU.h dbleQR.h \
+	MArray2.h MDiagArray2.h Matrix.h MArrayN.h base-lu.h \
+	dim-vector.h mx-base.h mx-op-defs.h mx-ops.h mx-defs.h \
+	mx-ext.h CColVector.h CDiagMatrix.h CMatrix.h CNDArray.h \
+	CRowVector.h CmplxAEPBAL.h CmplxCHOL.h CmplxDET.h \
+	CmplxHESS.h CmplxLU.h CmplxQR.h CmplxQRP.h CmplxSCHUR.h \
+	CmplxSVD.h EIG.h boolMatrix.h boolNDArray.h chMatrix.h \
+	chNDArray.h dColVector.h \
+	dDiagMatrix.h dMatrix.h dNDArray.h dRowVector.h \
+	dbleAEPBAL.h dbleCHOL.h dbleDET.h dbleHESS.h dbleLU.h dbleQR.h \
 	dbleQRP.h dbleSCHUR.h dbleSVD.h
 
 MX_OP_INC := mx-cdm-cm.h mx-cdm-cs.h mx-cdm-dm.h mx-cdm-m.h \
@@ -72,7 +74,7 @@ INCLUDES := Bounds.h CollocWt.h DAE.h DAEFunc.h DAERT.h \
 	$(MX_OP_INC) \
 	$(VX_OP_INC)
 
-TEMPLATE_SRC := Array.cc Array2.cc Array3.cc ArrayN.cc DiagArray2.cc \
+TEMPLATE_SRC := Array.cc ArrayN.cc DiagArray2.cc \
 	MArray.cc MArray2.cc MDiagArray2.cc base-lu.cc
 
 TI_SRC := Array-C.cc Array-b.cc Array-ch.cc Array-i.cc Array-d.cc \
@@ -80,12 +82,13 @@ TI_SRC := Array-C.cc Array-b.cc Array-ch.cc Array-i.cc Array-d.cc \
 	MArray-C.cc MArray-ch.cc MArray-i.cc MArray-d.cc MArray-s.cc
 
 MATRIX_SRC := Array-flags.cc CColVector.cc CDiagMatrix.cc CMatrix.cc \
-	CRowVector.cc CmplxAEPBAL.cc CmplxCHOL.cc CmplxDET.cc \
-	CmplxHESS.cc CmplxLU.cc CmplxQR.cc CmplxQRP.cc CmplxSCHUR.cc \
-	CmplxSVD.cc EIG.cc MArray-misc.cc MArrayN.cc NDArray.cc \
-	boolMatrix.cc chMatrix.cc \
-	dColVector.cc dDiagMatrix.cc dMatrix.cc dRowVector.cc \
-	dbleAEPBAL.cc dbleCHOL.cc dbleDET.cc dbleHESS.cc dbleLU.cc \
+	CNDArray.cc CRowVector.cc CmplxAEPBAL.cc CmplxCHOL.cc \
+	CmplxDET.cc CmplxHESS.cc CmplxLU.cc CmplxQR.cc CmplxQRP.cc \
+	CmplxSCHUR.cc CmplxSVD.cc EIG.cc MArray-misc.cc MArrayN.cc \
+	boolMatrix.cc boolNDArray.cc chMatrix.cc chNDArray.cc \
+	dColVector.cc dDiagMatrix.cc \
+	dMatrix.cc dNDArray.cc dRowVector.cc dbleAEPBAL.cc \
+	dbleCHOL.cc dbleDET.cc dbleHESS.cc dbleLU.cc \
 	dbleQR.cc dbleQRP.cc dbleSCHUR.cc dbleSVD.cc
 
 MX_OP_SRC := mx-cdm-cm.cc mx-cdm-cs.cc mx-cdm-dm.cc mx-cdm-m.cc \

@@ -4387,7 +4387,7 @@ save_mat5_binary_element (std::ostream& os,
 	for (Octave_map::iterator i = m.begin (); i != m.end (); i++)
 	  {
 	    // write the data of each element
-	    octave_value_list elts = m.contents (i);
+	    Cell elts = m.contents (i);
 
 	    for (int j = 0; j < len; j++)
 	      {

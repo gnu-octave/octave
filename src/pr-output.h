@@ -28,10 +28,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-cmplx.h"
 
 class ComplexMatrix;
+class ComplexNDArray;
 class Matrix;
+class NDArray;
 class Range;
 class boolMatrix;
+class boolNDArray;
 class charMatrix;
+class charNDArray;
 class Cell;
 
 extern void
@@ -44,11 +48,21 @@ octave_print_internal (std::ostream& os, const Matrix& m,
 		       int extra_indent = 0);
 
 extern void
+octave_print_internal (std::ostream& os, const NDArray& nda,
+		       bool pr_as_read_syntax = false,
+		       int extra_indent = 0);
+
+extern void
 octave_print_internal (std::ostream& os, const Complex& c,
 		       bool pr_as_read_syntax = false);
 
 extern void
 octave_print_internal (std::ostream& os, const ComplexMatrix& cm,
+		       bool pr_as_read_syntax = false,
+		       int extra_indent = 0);
+
+extern void
+octave_print_internal (std::ostream& os, const ComplexNDArray& nda,
 		       bool pr_as_read_syntax = false,
 		       int extra_indent = 0);
 
@@ -63,7 +77,18 @@ octave_print_internal (std::ostream& os, const boolMatrix& m,
 		       int extra_indent = 0);
 
 extern void
+octave_print_internal (std::ostream& os, const boolNDArray& m,
+		       bool pr_as_read_syntax = false,
+		       int extra_indent = 0);
+
+extern void
 octave_print_internal (std::ostream& os, const charMatrix& chm,
+		       bool pr_as_read_syntax = false,
+		       int extra_indent = 0,
+		       bool pr_as_string = false);
+
+extern void
+octave_print_internal (std::ostream& os, const charNDArray& chm,
 		       bool pr_as_read_syntax = false,
 		       int extra_indent = 0,
 		       bool pr_as_string = false);

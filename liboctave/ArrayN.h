@@ -36,7 +36,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cstdlib>
 
 #include "Array.h"
-#include "dMatrix.h"
+#include "Array2.h"
 #include "lo-error.h"
 
 class idx_vector;
@@ -49,174 +49,73 @@ ArrayN : public Array<T>
 {
 protected:
 
+  static int get_size (const dim_vector& dims)
+    { return Array<T>::get_size (dims); }
 
-  ArrayN (T *d, const Array<int>& dims) : Array<T> (d, get_size (dims))
-    {
-      dimensions = dims;
-      set_max_indices (dimensions.length ());
-    }
+  ArrayN (T *d, const dim_vector& dims) : Array<T> (d, dims) { }
 
 public:
-
-  static int get_size (const Array<int>& dims);
 
   // These really need to be protected (and they will be in the
   // future, so don't depend on them being here!), but they can't be
   // until template friends work correctly in g++.
 
-  Array<int> dimensions;
-
   ArrayN (void) : Array<T> () { }
 
-  ArrayN (const Array<int>& dims) : Array<T> (get_size (dims))
-    {
-      dimensions = dims;
-      set_max_indices (dimensions.length ());
-    }
+  ArrayN (const dim_vector& dims) : Array<T> (dims) { }
 
-  ArrayN (const Array<int>& dims, const T& val)
-    : Array<T> (get_size (dims), val)
-    {
-      dimensions = dims;
-      set_max_indices (dimensions.length ());
-    }
+  ArrayN (const dim_vector& dims, const T& val)
+    : Array<T> (dims) { fill (val); }
 
-  ArrayN (const ArrayN<T>& a) : Array<T> (a)
-    {
-      dimensions = a.dimensions;
-      set_max_indices (dimensions.length ());
-    }
+  ArrayN (const Array2<T>& a) : Array<T> (a, a.dims ()) { }
 
-  ArrayN (const Array<T>& a, const Array<int>& dims) : Array<T> (a)
-    {
-      dimensions = dims;
-      set_max_indices (dimensions.length ());
-    }
+  ArrayN (const ArrayN<T>& a) : Array<T> (a, a.dims ()) { }
 
-  // New constructor which takes a Matrix as an argument.  This should
-  // be moved to a subclass of ArrayN (NDArray) once we add a double
-  // instantiation of ArrayN.
-
-  ArrayN (const Matrix& m) : Array<T> (m)
-    {
-      set_max_indices (2);
-
-      Array<int> dim (2);
-
-      dim(0) = m.dim1 ();
-      dim(1) = m.dim2 ();
-
-      dimensions = dim;
-    }
+  ArrayN (const Array<T>& a, const dim_vector& dims) : Array<T> (a, dims) { }
 
   ~ArrayN (void) { }
 
   ArrayN<T>& operator = (const ArrayN<T>& a)
     {
-      if (this != &a && Array<T>::rep != a.rep)
-	{
-	  Array<T>::operator = (a);
-	  dimensions = a.dimensions;
-	}
+      if (this != &a)
+	Array<T>::operator = (a);
 
       return *this;
     }
 
-  int compute_index (const Array<int>& ra_idx) const;
+  void resize (const dim_vector& dims)
+    { Array<T>resize_no_fill (dims); }
 
-  Array<int> dims (void) const { return dimensions; }
+  void resize (const dim_vector& dims, const T& val)
+    { Array<T>::resize (dims, val); }
 
-  T range_error (const char *fcn, const Array<int>& ra_idx) const;
-  T& range_error (const char *fcn, const Array<int>& ra_idx);
-
-  // No checking of any kind, ever.
-
-  T& xelem (const Array<int>& ra_idx)
-    { return Array<T>::xelem (compute_index (ra_idx)); }
-
-  T xelem (const Array<int>& ra_idx) const
-    { return Array<T>::xelem (compute_index (ra_idx)); }
-
-  // Note that the following element selection methods don't use
-  // xelem() because they need to make use of the code in
-  // Array<T>::elem() that checks the reference count.
-
-  T& checkelem (const Array<int>& ra_idx)
+  ArrayN<T>& insert (const ArrayN<T>& a, const dim_vector& dims)
     {
-      int i = compute_index (ra_idx);
-
-      if (i < 0)
-	return range_error ("ArrayN<T>::checkelem", ra_idx);
-      else
-	return Array<T>::elem (i);
+      Array<T>::insert (a, dims);
+      return *this;
     }
 
-  T& elem (const Array<int>& ra_idx)
+  ArrayN<T> index (idx_vector& i, int resize_ok = 0,
+		   const T& rfv = resize_fill_value (T ())) const
     {
-      int i = compute_index (ra_idx);
-
-      return Array<T>::elem (i);
+      Array<T> tmp = Array<T>::index (i, resize_ok, rfv);
+      return ArrayN<T> (tmp, tmp.dims ());
     }
 
-#if defined (BOUNDS_CHECKING)
-  T& operator () (const Array<int>& ra_idx) { return checkelem (ra_idx); }
-#else
-  T& operator () (const Array<int>& ra_idx) { return elem (ra_idx); }
-#endif
-
-  T checkelem (const Array<int>& ra_idx) const
+  ArrayN<T> index (idx_vector& i, idx_vector& j, int resize_ok = 0,
+		   const T& rfv = resize_fill_value (T ())) const
     {
-      int i = compute_index (ra_idx);
-
-      if (i < 0)
-	return range_error ("ArrayN<T>::checkelem", ra_idx);
-      else
-	return Array<T>::elem (i);
+      Array<T> tmp = Array<T>::index (i, j, resize_ok, rfv);
+      return ArrayN<T> (tmp, tmp.dims ());
     }
-
-  T elem (const Array<int>& ra_idx) const
-    {
-      int i = compute_index (ra_idx);
-
-      return Array<T>::elem (i);
-    }
-
-#if defined (BOUNDS_CHECKING)
-  T operator () (const Array<int>& ra_idx) const { return checkelem (ra_idx); }
-#else
-  T operator () (const Array<int>& ra_idx) const { return elem (ra_idx); }
-#endif
-
-  void resize (const Array<int>& dims);
-  void resize (const Array<int>& dims, const T& val);
-
-  ArrayN<T>& insert (const ArrayN<T>& a, const Array<int>& dims);
-
-#ifdef HEAVYWEIGHT_INDEXING
-  void maybe_delete_elements (Array<idx_vector>& ra_idx, const T& rfv);
-
-  ArrayN<T> value (void);
-
-  ArrayN<T> index (idx_vector& ra_idx, int resize_ok = 0,
-		   const T& rfv = resize_fill_value (T ())) const;
 
   ArrayN<T> index (Array<idx_vector>& ra_idx, int resize_ok = 0,
-		   const T& rfv = resize_fill_value (T ())) const;
-  
-  void maybe_delete_dims (void);
-#endif
+		   const T& rfv = resize_fill_value (T ())) const
+    {
+      Array<T> tmp = Array<T>::index (ra_idx, resize_ok, rfv);
+      return ArrayN<T> (tmp, tmp.dims ());
+    }
 };
-
-template <class LT, class RT>
-int
-assign (ArrayN<LT>& lhs, const ArrayN<RT>& rhs, const LT& rfv);
-
-template <class LT, class RT>
-int
-assign (ArrayN<LT>& lhs, const ArrayN<RT>& rhs)
-{
-  return assign (lhs, rhs, resize_fill_value (LT ()));
-}
 
 template <class T>
 std::ostream&

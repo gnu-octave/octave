@@ -53,7 +53,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define UCHAR_MAX 255
 #endif
 
-template class octave_base_matrix<Matrix>;
+template class octave_base_matrix<NDArray>;
 
 DEFINE_OCTAVE_ALLOCATOR (octave_matrix);
 
@@ -64,11 +64,8 @@ octave_matrix::try_narrowing_conversion (void)
 {
   octave_value *retval = 0;
 
-  int nr = matrix.rows ();
-  int nc = matrix.cols ();
-
-  if (nr == 1 && nc == 1)
-    retval = new octave_scalar (matrix (0, 0));
+  if (matrix.nelem () == 1)
+    retval = new octave_scalar (matrix (0));
 
   return retval;
 }
@@ -100,6 +97,14 @@ octave_matrix::double_value (bool) const
   return retval;
 }
 
+// XXX FIXME XXX
+
+Matrix
+octave_matrix::matrix_value (bool) const
+{
+  return matrix.matrix_value ();
+}
+
 Complex
 octave_matrix::complex_value (bool) const
 {
@@ -120,6 +125,14 @@ octave_matrix::complex_value (bool) const
     gripe_invalid_conversion ("real matrix", "complex scalar");
 
   return retval;
+}
+
+// XXX FIXME XXX
+
+ComplexMatrix
+octave_matrix::complex_matrix_value (bool) const
+{
+  return ComplexMatrix (matrix.matrix_value ());
 }
 
 octave_value

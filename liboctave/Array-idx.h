@@ -22,6 +22,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 #include "Array-flags.h"
+#include "Range.h"
 #include "idx-vector.h"
 #include "lo-error.h"
 
@@ -38,19 +39,27 @@ template <class T>
 void
 Array<T>::set_index (const idx_vector& idx_arg)
 {
-  if (! idx)
-    idx = new idx_vector [max_indices];
+  int nd = ndims ();
 
-  if (idx_count < max_indices)
+  if (! idx && nd > 0)
+    idx = new idx_vector [nd];
+
+  if (idx_count < nd)
     {
       idx[idx_count++] = idx_arg;
     }
   else
     {
-      (*current_liboctave_error_handler)
-	("invalid number of indices specified");
+      idx_vector *new_idx = new idx_vector [idx_count+1];
 
-      clear_index ();
+      for (int i = 0; i < idx_count; i++)
+	new_idx[i] = idx[i];
+
+      new_idx[idx_count++] = idx_arg;
+
+      delete [] idx;
+
+      idx = new_idx;
     }
 }
 
@@ -60,7 +69,24 @@ Array<T>::value (void)
 {
   Array<T> retval;
 
-  retval = index (idx[0]);
+  int n_idx = index_count ();
+
+  if (n_idx == 2)
+    {
+      idx_vector *tmp = get_idx ();
+
+      idx_vector idx_i = tmp[0];
+      idx_vector idx_j = tmp[1];
+
+      retval = index (idx_i, idx_j);
+    }
+  else if (n_idx == 1)
+    {
+      retval = index (idx[0]);
+    }
+  else
+    (*current_liboctave_error_handler)
+      ("Array<T>::value: invalid number of indices specified");
 
   clear_index ();
 
@@ -70,6 +96,34 @@ Array<T>::value (void)
 template <class T>
 Array<T>
 Array<T>::index (idx_vector& idx_arg, int resize_ok, const T& rfv) const
+{
+  Array<T> retval;
+
+  switch (ndims ())
+    {
+    case 1:
+      retval = index1 (idx_arg, resize_ok, rfv);
+      break;
+
+    case 2:
+      retval = index2 (idx_arg, resize_ok, rfv);
+      break;
+
+    default:
+      {
+	Array<idx_vector> tmp (1, idx_arg);
+
+	retval = index (tmp, resize_ok, rfv);
+      }
+      break;
+    }
+
+  return retval;
+}
+
+template <class T>
+Array<T>
+Array<T>::index1 (idx_vector& idx_arg, int resize_ok, const T& rfv) const
 {
   Array<T> retval;
 
@@ -85,7 +139,7 @@ Array<T>::index (idx_vector& idx_arg, int resize_ok, const T& rfv) const
 	}
       else if (n == 0)
 	{
-	  retval.resize (0);
+	  retval.resize_no_fill (0);
 	}
       else if (len == 1 && n > 1
 	       && idx_arg.one_zero_only ()
@@ -95,7 +149,7 @@ Array<T>::index (idx_vector& idx_arg, int resize_ok, const T& rfv) const
 	}
       else
 	{
-	  retval.resize (n);
+	  retval.resize_no_fill (n);
 
 	  for (int i = 0; i < n; i++)
 	    {
@@ -114,8 +168,272 @@ Array<T>::index (idx_vector& idx_arg, int resize_ok, const T& rfv) const
 }
 
 template <class T>
+Array<T>
+Array<T>::index2 (idx_vector& idx_arg, int resize_ok, const T& rfv) const
+{
+  Array<T> retval;
+
+  int nr = dim1 ();
+  int nc = dim2 ();
+
+  int orig_len = nr * nc;
+
+  int idx_orig_rows = idx_arg.orig_rows ();
+  int idx_orig_columns = idx_arg.orig_columns ();
+
+  if (idx_arg.is_colon ())
+    {
+      // Fast magic colon processing.
+
+      int result_nr = nr * nc;
+      int result_nc = 1;
+
+      retval = Array<T> (*this, dim_vector (result_nr, result_nc));
+    }
+  else if (nr == 1 && nc == 1)
+    {
+      Array<T> tmp = Array<T>::index1 (idx_arg, resize_ok);
+
+      if (tmp.length () != 0)
+	retval = Array<T> (tmp, dim_vector (idx_orig_rows, idx_orig_columns));
+      else
+	retval = Array<T> (tmp, dim_vector (0, 0));
+    }
+  else if (nr == 1 || nc == 1)
+    {
+      // If indexing a vector with a matrix, return value has same
+      // shape as the index.  Otherwise, it has same orientation as
+      // indexed object.
+
+      Array<T> tmp = index1 (idx_arg, resize_ok);
+
+      int len = tmp.length ();
+
+      if (len == 0)
+	{
+	  if (idx_orig_rows == 0 || idx_orig_columns == 0)
+	    retval = Array<T> (dim_vector (idx_orig_rows, idx_orig_columns));
+	  else if (nr == 1)
+	    retval = Array<T> (dim_vector (1, 0));
+	  else
+	    retval = Array<T> (dim_vector (0, 1));
+	}
+      else
+	{
+	  if (idx_orig_rows == 1 || idx_orig_columns == 1)
+	    {
+	      if (nr == 1)
+		retval = Array<T> (tmp, dim_vector (1, len));
+	      else
+		retval = Array<T> (tmp, dim_vector (len, 1));
+	    }
+	  else
+	    retval = Array<T> (tmp, dim_vector (idx_orig_rows, idx_orig_columns));
+	}
+    }
+  else
+    {
+      if (liboctave_wfi_flag
+	  && ! (idx_arg.one_zero_only ()
+		&& idx_orig_rows == nr
+		&& idx_orig_columns == nc))
+	(*current_liboctave_warning_handler) ("single index used for matrix");
+
+      // This code is only for indexing matrices.  The vector
+      // cases are handled above.
+
+      idx_arg.freeze (nr * nc, "matrix", resize_ok);
+
+      if (idx_arg)
+	{
+	  int result_nr = idx_orig_rows;
+	  int result_nc = idx_orig_columns;
+
+	  if (idx_arg.one_zero_only ())
+	    {
+	      result_nr = idx_arg.ones_count ();
+	      result_nc = (result_nr > 0 ? 1 : 0);
+	    }
+
+	  retval.resize_no_fill (result_nr, result_nc);
+
+	  int k = 0;
+	  for (int j = 0; j < result_nc; j++)
+	    {
+	      for (int i = 0; i < result_nr; i++)
+		{
+		  int ii = idx_arg.elem (k++);
+		  if (ii >= orig_len)
+		    retval.elem (i, j) = rfv;
+		  else
+		    {
+		      int fr = ii % nr;
+		      int fc = (ii - fr) / nr;
+		      retval.elem (i, j) = elem (fr, fc);
+		    }
+		}
+	    }
+	}
+      // idx_vector::freeze() printed an error message for us.
+    }
+
+  return retval;
+}
+
+template <class T>
+Array<T>
+Array<T>::index (idx_vector& idx_i, idx_vector& idx_j, int resize_ok,
+		 const T& rfv) const
+{
+  Array<T> retval;
+
+  int nr = dim1 ();
+  int nc = dim2 ();
+
+  int n = idx_i.freeze (nr, "row", resize_ok);
+  int m = idx_j.freeze (nc, "column", resize_ok);
+
+  if (idx_i && idx_j)
+    {
+      if (idx_i.orig_empty () || idx_j.orig_empty () || n == 0 || m == 0)
+	{
+	  retval.resize_no_fill (n, m);
+	}
+      else if (idx_i.is_colon_equiv (nr) && idx_j.is_colon_equiv (nc))
+	{
+	  retval = *this;
+	}
+      else
+	{
+	  retval.resize_no_fill (n, m);
+
+	  for (int j = 0; j < m; j++)
+	    {
+	      int jj = idx_j.elem (j);
+	      for (int i = 0; i < n; i++)
+		{
+		  int ii = idx_i.elem (i);
+		  if (ii >= nr || jj >= nc)
+		    retval.elem (i, j) = rfv;
+		  else
+		    retval.elem (i, j) = elem (ii, jj);
+		}
+	    }
+	}
+    }
+
+  // idx_vector::freeze() printed an error message for us.
+
+  return retval;
+}
+
+#include "ArrayN-inline.h"
+
+template <class T>
+Array<T>
+Array<T>::index (Array<idx_vector>& ra_idx, int resize_ok, const T& rfv) const
+{
+  Array<T> retval;
+
+  int n_idx = ra_idx.length ();
+
+  int n_dims = dimensions.length ();
+
+  if (n_idx == n_dims)
+    {
+      dim_vector frozen_lengths = freeze (ra_idx, dimensions, resize_ok);
+
+      if (frozen_lengths.length () == n_dims)
+	{
+	  if (all_ok (ra_idx))
+	    {
+	      if (any_orig_empty (ra_idx))
+		{
+		  retval.resize (frozen_lengths);
+		}
+	      else if (any_zero_len (frozen_lengths))
+		{
+		  dim_vector new_size = get_zero_len_size (frozen_lengths,
+							   dimensions);
+
+		  retval.resize (new_size);
+		}
+	      else if (all_colon_equiv (ra_idx, frozen_lengths))
+		{
+		  retval = *this;
+		}
+	      else
+		{
+		  (*current_liboctave_error_handler) ("not implemented");
+#if 0
+		  retval.resize (frozen_lengths);
+
+		  int n = Array<T>::get_size (frozen_lengths);
+
+		  dim_vector result_idx (n_dims, 0);
+
+		  for (int i = 0; i < n; i++)
+		    {
+		      dim_vector elt_idx = get_elt_idx (result_idx);
+
+		      if (elt_idx > orig_len)
+			retval.elem (result_idx) = rfv;
+		      else
+			retval.elem (result_idx) = elem (elt_idx);
+
+		      increment_index (result_idx, frozen_lengths);
+		    }
+#endif
+		}
+	    }
+	  // idx_vector::freeze() printed an error message for us.
+	}
+    }
+  else if (n_idx == 1)
+    {
+      if (ra_idx(0).is_colon ())
+	{
+	  // Fast magic colon processing.
+
+	  int result_nr = Array<int>::get_size (dimensions);
+	  int result_nc = 1;
+
+	  retval = Array<T> (*this, dim_vector (result_nr, result_nc));
+	}
+      else
+	(*current_liboctave_error_handler) ("not implemented");
+    }
+  else
+    (*current_liboctave_error_handler)
+      ("invalid number of dimensions for N-dimensional array index");
+
+  return retval;
+}
+
+template <class T>
 void
 Array<T>::maybe_delete_elements (idx_vector& idx_arg)
+{
+  switch (ndims ())
+    {
+    case 1:
+      maybe_delete_elements_1 (idx_arg);
+      break;
+
+    case 2:
+      maybe_delete_elements_2 (idx_arg);
+      break;
+
+    default:
+      (*current_liboctave_error_handler)
+	("Array<T>::maybe_delete_elements: invalid operation");
+      break;
+    }
+}
+
+template <class T>
+void
+Array<T>::maybe_delete_elements_1 (idx_vector& idx_arg)
 {
   int len = length ();
 
@@ -123,7 +441,7 @@ Array<T>::maybe_delete_elements (idx_vector& idx_arg)
     return;
 
   if (idx_arg.is_colon_equiv (len, 1))
-    resize (0);
+    resize_no_fill (0);
   else
     {
       int num_to_delete = idx_arg.length (len);
@@ -166,7 +484,8 @@ Array<T>::maybe_delete_elements (idx_vector& idx_arg)
 
 	      rep = new typename Array<T>::ArrayRep (new_data, new_len);
 
-	      set_max_indices (1);
+	      dimensions.resize (1);
+	      dimensions(0) = new_len;
 	    }
 	  else
 	    (*current_liboctave_error_handler)
@@ -175,12 +494,538 @@ Array<T>::maybe_delete_elements (idx_vector& idx_arg)
     }
 }
 
-// ??? FIXME ??? -- this does not handle assignment of empty vectors
-// to delete elements.  Should it?
+template <class T>
+void
+Array<T>::maybe_delete_elements_2 (idx_vector& idx_arg)
+{
+  int nr = dim1 ();
+  int nc = dim2 ();
+
+  if (nr == 0 && nc == 0)
+    return;
+
+  int n;
+  if (nr == 1)
+    n = nc;
+  else if (nc == 1)
+    n = nr;
+  else
+    {
+      (*current_liboctave_error_handler)
+	("A(idx) = []: expecting A to be row or column vector or scalar");
+
+      return;
+    }
+
+  if (idx_arg.is_colon_equiv (n, 1))
+    {
+      // Either A(:) = [] or A(idx) = [] with idx enumerating all
+      // elements, so we delete all elements and return [](0x0).  To
+      // preserve the orientation of the vector, you have to use
+      // A(idx,:) = [] (delete rows) or A(:,idx) (delete columns).
+
+      resize_no_fill (0, 0);
+      return;
+    }
+
+  idx_arg.sort (true);
+
+  int num_to_delete = idx_arg.length (n);
+
+  if (num_to_delete != 0)
+    {
+      int new_n = n;
+
+      int iidx = 0;
+
+      for (int i = 0; i < n; i++)
+	if (i == idx_arg.elem (iidx))
+	  {
+	    iidx++;
+	    new_n--;
+
+	    if (iidx == num_to_delete)
+	      break;
+	  }
+
+      if (new_n > 0)
+	{
+	  T *new_data = new T [new_n];
+
+	  int ii = 0;
+	  iidx = 0;
+	  for (int i = 0; i < n; i++)
+	    {
+	      if (iidx < num_to_delete && i == idx_arg.elem (iidx))
+		iidx++;
+	      else
+		{
+		  if (nr == 1)
+		    new_data[ii] = elem (0, i);
+		  else
+		    new_data[ii] = elem (i, 0);
+
+		  ii++;
+		}
+	    }
+
+	  if (--(Array<T>::rep)->count <= 0)
+	    delete Array<T>::rep;
+
+	  Array<T>::rep = new typename Array<T>::ArrayRep (new_data, new_n);
+
+	  dimensions.resize (2);
+
+	  if (nr == 1)
+	    {
+	      dimensions(0) = 1;
+	      dimensions(1) = new_n;
+	    }
+	  else
+	    {
+	      dimensions(0) = new_n;
+	      dimensions(1) = 1;
+	    }
+	}
+      else
+	(*current_liboctave_error_handler)
+	  ("A(idx) = []: index out of range");
+    }
+}
+
+template <class T>
+void
+Array<T>::maybe_delete_elements (idx_vector& idx_i, idx_vector& idx_j)
+{
+  int nr = dim1 ();
+  int nc = dim2 ();
+
+  if (nr == 0 && nc == 0)
+    return;
+
+  if (idx_i.is_colon ())
+    {
+      if (idx_j.is_colon ())
+	{
+	  // A(:,:) -- We are deleting columns and rows, so the result
+	  // is [](0x0).
+
+	  resize_no_fill (0, 0);
+	  return;
+	}
+
+      if (idx_j.is_colon_equiv (nc, 1))
+	{
+	  // A(:,j) -- We are deleting columns by enumerating them,
+	  // If we enumerate all of them, we should have zero columns
+	  // with the same number of rows that we started with.
+
+	  resize_no_fill (nr, 0);
+	  return;
+	}
+    }
+
+  if (idx_j.is_colon () && idx_i.is_colon_equiv (nr, 1))
+    {
+      // A(i,:) -- We are deleting rows by enumerating them.  If we
+      // enumerate all of them, we should have zero rows with the
+      // same number of columns that we started with.
+
+      resize_no_fill (0, nc);
+      return;
+    }
+
+  if (idx_i.is_colon_equiv (nr, 1))
+    {
+      if (idx_j.is_colon_equiv (nc, 1))
+	resize_no_fill (0, 0);
+      else
+	{
+	  idx_j.sort (true);
+
+	  int num_to_delete = idx_j.length (nc);
+
+	  if (num_to_delete != 0)
+	    {
+	      if (nr == 1 && num_to_delete == nc)
+		resize_no_fill (0, 0);
+	      else
+		{
+		  int new_nc = nc;
+
+		  int iidx = 0;
+
+		  for (int j = 0; j < nc; j++)
+		    if (j == idx_j.elem (iidx))
+		      {
+			iidx++;
+			new_nc--;
+
+			if (iidx == num_to_delete)
+			  break;
+		      }
+
+		  if (new_nc > 0)
+		    {
+		      T *new_data = new T [nr * new_nc];
+
+		      int jj = 0;
+		      iidx = 0;
+		      for (int j = 0; j < nc; j++)
+			{
+			  if (iidx < num_to_delete && j == idx_j.elem (iidx))
+			    iidx++;
+			  else
+			    {
+			      for (int i = 0; i < nr; i++)
+				new_data[nr*jj+i] = elem (i, j);
+			      jj++;
+			    }
+			}
+
+		      if (--(Array<T>::rep)->count <= 0)
+			delete Array<T>::rep;
+
+		      Array<T>::rep = new typename Array<T>::ArrayRep (new_data, nr * new_nc);
+
+		      dimensions.resize (2);
+		      dimensions(1) = new_nc;
+		    }
+		  else
+		    (*current_liboctave_error_handler)
+		      ("A(idx) = []: index out of range");
+		}
+	    }
+	}
+    }
+  else if (idx_j.is_colon_equiv (nc, 1))
+    {
+      if (idx_i.is_colon_equiv (nr, 1))
+	resize_no_fill (0, 0);
+      else
+	{
+	  idx_i.sort (true);
+
+	  int num_to_delete = idx_i.length (nr);
+
+	  if (num_to_delete != 0)
+	    {
+	      if (nc == 1 && num_to_delete == nr)
+		resize_no_fill (0, 0);
+	      else
+		{
+		  int new_nr = nr;
+
+		  int iidx = 0;
+
+		  for (int i = 0; i < nr; i++)
+		    if (i == idx_i.elem (iidx))
+		      {
+			iidx++;
+			new_nr--;
+
+			if (iidx == num_to_delete)
+			  break;
+		      }
+
+		  if (new_nr > 0)
+		    {
+		      T *new_data = new T [new_nr * nc];
+
+		      int ii = 0;
+		      iidx = 0;
+		      for (int i = 0; i < nr; i++)
+			{
+			  if (iidx < num_to_delete && i == idx_i.elem (iidx))
+			    iidx++;
+			  else
+			    {
+			      for (int j = 0; j < nc; j++)
+				new_data[new_nr*j+ii] = elem (i, j);
+			      ii++;
+			    }
+			}
+
+		      if (--(Array<T>::rep)->count <= 0)
+			delete Array<T>::rep;
+
+		      Array<T>::rep = new typename Array<T>::ArrayRep (new_data, new_nr * nc);
+
+		      dimensions.resize (2);
+		      dimensions(0) = new_nr;
+		    }
+		  else
+		    (*current_liboctave_error_handler)
+		      ("A(idx) = []: index out of range");
+		}
+	    }
+	}
+    }
+}
+
+template <class T>
+void
+Array<T>::maybe_delete_elements (idx_vector&, idx_vector&, idx_vector&)
+{
+  assert (0);
+}
+
+template <class T>
+void
+Array<T>::maybe_delete_elements (Array<idx_vector>& idx, const T& rfv)
+{
+  int n_idx = idx.length ();
+
+  dim_vector lhs_dims = dims ();
+
+  dim_vector idx_is_colon;
+  idx_is_colon.resize (n_idx);
+
+  dim_vector idx_is_colon_equiv;
+  idx_is_colon_equiv.resize (n_idx);
+
+  // Initialization of colon arrays.
+
+  for (int i = 0; i < n_idx; i++)
+    {
+      idx_is_colon_equiv(i) = idx(i).is_colon_equiv (lhs_dims(i), 1);
+
+      idx_is_colon(i) = idx(i).is_colon ();
+    }
+
+  if (all_ones (idx_is_colon) || all_ones (idx_is_colon_equiv))
+    {
+      // A(:,:,:) -- we are deleting elements in all dimensions, so
+      // the result is [](0x0x0).
+
+      dim_vector zeros;
+      zeros.resize (n_idx);
+
+      for (int i = 0; i < n_idx; i++)
+	zeros(i) = 0;
+
+      resize (zeros, rfv);
+    }
+
+  else if (num_ones (idx_is_colon) == n_idx - 1
+	   && num_ones (idx_is_colon_equiv) == n_idx)
+    {
+      // A(:,:,j) -- we are deleting elements in one dimension by
+      // enumerating them.
+      //
+      // If we enumerate all of the elements, we should have zero
+      // elements in that dimension with the same number of elements
+      // in the other dimensions that we started with.
+
+      dim_vector temp_dims;
+      temp_dims.resize (n_idx);
+
+      for (int i = 0; i < n_idx; i++)
+	{
+	  if (idx_is_colon (i))
+	    temp_dims (i) =  lhs_dims (i);
+	  else
+	    temp_dims (i) = 0;
+	}
+
+      resize (temp_dims);
+    }
+  else if (num_ones (idx_is_colon) == n_idx - 1)
+    {
+      // We have colons in all indices except for one.
+      // This index tells us which slice to delete
+
+      int non_col = 0;
+
+      // Find the non-colon column.
+
+      for (int i = 0; i < n_idx; i++)
+	{
+	  if (! idx_is_colon (i))
+	    non_col = i;
+	}
+
+      // The length of the non-colon dimension.
+
+      int non_col_dim = lhs_dims (non_col);
+
+      idx(non_col).sort (true);
+
+      int num_to_delete = idx(non_col).length (lhs_dims (non_col));
+
+      if (num_to_delete > 0)
+	{
+	  int temp = num_ones(lhs_dims);
+
+	  if (non_col_dim == 1)
+	    temp--;
+
+	  if (temp == n_idx - 1 && num_to_delete == non_col_dim)
+	    {
+	      // We have A with (1x1x4), where A(1,:,1:4)
+	      // Delete all (0x0x0)
+
+	      dim_vector zero_dims (n_idx, 0);
+
+	      resize (zero_dims, rfv);
+	    }
+	  else
+	    {
+	      // New length of non-colon dimension
+	      // (calculated in the next for loop)
+
+	      int new_dim = non_col_dim;
+
+	      int iidx = 0;
+
+	      for (int j = 0; j < non_col_dim; j++)
+		if (j == idx(non_col).elem (iidx))
+		  {
+		    iidx++;
+
+		    new_dim--;
+
+		    if (iidx == num_to_delete)
+		      break;
+		  }
+
+	      // Creating the new nd array after deletions.
+
+	      if (new_dim > 0)
+		{
+		  // Calculate number of elements in new array.
+
+		  int num_new_elem=1;
+
+		  for (int i = 0; i < n_idx; i++)
+		    {
+		      if (i == non_col)
+			num_new_elem *= new_dim;
+
+		      else
+			num_new_elem *= lhs_dims(i);
+		    }
+
+		  T *new_data = new T [num_new_elem];
+		  
+		  Array<int> result_idx (lhs_dims.length (), 0);
+
+		  dim_vector lhs_inc;
+		  lhs_inc.resize (lhs_dims.length ());
+
+		  for (int i = 0; i < lhs_dims.length (); i++)
+		    lhs_inc(i) = lhs_dims(i) + 1;
+
+		  dim_vector new_lhs_dim = lhs_dims;
+
+		  new_lhs_dim(non_col) = new_dim;
+
+		  int num_elem = 1;
+
+		  int numidx = 0;
+
+		  int n = length ();
+
+		  for (int i =0; i < lhs_dims.length (); i++)
+		    if (i != non_col)
+		      num_elem *= lhs_dims (i);
+
+		  num_elem *= idx(non_col).capacity ();
+
+		  for (int i = 0; i < n; i++)
+		    {
+		      if (numidx < num_elem
+			  && is_in (result_idx(non_col), idx(non_col)))
+			numidx++;
+
+		      else
+			{
+			  Array<int> temp_result_idx = result_idx;
+
+			  int num_lgt
+			    = how_many_lgt (result_idx(non_col), idx(non_col));
+
+			  temp_result_idx(non_col) -= num_lgt;
+
+			  int kidx
+			    = ::compute_index (temp_result_idx, new_lhs_dim);
+
+			  new_data[kidx] = elem (result_idx);
+			}
+
+		      increment_index (result_idx, lhs_dims);
+		    }
+
+		  if (--rep->count <= 0)
+		    delete rep;
+
+		  rep = new typename Array<T>::ArrayRep (new_data,
+							 num_new_elem);
+
+		  dimensions = new_lhs_dim;
+	    	}
+	    }
+	}
+    }
+  else if (num_ones(idx_is_colon) < n_idx)
+    {
+      (*current_liboctave_error_handler)
+	("A null assignment can have only one non-colon index.");
+    }
+}
+
+// XXX FIXME XXX -- this is a mess.
 
 template <class LT, class RT>
 int
 assign (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
+{
+  int retval = 0;
+
+  switch (lhs.ndims ())
+    {
+    case 0:
+      {
+	if (lhs.index_count () < 3)
+	  {
+	    // kluge...
+	    lhs.resize_no_fill (0, 0);
+	    retval = assign2 (lhs, rhs, rfv);
+	  }
+	else
+	  retval = assignN (lhs, rhs, rfv);
+      }
+      break;
+
+    case 1:
+      {
+	if (lhs.index_count () > 1)
+	  retval = assignN (lhs, rhs, rfv);
+	else
+	  retval = assign1 (lhs, rhs, rfv);
+      }
+      break;
+
+    case 2:
+      {
+	if (lhs.index_count () > 2)
+	  retval = assignN (lhs, rhs, rfv);
+	else
+	  retval = assign2 (lhs, rhs, rfv);
+      }
+      break;
+
+    default:
+      retval = assignN (lhs, rhs, rfv);
+      break;
+    }
+
+  return retval;
+}
+
+template <class LT, class RT>
+int
+assign1 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 {
   int retval = 1;
 
@@ -232,7 +1077,7 @@ assign (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
     {
       if (lhs_len == 0)
 	{
-	  lhs.resize (rhs_len);
+	  lhs.resize_no_fill (rhs_len);
 
 	  for (int i = 0; i < rhs_len; i++)
 	    lhs.elem (i) = rhs.elem (i);
@@ -245,7 +1090,625 @@ assign (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
     {
       (*current_liboctave_error_handler)
 	("A([]) = X: X must also be an empty matrix or a scalar");
-  
+
+      retval = 0;
+    }
+
+  lhs.clear_index ();
+
+  return retval;
+}
+
+#define MAYBE_RESIZE_LHS \
+  do \
+    { \
+      int max_row_idx = idx_i_is_colon ? rhs_nr : idx_i.max () + 1; \
+      int max_col_idx = idx_j_is_colon ? rhs_nc : idx_j.max () + 1; \
+ \
+      int new_nr = max_row_idx > lhs_nr ? max_row_idx : lhs_nr; \
+      int new_nc = max_col_idx > lhs_nc ? max_col_idx : lhs_nc; \
+ \
+      lhs.resize_and_fill (new_nr, new_nc, rfv); \
+    } \
+  while (0)
+
+template <class LT, class RT>
+int
+assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
+{
+  int retval = 1;
+
+  int n_idx = lhs.index_count ();
+
+  int lhs_nr = lhs.rows ();
+  int lhs_nc = lhs.cols ();
+
+  int rhs_nr = rhs.rows ();
+  int rhs_nc = rhs.cols ();
+
+  idx_vector *tmp = lhs.get_idx ();
+
+  idx_vector idx_i;
+  idx_vector idx_j;
+
+  if (n_idx > 1)
+    idx_j = tmp[1];
+
+  if (n_idx > 0)
+    idx_i = tmp[0];
+
+  if (n_idx == 2)
+    {
+      int n = idx_i.freeze (lhs_nr, "row", true, liboctave_wrore_flag);
+
+      int m = idx_j.freeze (lhs_nc, "column", true, liboctave_wrore_flag);
+
+      int idx_i_is_colon = idx_i.is_colon ();
+      int idx_j_is_colon = idx_j.is_colon ();
+
+      if (idx_i_is_colon)
+	n = lhs_nr > 0 ? lhs_nr : rhs_nr;
+
+      if (idx_j_is_colon)
+	m = lhs_nc > 0 ? lhs_nc : rhs_nc;
+
+      if (idx_i && idx_j)
+	{
+	  if (rhs_nr == 0 && rhs_nc == 0)
+	    {
+	      lhs.maybe_delete_elements (idx_i, idx_j);
+	    }
+	  else
+	    {
+	      if (rhs_nr == 1 && rhs_nc == 1 && n > 0 && m > 0)
+		{
+		  MAYBE_RESIZE_LHS;
+
+		  RT scalar = rhs.elem (0, 0);
+
+		  for (int j = 0; j < m; j++)
+		    {
+		      int jj = idx_j.elem (j);
+		      for (int i = 0; i < n; i++)
+			{
+			  int ii = idx_i.elem (i);
+			  lhs.elem (ii, jj) = scalar;
+			}
+		    }
+		}
+	      else if (n == rhs_nr && m == rhs_nc)
+		{
+		  if (n > 0 && m > 0)
+		    {
+		      MAYBE_RESIZE_LHS;
+
+		      for (int j = 0; j < m; j++)
+			{
+			  int jj = idx_j.elem (j);
+			  for (int i = 0; i < n; i++)
+			    {
+			      int ii = idx_i.elem (i);
+			      lhs.elem (ii, jj) = rhs.elem (i, j);
+			    }
+			}
+		    }
+		}
+	      else if (n == 0 && m == 0)
+		{
+		  if (! ((rhs_nr == 1 && rhs_nc == 1)
+			 || (rhs_nr == 0 && rhs_nc == 0)))
+		    {
+		      (*current_liboctave_error_handler)
+		("A([], []) = X: X must be an empty matrix or a scalar");
+
+		      retval = 0;
+		    }
+		}
+	      else
+		{
+		  (*current_liboctave_error_handler)
+    ("A(I, J) = X: X must be a scalar or the number of elements in I must");
+		  (*current_liboctave_error_handler)
+    ("match the number of rows in X and the number of elements in J must");
+		  (*current_liboctave_error_handler)
+    ("match the number of columns in X");
+
+		  retval = 0;
+		}
+	    }
+	}
+      // idx_vector::freeze() printed an error message for us.
+    }
+  else if (n_idx == 1)
+    {
+      int lhs_is_empty = lhs_nr == 0 || lhs_nc == 0;
+
+      if (lhs_is_empty || (lhs_nr == 1 && lhs_nc == 1))
+	{
+	  int lhs_len = lhs.length ();
+
+	  int n = idx_i.freeze (lhs_len, 0, true, liboctave_wrore_flag);
+
+	  if (idx_i)
+	    {
+	      if (rhs_nr == 0 && rhs_nc == 0)
+		{
+		  if (n != 0 && (lhs_nr != 0 || lhs_nc != 0))
+		    lhs.maybe_delete_elements (idx_i);
+		}
+	      else
+		{
+		  if (liboctave_wfi_flag)
+		    {
+		      if (lhs_is_empty
+			  && idx_i.is_colon ()
+			  && ! (rhs_nr == 1 || rhs_nc == 1))
+			{
+			  (*current_liboctave_warning_handler)
+			    ("A(:) = X: X is not a vector or scalar");
+			}
+		      else
+			{
+			  int idx_nr = idx_i.orig_rows ();
+			  int idx_nc = idx_i.orig_columns ();
+
+			  if (! (rhs_nr == idx_nr && rhs_nc == idx_nc))
+			    (*current_liboctave_warning_handler)
+			      ("A(I) = X: X does not have same shape as I");
+			}
+		    }
+
+		  if (assign1 ((Array<LT>&) lhs, (Array<RT>&) rhs, rfv))
+		    {
+		      int len = lhs.length ();
+
+		      if (len > 0)
+			{
+			  // The following behavior is much simplified
+			  // over previous versions of Octave.  It
+			  // seems to be compatible with Matlab.
+
+			  lhs.dimensions = dim_vector (1, lhs.length ());
+			}
+		      else
+			lhs.dimensions = dim_vector (0, 0);
+		    }
+		  else
+		    retval = 0;
+		}
+	    }
+	  // idx_vector::freeze() printed an error message for us.
+	}
+      else if (lhs_nr == 1)
+	{
+	  idx_i.freeze (lhs_nc, "vector", true, liboctave_wrore_flag);
+
+	  if (idx_i)
+	    {
+	      if (rhs_nr == 0 && rhs_nc == 0)
+		lhs.maybe_delete_elements (idx_i);
+	      else
+		{
+		  if (assign1 ((Array<LT>&) lhs, (Array<RT>&) rhs, rfv))
+		    lhs.dimensions = dim_vector (1, lhs.length ());
+		  else
+		    retval = 0;
+		}
+	    }
+	  // idx_vector::freeze() printed an error message for us.
+	}
+      else if (lhs_nc == 1)
+	{
+	  idx_i.freeze (lhs_nr, "vector", true, liboctave_wrore_flag);
+
+	  if (idx_i)
+	    {
+	      if (rhs_nr == 0 && rhs_nc == 0)
+		lhs.maybe_delete_elements (idx_i);
+	      else
+		{
+		  if (assign1 ((Array<LT>&) lhs, (Array<RT>&) rhs, rfv))
+		    lhs.dimensions = dim_vector (lhs.length (), 1);
+		  else
+		    retval = 0;
+		}
+	    }
+	  // idx_vector::freeze() printed an error message for us.
+	}
+      else
+	{
+	  if (liboctave_wfi_flag
+	      && ! (idx_i.is_colon ()
+		    || (idx_i.one_zero_only ()
+			&& idx_i.orig_rows () == lhs_nr
+			&& idx_i.orig_columns () == lhs_nc)))
+	    (*current_liboctave_warning_handler)
+	      ("single index used for matrix");
+
+	  int len = idx_i.freeze (lhs_nr * lhs_nc, "matrix");
+
+	  if (idx_i)
+	    {
+	      if (len == 0)
+		{
+		  if (! ((rhs_nr == 1 && rhs_nc == 1)
+			 || (rhs_nr == 0 && rhs_nc == 0)))
+		    (*current_liboctave_error_handler)
+		      ("A([]) = X: X must be an empty matrix or scalar");
+		}
+	      else if (len == rhs_nr * rhs_nc)
+		{
+		  int k = 0;
+		  for (int j = 0; j < rhs_nc; j++)
+		    {
+		      for (int i = 0; i < rhs_nr; i++)
+			{
+			  int ii = idx_i.elem (k++);
+			  int fr = ii % lhs_nr;
+			  int fc = (ii - fr) / lhs_nr;
+			  lhs.elem (fr, fc) = rhs.elem (i, j);
+			}
+		    }
+		}
+	      else if (rhs_nr == 1 && rhs_nc == 1 && len <= lhs_nr * lhs_nc)
+		{
+		  RT scalar = rhs.elem (0, 0);
+
+		  for (int i = 0; i < len; i++)
+		    {
+		      int ii = idx_i.elem (i);
+		      int fr = ii % lhs_nr;
+		      int fc = (ii - fr) / lhs_nr;
+		      lhs.elem (fr, fc) = scalar;
+		    }
+		}
+	      else
+		{
+		  (*current_liboctave_error_handler)
+      ("A(I) = X: X must be a scalar or a matrix with the same size as I");
+
+		  retval = 0;
+		}
+	    }
+	  // idx_vector::freeze() printed an error message for us.
+	}
+    }
+  else
+    {
+      (*current_liboctave_error_handler)
+	("invalid number of indices for matrix expression");
+
+      retval = 0;
+    }
+
+  lhs.clear_index ();
+
+  return retval;
+}
+
+#define MAYBE_RESIZE_ND_DIMS \
+  do \
+    { \
+      if (n_idx >= lhs_dims.length () && ! rhs_is_empty) \
+	{ \
+	  Array<int> max_idx (n_idx); \
+	  dim_vector new_idx; \
+          new_idx.resize (n_idx); \
+ \
+	  for (int i = 0; i < n_idx; i++) \
+	    { \
+	      if (lhs_dims.length () == 0 || i >= lhs_dims.length ()) \
+		new_idx(i) = idx(i).max () + 1; \
+	      else \
+		{ \
+		  if (i < rhs_dims.length ()) \
+		    max_idx(i) = idx(i).is_colon () ? rhs_dims(i) : idx(i).max () + 1; \
+		  else \
+		    max_idx(i) = idx(i).max () + 1; \
+ \
+		  new_idx(i) = max_idx(i) > lhs_dims(i) ? max_idx(i) : lhs_dims(i); \
+		} \
+            } \
+ \
+	  lhs.resize (new_idx, rfv); \
+	  lhs_dims = lhs.dims ();  \
+        } \
+    } \
+  while (0)
+
+template <class LT, class RT>
+int
+assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
+{
+  int retval = 1;
+
+  int n_idx = lhs.index_count ();
+
+  dim_vector lhs_dims = lhs.dims ();
+  dim_vector rhs_dims = rhs.dims ();
+
+  idx_vector *tmp = lhs.get_idx ();
+
+  Array<idx_vector> idx = conv_to_array (tmp, n_idx);
+
+  // This needs to be defined before MAYBE_RESIZE_ND_DIMS.
+
+  bool rhs_is_empty = rhs_dims.length () == 0 ? true : any_zero_len (rhs_dims);
+
+  // Maybe expand to more dimensions.
+
+  MAYBE_RESIZE_ND_DIMS;
+
+  Array<int> idx_is_colon (n_idx, 0);
+  Array<int> idx_is_colon_equiv (n_idx, 0);
+
+  for (int i = 0; i < n_idx; i++)
+    {
+      idx_is_colon_equiv(i) = idx(i).is_colon_equiv (lhs_dims(i), 1);
+
+      idx_is_colon(i) = idx(i).is_colon ();
+    }
+
+  int resize_ok = 1;
+
+  dim_vector frozen_len;
+
+  if (n_idx == lhs_dims.length ())
+    frozen_len = freeze (idx, lhs_dims, resize_ok);
+
+  bool rhs_is_scalar = is_scalar (rhs_dims);
+
+  bool idx_is_empty = any_zero_len (frozen_len);
+
+  if (rhs_is_empty)
+    {
+      lhs.maybe_delete_elements (idx, rfv);
+    }
+  else if (rhs_is_scalar)
+    {
+      if (n_idx == 0)
+	(*current_liboctave_error_handler)
+	  ("number of indices is zero.");
+
+      else if (n_idx < lhs_dims.length ())
+	{
+	  // Number of indices is less than dimensions.
+
+	  if (any_ones (idx_is_colon)|| any_ones (idx_is_colon_equiv))
+	    {
+	      (*current_liboctave_error_handler)
+		("number of indices is less than number of dimensions, one or more indices are colons.");
+	    }
+	  else
+	    {
+	      // Fewer indices than dimensions, no colons.
+
+	      bool resize = false;
+
+	      // Subtract one since the last idx do not tell us
+	      // anything about dimensionality.
+
+	      for (int i = 0; i < idx.length () - 1; i++)
+		{
+		  // Subtract one since idx counts from 0 while dims
+		  // count from 1.
+
+		  if (idx(i).elem (0) + 1 > lhs_dims(i))
+		    resize = true;
+		}
+
+	      if (resize)
+		{
+		  dim_vector new_dims;
+		  new_dims.resize (lhs_dims.length ());
+
+		  for (int i = 0; i < lhs_dims.length (); i++)
+		    {
+		      if (i < idx.length () - 1
+			  && idx(i).elem (0) + 1 > lhs_dims(i))
+			new_dims(i) = idx(i).elem (0)+1;
+		      else
+			new_dims(i) = lhs_dims(i);
+		    }
+
+		  lhs.resize (new_dims, rfv);
+
+		  lhs_dims = lhs.dims ();
+		}
+
+	      Array<int> one_arg_temp (1, 0);
+
+	      RT scalar = rhs.elem (one_arg_temp);
+
+	      Array<int> int_arr = conv_to_int_array (idx);
+
+	      int numelem = get_scalar_idx (int_arr, lhs_dims);
+
+	      if (numelem > lhs.length () || numelem < 0)
+		(*current_liboctave_error_handler)
+		  ("attempt to grow array along ambiguous dimension.");
+	      else
+		lhs.Array<LT>::checkelem (numelem) = scalar;
+	    }
+	}
+      else
+	{
+	  // Scalar to matrix assignment with as many indices as lhs
+	  // dimensions.
+
+	  int n = Array<LT>::get_size (frozen_len);
+
+	  Array<int> result_idx (lhs_dims.length (), 0);
+
+	  Array<int> elt_idx;
+
+	  RT scalar = rhs.elem (0);
+
+	  for (int i = 0; i < n; i++)
+	    {
+	      elt_idx = get_elt_idx (idx, result_idx);
+
+	      dim_vector lhs_inc;
+	      lhs_inc.resize (lhs_dims.length ());
+
+	      for (int i = 0; i < lhs_dims.length (); i++)
+		lhs_inc(i) = lhs_dims(i) + 1;
+
+	      if (index_in_bounds(elt_idx, lhs_inc))
+		lhs.checkelem (elt_idx) = scalar;
+	      else
+		lhs.checkelem (elt_idx) = rfv;
+
+	      increment_index (result_idx, frozen_len);
+	    }
+	}
+    }
+  else if (rhs_dims.length () >= 2)
+    {
+      // RHS is matrix or higher dimension.
+
+      // Subtracting number of dimensions of length 1 will catch
+      // cases where: A(2,1,2)=3  A(:,1,:)=[2,3;4,5]
+
+      if (rhs_dims.length () != num_ones(idx_is_colon_equiv) - num_ones(lhs_dims))
+	{
+	  (*current_liboctave_error_handler)
+	    ("dimensions do not match in matrix assignment.");
+	}
+      else
+	{
+	  bool dim_ok(true);
+
+	  int jj = 0;
+
+	  // Check that RHS dimensions are the same length as the
+	  // corresponding LHS dimensions.
+
+	  for (int j = 0; j < idx_is_colon.length (); j++)
+	    {
+	      if (idx_is_colon(j) || idx_is_colon_equiv(j))
+		{
+		  if (rhs_dims(jj) < lhs_dims(j))
+		    {
+		      dim_ok = false;
+
+		      break;
+		    }
+
+		  jj++;
+		}
+	    }
+
+	  if (! dim_ok)
+	    (*current_liboctave_error_handler)
+	      ("subscripted assignment dimension mismatch.");
+	  else
+	    {
+	      dim_vector new_dims;
+	      new_dims.resize (n_idx);
+
+	      bool resize = false;
+
+	      int ii = 0;
+
+	      // Update idx vectors.
+
+	      for (int i = 0; i < n_idx; i++)
+		{
+		  if (idx(i).is_colon ())
+		    {
+		      // Add appropriate idx_vector to idx(i) since
+		      // index with : contains no indexes.
+
+		      frozen_len(i) = lhs_dims(i) > rhs_dims(ii) ? lhs_dims(i) : rhs_dims(ii);
+
+		      new_dims(i) = lhs_dims(i) > rhs_dims(ii) ? lhs_dims(i) : rhs_dims(ii);
+
+		      ii++;
+
+		      Range idxrange (1, frozen_len(i), 1);
+
+		      idx_vector idxv (idxrange);
+
+		      idx(i) = idxv;
+		    }
+		  else
+		    {
+		      new_dims(i) = lhs_dims(i) > idx(i).max () + 1 ? lhs_dims(i) : idx(i).max () + 1;
+
+		      if (frozen_len(i) > 1)
+			ii++;
+		    }
+		  if (new_dims(i) != lhs_dims(i))
+		    resize = true;
+		}
+
+	      // Resize LHS if dimensions have changed.
+
+	      if (resize)
+		{
+		  lhs.resize (new_dims, rfv);
+
+		  lhs_dims = lhs.dims ();
+		}
+
+	      // Number of elements which need to be set.
+
+	      int n = Array<LT>::get_size (frozen_len);
+
+	      Array<int> result_idx (lhs_dims.length (), 0);
+	      Array<int> elt_idx;
+
+	      Array<int> result_rhs_idx (rhs_dims.length (), 0);
+
+	      dim_vector frozen_rhs;
+	      frozen_rhs.resize (rhs_dims.length());
+
+	      for (int i = 0; i < rhs_dims.length (); i++)
+		frozen_rhs(i) = rhs_dims(i);
+
+	      dim_vector lhs_inc;
+	      lhs_inc.resize (lhs_dims.length ());
+
+	      for (int i = 0; i < lhs_dims.length (); i++)
+		lhs_inc(i) = lhs_dims(i) + 1;
+
+	      for (int i = 0; i < n; i++)
+		{
+		  elt_idx = get_elt_idx (idx, result_idx);
+
+		  if (index_in_bounds (elt_idx, lhs_inc))
+		    {
+		      int s = compute_index (result_rhs_idx,rhs_dims);
+
+		      lhs.checkelem (elt_idx) = rhs.elem (s);
+
+		      increment_index (result_rhs_idx, frozen_rhs);
+		    }
+		  else
+		    lhs.checkelem (elt_idx) = rfv;
+
+		  increment_index (result_idx, frozen_len);
+		}
+	    }
+	}
+    }
+  else if (idx_is_empty)
+    {
+      // Assignment to matrix with at least one empty index.
+
+      if (! rhs_is_empty || ! rhs_is_scalar)
+	{
+	  (*current_liboctave_error_handler)
+	    ("A([], []) = X: X must be an empty matrix or a scalar");
+
+	  retval = 0;
+	}
+    }
+  else if (lhs_dims.length () != rhs_dims.length ())
+    {
+      (*current_liboctave_error_handler)
+	("A(I) = X: X must be a scalar or a matrix with the same size as I");
       retval = 0;
     }
 

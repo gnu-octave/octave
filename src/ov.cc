@@ -323,10 +323,17 @@ octave_value::assign_op_as_string (assign_op op)
   return retval;
 }
 
-octave_value::octave_value (void)
-  : rep (new octave_base_value ())
+octave_value *
+octave_value::nil_rep (void) const
 {
-  rep->count = 1;
+  static octave_base_value *nr = new octave_base_value ();
+  return nr;
+}
+
+octave_value::octave_value (void)
+  : rep (nil_rep ())
+{
+  rep->count++;
 }
 
 octave_value::octave_value (short int i)
@@ -393,11 +400,15 @@ octave_value::octave_value (double d)
   rep->count = 1;
 }
 
-octave_value::octave_value (const Cell& c)
-  : rep (new octave_cell (c))
+octave_value::octave_value (const Cell& c, bool is_cs_list)
+  : rep (0)
 {
+  if (is_cs_list)
+    rep = new octave_cs_list (c);
+  else
+    rep = new octave_cell (c);
+
   rep->count = 1;
-  maybe_mutate ();
 }
 
 octave_value::octave_value (const Matrix& m)
@@ -408,7 +419,7 @@ octave_value::octave_value (const Matrix& m)
 }
 
 octave_value::octave_value (const NDArray& a)
-  : rep (new octave_double_nd_array (a))
+  : rep (new octave_matrix (a))
 {
   rep->count = 1;
   maybe_mutate ();
@@ -449,14 +460,12 @@ octave_value::octave_value (const ComplexMatrix& m)
   maybe_mutate ();
 }
 
-#if 0
-octave_value::octave_value (const ArrayN<Complex>& a)
-  : rep (new octave_complex_nd_array (a))
+octave_value::octave_value (const ComplexNDArray& a)
+  : rep (new octave_complex_matrix (a))
 {
   rep->count = 1;
   maybe_mutate ();
 }
-#endif
 
 octave_value::octave_value (const ComplexDiagMatrix& d)
   : rep (new octave_complex_matrix (d))
@@ -492,6 +501,13 @@ octave_value::octave_value (const boolMatrix& bm)
   maybe_mutate ();
 }
 
+octave_value::octave_value (const boolNDArray& bnda)
+  : rep (new octave_bool_matrix (bnda))
+{
+  rep->count = 1;
+  maybe_mutate ();
+}
+
 octave_value::octave_value (char c)
   : rep (new octave_char_matrix_str (c))
 {
@@ -521,13 +537,19 @@ octave_value::octave_value (const string_vector& s)
 }
 
 octave_value::octave_value (const charMatrix& chm, bool is_string)
-  : rep (0)
+  : rep (is_string
+	 ? new octave_char_matrix_str (chm)
+	 : new octave_char_matrix (chm))
 {
-  if (is_string)
-    rep = new octave_char_matrix_str (chm);
-  else
-    rep = new octave_char_matrix (chm);
+  rep->count = 1;
+  maybe_mutate ();
+}
 
+octave_value::octave_value (const charNDArray& chm, bool is_string)
+  : rep (is_string
+	 ? new octave_char_matrix_str (chm)
+	 : new octave_char_matrix (chm))
+{
   rep->count = 1;
   maybe_mutate ();
 }
@@ -571,10 +593,8 @@ octave_value::octave_value (const octave_fcn_handle& fh)
 }
 
 octave_value::octave_value (const octave_value_list& l, bool is_cs_list)
-  : rep (0)
+  : rep (is_cs_list ? new octave_cs_list (l) : new octave_list (l))
 {
-  rep = is_cs_list ? new octave_cs_list (l) : new octave_list (l);
-
   rep->count = 1;
 }
 
@@ -1751,7 +1771,6 @@ install_types (void)
   octave_scalar::register_type ();
   octave_complex::register_type ();
   octave_matrix::register_type ();
-  octave_double_nd_array::register_type ();
   octave_complex_matrix::register_type ();
   octave_range::register_type ();
   octave_bool::register_type ();

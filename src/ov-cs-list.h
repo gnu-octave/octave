@@ -56,6 +56,9 @@ public:
   octave_cs_list (const octave_value_list& l)
     : octave_list (l) { }
 
+  octave_cs_list (const Cell& c)
+    : octave_list (c) { }
+
   octave_cs_list (const octave_cs_list& l)
     : octave_list (l) { }
 

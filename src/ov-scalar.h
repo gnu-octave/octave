@@ -90,8 +90,10 @@ public:
     { return Matrix (1, 1, scalar); }
 
   NDArray double_nd_array_value (bool = false) const
-  { Array<int> temp (1, 1);
-      return NDArray (temp, double_value ()); }
+    {
+      dim_vector temp (1, 1);
+      return NDArray (temp, double_value ());
+    }
 
   Complex complex_value (bool = false) const { return scalar; }
 

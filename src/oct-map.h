@@ -29,6 +29,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <map>
 
+#include "Cell.h"
 #include "oct-obj.h"
 
 class string_vector;
@@ -38,15 +39,21 @@ Octave_map
 {
  public:
 
-  typedef std::map<std::string, octave_value_list>::iterator iterator;
-  typedef std::map<std::string, octave_value_list>::const_iterator const_iterator;
+  typedef std::map<std::string, Cell>::iterator iterator;
+  typedef std::map<std::string, Cell>::const_iterator const_iterator;
 
   Octave_map (void) : map (), array_len (0) { }
 
   Octave_map (const std::string& key, const octave_value& value)
     : map (), array_len (1)
       {
-	map[key] = octave_value_list (value);
+	map[key] = Cell (value);
+      }
+
+  Octave_map (const std::string& key, const Cell& vals)
+    : map (), array_len (vals.length ())
+      {
+	map[key] = vals;
       }
 
   Octave_map (const std::string& key, const octave_value_list& val_list)
@@ -75,9 +82,9 @@ Octave_map
 
   int empty (void) const { return map.empty (); }
 
-  octave_value_list& operator [] (const std::string& key) { return map[key]; }
+  Cell& operator [] (const std::string& key) { return map[key]; }
 
-  octave_value_list operator [] (const std::string& key) const;
+  Cell operator [] (const std::string& key) const;
 
   void del (const std::string& key)
     {
@@ -94,10 +101,10 @@ Octave_map
 
   std::string key (const_iterator p) const { return p->first; }
 
-  octave_value_list& contents (const_iterator p)
+  Cell& contents (const_iterator p)
     { return operator [] (key(p)); }
 
-  octave_value_list contents (const_iterator p) const
+  Cell contents (const_iterator p) const
     { return operator [] (key(p)); }
 
   const_iterator seek (const std::string& key) const { return map.find (key); }
@@ -115,19 +122,19 @@ Octave_map
 
   int array_length (void) const;
 
-  Octave_map& assign (const idx_vector& idx, const Octave_map& rhs);
+  Octave_map& assign (const octave_value_list& idx, const Octave_map& rhs);
 
-  Octave_map& assign (const idx_vector& idx, const std::string& key,
-		      const octave_value_list& rhs);
+  Octave_map& assign (const octave_value_list& idx, const std::string& key,
+		      const Cell& rhs);
 
-  Octave_map& assign (const std::string& key, const octave_value_list& rhs);
+  Octave_map& assign (const std::string& key, const Cell& rhs);
 
-  Octave_map index (idx_vector& idx);
+  Octave_map index (const octave_value_list& idx);
 
 private:
 
   // The map of names to values.
-  std::map<std::string, octave_value_list> map;
+  std::map<std::string, Cell> map;
 
   // The current size of this struct array;
   mutable int array_len;

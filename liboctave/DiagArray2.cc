@@ -53,7 +53,7 @@ T&
 DiagArray2<T>::checkelem (int r, int c)
 {
   static T foo (0);
-  if (r < 0 || c < 0 || r >= nr || c >= nc)
+  if (r < 0 || c < 0 || r >= dim1 () || c >= dim2 ())
     {
       (*current_liboctave_error_handler) ("range error in DiagArray2");
       return foo;
@@ -66,7 +66,7 @@ T&
 DiagArray2<T>::operator () (int r, int c)
 {
   static T foo (0);
-  if (r < 0 || c < 0 || r >= nr || c >= nc)
+  if (r < 0 || c < 0 || r >= dim1 () || c >= dim2 ())
     {
       (*current_liboctave_error_handler) ("range error in DiagArray2");
       return foo;
@@ -86,7 +86,7 @@ template <class T>
 T
 DiagArray2<T>::checkelem (int r, int c) const
 {
-  if (r < 0 || c < 0 || r >= nr || c >= nc)
+  if (r < 0 || c < 0 || r >= dim1 () || c >= dim2 ())
     {
       (*current_liboctave_error_handler) ("range error in DiagArray2");
       return T ();
@@ -98,7 +98,7 @@ template <class T>
 T
 DiagArray2<T>::operator () (int r, int c) const
 {
-  if (r < 0 || c < 0 || r >= nr || c >= nc)
+  if (r < 0 || c < 0 || r >= dim1 () || c >= dim2 ())
     {
       (*current_liboctave_error_handler) ("range error in DiagArray2");
       return T ();
@@ -142,8 +142,7 @@ DiagArray2<T>::resize (int r, int c)
 
   Array<T>::rep = new typename Array<T>::ArrayRep (new_len);
 
-  nr = r;
-  nc = c;
+  dimensions = dim_vector (r, c);
 
   if (old_data && old_len > 0)
     {
@@ -178,8 +177,7 @@ DiagArray2<T>::resize (int r, int c, const T& val)
 
   Array<T>::rep = new typename Array<T>::ArrayRep (new_len);
 
-  nr = r;
-  nc = c;
+  dimensions = dim_vector (r, c);
 
   int min_len = old_len < new_len ? old_len : new_len;
 

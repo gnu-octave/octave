@@ -48,21 +48,24 @@ class tree_walker;
 // Character matrix values.
 
 class
-octave_bool_matrix : public octave_base_matrix<boolMatrix>
+octave_bool_matrix : public octave_base_matrix<boolNDArray>
 {
 public:
 
   octave_bool_matrix (void)
-    : octave_base_matrix<boolMatrix> () { }
+    : octave_base_matrix<boolNDArray> () { }
+
+  octave_bool_matrix (const boolNDArray& bnda)
+    : octave_base_matrix<boolNDArray> (bnda) { }
 
   octave_bool_matrix (const boolMatrix& bm)
-    : octave_base_matrix<boolMatrix> (bm) { }
+    : octave_base_matrix<boolNDArray> (bm) { }
 
   octave_bool_matrix (const Array2<bool>& a)
-    : octave_base_matrix<boolMatrix> (a) { }
+    : octave_base_matrix<boolNDArray> (a) { }
 
   octave_bool_matrix (const octave_bool_matrix& bm)
-    : octave_base_matrix<boolMatrix> (bm) { }
+    : octave_base_matrix<boolNDArray> (bm) { }
 
   ~octave_bool_matrix (void) { }
 
@@ -73,7 +76,9 @@ public:
 
   octave_value *try_narrowing_conversion (void);
 
-  idx_vector index_vector (void) const { return idx_vector (matrix); }
+  // XXX FIXME XXX
+  idx_vector index_vector (void) const
+    { return idx_vector (matrix.matrix_value ()); }
 
   bool is_bool_matrix (void) const { return true; }
 
@@ -88,15 +93,16 @@ public:
   double scalar_value (bool frc_str_conv = false) const
     { return double_value (frc_str_conv); }
 
-  Matrix matrix_value (bool = false) const { return Matrix (matrix); }
+  Matrix matrix_value (bool = false) const
+    { return Matrix (matrix.matrix_value ()); }
 
   Complex complex_value (bool = false) const;
 
   ComplexMatrix complex_matrix_value (bool = false) const
-    { return ComplexMatrix (matrix); }
+    { return ComplexMatrix (matrix.matrix_value ( )); }
 
   boolMatrix bool_matrix_value (void) const
-    { return matrix; }
+    { return matrix.matrix_value (); }
 
   octave_value convert_to_str_internal (bool pad, bool force) const;
 

@@ -33,16 +33,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <iostream>
 
+#include "dim-vector.h"
 #include "lo-utils.h"
 
 class idx_vector;
-
-// For now, define this here if it is not already defined.  Not doing
-// this can result in bugs that are very hard to find.
-
-#ifndef HEAVYWEIGHT_INDEXING
-#define HEAVYWEIGHT_INDEXING 1
-#endif
 
 // One dimensional array class.  Handles the reference counting for
 // all the derived classes.
@@ -60,7 +54,9 @@ Array
 {
 protected:
 
-// The real representation of all arrays.
+  //--------------------------------------------------------------------
+  // The real representation of all arrays.
+  //--------------------------------------------------------------------
 
   class ArrayRep
   {
@@ -78,16 +74,28 @@ protected:
 
     explicit ArrayRep (int n) : data (new T [n]), len (n), count (1) { }
 
+    explicit ArrayRep (int n, const T& val)
+      : data (new T [n]), len (n), count (1)
+      {
+	fill (val);
+      }
+
     ArrayRep (const ArrayRep& a)
       : data (new T [a.len]), len (a.len), count (1)
-	{
-	  for (int i = 0; i < len; i++)
-	    data[i] = a.data[i];
-	}
+      {
+        for (int i = 0; i < len; i++)
+	  data[i] = a.data[i];
+      }
 
     ~ArrayRep (void) { delete [] data; }
 
     int length (void) const { return len; }
+
+    void fill (const T& val)
+      {
+	for (int i = 0; i < len; i++)
+	  data[i] = val;
+      }
 
     T& elem (int n) { return data[n]; }
 
@@ -99,6 +107,8 @@ protected:
       }
   };
 
+  //--------------------------------------------------------------------
+
   void make_unique (void)
     {
       if (rep->count > 1)
@@ -108,79 +118,154 @@ protected:
 	}
     }
 
-#ifdef HEAVYWEIGHT_INDEXING
-  idx_vector *idx;
-  int max_indices;
-  int idx_count;
-#endif
-
-protected:
+  void make_unique (const T& val)
+    {
+      if (rep->count > 1)
+	{
+	  --rep->count;
+	  rep = new ArrayRep (rep->length (), val);
+	}
+      else
+	rep->fill (val);
+    }
 
   typename Array<T>::ArrayRep *rep;
 
-  Array (T *d, int l)
-    {
-      rep = new typename Array<T>::ArrayRep (d, l);
+  dim_vector dimensions;
 
-#ifdef HEAVYWEIGHT_INDEXING
-      idx = 0;
-      max_indices = 1;
-      idx_count = 0;
-#endif
+  idx_vector *idx;
+  int idx_count;
+
+  Array (T *d, int n)
+    : rep (new typename Array<T>::ArrayRep (d, n)), dimensions (n),
+      idx (0), idx_count (0) { }
+
+  Array (T *d, const dim_vector& dims)
+    : rep (new typename Array<T>::ArrayRep (d, get_size (dims))),
+      dimensions (dims), idx (0), idx_count (0) { }
+
+private:
+
+  Array<T>::ArrayRep *nil_rep (void) const
+    {
+      static typename Array<T>::ArrayRep *nr
+	= new typename Array<T>::ArrayRep ();
+
+      return nr;
     }
 
 public:
 
   Array (void)
-    {
-      rep = new typename Array<T>::ArrayRep ();
-
-#ifdef HEAVYWEIGHT_INDEXING
-      idx = 0;
-      max_indices = 1;
-      idx_count = 0;
-#endif
-    }
+    : rep (nil_rep ()), dimensions (),
+      idx (0), idx_count (0) { rep->count++; }
 
   explicit Array (int n)
-    {
-      rep = new typename Array<T>::ArrayRep (n);
+    : rep (new typename Array<T>::ArrayRep (n)), dimensions (n),
+      idx (0), idx_count (0) { }
 
-#ifdef HEAVYWEIGHT_INDEXING
-      idx = 0;
-      max_indices = 1;
-      idx_count = 0;
-#endif
+  explicit Array (int n, const T& val)
+    : rep (new typename Array<T>::ArrayRep (n)), dimensions (n),
+      idx (0), idx_count (0)
+    {
+      fill (val);
     }
 
-  Array (int n, const T& val);
-
   Array (const Array<T>& a)
+    : rep (a.rep), dimensions (a.dimensions), idx (0), idx_count (0)
     {
-      rep = a.rep;
       rep->count++;
+    }
 
-#ifdef HEAVYWEIGHT_INDEXING
-      max_indices = a.max_indices;
-      idx_count = 0;
-      idx = 0;
-#endif
+public:
+
+  Array (const dim_vector& dims)
+    : rep (new typename Array<T>::ArrayRep (get_size (dims))),
+      dimensions (dims), idx (0), idx_count (0) { }
+
+  Array (const dim_vector& dims, const T& val)
+    : rep (new typename Array<T>::ArrayRep (get_size (dims))),
+      dimensions (dims), idx (0), idx_count (0)
+    {
+      fill (val);
+    }
+
+  Array (const Array<T>& a, const dim_vector& dims)
+    : rep (a.rep), dimensions (dims), idx (0), idx_count (0)
+    {
+      rep->count++;
     }
 
   ~Array (void);
 
-  Array<T>& operator = (const Array<T>& a);
+  Array<T>& operator = (const Array<T>& a)
+    {
+      if (this != &a)
+	{
+	  if (--rep->count <= 0)
+	    delete rep;
+
+	  rep = a.rep;
+	  rep->count++;
+
+	  dimensions = a.dimensions;
+	}
+
+      idx_count = 0;
+      idx = 0;
+
+      return *this;
+    }
+
+  void fill (const T& val) { make_unique (val); }
 
   int capacity (void) const { return rep->length (); }
-  int length (void) const { return rep->length (); }
+  int length (void) const { return capacity (); }
+  int nelem (void) const { return capacity (); }
+
+  int dim1 (void) const { return dimensions(0); }
+  int dim2 (void) const { return dimensions(1); }
+  int dim3 (void) const { return dimensions(2); }
+
+  int rows (void) const { return dim1 (); }
+  int cols (void) const { return dim2 (); }
+  int columns (void) const { return dim2 (); }
+  int pages (void) const { return dim3 (); }
+
+  dim_vector dims (void) const { return dimensions; }
+
+  static int get_size (int r, int c);
+  static int get_size (int r, int c, int p);
+  static int get_size (const dim_vector& dims);
 
   T range_error (const char *fcn, int n) const;
   T& range_error (const char *fcn, int n);
+
+  T range_error (const char *fcn, int i, int j) const;
+  T& range_error (const char *fcn, int i, int j);
+
+  T range_error (const char *fcn, int i, int j, int k) const;
+  T& range_error (const char *fcn, int i, int j, int k);
+
+  T range_error (const char *fcn, const Array<int>& ra_idx) const;
+  T& range_error (const char *fcn, const Array<int>& ra_idx);
 
   // No checking, even for multiple references, ever.
 
   T& xelem (int n) { return rep->elem (n); }
   T xelem (int n) const { return rep->elem (n); }
+
+  T& xelem (int i, int j) { return xelem (dim1()*j+i); }
+  T xelem (int i, int j) const { return xelem (dim1()*j+i); }
+
+  T& xelem (int i, int j, int k) { return xelem (i, dim2()*k+j); }
+  T xelem (int i, int j, int k) const { return xelem (i, dim2()*k+j); }
+
+  T& xelem (const Array<int>& ra_idx)
+    { return xelem (compute_index (ra_idx)); }
+
+  T xelem (const Array<int>& ra_idx) const
+    { return xelem (compute_index (ra_idx)); }
 
   // XXX FIXME XXX -- would be nice to fix this so that we don't
   // unnecessarily force a copy, but that is not so easy, and I see no
@@ -197,16 +282,55 @@ public:
 	}
     }
 
+  T& checkelem (int i, int j)
+    {
+      if (i < 0 || j < 0 || i >= dim1 () || j >= dim2 ())
+	return range_error ("T& Array<T>::checkelem", i, j);
+      else
+	return elem (dim1()*j+i);
+    }
+
+  T& checkelem (int i, int j, int k)
+    {
+      if (i < 0 || j < 0 || k < 0 || i >= dim1 () || j >= dim2 () || k >= dim3 ())
+	return range_error ("T& Array<T>::checkelem", i, j, k);
+      else
+	return elem (i, dim2()*k+j);
+    }
+
+  T& checkelem (const Array<int>& ra_idx)
+    {
+      int i = compute_index (ra_idx);
+
+      if (i < 0)
+	return range_error ("T& Array<T>::checkelem", ra_idx);
+      else
+	return elem (i);
+    }
+
   T& elem (int n)
     {
       make_unique ();
       return xelem (n);
     }
 
+  T& elem (int i, int j) { return elem (dim1()*j+i); }
+
+  T& elem (int i, int j, int k) { return elem (i, dim2()*k+j); }
+
+  T& elem (const Array<int>& ra_idx)
+    { return Array<T>::elem (compute_index (ra_idx)); }
+
 #if defined (BOUNDS_CHECKING)
   T& operator () (int n) { return checkelem (n); }
+  T& operator () (int i, int j) { return checkelem (i, j); }
+  T& operator () (int i, int j, int k) { return checkelem (i, j, k); }
+  T& operator () (const Array<int>& ra_idx) { return checkelem (ra_idx); }
 #else
   T& operator () (int n) { return elem (n); }
+  T& operator () (int i, int j) { return elem (i, j); }
+  T& operator () (int i, int j, int k) { return elem (i, j, k); }
+  T& operator () (const Array<int>& ra_idx) { return elem (ra_idx); }
 #endif
 
   T checkelem (int n) const
@@ -217,16 +341,91 @@ public:
 	return xelem (n);
     }
 
+  T checkelem (int i, int j) const
+    {
+      if (i < 0 || j < 0 || i >= dim1 () || j >= dim2 ())
+	return range_error ("T Array<T>::checkelem", i, j);
+      else
+	return elem (dim1()*j+i);
+    }
+
+  T checkelem (int i, int j, int k) const
+    {
+      if (i < 0 || j < 0 || k < 0 || i >= dim1 () || j >= dim2 () || k >= dim3 ())
+	return range_error ("T Array<T>::checkelem", i, j, k);
+      else
+	return Array<T>::elem (i, Array<T>::dim1()*k+j);
+    }
+
+  T checkelem (const Array<int>& ra_idx) const
+    {
+      int i = compute_index (ra_idx);
+
+      if (i < 0)
+	return range_error ("T Array<T>::checkelem", ra_idx);
+      else
+	return Array<T>::elem (i);
+    }
+
   T elem (int n) const { return xelem (n); }
+
+  T elem (int i, int j) const { return elem (dim1()*j+i); }
+
+  T elem (int i, int j, int k) const { return elem (i, dim2()*k+j); }
+
+  T elem (const Array<int>& ra_idx) const
+    { return Array<T>::elem (compute_index (ra_idx)); }
 
 #if defined (BOUNDS_CHECKING)
   T operator () (int n) const { return checkelem (n); }
+  T operator () (int i, int j) const { return checkelem (i, j); }
+  T operator () (int i, int j, int k) const { return checkelem (i, j, k); }
+  T operator () (const Array<int>& ra_idx) const { return checkelem (ra_idx); }
 #else
   T operator () (int n) const { return elem (n); }
+  T operator () (int i, int j) const { return elem (i, j); }
+  T operator () (int i, int j, int k) const { return elem (i, j, k); }
+  T operator () (const Array<int>& ra_idx) const { return elem (ra_idx); }
 #endif
 
-  void resize (int n);
-  void resize (int n, const T& val);
+  int compute_index (const Array<int>& ra_idx) const;
+
+protected:
+
+  void resize_no_fill (int n);
+
+  void resize_no_fill (int r, int c);
+
+  void resize_no_fill (int r, int c, int p);
+
+  void resize_no_fill (const dim_vector& dims);
+
+  void resize_and_fill (int n, const T& val);
+
+  void resize_and_fill (int r, int c, const T& val);
+
+  void resize_and_fill (int r, int c, int p, const T& val);
+
+  void resize_and_fill (const dim_vector& dims, const T& val);
+
+public:
+
+  void resize (int n) { resize_no_fill (n); }
+
+  //  void resize (int n, const T& val) { resize_and_fill (n, val); }
+
+  void resize (const dim_vector& dims) { resize_no_fill (dims); }
+
+  void resize (const dim_vector& dims, const T& val)
+    { resize_and_fill (dims, val); }
+
+  Array<T>& insert (const Array<T>& a, int r, int c);
+
+  Array<T>& insert (const Array<T>& a, const Array<int>& dims);
+
+  bool is_square (void) const { return (dim1 () == dim2 ()); }
+
+  Array<T> transpose (void) const;
 
   const T *data (void) const { return rep->data; }
 
@@ -243,9 +442,7 @@ public:
       return *this;
     }
 
-#ifdef HEAVYWEIGHT_INDEXING
-
-  void set_max_indices (int mi) { max_indices = mi; }
+  int ndims (void) const { return dimensions.length (); }
 
   void clear_index (void);
 
@@ -257,28 +454,60 @@ public:
 
   void maybe_delete_elements (idx_vector& i);
 
+  void maybe_delete_elements_1 (idx_vector& i);
+
+  void maybe_delete_elements_2 (idx_vector& i);
+
+  void maybe_delete_elements (idx_vector& i, idx_vector& j);
+
+  void maybe_delete_elements (idx_vector& i, idx_vector& j, idx_vector& k);
+
+  void maybe_delete_elements (Array<idx_vector>& ra_idx, const T& rfv);
+
+  void maybe_delete_dims (void);
+
   Array<T> value (void);
 
   Array<T> index (idx_vector& i, int resize_ok = 0,
 		  const T& rfv = resize_fill_value (T ())) const;
 
-#endif
+  Array<T> index1 (idx_vector& i, int resize_ok = 0,
+		   const T& rfv = resize_fill_value (T ())) const;
+
+  Array<T> index2 (idx_vector& i, int resize_ok = 0,
+		   const T& rfv = resize_fill_value (T ())) const;
+
+  Array<T> index (idx_vector& i, idx_vector& j, int resize_ok = 0,
+		  const T& rfv = resize_fill_value (T ())) const;
+
+  Array<T> index (Array<idx_vector>& ra_idx, int resize_ok = 0,
+		  const T& rfv = resize_fill_value (T ())) const;
 
   //  static T resize_fill_value (void) { return T (); }
 
   void print_info (std::ostream& os, const std::string& prefix) const;
+
+  template <class LT, class RT>
+  friend int
+  assign (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv);
+
+  template <class LT, class RT>
+  friend int
+  assign1 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv);
+
+  template <class LT, class RT>
+  friend int
+  assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv);
+
+  template <class LT, class RT>
+  friend int
+  assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv);
 };
-
-template <class LT, class RT>
-int
-assign (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv);
-
 
 template <class LT, class RT>
 int
 assign (Array<LT>& lhs, const Array<RT>& rhs)
 {
-  //  return assign (lhs, rhs, Array<LT>::resize_fill_value ());
   return assign (lhs, rhs, resize_fill_value (LT ()));
 }
 

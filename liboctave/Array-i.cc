@@ -44,6 +44,8 @@ template int assign (Array<int>&, const Array<char>&, const int&);
 
 template class Array2<int>;
 
+#if 0
+
 template int assign (Array2<int>&, const Array2<int>&);
 template int assign (Array2<int>&, const Array2<short>&);
 template int assign (Array2<int>&, const Array2<char>&);
@@ -51,6 +53,8 @@ template int assign (Array2<int>&, const Array2<char>&);
 template int assign (Array2<int>&, const Array2<int>&, const int&);
 template int assign (Array2<int>&, const Array2<short>&, const int&);
 template int assign (Array2<int>&, const Array2<char>&, const int&);
+
+#endif
 
 #include "DiagArray2.h"
 #include "DiagArray2.cc"

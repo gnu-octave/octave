@@ -76,7 +76,7 @@ octave_char_matrix_str::do_index_op (const octave_value_list& idx,
 	idx_vector i = idx (0).index_vector ();
 	idx_vector j = idx (1).index_vector ();
 
-	retval = octave_value (charMatrix (matrix.index (i, j, resize_ok)),
+	retval = octave_value (charNDArray (matrix.index (i, j, resize_ok)),
 			       true);
       }
       break;
@@ -85,12 +85,21 @@ octave_char_matrix_str::do_index_op (const octave_value_list& idx,
       {
 	idx_vector i = idx (0).index_vector ();
 
-	retval = octave_value (charMatrix (matrix.index (i, resize_ok)), true);
+	retval = octave_value (charNDArray (matrix.index (i, resize_ok)),
+			       true);
       }
       break;
 
     default:
-      error ("invalid number of indices (%d) for matrix value", len);
+      {
+	Array<idx_vector> idx_vec (len);
+
+	for (int i = 0; i < len; i++)
+	  idx_vec(i) = idx(i).index_vector ();
+
+	retval = octave_value (charNDArray (matrix.index (idx_vec, resize_ok)),
+			       true);
+      }
       break;
     }
 
@@ -108,35 +117,10 @@ octave_char_matrix_str::assign (const octave_value_list& idx,
   if (tmp.rows () == 1 && tmp.columns () == 0)
     tmp.resize (0, 0);    
 
-  switch (len)
-    {
-    case 2:
-      {
-	idx_vector i = idx (0).index_vector ();
-	idx_vector j = idx (1).index_vector ();
+  for (int i = 0; i < len; i++)
+    matrix.set_index (idx(i).index_vector ());
 
-	matrix.set_index (i);
-	matrix.set_index (j);
-
-	::assign (matrix, tmp, Vstring_fill_char);
-      }
-      break;
-
-    case 1:
-      {
-	idx_vector i = idx (0).index_vector ();
-
-	matrix.set_index (i);
-
-	::assign (matrix, tmp, Vstring_fill_char);
-      }
-      break;
-
-    default:
-      error ("invalid number of indices (%d) for indexed matrix assignment",
-	     len);
-      break;
-    }
+  ::assign (matrix, tmp, Vstring_fill_char);
 }
 
 bool
@@ -155,7 +139,7 @@ octave_char_matrix_str::matrix_value (bool force_string_conv) const
   if (! force_string_conv && Vwarn_str_to_num)
     gripe_implicit_conversion ("string", "real matrix");
 
-  retval = Matrix (matrix);
+  retval = Matrix (matrix.matrix_value ());
 
   return retval;
 }
@@ -163,12 +147,21 @@ octave_char_matrix_str::matrix_value (bool force_string_conv) const
 string_vector
 octave_char_matrix_str::all_strings (bool, bool) const
 {
-  int n = matrix.rows ();
+  string_vector retval;
 
-  string_vector retval (n);
+  if (matrix.ndims () == 2)
+    {
+      charMatrix chm = matrix.matrix_value ();
 
-  for (int i = 0; i < n; i++)
-    retval[i] = matrix.row_as_string (i, true);
+      int n = chm.rows ();
+
+      retval.resize (n);
+
+      for (int i = 0; i < n; i++)
+	retval[i] = chm.row_as_string (i, true);
+    }
+  else
+    error ("invalid conversion of charNDArray to string_vector");
 
   return retval;
 }
@@ -176,7 +169,18 @@ octave_char_matrix_str::all_strings (bool, bool) const
 std::string
 octave_char_matrix_str::string_value (bool) const
 {
-  return matrix.row_as_string (0);  // XXX FIXME??? XXX
+  std::string retval;
+
+  if (matrix.ndims () == 2)
+    {
+      charMatrix chm = matrix.matrix_value ();
+
+      retval = chm.row_as_string (0);  // XXX FIXME??? XXX
+    }
+  else
+    error ("invalid conversion of charNDArray to string");
+
+  return retval;
 }
 
 void

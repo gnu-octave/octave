@@ -196,7 +196,6 @@ do_test ones-1.m
 
 set test ones-2
 set prog_output "^ans = 1";
-setup_xfail *-*-*
 do_test ones-2.m
 
 set test zeros-1
@@ -205,7 +204,6 @@ do_test zeros-1.m
 
 set test zeros-2
 set prog_output "^ans = 1"
-setup_xfail *-*-*
 do_test zeros-2.m
 
 set test rand-1

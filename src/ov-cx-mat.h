@@ -49,27 +49,30 @@ class tree_walker;
 // Complex matrix values.
 
 class
-octave_complex_matrix : public octave_base_matrix<ComplexMatrix>
+octave_complex_matrix : public octave_base_matrix<ComplexNDArray>
 {
 public:
 
   octave_complex_matrix (void)
-    : octave_base_matrix<ComplexMatrix> () { }
+    : octave_base_matrix<ComplexNDArray> () { }
+
+  octave_complex_matrix (const ComplexNDArray& m)
+    : octave_base_matrix<ComplexNDArray> (m) { }
 
   octave_complex_matrix (const ComplexMatrix& m)
-    : octave_base_matrix<ComplexMatrix> (m) { }
+    : octave_base_matrix<ComplexNDArray> (m) { }
 
   octave_complex_matrix (const ComplexDiagMatrix& d)
-    : octave_base_matrix<ComplexMatrix> (ComplexMatrix (d)) { }
+    : octave_base_matrix<ComplexNDArray> (ComplexMatrix (d)) { }
 
   octave_complex_matrix (const ComplexRowVector& v)
-    : octave_base_matrix<ComplexMatrix> (ComplexMatrix (v)) { }
+    : octave_base_matrix<ComplexNDArray> (ComplexMatrix (v)) { }
 
   octave_complex_matrix (const ComplexColumnVector& v)
-    : octave_base_matrix<ComplexMatrix> (ComplexMatrix (v)) { }
+    : octave_base_matrix<ComplexNDArray> (ComplexMatrix (v)) { }
 
   octave_complex_matrix (const octave_complex_matrix& cm)
-    : octave_base_matrix<ComplexMatrix> (cm) { }
+    : octave_base_matrix<ComplexNDArray> (cm) { }
 
   ~octave_complex_matrix (void) { }
 

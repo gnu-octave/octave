@@ -91,13 +91,16 @@ public:
   int rows (void) const { return matrix.rows (); }
   int columns (void) const { return matrix.columns (); }
 
-  int length (void) const
-  {
-    int r = rows ();
-    int c = columns ();
+  dim_vector dims (void) const { return matrix.dims (); }
 
-    return (r == 0 || c == 0) ? 0 : ((r > c) ? r : c);
-  }
+  // XXX FIXME XXX 
+  int length (void) const
+    {
+      int r = rows ();
+      int c = columns ();
+
+      return (r == 0 || c == 0) ? 0 : ((r > c) ? r : c);
+    }
 
   octave_value all (int dim = 0) const { return matrix.all (dim); }
   octave_value any (int dim = 0) const { return matrix.any (dim); }

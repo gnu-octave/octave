@@ -40,9 +40,20 @@ template int assign (Array<char>&, const Array<char>&, const char&);
 
 template class Array2<char>;
 
+#if 0
+
 template int assign (Array2<char>&, const Array2<char>&);
 
 template int assign (Array2<char>&, const Array2<char>&, const char&);
+
+#endif
+
+#include "ArrayN.h"
+#include "ArrayN.cc"
+
+template class ArrayN<char>;
+
+template std::ostream& operator << (std::ostream&, const ArrayN<char>&);
 
 #include "DiagArray2.h"
 #include "DiagArray2.cc"

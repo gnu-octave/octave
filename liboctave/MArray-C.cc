@@ -42,6 +42,13 @@ template class MArray2<Complex>;
 
 INSTANTIATE_MARRAY2_FRIENDS (Complex)
 
+#include "MArrayN.h"
+#include "MArrayN.cc"
+
+template class MArrayN<Complex>;
+
+INSTANTIATE_MARRAYN_FRIENDS (Complex)
+
 #include "MDiagArray2.h"
 #include "MDiagArray2.cc"
 

@@ -49,27 +49,30 @@ class tree_walker;
 // Real matrix values.
 
 class
-octave_matrix : public octave_base_matrix<Matrix>
+octave_matrix : public octave_base_matrix<NDArray>
 {
 public:
 
   octave_matrix (void)
-    : octave_base_matrix<Matrix> () { }
+    : octave_base_matrix<NDArray> () { }
 
   octave_matrix (const Matrix& m)
-    : octave_base_matrix<Matrix> (m) { }
+    : octave_base_matrix<NDArray> (m) { }
+
+  octave_matrix (const NDArray& nda)
+    : octave_base_matrix<NDArray> (nda) { }
 
   octave_matrix (const DiagMatrix& d)
-    : octave_base_matrix<Matrix> (Matrix (d)) { }
+    : octave_base_matrix<NDArray> (Matrix (d)) { }
 
   octave_matrix (const RowVector& v)
-    : octave_base_matrix<Matrix> (Matrix (v)) { }
+    : octave_base_matrix<NDArray> (Matrix (v)) { }
 
   octave_matrix (const ColumnVector& v)
-    : octave_base_matrix<Matrix> (Matrix (v)) { }
+    : octave_base_matrix<NDArray> (Matrix (v)) { }
 
   octave_matrix (const octave_matrix& m)
-    : octave_base_matrix<Matrix> (m) { }
+    : octave_base_matrix<NDArray> (m) { }
 
   ~octave_matrix (void) { }
 
@@ -78,7 +81,8 @@ public:
 
   octave_value *try_narrowing_conversion (void);
 
-  idx_vector index_vector (void) const { return idx_vector (matrix); }
+  // XXX FIXME XXX
+  idx_vector index_vector (void) const { return idx_vector (matrix_value ()); }
 
   bool is_real_matrix (void) const { return true; }
 
@@ -91,15 +95,14 @@ public:
   double scalar_value (bool frc_str_conv = false) const
     { return double_value (frc_str_conv); }
 
-  Matrix matrix_value (bool = false) const { return matrix; }
+  Matrix matrix_value (bool = false) const;
 
   Complex complex_value (bool = false) const;
 
-  ComplexMatrix complex_matrix_value (bool = false) const
-    { return ComplexMatrix (matrix); }
+  ComplexMatrix complex_matrix_value (bool = false) const;
 
   NDArray double_nd_array_value (bool = false) const
-    { return NDArray (matrix); }
+    { return matrix; }
 
   void increment (void) { matrix += 1.0; }
 

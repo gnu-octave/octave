@@ -31,7 +31,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cassert>
 #include <cstdlib>
 
-#include "Array2.h"
+#include "Array.h"
 #include "lo-error.h"
 
 class idx_vector;
@@ -40,132 +40,49 @@ class idx_vector;
 
 template <class T>
 class
-Array3 : public Array2<T>
+Array3 : public Array<T>
 {
 protected:
 
-  int d3;
+  static int get_size (int r, int c, int p)
+    { return Array<T>::get_size (r, c, p); }
 
-  Array3 (T *d, int n, int m, int k) : Array2<T> (d, n, get_size (m, k))
-    {
-      Array2<T>::d2 = m;
-      d3 = k;
-      set_max_indices (3);
-    }
+  Array3 (T *d, int r, int c, int p) : Array<T> (d, dim_vector (r, c, p)) { }
 
 public:
 
-  Array3 (void) : Array2<T> ()
-    {
-      Array2<T>::d2 = 0;
-      d3 = 0;
-      set_max_indices (3);
-    }
+  Array3 (void) : Array<T> (dim_vector (0, 0, 0)) { }
 
-  Array3 (int n, int m, int k) : Array2<T> (n, get_size (m, k))
-    {
-      Array2<T>::d2 = m;
-      d3 = k;
-      set_max_indices (3);
-    }
+  Array3 (int r, int c, int p) : Array<T> (dim_vector (r, c, p)) { }
 
-  Array3 (int n, int m, int k, const T& val) : Array2<T> (n, m*k, val)
-    {
-      Array2<T>::d2 = m;
-      d3 = k;
-      set_max_indices (3);
-    }
+  Array3 (int r, int c, int p, const T& val)
+    : Array<T> (dim_vector (r, c, p), val) { }
 
-  Array3 (const Array3<T>& a) : Array2<T> (a)
-    {
-      Array2<T>::d2 = a.d2;
-      d3 = a.d3;
-      set_max_indices (3);
-    }
+  Array3 (const Array3<T>& a)
+    : Array<T> (a, a.dims ()) { }
+
+  Array3 (const Array<T>& a, int r, int c, int p)
+    : Array<T> (a, dim_vector (r, c, p)) { }
 
   ~Array3 (void) { }
 
   Array3<T>& operator = (const Array3<T>& a)
     {
-      if (this != &a && Array<T>::rep != a.rep)
+      if (this != &a)
 	{
 	  Array<T>::operator = (a);
-	  Array2<T>::d1 = a.d1;
-	  Array2<T>::d2 = a.d2;
-	  d3 = a.d3;
+
+	  dimensions = a.dimensions;
 	}
 
       return *this;
     }
 
-  int dim3 (void) const { return d3; }
+  void resize (int r, int c, int p) { resize_no_fill (r, c, p); }
 
-  // No checking of any kind, ever.
-
-  T& xelem (int i, int j, int k) { return Array2<T>::xelem (i, Array2<T>::d2*k+j); }
-  T xelem (int i, int j, int k) const { return Array2<T>::xelem (i, Array2<T>::d2*k+j); }
-
-  // Note that the following element selection methods don't use
-  // xelem() because they need to make use of the code in
-  // Array<T>::elem() that checks the reference count.
-
-  T& checkelem (int i, int j, int k)
-    {
-      if (i < 0 || j < 0 || k < 0 || i >= Array2<T>::d1 || j >= Array2<T>::d2 || k >= d3)
-	{
-	  (*current_liboctave_error_handler) ("range error in Array3");
-	  static T foo;
-	  return foo;
-	}
-      return Array2<T>::elem (i, Array2<T>::d2*k+j);
-    }
-
-  T& elem (int i, int j, int k) { return Array2<T>::elem (i, Array2<T>::d2*k+j); }
-
-#if defined (BOUNDS_CHECKING)
-  T& operator () (int i, int j, int k) { return checkelem (i, j, k); }
-#else
-  T& operator () (int i, int j, int k) { return elem (i, j, k); }
-#endif
-
-  T checkelem (int i, int j, int k) const
-    {
-      if (i < 0 || j < 0 || k < 0 || i >= Array2<T>::d1 || j >= Array2<T>::d2 || k >= d3)
-	{
-	  (*current_liboctave_error_handler) ("range error in Array3");
-	  return T ();
-	}
-      return Array2<T>::elem (i, Array2<T>::d1*k+j);
-    }
-
-  T elem (int i, int j, int k) const { return Array2<T>::elem (i, Array2<T>::d2*k+j); }
-
-#if defined (BOUNDS_CHECKING)
-  T operator () (int i, int j, int k) const { return checkelem (i, j, k); }
-#else
-  T operator () (int i, int j, int k) const { return elem (i, j, k); }
-#endif
-
-  void resize (int n, int m, int k);
-  void resize (int n, int m, int k, const T& val);
-
-#ifdef HEAVYWEIGHT_INDEXING
-  void maybe_delete_elements (idx_vector& i, idx_vector& j, idx_vector& k);
-
-  Array3<T> value (void);
-#endif
+  void resize (int r, int c, int p, const T& val)
+    { resize_and_fill (r, c, p, val); }
 };
-
-template <class LT, class RT>
-int
-assign (Array3<LT>& lhs, const Array3<RT>& rhs, const LT& rfv);
-
-template <class LT, class RT>
-int
-assign (Array3<LT>& lhs, const Array3<RT>& rhs)
-{
-  return assign (lhs, rhs, static_cast<LT> (0));
-}
 
 #endif
 

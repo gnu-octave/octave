@@ -46,6 +46,8 @@ template int assign (Array<double>&, const Array<char>&, const double&);
 
 template class Array2<double>;
 
+#if 0
+
 template int assign (Array2<double>&, const Array2<double>&);
 template int assign (Array2<double>&, const Array2<int>&);
 template int assign (Array2<double>&, const Array2<short>&);
@@ -56,10 +58,14 @@ template int assign (Array2<double>&, const Array2<int>&, const double&);
 template int assign (Array2<double>&, const Array2<short>&, const double&);
 template int assign (Array2<double>&, const Array2<char>&, const double&);
 
+#endif
+
 #include "ArrayN.h"
 #include "ArrayN.cc"
 
 template class ArrayN<double>;
+
+#if 0
 
 template int assign (ArrayN<double>&, const ArrayN<double>&);
 template int assign (ArrayN<double>&, const ArrayN<int>&);
@@ -70,6 +76,8 @@ template int assign (ArrayN<double>&, const ArrayN<double>&, const double&);
 template int assign (ArrayN<double>&, const ArrayN<int>&, const double&);
 template int assign (ArrayN<double>&, const ArrayN<short>&, const double&);
 template int assign (ArrayN<double>&, const ArrayN<char>&, const double&);
+
+#endif
 
 template std::ostream& operator << (std::ostream&, const ArrayN<double>&);
 

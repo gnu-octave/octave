@@ -34,12 +34,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-map.h"
 #include "utils.h"
 
-octave_value_list
+Cell
 Octave_map::operator [] (const std::string& key) const
 {
   const_iterator p = seek (key);
 
-  return p != end () ? p->second : octave_value_list ();
+  return p != end () ? p->second : Cell ();
 }
 
 string_vector
@@ -94,7 +94,7 @@ equiv_keys (const Octave_map& a, const Octave_map& b)
 }
 
 Octave_map&
-Octave_map::assign (const idx_vector& idx, const Octave_map& rhs)
+Octave_map::assign (const octave_value_list& idx, const Octave_map& rhs)
 {
   string_vector t_keys = empty () ? rhs.keys () : equiv_keys (*this, rhs);
 
@@ -106,7 +106,7 @@ Octave_map::assign (const idx_vector& idx, const Octave_map& rhs)
 	{
 	  std::string key = t_keys[i];
 
-	  octave_value_list t_rhs = rhs[key];
+	  Cell t_rhs = rhs[key];
 
 	  assign (idx, key, t_rhs);
 
@@ -121,10 +121,10 @@ Octave_map::assign (const idx_vector& idx, const Octave_map& rhs)
 }
 
 Octave_map&
-Octave_map::assign (const idx_vector& idx, const std::string& key,
-		    const octave_value_list& rhs)
+Octave_map::assign (const octave_value_list& idx, const std::string& key,
+		    const Cell& rhs)
 {
-  octave_value_list tmp = map[key];
+  Cell tmp = map[key];
 
   octave_value fill_value = Matrix ();
 
@@ -155,13 +155,13 @@ Octave_map::assign (const idx_vector& idx, const std::string& key,
 }
 
 Octave_map&
-Octave_map::assign (const std::string& key, const octave_value_list& rhs)
+Octave_map::assign (const std::string& key, const Cell& rhs)
 {
   if (empty ())
     map[key] = rhs;
   else
     {
-      octave_value_list tmp = contents (begin ());
+      Cell tmp = contents (begin ());
 
       if (tmp.length () == rhs.length ())
 	map[key] = rhs;
@@ -173,13 +173,13 @@ Octave_map::assign (const std::string& key, const octave_value_list& rhs)
 }
 
 Octave_map
-Octave_map::index (idx_vector& idx)
+Octave_map::index (const octave_value_list& idx)
 {
   Octave_map retval;
 
   for (iterator p = begin (); p != end (); p++)
     {
-      octave_value_list tmp = contents(p).index (idx);
+      Cell tmp = contents(p).index (idx);
 
       if (error_state)
 	break;

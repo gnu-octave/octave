@@ -40,6 +40,13 @@ template class MArray2<double>;
 
 INSTANTIATE_MARRAY2_FRIENDS (double)
 
+#include "MArrayN.h"
+#include "MArrayN.cc"
+
+template class MArrayN<double>;
+
+INSTANTIATE_MARRAYN_FRIENDS (double)
+
 #include "MDiagArray2.h"
 #include "MDiagArray2.cc"
 

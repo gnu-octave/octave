@@ -1,3 +1,43 @@
+2003-09-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov.h (octave_value::dim_vector): New function.
+
+	* ov.h, ov.cc (octave_value::octave_value (const Cell&)):
+	New arg, is_cs_list.
+	(octave_value::octave_value (const NDArray&)):
+	Create octave_matrix object, not octave_double_nd_array object.
+	(octave_value::octave_value (const ComplexNDArray&),
+	octave_value::octave_value (const boolNDArray&),
+	octave_value (const charNDArray&, bool)): New constructors.
+
+	* ov.h, ov.cc (octave_value::nil_rep): New function.
+	(octave_value::octave_value (void)): Use it to initialize empty
+	octave_value objects.
+
+	* ov-list.h, ov-list.cc (octave_list::octave_list (const Cell&)):
+	New constructor.
+	* ov-cs-list.h (octave_cs_list::octave_cs_list (const Cell&)):
+	Likewise.
+
+	* data.cc (Fsize): Handle N-d objects.
+
+	* pr-output.cc (octave_print_internal): New versions for NDArray,
+	ComplexNDArray, boolNDArray, and charNDArray objects.
+	* pr-output.h: Provide decls.
+
+	* ov-re-nd-array.h, ov-re-nd-array.cc: Delete.
+
+	* Cell.h, Cell.cc, ov-base-mat.h, ov-base-mat.cc, ov-bool-mat.h,
+	ov-bool-mat.cc, ov-ch-mat.h, ov-ch-mat.cc, ov-cx-mat.h,
+	ov-cx-mat.cc, ov-re-mat.h, ov-re-mat.cc, ov-str-mat.h,
+	ov-str-mat.cc: Now N-dimensional.
+
+	* oct-map.h, oct-map.cc: Now based on Cell ojects instead of
+	octave_value_list objects.  Change all uses.
+
+	* TEMPLATE-INST/Array-tc.cc: Also instantiate ArrayN objects.
+	Don't instantiate assign funcitons for Array2 objects.
+
 2003-09-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pt-plot.cc (symbols_of_pt_plot): Default for automatic replot is

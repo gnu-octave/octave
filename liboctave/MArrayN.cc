@@ -34,12 +34,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "MArray-defs.h"
 
-// Two dimensional array with math ops.
+// N-dimensional array with math ops.
 
 // Element by element MArrayN by scalar ops.
 
-
-#if 0
 template <class T>
 MArrayN<T>&
 operator += (MArrayN<T>& a, const T& s)
@@ -56,7 +54,7 @@ operator -= (MArrayN<T>& a, const T& s)
   return a;
 }
 
-
+#if 0
 #define MARRAYN_NDS_OP(OP) \
   template <class T> \
   MArrayN<T> \
@@ -100,8 +98,8 @@ template <class T> \
 MArrayN<T> \
 FCN (const MArrayN<T>& a, const MArrayN<T>& b) \
 { \
-Array<int> a_dims = a.dims (); \
-Array<int> b_dims = b.dims (); \
+dim_vector a_dims = a.dims (); \
+dim_vector b_dims = b.dims (); \
 int dims_ok = 1; \
 int any_dims_zero = 0; \
 if (a_dims.length () != b_dims.length ()) \

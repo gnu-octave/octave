@@ -44,10 +44,10 @@ DEFINE_OCTAVE_ALLOCATOR(octave_struct);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(octave_struct, "struct");
 
-octave_value_list
+Cell
 octave_struct::dotref (const octave_value_list& idx)
 {
-  octave_value_list retval;
+  Cell retval;
 
   assert (idx.length () == 1);
 
@@ -63,11 +63,13 @@ octave_struct::dotref (const octave_value_list& idx)
   return retval;
 }
 
+#if 0
 static void
 gripe_invalid_index (void)
 {
   error ("invalid index for structure array");
 }
+#endif
 
 static void
 gripe_invalid_index_for_assignment (void)
@@ -104,46 +106,28 @@ octave_struct::subsref (const std::string& type,
 	    std::list<octave_value_list>::const_iterator p = idx.begin ();
 	    octave_value_list key_idx = *++p;
 
-	    octave_value_list tmp = dotref (key_idx);
+	    Cell tmp = dotref (key_idx);
 
 	    if (! error_state)
 	      {
-		octave_value_list t_idx = idx.front ();
+		Cell t = tmp.index (idx.front ());
 
-		if (t_idx.length () == 1)
-		  {
-		    idx_vector i = t_idx(0).index_vector ();
-		    octave_value_list t = tmp.index (i);
+		retval = (t.length () == 1) ? t(0) : octave_value (t, true);
 
-		    retval = (t.length () == 1) ? t(0) : octave_value (t, true);
+		// We handled two index elements, so tell
+		// next_subsref to skip both of them.
 
-		    // We handled two index elements, so tell
-		    // next_subsref to skip both of them.
-
-		    skip++;
-		  }
-		else
-		  gripe_invalid_index ();
+		skip++;
 	      }
 	  }
 	else
-	  {
-	    octave_value_list t_idx = idx.front ();
-
-	    if (t_idx.length () == 1)
-	      {
-		idx_vector i = t_idx(0).index_vector ();
-		retval = map.index (i);
-	      }
-	    else
-	      gripe_invalid_index ();
-	  }
+	  retval = map.index (idx.front ());
       }
       break;
 
     case '.':
       {
-	octave_value_list t = dotref (idx.front ());
+	Cell t = dotref (idx.front ());
 
 	retval = (t.length () == 1) ? t(0) : octave_value (t, true);
       }
@@ -164,7 +148,7 @@ octave_struct::subsref (const std::string& type,
 }
 
 octave_value
-octave_struct::numeric_conv (const octave_value_list& val,
+octave_struct::numeric_conv (const Cell& val,
 			     const std::string& type)
 {
   octave_value retval;
@@ -204,48 +188,39 @@ octave_struct::subsasgn (const std::string& type,
 		std::list<octave_value_list>::const_iterator p = idx.begin ();
 		octave_value_list t_idx = *p;
 
-		if (t_idx.length () == 1)
-		  {
-		    octave_value_list key_idx = *++p;
+		octave_value_list key_idx = *++p;
 
-		    assert (key_idx.length () == 1);
+		assert (key_idx.length () == 1);
 
-		    std::string key = key_idx(0).string_value ();
+		std::string key = key_idx(0).string_value ();
 
-		    octave_value u;
+		octave_value u;
 
-		    if (! map.contains (key))
-		      u = octave_value::empty_conv (type.substr (2), rhs);
-		    else
-		      {
-			octave_value_list map_val = map[key];
-
-			octave_value_list t_idx = idx.front ();
-
-			idx_vector i = t_idx(0).index_vector ();
-
-			octave_value_list map_elt = map_val.index (i, true);
-
-			u = numeric_conv (map_elt, type.substr (2));
-		      }
-
-		    if (! error_state)
-		      {
-			std::list<octave_value_list> next_idx (idx);
-
-			// We handled two index elements, so subsasgn to
-			// needs to skip both of them.
-
-			next_idx.erase (next_idx.begin ());
-			next_idx.erase (next_idx.begin ());
-
-			u.make_unique ();
-
-			t_rhs = u.subsasgn (type.substr (2), next_idx, rhs);
-		      }
-		  }
+		if (! map.contains (key))
+		  u = octave_value::empty_conv (type.substr (2), rhs);
 		else
-		  gripe_invalid_index_for_assignment ();
+		  {
+		    Cell map_val = map[key];
+
+		    Cell map_elt = map_val.index (idx.front (), true);
+
+		    u = numeric_conv (map_elt, type.substr (2));
+		  }
+
+		if (! error_state)
+		  {
+		    std::list<octave_value_list> next_idx (idx);
+
+		    // We handled two index elements, so subsasgn to
+		    // needs to skip both of them.
+
+		    next_idx.erase (next_idx.begin ());
+		    next_idx.erase (next_idx.begin ());
+
+		    u.make_unique ();
+
+		    t_rhs = u.subsasgn (type.substr (2), next_idx, rhs);
+		  }
 	      }
 	    else
 	      gripe_invalid_index_for_assignment ();
@@ -266,7 +241,7 @@ octave_struct::subsasgn (const std::string& type,
 	      u = octave_value::empty_conv (type.substr (1), rhs);
 	    else
 	      {
-		octave_value_list map_val = map[key];
+		Cell map_val = map[key];
 
 		u = numeric_conv (map_val, type.substr (1));
 	      }
@@ -310,47 +285,31 @@ octave_struct::subsasgn (const std::string& type,
 
 		if (! error_state)
 		  {
-		    octave_value_list t_idx = idx.front ();
+		    map.assign (idx.front (), key, t_rhs);
 
-		    if (t_idx.length () == 1)
-		      {
-			idx_vector i = t_idx(0).index_vector ();
-
-			map.assign (i, key, t_rhs);
-
-			if (! error_state)
-			  retval = octave_value (this, count + 1);
-			else
-			  gripe_failed_assignment ();
-		      }
+		    if (! error_state)
+		      retval = octave_value (this, count + 1);
 		    else
-		      gripe_invalid_index_for_assignment ();
+		      gripe_failed_assignment ();
 		  }
 		else
 		  gripe_failed_assignment ();
 	      }
 	    else
 	      {
-		octave_value_list t_idx = idx.front ();
+		Octave_map rhs_map = t_rhs.map_value ();
 
-		if (t_idx.length () == 1)
+		if (! error_state)
 		  {
-		    idx_vector i = t_idx(0).index_vector ();
-
-		    Octave_map rhs_map = t_rhs.map_value ();
+		    map.assign (idx.front (), rhs_map);
 
 		    if (! error_state)
-		      {
-			map.assign (i, rhs_map);
-
-			if (! error_state)
-			  retval = octave_value (this, count + 1);
-			else
-			  gripe_failed_assignment ();
-		      }
+		      retval = octave_value (this, count + 1);
 		    else
-		      error ("invalid structure assignment");
+		      gripe_failed_assignment ();
 		  }
+		else
+		  error ("invalid structure assignment");
 	      }
 	  }
 	  break;
@@ -420,7 +379,7 @@ octave_struct::print_raw (std::ostream& os, bool) const
       for (Octave_map::const_iterator p = map.begin (); p != map.end (); p++)
 	{
 	  std::string key = map.key (p);
-	  octave_value_list val = map.contents (p);
+	  Cell val = map.contents (p);
 
 	  octave_value tmp = (n == 1) ? val(0) : octave_value (val, true);
 

@@ -44,7 +44,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-re-mat.h"
 #include "pr-output.h"
 
-template class octave_base_matrix<boolMatrix>;
+template class octave_base_matrix<boolNDArray>;
 
 DEFINE_OCTAVE_ALLOCATOR (octave_bool_matrix);
 
@@ -69,11 +69,16 @@ octave_bool_matrix::try_narrowing_conversion (void)
 {
   octave_value *retval = 0;
 
-  int nr = matrix.rows ();
-  int nc = matrix.cols ();
+  if (matrix.ndims () == 2)
+    {
+      boolMatrix bm = matrix.matrix_value ();
 
-  if (nr == 1 && nc == 1)
-    retval = new octave_bool (matrix (0, 0));
+      int nr = bm.rows ();
+      int nc = bm.cols ();
+
+      if (nr == 1 && nc == 1)
+	retval = new octave_bool (bm (0, 0));
+    }
 
   return retval;
 }

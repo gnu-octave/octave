@@ -33,6 +33,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "lo-sstream.h"
 #include "lo-utils.h"
 
+#include "Cell.h"
 #include "defun.h"
 #include "error.h"
 #include "ov-list.h"
@@ -41,6 +42,17 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 DEFINE_OCTAVE_ALLOCATOR (octave_list);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_list, "list");
+
+octave_list::octave_list (const Cell& c)
+  : octave_base_value (), lst ()
+{
+  int n = c.length ();
+
+  lst.resize (n);
+
+  for (int i = 0; i < n; i++)
+    lst(i) = c(i);
+}
 
 octave_value
 octave_list::subsref (const std::string& type,

@@ -71,7 +71,7 @@ OV_INCLUDES := ov-re-mat.h ov-cx-mat.h ov-ch-mat.h ov-cs-list.h ov-list.h \
 	ov-colon.h ov-base.h ov-base-mat.h ov-base-scalar.h \
 	ov-str-mat.h ov-bool-mat.h ov-bool.h ov-file.h ov-cell.h ov.h \
 	ov-fcn.h ov-builtin.h ov-dld-fcn.h ov-mapper.h ov-usr-fcn.h \
-	ov-base-nd-array.h ov-re-nd-array.h ov-fcn-handle.h ov-typeinfo.h
+	ov-fcn-handle.h ov-typeinfo.h
 
 PT_INCLUDES := pt.h pt-all.h pt-arg-list.h pt-assign.h pt-binop.h \
         pt-bp.h	pt-cell.h pt-check.h pt-cmd.h pt-colon.h pt-const.h \
@@ -99,9 +99,8 @@ OP_XSRC := op-b-b.cc op-bm-b.cc op-bm-bm.cc op-cell.cc \
 	op-cs-s.cc op-fil-b.cc op-fil-bm.cc op-fil-cm.cc \
 	op-fil-cs.cc op-fil-m.cc op-fil-s.cc op-fil-lis.cc \
 	op-fil-rec.cc op-fil-str.cc op-list.cc op-m-cm.cc \
-	op-m-cs.cc op-m-m.cc op-m-nd.cc op-m-s.cc op-nd-m.cc \
-	op-nd-nd.cc op-nd-s.cc op-range.cc op-s-cm.cc \
-	op-s-cs.cc op-s-m.cc op-s-nd.cc op-s-s.cc op-str-m.cc \
+	op-m-cs.cc op-m-m.cc op-m-s.cc op-range.cc op-s-cm.cc \
+	op-s-cs.cc op-s-m.cc op-s-s.cc op-str-m.cc \
 	op-str-s.cc op-str-str.cc
 
 OP_SRC := $(addprefix OPERATORS/, $(OP_XSRC))
@@ -112,8 +111,7 @@ OV_SRC := ov-base.cc ov-base-mat.cc ov-base-scalar.cc ov-ch-mat.cc \
 	ov-complex.cc ov-str-mat.cc ov-struct.cc ov-va-args.cc \
 	ov-colon.cc ov-bool-mat.cc ov-bool.cc ov-file.cc ov-cell.cc \
 	ov.cc ov-fcn.cc ov-builtin.cc ov-dld-fcn.cc ov-mapper.cc \
-	ov-usr-fcn.cc ov-base-nd-array.cc ov-re-nd-array.cc \
-	ov-fcn-handle.cc ov-typeinfo.cc
+	ov-usr-fcn.cc ov-fcn-handle.cc ov-typeinfo.cc
 
 PT_SRC := pt.cc pt-arg-list.cc pt-assign.cc pt-bp.cc pt-binop.cc \
 	pt-cell.cc pt-check.cc pt-cmd.cc pt-colon.cc pt-const.cc \

@@ -50,6 +50,8 @@ template int assign (Array<Complex>&, const Array<char>&, const Complex&);
 
 template class Array2<Complex>;
 
+#if 0
+
 template int assign (Array2<Complex>&, const Array2<Complex>&);
 template int assign (Array2<Complex>&, const Array2<double>&);
 template int assign (Array2<Complex>&, const Array2<int>&);
@@ -61,6 +63,15 @@ template int assign (Array2<Complex>&, const Array2<double>&, const Complex&);
 template int assign (Array2<Complex>&, const Array2<int>&, const Complex&);
 template int assign (Array2<Complex>&, const Array2<short>&, const Complex&);
 template int assign (Array2<Complex>&, const Array2<char>&, const Complex&);
+
+#endif
+
+#include "ArrayN.h"
+#include "ArrayN.cc"
+
+template class ArrayN<Complex>;
+
+template std::ostream& operator << (std::ostream&, const ArrayN<Complex>&);
 
 #include "DiagArray2.h"
 #include "DiagArray2.cc"

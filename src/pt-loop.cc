@@ -379,7 +379,7 @@ tree_simple_for_command::eval (void)
 	  {
 	    MAYBE_DO_BREAKPOINT;
 
-	    octave_value_list val_lst = tmp_val.contents (p);
+	    Cell val_lst = tmp_val.contents (p);
 
 	    octave_value val
 	      = (val_lst.length () == 1) ? val_lst(0) : octave_value (val_lst);
@@ -490,7 +490,7 @@ tree_complex_for_command::eval (void)
 	{
 	  octave_value key = tmp_val.key (q);
 
-	  octave_value_list val_lst = tmp_val.contents (q);
+	  Cell val_lst = tmp_val.contents (q);
 
 	  int n = tmp_val.array_length ();
 

@@ -20,15 +20,15 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-#if !defined (octave_NDArray_int_h)
-#define octave_NDArray_int_h 1
+#if !defined (octave_NDArray_h)
+#define octave_NDArray_h 1
 
 #if defined (__GNUG__) && defined (USE_PRAGMA_INTERFACE_IMPLEMENTATION)
 #pragma interface
 #endif
 
 #include "MArrayN.h"
-//#include "mx-base.h"
+#include "dMatrix.h"
 
 #include "mx-defs.h"
 #include "mx-op-defs.h"
@@ -36,31 +36,37 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "data-conv.h"
 #include "mach-info.h"
 
-class NDArray : public MArrayN<double>
+class
+NDArray : public MArrayN<double>
 {
- public:
+public:
   
   NDArray (void) : MArrayN<double> () { }
 
-  NDArray (Array<int>& dims) : MArrayN<double> (dims) { }
+  NDArray (dim_vector& dims) : MArrayN<double> (dims) { }
 
-  NDArray (Array<int>& dims, double val) : MArrayN<double> (dims, val) { }
+  NDArray (dim_vector& dims, double val) : MArrayN<double> (dims, val) { }
   
-  NDArray (const NDArray& a): MArrayN<double> (a) { }
+  NDArray (const NDArray& a) : MArrayN<double> (a) { }
+
+  NDArray (const Matrix& a) : MArrayN<double> (a) { }
 
   NDArray (const MArrayN<double>& a) : MArrayN<double> (a) { }
 
-  NDArray (const Matrix& m) : MArrayN<double> (m) { }
-
   NDArray (const ArrayN<double>& a) : MArrayN<double> (a) { }
-
-  //NDArray (const Array<double>& a) : MArrayN<double> (a) { }
 
   NDArray& operator = (const NDArray& a)
     {
       MArrayN<double>::operator = (a);
       return *this;
     }
+
+  // XXX FIXME XXX -- this is not quite the right thing.
+
+  boolMatrix all (int dim = -1) const;
+  boolMatrix any (int dim = -1) const;
+
+  Matrix matrix_value (void) const;
 
   // i/o
 
@@ -72,11 +78,17 @@ class NDArray : public MArrayN<double>
   bool any_element_is_negative (bool = false) const;
   bool all_integers (double& max_val, double& min_val) const;
 
- private:
+private:
 
-  NDArray (double *d, Array<int>& dims) : MArrayN<double> (d, dims) { }
+  NDArray (double *d, dim_vector& dims) : MArrayN<double> (d, dims) { }
 };
 
 MARRAY_FORWARD_DEFS (MArrayN, NDArray, double)
 
 #endif
+
+/*
+;;; Local Variables: ***
+;;; mode: C++ ***
+;;; End: ***
+*/

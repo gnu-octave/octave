@@ -40,7 +40,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gripes.h"
 #include "pr-output.h"
 
-template class octave_base_matrix<charMatrix>;
+template class octave_base_matrix<charNDArray>;
 
 DEFINE_OCTAVE_ALLOCATOR (octave_char_matrix);
 

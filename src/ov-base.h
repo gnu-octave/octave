@@ -96,6 +96,8 @@ public:
 
   int columns (void) const { return -1; }
 
+  dim_vector dims (void) const { return dim_vector (rows (), columns ()); }
+
   int length (void) const { return -1; }
 
   bool is_defined (void) const { return false; }

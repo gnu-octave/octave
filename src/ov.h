@@ -182,25 +182,28 @@ public:
 
   octave_value (octave_time t);
   octave_value (double d);
-  octave_value (const Cell& m);
+  octave_value (const Cell& m, bool is_cs_list = false);
   octave_value (const Matrix& m);
-  octave_value (const NDArray& m);
+  octave_value (const NDArray& nda);
   octave_value (const DiagMatrix& d);
   octave_value (const RowVector& v);
   octave_value (const ColumnVector& v);
   octave_value (const Complex& C);
   octave_value (const ComplexMatrix& m);
+  octave_value (const ComplexNDArray& cnda);
   octave_value (const ArrayN<Complex>& m);
   octave_value (const ComplexDiagMatrix& d);
   octave_value (const ComplexRowVector& v);
   octave_value (const ComplexColumnVector& v);
   octave_value (bool b);
   octave_value (const boolMatrix& bm);
+  octave_value (const boolNDArray& bnda);
   octave_value (char c);
   octave_value (const char *s);
   octave_value (const std::string& s);
   octave_value (const string_vector& s);
   octave_value (const charMatrix& chm, bool is_string = false);
+  octave_value (const charNDArray& chnda, bool is_string = false);
   octave_value (double base, double limit, double inc);
   octave_value (const Range& r);
   octave_value (const Octave_map& m);
@@ -314,6 +317,9 @@ public:
 
   virtual int columns (void) const
     { return rep->columns (); }
+
+  virtual dim_vector dims (void) const
+    { return rep->dims (); }
 
   virtual int length (void) const
     { return rep->length (); }
@@ -636,6 +642,8 @@ private:
   binary_op op_eq_to_binary_op (assign_op op);
 
   DECLARE_OCTAVE_ALLOCATOR
+
+  octave_value *nil_rep (void) const;
 };
 
 #define OV_UNOP_FN(name) \

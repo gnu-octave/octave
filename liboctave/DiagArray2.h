@@ -110,51 +110,28 @@ friend class Proxy;
 
 protected:
 
-  int nr;
-  int nc;
-
   DiagArray2 (T *d, int r, int c) : Array<T> (d, r < c ? r : c)
-    {
-      nr = r;
-      nc = c;
-      set_max_indices (2);
-    }
+    { dimensions = dim_vector (r, c); }
 
 public:
 
-  DiagArray2 (void) : Array<T> ()
-    {
-      nr = 0;
-      nc = 0;
-      set_max_indices (2);
-    }
+  DiagArray2 (void) : Array<T> (dim_vector (0, 0)) { }
 
   DiagArray2 (int r, int c) : Array<T> (r < c ? r : c)
-    {
-      nr = r;
-      nc = c;
-      set_max_indices (2);
-    }
+    { dimensions = dim_vector (r, c); }
 
-  DiagArray2 (int r, int c, const T& val) : Array<T> (r < c ? r : c, val)
+  DiagArray2 (int r, int c, const T& val) : Array<T> (r < c ? r : c)
     {
-      nr = r;
-      nc = c;
-      set_max_indices (2);
+      dimensions = dim_vector (r, c);
+
+      fill (val);
     }
 
   DiagArray2 (const Array<T>& a) : Array<T> (a)
-    {
-      nr = nc = a.length ();
-      set_max_indices (2);
-    }
+    { dimensions = dim_vector (a.length (), a.length ()); }
 
   DiagArray2 (const DiagArray2<T>& a) : Array<T> (a)
-    {
-      nr = a.nr;
-      nc = a.nc;
-      set_max_indices (2);
-    }
+    { dimensions = a.dims (); }
 
   ~DiagArray2 (void) { }
 
@@ -163,8 +140,7 @@ public:
       if (this != &a)
 	{
 	  Array<T>::operator = (a);
-	  nr = a.nr;
-	  nc = a.nc;
+	  dimensions = a.dims ();
 	}
 
       return *this;
@@ -173,6 +149,9 @@ public:
 #if 0
   operator Array2<T> () const
     {
+      int nr = dim1 ();
+      int nc = dim2 ();
+
       Array2<T> retval (nr, nc,  T (0));
 
       int len = nr < nc ? nr : nc;
@@ -184,13 +163,6 @@ public:
     }
 #endif
 
-  int dim1 (void) const { return nr; }
-  int dim2 (void) const { return nc; }
-
-  int rows (void) const { return nr; }
-  int cols (void) const { return nc; }
-  int columns (void) const { return nc; }
-
 #if 1
   Proxy elem (int r, int c)
     {
@@ -199,7 +171,7 @@ public:
 
   Proxy checkelem (int r, int c)
     {
-      if (r < 0 || c < 0 || r >= nr || c >= nc)
+      if (r < 0 || c < 0 || r >= dim1 () || c >= dim2 ())
 	{
 	  (*current_liboctave_error_handler) ("range error in DiagArray2");
 	  return Proxy (0, r, c);
@@ -210,7 +182,7 @@ public:
 
   Proxy operator () (int r, int c)
     {
-      if (r < 0 || c < 0 || r >= nr || c >= nc)
+      if (r < 0 || c < 0 || r >= dim1 () || c >= dim2 ())
 	{
 	  (*current_liboctave_error_handler) ("range error in DiagArray2");
 	  return Proxy (0, r, c);

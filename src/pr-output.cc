@@ -1485,6 +1485,24 @@ octave_print_internal (std::ostream& os, const Matrix& m,
     }
 }
 
+void
+octave_print_internal (std::ostream& os, const NDArray& nda,
+		       bool pr_as_read_syntax, int extra_indent)
+{
+  switch (nda.ndims ())
+    {
+    case 1:
+    case 2:
+      octave_print_internal (os, nda.matrix_value (),
+			     pr_as_read_syntax, extra_indent);
+      break;
+
+    default:
+      os << nda;
+      break;
+    }
+}
+
 static inline void
 pr_plus_format (std::ostream& os, const Complex& c)
 {
@@ -1661,6 +1679,24 @@ octave_print_internal (std::ostream& os, const ComplexMatrix& cm,
 }
 
 void
+octave_print_internal (std::ostream& os, const ComplexNDArray& nda,
+		       bool pr_as_read_syntax, int extra_indent)
+{
+  switch (nda.ndims ())
+    {
+    case 1:
+    case 2:
+      octave_print_internal (os, nda.matrix_value (),
+			     pr_as_read_syntax, extra_indent);
+      break;
+
+    default:
+      os << nda;
+      break;
+    }
+}
+
+void
 octave_print_internal (std::ostream& os, const Range& r,
 		       bool pr_as_read_syntax, int extra_indent)
 {
@@ -1777,6 +1813,25 @@ octave_print_internal (std::ostream& os, const boolMatrix& bm,
 }
 
 void
+octave_print_internal (std::ostream& os, const boolNDArray& nda,
+		       bool pr_as_read_syntax,
+		       int extra_indent)
+{
+  switch (nda.ndims ())
+    {
+    case 1:
+    case 2:
+      octave_print_internal (os, nda.matrix_value (),
+			     pr_as_read_syntax, extra_indent);
+      break;
+
+    default:
+      os << nda;
+      break;
+    }
+}
+
+void
 octave_print_internal (std::ostream& os, const charMatrix& chm,
 		       bool pr_as_read_syntax,
 		       int /* extra_indent XXX FIXME XXX */,
@@ -1820,6 +1875,25 @@ octave_print_internal (std::ostream& os, const charMatrix& chm,
   else
     {
       os << "sorry, printing char matrices not implemented yet\n";
+    }
+}
+
+void
+octave_print_internal (std::ostream& os, const charNDArray& nda,
+		       bool pr_as_read_syntax, int extra_indent,
+		       bool pr_as_string)
+{
+  switch (nda.ndims ())
+    {
+    case 1:
+    case 2:
+      octave_print_internal (os, nda.matrix_value (),
+			     pr_as_read_syntax, extra_indent, pr_as_string);
+      break;
+
+    default:
+      os << nda;
+      break;
     }
 }
 

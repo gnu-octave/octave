@@ -1,3 +1,45 @@
+2003-09-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Array.h, Array-idx.h, Array.cc: Fold all N-d functionality here.
+	Turn inheritance hierarchy upside down (2-d and 3-d arrays are now
+	just special cases of the general purpose N-d Array object).
+
+	* dim-vector.h: New file.  Use dim_vector objects instead of
+	ints or Array<int> objects to represent the size of Array
+	objects.
+
+	* MArray-defs.h (INSTANTIATE_MARRAYN_FRIENDS): New macro.
+
+	* Array2-idx.h, Array3-idx.h, Array2.cc, Array3.cc: Delete.
+
+	* mx-base.h: Include NDArray header files.
+
+	* MArray-C.cc, MArray-d.cc: Also instantiate ArrayN objects.
+
+	* Array-C.cc, Array-b.cc, Array-ch.cc, Array-d.cc, Array-i.cc,
+	Array-s.cc: Also instantiate ArrayN objects.
+	Don't instantiate assign funcitons for Array2 objects.
+
+	* CDiagMatrix.cc (ComplexDiagMatrix::diag): Signal error with
+	liboctave_error_handler, not cerr.
+	* CMatrix.cc (ComplexMatrix::diag): Likewise.
+	* dDiagMatrix.cc (DiagMatrix::diag): Likewise.
+	* dMatrix.cc (Matrix::diag): Likewise.
+
+	* Array-flags.cc, Array.cc, Array.h, Array2.h, Array3.h, ArrayN.h:
+	Omit checks for HEAVYWEIGHT_INDEXING.
+
+2003-09-12  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* mx-base.h: Include CNDarray.h.  Include dNDArray.h, not NDArray.h.
+
+	* CNDARray.h, CNDArray.cc: New files.
+	* Makefile.in: Add them to the appropriate lists.
+
+	* dNDArray.h: Rename from NDArray.h.
+	* dNDArray.cc: Rename from NDArray.cc.
+	* Makefile.in: Rename them here too.
+
 2003-09-10  Petter Risholm  <risholm@stud.ntnu.no>
 
 	* mx-base.h: Include NDArray.h, not ArrayN.h.

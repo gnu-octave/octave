@@ -144,10 +144,13 @@ octave_base_matrix<MT>::do_index_op (const octave_value_list& idx,
 
     default:
       {
-	std::string n = type_name ();
+	Array<idx_vector> idx_vec (len);
 
-	error ("invalid number of indices (%d) for %s value",
-	       len, n.c_str ());
+	for (int i = 0; i < len; i++)
+	  idx_vec(i) = idx(i).index_vector ();
+
+	retval = MT (matrix.index (idx_vec, resize_ok,
+				   MT::resize_fill_value ()));
       }
       break;
     }
@@ -161,35 +164,10 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx, const MT& rhs)
 {
   int len = idx.length ();
 
-  switch (len)
-    {
-    case 2:
-      {
-	idx_vector i = idx (0).index_vector ();
-	idx_vector j = idx (1).index_vector ();
+  for (int i = 0; i < len; i++)
+    matrix.set_index (idx(i).index_vector ());
 
-	matrix.set_index (i);
-	matrix.set_index (j);
-
-	::assign (matrix, rhs, MT::resize_fill_value ());
-      }
-      break;
-
-    case 1:
-      {
-	idx_vector i = idx (0).index_vector ();
-
-	matrix.set_index (i);
-
-	::assign (matrix, rhs, MT::resize_fill_value ());
-      }
-      break;
-
-    default:
-      error ("invalid number of indices (%d) for indexed assignment",
-	     len);
-      break;
-    }
+  ::assign (matrix, rhs, MT::resize_fill_value ());
 }
 
 template <class MT>

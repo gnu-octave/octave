@@ -148,7 +148,8 @@ public:
 			       int print)
     { assert (0); return NULL_TREE_CONST; }
 
-  virtual int save (ostream& os, int mark_as_global = 0)
+  virtual int save (ostream& os, int mark_as_global = 0,
+		    int precision = 17)
     { assert (0); return 0; }
 
   virtual int line (void) const { return line_num; }

@@ -1,3 +1,16 @@
+2003-09-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (MATRIX_INC): Add ArrayN-inlines.h to the list.
+
+2003-09-03  Petter Risholm  <risholm@stud.ntnu.no>
+	
+	* ArrayN-inline.h: New file.
+	(index_in_bounds, increment_index): Move here.
+	* ArrayN.cc: From here.
+
+	* ArrayN.h (maybe_delete_elements): New arg, resize_fill_value.
+	* ArrayN-idx.h (assign): New function.
+
 2003-08-28  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* lo-specfun.cc (zbesj, zbesy, zbesi, zbesk, airy, biry):
@@ -20,7 +33,7 @@
 
 	* ArrayN.cc (operator <<): Improve output readability.
 
-2003-07-29  Petter Risholm	<risholm@stud.ntnu.no>
+2003-07-29  Petter Risholm  <risholm@stud.ntnu.no>
 
 	* ArrayN.cc (ArrayN<T>::resize (const Array<int>&, const T&)):
 	* ArrayN.cc (ArrayN<T>::resize (const Array<int>&)):

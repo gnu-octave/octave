@@ -25,8 +25,9 @@ ifeq ($(INCLUDE_LINK_DEPS), true)
     -lglob $(LIBS) $(FLIBS)
 endif
 
-MATRIX_INC := Array.h Array2.h Array3.h ArrayN.h DiagArray2.h Array-flags.h \
-	Array-idx.h Array2-idx.h Array3-idx.h ArrayN-idx.h MArray-defs.h \
+MATRIX_INC := Array.h Array2.h Array3.h ArrayN.h DiagArray2.h \
+	Array-flags.h Array-idx.h Array2-idx.h Array3-idx.h \
+	ArrayN-idx.h ArrayN-inlines.h MArray-defs.h \
 	MArray.h MArray2.h MDiagArray2.h Matrix.h \
 	base-lu.h mx-base.h mx-op-defs.h mx-ops.h mx-defs.h mx-ext.h \
 	CColVector.h CDiagMatrix.h CMatrix.h CRowVector.h CmplxAEPBAL.h \

@@ -34,6 +34,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream>
 
 #include "ArrayN.h"
+#include "ArrayN-inline.h"
 
 #if defined (HEAVYWEIGHT_INDEXING)
 #include "idx-vector.h"
@@ -93,6 +94,7 @@ ArrayN<T>::get_size (const Array<int>& ra_idx)
   // This value should be an integer.  If we return this value and
   // things work the way we expect, we should be paying a visit to
   // new_handler in no time flat.
+
   static int max_items = static_cast<int> (ldexp (dl, nl));
 
   int retval = max_items;
@@ -154,50 +156,6 @@ ArrayN<T>::range_error (const char *fcn, const Array<int>& ra_idx)
 
   static T foo;
   return foo;
-}
-
-static inline bool
-index_in_bounds (const Array<int>& ra_idx, const Array<int>& dimensions)
-{
-  bool retval = true;
-
-  int n = ra_idx.length ();
-
-  if (n == dimensions.length ())
-    {
-      for (int i = 0; i < n; i++)
-	{
-	  if (ra_idx(i) < 0 || ra_idx(i) >= dimensions (i))
-	    {
-	      retval = false;
-	      break;
-	    }
-	}
-    }
-  else
-    retval = false;
-
-  return retval;
-}
-
-static inline void
-increment_index (Array<int>& ra_idx, const Array<int>& dimensions,
-		 int start_dimension = 0)
-{
-  ra_idx(start_dimension)++;
-
-  int n = ra_idx.length () - 1;
-
-  for (int i = start_dimension; i < n; i++)
-    {
-      if (ra_idx(i) < dimensions(i))
- 	break;
-      else
- 	{
- 	  ra_idx(i) = 0;
- 	  ra_idx(i+1)++;
- 	}
-    }
 }
 
 template <class T>

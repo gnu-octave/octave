@@ -176,7 +176,7 @@ public:
   ArrayN<T>& insert (const ArrayN<T>& a, const Array<int>& dims);
 
 #ifdef HEAVYWEIGHT_INDEXING
-  void maybe_delete_elements (Array<idx_vector>& ra_idx);
+  void maybe_delete_elements (Array<idx_vector>& ra_idx, const T& rfv);
 
   ArrayN<T> value (void);
 

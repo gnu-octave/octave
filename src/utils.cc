@@ -695,7 +695,7 @@ decode_prompt_string (char *string)
 	    case 'd':
 	      /* Make the current time/date into a string. */
 	      {
-		long the_time = time (0);
+		time_t the_time = time (0);
 		char *ttemp = ctime (&the_time);
 		temp = strsave (ttemp);
 

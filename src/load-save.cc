@@ -2857,7 +2857,7 @@ get_file_format (const std::string& fname, const std::string& orig_fname)
 	  file.clear ();
 	  file.seekg (0, std::ios::beg);
 
-	  err = read_mat5_binary_file_header (file, swap, false);
+	  err = read_mat5_binary_file_header (file, swap, true);
 
 	  if (! err)
   	    {

@@ -1,3 +1,9 @@
+2000-07-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* load-save.cc (get_file_format): Call read_mat5_binary_file_header 
+	with third arg true instead of false, so we don't barf if the file
+	is not a matlab v5 binary file.
+
 2000-07-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (octave): Link to ../libcruft/blas-xtra/xerbla.o here.

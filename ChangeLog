@@ -1,3 +1,8 @@
+2000-07-17  Joao Cardoso  <jcardoso@inescn.pt>
+
+	* configure.in (LIBGLOB): Set to be the two object files in the
+	glob directory instead of libglob.a.
+
 2000-07-05  Steven G. Johnson  <stevenj@gil-galad.mit.edu>
 
 	* Use BLAS_LIBS to save the names of BLAS libraries instead of

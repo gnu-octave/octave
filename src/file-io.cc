@@ -39,19 +39,20 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cstdlib>
 #include <cctype>
 
-#include <sys/types.h>
+#include <strstream.h>
+
 #ifdef HAVE_UNISTD_H
+#include <sys/types.h>
 #include <unistd.h>
 #endif
-#include <sys/wait.h>
-#include <fcntl.h>
 
-#include <strstream.h>
+#include <fcntl.h>
 
 #include <DLList.h>
 
 #include "dMatrix.h"
 
+#include "syswait.h"
 #include "statdefs.h"
 #include "file-io.h"
 #include "input.h"

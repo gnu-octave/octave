@@ -47,12 +47,13 @@ Free Software Foundation, Inc.
 #include <iostream.h>
 #include <strstream.h>
 
-#include <sys/types.h>
 #ifdef HAVE_UNISTD_H
+#include <sys/types.h>
 #include <unistd.h>
 #endif
 
 // This must come before anything that includes iostream.h...
+// (This is apparently no longer true...)
 extern "C"
 {
 #include "readline/readline.h"
@@ -64,6 +65,7 @@ extern char *xmalloc ();
 
 // Yes, this sucks, but it avoids a conflict with another readline
 // function declared in iostream.h.
+// (Apparently, there isn't one there now...)
 
 #if 0
 #define LINE_SIZE 8192

@@ -22,14 +22,17 @@ Boston, MA  02111-1307, USA.  */
 
 #ifndef HAVE_TEMPNAM
 
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
 #include <errno.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#ifdef HAVE_UNISTD_H
+#include <sys/types.h>
+#include <unistd.h>
+#endif
+
 #include <fcntl.h>
 
 #include "statdefs.h"

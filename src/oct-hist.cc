@@ -36,14 +36,15 @@ Software Foundation, Inc.
 #include <cstdlib>
 #include <cstring>
 
-#include <sys/types.h>
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
-#include <fcntl.h>
-
 #include <fstream.h>
 #include <strstream.h>
+
+#ifdef HAVE_UNISTD_H
+#include <sys/types.h>
+#include <unistd.h>
+#endif
+
+#include <fcntl.h>
 
 #include "statdefs.h"
 #include "utils.h"

@@ -28,14 +28,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <csignal>
 #include <new>
 
-#include <sys/types.h>
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
-#include <sys/wait.h>
-
 #include <iostream.h>
 
+#ifdef HAVE_UNISTD_H
+#include <sys/types.h>
+#include <unistd.h>
+#endif
+
+#include "syswait.h"
 #include "sighandlers.h"
 #include "octave.h"
 #include "error.h"

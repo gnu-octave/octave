@@ -28,11 +28,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cfloat>
 #include <cstring>
 
-#include <sys/types.h>
+#include <strstream.h>
+
 #ifdef HAVE_UNISTD_H
+#include <sys/types.h>
 #include <unistd.h>
 #endif
-#include <strstream.h>
 
 #include "defaults.h"
 #include "version.h"

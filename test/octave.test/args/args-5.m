@@ -1,5 +1,5 @@
 1;
-function [...] = f (...)
+function [varargout] = f (varargin)
   printf ("nargin: %d, nargout: %d\n", nargin, nargout);
 endfunction
 f

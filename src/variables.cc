@@ -1592,8 +1592,8 @@ With -x, exclude the named variables")
 	  gvars = curr_sym_tab->list (gcount, 0, symbol_def::USER_VARIABLE,
 				      SYMTAB_GLOBAL_SCOPE);
 
-	  fcns = curr_sym_tab->list (fcount, 0, symbol_def::USER_FUNCTION,
-				     SYMTAB_ALL_SCOPES);
+	  fcns = global_sym_tab->list (fcount, 0, symbol_def::USER_FUNCTION,
+				       SYMTAB_ALL_SCOPES);
 	}
 
       while (argc > 0)
@@ -1631,8 +1631,7 @@ With -x, exclude the named variables")
 		  if ((exclusive && ! match) || (! exclusive && match))
 		    {
 		      count = curr_sym_tab->clear (nm);
-		      if (count > 0)
-			global_sym_tab->clear (nm, clear_user_functions);
+		      global_sym_tab->clear (nm, clear_user_functions);
 		    }
 		}
 	    }

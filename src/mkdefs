@@ -1,0 +1,12 @@
+#!/bin/sh
+
+sed -n -e '/^BEGIN_INSTALL_BUILTIN/{
+  : loop
+  N
+  /END_INSTALL_BUILTIN/b done
+  b loop
+  : done
+  s/BEGIN_INSTALL_BUILTIN//
+  s/END_INSTALL_BUILTIN//
+  p
+}'

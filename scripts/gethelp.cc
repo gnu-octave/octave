@@ -1,3 +1,7 @@
+#if defined (__DECCXX)
+#define __USE_STD_IOSTREAM
+#endif
+
 #include <string>
 #include <iostream>
 

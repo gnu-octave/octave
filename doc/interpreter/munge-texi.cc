@@ -20,6 +20,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
+#if defined (__DECCXX)
+#define __USE_STD_IOSTREAM
+#endif
+
 #include <cctype>
 #include <iostream>
 #include <fstream>

@@ -1,3 +1,8 @@
+2003-01-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* interpreter/munge-texi.cc: Define __USE_STD_IOSTREAM if using
+	Compaq C++.
+
 2002-12-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* interpreter/Makefile.in (%.o : %.c): No longer need

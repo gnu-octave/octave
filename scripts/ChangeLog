@@ -1,5 +1,7 @@
 2003-01-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* gethelp.cc: Define __USE_STD_IOSTREAM if using Compaq C++.
+
 	* miscellaneous/tempname.m: New file.
 
 	* miscellaneous/tempdir.m: New file.

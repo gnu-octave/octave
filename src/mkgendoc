@@ -15,6 +15,10 @@ fi
 cat << \EOF
 // DO NOT EDIT!  Generated automatically by mkgendoc
 
+#if defined (__DECCXX)
+#define __USE_STD_IOSTREAM
+#endif
+
 #include <iostream>
 #include <string>
 

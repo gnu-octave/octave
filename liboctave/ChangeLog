@@ -1,5 +1,8 @@
 2003-01-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* oct-alloc.h (DECLARE_OCTAVE_ALLOCATOR): Define operator delete
+	to correspond to placement new operator.
+
 	* dbleDET.cc (DET::value_will_overflow): We want det[1], not det[2].
 	(DET::value_will_underflow): Likewise.
 	* CmplxDET.cc (ComplexDET::value_will_overflow): Likewise.

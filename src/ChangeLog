@@ -1,5 +1,8 @@
 2003-01-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* mkgendoc: In generated code, define __USE_STD_IOSTREAM if using
+	Compaq C++.
+
 	* Makefile.in (distclean): Also remove doc-files and gendoc.cc.
 
 	* input.cc (initialize_command_input): Use const for

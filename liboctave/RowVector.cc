@@ -298,8 +298,6 @@ RowVector::operator * (const ColumnVector& a) const
   if (len != a.len)
     FAIL;
 
-  return 0.0;
-
   int i_one = 1;
   return F77_FCN (ddot) (&len, data, &i_one, a.data, &i_one);
 }

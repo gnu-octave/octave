@@ -240,7 +240,7 @@ print_fsolve_option_list (void)
 }
 
 static void
-do_fsolve_option (char *keyword, double val)
+set_fsolve_option (char *keyword, double val)
 {
   NLEQN_OPTIONS *list = fsolve_option_table;
 
@@ -259,6 +259,28 @@ do_fsolve_option (char *keyword, double val)
   warning ("fsolve_options: no match for `%s'", keyword);
 }
 
+static Octave_object
+show_fsolve_option (char *keyword)
+{
+  Octave_object retval;
+
+  NLEQN_OPTIONS *list = fsolve_option_table;
+
+  while (list->keyword != 0)
+    {
+      if (keyword_almost_match (list->kw_tok, list->min_len, keyword,
+				list->min_toks_to_match, MAX_TOKENS))
+	{
+	  return (fsolve_opts.*list->d_get_fcn) ();
+	}
+      list++;
+    }
+
+  warning ("fsolve_options: no match for `%s'", keyword);
+
+  return retval;
+}
+
 DEFUN_DLD_BUILTIN ("fsolve_options", Ffsolve_options, Sfsolve_options, -1, 1,
   "fsolve_options (KEYWORD, VALUE)\n\
 \n\
@@ -274,18 +296,23 @@ to the shortest match.")
       print_fsolve_option_list ();
       return retval;
     }
-  else if (nargin == 2)
+  else if (nargin == 1 || nargin == 2)
     {
       char *keyword = args(0).string_value ();
 
       if (! error_state)
 	{
-	  double val = args(1).double_value ();
-
-	  if (! error_state)
+	  if (nargin == 1)
+	    return show_fsolve_option (keyword);
+	  else
 	    {
-	      do_fsolve_option (keyword, val);
-	      return retval;
+	      double val = args(1).double_value ();
+
+	      if (! error_state)
+		{
+		  set_fsolve_option (keyword, val);
+		  return retval;
+		}
 	    }
 	}
     }

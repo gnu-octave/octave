@@ -255,7 +255,7 @@ print_lsode_option_list (void)
 }
 
 static void
-do_lsode_option (char *keyword, double val)
+set_lsode_option (char *keyword, double val)
 {
   ODE_OPTIONS *list = lsode_option_table;
 
@@ -274,6 +274,28 @@ do_lsode_option (char *keyword, double val)
   warning ("lsode_options: no match for `%s'", keyword);
 }
 
+static Octave_object
+show_lsode_option (char *keyword)
+{
+  Octave_object retval;
+
+  ODE_OPTIONS *list = lsode_option_table;
+
+  while (list->keyword != 0)
+    {
+      if (keyword_almost_match (list->kw_tok, list->min_len, keyword,
+				list->min_toks_to_match, MAX_TOKENS))
+	{
+	  return (lsode_opts.*list->d_get_fcn) ();
+	}
+      list++;
+    }
+
+  warning ("lsode_options: no match for `%s'", keyword);
+
+  return retval;
+}
+
 DEFUN_DLD_BUILTIN ("lsode_options", Flsode_options, Slsode_options, -1, 1,
   "lsode_options (KEYWORD, VALUE)\n\
 \n\
@@ -289,18 +311,23 @@ to the shortest match.")
       print_lsode_option_list ();
       return retval;
     }
-  else if (nargin == 2)
+  else if (nargin == 1 || nargin == 2)
     {
       char *keyword = args(0).string_value ();
 
       if (! error_state)
 	{
-	  double val = args(1).double_value ();
-
-	  if (! error_state)
+	  if (nargin == 1)
+	    return show_lsode_option (keyword);
+	  else
 	    {
-	      do_lsode_option (keyword, val);
-	      return retval;
+	      double val = args(1).double_value ();
+
+	      if (! error_state)
+		{
+		  set_lsode_option (keyword, val);
+		  return retval;
+		}
 	    }
 	}
     }

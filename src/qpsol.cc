@@ -327,7 +327,7 @@ print_qpsol_option_list (void)
 }
 
 static void
-do_qpsol_option (char *keyword, double val)
+set_qpsol_option (char *keyword, double val)
 {
   QPSOL_OPTIONS *list = qpsol_option_table;
 
@@ -354,6 +354,31 @@ do_qpsol_option (char *keyword, double val)
     }
 
   warning ("qpsol_options: no match for `%s'", keyword);
+}
+
+static Octave_object
+show_qpsol_option (char *keyword)
+{
+  Octave_object retval;
+
+  QPSOL_OPTIONS *list = qpsol_option_table;
+
+  while (list->keyword != 0)
+    {
+      if (keyword_almost_match (list->kw_tok, list->min_len, keyword,
+				list->min_toks_to_match, MAX_TOKENS))
+	{
+	  if (list->d_get_fcn)
+	    return (qpsol_opts.*list->d_get_fcn) ();
+	  else
+	    return (double) (qpsol_opts.*list->i_get_fcn) ();
+	}
+      list++;
+    }
+
+  warning ("qpsol_options: no match for `%s'", keyword);
+
+  return retval;
 }
 
 #endif
@@ -386,18 +411,23 @@ to the shortest match.")
       print_qpsol_option_list ();
       return retval;
     }
-  else if (nargin == 2)
+  else if (nargin == 1 || nargin == 2)
     {
       char *keyword = args(0).string_value ();
 
       if (! error_state)
 	{
-	  double val = args(1).double_value ();
-
-	  if (! error_state)
+	  if (nargin == 1)
+	    return show_qpsol_option (keyword);
+	  else
 	    {
-	      do_qpsol_option (keyword, val);
-	      return retval;
+	      double val = args(1).double_value ();
+
+	      if (! error_state)
+		{
+		  set_qpsol_option (keyword, val);
+		  return retval;
+		}
 	    }
 	}
     }

@@ -567,7 +567,7 @@ representation.\n\
   return retval;
 }
 
-#if 0
+// #if 0
 
 // Octave could use some way to access the value of ERRNO, but this is
 // probably not the best interface, so don't depend on it...
@@ -588,7 +588,7 @@ Return the current value of the system-dependent variable errno.\n\
   return retval;
 }
 
-#endif
+// #endif
 
 static void
 warn_old_style_preference (bool val, const std::string& sval)

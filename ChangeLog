@@ -1,3 +1,11 @@
+2004-12-17  John W. Eaton  <jwe@octave.org>
+
+	* configure.in: Use AC_GNU_SOURCE.
+
+2004-12-17  Orion Poplawski  <orion@cora.nwra.com>
+
+	* configure.in: Also check for signbit decl.
+
 2004-12-03  John W. Eaton  <jwe@octave.org>
 
 	* aclocal.m4 (OCTAVE_PROG_GPERF): Check with -L C++, not -L ANSI_C.

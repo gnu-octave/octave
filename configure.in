@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.458 $)
+AC_REVISION($Revision: 1.459 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -37,6 +37,8 @@ AC_CONFIG_HEADER(config.h)
 AC_DEFINE(OCTAVE_SOURCE, 1, [Define if this is Octave.])
   
 OCTAVE_HOST_TYPE
+
+AC_GNU_SOURCE
 
 AC_AIX
 AC_MINIX
@@ -1153,6 +1155,7 @@ case "$canonical_host_type" in
   ;;
   *)
     AC_CHECK_FUNCS(finite isnan isinf copysign signbit)
+    AC_CHECK_DECLS(signbit, , , [#include <math.h>])
   ;;
 esac
 

@@ -1,3 +1,10 @@
+2004-12-17  John W. Eaton  <jwe@octave.org>
+
+	* lo-cieee.c (lo_ieee_signbit): New function.
+	* lo-ieee.h: Provide decl.
+	Don't define lo_ieee_signbit as a macro here.
+	From Orion Poplawski <orion@cora.nwra.com>.
+
 2004-11-18  John W. Eaton  <jwe@octave.org>
 
 	* int32NDArray.cc (pow): Delete instantiation.

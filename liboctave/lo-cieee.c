@@ -153,6 +153,30 @@ lo_ieee_nan_value (void)
   return octave_NaN;
 }
 
+#if ! (defined (signbit) || defined (HAVE_DECL_SIGNBIT)) && defined (HAVE_SIGNBIT)
+extern int signbit (double);
+#endif
+
+int
+lo_ieee_signbit (double x)
+{
+/* In the following definitions, only check x < 0 explicitly to avoid
+   a function call when it looks like signbit or copysign are actually
+   functions.  */
+
+#if defined (signbit)
+  return signbit (x);
+#elif defined (HAVE_SIGNBIT)
+  return (x < 0 || signbit (x));
+#elif defined (copysign)
+  return (copysign (1.0, x) < 0);
+#elif defined (HAVE_COPYSIGN)
+  return (x < 0 || copysign (1.0, x) < 0);
+#else
+  return x < 0;
+#endif
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

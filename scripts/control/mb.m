@@ -14,7 +14,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with Octave; see the file COPYING.  If not, write to the Free
-# Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+# Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 # I think that this m-file can be deleted
 # a.s.hodel@eng.auburn.edu - 4 Dec. 1998

@@ -14,7 +14,7 @@
 # 
 # You should have received a copy of the GNU General Public License 
 # along with Octave; see the file COPYING.  If not, write to the Free 
-# Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA. 
+# Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. 
  
 function [retval,Pc,Pf] = hinfsyn_chk(A,B1,B2,C1,C2,D12,D21,g,ptol)
   # [retval,Pc,Pf] = hinfsyn_chk(A,B1,B2,C1,C2,D12,D21,g,ptol)

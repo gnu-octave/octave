@@ -1,5 +1,8 @@
 2000-02-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* data-conv.cc (LS_DO_WRITE): Cast arg to ostream::write to char*.
+	(LS_DO_READ): Likewise, for istream::read.
+
 	* oct-env.cc (octave_env::do_polite_directory_format):
 	Use operator== and substr method to do limited-length string
 	comparison.

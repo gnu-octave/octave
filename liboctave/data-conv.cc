@@ -189,7 +189,7 @@ oct_data_conv::string_to_data_type (const std::string& str)
   do \
     { \
       volatile TYPE *ptr = X_CAST (volatile TYPE *, data); \
-      stream.read (X_CAST (TYPE *, ptr), size * len); \
+      stream.read (X_CAST (char *, ptr), size * len); \
       if (swap) \
         swap_ ## size ## _bytes (ptr, len); \
       TYPE tmp = ptr[0]; \
@@ -210,7 +210,7 @@ oct_data_conv::string_to_data_type (const std::string& str)
       TYPE *ptr = new TYPE [len]; \
       for (int i = 0; i < len; i++) \
         ptr[i] = X_CAST (TYPE, data[i]); \
-      stream.write (ptr, size * len); \
+      stream.write (X_CAST (char *, ptr), size * len); \
       delete [] ptr ; \
     } \
   while (0)

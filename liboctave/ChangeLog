@@ -1,3 +1,8 @@
+Tue Feb 10 16:14:36 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Array-idx.h (assign): Allow A([]) = X to succeed if X is an
+	empty matrix of any dimension.
+
 Thu Feb  5 02:12:38 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-syscalls.cc (octave_syscalls::vfork): New function.

@@ -243,10 +243,13 @@ assign (Array<LT>& lhs, const Array<RT>& rhs)
     }
   else
     {
-      (*current_liboctave_error_handler)
-	("A([]) = X: X must also be an empty matrix");
+      if (rhs_len != 0)
+ 	{
+	  (*current_liboctave_error_handler)
+	    ("A([]) = X: X must also be an empty matrix");
 
-      retval = 0;
+	  retval = 0;
+	}
     }
 
   lhs.clear_index ();

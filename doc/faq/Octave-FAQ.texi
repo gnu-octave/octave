@@ -8,7 +8,7 @@
 @titlepage
 @title Octave FAQ
 @subtitle Frequently asked questions about Octave
-@subtitle December 14, 1996
+@subtitle February 14, 1998
 @sp 1
 @author John W. Eaton
 @page
@@ -90,15 +90,10 @@ Free Software Foundation.
 @node Version 2.0, Octave Features, What is Octave?, Top
 @chapter What's new in version 2.0 of Octave
 
-The long-awaited version 2.0 of Octave has now been released.  Many
-bugs have been fixed and lots of new features added.  Octave is now much
-more compatible with @sc{Matlab}.
-
-Version 2.0 fixes many bugs, but as with any ``x.y.0'' release there
-will be a few glitches.  There will probably be a 2.0.1 release to fix
-most of these problems.  You can help contribute to the quality of
-Octave by using it and submitting bug reports for the problems you
-encounter.
+Version 2.0.10 of Octave was released February 6, 1998.  Most bugs
+reported since version 2.0 was release have been fixed, and a number of
+new features have been added.  Octave is now much more compatible with
+@sc{Matlab}.
 
 A list of user-visible changes in recent versions of Octave may be found
 in the file NEWS, distributed in both source and binary releases of
@@ -458,9 +453,8 @@ via the GNU Emacs, info, or xinfo programs, or by using the @samp{help -i}
 command to start the GNU info browser directly from the Octave prompt.
 
 It is also possible to use your favorite WWW browser to read the Octave
-manual (or any other Info file) by using Roar Smith's info2www program
-to convert GNU Info files to HTML.  The source for info2www is available
-from @url{ftp://ftp.che.wisc.edu/pub/www}.
+manual by converting the Texinfo source to HTML using the
+@code{texi2html} program.
 
 @node Getting Octave, Installation, Documentation, Top
 @chapter Obtaining Source Code
@@ -484,26 +478,21 @@ ordering a tape or CD-ROM from the Free Software Foundation (FSF).
 
 Octave was not developed by the FSF, but the FSF does distribute Octave,
 and the developers of Octave support the efforts of the FSF by
-encouraging users of Octave to order Octave on tape or CD directly from
+encouraging users of Octave to order Octave on CD-ROM directly from
 the FSF.
 
 The FSF is a nonprofit organization that distributes software and
-manuals to raise funds for more GNU development.  Buying a tape or CD
-from the FSF contributes directly to paying staff to develop GNU
-software.  CD-ROMs cost $400 if an organization is buying, or $100 if an
-individual is buying.  Tapes cost around $200 depending on media type.
-
-The FSF only makes new CD releases a few times a year, so if you are
-interested specifically in Octave, I recommend asking for the latest
-release on tape.
+manuals to raise funds for more GNU development.  Buying a CD-ROM from
+the FSF contributes directly to paying staff to develop GNU software.
+CD-ROMs cost $240 if an organization is buying, or $60 if an individual
+is buying.
 
 @cindex FSF [Free Software Foundation]
 @cindex GNU [GNU's not unix]
 
 For more information about ordering from the FSF, contact
-gnu@@prep.ai.mit.edu, phone (617) 542-5942 or anonymous ftp file
-@file{/pub/gnu/GNUinfo/ORDERS} from prep.ai.mit.edu or one of the sites
-listed below.
+gnu@@gnu.org, phone (617) 542-5942 or anonymous ftp the file
+@file{/pub/gnu/GNUinfo/ORDERS} from ftp.gnu.org.
 
 @cindex FSF, contact <gnu@@prep.ai.mit.edu>
 @cindex GNUware, anonymous FTP sites
@@ -532,35 +521,35 @@ last release.
 @cindex VMS support
 @cindex VAX
 @cindex MS-DOS support
+@cindex Windows support
 @cindex DJGPP
 @cindex EMX
 @cindex OS/2 support
 
-Octave currently runs on Unix-like systems only.  It should be possible
-to make Octave work on other systems.  If you are interested in porting
-Octave to other systems, please contact bug-octave@@bevo.che.wisc.edu.
+Octave currently runs on Unix-like systems, OS/2, and Windows NT/95
+(using the gnu-win32 tools from Cygnus Support).  It should be possible
+to make Octave work on other systems as well.  If you are interested in
+porting Octave to other systems, please contact
+bug-octave@@bevo.che.wisc.edu.
 
 @node latest versions,  , Octave for other platforms, Getting Octave
 @section What is the latest version of Octave
 
 @cindex Octave, version date
 
-The latest version of Octave is 2.0, released December 1996.
+The latest version of Octave is 2.0.10, released February 6, 1998.
 
 @node Installation, Common problems, Getting Octave, Top
 @chapter Installation Issues and Problems
 
 @cindex Octave, building 
 
-Octave requires approximately 50MB of disk storage to unpack and
-install (significantly less if you don't compile with debugging
-symbols).
-
-Octave has been compiled and tested with g++ and libg++ on a
-SPARCstation 2 running SunOS 4.1.2, an IBM RS/6000 running AIX 3.2.5,
-DEC Alpha systems running OSF/1 1.3 and 3.0, a DECstation 5000/240
-running Ultrix 4.2a, and i486 systems running Linux.  It should work on
-most other Unix systems that have a working port of g++ and libg++.
+Octave requires approximately 125MB of disk storage to unpack and
+compile from source (significantly less if you don't compile with
+debugging symbols or create shared libraries).  Once installed, Octave
+requires approximately 65MB of disk space (again, considerably less if
+you don't build shared libraries or the binaries and libraries do not
+include debugging symbols).
 
 @menu
 * What else do I need?::        
@@ -577,11 +566,20 @@ most other Unix systems that have a working port of g++ and libg++.
 @cindex Flex
 @cindex GNU Bison
 
-  In order to build Octave, you will need a current version
-of g++, libg++, and GNU make.  If you don't have these tools, you can
-get them from many anonymous ftp archives, including ftp.che.wisc.edu,
-ftp.uu.net, prep.ai.mit.edu, and wuarchive.wustl.edu, or by writing to
-the FSF at 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+To compile Octave, you will need a recent version of GNU Make.  You
+will also need g++ 2.7.2 or later.  Version 2.8.0 or egcs 1.0.x should
+work.  Later versions may work, but C++ is still evolving, so don't be
+too surprised if you run into some trouble.
+
+It is no longer necessary to have libg++, but you do need to have the
+GNU implementation of libstdc++.  If you are using g++ 2.7.2,
+libstdc++ is distributed along with libg++, but for later versions,
+libstdc++ is distributed separately.  For egcs, libstdc++ is included
+with the compiler distribution.
+
+<em>You must have gnu make to compile octave</em>.  Octave's Makefiles
+use features of GNU Make that are not present in other versions of make.
+GNU Make is very portable and easy to install.
 
 @node Other C++ compilers?,  , What else do I need?, Installation
 @section Can I compile Octave with another C++ compiler?
@@ -718,22 +716,25 @@ variables may have been introduced since this document was last updated.
 
 @example
 @group
-  PS1 = ">> ";
-  PS2 = "";
-  beep_on_error = 1;
-  default_save_format = "mat-binary";
-  define_all_return_values = 1;
-  do_fortran_indexing = 1;
-  empty_list_elements_ok = 1;
-  implicit_str_to_num_ok = 1;
-  ok_to_lose_imaginary_part = 1;
-  page_screen_output = 0;
-  prefer_column_vectors = 0;
-  prefer_zero_one_indexing = 1;
-  print_empty_dimensions = 0;
-  treat_neg_dim_as_zero = 1;
-  warn_function_name_clash = 0;
-  whitespace_in_literal_matrix = "traditional";
+  PS1 = ">> "
+  PS2 = ""
+  beep_on_error = 1.0
+  default_eval_print_flag = 0.0
+  default_save_format = "mat-binary"
+  define_all_return_values = 1.0
+  do_fortran_indexing = 1.0
+  empty_list_elements_ok = 1.0
+  fixed_point_format = 1.0
+  implicit_num_to_str_ok = 1.0
+  implicit_str_to_num_ok = 1.0
+  ok_to_lose_imaginary_part = 1.0
+  page_screen_output = 0.0
+  prefer_column_vectors = 0.0
+  prefer_zero_one_indexing = 1.0
+  print_empty_dimensions = 0.0
+  treat_neg_dim_as_zero = 1.0
+  warn_function_name_clash = 0.0
+  whitespace_in_literal_matrix = "traditional"
 @end group
 @end example
 

@@ -39,7 +39,7 @@ SUBDIRS = @PLPLOT_DIR@ @READLINE_DIR@ @DLFCN_DIR@ glob \
 
 
 # Subdirectories in which to run `make all'.
-INSTALL_SUBDIRS = @INFO_DIR@ libcruft liboctave src scripts doc examples
+INSTALL_SUBDIRS = libcruft liboctave src scripts doc examples
 
 # Subdirectories in which to run `make conf-dist'.
 CONF_DISTSUBDIRS = src

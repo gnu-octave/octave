@@ -69,7 +69,7 @@ your @file{~/.emacs} file:
 @lisp
 (autoload 'octave-mode "octave-mod" nil t)
 (setq auto-mode-alist
-      (cons '(\"\\\\.m$\" . octave-mode) auto-mode-alist))
+      (cons '("\\.m$" . octave-mode) auto-mode-alist))
 @end lisp
 
 @item

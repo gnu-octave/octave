@@ -224,7 +224,7 @@ DISTFILES = Makefile.in ChangeLog mkdefs mkops mkgendoc \
 	DOCSTRINGS mkbuiltins mk-oct-links \
 	defaults.h.in oct-conf.h.in octave.gperf oct-gperf.h \
 	octave.cc parse.cc lex.cc y.tab.h \
-	$(INCLUDES) $(DIST_SRC) $(OPT_HANDLERS)
+	$(INCLUDES) $(DIST_SRC) $(OPT_HANDLERS) $(EXTRAS)
 
 ifeq ($(SHARED_LIBS), true)
   BINDISTLIBS = src/liboctinterp

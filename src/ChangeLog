@@ -1,3 +1,7 @@
+2002-11-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* sysdep.cc (BSD_init): Avoid failure if FP_X_DNML is not defined.
+
 2002-11-08  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* cutils.c: Be sure to always return buf.

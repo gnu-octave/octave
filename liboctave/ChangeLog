@@ -1,3 +1,8 @@
+2002-11-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lo-ieee.cc (octave_ieee_init): Check defined (__osf__) instead
+	of ! defined (linux).
+
 2002-11-09  Per Persson <persquare@mac.com>
 
 	* oct-shlib.cc (octave_dyld_shlib): New class.

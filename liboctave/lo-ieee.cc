@@ -53,13 +53,10 @@ octave_ieee_init (void)
 {
 #if defined (HAVE_ISINF) || defined (HAVE_FINITE)
 
-// Some version of gcc on some old version of Linux used to crash when
-// trying to make Inf and NaN.
-
 #if defined (SCO)
   double tmp = 1.0;
   octave_Inf = 1.0 / (tmp - tmp);
-#elif defined (__alpha__) && ! defined (linux)
+#elif defined (__alpha__) && defined (__osf__)
   extern unsigned int DINFINITY[2];
   octave_Inf =  (*(X_CAST(double *, DINFINITY)));
 #else
@@ -78,7 +75,7 @@ octave_ieee_init (void)
 
 #if defined (HAVE_ISNAN)
 
-#if defined (__alpha__) && ! defined (linux)
+#if defined (__alpha__) && defined (__osf__)
   extern unsigned int DQNAN[2];
   octave_NaN = (*(X_CAST(double *, DQNAN)));
 #else

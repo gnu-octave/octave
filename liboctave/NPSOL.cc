@@ -279,11 +279,14 @@ NPSOL::do_minimize (double& objf, int& inform, ColumnVector& lambda)
   while (attempt++ < 5)
     {
 
-      F77_FCN (npsol, NPSOL) (n, nclin, ncnln, nrowa, nrowj, nrowr,
-			      pclin, clow, cup, npsol_confun,
-			      npsol_objfun, inform, iter, istate, c,
-			      cjac, pclambda, objf, objgrd, r, px, iw,
-			      leniw, w, lenw);
+      F77_XFCN (npsol, NPSOL,
+		(n, nclin, ncnln, nrowa, nrowj, nrowr, pclin, clow,
+		 cup, npsol_confun, npsol_objfun, inform, iter,
+		 istate, c, cjac, pclambda, objf, objgrd, r, px, iw,
+		 leniw, w, lenw));
+
+      // XXX FIXME XXX -- need to know if an exception that resulted
+      // in a call to xstopx has occurred...
 
       if (inform == 6 || inform == 1)
 	continue;

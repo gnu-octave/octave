@@ -36,7 +36,17 @@ class
 idx_vector
 {
 public:
-  idx_vector (void);
+
+  idx_vector::idx_vector (void)
+    {
+      len = 0;
+      num_zeros = 0;
+      num_ones = 0;
+      one_zero = 0;
+      initialized = 0;
+      data = 0;
+    }
+
   idx_vector (const idx_vector& a);
 
   idx_vector (const Matrix& m, int do_ftn_idx,
@@ -44,27 +54,30 @@ public:
 
   idx_vector (const Range& r);
 
- ~idx_vector (void);
+  idx_vector::~idx_vector (void) { delete [] data; }
 
   idx_vector& operator = (const idx_vector& a);
 
-  operator void * () const;
+  idx_vector::operator void * () const
+    {
+      return initialized ? (void *) 1 : (void *) 0;
+    }
 
-  int capacity (void) const;
-  int length (void) const;
+  int idx_vector::capacity (void) const { return len; }
+  int idx_vector::length (void) const { return len; }
 
-  int elem (int n) const;
-  int checkelem (int n) const;
-  int operator () (int n) const;
+  int idx_vector::elem (int n) const { return data[n]; }
+
+  int idx_vector::operator () (int n) const { return checkelem (n); }
+
+  int idx_vector::max (void) const { return max_val; }
+  int idx_vector::min (void) const { return min_val; }
+
+  int idx_vector::one_zero_only (void) const { return one_zero; }
+  int idx_vector::zeros_count (void) const { return num_zeros; }
+  int idx_vector::ones_count (void) const { return num_ones; }
 
 // other stuff
-
-  int max (void) const;
-  int min (void) const;
-
-  int one_zero_only (void) const;
-  int zeros_count (void) const;
-  int ones_count (void) const;
 
   void sort (void);
   void sort_uniq (void);
@@ -78,51 +91,17 @@ public:
 private:
 
   int len;
-  int one_zero;
   int num_zeros;
   int num_ones;
   int max_val;
   int min_val;
-  int initialized;
+  unsigned int one_zero : 1;
+  unsigned int initialized : 1;
   int *data;
 
   void init_state (const char *rc = 0, int z_len = 0);
   void convert_one_zero_to_idx (void);
 };
-
-inline idx_vector::idx_vector (void)
-{
-  len = 0;
-  data = 0;
-  num_zeros = 0;
-  num_ones = 0;
-  one_zero = 0;
-  initialized = 0;
-}
-
-inline idx_vector::~idx_vector (void)
-{
-  delete [] data;
-}
-
-inline idx_vector::operator void * () const
-{
-  return initialized ? (void *) 1 : (void *) 0;
-}
-
-inline int idx_vector::capacity (void) const { return len; }
-inline int idx_vector::length (void) const { return len; }
-
-inline int idx_vector::elem (int n) const { return data[n]; }
-
-inline int idx_vector::operator () (int n) const { return checkelem (n); }
-
-inline int idx_vector::max (void) const { return max_val; }
-inline int idx_vector::min (void) const { return min_val; }
-
-inline int idx_vector::one_zero_only (void) const { return one_zero; }
-inline int idx_vector::zeros_count (void) const { return num_zeros; }
-inline int idx_vector::ones_count (void) const { return num_ones; }
 
 #endif
 

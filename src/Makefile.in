@@ -59,11 +59,10 @@ DLD_OBJ := $(patsubst %.cc, %.o, $(DLD_SRC))
 
 INCLUDES := arith-ops.h builtins.h defaults.h.in defun.h defun-dld.h \
 	defun-int.h dirfns.h dynamic-ld.h error.h file-info.h \
-	file-io.h fnmatch.h getopt.h gripes.h help.h idx-vector.h \
-	input.h lex.h load-save.h mappers.h missing-math.h \
-	oct-gperf.h octave.h octave-hist.h \
-	oct-map.h oct-obj.h oct-str.h pager.h parse.h pathlen.h \
-	pathsearch.h pr-output.h procstream.h sighandlers.h \
+	file-io.h fnmatch.h getopt.h gripes.h help.h input.h lex.h \
+	load-save.h mappers.h missing-math.h oct-gperf.h octave.h \
+	octave-hist.h oct-map.h oct-obj.h oct-str.h pager.h parse.h \
+	pathlen.h pathsearch.h pr-output.h procstream.h sighandlers.h \
 	statdefs.h symtab.h sysdep.h sysdir.h systime.h syswait.h \
 	token.h tree-base.h tree-cmd.h tree-const.h tree-expr.h \
 	tree-misc.h tree-plot.h tc-inlines.h tc-rep.h unwind-prot.h \
@@ -79,8 +78,7 @@ TI_OBJ := $(patsubst %.cc, %.o, $(TI_SRC))
 
 SOURCES := acosh.c arith-ops.cc asinh.c atanh.c data.cc dirfns.cc \
 	dynamic-ld.cc erf.c erfc.c error.cc file-info.cc file-io.cc \
-	filemode.c \
-	fnmatch.c getopt.c getopt1.c gripes.cc help.cc idx-vector.cc \
+	filemode.c fnmatch.c getopt.c getopt1.c gripes.cc help.cc \
 	input.cc lex.l load-save.cc mappers.cc mkdir.c octave.cc \
 	octave-hist.cc oct-map.cc oct-obj.cc oct-str.cc pager.cc \
 	parse.y pr-output.cc procstream.cc rename.c resource.cc \

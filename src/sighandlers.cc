@@ -72,7 +72,7 @@ octave_new_handler (void)
       panic_impossible ();
     }
   else
-    clean_up_and_exit (1);
+    my_friendly_exit ("operator new", 1);
 }
 
 static RETSIGTYPE

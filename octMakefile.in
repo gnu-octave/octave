@@ -57,10 +57,14 @@ octave-bug: octave-bug.in
 	  -e "s;%TARGET_HOST_TYPE%;${target_host_type};" \
 	  -e "s;%F77%;${F77};" \
 	  -e "s;%FFLAGS%;${FFLAGS};" \
+	  -e "s;%F2C%;${F2C};" \
+	  -e "s;%F2CFLAGS%;${F2CFLAGS};" \
+	  -e "s;%FLIBS%;${FLIBS};" \
 	  -e "s;%CC%;${CC};" \
 	  -e "s;%CFLAGS%;${BUG_CFLAGS};" \
 	  -e "s;%CXX%;${CXX};" \
 	  -e "s;%CXXFLAGS%;${BUG_CXXFLAGS};" \
+	  -e "s;%LDFLAGS%;${LDFLAGS};" \
 	  -e "s;%DEFS%;${UGLY_DEFS};")
 	@mv $@.tmp $@
 

@@ -16,10 +16,14 @@ VERSION="%VERSION%"
 MACHINE="%TARGET_HOST_TYPE%"
 F77="%F77%"
 FFLAGS="%FFLAGS%"
+FLIBS="%FLIBS%"
+F2C="%F2C%"
+F2CFLAGS="%F2CFLAGS%"
 CC="%CC%"
 CFLAGS="%CFLAGS%"
 CXX="%CXX%"
 CXXFLAGS="%CXXFLAGS%"
+LDFLAGS="%LDFLAGS%"
 DEFS="%DEFS%"
 
 PATH=/bin:/usr/bin:/usr/ucb:/usr/local/bin:$PATH
@@ -103,10 +107,14 @@ Configuration (please do not edit this section):
 uname output:     $UN
 Fortran compiler: $F77
 FFLAGS:           $FFLAGS
+F2C:              $F2C
+F2CFLAGS:         $F2CFLAGS
+FLIBS:            $FLIBS
 C compiler:       $CC
 CFLAGS:           $CFLAGS
 C++ compiler:     $CXX
 CXXFLAGS:         $CXXFLAGS
+LDFLAGS:          $LDFLAGS
 DEFS:
 
 EOF

@@ -43,6 +43,8 @@ octave_fcn_handle : public octave_base_value
 {
 public:
 
+  octave_fcn_handle (void) : fcn (0), nm () { }
+
   octave_fcn_handle (octave_function *f, const std::string& n)
     : fcn (f), nm (n) { }
 

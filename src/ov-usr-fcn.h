@@ -168,8 +168,6 @@ public:
 
 private:
 
-  octave_user_function (void);
-
   octave_user_function (const octave_user_function& m);
 
   // List of arguments for this function.  These are local variables.

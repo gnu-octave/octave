@@ -59,13 +59,13 @@ function __plt2mv__ (x, y, fmt)
   if (x_nc > 0)
     tmp = [x, y];
     cmd = sprintf ("gplot tmp(:,%d:%d:%d) %s", 1, x_nc, x_nc+1,
-                   deblank (fmt (k, :)));
+                   undo_string_escapes (deblank (fmt (k, :))));
     if (k < fmt_nr)
       k++;
     endif
     for i = 2:x_nc
       cmd = sprintf ("%s, tmp(:,%d:%d:%d) %s", cmd, i, x_nc-i+1, x_nc+1,
-                     deblank (fmt (k, :)));
+                     undo_string_escapes (deblank (fmt (k, :))));
       if (k < fmt_nr)
         k++;
       endif

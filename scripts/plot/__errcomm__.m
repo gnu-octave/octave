@@ -60,7 +60,7 @@ function __errcomm__ (caller, varargin)
 	nargin--;
 	a = varargin{k++};
 	if (isstr (a))
-	  fmt = a;
+	  fmt = undo_string_escapes (a);
 	  cmd = "__errplot__ (arg1";
 	  for i = 2:ndata,
 	    cmd = sprintf ("%s, arg%d", cmd, i);

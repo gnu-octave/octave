@@ -57,7 +57,7 @@ function __plt2vv__ (x, y, fmt)
   endif
 
   tmp = [x, y];
-  cmd = sprintf ("gplot tmp %s", fmt);
+  cmd = sprintf ("gplot tmp %s", undo_string_escapes (fmt));
   eval (cmd);
 
 endfunction

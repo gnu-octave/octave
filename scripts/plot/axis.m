@@ -229,7 +229,7 @@ function curr_axis = axis (ax, varargin)
       endif
 
     else
-      warning (["unknown axis option '", ax, "'"]);
+      warning ("unknown axis option '%s'", ax);
     endif
 
   elseif (isvector (ax))

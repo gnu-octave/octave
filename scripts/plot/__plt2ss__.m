@@ -40,7 +40,7 @@ function __plt2ss__ (x, y, fmt)
 
   if (x_nr == 1 && x_nr == y_nr && x_nc == 1 && x_nc == y_nc)
     tmp = [x, y];
-    cmd = sprintf ("gplot tmp %s", fmt);
+    cmd = sprintf ("gplot tmp %s", undo_string_escapes (fmt));
     eval (cmd);
   else
     error ("__plt2ss__: arguments must be scalars");

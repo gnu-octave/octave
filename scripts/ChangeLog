@@ -1,3 +1,13 @@
+2003-01-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* plot/__plt2vv__.m: Call undo_string_escapes on fmt arg before eval.
+	* plot/__plt2vm__.m: Likewise.
+	* plot/__plt2ss__.m: Likewise.
+	* plot/__plt2mv__.m: Likewise.
+	* plot/__plt2mm__.m: Likewise.
+	* plot/__errplot__.m: Likewise.
+	* plot/__errcomm__.m: Likewise, for fmt arg passed in by user.
+
 2003-01-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* strings/strcmp.m: Handle cell arrays of strings.

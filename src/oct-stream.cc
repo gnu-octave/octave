@@ -44,8 +44,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-obj.h"
 #include "utils.h"
 
-static istream&
-octave_scan (istream& is, const char *fmt, ...)
+static std::istream&
+octave_scan (std::istream& is, const char *fmt, ...)
 {
 #if defined (__GNUG__)
 

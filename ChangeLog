@@ -1,5 +1,10 @@
 Thu Jan 15 23:12:27 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* config.guess: Update to new version from the FSF.
+	* configure.in: Match alpha*-... instead of just alpha-... to cope
+	with new strings like alphaev56-dec-osf4.0b returned from
+	config.guess.
+
 	* aclocal.m4 (OCTAVE_CC_FLAG, OCTAVE_CXX_FLAG): New macros.
 	* configure.in: Use them to find out if the C and C++ compilers
 	support -mieee-fp, -mieee, -fno-implicit-templates, and

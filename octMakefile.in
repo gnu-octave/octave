@@ -39,7 +39,7 @@ SUBDIRS = @INFO_DIR@ @PLPLOT_DIR@ @READLINE_DIR@ glob kpathsea \
 CONF_DISTSUBDIRS = src
 
 # Subdirectories in which to run `make dist'.
-DISTSUBDIRS = libcruft liboctave info readline src scripts dld test doc 
+DISTSUBDIRS = libcruft liboctave info readline src scripts test doc 
 
 BINDISTFILES = COPYING ChangeLog NEWS README THANKS INSTALL.OCTAVE \
 	BUGS PROJECTS octave-bug octave.sh doinstall.sh \

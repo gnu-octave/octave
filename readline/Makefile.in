@@ -20,6 +20,9 @@ SHLEXT = @SHLEXT@
 
 SHARED_LIBS = @SHARED_LIBS@
 
+TERMLIBS = @TERMLIBS@
+SHARED_TERMLIBS = @SHARED_TERMLIBS@
+
 LIBS_TO_INSTALL = libreadline.a libhistory.a \
 	libreadline.$(SHLEXT) libhistory.$(SHLEXT)
 
@@ -144,7 +147,8 @@ libhistory.a: history.o
 
 stamp-readline: $(PICOBJ)
 	if $(SHARED_LIBS); then \
-	  $(CC) -shared -o libreadline.$(SHLEXT) $(PICOBJ) -ltermcap; \
+	  $(CC) -shared -o libreadline.$(SHLEXT) $(PICOBJ) \
+	  $(SHARED_TERMLIBS); \
 	fi
 	touch stamp-readline
 
@@ -198,7 +202,7 @@ readline: $(OBJECTS)
 	$(CC) $(CPPFLAGS) $(ALL_CFLAGS) -DTEST -o readline \
 	  readline.c bind.o complete.o display.o funmap.o history.o \
 	  isearch.o keymaps.o parens.o rltty.o search.o signals.o \
-	tilde.o vi_mode.o xmalloc.o -ltermcap
+	tilde.o vi_mode.o xmalloc.o $(TERMLIBS)
 
 clean:
 	$(RM) -f $(OBJECTS) libreadline.a libhistory.a pic/*.o

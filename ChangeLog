@@ -1,3 +1,8 @@
+2003-01-21  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makeconf.in (MKOCTFILE_INCFLAGS): Skip -I$(includedir) if
+	$(includedir) is /usr/include.
+
 2003-01-16  Mumit Khan  <khan@nanotech.wisc.edu>
 
 	* Makeconf.in (SED): Export to subshells.

@@ -282,8 +282,13 @@ imagepath = @imagepath@
 canonical_host_type = @canonical_host_type@
 
 # The -I flags to use for the mkoctfile script.
-MKOCTFILE_INCFLAGS = \
-  -I$(octincludedir) -I$(octincludedir)/octave -I$(includedir)
+ifeq ($(includedir,/usr/include)
+ MKOCTFILE_INCFLAGS = \
+    -I$(octincludedir) -I$(octincludedir)/octave
+else
+ MKOCTFILE_INCFLAGS = \
+    -I$(octincludedir) -I$(octincludedir)/octave -I$(includedir)
+endif
 
 # The -L flags to use for the mkoctfile scrip (for --link-stand-alone)
 MKOCTFILE_LFLAGS = -L$(octlibdir)

@@ -880,6 +880,77 @@ Read the readline library initialiazation file @var{file}.  If\n\
   return retval;
 }
 
+static string hook_fcn;
+static octave_value user_data;
+
+static int
+input_event_hook (...)
+{
+  if (user_data.is_defined ())
+    feval (hook_fcn, user_data, 0);
+  else
+    feval (hook_fcn, octave_value_list (), 0);
+
+  return 0;
+}
+
+DEFUN (input_event_hook, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {[@var{ofcn}, @var{odata}] =} input_event_hook (@var{fcn}, @var{data})\n\
+Given the name of a function as a string and any Octave value object,\n\
+install @var{fcn} as a function to call periodically, when Octave is\n\
+waiting for input.  The function should have the form\n\
+@example\n\
+@var{fcn} (@var{data})\n\
+@end example\n\
+\n\
+If @var{data} is omitted, Octave calls the function without any\n\
+arguments.  If both @var{fcn} and @var{data} are omitted, Octave\n\
+clears the hook.  In all cases, the name of the previous hook function\n\
+and the user data are returned.\n\
+@end deftypefn")
+{
+  octave_value_list retval;
+
+  int nargin = args.length ();
+
+  if (nargin > 2)
+    print_usage ("input_event_hook");
+  else
+    {
+      octave_value tmp_user_data;
+
+      string tmp_hook_fcn;
+
+      if (nargin > 1)
+	tmp_user_data = args(1);
+
+      if (nargin > 0)
+	{
+	  tmp_hook_fcn = args(0).string_value ();
+
+	  if (error_state)
+	    {
+	      error ("input_event_hook: expecting string as first arg");
+	      return retval;
+	    }
+
+	  command_editor::set_event_hook (input_event_hook);
+	}
+
+      if (nargin == 0)
+	command_editor::set_event_hook (0);
+
+      retval(1) = user_data;
+      retval(0) = hook_fcn;
+
+      hook_fcn = tmp_hook_fcn;
+      user_data = tmp_user_data;
+    }
+
+  return retval;
+}
+
 static int
 ps1 (void)
 {

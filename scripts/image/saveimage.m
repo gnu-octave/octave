@@ -168,8 +168,6 @@ function saveimage (filename, img, img_form, map)
         else
           img_row = map(img(idx));
         endif
-        img_row
-        tmp
         if (img_nc < 8)
           for j = 1:8
             tmp(:,i) = tmp(:,i) + img_row (j) * 2^(8-j);

@@ -33,7 +33,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-time.h"
 
 #if !defined (HAVE_STRPTIME)
-extern char *strptime (const char *buf, const char *format, struct tm *tm);
+extern "C" char *strptime (const char *buf, const char *format, struct tm *tm);
 #endif
 
 octave_time::octave_time (const octave_base_tm& tm)

@@ -1,3 +1,7 @@
+2000-01-30  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-time.cc: Declare strptime extern "C".
+
 2000-01-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-time.cc [! HAVE_STRPTIME]: Provide declaration.

@@ -1,3 +1,8 @@
+2000-01-30  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* input.cc (input_event_hook, Finput_event_hook): New functions.
+	(hook_fcn, user_data): New static variables.
+
 2000-01-28  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pt-except.cc (do_catch_code): Don't do anything special for

@@ -149,6 +149,24 @@ is_text_function_name (const string& s)
   return (sr && sr->is_text_function ());
 }
 
+// Is this a mapper function?
+
+bool
+is_builtin_function_name (const string& s)
+{
+  symbol_record *sr = global_sym_tab->lookup (s);
+  return (sr && sr->is_builtin_function ());
+}
+
+// Is this a mapper function?
+
+bool
+is_mapper_function_name (const string& s)
+{
+  symbol_record *sr = global_sym_tab->lookup (s);
+  return (sr && sr->is_mapper_function ());
+}
+
 // Is this function globally in this scope?
 
 bool
@@ -1016,35 +1034,40 @@ maybe_list (const char *header, const string_vector& argv, int argc,
   return status;
 }
 
-DEFUN_TEXT (document, args, ,
-  "document symbol string ...\n\
+DEFUN (document, args, ,
+  "document (NAME, STRING)\n\
 \n\
 Associate a cryptic message with a variable name.")
 {
-  octave_value_list retval;
+  octave_value retval;
 
-  int argc = args.length () + 1;
+  int nargin = args.length ();
 
-  string_vector argv = args.make_argv ("document");
-
-  if (error_state)
-    return retval;
-
-  if (argc == 3)
+  if (nargin == 2)
     {
-      string name = argv[1];
-      string help = argv[2];
+      string name = args(0).string_value ();
 
-      if (is_builtin_variable (name))
-	error ("sorry, can't redefine help for builtin variables");
-      else
+      if (! error_state)
 	{
-	  symbol_record *sym_rec = curr_sym_tab->lookup (name, 0);
+	  string help = args(1).string_value ();
 
-	  if (sym_rec)
-	    sym_rec->document (help);
-	  else
-	    error ("document: no such symbol `%s'", name.c_str ());
+	  if (! error_state)
+	    {
+	      if (is_builtin_variable (name)
+		  || is_text_function_name (name)
+		  || is_mapper_function_name (name)
+		  || is_builtin_function_name (name))
+		error ("document: can't redefine help for built-in variables and functions");
+	      else
+		{
+		  symbol_record *sym_rec = curr_sym_tab->lookup (name, 0);
+
+		  if (sym_rec)
+		    sym_rec->document (help);
+		  else
+		    error ("document: no such symbol `%s'", name.c_str ());
+		}
+	    }
 	}
     }
   else

@@ -60,6 +60,7 @@ define do-subst-config-vals
 echo making $@ from $(srcdir)/$@.in
 sed < $(srcdir)/$@.in > $@.tmp \
   -e "s;%VERSION%;${version};" \
+  -e "s;%config_opts%;${config_opts};" \
   -e "s;%TARGET_HOST_TYPE%;${target_host_type};" \
   -e "s;%F77%;${F77};" \
   -e "s;%FFLAGS%;${FFLAGS};" \

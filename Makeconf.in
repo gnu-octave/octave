@@ -123,6 +123,9 @@ TERMLIBS = @TERMLIBS@
 LIBPLPLOT = @LIBPLPLOT@
 LIBDLFCN = @LIBDLFCN@
 
+# The arguments passed to configure.
+config_opts = @config_opts
+
 # A shell command to extract the version number from version.h.
 getversion = sed -e '/VERSION/!d' -e 's/.*"\(.*\)".*$$/\1/' -e q
 

@@ -2943,6 +2943,12 @@ OCT_VAL_REP::do_index (const octave_value_list& args)
 	      error ("can't index %s variables", type_as_string ());
 	      break;
 	    }
+
+	  // We may have converted this value from a scalar to a
+	  // matrix to allow indexing to work.
+
+	  if (! error_state)
+	    maybe_mutate ();
 	}
     }
 

@@ -1735,7 +1735,6 @@ install_types (void)
   octave_bool_matrix::register_type ();
   octave_char_matrix::register_type ();
   octave_char_matrix_str::register_type ();
-  octave_re_nd_array::register_type ();
   octave_struct::register_type ();
   octave_file::register_type ();
   octave_list::register_type ();

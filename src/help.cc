@@ -751,8 +751,8 @@ display the definition of each NAME that refers to a function")
 
 	      if (pos != NPOS)
 		{
-		  id = id.substr (0, pos);
 		  elts = id.substr (pos+1);
+		  id = id.substr (0, pos);
 		}
 	    }
 

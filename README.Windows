@@ -1,150 +1,244 @@
-*** PLEASE NOTE: This information is mostly out of date.  It would be
-*** useful for someone who uses Octave on Windows to take over
-*** mainenance of this and other files related to running Octave on
-*** Windows systems.
+The following is my current best set of directions for building Octave
+from sources on a Windows system using the Cygwin tools.  If you
+already have Cygwin installed, you may need to update your
+installation of tools to include those mentioned below.
+
+Following these steps should give you an Octave installation that
+includes all the necessary tools for building dynamically linked
+functions (.oct files).
 
 
-Octave has been ported to Windows NT and Windows 95 using the gnu-win32
-tools from Cygnus Support.  If you would like to volunteer to work on
-improving this port, please contact bug-octave@bevo.che.wisc.edu.
+ 1. Use your favorite browser to view the page http://www.cygwin.com
 
-The directory ftp://ftp.che.wisc.edu/pub/octave/BINARIES/gnu-win32
-contains a binary distribution of Octave for Windows NT/95 along with
-installation instructions.  Unless you are interested in doing some
-hacking, you should use the binary releases.
+ 2. Click on the "Install or update now" link.
 
-Here is a list of current problems (and workarounds, where available).
+ 3. A dialog should appear with the option to run the setup program
+    from its current location or save it to disk.  Either will work,
+    but I usually choose to save the setup program to disk so that it
+    is possible to run it later to update the installation without
+    having to go back to the web page using a browser.
 
-* To compile and install Octave on a Windows NT/95 system,
-  you will need to get the beta 19 release of the gnu-win32 tools.
-  They are available from ftp://ftp.cygnus.com/pub/gnu-win32.
+ 4. Run the setup program.
 
-* You will need to have f2c and libf2c.a or g77 installed.  I would
-  recommend using g77.  Mumit Khan has directions for building g77 at
-  http://www.xraylith.wisc.edu/~khan/software/gnu-win32/g77.html.
-  Another solution is to use egcs, which includes g77.  The egcs
-  compiler is available from http://www.cygnus.com/egcs.
+ 5. Choose "Install from Internet".
 
-* You will also need a termcap library.  The GNU termcap library seems
-  to work.  You can get it from any GNU archive site, including 
-  ftp://ftp.gnu.org/pub/gnu/termcap-1.3.tar.gz.
+ 6. Select a root install directory.  You may choose any directory, but
+    it needs to have about 600MB available to install all the
+    necessary Cygwin tools plus build and install Octave from sources.
+    That may seem like a large disk space requirement, but remember
+    that you are getting more than just Octave, you are installing a
+    Unix-like development environment including C, C++, and Fortran
+    compilers as well.  Once Octave is installed, you can delete the
+    sources and build directory, freeing up about 250MB.
 
-* It is possible to cross-compile Octave for Windows NT/95 systems.
-  On the same hardware, it's generally much faster to use gcc as a
-  cross compiler under Linux than as a native compiler under Windows.
+    You may choose to install for just you or all users (if you have
+    permission to do so).  I would select "Unix" as the default text
+    file type (this option should be the default).
 
-  Here are some instructions for building a cross version of gcc and
-  then using it to compile Octave.  I've done this using a Linux
-  system as the host, but it should work equally well on other systems
-  that can run gcc).
+ 7. Select a local package directory.  This is a directory that the
+    setup program will use to temporarily store package files before
+    installing them.  It should have plenty of space (probably 70MB
+    or more).  You may delete this directory once the installation is
+    complete.
 
-    + install cdk on your Windows system
+ 8. Select your Internet Connection.  Probably "Direct Connection" is
+    OK unless you are behind a firewall of some kind that limits your
+    access to the Internet.
 
-    + build a cross version of binutils:
+ 9. Choose a download site.  One that is "near" you on the net is
+    probably best.
 
-      tar zxf binutils-2.9.tar.gz
-      cd binutils-2.9
-      ./configure --target=i386-pc-cygwin32 --prefix=/usr/local/cross-gcc
+10. Select packages.  The defaults are not enough to build all of
+    Octave from sources.  In addition to the default set of packages,
+    you should select the following packages from the following
+    categories:
+
+      Archive: unzip
+      Devel:   autoconf, binutils, bison, cvs, dejagnu, flex, gcc,
+               gperf, make
+      Text:    less, tetex, tetex-base
+      Utils:   diff, patch
+
+    Once you have made these selections, click the Next button to
+    download and install all the selected packages.  The download and
+    install may take a while depending on the speed of your computer
+    and your connection to the net.
+
+11. Once the download and file installation is done, click Finish.  I
+    usually choose to create an icon on the desktop and put an icon in
+    the start menu.  After you click finish, a series of scripts will
+    run, displaying some output in a terminal window.  It will take a
+    few minutes.
+
+12. Download and install Gnuplot:
+
+    a. Use your favorite browser to go to http://www.gnuplot.info and
+       download a binary package of gnuplot for Windows.  At the time
+       of this writing, it was available from the gnuplot ftp site in
+       the file gp373w32.zip.
+
+    b. When you download the zip file, place it in your Cygwin /tmp
+       directory.  This directory will be called something like
+       c:\cygwin\tmp in Windows (the precise location depends on where
+       you chose to install Cygwin).
+
+    c. After downloading the zip file, start Cygwin (actually a bash
+       shell running in a terminal window) by clicking on the Cygwin
+       desktop icon or use the start menu item that you created when
+       you installed Cygwin.
+
+    d. Run the command
+
+         unzip /tmp/gp373w32.zip
+
+       to unpack the zip archive.  This command should create a
+       subdirectory called gp373w32 in your Cygwin home directory.
+
+    e. Move the gnuplot programs and help file to the Cygwin bin
+       directory:
+
+          mv gp373w32/pgnuplot.exe /usr/local/bin
+          mv gp373w32/wgnupl32.exe /usr/local/bin
+          mv gp373w32/WGNUPLOT.HLP /usr/local/bin
+
+       Make sure that executable files have execute permissions set:
+
+          chmod a+rx /usr/local/bin/pgnuplot.exe
+          chmod a+rx /usr/local/bin/wgnupl32.exe
+
+    f. Test it by typing the command
+
+         wgnupl32
+
+       This command should bring up a gnuplot command window.  Try
+       plotting something by typing
+
+         sin(x)
+
+       at the gnuplot prompt.  This command should bring up a plot
+       window displaying a sine wave.
+
+    g. close gnuplot and start the Octave installation.
+
+13. Get the Octave sources, either from a current snapshot
+    distribution or from CVS:
+
+    Snapshot:
+
+      a. Download a copy of the current version of Octave from
+         ftp://ftp.octave.org.  You may use the command line ftp
+         client in Cygwin or a web browser.  You are looking for the
+         most recent version in the pub/octave/bleeding-edge
+         directory.  At the time of this writing, it was
+         octave-2.1.46.tar.gz.  Save this file to your Cygwin home
+         directory.  This directory will usually be called something
+         like c:\cygwin\home\jwe from Windows (the precise location
+         depends on where you chose to install Cygwin).
+
+         IMPORTANT: If you use the ftp client, be sure to set the
+         binary mode for downloads by typing
+
+           binary
+
+         at the ftp prompt.
+
+      b. Unpack the source files using the command:
+
+           tar zxf octave-2.1.46.tar.gz
+
+         in the Cygwin shell.  This command will create a subdirectory
+         called octave-2.1.46 in your home directory.
+
+      c. Change your current working directory to the top-level Octave
+         source directory:
+
+           cd octave-2.1.46
+
+         then continue with step 14 below.
+
+    CVS:
+
+      a. Check out a copy of the current sources from the public CVS
+         archive by running the following commands
+
+           cvs -d :pserver:anoncvs@www.octave.org:/cvs login
+           cvs -z 9 -d :pserver:anoncvs@www.octave.org:/cvs checkout octave
+         
+         in the Cygwin shell.  The first command will prompt you for a
+         password; reply with anoncvs.  The checkout command will
+         create a subdirectory called octave containing the current
+         CVS version of the Octave sources.
+
+      b. Change your current working directory to the top-level Octave
+         source directory:
+
+           cd octave
+
+      c. Build the configure scripts by running the command
+
+           ./autogen.sh
+
+         then continue with step 14 below.
+
+
+14. Configure Octave by running the command
+
+      ./configure --enable-shared --disable-static
+
+    This command will take several minutes to run as the configure
+    script determines what features are available on your system.  You
+    need the --enable-shared option if you want to build dynamically
+    loaded functions (.oct files) later.  You may omit the
+    --disable-static option if you want to build static libraries (.a
+    files) in addition to shared libraries, but the build will take
+    about twice as long to complete.
+
+15. Build the Octave binary by running the command
+
       make
+
+    You may see warnings from gcc saying that __cdecl is redefined or
+    that all code is position independent.  You may safely ignore
+    these warnings.
+
+16. (OPTIONAL) Run Octave's regression test suite by running the
+    command
+
+      make check
+
+    Running the tests may take a very long time, so if you are in a
+    hurry, you might want to skip this step.  At the time of this
+    writing, there are 4 "expected" failures related to the try-catch
+    and eval commands.  You may safely ignore those failures.
+
+17. Complete the installation by running the command
+
       make install
 
-      (You can choose whatever value for prefix that you prefer, of
-      course, just remember to also make the corresponding changes in the
-      following steps as well.)
+18. Try starting Octave by running the command
 
-    + copy libraries and include files from cdk.  You'll need the
-      library files from the following directory trees:
+      octave
 
-	b19/H-i386-pc-cygwin32/lib
-	b19/H-i386-pc-cygwin32/i386-cygwin32/lib
+    in the cygwin shell and then typing
 
-      Copy them to /usr/local/cross-gcc/i386-pc-cygwin32/lib.
+      sombrero (41)
 
-      You'll also need the include files from the following directory
-      trees:
+    at the Octave prompt to see if you can create a plot.
 
-	b19/include
-	b19/H-i386-pc-cygwin32/include
+19. Try to build a .oct file and run it:
 
-      Copy them to /usr/local/cross-gcc/i386-pc-cygwin32/include.
-
-    + build cross version of egcs:
-
-      tar zxf egcs-1.0.2.tar.gz
-      cd egcs-1.0.2
-      export PATH=/usr/local/cross-gcc/bin:$PATH
-      ./configure --target=i386-pc-cygwin32 --prefix=/usr/local/cross-gcc
-      make
-      make install
-
-    + cross-compile libtermcap:
-
-      export PATH=/usr/local/cross-gcc/i386-pc-cygwin32/bin:$PATH
-      tar zxf termcap-1.3.tar.gz
-      cd termcap-1.3
-      ./configure --host=i386-pc-cygwin3
-      make
-      cp termcap.h /usr/local/cross-gcc/i386-pc-cygwin32/include
-      cp libtermcap.a /usr/local/cross-gcc/i386-pc-cygwin32/lib
-
-    + cross-compile Octave using the compiler you just built:
-
-      export PATH=/usr/local/cross-gcc/i386-pc-cygwin32/bin:$PATH
-      tar zxf octave-2.0.12.tar.gz
-      cd octave-2.0.10
-      ./configure --host=i386-pc-cygwin3
-      make
-
-    + make a binary distribution to copy to your Windows system:
-
-      make -f octMakefile binary-dist
-
-    + copy the binary distribution to your Windows system and install
-      using the intall-octave shell script
-
-* Octave requires gnuplot for plotting, but the normal Windows version
-  of gnuplot will not work because it only reads from the GUI and refuses
-  to read input from stdin.  Mumit Khan has written a patch that fixes
-  the problem, but the gnuplot license does not allow us to distribute
-  modified versions of gnuplot in binary form.  The patch is available
-  from http://www.xraylith.wisc.edu/~khan/software/gnu-win32.
-
-* If Octave takes a long time to find function files, you may have to
-  modify your LOADPATH to avoid device names specified using the
-  `//DEV/subdir' syntax.  To map the D: drive (for example) to
-  /D_DRIVE, do the following:
-
-    cd /
-    mkdir /D_DRIVE
-    mount d: /D_DRIVE
-
-  Then you can set your LOADPATH to include /D_DRIVE/subdir instead of
-  //d/subdir.
-
-* If you see error messages like the following:
-
-    The heap has been split, CYGWIN can't fork this process. Increase
-    the heap_chunk_size in the registry and try again.
-
-  you can increase the heap size by saving the follwoing text to a
-  file (delete the leading white space) and then double click on the
-  file.  Try changing the value to something larger than 4 (MB).
-
-    REGEDIT4
-
-    [HKEY_CURRENT_USER\Software\Cygnus Solutions\CYGWIN.DLL setup\b15.0]
-    "heap_chunk_in_mb"=dword:00000004
+      cd examples
+      mkoctfile hello.cc
+      octave
+      ...
+      octave:1> hello
+      Hello, world!
 
 
-If you know of solutions for any of the problems mentioned above,
-please contact bug-octave@bevo.che.wisc.edu.
-
-More information about the gnu-win32 project is available via the WWW
-at http://www.cygnus.com/gnu-win32.
 
 John W. Eaton
 jwe@bevo.che.wisc.edu
 University of Wisconsin-Madison
 Department of Chemical Engineering
 
-Thu Apr 16 23:39:13 1998
+Wed Apr 30 17:15:32 2003

@@ -28,6 +28,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <iostream.h>
 #include "CollocWt.h"
 #include "f77-uscore.h"
+#include "lo-error.h"
 
 extern "C"
 {
@@ -43,8 +44,7 @@ extern "C"
 void
 CollocWt::error (const char* msg)
 {
-  cerr << "Fatal CollocWt error. " << msg << "\n";
-  exit(1);
+  (*current_liboctave_error_handler) ("fatal CollocWt error: %s", msg);
 }
 
 CollocWt::CollocWt (void)
@@ -183,7 +183,10 @@ CollocWt&
 CollocWt::set_left (double val)
 {
   if (val >= rb)
-    error ("left bound greater than right bound");
+    {
+      error ("left bound greater than right bound");
+      return *this;
+    }
 
   lb = val;
   initialized = 0;
@@ -210,7 +213,10 @@ CollocWt&
 CollocWt::set_right (double val)
 {
   if (val <= lb)
-    error ("right bound less than left bound");
+    {
+      error ("right bound less than left bound");
+      return *this;
+    }
 
   rb = val;
   initialized = 0;
@@ -240,11 +246,17 @@ CollocWt::init (void)
 
   double wid = rb - lb;
   if (wid <= 0.0)
-    error ("width less than or equal to zero");
+    {
+      error ("width less than or equal to zero");
+      return;
+    }
 
   nt = n + inc_left + inc_right;
   if (nt < 0)
-    error ("total number of collocation points less than zero");
+    {
+      error ("total number of collocation points less than zero");
+      return;
+    }
   else if (nt == 0)
     return;
 

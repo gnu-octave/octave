@@ -270,6 +270,18 @@ intcmp (int *i, int *j)
   return (*i - *j);
 }
 
+int
+idx_vector::checkelem (int n) const
+{
+  if (n < 0 || n >= len)
+    {
+      error ("idx-vector: index out of range");
+      return 0;
+    }
+
+  return elem (n);
+}
+
 void
 idx_vector::sort (void)
 {

@@ -30,6 +30,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "Matrix.h"
 #include "mx-inlines.cc"
+#include "lo-error.h"
 
 /*
  * Column Vector class.
@@ -38,7 +39,13 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 ColumnVector::ColumnVector (int n)
 {
   if (n < 0)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("can't create column vector with negative dimension");
+      len = 0;
+      data = (double *) NULL;
+      return;
+    }
 
   len = n;
   if (n > 0)
@@ -50,7 +57,13 @@ ColumnVector::ColumnVector (int n)
 ColumnVector::ColumnVector (int n, double val)
 {
   if (n < 0)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("can't create column vector with negative dimension");
+      len = 0;
+      data = (double *) NULL;
+      return;
+    }
 
   len = n;
   if (n > 0)
@@ -99,11 +112,44 @@ ColumnVector::operator = (const ColumnVector& a)
   return *this;
 }
 
+double&
+ColumnVector::checkelem (int n)
+{
+#ifndef NO_RANGE_CHECK
+  if (n < 0 || n >= len)
+    {
+      (*current_liboctave_error_handler) ("range error");
+      static double foo = 0.0;
+      return foo;
+    }
+#endif
+
+  return elem (n);
+}
+
+double
+ColumnVector::checkelem (int n) const
+{
+#ifndef NO_RANGE_CHECK
+  if (n < 0 || n >= len)
+    {
+      (*current_liboctave_error_handler) ("range error");
+      return 0.0;
+    }
+#endif
+
+  return elem (n);
+}
+
 ColumnVector&
 ColumnVector::resize (int n)
 {
   if (n < 0)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("can't resize to negative dimension");
+      return *this;
+    }
 
   double *new_data = (double *) NULL;
   if (n > 0)
@@ -153,7 +199,10 @@ ColumnVector&
 ColumnVector::insert (const ColumnVector& a, int r)
 {
   if (r < 0 || r + a.len - 1 > len)
-    FAIL;
+    {
+      (*current_liboctave_error_handler) ("range error for insert");
+      return *this;
+    }
 
   for (int i = 0; i < a.len; i++)
     data[r+i] = a.data[i];
@@ -173,7 +222,10 @@ ColumnVector&
 ColumnVector::fill (double val, int r1, int r2)
 {
   if (r1 < 0 || r2 < 0 || r1 >= len || r2 >= len)
-    FAIL;
+    {
+      (*current_liboctave_error_handler) ("range error for fill");
+      return *this;
+    }
 
   if (r1 > r2) { int tmp = r1; r1 = r2; r2 = tmp; }
 
@@ -298,7 +350,11 @@ Matrix
 ColumnVector::operator * (const RowVector& a) const
 {
   if (len != a.len)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant vector multiplication attempted");
+      return Matrix ();
+    }
 
   if (len == 0)
     return Matrix (len, len, 0.0);
@@ -331,7 +387,11 @@ ColumnVector
 ColumnVector::operator + (const ColumnVector& a) const
 {
   if (len != a.len)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant vector addition attempted");
+      return ColumnVector ();
+    }
 
   if (len == 0)
     return ColumnVector (0);
@@ -343,7 +403,11 @@ ColumnVector
 ColumnVector::operator - (const ColumnVector& a) const
 {
   if (len != a.len)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant vector subtraction attempted");
+      return ColumnVector ();
+    }
 
   if (len == 0)
     return ColumnVector (0);
@@ -355,7 +419,11 @@ ComplexColumnVector
 ColumnVector::operator + (const ComplexColumnVector& a) const
 {
   if (len != a.len)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant vector addition attempted");
+      return ComplexColumnVector ();
+    }
 
   if (len == 0)
     return ComplexColumnVector (0);
@@ -367,7 +435,11 @@ ComplexColumnVector
 ColumnVector::operator - (const ComplexColumnVector& a) const
 {
   if (len != a.len)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant vector subtraction attempted");
+      return ComplexColumnVector ();
+    }
 
   if (len == 0)
     return ComplexColumnVector (0);
@@ -379,7 +451,11 @@ ColumnVector
 ColumnVector::product (const ColumnVector& a) const
 {
   if (len != a.len)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant vector product attempted");
+      return ColumnVector ();
+    }
 
   if (len == 0)
     return ColumnVector (0);
@@ -391,7 +467,11 @@ ColumnVector
 ColumnVector::quotient (const ColumnVector& a) const
 {
   if (len != a.len)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant vector quotient attempted");
+      return ColumnVector ();
+    }
 
   if (len == 0)
     return ColumnVector (0);
@@ -403,7 +483,11 @@ ComplexColumnVector
 ColumnVector::product (const ComplexColumnVector& a) const
 {
   if (len != a.len)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant vector product attempted");
+      return ColumnVector ();
+    }
 
   if (len == 0)
     return ComplexColumnVector (0);
@@ -415,7 +499,11 @@ ComplexColumnVector
 ColumnVector::quotient (const ComplexColumnVector& a) const
 {
   if (len != a.len)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant vector quotient attempted");
+      return ColumnVector ();
+    }
 
   if (len == 0)
     return ComplexColumnVector (0);
@@ -427,7 +515,11 @@ ColumnVector&
 ColumnVector::operator += (const ColumnVector& a)
 {
   if (len != a.len)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant vector += operation attempted");
+      return ColumnVector ();
+    }
 
   if (len == 0)
     return *this;
@@ -440,7 +532,11 @@ ColumnVector&
 ColumnVector::operator -= (const ColumnVector& a)
 {
   if (len != a.len)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant vector -= operation attempted");
+      return ColumnVector ();
+    }
 
   if (len == 0)
     return *this;
@@ -521,7 +617,13 @@ operator << (ostream& os, const ColumnVector& a)
 ComplexColumnVector::ComplexColumnVector (int n)
 {
   if (n < 0)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("can't create column vector with negative dimension");
+      len = 0;
+      data = (Complex *) NULL;
+      return;
+    }
 
   len = n;
   if (n > 0)
@@ -533,7 +635,13 @@ ComplexColumnVector::ComplexColumnVector (int n)
 ComplexColumnVector::ComplexColumnVector (int n, double val)
 {
   if (n < 0)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("can't create column vector with negative dimension");
+      len = 0;
+      data = (Complex *) NULL;
+      return;
+    }
 
   len = n;
   if (n > 0)
@@ -548,7 +656,13 @@ ComplexColumnVector::ComplexColumnVector (int n, double val)
 ComplexColumnVector::ComplexColumnVector (int n, const Complex& val)
 {
   if (n < 0)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("can't create column vector with negative dimension");
+      len = 0;
+      data = (Complex *) NULL;
+      return;
+    }
 
   len = n;
   if (n > 0)
@@ -632,11 +746,44 @@ ComplexColumnVector::operator = (const ComplexColumnVector& a)
   return *this;
 }
 
+Complex&
+ComplexColumnVector::checkelem (int n)
+{
+#ifndef NO_RANGE_CHECK
+  if (n < 0 || n >= len)
+    {
+      (*current_liboctave_error_handler) ("range error");
+      static Complex foo (0.0);
+      return foo;
+    }
+#endif
+
+  return elem (n);
+}
+
+Complex
+ComplexColumnVector::checkelem (int n) const
+{
+#ifndef NO_RANGE_CHECK
+  if (n < 0 || n >= len)
+    {
+      (*current_liboctave_error_handler) ("range error");
+      return Complex (0.0);
+    }
+#endif
+
+  return elem (n);
+}
+
 ComplexColumnVector&
 ComplexColumnVector::resize (int n)
 {
   if (n < 0)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("can't resize to negative dimension");
+      return *this;
+    }
 
   Complex *new_data = (Complex *) NULL;
   if (n > 0)
@@ -699,7 +846,10 @@ ComplexColumnVector&
 ComplexColumnVector::insert (const ColumnVector& a, int r)
 {
   if (r < 0 || r + a.len - 1 > len)
-    FAIL;
+    {
+      (*current_liboctave_error_handler) ("range error for insert");
+      return *this;
+    }
 
   for (int i = 0; i < a.len; i++)
     data[r+i] = a.data[i];
@@ -711,7 +861,10 @@ ComplexColumnVector&
 ComplexColumnVector::insert (const ComplexColumnVector& a, int r)
 {
   if (r < 0 || r + a.len - 1 > len)
-    FAIL;
+    {
+      (*current_liboctave_error_handler) ("range error for insert");
+      return *this;
+    }
 
   for (int i = 0; i < a.len; i++)
     data[r+i] = a.data[i];
@@ -739,7 +892,10 @@ ComplexColumnVector&
 ComplexColumnVector::fill (double val, int r1, int r2)
 {
   if (r1 < 0 || r2 < 0 || r1 >= len || r2 >= len)
-    FAIL;
+    {
+      (*current_liboctave_error_handler) ("range error for fill");
+      return *this;
+    }
 
   if (r1 > r2) { int tmp = r1; r1 = r2; r2 = tmp; }
 
@@ -753,7 +909,10 @@ ComplexColumnVector&
 ComplexColumnVector::fill (const Complex& val, int r1, int r2)
 {
   if (r1 < 0 || r2 < 0 || r1 >= len || r2 >= len)
-    FAIL;
+    {
+      (*current_liboctave_error_handler) ("range error for fill");
+      return *this;
+    }
 
   if (r1 > r2) { int tmp = r1; r1 = r2; r2 = tmp; }
 
@@ -952,7 +1111,11 @@ ComplexMatrix
 ComplexColumnVector::operator * (const ComplexRowVector& a) const
 {
   if (len != a.len)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant vector multiplication attempted");
+      return ComplexMatrix ();
+    }
 
   if (len == 0)
     return ComplexMatrix (len, len, 0.0);
@@ -978,7 +1141,11 @@ ComplexColumnVector
 ComplexColumnVector::operator + (const ColumnVector& a) const
 {
   if (len != a.len)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant vector addition attempted");
+      return ComplexColumnVector ();
+    }
 
   if (len == 0)
     return ComplexColumnVector (0);
@@ -990,7 +1157,11 @@ ComplexColumnVector
 ComplexColumnVector::operator - (const ColumnVector& a) const
 {
   if (len != a.len)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant vector subtraction attempted");
+      return ComplexColumnVector ();
+    }
 
   if (len == 0)
     return ComplexColumnVector (0);
@@ -1002,7 +1173,11 @@ ComplexColumnVector
 ComplexColumnVector::operator + (const ComplexColumnVector& a) const
 {
   if (len != a.len)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant vector addition attempted");
+      return ComplexColumnVector ();
+    }
 
   if (len == 0)
     return ComplexColumnVector (0);
@@ -1014,7 +1189,11 @@ ComplexColumnVector
 ComplexColumnVector::operator - (const ComplexColumnVector& a) const
 {
   if (len != a.len)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant vector subtraction attempted");
+      return ComplexColumnVector ();
+    }
 
   if (len == 0)
     return ComplexColumnVector (0);
@@ -1026,7 +1205,11 @@ ComplexColumnVector
 ComplexColumnVector::product (const ColumnVector& a) const
 {
   if (len != a.len)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant vector product attempted");
+      return ComplexColumnVector ();
+    }
 
   if (len == 0)
     return ComplexColumnVector (0);
@@ -1038,7 +1221,11 @@ ComplexColumnVector
 ComplexColumnVector::quotient (const ColumnVector& a) const
 {
   if (len != a.len)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant vector quotient attempted");
+      return ComplexColumnVector ();
+    }
 
   if (len == 0)
     return ComplexColumnVector (0);
@@ -1050,7 +1237,11 @@ ComplexColumnVector
 ComplexColumnVector::product (const ComplexColumnVector& a) const
 {
   if (len != a.len)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant vector product attempted");
+      return ComplexColumnVector ();
+    }
 
   if (len == 0)
     return ComplexColumnVector (0);
@@ -1062,7 +1253,11 @@ ComplexColumnVector
 ComplexColumnVector::quotient (const ComplexColumnVector& a) const
 {
   if (len != a.len)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant vector quotient attempted");
+      return ComplexColumnVector ();
+    }
 
   if (len == 0)
     return ComplexColumnVector (0);
@@ -1074,7 +1269,11 @@ ComplexColumnVector&
 ComplexColumnVector::operator += (const ColumnVector& a)
 {
   if (len != a.len)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant vector += operation attempted");
+      return *this;
+    }
 
   if (len == 0)
     return *this;
@@ -1087,7 +1286,11 @@ ComplexColumnVector&
 ComplexColumnVector::operator -= (const ColumnVector& a)
 {
   if (len != a.len)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant vector -= operation attempted");
+      return *this;
+    }
 
   if (len == 0)
     return *this;
@@ -1100,7 +1303,11 @@ ComplexColumnVector&
 ComplexColumnVector::operator += (const ComplexColumnVector& a)
 {
   if (len != a.len)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant vector += operation attempted");
+      return *this;
+    }
 
   if (len == 0)
     return *this;
@@ -1113,7 +1320,11 @@ ComplexColumnVector&
 ComplexColumnVector::operator -= (const ComplexColumnVector& a)
 {
   if (len != a.len)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant vector -= operation attempted");
+      return *this;
+    }
 
   if (len == 0)
     return *this;

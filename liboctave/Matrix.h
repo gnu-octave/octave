@@ -47,8 +47,6 @@ represented by some sort of inheritance tree...
 // #include <iomanip.h>  // We don\'t use this yet.
 #include <Complex.h>
 
-#define FAIL assert(0) /* XXX FIXME XXX */
-
 #ifndef MAPPER_FCN_TYPEDEFS
 #define MAPPER_FCN_TYPEDEFS 1
 
@@ -554,30 +552,10 @@ inline int Matrix::columns (void) const { return nc; }
 
 inline double& Matrix::elem (int r, int c) { return data[nr*c+r]; }
 
-inline double& Matrix::checkelem (int r, int c)
-{
-#ifndef NO_RANGE_CHECK
-  if (r < 0 || r >= nr || c < 0 || c >= nc)
-    FAIL;
-#endif
-
-  return elem (r, c);
-}
-
 inline double& Matrix::operator () (int r, int c)
   { return checkelem (r, c); }
 
 inline double Matrix::elem (int r, int c) const { return data[nr*c+r]; }
-
-inline double Matrix::checkelem (int r, int c) const
-{
-#ifndef NO_RANGE_CHECK
-  if (r < 0 || r >= nr || c < 0 || c >= nc)
-    FAIL;
-#endif
-
-  return elem (r, c);
-}
 
 inline double Matrix::operator () (int r, int c) const
   { return checkelem (r, c); }
@@ -715,31 +693,9 @@ inline int ColumnVector::length (void) const { return len; }
 
 inline double& ColumnVector::elem (int n) { return data[n]; }
 
-inline double&
-ColumnVector::checkelem (int n)
-{
-#ifndef NO_RANGE_CHECK
-  if (n < 0 || n >= len)
-    FAIL;
-#endif
-
-  return elem (n);
-}
-
 inline double& ColumnVector::operator () (int n) { return checkelem (n); }
 
 inline double ColumnVector::elem (int n) const { return data[n]; }
-
-inline double
-ColumnVector::checkelem (int n) const
-{
-#ifndef NO_RANGE_CHECK
-  if (n < 0 || n >= len)
-    FAIL;
-#endif
-
-  return elem (n);
-}
 
 inline double ColumnVector::operator () (int n) const { return checkelem (n); }
 
@@ -882,31 +838,9 @@ inline int RowVector::length (void) const { return len; }
 
 inline double& RowVector::elem (int n) { return data[n]; }
 
-inline double&
-RowVector::checkelem (int n)
-{
-#ifndef NO_RANGE_CHECK
-  if (n < 0 || n >= len)
-    FAIL;
-#endif
-
-  return elem (n);
-}
-
 inline double& RowVector::operator () (int n) { return checkelem (n); }
 
 inline double RowVector::elem (int n) const { return data[n]; }
-
-inline double
-RowVector::checkelem (int n) const
-{
-#ifndef NO_RANGE_CHECK
-  if (n < 0 || n >= len)
-    FAIL;
-#endif
-
-  return elem (n);
-}
 
 inline double RowVector::operator () (int n) const { return checkelem (n); }
 
@@ -1076,31 +1010,11 @@ inline int DiagMatrix::columns (void) const { return nc; }
 inline double& DiagMatrix::elem (int r, int c)
   { return (r == c) ? data[r] : 0; }
 
-inline double& DiagMatrix::checkelem (int r, int c)
-{
-#ifndef NO_RANGE_CHECK
-  if (r < 0 || r >= nr || c < 0 || c >= nc)
-    FAIL;
-#endif
-
-  return elem (r, c);
-}
-
 inline double& DiagMatrix::operator () (int r, int c)
   { return checkelem (r, c); }
 
 inline double DiagMatrix::elem (int r, int c) const
   { return (r == c) ? data[r] : 0; }
-
-inline double DiagMatrix::checkelem (int r, int c) const
-{
-#ifndef NO_RANGE_CHECK
-  if (r < 0 || r >= nr || c < 0 || c >= nc)
-    FAIL;
-#endif
-
-  return elem (r, c);
-}
 
 inline double DiagMatrix::operator () (int r, int c) const
   { return checkelem (r, c); }
@@ -1398,31 +1312,11 @@ inline int ComplexMatrix::columns (void) const { return nc; }
 
 inline Complex& ComplexMatrix::elem (int r, int c) { return data[nr*c+r]; }
 
-inline Complex& ComplexMatrix::checkelem (int r, int c)
-{
-#ifndef NO_RANGE_CHECK
-  if (r < 0 || r >= nr || c < 0 || c >= nc)
-    FAIL;
-#endif
-
-  return elem (r, c);
-}
-
 inline Complex& ComplexMatrix::operator () (int r, int c)
   { return checkelem (r, c); }
 
 inline Complex ComplexMatrix::elem (int r, int c) const
   { return data[nr*c+r]; }
-
-inline Complex ComplexMatrix::checkelem (int r, int c) const
-{
-#ifndef NO_RANGE_CHECK
-  if (r < 0 || r >= nr || c < 0 || c >= nc)
-    FAIL;
-#endif
-
-  return elem (r, c);
-}
 
 inline Complex ComplexMatrix::operator () (int r, int c) const
   { return checkelem (r, c); }
@@ -1591,32 +1485,10 @@ inline int ComplexColumnVector::length (void) const { return len; }
 
 inline Complex& ComplexColumnVector::elem (int n) { return data[n]; }
 
-inline Complex&
-ComplexColumnVector::checkelem (int n)
-{
-#ifndef NO_RANGE_CHECK
-  if (n < 0 || n >= len)
-    FAIL;
-#endif
-
-  return elem (n);
-}
-
 inline Complex& ComplexColumnVector::operator () (int n)
   { return checkelem (n); }
 
 inline Complex ComplexColumnVector::elem (int n) const { return data[n]; }
-
-inline Complex
-ComplexColumnVector::checkelem (int n) const
-{
-#ifndef NO_RANGE_CHECK
-  if (n < 0 || n >= len)
-    FAIL;
-#endif
-
-  return elem (n);
-}
 
 inline Complex ComplexColumnVector::operator () (int n) const
   { return checkelem (n); }
@@ -1786,31 +1658,9 @@ inline int ComplexRowVector::length (void) const { return len; }
 
 inline Complex& ComplexRowVector::elem (int n) { return data[n]; }
 
-inline Complex&
-ComplexRowVector::checkelem (int n)
-{
-#ifndef NO_RANGE_CHECK
-  if (n < 0 || n >= len)
-    FAIL;
-#endif
-
-  return elem (n);
-}
-
 inline Complex& ComplexRowVector::operator () (int n) { return checkelem (n); }
 
 inline Complex ComplexRowVector::elem (int n) const { return data[n]; }
-
-inline Complex
-ComplexRowVector::checkelem (int n) const
-{
-#ifndef NO_RANGE_CHECK
-  if (n < 0 || n >= len)
-    FAIL;
-#endif
-
-  return elem (n);
-}
 
 inline Complex ComplexRowVector::operator () (int n) const
   { return checkelem (n); }
@@ -2014,31 +1864,11 @@ inline int ComplexDiagMatrix::columns (void) const { return nc; }
 inline Complex& ComplexDiagMatrix::elem (int r, int c)
   { Complex czero (0.0, 0.0); return (r == c) ? data[r] : czero; }
 
-inline Complex& ComplexDiagMatrix::checkelem (int r, int c)
-{
-#ifndef NO_RANGE_CHECK
-  if (r < 0 || r >= nr || c < 0 || c >= nc)
-    FAIL;
-#endif
-
-  return elem (r, c);
-}
-
 inline Complex& ComplexDiagMatrix::operator () (int r, int c)
   { return checkelem (r, c); }
 
 inline Complex ComplexDiagMatrix::elem (int r, int c) const
   { Complex czero (0.0, 0.0); return (r == c) ? data[r] : czero; }
-
-inline Complex ComplexDiagMatrix::checkelem (int r, int c) const
-{
-#ifndef NO_RANGE_CHECK
-  if (r < 0 || r >= nr || c < 0 || c >= nc)
-    FAIL;
-#endif
-
-  return elem (r, c);
-}
 
 inline Complex ComplexDiagMatrix::operator () (int r, int c) const
   { return checkelem (r, c); }
@@ -2072,7 +1902,7 @@ private:
 
 inline AEPBALANCE::AEPBALANCE (const Matrix& a,const char * balance_job) 
 {
-  init (a,balance_job); 
+  init (a, balance_job); 
 }
 
 inline AEPBALANCE::AEPBALANCE (const AEPBALANCE& a)
@@ -2123,7 +1953,7 @@ private:
 inline ComplexAEPBALANCE::ComplexAEPBALANCE (const ComplexMatrix& a,
 					     const char * balance_job)
 {
-  init(a,balance_job); 
+  init(a, balance_job); 
 }
 
 inline ComplexAEPBALANCE::ComplexAEPBALANCE (const ComplexAEPBALANCE& a)
@@ -2276,7 +2106,7 @@ private:
 inline GEPBALANCE::GEPBALANCE (const Matrix& a, const Matrix& b, 
   const char * balance_job) 
 {
-  init (a,b,balance_job); 
+  init (a, b, balance_job); 
 }
 
 inline GEPBALANCE::GEPBALANCE (const GEPBALANCE& a)

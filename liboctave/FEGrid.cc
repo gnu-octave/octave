@@ -26,14 +26,14 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #endif
 
 #include "FEGrid.h"
+#include "lo-error.h"
 
 // error handling
 
 void
 FEGrid::error (const char* msg) const
 {
-  cerr << "Fatal FEGrid error. " << msg << "\n";
-  exit(1);
+  (*current_liboctave_error_handler) ("fatal FEGrid error: %s", msg);
 }
 
 void
@@ -47,7 +47,10 @@ FEGrid::nel_error (void) const
 FEGrid::FEGrid (int nel, double width)
 {
   if (nel < 1)
-    nel_error ();
+    {
+      nel_error ();
+      return;
+    }
 
   elem.resize (nel+1);
 
@@ -58,7 +61,10 @@ FEGrid::FEGrid (int nel, double width)
 FEGrid::FEGrid (int nel, double left, double right)
 {
   if (nel < 1)
-    nel_error ();
+    {
+      nel_error ();
+      return;
+    }
 
   elem.resize (nel+1);
 
@@ -74,7 +80,10 @@ int
 FEGrid::element (double x) const
 {
   if (! in_bounds (x))
-    error ("value not within grid boundaries");
+    {
+      error ("value not within grid boundaries");
+      return -1;
+    }
 
   int nel = elem.capacity () - 1;
   for (int i = 1; i <= nel; i++)
@@ -91,15 +100,24 @@ FEGrid::check_grid (void) const
 {
   int nel = elem.capacity () - 1;
   if (nel < 1)
-    nel_error ();
+    {
+      nel_error ();
+      return;
+    }
 
   for (int i = 1; i <= nel; i++)
     {
       if (elem.elem (i-1) > elem.elem (i))
-	error ("element boundaries not in ascending order");
+	{
+	  error ("element boundaries not in ascending order");
+	  return;
+	}
 
       if (elem.elem (i-1) == elem.elem (i))
-	error ("zero width element");
+	{
+	  error ("zero width element");
+	  return;
+	}
     }
 }
 

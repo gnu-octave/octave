@@ -28,10 +28,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma interface
 #endif
 
-#include <assert.h>
-
-#define FAIL assert(0) /* XXX FIXME XXX */
-
 class ostream;
 class Matrix;
 class Range;
@@ -120,15 +116,6 @@ inline int idx_vector::capacity (void) const { return len; }
 inline int idx_vector::length (void) const { return len; }
 
 inline int idx_vector::elem (int n) const { return data[n]; }
-
-inline int
-idx_vector::checkelem (int n) const
-{
-  if (n < 0 || n >= len)
-    FAIL;
-
-  return elem (n);
-}
 
 inline int idx_vector::operator () (int n) const { return checkelem (n); }
 

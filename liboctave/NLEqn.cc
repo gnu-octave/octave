@@ -29,6 +29,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <float.h>
 #include "NLEqn.h"
 #include "f77-uscore.h"
+#include "lo-error.h"
 
 extern "C"
 {
@@ -48,8 +49,7 @@ static jacobian_fcn user_jac;
 void
 NLEqn::error (const char* msg)
 {
-  cerr << "Fatal NLEqn error. " << msg << "\n";
-  exit(1);
+  (*current_liboctave_error_handler) ("fatal NLEqn error: %s", msg);
 }
 
 // Constructors
@@ -99,7 +99,10 @@ void
 NLEqn::set_states (const Vector& xvec)
 {
   if (xvec.capacity () != n)
-    error ("dimension error");
+    {
+      error ("dimension error");
+      return;
+    }
 
   x = xvec;
 }
@@ -187,7 +190,10 @@ NLEqn::solve (int& info)
   int tmp_info = 0;
 
   if (n == 0)
-    error ("Equation set not initialized");
+    {
+      error ("equation set not initialized");
+      return Vector ();
+    }
 
   double tol = sqrt (DBL_EPSILON);
 

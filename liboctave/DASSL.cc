@@ -27,6 +27,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <iostream.h>
 #include "DAE.h"
+#include "lo-error.h"
 
 extern "C"
 {
@@ -125,8 +126,11 @@ DAE::DAE (Vector& state, Vector& deriv, double time, DAEFunc& f)
 {
   if (deriv.capacity () != state.capacity ())
     {
-      cerr << "x, xdot size mismatch in DAE constructor";
-      exit (1);
+      (*current_liboctave_error_handler)
+	("x, xdot size mismatch in DAE constructor");
+      n = 0;
+      t = 0.0;
+      return;
     }
 
   n = state.capacity ();

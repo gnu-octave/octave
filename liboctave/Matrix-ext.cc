@@ -27,6 +27,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "Matrix.h"
 #include "mx-inlines.cc"
+#include "lo-error.h"
 
 /*
  * AEPBALANCE operations
@@ -36,7 +37,10 @@ int
 AEPBALANCE::init (const Matrix& a, const char *balance_job)
 {
   if (a.nr != a.nc)
-    FAIL;
+    {
+      (*current_liboctave_error_handler) ("AEPBALANCE requires square matrix");
+      return -1;
+    }
 
   int n = a.nc;
 
@@ -110,7 +114,11 @@ int
 GEPBALANCE::init (const Matrix& a, const Matrix& b, const char *balance_job)
 {
   if (a.nr != a.nc || a.nr != b.nr || b.nr != b.nc)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("GEPBALANCE requires square matrices of the same size");
+      return -1;
+    }
 
   int n = a.nc;
 
@@ -236,7 +244,10 @@ int
 CHOL::init (const Matrix& a)
 {
   if (a.nr != a.nc)
-    FAIL;
+    {
+      (*current_liboctave_error_handler) ("CHOL requires square matrix");
+      return -1;
+    }
 
   char uplo = 'U';
 
@@ -266,7 +277,11 @@ int
 ComplexCHOL::init (const ComplexMatrix& a)
 {
    if (a.nr != a.nc)
-     FAIL;
+     {
+       (*current_liboctave_error_handler)
+	 ("ComplexCHOL requires square matrix");
+       return -1;
+     }
 
    char uplo = 'U';
 
@@ -299,7 +314,10 @@ int
 HESS::init (const Matrix& a)
 {
   if (a.nr != a.nc)
-    FAIL;
+    {
+      (*current_liboctave_error_handler) ("HESS requires square matrix");
+      return -1;
+    }
 
   char jobbal = 'N';
   char side = 'R';
@@ -357,7 +375,11 @@ int
 ComplexHESS::init (const ComplexMatrix& a)
 {
    if (a.nr != a.nc)
-     FAIL;
+     {
+       (*current_liboctave_error_handler)
+	 ("ComplexHESS requires square matrix");
+       return -1;
+     }
 
    char job = 'N';
    char side = 'R';
@@ -429,7 +451,10 @@ int
 SCHUR::init (const Matrix& a, const char *ord)
 {
   if (a.nr != a.nc)
-    FAIL;
+    {
+      (*current_liboctave_error_handler) ("SCHUR requires square matrix");
+      return -1;
+    }
 
   char jobvs = 'V';
   char sort;
@@ -516,7 +541,11 @@ int
 ComplexSCHUR::init (const ComplexMatrix& a, const char *ord)
 {
   if (a.nr != a.nc)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("ComplexSCHUR requires square matrix");
+      return -1;
+    }
 
   char jobvs = 'V';
   char sort;
@@ -688,7 +717,10 @@ int
 EIG::init (const Matrix& a)
 {
   if (a.nr != a.nc)
-    FAIL;
+    {
+      (*current_liboctave_error_handler) ("EIG requires square matrix");
+      return -1;
+    }
 
   int n = a.nr;
 
@@ -725,7 +757,10 @@ EIG::init (const Matrix& a)
       else
 	{
 	  if (j+1 >= n)
-	    FAIL;
+	    {
+	      (*current_liboctave_error_handler) ("EIG: internal error");
+	      return -1;
+	    }
 
 	  for (int i = 0; i < n; i++)
 	    {
@@ -753,7 +788,10 @@ EIG::init (const ComplexMatrix& a)
 {
 
   if (a.nr != a.nc)
-    FAIL;
+    {
+      (*current_liboctave_error_handler) ("EIG requires square matrix");
+      return -1;
+    }
 
   int n = a.nr;
 
@@ -795,7 +833,10 @@ EIG::init (const ComplexMatrix& a)
 LU::LU (const Matrix& a)
 {
   if (a.nr == 0 || a.nc == 0 || a.nr != a.nc)
-    FAIL;
+    {
+      (*current_liboctave_error_handler) ("LU requires square matrix");
+      return;
+    }
 
   int n = a.nr;
 
@@ -854,7 +895,10 @@ LU::LU (const Matrix& a)
 ComplexLU::ComplexLU (const ComplexMatrix& a)
 {
   if (a.nr == 0 || a.nc == 0 || a.nr != a.nc)
-    FAIL;
+    {
+      (*current_liboctave_error_handler) ("ComplexLU requires square matrix");
+      return;
+    }
 
   int n = a.nr;
 
@@ -920,7 +964,10 @@ QR::QR (const Matrix& a)
   int n = a.nc;
 
   if (m == 0 || n == 0)
-    FAIL;
+    {
+      (*current_liboctave_error_handler) ("QR must have non-empty matrix");
+      return;
+    }
 
   double *tmp_data;
   int min_mn = m < n ? m : n;
@@ -966,7 +1013,11 @@ ComplexQR::ComplexQR (const ComplexMatrix& a)
   int n = a.nc;
 
   if (m == 0 || n == 0)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("ComplexQR must have non-empty matrix");
+      return;
+    }
 
   Complex *tmp_data;
   int min_mn = m < n ? m : n;

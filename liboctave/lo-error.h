@@ -21,8 +21,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
-#if !defined (_error_h)
-#define _error_h 1
+#if !defined (_liboctave_error_h)
+#define _liboctave_error_h 1
 
 #ifdef __GNUG__
 #pragma interface
@@ -35,11 +35,15 @@ typedef void v_fcn_cpc_x (const char *, ...);
 volatile v_fcn_cpc_x fatal;
 #endif
 
+extern void liboctave_fatal (const char *fmt, ...);
+
 typedef void (*liboctave_error_handler) (const char *, ...);
 
-extern void set_liboctave_error_handler (liboctave_error_handler f);
+// Would be nice to make this private, but we want to share it among
+// all the liboctave classes.
+extern liboctave_error_handler current_liboctave_error_handler;
 
-extern void liboctave_fatal (const char *fmt, ...);
+extern void set_liboctave_error_handler (liboctave_error_handler f);
 
 #endif
 

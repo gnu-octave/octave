@@ -29,12 +29,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <stdlib.h>
 #include <stdarg.h>
 
-#include "liboctave-error.h"
+#include "lo-error.h"
 
-static
-liboctave_error_handler default_liboctave_error_handler = liboctave_fatal;
-
-static
 liboctave_error_handler current_liboctave_error_handler = liboctave_fatal;
 
 static void
@@ -54,7 +50,7 @@ set_liboctave_error_handler (liboctave_error_handler f)
   if (f)
     current_liboctave_error_handler = f;
   else
-    current_liboctave_error_handler = default_liboctave_error_handler;
+    current_liboctave_error_handler = liboctave_fatal;
 }
 
 void

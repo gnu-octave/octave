@@ -27,14 +27,14 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <iostream.h>
 #include "Bounds.h"
+#include "lo-error.h"
 
 // error handling
 
 void
 Bounds::error (const char* msg)
 {
-  cerr << "Fatal bounds error. " << msg << "\n";
-  exit(1);
+  (*current_liboctave_error_handler) ("fatal bounds error: ", msg);
 }
 
 Bounds::Bounds (void)
@@ -54,7 +54,10 @@ Bounds::Bounds (int n)
 Bounds::Bounds (const ColumnVector l, const ColumnVector u)
 {
   if (l.capacity () != u.capacity ())
-    error ("inconsistent sizes for lower and upper bounds");
+    {
+      error ("inconsistent sizes for lower and upper bounds");
+      return;
+    }
 
   nb = l.capacity ();
   lb = l;
@@ -140,7 +143,10 @@ Bounds&
 Bounds::set_bounds (const ColumnVector l, const ColumnVector u)
 {
   if (l.capacity () != u.capacity ())
-    error ("inconsistent sizes for lower and upper bounds");
+    {
+      error ("inconsistent sizes for lower and upper bounds");
+      return *this;
+    }
 
   nb = l.capacity ();
   lb = l;
@@ -185,7 +191,10 @@ Bounds&
 Bounds::set_lower_bounds (const ColumnVector l)
 {
   if (nb != l.capacity ())
-    error ("inconsistent size for lower bounds");
+    {
+      error ("inconsistent size for lower bounds");
+      return *this;
+    }
 
   lb = l;
 
@@ -196,7 +205,10 @@ Bounds&
 Bounds::set_upper_bounds (const ColumnVector u)
 {
   if (nb != u.capacity ())
-    error ("inconsistent size for upper bounds");
+    {
+      error ("inconsistent size for upper bounds");
+      return *this;
+    }
 
   ub = u;
 

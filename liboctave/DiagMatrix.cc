@@ -30,6 +30,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "Matrix.h"
 #include "mx-inlines.cc"
+#include "lo-error.h"
 
 /*
  * Diagonal Matrix class.
@@ -38,7 +39,15 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 DiagMatrix::DiagMatrix (int n)
 {
   if (n < 0)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("can't create matrix with negative dimensions");
+      nr = 0;
+      nc = 0;
+      len = 0;
+      data = (double *) NULL;
+      return;
+    }
 
   nr = n;
   nc = n;
@@ -52,7 +61,15 @@ DiagMatrix::DiagMatrix (int n)
 DiagMatrix::DiagMatrix (int n, double val)
 {
   if (n < 0)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("can't create matrix with negative dimensions");
+      nr = 0;
+      nc = 0;
+      len = 0;
+      data = (double *) NULL;
+      return;
+    }
 
   nr = n;
   nc = n;
@@ -69,7 +86,15 @@ DiagMatrix::DiagMatrix (int n, double val)
 DiagMatrix::DiagMatrix (int r, int c)
 {
   if (r < 0 || c < 0)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("can't create matrix with negative dimensions");
+      nr = 0;
+      nc = 0;
+      len = 0;
+      data = (double *) NULL;
+      return;
+    }
 
   nr = r;
   nc = c;
@@ -83,7 +108,15 @@ DiagMatrix::DiagMatrix (int r, int c)
 DiagMatrix::DiagMatrix (int r, int c, double val)
 {
   if (r < 0 || c < 0)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("can't create matrix with negative dimensions");
+      nr = 0;
+      nc = 0;
+      len = 0;
+      data = (double *) NULL;
+      return;
+    }
 
   nr = r;
   nc = c;
@@ -168,11 +201,44 @@ DiagMatrix::operator = (const DiagMatrix& a)
   return *this;
 }
 
+double&
+DiagMatrix::checkelem (int r, int c)
+{
+#ifndef NO_RANGE_CHECK
+  if (r < 0 || r >= nr || c < 0 || c >= nc)
+    {
+      (*current_liboctave_error_handler) ("range error");
+      static double foo = 0.0;
+      return foo;
+    }
+#endif
+
+  return elem (r, c);
+}
+
+double
+DiagMatrix::checkelem (int r, int c) const
+{
+#ifndef NO_RANGE_CHECK
+  if (r < 0 || r >= nr || c < 0 || c >= nc)
+    {
+      (*current_liboctave_error_handler) ("range error");
+      return 0.0;
+    }
+#endif
+
+  return elem (r, c);
+}
+
 DiagMatrix&
 DiagMatrix::resize (int r, int c)
 {
   if (r < 0 || c < 0)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("can't resize to negative dimensions");
+      return *this;
+    }
 
   int new_len = r < c ? r : c;
   double *new_data = (double *) NULL;
@@ -199,7 +265,11 @@ DiagMatrix&
 DiagMatrix::resize (int r, int c, double val)
 {
   if (r < 0 || c < 0)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("can't resize to negative dimensions");
+      return *this;
+    }
 
   int new_len = r < c ? r : c;
   double *new_data = (double *) NULL;
@@ -254,7 +324,10 @@ DiagMatrix&
 DiagMatrix::fill (double val, int beg, int end)
 {
   if (beg < 0 || end >= len || end < beg)
-    FAIL;
+    {
+      (*current_liboctave_error_handler) ("range error for fill");
+      return *this;
+    }
 
   if (end > beg)
     copy (data+beg, beg-end, val);
@@ -265,7 +338,10 @@ DiagMatrix&
 DiagMatrix::fill (const ColumnVector& a)
 {
   if (a.len != len)
-    FAIL;
+    {
+      (*current_liboctave_error_handler) ("range error for fill");
+      return *this;
+    }
 
   copy (data, a.data, len);
   return *this;
@@ -275,7 +351,10 @@ DiagMatrix&
 DiagMatrix::fill (const RowVector& a)
 {
   if (a.len != len)
-    FAIL;
+    {
+      (*current_liboctave_error_handler) ("range error for fill");
+      return *this;
+    }
 
   copy (data, a.data, len);
   return *this;
@@ -285,7 +364,10 @@ DiagMatrix&
 DiagMatrix::fill (const ColumnVector& a, int beg)
 {
   if (beg < 0 || beg + a.len >= len)
-    FAIL;
+    {
+      (*current_liboctave_error_handler) ("range error for fill");
+      return *this;
+    }
 
   copy (data+beg, a.data, a.len);
   return *this;
@@ -295,7 +377,10 @@ DiagMatrix&
 DiagMatrix::fill (const RowVector& a, int beg)
 {
   if (beg < 0 || beg + a.len >= len)
-    FAIL;
+    {
+      (*current_liboctave_error_handler) ("range error for fill");
+      return *this;
+    }
 
   copy (data+beg, a.data, a.len);
   return *this;
@@ -331,7 +416,10 @@ RowVector
 DiagMatrix::row (int i) const
 {
   if (i < 0 || i >= nr)
-    FAIL;
+    {
+      (*current_liboctave_error_handler) ("invalid row selection");
+      return RowVector (); 
+    }
 
   RowVector retval (nc, 0.0);
   if (nr <= nc || (nr > nc && i < nc))
@@ -344,7 +432,10 @@ RowVector
 DiagMatrix::row (char *s) const
 {
   if (s == (char *) NULL)
-    FAIL;
+    {
+      (*current_liboctave_error_handler) ("invalid row selection");
+      return RowVector (); 
+    }
 
   char c = *s;
   if (c == 'f' || c == 'F')
@@ -352,14 +443,20 @@ DiagMatrix::row (char *s) const
   else if (c == 'l' || c == 'L')
     return row (nr - 1);
   else
-    FAIL;
+    {
+      (*current_liboctave_error_handler) ("invalid row selection");
+      return RowVector (); 
+    }
 }
 
 ColumnVector
 DiagMatrix::column (int i) const
 {
   if (i < 0 || i >= nc)
-    FAIL;
+    {
+      (*current_liboctave_error_handler) ("invalid column selection");
+      return ColumnVector (); 
+    }
 
   ColumnVector retval (nr, 0.0);
   if (nr >= nc || (nr < nc && i < nr))
@@ -372,7 +469,10 @@ ColumnVector
 DiagMatrix::column (char *s) const
 {
   if (s == (char *) NULL)
-    FAIL;
+    {
+      (*current_liboctave_error_handler) ("invalid column selection");
+      return ColumnVector (); 
+    }
 
   char c = *s;
   if (c == 'f' || c == 'F')
@@ -380,14 +480,20 @@ DiagMatrix::column (char *s) const
   else if (c == 'l' || c == 'L')
     return column (nc - 1);
   else
-    FAIL;
+    {
+      (*current_liboctave_error_handler) ("invalid column selection");
+      return ColumnVector (); 
+    }
 }
 
 DiagMatrix
 DiagMatrix::inverse (int &info) const
 {
   if (nr != nc)
-    FAIL;
+    {
+      (*current_liboctave_error_handler) ("inverse requires square matrix");
+      return DiagMatrix ();
+    }
 
   info = 0;
   double *tmp_data = dup (data, len);
@@ -505,7 +611,11 @@ ColumnVector
 DiagMatrix::operator * (const ColumnVector& a) const
 {
   if (nc != a.len)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix multiplication attempted");
+      return ColumnVector ();
+    }
 
   if (nc == 0 || nr == 0)
     return ColumnVector (0);
@@ -525,7 +635,11 @@ ComplexColumnVector
 DiagMatrix::operator * (const ComplexColumnVector& a) const
 {
   if (nc != a.len)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix multiplication attempted");
+      return ColumnVector ();
+    }
 
   if (nc == 0 || nr == 0)
     return ComplexColumnVector (0);
@@ -547,7 +661,11 @@ DiagMatrix
 DiagMatrix::operator + (const DiagMatrix& a) const
 {
   if (nr != a.nr || nc != a.nc)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix addition attempted");
+      return DiagMatrix ();
+    }
 
   if (nc == 0 || nr == 0)
     return DiagMatrix (nr, nc);
@@ -559,7 +677,11 @@ DiagMatrix
 DiagMatrix::operator - (const DiagMatrix& a) const
 {
   if (nr != a.nr || nc != a.nc)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix subtraction attempted");
+      return DiagMatrix ();
+    }
 
   if (nc == 0 || nr == 0)
     return DiagMatrix (nr, nc);
@@ -571,7 +693,11 @@ DiagMatrix
 DiagMatrix::operator * (const DiagMatrix& a) const
 {
   if (nr != a.nr || nc != a.nc)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix multiplication attempted");
+      return DiagMatrix ();
+    }
 
   if (nc == 0 || nr == 0)
     return DiagMatrix (nr, nc);
@@ -583,7 +709,11 @@ ComplexDiagMatrix
 DiagMatrix::operator + (const ComplexDiagMatrix& a) const
 {
   if (nr != a.nr || nc != a.nc)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix addition attempted");
+      return ComplexDiagMatrix ();
+    }
 
   if (nc == 0 || nr == 0)
     return ComplexDiagMatrix (nr, nc);
@@ -595,7 +725,11 @@ ComplexDiagMatrix
 DiagMatrix::operator - (const ComplexDiagMatrix& a) const
 {
   if (nr != a.nr || nc != a.nc)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix subtraction attempted");
+      return ComplexDiagMatrix ();
+    }
 
   if (nc == 0 || nr == 0)
     return ComplexDiagMatrix (nr, nc);
@@ -607,7 +741,11 @@ ComplexDiagMatrix
 DiagMatrix::operator * (const ComplexDiagMatrix& a) const
 {
   if (nr != a.nr || nc != a.nc)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix multiplication attempted");
+      return ComplexDiagMatrix ();
+    }
 
   if (nc == 0 || nr == 0)
     return ComplexDiagMatrix (nr, nc);
@@ -619,7 +757,11 @@ DiagMatrix
 DiagMatrix::product (const DiagMatrix& a) const
 {
   if (nr != a.nr || nc != a.nc)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix product attempted");
+      return DiagMatrix ();
+    }
 
   if (nc == 0 || nr == 0)
     return DiagMatrix (nr, nc);
@@ -631,7 +773,11 @@ DiagMatrix
 DiagMatrix::quotient (const DiagMatrix& a) const
 {
   if (nr != a.nr || nc != a.nc)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix quotient attempted");
+      return DiagMatrix ();
+    }
 
   if (nc == 0 || nr == 0)
     return DiagMatrix (nr, nc);
@@ -643,7 +789,11 @@ ComplexDiagMatrix
 DiagMatrix::product (const ComplexDiagMatrix& a) const
 {
   if (nr != a.nr || nc != a.nc)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix product attempted");
+      return ComplexDiagMatrix ();
+    }
 
   if (nc == 0 || nr == 0)
     return ComplexDiagMatrix (nr, nc);
@@ -655,7 +805,11 @@ ComplexDiagMatrix
 DiagMatrix::quotient (const ComplexDiagMatrix& a) const
 {
   if (nr != a.nr || nc != a.nc)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix quotient attempted");
+      return ComplexDiagMatrix ();
+    }
 
   if (nc == 0 || nr == 0)
     return ComplexDiagMatrix (nr, nc);
@@ -667,7 +821,11 @@ DiagMatrix&
 DiagMatrix::operator += (const DiagMatrix& a)
 {
   if (nr != a.nr || nc != a.nc)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix += operation attempted");
+      return *this;
+    }
 
   if (nc == 0 || nr == 0)
     return *this;
@@ -680,7 +838,11 @@ DiagMatrix&
 DiagMatrix::operator -= (const DiagMatrix& a)
 {
   if (nr != a.nr || nc != a.nc)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix -= operation attempted");
+      return *this;
+    }
 
   if (nr == 0 || nc == 0)
 
@@ -694,7 +856,11 @@ Matrix
 DiagMatrix::operator + (const Matrix& a) const
 {
   if (nr != a.nr || nc != a.nc)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix addition attempted");
+      return Matrix ();
+    }
 
   if (nr == 0 || nc == 0)
     return Matrix (nr, nc);
@@ -710,7 +876,11 @@ Matrix
 DiagMatrix::operator - (const Matrix& a) const
 {
   if (nr != a.nr || nc != a.nc)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix subtraction attempted");
+      return Matrix ();
+    }
 
   if (nr == 0 || nc == 0)
     return Matrix (nr, nc);
@@ -726,7 +896,11 @@ Matrix
 DiagMatrix::operator * (const Matrix& a) const
 {
   if (nc != a.nr)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix multiplication attempted");
+      return Matrix ();
+    }
 
   if (nr == 0 || nc == 0 || a.nc == 0)
     return Matrix (nr, a.nc, 0.0);
@@ -766,7 +940,11 @@ ComplexMatrix
 DiagMatrix::operator + (const ComplexMatrix& a) const
 {
   if (nr != a.nr || nc != a.nc)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix addition attempted");
+      return ComplexMatrix ();
+    }
 
   if (nr == 0 || nc == 0)
     return ComplexMatrix (nr, nc);
@@ -782,7 +960,11 @@ ComplexMatrix
 DiagMatrix::operator - (const ComplexMatrix& a) const
 {
   if (nr != a.nr || nc != a.nc)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix subtraction attempted");
+      return ComplexMatrix ();
+    }
 
   if (nr == 0 || nc == 0)
     return ComplexMatrix (nr, nc);
@@ -798,7 +980,11 @@ ComplexMatrix
 DiagMatrix::operator * (const ComplexMatrix& a) const
 {
   if (nc != a.nr)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix multiplication attempted");
+      return ComplexMatrix ();
+    }
 
   if (nr == 0 || nc == 0 || a.nc == 0)
     return ComplexMatrix (nr, nc, 0.0);
@@ -916,7 +1102,15 @@ operator << (ostream& os, const DiagMatrix& a)
 ComplexDiagMatrix::ComplexDiagMatrix (int n)
 {
   if (n < 0)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("can't create matrix with negative dimensions");
+      nr = 0;
+      nc = 0;
+      len = 0;
+      data = (Complex *) NULL;
+      return;
+    }
 
   nr = n;
   nc = n;
@@ -930,7 +1124,15 @@ ComplexDiagMatrix::ComplexDiagMatrix (int n)
 ComplexDiagMatrix::ComplexDiagMatrix (int n, double val)
 {
   if (n < 0)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("can't create matrix with negative dimensions");
+      nr = 0;
+      nc = 0;
+      len = 0;
+      data = (Complex *) NULL;
+      return;
+    }
 
   nr = n;
   nc = n;
@@ -947,7 +1149,15 @@ ComplexDiagMatrix::ComplexDiagMatrix (int n, double val)
 ComplexDiagMatrix::ComplexDiagMatrix (int n, const Complex& val)
 {
   if (n < 0)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("can't create matrix with negative dimensions");
+      nr = 0;
+      nc = 0;
+      len = 0;
+      data = (Complex *) NULL;
+      return;
+    }
 
   nr = n;
   nc = n;
@@ -964,7 +1174,15 @@ ComplexDiagMatrix::ComplexDiagMatrix (int n, const Complex& val)
 ComplexDiagMatrix::ComplexDiagMatrix (int r, int c)
 {
   if (r < 0 || c < 0)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("can't create matrix with negative dimensions");
+      nr = 0;
+      nc = 0;
+      len = 0;
+      data = (Complex *) NULL;
+      return;
+    }
 
   nr = r;
   nc = c;
@@ -978,7 +1196,15 @@ ComplexDiagMatrix::ComplexDiagMatrix (int r, int c)
 ComplexDiagMatrix::ComplexDiagMatrix (int r, int c, double val)
 {
   if (r < 0 || c < 0)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("can't create matrix with negative dimensions");
+      nr = 0;
+      nc = 0;
+      len = 0;
+      data = (Complex *) NULL;
+      return;
+    }
 
   nr = r;
   nc = c;
@@ -995,7 +1221,15 @@ ComplexDiagMatrix::ComplexDiagMatrix (int r, int c, double val)
 ComplexDiagMatrix::ComplexDiagMatrix (int r, int c, const Complex& val)
 {
   if (r < 0 || c < 0)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("can't create matrix with negative dimensions");
+      nr = 0;
+      nc = 0;
+      len = 0;
+      data = (Complex *) NULL;
+      return;
+    }
 
   nr = r;
   nc = c;
@@ -1149,11 +1383,44 @@ ComplexDiagMatrix::operator = (const ComplexDiagMatrix& a)
   return *this;
 }
 
+Complex&
+ComplexDiagMatrix::checkelem (int r, int c)
+{
+#ifndef NO_RANGE_CHECK
+  if (r < 0 || r >= nr || c < 0 || c >= nc)
+    {
+      (*current_liboctave_error_handler) ("range error");
+      static Complex foo (0.0);
+      return foo;
+    }
+#endif
+
+  return elem (r, c);
+}
+
+Complex
+ComplexDiagMatrix::checkelem (int r, int c) const
+{
+#ifndef NO_RANGE_CHECK
+  if (r < 0 || r >= nr || c < 0 || c >= nc)
+    {
+      (*current_liboctave_error_handler) ("range error");
+      return Complex (0.0);
+    }
+#endif
+
+  return elem (r, c);
+}
+
 ComplexDiagMatrix&
 ComplexDiagMatrix::resize (int r, int c)
 {
   if (r < 0 || c < 0)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("can't resize to negative dimensions");
+      return *this;
+    }
 
   int new_len = r < c ? r : c;
   Complex *new_data = (Complex *) NULL;
@@ -1180,7 +1447,11 @@ ComplexDiagMatrix&
 ComplexDiagMatrix::resize (int r, int c, double val)
 {
   if (r < 0 || c < 0)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("can't resize to negative dimensions");
+      return *this;
+    }
 
   int new_len = r < c ? r : c;
   Complex *new_data = (Complex *) NULL;
@@ -1210,7 +1481,11 @@ ComplexDiagMatrix&
 ComplexDiagMatrix::resize (int r, int c, const Complex& val)
 {
   if (r < 0 || c < 0)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("can't resize to negative dimensions");
+      return *this;
+    }
 
   int new_len = r < c ? r : c;
   Complex *new_data = (Complex *) NULL;
@@ -1278,7 +1553,10 @@ ComplexDiagMatrix&
 ComplexDiagMatrix::fill (double val, int beg, int end)
 {
   if (beg < 0 || end >= len || end < beg)
-    FAIL;
+    {
+      (*current_liboctave_error_handler) ("range error for fill");
+      return *this;
+    }
 
   if (end > beg)
     copy (data+beg, beg-end, val);
@@ -1289,7 +1567,10 @@ ComplexDiagMatrix&
 ComplexDiagMatrix::fill (const Complex& val, int beg, int end)
 {
   if (beg < 0 || end >= len || end < beg)
-    FAIL;
+    {
+      (*current_liboctave_error_handler) ("range error for fill");
+      return *this;
+    }
 
   if (end > beg)
     copy (data+beg, beg-end, val);
@@ -1300,7 +1581,10 @@ ComplexDiagMatrix&
 ComplexDiagMatrix::fill (const ColumnVector& a)
 {
   if (a.len != len)
-    FAIL;
+    {
+      (*current_liboctave_error_handler) ("range error for fill");
+      return *this;
+    }
 
   copy (data, a.data, len);
   return *this;
@@ -1310,7 +1594,10 @@ ComplexDiagMatrix&
 ComplexDiagMatrix::fill (const ComplexColumnVector& a)
 {
   if (a.len != len)
-    FAIL;
+    {
+      (*current_liboctave_error_handler) ("range error for fill");
+      return *this;
+    }
 
   copy (data, a.data, len);
   return *this;
@@ -1320,7 +1607,10 @@ ComplexDiagMatrix&
 ComplexDiagMatrix::fill (const RowVector& a)
 {
   if (a.len != len)
-    FAIL;
+    {
+      (*current_liboctave_error_handler) ("range error for fill");
+      return *this;
+    }
 
   copy (data, a.data, len);
   return *this;
@@ -1330,7 +1620,10 @@ ComplexDiagMatrix&
 ComplexDiagMatrix::fill (const ComplexRowVector& a)
 {
   if (a.len != len)
-    FAIL;
+    {
+      (*current_liboctave_error_handler) ("range error for fill");
+      return *this;
+    }
 
   copy (data, a.data, len);
   return *this;
@@ -1340,7 +1633,10 @@ ComplexDiagMatrix&
 ComplexDiagMatrix::fill (const ColumnVector& a, int beg)
 {
   if (beg < 0 || beg + a.len >= len)
-    FAIL;
+    {
+      (*current_liboctave_error_handler) ("range error for fill");
+      return *this;
+    }
 
   copy (data+beg, a.data, a.len);
   return *this;
@@ -1350,7 +1646,10 @@ ComplexDiagMatrix&
 ComplexDiagMatrix::fill (const ComplexColumnVector& a, int beg)
 {
   if (beg < 0 || beg + a.len >= len)
-    FAIL;
+    {
+      (*current_liboctave_error_handler) ("range error for fill");
+      return *this;
+    }
 
   copy (data+beg, a.data, a.len);
   return *this;
@@ -1360,7 +1659,10 @@ ComplexDiagMatrix&
 ComplexDiagMatrix::fill (const RowVector& a, int beg)
 {
   if (beg < 0 || beg + a.len >= len)
-    FAIL;
+    {
+      (*current_liboctave_error_handler) ("range error for fill");
+      return *this;
+    }
 
   copy (data+beg, a.data, a.len);
   return *this;
@@ -1370,7 +1672,10 @@ ComplexDiagMatrix&
 ComplexDiagMatrix::fill (const ComplexRowVector& a, int beg)
 {
   if (beg < 0 || beg + a.len >= len)
-    FAIL;
+    {
+      (*current_liboctave_error_handler) ("range error for fill");
+      return *this;
+    }
 
   copy (data+beg, a.data, a.len);
   return *this;
@@ -1435,7 +1740,10 @@ ComplexRowVector
 ComplexDiagMatrix::row (int i) const
 {
   if (i < 0 || i >= nr)
-    FAIL;
+    {
+      (*current_liboctave_error_handler) ("invalid row selection");
+      return RowVector (); 
+    }
 
   ComplexRowVector retval (nc, 0.0);
   if (nr <= nc || (nr > nc && i < nc))
@@ -1448,7 +1756,10 @@ ComplexRowVector
 ComplexDiagMatrix::row (char *s) const
 {
   if (s == (char *) NULL)
-    FAIL;
+    {
+      (*current_liboctave_error_handler) ("invalid row selection");
+      return ComplexRowVector (); 
+    }
 
   char c = *s;
   if (c == 'f' || c == 'F')
@@ -1456,14 +1767,20 @@ ComplexDiagMatrix::row (char *s) const
   else if (c == 'l' || c == 'L')
     return row (nr - 1);
   else
-    FAIL;
+    {
+      (*current_liboctave_error_handler) ("invalid row selection");
+      return ComplexRowVector ();
+    }
 }
 
 ComplexColumnVector
 ComplexDiagMatrix::column (int i) const
 {
   if (i < 0 || i >= nc)
-    FAIL;
+    {
+      (*current_liboctave_error_handler) ("invalid column selection");
+      return ColumnVector (); 
+    }
 
   ComplexColumnVector retval (nr, 0.0);
   if (nr >= nc || (nr < nc && i < nr))
@@ -1476,7 +1793,10 @@ ComplexColumnVector
 ComplexDiagMatrix::column (char *s) const
 {
   if (s == (char *) NULL)
-    FAIL;
+    {
+      (*current_liboctave_error_handler) ("invalid column selection");
+      return ColumnVector (); 
+    }
 
   char c = *s;
   if (c == 'f' || c == 'F')
@@ -1484,14 +1804,20 @@ ComplexDiagMatrix::column (char *s) const
   else if (c == 'l' || c == 'L')
     return column (nc - 1);
   else
-    FAIL;
+    {
+      (*current_liboctave_error_handler) ("invalid column selection");
+      return ColumnVector (); 
+    }
 }
 
 ComplexDiagMatrix
 ComplexDiagMatrix::inverse (int& info) const
 {
   if (nr != nc)
-    FAIL;
+    {
+      (*current_liboctave_error_handler) ("inverse requires square matrix");
+      return DiagMatrix ();
+    }
 
   info = 0;
   for (int i = 0; i < len; i++)
@@ -1629,7 +1955,11 @@ ComplexColumnVector
 ComplexDiagMatrix::operator * (const ColumnVector& a) const
 {
   if (nc != a.len)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix muliplication attempted");
+      return ComplexColumnVector ();
+    }
 
   if (nc == 0 || nr == 0)
     return ComplexColumnVector (0);
@@ -1649,7 +1979,11 @@ ComplexColumnVector
 ComplexDiagMatrix::operator * (const ComplexColumnVector& a) const
 {
   if (nc != a.len)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix muliplication attempted");
+      return ComplexColumnVector ();
+    }
 
   if (nc == 0 || nr == 0)
     return ComplexColumnVector (0);
@@ -1671,7 +2005,11 @@ ComplexDiagMatrix
 ComplexDiagMatrix::operator + (const DiagMatrix& a) const
 {
   if (nr != a.nr || nc != a.nc)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix addition attempted");
+      return ComplexDiagMatrix ();
+    }
 
   if (nr == 0 || nc == 0)
     return ComplexDiagMatrix (nr, nc);
@@ -1683,7 +2021,11 @@ ComplexDiagMatrix
 ComplexDiagMatrix::operator - (const DiagMatrix& a) const
 {
   if (nr != a.nr || nc != a.nc)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix subtraction attempted");
+      return ComplexDiagMatrix ();
+    }
 
   if (nr == 0 || nc == 0)
     return ComplexDiagMatrix (nr, nc);
@@ -1695,7 +2037,11 @@ ComplexDiagMatrix
 ComplexDiagMatrix::operator * (const DiagMatrix& a) const
 {
   if (nr != a.nr || nc != a.nc)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix multiplication attempted");
+      return ComplexDiagMatrix ();
+    }
 
   if (nr == 0 || nc == 0)
     return ComplexDiagMatrix (nr, nc);
@@ -1707,7 +2053,11 @@ ComplexDiagMatrix
 ComplexDiagMatrix::operator + (const ComplexDiagMatrix& a) const
 {
   if (nr != a.nr || nc != a.nc)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix addition attempted");
+      return ComplexDiagMatrix ();
+    }
 
   if (nr == 0 || nc == 0)
     return ComplexDiagMatrix (nr, nc);
@@ -1719,7 +2069,11 @@ ComplexDiagMatrix
 ComplexDiagMatrix::operator - (const ComplexDiagMatrix& a) const
 {
   if (nr != a.nr || nc != a.nc)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix subtraction attempted");
+      return ComplexDiagMatrix ();
+    }
 
   if (nr == 0 || nc == 0)
     return ComplexDiagMatrix (nr, nc);
@@ -1731,7 +2085,11 @@ ComplexDiagMatrix
 ComplexDiagMatrix::operator * (const ComplexDiagMatrix& a) const
 {
   if (nr != a.nr || nc != a.nc)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix multiplication attempted");
+      return ComplexDiagMatrix ();
+    }
 
   if (nr == 0 || nc == 0)
     return ComplexDiagMatrix (nr, nc);
@@ -1743,7 +2101,11 @@ ComplexDiagMatrix
 ComplexDiagMatrix::product (const DiagMatrix& a) const
 {
   if (nr != a.nr || nc != a.nc)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix product attempted");
+      return ComplexDiagMatrix ();
+    }
 
   if (nr == 0 || nc == 0)
     return ComplexDiagMatrix (nr, nc);
@@ -1755,7 +2117,11 @@ ComplexDiagMatrix
 ComplexDiagMatrix::quotient (const DiagMatrix& a) const
 {
   if (nr != a.nr || nc != a.nc)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix quotient attempted");
+      return ComplexDiagMatrix ();
+    }
 
   if (nr == 0 || nc == 0)
     return ComplexDiagMatrix (nr, nc);
@@ -1767,7 +2133,11 @@ ComplexDiagMatrix
 ComplexDiagMatrix::product (const ComplexDiagMatrix& a) const
 {
   if (nr != a.nr || nc != a.nc)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix product attempted");
+      return ComplexDiagMatrix ();
+    }
 
   if (nr == 0 || nc == 0)
     return ComplexDiagMatrix (nr, nc);
@@ -1779,7 +2149,11 @@ ComplexDiagMatrix
 ComplexDiagMatrix::quotient (const ComplexDiagMatrix& a) const
 {
   if (nr != a.nr || nc != a.nc)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix quotient attempted");
+      return ComplexDiagMatrix ();
+    }
 
   if (nr == 0 || nc == 0)
     return ComplexDiagMatrix (nr, nc);
@@ -1791,7 +2165,11 @@ ComplexDiagMatrix&
 ComplexDiagMatrix::operator += (const DiagMatrix& a)
 {
   if (nr != a.nr || nc != a.nc)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix += operation attempted");
+      return *this;
+    }
 
   if (nr == 0 || nc == 0)
     return *this;
@@ -1804,7 +2182,11 @@ ComplexDiagMatrix&
 ComplexDiagMatrix::operator -= (const DiagMatrix& a)
 {
   if (nr != a.nr || nc != a.nc)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix -= operation attempted");
+      return *this;
+    }
 
   if (nr == 0 || nc == 0)
     return *this;
@@ -1817,7 +2199,11 @@ ComplexDiagMatrix&
 ComplexDiagMatrix::operator += (const ComplexDiagMatrix& a)
 {
   if (nr != a.nr || nc != a.nc)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix += operation attempted");
+      return *this;
+    }
 
   if (nr == 0 || nc == 0)
     return *this;
@@ -1830,7 +2216,11 @@ ComplexDiagMatrix&
 ComplexDiagMatrix::operator -= (const ComplexDiagMatrix& a)
 {
   if (nr != a.nr || nc != a.nc)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix -= operation attempted");
+      return *this;
+    }
 
   if (nr == 0 || nc == 0)
     return *this;
@@ -1845,7 +2235,11 @@ ComplexMatrix
 ComplexDiagMatrix::operator + (const Matrix& a) const
 {
   if (nr != a.nr || nc != a.nc)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix addition attempted");
+      return ComplexMatrix ();
+    }
 
   if (nr == 0 || nc == 0)
     return ComplexMatrix (nr, nc);
@@ -1861,7 +2255,11 @@ ComplexMatrix
 ComplexDiagMatrix::operator - (const Matrix& a) const
 {
   if (nr != a.nr || nc != a.nc)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix subtraction attempted");
+      return ComplexMatrix ();
+    }
 
   if (nr == 0 || nc == 0)
     return ComplexMatrix (nr, nc);
@@ -1877,7 +2275,11 @@ ComplexMatrix
 ComplexDiagMatrix::operator * (const Matrix& a) const
 {
   if (nc != a.nr)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix multiplication attempted");
+      return ComplexMatrix ();
+    }
 
   if (nr == 0 || nc == 0 || a.nc == 0)
     return ComplexMatrix (nr, a.nc, 0.0);
@@ -1917,7 +2319,11 @@ ComplexMatrix
 ComplexDiagMatrix::operator + (const ComplexMatrix& a) const
 {
   if (nr != a.nr || nc != a.nc)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix addition attempted");
+      return ComplexMatrix ();
+    }
 
   if (nr == 0 || nc == 0)
     return ComplexMatrix (nr, nc);
@@ -1933,7 +2339,11 @@ ComplexMatrix
 ComplexDiagMatrix::operator - (const ComplexMatrix& a) const
 {
   if (nr != a.nr || nc != a.nc)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix subtraction attempted");
+      return ComplexMatrix ();
+    }
 
   if (nr == 0 || nc == 0)
     return ComplexMatrix (nr, nc);
@@ -1949,7 +2359,11 @@ ComplexMatrix
 ComplexDiagMatrix::operator * (const ComplexMatrix& a) const
 {
   if (nc != a.nr)
-    FAIL;
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix multiplication attempted");
+      return ComplexMatrix ();
+    }
 
   if (nr == 0 || nc == 0 || a.nc == 0)
     return ComplexMatrix (nr, a.nc, 0.0);

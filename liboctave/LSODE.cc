@@ -28,6 +28,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <iostream.h>
 #include "ODE.h"
 #include "f77-uscore.h"
+#include "lo-error.h"
 
 extern "C"
 {
@@ -252,8 +253,10 @@ ODE::integrate (double tout)
       working_too_hard++;
       if (working_too_hard > 20)
 	{
-	  cerr << "Shut 'er down Slim!  She's a suckin' mud!\n";
-	  exit (1);
+	  (*current_liboctave_error_handler)
+	    ("giving up after more than %d steps attempted in lsode",
+	     iwork[5] * 20);
+	  return ColumnVector ();
 	}
       else
 	{

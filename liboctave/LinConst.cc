@@ -27,14 +27,14 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <iostream.h>
 #include "LinConst.h"
+#include "lo-error.h"
 
 // error handling
 
 void
 LinConst::error (const char* msg)
 {
-  cerr << "Fatal LinConst error. " << msg << "\n";
-  exit(1);
+  (*current_liboctave_error_handler) ("fatal LinConst error: %s", msg);
 }
 
 LinConst::LinConst (const Matrix& a_eq, const Vector& b_eq,

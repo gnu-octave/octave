@@ -49,6 +49,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Zero means it should be considered an error.
 static int Vempty_list_elements_ok;
 
+// The character to fill with when creating string arrays.
+static char Vstring_fill_char;
+
 // General matrices.  This list type is much more work to handle than
 // constant matrices, but it allows us to construct matrices from
 // other matrices, variables, and functions.
@@ -443,7 +446,7 @@ tree_matrix::eval (bool /* print */)
       bool found_complex = tmp.is_complex ();
 
       if (all_strings)
-	chm.resize (nr, nc, 0);
+	chm.resize (nr, nc, Vstring_fill_char);
       else if (found_complex)
 	cm.resize (nr, nc, 0.0);
       else
@@ -536,11 +539,40 @@ empty_list_elements_ok (void)
   return 0;
 }
 
+static int
+string_fill_char (void)
+{
+  int status = 0;
+
+  string s = builtin_string_variable ("string_fill_char");
+
+  switch (s.length ())
+    {
+    case 1:
+      Vstring_fill_char = s[0];
+      break;
+
+    case 0:
+      Vstring_fill_char = '\0';
+      break;
+
+    default:
+      warning ("string_fill_char must be a single character");
+      status = -1;
+      break;
+    }
+
+  return status;
+}
+
 void
 symbols_of_pt_mat (void)
 {
   DEFVAR (empty_list_elements_ok, "warn", 0, empty_list_elements_ok,
     "ignore the empty element in expressions like `a = [[], 1]'");
+
+  DEFVAR (string_fill_char, " ", 0, string_fill_char,
+    "the character to fill with when creating string arrays.");
 }
 
 /*

@@ -61,6 +61,9 @@ static int plot_line_count = 0;
 // Is this a parametric plot?  Makes a difference for 3D plotting.
 static int parametric_plot = 0;
 
+// The gnuplot terminal type.
+static char *gnuplot_terminal_type = 0;
+
 // Should the graph window be cleared before plotting the next line?
 static int clear_before_plotting = 1;
 
@@ -104,6 +107,8 @@ open_plot_stream (void)
 
   if (! plot_stream.is_open ())
     {
+      initialized = 0;
+
       plot_line_count = 0;
 
       char *plot_prog = user_pref.gnuplot_binary;
@@ -138,6 +143,9 @@ open_plot_stream (void)
     {
       initialized = 1;
       plot_stream << "set data style lines\n";
+
+      if (gnuplot_terminal_type)
+	plot_stream << "set term " << gnuplot_terminal_type << "\n";
     }
 }
 
@@ -1147,6 +1155,15 @@ set plotting options")
 	parametric_plot = 1;
       else if (almost_match ("noparametric", argv[1], 5))
 	parametric_plot = 0;
+      else if (almost_match ("term", argv[1], 1))
+	{
+	  delete [] gnuplot_terminal_type;
+	  ostrstream buf;
+	  for (int i = 2; i < argc; i++)
+	    buf << argv[i] << " ";
+	  buf << "\n" << ends;
+	  gnuplot_terminal_type = buf.str ();
+	}
     }
 
   for (int i = 0; i < argc; i++)

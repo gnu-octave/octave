@@ -579,49 +579,6 @@ operator * (const ComplexDiagMatrix& a, const ComplexDiagMatrix& b)
 }
 
 ComplexDiagMatrix
-operator + (const ComplexDiagMatrix& m, const DiagMatrix& a)
-{
-  int nr = m.rows ();
-  int nc = m.cols ();
-
-  int a_nr = a.rows ();
-  int a_nc = a.cols ();
-
-  if (nr != a_nr || nc != a_nc)
-    {
-      gripe_nonconformant ("operator +", nr, nc, a_nr, a_nc);
-      return ComplexDiagMatrix ();
-    }
-
-  if (nr == 0 || nc == 0)
-    return ComplexDiagMatrix (nr, nc);
-
-  return ComplexDiagMatrix (add (m.data (), a.data (), m.length ()), nr, nc);
-}
-
-ComplexDiagMatrix
-operator - (const ComplexDiagMatrix& m, const DiagMatrix& a)
-{
-  int nr = m.rows ();
-  int nc = m.cols ();
-
-  int a_nr = a.rows ();
-  int a_nc = a.cols ();
-
-  if (nr != a_nr || nc != a_nc)
-    {
-      gripe_nonconformant ("operator -", nr, nc, a_nr, a_nc);
-      return ComplexDiagMatrix ();
-    }
-
-  if (nr == 0 || nc == 0)
-    return ComplexDiagMatrix (nr, nc);
-
-  return ComplexDiagMatrix (subtract (m.data (), a.data (), m.length ()),
-			    nr, nc);
-}
-
-ComplexDiagMatrix
 operator * (const ComplexDiagMatrix& a, const DiagMatrix& b)
 {
   int nr_a = a.rows ();
@@ -662,49 +619,6 @@ operator * (const ComplexDiagMatrix& a, const DiagMatrix& b)
 }
 
 ComplexDiagMatrix
-operator + (const DiagMatrix& m, const ComplexDiagMatrix& a)
-{
-  int nr = m.rows ();
-  int nc = m.cols ();
-
-  int a_nr = a.rows ();
-  int a_nc = a.cols ();
-
-  if (nr != a_nr || nc != a_nc)
-    {
-      gripe_nonconformant ("operator +", nr, nc, a_nr, a_nc);
-      return ComplexDiagMatrix ();
-    }
-
-  if (nc == 0 || nr == 0)
-    return ComplexDiagMatrix (nr, nc);
-
-  return ComplexDiagMatrix (add (m.data (), a.data (), m.length ()),  nr, nc);
-}
-
-ComplexDiagMatrix
-operator - (const DiagMatrix& m, const ComplexDiagMatrix& a)
-{
-  int nr = m.rows ();
-  int nc = m.cols ();
-
-  int a_nr = a.rows ();
-  int a_nc = a.cols ();
-
-  if (nr != a_nr || nc != a_nc)
-    {
-      gripe_nonconformant ("operator -", nr, nc, a_nr, a_nc);
-      return ComplexDiagMatrix ();
-    }
-
-  if (nc == 0 || nr == 0)
-    return ComplexDiagMatrix (nr, nc);
-
-  return ComplexDiagMatrix (subtract (m.data (), a.data (), m.length ()),
-			    nr, nc);
-}
-
-ComplexDiagMatrix
 operator * (const DiagMatrix& a, const ComplexDiagMatrix& b)
 {
   int nr_a = a.rows ();
@@ -742,50 +656,6 @@ operator * (const DiagMatrix& a, const ComplexDiagMatrix& b)
     }
 
   return c;
-}
-
-ComplexDiagMatrix
-product (const ComplexDiagMatrix& m, const DiagMatrix& a)
-{
-  int nr = m.rows ();
-  int nc = m.cols ();
-
-  int a_nr = a.rows ();
-  int a_nc = a.cols ();
-
-  if (nr != a_nr || nc != a_nc)
-    {
-      gripe_nonconformant ("product", nr, nc, a_nr, a_nc);
-      return ComplexDiagMatrix ();
-    }
-
-  if (nr == 0 || nc == 0)
-    return ComplexDiagMatrix (nr, nc);
-
-  return ComplexDiagMatrix (multiply (m.data (), a.data (), m.length ()),
-			    nr, nc);
-}
-
-ComplexDiagMatrix
-product (const DiagMatrix& m, const ComplexDiagMatrix& a)
-{
-  int nr = m.rows ();
-  int nc = m.cols ();
-
-  int a_nr = a.rows ();
-  int a_nc = a.cols ();
-
-  if (nr != a_nr || nc != a_nc)
-    {
-      gripe_nonconformant ("product", nr, nc, a_nr, a_nc);
-      return ComplexDiagMatrix ();
-    }
-
-  if (nc == 0 || nr == 0)
-    return ComplexDiagMatrix (nr, nc);
-
-  return ComplexDiagMatrix (multiply (m.data (), a.data (), m.length ()),
-			    nr, nc);
 }
 
 // other operations

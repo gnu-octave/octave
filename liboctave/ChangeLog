@@ -1,5 +1,9 @@
 2000-02-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* oct-rl-edit.c (octave_rl_set_event_hook): Take address of
+	rl_event_hook before casting to void **.
+	(octave_rl_set_startup_hook): Likewise, for rl_startup_hook.
+
 	* MArray-defs.h: Many new macros to make declaration and
 	definition of operators more consistent.
 	

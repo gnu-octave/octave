@@ -203,7 +203,7 @@ octave_rl_set_completion_function (rl_attempted_completion_fcn_ptr f)
 void
 octave_rl_set_startup_hook (rl_startup_hook_fcn_ptr f)
 {
-  void **fp = (void **) rl_startup_hook;
+  void **fp = (void **) (&rl_startup_hook);
   *fp = (void *) f;
 }
 
@@ -216,7 +216,7 @@ octave_rl_get_startup_hook (void)
 void
 octave_rl_set_event_hook (rl_event_hook_fcn_ptr f)
 {
-  void **fp = (void **) rl_event_hook;
+  void **fp = (void **) (&rl_event_hook);
   *fp = (void *) f;
 }
 

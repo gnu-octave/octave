@@ -35,10 +35,7 @@ all: FORCE
 
 TARGETS = octave-bug mkoctfile libcruft liboctave kpathsea info dlfcn \
 	src scripts doc check octave.info INSTALL.OCTAVE BUGS \
-	install uninstall tags TAGS clean-tar dist-z links-for-dist \
-	dist-tar clean-dist-tar dist links-for-bin-dist bin-dist-tar \
-	clean-bin-dist-tar binary-dist bin-dist conf-dist \
-	snapshot-z snapshot snapshot-version
+	install uninstall tags TAGS dist conf-dist snapshot snapshot-version
 
 NO_DEP_TARGETS = clean mostlyclean distclean maintainer-clean
 
@@ -49,5 +46,25 @@ $(TARGETS): FORCE
 
 $(NO_DEP_TARGETS): FORCE
 	$(MAKE) -f octMakefile omit_deps=true $@
+
+binary-dist: FORCE
+	@echo "***"
+	@echo "*** you must specify either static or dynamic:"
+	@echo "***"
+	@echo "*** make dynamic-binary-dist"
+	@echo "***"
+	@echo "***   dynamically linked version typically including support"
+	@echo "***   for shared libraried and dynamically linked functions"
+	@echo "***"
+	@echo "*** make static-binary-dist"
+	@echo "***"
+	@echo "***   statically linked version"
+	@echo "***"
+
+static-binary-dist:
+	$(MAKE) -f octMakefile DIST_TYPE=static binary-dist
+
+dynamic-binary-dist:
+	$(MAKE) -f octMakefile DIST_TYPE=dynamic binary-dist
 
 FORCE:  

@@ -45,7 +45,7 @@ DISTSUBDIRS = libcruft liboctave info readline dlfcn src scripts \
 
 XBINDISTFILES = BUGS COPYING INSTALL INSTALL.OCTAVE NEWS NEWS.[0-9] \
 	PROJECTS README README.Linux README.NLP README.Windows \
-	SENDING-PATCHES THANKS octave-sh insatll-octave mkinstalldirs \
+	SENDING-PATCHES THANKS octave-sh install-octave mkinstalldirs \
 	ChangeLog ChangeLog.[0-9]
 
 BINDISTFILES = $(addprefix $(srcdir)/, $(XBINDISTFILES)) \
@@ -54,9 +54,6 @@ BINDISTFILES = $(addprefix $(srcdir)/, $(XBINDISTFILES)) \
 # Subdirectories in which to run `make bin-dist'.
 BINDISTSUBDIRS = libcruft liboctave src kpathsea readline info \
 	scripts doc emacs examples
-
-# Complete directories trees to distribute with binary distributions.
-BINDISTDIRS = emacs
 
 # Subdirectories in which to run clean targets.
 CLEANSUBDIRS = $(DISTSUBDIRS) glob kpathsea
@@ -136,22 +133,20 @@ maintainer-clean distclean::
 dist-info-files: INSTALL.OCTAVE BUGS
 .PHONY: dist-info-files
 
-links-for-dist: dist-info-files
+dist: dist-info-files
 	echo octave-$(version) > .fname
 	rm -rf `cat .fname`
 	mkdir `cat .fname`
 	ln $(DISTFILES) `cat .fname`
 	for dir in $(DISTDIRS); do ln -s ../$$dir `cat .fname`; done
-	for dir in $(DISTSUBDIRS); do mkdir `cat .fname`/$$dir; cd $$dir; $(MAKE) dist; cd ..; done
-.PHONY: links-for-dist
-
-dist-tar: links-for-dist
+	for dir in $(DISTSUBDIRS); do \
+	  mkdir `cat .fname`/$$dir ; \
+	  cd $$dir ; \
+	  $(MAKE) dist ; \
+	  cd .. ; \
+	done
 	tar chf `cat .fname`.tar `cat .fname`
 	rm -rf `cat .fname`
-.PHONY: dist-tar
-
-dist: dist-tar
-	echo octave-$(version) > .fname
 	tar xf `cat .fname`.tar
 	find `cat .fname` \( \( -name RCS -a -type d \) \
 	  -o \( -name OLD -a -type d \) -o -name "=*" \
@@ -163,73 +158,12 @@ dist: dist-tar
 	rm -rf `cat .fname`/test/octave.test/qpsol
 	chmod -R a+rwX `cat .fname`
 	tar cf `cat .fname`.tar `cat .fname`
-	rm -rf `cat .fname` .fname
-.PHONY: dist
-
-# Rules for making a binary distribution.
-
-VERSION:
-	echo $(version) > VERSION
-.PHONY: VERSION
-
-ARCH:
-	echo $(target_host_type) > ARCH
-.PHONY: ARCH
-
-links-for-bin-dist: VERSION ARCH octave-bug dist-info-files
-	echo octave-$(version)-$(target_host_type) > .fname
-	rm -rf `cat .fname`
-	mkdir `cat .fname`
-	ln $(BINDISTFILES) `cat .fname`
-#	for dir in $(BINDISTDIRS); do ln -s ../$$dir `cat .fname`; done
-	for dir in $(BINDISTSUBDIRS); do mkdir `cat .fname`/$$dir; cd $$dir; $(MAKE) bin-dist; cd ..; done
-.PHONY: links-for-bin-dist
-
-bin-dist-tar: links-for-bin-dist
-	echo octave-$(version)-$(target_host_type) > .fname
-	tar chf `cat .fname`.tar `cat .fname`
-	rm -rf `cat .fname`
-.PHONY: bin-dist-tar
-
-binary-dist bin-dist: bin-dist-tar
-	echo octave-$(version)-$(target_host_type) > .fname
-	tar xf `cat .fname`.tar
-	find `cat .fname` \( \( -name RCS -a -type d \) \
-	  -o \( -name OLD -a -type d \) -o -name "=*" \
-	  -o -name '*~' -o -name '#*#' -o -name config.log \
-	  -o -name config.status -o -name Makefile \
-	  -o -name c-auto.h \) -print | xargs rm -rf
-	rm -f `cat .fname`/test/octave.test/*.m
-	rm -rf `cat .fname`/test/octave.test/npsol
-	rm -rf `cat .fname`/test/octave.test/qpsol
-	chmod -R a+rwX `cat .fname`
-	tar cf `cat .fname`.tar `cat .fname`
-	rm -rf `cat .fname` .fname
-.PHONY: binary-dist bin-dist
-
-# Rules for making a dist of just the stuff needed to run configure.
-
-conf-dist:
-	echo config-dist-$(version) > .fname
-	rm -rf `cat .fname`
-	mkdir `cat .fname`
-	ln $(CONF_DISTFILES) `cat .fname`
-	for dir in $(CONF_DISTSUBDIRS); do mkdir `cat .fname`/$$dir; cd $$dir; $(MAKE) conf-dist; cd ..; done
-	tar chf `cat .fname`.tar `cat .fname`
 	rm -rf `cat .fname`
 	gzip --best `cat .fname`.tar
 	rm -f .fname
-.PHONY: conf-dist
+.PHONY: dist
 
 # Rules for making a snapshot.
-
-snapshot-z: snapshot-version
-	$(MAKE) dist
-	$(MAKE) dist-z
-.PHONY: snapshot-z
-
-snapshot: snapshot-z
-.PHONY: snapshot
 
 snapshot-version:
 	@echo "creating src/version.h"
@@ -240,3 +174,76 @@ snapshot-version:
 	} { print $$0 }' src/version.h > src/version.h.new
 	@$(top_srcdir)/move-if-change src/version.h.new src/version.h
 .PHONY: snapshot-version
+
+snapshot: snapshot-version
+	$(MAKE) dist
+.PHONY: snapshot
+
+# Rules for making a dist of just the stuff needed to run configure.
+
+conf-dist:
+	echo config-dist-$(version) > .fname
+	rm -rf `cat .fname`
+	mkdir `cat .fname`
+	ln $(CONF_DISTFILES) `cat .fname`
+	for dir in $(CONF_DISTSUBDIRS); do \
+	  mkdir `cat .fname`/$$dir ; \
+	  cd $$dir ; \
+	  $(MAKE) conf-dist ; \
+	  cd .. ; \
+	done
+	tar chf `cat .fname`.tar `cat .fname`
+	rm -rf `cat .fname`
+	gzip --best `cat .fname`.tar
+	rm -f .fname
+.PHONY: conf-dist
+
+# Rules for making a binary distribution.
+
+bin-dist-type:
+	@if [ -z "$(DIST_TYPE)" ]; then \
+	  echo "***" ; \
+	  echo "*** Must specify a value for DIST_TYPE (static or dynamic)" ; \
+	  echo "***" ; \
+	  exit 1 ; \
+	else \
+	  exit 0 ; \
+	fi
+.PHONY: bin-dist-type
+
+VERSION:
+	echo $(version) > VERSION
+.PHONY: VERSION
+
+ARCH:
+	echo $(target_host_type) > ARCH
+.PHONY: ARCH
+
+binary-dist: bin-dist-type VERSION ARCH octave-bug dist-info-files
+	echo octave-$(version)-$(target_host_type)-$(DIST_TYPE) > .fname
+	rm -rf `cat .fname`
+	mkdir `cat .fname`
+	ln $(BINDISTFILES) `cat .fname`
+	for dir in $(BINDISTSUBDIRS); do \
+	  mkdir `cat .fname`/$$dir ; \
+	  cd $$dir ; \
+	  $(MAKE) bin-dist ; \
+	  cd .. ; \
+	done
+	tar chf `cat .fname`.tar `cat .fname`
+	rm -rf `cat .fname`
+	tar xf `cat .fname`.tar
+	find `cat .fname` \( \( -name RCS -a -type d \) \
+	  -o \( -name OLD -a -type d \) -o -name "=*" \
+	  -o -name '*~' -o -name '#*#' -o -name config.log \
+	  -o -name config.status -o -name Makefile \
+	  -o -name c-auto.h \) -print | xargs rm -rf
+	rm -f `cat .fname`/test/octave.test/*.m
+	rm -rf `cat .fname`/test/octave.test/npsol
+	rm -rf `cat .fname`/test/octave.test/qpsol
+	chmod -R a+rwX `cat .fname`
+	tar cf `cat .fname`.tar `cat .fname`
+	rm -rf `cat .fname`
+	gzip --best `cat .fname`.tar
+	rm -f .fname
+.PHONY: binary-dist

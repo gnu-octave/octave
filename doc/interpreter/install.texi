@@ -396,7 +396,7 @@ binary distribution.
 To install Octave from a binary distribution, execute the command
 
 @example
-sh ./doinstall.sh
+sh ./install-octave
 @end example
 
 @noindent
@@ -409,24 +409,29 @@ installed in the following subdirectories of @file{/usr/local}.
 @item bin
 Octave and other binaries that people will want to run directly.
 
+@item lib
+Shared libraries that Octave needs in order to run.  These files are
+not included if you are installing a statically linked version of
+Octave.
+
 @item man/man1
 Unix-style man pages describing Octave.
 
 @item info
 Info files describing Octave.
 
-@item lib/octave/@var{version}/m
+@item share/octave/@var{version}/m
 Function files distributed with Octave.  This includes the Octave
 version, so that multiple versions of Octave may be installed at the
 same time.
 
-@item lib/octave/@var{version}/exec/@var{host_type}
+@item libexec/octave/@var{version}/exec/@var{host_type}
 Executables to be run by Octave rather than the user.
 
-@item lib/octave/@var{version}/oct/@var{host_type}
+@item libexec/octave/@var{version}/oct/@var{host_type}
 Object files that will be dynamically loaded.
 
-@item lib/octave/@var{version}/imagelib
+@item share/octave/@var{version}/imagelib
 Image files that are distributed with Octave.
 @end table
 
@@ -435,16 +440,30 @@ where @var{version} stands for the current version number of the
 interpreter, and @var{host_type} is the type of computer on which Octave
 is installed (for example, @samp{i486-unknown-gnu}).
 
-If these directories don't exist, the script @file{doinstall.sh} will
-create them for you.
+If these directories don't exist, the script @file{install-octave} will
+create them for you.  The installation script also creates the following
+subdirectories of @file{/usr/local} that are intended for locally
+installed functions:
+
+@table @file
+@item share/octave/site/m
+Locally installed M-files.
+
+@item libexec/octave/site/exec/@var{host_type}
+Locally installed binaries intendec to be run by Octave rather than by
+the user.
+
+@item libexec/octave/site/octave/@var{host_type}
+Local object files that will be dynamically linked.
+@end table
 
 If it is not possible for you to install Octave in @file{/usr/local}, or
 if you would prefer to install it in a different directory, you can
 specify the name of the top level directory as an argument to the
-doinstall.sh script.  For example:
+@file{install-octave} script.  For example:
 
 @example
-sh ./doinstall.sh /some/other/directory
+sh ./install-octave /some/other/directory
 @end example
 
 @noindent
@@ -459,16 +478,48 @@ Here is how to build a binary distribution for others.
 
 @itemize @bullet
 @item
-You must build Octave in the same directory as the source.  This is
-required since the @samp{binary-dist} targets in the makefiles will not
-work if you compile outside the source tree.
+Unpack the source distribution.
 
 @item
-Use @samp{CFLAGS=-O CXXFLAGS=-O LDFLAGS=} as arguments for Make because
-most people who get the binary distributions are probably not going to
-be interested in debugging Octave.
+Configure Octave using the command
+
+@example
+./configure --disable-dl --disable-shl --disable-shared
+@end example
+
+If your system supports shared libraries and dynamic linking, you should
+also build a binary that supports those features, but it is important to
+create a statically linked executable that will run no matter what
+versions of the libraries are installed on the target system.
 
 @item
-Type @samp{make binary-dist}.  This will build everything and then pack
-it up for distribution.
+Build the binaries using the command
+
+@example
+make LDFLAGS=-static
+@end example
+
+@item
+Type @samp{make static-binary-dist}.  This will create a compressed tar
+file ready for distribution.  The file will have a name like
+@file{octave-@var{version}-@var{host_type}-static.tar.gz}.
+
+@item
+If your system supports dynamic linking and shared libraries, build
+another version of Octave that supports these features.  Use the
+commands
+
+@example
+@group
+configure --enable-shared
+make
+make dynamic-binary-dist
+@end group
+@end example
+
+@noindent
+This will create a compressed tar file ready for distribution.  The file
+will have a name like
+@file{octave-@var{version}-@var{host_type}-dynamic.tar.gz}.
+
 @end itemize

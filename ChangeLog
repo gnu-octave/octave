@@ -1,3 +1,12 @@
+Mon Jan 27 00:10:10 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in: Delete `internal' targets.
+	(static-binary-dist, dynamic-binary-dist): Special cases.
+
+	* octMakefile.in (static-binary-dist, dynamic-binary-dist):
+	New targets.
+	(binary-dist, bin-dist): Delete.
+
 Sun Jan 26 19:39:51 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* emacs/Makefile.in: New file.

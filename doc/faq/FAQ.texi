@@ -3,16 +3,6 @@
 @setfilename FAQ.info
 @settitle Frequently asked questions about Octave (with answers)
 
-@c Smaller amounts of whitespace for the 8.5 by 11 inch format.
-@tex
-\global\chapheadingskip = 15pt plus 4pt minus 2pt 
-\global\secheadingskip = 12pt plus 3pt minus 2pt
-\global\subsecheadingskip = 9pt plus 2pt minus 2pt
-\global\parskip 5pt plus 1pt
-
-@finalout
-@end tex
-
 @setchapternewpage off
 
 @titlepage

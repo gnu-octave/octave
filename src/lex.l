@@ -121,7 +121,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
     { \
       current_input_column += yyleng; \
       lexer_flags.quote_is_transpose = false; \
-      lexer_flags.cant_be_identifier = false; \
       lexer_flags.convert_spaces_to_comma = true; \
       COUNT_TOK_AND_RETURN (tok); \
     } \
@@ -144,7 +143,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
       token_stack.push (yylval.tok_val); \
       current_input_column += yyleng; \
       lexer_flags.quote_is_transpose = false; \
-      lexer_flags.cant_be_identifier = true; \
       lexer_flags.convert_spaces_to_comma = convert; \
       COUNT_TOK_AND_RETURN (tok); \
     } \
@@ -240,11 +238,9 @@ static unsigned int Vtoken_count = 0;
 
 static void fixup_column_count (char *s);
 static void do_comma_insert_check (void);
-static int is_plot_keyword (const std::string& s);
 static int is_keyword_token (const std::string& s);
 static void prep_for_function (void);
 static void prep_for_nested_function (void);
-static std::string plot_style_token (const std::string& s);
 static symbol_record *lookup_identifier (const std::string& s);
 static std::string grab_help_text (void);
 static bool match_any (char c, const char *s);
@@ -312,24 +308,20 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     BEGIN (INITIAL);
     current_input_column = 1;
     lexer_flags.quote_is_transpose = false;
-    lexer_flags.cant_be_identifier = false;
     lexer_flags.convert_spaces_to_comma = true;
     COUNT_TOK_AND_RETURN ('\n');
   }
 
 <COMMAND_START>[\;\,] {
-    if (lexer_flags.doing_set && strcmp (yytext, ",") == 0)
-      {
-	TOK_PUSH_AND_RETURN (yytext, STRING);
-      }
+    if (lexer_flags.doing_rawcommand)
+      TOK_PUSH_AND_RETURN (yytext, STRING);
+
+    BEGIN (INITIAL);
+
+    if (strcmp (yytext, ",") == 0)
+      TOK_RETURN (',');
     else
-      {
-	BEGIN (INITIAL);
-	if (strcmp (yytext, ",") == 0)
-	  TOK_RETURN (',');
-	else
-	  TOK_RETURN (';');
-      }
+      TOK_RETURN (';');
   }
 
 <COMMAND_START>[\"\'] {
@@ -384,7 +376,6 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     int tmp = eat_continuation ();
 
     lexer_flags.quote_is_transpose = false;
-    lexer_flags.cant_be_identifier = false;
     lexer_flags.convert_spaces_to_comma = true;
 
     if ((tmp & ATE_NEWLINE) == ATE_NEWLINE)
@@ -423,7 +414,6 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 	  }
 
 	lexer_flags.quote_is_transpose = false;
-	lexer_flags.cant_be_identifier = false;
 	lexer_flags.convert_spaces_to_comma = true;
 
 	maybe_warn_separator_insert (',');
@@ -443,7 +433,6 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     fixup_column_count (yytext);
     eat_whitespace ();
     lexer_flags.quote_is_transpose = false;
-    lexer_flags.cant_be_identifier = false;
     lexer_flags.convert_spaces_to_comma = true;
     COUNT_TOK_AND_RETURN (';');
   }
@@ -461,7 +450,6 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     eat_whitespace ();
 
     lexer_flags.quote_is_transpose = false;
-    lexer_flags.cant_be_identifier = false;
     lexer_flags.convert_spaces_to_comma = true;
 
     if (nesting_level.none ())
@@ -475,46 +463,25 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
       }
   }
 
-%{
-// Open and close bracket are handled differently if we are in the range
-// part of a plot command.
-//
-%}
-
 \[{S}* {
     nesting_level.bracket ();
 
     current_input_column += yyleng;
     lexer_flags.quote_is_transpose = false;
-    lexer_flags.cant_be_identifier = false;
     lexer_flags.convert_spaces_to_comma = true;
 
     promptflag--;
     eat_whitespace ();
 
-    if (lexer_flags.plotting && ! lexer_flags.past_plot_range)
-      {
-	lexer_flags.in_plot_range = true;
-	COUNT_TOK_AND_RETURN (OPEN_BRACE);
-      }
-    else
-      {
-	lexer_flags.bracketflag++;
-	BEGIN (MATRIX_START);
-	COUNT_TOK_AND_RETURN ('[');
-      }
+    lexer_flags.bracketflag++;
+    BEGIN (MATRIX_START);
+    COUNT_TOK_AND_RETURN ('[');
   }
 
 \] {
     nesting_level.remove ();
 
-    if (lexer_flags.plotting && ! lexer_flags.past_plot_range)
-      {
-	lexer_flags.in_plot_range = false;
-	TOK_RETURN (CLOSE_BRACE);
-      }
-    else
-      TOK_RETURN (']');
+    TOK_RETURN (']');
   }
 
 %{
@@ -606,7 +573,6 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 "@" {
     current_input_column++;
     lexer_flags.quote_is_transpose = false;
-    lexer_flags.cant_be_identifier = false;
     lexer_flags.convert_spaces_to_comma = false;
     lexer_flags.looking_at_function_handle++;
     COUNT_TOK_AND_RETURN ('@');
@@ -621,7 +587,6 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 {NL} {
     current_input_column = 1;
     lexer_flags.quote_is_transpose = false;
-    lexer_flags.cant_be_identifier = false;
     lexer_flags.convert_spaces_to_comma = true;
 
     if (nesting_level.none ())
@@ -658,19 +623,6 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     current_input_column++;
     COUNT_TOK_AND_RETURN (handle_string ('"'));
 }
-
-%{
-// The colon operator is handled differently if we are in the range
-// part of a plot command.
-%}
-
-":" {
-    if (lexer_flags.plotting
-	&& (lexer_flags.in_plot_range || lexer_flags.in_plot_using))
-      BIN_OP_RETURN (COLON, true);
-    else
-      BIN_OP_RETURN (':', false);
-  }
 
 %{
 // Gobble comments.  If closest nesting is inside parentheses, don't
@@ -718,7 +670,6 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
     current_input_column = 1;
     lexer_flags.quote_is_transpose = false;
-    lexer_flags.cant_be_identifier = false;
     lexer_flags.convert_spaces_to_comma = true;
 
     maybe_gripe_matlab_incompatible_comment (yytext[0]);
@@ -735,6 +686,8 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %{
 // Other operators.
 %}
+
+":"     { BIN_OP_RETURN (':', false); }
 
 ".+"	{ XBIN_OP_RETURN (EPLUS, false); }
 ".-"	{ XBIN_OP_RETURN (EMINUS, false); }
@@ -755,6 +708,8 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 "|"	{ BIN_OP_RETURN (EXPR_OR, false); }
 "<"	{ BIN_OP_RETURN (EXPR_LT, false); }
 ">"	{ BIN_OP_RETURN (EXPR_GT, false); }
+"+"     { BIN_OP_RETURN ('+', false); }
+"-"     { BIN_OP_RETURN ('-', false); }
 "*"	{ BIN_OP_RETURN ('*', false); }
 "/"	{ BIN_OP_RETURN ('/', false); }
 "\\"	{ BIN_OP_RETURN (LEFTDIV, false); }
@@ -769,31 +724,14 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 ">>"	{ XBIN_OP_RETURN (RSHIFT, false); }
 
 {NOT} {
-    if (lexer_flags.plotting && ! lexer_flags.in_plot_range)
-      lexer_flags.past_plot_range = true;
-
     if (yytext[0] == '~')
       BIN_OP_RETURN (EXPR_NOT, false);
     else
       XBIN_OP_RETURN (EXPR_NOT, false);
   }
 
-"+" { 
-    if (lexer_flags.plotting && ! lexer_flags.in_plot_range)
-      lexer_flags.past_plot_range = true;
-    BIN_OP_RETURN ('+', false);
-  }
-
-"-" { 
-    if (lexer_flags.plotting && ! lexer_flags.in_plot_range)
-      lexer_flags.past_plot_range = true;
-    BIN_OP_RETURN ('-', false);
-  }
-
 "(" {
     lexer_flags.looking_at_indirect_ref = false;
-    if (lexer_flags.plotting && ! lexer_flags.in_plot_range)
-      lexer_flags.past_plot_range = true;
     nesting_level.paren ();
     promptflag--;
     TOK_RETURN ('(');
@@ -801,18 +739,14 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
 ")" {
     nesting_level.remove ();
-
     current_input_column++;
-    lexer_flags.cant_be_identifier = true;
     lexer_flags.quote_is_transpose = true;
     lexer_flags.convert_spaces_to_comma = nesting_level.is_bracket_or_brace ();
     do_comma_insert_check ();
     COUNT_TOK_AND_RETURN (')');
   }
 
-"." {
-    TOK_RETURN ('.');
-  }
+"."     { TOK_RETURN ('.'); }
 
 "+="	{ XBIN_OP_RETURN (ADD_EQ, false); }
 "-="	{ XBIN_OP_RETURN (SUB_EQ, false); }
@@ -836,7 +770,6 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
     current_input_column += yyleng;
     lexer_flags.quote_is_transpose = false;
-    lexer_flags.cant_be_identifier = false;
     lexer_flags.convert_spaces_to_comma = true;
 
     promptflag--;
@@ -1026,124 +959,6 @@ delete_input_buffer (void *buf)
   delete_buffer (static_cast<YY_BUFFER_STATE> (buf));
 }
 
-// Check to see if a character string matches any of the possible line
-// styles for plots.
-
-static std::string
-plot_style_token (const std::string& s)
-{
-  std::string retval;
-
-  // XXX FIXME XXX -- specify minimum match length for these.
-  static const char *plot_styles[] = 
-    {
-      "boxes",
-      "boxerrorbars",
-      "boxxyerrorbars",
-      "candlesticks",
-      "dots",
-      "errorbars",
-      "financebars",
-      "fsteps",
-      "histeps",
-      "impulses",
-      "lines",
-      "linespoints",
-      "points",
-      "steps",
-      "vector",
-      "xerrorbars",
-      "xyerrorbars",
-      "yerrorbars",
-      0,
-    };
-
-  const char * const *tmp = plot_styles;
-  while (*tmp)
-    {
-      if (almost_match (*tmp, s.c_str ()))
-	{
-	  retval = *tmp;
-	  break;
-	}
-
-      tmp++;
-    }
-
-  return retval;
-}
-
-// Check to see if a character string matches any of the possible axes
-// tags for plots.
-
-static std::string
-plot_axes_token (const std::string& s)
-{
-  std::string retval;
-
-  // XXX FIXME XXX -- specify minimum match length for these.
-  static const char *plot_axes[] = 
-    {
-      "x1y1",
-      "x1y2",
-      "x2y1",
-      "x2y2",
-      0,
-    };
-
-  const char **tmp = plot_axes;
-  while (*tmp)
-    {
-      if (almost_match (*tmp, s.c_str ()))
-	{
-	  retval = *tmp;
-	  break;
-	}
-
-      tmp++;
-    }
-
-  return retval;
-}
-
-// Check to see if a character string matches any one of the plot
-// option keywords.  Don't match abbreviations for clear, since that's
-// not a gnuplot keyword (users will probably only expect to be able
-// to abbreviate actual gnuplot keywords).
-
-static int
-is_plot_keyword (const std::string& s)
-{
-  const char *t = s.c_str ();
-  if (almost_match ("title", t, 1))
-    {
-      return TITLE;
-    }
-  else if (almost_match ("using", t, 1))
-    {
-      lexer_flags.in_plot_using = true;
-      return USING;
-    }
-  else if (almost_match ("with", t, 1))
-    {
-      lexer_flags.in_plot_style = true;
-      return WITH;
-    }
-  else if (almost_match ("axes", t, 2) || almost_match ("axis", t, 2))
-    {
-      lexer_flags.in_plot_axes = true;
-      return AXES;
-    }
-  else if (strcmp ("clear", t) == 0)
-    {
-      return CLEAR;
-    }
-  else
-    {
-      return 0;
-    }
-}
-
 static void
 prep_for_function (void)
 {
@@ -1182,34 +997,6 @@ is_keyword_token (const std::string& s)
 {
   int l = input_line_number;
   int c = current_input_column;
-
-  if (lexer_flags.plotting)
-    {
-      if (lexer_flags.in_plot_style)
-	{
-	  std::string sty = plot_style_token (s);
-
-	  if (! sty.empty ())
-	    {
-	      lexer_flags.in_plot_style = false;
-	      yylval.tok_val = new token (sty, l, c);
-	      token_stack.push (yylval.tok_val);
-	      return STYLE;
-	    }
-	}
-      else if (lexer_flags.in_plot_axes)
-	{
-	  std::string axes = plot_axes_token (s);
-
-	  if (! axes.empty ())
-	    {
-	      lexer_flags.in_plot_axes = false;
-	      yylval.tok_val = new token (axes, l, c);
-	      token_stack.push (yylval.tok_val);
-	      return AXES_TAG;
-	    }
-	}	
-    }
 
   int len = s.length ();
 
@@ -1309,21 +1096,6 @@ is_keyword_token (const std::string& s)
 	case unwind_protect_kw:
 	  end_tokens_expected++;
 	  promptflag--;
-	  break;
-
-	case gplot_kw:
-	  lexer_flags.plotting = true;
-	  yylval.tok_val = new token (token::two_dee, l, c);
-	  break;
-
-	case gsplot_kw:
-	  lexer_flags.plotting = true;
-	  yylval.tok_val = new token (token::three_dee, l, c);
-	  break;
-
-	case replot_kw:
-	  lexer_flags.plotting = true;
-	  yylval.tok_val = new token (token::replot, l, c);
 	  break;
 
 	case function_kw:
@@ -1969,11 +1741,7 @@ handle_number (void)
   assert (nread == 1);
 
   lexer_flags.quote_is_transpose = true;
-  lexer_flags.cant_be_identifier = true;
   lexer_flags.convert_spaces_to_comma = true;
-
-  if (lexer_flags.plotting && ! lexer_flags.in_plot_range)
-    lexer_flags.past_plot_range = true;
 
   yylval.tok_val = new token (value, yytext, input_line_number,
 			      current_input_column);
@@ -2199,22 +1967,27 @@ handle_string (char delim, int text_style)
 	    {
 	      c = yyinput ();
 	      if (c == delim)
-		buf << static_cast<char> (c);
+		{
+		  buf << static_cast<char> (c);		    
+		  if (lexer_flags.doing_rawcommand)
+		    buf << static_cast<char> (c);
+		}
 	      else
 		{
+		  std::string s;  
 		  yyunput (c, yytext);
 		  buf << OSSTREAM_ENDS;
-		  std::string s = do_string_escapes (OSSTREAM_STR (buf));
+		  if (lexer_flags.doing_rawcommand)
+		    s = OSSTREAM_STR (buf);
+		  else
+		    s = do_string_escapes (OSSTREAM_STR(buf));
 		  OSSTREAM_FREEZE (buf);
 
-		  if (text_style && lexer_flags.doing_set)
-		    {
-		      s = std::string (1, delim) + s + std::string (1, delim);
-		    }
+		  if (text_style && lexer_flags.doing_rawcommand)
+		    s = std::string (1, delim) + s + std::string (1, delim);
 		  else
 		    {
 		      lexer_flags.quote_is_transpose = true;
-		      lexer_flags.cant_be_identifier = true;
 		      lexer_flags.convert_spaces_to_comma = true;
 		    }
 
@@ -2394,7 +2167,6 @@ handle_close_bracket (bool spc_gobbled, int bracket_type)
     }
 
   lexer_flags.quote_is_transpose = true;
-  lexer_flags.cant_be_identifier = false;
   lexer_flags.convert_spaces_to_comma = true;
 
   return retval;
@@ -2454,12 +2226,6 @@ handle_identifier (void)
 
   int spc_gobbled = (cont_is_spc || c == ' ' || c == '\t');
 
-  // It is almost always an error for an identifier to be followed
-  // directly by another identifier.  Special cases are handled
-  // below.
-
-  lexer_flags.cant_be_identifier = true;
-
   // If we are expecting a structure element, avoid recognizing
   // keywords and other special names and return STRUCT_ELT, which is
   // a string that is also a valid identifier.  But first, we have to
@@ -2476,7 +2242,6 @@ handle_identifier (void)
 
       token_stack.push (yylval.tok_val);
 
-      lexer_flags.cant_be_identifier = false;
       lexer_flags.quote_is_transpose = true;
       lexer_flags.convert_spaces_to_comma = true;
 
@@ -2499,7 +2264,7 @@ handle_identifier (void)
 	TOK_PUSH_AND_RETURN (tok, FCN_HANDLE);
     }
 
-  // If we have a regular keyword, or a plot STYLE, return it.
+  // If we have a regular keyword, return it.
   // Keywords can be followed by identifiers (TOK_RETURN handles
   // that).
 
@@ -2507,39 +2272,11 @@ handle_identifier (void)
     {
       if (kw_token < 0)
 	return kw_token;
-      else if (kw_token == STYLE)
-	{
-	  current_input_column += yyleng;
-	  lexer_flags.quote_is_transpose = false;
-	  lexer_flags.convert_spaces_to_comma = true;
-	  return kw_token;
-	}
       else
 	TOK_RETURN (kw_token);
     }
 
   // See if we have a plot keyword (title, using, with, or clear).
-
-  if (lexer_flags.plotting)
-    {
-      // Yes, we really do need both of these plot_range variables.
-      // One is used to mark when we are past all possiblity of a plot
-      // range, the other is used to mark when we are actually between
-      // the square brackets that surround the range.
-
-      if (! lexer_flags.in_plot_range)
-	lexer_flags.past_plot_range = true;
-
-      // Option keywords can't appear in brackets, braces, or parentheses.
-
-      int plot_option_kw = 0;
-
-      if (nesting_level.none ())
-	plot_option_kw = is_plot_keyword (tok);
-      
-      if (lexer_flags.cant_be_identifier && plot_option_kw)
-	TOK_RETURN (plot_option_kw);
-    }
 
   int c1 = yyinput ();
 
@@ -2591,9 +2328,12 @@ handle_identifier (void)
 	}
       else if (! next_tok_is_paren)
 	{
-	  if (tok == "gset")
-	    lexer_flags.doing_set = true;
+	  BEGIN (COMMAND_START);
+	}
 
+      if (is_rawcommand_name (tok))
+	{
+	  lexer_flags.doing_rawcommand = true;
 	  BEGIN (COMMAND_START);
 	}
     }
@@ -2661,22 +2401,13 @@ lexical_feedback::init (void)
   // Not parsing an object index.
   looking_at_object_index = 0;
 
-  // Next token can be identifier.
-  cant_be_identifier = false;
-
   // No need to do comma insert or convert spaces to comma at
   // beginning of input. 
   convert_spaces_to_comma = true;
   do_comma_insert = false;
 
   // Not initially doing any plotting or setting of plot attributes.
-  doing_set = false;
-  in_plot_range = false;
-  in_plot_style = false;
-  in_plot_axes = false;
-  in_plot_using = false;
-  past_plot_range = false;
-  plotting = false;
+  doing_rawcommand = false;
 
   // Not initially looking at indirect references.
   looking_at_indirect_ref = false;

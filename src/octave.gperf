@@ -21,13 +21,10 @@ enum octave_kw_id
   for_kw,
   function_kw,
   global_kw,
-  gplot_kw,
-  gsplot_kw,
   if_kw,
   magic_file_kw,
   magic_line_kw,
   otherwise_kw,
-  replot_kw,
   return_kw,
   static_kw,
   switch_kw,
@@ -63,12 +60,9 @@ endwhile, END, endwhile_kw
 for, FOR, for_kw
 function, FCN, function_kw
 global, GLOBAL, global_kw
-gplot, PLOT, gplot_kw
-gsplot, PLOT, gsplot_kw
 if, IF, if_kw
 otherwise, OTHERWISE, otherwise_kw
 persistent, STATIC, static_kw
-replot, PLOT, replot_kw
 return, FUNC_RET, return_kw
 static, STATIC, static_kw
 switch, SWITCH, switch_kw

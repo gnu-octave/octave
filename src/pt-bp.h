@@ -103,12 +103,6 @@ tree_breakpoint : public tree_walker
 
   void visit_parameter_list (tree_parameter_list&);
 
-  void visit_plot_command (tree_plot_command&);
-
-  void visit_plot_limits (plot_limits&);
-
-  void visit_plot_range (plot_range&);
-
   void visit_postfix_expression (tree_postfix_expression&);
 
   void visit_prefix_expression (tree_prefix_expression&);
@@ -122,16 +116,6 @@ tree_breakpoint : public tree_walker
   void visit_statement (tree_statement&);
 
   void visit_statement_list (tree_statement_list&);
-
-  void visit_subplot (subplot&);
-
-  void visit_subplot_axes (subplot_axes&);
-
-  void visit_subplot_list (subplot_list&);
-
-  void visit_subplot_style (subplot_style&);
-
-  void visit_subplot_using (subplot_using&);
 
   void visit_switch_case (tree_switch_case&);
 

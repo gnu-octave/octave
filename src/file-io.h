@@ -29,6 +29,10 @@ extern void initialize_file_io (void);
 
 extern void close_files (void);
 
+extern void mark_for_deletion (const std::string&);
+
+extern void cleanup_tmp_files (void);
+
 #endif
 
 /*

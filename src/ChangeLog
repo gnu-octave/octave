@@ -1,3 +1,80 @@
+2004-12-27  John W. Eaton  <jwe@octave.org>
+
+	Merge of changes from Teemu Ikonen <tpikonen@pcu.helsinki.fi> to
+	remove gnuplot from main parser.
+
+	* pt-plot.cc, pt-plot.h: Delete.
+	* Makefile.in (PT_SRC, PT_INCLUDES): Delete them from the lists.
+
+	* DLD-FUNCTIONS/gplot.l: New file.
+	* Makefile.in: Include it in the DLD_XSRC list.
+
+	* dirfns.cc (octave_change_to_directory):
+	Don't call do_external_plotter_cd.
+
+	* symtab.h (symbol_record::TYPE): New element, RAWCOMMAND.
+	(symbol_record::symbol_def::mark_as_rawcommand,
+	symbol_record::symbol_def::unmark_rawcommand,
+	symbol_record::symbol_def::is_rawcommand): New functions.
+	(symbol_record::symbol_def::symbol_type): Bitfield is now 9 bits wide.
+	(symbol_record::mark_as_rawcommand,
+	symbol_record::unmark_rawcommand, symbol_record::is_rawcommand):
+	New functions.
+	(SYMTAB_ALL_TYPES): Include RAWCOMMAND.
+
+	* parse.y (make_plot_command): Delete function.
+	(tree_plot_command_type, subplot_type, subplot_list_type,
+	plot_limits_type, plot_range_type, subplot_using_type,
+	subplot_style_type, subplot_axes_type):
+	Delete non-terminal type decls.
+	(PLOT, STYLE, AXES_TAG): Delete token types.
+	(title, plot_command, plot_command2, plot_options, plot_command1,
+	ranges, ranges1, using, using1, style, axes): Delete non-terminals.
+
+	* toplev.cc (do_octave_atexit): Don't call close_plot_stream.
+
+	* variables.cc (rawcommand_set): New static variable.
+	(is_marked_as_rawcommand, mark_as_rawcommand, unmark_rawcommand,
+	Fiscommand, Fmark_as_rawcommand, Funmark_rawcommand,
+	Fisrawcommand, is_rawcommand_name): New functions.
+	* variables.h: Provide decl for is_rawcommand_name.
+
+	* pt-bp.cc, pt-bp.h, pt-check.cc, pt-check.h, pt-pr-code.cc,
+	pt-pr-code.h, pt-walk.h: Delete all declarations, definitions, and
+	uses of visit_subplot, visit_subplot_axes, visit_subplot_list,
+	visit_subplot_style, and visit_subplot_using methods.
+
+	* lex.h (lexer_flags): New field, doing_rawcommand.
+	* lex.l (<COMMAND_START>[\;\,]): Also handle raw commands here.
+	(lexer_flags::init): Initialize doing_racommand to false.
+	(handle_identifier): Recognize raw commands ere.
+	(handle_string): Don't do string escape conversions on raw command
+	strings.
+
+	* octave.gperf: Delete gplot_kw, gsplot_kw, replot_kw.
+
+	* lex.h (lexer_flags): Delete fields cant_be_identifier,
+	doing_set, in_plot_range, in_plot_using, in_plot_style,
+	in_plot_axes, past_plot_range, and plotting.
+	* lex.l: Delete all uses of these lexer flags and remove all
+	special cases for plotting.
+	(plot_style_token, plot_axes_token, is_plot_keyword): Delete.
+
+	* file-io.cc, file-io.h (tmp_files, mark_for_deletion,
+	cleanup_tmp_files): Move here.
+	* pt-plot.cc, pt-plot.h: From here.
+
+	* Makefile.in (PKG_ADD): New target.
+	(all): Depend on PKG_ADD.
+	(install-oct): Depend on PKG_ADD.  Install PKG_ADD file.
+	(gplot.cc): New target.
+	(stamp-prereq): Depend on gplot.cc.
+	(VAR): Don't include $(DLD_SRC) here.
+	(DLD_OBJ, DLD_DEF_FILES): Include .l files.
+
+	* defun-int.h (DEFVAR, DEFCONST, DEFCONSTX): Move definition here.
+	* defun.h: From here.
+
 2004-12-22  John W. Eaton  <jwe@octave.org>
 
 	* ls-oct-ascii.cc (extract_keyword (std::istream&, const

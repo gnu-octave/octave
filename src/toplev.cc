@@ -66,7 +66,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "procstream.h"
 #include "ov.h"
 #include "pt-jump.h"
-#include "pt-plot.h"
 #include "pt-stmt.h"
 #include "sighandlers.h"
 #include "sysdep.h"
@@ -558,8 +557,6 @@ do_octave_atexit (void)
       raw_mode (0);
 
       command_history::clean_up_and_save ();
-
-      close_plot_stream ();
 
       close_files ();
 

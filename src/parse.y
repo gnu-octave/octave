@@ -168,10 +168,6 @@ maybe_warn_assign_as_truth_value (tree_expression *expr);
 static void
 maybe_warn_variable_switch_label (tree_expression *expr);
 
-// Create a plot command.
-static tree_plot_command *
-make_plot_command (token *tok, plot_limits *range, subplot_list *list);
-
 // Finish building a range.
 static tree_expression *
 finish_colon_expression (tree_colon_expression *e);
@@ -391,14 +387,6 @@ set_stmt_print_flag (tree_statement_list *, char, bool);
   tree_decl_command *tree_decl_command_type;
   tree_statement *tree_statement_type;
   tree_statement_list *tree_statement_list_type;
-  tree_plot_command *tree_plot_command_type;
-  subplot *subplot_type;
-  subplot_list *subplot_list_type;
-  plot_limits *plot_limits_type;
-  plot_range *plot_range_type;
-  subplot_using *subplot_using_type;
-  subplot_style *subplot_style_type;
-  subplot_axes *subplot_axes_type;
   octave_user_function *octave_user_function_type;
 }
 
@@ -417,8 +405,7 @@ set_stmt_print_flag (tree_statement_list *, char, bool);
 %token <tok_val> STRUCT_ELT
 %token <tok_val> NAME
 %token <tok_val> END
-%token <tok_val> PLOT
-%token <tok_val> STRING STYLE AXES_TAG
+%token <tok_val> STRING
 %token <tok_val> FOR WHILE DO UNTIL
 %token <tok_val> IF ELSEIF ELSE
 %token <tok_val> SWITCH CASE OTHERWISE
@@ -441,7 +428,7 @@ set_stmt_print_flag (tree_statement_list *, char, bool);
 %type <tree_fcn_handle_type> fcn_handle
 %type <tree_matrix_type> matrix_rows matrix_rows1
 %type <tree_cell_type> cell_rows cell_rows1
-%type <tree_expression_type> title matrix cell
+%type <tree_expression_type> matrix cell
 %type <tree_expression_type> primary_expr postfix_expr prefix_expr binary_expr
 %type <tree_expression_type> simple_expr colon_expr assign_expr expression
 %type <tree_identifier_type> identifier fcn_name
@@ -466,14 +453,6 @@ set_stmt_print_flag (tree_statement_list *, char, bool);
 %type <tree_statement_type> statement
 %type <tree_statement_list_type> simple_list simple_list1 list list1
 %type <tree_statement_list_type> opt_list input1 function4
-%type <tree_plot_command_type> plot_command 
-%type <subplot_type> plot_command2 plot_options
-%type <subplot_list_type> plot_command1
-%type <plot_limits_type> ranges
-%type <plot_range_type> ranges1 
-%type <subplot_using_type> using using1 
-%type <subplot_style_type> style
-%type <subplot_axes_type> axes
 
 // Precedence and associativity.
 %left ';' ',' '\n'
@@ -584,16 +563,6 @@ statement	: expression
 		      = octave_comment_buffer::get_comment ();
 
 		    $$ = new tree_statement ($1, comment);
-		  }
-		| PLOT CLEAR
-		  {
-		    symbol_record *sr = lookup_by_name ("clearplot", 0);
-		    tree_identifier *id = new tree_identifier (sr);
-
-		    octave_comment_list *comment
-		      = octave_comment_buffer::get_comment ();
-
-		    $$ = new tree_statement (id, comment);
 		  }
 		;
 
@@ -962,8 +931,6 @@ command		: declaration
 		| except_command
 		  { $$ = $1; }
 		| function
-		  { $$ = $1; }
-		| plot_command
 		  { $$ = $1; }
 		;
 
@@ -1365,161 +1332,6 @@ function_end	: END
 		  }
 		;
 
-// ========
-// Plotting
-// ========
-
-plot_command	: PLOT
-		  {
-		    if (! ($$ = make_plot_command ($1, 0, 0)))
-		      ABORT_PARSE;
-		  }
-		| PLOT ranges
-		  {
-		    if (! ($$ = make_plot_command ($1, $2, 0)))
-		      ABORT_PARSE;
-		  }
-		| PLOT plot_command1
-		  {
-		    if (! ($$ = make_plot_command ($1, 0, $2)))
-		      ABORT_PARSE;
-		  }
-		| PLOT ranges plot_command1
-		  {
-		    if (! ($$ = make_plot_command ($1, $2, $3)))
-		      ABORT_PARSE;
-		  }
-		;
-
-ranges		: ranges1
-		  { $$ = new plot_limits ($1); }
-		| ranges1 ranges1
-		  { $$ = new plot_limits ($1, $2); }
-		| ranges1 ranges1 ranges1
-		  { $$ = new plot_limits ($1, $2, $3); }
-		;
-
-ranges1		: OPEN_BRACE expression COLON expression CLOSE_BRACE
-		  { $$ = new plot_range ($2, $4); }
-		| OPEN_BRACE COLON expression CLOSE_BRACE
-		  { $$ = new plot_range (0, $3); }
-		| OPEN_BRACE expression COLON CLOSE_BRACE
-		  { $$ = new plot_range ($2, 0); }
-		| OPEN_BRACE COLON CLOSE_BRACE
-		  { $$ = new plot_range (); }
-		| OPEN_BRACE CLOSE_BRACE
-		  { $$ = new plot_range (); }
-		;
-
-plot_command1	: plot_command2
-		  { $$ = new subplot_list ($1); }
-		| plot_command1 ',' plot_command2
-		  {
-		    $1->append ($3);
-		    $$ = $1;
-		  }
-		;
-
-plot_command2	: expression
-		  { $$ = new subplot ($1); }
-		| expression plot_options
-		  { $$ = $2->add_data ($1); }
-		;
-
-plot_options	: using
-		  {
-		    subplot *tmp = new subplot ();
-		    $$ = tmp->add_clause ($1);
-		  }
-		| title
-		  {
-		    subplot *tmp = new subplot ();
-		    $$ = tmp->add_clause ($1);
-		  }
-		| style
-		  {
-		    subplot *tmp = new subplot ();
-		    $$ = tmp->add_clause ($1);
-		  }
-		| axes
-		  {
-		    subplot *tmp = new subplot ();
-		    $$ = tmp->add_clause ($1);
-		  }
-		| plot_options using
-		  {
-		    if (! ($$ = $1->add_clause ($2)))
-		      {
-			yyerror ("only one using option may be specified");
-			ABORT_PARSE;
-		      }
-		  }
-		| plot_options title
-		  {
-		    if (! ($$ = $1->add_clause ($2)))
-		      {
-			yyerror ("only one title option my be specified");
-			ABORT_PARSE;
-		      }
-		  }
-		| plot_options style
-		  {
-		    if (! ($$ = $1->add_clause ($2)))
-		      {
-			yyerror ("only one style option my be specified");
-			ABORT_PARSE;
-		      }
-		  }
-		| plot_options axes
-		  {
-		    if (! ($$ = $1->add_clause ($2)))
-		      {
-			yyerror ("only one axes option may be specified");
-			ABORT_PARSE;
-		      }
-		  }
-		;
-
-axes		: AXES AXES_TAG
-		  {
-		    lexer_flags.in_plot_axes = false;
-		    $$ = new subplot_axes ($2->text ());
-		  }
-		;
-
-using		: using1
-		  {
-		    lexer_flags.in_plot_using = false;
-		    $$ = $1;
-		  }
-		| using1 expression
-		  {
-		    lexer_flags.in_plot_using = false;
-		    $$ = $1->set_format ($2);
-		  }
-		;
-
-using1		: USING expression
-		  {
-		    subplot_using *tmp = new subplot_using ();
-		    $$ = tmp->add_qualifier ($2);
-		  }
-		| using1 COLON expression
-		  { $$ = $1->add_qualifier ($3); }
-		;
-
-title		: TITLE expression
-		  { $$ = $2; }
-		;
-
-style		: WITH STYLE
-		  { $$ = new subplot_style ($2->text ()); }
-		| WITH STYLE expression
-		  { $$ = new subplot_style ($2->text (), $3); }
-		| WITH STYLE expression expression
-		  { $$ = new subplot_style ($2->text (), $3, $4); }
-		;
-
 // =============
 // Miscellaneous
 // =============
@@ -1742,34 +1554,6 @@ maybe_warn_variable_switch_label (tree_expression *expr)
     {
       warning ("variable switch label");
     }
-}
-
-// Create a plot command.
-
-static tree_plot_command *
-make_plot_command (token *tok, plot_limits *range, subplot_list *list)
-{
-  if (range)
-    {
-      if (tok->pttype () == token::replot)
-	{
-	  yyerror ("cannot specify new ranges with replot");
-	  return 0;
-	}
-    }
-  else if (! list && tok->pttype () != token::replot)
-    {
-      yyerror ("must have something to plot");
-      return 0;
-    }
-
-  lexer_flags.plotting = false;
-  lexer_flags.past_plot_range = false;
-  lexer_flags.in_plot_range = false;
-  lexer_flags.in_plot_using = false;
-  lexer_flags.in_plot_style = false;
-  
-  return new tree_plot_command (list, range, tok->pttype ());
 }
 
 static tree_expression *

@@ -76,9 +76,10 @@ public:
       DLD_FUNCTION = 4,
       BUILTIN_FUNCTION = 8,
       COMMAND = 16,
-      MAPPER_FUNCTION = 32,
-      BUILTIN_VARIABLE = 64,
-      BUILTIN_CONSTANT = 128
+      RAWCOMMAND = 32,
+      MAPPER_FUNCTION = 64,
+      BUILTIN_VARIABLE = 128,
+      BUILTIN_CONSTANT = 256
     };
 
 private:
@@ -127,6 +128,16 @@ private:
 
     bool is_command (void) const
       { return (symbol_type & symbol_record::COMMAND); }
+
+    void mark_as_rawcommand (void)
+      { symbol_type |= (symbol_record::COMMAND
+			| symbol_record::RAWCOMMAND); }
+
+    void unmark_rawcommand (void)
+      { symbol_type &= ~symbol_record::RAWCOMMAND; }
+
+    bool is_rawcommand (void) const
+      { return (symbol_type & symbol_record::RAWCOMMAND); }      
 
     bool is_mapper_function (void) const
       { return (symbol_type & symbol_record::MAPPER_FUNCTION); }
@@ -214,7 +225,7 @@ private:
     static octave_allocator allocator;
 
     // The type of this symbol (see the enum above).
-    unsigned int symbol_type : 8;
+    unsigned int symbol_type : 9;
 
     // Nonzero means this variable cannot be cleared.
     unsigned int eternal : 1;
@@ -283,6 +294,15 @@ public:
 
   bool is_command (void) const
     { return definition->is_command (); }
+
+  void mark_as_rawcommand (void)
+    { definition->mark_as_rawcommand (); }
+
+  void unmark_rawcommand (void)
+    { definition->unmark_rawcommand (); }
+
+  bool is_rawcommand (void) const
+    { return definition->is_rawcommand (); }    
 
   bool is_mapper_function (void) const
     { return definition->is_mapper_function (); }
@@ -443,6 +463,7 @@ private:
 			  | symbol_record::DLD_FUNCTION \
 			  | symbol_record::BUILTIN_FUNCTION \
 			  | symbol_record::COMMAND \
+  			  | symbol_record::RAWCOMMAND \
 			  | symbol_record::MAPPER_FUNCTION \
 			  | symbol_record::BUILTIN_VARIABLE \
 			  | symbol_record::BUILTIN_CONSTANT)

@@ -48,11 +48,12 @@ DLD_XSRC := balance.cc besselj.cc betainc.cc chol.cc colloc.cc \
 	gcd.cc getgrent.cc getpwent.cc getrusage.cc givens.cc hess.cc \
 	inv.cc kron.cc lpsolve.cc lsode.cc lu.cc minmax.cc \
 	odessa.cc pinv.cc qr.cc quad.cc qz.cc rand.cc schur.cc \
-	sort.cc sqrtm.cc svd.cc syl.cc time.cc
+	sort.cc sqrtm.cc svd.cc syl.cc time.cc gplot.l
 
 DLD_SRC := $(addprefix DLD-FUNCTIONS/, $(DLD_XSRC))
 
-DLD_OBJ := $(patsubst %.cc, %.o, $(DLD_XSRC))
+DLD_OBJ_1 := $(patsubst %.l, %.o, $(DLD_XSRC))
+DLD_OBJ := $(patsubst %.cc, %.o, $(DLD_OBJ_1))
 
 ifeq ($(ENABLE_DYNAMIC_LINKING), true)
   OCT_FILES := $(patsubst %.o, %.oct, $(DLD_OBJ))
@@ -81,7 +82,7 @@ OV_INCLUDES := ov-re-mat.h ov-cx-mat.h ov-ch-mat.h ov-cs-list.h ov-list.h \
 PT_INCLUDES := pt.h pt-all.h pt-arg-list.h pt-assign.h pt-binop.h \
         pt-bp.h	pt-cell.h pt-check.h pt-cmd.h pt-colon.h pt-const.h \
 	pt-decl.h pt-except.h pt-exp.h pt-fcn-handle.h pt-id.h pt-idx.h \
-	pt-jump.h pt-loop.h pt-mat.h pt-misc.h pt-plot.h \
+	pt-jump.h pt-loop.h pt-mat.h pt-misc.h \
 	pt-pr-code.h pt-select.h pt-stmt.h pt-unop.h pt-walk.h \
 
 INCLUDES := Cell.h base-list.h c-file-ptr-stream.h comment-list.h \
@@ -136,7 +137,7 @@ PT_SRC := pt.cc pt-arg-list.cc pt-assign.cc pt-bp.cc pt-binop.cc \
 	pt-cell.cc pt-check.cc pt-cmd.cc pt-colon.cc pt-const.cc \
 	pt-decl.cc pt-except.cc pt-exp.cc pt-fcn-handle.cc pt-id.cc \
 	pt-idx.cc pt-jump.cc pt-loop.cc pt-mat.cc pt-misc.cc \
-	pt-plot.cc pt-pr-code.cc pt-select.cc pt-stmt.cc pt-unop.cc
+	pt-pr-code.cc pt-select.cc pt-stmt.cc pt-unop.cc
 
 DIST_SRC := Cell.cc bitfcns.cc c-file-ptr-stream.cc comment-list.cc \
 	cutils.c data.cc debug.cc defaults.cc defun.cc dirfns.cc \
@@ -189,7 +190,8 @@ MAKEDEPS := $(patsubst %.cc, %.d, $(DEP_1))
 
 DEFUN_PATTERN = "^[ \t]*DEF(CONSTFUN|CMD|UN|UN_DLD|UN_TEXT|UN_MAPPER)[ \t]*\\("
 
-DLD_DEF_FILES := $(patsubst %.cc, %.df, $(DLD_XSRC))
+DLD_DEF_FILES_1 := $(patsubst %.l, %.df, $(DLD_XSRC))
+DLD_DEF_FILES := $(patsubst %.cc, %.df, $(DLD_DEF_FILES_1))
 
 DEF_4 := $(addprefix $(srcdir)/, $(SOURCES))
 DEF_3 := $(notdir $(shell egrep -l $(DEFUN_PATTERN) $(DEF_4)))
@@ -199,8 +201,7 @@ DEF_FILES := $(patsubst %.cc, %.df, $(DEF_1)) $(DLD_DEF_FILES)
 
 DEFVAR_PATTERN = "^[ \t]*DEF(VAR|CONS(T|TX))[ \t]*\\("
 
-VAR_5 := $(SOURCES) $(DLD_SRC)
-VAR_4 := $(addprefix $(srcdir)/, $(VAR_5))
+VAR_4 := $(addprefix $(srcdir)/, $(SOURCES))
 VAR_3 := $(notdir $(shell egrep -l $(DEFVAR_PATTERN) $(VAR_4)))
 VAR_2 := $(patsubst %.y, %, $(VAR_3))
 VAR_1 := $(patsubst %.l, %, $(VAR_2))
@@ -235,7 +236,7 @@ else
   BINDISTFILES = octave $(OCT_FILES)
 endif
 
-all: octave$(EXEEXT) stamp-oct-links DOCSTRINGS
+all: octave$(EXEEXT) stamp-oct-links PKG_ADD DOCSTRINGS
 .PHONY: all
 
 objects: $(OBJECTS)
@@ -284,7 +285,7 @@ stamp-oct-links: $(OCT_FILES)
 	fi
 	touch stamp-oct-links
 
-stamp-prereq: defaults.h oct-conf.h oct-gperf.h parse.cc lex.cc $(OPT_HANDLERS)
+stamp-prereq: defaults.h oct-conf.h oct-gperf.h parse.cc lex.cc gplot.cc $(OPT_HANDLERS)
 	touch stamp-prereq
 
 octave$(EXEEXT): stamp-prereq $(LIBRARIES) main.o $(DLD_STATIC_OBJ)
@@ -321,6 +322,12 @@ builtins.cc: $(DEF_FILES) mkbuiltins
 	@echo $(VAR_FILES) > var-files
 	@$(srcdir)/mkbuiltins def-files var-files > $@-t
 	@$(top_srcdir)/move-if-change $@-t $@
+
+PKG_ADD: $(DLD_SRC)
+	$(SED) -n -e 's,^//* *PKG_ADD: *,,p' \
+	          -e 's,^/\* *PKG_ADD: *\(.*\) \*/$$,\1,p' \
+	  $(addprefix $(srcdir)/, $(DLD_SRC)) > PKG_ADD.t
+	mv PKG_ADD.t PKG_ADD
 
 DOCSTRINGS: gendoc$(BUILD_EXEEXT)
 	./gendoc > $@-t
@@ -372,7 +379,7 @@ install-bin:
 	$(LN_S) octave-$(version)$(EXEEXT) $(DESTDIR)$(bindir)/octave$(EXEEXT)
 .PHONY: install-bin
 
-install-oct:
+install-oct: PKG_ADD
 	if [ -n "$(OCT_FILES)" ]; then \
 	  $(top_srcdir)/mkinstalldirs $(DESTDIR)$(octfiledir); \
 	  xfiles="$(OCT_FILES)"; \
@@ -380,6 +387,7 @@ install-oct:
 	    $(INSTALL_PROGRAM) $$f $(DESTDIR)$(octfiledir)/$$f; \
 	  done; \
 	  $(srcdir)/mk-oct-links $(DESTDIR)$(octfiledir) $(DLD_DEF_FILES); \
+	  $(INSTALL_DATA) PKG_ADD $(DESTDIR)$(octfiledir)/PKG_ADD; \
 	fi
 .PHONY: install-oct
 
@@ -510,6 +518,9 @@ parse.cc : parse.y
 	@$(top_srcdir)/move-if-change y.tab.c $(@F)
 
 lex.cc : lex.l
+	$(LEX) $(LFLAGS) $< > $(@F)
+
+gplot.cc : DLD-FUNCTIONS/gplot.l
 	$(LEX) $(LFLAGS) $< > $(@F)
 
 defaults.h: defaults.h.in ../Makeconf Makefile

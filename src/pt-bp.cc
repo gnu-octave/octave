@@ -469,31 +469,6 @@ tree_breakpoint::visit_parameter_list (tree_parameter_list& lst)
     }
 }
 
-void 
-tree_breakpoint::visit_plot_command (tree_plot_command& cmd)
-{
-  if (found)
-    return;
-
-  // Don't bother looking at the range plot list since they must be
-  // on the same line.
-
-  if (cmd.line () >= line)
-    take_action (cmd);
-}
-
-void
-tree_breakpoint::visit_plot_limits (plot_limits&)
-{
-  // Do nothing.  This case will be handled in visit_tree_plot_command.
-}
-
-void 
-tree_breakpoint::visit_plot_range (plot_range&)
-{
-  // Do nothing.  This case will be handled in visit_tree_plot_command.
-}
-
 void
 tree_breakpoint::visit_postfix_expression (tree_postfix_expression& expr)
 {
@@ -594,36 +569,6 @@ tree_breakpoint::visit_statement_list (tree_statement_list& lst)
       if (elt)
 	elt->accept (*this);
     }
-}
-
-void 
-tree_breakpoint::visit_subplot (subplot&)
-{
-  // Do nothing.  This case will be handled in visit_tree_plot_command.
-}
-
-void
-tree_breakpoint::visit_subplot_axes (subplot_axes&)
-{
-  // Do nothing.  This caser will be handled in visit_tree_plot_command.
-}
-
-void
-tree_breakpoint::visit_subplot_list (subplot_list&)
-{
-  // Do nothing.  This case will be handled in visit_tree_plot_command.
-}
-
-void 
-tree_breakpoint::visit_subplot_style (subplot_style&)
-{
-  // Do nothing.  This case will be handled in visit_tree_plot_command.
-}
-
-void
-tree_breakpoint::visit_subplot_using (subplot_using&)
-{
-  // Do nothing.  This case will be handled in visit_tree_plot_command.
 }
 
 void

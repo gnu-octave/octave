@@ -49,9 +49,6 @@ class tree_no_op_command;
 class tree_constant;
 class tree_fcn_handle;
 class tree_parameter_list;
-class tree_plot_command;
-class plot_limits;
-class plot_range;
 class tree_postfix_expression;
 class tree_prefix_expression;
 class tree_return_command;
@@ -59,11 +56,6 @@ class tree_return_list;
 class tree_simple_assignment;
 class tree_statement;
 class tree_statement_list;
-class subplot;
-class subplot_axes;
-class subplot_list;
-class subplot_style;
-class subplot_using;
 class tree_try_catch_command;
 class tree_unwind_protect_command;
 class tree_while_command;
@@ -153,15 +145,6 @@ public:
   visit_parameter_list (tree_parameter_list&) = 0;
 
   virtual void
-  visit_plot_command (tree_plot_command&) = 0;
-
-  virtual void
-  visit_plot_limits (plot_limits&) = 0;
-
-  virtual void
-  visit_plot_range (plot_range&) = 0;
-
-  virtual void
   visit_postfix_expression (tree_postfix_expression&) = 0;
 
   virtual void
@@ -181,21 +164,6 @@ public:
 
   virtual void
   visit_statement_list (tree_statement_list&) = 0;
-
-  virtual void
-  visit_subplot (subplot&) = 0;
-
-  virtual void
-  visit_subplot_axes (subplot_axes&) = 0;
-
-  virtual void
-  visit_subplot_list (subplot_list&) = 0;
-
-  virtual void
-  visit_subplot_style (subplot_style&) = 0;
-
-  virtual void
-  visit_subplot_using (subplot_using&) = 0;
 
   virtual void
   visit_try_catch_command (tree_try_catch_command&) = 0;

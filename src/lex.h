@@ -75,10 +75,6 @@ public:
   // function definition.
   bool beginning_of_function;
 
-  // Another context hack, this time for the plot command's `using',
-  // `title', and `with' keywords.
-  bool cant_be_identifier;
-
   // TRUE means that we should convert spaces to a comma inside a
   // matrix definition.
   bool convert_spaces_to_comma;
@@ -105,21 +101,9 @@ public:
   // GAG.  Stupid kludge so that [[1,2][3,4]] will work.
   bool do_comma_insert;
 
-  // TRUE means we think we are looking at a set command.
-  bool doing_set;
-
-  // TRUE means we're looking at the range part of a plot command.
-  bool in_plot_range;
-
-  // TRUE means we're looking at the using part of a plot command.
-  bool in_plot_using;
-
-  // TRUE means we're looking at the style part of a plot command.
-  bool in_plot_style;
-
-  // TRUE means we're looking at the axes part of a plot command.
-  bool in_plot_axes;
-
+  // TRUE means we're doing a raw input command.
+  bool doing_rawcommand;
+    
   // TRUE means we're looking at an indirect reference to a
   // structure element.
   bool looking_at_indirect_ref;
@@ -133,13 +117,6 @@ public:
   //   0 ==> No.
   //  -1 ==> Yes, but it is the last one because we have seen EOF.
   int parsing_nested_function;
-
-  // TRUE means we've seen something that means we must be past the
-  // range part of a plot command.
-  bool past_plot_range;
-
-  // TRUE means we're working on a plot command.
-  bool plotting;
 
   // Return transpose or start a string?
   bool quote_is_transpose;

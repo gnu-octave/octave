@@ -144,7 +144,8 @@ DEFCMD (mark_as_command, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} mark_as_command (@var{name})\n\
 Enter @var{name} into the list of commands.\n\
-@end deftypefn")
+@end deftypefn\n\
+@seealso{unmark_command, iscommand}")
 {
   octave_value_list retval;
 
@@ -175,9 +176,10 @@ Enter @var{name} into the list of commands.\n\
 
 DEFCMD (unmark_command, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} mark_as_command (@var{name})\n\
+@deftypefn {Built-in Function} {} unmark_command (@var{name})\n\
 Remove @var{name} from the list of commands.\n\
-@end deftypefn")
+@end deftypefn\n\
+@seealso{mark_as_command, iscommand}")
 {
   octave_value_list retval;
 
@@ -225,6 +227,215 @@ is_command_name (const std::string& s)
     }
   else
     retval = is_marked_as_command (s);
+
+  return retval;
+}
+
+DEFCMD (iscommand, args, ,
+"-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} iscommand (@var{name})\n\
+Return true if @var{name} is a command style function.  If @var{name}\n\
+is omitted, return a list of identifiers which are marked as commands with\n\
+mark_as_command.\n\
+@end deftypefn\n\
+@seealso{mark_as_command, unmark_command}")
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 0)
+    {
+      string_vector lst (command_set.size ());
+
+      int i = 0;
+      for (std::set<std::string>::const_iterator p = command_set.begin ();
+	   p != command_set.end (); p++)
+	lst[i++] = *p;
+
+      retval = Cell (lst.qsort ());
+    }
+  else if (nargin == 1)
+    {
+      string_vector argv = args.make_argv ("iscommand");
+	  
+      if (! error_state)
+	{
+	  std::string s = argv[1];
+	  retval = is_command_name(s);
+	}
+    }
+  else
+    print_usage ("iscommand");
+
+  return retval;
+}
+
+// Is this a raw input command?
+
+static std::set <std::string> rawcommand_set;
+
+static inline bool
+is_marked_as_rawcommand (const std::string& s)
+{
+  return rawcommand_set.find (s) != rawcommand_set.end ();
+}
+
+static inline void
+mark_as_rawcommand (const std::string& s)
+{
+  command_set.insert (s);    
+  rawcommand_set.insert (s);
+}
+
+static inline void
+unmark_rawcommand (const std::string& s)
+{
+  rawcommand_set.erase (s);
+
+  symbol_record *sr = fbi_sym_tab->lookup (s);
+
+  if (sr)
+    sr->unmark_rawcommand ();
+}
+
+DEFCMD (mark_as_rawcommand, args, ,
+"-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} mark_as_rawcommand (@var{name})\n\
+Enter @var{name} into the list of raw input commands and to the list of\n\
+command style functions.\n\
+Raw input commands are like normal command style functions, but they\n\
+receive their input unprocessed (ie. strings still contain the quotes\n\
+and escapes they had when input). However, comments and continuations\n\
+are handled as usual, you cannot pass a token starting with a comment\n\
+character ('#' or '%') to your function, and the last token cannot be\n\
+a continuation token ('\\' or '...').\n\
+@end deftypefn\n\
+@seealso{unmark_rawcommand, israwcommand, iscommand, mark_as_command}")
+{
+  octave_value_list retval;
+
+  if (at_top_level ())
+    {
+      int nargin = args.length ();
+
+      if (nargin > 0)
+	{
+	  int argc = nargin + 1;
+
+	  string_vector argv = args.make_argv ("mark_as_rawcommand");
+
+	  if (! error_state)
+	    {
+	      for (int i = 1; i < argc; i++)
+		mark_as_rawcommand (argv[i]);
+	    }
+	}
+      else
+	print_usage ("mark_as_rawcommand");
+    }
+  else
+    warning ("mark_as_rawcommand: invalid use inside function body");
+
+  return retval;
+}
+
+DEFCMD (unmark_rawcommand, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} unmark_rawcommand (@var{name})\n\
+Remove @var{name} from the list of raw input commands.\n\
+Note that this does not remove @var{name} from the list of command style\n\
+functions.\n\
+@end deftypefn\n\
+@seealso{mark_as_rawcommand, israwcommand, iscommand, unmark_command}")
+{
+  octave_value_list retval;
+
+  if (at_top_level ())
+    {
+      int nargin = args.length ();
+
+      if (nargin > 0)
+	{
+	  int argc = nargin + 1;
+
+	  string_vector argv = args.make_argv ("unmark_rawcommand");
+
+	  if (! error_state)
+	    {
+	      for (int i = 1; i < argc; i++)
+		unmark_rawcommand (argv[i]);
+	    }
+	}
+      else
+	print_usage ("unmark_rawcommand");
+    }
+  else
+    warning ("unmark_rawcommand: invalid use inside function body");
+
+  return retval;
+}
+
+bool
+is_rawcommand_name (const std::string& s)
+{
+  bool retval = false;
+
+  symbol_record *sr = fbi_sym_tab->lookup (s);
+
+  if (sr)
+    {
+      if (sr->is_rawcommand ())
+	retval = true;
+      else if (is_marked_as_rawcommand (s))
+	{
+	  sr->mark_as_rawcommand ();
+	  retval = true;
+	}
+    }
+  else
+    retval = is_marked_as_rawcommand (s);
+
+  return retval;
+}
+
+DEFCMD (israwcommand, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} israwcommand (@var{name})\n\
+Return true if @var{name} is a raw input command function.\n\
+If @var{name} is omitted, return a list of identifiers which are marked as\n\
+raw input commands with mark_as_rawcommand.\n\
+@end deftypefn\n\
+@seealso{mark_as_rawcommand, unmark_rawcommand}")
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 0)
+    {
+      string_vector lst (rawcommand_set.size());
+      
+      int i = 0;
+      for (std::set<std::string>::const_iterator p = rawcommand_set.begin ();
+	   p != rawcommand_set.end ();
+	   p++)
+	lst[i++] = *p;
+
+      retval = Cell (lst.qsort ());
+    }
+  else if (nargin == 1)
+    {
+      string_vector argv = args.make_argv ("israwcommand");
+	  
+      if (! error_state)
+	{
+	  std::string s = argv[1];
+	  retval = is_rawcommand_name(s);
+	}
+    }
+  else
+    print_usage ("israwcommand");
 
   return retval;
 }

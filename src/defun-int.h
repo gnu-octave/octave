@@ -92,6 +92,41 @@ typedef bool (*octave_dld_fcn_installer) (const octave_shlib&);
     return error_state ? false : true; \
   }
 
+// Define a builtin variable.
+//
+//   name is the name of the variable, unquoted.
+//
+//   defn is the initial value for the variable.
+//
+//   protect is a flag that says whether it should be possible to give
+//     the variable a new value.
+//
+//   eternal is a flag that says whether it should be possible to
+//     clear the variable.  Most builtin variables are eternal, and
+//     cannot be cleared.
+//
+//   chg_fcn is a pointer to a function that should be called whenever
+//     this variable is given a new value.  It can be 0 if there is no
+//     function to call.  See also the code in user-prefs.cc.
+//
+//   doc is the simple help text for this variable.
+
+#define DEFVAR(name, defn, chg_fcn, doc) \
+  DEFVAR_INTERNAL (#name, SBV_ ## name, defn, false, chg_fcn, doc)
+
+// Define a builtin constant `name' (which may be redefined, but will
+// retain its original value when cleared) and also an alias to it
+// called `__name__' (which may not be redefined).
+
+#define DEFCONST(name, defn, doc) \
+  DEFCONST_INTERNAL (name, defn, doc)
+
+// This one can be used when `name' cannot be used directly (if it is
+// already defined as a macro).  In that case, name is already a
+// quoted string, and the name of the structure must to be passed too.
+
+#define DEFCONSTX(name, sname, defn, doc) \
+  DEFCONSTX_INTERNAL (name, sname, defn, doc)
 
 // MAKE_BUILTINS is defined to extract function names and related
 // information and create the *.df files that are eventually used to

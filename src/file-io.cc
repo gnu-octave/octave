@@ -52,11 +52,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <unistd.h>
 #endif
 
+#include "error.h"
 #include "file-ops.h"
+#include "lo-ieee.h"
 
 #include "defun.h"
-#include "error.h"
-#include "lo-ieee.h"
 #include "oct-fstrm.h"
 #include "oct-iostrm.h"
 #include "oct-map.h"
@@ -65,7 +65,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-stream.h"
 #include "oct-strstrm.h"
 #include "pager.h"
-#include "pt-plot.h"
 #include "so-array.h"
 #include "sysdep.h"
 #include "utils.h"
@@ -100,6 +99,29 @@ void
 close_files (void)
 {
   octave_stream_list::clear ();
+}
+
+// List of files to delete when we exit or crash.
+//
+// XXX FIXME XXX -- this should really be static, but that causes
+// problems on some systems.
+std::stack <std::string> tmp_files;
+
+void
+mark_for_deletion (const std::string& file)
+{
+  tmp_files.push (file);
+}
+
+void
+cleanup_tmp_files (void)
+{
+  while (! tmp_files.empty ())
+    {
+      std::string filename = tmp_files.top ();
+      tmp_files.pop ();
+      unlink (filename.c_str ());
+    }
 }
 
 static void

@@ -46,6 +46,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-env.h"
 #include "str-vec.h"
 
+#include "Cell.h"
 #include "defun.h"
 #include "dir-ops.h"
 #include "dirfns.h"
@@ -54,7 +55,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-obj.h"
 #include "pager.h"
 #include "procstream.h"
-#include "pt-plot.h"
 #include "sysdep.h"
 #include "toplev.h"
 #include "unwind-prot.h"
@@ -71,7 +71,9 @@ octave_change_to_directory (const std::string& newdir)
   int cd_ok = octave_env::chdir (newdir);
 
   if (cd_ok)
-    do_external_plotter_cd (newdir);
+    // XXX FIXME XXX -- this should be handled as a list of functions
+    // to call so users can add their own chdir handlers.
+    /* do_external_plotter_cd (newdir) */;
   else
     {
       using namespace std;

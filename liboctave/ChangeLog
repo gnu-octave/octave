@@ -1,3 +1,11 @@
+2001-06-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* dMatrix.cc (Matrix::inverse, Matrix::solve, Matrix::determinant,
+	Matrix::inverse): Handle the case of rcond being a NaN the same as
+	a signular matrix.  From "Jianming" <caijianming@yahoo.co.uk>.
+	* CMatrix.cc (ComplexMatrix::inverse, ComplexMatrix::solve,
+	ComplexMatrix::determinant, ComplexMatrix::inverse): Likewise.
+
 2001-05-31  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* chMatrix.cc (charMatrix::row_as_string): New parameter, raw.

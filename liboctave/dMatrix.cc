@@ -593,7 +593,7 @@ Matrix::inverse (int& info, double& rcond, int force) const
 	{
 	  volatile double rcond_plus_one = rcond + 1.0;
 
-	  if (rcond_plus_one == 1.0)
+	  if (rcond_plus_one == 1.0 || xisnan (rcond))
 	    info = -1;
 
 	  if (info == -1 && ! force)
@@ -1003,7 +1003,7 @@ Matrix::determinant (int& info, double& rcond) const
 	{
 	  volatile double rcond_plus_one = rcond + 1.0;
 
-	  if (rcond_plus_one == 1.0)
+	  if (rcond_plus_one == 1.0 || xisnan (rcond))
 	    {
 	      info = -1;
 	      retval = DET ();
@@ -1080,7 +1080,7 @@ Matrix::solve (const Matrix& b, int& info, double& rcond,
 	{
 	  volatile double rcond_plus_one = rcond + 1.0;
 
-	  if (rcond_plus_one == 1.0)
+	  if (rcond_plus_one == 1.0 || xisnan (rcond))
 	    {
 	      info = -2;
 
@@ -1201,7 +1201,7 @@ Matrix::solve (const ColumnVector& b, int& info, double& rcond,
 	{
 	  volatile double rcond_plus_one = rcond + 1.0;
 
-	  if (rcond_plus_one == 1.0)
+	  if (rcond_plus_one == 1.0 || xisnan (rcond))
 	    {
 	      info = -2;
 

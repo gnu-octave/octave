@@ -895,7 +895,7 @@ ComplexMatrix::inverse (int& info, double& rcond, int force) const
 	{
 	  volatile double rcond_plus_one = rcond + 1.0;
 
-	  if (rcond_plus_one == 1.0)
+	  if (rcond_plus_one == 1.0 || xisnan (rcond))
 	    info = -1;
 
 	  if (info == -1 && ! force)
@@ -1307,7 +1307,7 @@ ComplexMatrix::determinant (int& info, double& rcond) const
 	{
 	  volatile double rcond_plus_one = rcond + 1.0;
 
-	  if (rcond_plus_one == 1.0)
+	  if (rcond_plus_one == 1.0 || xisnan (rcond))
 	    {
 	      info = -1;
 	      retval = ComplexDET ();
@@ -1413,7 +1413,7 @@ ComplexMatrix::solve (const ComplexMatrix& b, int& info, double& rcond,
 	{
 	  volatile double rcond_plus_one = rcond + 1.0;
 
-	  if (rcond_plus_one == 1.0)
+	  if (rcond_plus_one == 1.0 || xisnan (rcond))
 	    {
 	      info = -2;
 
@@ -1531,12 +1531,12 @@ ComplexMatrix::solve (const ComplexColumnVector& b, int& info,
 
       if (f77_exception_encountered)
 	(*current_liboctave_error_handler)
-	  ("unrecoverable error in dgeco");
+	  ("unrecoverable error in zgeco");
       else
 	{
 	  volatile double rcond_plus_one = rcond + 1.0;
 
-	  if (rcond_plus_one == 1.0)
+	  if (rcond_plus_one == 1.0 || xisnan (rcond))
 	    {
 	      info = -2;
 

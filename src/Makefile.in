@@ -95,8 +95,8 @@ INCLUDES := arith-ops.h builtins.h defaults.h.in defun.h defun-dld.h \
 
 TI_SRC := Array-tc.cc Map-tc.cc DLList-fi.cc \
 	SLList-expr.cc SLList-misc.cc SLList-plot.cc SLList-str.cc \
-	SLList-tc.cc SLStack-i.cc SLStack-pc.cc SLStack-str.cc \
-	SLStack-sym.cc SLStack-tok.cc SLStack-tm.cc SLStack-ue.cc \
+	SLList-tc.cc SLList-tm.cc SLStack-i.cc SLStack-pc.cc \
+	SLStack-str.cc SLStack-sym.cc SLStack-tok.cc SLStack-ue.cc \
 	SLStack-ui.cc
 
 TI_OBJ := $(patsubst %.cc, %.o, $(TI_SRC))
@@ -136,7 +136,7 @@ endif
 
 # Ugh.
 
-DEP_SOURCES_3 := $(SOURCES) $(DLD_SRC) $(TI_SRC) builtins.cc
+DEP_SOURCES_3 := $(SOURCES) $(DLD_SRC) $(TI_SRC) builtins.cc octave.cc
 DEP_SOURCES_2 := $(patsubst %.l, %.cc, $(DEP_SOURCES_3))
 DEP_SOURCES_1 := $(patsubst %.y, %.cc, $(DEP_SOURCES_2))
 DEP_SOURCES := $(patsubst %.c, %.d, $(DEP_SOURCES_1))

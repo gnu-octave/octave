@@ -120,7 +120,7 @@ public:
 
   void init (void);
 
-  // Nonzero means we thing we are looking at the beginning of a
+  // Nonzero means we think we are looking at the beginning of a
   // function definition.
   int beginning_of_function;
 

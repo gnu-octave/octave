@@ -54,6 +54,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt-cmd.h"
 #include "pt-const.h"
 #include "pt-exp.h"
+#include "pt-mat.h"
 #include "pt-misc.h"
 #include "pt-plot.h"
 #include "user-prefs.h"
@@ -325,7 +326,6 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
       }
     else
       {
-	mlnm.push (1);
 	lexer_flags.braceflag++;
 	BEGIN MATRIX;
 	return '[';
@@ -612,10 +612,6 @@ reset_parser (void)
 
   // Error may have occurred inside some parentheses or braces.
   nesting_level.clear ();
-
-  // Not initially defining a matrix list.
-  ml.clear ();
-  mlnm.clear ();
 
   // Clear out the stack of token info used to track line and column
   // numbers.

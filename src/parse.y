@@ -1,4 +1,5 @@
-/* parse.y						-*- text -*-
+// parse.y						-*- text -*-
+/*
 
 Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
 
@@ -61,14 +62,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // Temporary symbol table pointer used to cope with bogus function syntax.
 symbol_table *tmp_local_sym_tab = 0;
-
-// Stack to hold list of literal matrices.
-SLStack <tree_matrix *> ml;
-
-// A nonzero element corresponding to an element of ml means we just
-// started reading a new matrix.  This should probably be part of a
-// new struct for matrix lists... 
-SLStack <int> mlnm;
 
 // The current input line number.
 int input_line_number = 0;
@@ -148,7 +141,7 @@ static tree_command *make_for_command
 
 // Build a for command a different way.
 static tree_command *make_for_command
-	 (token *for_tok, tree_expression *expr,
+	 (token *for_tok, tree_matrix_row *mr, tree_expression *expr,
 	  tree_statement_list *body, token *end_tok);
 
 // Build a break command.
@@ -178,7 +171,7 @@ static tree_expression *make_simple_assignment
 
 // Make an expression that handles assignment of multiple values.
 static tree_expression *make_multi_val_ret
-	 (tree_expression *rhs, token *eq_tok);
+	 (tree_matrix_row *mr, tree_expression *rhs, token *eq_tok);
 
 // Begin defining a function.
 static tree_function *start_function_def
@@ -199,11 +192,8 @@ static tree_function *finish_function_def
 static tree_index_expression *make_index_expression
 	 (tree_indirect_ref *indir, tree_argument_list *args);
 
-// Start building a matrix list.
-static void start_matrix (tree_expression *expr);
-
 // Finish building a matrix list.
-static tree_expression *finish_matrix (void);
+static tree_expression *finish_matrix (tree_matrix *m);
 
 // Maybe print a warning.  Duh.
 static void maybe_warn_missing_semi (tree_statement_list *);
@@ -231,6 +221,8 @@ static void maybe_warn_missing_semi (tree_statement_list *);
 
 // Types for the nonterminals we generate.
   tree *tree_type;
+  tree_matrix *tree_matrix_type;
+  tree_matrix_row *tree_matrix_row_type;
   tree_expression *tree_expression_type;
   tree_constant *tree_constant_type;
   tree_identifier *tree_identifier_type;
@@ -289,6 +281,8 @@ static void maybe_warn_missing_semi (tree_statement_list *);
 
 // Nonterminals we construct.
 %type <tree_type> input
+%type <tree_matrix_type> rows rows1
+%type <tree_matrix_row_type> matrix_row matrix_row1
 %type <tree_expression_type> expression simple_expr simple_expr1
 %type <tree_expression_type> ans_expression title matrix
 %type <tree_identifier_type> identifier
@@ -449,6 +443,7 @@ list		: list1
 		  {
 		    tree_statement *tmp = $1->rear ();
 		    tmp->set_print_flag (0);
+		    $$ = $1;
 		  }
 		;
 
@@ -521,7 +516,10 @@ plot_command1	: // empty
 		| plot_command2
 		  { $$ = new subplot_list ($1); }
 		| plot_command1 ',' plot_command2
-		  { $1->append ($3); }
+		  {
+		    $1->append ($3);
+		    $$ = $1;
+		  }
 		;
 
 plot_command2	: expression
@@ -612,7 +610,10 @@ global_decl	: GLOBAL global_decl1
 global_decl1	: global_decl2
 		  { $$ = new tree_global_init_list ($1); }
 		| global_decl1 optcomma global_decl2
-		  { $1->append ($3); }
+		  {
+		    $1->append ($3);
+		    $$ = $1;
+		  }
 
 global_decl2	: identifier
 		  { $$ = new tree_global ($1); }
@@ -668,7 +669,7 @@ command		: plot_command
 		| FOR '[' screwed_again matrix_row SCREW_TWO '='
 		    expression optsep opt_list END
 		  {
-		    if (! ($$ = make_for_command ($1, $7, $9, $10)))
+		    if (! ($$ = make_for_command ($1, $4, $7, $9, $10)))
 		      ABORT_PARSE;
 		  }
 		| BREAK
@@ -698,13 +699,19 @@ if_command	: IF if_cmd_list END
 if_cmd_list	: if_cmd_list1
 		  { $$ = $1 }
 		| if_cmd_list1 else_clause
-		  { $1->append ($2); }
+		  {
+		    $1->append ($2);
+		    $$ = $1;
+		  }
 		;
 
 if_cmd_list1	: expression optsep opt_list
 		  { $$ = start_if_command ($1, $3); }
 		| if_cmd_list1 elseif_clause
-		  { $1->append ($2); }
+		  {
+		    $1->append ($2);
+		    $$ = $1;
+		  }
 		;
 
 elseif_clause	: ELSEIF optsep expression optsep opt_list
@@ -769,15 +776,9 @@ simple_expr1	: NUM
 		| matrix
 		  { $$ = $1; }
 		| '[' ']'
-		  {
-		    mlnm.pop ();
-		    $$ = new tree_constant (Matrix ());
-		  }
+		  { $$ = new tree_constant (Matrix ()); }
 		| '[' ';' ']'
-		  {
-		    mlnm.pop ();
-		    $$ = new tree_constant (Matrix ());
-		  }
+		  { $$ = new tree_constant (Matrix ()); }
 		| colon_expr
 		  { $$ = finish_colon_expression ($1); }
 		| PLUS_PLUS identifier %prec UNARY
@@ -794,7 +795,7 @@ simple_expr1	: NUM
 		  { $$ = make_simple_assignment ($1, $2, $3); }
 		| '[' screwed_again matrix_row SCREW_TWO '=' simple_expr
 		  {
-		    if (! ($$ = make_multi_val_ret ($6, $5)))
+		    if (! ($$ = make_multi_val_ret ($3, $6, $5)))
 		      ABORT_PARSE;
 		  }
 		| identifier PLUS_PLUS
@@ -879,6 +880,7 @@ word_list	: TEXT
 		  {
 		    tree_constant *tmp = make_constant (TEXT, $2);
 		    $1->append (tmp);
+		    $$ = $1;
 		  }
 		;
 
@@ -945,10 +947,14 @@ return_list1	: return_list_x identifier
 		| return_list_x error
 		  {
 		    yyerror ("invalid function return list");
+		    $$ = 0;
 		    ABORT_PARSE;
 		  }
 		| return_list1 ',' identifier
-		  { $1->append ($3); }
+		  {
+		    $1->append ($3);
+		    $$ = $1;
+		  }
 		;
 
 func_def2	: identifier safe local_symtab func_def3
@@ -967,7 +973,7 @@ func_def3	: param_list optsep opt_list fcn_end_or_eof
 fcn_end_or_eof	: END
 		  {
 		    if (check_end ($1, token::function_end))
-			ABORT_PARSE;
+		      ABORT_PARSE;
 
 		    if (reading_fcn_file)
 		      check_for_garbage_after_fcn_def ();
@@ -1026,27 +1032,34 @@ param_list	: '(' ')'
 		  {
 		    lexer_flags.quote_is_transpose = 0;
 		    $1->mark_as_formal_parameters ();
+		    $$ = $1;
 		  }
 		| param_list1 ',' ELLIPSIS ')'
 		  {
 		    lexer_flags.quote_is_transpose = 0;
 		    $1->mark_as_formal_parameters ();
 		    $1->mark_varargs ();
+		    $$ = $1;
 		  }
 		;
 
 param_list1	: '(' identifier
 		  { $$ = new tree_parameter_list ($2); }
 		| param_list1 ',' identifier
-		  { $1->append ($3); }
+		  {
+		    $1->append ($3);
+		    $$ = $1;
+		  }
 		| '(' error
 		  {
 		    yyerror ("invalid parameter list");
+		    $$ = 0;
 		    ABORT_PARSE;
 		  }
 		| param_list1 ',' error
 		  {
 		    yyerror ("invalid parameter list");
+		    $$ = 0;
 		    ABORT_PARSE;
 		  }
 		;
@@ -1080,41 +1093,54 @@ arg_list	: ':'
 		    tree_constant::magic_colon t;
 		    colon = new tree_constant (t);
 		    $1->append (colon);
+		    $$ = $1;
 		  }
 		| arg_list ',' expression
-		  { $1->append ($3); }
+		  {
+		    $1->append ($3);
+		    $$ = $1;
+		  }
 		| arg_list ',' ALL_VA_ARGS
 		  {
 		    tree_constant *all_va_args;
 		    tree_constant::all_va_args t;
 		    all_va_args = new tree_constant (t);
 		    $1->append (all_va_args);
+		    $$ = $1;
 		  }
 		;
 
 matrix		: '[' screwed_again rows ']'
-		  { $$ = finish_matrix (); }
+		  { $$ = finish_matrix ($3); }
 		;
 
 rows		: rows1
+		  { $$ = $1; }
 		| rows1 ';'	// Ignore trailing semicolon.
+		  { $$ = $1; }
 		;
 
 rows1		: matrix_row
+		  { $$ = new tree_matrix ($1); }
 		| rows1 ';' matrix_row
+		  {
+		    $1->append ($3);
+		    $$ = $1;
+		  }
 		;
 
 matrix_row	: matrix_row1
+		  { $$ = $1; }
 		| matrix_row1 ','	// Ignore trailing comma.
+		  { $$ = $1; }
 		;
 
 matrix_row1	: expression		// First element on row.
-		  { start_matrix ($1); }
+		  { $$ = new tree_matrix_row ($1); }
 		| matrix_row1 ',' expression
 		  {
-		    tree_matrix *tmp = ml.pop ();
-		    tmp = tmp->chain ($3, tree_matrix::md_right);
-		    ml.push (tmp);
+		    $1->append ($3);
+		    $$ = $1;
 		  }
 		;
 
@@ -1704,8 +1730,9 @@ make_for_command (token *for_tok, tree_index_expression *var,
 // Build a for command a different way.
 
 static tree_command *
-make_for_command (token *for_tok, tree_expression *expr,
-		  tree_statement_list *body, token *end_tok)
+make_for_command (token *for_tok, tree_matrix_row *mr,
+		  tree_expression *expr, tree_statement_list *body,
+		  token *end_tok)
 {
   tree_command *retval = 0;
 
@@ -1713,9 +1740,7 @@ make_for_command (token *for_tok, tree_expression *expr,
     {
       lexer_flags.looping--;
 
-      tree_matrix *tmp = ml.pop ();
-      tmp = tmp->reverse ();
-      tree_return_list *id_list = tmp->to_return_list ();
+      tree_return_list *id_list = mr->to_return_list ();
 
       int l = for_tok->line ();
       int c = for_tok->column ();
@@ -1842,7 +1867,7 @@ make_simple_assignment (tree_index_expression *var, token *eq_tok,
 // Make an expression that handles assignment of multiple values.
 
 static tree_expression *
-make_multi_val_ret (tree_expression *rhs, token *eq_tok)
+make_multi_val_ret (tree_matrix_row *mr, tree_expression *rhs, token *eq_tok)
 {
 // Convert the matrix list to a list of identifiers.  If that fails,
 // we can abort here, without losing anything -- no other possible
@@ -1853,11 +1878,7 @@ make_multi_val_ret (tree_expression *rhs, token *eq_tok)
 
   lexer_flags.maybe_screwed_again--;
 
-  tree_matrix *tmp = ml.pop ();
-
-  tmp = tmp->reverse ();
-
-  tree_return_list *id_list = tmp->to_return_list ();
+  tree_return_list *id_list = mr->to_return_list ();
 
   if (id_list)
     {
@@ -2013,52 +2034,26 @@ make_index_expression (tree_indirect_ref *indir, tree_argument_list *args)
   return retval;
 }
 
-// Start building a matrix list.
-
-void
-start_matrix (tree_expression *expr)
-{
-  if (mlnm.top ())
-    {
-      mlnm.pop ();
-      mlnm.push (0);
-      tree_matrix *tmp = new tree_matrix (expr, tree_matrix::md_none);
-      ml.push (tmp);
-    }
-  else
-    {
-      tree_matrix *tmp = ml.pop ();
-      tmp = tmp->chain (expr, tree_matrix::md_down);
-      ml.push (tmp);
-    }
-}
-
 // Finish building a matrix list.
 
 static tree_expression *
-finish_matrix (void)
+finish_matrix (tree_matrix *m)
 {
   tree_expression *retval = 0;
 
-  mlnm.pop ();
-
   lexer_flags.maybe_screwed_again--;
 
-  tree_matrix *list = ml.pop ();
-
-  list = list->reverse ();
-
-  if (list->is_matrix_constant ())
+  if (m->is_matrix_constant ())
     {
-      tree_constant tmp = list->eval (0);
+      tree_constant tmp = m->eval (0);
 
-      delete list;
+      delete m;
 
       if (! error_state)
 	retval = new tree_constant (tmp);
     }
   else
-    retval = list;
+    retval = m;
 
   return retval;
 }

@@ -40,14 +40,6 @@ class symbol_table;
 // Temporary symbol table pointer used to cope with bogus function syntax.
 extern symbol_table *tmp_local_sym_tab;
 
-// Stack to hold list of literal matrices.
-extern SLStack <tree_matrix *> ml;
-
-// A nonzero element corresponding to an element of ml means we just
-// started reading a new matrix.  This should probably be part of a
-// new struct for matrix lists...
-extern SLStack <int> mlnm;
-
 // Nonzero means print parser debugging info (-d).
 extern int yydebug;
 

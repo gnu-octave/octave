@@ -66,7 +66,7 @@ LU::LU (const Matrix& a)
   int info = 0;
   double dummy = 0;
 
-  F77_XFCN (dgesv, DGESV) (n, 0, tmp_data, n, ipvt, dummy, n, info);
+  F77_XFCN (dgesv, DGESV, (n, 0, tmp_data, n, ipvt, dummy, n, info));
 
   if (f77_exception_encountered)
     (*current_liboctave_error_handler) ("unrecoverable error in dgesv");

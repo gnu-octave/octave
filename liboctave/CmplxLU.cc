@@ -66,7 +66,7 @@ ComplexLU::ComplexLU (const ComplexMatrix& a)
   int info = 0;
   Complex *dummy = 0;
 
-  F77_XFCN (zgesv, ZGESV) (n, 0, tmp_data, n, ipvt, dummy, n, info);
+  F77_XFCN (zgesv, ZGESV, (n, 0, tmp_data, n, ipvt, dummy, n, info));
 
   if (f77_exception_encountered)
     (*current_liboctave_error_handler) ("unrecoverable error in zgesv");

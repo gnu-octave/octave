@@ -29,12 +29,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include "Array-util.h"
 #include "dNDArray.h"
 #include "mx-base.h"
 #include "lo-error.h"
 #include "lo-ieee.h"
-
-#include "ArrayN-inline.h"
 
 NDArray::NDArray (const boolNDArray& a)
   : MArrayN<double> (a.dims ())

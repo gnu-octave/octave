@@ -1,7 +1,6 @@
-// Inline functions used by ArrayN-idx.h and ArrayN.cc
 /*
 
-Copyright (C) 2000 John W. Eaton
+Copyright (C) 2003 John W. Eaton
 
 This file is part of Octave.
 
@@ -21,12 +20,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-#ifndef octave_ArrayN_inline_h
-#define octave_ArrayN_inline_h 1
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
-#include "idx-vector.h"
+#include "Array-util.h"
 
-static inline bool
+bool
 index_in_bounds (const Array<int>& ra_idx, const dim_vector& dimensions)
 {
   bool retval = true;
@@ -50,9 +50,9 @@ index_in_bounds (const Array<int>& ra_idx, const dim_vector& dimensions)
   return retval;
 }
 
-static inline void
+void
 increment_index (Array<int>& ra_idx, const dim_vector& dimensions,
-		 int start_dimension = 0)
+		 int start_dimension)
 {
   ra_idx(start_dimension)++;
 
@@ -70,7 +70,7 @@ increment_index (Array<int>& ra_idx, const dim_vector& dimensions,
     }
 }
 
-static inline int
+int
 get_scalar_idx (Array<int>& idx, dim_vector& dims)
 {
   int retval (-1);
@@ -91,7 +91,7 @@ get_scalar_idx (Array<int>& idx, dim_vector& dims)
   return retval;
 }
 
-static inline int
+int
 num_ones (const Array<int>& ra_idx)
 {
   int retval (0);
@@ -103,7 +103,7 @@ num_ones (const Array<int>& ra_idx)
   return retval;
 }
 
-static inline bool
+bool
 is_scalar (const dim_vector& dim)
 {
   bool retval = true;
@@ -129,7 +129,7 @@ is_scalar (const dim_vector& dim)
   return retval;
 }
 
-static inline bool
+bool
 any_ones (const Array<int>& arr)
 {
   bool retval = false;
@@ -146,7 +146,7 @@ any_ones (const Array<int>& arr)
   return retval;
 }
 
-static inline int
+int
 compute_index (const Array<int>& ra_idx, const dim_vector& dims)
 {
   int retval = -1;
@@ -171,7 +171,7 @@ compute_index (const Array<int>& ra_idx, const dim_vector& dims)
   return retval;
 }
 
-static inline Array<int>
+Array<int>
 conv_to_int_array (const Array<idx_vector>& a)
 {
   Array<int> retval (a.length ());
@@ -182,7 +182,7 @@ conv_to_int_array (const Array<idx_vector>& a)
   return retval;
 }
 
-static inline Array<idx_vector>
+Array<idx_vector>
 conv_to_array (const idx_vector *tmp, const int len)
 {
   Array<idx_vector> retval (len);
@@ -193,7 +193,7 @@ conv_to_array (const idx_vector *tmp, const int len)
   return retval;
 }
 
-static inline dim_vector
+dim_vector
 freeze (Array<idx_vector>& ra_idx, const dim_vector& dimensions, int resize_ok)
 {
   dim_vector retval;
@@ -210,7 +210,7 @@ freeze (Array<idx_vector>& ra_idx, const dim_vector& dimensions, int resize_ok)
   return retval;
 }
 
-static inline bool
+bool
 vector_equivalent (const Array<int>& ra_idx)
 {
   int n = ra_idx.length ();
@@ -231,7 +231,7 @@ vector_equivalent (const Array<int>& ra_idx)
   return true;
 }
 
-static inline bool
+bool
 equal_arrays (const dim_vector& a, const dim_vector& b)
 {
   bool retval = true;
@@ -250,7 +250,7 @@ equal_arrays (const dim_vector& a, const dim_vector& b)
   return retval;
 }
 
-static inline bool
+bool
 all_ok (const Array<idx_vector>& ra_idx)
 {
   bool retval = true;
@@ -269,7 +269,7 @@ all_ok (const Array<idx_vector>& ra_idx)
   return retval;
 }
 
-static inline bool
+bool
 any_orig_empty (const Array<idx_vector>& ra_idx)
 {
   bool retval = false;
@@ -288,7 +288,7 @@ any_orig_empty (const Array<idx_vector>& ra_idx)
   return retval;
 }
 
-static inline bool
+bool
 any_zero_len (const dim_vector& frozen_lengths)
 {
   bool retval = false;
@@ -307,7 +307,7 @@ any_zero_len (const dim_vector& frozen_lengths)
   return retval;
 }
 
-static inline dim_vector
+dim_vector
 get_zero_len_size (const dim_vector& frozen_lengths,
 		   const dim_vector& dimensions)
 {
@@ -316,7 +316,7 @@ get_zero_len_size (const dim_vector& frozen_lengths,
   return retval;
 }
 
-static inline bool
+bool
 all_colon_equiv (const Array<idx_vector>& ra_idx,
 		 const dim_vector& frozen_lengths)
 {
@@ -340,7 +340,7 @@ all_colon_equiv (const Array<idx_vector>& ra_idx,
   return retval;
 }
 
-static inline bool
+bool
 is_in (int num, const idx_vector& idx)
 {
   int n = idx.capacity ();
@@ -352,7 +352,7 @@ is_in (int num, const idx_vector& idx)
   return false;
 }
 
-static inline int
+int
 how_many_lgt (const int num, idx_vector& idxv)
 {
   int retval = 0;
@@ -360,13 +360,15 @@ how_many_lgt (const int num, idx_vector& idxv)
   int n = idxv.capacity ();
 
   for (int i = 0; i < n; i++)
-    if (num > idxv.elem (i))
-      retval++;
+    {
+      if (num > idxv.elem (i))
+	retval++;
+    }
 
   return retval;
 }
 
-static inline bool
+bool
 all_ones (const Array<int>& arr)
 {
   bool retval = true;
@@ -383,7 +385,7 @@ all_ones (const Array<int>& arr)
   return retval;
 }
 
-static Array<int>
+Array<int>
 get_elt_idx (const Array<idx_vector>& ra_idx, const Array<int>& result_idx)
 {
   int n = ra_idx.length ();
@@ -396,7 +398,7 @@ get_elt_idx (const Array<idx_vector>& ra_idx, const Array<int>& result_idx)
   return retval;
 }
 
-static inline int
+int
 number_of_elements (const dim_vector ra_idx)
 {
   int retval = 1;
@@ -412,7 +414,7 @@ number_of_elements (const dim_vector ra_idx)
   return retval;
 }
 
-static inline Array<int>
+Array<int>
 get_ra_idx (int idx, const dim_vector& dims)
 {
   Array<int> retval;
@@ -446,7 +448,7 @@ get_ra_idx (int idx, const dim_vector& dims)
   return retval;
 }
 
-static inline dim_vector
+dim_vector
 short_freeze (Array<idx_vector>& ra_idx, const dim_vector& dimensions,
 	      int resize_ok)
 {
@@ -507,7 +509,6 @@ short_freeze (Array<idx_vector>& ra_idx, const dim_vector& dimensions,
 
   return retval;
 }
-#endif
 
 /*
 ;;; Local Variables: ***

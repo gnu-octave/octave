@@ -36,11 +36,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "Array.h"
 #include "Array-flags.h"
+#include "Array-util.h"
 #include "Range.h"
 #include "idx-vector.h"
 #include "lo-error.h"
-
-#include "ArrayN-inline.h"
 
 // One dimensional array class.  Handles the reference counting for
 // all the derived classes.
@@ -1985,10 +1984,12 @@ Array<T>::index (Array<idx_vector>& ra_idx, int resize_ok, const T& rfv) const
 	      Array<int> result_idx (ra_idx.length (), 0);
 
 	      dim_vector this_dims = dims ();
-	
+
+	      Array<int> elt_idx;
+
 	      for (int i = 0; i < n; i++)
 		{
-		  Array<int> elt_idx = get_elt_idx (ra_idx, result_idx); 
+		  elt_idx = get_elt_idx (ra_idx, result_idx); 
 	
 		  int numelem_result = 
 		    get_scalar_idx (result_idx, frozen_lengths);

@@ -1,5 +1,12 @@
 2003-11-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Array.cc, ArrayN.cc, dNDArray.cc, CNDArray.cc, boolNDArray.cc,
+	chNDArray.cc: Include Array-util.h instead of ArrayN-inline.h.
+
+	* ArrayN-inline.h: Delete.
+	* Array-util.h, Array-util.cc: New files, from ArrayN-inline.h.
+	* Makefile.in: Fix the appropriate lists.
+
 	* Array.cc, Array.h, ArrayN.h, CMatrix.cc, CNDArray.h,
 	CRowVector.cc, CmplxQR.cc, CollocWt.h, DASPK.h, DASRT.h, DASSL.h,
 	FEGrid.cc, LP.h, LSODE.h, MArrayN.h, ODE.h, ODES.h, ODESSA.cc,

@@ -26,7 +26,7 @@ ifeq ($(INCLUDE_LINK_DEPS), true)
 endif
 
 MATRIX_INC := Array.h Array2.h Array3.h ArrayN.h DiagArray2.h \
-	Array-flags.h ArrayN-idx.h ArrayN-inline.h MArray-defs.h \
+	Array-flags.h Array-util.h ArrayN-idx.h MArray-defs.h \
 	MArray.h MArray2.h MDiagArray2.h Matrix.h MArrayN.h \
 	base-lu.h dim-vector.h mx-base.h mx-op-defs.h mx-ops.h \
 	mx-defs.h mx-ext.h CColVector.h CDiagMatrix.h CMatrix.h \
@@ -73,14 +73,14 @@ TI_SRC := Array-C.cc Array-b.cc Array-ch.cc Array-i.cc Array-d.cc \
 	Array-s.cc Array-str.cc Array-idx-vec.cc \
 	MArray-C.cc MArray-ch.cc MArray-i.cc MArray-d.cc MArray-s.cc
 
-MATRIX_SRC := Array-flags.cc CColVector.cc CDiagMatrix.cc CMatrix.cc \
-	CNDArray.cc CRowVector.cc CmplxAEPBAL.cc CmplxCHOL.cc \
-	CmplxDET.cc CmplxHESS.cc CmplxLU.cc CmplxQR.cc CmplxQRP.cc \
-	CmplxSCHUR.cc CmplxSVD.cc EIG.cc MArray-misc.cc MArrayN.cc \
-	boolMatrix.cc boolNDArray.cc chMatrix.cc chNDArray.cc \
-	dColVector.cc dDiagMatrix.cc \
-	dMatrix.cc dNDArray.cc dRowVector.cc dbleAEPBAL.cc \
-	dbleCHOL.cc dbleDET.cc dbleHESS.cc dbleLU.cc \
+MATRIX_SRC := Array-flags.cc Array-util.cc CColVector.cc \
+	CDiagMatrix.cc CMatrix.cc CNDArray.cc CRowVector.cc \
+	CmplxAEPBAL.cc CmplxCHOL.cc CmplxDET.cc CmplxHESS.cc \
+	CmplxLU.cc CmplxQR.cc CmplxQRP.cc CmplxSCHUR.cc CmplxSVD.cc \
+	EIG.cc MArray-misc.cc MArrayN.cc boolMatrix.cc \
+	boolNDArray.cc chMatrix.cc chNDArray.cc dColVector.cc \
+	dDiagMatrix.cc dMatrix.cc dNDArray.cc dRowVector.cc \
+	dbleAEPBAL.cc dbleCHOL.cc dbleDET.cc dbleHESS.cc dbleLU.cc \
 	dbleQR.cc dbleQRP.cc dbleSCHUR.cc dbleSVD.cc
 
 MX_OP_SRC := $(shell $(AWK) -f $(srcdir)/mk-ops.awk prefix=mx list_cc_files=1 $(srcdir)/mx-ops)

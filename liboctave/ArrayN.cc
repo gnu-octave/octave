@@ -33,8 +33,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <iostream>
 
+#include "Array-util.h"
 #include "ArrayN.h"
-#include "ArrayN-inline.h"
 #include "ArrayN-idx.h"
 #include "idx-vector.h"
 #include "lo-error.h"

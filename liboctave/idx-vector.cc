@@ -405,7 +405,7 @@ IDX_VEC_REP::init_state (void)
 void
 IDX_VEC_REP::maybe_convert_one_zero_to_idx (int z_len)
 {
-  if (one_zero && z_len == len)
+  if (one_zero && (z_len == len || z_len == 0))
     {
       if (num_ones == 0)
 	{
@@ -585,10 +585,7 @@ int
 IDX_VEC_REP::freeze (int z_len, const char *tag, int resize_ok)
 {
   if (frozen)
-    {
-      assert (frozen_at_z_len == z_len);
-      return frozen_len;
-    }
+    return frozen_len;
 
   frozen_len = -1;
 
@@ -633,7 +630,8 @@ IDX_VEC_REP::freeze (int z_len, const char *tag, int resize_ok)
     }
 
   frozen = 1;
-  frozen_at_z_len = z_len;
+
+  frozen_at_z_len = z_len ? z_len : len;
 
   return frozen_len;
 }

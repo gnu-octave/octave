@@ -665,6 +665,11 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs)
 			      lhs.d1 = rhs.d1;
 			      lhs.d2 = rhs.d2;
 			    }
+			  else if (lhs_is_empty && idx_i.one_zero_only ())
+			    {
+			      lhs.d1 = idx_nr;
+			      lhs.d2 = idx_nc;
+			    }
 			  else if (rhs_nr == 1
 				   && (idx_nr == 1 || lhs_len == 1))
 			    {

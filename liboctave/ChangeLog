@@ -1,3 +1,12 @@
+2000-06-08  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Array2-idx.h (assign): Allow x(bool) = RHS to succeed if x is
+	previously undefined and set size of x to size of bool index.
+	* idx-vector.cc (IDX_VEC_REP::maybe_convert_one_zero_to_idx):
+	Allow z_len to be zero.
+	(IDX_VEC_REP::freeze): If z_len is zero, set frozen_at_z_len to len.
+	If frozen, don't assert that frozen_at_z_len == z_len.
+
 2000-05-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-rl-edit.c (octave_rl_clear_screen): Call _rl_clear_screen

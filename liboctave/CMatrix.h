@@ -140,7 +140,8 @@ public:
 
   ComplexMatrix inverse (void) const;
   ComplexMatrix inverse (int& info) const;
-  ComplexMatrix inverse (int& info, double& rcond, int force = 0) const;
+  ComplexMatrix inverse (int& info, double& rcond, int force = 0,
+			 int calc_cond = 1) const;
 
   ComplexMatrix pseudo_inverse (double tol = 0.0);
 
@@ -152,7 +153,7 @@ public:
 
   ComplexDET determinant (void) const;
   ComplexDET determinant (int& info) const;
-  ComplexDET determinant (int& info, double& rcond) const;
+  ComplexDET determinant (int& info, double& rcond, int calc_cond = 1) const;
 
   ComplexMatrix solve (const Matrix& b) const;
   ComplexMatrix solve (const Matrix& b, int& info) const;
@@ -251,6 +252,7 @@ public:
   ComplexMatrix prod (int dim = -1) const;
   ComplexMatrix sum (int dim = -1) const;
   ComplexMatrix sumsq (int dim = -1) const;
+  Matrix abs (void) const;
 
   ComplexColumnVector diag (void) const;
   ComplexColumnVector diag (int k) const;

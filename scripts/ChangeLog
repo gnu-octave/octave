@@ -1,3 +1,7 @@
+2003-02-18  David Bateman <dbateman@free.fr>
+
+ 	* mkpkgadd: Scan C++ files as well
+
 2003-02-13  Schloegl Alois <alois.schloegl@tugraz.at>
 
 	* strings/findstr.m: Return empty set for zero-length target.

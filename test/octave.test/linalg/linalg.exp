@@ -159,7 +159,7 @@ set prog_output "\n... lu:.*"
 do_test lu-5.m
 
 set test lu-6
-set prog_output "error:.*"
+set prog_output "ans = 1"
 do_test lu-6.m
 
 set test qr-1

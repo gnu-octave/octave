@@ -1,3 +1,7 @@
+2003-02-18  David Bateman <dbateman@free.fr>
+
+	* configure.in: Eliminate linpack
+
 2003-02-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in: Check for mkstemp too.

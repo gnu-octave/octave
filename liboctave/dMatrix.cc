@@ -75,15 +75,19 @@ extern "C"
 			      const double&, double*, const int&,
 			      long, long);
 
-  int F77_FUNC (dgeco, DGECO) (double*, const int&, const int&, int*,
-			      double&, double*);
+  int F77_FUNC (dgetrf, DGETRF) (const int&, const int&, double*, const int&,
+		      int*, int&);
 
-  int F77_FUNC (dgesl, DGESL) (const double*, const int&, const int&,
-			      const int*, double*, const int&);
+  int F77_FUNC (dgetrs, DGETRS) (const char*, const int&, const int&, 
+				const double*, const int&,
+				const int*, double*, const int&, int&);
 
-  int F77_FUNC (dgedi, DGEDI) (double*, const int&, const int&,
-			      const int*, double*, double*,
-			      const int&);
+  int F77_FUNC (dgetri, DGETRI) (const int&, double*, const int&, const int*,
+				double*, const int&, int&);
+
+  int F77_FUNC (dgecon, DGECON) (const char*, const int&, double*, 
+				 const int&, const double&, double&, 
+				 double*, int*, int&);
 
   int F77_FUNC (dgelss, DGELSS) (const int&, const int&, const int&,
 				double*, const int&, double*,
@@ -595,18 +599,18 @@ Matrix::inverse (void) const
 {
   int info;
   double rcond;
-  return inverse (info, rcond);
+  return inverse (info, rcond, 0, 0);
 }
 
 Matrix
 Matrix::inverse (int& info) const
 {
   double rcond;
-  return inverse (info, rcond);
+  return inverse (info, rcond, 0, 0);
 }
 
 Matrix
-Matrix::inverse (int& info, double& rcond, int force) const
+Matrix::inverse (int& info, double& rcond, int force, int calc_cond) const
 {
   Matrix retval;
 
@@ -617,40 +621,78 @@ Matrix::inverse (int& info, double& rcond, int force) const
     (*current_liboctave_error_handler) ("inverse requires square matrix");
   else
     {
-      info = 0;
-
       Array<int> ipvt (nr);
       int *pipvt = ipvt.fortran_vec ();
-
-      Array<double> z (nr);
-      double *pz = z.fortran_vec ();
 
       retval = *this;
       double *tmp_data = retval.fortran_vec ();
 
-      F77_XFCN (dgeco, DGECO, (tmp_data, nr, nc, pipvt, rcond, pz));
+      Array<double> z(1);
+      int lwork = -1;
+
+      // Query the optimum work array size
+      F77_XFCN (dgetri, DGETRI, (nc, tmp_data, nr, pipvt, 
+				 z.fortran_vec (), lwork, info));
+
+      if (f77_exception_encountered) 
+	{
+	  (*current_liboctave_error_handler)
+	    ("unrecoverable error in dgetri");
+	  return retval;
+	}
+
+      lwork = static_cast<int> (z(0));
+      lwork = (lwork < 2 *nc ? 2*nc : lwork);
+      z.resize (lwork);
+      double *pz = z.fortran_vec ();
+
+      info = 0;
+
+      /* Calculate the norm of the matrix, for later use */
+      double anorm = 0;
+      if (calc_cond) 
+	anorm = retval.abs().sum().row(0).max();
+
+      F77_XFCN (dgetrf, DGETRF, (nc, nc, tmp_data, nr, pipvt, info));
 
       if (f77_exception_encountered)
-	(*current_liboctave_error_handler) ("unrecoverable error in dgeco");
+	(*current_liboctave_error_handler) ("unrecoverable error in dgetrf");
       else
 	{
-	  volatile double rcond_plus_one = rcond + 1.0;
-
-	  if (rcond_plus_one == 1.0 || xisnan (rcond))
+	  /* Throw-away extra info LAPACK gives so as to not change output */
+	  rcond = 0.;
+	  if ( info != 0) 
 	    info = -1;
+	  else if (calc_cond) 
+	    {
+	      /* Now calculate the condition number for non-singular matrix */
+	      char job = '1';
+	      Array<int> iz (nc);
+	      int *piz = iz.fortran_vec ();
+	      F77_XFCN (dgecon, DGECON, ( &job, nc, tmp_data, nr, anorm, 
+					  rcond, pz, piz, info));
+
+	      if (f77_exception_encountered)
+		(*current_liboctave_error_handler) 
+		  ("unrecoverable error in dgecon");
+
+	      if ( info != 0) 
+		info = -1;
+	    }
 
 	  if (info == -1 && ! force)
 	    retval = *this; // Restore matrix contents.
 	  else
 	    {
-	      double *dummy = 0;
-
-	      F77_XFCN (dgedi, DGEDI, (tmp_data, nr, nc, pipvt, dummy,
-				       pz, 1));
+	      F77_XFCN (dgetri, DGETRI, (nc, tmp_data, nr, pipvt,
+				       pz, lwork, info));
 
 	      if (f77_exception_encountered)
 		(*current_liboctave_error_handler)
-		  ("unrecoverable error in dgedi");
+		  ("unrecoverable error in dgetri");
+
+	      if ( info != 0) 
+		info = -1;
 	    }
 	}
     }
@@ -1024,18 +1066,18 @@ Matrix::determinant (void) const
 {
   int info;
   double rcond;
-  return determinant (info, rcond);
+  return determinant (info, rcond, 0);
 }
 
 DET
 Matrix::determinant (int& info) const
 {
   double rcond;
-  return determinant (info, rcond);
+  return determinant (info, rcond, 0);
 }
 
 DET
-Matrix::determinant (int& info, double& rcond) const
+Matrix::determinant (int& info, double& rcond, int calc_cond) const
 {
   DET retval;
 
@@ -1051,41 +1093,77 @@ Matrix::determinant (int& info, double& rcond) const
     }
   else
     {
-      info = 0;
-
       Array<int> ipvt (nr);
       int *pipvt = ipvt.fortran_vec ();
-
-      Array<double> z (nr);
-      double *pz = z.fortran_vec ();
 
       Matrix atmp = *this;
       double *tmp_data = atmp.fortran_vec ();
 
-      F77_XFCN (dgeco, DGECO, (tmp_data, nr, nr, pipvt, rcond, pz));
+      info = 0;
+
+      /* Calculate the norm of the matrix, for later use */
+      double anorm = 0;
+      if (calc_cond) 
+	anorm = atmp.abs().sum().row(0).max();
+
+      F77_XFCN (dgetrf, DGETRF, (nr, nr, tmp_data, nr, pipvt, info));
 
       if (f77_exception_encountered)
-	(*current_liboctave_error_handler) ("unrecoverable error in dgeco");
+	(*current_liboctave_error_handler) ("unrecoverable error in dgetrf");
       else
 	{
-	  volatile double rcond_plus_one = rcond + 1.0;
-
-	  if (rcond_plus_one == 1.0 || xisnan (rcond))
+	  /* Throw-away extra info LAPACK gives so as to not change output */
+	  rcond = 0.;
+	  if ( info != 0) 
 	    {
-	      info = -1;
-	      retval = DET ();
-	    }
-	  else
+	    info = -1;
+	    retval = DET ();
+	    } 
+	  else 
 	    {
-	      double d[2];
+	      if (calc_cond) 
+		{
+		  /* Now calc the condition number for non-singular matrix */
+		  char job = '1';
+		  Array<double> z (4 * nc);
+		  double *pz = z.fortran_vec ();
+		  Array<int> iz (nc);
+		  int *piz = iz.fortran_vec ();
 
-	      F77_XFCN (dgedi, DGEDI, (tmp_data, nr, nr, pipvt, d, pz, 10));
+		  F77_XFCN (dgecon, DGECON, ( &job, nc, tmp_data, nr, anorm, 
+					      rcond, pz, piz, info));
 
-	      if (f77_exception_encountered)
-		(*current_liboctave_error_handler)
-		  ("unrecoverable error in dgedi");
-	      else
-		retval = DET (d);
+		  if (f77_exception_encountered)
+		    (*current_liboctave_error_handler) 
+		      ("unrecoverable error in dgecon");
+		}
+
+	      if ( info != 0) 
+		{
+		  info = -1;
+		  retval = DET ();
+		} 
+	      else 
+		{
+		  double d[2] = { 1., 0.};
+		  for (int i=0; i<nc; i++) 
+		    {
+		      if (ipvt(i) != (i+1)) d[0] = -d[0];
+		      d[0] *= atmp(i,i);
+		      if (d[0] == 0.) break;
+		      while (fabs(d[0]) < 1.) 
+			{
+			  d[0] = 10. * d[0];
+			  d[1] = d[1] - 1.;
+			}
+		      while (fabs(d[0]) >= 10.) 
+			{
+			  d[0] = 0.1 * d[0];
+			  d[1] = d[1] + 1.;
+			}
+		    }
+		  retval = DET (d);
+		}
 	    }
 	}
     }
@@ -1098,14 +1176,14 @@ Matrix::solve (const Matrix& b) const
 {
   int info;
   double rcond;
-  return solve (b, info, rcond);
+  return solve (b, info, rcond, 0);
 }
 
 Matrix
 Matrix::solve (const Matrix& b, int& info) const
 {
   double rcond;
-  return solve (b, info, rcond);
+  return solve (b, info, rcond, 0);
 }
 
 Matrix
@@ -1133,21 +1211,26 @@ Matrix::solve (const Matrix& b, int& info, double& rcond,
       Array<int> ipvt (nr);
       int *pipvt = ipvt.fortran_vec ();
 
-      Array<double> z (nr);
-      double *pz = z.fortran_vec ();
-
       Matrix atmp = *this;
       double *tmp_data = atmp.fortran_vec ();
 
-      F77_XFCN (dgeco, DGECO, (tmp_data, nr, nr, pipvt, rcond, pz));
+      Array<double> z (4 * nc);
+      double *pz = z.fortran_vec ();
+      Array<int> iz (nc);
+      int *piz = iz.fortran_vec ();
+
+      /* Calculate the norm of the matrix, for later use */
+      double anorm = atmp.abs().sum().row(0).max();
+
+      F77_XFCN (dgetrf, DGETRF, (nr, nr, tmp_data, nr, pipvt, info));
 
       if (f77_exception_encountered)
-	(*current_liboctave_error_handler) ("unrecoverable error in dgeco");
+	(*current_liboctave_error_handler) ("unrecoverable error in dgetrf");
       else
 	{
-	  volatile double rcond_plus_one = rcond + 1.0;
-
-	  if (rcond_plus_one == 1.0 || xisnan (rcond))
+	  /* Throw-away extra info LAPACK gives so as to not change output */
+	  rcond = 0.;
+	  if ( info != 0) 
 	    {
 	      info = -2;
 
@@ -1155,28 +1238,50 @@ Matrix::solve (const Matrix& b, int& info, double& rcond,
 		sing_handler (rcond);
 	      else
 		(*current_liboctave_error_handler)
-		  ("matrix singular to machine precision, rcond = %g",
-		   rcond);
-	    }
-	  else
+		  ("matrix singular to machine precision");
+
+	    } 
+	  else 
 	    {
-	      retval = b;
-	      double *result = retval.fortran_vec ();
+	      /* Now calculate the condition number for non-singular matrix */
+	      char job = '1';
+	      F77_XFCN (dgecon, DGECON, ( &job, nc, tmp_data, nr, anorm, 
+					  rcond, pz, piz, info));
+	      
+	      if (f77_exception_encountered)
+		(*current_liboctave_error_handler) 
+		  ("unrecoverable error in dgecon");
+	      
+	      if ( info != 0) 
+		info = -2;
 
-	      int b_nc = b.cols ();
+	      volatile double rcond_plus_one = rcond + 1.0;
 
-	      for (volatile int j = 0; j < b_nc; j++)
+	      if (rcond_plus_one == 1.0 || xisnan (rcond))
 		{
-		  F77_XFCN (dgesl, DGESL, (tmp_data, nr, nr, pipvt,
-					   &result[nr*j], 0)); 
+		  info = -2;
 
+		  if (sing_handler)
+		    sing_handler (rcond);
+		  else
+		    (*current_liboctave_error_handler)
+		      ("matrix singular to machine precision, rcond = %g",
+		       rcond);
+		}
+	      else
+		{
+		  retval = b;
+		  double *result = retval.fortran_vec ();
+
+		  int b_nc = b.cols ();
+
+		  char job = 'N';
+		  F77_XFCN (dgetrs, DGETRS, (&job, nr, b_nc, tmp_data, nr,
+					     pipvt, result, b.rows(), info)); 
+		
 		  if (f77_exception_encountered)
-		    {
-		      (*current_liboctave_error_handler)
-			("unrecoverable error in dgesl");
-
-		      break;
-		    }
+		    (*current_liboctave_error_handler)
+		      ("unrecoverable error in dgetrs");
 		}
 	    }
 	}
@@ -1253,22 +1358,26 @@ Matrix::solve (const ColumnVector& b, int& info, double& rcond,
       Array<int> ipvt (nr);
       int *pipvt = ipvt.fortran_vec ();
 
-      Array<double> z (nr);
-      double *pz = z.fortran_vec ();
-
       Matrix atmp = *this;
       double *tmp_data = atmp.fortran_vec ();
 
-      F77_XFCN (dgeco, DGECO, (tmp_data, nr, nr, pipvt, rcond, pz));
+      Array<double> z (4 * nc);
+      double *pz = z.fortran_vec ();
+      Array<int> iz (nc);
+      int *piz = iz.fortran_vec ();
+
+      /* Calculate the norm of the matrix, for later use */
+      double anorm = atmp.abs().sum().row(0).max();
+
+      F77_XFCN (dgetrf, DGETRF, (nr, nr, tmp_data, nr, pipvt, info));
 
       if (f77_exception_encountered)
-	(*current_liboctave_error_handler)
-	  ("unrecoverable error in dgeco");
+	(*current_liboctave_error_handler) ("unrecoverable error in dgetrf");
       else
 	{
-	  volatile double rcond_plus_one = rcond + 1.0;
-
-	  if (rcond_plus_one == 1.0 || xisnan (rcond))
+	  /* Throw-away extra info LAPACK gives so as to not change output */
+	  rcond = 0.;
+	  if ( info > 0) 
 	    {
 	      info = -2;
 
@@ -1276,23 +1385,53 @@ Matrix::solve (const ColumnVector& b, int& info, double& rcond,
 		sing_handler (rcond);
 	      else
 		(*current_liboctave_error_handler)
-		  ("matrix singular to machine precision, rcond = %g",
-		   rcond);
-	    }
-	  else
+		  ("matrix singular to machine precision");
+
+	    } 
+	  else 
 	    {
-	      retval = b;
-	      double *result = retval.fortran_vec ();
-
-	      F77_XFCN (dgesl, DGESL, (tmp_data, nr, nr, pipvt, result, 0));
-
+	      /* Now calculate the condition number for non-singular matrix */
+	      char job = '1';
+	      F77_XFCN (dgecon, DGECON, ( &job, nc, tmp_data, nr, anorm, 
+					  rcond, pz, piz, info));
+	      
 	      if (f77_exception_encountered)
-		(*current_liboctave_error_handler)
-		  ("unrecoverable error in dgesl");
+		(*current_liboctave_error_handler) 
+		  ("unrecoverable error in dgecon");
+
+	      if ( info != 0) 
+		info = -2;
+
+	      volatile double rcond_plus_one = rcond + 1.0;
+
+	      if (rcond_plus_one == 1.0 || xisnan (rcond))
+		{
+		  info = -2;
+
+		  if (sing_handler)
+		    sing_handler (rcond);
+		  else
+		    (*current_liboctave_error_handler)
+		      ("matrix singular to machine precision, rcond = %g",
+		       rcond);
+		}
+	      else
+		{
+		  retval = b;
+		  double *result = retval.fortran_vec ();
+
+		  char job = 'N';
+		  F77_XFCN (dgetrs, DGETRS, (&job, nr, 1, tmp_data, nr, pipvt,
+					     result, b.length(), info)); 
+
+		  if (f77_exception_encountered)
+		    (*current_liboctave_error_handler)
+		      ("unrecoverable error in dgetrs");
+		}
 	    }
 	}
     }
-
+  
   return retval;
 }
 

@@ -65,6 +65,8 @@ p =\n\
   0  1\n\
   1  0\n\
 @end example\n\
+\n\
+The matrix is not required to be square..\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -88,12 +90,6 @@ p =\n\
     return retval;
   else if (arg_is_empty > 0)
     return octave_value_list (3, Matrix ());
-
-  if (nr != nc)
-    {
-      gripe_square_matrix_required ("lu");
-      return retval;
-    }
 
   if (arg.is_real_type ())
     {

@@ -18,11 +18,11 @@ C     system arising in the Newton iteration.
 C     Real matrix information and real temporary storage
 C     is stored in the array WM.
 C     Integer matrix information is stored in the array IWM.
-C     For a dense matrix, the LINPACK routine DGESL is called.
-C     For a banded matrix, the LINPACK routine DGBSL is called.
+C     For a dense matrix, the LAPACK routine DGETRS is called.
+C     For a banded matrix, the LAPACK routine DGBTRS is called.
 C-----------------------------------------------------------------------
 C***ROUTINES CALLED
-C   DGESL, DGBSL
+C   DGETRS, DGBTRS
 C
 C***END PROLOGUE  DSLVD
 C
@@ -38,7 +38,7 @@ C
 C
 C     Dense matrix.
 C
-100   CALL DGESL(WM,NEQ,NEQ,IWM(LIPVT),DELTA,0)
+100   CALL DGETRS('N', NEQ, 1, WM, NEQ, IWM(LIPVT), DELTA, NEQ, INLPCK)
       RETURN
 C
 C     Dummy section for MTYPE=3.
@@ -49,8 +49,8 @@ C
 C     Banded matrix.
 C
 400   MEBAND=2*IWM(LML)+IWM(LMU)+1
-      CALL DGBSL(WM,MEBAND,NEQ,IWM(LML),
-     *  IWM(LMU),IWM(LIPVT),DELTA,0)
+      CALL DGBTRS('N', NEQ, IWM(LML), IWM(LMU), 1, WM, MEBAND, 
+     *     IWM(LIPVT), DELTA, NEQ, INLPCK)
       RETURN
 C
 C------END OF SUBROUTINE DSLVD------------------------------------------

@@ -79,14 +79,19 @@ extern "C"
 			      const Complex&, Complex*, const int&, 
 			      long, long);
 
-  int F77_FUNC (zgeco, ZGECO) (Complex*, const int&, const int&, int*,
-			      double&, Complex*);
+  int F77_FUNC (zgetrf, ZGETRF) (const int&, const int&, Complex*, const int&,
+			      int*, int&);
 
-  int F77_FUNC (zgedi, ZGEDI) (Complex*, const int&, const int&, int*,
-			      Complex*, Complex*, const int&);
+  int F77_FUNC (zgetrs, ZGETRS) (const char*, const int&, const int&, 
+			      Complex*, const int&,
+			      const int*, Complex*, const int&, int&);
 
-  int F77_FUNC (zgesl, ZGESL) (Complex*, const int&, const int&, int*,
-			      Complex*, const int&);
+  int F77_FUNC (zgetri, ZGETRI) (const int&, Complex*, const int&, const int*,
+			      Complex*, const int&, int&);
+
+  int F77_FUNC (zgecon, ZGECON) (const char*, const int&, Complex*, 
+				 const int&, const double&, double&, 
+				 Complex*, double*, int&);
 
   int F77_FUNC (zgelss, ZGELSS) (const int&, const int&, const int&,
 				Complex*, const int&, Complex*,
@@ -925,18 +930,19 @@ ComplexMatrix::inverse (void) const
 {
   int info;
   double rcond;
-  return inverse (info, rcond);
+  return inverse (info, rcond, 0, 0);
 }
 
 ComplexMatrix
 ComplexMatrix::inverse (int& info) const
 {
   double rcond;
-  return inverse (info, rcond);
+  return inverse (info, rcond, 0, 0);
 }
 
 ComplexMatrix
-ComplexMatrix::inverse (int& info, double& rcond, int force) const
+ComplexMatrix::inverse (int& info, double& rcond, int force, 
+			int calc_cond) const
 {
   ComplexMatrix retval;
 
@@ -947,44 +953,83 @@ ComplexMatrix::inverse (int& info, double& rcond, int force) const
     (*current_liboctave_error_handler) ("inverse requires square matrix");
   else
     {
-      info = 0;
-
       Array<int> ipvt (nr);
       int *pipvt = ipvt.fortran_vec ();
-
-      Array<Complex> z (nr);
-      Complex *pz = z.fortran_vec ();
 
       retval = *this;
       Complex *tmp_data = retval.fortran_vec ();
 
-      F77_XFCN (zgeco, ZGECO, (tmp_data, nr, nc, pipvt, rcond, pz));
+      Array<Complex> z(1);
+      int lwork = 1;
+
+      // Query the optimum work array size
+
+      F77_XFCN (zgetri, ZGETRI, (nc, tmp_data, nr, pipvt, 
+				 z.fortran_vec (), lwork, info));
+
+      if (f77_exception_encountered) 
+	{
+	  (*current_liboctave_error_handler)
+	    ("unrecoverable error in zgetri");
+	  return retval;
+	}
+
+      lwork = static_cast<int> (real(z(0)));
+      lwork = (lwork <  2 *nc ? 2*nc : lwork);
+      z.resize (lwork);
+      Complex *pz = z.fortran_vec ();
+
+      info = 0;
+
+      /* Calculate the norm of the matrix, for later use */
+      double anorm;
+      if (calc_cond)
+	anorm  = retval.abs().sum().row(0).max();
+
+      F77_XFCN (zgetrf, ZGETRF, (nc, nc, tmp_data, nr, pipvt, info));
 
       if (f77_exception_encountered)
-	(*current_liboctave_error_handler) ("unrecoverable error in zgeco");
+	(*current_liboctave_error_handler) ("unrecoverable error in zgetrf");
       else
 	{
-	  volatile double rcond_plus_one = rcond + 1.0;
-
-	  if (rcond_plus_one == 1.0 || xisnan (rcond))
+	  /* Throw-away extra info LAPACK gives so as to not change output */
+	  rcond = 0.;
+	  if ( info != 0) 
 	    info = -1;
+	  else if (calc_cond) 
+	    {
+	      /* Now calculate the condition number for non-singular matrix */
+	      char job = '1';
+	      Array<double> rz (2 * nc);
+	      double *prz = rz.fortran_vec ();
+	      F77_XFCN (zgecon, ZGECON, ( &job, nc, tmp_data, nr, anorm, 
+					  rcond, pz, prz, info));
+
+	      if (f77_exception_encountered)
+		(*current_liboctave_error_handler) 
+		  ("unrecoverable error in zgecon");
+
+	      if ( info != 0) 
+		info = -1;
+	    }
 
 	  if (info == -1 && ! force)
 	    retval = *this;  // Restore contents.
 	  else
 	    {
-	      Complex *dummy = 0;
-
-	      F77_XFCN (zgedi, ZGEDI, (tmp_data, nr, nc, pipvt, dummy,
-				       pz, 1));
+	      F77_XFCN (zgetri, ZGETRI, (nc, tmp_data, nr, pipvt,
+				       pz, lwork, info));
 
 	      if (f77_exception_encountered)
 		(*current_liboctave_error_handler)
-		  ("unrecoverable error in zgedi");
+		  ("unrecoverable error in zgetri");
+
+	      if ( info != 0) 
+		info = -1;
 	    }
 	}
     }
-
+  
   return retval;
 }
 
@@ -1356,18 +1401,18 @@ ComplexMatrix::determinant (void) const
 {
   int info;
   double rcond;
-  return determinant (info, rcond);
+  return determinant (info, rcond, 0);
 }
 
 ComplexDET
 ComplexMatrix::determinant (int& info) const
 {
   double rcond;
-  return determinant (info, rcond);
+  return determinant (info, rcond, 0);
 }
 
 ComplexDET
-ComplexMatrix::determinant (int& info, double& rcond) const
+ComplexMatrix::determinant (int& info, double& rcond, int calc_cond) const
 {
   ComplexDET retval;
 
@@ -1383,45 +1428,81 @@ ComplexMatrix::determinant (int& info, double& rcond) const
     }
   else
     {
-      info = 0;
-
       Array<int> ipvt (nr);
       int *pipvt = ipvt.fortran_vec ();
-
-      Array<Complex> z (nr);
-      Complex *pz = z.fortran_vec ();
 
       ComplexMatrix atmp = *this;
       Complex *tmp_data = atmp.fortran_vec ();
 
-      F77_XFCN (zgeco, ZGECO, (tmp_data, nr, nr, pipvt, rcond, pz));
+      info = 0;
+
+      /* Calculate the norm of the matrix, for later use */
+      double anorm = 0;
+      if (calc_cond) 
+	anorm = atmp.abs().sum().row(0).max();
+
+      F77_XFCN (zgetrf, ZGETRF, (nr, nc, tmp_data, nr, pipvt, info));
 
       if (f77_exception_encountered)
-	(*current_liboctave_error_handler) ("unrecoverable error in zgeco");
+	(*current_liboctave_error_handler) ("unrecoverable error in zgetrf");
       else
 	{
-	  volatile double rcond_plus_one = rcond + 1.0;
-
-	  if (rcond_plus_one == 1.0 || xisnan (rcond))
+	  /* Throw-away extra info LAPACK gives so as to not change output */
+	  rcond = 0.;
+	  if ( info != 0) 
 	    {
 	      info = -1;
 	      retval = ComplexDET ();
-	    }
-	  else
+	    } 
+	  else 
 	    {
-	      Complex d[2];
+	      if (calc_cond) 
+		{
+		  /* Now calc the condition number for non-singular matrix */
+		  char job = '1';
+		  Array<Complex> z (2*nr);
+		  Complex *pz = z.fortran_vec ();
+		  Array<double> rz (2*nr);
+		  double *prz = rz.fortran_vec ();
+		  
+		  F77_XFCN (zgecon, ZGECON, ( &job, nc, tmp_data, nr, anorm, 
+					      rcond, pz, prz, info));
 
-	      F77_XFCN (zgedi, ZGEDI, (tmp_data, nr, nr, pipvt, d, pz, 10));
+		  if (f77_exception_encountered)
+		    (*current_liboctave_error_handler) 
+		      ("unrecoverable error in zgecon");
+		}
 
-	      if (f77_exception_encountered)
-		(*current_liboctave_error_handler)
-		  ("unrecoverable error in dgedi");
-	      else
-		retval = ComplexDET (d);
+	      if ( info != 0) 
+		{
+		  info = -1;
+		  retval = ComplexDET ();
+		} 
+	      else 
+		{
+		  Complex d[2] = { 1., 0.};
+		  for (int i=0; i<nc; i++) 
+		    {
+		      if (ipvt(i) != (i+1)) d[0] = -d[0];
+		      d[0] = d[0] * atmp(i,i);
+		      if (d[0] == 0.) break;
+		      while (::abs(d[0]) < 1.) 
+			{
+			  d[0] = 10. * d[0];
+			  d[1] = d[1] - 1.;
+			}
+		      while (::abs(d[0]) >= 10.) 
+			{
+			  d[0] = 0.1 * d[0];
+			  d[1] = d[1] + 1.;
+			}
+		    }
+		  retval = ComplexDET (d);
+		}
 	    }
 	}
     }
-
+  
   return retval;
 }
 
@@ -1494,55 +1575,82 @@ ComplexMatrix::solve (const ComplexMatrix& b, int& info, double& rcond,
       Array<int> ipvt (nr);
       int *pipvt = ipvt.fortran_vec ();
 
-      Array<Complex> z (nr);
-      Complex *pz = z.fortran_vec ();
-
       ComplexMatrix atmp = *this;
       Complex *tmp_data = atmp.fortran_vec ();
 
-      F77_XFCN (zgeco, ZGECO, (tmp_data, nr, nr, pipvt, rcond, pz));
+      Array<Complex> z (2 * nc);
+      Complex *pz = z.fortran_vec ();
+      Array<double> rz (2 * nc);
+      double *prz = rz.fortran_vec ();
+
+      /* Calculate the norm of the matrix, for later use */
+      double anorm = atmp.abs().sum().row(0).max();
+
+      F77_XFCN (zgetrf, ZGETRF, (nr, nr, tmp_data, nr, pipvt, info));
 
       if (f77_exception_encountered)
-	(*current_liboctave_error_handler) ("unrecoverable error in zgeco");
+	(*current_liboctave_error_handler) ("unrecoverable error in zgetrf");
       else
 	{
-	  volatile double rcond_plus_one = rcond + 1.0;
-
-	  if (rcond_plus_one == 1.0 || xisnan (rcond))
-	    {
+	  /* Throw-away extra info LAPACK gives so as to not change output */
+	  rcond = 0.;
+	  if ( info != 0) 
+	    { 
 	      info = -2;
 
 	      if (sing_handler)
 		sing_handler (rcond);
 	      else
 		(*current_liboctave_error_handler)
-		  ("matrix singular to machine precision, rcond = %g",
-		   rcond);
-	    }
-	  else
+		  ("matrix singular to machine precision");
+
+	    } 
+	  else 
 	    {
-	      retval = b;
-	      Complex *result = retval.fortran_vec ();
+	      /* Now calculate the condition number for non-singular matrix */
+	      char job = '1';
+	      F77_XFCN (zgecon, ZGECON, ( &job, nc, tmp_data, nr, anorm, 
+					  rcond, pz, prz, info));
 
-	      int b_nc = b.cols ();
+	      if (f77_exception_encountered)
+		(*current_liboctave_error_handler) 
+		  ("unrecoverable error in zgecon");
 
-	      for (volatile int j = 0; j < b_nc; j++)
+	      if ( info != 0) 
+		info = -2;
+
+	      volatile double rcond_plus_one = rcond + 1.0;
+
+	      if (rcond_plus_one == 1.0 || xisnan (rcond))
 		{
-		  F77_XFCN (zgesl, ZGESL, (tmp_data, nr, nr, pipvt,
-					   &result[nr*j], 0));
+		  info = -2;
+
+		  if (sing_handler)
+		    sing_handler (rcond);
+		  else
+		    (*current_liboctave_error_handler)
+		      ("matrix singular to machine precision, rcond = %g",
+		       rcond);
+		}
+	      else
+		{
+		  retval = b;
+		  Complex *result = retval.fortran_vec ();
+
+		  int b_nc = b.cols ();
+
+		  char job = 'N';
+		  F77_XFCN (zgetrs, ZGETRS, (&job, nr, b_nc, tmp_data, nr,
+					     pipvt, result, b.rows(), info)); 
 
 		  if (f77_exception_encountered)
-		    {
-		      (*current_liboctave_error_handler)
-			("unrecoverable error in dgesl");
-
-		      break;
-		    }
+		    (*current_liboctave_error_handler)
+		      ("unrecoverable error in zgetrs");
 		}
 	    }
 	}
     }
-
+  
   return retval;
 }
 
@@ -1616,23 +1724,27 @@ ComplexMatrix::solve (const ComplexColumnVector& b, int& info,
       Array<int> ipvt (nr);
       int *pipvt = ipvt.fortran_vec ();
 
-      Array<Complex> z (nr);
-      Complex *pz = z.fortran_vec ();
-
       ComplexMatrix atmp = *this;
       Complex *tmp_data = atmp.fortran_vec ();
 
-      F77_XFCN (zgeco, ZGECO, (tmp_data, nr, nr, pipvt, rcond, pz));
+      Array<Complex> z (2 * nc);
+      Complex *pz = z.fortran_vec ();
+      Array<double> rz (2 * nc);
+      double *prz = rz.fortran_vec ();
+
+      /* Calculate the norm of the matrix, for later use */
+      double anorm = atmp.abs().sum().row(0).max();
+
+      F77_XFCN (zgetrf, ZGETRF, (nr, nr, tmp_data, nr, pipvt, info));
 
       if (f77_exception_encountered)
-	(*current_liboctave_error_handler)
-	  ("unrecoverable error in zgeco");
+	(*current_liboctave_error_handler) ("unrecoverable error in zgetrf");
       else
 	{
-	  volatile double rcond_plus_one = rcond + 1.0;
-
-	  if (rcond_plus_one == 1.0 || xisnan (rcond))
-	    {
+	  /* Throw-away extra info LAPACK gives so as to not change output */
+	  rcond = 0.;
+	  if ( info != 0) 
+	    { 
 	      info = -2;
 
 	      if (sing_handler)
@@ -1641,21 +1753,51 @@ ComplexMatrix::solve (const ComplexColumnVector& b, int& info,
 		(*current_liboctave_error_handler)
 		  ("matrix singular to machine precision, rcond = %g",
 		   rcond);
-	    }
-	  else
+	    } 
+	  else 
 	    {
-	      retval = b;
-	      Complex *result = retval.fortran_vec ();
-
-	      F77_XFCN (zgesl, ZGESL, (tmp_data, nr, nr, pipvt, result, 0));
+	      /* Now calculate the condition number for non-singular matrix */
+	      char job = '1';
+	      F77_XFCN (zgecon, ZGECON, ( &job, nc, tmp_data, nr, anorm, 
+					  rcond, pz, prz, info));
 
 	      if (f77_exception_encountered)
-		(*current_liboctave_error_handler)
-		  ("unrecoverable error in dgesl");
+		(*current_liboctave_error_handler) 
+		  ("unrecoverable error in zgecon");
+
+	      if ( info != 0) 
+		info = -2;
+
+	      volatile double rcond_plus_one = rcond + 1.0;
+
+	      if (rcond_plus_one == 1.0 || xisnan (rcond))
+		{
+		  info = -2;
+		
+		  if (sing_handler)
+		    sing_handler (rcond);
+		  else
+		    (*current_liboctave_error_handler)
+		      ("matrix singular to machine precision, rcond = %g",
+		       rcond);
+		}
+	      else
+		{
+		  retval = b;
+		  Complex *result = retval.fortran_vec ();
+
+		  char job = 'N';
+		  F77_XFCN (zgetrs, ZGETRS, (&job, nr, 1, tmp_data, nr, pipvt,
+					     result, b.length(), info)); 
+
+		  if (f77_exception_encountered)
+		    (*current_liboctave_error_handler)
+		      ("unrecoverable error in zgetrs");
+
+		}
 	    }
 	}
     }
-
   return retval;
 }
 
@@ -2488,6 +2630,20 @@ ComplexMatrix::sumsq (int dim) const
 #undef COL_EXPR
 }
 
+Matrix ComplexMatrix::abs (void) const
+{
+  int nr = rows ();
+  int nc = cols ();
+
+  Matrix retval (nr, nc);
+
+  for (int j = 0; j < nc; j++)
+    for (int i = 0; i < nr; i++)
+      retval (i, j) = ::abs (elem (i, j));
+
+  return retval;
+}
+
 ComplexColumnVector
 ComplexMatrix::diag (void) const
 {
@@ -2600,7 +2756,7 @@ ComplexMatrix::row_min (Array<int>& index) const
 
 	  bool real_only = row_is_real_only (i);
 
-	  double abs_min = real_only ? real (tmp_min) : abs (tmp_min);
+	  double abs_min = real_only ? real (tmp_min) : ::abs (tmp_min);
 
 	  if (xisnan (tmp_min))
 	    idx_j = -1;
@@ -2610,7 +2766,7 @@ ComplexMatrix::row_min (Array<int>& index) const
 		{
 		  Complex tmp = elem (i, j);
 
-		  double abs_tmp = real_only ? real (tmp) : abs (tmp);
+		  double abs_tmp = real_only ? real (tmp) : ::abs (tmp);
 
 		  if (xisnan (tmp))
 		    {
@@ -2662,7 +2818,7 @@ ComplexMatrix::row_max (Array<int>& index) const
 
 	  bool real_only = row_is_real_only (i);
 
-	  double abs_max = real_only ? real (tmp_max) : abs (tmp_max);
+	  double abs_max = real_only ? real (tmp_max) : ::abs (tmp_max);
 
 	  if (xisnan (tmp_max))
 	    idx_j = -1;
@@ -2672,7 +2828,7 @@ ComplexMatrix::row_max (Array<int>& index) const
 		{
 		  Complex tmp = elem (i, j);
 
-		  double abs_tmp = real_only ? real (tmp) : abs (tmp);
+		  double abs_tmp = real_only ? real (tmp) : ::abs (tmp);
 
 		  if (xisnan (tmp))
 		    {
@@ -2724,7 +2880,7 @@ ComplexMatrix::column_min (Array<int>& index) const
 
 	  bool real_only = column_is_real_only (j);
 
-	  double abs_min = real_only ? real (tmp_min) : abs (tmp_min);
+	  double abs_min = real_only ? real (tmp_min) : ::abs (tmp_min);
 
 	  if (xisnan (tmp_min))
 	    idx_i = -1;
@@ -2734,7 +2890,7 @@ ComplexMatrix::column_min (Array<int>& index) const
 		{
 		  Complex tmp = elem (i, j);
 
-		  double abs_tmp = real_only ? real (tmp) : abs (tmp);
+		  double abs_tmp = real_only ? real (tmp) : ::abs (tmp);
 
 		  if (xisnan (tmp))
 		    {
@@ -2786,7 +2942,7 @@ ComplexMatrix::column_max (Array<int>& index) const
 
 	  bool real_only = column_is_real_only (j);
 
-	  double abs_max = real_only ? real (tmp_max) : abs (tmp_max);
+	  double abs_max = real_only ? real (tmp_max) : ::abs (tmp_max);
 
 	  if (xisnan (tmp_max))
 	    idx_i = -1;
@@ -2796,7 +2952,7 @@ ComplexMatrix::column_max (Array<int>& index) const
 		{
 		  Complex tmp = elem (i, j);
 
-		  double abs_tmp = real_only ? real (tmp) : abs (tmp);
+		  double abs_tmp = real_only ? real (tmp) : ::abs (tmp);
 
 		  if (xisnan (tmp))
 		    {

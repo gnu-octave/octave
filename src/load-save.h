@@ -29,14 +29,47 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class octave_value;
 
+enum load_save_format
+  {
+    LS_ASCII,
+    LS_BINARY,
+    LS_MAT_ASCII,
+    LS_MAT_BINARY,
+    LS_MAT5_BINARY,
+#ifdef HAVE_HDF5
+    LS_HDF5,
+#endif /* HAVE_HDF5 */
+    LS_UNKNOWN
+  };
+
 extern bool
 save_ascii_data_for_plotting (std::ostream& os, const octave_value& t,
 			      const std::string& name = std::string ());
 
-extern bool save_three_d (std::ostream& os, const octave_value& t,
-			  bool parametric = false);
+extern bool
+save_three_d (std::ostream& os, const octave_value& t,
+	      bool parametric = false);
 
-extern void save_user_variables (void);
+extern void
+save_user_variables (void);
+
+extern int
+read_binary_file_header (std::istream& is, bool& swap,
+			 oct_mach_info::float_format& flt_fmt,
+			 bool quiet = false);
+
+extern octave_value
+do_load (std::istream& stream, const std::string& orig_fname, bool force,
+	 load_save_format format, oct_mach_info::float_format flt_fmt,
+	 bool list_only, bool swap, bool verbose, bool import,
+	 const string_vector& argv, int argv_idx, int argc, int nargout);
+
+extern void
+do_save (std::ostream& os, symbol_record *sr, load_save_format fmt,
+	 int save_as_floats, bool& infnan_warned);
+
+extern void
+write_header (std::ostream& os, load_save_format format);
 
 #endif
 

@@ -1,3 +1,23 @@
+2003-02-18  David Bateman <dbateman@free.fr>
+
+	* dMatrix.cc (Matrix::inverse, Matrix::determinant, Matrix::solve):
+	Use Lapack instead of Linpack.
+	* Cmatrix.cc (ComplexMatrix::inverse, ComplexMatrix::determinant,
+	ComplexMatrix::solve): Likewise.
+
+	* dMatrix.cc (Matrix::determinant, Matrix::inverse): New arg,
+	calc_cond.  If 0, skip condition number calculation.
+	* CMatrix.cc (ComplexMatrix::determinant, ComplexMatrix::inverse):
+	Likewise.
+
+	* CmplxLU.cc (ComplexLU::ComplexLU): Allow non-square matrices.
+	* dbleLU.cc (LU::LU): Likewise.
+	* base-lu.cc (base_lu::L), base_lu::U, base_lu::P): Likewise.
+
+2002-10-31  John W. Eaton  <jwe@bevo.che.wisc.edu>
+  
+  	* octave.test/arith/prod-4.m, octave.test/arith/sum-4.m:
+
 2003-02-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Array2-idx.h (Array2<T>::index): Fix thinko.

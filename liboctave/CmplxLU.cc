@@ -51,16 +51,9 @@ ComplexLU::ComplexLU (const ComplexMatrix& a)
 {
   int a_nr = a.rows ();
   int a_nc = a.cols ();
+  int mn = (a_nr < a_nc ? a_nr : a_nc);
 
-  if (a_nr == 0 || a_nc == 0 || a_nr != a_nc)
-    {
-      (*current_liboctave_error_handler) ("ComplexLU requires square matrix");
-      return;
-    }
-
-  int n = a_nr;
-
-  ipvt.resize (n);
+  ipvt.resize (mn);
   int *pipvt = ipvt.fortran_vec ();
 
   a_fact = a;
@@ -68,10 +61,10 @@ ComplexLU::ComplexLU (const ComplexMatrix& a)
 
   int info = 0;
 
-  F77_XFCN (zgetrf, ZGETRF, (n, n, tmp_data, n, pipvt, info));
+  F77_XFCN (zgetrf, ZGETRF, (a_nr, a_nc, tmp_data, a_nr, pipvt, info));
 
   if (f77_exception_encountered)
-    (*current_liboctave_error_handler) ("unrecoverable error in zgesv");
+    (*current_liboctave_error_handler) ("unrecoverable error in zgetrf");
   else
     ipvt -= 1;
 }

@@ -833,7 +833,7 @@ builtin_string_variable (const std::string& name)
 {
   symbol_record *sr = fbi_sym_tab->lookup (name);
 
-  // It is a prorgramming error to look for builtins that aren't.
+  // It is a programming error to look for builtins that aren't.
 
   // Use != here to avoid possible conversion to int of smaller type
   // than the sr pointer.
@@ -860,7 +860,7 @@ builtin_real_scalar_variable (const std::string& name, double& d)
   int status = 0;
   symbol_record *sr = fbi_sym_tab->lookup (name);
 
-  // It is a prorgramming error to look for builtins that aren't.
+  // It is a programming error to look for builtins that aren't.
 
   // Use != here to avoid possible conversion to int of smaller type
   // than the sr pointer.
@@ -885,7 +885,7 @@ builtin_any_variable (const std::string& name)
 {
   symbol_record *sr = fbi_sym_tab->lookup (name);
 
-  // It is a prorgramming error to look for builtins that aren't.
+  // It is a programming error to look for builtins that aren't.
 
   // Use != here to avoid possible conversion to int of smaller type
   // than the sr pointer.

@@ -1,3 +1,13 @@
+2003-02-18  David Bateman <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/lu.cc (Flu): Allow non-square matrices.
+
+2003-02-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* load-save.cc (read_binary_file_header, do_load, do_save,
+	write_header): No longer static.
+	(load_save_format): Move enum decl to load-save.h.
+
 2003-02-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-stdstrm.h, oct-stdstrm.cc (octave_base_stdiostream,

@@ -36,7 +36,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 DEFUN_DLD (det, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[@var{d}, @var{rcond}] = } det (@var{a})\n\
-Compute the determinant of @var{a} using @sc{Linpack}.  Return an estimate\n\
+Compute the determinant of @var{a} using @sc{Lapack}.  Return an estimate\n\
 of the reciprocal condition number if requested.\n\
 @end deftypefn")
 {

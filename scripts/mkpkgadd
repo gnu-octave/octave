@@ -9,8 +9,14 @@ fi
 
 cd $dir
 
-files=`ls *.m`
+m_files=`ls *.m`
+cxx_files=`ls *.cc`
 
-if [ -n "$files" ]; then
-  sed -n 's/^[#%][#%]* *PKG_ADD: *//p' $files
+if [ -n "$m_files" ]; then
+  sed -n 's/^[#%][#%]* *PKG_ADD: *//p' $m_files
+fi
+
+if [ -n "$cxx_files" ]; then
+  sed -n -e 's,^//* *PKG_ADD: *,,p' \
+         -e 's,^/\** *PKG_ADD: *\(.*\) \*/$,\1,p' $cxx_files
 fi

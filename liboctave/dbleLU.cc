@@ -51,16 +51,9 @@ LU::LU (const Matrix& a)
 {
   int a_nr = a.rows ();
   int a_nc = a.cols ();
+  int mn = (a_nr < a_nc ? a_nr : a_nc);
 
-  if (a_nr == 0 || a_nc == 0 || a_nr != a_nc)
-    {
-      (*current_liboctave_error_handler) ("LU requires square matrix");
-      return;
-    }
-
-  int n = a_nr;
-
-  ipvt.resize (n);
+  ipvt.resize (mn);
   int *pipvt = ipvt.fortran_vec ();
 
   a_fact = a;
@@ -68,10 +61,10 @@ LU::LU (const Matrix& a)
 
   int info = 0;
 
-  F77_XFCN (dgetrf, DGETRF, (n, n, tmp_data, n, pipvt, info));
+  F77_XFCN (dgetrf, DGETRF, (a_nr, a_nc, tmp_data, a_nr, pipvt, info));
 
   if (f77_exception_encountered)
-    (*current_liboctave_error_handler) ("unrecoverable error in dgesv");
+    (*current_liboctave_error_handler) ("unrecoverable error in dgetrf");
   else
     ipvt -= 1;
 }

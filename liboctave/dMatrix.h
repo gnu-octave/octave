@@ -115,7 +115,8 @@ public:
 
   Matrix inverse (void) const;
   Matrix inverse (int& info) const;
-  Matrix inverse (int& info, double& rcond, int force = 0) const;
+  Matrix inverse (int& info, double& rcond, int force = 0, 
+		  int calc_cond = 1) const;
 
   Matrix pseudo_inverse (double tol = 0.0);
 
@@ -127,7 +128,7 @@ public:
 
   DET determinant (void) const;
   DET determinant (int& info) const;
-  DET determinant (int& info, double& rcond) const;
+  DET determinant (int& info, double& rcond, int calc_cond = 1) const;
 
   Matrix solve (const Matrix& b) const;
   Matrix solve (const Matrix& b, int& info) const;

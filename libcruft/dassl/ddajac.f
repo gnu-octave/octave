@@ -44,7 +44,7 @@ C     JAC      = NAME OF THE EXTERNAL USER-SUPPLIED ROUTINE
 C                TO EVALUATE THE ITERATION MATRIX (THIS ROUTINE
 C                IS ONLY USED IF IWM(MTYPE) IS 1 OR 4)
 C-----------------------------------------------------------------------
-C***ROUTINES CALLED  DGBFA, DGEFA
+C***ROUTINES CALLED  DGBTRF, DGETRF
 C***REVISION HISTORY  (YYMMDD)
 C   830315  DATE WRITTEN
 C   901009  Finished conversion to SLATEC 4.0 format (F.N.Fritsch)
@@ -53,6 +53,7 @@ C   901019  Merged changes made by C. Ulrich with SLATEC 4.0 format.
 C   901026  Added explicit declarations for all variables and minor
 C           cosmetic changes to prologue.  (FNF)
 C   901101  Corrected PURPOSE.  (FNF)
+C   020204  Convert to use LAPACK
 C***END PROLOGUE  DDAJAC
 C
       INTEGER  NEQ, IER, IWM(*), IRES, IPAR(*), NTEMP
@@ -61,7 +62,7 @@ C
      *   UROUND, RPAR(*)
       EXTERNAL  RES, JAC
 C
-      EXTERNAL  DGBFA, DGEFA
+      EXTERNAL  DGBTRF, DGETRF
 C
       INTEGER  I, I1, I2, II, IPSAVE, ISAVE, J, K, L, LENPD, LIPVT,
      *   LML, LMTYPE, LMU, MBA, MBAND, MEB1, MEBAND, MSAVE, MTYPE, N,
@@ -113,7 +114,7 @@ C     DENSE FINITE-DIFFERENCE-GENERATED MATRIX
 C
 C
 C     DO DENSE-MATRIX LU DECOMPOSITION ON PD
-230      CALL DGEFA(WM(NPD),NEQ,NEQ,IWM(LIPVT),IER)
+230      CALL DGETRF( NEQ, NEQ, WM(NPD), NEQ, IWM(LIPVT), IER)
       RETURN
 C
 C
@@ -170,8 +171,8 @@ C     BANDED FINITE-DIFFERENCE-GENERATED MATRIX
 C
 C
 C     DO LU DECOMPOSITION OF BANDED PD
-550   CALL DGBFA(WM(NPD),MEBAND,NEQ,
-     *    IWM(LML),IWM(LMU),IWM(LIPVT),IER)
+550   CALL DGBTRF(NEQ, NEQ, IWM(LML), IWM(LMU), WM(NPD), MEBAND,
+     *     IWM(LIPVT), IER)
       RETURN
 C------END OF SUBROUTINE DDAJAC------
       END

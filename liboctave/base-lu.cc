@@ -34,14 +34,16 @@ template <class lu_type, class lu_elt_type, class p_type, class p_elt_type>
 lu_type
 base_lu <lu_type, lu_elt_type, p_type, p_elt_type> :: L (void) const
 {
-  int n = ipvt.length ();
+  int a_nr = a_fact.rows ();
+  int a_nc = a_fact.cols ();
+  int mn = (a_nr < a_nc ? a_nr : a_nc);
 
-  lu_type l (n, n, lu_elt_type (0.0));
+  lu_type l (a_nr, mn, lu_elt_type (0.0));
 
-  for (int i = 0; i < n; i++)
+  for (int i = 0; i < a_nr; i++)
     {
       l.xelem (i, i) = 1.0;
-      for (int j = 0; j < i; j++)
+      for (int j = 0; j < (i < a_nc ? i : a_nc); j++)
 	l.xelem (i, j) = a_fact.xelem (i, j);
     }
 
@@ -52,13 +54,15 @@ template <class lu_type, class lu_elt_type, class p_type, class p_elt_type>
 lu_type
 base_lu <lu_type, lu_elt_type, p_type, p_elt_type> :: U (void) const
 {
-  int n = ipvt.length ();
+  int a_nr = a_fact.rows ();
+  int a_nc = a_fact.cols ();
+  int mn = (a_nr < a_nc ? a_nr : a_nc);
 
-  lu_type u (n, n, lu_elt_type (0.0));
+  lu_type u (mn, a_nc, lu_elt_type (0.0));
 
-  for (int i = 0; i < n; i++)
+  for (int i = 0; i < mn; i++)
     {
-      for (int j = i; j < n; j++)
+      for (int j = i; j < a_nc; j++)
 	u.xelem (i, j) = a_fact.xelem (i, j);
     }
 
@@ -69,14 +73,14 @@ template <class lu_type, class lu_elt_type, class p_type, class p_elt_type>
 p_type
 base_lu <lu_type, lu_elt_type, p_type, p_elt_type> :: P (void) const
 {
-  int n = ipvt.length ();
+  int a_nr = a_fact.rows ();
 
-  Array<int> pvt (n);
+  Array<int> pvt (a_nr);
 
-  for (int i = 0; i < n; i++)
+  for (int i = 0; i < a_nr; i++)
     pvt.xelem (i) = i;
 
-  for (int i = 0; i < n - 1; i++)
+  for (int i = 0; i < ipvt.length(); i++)
     {
       int k = ipvt.xelem (i);
 
@@ -88,9 +92,9 @@ base_lu <lu_type, lu_elt_type, p_type, p_elt_type> :: P (void) const
 	}
     }
 
-  p_type p (n, n, p_elt_type (0.0));
+  p_type p (a_nr, a_nr, p_elt_type (0.0));
 
-  for (int i = 0; i < n; i++)
+  for (int i = 0; i < a_nr; i++)
     p.xelem (i, pvt.xelem (i)) = 1.0;
 
   return p;

@@ -56,7 +56,7 @@ C                calling program and external user routines.
 C                They are not altered by DMATD.
 C-----------------------------------------------------------------------
 C***ROUTINES CALLED
-C   JACD, RES, DGEFA, DGBFA
+C   JACD, RES, DGETRF, DGBTRF
 C
 C***END PROLOGUE  DMATD
 C
@@ -111,7 +111,7 @@ C
 C
 C     Do dense-matrix LU decomposition on J.
 C
-230      CALL DGEFA(WM,NEQ,NEQ,IWM(LIPVT),IER)
+230      CALL DGETRF( NEQ, NEQ, WM, NEQ, IWM(LIPVT), IER)
       RETURN
 C
 C
@@ -175,7 +175,8 @@ C
 C
 C     Do LU decomposition of banded J.
 C
-550   CALL DGBFA (WM,MEBAND,NEQ,IWM(LML),IWM(LMU),IWM(LIPVT),IER)
+550   CALL DGBTRF(NEQ, NEQ, IWM(LML), IWM(LMU), WM, MEBAND,
+     *     IWM(LIPVT), IER)
       RETURN
 C
 C------END OF SUBROUTINE DMATD------------------------------------------

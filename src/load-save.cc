@@ -94,20 +94,7 @@ static int Vsave_precision;
 #define OCT_RBV DBL_MAX / 100.0
 #endif
 
-enum load_save_format
-  {
-    LS_ASCII,
-    LS_BINARY,
-    LS_MAT_ASCII,
-    LS_MAT_BINARY,
-    LS_MAT5_BINARY,
-#ifdef HAVE_HDF5
-    LS_HDF5,
-#endif /* HAVE_HDF5 */
-    LS_UNKNOWN
-  };
-
-  enum arrayclasstype
+enum arrayclasstype
   {
     mxCELL_CLASS=1,		// cell array
     mxSTRUCT_CLASS,		// structure
@@ -2835,10 +2822,9 @@ matches_patterns (const string_vector& patterns, int pat_idx,
   return false;
 }
 
-static int
+int
 read_binary_file_header (std::istream& is, bool& swap,
-			 oct_mach_info::float_format& flt_fmt,
-			 bool quiet = false)
+			 oct_mach_info::float_format& flt_fmt, bool quiet)
 {
   const int magic_len = 10;
   char magic[magic_len+1];
@@ -2953,7 +2939,7 @@ get_file_format (const std::string& fname, const std::string& orig_fname)
   return retval;
 }
 
-static octave_value
+octave_value
 do_load (std::istream& stream, const std::string& orig_fname, bool force,
 	 load_save_format format, oct_mach_info::float_format flt_fmt,
 	 bool list_only, bool swap, bool verbose, bool import,
@@ -4636,7 +4622,7 @@ save_ascii_data_for_plotting (std::ostream& os, const octave_value& t,
 
 // Save the info from sr on stream os in the format specified by fmt.
 
-static void
+void
 do_save (std::ostream& os, symbol_record *sr, load_save_format fmt,
 	 int save_as_floats, bool& infnan_warned)
 {
@@ -4750,7 +4736,7 @@ get_default_save_format (void)
   return retval;
 }
 
-static void
+void
 write_header (std::ostream& os, load_save_format format)
 {
   switch (format)

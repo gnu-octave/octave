@@ -1,3 +1,37 @@
+2003-02-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* libcruft/blas/dtbsv.f: New file.
+	* libcruft/lapack/dlatrs.f, libcruft/lapack/dtrti2.f,
+	libcruft/lapack/dtrtri.f, libcruft/lapack/ztrti2.f,
+	libcruft/lapack/ztrtri.f: New files.
+
+2003-02-04  David Bateman <dbateman@free.fr>
+
+	* libcruft/Makefile.in (CRUFT_DIRS): Remove linpack from list.
+
+	* libcruft/linpackdgbfa.f, libcruft/linpackdgbsl.f
+	libcruft/linpackdgeco.f, libcruft/linpackdgedi.f,
+	libcruft/linpackdgefa.f, libcruft/linpackdgesl.f,
+	libcruft/linpackspofa.f, libcruft/linpackzgeco.f,
+	libcruft/linpackzgedi.f, libcruft/linpackzgefa.f,
+	libcruft/linpackzgesl.f: Delete.
+
+	* libcruft/dassl/ddajac.f, libcruft/dassl/ddaslv.f:  Use DGxTRF and
+	DGxTRS instead of DGxFA and DGxSL.
+	* libcruft/daspk/ddaspk.f, libcruft/daspk/dmatd.f,
+	libcruft/daspk/dslvd.f: Likewise.
+	* libcruft/odepack/lsode.f, libcruft/odepack/prepj.f,
+	libcruft/odepack/solsy.f: Likewise.
+	* libcruft/odessa/odessa.f, libcruft/odessa/odessa_prepj.f,
+	libcruft/odessa/odessa_solsy.f: Likewise.
+	* libcrudt/ranlib/setgmn.f: Use SPOTRF instead of SPOFA.
+
+	* libcruft/lapack/dgbtf2.f, libcruft/lapack/dgbtrf.f,
+	libcruft/lapack/dgbtrs.f, libcruft/lapack/dgecon.f,
+	libcruft/lapack/dgetri.f, libcruft/lapack/spotf2.f,
+	libcruft/lapack/spotrf.f, libcruft/lapack/zgecon.f,
+	libcruft/lapack/zgetri.f: New files.
+
 2003-01-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* misc/quit.h (BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_1,

@@ -1326,7 +1326,7 @@ C   DATV   computes matrix-vector product in Krylov algorithm.
 C   DORTH  performs orthogonalization of Krylov basis vectors.
 C   DHEQR  performs QR factorization of Hessenberg matrix.
 C   DHELS  finds least-squares solution of Hessenberg linear system.
-C   DGEFA, DGESL, DGBFA, DGBSL are LINPACK routines for solving 
+C   DGETRF, DGETRS, DGBTRF, DGBTRS are LAPACK routines for solving 
 C          linear systems (dense or band direct methods).
 C   DAXPY, DCOPY, DDOT, DNRM2, DSCAL are Basic Linear Algebra (BLAS)
 C          routines.

@@ -1,10 +1,10 @@
       SUBROUTINE setgmn(meanv,covm,ldcovm,p,parm)
 C      SUBROUTINE setgmn(meanv,covm,p,parm)
 C     JJV changed this routine to take leading dimension of COVM
-C     JJV argument and pass it to SPOFA, making it easier to use
+C     JJV argument and pass it to SPOTRF, making it easier to use
 C     JJV if the COVM which is used is contained in a larger matrix
-C     JJV and to make the routine more consistent with LINPACK.
-C     JJV Changes are in comments, declarations, and the call to SPOFA.
+C     JJV and to make the routine more consistent with LAPACK.
+C     JJV Changes are in comments, declarations, and the call to SPOTRF.
 C**********************************************************************
 C
 C     SUBROUTINE SETGMN( MEANV, COVM, LDCOVM, P, PARM)
@@ -58,7 +58,7 @@ C     .. Local Scalars ..
       INTEGER i,icount,info,j
 C     ..
 C     .. External Subroutines ..
-      EXTERNAL spofa
+      EXTERNAL spotrf
 C     ..
 C     .. Executable Statements ..
 C
@@ -81,7 +81,8 @@ C
 C      Cholesky decomposition to find A s.t. trans(A)*(A) = COVM
 C
 C      CALL spofa(covm,p,p,info)
-      CALL spofa(covm,ldcovm,p,info)
+C      CALL spofa(covm,ldcovm,p,info)
+      CALL spotrf ( 'Upper', p, covm, ldcovm, info)
       IF (.NOT. (info.NE.0)) GO TO 30
       WRITE (*,*) ' COVM not positive definite in SETGMN'
       STOP ' COVM not positive definite in SETGMN'

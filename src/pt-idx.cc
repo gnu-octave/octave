@@ -38,6 +38,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // Index expressions.
 
+tree_index_expression::tree_index_expression (tree_expression *e = 0,
+					      tree_argument_list *lst = 0,
+					      int l = -1, int c = -1)
+  : tree_expression (l, c), expr (e), list (lst),
+    arg_nm (lst ? lst->get_arg_names () : string_vector ()) { }
+
 tree_index_expression::~tree_index_expression (void)
 {
   delete expr;

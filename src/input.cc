@@ -564,7 +564,7 @@ get_user_input (const octave_value_list& args, bool debug, int nargout)
 
 	  retval = eval_string (input_buf, silent, parse_status, nargout);
 
-	  if (! debug && retval.length == 0)
+	  if (! debug && retval.length () == 0)
 	    retval(0) = Matrix ();
 	}
     }

@@ -47,8 +47,7 @@ tree_index_expression : public tree_expression
 public:
 
   tree_index_expression (tree_expression *e = 0, tree_argument_list *lst = 0,
-			 int l = -1, int c = -1)
-    : tree_expression (l, c), expr (e), list (lst), arg_nm () { }
+			 int l = -1, int c = -1);
 
   ~tree_index_expression (void);
 

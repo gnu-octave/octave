@@ -182,6 +182,8 @@ clean_up_for_exit (void)
 
   cleanup_tmp_files ();
 
+  flush_octave_stdout ();
+
   if (!quitting_gracefully && (interactive || forced_interactive))
     cout << "\n";
 }
@@ -512,6 +514,8 @@ do_octave_atexit (void)
       octave_value_list fcn = octave_atexit_functions.pop ();
 
       feval (fcn, 0);
+
+      flush_octave_stdout ();
     }
 }
 

@@ -23,10 +23,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_byte_swap_h)
 #define octave_byte_swap_h 1
 
+// XXX FIXME XXX -- not sure these volatile qualifiers are really
+// needed or appropriate here.
+
 static inline void
-swap_bytes (void *ptr, unsigned int i, unsigned int j)
+swap_bytes (volatile void *ptr, unsigned int i, unsigned int j)
 {
-  char *t = static_cast<char *> (ptr);
+  volatile char *t = static_cast<volatile char *> (ptr);
 
   char tmp = t[i];
   t[i] = t[j];
@@ -34,26 +37,26 @@ swap_bytes (void *ptr, unsigned int i, unsigned int j)
 }
 
 static inline void
-swap_2_bytes (void *ptr)
+swap_2_bytes (volatile void *ptr)
 {
-  char *t = static_cast<char *> (ptr);
+  volatile char *t = static_cast<volatile char *> (ptr);
 
   swap_bytes (t, 0, 1);
 }
 
 static inline void
-swap_4_bytes (void *ptr)
+swap_4_bytes (volatile void *ptr)
 {
-  char *t = static_cast<char *> (ptr);
+  volatile char *t = static_cast<volatile char *> (ptr);
 
   swap_bytes (t, 0, 3);
   swap_bytes (t, 1, 2);
 }
 
 static inline void
-swap_8_bytes (void *ptr)
+swap_8_bytes (volatile void *ptr)
 {
-  char *t = static_cast<char *> (ptr);
+  volatile char *t = static_cast<volatile char *> (ptr);
 
   swap_bytes (t, 0, 7);
   swap_bytes (t, 1, 6);
@@ -62,9 +65,9 @@ swap_8_bytes (void *ptr)
 }
 
 static inline void
-swap_2_bytes (void *ptr, int len)
+swap_2_bytes (volatile void *ptr, int len)
 {
-  char *t = static_cast<char *> (ptr);
+  volatile char *t = static_cast<volatile char *> (ptr);
 
   for (int i = 0; i < len; i++)
     {
@@ -74,9 +77,9 @@ swap_2_bytes (void *ptr, int len)
 }
 
 static inline void
-swap_4_bytes (void *ptr, int len)
+swap_4_bytes (volatile void *ptr, int len)
 {
-  char *t = static_cast<char *> (ptr);
+  volatile char *t = static_cast<volatile char *> (ptr);
 
   for (int i = 0; i < len; i++)
     {
@@ -86,9 +89,9 @@ swap_4_bytes (void *ptr, int len)
 }
 
 static inline void
-swap_8_bytes (void *ptr, int len)
+swap_8_bytes (volatile void *ptr, int len)
 {
-  char *t = static_cast<char *> (ptr);
+  volatile char *t = static_cast<volatile char *> (ptr);
 
   for (int i = 0; i < len; i++)
     {

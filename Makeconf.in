@@ -73,7 +73,7 @@ ALL_FFLAGS = $(FFLAGS)
 # cc and associated flags.
 
 DLFCN_INCFLAGS = @DLFCN_INCFLAGS@
-GLOB_INCFLAGS = @DLFCN_INCFLAGS@
+GLOB_INCFLAGS = @GLOB_INCFLAGS@
 
 # Clean up INCFLAGS a bit if we are not compiling in a separate
 # directory.
@@ -135,6 +135,7 @@ FLIBS = @FLIBS@
 
 TERMLIBS = @TERMLIBS@
 LIBDLFCN = @LIBDLFCN@
+LIBGLOB = @LIBGLOB@
 LIBPLPLOT = @LIBPLPLOT@
 LIBREADLINE = @LIBREADLINE@
 LIBKPATHSEA = @LIBKPATHSEA@
@@ -332,6 +333,7 @@ sed < $< \
   -e "s;%LDFLAGS%;\"${LDFLAGS}\";" \
   -e "s;%LEXLIB%;\"${LEXLIB}\";" \
   -e "s;%LIBDLFCN%;\"${LIBDLFCN}\";" \
+  -e "s;%LIBGLOB%;\"${LIBGLOB}\";" \
   -e "s;%LIBFLAGS%;\"-L${octlibdir}\";" \
   -e "s;%LIBPLPLOT%;\"${LIBPLPLOT}\";" \
   -e "s;%LIBS%;\"${LIBS}\";" \

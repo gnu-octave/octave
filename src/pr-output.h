@@ -30,6 +30,7 @@ class ostream;
 class ComplexMatrix;
 class Matrix;
 class Range;
+class boolMatrix;
 class charMatrix;
 
 extern void
@@ -56,10 +57,15 @@ octave_print_internal (ostream& os, const Range& r,
 		       int extra_indent = 0);
 
 extern void
+octave_print_internal (ostream& os, const boolMatrix& m,
+		       bool pr_as_read_syntax = false,
+		       int extra_indent = 0);
+
+extern void
 octave_print_internal (ostream& os, const charMatrix& chm,
 		       bool pr_as_read_syntax = false,
-		       bool pr_as_string = false,
-		       int extra_indent = 0);
+		       int extra_indent = 0,
+		       bool pr_as_string = false);
 
 #endif
 

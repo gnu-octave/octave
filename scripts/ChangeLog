@@ -1,3 +1,63 @@
+Fri Nov  6 10:17:00 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* New files from OCST, in control subdiretory:
+
+	    DEMOcontrol.m      is_siso.m          syschnames.m
+	    abcddim.m          is_stabilizable.m  syschnamesl.m
+	    abcddims.m         is_stable.m        syschtsam.m
+	    analdemo.m         jet707.m           sysconnect.m
+	    are.m              lqe.m              syscont.m
+	    axis2dlim.m        lqg.m              syscont_disc.m
+	    bddemo.m           lqr.m              sysdefioname.m
+	    bode.m             lsim.m             sysdefstname.m
+	    bode_bounds.m      ltifr.m            sysdimensions.m
+	    bodquist.m         lyap.m             sysdisc.m
+	    buildssic.m        mb.m               sysdup.m
+	    c2d.m              minfo.m            sysgetsignals.m
+	    com2str.m,v        moddemo.m          sysgettsam.m
+	    controldemo.m      nichols.m          sysgettype.m
+	    ctrb.m             nyquist.m          sysgroup.m
+	    d2c.m              obsv.m             sysgroupn.m
+	    damp.m             ord2.m             sysmult.m
+	    dare.m             outlist.m          sysout.m
+	    dcgain.m           packedform.m       sysprune.m
+	    demomarsyas.m      packsys.m          sysreorder.m
+	    dezero.m;          parallel.m         sysrepdemo.m
+	    dgkfdemo.m         place.m            sysscale.m
+	    dgram.m            polyout.m          syssub.m
+	    dhinfdemo.m        prompt.m           sysupdate.m
+	    dlqe.m             pzmap.m            tf2ss.m
+	    dlqg.m             qzval.m            tf2sys.m
+	    dlqr.m             rldemo.m           tf2sysl.m
+	    dlyap.m            rlocus.m           tf2zp.m
+	    dmr2d.m            rotg.m             tfout.m
+	    fir2sys.m          run_cmd.m;         tzero.m
+	    frdemo.m           series.m           tzero2.m
+	    freqchkw.m         sortcom.m          ugain.m
+	    freqresp.m         ss2sys.m           unpacksys.m
+	    gram.m             ss2tf.m            wgt1o.m
+	    h2norm.m           ss2zp.m            zgfmul.m
+	    h2syn.m            starp.m            zgfslv.m
+	    hinf_ctr.m         step.m             zginit.m
+	    hinfdemo.m         stepimp.m          zgpbal.m
+	    hinfnorm.m         strappend.m;       zgreduce.m
+	    hinfsyn.m          susball.m          zgrownorm.m
+	    hinfsyn_chk.m      swap.m             zgscal.m
+	    impulse.m          swapcols.m         zgsgiv.m
+	    is_abcd.m          swaprows.m         zgshsr.m
+	    is_controllable.m  sys2fir.m          zp2ss.m
+	    is_detectable.m    sys2ss.m           zp2ssg2.m
+	    is_dgkf.m          sys2tf.m           zp2sys.m
+	    is_digital.m       sys2zp.m           zp2tf.m
+	    is_observable.m    sysadd.m           zpout.m
+	    is_sample.m        sysappend.m
+
+Thu Nov  5 13:28:40 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in (AC_OUTPUT): Escape newlinew in macro call with \.
+
+	* strings/deblank.m: Make it work for string arrays too.
+
 Wed Nov  4 21:51:13 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* linear-algebra/housh.m: New file from the OCST.

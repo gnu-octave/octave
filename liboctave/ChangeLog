@@ -1,3 +1,20 @@
+Tue Nov 10 07:53:15 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* byte-swap.h (swap_bytes, swap_2_bytes, swap_4_bytes, swap_8_bytes): 
+	Add volatile qualifier to void* arg.
+	Cast volatile void* arg to volatile char*.
+
+Mon Nov  9 08:28:31 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* cmd-edit.h (command_editor::do_set_event_hook): New function.
+	(command_editor::do_restore_event_hook): Ditto.
+	* cmd-edit.cc (command_editor::set_event_hook): Ditto.
+	(command_editor::restore_event_hook): Ditto.
+	(gnu_readline::do_set_event_hook): Ditto.
+	(gnu_readline::do_restore_event_hook): Ditto.
+	(gnu_readline::previous_event_hook): New data member.
+	(gnu_readline::gnu_readline): Initialize previous_event_hook.
+
 Mon Nov  2 13:36:04 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (BINDISTLIBS): Don't include .$(SHLEXT_VER) in name.

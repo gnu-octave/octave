@@ -104,32 +104,38 @@ tree_simple_assignment::rvalue (void)
 		{
 		  ult.assign (etype, rhs_val);
 
-		  retval = ult.value ();
-
-		  if (error_state)
-		    eval_error ();
-		  else if (print_result ())
+		  if (! error_state)
 		    {
-		      if (Vprint_rhs_assign_val)
-			retval.print_with_name (octave_stdout,
-						lhs->str_print_code ());
+		      if (etype == octave_value::asn_eq)
+			retval = rhs_val;
 		      else
+			retval = ult.value ();
+
+		      if (print_result ())
 			{
-			  // We clear any index here so that we can
-			  // get the new value of the referenced
-			  // object below, instead of the indexed
-			  // value (which should be the same as the
-			  // right hand side value).
+			  if (Vprint_rhs_assign_val)
+			    retval.print_with_name (octave_stdout,
+						    lhs->str_print_code ());
+			  else
+			    {
+			      // We clear any index here so that we can
+			      // get the new value of the referenced
+			      // object below, instead of the indexed
+			      // value (which should be the same as the
+			      // right hand side value).
 
-			  ult.clear_index ();
+			      ult.clear_index ();
 
-			  octave_value lhs_val = ult.value ();
+			      octave_value lhs_val = ult.value ();
 
-			  if (! error_state)
-			    lhs_val.print_with_name (octave_stdout,
-						     lhs->name ());
+			      if (! error_state)
+				lhs_val.print_with_name (octave_stdout,
+							 lhs->name ());
+			    }
 			}
 		    }
+		  else
+		    eval_error ();
 		}
 	    }
 	}
@@ -235,7 +241,13 @@ tree_multi_assignment::rvalue (int)
 			{
 			  ult.assign (etype, rhs_val(k));
 
-			  retval(k) = ult.value ();
+			  if (! error_state)
+			    {
+			      if (etype == octave_value::asn_eq)
+				retval(k) = rhs_val(k);
+			      else
+				retval(k) = ult.value ();
+			    }
 			}
 		      else
 			error ("element number %d undefined in return list",

@@ -85,6 +85,10 @@ public:
 
   static void restore_startup_hook (void);
 
+  static void set_event_hook (fcn f);
+
+  static void restore_event_hook (void);
+
   static void read_init_file (const string& file = string ());
 
   static int current_command_number (void);
@@ -157,6 +161,10 @@ protected:
   virtual void do_set_startup_hook (fcn) { }
 
   virtual void do_restore_startup_hook (void) { }
+
+  virtual void do_set_event_hook (fcn) { }
+
+  virtual void do_restore_event_hook (void) { }
 
   virtual void do_read_init_file (const string&) { }
 

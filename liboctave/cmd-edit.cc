@@ -114,6 +114,10 @@ public:
 
   void do_restore_startup_hook (void);
 
+  void do_set_event_hook (fcn f);
+
+  void do_restore_event_hook (void);
+
   void do_read_init_file (const string& file);
 
   static void operate_and_get_next (int, int);
@@ -121,6 +125,8 @@ public:
 private:
 
   fcn previous_startup_hook;
+
+  fcn previous_event_hook;
 
   completion_fcn completion_function;
 
@@ -130,7 +136,8 @@ private:
 };
 
 gnu_readline::gnu_readline ()
-  : command_editor (), previous_startup_hook (0), completion_function (0)
+  : command_editor (), previous_startup_hook (0),
+    previous_event_hook (0), completion_function (0)
 {
   rl_initialize ();
 
@@ -323,6 +330,20 @@ void
 gnu_readline::do_restore_startup_hook (void)
 {
   rl_startup_hook = previous_startup_hook;
+}
+
+void
+gnu_readline::do_set_event_hook (fcn f)
+{
+  previous_event_hook = rl_event_hook;
+
+  rl_event_hook = f;
+}
+
+void
+gnu_readline::do_restore_event_hook (void)
+{
+  rl_event_hook = previous_event_hook;
 }
 
 void
@@ -659,6 +680,20 @@ command_editor::restore_startup_hook (void)
 {
   if (instance_ok ())
     instance->do_restore_startup_hook ();
+}
+
+void
+command_editor::set_event_hook (fcn f)
+{
+  if (instance_ok ())
+    instance->do_set_event_hook (f);
+}
+
+void
+command_editor::restore_event_hook (void)
+{
+  if (instance_ok ())
+    instance->do_restore_event_hook ();
 }
 
 void

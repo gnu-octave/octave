@@ -782,7 +782,7 @@ DEFUN (is_complex, args, ,
 }
 
 DEFUN (isempty, args, ,
-  "isempty (x): return nonzero if x is an empty matrix or empty list")
+  "isempty (x): return nonzero if x is an empty matrix, string, or list")
 {
   double retval = 0.0;
 
@@ -792,7 +792,7 @@ DEFUN (isempty, args, ,
 
       if (arg.is_matrix_type ())
 	retval = static_cast<double> (arg.rows () == 0 || arg.columns () == 0);
-      else if (arg.is_list ())
+      else if (arg.is_list () || arg.is_string ())
 	retval = static_cast<double> (arg.length () == 0);
     }
   else

@@ -6,6 +6,10 @@
    Leave the following blank line there!!  Autoheader needs it.  */
 
 
+/* Define if your version of GNU libc has buggy inline assembly code
+   for math functions like exp.  */
+#undef __NO_MATH_INLINES
+
 /* Define if you want bounds checking on element references for
    internal array and matrix classes. */
 #undef BOUNDS_CHECKING

@@ -41,8 +41,8 @@ function t = deblank (s)
       t = "";
     else
       s = reshape (s, 1, len);
-      k = max (find (s != " "));
-      t = s (1:k);
+      k = ceil (max (find (s != " ")) / nr) * nr;
+      t = reshape (s (1:k), nr, k / nr);
     endif
 
   else

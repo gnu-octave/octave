@@ -1,3 +1,36 @@
+Mon Nov  9 16:12:37 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pr-output.cc (octave_print_internal): Reorder default args for
+	charMatrix version.
+	(octave_print_internal): New function for boolMatrix.
+
+	* version.h (OCTAVE_STARTUP_MESSAGE): Note that this is a
+	development release.
+
+	* toplev.cc (do_octave_atexit): Call flush_octave_stdout here.
+	(clean_up_for_exit): And here.
+
+Mon Nov  9 15:20:53 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* input.cc (get_user_input): Check retval.length(), not	retval.length.
+
+Sun Nov  8 19:30:33 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pt-assign.cc (tree_simple_assignment::rvalue): If etype is
+	asn_eq, don't evaluate ult again because retval is just rhs value.
+	(tree_multi_assignment::rvalue): Likewise.
+
+Fri Nov  6 12:14:29 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pt-loop.cc (tree_for_command::eval): Move code for string RHS
+	outside if clause for matrix types.
+
+	* pt-idx.cc: Don't forget to define arg_nm.
+	Move contstructor here.
+	* pt-idx.h: From here.
+
+	* data.cc (Fisempty): Also return true for empty strings.
+
 Wed Nov  4 17:21:41 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* ov-base.cc (octave_base_value::rows, octave_base_value::columns,

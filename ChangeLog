@@ -1,4 +1,17 @@
+Mon Nov  9 08:53:03 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makeconf.in (LIBGLOB): Add a place for substitution to occur.
+	(GLOB_INCFLAGS): Define as @GLOB_INCFLAGS@, not @DLFCN_INCFLAGS@.
+	(do-subst-config-vals): Don't forget LIBGLOB.
+	* octave-bug.in (LIBGLOB): Substitute here too, and add it to the
+	list of configuration items to print.
+
 Mon Nov  2 20:33:16 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: Define __NO_MATH_INLINES.
+	* acconfig.h: Add #undef for it.
+
+	* configure.in (AC_OUTPUT): Escape newlinew in macro call with \.
 
 	* install-octave.in (SHLEXT): Substitute.
 	(SHLEXT_VER): Define.

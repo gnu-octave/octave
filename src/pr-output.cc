@@ -1577,9 +1577,19 @@ octave_print_internal (ostream& os, const Range& r,
 }
 
 void
+octave_print_internal (ostream& os, const boolMatrix& bm,
+		       bool pr_as_read_syntax,
+		       int extra_indent)
+{
+  Matrix tmp (bm);
+  octave_print_internal (os, tmp, pr_as_read_syntax, extra_indent);
+}
+
+void
 octave_print_internal (ostream& os, const charMatrix& chm,
-		       bool pr_as_read_syntax, bool pr_as_string,
-		       int /* extra_indent XXX FIXME XXX */)
+		       bool pr_as_read_syntax,
+		       int /* extra_indent XXX FIXME XXX */,
+		       bool pr_as_string)
 {
   if (pr_as_string)
     {

@@ -1,5 +1,7 @@
 Wed Oct 30 01:04:13 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Makefile.in (all): Fix message to say 2.7.2, not 2.7.0.
+
 	* config.h.bot (GCC_ATTR_NORETURN): Rename from NORETURN.
 	(GCC_ATTR_UNUSED): Rename from GCC_ATTRIBUTE_UNUSED.
 	(NPOS): Define if using gcc 2.8.x or later.

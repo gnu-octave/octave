@@ -19,7 +19,7 @@ all: FORCE
 	@echo "*  You will also need g++ and libg++.                    *"
 	@echo "*                                                        *"
 	@echo "*  This version of Octave has been developed with        *"
-	@echo "*  version 2.7.0.   You probably won't get very far      *"
+	@echo "*  version 2.7.2.   You probably won't get very far      *"
 	@echo "*  with earlier versions.  Later versions may work,      *"
 	@echo "*  but C++ is still evolving, so don't be too surprised  *"
 	@echo "*  if you run into some trouble.                         *"

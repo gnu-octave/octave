@@ -54,7 +54,42 @@ operator -= (MArrayN<T>& a, const T& s)
   return a;
 }
 
-#if 0
+// Element by element MArrayN by MArrayN ops.
+
+template <class T>
+MArrayN<T>&
+operator += (MArrayN<T>& a, const MArrayN<T>& b)
+{
+  int l = a.length ();
+  if (l > 0)
+    {
+      int bl = b.length ();
+      if (l != bl)
+	gripe_nonconformant ("operator +=", l, bl);
+      else
+	DO_VV_OP2 (+=);
+    }
+  return a;
+}
+
+template <class T>
+MArrayN<T>&
+operator -= (MArrayN<T>& a, const MArrayN<T>& b)
+{
+  int l = a.length ();
+  if (l > 0)
+    {
+      int bl = b.length ();
+      if (l != bl)
+	gripe_nonconformant ("operator -=", l, bl);
+      else
+	DO_VV_OP2 (-=);
+    }
+  return a;
+}
+
+// Element by element MArrayN by scalar ops.
+
 #define MARRAYN_NDS_OP(OP) \
   template <class T> \
   MArrayN<T> \
@@ -132,6 +167,8 @@ if (a_dims.length () != b_dims.length ()) \
 
 MARRAY_NDND_OP (operator +, +)
 MARRAY_NDND_OP (operator -, -)
+MARRAY_NDND_OP (product,    *)
+MARRAY_NDND_OP (quotient,   /)
 
 template <class T>
 MArrayN<T>
@@ -152,8 +189,6 @@ operator - (const MArrayN<T>& a)
   return result;
 }
 
-#endif
- 
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

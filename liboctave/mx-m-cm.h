@@ -25,10 +25,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class Matrix;
 class ComplexMatrix;
+class NDArray;
+class ComplexNDArray;
 
 #include "mx-op-defs.h"
 
 MM_OP_DECLS (ComplexMatrix, Matrix, ComplexMatrix)
+NDND_OP_DECLS (ComplexNDArray, NDArray, ComplexNDArray)
 
 #endif
 

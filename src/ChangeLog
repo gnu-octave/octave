@@ -1,3 +1,45 @@
+2003-10-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ops.h (DEFNDUNOP_OP, DEFNDUNOP_FN, DEFNDBINOP_OP,
+	DEFNDBINOP_FN): New N-dimensional macros.
+	* src/OPERATORS/op-bm-bm.cc, src/OPERATORS/op-cm-cm.cc,
+	src/OPERATORS/op-cm-cs.cc, src/OPERATORS/op-cm-m.cc,
+	src/OPERATORS/op-cm-s.cc, src/OPERATORS/op-cs-cm.cc,
+	src/OPERATORS/op-cs-m.cc, src/OPERATORS/op-m-cm.cc,
+	src/OPERATORS/op-m-cs.cc, src/OPERATORS/op-m-m.cc,
+	src/OPERATORS/op-m-s.cc, src/OPERATORS/op-s-cm.cc,
+	src/OPERATORS/op-s-m.cc: Use N-dimensional macros as appropriate.
+
+	* DLD-FUNCTIONS/rand.cc (do_rand, Frand, Frandn):
+	Handle N-dimensions.
+
+	* xpow.cc (elem_xpow (double, const NDArray&),
+	elem_xpow (double, const ComplexNDArray&),
+	elem_xpow (const NDArray&, double),
+	elem_xpow (const NDArray&, const NDArray&),
+	elem_xpow (const NDArray&, const Complex&),
+	elem_xpow (const NDArray&, const ComplexNDArray&),
+	elem_xpow (const Complex&, const NDArray&),
+	elem_xpow (const Complex&, const ComplexNDArray&),
+	elem_xpow (const ComplexNDArray&, double),
+	elem_xpow (const ComplexNDArray&, const NDArray&),
+	elem_xpow (const ComplexNDArray&, const Complex&),
+	elem_xpow (const ComplexNDArray&, const ComplexNDArray&):
+	New functions.
+	* xpow.h: Provide decls.
+
+	* xdiv.cc (x_el_div (double, const NDArray&),
+	x_el_div (double, const ComplexNDArray&),
+	x_el_div (const Complex, const NDArray&),
+	x_el_div (const Complex, const ComplexNDArray&)): New functions.
+	* xdiv.h: Provide decls.
+
+	* ov-bool-mat.h (boolNDArray::array_value): New function.
+	* ov-ch-mat.h (charNDArray::array_value): New function.
+	* ov-cx-mat.h (ComplexNDArray::array_value): New function.
+	* ov-re-mat.h (NDArray::array_value): New function.
+	(NDArray::double_nd_array_value): Delete.
+
 2003-10-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* parse.y (text_getc): New static function.

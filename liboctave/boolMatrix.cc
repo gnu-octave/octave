@@ -94,7 +94,7 @@ boolMatrix::any (int dim) const
   MX_ANY_OP (dim);
 }
 
-MM_CMP_OPS(boolMatrix, , boolMatrix, )
+MM_CMP_OPS (boolMatrix, , boolMatrix, )
 
 /*
 ;;; Local Variables: ***

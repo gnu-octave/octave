@@ -28,6 +28,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class Matrix;
 class ComplexMatrix;
 
+class NDArray;
+class ComplexNDArray;
+
 extern Matrix xdiv (const Matrix& a, const Matrix& b);
 extern ComplexMatrix xdiv (const Matrix& a, const ComplexMatrix& b);
 extern ComplexMatrix xdiv (const ComplexMatrix& a, const Matrix& b);
@@ -37,6 +40,11 @@ extern Matrix x_el_div (double a, const Matrix& b);
 extern ComplexMatrix x_el_div (double a, const ComplexMatrix& b);
 extern ComplexMatrix x_el_div (const Complex a, const Matrix& b);
 extern ComplexMatrix x_el_div (const Complex a, const ComplexMatrix& b);
+
+extern NDArray x_el_div (double a, const NDArray& b);
+extern ComplexNDArray x_el_div (double a, const ComplexNDArray& b);
+extern ComplexNDArray x_el_div (const Complex a, const NDArray& b);
+extern ComplexNDArray x_el_div (const Complex a, const ComplexNDArray& b);
 
 extern Matrix xleftdiv (const Matrix& a, const Matrix& b);
 extern ComplexMatrix xleftdiv (const Matrix& a, const ComplexMatrix& b);

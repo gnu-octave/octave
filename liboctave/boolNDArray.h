@@ -62,6 +62,10 @@ public:
       return *this;
     }
 
+  // unary operations
+
+  boolNDArray operator ! (void) const;
+
   // XXX FIXME XXX -- this is not quite the right thing.
 
   boolMatrix all (int dim = -1) const;
@@ -89,6 +93,8 @@ private:
 
   boolNDArray (bool *d, dim_vector& dims) : ArrayN<bool> (d, dims) { }
 };
+
+NDND_CMP_OP_DECLS (boolNDArray, boolNDArray)
 
 #endif
 

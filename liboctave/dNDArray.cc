@@ -36,6 +36,33 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "ArrayN-inline.h"
 
+NDArray::NDArray (const boolNDArray& a)
+  : MArrayN<double> (a.dims ())
+{
+  for (int i = 0; i < a.length (); i++)
+    elem (i) = a.elem (i);
+}
+
+NDArray::NDArray (const charNDArray& a)
+  : MArrayN<double> (a.dims ())
+{
+  for (int i = 0; i < a.length (); i++)
+    elem (i) = a.elem (i);
+}
+
+// unary operations
+
+boolNDArray
+NDArray::operator ! (void) const
+{
+  boolNDArray b (dims ());
+
+  for (int i = 0; i < length (); i++)
+    b.elem (i) = ! elem (i);
+
+  return b;
+}
+
 // XXX FIXME XXX -- this is not quite the right thing.
 
 boolMatrix
@@ -155,6 +182,15 @@ NDArray::all_integers (double& max_val, double& min_val) const
 
   return true;
 }
+
+NDS_CMP_OPS(NDArray, , double, )
+NDS_BOOL_OPS(NDArray, double, 0.0)
+
+SND_CMP_OPS(double, , NDArray, )
+SND_BOOL_OPS(double, NDArray, 0.0)
+
+NDND_CMP_OPS(NDArray, , NDArray, )
+NDND_BOOL_OPS(NDArray, NDArray, 0.0)
 
 /*
 ;;; Local Variables: ***

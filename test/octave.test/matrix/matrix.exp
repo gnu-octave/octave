@@ -211,7 +211,7 @@ set prog_output "^ans = 1"
 do_test rand-1.m
 
 set test rand-2
-set prog_output "\n... rand:.*"
+set prog_output "^ans = 1"
 do_test rand-2.m
 
 set test randn-1
@@ -219,7 +219,7 @@ set prog_output "^ans = 1"
 do_test randn-1.m
 
 set test randn-2
-set prog_output "\n... randn:.*"
+set prog_output "^ans = 1"
 do_test randn-2.m
 
 set test diag-1

@@ -410,8 +410,6 @@ Array<T>::resize_no_fill (const dim_vector& dims)
 
   rep = new typename Array<T>::ArrayRep (get_size (dims));
 
-  dim_vector old_dimensions = dimensions;
-
   dimensions = dims;
 
   Array<int> ra_idx (dimensions.length (), 0);
@@ -695,8 +693,6 @@ Array<T>::resize_and_fill (const dim_vector& dims, const T& val)
   int len = get_size (dims);
 
   rep = new typename Array<T>::ArrayRep (len);
-
-  dim_vector old_dimensions = dimensions;
 
   dimensions = dims;
 

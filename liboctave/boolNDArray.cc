@@ -35,6 +35,19 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "ArrayN-inline.h"
 
+// unary operations
+
+boolNDArray
+boolNDArray::operator ! (void) const
+{
+  boolNDArray b (dims ());
+
+  for (int i = 0; i < length (); i++)
+    b.elem (i) = ! elem (i);
+
+  return b;
+}
+
 // XXX FIXME XXX -- this is not quite the right thing.
 
 boolMatrix
@@ -105,6 +118,8 @@ boolNDArray::increment_index (Array<int>& ra_idx,
 {
   ::increment_index (ra_idx, dimensions, start_dimension);
 }
+
+NDND_CMP_OPS (boolNDArray, , boolNDArray, )
 
 /*
 ;;; Local Variables: ***

@@ -104,6 +104,9 @@ public:
   boolMatrix bool_matrix_value (void) const
     { return matrix.matrix_value (); }
 
+  boolNDArray array_value (bool = false) const
+    { return matrix; }
+
   octave_value convert_to_str_internal (bool pad, bool force) const;
 
 protected:

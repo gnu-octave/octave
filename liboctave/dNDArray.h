@@ -43,9 +43,10 @@ public:
   
   NDArray (void) : MArrayN<double> () { }
 
-  NDArray (dim_vector& dims) : MArrayN<double> (dims) { }
+  NDArray (const dim_vector& dims) : MArrayN<double> (dims) { }
 
-  NDArray (dim_vector& dims, double val) : MArrayN<double> (dims, val) { }
+  NDArray (const dim_vector& dims, double val)
+    : MArrayN<double> (dims, val) { }
   
   NDArray (const NDArray& a) : MArrayN<double> (a) { }
 
@@ -55,11 +56,19 @@ public:
 
   NDArray (const ArrayN<double>& a) : MArrayN<double> (a) { }
 
+  explicit NDArray (const boolNDArray& a);
+
+  explicit NDArray (const charNDArray& a);
+
   NDArray& operator = (const NDArray& a)
     {
       MArrayN<double>::operator = (a);
       return *this;
     }
+
+  // unary operations
+
+  boolNDArray operator ! (void) const;
 
   // XXX FIXME XXX -- this is not quite the right thing.
 
@@ -88,6 +97,15 @@ private:
 
   NDArray (double *d, dim_vector& dims) : MArrayN<double> (d, dims) { }
 };
+
+NDS_CMP_OP_DECLS (NDArray, double)
+NDS_BOOL_OP_DECLS (NDArray, double)
+
+SND_CMP_OP_DECLS (double, NDArray)
+SND_BOOL_OP_DECLS (double, NDArray)
+
+NDND_CMP_OP_DECLS (NDArray, NDArray)
+NDND_BOOL_OP_DECLS (NDArray, NDArray)
 
 MARRAY_FORWARD_DEFS (MArrayN, NDArray, double)
 

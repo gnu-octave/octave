@@ -52,14 +52,7 @@ operator << (std::ostream& os, const ArrayN<T>& a)
   os << n_dims << "-dimensional array";
 
   if (n_dims)
-    {
-      os << " (";
-
-      for (int i = 0; i < n_dims - 1; i++)
-	os << a_dims(i) << "x";
-
-      os << a_dims(n_dims-1) << ")";
-    }
+    os << " (" << a_dims.str () << ")";
 
   os <<"\n\n";
 

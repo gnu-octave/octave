@@ -39,8 +39,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // matrix unary ops.
 
-DEFUNOP_OP (not, matrix, !)
-DEFUNOP_OP (uminus, matrix, -)
+DEFNDUNOP_OP (not, matrix, !)
+DEFNDUNOP_OP (uminus, matrix, -)
 
 DEFUNOP (transpose, matrix)
 {
@@ -54,8 +54,9 @@ DEFNCUNOP_METHOD (decr, matrix, decrement)
 
 // matrix by matrix ops.
 
-DEFBINOP_OP (add, matrix, matrix, +)
-DEFBINOP_OP (sub, matrix, matrix, -)
+DEFNDBINOP_OP (add, matrix, matrix, array, array, +)
+DEFNDBINOP_OP (sub, matrix, matrix, array, array, -)
+
 DEFBINOP_OP (mul, matrix, matrix, *)
 DEFBINOP_FN (div, matrix, matrix, xdiv)
 
@@ -67,40 +68,26 @@ DEFBINOPX (pow, matrix, matrix)
 
 DEFBINOP_FN (ldiv, matrix, matrix, xleftdiv)
 
-DEFBINOP_FN (lt, matrix, matrix, mx_el_lt)
-DEFBINOP_FN (le, matrix, matrix, mx_el_le)
-DEFBINOP_FN (eq, matrix, matrix, mx_el_eq)
-DEFBINOP_FN (ge, matrix, matrix, mx_el_ge)
-DEFBINOP_FN (gt, matrix, matrix, mx_el_gt)
-DEFBINOP_FN (ne, matrix, matrix, mx_el_ne)
+DEFNDBINOP_FN (lt, matrix, matrix, array, array, mx_el_lt)
+DEFNDBINOP_FN (le, matrix, matrix, array, array, mx_el_le)
+DEFNDBINOP_FN (eq, matrix, matrix, array, array, mx_el_eq)
+DEFNDBINOP_FN (ge, matrix, matrix, array, array, mx_el_ge)
+DEFNDBINOP_FN (gt, matrix, matrix, array, array, mx_el_gt)
+DEFNDBINOP_FN (ne, matrix, matrix, array, array, mx_el_ne)
 
-DEFBINOP_FN (el_mul, matrix, matrix, product)
-DEFBINOP_FN (el_div, matrix, matrix, quotient)
-DEFBINOP_FN (el_pow, matrix, matrix, elem_xpow)
+DEFNDBINOP_FN (el_mul, matrix, matrix, array, array, product)
+DEFNDBINOP_FN (el_div, matrix, matrix, array, array, quotient)
+DEFNDBINOP_FN (el_pow, matrix, matrix, array, array, elem_xpow)
 
 DEFBINOP (el_ldiv, matrix, matrix)
 {
   CAST_BINOP_ARGS (const octave_matrix&, const octave_matrix&);
 
-  return octave_value (quotient (v2.matrix_value (), v1.matrix_value ()));
+  return octave_value (quotient (v2.array_value (), v1.array_value ()));
 }
 
-DEFBINOP_FN (el_and, matrix, matrix, mx_el_and)
-DEFBINOP_FN (el_or, matrix, matrix, mx_el_or)
-
-#if 0
-static octave_value
-oct_assignop_assign (octave_value& a1,
-		     const octave_value_list& idx,
-		     const octave_value& a2)
-{
-  CAST_BINOP_ARGS (octave_matrix&, const octave_matrix&);
-
-  v1.assign (idx, v2.double_nd_array_value ());
-
-  return octave_value ();
-}
-#endif
+DEFNDBINOP_FN (el_and, matrix, matrix, array, array, mx_el_and)
+DEFNDBINOP_FN (el_or,  matrix, matrix, array, array, mx_el_or)
 
 DEFASSIGNOP_FN (assign, matrix, matrix, assign)
 

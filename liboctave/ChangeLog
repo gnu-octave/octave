@@ -1,3 +1,57 @@
+2003-10-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* NDArray.cc (NDArray::NDArray (const boolNDArray),
+	NDArray::NDArray (const charNDArray)): New constructors.
+	(NDArray::operator !): New function.
+	Provide NDS_CMP_OPS, NDS_BOOL_OPS, SND_CMP_OPS, SND_BOOL_OPS,
+	NDND_CMP_OPS, NDND_BOOL_OPS.
+
+	* CNDArray.cc (ComplexNDArray::ComplexNDArray (const NDArray&),
+	ComplexNDArray::ComplexNDArray (const boolNDArray&),
+	ComplexNDArray::ComplexNDArray (const charNDArray&)):
+	New constructors.
+	(ComplexNDArray::operator !): New function.
+	Provide NDS_CMP_OPS, NDS_BOOL_OPS, SND_CMP_OPS, SND_BOOL_OPS,
+	NDND_CMP_OPS, NDND_BOOL_OPS.
+
+	* ArrayN.h (resize (const dim_vector&)): Fix typo.
+
+	* boolNDArray.cc (boolNDArray::operator !): New function.
+	Provide NDND_CMP_OPS.
+
+	* MArrayN.cc (operator +=, operator -=): New functions.
+	Provide product and quotient functions.
+
+	* MArray-misc.cc (gripe_nonconformant (const char *, dim_vector&,
+	dim_vector&)): New function.
+
+	* dim-vector.h (dim_vector::str, dim_vector::all_zero,
+	operator ==, operator !=): New functions.
+	* ArrayN.cc (operator <<): Use dim_vector::str here.
+
+	* Array.cc (Array<T>::resize_no_fill, Array<T>::resize_and_fill):
+	No need to save old dimensions.
+
+	* oct-rand.cc (MAKE_RAND_ND_ARRAY): New macro.
+	(octave_rand::nd_array): New function.
+	* oct-rand.h (octave_rand::nd_array): Provide decl.
+
+	* mx-op-defs.h (NDCMP_OP_DECL, NDBOOL_OP_DECL, NDS_BIN_OP_DECLS,
+	NDS_BIN_OP, NDS_BIN_OPS, NDS_CMP_OP_DECLS, NDS_CMP_OP,
+	NDS_CMP_OPS, NDS_BOOL_OP_DECLS, NDS_BOOL_OP, NDS_BOOL_OPS,
+	NDS_OP_DECLS, SND_BIN_OP_DECLS, SND_BIN_OP, SND_BIN_OPS,
+	SND_CMP_OP_DECLS, SND_CMP_OP, SND_CMP_OPS, SND_BOOL_OP_DECLS,
+	SND_BOOL_OP, SND_BOOL_OPS, SND_OP_DECLS, NDND_BIN_OP_DECLS,
+	NDND_BIN_OP, NDND_BIN_OPS, NDND_CMP_OP_DECLS, NDND_CMP_OP,
+	NDND_CMP_OPS, NDND_BOOL_OP_DECLS, NDND_BOOL_OP, NDND_BOOL_OPS,
+	NDND_OP_DECLS): New macros.
+	* mx-cm-m.h, mx-cm-s.h, mx-cs-m.h, mx-m-cm.h, mx-m-cs.h,
+	mx-s-cm.h, mx-cm-m.cc, mx-cm-s.cc, mx-cs-m.cc, mx-m-cm.cc,
+	mx-m-cs.cc, mx-s-cm.cc: Use them.
+
+	* mx-defs.h (class NDArray, class ComplexNDArray, class
+	boolNDArray, class charNDArray): New forward decls.
+
 2003-10-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Array.cc (assign2): No error (but don't do anything either) for

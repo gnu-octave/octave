@@ -44,9 +44,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // matrix by complex scalar ops.
 
-DEFBINOP_OP (add, matrix, complex, +)
-DEFBINOP_OP (sub, matrix, complex, -)
-DEFBINOP_OP (mul, matrix, complex, *)
+DEFNDBINOP_OP (add, matrix, complex, array, complex, +)
+DEFNDBINOP_OP (sub, matrix, complex, array, complex, -)
+DEFNDBINOP_OP (mul, matrix, complex, array, complex, *)
 
 DEFBINOP (div, matrix, complex)
 {
@@ -57,7 +57,7 @@ DEFBINOP (div, matrix, complex)
   if (d == 0.0)
     gripe_divide_by_zero ();
 
-  return octave_value (v1.matrix_value () / d);
+  return octave_value (v1.array_value () / d);
 }
 
 DEFBINOP_FN (pow, matrix, complex, xpow)
@@ -72,14 +72,14 @@ DEFBINOP (ldiv, matrix, complex)
   return octave_value (xleftdiv (m1, m2));
 }
 
-DEFBINOP_FN (lt, matrix, complex, mx_el_lt)
-DEFBINOP_FN (le, matrix, complex, mx_el_le)
-DEFBINOP_FN (eq, matrix, complex, mx_el_eq)
-DEFBINOP_FN (ge, matrix, complex, mx_el_ge)
-DEFBINOP_FN (gt, matrix, complex, mx_el_gt)
-DEFBINOP_FN (ne, matrix, complex, mx_el_ne)
+DEFNDBINOP_FN (lt, matrix, complex, array, complex, mx_el_lt)
+DEFNDBINOP_FN (le, matrix, complex, array, complex, mx_el_le)
+DEFNDBINOP_FN (eq, matrix, complex, array, complex, mx_el_eq)
+DEFNDBINOP_FN (ge, matrix, complex, array, complex, mx_el_ge)
+DEFNDBINOP_FN (gt, matrix, complex, array, complex, mx_el_gt)
+DEFNDBINOP_FN (ne, matrix, complex, array, complex, mx_el_ne)
 
-DEFBINOP_OP (el_mul, matrix, complex, *)
+DEFNDBINOP_OP (el_mul, matrix, complex, array, complex, *)
 
 DEFBINOP (el_div, matrix, complex)
 {
@@ -90,20 +90,20 @@ DEFBINOP (el_div, matrix, complex)
   if (d == 0.0)
     gripe_divide_by_zero ();
 
-  return octave_value (v1.matrix_value () / d);
+  return octave_value (v1.array_value () / d);
 }
 
-DEFBINOP_FN (el_pow, matrix, complex, elem_xpow)
+DEFNDBINOP_FN (el_pow, matrix, complex, array, complex, elem_xpow)
 
 DEFBINOP (el_ldiv, matrix, complex)
 {
   CAST_BINOP_ARGS (const octave_matrix&, const octave_complex&);
 
-  return x_el_div (v2.complex_value (), v1.matrix_value ());
+  return x_el_div (v2.complex_value (), v1.array_value ());
 }
 
-DEFBINOP_FN (el_and, matrix, complex, mx_el_and)
-DEFBINOP_FN (el_or, matrix, complex, mx_el_or)
+DEFNDBINOP_FN (el_and, matrix, complex, array, complex, mx_el_and)
+DEFNDBINOP_FN (el_or, matrix, complex, array, complex, mx_el_or)
 
 void
 install_m_cs_ops (void)

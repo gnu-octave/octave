@@ -249,6 +249,51 @@ octave_rand::matrix (int n, int m)
   return retval;
 }
 
+#define MAKE_RAND_ND_ARRAY(mat, len, f, F) \
+  do \
+    { \
+      double val; \
+      for (volatile int i = 0; i < len; i++) \
+	{ \
+	  OCTAVE_QUIT; \
+	  F77_FUNC (f, F) (0.0, 1.0, val); \
+	  mat(i) = val; \
+	} \
+    } \
+  while (0)
+
+NDArray
+octave_rand::nd_array (const dim_vector& dims)
+{
+  maybe_initialize ();
+
+  NDArray retval;
+
+  if (! dims.all_zero ())
+    {
+      retval.resize (dims);
+
+      int len = retval.length ();
+
+      switch (current_distribution)
+	{
+	case uniform_dist:
+	  MAKE_RAND_ND_ARRAY (retval, len, dgenunf, DGENUNF);
+	  break;
+
+	case normal_dist:
+	  MAKE_RAND_ND_ARRAY (retval, len, dgennor, DGENNOR);
+	  break;
+
+	default:
+	  abort ();
+	  break;
+	}
+    }
+
+  return retval;
+}
+
 #define MAKE_RAND_ARRAY(array, n, f, F) \
   do \
     { \

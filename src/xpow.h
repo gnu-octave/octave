@@ -61,6 +61,23 @@ extern octave_value elem_xpow (const ComplexMatrix& a, const Matrix& b);
 extern octave_value elem_xpow (const ComplexMatrix& a, const Complex& b);
 extern octave_value elem_xpow (const ComplexMatrix& a, const ComplexMatrix& b);
 
+
+extern octave_value elem_xpow (double a, const NDArray& b);
+extern octave_value elem_xpow (double a, const ComplexNDArray& b);
+
+extern octave_value elem_xpow (const NDArray& a, double b);
+extern octave_value elem_xpow (const NDArray& a, const NDArray& b);
+extern octave_value elem_xpow (const NDArray& a, const Complex& b);
+extern octave_value elem_xpow (const NDArray& a, const ComplexNDArray& b);
+
+extern octave_value elem_xpow (const Complex& a, const NDArray& b);
+extern octave_value elem_xpow (const Complex& a, const ComplexNDArray& b);
+
+extern octave_value elem_xpow (const ComplexNDArray& a, double b);
+extern octave_value elem_xpow (const ComplexNDArray& a, const NDArray& b);
+extern octave_value elem_xpow (const ComplexNDArray& a, const Complex& b);
+extern octave_value elem_xpow (const ComplexNDArray& a, const ComplexNDArray& b);
+
 #endif
 
 /*

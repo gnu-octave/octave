@@ -28,6 +28,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include <cassert>
+#include <string>
+
+#include "lo-sstream.h"
 
 class
 dim_vector
@@ -116,11 +119,79 @@ public:
 	ndims = n;
     }
 
+  std::string str (void) const
+    {
+      OSSTREAM buf;
+
+      for (int i = 0; i < ndims; i++)
+	{
+	  buf << dims[i];
+
+	  if (i < ndims - 1)
+	    buf << "x";
+	}
+
+      buf << OSSTREAM_ENDS;
+
+      std::string retval = OSSTREAM_STR (buf);
+
+      OSSTREAM_FREEZE (buf);
+
+      return retval;
+    }
+
+  bool all_zero (void) const
+    {
+      bool retval = true;
+
+      for (int i = 0; i < ndims; i++)
+	{
+	  if (dims[i] != 0)
+	    {
+	      retval = false;
+	      break;
+	    }
+	}
+
+      return retval;
+    }
+
 private:
 
   int ndims;
   int *dims;
 };
+
+static inline bool
+operator == (const dim_vector& a, const dim_vector& b)
+{
+  bool retval = true;
+
+  int a_len = a.length ();
+  int b_len = b.length ();
+
+  if (a_len != b_len)
+    retval = false;
+  else
+    {
+      for (int i = 0; i < a_len; i++)
+	{
+	  if (a(i) != b(i))
+	    {
+	      retval = false;
+	      break;
+	    }
+	}
+    }
+
+  return retval;
+}
+
+static inline bool
+operator != (const dim_vector& a, const dim_vector& b)
+{
+  return ! operator == (a, b);
+}
 
 #endif
 

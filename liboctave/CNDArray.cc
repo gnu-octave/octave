@@ -35,6 +35,43 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "ArrayN-inline.h"
 
+// XXX FIXME XXX -- could we use a templated mixed-type copy function
+// here?
+
+ComplexNDArray::ComplexNDArray (const NDArray& a)
+  : MArrayN<Complex> (a.dims ())
+{
+  for (int i = 0; i < a.length (); i++)
+    elem (i) = a.elem (i);
+}
+
+ComplexNDArray::ComplexNDArray (const boolNDArray& a)
+  : MArrayN<Complex> (a.dims ())
+{
+  for (int i = 0; i < a.length (); i++)
+    elem (i) = a.elem (i);
+}
+
+ComplexNDArray::ComplexNDArray (const charNDArray& a)
+  : MArrayN<Complex> (a.dims ())
+{
+  for (int i = 0; i < a.length (); i++)
+    elem (i) = a.elem (i);
+}
+
+// unary operations
+
+boolNDArray
+ComplexNDArray::operator ! (void) const
+{
+  boolNDArray b (dims ());
+
+  for (int i = 0; i < length (); i++)
+    b.elem (i) = elem (i) != 0.0;
+
+  return b;
+}
+
 // XXX FIXME XXX -- this is not quite the right thing.
 
 boolMatrix
@@ -105,6 +142,15 @@ ComplexNDArray::increment_index (Array<int>& ra_idx,
 {
   ::increment_index (ra_idx, dimensions, start_dimension);
 }
+
+NDS_CMP_OPS(ComplexNDArray, real, Complex, real)
+NDS_BOOL_OPS(ComplexNDArray, Complex, 0.0)
+
+SND_CMP_OPS(Complex, real, ComplexNDArray, real)
+SND_BOOL_OPS(Complex, ComplexNDArray, 0.0)
+
+NDND_CMP_OPS(ComplexNDArray, real, ComplexNDArray, real)
+NDND_BOOL_OPS(ComplexNDArray, ComplexNDArray, 0.0)
 
 /*
 ;;; Local Variables: ***

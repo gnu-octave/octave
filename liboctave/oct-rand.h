@@ -26,6 +26,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string>
 
 #include "dMatrix.h"
+#include "dNDArray.h"
 
 struct
 octave_rand
@@ -53,6 +54,10 @@ octave_rand
   // Return a matrix of numbers from the sequence, filled in column
   // major order.
   static Matrix matrix (int r, int c);
+
+  // Return an N-dimensional array of numbers from the sequence,
+  // filled in column major order.
+  static NDArray nd_array (const dim_vector& dims);
 
   // Return an array of numbers from the sequence.
   static Array<double> vector (int n);

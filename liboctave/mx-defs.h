@@ -30,6 +30,11 @@ class ComplexMatrix;
 class boolMatrix;
 class charMatrix;
 
+class NDArray;
+class ComplexNDArray;
+class boolNDArray;
+class charNDArray;
+
 class ColumnVector;
 class ComplexColumnVector;
 

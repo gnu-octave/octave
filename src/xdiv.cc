@@ -28,6 +28,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "CMatrix.h"
 #include "dMatrix.h"
+#include "CNDArray.h"
+#include "dNDArray.h"
 #include "oct-cmplx.h"
 #include "quit.h"
 
@@ -301,6 +303,71 @@ x_el_div (const Complex a, const ComplexMatrix& b)
 	OCTAVE_QUIT;
 	result (i, j) = a / b (i, j);
       }
+
+  return result;
+}
+
+// Funny element by element division operations.
+//
+//          op2 \ op1:   s   cs
+//               +--   +---+----+
+//   N-d array         | 1 |  3 |
+//                     +---+----+
+//   complex N-d array | 2 |  4 |
+//                     +---+----+
+
+NDArray
+x_el_div (double a, const NDArray& b)
+{
+  NDArray result (b.dims ());
+
+  for (int i = 0; i < b.length (); i++)
+    {
+      OCTAVE_QUIT;
+      result (i) = a / b (i);
+    }
+
+  return result;
+}
+
+ComplexNDArray
+x_el_div (double a, const ComplexNDArray& b)
+{
+  ComplexNDArray result (b.dims ());
+
+  for (int i = 0; i < b.length (); i++)
+    {
+      OCTAVE_QUIT;
+      result (i) = a / b (i);
+    }
+
+  return result;
+}
+
+ComplexNDArray
+x_el_div (const Complex a, const NDArray& b)
+{
+  ComplexNDArray result (b.dims ());
+
+  for (int i = 0; i < b.length (); i++)
+    {
+      OCTAVE_QUIT;
+      result (i) = a / b (i);
+    }
+
+  return result;
+}
+
+ComplexNDArray
+x_el_div (const Complex a, const ComplexNDArray& b)
+{
+  ComplexNDArray result (b.dims ());
+
+  for (int i = 0; i < b.length (); i++)
+    {
+      OCTAVE_QUIT;
+      result (i) = a / b (i);
+    }
 
   return result;
 }

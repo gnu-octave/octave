@@ -29,12 +29,19 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   extern R OP (const X&, const Y&)
 
 class boolMatrix;
+class boolNDArray;
 
 #define CMP_OP_DECL(OP, X, Y) \
   extern boolMatrix OP (const X&, const Y&)
 
+#define NDCMP_OP_DECL(OP, X, Y) \
+  extern boolNDArray OP (const X&, const Y&)
+
 #define BOOL_OP_DECL(OP, X, Y) \
   extern boolMatrix OP (const X&, const Y&)
+
+#define NDBOOL_OP_DECL(OP, X, Y) \
+  extern boolNDArray OP (const X&, const Y&)
 
 #define TBM boolMatrix (1, 1, true)
 #define FBM boolMatrix (1, 1, false)
@@ -482,6 +489,324 @@ class boolMatrix;
   MM_CMP_OP_DECLS (M1, M2) \
   MM_BOOL_OP_DECLS (M1, M2)
 
+// N-d matrix by scalar operations.
+
+#define NDS_BIN_OP_DECLS(R, ND, S) \
+  BIN_OP_DECL (R, operator +, ND, S); \
+  BIN_OP_DECL (R, operator -, ND, S); \
+  BIN_OP_DECL (R, operator *, ND, S); \
+  BIN_OP_DECL (R, operator /, ND, S);
+
+#define NDS_BIN_OP(R, OP, ND, S, F) \
+  R \
+  OP (const ND& m, const S& s) \
+  { \
+    R r (m.dims ()); \
+ \
+    int len = m.length (); \
+ \
+    if (len > 0) \
+      F ## _vs (r.fortran_vec (), m.data (), len, s); \
+ \
+    return r; \
+  }
+
+#define NDS_BIN_OPS(R, ND, S) \
+  NDS_BIN_OP (R, operator +, ND, S, mx_inline_add) \
+  NDS_BIN_OP (R, operator -, ND, S, mx_inline_subtract) \
+  NDS_BIN_OP (R, operator *, ND, S, mx_inline_multiply) \
+  NDS_BIN_OP (R, operator /, ND, S, mx_inline_divide)
+
+#define NDS_CMP_OP_DECLS(ND, S) \
+  NDCMP_OP_DECL (mx_el_lt, ND, S); \
+  NDCMP_OP_DECL (mx_el_le, ND, S); \
+  NDCMP_OP_DECL (mx_el_ge, ND, S); \
+  NDCMP_OP_DECL (mx_el_gt, ND, S); \
+  NDCMP_OP_DECL (mx_el_eq, ND, S); \
+  NDCMP_OP_DECL (mx_el_ne, ND, S);
+
+#define NDS_CMP_OP(F, OP, ND, NDC, S, SC, EMPTY_RESULT) \
+  boolNDArray \
+  F (const ND& m, const S& s) \
+  { \
+    boolNDArray r; \
+ \
+    int len = m.length (); \
+ \
+    if (len == 0) \
+      r = EMPTY_RESULT; \
+    else \
+      { \
+	r.resize (m.dims ()); \
+ \
+	for (int i = 0; i < len; i++) \
+	  r.elem(i) = NDC (m.elem(i)) OP SC (s); \
+      } \
+ \
+    return r; \
+  }
+
+#define NDS_CMP_OPS(ND, NDC, S, SC) \
+  NDS_CMP_OP (mx_el_lt, <,  ND, NDC, S, SC, NBM) \
+  NDS_CMP_OP (mx_el_le, <=, ND, NDC, S, SC, NBM) \
+  NDS_CMP_OP (mx_el_ge, >=, ND, NDC, S, SC, NBM) \
+  NDS_CMP_OP (mx_el_gt, >,  ND, NDC, S, SC, NBM) \
+  NDS_CMP_OP (mx_el_eq, ==, ND,    , S,   , FBM) \
+  NDS_CMP_OP (mx_el_ne, !=, ND,    , S,   , TBM)
+
+#define NDS_BOOL_OP_DECLS(ND, S) \
+  NDBOOL_OP_DECL (mx_el_and, ND, S); \
+  NDBOOL_OP_DECL (mx_el_or,  ND, S);
+
+#define NDS_BOOL_OP(F, OP, ND, S, ZERO) \
+  boolNDArray \
+  F (const ND& m, const S& s) \
+  { \
+    boolNDArray r; \
+ \
+    int len = m.length (); \
+ \
+    if (len > 0) \
+      { \
+        r.resize (m.dims ()); \
+ \
+        for (int i = 0; i < len; i++) \
+	  r.elem(i) = (m.elem(i) != ZERO) OP (s != ZERO); \
+      } \
+ \
+    return r; \
+  }
+
+#define NDS_BOOL_OPS(ND, S, ZERO) \
+  NDS_BOOL_OP (mx_el_and, &&, ND, S, ZERO) \
+  NDS_BOOL_OP (mx_el_or,  ||, ND, S, ZERO)
+
+#define NDS_OP_DECLS(R, ND, S) \
+  NDS_BIN_OP_DECLS (R, ND, S) \
+  NDS_CMP_OP_DECLS (ND, S) \
+  NDS_BOOL_OP_DECLS (ND, S)
+
+// scalar by N-d matrix operations.
+
+#define SND_BIN_OP_DECLS(R, S, ND) \
+  BIN_OP_DECL (R, operator +, S, ND); \
+  BIN_OP_DECL (R, operator -, S, ND); \
+  BIN_OP_DECL (R, operator *, S, ND); \
+  BIN_OP_DECL (R, operator /, S, ND);
+
+#define SND_BIN_OP(R, OP, S, ND, F) \
+  R \
+  OP (const S& s, const ND& m) \
+  { \
+    R r (m.dims ()); \
+ \
+    int len = m.length (); \
+ \
+    if (len > 0) \
+      F ## _sv (r.fortran_vec (), s, m.data (), len); \
+ \
+    return r; \
+  }
+
+#define SND_BIN_OPS(R, S, ND) \
+  SND_BIN_OP (R, operator +, S, ND, mx_inline_add) \
+  SND_BIN_OP (R, operator -, S, ND, mx_inline_subtract) \
+  SND_BIN_OP (R, operator *, S, ND, mx_inline_multiply) \
+  SND_BIN_OP (R, operator /, S, ND, mx_inline_divide)
+
+#define SND_CMP_OP_DECLS(S, ND) \
+  NDCMP_OP_DECL (mx_el_lt, S, ND); \
+  NDCMP_OP_DECL (mx_el_le, S, ND); \
+  NDCMP_OP_DECL (mx_el_ge, S, ND); \
+  NDCMP_OP_DECL (mx_el_gt, S, ND); \
+  NDCMP_OP_DECL (mx_el_eq, S, ND); \
+  NDCMP_OP_DECL (mx_el_ne, S, ND);
+
+#define SND_CMP_OP(F, OP, S, SC, ND, NDC, EMPTY_RESULT) \
+  boolNDArray \
+  F (const S& s, const ND& m) \
+  { \
+    boolNDArray r; \
+ \
+    int len = m.length (); \
+ \
+    if (len == 0) \
+      r = EMPTY_RESULT; \
+    else \
+      { \
+        r.resize (m.dims ()); \
+ \
+        for (int i = 0; i < len; i++) \
+	    r.elem(i) = SC (s) OP NDC (m.elem(i)); \
+      } \
+ \
+    return r; \
+  }
+
+#define SND_CMP_OPS(S, CS, ND, CND) \
+  SND_CMP_OP (mx_el_lt, <,  S, CS, ND, CND, NBM) \
+  SND_CMP_OP (mx_el_le, <=, S, CS, ND, CND, NBM) \
+  SND_CMP_OP (mx_el_ge, >=, S, CS, ND, CND, NBM) \
+  SND_CMP_OP (mx_el_gt, >,  S, CS, ND, CND, NBM) \
+  SND_CMP_OP (mx_el_eq, ==, S,   , ND,    , FBM) \
+  SND_CMP_OP (mx_el_ne, !=, S,   , ND,    , TBM)
+
+#define SND_BOOL_OP_DECLS(S, ND) \
+  NDBOOL_OP_DECL (mx_el_and, S, ND); \
+  NDBOOL_OP_DECL (mx_el_or,  S, ND);
+
+#define SND_BOOL_OP(F, OP, S, ND, ZERO) \
+  boolNDArray \
+  F (const S& s, const ND& m) \
+  { \
+    boolNDArray r; \
+ \
+    int len = m.length (); \
+ \
+    if (len > 0) \
+      { \
+        r.resize (m.dims ()); \
+ \
+        for (int i = 0; i < len; i++) \
+	    r.elem(i) = (s != ZERO) OP (m.elem(i) != ZERO); \
+      } \
+ \
+    return r; \
+  }
+
+#define SND_BOOL_OPS(S, ND, ZERO) \
+  SND_BOOL_OP (mx_el_and, &&, S, ND, ZERO) \
+  SND_BOOL_OP (mx_el_or,  ||, S, ND, ZERO)
+
+#define SND_OP_DECLS(R, S, ND) \
+  SND_BIN_OP_DECLS (R, S, ND) \
+  SND_CMP_OP_DECLS (S, ND) \
+  SND_BOOL_OP_DECLS (S, ND)
+
+// N-d matrix by N-d matrix operations.
+
+#define NDND_BIN_OP_DECLS(R, ND1, ND2) \
+  BIN_OP_DECL (R, operator +, ND1, ND2); \
+  BIN_OP_DECL (R, operator -, ND1, ND2); \
+  BIN_OP_DECL (R, product,    ND1, ND2); \
+  BIN_OP_DECL (R, quotient,   ND1, ND2);
+
+#define NDND_BIN_OP(R, OP, ND1, ND2, F) \
+  R \
+  OP (const ND1& m1, const ND2& m2) \
+  { \
+    R r; \
+ \
+    dim_vector m1_dims = m1.dims (); \
+    dim_vector m2_dims = m2.dims (); \
+ \
+    if (m1_dims != m2_dims) \
+      gripe_nonconformant (#OP, m1_dims, m2_dims); \
+    else \
+      { \
+	r.resize (m1_dims); \
+ \
+	int len = m1.length (); \
+ \
+	if (len > 0) \
+	  F ## _vv (r.fortran_vec (), m1.data (), m2.data (), len); \
+      } \
+ \
+    return r; \
+  }
+
+#define NDND_BIN_OPS(R, ND1, ND2) \
+  NDND_BIN_OP (R, operator +, ND1, ND2, mx_inline_add) \
+  NDND_BIN_OP (R, operator -, ND1, ND2, mx_inline_subtract) \
+  NDND_BIN_OP (R, product,    ND1, ND2, mx_inline_multiply) \
+  NDND_BIN_OP (R, quotient,   ND1, ND2, mx_inline_divide)
+
+#define NDND_CMP_OP_DECLS(ND1, ND2) \
+  NDCMP_OP_DECL (mx_el_lt, ND1, ND2); \
+  NDCMP_OP_DECL (mx_el_le, ND1, ND2); \
+  NDCMP_OP_DECL (mx_el_ge, ND1, ND2); \
+  NDCMP_OP_DECL (mx_el_gt, ND1, ND2); \
+  NDCMP_OP_DECL (mx_el_eq, ND1, ND2); \
+  NDCMP_OP_DECL (mx_el_ne, ND1, ND2);
+
+#define NDND_CMP_OP(F, OP, ND1, C1, ND2, C2, ONE_MT_RESULT, TWO_MT_RESULT) \
+  boolNDArray \
+  F (const ND1& m1, const ND2& m2) \
+  { \
+    boolNDArray r; \
+ \
+    dim_vector m1_dims = m1.dims (); \
+    dim_vector m2_dims = m2.dims (); \
+ \
+    if (m1_dims == m2_dims) \
+      { \
+	if (m1_dims.all_zero ()) \
+	  r = TWO_MT_RESULT; \
+	else \
+	  { \
+	    r.resize (m1_dims); \
+ \
+	    for (int i = 0; i < m1.length (); i++) \
+	      r.elem(i) = C1 (m1.elem(i)) OP C2 (m2.elem(i)); \
+	  } \
+      } \
+    else \
+      { \
+	if (m1_dims.all_zero () || m2_dims.all_zero ()) \
+	  r = ONE_MT_RESULT; \
+	else \
+	  gripe_nonconformant (#F, m1_dims, m2_dims); \
+      } \
+ \
+    return r; \
+  }
+
+#define NDND_CMP_OPS(ND1, C1, ND2, C2) \
+  NDND_CMP_OP (mx_el_lt, <,  ND1, C1, ND2, C2, NBM, NBM) \
+  NDND_CMP_OP (mx_el_le, <=, ND1, C1, ND2, C2, NBM, NBM) \
+  NDND_CMP_OP (mx_el_ge, >=, ND1, C1, ND2, C2, NBM, NBM) \
+  NDND_CMP_OP (mx_el_gt, >,  ND1, C1, ND2, C2, NBM, NBM) \
+  NDND_CMP_OP (mx_el_eq, ==, ND1,   , ND2,   , FBM, TBM) \
+  NDND_CMP_OP (mx_el_ne, !=, ND1,   , ND2,   , TBM, FBM)
+
+#define NDND_BOOL_OP_DECLS(ND1, ND2) \
+  NDBOOL_OP_DECL (mx_el_and, ND1, ND2); \
+  NDBOOL_OP_DECL (mx_el_or,  ND1, ND2);
+
+#define NDND_BOOL_OP(F, OP, ND1, ND2, ZERO) \
+  boolNDArray \
+  F (const ND1& m1, const ND2& m2) \
+  { \
+    boolNDArray r; \
+ \
+    dim_vector m1_dims = m1.dims (); \
+    dim_vector m2_dims = m2.dims (); \
+ \
+    if (m1_dims == m2_dims) \
+      { \
+	if (! m1_dims.all_zero ()) \
+	  { \
+	    r.resize (m1_dims); \
+ \
+	    for (int i = 0; i < m1.length (); i++) \
+	      r.elem(i) = (m1.elem(i) != ZERO) OP (m2.elem(i) != ZERO); \
+	  } \
+      } \
+    else \
+      gripe_nonconformant (#F, m1_dims, m2_dims); \
+ \
+    return r; \
+  }
+
+#define NDND_BOOL_OPS(ND1, ND2, ZERO) \
+  NDND_BOOL_OP (mx_el_and, &&, ND1, ND2, ZERO) \
+  NDND_BOOL_OP (mx_el_or,  ||, ND1, ND2, ZERO)
+
+#define NDND_OP_DECLS(R, ND1, ND2) \
+  NDND_BIN_OP_DECLS (R, ND1, ND2) \
+  NDND_CMP_OP_DECLS (ND1, ND2) \
+  NDND_BOOL_OP_DECLS (ND1, ND2)
+
 // scalar by diagonal matrix operations.
 
 #define SDM_BIN_OP_DECLS(R, S, DM) \
@@ -497,9 +822,7 @@ class boolMatrix;
  \
     R r (nr, nc, s); \
  \
-    int len = dm.length (); \
- \
-    for (int i = 0; i < len; i++) \
+    for (int i = 0; i < dm.length (); i++) \
       r.elem(i, i) OPEQ dm.elem(i, i); \
  \
     return r; \
@@ -527,9 +850,7 @@ class boolMatrix;
  \
     R r (nr, nc, SGN s); \
  \
-    int len = dm.length (); \
- \
-    for (int i = 0; i < len; i++) \
+    for (int i = 0; i < dm.length (); i++) \
       r.elem(i, i) += dm.elem(i, i); \
  \
     return r; \
@@ -601,7 +922,9 @@ operator * (const M& m, const DM& dm) \
  \
       if (m_nr > 0 && m_nc > 0 && dm_nc > 0) \
 	{ \
-	  for (int j = 0; j < dm.length (); j++) \
+	  int len = dm.length (); \
+ \
+	  for (int j = 0; j < len; j++) \
 	    { \
 	      if (dm.elem(j, j) == 1.0) \
 		{ \
@@ -687,7 +1010,9 @@ operator * (const DM& dm, const M& m) \
  \
       if (dm_nr > 0 && dm_nc > 0 && m_nc > 0) \
 	{ \
-	  for (int i = 0; i < dm.length (); i++) \
+	  int len = dm.length (); \
+ \
+	  for (int i = 0; i < len; i++) \
 	    { \
 	      if (dm.elem(i, i) == 1.0) \
 		{ \

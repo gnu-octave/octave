@@ -29,12 +29,18 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "boolMatrix.h"
 #include "dMatrix.h"
 #include "CMatrix.h"
+#include "boolNDArray.h"
+#include "dNDArray.h"
+#include "CNDArray.h"
 
 MS_BIN_OPS (ComplexMatrix, Matrix, Complex)
+NDS_BIN_OPS (ComplexNDArray, NDArray, Complex)
 
 MS_CMP_OPS (Matrix, , Complex, real)
+NDS_CMP_OPS (NDArray, , Complex, real)
 
 MS_BOOL_OPS (Matrix, Complex, 0.0)
+NDS_BOOL_OPS (NDArray, Complex, 0.0)
 
 /*
 ;;; Local Variables: ***

@@ -43,8 +43,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // matrix by complex matrix ops.
 
-DEFBINOP_OP (add, matrix, complex_matrix, +)
-DEFBINOP_OP (sub, matrix, complex_matrix, -)
+DEFNDBINOP_OP (add, matrix, complex_matrix, array, array, +)
+DEFNDBINOP_OP (sub, matrix, complex_matrix, array, array, -)
+
 DEFBINOP_OP (mul, matrix, complex_matrix, *)
 DEFBINOP_FN (div, matrix, complex_matrix, xdiv)
 
@@ -56,32 +57,32 @@ DEFBINOPX (pow, matrix, complex_matrix)
 
 DEFBINOP_FN (ldiv, matrix, complex_matrix, xleftdiv)
 
-DEFBINOP_FN (lt, matrix, complex_matrix, mx_el_lt)
-DEFBINOP_FN (le, matrix, complex_matrix, mx_el_le)
-DEFBINOP_FN (eq, matrix, complex_matrix, mx_el_eq)
-DEFBINOP_FN (ge, matrix, complex_matrix, mx_el_ge)
-DEFBINOP_FN (gt, matrix, complex_matrix, mx_el_gt)
-DEFBINOP_FN (ne, matrix, complex_matrix, mx_el_ne)
+DEFNDBINOP_FN (lt, matrix, complex_matrix, array, array, mx_el_lt)
+DEFNDBINOP_FN (le, matrix, complex_matrix, array, array, mx_el_le)
+DEFNDBINOP_FN (eq, matrix, complex_matrix, array, array, mx_el_eq)
+DEFNDBINOP_FN (ge, matrix, complex_matrix, array, array, mx_el_ge)
+DEFNDBINOP_FN (gt, matrix, complex_matrix, array, array, mx_el_gt)
+DEFNDBINOP_FN (ne, matrix, complex_matrix, array, array, mx_el_ne)
 
-DEFBINOP_FN (el_mul, matrix, complex_matrix, product)
-DEFBINOP_FN (el_div, matrix, complex_matrix, quotient)
-DEFBINOP_FN (el_pow, matrix, complex_matrix, elem_xpow)
+DEFNDBINOP_FN (el_mul, matrix, complex_matrix, array, array, product)
+DEFNDBINOP_FN (el_div, matrix, complex_matrix, array, array, quotient)
+DEFNDBINOP_FN (el_pow, matrix, complex_matrix, array, array, elem_xpow)
 
 DEFBINOP (el_ldiv, matrix, complex_matrix)
 {
   CAST_BINOP_ARGS (const octave_matrix&, const octave_complex_matrix&);
 
-  return quotient (v2.complex_matrix_value (), v1.matrix_value ());
+  return quotient (v2.array_value (), v1.array_value ());
 }
 
-DEFBINOP_FN (el_and, matrix, complex_matrix, mx_el_and)
-DEFBINOP_FN (el_or, matrix, complex_matrix, mx_el_or)
+DEFNDBINOP_FN (el_and, matrix, complex_matrix, array, array, mx_el_and)
+DEFNDBINOP_FN (el_or,  matrix, complex_matrix, array, array, mx_el_or)
 
 DEFCONV (complex_matrix_conv, matrix, complex_matrix)
 {
   CAST_CONV_ARG (const octave_matrix&);
 
-  return new octave_complex_matrix (ComplexMatrix (v.matrix_value ()));
+  return new octave_complex_matrix (ComplexNDArray (v.array_value ()));
 }
 
 void

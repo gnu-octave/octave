@@ -40,9 +40,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // scalar by matrix ops.
 
-DEFBINOP_OP (add, scalar, matrix, +)
-DEFBINOP_OP (sub, scalar, matrix, -)
-DEFBINOP_OP (mul, scalar, matrix, *)
+DEFNDBINOP_OP (add, scalar, matrix, scalar, array, +)
+DEFNDBINOP_OP (sub, scalar, matrix, scalar, array, -)
+DEFNDBINOP_OP (mul, scalar, matrix, scalar, array, *)
 
 DEFBINOP (div, scalar, matrix)
 {
@@ -65,19 +65,19 @@ DEFBINOP (ldiv, scalar, matrix)
   if (d == 0.0)
     gripe_divide_by_zero ();
 
-  return octave_value (v2.matrix_value () / d);
+  return octave_value (v2.array_value () / d);
 }
 
-DEFBINOP_FN (lt, scalar, matrix, mx_el_lt)
-DEFBINOP_FN (le, scalar, matrix, mx_el_le)
-DEFBINOP_FN (eq, scalar, matrix, mx_el_eq)
-DEFBINOP_FN (ge, scalar, matrix, mx_el_ge)
-DEFBINOP_FN (gt, scalar, matrix, mx_el_gt)
-DEFBINOP_FN (ne, scalar, matrix, mx_el_ne)
+DEFNDBINOP_FN (lt, scalar, matrix, scalar, array, mx_el_lt)
+DEFNDBINOP_FN (le, scalar, matrix, scalar, array, mx_el_le)
+DEFNDBINOP_FN (eq, scalar, matrix, scalar, array, mx_el_eq)
+DEFNDBINOP_FN (ge, scalar, matrix, scalar, array, mx_el_ge)
+DEFNDBINOP_FN (gt, scalar, matrix, scalar, array, mx_el_gt)
+DEFNDBINOP_FN (ne, scalar, matrix, scalar, array, mx_el_ne)
 
-DEFBINOP_OP (el_mul, scalar, matrix, *)
-DEFBINOP_FN (el_div, scalar, matrix, x_el_div)
-DEFBINOP_FN (el_pow, scalar, matrix, elem_xpow)
+DEFNDBINOP_OP (el_mul, scalar, matrix, scalar, array, *)
+DEFNDBINOP_FN (el_div, scalar, matrix, scalar, array, x_el_div)
+DEFNDBINOP_FN (el_pow, scalar, matrix, scalar, array, elem_xpow)
 
 DEFBINOP (el_ldiv, scalar, matrix)
 {
@@ -88,11 +88,11 @@ DEFBINOP (el_ldiv, scalar, matrix)
   if (d == 0.0)
     gripe_divide_by_zero ();
 
-  return octave_value (v2.matrix_value () / d);
+  return octave_value (v2.array_value () / d);
 }
 
-DEFBINOP_FN (el_and, scalar, matrix, mx_el_and)
-DEFBINOP_FN (el_or, scalar, matrix, mx_el_or)
+DEFNDBINOP_FN (el_and, scalar, matrix, scalar, array, mx_el_and)
+DEFNDBINOP_FN (el_or,  scalar, matrix, scalar, array, mx_el_or)
 
 DEFCONV (matrix_conv, scalar, matrix)
 {

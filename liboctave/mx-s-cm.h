@@ -24,10 +24,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define octave_s_cm_h 1
 
 class ComplexMatrix;
+class ComplexNDArray;
 
 #include "mx-op-defs.h"
 
 SM_OP_DECLS (ComplexMatrix, double, ComplexMatrix)
+SND_OP_DECLS (ComplexNDArray, double, ComplexNDArray)
 
 #endif
 

@@ -86,7 +86,7 @@ public:
     }
 
   void resize (const dim_vector& dims)
-    { Array<T>resize_no_fill (dims); }
+    { Array<T>::resize_no_fill (dims); }
 
   void resize (const dim_vector& dims, const T& val)
     { Array<T>::resize (dims, val); }

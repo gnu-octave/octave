@@ -190,6 +190,13 @@ extern void install_ops (void);
     return octave_value (op v.t ## _value ()); \
   }
 
+#define DEFNDUNOP_OP(name, t, op) \
+  UNOPDECL (name, a) \
+  { \
+    CAST_UNOP_ARG (const octave_ ## t&); \
+    return octave_value (op v.array_value ()); \
+  }
+
 // XXX FIXME XXX -- in some cases, the constructor isn't necessary.
 
 #define DEFUNOP_FN(name, t, f) \
@@ -197,6 +204,13 @@ extern void install_ops (void);
   { \
     CAST_UNOP_ARG (const octave_ ## t&); \
     return octave_value (f (v.t ## _value ())); \
+  }
+
+#define DEFNDUNOP_FN(name, t, f) \
+  UNOPDECL (name, a) \
+  { \
+    CAST_UNOP_ARG (const octave_ ## t&); \
+    return octave_value (f (v.array_value ())); \
   }
 
 #define DEFNCUNOP_METHOD(name, t, method) \
@@ -225,6 +239,14 @@ extern void install_ops (void);
       (v1.t1 ## _value () op v2.t2 ## _value ()); \
   }
 
+#define DEFNDBINOP_OP(name, t1, t2, e1, e2, op) \
+  BINOPDECL (name, a1, a2) \
+  { \
+    CAST_BINOP_ARGS (const octave_ ## t1&, const octave_ ## t2&); \
+    return octave_value \
+      (v1.e1 ## _value () op v2.e2 ## _value ()); \
+  }
+
 // XXX FIXME XXX -- in some cases, the constructor isn't necessary.
 
 #define DEFBINOP_FN(name, t1, t2, f) \
@@ -232,6 +254,13 @@ extern void install_ops (void);
   { \
     CAST_BINOP_ARGS (const octave_ ## t1&, const octave_ ## t2&); \
     return octave_value (f (v1.t1 ## _value (), v2.t2 ## _value ())); \
+  }
+
+#define DEFNDBINOP_FN(name, t1, t2, e1, e2, f) \
+  BINOPDECL (name, a1, a2) \
+  { \
+    CAST_BINOP_ARGS (const octave_ ## t1&, const octave_ ## t2&); \
+    return octave_value (f (v1.e1 ## _value (), v2.e2 ## _value ())); \
   }
 
 #define BINOP_NONCONFORMANT(msg) \

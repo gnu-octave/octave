@@ -839,6 +839,343 @@ elem_xpow (const ComplexMatrix& a, const ComplexMatrix& b)
   return result;
 }
 
+// Safer pow functions that work elementwise for N-d arrays.
+//
+//       op2 \ op1:   s   nd  cs   cnd
+//            +--   +---+---+----+----+
+//   scalar   |     | * | 3 |  * |  9 |
+//                  +---+---+----+----+
+//   N_d            | 1 | 4 |  7 | 10 |
+//                  +---+---+----+----+
+//   complex_scalar | * | 5 |  * | 11 |
+//                  +---+---+----+----+
+//   complex_N_d    | 2 | 6 |  8 | 12 |
+//                  +---+---+----+----+
+//
+//   * -> not needed.
+
+// XXX FIXME XXX -- these functions need to be fixed so that things
+// like
+//
+//   a = -1; b = [ 0, 0.5, 1 ]; r = a .^ b
+//
+// and
+//
+//   a = -1; b = [ 0, 0.5, 1 ]; for i = 1:3, r(i) = a .^ b(i), end
+//
+// produce identical results.  Also, it would be nice if -1^0.5
+// produced a pure imaginary result instead of a complex number with a
+// small real part.  But perhaps that's really a problem with the math
+// library...
+
+// -*- 1 -*-
+octave_value
+elem_xpow (double a, const NDArray& b)
+{
+  octave_value retval;
+
+  double d1, d2;
+
+  if (a < 0.0 && ! b.all_integers (d1, d2))
+    {
+      Complex atmp (a);
+      ComplexNDArray result (b.dims ());
+      for (int i = 0; i < b.length (); i++)
+	{
+	  OCTAVE_QUIT;
+	  result(i) = pow (atmp, b(i));
+	}
+
+      retval = result;
+    }
+  else
+    {
+      NDArray result (b.dims ());
+      for (int i = 0; i < b.length (); i++)
+	{
+	  OCTAVE_QUIT;
+	  result (i) = pow (a, b(i));
+	}
+
+      retval = result;
+    }
+
+  return retval;
+}
+
+// -*- 2 -*-
+octave_value
+elem_xpow (double a, const ComplexNDArray& b)
+{
+  ComplexNDArray result (b.dims ());
+  Complex atmp (a);
+  for (int i = 0; i < b.length (); i++)
+    {
+      OCTAVE_QUIT;
+      result(i) = pow (atmp, b(i));
+    }
+
+  return result;
+}
+
+// -*- 3 -*-
+octave_value
+elem_xpow (const NDArray& a, double b)
+{
+  octave_value retval;
+
+  if (static_cast<int> (b) != b && a.any_element_is_negative ())
+    {
+      ComplexNDArray result (a.dims ());
+
+      for (int i = 0; i < a.length (); i++)
+	{
+	  OCTAVE_QUIT;
+	  Complex atmp (a(i));
+	  result(i) = pow (atmp, b);
+	}
+
+      retval = result;
+    }
+  else
+    {
+      NDArray result (a.dims ());
+
+      for (int i = 0; i < a.length (); i++)
+	{
+	  OCTAVE_QUIT;
+	  result(i) = pow (a(i), b);
+	}
+
+      retval = result;
+    }
+
+  return retval;
+}
+
+// -*- 4 -*-
+octave_value
+elem_xpow (const NDArray& a, const NDArray& b)
+{
+  octave_value retval;
+
+  dim_vector a_dims = a.dims ();
+  dim_vector b_dims = b.dims ();
+
+  if (a_dims != b_dims)
+    {
+      gripe_nonconformant ("operator .^", a_dims, b_dims);
+      return octave_value ();
+    }
+
+  int len = a.length ();
+
+  bool convert_to_complex = false;
+
+  for (int i = 0; i < len; i++)
+    {
+      OCTAVE_QUIT;
+      double atmp = a(i);
+      double btmp = b(i);
+      if (atmp < 0.0 && static_cast<int> (btmp) != btmp)
+	{
+	  convert_to_complex = true;
+	  goto done;
+	}
+    }
+
+done:
+
+  if (convert_to_complex)
+    {
+      ComplexNDArray complex_result (a_dims);
+
+      for (int i = 0; i < len; i++)
+	{
+	  OCTAVE_QUIT;
+	  Complex atmp (a(i));
+	  Complex btmp (b(i));
+	  complex_result(i) = pow (atmp, btmp);
+	}
+
+      retval = complex_result;
+    }
+  else
+    {
+      NDArray result (a_dims);
+
+      for (int i = 0; i < len; i++)
+	{
+	  OCTAVE_QUIT;
+	  result(i) = pow (a(i), b(i));
+	}
+
+      retval = result;
+    }
+
+  return retval;
+}
+
+// -*- 5 -*-
+octave_value
+elem_xpow (const NDArray& a, const Complex& b)
+{
+  ComplexNDArray result (a.dims ());
+
+  for (int i = 0; i < a.length (); i++)
+    {
+      OCTAVE_QUIT;
+      result(i) = pow (Complex (a(i)), b);
+    }
+
+  return result;
+}
+
+// -*- 6 -*-
+octave_value
+elem_xpow (const NDArray& a, const ComplexNDArray& b)
+{
+  dim_vector a_dims = a.dims ();
+  dim_vector b_dims = b.dims ();
+
+  if (a_dims != b_dims)
+    {
+      gripe_nonconformant ("operator .^", a_dims, b_dims);
+      return octave_value ();
+    }
+
+  ComplexNDArray result (a_dims);
+  for (int i = 0; i < a.length (); i++)
+    {
+      OCTAVE_QUIT;
+      result(i) = pow (Complex (a(i)), b(i));
+    }
+
+  return result;
+}
+
+// -*- 7 -*-
+octave_value
+elem_xpow (const Complex& a, const NDArray& b)
+{
+  ComplexNDArray result (b.dims ());
+  for (int i = 0; i < b.length (); i++)
+    {
+      OCTAVE_QUIT;
+      double btmp = b(i);
+      if (xisint (btmp))
+	result(i) = pow (a, static_cast<int> (btmp));
+      else
+	result(i) = pow (a, btmp);
+    }
+
+  return result;
+}
+
+// -*- 8 -*-
+octave_value
+elem_xpow (const Complex& a, const ComplexNDArray& b)
+{
+  ComplexNDArray result (b.dims ());
+  for (int i = 0; i < b.length (); i++)
+    {
+      OCTAVE_QUIT;
+      result(i) = pow (a, b(i));
+    }
+
+  return result;
+}
+
+// -*- 9 -*-
+octave_value
+elem_xpow (const ComplexNDArray& a, double b)
+{
+  ComplexNDArray result (a.dims ());
+
+  if (xisint (b))
+    {
+      for (int i = 0; i < a.length (); i++)
+	{
+	  OCTAVE_QUIT;
+	  result(i) = pow (a(i), static_cast<int> (b));
+	}
+    }
+  else
+    {
+      for (int i = 0; i < a.length (); i++)
+	{
+	  OCTAVE_QUIT;
+	  result(i) = pow (a(i), b);
+	}
+    }
+
+  return result;
+}
+
+// -*- 10 -*-
+octave_value
+elem_xpow (const ComplexNDArray& a, const NDArray& b)
+{
+  dim_vector a_dims = a.dims ();
+  dim_vector b_dims = b.dims ();
+
+  if (a_dims != b_dims)
+    {
+      gripe_nonconformant ("operator .^", a_dims, b_dims);
+      return octave_value ();
+    }
+
+  ComplexNDArray result (a_dims);
+  for (int i = 0; i < a.length (); i++)
+    {
+      OCTAVE_QUIT;
+      double btmp = b(i);
+      if (xisint (btmp))
+	result(i) = pow (a(i), static_cast<int> (btmp));
+      else
+	result(i) = pow (a(i), btmp);
+    }
+
+  return result;
+}
+
+// -*- 11 -*-
+octave_value
+elem_xpow (const ComplexNDArray& a, const Complex& b)
+{
+  ComplexNDArray result (a.dims ());
+  for (int i = 0; i < a.length (); i++)
+    {
+      OCTAVE_QUIT;
+      result(i) = pow (a(i), b);
+    }
+
+  return result;
+}
+
+// -*- 12 -*-
+octave_value
+elem_xpow (const ComplexNDArray& a, const ComplexNDArray& b)
+{
+  dim_vector a_dims = a.dims ();
+  dim_vector b_dims = b.dims ();
+
+  if (a_dims != b_dims)
+    {
+      gripe_nonconformant ("operator .^", a_dims, b_dims);
+      return octave_value ();
+    }
+
+  ComplexNDArray result (a_dims);
+  for (int i = 0; i < a.length (); i++)
+    {
+      OCTAVE_QUIT;
+      result(i) = pow (a(i), b(i));
+    }
+
+  return result;
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

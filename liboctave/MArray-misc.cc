@@ -26,6 +26,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "MArray.h"
 #include "MArray2.h"
+#include "dim-vector.h"
 #include "lo-error.h"
 
 void
@@ -44,6 +45,19 @@ gripe_nonconformant (const char *op, int op1_nr, int op1_nc,
     ("%s: nonconformant arguments (op1 is %dx%d, op2 is %dx%d)",
      op, op1_nr, op1_nc, op2_nr, op2_nc);
 }
+
+void
+gripe_nonconformant (const char *op, dim_vector& op1_dims,
+		     dim_vector& op2_dims)
+{
+  std::string op1_dims_str = op1_dims.str ();
+  std::string op2_dims_str = op2_dims.str ();
+
+  (*current_liboctave_error_handler)
+    ("%s: nonconformant arguments (op1 is %s, op2 is %s)",
+     op, op1_dims_str.c_str (), op2_dims_str.c_str ());
+}
+
 
 /*
 ;;; Local Variables: ***

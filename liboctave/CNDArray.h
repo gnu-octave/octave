@@ -43,9 +43,9 @@ public:
   
   ComplexNDArray (void) : MArrayN<Complex> () { }
 
-  ComplexNDArray (dim_vector& dims) : MArrayN<Complex> (dims) { }
+  ComplexNDArray (const dim_vector& dims) : MArrayN<Complex> (dims) { }
 
-  ComplexNDArray (dim_vector& dims, const Complex& val)
+  ComplexNDArray (const dim_vector& dims, const Complex& val)
     : MArrayN<Complex> (dims, val) { }
   
   ComplexNDArray (const ComplexNDArray& a) : MArrayN<Complex> (a) { }
@@ -56,11 +56,21 @@ public:
 
   ComplexNDArray (const ArrayN<Complex>& a) : MArrayN<Complex> (a) { }
 
+  explicit ComplexNDArray (const NDArray& a);
+
+  explicit ComplexNDArray (const boolNDArray& a);
+
+  explicit ComplexNDArray (const charNDArray& a);
+
   ComplexNDArray& operator = (const ComplexNDArray& a)
     {
       MArrayN<Complex>::operator = (a);
       return *this;
     }
+
+  // unary operations
+
+  boolNDArray operator ! (void) const;
 
   // XXX FIXME XXX -- this is not quite the right thing.
 
@@ -90,6 +100,15 @@ private:
   ComplexNDArray (Complex *d, dim_vector& dims)
     : MArrayN<Complex> (d, dims) { }
 };
+
+NDS_CMP_OP_DECLS (ComplexNDArray, Complex)
+NDS_BOOL_OP_DECLS (ComplexNDArray, Complex)
+
+SND_CMP_OP_DECLS (Complex, ComplexNDArray)
+SND_BOOL_OP_DECLS (Complex, ComplexNDArray)
+
+NDND_CMP_OP_DECLS (ComplexNDArray, ComplexNDArray)
+NDND_BOOL_OP_DECLS (ComplexNDArray, ComplexNDArray)
 
 MARRAY_FORWARD_DEFS (MArrayN, ComplexNDArray, Complex)
 

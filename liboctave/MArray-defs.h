@@ -271,10 +271,10 @@
 
 // Instantiate all the MArrayN friends for MArrayN element type T.
 #define INSTANTIATE_MARRAYN_FRIENDS(T) \
-  MARRAY_OP_ASSIGN_DEFS (MArrayN, T, T) /* \
-  MARRAY_OP_ASSIGN_DEFS (MArray2, T, MArray2<T>) \
-  MARRAY_UNOP_DEFS (MArray2, T) \
-  MARRAY_BINOP_DEFS (MArray2, T)  */
+  MARRAY_OP_ASSIGN_DEFS (MArrayN, T, T) \
+  MARRAY_OP_ASSIGN_DEFS (MArrayN, T, MArrayN<T>) \
+  MARRAY_UNOP_DEFS (MArrayN, T) \
+  MARRAY_BINOP_DEFS (MArrayN, T)
 
 // Instantiate all the MDiagArray2 friends for MDiagArray2 element type T.
 #define INSTANTIATE_MDIAGARRAY2_FRIENDS(T) \

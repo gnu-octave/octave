@@ -1,5 +1,8 @@
 Thu Oct  2 01:37:15 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* aclocal.m4 (OCTAVE_FLIBS): Ignore -lc and -lgcc.
+	From "Ram'on Garc'ia Fern'andez" <ramon@juguete.quim.ucm.es>
+
 	* mkoctfile.in: Handle -IDIR option.
 
 Thu Sep 25 11:47:45 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>

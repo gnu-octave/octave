@@ -153,7 +153,7 @@ dnl
 	    fi
 	  fi
 	;;
-	-lang* | -lcrt0.o)
+	-lang* | -lcrt0.o | -lc | -lgcc)
 	  arg=
 	;;
 	-[lLR])
@@ -180,7 +180,7 @@ dnl
 		  ;;
 		esac
 	      ;;
-	      -lm | -lc)
+	      -lm)
 	      ;;
 	      *)
 		lflags="$lflags $arg"

@@ -74,6 +74,7 @@ protected:
     {
       data = d;
       len = l;
+      count = 1;
     }
 
 public:
@@ -82,6 +83,7 @@ public:
     {
       data = 0;
       len = 0;
+      count = 1;
     }
 
   ArrayRep (int n);
@@ -118,7 +120,6 @@ protected:
   Array (T *d, int l)
     {
       rep = new ArrayRep<T> (d, l);
-      rep->count = 1;
 
 #ifdef HEAVYWEIGHT_INDEXING
       idx = 0;
@@ -132,7 +133,6 @@ public:
   Array (void)
     {
       rep = new ArrayRep<T> ();
-      rep->count = 1;
 
 #ifdef HEAVYWEIGHT_INDEXING
       idx = 0;
@@ -144,7 +144,6 @@ public:
   Array (int n)
     {
       rep = new ArrayRep<T> (n);
-      rep->count = 1;
 
 #ifdef HEAVYWEIGHT_INDEXING
       idx = 0;
@@ -180,7 +179,6 @@ public:
 	{
 	  --rep->count;
 	  rep = new ArrayRep<T> (*rep);
-	  rep->count = 1;
 	}
       return rep->elem (n);
     }

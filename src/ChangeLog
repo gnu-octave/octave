@@ -1,5 +1,14 @@
 2002-12-30  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* utils.cc (Ffile_in_path): Index args correctly.
+
+	* utils.cc (Ffile_in_path): Call error, not print_usage, for
+	invalid option error.
+	(Ffile_in_loadpath): Likewise.
+
+	* load-save.cc: Use OCTAVE_LOCAL_BUFFER instead of local automatic
+	arrays or using new/delete.
+
 	* lex.l (.): Try another approach to handling EOF here.
 
 	* load-save.cc (read_mat_ascii_data): Use isalpha and isalnum, not

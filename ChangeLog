@@ -1,3 +1,7 @@
+2002-12-30  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in (OCTAVE_LOCAL_BUFFER): New macro.
+
 2002-12-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* mkoctfile.in: Include $LIBOCTINTERP in the stand alone link command.

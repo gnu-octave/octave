@@ -1,1 +1,1 @@
-file_in_path ("foo", "bar", "baz")
+file_in_path ("foo", "bar", "baz", "ooka")

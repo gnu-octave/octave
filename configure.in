@@ -22,7 +22,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### 02111-1307, USA. 
 
 AC_INIT
-AC_REVISION($Revision: 1.399 $)
+AC_REVISION($Revision: 1.400 $)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -1347,6 +1347,15 @@ typedef int sig_atomic_t;
 /* sigsetjmp is a macro, not a function. */
 #if defined (sigsetjmp) && defined (HAVE_SIGLONGJMP)
 #define OCTAVE_HAVE_SIG_JUMP
+#endif
+
+#if defined (__GNUG__)
+#define OCTAVE_LOCAL_BUFFER(T, buf, size) \
+  T buf[size]
+#else
+#define OCTAVE_LOCAL_BUFFER(T, buf, size) \
+  std::auto_ptr<T> buf_auto_ptr (new T [size]); \
+  T *buf = buf_auto_ptr.get ()
 #endif
 ])
 

@@ -32,9 +32,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cstring>
 #include <cctype>
 
+#include <fstream>
 #include <iomanip>
 #include <iostream>
-#include <fstream>
+#include <memory>
 #include <string>
 
 #ifdef HAVE_HDF5
@@ -653,7 +654,8 @@ read_ascii_data (std::istream& is, const std::string& filename, bool& global,
 		  int len;
 		  if (extract_keyword (is, "length", len) && len >= 0)
 		    {
-		      char tmp[len+1];
+		      OCTAVE_LOCAL_BUFFER (char, tmp, len+1);
+
 		      if (len > 0 && ! is.read (X_CAST (char *, tmp), len))
 			{
 			  error ("load: failed to load string constant");
@@ -685,7 +687,8 @@ read_ascii_data (std::istream& is, const std::string& filename, bool& global,
 	  int len;
 	  if (extract_keyword (is, "length", len) && len >= 0)
 	    {
-	      char *tmp = new char [len+1];
+	      OCTAVE_LOCAL_BUFFER (char, tmp, len+1);
+
 	      if (len > 0 && ! is.read (X_CAST (char *, tmp), len))
 		{
 		  error ("load: failed to load string constant");
@@ -931,7 +934,7 @@ read_binary_data (std::istream& is, bool swap,
 	  goto data_read_error;
 	if (swap)
 	  swap_4_bytes (X_CAST (char *, &len));
-	char s[len+1];
+	OCTAVE_LOCAL_BUFFER (char, s, len+1);
 	if (! is.read (X_CAST (char *, s), len))
 	  goto data_read_error;
 	s[len] = '\0';
@@ -977,7 +980,7 @@ read_binary_data (std::istream& is, bool swap,
 	      goto data_read_error;
 	    if (swap)
 	      swap_4_bytes (X_CAST (char *, &len));
-	    char tmp[len+1];
+	    OCTAVE_LOCAL_BUFFER (char, tmp, len+1);
 	    if (! is.read (X_CAST (char *, tmp), len))
 	      goto data_read_error;
 	    if (len > max_len)
@@ -1311,9 +1314,8 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
   H5G_stat_t info;
   herr_t retval = 0;
   bool ident_valid = valid_identifier (name);
-  char *vname;
 
-  vname = new char[strlen (name) + 1];
+  OCTAVE_LOCAL_BUFFER (char, vname, strlen (name) + 1);
 
   strcpy (vname, name);
 
@@ -1372,8 +1374,8 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
 	  else if (rank > 0 && rank <= 2)
 	    {
 	      // real matrix
-	      hsize_t *dims = new hsize_t[rank];
-	      hsize_t *maxdims = new hsize_t[rank];
+	      OCTAVE_LOCAL_BUFFER (hsize_t, dims, rank);
+	      OCTAVE_LOCAL_BUFFER (hsize_t, maxdims, rank);
 
 	      H5Sget_simple_extent_dims (space_id, dims, maxdims);
 
@@ -1381,10 +1383,6 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
 	      // octave uses column-major & HDF5 uses row-major
 	      nc = dims[0];
 	      nr = rank > 1 ? dims[1] : 1;
-
-	      delete [] dims;
-	      delete [] maxdims;
-
 	      Matrix m (nr, nc);
 	      double *re = m.fortran_vec ();
 	      if (H5Dread (data_id, H5T_NATIVE_DOUBLE, H5S_ALL, H5S_ALL, 
@@ -1395,13 +1393,13 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
 	    }
 	  else if (rank >= 3 && d->import)
 	    {
-	      hsize_t *dims = new hsize_t[rank];
-	      hsize_t *maxdims = new hsize_t[rank];
+	      OCTAVE_LOCAL_BUFFER (hsize_t, dims, rank);
+	      OCTAVE_LOCAL_BUFFER (hsize_t, maxdims, rank);
 
 	      H5Sget_simple_extent_dims (space_id, dims, maxdims);
 
-	      hssize_t *start = new hssize_t[rank];
-	      hsize_t *count = new hsize_t[rank];
+	      OCTAVE_LOCAL_BUFFER (hssize_t, start, rank);
+	      OCTAVE_LOCAL_BUFFER (hsize_t, count, rank);
 
 	      for (hsize_t i = 0; i < rank; ++i)
 		{
@@ -1414,11 +1412,6 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
 					     rank, dims, rank-1,
 					     start, count,
 					     H5T_NATIVE_DOUBLE, d->tc);
-
-	      delete [] count;
-	      delete [] start;
-	      delete [] dims;
-	      delete [] maxdims;
 	    }
 	  else
 	    {
@@ -1474,7 +1467,8 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
 		  // same physical length (I think), which is
 		  // slightly wasteful, but oh well.
 
-		  char *s = new char [elements * slen];
+		  OCTAVE_LOCAL_BUFFER (char, s, elements * slen);
+
 		  // create datatype for (null-terminated) string
 		  // to read into:
 		  hid_t st_id = H5Tcopy (H5T_C_S1);
@@ -1492,8 +1486,6 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
 			}
 		      d->tc = octave_value (chm, true);
 		    }
-
-		  delete [] s;
 
 		  H5Tclose (st_id);
 		}
@@ -1531,15 +1523,13 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
 	      else if (rank > 0 && rank <= 2)
 		{
 		  // complex matrix
-		  hsize_t *dims = new hsize_t[rank];
-		  hsize_t *maxdims = new hsize_t[rank];
+		  OCTAVE_LOCAL_BUFFER (hsize_t, dims, rank);
+		  OCTAVE_LOCAL_BUFFER (hsize_t, maxdims, rank);
 		  H5Sget_simple_extent_dims (space_id, dims, maxdims);
 		  int nr, nc;  // rows and columns
 		  // octave uses column-major & HDF5 uses row-major
 		  nc = dims[0];
 		  nr = rank > 1 ? dims[1] : 1;
-		  delete [] dims;
-		  delete [] maxdims;
 		  ComplexMatrix m (nr, nc);
 		  Complex *reim = m.fortran_vec ();
 		  if (H5Dread (data_id, d->complex_type, H5S_ALL,
@@ -1551,11 +1541,11 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
 		}
 	      else if (rank >= 3 && d->import)
 		{
-		  hsize_t *dims = new hsize_t[rank];
-		  hsize_t *maxdims = new hsize_t[rank];
+		  OCTAVE_LOCAL_BUFFER (hsize_t, dims, rank);
+		  OCTAVE_LOCAL_BUFFER (hsize_t, maxdims, rank);
 		  H5Sget_simple_extent_dims (space_id, dims, maxdims);
-		  hssize_t *start = new hssize_t[rank];
-		  hsize_t *count = new hsize_t[rank];
+		  OCTAVE_LOCAL_BUFFER (hssize_t, start, rank);
+		  OCTAVE_LOCAL_BUFFER (hsize_t, count, rank);
 		  for (hsize_t i = 0; i < rank; ++i)
 		    {
 		      start[i] = 0;
@@ -1568,11 +1558,6 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
 						 start, count,
 						 d->complex_type,
 						 d->tc);
-
-		  delete [] count;
-		  delete [] start;
-		  delete [] dims;
-		  delete [] maxdims;
 		}
 	      else
 		{
@@ -1730,8 +1715,6 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
       d->name = new char [strlen (vname) + 1];
       strcpy (d->name, vname);
     }
-
-  delete [] vname;
 
   return retval;
 }
@@ -2358,7 +2341,7 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
   // supposed to include it, but apparently not all files do.  Either
   // way, I think this should work.
 
-  char name[len+1];
+  OCTAVE_LOCAL_BUFFER (char, name, len+1);
   if (! is.read (X_CAST (char *, name), len))
     goto data_read_error;
   name[len] = '\0';
@@ -2623,7 +2606,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
       }
 
     pos = is.tellg ();
-    char name[len+1];
+    OCTAVE_LOCAL_BUFFER (char, name, len+1);
 
     if (len)			// structure field subelements have
 				// zero-length array name subelements
@@ -2665,7 +2648,6 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	FOUR_BYTE_INT len;
 	FOUR_BYTE_INT field_name_length;
 	int i;
-	char *elname;
 
 	// field name length subelement -- actually the maximum length
 	// of a field name.  The Matlab docs promise this will always
@@ -2692,7 +2674,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	    goto data_read_error;
 	  }
 
-	elname = new char[len];
+	OCTAVE_LOCAL_BUFFER (char, elname, len);
 
 	if (! is.read (elname, len))
 	  goto data_read_error;
@@ -2705,7 +2687,6 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	    m[elname + i*field_name_length] = fieldtc;
 	  }
 
-	delete [] elname;
 	tc = m;
       }
       break;
@@ -3687,7 +3668,7 @@ add_hdf5_data (hid_t loc_id, const octave_value& tc,
       if (data_id < 0)
 	goto error_cleanup;
 
-      char *s = new char [nr * (nc + 1)];
+      OCTAVE_LOCAL_BUFFER (char, s, nr * (nc + 1));
 
       for (int i = 0; i < nr; ++i)
 	{
@@ -3697,11 +3678,8 @@ add_hdf5_data (hid_t loc_id, const octave_value& tc,
 
       if (H5Dwrite (data_id, type_id, H5S_ALL, H5S_ALL, H5P_DEFAULT,
 		    (void*) s) < 0) {
-	delete [] s;
 	goto error_cleanup;
       }
-
-      delete [] s;
     }
   else if (tc.is_range ())
     {
@@ -4014,11 +3992,10 @@ write_mat5_array (std::ostream& os, Matrix& m, const int save_as_floats)
 #define MAT5_DO_WRITE(TYPE, data, count, stream)			\
   do									\
     {									\
-      TYPE *ptr = new TYPE [count];					\
+      OCTAVE_LOCAL_BUFFER (TYPE, ptr, count);				\
       for (int i = 0; i < count; i++)					\
         ptr[i] = X_CAST (TYPE, data[i]);				\
       stream.write (X_CAST (char *, ptr), count * sizeof (TYPE));	\
-      delete [] ptr ;							\
     }									\
   while (0)
 
@@ -4187,11 +4164,10 @@ save_mat5_binary_element (std::ostream& os,
     int paddedlength = PAD (namelen);
 
     write_mat5_tag (os, miINT8, namelen);
-    char * paddedname = new char [paddedlength];
+    OCTAVE_LOCAL_BUFFER (char, paddedname, paddedlength);
     memset (paddedname, 0, paddedlength);
     strncpy (paddedname, name.c_str (), namelen);
     os.write (paddedname, paddedlength);
-    delete [] paddedname;
   }
 
   // data element
@@ -4202,7 +4178,7 @@ save_mat5_binary_element (std::ostream& os,
       int len = nr*nc*2;
       int paddedlength = PAD (nr*nc*2);
 
-      TWO_BYTE_INT *buf = new TWO_BYTE_INT[nc*nr+3];
+      OCTAVE_LOCAL_BUFFER (TWO_BYTE_INT, buf, nc*nr+3);
       write_mat5_tag (os, miUINT16, len);
 
       for (int i = 0; i < nr; i++)
@@ -4217,8 +4193,6 @@ save_mat5_binary_element (std::ostream& os,
       
       if (paddedlength > len)
 	os.write ((char *)buf, paddedlength - len);
-
-      delete [] buf;
     }
   else if (tc.is_real_scalar () || tc.is_real_matrix () || tc.is_range ())
     {

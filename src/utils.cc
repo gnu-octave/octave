@@ -314,7 +314,7 @@ name in the path.  If no files are found, return an empty cell array.\n\
 	      if (! error_state && opt == "all")
 		retval = Cell (make_absolute (Vload_path_dir_path.find_all_first_of (names)));
 	      else
-		print_usage ("file_in_loadpath: invalid option");
+		error ("file_in_loadpath: invalid option");
 	    }
 	}
       else
@@ -348,6 +348,7 @@ the first that matches.\n\
 If the third optional argument @code{\"all\"} is supplied, return\n\
 a cell array containing the list of all files that have the same\n\
 name in the path.  If no files are found, return an empty cell array.\n\
+@seealso{file_in_loadpath}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -360,7 +361,7 @@ name in the path.  If no files are found, return an empty cell array.\n\
 
       if (! error_state)
 	{
-	  string_vector names = args(0).all_strings ();
+	  string_vector names = args(1).all_strings ();
 
 	  if (! error_state && names.length () > 0)
 	    {
@@ -375,12 +376,12 @@ name in the path.  If no files are found, return an empty cell array.\n\
 		}
 	      else if (nargin == 3)
 		{
-		  std::string opt = args(1).string_value ();
+		  std::string opt = args(2).string_value ();
 
 		  if (! error_state && opt == "all")
 		    retval = Cell (make_absolute (search_path_for_all_files (path, names)));
 		  else
-		    print_usage ("file_in_path: invalid option");
+		    error ("file_in_path: invalid option");
 		}
 	    }
 	  else

@@ -52,10 +52,9 @@ function v = npv (r, p, i)
   if is_scalar (r)
     d = 1 ./ (1 + r) .^ (0 : n);
   elseif (is_vector (r) && (length (r) == n))
-    d = [1, 1 ./ cumprod (reshape (1 + r, 1, n))];
+    d = [1, (1 ./ cumprod (reshape (1 + r, 1, n)))];
   else
-    error (["npv:  r has be a scalar ", ...
-	"or a vector of the same length as p"]);
+    error ("npv: r must be a scalar or a vector of the same length as p");
   endif
 
   if (nargin == 3)

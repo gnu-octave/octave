@@ -3085,16 +3085,27 @@ be named @file{@var{file}.m}.\n\
 
   if (nargin == 1)
     {
-      string file = args(0).string_value ();
+      string file_name = args(0).string_value ();
 
       if (! error_state)
 	{
-	  file = file_ops::tilde_expand (file);
+	  string file_full_name = file_ops::tilde_expand (file_name);
 
-	  parse_fcn_file (file, true, true);
+	  unwind_protect::begin_frame ("Fsource");
+
+	  unwind_protect_str (curr_fcn_file_name);
+	  unwind_protect_str (curr_fcn_file_full_name);
+
+	  curr_fcn_file_name = file_name;
+	  curr_fcn_file_full_name = file_full_name;
+
+	  parse_fcn_file (file_full_name, true, true);
 
 	  if (error_state)
-	    error ("source: error sourcing file `%s'", file.c_str ());
+	    error ("source: error sourcing file `%s'",
+		   file_full_name.c_str ());
+
+	  unwind_protect::run_frame ("Fsource");
 	}
       else
 	error ("source: expecting file name as argument");

@@ -112,17 +112,17 @@ function [a, b, c, d] = zp2ss (zer, pol, k)
     case(1)
       ## real pole/zero combination
       if(length(zer))
-        num = [1 -zer(1)];  
+        num = [1, -zer(1)];  
         zer = zer(2:length(zer));
       endif
-      den = [1 -pol(1)];
+      den = [1, -pol(1)];
       pol = pol(2:length(pol));
     case(2)
       ## got a complex pole or zero, need two roots (if available)
       if(length(zer) > 1)
         [num,zer] = zp2ssg2(zer);	# get two zeros
       elseif(length(zer) == 1)
-        num = [1 -zer];			# use last zero (better be real!)
+        num = [1, -zer];		# use last zero (better be real!)
         zer = [];
       endif
       [den,pol] = zp2ssg2(pol);		# get two poles

@@ -37,7 +37,7 @@ function v = values (x)
   n = length (x);
   x = reshape (x, n, 1);
   s = sort (x);
-  v = s([1; find (s(2:n) > s(1:n-1)) + 1]);
+  v = s([1; (find (s(2:n) > s(1:n-1)) + 1)]);
   if (i)
     v = [v; NaN];
   endif

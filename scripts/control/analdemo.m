@@ -49,7 +49,7 @@ function analdemo ()
       disp("Example #1, consider the discrete time state space system:\n");
       a=[1, 5, -8.4; 1.2, -3, 5; 1, 7, 9]
       b=[1, 5; 2, 6; -4.4, 5]
-      c=[1 -1.5, 2; 6, -9.8, 1]
+      c=[1, -1.5, 2; 6, -9.8, 1]
       d=0
       prompt
       disp("\nThe discrete controllability grammian is computed as follows:");

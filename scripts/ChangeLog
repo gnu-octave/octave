@@ -1,13 +1,20 @@
 1999-12-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
-	* control/bddemo.m: Make it more likely to work with
-	whitespace_in_literal_matrix = "ignore".
+	* control/bddemo.m: Make it more likely to work with any value of
+	whitespace_in_literal_matrix.
 	* control/analdemo.m: Ditto.
 	* control/dgkfdemo.m: Ditto.
 	* control/frdemo.m: Ditto.
 	* control/sysrepdemo.m: Ditto.
 	* control/moddemo.m: Ditto.
+	* control/zp2ss.m: Ditto.
 	* control/zp2tf.m: Ditto.
+	* control/syssub.m: Ditto.
+	* finance/npv.m: Ditto.
+	* statistics/base/studentize.m: Ditto.
+	* statistics/base/values.m: Ditto.
+	* statistics/distributions/exponential_cdf.m: Ditto.
+	* statistics/distributions/poisson_cdf.m: Ditto.
 
 	* control/dezero.m: Use toascii to convert string to ASCII value
 	instead of multiplying it by 1.

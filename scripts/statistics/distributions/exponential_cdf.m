@@ -32,8 +32,7 @@ function cdf = exponential_cdf (x, l)
   
   [retval, x, l] = common_size (x, l);
   if (retval > 0)
-    error (["exponential_cdf:  ",
-	    "x and lambda must be of common size or scalar"]);
+    error ("exponential_cdf: x and lambda must be of common size or scalar");
   endif
   
   [r, c] = size (x);

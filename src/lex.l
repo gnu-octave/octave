@@ -163,6 +163,8 @@ static bracket_brace_paren_nesting_level nesting_level;
 
 static int Vwhitespace_in_literal_matrix;
 
+static bool Vwarn_separator_insert = false;
+
 // Forward declarations for functions defined at the bottom of this
 // file.
 
@@ -186,6 +188,7 @@ static bool have_continuation (bool trailing_comments_ok = true);
 static bool have_ellipsis_continuation (bool trailing_comments_ok = true);
 static yum_yum eat_whitespace (void);
 static yum_yum eat_continuation (void);
+static void maybe_warn_separator_insert (char sep);
 
 %}
 
@@ -277,13 +280,21 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
 <MATRIX>{S}*\,{S}* {
     current_input_column += yyleng;
+
     int tmp = eat_continuation ();
+
     lexer_flags.quote_is_transpose = false;
     lexer_flags.cant_be_identifier = false;
     lexer_flags.convert_spaces_to_comma = true;
-    if (Vwhitespace_in_literal_matrix != 2
-	&& (tmp & ATE_NEWLINE) == ATE_NEWLINE)
-      unput (';');
+
+    if ((tmp & ATE_NEWLINE) == ATE_NEWLINE)
+      {
+	maybe_warn_separator_insert (';');
+
+	if (Vwhitespace_in_literal_matrix != 2)
+	  unput (';');
+      }
+
     return (',');
   }
 
@@ -296,21 +307,31 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
 <MATRIX>{S}+ {
     current_input_column += yyleng;
-    if (Vwhitespace_in_literal_matrix != 2)
-      {
-	int tmp = eat_continuation ();
-	int bin_op = next_token_is_bin_op (true);
-	int postfix_un_op = next_token_is_postfix_unary_op (true);
 
-	if (! (postfix_un_op || bin_op)
-	    && nesting_level.is_bracket ()
-	    && lexer_flags.convert_spaces_to_comma)
+    int tmp = eat_continuation ();
+    int bin_op = next_token_is_bin_op (true);
+    int postfix_un_op = next_token_is_postfix_unary_op (true);
+
+    if (! (postfix_un_op || bin_op)
+	&& nesting_level.is_bracket ()
+	&& lexer_flags.convert_spaces_to_comma)
+      {
+	if ((tmp & ATE_NEWLINE) == ATE_NEWLINE)
+	  {
+	    maybe_warn_separator_insert (';');
+
+	    if (Vwhitespace_in_literal_matrix != 2)
+	      unput (';');
+	  }
+
+	if (Vwhitespace_in_literal_matrix != 2)
 	  {
 	    lexer_flags.quote_is_transpose = false;
 	    lexer_flags.cant_be_identifier = false;
 	    lexer_flags.convert_spaces_to_comma = true;
-	    if ((tmp & ATE_NEWLINE) == ATE_NEWLINE)
-	      unput (';');
+
+	    maybe_warn_separator_insert (',');
+
 	    return (',');
 	  }
       }
@@ -341,6 +362,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 <MATRIX>{S}*{NL}{SNLCMT}* {
     fixup_column_count (yytext);
     eat_whitespace ();
+
     if (Vwhitespace_in_literal_matrix != 2)
       {
 	lexer_flags.quote_is_transpose = false;
@@ -349,8 +371,13 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
 	if (nesting_level.none ())
 	  return LEXICAL_ERROR;
+      }
 
-	if (nesting_level.is_bracket ())
+    if (nesting_level.is_bracket ())
+      {
+	maybe_warn_separator_insert (';');
+
+	if (Vwhitespace_in_literal_matrix != 2)
 	  return ';';
       }
   }
@@ -1850,7 +1877,7 @@ handle_close_bracket (int spc_gobbled)
       int c1 = yyinput ();
       unput (c1);
 
-      if (lexer_flags.bracketflag && Vwhitespace_in_literal_matrix != 2)
+      if (lexer_flags.bracketflag)
 	{
 	  int bin_op = next_token_is_bin_op (spc_gobbled);
 
@@ -1862,8 +1889,13 @@ handle_close_bracket (int spc_gobbled)
 	      && nesting_level.is_bracket ()
 	      && lexer_flags.convert_spaces_to_comma)
 	    {
-	      unput (',');
-	      return ']';
+	      maybe_warn_separator_insert (',');
+
+	      if (Vwhitespace_in_literal_matrix != 2)
+		{
+		  unput (',');
+		  return ']';
+		}
 	    }
 	}
     }
@@ -1878,7 +1910,7 @@ handle_close_bracket (int spc_gobbled)
 static void
 maybe_unput_comma (int spc_gobbled)
 {
-  if (Vwhitespace_in_literal_matrix != 2 && nesting_level.is_bracket ())
+  if (nesting_level.is_bracket ())
     {
       int bin_op = next_token_is_bin_op (spc_gobbled);
 
@@ -1895,12 +1927,31 @@ maybe_unput_comma (int spc_gobbled)
       int dot_op = (c1 == '.'
 		    && (isalpha (c2) || isspace (c2) || c2 == '_'));
 
-      int index_op = (c1 == '('
-		      && (Vwhitespace_in_literal_matrix == 0
-			  || ! spc_gobbled));
+      if (postfix_un_op || bin_op || sep_op || dot_op)
+	return;
 
-      if (! (postfix_un_op || bin_op || sep_op || dot_op || index_op))
-	unput (',');
+      int index_op = (c1 == '(');
+
+      if (index_op)
+	{
+	  // If there is no space before the '(', we don't insert a comma.
+	  if (! spc_gobbled)
+	    return;
+
+	  maybe_warn_separator_insert (',');
+
+	  // If there is a space, we only insert a comma if we are
+	  // trying to be Matlab-like.
+	  if (Vwhitespace_in_literal_matrix == 1)
+	    unput (',');
+	}
+      else
+	{
+	  maybe_warn_separator_insert (',');
+
+	  if (Vwhitespace_in_literal_matrix != 2)
+	    unput (',');
+	}
     }
 }
 
@@ -2150,6 +2201,30 @@ lexical_feedback::init (void)
   quote_is_transpose = false;
 }
 
+static void
+maybe_warn_separator_insert (char sep)
+{
+  string nm = curr_fcn_file_full_name;
+
+  if (Vwarn_separator_insert)
+    {
+      if (nm.empty ())
+	warning ("potential auto-insertion of `%c' near line %d",
+		 sep, input_line_number);
+      else
+	warning ("potential auto-insertion of `%c' near line %d of file %s",
+		 sep, input_line_number, nm.c_str ());
+    }
+}
+
+static int
+warn_separator_insert (void)
+{
+  Vwarn_separator_insert = check_preference ("warn_separator_insert");
+
+  return 0;
+}
+
 static int
 whitespace_in_literal_matrix (void)
 {
@@ -2173,6 +2248,10 @@ whitespace_in_literal_matrix (void)
 void
 symbols_of_lex (void)
 {
+  DEFVAR (warn_separator_insert, 0.0, warn_separator_insert,
+    "print warning if commas or semicolons that might be inserted\n\
+automatically in literal matrices");
+
   DEFVAR (whitespace_in_literal_matrix, "", whitespace_in_literal_matrix,
     "control auto-insertion of commas and semicolons in literal matrices");
 }

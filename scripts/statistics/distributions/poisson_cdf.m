@@ -30,8 +30,7 @@ function cdf = poisson_cdf (x, l)
   
   [retval, x, l] = common_size (x, l);
   if (retval > 0)
-    error (["poisson_cdf:  ",
-	    "x and lambda must be of common size or scalar"]);
+    error ("poisson_cdf: x and lambda must be of common size or scalar");
   endif
   
   [r, c] = size (x);

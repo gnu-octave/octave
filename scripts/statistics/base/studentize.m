@@ -39,7 +39,7 @@ function t = studentize (x)
   elseif is_matrix (x)
     l = ones (rows (x), 1);
     t = x - l * mean (x);
-    t = t ./ (l * max ([std (t); !any (t)]));
+    t = t ./ (l * max ([(std (t)); (! any (t))]));
   else
     error ("studentize:  x must be a vector or a matrix.");
   endif

@@ -1,3 +1,15 @@
+1999-12-15  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lex.l (Vwarn_separator_insert): New variable.
+	(syms_of_lex): DEFVAR it.
+	(warn_separator_insert): New function.
+	(maybe_warn_separator_insert): New function.
+	Use new stuff to allow warnings for code that might result in
+	auto-insertion of commas or semicolons, depending on the value of
+	whitespace_in_literal_matrix.
+
+	* parse.y (Fsource): Record function file name here too.
+
 1999-12-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* variables.cc (link_to_global_variable): If the local symbol is

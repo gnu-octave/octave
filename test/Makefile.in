@@ -22,7 +22,7 @@ SUBDIRS =
 
 OCTAVE_BINARY = ../src/octave
 
-OCTAVE_SCRIPT_PATH = "$(srcdir)/../scripts"
+OCTAVE_SCRIPT_PATH = "$(srcdir)/../scripts//"
 
 # Complete directory trees to distribute.
 DISTDIRS = config octave.test

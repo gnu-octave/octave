@@ -751,6 +751,46 @@ DEFUN ("eval", Feval, Seval, 2, 1,
 }
 
 /*
+ * Execute a shell command.
+ */
+DEFUN ("shell_cmd", Fshell_cmd, Sshell_cmd, 2, 1,
+  "shell_cmd (string [, return_output]): execute shell commands")
+{
+  Octave_object retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 2 && args(1).is_string_type ())
+    {
+      iprocstream cmd (args(1).string_value ());
+      char ch;
+      ostrstream output_buf;
+      while (cmd.get (ch))
+	output_buf.put (ch);
+      output_buf << ends;
+      int status = cmd.close ();
+      switch (nargout)
+	{
+	case 1:
+	  maybe_page_output (output_buf);
+	  retval.resize (1);
+	  retval(0) = tree_constant ((double) status);
+	  break;
+	case 2:
+	  retval.resize (2);
+	  retval(0) = tree_constant ((double) status);
+	  retval(1) = tree_constant (output_buf.str ());
+	  break;
+	  break;
+	}
+    }
+  else
+    print_usage ("shell_cmd");
+
+  return retval;
+}
+
+/*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
 ;;; page-delimiter: "^/\\*" ***

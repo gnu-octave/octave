@@ -31,16 +31,8 @@ function perror (name, err)
 
   if (nargin != 2)
     usage ("perror (name, err)");
+  else
+    printf (strerror (name, err));
   endif
-
-  if (! isstr (name))
-    error ("perror: first argument must be a string");
-  endif
-
-  if (! is_scalar (err))
-    error ("perror: second argument must be a scalar");
-  endif
-
-  printf (strerror (name, err));
 
 endfunction

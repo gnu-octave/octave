@@ -35,6 +35,7 @@ Software Foundation, Inc.
 
 #include "tree-const.h"
 #include "user-prefs.h"
+#include "oct-map.h"
 #include "help.h"
 #include "utils.h"
 #include "error.h"
@@ -736,6 +737,34 @@ DEFUN ("is_struct", Fis_struct, Sis_struct, 1, 1,
     }
   else
     print_usage ("is_struct");
+
+  return retval;
+}
+
+DEFUN ("struct_contains", Fstruct_contains, Sstruct_contains, 1, 2,
+  "struct_contains (S, NAME)\n\
+\n\
+return nonzero if S is a structure with element NAME")
+{
+  Octave_object retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 2)
+    {
+      retval = 0.0;
+      if (args(0).is_map ())
+	{
+	  if (args(1).is_string ())
+	    {
+	      Octave_map m = args(0).map_value ();
+	      char *s = args(1).string_value ();
+	      retval = (double) (s && m.contains (s));
+	    }
+	}
+    }
+  else
+    print_usage ("struct_contains");
 
   return retval;
 }

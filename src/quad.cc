@@ -212,7 +212,7 @@ integrand is singular.")
       if (indefinite)
 	{
 	  IndefQuad iq (quad_user_function, bound, indef_type, abstol, reltol);
-	  iq.copy (quad_opts);
+	  iq.set_options (quad_opts);
 	  val = iq.integrate (ier, nfun, abserr);
 	}
       else
@@ -220,13 +220,13 @@ integrand is singular.")
 	  if (have_sing)
 	    {
 	      DefQuad dq (quad_user_function, a, b, sing, abstol, reltol);
-	      dq.copy (quad_opts);
+	      dq.set_options (quad_opts);
 	      val = dq.integrate (ier, nfun, abserr);
 	    }
 	  else
 	    {
 	      DefQuad dq (quad_user_function, a, b, abstol, reltol);
-	      dq.copy (quad_opts);
+	      dq.set_options (quad_opts);
 	      val = dq.integrate (ier, nfun, abserr);
 	    }
 	}

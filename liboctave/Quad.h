@@ -64,10 +64,8 @@ Quad_options
   Quad_options& operator = (const Quad_options& opt)
     {
       if (this != &opt)
-	{
-	  x_absolute_tolerance = opt.x_absolute_tolerance;
-	  x_relative_tolerance = opt.x_relative_tolerance;
-	}
+	set_options (opt);
+
       return *this;
     }
 
@@ -82,6 +80,12 @@ Quad_options
     }
 
   void set_default_options (void) { init (); }
+
+  void set_options (const Quad_options& opt)
+    {
+      x_absolute_tolerance = opt.x_absolute_tolerance;
+      x_relative_tolerance = opt.x_relative_tolerance;
+    }
 
   // XXX FIXME XXX -- check for invalid values?
   void set_absolute_tolerance (double val) { x_absolute_tolerance = val; }

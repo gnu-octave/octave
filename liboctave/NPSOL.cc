@@ -334,7 +334,7 @@ NPSOL_options::init (void)
 }
 
 void
-NPSOL_options::copy (const NPSOL_options& opt)
+NPSOL_options::set_options (const NPSOL_options& opt)
 {
   x_central_difference_interval = opt.x_central_difference_interval;
   x_crash_tolerance = opt.x_crash_tolerance;

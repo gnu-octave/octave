@@ -188,8 +188,6 @@ load_octave_builtin (const string&)
 
   retval = (Octave_builtin_fcn) resolve_octave_reference (mangled_name);
 
-  delete [] mangled_name;
-
 #endif
 
   return retval;
@@ -204,7 +202,7 @@ load_octave_oct_file (const string& name)
 
   string oct_file = oct_file_in_path (name);
 
-  if (oct_file)
+  if (oct_file.empty ())
     {
       string mangled_name = mangle_octave_oct_file_name (name);
 
@@ -222,8 +220,6 @@ load_octave_oct_file (const string& name)
 	      retval = 1;
 	    }
 	}
-
-      delete [] oct_file;
     }
 
 #else

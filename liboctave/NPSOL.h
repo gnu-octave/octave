@@ -42,12 +42,12 @@ public:
 
   NPSOL_options (void) { init (); }
 
-  NPSOL_options (const NPSOL_options& opt) { copy (opt); }
+  NPSOL_options (const NPSOL_options& opt) { set_options (opt); }
 
   NPSOL_options& operator = (const NPSOL_options& opt)
     {
       if (this != &opt)
-	copy (opt);
+	set_options (opt);
 
       return *this;
     }
@@ -56,9 +56,9 @@ public:
 
   void init (void);
 
-  void copy (const NPSOL_options& opt);
-
   void set_default_options (void) { init (); }
+
+  void set_options (const NPSOL_options& opt);
 
 // XXX FIXME XXX -- is this a good idea?
 

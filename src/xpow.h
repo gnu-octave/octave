@@ -59,8 +59,7 @@ extern octave_value elem_xpow (const Complex& a, const ComplexMatrix& b);
 extern octave_value elem_xpow (const ComplexMatrix& a, double b);
 extern octave_value elem_xpow (const ComplexMatrix& a, const Matrix& b);
 extern octave_value elem_xpow (const ComplexMatrix& a, const Complex& b);
-extern octave_value elem_xpow (const ComplexMatrix& a,
-				const ComplexMatrix& b);
+extern octave_value elem_xpow (const ComplexMatrix& a, const ComplexMatrix& b);
 
 #endif
 

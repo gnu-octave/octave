@@ -112,6 +112,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define CXXLIB_PATH %CXXLIB_PATH%
 #endif
 
+extern void install_defaults (void);
+
 #endif
 
 /*

@@ -30,8 +30,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <stdio.h>
 
-#include "Array.h"
-
 #include "builtins.h"
 #include "error.h"
 #include "oct-obj.h"
@@ -581,6 +579,9 @@ tree_parameter_list : public tree
 
   void mark_varargs (void);
   int takes_varargs (void) const;
+
+  void mark_varargs_only (void);
+  int varargs_only (void);
 
   tree_identifier *define (tree_constant *t);
 

@@ -21,11 +21,16 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
+#if !defined (octave_oct_obj_h)
+#define octave_oct_obj_h 1
+
 #include "Array.h"
 
 class tree_constant;
 
 typedef Array<tree_constant> Octave_object;
+
+#endif
 
 /*
 ;;; Local Variables: ***

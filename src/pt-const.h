@@ -30,7 +30,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <stdlib.h>
 
-#include "Array.h"
 #include "mx-base.h"
 #include "Range.h"
 

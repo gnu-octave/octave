@@ -1151,6 +1151,7 @@ tree_identifier::eval (int print)
 	{
 	  int nargout = maybe_do_ans_assign ? 0 : 1;
 
+//	  int nargin = (ans->is_constant ()) ? 0 : 1;
 	  Octave_object tmp_args;
 	  Octave_object tmp = ans->eval (0, nargout, tmp_args, 0);
 
@@ -1512,7 +1513,8 @@ tree_function::eval (int print, int nargout, const Octave_object& args,
   unwind_protect_int (num_named_args);
   unwind_protect_int (curr_arg_number);
 
-  if (param_list != (tree_parameter_list *) NULL)
+  if (param_list != (tree_parameter_list *) NULL
+      && ! param_list->varargs_only ())
     {
       param_list->define_from_arg_vector (args, nargin);
       if (error_state)
@@ -2839,6 +2841,18 @@ int
 tree_parameter_list::takes_varargs (void) const
 {
   return marked_for_varargs;
+}
+
+void
+tree_parameter_list::mark_varargs_only (void)
+{
+  marked_for_varargs = -1;
+}
+
+int
+tree_parameter_list::varargs_only (void)
+{
+  return (marked_for_varargs < 0);
 }
 
 tree_identifier *

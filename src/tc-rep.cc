@@ -38,6 +38,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "mx-base.h"
 #include "Range.h"
 
+#include "arith-ops.h"
 #include "variables.h"
 #include "error.h"
 #include "gripes.h"
@@ -5098,7 +5099,7 @@ tree_constant_rep::do_scalar_index (const Octave_object& args,
 	  }
 	  break;
 	default:
-	  ::error ("illegal number of arguments for scalar type");
+	  ::error ("invalid number of arguments for scalar type");
 	  return tree_constant ();
 	  break;
 	}

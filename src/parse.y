@@ -1042,6 +1042,13 @@ param_list	: '(' ')'
 		    quote_is_transpose = 0;
 		    $$ = (tree_parameter_list *) NULL;
 		  }
+		| '(' ELLIPSIS ')'
+		  {
+		    quote_is_transpose = 0;
+		    tree_parameter_list *tmp = new tree_parameter_list ();
+		    tmp->mark_varargs_only ();
+		    $$ = tmp;
+		  }
 		| param_list1 ')'
 		  {
 		    quote_is_transpose = 0;
@@ -1057,6 +1064,7 @@ param_list	: '(' ')'
 		    tmp->mark_varargs ();
 		    $$ = tmp;
 		  }
+		;
 
 param_list1	: '(' identifier
 		  { $$ = new tree_parameter_list ($2); }
@@ -1077,8 +1085,11 @@ param_list1	: '(' identifier
 		;
 
 identifier	: NAME
-		  { $$ = new tree_identifier
-		      ($1->sym_rec (), $1->line (), $1->column ()); }
+		  {
+		    $$ = new tree_identifier
+		      ($1->sym_rec (), $1->line (), $1->column ());
+		  }
+		;
 
 arg_list	: arg_list1
 		  { $$ = $1->reverse (); }

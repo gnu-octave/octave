@@ -162,8 +162,8 @@ TERMLIBS = @TERMLIBS@
 
 LIBS = @LIBS@
 
-DISTFILES = Makefile.in mkdefs mkbuiltins octave.gperf octave.cc \
-	parse.cc lex.cc y.tab.h \
+DISTFILES = Makefile.in mkdefs mkbuiltins mk-oct-links \
+	octave.gperf octave.cc parse.cc lex.cc y.tab.h \
 	$(INCLUDES) $(DLD_SRC) $(SOURCES) $(TEMPLATE_SRC) $(TI_SRC)
 
 all: defaults.h stamp-picdir libraries \

@@ -20,6 +20,7 @@ for f in "$@"; do
       if [ "$n" = "$base" ]; then
         true
       else
+	echo "creating link $n.oct -> $base.oct"
         ( cd $links_dir; ln $base.oct $n.oct )
       fi
     done

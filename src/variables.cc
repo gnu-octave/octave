@@ -1810,6 +1810,10 @@ directory specification");
     "if a function does not return any values explicitly, return the\n\
   last computed value");
 
+  DEFVAR ("save_precision", SBV_save_precision, 15.0, 0,
+	  set_save_precision,
+    "number of significant figures kept by the ASCII save command");
+
   DEFVAR ("saving_history", SBV_saving_history, 1.0, 0, saving_history,
     "save command history");
 

@@ -182,7 +182,7 @@ function fmt = __pltopt__ (caller, opt)
       while (working)
         if (max (size (opt)) > 1)
 	  char = opt(1);
-	  opt = opt(2:length(opt))
+	  opt = opt(2:length(opt));
         else
 	  char = opt;
 	  if (! strcmp (char, ";"))

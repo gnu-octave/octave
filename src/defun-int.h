@@ -101,9 +101,10 @@ alias_builtin (const string& alias, const string& name);
 
 // How builtin variables are actually installed.
 
-#define DEFVAR_INTERNAL(name, sname, defn, inst_as_fcn, protect, sv_fcn, doc) \
+#define DEFVAR_INTERNAL(name, sname, defn, inst_as_fcn, protect, \
+			chg_fcn, doc) \
   install_builtin_variable (name, octave_value (defn), inst_as_fcn, \
-			    protect, (sv_fcn != 0), sv_fcn, doc)
+			    protect, (chg_fcn != 0), chg_fcn, doc)
 
 // How mapper functions are actually installed.
 

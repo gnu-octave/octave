@@ -117,10 +117,10 @@ void
 initialize_symbol_tables (void)
 {
   if (! global_sym_tab)
-    global_sym_tab = new symbol_table ();
+    global_sym_tab = new symbol_table (2048);
 
   if (! top_level_sym_tab)
-    top_level_sym_tab = new symbol_table ();
+    top_level_sym_tab = new symbol_table (4096);
 
   curr_sym_tab = top_level_sym_tab;
 }
@@ -1512,7 +1512,7 @@ clear_global_error_variable (void *)
 void
 bind_builtin_variable (const string& varname, const octave_value& val,
 		       bool protect, bool eternal,
-		       symbol_record::sv_function sv_fcn,
+		       symbol_record::change_function chg_fcn,
 		       const string& help)
 {
   symbol_record *sr = global_sym_tab->lookup (varname, true);
@@ -1528,8 +1528,8 @@ bind_builtin_variable (const string& varname, const octave_value& val,
   // variable function only if it knows about it, and it needs to, so
   // that user prefs can be properly initialized.
 
-  if (sv_fcn)
-    sr->set_sv_function (sv_fcn);
+  if (chg_fcn)
+    sr->set_change_function (chg_fcn);
 
   sr->define_builtin_var (val);
 
@@ -1784,6 +1784,30 @@ With -x, exclude the named variables")
 	    }
 	}
     }
+
+  return retval;
+}
+
+DEFUN (__dump_symtab_info__, args, ,
+  "__dump_symtab_info__ (): print raw symbol table statistices")
+{
+  octave_value_list retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 1)
+    {
+      string arg = args(0).string_value ();
+
+      if (arg == "global")
+	global_sym_tab->print_stats ();
+      else
+	print_usage ("__dump_symtab_info__");
+    }
+  else if (nargin == 0)
+    curr_sym_tab->print_stats ();
+  else
+    print_usage ("__dump_symtab_info__");
 
   return retval;
 }

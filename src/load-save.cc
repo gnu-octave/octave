@@ -78,6 +78,27 @@ enum load_save_format
     LS_UNKNOWN,
   };
 
+// Return nonzero if S is a valid identifier.
+
+static bool
+valid_identifier (const char *s)
+{
+  if (! s || ! (isalnum (*s) || *s == '_'))
+     return false;
+
+  while (*++s != '\0')
+    if (! (isalnum (*s) || *s == '_'))
+      return false;
+
+  return true;
+}
+
+static bool
+valid_identifier (const string& s)
+{
+  return valid_identifier (s.c_str ());
+}
+
 // XXX FIXME XXX -- shouldn't this be implemented in terms of other
 // functions that are already available?
 

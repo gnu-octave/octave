@@ -46,34 +46,34 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //     clear the variable.  Most builtin variables are eternal, and
 //     cannot be cleared.
 //
-//   sv_fcn is a pointer to a function that should be called whenever
+//   chg_fcn is a pointer to a function that should be called whenever
 //     this variable is given a new value.  It can be 0 if there is no
 //     function to call.  See also the code in user-prefs.cc.
 //
 //   doc is the simple help text for this variable.
 
-#define DEFVAR(name, defn, inst_as_fcn, sv_fcn, doc) \
-  DEFVAR_INTERNAL (#name, SBV_ ## name, defn, inst_as_fcn, 0, sv_fcn, doc)
+#define DEFVAR(name, defn, inst_as_fcn, chg_fcn, doc) \
+  DEFVAR_INTERNAL (#name, SBV_ ## name, defn, inst_as_fcn, 0, chg_fcn, doc)
 
 // Define a builtin-constant, and a corresponding variable that can be
 // redefined.  This is just the same as DEFVAR, except that it defines
 // `name' as a variable, and `__name__' as a constant that cannot be
 // redefined.
 
-#define DEFCONST(name, defn, inst_as_fcn, sv_fcn, doc) \
+#define DEFCONST(name, defn, inst_as_fcn, chg_fcn, doc) \
   DEFVAR_INTERNAL (#name, SBV_ ## name, defn, inst_as_fcn, false, \
-		   sv_fcn, doc); \
+		   chg_fcn, doc); \
   DEFVAR_INTERNAL ("__" ## #name ## "__", XSBV_ ## name, defn, false, \
-		   true, sv_fcn, doc)
+		   true, chg_fcn, doc)
 
 // This one can be used when `name' cannot be used directly (if it is
 // already defined as a macro).  In that case, name is already a
 // quoted string, and the name of the structure has to be passed too.
 
-#define DEFCONSTX(name, sname, defn, inst_as_fcn, sv_fcn, doc) \
-  DEFVAR_INTERNAL (name, sname, defn, inst_as_fcn, false, sv_fcn, doc); \
+#define DEFCONSTX(name, sname, defn, inst_as_fcn, chg_fcn, doc) \
+  DEFVAR_INTERNAL (name, sname, defn, inst_as_fcn, false, chg_fcn, doc); \
   DEFVAR_INTERNAL ("__" ## name ## "__", X ## sname, defn, false, true, \
-		   sv_fcn, doc)
+		   chg_fcn, doc)
 
 // Define a builtin function.
 //

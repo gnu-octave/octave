@@ -95,18 +95,18 @@ install_builtin_variable_as_function (const string& name,
 void
 install_builtin_variable (const string& name, const octave_value& value,
 			  bool install_as_function, bool protect,
-			  bool eternal, void *sv_fcn_arg,
+			  bool eternal, void *chg_fcn_arg,
 			  const string& help_string)
 {
-  symbol_record::sv_function sv_fcn
-    = static_cast<symbol_record::sv_function> (sv_fcn_arg);
+  symbol_record::change_function chg_fcn
+    = static_cast<symbol_record::change_function> (chg_fcn_arg);
 
   if (install_as_function)
     install_builtin_variable_as_function (name, value, protect,
 					  eternal, help_string);
   else
     bind_builtin_variable (name, value, protect, eternal,
-			   sv_fcn, help_string);
+			   chg_fcn, help_string);
 }
 
 void

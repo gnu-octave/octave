@@ -101,7 +101,7 @@ extern void clear_global_error_variable (void *);
 extern void
 bind_builtin_variable (const string&, const octave_value&,
 		       bool protect = false, bool eternal = false,
-		       symbol_record::sv_function f = 0,
+		       symbol_record::change_function f = 0,
 		       const string& help = string ());
 
 // Symbol table for symbols at the top level.

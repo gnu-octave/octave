@@ -36,11 +36,11 @@ octave_lvalue
 {
 public:
 
-  octave_lvalue (octave_value *v = 0, symbol_record::sv_function f = 0)
+  octave_lvalue (octave_value *v = 0, symbol_record::change_function f = 0)
     : val (v), idx (), chg_fcn (f), struct_elt_name () { }
 
   octave_lvalue (octave_value *v, const string& nm,
-		 symbol_record::sv_function f = 0)
+		 symbol_record::change_function f = 0)
     : val (v), idx (), chg_fcn (f), struct_elt_name (nm) { }
 
   octave_lvalue (const octave_lvalue& vr)
@@ -102,7 +102,7 @@ private:
 
   octave_value_list idx;
 
-  symbol_record::sv_function chg_fcn;
+  symbol_record::change_function chg_fcn;
 
   string struct_elt_name;
 };

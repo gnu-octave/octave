@@ -2746,36 +2746,16 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
     {
       // RHS is matrix or higher dimension.
 
-      bool dim_ok = true;
-
-      int jj = 0;
-
       // Check that RHS dimensions are the same length as the
-      // corresponding LHS dimensions.
+      // corresponding LHS index dimensions.
 
-      int rhs_dims_len = rhs_dims.length ();
+      dim_vector t_rhs_dims = rhs_dims;
+      t_rhs_dims.chop_trailing_singletons ();
 
-      for (int j = 0; j < idx_is_colon.length (); j++)
-	{
-	  if (jj < rhs_dims.length () && rhs_dims(jj) == 1)
-	    jj++;
-	  else if (idx_is_colon(j))
-	    {
-	      if (jj > rhs_dims_len || rhs_dims(jj) < lhs_dims(j))
-		{
-		  dim_ok = false;
+      dim_vector t_frozen_len = frozen_len;
+      t_frozen_len.chop_trailing_singletons ();
 
-		  break;
-		}
-
-	      jj++;
-	    }
-	}
-
-      if (jj != rhs_dims_len)
-	dim_ok = false;
-
-      if (! dim_ok)
+      if (t_rhs_dims != t_frozen_len)
 	(*current_liboctave_error_handler)
 	  ("subscripted assignment dimension mismatch");
       else

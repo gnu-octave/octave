@@ -1,3 +1,8 @@
+2004-02-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Array.cc (Array<T>::assignN): Simplify dimension check by
+	comparing rhs_dims and frozen_len sans trailing singletons.
+
 2004-02-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* idx-vector.cc (tree_to_mat_idx): New arg, conversion_error.

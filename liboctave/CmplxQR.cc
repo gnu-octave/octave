@@ -124,7 +124,7 @@ ComplexQR::init (const ComplexMatrix& a, QR::type qr_type)
 
 	  lwork = 32 * n2;
 	  work.resize (lwork);
-	  pwork = work.fortran_vec ();
+	  Complex *pwork2 = work.fortran_vec ();
 
 	  F77_XFCN (zungqr, ZUNGQR, (m, n2, min_mn, tmp_data, m, ptau,
 				     pwork, lwork, info));

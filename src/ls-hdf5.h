@@ -41,7 +41,7 @@ public:
 
   hdf5_fstreambase () { file_id = -1; }
 
-  hdf5_fstreambase (const char *name, int mode, int prot = 0)
+  hdf5_fstreambase (const char *name, int mode, int /* prot */ = 0)
     {
       if (mode == std::ios::in)
 	file_id = H5Fopen (name, H5F_ACC_RDONLY, H5P_DEFAULT);

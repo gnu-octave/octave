@@ -115,10 +115,10 @@ QR::init (const Matrix& a, QR::type qr_type)
 
 	  lwork = 32 * n2;
 	  work.resize (lwork);
-	  pwork = work.fortran_vec ();
+	  double *pwork2 = work.fortran_vec ();
 
 	  F77_XFCN (dorgqr, DORGQR, (m, n2, min_mn, tmp_data, m, ptau,
-				     pwork, lwork, info));
+				     pwork2, lwork, info));
 
 	  if (f77_exception_encountered)
 	    (*current_liboctave_error_handler)

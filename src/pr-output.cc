@@ -1965,7 +1965,7 @@ octave_print_internal (std::ostream& os, const charMatrix& chm,
 
 void
 octave_print_internal (std::ostream& os, const charNDArray& nda,
-		       bool pr_as_read_syntax, int /* extra_indent */,
+		       bool pr_as_read_syntax, int extra_indent,
 		       bool pr_as_string)
 {
   switch (nda.ndims ())
@@ -1984,7 +1984,7 @@ octave_print_internal (std::ostream& os, const charNDArray& nda,
 
 void
 octave_print_internal (std::ostream& os, const ArrayN<std::string>& nda,
-		       bool pr_as_read_syntax, int extra_indent)
+		       bool pr_as_read_syntax, int /* extra_indent */)
 {
   // XXX FIXME XXX -- this mostly duplicates the code in the
   // PRINT_ND_ARRAY macro.

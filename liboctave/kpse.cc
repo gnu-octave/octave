@@ -848,7 +848,7 @@ absolute_search (const std::string& name)
 
 static string_vector
 path_search (const std::string& path, const std::string& name,
-	     bool must_exist, bool all)
+	     bool /* must_exist */, bool all)
 {
   string_vector ret_list;
   bool done = false;
@@ -1025,7 +1025,7 @@ kpse_all_path_search (const std::string& path, const std::string& name)
 
 static string_vector
 path_find_first_of (const std::string& path, const string_vector& names,
-		    bool must_exist, bool all)
+		    bool /* must_exist */, bool all)
 {
   string_vector ret_list;
   bool done = false;

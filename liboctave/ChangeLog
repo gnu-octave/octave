@@ -1,5 +1,11 @@
 2003-11-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* dbleQR.cc (QR::init): Use separate pwork pointers.
+	* CmplxQR.cc (ComplexQR::init): Likewise.
+
+	* oct-group.cc (octave_group::getgrnam): Pass correct args to
+	two-arg getgrnam version.
+
 	* Array.cc (assignN): Allow single indexing to work.
 	(Array<T>::range_error (const char*, const Array<int>&)):
 	Report index values.
@@ -9,6 +15,9 @@
 	* DASRT.cc (ddasrt_f, ddasrt_g): Likewise.
 	* DASPK.cc (ddaspk_psol): Likewise.
 	* lo-mappers.cc (imag): Likewise.
+	* Array-util.cc (get_zero_len_size): Likewise.
+	* kpse.cc (path_search, path_find_first_of): Likewise.
+	* cmd-edit.cc (do_generate_filename_completions): Likewise.
 
 	* dim-vector.h (dim_vector::all_ones): New function.
 

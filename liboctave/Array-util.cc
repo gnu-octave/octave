@@ -310,8 +310,8 @@ any_zero_len (const dim_vector& frozen_lengths)
 }
 
 dim_vector
-get_zero_len_size (const dim_vector& frozen_lengths,
-		   const dim_vector& dimensions)
+get_zero_len_size (const dim_vector& /* frozen_lengths */,
+		   const dim_vector& /* dimensions */)
 {
   dim_vector retval;
   assert (0);

@@ -1,3 +1,5 @@
+2003-11-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
 2003-11-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* version.h (OCTAVE_VERSION): Now 2.1.52.
@@ -6,6 +8,8 @@
 	* ov.h (octave_value::all_strings): Pass second arg to rep function.
 
 	* DLD-FUNCTIONS/dasrt.cc (dasrt_user_f): Delete unused arg names.
+	* ls-hdf5.h (hdf5_streambase::hdf5_streambase): Likewise.
+	* ls-hdf5.cc (read_hdf5_data): Likewise.
 	* ls-utils.cc (get_save_type): Likewise.
 	* parse.y (Fassignin): Likewise.
 	* utils.cc (empty_arg): Likewise.
@@ -22,8 +26,8 @@
 	* pt-check.cc (tree_checker::visit_subplot_axes): Likewise.
 	* pr-output.cc (octave_print_internal (std::ostream&, double, bool),
 	octave_print_internal (std::ostream&, const Complex&, bool),
-	octave_print_internal (std::ostream& const charNDArray&, bool,
-	int, bool): Likewise.
+	octave_print_internal (std::ostream&, const ArrayN<std::string>&,
+	bool, int): Likewise.
 	* oct-stream.cc (octave_scan<> (std::istream&, const
 	scanf_format_elt&, char*): Likewise
 	* TEMPLATE-INST/Array-tc.cc (resize_fill_value<octave_value>):

@@ -556,7 +556,7 @@ default_command_editor::do_get_output_stream (void)
 }
 
 string_vector
-default_command_editor::do_generate_filename_completions (const std::string& text)
+default_command_editor::do_generate_filename_completions (const std::string&)
 {
   // XXX FIXME XXX
   return string_vector ();

@@ -785,7 +785,7 @@ hdf5_read_next_data (hid_t group_id, const char *name, void *dv)
 // job anyway.  (c.f. load -import documentation.)
 std::string
 read_hdf5_data (std::istream& is,
-		const std::string& filename, bool& global,
+		const std::string& /* filename */, bool& global,
 		octave_value& tc, std::string& doc, bool import)
 {
   std::string retval;

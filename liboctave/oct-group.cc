@@ -117,7 +117,7 @@ octave_group
 octave_group::getgrnam (const std::string& nm)
 {
   std::string msg;
-  return getgrnam (msg);
+  return getgrnam (nm, msg);
 }
 
 octave_group

@@ -376,7 +376,7 @@ EXPON	([DdEe][+-]?{D}+)
 				     && in_brace_or_paren.top ()
 				     && convert_spaces_to_comma)
 				{
-				  unput (',');
+				  unput (','); /* XXX */
 				  return ']';
 				}
 			    }
@@ -397,7 +397,7 @@ EXPON	([DdEe][+-]?{D}+)
  			  if (! (postfix_un_op || bin_op)
 			      && in_brace_or_paren.top ()
 			      && convert_spaces_to_comma)
-			    TOK_RETURN (',');
+			    TOK_RETURN (','); /* XXX */
 			}
 
 <MATRIX>{SN}*\;{SN}*	|
@@ -469,16 +469,6 @@ EXPON	([DdEe][+-]?{D}+)
 		    {
 		      in_plot_range = 1;
 		      TOK_RETURN (OPEN_BRACE);
-		    }
-
-		  if (do_comma_insert)
-		    {
-		      yyless (0);
-		      do_comma_insert = 0;
-		      quote_is_transpose = 0;
-		      cant_be_identifier = 0;
-		      convert_spaces_to_comma = 1;
-		      return (',');
 		    }
 		  else
 		    {
@@ -1452,10 +1442,12 @@ handle_identifier (char *tok, int next_tok_is_eq)
 
       int c1 = yyinput ();
       unput (c1);
-      int other_op = match_any (c1, ",;\n](");
+      int other_op = match_any (c1, ",;\n]");
 
-      if (! (postfix_un_op || bin_op || other_op))
-	unput (',');
+      int index_op = (! spc_prev && c1 == '(');
+
+      if (! (postfix_un_op || bin_op || other_op || index_op))
+	unput (','); /* XXX */
     }
 
   return NAME;

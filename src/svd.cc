@@ -35,19 +35,19 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "f-svd.h"
 
 #ifdef WITH_DLD
-tree_constant *
-builtin_svd_2 (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_svd_2 (const Octave_object& args, int nargin, int nargout)
 {
   return svd (args, nargin, nargout);
 }
 #endif
 
-tree_constant *
-svd (const tree_constant *args, int nargin, int nargout)
+Octave_object
+svd (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
-  tree_constant arg = args[1].make_numeric ();
+  tree_constant arg = args(1).make_numeric ();
 
   if (arg.rows () == 0 || arg.columns () == 0)
     {
@@ -57,10 +57,10 @@ svd (const tree_constant *args, int nargin, int nargout)
 	  if (flag < 0)
 	    gripe_empty_arg ("svd", 0);
 	  Matrix m;
-	  retval = new tree_constant [4];
-	  retval[0] = tree_constant (m);
-	  retval[1] = tree_constant (m);
-	  retval[2] = tree_constant (m);
+	  retval.resize (3);
+	  retval(0) = tree_constant (m);
+	  retval(1) = tree_constant (m);
+	  retval(2) = tree_constant (m);
 	}
       else
 	gripe_empty_arg ("svd", 1);
@@ -100,17 +100,17 @@ svd (const tree_constant *args, int nargin, int nargout)
 
 	DiagMatrix sigma = result.singular_values ();
 
-	if (nargout == 1)
+	if (nargout == 0 || nargout == 1)
 	  {
-	    retval = new tree_constant [2];
-	    retval[0] = tree_constant (sigma.diag (), 1);
+	    retval.resize (1);
+	    retval(0) = tree_constant (sigma.diag (), 1);
 	  }
 	else
 	  {
-	    retval = new tree_constant [4];
-	    retval[0] = tree_constant (result.left_singular_matrix ());
-	    retval[1] = tree_constant (sigma);
-	    retval[2] = tree_constant (result.right_singular_matrix ());
+	    retval.resize (3);
+	    retval(0) = tree_constant (result.left_singular_matrix ());
+	    retval(1) = tree_constant (sigma);
+	    retval(2) = tree_constant (result.right_singular_matrix ());
 	  }
       }
       break;
@@ -121,17 +121,17 @@ svd (const tree_constant *args, int nargin, int nargout)
 
 	DiagMatrix sigma = result.singular_values ();
 
-	if (nargout == 1)
+	if (nargout == 0 || nargout == 1)
 	  {
-	    retval = new tree_constant [2];
-	    retval[0] = tree_constant (sigma.diag (), 1);
+	    retval.resize (1);
+	    retval(0) = tree_constant (sigma.diag (), 1);
 	  }
 	else
 	  {
-	    retval = new tree_constant [4];
-	    retval[0] = tree_constant (result.left_singular_matrix ());
-	    retval[1] = tree_constant (sigma);
-	    retval[2] = tree_constant (result.right_singular_matrix ());
+	    retval.resize (3);
+	    retval(0) = tree_constant (result.left_singular_matrix ());
+	    retval(1) = tree_constant (sigma);
+	    retval(2) = tree_constant (result.right_singular_matrix ());
 	  }
       }
       break;

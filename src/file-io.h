@@ -28,36 +28,36 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <Pix.h>
 
-class tree_constant;
+#include "oct-obj.h"
 
 extern Pix return_valid_file (const tree_constant& arg);
 
-extern tree_constant *fclose_internal (const tree_constant *args);
-extern tree_constant *feof_internal (const tree_constant *args,
-				     int nargin, int nargout);
-extern tree_constant *ferror_internal (const tree_constant *args,
-                                       int nargin, int nargout);
-extern tree_constant *fflush_internal (const tree_constant *args);
-extern tree_constant *fgets_internal (const tree_constant *args, int nargout);
-extern tree_constant *fopen_internal (const tree_constant *args);
-extern tree_constant *fread_internal (const tree_constant *args,
+extern Octave_object fclose_internal (const Octave_object& args);
+extern Octave_object feof_internal (const Octave_object& args,
+				    int nargin, int nargout);
+extern Octave_object ferror_internal (const Octave_object& args,
 				      int nargin, int nargout);
-extern tree_constant *freport_internal (void);
-extern tree_constant *frewind_internal (const tree_constant *args);
-extern tree_constant *fseek_internal (const tree_constant *args, int nargin);
-extern tree_constant *ftell_internal (const tree_constant *args);
-extern tree_constant *fwrite_internal (const tree_constant *args,
-				       int nargin, int nargout);
+extern Octave_object fflush_internal (const Octave_object& args);
+extern Octave_object fgets_internal (const Octave_object& args, int nargout);
+extern Octave_object fopen_internal (const Octave_object& args);
+extern Octave_object fread_internal (const Octave_object& args,
+				     int nargin, int nargout);
+extern Octave_object freport_internal (void);
+extern Octave_object frewind_internal (const Octave_object& args);
+extern Octave_object fseek_internal (const Octave_object& args, int nargin);
+extern Octave_object ftell_internal (const Octave_object& args);
+extern Octave_object fwrite_internal (const Octave_object& args,
+				      int nargin, int nargout);
 
 extern void initialize_file_io (void);
 
 extern void close_files (void);
 
-extern tree_constant *do_printf (const char *type, const tree_constant *args,
-				 int nargin, int nargout);
-
-extern tree_constant *do_scanf (const char *type, const tree_constant *args,
+extern Octave_object do_printf (const char *type, const Octave_object& args,
 				int nargin, int nargout);
+
+extern Octave_object do_scanf (const char *type, const Octave_object& args,
+			       int nargin, int nargout);
 
 #endif
 

@@ -41,14 +41,14 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 static tree_fvc *lsode_fcn;
 
 #ifdef WITH_DLD
-tree_constant *
-builtin_lsode_2 (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_lsode_2 (const Octave_object& args, int nargin, int nargout)
 {
   return lsode (args, nargin, nargout);
 }
 
-tree_constant *
-builtin_lsode_options_2 (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_lsode_options_2 (const Octave_object& args, int nargin, int nargout)
 {
   return lsode_options (args, nargin, nargout);
 }
@@ -64,9 +64,9 @@ lsode_user_function (const ColumnVector& x, double t)
   int nstates = x.capacity ();
 
 //  tree_constant name (lsode_fcn->name ());
-  tree_constant *args = new tree_constant [3];
-//  args[0] = name;
-  args[2] = tree_constant (t);
+  Octave_object args (3);
+//  args(0) = name;
+  args(2) = tree_constant (t);
 
   if (nstates > 1)
     {
@@ -74,20 +74,18 @@ lsode_user_function (const ColumnVector& x, double t)
       for (int i = 0; i < nstates; i++)
 	m (i, 0) = x.elem (i);
       tree_constant state (m);
-      args[1] = state;
+      args(1) = state;
     }
   else
     {
       double d = x.elem (0);
       tree_constant state (d);
-      args[1] = state;
+      args(1) = state;
     }
 
   if (lsode_fcn != (tree_fvc *) NULL)
     {
-      tree_constant *tmp = lsode_fcn->eval (0, 1, args, 3);
-
-      delete [] args;
+      Octave_object tmp = lsode_fcn->eval (0, 1, args, 3);
 
       if (error_state)
 	{
@@ -95,44 +93,39 @@ lsode_user_function (const ColumnVector& x, double t)
 	  return retval;
 	}
 
-      if (tmp != NULL_TREE_CONST && tmp[0].is_defined ())
+      if (tmp.length () > 0 && tmp(0).is_defined ())
 	{
-	  retval = tmp[0].to_vector ();
-
-	  delete [] tmp;
+	  retval = tmp(0).to_vector ();
 
 	  if (retval.length () == 0)
 	    gripe_user_supplied_eval ("lsode");
 	}
       else
-	{
-	  delete [] tmp;
-	  gripe_user_supplied_eval ("lsode");
-	}
+	gripe_user_supplied_eval ("lsode");
     }
 
   return retval;
 }
 
-tree_constant *
-lsode (const tree_constant *args, int nargin, int nargout)
+Octave_object
+lsode (const Octave_object& args, int nargin, int nargout)
 {
 // Assumes that we have been given the correct number of arguments.
 
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
-  lsode_fcn = is_valid_function (args[1], "lsode", 1);
+  lsode_fcn = is_valid_function (args(1), "lsode", 1);
   if (lsode_fcn == (tree_fvc *) NULL
       || takes_correct_nargs (lsode_fcn, 3, "lsode", 1) != 1)
     return retval;
 
-  ColumnVector state = args[2].to_vector ();
-  ColumnVector out_times = args[3].to_vector ();
+  ColumnVector state = args(2).to_vector ();
+  ColumnVector out_times = args(3).to_vector ();
   ColumnVector crit_times;
   int crit_times_set = 0;
   if (nargin > 4)
     {
-      crit_times = args[4].to_vector ();
+      crit_times = args(4).to_vector ();
       crit_times_set = 1;
     }
 
@@ -151,8 +144,8 @@ lsode (const tree_constant *args, int nargin, int nargout)
   else
     output = ode.integrate (out_times);
 
-  retval = new tree_constant [2];
-  retval[0] = tree_constant (output);
+  retval.resize (1);
+  retval(0) = tree_constant (output);
   return retval;
 }
 
@@ -171,7 +164,7 @@ struct ODE_OPTIONS
   d_get_opt_mf d_get_fcn;
 };
 
-static ODE_OPTIONS lsode_option_table[] =
+static ODE_OPTIONS lsode_option_table [] =
 {
   { "absolute tolerance",
     { "absolute", "tolerance", NULL, NULL, },
@@ -262,30 +255,26 @@ do_lsode_option (char *keyword, double val)
   warning ("lsode_options: no match for `%s'", keyword);
 }
 
-tree_constant *
-lsode_options (const tree_constant *args, int nargin, int nargout)
+Octave_object
+lsode_options (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin == 1)
-    {
-      print_lsode_option_list ();
-    }
+    print_lsode_option_list ();
   else if (nargin == 3)
     {
-      if (args[1].is_string_type ())
+      if (args(1).is_string_type ())
 	{
-	  char *keyword = args[1].string_value ();
-	  double val = args[2].double_value ();
+	  char *keyword = args(1).string_value ();
+	  double val = args(2).double_value ();
 	  do_lsode_option (keyword, val);
 	}
       else
 	print_usage ("lsode_options");
     }
   else
-    {
-      print_usage ("lsode_options");
-    }
+    print_usage ("lsode_options");
 
   return retval;
 }

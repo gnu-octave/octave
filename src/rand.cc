@@ -1,7 +1,7 @@
 // f-rand.cc                                           -*- C++ -*-
 /*
 
-Copyright (C) 1993 John W. Eaton
+Copyright (C) 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -46,8 +46,8 @@ extern "C"
 }
 
 #ifdef WITH_DLD
-tree_constant *
-builtin_rand_2 (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_rand_2 (const Octave_object& args, int nargin, int nargout)
 {
   return rand_internal (args, nargin, nargout);
 }
@@ -102,12 +102,12 @@ curr_rand_dist (void)
     }
 }
 
-tree_constant *
-rand_internal (const tree_constant *args, int nargin, int nargout)
+Octave_object
+rand_internal (const Octave_object& args, int nargin, int nargout)
 {
 // Assumes that we have been given the correct number of arguments.
 
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   static int initialized = 0;
   if (! initialized)
@@ -144,49 +144,45 @@ rand_internal (const tree_constant *args, int nargin, int nargout)
     }
   else if (nargin == 2)
     {
-      switch (args[1].const_type ())
+      switch (args(1).const_type ())
 	{
 	case tree_constant_rep::string_constant:
-	  char *s_arg = args[1].string_value ();
+	  char *s_arg = args(1).string_value ();
 	  if (strcmp (s_arg, "dist") == 0)
 	    {
-	      retval = new tree_constant [2];
+	      retval.resize (1);
 	      char *s = curr_rand_dist ();
-	      retval[0] = tree_constant (s);
+	      retval(0) = tree_constant (s);
 	    }
 	  else if (strcmp (s_arg, "seed") == 0)
 	    {
-	      retval = new tree_constant [2];
+	      retval.resize (1);
 	      double d = curr_rand_seed ();
-	      retval[0] = tree_constant (d);
+	      retval(0) = tree_constant (d);
 	    }
 	  else if (strcmp (s_arg, "uniform") == 0)
 	    current_distribution = uniform;
 	  else if (strcmp (s_arg, "normal") == 0)
 	    current_distribution = normal;
 	  else
-	    {
-	      delete [] retval;
-	      retval = NULL_TREE_CONST;
-	      error ("rand: unrecognized string argument");
-	    }
+	    error ("rand: unrecognized string argument");
 	  break;
 	case tree_constant_rep::scalar_constant:
 	case tree_constant_rep::complex_scalar_constant:
-	  n = NINT (args[1].double_value ());
+	  n = NINT (args(1).double_value ());
 	  m = n;
 	  goto gen_matrix;
 	case tree_constant_rep::range_constant:
 	  {
-	    Range r = args[1].range_value ();
+	    Range r = args(1).range_value ();
 	    n = 1;
 	    m = NINT (r.nelem ());
 	  }
 	  goto gen_matrix;
 	case tree_constant_rep::matrix_constant:
 	case tree_constant_rep::complex_matrix_constant:
-	  n = NINT (args[1].rows ());
-	  m = NINT (args[1].columns ());
+	  n = NINT (args(1).rows ());
+	  m = NINT (args(1).columns ());
 	  goto gen_matrix;
 	default:
 	  panic_impossible ();
@@ -195,16 +191,16 @@ rand_internal (const tree_constant *args, int nargin, int nargout)
     }
   else if (nargin == 3)
     {
-      if (args[1].is_string_type ()
-	  && strcmp (args[1].string_value (), "seed") == 0)
+      if (args(1).is_string_type ()
+	  && strcmp (args(1).string_value (), "seed") == 0)
 	{
-	  double d = args[2].to_scalar ();
+	  double d = args(2).to_scalar ();
 	  set_rand_seed (d);
 	}
       else
 	{
-	  n = NINT (args[1].to_scalar ());
-	  m = NINT (args[2].to_scalar ());
+	  n = NINT (args(1).to_scalar ());
+	  m = NINT (args(2).to_scalar ());
 	  goto gen_matrix;
 	}
     }
@@ -215,13 +211,13 @@ rand_internal (const tree_constant *args, int nargin, int nargout)
 
   if (n == 0 || m == 0)
     {
-      retval = new tree_constant [2];
+      retval.resize (1);
       Matrix m (0, 0);
-      retval[0] = tree_constant (m);
+      retval(0) = tree_constant (m);
     }
   else if (n > 0 && m > 0)
     {
-      retval = new tree_constant [2];
+      retval.resize (1);
       Matrix rand_mat (n, m);
       for (int j = 0; j < m; j++)
 	for (int i = 0; i < n; i++)
@@ -245,7 +241,7 @@ rand_internal (const tree_constant *args, int nargin, int nargout)
 	      }
 	  }
 
-      retval[0] = tree_constant (rand_mat);
+      retval(0)   = tree_constant (rand_mat);
     }
   else
     error ("rand: invalid negative argument");

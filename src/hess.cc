@@ -35,19 +35,19 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "f-hess.h"
 
 #ifdef WITH_DLD
-tree_constant *
-builtin_hess_2 (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_hess_2 (const Octave_object& args, int nargin, int nargout)
 {
   return hess (args, nargin, nargout);
 }
 #endif
 
-tree_constant *
-hess (const tree_constant *args, int nargin, int nargout)
+Octave_object
+hess (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
-  tree_constant arg = args[1].make_numeric ();
+  tree_constant arg = args(1).make_numeric ();
 
   int a_nr = arg.rows ();
   int a_nc = arg.columns ();
@@ -60,9 +60,9 @@ hess (const tree_constant *args, int nargin, int nargout)
 	  if (flag < 0)
 	    warning ("hess: argument is empty matrix");
 	  Matrix m;
-	  retval = new tree_constant [3];
-	  retval[0] = tree_constant (m);
-	  retval[1] = tree_constant (m);
+	  retval.resize (2);
+	  retval(0) = tree_constant (m);
+	  retval(1) = tree_constant (m);
         }
       else
 	error ("hess: empty matrix is invalid as argument");
@@ -87,16 +87,16 @@ hess (const tree_constant *args, int nargin, int nargout)
 
 	HESS result (tmp);
 
-	if (nargout == 1)
+	if (nargout == 0 || nargout == 1)
 	  {
-	    retval = new tree_constant [2];
-	    retval[0] = tree_constant (result.hess_matrix ());
+	    retval.resize (1);
+	    retval(0) = tree_constant (result.hess_matrix ());
 	  }
         else
 	  {
-	    retval = new tree_constant [3];
-	    retval[0] = tree_constant (result.unitary_hess_matrix ());
-	    retval[1] = tree_constant (result.hess_matrix ());
+	    retval.resize (2);
+	    retval(0) = tree_constant (result.unitary_hess_matrix ());
+	    retval(1) = tree_constant (result.hess_matrix ());
           }
       }
       break;
@@ -106,48 +106,48 @@ hess (const tree_constant *args, int nargin, int nargout)
 
 	ComplexHESS result (ctmp);
 
-	if (nargout == 1)
+	if (nargout == 0 || nargout == 1)
 	  {
-	    retval = new tree_constant [2];
-	    retval[0] = tree_constant (result.hess_matrix ());
+	    retval.resize (1);
+	    retval(0) = tree_constant (result.hess_matrix ());
 	  }
   	else
 	  {
-	    retval = new tree_constant [3];
-	    retval[0] = tree_constant (result.unitary_hess_matrix ());
-	    retval[1] = tree_constant (result.hess_matrix ());
+	    retval.resize (2);
+	    retval(0) = tree_constant (result.unitary_hess_matrix ());
+	    retval(1) = tree_constant (result.hess_matrix ());
 	  }
       }
       break;
     case tree_constant_rep::scalar_constant:
       {
 	double d = arg.double_value ();
-	if (nargout == 1)
+	if (nargout == 0 || nargout == 1)
 	  {
-	    retval = new tree_constant [2];
-	    retval[0] = tree_constant (d);
+	    retval.resize (1);
+	    retval(0) = tree_constant (d);
 	  }
 	else
 	  {
-	    retval = new tree_constant [3];
-	    retval[0] = tree_constant (1);
-	    retval[1] = tree_constant (d);
+	    retval.resize (2);
+	    retval(0) = tree_constant (1);
+	    retval(1) = tree_constant (d);
 	  }
       }
       break;
     case tree_constant_rep::complex_scalar_constant:
       {
 	Complex c = arg.complex_value ();
-	if (nargout == 1)
+	if (nargout == 0 || nargout == 1)
  	  {
-	    retval = new tree_constant [2];
-	    retval[0] = tree_constant (c);
+	    retval.resize (1);
+	    retval(0) = tree_constant (c);
 	  }
 	else
 	  {
-	    retval = new tree_constant [3];
-	    retval[0] = tree_constant (1);
-	    retval[1] = tree_constant (c);
+	    retval.resize (2);
+	    retval(0) = tree_constant (1);
+	    retval(1) = tree_constant (c);
 	  }
       }
       break;

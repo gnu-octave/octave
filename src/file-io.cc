@@ -275,12 +275,12 @@ file_io_get_file (const tree_constant arg, const char *mode,
   return p;
 }
 
-tree_constant *
-fclose_internal (const tree_constant *args)
+Octave_object
+fclose_internal (const Octave_object& args)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
-  Pix p = return_valid_file (args[1]);
+  Pix p = return_valid_file (args(1));
 
   if (p == (Pix) NULL)
     return retval;
@@ -297,24 +297,24 @@ fclose_internal (const tree_constant *args)
   file_list.del (p);
   file_count--;
 
-  retval = new tree_constant[2];
+  retval.resize (1);
   if (success == 0)
-    retval[0] = tree_constant (1.0); // succeeded
+    retval(0) = tree_constant (1.0); // succeeded
   else
     {
       error ("fclose: error on closing file");
-      retval[0] = tree_constant (0.0); // failed
+      retval(0) = tree_constant (0.0); // failed
     }
 
   return retval;
 }
 
-tree_constant *
-fflush_internal (const tree_constant *args)
+Octave_object
+fflush_internal (const Octave_object& args)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
-  Pix p = return_valid_file (args[1]);
+  Pix p = return_valid_file (args(1));
 
   if (p == (Pix) NULL)
     return retval;
@@ -334,13 +334,13 @@ fflush_internal (const tree_constant *args)
   else
     success = fflush (file.fptr ());
 
-  retval = new tree_constant[2];
+  retval.resize (1);
   if (success == 0)
-    retval[0] = tree_constant (1.0); // succeeded
+    retval(0) = tree_constant (1.0); // succeeded
   else
     {
       error ("fflush: write error");
-      retval[0] = tree_constant (0.0); // failed
+      retval(0) = tree_constant (0.0); // failed
     }
 
   return retval;
@@ -361,20 +361,20 @@ valid_mode (const char *mode)
   return 0;
 }
 
-tree_constant *
-fgets_internal (const tree_constant *args, int nargout)
+Octave_object
+fgets_internal (const Octave_object& args, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
-  Pix p = file_io_get_file (args[1], "r", "fgets");
+  Pix p = file_io_get_file (args(1), "r", "fgets");
   
   if (p == (Pix) NULL)
     return retval;
 
   int length = 0;
-  if (args[2].is_scalar_type ())
+  if (args(2).is_scalar_type ())
     {
-      length = (int) args[2].double_value ();
+      length = (int) args(2).double_value ();
       if ((double) NINT (length) != length)
 	{
 	  error ("fgets: length not an integer value");
@@ -389,56 +389,56 @@ fgets_internal (const tree_constant *args, int nargout)
 
   if (success == (char *) NULL)
     {
-      retval = new tree_constant[2];
-      retval[0] = tree_constant (-1.0);
+      retval.resize (1);
+      retval(0) = tree_constant (-1.0);
       return retval;
     }
 
   if (nargout == 2)
     {
-      retval = new tree_constant[3];
-      retval[1] = tree_constant ((double) strlen (string));
+      retval.resize (2);
+      retval(1) = tree_constant ((double) strlen (string));
     }
   else
-    retval = new tree_constant[2];
+    retval.resize (1);
 
-  retval[0] = tree_constant (string);
+  retval(0) = tree_constant (string);
 
   return retval;
 }
 
-tree_constant *
-fopen_internal (const tree_constant *args)
+Octave_object
+fopen_internal (const Octave_object& args)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
   Pix p;
 
-  if (! args[1].is_string_type ())
+  if (! args(1).is_string_type ())
     {
       error ("fopen: file name must be a string");
       return retval;
     }
 
-  p = return_valid_file (args[1]);
+  p = return_valid_file (args(1));
 
   if (p != (Pix) NULL)
     {
       file_info file = file_list (p);
 
-      retval = new tree_constant[2];
-      retval[0] = tree_constant ((double) file.number ());
+      retval.resize (1);
+      retval(0) = tree_constant ((double) file.number ());
 
       return retval;
     }
 
-  if (! args[2].is_string_type ())
+  if (! args(2).is_string_type ())
     {
       error ("fopen: file mode must be a string");
       return retval;
     }
 
-  char *name = args[1].string_value ();
-  char *mode = args[2].string_value ();
+  char *name = args(1).string_value ();
+  char *mode = args(2).string_value ();
 
   if (! valid_mode (mode))
     {
@@ -466,16 +466,16 @@ fopen_internal (const tree_constant *args)
   file_info file (number, name, file_ptr, mode);
   file_list.append (file);
 
-  retval = new tree_constant[2];
-  retval[0] = tree_constant ((double) number);
+  retval.resize (1);
+  retval(0) = tree_constant ((double) number);
 
   return retval;
 }
 
-tree_constant *
+Octave_object
 freport_internal (void)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
   Pix p = file_list.first ();
 
   ostrstream output_buf;
@@ -495,12 +495,12 @@ freport_internal (void)
   return retval;
 }
 
-tree_constant *
-frewind_internal (const tree_constant *args)
+Octave_object
+frewind_internal (const Octave_object& args)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
-  Pix p = file_io_get_file (args[1], "a+", "frewind");
+  Pix p = file_io_get_file (args(1), "a+", "frewind");
 
   if (p != (Pix) NULL)
     {
@@ -511,21 +511,21 @@ frewind_internal (const tree_constant *args)
   return retval;
 }
 
-tree_constant *
-fseek_internal (const tree_constant *args, int nargin)
+Octave_object
+fseek_internal (const Octave_object& args, int nargin)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
-  Pix p = file_io_get_file (args[1], "a+", "fseek");
+  Pix p = file_io_get_file (args(1), "a+", "fseek");
 
   if (p == (Pix) NULL)
     return retval;
 
   long origin = SEEK_SET;
   long offset = 0;
-  if (args[2].is_scalar_type ())
+  if (args(2).is_scalar_type ())
     {
-      offset = (long) args[2].double_value ();
+      offset = (long) args(2).double_value ();
       if ((double) NINT (offset) != offset)
 	{
 	  error ("fseek: offset not an integer value");
@@ -533,9 +533,9 @@ fseek_internal (const tree_constant *args, int nargin)
 	}
     }
 
-  if (nargin == 4 && args[3].is_scalar_type ())
+  if (nargin == 4 && args(3).is_scalar_type ())
     {
-      origin = (long) args[3].double_value ();
+      origin = (long) args(3).double_value ();
       if (origin == -1)
 	origin = SEEK_CUR;
       else if (origin == -2)
@@ -552,32 +552,32 @@ fseek_internal (const tree_constant *args, int nargin)
 
   file_info file = file_list (p);
   int success = fseek (file.fptr (), offset, origin);
-  retval = new tree_constant[2];
+  retval.resize (1);
 
   if (success == 0)
-    retval[0] = tree_constant (1.0); // succeeded
+    retval(0) = tree_constant (1.0); // succeeded
   else
     {
       error ("fseek: file error");
-      retval[0] = tree_constant (0.0); // failed
+      retval(0) = tree_constant (0.0); // failed
     }
 
   return retval;
 }
 
-tree_constant *
-ftell_internal (const tree_constant *args)
+Octave_object
+ftell_internal (const Octave_object& args)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
-  Pix p = file_io_get_file (args[1], "a+", "ftell");
+  Pix p = file_io_get_file (args(1), "a+", "ftell");
 
   if (p != (Pix) NULL)
     {
       file_info file = file_list (p);
       long offset = ftell (file.fptr ());
-      retval = new tree_constant[2];
-      retval[0] = tree_constant ((double) offset);
+      retval.resize (1);
+      retval(0) = tree_constant ((double) offset);
 
       if (offset == -1L)
 	error ("ftell: write error");
@@ -605,7 +605,7 @@ close_files (void)
 }
 
 static int
-process_printf_format (const char *s, const tree_constant *args,
+process_printf_format (const char *s, const Octave_object& args,
 		       ostrstream& sb, const char *type, int nargin)
 {
   ostrstream fmt;
@@ -639,14 +639,14 @@ process_printf_format (const char *s, const tree_constant *args,
 	  return -1;
 	}
 
-      if (args[fmt_arg_count].const_type ()
+      if (args(fmt_arg_count).const_type ()
 	  != tree_constant_rep::scalar_constant)
 	{
 	  error ("%s: `*' must be replaced by an integer", type);
 	  return -1;
 	}
 
-      fmt << NINT (args[fmt_arg_count++].double_value ());
+      fmt << NINT (args(fmt_arg_count++).double_value ());
       s++;
       chars_from_fmt_str++;
     }
@@ -679,14 +679,14 @@ process_printf_format (const char *s, const tree_constant *args,
 	  return -1;
 	}
 
-      if (args[fmt_arg_count].const_type ()
+      if (args(fmt_arg_count).const_type ()
 	  != tree_constant_rep::scalar_constant)
 	{
 	  error ("%s: `*' must be replaced by an integer", type);
 	  return -1;
 	}
 
-      fmt << NINT (args[fmt_arg_count++].double_value ());
+      fmt << NINT (args(fmt_arg_count++).double_value ());
       s++;
       chars_from_fmt_str++;
     }
@@ -717,7 +717,7 @@ process_printf_format (const char *s, const tree_constant *args,
       return -1;
     }
 
-  arg_type = args[fmt_arg_count].const_type ();
+  arg_type = args(fmt_arg_count).const_type ();
 
   switch (*s)
     {
@@ -729,7 +729,7 @@ process_printf_format (const char *s, const tree_constant *args,
 	{
 	  chars_from_fmt_str++;
 	  fmt << *s << ends;
-	  double d = args[fmt_arg_count++].double_value ();
+	  double d = args(fmt_arg_count++).double_value ();
 	  if ((int) d != d)
 	    goto invalid_conversion;
 	  else
@@ -750,7 +750,7 @@ process_printf_format (const char *s, const tree_constant *args,
 	  chars_from_fmt_str++;
 	  fmt << *s << ends;
 	  char *s = fmt.str ();
-	  sb.form (s, args[fmt_arg_count++].double_value ());
+	  sb.form (s, args(fmt_arg_count++).double_value ());
 	  delete [] s;
 	  return chars_from_fmt_str;
 	}
@@ -764,7 +764,7 @@ process_printf_format (const char *s, const tree_constant *args,
 	  chars_from_fmt_str++;
 	  fmt << *s << ends;
 	  char *s = fmt.str ();
-	  sb.form (s, args[fmt_arg_count++].string_value ());
+	  sb.form (s, args(fmt_arg_count++).string_value ());
 	  delete [] s;
 	  return chars_from_fmt_str;
 	}
@@ -777,7 +777,7 @@ process_printf_format (const char *s, const tree_constant *args,
 	{
 	  chars_from_fmt_str++;
 	  fmt << *s << ends;
-	  char *str = args[fmt_arg_count++].string_value ();
+	  char *str = args(fmt_arg_count++).string_value ();
 	  if (strlen (str) != 1)
 	    goto invalid_conversion;
 	  else
@@ -803,20 +803,20 @@ process_printf_format (const char *s, const tree_constant *args,
 }
 
 
-tree_constant *
-do_printf (const char *type, const tree_constant *args, int nargin,
+Octave_object
+do_printf (const char *type, const Octave_object& args, int nargin,
 	   int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
   fmt_arg_count = 1;
   char *fmt;
   file_info file;
 
   if (strcmp (type, "fprintf") == 0)
     {
-      if (args[2].is_string_type ())
+      if (args(2).is_string_type ())
 	{
-	  fmt = args[2].string_value ();
+	  fmt = args(2).string_value ();
 	  fmt_arg_count++;
 	}
       else
@@ -825,7 +825,7 @@ do_printf (const char *type, const tree_constant *args, int nargin,
 	  return retval;
 	}
 
-      Pix p = file_io_get_file (args[1], "a+", type);
+      Pix p = file_io_get_file (args(1), "a+", type);
 
       if (p == (Pix) NULL)
 	return retval;
@@ -838,13 +838,13 @@ do_printf (const char *type, const tree_constant *args, int nargin,
 	  return retval;
 	}
 
-      fmt = args[2].string_value ();
+      fmt = args(2).string_value ();
 
       fmt_arg_count++;
     }
-  else if (args[1].is_string_type ())
+  else if (args(1).is_string_type ())
     {
-      fmt = args[1].string_value ();
+      fmt = args(1).string_value ();
       fmt_arg_count++;
     }
   else
@@ -903,9 +903,9 @@ do_printf (const char *type, const tree_constant *args, int nargin,
     }
   else if (strcmp (type, "sprintf") == 0)
     {
-      retval = new tree_constant [2];
+      retval.resize (1);
       char *msg = output_buf.str ();
-      retval[0] = tree_constant (msg);
+      retval(0) = tree_constant (msg);
       delete [] msg;
     }
 
@@ -915,7 +915,7 @@ do_printf (const char *type, const tree_constant *args, int nargin,
 static int
 process_scanf_format (const char *s, ostrstream& fmt,
 		      const char *type, int nargout, FILE* fptr,
-		      tree_constant *values)
+		      Octave_object& values)
 {
   fmt << "%";
 
@@ -961,7 +961,7 @@ process_scanf_format (const char *s, ostrstream& fmt,
 // Even if we don't have a place to store them, attempt to convert
 // everything specified by the format string.
 
-  if (fmt_arg_count >= nargout)
+  if (fmt_arg_count >= (nargout ? nargout : 1))
     store_value = 0;
 
   switch (*s)
@@ -975,7 +975,7 @@ process_scanf_format (const char *s, ostrstream& fmt,
 	success = fscanf (fptr, str, &temp);
 	delete [] str;
 	if (success > 0 && store_value)
-	  values[fmt_arg_count++] = tree_constant ((double) temp);
+	  values(fmt_arg_count++) = tree_constant ((double) temp);
       }
       break;
     case 'e': case 'E': case 'f': case 'g': case 'G':
@@ -987,7 +987,7 @@ process_scanf_format (const char *s, ostrstream& fmt,
 	success = fscanf (fptr, str, &temp);
 	delete [] str;
 	if (success > 0 && store_value)
-	  values[fmt_arg_count++] = tree_constant (temp);
+	  values(fmt_arg_count++) = tree_constant (temp);
       }
       break;
     case 's':
@@ -1023,7 +1023,7 @@ process_scanf_format (const char *s, ostrstream& fmt,
 	success = fscanf (fptr, str, temp);
 	delete [] str;
 	if (success && store_value)
-	  values[fmt_arg_count++] = tree_constant (temp);
+	  values(fmt_arg_count++) = tree_constant (temp);
       }
       break;
     case 'c':
@@ -1039,7 +1039,7 @@ process_scanf_format (const char *s, ostrstream& fmt,
 	delete [] str;
 	temp[string_width] = '\0';
 	if (success > 0 && store_value)
-	  values[fmt_arg_count++] = tree_constant (temp);
+	  values(fmt_arg_count++) = tree_constant (temp);
       }
       break;
     default:
@@ -1068,10 +1068,10 @@ process_scanf_format (const char *s, ostrstream& fmt,
   return -1;
 }
 
-tree_constant *
-do_scanf (const char *type, const tree_constant *args, int nargin, int nargout)
+Octave_object
+do_scanf (const char *type, const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
   char *scanf_fmt = (char *) NULL;
   char *tmp_file = (char *) NULL;
   int tmp_file_open = 0;
@@ -1082,8 +1082,8 @@ do_scanf (const char *type, const tree_constant *args, int nargin, int nargout)
 
   if (strcmp (type, "scanf") != 0)
     {
-      if (args[2].is_string_type ())
-	scanf_fmt = args[2].string_value ();
+      if (args(2).is_string_type ())
+	scanf_fmt = args(2).string_value ();
       else
 	{
 	  error ("%s: format must be a string", type);
@@ -1095,7 +1095,7 @@ do_scanf (const char *type, const tree_constant *args, int nargin, int nargout)
 
   if (doing_fscanf)
     {
-      Pix p = file_io_get_file (args[1], "r", type);
+      Pix p = file_io_get_file (args(1), "r", type);
 
       if (p == (Pix) NULL)
 	return retval;
@@ -1111,13 +1111,13 @@ do_scanf (const char *type, const tree_constant *args, int nargin, int nargout)
       fptr = file.fptr ();
     }
 
-  if ((fptr == (FILE *) NULL && args[1].is_string_type ())
+  if ((fptr == (FILE *) NULL && args(1).is_string_type ())
       || (doing_fscanf && file.number () == 0))
     {
       char *string;
 
       if (strcmp (type, "scanf") == 0)
-	scanf_fmt = args[1].string_value ();
+	scanf_fmt = args(1).string_value ();
 
       if (strcmp (type, "scanf") == 0
 	  || (doing_fscanf && file.number () == 0))
@@ -1127,7 +1127,7 @@ do_scanf (const char *type, const tree_constant *args, int nargin, int nargout)
 	    maybe_save_history (string);
 	}
       else
-	string = args[1].string_value ();
+	string = args(1).string_value ();
 
       tmp_file = tmpnam ((char *) NULL);
 
@@ -1162,7 +1162,7 @@ do_scanf (const char *type, const tree_constant *args, int nargin, int nargout)
 
 // Scan scanf_fmt for % escapes and assign the arguments.
 
-  retval = new tree_constant[nargout+1];
+  retval.resize (nargout ? nargout : 1);
 
   char *ptr = scanf_fmt;
 
@@ -1191,10 +1191,7 @@ do_scanf (const char *type, const tree_constant *args, int nargin, int nargout)
       if (status < 0)
 	{
 	  if (fmt_arg_count == 0)
-	    {
-	      delete [] retval;
-	      retval = NULL_TREE_CONST;
-	    }
+	    retval.resize (0);
 	  break;
 	}
 
@@ -1273,12 +1270,12 @@ num_items_remaining (FILE *fptr, char *type)
  *     data	 : output data
  *     count	 : number of elements read
  */
-tree_constant *
-fread_internal (const tree_constant *args, int nargin, int nargout)
+Octave_object
+fread_internal (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
-  Pix p = file_io_get_file (args[1], "r", "fread");
+  Pix p = file_io_get_file (args(1), "r", "fread");
 
   if (p == (Pix) NULL)
     return retval;
@@ -1287,8 +1284,8 @@ fread_internal (const tree_constant *args, int nargin, int nargout)
   char *prec = "uchar";
   if (nargin > 3)
     {
-      if (args[3].is_string_type ())
-	prec = args[3].string_value ();
+      if (args(3).is_string_type ())
+	prec = args(3).string_value ();
       else
 	{
 	  error ("fread: precision must be a specified as a string");
@@ -1312,15 +1309,15 @@ fread_internal (const tree_constant *args, int nargin, int nargout)
 
   if (nargin > 2)
     {
-      if (args[2].is_scalar_type ())
+      if (args(2).is_scalar_type ())
 	{
-	  tree_constant tmpa = args[2].make_numeric ();
+	  tree_constant tmpa = args(2).make_numeric ();
 	  dnr = tmpa.double_value ();
 	  dnc = 1.0;
 	}
-      else if (args[2].is_matrix_type ())
+      else if (args(2).is_matrix_type ())
 	{
-	  ColumnVector tmp = args[2].to_vector ();
+	  ColumnVector tmp = args(2).to_vector ();
 
 	  if (tmp.length () == 2)
 	    {
@@ -1380,13 +1377,13 @@ fread_internal (const tree_constant *args, int nargin, int nargout)
 
   if (nargout > 1)
     {
-      retval = new tree_constant[3];
-      retval[1] = tree_constant ((double) count);
+      retval.resize (2);
+      retval(1) = tree_constant ((double) count);
     }
   else
-    retval = new tree_constant[2];
+    retval.resize (1);
 
-  retval[0] = tree_constant (m);
+  retval(0) = tree_constant (m);
 
   return retval;
 }
@@ -1407,12 +1404,12 @@ fread_internal (const tree_constant *args, int nargin, int nargout)
  *
  *    count     : the number of elements written
  */
-tree_constant *
-fwrite_internal (const tree_constant *args, int nargin, int nargout)
+Octave_object
+fwrite_internal (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
-  Pix p = file_io_get_file (args[1], "a+", "fwrite");
+  Pix p = file_io_get_file (args(1), "a+", "fwrite");
 
   if (p == (Pix) NULL)
     return retval;
@@ -1421,8 +1418,8 @@ fwrite_internal (const tree_constant *args, int nargin, int nargout)
   char *prec = "uchar";
   if (nargin > 3)
     {
-      if (args[3].is_string_type ())
-	prec = args[3].string_value ();
+      if (args(3).is_string_type ())
+	prec = args(3).string_value ();
       else
 	{
 	  error ("fwrite: precision must be a specified as a string");
@@ -1432,12 +1429,12 @@ fwrite_internal (const tree_constant *args, int nargin, int nargout)
 
   file_info file = file_list (p);
 
-  Matrix m = args[2].to_matrix ();
+  Matrix m = args(2).to_matrix ();
 
   int count = m.write (file.fptr (), prec);
 
-  retval = new tree_constant[2];
-  retval[0] = tree_constant ((double) count);
+  retval.resize (1);
+  retval(0) = tree_constant ((double) count);
 
   return retval;
 }
@@ -1450,21 +1447,21 @@ fwrite_internal (const tree_constant *args, int nargin, int nargout)
  *     fid : file id from fopen
  *     eof : non zero for an end of file condition
  */
-tree_constant *
-feof_internal (const tree_constant *args, int nargin, int nargout)
+Octave_object
+feof_internal (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
 // Get file info.
-  Pix p = return_valid_file (args[1]);
+  Pix p = return_valid_file (args(1));
 
   if (p == (Pix) NULL)
     return retval;
 
   file_info file = file_list (p);
 
-  retval = new tree_constant[2];
-  retval[0] = tree_constant (feof (file.fptr ()));
+  retval.resize (1);
+  retval(0) = tree_constant (feof (file.fptr ()));
 
   return retval;
 }
@@ -1478,13 +1475,13 @@ feof_internal (const tree_constant *args, int nargin, int nargout)
  *     message : system error message
  *     errnum  : error number
  */
-tree_constant *
-ferror_internal (const tree_constant *args, int nargin, int nargout)
+Octave_object
+ferror_internal (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
 // Get file info.
-  Pix p = return_valid_file (args[1]);
+  Pix p = return_valid_file (args(1));
 
   if (p == (Pix) NULL)
     return retval;
@@ -1495,13 +1492,13 @@ ferror_internal (const tree_constant *args, int nargin, int nargout)
 
   if (nargout > 1)
     {
-      retval = new tree_constant[3];
-      retval[1] = tree_constant ((double) ierr);
+      retval.resize (2);
+      retval(1) = tree_constant ((double) ierr);
     }
   else
-    retval = new tree_constant[2];
+    retval.resize (1);
 
-  retval[0] = tree_constant (strsave (strerror (ierr)));
+  retval(0) = tree_constant (strsave (strerror (ierr)));
 
   return retval;
 }

@@ -42,14 +42,14 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 static tree_fvc *quad_fcn;
 
 #ifdef WITH_DLD
-tree_constant *
-builtin_quad_2 (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_quad_2 (const Octave_object& args, int nargin, int nargout)
 {
   return do_quad (args, nargin, nargout);
 }
 
-tree_constant *
-builtin_quad_options_2 (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_quad_options_2 (const Octave_object& args, int nargin, int nargout)
 {
   return quad_options (args, nargin, nargout);
 }
@@ -63,32 +63,25 @@ quad_user_function (double x)
   double retval = 0.0;
 
 //  tree_constant name = tree_constant (quad_fcn->name ());
-  tree_constant *args = new tree_constant [2];
-//  args[0] = name;
-  args[1] = tree_constant (x);
+  Octave_object args (2);
+//  args(0) = name;
+  args(1) = tree_constant (x);
 
   if (quad_fcn != (tree_fvc *) NULL)
     {
-      tree_constant *tmp = quad_fcn->eval (0, 1, args, 2);
-
-      delete [] args;
+      Octave_object tmp = quad_fcn->eval (0, 1, args, 2);
 
       if (error_state)
 	{
-	  delete [] tmp;
 	  quad_integration_error = 1;  // XXX FIXME XXX
 	  gripe_user_supplied_eval ("quad");
 	  return retval;
 	}
 
-      if (tmp != NULL_TREE_CONST && tmp[0].is_defined ())
-	{
-	  retval = tmp[0].to_scalar ();
-	  delete [] tmp;
-	}
+      if (tmp.length () && tmp(0).is_defined ())
+	retval = tmp(0).to_scalar ();
       else
 	{
-	  delete [] tmp;
 	  quad_integration_error = 1;  // XXX FIXME XXX
 	  gripe_user_supplied_eval ("quad");
 	}
@@ -97,20 +90,20 @@ quad_user_function (double x)
   return retval;
 }
 
-tree_constant *
-do_quad (const tree_constant *args, int nargin, int nargout)
+Octave_object
+do_quad (const Octave_object& args, int nargin, int nargout)
 {
 // Assumes that we have been given the correct number of arguments.
 
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
-  quad_fcn = is_valid_function (args[1], "fsolve", 1);
+  quad_fcn = is_valid_function (args(1), "fsolve", 1);
   if (quad_fcn == (tree_fvc *) NULL
       || takes_correct_nargs (quad_fcn, 2, "fsolve", 1) != 1)
     return retval;
 
-  double a = args[2].to_scalar ();
-  double b = args[3].to_scalar ();
+  double a = args(2).to_scalar ();
+  double b = args(3).to_scalar ();
 
   int indefinite = 0;
   IndefQuad::IntegralType indef_type = IndefQuad::doubly_infinite;
@@ -151,9 +144,9 @@ do_quad (const tree_constant *args, int nargin, int nargout)
 	  return retval;
 	}
       have_sing = 1;
-      sing = args[5].to_vector ();
+      sing = args(5).to_vector ();
     case 5:
-      tol = args[4].to_vector ();
+      tol = args(4).to_vector ();
       switch (tol.capacity ())
 	{
 	case 2:
@@ -193,12 +186,12 @@ do_quad (const tree_constant *args, int nargin, int nargout)
       break;
     }
 
-  retval = new tree_constant [5];
+  retval.resize (4);
 
-  retval[0] = tree_constant (val);
-  retval[1] = tree_constant ((double) ier);
-  retval[2] = tree_constant ((double) nfun);
-  retval[3] = tree_constant (abserr);
+  retval(0) = tree_constant (val);
+  retval(1) = tree_constant ((double) ier);
+  retval(2) = tree_constant ((double) nfun);
+  retval(3) = tree_constant (abserr);
 
   return retval;
 }
@@ -218,7 +211,7 @@ struct QUAD_OPTIONS
   d_get_opt_mf d_get_fcn;
 };
 
-static QUAD_OPTIONS quad_option_table[] =
+static QUAD_OPTIONS quad_option_table [] =
 {
   { "absolute tolerance",
     { "absolute", "tolerance", NULL, },
@@ -291,30 +284,26 @@ do_quad_option (char *keyword, double val)
   warning ("quad_options: no match for `%s'", keyword);
 }
 
-tree_constant *
-quad_options (const tree_constant *args, int nargin, int nargout)
+Octave_object
+quad_options (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin == 1)
-    {
-      print_quad_option_list ();
-    }
+    print_quad_option_list ();
   else if (nargin == 3)
     {
-      if (args[1].is_string_type ())
+      if (args(1).is_string_type ())
 	{
-	  char *keyword = args[1].string_value ();
-	  double val = args[2].double_value ();
+	  char *keyword = args(1).string_value ();
+	  double val = args(2).double_value ();
 	  do_quad_option (keyword, val);
 	}
       else
 	print_usage ("quad_options");
     }
   else
-    {
-      print_usage ("quad_options");
-    }
+    print_usage ("quad_options");
 
   return retval;
 }

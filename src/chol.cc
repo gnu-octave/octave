@@ -35,19 +35,21 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "f-chol.h"
 
 #ifdef WITH_DLD
-tree_constant *
-builtin_chol_2 (const tree_constant *args, int nargin, int nargout)
+Octave_object*
+builtin_chol_2 (const Octave_object& args, int nargin, int nargout)
 {
-  return chol (args, nargin, nargout);
+  Octave_object retval (1);
+  retval(0) = chol (args(1));
+  return retval;
 }
 #endif
 
-tree_constant *
-chol (const tree_constant *a, int nargin, int nargout)
+tree_constant
+chol (const tree_constant& a)
 {
-  tree_constant *retval = new tree_constant [2];
+  tree_constant retval;
 
-  tree_constant tmp = a[1].make_numeric ();;
+  tree_constant tmp = a.make_numeric ();;
     
   int nr = tmp.rows ();
   int nc = tmp.columns ();
@@ -60,9 +62,7 @@ chol (const tree_constant *a, int nargin, int nargout)
 	  if (flag < 0)
 	    gripe_empty_arg ("chol", 0);
 	  Matrix m;
-	  retval = new tree_constant [3];
-	  retval[0] = tree_constant (m);
-	  retval[1] = tree_constant (m);
+	  retval = tree_constant (m);
 	}
       else
 	gripe_empty_arg ("chol", 1);
@@ -80,7 +80,7 @@ chol (const tree_constant *a, int nargin, int nargout)
         if (info != 0)
           error ("chol: matrix not positive definite");
         else
-  	  retval[0] = tree_constant (fact.chol_matrix ());
+  	  retval = tree_constant (fact.chol_matrix ());
       }
       break;
     case tree_constant_rep::complex_matrix_constant:
@@ -91,19 +91,19 @@ chol (const tree_constant *a, int nargin, int nargout)
         if (info != 0)
           error ("chol: matrix not positive definite");
         else
-	  retval[0] = tree_constant (fact.chol_matrix ());
+	  retval = tree_constant (fact.chol_matrix ());
       }
       break;
     case tree_constant_rep::scalar_constant:
       {
 	double d = tmp.double_value ();
-	retval[0] = tree_constant (d);
+	retval = tree_constant (d);
       }
       break;
     case tree_constant_rep::complex_scalar_constant:
       {
 	Complex c = tmp.complex_value ();
-	retval[0] = tree_constant (c);
+	retval = tree_constant (c);
       }
       break;
     default:

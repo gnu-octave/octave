@@ -57,21 +57,21 @@ int F77_FCN (zunghr) (const int*, const int*, const int*, Complex*,
 #endif
 
 #ifdef WITH_DLD
-tree_constant *
-builtin_givens_2 (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_givens_2 (const Octave_object& args, int nargin, int nargout)
 {
   return givens (args, nargin, nargout);
 }
 #endif
 
-tree_constant *
-givens (const tree_constant *args, int nargin, int nargout)
+Octave_object
+givens (const Octave_object& args, int nargin, int nargout)
 {
 
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
-  tree_constant arga = args[1].make_numeric ();
-  tree_constant argb = args[2].make_numeric ();
+  tree_constant arga = args(1).make_numeric ();
+  tree_constant argb = args(2).make_numeric ();
 
   if (! arga.is_scalar_type () && argb.is_scalar_type ())
     {
@@ -79,8 +79,7 @@ givens (const tree_constant *args, int nargin, int nargout)
     }
   else
     {
-
-      retval = new tree_constant [nargout+1];
+      retval.resize (nargout ? nargout : 1);
 
       Complex cx, cy;
       double x, y;
@@ -120,13 +119,13 @@ givens (const tree_constant *args, int nargin, int nargout)
 		g.elem (0, 1) = cs;
 		g.elem (1, 0) = -conj (cs);
 
-		retval[0] = tree_constant (g);
+		retval(0) = tree_constant (g);
 	      }
 	      break;
    
 	    case 2:		// output scalar values
-	      retval[0] = tree_constant(cc);
-	      retval[1] = tree_constant(cs);
+	      retval(0) = tree_constant(cc);
+	      retval(1) = tree_constant(cs);
 	      break;
 
 	    default:  
@@ -150,13 +149,13 @@ givens (const tree_constant *args, int nargin, int nargout)
 		g.elem (0, 1) = s;
 		g.elem (1, 0) = -s;
 
-		retval[0] = tree_constant (g);
+		retval(0) = tree_constant (g);
 	      }
 	      break;
    
 	    case 2:		// output scalar values
-	      retval[0] = tree_constant (cc);
-	      retval[1] = tree_constant (s);
+	      retval(0) = tree_constant (cc);
+	      retval(1) = tree_constant (s);
 	      break;
    
 	    default:

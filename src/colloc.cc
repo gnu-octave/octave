@@ -1,7 +1,7 @@
 // f-colloc.cc                                           -*- C++ -*-
 /*
 
-Copyright (C) 1993 John W. Eaton
+Copyright (C) 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -33,26 +33,26 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "f-colloc.h"
 
 #ifdef WITH_DLD
-tree_constant *
-builtin_colloc_2 (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_colloc_2 (const Octave_object& args, int nargin, int nargout)
 {
   return collocation_weights (args, nargin);
 }
 #endif
 
-tree_constant *
-collocation_weights (const tree_constant *args, int nargin)
+Octave_object
+collocation_weights (const Octave_object& args, int nargin)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
-  if (args[1].const_type () != tree_constant_rep::complex_scalar_constant
-      && args[1].const_type () != tree_constant_rep::scalar_constant)
+  if (args(1).const_type () != tree_constant_rep::complex_scalar_constant
+      && args(1).const_type () != tree_constant_rep::scalar_constant)
     {
       error ("colloc: first argument must be a scalar");
       return retval;
     }
 
-  int ncol = NINT (args[1].double_value ());
+  int ncol = NINT (args(1).double_value ());
   if (ncol < 0)
     {
       error ("colloc: first argument must be non-negative");
@@ -65,15 +65,15 @@ collocation_weights (const tree_constant *args, int nargin)
 
   for (int i = 2; i < nargin; i++)
     {
-      if (args[i].is_defined ())
+      if (args(i).is_defined ())
 	{
-	  if (! args[i].is_string_type ())
+	  if (! args(i).is_string_type ())
 	    {
 	      error ("colloc: expecting string argument");
 	      return retval;
 	    }
 
-	  char *s = args[i].string_value ();
+	  char *s = args(i).string_value ();
 	  if (s != (char *) NULL
 	      && (((*s == 'R' || *s == 'r') && strlen (s) == 1)
 		  || strcmp (s, "right") == 0))
@@ -113,13 +113,12 @@ collocation_weights (const tree_constant *args, int nargin)
   Matrix B = wts.second ();
   ColumnVector q = wts.quad_weights ();
 
-  retval = new tree_constant [5];
+  retval.resize (4);
 
-  retval[0] = tree_constant (r);
-  retval[1] = tree_constant (A);
-  retval[2] = tree_constant (B);
-  retval[3] = tree_constant (q);
-  retval[4] = tree_constant ();
+  retval(0) = tree_constant (r);
+  retval(1) = tree_constant (A);
+  retval(2) = tree_constant (B);
+  retval(3) = tree_constant (q);
 
   return retval;
 }

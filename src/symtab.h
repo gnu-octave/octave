@@ -35,12 +35,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include "SLStack.h"
 
-#ifndef SV_FUNCTION_TYPEDEFS
-#define SV_FUNCTION_TYPEDEFS 1
-
-typedef int (*sv_Function)(void);
-
-#endif
+#include "builtins.h"
 
 #define HASH_TABLE_SIZE 1024             /* Must be multiple of 2 */
 #define HASH_MASK (HASH_TABLE_SIZE - 1)

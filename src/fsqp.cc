@@ -38,14 +38,14 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 // static tree *fsqp_constraints;
 
 #ifdef WITH_DLD
-tree_constant *
-builtin_fsqp_2 (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_fsqp_2 (const Octave_object& args, int nargin, int nargout)
 {
   return fsqp (args, nargin, nargout);
 }
 
-tree_constant *
-builtin_fsqp_options_2 (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_fsqp_options_2 (const Octave_object& args, int nargin, int nargout)
 {
   return fsqp_options (args, nargin, nargout);
 }
@@ -64,8 +64,8 @@ fsqp_constraint_function (const ColumnVector& x)
   return retval;
 }
 
-tree_constant *
-fsqp (const tree_constant *args, int nargin, int nargout)
+Octave_object
+fsqp (const Octave_object& args, int nargin, int nargout)
 {
 /*
 
@@ -84,17 +84,17 @@ Handle all of the following:
 
 // Assumes that we have been given the correct number of arguments.
 
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
   error ("fsqp: not implemented yet");
   return retval;
 }
 
-tree_constant *
-fsqp_options (const tree_constant *args, int nargin, int nargout)
+Octave_object
+fsqp_options (const Octave_object& args, int nargin, int nargout)
 {
 // Assumes that we have been given the correct number of arguments.
 
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
   error ("fsqp_options: not implemented yet");
   return retval;
 }

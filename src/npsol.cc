@@ -45,14 +45,14 @@ static tree_fvc *npsol_objective;
 static tree_fvc *npsol_constraints;
 
 #ifdef WITH_DLD
-tree_constant *
-builtin_npsol_2 (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_npsol_2 (const Octave_object& args, int nargin, int nargout)
 {
   return npsol (args, nargin, nargout);
 }
 
-tree_constant *
-builtin_npsol_options_2 (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_npsol_options_2 (const Octave_object& args, int nargin, int nargout)
 {
   return npsol_options (args, nargin, nargout);
 }
@@ -80,9 +80,9 @@ npsol_objective_function (const ColumnVector& x)
     }
 
 //  tree_constant name = tree_constant (npsol_objective->name ());
-  tree_constant *args = new tree_constant [2];
-//  args[0] = name;
-  args[1] = decision_vars;
+  Octave_object args (2);
+//  args(0) = name;
+  args(1) = decision_vars;
 
   static double retval;
   retval = 0.0;
@@ -90,26 +90,19 @@ npsol_objective_function (const ColumnVector& x)
   tree_constant objective_value;
   if (npsol_objective != (tree_fvc *) NULL)
     {
-      tree_constant *tmp = npsol_objective->eval (0, 1, args, 2);
-
-      delete [] args;
+      Octave_object tmp = npsol_objective->eval (0, 1, args, 2);
 
       if (error_state)
 	{
 	  error ("npsol: error evaluating objective function");
 	  npsol_objective_error = 1; // XXX FIXME XXX
-	  delete [] tmp;
 	  return retval;
 	}
 
-      if (tmp != NULL_TREE_CONST && tmp[0].is_defined ())
-	{
-	  objective_value = tmp[0];
-	  delete [] tmp;
-	}
+      if (tmp.length () > 0 && tmp(0).is_defined ())
+	objective_value = tmp(0);
       else
 	{
-	  delete [] tmp;
 	  error ("npsol: error evaluating objective function");
 	  npsol_objective_error = 1; // XXX FIXME XXX
 	  return retval;
@@ -164,37 +157,29 @@ npsol_constraint_function (const ColumnVector& x)
     }
 
 //  tree_constant name = tree_constant (npsol_constraints->name ());
-  tree_constant *args = new tree_constant [2];
-//  args[0] = name;
-  args[1] = decision_vars;
+  Octave_object args (2);
+//  args(0) = name;
+  args(1) = decision_vars;
 
   if (npsol_constraints != (tree_fvc *)NULL)
     {
-      tree_constant *tmp = npsol_constraints->eval (0, 1, args, 2);
-
-      delete [] args;
+      Octave_object tmp = npsol_constraints->eval (0, 1, args, 2);
 
       if (error_state)
 	{
-	  delete [] tmp;
 	  error ("npsol: error evaluating constraints");
 	  return retval;
 	}
 
-      if (tmp != NULL_TREE_CONST && tmp[0].is_defined ())
+      if (tmp.length () > 0 && tmp(0).is_defined ())
 	{
-	  retval = tmp[0].to_vector ();
-
-	  delete [] tmp;
+	  retval = tmp(0).to_vector ();
 
 	  if (retval.length () <= 0)
 	    error ("npsol: error evaluating constraints");
 	}
       else
-	{
-	  delete [] tmp;
-	  error ("npsol: error evaluating constraints");
-	}
+	error ("npsol: error evaluating constraints");
     }
 
   return retval;
@@ -260,8 +245,8 @@ nonlinear_constraints_ok (const ColumnVector& x, const ColumnVector& nllb,
   return ok;
 }
 
-tree_constant *
-npsol (const tree_constant *args, int nargin, int nargout)
+Octave_object
+npsol (const Octave_object& args, int nargin, int nargout)
 {
 /*
 
@@ -280,9 +265,9 @@ Handle all of the following:
 
 // Assumes that we have been given the correct number of arguments.
 
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
-  ColumnVector x = args[1].to_vector ();
+  ColumnVector x = args(1).to_vector ();
 
   if (x.capacity () == 0)
     {
@@ -290,7 +275,7 @@ Handle all of the following:
       return retval;
     }
 
-  npsol_objective = is_valid_function (args[2], "npsol", 1);
+  npsol_objective = is_valid_function (args(2), "npsol", 1);
   if (npsol_objective == (tree_fvc *) NULL
       || takes_correct_nargs (npsol_objective, 2, "npsol", 1) != 1)
     return retval;
@@ -302,8 +287,8 @@ Handle all of the following:
   Bounds bounds;
   if (nargin == 5 || nargin == 8 || nargin == 11)
     {
-      ColumnVector lb = args[3].to_vector ();
-      ColumnVector ub = args[4].to_vector ();
+      ColumnVector lb = args(3).to_vector ();
+      ColumnVector ub = args(4).to_vector ();
 
       int lb_len = lb.capacity ();
       int ub_len = ub.capacity ();
@@ -347,15 +332,15 @@ Handle all of the following:
 
   npsol_constraints = (tree_fvc *) NULL;
   if (nargin == 6 || nargin == 8 || nargin == 9 || nargin == 11)
-    npsol_constraints = is_valid_function (args[nargin-2], "npsol", 0);
+    npsol_constraints = is_valid_function (args(nargin-2), "npsol", 0);
 
   if (nargin == 8 || nargin == 6)
     {
       if (npsol_constraints == (tree_fvc *) NULL)
 	{
-	  ColumnVector lub = args[nargin-1].to_vector ();
-	  Matrix c = args[nargin-2].to_matrix ();
-	  ColumnVector llb = args[nargin-3].to_vector ();
+	  ColumnVector lub = args(nargin-1).to_vector ();
+	  Matrix c = args(nargin-2).to_matrix ();
+	  ColumnVector llb = args(nargin-3).to_vector ();
 
 	  if (llb.capacity () == 0 || lub.capacity () == 0)
 	    {
@@ -390,8 +375,8 @@ Handle all of the following:
 	{
 	  if (takes_correct_nargs (npsol_constraints, 2, "npsol", 1))
 	    {
-	      ColumnVector nlub = args[nargin-1].to_vector ();
-	      ColumnVector nllb = args[nargin-3].to_vector ();
+	      ColumnVector nlub = args(nargin-1).to_vector ();
+	      ColumnVector nllb = args(nargin-3).to_vector ();
 
 	      NLFunc const_func (npsol_constraint_function);
 
@@ -427,14 +412,14 @@ Handle all of the following:
       if (npsol_constraints == (tree_fvc *) NULL)
 	{
 	  // Produce error message.
-	  is_valid_function (args[nargin-2], "npsol", 1);
+	  is_valid_function (args(nargin-2), "npsol", 1);
 	}
       else
 	{
 	  if (takes_correct_nargs (npsol_constraints, 2, "npsol", 1))
 	    {
-	      ColumnVector nlub = args[nargin-1].to_vector ();
-	      ColumnVector nllb = args[nargin-3].to_vector ();
+	      ColumnVector nlub = args(nargin-1).to_vector ();
+	      ColumnVector nllb = args(nargin-3).to_vector ();
 
 	      NLFunc const_func (npsol_constraint_function);
 
@@ -444,9 +429,9 @@ Handle all of the following:
 
 	      NLConst nonlinear_constraints (nllb, const_func, nlub);
 
-	      ColumnVector lub = args[nargin-4].to_vector ();
-	      Matrix c = args[nargin-5].to_matrix ();
-	      ColumnVector llb = args[nargin-6].to_vector ();
+	      ColumnVector lub = args(nargin-4).to_vector ();
+	      Matrix c = args(nargin-5).to_matrix ();
+	      ColumnVector llb = args(nargin-6).to_vector ();
 
 	      if (llb.capacity () == 0 || lub.capacity () == 0)
 		{
@@ -486,14 +471,14 @@ Handle all of the following:
 
  solved:
 
-  retval = new tree_constant [nargout+1];
-  retval[0] = tree_constant (soln, 1);
+  retval.resize (nargout ? nargout : 1);
+  retval(0) = tree_constant (soln, 1);
   if (nargout > 1)
-    retval[1] = tree_constant (objf);
+    retval(1) = tree_constant (objf);
   if (nargout > 2)
-    retval[2] = tree_constant ((double) inform);
+    retval(2) = tree_constant ((double) inform);
   if (nargout > 3)
-    retval[3] = tree_constant (lambda);
+    retval(3) = tree_constant (lambda);
 
   return retval;
 }
@@ -517,7 +502,7 @@ struct NPSOL_OPTIONS
   i_get_opt_mf i_get_fcn;
 };
 
-static NPSOL_OPTIONS npsol_option_table[] =
+static NPSOL_OPTIONS npsol_option_table [] =
 {
   { "central difference interval",
     { "central", "difference", "interval", NULL, NULL, NULL, },
@@ -710,10 +695,10 @@ do_npsol_option (char *keyword, double val)
   warning ("npsol_options: no match for `%s'", keyword);
 }
 
-tree_constant *
-npsol_options (const tree_constant *args, int nargin, int nargout)
+Octave_object
+npsol_options (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin == 1)
     {
@@ -721,10 +706,10 @@ npsol_options (const tree_constant *args, int nargin, int nargout)
     }
   else if (nargin == 3)
     {
-      if (args[1].is_string_type ())
+      if (args(1).is_string_type ())
 	{
-	  char *keyword = args[1].string_value ();
-	  double val = args[2].double_value ();
+	  char *keyword = args(1).string_value ();
+	  double val = args(2).double_value ();
 	  do_npsol_option (keyword, val);
 	}
       else

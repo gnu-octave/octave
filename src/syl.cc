@@ -55,21 +55,21 @@ extern "C"
 }
 
 #ifdef WITH_DLD
-tree_constant *
-builtin_syl_2 (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_syl_2 (const Octave_object& args, int nargin, int nargout)
 {
   return syl (args, nargin, nargout);
 }
 #endif
 
-tree_constant *
-syl (const tree_constant *args, int nargin, int nargout)
+Octave_object
+syl (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
-  tree_constant arga = args[1].make_numeric ();
-  tree_constant argb = args[2].make_numeric ();
-  tree_constant argc = args[3].make_numeric ();
+  tree_constant arga = args(1).make_numeric ();
+  tree_constant argb = args(2).make_numeric ();
+  tree_constant argc = args(3).make_numeric ();
 
   if (arga.is_empty () || argb.is_empty () || argc.is_empty ())
     retval = vector_of_empties (nargout, "syl");
@@ -98,7 +98,7 @@ syl (const tree_constant *args, int nargin, int nargout)
   
 // Dimensions look o.k., let's solve the problem.
 
-    retval = new tree_constant[nargout+1];
+    retval.resize (nargout ? nargout : 1);
 
     if (arga.is_complex_type () || argb.is_complex_type ()
 	|| argc.is_complex_type ())
@@ -138,7 +138,7 @@ syl (const tree_constant *args, int nargin, int nargout)
 
 	cx = -ua * cx * ub.hermitian ();
   
-	retval[0] = tree_constant (cx);
+	retval(0) = tree_constant (cx);
       }
     else
       {
@@ -180,7 +180,7 @@ syl (const tree_constant *args, int nargin, int nargout)
   
 	cx = -ua*cx*ub.transpose ();
   
-	retval[0] = tree_constant (cx);
+	retval(0) = tree_constant (cx);
       }
     }
   return retval;

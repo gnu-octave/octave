@@ -41,14 +41,14 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 static tree_fvc *dassl_fcn;
 
 #ifdef WITH_DLD
-tree_constant *
-builtin_dassl_2 (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_dassl_2 (const Octave_object& args, int nargin, int nargout)
 {
   return dassl (args, nargin, nargout);
 }
 
-tree_constant *
-builtin_dassl_options_2 (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_dassl_options_2 (const Octave_object& args, int nargin, int nargout)
 {
   return dassl_options (args, nargin, nargout);
 }
@@ -66,9 +66,9 @@ dassl_user_function (const ColumnVector& x, const ColumnVector& xdot, double t)
   assert (nstates == xdot.capacity ());
 
 //  tree_constant name (dassl_fcn->name ());
-  tree_constant *args = new tree_constant [4];
-//  args[0] = name;
-  args[3] = tree_constant (t);
+  Octave_object args (4);
+//  args(0) = name;
+  args(3) = tree_constant (t);
 
   if (nstates > 1)
     {
@@ -81,8 +81,8 @@ dassl_user_function (const ColumnVector& x, const ColumnVector& xdot, double t)
 	}
       tree_constant state (m1);
       tree_constant deriv (m2);
-      args[1] = state;
-      args[2] = deriv;
+      args(1) = state;
+      args(2) = deriv;
     }
   else
     {
@@ -90,15 +90,13 @@ dassl_user_function (const ColumnVector& x, const ColumnVector& xdot, double t)
       double d2 = xdot.elem (0);
       tree_constant state (d1);
       tree_constant deriv (d2);
-      args[1] = state;
-      args[2] = deriv;
+      args(1) = state;
+      args(2) = deriv;
     }
 
   if (dassl_fcn != (tree_fvc *) NULL)
     {
-      tree_constant *tmp = dassl_fcn->eval (0, 1, args, 4);
-
-      delete [] args;
+      Octave_object tmp = dassl_fcn->eval (0, 1, args, 4);
 
       if (error_state)
 	{
@@ -106,45 +104,40 @@ dassl_user_function (const ColumnVector& x, const ColumnVector& xdot, double t)
 	  return retval;
 	}
 
-      if (tmp != NULL_TREE_CONST && tmp[0].is_defined ())
+      if (tmp.length () > 0 && tmp(0).is_defined ())
 	{
-	  retval = tmp[0].to_vector ();
-
-	  delete [] tmp;
+	  retval = tmp(0).to_vector ();
 
 	  if (retval.length () == 0)
 	    gripe_user_supplied_eval ("dassl");
 	}
       else
-	{
-	  delete [] tmp;
-	  gripe_user_supplied_eval ("dassl");
-	}
+	gripe_user_supplied_eval ("dassl");
     }
 
   return retval;
 }
 
-tree_constant *
-dassl (const tree_constant *args, int nargin, int nargout)
+Octave_object
+dassl (const Octave_object& args, int nargin, int nargout)
 {
 // Assumes that we have been given the correct number of arguments.
 
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
-  dassl_fcn = is_valid_function (args[1], "dassl", 1);
+  dassl_fcn = is_valid_function (args(1), "dassl", 1);
   if (dassl_fcn == (tree_fvc *) NULL
       || takes_correct_nargs (dassl_fcn, 4, "dassl", 1) != 1)
     return retval;
 
-  ColumnVector state = args[2].to_vector ();
-  ColumnVector deriv = args[3].to_vector ();
-  ColumnVector out_times = args[4].to_vector ();
+  ColumnVector state = args(2).to_vector ();
+  ColumnVector deriv = args(3).to_vector ();
+  ColumnVector out_times = args(4).to_vector ();
   ColumnVector crit_times;
   int crit_times_set = 0;
   if (nargin > 5)
     {
-      crit_times = args[5].to_vector ();
+      crit_times = args(5).to_vector ();
       crit_times_set = 1;
     }
 
@@ -168,9 +161,9 @@ dassl (const tree_constant *args, int nargin, int nargout)
   else
     output = dae.integrate (out_times, deriv_output);
 
-  retval = new tree_constant [3];
-  retval[0] = tree_constant (output);
-  retval[1] = tree_constant (deriv_output);
+  retval.resize (2);
+  retval(0) = tree_constant (output);
+  retval(1) = tree_constant (deriv_output);
   return retval;
 }
 
@@ -179,7 +172,7 @@ typedef double (ODE_options::*d_get_opt_mf) (void);
 
 #define MAX_TOKENS 3
 
-struct ODE_OPTIONS
+struct DAE_OPTIONS
 {
   char *keyword;
   char *kw_tok[MAX_TOKENS + 1];
@@ -189,7 +182,7 @@ struct ODE_OPTIONS
   d_get_opt_mf d_get_fcn;
 };
 
-static ODE_OPTIONS dassl_option_table[] =
+static DAE_OPTIONS dassl_option_table [] =
 {
   { "absolute tolerance",
     { "absolute", "tolerance", NULL, NULL, },
@@ -233,7 +226,7 @@ print_dassl_option_list (void)
 	     << "  keyword                                  value\n"
 	     << "  -------                                  -----\n\n";
 
-  ODE_OPTIONS *list = dassl_option_table;
+  DAE_OPTIONS *list = dassl_option_table;
 
   char *keyword;
   while ((keyword = list->keyword) != (char *) NULL)
@@ -257,7 +250,7 @@ print_dassl_option_list (void)
 static void
 do_dassl_option (char *keyword, double val)
 {
-  ODE_OPTIONS *list = dassl_option_table;
+  DAE_OPTIONS *list = dassl_option_table;
 
   while (list->keyword != (char *) NULL)
     {
@@ -274,30 +267,26 @@ do_dassl_option (char *keyword, double val)
   warning ("dassl_options: no match for `%s'", keyword);
 }
 
-tree_constant *
-dassl_options (const tree_constant *args, int nargin, int nargout)
+Octave_object
+dassl_options (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin == 1)
-    {
-      print_dassl_option_list ();
-    }
+    print_dassl_option_list ();
   else if (nargin == 3)
     {
-      if (args[1].is_string_type ())
+      if (args(1).is_string_type ())
 	{
-	  char *keyword = args[1].string_value ();
-	  double val = args[2].double_value ();
+	  char *keyword = args(1).string_value ();
+	  double val = args(2).double_value ();
 	  do_dassl_option (keyword, val);
 	}
       else
 	print_usage ("dassl_options");
     }
   else
-    {
-      print_usage ("dassl_options");
-    }
+    print_usage ("dassl_options");
 
   return retval;
 }

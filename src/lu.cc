@@ -34,17 +34,17 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "f-lu.h"
 
 #ifdef WITH_DLD
-tree_constant *
-builtin_lu_2 (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_lu_2 (const Octave_object& args, int nargin, int nargout)
 {
-  return lu (args[1], nargout);
+  return lu (args(1), nargout);
 }
 #endif
 
-tree_constant *
+Octave_object
 lu (const tree_constant& a, int nargout)
 {
-  tree_constant *retval = new tree_constant [4];
+  Octave_object retval (3);
 
   tree_constant tmp = a.make_numeric ();;
     
@@ -56,10 +56,9 @@ lu (const tree_constant& a, int nargout)
 	  if (flag < 0)
 	    gripe_empty_arg ("lu", 0);
 	  Matrix m;
-	  retval = new tree_constant [4];
-	  retval[0] = tree_constant (m);
-	  retval[1] = tree_constant (m);
-	  retval[2] = tree_constant (m);
+	  retval(0) = tree_constant (m);
+	  retval(1) = tree_constant (m);
+	  retval(2) = tree_constant (m);
 	  return retval;
 	}
       else
@@ -81,15 +80,15 @@ lu (const tree_constant& a, int nargout)
 		{
 		  Matrix P = fact.P ();
 		  Matrix L = P.transpose () * fact.L ();
-		  retval[0] = tree_constant (L);
-		  retval[1] = tree_constant (fact.U ());
+		  retval(0) = tree_constant (L);
+		  retval(1) = tree_constant (fact.U ());
 		}
 		break;
 	      case 3:
 	      default:
-		retval[0] = tree_constant (fact.L ());
-		retval[1] = tree_constant (fact.U ());
-		retval[2] = tree_constant (fact.P ());
+		retval(0) = tree_constant (fact.L ());
+		retval(1) = tree_constant (fact.U ());
+		retval(2) = tree_constant (fact.P ());
 		break;
 	      }
 	  }
@@ -110,15 +109,15 @@ lu (const tree_constant& a, int nargout)
 		{
 		  ComplexMatrix P = fact.P ();
 		  ComplexMatrix L = P.transpose () * fact.L ();
-		  retval[0] = tree_constant (L);
-		  retval[1] = tree_constant (fact.U ());
+		  retval(0) = tree_constant (L);
+		  retval(1) = tree_constant (fact.U ());
 		}
 		break;
 	      case 3:
 	      default:
-		retval[0] = tree_constant (fact.L ());
-		retval[1] = tree_constant (fact.U ());
-		retval[2] = tree_constant (fact.P ());
+		retval(0) = tree_constant (fact.L ());
+		retval(1) = tree_constant (fact.U ());
+		retval(2) = tree_constant (fact.P ());
 		break;
 	      }
 	  }
@@ -129,17 +128,17 @@ lu (const tree_constant& a, int nargout)
     case tree_constant_rep::scalar_constant:
       {
 	double d = tmp.double_value ();
-	retval[0] = tree_constant (1.0);
-	retval[1] = tree_constant (d);
-	retval[2] = tree_constant (1.0);
+	retval(0) = tree_constant (1.0);
+	retval(1) = tree_constant (d);
+	retval(2) = tree_constant (1.0);
       }
       break;
     case tree_constant_rep::complex_scalar_constant:
       {
 	Complex c = tmp.complex_value ();
-	retval[0] = tree_constant (1.0);
-	retval[1] = tree_constant (c);
-	retval[2] = tree_constant (1.0);
+	retval(0) = tree_constant (1.0);
+	retval(1) = tree_constant (c);
+	retval(2) = tree_constant (1.0);
       }
       break;
     default:

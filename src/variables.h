@@ -36,12 +36,7 @@ struct builtin_text_functions;
 struct builtin_general_functions;
 struct builtin_string_variables;
 
-#ifndef SV_FUNCTION_TYPEDEFS
-#define SV_FUNCTION_TYPEDEFS 1
-
-typedef int (*sv_Function)(void);
-
-#endif
+#include "builtins.h"
 
 extern void initialize_symbol_tables (void);
 

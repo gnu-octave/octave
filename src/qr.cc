@@ -34,17 +34,17 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "f-qr.h"
 
 #ifdef WITH_DLD
-tree_constant *
-builtin_qr_2 (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_qr_2 (const Octave_object& args, int nargin, int nargout)
 {
-  return qr (args[1], nargout);
+  return qr (args(1), nargout);
 }
 #endif
 
-tree_constant *
+Octave_object
 qr (const tree_constant& a, int nargout)
 {
-  tree_constant *retval = new tree_constant [3];
+  Octave_object retval (2);
 
   tree_constant tmp = a.make_numeric ();;
     
@@ -59,9 +59,8 @@ qr (const tree_constant& a, int nargout)
 	  if (flag < 0)
 	    gripe_empty_arg ("qr", 0);
 	  Matrix m;
-	  retval = new tree_constant [3];
-	  retval[0] = tree_constant (m);
-	  retval[1] = tree_constant (m);
+	  retval(0) = tree_constant (m);
+	  retval(1) = tree_constant (m);
 	}
       else
 	gripe_empty_arg ("qr", 1);
@@ -75,30 +74,30 @@ qr (const tree_constant& a, int nargout)
       {
 	Matrix m = tmp.matrix_value ();
 	QR fact (m);
-	retval[0] = tree_constant (fact.Q ());
-	retval[1] = tree_constant (fact.R ());
+	retval(0) = tree_constant (fact.Q ());
+	retval(1) = tree_constant (fact.R ());
       }
       break;
     case tree_constant_rep::complex_matrix_constant:
       {
 	ComplexMatrix m = tmp.complex_matrix_value ();
 	ComplexQR fact (m);
-	retval[0] = tree_constant (fact.Q ());
-	retval[1] = tree_constant (fact.R ());
+	retval(0) = tree_constant (fact.Q ());
+	retval(1) = tree_constant (fact.R ());
       }
       break;
     case tree_constant_rep::scalar_constant:
       {
 	double d = tmp.double_value ();
-	retval[0] = tree_constant (1.0);
-	retval[1] = tree_constant (d);
+	retval(0) = tree_constant (1.0);
+	retval(1) = tree_constant (d);
       }
       break;
     case tree_constant_rep::complex_scalar_constant:
       {
 	Complex c = tmp.complex_value ();
-	retval[0] = tree_constant (1.0);
-	retval[1] = tree_constant (c);
+	retval(0) = tree_constant (1.0);
+	retval(1) = tree_constant (c);
       }
       break;
     default:

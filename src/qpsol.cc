@@ -47,14 +47,14 @@ extern int linear_constraints_ok (const ColumnVector& x,
 				  int warn);
 
 #ifdef WITH_DLD
-tree_constant *
-builtin_qpsol_2 (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_qpsol_2 (const Octave_object& args, int nargin, int nargout)
 {
   return qpsol (args, nargin, nargout);
 }
 
-tree_constant *
-builtin_qpsol_options_2 (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_qpsol_options_2 (const Octave_object& args, int nargin, int nargout)
 {
   return qpsol_options (args, nargin, nargout);
 }
@@ -62,8 +62,8 @@ builtin_qpsol_options_2 (const tree_constant *args, int nargin, int nargout)
 
 static QPSOL_options qpsol_opts;
 
-tree_constant *
-qpsol (const tree_constant *args, int nargin, int nargout)
+Octave_object
+qpsol (const Octave_object& args, int nargin, int nargout)
 {
 /*
 
@@ -78,23 +78,23 @@ Handle all of the following:
 
 // Assumes that we have been given the correct number of arguments.
 
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
-  ColumnVector x = args[1].to_vector ();
+  ColumnVector x = args(1).to_vector ();
   if (x.capacity () == 0)
     {
       error ("qpsol: expecting vector as first argument");
       return retval;
     }
 
-  Matrix H = args[2].to_matrix ();
+  Matrix H = args(2).to_matrix ();
   if (H.rows () != H.columns () || H.rows () != x.capacity ())
     {
       error ("qpsol: H must be a square matrix consistent with the size of x");
       return retval;
     }
 
-  ColumnVector c = args[3].to_vector ();
+  ColumnVector c = args(3).to_vector ();
   if (c.capacity () != x.capacity ())
     {
       error ("qpsol: c must be a vector the same size as x");
@@ -104,8 +104,8 @@ Handle all of the following:
   Bounds bounds;
   if (nargin == 6 || nargin == 9)
     {
-      ColumnVector lb = args[4].to_vector ();
-      ColumnVector ub = args[5].to_vector ();
+      ColumnVector lb = args(4).to_vector ();
+      ColumnVector ub = args(5).to_vector ();
 
       int lb_len = lb.capacity ();
       int ub_len = ub.capacity ();
@@ -150,9 +150,9 @@ Handle all of the following:
 
   if (nargin == 7 || nargin == 9)
     {
-      ColumnVector lub = args[nargin-1].to_vector ();
-      Matrix A = args[nargin-2].to_matrix ();
-      ColumnVector llb = args[nargin-3].to_vector ();
+      ColumnVector lub = args(nargin-1).to_vector ();
+      Matrix A = args(nargin-2).to_matrix ();
+      ColumnVector llb = args(nargin-3).to_vector ();
 
       if (llb.capacity () == 0 || lub.capacity () == 0)
 	{
@@ -188,14 +188,14 @@ Handle all of the following:
 
  solved:
 
-  retval = new tree_constant [nargout+1];
-  retval[0] = tree_constant (soln, 1);
+  retval.resize (nargout ? nargout : 1);
+  retval(0) = tree_constant (soln, 1);
   if (nargout > 1)
-    retval[1] = tree_constant (objf);
+    retval(1) = tree_constant (objf);
   if (nargout > 2)
-    retval[2] = tree_constant ((double) inform);
+    retval(2) = tree_constant ((double) inform);
   if (nargout > 3)
-    retval[3] = tree_constant (lambda);
+    retval(3) = tree_constant (lambda);
 
   return retval;
 }
@@ -219,7 +219,7 @@ struct QPSOL_OPTIONS
   i_get_opt_mf i_get_fcn;
 };
 
-static QPSOL_OPTIONS qpsol_option_table[] =
+static QPSOL_OPTIONS qpsol_option_table [] =
 {
   { "feasibility tolerance",
     { "feasibility", "tolerance", NULL, },
@@ -316,10 +316,10 @@ do_qpsol_option (char *keyword, double val)
   warning ("qpsol_options: no match for `%s'", keyword);
 }
 
-tree_constant *
-qpsol_options (const tree_constant *args, int nargin, int nargout)
+Octave_object
+qpsol_options (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin == 1)
     {
@@ -327,10 +327,10 @@ qpsol_options (const tree_constant *args, int nargin, int nargout)
     }
   else if (nargin == 3)
     {
-      if (args[1].is_string_type ())
+      if (args(1).is_string_type ())
 	{
-	  char *keyword = args[1].string_value ();
-	  double val = args[2].double_value ();
+	  char *keyword = args(1).string_value ();
+	  double val = args(2).double_value ();
 	  do_qpsol_option (keyword, val);
 	}
       else

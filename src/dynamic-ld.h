@@ -24,9 +24,9 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_dynamic_ld_h)
 #define octave_dynamic_ld_h 1
 
-class tree_constant;
+#include "oct-obj.h"
 
-typedef tree_constant* (*builtin_fcn_ptr) (tree_constant*, int, int);
+typedef Octave_object (*builtin_fcn_ptr) (const Octave_object&, int, int);
 
 extern void octave_dld_tc2_unlink_by_symbol (const char *name, int hard = 1);
 
@@ -36,11 +36,11 @@ extern builtin_fcn_ptr octave_dld_tc2 (const char *name,
 				       const char *fcn,
 				       const char *object);
 
-extern tree_constant *octave_dld_tc2_and_go (tree_constant *args,
-					     int nargin, int nargout,
-					     const char *name,
-					     const char *fcn,
-					     const char *object);
+extern Octave_object octave_dld_tc2_and_go (const Octave_object&,
+					    int nargin, int nargout,
+					    const char *name,
+					    const char *fcn,
+					    const char *object);
 
 #endif
 

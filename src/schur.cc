@@ -35,34 +35,34 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "f-schur.h"
 
 #ifdef WITH_DLD
-tree_constant *
-builtin_schur_2 (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_schur_2 (const Octave_object& args, int nargin, int nargout)
 {
   return schur (args, nargin, nargout);
 }
 #endif
 
-tree_constant *
-schur (const tree_constant *args, int nargin, int nargout)
+Octave_object
+schur (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
-  tree_constant arg = args[1].make_numeric ();
+  tree_constant arg = args(1).make_numeric ();
 
   char *ord;
   if (nargin != 3)
     ord = "U";
   else
-    ord = args[2].string_value ();
+    ord = args(2).string_value ();
 
   if (*ord != 'U' && *ord != 'A' && *ord != 'D'
       && *ord != 'u' && *ord != 'a' && *ord != 'd')
     {
       warning ("schur: incorrect ordered schur argument `%c'", *ord);
       Matrix m;
-      retval = new tree_constant [3];
-      retval[0] = tree_constant (m);
-      retval[1] = tree_constant (m);
+      retval.resize (2);
+      retval(0) = tree_constant (m);
+      retval(1) = tree_constant (m);
       return retval;
     }
   int a_nr = arg.rows ();
@@ -76,9 +76,9 @@ schur (const tree_constant *args, int nargin, int nargout)
           if (flag < 0)
             warning ("schur: argument is empty matrix");
           Matrix m;
-          retval = new tree_constant [3];
-          retval[0] = tree_constant (m);
-          retval[1] = tree_constant (m);
+          retval.resize (2);
+          retval(0) = tree_constant (m);
+          retval(1) = tree_constant (m);
         }
       else
         error ("schur: empty matrix is invalid as argument");
@@ -102,16 +102,16 @@ schur (const tree_constant *args, int nargin, int nargout)
 
 	SCHUR result (tmp,ord);
 
-        if (nargout == 1)
+        if (nargout == 0 || nargout == 1)
           {
-            retval = new tree_constant [2];
-            retval[0] = tree_constant (result.schur_matrix ());
+            retval.resize (1);
+            retval(0) = tree_constant (result.schur_matrix ());
           }
         else
           {
-            retval = new tree_constant [3];
-            retval[0] = tree_constant (result.unitary_matrix ());
-            retval[1] = tree_constant (result.schur_matrix ());
+            retval.resize (2);
+            retval(0) = tree_constant (result.unitary_matrix ());
+            retval(1) = tree_constant (result.schur_matrix ());
           }
       }
       break;
@@ -121,48 +121,48 @@ schur (const tree_constant *args, int nargin, int nargout)
 
         ComplexSCHUR result (ctmp,ord);
  
-        if (nargout == 1)
+        if (nargout == 0 || nargout == 1)
           {
-            retval = new tree_constant [2];
-            retval[0] = tree_constant (result.schur_matrix ());
+            retval.resize (1);
+            retval(0) = tree_constant (result.schur_matrix ());
           }
         else
           {
-            retval = new tree_constant [3];
-            retval[0] = tree_constant (result.unitary_matrix ());
-            retval[1] = tree_constant (result.schur_matrix ());
+            retval.resize (2);
+            retval(0) = tree_constant (result.unitary_matrix ());
+            retval(1) = tree_constant (result.schur_matrix ());
           }
       }    
       break;
     case tree_constant_rep::scalar_constant:
       {
         double d = arg.double_value ();
-        if (nargout == 1)
+        if (nargout == 0 || nargout == 1)
   	  {
-	    retval = new tree_constant [2];
-            retval[0] = tree_constant (d);
+	    retval.resize (1);
+            retval(0) = tree_constant (d);
           }
         else
 	  {
-	    retval = new tree_constant [3];
-	    retval[0] = tree_constant (1);
-	    retval[1] = tree_constant (d);
+	    retval.resize (2);
+	    retval(0) = tree_constant (1);
+	    retval(1) = tree_constant (d);
   	  }
       }
       break;
     case tree_constant_rep::complex_scalar_constant:
       {
         Complex c = arg.complex_value ();
-	if (nargout == 1)
+	if (nargout == 0 || nargout == 1)
 	  {
-	    retval = new tree_constant [2];
-	    retval[0] = tree_constant (c);
+	    retval.resize (1);
+	    retval(0) = tree_constant (c);
 	  }
 	else
 	  {
-	    retval = new tree_constant [3];
-	    retval[0] = tree_constant (1);
-	    retval[1] = tree_constant (c);
+	    retval.resize (2);
+	    retval(0) = tree_constant (1);
+	    retval(1) = tree_constant (c);
 	  }
       }
       break;

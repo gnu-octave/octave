@@ -43,11 +43,11 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "f-expm.h"
 
 #ifdef WITH_DLD
-tree_constant *
-builtin_matrix_exp_2 (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_matrix_exp_2 (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = new tree_constant [2];
-  retval[0] = matrix_exp (args[1]);
+  Octave_object retval (1);
+  retval(0) = matrix_exp (args(1));
   return retval;
 }
 #endif
@@ -69,7 +69,7 @@ matrix_exp (const tree_constant& a)
 
 // Constants for matrix exponential calculation.
 
-  static double padec[] =
+  static double padec [] =
     {
       5.0000000000000000e-1,
       1.1666666666666667e-1,

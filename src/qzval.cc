@@ -53,20 +53,20 @@ extern "C"
 }
 
 #ifdef WITH_DLD
-tree_constant *
-builtin_qzvalue_2 (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_qzvalue_2 (const Octave_object& args, int nargin, int nargout)
 {
   return qzvalue (args, nargin, nargout);
 }
 #endif
 
-tree_constant *
-qzvalue (const tree_constant *args, int nargin, int nargout)
+Octave_object
+qzvalue (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
-  tree_constant arga = args[1].make_numeric ();
-  tree_constant argb = args[2].make_numeric();
+  tree_constant arga = args(1).make_numeric ();
+  tree_constant argb = args(2).make_numeric();
 
   if (arga.is_empty () || argb.is_empty ())
     retval = vector_of_empties (nargout, "qzvalue");
@@ -93,7 +93,7 @@ qzvalue (const tree_constant *args, int nargin, int nargout)
   
 // Dimensions look o.k., let's solve the problem.
 
-      retval = new tree_constant[nargout+1];
+      retval.resize (nargout ? nargout : 1);
 
       if (arga.is_complex_type () || argb.is_complex_type ())
 	error ("qzvalue: cannot yet do complex matrix arguments\n");
@@ -155,7 +155,7 @@ qzvalue (const tree_constant *args, int nargin, int nargout)
 		  cx (cnt) = (alfr (i) + Im * alfi (i)) / beta (i);
 		}
 	    }
-	  retval[0] = tree_constant (cx);
+	  retval(0)                          = tree_constant (cx);
 	}
     }
   return retval;

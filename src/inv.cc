@@ -35,11 +35,11 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "f-inv.h"
 
 #ifdef WITH_DLD
-tree_constant *
-builtin_inv_2 (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_inv_2 (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = new tree_constant [2];
-  retval[0] = inverse (args[1]);
+  Octave_object retval (1);
+  retval(0) = inverse (args(1));
   return retval;
 }
 #endif

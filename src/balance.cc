@@ -42,24 +42,24 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "f-balance.h"
 
 #ifdef WITH_DLD
-tree_constant *
-builtin_balance_2 (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_balance_2 (const Octave_object& args, int nargin, int nargout)
 {
   return balance (args, nargin, nargout);
 }
 #endif
 
-tree_constant *
-balance (const tree_constant *args, int nargin, int nargout)
+Octave_object
+balance (const Octave_object& args, int nargin, int nargout)
 {
   char *bal_job;
   int my_nargin;		// # args w/o optional string arg
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   // determine if balancing option is listed
   // set my_nargin to the number of matrix inputs
-  if (args[nargin-1].const_type () == tree_constant_rep::string_constant ){
-    bal_job = args[nargin-1].string_value ();
+  if (args(nargin-1).const_type () == tree_constant_rep::string_constant ){
+    bal_job = args(nargin-1).string_value ();
     my_nargin = nargin-2;
   }
   else
@@ -68,7 +68,7 @@ balance (const tree_constant *args, int nargin, int nargout)
     my_nargin = nargin-1;
   }
 
-  tree_constant arg = args[1].make_numeric ();
+  tree_constant arg = args(1).make_numeric ();
   int a_nr = arg.rows ();
   int a_nc = arg.columns ();
 
@@ -81,9 +81,9 @@ balance (const tree_constant *args, int nargin, int nargout)
 	{
 	  if (flag < 0) warning ("balance: argument is empty matrix");
 	  Matrix m;
-	  retval = new tree_constant [3];
-	  retval[0] = tree_constant (m);
-	  retval[1] = tree_constant (m);
+	  retval.resize (2);
+	  retval(0) = tree_constant (m);
+	  retval(1) = tree_constant (m);
 	}
       else
 	error ("balance: empty matrix is invalid as argument");
@@ -131,29 +131,29 @@ balance (const tree_constant *args, int nargin, int nargout)
 
 // Algebraic eigenvalue problem.
 
-      retval = new tree_constant[nargout+1];
+      retval.resize (nargout ? nargout : 1);
       if (arg.is_complex_type ())
 	{
 	  ComplexAEPBALANCE result (caa, bal_job);
 
-	  if (nargout == 1)
-	    retval[0] = tree_constant(result.balanced_matrix ());
+	  if (nargout == 0 || nargout == 1)
+	    retval(0) = tree_constant(result.balanced_matrix ());
 	  else
 	    {
-	      retval[0] = tree_constant (result.balancing_matrix ());
-	      retval[1] = tree_constant (result.balanced_matrix ());
+	      retval(0) = tree_constant (result.balancing_matrix ());
+	      retval(1) = tree_constant (result.balanced_matrix ());
 	    }
 	}
       else
 	{
 	  AEPBALANCE result (aa, bal_job);
 
-	  if (nargout == 1)
-	    retval[0] = tree_constant (result.balanced_matrix ());
+	  if (nargout == 0 || nargout == 1)
+	    retval(0) = tree_constant (result.balanced_matrix ());
 	  else
 	    {
-	      retval[0] = tree_constant (result.balancing_matrix ());
-	      retval[1] = tree_constant (result.balanced_matrix ());
+	      retval(0) = tree_constant (result.balancing_matrix ());
+	      retval(1) = tree_constant (result.balanced_matrix ());
 	    }
 	}
       break;
@@ -162,11 +162,11 @@ balance (const tree_constant *args, int nargin, int nargout)
 // Generalized eigenvalue problem.
 
       {
-	retval = new tree_constant[nargout+1];
+	retval.resize (nargout ? nargout : 1);
       
 // 1st we have to check argument 2 dimensions and type...
 
-	tree_constant brg = args[2].make_numeric ();
+	tree_constant brg = args(2).make_numeric ();
 	int b_nr = brg.rows ();
 	int b_nc = brg.columns ();
       
@@ -238,17 +238,17 @@ balance (const tree_constant *args, int nargin, int nargout)
 	      {
 	      case 1:
 		warning ("balance: should use two output arguments");
-		retval[0] = tree_constant (caa);
+		retval(0) = tree_constant (caa);
 		break;
 	      case 2:
-		retval[0] = tree_constant (caa);
-		retval[1] = tree_constant (cbb);
+		retval(0) = tree_constant (caa);
+		retval(1) = tree_constant (cbb);
 		break;
 	      case 4:
-		retval[0] = tree_constant (result.left_balancing_matrix ());
-		retval[1] = tree_constant (result.right_balancing_matrix ());
-		retval[2] = tree_constant (caa);
-		retval[3] = tree_constant (cbb);
+		retval(0) = tree_constant (result.left_balancing_matrix ());
+		retval(1) = tree_constant (result.right_balancing_matrix ());
+		retval(2) = tree_constant (caa);
+		retval(3) = tree_constant (cbb);
 		break;
 	      default:
 		error ("balance: illegal number of output arguments");
@@ -260,14 +260,14 @@ balance (const tree_constant *args, int nargin, int nargout)
 	    switch (nargout)
 	      {
 	      case 2:
-		retval[0] = tree_constant (result.balanced_a_matrix ());
-		retval[1] = tree_constant (result.balanced_b_matrix ());
+		retval(0) = tree_constant (result.balanced_a_matrix ());
+		retval(1) = tree_constant (result.balanced_b_matrix ());
 		break;
 	      case 4:
-		retval[0] = tree_constant (result.left_balancing_matrix ());
-		retval[1] = tree_constant (result.right_balancing_matrix ());
-		retval[2] = tree_constant (result.balanced_a_matrix ());
-		retval[3] = tree_constant (result.balanced_b_matrix ());
+		retval(0) = tree_constant (result.left_balancing_matrix ());
+		retval(1) = tree_constant (result.right_balancing_matrix ());
+		retval(2) = tree_constant (result.balanced_a_matrix ());
+		retval(3) = tree_constant (result.balanced_b_matrix ());
 		break;
 	      default:
 		error ("balance: illegal number of output arguments");

@@ -41,14 +41,14 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 static tree_fvc *fsolve_fcn;
 
 #ifdef WITH_DLD
-tree_constant *
-builtin_fsolve_2 (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_fsolve_2 (const Octave_object& args, int nargin, int nargout)
 {
   return fsolve (args, nargin, nargout);
 }
 
-tree_constant *
-builtin_fsolve_options (const tree_constant *args, int nargin, int nargout)
+Octave_object
+builtin_fsolve_options (const Octave_object& args, int nargin, int nargout)
 {
   return fsolve_options (args, nargin, nargout);
 }
@@ -92,8 +92,8 @@ fsolve_user_function (const ColumnVector& x)
   int n = x.capacity ();
 
 //  tree_constant name = tree_constant (fsolve_fcn->name ());
-  tree_constant *args = new tree_constant [2];
-//  args[0] = name;
+  Octave_object args (2);
+//  args(0) = name;
 
   if (n > 1)
     {
@@ -101,51 +101,45 @@ fsolve_user_function (const ColumnVector& x)
       for (int i = 0; i < n; i++)
 	m (i, 0) = x.elem (i);
       tree_constant vars (m);
-      args[1] = vars;
+      args(1) = vars;
     }
   else
     {
       double d = x.elem (0);
       tree_constant vars (d);
-      args[1] = vars;
+      args(1) = vars;
     }
 
   if (fsolve_fcn != (tree_fvc *) NULL)
     {
-      tree_constant *tmp = fsolve_fcn->eval (0, 1, args, 2);
-      delete [] args;
-      if (tmp != NULL_TREE_CONST && tmp[0].is_defined ())
+      Octave_object tmp = fsolve_fcn->eval (0, 1, args, 2);
+      if (tmp.length () > 0 && tmp(0).is_defined ())
 	{
-	  retval = tmp[0].to_vector ();
-
-	  delete [] tmp;
+	  retval = tmp(0).to_vector ();
 
 	  if (retval.length () <= 0)
 	    gripe_user_supplied_eval ("fsolve");
 	}
       else
-	{
-	  delete [] tmp;
-	  gripe_user_supplied_eval ("fsolve");
-	}
+	gripe_user_supplied_eval ("fsolve");
     }
 
   return retval;
 }
 
-tree_constant *
-fsolve (const tree_constant *args, int nargin, int nargout)
+Octave_object
+fsolve (const Octave_object& args, int nargin, int nargout)
 {
 // Assumes that we have been given the correct number of arguments.
 
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
-  fsolve_fcn = is_valid_function (args[1], "fsolve", 1);
+  fsolve_fcn = is_valid_function (args(1), "fsolve", 1);
   if (fsolve_fcn == (tree_fvc *) NULL
       || takes_correct_nargs (fsolve_fcn, 2, "fsolve", 1) != 1)
     return retval;
 
-  ColumnVector x = args[2].to_vector ();
+  ColumnVector x = args(2).to_vector ();
 
   if (nargin > 3)
     warning ("fsolve: ignoring extra arguments");
@@ -162,14 +156,14 @@ fsolve (const tree_constant *args, int nargin, int nargout)
 
   info = hybrd_info_to_fsolve_info (info);
 
-  retval = new tree_constant [nargout+1];
-  retval[0] = tree_constant (soln, 1);
+  retval.resize (nargout ? nargout : 1);
+  retval(0) = tree_constant (soln, 1);
 
   if (nargout > 1)
-    retval[1] = tree_constant ((double) info);
+    retval(1) = tree_constant ((double) info);
 
   if (nargout > 2)
-    retval[2] = tree_constant ();
+    retval(2) = tree_constant ();
 
   return retval;
 }
@@ -189,7 +183,7 @@ struct NLEQN_OPTIONS
   d_get_opt_mf d_get_fcn;
 };
 
-static NLEQN_OPTIONS fsolve_option_table[] =
+static NLEQN_OPTIONS fsolve_option_table [] =
 {
   { "tolerance",
     { "tolerance", NULL, },
@@ -256,30 +250,26 @@ do_fsolve_option (char *keyword, double val)
   warning ("fsolve_options: no match for `%s'", keyword);
 }
 
-tree_constant *
-fsolve_options (const tree_constant *args, int nargin, int nargout)
+Octave_object
+fsolve_options (const Octave_object& args, int nargin, int nargout)
 {
-  tree_constant *retval = NULL_TREE_CONST;
+  Octave_object retval;
 
   if (nargin == 1)
-    {
-      print_fsolve_option_list ();
-    }
+    print_fsolve_option_list ();
   else if (nargin == 3)
     {
-      if (args[1].is_string_type ())
+      if (args(1).is_string_type ())
 	{
-	  char *keyword = args[1].string_value ();
-	  double val = args[2].double_value ();
+	  char *keyword = args(1).string_value ();
+	  double val = args(2).double_value ();
 	  do_fsolve_option (keyword, val);
 	}
       else
 	print_usage ("fsolve_options");
     }
   else
-    {
-      print_usage ("fsolve_options");
-    }
+    print_usage ("fsolve_options");
 
   return retval;
 }

@@ -1,3 +1,7 @@
+Wed Nov 26 20:02:13 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lo-sysdep.cc (octave_getcwd): Prefer getcwd over getwd.
+
 Wed Nov 19 02:30:04 1997  Mumit Khan <khan@dhaka.xraylith.wisc.edu>
 
 	Changes to make support egcs snapshots that implement explicit

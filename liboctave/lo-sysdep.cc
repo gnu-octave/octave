@@ -61,10 +61,10 @@ octave_getcwd (void)
 
 #if defined (__EMX__)
   tmp = _getcwd2 (buf, MAXPATHLEN);
-#elif defined (HAVE_GETWD)
-  tmp = getwd (buf);
 #elif defined (HAVE_GETCWD)
   tmp = getcwd (buf, MAXPATHLEN);
+#elif defined (HAVE_GETWD)
+  tmp = getwd (buf);
 #endif
 
   if (tmp)

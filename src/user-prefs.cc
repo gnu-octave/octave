@@ -66,6 +66,7 @@ init_user_prefs (void)
   user_pref.warn_assign_as_truth_value = 0;
   user_pref.warn_comma_in_global_decl = 0;
   user_pref.warn_divide_by_zero = 0;
+  user_pref.warn_function_name_clash = 0;
 
   user_pref.default_save_format = 0;
   user_pref.editor = 0;
@@ -447,6 +448,18 @@ int
 warn_divide_by_zero (void)
 {
   user_pref.warn_divide_by_zero = check_str_pref ("warn_divide_by_zero");
+
+  return 0;
+}
+
+// Generate warning if declared function name disagrees with the name
+// of the file in which it is defined.
+
+int
+warn_function_name_clash (void)
+{
+  user_pref.warn_function_name_clash =
+    check_str_pref ("warn_function_name_clash");
 
   return 0;
 }

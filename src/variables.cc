@@ -1621,6 +1621,10 @@ install_builtin_variables (void)
   DEFVAR ("warn_divide_by_zero", SBV_warn_divide_by_zero, "true", 0, 0,
 	  1, warn_divide_by_zero,
     "on IEEE machines, allow divide by zero errors to be suppressed");
+
+  DEFVAR ("warn_function_name_clash", SBV_warn_function_name_clash,
+	  "true", 0, 0, 1, warn_function_name_clash,
+    "produce warning if function name conflicts with file name");
 }
 
 // Deleting names from the symbol tables.

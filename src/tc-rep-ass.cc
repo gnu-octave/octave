@@ -353,12 +353,11 @@ TC_REP::fortran_style_matrix_assignment (const tree_constant& rhs,
 	int i = NINT (tmp_i.double_value ());
 	int idx = i - 1;
 
-	if (index_check (idx, "") < 0)
-	  return;
-
 	if (rhs_nr == 0 && rhs_nc == 0)
 	  {
-	    if (idx < nr * nc)
+	    int len = nr * nc;
+
+	    if (idx < len && len > 0)
 	      {
 		convert_to_row_or_column_vector ();
 
@@ -372,8 +371,16 @@ TC_REP::fortran_style_matrix_assignment (const tree_constant& rhs,
 		else
 		  panic_impossible ();
 	      }
+	    else if (idx < 0)
+	      {
+		error ("invalid index = %d", idx+1);
+	      }
+
 	    return;
 	  }
+
+	if (index_check (idx, "") < 0)
+	  return;
 
 	if (nr <= 1 || nc <= 1)
 	  {

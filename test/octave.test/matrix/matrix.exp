@@ -1,13 +1,66 @@
-# all
-# any
+set test all-1
+set prog_output "ans = 1"
+do_test all-1.m
+
+set test all-2
+set prog_output "\n... all:.*"
+do_test all-2.m
+
+set test all-3
+set prog_output "\n... all:.*"
+do_test all-3.m
+
+set test any-1
+set prog_output "ans = 1"
+do_test any-1.m
+
+set test any-2
+set prog_output "\n... any:.*"
+do_test any-2.m
+
+set test any-3
+set prog_output "\n... any:.*"
+do_test any-3.m
+
 # diff
-# isinf
-# isnan
-# finite
 # find
-# fliplr
-# flipud
-# rot90
+
+set test fliplr-1
+set prog_output "ans = 1"
+do_test fliplr-1.m
+
+set test fliplr-2
+set prog_output "usage:.*"
+do_test fliplr-2.m
+
+set test fliplr-3
+set prog_output "usage:.*"
+do_test fliplr-3.m
+
+set test flipud-1
+set prog_output "ans = 1"
+do_test flipud-1.m
+
+set test flipud-2
+set prog_output "usage:.*"
+do_test flipud-2.m
+
+set test flipud-3
+set prog_output "usage:.*"
+do_test flipud-3.m
+
+set test rot90-1
+set prog_output "ans = 1"
+do_test rot90-1.m
+
+set test rot90-2
+set prog_output "usage:.*"
+do_test rot90-2.m
+
+set test rot90-3
+set prog_output "usage:.*"
+do_test rot90-3.m
+
 # reshape
 # shift
 # sort
@@ -15,9 +68,31 @@
 # triu
 # vec
 # vech
-# eye
-# ones
-# zeros
+
+set test eye-1
+set prog_output "ans = 1"
+do_test eye-1.m
+
+set test eye-2
+set prog_output "\n... eye:.*"
+do_test eye-2.m
+
+set test ones-1
+set prog_output "ans = 1"
+do_test ones-1.m
+
+set test ones-2
+set prog_output "\n... ones:.*"
+do_test ones-2.m
+
+set test zeros-1
+set prog_output "ans = 1"
+do_test zeros-1.m
+
+set test zeros-2
+set prog_output "\n... zeros:.*"
+do_test zeros-2.m
+
 # rand
 # randn
 # diag
@@ -25,7 +100,19 @@
 # logspace
 # hadamard
 # hankel
-# hilb
+
+set test hilb-1
+set prog_output "ans = 1"
+do_test hilb-1.m
+
+set test hilb-2
+set prog_output "usage:.*"
+do_test hilb-2.m
+
+set test hilb-3
+set prog_output "usage:.*"
+do_test hilb-3.m
+
 # invhilb
 # toeplitz
 # vander

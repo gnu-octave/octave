@@ -600,14 +600,14 @@ process_printf_format (const char *s, const tree_constant *args,
     {
       if (fmt_arg_count >= nargin)
 	{
-	  message (type, "not enough arguments");
+	  error ("%s: not enough arguments", type);
 	  return -1;
 	}
 
       if (args[fmt_arg_count].const_type ()
 	  != tree_constant_rep::scalar_constant)
 	{
-	  message (type, "`*' must be replaced by an integer");
+	  error ("%s: `*' must be replaced by an integer", type);
 	  return -1;
 	}
 
@@ -640,14 +640,14 @@ process_printf_format (const char *s, const tree_constant *args,
 
       if (fmt_arg_count >= nargin)
 	{
-	  message (type, "not enough arguments");
+	  error ("%s: not enough arguments", type);
 	  return -1;
 	}
 
       if (args[fmt_arg_count].const_type ()
 	  != tree_constant_rep::scalar_constant)
 	{
-	  message (type, "`*' must be replaced by an integer");
+	  error ("%s: `*' must be replaced by an integer", type);
 	  return -1;
 	}
 
@@ -678,7 +678,7 @@ process_printf_format (const char *s, const tree_constant *args,
 
   if (fmt_arg_count >= nargin)
     {
-      message (type, "not enough arguments");
+      error ("%s: not enough arguments", type);
       return -1;
     }
 
@@ -759,11 +759,11 @@ process_printf_format (const char *s, const tree_constant *args,
    }
 
  invalid_conversion:
-  message (type, "invalid conversion");
+  error ("%s: invalid conversion", type);
   return -1;
 
  invalid_format:
-  message (type, "invalid format");
+  error ("%s: invalid format", type);
   return -1;
 }
 
@@ -875,7 +875,7 @@ do_printf (const char *type, const tree_constant *args, int nargin,
       char *msg = output_buf.str ();
       int success = fputs (msg, file.fptr ());
       if (success == EOF)
-	error ("%s: writing to file", type);
+	warning ("%s: unknown failure writing to file", type);
       delete [] msg;
     }
   else if (strcmp (type, "sprintf") == 0)
@@ -939,7 +939,7 @@ process_scanf_format (const char *s, const tree_constant *args,
 
   if (fmt_arg_count >= nargout && store_value)
     {
-      message (type, "not enough arguments");
+      error ("%s: not enough arguments", type);
       return -1;
     }
 
@@ -1031,20 +1031,20 @@ process_scanf_format (const char *s, const tree_constant *args,
     return chars_from_fmt_str;
 
   if (success == 0)
-    message (type, "invalid conversion");
+    warning ("%s: invalid conversion", type);
   else if (success == EOF)
     {
       if (strcmp (type, "fscanf") == 0)
-	message (type, "end of file reached before final conversion");
+	warning ("%s: end of file reached before final conversion", type);
       else if (strcmp (type, "sscanf") == 0)
-	message (type, "end of string reached before final conversion");
+	warning ("%s: end of string reached before final conversion", type);
       else if (strcmp (type, "scanf") == 0)
-	message (type, "end of input reached before final conversion");
+	warning ("%s: end of input reached before final conversion", type);
     }
   else
     {
     invalid_format:
-      message (type, "invalid format");
+      warning ("%s: invalid format", type);
     }
 
   return -1;

@@ -1,0 +1,1 @@
+warning ("foo", 1)

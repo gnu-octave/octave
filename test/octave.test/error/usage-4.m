@@ -1,0 +1,1 @@
+usage ("foo\n")

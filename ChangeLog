@@ -1,6 +1,6 @@
 2004-02-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
-	* mkoctfile.in (LINK_DEPS): Include $LIBS.
+	* mkoctfile.in (LINK_DEPS): Include $LIBS and $RLD_FLAG.
 	Use $OCTAVE_LIBS instead of listing libs individually.
 
 2004-02-14  John W. Eaton  <jwe@bevo.che.wisc.edu>

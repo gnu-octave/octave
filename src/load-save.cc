@@ -3484,7 +3484,7 @@ glob_pattern_p (const std::string& pattern)
 	  if (open)
 	    return true;
 	  continue;
-	  
+
 	case '\\':
 	  if (i == len - 1)
 	    return false;
@@ -3505,13 +3505,19 @@ get_save_type (double max_val, double min_val)
 {
   save_type st = LS_DOUBLE;
 
-  if (max_val < 256 && min_val > -1)
-    st = LS_U_CHAR;
-  else if (max_val < 65536 && min_val > -1)
-    st = LS_U_SHORT;
-  else if (max_val < 4294967295UL && min_val > -1)
-    st = LS_U_INT;
-  else if (max_val < 128 && min_val >= -128)
+  // Matlab doesn't seem to load the UINT32 type correctly, so let's
+  // avoid it (and the other unsigned types, even though they may not
+  // have the same problem.
+
+  //  if (max_val < 256 && min_val > -1)
+  //    st = LS_U_CHAR;
+  //  else if (max_val < 65536 && min_val > -1)
+  //    st = LS_U_SHORT;
+  //  else if (max_val < 4294967295UL && min_val > -1)
+  //    st = LS_U_INT;
+  //  else
+
+  if (max_val < 128 && min_val >= -128)
     st = LS_CHAR;
   else if (max_val < 32768 && min_val >= -32768)
     st = LS_SHORT;

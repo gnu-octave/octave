@@ -39,7 +39,7 @@ TARGETS = octave-bug libcruft liboctave kpathsea dld info plplot readline \
 	doc-dist local-dist-tar clean-local-dist-tar local-dist \
 	split-dist split-local-dist snapshot-z snapshot snapshot-version
 
-NO_DEP_TARGETS = clean mostlyclean distclean realclean
+NO_DEP_TARGETS = clean mostlyclean distclean maintainer-clean
 
 ALL_TARGETS = $(TARGETS) $(NO_DEP_TARGETS)
 

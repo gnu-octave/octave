@@ -92,14 +92,18 @@ install::
 	$(top_srcdir)/mkinstalldirs $(DIRS_TO_MAKE)
 	$(INSTALL) octave-bug $(bindir)/octave-bug
 
-install uninstall tags TAGS clean mostlyclean distclean realclean::
+maintainer-clean::
+	@echo "This command is intended for maintainers to use;"
+	@echo "it deletes files that may require special tools to rebuild."
+
+install uninstall tags TAGS clean mostlyclean distclean maintainer-clean::
 	$(SUBDIR_FOR_COMMAND)
-.PHONY: install uninstall tags clean mostlyclean distclean realclean
+.PHONY: install uninstall tags clean mostlyclean distclean maintainer-clean
 
 distclean::
 	rm -f Makefile config.cache config.log config.status
 
-realclean::
+maintainer-clean::
 	rm -f Makefile config.status
 
 # Now that things are under RCS control, we need to do the recursive

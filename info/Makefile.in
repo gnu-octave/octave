@@ -130,7 +130,7 @@ distclean: clean texclean
 
 mostlyclean: clean
 
-realclean: distclean
+maintainer-clean: distclean
 	rm -f funs.h doc.c
 	rm -f info.info info-stnd.info
 

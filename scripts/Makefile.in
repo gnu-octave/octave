@@ -41,9 +41,9 @@ $(SUBDIRS):
 	cd $@ ; $(MAKE) all
 .PHONY: $(SUBDIRS)
 
-install uninstall clean mostlyclean distclean realclean::
+install uninstall clean mostlyclean distclean maintainer-clean::
 	$(SUBDIR_FOR_COMMAND)
-.PHONY: install uninstall clean mostlyclean distclean realclean
+.PHONY: install uninstall clean mostlyclean distclean maintainer-clean
 
 install::
 	ls -R $(datadir)/octave > $(datadir)/octave/ls-R
@@ -63,7 +63,7 @@ TAGS:: $(SOURCES)
 distclean::
 	rm -f Makefile
 
-realclean::
+maintainer-clean::
 	rm -f tags TAGS Makefile
 
 local-dist:

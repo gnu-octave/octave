@@ -60,9 +60,9 @@ distclean: clean
 	rm -f Makefile
 .PHONY: distclean
 
-realclean: distclean
+maintainer-clean: distclean
 	rm -f tags TAGS
-.PHONY: realclean
+.PHONY: maintainer-clean
 
 local-dist:
 	ln $(DISTFILES) ../../`cat ../../.fname`/scripts/time

@@ -102,9 +102,9 @@ distclean: clean
 	rm -f Makefile  *.a $(TMPSRC) $(TMPINC) *.d
 .PHONY: distclean
 
-realclean: distclean
+maintainer-clean: distclean
 	rm -f tags TAGS *.d
-.PHONY: realclean
+.PHONY: maintainer-clean
 
 local-dist:
 	ln $(DISTFILES) ../`cat ../.fname`/liboctave

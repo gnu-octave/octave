@@ -83,7 +83,7 @@ mk_stat_map (const file_stat& fs)
 }
 
 DEFUN(dup2, args, ,
- "fid = dup2 (old, new)")
+ "fid = dup2 (old, new): duplicate a file descriptor")
 {
   double retval = -1.0;
 
@@ -122,7 +122,7 @@ DEFUN(dup2, args, ,
 }
 
 DEFUN(exec, args, ,
- "exec (file, args)")
+ "exec (file, args): replace current process with a new process")
 {
   double retval = -1.0;
 
@@ -190,7 +190,7 @@ DEFUN(exec, args, ,
 }
 
 DEFUN(fcntl, args, ,
- "fcntl (fid, request, argument)")
+ "fcntl (fid, request, argument): control open file descriptors")
 {
   double retval = -1.0;
 
@@ -372,7 +372,7 @@ DEFUN (mkfifo, args, ,
 }
 
 DEFUN (pipe, args, ,
-  "[file_ids, status] = pipe ()")
+  "[file_ids, status] = pipe (): create an interprocess channel")
 {
   Octave_object retval (2, tree_constant (-1.0));
 

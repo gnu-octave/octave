@@ -568,6 +568,13 @@ command_editor::reset_current_command_number (int n)
 }
 
 void
+command_editor::increment_current_command_number (void)
+{
+  if (instance_ok ())
+    instance->command_number++;
+}
+
+void
 command_editor::restore_terminal_state (void)
 {
   if (instance_ok ())

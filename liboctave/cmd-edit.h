@@ -89,6 +89,8 @@ public:
 
   static void reset_current_command_number (int n);
 
+  static void increment_current_command_number (void);
+
 private:
 
   // No copying!

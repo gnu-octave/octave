@@ -413,6 +413,9 @@ EOF
     rs6000:LynxOS:2.[23]*:*)
 	echo rs6000-lynx-lynxos${UNAME_RELEASE}
 	exit 0 ;;
+    Macintosh::*:*)
+        echo powerpc-apple-machten${UNAME_RELEASE}
+        exit 0 ;;
     RM*:SINIX-*:*:*)
 	echo mips-sni-sysv4
 	exit 0 ;;

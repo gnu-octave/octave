@@ -890,13 +890,13 @@ builtin_string_variable (const char *name)
 }
 
 // Look for the given name in the global symbol table.  If it refers
-// to a real scalar, place the value in d and return 0.  Otherwise,
-// return -1.
+// to a real scalar, place the value in d and return 1.  Otherwise,
+// return 0.
 
 int
 builtin_real_scalar_variable (const char *name, double& d)
 {
-  int status = -1;
+  int status = 0;
   symbol_record *sr = global_sym_tab->lookup (name, 0, 0);
 
   // It is a prorgramming error to look for builtins that aren't.
@@ -912,7 +912,7 @@ builtin_real_scalar_variable (const char *name, double& d)
       if (! error_state && val.is_scalar_type ())
 	{
 	  d = val.double_value ();
-	  status = 0;
+	  status = 1;
 	}
     }
 
@@ -1673,13 +1673,13 @@ default_return_value");
     "path to gnuplot binary");
 
 #ifdef GNUPLOT_HAS_MULTIPLOT
-  double gnuplot_has_multiplot = "true";
+  char *with_multiplot = "true";
 #else
-  double gnuplot_has_multiplot = "false";
+  char *with_multiplot = "false";
 #endif
 
   DEFVAR ("gnuplot_has_multiplot", SBV_gnuplot_has_multiplot,
-	  gnuplot_has_multiplot, 0, gnuplot_has_multiplot,
+	  with_multiplot, 0, gnuplot_has_multiplot,
     "true if gnuplot supports multiplot, false otherwise");
 
   DEFCONST ("i", SBV_i, Complex (0.0, 1.0), 1, 0,

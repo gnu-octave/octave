@@ -148,7 +148,7 @@ public:
 
 private:
 
-  // Number of conversions specified by this format std::string, or -1 if
+  // Number of conversions specified by this format string, or -1 if
   // invalid conversions have been found.
   int nconv;
 
@@ -225,7 +225,7 @@ public:
   int prec;
 
   // Flags -- `-', `+', ` ', `0', or `#'.
-  string flags;
+  std::string flags;
 
   // Type of conversion -- `d', `i', `o', `x', `X', `u', `c', `s',
   // `f', `e', `E', `g', `G', `p', or `%'
@@ -280,7 +280,7 @@ public:
 
 private:
 
-  // Number of conversions specified by this format std::string, or -1 if
+  // Number of conversions specified by this format string, or -1 if
   // invalid conversions have been found.
   int nconv;
 

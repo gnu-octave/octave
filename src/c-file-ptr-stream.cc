@@ -42,7 +42,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define SEEK_END 2
 #endif
 
-c_file_ptr_buf::~c_file_ptr_buf (void) { fflush (f); }
+c_file_ptr_buf::~c_file_ptr_buf (void)
+{
+  if (f)
+    fflush (f);
+}
 
 // XXX FIXME XXX -- I'm sure there is room for improvement here...
 

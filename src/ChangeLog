@@ -1,5 +1,8 @@
 2000-03-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* c-file-ptr-stream.cc (c_file_ptr_buf::~c_file_ptr_buf):
+	Avoid dereferencing NULL pointer.
+
 	* oct-stream.cc (printf_format_list::add_elt_to_list,
 	printf_format_list::process_conversion,
 	printf_format_list::finish_conversion): New args, flags, fw, and prec.

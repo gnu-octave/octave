@@ -289,6 +289,10 @@ dist: parse.cc lex.cc oct-gperf.h
 	rm -f oct-gperf.h defaults.h *.d *.def builtins.cc
 .PHONY: dist
 
+conf-dist:
+	ln octave.cc Makefile.in ../`cat ../.fname`/src
+.PHONY: conf-dist
+
 # Special rules -- these files need special things to be defined.
 
 defaults.h: defaults.h.in ../Makeconf Makefile

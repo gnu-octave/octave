@@ -18,13 +18,15 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
-DISTFILES = BUGS COPYING INSTALL INSTALL.OCTAVE Makefile.in \
-	octMakefile.in Makeconf.in NEWS PROJECTS README README.NLP \
-	ROADMAP SENDING-PATCHES THANKS configure configure.in \
-	config.guess config.sub move-if-change octave.sh \
-	octave-bug.in aclocal.m4 install-sh doinstall.sh \
-	mkinstalldirs config.h.in acconfig.h config.h.bot \
-	MAKEINFO.PATCH ChangeLog ChangeLog.[0-9] 
+CONF_DISTFILES = Makefile.in octMakefile.in Makeconf.in configure \
+	configure.in config.guess config.sub aclocal.m4 config.h.in \
+	acconfig.h config.h.bot
+
+DISTFILES = $(CONF_DISTFILES) \
+	BUGS COPYING INSTALL INSTALL.OCTAVE NEWS PROJECTS README \
+	README.NLP ROADMAP SENDING-PATCHES THANKS move-if-change \
+	octave.sh octave-bug.in install-sh doinstall.sh \
+	mkinstalldirs MAKEINFO.PATCH ChangeLog ChangeLog.[0-9] 
 
 # Complete directory trees to distribute.
 DISTDIRS = emacs glob kpathsea make plplot
@@ -32,6 +34,9 @@ DISTDIRS = emacs glob kpathsea make plplot
 # Subdirectories in which to run `make all'.
 SUBDIRS = @INFO_DIR@ @PLPLOT_DIR@ @READLINE_DIR@ glob kpathsea \
 	libcruft liboctave src scripts doc
+
+# Subdirectories in which ot run `make conf-dist'.
+CONF_DISTSUBDIRS = src
 
 # Subdirectories in which to run `make dist'.
 DISTSUBDIRS = libcruft liboctave info readline src scripts dld test doc 
@@ -239,6 +244,21 @@ split-local-dist:
 	split -b 1350k `cat .fname`.tar.gz `cat .fname`.tar.gz-
 	rm -f .fname
 .PHONY: split-local-dist
+
+# Rules for making a dist of just the stuff needed to run configure.
+
+conf-dist:
+	echo config-dist-$(version) > .fname
+	rm -rf `cat .fname`
+	mkdir `cat .fname`
+	ln $(CONF_DISTFILES) `cat .fname`
+	for dir in $(CONF_DISTSUBDIRS); do mkdir `cat .fname`/$$dir; cd $$dir; $(MAKE) dist; cd ..; done
+.PHONY: conf-dist
+
+dist-tar: links-for-dist
+	tar chf `cat .fname`.tar `cat .fname`
+	rm -rf `cat .fname`
+.PHONY: dist-tar
 
 # Rules for making a snapshot.
 

@@ -35,7 +35,7 @@ DISTDIRS = emacs glob kpathsea make # plplot
 SUBDIRS = @INFO_DIR@ @PLPLOT_DIR@ @READLINE_DIR@ @DLFCN_DIR@ glob \
 	kpathsea libcruft liboctave src scripts doc examples
 
-# Subdirectories in which ot run `make conf-dist'.
+# Subdirectories in which to run `make conf-dist'.
 CONF_DISTSUBDIRS = src
 
 # Subdirectories in which to run `make dist'.
@@ -48,6 +48,9 @@ BINDISTFILES = COPYING ChangeLog NEWS README THANKS INSTALL.OCTAVE \
 
 # Subdirectories in which to run `make dist'.
 BINDISTSUBDIRS = emacs scripts doc
+
+# Subdirectories in which to run clean targets.
+CLEANSUBDIRS = $(DISTSUBDIRS) 
 
 DIRS_TO_MAKE = $(bindir) $(libdir) $(octincludedir) $(fcnfiledir) \
   $(octfiledir) $(archlibdir) \
@@ -105,7 +108,7 @@ install uninstall tags TAGS::
 .PHONY: install uninstall tags
 
 clean mostlyclean distclean maintainer-clean::
-	$(foreach d, $(SUBDIRS) test, $(do-subdir-for-command))
+	$(foreach d, $(CLEANSUBDIRS), $(do-subdir-for-command))
 .PHONY: clean mostlyclean distclean maintainer-clean
 
 maintainer-clean distclean::

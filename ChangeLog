@@ -1,5 +1,8 @@
 Sat Oct 12 00:17:06 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* octMakefile.in (CLEANSUBDIRS): New macro.
+	Use it for clean targets.
+
 	* config.h.bot (STATIC_CAST, DYNAMIC_CAST, REINTERPRET_CAST):
 	New macros.
 

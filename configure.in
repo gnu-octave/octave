@@ -21,7 +21,7 @@ dnl Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
 ### along with Octave; see the file COPYING.  If not, write to the Free
 ### Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
-AC_REVISION($Revision: 1.88 $)
+AC_REVISION($Revision: 1.89 $)
 AC_PREREQ(2.0)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h kpathsea/c-auto.h)
@@ -559,10 +559,11 @@ esac
 XCFLAGS="$CFLAGS"
 CFLAGS="$CFLAGS $GCC_IEEE_FP_FLAG"
 
-### Inf and NaN don't work with gcc on the Alpha yet.
+### Inf and NaN don't work with gcc on the Alpha yet.  I am also told
+### that they don't work on m68k HP sytems either.
 
 case "$canonical_host_type" in
-  alpha-dec-osf*)
+  alpha-dec-osf* | m68k-hp-hpux*)
   ;;
   *)
     AC_CHECK_FUNCS(finite isnan isinf infinity quiet_nan)
@@ -801,9 +802,10 @@ define([tmpd], [libcruft/lapack/Makefile libcruft/linpack/Makefile])dnl
 define([tmpe], [libcruft/minpack/Makefile libcruft/misc/Makefile])dnl
 define([tmpf], [libcruft/npsol/Makefile libcruft/odepack/Makefile])dnl
 define([tmpg], [libcruft/qpsol/Makefile libcruft/quadpack/Makefile])dnl
-define([tmph], [libcruft/ranlib/Makefile libcruft/villad/Makefile])dnl
+define([tmph], [libcruft/ranlib/Makefile libcruft/slatec-fn/Makefile])dnl
+define([tmpi], [libcruft/villad/Makefile])dnl
 
-define([cruftdirs], [tmpa tmpb tmpc tmpd tmpe tmpf tmpg tmph])dnl
+define([cruftdirs], [tmpa tmpb tmpc tmpd tmpe tmpf tmpg tmph tmpi])dnl
 define([tmpSA], [scripts/Makefile scripts/control/Makefile])dnl
 define([tmpSB], [scripts/general/Makefile scripts/image/Makefile])
 define([tmpSC], [scripts/linear-algebra/Makefile])dnl

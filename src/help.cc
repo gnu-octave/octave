@@ -650,9 +650,29 @@ display the definition of each NAME that refers to a function")
 	      else if (sym_rec->is_builtin_function ())
 		output_buf << *argv << " is a builtin function\n";
 	      else if (sym_rec->is_user_variable ())
-		output_buf << *argv << " is a user-defined variable\n";
+		{
+		  tree_fvc *defn = sym_rec->def ();
+
+		  if (nargout == 0 && ! quiet)
+		    output_buf << *argv << " is a user-defined variable\n";
+
+		  defn->print_code (output_buf);
+
+		  if (nargout == 0)
+		    output_buf << "\n";
+		}
 	      else if (sym_rec->is_builtin_variable ())
-		output_buf << *argv << " is a builtin variable\n";
+		{
+		  tree_fvc *defn = sym_rec->def ();
+
+		  if (nargout == 0 && ! quiet)
+		    output_buf << *argv << " is a builtin variable\n";
+
+		  defn->print_code (output_buf);
+
+		  if (nargout == 0)
+		    output_buf << "\n";
+		}
 	      else
 		output_buf << "type: `" << *argv << "' has unknown type!\n";
 	    }

@@ -1,3 +1,9 @@
+2000-06-30  Steven G. Johnson  <stevenj@gil-galad.mit.edu>
+
+	* Makefile.in (octave): Link $(FLIBS) last.
+	* octave.cc (main): Force our own xerbla to be linked instead of
+	some system version.
+
 2000-06-29  James R. Van Zandt  <jrv@vanzandt.mv.com>
 
 	* load-save.cc (load_save_format): New value, LS_MAT5_BINARY.

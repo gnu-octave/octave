@@ -416,8 +416,8 @@ DEFUN (glob, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} glob (@var{pattern})\n\
 Given an array of strings in @var{pattern}, return the list of file\n\
-names that any of them, or an empty string if no patterns match.  Tilde\n\
-expansion is performed on each of the patterns before looking for\n\
+names that match any of them, or an empty string if no patterns match.\n\
+Tilde expansion is performed on each of the patterns before looking for\n\
 matching file names.  For example,\n\
 \n\
 @example\n\

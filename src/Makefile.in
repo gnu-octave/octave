@@ -256,7 +256,7 @@ octave: stamp-prereq $(LIBRARIES) stamp-oct-links \
 	octave.o builtins.o ops.o $(DLD_STATIC_OBJ) \
 	$(OCTAVE_LFLAGS) \
 	$(OCTAVE_LIBS) \
-	$(FLIBS) $(LEXLIB) $(TERMLIBS) $(LIBS)
+	$(LEXLIB) $(TERMLIBS) $(LIBS) $(FLIBS)
 
 stmp-pic: pic
 	@if [ -f stmp-pic ]; then \

@@ -1,3 +1,7 @@
+2000-06-30  Steven G. Johnson  <stevenj@gil-galad.mit.edu>
+
+	* configure.in: Support for --with-fastblas (ATLAS).
+
 2000-06-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in: Check for long long data type.

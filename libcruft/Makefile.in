@@ -24,8 +24,13 @@ INSTALL_DATA = @INSTALL_DATA@
 # generate a new configure script in the top-level directory (edit
 # configure.in and run autoconf).
 
-CRUFT_DIRS = amos blas dassl fftpack lapack linpack minpack misc odepack \
-	ordered-qz quadpack ranlib slatec-err slatec-fn villad
+# Some of the directories in libcruft may be only optionally built,
+# e.g. if they are already present on the system.  For these, their
+# dirname is substituted by configure and may be the empty string.
+
+CRUFT_DIRS = amos @BLAS_DIR@ blas-xtra dassl fftpack @LAPACK_DIR@ \
+	lapack-xtra linpack minpack misc odepack ordered-qz quadpack \
+	ranlib slatec-err slatec-fn villad
 
 SUBDIRS = $(CRUFT_DIRS)
 

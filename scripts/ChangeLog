@@ -1,3 +1,7 @@
+2000-06-30  Kai Habel  <kahacjde@calvados.zrz.TU-Berlin.DE>
+
+	* plot/hist.m: Allow 3 argument form to work.
+
 2000-06-27  Matthew W. Roberts <matt@lehi.tamu.edu>
 
 	* plot/plot.m: Add examples in doc string.

@@ -43,6 +43,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include "cmd-edit.h"
+#include "f77-fcn.h"
 #include "file-stat.h"
 #include "lo-error.h"
 #include "oct-env.h"
@@ -70,6 +71,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "variables.h"
 #include <version.h>
+
+// Kluge.
+extern "C" void F77_FCN (xerbla, XERBLA) (const char *, int);
 
 extern void install_builtins (void);
 
@@ -578,6 +582,17 @@ main (int argc, char **argv)
     retval = 0;
 
   clean_up_and_exit (retval);
+
+  // The following code should never be reached.  It is a hack to make
+  // sure that the xerbla.f from libcruft/blas-xtra is linked with
+  // octave, in preference to the xerbla function from any standard
+  // BLAS that we link to.
+
+  // XXX FIXME XXX -- this may not work on some systems if libcruft
+  // and the external blas libraries are both shared libraries.
+
+  if (retval < 0)
+    F77_FCN (xerbla, XERBLA) ("foobar", 0);
 }
 
 /*

@@ -45,7 +45,7 @@
 
 function [nn, xx] = hist (y, x, norm)
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1 || nargin > 3)
     usage ("[nn, xx] = hist (y, x, norm)");
   endif
 

@@ -1,1 +1,1 @@
-getegid () > 0
+getegid () >= 0

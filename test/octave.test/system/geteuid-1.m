@@ -1,1 +1,1 @@
-geteuid () > 0
+geteuid () >= 0

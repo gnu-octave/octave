@@ -1,1 +1,1 @@
-getgid () > 0
+getgid () >= 0

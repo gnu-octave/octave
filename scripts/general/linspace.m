@@ -45,9 +45,12 @@ function retval = linspace (x1, x2, n)
     error ("linspace: npoints must be greater than 2");
   endif
 
+# In some cases x1 + delta * (npoints - 1) will not be equal to x2, so
+# we cheat and force the last value to be x2.
+
   if (length (x1) == 1 && length (x2) == 1)
     delta = (x2 - x1) / (npoints - 1);
-    retval = x1:delta:x2;
+    retval = [x1+(0:npoints-2)*delta, x2];
   else
     error ("linspace: arguments must be scalars");
   endif

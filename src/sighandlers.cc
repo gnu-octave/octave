@@ -75,10 +75,26 @@ octave_new_handler (void)
     my_friendly_exit ("operator new", 1);
 }
 
-static RETSIGTYPE
-generic_sig_handler (int i)
+sig_handler *
+octave_set_signal_handler (int sig, sig_handler *handler)
 {
-  my_friendly_exit (sys_siglist[i], i);
+#if defined (HAVE_POSIX_SIGNALS)
+  struct sigaction act, oact;
+  act.sa_handler = handler;
+  act.sa_flags = 0;
+  sigemptyset (&act.sa_mask);
+  sigemptyset (&oact.sa_mask);
+  sigaction (sig, &act, &oact);
+  return oact.sa_handler;
+#else
+  return signal (sig, handler);
+#endif
+}
+
+static RETSIGTYPE
+generic_sig_handler (int sig)
+{
+  my_friendly_exit (sys_siglist[sig], sig);
 
 #if RETSIGTYPE == void
   return;
@@ -94,7 +110,7 @@ generic_sig_handler (int i)
 
 #if 0
 static RETSIGTYPE
-sigchld_handler (int i)
+sigchld_handler (int sig)
 {
   int status;
   pid_t pid = wait (&status);
@@ -124,18 +140,18 @@ sigchld_handler (int i)
 	}
     }
 
-  signal (SIGCHLD, sigchld_handler);
+  octave_set_signal_handler (SIGCHLD, sigchld_handler);
 }
 #endif
 
 #if defined (__alpha__)
 static RETSIGTYPE
-sigfpe_handler (int i)
+sigfpe_handler (int sig)
 {
   // Can this ever cause trouble on systems that don't forget signal
   // handlers when they are invoked?
 
-  signal (SIGFPE, sigfpe_handler);
+  octave_set_signal_handler (SIGFPE, sigfpe_handler);
 
   error ("floating point exception -- trying to return to prompt");
 
@@ -159,12 +175,12 @@ sigfpe_handler (int i)
 // signal interface if it is available.
 
 static RETSIGTYPE
-sigint_handler (int i)
+sigint_handler (int sig)
 {
   // Can this ever cause trouble on systems that don't forget signal
   // handlers when they are invoked?
 
-  signal (SIGINT, sigint_handler);
+  octave_set_signal_handler (SIGINT, sigint_handler);
 
   if (can_interrupt)
     {
@@ -180,12 +196,12 @@ sigint_handler (int i)
 }
 
 static RETSIGTYPE
-sigpipe_handler (int i)
+sigpipe_handler (int sig)
 {
   // Can this ever cause trouble on systems that don't forget signal
   // handlers when they are invoked?
 
-  signal (SIGPIPE, sigpipe_handler);
+  octave_set_signal_handler (SIGPIPE, sigpipe_handler);
 
   if (pipe_handler_error_count++ == 0)
     message (0, "broken pipe");
@@ -210,109 +226,109 @@ install_signal_handlers (void)
   set_new_handler (octave_new_handler);
 
 #ifdef SIGABRT
-  signal (SIGABRT, generic_sig_handler);
+  octave_set_signal_handler (SIGABRT, generic_sig_handler);
 #endif
 
 #ifdef SIGALRM
-  signal (SIGALRM, generic_sig_handler);
+  octave_set_signal_handler (SIGALRM, generic_sig_handler);
 #endif
 
 #ifdef SIGBUS
-  signal (SIGBUS, generic_sig_handler);
+  octave_set_signal_handler (SIGBUS, generic_sig_handler);
 #endif
 
 #if 0
 #ifdef SIGCHLD
-  signal (SIGCHLD, sigchld_handler);
+  octave_set_signal_handler (SIGCHLD, sigchld_handler);
 #endif
 #endif
 
 #ifdef SIGEMT
-  signal (SIGEMT, generic_sig_handler);
+  octave_set_signal_handler (SIGEMT, generic_sig_handler);
 #endif
 
 #ifdef SIGFPE
 #if defined (__alpha__)
-  signal (SIGFPE, sigfpe_handler);
+  octave_set_signal_handler (SIGFPE, sigfpe_handler);
 #else
-  signal (SIGFPE, generic_sig_handler);
+  octave_set_signal_handler (SIGFPE, generic_sig_handler);
 #endif
 #endif
 
 #ifdef SIGHUP
-  signal (SIGHUP, generic_sig_handler);
+  octave_set_signal_handler (SIGHUP, generic_sig_handler);
 #endif
 
 #ifdef SIGILL
-  signal (SIGILL, generic_sig_handler);
+  octave_set_signal_handler (SIGILL, generic_sig_handler);
 #endif
 
 #ifdef SIGINT
-  signal (SIGINT, sigint_handler);
+  octave_set_signal_handler (SIGINT, sigint_handler);
 #endif
 
 #ifdef SIGIOT
-  signal (SIGIOT, generic_sig_handler);
+  octave_set_signal_handler (SIGIOT, generic_sig_handler);
 #endif
 
 #ifdef SIGLOST
-  signal (SIGLOST, generic_sig_handler);
+  octave_set_signal_handler (SIGLOST, generic_sig_handler);
 #endif
 
 #ifdef SIGPIPE
-  signal (SIGPIPE, sigpipe_handler);
+  octave_set_signal_handler (SIGPIPE, sigpipe_handler);
 #endif
 
 #ifdef SIGPOLL
-  signal (SIGPOLL, SIG_IGN);
+  octave_set_signal_handler (SIGPOLL, SIG_IGN);
 #endif
 
 #ifdef SIGPROF
-  signal (SIGPROF, generic_sig_handler);
+  octave_set_signal_handler (SIGPROF, generic_sig_handler);
 #endif
 
 #ifdef SIGQUIT
-  signal (SIGQUIT, generic_sig_handler);
+  octave_set_signal_handler (SIGQUIT, generic_sig_handler);
 #endif
 
 #ifdef SIGSEGV
-  signal (SIGSEGV, generic_sig_handler);
+  octave_set_signal_handler (SIGSEGV, generic_sig_handler);
 #endif
 
 #ifdef SIGSYS
-  signal (SIGSYS, generic_sig_handler);
+  octave_set_signal_handler (SIGSYS, generic_sig_handler);
 #endif
 
 #ifdef SIGTERM
-  signal (SIGTERM, generic_sig_handler);
+  octave_set_signal_handler (SIGTERM, generic_sig_handler);
 #endif
 
 #ifdef SIGTRAP
-  signal (SIGTRAP, generic_sig_handler);
+  octave_set_signal_handler (SIGTRAP, generic_sig_handler);
 #endif
 
 #ifdef SIGUSR1
-  signal (SIGUSR1, generic_sig_handler);
+  octave_set_signal_handler (SIGUSR1, generic_sig_handler);
 #endif
 
 #ifdef SIGUSR2
-  signal (SIGUSR2, generic_sig_handler);
+  octave_set_signal_handler (SIGUSR2, generic_sig_handler);
 #endif
 
 #ifdef SIGVTALRM
-  signal (SIGVTALRM, generic_sig_handler);
+  octave_set_signal_handler (SIGVTALRM, generic_sig_handler);
 #endif
 
 #ifdef SIGIO
-  signal (SIGIO, SIG_IGN);
+  octave_set_signal_handler (SIGIO, SIG_IGN);
 #endif
 
 #ifdef SIGXCPU
-  signal (SIGXCPU, generic_sig_handler);
+  octave_set_signal_handler (SIGXCPU, generic_sig_handler);
 #endif
 
 #ifdef SIGXFSZ
-  signal (SIGXFSZ, generic_sig_handler);
+  octave_set_signal_handler (SIGXFSZ, generic_sig_handler);
 #endif
 }
 

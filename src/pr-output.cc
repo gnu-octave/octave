@@ -2119,9 +2119,60 @@ PRINT_CONV (octave_uint8, octave_uint16);
 #undef PRINT_CONV
 
 template <class T>
+static inline void
+pr_int (std::ostream& os, const T& d, int fw = 0)
+{
+  size_t sz = d.byte_size();
+  const unsigned char * tmpi = d.iptr();
+
+  if (hex_format)
+    {
+      char ofill = os.fill ('0');
+
+      std::ios::fmtflags oflags
+	= os.flags (std::ios::right | std::ios::hex);
+
+      if (hex_format > 1 || oct_mach_info::words_big_endian ())
+	{
+	  for (size_t i = 0; i < sz; i++)
+	    os << std::setw (2) << static_cast<int> (tmpi[i]);
+	}
+      else
+	{
+	  for (int i = sz - 1; i >= 0; i--)
+	    os << std::setw (2) << static_cast<int> (tmpi[i]);
+	}
+
+      os.fill (ofill);
+      os.setf (oflags);	  
+    }
+  else if (bit_format)
+    {
+      if (bit_format > 1 || oct_mach_info::words_big_endian ())
+	{
+	  for (size_t i = 0; i < sz; i++)
+	    PRINT_CHAR_BITS_SWAPPED (os, tmpi[i]);
+	}
+      else
+	{
+	  for (int i = sz - 1; i >= 0; i--)
+	    PRINT_CHAR_BITS (os, tmpi[i]);
+	}
+    }
+  else
+    {
+      os << std::setw (fw)
+	 << typename octave_print_conv<T>::print_conv_type (d);
+
+      if (bank_format)
+	os << ".00";
+    }
+}
+
+template <class T>
 void
 octave_print_internal (std::ostream& os, const intNDArray<T>& nda,
-		       bool pr_as_read_syntax, int)
+		       bool pr_as_read_syntax, int extra_indent)
 {
   // XXX FIXME XXX -- this mostly duplicates the code in the
   // PRINT_ND_ARRAY macro.
@@ -2129,16 +2180,14 @@ octave_print_internal (std::ostream& os, const intNDArray<T>& nda,
   if (nda.is_empty ())
     print_empty_nd_array (os, nda.dims (), pr_as_read_syntax);
   else if (nda.length () == 1)
-    {
-      os << typename octave_print_conv<T>::print_conv_type (nda(0));
-    }
-  else
+    octave_print_internal (os, nda (0), pr_as_read_syntax);
+  else if (plus_format && ! pr_as_read_syntax)
     {
       int ndims = nda.ndims ();
 
-      dim_vector dims = nda.dims ();
-
       Array<int> ra_idx (ndims, 0);
+
+      dim_vector dims = nda.dims ();
 
       int m = 1;
 
@@ -2150,11 +2199,9 @@ octave_print_internal (std::ostream& os, const intNDArray<T>& nda,
 
       for (int i = 0; i < m; i++)
 	{
-	  std::string nm = "ans";
-
 	  if (m > 1)
 	    {
-	      nm += "(:,:,";
+	      std::string nm = "ans(:,:,";
 
 	      OSSTREAM buf;
 
@@ -2173,6 +2220,8 @@ octave_print_internal (std::ostream& os, const intNDArray<T>& nda,
 	      nm += OSSTREAM_STR (buf);
 
 	      OSSTREAM_FREEZE (buf);
+
+	      os << nm << " =\n\n";
 	    }
 
 	  Array<idx_vector> idx (ndims);
@@ -2185,32 +2234,196 @@ octave_print_internal (std::ostream& os, const intNDArray<T>& nda,
 
 	  Array2<T> page (nda.index (idx), nr, nc);
 
-	  // XXX FIXME XXX -- need to do some more work to put these
-	  // in neatly aligned columns...
-
-	  int n_rows = page.rows ();
-	  int n_cols = page.cols ();
-
-	  os << nm << " =\n\n";
-
-	  for (int ii = 0; ii < n_rows; ii++)
+	  for (int ii = 0; ii < nr; ii++)
 	    {
-	      for (int jj = 0; jj < n_cols; jj++)
-		os << "  " << typename octave_print_conv<T>::print_conv_type (page(ii,jj));
+	      for (int jj = 0; jj < nc; jj++)
+		{
+		  OCTAVE_QUIT;
 
-	      os << "\n";
+		  pr_plus_format (os, page(ii,jj));
+		}
+
+	      if ((ii < nr - 1) || (i < m -1))
+		os << "\n";
 	    }
 
 	  if (i < m - 1)
-	    os << "\n";
+	    {
+	      os << "\n";
+	      increment_index (ra_idx, dims, 2);
+	    }
+	}
+    }
+  else
+    {
+      int ndims = nda.ndims ();
 
-	  if (i < m)
-	    increment_index (ra_idx, dims, 2);
+      dim_vector dims = nda.dims ();
+
+      Array<int> ra_idx (ndims, 0);
+
+      int m = 1;
+
+      for (int i = 2; i < ndims; i++)
+	m *= dims(i);
+
+      int nr = dims(0);
+      int nc = dims(1);
+
+      int fw = 0;
+      if (hex_format)
+	fw = 2 * nda(0).byte_size ();
+      else if (bit_format)
+	fw = nda(0).nbits ();
+      else
+	{
+	  bool isneg = false;
+	  int digits = 0;
+
+	  for (int i = 0; i < dims.numel (); i++)
+	    {
+	      int new_digits = static_cast<int> 
+		(floor (log10 (double (abs (nda(i).value ()))) + 1.0));
+
+	      if (new_digits > digits)
+		digits = new_digits;
+
+	      if (! isneg)
+	      isneg = (abs (nda(i).value ()) != nda(i).value ());
+	    }
+
+	  fw = digits + isneg;
+	}
+
+      int column_width = fw + (bank_format ? 5 : 2);
+      int total_width = nc * column_width;
+      int max_width = command_editor::terminal_cols () - extra_indent;
+      int inc = nc;
+      if (total_width > max_width && Vsplit_long_rows)
+	{
+	  inc = max_width / column_width;
+	  if (inc == 0)
+	    inc++;
+	}
+
+      for (int i = 0; i < m; i++)
+	{
+	  if (m > 1)
+	    {
+	      std::string nm = "ans(:,:,";
+
+	      OSSTREAM buf;
+
+	      for (int k = 2; k < ndims; k++)
+		{
+		  buf << ra_idx(k) + 1;
+
+		  if (k < ndims - 1)
+		    buf << ",";
+		  else
+		    buf << ")";
+		}
+
+	      buf << OSSTREAM_ENDS;
+
+	      nm += OSSTREAM_STR (buf);
+
+	      OSSTREAM_FREEZE (buf);
+
+	      os << nm << " =\n\n";
+	    }
+
+	  Array<idx_vector> idx (ndims);
+
+	  idx(0) = idx_vector (':');
+	  idx(1) = idx_vector (':');
+
+	  for (int k = 2; k < ndims; k++)
+	    idx(k) = idx_vector (ra_idx(k) + 1);
+
+	  Array2<T> page (nda.index (idx), nr, nc);
+
+	  if (free_format)
+	    {
+	      if (pr_as_read_syntax)
+		os << "[\n";
+
+	      for (int ii = 0; ii < nr; ii++)
+		{
+		  for (int jj = 0; jj < nc; jj++)
+		    {
+		      OCTAVE_QUIT;
+		      os << "  ";
+		      os << typename octave_print_conv<T>::print_conv_type (page(ii,jj));
+		    }
+		  os << "\n";
+		}
+
+	      if (pr_as_read_syntax)
+		os << "]";
+	    }
+	  else
+	    {
+	      int n_rows = page.rows ();
+	      int n_cols = page.cols ();
+
+	      for (int col = 0; col < n_cols; col += inc)
+		{
+		  int lim = col + inc < n_cols ? col + inc : n_cols;
+
+		  pr_col_num_header (os, total_width, max_width, lim, col,
+				     extra_indent);
+
+		  for (int ii = 0; ii < n_rows; ii++)
+		    {
+		      os << std::setw (extra_indent) << "";
+		      
+		      for (int jj = col; jj < lim; jj++)
+			{
+			  OCTAVE_QUIT;
+			  os << "  ";
+			  pr_int (os, page(ii,jj), fw);
+			}
+		      if ((ii < n_rows - 1) || (i < m -1))
+			os << "\n";
+		    }
+		}
+	    }
+
+	  if (i < m - 1)
+	    {
+	      os << "\n";
+	      increment_index (ra_idx, dims, 2);
+	    }
 	}
     }
 }
 
 // XXX FIXME XXX -- this is not the right spot for this...
+
+template void
+pr_int (std::ostream&, const octave_int8&, int);
+
+template void
+pr_int (std::ostream&, const octave_int16&, int);
+
+template void
+pr_int (std::ostream&, const octave_int32&, int);
+
+template void
+pr_int (std::ostream&, const octave_int64&, int);
+
+template void
+pr_int (std::ostream&, const octave_uint8&, int);
+
+template void
+pr_int (std::ostream&, const octave_uint16&, int);
+
+template void
+pr_int (std::ostream&, const octave_uint32&, int);
+
+template void
+pr_int (std::ostream&, const octave_uint64&, int);
 
 template void
 octave_print_internal (std::ostream&, const intNDArray<octave_int8>&,
@@ -2248,9 +2461,17 @@ template <class T>
 void
 octave_print_internal (std::ostream& os, const octave_int<T>& val, bool)
 {
-  // XXX FIXME XXX -- we need to handle various formats here...
-
-  os << typename octave_print_conv<octave_int<T> >::print_conv_type (val);
+  if (plus_format)
+    {
+      pr_plus_format (os, val);
+    }
+  else
+    {
+      if (free_format)
+	os << typename octave_print_conv<T>::print_conv_type (val);
+      else
+	pr_int (os, val);
+    }
 }
 
 // XXX FIXME XXX -- this is not the right spot for this...

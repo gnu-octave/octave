@@ -1,5 +1,9 @@
 2004-08-31  John W. Eaton  <jwe@octave.org>
 
+	* oct-inttypes.h (octave_int::byte_size): New function.
+
+2004-08-31  John W. Eaton  <jwe@octave.org>
+
 	* Makefile.in (EXTRAS): Add intNDArray.cc to the list.
 
 	* data-conv.h (oct_data_conv::data_type): Include sized types.

@@ -1,4 +1,19 @@
+2004-08-31  John W. Eaton  <jwe@octave.org>
+
+	* pr-output.cc (pr_int): Also handle bank_format.
+	(octave_print_internal (std::ostream& os, const intNDArray<T>&,
+	bool, int)): Likewise.
+
 2004-08-31  David Bateman  <dbateman@free.fr>
+
+	* pr-output.cc (pr_int(std::ostream, const T&, int)):
+	New template function to print formatted integer types.
+	Instantiate it for all of the integer types.
+	(octave_print_internal (std::ostream, const intNDArray<T>&, bool,
+	int)): Use pr_int.  Align output up in columns, and check for
+	free_format or plus_format.
+	(octave_print_internal (std::ostream, const octave_int<T>&, bool)):
+	Use pr_int.  Check for free_format and plus_format.
 
 	* ls-hdf5.cc (hdf5_read_next_data): When importing hdf5 files,
 	allow structures and lists (for backward compatibility).  Also

@@ -237,6 +237,9 @@ public:
   
   T value (void) const { return ival; }
 
+  const unsigned char * iptr (void) const
+  { return reinterpret_cast<const unsigned char *> (& ival); }
+
   bool operator ! (void) const { return ! ival; }
 
   octave_int<T> operator + (void) const { return *this; }
@@ -268,6 +271,8 @@ public:
   octave_int<T> max (void) const { return std::numeric_limits<T>::max (); }
 
   static int nbits (void) { return sizeof (T) * CHAR_BIT; }
+
+  static int byte_size (void) { return sizeof(T); }
 
 private:
 

@@ -104,8 +104,10 @@ SVD::init (const Matrix& a, SVD::type svd_type)
       // demonstrate the bug, set both jobu and jobv to 'N' and find
       // the singular values of [eye(3), eye(3)].  The result is
       // [-sqrt(2), -sqrt(2), -sqrt(2)].
+      //
+      // For Lapack 3.0, this problem seems to be fixed.
 
-      jobu = 'O';
+      jobu = 'N';
       jobv = 'N';
       ncol_u = nrow_vt = 1;
       break;

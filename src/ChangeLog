@@ -1,3 +1,11 @@
+Wed Nov  6 12:32:48 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* variables.cc (is_function_file): Call gobble_leading_whitespace
+	here to strip all leading whitespace and comments.
+	(parse_fcn_file): If reading a function file, call
+	gobble_leading_whitespace again after resetting parser state to
+	grab help text.
+
 Tue Nov  5 13:00:35 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* syscalls.cc (Fgeteuid, Fgetuid): New functions.

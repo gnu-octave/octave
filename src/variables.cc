@@ -458,7 +458,7 @@ looks_like_octave_copyright (const string& s)
 // code!
 
 static string
-gobble_leading_white_space (FILE *ffile, int in_parts)
+gobble_leading_white_space (FILE *ffile, bool in_parts)
 {
   string help_txt;
 
@@ -560,6 +560,8 @@ is_function_file (FILE *ffile)
 
   long pos = ftell (ffile);
 
+  gobble_leading_white_space (ffile, false);
+
   char buf [10];
   fgets (buf, 10, ffile);
   int len = strlen (buf);
@@ -609,8 +611,6 @@ parse_fcn_file (int exec_script, const string& ff)
       // Check to see if this file defines a function or is just a
       // list of commands.
 
-      string tmp_help_txt = gobble_leading_white_space (ffile, 0);
-
       if (is_function_file (ffile))
 	{
 	  // XXX FIXME XXX -- we shouldn't need both the
@@ -642,7 +642,10 @@ parse_fcn_file (int exec_script, const string& ff)
 
 	  reset_parser ();
 
-	  help_buf = tmp_help_txt;
+	  help_buf = gobble_leading_white_space (ffile, true);
+
+	  // XXX FIXME XXX -- this should not be necessary.
+	  gobble_leading_white_space (ffile, false);
 
 	  int status = yyparse ();
 
@@ -774,7 +777,7 @@ get_help_from_file (const string& path)
 
       if (fptr)
 	{
-	  retval = gobble_leading_white_space (fptr, 1);
+	  retval = gobble_leading_white_space (fptr, true);
 	  fclose (fptr);
 	}
     }

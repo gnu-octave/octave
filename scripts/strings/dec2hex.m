@@ -44,7 +44,7 @@ function h = dec2hex (d)
     for i = 1:len
       tmp = d (i);
       if (tmp == round (tmp))
-	h = [h, sprintf ("%x", tmp)];
+	h = sprintf ("%s%x", h, tmp);
       else
 	error ("dec2hex: invalid conversion");
       endif

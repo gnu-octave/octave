@@ -22,18 +22,26 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
-#ifdef HAVE_FFTW
+#if defined (HAVE_FFTW3)
 
 #include "oct-fftw.h"
 #include "lo-error.h"
-
+#include <iostream>
 
 // Helper class to create and cache fftw plans for both 1d and 2d. This
 // implementation uses FFTW_ESTIMATE to create the plans, which in theory
-// is suboptimal, but provides quite reasonable performance. Future
-// enhancement will be to add a dynamically loadable interface ("fftw")
-// to manipulate fftw wisdom so that users may choose the appropriate
-// planner.
+// is suboptimal, but provides quite reasonable performance.
+
+// Also note that if FFTW_ESTIMATE is not used the planner in FFTW3
+// destroys the input and output arrays. So with the form of the 
+// current code we definitely want FFTW_ESTIMATE!! However, we use
+// any wsidom that is available, either in a FFTW3 system wide file
+// or as supplied by the user.
+
+// XXX FIXME XXX If we can ensure 16 byte alignment in Array<T> (<T> *data)
+// the FFTW3 can use SIMD instructions for further acceleration.
+
+// Note that it is profitable to store the FFTW3 plans, for small ffts
 
 class
 octave_fftw_planner
@@ -41,17 +49,35 @@ octave_fftw_planner
 public:
   octave_fftw_planner ();
 
-  fftw_plan create_plan (fftw_direction, size_t);
-  fftwnd_plan create_plan2d (fftw_direction, size_t, size_t);
+  fftw_plan create_plan (int dir, const int rank, const dim_vector dims, 
+			 int howmany, int stride, int dist, 
+			 const Complex *in, Complex *out);
+  fftw_plan create_plan (const int rank, const dim_vector dims, 
+			 int howmany, int stride, int dist, 
+			 const double *in, Complex *out);
 
 private:
   int plan_flags;
 
+  // Plan for fft and ifft of complex values
   fftw_plan plan[2];
-  fftwnd_plan plan2d[2];
+  int d[2];  // dist
+  int s[2];  // stride
+  int r[2];  // rank
+  int h[2];  // howmany
+  dim_vector n[2]; // dims
+  char ialign[2];
+  char oalign[2];
 
-  size_t n[2];
-  size_t n2d[2][2];
+  // Plan for fft of real values
+  fftw_plan rplan;
+  int rd;  // dist
+  int rs;  // stride
+  int rr;  // rank
+  int rh;  // howmany
+  dim_vector rn; // dims
+  char rialign;
+  char roalign;
 };
 
 octave_fftw_planner::octave_fftw_planner ()
@@ -59,31 +85,67 @@ octave_fftw_planner::octave_fftw_planner ()
   plan_flags = FFTW_ESTIMATE;
 
   plan[0] = plan[1] = 0;
-  plan2d[0] = plan2d[1] = 0;
-  
-  n[0] = n[1] = 0;
-  n2d[0][0] = n2d[0][1] = n2d[1][0] = n2d[1][1] = 0;
+  d[0] = d[1] = s[0] = s[1] = r[0] = r[1] = h[0] = h[1] = 0;
+  ialign[0] = ialign[1] = oalign[0] = oalign[1] = 0;
+  n[0] = n[1] = dim_vector();
+
+  rplan = 0;
+  rd = rs = rr = rh = 0;
+  rialign = roalign = 0;
+  rn = dim_vector ();
+
+  // If we have a system wide wisdom file, import it
+  fftw_import_system_wisdom ( );
 }
 
 fftw_plan
-octave_fftw_planner::create_plan (fftw_direction dir, size_t npts)
+octave_fftw_planner::create_plan (int dir, const int rank,
+				  const dim_vector dims, int howmany,
+				  int stride, int dist, 
+				  const Complex *in, Complex *out)
 {
-  size_t which = (dir == FFTW_FORWARD) ? 0 : 1;
+  int which = (dir == FFTW_FORWARD) ? 0 : 1;
   fftw_plan *cur_plan_p = &plan[which];
   bool create_new_plan = false;
+  char in_align = ((int) in) & 0xF;
+  char out_align = ((int) out) & 0xF;
 
-  if (plan[which] == 0 || n[which] != npts)
-    {
-      create_new_plan = true;
-      n[which] = npts;
-    }
+  if (plan[which] == 0 || d[which] != dist || s[which] != stride ||
+      r[which] != rank || h[which] != howmany ||
+      ialign[which] != in_align || oalign[which] != out_align)
+    create_new_plan = true;
+  else
+    // We still might not have the same shape of array
+    for (int i = 0; i < rank; i++)
+      if (dims(i) != n[which](i))
+	{
+	  create_new_plan = true;
+	  break;
+	}
 
   if (create_new_plan)
     {
+      d[which] = dist;
+      s[which] = stride;
+      r[which] = rank;
+      h[which] = howmany;
+      ialign[which] = in_align;
+      oalign[which] = out_align;
+      n[which] = dims;
+
       if (*cur_plan_p)
 	fftw_destroy_plan (*cur_plan_p);
 
-      *cur_plan_p = fftw_create_plan (npts, dir, plan_flags);
+      // Note reversal of dimensions for column major storage in FFTW
+      OCTAVE_LOCAL_BUFFER (int, tmp, rank);
+      for (int i = 0, j = rank-1; i < rank; i++, j--)
+	tmp[i] = dims(j);
+
+      *cur_plan_p =
+	fftw_plan_many_dft (rank, tmp, howmany,
+	      reinterpret_cast<fftw_complex *> (const_cast<Complex *> (in)),
+	      NULL, stride, dist, reinterpret_cast<fftw_complex *> (out),
+	      NULL, stride, dist, dir, plan_flags);
 
       if (*cur_plan_p == 0)
 	(*current_liboctave_error_handler) ("Error creating fftw plan");
@@ -92,32 +154,55 @@ octave_fftw_planner::create_plan (fftw_direction dir, size_t npts)
   return *cur_plan_p;
 }
  
-fftwnd_plan
-octave_fftw_planner::create_plan2d (fftw_direction dir, 
-                                   size_t nrows, size_t ncols)
+fftw_plan
+octave_fftw_planner::create_plan (const int rank, const dim_vector dims, 
+				  int howmany, int stride, int dist, 
+				  const double *in, Complex *out)
 {
-  size_t which = (dir == FFTW_FORWARD) ? 0 : 1;
-  fftwnd_plan *cur_plan_p = &plan2d[which];
+  fftw_plan *cur_plan_p = &rplan;
   bool create_new_plan = false;
+  char in_align = ((int) in) & 0xF;
+  char out_align = ((int) out) & 0xF;
 
-  if (plan2d[which] == 0 || n2d[which][0] != nrows || n2d[which][1] != ncols)
-    {
-      create_new_plan = true;
-
-      n2d[which][0] = nrows;
-      n2d[which][1] = ncols;
-    }
+  if (rplan == 0 || rd != dist || rs != stride ||
+      rr != rank || rh != howmany ||
+      rialign != in_align || roalign != out_align)
+    create_new_plan = true;
+  else
+    // We still might not have the same shape of array
+    for (int i = 0; i < rank; i++)
+      if (dims(i) != rn(i))
+	{
+	  create_new_plan = true;
+	  break;
+	}
 
   if (create_new_plan)
     {
-      if (*cur_plan_p)
-	fftwnd_destroy_plan (*cur_plan_p);
+      rd = dist;
+      rs = stride;
+      rr = rank;
+      rh = howmany;
+      rialign = in_align;
+      roalign = out_align;
+      rn = dims;
 
-      *cur_plan_p = fftw2d_create_plan (nrows, ncols, dir, 
-					plan_flags | FFTW_IN_PLACE);
+      if (*cur_plan_p)
+	fftw_destroy_plan (*cur_plan_p);
+
+      // Note reversal of dimensions for column major storage in FFTW
+      OCTAVE_LOCAL_BUFFER (int, tmp, rank);
+      for (int i = 0, j = rank-1; i < rank; i++, j--)
+	tmp[i] = dims(j);
+
+      *cur_plan_p =
+	fftw_plan_many_dft_r2c (rank, tmp, howmany,
+	      (const_cast<double *> (in)),
+	      NULL, stride, dist, reinterpret_cast<fftw_complex *> (out),
+	      NULL, stride, dist, plan_flags);
 
       if (*cur_plan_p == 0)
-	(*current_liboctave_error_handler) ("Error creating 2d fftw plan");
+	(*current_liboctave_error_handler) ("Error creating fftw plan");
     }
 
   return *cur_plan_p;
@@ -125,51 +210,184 @@ octave_fftw_planner::create_plan2d (fftw_direction dir,
 
 static octave_fftw_planner fftw_planner;
 
-int
-octave_fftw::fft (const Complex *in, Complex *out, size_t npts)
+static inline void convert_packcomplex_1d (Complex *out, size_t nr, 
+					   size_t nc, int stride, int dist)
 {
-  fftw_one (fftw_planner.create_plan (FFTW_FORWARD, npts),
-            reinterpret_cast<fftw_complex *> (const_cast<Complex *> (in)),
-            reinterpret_cast<fftw_complex *> (out));
+  // Fill in the missing data
+  for (size_t i = 0; i < nr; i++)
+    for (size_t j = nc/2+1; j < nc; j++)
+      out[j*stride + i*dist] = conj(out[(nc - j)*stride + i*dist]);
+}
+
+static inline void convert_packcomplex_Nd (Complex *out, 
+					   const dim_vector &dv)
+{
+  size_t nc = dv(0);
+  size_t nr = dv(1);
+  size_t np = (dv.length() > 2 ? dv.numel () / nc / nr : 1);
+  size_t nrp = nr * np;
+  Complex *ptr1, *ptr2;
+
+  // Create space for the missing elements
+  for (size_t i = 0; i < nrp; i++)
+    {
+      ptr1 = out + i * (nc/2 + 1) + nrp*((nc-1)/2);
+      ptr2 = out + i * nc;
+      for (size_t j = 0; j < nc/2+1; j++)
+	*ptr2++ = *ptr1++;
+    }
+
+  // Fill in the missing data for the rank = 2 case directly for speed
+  for (size_t i = 0; i < np; i++)
+    {
+      for (size_t j = 1; j < nr; j++)
+	for (size_t k = nc/2+1; k < nc; k++)
+	  out[k + (j + i*nr)*nc] = conj(out[nc - k + ((i+1)*nr - j)*nc]);
+
+      for (size_t j = nc/2+1; j < nc; j++)
+	out[j + i*nr*nc] = conj(out[(i*nr+1)*nc - j]);
+    }
+
+  // Now do the permutations needed for rank > 2 cases
+  size_t jstart = dv(0) * dv(1);
+  size_t kstep = dv(0);
+  size_t nel = dv.numel ();
+  for (int inner = 2; inner < dv.length(); inner++) 
+    {
+      size_t jmax = jstart * dv(inner);
+      for (size_t i = 0; i < nel; i+=jmax)
+	for (size_t j = jstart, jj = jmax-jstart; j < jj; 
+	     j+=jstart, jj-=jstart)
+	  for (size_t k = 0; k < jstart; k+= kstep)
+	    for (size_t l = nc/2+1; l < nc; l++)
+	      {
+		Complex tmp = out[i+ j + k + l];
+		out[i + j + k + l] =  out[i + jj + k + l];
+		out[i + jj + k + l] = tmp;
+	      }
+      jstart = jmax;
+    }
+}
+
+int
+octave_fftw::fft (const double *in, Complex *out, size_t npts, 
+		  size_t nsamples, int stride, int dist)
+{
+  dist = (dist < 0 ? npts : dist);
+
+  dim_vector dv (npts);
+  fftw_plan plan = fftw_planner.create_plan (1, dv, nsamples, stride, dist,
+					     in, out);
+
+  fftw_execute_dft_r2c (plan, (const_cast<double *>(in)),
+			reinterpret_cast<fftw_complex *> (out));
+
+  // Need to create other half of the transform
+  convert_packcomplex_1d (out, nsamples, npts, stride, dist);
 
   return 0;
 }
 
 int
-octave_fftw::ifft (const Complex *in, Complex *out, size_t npts)
+octave_fftw::fft (const Complex *in, Complex *out, size_t npts, 
+		  size_t nsamples, int stride, int dist)
 {
-  fftw_one (fftw_planner.create_plan (FFTW_BACKWARD, npts),
-            reinterpret_cast<fftw_complex *> (const_cast<Complex *> (in)),
-            reinterpret_cast<fftw_complex *> (out));
+  dist = (dist < 0 ? npts : dist);
 
+  dim_vector dv (npts);
+  fftw_plan plan = fftw_planner.create_plan (FFTW_FORWARD, 1, dv, nsamples,
+					     stride, dist, in, out);
+
+  fftw_execute_dft (plan, 
+	reinterpret_cast<fftw_complex *> (const_cast<Complex *>(in)),
+	reinterpret_cast<fftw_complex *> (out));
+
+  return 0;
+}
+
+int
+octave_fftw::ifft (const Complex *in, Complex *out, size_t npts, 
+		   size_t nsamples, int stride, int dist)
+{
+  dist = (dist < 0 ? npts : dist);
+
+  dim_vector dv (npts);
+  fftw_plan plan = fftw_planner.create_plan (FFTW_BACKWARD, 1, dv, nsamples,
+					     stride, dist, in, out);
+
+  fftw_execute_dft (plan, 
+	reinterpret_cast<fftw_complex *> (const_cast<Complex *>(in)),
+	reinterpret_cast<fftw_complex *> (out));
+
+  const Complex scale = npts;
+  for (size_t j = 0; j < nsamples; j++)
+    for (size_t i = 0; i < npts; i++)
+      out[i*stride + j*dist] /= scale;
+
+  return 0;
+}
+
+int
+octave_fftw::fftNd (const double *in, Complex *out, const int rank, 
+		    const dim_vector &dv)
+{
+  int dist = 1;
+  for (int i = 0; i < rank; i++)
+    dist *= dv(i);
+
+  // Fool with the position of the start of the output matrix, so that
+  // creating other half of the matrix won't cause cache problems
+  int offset = (dv.numel () / dv(0)) * ((dv(0) - 1) / 2); 
+  
+  fftw_plan plan = fftw_planner.create_plan (rank, dv, 1, 1, dist,
+					     in, out + offset);
+
+  fftw_execute_dft_r2c (plan, (const_cast<double *>(in)),
+			reinterpret_cast<fftw_complex *> (out+ offset));
+
+  // Need to create other half of the transform
+  convert_packcomplex_Nd (out, dv);
+
+  return 0;
+}
+
+int
+octave_fftw::fftNd (const Complex *in, Complex *out, const int rank, 
+		    const dim_vector &dv)
+{
+  int dist = 1;
+  for (int i = 0; i < rank; i++)
+    dist *= dv(i);
+
+  fftw_plan plan = fftw_planner.create_plan (FFTW_FORWARD, rank, dv, 1, 1,
+					     dist, in, out);
+
+  fftw_execute_dft (plan, 
+	reinterpret_cast<fftw_complex *> (const_cast<Complex *>(in)),
+	reinterpret_cast<fftw_complex *> (out));
+
+  return 0;
+}
+
+int
+octave_fftw::ifftNd (const Complex *in, Complex *out, const int rank, 
+		    const dim_vector &dv)
+{
+  int dist = 1;
+  for (int i = 0; i < rank; i++)
+    dist *= dv(i);
+
+  fftw_plan plan = fftw_planner.create_plan (FFTW_BACKWARD, rank, dv, 1, 1,
+					     dist, in, out);
+
+  fftw_execute_dft (plan, 
+	reinterpret_cast<fftw_complex *> (const_cast<Complex *>(in)),
+	reinterpret_cast<fftw_complex *> (out));
+
+  const size_t npts = dv.numel ();
   const Complex scale = npts;
   for (size_t i = 0; i < npts; i++)
     out[i] /= scale;
-
-  return 0;
-}
-
-int
-octave_fftw::fft2d (Complex *inout, size_t nr, size_t nc)
-{
-  fftwnd_one (fftw_planner.create_plan2d (FFTW_FORWARD, nr, nc),
-              reinterpret_cast<fftw_complex *> (inout),
-              0);
-
-  return 0;
-}
-
-int
-octave_fftw::ifft2d (Complex *inout, size_t nr, size_t nc)
-{
-  fftwnd_one (fftw_planner.create_plan2d (FFTW_BACKWARD, nr, nc),
-              reinterpret_cast<fftw_complex *> (inout),
-              0);
-
-  const size_t npts = nr * nc;
-  const Complex scale = npts;
-  for (size_t i = 0; i < npts; i++)
-    inout[i] /= scale;
 
   return 0;
 }

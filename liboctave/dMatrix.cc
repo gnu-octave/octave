@@ -52,7 +52,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-cmplx.h"
 #include "quit.h"
 
-#ifdef HAVE_FFTW
+#if defined (HAVE_FFTW3)
 #include "oct-fftw.h"
 #endif
 
@@ -766,7 +766,7 @@ Matrix::pseudo_inverse (double tol) const
     }
 }
 
-#ifdef HAVE_FFTW
+#if defined (HAVE_FFTW3)
 
 ComplexMatrix
 Matrix::fourier (void) const
@@ -789,16 +789,10 @@ Matrix::fourier (void) const
       nsamples = nc;
     }
 
-  ComplexMatrix tmp (*this);
-  Complex *in (tmp.fortran_vec ());
+  const double *in (fortran_vec ());
   Complex *out (retval.fortran_vec ());
 
-  for (size_t i = 0; i < nsamples; i++)
-    {
-      OCTAVE_QUIT;
-
-      octave_fftw::fft (&in[npts * i], &out[npts * i], npts);
-    }
+  octave_fftw::fft (in, out, npts, nsamples); 
 
   return retval;
 }
@@ -828,12 +822,7 @@ Matrix::ifourier (void) const
   Complex *in (tmp.fortran_vec ());
   Complex *out (retval.fortran_vec ());
 
-  for (size_t i = 0; i < nsamples; i++)
-    {
-      OCTAVE_QUIT;
-
-      octave_fftw::ifft (&in[npts * i], &out[npts * i], npts);
-    }
+  octave_fftw::ifft (in, out, npts, nsamples); 
 
   return retval;
 }
@@ -841,13 +830,11 @@ Matrix::ifourier (void) const
 ComplexMatrix
 Matrix::fourier2d (void) const
 {
-  int nr = rows ();
-  int nc = cols ();
+  dim_vector dv(rows (), cols ());
 
-  ComplexMatrix retval (*this);
-  // Note the order of passing the rows and columns to account for
-  // column-major storage.
-  octave_fftw::fft2d (retval.fortran_vec (), nc, nr);
+  const double *in = fortran_vec ();
+  ComplexMatrix retval (rows (), cols ());
+  octave_fftw::fftNd (in, retval.fortran_vec (), 2, dv);
 
   return retval;
 }
@@ -855,13 +842,12 @@ Matrix::fourier2d (void) const
 ComplexMatrix
 Matrix::ifourier2d (void) const
 {
-  int nr = rows ();
-  int nc = cols ();
+  dim_vector dv(rows (), cols ());
 
   ComplexMatrix retval (*this);
-  // Note the order of passing the rows and columns to account for
-  // column-major storage.
-  octave_fftw::ifft2d (retval.fortran_vec (), nc, nr);
+  Complex *out (retval.fortran_vec ());
+
+  octave_fftw::ifftNd (out, out, 2, dv);
 
   return retval;
 }
@@ -998,8 +984,8 @@ Matrix::fourier2d (void) const
   wsave.resize (nn);
   pwsave = wsave.fortran_vec ();
 
-  Array<Complex> row (npts);
-  Complex *prow = row.fortran_vec ();
+  Array<Complex> tmp (npts);
+  Complex *prow = tmp.fortran_vec ();
 
   F77_FUNC (cffti, CFFTI) (npts, pwsave);
 
@@ -1067,8 +1053,8 @@ Matrix::ifourier2d (void) const
   wsave.resize (nn);
   pwsave = wsave.fortran_vec ();
 
-  Array<Complex> row (npts);
-  Complex *prow = row.fortran_vec ();
+  Array<Complex> tmp (npts);
+  Complex *prow = tmp.fortran_vec ();
 
   F77_FUNC (cffti, CFFTI) (npts, pwsave);
 

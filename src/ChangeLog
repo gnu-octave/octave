@@ -1,3 +1,20 @@
+2004-02-16 David Bateman <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/fft.cc: Adapt for Nd arrays, combine with ifft.cc.
+	* DLD-FUNCTIONS/ifft.cc: Delete.
+	* DLD-FUNCTIONS/fft2.cc: Adapt for Nd arrays, combine with ifft.cc.
+	* DLD-FUNCTIONS/ifft2.cc: Delete.
+	* DLD-FUNCTIONS/fftn.cc: New function for Nd FFT and inverse FFT.
+	* DLD-FUNCTIONS/fft_wisdom.cc: New function to manipulate FFTW 
+	wisdom.
+
+	* Makefile.in: Remove ifft.cc and ifft2.cc.  Add fftn.cc and 
+	ifftn.cc.  Make building of fft-wisdom.cc conditional on the 
+	value of FFTW_LIBS.
+	* defaults.cc (Vwisdom_prog): New variable
+	(set_default_wisdom_prog, wisdom_prog): New functions.
+	(symbols_of_defaults): Add DEFVAR for wisdom_prog.
+	
 2004-02-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* ov-list.cc (octave_list::subsasgn): Call assign for Cell objects

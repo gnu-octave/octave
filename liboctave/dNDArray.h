@@ -90,6 +90,15 @@ public:
      
   NDArray abs (void) const;
 
+  ComplexNDArray fourier (int dim = 1) const;
+  ComplexNDArray ifourier (int dim = 1) const;
+
+  ComplexNDArray fourier2d (void) const;
+  ComplexNDArray ifourier2d (void) const;
+
+  ComplexNDArray fourierNd (void) const;
+  ComplexNDArray ifourierNd (void) const;
+
   friend NDArray real (const ComplexNDArray& a);
   friend NDArray imag (const ComplexNDArray& a);
 

@@ -1,3 +1,8 @@
+2004-02-16  David Bateman  <dbateman@free.fr>
+
+	* configure.in: Test for the presence of FFTW 3.x and use it in
+	preference to FFTW 2.x.  Define HAVE_FFTW3
+
 2004-02-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* mkoctfile.in (LINK_DEPS): Include $LIBS and $RLD_FLAG.

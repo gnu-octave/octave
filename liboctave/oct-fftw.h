@@ -22,24 +22,27 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define octave_oct_fftw_h 1
 
 #include <cstddef>
-
-#if defined (HAVE_DFFTW_H)
-#include <dfftw.h>
-#else
-#include <fftw.h>
-#endif
+#include <fftw3.h>
 
 #include "oct-cmplx.h"
+#include "dim-vector.h"
 
 class
 octave_fftw
 {
 public:
-  static int fft (const Complex*, Complex *, size_t);
-  static int ifft (const Complex*, Complex *, size_t);
+  static int fft (const double *in, Complex *out, size_t npts, 
+		  size_t nsamples = 1, int stride = 1, int dist = -1);
+  static int fft (const Complex *in, Complex *out, size_t npts, 
+		  size_t nsamples = 1, int stride = 1, int dist = -1);
+  static int ifft (const Complex *in, Complex *out, size_t npts,
+		   size_t nsamples = 1, int stride = 1, int dist = -1);
 
-  static int fft2d (Complex*, size_t, size_t);
-  static int ifft2d (Complex*, size_t, size_t);
+  static int fftNd (const double*, Complex*, const int, const dim_vector &);
+  static int fftNd (const Complex*, Complex*, const int, 
+		    const dim_vector &);
+  static int ifftNd (const Complex*, Complex*, const int, 
+		     const dim_vector &);
 
 private:
   octave_fftw ();

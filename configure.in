@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.445 $)
+AC_REVISION($Revision: 1.446 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -407,19 +407,17 @@ AC_ARG_WITH(fftw,
   with_fftw=$withval, with_fftw=yes)
 
 if test "$with_fftw" = "yes"; then
-  have_fftw_header=no
-  AC_CHECK_HEADERS(dfftw.h fftw.h, [have_fftw_header=yes; break])
-  if test "$have_fftw_header" = yes; then
-    AC_CHECK_LIB(dfftw, fftw_create_plan, FFTW_LIBS="-ldfftw",
-      [AC_CHECK_LIB(fftw, fftw_create_plan, FFTW_LIBS="-lfftw", with_fftw=no)])
-  else
-    with_fftw=no
+  have_fftw3_header=no
+  with_fftw3=no
+  AC_CHECK_HEADER(fftw3.h, [have_fftw3_header=yes; break])
+  if test "$have_fftw3_header" = yes; then
+      AC_CHECK_LIB(fftw3, fftw_plan_dft_1d, [FFTW_LIBS="-lfftw3"; with_fftw3=yes])
   fi
 fi
 
-if test "$with_fftw" = yes; then
+if test "$with_fftw" = yes && test "$with_fftw3" = yes; then
   FFT_DIR=''
-  AC_DEFINE(HAVE_FFTW, 1, [Define if the FFTW library is available.])
+  AC_DEFINE(HAVE_FFTW3, 1, [Define if the FFTW3 library is used.])
 fi
 
 WITH_MPI=true

@@ -1,5 +1,6 @@
 /*
 
+Copyright (C) 2004 David Bateman
 Copyright (C) 1996, 1997 John W. Eaton
 
 This file is part of Octave.
@@ -32,94 +33,167 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-obj.h"
 #include "utils.h"
 
-// This function should be merged with Fifft.
+#if defined (HAVE_FFTW3)
+#define FFTSRC "@sc{Fftw}"
+#define WISDOM ", fft_wisdom"
+#else
+#define FFTSRC "@sc{Fftpack}"
+#define WISDOM 
+#endif
 
-DEFUN_DLD (fft, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} fft (@var{a}, @var{n})\n\
-Compute the FFT of @var{a} using subroutines from @sc{Fftpack}.  If @var{a}\n\
-is a matrix, @code{fft} computes the FFT for each column of @var{a}.\n\
-\n\
-If called with two arguments, @var{n} is expected to be an integer\n\
-specifying the number of elements of @var{a} to use.  If @var{a} is a\n\
-matrix, @var{n} specifies the number of rows of @var{a} to use.  If\n\
-@var{n} is larger than the size of @var{a}, @var{a} is resized and\n\
-padded with zeros.\n\
-@end deftypefn")
+static octave_value
+do_fft (const octave_value_list &args, const char *fcn, int type)
 {
   octave_value retval;
 
   int nargin = args.length ();
 
-  if (nargin < 1 || nargin > 2)
+  if (nargin < 1 || nargin > 3)
     {
-      print_usage ("fft");
+      print_usage (fcn);
       return retval;
     }
 
   octave_value arg = args(0);
-
-  int n_points = arg.rows ();
-  if (n_points == 1)
-    n_points = arg.columns ();
-
-  if (nargin == 2)
+  dim_vector dims = arg.dims ();
+  int n_points = -1;
+  int dim = -1;
+  
+  if (nargin > 1)
     {
-      double dval = args(1).double_value ();
-      if (xisnan (dval))
-	error ("fft: NaN is invalid as the N_POINTS");
-      else
-	n_points = NINT (dval);
+      if (! args(1).is_empty ())
+	{
+	  double dval = args(1).double_value ();
+	  if (xisnan (dval))
+	    error ("%s: NaN is invalid as the N_POINTS", fcn);
+	  else
+	    {
+	      n_points = NINT (dval);
+	      if (n_points < 0)
+		error ("%s: number of points must be greater than zero", fcn);
+	    }
+	}
     }
 
   if (error_state)
     return retval;
 
-  if (n_points < 0)
+  if (nargin > 2)
     {
-      error ("fft: number of points must be greater than zero");
-      return retval;
+      double dval = args(2).double_value ();
+      if (xisnan (dval))
+	error ("%s: NaN is invalid as the N_POINTS", fcn);
+      else if (dval < 1 || dval > dims.length ())
+	error ("%s: invalid dimension along which to perform fft", fcn);
+      else
+	dim = NINT (dval) - 1;
     }
 
-  int arg_is_empty = empty_arg ("fft", arg.rows (), arg.columns ());
-
-  if (arg_is_empty < 0)
+  if (error_state)
     return retval;
-  else if (arg_is_empty || n_points == 0)
+
+  for (int i = 0; i < dims.length (); i++)
+    if (dims(i) < 0)
+      return retval;
+
+  if (dim < 0)
+    for (int i = 0; i < dims.length (); i++)
+      if ( dims(i) > 1)
+	{
+	  dim = i;
+	  break;
+	}
+
+  if (n_points < 0)
+    n_points = dims (dim);
+  else
+    dims (dim) = n_points;
+
+  if (dims.all_zero () || n_points == 0)
     return octave_value (Matrix ());
 
   if (arg.is_real_type ())
     {
-      Matrix m = arg.matrix_value ();
+      NDArray nda = arg.array_value ();
 
       if (! error_state)
 	{
-	  if (m.rows () == 1)
-	    m.resize (1, n_points, 0.0);
-	  else
-	    m.resize (n_points, m.columns (), 0.0);
-	  retval = m.fourier ();
+	  nda.resize (dims, 0.0);
+	  retval = (type != 0 ? nda.ifourier (dim) : nda.fourier (dim));
 	}
     }
   else if (arg.is_complex_type ())
     {
-      ComplexMatrix m = arg.complex_matrix_value ();
+      ComplexNDArray cnda = arg.complex_array_value ();
 
       if (! error_state)
 	{
-	  if (m.rows () == 1)
-	    m.resize (1, n_points, 0.0);
-	  else
-	    m.resize (n_points, m.columns (), 0.0);
-	  retval = m.fourier ();
+	  cnda.resize (dims, 0.0);
+	  retval = (type != 0 ? cnda.ifourier (dim) : cnda.fourier (dim));
 	}
     }
   else
     {
-      gripe_wrong_type_arg ("fft", arg);
+      gripe_wrong_type_arg (fcn, arg);
     }
 
   return retval;
+}
+
+
+DEFUN_DLD (fft, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} fft (@var{a}, @var{n}, @var{dim})\n\
+Compute the FFT of @var{a} using subroutines from\n"
+FFTSRC
+". The FFT is calculated along the first non-singleton dimension of the\n\
+array. Thus if @var{a} is a matrix, @code{fft (@var{a})} computes the\n\
+FFT for each column of @var{a}.\n\
+\n\
+If called with two arguments, @var{n} is expected to be an integer\n\
+specifying the number of elements of @var{a} to use, or an empty\n\
+matrix to specify that its value should be ignored. If @var{n} is\n\
+larger than the dimension along which the FFT is calculated, then\n\
+@var{a} is resized and padded with zeros. Otherwise, if@var{n} is\n\
+smaller than the dimension along which the FFT is calculated, then\n\
+@var{a} is truncated.\n\
+\n\
+If called with three agruments, @var{dim} is an integer specifying the\n\
+dimension of the matrix along which the FFT is performed\n\
+@end deftypefn\n\
+@seealso {ifft, fft2, fftn"
+WISDOM
+"}")
+{
+  return do_fft(args, "fft", 0);
+}
+
+
+DEFUN_DLD (ifft, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} ifft (@var{a}, @var{n}, @var{dim})\n\
+Compute the inverse FFT of @var{a} using subroutines from\n"
+FFTSRC
+". The inverse FFT is calculated along the first non-singleton dimension\n\
+of the array. Thus if @var{a} is a matrix, @code{fft (@var{a})} computes\n\
+the inverse FFT for each column of @var{a}.\n\
+\n\
+If called with two arguments, @var{n} is expected to be an integer\n\
+specifying the number of elements of @var{a} to use, or an empty\n\
+matrix to specify that its value should be ignored. If @var{n} is\n\
+larger than the dimension along which the inverse FFT is calculated, then\n\
+@var{a} is resized and padded with zeros. Otherwise, if@var{n} is\n\
+smaller than the dimension along which the inverse FFT is calculated,\n\
+then @var{a} is truncated.\n\
+\n\
+If called with three agruments, @var{dim} is an integer specifying the\n\
+dimension of the matrix along which the inverse FFT is performed\n\
+@end deftypefn\n\
+@seealso {fft, ifft2, ifftn"
+WISDOM
+"}")
+{
+  return do_fft(args, "ifft", 1);
 }
 
 /*

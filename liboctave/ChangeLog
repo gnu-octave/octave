@@ -1,3 +1,31 @@
+2004-02-16  David Bateman <dbateman@free.fr>
+
+	* oct-fftw.cc (octave_fftw_planner::create_plan, octave_fftw::fftNd):
+	Add support for FFTW 3.x. Include the ability to
+	use the real to complex transform for fft's of real matrices
+	(octave_fftw_planner::create_plan2d): Delete.
+	(octave_fftw::fft2d): Delete.
+	(convert_packcomplex_1d, convert_packcomplex_Nd):
+	New static functions.
+	* oct-fftw.h: Update decls.
+
+	* dMatrix.cc (Matrix::fourier, Matrix::ifourier,
+	Matrix::fourier2d, Matrix::ifourier2d): FFT's use real to complex
+	transforms.  1D FFT of a matrix done as single call rather than
+	loop.  Update for FFTW 3.x
+	* CMatrix.cc (ComplexMatrix::fourier, ComplexMatrix::ifourier,
+	ComplexMatrix::fourier2d, ComplexMatrix::ifourier2d): 1D fft of a
+	matrix done as single call rather than loop.  Update for FFTW 3.x.
+
+	* dNDArray.cc (NDArray::fourier, NDArray::ifourier,
+	NDArray::fourierNd, NDArray::ifouriourNd): New fourier transform
+	functions for Nd arrays.
+	* dNArray.h Provide decls.
+	* CNDArray.cc (ComplexNDArray::fourier, ComplexNDArray::ifourier,
+	ComplexNDArray::fourierNd, ComplexNDArray::ifouriourNd): New
+	fourier transform functions for complex Nd arrays.
+	* CNArray.h: Provide decls.
+	
 2004-02-15  Petter Risholm  <risholm@stud.ntnu.no>
 
 	* Array.cc (Array<T>::insert (const Array<T>&, int, int)):

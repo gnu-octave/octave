@@ -19,6 +19,10 @@ please contact @email{bug-octave@@bevo.che.wisc.edu}.
 
 @DOCSTRING(ifft2)
 
+@DOCSTRING(fftn)
+
+@DOCSTRING(ifftn)
+
 @DOCSTRING(fftconv)
 
 @DOCSTRING(fftfilt)

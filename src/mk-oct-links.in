@@ -23,7 +23,7 @@ for f in "$@"; do
         true
       else
 	echo "creating link $n.oct -> $base.oct"
-        ( cd $links_dir; $LN_S $base.oct $n.oct )
+        ( cd $links_dir; rm -f $n.oct; $LN_S $base.oct $n.oct )
       fi
     done
   fi

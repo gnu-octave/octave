@@ -76,17 +76,26 @@ static string Vps2;
 // String printed before echoed input (enabled by --echo-input).
 string Vps4;
 
+// Echo commands as they are executed?
+//
+//   1  ==>  echo commands read from script files
+//   2  ==>  echo commands from functions
+//   4  ==>  echo commands read from command line
+//
+// more than one state can be active at once.
+int Vecho_executing_commands;
+
 // Character to append after successful command-line completion attempts.
 static char Vcompletion_append_char;
 
 // Global pointer for eval().
 string current_eval_string;
 
-// Nonzero means get input from current_eval_string.
-int get_input_from_eval_string = 0;
+// TRUE means get input from current_eval_string.
+bool get_input_from_eval_string = false;
 
-// Nonzero means we're parsing a function file.
-int reading_fcn_file = 0;
+// TRUE means we're parsing a function file.
+bool reading_fcn_file = false;
 
 // Simple name of function file we are reading.
 string curr_fcn_file_name;
@@ -94,17 +103,17 @@ string curr_fcn_file_name;
 // Full name of file we are reading.
 string curr_fcn_file_full_name;
 
-// Nonzero means we're parsing a script file.
-int reading_script_file = 0;
+// TRUE means we're parsing a script file.
+bool reading_script_file = false;
 
 // If we are reading from an M-file, this is it.
 FILE *ff_instream = 0;
 
-// Nonzero means this is an interactive shell.
-int interactive = 0;
+// TRUE means this is an interactive shell.
+bool interactive = false;
 
-// Nonzero means the user forced this shell to be interactive (-i).
-int forced_interactive = 0;
+// TRUE means the user forced this shell to be interactive (-i).
+bool forced_interactive = false;
 
 // Should we issue a prompt?
 int promptflag = 1;
@@ -787,6 +796,14 @@ completion_append_char (void)
   return status;
 }
 
+static int
+echo_executing_commands (void)
+{
+  Vecho_executing_commands = check_preference ("echo_executing_commands"); 
+
+  return 0;
+}
+
 void
 symbols_of_input (void)
 {
@@ -801,6 +818,10 @@ symbols_of_input (void)
 
   DEFVAR (completion_append_char, " ", 0, completion_append_char,
     "the string to append after successful command-line completion attempts");
+
+  DEFVAR (echo_executing_commands, static_cast<double> (ECHO_OFF), 0,
+	  echo_executing_commands,
+    "echo commands as they are executed");
 }
 
 /*

@@ -78,7 +78,7 @@ enum load_save_format
     LS_UNKNOWN,
   };
 
-// Return nonzero if S is a valid identifier.
+// Return TRUE if S is a valid identifier.
 
 static bool
 valid_identifier (const char *s)
@@ -103,8 +103,8 @@ valid_identifier (const string& s)
 // functions that are already available?
 
 // Install a variable with name NAME and the value specified TC in the
-// symbol table.  If FORCE is nonzero, replace any existing definition
-// for NAME.  If GLOBAL is nonzero, make the variable global.
+// symbol table.  If FORCE is TRUE, replace any existing definition
+// for NAME.  If GLOBAL is TRUE, make the variable global.
 //
 // Assumes TC is defined.
 
@@ -116,10 +116,10 @@ install_loaded_variable (int force, char *name, const octave_value& val,
 
   symbol_record *lsr = curr_sym_tab->lookup (name);
 
-  int is_undefined = 1;
-  int is_variable = 0;
-  int is_function = 0;
-  int is_global = 0;
+  bool is_undefined = true;
+  bool is_variable = false;
+  bool is_function = false;
+  bool is_global = false;
 
   if (lsr)
     {
@@ -332,16 +332,16 @@ extract_keyword (istream& is, const char *keyword)
 }
 
 // Match KEYWORD on stream IS, placing the associated value in VALUE,
-// returning 1 if successful and 0 otherwise.
+// returning TRUE if successful and FALSE otherwise.
 //
 // Input should look something like:
 //
 //  [ \t]*keyword[ \t]*int-value.*\n
 
-static int
+static bool
 extract_keyword (istream& is, const char *keyword, int& value)
 {
-  int status = 0;
+  bool status = false;
   value = 0;
 
   char c;
@@ -374,7 +374,7 @@ extract_keyword (istream& is, const char *keyword, int& value)
 	      if (c != '\n')
 		is >> value;
 	      if (is)
-		status = 1;
+		status = true;
 	      while (is.get (c) && c != '\n')
 		; // Skip to beginning of next line;
 	      break;
@@ -386,7 +386,7 @@ extract_keyword (istream& is, const char *keyword, int& value)
 
 // Extract one value (scalar, matrix, string, etc.) from stream IS and
 // place it in TC, returning the name of the variable.  If the value
-// is tagged as global in the file, return nonzero in GLOBAL.
+// is tagged as global in the file, return TRUE in GLOBAL.
 //
 // FILENAME is used for error messages.
 //
@@ -463,7 +463,7 @@ extract_keyword (istream& is, const char *keyword, int& value)
 // arbitrary comments, etc.  Someone should fix that.
 
 static char *
-read_ascii_data (istream& is, const string& filename, int& global,
+read_ascii_data (istream& is, const string& filename, bool& global,
 		 octave_value& tc)
 {
   // Read name for this entry or break on EOF.
@@ -521,7 +521,8 @@ read_ascii_data (istream& is, const string& filename, int& global,
 	}
       else if (strncmp (ptr, "matrix", 6) == 0)
 	{
-	  int nr = 0, nc = 0;
+	  int nr = 0;
+	  int nc = 0;
 
 	  if (extract_keyword (is, "rows", nr) && nr >= 0
 	      && extract_keyword (is, "columns", nc) && nc >= 0)
@@ -554,7 +555,8 @@ read_ascii_data (istream& is, const string& filename, int& global,
 	}
       else if (strncmp (ptr, "complex matrix", 14) == 0)
 	{
-	  int nr = 0, nc = 0;
+	  int nr = 0;
+	  int nc = 0;
 
 	  if (extract_keyword (is, "rows", nr) && nr > 0
 	      && extract_keyword (is, "columns", nc) && nc > 0)
@@ -658,8 +660,8 @@ read_ascii_data (istream& is, const string& filename, int& global,
 
 // Extract one value (scalar, matrix, string, etc.) from stream IS and
 // place it in TC, returning the name of the variable.  If the value
-// is tagged as global in the file, return nonzero in GLOBAL.  If SWAP
-// is nonzero, swap bytes after reading.
+// is tagged as global in the file, return TRUE in GLOBAL.  If SWAP
+// is TRUE, swap bytes after reading.
 //
 // The data is expected to be in the following format:
 //
@@ -727,14 +729,15 @@ read_ascii_data (istream& is, const string& filename, int& global,
 // FILENAME is used for error messages.
 
 static char *
-read_binary_data (istream& is, int swap,
+read_binary_data (istream& is, bool swap,
 		  oct_mach_info::float_format fmt,
-		  const string& filename, int& global,
+		  const string& filename, bool& global,
 		  octave_value& tc, char *&doc)
 {
   char tmp = 0;
 
-  FOUR_BYTE_INT name_len = 0, doc_len = 0;
+  FOUR_BYTE_INT name_len = 0;
+  FOUR_BYTE_INT doc_len = 0;
   char *name = 0;
 
   doc = 0;
@@ -1056,14 +1059,14 @@ read_mat_ascii_data (istream& is, const string& filename,
 }
 
 // Read LEN elements of data from IS in the format specified by
-// PRECISION, placing the result in DATA.  If SWAP is nonzero, swap
+// PRECISION, placing the result in DATA.  If SWAP is TRUE, swap
 // the bytes of each element before copying to DATA.  FLT_FMT
 // specifies the format of the data if we are reading floating point
 // numbers.
 
 static void
 read_mat_binary_data (istream& is, double *data, int precision,
-		      int len, int swap,
+		      int len, bool swap,
 		      oct_mach_info::float_format flt_fmt)
 {
   switch (precision)
@@ -1098,12 +1101,12 @@ read_mat_binary_data (istream& is, double *data, int precision,
 }
 
 static int
-read_mat_file_header (istream& is, int& swap, FOUR_BYTE_INT& mopt, 
+read_mat_file_header (istream& is, bool& swap, FOUR_BYTE_INT& mopt, 
 		      FOUR_BYTE_INT& nr, FOUR_BYTE_INT& nc,
 		      FOUR_BYTE_INT& imag, FOUR_BYTE_INT& len,
 		      int quiet = 0)
 {
-  swap = 0;
+  swap = false;
 
   // We expect to fail here, at the beginning of a record, so not
   // being able to read another mopt value should not result in an
@@ -1135,12 +1138,12 @@ read_mat_file_header (istream& is, int& swap, FOUR_BYTE_INT& mopt,
 // Gag me.
 
   if (oct_mach_info::words_big_endian () && mopt == 0)
-    swap = 1;
+    swap = true;
 
   // mopt is signed, therefore byte swap may result in negative value.
 
   if (mopt > 9999 || mopt < 0)
-    swap = 1;
+    swap = true;
 
   if (swap)
     {
@@ -1257,7 +1260,11 @@ read_mat_binary_data (istream& is, const string& filename,
   Matrix re;
   oct_mach_info::float_format flt_fmt = oct_mach_info::unknown;
   char *name = 0;
-  int swap = 0, type = 0, prec = 0, mach = 0, dlen = 0;
+  bool swap = false;
+  int type = 0;
+  int prec = 0;
+  int mach = 0;
+  int dlen = 0;
 
   FOUR_BYTE_INT mopt, nr, nc, imag, len;
 
@@ -1353,7 +1360,7 @@ read_mat_binary_data (istream& is, const string& filename,
   return 0;
 }
 
-// Return nonzero if NAME matches one of the given globbing PATTERNS.
+// Return TRUE if NAME matches one of the given globbing PATTERNS.
 
 static bool
 matches_patterns (const string_vector& patterns, int pat_idx,
@@ -1370,9 +1377,9 @@ matches_patterns (const string_vector& patterns, int pat_idx,
 }
 
 static int
-read_binary_file_header (istream& is, int& swap,
+read_binary_file_header (istream& is, bool& swap,
 			 oct_mach_info::float_format& flt_fmt,
-			 int quiet = 0) 
+			 bool quiet = false)
 {
   int magic_len = 10;
   char magic [magic_len+1];
@@ -1417,10 +1424,11 @@ get_file_format (const string& fname, const string& orig_fname)
       return retval;
     }
 
-  int swap;
   oct_mach_info::float_format flt_fmt = oct_mach_info::unknown;
 
-  if (read_binary_file_header (file, swap, flt_fmt, 1) == 0)
+  bool swap = false;
+
+  if (read_binary_file_header (file, swap, flt_fmt, true) == 0)
     retval = LS_BINARY;
   else
     {
@@ -1469,9 +1477,9 @@ get_file_format (const string& fname, const string& orig_fname)
 }
 
 static octave_value_list
-do_load (istream& stream, const string& orig_fname, int force,
+do_load (istream& stream, const string& orig_fname, bool force,
 	 load_save_format format, oct_mach_info::float_format flt_fmt,
-	 int list_only, int swap, int verbose, const string_vector& argv,
+	 bool list_only, bool swap, bool verbose, const string_vector& argv,
 	 int argv_idx, int argc, int nargout)
 {
   octave_value_list retval;
@@ -1480,7 +1488,7 @@ do_load (istream& stream, const string& orig_fname, int force,
   int count = 0;
   for (;;)
     {
-      int global = 0;
+      bool global = false;
       octave_value tc;
 
       char *name = 0;
@@ -1612,31 +1620,30 @@ found in the file will be replaced with the values read from the file.")
   if (error_state)
     return retval;
 
-  int force = 0;
-
   // It isn't necessary to have the default load format stored in a
   // user preference variable since we can determine the type of file
   // as we are reading.
 
   load_save_format format = LS_UNKNOWN;
 
-  int list_only = 0;
-  int verbose = 0;
+  bool force = false;
+  bool list_only = false;
+  bool verbose = false;
 
   int i;
   for (i = 1; i < argc; i++)
     {
       if (argv[i] == "-force" || argv[i] == "-f")
 	{
-	  force++;
+	  force = true;
 	}
       else if (argv[i] == "-list" || argv[i] == "-l")
 	{
-	  list_only = 1;
+	  list_only = true;
 	}
       else if (argv[i] == "-verbose" || argv[i] == "-v")
 	{
-	  verbose = 1;
+	  verbose = true;
 	}
       else if (argv[i] == "-ascii" || argv[i] == "-a")
 	{
@@ -1664,7 +1671,7 @@ found in the file will be replaced with the values read from the file.")
 
   oct_mach_info::float_format flt_fmt = oct_mach_info::unknown;
 
-  int swap = 0;
+  bool swap = false;
 
   if (argv[i] == "-")
     {
@@ -1727,9 +1734,9 @@ found in the file will be replaced with the values read from the file.")
   return retval;
 }
 
-// Return nonzero if PATTERN has any special globbing chars in it.
+// Return TRUE if PATTERN has any special globbing chars in it.
 
-static int
+static bool
 glob_pattern_p (const string& pattern)
 {
   int open = 0;
@@ -1744,7 +1751,7 @@ glob_pattern_p (const string& pattern)
 	{
 	case '?':
 	case '*':
-	  return 1;
+	  return true;
 
 	case '[':	// Only accept an open brace if there is a close
 	  open++;	// brace to match it.  Bracket expressions must be
@@ -1752,19 +1759,19 @@ glob_pattern_p (const string& pattern)
 
 	case ']':
 	  if (open)
-	    return 1;
+	    return true;
 	  continue;
 	  
 	case '\\':
 	  if (i == len - 1)
-	    return 0;
+	    return false;
 
 	default:
 	  continue;
 	}
     }
 
-  return 0;
+  return false;
 }
 
 // MAX_VAL and MIN_VAL are assumed to have integral values even though
@@ -1798,7 +1805,7 @@ get_save_type (double max_val, double min_val)
 static bool
 save_binary_data (ostream& os, const octave_value& tc,
 		  const string& name, const string& doc,
-		  int mark_as_global, int save_as_floats) 
+		  bool mark_as_global, bool save_as_floats) 
 {
   FOUR_BYTE_INT name_len = name.length ();
 
@@ -1993,7 +2000,7 @@ save_mat_binary_data (ostream& os, const octave_value& tc,
     {
       unwind_protect::begin_frame ("save_mat_binary_data");
       unwind_protect_int (Vimplicit_str_to_num_ok);
-      Vimplicit_str_to_num_ok = 1;
+      Vimplicit_str_to_num_ok = true;
       Matrix m = tc.matrix_value ();
       os.write (m.data (), 8 * len);
       unwind_protect::run_frame ("save_mat_binary_data");
@@ -2101,7 +2108,7 @@ strip_infnan (const ComplexMatrix& m)
 // flag MARK_AS_GLOBAL on stream OS in the plain text format described
 // above for load_ascii_data.  If NAME is empty, the name: line is not
 // generated.  PRECISION specifies the number of decimal digits to print. 
-// If STRIP_NAN_AND_INF is nonzero, rows containing NaNs are deleted,
+// If STRIP_NAN_AND_INF is TRUE, rows containing NaNs are deleted,
 // and Infinite values are converted to +/-OCT_RBV (A Real Big Value,
 // but not so big that gnuplot can't handle it when trying to compute
 // axis ranges, etc.).
@@ -2276,11 +2283,11 @@ do_save (ostream& os, symbol_record *sr, load_save_format fmt,
 }
 
 // Save variables with names matching PATTERN on stream OS in the
-// format specified by FMT.  If SAVE_BUILTINS is nonzero, also save
+// format specified by FMT.  If SAVE_BUILTINS is TRUE, also save
 // builtin variables with names that match PATTERN.
 
 static int
-save_vars (ostream& os, const string& pattern, int save_builtins,
+save_vars (ostream& os, const string& pattern, bool save_builtins,
 	   load_save_format fmt, int save_as_floats)
 {
   int count;
@@ -2357,8 +2364,8 @@ write_binary_header (ostream& os, load_save_format format)
 
 static void
 save_vars (const string_vector& argv, int argv_idx, int argc,
-	   ostream& os, int save_builtins, load_save_format fmt,
-	   int save_as_floats) 
+	   ostream& os, bool save_builtins, load_save_format fmt,
+	   bool save_as_floats) 
 {
   write_binary_header (os, fmt);
 
@@ -2397,7 +2404,7 @@ save_user_variables (void)
 
   if (file)
     {
-      save_vars (string_vector (), 0, 0, file, 0, format, 0);
+      save_vars (string_vector (), 0, 0, file, false, format, false);
       message (0, "save to `%s' complete", fname);
     }
   else
@@ -2422,9 +2429,9 @@ save variables in a file")
   // Here is where we would get the default save format if it were
   // stored in a user preference variable.
 
-  int save_builtins = 0;
+  bool save_builtins = false;
 
-  int save_as_floats = 0;
+  bool save_as_floats = false;
 
   load_save_format format = get_default_save_format ();
 
@@ -2446,11 +2453,11 @@ save variables in a file")
       else if (argv[i] == "-float-binary" || argv[i] == "-f")
 	{
 	  format = LS_BINARY;
-	  save_as_floats = 1;
+	  save_as_floats = true;
 	}
       else if (argv[i] == "-save-builtins")
 	{
-	  save_builtins = 1;
+	  save_builtins = true;
 	}
       else
 	break;
@@ -2517,12 +2524,12 @@ save variables in a file")
 
 // If TC is matrix, save it on stream OS in a format useful for
 // making a 3-dimensional plot with gnuplot.  If PARAMETRIC is
-// nonzero, assume a parametric 3-dimensional plot will be generated.
+// TRUE, assume a parametric 3-dimensional plot will be generated.
 
 bool
 save_three_d (ostream& os, const octave_value& tc, bool parametric)
 {
-  int fail = 0;
+  bool fail = false;
 
   int nr = tc.rows ();
   int nc = tc.columns ();
@@ -2568,7 +2575,7 @@ save_three_d (ostream& os, const octave_value& tc, bool parametric)
   else
     {
       ::error ("for now, I can only save real matrices in 3D format");
-      fail = 1;
+      fail = true;
     }
 
   return (os && ! fail);

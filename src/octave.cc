@@ -47,6 +47,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "file-stat.h"
 #include "lo-error.h"
 #include "oct-env.h"
+#include "pathsearch.h"
 #include "str-vec.h"
 
 #include <defaults.h>
@@ -60,7 +61,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ops.h"
 #include "toplev.h"
 #include "parse.h"
-#include "pathsearch.h"
 #include "pt-plot.h"
 #include "procstream.h"
 #include "prog-args.h"
@@ -79,15 +79,6 @@ extern "C" int on_exit ();
 #define atexit on_exit
 #endif
 
-// Don't redefine the variables if glibc already has.
-#if defined (HAVE_PROGRAM_INVOCATION_NAME) || defined (WITH_KPATHSEARCH)
-extern char *program_invocation_name;
-extern char *program_invocation_short_name;
-#else
-char *program_invocation_name;
-char *program_invocation_short_name;
-#endif
-
 // The command-line options.
 static string_vector octave_argv;
 
@@ -99,15 +90,15 @@ static bool read_init_files = true;
 // (--norc; --no-site-file; -f)
 static bool read_site_files = true;
 
-// Nonzero means we don't print the usual startup message.
+// TRUE means we don't print the usual startup message.
 // (--quiet; --silent; -q)
 static bool inhibit_startup_message = false;
 
-// Nonzero means we turn on compatibility options.
+// TRUE means we turn on compatibility options.
 // (--traditional)
 static bool traditional = false;
 
-// If nonzero, print verbose info in some cases.
+// If TRUE, print verbose info in some cases.
 // (--verbose; -V)
 static bool verbose_flag = false;
 
@@ -152,7 +143,7 @@ long_options long_opts[] =
     { "traditional",      prog_args::no_arg,       0, TRADITIONAL_OPTION },
     { "verbose",          prog_args::no_arg,       0, 'V' },
     { "version",          prog_args::no_arg,       0, 'v' },
-    { 0,                  0,                 0, 0 }
+    { 0,                  0,                       0, 0 }
   };
 
 // Store the command-line options for later use.
@@ -160,18 +151,6 @@ long_options long_opts[] =
 static void
 intern_argv (int argc, char **argv)
 {
-  octave_env::set_program_name (argv[0]);
-
-  // XXX FIXME XXX -- Kpathsea needs this.
-
-#if ! defined (HAVE_PROGRAM_INVOCATION_NAME)
-  program_invocation_name
-    = strsave (octave_env::get_program_invocation_name () . c_str ());
-
-  program_invocation_short_name
-    = strsave (octave_env::get_program_name () . c_str ());
-#endif
-
   if (argc > 1)
     {
       // Skip program name in argv.
@@ -219,9 +198,9 @@ execute_startup_files (void)
   // XXX FIXME XXX -- need to make it possible to set this in startup
   // files.
 
-  unwind_protect_int (input_from_startup_file);
+  unwind_protect_bool (input_from_startup_file);
 
-  input_from_startup_file = 1;
+  input_from_startup_file = true;
 
   int verbose = (verbose_flag && ! inhibit_startup_message);
 
@@ -367,9 +346,11 @@ maximum_braindamage (void)
 int
 main (int argc, char **argv)
 {
+  octave_env::set_program_name (argv[0]);
+
   // The order of these calls is important.  The call to
   // install_defaults must come before install_builtins because
-  // default variable values must be available for the varaibles to be
+  // default variable values must be available for the variables to be
   // installed, and the call to install_builtins must come before the
   // options are processed because some command line options override
   // defaults by calling bind_builtin_variable.
@@ -420,7 +401,7 @@ main (int argc, char **argv)
 	  break;
 
 	case 'i':
-	  forced_interactive = 1;
+	  forced_interactive = true;
 	  break;
 
 	case 'p':
@@ -463,7 +444,7 @@ main (int argc, char **argv)
 	  break;
 
 	case NO_LINE_EDITING_OPTION:
-	  line_editing = 0;
+	  line_editing = false;
 	  break;
 
 	case NO_SITE_FILE_OPTION:
@@ -517,10 +498,13 @@ main (int argc, char **argv)
   // script.
 
   int last_arg_idx = args.optind ();
+
   int remaining_args = argc - last_arg_idx;
+
   if (remaining_args > 0)
     {
-      reading_script_file = 1;
+      reading_script_file = true;
+
       curr_fcn_file_name = argv[last_arg_idx];
       curr_fcn_file_full_name = curr_fcn_file_name;
 
@@ -528,7 +512,7 @@ main (int argc, char **argv)
 
       if (infile)
 	{
-	  input_from_command_line_file = 1;
+	  input_from_command_line_file = true;
 
 	  bind_builtin_variable ("program_invocation_name",
 				 curr_fcn_file_name);
@@ -575,7 +559,7 @@ main (int argc, char **argv)
     }
 
   if (! interactive)
-    line_editing = 0;
+    line_editing = false;
 
   int retval = main_loop ();
 

@@ -36,11 +36,11 @@ extern FILE *get_input_from_stdin (void);
 // Global pointer for eval().
 extern string current_eval_string;
 
-// Nonzero means get input from current_eval_string.
-extern int get_input_from_eval_string;
+// TRUE means get input from current_eval_string.
+extern bool get_input_from_eval_string;
 
-// Nonzero means we're parsing a function file.
-extern int reading_fcn_file;
+// TRUE means we're parsing a function file.
+extern bool reading_fcn_file;
 
 // Simple name of function file we are reading.
 extern string curr_fcn_file_name;
@@ -48,17 +48,17 @@ extern string curr_fcn_file_name;
 // Full name of file we are reading.
 extern string curr_fcn_file_full_name;
 
-// Nonzero means we're parsing a script file.
-extern int reading_script_file;
+// TRUE means we're parsing a script file.
+extern bool reading_script_file;
 
 // If we are reading from an M-file, this is it.
 extern FILE *ff_instream;
 
-// Nonzero means this is an interactive shell.
-extern int interactive;
+// TRUE means this is an interactive shell.
+extern bool interactive;
 
-// Nonzero means the user forced this shell to be interactive (-i).
-extern int forced_interactive;
+// TRUE means the user forced this shell to be interactive (-i).
+extern bool forced_interactive;
 
 // Should we issue a prompt?
 extern int promptflag;
@@ -74,6 +74,16 @@ extern string gnu_readline (const string& s, bool force_readline = false);
 extern void initialize_command_input (void);
 
 extern string Vps4;
+
+enum echo_state
+{
+  ECHO_OFF = 0,
+  ECHO_SCRIPTS = 1,
+  ECHO_FUNCTIONS = 2,
+  ECHO_CMD_LINE = 4
+};
+
+extern int Vecho_executing_commands;
 
 #endif
 

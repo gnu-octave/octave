@@ -36,43 +36,17 @@ class charMatrix;
 extern void
 clean_up_and_exit (int) GCC_ATTR_NORETURN;
 
-extern void
-parse_and_execute (FILE *f);
-
-extern void
-parse_and_execute (const string& s, bool verbose = false,
-		   const char *warn_for = 0);
-
-extern octave_value
-eval_string (const string&, bool silent, int& parse_status);
-
 extern int
 main_loop (void);
 
 extern void
 do_octave_atexit (void);
 
-// Nonzero means we are using readline.
-extern int line_editing;
-
-// Nonzero means we printed messages about reading startup files.
-extern int reading_startup_message_printed;
-
-// Nonzero means we are exiting via the builtin exit or quit functions.
-extern int quitting_gracefully;
-
 // Current command to execute.
 extern tree_statement_list *global_command;
 
 // Pointer to function that is currently being evaluated.
 extern octave_user_function *curr_function;
-
-// Nonzero means input is coming from startup file.
-extern int input_from_startup_file;
-
-// Nonzero means that input is coming from a file that was named on
-// the command line.
-extern int input_from_command_line_file;
 
 #endif
 

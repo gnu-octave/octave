@@ -34,7 +34,6 @@ Software Foundation, Inc.
 #endif
 
 #include <cfloat>
-#include <cmath>
 #include <cstddef>
 #include <cstdio>
 #include <cstdlib>
@@ -72,6 +71,8 @@ LOSE! LOSE!
 
 extern char *term_clrpag;
 extern "C" void _rl_output_character_function ();
+
+#include "oct-math.h"
 
 #include "defun.h"
 #include "error.h"

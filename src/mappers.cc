@@ -25,10 +25,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
-#include <cmath>
 #include <cfloat>
 
 #include "oct-cmplx.h"
+#include "oct-math.h"
 
 #include "defun.h"
 #include "error.h"

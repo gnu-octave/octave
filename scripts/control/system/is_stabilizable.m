@@ -1,5 +1,3 @@
-## Copyright (C) 1993, 1994, 1995 Auburn University.  All rights reserved.
-##
 ## This file is part of Octave.
 ##
 ## Octave is free software; you can redistribute it and/or modify it
@@ -17,25 +15,16 @@
 ## Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{retval}, @var{u}] =} is_stabilizable (@var{sys}, @var{tol})
-## @deftypefnx {Function File} {[@var{retval}, @var{u}] =} is_stabilizable (@var{a}, @var{b}, @var{tol})
-## Logical check for system stabilizability (i.e., all unstable modes are controllable).
+## @deftypefn {Function File} {@var{retval} =} is_stabilizable (@var{sys}, @var{tol})
+## @deftypefnx {Function File} {@var{retval} =} is_stabilizable (@var{a}, @var{b}, @var{tol}, @var{dflg})
+## Logical check for system stabilizability (i.e., all unstable modes are controllable). 
+## Returns 1 if the system is stabilizable, 0 if the the system is not stabilizable, -1 
+## if the system has non stabilizable modes at the imaginary axis (unit circle for discrete-time
+## systems.
 ##
-## Test for stabilizability is performed via an ordered Schur decomposition
-## that reveals the unstable subspace of the system @var{a} matrix.
+## Test for stabilizability is performed via Hautus Lemma. If @var{dflg}!=0 assume that 
+## discrete-time matrices (a,b) are supplied.
 ##
-## Returns @code{retval} = 1 if the system, @var{a}, is stabilizable,
-## if the pair  (@var{a}, @var{b}) is stabilizable, or 0 if not.
-## @var{u} = orthogonal basis of controllable subspace.
-##
-## Controllable subspace is determined by applying Arnoldi iteration with
-## complete re-orthogonalization to obtain an orthogonal basis of the
-## Krylov subspace.
-## @example
-##   span ([b,a*b,...,a^   b]).
-## @end example
-## tol is a roundoff paramter, set to 200*eps if omitted.
-## @end deftypefn
 
 ## See also: size, rows, columns, length, ismatrix, isscalar, isvector
 ##     is_observable, is_stabilizable, is_detectable
@@ -45,45 +34,81 @@
 ## Updated by A. S. Hodel (scotte@eng.auburn.edu) Aubust, 1995 to use krylovb
 ## Updated by John Ingram (ingraje@eng.auburn.edu) July, 1996 to accept systems
 
-function [retval, U] = is_stabilizable (a, b, tol)
+function retval = is_stabilizable (a, b, tol, dflg)
 
-  if(nargin < 1)        usage("[retval,U] = is_stabilizable(a {, b ,tol})");
+  if(nargin < 1)        
+    usage("[retval,U] = is_stabilizable(a {, b ,tol, dflg})");
   elseif(isstruct(a))
-    ## sustem passed.
+    ## system passed.
     if(nargin == 2)
       tol = b;          % get tolerance
     elseif(nargin > 2)
-      usage("[retval,U] = is_stabilizable(sys{,tol})");
+      usage("retval = is_stabilizable(sys{,tol})");
     endif
+    disc = is_digital(a);
     [a,b] = sys2ss(a);
   else
     ## a,b arguments sent directly.
-    if(nargin > 3)
-      usage("[retval,U] = is_stabilizable(a {, b ,tol})");
+    if ((nargin > 4)||(nargin == 1))
+      usage("retval = is_stabilizable(a {, b ,tol, dflg})");
     endif
-  endif
-
-  if(exist("tol"))
-    [retval,U] = is_controllable(a,b,tol);
-  else
-    [retval,U] = is_controllable(a,b);
-    tol = 1e2*rows(b)*eps;
-  endif
-
-  if( !retval & columns(U) > 0)
-    ## now use an ordered Schur decomposition to get an orthogonal
-    ## basis of the unstable subspace...
-    n = rows(a);
-    [ua, s] = schur (-(a+eye(n)*tol), "A");
-    k = sum( real(eig(a)) >= 0 );       # count unstable poles
-
-    if( k > 0 )
-      ua = ua(:,1:k);
-      ## now see if span(ua) is contained in span(U)
-      retval = (norm(ua - U*U'*ua) < tol);
+    if(exist("dflg"))
+      disc = dflg;
     else
-      retval = 1;                       # all poles stable
-    endif
+      disc = 0;
+    end
   endif
 
-endfunction
+  if(~exist("tol"))
+    tol = 200*eps;
+  end    
+
+
+  ## Checking dimensions
+  n = is_square(a);
+  if (n==0)
+    error("is_stabilizable: a must be square");
+  end
+  [nr,m] = size(b);
+  if (nr!=n)
+    error("is_stabilizable:  (a,b) not conformal");
+  end
+  
+  ##Computing the eigenvalue of A
+  L = eig(a);
+  retval = 1;
+  specflag = 0;
+  for i=1:n
+    if (disc==0)
+      ## Continuous time case
+      rL = real(L(i));
+      if (rL>=0)
+	H = [eye(n)*L(i)-a, b];
+	f = (rank(H,tol)==n);
+	if (f==0)
+	  retval = 0;
+	  if (rL==0)
+	    specflag = 1;
+	  end
+	end
+      end
+    else
+      ## Discrete time case
+      rL = abs(L(i));
+      if (rL>=1)
+	H = [eye(n)*L(i)-a, b];
+	f = (rank(H,tol)==n);
+	if (f==0)
+	  retval = 0;
+	  if (rL==1)
+	    specflag = 1;
+	  end
+	end
+      end
+    end
+  end
+  if (specflag==1)
+    ## This means that the system has uncontrollable modes at the imaginary axis 
+    ## (or at the unit circle for discrete time systems)
+    retval = -1;
+  end

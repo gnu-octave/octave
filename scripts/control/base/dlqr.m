@@ -101,8 +101,6 @@
 ## Created: August 1993
 ## Converted to discrete time by R. B. Tenison
 ## (btenison@eng.auburn.edu) October 1993
-## Modified by Gabriele Pannocchia <pannocchia@ing.unipi.it>
-## July 2000
 
 function [k, p, e] = dlqr (a, b, q, r, s)
 
@@ -110,28 +108,10 @@ function [k, p, e] = dlqr (a, b, q, r, s)
     error ("dlqr: invalid number of arguments");
   endif
 
-  ## Check a.
-  if ((n = issquare (a)) == 0)
-    error ("dlqr: requires 1st parameter(a) to be square");
-  endif
+  ## Dimension check is done inside dare.m
+  [n,m] = size(b);
 
-  ## Check b.
-  [n1, m] = size (b);
-  if (n1 != n)
-    error ("dlqr: a,b not conformal");
-  endif
-
-  ## Check q.
-  if ((n1 = issquare (q)) == 0 || n1 != n)
-    error ("dlqr: q must be square and conformal with a");
-  endif
-
-  ## Check r.
-  if((m1 = issquare(r)) == 0 || m1 != m)
-    error ("dlqr: r must be square and conformal with column dimension of b");
-  endif
-
-  ## Check if n is there.
+  ## Check if s is there.
   if (nargin == 5)
     [n1, m1] = size (s);
     if (n1 != n || m1 != m)
@@ -139,7 +119,6 @@ function [k, p, e] = dlqr (a, b, q, r, s)
     endif
 
     ## Incorporate cross term into a and q.
-
     ao = a - (b/r)*s';
     qo = q - (s/r)*s';
   else
@@ -148,15 +127,23 @@ function [k, p, e] = dlqr (a, b, q, r, s)
     qo = q;
   endif
 
-  ## Check that q, (r) are symmetric, positive (semi)definite
-  if (issymmetric (q) && issymmetric (r)
-      && all (eig (q) >= 0) && all (eig (r) > 0))
-    p = dare (ao, b, qo, r);
-    k = (r+b'*p*b)\(b'*p*a + s');
-    e = eig (a - b*k);
-  else
-    error ("dlqr: q (r) must be symmetric positive (semi) definite");
+  ## Checking stabilizability and detectability (dimensions are checked inside these calls)
+  tol = 200*eps;
+  if (is_stabilizable (ao, b,tol,1) == 0)
+    error ("dlqr: (a,b) not stabilizable");
   endif
+  dflag = is_detectable (ao, qo, tol,1);
+  if ( dflag == 0)
+    warning ("dlqr: (a,q) not detectable");
+  elseif ( dflag == -1)
+    error("dlqr: (a,q) has non minimal modes near unit circle");
+  end
+
+  ## Compute the Riccati solution
+  p = dare (ao, b, qo, r);
+  k = (r+b'*p*b)\(b'*p*a + s');
+  e = eig (a - b*k);
+
 
 endfunction
 

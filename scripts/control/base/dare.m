@@ -18,20 +18,20 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} dare (@var{a}, @var{b}, @var{c}, @var{r}, @var{opt})
+## @deftypefn {Function File} {} dare (@var{a}, @var{b}, @var{q}, @var{r}, @var{opt})
 ##
 ## Return the solution, @var{x} of the discrete-time algebraic Riccati
 ## equation
 ## @iftex
 ## @tex
 ## $$
-## A^TXA - X + A^TXB (R + B^TXB)^{-1} B^TXA + C = 0
+## A^TXA - X + A^TXB (R + B^TXB)^{-1} B^TXA + Q = 0
 ## $$
 ## @end tex
 ## @end iftex
 ## @ifinfo
 ## @example
-## a' x a - x + a' x b (r + b' x b)^(-1) b' x a + c = 0
+## a' x a - x + a' x b (r + b' x b)^(-1) b' x a + q = 0
 ## @end example
 ## @end ifinfo
 ## @noindent
@@ -44,9 +44,9 @@
 ## @item b
 ## @var{n} by @var{m}.
 ##
-## @item c
+## @item q
 ## @var{n} by @var{n}, symmetric positive semidefinite, or @var{p} by @var{n}.
-## In the latter case @math{c:=c'*c} is used.
+## In the latter case @math{q:=q'*q} is used.
 ##
 ## @item r
 ## @var{m} by @var{m}, symmetric positive definite (invertible).
@@ -74,7 +74,7 @@
 ## Created: August 1993
 ## Adapted-By: jwe
 
-function x = dare (a, b, c, r, opt)
+function x = dare (a, b, q, r, opt)
 
   if (nargin == 4 | nargin == 5)
     if (nargin == 5)
@@ -86,28 +86,29 @@ function x = dare (a, b, c, r, opt)
       opt = "B";
     endif
 
-    ## dimension checks are done in is_controllable, is_observable
-    if (is_controllable (a, b) == 0)
-      warning ("dare: a,b are not controllable");
-    elseif (is_observable (a, c) == 0)
-      warning ("dare: a,c are not observable");
+    
+    if ((p = issquare (q)) == 0)
+      q = q'*q;
     endif
 
-    if ((p = issquare (c)) == 0)
-      c = c'*c;
-      p = rows (c);
-    endif
+    ##Checking positive definiteness
+    if (isdefinite(r)<=0)
+      error("dare: r not positive definite");
+    end
+    if (isdefinite(q)<0)
+      error("dare: q not positive semidefinite");
+    end
+
 
     ## Check r dimensions.
-    n = rows(a);
-    m = columns(b);
+    [n,m] = size(b);
     if ((m1 = issquare (r)) == 0)
-      warning ("dare: r is not square");
+      error ("dare: r is not square");
     elseif (m1 != m)
-      warning ("b,r are not conformable");
+      error ("b,r are not conformable");
     endif
 
-    s1 = [a, zeros(n) ; -c, eye(n)];
+    s1 = [a, zeros(n) ; -q, eye(n)];
     s2 = [eye(n), (b/r)*b' ; zeros(n), a'];
     [c,d,s1,s2] = balance(s1,s2,opt);
     [aa,bb,u,lam] = qz(s1,s2,"S");
@@ -116,7 +117,7 @@ function x = dare (a, b, c, r, opt)
     n2 = 2*n;
     x = u (n1:n2, 1:n)/u(1:n, 1:n);
   else
-    usage ("x = dare (a, b, c, r {,opt})");
+    usage ("x = dare (a, b, q, r {,opt})");
   endif
 
 endfunction

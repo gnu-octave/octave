@@ -1,5 +1,12 @@
 2003-11-14  Gabriele Pannocchia  <g.pannocchia@ing.unipi.it>
 
+	* control/base/dare.m: 
+	* control/base/dlqr.m: 
+
+	* control/system/is_detectable.m: Use Hautus Lemma.
+	Correct the behavior for discrete-time systems.
+	* control/system/is_stabilizable.m: Likewise.
+
 	* linear-algebra/krylov.m: Return H = [] in Vnrm == 0 case.
 
 	* linear-algebra/krylovb.m: Fix typo in usage message.

@@ -29,7 +29,7 @@ INCLUDES := f77-fcn.h lo-error.h
 
 ifeq ($(SHARED_LIBS), true)
   ifdef CPICFLAG
-    CPICDEP := pic/machar.o pic/dostop.o pic/f77-fcn.o
+    CPICDEP := pic/machar.o pic/f77-fcn.o
   endif
   ifdef CXXPICFLAG
     CXXPICDEP := pic/f77-extern.o pic/lo-error.o

@@ -1,3 +1,7 @@
+2001-04-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* misc/Makefile.in (CPICDEP): Remove pic/dostop.o from the list.
+
 2001-03-27  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* misc/xstopx.f: Delete.

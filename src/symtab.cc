@@ -181,7 +181,10 @@ symbol_def::document (const char *h)
 int
 symbol_def::save (ostream& os, int mark_as_global)
 {
-  return definition->save (os, mark_as_global);
+  if (definition)
+    return definition->save (os, mark_as_global);
+  else
+    return 0;
 }
 
 int

@@ -109,6 +109,12 @@ tree_constant_rep::do_scalar_index (const tree_constant *args,
 	      {
 		rows = 1;
 	      }
+	    else if (args[1].is_scalar_type ()
+		     && NINT (args[1].double_value ()) == 0)
+	      {
+		Matrix m (0, 0);
+		return tree_constant (m);
+	      }
 	    else
 	      break;
 
@@ -294,7 +300,7 @@ tree_constant_rep::fortran_style_matrix_index (const Matrix& mi) const
 
       int result_size = iv.length ();
 
-      if (columns () == 1 || iv.one_zero_only ())
+      if (nc == 1 || (nr != 1 && iv.one_zero_only ()))
 	{
 	  CRMATRIX (m, cm, result_size, 1);
 
@@ -307,7 +313,7 @@ tree_constant_rep::fortran_style_matrix_index (const Matrix& mi) const
 
 	  ASSIGN_CRMATRIX_TO (retval, m, cm);
 	}
-      else if (rows () == 1)
+      else if (nr == 1)
 	{
 	  CRMATRIX (m, cm, 1, result_size);
 

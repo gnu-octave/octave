@@ -1036,7 +1036,7 @@ set plotting options for gnuplot")
 DEFUN_TEXT (set, args, nargout,
   "This command is has been replaced by `gset'.")
 {
-  warning ("set is obsolete -- use gset instead")
+  warning ("set is obsolete -- use gset instead");
   return Fgset (args, nargout);
 }
 
@@ -1072,7 +1072,7 @@ show plotting options")
 DEFUN_TEXT (show, args, nargout,
   "This command is has been replaced by `gshow'.")
 {
-  warning ("show is obsolete -- use gshow instead")
+  warning ("show is obsolete -- use gshow instead");
   return Fgshow (args, nargout);
 }
 

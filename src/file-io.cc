@@ -21,7 +21,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-// Written by John C. Campbell <jcc@che.utexas.edu>.
+// Written by John C. Campbell <jcc@bevo.che.wisc.edu>
 //
 // Thomas Baier <baier@ci.tuwien.ac.at> added the following functions:
 //

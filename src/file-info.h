@@ -21,7 +21,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-// Written by John C. Campbell <jcc@che.utexas.edu>.
+// Written by John C. Campbell <jcc@bevo.che.wisc.edu>
 
 #if !defined (octave_file_info_h)
 #define octave_file_info_h 1

@@ -1,3 +1,8 @@
+Fri Aug 20 07:58:00 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* idx-vector.cc (intcmp): Declare args as const void *, not int *,
+	then cast to const int * to compare.
+
 Fri Jul 16 11:23:51 1999  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* DAEFunc.h: Remove useless preprocessor conditional.

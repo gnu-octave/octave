@@ -458,9 +458,9 @@ IDX_VEC_REP::checkelem (int n) const
 }
 
 static inline int
-intcmp (int *ii, int *jj)
+intcmp (const void *ii, const void *jj)
 {
-  return (*ii - *jj);
+  return (*(static_cast<const int *> (ii)) - *(static_cast<const int *> (jj)));
 }
 
 static inline void

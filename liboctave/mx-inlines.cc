@@ -29,7 +29,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #define VS_OP_FCN(F, OP) \
   template <class R, class V, class S> \
-  static inline void \
+  inline void \
   F ## _vs (R *r, const V *v, size_t n, S s) \
   { \
     for (size_t i = 0; i < n; i++) \
@@ -42,7 +42,6 @@ VS_OP_FCN (multiply, *)
 VS_OP_FCN (divide,   /)
 
 #define VS_OP(F, OP, R, V, S) \
-  extern template void F ## _vs (R *, const V *, size_t, S); \
   static inline R * \
   F (const V *v, size_t n, S s) \
   { \
@@ -68,7 +67,7 @@ VS_OPS (Complex, Complex, Complex)
 
 #define SV_OP_FCN(F, OP) \
   template <class R, class S, class V> \
-  static inline void \
+  inline void \
   F ## _sv (R *r, S s, const V *v, size_t n) \
   { \
     for (size_t i = 0; i < n; i++) \
@@ -81,7 +80,6 @@ SV_OP_FCN (multiply, *)
 SV_OP_FCN (divide,   /)
 
 #define SV_OP(F, OP, R, S, V) \
-  extern template void F ## _sv (R *, S, const V *, size_t); \
   static inline R * \
   F (S s, const V *v, size_t n) \
   { \
@@ -107,7 +105,7 @@ SV_OPS (Complex, Complex, Complex)
 
 #define VV_OP_FCN(F, OP) \
   template <class R, class T1, class T2> \
-  static inline void \
+  inline void \
   F ## _vv (R *r, const T1 *v1, const T2 *v2, size_t n) \
   { \
     for (size_t i = 0; i < n; i++) \
@@ -120,7 +118,6 @@ VV_OP_FCN (multiply, *)
 VV_OP_FCN (divide,   /)
 
 #define VV_OP(F, OP, R, T1, T2) \
-  extern template void F ## _vv (R *, const T1 *, const T2 *, size_t); \
   static inline R * \
   F (const T1 *v1, const T2 *v2, size_t n) \
   { \

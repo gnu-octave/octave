@@ -6,13 +6,17 @@
 @chapter Plotting
 
 All of Octave's plotting functions use @code{gnuplot} to handle the
-actual graphics.  There are two low-level functions, @code{gplot} and
+actual graphics. Most types of plots can be generated using the basic
+plotting functions, which are patterned after the equivalent functions
+in @sc{Matlab}. The use of these functions is generally
+straightforward, and is the preferred method for generating plots.
+However, for users familiar with @code{gnuplot}, or for some
+specialized applications where the basic commands are inadequate,
+Octave also provides two low-level functions, @code{gplot} and
 @code{gsplot}, that behave almost exactly like the corresponding
-@code{gnuplot} functions @code{plot} and @code{splot}.  A number of
-other higher level plotting functions, patterned after the graphics
-functions found in @sc{Matlab} version 3.5, are also available.
-These higher level functions are all implemented in terms of the two
-low-level plotting functions.
+@code{gnuplot} functions @code{plot} and @code{splot}. Also note that
+some advanced @sc{Matlab} features from recent versions are not
+implemented, such as handle-graphics and related functions.
 
 @menu
 * Two-Dimensional Plotting::    
@@ -21,11 +25,112 @@ low-level plotting functions.
 * Plot Annotations::            
 * Multiple Plots on One Page::  
 * Multiple Plot Windows::       
+@c *Exporting Plots::
+* Low-Level plotting commands::
 * Interaction with gnuplot::    
 @end menu
 
 @node Two-Dimensional Plotting
 @section Two-Dimensional Plotting
+
+The @sc{Matlab}-style two-dimensional plotting commands are:
+
+@cindex plotting
+@cindex graphics
+
+@DOCSTRING(plot)
+
+@DOCSTRING(hold)
+
+@DOCSTRING(ishold)
+
+@DOCSTRING(clearplot)
+
+@DOCSTRING(shg)
+
+@DOCSTRING(closeplot)
+
+@DOCSTRING(purge_tmp_files)
+
+@DOCSTRING(axis)
+
+@node Specialized Two-Dimensional Plots
+@section Specialized Two-Dimensional Plots
+
+@DOCSTRING(bar)
+
+@DOCSTRING(contour)
+
+@DOCSTRING(hist)
+
+@DOCSTRING(loglog)
+
+@DOCSTRING(polar)
+
+@DOCSTRING(semilogx)
+
+@DOCSTRING(semilogy)
+
+@DOCSTRING(stairs)
+
+@DOCSTRING(errorbar)
+
+@DOCSTRING(loglogerr)
+
+@DOCSTRING(semilogxerr)
+
+@DOCSTRING(semilogyerr)
+
+@node Three-Dimensional Plotting
+@section Three-Dimensional Plotting
+
+The @sc{Matlab}-style three-dimensional plotting commands are:
+
+@DOCSTRING(mesh)
+
+@DOCSTRING(meshgrid)
+
+@DOCSTRING(meshdom)
+
+@node Plot Annotations
+@section Plot Annotations
+
+@DOCSTRING(grid)
+
+@DOCSTRING(title)
+
+@DOCSTRING(xlabel)
+
+@DOCSTRING(top_title)
+
+@node Multiple Plots on One Page
+@section Multiple Plots on One Page
+
+The following functions all require a version of @code{gnuplot} that
+supports the multiplot feature.
+
+@DOCSTRING(mplot)
+
+@DOCSTRING(multiplot)
+
+@DOCSTRING(oneplot)
+
+@DOCSTRING(plot_border)
+
+@DOCSTRING(subplot)
+
+@DOCSTRING(subwindow)
+
+@node Multiple Plot Windows
+@section Multiple Plot Windows
+
+@DOCSTRING(figure)
+
+@c @node Exporting Plots
+@c XXX FIXME XXX -- add info about getting paper copies of plots.
+
+@node Low-Level plotting commands
+@section Low-Level plotting commands
 
 @deffn {Command} gplot @var{ranges} @var{expression} @var{using} @var{title} @var{style}
 Generate a 2-dimensional plot.
@@ -104,128 +209,6 @@ larger than the actual range of the data so that the curves do not touch
 the border of the plot.
 @end deffn
 
-@deffn {Command} gset options
-@deffnx {Command} gshow options
-@deffnx {Command} replot options
-In addition to the basic plotting commands, the whole range of
-@code{gset} and @code{gshow} commands from @code{gnuplot} are available,
-as is @code{replot}.
-
-@findex set
-@findex show
-Note that in Octave 2.0, the @code{set} and @code{show} commands were
-renamed to @code{gset} and @code{gshow} in order to allow for
-compatibility with the @sc{Matlab} graphics and GUI commands in a future
-version of Octave.  (For now, the old @code{set} and @code{show}
-commands do work, but they print an annoying warning message to try to
-get people to switch to using @code{gset} and @code{gshow}.)
-
-The @code{gset} and @code{gshow} commands allow you to set and show
-@code{gnuplot} parameters.  For more information about the @code{gset}
-and @code{gshow} commands, see the documentation for @code{set} and
-@code{show} in the @code{gnuplot} user's guide (also available on line
-if you run @code{gnuplot} directly, instead of running it from Octave).
-
-The @code{replot} command allows you to force the plot to be
-redisplayed.  This is useful if you have changed something about the
-plot, such as the title or axis labels.  The @code{replot} command also
-accepts the same arguments as @code{gplot} or @code{gsplot} (except for
-data ranges) so you can add additional lines to existing plots.  
-
-For example,
-
-@example
-gset term tek40
-gset output "/dev/plotter"
-gset title "sine with lines and cosine with impulses"
-replot "sin (x) w l"
-@end example
-
-will change the terminal type for plotting, add a title to the current
-plot, add a graph of
-@iftex
-@tex
-$\sin(x)$
-@end tex
-@end iftex
-@ifinfo
-sin (x) 
-@end ifinfo
-to the plot, and force the new plot to be
-sent to the plot device.  This last step is normally required in order
-to update the plot.  This default is reasonable for slow terminals or
-hardcopy output devices because even when you are adding additional
-lines with a replot command, gnuplot always redraws the entire plot, and
-you probably don't want to have a completely new plot generated every
-time something as minor as an axis label changes.
-
-@findex shg
-The command @code{shg} is equivalent to executing @code{replot} without
-any arguments.
-@end deffn
-
-@DOCSTRING(automatic_replot)
-
-Note that NaN values in the plot data are automatically omitted, and
-Inf values are converted to a very large value before calling gnuplot.
-
-@c XXX FIXME XXX -- add info about what to do to get plots on remote X
-@c terminals.  People often forget how to properly set DISPLAY and run
-@c xhost.
-
-@c XXX FIXME XXX -- add info about getting paper copies of plots.
-
-The @sc{Matlab}-style two-dimensional plotting commands are:
-
-@cindex plotting
-@cindex graphics
-
-@DOCSTRING(plot)
-
-@DOCSTRING(hold)
-
-@DOCSTRING(ishold)
-
-@DOCSTRING(clearplot)
-
-@DOCSTRING(shg)
-
-@DOCSTRING(closeplot)
-
-@DOCSTRING(purge_tmp_files)
-
-@DOCSTRING(axis)
-
-@node Specialized Two-Dimensional Plots
-@section Specialized Two-Dimensional Plots
-
-@DOCSTRING(bar)
-
-@DOCSTRING(contour)
-
-@DOCSTRING(hist)
-
-@DOCSTRING(loglog)
-
-@DOCSTRING(polar)
-
-@DOCSTRING(semilogx)
-
-@DOCSTRING(semilogy)
-
-@DOCSTRING(stairs)
-
-@DOCSTRING(errorbar)
-
-@DOCSTRING(loglogerr)
-
-@DOCSTRING(semilogxerr)
-
-@DOCSTRING(semilogyerr)
-
-@node Three-Dimensional Plotting
-@section Three-Dimensional Plotting
-
 @deffn {Command} gsplot @var{ranges} @var{expression} @var{using} @var{title} @var{style}
 Generate a 3-dimensional plot.
 
@@ -298,49 +281,75 @@ $$
 but not @code{rand (5, 30)}.
 @end deffn
 
-The @sc{Matlab}-style three-dimensional plotting commands are:
+@deffn {Command} gset options
+@deffnx {Command} gshow options
+@deffnx {Command} replot options
+In addition to the basic plotting commands, the whole range of
+@code{gset} and @code{gshow} commands from @code{gnuplot} are available,
+as is @code{replot}.
 
-@DOCSTRING(mesh)
+@findex set
+@findex show
+Note that in Octave 2.0, the @code{set} and @code{show} commands were
+renamed to @code{gset} and @code{gshow} in order to allow for
+compatibility with the @sc{Matlab} graphics and GUI commands in a future
+version of Octave.  (For now, the old @code{set} and @code{show}
+commands do work, but they print an annoying warning message to try to
+get people to switch to using @code{gset} and @code{gshow}.)
 
-@DOCSTRING(meshgrid)
+The @code{gset} and @code{gshow} commands allow you to set and show
+@code{gnuplot} parameters.  For more information about the @code{gset}
+and @code{gshow} commands, see the documentation for @code{set} and
+@code{show} in the @code{gnuplot} user's guide (also available on line
+if you run @code{gnuplot} directly, instead of running it from Octave).
 
-@DOCSTRING(meshdom)
+The @code{replot} command allows you to force the plot to be
+redisplayed.  This is useful if you have changed something about the
+plot, such as the title or axis labels.  The @code{replot} command also
+accepts the same arguments as @code{gplot} or @code{gsplot} (except for
+data ranges) so you can add additional lines to existing plots.  
 
-@node Plot Annotations
-@section Plot Annotations
+For example,
 
-@DOCSTRING(grid)
+@example
+gset term tek40
+gset output "/dev/plotter"
+gset title "sine with lines and cosine with impulses"
+replot "sin (x) w l"
+@end example
 
-@DOCSTRING(title)
+will change the terminal type for plotting, add a title to the current
+plot, add a graph of
+@iftex
+@tex
+$\sin(x)$
+@end tex
+@end iftex
+@ifinfo
+sin (x) 
+@end ifinfo
+to the plot, and force the new plot to be
+sent to the plot device.  This last step is normally required in order
+to update the plot.  This default is reasonable for slow terminals or
+hardcopy output devices because even when you are adding additional
+lines with a replot command, gnuplot always redraws the entire plot, and
+you probably don't want to have a completely new plot generated every
+time something as minor as an axis label changes.
 
-@DOCSTRING(bottom_title)
+@findex shg
+The command @code{shg} is equivalent to executing @code{replot} without
+any arguments.
+@end deffn
 
-@DOCSTRING(xlabel)
+@DOCSTRING(automatic_replot)
 
-@node Multiple Plots on One Page
-@section Multiple Plots on One Page
+Note that NaN values in the plot data are automatically omitted, and
+Inf values are converted to a very large value before calling gnuplot.
 
-The following functions all require a version of @code{gnuplot} that
-supports the multiplot feature.
+@c XXX FIXME XXX -- add info about what to do to get plots on remote X
+@c terminals.  People often forget how to properly set DISPLAY and run
+@c xhost.
 
-@DOCSTRING(mplot)
-
-@DOCSTRING(multiplot)
-
-@DOCSTRING(oneplot)
-
-@DOCSTRING(plot_border)
-
-@DOCSTRING(subplot)
-
-@DOCSTRING(subwindow)
-
-@DOCSTRING(top_title)
-
-@node Multiple Plot Windows
-@section Multiple Plot Windows
-
-@DOCSTRING(figure)
 
 @node Interaction with gnuplot
 @section Interaction with @code{gnuplot}

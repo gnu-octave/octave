@@ -36,20 +36,20 @@ ALL_CFLAGS = $(LOCAL_INCLUDES) $(DEFS) $(CFLAGS)
 LIBRARY_NAME = libreadline.a
 
 # The C code source files for this library.
-CSOURCES = readline.c funmap.c keymaps.c vi_mode.c parens.c rltty.c \
-	   complete.c bind.c isearch.c display.c signals.c \
-	   emacs_keymap.c vi_keymap.c history.c tilde.c xmalloc.c
+CSOURCES = bind.c complete.c display.c emacs_keymap.c funmap.c \
+	history.c isearch.c keymaps.c parens.c readline.c rltty.c \
+	search.c signals.c tilde.c vi_keymap.c vi_mode.c xmalloc.c
 
 # The header files for this library.
-HSOURCES = readline.h rldefs.h chardefs.h keymaps.h history.h \
-	   posixstat.h tilde.h rlconf.h config.h.in
+HSOURCES = ansi_stdlib.h chardefs.h config.h history.h keymaps.h \
+	memalloc.h posixstat.h readline.h rlconf.h rldefs.h tilde.h 
 
 OBJECTS = readline.o vi_mode.o funmap.o keymaps.o parens.o search.o \
 	  rltty.o complete.o bind.o isearch.o display.o signals.o \
 	  history.o tilde.o xmalloc.o
 
 DISTFILES = $(CSOURCES) $(HSOURCES) Makefile.in configure.in \
-	configure README STANDALONE COPYING
+	configure README STANDALONE COPYING config.h.in
 
 SUBDIRS = doc examples
 

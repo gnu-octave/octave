@@ -90,7 +90,7 @@ function [in, out, pid] = popen2 (command, args)
           fclose (nth (stdin_pipe, 1));
           fclose (nth (stdout_pipe, 2));
 
-          if (fcntl (nth (stdout_pipe, 1), __F_SETFL__, __O_NONBLOCK__) < 0)
+          if (fcntl (nth (stdout_pipe, 1), F_SETFL, O_NONBLOCK) < 0)
             error ("popen2: error setting file mode");
           else
             in = nth (stdin_pipe, 2);

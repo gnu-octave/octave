@@ -1,7 +1,7 @@
 // FEGrid.h                                                -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -32,25 +32,38 @@ class ostream;
 
 #include "dColVector.h"
 
-class FEGrid
+class
+FEGrid
 {
-private:
-
-  void error (const char* msg) const;
-  void nel_error (void) const;
-
-  void check_grid (void) const;
-
 public:
 
-  FEGrid (void) { }
-  FEGrid (const ColumnVector& elbnds) : elem (elbnds) { check_grid (); }
+  FEGrid (void)
+    : elem () { }
+
+  FEGrid (const ColumnVector& elbnds)
+    : elem (elbnds) { check_grid (); }
+
   FEGrid (int nel, double width);
+
   FEGrid (int nel, double left, double right);
+
+  FEGrid (const FEGrid& a)
+    : elem (a.elem) { }
+
+  FEGrid& operator = (const FEGrid& a)
+    {
+      if (this != &a)
+	elem = a.elem;
+
+      return *this;
+    }
+
+  ~FEGrid (void) { }
 
   int element (double x) const;
 
   double left (void) const { return elem.elem (0); }
+
   double right (void) const { return elem.elem (elem.capacity () - 1); }
 
   int in_bounds (double x) const { return (x >= left () && x <= right ()); }
@@ -62,6 +75,13 @@ public:
 protected:
 
   ColumnVector elem;
+
+private:
+
+  void error (const char* msg) const;
+  void nel_error (void) const;
+
+  void check_grid (void) const;
 };
 
 #endif

@@ -31,21 +31,22 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class LP : public base_minimizer
 {
- public:
+public:
 
-  LP (void) : base_minimizer () { }
+  LP (void)
+    : base_minimizer (), c (), bnds (), lc () { }
 
   LP (const ColumnVector& c_arg)
-    : base_minimizer (), c (c_arg) { }
+    : base_minimizer (), c (c_arg), bnds (), lc () { }
 
   LP (const ColumnVector& c_arg, const Bounds& b)
-    : base_minimizer (), c (c_arg), bnds (b) { }
+    : base_minimizer (), c (c_arg), bnds (b), lc () { }
 
   LP (const ColumnVector& c_arg, const Bounds& b, const LinConst& l)
     : base_minimizer (), c (c_arg), bnds (b), lc (l) { }
 
   LP (const ColumnVector& c_arg, const LinConst& l)
-    : base_minimizer (), c (c_arg), lc (l) { }
+    : base_minimizer (), c (c_arg), bnds (), lc (l) { }
 
   LP (const LP& a)
     : base_minimizer (a), c (a.c), bnds (a.bnds), lc (a.lc) { }
@@ -65,7 +66,13 @@ class LP : public base_minimizer
 
   ~LP (void) { }
 
- protected:
+  ColumnVector linear_obj_coeff (void) const { return c; }
+
+  Bounds bounds (void) const { return bnds; }
+
+  LinConst linear_constraints (void) const { return lc; }
+
+protected:
 
   ColumnVector c;
   Bounds bnds;

@@ -1,7 +1,7 @@
 //                                  -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -34,32 +34,35 @@ class ostream;
 #include "CMatrix.h"
 #include "CColVector.h"
 
-class EIG
+class
+EIG
 {
 friend class Matrix;
 friend class ComplexMatrix;
 
 public:
 
-  EIG (void) { }
+  EIG (void)
+    : lambda (), v () { }
 
   EIG (const Matrix& a) { init (a); }
+
   EIG (const Matrix& a, int& info) { info = init (a); }
 
   EIG (const ComplexMatrix& a) { init (a); }
+
   EIG (const ComplexMatrix& a, int& info) { info = init (a); }
 
   EIG (const EIG& a)
-    {
-      lambda = a.lambda;
-      v = a.v;
-    }
+    : lambda (a.lambda), v (a.v) { }
 
   EIG& operator = (const EIG& a)
     {
-      lambda = a.lambda;
-      v = a.v;
-
+      if (this != &a)
+	{
+	  lambda = a.lambda;
+	  v = a.v;
+	}
       return *this;
     }
 
@@ -71,11 +74,11 @@ public:
 
 private:
 
-  int init (const Matrix& a);
-  int init (const ComplexMatrix& a);
-
   ComplexColumnVector lambda;
   ComplexMatrix v;
+
+  int init (const Matrix& a);
+  int init (const ComplexMatrix& a);
 };
 
 #endif

@@ -32,9 +32,10 @@ class ColumnVector;
 
 #include "LP.h"
 
-class LPsolve : public LP
+class
+LPsolve : public LP
 {
- public:
+public:
 
   LPsolve (void)
     : LP () { }
@@ -57,9 +58,8 @@ class LPsolve : public LP
   LPsolve& operator = (const LPsolve& a)
     {
       if (this != &a)
-	{
-	  LP::operator = (a);
-	}
+	LP::operator = (a);
+
       return *this;
     }
 

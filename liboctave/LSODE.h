@@ -32,37 +32,82 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class ostream;
 #endif
 
+#include <cmath>
+
 #include "ODE.h"
 
-class LSODE_options
+class
+LSODE_options
 {
- public:
+public:
 
-  LSODE_options (void);
-  LSODE_options (const LSODE_options& opt);
+  LSODE_options (void) { init (); }
 
-  LSODE_options& operator = (const LSODE_options& opt);
+  LSODE_options (const LSODE_options& opt) { copy (opt); }
 
-  ~LSODE_options (void);
+  LSODE_options& operator = (const LSODE_options& opt)
+    {
+      if (this != &opt)
+	copy (opt);
 
-  void init (void);
-  void copy (const LSODE_options& opt);
+      return *this;
+    }
 
-  void set_default_options (void);
+  ~LSODE_options (void) { }
 
-  void set_absolute_tolerance (double);
-  void set_initial_step_size (double);
-  void set_maximum_step_size (double);
-  void set_minimum_step_size (double);
-  void set_relative_tolerance (double);
+  void init (void)
+    {
+      double sqrt_eps = ::sqrt (DBL_EPSILON);
 
-  double absolute_tolerance (void);
-  double initial_step_size (void);
-  double maximum_step_size (void);
-  double minimum_step_size (void);
-  double relative_tolerance (void);
+      x_absolute_tolerance = sqrt_eps;
+      x_initial_step_size = -1.0;
+      x_maximum_step_size = -1.0;
+      x_minimum_step_size = 0.0;
+      x_relative_tolerance = sqrt_eps;
+    }
 
- private:
+  void copy (const LSODE_options& opt)
+    {
+      x_absolute_tolerance = opt.x_absolute_tolerance;
+      x_initial_step_size = opt.x_initial_step_size;
+      x_maximum_step_size = opt.x_maximum_step_size;
+      x_minimum_step_size = opt.x_minimum_step_size;
+      x_relative_tolerance = opt.x_relative_tolerance;
+    }
+
+  void set_default_options (void) { init (); }
+
+  void set_absolute_tolerance (double val)
+    { x_absolute_tolerance = (val > 0.0) ? val : ::sqrt (DBL_EPSILON); }
+
+  void set_initial_step_size (double val)
+    { x_initial_step_size = (val >= 0.0) ? val : -1.0; }
+
+  void set_maximum_step_size (double val)
+    { x_maximum_step_size = (val >= 0.0) ? val : -1.0; }
+
+  void set_minimum_step_size (double val)
+    { x_minimum_step_size = (val >= 0.0) ? val : 0.0; }
+
+  void set_relative_tolerance (double val)
+    { x_relative_tolerance = (val > 0.0) ? val : ::sqrt (DBL_EPSILON); }
+
+  double absolute_tolerance (void)
+    { return x_absolute_tolerance; }
+
+  double initial_step_size (void)
+    { return x_initial_step_size; }
+
+  double maximum_step_size (void)
+    { return x_maximum_step_size; }
+
+  double minimum_step_size (void)
+    { return x_minimum_step_size; }
+
+  double relative_tolerance (void)
+    {  return x_relative_tolerance; }
+
+private:
 
   double x_absolute_tolerance;
   double x_initial_step_size;
@@ -71,7 +116,8 @@ class LSODE_options
   double x_relative_tolerance;
 };
 
-class LSODE : public ODE, public LSODE_options
+class
+LSODE : public ODE, public LSODE_options
 {
 public:
 

@@ -126,11 +126,6 @@ friend KL_DMAT_TYPE operator - (const KL_DMAT_TYPE& a);
 
 #endif
 
-#undef DO_SV_OP
-#undef DO_VS_OP
-#undef DO_VV_OP
-#undef NEG_V
-
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

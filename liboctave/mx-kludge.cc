@@ -285,10 +285,19 @@ operator - (const KL_DMAT_TYPE& a)
 
 #endif
 
-#undef DO_SV_OP
 #undef DO_VS_OP
+#undef DO_SV_OP
 #undef DO_VV_OP
 #undef NEG_V
+#undef KL_VS_OP
+#undef KL_SV_OP
+#undef KL_VV_OP
+#undef KL_MS_OP
+#undef KL_SM_OP
+#undef KL_MM_OP
+#undef KL_DMS_OP
+#undef KL_SDM_OP
+#undef KL_DMDM_OP
 
 /*
 ;;; Local Variables: ***

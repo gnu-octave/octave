@@ -518,7 +518,7 @@ ComplexNDArray::all_elements_are_real (void) const
 
   for (int i = 0; i < nel; i++)
     {
-      double ip = imag (elem (i));
+      double ip = std::imag (elem (i));
 
       if (ip != 0.0 || lo_ieee_signbit (ip))
 	return false;
@@ -540,8 +540,8 @@ ComplexNDArray::all_integers (double& max_val, double& min_val) const
     {
       Complex val = elem (0);
 
-      double r_val = real (val);
-      double i_val = imag (val);
+      double r_val = std::real (val);
+      double i_val = std::imag (val);
       
       max_val = r_val;
       min_val = r_val;
@@ -559,8 +559,8 @@ ComplexNDArray::all_integers (double& max_val, double& min_val) const
     {
       Complex val = elem (i);
 
-      double r_val = real (val);
-      double i_val = imag (val);
+      double r_val = std::real (val);
+      double i_val = std::imag (val);
 
       if (r_val > max_val)
 	max_val = r_val;
@@ -590,8 +590,8 @@ ComplexNDArray::too_large_for_float (void) const
     {
       Complex val = elem (i);
 
-      double r_val = real (val);
-      double i_val = imag (val);
+      double r_val = std::real (val);
+      double i_val = std::imag (val);
 
       if (r_val > FLT_MAX
 	  || i_val > FLT_MAX
@@ -615,8 +615,8 @@ ComplexNDArray::any (int dim) const
 {
   MX_ND_ANY_ALL_REDUCTION
     (MX_ND_ANY_EVAL (elem (iter_idx) != Complex (0, 0)
-		     && ! (lo_ieee_isnan (::real (elem (iter_idx)))
-			   || lo_ieee_isnan (::imag (elem (iter_idx))))),
+		     && ! (lo_ieee_isnan (std::real (elem (iter_idx)))
+			   || lo_ieee_isnan (std::imag (elem (iter_idx))))),
 		     false);
 }
 
@@ -642,7 +642,7 @@ ComplexNDArray
 ComplexNDArray::sumsq (int dim) const
 {
   MX_ND_COMPLEX_OP_REDUCTION
-    (+= imag (elem (iter_idx))
+    (+= std::imag (elem (iter_idx))
      ? elem (iter_idx) * conj (elem (iter_idx))
      : std::pow (elem (iter_idx), 2), Complex (0, 0));
 }
@@ -736,7 +736,7 @@ ComplexNDArray::max (ArrayN<int>& idx_arg, int dim) const
 	  
 	  if (! octave_is_NaN_or_NA (tmp_max))
 	    {
-	      abs_max = ::abs(tmp_max);
+	      abs_max = std::abs(tmp_max);
 	      break;
 	    }
 	}
@@ -748,7 +748,7 @@ ComplexNDArray::max (ArrayN<int>& idx_arg, int dim) const
 	  if (octave_is_NaN_or_NA (tmp))
 	    continue;
 
-	  double abs_tmp = ::abs (tmp);
+	  double abs_tmp = std::abs (tmp);
 
 	  if (abs_tmp > abs_max)
 	    {
@@ -828,7 +828,7 @@ ComplexNDArray::min (ArrayN<int>& idx_arg, int dim) const
 	  
 	  if (! octave_is_NaN_or_NA (tmp_min))
 	    {
-	      abs_min = ::abs(tmp_min);
+	      abs_min = std::abs(tmp_min);
 	      break;
 	    }
 	}
@@ -840,7 +840,7 @@ ComplexNDArray::min (ArrayN<int>& idx_arg, int dim) const
 	  if (octave_is_NaN_or_NA (tmp))
 	    continue;
 
-	  double abs_tmp = ::abs (tmp);
+	  double abs_tmp = std::abs (tmp);
 
 	  if (abs_tmp < abs_min)
 	    {
@@ -873,7 +873,7 @@ ComplexNDArray::abs (void) const
   int nel = nelem ();
 
   for (int i = 0; i < nel; i++)
-    retval(i) = ::abs (elem (i));
+    retval(i) = std::abs (elem (i));
       
   return retval;
 }
@@ -1160,13 +1160,13 @@ max (const ComplexNDArray& a, const ComplexNDArray& b)
   return result;
 }
 
-NDS_CMP_OPS(ComplexNDArray, real, Complex, real)
+NDS_CMP_OPS(ComplexNDArray, std::real, Complex, std::real)
 NDS_BOOL_OPS(ComplexNDArray, Complex, 0.0)
 
-SND_CMP_OPS(Complex, real, ComplexNDArray, real)
+SND_CMP_OPS(Complex, std::real, ComplexNDArray, std::real)
 SND_BOOL_OPS(Complex, ComplexNDArray, 0.0)
 
-NDND_CMP_OPS(ComplexNDArray, real, ComplexNDArray, real)
+NDND_CMP_OPS(ComplexNDArray, std::real, ComplexNDArray, std::real)
 NDND_BOOL_OPS(ComplexNDArray, ComplexNDArray, 0.0)
 
 /*

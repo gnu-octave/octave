@@ -1,3 +1,10 @@
+2005-03-30  John W. Eaton  <jwe@octave.org>
+
+	* src/ov-complex.cc, src/ov-cx-mat.cc, src/xpow.cc: Use std:: for
+	Complex functions instead of relying on wrappers from oct-cmplx.h.
+
+	* oct-stream.cc (octave_scan): Initialize c1 to EOF.
+
 2005-03-29  John W. Eaton  <jwe@octave.org>
 
 	* utils.cc (get_dimensions): Produce error instead of warning if

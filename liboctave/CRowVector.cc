@@ -408,13 +408,13 @@ ComplexRowVector::min (void) const
     return Complex (0.0);
 
   Complex res = elem (0);
-  double absres = abs (res);
+  double absres = std::abs (res);
 
   for (int i = 1; i < len; i++)
-    if (abs (elem (i)) < absres)
+    if (std::abs (elem (i)) < absres)
       {
 	res = elem (i);
-	absres = abs (res);
+	absres = std::abs (res);
       }
 
   return res;
@@ -428,13 +428,13 @@ ComplexRowVector::max (void) const
     return Complex (0.0);
 
   Complex res = elem (0);
-  double absres = abs (res);
+  double absres = std::abs (res);
 
   for (int i = 1; i < len; i++)
-    if (abs (elem (i)) > absres)
+    if (std::abs (elem (i)) > absres)
       {
 	res = elem (i);
-	absres = abs (res);
+	absres = std::abs (res);
       }
 
   return res;

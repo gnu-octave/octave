@@ -73,7 +73,7 @@ octave_complex_matrix::try_narrowing_conversion (void)
 	{
 	  Complex c = matrix (0, 0);
 
-	  if (imag (c) == 0.0)
+	  if (std::imag (c) == 0.0)
 	    retval = new octave_scalar (std::real (c));
 	  else
 	    retval = new octave_complex (c);
@@ -216,8 +216,8 @@ strip_infnan (const ComplexMatrix& m)
 	    goto next_row;
 	  else
 	    {
-	      double re = real (c);
-	      double im = imag (c);
+	      double re = std::real (c);
+	      double im = std::imag (c);
 
 	      re = xisinf (re) ? (re > 0 ? OCT_RBV : -OCT_RBV) : re;
 	      im = xisinf (im) ? (im > 0 ? OCT_RBV : -OCT_RBV) : im;

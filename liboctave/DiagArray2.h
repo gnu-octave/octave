@@ -82,7 +82,7 @@ private:
 	  return object->get (i);
 	else
 	  {
-	    static T foo (0);
+	    static T foo;
 	    return foo;
 	  }
       }

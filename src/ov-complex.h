@@ -1,3 +1,4 @@
+#define OCTAVE_STD std
 /*
 
 Copyright (C) 1996, 1997 John W. Eaton
@@ -78,8 +79,8 @@ public:
   octave_value any (int = 0) const
     {
       return (scalar != Complex (0, 0)
-	      && ! (lo_ieee_isnan (::real (scalar))
-		    || lo_ieee_isnan (::imag (scalar))));
+	      && ! (lo_ieee_isnan (OCTAVE_STD::real (scalar))
+		    || lo_ieee_isnan (OCTAVE_STD::imag (scalar))));
     }
 
   bool is_complex_scalar (void) const { return true; }

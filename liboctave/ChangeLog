@@ -1,3 +1,15 @@
+2005-03-30  John W. Eaton  <jwe@octave.org>
+
+	* liboctave/CColVector.cc, liboctave/CNDArray.cc,
+	liboctave/CRowVector.cc: Use std:: for Complex functions instead
+	of relying on wrappers from oct-cmplx.h.
+
+	* oct-cmplx.h: Provide typedef only.
+
+	* DiagArray2.cc (xelem): Don't use initializer for static data.
+	* DiagArray2.h (DiagArray<T>::Proxy::operator T ()):
+	Likewise.
+
 2005-03-26  John W. Eaton  <jwe@octave.org>
 
 	* cmd-edit.cc (do_readline): Wrap call to ::octave_rl_readline

@@ -70,16 +70,12 @@ xpow (double a, double b)
 {
   if (a < 0.0 && static_cast<int> (b) != b)
     {
-      // XXX FIXME XXX -- avoid apparent GNU libm bug by converting
-      // A and B to complex instead of just A.
-
       Complex atmp (a);
-      Complex btmp (b);
 
-      return pow (atmp, btmp);
+      return std::pow (atmp, b);
     }
   else
-    return pow (a, b);
+    return std::pow (a, b);
 }
 
 // -*- 2 -*-
@@ -102,10 +98,10 @@ xpow (double a, const Matrix& b)
       for (int i = 0; i < nr; i++)
 	{
 	  Complex elt = lambda (i);
-	  if (imag (elt) == 0.0)
-	    lambda (i) = pow (a, real (elt));
+	  if (std::imag (elt) == 0.0)
+	    lambda (i) = std::pow (a, std::real (elt));
 	  else
-	    lambda (i) = pow (a, elt);
+	    lambda (i) = std::pow (a, elt);
 	}
       ComplexDiagMatrix D (lambda);
 
@@ -121,7 +117,7 @@ xpow (double a, const Complex& b)
 {
   Complex result;
   Complex atmp (a);
-  result = pow (atmp, b);
+  result = std::pow (atmp, b);
   return result;
 }
 
@@ -145,10 +141,10 @@ xpow (double a, const ComplexMatrix& b)
       for (int i = 0; i < nr; i++)
 	{
 	  Complex elt = lambda (i);
-	  if (imag (elt) == 0.0)
-	    lambda (i) = pow (a, real (elt));
+	  if (std::imag (elt) == 0.0)
+	    lambda (i) = std::pow (a, std::real (elt));
 	  else
-	    lambda (i) = pow (a, elt);
+	    lambda (i) = std::pow (a, elt);
 	}
       ComplexDiagMatrix D (lambda);
 
@@ -226,7 +222,7 @@ xpow (const Matrix& a, double b)
 	  ComplexMatrix Q (a_eig.eigenvectors ());
 
 	  for (int i = 0; i < nr; i++)
-	    lambda (i) = pow (lambda (i), b);
+	    lambda (i) = std::pow (lambda (i), b);
 
 	  ComplexDiagMatrix D (lambda);
 
@@ -255,7 +251,7 @@ xpow (const Matrix& a, const Complex& b)
       ComplexMatrix Q (a_eig.eigenvectors ());
 
       for (int i = 0; i < nr; i++)
-	lambda (i) = pow (lambda (i), b);
+	lambda (i) = std::pow (lambda (i), b);
 
       ComplexDiagMatrix D (lambda);
 
@@ -272,9 +268,9 @@ xpow (const Complex& a, double b)
   Complex result;
 
   if (xisint (b))
-    result = pow (a, static_cast<int> (b));
+    result = std::pow (a, static_cast<int> (b));
   else
-    result = pow (a, b);
+    result = std::pow (a, b);
 
   return result;
 }
@@ -299,10 +295,10 @@ xpow (const Complex& a, const Matrix& b)
       for (int i = 0; i < nr; i++)
 	{
 	  Complex elt = lambda (i);
-	  if (imag (elt) == 0.0)
-	    lambda (i) = pow (a, real (elt));
+	  if (std::imag (elt) == 0.0)
+	    lambda (i) = std::pow (a, std::real (elt));
 	  else
-	    lambda (i) = pow (a, elt);
+	    lambda (i) = std::pow (a, elt);
 	}
       ComplexDiagMatrix D (lambda);
 
@@ -317,7 +313,7 @@ octave_value
 xpow (const Complex& a, const Complex& b)
 {
   Complex result;
-  result = pow (a, b);
+  result = std::pow (a, b);
   return result;
 }
 
@@ -341,10 +337,10 @@ xpow (const Complex& a, const ComplexMatrix& b)
       for (int i = 0; i < nr; i++)
 	{
 	  Complex elt = lambda (i);
-	  if (imag (elt) == 0.0)
-	    lambda (i) = pow (a, real (elt));
+	  if (std::imag (elt) == 0.0)
+	    lambda (i) = std::pow (a, std::real (elt));
 	  else
-	    lambda (i) = pow (a, elt);
+	    lambda (i) = std::pow (a, elt);
 	}
       ComplexDiagMatrix D (lambda);
 
@@ -422,7 +418,7 @@ xpow (const ComplexMatrix& a, double b)
 	  ComplexMatrix Q (a_eig.eigenvectors ());
 
 	  for (int i = 0; i < nr; i++)
-	    lambda (i) = pow (lambda (i), b);
+	    lambda (i) = std::pow (lambda (i), b);
 
 	  ComplexDiagMatrix D (lambda);
 
@@ -451,7 +447,7 @@ xpow (const ComplexMatrix& a, const Complex& b)
       ComplexMatrix Q (a_eig.eigenvectors ());
 
       for (int i = 0; i < nr; i++)
-	lambda (i) = pow (lambda (i), b);
+	lambda (i) = std::pow (lambda (i), b);
 
       ComplexDiagMatrix D (lambda);
 
@@ -509,7 +505,7 @@ elem_xpow (double a, const Matrix& b)
 	for (int i = 0; i < nr; i++)
 	  {
 	    OCTAVE_QUIT;
-	    result (i, j) = pow (atmp, b (i, j));
+	    result (i, j) = std::pow (atmp, b (i, j));
 	  }
 
       retval = result;
@@ -521,7 +517,7 @@ elem_xpow (double a, const Matrix& b)
 	for (int i = 0; i < nr; i++)
 	  {
 	    OCTAVE_QUIT;
-	    result (i, j) = pow (a, b (i, j));
+	    result (i, j) = std::pow (a, b (i, j));
 	  }
 
       retval = result;
@@ -543,7 +539,7 @@ elem_xpow (double a, const ComplexMatrix& b)
     for (int i = 0; i < nr; i++)
       {
 	OCTAVE_QUIT;
-	result (i, j) = pow (atmp, b (i, j));
+	result (i, j) = std::pow (atmp, b (i, j));
       }
 
   return result;
@@ -566,13 +562,9 @@ elem_xpow (const Matrix& a, double b)
 	  {
 	    OCTAVE_QUIT;
       
-	    // XXX FIXME XXX -- avoid apparent GNU libm bug by
-	    // converting A and B to complex instead of just A.
-
 	    Complex atmp (a (i, j));
-	    Complex btmp (b);
 
-	    result (i, j) = pow (atmp, btmp);
+	    result (i, j) = std::pow (atmp, b);
 	  }
 
       retval = result;
@@ -584,7 +576,7 @@ elem_xpow (const Matrix& a, double b)
 	for (int i = 0; i < nr; i++)
 	  {
 	    OCTAVE_QUIT;
-	    result (i, j) = pow (a (i, j), b);
+	    result (i, j) = std::pow (a (i, j), b);
 	  }
 
       retval = result;
@@ -637,7 +629,7 @@ done:
 	    OCTAVE_QUIT;
 	    Complex atmp (a (i, j));
 	    Complex btmp (b (i, j));
-	    complex_result (i, j) = pow (atmp, btmp);
+	    complex_result (i, j) = std::pow (atmp, btmp);
 	  }
 
       retval = complex_result;
@@ -650,7 +642,7 @@ done:
 	for (int i = 0; i < nr; i++)
 	  {
 	    OCTAVE_QUIT;
-	    result (i, j) = pow (a (i, j), b (i, j));
+	    result (i, j) = std::pow (a (i, j), b (i, j));
 	  }
 
       retval = result;
@@ -671,7 +663,7 @@ elem_xpow (const Matrix& a, const Complex& b)
     for (int i = 0; i < nr; i++)
       {
 	OCTAVE_QUIT;
-	result (i, j) = pow (Complex (a (i, j)), b);
+	result (i, j) = std::pow (Complex (a (i, j)), b);
       }
 
   return result;
@@ -698,7 +690,7 @@ elem_xpow (const Matrix& a, const ComplexMatrix& b)
     for (int i = 0; i < nr; i++)
       {
 	OCTAVE_QUIT;
-	result (i, j) = pow (Complex (a (i, j)), b (i, j));
+	result (i, j) = std::pow (Complex (a (i, j)), b (i, j));
       }
 
   return result;
@@ -718,9 +710,9 @@ elem_xpow (const Complex& a, const Matrix& b)
 	OCTAVE_QUIT;
 	double btmp = b (i, j);
 	if (xisint (btmp))
-	  result (i, j) = pow (a, static_cast<int> (btmp));
+	  result (i, j) = std::pow (a, static_cast<int> (btmp));
 	else
-	  result (i, j) = pow (a, btmp);
+	  result (i, j) = std::pow (a, btmp);
       }
 
   return result;
@@ -738,7 +730,7 @@ elem_xpow (const Complex& a, const ComplexMatrix& b)
     for (int i = 0; i < nr; i++)
       {
 	OCTAVE_QUIT;
-	result (i, j) = pow (a, b (i, j));
+	result (i, j) = std::pow (a, b (i, j));
       }
 
   return result;
@@ -759,7 +751,7 @@ elem_xpow (const ComplexMatrix& a, double b)
 	for (int i = 0; i < nr; i++)
 	  {
 	    OCTAVE_QUIT;
-	    result (i, j) = pow (a (i, j), static_cast<int> (b));
+	    result (i, j) = std::pow (a (i, j), static_cast<int> (b));
 	  }
     }
   else
@@ -768,7 +760,7 @@ elem_xpow (const ComplexMatrix& a, double b)
 	for (int i = 0; i < nr; i++)
 	  {
 	    OCTAVE_QUIT;
-	    result (i, j) = pow (a (i, j), b);
+	    result (i, j) = std::pow (a (i, j), b);
 	  }
     }
 
@@ -798,9 +790,9 @@ elem_xpow (const ComplexMatrix& a, const Matrix& b)
 	OCTAVE_QUIT;
 	double btmp = b (i, j);
 	if (xisint (btmp))
-	  result (i, j) = pow (a (i, j), static_cast<int> (btmp));
+	  result (i, j) = std::pow (a (i, j), static_cast<int> (btmp));
 	else
-	  result (i, j) = pow (a (i, j), btmp);
+	  result (i, j) = std::pow (a (i, j), btmp);
       }
 
   return result;
@@ -818,7 +810,7 @@ elem_xpow (const ComplexMatrix& a, const Complex& b)
     for (int i = 0; i < nr; i++)
       {
 	OCTAVE_QUIT;
-	result (i, j) = pow (a (i, j), b);
+	result (i, j) = std::pow (a (i, j), b);
       }
 
   return result;
@@ -845,7 +837,7 @@ elem_xpow (const ComplexMatrix& a, const ComplexMatrix& b)
     for (int i = 0; i < nr; i++)
       {
 	OCTAVE_QUIT;
-	result (i, j) = pow (a (i, j), b (i, j));
+	result (i, j) = std::pow (a (i, j), b (i, j));
       }
 
   return result;
@@ -895,7 +887,7 @@ elem_xpow (double a, const NDArray& b)
       for (int i = 0; i < b.length (); i++)
 	{
 	  OCTAVE_QUIT;
-	  result(i) = pow (atmp, b(i));
+	  result(i) = std::pow (atmp, b(i));
 	}
 
       retval = result;
@@ -906,7 +898,7 @@ elem_xpow (double a, const NDArray& b)
       for (int i = 0; i < b.length (); i++)
 	{
 	  OCTAVE_QUIT;
-	  result (i) = pow (a, b(i));
+	  result (i) = std::pow (a, b(i));
 	}
 
       retval = result;
@@ -924,7 +916,7 @@ elem_xpow (double a, const ComplexNDArray& b)
   for (int i = 0; i < b.length (); i++)
     {
       OCTAVE_QUIT;
-      result(i) = pow (atmp, b(i));
+      result(i) = std::pow (atmp, b(i));
     }
 
   return result;
@@ -944,13 +936,9 @@ elem_xpow (const NDArray& a, double b)
 	{
 	  OCTAVE_QUIT;
 
-	  // XXX FIXME XXX -- avoid apparent GNU libm bug by
-	  // converting A and B to complex instead of just A.
-
 	  Complex atmp (a (i));
-	  Complex btmp (b);
 
-	  result(i) = pow (atmp, btmp);
+	  result(i) = std::pow (atmp, b);
 	}
 
       retval = result;
@@ -962,7 +950,7 @@ elem_xpow (const NDArray& a, double b)
       for (int i = 0; i < a.length (); i++)
 	{
 	  OCTAVE_QUIT;
-	  result(i) = pow (a(i), b);
+	  result(i) = std::pow (a(i), b);
 	}
 
       retval = result;
@@ -1013,7 +1001,7 @@ done:
 	  OCTAVE_QUIT;
 	  Complex atmp (a(i));
 	  Complex btmp (b(i));
-	  complex_result(i) = pow (atmp, btmp);
+	  complex_result(i) = std::pow (atmp, btmp);
 	}
 
       retval = complex_result;
@@ -1025,7 +1013,7 @@ done:
       for (int i = 0; i < len; i++)
 	{
 	  OCTAVE_QUIT;
-	  result(i) = pow (a(i), b(i));
+	  result(i) = std::pow (a(i), b(i));
 	}
 
       retval = result;
@@ -1043,7 +1031,7 @@ elem_xpow (const NDArray& a, const Complex& b)
   for (int i = 0; i < a.length (); i++)
     {
       OCTAVE_QUIT;
-      result(i) = pow (Complex (a(i)), b);
+      result(i) = std::pow (Complex (a(i)), b);
     }
 
   return result;
@@ -1066,7 +1054,7 @@ elem_xpow (const NDArray& a, const ComplexNDArray& b)
   for (int i = 0; i < a.length (); i++)
     {
       OCTAVE_QUIT;
-      result(i) = pow (Complex (a(i)), b(i));
+      result(i) = std::pow (Complex (a(i)), b(i));
     }
 
   return result;
@@ -1082,9 +1070,9 @@ elem_xpow (const Complex& a, const NDArray& b)
       OCTAVE_QUIT;
       double btmp = b(i);
       if (xisint (btmp))
-	result(i) = pow (a, static_cast<int> (btmp));
+	result(i) = std::pow (a, static_cast<int> (btmp));
       else
-	result(i) = pow (a, btmp);
+	result(i) = std::pow (a, btmp);
     }
 
   return result;
@@ -1098,7 +1086,7 @@ elem_xpow (const Complex& a, const ComplexNDArray& b)
   for (int i = 0; i < b.length (); i++)
     {
       OCTAVE_QUIT;
-      result(i) = pow (a, b(i));
+      result(i) = std::pow (a, b(i));
     }
 
   return result;
@@ -1115,7 +1103,7 @@ elem_xpow (const ComplexNDArray& a, double b)
       for (int i = 0; i < a.length (); i++)
 	{
 	  OCTAVE_QUIT;
-	  result(i) = pow (a(i), static_cast<int> (b));
+	  result(i) = std::pow (a(i), static_cast<int> (b));
 	}
     }
   else
@@ -1123,7 +1111,7 @@ elem_xpow (const ComplexNDArray& a, double b)
       for (int i = 0; i < a.length (); i++)
 	{
 	  OCTAVE_QUIT;
-	  result(i) = pow (a(i), b);
+	  result(i) = std::pow (a(i), b);
 	}
     }
 
@@ -1149,9 +1137,9 @@ elem_xpow (const ComplexNDArray& a, const NDArray& b)
       OCTAVE_QUIT;
       double btmp = b(i);
       if (xisint (btmp))
-	result(i) = pow (a(i), static_cast<int> (btmp));
+	result(i) = std::pow (a(i), static_cast<int> (btmp));
       else
-	result(i) = pow (a(i), btmp);
+	result(i) = std::pow (a(i), btmp);
     }
 
   return result;
@@ -1165,7 +1153,7 @@ elem_xpow (const ComplexNDArray& a, const Complex& b)
   for (int i = 0; i < a.length (); i++)
     {
       OCTAVE_QUIT;
-      result(i) = pow (a(i), b);
+      result(i) = std::pow (a(i), b);
     }
 
   return result;
@@ -1188,7 +1176,7 @@ elem_xpow (const ComplexNDArray& a, const ComplexNDArray& b)
   for (int i = 0; i < a.length (); i++)
     {
       OCTAVE_QUIT;
-      result(i) = pow (a(i), b(i));
+      result(i) = std::pow (a(i), b(i));
     }
 
   return result;

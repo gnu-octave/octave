@@ -2,7 +2,7 @@ function [xb, yb] = bar (x, y)
 
 # usage: [xb, yb] = bar (x, y)
 #
-# Given two vectors of x-y data, bar produces a bar graph.
+# Given two vectors of x-y data, bar produces a `bar' graph.
 #
 # If only one argument is given, it is taken as a vector of y-values
 # and the x coordinates are taken to be the indices of the elements.

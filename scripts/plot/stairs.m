@@ -1,8 +1,8 @@
 function [xs, ys] = stairs (x, y)
 
-# usage: [xs, ys] = bar (x, y)
+# usage: [xs, ys] = stairs (x, y)
 #
-# Given two vectors of x-y data, bar produces a `stairstep' plot.
+# Given two vectors of x-y data, stairs produces a `stairstep' plot.
 #
 # If only one argument is given, it is taken as a vector of y-values
 # and the x coordiates are taken to be the indices of the elements.
@@ -10,7 +10,7 @@ function [xs, ys] = stairs (x, y)
 # If two output arguments are specified, the data are generated but
 # not plotted.  For example,
 #
-#   bar (x, y);
+#   stairs (x, y);
 #
 # and
 #

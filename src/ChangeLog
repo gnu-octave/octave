@@ -1,5 +1,10 @@
 2005-03-16  John W. Eaton  <jwe@octave.org>
 
+	* ov-struct.cc (octave_struct::save_ascii): Don't convert Cell
+	object to cs-list.
+	(octave_struct::save_binary): Likewise
+	(octave_struct::save_hdf5): Likewise.
+
 	* DLD-FUNCTIONS/gplot.l (Fset, Fshow): Delete.
 	(F__gnuplot_plot__): Rename from Fgplot.
 	(F__gnuplot_splot__): Rename from Fgsplot.

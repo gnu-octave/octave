@@ -986,8 +986,7 @@ octave_struct::save_ascii (std::ostream& os, bool& infnan_warned,
   while (i != m.end ())
     {
       Cell val = map.contents (i);
-      octave_value tmp = (map.numel () == 1) ? val(0) : 
-	octave_value (val, true);
+      octave_value tmp = (map.numel () == 1) ? val(0) : octave_value (val);
 
       bool b = save_ascii_data (os, tmp, m.key (i), infnan_warned, 
 				strip_nan_and_inf, 0, 0);
@@ -1061,8 +1060,7 @@ octave_struct::save_binary (std::ostream& os, bool& save_as_floats)
   while (i != m.end ())
     {
       Cell val = map.contents (i);
-      octave_value tmp = (map.numel () == 1) ? val(0) : 
-	octave_value (val, true);
+      octave_value tmp = (map.numel () == 1) ? val(0) : octave_value (val);
 
       bool b = save_binary_data (os, tmp, m.key (i), "", 0, save_as_floats);
       
@@ -1138,8 +1136,7 @@ octave_struct::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
   while (i != m.end ())
     {
       Cell val = map.contents (i);
-      octave_value tmp = (map.numel () == 1) ? val(0) : 
-	octave_value (val, true);
+      octave_value tmp = (map.numel () == 1) ? val(0) : octave_value (val);
 
       bool retval2 = add_hdf5_data (data_hid, tmp, m.key (i), "", false, 
 				    save_as_floats);

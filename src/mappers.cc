@@ -277,13 +277,14 @@ atanh (const Complex& x)
 Complex
 ceil (const Complex& x)
 {
-  return Complex (real (x), imag (x));
+  return Complex (ceil (real (x)), ceil (imag (x)));
 }
 
 Complex
 fix (const Complex& x)
 {
-  return Complex (real (x), imag (x));
+  return Complex (static_cast<int> (real (x)),
+		  static_cast<int> (imag (x)));
 }
 
 Complex

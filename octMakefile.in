@@ -212,17 +212,15 @@ split-local-dist:
 	rm -f .fname
 .PHONY: split-local-dist
 
-newversion:
-	awk '/static[ \t]+char[ \t]+version_string\[\] [ \t]*=/ { \
-	  beg = index ($$5, ".") + 1; \
-	  end = index ($$5, ";") - 2; \
-	  len_major = beg - 3; \
-	  len_minor = end - beg + 1; \
-	  major = substr ($$5, 2, len_major); \
-	  minor = substr ($$5, beg, len_minor); \
-	  printf ("static char version_string[] = \"%d.%d\";\n", \
-		  major, ++minor); \
+snapshot: snapshot-version dist
+.PHONY: snapshot
+
+snapshot-version:
+	gawk '/static[ \t]+char[ \t]+version_string\[\] [ \t]*=/ { \
+	  datestring = strftime("%y%m%d", systime()); \
+	  printf("static char version_string[] = \"ss-%s\";\n", \
+		 datestring); \
 	  next; \
 	} { print $$0 }' src/version.h > src/version.h.new
 	mv src/version.h.new src/version.h
-.PHONY: newversion
+.PHONY: snapshot-version

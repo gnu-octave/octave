@@ -1,5 +1,9 @@
 2003-01-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* miscellaneous/fileparts.m: New file.
+
+	* io/beep.m: New file.
+
 	* plot/__pltopt1__.m: Call undo_string_escapes for title part of
 	format only.
 

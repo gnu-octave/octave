@@ -1,4 +1,4 @@
-## Copyright (C) 1996, 1997 John W. Eaton
+## Copyright (C) 2003 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -18,38 +18,26 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} grid (@var{arg})
-## For two-dimensional plotting, force the display of a grid on the plot.
-## The argument may be either @code{"on"} or @code{"off"}.  If it is
-## omitted, @code{"on"} is assumed.
+## @deftypefn {Built-in Function} {[@var{dir}, @var{name}, @var{ext}, @var{ver}]} fnmatch (@var{filename})
+## Return the directory, name, extension, and version components of
+## @var{filename}.
 ## @end deftypefn
-## @seealso{plot, semilogx, semilogy, loglog, polar, mesh, contour,
-## bar, stairs, gplot, gsplot, replot, xlabel, ylabel, and title}
 
-## Author: jwe
+function [directory, name, extension, version] = fileparts (filename)
 
-## PKG_ADD: mark_as_command grid
-
-function grid (x)
-
-  usage_msg = "grid (\"on\" | \"off\")";
-
-  if (nargin == 0)
-    gset grid;
-  elseif (nargin == 1)
-    if (isstr (x))
-      if (strcmp ("off", x))
-        gset nogrid;
-      elseif (strcmp ("on", x))
-        gset grid;
-      else
-    usage (usage_msg);
-      endif
+  if (nargin == 1)
+    if (isstr (filename))
+      ds = rindex (filename, filesep);
+      es = rindex (filename, ".");
+      directory = filename(1:ds-1);
+      name = filename(ds+1:es-1);
+      extension = filename(es+1:length (filename));
+      version = "";
     else
-      error ("grid: argument must be a string");
+      error ("filesep: expecting filename argument to be a string");
     endif
   else
-    usage (usage_msg);
+    usage ("filesep (filename)");
   endif
 
 endfunction

@@ -80,7 +80,7 @@ static int Vtreat_neg_dim_as_zero;
 bool
 valid_identifier (const char *s)
 {
-  if (! s || ! (isalnum (*s) || *s == '_'))
+  if (! s || ! (isalpha (*s) || *s == '_'))
      return false;
 
   while (*++s != '\0')
@@ -94,6 +94,28 @@ bool
 valid_identifier (const std::string& s)
 {
   return valid_identifier (s.c_str ());
+}
+
+DEFCMD (isvarname, args, ,
+  "@deftypefn {Built-in Function} {} isvarname (@var{name})\n\
+Return true if @var{name} is a valid variable name\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  int argc = args.length () + 1;
+
+  string_vector argv = args.make_argv ("help");
+
+  if (error_state)
+    return retval;
+
+  if (argc == 2)
+    retval = valid_identifier (argv[1]);
+  else
+    print_usage ("isvarname");
+
+  return retval;
 }
 
 int

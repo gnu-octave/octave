@@ -391,6 +391,19 @@ install_defaults (void)
   set_site_defaults_file ();
 }
 
+DEFUN (rehash, , ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} rehash ()\n\
+Reinitialize Octave's @code{LOADPATH} directory cache.\n\
+@end deftypefn")
+{
+  octave_value_list retval;
+
+  Vload_path_dir_path.rehash ();
+
+  return retval;
+}
+
 static int
 editor (void)
 {
@@ -627,19 +640,6 @@ The name of the top-level Octave installation directory.\n\
 The version number of Octave, as a string.\n\
 @end defvr");
 
-}
-
-DEFUN (rehash, , ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} rehash ()\n\
-Reinitialize Octave's @code{LOADPATH} directory cache.\n\
-@end deftypefn")
-{
-  octave_value_list retval;
-
-  Vload_path_dir_path.rehash ();
-
-  return retval;
 }
 
 /*

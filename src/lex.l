@@ -54,6 +54,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // because it may not be protected to allow it to be included multiple
 // times.
 
+#include "Cell.h"
 #include "comment-list.h"
 #include "defun.h"
 #include "error.h"
@@ -2573,6 +2574,44 @@ lexical_feedback::init (void)
   // Quote marks strings intially.
   quote_is_transpose = false;
 }
+
+DEFCMD (iskeyword, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} iskeyword (@var{name})\n\
+Return true if @var{name} is an Octave keyword.  If @var{name}\n\
+is omitted, return a list of keywords.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  int argc = args.length () + 1;
+
+  string_vector argv = args.make_argv ("help");
+
+  if (error_state)
+    return retval;
+
+  if (argc == 1)
+    {
+      string_vector lst (TOTAL_KEYWORDS);
+
+      for (int i = 0; i < TOTAL_KEYWORDS; i++)
+	lst[i] = wordlist[i].name;
+
+      retval = Cell (lst.qsort ());
+    }
+  else if (argc == 2)
+    {
+      std::string s = argv[1];
+
+      retval = (octave_kw_lookup (s.c_str (), s.length ()) != 0);
+    }
+  else
+    print_usage ("iskeyword");
+
+  return retval;
+}
+
 
 static void
 maybe_warn_separator_insert (char sep)

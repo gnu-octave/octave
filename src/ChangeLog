@@ -1,5 +1,13 @@
 2003-01-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* dirfns.cc (symbols_of_dirfns): New function.
+	Install new built-in constant filesep.
+
+	* utils.cc (Fisvaranme): New function.
+	(valid_identifier): Identifiers can't start with digits!  Doh!
+
+	* lex.l (Fiskeyword): New function.
+
 	* Makefile.in (INCLUDES): Don't forget base-list.h.
 
 	* symtab.cc (symbol_record::define): If definition already exists,

@@ -638,6 +638,18 @@ fnmatch (\"a*b\", [\"ab\"; \"axyzb\"; \"xyzab\"])\n\
   return retval;
 }
 
+void
+symbols_of_dirfns (void)
+{
+  DEFCONST (filesep, file_ops::dir_sep_str,
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} filesep\n\
+The character used to separate directory names.  The value\n\
+of this variable is system dependent.\n\
+@end defvr");
+
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

@@ -1,3 +1,7 @@
+2003-01-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: Fail on all gcc 1.x and 2.x versions.
+
 2002-12-30  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in (OCTAVE_LOCAL_BUFFER): New macro.

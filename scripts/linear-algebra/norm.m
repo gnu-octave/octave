@@ -75,7 +75,7 @@ function retval = norm (x, p)
     if (nargin == 2)
       if (isstr (p))
         if (strcmp (p, "fro"))
-          retval = sqrt (sum (diag (x' * x)));
+	  retval = sqrt (sum (abs (x) .^ 2));
         elseif (strcmp (p, "inf"))
           retval = max (abs (x));
         else
@@ -91,7 +91,7 @@ function retval = norm (x, p)
         endif
       endif
     elseif (nargin == 1)
-      retval = sum (abs (x) .^ 2) ^ 0.5;
+      retval = sqrt (sum (abs (x) .^ 2));
     endif
 
   else
@@ -99,7 +99,7 @@ function retval = norm (x, p)
     if (nargin == 2)
       if (isstr (p))
         if (strcmp (p, "fro"))
-          retval = sqrt (sum (diag (x' * x)));
+	  retval = sqrt (sum (sum (abs (x) .^ 2)));
         elseif (strcmp (p, "inf"))
           retval = max (sum (abs (x')));
         else

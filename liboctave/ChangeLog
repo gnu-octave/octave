@@ -1,3 +1,7 @@
+2005-03-15  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in (MATRIX_INC): Remove oct-spparms.h from the list.
+
 2005-03-14  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in (DISTFILES): Don't include $(UMFPACK_EXTRAS).

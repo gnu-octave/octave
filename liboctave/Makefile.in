@@ -36,7 +36,7 @@ MATRIX_INC := Array.h Array2.h Array3.h ArrayN.h DiagArray2.h \
 	dNDArray.h dRowVector.h dbleAEPBAL.h dbleCHOL.h dbleDET.h \
 	dbleHESS.h dbleLU.h dbleQR.h dbleQRP.h dbleSCHUR.h dbleSVD.h \
 	boolSparse.h CSparse.h dSparse.h MSparse-defs.h MSparse.h \
-	Sparse.h oct-spparms.h sparse-base-lu.h SparseCmplxLU.h \
+	Sparse.h sparse-base-lu.h SparseCmplxLU.h \
 	SparsedbleLU.h Sparse-op-defs.h SparseType.h \
 	int8NDArray.h uint8NDArray.h int16NDArray.h uint16NDArray.h \
 	int32NDArray.h uint32NDArray.h int64NDArray.h uint64NDArray.h \

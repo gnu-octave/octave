@@ -1,3 +1,10 @@
+2000-01-21  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* CMatrix.cc (ComplexMatrix::expm): Apply permutation and scaling
+	operations directly in step 2 and reverse step 2.
+	* dMatrix.cc (Matrix::expm): Apply permutation and scaling
+	operations directly in step 2 and reverse step 2.
+
 2000-01-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-time.h, oct-time.cc (octave_strptime): New class.

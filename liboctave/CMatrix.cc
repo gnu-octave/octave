@@ -1606,11 +1606,13 @@ ComplexMatrix::expm (void) const
   Complex *mp = m.fortran_vec ();
 
   int info, ilo, ihi,ilos,ihis;
-  Array<double> dpermute(nc);
-  Array<double> dscale(nc);
+  Array<double> dpermute (nc);
+  Array<double> dscale (nc);
 
-  // FIXME: should pass job as a parameter in expm
-  char job = 'P';       // Permute first
+  // XXX FIXME XXX -- should pass job as a parameter in expm
+
+  // Permute first
+  char job = 'P';
   F77_XFCN (zgebal, ZGEBAL, (&job, nc, mp, nc, ilo, ihi,
             dpermute.fortran_vec(), info, 1L, 1L));
 
@@ -1620,7 +1622,8 @@ ComplexMatrix::expm (void) const
       return retval;
     }
 
-  job = 'S';            // then scale
+  // then scale
+  job = 'S';
   F77_XFCN (zgebal, ZGEBAL, (&job, nc, mp, nc, ilos, ihis,
             dscale.fortran_vec(), info, 1L, 1L));
 
@@ -1701,43 +1704,42 @@ ComplexMatrix::expm (void) const
   // Done in two steps: inverse scaling, then inverse permutation
 
   // inverse scaling (diagonal transformation)
-  int ii, jj;
-  for(ii = 0; ii < nc ; ii++)
-    for(jj=0; jj < nc ; jj++)
-       retval(ii,jj) *= dscale(ii)/dscale(jj);
+  for (int i = 0; i < nc; i++)
+    for (int j = 0; j < nc; j++)
+       retval(i,j) *= dscale(i) / dscale(j);
 
   // construct balancing permutation vector
-  Array<int> ipermute(nc);
-  for(ii=0 ; ii < nc ; ii++)
-    ipermute(ii) = ii;  // initialize to identity permutation
+  Array<int> ipermute (nc);
+  for (int i = 0; i < nc; i++)
+    ipermute(i) = i;  // initialize to identity permutation
 
   // leading permutations in forward order
-  for( ii = 0 ; ii < (ilo-1) ; ii++)
-  {
-    int swapidx = ( (int) dpermute(ii) ) -1;
-    int tmp = ipermute(ii);
-    ipermute(ii) = ipermute( swapidx );
-    ipermute(swapidx) = tmp;
-  }
+  for (int i = 0; i < (ilo-1); i++)
+    {
+      int swapidx = static_cast<int> (dpermute(i)) - 1;
+      int tmp = ipermute(i);
+      ipermute(i) = ipermute(swapidx);
+      ipermute(swapidx) = tmp;
+    }
 
   // trailing permutations must be done in reverse order
-  for( ii = nc-1 ; ii >= ihi ; ii--)
-  {
-    int swapidx = ( (int) dpermute(ii) ) -1;
-    int tmp = ipermute(ii);
-    ipermute(ii) = ipermute( swapidx );
-    ipermute(swapidx) = tmp;
-  }
+  for (int i = nc - 1; i >= ihi; i--)
+    {
+      int swapidx = static_cast<int> (dpermute(i)) - 1;
+      int tmp = ipermute(i);
+      ipermute(i) = ipermute(swapidx);
+      ipermute(swapidx) = tmp;
+    }
 
   // construct inverse balancing permutation vector
-  Array<int> invpvec(nc);
-  for( ii = 0 ; ii < nc ; ii++)
-    invpvec(ipermute(ii)) = ii ;     // Thanks to R. A. Lippert for this method
+  Array<int> invpvec (nc);
+  for (int i = 0; i < nc; i++)
+    invpvec(ipermute(i)) = i;     // Thanks to R. A. Lippert for this method
 
   ComplexMatrix tmpMat = retval;
-  for( ii = 0 ; ii < nc ; ii ++)
-    for( jj= 0 ; jj < nc ; jj++ )
-      retval(ii,jj) = tmpMat(invpvec(ii),invpvec(jj));
+  for (int i = 0; i < nc; i++)
+    for (int j = 0; j < nc; j++)
+      retval(i,j) = tmpMat(invpvec(i),invpvec(j));
 
   // Reverse preconditioning step 1: fix trace normalization.
 

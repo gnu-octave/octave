@@ -543,7 +543,7 @@ toascii (\"ASCII\")\n\
 @end group\n\
 \n\
 @end example\n\
-@end deftypefn")
+@end deftypefn");
 
   DEFUN_MAPPER (tolower, xtolower, 0, 0, 0, 0, 0, 0.0, 0.0, 2,
     "-*- texinfo -*-\n\
@@ -556,7 +556,7 @@ are left unchanged.  For example,\n\
 tolower (\"MiXeD cAsE 123\")\n\
      @result{} \"mixed case 123\"\n\
 @end example\n\
-@end deftypefn")
+@end deftypefn");
 
   DEFUN_MAPPER (toupper, xtoupper, 0, 0, 0, 0, 0, 0.0, 0.0, 2,
     "-*- texinfo -*-\n\
@@ -571,7 +571,7 @@ toupper (\"MiXeD cAsE 123\")
      @result{} \"MIXED CASE 123\"\n\
 @end group\n\
 @end example\n\
-@end deftypefn")
+@end deftypefn");
 
   DEFALIAS (gammaln, lgamma);
 

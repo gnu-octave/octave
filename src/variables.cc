@@ -1576,6 +1576,12 @@ set to \"true\".");
     "default format for files created with save, may be one of\n\
 \"binary\", \"text\", or \"mat-binary\""); 
 
+  DEFVAR ("define_all_return_values", SBV_define_all_return_values,
+	  "false", 0, 0, 1, define_all_return_values,
+    "control whether values returned from functions should have a\n\
+value even if one has not been explicitly assigned.  See also\n\
+default_return_value"); 
+
   DEFVAR ("do_fortran_indexing", SBV_do_fortran_indexing, "false", 0, 0,
 	  1, do_fortran_indexing,
     "allow single indices for matrices");
@@ -1606,12 +1612,6 @@ set to \"true\".");
 
   DEFVAR ("inf", SBV_inf, octave_Inf, 0, 1, 1, 0,
     "infinity");
-
-  DEFVAR ("define_all_return_values", SBV_define_all_return_values,
-	  "false", 0, 0, 1, define_all_return_values,
-    "control whether values returned from functions should have a\n\
-value even if one has not been explicitly assigned.  See also\n\
-default_return_value"); 
 
   DEFVAR ("j", SBV_j, Complex (0.0, 1.0), 1, 1, 1, 0,
     "sqrt (-1)");

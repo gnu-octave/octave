@@ -414,7 +414,7 @@ void
 symbol_record::print_symbol_info_line (std::ostream& os) const
 {
   os << (is_read_only () ? " r-" : " rw")
-     << (is_eternal () ? "-" : "d")
+     << (is_static () || is_eternal () ? "-" : "d")
      << "  "
      << std::setiosflags (std::ios::left) << std::setw (24)
      << type_name () . c_str ();

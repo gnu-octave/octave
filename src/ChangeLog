@@ -1,3 +1,8 @@
+2003-12-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* symtab.cc (symbol_record::print_symbol_info_line):
+	Also check is_static to see if a symbol can be cleared.
+
 2003-12-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* lex.l (is_keyword): Also allow varargout_kw if

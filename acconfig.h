@@ -60,6 +60,9 @@
 /* Define if signal handlers must be reinstalled after they are called. */
 #undef MUST_REINSTALL_SIGHANDLERS
 
+/* Define (to string::npos) if <string> doesn't. */
+#undef NPOS
+
 /* Define if you don't have NPSOL. */
 #undef NPSOL_MISSING
 

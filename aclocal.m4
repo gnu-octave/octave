@@ -369,6 +369,22 @@ if test $octave_cv_struct_gr_passwd = yes; then
 fi
 ])
 dnl
+dnl See if the standard string class has npos as a member.
+dnl
+AC_DEFUN(OCTAVE_STRING_NPOS,
+[AC_CACHE_CHECK([whether including <string> defines NPOS],
+octave_cv_string_npos,
+[AC_LANG_SAVE
+AC_LANG_CPLUSPLUS
+AC_TRY_COMPILE([#include <string>],
+[size_t foo = NPOS],
+octave_cv_string_npos=yes, octave_cv_string_npos=no)])
+if test $octave_cv_string_npos = no; then
+  AC_DEFINE(NPOS, string::npos)
+fi
+AC_LANG_RESTORE
+])
+dnl
 dnl The following test is from Karl Berry's Kpathseach library.  I'm
 dnl including it here in case we someday want to make the use of
 dnl kpathsea optional.

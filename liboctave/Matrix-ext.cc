@@ -50,7 +50,8 @@ extern "C"
 		       const int*, double*, const int*, double*,
 		       const int*, int*, long, long);
 
-  int F77_FCN (dgeesx) (const char*, const char*, int (*)(), const char*,
+  int F77_FCN (dgeesx) (const char*, const char*,
+			int (*)(double*, double*), const char*,
 			const int*, double*, const int*, int*, double*,
 			double*, double*, const int*, double*, double*, 
 			double*, const int*, int*, const int*, int*,
@@ -116,11 +117,11 @@ extern "C"
   int F77_FCN (zgeqrf) (const int*, const int*, Complex*, const int*,
 			Complex*, Complex*, const int*, int*);
 
-  int F77_FCN (zgeesx) (const char*, const char*, int (*)(), const char*,
-			const int*, Complex*, const int*, int*,
-			Complex*, Complex*, const int*, double*, double*,
-			Complex*, const int*, double*, int*, int*,
-			long, long);
+  int F77_FCN (zgeesx) (const char*, const char*, int (*)(Complex*),
+			const char*, const int*, Complex*, const int*,
+			int*, Complex*, Complex*, const int*, double*,
+			double*, Complex*, const int*, double*, int*,
+			int*, long, long);
 
   int F77_FCN (zgebal) (const char*, const int*, Complex*, const int*,
                         int*, int*, double*, int*, long, long);
@@ -577,9 +578,6 @@ select_dig (double *a, double *b)
   return (hypot (*a, *b) < 1.0);
 }
 
-// GAG.
-extern "C" { static int (*dummy_select)(); }
-
 int
 SCHUR::init (const Matrix& a, const char *ord)
 {
@@ -641,7 +639,7 @@ SCHUR::init (const Matrix& a, const char *ord)
     }
   else
     {
-      F77_FCN (dgeesx) (&jobvs, &sort, dummy_select, &sense, &n, s,
+      F77_FCN (dgeesx) (&jobvs, &sort, (void *) 0, &sense, &n, s,
 			&n, &sdim, wr, wi, q, &n, &rconde, &rcondv,
 			work, &lwork, iwork, &liwork, bwork, &info,
 			1L, 1L);
@@ -727,7 +725,7 @@ ComplexSCHUR::init (const ComplexMatrix& a, const char *ord)
     }
   else
     {
-      F77_FCN (zgeesx) (&jobvs, &sort, dummy_select, &sense, &n, s,
+      F77_FCN (zgeesx) (&jobvs, &sort, (void *) 0, &sense, &n, s,
 			&n, &sdim, w, q, &n, &rconde, &rcondv, work,
 			&lwork, rwork, bwork, &info, 1L, 1L);
     }

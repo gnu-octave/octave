@@ -64,7 +64,6 @@ BEGIN {
 
 	  zero_val = (NF > n) ? $(++n) : "";
 
-	  delete bool_headers;
 	  k = 0
 	  while (NF > n)
 	    bool_headers[k++] = $(++n);
@@ -155,7 +154,10 @@ BEGIN {
 	  printf ("#include \"%s\"\n", h_file) >> cc_file;
 
 	  for (i in bool_headers)
-	    printf ("#include \"%s\"\n", bool_headers[i]) >> cc_file;
+	    {
+	      printf ("#include \"%s\"\n", bool_headers[i]) >> cc_file;
+	      delete bool_headers[i];
+	    }
 
           if (result_header)
 	    printf ("#include \"%s\"\n", result_header) >> cc_file;

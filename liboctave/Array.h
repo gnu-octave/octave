@@ -158,7 +158,7 @@ protected:
 
 private:
 
-  Array<T>::ArrayRep *nil_rep (void) const
+  typename Array<T>::ArrayRep *nil_rep (void) const
     {
       static typename Array<T>::ArrayRep *nr
 	= new typename Array<T>::ArrayRep ();

@@ -1,3 +1,13 @@
+2003-11-08  John Eaton  <osc0383@coe3.osc.edu>
+
+	* Array.h (Array<T>::nil_rep): Qualify return type with typename.
+
+	* mk-ops.awk: Delete elements of bool_headers array individually.
+
+2003-11-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Array.cc (maybe_delete_elements): Rename arg idx to ra_idx.
+
 2003-10-31  Petter Risholm  <risholm@stud.ntnu.no>
 
 	* mx-inlines.cc (MX_ND_CUMULATIVE_OP): New macro.

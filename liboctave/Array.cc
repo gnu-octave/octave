@@ -1300,9 +1300,9 @@ Array<T>::maybe_delete_elements (idx_vector&, idx_vector&, idx_vector&)
 
 template <class T>
 void
-Array<T>::maybe_delete_elements (Array<idx_vector>& idx, const T& rfv)
+Array<T>::maybe_delete_elements (Array<idx_vector>& ra_idx, const T& rfv)
 {
-  int n_idx = idx.length ();
+  int n_idx = ra_idx.length ();
 
   dim_vector lhs_dims = dims ();
 
@@ -1316,9 +1316,9 @@ Array<T>::maybe_delete_elements (Array<idx_vector>& idx, const T& rfv)
 
   for (int i = 0; i < n_idx; i++)
     {
-      idx_is_colon_equiv(i) = idx(i).is_colon_equiv (lhs_dims(i), 1);
+      idx_is_colon_equiv(i) = ra_idx(i).is_colon_equiv (lhs_dims(i), 1);
 
-      idx_is_colon(i) = idx(i).is_colon ();
+      idx_is_colon(i) = ra_idx(i).is_colon ();
     }
 
   if (all_ones (idx_is_colon) || all_ones (idx_is_colon_equiv))
@@ -1377,9 +1377,9 @@ Array<T>::maybe_delete_elements (Array<idx_vector>& idx, const T& rfv)
 
       int non_col_dim = lhs_dims (non_col);
 
-      idx(non_col).sort (true);
+      ra_idx(non_col).sort (true);
 
-      int num_to_delete = idx(non_col).length (lhs_dims (non_col));
+      int num_to_delete = ra_idx(non_col).length (lhs_dims (non_col));
 
       if (num_to_delete > 0)
 	{
@@ -1407,7 +1407,7 @@ Array<T>::maybe_delete_elements (Array<idx_vector>& idx, const T& rfv)
 	      int iidx = 0;
 
 	      for (int j = 0; j < non_col_dim; j++)
-		if (j == idx(non_col).elem (iidx))
+		if (j == ra_idx(non_col).elem (iidx))
 		  {
 		    iidx++;
 
@@ -1458,20 +1458,20 @@ Array<T>::maybe_delete_elements (Array<idx_vector>& idx, const T& rfv)
 		    if (i != non_col)
 		      num_elem *= lhs_dims (i);
 
-		  num_elem *= idx(non_col).capacity ();
+		  num_elem *= ra_idx(non_col).capacity ();
 
 		  for (int i = 0; i < n; i++)
 		    {
 		      if (numidx < num_elem
-			  && is_in (result_idx(non_col), idx(non_col)))
+			  && is_in (result_idx(non_col), ra_idx(non_col)))
 			numidx++;
 
 		      else
 			{
 			  Array<int> temp_result_idx = result_idx;
 
-			  int num_lgt
-			    = how_many_lgt (result_idx(non_col), idx(non_col));
+			  int num_lgt = how_many_lgt (result_idx(non_col),
+						      ra_idx(non_col));
 
 			  temp_result_idx(non_col) -= num_lgt;
 

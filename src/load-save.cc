@@ -30,6 +30,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <string>
 
+#include <iomanip.h>
 #include <iostream.h>
 #include <fstream.h>
 #include <strstream.h>
@@ -1355,17 +1356,18 @@ read_mat_binary_data (istream& is, const string& filename,
 
 // Return nonzero if NAME matches one of the given globbing PATTERNS.
 
-static int
+static bool
 matches_patterns (const string_vector& patterns, int pat_idx,
 		  int num_pat, const string& name)
 {
   for (int i = pat_idx; i < num_pat; i++)
     {
       glob_match pattern (patterns[i]);
+
       if (pattern.match (name))
-	return 1;
+	return true;
     }
-  return 0;
+  return false;
 }
 
 static int
@@ -1533,11 +1535,13 @@ do_load (istream& stream, const string& orig_fname, int force,
 			      << "type               rows   cols   name\n"
 			      << "====               ====   ====   ====\n";
 
-			  string type = tc.type_name ();
-			  output_buf.form ("%-16s", type.c_str ());
-			  output_buf.form ("%7d", tc.rows ());
-			  output_buf.form ("%7d", tc.columns ());
-			  output_buf << "   ";
+			  output_buf
+			    << setiosflags (ios::left)
+			    << setw (16) << tc.type_name () . c_str ()
+			    << setiosflags (ios::right)
+			    << setw (7) << tc.rows ()
+			    << setw (7) << tc.columns ()
+			    << "   ";
 			}
 		      output_buf << name << "\n";
 		    }

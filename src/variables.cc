@@ -1156,12 +1156,12 @@ make_name_list (void)
 
   key = names (keyword_help (), key_len);
 
-  glb = global_sym_tab->list (glb_len);
+  glb = global_sym_tab->name_list (glb_len);
 
-  top = top_level_sym_tab->list (top_len);
+  top = top_level_sym_tab->name_list (top_len);
 
   if (top_level_sym_tab != curr_sym_tab)
-    lcl = curr_sym_tab->list (lcl_len);
+    lcl = curr_sym_tab->name_list (lcl_len);
 
   ffl = octave_fcn_file_name_cache::list_no_suffix ();
   int ffl_len = ffl.length ();
@@ -1302,18 +1302,18 @@ do_who (int argc, const string_vector& argv)
   if (show_builtins)
     {
       pad_after += global_sym_tab->maybe_list
-	("*** built-in variables:", pats, npats, octave_stdout,
+	("*** built-in variables:", pats, octave_stdout,
 	 show_verbose, symbol_record::BUILTIN_VARIABLE, SYMTAB_ALL_SCOPES);
 
       pad_after += global_sym_tab->maybe_list
-	("*** built-in functions:", pats, npats, octave_stdout,
+	("*** built-in functions:", pats, octave_stdout,
 	 show_verbose, symbol_record::BUILTIN_FUNCTION, SYMTAB_ALL_SCOPES);
     }
 
   if (show_functions)
     {
       pad_after += global_sym_tab->maybe_list
-	("*** currently compiled functions:", pats, npats,
+	("*** currently compiled functions:", pats,
 	 octave_stdout, show_verbose, symbol_record::USER_FUNCTION,
 	 SYMTAB_ALL_SCOPES);
     }
@@ -1321,11 +1321,11 @@ do_who (int argc, const string_vector& argv)
   if (show_variables)
     {
       pad_after += curr_sym_tab->maybe_list
-	("*** local user variables:", pats, npats, octave_stdout,
+	("*** local user variables:", pats, octave_stdout,
 	 show_verbose, symbol_record::USER_VARIABLE, SYMTAB_LOCAL_SCOPE);
 
       pad_after += curr_sym_tab->maybe_list
-	("*** globally visible user variables:", pats, npats,
+	("*** globally visible user variables:", pats,
 	 octave_stdout, show_verbose, symbol_record::USER_VARIABLE,
 	 SYMTAB_GLOBAL_SCOPE);
     }
@@ -1645,17 +1645,19 @@ With -x, exclude the named variables")
 
       if (argc > 0)
 	{
-	  lvars = curr_sym_tab->list (lcount, 0, 0, 0,
-				      SYMTAB_VARIABLES,
-				      SYMTAB_LOCAL_SCOPE);
+	  string_vector tmp;
 
-	  gvars = curr_sym_tab->list (gcount, 0, 0, 0,
-				      SYMTAB_VARIABLES,
-				      SYMTAB_GLOBAL_SCOPE);
+	  lvars = curr_sym_tab->name_list (lcount, tmp, false,
+					   SYMTAB_VARIABLES,
+					   SYMTAB_LOCAL_SCOPE);
 
-	  fcns = global_sym_tab->list (fcount, 0, 0, 0,
-				       symbol_record::USER_FUNCTION,
-				       SYMTAB_ALL_SCOPES);
+	  gvars = curr_sym_tab->name_list (gcount, tmp, false,
+					   SYMTAB_VARIABLES,
+					   SYMTAB_GLOBAL_SCOPE);
+
+	  fcns = global_sym_tab->name_list (fcount, tmp, false,
+					    symbol_record::USER_FUNCTION,
+					    SYMTAB_ALL_SCOPES);
 	}
 
       // XXX FIXME XXX -- this needs to be optimized to avoid the

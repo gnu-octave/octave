@@ -30,6 +30,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <string>
 
+#include <iomanip.h>
 #include <iostream.h>
 #include <strstream.h>
 
@@ -882,7 +883,7 @@ union equiv
       stmp[6] = (ctmp & 0x02) ? '1' : '0'; \
       stmp[7] = (ctmp & 0x01) ? '1' : '0'; \
       stmp[8] = '\0'; \
-      os.form ("%s", stmp); \
+      os << stmp; \
     } \
   while (0)
 
@@ -900,7 +901,7 @@ union equiv
       stmp[6] = (ctmp & 0x40) ? '1' : '0'; \
       stmp[7] = (ctmp & 0x80) ? '1' : '0'; \
       stmp[8] = '\0'; \
-      os.form ("%s", stmp); \
+      os << stmp; \
     } \
   while (0)
 
@@ -929,8 +930,17 @@ pr_any_float (const char *fmt, ostream& os, double d, int fw = 0)
 	  // XXX FIXME XXX -- is it correct to swap bytes for VAX
 	  // formats and not for Cray?
 
+	  // XXX FIXME XXX -- will bad things happen if we are
+	  // interrupted before resetting the format flags and fill
+	  // character?
+
 	  oct_mach_info::float_format flt_fmt =
 	    oct_mach_info::native_float_format ();
+
+	  char ofill = os.fill ('0');
+
+	  ios::fmtflags oflags = os.setf (ios::right);
+	  os.setf (ios::hex, ios::basefield);
 
 	  if (hex_format > 1
 	      || flt_fmt == oct_mach_info::ieee_big_endian
@@ -938,13 +948,16 @@ pr_any_float (const char *fmt, ostream& os, double d, int fw = 0)
 	      || flt_fmt == oct_mach_info::unknown)
 	    {
 	      for (size_t i = 0; i < sizeof (double); i++)
-		os.form ("%02x", static_cast<int> (tmp.i[i]));
+		os << setw (2) << static_cast<int> (tmp.i[i]);
 	    }
 	  else
 	    {
 	      for (int i = sizeof (double) - 1; i >= 0; i--)
-		os.form ("%02x", static_cast<int> (tmp.i[i]));
+		os << setw (2) << static_cast<int> (tmp.i[i]);
 	    }
+
+	  os.fill (ofill);
+	  os.setf (oflags);	  
 	}
       else if (bit_format)
 	{
@@ -990,14 +1003,14 @@ pr_any_float (const char *fmt, ostream& os, double d, int fw = 0)
 	    s = "Inf";
 
 	  if (fw > 0)
-	    os.form ("%*s", fw, s);
+	    os << setw (fw) << s;
 	  else
 	    os << s;
 	}
       else if (xisnan (d))
 	{
 	  if (fw > 0)
-	    os.form ("%*s", fw, "NaN");
+	    os << setw (fw) << "NaN";
 	  else
 	    os << "NaN";
 	}
@@ -1078,7 +1091,7 @@ pr_col_num_header (ostream& os, int total_width, int max_width,
 
       int num_cols = lim - col;
 
-      os.form ("%*s", extra_indent, "");
+      os << setw (extra_indent) << "";
 
       if (num_cols == 1)
 	os << " Column " << col + 1 << ":\n";
@@ -1226,7 +1239,7 @@ octave_print_internal (ostream& os, const Matrix& m, bool pr_as_read_syntax,
 
 	      for (int i = 0; i < nr; i++)
 		{
-		  os.form ("%*s", extra_indent, "");
+		  os << setw (extra_indent) << "";
 
 		  for (int j = col; j < lim; j++)
 		    {
@@ -1379,7 +1392,7 @@ octave_print_internal (ostream& os, const ComplexMatrix& cm,
 
 	      for (int i = 0; i < nr; i++)
 		{
-		  os.form ("%*s", extra_indent, "");
+		  os << setw (extra_indent) << "";
 
 		  for (int j = col; j < lim; j++)
 		    {
@@ -1476,7 +1489,7 @@ octave_print_internal (ostream& os, const Range& r,
 	      pr_col_num_header (os, total_width, max_width, lim, col,
 				 extra_indent);
 
-	      os.form ("%*s", extra_indent, "");
+	      os << setw (extra_indent) << "";
 
 	      for (int i = col; i < lim; i++)
 		{

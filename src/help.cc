@@ -483,7 +483,7 @@ simple_help (void)
   do \
     { \
       int count; \
-      string_vector names = global_sym_tab->list (count, 0, 0, 1, type); \
+      string_vector names = global_sym_tab->name_list (count, 0, 0, 1, type); \
       display_symtab_names (octave_stdout, names, count, msg); \
     } \
   while (0)

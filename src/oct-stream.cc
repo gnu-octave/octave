@@ -2639,8 +2639,13 @@ octave_stream_list::do_list_open_files (void) const
 
 	  string name = os->name ();
 
-	  buf.form ("  %4d     %-3s  %-9s  %s\n",
-		    i, mode.c_str (), arch.c_str (), name.c_str ());
+	  buf << "  "
+	      << setiosflags (ios::right)
+	      << setw (4) << i << "     "
+	      << setiosflags (ios::left)
+	      << setw (3) << mode.c_str () << "  "
+	      << setw (9) << arch.c_str () << "  "
+	      << name << "\n";
 	}
     }
 

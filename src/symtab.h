@@ -121,6 +121,11 @@ private:
     bool is_eternal (void) const
       { return eternal; }
 
+    int rows (void) const { return definition.rows (); }
+    int columns (void) const { return definition.columns (); }
+
+    string type_name (void) const { return definition.type_name (); }
+
     void define (const octave_value& val, unsigned int sym_type)
       {
 	definition = val;
@@ -269,6 +274,14 @@ public:
   void mark_as_static (void);
   bool is_static (void) const { return tagged_static; }
 
+  bool hides_fcn (void) const;
+  bool hides_builtin (void) const;
+
+  int rows (void) const { return definition->rows (); }
+  int columns (void) const { return definition->columns (); }
+
+  string type_name (void) const { return definition->type_name (); }
+
   octave_value& variable_value (void);
   octave_lvalue variable_reference (void);
 
@@ -279,6 +292,8 @@ public:
   void push_context (void);
 
   void pop_context (void);
+
+  void print_symbol_info_line (ostream& os);
 
 private:
 
@@ -310,55 +325,6 @@ private:
 
   symbol_record& operator = (const symbol_record& s);
 };
-
-#if 0
-// A structure for handling verbose information about a symbol_record.
-
-class
-symbol_record_info
-{
-public:
-
-  symbol_record_info (void);
-  symbol_record_info (symbol_record& s);
-
-  symbol_record_info (const symbol_record_info& s);
-
-  ~symbol_record_info (void) { }
-
-  symbol_record_info& operator = (const symbol_record_info& s);
-
-  bool is_defined (void) const;
-  bool is_read_only (void) const;
-  bool is_eternal (void) const;
-  bool hides_fcn (void) const;
-  bool hides_builtin (void) const;
-  string type_name (void) const;
-  bool is_function (void) const;
-  int rows (void) const;
-  int columns (void) const;
-  string name (void) const;
-
-  enum HIDES
-    {
-      SR_INFO_NONE = 0,
-      SR_INFO_USER_FUNCTION = 1,
-      SR_INFO_BUILTIN_FUNCTION = 2
-    };
-
-private:
-
-  bool initialized;
-  int nr;
-  int nc;
-  unsigned int type : 6;
-  unsigned int hides : 2;
-  unsigned int eternal : 1;
-  unsigned int read_only : 1;
-  string nm;
-  string const_type;
-};
-#endif
 
 // A symbol table.
 
@@ -403,23 +369,20 @@ public:
 
   int size (void) const;
 
-#if 0
-  symbol_record_info *
-  long_list (int& count, const string_vector& pats = string_vector (),
-	     int npats = 0, bool sort = false,
-	     unsigned int type = SYMTAB_ALL_TYPES,
-	     unsigned int scope = SYMTAB_ALL_SCOPES) const;
-#endif
+  Array<symbol_record *>
+  symbol_list (int& count, const string_vector& pats = string_vector (),
+	       unsigned int type = SYMTAB_ALL_TYPES,
+	       unsigned int scope = SYMTAB_ALL_SCOPES) const;
+
 
   string_vector
-  list (int& count, const string_vector& pats = string_vector (),
-	int npats = 0, bool sort = false,
-	unsigned int type = SYMTAB_ALL_TYPES,
-	unsigned int scope = SYMTAB_ALL_SCOPES) const;
+  name_list (int& count, const string_vector& pats = string_vector (),
+	     bool sort = false, unsigned int type = SYMTAB_ALL_TYPES,
+	     unsigned int scope = SYMTAB_ALL_SCOPES) const;
 
 
   int maybe_list (const char *header, const string_vector& argv,
-		  int argc, ostream& os, bool show_verbose,
+		  ostream& os, bool show_verbose,
 		  unsigned type, unsigned scope);
   
   symbol_record **glob (int& count, const string& pat = string ("*"),

@@ -87,7 +87,7 @@ INCLUDES := BaseSLList.h Map.h SLList.h SLStack.h Stack.h defun-dld.h \
 	systime.h syswait.h token.h toplev.h unwind-prot.h utils.h \
 	variables.h version.h xdiv.h xpow.h $(OV_INCLUDES) $(PT_INCLUDES)
 
-TI_XSRC := Array-oc.cc Array-os.cc Array-tc.cc Map-fnc.cc \
+TI_XSRC := Array-oc.cc Array-os.cc Array-sym.cc Array-tc.cc Map-fnc.cc \
 	Map-tc.cc SLList-expr.cc SLList-misc.cc SLList-plot.cc \
 	SLList-tc.cc SLList-tm.cc SLStack-i.cc SLStack-pc.cc \
 	SLStack-str.cc SLStack-sym.cc SLStack-tok.cc \

@@ -42,7 +42,7 @@ function [y, iterations] = erfinv (x)
   x = reshape (x, m * n, 1);
   y = zeros (m * n, 1);
 
-  i = find ((x < -1) | (x > 1));
+  i = find ((x < -1) | (x > 1) | isnan(x));
   if any (i)
     y(i) = NaN * ones (length (i), 1);
   endif

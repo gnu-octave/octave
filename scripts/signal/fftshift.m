@@ -23,12 +23,12 @@
 ## and @code{ifft} functions, in order the move the frequency 0 to the
 ## center of the vector or matrix.
 ##
-## If @var{v} is a vector of @math{E} elements corresponding to @math{E}
+## If @var{v} is a vector of @math{N} elements corresponding to @math{N}
 ## time samples spaced of @math{Dt} each, then @code{fftshift (fft
 ## (@var{v}))} corresponds to frequencies
 ##
 ## @example
-## f = linspace (-E/(4*Dt), (E/2-1)/(2*Dt), E)
+## f = ((1:N) - ceil(N/2)) / N / Dt
 ## @end example
 ##
 ## If @var{v} is a matrix, the same holds for rows and columns.

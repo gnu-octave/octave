@@ -40,6 +40,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt-jump.h"
 #include "pt-loop.h"
 #include "pt-mat.h"
+#include "pt-cell.h"
 #include "pt-misc.h"
 #include "pt-plot.h"
 #include "pt-pr-code.h"

@@ -39,6 +39,7 @@ class ostream;
 #include "oct-alloc.h"
 #include "str-vec.h"
 
+class Cell;
 class Octave_map;
 class octave_stream;
 class octave_function;
@@ -152,6 +153,7 @@ public:
 
   octave_value (void);
   octave_value (double d);
+  octave_value (const Cell& m);
   octave_value (const Matrix& m);
   octave_value (const DiagMatrix& d);
   octave_value (const RowVector& v, int pcv = -1);
@@ -289,6 +291,9 @@ public:
   bool is_undefined (void) const
     { return ! is_defined (); }
 
+  virtual bool is_cell (void) const
+    { return rep->is_cell (); }
+
   virtual bool is_real_scalar (void) const
     { return rep->is_real_scalar (); }
 
@@ -401,6 +406,8 @@ public:
 
   virtual double scalar_value (bool frc_str_conv = false) const
     { return rep->scalar_value (frc_str_conv); }
+
+  virtual Cell cell_value (void) const;
 
   virtual Matrix matrix_value (bool frc_str_conv = false) const
     { return rep->matrix_value (frc_str_conv); }

@@ -44,6 +44,7 @@ class tree_switch_command;
 class tree_index_expression;
 class tree_indirect_ref;
 class tree_matrix;
+class tree_cell;
 class tree_multi_assignment;
 class tree_no_op_command;
 class tree_constant;
@@ -134,6 +135,9 @@ public:
 
   virtual void
   visit_matrix (tree_matrix&) = 0;
+
+  virtual void
+  visit_cell (tree_cell&) = 0;
 
   virtual void
   visit_multi_assignment (tree_multi_assignment&) = 0;

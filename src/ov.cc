@@ -37,6 +37,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-base.h"
 #include "ov-bool.h"
 #include "ov-bool-mat.h"
+#include "ov-cell.h"
 #include "ov-scalar.h"
 #include "ov-re-mat.h"
 #include "ov-complex.h"
@@ -332,6 +333,13 @@ octave_value::octave_value (double d)
   : rep (new octave_scalar (d))
 {
   rep->count = 1;
+}
+
+octave_value::octave_value (const Cell& c)
+  : rep (new octave_cell (c))
+{
+  rep->count = 1;
+  maybe_mutate ();
 }
 
 octave_value::octave_value (const Matrix& m)
@@ -707,6 +715,12 @@ octave_value::struct_elt_ref (octave_value *, const string&)
   panic_impossible ();
 
   return octave_lvalue ();
+}
+
+Cell
+octave_value::cell_value (void) const
+{
+  return rep->cell_value ();
 }
 
 Octave_map

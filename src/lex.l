@@ -86,15 +86,18 @@ const yum_yum ATE_NOTHING = 0;
 const yum_yum ATE_SPACE_OR_TAB = 1;
 const yum_yum ATE_NEWLINE = 2;
 
-// Is the closest nesting level a square brace or a paren?
+// Is the closest nesting level a square bracket, squiggly brace or a paren?
 
-class brace_paren_nesting_level : public SLStack <int>
+class bracket_brace_paren_nesting_level : public SLStack <int>
 {
 public:
 
-  brace_paren_nesting_level (void) : SLStack<int> () { }
+  bracket_brace_paren_nesting_level (void) : SLStack<int> () { }
 
-  ~brace_paren_nesting_level (void) { }
+  ~bracket_brace_paren_nesting_level (void) { }
+
+  void bracket (void) { push (BRACKET); }
+  bool is_bracket (void) { return ! empty () && top () == BRACKET; }
 
   void brace (void) { push (BRACE); }
   bool is_brace (void) { return ! empty () && top () == BRACE; }
@@ -108,14 +111,15 @@ public:
 
 private:
 
-  enum { BRACE = 1, PAREN = 2 };
+  enum { BRACKET = 1, BRACE = 2, PAREN = 3 };
 
-  brace_paren_nesting_level (const brace_paren_nesting_level&);
+  bracket_brace_paren_nesting_level (const bracket_brace_paren_nesting_level&);
 
-  brace_paren_nesting_level& operator = (const brace_paren_nesting_level&);
+  bracket_brace_paren_nesting_level&
+  operator = (const bracket_brace_paren_nesting_level&);
 };
 
-static brace_paren_nesting_level nesting_level;
+static bracket_brace_paren_nesting_level nesting_level;
 
 // Should whitespace in a literal matrix list be automatically
 // converted to commas and semicolons?
@@ -176,7 +180,7 @@ static bool next_token_is_postfix_unary_op (bool spc_prev);
 static string strip_trailing_whitespace (char *s);
 static void handle_number (void);
 static int handle_string (char delim, int text_style = 0);
-static int handle_close_brace (int spc_gobbled);
+static int handle_close_bracket (int spc_gobbled);
 static int handle_identifier (const string& tok, int spc_gobbled);
 static bool have_continuation (bool trailing_comments_ok = true);
 static bool have_ellipsis_continuation (bool trailing_comments_ok = true);
@@ -262,7 +266,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     int c = yytext[yyleng-1];
     int cont_is_spc = eat_continuation ();
     int spc_gobbled = (cont_is_spc || c == ' ' || c == '\t');
-    return handle_close_brace (spc_gobbled);
+    return handle_close_bracket (spc_gobbled);
   }
 
 %{
@@ -299,7 +303,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 	int postfix_un_op = next_token_is_postfix_unary_op (true);
 
 	if (! (postfix_un_op || bin_op)
-	    && nesting_level.is_brace ()
+	    && nesting_level.is_bracket ()
 	    && lexer_flags.convert_spaces_to_comma)
 	  {
 	    lexer_flags.quote_is_transpose = false;
@@ -346,19 +350,19 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 	if (nesting_level.none ())
 	  return LEXICAL_ERROR;
 
-	if (nesting_level.is_brace ())
+	if (nesting_level.is_bracket ())
 	  return ';';
       }
   }
 
 %{
-// Open and close brace are handled differently if we are in the range
+// Open and close bracket are handled differently if we are in the range
 // part of a plot command.
 //
 %}
 
 \[{S}* {
-    nesting_level.brace ();
+    nesting_level.bracket ();
 
     current_input_column += yyleng;
     lexer_flags.quote_is_transpose = false;
@@ -375,7 +379,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
       }
     else
       {
-	lexer_flags.braceflag++;
+	lexer_flags.bracketflag++;
 	BEGIN MATRIX;
 	return '[';
       }
@@ -477,7 +481,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     if (nesting_level.none ())
       return '\n';
 
-    if (nesting_level.is_brace ())
+    if (nesting_level.is_bracket ())
       return LEXICAL_ERROR;
   }
 
@@ -548,7 +552,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
     if (nesting_level.none ())
       return '\n';
-    else if (nesting_level.is_brace ())
+    else if (nesting_level.is_bracket ())
       return ';';
   }
 
@@ -617,7 +621,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
     current_input_column++;
     lexer_flags.cant_be_identifier = true;
     lexer_flags.quote_is_transpose = true;
-    lexer_flags.convert_spaces_to_comma = nesting_level.is_brace ();
+    lexer_flags.convert_spaces_to_comma = nesting_level.is_bracket ();
     do_comma_insert_check ();
     return ')';
   }
@@ -640,6 +644,24 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 "|="	{ BIN_OP_RETURN (OR_EQ, false); }
 "<<="	{ BIN_OP_RETURN (LSHIFT_EQ, false); }
 ">>="	{ BIN_OP_RETURN (RSHIFT_EQ, false); }
+
+"{" {
+    nesting_level.brace ();
+    promptflag--;
+    TOK_RETURN ('{');
+  }
+
+"}" {
+    nesting_level.remove ();
+
+    current_input_column++;
+    lexer_flags.cant_be_identifier = true;
+    lexer_flags.quote_is_transpose = true;
+    lexer_flags.convert_spaces_to_comma = nesting_level.is_bracket ();
+    do_comma_insert_check (); // Is this really necessary?
+
+    return '}';
+  }
 
 %{
 // Unrecognized input is a lexical error.
@@ -674,7 +696,7 @@ do_comma_insert_check (void)
   if (spc_gobbled)
     unput (' ');
 
-  lexer_flags.do_comma_insert = (lexer_flags.braceflag && c == '[');
+  lexer_flags.do_comma_insert = (lexer_flags.bracketflag && c == '[');
 }
 
 // Fix things up for errors or interrupts.  The parser is never called
@@ -691,7 +713,7 @@ reset_parser (void)
   // We do want a prompt by default.
   promptflag = 1;
 
-  // Error may have occurred inside some parentheses or braces.
+  // Error may have occurred inside some brackets, braces, or parentheses.
   nesting_level.clear ();
 
   // Clear out the stack of token info used to track line and column
@@ -1806,17 +1828,17 @@ next_token_is_assign_op (void)
 }
 
 static int
-handle_close_brace (int spc_gobbled)
+handle_close_bracket (int spc_gobbled)
 {
   int retval = ']';
 
   if (! nesting_level.none ())
     {
       nesting_level.remove ();
-      lexer_flags.braceflag--;
+      lexer_flags.bracketflag--;
     }
 
-  if (lexer_flags.braceflag == 0)
+  if (lexer_flags.bracketflag == 0)
     BEGIN 0;
 
   if (next_token_is_assign_op () && ! lexer_flags.looking_at_return_list)
@@ -1828,7 +1850,7 @@ handle_close_brace (int spc_gobbled)
       int c1 = yyinput ();
       unput (c1);
 
-      if (lexer_flags.braceflag && Vwhitespace_in_literal_matrix != 2)
+      if (lexer_flags.bracketflag && Vwhitespace_in_literal_matrix != 2)
 	{
 	  int bin_op = next_token_is_bin_op (spc_gobbled);
 
@@ -1837,7 +1859,7 @@ handle_close_brace (int spc_gobbled)
 	  int sep_op = next_token_is_sep_op ();
 
 	  if (! (postfix_un_op || bin_op || sep_op)
-	      && nesting_level.is_brace ()
+	      && nesting_level.is_bracket ()
 	      && lexer_flags.convert_spaces_to_comma)
 	    {
 	      unput (',');
@@ -1856,7 +1878,7 @@ handle_close_brace (int spc_gobbled)
 static void
 maybe_unput_comma (int spc_gobbled)
 {
-  if (Vwhitespace_in_literal_matrix != 2 && nesting_level.is_brace ())
+  if (Vwhitespace_in_literal_matrix != 2 && nesting_level.is_bracket ())
     {
       int bin_op = next_token_is_bin_op (spc_gobbled);
 
@@ -1950,7 +1972,7 @@ handle_identifier (const string& tok, int spc_gobbled)
       if (! lexer_flags.in_plot_range)
 	lexer_flags.past_plot_range = true;
 
-      // Option keywords can't appear in parentheses or braces.
+      // Option keywords can't appear in brackets, braces, or parentheses.
 
       int plot_option_kw = 0;
 
@@ -2090,7 +2112,7 @@ void
 lexical_feedback::init (void)
 {
   // Not initially defining a matrix list.
-  braceflag = 0;
+  bracketflag = 0;
 
   // Not initially inside a loop or if statement.
   looping = 0;

@@ -40,6 +40,7 @@ class ostream;
 #include "ov.h"
 #include "ov-typeinfo.h"
 
+class Cell;
 class Octave_map;
 class octave_value_list;
 
@@ -91,6 +92,8 @@ public:
   int length (void) const { return -1; }
 
   bool is_defined (void) const { return false; }
+
+  bool is_cell (void) const { return false; }
 
   bool is_real_scalar (void) const { return false; }
 
@@ -162,6 +165,8 @@ public:
 
   double scalar_value (bool frc_str_conv = false) const
     { return double_value (frc_str_conv); }
+
+  Cell cell_value (bool = false) const;
 
   Matrix matrix_value (bool = false) const;
 

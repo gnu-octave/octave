@@ -506,6 +506,37 @@ tree_print_code::visit_matrix (tree_matrix& lst)
 }
 
 void
+tree_print_code::visit_cell (tree_cell& lst)
+{
+  indent ();
+
+  print_parens (lst, "(");
+
+  os << "{";
+
+  Pix p = lst.first ();
+
+  while (p)
+    {
+      tree_argument_list *elt = lst (p);
+
+      lst.next (p);
+
+      if (elt)
+	{
+	  elt->accept (*this);
+
+	  if (p)
+	    os << "; ";
+	}
+    }
+
+  os << "}";
+
+  print_parens (lst, ")");
+}
+
+void
 tree_print_code::visit_multi_assignment (tree_multi_assignment& expr)
 {
   indent ();

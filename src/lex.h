@@ -122,8 +122,8 @@ public:
 
   void init (void);
 
-  // Brace level count.
-  int braceflag;
+  // Square bracket level count.
+  int bracketflag;
 
   // TRUE means we're in the middle of defining a loop.
   int looping;

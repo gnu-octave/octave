@@ -32,6 +32,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "lo-ieee.h"
 
+#include "Cell.h"
 #include "gripes.h"
 #include "oct-map.h"
 #include "oct-obj.h"
@@ -193,6 +194,14 @@ octave_base_value::double_value (bool) const
 {
   double retval = octave_NaN;
   gripe_wrong_type_arg ("octave_base_value::double_value ()", type_name ());
+  return retval;
+}
+
+Cell
+octave_base_value::cell_value (bool) const
+{
+  Cell retval;
+  gripe_wrong_type_arg ("octave_base_value::cell_value()", type_name ());
   return retval;
 }
 

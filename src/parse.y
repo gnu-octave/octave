@@ -266,6 +266,10 @@ make_decl_command (int tok, token *tok_val, tree_decl_init_list *lst);
 static tree_expression *
 finish_matrix (tree_matrix *m);
 
+// Finish building a cell list.
+static tree_expression *
+finish_cell (tree_cell *c);
+
 // Maybe print a warning.  Duh.
 static void
 maybe_warn_missing_semi (tree_statement_list *);
@@ -299,6 +303,7 @@ set_stmt_print_flag (tree_statement_list *, char, bool);
   char sep_type;
   tree *tree_type;
   tree_matrix *tree_matrix_type;
+  tree_cell *tree_cell_type;
   tree_expression *tree_expression_type;
   tree_constant *tree_constant_type;
   tree_identifier *tree_identifier_type;
@@ -363,15 +368,17 @@ set_stmt_print_flag (tree_statement_list *, char, bool);
 %type <sep_type> sep_no_nl opt_sep_no_nl sep opt_sep
 %type <tree_type> input
 %type <tree_constant_type> constant magic_colon
-%type <tree_matrix_type> rows rows1
-%type <tree_expression_type> title matrix
+%type <tree_matrix_type> matrix_rows matrix_rows1
+%type <tree_cell_type> cell_rows cell_rows1
+%type <tree_expression_type> title matrix cell
 %type <tree_expression_type> primary_expr postfix_expr prefix_expr binary_expr
 %type <tree_expression_type> simple_expr colon_expr assign_expr expression
 %type <tree_identifier_type> identifier
 %type <octave_user_function_type> function1 function2 function3
 %type <tree_index_expression_type> word_list_cmd
 %type <tree_colon_expression_type> colon_expr1
-%type <tree_argument_list_type> arg_list word_list assign_lhs matrix_row
+%type <tree_argument_list_type> arg_list word_list assign_lhs
+%type <tree_argument_list_type> cell_or_matrix_row
 %type <tree_parameter_list_type> param_list param_list1
 %type <tree_parameter_list_type> return_list return_list1
 %type <tree_command_type> command select_command loop_command
@@ -410,7 +417,7 @@ set_stmt_print_flag (tree_statement_list *, char, bool);
 %left QUOTE TRANSPOSE
 %left UNARY PLUS_PLUS MINUS_MINUS EXPR_NOT
 %right POW EPOW
-%left '(' '.'
+%left '(' '.' '{'
 
 // Where to start.
 %start input
@@ -532,29 +539,53 @@ matrix		: '[' ']'
 		  { $$ = new tree_constant (octave_value (Matrix ())); }
 		| '[' ';' ']'
 		  { $$ = new tree_constant (octave_value (Matrix ())); }
-		| '[' in_matrix_or_assign_lhs rows ']'
+		| '[' in_matrix_or_assign_lhs matrix_rows ']'
 		  {
 		    $$ = finish_matrix ($3);
 		    lexer_flags.looking_at_matrix_or_assign_lhs = false;
 		  }
 		;
 
-rows		: rows1
+matrix_rows	: matrix_rows1
 		  { $$ = $1; }
-		| rows1 ';'	// Ignore trailing semicolon.
+		| matrix_rows1 ';'	// Ignore trailing semicolon.
 		  { $$ = $1; }
 		;
 
-rows1		: matrix_row
+matrix_rows1	: cell_or_matrix_row
 		  { $$ = new tree_matrix ($1); }
-		| rows1 ';' matrix_row
+		| matrix_rows1 ';' cell_or_matrix_row
 		  {
 		    $1->append ($3);
 		    $$ = $1;
 		  }
 		;
 
-matrix_row	: arg_list
+cell		: '{' '}'
+		  { $$ = new tree_constant (octave_value (Matrix ())); }
+		| '{' ';' '}'
+		  { $$ = new tree_constant (octave_value (Matrix ())); }
+		| '{' cell_rows '}'
+		  { $$ = finish_cell ($2); }
+		;
+
+cell_rows	: cell_rows1
+		  { $$ = $1; }
+		| cell_rows1 ';'	// Ignore trailing semicolon.
+		  { $$ = $1; }
+		;
+
+cell_rows1	: cell_or_matrix_row
+		  { $$ = new tree_cell ($1); }
+		| cell_rows1 ';' cell_or_matrix_row
+		  {
+		    $1->append ($3);
+		    $$ = $1;
+		  }
+		;
+
+cell_or_matrix_row
+		: arg_list
 		  { $$ = $1; }
 		| arg_list ','	// Ignore trailing comma.
 		  { $$ = $1; }
@@ -565,6 +596,8 @@ primary_expr	: identifier
 		| constant
 		  { $$ = $1; }
 		| matrix
+		  { $$ = $1; }
+		| cell
 		  { $$ = $1; }
 		| '(' expression ')'
 		  { $$ = $2->mark_in_parens (); }
@@ -615,6 +648,8 @@ postfix_expr	: primary_expr
 		| postfix_expr '(' ')'
 		  { $$ = make_index_expression ($1, 0); }
 		| postfix_expr '(' arg_list ')'
+		  { $$ = make_index_expression ($1, $3); }
+		| postfix_expr '{' arg_list '}'
 		  { $$ = make_index_expression ($1, $3); }
 		| postfix_expr PLUS_PLUS
 		  { $$ = make_postfix_op (PLUS_PLUS, $1, $2); }
@@ -2516,6 +2551,16 @@ finish_matrix (tree_matrix *m)
   unwind_protect::run_frame ("finish_matrix");
 
   return retval;
+}
+
+// Finish building a cell list.
+
+static tree_expression *
+finish_cell (tree_cell *c)
+{
+  // For now, this doesn't do anything.
+
+  return c;
 }
 
 static void

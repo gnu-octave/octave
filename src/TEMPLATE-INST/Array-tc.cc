@@ -44,6 +44,7 @@ extern template class Array2<Complex>;
 extern template class DiagArray2<Complex>;
 
 template class Array<octave_value>;
+template class Array2<octave_value>;
 
 /*
 ;;; Local Variables: ***

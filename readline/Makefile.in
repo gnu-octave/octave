@@ -85,23 +85,28 @@ documentation: force
 
 force:
 
+# For Octave:
+
+install:
+uninstall:
+
 # The rule for 'includes' is written funny so that the if statement
 # always returns TRUE unless there really was an error installing the
 # include files.
-install: installdirs libreadline.a
-	${INSTALL_DATA} readline.h keymaps.h chardefs.h history.h \
-		$(incdir)/readline
-	-${MV} $(libdir)/libreadline.a $(libdir)/libreadline.old
-	${INSTALL_DATA} libreadline.a $(bindir)/libreadline.a
-	-[ -n "$(RANLIB)" ] && $(RANLIB) -t $(bindir)/libreadline.a
-
-installdirs:
-	[ ! -d $(incdir)/readline ] && { \
-	  mkdir $(incdir)/readline && chmod chmod 755 $(incdir)/readline; }
-
-uninstall:
-	cd $(incdir)/readline && ${RM} -f ${INSTALLED_HEADERS}
-	cd $(libdir) && ${RM} -f libreadline.a libreadline.old
+#install: installdirs libreadline.a
+#	${INSTALL_DATA} readline.h keymaps.h chardefs.h history.h \
+#		$(incdir)/readline
+#	-${MV} $(libdir)/libreadline.a $(libdir)/libreadline.old
+#	${INSTALL_DATA} libreadline.a $(bindir)/libreadline.a
+#	-[ -n "$(RANLIB)" ] && $(RANLIB) -t $(bindir)/libreadline.a
+#
+#installdirs:
+#	[ ! -d $(incdir)/readline ] && { \
+#	  mkdir $(incdir)/readline && chmod chmod 755 $(incdir)/readline; }
+#
+#uninstall:
+#	cd $(incdir)/readline && ${RM} -f ${INSTALLED_HEADERS}
+#	cd $(libdir) && ${RM} -f libreadline.a libreadline.old
 
 tags:	force
 	etags $(CSOURCES) $(HSOURCES)

@@ -112,42 +112,45 @@ gmalloc.o:
 
 check: 
 
+install:
+uninstall:
+
 # Installation of kpathsea itself is complicated by the fact that we
 # want to install texmf.cnf, kpathsea.info, and MakeTeXPK by default,
 # but not the headers or the .a file itself.  So we have a separate
 # target `install-library' to install the latter stuff.
-install: install-exec install-data
-uninstall: uninstall-exec uninstall-data
-
-install-exec: kpsewhich MakeTeXPK
-	$(SHELL) $(top_srcdir)/../mkdirchain $(bindir) $(scriptdir)
-	if grep 'original MakeTeXPK --' $(scriptdir)/MakeTeXPK >/dev/null 2>&1\
-	   || test ! -r $(scriptdir)/MakeTeXPK; then \
-	  $(INSTALL_PROGRAM) MakeTeXPK $(scriptdir)/MakeTeXPK; \
-	else true; fi
-	$(INSTALL_PROGRAM) kpsewhich $(bindir)/kpsewhich
-uninstall-exec:
-	rm -f $(bindir)/kpsewhich
-
-install-data: texmf.cnf kpathsea.info
-	$(SHELL) $(top_srcdir)/../mkdirchain $(texmf) $(infodir) $(web2cdir)
-	if grep 'original texmf.cnf --' $(web2cdir)/texmf.cnf >/dev/null 2>&1 \
-	   || test ! -r $(web2cdir)/texmf.cnf; then \
-	  $(INSTALL_DATA) texmf.cnf $(web2cdir)/texmf.cnf; \
-	else true; fi
-	$(INSTALL_DATA) $(srcdir)/kpathsea.info $(infodir)/kpathsea.info
-uninstall-data:
-	rm -f $(infodir)/kpathsea.info*
-
-install-library: $(library).a 
-	$(SHELL) $(top_srcdir)/../mkdirchain $(includedir)/kpathsea $(libdir)
-	$(INSTALL_DATA) $(library).a $(libdir)/lib$(library).a
-	for f in $(install_headers); do \
-	  $(INSTALL_DATA) $$f $(includedir)/kpathsea/$$f; done
-	rm -f $(includedir)/kpathsea/c-auto.h
-uninstall-library:
-	rm -f $(libdir)/lib$(library).a
-	for f in $(install_headers); do rm -f $(includedir)/$$f; done
+#install: install-exec install-data
+#uninstall: uninstall-exec uninstall-data
+#
+#install-exec: kpsewhich MakeTeXPK
+#	$(SHELL) $(top_srcdir)/../mkdirchain $(bindir) $(scriptdir)
+#	if grep 'original MakeTeXPK --' $(scriptdir)/MakeTeXPK >/dev/null 2>&1\
+#	   || test ! -r $(scriptdir)/MakeTeXPK; then \
+#	  $(INSTALL_PROGRAM) MakeTeXPK $(scriptdir)/MakeTeXPK; \
+#	else true; fi
+#	$(INSTALL_PROGRAM) kpsewhich $(bindir)/kpsewhich
+#uninstall-exec:
+#	rm -f $(bindir)/kpsewhich
+#
+#install-data: texmf.cnf kpathsea.info
+#	$(SHELL) $(top_srcdir)/../mkdirchain $(texmf) $(infodir) $(web2cdir)
+#	if grep 'original texmf.cnf --' $(web2cdir)/texmf.cnf >/dev/null 2>&1 \
+#	   || test ! -r $(web2cdir)/texmf.cnf; then \
+#	  $(INSTALL_DATA) texmf.cnf $(web2cdir)/texmf.cnf; \
+#	else true; fi
+#	$(INSTALL_DATA) $(srcdir)/kpathsea.info $(infodir)/kpathsea.info
+#uninstall-data:
+#	rm -f $(infodir)/kpathsea.info*
+#
+#install-library: $(library).a 
+#	$(SHELL) $(top_srcdir)/../mkdirchain $(includedir)/kpathsea $(libdir)
+#	$(INSTALL_DATA) $(library).a $(libdir)/lib$(library).a
+#	for f in $(install_headers); do \
+#	  $(INSTALL_DATA) $$f $(includedir)/kpathsea/$$f; done
+#	rm -f $(includedir)/kpathsea/c-auto.h
+#uninstall-library:
+#	rm -f $(libdir)/lib$(library).a
+#	for f in $(install_headers); do rm -f $(includedir)/$$f; done
 
 # distdir is used by other distributions; they define $(distdir).
 distdir: INSTALL TAGS $(library).info $(library).dvi

@@ -1,7 +1,7 @@
 // input.cc                                             -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993 John W. Eaton
+Copyright (C) 1992, 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -37,6 +37,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 extern "C"
 {
 #include "readline/readline.h"
+#include "readline/history.h"
 
 extern char *xmalloc ();
 
@@ -173,7 +174,7 @@ octave_gets (void)
 /*
  * Read a line from the input stream.
  */
-int 
+int
 octave_read (char *buf, int max_size)
 {
   int status = 0;
@@ -291,7 +292,7 @@ get_input_from_stdin (void)
   return rl_instream;
 }
 
-char *
+static char *
 command_generator (char *text, int state)
 {
   static int len = 0;
@@ -330,12 +331,75 @@ command_generator (char *text, int state)
   return (char *) NULL;
 }
 
-char **
+static char **
 command_completer (char *text, int start, int end)
 {
   char **matches = (char **) NULL;
   matches = completion_matches (text, command_generator);
   return matches;
+}
+
+/*
+ * The next two functions implement the equivalent of the K*rn shell
+ * C-o operate-and-get-next-history-line editing command.  Stolen from
+ * the GNU Bourne Again SHell.
+ */
+
+// ??
+static int saved_history_line_to_use = 0;
+
+// ??
+static Function *old_rl_startup_hook = (Function *) NULL;
+
+static void
+set_saved_history (void)
+{
+  HIST_ENTRY *h;
+
+  if (saved_history_line_to_use)
+    {
+      if (history_set_pos (saved_history_line_to_use))
+	{
+	  h = current_history ();
+	  if (h)
+	    {
+	      rl_insert_text (h->line);
+
+// Get rid of any undo list created by the previous insert, so the
+// line won't totally be erased when the edits are undone (they will
+// be normally, because this is a history  line -- cf. readline.c:
+// line 380 or so).
+	      if (rl_undo_list)
+		{
+		  free_undo_list ();
+		  rl_undo_list = (UNDO_LIST *) NULL;
+		}
+	    }
+	}
+    }
+  saved_history_line_to_use = 0;
+  rl_startup_hook = old_rl_startup_hook;
+}
+
+static void
+operate_and_get_next (int count, int c)
+{
+  int where;
+  extern int history_stifled, history_length, max_input_history;
+
+  /* Accept the current line. */
+  rl_newline ();
+
+  /* Find the current line, and find the next line to use. */
+  where = where_history ();
+
+  if (history_stifled && (history_length >= max_input_history))
+    saved_history_line_to_use = where;
+  else
+    saved_history_line_to_use = where + 1;
+
+  old_rl_startup_hook = rl_startup_hook;
+  rl_startup_hook = (Function *) set_saved_history;
 }
 
 void
@@ -346,6 +410,10 @@ initialize_readline (void)
 
 // Tell the completer that we want to try first.
   rl_attempted_completion_function = (Function *) command_completer;
+
+// Bind operate-and-get-next.
+  rl_add_defun ("operate-and-get-next",
+		(Function *) operate_and_get_next, CTRL ('O'));
 }
 
 /*

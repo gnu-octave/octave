@@ -1,7 +1,7 @@
 // input.h                                              -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993 John W. Eaton
+Copyright (C) 1992, 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -32,8 +32,6 @@ extern char *octave_gets (void);
 extern int octave_read (char *buf, int max_size);
 extern FILE *get_input_from_file (char *name, int warn = 1);
 extern FILE *get_input_from_stdin (void);
-extern char *command_generator (char *text, int state);
-extern char **command_completer (char *text, int start, int end);
 extern void initialize_readline (void);
 
 // Global pointer for eval().

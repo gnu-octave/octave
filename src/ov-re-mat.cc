@@ -53,6 +53,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "byte-swap.h"
 #include "ls-oct-ascii.h"
 #include "ls-utils.h"
+#include "ls-hdf5.h"
 
 #if ! defined (UCHAR_MAX)
 #define UCHAR_MAX 255
@@ -508,17 +509,23 @@ bool
 octave_matrix::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
 {
   dim_vector d = dims ();
-  hsize_t hdims[d.length () > 2 ? d.length () : 3];
+  int empty = save_hdf5_empty (loc_id, name, d);
+  if (empty != 0)
+    return (empty > 0);
+
+  int rank = d.length ();
   hid_t space_hid = -1, data_hid = -1;
-  int rank = ( (d (0) == 1) && (d.length () == 2) ? 1 : d.length ());
   bool retval = true;
   NDArray m = array_value ();
 
-  // Octave uses column-major, while HDF5 uses row-major ordering
-  for (int i = 0, j = d.length() - 1; i < d.length (); i++, j--)
-    hdims[i] = d (j);
+  OCTAVE_LOCAL_BUFFER (hsize_t, hdims, rank);
 
-  space_hid = H5Screate_simple (rank, hdims, (hsize_t*) 0);
+  // Octave uses column-major, while HDF5 uses row-major ordering
+  for (int i = 0; i < rank; i++)
+    hdims[i] = d (rank-i-1);
+ 
+  space_hid = H5Screate_simple (rank, hdims, (hsize_t *)0);
+
   if (space_hid < 0) return false;
 
   hid_t save_type_hid = H5T_NATIVE_DOUBLE;
@@ -566,6 +573,13 @@ bool
 octave_matrix::load_hdf5 (hid_t loc_id, const char *name,
 			  bool /* have_h5giterate_bug */)
 {
+  dim_vector dv;
+  int empty = load_hdf5_empty (loc_id, name, dv);
+  if (empty > 0)
+    matrix.resize(dv);
+  if (empty != 0)
+      return (empty > 0);
+
   bool retval = false;
   hid_t data_hid = H5Dopen (loc_id, name);
   hid_t space_id = H5Dget_space (data_hid);
@@ -583,8 +597,6 @@ octave_matrix::load_hdf5 (hid_t loc_id, const char *name,
   OCTAVE_LOCAL_BUFFER (hsize_t, maxdims, rank);
 
   H5Sget_simple_extent_dims (space_id, hdims, maxdims);
-
-  dim_vector dv;
 
   // Octave uses column-major, while HDF5 uses row-major ordering
   if (rank == 1)

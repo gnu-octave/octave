@@ -240,19 +240,35 @@ octave_char_matrix_str::save_ascii (std::ostream& os,
 				    bool& /* infnan_warned */, 
 				    bool /* strip_nan_and_inf */)
 {
-  charMatrix chm = char_matrix_value ();
-  int elements = chm.rows ();
-  os << "# elements: " << elements << "\n";
-  for (int i = 0; i < elements; i++)
+  dim_vector d = dims ();
+  if (d.length () > 2)
     {
-      unsigned len = chm.cols ();
-      os << "# length: " << len << "\n";
-      std::string tstr = chm.row_as_string (i, false, true);
-      const char *tmp = tstr.data ();
-      if (tstr.length () > len)
-	panic_impossible ();
-      os.write (X_CAST (char *, tmp), len);
+      charNDArray tmp = char_array_value ();
+      os << "# ndims: " << d.length () << "\n";
+      for (int i=0; i < d.length (); i++)
+	os << " " << d (i);
       os << "\n";
+      os.write (X_CAST (char *, tmp.fortran_vec ()), d.numel ());
+      os << "\n";
+    }
+  else
+    {
+      // Keep this case, rather than use generic code above for
+      // backward compatiability. Makes load_ascii much more complex!!
+      charMatrix chm = char_matrix_value ();
+      int elements = chm.rows ();
+      os << "# elements: " << elements << "\n";
+      for (int i = 0; i < elements; i++)
+	{
+	  unsigned len = chm.cols ();
+	  os << "# length: " << len << "\n";
+	  std::string tstr = chm.row_as_string (i, false, true);
+	  const char *tmp = tstr.data ();
+	  if (tstr.length () > len)
+	    panic_impossible ();
+	  os.write (X_CAST (char *, tmp), len);
+	  os << "\n";
+	}
     }
 
   return true;
@@ -261,88 +277,130 @@ octave_char_matrix_str::save_ascii (std::ostream& os,
 bool 
 octave_char_matrix_str::load_ascii (std::istream& is)
 {
-  int elements;
+  int mdims = 0;
   bool success = true;
   std::streampos pos = is.tellg ();
 
-  if (extract_keyword (is, "elements", elements, true))
+  if (extract_keyword (is, "ndims", mdims, true))
     {
-
-      if (elements >= 0)
+      if (mdims >= 0)
 	{
-	  // XXX FIXME XXX -- need to be able to get max length
-	  // before doing anything.
+	  dim_vector dv;
+	  dv.resize (mdims);
 
-	  charMatrix chm (elements, 0);
-	  int max_len = 0;
-	  for (int i = 0; i < elements; i++)
+	  for (int i = 0; i < mdims; i++)
+	    is >> dv(i);
+
+	  charNDArray tmp(dv);
+	  char *ftmp = tmp.fortran_vec ();
+
+	  // Skip the return line
+	  if (! is.read (ftmp, 1))
+	    return false;
+
+	  if (! is.read (ftmp, dv.numel ()) || !is)
 	    {
-	      int len;
-	      if (extract_keyword (is, "length", len) && len >= 0)
-		{
-		  OCTAVE_LOCAL_BUFFER (char, tmp, len+1);
-		  
-		  if (len > 0 && ! is.read (X_CAST (char *, tmp), len))
-		    {
-		      error ("load: failed to load string constant");
-		      success = false;
-		      break;
-		    }
-		  else
-		    {
-		      tmp [len] = '\0';
-		      if (len > max_len)
-			{
-			  max_len = len;
-			  chm.resize (elements, max_len, 0);
-			}
-		      chm.insert (tmp, i, 0);
-		    }
-		}
-	      else
-		{
-		  error ("load: failed to extract string length for element %d", 
-			 i+1);
-		  success = false;
-		}
+	      error ("load: failed to load string constant");
+	      success = false;
 	    }
-	  
-	  if (! error_state)
-	    matrix = chm;
-	  
+	  else
+	    matrix = tmp;
 	}
       else
 	{
-	  error ("load: failed to extract number of string elements");
+	  error ("load: failed to extract matrix size");
 	  success = false;
 	}
     }
   else
     {
+      int elements;
+
       // re-read the same line again
       is.clear ();
       is.seekg (pos);
 
-      int len;
-      
-      if (extract_keyword (is, "length", len) && len >= 0)
+      if (extract_keyword (is, "elements", elements, true))
 	{
-	  // This is cruft for backward compatiability, but relatively harmless.
 
-	  OCTAVE_LOCAL_BUFFER (char, tmp, len+1);
-
-	  if (len > 0 && ! is.read (X_CAST (char *, tmp), len))
+	  if (elements >= 0)
 	    {
-	      error ("load: failed to load string constant");
+	      // XXX FIXME XXX -- need to be able to get max length
+	      // before doing anything.
+
+	      charMatrix chm (elements, 0);
+	      int max_len = 0;
+	      for (int i = 0; i < elements; i++)
+		{
+		  int len;
+		  if (extract_keyword (is, "length", len) && len >= 0)
+		    {
+		      OCTAVE_LOCAL_BUFFER (char, tmp, len+1);
+		  
+		      if (len > 0 && ! 
+			  is.read (X_CAST (char *, tmp), len))
+			{
+			  error ("load: failed to load string constant");
+			  success = false;
+			  break;
+			}
+		      else
+			{
+			  tmp [len] = '\0';
+			  if (len > max_len)
+			    {
+			      max_len = len;
+			      chm.resize (elements, max_len, 0);
+			    }
+			  chm.insert (tmp, i, 0);
+			}
+		    }
+		  else
+		    {
+		      error ("load: failed to extract string length for element %d", 
+			     i+1);
+		      success = false;
+		    }
+		}
+	  
+	      if (! error_state)
+		matrix = chm;
+	  
 	    }
 	  else
 	    {
-	      tmp [len] = '\0';
+	      error ("load: failed to extract number of string elements");
+	      success = false;
+	    }
+	}
+      else
+	{
+	  // re-read the same line again
+	  is.clear ();
+	  is.seekg (pos);
 
-	      if (is)
-		matrix = charMatrix (tmp);
+	  int len;
+      
+	  if (extract_keyword (is, "length", len) && len >= 0)
+	    {
+	      // This is cruft for backward compatiability, 
+	      // but relatively harmless.
+
+	      OCTAVE_LOCAL_BUFFER (char, tmp, len+1);
+
+	      if (len > 0 && ! is.read (X_CAST (char *, tmp), len))
+		{
+		  error ("load: failed to load string constant");
+		}
 	      else
-		error ("load: failed to load string constant");
+		{
+		  tmp [len] = '\0';
+		  
+		  if (is)
+		    matrix = charMatrix (tmp);
+		  else
+		    error ("load: failed to load string constant");
+		}
 	    }
 	}
     }
@@ -354,17 +412,21 @@ bool
 octave_char_matrix_str::save_binary (std::ostream& os,
 				     bool& /* save_as_floats */)
 {
-  FOUR_BYTE_INT nr = rows ();
-  os.write (X_CAST (char *, &nr), 4);
-  charMatrix chm = char_matrix_value ();
-  for (int i = 0; i < nr; i++)
+  dim_vector d = dims ();
+  if (d.length() < 1)
+    return false;
+
+  // Use negative value for ndims to differentiate with old format!!
+  FOUR_BYTE_INT tmp = - d.length();
+  os.write (X_CAST (char *, &tmp), 4);
+  for (int i=0; i < d.length (); i++)
     {
-      FOUR_BYTE_INT len = chm.cols ();
-      os.write (X_CAST (char *, &len), 4);
-      std::string tstr = chm.row_as_string (i);
-      const char *btmp = tstr.data ();
-      os.write (X_CAST (char *, btmp), len);
+      tmp = d(i);
+      os.write (X_CAST (char *, &tmp), 4);
     }
+
+  charNDArray m = char_array_value ();
+  os.write (m.fortran_vec (), d.numel ());
   return true;
 }
 
@@ -377,28 +439,55 @@ octave_char_matrix_str::load_binary (std::istream& is, bool swap,
     return false;
   if (swap)
     swap_4_bytes (X_CAST (char *, &elements));
-  charMatrix chm (elements, 0);
-  int max_len = 0;
-  for (int i = 0; i < elements; i++)
-    {
-      FOUR_BYTE_INT len;
-      if (! is.read (X_CAST (char *, &len), 4))
-	return false;
-      if (swap)
-	swap_4_bytes (X_CAST (char *, &len));
-      OCTAVE_LOCAL_BUFFER (char, btmp, len+1);
-      if (! is.read (X_CAST (char *, btmp), len))
-	return false;
-      if (len > max_len)
-	{
-	  max_len = len;
-	  chm.resize (elements, max_len, 0);
-	}
-      btmp [len] = '\0';
-      chm.insert (btmp, i, 0);
-    }
 
-  matrix = chm;
+  if (elements < 0)
+    {
+      FOUR_BYTE_INT mdims = - elements;
+      FOUR_BYTE_INT di;
+      dim_vector dv;
+      dv.resize (mdims);
+
+      for (int i = 0; i < mdims; i++)
+	{
+	  if (! is.read (X_CAST (char *, &di), 4))
+	    return false;
+	  if (swap)
+	    swap_4_bytes (X_CAST (char *, &di));
+	  dv(i) = di;
+	}
+      
+      charNDArray m(dv);
+      char *tmp = m.fortran_vec ();
+      is.read (tmp, dv.numel ());
+      
+      if (error_state || ! is)
+	return false;
+      matrix = m;
+    }
+  else
+    {
+      charMatrix chm (elements, 0);
+      int max_len = 0;
+      for (int i = 0; i < elements; i++)
+	{
+	  FOUR_BYTE_INT len;
+	  if (! is.read (X_CAST (char *, &len), 4))
+	    return false;
+	  if (swap)
+	    swap_4_bytes (X_CAST (char *, &len));
+	  OCTAVE_LOCAL_BUFFER (char, btmp, len+1);
+	  if (! is.read (X_CAST (char *, btmp), len))
+	    return false;
+	  if (len > max_len)
+	    {
+	      max_len = len;
+	      chm.resize (elements, max_len, 0);
+	    }
+	  btmp [len] = '\0';
+	  chm.insert (btmp, i, 0);
+	}
+      matrix = chm;
+    }
   return true;
 }
 
@@ -407,47 +496,43 @@ bool
 octave_char_matrix_str::save_hdf5 (hid_t loc_id, const char *name,
 				   bool /* save_as_floats */)
 {
-  hsize_t dimens[3];
-  hid_t space_hid = -1, type_hid = -1, data_hid = -1;
+  dim_vector d = dims ();
+  int empty = save_hdf5_empty (loc_id, name, d);
+  if (empty != 0)
+    return (empty > 0);
+
+  int rank = d.length ();
+  hid_t space_hid = -1, data_hid = -1;
   bool retval = true;
+  charNDArray m = char_array_value ();
 
-  int nr = rows ();
-  charMatrix chm = char_matrix_value ();
-  int nc = chm.cols ();
+  OCTAVE_LOCAL_BUFFER (hsize_t, hdims, rank);
 
-  // create datatype for (null-terminated) string to write from:
-  type_hid = H5Tcopy (H5T_C_S1); H5Tset_size (type_hid, nc + 1);
-  if (type_hid < 0) return false;
-
-  dimens[0] = nr;
-  space_hid = H5Screate_simple (nr > 0 ? 1 : 0, dimens, (hsize_t*) 0);
+  // Octave uses column-major, while HDF5 uses row-major ordering
+  for (int i = 0; i < rank; i++)
+    hdims[i] = d (rank-i-1);
+ 
+  space_hid = H5Screate_simple (rank, hdims, (hsize_t *)0);
   if (space_hid < 0)
-    {
-      H5Tclose (type_hid);
-      return false;
-    }
+    return false;
 
-  data_hid = H5Dcreate (loc_id, name, type_hid, space_hid, H5P_DEFAULT);
+  data_hid = H5Dcreate (loc_id, name, H5T_NATIVE_CHAR, space_hid, 
+			H5P_DEFAULT);
   if (data_hid < 0)
     {
       H5Sclose (space_hid);
-      H5Tclose (type_hid);
       return false;
     }
 
-  OCTAVE_LOCAL_BUFFER (char, s, nr * (nc + 1));
+  OCTAVE_LOCAL_BUFFER (char, s, d.numel ());
 
-  for (int i = 0; i < nr; ++i)
-    {
-      std::string tstr = chm.row_as_string (i);
-      strcpy (s + i * (nc+1), tstr.c_str ());
-    }
+  for (int i = 0; i < d.numel(); ++i)
+    s[i] = m(i);
 
-  retval = H5Dwrite (data_hid, type_hid, H5S_ALL, H5S_ALL, H5P_DEFAULT,
-		     (void*) s) >= 0;
+  retval = H5Dwrite (data_hid, H5T_NATIVE_CHAR, H5S_ALL, H5S_ALL, 
+		     H5P_DEFAULT, (void*) s) >= 0;
 
   H5Dclose (data_hid);
-  H5Tclose (type_hid);
   H5Sclose (space_hid);
   return retval;
 }
@@ -456,105 +541,162 @@ bool
 octave_char_matrix_str::load_hdf5 (hid_t loc_id, const char *name,
 				   bool /* have_h5giterate_bug */)
 {
+  dim_vector dv;
+  int empty = load_hdf5_empty (loc_id, name, dv);
+  if (empty > 0)
+    matrix.resize(dv);
+  if (empty != 0)
+      return (empty > 0);
+
   hid_t data_hid = H5Dopen (loc_id, name);
   hid_t space_hid = H5Dget_space (data_hid);
   hsize_t rank = H5Sget_simple_extent_ndims (space_hid);
   hid_t type_hid = H5Dget_type (data_hid);
+  hid_t type_class_hid = H5Tget_class (type_hid);
 
-  if (rank == 0)
+  if (type_class_hid == H5T_INTEGER)
     {
-      // a single string:
-      int slen = H5Tget_size (type_hid);
-      if (slen < 0)
+      bool retval = false;
+      if (rank < 1)
 	{
 	  H5Tclose (type_hid);
 	  H5Sclose (space_hid);
 	  H5Dclose (data_hid);
 	  return false;
 	}
-      else
-	{
-	  OCTAVE_LOCAL_BUFFER (char, s, slen);
-	  // create datatype for (null-terminated) string
-	  // to read into:
-	  hid_t st_id = H5Tcopy (H5T_C_S1);
-	  H5Tset_size (st_id, slen);
-	  if (H5Dread (data_hid, st_id, H5S_ALL, H5S_ALL, 
-		       H5P_DEFAULT, (void *) s) < 0)
-	    {
-	      H5Tclose (st_id);
-	      H5Tclose (type_hid);
-	      H5Sclose (space_hid);
-	      H5Dclose (data_hid);
-	      return false;
-	    }
 
-	  matrix = charMatrix (s);
-	  
-	  H5Tclose (st_id);
-	  H5Tclose (type_hid);
-	  H5Sclose (space_hid);
-	  H5Dclose (data_hid);
-	  return true;
-	}
-    }
-  else if (rank == 1)
-    {
-      // string vector
-      hsize_t elements, maxdim;
-      H5Sget_simple_extent_dims (space_hid, &elements, &maxdim);
-      int slen = H5Tget_size (type_hid);
-      if (slen < 0)
+      OCTAVE_LOCAL_BUFFER (hsize_t, hdims, rank);
+      OCTAVE_LOCAL_BUFFER (hsize_t, maxdims, rank);
+
+      H5Sget_simple_extent_dims (space_hid, hdims, maxdims);
+
+      // Octave uses column-major, while HDF5 uses row-major ordering
+      if (rank == 1)
 	{
-	  H5Tclose (type_hid);
-	  H5Sclose (space_hid);
-	  H5Dclose (data_hid);
-	  return false;
+	  dv.resize (2);
+	  dv(0) = 1;
+	  dv(1) = hdims[0];
 	}
       else
 	{
-	  // hdf5 string arrays store strings of all the
-	  // same physical length (I think), which is
-	  // slightly wasteful, but oh well.
-	  
-	  OCTAVE_LOCAL_BUFFER (char, s, elements * slen);
-
-	  // create datatype for (null-terminated) string
-	  // to read into:
-	  hid_t st_id = H5Tcopy (H5T_C_S1);
-	  H5Tset_size (st_id, slen);
-
-	  if (H5Dread (data_hid, st_id, H5S_ALL, H5S_ALL, 
-		       H5P_DEFAULT, (void *) s) < 0)
-	    {
-	      H5Tclose (st_id);
-	      H5Tclose (type_hid);
-	      H5Sclose (space_hid);
-	      H5Dclose (data_hid);
-	      return false;
-	    }
-
-	  charMatrix chm (elements, slen - 1);
-	  for (hsize_t i = 0; i < elements; ++i)
-	    {
-	      chm.insert (s + i*slen, i, 0);
-	    }
-
-	  matrix = chm;
-
-	  H5Tclose (st_id);
-	  H5Tclose (type_hid);
-	  H5Sclose (space_hid);
-	  H5Dclose (data_hid);
-	  return true;
+	  dv.resize (rank);
+	  for (int i = 0, j = rank - 1; i < (int)rank; i++, j--)
+	    dv(j) = hdims[i];
 	}
-    }
-  else
-    {
+
+      charNDArray m (dv);
+      char *str = m.fortran_vec ();
+      if (H5Dread (data_hid, H5T_NATIVE_CHAR, H5S_ALL, H5S_ALL, 
+		   H5P_DEFAULT, (void *) str) >= 0) 
+	{
+	  retval = true;
+	  matrix = m;
+	}
+
       H5Tclose (type_hid);
       H5Sclose (space_hid);
       H5Dclose (data_hid);
-      return false;
+      return true;
+    }
+  else
+    {
+      // This is cruft for backward compatiability and easy data
+      // importation
+      if (rank == 0)
+	{
+	  // a single string:
+	  int slen = H5Tget_size (type_hid);
+	  if (slen < 0)
+	    {
+	      H5Tclose (type_hid);
+	      H5Sclose (space_hid);
+	      H5Dclose (data_hid);
+	      return false;
+	    }
+	  else
+	    {
+	      OCTAVE_LOCAL_BUFFER (char, s, slen);
+	      // create datatype for (null-terminated) string
+	      // to read into:
+	      hid_t st_id = H5Tcopy (H5T_C_S1);
+	      H5Tset_size (st_id, slen);
+	      if (H5Dread (data_hid, st_id, H5S_ALL, H5S_ALL, 
+			   H5P_DEFAULT, (void *) s) < 0)
+		{
+		  H5Tclose (st_id);
+		  H5Tclose (type_hid);
+		  H5Sclose (space_hid);
+		  H5Dclose (data_hid);
+		  return false;
+		}
+
+	      matrix = charMatrix (s);
+	  
+	      H5Tclose (st_id);
+	      H5Tclose (type_hid);
+	      H5Sclose (space_hid);
+	      H5Dclose (data_hid);
+	      return true;
+	    }
+	}
+      else if (rank == 1)
+	{
+	  // string vector
+	  hsize_t elements, maxdim;
+	  H5Sget_simple_extent_dims (space_hid, &elements, &maxdim);
+	  int slen = H5Tget_size (type_hid);
+	  if (slen < 0)
+	    {
+	      H5Tclose (type_hid);
+	      H5Sclose (space_hid);
+	      H5Dclose (data_hid);
+	      return false;
+	    }
+	  else
+	    {
+	      // hdf5 string arrays store strings of all the
+	      // same physical length (I think), which is
+	      // slightly wasteful, but oh well.
+	  
+	      OCTAVE_LOCAL_BUFFER (char, s, elements * slen);
+
+	      // create datatype for (null-terminated) string
+	      // to read into:
+	      hid_t st_id = H5Tcopy (H5T_C_S1);
+	      H5Tset_size (st_id, slen);
+
+	      if (H5Dread (data_hid, st_id, H5S_ALL, H5S_ALL, 
+			   H5P_DEFAULT, (void *) s) < 0)
+		{
+		  H5Tclose (st_id);
+		  H5Tclose (type_hid);
+		  H5Sclose (space_hid);
+		  H5Dclose (data_hid);
+		  return false;
+		}
+
+	      charMatrix chm (elements, slen - 1);
+	      for (hsize_t i = 0; i < elements; ++i)
+		{
+		  chm.insert (s + i*slen, i, 0);
+		}
+
+	      matrix = chm;
+
+	      H5Tclose (st_id);
+	      H5Tclose (type_hid);
+	      H5Sclose (space_hid);
+	      H5Dclose (data_hid);
+	      return true;
+	    }
+	}
+      else
+	{
+	  H5Tclose (type_hid);
+	  H5Sclose (space_hid);
+	  H5Dclose (data_hid);
+	  return false;
+	}
     }
 }
 #endif

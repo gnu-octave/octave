@@ -1,3 +1,17 @@
+2004-03-01  David Bateman  <dbateman@free.fr>
+ 
+	* ls-hdf5.cc (save_hdf5_empty, load_hdf5_empty): New functions
+	to save/load empty matrices keeping their dimensions.
+	* ls-hdf5.h (save_hdf5_empty, load_hdf5_empty): Provide decls.
+
+	* ov-re-mat.cc (save_hdf5, load_hdf5): Cleanup, check empty matrix.
+	* ov-cx-mat.cc (save_hdf5, load_hdf5): Ditto.
+	* ov-bool-mat.cc (save_hdf5, load_hdf5): Ditto.
+
+	* ov-str-mat.cc (save_ascoo, load_ascii, save_binary,
+	load_binary, save_hdf5, load_hdf5): Cleanup, check empty matrix,
+	and save/load N-d arrays.
+ 
 2004-02-27  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* octave.cc (execute_startup_files): Don't find current directory

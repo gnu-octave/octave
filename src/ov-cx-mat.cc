@@ -446,16 +446,21 @@ octave_complex_matrix::save_hdf5 (hid_t loc_id, const char *name,
 				  bool save_as_floats)
 {
   dim_vector d = dims ();
-  hsize_t hdims[d.length () > 2 ? d.length () : 3];
-  hid_t space_hid = -1, type_hid = -1, data_hid = -1;
-  int rank = ( (d (0) == 1) && (d.length () == 2) ? 1 : d.length ());
+  int empty = save_hdf5_empty (loc_id, name, d);
+  if (empty != 0)
+    return (empty > 0);
+
+  int rank = d.length ();
+  hid_t space_hid = -1, data_hid = -1, type_hid = -1;
   bool retval = true;
   ComplexNDArray m = complex_array_value ();
 
-  // Octave uses column-major, while HDF5 uses row-major ordering
-  for (int i = 0, j = d.length() - 1; i < d.length (); i++, j--)
-    hdims[i] = d (j);
+  OCTAVE_LOCAL_BUFFER (hsize_t, hdims, rank);
 
+  // Octave uses column-major, while HDF5 uses row-major ordering
+  for (int i = 0; i < rank; i++)
+    hdims[i] = d (rank-i-1);
+ 
   space_hid = H5Screate_simple (rank, hdims, (hsize_t*) 0);
   if (space_hid < 0) return false;
 
@@ -523,6 +528,13 @@ bool
 octave_complex_matrix::load_hdf5 (hid_t loc_id, const char *name,
 				  bool /* have_h5giterate_bug */)
 {
+  dim_vector dv;
+  int empty = load_hdf5_empty (loc_id, name, dv);
+  if (empty > 0)
+    matrix.resize(dv);
+  if (empty != 0)
+      return (empty > 0);
+
   bool retval = false;
   hid_t data_hid = H5Dopen (loc_id, name);
   hid_t type_hid = H5Dget_type (data_hid);
@@ -552,8 +564,6 @@ octave_complex_matrix::load_hdf5 (hid_t loc_id, const char *name,
   OCTAVE_LOCAL_BUFFER (hsize_t, maxdims, rank);
 
   H5Sget_simple_extent_dims (space_id, hdims, maxdims);
-
-  dim_vector dv;
 
   // Octave uses column-major, while HDF5 uses row-major ordering
   if (rank == 1)

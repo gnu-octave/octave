@@ -514,6 +514,83 @@ hdf5_add_attr (hid_t loc_id, const char *attr_name)
   return retval;
 }
 
+// Save an empty matrix, if needed. Returns
+//    > 0  Saved empty matrix
+//    = 0  Not an empty matrix; did nothing
+//    < 0  Error condition
+int
+save_hdf5_empty (hid_t loc_id, const char *name, const dim_vector d)
+{
+  hsize_t sz = d.length ();
+  int dims[sz];
+  bool empty = false;
+  hid_t space_hid = -1, data_hid = -1;
+  int retval;
+  for (hsize_t i = 0; i < sz; i++)
+    {
+      dims[i] = d(i);
+      if (dims[i] < 1)
+	empty = true;
+    }
+
+  if (!empty)
+    return 0;
+
+  space_hid = H5Screate_simple (1, &sz, (hsize_t *) 0);
+  if (space_hid < 0) return space_hid;
+
+  data_hid = H5Dcreate (loc_id, name, H5T_NATIVE_INT, space_hid, 
+			H5P_DEFAULT);
+  if (data_hid < 0)
+    {
+      H5Sclose (space_hid);
+      return data_hid;
+    }
+  
+  retval = H5Dwrite (data_hid, H5T_NATIVE_INT, H5S_ALL, H5S_ALL,
+		     H5P_DEFAULT, (void*) dims) >= 0;
+
+  H5Dclose (data_hid);
+  H5Sclose (space_hid);
+
+  if (retval >= 0)
+    retval = hdf5_add_attr (loc_id, "OCTAVE_EMPTY_MATRIX");
+  
+  return (retval == 0 ? 1 : retval);
+}
+
+// Load an empty matrix, if needed. Returns
+//    > 0  loaded empty matrix, dimensions returned
+//    = 0  Not an empty matrix; did nothing
+//    < 0  Error condition
+int
+load_hdf5_empty (hid_t loc_id, const char *name, dim_vector &d)
+{
+  if (!hdf5_check_attr(loc_id, "OCTAVE_EMPTY_MATRIX"))
+    return 0;
+
+  hsize_t hdims, maxdims;
+  hid_t data_hid = H5Dopen (loc_id, name);
+  hid_t space_id = H5Dget_space (data_hid);
+  H5Sget_simple_extent_dims (space_id, &hdims, &maxdims);
+  int dims[hdims];
+  int retval;
+
+  retval = H5Dread (data_hid, H5T_NATIVE_INT, H5S_ALL, H5S_ALL, 
+		    H5P_DEFAULT, (void *) dims);
+  if (retval >= 0)
+    {
+      d.resize (hdims);
+      for (hsize_t i = 0; i < hdims; i++)
+	d(i) = dims[i];
+    }
+
+  H5Sclose (space_id);
+  H5Dclose (data_hid);
+
+  return (retval == 0 ? hdims : retval);
+}
+
 // save_type_to_hdf5 is not currently used, since hdf5 doesn't yet support
 // automatic float<->integer conversions:
 

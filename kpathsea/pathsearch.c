@@ -265,7 +265,10 @@ path_search P4C(const_string, path,  string, name,
       
       /* Free the list space, if any (but not the elements).  */
       if (found)
-        free (found);
+	{
+	  str_list_free (found);
+	  free (found);
+	}
     }
 
   /* Free the expanded name we were passed.  It can't be in the return
@@ -327,8 +330,14 @@ string
 kpse_path_search P3C(const_string, path,  const_string, name,
                      boolean, must_exist)
 {
-  string *ret_list = search (path, name, must_exist, false);
-  return *ret_list;
+  static string *ret_list;
+
+  if (ret_list)
+    free (ret_list);
+
+  ret_list = search (path, name, must_exist, false);
+
+  return *ret_list;  /* Freeing this is caller's responsibility */
 }
 
 

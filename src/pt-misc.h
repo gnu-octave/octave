@@ -237,6 +237,8 @@ tree_va_return_list : public SLList<tree_constant>
 {
 public:
   tree_va_return_list (void) : SLList<tree_constant> () { }
+
+  ~tree_va_return_list (void) { }
 };
 
 // List of expressions that make up a global statement.

@@ -17,8 +17,7 @@ C           DOUBLE PRECISION VERSION
 C
 C           PARAMETERS
 C            ON ENTRY
-C              F      - DOUBLE PRECISION
-C                       FUNCTION SUBPROGRAM DEFINING THE INTEGRAND
+C              F      - SUBROUTINE F(X,IERR,RESULT) DEFINING THE INTEGRAND
 C                       FUNCTION F(X). THE ACTUAL NAME FOR F NEEDS TO BE
 C                       DECLARED E X T E R N A L IN THE DRIVER PROGRAM.
 C
@@ -140,16 +139,16 @@ C           THE INTEGRAL, AND ESTIMATE THE ABSOLUTE ERROR.
 C
       RESG = 0.0D+00
       IERR = 0
-      FC = F(CENTR,IERR)
+      CALL F (CENTR,IERR,FC)
       IF (IERR .LT. 0) RETURN
       RESK = WGK(11)*FC
       RESABS = DABS(RESK)
       DO 10 J=1,5
         JTW = 2*J
         ABSC = HLGTH*XGK(JTW)
-        FVAL1 = F(CENTR-ABSC,IERR)
+        CALL F(CENTR-ABSC,IERR,FVAL1)
         IF (IERR .LT. 0) RETURN
-        FVAL2 = F(CENTR+ABSC,IERR)
+        CALL F(CENTR+ABSC,IERR,FVAL2)
         IF (IERR .LT. 0) RETURN
         FV1(JTW) = FVAL1
         FV2(JTW) = FVAL2
@@ -161,9 +160,9 @@ C
       DO 15 J = 1,5
         JTWM1 = 2*J-1
         ABSC = HLGTH*XGK(JTWM1)
-        FVAL1 = F(CENTR-ABSC,IERR)
+        CALL F(CENTR-ABSC,IERR,FVAL1)
         IF (IERR .LT. 0) RETURN
-        FVAL2 = F(CENTR+ABSC,IERR)
+        CALL F(CENTR+ABSC,IERR,FVAL2)
         IF (IERR .LT. 0) RETURN
         FV1(JTWM1) = FVAL1
         FV2(JTWM1) = FVAL2

@@ -20,8 +20,7 @@ C           DOUBLE PRECISION VERSION
 C
 C           PARAMETERS
 C            ON ENTRY
-C              F      - DOUBLE PRECISION
-C                       FUCTION SUBPROGRAM DEFINING THE INTEGRAND
+C              F      - SUBROUTINE F(X,IERR,RESULT) DEFINING THE INTEGRAND
 C                       FUNCTION F(X). THE ACTUAL NAME FOR F NEEDS TO BE
 C                       DECLARED E X T E R N A L IN THE CALLING PROGRAM.
 C
@@ -151,10 +150,10 @@ C
       HLGTH = 0.5D+00*(B-A)
       TABSC1 = BOUN+DINF*(0.1D+01-CENTR)/CENTR
       IERR = 0
-      FVAL1 = F(TABSC1,IERR)
+      CALL F(TABSC1,IERR,FVAL1)
       IF (IERR .LT. 0) RETURN
       IF(INF.EQ.2) THEN
-        FVALT = F(-TABSC1,IERR)
+        CALL F(-TABSC1,IERR,FVALT)
         IF (IERR .LT. 0) RETURN
         FVAL1 = FVAL1+FVALT
       ENDIF
@@ -172,17 +171,17 @@ C
         ABSC2 = CENTR+ABSC
         TABSC1 = BOUN+DINF*(0.1D+01-ABSC1)/ABSC1
         TABSC2 = BOUN+DINF*(0.1D+01-ABSC2)/ABSC2
-        FVAL1 = F(TABSC1,IERR)
+        CALL F(TABSC1,IERR,FVAL1)
         IF (IERR .LT. 0) RETURN
-        FVAL2 = F(TABSC2,IERR)
+        CALL F(TABSC2,IERR,FVAL2)
         IF (IERR .LT. 0) RETURN
         IF(INF.EQ.2) THEN
-          FVALT = F(-TABSC1,IERR)
+          CALL F(-TABSC1,IERR,FVALT)
           IF (IERR .LT. 0) RETURN
           FVAL1 = FVAL1+FVALT
         ENDIF
         IF(INF.EQ.2) THEN
-          FVALT = F(-TABSC2,IERR)
+          CALL F(-TABSC2,IERR,FVALT)
           IF (IERR .LT. 0) RETURN
           FVAL2 = FVAL2+FVALT
         ENDIF

@@ -29,11 +29,12 @@
 ##              --------------------
 ##                   Ksys
 
-function sysp = parallel (Asys, Bsys)
+## Author: David Clem
+## Created: August 15, 1994
+## completely rewritten Oct 1996 a s hodel
+## SYS_INTERNAL accesses members of system structure
 
-  ## Written by David Clem August 15, 1994
-  ## completely rewritten Oct 1996 a s hodel
-  ## SYS_INTERNAL accesses members of system structure
+function sysp = parallel (Asys, Bsys)
 
   if(nargin != 2)
     usage("sysp = parallel(Asys,Bsys)");

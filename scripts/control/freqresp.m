@@ -39,9 +39,11 @@
 ## @end table
 ## @end deftypefn
 
+## Author: R. Bruce Tenison <btenison@eng.auburn.edu>
+## Created: July 11, 1994
+
 function [ff, w] = freqresp (sys, USEW, w);
 
-  ## Written by: R. Bruce Tenison July 11, 1994
   ## SYS_INTERNAL accesses members of system data structure
 
   save_val = empty_list_elements_ok;

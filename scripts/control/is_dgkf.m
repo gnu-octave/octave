@@ -94,31 +94,31 @@
 ## 
 ## @end deftypefn
  
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
+## Updated by John Ingram July 1996 to accept structured systems
+
+## Revised by Kai P. Mueller April 1998 to solve the general H_infinity
+## problem using unitary transformations Q (on w and z)
+## and non-singular transformations R (on u and y) such
+## that the Dzu and Dyw matrices of the transformed plant
+## 
+##    ~
+##    P  (the variable Asys here)
+##
+## become
+##
+##    ~            -1         T
+##    D  = Q   D   R   = [ 0 I ]  or [ I ],
+##     12   12  12  12
+##
+##    ~            T
+##    D  = R   D   Q   = [ 0 I ] or [ I ].
+##     21   21  21  21
+##
+## This transformation together with the algorithm in [1] solves
+## the general problem (see [2] for example). 
+
 function [retval, dgkf_struct] = is_dgkf (Asys, nu, ny, tol)
-
-  ## Written by A. S. Hodel
-  ## Updated by John Ingram July 1996 to accept structured systems
-
-  ## Revised by Kai P Mueller April 1998 to solve the general H_infinity
-  ## problem using unitary transformations Q (on w and z)
-  ## and non-singular transformations R (on u and y) such
-  ## that the Dzu and Dyw matrices of the transformed plant
-  ## 
-  ##    ~
-  ##    P  (the variable Asys here)
-  ##
-  ## become
-  ##
-  ##    ~            -1         T
-  ##    D  = Q   D   R   = [ 0 I ]  or [ I ],
-  ##     12   12  12  12
-  ##
-  ##    ~            T
-  ##    D  = R   D   Q   = [ 0 I ] or [ I ].
-  ##     21   21  21  21
-  ##
-  ## This transformation together with the algorithm in [1] solves
-  ## the general problem (see [2] for example). 
 
   if (nargin < 3) | (nargin > 4)
     usage("[retval,dgkf_struct] = is_dgkf(Asys,nu,ny{,tol})");

@@ -29,11 +29,12 @@
 ##  See also: polyval, polyvalm, poly, roots, conv, deconv, residue, 
 ##	filter, polyderiv, polyinteg
 
-function y = polyout (c, x)
-
-## Written by A. Scottedward Hodel (scotte@eng.auburn.edu) May 1995)
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
+## Created: May 1995
 ## Nov 1998: Correctly handles complex coefficients
   
+function y = polyout (c, x)
+
   if (nargin < 1 ) || (nargin > 2) || (nargout < 0 ) || (nargout > 1)
     usage("[y = ] polyout(c,[x])");
   endif

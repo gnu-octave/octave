@@ -54,10 +54,12 @@
 ## signal names as in @var{sys}).
 ## @end deftypefn
  
+## Author: R. Bruce Tenison <btenison@eng.auburn.edu>
+## Created: August 23, 1994
+## Updated by John Ingram for system data structure  August 1996
+
 function csys = d2c (sys, opt)
 
-  ## Written by R. Bruce Tenison August 23, 1994
-  ## Updated by John Ingram for system data structure  August 1996
   ## SYS_INTERNAL accesses members of system data structure
 
   if( (nargin != 1) & (nargin != 2) )

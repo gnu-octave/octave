@@ -39,10 +39,11 @@
 ## @end example
 ## @end deftypefn
  
-function sys = sysadd (...)
+## Author: John Ingram <ingraje@eng.auburn.edu>
+## Created: July 1996
+## Updated for variable number of arguments July 1999 A. S. Hodel
 
-  ## Written by John Ingram July 1996
-  ## Updated for variable number of arguments July 1999 A. S. Hodel
+function sys = sysadd (...)
 
   if(nargin < 1)
     usage("sysadd: sys = sysysadd(Gsys{,Hsys, ...})");

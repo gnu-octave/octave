@@ -111,9 +111,10 @@
 ## Prentice-Hall, 1990, pp. 56-58
 ## @end deftypefn
 
-function [k, p, e] = lqr (a, b, q, r, s)
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
+## Created: August 1993.
 
-  ## Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
+function [k, p, e] = lqr (a, b, q, r, s)
 
   ## disp("lqr: entry");
 

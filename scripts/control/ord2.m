@@ -42,9 +42,11 @@
 
 ## See also: jet707 (MIMO example, Boeing 707-321 aircraft model)
 
+## Author: Kai P. Mueller <mueller@ifr.ing.tu-bs.de>
+## Created: September 28, 1997
+
 function outsys = ord2 (nfreq, damp, gain)
 
-  ## Written by Kai P. Mueller September 28, 1997
   ## Updates
 
   if(nargin != 2 & nargin != 3)

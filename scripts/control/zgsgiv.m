@@ -22,13 +22,15 @@
 ## No longer used in zero-balancing (zgpbal); kept for backward compatibility
 ## @end deftypefn
 
-function [a, b] = zgsgiv (c, s, a, b)
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
+## Created: July 29, 1992
+## Convertion to Octave by R. Bruce Tenison July 3, 1994
 
-  ## A. S. Hodel July 29, 1992
-  ## Convertion to Octave by R. Bruce Tenison July 3, 1994
+function [a, b] = zgsgiv (c, s, a, b)
 
   t1 = c*a + s*b;
   t2 = -s*a + c*b;
   a = t1;
   b = t2;
+
 endfunction

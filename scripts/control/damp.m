@@ -28,10 +28,10 @@
 ## See also: @code{eig}
 ## @end deftypefn
 
-function damp (p, tsam)
+## Author: Kai P. Mueller <mueller@ifr.ing.tu-bs.de>
+## Created: September 29, 1997.
 
-  ## Written by Kai P. Mueller September 29, 1997.
-  ## Update
+function damp (p, tsam)
 
   ## assume a continuous system
   DIGITAL = 0;

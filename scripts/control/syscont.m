@@ -36,9 +36,10 @@
 ## 
 ## @end deftypefn
  
-function [csys, Acd, Ccd] = syscont (sys)
+## Author: John Ingram <ingraje@eng.auburn.edu>
+## Created: August 1996
 
-  ## Written by John Ingram August 1996
+function [csys, Acd, Ccd] = syscont (sys)
 
   save_empty = empty_list_elements_ok;
   empty_list_elements_ok = 1;

@@ -22,13 +22,13 @@
 ##  function prompt([str])
 ##  Prompt user to continue
 ##  str: input string. Default value: "\n ---- Press a key to continue ---"
-##  Written by David Clem August 15, 1994
-##  Modified A. S. Hodel June 1995
-## 
-## 
 ## @end format
 ## @end deftypefn
  
+## Author: David Clem
+## Created: August 15, 1994
+## Modified A. S. Hodel June 1995
+
 function prompt (str)
 
   if(nargin > 1)

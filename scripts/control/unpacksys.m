@@ -19,9 +19,10 @@
 ## [a,b,c,d] = unpacksys(sys)
 ## Obsolete.  Use sys2ss instead.
 
-function [a, b, c, d] = unpacksys (syst)
+## Author: David Clem
+## Created: August 19, 1994
 
-  ## Written by David Clem August 19, 1994
+function [a, b, c, d] = unpacksys (syst)
 
   warning("unpacksys obsolete; calling sys2ss");
   [a,b,c,d] = sys2ss(syst);

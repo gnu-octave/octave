@@ -45,9 +45,10 @@
 ## Do not attempt to use this at home; no argument checking performed.
 ## @end deftypefn 
 
-function [retval, Pc, Pf] = hinfsyn_chk (A, B1, B2, C1, C2, D12, D21, g, ptol)
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
+## Created: August 1995
 
-  ## A. S. Hodel August 1995
+function [retval, Pc, Pf] = hinfsyn_chk (A, B1, B2, C1, C2, D12, D21, g, ptol)
 
   Pc = Pf = [];
 

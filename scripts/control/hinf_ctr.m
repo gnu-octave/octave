@@ -35,12 +35,13 @@
 ## Do not attempt to use this at home; no argument checking performed.
 ## @end deftypefn
   
-function K = hinf_ctr (dgs, F, H, Z, g)
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
+## Created: August 1995
+## Revised by Kai P. Mueller April 1998 to solve the general H_infinity
+## problem using unitary transformations Q (on w and z)
+## and non-singular transformations R (on u and y).
 
-  ## A. S. Hodel August 1995
-  ## Revised by Kai P Mueller April 1998 to solve the general H_infinity
-  ## problem using unitary transformations Q (on w and z)
-  ## and non-singular transformations R (on u and y).
+function K = hinf_ctr (dgs, F, H, Z, g)
 
   nw = dgs.nw;
   nu = dgs.nu;

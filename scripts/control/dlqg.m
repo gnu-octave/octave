@@ -43,9 +43,10 @@
 ##
 ## See also: lqg, dlqe, dlqr
 
-function [K, Q, P, Ee, Er] = dlqg (A, B, C, G, Sigw, Sigv, Q, R)
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
+## Created: August 1995
 
-  ## Written by A. S. Hodel August 1995
+function [K, Q, P, Ee, Er] = dlqg (A, B, C, G, Sigw, Sigv, Q, R)
 
   warning("dlqg: obsolete. use lqg instead (system data structure format)");
 

@@ -21,7 +21,8 @@
 ## Octave Controls toolbox demo: H2/Hinfinity options demos
 ##@end deftypefn
  
-## Written by A. S. Hodel June 1995
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
+## Created: June 1995
 
 function dgkfdemo ()
  

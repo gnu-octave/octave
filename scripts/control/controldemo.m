@@ -18,8 +18,9 @@
 
 ## Controls toolbox demo.
 ## Demo programs: bddemo.m, frdemo.m, analdemo.m, moddmeo.m, rldemo.m
-##  
-## Written by David Clem August 15, 1994
+
+## Author: David Clem
+## Created: August 15, 1994
 
 function DEMOcontrol ()
 

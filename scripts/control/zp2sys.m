@@ -52,9 +52,9 @@
 ## @end example
 ## @end deftypefn
  
-function outsys = zp2sys (zer, pol, k, tsam, inname, outname)
+## Modified by John Ingram  July 20, 1996  
 
-  ## Modified by John Ingram  July 20, 1996  
+function outsys = zp2sys (zer, pol, k, tsam, inname, outname)
 
   ## Test for the correct number of input arguments
   if ((nargin < 3) || (nargin > 6))

@@ -58,9 +58,9 @@
 ## @end table
 ## @end deftypefn
  
-function [K, gain, Kc, Kf, Pc, Pf] = h2syn (Asys, nu, ny, tol)
+## Updated for System structure December 1996 by John Ingram
 
-  ## Updated for System structure December 1996 by John Ingram
+function [K, gain, Kc, Kf, Pc, Pf] = h2syn (Asys, nu, ny, tol)
 
   if ((nargin < 3) | (nargin > 4))
     usage("[K,gain, Kc, Kf, Pc, Pf] = h2syn(Asys,nu,ny[,tol])");

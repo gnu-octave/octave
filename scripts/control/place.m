@@ -24,25 +24,25 @@
 ## 
 ## Version: Beta (May-1997): If you have any comments, please let me know.
 ## 			    (see the file place.m for my address)
-## 
-## Written by: Jose Daniel Munoz Frias.
 ## @end deftypefn
- 
-function K = place (sys, P) 
 
-  ## Universidad Pontificia Comillas
-  ## ICAIdea
-  ## Alberto Aguilera, 23
-  ## 28015 Madrid, Spain
-  ##
-  ## E-Mail: daniel@dea.icai.upco.es
-  ##
-  ## Phone: 34-1-5422800   Fax: 34-1-5596569
-  ##
-  ## Algorithm taken from "The Control Handbook", IEEE press pp. 209-212
-  ##
-  ## code adaped by A.S.Hodel (a.s.hodel@eng.auburn.edu) for use in controls
-  ## toolbox
+## Author: Jose Daniel Munoz Frias
+ 
+## Universidad Pontificia Comillas
+## ICAIdea
+## Alberto Aguilera, 23
+## 28015 Madrid, Spain
+##
+## E-Mail: daniel@dea.icai.upco.es
+##
+## Phone: 34-1-5422800   Fax: 34-1-5596569
+##
+## Algorithm taken from "The Control Handbook", IEEE press pp. 209-212
+##
+## code adaped by A.S.Hodel (a.s.hodel@eng.auburn.edu) for use in controls
+## toolbox
+
+function K = place (sys, P) 
 
   sav_val = empty_list_elements_ok;
   empty_list_elements_ok = 1;

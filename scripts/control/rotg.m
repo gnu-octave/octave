@@ -24,4 +24,5 @@
 function [c, s] = rotg (a, b)
 
   [c,s] = givens(a,b);
+
 endfunction

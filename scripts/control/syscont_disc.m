@@ -39,9 +39,10 @@
 ## 
 ## @end deftypefn
  
-function [n_tot, st_c, st_d, y_c, y_d] = syscont_disc (sys)
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
+## Created: February 1997
 
-  ## Written by A. S. Hodel (a.s.hodel@eng.auburn.edu) Feb 1997
+function [n_tot, st_c, st_d, y_c, y_d] = syscont_disc (sys)
 
   ## get ranges for discrete/continuous states and outputs
   [nn,nz,mm,pp,yd] = sysdimensions(sys);

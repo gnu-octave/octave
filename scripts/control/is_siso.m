@@ -22,7 +22,8 @@
 ## @var{sys} is single-input, single-output.
 ## @end deftypefn
  
-## a s hodel July 1996, 1998
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
+## Created: July 1996, 1998
 
 function  SISO = is_siso (sys)
 

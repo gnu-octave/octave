@@ -84,13 +84,14 @@
 ## 
 ## @end deftypefn
  
+## Author: R. Bruce Tenison <btenison@eng.auburn.edu>
+## Created: July 13, 1994
+## A. S. Hodel July 1995 (adaptive frequency spacing, 
+##     remove acura parameter, etc.)
+## Revised by John Ingram July 1996 for system format
+
 function [realp, imagp, w] = nyquist (sys, w, outputs, inputs, atol)
    
-  ## By R. Bruce Tenison, July 13, 1994
-  ## A. S. Hodel July 1995 (adaptive frequency spacing, 
-  ##     remove acura parameter, etc.)
-  ## Revised by John Ingram July 1996 for system format
-
   ## Both bode and nyquist share the same introduction, so the common
   ## parts are in a file called bodquist.m.  It contains the part that
   ## finds the number of arguments, determines whether or not the system

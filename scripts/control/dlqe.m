@@ -95,10 +95,12 @@
 ## @end table
 ## @end deftypefn
 
-function [l, m, p, e] = dlqe (a, g, c, sigw, sigv, s)
-## Written by A. S. Hodel (scotte@eng.auburn.edu) August, 1993.
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
+## Created: August 1993
 ## Modified for discrete time by R. Bruce Tenison (btenison@eng.auburn.edu)
 ## October, 1993
+
+function [l, m, p, e] = dlqe (a, g, c, sigw, sigv, s)
 
   if (nargin != 5 && nargin != 6)
     error ("dlqe: invalid number of arguments");

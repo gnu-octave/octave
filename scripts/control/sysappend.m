@@ -74,10 +74,11 @@
 ## 
 ## @end deftypefn
 
+## Author: John Ingram <ingraje@eng.auburn.edu>
+## Created: August 1996
+  
 function retsys = sysappend (sys, b, c, d, outname, inname, yd)
 
-  ## written by John Ingram August 1996
-  
   sav_empty_list_elements_ok = empty_list_elements_ok;
 
   empty_list_elements_ok = 1;

@@ -35,9 +35,10 @@
 ## @end format
 ## @end deftypefn
 
-function [yy, idx] = sortcom (xx, opt)
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
+## Created: June 1995
 
-  ## Written by A. S. Hodel June 1995
+function [yy, idx] = sortcom (xx, opt)
 
   if( nargin < 1 | nargin > 2 )
      usage("yy = sortcom(xx[,opt]");

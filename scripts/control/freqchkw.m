@@ -22,9 +22,10 @@
 ## Returns boolean value.
 ## @end deftypefn
 
-function USEW = freqchkw (w)
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
+## Created: July 1996
 
-  ## A S Hodel July 1996
+function USEW = freqchkw (w)
 
   if(isempty(w))
     USEW = 0;

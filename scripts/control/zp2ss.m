@@ -45,9 +45,10 @@
 ## @samp{k} is @code{zp}-form leading coefficient.
 ## @end deftypefn
  
-function [a, b, c, d] = zp2ss (zer, pol, k)
+## Author: David Clem
+## Created: August 15, 1994
 
-  ## Written by David Clem August 15, 1994
+function [a, b, c, d] = zp2ss (zer, pol, k)
 
   sav_val = empty_list_elements_ok;
   empty_list_elements_ok = 1;

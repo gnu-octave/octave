@@ -75,14 +75,15 @@
 ## @end enumerate
 ## @end deftypefn
  
-function [K, g, GW, Xinf, Yinf] = hinfsyn (Asys, nu, ny, gmin, gmax, gtol, ptol, tol)
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
+## Created: August 1995
+## Updated for Packed system structures December 1996 by John Ingram
+## 
+## Revised by Kai P. Mueller April 1998 to solve the general H_infinity
+## problem using unitary transformations Q (on w and z)
+## and non-singular transformations R (on u and y).
 
-  ## A. S. Hodel August 1995
-  ## Updated for Packed system structures December 1996 by John Ingram
-  ## 
-  ## Revised by Kai P Mueller April 1998 to solve the general H_infinity
-  ## problem using unitary transformations Q (on w and z)
-  ## and non-singular transformations R (on u and y).
+function [K, g, GW, Xinf, Yinf] = hinfsyn (Asys, nu, ny, gmin, gmax, gtol, ptol, tol)
 
   if( (nargin < 1) | (nargin > 8) )
     usage("[K,g,GW,Xinf,Yinf] = hinfsyn(Asys,nu,ny,gmin,gmax,gtol,ptol,tol)");

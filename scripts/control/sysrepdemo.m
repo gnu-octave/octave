@@ -21,8 +21,8 @@
 ## Tutorial for the use of the system data structure functions.
 ## @end deftypefn
 
-## Octave Controls toolbox demo: System representation
-## Written by A. S. Hodel June 1995
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
+## Created: June 1995
 ## Revised Aug 1995 for system data structure format
 
 function sysrepdemo ()

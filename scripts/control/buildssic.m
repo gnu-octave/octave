@@ -19,8 +19,6 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File } {@var{sys} =} buildssic(@var{Clst}, @var{Ulst}, @var{Olst}, @var{Ilst}, @var{s1}, @var{s2}, @var{s3}, @var{s4}, @var{s5}, @var{s6}, @var{s7}, @var{s8})
 ## 
-## Contributed by Kai Mueller.
-## 
 ##  Form an arbitrary complex (open or closed loop) system in
 ##  state-space form from several systems. "@code{buildssic}" can
 ##  easily (despite it's cryptic syntax) integrate transfer functions
@@ -126,10 +124,11 @@
 ## where "One" is a unity gain (auxillary) function with order 0.
 ## (e.g. @code{One = ugain(1);})
 ## @end deftypefn
- 
-function sys = buildssic (Clst, Ulst, Olst, Ilst, s1, s2, s3, s4, s5, s6, s7, s8)
 
-  ## Written by Kai Mueller April 1998
+## Author: Kai P. Mueller <mueller@ifr.ing.tu-bs.de>
+## Created: April 1998
+
+function sys = buildssic (Clst, Ulst, Olst, Ilst, s1, s2, s3, s4, s5, s6, s7, s8)
 
   if((nargin < 5) || (nargin > 12))
     usage("sys = buildssic(Clst,Ulst,Olst,Ilst,s1,s2,s3,s4,s5,s6,s7,s8)");

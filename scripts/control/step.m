@@ -46,10 +46,11 @@
  
 ## See also:  impulse, stepimp
 
-function [y, t] = step (sys, inp, tstop, n)
-
-## Written by Kai P. Mueller September 30, 1997
+## Author: Kai P. Mueller <mueller@ifr.ing.tu-bs.de>
+## Created: September 30, 1997
 ## based on lsim.m of Scottedward Hodel
+
+function [y, t] = step (sys, inp, tstop, n)
 
   if((nargin < 1) || (nargin > 4))
     usage("[y, u] = step(sys[, inp, tstop, n])");

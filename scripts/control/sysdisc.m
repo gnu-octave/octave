@@ -36,18 +36,8 @@
  
 function [dsys, Adc, Cdc] = sysdisc (sys)
 
-  ## function [dsys,Adc,Cdc] = sysdisc(sys)
-  ## inputs: sys = system data structure
-  ## outputs:
-  ##    dsys: purely discrete portion of sys (returned empty if there is
-  ##          no purely discrete path from inputs to outputs)
-  ##    Adc, Cdc: connections from continuous states to discrete states/discrete
-  ##    outputs, respectively.
-  ##
-
   save_empty = empty_list_elements_ok;
   empty_list_elements_ok = 1;
-
 
   if (nargin != 1)
     usage("[dsys,Adc,Cdc] = sysdisc(sys)");

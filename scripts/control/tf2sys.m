@@ -50,10 +50,12 @@
 ## @end example
 ## @end deftypefn
 
+## Author: R. Bruce Tenison <btenison@eng.auburn.edu>
+## Created: July 29, 1994
+## Name changed to TF2SYS July 1995
+## updated for new system data structure format July 1996
+
 function outsys = tf2sys (num, den, tsam, inname, outname)
-  ## Written by R. Bruce Tenison  July 29, 1994
-  ## Name changed to TF2SYS July 1995
-  ## updated for new system data structure format July 1996
 
   ## Test for the correct number of input arguments
   if ((nargin < 2) || (nargin > 5))

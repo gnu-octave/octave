@@ -31,8 +31,10 @@
 ##  fc = Corner frequency (in Hz, *not* in rad/sec)
 ## @end deftypefn
  
+## Author: Kai P. Mueller <mueller@ifr.ing.tu-bs.de>
+## Created: September 30, 1997
+
 function wsys = wgt1o (vl, vh, fc)
-## Written by Kai P. Mueller September 30, 1997
 
   if (nargin != 3)
     usage("wsys = wgt1o(vl, vh, fc)");

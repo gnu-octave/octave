@@ -61,10 +61,11 @@
 
 ## See also:  h2syn, lqe, lqr
 
-function [K, Q1, P1, Ee, Er] = lqg (sys, Sigw, Sigv, Q, R, input_list)
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
+## Created: August 1995
+## revised for new system format August 1996
 
-  ## Written by A. S. Hodel August 1995; revised for new system format
-  ## August 1996
+function [K, Q1, P1, Ee, Er] = lqg (sys, Sigw, Sigv, Q, R, input_list)
 
   if ( (nargin < 5) | (nargin > 6))
     usage("[K,Q1,P1,Ee,Er] = lqg(sys,Sigw, Sigv,Q,R{,input_list})");

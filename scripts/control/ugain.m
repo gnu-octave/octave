@@ -28,13 +28,14 @@
 ## 
 ## @end deftypefn
 
-function outsys = ugain (n)
+## Author: Kai P. Mueller <mueller@ifr.ing.tu-bs.de>
+## Created: April 1998
 
-  ## Written by Kai P. Mueller April, 1998
-  ## Updates
+function outsys = ugain (n)
 
   if((nargin != 1) || (nargout > 1))
     usage("outsys = ugain(n)")
   endif
   outsys = ss2sys([],[],[],eye(n));
+
 endfunction

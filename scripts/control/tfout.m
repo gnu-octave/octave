@@ -25,8 +25,10 @@
 ##  See also: polyval, polyvalm, poly, roots, conv, deconv, residue, 
 ##	filter, polyderiv, polyinteg, polyout
 
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
+## Created: June 1995
+
 function tfout (num, denom, x)
-## Written by A. Scottedward Hodel (scotte@eng.auburn.edu) June 1995)
   
   save_empty = empty_list_elements_ok;
   empty_list_elements_ok = 1;

@@ -24,7 +24,7 @@
 ## @var{m} satisfies @math{ a m + m a' + b b' = 0 }.
 ## @end deftypefn
 
-## Written by A. S. Hodel 
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 
 function m = gram (a, b)
 

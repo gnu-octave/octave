@@ -45,10 +45,11 @@
 ## @end deftypefn
 ## 
  
-function sys = sysprune (sys, output_idx, input_idx, state_idx)
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
+## Created: August 1995
+## Updated by John Ingram 7-15-96
 
-  ## A. S. Hodel August 1995
-  ## Updated by John Ingram 7-15-96
+function sys = sysprune (sys, output_idx, input_idx, state_idx)
 
   if( nargin < 3 | nargin > 4  )
     usage("retsys = sysprune(sys,output_idx,input_idx{,state_idx})");

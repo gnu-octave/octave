@@ -38,11 +38,14 @@
 ## for complex frequencies @math{s = jw}.
 ## @end deftypefn
 
+## Author: R. Bruce Tenison <btenison@eng.auburn.edu>
+## Author: David Clem
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
+## Created: July 1995
+## updated by John Ingram August 1996 for system format
+
 function out = ltifr (a, b, w)
 
-  ## R. B. Tenison, D. Clem, A. S. Hodel, July 1995
-  ## updated by John Ingram August 1996 for system format
-  
   if ((nargin < 2) || (nargin > 3))
     error("incorrect number of input arguments");
   endif

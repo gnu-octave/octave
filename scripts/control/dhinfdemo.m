@@ -1,4 +1,4 @@
-## Copyright (C) 1996, 1998 Kai Mueller
+## Copyright (C) 1996, 1998 Kai P. Mueller
 ##
 ## This file is part of Octave.
 ##

@@ -40,16 +40,18 @@
 ## @end format
 ## @end deftypefn
 
-function [rldata, k_break, rlpol, gvec, real_ax_pts] = rlocus (sys, increment, min_k, max_k)
+## Author: David Clem
+## Author: R. Bruce Tenison <btenison@eng.auburn.edu>
+## Updated by Kristi McGowan July 1996 for intelligent gain selection
+## Updated by John Ingram July 1996 for systems
 
-  ## Convert the input to a transfer function if necessary
-  ## Written by Clem and Tenison
-  ## Updated by Kristi McGowan July 1996 for intelligent gain selection
-  ## Updated by John Ingram July 1996 for systems
+function [rldata, k_break, rlpol, gvec, real_ax_pts] = rlocus (sys, increment, min_k, max_k)
   
   if (nargin < 1) | (nargin > 4)
     usage("rlocus(sys[,inc,mink,maxk])");
   endif
+
+  ## Convert the input to a transfer function if necessary
   
   [num,den] = sys2tf(sys)		# extract numerator/denom polyomials
   lnum = length(num);      lden = length(den);

@@ -39,9 +39,10 @@
 ## 
 ## @end deftypefn
 
-function m = dgram (a, b)
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
+## Created: July 1995
 
-  ## Written by A. S. Hodel July 1995
+function m = dgram (a, b)
 
   ## let dlyap do the error checking...
   m = dlyap(a,b*b');

@@ -48,9 +48,10 @@
 
 ## See also: tf2sys, ss2sys, zp2sys, sysout, sys2ss, sys2tf, sys2zp
 
-function sys = sysupdate (sys, opt)
+## Author: John Ingram <ingraje@eng.auburn.edu>
+## Created: July 9, 1996
 
-  ## Written by John Ingram  7-9-96
+function sys = sysupdate (sys, opt)
 
   ## check for correct number of inputs 
   if (nargin != 2)

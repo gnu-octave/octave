@@ -32,10 +32,11 @@
 ## does not recognize discrete inputs).
 ## @end deftypefn
 
-function sys = sysmult (...)
+## Author: John Ingram <ingraje@eng.auburn.edu>
+## Created: July 1996
+## updated for variable number of arguments by A. S. Hodel July 1999
 
-  ## Written by John Ingram July 1996
-  ## updated for variable number of arguments by A. S. Hodel July 1999
+function sys = sysmult (...)
 
   if(nargin < 1)
     usage("sysmult: sys = sysmult(Asys{,Bsys,...})");

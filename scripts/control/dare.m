@@ -71,7 +71,7 @@
 
 ## See also: balance, are
 
-## Author: A. S. Hodel <scotte@eng.auburn.edu>
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 ## Created: August 1993
 ## Adapted-By: jwe
 

@@ -21,12 +21,12 @@
 ## Octave Controls toolbox demo: Frequency Response demo
 ## @end deftypefn
 
+## Author: David Clem
+## Created: August 15, 1994 
+## a s hodel: updated to match new order of ss2zp outputs
+## J Ingram:  updated for system data structure format August 1996
+
 function frdemo ()
-
-  ## Written by David Clem August 15, 1994 
-
-  ## a s hodel: updated to match new order of ss2zp outputs
-  ## J Ingram:  updated for system data structure format August 1996
 
   disp("")
   clc

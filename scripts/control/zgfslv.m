@@ -21,9 +21,10 @@
 ## solve system of equations for dense zgep problem
 ## @end deftypefn
  
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
+## Converted to Octave by R Bruce Tenison, July 3, 1994
+
 function x = zgfslv (n, m, p, b)
-  ## Written by A. Scotte Hodel
-  ## Converted to Octave by R Bruce Tenison, July 3, 1994
 
   nmp = n+m+p;
   gam1 = (2*n)+m+p;    gam2 = n+p;     gam3 = n+m;

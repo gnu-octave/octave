@@ -70,9 +70,9 @@
 ## 
 ## @end deftypefn
 
-function [dsys, fidx] = dmr2d (sys, idx, sprefix, Ts2, cuflg)
+## Adapted from c2d by a.s.hodel@eng.auburn.edu
 
-  ## Adapted from c2d by a.s.hodel@eng.auburn.edu
+function [dsys, fidx] = dmr2d (sys, idx, sprefix, Ts2, cuflg)
 
   ## parse input arguments
   if(nargin != 4 | nargout > 2)

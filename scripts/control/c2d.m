@@ -66,11 +66,11 @@
 ## to the names of the new discrete states.   
 ## @end deftypefn
 
-function dsys = c2d (sys, opt, T)
+## Author: R. Bruce Tenison <btenison@eng.auburn.edu>
+## Created: October 1993
+## Updated by John Ingram for system data structure August 1996
 
-  ## Written by R.B. Tenison (btenison@eng.auburn.edu)
-  ## October 1993
-  ## Updated by John Ingram for system data structure August 1996
+function dsys = c2d (sys, opt, T)
 
   ## parse input arguments
   if(nargin < 1 | nargin > 3)

@@ -86,9 +86,10 @@
 ## 
 ## @end deftypefn
 
-function retsys = syssetsignals (sys, opt, names, sig_idx)
+## Author: John Ingram <ingraje@eng.auburn.edu>
+## Created: August 1996
 
-  ## Written by John Ingram August 1996
+function retsys = syssetsignals (sys, opt, names, sig_idx)
 
   if (nargin < 3 | nargin > 4)
     usage("retsys=syssetsignals(sys,opt,names{,sig_idx})");

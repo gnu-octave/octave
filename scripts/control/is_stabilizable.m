@@ -41,11 +41,12 @@
 ## See also: size, rows, columns, length, is_matrix, is_scalar, is_vector
 ##     is_observable, is_stabilizable, is_detectable
 
-function [retval, U] = is_stabilizable (a, b, tol)
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
+## Created: August 1993
+## Updated by A. S. Hodel (scotte@eng.auburn.edu) Aubust, 1995 to use krylovb 
+## Updated by John Ingram (ingraje@eng.auburn.edu) July, 1996 to accept systems
 
-  ## Written by A. S. Hodel (scotte@eng.auburn.edu) August, 1993.
-  ## Updated by A. S. Hodel (scotte@eng.auburn.edu) Aubust, 1995 to use krylovb 
-  ## Updated by John Ingram (ingraje@eng.auburn.edu) July, 1996 to accept systems
+function [retval, U] = is_stabilizable (a, b, tol)
 
   if(nargin < 1)        usage("[retval,U] = is_stabilizable(a {, b ,tol})");
   elseif(is_struct(a))

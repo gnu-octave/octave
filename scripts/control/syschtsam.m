@@ -22,8 +22,10 @@
 ## an error if sys is purely continuous time.
 ## @end deftypefn
  
+## Author: John Ingram <ingraje@eng.auburn.edu>
+## Created: August 1996
+
 function retsys = syschtsam (sys, tsam)
-## Written by John Ingram August 1996
 
   if (nargin != 2)
     usage("retsys = syschtsam(sys,tsam)");

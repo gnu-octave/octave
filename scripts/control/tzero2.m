@@ -26,8 +26,10 @@
 ##@code{tzero} instead.
 ##@end deftypefn
 
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
+## Created: August 1993
+
 function zr = tzero2 (a, b, c, d, bal)
-## Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
 
   if (nargin == 4)
     bal = "B";

@@ -42,9 +42,11 @@
 ## @end format
 ## @end deftypefn
 
+## Author: R. Bruce Tenison <btenison@eng.auburn.edu>
+## Created: June 22, 1994
+## mod A S Hodel July, Aug  1995
+
 function [a, b, c, d] = tf2ss (num, den)
-  ## Written by R. Bruce Tenison (June 22, 1994) btenison@eng.auburn.edu
-  ## mod A S Hodel July, Aug  1995
 
   if(nargin != 2)        error("tf2ss: wrong number of input arguments")
   elseif(isempty(num))   error("tf2ss: empty numerator");

@@ -187,9 +187,10 @@
 ## 
 ## @end deftypefn
 
-function retsys = ss2sys (a, b, c, d, tsam, n, nz, stname, inname, outname, outlist)
+## Author: John Ingram <ingraje@eng.auburn.edu>
+## Created: July 20, 1996
 
-  ## Written by John Ingram (ingraje@eng.auburn.edu)  July 20, 1996
+function retsys = ss2sys (a, b, c, d, tsam, n, nz, stname, inname, outname, outlist)
 
   ## Test for correct number of inputs
   if ((nargin < 3) | (nargin > 11))

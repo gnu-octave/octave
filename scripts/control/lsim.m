@@ -34,10 +34,12 @@
 ## and x = system states.
 ## @end deftypefn
  
-function [y, x] = lsim (sys, u, t, x0)
+## Author: David Clem
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
+## Created: July 1995
+## modified by John Ingram for system format August 1996
 
-  ## Written by David Clem, A. S. Hodel July 1995
-  ## modified by John Ingram for system format August 1996
+function [y, x] = lsim (sys, u, t, x0)
 
   if((nargin < 3)||(nargin > 4))
     usage("[y,x] = lsim(sys,u,t[,x0])");

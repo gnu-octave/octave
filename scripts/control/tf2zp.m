@@ -28,8 +28,9 @@
 ## @end format
 ## @end deftypefn
 
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
+
 function [zer, pol, k] = tf2zp (num, den)
-## Written by A. S. Hodel, etc.
 
   if(nargin == 2)
     if(length(den) > 1)          pol = roots(den);
@@ -41,4 +42,5 @@ function [zer, pol, k] = tf2zp (num, den)
 
   [a,b,c,d] = tf2ss(num,den);
   [dum,k] = tzero(a,b,c,d);
+
 endfunction

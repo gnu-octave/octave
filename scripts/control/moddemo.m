@@ -25,9 +25,11 @@
 ## @end format
 ## @end deftypefn
  
-function moddemo ()
-## Written by David Clem August 15, 1994
+## Author: David Clem
+## Created: August 15, 1994
 ## a s hodel: updated to reflect updated output order in ss2zp
+
+function moddemo ()
 
   while (1)
     clc

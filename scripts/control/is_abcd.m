@@ -25,11 +25,11 @@
 
 ## See also: abcddim
 
-function retval = is_abcd (a, b, c, d)
+## Author: Kai P. Mueller <mueller@ifr.ing.tu-bs.de>
+## Created: November 4, 1997
+## based on is_controllable.m of Scottedward Hodel
 
-  ## Written by Kai P. Mueller November 4, 1997
-  ## based on is_controllable.m of Scottedward Hodel
-  ## modified by
+function retval = is_abcd (a, b, c, d)
 
   retval = 0;
   switch (nargin)

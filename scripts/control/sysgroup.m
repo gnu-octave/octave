@@ -46,15 +46,15 @@
 ## 
 ## @end deftypefn
  
-function sys = sysgroup (...)
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
+## Created: August 1995
+## modified by John Ingram July 1996
+## A. S. Hodel: modified for variable number of arguments 1999
 
-  ## A. S. Hodel August 1995
-  ## modified by John Ingram July 1996
-  ## A. S. Hodel: modified for variable number of arguments 1999
+function sys = sysgroup (...)
 
   save_emp = empty_list_elements_ok;
   empty_list_elements_ok = 1;
-
     
   if(nargin < 1)
     usage("sys = sysgroup(Asys{,Bsys,...})");

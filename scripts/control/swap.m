@@ -24,12 +24,14 @@
 ## @end format
 ## @end deftypefn
 
-function [a1, b1] = swap (a, b)
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
+## Created: July 24, 1992
+## Conversion to Octave R. Bruce Tenison July 4, 1994
 
-  ## A. S. Hodel July 24 1992
-  ## Conversion to Octave R. Bruce Tenison July 4, 1994
+function [a1, b1] = swap (a, b)
 
   a1 = b;
   b1 = a;
+
 endfunction
 

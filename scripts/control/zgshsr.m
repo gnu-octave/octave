@@ -23,10 +23,11 @@
 ## Called by zgfslv
 ## @end deftypefn
 
-function x = zgshsr (y)
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
+## Created: July 24, 1992
+## Conversion to Octave by R. Bruce Tenison July 3, 1994
 
-  ## A. S. Hodel July 24, 1992
-  ## Conversion to Octave by R. Bruce Tenison July 3, 1994
+function x = zgshsr (y)
 
   if(!is_vector(y))
     error(sprintf("y(%dx%d) must be a vector",rows(y),columns(y)));

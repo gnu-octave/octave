@@ -28,11 +28,11 @@
 ## ZGEP: Hodel, "Computation of Zeros with Balancing," 1992, submitted to  LAA
 ## Generalized CG: Golub and Van Loan, "Matrix Computations, 2nd ed" 1989
 
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
+## Conversion to Octave July 3, 1994
+  
 function y = zgfmul (a, b, c, d, x)
 
-  ## A. S. Hodel July 24 1992
-  ## Conversion to Octave July 3, 1994
-  
   [n,m] = size(b);
   [p,m1] = size(c);
   nm = n+m;

@@ -35,9 +35,10 @@
 ## @end example
 ## @end deftypefn
  
-function [zer, pol, k, tsam, inname, outname] = sys2zp (sys)
+## Author: John Ingram <ingraje@eng.auburn.edu>
+## Created: July 15, 1996
 
-  ## Created by John Ingram July 15 1996
+function [zer, pol, k, tsam, inname, outname] = sys2zp (sys)
 
   if(nargin != 1)
     usage("[zer,pol,k,tsam,inname,outname] = sys2zp(sys)");

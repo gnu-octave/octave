@@ -61,9 +61,11 @@
 ## See also: is_abcd
 ## @end deftypefn
 
-function [n, m, p] = abcddim (a, b, c, d)
-## Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
+## Created: August 1993.
 ## a s hodel: modified to accept pure-gain systems aug 1996
+
+function [n, m, p] = abcddim (a, b, c, d)
 
   if (nargin != 4)
     error ("abcddim: four arguments required");

@@ -90,14 +90,14 @@
 ## @end enumerate
 ## @end deftypefn 
 
-function [mag_r, phase_r, w_r] = bode (sys, w, outputs, inputs, plot_style)
+## Author: John Ingram <ingraje@eng.auburn.edu>
+## Created: July 10, 1996
+## Based on previous code by R. Bruce Tenison, July 13, 1994
+## Modified by David Clem November 13, 1994
+## again by A. S. Hodel July 1995 (smart plot range, etc.)
+## Modified by Kai P. Mueller September 28, 1997 (multiplot mode)
 
-  ## Written by John Ingram  July 10th, 1996
-  ## Based on previous code
-  ## By R. Bruce Tenison, July 13, 1994
-  ## Modified by David Clem November 13, 1994
-  ## again by A. S. Hodel July 1995 (smart plot range, etc.)
-  ## Modified by Kai P. Mueller September 28, 1997 (multiplot mode)
+function [mag_r, phase_r, w_r] = bode (sys, w, outputs, inputs, plot_style)
 
   ## check number of input arguments given
   if (nargin < 1 | nargin > 5)

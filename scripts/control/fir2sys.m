@@ -67,12 +67,13 @@
 ## @end example
 ## @end deftypefn
  
-function sys = fir2sys (num, tsam, inname, outname)
+## Author: R. Bruce Tenison <btenison@eng.auburn.edu>
+## Created: July 29, 1994
+## Name changed to TF2SYS July 1995
+## updated for new system data structure format July 1996
+## adapted from tf2sys july 1996
 
-  ## Written by R. Bruce Tenison  July 29, 1994
-  ## Name changed to TF2SYS July 1995
-  ## updated for new system data structure format July 1996
-  ## adapted from tf2sys july 1996
+function sys = fir2sys (num, tsam, inname, outname)
 
   ## Test for the correct number of input arguments
   if (nargin < 1 | nargin > 4)

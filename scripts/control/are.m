@@ -61,8 +61,10 @@
 
 ## See also: balance, dare
 
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
+## Created: August 1993
+
 function x = are (a, b, c, opt)
-## Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
 
   if (nargin == 3 || nargin == 4)
     if (nargin == 4)

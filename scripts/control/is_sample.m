@@ -22,7 +22,8 @@
 ##  (real,scalar, > 0)
 ## @end deftypefn
  
-## A. S. Hodel July 1995
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
+## Created: July 1995
 
 function out = is_sample (Ts)
 

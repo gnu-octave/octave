@@ -67,34 +67,35 @@
 ## See also: sysgetsignals, sysgettsam
 
 function [n, nz, m, p, yd] = sysdimensions (sys, opt)
-if(nargout > 5 | nargin < 1 | nargin > 2)
-  usage("[n,nz,m,p[,yd]] = sysdimensions(sys{,opt})");
-elseif(!is_struct(sys))
-  usage("[n,nz,m,p] = sysdimensions(sys)");
-elseif(nargin == 1)
-  opt = "all";
-endif
 
-n = sys.n;
-nz = sys.nz;
-m = length(sysgetsignals(sys,"in"));
-p = length(sysgetsignals(sys,"out"));
-yd = sys.yd;
-legal_options = list("all","cst","dst","st","in","out");
-legal_values = list(n,n,nz,n+nz,m,p);
-
-legal_opt = 0;
-for ii=1:length(legal_options)
-  if(strcmp(nth(legal_options,ii),opt))
-    n = nth(legal_values,ii);
-    legal_opt = 1;
-    if(ii > 1 & nargout > 1)
-      warning("opt=%s, %d output arguments requested",opt,nargout);
-    endif
+  if(nargout > 5 | nargin < 1 | nargin > 2)
+    usage("[n,nz,m,p[,yd]] = sysdimensions(sys{,opt})");
+  elseif(!is_struct(sys))
+    usage("[n,nz,m,p] = sysdimensions(sys)");
+  elseif(nargin == 1)
+    opt = "all";
   endif
-endfor
-if(!legal_opt)
-  error("illegal option passed = %s",opt);
-endif
+
+  n = sys.n;
+  nz = sys.nz;
+  m = length(sysgetsignals(sys,"in"));
+  p = length(sysgetsignals(sys,"out"));
+  yd = sys.yd;
+  legal_options = list("all","cst","dst","st","in","out");
+  legal_values = list(n,n,nz,n+nz,m,p);
+
+  legal_opt = 0;
+  for ii=1:length(legal_options)
+    if(strcmp(nth(legal_options,ii),opt))
+      n = nth(legal_values,ii);
+      legal_opt = 1;
+      if(ii > 1 & nargout > 1)
+	warning("opt=%s, %d output arguments requested",opt,nargout);
+      endif
+    endif
+  endfor
+  if(!legal_opt)
+    error("illegal option passed = %s",opt);
+  endif
 
 endfunction

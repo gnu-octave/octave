@@ -76,7 +76,7 @@
 ## Solves by using the Bartels-Stewart algorithm (1972).
 ## @end deftypefn
 
-## Author: A. S. Hodel <scotte@eng.auburn.edu>
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 ## Created: August 1993
 ## Adapted-By: jwe
 

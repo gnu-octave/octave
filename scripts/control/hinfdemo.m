@@ -1,4 +1,4 @@
-## Copyright (C) 1996, 1998 Kai Mueller
+## Copyright (C) 1996, 1998 Kai P. Mueller
 ##
 ## This file is part of Octave.
 ##
@@ -128,7 +128,8 @@
 ## @end table
 ## @end deftypefn
 
-## Kai P. Mueller 30-APR-1998 <mueller@ifr.ing.tu-bs.de
+## Author: Kai P. Mueller <mueller@ifr.ing.tu-bs.de>
+## Created: April 30, 1998
 
 yn = [];
 while (length(yn) < 1)

@@ -25,7 +25,7 @@
 ## outputs:
 ##   idxvec: vector of signal indices (appropriate for use with sysprune)
 
-## Written by A. S. Hodel, a.s.hodel@eng.auburn.edu
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
 
 function idxvec = sysidx (sys, sigtype, signamelist)
 

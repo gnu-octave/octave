@@ -24,13 +24,15 @@
 ## @end format
 ## @end deftypefn
 
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
+## Created: July 23, 1992
+## Conversion to Octave R. Bruce Tenison July 4, 1994
+  
 function B = swaprows (A)
 
-  ## A. S. Hodel July 23, 1992
-  ## Conversion to Octave R. Bruce Tenison July 4, 1994
-  
   m = rows(A);
   idx = m:-1:1;
   B = A(idx,:);
+
 endfunction
 

@@ -30,10 +30,11 @@
 ##  desired locations.  
 ## @end deftypefn
  
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
+## Created: August 1995
+  
 function pv = sysreorder (vlen, list)
 
-  ## A. S. Hodel, Aug 1995
-  
   ## disp('sysreorder: entry')
   
   pv = 1:vlen;

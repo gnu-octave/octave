@@ -104,10 +104,12 @@
 ## @end enumerate
 ## @end deftypefn
 
-function [k, p, e] = dlqr (a, b, q, r, s)
-## Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
+## Created: August 1993
 ## Converted to discrete time by R. B. Tenison
 ## (btenison@eng.auburn.edu) October 1993
+
+function [k, p, e] = dlqr (a, b, q, r, s)
 
   if (nargin != 4 && nargin != 5)
     error ("dlqr: invalid number of arguments");

@@ -62,10 +62,11 @@
 ## @end example
 ## @end deftypefn
  
-function [a, b, c, d, tsam, n, nz, stname, inname, outname, yd] = sys2ss (sys)
+## Author: David Clem
+## Created: August 19, 1994
+## Updates by John Ingram July 14, 1996
 
-  ## Written by David Clem August 19, 1994
-  ## Updates by John Ingram July 14, 1996
+function [a, b, c, d, tsam, n, nz, stname, inname, outname, yd] = sys2ss (sys)
 
   if(nargin != 1)
     usage("[a,b,c,d,tsam,n,nz,stname,inname,outname,yd] = sys2ss(sys)")

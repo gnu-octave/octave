@@ -23,9 +23,10 @@
 ##  a polynomial with those roots.
 ## @end deftypefn
 
-function [poly, rvals] = zp2ssg2 (rvals)
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
+## Created: August 1996
 
-  ## A. S. Hodel Aug 1996
+function [poly, rvals] = zp2ssg2 (rvals)
 
   ## locate imaginary roots (if any)
   cidx = find(imag(rvals));

@@ -24,7 +24,8 @@
 ##       number of @var{A}-Matrix in @var{sys} (default @var{tol} = 1.0e-10)
 ## @end deftypefn
 
-## Written by Kai P Mueller (mueller@ifr.ing.tu-bs.de) October 1, 1997
+## Author: Kai P. Mueller <mueller@ifr.ing.tu-bs.de>
+## Created: October 1, 1997
 
 function gm = dcgain (sys, tol)
 

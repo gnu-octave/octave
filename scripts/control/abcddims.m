@@ -24,12 +24,15 @@
 ## @var{my} and @var{ny} are the row and column dimensions of the result.
 ## @end deftypefn
 
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
+## Created: February 1997
+
 function [y, my, ny] = abcddims (x)
-## Written by A. S. Hodel (scotte@eng.auburn.edu) Feb 1997
 
   y = x;
   if(isempty(y))
     y = [];
   endif
   [my,ny] = size(y);
+
 endfunction

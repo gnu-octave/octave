@@ -21,10 +21,11 @@
 ##  Octave Controls toolbox demo: Block Diagram Manipulations demo
 ## @end deftypefn
  
-function bddemo ()
+## Author: David Clem
+## Created: August 15, 1994
+## Modified by A S Hodel Summer-Fall 1996
 
-  ## Written by David Clem August 15, 1994
-  ## Modified by A S Hodel Summer-Fall 1996
+function bddemo ()
 
   sav_page = page_screen_output;
   page_screen_output = 1;

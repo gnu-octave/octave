@@ -26,9 +26,10 @@
 
 ## See also: fir2sys
  
-function [c, tsam, inname, outname] = sys2fir (sys)
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
+## Created: July 1996
 
-  ## a s hodel July 1996
+function [c, tsam, inname, outname] = sys2fir (sys)
 
   ## let sys2tf do most of the work
 

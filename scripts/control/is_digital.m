@@ -32,9 +32,10 @@
 ## Exits with an error of sys is a mixed (continuous and discrete) system
 ## @end deftypefn
 
-function DIGITAL = is_digital (sys, eflg)
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
+## Created: July 1996
 
-  ## a s hodel July 1996
+function DIGITAL = is_digital (sys, eflg)
 
   switch(nargin)
   case(1),  eflg = 0;

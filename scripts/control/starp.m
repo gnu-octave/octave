@@ -49,9 +49,10 @@
 ## @end format
 ## @end deftypefn
 
-function sys = starp (P, K, ny, nu);
+## Author: Kai P. Mueller <mueller@ifr.ing.tu-bs.de>
+## Created: May 1998
 
-  ## Written by Kai Mueller May 1998
+function sys = starp (P, K, ny, nu);
 
   if((nargin != 2) && (nargin != 4))
     usage("sys = starp(P, K, ny, nu)");

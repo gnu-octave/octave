@@ -30,11 +30,12 @@
 ## @end format
 ## @end deftypefn
 
-function [zer, pol, k] = ss2zp (a, b, c, d)
+## Author: David Clem
+## Created: August 15, 1994
+## Hodel: changed order of output arguments to zer, pol, k. July 1996
+## a s hodel: added argument checking, allow for pure gain blocks aug 1996
 
-  ## Written by David Clem August 15, 1994
-  ## Hodel: changed order of output arguments to zer, pol, k. July 1996
-  ## a s hodel: added argument checking, allow for pure gain blocks aug 1996
+function [zer, pol, k] = ss2zp (a, b, c, d)
 
   if(nargin != 4)
     usage("[zer,pol,k] = ss2zp(a,b,c,d)");

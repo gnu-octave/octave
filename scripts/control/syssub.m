@@ -36,10 +36,11 @@
 ## @end example
 ## @end deftypefn
  
-function sys = syssub (...)
+## Author: John Ingram <ingraje@eng.auburn.edu>
+## Created: July 1996
+## updated for variable numbers of input arguments by July 1999 A. S. Hodel
 
-  ## Written by John Ingram July 1996
-  ## updated for variable numbers of input arguments by July 1999 A. S. Hodel
+function sys = syssub (...)
 
   if(nargin < 1)
     usage("syssub: sys = syssub(Gsys{,Hsys,...})");

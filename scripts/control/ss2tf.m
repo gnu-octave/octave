@@ -38,10 +38,11 @@
 ## @end format
 ## @end deftypefn
  
-function [num, den] = ss2tf (a, b, c, d)
+## Author: R. Bruce Tenison <btenison@eng.auburn.edu>
+## Created: June 24, 1994
+## a s hodel: modified to allow for pure gain blocks Aug 1996
 
-  ## Written by R. Bruce Tenison (June 24, 1994) btenison@eng.auburn.edu
-  ## a s hodel: modified to allow for pure gain blocks Aug 1996
+function [num, den] = ss2tf (a, b, c, d)
 
   ## Check args
   [n,m,p] = abcddim(a,b,c,d);

@@ -27,11 +27,12 @@
 ## 
 ## Note: discrete-state sampling time is not included!
 
-function Asys = packsys (a, b, c, d, dflg)
+## Author: R. Bruce Tenison <btenison@eng.auburn.edu>
+## Created: July 29, 1994
+## Modified by David Clem November 13, 1994
+## Modified by A. S. Hodel April 1995
 
-  ## Written by R. Bruce Tenison  July 29, 1994
-  ## Modified by David Clem November 13, 1994
-  ## Modified by A. S. Hodel April 1995
+function Asys = packsys (a, b, c, d, dflg)
 
   warning("packsys is obsolete!  Use ss2sys instead.");
   

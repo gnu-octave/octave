@@ -39,9 +39,10 @@
 ## @end table
 ## @end deftypefn
  
-function retsys = sysout (sys, opt)
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
+## Created: 1995-1996
 
-  ## Written by A S Hodel: 1995-1996
+function retsys = sysout (sys, opt)
 
   if( (nargin < 1) || (nargin > 2) )
     usage("sysout(sys[,opt])");

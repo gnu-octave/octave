@@ -60,9 +60,10 @@
 ## 
 ## @end deftypefn
  
-function x = dlyap (a, b)
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
+## Created: August 1993
 
-  ## Written by A. S. Hodel (scotte@eng.auburn.edu) August 1993.
+function x = dlyap (a, b)
 
   if ((n = is_square (a)) == 0)
     warning ("dlyap: a must be square");

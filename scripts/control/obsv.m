@@ -36,10 +36,10 @@
 ##        are much better for observability tests.
 ## @end deftypefn
 
-function Qb = obsv (sys, c)
+## Author: Kai P. Mueller <mueller@ifr.ing.tu-bs.de>
+## Created: November 4, 1997
 
-  ## Written by Kai P. Mueller November 4, 1997
-  ## modified by
+function Qb = obsv (sys, c)
 
   if (nargin == 2)
     a = sys;

@@ -58,11 +58,12 @@
 ## See also: size, rows, columns, length, is_matrix, is_scalar, is_vector
 ##     is_observable, is_stabilizable, is_detectable, krylov, krylovb
 
-function [retval, U] = is_controllable (a, b, tol)
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
+## Created: August 1993
+## Updated by A. S. Hodel (scotte@eng.auburn.edu) Aubust, 1995 to use krylovb 
+## Updated by John Ingram (ingraje@eng.auburn.edu) July, 1996 for packed systems
 
-  ## Written by A. S. Hodel (scotte@eng.auburn.edu) August, 1993.
-  ## Updated by A. S. Hodel (scotte@eng.auburn.edu) Aubust, 1995 to use krylovb 
-  ## Updated by John Ingram (ingraje@eng.auburn.edu) July, 1996 for packed systems
+function [retval, U] = is_controllable (a, b, tol)
 
   deftol = 1;    # assume default tolerance
   if(nargin < 1 | nargin > 3)

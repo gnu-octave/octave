@@ -42,9 +42,10 @@
 ## 
 ## @end deftypefn
 
-function str_val = outlist (name_list, tabchar, yd, ilist)
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
+## Created: December 1995
 
-  ## A. S. Hodel Dec. 1995, 1998
+function str_val = outlist (name_list, tabchar, yd, ilist)
 
   ## save for restore later
   save_empty = empty_list_elements_ok;

@@ -28,10 +28,11 @@
 ## ZGEP: Hodel, "Computation of Zeros with Balancing," 1992, submitted to  LAA
 ## Generalized CG: Golub and Van Loan, "Matrix Computations, 2nd ed" 1989
 
-function x = zgscal (a, b, c, d, z, n, m, p)
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
+## Created: July 24, 1992
+## Conversion to Octave R. Bruce Tenison July 3, 1994
 
-  ## A. S. Hodel July 24 1992
-  ## Conversion to Octave R. Bruce Tenison July 3, 1994
+function x = zgscal (a, b, c, d, z, n, m, p)
 
   ## initialize parameters:
   ## Givens rotations, diagonalized 2x2 block of F, gcg vector initialization

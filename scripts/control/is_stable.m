@@ -41,11 +41,12 @@
 ## See also: size, rows, columns, length, is_matrix, is_scalar, is_vector
 ##     is_observable, is_stabilizable, is_detectable, krylov, krylovb
 
-function retval = is_stable (a, tol, disc)
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
+## Created: August 1993
+## Updated by John Ingram (ingraje@eng.auburn.edu) July, 1996 for systems
+## Updated to simpler form by a.s.hodel 1998
 
-  ## Written by A. S. Hodel (scotte@eng.auburn.edu) August, 1993.
-  ## Updated by John Ingram (ingraje@eng.auburn.edu) July, 1996 for systems
-  ## Updated to simpler form by a.s.hodel 1998
+function retval = is_stable (a, tol, disc)
 
   if( (nargin < 1) | (nargin > 3) )   usage("is_stable(a {,tol,disc})");
   elseif(is_struct(a))

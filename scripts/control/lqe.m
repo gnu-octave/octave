@@ -86,15 +86,17 @@
 ## @end table
 ## @end deftypefn
 
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
+## Created: August 1993
+
 function [k, p, e] = lqe (a, g, c, sigw, sigv, zz)
-## Written by A. S. Hodel (scotte@eng.auburn.edu) August, 1993.
 
   if ( (nargin != 5) && (nargin != 6))
     error ("lqe: invalid number of arguments");
   endif
 
-## The problem is dual to the regulator design, so transform to lqr
-## call.
+  ## The problem is dual to the regulator design, so transform to lqr
+  ## call.
 
   if (nargin == 5)
     [k, p, e] = lqr (a', c', g*sigw*g', sigv);

@@ -41,10 +41,11 @@
 ## set appropriately in the returned value of @var{sys}.
 ## @end deftypefn
 
-function sys = sysscale (sys, outscale, inscale, outname, inname)
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
+## Created: August 1995
+## modified by John Ingram 7-15-96
 
-  ## A. S. Hodel August 1995
-  ## modified by John Ingram 7-15-96
+function sys = sysscale (sys, outscale, inscale, outname, inname)
 
   if( (nargin < 3) || (nargin > 5)  )
     usage("retsys = sysscale(Asys,output_list,input_list{,inname,outname})");

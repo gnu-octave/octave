@@ -63,10 +63,11 @@
 ## 
 ## @end deftypefn
 
-function sys = sysconnect (sys, output_list, input_list, order, tol)
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
+## Created: August 1995
+## modified by John Ingram July 1996
 
-  ## A. S. Hodel August 1995
-  ## modified by John Ingram July 1996
+function sys = sysconnect (sys, output_list, input_list, order, tol)
 
   if( (nargin < 3) | (nargin > 5) )
     usage("retsys = sysconnect(sys,output_list,input_list[,order,tol])");

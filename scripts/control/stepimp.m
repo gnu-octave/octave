@@ -32,10 +32,11 @@
 
 ## See also: step, impulse
 
-function [y, t] = stepimp (sitype, sys, inp, tstop, n)
+## Author: Kai P. Mueller <mueller@ifr.ing.tu-bs.de>
+## Created: October 2, 1997
+## based on lsim.m of Scottedward Hodel
 
-  ## Written by Kai P. Mueller October 2, 1997
-  ## based on lsim.m of Scottedward Hodel
+function [y, t] = stepimp (sitype, sys, inp, tstop, n)
 
   if (sitype == 1)         IMPULSE = 0;
   elseif (sitype == 2)     IMPULSE = 1;

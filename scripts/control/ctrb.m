@@ -32,11 +32,11 @@
 ##        are much better for controllability tests.
 ## @end deftypefn
 
-function Qs = ctrb (sys, b)
+## Author: Kai P. Mueller <mueller@ifr.ing.tu-bs.de>
+## Created: November 4, 1997
+## based on is_controllable.m of Scottedward Hodel
 
-  ## Written by Kai P. Mueller November 4, 1997
-  ## based on is_controllable.m of Scottedward Hodel
-  ## modified by
+function Qs = ctrb (sys, b)
 
   if (nargin == 2)
     a = sys;

@@ -51,10 +51,11 @@
 ## 
 ## @end deftypefn
 
-function retsys = sysdup (Asys, output_list, input_list)
+## Author: A. S. Hodel <a.s.hodel@eng.auburn.edu>
+## Created: August 1995
+## modified by John Ingram July 1996
 
-  ## A. S. Hodel August 1995
-  ## modified by John Ingram July 1996
+function retsys = sysdup (Asys, output_list, input_list)
 
   if( nargin != 3)
     usage("retsys = sysdup(Asys,output_list,input_list)");

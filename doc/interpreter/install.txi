@@ -240,6 +240,13 @@ on the HP-PA architecture.  You can find the patch at
 @url{ftp://ftp.cygnus.com/pub/g++/libg++-2.7.2-hppa-gcc-fix}.
 
 @item
+On some alpha systems there may be a problem with the @code{libdxml}
+library, resulting in floating point errors and/or segmentation faults in
+the linear algebra routines called by Octave.  If you encounter such
+problems, then you should modify the configure script so that
+@code{SPECIAL_MATH_LIB} is not set to @code{-ldxml}.
+
+@item
 On FreeBSD systems Octave may hang while initializing some internal
 constants.  The fix appears to be to use
 

@@ -1,7 +1,7 @@
 // NLConst.h                                              -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -33,34 +33,38 @@ class ColumnVector;
 #include "Bounds.h"
 #include "NLFunc.h"
 
-class NLConst : public Bounds, public NLFunc
+class
+NLConst : public Bounds, public NLFunc
 {
 public:
 
-  NLConst (void) : Bounds (), NLFunc () { }
+  NLConst (void)
+    : Bounds (), NLFunc () { }
 
-  NLConst (int n) : Bounds (n), NLFunc () { }
+  NLConst (int n)
+    : Bounds (n), NLFunc () { }
 
   NLConst (const ColumnVector& lb, const NLFunc f, const ColumnVector& ub)
     : Bounds (lb, ub), NLFunc (f) { }
 
-  NLConst (const NLConst& a) : Bounds (a.lb, a.ub), NLFunc (a.fun, a.jac) { }
+  NLConst (const NLConst& a)
+    : Bounds (a.lb, a.ub), NLFunc (a.fun, a.jac) { }
 
   NLConst& operator = (const NLConst& a)
     {
-      nb = a.nb;
-      lb = a.lb;
-      fun = a.fun;
-      jac = a.jac;
-      ub = a.ub;
-
+      if (this != &a)
+	{
+	  Bounds::operator = (a);
+	  NLFunc::operator = (a);
+	}
       return *this;
     }
+
+  ~NLConst (void) { }
 
 private:
 
   void error (const char *msg);
-
 };
 
 #endif

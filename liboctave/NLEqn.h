@@ -1,7 +1,7 @@
 // NLEqn.h                                                -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -34,85 +34,72 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "dColVector.h"
 #include "NLFunc.h"
 
-class NLEqn_options
+class
+NLEqn_options
 {
- public:
+public:
 
-  NLEqn_options (void) { init (); }
+  NLEqn_options (void)
+    : x_tolerance (::sqrt (DBL_EPSILON)) { }
 
-  NLEqn_options (const NLEqn_options& opt) { copy (opt); }
+  NLEqn_options (const NLEqn_options& opt)
+    : x_tolerance (opt.x_tolerance) { }
 
   NLEqn_options& operator = (const NLEqn_options& opt)
     {
       if (this != &opt)
-	copy (opt);
+	x_tolerance = opt.x_tolerance;
 
       return *this;
     }
 
   ~NLEqn_options (void) { }
 
-  void init (void)
-    {
-      double sqrt_eps = sqrt (DBL_EPSILON);
-      x_tolerance = sqrt_eps;
-    }
-
-  void copy (const NLEqn_options& opt)
-    {
-      x_tolerance = opt.x_tolerance;
-    }
-
-  void set_default_options (void) { init (); }
+  void set_default_options (void) { x_tolerance = ::sqrt (DBL_EPSILON); }
 
   void set_tolerance (double val)
-    {
-      x_tolerance = (val > 0.0) ? val : sqrt (DBL_EPSILON);
-    }
+    { x_tolerance = (val > 0.0) ? val : ::sqrt (DBL_EPSILON); }
 
   double tolerance (void) { return x_tolerance; }
 
- private:
+private:
 
   double x_tolerance;
 };
 
-class NLEqn : public NLFunc, public NLEqn_options
+class
+NLEqn : public NLFunc, public NLEqn_options
 {
- public:
+public:
 
-// Constructors
+  NLEqn (void)
+    : NLFunc (), NLEqn_options (), x () { }
 
-  NLEqn (void) : NLFunc (), n (0), x () { }
+  NLEqn (const ColumnVector& xx, const NLFunc f) 
+    : NLFunc (f), NLEqn_options (), x (xx) { }
 
-  NLEqn (const ColumnVector& xvec, const NLFunc f) 
-    : NLFunc (f), n (xvec.capacity ()), x (xvec) { }
-
-  NLEqn (const NLEqn& a) : NLFunc (a.fun, a.jac), n (a.n), x (a.x) { }
+  NLEqn (const NLEqn& a)
+    : NLFunc (a.fun, a.jac), NLEqn_options (), x (a.x) { }
 
   NLEqn& operator = (const NLEqn& a)
     {
-      fun = a.fun;
-      jac = a.jac;
-      x = a.n;
+      if (this != &a)
+	{
+	  NLFunc::operator = (a);
+	  NLEqn_options::operator = (a);
 
+	  x = a.x;
+	}
       return *this;
     }
 
-  void resize (int nn)
-    {
-      if (n != nn)
-	{
-	  n = nn;
-	  x.resize (n);
-	}
-    }
+  ~NLEqn (void) { }
 
-  void set_states (const ColumnVector&);
+  void set_states (const ColumnVector& xx) { x = xx; }
 
   ColumnVector states (void) const { return x; }
 
-  int size (void) const { return n; }
+  int size (void) const { return x.capacity (); }
 
   ColumnVector solve (void)
     {
@@ -137,7 +124,6 @@ class NLEqn : public NLFunc, public NLEqn_options
 
  private:
 
-  int n;
   ColumnVector x;
 
   void error (const char* msg);

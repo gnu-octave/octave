@@ -43,9 +43,8 @@ template class base_lu <ComplexMatrix, Complex, Matrix, double>;
 
 extern "C"
 {
-  int F77_FCN (zgesv, ZGESV) (const int&, const int&, Complex*,
-			      const int&, int*, Complex*, const int&,
-			      int&);
+  int F77_FCN (zgetrf, ZGETRF) (const int&, const int&, Complex*,
+				const int&, int*, int&);
 }
 
 ComplexLU::ComplexLU (const ComplexMatrix& a)
@@ -68,9 +67,8 @@ ComplexLU::ComplexLU (const ComplexMatrix& a)
   Complex *tmp_data = a_fact.fortran_vec ();
 
   int info = 0;
-  Complex *dummy = 0;
 
-  F77_XFCN (zgesv, ZGESV, (n, 0, tmp_data, n, pipvt, dummy, n, info));
+  F77_XFCN (zgetrf, ZGETRF, (n, n, tmp_data, n, pipvt, info));
 
   if (f77_exception_encountered)
     (*current_liboctave_error_handler) ("unrecoverable error in zgesv");

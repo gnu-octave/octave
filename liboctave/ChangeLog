@@ -1,3 +1,9 @@
+1999-12-08  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* dbleLU.cc (LU::LU): Call DGETRF directly instead of calling DGESV.
+	* CmplxLU.cc (ComplexLU::ComplexLU): Likewise, call ZGETRF
+	directly, instead of calling ZGESV.
+
 1999-11-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* data-conv.cc (init_sized_type_lookup_table): New function.

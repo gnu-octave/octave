@@ -43,9 +43,8 @@ template class base_lu <Matrix, double, Matrix, double>;
 
 extern "C"
 {
-  int F77_FCN (dgesv, DGESV) (const int&, const int&, double*,
-			      const int&, int*, double&, const int&,
-			      int&);
+  int F77_FCN (dgetrf, DGETRF) (const int&, const int&, double*,
+				const int&, int*, int&);
 }
 
 LU::LU (const Matrix& a)
@@ -68,9 +67,8 @@ LU::LU (const Matrix& a)
   double *tmp_data = a_fact.fortran_vec ();
 
   int info = 0;
-  double dummy = 0;
 
-  F77_XFCN (dgesv, DGESV, (n, 0, tmp_data, n, pipvt, dummy, n, info));
+  F77_XFCN (dgetrf, DGETRF, (n, n, tmp_data, n, pipvt, info));
 
   if (f77_exception_encountered)
     (*current_liboctave_error_handler) ("unrecoverable error in dgesv");

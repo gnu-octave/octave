@@ -155,7 +155,7 @@ octave_struct::subsref (const std::string& type,
   // octave_user_function::subsref.
 
   if (idx.size () > 1)
-    retval = retval(0).next_subsref (nargout, type, idx);
+    retval = retval(0).next_subsref (nargout, type, idx, skip);
 
   return retval;
 }

@@ -1,3 +1,7 @@
+2004-09-23  John W. Eaton  <jwe@octave.org>
+
+	* ov-struct.cc (octave_struct::subsref): Pass skip to next_subsref.
+
 2004-09-22  John W. Eaton  <jwe@octave.org>
 
 	* pt-plot.cc (send_to_plot_stream): Skip automatic replot if in

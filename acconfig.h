@@ -33,11 +33,23 @@
 /* Define if your gnuplot has mutliplot. */
 #undef GNUPLOT_HAS_MULTIPLOT
 
+/* Define if you have BSD style signals. */
+#undef HAVE_BSD_SIGNALS
+
+/* Define if you have POSIX style signals. */
+#undef HAVE_POSIX_SIGNALS
+
 /* Define if your system has program_invocation_name. */
 #undef HAVE_PROGRAM_INVOCATION_NAME
 
 /* Define if your system has a sys_siglist variable. */
 #undef HAVE_SYS_SIGLIST
+
+/* Define if you have System V Release 3 style signals. */
+#undef HAVE_USG_SIGHOLD
+
+/* Define if signal handlers must be reinstalled after they are called. */
+#undef MUST_REINSTALL_SIGHANDLERS
 
 /* Define if you don't have NPSOL. */
 #undef NPSOL_MISSING

@@ -63,6 +63,12 @@ int can_interrupt = 0;
 static sigset_t octave_signal_mask;
 #endif
 
+#if RETSIGTYPE == void
+#define SIGHANDLER_RETURN(status) return
+#else
+#define SIGHANDLER_RETURN(status) return status
+#endif
+
 void
 octave_save_signal_mask (void)
 {
@@ -126,11 +132,7 @@ generic_sig_handler (int sig)
 {
   my_friendly_exit (sys_siglist[sig], sig);
 
-#if RETSIGTYPE == void
-  return;
-#else
-  return 0;
-#endif
+  SIGHANDLER_RETURN (0);
 }
 
 // Handle SIGCHLD.
@@ -138,10 +140,9 @@ generic_sig_handler (int sig)
 static RETSIGTYPE
 sigchld_handler (int /* sig */)
 {
-  // Can this ever cause trouble on systems that don't forget signal
-  // handlers when they are invoked?
-
+#ifdef MUST_REINSTALL_SIGHANDLERS
   octave_set_signal_handler (SIGCHLD, sigchld_handler);
+#endif
 
   int n = octave_child_list::length ();
 
@@ -168,16 +169,17 @@ sigchld_handler (int /* sig */)
 	    }
 	}
     }
+
+  SIGHANDLER_RETURN (0);
 }
 
 #if defined (__alpha__)
 static RETSIGTYPE
 sigfpe_handler (int /* sig */)
 {
-  // Can this ever cause trouble on systems that don't forget signal
-  // handlers when they are invoked?
-
+#ifdef MUST_REINSTALL_SIGHANDLERS
   octave_set_signal_handler (SIGFPE, sigfpe_handler);
+#endif
 
   error ("floating point exception -- trying to return to prompt");
 
@@ -187,11 +189,7 @@ sigfpe_handler (int /* sig */)
       panic_impossible ();
     }
 
-#if RETSIGTYPE == void
-  return;
-#else
-  return 0;
-#endif
+  SIGHANDLER_RETURN (0);
 }
 #endif
 
@@ -200,10 +198,9 @@ sigfpe_handler (int /* sig */)
 static RETSIGTYPE
 sigint_handler (int /* sig */)
 {
-  // Can this ever cause trouble on systems that don't forget signal
-  // handlers when they are invoked?
-
+#ifdef MUST_REINSTALL_SIGHANDLERS
   octave_set_signal_handler (SIGINT, sigint_handler);
+#endif
 
   if (can_interrupt)
     {
@@ -211,20 +208,15 @@ sigint_handler (int /* sig */)
       panic_impossible ();
     }
 
-#if RETSIGTYPE == void
-  return;
-#else
-  return 0;
-#endif
+  SIGHANDLER_RETURN (0);
 }
 
 static RETSIGTYPE
 sigpipe_handler (int /* sig */)
 {
-  // Can this ever cause trouble on systems that don't forget signal
-  // handlers when they are invoked?
-
+#ifdef MUST_REINSTALL_SIGHANDLERS
   octave_set_signal_handler (SIGPIPE, sigpipe_handler);
+#endif
 
   if (pipe_handler_error_count++ == 0)
     warning ("broken pipe");
@@ -234,11 +226,7 @@ sigpipe_handler (int /* sig */)
   if (pipe_handler_error_count  > 100)
     jump_to_top_level ();
 
-#if RETSIGTYPE == void
-  return;
-#else
-  return 0;
-#endif
+  SIGHANDLER_RETURN (0);
 }
 
 void

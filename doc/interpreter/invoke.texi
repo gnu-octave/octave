@@ -193,9 +193,9 @@ When Octave starts, the value of @code{program_invocation_name} is
 automatically set to the name that was typed at the shell prompt to run
 Octave, and the value of @code{program_name} is automatically set to the
 final component of @code{program_invocation_name}.  For example, if you
-typed @file{/usr/local/bin/octave} to start Octave,
+typed @file{@value{OCTAVEHOME}/bin/octave} to start Octave,
 @code{program_invocation_name} would have the value
-@file{/usr/local/bin/octave}, and @code{program_name} would have the
+@file{@value{OCTAVEHOME}/bin/octave}, and @code{program_name} would have the
 value @code{octave}.
 
 If executing a script from the command line (e.g., @code{octave foo.m}
@@ -230,13 +230,22 @@ files:
 @cindex startup files
 
 @table @code
-@item OCTAVE_HOME/lib/octave/VERSION/m/startup/octaverc
+@item OCTAVE_HOME/share/octave/site/m/startup/octaverc
+Where @code{OCTAVE_HOME} is the directory in which all of Octave is
+installed (the default is @file{/usr/local}).  This file is provided so
+that changes to the default Octave environment can be made globally for
+all users at your site for all versions of Octave you have installed.
+Some care should be taken when making changes to this file, since all
+users of Octave at your site will be affected.
+
+@item OCTAVE_HOME/share/octave/VERSION/m/startup/octaverc
 Where @code{OCTAVE_HOME} is the directory in which all of Octave is
 installed (the default is @file{/usr/local}), and @code{VERSION} is the
 version number of Octave.  This file is provided so that changes to the
-default Octave environment can be made globally for all users.  Some
-care should be taken when making changes to this file, since all users
-of Octave at your site will be affected.
+default Octave environment can be made globally for all users for a
+particular version of Octave.  Some care should be taken when making
+changes to this file, since all users of Octave at your site will be
+affected.
 
 @item ~/.octaverc
 @cindex @code{~/.octaverc}

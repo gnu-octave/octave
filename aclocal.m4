@@ -435,3 +435,97 @@ AC_MSG_RESULT($octave_cv_var_program_inv_name)
 if test $octave_cv_var_program_inv_name = yes; then
   AC_DEFINE(HAVE_PROGRAM_INVOCATION_NAME)
 fi])
+dnl
+dnl These two checks for signal functions were originally part of the
+dnl aclocal.m4 file distributed with bash 2.0.
+dnl
+dnl Check type of signal routines (posix, 4.2bsd, 4.1bsd or v7)
+AC_DEFUN(OCTAVE_SIGNAL_CHECK,
+[AC_REQUIRE([AC_TYPE_SIGNAL])
+AC_MSG_CHECKING(for type of signal functions)
+AC_CACHE_VAL(octave_cv_signal_vintage,
+[
+  AC_TRY_LINK([#include <signal.h>],[
+    sigset_t ss;
+    struct sigaction sa;
+    sigemptyset(&ss); sigsuspend(&ss);
+    sigaction(SIGINT, &sa, (struct sigaction *) 0);
+    sigprocmask(SIG_BLOCK, &ss, (sigset_t *) 0);
+  ], octave_cv_signal_vintage=posix,
+  [
+    AC_TRY_LINK([#include <signal.h>], [
+	int mask = sigmask(SIGINT);
+	sigsetmask(mask); sigblock(mask); sigpause(mask);
+    ], octave_cv_signal_vintage=4.2bsd,
+    [
+      AC_TRY_LINK([
+	#include <signal.h>
+	RETSIGTYPE foo() { }], [
+		int mask = sigmask(SIGINT);
+		sigset(SIGINT, foo); sigrelse(SIGINT);
+		sighold(SIGINT); sigpause(SIGINT);
+        ], octave_cv_signal_vintage=svr3
+    )]
+  )]
+)
+])
+AC_MSG_RESULT($octave_cv_signal_vintage)
+if test $octave_cv_signal_vintage = posix; then
+AC_DEFINE(HAVE_POSIX_SIGNALS)
+elif test $octave_cv_signal_vintage = "4.2bsd"; then
+AC_DEFINE(HAVE_BSD_SIGNALS)
+elif test $octave_cv_signal_vintage = svr3; then
+AC_DEFINE(HAVE_USG_SIGHOLD)
+fi
+])
+dnl
+AC_DEFUN(OCTAVE_REINSTALL_SIGHANDLERS,
+[AC_REQUIRE([AC_TYPE_SIGNAL])
+AC_REQUIRE([OCTAVE_SIGNAL_CHECK])
+AC_MSG_CHECKING([if signal handlers must be reinstalled when invoked])
+AC_CACHE_VAL(octave_cv_must_reinstall_sighandlers,
+[AC_TRY_RUN([
+#include <signal.h>
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+typedef RETSIGTYPE sigfunc();
+int nsigint;
+#ifdef HAVE_POSIX_SIGNALS
+sigfunc *
+set_signal_handler(sig, handler)
+     int sig;
+     sigfunc *handler;
+{
+  struct sigaction act, oact;
+  act.sa_handler = handler;
+  act.sa_flags = 0;
+  sigemptyset (&act.sa_mask);
+  sigemptyset (&oact.sa_mask);
+  sigaction (sig, &act, &oact);
+  return (oact.sa_handler);
+}
+#else
+#define set_signal_handler(s, h) signal(s, h)
+#endif
+RETSIGTYPE
+sigint(s)
+    int s;
+{
+  nsigint++;
+}
+main()
+{
+  nsigint = 0;
+  set_signal_handler(SIGINT, sigint);
+  kill((int)getpid(), SIGINT);
+  kill((int)getpid(), SIGINT);
+  exit(nsigint != 2);
+}
+], octave_cv_must_reinstall_sighandlers=no, octave_cv_must_reinstall_sighandlers=yes,
+AC_MSG_ERROR(cannot check signal handling if cross compiling))])
+AC_MSG_RESULT($octave_cv_must_reinstall_sighandlers)
+if test $octave_cv_must_reinstall_sighandlers = yes; then
+AC_DEFINE(MUST_REINSTALL_SIGHANDLERS)
+fi
+])

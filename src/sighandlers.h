@@ -64,12 +64,6 @@ extern void octave_restore_signal_mask (void);
 extern char *sys_siglist[];
 #endif
 
-#if defined (HAVE_SIGACTION) && defined (HAVE_SIGPROCMASK)
-#if defined (HAVE_SIGPENDING) && defined (HAVE_SIGSUSPEND)
-#define HAVE_POSIX_SIGNALS
-#endif
-#endif
-
 // Maybe this should be in a separate file?
 
 class

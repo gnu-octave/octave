@@ -393,6 +393,8 @@ Configuration and Installation:
   * Make Octave as independent of the particular readline version as
     possible.
 
+  * Make configure take more defaults from the environment.
+
   * Should --enable-lite-kernel imply --enable-shared?
 
   * Make it possible to configure without readline.

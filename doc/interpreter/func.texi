@@ -583,11 +583,11 @@ time stamp every time a function is used is rather inefficient, but it
 has to be done to ensure that the correct function definition is used.
 
 Octave assumes that function files in the
-@file{/usr/local/lib/octave/@value{VERSION}/m} directory tree will not
-change, so it doesn't have to check their time stamps every time the
-functions defined in those files are used.  This is normally a very good
-assumption and provides a significant improvement in performance for the
-function files that are distributed with Octave.
+@file{@value{OCTAVEHOME}/share/octave/@value{VERSION}/m} directory tree
+will not change, so it doesn't have to check their time stamps every
+time the functions defined in those files are used.  This is normally a
+very good assumption and provides a significant improvement in
+performance for the function files that are distributed with Octave.
 
 If you know that your own function files will not change while you are
 running Octave, you can improve performance by setting the variable

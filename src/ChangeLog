@@ -1,3 +1,14 @@
+Tue Nov  5 13:00:35 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* sighandlers.h (octave_child_list): Don't define
+	HAVE_POSIX_SIGNALS HERE.
+
+	* sighandlers.cc (SIGHANDLER_RETURN): New macro.
+	(generic_sig_handler, sigchld_handler, sigfpe_handler,
+	sigint_handler, sigpipe_handler):  Use it.
+	(sigchld_handler, sigfpe_handler, sigint_handler, sigpipe_handler):
+	Only reinstall signal handler if MUST_REINSTALL_SIGHANDLER is defined.
+
 Sun Nov  3 00:45:30 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pt-const.cc (tree_constant::print): Just call val.print().

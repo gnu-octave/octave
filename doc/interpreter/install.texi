@@ -115,7 +115,10 @@ Once you have successfully compiled Octave, run @samp{make install}.
 
 This will install a copy of octave, its libraries, and its documentation
 in the destination directory.  As distributed, Octave is installed in
-the following directories:
+the following directories.  In the table below, @var{prefix} defaults to
+@file{/usr/local}, @var{version} stands for the current version number
+of the interpreter, and @var{host_type} is the type of computer on which
+Octave is installed (for example, @samp{i586-unknown-gnu}).
 
 @table @file
 @item @var{prefix}/bin
@@ -123,6 +126,9 @@ Octave and other binaries that people will want to run directly.
 
 @item @var{prefix}/lib
 Libraries like libcruft.a and liboctave.a.
+
+@item @var{prefix}/share
+Architecture-independent data files.
 
 @item @var{prefix}/include/octave
 Include files distributed with Octave.
@@ -133,7 +139,7 @@ Unix-style man pages describing Octave.
 @item @var{prefix}/info
 Info files describing Octave.
 
-@item @var{prefix}/lib/octave/@var{version}/m
+@item @var{prefix}/share/octave/@var{version}/m
 Function files distributed with Octave.  This includes the Octave
 version, so that multiple versions of Octave may be installed at the
 same time.
@@ -144,15 +150,9 @@ Executables to be run by Octave rather than the user.
 @item @var{prefix}/lib/octave/@var{version}/oct/@var{host_type}
 Object files that will be dynamically loaded.
 
-@item @var{prefix}/lib/octave/@var{version}/imagelib
+@item @var{prefix}/share/octave/@var{version}/imagelib
 Image files that are distributed with Octave.
 @end table
-
-@noindent
-where @var{prefix} defaults to @file{/usr/local}, @var{version}
-stands for the current version number of the interpreter, and
-@var{host_type} is the type of computer on which Octave is installed
-(for example, @samp{i486-unknown-gnu}).
 @end itemize
 
 @menu
@@ -465,7 +465,7 @@ is installed (for example, @samp{i486-unknown-gnu}).
 If these directories don't exist, the script @file{doinstall.sh} will
 create them for you.
 
-If this is possible for you to install Octave in @file{/usr/local}, or
+If it is not possible for you to install Octave in @file{/usr/local}, or
 if you would prefer to install it in a different directory, you can
 specify the name of the top level directory as an argument to the
 doinstall.sh script.  For example:

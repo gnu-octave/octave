@@ -376,7 +376,7 @@ For example,
 
 @example
 octave:13> file_in_path (LOADPATH, "nargchk.m")
-ans = /usr/local/lib/octave/1.1.0/m/general/nargchk.m
+ans = "@value{OCTAVEHOME}/share/octave/2.0/m/general/nargchk.m"
 @end example
 @end deftypefn
 

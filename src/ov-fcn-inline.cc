@@ -31,6 +31,7 @@ Open Source Initiative (www.opensource.org)
 #include <config.h>
 #endif
 
+#include <istream>
 #include <iostream>
 
 #include "defun.h"
@@ -125,7 +126,31 @@ octave_fcn_inline::load_ascii (std::istream& is)
       is >> nm;
       if (nm == "0")
 	nm = "";
-      is >> iftext;
+
+      char c;
+      OSSTREAM buf;
+
+      // Skip preceeding newline(s)
+      while (is.get (c) && c == '\n');
+
+      if (is)
+	{
+	  buf << c;
+
+	  // Get a line of text whitespace characters included, leaving
+	  // newline in the stream
+	  while (is.peek () != '\n')
+	    {
+	      is.get (c);
+	      if (! is)
+		break;
+	      buf << c;
+	    }
+	}
+
+      buf << OSSTREAM_ENDS;
+      iftext = OSSTREAM_STR (buf);
+      OSSTREAM_FREEZE (buf);
 
       octave_fcn_inline tmp (iftext, ifargs, nm);
       fcn = tmp.fcn;
@@ -331,6 +356,9 @@ octave_fcn_inline::save_hdf5 (hid_t loc_id, const char *name,
     }
 
   H5Dclose (data_hid);
+  H5Sclose (space_hid);
+  H5Tclose (type_hid);
+  H5Gclose (group_hid);
 
   return retval;
 }

@@ -377,7 +377,8 @@ read_ascii_data (std::istream& is, const std::string& filename, bool& global,
       else
 	tc = octave_value_typeinfo::lookup_type (typ);
 
-      tc.load_ascii (is);
+      if (! tc.load_ascii (is))
+	error ("load: trouble reading ascii file `%s'", filename.c_str ());
     }
   else
     error ("load: failed to extract keyword specifying value type");

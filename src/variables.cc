@@ -897,6 +897,19 @@ lookup_user_function (const std::string& nm)
 }
 
 octave_value
+lookup_function_handle (const std::string& nm)
+{
+  octave_value retval;
+
+  symbol_record *sr = curr_sym_tab->lookup (nm, true);
+
+  if (sr && sr->def ().is_function_handle ())
+    retval = sr->def ();
+
+  return retval;
+}
+
+octave_value
 get_global_value (const std::string& nm)
 {
   octave_value retval;
@@ -1921,11 +1934,22 @@ do_matlab_compatible_clear (const string_vector& argv, int argc, int idx)
     } \
   while (0)
 
-
 bool
 clear_function (const std::string& nm)
 {
   return do_clear_function (nm);
+}
+
+bool
+clear_variable (const std::string& nm)
+{
+  return do_clear_variable (nm);
+}
+
+bool
+clear_symbol (const std::string& nm)
+{
+  return do_clear_symbol (nm);
 }
 
 DEFCMD (clear, args, ,

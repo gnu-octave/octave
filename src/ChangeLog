@@ -1,3 +1,22 @@
+2004-09-11  David Bateman  <dbateman@free.fr>
+
+	* ov-fcn-handle.cc (octave_fcn_handle::save_ascii,
+	octave_fcn_handle::load_ascii, octave_fcn_handle::save_binary,
+	octave_fcn_handle::load_binary, octave_fcn_handle::save_hdf5,
+	octave_fcn_handle::load_hdf5): New functions. 
+	* ov-fcn-handle.h: Provide decls.
+
+	* ov-fcn-inline.cc (octave_fcn_inline::load_ascii):
+	Allow spaces in saved function.
+ 	(octave_fcn_inline::save_hdf5): Properly close all HDF5 objects.
+
+	* ls-oct-ascii.cc (read_ascii_data): Check return type of 
+	<octave_value>.load_ascii for errors reading the variables
+
+	* variables.cc (lookup_function_handle, clear_variable,
+	clear_symbol): New functions.
+	* variables.h: Provide decls.
+
 2004-09-10  John W. Eaton  <jwe@octave.org>
 
 	* ov-builtin.cc (octave_builtin::do_multi_index_op): Use unwind

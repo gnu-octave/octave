@@ -89,6 +89,8 @@ extern octave_value lookup_function (const std::string& nm);
 
 extern octave_value lookup_user_function (const std::string& nm);
 
+extern octave_value lookup_function_handle (const std::string& nm);
+
 extern octave_value get_global_value (const std::string& nm);
 
 extern void set_global_value (const std::string& nm, const octave_value& val);
@@ -120,6 +122,8 @@ extern void munlock (const std::string&);
 extern bool mislocked (const std::string&);
 
 extern bool clear_function (const std::string& nm);
+extern bool clear_variable (const std::string& nm);
+extern bool clear_symbol (const std::string& nm);
 
 // Symbol table for symbols at the top level.
 extern symbol_table *top_level_sym_tab;

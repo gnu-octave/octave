@@ -45,6 +45,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt-exp.h"
 #include "pt-assign.h"
 #include "variables.h"
+#include "parse.h"
+
+#include "byte-swap.h"
+#include "ls-oct-ascii.h"
+#include "ls-hdf5.h"
+#include "ls-utils.h"
 
 DEFINE_OCTAVE_ALLOCATOR (octave_fcn_handle);
 
@@ -90,6 +96,352 @@ octave_fcn_handle::subsref (const std::string& type,
 
   return retval;
 }
+
+bool
+octave_fcn_handle::save_ascii (std::ostream& os, bool&, bool)
+{
+  os << nm << "\n";
+  if (nm == "@<anonymous>")
+    {
+      OSSTREAM buf;
+      print_raw (buf, true);
+      os << OSSTREAM_STR (buf) << "\n" << OSSTREAM_ENDS;
+      OSSTREAM_FREEZE (buf);
+    }
+
+  return true;
+}
+
+bool
+octave_fcn_handle::load_ascii (std::istream& is)
+{
+  is >> nm;
+  if (nm == "@<anonymous>")
+    {
+      char c;
+      OSSTREAM buf;
+
+      // Skip preceeding newline(s)
+      while (is.get (c) && c == '\n');
+
+      if (is)
+	{
+	  buf << c;
+
+	  // Get a line of text whitespace characters included, leaving
+	  // newline in the stream
+	  while (is.peek () != '\n')
+	    {
+	      is.get (c);
+	      if (! is)
+		break;
+	      buf << c;
+	    }
+	}
+
+      buf << OSSTREAM_ENDS;
+
+      int parse_status;
+      octave_value anon_fcn_handle = eval_string (OSSTREAM_C_STR (buf), 
+						  true, parse_status);
+      OSSTREAM_FREEZE (buf);
+
+      fcn = anon_fcn_handle.fcn_handle_value () -> fcn;
+    }
+  else
+    {
+      fcn = lookup_function (nm);
+      if (! fcn.is_function ())
+	return false;
+    }
+
+  return true;
+}
+
+bool
+octave_fcn_handle::save_binary (std::ostream& os, bool&)
+{
+  FOUR_BYTE_INT tmp = nm.length ();
+  os.write (X_CAST (char *, &tmp), 4);
+  os.write (nm.c_str (), nm.length ());
+  if (nm == "@<anonymous>")
+    {
+      OSSTREAM buf;
+      print_raw (buf, true);
+      std::string stmp = OSSTREAM_STR (buf);
+      OSSTREAM_FREEZE (buf);
+      tmp = stmp.length ();
+      os.write (X_CAST (char *, &tmp), 4);
+      os.write (stmp.c_str (), stmp.length ());
+    }
+  return true;
+}
+
+bool
+octave_fcn_handle::load_binary (std::istream& is, bool swap,
+				oct_mach_info::float_format)
+{
+  FOUR_BYTE_INT tmp;
+  if (! is.read (X_CAST (char *, &tmp), 4))
+    return false;
+  if (swap)
+    swap_bytes<4> (&tmp);
+
+  OCTAVE_LOCAL_BUFFER (char, ctmp1, tmp+1);
+  is.read (ctmp1, tmp);
+  nm = std::string (ctmp1);
+
+  if (! is)
+    return false;
+
+  if (nm == "@<anonymous>")
+    {
+      if (! is.read (X_CAST (char *, &tmp), 4))
+	return false;
+      if (swap)
+	swap_bytes<4> (&tmp);
+
+      OCTAVE_LOCAL_BUFFER (char, ctmp2, tmp+1);
+      is.read (ctmp2, tmp);
+
+      int parse_status;
+      octave_value anon_fcn_handle = eval_string (ctmp2, true, parse_status);
+
+      fcn = anon_fcn_handle.fcn_handle_value () -> fcn;
+    }
+  else
+    {
+      fcn = lookup_function (nm);
+      if (! fcn.is_function ())
+	return false;
+    }
+  return true;
+}
+
+#if defined (HAVE_HDF5)
+bool
+octave_fcn_handle::save_hdf5 (hid_t loc_id, const char *name,
+			      bool /* save_as_floats */)
+{
+  hid_t group_hid = -1;
+  group_hid = H5Gcreate (loc_id, name, 0);
+  if (group_hid < 0 ) return false;
+
+  hid_t space_hid = -1, data_hid = -1, type_hid = -1;;
+  bool retval = true;
+
+  // attach the type of the variable
+  type_hid = H5Tcopy (H5T_C_S1);
+  H5Tset_size (type_hid, nm.length () + 1);
+  if (type_hid < 0)
+    {
+      H5Gclose (group_hid);
+      return false;
+    }
+
+  OCTAVE_LOCAL_BUFFER (hsize_t, hdims, 2);
+  hdims[0] = 0;
+  hdims[1] = 0;
+  space_hid = H5Screate_simple (0 , hdims, (hsize_t*) 0);
+  if (space_hid < 0)
+    {
+      H5Tclose (type_hid);
+      H5Gclose (group_hid);
+      return false;
+    }
+
+  data_hid = H5Dcreate (group_hid, "nm",  type_hid, space_hid, H5P_DEFAULT);
+  if (data_hid < 0 || H5Dwrite (data_hid, type_hid, H5S_ALL, H5S_ALL,
+				H5P_DEFAULT, (void*) nm.c_str ()) < 0)
+    {
+      H5Sclose (space_hid);
+      H5Tclose (type_hid);
+      H5Gclose (group_hid);
+      return false;
+    }
+  H5Dclose (data_hid);
+
+  if (nm == "@<anonymous>")
+    {
+      OSSTREAM buf;
+      print_raw (buf, true);
+      std::string stmp = OSSTREAM_STR (buf);
+      OSSTREAM_FREEZE (buf);
+
+      // attach the type of the variable
+      H5Tset_size (type_hid, stmp.length () + 1);
+      if (type_hid < 0)
+	{
+	  H5Gclose (group_hid);
+	  return false;
+	}
+
+      data_hid = H5Dcreate (group_hid, "fcn",  type_hid, space_hid,
+			    H5P_DEFAULT);
+      if (data_hid < 0 || H5Dwrite (data_hid, type_hid, H5S_ALL, H5S_ALL,
+				    H5P_DEFAULT, (void*) stmp.c_str ()) < 0)
+	{
+	  H5Sclose (space_hid);
+	  H5Tclose (type_hid);
+	  H5Gclose (group_hid);
+	  return false;
+	}
+
+      H5Dclose (data_hid);
+    }
+
+  H5Sclose (space_hid);
+  H5Tclose (type_hid);
+  H5Gclose (group_hid);
+
+  return retval;
+}
+
+bool
+octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name,
+			      bool /* have_h5giterate_bug */)
+{
+  hid_t group_hid, data_hid, space_hid, type_hid, type_class_hid, st_id;
+  hsize_t rank;
+  int slen;
+
+  group_hid = H5Gopen (loc_id, name);
+  if (group_hid < 0 ) return false;
+
+  data_hid = H5Dopen (group_hid, "nm");
+
+  if (data_hid < 0)
+    {
+      H5Gclose (group_hid);
+      return false;
+    }
+
+  type_hid = H5Dget_type (data_hid);
+  type_class_hid = H5Tget_class (type_hid);
+
+  if (type_class_hid != H5T_STRING)
+    {
+      H5Tclose (type_hid);
+      H5Dclose (data_hid);
+      H5Gclose (group_hid);
+      return false;
+    }
+
+  space_hid = H5Dget_space (data_hid);
+  rank = H5Sget_simple_extent_ndims (space_hid);
+
+  if (rank != 0)
+    {
+      H5Sclose (space_hid);
+      H5Tclose (type_hid);
+      H5Dclose (data_hid);
+      H5Gclose (group_hid);
+      return false;
+    }
+
+  slen = H5Tget_size (type_hid);
+  if (slen < 0)
+    {
+      H5Sclose (space_hid);
+      H5Tclose (type_hid);
+      H5Dclose (data_hid);
+      H5Gclose (group_hid);
+      return false;
+    }
+
+  OCTAVE_LOCAL_BUFFER (char, nm_tmp, slen);
+
+  // create datatype for (null-terminated) string to read into:
+  st_id = H5Tcopy (H5T_C_S1);
+  H5Tset_size (st_id, slen);
+
+  if (H5Dread (data_hid, st_id, H5S_ALL, H5S_ALL, H5P_DEFAULT,
+	       X_CAST (void *, nm_tmp)) < 0)
+    {
+      H5Sclose (space_hid);
+      H5Tclose (type_hid);
+      H5Gclose (group_hid);
+      return false;
+    }
+  H5Tclose (st_id);
+  H5Dclose (data_hid);
+  nm = nm_tmp;
+
+  if (nm == "@<anonymous>")
+    {
+      data_hid = H5Dopen (group_hid, "fcn");
+
+      if (data_hid < 0)
+	{
+	  H5Gclose (group_hid);
+	  return false;
+	}
+
+      type_hid = H5Dget_type (data_hid);
+      type_class_hid = H5Tget_class (type_hid);
+
+      if (type_class_hid != H5T_STRING)
+	{
+	  H5Tclose (type_hid);
+	  H5Dclose (data_hid);
+	  H5Gclose (group_hid);
+	  return false;
+	}
+
+      space_hid = H5Dget_space (data_hid);
+      rank = H5Sget_simple_extent_ndims (space_hid);
+
+      if (rank != 0)
+	{
+	  H5Sclose (space_hid);
+	  H5Tclose (type_hid);
+	  H5Dclose (data_hid);
+	  H5Gclose (group_hid);
+	  return false;
+	}
+
+      slen = H5Tget_size (type_hid);
+      if (slen < 0)
+	{
+	  H5Sclose (space_hid);
+	  H5Tclose (type_hid);
+	  H5Dclose (data_hid);
+	  H5Gclose (group_hid);
+	  return false;
+	}
+
+      OCTAVE_LOCAL_BUFFER (char, fcn_tmp, slen);
+
+      // create datatype for (null-terminated) string to read into:
+      st_id = H5Tcopy (H5T_C_S1);
+      H5Tset_size (st_id, slen);
+
+      if (H5Dread (data_hid, st_id, H5S_ALL, H5S_ALL, H5P_DEFAULT,
+		   X_CAST (void *, fcn_tmp)) < 0)
+	{
+	  H5Sclose (space_hid);
+	  H5Tclose (type_hid);
+	  H5Gclose (group_hid);
+	  return false;
+	}
+      H5Dclose (data_hid);
+      H5Tclose (st_id);
+
+      int parse_status;
+      octave_value anon_fcn_handle = eval_string (fcn_tmp, true, parse_status);
+
+      fcn = anon_fcn_handle.fcn_handle_value () -> fcn;
+    }
+  else
+    {
+      fcn = lookup_function (nm);
+      if (! fcn.is_function ())
+	return false;
+    }
+
+  return true;
+}
+#endif
 
 void
 octave_fcn_handle::print (std::ostream& os, bool pr_as_read_syntax) const

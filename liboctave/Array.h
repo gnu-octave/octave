@@ -272,7 +272,7 @@ private:
 // taking the address of a Proxy.  Maybe it should be implemented by
 // means of a companion function in the DiagArray class.
 
-    T *operator& () const;
+    inline T *operator& () const { assert (0); return (T *) 0; }
 
     int i;
     int j;

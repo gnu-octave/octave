@@ -1,6 +1,6 @@
-whitespace_in_literal_matrix = "ignore";
 x = [1,2];
 a = 1;
 b = 2;
-[a... # comments ok here
- b]
+y = [a... # comments ok here
+ b];
+all (y == x)

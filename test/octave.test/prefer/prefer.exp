@@ -1,4 +1,4 @@
-## whitespace_in_literal_matrix
+## literal matrix input (these should be somewhere else now...)
 
 set test whitespace-in-literal-matrix-1
 set prog_output "^ans = 1"

@@ -1,5 +1,5 @@
 set test contin-1
-set prog_output "parse error.*"
+set prog_output "^ans = 1"
 do_test contin-1.m
 
 set test contin-2
@@ -11,7 +11,7 @@ set prog_output "^ans = 1"
 do_test contin-3.m
 
 set test contin-4
-set prog_output "parse error.*"
+set prog_output "^ans = 1"
 do_test contin-4.m
 
 set test contin-5

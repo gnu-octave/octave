@@ -67,7 +67,7 @@ fix (double x)
 double
 imag (double x)
 {
-  return xisnan (x) ? octave_NaN : 0.0;
+  return 0.0;
 }
 
 double

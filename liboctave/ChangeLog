@@ -1,3 +1,7 @@
+2003-01-30  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lo-mappers.cc (imag (double)): Return 0.0 for all args, even NaN.
+
 2003-01-28  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* CMatrix.cc, dMatrix.cc: Move min and max functions here, from

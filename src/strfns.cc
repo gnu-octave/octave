@@ -48,7 +48,7 @@ converted to the corresponding ASCII character.  For example,\n\
 \n\
 @example\n\
 @group\n\
-setstr ([97, 98, 99])\n\
+char ([97, 98, 99])\n\
      @result{} \"abc\"\n\
 @end group\n\
 @end example\n\

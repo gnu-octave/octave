@@ -623,7 +623,8 @@ string CATCH.")
 
       int parse_status = 0;
 
-      retval = eval_string (args(0), 0, parse_status, nargout);
+      retval = eval_string (args(0), Vdefault_eval_print_flag,
+			    parse_status, nargout);
 
       if (nargin > 1 && (parse_status != 0 || error_state))
 	{
@@ -636,8 +637,7 @@ string CATCH.")
 	  bind_global_error_variable ();
 	  add_unwind_protect (clear_global_error_variable, 0);
 
-	  eval_string (args(1), Vdefault_eval_print_flag,
-		       parse_status, nargout);
+	  eval_string (args(1), 0, parse_status, nargout);
 
 	  retval = octave_value_list ();
 	}

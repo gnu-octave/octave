@@ -50,7 +50,7 @@ static ostrstream *pager_buf = 0;
 static int write_to_diary_file = 0;
 
 // The name of the current diary file.
-static char *diary_file = "diary";
+static char *diary_file = 0;
 
 // The diary file.
 static ofstream diary_stream;
@@ -201,6 +201,9 @@ redirect all input and screen output to a file.")
   Octave_object retval;
 
   DEFINE_ARGV("diary");
+
+  if (! diary_file)
+    diary_file = strsave ("diary");
 
   switch (argc)
     {

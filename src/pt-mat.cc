@@ -368,7 +368,7 @@ tm_const::init (const tree_matrix& tm)
 }
 
 bool
-tree_matrix_row::is_matrix_constant (void) const
+tree_matrix_row::all_elements_are_constant (void) const
 {
   for (Pix p = first (); p != 0; next (p))
     {
@@ -435,13 +435,13 @@ tree_matrix_row::accept (tree_walker& tw)
 }
 
 bool
-tree_matrix::is_matrix_constant (void) const
+tree_matrix::all_elements_are_constant (void) const
 {
   for (Pix p = first (); p != 0; next (p))
     {
       tree_matrix_row *elt = this->operator () (p);
 
-      if (! elt->is_matrix_constant ())
+      if (! elt->all_elements_are_constant ())
 	return false;
     }
 

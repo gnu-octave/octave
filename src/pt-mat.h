@@ -54,7 +54,7 @@ public:
 
   ~tree_matrix_row (void) { }
 
-  bool is_matrix_constant (void) const;
+  bool all_elements_are_constant (void) const;
 
   tree_return_list *to_return_list (void);
 
@@ -75,7 +75,7 @@ public:
 
   ~tree_matrix (void) { }
 
-  bool is_matrix_constant (void) const;
+  bool all_elements_are_constant (void) const;
 
   octave_value eval (bool print);
 

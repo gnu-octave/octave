@@ -101,12 +101,11 @@ bool
 octave_fcn_handle::save_ascii (std::ostream& os, bool&, bool)
 {
   os << nm << "\n";
+
   if (nm == "@<anonymous>")
     {
-      OSSTREAM buf;
-      print_raw (buf, true);
-      os << OSSTREAM_STR (buf) << "\n" << OSSTREAM_ENDS;
-      OSSTREAM_FREEZE (buf);
+      print_raw (os, true);
+      os << "\n";
     }
 
   return true;
@@ -116,20 +115,23 @@ bool
 octave_fcn_handle::load_ascii (std::istream& is)
 {
   is >> nm;
+
   if (nm == "@<anonymous>")
     {
       char c;
       OSSTREAM buf;
 
-      // Skip preceeding newline(s)
-      while (is.get (c) && c == '\n');
+      // Skip preceeding newline(s).
+      while (is.get (c) && c == '\n')
+	/* do nothing */;
 
       if (is)
 	{
 	  buf << c;
 
 	  // Get a line of text whitespace characters included, leaving
-	  // newline in the stream
+	  // newline in the stream.
+
 	  while (is.peek () != '\n')
 	    {
 	      is.get (c);
@@ -142,11 +144,20 @@ octave_fcn_handle::load_ascii (std::istream& is)
       buf << OSSTREAM_ENDS;
 
       int parse_status;
-      octave_value anon_fcn_handle = eval_string (OSSTREAM_C_STR (buf), 
+      octave_value anon_fcn_handle = eval_string (OSSTREAM_STR (buf), 
 						  true, parse_status);
       OSSTREAM_FREEZE (buf);
 
-      fcn = anon_fcn_handle.fcn_handle_value () -> fcn;
+      if (parse_status == 0)
+	{
+	  octave_fcn_handle *fh = anon_fcn_handle.fcn_handle_value ();
+	  if (fh)
+	    fcn = fh->fcn;
+	  else
+	    return false;
+	}
+      else
+	return false;
     }
   else
     {
@@ -207,7 +218,16 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
       int parse_status;
       octave_value anon_fcn_handle = eval_string (ctmp2, true, parse_status);
 
-      fcn = anon_fcn_handle.fcn_handle_value () -> fcn;
+      if (parse_status == 0)
+	{
+	  octave_fcn_handle *fh = anon_fcn_handle.fcn_handle_value ();
+	  if (fh)
+	    fcn = fh->fcn;
+	  else
+	    return false;
+	}
+      else
+	return false;
     }
   else
     {
@@ -252,7 +272,8 @@ octave_fcn_handle::save_hdf5 (hid_t loc_id, const char *name,
 
   data_hid = H5Dcreate (group_hid, "nm",  type_hid, space_hid, H5P_DEFAULT);
   if (data_hid < 0 || H5Dwrite (data_hid, type_hid, H5S_ALL, H5S_ALL,
-				H5P_DEFAULT, (void*) nm.c_str ()) < 0)
+				H5P_DEFAULT,
+				static_cast<void*> (nm.c_str ())) < 0)
     {
       H5Sclose (space_hid);
       H5Tclose (type_hid);
@@ -279,7 +300,8 @@ octave_fcn_handle::save_hdf5 (hid_t loc_id, const char *name,
       data_hid = H5Dcreate (group_hid, "fcn",  type_hid, space_hid,
 			    H5P_DEFAULT);
       if (data_hid < 0 || H5Dwrite (data_hid, type_hid, H5S_ALL, H5S_ALL,
-				    H5P_DEFAULT, (void*) stmp.c_str ()) < 0)
+				    H5P_DEFAULT,
+				    static_cast<void*> (stmp.c_str ())) < 0)
 	{
 	  H5Sclose (space_hid);
 	  H5Tclose (type_hid);
@@ -430,7 +452,16 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name,
       int parse_status;
       octave_value anon_fcn_handle = eval_string (fcn_tmp, true, parse_status);
 
-      fcn = anon_fcn_handle.fcn_handle_value () -> fcn;
+      if (parse_status == 0)
+	{
+	  octave_fcn_handle *fh = anon_fcn_handle.fcn_handle_value ();
+	  if (fh)
+	    fcn = fh->fcn;
+	  else
+	    return false;
+	}
+      else
+	return false;
     }
   else
     {
@@ -459,7 +490,7 @@ octave_fcn_handle::print_raw (std::ostream& os, bool pr_as_read_syntax) const
     {
       tree_print_code tpc (os);
 
-      // FCN is const becuase this member function is, so we can't
+      // FCN is const because this member function is, so we can't
       // use it to call user_function_value, so we make a copy first.
 
       octave_value ftmp = fcn;

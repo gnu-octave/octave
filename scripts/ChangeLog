@@ -1,5 +1,7 @@
 1999-11-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* control/pinv.m: Delete.
+
 	* Makefile.in (DOCSTRINGS): Don't echo $(ALL_M_FILES).
 
 	* strings/blanks.m: Texinfoize doc string.

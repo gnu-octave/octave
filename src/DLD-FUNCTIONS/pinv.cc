@@ -31,8 +31,16 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 
 DEFUN_DLD (pinv, args, ,
-  "pinv ( [, tol])\n\
-Returns the pseudoinverse of X; singular values less than tol are ignored.")
+  "-*- texinfo -*-\n\
+@deftypefn {Function File } { } pinv (@var{X}, @var{tol})\n\
+Returns the pseudoinverse of X; singular values less than tol are ignored.\n\
+\n\
+If the second arguement is ommited , it is assummed that\n\
+@example\n\
+tol = max (size (X)) * sigma_max (X) * eps,\n\
+@end example\n\
+where sigma_max(X) is the maximal singular value of X.\n\
+@end deftypefn")
 {
   octave_value_list retval;
 

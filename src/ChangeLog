@@ -1,5 +1,7 @@
 1999-11-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* DLD-FUNCTIONS/pinv.cc (Fpinv): Texinfoize doc string.
+
 	* defun-int.h (DEFUN_DLD_INTERNAL): New macro.
 	* defun-dld.h [MAKE_BUILTINS] (DEFUN_DLD): Simply expand to
 	DEFUN_DLD_INTERNAL.

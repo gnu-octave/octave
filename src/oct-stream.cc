@@ -1481,7 +1481,7 @@ octave_base_stream::do_oscanf (const scanf_format_elt *elt)
 	      {
 		// XXX FIXME XXX -- this must be fixed!
 
-		int width = 65535;
+		int width = elt->width ? elt->width : 65535;
 		char *tmp = new char [width+1];
 		do_oscanf_str_conv (is, fmt, tmp, width);
 		delete [] tmp;

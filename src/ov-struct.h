@@ -84,6 +84,8 @@ public:
 
   bool is_defined (void) const { return true; }
 
+  bool is_constant (void) const { return false; }
+
   bool is_map (void) const { return true; }
 
   Octave_map map_value (void) const { return map; }

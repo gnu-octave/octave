@@ -74,12 +74,14 @@ public:
 
   octave_value *try_narrowing_conversion (void);
 
-  octave_value do_index_op (const octave_value_list& idx) const;
+  octave_value do_index_op (const octave_value_list& idx);
 
   int rows (void) const { return 1; }
   int columns (void) const { return 1; }
 
   bool is_defined (void) const { return true; }
+
+  bool is_constant (void) const { return true; }
 
   bool is_complex_scalar (void) const { return true; }
 

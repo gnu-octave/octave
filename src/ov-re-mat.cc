@@ -77,7 +77,7 @@ octave_matrix::try_narrowing_conversion (void)
 }
 
 octave_value
-octave_matrix::do_index_op (const octave_value_list& idx) const
+octave_matrix::do_index_op (const octave_value_list& idx)
 {
   octave_value retval;
 

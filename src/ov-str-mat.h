@@ -80,7 +80,7 @@ public:
 
   type_conv_fcn numeric_conversion_function (void) const;
 
-  octave_value do_index_op (const octave_value_list& idx) const;
+  octave_value do_index_op (const octave_value_list& idx);
 
   void assign (const octave_value_list& idx, const charMatrix& rhs);
 

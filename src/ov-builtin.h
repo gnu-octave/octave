@@ -20,59 +20,45 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-#if !defined (octave_magic_colon_h)
-#define octave_magic_colon_h 1
+#if !defined (octave_builtin_h)
+#define octave_builtin_h 1
 
-#include <cstdlib>
+#if defined (__GNUG__)
+#pragma interface
+#endif
 
 #include <string>
 
-class ostream;
-
-#include "mx-base.h"
-#include "str-vec.h"
-
-#include "error.h"
-#include "ov-base.h"
+#include "ov-fcn.h"
 #include "ov-typeinfo.h"
 
-class Octave_map;
+class octave_value;
 class octave_value_list;
 
-class tree_walker;
-
-// A type to represent `:' as used for indexing.
+// Builtin functions.
 
 class
-octave_magic_colon : public octave_base_value
+octave_builtin : public octave_function
 {
 public:
 
-  octave_magic_colon (void)
-    : octave_base_value () { }
+  typedef octave_value_list (*fcn) (const octave_value_list&, int);
 
-  octave_magic_colon (const octave_magic_colon&)
-    : octave_base_value () { }
+  octave_builtin (fcn ff, const string& nm = string (),
+		  const string& ds = string ())
+    : octave_function (nm, ds), f (ff) { }
 
-  ~octave_magic_colon (void) { }
+  ~octave_builtin (void) { }
 
-  octave_value *clone (void) { return new octave_magic_colon (*this); }
+  void *operator new (size_t size)
+    { return allocator.alloc (size); }
 
-  idx_vector index_vector (void) const { return idx_vector (':'); }
+  void operator delete (void *p, size_t size)
+    { allocator.free (p, size); }
 
-  bool is_defined (void) const { return true; }
+  octave_function *function_value (bool) { return this; }
 
-  bool is_constant (void) const { return true; }
-
-  bool is_magic_colon (void) const { return true; }
-
-  bool valid_as_scalar_index (void) const { return true; }
-
-  bool valid_as_zero_index (void) const { return false; }
-
-  void print (ostream& os, bool pr_as_read_syntax = false) const;
-
-  void print_raw (ostream& os, bool pr_as_read_syntax = false) const;
+  octave_value_list do_index_op (int nargout, const octave_value_list& args);
 
   int type_id (void) const { return t_id; }
 
@@ -85,10 +71,20 @@ public:
 
 private:
 
-  // Type id of magic colon objects, set by register_type().
+  octave_builtin (void);
+
+  octave_builtin (const octave_builtin& m);
+
+  // A pointer to the actual function.
+  fcn f;
+
+  // For custom memory management.
+  static octave_allocator allocator;
+
+  // Type id of list objects, set by register_type().
   static int t_id;
 
-  // Type name of magic colon objects, defined in ov-colon.cc.
+  // Type name of list objects, defined in ov-list.cc.
   static const string t_name;
 };
 

@@ -31,6 +31,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Array-flags.h"
 #include "str-vec.h"
 
+#include "oct-obj.h"
 #include "oct-var-ref.h"
 #include "ov.h"
 #include "ov-base.h"
@@ -48,6 +49,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-list.h"
 #include "ov-colon.h"
 #include "ov-va-args.h"
+#include "ov-builtin.h"
+#include "ov-mapper.h"
+#include "ov-usr-fcn.h"
 #include "ov-typeinfo.h"
 
 #include "defun.h"
@@ -420,6 +424,12 @@ octave_value::octave_value (octave_stream *s, int n)
   rep->count = 1;
 }
 
+octave_value::octave_value (octave_function *f)
+  : rep (f)
+{
+  rep->count = 1;
+}
+
 octave_value::octave_value (const octave_value_list& l)
   : rep (new octave_list (l))
 {
@@ -477,6 +487,12 @@ octave_value::maybe_mutate (void)
       rep = tmp;
       rep->count = 1;
     }    
+}
+
+octave_value_list
+octave_value::do_index_op (int nargout, const octave_value_list& idx)
+{
+  return rep->do_index_op (nargout, idx);
 }
 
 static void
@@ -557,12 +573,6 @@ octave_value::struct_elt_ref (octave_value *, const string&)
   return octave_variable_reference ();
 }
 
-octave_value_list
-octave_value::eval (int, const octave_value_list& idx)
-{
-  return (idx.length () > 0) ? do_index_op (idx) : *this;
-}
-
 Octave_map
 octave_value::map_value (void) const
 {
@@ -579,6 +589,12 @@ int
 octave_value::stream_number (void) const
 {
   return rep->stream_number ();
+}
+
+octave_function *
+octave_value::function_value (bool silent)
+{
+  return rep->function_value (silent);
 }
 
 octave_value_list
@@ -954,6 +970,9 @@ install_types (void)
   octave_list::register_type ();
   octave_all_va_args::register_type ();
   octave_magic_colon::register_type ();
+  octave_builtin::register_type ();
+  octave_mapper::register_type ();
+  octave_user_function::register_type ();
 }
 
 static int

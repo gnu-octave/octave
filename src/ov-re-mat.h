@@ -81,7 +81,7 @@ public:
 
   octave_value *try_narrowing_conversion (void);
 
-  octave_value do_index_op (const octave_value_list& idx) const;
+  octave_value do_index_op (const octave_value_list& idx);
 
   void assign (const octave_value_list& idx, const Matrix& rhs);
 
@@ -107,6 +107,8 @@ public:
   int columns (void) const { return matrix.columns (); }
 
   bool is_defined (void) const { return true; }
+
+  bool is_constant (void) const { return true; }
 
   bool is_real_matrix (void) const { return true; }
 

@@ -34,6 +34,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "gripes.h"
 #include "oct-map.h"
+#include "oct-obj.h"
 #include "oct-var-ref.h"
 #include "ops.h"
 #include "ov-base.h"
@@ -52,7 +53,15 @@ int octave_base_value::t_id = -1;
 const string octave_base_value::t_name ("<unknown type>");
 
 octave_value
-octave_base_value::do_index_op (const octave_value_list&) const
+octave_base_value::do_index_op (const octave_value_list&)
+{
+  string nm = type_name ();
+  error ("can't perform indexing operations for %s type", nm.c_str ());
+  return octave_value ();
+}
+
+octave_value_list
+octave_base_value::do_index_op (int, const octave_value_list&)
 {
   string nm = type_name ();
   error ("can't perform indexing operations for %s type", nm.c_str ());
@@ -221,6 +230,17 @@ octave_base_value::stream_number (void) const
 {
   int retval = -1;
   gripe_wrong_type_arg ("octave_base_value::stream_number()", type_name ());
+  return retval;
+}
+
+octave_function *
+octave_base_value::function_value (bool silent)
+{
+  octave_function *retval = 0;
+
+  if (! silent)
+    gripe_wrong_type_arg ("octave_base_value::function_value()",
+			  type_name ());
   return retval;
 }
 

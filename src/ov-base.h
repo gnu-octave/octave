@@ -70,7 +70,9 @@ public:
   octave_value *try_narrowing_conversion (void)
     { return static_cast<octave_value *> (0); }
 
-  octave_value do_index_op (const octave_value_list& idx) const;
+  octave_value do_index_op (const octave_value_list& idx);
+
+  octave_value_list do_index_op (int nargout, const octave_value_list& idx);
 
   idx_vector index_vector (void) const;
 
@@ -141,6 +143,10 @@ public:
   bool is_zero_by_zero (void) const
     { return (rows () == 0 && columns () == 0); }
 
+  bool is_constant (void) const { return false; }
+
+  bool is_function (void) const { return false; }
+
   double double_value (bool) const;
 
   double scalar_value (bool) const { return double_value (); }
@@ -164,6 +170,8 @@ public:
   octave_stream *stream_value (void) const;
 
   int stream_number (void) const;
+
+  octave_function *function_value (bool silent);
 
   octave_value_list list_value (void) const;
 

@@ -84,6 +84,8 @@ public:
   int rows (void) const { return matrix.rows (); }
   int columns (void) const { return matrix.columns (); }
 
+  bool is_constant (void) const { return true; }
+
   bool is_defined (void) const { return true; }
 
   bool is_char_matrix (void) const { return true; }

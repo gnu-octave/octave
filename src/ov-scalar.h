@@ -73,14 +73,17 @@ public:
   void operator delete (void *p, size_t size)
     { allocator.free (p, size); }
 
-  octave_value do_index_op (const octave_value_list& idx) const;
+  octave_value do_index_op (const octave_value_list& idx);
 
   idx_vector index_vector (void) const { return idx_vector (scalar); }
 
   int rows (void) const { return 1; }
   int columns (void) const { return 1; }
 
+  bool is_constant (void) const { return true; }
+
   bool is_defined (void) const { return true; }
+
   bool is_real_scalar (void) const { return true; }
 
   octave_value all (void) const { return (scalar != 0.0); }

@@ -39,10 +39,9 @@ class ostream;
 #include "oct-alloc.h"
 #include "str-vec.h"
 
-#include "oct-sym.h"
-
 class Octave_map;
 class octave_stream;
+class octave_function;
 class octave_value_list;
 class octave_variable_reference;
 
@@ -74,7 +73,7 @@ typedef octave_value (*assign_op_fcn)
 typedef octave_value * (*type_conv_fcn) (const octave_value&);
 
 class
-octave_value : public octave_symbol
+octave_value
 {
 public:
 
@@ -150,6 +149,7 @@ public:
   octave_value (const Range& r);
   octave_value (const Octave_map& m);
   octave_value (octave_stream *s, int n);
+  octave_value (octave_function *f);
   octave_value (const octave_value_list& m);
   octave_value (octave_value::magic_colon);
   octave_value (octave_value::all_va_args);
@@ -213,8 +213,11 @@ public:
   virtual octave_value *try_narrowing_conversion (void)
     { return rep->try_narrowing_conversion (); }
 
-  virtual octave_value do_index_op (const octave_value_list& idx) const
+  virtual octave_value do_index_op (const octave_value_list& idx)
     { return rep->do_index_op (idx); }
+
+  virtual octave_value_list
+  do_index_op (int nargout, const octave_value_list& idx);
 
   void assign (assign_op, const octave_value& rhs);
 
@@ -343,14 +346,15 @@ public:
   virtual bool is_zero_by_zero (void) const
     { return rep->is_zero_by_zero (); }
 
-  bool is_constant (void) const
-    { return true; }
+  virtual bool is_constant (void) const
+    { return rep->is_constant (); }
+
+  virtual bool is_function (void) const
+    { return rep->is_function (); }
 
   // Values.
 
   octave_value eval (void) { return *this; }
-
-  octave_value_list eval (int, const octave_value_list& idx);
 
   virtual double double_value (bool frc_str_conv = false) const
     { return rep->double_value (frc_str_conv); }
@@ -384,6 +388,8 @@ public:
   virtual octave_stream *stream_value (void) const;
 
   virtual int stream_number (void) const;
+
+  virtual octave_function *function_value (bool silent = false);
 
   virtual octave_value_list list_value (void) const;
 

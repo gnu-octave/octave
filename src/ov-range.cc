@@ -86,7 +86,7 @@ octave_range::try_narrowing_conversion (void)
 }
 
 octave_value
-octave_range::do_index_op (const octave_value_list& idx) const
+octave_range::do_index_op (const octave_value_list& idx)
 {
   // XXX FIXME XXX -- this doesn't solve the problem of
   //

@@ -49,7 +49,7 @@ const string
 octave_list::t_name ("list");
 
 octave_value
-octave_list::do_index_op (const octave_value_list& idx) const
+octave_list::do_index_op (const octave_value_list& idx)
 {
   octave_value retval;
 

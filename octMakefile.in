@@ -41,7 +41,7 @@ CONF_DISTSUBDIRS = src
 
 # Subdirectories in which to run `make dist'.
 DISTSUBDIRS = libcruft liboctave info readline dlfcn src scripts \
-	test doc examples
+	test doc emacs examples
 
 XBINDISTFILES = BUGS COPYING INSTALL INSTALL.OCTAVE NEWS NEWS.[0-9] \
 	PROJECTS README README.Linux README.NLP README.Windows \

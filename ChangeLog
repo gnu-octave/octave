@@ -1,3 +1,9 @@
+2003-05-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makeconf.in (NO_OCT_FILE_STRIP): Use -C arg for make.
+
+	* octMakefile.in (DIRS_TO_MAKE): Use $(shell ...) instead of `...`.
+
 2003-05-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makeconf.in, octMakefile.in, emacs/Makefile.in,

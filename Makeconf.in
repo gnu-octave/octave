@@ -355,7 +355,7 @@ pic/%.o : %.cc
 	@mv $@-t $@
 
 define do-subdir-for-command
-echo making $@ in $d; cd $d; $(MAKE) $@; cd ..;
+echo making $@ in $d; $(MAKE) -C $d $@;
 endef
 
 define subdir-for-command

@@ -1,3 +1,7 @@
+2005-02-08  Walter Landry  <landry@osc.edu>
+
+	* symtab.h (symbol_record::mark_as_command): Avoid AIX compiler error.
+
 2005-02-07  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/find.cc (find_nonzero_elem_idx): Return [] instead

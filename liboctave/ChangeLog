@@ -1,3 +1,7 @@
+2005-02-08  John W. Eaton  <jwe@octave.org>
+
+	* Array-util.cc (freeze): Improve error message.
+
 2005-01-26  David Bateman <dbateman@free.fr>
 
 	* Array.cc (Array<T>::insert): Handle generic case, not just

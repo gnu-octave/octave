@@ -116,8 +116,9 @@ private:
     bool is_user_variable (void) const
       { return (symbol_type & symbol_record::USER_VARIABLE); }
 
+    // Don't use |= here to avoid error with AIX compiler.
     void mark_as_command (void)
-      { symbol_type |= symbol_record::COMMAND; }
+      { symbol_type = symbol_type | symbol_record::COMMAND; }
 
     void unmark_command (void)
       { symbol_type &= ~symbol_record::COMMAND; }

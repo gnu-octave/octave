@@ -2969,34 +2969,12 @@ parse_and_execute (const std::string& s, bool verbose, const char *warn_for)
 }
 
 static bool
-looks_like_octave_copyright (const std::string& s)
+looks_like_copyright (const std::string& s)
 {
-  bool retval = false;
+  // Perhaps someday we will want to do more here, so leave this as a
+  // separate function.
 
-  std::string t = s.substr (0, 14);
-
-  if (t == "Copyright (C) ")
-    {
-      size_t pos = s.find ('\n');
-
-      if (pos != NPOS)
-	{
-	  pos = s.find ('\n', pos + 1);
-
-	  if (pos != NPOS)
-	    {
-	      pos++;
-
-	      t = s.substr (pos, 28);
-
-	      if (t == "This file is part of Octave."
-		  || t == "This program is free softwar")
-		retval = true;
-	    }
-	}
-    }
-
-  return retval;
+  return (s.substr (0, 14) == "Copyright");
 }
 
 static int
@@ -3146,7 +3124,7 @@ gobble_leading_white_space (FILE *ffile, bool in_parts,
 
   if (! help_txt.empty ())
     {
-      if (looks_like_octave_copyright (help_txt))
+      if (looks_like_copyright (help_txt))
 	{
 	  if (save_copyright)
 	    octave_comment_buffer::append (help_txt);

@@ -1,3 +1,9 @@
+2005-03-02  John W. Eaton  <jwe@octave.org>
+
+	* parse.y (looks_like_copyright):
+	Rename from looks_like_octave_copyright.  Change all uses.
+	Simply match "Copyright".
+
 2005-03-01  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/odessa.cc: Delete.

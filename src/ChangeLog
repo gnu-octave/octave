@@ -1,5 +1,8 @@
 2002-05-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* oct-map.cc (Octave_map::assign): Resize RHS if it is shorter
+	than existing struct array.
+
 	* ov-cell.cc (octave_cell::subsasgn): If an error has occurred,
 	skip final assignment step.
 	* ov-list.cc (octave_list::subsasgn): Likewise.

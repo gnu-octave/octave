@@ -69,16 +69,22 @@ Octave_map::assign (const idx_vector& idx, const std::string& key,
 
   if (! error_state)
     {
-      int n = tmp.length ();
+      int rhs_len = tmp.length ();
 
-      if (n > array_length ())
+      int len = array_length ();
+
+      octave_value fill_value = Matrix ();
+
+      if (rhs_len < len)
 	{
-	  octave_value fill_value = Matrix ();
-
+	  tmp.resize (len, fill_value);
+	}
+      else if (rhs_len > len)
+	{
 	  for (Pix p = first (); p != 0; next (p))
-	    contents(p).resize (n, fill_value);
+	    contents(p).resize (len, fill_value);
 
-	  array_len = n;
+	  array_len = len;
 	}
 
       map[key] = tmp;

@@ -557,9 +557,11 @@ AC_DEFUN(OCTAVE_CXX_ISO_COMPLIANT_LIBRARY, [
   AC_CACHE_VAL(octave_cv_cxx_iso_compliant_library, [
     AC_LANG_PUSH(C++)
     rm -f conftest.h
+### Omitting cwctype for now, since it is broken with gcc-3.0.x and
+### possibly other versions...
     for inc in algorithm bitset cassert cctype cerrno cfloat ciso646 \
 	climits clocale cmath complex csetjmp csignal cstdarg cstddef \
-	cstdio cstdlib cstring ctime cwchar cwctype deque exception \
+	cstdio cstdlib cstring ctime cwchar deque exception \
 	fstream functional iomanip ios iosfwd iostream istream iterator \
 	limits list locale map memory new numeric ostream queue set \
 	sstream stack stdexcept streambuf string strstream typeinfo \

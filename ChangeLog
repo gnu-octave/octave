@@ -1,3 +1,7 @@
+2002-05-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* aclocal.m4 (OCTAVE_CXX_ISO_COMPLIANT_LIBRARY): Omit cwctype.
+
 2002-05-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in (AC_AIX): Move before AC_MINIX and AC_ISC_POSIX.

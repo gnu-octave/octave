@@ -174,7 +174,9 @@ static void maybe_warn_assign_as_truth_value (tree *expr);
 
 // Other tokens.
 %token FCN SCREW_TWO
-%token END_OF_INPUT GLOBAL
+%token GLOBAL
+%token ELLIPSIS
+%token END_OF_INPUT
 %token USING TITLE WITH COLON OPEN_BRACE CLOSE_BRACE
 
 // Nonterminals we construct.
@@ -970,6 +972,13 @@ param_list	: param_list1 ')'
 		    tmp->mark_as_formal_parameters ();
 		    $$ = tmp;
 		  }
+		| param_list1 ',' ELLIPSIS ')'
+		  {
+		    tree_parameter_list *tmp = $1->reverse ();
+		    tmp->mark_as_formal_parameters ();
+		    tmp->mark_varargs ();
+		    $$ = tmp;
+		  }
 
 param_list1	: '(' identifier
 		  { $$ = new tree_parameter_list ($2); }
@@ -977,13 +986,15 @@ param_list1	: '(' identifier
 		  { $$ = $1->chain ($3); }
 		| '(' error
 		  {
-		    error ("parameter lists may only contain identifiers");
-		    $$ = (tree_parameter_list *) NULL;
+		    yyerror ("parse error");
+		    error ("invalid parameter list");
+		    ABORT_PARSE;
 		  }
 		| param_list1 ',' error
 		  {
-		    error ("parameter lists may only contain identifiers");
-		    $$ = (tree_parameter_list *) NULL;
+		    yyerror ("parse error");
+		    error ("invalid parameter list");
+		    ABORT_PARSE;
 		  }
 		;
 

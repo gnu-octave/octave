@@ -27,6 +27,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <stdio.h>
 
 class tree;
+class tree_function;
 
 // Tell g++ that clean_up_and_exit doesn't return;
 
@@ -77,6 +78,9 @@ extern int quitting_gracefully;
 
 // Current command to execute.
 extern tree *global_command;
+
+// Pointer to function that is currently being evaluated.
+extern tree_function *curr_function;
 
 #endif
 

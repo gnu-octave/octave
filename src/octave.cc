@@ -115,6 +115,9 @@ int quitting_gracefully = 0;
 // Current command to execute.
 tree *global_command = (tree *) NULL;
 
+// Pointer to function that is currently being evaluated.
+tree_function *curr_function = (tree_function *) NULL;
+
 // Top level context (?)
 jmp_buf toplevel;
 

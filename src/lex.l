@@ -488,13 +488,8 @@ EXPON	([DdEe][+-]?{D}+)
 
 {S}*		{ current_input_column += yyleng; }
 
-{EL}{S}*\n	{
-
-// Line continuation.
-
-		  promptflag--;
-		  current_input_column = 1;
-		}
+{EL}{S}*\n	{ promptflag--; current_input_column = 1; }
+{EL}		{ return ELLIPSIS; }
 
 <<EOF>>		TOK_RETURN (END_OF_INPUT);
 

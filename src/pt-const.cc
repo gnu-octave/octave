@@ -1543,8 +1543,11 @@ tree_constant_rep::matrix_value (void) const
 {
   switch (type_tag)
     {
+    case scalar_constant:
+      return Matrix (scalar);
     case matrix_constant:
       return *matrix;
+    case complex_scalar_constant:
     case complex_matrix_constant:
       {
 	int flag = user_pref.ok_to_lose_imaginary_part;
@@ -1552,7 +1555,14 @@ tree_constant_rep::matrix_value (void) const
 	  warning ("implicit conversion of complex matrix to real matrix"); 
 
 	if (flag != 0)
-	  return real (*complex_matrix);
+	  {
+	    if (type_tag == complex_scalar_constant)
+	      return Matrix (real (*complex_scalar));
+	    else if (type_tag == complex_matrix_constant)
+	      return real (*complex_matrix);
+	    else
+	      panic_impossible ();
+	  }
 	else
 	  error ("implicit conversion of complex matrix to real matrix not allowed");
 	jump_to_top_level ();

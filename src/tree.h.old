@@ -251,6 +251,9 @@ public:
   void mark_as_system_m_file (void);
   int is_system_m_file (void) const;
 
+  int takes_varargs (void) const;
+  tree_constant get_next_arg (void);
+
   void stash_function_name (char *s);
   char *function_name (void);
 
@@ -277,6 +280,10 @@ private:
   char *fcn_name;
   time_t t_parsed;
   int system_m_file;
+  int varargs_ok;
+  const tree_constant *args_passed;
+  int num_args_passed;
+  int curr_arg_number;
 };
 
 /*
@@ -556,6 +563,9 @@ tree_parameter_list : public tree
 
   void mark_as_formal_parameters (void);
 
+  void mark_varargs (void);
+  int takes_varargs (void) const;
+
   tree_identifier *define (tree_constant *t);
 
   tree_parameter_list *next_elem (void);
@@ -563,6 +573,7 @@ tree_parameter_list : public tree
   tree_constant eval (int print);
 
  private:
+  int marked_for_varargs;
   tree_identifier *param;
   tree_parameter_list *next;
 };

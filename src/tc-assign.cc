@@ -392,23 +392,29 @@ tree_constant_rep::check_vector_assign (int rhs_nr, int rhs_nc,
   int nr = rows ();
   int nc = columns ();
 
-  if (nr == 1 && nc == 1)  // No orientation to preserve
+  if ((nr == 1 && nc == 1) || nr == 0 || nc == 0)  // No orientation.
     {
-      if (! ( ilen == rhs_nr || ilen == rhs_nc))
-	error ("A(%s) = X: X and %s must have the same number of\
- elements", rm, rm); 
+      if (! (ilen == rhs_nr || ilen == rhs_nc))
+	{
+	  error ("A(%s) = X: X and %s must have the same number of elements",
+		 rm, rm);
+	}
     }
-  else if (nr == 1)  // Preserve current row orientation
+  else if (nr == 1)  // Preserve current row orientation.
     {
       if (! (rhs_nr == 1 && rhs_nc == ilen))
-	error ("A(%s) = X: where A is a row vector, X must also be a\
- row vector with the same number of elements as %s", rm, rm); 
+	{
+	  error ("A(%s) = X: where A is a row vector, X must also be a", rm);
+	  error ("row vector with the same number of elements as %s", rm);
+	}
     }
-  else if (nc == 1)  // Preserve current column orientation
+  else if (nc == 1)  // Preserve current column orientation.
     {
       if (! (rhs_nc == 1 && rhs_nr == ilen))
-	error ("A(%s) = X: where A is a column vector, X must also\
- be a column vector with the same number of elements as %s", rm, rm); 
+	{
+	  error ("A(%s) = X: where A is a column vector, X must also be", rm);
+	  error ("a column vector with the same number of elements as %s", rm);
+	}
     }
   else
     panic_impossible ();

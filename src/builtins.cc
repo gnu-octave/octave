@@ -429,6 +429,10 @@ where xdot and x are vectors and t is a scalar.\n", },
   { "min", 3, 2, builtin_min,
     "min (x): minimum value(s) of a vector (matrix)", },
 
+  { "get_next_arg", 1, 1, builtin_get_next_arg,
+    "get_next_arg (): return next argument in function taking varible\n\
+number of parameters", },
+
   { "npsol", 11, 3, builtin_npsol,
 #if defined (NPSOL_MISSING)
     "This function requires NPSOL, which is not freely\n\

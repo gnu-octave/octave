@@ -38,16 +38,11 @@ public:
 	  update_internal ();
       }
 
-  file_stat (const file_stat& f)
-    : file_name (f.file_name), follow_links (f.follow_links),
-      initialized (f.initialized) { }
+  file_stat (const file_stat& f) { copy (f); }
 
   file_stat& operator = (const file_stat& f)
     {
-      file_name  = f.file_name;
-      follow_links = f.follow_links;
-      initialized = f.initialized;
-
+      copy (f);
       return *this;
     }
 
@@ -185,6 +180,8 @@ private:
 #endif
 
   void update_internal (bool force = false);
+
+  void copy (const file_stat&);
 };
 
 extern int is_newer (const string&, time_t);

@@ -1,6 +1,10 @@
 Summary of changes for version 2.1.x:
 ------------------------------------
 
+  * Given a matrix, X, and a boolean index, idx, of the same shape as
+    X, X(idx) and X(idx) = RHS now work no matter what the value of
+    do_fortran_indexing is.
+
   * If you are using GNU Emacs 19.34 or earlier, you will need to add
     the following code to your ~/.emacs file in order to use Emacs
     Octave mode:

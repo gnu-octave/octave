@@ -66,6 +66,9 @@ Array2<T>::index (idx_vector& idx) const
   int nr = d1;
   int nc = d2;
 
+  int idx_orig_rows = idx.orig_rows ();
+  int idx_orig_columns = idx.orig_columns ();
+
   if (nr == 1 && nc == 1)
     {
       Array<T> tmp = Array<T>::index (idx);
@@ -100,7 +103,11 @@ Array2<T>::index (idx_vector& idx) const
 	    retval = Array2<T> (tmp, 1, len);
 	}
     }
-  else if (liboctave_dfi_flag || idx.is_colon ())
+  else if (liboctave_dfi_flag
+	   || idx.is_colon ()
+	   || (idx.one_zero_only ()
+	       && idx_orig_rows == nr
+	       && idx_orig_columns == nc))
     {
       // This code is only for indexing matrices.  The vector
       // cases are handled above.
@@ -109,8 +116,8 @@ Array2<T>::index (idx_vector& idx) const
 
       if (idx)
 	{
-	  int result_nr = idx.orig_rows ();
-	  int result_nc = idx.orig_columns ();
+	  int result_nr = idx_orig_rows;
+	  int result_nc = idx_orig_columns;
 
 	  if (idx.is_colon ())
 	    {
@@ -512,13 +519,19 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs)
   int rhs_nr = rhs.rows ();
   int rhs_nc = rhs.cols ();
 
+  idx_vector *tmp = lhs.get_idx ();
+
+  idx_vector idx_i;
+  idx_vector idx_j;
+
+  if (n_idx > 1)
+    idx_j = tmp[1];
+
+  if (n_idx > 0)
+    idx_i = tmp[0];
+
   if (n_idx == 2)
     {
-      idx_vector *tmp = lhs.get_idx ();
-
-      idx_vector idx_i = tmp[0];
-      idx_vector idx_j = tmp[1];
-
       int n = idx_i.freeze (lhs_nr, "row", liboctave_rre_flag);
 
       int m = idx_j.freeze (lhs_nc, "column", liboctave_rre_flag);
@@ -602,23 +615,19 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs)
 
       if (lhs_is_empty || (lhs_nr == 1 && lhs_nc == 1))
 	{
-	  idx_vector *tmp = lhs.get_idx ();
-
-	  idx_vector idx = tmp[0];
-
 	  int lhs_len = lhs.length ();
 
-	  int n = idx.freeze (lhs_len, 0, liboctave_rre_flag);
+	  int n = idx_i.freeze (lhs_len, 0, liboctave_rre_flag);
 
-	  if (idx)
+	  if (idx_i)
 	    {
 	      if (rhs_nr == 0 && rhs_nc == 0)
 		{
 		  if (n != 0 && (lhs_nr != 0 || lhs_nc != 0))
-		    lhs.maybe_delete_elements (idx);
+		    lhs.maybe_delete_elements (idx_i);
 		}
 	      else if (! liboctave_dfi_flag && lhs_is_empty
-		       && idx.is_colon ()
+		       && idx_i.is_colon ()
 		       && ! (rhs_nr == 1 || rhs_nc == 1))
 		{
 		  (*current_liboctave_error_handler)
@@ -632,8 +641,8 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs)
 
 		      if (len > 0)
 			{
-			  int idx_nr = idx.orig_rows ();
-			  int idx_nc = idx.orig_columns ();
+			  int idx_nr = idx_i.orig_rows ();
+			  int idx_nc = idx_i.orig_columns ();
 
 			  // lhs_is_empty now means that lhs was
 			  // *originally* empty, and lhs_len is the
@@ -654,7 +663,7 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs)
 				  lhs.d2 = lhs.length ();
 				}
 			    }
-			  else if (lhs_is_empty && idx.is_colon ())
+			  else if (lhs_is_empty && idx_i.is_colon ())
 			    {
 			      lhs.d1 = rhs.d1;
 			      lhs.d2 = rhs.d2;
@@ -696,16 +705,12 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs)
 	}
       else if (lhs_nr == 1)
 	{
-	  idx_vector *tmp = lhs.get_idx ();
+	  idx_i.freeze (lhs_nc, "vector", liboctave_rre_flag);
 
-	  idx_vector idx = tmp[0];
-
-	  idx.freeze (lhs_nc, "vector", liboctave_rre_flag);
-
-	  if (idx)
+	  if (idx_i)
 	    {
 	      if (rhs_nr == 0 && rhs_nc == 0)
-		lhs.maybe_delete_elements (idx);
+		lhs.maybe_delete_elements (idx_i);
 	      else
 		{
 		  if (assign ((Array<LT>&) lhs, (Array<RT>&) rhs))
@@ -718,16 +723,12 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs)
 	}
       else if (lhs_nc == 1)
 	{
-	  idx_vector *tmp = lhs.get_idx ();
+	  idx_i.freeze (lhs_nr, "vector", liboctave_rre_flag);
 
-	  idx_vector idx = tmp[0];
-
-	  idx.freeze (lhs_nr, "vector", liboctave_rre_flag);
-
-	  if (idx)
+	  if (idx_i)
 	    {
 	      if (rhs_nr == 0 && rhs_nc == 0)
-		lhs.maybe_delete_elements (idx);
+		lhs.maybe_delete_elements (idx_i);
 	      else
 		{
 		  if (assign ((Array<LT>&) lhs, (Array<RT>&) rhs))
@@ -738,14 +739,15 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs)
 	    }
 	  // idx_vector::freeze() printed an error message for us.
 	}
-      else if (liboctave_dfi_flag)
+      else if (liboctave_dfi_flag
+	       || idx_i.is_colon ()
+	       || (idx_i.one_zero_only ()
+		   && idx_i.orig_rows () == lhs_nr
+		   && idx_i.orig_columns () == lhs_nc))
 	{
-	  idx_vector *tmp = lhs.get_idx ();
-	  idx_vector idx = tmp[0];
+	  int len = idx_i.freeze (lhs_nr * lhs_nc, "matrix");
 
-	  int len = idx.freeze (lhs_nr * lhs_nc, "matrix");
-
-	  if (idx)
+	  if (idx_i)
 	    {
 	      if (len == 0)
 		{
@@ -761,7 +763,7 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs)
 		    {
 		      for (int i = 0; i < rhs_nr; i++)
 			{
-			  int ii = idx.elem (k++);
+			  int ii = idx_i.elem (k++);
 			  int fr = ii % lhs_nr;
 			  int fc = (ii - fr) / lhs_nr;
 			  lhs.elem (fr, fc) = rhs.elem (i, j);
@@ -774,7 +776,7 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs)
 
 		  for (int i = 0; i < len; i++)
 		    {
-		      int ii = idx.elem (i);
+		      int ii = idx_i.elem (i);
 		      int fr = ii % lhs_nr;
 		      int fc = (ii - fr) / lhs_nr;
 		      lhs.elem (fr, fc) = scalar;

@@ -1,3 +1,10 @@
+2000-01-26  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Array2-idx.h (assign (Array2<LT>& lhs, const Array2<RT>& rhs)): 
+	Allow A(idx) = RHS if idx is a boolean index with the same shape
+	as A, even when do_fortran_indexing is not enabled.
+	(Array2<T>::index (idx_vector& idx) const): Likewise, for A(idx).
+
 2000-01-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* dMatrix.cc (Matrix::solve (...)): Add new variant with

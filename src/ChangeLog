@@ -1,3 +1,8 @@
+2002-09-18  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-struct.cc (octave_struct::subsasgn): Ensure that indexed
+	object is not shared before calling subsasgn.
+
 2002-09-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* load-save.cc: Use % instead of # as comment character in ascii

@@ -239,6 +239,8 @@ octave_struct::subsasgn (const std::string type,
 			next_idx.remove_front ();
 			next_idx.remove_front ();
 
+			u.make_unique ();
+
 			t_rhs = u.subsasgn (type.substr (2), next_idx, rhs);
 		      }
 		  }
@@ -274,6 +276,8 @@ octave_struct::subsasgn (const std::string type,
 		SLList<octave_value_list> next_idx (idx);
 
 		next_idx.remove_front ();
+
+		u.make_unique ();
 
 		t_rhs = u.subsasgn (type.substr (1), next_idx, rhs);
 	      }

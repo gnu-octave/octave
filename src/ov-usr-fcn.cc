@@ -328,10 +328,14 @@ octave_user_function::subsref (const std::string type,
       panic_impossible ();
     }
 
-  return retval;
+  // XXX FIXME XXX -- perhaps there should be an
+  // octave_value_list::next_subsref member function?  See also
+  // octave_builtin::subsref.
 
-  // XXX FIXME XXX
-  //  return retval.next_subsref (type, idx);
+  if (idx.length () > 1)
+    retval = retval(0).next_subsref (type, idx);
+
+  return retval;
 }
 
 octave_value_list

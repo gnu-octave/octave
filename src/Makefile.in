@@ -124,7 +124,9 @@ builtins.cc: $(DEF_FILES) mkbuiltins
 	@$(srcdir)/mkbuiltins $(DEF_FILES) > $@.tmp
 	@$(top_srcdir)/move-if-change $@.tmp $@
 
-$(DEF_FILES): mkdefs defun-int.h defun-dld.h defun.h
+$(DEF_FILES): mkdefs defun-int.h defun-dld.h defun.h defaults.h
+
+$(MAKEDEPS): defaults.h
 
 check: all
 .PHONY: check

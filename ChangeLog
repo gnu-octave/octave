@@ -1,7 +1,9 @@
 Tue Oct 15 14:40:51 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in: Comment out plplot stuff.
-
+	In commands to get gxx_version and gcc_version, use simpler sed
+	command to avoid confusing brain-dead vendor-supplied seds.
+	
 Mon Oct 14 11:09:12 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* octMakefile.in (maintainer-clean distclean): Remove mkoctfile too.

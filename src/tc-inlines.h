@@ -179,20 +179,24 @@ fortran_column (int i, int nr)
   int nc = 0; \
   Matrix m; \
   ComplexMatrix cm; \
-  if ((tc).const_type () == TC_REP::complex_matrix_constant) \
-    { \
-      cm = (tc).complex_matrix_value (); \
-      nr = (cm).rows (); \
-      nc = (cm).columns (); \
-    } \
-  else if ((tc).const_type () == TC_REP::matrix_constant) \
+  if ((tc).is_real_type ()) \
     { \
       m = (tc).matrix_value (); \
       nr = (m).rows (); \
       nc = (m).columns (); \
     } \
+  else if ((tc).is_complex_type ()) \
+    { \
+      cm = (tc).complex_matrix_value (); \
+      nr = (cm).rows (); \
+      nc = (cm).columns (); \
+    } \
   else \
-    panic_impossible ();
+    { \
+      panic_impossible (); \
+    } \
+  if (error_state) \
+    return;
 
 // Assign a real or complex value to a tree_constant.
 //

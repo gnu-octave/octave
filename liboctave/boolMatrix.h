@@ -27,24 +27,24 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #pragma interface
 #endif
 
-#include "MArray2.h"
+#include "Array2.h"
 
 #include "mx-defs.h"
 
 class
-boolMatrix : public MArray2<bool>
+boolMatrix : public Array2<bool>
 {
 public:
 
-  boolMatrix (void) : MArray2<bool> () { }
-  boolMatrix (int r, int c) : MArray2<bool> (r, c) { }
-  boolMatrix (int r, int c, bool val) : MArray2<bool> (r, c, val) { }
-  boolMatrix (const MArray2<bool>& a) : MArray2<bool> (a) { }
-  boolMatrix (const boolMatrix& a) : MArray2<bool> (a) { }
+  boolMatrix (void) : Array2<bool> () { }
+  boolMatrix (int r, int c) : Array2<bool> (r, c) { }
+  boolMatrix (int r, int c, bool val) : Array2<bool> (r, c, val) { }
+  boolMatrix (const Array2<bool>& a) : Array2<bool> (a) { }
+  boolMatrix (const boolMatrix& a) : Array2<bool> (a) { }
 
   boolMatrix& operator = (const boolMatrix& a)
     {
-      MArray2<bool>::operator = (a);
+      Array2<bool>::operator = (a);
       return *this;
     }
 
@@ -69,7 +69,7 @@ public:
 
 private:
 
-  boolMatrix (bool *b, int r, int c) : MArray2<bool> (b, r, c) { }
+  boolMatrix (bool *b, int r, int c) : Array2<bool> (b, r, c) { }
 };
 
 #endif

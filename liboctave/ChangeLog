@@ -1,3 +1,11 @@
+Wed Mar 26 15:31:57 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* MArray-b.cc: Delete.
+	* Makefile.in: Delete it from the lists.
+
+	* boolMatrix.h (class bboolMatrix): Derive from Array2, not
+	MArray2, since most of the numeric ops don't really make sense.
+
 Tue Mar 25 17:37:25 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* boolMatrix.cc (boolMatrix::all, boolMatrix::any): New functions.

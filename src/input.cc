@@ -760,7 +760,7 @@ match_sans_spaces (const char *standard, const char *test)
   while (*tp == ' ' || *tp == '\t')
     tp++;
 
-  char *ep = test + strlen (test) - 1;
+  char *ep = tmp + strlen (tmp) - 1;
   while (*ep == ' ' || *ep == '\t')
     ep--;
 

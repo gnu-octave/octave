@@ -681,12 +681,17 @@ The marks are pushed."
                     (not (eq (octave-previous-statement) 'first-statement))
                     ;; Keep local to subprogram
                     (not (looking-at octave-endfunc-stmt-regexp)))
-
-          (skip-chars-forward " \t")
-          (cond ((looking-at bb-re)
+	  (skip-chars-forward " \t")
+	  (save-excursion
+	    (while (< (point) (octave-point 'eol))
+	      (cond
+	       ((and (looking-at bb-re)
+		     (not (octave-is-in-string-p (point))))
 		 (setq count (- count 1)))
-                ((looking-at eb-re)
-		 (setq count (+ count 1)))))
+	       ((and (looking-at eb-re)
+		     (not (octave-is-in-string-p (point))))
+		 (setq count (+ count 1))))
+	      (forward-char))))
 
 	(and (= count 0)
 	     ;; All pairs accounted for.

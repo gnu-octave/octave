@@ -116,6 +116,8 @@ public:
 
   void visit_subplot (subplot&);
 
+  void visit_subplot_axes (subplot_axes&);
+
   void visit_subplot_list (subplot_list&);
 
   void visit_subplot_style (subplot_style&);

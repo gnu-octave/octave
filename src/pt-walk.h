@@ -59,6 +59,7 @@ class tree_simple_assignment;
 class tree_statement;
 class tree_statement_list;
 class subplot;
+class subplot_axes;
 class subplot_list;
 class subplot_style;
 class subplot_using;
@@ -178,6 +179,9 @@ public:
 
   virtual void
   visit_subplot (subplot&) = 0;
+
+  virtual void
+  visit_subplot_axes (subplot_axes&) = 0;
 
   virtual void
   visit_subplot_list (subplot_list&) = 0;

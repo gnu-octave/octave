@@ -161,6 +161,9 @@ public:
   // TRUE means we're looking at the style part of a plot command.
   bool in_plot_style;
 
+  // TRUE means we're looking at the axes part of a plot command.
+  bool in_plot_axes;
+
   // TRUE means we're looking at an indirect reference to a
   // structure element.
   bool looking_at_indirect_ref;

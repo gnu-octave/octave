@@ -107,6 +107,7 @@ static string Vgnuplot_command_replot;
 static string Vgnuplot_command_splot;
 static string Vgnuplot_command_using;
 static string Vgnuplot_command_with;
+static string Vgnuplot_command_axes;
 static string Vgnuplot_command_title;
 static string Vgnuplot_command_end;
 
@@ -625,12 +626,28 @@ subplot_style::accept (tree_walker& tw)
   tw.visit_subplot_style (*this);
 }
 
+int
+subplot_axes::print (ostrstream& plot_buf)
+{
+  if (! sp_axes.empty ())
+    plot_buf << " " << Vgnuplot_command_axes << " " << sp_axes;
+
+  return 0;
+}
+
+void
+subplot_axes::accept (tree_walker& tw)
+{
+  tw.visit_subplot_axes (*this);
+}
+
 subplot::~subplot (void)
 {
   delete sp_plot_data;
   delete sp_using_clause;
   delete sp_title_clause;
   delete sp_style_clause;
+  delete sp_axes_clause;
 }
 
 octave_value
@@ -759,6 +776,13 @@ subplot::print (int ndim, ostrstream& plot_buf)
 
   if (status < 0)
     return -1;
+
+  if (sp_axes_clause)
+    {
+      int status = sp_axes_clause->print (plot_buf);
+      if (status < 0)
+	return -1;
+    }
 
   if (sp_title_clause)
     {
@@ -1151,6 +1175,12 @@ gnuplot_command_with (void)
 }
 
 static int
+gnuplot_command_axes (void)
+{
+  return set_string_var (Vgnuplot_command_axes, "gnuplot_command_axes");
+}
+
+static int
 gnuplot_command_title (void)
 {
   return set_string_var (Vgnuplot_command_title, "gnuplot_command_title");
@@ -1200,6 +1230,9 @@ symbols_of_pt_plot (void)
     "");
 
   DEFVAR (gnuplot_command_with, "w", 0, gnuplot_command_with,
+    "");
+
+  DEFVAR (gnuplot_command_axes, "ax", 0, gnuplot_command_axes,
     "");
 
   DEFVAR (gnuplot_command_title, "t", 0, gnuplot_command_title,

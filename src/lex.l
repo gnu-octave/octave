@@ -835,6 +835,38 @@ plot_style_token (const string& s)
   return retval;
 }
 
+// Check to see if a character string matches any of the possible axes
+// tags for plots.
+
+static string
+plot_axes_token (const string& s)
+{
+  string retval;
+
+  static char *plot_axes[] = 
+    {
+      "x1y1",
+      "x1y2",
+      "x2y1",
+      "x2y2",
+      0,
+    };
+
+  char **tmp = plot_axes;
+  while (*tmp)
+    {
+      if (almost_match (*tmp, s.c_str ()))
+	{
+	  retval = *tmp;
+	  break;
+	}
+
+      tmp++;
+    }
+
+  return retval;
+}
+
 // Check to see if a character string matches any one of the plot
 // option keywords.  Don't match abbreviations for clear, since that's
 // not a gnuplot keyword (users will probably only expect to be able
@@ -858,6 +890,11 @@ is_plot_keyword (const string& s)
       lexer_flags.in_plot_style = true;
       return WITH;
     }
+  else if (almost_match ("axes", t) || almost_match ("axis", t))
+    {
+      lexer_flags.in_plot_axes = true;
+      return AXES;
+    }
   else if (strcmp ("clear", t) == 0)
     {
       return CLEAR;
@@ -873,17 +910,32 @@ is_plot_keyword (const string& s)
 static int
 is_keyword (const string& s)
 {
-  if (lexer_flags.plotting && lexer_flags.in_plot_style)
+  if (lexer_flags.plotting)
     {
-      string sty = plot_style_token (s);
-
-      if (! sty.empty ())
+      if (lexer_flags.in_plot_style)
 	{
-	  lexer_flags.in_plot_style = false;
-	  yylval.tok_val = new token (sty);
-	  token_stack.push (yylval.tok_val);
-	  return STYLE;
+	  string sty = plot_style_token (s);
+
+	  if (! sty.empty ())
+	    {
+	      lexer_flags.in_plot_style = false;
+	      yylval.tok_val = new token (sty);
+	      token_stack.push (yylval.tok_val);
+	      return STYLE;
+	    }
 	}
+      else if (lexer_flags.in_plot_axes)
+	{
+	  string axes = plot_axes_token (s);
+
+	  if (! axes.empty ())
+	    {
+	      lexer_flags.in_plot_axes = false;
+	      yylval.tok_val = new token (axes);
+	      token_stack.push (yylval.tok_val);
+	      return AXES_TAG;
+	    }
+	}	
     }
 
   int l = input_line_number;
@@ -1860,6 +1912,7 @@ lexical_feedback::init (void)
   doing_set = false;
   in_plot_range = false;
   in_plot_style = false;
+  in_plot_axes = false;
   in_plot_using = false;
   past_plot_range = false;
   plotting = false;

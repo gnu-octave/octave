@@ -73,8 +73,14 @@ public:
 
   void stash_fcn_file_name (void);
 
+  void mark_fcn_file_up_to_date (time_t t)
+    { t_checked = t; }
+
   void stash_fcn_file_time (time_t t)
-    { t_parsed = t; }
+    {
+      t_parsed = t;
+      mark_fcn_file_up_to_date (t);
+    }
 
   void stash_symtab_ptr (symbol_record *sr)
     { symtab_entry = sr; }
@@ -84,6 +90,9 @@ public:
 
   time_t time_parsed (void) const
     { return t_parsed; }
+
+  time_t time_checked (void) const
+    { return t_checked; }
 
   void mark_as_system_fcn_file (void);
 
@@ -156,6 +165,10 @@ private:
 
   // The time the file was parsed.
   time_t t_parsed;
+
+  // The time the file was last checked to see if it needs to be
+  // parsed again.
+  time_t t_checked;
 
   // True if this function came from a file that is considered to be a
   // system function.  This affects whether we check the time stamp

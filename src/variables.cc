@@ -41,6 +41,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "error.h"
 #include "gripes.h"
 #include "help.h"
+#include "input.h"
 #include "lex.h"
 #include "oct-map.h"
 #include "oct-obj.h"
@@ -510,14 +511,19 @@ symbol_out_of_date (symbol_record *sr)
 		 || (Vignore_function_time_stamp
 		     && tmp->is_system_fcn_file ())))
 	    {
-	      time_t tp = tmp->time_parsed ();
+	      if (tmp->time_checked () < Vlast_prompt_time)
+		{
+		  time_t tp = tmp->time_parsed ();
 
-	      string fname = fcn_file_in_path (ff);
+		  string fname = fcn_file_in_path (ff);
 
-	      file_stat fs (fname);
+		  tmp->mark_fcn_file_up_to_date (time (0));
 
-	      if (fs && fs.is_newer (tp))
-		retval = true;
+		  file_stat fs (fname);
+
+		  if (fs && fs.is_newer (tp))
+		    retval = true;
+		}
 	    }
 	}
     }

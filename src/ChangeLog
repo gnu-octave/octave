@@ -1,3 +1,30 @@
+Wed Apr 15 01:03:05 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* input.cc (Vlast_prompt_time): New global variable.
+	(octave_gets): Set it.
+	* ov-usr-fcn.h (octave_user_function::time_checked): New function.
+	(octave_user_function::mark_fcn_file_up_to_date): Ditto.
+	(octave_user_function::t_checked): New data member.
+	* variables.cc (symbol_out_of_date): Only check file time stamp if
+	a prompt has been printed since the last time check.
+
+	* pt-plot.h, pt-plot.cc (subplot_axes): New class.
+	(subplot): Handle axes.
+	(Vgnuplot_command_axes): New static variable.
+	(gnuplot_command_axes): New function.
+	(symbols_of_pt_plot): DEFVAR gnuplot_command_axes.
+	* pt-walk.h (tree_walker::visit_subplot_axes): New virtual function.
+	* parse.y (plot_options): Handle axes.
+	* lex.l (plot_axes_token): New function.
+	(is_keyword): Use it.
+	(is_plot_keyword): Recognize "axes" and "axis".
+	* lex.h (class lexical_feedback): New field, in_plot_axes.
+	(lexical_feedback::init): Reset it.
+
+Tue Apr 14 23:32:27 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* parse.y (parse_fcn_file): New arg, force_script.  Change callers.
+
 Fri Apr 10 11:01:27 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* help.cc (type): Also print values of variables.

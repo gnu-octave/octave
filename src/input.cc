@@ -86,6 +86,9 @@ string Vps4;
 // more than one state can be active at once.
 int Vecho_executing_commands;
 
+// The time we last printed a prompt.
+time_t Vlast_prompt_time;
+
 // Character to append after successful command-line completion attempts.
 static char Vcompletion_append_char;
 
@@ -191,6 +194,8 @@ static string
 octave_gets (void)
 {
   string retval;
+
+  Vlast_prompt_time = time (0);
 
   if ((interactive || forced_interactive)
       && (! (reading_fcn_file || reading_script_file)))

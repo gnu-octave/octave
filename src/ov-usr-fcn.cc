@@ -80,10 +80,10 @@ octave_user_function::octave_user_function
   : octave_function (string (), string ()),
     param_list (pl), ret_list (rl), cmd_list (cl),
     sym_tab (st), file_name (), fcn_name (), t_parsed (0),
-    system_fcn_file (false), call_depth (0), num_named_args (0),
-    args_passed (), num_args_passed (0), curr_va_arg_number (0),
-    vr_list (0), symtab_entry (0), argn_sr (0), nargin_sr (0),
-    nargout_sr (0)
+    t_checked (0), system_fcn_file (false), call_depth (0),
+    num_named_args (0), args_passed (), num_args_passed (0),
+    curr_va_arg_number (0), vr_list (0), symtab_entry (0),
+    argn_sr (0), nargin_sr (0), nargout_sr (0)
 {
   install_automatic_vars ();
 

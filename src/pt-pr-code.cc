@@ -793,6 +793,11 @@ tree_print_code::visit_subplot (subplot& cmd)
       sp_plot_data->accept (*this);
     }
 
+  subplot_axes *sp_axes_clause = cmd.axes_clause ();
+
+  if (sp_axes_clause)
+    sp_axes_clause->accept (*this);
+
   subplot_using *sp_using_clause = cmd.using_clause ();
 
   if (sp_using_clause)
@@ -807,6 +812,12 @@ tree_print_code::visit_subplot (subplot& cmd)
 
   if (sp_style_clause)
     sp_style_clause->accept (*this);
+}
+
+void
+tree_print_code::visit_subplot_axes (subplot_axes& cmd)
+{
+  os << " axes " << cmd.axes ();
 }
 
 void

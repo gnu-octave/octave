@@ -26,6 +26,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define octave_input_h 1
 
 #include <cstdio>
+#include <ctime>
 
 #include <string>
 
@@ -84,6 +85,8 @@ enum echo_state
 };
 
 extern int Vecho_executing_commands;
+
+extern time_t Vlast_prompt_time;
 
 #endif
 

@@ -36,6 +36,7 @@ class plot_limits;
 class plot_range;
 class subplot_using;
 class subplot_style;
+class subplot_axes;
 class subplot;
 class subplot_list;
 
@@ -265,24 +266,92 @@ private:
 };
 
 class
+subplot_axes
+{
+public:
+
+  subplot_axes (const string& s = string ())
+    : sp_axes (s) { }
+
+  ~subplot_axes (void) { }
+
+  int print (ostrstream& plot_buf);
+
+  string axes (void) { return sp_axes; }
+
+  void accept (tree_walker& tw);
+
+private:
+
+  // The axes we are using: `x1y1', `x1y2', etc.
+  string sp_axes;
+
+  // No copying!
+
+  subplot_axes (const subplot_axes&);
+
+  subplot_axes& operator = (const subplot_axes&);
+};
+
+class
 subplot
 {
 public:
 
   subplot (tree_expression *data = 0)
     : sp_plot_data (data), sp_using_clause (0), sp_title_clause (0),
-      sp_style_clause (0) { }
-
-  subplot (subplot_using *u, tree_expression *t, subplot_style *s)
-    : sp_plot_data (0), sp_using_clause (u), sp_title_clause (t),
-      sp_style_clause (s) { }
+      sp_style_clause (0), sp_axes_clause (0) { }
 
   ~subplot (void);
 
-  subplot *set_data (tree_expression *data)
+  subplot *add_data (tree_expression *data)
     {
       sp_plot_data = data;
       return this;
+    }
+
+  subplot *add_clause (subplot_using *u)
+    {
+      if (! sp_using_clause)
+	{
+	  sp_using_clause = u;
+	  return this;
+	}
+      else
+	return 0;
+    }
+
+  subplot *add_clause (tree_expression *t)
+    {
+      if (! sp_title_clause)
+	{
+	  sp_title_clause = t;
+	  return this;
+	}
+      else
+	return 0;
+    }
+
+  subplot *add_clause (subplot_style *s)
+    {
+      if (! sp_style_clause)
+	{
+	  sp_style_clause = s;
+	  return this;
+	}
+      else
+	return 0;
+    }
+
+  subplot *add_clause (subplot_axes *a)
+    {
+      if (! sp_axes_clause)
+	{
+	  sp_axes_clause = a;
+	  return this;
+	}
+      else
+	return 0;
     }
 
   octave_value extract_plot_data (int ndim, octave_value& data);
@@ -299,6 +368,8 @@ public:
 
   subplot_style *style_clause (void) { return sp_style_clause; }
 
+  subplot_axes *axes_clause (void) { return sp_axes_clause; }
+
   void accept (tree_walker& tw);
 
 private:
@@ -314,6 +385,9 @@ private:
 
   // The `style' option
   subplot_style *sp_style_clause;
+
+  // The `axes' option
+  subplot_axes *sp_axes_clause;
 
   // No copying!
 

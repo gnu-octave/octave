@@ -324,6 +324,7 @@ set_stmt_print_flag (tree_statement_list *, char, bool);
   plot_range *plot_range_type;
   subplot_using *subplot_using_type;
   subplot_style *subplot_style_type;
+  subplot_axes *subplot_axes_type;
   octave_user_function *octave_user_function_type;
 }
 
@@ -342,7 +343,7 @@ set_stmt_print_flag (tree_statement_list *, char, bool);
 %token <tok_val> NAME
 %token <tok_val> END
 %token <tok_val> PLOT
-%token <tok_val> TEXT STYLE
+%token <tok_val> TEXT STYLE AXES_TAG
 %token <tok_val> FOR WHILE
 %token <tok_val> IF ELSEIF ELSE
 %token <tok_val> SWITCH CASE OTHERWISE
@@ -354,7 +355,7 @@ set_stmt_print_flag (tree_statement_list *, char, bool);
 // Other tokens.
 %token END_OF_INPUT LEXICAL_ERROR
 %token FCN ELLIPSIS ALL_VA_ARGS
-%token USING TITLE WITH COLON OPEN_BRACE CLOSE_BRACE CLEAR
+%token USING TITLE WITH AXES COLON OPEN_BRACE CLOSE_BRACE CLEAR
 
 // Nonterminals we construct.
 %type <sep_type> sep_no_nl opt_sep_no_nl sep opt_sep
@@ -392,6 +393,7 @@ set_stmt_print_flag (tree_statement_list *, char, bool);
 %type <plot_range_type> ranges1 
 %type <subplot_using_type> using using1 
 %type <subplot_style_type> style
+%type <subplot_axes_type> axes
 
 // Precedence and associativity.
 %left ';' ',' '\n'
@@ -1177,39 +1179,68 @@ plot_command1	: // empty
 plot_command2	: expression
 		  { $$ = new subplot ($1); }
 		| expression plot_options
-		  { $$ = $2->set_data ($1); }
+		  { $$ = $2->add_data ($1); }
 		;
 
 plot_options	: using
-		  { $$ = new subplot ($1, 0, 0); }
+		  {
+		    subplot *tmp = new subplot ();
+		    $$ = tmp->add_clause ($1);
+		  }
 		| title
-		  { $$ = new subplot (0, $1, 0); }
+		  {
+		    subplot *tmp = new subplot ();
+		    $$ = tmp->add_clause ($1);
+		  }
 		| style
-		  { $$ = new subplot (0, 0, $1); }
-		| using title
-		  { $$ = new subplot ($1, $2, 0); }
-		| title using		 
-		  { $$ = new subplot ($2, $1, 0); }
-		| using style		 
-		  { $$ = new subplot ($1, 0, $2); }
-		| style using		 
-		  { $$ = new subplot ($2, 0, $1); }
-		| title style		 
-		  { $$ = new subplot (0, $1, $2); }
-		| style title		 
-		  { $$ = new subplot (0, $2, $1); }
-		| using title style	 
-		  { $$ = new subplot ($1, $2, $3); }
-		| using style title	 
-		  { $$ = new subplot ($1, $3, $2); }
-		| title using style	 
-		  { $$ = new subplot ($2, $1, $3); }
-		| title style using	 
-		  { $$ = new subplot ($3, $1, $2); }
-		| style using title	 
-		  { $$ = new subplot ($2, $3, $1); }
-		| style title using	 
-		  { $$ = new subplot ($3, $2, $1); }
+		  {
+		    subplot *tmp = new subplot ();
+		    $$ = tmp->add_clause ($1);
+		  }
+		| axes
+		  {
+		    subplot *tmp = new subplot ();
+		    $$ = tmp->add_clause ($1);
+		  }
+		| plot_options using
+		  {
+		    if (! ($$ = $1->add_clause ($2)))
+		      {
+			yyerror ("only one using option may be specified");
+			ABORT_PARSE;
+		      }
+		  }
+		| plot_options title
+		  {
+		    if (! ($$ = $1->add_clause ($2)))
+		      {
+			yyerror ("only one title option my be specified");
+			ABORT_PARSE;
+		      }
+		  }
+		| plot_options style
+		  {
+		    if (! ($$ = $1->add_clause ($2)))
+		      {
+			yyerror ("only one style option my be specified");
+			ABORT_PARSE;
+		      }
+		  }
+		| plot_options axes
+		  {
+		    if (! ($$ = $1->add_clause ($2)))
+		      {
+			yyerror ("only one axes option may be specified");
+			ABORT_PARSE;
+		      }
+		  }
+		;
+
+axes		: AXES AXES_TAG
+		  {
+		    lexer_flags.in_plot_axes = false;
+		    $$ = new subplot_axes ($2->text ());
+		  }
 		;
 
 using		: using1
@@ -2750,7 +2781,7 @@ restore_input_stream (void *f)
 }
 
 static bool
-parse_fcn_file (bool exec_script, const string& ff)
+parse_fcn_file (const string& ff, bool exec_script, bool force_script = false)
 {
   unwind_protect::begin_frame ("parse_fcn_file");
 
@@ -2785,7 +2816,7 @@ parse_fcn_file (bool exec_script, const string& ff)
       // Check to see if this file defines a function or is just a
       // list of commands.
 
-      if (is_function_file (ffile))
+      if (! force_script && is_function_file (ffile))
 	{
 	  // XXX FIXME XXX -- we shouldn't need both the
 	  // command_history object and the
@@ -2886,7 +2917,7 @@ load_fcn_from_file (symbol_record *sym_rec, bool exec_script)
       curr_fcn_file_full_name = ff;
 
       if (ff.length () > 0)
-	script_file_executed = parse_fcn_file (exec_script, ff);
+	script_file_executed = parse_fcn_file (ff, exec_script);
 
       if (! (error_state || script_file_executed))
 	force_link_to_function (nm);
@@ -2915,7 +2946,7 @@ script file but without requiring the file to be named `FILE.m'.")
 	{
 	  file = file_ops::tilde_expand (file);
 
-	  parse_fcn_file (true, file);
+	  parse_fcn_file (file, true, true);
 
 	  if (error_state)
 	    error ("source: error sourcing file `%s'", file.c_str ());

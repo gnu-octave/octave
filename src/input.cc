@@ -1135,7 +1135,7 @@ Without any arguments, toggle the current echo state.")
 	char *arg = argv[1];
 	if (strcmp (arg, "on") == 0)
 	  bind_builtin_variable ("echo_executing_commands", ECHO_SCRIPTS);
-	else if (strcmp (arg, "on") == 0)
+	else if (strcmp (arg, "off") == 0)
 	  bind_builtin_variable ("echo_executing_commands", ECHO_OFF);
 	else
 	  print_usage ("echo");

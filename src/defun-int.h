@@ -159,13 +159,16 @@ typedef bool (*octave_dld_fcn_installer) (const octave_shlib&);
 #define INSTALL_CONST(name, sname, defn, protect, doc) \
   install_builtin_constant (name, octave_value (defn), protect, doc)
 
+#define UNDERSCORIFY(name) \
+  "__" ## name ## "__"
+
 #define DEFCONST_INTERNAL(name, defn, doc) \
   INSTALL_CONST (#name, SBV_ ## name, defn, false, doc); \
-  INSTALL_CONST ("__" ## #name ## "__", XSBV_ ## name, defn, true, doc)
+  INSTALL_CONST (UNDERSCORIFY (#name), XSBV_ ## name, defn, true, doc)
 
 #define DEFCONSTX_INTERNAL(name, sname, defn, doc) \
   INSTALL_CONST (name, sname, defn, false, doc); \
-  INSTALL_CONST ("__" ## name ## "__", X ## sname, defn, true, doc)
+  INSTALL_CONST (UNDERSCORIFY (name), X ## sname, defn, true, doc)
 
 // How mapper functions are actually installed.
 

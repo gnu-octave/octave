@@ -1108,8 +1108,15 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 
       const scanf_format_elt *elt = fmt_list.first ();
 
+      ios::fmtflags flags = is.flags ();
+
       for (;;)
 	{
+	  // Restore format flags in case we had to change them (note
+	  // 'c' conversion below).
+
+	  is.setf (flags);
+
 	  if (elt)
 	    {
 	      if (nr > 0 && nc > 0 && count == max_size)
@@ -1163,8 +1170,11 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 		  }
 		  break;
 
-		case 's':
 		case 'c':
+		  is.unsetf (ios::skipws);
+		  // Fall through...
+
+		case 's':
 		  {
 		    char tmp;
 

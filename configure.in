@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.438 $)
+AC_REVISION($Revision: 1.439 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -934,7 +934,7 @@ fi
 ## avoids the problem.
 
 GLOB_DIR=glob
-if test -n "$(ALLOCA)"; then
+if test -n "$ALLOCA"; then
   LIBGLOB='$(TOPDIR)/glob/glob.o $(TOPDIR)/glob/fnmatch.o $(TOPDIR)/glob/alloca.o'
 else
   LIBGLOB='$(TOPDIR)/glob/glob.o $(TOPDIR)/glob/fnmatch.o'

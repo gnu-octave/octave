@@ -25,15 +25,15 @@ set prog_output "ans = 1"
 do_test betainc-1.m
 
 set test betainc-2
-set prog_output "error:.*"
+set prog_output "\n... betainc:.*"
 do_test betainc-2.m
 
 set test betainc-3
-set prog_output "error:.*"
+set prog_output "\n... betainc:.*"
 do_test betainc-3.m
 
 set test betainc-4
-set prog_output "error:.*"
+set prog_output "\n... betainc:.*"
 do_test betainc-4.m
 
 set test ceil-1

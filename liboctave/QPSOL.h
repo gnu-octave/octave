@@ -24,10 +24,9 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (_QPSOL_h)
 #define _QPSOL_h 1
 
-#ifdef __GNUG__
-#pragma interface
-#endif
+#ifndef QPSOL_MISSING
 
+#include "Matrix.h"
 #include "QP.h"
 
 #ifndef Vector
@@ -91,6 +90,8 @@ QPSOL::operator = (const QPSOL& a)
   iprint = a.iprint;
   return *this;
 }
+
+#endif /* QPSOL_MISSING */
 
 #endif
 

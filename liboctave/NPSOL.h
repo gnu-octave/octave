@@ -21,15 +21,12 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
-#ifndef NPSOL_MISSING
-
 #if !defined (_NPSOL_h)
 #define _NPSOL_h 1
 
-#ifdef __GNUG__
-#pragma interface
-#endif
+#ifndef NPSOL_MISSING
 
+#include "Matrix.h"
 #include "NLP.h"
 
 #ifndef Vector
@@ -114,9 +111,9 @@ NPSOL::operator = (const NPSOL& a)
   return *this;
 }
 
-#endif
-
 #endif /* NPSOL_MISSING */
+
+#endif
 
 /*
 ;;; Local Variables: ***

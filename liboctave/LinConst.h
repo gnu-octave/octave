@@ -24,11 +24,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (_LinConst_h)
 #define _LinConst_h 1
 
-#ifdef __GNUG__
-#pragma interface
-#endif
-
 #include <float.h>
+
+class ostream;
+
 #include "Matrix.h"
 #include "Bounds.h"
 

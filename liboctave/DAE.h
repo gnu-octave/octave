@@ -24,15 +24,9 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (_DAE_h)
 #define _DAE_h 1
 
-#ifdef __GNUG__
-#pragma interface
-#endif
-
-#include <iostream.h>
 #include "ODE.h"
 #include "DAEFunc.h"
 #include "Matrix.h"
-#include "f77-uscore.h"
 
 #ifndef Vector
 #define Vector ColumnVector

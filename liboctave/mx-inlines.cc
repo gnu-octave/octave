@@ -21,14 +21,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
-#ifdef __GNUG__
-#pragma implementation
-#endif
-
 // But first, some helper functions...
 
 static inline double *
-add (double *d, int len, double s)
+add (const double *d, int len, double s)
 {
   double *result = 0;
   if (len > 0)
@@ -41,7 +37,7 @@ add (double *d, int len, double s)
 }
 
 static inline double *
-subtract (double *d, int len, double s)
+subtract (const double *d, int len, double s)
 {
   double *result = 0;
   if (len > 0)
@@ -54,7 +50,7 @@ subtract (double *d, int len, double s)
 }
 
 static inline double *
-subtract (double s, double *d, int len)
+subtract (double s, const double *d, int len)
 {
   double *result = 0;
   if (len > 0)
@@ -67,7 +63,7 @@ subtract (double s, double *d, int len)
 }
 
 static inline double *
-multiply (double *d, int len, double s)
+multiply (const double *d, int len, double s)
 {
   double *result = 0;
   if (len > 0)
@@ -80,7 +76,7 @@ multiply (double *d, int len, double s)
 }
 
 static inline double *
-divide (double *d, int len, double s)
+divide (const double *d, int len, double s)
 {
   double *result = 0;
   if (len > 0)
@@ -93,7 +89,7 @@ divide (double *d, int len, double s)
 }
 
 static inline double *
-divide (double s, double *d, int len)
+divide (double s, const double *d, int len)
 {
   double *result = 0;
   if (len > 0)
@@ -106,7 +102,7 @@ divide (double s, double *d, int len)
 }
 
 static inline double *
-add (double *x, double *y, int len)
+add (const double *x, const double *y, int len)
 {
   double *result = 0;
   if (len > 0)
@@ -119,7 +115,7 @@ add (double *x, double *y, int len)
 }
 
 static inline double *
-subtract (double *x, double *y, int len)
+subtract (const double *x, const double *y, int len)
 {
   double *result = 0;
   if (len > 0)
@@ -132,7 +128,7 @@ subtract (double *x, double *y, int len)
 }
 
 static inline double *
-multiply (double *x, double *y, int len)
+multiply (const double *x, const double *y, int len)
 {
   double *result = 0;
   if (len > 0)
@@ -145,7 +141,7 @@ multiply (double *x, double *y, int len)
 }
 
 static inline double *
-divide (double *x, double *y, int len)
+divide (const double *x, const double *y, int len)
 {
   double *result = 0;
   if (len > 0)
@@ -158,7 +154,7 @@ divide (double *x, double *y, int len)
 }
 
 static inline double *
-add2 (double *x, double *y, int len)
+add2 (double *x, const double *y, int len)
 {
   for (int i = 0; i < len; i++)
     x[i] += y[i];
@@ -166,7 +162,7 @@ add2 (double *x, double *y, int len)
 }
 
 static inline double *
-subtract2 (double *x, double *y, int len)
+subtract2 (double *x, const double *y, int len)
 {
   for (int i = 0; i < len; i++)
     x[i] -= y[i];
@@ -174,7 +170,7 @@ subtract2 (double *x, double *y, int len)
 }
 
 static inline double *
-negate (double *d, int len)
+negate (const double *d, int len)
 {
   double *result = 0;
   if (len > 0)
@@ -194,16 +190,16 @@ copy (double *d, int len, double s)
 }
 
 static inline void
-copy (double *x, double *y, int len)
+copy (double *x, const double *y, int len)
 {
   for (int i = 0; i < len; i++)
     x[i] = y[i];
 }
 
 static inline double *
-dup (double *x, int len)
+dup (const double *x, int len)
 {
-  double *retval = (double *) NULL;
+  double *retval = 0;
   if (len > 0)
     {
       retval = new double [len];
@@ -214,7 +210,7 @@ dup (double *x, int len)
 }
 
 static inline int
-equal (double *x, double *y, int len)
+equal (const double *x, const double *y, int len)
 {
   for (int i = 0; i < len; i++)
     if (x[i] != y[i])
@@ -225,7 +221,7 @@ equal (double *x, double *y, int len)
 // And some for Complex too...
 
 static inline Complex *
-add (Complex *d, int len, Complex s)
+add (const Complex *d, int len, Complex s)
 {
   Complex *result = 0;
   if (len > 0)
@@ -238,7 +234,7 @@ add (Complex *d, int len, Complex s)
 }
 
 static inline Complex *
-add (Complex s, Complex *d, int len)
+add (Complex s, const Complex *d, int len)
 {
   Complex *result = 0;
   if (len > 0)
@@ -251,7 +247,7 @@ add (Complex s, Complex *d, int len)
 }
 
 static inline Complex *
-subtract (Complex *d, int len, Complex s)
+subtract (const Complex *d, int len, Complex s)
 {
   Complex *result = 0;
   if (len > 0)
@@ -264,7 +260,7 @@ subtract (Complex *d, int len, Complex s)
 }
 
 static inline Complex *
-subtract (Complex s, Complex *d, int len)
+subtract (Complex s, const Complex *d, int len)
 {
   Complex *result = 0;
   if (len > 0)
@@ -277,7 +273,7 @@ subtract (Complex s, Complex *d, int len)
 }
 
 static inline Complex *
-multiply (Complex *d, int len, Complex s)
+multiply (const Complex *d, int len, Complex s)
 {
   Complex *result = 0;
   if (len > 0)
@@ -290,7 +286,7 @@ multiply (Complex *d, int len, Complex s)
 }
 
 static inline Complex *
-multiply (Complex s, Complex *d, int len)
+multiply (Complex s, const Complex *d, int len)
 {
   Complex *result = 0;
   if (len > 0)
@@ -303,7 +299,7 @@ multiply (Complex s, Complex *d, int len)
 }
 
 static inline Complex *
-divide (Complex *d, int len, Complex s)
+divide (const Complex *d, int len, Complex s)
 {
   Complex *result = 0;
   if (len > 0)
@@ -316,7 +312,7 @@ divide (Complex *d, int len, Complex s)
 }
 
 static inline Complex *
-divide (Complex s, Complex *d, int len)
+divide (Complex s, const Complex *d, int len)
 {
   Complex *result = 0;
   if (len > 0)
@@ -329,7 +325,7 @@ divide (Complex s, Complex *d, int len)
 }
 
 static inline Complex *
-add (Complex *x, Complex *y, int len)
+add (const Complex *x, const Complex *y, int len)
 {
   Complex *result = 0;
   if (len > 0)
@@ -342,7 +338,7 @@ add (Complex *x, Complex *y, int len)
 }
 
 static inline Complex *
-subtract (Complex *x, Complex *y, int len)
+subtract (const Complex *x, const Complex *y, int len)
 {
   Complex *result = 0;
   if (len > 0)
@@ -355,7 +351,7 @@ subtract (Complex *x, Complex *y, int len)
 }
 
 static inline Complex *
-multiply (Complex *x, Complex *y, int len)
+multiply (const Complex *x, const Complex *y, int len)
 {
   Complex *result = 0;
   if (len > 0)
@@ -368,7 +364,7 @@ multiply (Complex *x, Complex *y, int len)
 }
 
 static inline Complex *
-divide (Complex *x, Complex *y, int len)
+divide (const Complex *x, const Complex *y, int len)
 {
   Complex *result = 0;
   if (len > 0)
@@ -381,7 +377,7 @@ divide (Complex *x, Complex *y, int len)
 }
 
 static inline Complex *
-add2 (Complex *x, Complex *y, int len)
+add2 (Complex *x, const Complex *y, int len)
 {
   for (int i = 0; i < len; i++)
     x[i] += y[i];
@@ -389,7 +385,7 @@ add2 (Complex *x, Complex *y, int len)
 }
 
 static inline Complex *
-subtract2 (Complex *x, Complex *y, int len)
+subtract2 (Complex *x, const Complex *y, int len)
 {
   for (int i = 0; i < len; i++)
     x[i] -= y[i];
@@ -397,7 +393,7 @@ subtract2 (Complex *x, Complex *y, int len)
 }
 
 static inline Complex *
-negate (Complex *d, int len)
+negate (const Complex *d, int len)
 {
   Complex *result = 0;
   if (len > 0)
@@ -410,7 +406,7 @@ negate (Complex *d, int len)
 }
 
 static inline double *
-not (Complex *d, int len)
+not (const Complex *d, int len)
 {
   double *result = 0;
   if (len > 0)
@@ -430,16 +426,16 @@ copy (Complex *d, int len, Complex s)
 }
 
 static inline void
-copy (Complex *x, Complex *y, int len)
+copy (Complex *x, const Complex *y, int len)
 {
   for (int i = 0; i < len; i++)
     x[i] = y[i];
 }
 
 static inline Complex *
-dup (Complex *x, int len)
+dup (const Complex *x, int len)
 {
-  Complex *retval = (Complex *) NULL;
+  Complex *retval = 0;
   if (len > 0)
     {
       retval = new Complex [len];
@@ -450,9 +446,9 @@ dup (Complex *x, int len)
 }
 
 static inline Complex *
-make_complex (double *x, int len)
+make_complex (const double *x, int len)
 {
-  Complex *retval = (Complex *) NULL;
+  Complex *retval = 0;
   if (len > 0)
     {
       retval = new Complex [len];
@@ -463,9 +459,9 @@ make_complex (double *x, int len)
 }
 
 static inline Complex *
-conj_dup (Complex *x, int len)
+conj_dup (const Complex *x, int len)
 {
-  Complex *retval = (Complex *) NULL;
+  Complex *retval = 0;
   if (len > 0)
     {
       retval = new Complex [len];
@@ -476,9 +472,9 @@ conj_dup (Complex *x, int len)
 }
 
 static inline double *
-real_dup (Complex *x, int len)
+real_dup (const Complex *x, int len)
 {
-  double *retval = (double *) NULL;
+  double *retval = 0;
   if (len > 0)
     {
       retval = new double [len];
@@ -489,9 +485,9 @@ real_dup (Complex *x, int len)
 }
 
 static inline double *
-imag_dup (Complex *x, int len)
+imag_dup (const Complex *x, int len)
 {
-  double *retval = (double *) NULL;
+  double *retval = 0;
   if (len > 0)
     {
       retval = new double [len];
@@ -502,7 +498,7 @@ imag_dup (Complex *x, int len)
 }
 
 static inline int
-equal (Complex *x, Complex *y, int len)
+equal (const Complex *x, const Complex *y, int len)
 {
   for (int i = 0; i < len; i++)
     if (x[i] != y[i])
@@ -513,7 +509,7 @@ equal (Complex *x, Complex *y, int len)
 // And still some more for mixed Complex/double operations...
 
 static inline Complex *
-add (Complex *d, int len, double s)
+add (const Complex *d, int len, double s)
 {
   Complex *result = 0;
   if (len > 0)
@@ -526,7 +522,7 @@ add (Complex *d, int len, double s)
 }
 
 static inline Complex *
-add (double *d, int len, Complex s)
+add (const double *d, int len, Complex s)
 {
   Complex *result = 0;
   if (len > 0)
@@ -539,7 +535,7 @@ add (double *d, int len, Complex s)
 }
 
 static inline Complex *
-add (double s, Complex *d, int len)
+add (double s, const Complex *d, int len)
 {
   Complex *result = 0;
   if (len > 0)
@@ -552,7 +548,7 @@ add (double s, Complex *d, int len)
 }
 
 static inline Complex *
-add (Complex s, double *d, int len)
+add (Complex s, const double *d, int len)
 {
   Complex *result = 0;
   if (len > 0)
@@ -565,7 +561,7 @@ add (Complex s, double *d, int len)
 }
 
 static inline Complex *
-subtract (Complex *d, int len, double s)
+subtract (const Complex *d, int len, double s)
 {
   Complex *result = 0;
   if (len > 0)
@@ -578,7 +574,7 @@ subtract (Complex *d, int len, double s)
 }
 
 static inline Complex *
-subtract (double *d, int len, Complex s)
+subtract (const double *d, int len, Complex s)
 {
   Complex *result = 0;
   if (len > 0)
@@ -591,7 +587,7 @@ subtract (double *d, int len, Complex s)
 }
 
 static inline Complex *
-subtract (double s, Complex *d, int len)
+subtract (double s, const Complex *d, int len)
 {
   Complex *result = 0;
   if (len > 0)
@@ -604,7 +600,7 @@ subtract (double s, Complex *d, int len)
 }
 
 static inline Complex *
-subtract (Complex s, double *d, int len)
+subtract (Complex s, const double *d, int len)
 {
   Complex *result = 0;
   if (len > 0)
@@ -617,7 +613,7 @@ subtract (Complex s, double *d, int len)
 }
 
 static inline Complex *
-multiply (Complex *d, int len, double s)
+multiply (const Complex *d, int len, double s)
 {
   Complex *result = 0;
   if (len > 0)
@@ -630,7 +626,7 @@ multiply (Complex *d, int len, double s)
 }
 
 static inline Complex *
-multiply (double *d, int len, Complex s)
+multiply (const double *d, int len, Complex s)
 {
   Complex *result = 0;
   if (len > 0)
@@ -643,7 +639,7 @@ multiply (double *d, int len, Complex s)
 }
 
 static inline Complex *
-divide (Complex *d, int len, double s)
+divide (const Complex *d, int len, double s)
 {
   Complex *result = 0;
   if (len > 0)
@@ -656,7 +652,7 @@ divide (Complex *d, int len, double s)
 }
 
 static inline Complex *
-divide (double *d, int len, Complex s)
+divide (const double *d, int len, Complex s)
 {
   Complex *result = 0;
   if (len > 0)
@@ -669,7 +665,7 @@ divide (double *d, int len, Complex s)
 }
 
 static inline Complex *
-divide (double s, Complex *d, int len)
+divide (double s, const Complex *d, int len)
 {
   Complex *result = 0;
   if (len > 0)
@@ -682,7 +678,7 @@ divide (double s, Complex *d, int len)
 }
 
 static inline Complex *
-divide (Complex s, double *d, int len)
+divide (Complex s, const double *d, int len)
 {
   Complex *result = 0;
   if (len > 0)
@@ -695,7 +691,7 @@ divide (Complex s, double *d, int len)
 }
 
 static inline Complex *
-add (Complex *x, double *y, int len)
+add (const Complex *x, const double *y, int len)
 {
   Complex *result = 0;
   if (len > 0)
@@ -708,7 +704,7 @@ add (Complex *x, double *y, int len)
 }
 
 static inline Complex *
-add (double *x, Complex *y, int len)
+add (const double *x, const Complex *y, int len)
 {
   Complex *result = 0;
   if (len > 0)
@@ -721,7 +717,7 @@ add (double *x, Complex *y, int len)
 }
 
 static inline Complex *
-subtract (Complex *x, double *y, int len)
+subtract (const Complex *x, const double *y, int len)
 {
   Complex *result = 0;
   if (len > 0)
@@ -734,7 +730,7 @@ subtract (Complex *x, double *y, int len)
 }
 
 static inline Complex *
-subtract (double *x, Complex *y, int len)
+subtract (const double *x, const Complex *y, int len)
 {
   Complex *result = 0;
   if (len > 0)
@@ -747,7 +743,7 @@ subtract (double *x, Complex *y, int len)
 }
 
 static inline Complex *
-multiply (Complex *x, double *y, int len)
+multiply (const Complex *x, const double *y, int len)
 {
   Complex *result = 0;
   if (len > 0)
@@ -760,7 +756,7 @@ multiply (Complex *x, double *y, int len)
 }
 
 static inline Complex *
-multiply (double *x, Complex *y, int len)
+multiply (const double *x, const Complex *y, int len)
 {
   Complex *result = 0;
   if (len > 0)
@@ -773,7 +769,7 @@ multiply (double *x, Complex *y, int len)
 }
 
 static inline Complex *
-divide (Complex *x, double *y, int len)
+divide (const Complex *x, const double *y, int len)
 {
   Complex *result = 0;
   if (len > 0)
@@ -786,7 +782,7 @@ divide (Complex *x, double *y, int len)
 }
 
 static inline Complex *
-divide (double *x, Complex *y, int len)
+divide (const double *x, const Complex *y, int len)
 {
   Complex *result = 0;
   if (len > 0)
@@ -799,7 +795,7 @@ divide (double *x, Complex *y, int len)
 }
 
 static inline Complex *
-add2 (Complex *x, double *y, int len)
+add2 (Complex *x, const double *y, int len)
 {
   for (int i = 0; i < len; i++)
     x[i] += y[i];
@@ -807,7 +803,7 @@ add2 (Complex *x, double *y, int len)
 }
 
 static inline Complex *
-subtract2 (Complex *x, double *y, int len)
+subtract2 (Complex *x, const double *y, int len)
 {
   for (int i = 0; i < len; i++)
     x[i] -= y[i];
@@ -822,7 +818,7 @@ copy (Complex *d, int len, double s)
 }
 
 static inline void
-copy (Complex *x, double *y, int len)
+copy (Complex *x, const double *y, int len)
 {
   for (int i = 0; i < len; i++)
     x[i] = y[i];

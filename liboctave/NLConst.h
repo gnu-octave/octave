@@ -24,12 +24,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (_NLConst_h)
 #define _NLConst_h 1
 
-#ifdef __GNUG__
-#pragma interface
-#endif
-
-#include <Bounds.h>
 #include "Matrix.h"
+#include "Bounds.h"
 #include "NLFunc.h"
 
 #ifndef Vector

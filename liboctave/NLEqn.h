@@ -24,12 +24,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (_NLEqn_h)
 #define _NLEqn_h 1
 
-#ifdef __GNUG__
-#pragma interface
-#endif
-
-#include <NLFunc.h>
 #include "Matrix.h"
+#include "NLFunc.h"
 
 #ifndef Vector
 #define Vector ColumnVector

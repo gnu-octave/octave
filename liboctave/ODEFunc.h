@@ -24,11 +24,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (_ODEFunc_h)
 #define _ODEFunc_h 1
 
-#ifdef __GNUG__
-#pragma interface
-#endif
-
-#include <iostream.h>
 #include "Matrix.h"
 
 #ifndef Vector

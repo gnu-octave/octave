@@ -21,12 +21,12 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
-#ifdef __GNUG__
-#pragma implementation
+#ifdef HAVE_CONFIG_H
+#include "config.h"
 #endif
 
-#include <iostream.h>
 #include "DAE.h"
+#include "f77-uscore.h"
 #include "lo-error.h"
 
 extern "C"
@@ -232,7 +232,7 @@ ddassl_j (double *time, double *state, double *deriv, double *pd,
 
   // Fix up the matrix of partial derivatives for dassl.
 
-  tmp_dfdx = tmp_dfdx + (*cj * tmp_dfdxdot);
+  tmp_dfdx = tmp_dfdx + (tmp_dfdxdot * (*cj));
 
   for (int j = 0; j < nn; j++)
     for (int i = 0; i < nn; i++)

@@ -21,14 +21,14 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
-#ifndef NPSOL_MISSING
-
-#ifdef __GNUG__
-#pragma implementation
+#ifdef HAVE_CONFIG_H
+#include "config.h"
 #endif
 
-#include <iostream.h>
 #include <math.h>
+
+#ifndef NPSOL_MISSING
+
 #include "NPSOL.h"
 #include "f77-uscore.h"
 #include "sun-utils.h"

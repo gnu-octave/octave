@@ -24,13 +24,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (_ODE_h)
 #define _ODE_h 1
 
-#ifdef __GNUG__
-#pragma interface
-#endif
+class ostream;
 
-#include <iostream.h>
-#include "ODEFunc.h"
 #include "Matrix.h"
+#include "ODEFunc.h"
 
 class ODE : public ODEFunc
 {

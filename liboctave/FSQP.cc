@@ -21,14 +21,12 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
-#ifndef FSQP_MISSING
-
-#ifdef __GNUG__
-#pragma implementation
+#ifdef HAVE_CONFIG_H
+#include "config.h"
 #endif
 
-#include <iostream.h>
-#include <math.h>
+#ifndef FSQP_MISSING
+
 #include "FSQP.h"
 #include "f77-uscore.h"
 

@@ -21,12 +21,14 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
-#ifdef __GNUG__
-#pragma implementation
+#ifdef HAVE_CONFIG_H
+#include "config.h"
 #endif
 
-#include <iostream.h>
 #include <math.h>
+
+#ifndef QPSOL_MISSING
+
 #include "QPSOL.h"
 #include "f77-uscore.h"
 
@@ -172,6 +174,8 @@ QPSOL::set_default_options (void)
 {
   iprint = 0;
 }
+
+#endif /* QPSOL_MISSING */
 
 /*
 ;;; Local Variables: ***

@@ -21,9 +21,11 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
-#ifdef __GNUG__
-#pragma implementation
+#ifdef HAVE_CONFIG_H
+#include "config.h"
 #endif
+
+#include <iostream.h>
 
 #include "Matrix.h"
 #include "mx-inlines.cc"
@@ -159,13 +161,14 @@ extern "C"
 int
 AEPBALANCE::init (const Matrix& a, const char *balance_job)
 {
-  if (a.nr != a.nc)
+  int a_nc = a.cols ();
+  if (a.rows () != a_nc)
     {
       (*current_liboctave_error_handler) ("AEPBALANCE requires square matrix");
       return -1;
     }
 
-  int n = a.nc;
+  int n = a_nc;
 
 // Parameters for balance call.
 
@@ -199,7 +202,7 @@ int
 ComplexAEPBALANCE::init (const ComplexMatrix& a, const char *balance_job)
 {
 
-  int n = a.nc;
+  int n = a.cols ();
 
 // Parameters for balance call.
 
@@ -222,7 +225,7 @@ ComplexAEPBALANCE::init (const ComplexMatrix& a, const char *balance_job)
     balancing_mat (i, i) = 1.0;
 
   F77_FCN (zgebak) (balance_job, "R", &n, &ilo, &ihi, scale, &n, 
-		    balancing_mat.fortran_vec(), &n, &info, 1L, 1L);
+		    balancing_mat.fortran_vec (), &n, &info, 1L, 1L);
 
   delete [] scale;
 
@@ -236,14 +239,17 @@ ComplexAEPBALANCE::init (const ComplexMatrix& a, const char *balance_job)
 int
 GEPBALANCE::init (const Matrix& a, const Matrix& b, const char *balance_job)
 {
-  if (a.nr != a.nc || a.nr != b.nr || b.nr != b.nc)
+  int a_nr = a.rows ();
+  int a_nc = a.cols ();
+  int b_nr = b.rows ();
+  if (a_nr != a_nc || a_nr != b_nr || b_nr != b.cols ())
     {
       (*current_liboctave_error_handler)
 	("GEPBALANCE requires square matrices of the same size");
       return -1;
     }
 
-  int n = a.nc;
+  int n = a_nc;
 
 // Parameters for balance call.
 
@@ -276,7 +282,7 @@ GEPBALANCE::init (const Matrix& a, const Matrix& b, const char *balance_job)
 
 // Initialize balancing matrices to identity.
 
-  left_balancing_mat = Matrix(n,n,0.0);
+  left_balancing_mat = Matrix (n, n, 0.0);
   for (int i = 0; i < n; i++)
     left_balancing_mat (i, i) = 1.0;
 
@@ -315,7 +321,7 @@ GEPBALANCE::init (const Matrix& a, const Matrix& b, const char *balance_job)
       for (int tmp = ilo-1; tmp < ihi; tmp++)
 	{
 	  cscale[tmp] = 0.0;
-	  wk.elem(tmp,0) = 0.0;
+	  wk.elem (tmp, 0) = 0.0;
 	}
     }
 
@@ -323,8 +329,8 @@ GEPBALANCE::init (const Matrix& a, const Matrix& b, const char *balance_job)
 
   for (int tmp = ilo-1; tmp < ihi; tmp++)
     {
-      cscale[tmp] = pow(2.0,cscale[tmp]);
-      wk.elem(tmp,0) = pow(2.0,-wk.elem(tmp,0));
+      cscale[tmp] = pow (2.0, cscale[tmp]);
+      wk.elem (tmp, 0) = pow (2.0, -wk.elem (tmp, 0));
     }
 
 // Column permutations/scaling.
@@ -366,7 +372,9 @@ GEPBALANCE::init (const Matrix& a, const Matrix& b, const char *balance_job)
 int
 CHOL::init (const Matrix& a)
 {
-  if (a.nr != a.nc)
+  int a_nr = a.rows ();
+  int a_nc = a.cols ();
+  if (a_nr != a_nc)
     {
       (*current_liboctave_error_handler) ("CHOL requires square matrix");
       return -1;
@@ -374,10 +382,10 @@ CHOL::init (const Matrix& a)
 
   char uplo = 'U';
 
-  int n = a.nc;
+  int n = a_nc;
   int info;
 
-  double *h = dup (a.data, a.len);
+  double *h = dup (a.data (), a.length ());
 
   F77_FCN (dpotrf) (&uplo, &n, h, &n, &info, 1L);
 
@@ -387,19 +395,19 @@ CHOL::init (const Matrix& a)
 // that matter :-)), please let me know!
 
   if (n > 1)
-    for (int j = 0; j < a.nc; j++)
-      for (int i = j+1; i < a.nr; i++)
+    for (int j = 0; j < a_nc; j++)
+      for (int i = j+1; i < a_nr; i++)
         chol_mat.elem (i, j) = 0.0;
-
 
   return info;
 }
 
-
 int
 ComplexCHOL::init (const ComplexMatrix& a)
 {
-   if (a.nr != a.nc)
+  int a_nr = a.rows ();
+  int a_nc = a.cols ();
+   if (a_nr != a_nc)
      {
        (*current_liboctave_error_handler)
 	 ("ComplexCHOL requires square matrix");
@@ -408,10 +416,10 @@ ComplexCHOL::init (const ComplexMatrix& a)
 
    char uplo = 'U';
 
-   int n = a.nc;
+   int n = a_nc;
    int info;
 
-   Complex *h = dup (a.data, a.len);
+   Complex *h = dup (a.data (), a.length ());
 
    F77_FCN (zpotrf) (&uplo, &n, h, &n, &info, 1L);
 
@@ -421,13 +429,12 @@ ComplexCHOL::init (const ComplexMatrix& a)
 // that matter :-)), please let me know!
 
   if (n > 1)
-    for (int j = 0; j < a.nc; j++)
-      for (int i = j+1; i < a.nr; i++)
+    for (int j = 0; j < a_nc; j++)
+      for (int i = j+1; i < a_nr; i++)
         chol_mat.elem (i, j) = 0.0;
 
    return info;
 }
-
 
 /*
  * HESS stuff
@@ -436,7 +443,9 @@ ComplexCHOL::init (const ComplexMatrix& a)
 int
 HESS::init (const Matrix& a)
 {
-  if (a.nr != a.nc)
+  int a_nr = a.rows ();
+  int a_nc = a.cols ();
+  if (a_nr != a_nc)
     {
       (*current_liboctave_error_handler) ("HESS requires square matrix");
       return -1;
@@ -445,13 +454,13 @@ HESS::init (const Matrix& a)
   char jobbal = 'N';
   char side = 'R';
 
-  int n = a.nc;
+  int n = a_nc;
   int lwork = 32 * n;
   int info;
   int ilo;
   int ihi;
 
-  double *h = dup(a.data, a.len);
+  double *h = dup (a.data (), a.length ());
 
   double *tau = new double [n+1];
   double *scale = new double [n];
@@ -464,7 +473,7 @@ HESS::init (const Matrix& a)
   F77_FCN (dgehrd) (&n, &ilo, &ihi, h, &n, tau, work, &lwork, &info,
 		    1L, 1L);
 
-  copy(z,h,n*n);
+  copy (z, h, n*n);
 
   F77_FCN (dorghr) (&n, &ilo, &ihi, z, &n, tau, work, &lwork, &info,
 		    1L, 1L);
@@ -475,16 +484,16 @@ HESS::init (const Matrix& a)
 // We need to clear out all of the area below the sub-diagonal which was used
 // to store the unitary matrix.
 
-  hess_mat = Matrix(h,n,n);
-  unitary_hess_mat = Matrix(z,n,n);
+  hess_mat = Matrix (h, n, n);
+  unitary_hess_mat = Matrix (z, n, n);
 
 // If someone thinks of a more graceful way of doing this (or faster for 
 // that matter :-)), please let me know! 
 
   if (n > 2)
-    for (int j = 0; j < a.nc; j++)
-      for (int i = j+2; i < a.nr; i++)
-        hess_mat.elem(i,j) = 0;
+    for (int j = 0; j < a_nc; j++)
+      for (int i = j+2; i < a_nr; i++)
+        hess_mat.elem (i, j) = 0;
 
   delete [] tau;
   delete [] work;
@@ -493,11 +502,12 @@ HESS::init (const Matrix& a)
   return info;
 }
 
-
 int
 ComplexHESS::init (const ComplexMatrix& a)
 {
-   if (a.nr != a.nc)
+  int a_nr = a.rows ();
+  int a_nc = a.cols ();
+   if (a_nr != a_nc)
      {
        (*current_liboctave_error_handler)
 	 ("ComplexHESS requires square matrix");
@@ -507,13 +517,13 @@ ComplexHESS::init (const ComplexMatrix& a)
    char job = 'N';
    char side = 'R';
 
-   int n = a.nc;
+   int n = a_nc;
    int lwork = 32 * n;
    int info;
    int ilo;
    int ihi;
 
-   Complex *h = dup(a.data,a.len);
+   Complex *h = dup (a.data (), a.length ());
 
    double *scale = new double [n];
    Complex *tau = new Complex [n-1];
@@ -525,7 +535,7 @@ ComplexHESS::init (const ComplexMatrix& a)
    F77_FCN (zgehrd) (&n, &ilo, &ihi, h, &n, tau, work, &lwork, &info, 1L,
 		     1L);
 
-   copy(z,h,n*n);
+   copy (z, h, n*n);
 
    F77_FCN (zunghr) (&n, &ilo, &ihi, z, &n, tau, work, &lwork, &info, 1L,
 		     1L);
@@ -540,9 +550,9 @@ ComplexHESS::init (const ComplexMatrix& a)
 // that matter :-)), please let me know!
 
    if (n > 2)
-     for (int j = 0; j < a.nc; j++)
-       for (int i = j+2; i < a.nr; i++)
-         hess_mat.elem(i,j) = 0;
+     for (int j = 0; j < a_nc; j++)
+       for (int i = j+2; i < a_nr; i++)
+         hess_mat.elem (i, j) = 0;
 
    delete [] work;
    delete [] tau;
@@ -573,7 +583,9 @@ extern "C" { static int (*dummy_select)(); }
 int
 SCHUR::init (const Matrix& a, const char *ord)
 {
-  if (a.nr != a.nc)
+  int a_nr = a.rows ();
+  int a_nc = a.cols ();
+  if (a_nr != a_nc)
     {
       (*current_liboctave_error_handler) ("SCHUR requires square matrix");
       return -1;
@@ -589,7 +601,7 @@ SCHUR::init (const Matrix& a, const char *ord)
 
   char sense = 'N';
 
-  int n = a.nc;
+  int n = a_nc;
   int lwork = 8 * n;
   int liwork = 1;
   int info;
@@ -597,7 +609,7 @@ SCHUR::init (const Matrix& a, const char *ord)
   double rconde;
   double rcondv;
 
-  double *s = dup(a.data,a.len);
+  double *s = dup (a.data (), a.length ());
 
   double *wr = new double [n];
   double *wi = new double [n];
@@ -635,7 +647,6 @@ SCHUR::init (const Matrix& a, const char *ord)
 			1L, 1L);
     }
 
-
   schur_mat = Matrix (s, n, n);
   unitary_mat = Matrix (q, n, n);
 
@@ -651,7 +662,7 @@ SCHUR::init (const Matrix& a, const char *ord)
 static int
 complex_select_ana (Complex *a)
 {
-  return (real (*a) < 0.0);
+  return a->real () < 0.0;
 }
 
 static int
@@ -663,7 +674,9 @@ complex_select_dig (Complex *a)
 int
 ComplexSCHUR::init (const ComplexMatrix& a, const char *ord)
 {
-  if (a.nr != a.nc)
+  int a_nr = a.rows ();
+  int a_nc = a.cols ();
+  if (a_nr != a_nc)
     {
       (*current_liboctave_error_handler)
 	("ComplexSCHUR requires square matrix");
@@ -679,7 +692,7 @@ ComplexSCHUR::init (const ComplexMatrix& a, const char *ord)
 
   char sense = 'N';
 
-  int n = a.nc;
+  int n = a_nc;
   int lwork = 8 * n;
   int info;
   int sdim;
@@ -694,7 +707,7 @@ ComplexSCHUR::init (const ComplexMatrix& a, const char *ord)
   if (*ord == 'A' || *ord == 'D' || *ord == 'a' || *ord == 'd')
     bwork = new int [n];
 
-  Complex *s = dup(a.data,a.len);
+  Complex *s = dup (a.data (), a.length ());
 
   Complex *work = new Complex [lwork];
   Complex *q = new Complex [n*n];
@@ -748,13 +761,13 @@ SVD::init (const Matrix& a)
 {
   int info;
 
-  int m = a.nr;
-  int n = a.nc;
+  int m = a.rows ();
+  int n = a.cols ();
 
   char jobu = 'A';
   char jobv = 'A';
 
-  double *tmp_data = dup (a.data, a.len);
+  double *tmp_data = dup (a.data (), a.length ());
 
   int min_mn = m < n ? m : n;
   int max_mn = m > n ? m : n;
@@ -797,13 +810,13 @@ ComplexSVD::init (const ComplexMatrix& a)
 {
   int info;
 
-  int m = a.nr;
-  int n = a.nc;
+  int m = a.rows ();
+  int n = a.cols ();
 
   char jobu = 'A';
   char jobv = 'A';
 
-  Complex *tmp_data = dup (a.data, a.len);
+  Complex *tmp_data = dup (a.data (), a.length ());
 
   int min_mn = m < n ? m : n;
   int max_mn = m > n ? m : n;
@@ -833,26 +846,91 @@ ComplexSVD::init (const ComplexMatrix& a)
 }
 
 /*
+ * DET stuff.
+ */
+
+int
+DET::value_will_overflow (void) const
+{
+  return det[2] + 1 > log10 (MAXDOUBLE) ? 1 : 0;
+}
+
+int
+DET::value_will_underflow (void) const
+{
+  return det[2] - 1 < log10 (MINDOUBLE) ? 1 : 0;
+}
+
+double
+DET::coefficient (void) const
+{
+  return det[0];
+}
+
+int
+DET::exponent (void) const
+{
+  return (int) det[1];
+}
+
+double
+DET::value (void) const
+{
+  return det[0] * pow (10.0, det[1]);
+}
+
+int
+ComplexDET::value_will_overflow (void) const
+{
+  return det[2].real () + 1 > log10 (MAXDOUBLE) ? 1 : 0;
+}
+
+int
+ComplexDET::value_will_underflow (void) const
+{
+  return det[2].real () - 1 < log10 (MINDOUBLE) ? 1 : 0;
+}
+
+Complex
+ComplexDET::coefficient (void) const
+{
+  return det[0];
+}
+
+int
+ComplexDET::exponent (void) const
+{
+  return (int) (det[1].real ());
+}
+
+Complex
+ComplexDET::value (void) const
+{
+  return det[0] * pow (10.0, det[1].real ());
+}
+
+/*
  * EIG stuff.
  */
 
 int
 EIG::init (const Matrix& a)
 {
-  if (a.nr != a.nc)
+  int a_nr = a.rows ();
+  if (a_nr != a.cols ())
     {
       (*current_liboctave_error_handler) ("EIG requires square matrix");
       return -1;
     }
 
-  int n = a.nr;
+  int n = a_nr;
 
   int info;
 
   char jobvl = 'N';
   char jobvr = 'V';
 
-  double *tmp_data = dup (a.data, a.len);
+  double *tmp_data = dup (a.data (), a.length ());
   double *wr = new double[n];
   double *wi = new double[n];
   Matrix vr (n, n);
@@ -909,14 +987,14 @@ EIG::init (const Matrix& a)
 int
 EIG::init (const ComplexMatrix& a)
 {
-
-  if (a.nr != a.nc)
+  int a_nr = a.rows ();
+  if (a_nr != a.cols ())
     {
       (*current_liboctave_error_handler) ("EIG requires square matrix");
       return -1;
     }
 
-  int n = a.nr;
+  int n = a_nr;
 
   int info;
 
@@ -929,7 +1007,7 @@ EIG::init (const ComplexMatrix& a)
   Complex *pw = lambda.fortran_vec ();
   Complex *pvr = v.fortran_vec ();
 
-  Complex *tmp_data = dup (a.data, a.len);
+  Complex *tmp_data = dup (a.data (), a.length ());
 
   int lwork = 8*n;
   Complex *work = new Complex[lwork];
@@ -955,17 +1033,19 @@ EIG::init (const ComplexMatrix& a)
 
 LU::LU (const Matrix& a)
 {
-  if (a.nr == 0 || a.nc == 0 || a.nr != a.nc)
+  int a_nr = a.rows ();
+  int a_nc = a.cols ();
+  if (a_nr == 0 || a_nc == 0 || a_nr != a_nc)
     {
       (*current_liboctave_error_handler) ("LU requires square matrix");
       return;
     }
 
-  int n = a.nr;
+  int n = a_nr;
 
   int *ipvt = new int [n];
   int *pvt = new int [n];
-  double *tmp_data = dup (a.data, a.len);
+  double *tmp_data = dup (a.data (), a.length ());
   int info = 0;
   int zero = 0;
   double b;
@@ -1017,17 +1097,19 @@ LU::LU (const Matrix& a)
 
 ComplexLU::ComplexLU (const ComplexMatrix& a)
 {
-  if (a.nr == 0 || a.nc == 0 || a.nr != a.nc)
+  int a_nr = a.rows ();
+  int a_nc = a.cols ();
+  if (a_nr == 0 || a_nc == 0 || a_nr != a_nc)
     {
       (*current_liboctave_error_handler) ("ComplexLU requires square matrix");
       return;
     }
 
-  int n = a.nr;
+  int n = a_nr;
 
   int *ipvt = new int [n];
   int *pvt = new int [n];
-  Complex *tmp_data = dup (a.data, a.len);
+  Complex *tmp_data = dup (a.data (), a.length ());
   int info = 0;
   int zero = 0;
   Complex b;
@@ -1083,8 +1165,8 @@ ComplexLU::ComplexLU (const ComplexMatrix& a)
 
 QR::QR (const Matrix& a)
 {
-  int m = a.nr;
-  int n = a.nc;
+  int m = a.rows ();
+  int n = a.cols ();
 
   if (m == 0 || n == 0)
     {
@@ -1102,10 +1184,10 @@ QR::QR (const Matrix& a)
   if (m > n)
     {
       tmp_data = new double [m*m];
-      copy (tmp_data, a.data, a.len);
+      copy (tmp_data, a.data (), a.length ());
     }
   else
-   tmp_data = dup (a.data, a.len);
+    tmp_data = dup (a.data (), a.length ());
 
   F77_FCN (dgeqrf) (&m, &n, tmp_data, &m, tau, work, &lwork, &info);
 
@@ -1132,8 +1214,8 @@ QR::QR (const Matrix& a)
 
 ComplexQR::ComplexQR (const ComplexMatrix& a)
 {
-  int m = a.nr;
-  int n = a.nc;
+  int m = a.rows ();
+  int n = a.cols ();
 
   if (m == 0 || n == 0)
     {
@@ -1152,10 +1234,10 @@ ComplexQR::ComplexQR (const ComplexMatrix& a)
   if (m > n)
     {
       tmp_data = new Complex [m*m];
-      copy (tmp_data, a.data, a.len);
+      copy (tmp_data, a.data (), a.length ());
     }
   else
-   tmp_data = dup (a.data, a.len);
+    tmp_data = dup (a.data (), a.length ());
 
   F77_FCN (zgeqrf) (&m, &n, tmp_data, &m, tau, work, &lwork, &info);
 

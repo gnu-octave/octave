@@ -23,10 +23,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #ifdef sun
 
-#ifdef __GNUG__
-#pragma implementation
-#endif
-
 #include <assert.h>
 
 /*

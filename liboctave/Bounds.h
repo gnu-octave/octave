@@ -24,11 +24,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (_Bounds_h)
 #define _Bounds_h 1
 
-#ifdef __GNUG__
-#pragma interface
-#endif
+class ostream;
 
-#include <iostream.h>
 #include "Matrix.h"
 
 #ifndef Vector

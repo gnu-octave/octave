@@ -21,12 +21,11 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
-// I\'m not sure how this is supposed to work if the .h file declares
-// several classes, each of which is defined in a separate file...
-//
-// #ifdef __GNUG__
-// #pragma implementation
-// #endif
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include <iostream.h>
 
 #include "Matrix.h"
 #include "mx-inlines.cc"
@@ -114,145 +113,85 @@ extern "C"
   int F77_FCN (cfftb) (const int*, Complex*, Complex*);
 }
 
+// Since this is only temporary, put all of this here, rather than
+// putting each type where it logically belongs.  This way, it will be
+// easier to delete.
+
+#define KLUDGE_MATRICES
+#define TYPE double
+#define KL_MAT_TYPE Matrix
+#include "mx-kludge.cc"
+#undef KLUDGE_MATRICES
+#undef TYPE
+#undef KL_MAT_TYPE
+
+#define KLUDGE_VECTORS
+#define TYPE double
+#define KL_VEC_TYPE ColumnVector
+#include "mx-kludge.cc"
+#undef KLUDGE_VECTORS
+#undef TYPE
+#undef KL_VEC_TYPE
+
+#define KLUDGE_VECTORS
+#define TYPE double
+#define KL_VEC_TYPE RowVector
+#include "mx-kludge.cc"
+#undef KLUDGE_VECTORS
+#undef TYPE
+#undef KL_VEC_TYPE
+
+#define KLUDGE_DIAG_MATRICES
+#define TYPE double
+#define KL_DMAT_TYPE DiagMatrix
+#include "mx-kludge.cc"
+#undef KLUDGE_DIAG_MATRICES
+#undef TYPE
+#undef KL_DMAT_TYPE
+
+#define KLUDGE_MATRICES
+#define TYPE Complex
+#define KL_MAT_TYPE ComplexMatrix
+#include "mx-kludge.cc"
+#undef KLUDGE_MATRICES
+#undef TYPE
+#undef KL_MAT_TYPE
+
+#define KLUDGE_VECTORS
+#define TYPE Complex
+#define KL_VEC_TYPE ComplexColumnVector
+#include "mx-kludge.cc"
+#undef KLUDGE_VECTORS
+#undef TYPE
+#undef KL_VEC_TYPE
+
+#define KLUDGE_VECTORS
+#define TYPE Complex
+#define KL_VEC_TYPE ComplexRowVector
+#include "mx-kludge.cc"
+#undef KLUDGE_VECTORS
+#undef TYPE
+#undef KL_VEC_TYPE
+
+#define KLUDGE_DIAG_MATRICES
+#define TYPE Complex
+#define KL_DMAT_TYPE ComplexDiagMatrix
+#include "mx-kludge.cc"
+#undef KLUDGE_DIAG_MATRICES
+#undef TYPE
+#undef KL_DMAT_TYPE
+
 /*
  * Matrix class.
  */
 
-Matrix::Matrix (int r, int c)
+Matrix::Matrix (const DiagMatrix& a) : Array2<double> (a.rows (), a.cols ())
 {
-  if (r < 0 || c < 0)
-    {
-      (*current_liboctave_error_handler)
-	("can't construct matrix with negative dimensions");
-      nr = 0;
-      nc = 0;
-      len = 0;
-      data = (double *) NULL;
-      return;
-    }
-
-  nr = r;
-  nc = c;
-  len = nr * nc;
-  if (len > 0)
-    data = new double [len];
-  else
-    data = (double *) NULL;
+  for (int i = 0; i < a.length (); i++)
+    elem (i, i) = a.elem (i, i);
 }
 
-Matrix::Matrix (int r, int c, double val)
-{
-  if (r < 0 || c < 0)
-    {
-      (*current_liboctave_error_handler)
-	("can't construct matrix with negative dimensions");
-      nr = 0;
-      nc = 0;
-      len = 0;
-      data = (double *) NULL;
-      return;
-    }
-
-  nr = r;
-  nc = c;
-  len = nr * nc;
-  if (len > 0)
-    {
-      data = new double [len];
-      copy (data, len, val);
-    }
-  else
-    data = (double *) NULL;
-}
-
-Matrix::Matrix (const Matrix& a)
-{
-  nr = a.nr;
-  nc = a.nc;
-  len = a.len;
-  if (len > 0)
-    {
-      data = new double [len];
-      copy (data, a.data, len);
-    }
-  else
-    data = (double *) NULL;
-}
-
-Matrix::Matrix (const DiagMatrix& a)
-{
-  nr = a.nr;
-  nc = a.nc;
-  len = nr * nc;
-  if (len > 0)
-    {
-      data = new double [len];
-      copy (data, len, 0.0);
-      for (int i = 0; i < a.len; i++)
-	data[nr*i+i] = a.data[i];
-    }
-  else
-    data = (double *) NULL;
-}
-
-Matrix::Matrix (double a)
-{
-  nr = 1;
-  nc = 1;
-  len = 1;
-  data = new double [1];
-  data[0] = a;
-}
-
-Matrix&
-Matrix::operator = (const Matrix& a)
-{
-  if (this != &a)
-    {
-      delete [] data;
-      nr = a.nr;
-      nc = a.nc;
-      len = a.len;
-      if (len > 0)
-	{
-	  data = new double [len];
-	  copy (data, a.data, len);
-	}
-      else
-	data = (double *) NULL;
-    }
-  return *this;
-}
-
-double&
-Matrix::checkelem (int r, int c)
-{
-#ifndef NO_RANGE_CHECK
-  if (r < 0 || r >= nr || c < 0 || c >= nc)
-    {
-      (*current_liboctave_error_handler) ("range error");
-      static double foo = 0.0;
-      return foo;
-    }
-#endif
-
-  return elem (r, c);
-}
-
-double
-Matrix::checkelem (int r, int c) const
-{
-#ifndef NO_RANGE_CHECK
-  if (r < 0 || r >= nr || c < 0 || c >= nc)
-    {
-      (*current_liboctave_error_handler) ("range error");
-      return 0.0;
-    }
-#endif
-
-  return elem (r, c);
-}
-
+#if 0
 Matrix&
 Matrix::resize (int r, int c)
 {
@@ -323,14 +262,15 @@ Matrix::resize (int r, int c, double val)
 
   return *this;
 }
+#endif
 
 int
 Matrix::operator == (const Matrix& a) const
 {
-  if (nr != a.nr || nc != a.nc)
+  if (rows () != a.rows () || cols () != a.cols ())
     return 0;
 
-  return equal (data, a.data, len);
+  return equal (data (), a.data (), length ());
 }
 
 int
@@ -342,14 +282,17 @@ Matrix::operator != (const Matrix& a) const
 Matrix&
 Matrix::insert (const Matrix& a, int r, int c)
 {
-  if (r < 0 || r + a.nr - 1 > nr || c < 0 || c + a.nc - 1 > nc)
+  int a_rows = a.rows ();
+  int a_cols = a.cols ();
+  if (r < 0 || r + a_rows - 1 > rows ()
+      || c < 0 || c + a_cols - 1 > cols ())
     {
       (*current_liboctave_error_handler) ("range error for insert");
       return *this;
     }
 
-  for (int j = 0; j < a.nc; j++)
-    for (int i = 0; i < a.nr; i++)
+  for (int j = 0; j < a_cols; j++)
+    for (int i = 0; i < a_rows; i++)
       elem (r+i, c+j) = a.elem (i, j);
 
   return *this;
@@ -358,14 +301,15 @@ Matrix::insert (const Matrix& a, int r, int c)
 Matrix&
 Matrix::insert (const RowVector& a, int r, int c)
 {
-  if (r < 0 || r >= nr || c < 0 || c + a.len - 1 > nc)
+  int a_len = a.length ();
+  if (r < 0 || r >= rows () || c < 0 || c + a_len - 1 > cols ())
     {
       (*current_liboctave_error_handler) ("range error for insert");
       return *this;
     }
 
-  for (int i = 0; i < a.len; i++)
-    elem (r, c+i) = a.data[i];
+  for (int i = 0; i < a_len; i++)
+    elem (r, c+i) = a.elem (i);
 
   return *this;
 }
@@ -373,14 +317,15 @@ Matrix::insert (const RowVector& a, int r, int c)
 Matrix&
 Matrix::insert (const ColumnVector& a, int r, int c)
 {
-  if (r < 0 || r + a.len - 1 > nr || c < 0 || c >= nc)
+  int a_len = a.length ();
+  if (r < 0 || r + a_len - 1 > rows () || c < 0 || c >= cols ())
     {
       (*current_liboctave_error_handler) ("range error for insert");
       return *this;
     }
 
-  for (int i = 0; i < a.len; i++)
-    elem (r+i, c) = a.data[i];
+  for (int i = 0; i < a_len; i++)
+    elem (r+i, c) = a.elem (i);
 
   return *this;
 }
@@ -388,14 +333,15 @@ Matrix::insert (const ColumnVector& a, int r, int c)
 Matrix&
 Matrix::insert (const DiagMatrix& a, int r, int c)
 {
-  if (r < 0 || r + a.nr - 1 > nr || c < 0 || c + a.nc - 1 > nc)
+  if (r < 0 || r + a.rows () - 1 > rows ()
+      || c < 0 || c + a.cols () - 1 > cols ())
     {
       (*current_liboctave_error_handler) ("range error for insert");
       return *this;
     }
 
-  for (int i = 0; i < a.len; i++)
-    elem (r+i, c+i) = a.data[i];
+  for (int i = 0; i < a.length (); i++)
+    elem (r+i, c+i) = a.elem (i, i);
 
   return *this;
 }
@@ -403,14 +349,21 @@ Matrix::insert (const DiagMatrix& a, int r, int c)
 Matrix&
 Matrix::fill (double val)
 {
+  int nr = rows ();
+  int nc = cols ();
   if (nr > 0 && nc > 0)
-    copy (data, len, val);
+    for (int j = 0; j < nc; j++)
+      for (int i = 0; i < nr; i++)
+	elem (i, j) = val;
+
   return *this;
 }
 
 Matrix&
 Matrix::fill (double val, int r1, int c1, int r2, int c2)
 {
+  int nr = rows ();
+  int nc = rows ();
   if (r1 < 0 || r2 < 0 || c1 < 0 || c2 < 0
       || r1 >= nr || r2 >= nr || c1 >= nc || c2 >= nc)
     {
@@ -431,14 +384,16 @@ Matrix::fill (double val, int r1, int c1, int r2, int c2)
 Matrix
 Matrix::append (const Matrix& a) const
 {
-  if (nr != a.nr)
+  int nr = rows ();
+  int nc = cols ();
+  if (nr != a.rows ())
     {
       (*current_liboctave_error_handler) ("row dimension mismatch for append");
       return Matrix ();
     }
 
   int nc_insert = nc;
-  Matrix retval (nr, nc + a.nc);
+  Matrix retval (nr, nc + a.cols ());
   retval.insert (*this, 0, 0);
   retval.insert (a, 0, nc_insert);
   return retval;
@@ -447,6 +402,8 @@ Matrix::append (const Matrix& a) const
 Matrix
 Matrix::append (const RowVector& a) const
 {
+  int nr = rows ();
+  int nc = cols ();
   if (nr != 1)
     {
       (*current_liboctave_error_handler) ("row dimension mismatch for append");
@@ -454,7 +411,7 @@ Matrix::append (const RowVector& a) const
     }
 
   int nc_insert = nc;
-  Matrix retval (nr, nc + a.len);
+  Matrix retval (nr, nc + a.length ());
   retval.insert (*this, 0, 0);
   retval.insert (a, 0, nc_insert);
   return retval;
@@ -463,7 +420,9 @@ Matrix::append (const RowVector& a) const
 Matrix
 Matrix::append (const ColumnVector& a) const
 {
-  if (nr != a.len)
+  int nr = rows ();
+  int nc = cols ();
+  if (nr != a.length ())
     {
       (*current_liboctave_error_handler) ("row dimension mismatch for append");
       return Matrix ();
@@ -479,14 +438,16 @@ Matrix::append (const ColumnVector& a) const
 Matrix
 Matrix::append (const DiagMatrix& a) const
 {
-  if (nr != a.nr)
+  int nr = rows ();
+  int nc = cols ();
+  if (nr != a.rows ())
     {
       (*current_liboctave_error_handler) ("row dimension mismatch for append");
       return *this;
     }
 
   int nc_insert = nc;
-  Matrix retval (nr, nc + a.nc);
+  Matrix retval (nr, nc + a.cols ());
   retval.insert (*this, 0, 0);
   retval.insert (a, 0, nc_insert);
   return retval;
@@ -495,7 +456,9 @@ Matrix::append (const DiagMatrix& a) const
 Matrix
 Matrix::stack (const Matrix& a) const
 {
-  if (nc != a.nc)
+  int nr = rows ();
+  int nc = cols ();
+  if (nc != a.cols ())
     {
       (*current_liboctave_error_handler)
 	("column dimension mismatch for stack");
@@ -503,7 +466,7 @@ Matrix::stack (const Matrix& a) const
     }
 
   int nr_insert = nr;
-  Matrix retval (nr + a.nr, nc);
+  Matrix retval (nr + a.rows (), nc);
   retval.insert (*this, 0, 0);
   retval.insert (a, nr_insert, 0);
   return retval;
@@ -512,7 +475,9 @@ Matrix::stack (const Matrix& a) const
 Matrix
 Matrix::stack (const RowVector& a) const
 {
-  if (nc != a.len)
+  int nr = rows ();
+  int nc = cols ();
+  if (nc != a.length ())
     {
       (*current_liboctave_error_handler)
 	("column dimension mismatch for stack");
@@ -529,6 +494,8 @@ Matrix::stack (const RowVector& a) const
 Matrix
 Matrix::stack (const ColumnVector& a) const
 {
+  int nr = rows ();
+  int nc = cols ();
   if (nc != 1)
     {
       (*current_liboctave_error_handler)
@@ -537,7 +504,7 @@ Matrix::stack (const ColumnVector& a) const
     }
 
   int nr_insert = nr;
-  Matrix retval (nr + a.len, nc);
+  Matrix retval (nr + a.length (), nc);
   retval.insert (*this, 0, 0);
   retval.insert (a, nr_insert, 0);
   return retval;
@@ -546,7 +513,9 @@ Matrix::stack (const ColumnVector& a) const
 Matrix
 Matrix::stack (const DiagMatrix& a) const
 {
-  if (nc != a.nc)
+  int nr = rows ();
+  int nc = cols ();
+  if (nc != a.cols ())
     {
       (*current_liboctave_error_handler)
 	("column dimension mismatch for stack");
@@ -554,7 +523,7 @@ Matrix::stack (const DiagMatrix& a) const
     }
 
   int nr_insert = nr;
-  Matrix retval (nr + a.nr, nc);
+  Matrix retval (nr + a.rows (), nc);
   retval.insert (*this, 0, 0);
   retval.insert (a, nr_insert, 0);
   return retval;
@@ -563,12 +532,14 @@ Matrix::stack (const DiagMatrix& a) const
 Matrix
 Matrix::transpose (void) const
 {
+  int nr = rows ();
+  int nc = cols ();
   Matrix result (nc, nr);
-  if (len > 0)
+  if (length () > 0)
     {
       for (int j = 0; j < nc; j++)
 	for (int i = 0; i < nr; i++)
-	  result.data[nc*i+j] = data[nr*j+i];
+	  result.elem (j, i) = elem (i, j);
     }
   return result;
 }
@@ -586,7 +557,7 @@ Matrix::extract (int r1, int c1, int r2, int c2) const
 
   for (int j = 0; j < new_c; j++)
     for (int i = 0; i < new_r; i++)
-      result.data[new_r*j+i] = elem (r1+i, c1+j);
+      result.elem (i, j) = elem (r1+i, c1+j);
 
   return result;
 }
@@ -596,7 +567,8 @@ Matrix::extract (int r1, int c1, int r2, int c2) const
 RowVector
 Matrix::row (int i) const
 {
-  if (i < 0 || i >= nr)
+  int nc = cols ();
+  if (i < 0 || i >= rows ())
     {
       (*current_liboctave_error_handler) ("invalid row selection");
       return RowVector ();
@@ -622,7 +594,7 @@ Matrix::row (char *s) const
   if (c == 'f' || c == 'F')
     return row (0);
   else if (c == 'l' || c == 'L')
-    return row (nr - 1);
+    return row (rows () - 1);
   else
     {
       (*current_liboctave_error_handler) ("invalid row selection");
@@ -633,7 +605,8 @@ Matrix::row (char *s) const
 ColumnVector
 Matrix::column (int i) const
 {
-  if (i < 0 || i >= nc)
+  int nr = rows ();
+  if (i < 0 || i >= cols ())
     {
       (*current_liboctave_error_handler) ("invalid column selection");
       return ColumnVector ();
@@ -659,7 +632,7 @@ Matrix::column (char *s) const
   if (c == 'f' || c == 'F')
     return column (0);
   else if (c == 'l' || c == 'L')
-    return column (nc - 1);
+    return column (cols () - 1);
   else
     {
       (*current_liboctave_error_handler) ("invalid column selection");
@@ -668,8 +641,26 @@ Matrix::column (char *s) const
 }
 
 Matrix
+Matrix::inverse (void) const
+{
+  int info;
+  double rcond;
+  return inverse (info, rcond);
+}
+
+Matrix
+Matrix::inverse (int& info) const
+{
+  double rcond;
+  return inverse (info, rcond);
+}
+
+Matrix
 Matrix::inverse (int& info, double& rcond) const
 {
+  int nr = rows ();
+  int nc = cols ();
+  int len = length ();
   if (nr != nc || nr == 0 || nc == 0)
     {
       (*current_liboctave_error_handler) ("inverse requires square matrix");
@@ -680,14 +671,14 @@ Matrix::inverse (int& info, double& rcond) const
 
   int *ipvt = new int [nr];
   double *z = new double [nr];
-  double *tmp_data = dup (data, len);
+  double *tmp_data = dup (data (), len);
 
   F77_FCN (dgeco) (tmp_data, &nr, &nc, ipvt, &rcond, z);
 
   if (rcond + 1.0 == 1.0)
     {
       info = -1;
-      copy (tmp_data, data, len);  // Restore matrix contents.
+      copy (tmp_data, data (), len);  // Restore matrix contents.
     }
   else
     {
@@ -703,24 +694,11 @@ Matrix::inverse (int& info, double& rcond) const
   return Matrix (tmp_data, nr, nc);
 }
 
-Matrix
-Matrix::inverse (int& info) const
-{
-  double rcond;
-  return inverse (info, rcond);
-}
-
-Matrix
-Matrix::inverse (void) const
-{
-  int info;
-  double rcond;
-  return inverse (info, rcond);
-}
-
 ComplexMatrix
 Matrix::fourier (void) const
 {
+  int nr = rows ();
+  int nc = cols ();
   int npts, nsamples;
   if (nr == 1 || nc == 1)
     {
@@ -735,7 +713,7 @@ Matrix::fourier (void) const
 
   int nn = 4*npts+15;
   Complex *wsave = new Complex [nn];
-  Complex *tmp_data = make_complex (data, len);
+  Complex *tmp_data = make_complex (data (), length ());
 
   F77_FCN (cffti) (&npts, wsave);
 
@@ -750,6 +728,8 @@ Matrix::fourier (void) const
 ComplexMatrix
 Matrix::ifourier (void) const
 {
+  int nr = rows ();
+  int nc = cols ();
   int npts, nsamples;
   if (nr == 1 || nc == 1)
     {
@@ -764,7 +744,7 @@ Matrix::ifourier (void) const
 
   int nn = 4*npts+15;
   Complex *wsave = new Complex [nn];
-  Complex *tmp_data = make_complex (data, len);
+  Complex *tmp_data = make_complex (data (), length ());
 
   F77_FCN (cffti) (&npts, wsave);
 
@@ -799,6 +779,8 @@ Matrix::determinant (int& info, double& rcond) const
 {
   DET retval;
 
+  int nr = rows ();
+  int nc = cols ();
   if (nr == 0 || nc == 0)
     {
       double d[2];
@@ -811,7 +793,7 @@ Matrix::determinant (int& info, double& rcond) const
   int *ipvt = new int [nr];
 
   double *z = new double [nr];
-  double *tmp_data = dup (data, len);
+  double *tmp_data = dup (data (), length ());
 
   F77_FCN (dgeco) (tmp_data, &nr, &nr, ipvt, &rcond, z);
 
@@ -854,7 +836,9 @@ Matrix::solve (const Matrix& b, int& info, double& rcond) const
 {
   Matrix retval;
 
-  if (nr == 0 || nc == 0 || nr != nc || nr != b.nr)
+  int nr = rows ();
+  int nc = cols ();
+  if (nr == 0 || nc == 0 || nr != nc || nr != b.rows ())
     {
       (*current_liboctave_error_handler)
 	("matrix dimension mismatch solution of linear equations");
@@ -865,7 +849,7 @@ Matrix::solve (const Matrix& b, int& info, double& rcond) const
   int *ipvt = new int [nr];
 
   double *z = new double [nr];
-  double *tmp_data = dup (data, len);
+  double *tmp_data = dup (data (), length ());
 
   F77_FCN (dgeco) (tmp_data, &nr, &nr, ipvt, &rcond, z);
 
@@ -877,12 +861,13 @@ Matrix::solve (const Matrix& b, int& info, double& rcond) const
     {
       int job = 0;
 
-      double *result = dup (b.data, b.len);
+      double *result = dup (b.data (), b.length ());
 
-      for (int j = 0; j < b.nc; j++)
+      int b_nc = b.cols ();
+      for (int j = 0; j < b_nc; j++)
 	F77_FCN (dgesl) (tmp_data, &nr, &nr, ipvt, &result[nr*j], &job);
 
-      retval = Matrix (result, b.nr, b.nc);
+      retval = Matrix (result, b.rows (), b_nc);
     }
 
   delete [] tmp_data;
@@ -916,8 +901,7 @@ Matrix::solve (const ComplexMatrix& b, int& info, double& rcond) const
 ColumnVector
 Matrix::solve (const ColumnVector& b) const
 {
-  int info;
-  double rcond;
+  int info; double rcond;
   return solve (b, info, rcond);
 }
 
@@ -933,7 +917,9 @@ Matrix::solve (const ColumnVector& b, int& info, double& rcond) const
 {
   ColumnVector retval;
 
-  if (nr == 0 || nc == 0 || nr != nc || nr != b.len)
+  int nr = rows ();
+  int nc = cols ();
+  if (nr == 0 || nc == 0 || nr != nc || nr != b.length ())
     {
       (*current_liboctave_error_handler)
 	("matrix dimension mismatch solution of linear equations");
@@ -944,7 +930,7 @@ Matrix::solve (const ColumnVector& b, int& info, double& rcond) const
   int *ipvt = new int [nr];
 
   double *z = new double [nr];
-  double *tmp_data = dup (data, len);
+  double *tmp_data = dup (data (), length ());
 
   F77_FCN (dgeco) (tmp_data, &nr, &nr, ipvt, &rcond, z);
 
@@ -956,11 +942,13 @@ Matrix::solve (const ColumnVector& b, int& info, double& rcond) const
     {
       int job = 0;
 
-      double *result = dup (b.data, b.len);
+      int b_len = b.length ();
+
+      double *result = dup (b.data (), b_len);
 
       F77_FCN (dgesl) (tmp_data, &nr, &nr, ipvt, result, &job);
 
-      retval = ColumnVector (result, b.len);
+      retval = ColumnVector (result, b_len);
     }
 
   delete [] tmp_data;
@@ -1009,19 +997,19 @@ Matrix::lssolve (const Matrix& b, int& info) const
 Matrix
 Matrix::lssolve (const Matrix& b, int& info, int& rank) const
 {
-  int nrhs = b.nc;
+  int nrhs = b.cols ();
 
-  int m = nr;
-  int n = nc;
+  int m = rows ();
+  int n = cols ();
 
-  if (m == 0 || n == 0 || m != b.nr)
+  if (m == 0 || n == 0 || m != b.rows ())
     {
       (*current_liboctave_error_handler)
 	("matrix dimension mismatch in solution of least squares problem");
       return Matrix ();
     }
 
-  double *tmp_data = dup (data, len);
+  double *tmp_data = dup (data (), length ());
 
   int nrr = m > n ? m : n;
   Matrix result (nrr, nrhs);
@@ -1070,22 +1058,21 @@ ComplexMatrix
 Matrix::lssolve (const ComplexMatrix& b, int& info) const
 {
   ComplexMatrix tmp (*this);
-  return tmp.lssolve (b, info);
+  return tmp.lssolve (b);
 }
 
 ComplexMatrix
 Matrix::lssolve (const ComplexMatrix& b, int& info, int& rank) const
 {
   ComplexMatrix tmp (*this);
-  return tmp.lssolve (b, info, rank);
+  return tmp.lssolve (b);
 }
 
 ColumnVector
 Matrix::lssolve (const ColumnVector& b) const
 {
   int info;
-  int rank;
-  return lssolve (b, info, rank);
+  int rank; return lssolve (b, info, rank);
 }
 
 ColumnVector
@@ -1100,17 +1087,17 @@ Matrix::lssolve (const ColumnVector& b, int& info, int& rank) const
 {
   int nrhs = 1;
 
-  int m = nr;
-  int n = nc;
+  int m = rows ();
+  int n = cols ();
 
-  if (m == 0 || n == 0 || m != b.len)
+  if (m == 0 || n == 0 || m != b.length ())
     {
       (*current_liboctave_error_handler)
 	("matrix dimension mismatch in solution of least squares problem");
       return ColumnVector ();
     }
 
-  double *tmp_data = dup (data, len);
+  double *tmp_data = dup (data (), length ());
 
   int nrr = m > n ? m : n;
   ColumnVector result (nrr);
@@ -1167,88 +1154,167 @@ Matrix::lssolve (const ComplexColumnVector& b, int& info, int& rank) const
   return tmp.lssolve (b, info, rank);
 }
 
+Matrix&
+Matrix::operator += (const Matrix& a)
+{
+  int nr = rows ();
+  int nc = cols ();
+  if (nr != a.rows () || nc != a.cols ())
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix += operation attempted");
+      return *this;
+    }
+
+  if (nr == 0 || nc == 0)
+    return *this;
+
+  double *d = fortran_vec (); // Ensures only one reference to my privates!
+
+  add2 (d, a.data (), length ());
+
+  return *this;
+}
+
+Matrix&
+Matrix::operator -= (const Matrix& a)
+{
+  int nr = rows ();
+  int nc = cols ();
+  if (nr != a.rows () || nc != a.cols ())
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix -= operation attempted");
+      return *this;
+    }
+
+  if (nr == 0 || nc == 0)
+    return *this;
+
+  double *d = fortran_vec (); // Ensures only one reference to my privates!
+
+  subtract2 (d, a.data (), length ());
+
+  return *this;
+}
+
+Matrix&
+Matrix::operator += (const DiagMatrix& a)
+{
+  if (rows () != a.rows () || cols () != a.cols ())
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix += operation attempted");
+      return *this;
+    }
+
+  for (int i = 0; i < a.length (); i++)
+    elem (i, i) += a.elem (i, i);
+
+  return *this;
+}
+
+Matrix&
+Matrix::operator -= (const DiagMatrix& a)
+{
+  if (rows () != a.rows () || cols () != a.cols ())
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix += operation attempted");
+      return *this;
+    }
+
+  for (int i = 0; i < a.length (); i++)
+    elem (i, i) -= a.elem (i, i);
+
+  return *this;
+}
+
+// unary operations
+
+Matrix
+Matrix::operator ! (void) const
+{
+  int nr = rows ();
+  int nc = cols ();
+
+  Matrix b (nr, nc);
+
+  for (int j = 0; j < nc; j++)
+    for (int i = 0; i < nr; i++)
+      b.elem (i, j) = ! elem (i, j);
+
+  return b;
+}
+
 // matrix by scalar -> matrix operations.
 
-Matrix
-Matrix::operator + (double s) const
+ComplexMatrix
+operator + (const Matrix& a, const Complex& s)
 {
-  return Matrix (add (data, len, s), nr, nc);
-}
-
-Matrix
-Matrix::operator - (double s) const
-{
-  return Matrix (subtract (data, len, s), nr, nc);
-}
-
-Matrix
-Matrix::operator * (double s) const
-{
-  return Matrix (multiply (data, len, s), nr, nc);
-}
-
-Matrix
-Matrix::operator / (double s) const
-{
-  return Matrix (divide (data, len, s), nr, nc);
+  return ComplexMatrix (add (a.data (), a.length (), s),
+			a.rows (), a.cols ());
 }
 
 ComplexMatrix
-Matrix::operator + (const Complex& s) const
+operator - (const Matrix& a, const Complex& s)
 {
-  return ComplexMatrix (add (data, len, s), nr, nc);
+  return ComplexMatrix (subtract (a.data (), a.length (), s),
+			a.rows (), a.cols ());
 }
 
 ComplexMatrix
-Matrix::operator - (const Complex& s) const
+operator * (const Matrix& a, const Complex& s)
 {
-  return ComplexMatrix (subtract (data, len, s), nr, nc);
+  return ComplexMatrix (multiply (a.data (), a.length (), s),
+			a.rows (), a.cols ());
 }
 
 ComplexMatrix
-Matrix::operator * (const Complex& s) const
+operator / (const Matrix& a, const Complex& s)
 {
-  return ComplexMatrix (multiply (data, len, s), nr, nc);
+  return ComplexMatrix (divide (a.data (), a.length (), s),
+			a.rows (), a.cols ());
+}
+
+// scalar by matrix -> matrix operations.
+
+ComplexMatrix
+operator + (const Complex& s, const Matrix& a)
+{
+  assert (0);
+  return ComplexMatrix ();
 }
 
 ComplexMatrix
-Matrix::operator / (const Complex& s) const
+operator - (const Complex& s, const Matrix& a)
 {
-  return ComplexMatrix (divide (data, len, s), nr, nc);
+  assert (0);
+  return ComplexMatrix ();
 }
 
-// scalar by matrix -> matrix operations
-
-Matrix
-operator + (double s, const Matrix& a)
+ComplexMatrix
+operator * (const Complex& s, const Matrix& a)
 {
-  return Matrix (add (a.data, a.len, s), a.nr, a.nc);
+  assert (0);
+  return ComplexMatrix ();
 }
 
-Matrix
-operator - (double s, const Matrix& a)
+ComplexMatrix
+operator / (const Complex& s, const Matrix& a)
 {
-  return Matrix (subtract (s, a.data, a.len), a.nr, a.nc);
-}
-
-Matrix
-operator * (double s, const Matrix& a)
-{
-  return Matrix (multiply (a.data, a.len, s), a.nr, a.nc);
-}
-
-Matrix
-operator / (double s, const Matrix& a)
-{
-  return Matrix (divide (s, a.data, a.len), a.nr, a.nc);
+  assert (0);
+  return ComplexMatrix ();
 }
 
 // matrix by column vector -> column vector operations
 
 ColumnVector
-Matrix::operator * (const ColumnVector& a) const
+operator * (const Matrix& m, const ColumnVector& a)
 {
-  if (nc != a.len)
+  int nr = m.rows ();
+  int nc = m.cols ();
+  if (nc != a.length ())
     {
       (*current_liboctave_error_handler)
 	("nonconformant matrix multiplication attempted");
@@ -1266,25 +1332,27 @@ Matrix::operator * (const ColumnVector& a) const
 
   double *y = new double [nr];
 
-  F77_FCN (dgemv) (&trans, &nr, &nc, &alpha, data, &ld, a.data,
+  F77_FCN (dgemv) (&trans, &nr, &nc, &alpha, m.data (), &ld, a.data (),
 		   &i_one, &beta, y, &i_one, 1L); 
 
   return ColumnVector (y, nr);
 }
 
 ComplexColumnVector
-Matrix::operator * (const ComplexColumnVector& a) const
+operator * (const Matrix& m, const ComplexColumnVector& a)
 {
-  ComplexMatrix tmp (*this);
+  ComplexMatrix tmp (m);
   return tmp * a;
 }
 
 // matrix by diagonal matrix -> matrix operations
 
 Matrix
-Matrix::operator + (const DiagMatrix& a) const
+operator + (const Matrix& m, const DiagMatrix& a)
 {
-  if (nr != a.nr || nc != a.nc)
+  int nr = m.rows ();
+  int nc = m.cols ();
+  if (nr != a.rows () || nc != a.cols ())
     {
       (*current_liboctave_error_handler)
 	("nonconformant matrix addition attempted");
@@ -1294,17 +1362,20 @@ Matrix::operator + (const DiagMatrix& a) const
   if (nr == 0 || nc == 0)
     return Matrix (nr, nc);
 
-  Matrix result (*this);
-  for (int i = 0; i < a.len; i++)
-    result.elem (i, i) += a.data[i];
+  Matrix result (m);
+  int a_len = a.length ();
+  for (int i = 0; i < a_len; i++)
+    result.elem (i, i) += a.elem (i, i);
 
   return result;
 }
 
 Matrix
-Matrix::operator - (const DiagMatrix& a) const
+operator - (const Matrix& m, const DiagMatrix& a)
 {
-  if (nr != a.nr || nc != a.nc)
+  int nr = m.rows ();
+  int nc = m.cols ();
+  if (nr != a.rows () || nc != a.cols ())
     {
       (*current_liboctave_error_handler)
 	("nonconformant matrix subtraction attempted");
@@ -1314,39 +1385,45 @@ Matrix::operator - (const DiagMatrix& a) const
   if (nr == 0 || nc == 0)
     return Matrix (nr, nc);
 
-  Matrix result (*this);
-  for (int i = 0; i < a.len; i++)
-    result.elem (i, i) -= a.data[i];
+  Matrix result (m);
+  int a_len = a.length ();
+  for (int i = 0; i < a_len; i++)
+    result.elem (i, i) -= a.elem (i, i);
 
   return result;
 }
 
 Matrix
-Matrix::operator * (const DiagMatrix& a) const
+operator * (const Matrix& m, const DiagMatrix& a)
 {
-  if (nc != a.nr)
+  int nr = m.rows ();
+  int nc = m.cols ();
+  int a_nr = a.rows ();
+  int a_nc = a.cols ();
+  if (nc != a_nr)
     {
       (*current_liboctave_error_handler)
 	("nonconformant matrix multiplication attempted");
       return Matrix ();
     }
 
-  if (nr == 0 || nc == 0 || a.nc == 0)
-    return Matrix (nr, a.nc, 0.0);
+  if (nr == 0 || nc == 0 || a_nc == 0)
+    return Matrix (nr, a_nc, 0.0);
 
-  double *c = new double [nr*a.nc];
+  double *c = new double [nr*a_nc];
   double *ctmp = (double *) NULL;
 
-  for (int j = 0; j < a.len; j++)
+  int a_len = a.length ();
+  for (int j = 0; j < a_len; j++)
     {
       int idx = j * nr;
       ctmp = c + idx;
-      if (a.data[j] == 1.0)
+      if (a.elem (j, j) == 1.0)
 	{
 	  for (int i = 0; i < nr; i++)
-	    ctmp[i] = elem (i, j);
+	    ctmp[i] = m.elem (i, j);
 	}
-      else if (a.data[j] == 0.0)
+      else if (a.elem (j, j) == 0.0)
 	{
 	  for (int i = 0; i < nr; i++)
 	    ctmp[i] = 0.0;
@@ -1354,23 +1431,25 @@ Matrix::operator * (const DiagMatrix& a) const
       else
 	{
 	  for (int i = 0; i < nr; i++)
-	    ctmp[i] = a.data[j] * elem (i, j);
+	    ctmp[i] = a.elem (j, j) * m.elem (i, j);
 	}
     }
 
-  if (a.nr < a.nc)
+  if (a_nr < a_nc)
     {
-      for (int i = nr * nc; i < nr * a.nc; i++)
+      for (int i = nr * nc; i < nr * a_nc; i++)
 	ctmp[i] = 0.0;
     }
 
-  return Matrix (c, nr, a.nc);
+  return Matrix (c, nr, a_nc);
 }
 
 ComplexMatrix
-Matrix::operator + (const ComplexDiagMatrix& a) const
+operator + (const Matrix& m, const ComplexDiagMatrix& a)
 {
-  if (nr != a.nr || nc != a.nc)
+  int nr = m.rows ();
+  int nc = m.cols ();
+  if (nr != a.rows () || nc != a.cols ())
     {
       (*current_liboctave_error_handler)
 	("nonconformant matrix addition attempted");
@@ -1380,17 +1459,19 @@ Matrix::operator + (const ComplexDiagMatrix& a) const
   if (nr == 0 || nc == 0)
     return ComplexMatrix (nr, nc);
 
-  ComplexMatrix result (*this);
-  for (int i = 0; i < a.len; i++)
-    result.elem (i, i) += a.data[i];
+  ComplexMatrix result (m);
+  for (int i = 0; i < a.length (); i++)
+    result.elem (i, i) += a.elem (i, i);
 
   return result;
 }
 
 ComplexMatrix
-Matrix::operator - (const ComplexDiagMatrix& a) const
+operator - (const Matrix& m, const ComplexDiagMatrix& a)
 {
-  if (nr != a.nr || nc != a.nc)
+  int nr = m.rows ();
+  int nc = m.cols ();
+  if (nr != a.rows () || nc != a.cols ())
     {
       (*current_liboctave_error_handler)
 	("nonconformant matrix subtraction attempted");
@@ -1400,39 +1481,43 @@ Matrix::operator - (const ComplexDiagMatrix& a) const
   if (nr == 0 || nc == 0)
     return ComplexMatrix (nr, nc);
 
-  ComplexMatrix result (*this);
-  for (int i = 0; i < a.len; i++)
-    result.elem (i, i) -= a.data[i];
+  ComplexMatrix result (m);
+  for (int i = 0; i < a.length (); i++)
+    result.elem (i, i) -= a.elem (i, i);
 
   return result;
 }
 
 ComplexMatrix
-Matrix::operator * (const ComplexDiagMatrix& a) const
+operator * (const Matrix& m, const ComplexDiagMatrix& a)
 {
-  if (nc != a.nr)
+  int nr = m.rows ();
+  int nc = m.cols ();
+  int a_nr = a.rows ();
+  int a_nc = a.cols ();
+  if (nc != a_nr)
     {
       (*current_liboctave_error_handler)
 	("nonconformant matrix multiplication attempted");
       return ComplexMatrix ();
     }
 
-  if (nr == 0 || nc == 0 || a.nc == 0)
-    return ComplexMatrix (nr, a.nc, 0.0);
+  if (nr == 0 || nc == 0 || a_nc == 0)
+    return ComplexMatrix (nr, a_nc, 0.0);
 
-  Complex *c = new Complex [nr*a.nc];
+  Complex *c = new Complex [nr*a_nc];
   Complex *ctmp = (Complex *) NULL;
 
-  for (int j = 0; j < a.len; j++)
+  for (int j = 0; j < a.length (); j++)
     {
       int idx = j * nr;
       ctmp = c + idx;
-      if (a.data[j] == 1.0)
+      if (a.elem (j, j) == 1.0)
 	{
 	  for (int i = 0; i < nr; i++)
-	    ctmp[i] = elem (i, j);
+	    ctmp[i] = m.elem (i, j);
 	}
-      else if (a.data[j] == 0.0)
+      else if (a.elem (j, j) == 0.0)
 	{
 	  for (int i = 0; i < nr; i++)
 	    ctmp[i] = 0.0;
@@ -1440,133 +1525,83 @@ Matrix::operator * (const ComplexDiagMatrix& a) const
       else
 	{
 	  for (int i = 0; i < nr; i++)
-	    ctmp[i] = a.data[j] * elem (i, j);
+	    ctmp[i] = a.elem (j, j) * m.elem (i, j);
 	}
     }
 
-  if (a.nr < a.nc)
+  if (a_nr < a_nc)
     {
-      for (int i = nr * nc; i < nr * a.nc; i++)
+      for (int i = nr * nc; i < nr * a_nc; i++)
 	ctmp[i] = 0.0;
     }
 
-  return ComplexMatrix (c, nr, a.nc);
-}
-
-Matrix&
-Matrix::operator += (const DiagMatrix& a)
-{
-  if (nr != a.nr || nc != a.nc)
-    {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix += operation attempted");
-      return *this;
-    }
-
-  for (int i = 0; i < a.len; i++)
-    elem (i, i) += a.data[i];
-
-  return *this;
-}
-
-Matrix&
-Matrix::operator -= (const DiagMatrix& a)
-{
-  if (nr != a.nr || nc != a.nc)
-    {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix += operation attempted");
-      return *this;
-    }
-
-  for (int i = 0; i < a.len; i++)
-    elem (i, i) -= a.data[i];
-
-  return *this;
+  return ComplexMatrix (c, nr, a_nc);
 }
 
 // matrix by matrix -> matrix operations
 
 Matrix
-Matrix::operator + (const Matrix& a) const
+operator * (const Matrix& m, const Matrix& a)
 {
-  if (nr != a.nr || nc != a.nc)
-    {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix addition attempted");
-      return Matrix ();
-    }
-
-  if (nr == 0 || nc == 0)
-    return Matrix (nr, nc);
-
-  return Matrix (add (data, a.data, len), nr, nc);
-}
-
-Matrix
-Matrix::operator - (const Matrix& a) const
-{
-  if (nr != a.nr || nc != a.nc)
-    {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix subtraction attempted");
-      return Matrix ();
-    }
-
-  if (nr == 0 || nc == 0)
-    return Matrix (nr, nc);
-
-  return Matrix (subtract (data, a.data, len), nr, nc);
-}
-
-Matrix
-Matrix::operator * (const Matrix& a) const
-{
-  if (nc != a.nr)
+  int nr = m.rows ();
+  int nc = m.cols ();
+  int a_nr = a.rows ();
+  int a_nc = a.cols ();
+  if (nc != a_nr)
     {
       (*current_liboctave_error_handler)
 	("nonconformant matrix multiplication attempted");
       return Matrix ();
     }
 
-  if (nr == 0 || nc == 0 || a.nc == 0)
-    return Matrix (nr, a.nc, 0.0);
+  if (nr == 0 || nc == 0 || a_nc == 0)
+    return Matrix (nr, a_nc, 0.0);
 
   char trans  = 'N';
   char transa = 'N';
 
   int ld  = nr;
-  int lda = a.nr;
+  int lda = a_nr;
 
   double alpha = 1.0;
   double beta  = 0.0;
-  int anc = a.nc;
 
-  double *c = new double [nr*a.nc];
+  double *c = new double [nr*a_nc];
 
-  F77_FCN (dgemm) (&trans, &transa, &nr, &anc, &nc, &alpha, data, &ld,
-		   a.data, &lda, &beta, c, &nr, 1L, 1L);
+  F77_FCN (dgemm) (&trans, &transa, &nr, &a_nc, &nc, &alpha, m.data (),
+		   &ld, a.data (), &lda, &beta, c, &nr, 1L, 1L);
 
-  return Matrix (c, nr, a.nc);
+  return Matrix (c, nr, a_nc);
 }
 
 ComplexMatrix
-Matrix::operator + (const ComplexMatrix& a) const
+operator * (const Matrix& m, const ComplexMatrix& a)
 {
-  if (nr != a.nr || nc != a.nc)
+  ComplexMatrix tmp (m);
+  return tmp * a;
+}
+
+ComplexMatrix
+operator + (const Matrix& m, const ComplexMatrix& a)
+{
+  int nr = m.rows ();
+  int nc = m.cols ();
+  if (nr != a.rows () || nc != a.cols ())
     {
       (*current_liboctave_error_handler)
 	("nonconformant matrix addition attempted");
       return ComplexMatrix ();
     }
 
-  return ComplexMatrix (add (data, a.data, len), nr, nc);
+  return ComplexMatrix (add (m.data (), a.data (), m.length ()), nr, nc);
 }
 
 ComplexMatrix
-Matrix::operator - (const ComplexMatrix& a) const
+operator - (const Matrix& m, const ComplexMatrix& a)
 {
-  if (nr != a.nr || nc != a.nc)
+  int nr = m.rows ();
+  int nc = m.cols ();
+  if (nr != a.rows () || nc != a.cols ())
     {
       (*current_liboctave_error_handler)
 	("nonconformant matrix subtraction attempted");
@@ -1576,52 +1611,15 @@ Matrix::operator - (const ComplexMatrix& a) const
   if (nr == 0 || nc == 0)
     return ComplexMatrix (nr, nc);
 
-  return ComplexMatrix (subtract (data, a.data, len), nr, nc);
+  return ComplexMatrix (subtract (m.data (), a.data (), m.length ()), nr, nc);
 }
 
 ComplexMatrix
-Matrix::operator * (const ComplexMatrix& a) const
+product (const Matrix& m, const ComplexMatrix& a)
 {
-  ComplexMatrix tmp (*this);
-  return tmp * a;
-}
-
-Matrix
-Matrix::product (const Matrix& a) const
-{
-  if (nr != a.nr || nc != a.nc)
-    {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix product attempted");
-      return Matrix ();
-    }
-
-  if (nr == 0 || nc == 0)
-    return Matrix (nr, nc);
-
-  return Matrix (multiply (data, a.data, len), nr, nc);
-}
-
-Matrix
-Matrix::quotient (const Matrix& a) const
-{
-  if (nr != a.nr || nc != a.nc)
-    {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix quotient attempted");
-      return Matrix ();
-    }
-
-  if (nr == 0 || nc == 0)
-    return Matrix (nr, nc);
-
-  return Matrix (divide (data, a.data, len), nr, nc);
-}
-
-ComplexMatrix
-Matrix::product (const ComplexMatrix& a) const
-{
-  if (nr != a.nr || nc != a.nc)
+  int nr = m.rows ();
+  int nc = m.cols ();
+  if (nr != a.rows () || nc != a.cols ())
     {
       (*current_liboctave_error_handler)
 	("nonconformant matrix product attempted");
@@ -1631,13 +1629,15 @@ Matrix::product (const ComplexMatrix& a) const
   if (nr == 0 || nc == 0)
     return ComplexMatrix (nr, nc);
 
-  return ComplexMatrix (multiply (data, a.data, len), nr, nc);
+  return ComplexMatrix (multiply (m.data (), a.data (), m.length ()), nr, nc);
 }
 
 ComplexMatrix
-Matrix::quotient (const ComplexMatrix& a) const
+quotient (const Matrix& m, const ComplexMatrix& a)
 {
-  if (nr != a.nr || nc != a.nc)
+  int nr = m.rows ();
+  int nc = m.cols ();
+  if (nr != a.rows () || nc != a.cols ())
     {
       (*current_liboctave_error_handler)
 	("nonconformant matrix quotient attempted");
@@ -1647,41 +1647,7 @@ Matrix::quotient (const ComplexMatrix& a) const
   if (nr == 0 || nc == 0)
     return ComplexMatrix (nr, nc);
 
-  return ComplexMatrix (divide (data, a.data, len), nr, nc);
-}
-
-Matrix&
-Matrix::operator += (const Matrix& a)
-{
-  if (nr != a.nr || nc != a.nc)
-    {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix += operation attempted");
-      return *this;
-    }
-
-  if (nr == 0 || nc == 0)
-    return *this;
-
-  add2 (data, a.data, len);
-  return *this;
-}
-
-Matrix&
-Matrix::operator -= (const Matrix& a)
-{
-  if (nr != a.nr || nc != a.nc)
-    {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix -= operation attempted");
-      return *this;
-    }
-
-  if (nr == 0 || nc == 0)
-    return *this;
-
-  subtract2 (data, a.data, len);
-  return *this;
+  return ComplexMatrix (divide (m.data (), a.data (), m.length ()), nr, nc);
 }
 
 // other operations.
@@ -1697,8 +1663,10 @@ map (d_d_Mapper f, const Matrix& a)
 void
 Matrix::map (d_d_Mapper f)
 {
-  for (int i = 0; i < len; i++)
-    data[i] = f (data[i]);
+  double *d = fortran_vec (); // Ensures only one reference to my privates!
+
+  for (int i = 0; i < length (); i++)
+    d[i] = f (d[i]);
 }
 
 // XXX FIXME XXX Do these really belong here?  They should maybe be
@@ -1708,6 +1676,8 @@ Matrix::map (d_d_Mapper f)
 Matrix
 Matrix::all (void) const
 {
+  int nr = rows ();
+  int nc = cols ();
   Matrix retval;
   if (nr > 0 && nc > 0)
     {
@@ -1760,6 +1730,8 @@ Matrix::all (void) const
 Matrix
 Matrix::any (void) const
 {
+  int nr = rows ();
+  int nc = cols ();
   Matrix retval;
   if (nr > 0 && nc > 0)
     {
@@ -1813,6 +1785,10 @@ Matrix
 Matrix::cumprod (void) const
 {
   Matrix retval;
+
+  int nr = rows ();
+  int nc = cols ();
+
   if (nr == 1)
     {
       retval.resize (1, nc);
@@ -1865,6 +1841,10 @@ Matrix
 Matrix::cumsum (void) const
 {
   Matrix retval;
+
+  int nr = rows ();
+  int nc = cols ();
+
   if (nr == 1)
     {
       retval.resize (1, nc);
@@ -1917,6 +1897,10 @@ Matrix
 Matrix::prod (void) const
 {
   Matrix retval;
+
+  int nr = rows ();
+  int nc = cols ();
+
   if (nr == 1)
     {
       retval.resize (1, 1);
@@ -1955,6 +1939,10 @@ Matrix
 Matrix::sum (void) const
 {
   Matrix retval;
+
+  int nr = rows ();
+  int nc = cols ();
+
   if (nr == 1)
     {
       retval.resize (1, 1);
@@ -1993,6 +1981,10 @@ Matrix
 Matrix::sumsq (void) const
 {
   Matrix retval;
+
+  int nr = rows ();
+  int nc = cols ();
+
   if (nr == 1)
     {
       retval.resize (1, 1);
@@ -2038,8 +2030,8 @@ Matrix::diag (void) const
 ColumnVector
 Matrix::diag (int k) const
 {
-  int nnr = nr;
-  int nnc = nc;
+  int nnr = rows ();
+  int nnc = cols ();
   if (k > 0)
     nnc -= k;
   else if (k < 0)
@@ -2075,30 +2067,13 @@ Matrix::diag (int k) const
   return d;
 }
 
-// unary operations
-
-Matrix
-Matrix::operator - (void) const
-{
-  return Matrix (negate (data, len), nr, nc);
-}
-
-Matrix
-Matrix::operator ! (void) const
-{
-  Matrix b (nr, nc);
-
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
-      b.elem (i, j) = ! elem (i, j);
-
-  return b;
-}
-
 ColumnVector
 Matrix::row_min (void) const
 {
   ColumnVector result;
+
+  int nr = rows ();
+  int nc = cols ();
 
   if (nr > 0 && nc > 0)
     {
@@ -2122,6 +2097,9 @@ Matrix::row_min_loc (void) const
 {
   ColumnVector result;
 
+  int nr = rows ();
+  int nc = cols ();
+
   if (nr > 0 && nc > 0)
     {
       result.resize (nr);
@@ -2143,6 +2121,9 @@ ColumnVector
 Matrix::row_max (void) const
 {
   ColumnVector result;
+
+  int nr = rows ();
+  int nc = cols ();
 
   if (nr > 0 && nc > 0)
     {
@@ -2166,6 +2147,9 @@ Matrix::row_max_loc (void) const
 {
   ColumnVector result;
 
+  int nr = rows ();
+  int nc = cols ();
+
   if (nr > 0 && nc > 0)
     {
       result.resize (nr);
@@ -2188,6 +2172,9 @@ Matrix::column_min (void) const
 {
   RowVector result;
 
+  int nr = rows ();
+  int nc = cols ();
+
   if (nr > 0 && nc > 0)
     {
       result.resize (nc);
@@ -2208,6 +2195,9 @@ RowVector
 Matrix::column_min_loc (void) const
 {
   RowVector result;
+
+  int nr = rows ();
+  int nc = cols ();
 
   if (nr > 0 && nc > 0)
     {
@@ -2232,6 +2222,9 @@ Matrix::column_max (void) const
 {
   RowVector result;
 
+  int nr = rows ();
+  int nc = cols ();
+
   if (nr > 0 && nc > 0)
     {
       result.resize (nc);
@@ -2254,6 +2247,9 @@ Matrix::column_max_loc (void) const
 {
   RowVector result;
 
+  int nr = rows ();
+  int nc = cols ();
+
   if (nr > 0 && nc > 0)
     {
       result.resize (nc);
@@ -2275,9 +2271,9 @@ ostream&
 operator << (ostream& os, const Matrix& a)
 {
 //  int field_width = os.precision () + 7;
-  for (int i = 0; i < a.nr; i++)
+  for (int i = 0; i < a.rows (); i++)
     {
-      for (int j = 0; j < a.nc; j++)
+      for (int j = 0; j < a.cols (); j++)
 	os << " " /* setw (field_width) */ << a.elem (i, j);
       os << "\n";
     }
@@ -2288,7 +2284,7 @@ istream&
 operator >> (istream& is, Matrix& a)
 {
   int nr = a.rows ();
-  int nc = a.columns ();
+  int nc = a.cols ();
 
   if (nr < 1 || nc < 1)
     is.clear (ios::badbit);
@@ -2313,222 +2309,29 @@ operator >> (istream& is, Matrix& a)
  * Complex Matrix class
  */
 
-ComplexMatrix::ComplexMatrix (int r, int c)
-{
-  if (r < 0 || c < 0)
-    {
-      (*current_liboctave_error_handler)
-	("can't construct matrix with negative dimensions");
-      nr = 0;
-      nc = 0;
-      len = 0;
-      data = (Complex *) NULL;
-      return;
-    }
-
-  nr = r;
-  nc = c;
-  len = nr * nc;
-  if (len > 0)
-    data = new Complex [len];
-  else
-    data = (Complex *) NULL;
-}
-
-ComplexMatrix::ComplexMatrix (int r, int c, double val)
-{
-  if (r < 0 || c < 0)
-    {
-      (*current_liboctave_error_handler)
-	("can't construct matrix with negative dimensions");
-      nr = 0;
-      nc = 0;
-      len = 0;
-      data = (Complex *) NULL;
-      return;
-    }
-
-  nr = r;
-  nc = c;
-  len = nr * nc;
-  if (len > 0)
-    {
-      data = new Complex [len];
-      copy (data, len, val);
-    }
-  else
-    data = (Complex *) NULL;
-}
-
-ComplexMatrix::ComplexMatrix (int r, int c, const Complex& val)
-{
-  if (r < 0 || c < 0)
-    {
-      (*current_liboctave_error_handler)
-	("can't construct matrix with negative dimensions");
-      nr = 0;
-      nc = 0;
-      len = 0;
-      data = (Complex *) NULL;
-      return;
-    }
-
-  nr = r;
-  nc = c;
-  len = nr * nc;
-  if (len > 0)
-    {
-      data = new Complex [len];
-      copy (data, len, val);
-    }
-  else
-    data = (Complex *) NULL;
-}
-
 ComplexMatrix::ComplexMatrix (const Matrix& a)
+  : Array2<Complex> (a.rows (), a.cols ())
 {
-  nr = a.nr;
-  nc = a.nc;
-  len = a.len;
-  if (len > 0)
-    {
-      data = new Complex [len];
-      copy (data, a.data, len);
-    }
-  else
-    data = (Complex *) NULL;
-}
-
-ComplexMatrix::ComplexMatrix (const ComplexMatrix& a)
-{
-  nr = a.nr;
-  nc = a.nc;
-  len = a.len;
-  if (len > 0)
-    {
-      data = new Complex [len];
-      copy (data, a.data, len);
-    }
-  else
-    data = (Complex *) NULL;
+  for (int j = 0; j < cols (); j++)
+    for (int i = 0; i < rows (); i++)
+      elem (i, j) = a.elem (i, j);
 }
 
 ComplexMatrix::ComplexMatrix (const DiagMatrix& a)
+  : Array2<Complex> (a.rows (), a.cols ())
 {
-  nr = a.nr;
-  nc = a.nc;
-  len = nr * nc;
-  if (len > 0)
-    {
-      data = new Complex [len];
-      copy (data, len, 0.0);
-      for (int i = 0; i < a.len; i++)
-	data[nr*i+i] = a.data[i];
-    }
-  else
-    data = (Complex *) NULL;
+  for (int i = 0; i < a.length (); i++)
+    elem (i, i) = a.elem (i, i);
 }
 
 ComplexMatrix::ComplexMatrix (const ComplexDiagMatrix& a)
+  : Array2<Complex> (a.rows (), a.cols ())
 {
-  nr = a.nr;
-  nc = a.nc;
-  len = nr * nc;
-  if (len > 0)
-    {
-      data = new Complex [len];
-      copy (data, len, 0.0);
-      for (int i = 0; i < a.len; i++)
-	data[nr*i+i] = a.data[i];
-    }
-  else
-    data = (Complex *) NULL;
+  for (int i = 0; i < a.length (); i++)
+    elem (i, i) = a.elem (i, i);
 }
 
-ComplexMatrix::ComplexMatrix (double a)
-{
-  nr = 1;
-  nc = 1;
-  len = 1;
-  data = new Complex [1];
-  data[0] = a;
-}
-
-ComplexMatrix::ComplexMatrix (const Complex& a)
-{
-  nr = 1;
-  nc = 1;
-  len = 1;
-  data = new Complex [1];
-  data[0] = Complex (a);
-}
-
-ComplexMatrix&
-ComplexMatrix::operator = (const Matrix& a)
-{
-  delete [] data;
-  nr = a.nr;
-  nc = a.nc;
-  len = a.len;
-  if (len > 0)
-    {
-      data = new Complex [len];
-      copy (data, a.data, len);
-    }
-  else
-    data = (Complex *) NULL;
-  return *this;
-}
-
-ComplexMatrix&
-ComplexMatrix::operator = (const ComplexMatrix& a)
-{
-  if (this != &a)
-    {
-      delete [] data;
-      nr = a.nr;
-      nc = a.nc;
-      len = a.len;
-      if (len > 0)
-	{
-	  data = new Complex [len];
-	  copy (data, a.data, len);
-	}
-      else
-	data = (Complex *) NULL;
-    }
-  return *this;
-}
-
-Complex&
-ComplexMatrix::checkelem (int r, int c)
-{
-#ifndef NO_RANGE_CHECK
-  if (r < 0 || r >= nr || c < 0 || c >= nc)
-    {
-      (*current_liboctave_error_handler) ("range error");
-      static Complex foo (0.0);
-      return foo;
-    }
-#endif
-
-  return elem (r, c);
-}
-
-Complex
-ComplexMatrix::checkelem (int r, int c) const
-{
-#ifndef NO_RANGE_CHECK
-  if (r < 0 || r >= nr || c < 0 || c >= nc)
-    {
-      (*current_liboctave_error_handler) ("range error");
-      return Complex (0.0);
-    }
-#endif
-
-  return elem (r, c);
-}
-
+#if 0
 ComplexMatrix&
 ComplexMatrix::resize (int r, int c)
 {
@@ -2637,14 +2440,15 @@ ComplexMatrix::resize (int r, int c, const Complex& val)
 
   return *this;
 }
+#endif
 
 int
 ComplexMatrix::operator == (const ComplexMatrix& a) const
 {
-  if (nr != a.nr || nc != a.nc)
+  if (rows () != a.rows () || cols () != a.cols ())
     return 0;
 
-  return equal (data, a.data, len);
+  return equal (data (), a.data (), length ());
 }
 
 int
@@ -2658,14 +2462,16 @@ ComplexMatrix::operator != (const ComplexMatrix& a) const
 ComplexMatrix&
 ComplexMatrix::insert (const Matrix& a, int r, int c)
 {
-  if (r < 0 || r + a.nr - 1 > nr || c < 0 || c + a.nc - 1 > nc)
+  int a_nr = a.rows ();
+  int a_nc = a.cols ();
+  if (r < 0 || r + a_nr - 1 > rows () || c < 0 || c + a_nc - 1 > cols ())
     {
       (*current_liboctave_error_handler) ("range error for insert");
       return *this;
     }
 
-  for (int j = 0; j < a.nc; j++)
-    for (int i = 0; i < a.nr; i++)
+  for (int j = 0; j < a_nc; j++)
+    for (int i = 0; i < a_nr; i++)
       elem (r+i, c+j) = a.elem (i, j);
 
   return *this;
@@ -2674,14 +2480,15 @@ ComplexMatrix::insert (const Matrix& a, int r, int c)
 ComplexMatrix&
 ComplexMatrix::insert (const RowVector& a, int r, int c)
 {
-  if (r < 0 || r >= nr || c < 0 || c + a.len - 1 > nc)
+  int a_len = a.length ();
+  if (r < 0 || r >= rows () || c < 0 || c + a_len - 1 > cols ())
     {
       (*current_liboctave_error_handler) ("range error for insert");
       return *this;
     }
 
-  for (int i = 0; i < a.len; i++)
-    elem (r, c+i) = a.data[i];
+  for (int i = 0; i < a_len; i++)
+    elem (r, c+i) = a.elem (i);
 
   return *this;
 }
@@ -2689,14 +2496,15 @@ ComplexMatrix::insert (const RowVector& a, int r, int c)
 ComplexMatrix&
 ComplexMatrix::insert (const ColumnVector& a, int r, int c)
 {
-  if (r < 0 || r + a.len - 1 > nr || c < 0 || c >= nc)
+  int a_len = a.length ();
+  if (r < 0 || r + a_len - 1 > rows () || c < 0 || c >= cols ())
     {
       (*current_liboctave_error_handler) ("range error for insert");
       return *this;
     }
 
-  for (int i = 0; i < a.len; i++)
-    elem (r+i, c) = a.data[i];
+  for (int i = 0; i < a_len; i++)
+    elem (r+i, c) = a.elem (i);
 
   return *this;
 }
@@ -2704,14 +2512,15 @@ ComplexMatrix::insert (const ColumnVector& a, int r, int c)
 ComplexMatrix&
 ComplexMatrix::insert (const DiagMatrix& a, int r, int c)
 {
-  if (r < 0 || r + a.nr - 1 > nr || c < 0 || c + a.nc - 1 > nc)
+  if (r < 0 || r + a.rows () - 1 > rows ()
+      || c < 0 || c + a.cols () - 1 > cols ())
     {
       (*current_liboctave_error_handler) ("range error for insert");
       return *this;
     }
 
-  for (int i = 0; i < a.len; i++)
-    elem (r+i, c+i) = a.data[i];
+  for (int i = 0; i < a.length (); i++)
+    elem (r+i, c+i) = a.elem (i, i);
 
   return *this;
 }
@@ -2719,14 +2528,16 @@ ComplexMatrix::insert (const DiagMatrix& a, int r, int c)
 ComplexMatrix&
 ComplexMatrix::insert (const ComplexMatrix& a, int r, int c)
 {
-  if (r < 0 || r + a.nr - 1 > nr || c < 0 || c + a.nc - 1 > nc)
+  int a_nr = a.rows ();
+  int a_nc = a.cols ();
+  if (r < 0 || r + a_nr - 1 > rows () || c < 0 || c + a_nc - 1 > cols ())
     {
       (*current_liboctave_error_handler) ("range error for insert");
       return *this;
     }
 
-  for (int j = 0; j < a.nc; j++)
-    for (int i = 0; i < a.nr; i++)
+  for (int j = 0; j < a_nc; j++)
+    for (int i = 0; i < a_nr; i++)
       elem (r+i, c+j) = a.elem (i, j);
 
   return *this;
@@ -2735,14 +2546,15 @@ ComplexMatrix::insert (const ComplexMatrix& a, int r, int c)
 ComplexMatrix&
 ComplexMatrix::insert (const ComplexRowVector& a, int r, int c)
 {
-  if (r < 0 || r >= nr || c < 0 || c + a.len - 1 > nc)
+  int a_len = a.length ();
+  if (r < 0 || r >= rows () || c < 0 || c + a_len - 1 > cols ())
     {
       (*current_liboctave_error_handler) ("range error for insert");
       return *this;
     }
 
-  for (int i = 0; i < a.len; i++)
-    elem (r, c+i) = a.data[i];
+  for (int i = 0; i < a_len; i++)
+    elem (r, c+i) = a.elem (i);
 
   return *this;
 }
@@ -2750,14 +2562,15 @@ ComplexMatrix::insert (const ComplexRowVector& a, int r, int c)
 ComplexMatrix&
 ComplexMatrix::insert (const ComplexColumnVector& a, int r, int c)
 {
-  if (r < 0 || r + a.len - 1 > nr || c < 0 || c >= nc)
+  int a_len = a.length ();
+  if (r < 0 || r + a_len - 1 > rows () || c < 0 || c >= cols ())
     {
       (*current_liboctave_error_handler) ("range error for insert");
       return *this;
     }
 
-  for (int i = 0; i < a.len; i++)
-    elem (r+i, c) = a.data[i];
+  for (int i = 0; i < a_len; i++)
+    elem (r+i, c) = a.elem (i);
 
   return *this;
 }
@@ -2765,14 +2578,15 @@ ComplexMatrix::insert (const ComplexColumnVector& a, int r, int c)
 ComplexMatrix&
 ComplexMatrix::insert (const ComplexDiagMatrix& a, int r, int c)
 {
-  if (r < 0 || r + a.nr - 1 > nr || c < 0 || c + a.nc - 1 > nc)
+  if (r < 0 || r + a.rows () - 1 > rows ()
+      || c < 0 || c + a.cols () - 1 > cols ())
     {
       (*current_liboctave_error_handler) ("range error for insert");
       return *this;
     }
 
-  for (int i = 0; i < a.len; i++)
-    elem (r+i, c+i) = a.data[i];
+  for (int i = 0; i < a.length (); i++)
+    elem (r+i, c+i) = a.elem (i, i);
 
   return *this;
 }
@@ -2780,22 +2594,34 @@ ComplexMatrix::insert (const ComplexDiagMatrix& a, int r, int c)
 ComplexMatrix&
 ComplexMatrix::fill (double val)
 {
+  int nr = rows ();
+  int nc = cols ();
   if (nr > 0 && nc > 0)
-    copy (data, len, val);
+    for (int j = 0; j < nc; j++)
+      for (int i = 0; i < nr; i++)
+	elem (i, j) = val;
+
   return *this;
 }
 
 ComplexMatrix&
 ComplexMatrix::fill (const Complex& val)
 {
+  int nr = rows ();
+  int nc = cols ();
   if (nr > 0 && nc > 0)
-    copy (data, len, val);
+    for (int j = 0; j < nc; j++)
+      for (int i = 0; i < nr; i++)
+	elem (i, j) = val;
+
   return *this;
 }
 
 ComplexMatrix&
 ComplexMatrix::fill (double val, int r1, int c1, int r2, int c2)
 {
+  int nr = rows ();
+  int nc = rows ();
   if (r1 < 0 || r2 < 0 || c1 < 0 || c2 < 0
       || r1 >= nr || r2 >= nr || c1 >= nc || c2 >= nc)
     {
@@ -2816,6 +2642,8 @@ ComplexMatrix::fill (double val, int r1, int c1, int r2, int c2)
 ComplexMatrix&
 ComplexMatrix::fill (const Complex& val, int r1, int c1, int r2, int c2)
 {
+  int nr = rows ();
+  int nc = rows ();
   if (r1 < 0 || r2 < 0 || c1 < 0 || c2 < 0
       || r1 >= nr || r2 >= nr || c1 >= nc || c2 >= nc)
     {
@@ -2836,14 +2664,16 @@ ComplexMatrix::fill (const Complex& val, int r1, int c1, int r2, int c2)
 ComplexMatrix
 ComplexMatrix::append (const Matrix& a) const
 {
-  if (nr != a.nr)
+  int nr = rows ();
+  int nc = cols ();
+  if (nr != a.rows ())
     {
       (*current_liboctave_error_handler) ("row dimension mismatch for append");
       return *this;
     }
 
   int nc_insert = nc;
-  ComplexMatrix retval (nr, nc + a.nc);
+  ComplexMatrix retval (nr, nc + a.cols ());
   retval.insert (*this, 0, 0);
   retval.insert (a, 0, nc_insert);
   return retval;
@@ -2852,6 +2682,8 @@ ComplexMatrix::append (const Matrix& a) const
 ComplexMatrix
 ComplexMatrix::append (const RowVector& a) const
 {
+  int nr = rows ();
+  int nc = cols ();
   if (nr != 1)
     {
       (*current_liboctave_error_handler) ("row dimension mismatch for append");
@@ -2859,7 +2691,7 @@ ComplexMatrix::append (const RowVector& a) const
     }
 
   int nc_insert = nc;
-  ComplexMatrix retval (nr, nc + a.len);
+  ComplexMatrix retval (nr, nc + a.length ());
   retval.insert (*this, 0, 0);
   retval.insert (a, 0, nc_insert);
   return retval;
@@ -2868,7 +2700,9 @@ ComplexMatrix::append (const RowVector& a) const
 ComplexMatrix
 ComplexMatrix::append (const ColumnVector& a) const
 {
-  if (nr != a.len)
+  int nr = rows ();
+  int nc = cols ();
+  if (nr != a.length ())
     {
       (*current_liboctave_error_handler) ("row dimension mismatch for append");
       return *this;
@@ -2884,14 +2718,16 @@ ComplexMatrix::append (const ColumnVector& a) const
 ComplexMatrix
 ComplexMatrix::append (const DiagMatrix& a) const
 {
-  if (nr != a.nr)
+  int nr = rows ();
+  int nc = cols ();
+  if (nr != a.rows ())
     {
       (*current_liboctave_error_handler) ("row dimension mismatch for append");
       return *this;
     }
 
   int nc_insert = nc;
-  ComplexMatrix retval (nr, nc + a.nc);
+  ComplexMatrix retval (nr, nc + a.cols ());
   retval.insert (*this, 0, 0);
   retval.insert (a, 0, nc_insert);
   return retval;
@@ -2900,14 +2736,16 @@ ComplexMatrix::append (const DiagMatrix& a) const
 ComplexMatrix
 ComplexMatrix::append (const ComplexMatrix& a) const
 {
-  if (nr != a.nr)
+  int nr = rows ();
+  int nc = cols ();
+  if (nr != a.rows ())
     {
       (*current_liboctave_error_handler) ("row dimension mismatch for append");
       return *this;
     }
 
   int nc_insert = nc;
-  ComplexMatrix retval (nr, nc + a.nc);
+  ComplexMatrix retval (nr, nc + a.cols ());
   retval.insert (*this, 0, 0);
   retval.insert (a, 0, nc_insert);
   return retval;
@@ -2916,6 +2754,8 @@ ComplexMatrix::append (const ComplexMatrix& a) const
 ComplexMatrix
 ComplexMatrix::append (const ComplexRowVector& a) const
 {
+  int nr = rows ();
+  int nc = cols ();
   if (nr != 1)
     {
       (*current_liboctave_error_handler) ("row dimension mismatch for append");
@@ -2923,7 +2763,7 @@ ComplexMatrix::append (const ComplexRowVector& a) const
     }
 
   int nc_insert = nc;
-  ComplexMatrix retval (nr, nc + a.len);
+  ComplexMatrix retval (nr, nc + a.length ());
   retval.insert (*this, 0, 0);
   retval.insert (a, 0, nc_insert);
   return retval;
@@ -2932,7 +2772,9 @@ ComplexMatrix::append (const ComplexRowVector& a) const
 ComplexMatrix
 ComplexMatrix::append (const ComplexColumnVector& a) const
 {
-  if (nr != a.len)
+  int nr = rows ();
+  int nc = cols ();
+  if (nr != a.length ())
     {
       (*current_liboctave_error_handler) ("row dimension mismatch for append");
       return *this;
@@ -2948,14 +2790,16 @@ ComplexMatrix::append (const ComplexColumnVector& a) const
 ComplexMatrix
 ComplexMatrix::append (const ComplexDiagMatrix& a) const
 {
-  if (nr != a.nr)
+  int nr = rows ();
+  int nc = cols ();
+  if (nr != a.rows ())
     {
       (*current_liboctave_error_handler) ("row dimension mismatch for append");
       return *this;
     }
 
   int nc_insert = nc;
-  ComplexMatrix retval (nr, nc + a.nc);
+  ComplexMatrix retval (nr, nc + a.cols ());
   retval.insert (*this, 0, 0);
   retval.insert (a, 0, nc_insert);
   return retval;
@@ -2964,7 +2808,9 @@ ComplexMatrix::append (const ComplexDiagMatrix& a) const
 ComplexMatrix
 ComplexMatrix::stack (const Matrix& a) const
 {
-  if (nc != a.nc)
+  int nr = rows ();
+  int nc = cols ();
+  if (nc != a.cols ())
     {
       (*current_liboctave_error_handler)
 	("column dimension mismatch for stack");
@@ -2972,7 +2818,7 @@ ComplexMatrix::stack (const Matrix& a) const
     }
 
   int nr_insert = nr;
-  ComplexMatrix retval (nr + a.nr, nc);
+  ComplexMatrix retval (nr + a.rows (), nc);
   retval.insert (*this, 0, 0);
   retval.insert (a, nr_insert, 0);
   return retval;
@@ -2981,7 +2827,9 @@ ComplexMatrix::stack (const Matrix& a) const
 ComplexMatrix
 ComplexMatrix::stack (const RowVector& a) const
 {
-  if (nc != a.len)
+  int nr = rows ();
+  int nc = cols ();
+  if (nc != a.length ())
     {
       (*current_liboctave_error_handler)
 	("column dimension mismatch for stack");
@@ -2998,6 +2846,8 @@ ComplexMatrix::stack (const RowVector& a) const
 ComplexMatrix
 ComplexMatrix::stack (const ColumnVector& a) const
 {
+  int nr = rows ();
+  int nc = cols ();
   if (nc != 1)
     {
       (*current_liboctave_error_handler)
@@ -3006,7 +2856,7 @@ ComplexMatrix::stack (const ColumnVector& a) const
     }
 
   int nr_insert = nr;
-  ComplexMatrix retval (nr + a.len, nc);
+  ComplexMatrix retval (nr + a.length (), nc);
   retval.insert (*this, 0, 0);
   retval.insert (a, nr_insert, 0);
   return retval;
@@ -3015,7 +2865,9 @@ ComplexMatrix::stack (const ColumnVector& a) const
 ComplexMatrix
 ComplexMatrix::stack (const DiagMatrix& a) const
 {
-  if (nc != a.nc)
+  int nr = rows ();
+  int nc = cols ();
+  if (nc != a.cols ())
     {
       (*current_liboctave_error_handler)
 	("column dimension mismatch for stack");
@@ -3023,7 +2875,7 @@ ComplexMatrix::stack (const DiagMatrix& a) const
     }
 
   int nr_insert = nr;
-  ComplexMatrix retval (nr + a.nr, nc);
+  ComplexMatrix retval (nr + a.rows (), nc);
   retval.insert (*this, 0, 0);
   retval.insert (a, nr_insert, 0);
   return retval;
@@ -3032,7 +2884,9 @@ ComplexMatrix::stack (const DiagMatrix& a) const
 ComplexMatrix
 ComplexMatrix::stack (const ComplexMatrix& a) const
 {
-  if (nc != a.nc)
+  int nr = rows ();
+  int nc = cols ();
+  if (nc != a.cols ())
     {
       (*current_liboctave_error_handler)
 	("column dimension mismatch for stack");
@@ -3040,7 +2894,7 @@ ComplexMatrix::stack (const ComplexMatrix& a) const
     }
 
   int nr_insert = nr;
-  ComplexMatrix retval (nr + a.nr, nc);
+  ComplexMatrix retval (nr + a.rows (), nc);
   retval.insert (*this, 0, 0);
   retval.insert (a, nr_insert, 0);
   return retval;
@@ -3049,7 +2903,9 @@ ComplexMatrix::stack (const ComplexMatrix& a) const
 ComplexMatrix
 ComplexMatrix::stack (const ComplexRowVector& a) const
 {
-  if (nc != a.len)
+  int nr = rows ();
+  int nc = cols ();
+  if (nc != a.length ())
     {
       (*current_liboctave_error_handler)
 	("column dimension mismatch for stack");
@@ -3066,6 +2922,8 @@ ComplexMatrix::stack (const ComplexRowVector& a) const
 ComplexMatrix
 ComplexMatrix::stack (const ComplexColumnVector& a) const
 {
+  int nr = rows ();
+  int nc = cols ();
   if (nc != 1)
     {
       (*current_liboctave_error_handler)
@@ -3074,7 +2932,7 @@ ComplexMatrix::stack (const ComplexColumnVector& a) const
     }
 
   int nr_insert = nr;
-  ComplexMatrix retval (nr + a.len, nc);
+  ComplexMatrix retval (nr + a.length (), nc);
   retval.insert (*this, 0, 0);
   retval.insert (a, nr_insert, 0);
   return retval;
@@ -3083,7 +2941,9 @@ ComplexMatrix::stack (const ComplexColumnVector& a) const
 ComplexMatrix
 ComplexMatrix::stack (const ComplexDiagMatrix& a) const
 {
-  if (nc != a.nc)
+  int nr = rows ();
+  int nc = cols ();
+  if (nc != a.cols ())
     {
       (*current_liboctave_error_handler)
 	("column dimension mismatch for stack");
@@ -3091,7 +2951,7 @@ ComplexMatrix::stack (const ComplexDiagMatrix& a) const
     }
 
   int nr_insert = nr;
-  ComplexMatrix retval (nr + a.nr, nc);
+  ComplexMatrix retval (nr + a.rows (), nc);
   retval.insert (*this, 0, 0);
   retval.insert (a, nr_insert, 0);
   return retval;
@@ -3100,13 +2960,15 @@ ComplexMatrix::stack (const ComplexDiagMatrix& a) const
 ComplexMatrix
 ComplexMatrix::hermitian (void) const
 {
+  int nr = rows ();
+  int nc = cols ();
   ComplexMatrix result;
-  if (len > 0)
+  if (length () > 0)
     {
       result.resize (nc, nr);
       for (int j = 0; j < nc; j++)
 	for (int i = 0; i < nr; i++)
-	  result.data[nc*i+j] = conj (data[nr*j+i]);
+	  result.elem (j, i) = conj (elem (i, j));
     }
   return result;
 }
@@ -3114,12 +2976,14 @@ ComplexMatrix::hermitian (void) const
 ComplexMatrix
 ComplexMatrix::transpose (void) const
 {
+  int nr = rows ();
+  int nc = cols ();
   ComplexMatrix result (nc, nr);
-  if (len > 0)
+  if (length () > 0)
     {
       for (int j = 0; j < nc; j++)
 	for (int i = 0; i < nr; i++)
-	  result.data[nc*i+j] = data[nr*j+i];
+	  result.elem (j, i) = elem (i, j);
     }
   return result;
 }
@@ -3127,27 +2991,31 @@ ComplexMatrix::transpose (void) const
 Matrix
 real (const ComplexMatrix& a)
 {
+  int a_len = a.length ();
   Matrix retval;
-  if (a.len > 0)
-    retval = Matrix (real_dup (a.data, a.len), a.nr, a.nc);
+  if (a_len > 0)
+    retval = Matrix (real_dup (a.data (), a_len), a.rows (), a.cols ());
   return retval;
 }
 
 Matrix
 imag (const ComplexMatrix& a)
 {
+  int a_len = a.length ();
   Matrix retval;
-  if (a.len > 0)
-    retval = Matrix (imag_dup (a.data, a.len), a.nr, a.nc);
+  if (a_len > 0)
+    retval = Matrix (imag_dup (a.data (), a_len), a.rows (), a.cols ());
   return retval;
 }
 
 ComplexMatrix
 conj (const ComplexMatrix& a)
 {
+  int a_len = a.length ();
   ComplexMatrix retval;
-  if (a.len > 0)
-    retval = ComplexMatrix (conj_dup (a.data, a.len), a.nr, a.nc);
+  if (a_len > 0)
+    retval = ComplexMatrix (conj_dup (a.data (), a_len), a.rows (),
+			    a.cols ());
   return retval;
 }
 
@@ -3166,7 +3034,7 @@ ComplexMatrix::extract (int r1, int c1, int r2, int c2) const
 
   for (int j = 0; j < new_c; j++)
     for (int i = 0; i < new_r; i++)
-      result.data[new_r*j+i] = elem (r1+i, c1+j);
+      result.elem (i, j) = elem (r1+i, c1+j);
 
   return result;
 }
@@ -3176,14 +3044,15 @@ ComplexMatrix::extract (int r1, int c1, int r2, int c2) const
 ComplexRowVector
 ComplexMatrix::row (int i) const
 {
-  if (i < 0 || i >= nr)
+  int nc = cols ();
+  if (i < 0 || i >= rows ())
     {
       (*current_liboctave_error_handler) ("invalid row selection");
       return ComplexRowVector ();
     }
 
   ComplexRowVector retval (nc);
-  for (int j = 0; j < nc; j++)
+  for (int j = 0; j < cols (); j++)
     retval.elem (j) = elem (i, j);
 
   return retval;
@@ -3202,7 +3071,7 @@ ComplexMatrix::row (char *s) const
   if (c == 'f' || c == 'F')
     return row (0);
   else if (c == 'l' || c == 'L')
-    return row (nr - 1);
+    return row (rows () - 1);
   else
     {
       (*current_liboctave_error_handler) ("invalid row selection");
@@ -3213,7 +3082,8 @@ ComplexMatrix::row (char *s) const
 ComplexColumnVector
 ComplexMatrix::column (int i) const
 {
-  if (i < 0 || i >= nc)
+  int nr = rows ();
+  if (i < 0 || i >= cols ())
     {
       (*current_liboctave_error_handler) ("invalid column selection");
       return ComplexColumnVector ();
@@ -3239,7 +3109,7 @@ ComplexMatrix::column (char *s) const
   if (c == 'f' || c == 'F')
     return column (0);
   else if (c == 'l' || c == 'L')
-    return column (nc - 1);
+    return column (cols () - 1);
   else
     {
       (*current_liboctave_error_handler) ("invalid column selection");
@@ -3248,8 +3118,25 @@ ComplexMatrix::column (char *s) const
 }
 
 ComplexMatrix
+ComplexMatrix::inverse (void) const
+{
+  int info;
+  double rcond; return inverse (info, rcond);
+}
+
+ComplexMatrix
+ComplexMatrix::inverse (int& info) const
+{
+  double rcond;
+  return inverse (info, rcond);
+}
+
+ComplexMatrix
 ComplexMatrix::inverse (int& info, double& rcond) const
 {
+  int nr = rows ();
+  int nc = cols ();
+  int len = length ();
   if (nr != nc)
     {
       (*current_liboctave_error_handler) ("inverse requires square matrix");
@@ -3260,14 +3147,14 @@ ComplexMatrix::inverse (int& info, double& rcond) const
 
   int *ipvt = new int [nr];
   Complex *z = new Complex [nr];
-  Complex *tmp_data = dup (data, len);
+  Complex *tmp_data = dup (data (), len);
 
   F77_FCN (zgeco) (tmp_data, &nr, &nc, ipvt, &rcond, z);
 
   if (rcond + 1.0 == 1.0)
     {
       info = -1;
-      copy (tmp_data, data, len);  // Restore contents.
+      copy (tmp_data, data (), len);  // Restore contents.
     }
   else
     {
@@ -3284,23 +3171,10 @@ ComplexMatrix::inverse (int& info, double& rcond) const
 }
 
 ComplexMatrix
-ComplexMatrix::inverse (int& info) const
-{
-  double rcond;
-  return inverse (info, rcond);
-}
-
-ComplexMatrix
-ComplexMatrix::inverse (void) const
-{
-  int info;
-  double rcond;
-  return inverse (info, rcond);
-}
-
-ComplexMatrix
 ComplexMatrix::fourier (void) const
 {
+  int nr = rows ();
+  int nc = cols ();
   int npts, nsamples;
   if (nr == 1 || nc == 1)
     {
@@ -3315,7 +3189,7 @@ ComplexMatrix::fourier (void) const
 
   int nn = 4*npts+15;
   Complex *wsave = new Complex [nn];
-  Complex *tmp_data = dup (data, len);
+  Complex *tmp_data = dup (data (), length ());
 
   F77_FCN (cffti) (&npts, wsave);
 
@@ -3330,6 +3204,8 @@ ComplexMatrix::fourier (void) const
 ComplexMatrix
 ComplexMatrix::ifourier (void) const
 {
+  int nr = rows ();
+  int nc = cols ();
   int npts, nsamples;
   if (nr == 1 || nc == 1)
     {
@@ -3344,7 +3220,7 @@ ComplexMatrix::ifourier (void) const
 
   int nn = 4*npts+15;
   Complex *wsave = new Complex [nn];
-  Complex *tmp_data = dup (data, len);
+  Complex *tmp_data = dup (data (), length ());
 
   F77_FCN (cffti) (&npts, wsave);
 
@@ -3379,6 +3255,8 @@ ComplexMatrix::determinant (int& info, double& rcond) const
 {
   ComplexDET retval;
 
+  int nr = rows ();
+  int nc = cols ();
   if (nr == 0 || nc == 0)
     {
       Complex d[2];
@@ -3391,7 +3269,7 @@ ComplexMatrix::determinant (int& info, double& rcond) const
   int *ipvt = new int [nr];
 
   Complex *z = new Complex [nr];
-  Complex *tmp_data = dup (data, len);
+  Complex *tmp_data = dup (data (), length ());
 
   F77_FCN (zgeco) (tmp_data, &nr, &nr, ipvt, &rcond, z);
 
@@ -3450,13 +3328,16 @@ ComplexMatrix::solve (const ComplexMatrix& b, int& info) const
   double rcond;
   return solve (b, info, rcond);
 }
-
 ComplexMatrix
 ComplexMatrix::solve (const ComplexMatrix& b, int& info, double& rcond) const
 {
   ComplexMatrix retval;
 
-  if (nr == 0 || nc == 0 || nr != nc || nr != b.nr)
+  int nr = rows ();
+  int nc = cols ();
+  int b_nr = b.rows ();
+  int b_nc = b.cols ();
+  if (nr == 0 || nc == 0 || nr != nc || nr != b_nr)
     {
       (*current_liboctave_error_handler)
 	("matrix dimension mismatch in solution of linear equations");
@@ -3467,7 +3348,7 @@ ComplexMatrix::solve (const ComplexMatrix& b, int& info, double& rcond) const
   int *ipvt = new int [nr];
 
   Complex *z = new Complex [nr];
-  Complex *tmp_data = dup (data, len);
+  Complex *tmp_data = dup (data (), length ());
 
   F77_FCN (zgeco) (tmp_data, &nr, &nr, ipvt, &rcond, z);
 
@@ -3479,12 +3360,12 @@ ComplexMatrix::solve (const ComplexMatrix& b, int& info, double& rcond) const
     {
       int job = 0;
 
-      Complex *result = dup (b.data, b.len);
+      Complex *result = dup (b.data (), b.length ());
 
-      for (int j = 0; j < b.nc; j++)
+      for (int j = 0; j < b_nc; j++)
 	F77_FCN (zgesl) (tmp_data, &nr, &nr, ipvt, &result[nr*j], &job);
 
-      retval = ComplexMatrix (result, b.nr, b.nc);
+      retval = ComplexMatrix (result, b_nr, b_nc);
     }
 
   delete [] tmp_data;
@@ -3492,28 +3373,6 @@ ComplexMatrix::solve (const ComplexMatrix& b, int& info, double& rcond) const
   delete [] z;
 
   return retval;
-}
-
-ComplexColumnVector
-ComplexMatrix::solve (const ColumnVector& b) const
-{
-  int info;
-  double rcond;
-  return solve (b, info, rcond);
-}
-
-ComplexColumnVector
-ComplexMatrix::solve (const ColumnVector& b, int& info) const
-{
-  double rcond;
-  return solve (b, info, rcond);
-}
-
-ComplexColumnVector
-ComplexMatrix::solve (const ColumnVector& b, int& info, double& rcond) const
-{
-  ComplexColumnVector tmp (b);
-  return solve (tmp, info, rcond);
 }
 
 ComplexColumnVector
@@ -3537,7 +3396,10 @@ ComplexMatrix::solve (const ComplexColumnVector& b, int& info,
 {
   ComplexColumnVector retval;
 
-  if (nr == 0 || nc == 0 || nr != nc || nr != b.len)
+  int nr = rows ();
+  int nc = cols ();
+  int b_len = b.length ();
+  if (nr == 0 || nc == 0 || nr != nc || nr != b_len)
     {
       (*current_liboctave_error_handler)
 	("matrix dimension mismatch in solution of linear equations");
@@ -3548,7 +3410,7 @@ ComplexMatrix::solve (const ComplexColumnVector& b, int& info,
   int *ipvt = new int [nr];
 
   Complex *z = new Complex [nr];
-  Complex *tmp_data = dup (data, len);
+  Complex *tmp_data = dup (data (), length ());
 
   F77_FCN (zgeco) (tmp_data, &nr, &nr, ipvt, &rcond, z);
 
@@ -3560,11 +3422,11 @@ ComplexMatrix::solve (const ComplexColumnVector& b, int& info,
     {
       int job = 0;
 
-      Complex *result = dup (b.data, b.len);
+      Complex *result = dup (b.data (), b_len);
 
       F77_FCN (zgesl) (tmp_data, &nr, &nr, ipvt, result, &job);
 
-      retval = ComplexColumnVector (result, b.len);
+      retval = ComplexColumnVector (result, b_len);
     }
 
   delete [] tmp_data;
@@ -3572,28 +3434,6 @@ ComplexMatrix::solve (const ComplexColumnVector& b, int& info,
   delete [] z;
 
   return retval;
-}
-
-ComplexMatrix
-ComplexMatrix::lssolve (const Matrix& b) const
-{
-  int info;
-  int rank;
-  return lssolve (b, info, rank);
-}
-
-ComplexMatrix
-ComplexMatrix::lssolve (const Matrix& b, int& info) const
-{
-  int rank;
-  return lssolve (b, info, rank);
-}
-
-ComplexMatrix
-ComplexMatrix::lssolve (const Matrix& b, int& info, int& rank) const
-{
-  ComplexMatrix tmp (b);
-  return lssolve (tmp, info, rank);
 }
 
 ComplexMatrix
@@ -3614,19 +3454,19 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, int& info) const
 ComplexMatrix
 ComplexMatrix::lssolve (const ComplexMatrix& b, int& info, int& rank) const
 {
-  int nrhs = b.nc;
+  int nrhs = b.cols ();
 
-  int m = nr;
-  int n = nc;
+  int m = rows ();
+  int n = cols ();
 
-  if (m == 0 || n == 0 || m != b.nr)
+  if (m == 0 || n == 0 || m != b.rows ())
     {
       (*current_liboctave_error_handler)
 	("matrix dimension mismatch solution of linear equations");
       return Matrix ();
     }
 
-  Complex *tmp_data = dup (data, len);
+  Complex *tmp_data = dup (data (), length ());
 
   int nrr = m > n ? m : n;
   ComplexMatrix result (nrr, nrhs);
@@ -3670,28 +3510,6 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, int& info, int& rank) const
 }
 
 ComplexColumnVector
-ComplexMatrix::lssolve (const ColumnVector& b) const
-{
-  int info;
-  int rank;
-  return lssolve (b, info, rank);
-}
-
-ComplexColumnVector
-ComplexMatrix::lssolve (const ColumnVector& b, int& info) const
-{
-  int rank;
-  return lssolve (b, info, rank);
-}
-
-ComplexColumnVector
-ComplexMatrix::lssolve (const ColumnVector& b, int& info, int& rank) const
-{
-  ComplexColumnVector tmp (b);
-  return lssolve (tmp, info, rank);
-}
-
-ComplexColumnVector
 ComplexMatrix::lssolve (const ComplexColumnVector& b) const
 {
   int info;
@@ -3712,17 +3530,17 @@ ComplexMatrix::lssolve (const ComplexColumnVector& b, int& info,
 {
   int nrhs = 1;
 
-  int m = nr;
-  int n = nc;
+  int m = rows ();
+  int n = cols ();
 
-  if (m == 0 || n == 0 || m != b.len)
+  if (m == 0 || n == 0 || m != b.length ())
     {
       (*current_liboctave_error_handler)
 	("matrix dimension mismatch solution of least squares problem");
       return ComplexColumnVector ();
     }
 
-  Complex *tmp_data = dup (data, len);
+  Complex *tmp_data = dup (data (), length ());
 
   int nrr = m > n ? m : n;
   ComplexColumnVector result (nrr);
@@ -3763,54 +3581,202 @@ ComplexMatrix::lssolve (const ComplexColumnVector& b, int& info,
   return retval;
 }
 
+// matrix by diagonal matrix -> matrix operations
+
+ComplexMatrix&
+ComplexMatrix::operator += (const DiagMatrix& a)
+{
+  int nr = rows ();
+  int nc = cols ();
+  if (nr != a.rows () || nc != a.cols ())
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix += operation attempted");
+      return ComplexMatrix ();
+    }
+
+  for (int i = 0; i < a.length (); i++)
+    elem (i, i) += a.elem (i, i);
+
+  return *this;
+}
+
+ComplexMatrix&
+ComplexMatrix::operator -= (const DiagMatrix& a)
+{
+  int nr = rows ();
+  int nc = cols ();
+  if (nr != a.rows () || nc != a.cols ())
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix -= operation attempted");
+      return ComplexMatrix ();
+    }
+
+  for (int i = 0; i < a.length (); i++)
+    elem (i, i) -= a.elem (i, i);
+
+  return *this;
+}
+
+ComplexMatrix&
+ComplexMatrix::operator += (const ComplexDiagMatrix& a)
+{
+  int nr = rows ();
+  int nc = cols ();
+  if (nr != a.rows () || nc != a.cols ())
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix += operation attempted");
+      return ComplexMatrix ();
+    }
+
+  for (int i = 0; i < a.length (); i++)
+    elem (i, i) += a.elem (i, i);
+
+  return *this;
+}
+
+ComplexMatrix&
+ComplexMatrix::operator -= (const ComplexDiagMatrix& a)
+{
+  int nr = rows ();
+  int nc = cols ();
+  if (nr != a.rows () || nc != a.cols ())
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix -= operation attempted");
+      return ComplexMatrix ();
+    }
+
+  for (int i = 0; i < a.length (); i++)
+    elem (i, i) -= a.elem (i, i);
+
+  return *this;
+}
+
+// matrix by matrix -> matrix operations
+
+ComplexMatrix&
+ComplexMatrix::operator += (const Matrix& a)
+{
+  int nr = rows ();
+  int nc = cols ();
+  if (nr != a.rows () || nc != a.cols ())
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix += operation attempted");
+      return *this;
+    }
+
+  if (nr == 0 || nc == 0)
+    return *this;
+
+  Complex *d = fortran_vec (); // Ensures only one reference to my privates!
+
+  add2 (d, a.data (), length ());
+  return *this;
+}
+
+ComplexMatrix&
+ComplexMatrix::operator -= (const Matrix& a)
+{
+  int nr = rows ();
+  int nc = cols ();
+  if (nr != a.rows () || nc != a.cols ())
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix -= operation attempted");
+      return *this;
+    }
+
+  if (nr == 0 || nc == 0)
+    return *this;
+
+  Complex *d = fortran_vec (); // Ensures only one reference to my privates!
+
+  subtract2 (d, a.data (), length ());
+  return *this;
+}
+
+ComplexMatrix&
+ComplexMatrix::operator += (const ComplexMatrix& a)
+{
+  int nr = rows ();
+  int nc = cols ();
+  if (nr != a.rows () || nc != a.cols ())
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix += operation attempted");
+      return *this;
+    }
+
+  if (nr == 0 || nc == 0)
+    return *this;
+
+  Complex *d = fortran_vec (); // Ensures only one reference to my privates!
+
+  add2 (d, a.data (), length ());
+  return *this;
+}
+
+ComplexMatrix&
+ComplexMatrix::operator -= (const ComplexMatrix& a)
+{
+  int nr = rows ();
+  int nc = cols ();
+  if (nr != a.rows () || nc != a.cols ())
+    {
+      (*current_liboctave_error_handler)
+	("nonconformant matrix -= operation attempted");
+      return *this;
+    }
+
+  if (nr == 0 || nc == 0)
+    return *this;
+
+  Complex *d = fortran_vec (); // Ensures only one reference to my privates!
+
+  subtract2 (d, a.data (), length ());
+  return *this;
+}
+
+// unary operations
+
+Matrix
+ComplexMatrix::operator ! (void) const
+{
+  return Matrix (not (data (), length ()), rows (), cols ());
+}
+
 // matrix by scalar -> matrix operations
 
 ComplexMatrix
-ComplexMatrix::operator + (double s) const
+operator + (const ComplexMatrix& a, double s)
 {
-  return ComplexMatrix (add (data, len, s), nr, nc);
+  return ComplexMatrix (add (a.data (), a.length (), s),
+			a.rows (), a.cols ());
 }
 
 ComplexMatrix
-ComplexMatrix::operator - (double s) const
+operator - (const ComplexMatrix& a, double s)
 {
-  return ComplexMatrix (subtract (data, len, s), nr, nc);
+  return ComplexMatrix (subtract (a.data (), a.length (), s),
+			a.rows (), a.cols ());
 }
 
 ComplexMatrix
-ComplexMatrix::operator * (double s) const
+operator * (const ComplexMatrix& a, double s)
 {
-  return ComplexMatrix (multiply (data, len, s), nr, nc);
+  return ComplexMatrix (multiply (a.data (), a.length (), s),
+			a.rows (), a.cols ());
 }
 
 ComplexMatrix
-ComplexMatrix::operator / (double s) const
+operator / (const ComplexMatrix& a, double s)
 {
-  return ComplexMatrix (divide (data, len, s), nr, nc);
-}
-
-ComplexMatrix
-ComplexMatrix::operator + (const Complex& s) const
-{
-  return ComplexMatrix (add (data, len, s), nr, nc);
-}
-
-ComplexMatrix
-ComplexMatrix::operator - (const Complex& s) const
-{
-  return ComplexMatrix (subtract (data, len, s), nr, nc);
-}
-
-ComplexMatrix
-ComplexMatrix::operator * (const Complex& s) const
-{
-  return ComplexMatrix (multiply (data, len, s), nr, nc);
-}
-
-ComplexMatrix
-ComplexMatrix::operator / (const Complex& s) const
-{
-  return ComplexMatrix (divide (data, len, s), nr, nc);
+  return ComplexMatrix (divide (a.data (), a.length (), s),
+			a.rows (), a.cols ());
 }
 
 // scalar by matrix -> matrix operations
@@ -3818,64 +3784,46 @@ ComplexMatrix::operator / (const Complex& s) const
 ComplexMatrix
 operator + (double s, const ComplexMatrix& a)
 {
-  return ComplexMatrix (add (a.data, a.len, s), a.nr, a.nc);
+  return ComplexMatrix (add (a.data (), a.length (), s), a.rows (),
+			a.cols ());
 }
 
 ComplexMatrix
 operator - (double s, const ComplexMatrix& a)
 {
-  return ComplexMatrix (subtract (s, a.data, a.len), a.nr, a.nc);
+  return ComplexMatrix (subtract (s, a.data (), a.length ()),
+			a.rows (), a.cols ());
 }
 
 ComplexMatrix
 operator * (double s, const ComplexMatrix& a)
 {
-  return ComplexMatrix (multiply (a.data, a.len, s), a.nr, a.nc);
+  return ComplexMatrix (multiply (a.data (), a.length (), s),
+			a.rows (), a.cols ());
 }
 
 ComplexMatrix
 operator / (double s, const ComplexMatrix& a)
 {
-  return ComplexMatrix (divide (s, a.data, a.len), a.nr, a.nc);
-}
-
-ComplexMatrix
-operator + (const Complex& s, const ComplexMatrix& a)
-{
-  return ComplexMatrix (add (s, a.data, a.len), a.nr, a.nc);
-}
-
-ComplexMatrix
-operator - (const Complex& s, const ComplexMatrix& a)
-{
-  return ComplexMatrix (subtract (s, a.data, a.len), a.nr, a.nc);
-}
-
-ComplexMatrix
-operator * (const Complex& s, const ComplexMatrix& a)
-{
-  return ComplexMatrix (multiply (s, a.data, a.len), a.nr, a.nc);
-}
-
-ComplexMatrix
-operator / (const Complex& s, const ComplexMatrix& a)
-{
-  return ComplexMatrix (divide (s, a.data, a.len), a.nr, a.nc);
+  return ComplexMatrix (divide (s, a.data (), a.length ()),
+			a.rows (), a.cols ());
 }
 
 // matrix by column vector -> column vector operations
 
 ComplexColumnVector
-ComplexMatrix::operator * (const ColumnVector& a) const
+operator * (const ComplexMatrix& m, const ColumnVector& a)
 {
   ComplexColumnVector tmp (a);
-  return *this * tmp;
+  return m * tmp;
 }
 
 ComplexColumnVector
-ComplexMatrix::operator * (const ComplexColumnVector& a) const
+operator * (const ComplexMatrix& m, const ComplexColumnVector& a)
 {
-  if (nc != a.len)
+  int nr = m.rows ();
+  int nc = m.cols ();
+  if (nc != a.length ())
     {
       (*current_liboctave_error_handler)
 	("nonconformant matrix multiplication attempted");
@@ -3893,7 +3841,7 @@ ComplexMatrix::operator * (const ComplexColumnVector& a) const
 
   Complex *y = new Complex [nr];
 
-  F77_FCN (zgemv) (&trans, &nr, &nc, &alpha, data, &ld, a.data,
+  F77_FCN (zgemv) (&trans, &nr, &nc, &alpha, m.data (), &ld, a.data (),
 		   &i_one, &beta, y, &i_one, 1L); 
 
   return ComplexColumnVector (y, nr);
@@ -3902,9 +3850,11 @@ ComplexMatrix::operator * (const ComplexColumnVector& a) const
 // matrix by diagonal matrix -> matrix operations
 
 ComplexMatrix
-ComplexMatrix::operator + (const DiagMatrix& a) const
+operator + (const ComplexMatrix& m, const DiagMatrix& a)
 {
-  if (nr != a.nr || nc != a.nc)
+  int nr = m.rows ();
+  int nc = m.cols ();
+  if (nr != a.rows () || nc != a.cols ())
     {
       (*current_liboctave_error_handler)
 	("nonconformant matrix addition attempted");
@@ -3914,17 +3864,19 @@ ComplexMatrix::operator + (const DiagMatrix& a) const
   if (nr == 0 || nc == 0)
     return ComplexMatrix (nr, nc);
 
-  ComplexMatrix result (*this);
-  for (int i = 0; i < a.len; i++)
-    result.elem (i, i) += a.data[i];
+  ComplexMatrix result (m);
+  for (int i = 0; i < a.length (); i++)
+    result.elem (i, i) += a.elem (i, i);
 
   return result;
 }
 
 ComplexMatrix
-ComplexMatrix::operator - (const DiagMatrix& a) const
+operator - (const ComplexMatrix& m, const DiagMatrix& a)
 {
-  if (nr != a.nr || nc != a.nc)
+  int nr = m.rows ();
+  int nc = m.cols ();
+  if (nr != a.rows () || nc != a.cols ())
     {
       (*current_liboctave_error_handler)
 	("nonconformant matrix subtraction attempted");
@@ -3934,39 +3886,42 @@ ComplexMatrix::operator - (const DiagMatrix& a) const
   if (nr == 0 || nc == 0)
     return ComplexMatrix (nr, nc);
 
-  ComplexMatrix result (*this);
-  for (int i = 0; i < a.len; i++)
-    result.elem (i, i) -= a.data[i];
+  ComplexMatrix result (m);
+  for (int i = 0; i < a.length (); i++)
+    result.elem (i, i) -= a.elem (i, i);
 
   return result;
 }
 
 ComplexMatrix
-ComplexMatrix::operator * (const DiagMatrix& a) const
+operator * (const ComplexMatrix& m, const DiagMatrix& a)
 {
-  if (nc != a.nr)
+  int nr = m.rows ();
+  int nc = m.cols ();
+  int a_nc = a.cols ();
+  if (nc != a.rows ())
     {
       (*current_liboctave_error_handler)
 	("nonconformant matrix multiplication attempted");
       return ComplexMatrix ();
     }
 
-  if (nr == 0 || nc == 0 || a.nc == 0)
+  if (nr == 0 || nc == 0 || a_nc == 0)
     return ComplexMatrix (nr, nc, 0.0);
 
-  Complex *c = new Complex [nr*a.nc];
+  Complex *c = new Complex [nr*a_nc];
   Complex *ctmp = (Complex *) NULL;
 
-  for (int j = 0; j < a.len; j++)
+  for (int j = 0; j < a.length (); j++)
     {
       int idx = j * nr;
       ctmp = c + idx;
-      if (a.data[j] == 1.0)
+      if (a.elem (j, j) == 1.0)
 	{
 	  for (int i = 0; i < nr; i++)
-	    ctmp[i] = elem (i, j);
+	    ctmp[i] = m.elem (i, j);
 	}
-      else if (a.data[j] == 0.0)
+      else if (a.elem (j, j) == 0.0)
 	{
 	  for (int i = 0; i < nr; i++)
 	    ctmp[i] = 0.0;
@@ -3974,23 +3929,25 @@ ComplexMatrix::operator * (const DiagMatrix& a) const
       else
 	{
 	  for (int i = 0; i < nr; i++)
-	    ctmp[i] = a.data[j] * elem (i, j);
+	    ctmp[i] = a.elem (j, j) * m.elem (i, j);
 	}
     }
 
-  if (a.nr < a.nc)
+  if (a.rows () < a_nc)
     {
-      for (int i = nr * nc; i < nr * a.nc; i++)
+      for (int i = nr * nc; i < nr * a_nc; i++)
 	ctmp[i] = 0.0;
     }
 
-  return ComplexMatrix (c, nr, a.nc);
+  return ComplexMatrix (c, nr, a_nc);
 }
 
 ComplexMatrix
-ComplexMatrix::operator + (const ComplexDiagMatrix& a) const
+operator + (const ComplexMatrix& m, const ComplexDiagMatrix& a)
 {
-  if (nr != a.nr || nc != a.nc)
+  int nr = m.rows ();
+  int nc = m.cols ();
+  if (nr != a.rows () || nc != a.cols ())
     {
       (*current_liboctave_error_handler)
 	("nonconformant matrix addition attempted");
@@ -4000,17 +3957,19 @@ ComplexMatrix::operator + (const ComplexDiagMatrix& a) const
   if (nr == 0 || nc == 0)
     return ComplexMatrix (nr, nc);
 
-  ComplexMatrix result (*this);
-  for (int i = 0; i < a.len; i++)
-    result.elem (i, i) += a.data[i];
+  ComplexMatrix result (m);
+  for (int i = 0; i < a.length (); i++)
+    result.elem (i, i) += a.elem (i, i);
 
   return result;
 }
 
 ComplexMatrix
-ComplexMatrix::operator - (const ComplexDiagMatrix& a) const
+operator - (const ComplexMatrix& m, const ComplexDiagMatrix& a)
 {
-  if (nr != a.nr || nc != a.nc)
+  int nr = m.rows ();
+  int nc = m.cols ();
+  if (nr != a.rows () || nc != a.cols ())
     {
       (*current_liboctave_error_handler)
 	("nonconformant matrix subtraction attempted");
@@ -4020,39 +3979,42 @@ ComplexMatrix::operator - (const ComplexDiagMatrix& a) const
   if (nr == 0 || nc == 0)
     return ComplexMatrix (nr, nc);
 
-  ComplexMatrix result (*this);
-  for (int i = 0; i < a.len; i++)
-    result.elem (i, i) -= a.data[i];
+  ComplexMatrix result (m);
+  for (int i = 0; i < a.length (); i++)
+    result.elem (i, i) -= a.elem (i, i);
 
   return result;
 }
 
 ComplexMatrix
-ComplexMatrix::operator * (const ComplexDiagMatrix& a) const
+operator * (const ComplexMatrix& m, const ComplexDiagMatrix& a)
 {
-  if (nc != a.nr)
+  int nr = m.rows ();
+  int nc = m.cols ();
+  int a_nc = a.cols ();
+  if (nc != a.rows ())
     {
       (*current_liboctave_error_handler)
 	("nonconformant matrix multiplication attempted");
       return ComplexMatrix ();
     }
 
-  if (nr == 0 || nc == 0 || a.nc == 0)
+  if (nr == 0 || nc == 0 || a_nc == 0)
     return ComplexMatrix (nr, nc, 0.0);
 
-  Complex *c = new Complex [nr*a.nc];
+  Complex *c = new Complex [nr*a_nc];
   Complex *ctmp = (Complex *) NULL;
 
-  for (int j = 0; j < a.len; j++)
+  for (int j = 0; j < a.length (); j++)
     {
       int idx = j * nr;
       ctmp = c + idx;
-      if (a.data[j] == 1.0)
+      if (a.elem (j, j) == 1.0)
 	{
 	  for (int i = 0; i < nr; i++)
-	    ctmp[i] = elem (i, j);
+	    ctmp[i] = m.elem (i, j);
 	}
-      else if (a.data[j] == 0.0)
+      else if (a.elem (j, j) == 0.0)
 	{
 	  for (int i = 0; i < nr; i++)
 	    ctmp[i] = 0.0;
@@ -4060,89 +4022,27 @@ ComplexMatrix::operator * (const ComplexDiagMatrix& a) const
       else
 	{
 	  for (int i = 0; i < nr; i++)
-	    ctmp[i] = a.data[j] * elem (i, j);
+	    ctmp[i] = a.elem (j, j) * m.elem (i, j);
 	}
     }
 
-  if (a.nr < a.nc)
+  if (a.rows () < a_nc)
     {
-      for (int i = nr * nc; i < nr * a.nc; i++)
+      for (int i = nr * nc; i < nr * a_nc; i++)
 	ctmp[i] = 0.0;
     }
 
-  return ComplexMatrix (c, nr, a.nc);
-}
-
-ComplexMatrix&
-ComplexMatrix::operator += (const DiagMatrix& a)
-{
-  if (nr != a.nr || nc != a.nc)
-    {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix += operation attempted");
-      return ComplexMatrix ();
-    }
-
-  for (int i = 0; i < a.len; i++)
-    elem (i, i) += a.data[i];
-
-  return *this;
-}
-
-ComplexMatrix&
-ComplexMatrix::operator -= (const DiagMatrix& a)
-{
-  if (nr != a.nr || nc != a.nc)
-    {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix -= operation attempted");
-      return ComplexMatrix ();
-    }
-
-  for (int i = 0; i < a.len; i++)
-    elem (i, i) -= a.data[i];
-
-  return *this;
-}
-
-ComplexMatrix&
-ComplexMatrix::operator += (const ComplexDiagMatrix& a)
-{
-  if (nr != a.nr || nc != a.nc)
-    {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix += operation attempted");
-      return ComplexMatrix ();
-    }
-
-  for (int i = 0; i < a.len; i++)
-    elem (i, i) += a.data[i];
-
-  return *this;
-}
-
-ComplexMatrix&
-ComplexMatrix::operator -= (const ComplexDiagMatrix& a)
-{
-  if (nr != a.nr || nc != a.nc)
-    {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix -= operation attempted");
-      return ComplexMatrix ();
-    }
-
-  for (int i = 0; i < a.len; i++)
-    elem (i, i) -= a.data[i];
-
-  return *this;
+  return ComplexMatrix (c, nr, a_nc);
 }
 
 // matrix by matrix -> matrix operations
 
 ComplexMatrix
-ComplexMatrix::operator + (const Matrix& a) const
+operator + (const ComplexMatrix& m, const Matrix& a)
 {
-  if (nr != a.nr || nc != a.nc)
+  int nr = m.rows ();
+  int nc = m.cols ();
+  if (nr != a.rows () || nc != a.cols ())
     {
       (*current_liboctave_error_handler)
 	("nonconformant matrix addition attempted");
@@ -4152,13 +4052,15 @@ ComplexMatrix::operator + (const Matrix& a) const
   if (nr == 0 || nc == 0)
     return ComplexMatrix (nr, nc);
 
-  return ComplexMatrix (add (data, a.data, len), nr, nc);
+  return ComplexMatrix (add (m.data (), a.data (), m.length ()), nr, nc);
 }
 
 ComplexMatrix
-ComplexMatrix::operator - (const Matrix& a) const
+operator - (const ComplexMatrix& m, const Matrix& a)
 {
-  if (nr != a.nr || nc != a.nc)
+  int nr = m.rows ();
+  int nc = m.cols ();
+  if (nr != a.rows () || nc != a.cols ())
     {
       (*current_liboctave_error_handler)
 	("nonconformant matrix subtraction attempted");
@@ -4168,83 +4070,55 @@ ComplexMatrix::operator - (const Matrix& a) const
   if (nr == 0 || nc == 0)
     return ComplexMatrix (nr, nc);
 
-  return ComplexMatrix (subtract (data, a.data, len), nr, nc);
+  return ComplexMatrix (subtract (m.data (), a.data (), m.length ()), nr, nc);
 }
 
 ComplexMatrix
-ComplexMatrix::operator * (const Matrix& a) const
+operator * (const ComplexMatrix& m, const Matrix& a)
 {
   ComplexMatrix tmp (a);
-  return *this * tmp;
+  return m * tmp;
 }
 
 ComplexMatrix
-ComplexMatrix::operator + (const ComplexMatrix& a) const
+operator * (const ComplexMatrix& m, const ComplexMatrix& a)
 {
-  if (nr != a.nr || nc != a.nc)
-    {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix addition attempted");
-      return ComplexMatrix ();
-    }
-
-  if (nr == 0 || nc == 0)
-    return ComplexMatrix (nr, nc);
-
-  return ComplexMatrix (add (data, a.data, len), nr, nc);
-}
-
-ComplexMatrix
-ComplexMatrix::operator - (const ComplexMatrix& a) const
-{
-  if (nr != a.nr || nc != a.nc)
-    {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix subtraction attempted");
-      return ComplexMatrix ();
-    }
-
-  if (nr == 0 || nc == 0)
-    return ComplexMatrix (nr, nc);
-
-  return ComplexMatrix (subtract (data, a.data, len), nr, nc);
-}
-
-ComplexMatrix
-ComplexMatrix::operator * (const ComplexMatrix& a) const
-{
-  if (nc != a.nr)
+  int nr = m.rows ();
+  int nc = m.cols ();
+  int a_nc = a.cols ();
+  if (nc != a.rows ())
     {
       (*current_liboctave_error_handler)
 	("nonconformant matrix multiplication attempted");
       return ComplexMatrix ();
     }
 
-  if (nr == 0 || nc == 0 || a.nc == 0)
+  if (nr == 0 || nc == 0 || a_nc == 0)
     return ComplexMatrix (nr, nc, 0.0);
 
   char trans  = 'N';
   char transa = 'N';
 
   int ld  = nr;
-  int lda = a.nr;
+  int lda = a.rows ();
 
   Complex alpha (1.0);
   Complex beta (0.0);
-  int anc = a.nc;
 
-  Complex *c = new Complex [nr*a.nc];
+  Complex *c = new Complex [nr*a_nc];
 
-  F77_FCN (zgemm) (&trans, &transa, &nr, &anc, &nc, &alpha, data, &ld,
-		   a.data, &lda, &beta, c, &nr, 1L, 1L);
+  F77_FCN (zgemm) (&trans, &transa, &nr, &a_nc, &nc, &alpha, m.data (),
+		   &ld, a.data (), &lda, &beta, c, &nr, 1L, 1L);
 
-  return ComplexMatrix (c, nr, a.nc);
+  return ComplexMatrix (c, nr, a_nc);
 }
 
 ComplexMatrix
-ComplexMatrix::product (const Matrix& a) const
+product (const ComplexMatrix& m, const Matrix& a)
 {
-  if (nr != a.nr || nc != a.nc)
+  int nr = m.rows ();
+  int nc = m.cols ();
+  if (nr != a.rows () || nc != a.cols ())
     {
       (*current_liboctave_error_handler)
 	("nonconformant matrix product attempted");
@@ -4254,13 +4128,15 @@ ComplexMatrix::product (const Matrix& a) const
   if (nr == 0 || nc == 0)
     return ComplexMatrix (nr, nc);
 
-  return ComplexMatrix (multiply (data, a.data, len), nr, nc);
+  return ComplexMatrix (multiply (m.data (), a.data (), m.length ()), nr, nc);
 }
 
 ComplexMatrix
-ComplexMatrix::quotient (const Matrix& a) const
+quotient (const ComplexMatrix& m, const Matrix& a)
 {
-  if (nr != a.nr || nc != a.nc)
+  int nr = m.rows ();
+  int nc = m.cols ();
+  if (nr != a.rows () || nc != a.cols ())
     {
       (*current_liboctave_error_handler)
 	("nonconformant matrix quotient attempted");
@@ -4270,121 +4146,7 @@ ComplexMatrix::quotient (const Matrix& a) const
   if (nr == 0 || nc == 0)
     return ComplexMatrix (nr, nc);
 
-  return ComplexMatrix (divide (data, a.data, len), nr, nc);
-}
-
-ComplexMatrix
-ComplexMatrix::product (const ComplexMatrix& a) const
-{
-  if (nr != a.nr || nc != a.nc)
-    {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix product attempted");
-      return ComplexMatrix ();
-    }
-
-  if (nr == 0 || nc == 0)
-    return ComplexMatrix (nr, nc);
-
-  return ComplexMatrix (multiply (data, a.data, len), nr, nc);
-}
-
-ComplexMatrix
-ComplexMatrix::quotient (const ComplexMatrix& a) const
-{
-  if (nr != a.nr || nc != a.nc)
-    {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix quotient attempted");
-      return ComplexMatrix ();
-    }
-
-  if (nr == 0 || nc == 0)
-    return ComplexMatrix (nr, nc);
-
-  return ComplexMatrix (divide (data, a.data, len), nr, nc);
-}
-
-ComplexMatrix&
-ComplexMatrix::operator += (const Matrix& a)
-{
-  if (nr != a.nr || nc != a.nc)
-    {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix += operation attempted");
-      return *this;
-    }
-
-  if (nr == 0 || nc == 0)
-    return *this;
-
-  add2 (data, a.data, len);
-  return *this;
-}
-
-ComplexMatrix&
-ComplexMatrix::operator -= (const Matrix& a)
-{
-  if (nr != a.nr || nc != a.nc)
-    {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix -= operation attempted");
-      return *this;
-    }
-
-  if (nr == 0 || nc == 0)
-    return *this;
-
-  subtract2 (data, a.data, len);
-  return *this;
-}
-
-ComplexMatrix&
-ComplexMatrix::operator += (const ComplexMatrix& a)
-{
-  if (nr != a.nr || nc != a.nc)
-    {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix += operation attempted");
-      return *this;
-    }
-
-  if (nr == 0 || nc == 0)
-    return *this;
-
-  add2 (data, a.data, len);
-  return *this;
-}
-
-ComplexMatrix&
-ComplexMatrix::operator -= (const ComplexMatrix& a)
-{
-  if (nr != a.nr || nc != a.nc)
-    {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix -= operation attempted");
-      return *this;
-    }
-
-  if (nr == 0 || nc == 0)
-    return *this;
-
-  subtract2 (data, a.data, len);
-  return *this;
-}
-
-// unary operations
-
-ComplexMatrix
-ComplexMatrix::operator - (void) const
-{
-  return ComplexMatrix (negate (data, len), nr, nc);
-}
-
-Matrix
-ComplexMatrix::operator ! (void) const
-{
-  return Matrix (not (data, len), nr, nc);
+  return ComplexMatrix (divide (m.data (), a.data (), m.length ()), nr, nc);
 }
 
 // other operations
@@ -4400,9 +4162,11 @@ map (c_c_Mapper f, const ComplexMatrix& a)
 Matrix
 map (d_c_Mapper f, const ComplexMatrix& a)
 {
-  Matrix b (a.nr, a.nc);
-  for (int j = 0; j < a.nc; j++)
-    for (int i = 0; i < a.nr; i++)
+  int a_nc = a.cols ();
+  int a_nr = a.rows ();
+  Matrix b (a_nr, a_nc);
+  for (int j = 0; j < a_nc; j++)
+    for (int i = 0; i < a_nr; i++)
       b.elem (i, j) = f (a.elem (i, j));
   return b;
 }
@@ -4410,13 +4174,16 @@ map (d_c_Mapper f, const ComplexMatrix& a)
 void
 ComplexMatrix::map (c_c_Mapper f)
 {
-  for (int i = 0; i < len; i++)
-    data[i] = f (data[i]);
+  for (int j = 0; j < cols (); j++)
+    for (int i = 0; i < rows (); i++)
+      elem (i, j) = f (elem (i, j));
 }
 
 Matrix
 ComplexMatrix::all (void) const
 {
+  int nr = rows ();
+  int nc = cols ();
   Matrix retval;
   if (nr > 0 && nc > 0)
     {
@@ -4469,6 +4236,8 @@ ComplexMatrix::all (void) const
 Matrix
 ComplexMatrix::any (void) const
 {
+  int nr = rows ();
+  int nc = cols ();
   Matrix retval;
   if (nr > 0 && nc > 0)
     {
@@ -4521,6 +4290,8 @@ ComplexMatrix::any (void) const
 ComplexMatrix
 ComplexMatrix::cumprod (void) const
 {
+  int nr = rows ();
+  int nc = cols ();
   ComplexMatrix retval;
   if (nr > 0 && nc > 0)
     {
@@ -4567,6 +4338,8 @@ ComplexMatrix::cumprod (void) const
 ComplexMatrix
 ComplexMatrix::cumsum (void) const
 {
+  int nr = rows ();
+  int nc = cols ();
   ComplexMatrix retval;
   if (nr > 0 && nc > 0)
     {
@@ -4613,6 +4386,8 @@ ComplexMatrix::cumsum (void) const
 ComplexMatrix
 ComplexMatrix::prod (void) const
 {
+  int nr = rows ();
+  int nc = cols ();
   ComplexMatrix retval;
   if (nr > 0 && nc > 0)
     {
@@ -4647,6 +4422,8 @@ ComplexMatrix::prod (void) const
 ComplexMatrix
 ComplexMatrix::sum (void) const
 {
+  int nr = rows ();
+  int nc = cols ();
   ComplexMatrix retval;
   if (nr > 0 && nc > 0)
     {
@@ -4681,6 +4458,8 @@ ComplexMatrix::sum (void) const
 ComplexMatrix
 ComplexMatrix::sumsq (void) const
 {
+  int nr = rows ();
+  int nc = cols ();
   ComplexMatrix retval;
   if (nr > 0 && nc > 0)
     {
@@ -4730,8 +4509,8 @@ ComplexMatrix::diag (void) const
 ComplexColumnVector
 ComplexMatrix::diag (int k) const
 {
-  int nnr = nr;
-  int nnc = nc;
+  int nnr = rows ();
+  int nnc = cols ();
   if (k > 0)
     nnc -= k;
   else if (k < 0)
@@ -4772,6 +4551,8 @@ ComplexMatrix::row_min (void) const
 {
   ComplexColumnVector result;
 
+  int nr = rows ();
+  int nc = cols ();
   if (nr > 0 && nc > 0)
     {
       result.resize (nr);
@@ -4797,6 +4578,9 @@ ComplexColumnVector
 ComplexMatrix::row_min_loc (void) const
 {
   ComplexColumnVector result;
+
+  int nr = rows ();
+  int nc = cols ();
 
   if (nr > 0 && nc > 0)
     {
@@ -4824,6 +4608,9 @@ ComplexMatrix::row_max (void) const
 {
   ComplexColumnVector result;
 
+  int nr = rows ();
+  int nc = cols ();
+
   if (nr > 0 && nc > 0)
     {
       result.resize (nr);
@@ -4849,6 +4636,9 @@ ComplexColumnVector
 ComplexMatrix::row_max_loc (void) const
 {
   ComplexColumnVector result;
+
+  int nr = rows ();
+  int nc = cols ();
 
   if (nr > 0 && nc > 0)
     {
@@ -4876,6 +4666,9 @@ ComplexMatrix::column_min (void) const
 {
   ComplexRowVector result;
 
+  int nr = rows ();
+  int nc = cols ();
+
   if (nr > 0 && nc > 0)
     {
       result.resize (nc);
@@ -4901,6 +4694,9 @@ ComplexRowVector
 ComplexMatrix::column_min_loc (void) const
 {
   ComplexRowVector result;
+
+  int nr = rows ();
+  int nc = cols ();
 
   if (nr > 0 && nc > 0)
     {
@@ -4928,6 +4724,9 @@ ComplexMatrix::column_max (void) const
 {
   ComplexRowVector result;
 
+  int nr = rows ();
+  int nc = cols ();
+
   if (nr > 0 && nc > 0)
     {
       result.resize (nc);
@@ -4953,6 +4752,9 @@ ComplexRowVector
 ComplexMatrix::column_max_loc (void) const
 {
   ComplexRowVector result;
+
+  int nr = rows ();
+  int nc = cols ();
 
   if (nr > 0 && nc > 0)
     {
@@ -4981,9 +4783,9 @@ ostream&
 operator << (ostream& os, const ComplexMatrix& a)
 {
 //  int field_width = os.precision () + 7;
-  for (int i = 0; i < a.nr; i++)
+  for (int i = 0; i < a.rows (); i++)
     {
-      for (int j = 0; j < a.nc; j++)
+      for (int j = 0; j < a.cols (); j++)
 	os << " " /* setw (field_width) */ << a.elem (i, j);
       os << "\n";
     }
@@ -4994,7 +4796,7 @@ istream&
 operator >> (istream& is, ComplexMatrix& a)
 {
   int nr = a.rows ();
-  int nc = a.columns ();
+  int nc = a.cols ();
 
   if (nr < 1 || nc < 1)
     is.clear (ios::badbit);

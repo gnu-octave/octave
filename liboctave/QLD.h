@@ -24,10 +24,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (_QLD_h)
 #define _QLD_h 1
 
-#ifdef __GNUG__
-#pragma interface
-#endif
-
+#include "Matrix.h"
 #include "QP.h"
 
 #ifndef Vector

@@ -24,11 +24,11 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (_NLP_h)
 #define _NLP_h 1
 
+#include "Matrix.h"
 #include "Objective.h"
 #include "Bounds.h"
 #include "LinConst.h"
 #include "NLConst.h"
-#include "Matrix.h"
 
 #ifndef Vector
 #define Vector ColumnVector

@@ -24,13 +24,9 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (_QP_h)
 #define _QP_h 1
 
-#ifdef __GNUG__
-#pragma interface
-#endif
-
+#include "Matrix.h"
 #include "Bounds.h"
 #include "LinConst.h"
-#include "Matrix.h"
 
 #ifndef Vector
 #define Vector ColumnVector

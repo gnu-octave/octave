@@ -24,10 +24,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (_LPsolve_h)
 #define _LPsolve_h 1
 
-#ifdef __GNUG__
-#pragma interface
-#endif
-
+#include "Matrix.h"
 #include "LP.h"
 
 #ifndef Vector

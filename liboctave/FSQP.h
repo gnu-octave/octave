@@ -21,15 +21,12 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
-#ifndef FSQP_MISSING
-
 #if !defined (_FSQP_h)
 #define _FSQP_h 1
 
-#ifdef __GNUG__
-#pragma interface
-#endif
+#ifndef FSQP_MISSING
 
+#include "Matrix.h"
 #include "NLP.h"
 
 #ifndef Vector
@@ -42,9 +39,9 @@ class FSQP : public NLP
  private:
 };
 
-#endif
-
 #endif /* FSQP_MISSING */
+
+#endif
 
 /*
 ;;; Local Variables: ***

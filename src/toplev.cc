@@ -235,8 +235,13 @@ main_loop (void)
       if (retval == 0 && global_command)
 	{
 	  global_command->eval (1);
+
 	  delete global_command;
-	  current_command_number++;
+
+	  if (octave_completion_matches_called)
+	    octave_completion_matches_called = false;	    
+	  else
+	    current_command_number++;
 	}
     }
   while (retval == 0);

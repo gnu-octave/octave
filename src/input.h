@@ -67,6 +67,9 @@ extern int promptflag;
 // A line of input.
 extern string current_input_line;
 
+// TRUE after a call to completion_matches().
+extern bool octave_completion_matches_called;
+
 char *gnu_readline (const char *s, bool force_readline = false);
 
 extern string Vps4;

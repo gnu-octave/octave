@@ -125,6 +125,9 @@ int promptflag = 1;
 // The current line of input, from wherever.
 string current_input_line;
 
+// TRUE after a call to completion_matches().
+bool octave_completion_matches_called = false;
+
 // Return the octal number parsed from STRING, or -1 to indicate that
 // the string contained a bad number.
 
@@ -1174,7 +1177,12 @@ Without any arguments, toggle the current echo state.")
 }
 
 DEFUN (completion_matches, args, nargout,
-  "completion_matches (HINT): generate possible completions given HINT")
+  "completion_matches (HINT): generate possible completions given HINT\n\
+\n\
+This function is provided for the benefit of programs like Emacs which\n\
+might be controlling Octave and handling user input.  The current command\n\
+number is not incremented when this function is called.  This is a feature,\n\
+not a bug.")
 {
   octave_value retval;
 
@@ -1236,6 +1244,8 @@ DEFUN (completion_matches, args, nargout,
 	      for (int i = 0; i < len; i++)
 		octave_stdout << list[i] << "\n";
 	    }
+
+	  octave_completion_matches_called = true;
 	}
     }
   else

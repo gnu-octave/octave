@@ -44,7 +44,7 @@ public:
 
   NPSOL_options (const NPSOL_options& opt) { copy (opt); }
 
-  NPSOL_options& operator = (const NPSOL_options& opt);
+  NPSOL_options& operator = (const NPSOL_options& opt)
     {
       if (this != &opt)
 	copy (opt);

@@ -1,7 +1,7 @@
 // LinConst.h                                                -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+Copyright (C) 1996 John W. Eaton
 
 This file is part of Octave.
 
@@ -37,40 +37,36 @@ class ColumnVector;
 #include "dMatrix.h"
 #include "Bounds.h"
 
-class LinConst : public Bounds
+class
+LinConst : public Bounds
 {
 public:
 
-  LinConst (void) : Bounds () { }
-  LinConst (int nc, int n) : Bounds (nc), A (nb, n) {}
-
-  LinConst (int eq, int ineq, int n)
-    : Bounds (eq+ineq), A (nb, n) {}
+  LinConst (void)
+    : Bounds (), A () { }
 
   LinConst (const ColumnVector& l, const Matrix& amat, const ColumnVector& u)
     : Bounds (l, u), A (amat)
       {
-	if (nb != amat.rows ())
-	  error ("inconsistent sizes for constraint matrix and bounds vectors");
+	if (Bounds::size () != amat.rows ())
+	  error ("nonconformant constraint matrix and bounds vectors");
       }
 
-  LinConst (const Matrix& A_eq, const ColumnVector& b_eq,
-	    const Matrix& A_ineq, const ColumnVector& b_ineq);
-
   LinConst (const LinConst& a)
-    : Bounds (a.lb, a.ub), A (a.constraint_matrix ()) {}
+    : Bounds (a.lb, a.ub), A (a.A) { }
 
   LinConst& operator = (const LinConst& a)
     {
-      nb = a.nb;
-      lb = a.lb;
-      A  = a.A;
-      ub = a.ub;
+      if (this != &a)
+	{
+	  Bounds::operator = (a);
 
+	  A  = a.A;
+	}
       return *this;
     }
 
-  LinConst& resize (int nclin, int n);
+  ~LinConst (void) { }
 
   Matrix constraint_matrix (void) const { return A; }
 
@@ -84,12 +80,6 @@ public:
       return *this;
     }
 
-  Matrix eq_constraint_matrix (void) const;
-  Matrix ineq_constraint_matrix (void) const;
-
-  ColumnVector eq_constraint_vector (void) const;
-  ColumnVector ineq_constraint_vector (void) const;
-
   friend ostream& operator << (ostream& os, const LinConst& b);
 
 protected:
@@ -99,7 +89,6 @@ protected:
 private:
 
   void error (const char *msg);
-
 };
 
 #endif

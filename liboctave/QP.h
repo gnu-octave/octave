@@ -51,7 +51,7 @@ public:
       { make_h_symmetric (); }
 
   QP (const ColumnVector& x, const Matrix& H_arg, const LinConst& l)
-    : base_minimizer (x), H (H_arg), lc (l), bnds (), lc ()
+    : base_minimizer (x), H (H_arg), c (), bnds (), lc (l)
       { make_h_symmetric (); }
 
   QP (const ColumnVector& x, const Matrix& H_arg, const ColumnVector& c_arg,
@@ -91,7 +91,7 @@ public:
       return *this;
     }
 
-  ~QP (void) { }
+  virtual ~QP (void) { }
 
   Matrix hessian (void) const { return H; }
 
@@ -100,8 +100,6 @@ public:
   Bounds bounds (void) const { return bnds; }
 
   LinConst linear_constraints (void) const { return lc; }
-
-  virtual ~QP (void) { }
 
 protected:
 

@@ -1,3 +1,12 @@
+2004-09-07  John W. Eaton  <jwe@octave.org>
+
+	* Range.cc (round): Delete unused function.
+
+	* lo-mappers.cc (xround): Rename from round.  Change all uses.
+	If HAVE_ROUND, call round, otherwise fake with floor and ceil.
+
+	* oct-inttypes.h: Include <cmath> here.
+
 2004-09-03  David Bateman  <dbateman@free.fr>
 
 	* boolNDArray.cc (boolNDArray::concat, boolNDArray::insert):

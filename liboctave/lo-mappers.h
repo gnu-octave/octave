@@ -30,7 +30,7 @@ extern double conj (double x);
 extern double fix (double x);
 extern double imag (double x);
 extern double real (double x);
-extern double round (double x);
+extern double xround (double x);
 extern double signum (double x);
 
 extern bool xisnan (double x);
@@ -59,7 +59,7 @@ extern Complex tanh (const Complex& x);
 extern Complex ceil (const Complex& x);
 extern Complex fix (const Complex& x);
 extern Complex floor (const Complex& x);
-extern Complex round (const Complex& x);
+extern Complex xround (const Complex& x);
 extern Complex signum (const Complex& x);
 
 extern bool xisnan (const Complex& x);

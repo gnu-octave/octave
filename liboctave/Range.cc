@@ -242,12 +242,6 @@ tceil (double x, double ct)
   return -tfloor (-x, ct);
 }
 
-static inline double
-round (double x, double ct)
-{
-  return tfloor (x+0.5, ct);
-}
-
 static inline bool
 teq (double u, double v, double ct = 3.0 * DBL_EPSILON)
 {

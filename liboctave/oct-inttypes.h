@@ -23,8 +23,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_inttypes_h)
 #define octave_inttypes_h 1
 
-#include <limits>
+#include <cmath>
 
+#include <limits>
 #include <iostream>
 
 #include "data-conv.h"
@@ -286,7 +287,7 @@ public:
   {
     double t = static_cast<double> (value ());
     double tx = static_cast<double> (x.value ());
-    double r = (t == 0 && tx == 0) ? 0 : round (t / tx);
+    double r = (t == 0 && tx == 0) ? 0 : xround (t / tx);
     ival = OCTAVE_INT_FIT_TO_RANGE (r, T);
     return *this;
   }
@@ -360,7 +361,7 @@ pow (double a, const octave_int<T>& b)
 {
   double tb = static_cast<double> (b.value ());
   double r = pow (a, tb);
-  r = lo_ieee_isnan (r) ? 0 : round (r);
+  r = lo_ieee_isnan (r) ? 0 : xround (r);
   return OCTAVE_INT_FIT_TO_RANGE (r, T);
 }
 
@@ -370,7 +371,7 @@ pow (const octave_int<T>& a, double b)
 {
   double ta = static_cast<double> (a.value ());
   double r = pow (ta, b);
-  r = lo_ieee_isnan (r) ? 0 : round (r);
+  r = lo_ieee_isnan (r) ? 0 : xround (r);
   return OCTAVE_INT_FIT_TO_RANGE (r, T);
 }
 
@@ -435,8 +436,8 @@ operator / (const octave_int<T1>& x, const octave_int<T2>& y)
   operator OP (const octave_int<T>& x, double y) \
   { \
     double tx = static_cast<double> (x.value ()); \
-    double r = round (tx OP y); \
-    r = lo_ieee_isnan (r) ? 0 : round (r); \
+    double r = xround (tx OP y); \
+    r = lo_ieee_isnan (r) ? 0 : xround (r); \
     return OCTAVE_INT_FIT_TO_RANGE (r, T); \
   }
 
@@ -453,7 +454,7 @@ OCTAVE_INT_DOUBLE_BIN_OP(/)
   { \
     double ty = static_cast<double> (y.value ()); \
     double r = x OP ty; \
-    r = lo_ieee_isnan (r) ? 0 : round (r); \
+    r = lo_ieee_isnan (r) ? 0 : xround (r); \
     return OCTAVE_INT_FIT_TO_RANGE (r, T); \
   }
 

@@ -77,9 +77,13 @@ real (double x)
 }
 
 double
-round (double x)
+xround (double x)
 {
-  return D_NINT (x);
+#if defined HAVE_ROUND
+  return round (x);
+#else
+  return (x < 0 ? ceil (x - 0.5) : floor (x + 0.5);
+#endif
 }
 
 double
@@ -253,9 +257,9 @@ floor (const Complex& x)
 }
 
 Complex
-round (const Complex& x)
+xround (const Complex& x)
 {
-  return Complex (D_NINT (real (x)), D_NINT (imag (x)));
+  return Complex (xround (real (x)), xround (imag (x)));
 }
 
 Complex

@@ -565,7 +565,7 @@ Return the real part of @var{z}.\n\
 @end deftypefn\n\
 @seealso{imag and conj}");
 
-  DEFUN_MAPPER (round, 0, 0, 0, round, 0, round, 0.0, 0.0, 0, 0,
+  DEFUN_MAPPER (round, 0, 0, 0, xround, 0, xround, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} round (@var{x})\n\
 Return the integer nearest to @var{x}.  If @var{x} is complex, return\n\

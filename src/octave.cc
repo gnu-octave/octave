@@ -389,10 +389,15 @@ execute_startup_files (void)
 
   int verbose = (verbose_flag && ! inhibit_startup_message);
 
-  // Execute commands from the site-wide configuration file.
+  // Execute commands from the site-wide configuration file.  First
+  // from the file $(prefix)/lib/octave/site/m/octaverc (if it exists),
+  // then from the file $(prefix)/lib/octave/$(version)/m/octaverc (if
+  // it exists).
+
+  char *lsd = get_local_site_defaults ();
+  parse_and_execute (lsd, 0, verbose);
 
   char *sd = get_site_defaults ();
-
   parse_and_execute (sd, 0, verbose);
 
   // Try to execute commands from $HOME/.octaverc and ./.octaverc.

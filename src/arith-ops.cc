@@ -41,7 +41,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "xdiv.h"
 #include "xpow.h"
 
-#if defined (HAVE_ISINF) || (defined (HAVE_FINITE) && defined (HAVE_ISNAN))
 #define DIVIDE_BY_ZERO_ERROR \
   do \
     { \
@@ -49,15 +48,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
         warning ("division by zero"); \
     } \
   while (0)
-#else
-#define DIVIDE_BY_ZERO_ERROR \
-  do \
-    { \
-      error ("division by zero attempted"); \
-      return tree_constant (); \
-    } \
-  while (0)
-#endif
 
 // But first, some stupid functions that don't deserve to be in the
 // Matrix class...

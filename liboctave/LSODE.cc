@@ -238,7 +238,7 @@ LSODE::do_integrate (double tout)
   if (abs_tol_len == 1)
     itol = 1;
   else if (abs_tol_len == n)
-    itol == 2;
+    itol = 2;
   else
     {
       (*current_liboctave_error_handler)

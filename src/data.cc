@@ -44,32 +44,32 @@ Software Foundation, Inc.
 #define MIN(a,b) ((a) < (b) ? (a) : (b))
 #endif
 
-DEFUN ("all", Fall, Sall, 2, 1,
+DEFUN ("all", Fall, Sall, 1, 1,
   "all (X): are all elements of X nonzero?")
 {
   Octave_object retval;
 
   int nargin = args.length ();
 
-  if (nargin != 2)
+  if (nargin == 1 && args(0).is_defined ())
+    retval = args(0).all ();
+  else
     print_usage ("all");
-  else if (nargin > 0 && args(1).is_defined ())
-    retval = args(1).all ();
 
   return retval;
 }
 
-DEFUN ("any", Fany, Sany, 2, 1,
+DEFUN ("any", Fany, Sany, 1, 1,
   "any (X): are any elements of X nonzero?")
 {
   Octave_object retval;
 
   int nargin = args.length ();
 
-  if (nargin != 2)
+  if (nargin == 1 && args(0).is_defined ())
+    retval = args(0).any ();
+  else
     print_usage ("any");
-  else if (nargin > 0 && args(1).is_defined ())
-    retval = args(1).any ();
 
   return retval;
 }
@@ -128,17 +128,17 @@ map (d_dd_fcn f, const Matrix& x, const Matrix& y)
   return retval;
 }
 
-DEFUN ("atan2", Fatan2, Satan2, 3, 1,
+DEFUN ("atan2", Fatan2, Satan2, 2, 1,
   "atan2 (Y, X): atan (Y / X) in range -pi to pi")
 {
   Octave_object retval;
 
-  if (args.length () != 3)
-    print_usage ("atan2");
-  else
+  int nargin = args.length ();
+
+  if (nargin == 2 && args(0).is_defined () && args(1).is_defined ())
     {
-      tree_constant arg_y = args(1);
-      tree_constant arg_x = args(2);
+      tree_constant arg_y = args(0);
+      tree_constant arg_x = args(1);
 
       int y_nr = arg_y.rows ();
       int y_nc = arg_y.columns ();
@@ -212,169 +212,162 @@ DEFUN ("atan2", Fatan2, Satan2, 3, 1,
       else
 	error ("atan2: nonconformant matrices");
     }
+  else
+    print_usage ("atan2");
 
   return retval;
 }
 
-DEFUN ("cumprod", Fcumprod, Scumprod, 2, 1,
+DEFUN ("cumprod", Fcumprod, Scumprod, 1, 1,
   "cumprod (X): cumulative products")
 {
   Octave_object retval;
 
   int nargin = args.length ();
 
-  if (nargin != 2)
+  if (nargin == 1 && args(0).is_defined ())
+    retval = args(0).cumprod ();
+  else
     print_usage ("cumprod");
-  else if (nargin > 0 && args(1).is_defined ())
-    retval = args(1).cumprod ();
 
   return retval;
 }
 
-DEFUN ("cumsum", Fcumsum, Scumsum, 2, 1,
+DEFUN ("cumsum", Fcumsum, Scumsum, 1, 1,
   "cumsum (X): cumulative sums")
 {
   Octave_object retval;
 
   int nargin = args.length ();
 
-  if (nargin != 2)
+  if (nargin == 1 && args(0).is_defined ())
+    retval = args(0).cumsum ();
+  else
     print_usage ("cumsum");
-  else if (nargin > 0 && args(1).is_defined ())
-    retval = args(1).cumsum ();
 
   return retval;
 }
 
-DEFUN ("diag", Fdiag, Sdiag, 3, 1,
+DEFUN ("diag", Fdiag, Sdiag, 2, 1,
   "diag (X [,k]): form/extract diagonals")
 {
   Octave_object retval;
 
   int nargin = args.length ();
 
-  if (nargin == 2)
-    retval = args(1).diag ();
-  else if (nargin == 3)
-    retval = args(1).diag (args(2));
+  if (nargin == 1 && args(0).is_defined ())
+    retval = args(0).diag ();
+  else if (nargin == 2 && args(0).is_defined () && args(1).is_defined ())
+    retval = args(0).diag (args(1));
   else
     print_usage ("diag");
 
   return retval;
 }
 
-DEFUN ("isstr", Fisstr, Sisstr, 2, 1,
+DEFUN ("isstr", Fisstr, Sisstr, 1, 1,
   "isstr (X): return 1 if X is a string, 0 otherwise")
 {
   Octave_object retval;
 
   int nargin = args.length ();
 
-  if (nargin != 2)
-    print_usage ("isstr");
+  if (nargin == 1 && args(0).is_defined ())
+    retval = (double) args(0).is_string ();
   else
-    {
-      if (nargin > 0 && args(1).is_defined ())
-	retval = (double) args(1).is_string ();
-    }
+    print_usage ("isstr");
 
   return retval;
 }
 
-DEFUN ("prod", Fprod, Sprod, 2, 1,
+DEFUN ("prod", Fprod, Sprod, 1, 1,
   "prod (X): products")
 {
   Octave_object retval;
 
   int nargin = args.length ();
 
-  if (nargin != 2)
+  if (nargin == 1 && args(0).is_defined ())
+    retval = args(0).prod ();
+  else
     print_usage ("prod");
-  else if (nargin > 0 && args(1).is_defined ())
-    retval = args(1).prod ();
 
   return retval;
 }
 
-DEFUN ("setstr", Fsetstr, Ssetstr, 2, 1,
+DEFUN ("setstr", Fsetstr, Ssetstr, 1, 1,
   "setstr (V): convert a vector to a string")
 {
   Octave_object retval;
 
   int nargin = args.length ();
 
-  if (nargin == 2)
-    retval = args(1).convert_to_str ();
+  if (nargin == 1 && args(0).is_defined ())
+    retval = args(0).convert_to_str ();
   else
     print_usage ("setstr");
 
   return retval;
 }
 
-DEFUN ("size", Fsize, Ssize, 2, 1,
+DEFUN ("size", Fsize, Ssize, 1, 1,
   "[m, n] = size (x): return rows and columns of X")
 {
   Octave_object retval;
 
   int nargin = args.length ();
 
-  if (nargin != 2)
-    print_usage ("size");
-  else
+  if (nargin == 1 && args(0).is_defined ())
     {
-      if (nargin > 0 && args(1).is_defined ())
+      int nr = args(0).rows ();
+      int nc = args(0).columns ();
+      if (nargout == 0 || nargout == 1)
 	{
-	  int nr = args(1).rows ();
-	  int nc = args(1).columns ();
-	  if (nargout == 0 || nargout == 1)
-	    {
-	      Matrix m (1, 2);
-	      m.elem (0, 0) = nr;
-	      m.elem (0, 1) = nc;
-	      retval = m;
-	    }
-	  else if (nargout == 2)
-	    {
-	      retval(1) = (double) nc;
-	      retval(0) = (double) nr;
-	    }
-	  else
-	    print_usage ("size");
+	  Matrix m (1, 2);
+	  m.elem (0, 0) = nr;
+	  m.elem (0, 1) = nc;
+	  retval = m;
 	}
+      else if (nargout == 2)
+	{
+	  retval(1) = (double) nc;
+	  retval(0) = (double) nr;
+	}
+      else
+	print_usage ("size");
     }
+  else
+    print_usage ("size");
 
   return retval;
 }
 
-DEFUN ("sum", Fsum, Ssum, 2, 1,
+DEFUN ("sum", Fsum, Ssum, 1, 1,
   "sum (X): sum of elements")
 {
   Octave_object retval;
 
   int nargin = args.length ();
 
-  if (nargin != 2)
-    print_usage ("sum");
+  if (nargin == 1 && args(0).is_defined ())
+    retval = args(0).sum ();
   else
-    {
-      if (nargin > 0 && args(1).is_defined ())
-	retval = args(1).sum ();
-    }
+    print_usage ("sum");
 
   return retval;
 }
 
-DEFUN ("sumsq", Fsumsq, Ssumsq, 2, 1,
+DEFUN ("sumsq", Fsumsq, Ssumsq, 1, 1,
   "sumsq (X): sum of squares of elements")
 {
   Octave_object retval;
 
   int nargin = args.length ();
 
-  if (nargin != 2)
+  if (nargin == 1 && args(0).is_defined ())
+    retval = args(0).sumsq ();
+  else
     print_usage ("sumsq");
-  else if (nargin > 0 && args(1).is_defined ())
-    retval = args(1).sumsq ();
 
   return retval;
 }
@@ -468,7 +461,7 @@ fill_matrix (const tree_constant& a, const tree_constant& b,
   return m;
 }
 
-DEFUN ("ones", Fones, Sones, 3, 1,
+DEFUN ("ones", Fones, Sones, 2, 1,
   "ones (N), ones (N, M), ones (X): create a matrix of all ones")
 {
   Octave_object retval;
@@ -477,14 +470,14 @@ DEFUN ("ones", Fones, Sones, 3, 1,
 
   switch (nargin)
     {
-    case 1:
+    case 0:
       retval = 1.0;
       break;
-    case 2:
-      retval = fill_matrix (args(1), 1.0, "ones");
+    case 1:
+      retval = fill_matrix (args(0), 1.0, "ones");
       break;
-    case 3:
-      retval = fill_matrix (args(1), args(2), 1.0, "ones");
+    case 2:
+      retval = fill_matrix (args(0), args(1), 1.0, "ones");
       break;
     default:
       print_usage ("ones");
@@ -494,7 +487,7 @@ DEFUN ("ones", Fones, Sones, 3, 1,
   return retval;
 }
 
-DEFUN ("zeros", Fzeros, Szeros, 3, 1,
+DEFUN ("zeros", Fzeros, Szeros, 2, 1,
   "zeros (N), zeros (N, M), zeros (X): create a matrix of all zeros")
 {
   Octave_object retval;
@@ -503,14 +496,14 @@ DEFUN ("zeros", Fzeros, Szeros, 3, 1,
 
   switch (nargin)
     {
-    case 1:
+    case 0:
       retval = 0.0;
       break;
-    case 2:
-      retval = fill_matrix (args(1), 0.0, "zeros");
+    case 1:
+      retval = fill_matrix (args(0), 0.0, "zeros");
       break;
-    case 3:
-      retval = fill_matrix (args(1), args(2), 0.0, "zeros");
+    case 2:
+      retval = fill_matrix (args(0), args(1), 0.0, "zeros");
       break;
     default:
       print_usage ("zeros");
@@ -562,7 +555,7 @@ identity_matrix (const tree_constant& a, const tree_constant& b)
   return m;
 }
 
-DEFUN ("eye", Feye, Seye, 3, 1,
+DEFUN ("eye", Feye, Seye, 2, 1,
   "eye (N), eye (N, M), eye (X): create an identity matrix")
 {
   Octave_object retval;
@@ -571,14 +564,14 @@ DEFUN ("eye", Feye, Seye, 3, 1,
 
   switch (nargin)
     {
-    case 1:
+    case 0:
       retval = 1.0;
       break;
-    case 2:
-      retval = identity_matrix (args(1));
+    case 1:
+      retval = identity_matrix (args(0));
       break;
-    case 3:
-      retval = identity_matrix (args(1), args(2));
+    case 2:
+      retval = identity_matrix (args(0), args(1));
       break;
     default:
       print_usage ("eye");

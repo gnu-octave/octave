@@ -110,11 +110,10 @@ all_args_defined (const Octave_object& args)
 {
   int nargin = args.length ();
 
-  while (--nargin > 0)
-    {
-      if (args(nargin).is_undefined ())
-	return 0;
-    }
+  for (int i = 0; i < nargin; i++)
+    if (args(i).is_undefined ())
+      return 0;
+
   return 1;
 }
 
@@ -125,11 +124,10 @@ any_arg_is_magic_colon (const Octave_object& args)
 {
   int nargin = args.length ();
 
-  while (--nargin > 0)
-    {
-      if (args(nargin).is_magic_colon ())
+  for (int i = 0; i < nargin; i++)
+    if (args(i).is_magic_colon ())
 	return 1;
-    }
+
   return 0;
 }
 
@@ -759,12 +757,12 @@ tree_identifier::do_lookup (int& script_file_executed)
 {
   script_file_executed = lookup (sym);
 
-  tree_fvc *ans = 0;
+  tree_fvc *retval = 0;
 
   if (! script_file_executed)
-    ans = sym->def ();
+    retval = sym->def ();
 
-  return ans;
+  return retval;
 }
 
 void
@@ -784,18 +782,16 @@ tree_identifier::eval (int print)
 
   int script_file_executed = 0;
 
-  tree_fvc *ans = do_lookup (script_file_executed);
+  tree_fvc *object_to_eval = do_lookup (script_file_executed);
 
   if (! script_file_executed)
     {
-      if (ans)
+      if (object_to_eval)
 	{
 	  int nargout = maybe_do_ans_assign ? 0 : 1;
 
-	  int nargin = (ans->is_constant ()) ? 0 : 1;
 	  Octave_object tmp_args;
-	  tmp_args.resize (nargin);
-	  Octave_object tmp = ans->eval (0, nargout, tmp_args);
+	  Octave_object tmp = object_to_eval->eval (0, nargout, tmp_args);
 
 	  if (tmp.length () > 0)
 	    retval = tmp(0);
@@ -806,7 +802,7 @@ tree_identifier::eval (int print)
 
   if (! error_state && retval.is_defined ())
     {
-      if (maybe_do_ans_assign && ! ans->is_constant ())
+      if (maybe_do_ans_assign && ! object_to_eval->is_constant ())
 	{
 
 // XXX FIXME XXX -- need a procedure to do this, probably in
@@ -872,11 +868,11 @@ tree_identifier::eval (int print, int nargout, const Octave_object& args)
 
   int script_file_executed = 0;
 
-  tree_fvc *ans = do_lookup (script_file_executed);
+  tree_fvc *object_to_eval = do_lookup (script_file_executed);
 
   if (! script_file_executed)
     {
-      if (ans)
+      if (object_to_eval)
 	{
 	  if (maybe_do_ans_assign && nargout == 1)
 	    {
@@ -885,7 +881,7 @@ tree_identifier::eval (int print, int nargout, const Octave_object& args)
 
 	      nargout = 0;
 
-	      retval = ans->eval (0, nargout, args);
+	      retval = object_to_eval->eval (0, nargout, args);
 
 	      if (retval.length () > 0 && retval(0).is_defined ())
 		{
@@ -908,7 +904,7 @@ tree_identifier::eval (int print, int nargout, const Octave_object& args)
 		}
 	    }
 	  else
-	    retval = ans->eval (print, nargout, args);
+	    retval = object_to_eval->eval (print, nargout, args);
 	}
       else
 	eval_undefined_error ();
@@ -950,13 +946,15 @@ tree_index_expression::eval (int print)
 
   if (list)
     {
-// Extract the arguments into a simple vector.
+// Extract the arguments into a simple vector.  Don't pass null args.
+
       Octave_object args = list->convert_to_const_vector ();
-// Don't pass null arguments.
+
       int nargin = args.length ();
+
       if (error_state)
 	eval_error ();
-      else if (nargin > 1 && all_args_defined (args))
+      else if (nargin > 0 && all_args_defined (args))
 	{
 	  Octave_object tmp = id->eval (print, 1, args);
 
@@ -987,12 +985,15 @@ tree_index_expression::eval (int print, int nargout, const Octave_object& args)
 
   if (list)
     {
-// Extract the arguments into a simple vector.
+// Extract the arguments into a simple vector.  Don't pass null args.
+
       Octave_object args = list->convert_to_const_vector ();
-// Don't pass null arguments.
+
+      int nargin = args.length ();
+
       if (error_state)
 	eval_error ();
-      else if (args.length () > 1 && all_args_defined (args))
+      else if (nargin > 0 && all_args_defined (args))
 	{
 	  retval = id->eval (print, nargout, args);
 	  if (error_state)
@@ -1199,7 +1200,7 @@ tree_unary_expression::eval (int print)
   if (error_state)
     return tree_constant ();
 
-  tree_constant ans;
+  tree_constant retval;
 
   switch (etype)
     {
@@ -1214,10 +1215,10 @@ tree_unary_expression::eval (int print)
 	    eval_error ();
 	  else if (u.is_defined ())
 	    {
-	      ans = do_unary_op (u, etype);
+	      retval = do_unary_op (u, etype);
 	      if (error_state)
 		{
-		  ans = tree_constant ();
+		  retval = tree_constant ();
 		  if (error_state)
 		    eval_error ();
 		}
@@ -1229,7 +1230,7 @@ tree_unary_expression::eval (int print)
       break;
     }
 
-  return ans;
+  return retval;
 }
 
 char *
@@ -1298,7 +1299,8 @@ tree_binary_expression::eval (int print)
   if (error_state)
     return tree_constant ();
 
-  tree_constant ans;
+  tree_constant retval;
+
   switch (etype)
     {
     case tree_expression::add:
@@ -1331,10 +1333,10 @@ tree_binary_expression::eval (int print)
 		eval_error ();
 	      else if (b.is_defined ())
 		{
-		  ans = do_binary_op (a, b, etype);
+		  retval = do_binary_op (a, b, etype);
 		  if (error_state)
 		    {
-		      ans = tree_constant ();
+		      retval = tree_constant ();
 		      if (error_state)
 			eval_error ();
 		    }
@@ -1397,7 +1399,7 @@ tree_binary_expression::eval (int print)
 	      }
 	  }
       done:
-	ans = tree_constant ((double) result);
+	retval = tree_constant ((double) result);
       }
       break;
     default:
@@ -1405,7 +1407,7 @@ tree_binary_expression::eval (int print)
       break;
     }
 
-  return ans;
+  return retval;
 }
 
 char *
@@ -1488,7 +1490,6 @@ tree_simple_assignment_expression::eval (int print)
 {
   assert (etype == tree_expression::assignment);
 
-  tree_constant ans;
   tree_constant retval;
 
   if (error_state)
@@ -1504,34 +1505,35 @@ tree_simple_assignment_expression::eval (int print)
 	}
       else if (! index)
 	{
-	  ans = lhs->assign (rhs_val);
+	  retval = lhs->assign (rhs_val);
 	  if (error_state)
 	    eval_error ();
 	}
       else
 	{
 // Extract the arguments into a simple vector.
+
 	  Octave_object args = index->convert_to_const_vector ();
 
 	  int nargin = args.length ();
 
 	  if (error_state)
 	    eval_error ();
-	  else if (nargin > 1)
+	  else if (nargin > 0)
 	    {
-	      ans = lhs->assign (rhs_val, args);
+	      retval = lhs->assign (rhs_val, args);
 	      if (error_state)
 		eval_error ();
 	    }
 	}
     }
 
-  if (! error_state && ans.is_defined ())
+  if (! error_state && retval.is_defined ())
     {
       int pad_after = 0;
       if (print && user_pref.print_answer_id_name)
 	{
-	  if (print_as_scalar (ans))
+	  if (print_as_scalar (retval))
 	    {
 	      ostrstream output_buf;
 	      output_buf << lhs->name () << " = " << ends;
@@ -1546,7 +1548,7 @@ tree_simple_assignment_expression::eval (int print)
 	    }
 	}
 
-      retval = ans.eval (print);
+      retval.eval (print);
 
       if (print && pad_after)
 	{
@@ -1950,7 +1952,6 @@ tree_builtin::eval (int print)
     eval_fcn:
 
       Octave_object args;
-      args(0) = tree_constant (my_name);
       Octave_object tmp = (*fcn) (args, 1);
       if (tmp.length () > 0)
 	retval = tmp(0);
@@ -1991,10 +1992,9 @@ tree_builtin::eval (int print, int nargout, const Octave_object& args)
     {
       if (nargin > nargin_max)
 	::error ("%s: too many arguments", my_name);
-      else if (nargin > 0 && args.length () > 0 && args(1).is_defined ())
+      else if (nargin > 0 && args(0).is_defined ())
 	{
-	  tree_constant tmp = args(1).mapper (mapper_fcn, 0);
-	  retval.resize (1);
+	  tree_constant tmp = args(0).mapper (mapper_fcn, 0);
 	  retval(0) = tmp;
 	}	
     }
@@ -2228,14 +2228,9 @@ tree_function::eval (int print, int nargout, const Octave_object& args)
 // Copy return values out.
 
     if (ret_list)
-      {
-	retval = ret_list->convert_to_const_vector ();
-      }
+      retval = ret_list->convert_to_const_vector ();
     else if (user_pref.return_last_computed_value)
-      {
-	retval.resize (1);
-	retval(0) = last_computed_value;
-      }
+      retval(0) = last_computed_value;
   }
 
  abort:
@@ -2337,7 +2332,7 @@ tree_function::print_code (ostream& os)
   print_code_new_line (os);
 }
 
-DEFUN ("va_arg", Fva_arg, Sva_arg, 1, 1,
+DEFUN ("va_arg", Fva_arg, Sva_arg, 0, 1,
   "va_arg (): return next argument in a function that takes a\n\
 variable number of parameters")
 {
@@ -2345,7 +2340,7 @@ variable number of parameters")
 
   int nargin = args.length ();
 
-  if (nargin == 1)
+  if (nargin == 0)
     {
       if (curr_function)
 	{
@@ -2366,7 +2361,7 @@ variable number of parameters")
   return retval;
 }
 
-DEFUN ("va_start", Fva_start, Sva_start, 1, 0,
+DEFUN ("va_start", Fva_start, Sva_start, 0, 0,
   "va_start (): reset the pointer to the list of optional arguments\n\
 to the beginning")
 {
@@ -2374,7 +2369,7 @@ to the beginning")
 
   int nargin = args.length ();
 
-  if (nargin == 1)
+  if (nargin == 0)
     {
       if (curr_function)
 	{

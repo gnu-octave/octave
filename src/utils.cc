@@ -498,7 +498,7 @@ static int
 all_strings (const Octave_object& args)
 {
   int n = args.length ();
-  for (int i = 1; i < n; i++)
+  for (int i = 0; i < n; i++)
     if (! args(i).is_string ())
       return 0;
   return 1;
@@ -513,8 +513,8 @@ make_argv (const Octave_object& args, const char *fcn_name)
       int n = args.length ();
       argv = new char * [n + 1];
       argv[0] = strsave (fcn_name);
-      for (int i = 1; i < n; i++)
-	argv[i] = strsave (args(i).string_value ());
+      for (int i = 0; i < n; i++)
+	argv[i+1] = strsave (args(i).string_value ());
     }
   else
     error ("%s: expecting all arguments to be strings", fcn_name);

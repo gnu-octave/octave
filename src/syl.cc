@@ -61,15 +61,17 @@ DEFUN_DLD_BUILTIN ("syl", Fsyl, Ssyl, 4, 1,
 {
   Octave_object retval;
 
-  if (args.length () != 4 || nargout > 1)
+  int nargin = args.length ();
+
+  if (nargin != 3 || nargout > 1)
     {
       print_usage ("syl");
       return retval;
     }
 
-  tree_constant arg_a = args(1);
-  tree_constant arg_b = args(2);
-  tree_constant arg_c = args(3);
+  tree_constant arg_a = args(0);
+  tree_constant arg_b = args(1);
+  tree_constant arg_c = args(2);
 
   int a_nr = arg_a.rows ();
   int a_nc = arg_a.columns ();

@@ -235,11 +235,11 @@ valid_scalar_indices (const Octave_object& args)
 {
   int nargin = args.length ();
 
-  return ((nargin == 3
-	   && args(2).valid_as_scalar_index ()
-	   && args(1).valid_as_scalar_index ())
-	  || (nargin == 2
-	      && args(1).valid_as_scalar_index ()));
+  return ((nargin == 2
+	   && args(1).valid_as_scalar_index ()
+	   && args(0).valid_as_scalar_index ())
+	  || (nargin == 1
+	      && args(0).valid_as_scalar_index ()));
 }
 
 // Now, the classes.
@@ -1804,11 +1804,13 @@ TC_REP::do_scalar_index (const Octave_object& args) const
 
       switch (nargin)
 	{
-	case 3:
+	case 2:
 	  {
-	    if (args(2).is_matrix_type ())
+	    tree_constant arg = args(1);
+
+	    if (arg.is_matrix_type ())
 	      {
-		Matrix mj = args(2).matrix_value ();
+		Matrix mj = arg.matrix_value ();
 
 		idx_vector j (mj, user_pref.do_fortran_indexing, "");
 		if (! j)
@@ -1818,9 +1820,9 @@ TC_REP::do_scalar_index (const Octave_object& args) const
 		if (len == j.ones_count ())
 		  cols = len;
 	      }
-	    else if (args(2).const_type () == magic_colon
-		     || (args(2).is_scalar_type ()
-			 && NINT (args(2).double_value ()) == 1))
+	    else if (arg.const_type () == magic_colon
+		     || (arg.is_scalar_type ()
+			 && NINT (arg.double_value ()) == 1))
 	      {
 		cols = 1;
 	      }
@@ -1830,11 +1832,13 @@ TC_REP::do_scalar_index (const Octave_object& args) const
 
 // Fall through...
 
-	case 2:
+	case 1:
 	  {
-	    if (args(1).is_matrix_type ())
+	    tree_constant arg = args(0);
+
+	    if (arg.is_matrix_type ())
 	      {
-		Matrix mi = args(1).matrix_value ();
+		Matrix mi = arg.matrix_value ();
 
 		idx_vector i (mi, user_pref.do_fortran_indexing, "");
 		if (! i)
@@ -1844,14 +1848,14 @@ TC_REP::do_scalar_index (const Octave_object& args) const
 		if (len == i.ones_count ())
 		  rows = len;
 	      }
-	    else if (args(1).const_type () == magic_colon
-		     || (args(1).is_scalar_type ()
-			 && NINT (args(1).double_value ()) == 1))
+	    else if (arg.const_type () == magic_colon
+		     || (arg.is_scalar_type ()
+			 && NINT (arg.double_value ()) == 1))
 	      {
 		rows = 1;
 	      }
-	    else if (args(1).is_scalar_type ()
-		     && NINT (args(1).double_value ()) == 0)
+	    else if (arg.is_scalar_type ()
+		     && NINT (arg.double_value ()) == 0)
 	      {
 		return Matrix ();
 	      }
@@ -1902,28 +1906,36 @@ TC_REP::do_matrix_index (const Octave_object& args) const
 
   switch (nargin)
     {
-    case 2:
-      if (args.length () <= 0)
-	::error ("matrix index is null");
-      else if (args(1).is_undefined ())
-	::error ("matrix index is a null expression");
-      else
-	retval = do_matrix_index (args(1));
+    case 1:
+      {
+	tree_constant arg = args(0);
+
+	if (arg.is_undefined ())
+	  ::error ("matrix index is a null expression");
+	else
+	  retval = do_matrix_index (arg);
+      }
       break;
 
     case 3:
-      if (args.length () <= 0)
-	::error ("matrix indices are null");
-      else if (args(1).is_undefined ())
+      {
+	tree_constant arg_a = args(0);
+	tree_constant arg_b = args(1);
+
+	if (arg_a.is_undefined ())
 	::error ("first matrix index is a null expression");
-      else if (args(2).is_undefined ())
-	::error ("second matrix index is a null expression");
-      else
-	retval = do_matrix_index (args(1), args(2));
+	else if (arg_b.is_undefined ())
+	  ::error ("second matrix index is a null expression");
+	else
+	  retval = do_matrix_index (arg_a, arg_b);
+      }
       break;
 
     default:
-      ::error ("too many indices for matrix expression");
+      if (nargin == 0)
+	::error ("matrix indices expected, but none provided");
+      else
+	::error ("too many indices for matrix expression");
       break;
     }
 
@@ -3235,7 +3247,7 @@ TC_REP::do_scalar_assignment (const tree_constant& rhs,
 	  type_tag = unknown_constant;
 	}
     }
-  else if (nargin > 3 || nargin < 2)
+  else if (nargin > 2 || nargin < 1)
     ::error ("invalid index expression for scalar type");
   else
     ::error ("index invalid or out of range for scalar type");
@@ -3281,39 +3293,47 @@ TC_REP::do_matrix_assignment (const tree_constant& rhs,
 // don't let any pass through here.
   switch (nargin)
     {
-    case 2:
-      if (args.length () <= 0)
-	::error ("matrix index is null");
-      else if (args(1).is_undefined ())
-	::error ("matrix index is undefined");
-      else
-	do_matrix_assignment (rhs, args(1));
+    case 1:
+      {
+	tree_constant arg = args(0);
+
+	if (arg.is_undefined ())
+	  ::error ("matrix index is undefined");
+	else
+	  do_matrix_assignment (rhs, arg);
+      }
       break;
 
-    case 3:
-      if (args.length () <= 0)
-	::error ("matrix indices are null");
-      else if (args(1).is_undefined ())
-	::error ("first matrix index is undefined");
-      else if (args(2).is_undefined ())
-	::error ("second matrix index is undefined");
-      else if (args(1).is_empty () || args(2).is_empty ())
-	{
-	  if (! rhs.is_empty ())
-	    {
-	      ::error ("in assignment expression, a matrix index is empty");
-	      ::error ("but hte right hand side is not an empty matrix");
-	    }
+    case 2:
+      {
+	tree_constant arg_a = args(0);
+	tree_constant arg_b = args(1);
+
+	if (arg_a.is_undefined ())
+	  ::error ("first matrix index is undefined");
+	else if (arg_b.is_undefined ())
+	  ::error ("second matrix index is undefined");
+	else if (arg_a.is_empty () || arg_b.is_empty ())
+	  {
+	    if (! rhs.is_empty ())
+	      {
+		::error ("in assignment expression, a matrix index is empty");
+		::error ("but the right hand side is not an empty matrix");
+	      }
 // XXX FIXME XXX -- to really be correct here, we should probably
 // check to see if the assignment conforms, but that seems like more
 // work than it's worth right now...
-	}
-      else
-	do_matrix_assignment (rhs, args(1), args(2));
+	  }
+	else
+	  do_matrix_assignment (rhs, arg_a, arg_b);
+      }
       break;
 
     default:
-      ::error ("too many indices for matrix expression");
+      if (nargin == 0)
+	::error ("matrix indices expected, but none provided");
+      else
+	::error ("too many indices for matrix expression");
       break;
     }
 }

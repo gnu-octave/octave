@@ -53,18 +53,18 @@ characters:\n\
 
   int nargin = args.length ();
 
-  if (nargin == 1 || nargin > 3 || nargout > 2)
+  if (nargin < 1 || nargin > 2 || nargout > 2)
     {
       print_usage ("schur");
       return retval;
     }
 
-  tree_constant arg = args(1);
+  tree_constant arg = args(0);
 
   char *ord = "U";
-  if (nargin == 3)
+  if (nargin == 2)
     {
-      ord = args(2).string_value ();
+      ord = args(1).string_value ();
 
       if (error_state)
 	{

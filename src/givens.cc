@@ -57,14 +57,16 @@ such that G [x; y] = [*; 0]  (x, y scalars)\n\
 {
   Octave_object retval;
 
-  if (args.length () != 3 || nargout > 2)
+  int nargin = args.length ();
+
+  if (nargin != 2 || nargout > 2)
     {
       print_usage ("givens");
       return retval;
     }
 
-  tree_constant arg_a = args(1);
-  tree_constant arg_b = args(2);
+  tree_constant arg_a = args(0);
+  tree_constant arg_b = args(1);
 
   if (! arg_a.is_scalar_type () && arg_b.is_scalar_type ())
     {

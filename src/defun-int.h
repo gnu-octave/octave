@@ -92,7 +92,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 // use them?
 
 #define DEFINE_ARGV(fcn_name) \
-  int argc = args.length (); \
+  int argc = args.length () + 1; \
   int save_argc = argc; \
   char **argv = make_argv (args, fcn_name); \
   char **save_argv = argv; \

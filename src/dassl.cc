@@ -52,10 +52,8 @@ dassl_user_function (const ColumnVector& x, const ColumnVector& xdot, double t)
 
   assert (nstates == xdot.capacity ());
 
-//  tree_constant name (dassl_fcn->name ());
   Octave_object args;
-  args(3) = t;
-//  args(0) = name;
+  args(2) = t;
 
   if (nstates > 1)
     {
@@ -68,8 +66,8 @@ dassl_user_function (const ColumnVector& x, const ColumnVector& xdot, double t)
 	}
       tree_constant state (m1);
       tree_constant deriv (m2);
-      args(1) = state;
-      args(2) = deriv;
+      args(1) = deriv;
+      args(0) = state;
     }
   else
     {
@@ -77,8 +75,8 @@ dassl_user_function (const ColumnVector& x, const ColumnVector& xdot, double t)
       double d2 = xdot.elem (0);
       tree_constant state (d1);
       tree_constant deriv (d2);
-      args(1) = state;
-      args(2) = deriv;
+      args(1) = deriv;
+      args(0) = state;
     }
 
   if (dassl_fcn)
@@ -120,17 +118,17 @@ where x, xdot, and res are vectors, and t is a scalar.")
 
   int nargin = args.length ();
 
-  if (nargin < 5 || nargin > 6)
+  if (nargin < 4 || nargin > 5)
     {
       print_usage ("dassl");
       return retval;
     }
 
-  dassl_fcn = is_valid_function (args(1), "dassl", 1);
+  dassl_fcn = is_valid_function (args(0), "dassl", 1);
   if (! dassl_fcn || takes_correct_nargs (dassl_fcn, 4, "dassl", 1) != 1)
     return retval;
 
-  ColumnVector state = args(2).vector_value ();
+  ColumnVector state = args(1).vector_value ();
 
   if (error_state)
     {
@@ -138,7 +136,7 @@ where x, xdot, and res are vectors, and t is a scalar.")
       return retval;
     }
 
-  ColumnVector deriv = args(3).vector_value ();
+  ColumnVector deriv = args(2).vector_value ();
 
   if (error_state)
     {
@@ -146,7 +144,7 @@ where x, xdot, and res are vectors, and t is a scalar.")
       return retval;
     }
 
-  ColumnVector out_times = args(4).vector_value ();
+  ColumnVector out_times = args(3).vector_value ();
 
   if (error_state)
     {
@@ -156,9 +154,9 @@ where x, xdot, and res are vectors, and t is a scalar.")
 
   ColumnVector crit_times;
   int crit_times_set = 0;
-  if (nargin > 5)
+  if (nargin > 4)
     {
-      crit_times = args(5).vector_value ();
+      crit_times = args(4).vector_value ();
 
       if (error_state)
 	{
@@ -305,18 +303,18 @@ to the shortest match.")
 
   int nargin = args.length ();
 
-  if (nargin == 1)
+  if (nargin == 0)
     {
       print_dassl_option_list ();
       return retval;
     }
-  else if (nargin == 3)
+  else if (nargin == 2)
     {
-      char *keyword = args(1).string_value ();
+      char *keyword = args(0).string_value ();
 
       if (! error_state)
 	{
-	  double val = args(2).double_value ();
+	  double val = args(1).double_value ();
 
 	  if (! error_state)
 	    {

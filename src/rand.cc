@@ -112,7 +112,7 @@ rand (SEED, N)        -- set seed")
 
   int nargin = args.length ();
 
-  if (nargin > 3 || nargout > 1)
+  if (nargin > 2 || nargout > 1)
     {
       print_usage ("rand");
       return retval;
@@ -145,15 +145,15 @@ rand (SEED, N)        -- set seed")
 
   int n = 0;
   int m = 0;
-  if (nargin == 1)
+  if (nargin == 0)
     {
       n = 1;
       m = 1;
       goto gen_matrix;
     }
-  else if (nargin == 2)
+  else if (nargin == 1)
     {
-      tree_constant tmp = args(1);
+      tree_constant tmp = args(0);
 
       if (tmp.is_string ())
 	{
@@ -191,8 +191,8 @@ rand (SEED, N)        -- set seed")
 	}
       else if (tmp.is_matrix_type ())
 	{
-	  n = NINT (args(1).rows ());
-	  m = NINT (args(1).columns ());
+	  n = NINT (args(0).rows ());
+	  m = NINT (args(0).columns ());
 	  goto gen_matrix;
 	}
       else
@@ -201,23 +201,23 @@ rand (SEED, N)        -- set seed")
 	  return retval;
 	}
     }
-  else if (nargin == 3)
+  else if (nargin == 2)
     {
-      if (args(1).is_string ()
-	  && strcmp (args(1).string_value (), "seed") == 0)
+      if (args(0).is_string ()
+	  && strcmp (args(0).string_value (), "seed") == 0)
 	{
-	  double d = args(2).double_value ();
+	  double d = args(1).double_value ();
 
 	  if (! error_state)
 	    set_rand_seed (d);
 	}
       else
 	{
-	  n = NINT (args(1).double_value ());
+	  n = NINT (args(0).double_value ());
 
 	  if (! error_state)
 	    {
-	      m = NINT (args(2).double_value ());
+	      m = NINT (args(1).double_value ());
 
 	      if (! error_state)
 		goto gen_matrix;

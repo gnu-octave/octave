@@ -150,7 +150,7 @@ DEFUN_DLD_BUILTIN ("min", Fmin, Smin, 3, 2,
 
   int nargin = args.length ();
 
-  if (nargin == 1 || nargin > 3 || nargout > 2)
+  if (nargin < 1 || nargin > 2 || nargout > 2)
     {
       print_usage ("min");
       return retval;
@@ -161,18 +161,18 @@ DEFUN_DLD_BUILTIN ("min", Fmin, Smin, 3, 2,
 
   switch (nargin)
     {
-    case 3:
-      arg2 = args(2);
-// Fall through...
     case 2:
-      arg1 = args(1);
+      arg2 = args(1);
+// Fall through...
+    case 1:
+      arg1 = args(0);
       break;
     default:
       panic_impossible ();
       break;
     }
 
-  if (nargin == 2 && (nargout == 1 || nargout == 0))
+  if (nargin == 1 && (nargout == 1 || nargout == 0))
     {
       if (arg1.is_real_scalar ())
 	{
@@ -212,7 +212,7 @@ DEFUN_DLD_BUILTIN ("min", Fmin, Smin, 3, 2,
 	  return retval;
 	}
     }
-  else if (nargin == 2 && nargout == 2)
+  else if (nargin == 1 && nargout == 2)
     {
       if (arg1.is_real_scalar ())
         {
@@ -266,7 +266,7 @@ DEFUN_DLD_BUILTIN ("min", Fmin, Smin, 3, 2,
 	  return retval;
         }
     }
-  else if (nargin == 3)
+  else if (nargin == 2)
     {
       if (arg1.rows () == arg2.rows ()
 	  && arg1.columns () == arg2.columns ())
@@ -325,7 +325,7 @@ DEFUN_DLD_BUILTIN ("max", Fmax, Smax, 3, 2,
 
   int nargin = args.length ();
 
-  if (nargin == 1 || nargin > 3 || nargout > 2)
+  if (nargin < 1 || nargin > 2 || nargout > 2)
     {
       print_usage ("max");
       return retval;
@@ -336,18 +336,18 @@ DEFUN_DLD_BUILTIN ("max", Fmax, Smax, 3, 2,
 
   switch (nargin)
     {
-    case 3:
-      arg2 = args(2);
-// Fall through...
     case 2:
-      arg1 = args(1);
+      arg2 = args(1);
+// Fall through...
+    case 1:
+      arg1 = args(0);
       break;
     default:
       panic_impossible ();
       break;
     }
 
-  if (nargin == 2 && (nargout == 1 || nargout == 0))
+  if (nargin == 1 && (nargout == 1 || nargout == 0))
     {
       if (arg1.is_real_scalar ())
 	{
@@ -379,7 +379,7 @@ DEFUN_DLD_BUILTIN ("max", Fmax, Smax, 3, 2,
 	  return retval;
 	}
     }
-  else if (nargin == 2 && nargout == 2)
+  else if (nargin == 1 && nargout == 2)
     {
       if (arg1.is_real_scalar ())
 	{
@@ -425,7 +425,7 @@ DEFUN_DLD_BUILTIN ("max", Fmax, Smax, 3, 2,
 	  return retval;
 	}
     }
-  else if (nargin == 3)
+  else if (nargin == 2)
     {
       if (arg1.rows () == arg2.rows ()
 	  && arg1.columns () == arg2.columns ())

@@ -60,19 +60,19 @@ that R = triu (qr (X))")
 
   int nargin = args.length ();
 
-  if (nargin != 2 && nargin != 3 || nargout > 3)
+  if (nargin != 1 && nargin != 2 || nargout > 3)
     {
       print_usage ("qr");
       return retval;
     }
 
-  tree_constant arg = args(1);
+  tree_constant arg = args(0);
     
   if (empty_arg ("qr", arg.rows (), arg.columns ()) < 0)
     return retval;
 
   QR::type type = nargout == 1 ? QR::raw
-    : (nargin == 3 ? QR::economy : QR::std);
+    : (nargin == 2 ? QR::economy : QR::std);
 
   if (arg.is_real_type ())
     {

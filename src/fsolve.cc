@@ -84,10 +84,8 @@ fsolve_user_function (const ColumnVector& x)
 
   int n = x.capacity ();
 
-//  tree_constant name = fsolve_fcn->name ();
   Octave_object args;
-  args.resize (2);
-//  args(0) = name;
+  args.resize (1);
 
   if (n > 1)
     {
@@ -95,13 +93,13 @@ fsolve_user_function (const ColumnVector& x)
       for (int i = 0; i < n; i++)
 	m (i, 0) = x.elem (i);
       tree_constant vars (m);
-      args(1) = vars;
+      args(0) = vars;
     }
   else
     {
       double d = x.elem (0);
       tree_constant vars (d);
-      args(1) = vars;
+      args(0) = vars;
     }
 
   if (fsolve_fcn)
@@ -137,17 +135,17 @@ where y and x are vectors.")
 
   int nargin = args.length ();
 
-  if (nargin < 3 || nargin > 7 || nargout > 3)
+  if (nargin < 2 || nargin > 6 || nargout > 3)
     {
       print_usage ("fsolve");
       return retval;
     }
 
-  fsolve_fcn = is_valid_function (args(1), "fsolve", 1);
+  fsolve_fcn = is_valid_function (args(0), "fsolve", 1);
   if (! fsolve_fcn || takes_correct_nargs (fsolve_fcn, 2, "fsolve", 1) != 1)
     return retval;
 
-  ColumnVector x = args(2).vector_value ();
+  ColumnVector x = args(1).vector_value ();
 
   if (error_state)
     {
@@ -155,7 +153,7 @@ where y and x are vectors.")
       return retval;
     }
 
-  if (nargin > 3)
+  if (nargin > 2)
     warning ("fsolve: ignoring extra arguments");
 
   if (nargout > 2)
@@ -271,18 +269,18 @@ to the shortest match.")
 
   int nargin = args.length ();
 
-  if (nargin == 1)
+  if (nargin == 0)
     {
       print_fsolve_option_list ();
       return retval;
     }
-  else if (nargin == 3)
+  else if (nargin == 2)
     {
-      char *keyword = args(1).string_value ();
+      char *keyword = args(0).string_value ();
 
       if (! error_state)
 	{
-	  double val = args(2).double_value ();
+	  double val = args(1).double_value ();
 
 	  if (! error_state)
 	    {

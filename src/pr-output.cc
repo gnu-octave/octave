@@ -1297,15 +1297,15 @@ octave_print_internal (ostream& os, const Range& r,
     }
 }
 
-DEFUN ("disp", Fdisp, Sdisp, 3, 1,
+DEFUN ("disp", Fdisp, Sdisp, 1, 1,
   "disp (X): display value without name tag")
 {
   Octave_object retval;
 
   int nargin = args.length ();
 
-  if (nargin == 2)
-    args(1).eval (1);
+  if (nargin == 1)
+    args(0).eval (1);
   else
     print_usage ("disp");
 

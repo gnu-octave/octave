@@ -159,13 +159,13 @@ DEFUN_DLD_BUILTIN ("find", Ffind, Sfind, 2, 3,
 
   int nargin = args.length ();
 
-  if (nargin != 2 || nargout > 3)
+  if (nargin != 1 || nargout > 3)
     {
       print_usage ("find");
       return retval;
     }
 
-  tree_constant arg = args(1);
+  tree_constant arg = args(0);
 
   if (arg.is_real_type ())
     {

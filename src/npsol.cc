@@ -289,14 +289,14 @@ Handle all of the following:
 
   int nargin = args.length ();
 
-  if (nargin < 3 || nargin == 4 || nargin == 7 || nargin == 10
-      || nargin > 11 || nargout > 4)
+  if (nargin < 2 || nargin == 3 || nargin == 6 || nargin == 9
+      || nargin > 10 || nargout > 4)
     {
       print_usage ("npsol");
       return retval;
     }
 
-  ColumnVector x = args(1).vector_value ();
+  ColumnVector x = args(0).vector_value ();
 
   if (error_state || x.capacity () == 0)
     {
@@ -304,7 +304,7 @@ Handle all of the following:
       return retval;
     }
 
-  npsol_objective = is_valid_function (args(2), "npsol", 1);
+  npsol_objective = is_valid_function (args(1), "npsol", 1);
   if (! npsol_objective
       || takes_correct_nargs (npsol_objective, 2, "npsol", 1) != 1)
     return retval;
@@ -314,10 +314,10 @@ Handle all of the following:
   ColumnVector soln;
 
   Bounds bounds;
-  if (nargin == 5 || nargin == 8 || nargin == 11)
+  if (nargin == 4 || nargin == 7 || nargin == 10)
     {
-      ColumnVector lb = args(3).vector_value ();
-      ColumnVector ub = args(4).vector_value ();
+      ColumnVector lb = args(2).vector_value ();
+      ColumnVector ub = args(3).vector_value ();
 
       int lb_len = lb.capacity ();
       int ub_len = ub.capacity ();
@@ -338,7 +338,7 @@ Handle all of the following:
   ColumnVector lambda;
   int inform;
 
-  if (nargin == 3)
+  if (nargin == 2)
     {
       // 1. npsol (x, phi)
 
@@ -349,7 +349,7 @@ Handle all of the following:
       goto solved;
     }
 
-  if (nargin == 5)
+  if (nargin == 4)
     {
       // 2. npsol (x, phi, lb, ub)
 
@@ -361,15 +361,15 @@ Handle all of the following:
     }
 
   npsol_constraints = 0;
-  if (nargin == 6 || nargin == 8 || nargin == 9 || nargin == 11)
-    npsol_constraints = is_valid_function (args(nargin-2), "npsol", 0);
+  if (nargin == 5 || nargin == 7 || nargin == 8 || nargin == 10)
+    npsol_constraints = is_valid_function (args(nargin-1), "npsol", 0);
 
-  if (nargin == 8 || nargin == 6)
+  if (nargin == 7 || nargin == 5)
     {
       if (! npsol_constraints)
 	{
-	  ColumnVector lub = args(nargin-1).vector_value ();
-	  ColumnVector llb = args(nargin-3).vector_value ();
+	  ColumnVector lub = args(nargin).vector_value ();
+	  ColumnVector llb = args(nargin-2).vector_value ();
 
 	  if (error_state || llb.capacity () == 0 || lub.capacity () == 0)
 	    {
@@ -377,7 +377,7 @@ Handle all of the following:
 	      return retval;
 	    }
 
-	  Matrix c = args(nargin-2).matrix_value ();
+	  Matrix c = args(nargin-1).matrix_value ();
 
 	  if (error_state)
 	    {
@@ -390,7 +390,7 @@ Handle all of the following:
 
 	  LinConst linear_constraints (llb, c, lub);
 
-	  if (nargin == 6)
+	  if (nargin == 5)
 	    {
 	      // 7. npsol (x, phi, llb, c, lub)
 
@@ -412,8 +412,8 @@ Handle all of the following:
 	{
 	  if (takes_correct_nargs (npsol_constraints, 2, "npsol", 1))
 	    {
-	      ColumnVector nlub = args(nargin-1).vector_value ();
-	      ColumnVector nllb = args(nargin-3).vector_value ();
+	      ColumnVector nlub = args(nargin).vector_value ();
+	      ColumnVector nllb = args(nargin-2).vector_value ();
 
 	      if (error_state
 		  || (! nonlinear_constraints_ok
@@ -423,7 +423,7 @@ Handle all of the following:
 	      NLFunc const_func (npsol_constraint_function);
 	      NLConst nonlinear_constraints (nllb, const_func, nlub);
 
-	      if (nargin == 6)
+	      if (nargin == 5)
 		{
 		  // 8. npsol (x, phi, nllb, g, nlub)
 
@@ -444,19 +444,19 @@ Handle all of the following:
 	}
     }
 
-  if (nargin == 9 || nargin == 11)
+  if (nargin == 8 || nargin == 10)
     {
       if (! npsol_constraints)
 	{
 	  // Produce error message.
-	  is_valid_function (args(nargin-2), "npsol", 1);
+	  is_valid_function (args(nargin-1), "npsol", 1);
 	}
       else
 	{
 	  if (takes_correct_nargs (npsol_constraints, 2, "npsol", 1))
 	    {
-	      ColumnVector nlub = args(nargin-1).vector_value ();
-	      ColumnVector nllb = args(nargin-3).vector_value ();
+	      ColumnVector nlub = args(nargin).vector_value ();
+	      ColumnVector nllb = args(nargin-2).vector_value ();
 
 	      if (error_state
 		  || (! nonlinear_constraints_ok
@@ -466,8 +466,8 @@ Handle all of the following:
 	      NLFunc const_func (npsol_constraint_function);
 	      NLConst nonlinear_constraints (nllb, const_func, nlub);
 
-	      ColumnVector lub = args(nargin-4).vector_value ();
-	      ColumnVector llb = args(nargin-6).vector_value ();
+	      ColumnVector lub = args(nargin-3).vector_value ();
+	      ColumnVector llb = args(nargin-5).vector_value ();
 
 	      if (error_state || llb.capacity () == 0 || lub.capacity () == 0)
 		{
@@ -475,7 +475,7 @@ Handle all of the following:
 		  return retval;
 		}
 	      
-	      Matrix c = args(nargin-5).matrix_value ();
+	      Matrix c = args(nargin-4).matrix_value ();
 
 	      if (error_state)
 		{
@@ -488,7 +488,7 @@ Handle all of the following:
 
 	      LinConst linear_constraints (llb, c, lub);
 
-	      if (nargin == 9)
+	      if (nargin == 8)
 		{
 		  // 6. npsol (x, phi, llb, c, lub, nllb, g, nlub)
 
@@ -768,18 +768,18 @@ to the shortest match.")
 
   int nargin = args.length ();
 
-  if (nargin == 1)
+  if (nargin == 0)
     {
       print_npsol_option_list ();
       return retval;
     }
-  else if (nargin == 3)
+  else if (nargin == 2)
     {
-      char *keyword = args(1).string_value ();
+      char *keyword = args(0).string_value ();
 
       if (! error_state)
 	{
-	  double val = args(2).double_value ();
+	  double val = args(1).double_value ();
 
 	  if (! error_state)
 	    {

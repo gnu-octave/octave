@@ -167,8 +167,8 @@ int
 takes_correct_nargs (tree_fvc *fcn, int expected_nargin, char *warn_for,
 		     int warn)
 {
-  int nargin = fcn->max_expected_args () - 1;
-  int e_nargin = expected_nargin - 1;
+  int nargin = fcn->max_expected_args ();
+  int e_nargin = expected_nargin;
   if (nargin != e_nargin)
     {
       if (warn)
@@ -179,13 +179,15 @@ takes_correct_nargs (tree_fvc *fcn, int expected_nargin, char *warn_for,
   return 1;
 }
 
-DEFUN ("is_global", Fis_global, Sis_global, 2, 1,
+DEFUN ("is_global", Fis_global, Sis_global, 1, 1,
   "is_global (X): return 1 if the string X names a global variable\n\
 otherwise, return 0.")
 {
   Octave_object retval = 0.0;
 
-  if (args.length () != 2)
+  int nargin = args.length ();
+
+  if (nargin != 1)
     {
       print_usage ("is_global");
       return retval;
@@ -206,7 +208,7 @@ otherwise, return 0.")
   return retval;
 }
 
-DEFUN ("exist", Fexist, Sexist, 2, 1,
+DEFUN ("exist", Fexist, Sexist, 1, 1,
   "exist (NAME): check if variable or file exists\n\
 \n\
 return 0 if NAME is undefined, 1 if it is a variable, or 2 if it is\n\
@@ -214,7 +216,9 @@ a function.")
 {
   Octave_object retval;
 
-  if (args.length () != 2)
+  int nargin = args.length ();
+
+  if (nargin != 1)
     {
       print_usage ("exist");
       return retval;
@@ -1141,10 +1145,13 @@ character, but may not be combined.")
 {
   Octave_object retval;
 
-  Octave_object tmp_args = args;
-  tmp_args(args.length ()) = "-long";
+  int nargin = args.length ();
 
-  int argc = tmp_args.length ();
+  Octave_object tmp_args = args;
+
+  tmp_args(nargin) = "-long";
+
+  int argc = nargin + 1;
   char **argv = make_argv (tmp_args, "whos");
 
   if (error_state)
@@ -1260,7 +1267,7 @@ bind_nargin_and_nargout (symbol_table *sym_tab, int nargin, int nargout)
 
   sr = sym_tab->lookup ("nargin", 1, 0);
   sr->unprotect ();
-  tmp = new tree_constant (nargin-1);
+  tmp = new tree_constant (nargin);
   sr->define (tmp);
   sr->protect ();
 

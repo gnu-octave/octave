@@ -373,7 +373,7 @@ kbhit (void)
   return c;
 }
 
-DEFUN ("clc", Fclc, Sclc, 1, 0,
+DEFUN ("clc", Fclc, Sclc, 0, 0,
   "clc (): clear screen")
 {
   Octave_object retval;
@@ -397,16 +397,16 @@ DEFUN ("clc", Fclc, Sclc, 1, 0,
 
 DEFALIAS (home, clc);
 
-DEFUN ("getenv", Fgetenv, Sgetenv, 2, 1,
+DEFUN ("getenv", Fgetenv, Sgetenv, 1, 1,
   "getenv (STRING): get environment variable values")
 {
   Octave_object retval;
 
   int nargin = args.length ();
 
-  if (nargin == 2)
+  if (nargin == 1)
     {
-      char *name = args(1).string_value ();
+      char *name = args(0).string_value ();
 
       if (! error_state)
 	{
@@ -423,7 +423,7 @@ DEFUN ("getenv", Fgetenv, Sgetenv, 2, 1,
   return retval;
 }
 
-DEFUN ("kbhit", Fkbhit, Skbhit, 1, 1,
+DEFUN ("kbhit", Fkbhit, Skbhit, 0, 1,
   "kbhit: get a single character from the terminal")
 {
   Octave_object retval;
@@ -449,7 +449,7 @@ DEFUN ("pause", Fpause, Spause, 1, 1,
 
   int nargin = args.length ();
 
-  if (! (nargin == 1 || nargin == 2))
+  if (! (nargin == 0 || nargin == 1))
     {
       print_usage ("pause");
       return retval;
@@ -459,9 +459,9 @@ DEFUN ("pause", Fpause, Spause, 1, 1,
     {
       switch (nargin)
 	{
-	case 2:
+	case 1:
 	  {
-	    double dval = args(1).double_value ();
+	    double dval = args(0).double_value ();
 
 	    if (! error_state)
 	      {

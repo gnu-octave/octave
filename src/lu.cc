@@ -40,13 +40,15 @@ DEFUN_DLD_BUILTIN ("lu", Flu, Slu, 2, 3,
 {
   Octave_object retval;
 
-  if (args.length () != 2 || nargout > 3)
+  int nargin = args.length ();
+
+  if (nargin != 1 || nargout > 3)
     {
       print_usage ("lu");
       return retval;
     }
 
-  tree_constant arg = args(1);
+  tree_constant arg = args(0);
 
   int nr = arg.rows ();
   int nc = arg.columns ();

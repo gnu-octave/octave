@@ -627,7 +627,9 @@ Have Octave ask the system, \"What kind of computer are you?\"")
 {
   Octave_object retval;
 
-  if (args.length () != 1)
+  int nargin = args.length ();
+
+  if (nargin != 0)
     warning ("computer: ignoring extra arguments");
 
   ostrstream output_buf;
@@ -652,12 +654,12 @@ Have Octave ask the system, \"What kind of computer are you?\"")
   return retval;
 }
 
-DEFUN ("flops", Fflops, Sflops, 2, 1,
+DEFUN ("flops", Fflops, Sflops, 0, 1,
   "flops (): count floating point operations")
 {
   int nargin = args.length ();
 
-  if (nargin > 2)
+  if (nargin > 0)
     print_usage ("flops");
 
   warning ("flops is a flop, always returning zero");
@@ -665,7 +667,7 @@ DEFUN ("flops", Fflops, Sflops, 2, 1,
   return 0.0;
 }
 
-DEFUN ("quit", Fquit, Squit, 1, 0,
+DEFUN ("quit", Fquit, Squit, 0, 0,
   "quit (): exit Octave gracefully")
 {
   Octave_object retval;
@@ -676,7 +678,7 @@ DEFUN ("quit", Fquit, Squit, 1, 0,
 
 DEFALIAS (exit, quit);
 
-DEFUN ("warranty", Fwarranty, Swarranty, 1, 0,
+DEFUN ("warranty", Fwarranty, Swarranty, 0, 0,
   "warranty (): describe copying conditions")
 {
   Octave_object retval;
@@ -713,13 +715,13 @@ feval (const Octave_object& args, int nargout)
 {
   Octave_object retval;
 
-  tree_fvc *fcn = is_valid_function (args(1), "feval", 1);
+  tree_fvc *fcn = is_valid_function (args(0), "feval", 1);
   if (fcn)
     {
-      int nargin = args.length () - 1;
+      int tmp_nargin = args.length () - 1;
       Octave_object tmp_args;
-      tmp_args.resize (nargin);
-      for (int i = 0; i < nargin; i++)
+      tmp_args.resize (tmp_nargin);
+      for (int i = 0; i < tmp_nargin; i++)
 	tmp_args(i) = args(i+1);
       retval = fcn->eval (0, nargout, tmp_args);
     }
@@ -736,7 +738,7 @@ evaluate NAME as a function, passing ARGS as its arguments")
 
   int nargin = args.length ();
 
-  if (nargin > 1)
+  if (nargin > 0)
     retval = feval (args, nargout);
   else
     print_usage ("feval");
@@ -820,7 +822,7 @@ eval_string (const tree_constant& arg, int& parse_status, int nargout)
   return eval_string (string, 1, 1, parse_status, nargout);
 }
 
-DEFUN ("eval", Feval, Seval, 3, 1,
+DEFUN ("eval", Feval, Seval, 2, 1,
   "eval (TRY, CATCH)\n\
 \n\
 Evaluate the string TRY as octave code.  If that fails, evaluate the\n\
@@ -830,11 +832,11 @@ string CATCH.")
 
   int nargin = args.length ();
 
-  if (nargin > 1)
+  if (nargin > 0)
     {
       begin_unwind_frame ("Feval");
 
-      if (nargin > 2)
+      if (nargin > 1)
 	{
 	  unwind_protect_int (suppress_octave_error_messages);
 	  suppress_octave_error_messages = 1;
@@ -842,12 +844,12 @@ string CATCH.")
 
       int parse_status = 0;
 
-      retval = eval_string (args(1), parse_status, nargout);
+      retval = eval_string (args(0), parse_status, nargout);
 
-      if (nargin > 2 && (parse_status != 0 || error_state))
+      if (nargin > 1 && (parse_status != 0 || error_state))
 	{
 	  error_state = 0;
-	  eval_string (args(2), parse_status, nargout);
+	  eval_string (args(1), parse_status, nargout);
 	  retval = Octave_object ();
 	}
 
@@ -868,19 +870,19 @@ DEFUN ("system", Fsystem, Ssystem, 2, 1,
 
   int nargin = args.length ();
 
-  if (nargin < 2 || nargin > 3)
+  if (nargin < 1 || nargin > 2)
     {
-      print_usage ("shell_cmd");
+      print_usage ("system");
       return retval;
     }
 
-  tree_constant tc_command = args(1);
+  tree_constant tc_command = args(0);
 
   char *tmp_str = tc_command.string_value ();
 
   if (error_state)
     {
-      error ("shell_cmd: expecting string as first argument");
+      error ("system: expecting string as first argument");
     }
   else
     {
@@ -896,7 +898,7 @@ DEFUN ("system", Fsystem, Ssystem, 2, 1,
 
       int status = cmd.close ();
 
-      if (nargout > 0 || nargin > 2)
+      if (nargout > 0 || nargin > 1)
 	{
 	  char *msg = output_buf.str ();
 

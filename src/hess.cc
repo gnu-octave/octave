@@ -41,13 +41,15 @@ DEFUN_DLD_BUILTIN ("hess", Fhess, Shess, 2, 2,
 {
   Octave_object retval;
 
-  if (args.length () != 2 || nargout > 2)
+  int nargin = args.length ();
+
+  if (nargin != 1 || nargout > 2)
     {
       print_usage ("hess");
       return retval;
     }
 
-  tree_constant arg = args(1);
+  tree_constant arg = args(0);
 
   int nr = arg.rows ();
   int nc = arg.columns ();

@@ -66,7 +66,7 @@ where OPT is an optional single character argument as follows: \n\
 
   int nargin = args.length ();
 
-  if (nargin < 2 || nargin > 4 || nargout < 0 || nargout > 4)
+  if (nargin < 1 || nargin > 3 || nargout < 0 || nargout > 4)
     {
       print_usage ("balance");
       return retval;
@@ -81,15 +81,15 @@ where OPT is an optional single character argument as follows: \n\
   if (args(nargin-1).is_string ())
     {
       bal_job = args(nargin-1).string_value ();
-      my_nargin = nargin-2;
+      my_nargin = nargin-1;
     }
   else
     {
       bal_job = "B";
-      my_nargin = nargin-1;
+      my_nargin = nargin;
     }
 
-  tree_constant arg_a = args(1);
+  tree_constant arg_a = args(0);
 
   int a_nr = arg_a.rows ();
   int a_nc = arg_a.columns ();
@@ -157,7 +157,7 @@ where OPT is an optional single character argument as follows: \n\
 
 // 1st we have to check argument 2 dimensions and type...
 
-	tree_constant arg_b = args(2);
+	tree_constant arg_b = args(1);
 
 	int b_nr = arg_b.rows ();
 	int b_nc = arg_b.columns ();

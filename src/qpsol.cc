@@ -91,14 +91,14 @@ Handle all of the following:
 
   int nargin = args.length ();
 
-  if (nargin < 4 || nargin == 5 || nargin == 8 || nargin > 9
+  if (nargin < 3 || nargin == 4 || nargin == 7 || nargin > 8
       || nargout > 4)
     {
       print_usage ("qpsol");
       return retval;
     }
 
-  ColumnVector x = args(1).vector_value ();
+  ColumnVector x = args(0).vector_value ();
 
   if (error_state || x.capacity () == 0)
     {
@@ -106,7 +106,7 @@ Handle all of the following:
       return retval;
     }
 
-  Matrix H = args(2).matrix_value ();
+  Matrix H = args(1).matrix_value ();
 
   if (error_state || H.rows () != H.columns () || H.rows () != x.capacity ())
     {
@@ -114,7 +114,7 @@ Handle all of the following:
       return retval;
     }
 
-  ColumnVector c = args(3).vector_value ();
+  ColumnVector c = args(2).vector_value ();
 
   if (error_state || c.capacity () != x.capacity ())
     {
@@ -123,10 +123,10 @@ Handle all of the following:
     }
 
   Bounds bounds;
-  if (nargin == 6 || nargin == 9)
+  if (nargin == 5 || nargin == 8)
     {
-      ColumnVector lb = args(4).vector_value ();
-      ColumnVector ub = args(5).vector_value ();
+      ColumnVector lb = args(3).vector_value ();
+      ColumnVector ub = args(4).vector_value ();
 
       int lb_len = lb.capacity ();
       int ub_len = ub.capacity ();
@@ -148,7 +148,7 @@ Handle all of the following:
   ColumnVector lambda;
   int inform;
 
-  if (nargin == 4)
+  if (nargin == 3)
     {
       // 1. qpsol (x, H, c)
 
@@ -159,7 +159,7 @@ Handle all of the following:
       goto solved;
     }
 
-  if (nargin == 6)
+  if (nargin == 5)
     {
       //  2. qpsol (x, H, c, lb, ub)
 
@@ -170,10 +170,10 @@ Handle all of the following:
       goto solved;
     }
 
-  if (nargin == 7 || nargin == 9)
+  if (nargin == 6 || nargin == 8)
     {
-      ColumnVector lub = args(nargin-1).vector_value ();
-      ColumnVector llb = args(nargin-3).vector_value ();
+      ColumnVector lub = args(nargin).vector_value ();
+      ColumnVector llb = args(nargin-2).vector_value ();
 
       if (error_state || llb.capacity () == 0 || lub.capacity () == 0)
 	{
@@ -181,7 +181,7 @@ Handle all of the following:
 	  return retval;
 	}
 
-      Matrix A = args(nargin-2).matrix_value ();
+      Matrix A = args(nargin-1).matrix_value ();
 
       if (error_state)
 	{
@@ -194,7 +194,7 @@ Handle all of the following:
 
       LinConst linear_constraints (llb, A, lub);
 
-      if (nargin == 9)
+      if (nargin == 8)
 	{
 	  // 3. qpsol (x, H, c, lb, ub, llb, A, lub)
 
@@ -374,18 +374,18 @@ to the shortest match.")
 
   int nargin = args.length ();
 
-  if (nargin == 1)
+  if (nargin == 0)
     {
       print_qpsol_option_list ();
       return retval;
     }
-  else if (nargin == 3)
+  else if (nargin == 2)
     {
-      char *keyword = args(1).string_value ();
+      char *keyword = args(0).string_value ();
 
       if (! error_state)
 	{
-	  double val = args(2).double_value ();
+	  double val = args(1).double_value ();
 
 	  if (! error_state)
 	    {

@@ -45,17 +45,17 @@ DEFUN_DLD_BUILTIN ("fft", Ffft, Sfft, 3, 1,
 
   int nargin = args.length ();
 
-  if (nargin < 2 || nargin > 3)
+  if (nargin < 1 || nargin > 2)
     {
       print_usage ("fft");
       return retval;
     }
 
-  tree_constant arg = args(1);
+  tree_constant arg = args(0);
 
   int n_points = arg.rows ();
-  if (nargin == 3)
-    n_points = NINT (args(2).double_value ());
+  if (nargin == 2)
+    n_points = NINT (args(1).double_value ());
 
   if (error_state)
     return retval;

@@ -42,13 +42,15 @@ DEFUN_DLD_BUILTIN ("logm", Flogm, Slogm, 2, 1,
 {
   Octave_object retval;
 
-  if (args.length () != 2)
+  int nargin = args.length ();
+
+  if (nargin != 1)
     {
       print_usage ("logm");
       return retval;
     }
 
-  tree_constant arg = args(1);
+  tree_constant arg = args(0);
     
   if (empty_arg ("logm", arg.rows (), arg.columns ()) < 0)
     return retval;
@@ -148,13 +150,15 @@ DEFUN_DLD_BUILTIN ("sqrtm", Fsqrtm, Ssqrtm, 2, 1,
 {
   Octave_object retval;
 
-  if (args.length () != 2)
+  int nargin = args.length ();
+
+  if (nargin != 1)
     {
       print_usage ("sqrtm");
       return retval;
     }
 
-  tree_constant arg = args(1);
+  tree_constant arg = args(0);
     
   if (empty_arg ("sqrtm", arg.rows (), arg.columns ()))
     return retval;

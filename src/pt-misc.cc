@@ -205,15 +205,13 @@ tree_statement_list::print_code (ostream& os)
 Octave_object
 tree_argument_list::convert_to_const_vector (void)
 {
-  int len = length () + 1;
+  int len = length ();
 
   Octave_object args;
   args.resize (len);
 
-// args[0] may eventually hold something useful, like the function
-// name.
   Pix p = first ();
-  for (int k = 1; k < len; k++)
+  for (int k = 0; k < len; k++)
     {
       tree_expression *elt = this->operator () (p);
       if (elt)
@@ -232,6 +230,7 @@ tree_argument_list::convert_to_const_vector (void)
 	  break;
 	}
     }
+
   return args;
 }
 
@@ -271,16 +270,16 @@ tree_parameter_list::mark_as_formal_parameters (void)
 void
 tree_parameter_list::define_from_arg_vector (const Octave_object& args)
 {
-  if (args.length () <= 0)
-    return;
-
   int nargin = args.length ();
 
-  int expected_nargin = length () + 1;
+  if (nargin <= 0)
+    return;
+
+  int expected_nargin = length ();
 
   Pix p = first ();
 
-  for (int i = 1; i < expected_nargin; i++)
+  for (int i = 0; i < expected_nargin; i++)
     {
       tree_identifier *elt = this->operator () (p);
 

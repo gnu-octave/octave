@@ -40,19 +40,19 @@ DEFUN_DLD_BUILTIN ("colloc", Fcolloc, Scolloc, 7, 4,
 
   int nargin = args.length ();
 
-  if (nargin < 2 || nargin > 4)
+  if (nargin < 1 || nargin > 3)
     {
       print_usage ("colloc");
       return retval;
     }
 
-  if (! args(1).is_scalar_type ())
+  if (! args(0).is_scalar_type ())
     {
       error ("colloc: first argument must be a scalar");
       return retval;
     }
 
-  double tmp = args(1).double_value ();
+  double tmp = args(0).double_value ();
 
   if (error_state)
     return retval;
@@ -68,7 +68,7 @@ DEFUN_DLD_BUILTIN ("colloc", Fcolloc, Scolloc, 7, 4,
   int left = 0;
   int right = 0;
 
-  for (int i = 2; i < nargin; i++)
+  for (int i = 1; i < nargin; i++)
     {
       if (args(i).is_defined ())
 	{

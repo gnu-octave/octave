@@ -47,18 +47,18 @@ unnecessary rows and columns of U and V")
 
   int nargin = args.length ();
 
-  if (nargin < 2 || nargin > 3 || nargout == 2 || nargout > 3)
+  if (nargin < 1 || nargin > 2 || nargout == 2 || nargout > 3)
     {
       print_usage ("svd");
       return retval;
     }
 
-  tree_constant arg = args(1);
+  tree_constant arg = args(0);
 
   if (empty_arg ("svd", arg.rows (), arg.columns ()) < 0)
     return retval;
 
-  SVD::type type = (nargin == 3) ? SVD::economy : SVD::std;
+  SVD::type type = (nargin == 2) ? SVD::economy : SVD::std;
 
   if (arg.is_real_type ())
     {

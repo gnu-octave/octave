@@ -757,13 +757,13 @@ get_user_input (const Octave_object& args, int nargout, int debug = 0)
 
   int read_as_string = 0;
 
-  if (nargin == 3)
+  if (nargin == 2)
     read_as_string++;
 
   char *prompt = "debug> ";
-  if (nargin > 1)
+  if (nargin > 0)
    {
-     prompt = args(1).string_value ();
+     prompt = args(0).string_value ();
 
      if (error_state)
        {
@@ -820,7 +820,7 @@ get_user_input (const Octave_object& args, int nargout, int debug = 0)
   return retval;
 }
 
-DEFUN ("input", Finput, Sinput, 3, 1,
+DEFUN ("input", Finput, Sinput, 2, 1,
   "input (PROMPT [, S])\n\
 \n\
 Prompt user for input.  If the second argument is present, return
@@ -830,7 +830,7 @@ value as a string.")
 
   int nargin = args.length ();
 
-  if (nargin == 2 || nargin == 3)
+  if (nargin == 1 || nargin == 2)
     retval = get_user_input (args, nargout);
   else
     print_usage ("input");
@@ -838,7 +838,7 @@ value as a string.")
   return retval;
 }
 
-DEFUN ("keyboard", Fkeyboard, Skeyboard, 2, 1,
+DEFUN ("keyboard", Fkeyboard, Skeyboard, 1, 1,
   "keyboard (PROMPT)\n\
 \n\
 maybe help in debugging function files")
@@ -847,7 +847,7 @@ maybe help in debugging function files")
 
   int nargin = args.length ();
 
-  if (nargin == 1 || nargin == 2)
+  if (nargin == 0 || nargin == 1)
     retval = get_user_input (args, nargout, 1);
   else
     print_usage ("keyboard");

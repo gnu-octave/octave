@@ -47,24 +47,24 @@ two dimensional fast fourier transform of a vector")
 
   int nargin = args.length ();
 
-  if (nargin < 2 || nargin > 4)
+  if (nargin < 1 || nargin > 3)
     {
       print_usage ("fft2");
       return retval;
     }
 
-  tree_constant arg = args(1);
+  tree_constant arg = args(0);
 
   int n_rows = arg.rows ();
-  if (nargin > 2)
-    n_rows = NINT (args(2).double_value ());
+  if (nargin > 1)
+    n_rows = NINT (args(1).double_value ());
 
   if (error_state)
     return retval;
 
   int n_cols = arg.columns ();
-  if (nargin > 3)
-    n_cols = NINT (args(3).double_value ());
+  if (nargin > 2)
+    n_cols = NINT (args(2).double_value ());
 
   if (error_state)
     return retval;

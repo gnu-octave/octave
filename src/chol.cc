@@ -41,13 +41,15 @@ DEFUN_DLD_BUILTIN ("chol", Fchol, Schol, 2, 1,
 {
   Octave_object retval;
 
-  if (args.length () != 2 || nargout > 1)
+  int nargin = args.length ();
+
+  if (nargin != 1 || nargout > 1)
     {
       print_usage ("chol");
       return retval;
     }
 
-  tree_constant arg = args(1);
+  tree_constant arg = args(0);
     
   int nr = arg.rows ();
   int nc = arg.columns ();

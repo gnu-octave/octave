@@ -49,10 +49,8 @@ quad_user_function (double x)
 {
   double retval = 0.0;
 
-//  tree_constant name = quad_fcn->name ();
   Octave_object args;
-  args(1) = x;
-//  args(0) = name;
+  args(0) = x;
 
   if (quad_fcn)
     {
@@ -104,17 +102,17 @@ at which the integrand is singular.")
 
   int nargin = args.length ();
 
-  if (nargin < 4 || nargin > 6 || nargout > 4)
+  if (nargin < 3 || nargin > 5 || nargout > 4)
     {
       print_usage ("quad");
       return retval;
     }
 
-  quad_fcn = is_valid_function (args(1), "fsolve", 1);
+  quad_fcn = is_valid_function (args(0), "fsolve", 1);
   if (! quad_fcn || takes_correct_nargs (quad_fcn, 2, "fsolve", 1) != 1)
     return retval;
 
-  double a = args(2).double_value ();
+  double a = args(1).double_value ();
 
   if (error_state)
     {
@@ -122,7 +120,7 @@ at which the integrand is singular.")
       return retval;
     }
 
-  double b = args(3).double_value ();
+  double b = args(2).double_value ();
 
   if (error_state)
     {
@@ -162,7 +160,7 @@ at which the integrand is singular.")
   int have_sing = 0;
   switch (nargin)
     {
-    case 6:
+    case 5:
       if (indefinite)
 	{
 	  error("quad: singularities not allowed on infinite intervals");
@@ -171,7 +169,7 @@ at which the integrand is singular.")
 
       have_sing = 1;
 
-      sing = args(5).vector_value ();
+      sing = args(4).vector_value ();
 
       if (error_state)
 	{
@@ -179,8 +177,8 @@ at which the integrand is singular.")
 	  return retval;
 	}
 
-    case 5:
-      tol = args(4).vector_value ();
+    case 4:
+      tol = args(3).vector_value ();
 
       if (error_state)
 	{
@@ -202,7 +200,7 @@ at which the integrand is singular.")
 	  return retval;
 	}
 
-    case 4:
+    case 3:
       if (indefinite)
 	{
 	  IndefQuad iq (quad_user_function, bound, indef_type, abstol, reltol);
@@ -337,18 +335,18 @@ to the shortest match.")
 
   int nargin = args.length ();
 
-  if (nargin == 1)
+  if (nargin == 0)
     {
       print_quad_option_list ();
       return retval;
     }
-  else if (nargin == 3)
+  else if (nargin == 2)
     {
-      char *keyword = args(1).string_value ();
+      char *keyword = args(0).string_value ();
 
       if (! error_state)
 	{
-	  double val = args(2).double_value ();
+	  double val = args(1).double_value ();
 
 	  if (! error_state)
 	    {

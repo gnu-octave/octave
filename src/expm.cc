@@ -60,13 +60,13 @@ DEFUN_DLD_BUILTIN ("expm", Fexpm, Sexpm, 2, 1,
 
   int nargin = args.length ();
 
-  if (nargin != 2)
+  if (nargin != 1)
     {
       print_usage ("expm");
       return retval;
     }
 
-  tree_constant arg = args(1);
+  tree_constant arg = args(0);
 
 // Constants for matrix exponential calculation.
 

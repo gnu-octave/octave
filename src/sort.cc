@@ -172,7 +172,7 @@ sort the columns of X, optionally return sort index")
 
   int nargin = args.length ();
 
-  if (nargin != 2)
+  if (nargin != 1)
     {
       print_usage ("sort");
       return retval;
@@ -184,7 +184,7 @@ sort the columns of X, optionally return sort index")
   else
     retval.resize (1);
 
-  tree_constant arg = args(1);
+  tree_constant arg = args(0);
 
   if (arg.is_real_type ())
     {

@@ -134,7 +134,7 @@ panic (const char *fmt, ...)
   abort ();
 }
 
-DEFUN ("error", Ferror, Serror, 2, 1,
+DEFUN ("error", Ferror, Serror, 1, 1,
   "error (MESSAGE): print MESSAGE and set the error state.\n\
 This should eventually take us up to the top level, possibly\n\
 printing traceback messages as we go.\n\
@@ -148,11 +148,11 @@ printed.")
 
   int nargin = args.length ();
 
-  if (nargin == 2 && args(1).is_defined ())
+  if (nargin == 1 && args(0).is_defined ())
     {
-      if (args(1).is_string ())
+      if (args(0).is_string ())
 	{
-	  msg = args(1).string_value ();
+	  msg = args(0).string_value ();
 
 	  if (! msg || ! *msg)
 	    return retval;

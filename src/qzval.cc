@@ -62,14 +62,16 @@ A and B must be real matrices.")
 {
   Octave_object retval;
 
-  if (args.length () != 3 || nargout > 1)
+  int nargin = args.length ();
+
+  if (nargin != 2 || nargout > 1)
     {
       print_usage ("qzvalue");
       return retval;
     }
 
-  tree_constant arg_a = args(1);
-  tree_constant arg_b = args(2);
+  tree_constant arg_a = args(0);
+  tree_constant arg_b = args(1);
 
   int a_nr = arg_a.rows();
   int a_nc = arg_a.columns();

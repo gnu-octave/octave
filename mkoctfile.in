@@ -83,12 +83,31 @@ while [ $# -gt 0 ]; do
 Options:
 
   -h, -?, --help          Print this message.
+
   -IDIR                   Add -IDIR to compile commands.
+
   -DDEF                   Add -DDEF to compile commands.
+
   -lLIB                   Add library LIB to link command.
+
   -LDIR                   Add -LDIR to link command.
+
   -o FILE, --output FILE  Output file name.  Default extension is .oct.
+
+  -p VAR, --print VAR     Print configuration variable VAR.  Recognized
+                          variables are:
+
+			    CPPFLAGS    CXX
+			    INCFLAGS	CXXFLAGS
+			    F77		CXXPICFLAG
+			    FFLAGS	XTRA_CFLAGS
+			    FPICFLAG	XTRA_CXXFLAGS
+			    CC		SHLEXT
+			    CFLAGS	SH_LD
+			    CPICFLAG	SH_LDFLAGS
+
   -s, --strip             Strip output file.
+
   -v, --verbose           Echo commands as they are executed.
 
   FILE                    Compile or link FILE.  Recognized file types are:
@@ -119,6 +138,16 @@ EOF
         octfile=`echo $1 | sed 's,\.[^.]*$,,'`.oct
       else
         echo "mkoctfile: output file name missing"
+      fi
+    ;;
+    -p | --print)
+      shift
+      if [ $# -gt 0 ]; then
+        eval echo \${$1}
+        exit 0
+      else
+        echo "mkprdmod: --print requires argument"
+        exit 1
       fi
     ;;
     -s | --strip)

@@ -1,7 +1,7 @@
 // sysdep.cc                                              -*- C++ -*-
 /*
 
-Copyright (C) 1993 John W. Eaton
+Copyright (C) 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -28,6 +28,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <stdlib.h>
 
 #include "error.h"
+
+#if defined (__386BSD__) && defined (HAVE_FLOATINGPOINT_H)
+#include <floatingpoint.h>
+#endif
 
 #ifdef NeXT
 extern "C"
@@ -57,6 +61,11 @@ NeXT_init (void)
 void
 sysdep_init (void)
 {
+#if defined (__386BSD__) && defined (HAVE_FLOATINGPOINT_H)
+// Disable trapping on common exceptions.
+  fpsetmask (~(FP_X_OFL|FP_X_INV|FP_X_DZ|FP_X_DNML|FP_X_UFL|FP_X_IMP));
+#endif
+
 #ifdef NeXT
   NeXT_init ();
 #endif

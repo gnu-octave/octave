@@ -29,7 +29,7 @@ DISTFILES = $(CONF_DISTFILES) \
 	README.MachTen README.kpathsea ROADMAP SENDING-PATCHES \
 	THANKS move-if-change octave-sh octave-bug.in \
 	octave-config.in install-octave.in mk-opts.pl mkinstalldirs \
-	mkoctfile.in texi2dvi ChangeLog ChangeLog.[0-9]
+	mkoctfile.in ChangeLog ChangeLog.[0-9]
 
 # Complete directory trees to distribute.
 DISTDIRS = # plplot

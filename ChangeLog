@@ -1,5 +1,7 @@
 2005-03-15  John W. Eaton  <jwe@octave.org>
 
+	* octMakefile.in (DISTFILES): Remove texi2dvi from the list.
+
 	* emacs/octave-inf.el, emacs/octave-mod.el, emacs/octave-hlp.el:
 	Import changes from Emacs.
 

@@ -1,5 +1,12 @@
 2002-12-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* toplev.cc (octave_interpreter_ready): New global variable.
+	* toplev.h: Provide decl.
+
+	* octave.cc (octave_main): Call execute_default_pkg_add_files just
+	before executing startup files.  Set octave_interpreter_ready to
+	true before calling execute_default_pkg_add_files.
+
 	* defaults.cc (maybe_add_or_del_packages, default_load_path,
 	update_load_path_dir_path): New static functions. 
 	(set_default_path, loadpath): Call update_load_path_dir_path.

@@ -59,6 +59,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt-walk.h"
 #include "sighandlers.h"
 #include "sysdep.h"
+#include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
 
@@ -942,7 +943,13 @@ and clear all the visible variables.)\n\
 @end deftypefn")
 {
   octave_value_list retval;
-  send_to_plot_stream ("clear\n");
+
+  // We are clearing the plot window, so there is no need to redisplay
+  // after each incremental change to the title, labels, etc.
+
+  unwind_protect_bool (Vautomatic_replot);
+
+  Vautomatic_replot = false;
 
   // XXX FIXME XXX -- instead of just clearing these things, it would
   // be nice if we could reset things to a user-specified default
@@ -954,10 +961,16 @@ and clear all the visible variables.)\n\
   send_to_plot_stream ("set nogrid\n");
   send_to_plot_stream ("set nolabel\n");
 
-  // This makes a simple `replot' not work after a `clearplot' command
-  // has been issued.
+  // Clear the plot display last.
+
+  send_to_plot_stream ("clear\n");
+
+  // Setting plot_line_count to zero makes a simple `replot' not work
+  // after a `clearplot' command has been issued.
 
   plot_line_count = 0;
+
+  unwind_protect::run ();
 
   return retval;
 }

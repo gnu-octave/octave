@@ -1,8 +1,8 @@
 GNU Octave -- a high-level language for numerical computations.
 
-Copyright (C) 1996, 1997 John W. Eaton
+Copyright (C) 1996, 1997, 1998, 2002 John W. Eaton
 
-Last updated: Fri Feb  6 02:23:36 1998
+Last updated: Fri Apr 12 20:23:53 2002
 
 Overview
 --------
@@ -25,7 +25,7 @@ Availability
 ------------
 
 The latest released version of Octave is always available via
-anonymous ftp from ftp.che.wisc.edu in the directory /pub/octave.
+anonymous ftp from ftp.octave.org in the directory /pub/octave.
 Complete source and binaries for several popular systems are
 available.  Source distributions of Octave are also available from
 ftp.gnu.org in the directory /pub/gnu, as well as many mirror
@@ -102,8 +102,8 @@ Additional Information
 ----------------------
 
 Up to date information about Octave is available on the WWW at the
-URL http://bevo.che.wisc.edu/octave, including archives of the
-help-octave, bug-octave, and octave-sources mailing lists.
+URL http://www.octave.org, including archives of the help-octave,
+bug-octave, and octave-sources mailing lists.
 
 --
 John W. Eaton

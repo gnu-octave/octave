@@ -1,4 +1,4 @@
-This file last updated: Tue Dec 10 03:40:00 1996
+This file last updated: Fri Apr 12 20:21:16 2002
 
 This directory contains the source for Octave, a high-level interactive
 language for solving numerical problems.  See the files README.octave
@@ -8,23 +8,15 @@ list of recent changes.
 Binary distributions:
 --------------------
 
-Binaries for several popular systems are distributed along with the
-source, and are available in subdirectories of /pub/octave/BINARIES.
+Octave binaries are no longer distributed from this site.
 
-Note:
+Packaged versions of Octave for various GNU/Linux systems are available
+with the major GNU/Linux distributions (Debian, Red Hat, SuSE, etc.).
 
-  * Binary distributions for Octave 2.0.x will be available when there
-    is time to create them.  We depend on volunteers to make binaries
-    for most systems.  If you would like to help out, please contact
-    bug-octave@bevo.che.wisc.edu.
-
-  * Gnuplot binaries are *not* included.  For the plotting commands to
-    work, you will need to install gnuplot on your system.  See the
-    file INSTALL.octave in the top level directory of the distribution
-    for more details.
-
-  * Octave has been compiled assuming that you have `less' installed.
-    You can use the environment variable PAGER to choose another pager.
+Tom Weichmann <tomcw@localnet.com> and Julian A. de Marchi
+<julian@matlinks.net> have created a package that makes 
+Octave easier to install on Windows systems.  You can find a pointer
+to it on the download page of the Octave web site, www.octave.org.
 
 A note about .gz files:
 ----------------------

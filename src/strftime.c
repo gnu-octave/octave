@@ -80,7 +80,12 @@
 
 #include <stdio.h>
 #include <sys/types.h>
-#if defined(TM_IN_SYS_TIME) || (!defined(HAVE_TM_ZONE) && !defined(HAVE_TZNAME))
+
+#if defined(TIME_WITH_SYS_TIME)
+#include <sys/time.h>
+#include <time.h>
+#else
+#if defined(HAVE_SYS_TIME_H)
 #include <sys/time.h>
 #else
 #include <time.h>

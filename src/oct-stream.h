@@ -258,7 +258,7 @@ public:
 
   // Return current error message for this stream.
 
-  string error (bool clear, int& errno);
+  string error (bool clear, int& err_num);
 
 protected:
 
@@ -399,12 +399,12 @@ public:
 
   bool eof (void) const;
 
-  string error (bool clear, int& errno);
+  string error (bool clear, int& err_num);
 
   string error (bool clear = false)
     {
-      int errno;
-      return error (clear, errno);
+      int err_num;
+      return error (clear, err_num);
     }
 
   bool ok (void) const { return rep && rep->ok (); }

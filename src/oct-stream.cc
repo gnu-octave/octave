@@ -1904,9 +1904,9 @@ octave_base_stream::rewind (void)
 // Return current error message for this stream.
 
 string
-octave_base_stream::error (bool clear_err, int& errno)
+octave_base_stream::error (bool clear_err, int& err_num)
 {
-  errno = fail ? -1 : 0;
+  err_num = fail ? -1 : 0;
 
   string tmp = errmsg;
 
@@ -2190,12 +2190,12 @@ octave_stream::eof (void) const
 }
 
 string
-octave_stream::error (bool clear, int& errno)
+octave_stream::error (bool clear, int& err_num)
 {
   string retval;
 
   if (stream_ok ("ferror", false))
-    retval = rep->error (clear, errno);
+    retval = rep->error (clear, err_num);
 
   return retval;
 }

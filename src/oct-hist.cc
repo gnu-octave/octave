@@ -131,9 +131,10 @@ do_history (int argc, const string_vector& argv)
   int i;
   for (i = 1; i < argc; i++)
     {
-      if (argv[i][0] == '-' && argv[i].length () == 2
-	  && (argv[i][1] == 'r' || argv[i][1] == 'w'
-	      || argv[i][1] == 'a' || argv[i][1] == 'n'))
+      string option = argv[i];
+
+      if (option == "-r" || option == "-w" || option == "-a"
+	  || option == "-n")
 	{
 	  if (i < argc - 1)
 	    {
@@ -141,24 +142,25 @@ do_history (int argc, const string_vector& argv)
 	      octave_command_history.set_file (file);
 	    }
 
-	  switch (argv[i][1])
-	    {
-	    case 'a':		// Append `new' lines to file.
-	      octave_command_history.append ();
-	      break;
+	  if (option == "-a")
+	    // Append `new' lines to file.
+	    octave_command_history.append ();
 
-	    case 'w':		// Write entire history.
-	      octave_command_history.write ();
-	      break;
+	  else if (option == "-w")
+	    // Write entire history.
+	    octave_command_history.write ();
 
-	    case 'r':		// Read entire file.
-	      octave_command_history.read ();
-	      break;
+	  else if (option == "-r")
+	    // Read entire file.
+	    octave_command_history.read ();
 
-	    case 'n':		// Read `new' history from file.
-	      octave_command_history.read_range ();
-	      break;
-	    }
+	  else if (option == "-n")
+	    // Read `new' history from file.
+	    octave_command_history.read_range ();
+
+	  else
+	    panic_impossible ();
+
 	  return;
 	}
       else if (argv[i] == "-q")

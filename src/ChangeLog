@@ -1,3 +1,14 @@
+Sun Oct 27 14:06:44 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-hist.cc (do_history): Rewite option parsing to avoid
+	(probably bogus) errors from g++ on cygwin32 system.
+
+	* strftime.c: Use autoconf macros TIME_WITH_SYS_TIME and
+	HAVE_SYS_TIME_H to decide which time.h files to include.
+
+	* oct-stream.h, oct-stream.cc (octave_stream::error,
+	octave_base_stream::error): Rename errno => err_num.
+
 Sat Oct 26 10:40:05 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-hist.cc (do_history): Move declaration of file inside

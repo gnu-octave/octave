@@ -21,7 +21,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA. 
 
-AC_REVISION($Revision: 1.351 $)
+AC_REVISION($Revision: 1.352 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -367,8 +367,8 @@ FFTW_LIBS=''
 AC_SUBST(FFTW_LIBS)
 
 AC_ARG_WITH(fftw, 
-  [  --with-fftw             use installed fftw instead of included fftpack],
-  with_fftw=yes, with_fftw=yes)
+  [  --without-fftw          use included fftpack instead of installed fftw],
+  with_fftw=$withval, with_fftw=yes)
 
 if test "$with_fftw" = "yes"; then
   AC_CHECK_HEADERS(dfftw.h fftw.h)

@@ -1,3 +1,7 @@
+2002-04-03  Steven G. Johnson <stevenj@alum.mit.edu>
+
+	* configure.in: Correct usage of AC_ARG_WITH for --with-fftw.
+
 2001-11-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* octave-bug.in (BLAS_LIBS, FFTW_LIBS, LD_CXX): Substitute and

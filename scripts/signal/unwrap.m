@@ -23,9 +23,9 @@
 ## Unwrap radian phases by adding multiples of 2*pi as appropriate to
 ## remove jumps greater than @var{tol}.  @var{tol} defaults to pi.
 ##
-## Unwrap will unwrap along the columns of @var{a} unless the row
-## dimension of @var{a} is 1 or @var{dim} is given with a
-## value of 1, when it will unwrap along the row(s).
+## Unwrap will unwrap along the first non-singleton dimension of
+## @var{a}, unless the optional argument @var{dim} is given, in 
+## which case the data will be unwrapped along this dimension
 ## @end deftypefn
 
 ## Author: Bill Lash <lash@tellabs.com>
@@ -36,22 +36,26 @@ function retval = unwrap (a, tol, dim)
     usage ("unwrap (a [, tol [, dim]])")
   endif
 
-  if (nargin < 3)
-    if (rows (a) == 1)
-      ## Row vector, go along the row.
+  nd = ndims (a);
+  sz = size (a);
+
+  if (nargin == 3)
+    if (! (isscalar (dim) && dim == round (dim)) && dim > 0 && 
+	dim < (nd + 1))
+      error ("unwrap: dim must be an integer and valid dimension");
+    endif
+  else
+    ## Find the first non-singleton dimension
+    dim  = 1;
+    while (dim < nd + 1 && sz (dim) == 1)
+      dim = dim + 1;
+    endwhile
+    if (dim > nd)
       dim = 1;
-    else
-      ## Otherwise go along the columns.
-      dim = 2;
     endif
   endif
 
-  if (nargin < 2)
-    tol = pi;
-  endif
-
-  ## If TOL is not provided but dim is, handle it.
-  if (isempty (tol))
+  if (nargin < 2 || isempty (tol))
     tol = pi;
   endif
 
@@ -59,15 +63,7 @@ function retval = unwrap (a, tol, dim)
   tol = abs (tol);
   
   rng = 2*pi;
-  
-  ## Put data in a form so that we can unwrap each column.
-  if (dim == 1)
-    ra = a.';
-  else
-    ra = a;
-  endif
-  n = columns (ra);
-  m = rows (ra);
+  m = sz (dim);
 
   ## Handle case where we are trying to unwrap a scalar, or only have
   ## one sample in the specified dimension.
@@ -78,7 +74,12 @@ function retval = unwrap (a, tol, dim)
 
   ## Take first order difference to see so that wraps will show up
   ## as large values, and the sign will show direction.
-  d = [ zeros(1,n); ra(1:m-1,:)-ra(2:m,:) ];
+  idx = cell ();
+  for i = 1:nd
+    idx {i} = 1:sz(i);
+  endfor
+  idx {dim} = [1,1:m-1];
+  d = a (idx {:}) - a;
 
   ## Find only the peaks, and multiply them by the range so that there
   ## are kronecker deltas at each wrap point multiplied by the range
@@ -86,14 +87,10 @@ function retval = unwrap (a, tol, dim)
   p =  rng * (((d > tol) > 0) - ((d < -tol) > 0));
 
   ## Now need to "integrate" this so that the deltas become steps.
-  r = cumsum (p);
+  r = cumsum (p, dim);
 
   ## Now add the "steps" to the original data and put output in the
   ## same shape as originally.
-  if (dim == 1)
-    retval = (ra + r).';
-  else
-    retval = (ra + r);
-  endif
+  retval = a + r;
 
 endfunction

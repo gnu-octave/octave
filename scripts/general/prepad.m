@@ -34,37 +34,56 @@
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>
 ## Created: June 1994
 
-function y = prepad (x, l, c)
+function y = prepad (x, l, c, dim)
 
-  if (nargin == 2)
+  if (nargin < 2 || nargin > 4)
+    usage ("prepad (x, l, [c, [dim]])");
+  endif
+
+  if (nargin < 3 || isempty (c))
     c = 0;
-  elseif (nargin < 2 || nargin > 3)
-    usage ("prepad (x, l) or prepad (x, l, c)");
+  else
+    if (! isscalar (c))
+      error ("prepad: third argument must be empty or a scalar");
+    endif
+  endif
+
+  nd = ndims (x);
+  sz = size (x);
+  if (nargin < 4)
+    %% Find the first non-singleton dimension
+    dim  = 1;
+    while (dim < nd + 1 && sz (dim) == 1)
+      dim = dim + 1;
+    endwhile
+    if (dim > nd)
+      dim = 1;
+    endif
+  else
+    if (! (isscalar (dim) && dim == round (dim)) && dim > 0 && 
+	dim < (nd + 1))
+      error ("prepad: dim must be an integer and valid dimension");
+    endif
   endif
 
   if (! ismatrix (x))
     error ("first argument must be a vector or matrix");
-  elseif (! isscalar (l))
-    error ("second argument must be a scaler");
+  elseif (! isscalar (l) || l < 0)
+    error ("second argument must be a positive scaler");
   endif
 
-  if (l < 0)
-    error ("second argument must be non-negative");
-  endif
+  d = sz (dim);
 
-  [nr, nc] = size (x);
-  if (nr == 1)
-    if (nc >= l)
-      y = x(nc-l+1:nc);
-    else
-      y = [c*ones(1,l-nc), x];
-    endif
+  if (d >= l)
+    idx = cell ();
+    for i = 1:nd
+      idx {i} = 1:sz(i);
+    endfor
+    idx {dim} = d-l+1:d;
+    y = x (idx {:});
   else
-    if (nr >= l)
-      y = x(nr-l+1:nr,:);
-    else
-      y = [c*ones(l-nr,nc); x];
-    endif
+    sz (dim) = l - d;
+    y = cat (dim, c * ones (sz), x);
   endif
 
 endfunction

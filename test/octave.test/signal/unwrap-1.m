@@ -28,11 +28,11 @@ tol = 1e3*eps;                      # maximum expected deviation
 t(++i) = assert(r, unwrap(w), tol);               #unwrap single row
 t(++i) = assert(r', unwrap(w'), tol);             #unwrap single column
 t(++i) = assert([r',r'], unwrap([w',w']), tol);   #unwrap 2 columns
-t(++i) = assert([r;r], unwrap([w;w],[],1), tol);  #verify that dim works
+t(++i) = assert([r;r], unwrap([w;w],[],2), tol);  #verify that dim works
 t(++i) = assert(r+10, unwrap(10+w), tol);         #verify that r(1)>pi works
 
-t(++i) = assert(w', unwrap(w',[],1));  #unwrap col by rows should not change it
-t(++i) = assert(w, unwrap(w,[],2));    #unwrap row by cols should not change it
+t(++i) = assert(w', unwrap(w',[],2));  #unwrap col by rows should not change it
+t(++i) = assert(w, unwrap(w,[],1));    #unwrap row by cols should not change it
 t(++i) = assert([w;w], unwrap([w;w])); #unwrap 2 rows by cols should not change them
 
 ## verify that setting tolerance too low will cause bad results.

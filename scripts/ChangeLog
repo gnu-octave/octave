@@ -1,3 +1,15 @@
+2004-04-15  David Bateman  <dbateman@free.fr>
+
+	* set/create_set.m, general/is_duplicate_entry.m: Make N-d array aware.
+
+	* general/shift.m, general/prepad.m, general/postpad.m: Make N-d
+	array aware and and optional argument for the dimension along
+	which to operate.
+
+	* scripts/signal/unwrap.m: Make N-d array aware and fix optional
+	argument for the dimension to be consistent with other N-d array
+	functions.
+
 2004-04-08  David Bateman  <dbateman@free.fr>
 
 	* statistics/distributions/discrete_cdf.m,

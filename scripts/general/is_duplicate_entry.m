@@ -29,8 +29,7 @@ function retval = is_duplicate_entry (x)
 
   if (nargin == 1)
     if (ismatrix (x))
-      [m, n] = size (x);
-      lx = m*n;
+      lx = numel (x);
       lx1 = lx-1;
       x = sort (reshape (x, 1, lx));
       dx = x(1:lx1) - x(2:lx);

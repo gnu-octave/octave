@@ -42,10 +42,9 @@ function y = create_set(x)
   if (isempty(x))
     y = [];
   else
-    [nrx, ncx] = size (x);
-    nelx = nrx * ncx;
-    y = sort (reshape (x, 1, nelx));
-    els = find (y(1:nelx-1) != y(2:nelx));
+    nel = numel (x);
+    y = sort (reshape (x, 1, nel));
+    els = find (y(1:nel-1) != y(2:nel));
     if (isempty (els));
       y = y(1);
     else

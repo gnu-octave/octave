@@ -19,7 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} logistic_rnd (@var{r}, @var{c})
-## @deftypefn {Function File} {} logistic_rnd (@var{sz})
+## @deftypefnx {Function File} {} logistic_rnd (@var{sz})
 ## Return an @var{r} by @var{c} matrix of random numbers from the
 ## logistic distribution. Or is @var{sz} is a vector, create a matrix of
 ## @var{sz}.

@@ -118,7 +118,7 @@ public:
     { return matrix; }
 
   octave_value convert_to_str_internal (bool, bool) const
-    { return octave_value (matrix.matrix_value (), true); }
+    { return octave_value (matrix, true); }
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 

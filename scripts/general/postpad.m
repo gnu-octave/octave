@@ -25,37 +25,55 @@
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>
 ## Created: June 1994
 
-function y = postpad (x, l, c)
+function y = postpad (x, l, c, dim)
 
-  if (nargin == 2)
+  if (nargin < 2 || nargin > 4)
+    usage ("postpad (x, l, [c, [dim]])");
+  endif
+
+  if (nargin < 3 || isempty (c))
     c = 0;
-  elseif (nargin < 2 || nargin > 3)
-    usage ("postpad (x, l) or postpad (x, l, c)");
+  else
+    if (! isscalar (c))
+      error ("postpad: third argument must be empty or a scalar");
+    endif
+  endif
+
+  nd = ndims (x);
+  sz = size (x);
+  if (nargin < 4)
+    %% Find the first non-singleton dimension
+    dim  = 1;
+    while (dim < nd + 1 && sz (dim) == 1)
+      dim = dim + 1;
+    endwhile
+    if (dim > nd)
+      dim = 1;
+    endif
+  else
+    if (! (isscalar (dim) && dim == round (dim)) && dim > 0 && 
+	dim < (nd + 1))
+      error ("postpad: dim must be an integer and valid dimension");
+    endif
   endif
 
   if (! ismatrix (x))
     error ("first argument must be a vector or matrix");
-  elseif (! isscalar (l))
-    error ("second argument must be a scaler");
+  elseif (! isscalar (l) || l < 0)
+    error ("second argument must be a positive scaler");
   endif
 
-  if (l < 0)
-    error ("second argument must be non-negative");
-  endif
-
-  [nr, nc] = size (x);
-  if (nr == 1)
-    if (nc >= l)
-      y = x(1:l);
-    else
-      y = [x, c*ones(1,l-nc)];
-    endif
+  d = sz (dim);
+  if (d >= l)
+    idx = cell ();
+    for i = 1:nd
+      idx {i} = 1:sz(i);
+    endfor
+    idx {dim} = 1:l;
+    y = x (idx {:});
   else
-    if (nr >= l)
-      y = x(1:l,:);
-    else
-      y = [x ; c*ones(l-nr,nc)];
-    endif
+    sz (dim) = l - d;
+    y = cat (dim, x, c * ones (sz));
   endif
 
 endfunction

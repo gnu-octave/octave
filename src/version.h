@@ -48,7 +48,7 @@ FITNESS FOR A PARTICULAR PURPOSE."
 For more information, visit http://www.octave.org/help-wanted.html"
 
 #define OCTAVE_BUGS_STATEMENT \
-  "Report bugs to <bug-octave@bevo.che.wisc.edu> (but first, please read\n\
+  "Report bugs to <bug@octave.org> (but first, please read\n\
 http://www.octave.org/bugs.html to learn how to write a helpful report)."
 
 #define OCTAVE_NAME_VERSION_AND_COPYRIGHT \

@@ -19,7 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} exponential_rnd (@var{lambda}, @var{r}, @var{c})
-## @deftypefn {Function File} {} exponential_rnd (@var{lambda}, @var{sz})
+## @deftypefnx {Function File} {} exponential_rnd (@var{lambda}, @var{sz})
 ## Return an @var{r} by @var{c} matrix of random samples from the
 ## exponential distribution with parameter @var{lambda}, which must be a
 ## scalar or of size @var{r} by @var{c}. Or if @var{sz} is a vector, 

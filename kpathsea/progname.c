@@ -404,6 +404,11 @@ selfdir P1C(const_string, argv0)
     }
 #endif /* not AMIGA */
   }
+  
+  /* If argv0 is somehow dir/exename, `self' will still be NULL.  */
+  if (!self)
+    self = concat3 (".", DIR_SEP_STRING, argv0);
+    
   ret = my_dirname (remove_dots (expand_symlinks (self)));
 
   free (self);

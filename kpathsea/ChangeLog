@@ -1,7 +1,9 @@
-Tue Jun  3 23:48:22 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+Wed Jun  4 12:14:38 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
-	* absolute.c (kpse_absolute_p): Recognize foo/bar as an
-	explicit_relative file name.
+	* progname.c (selfdir): Handle dir/exename case here.
+	Patch from Karl Berry  <karl@cs.umb.edu>.
+
+Tue Jun  3 23:48:22 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* common.ac: (program_invocation_name): AC_TRY_LINK only requires
 	function body.  Add declaration for program_invocation_name so gcc

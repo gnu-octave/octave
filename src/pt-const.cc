@@ -2263,7 +2263,7 @@ tree_constant_rep::diag (const tree_constant& a) const
 	    }
 	}
       else
-	message ("diag", "invalid second argument");
+	error ("diag: invalid second argument");
 
       break;
     case complex_scalar_constant:
@@ -2302,7 +2302,7 @@ tree_constant_rep::diag (const tree_constant& a) const
 	    }
 	}
       else
-	message ("diag", "invalid second argument");
+	error ("diag: invalid second argument");
 
       break;
     case string_constant:

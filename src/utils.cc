@@ -1189,7 +1189,8 @@ send_to_plot_stream (const char *cmd)
 
 	      if (strcmp (plot_prog, "gnuplot") != 0)
 		{
-		  message ("plot", "trying again with `gnuplot'");
+		  warning ("having trouble finding plotting program.");
+		  warning ("trying again with `gnuplot'");
 		  goto last_chance;
 		}
 	    }

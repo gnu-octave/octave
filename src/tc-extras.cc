@@ -773,7 +773,7 @@ column_max (const tree_constant *args, int nargin, int nargout)
 	    }
 	}
       else
-	message ("max", "nonconformant matrices");
+	error ("max: nonconformant matrices");
     }
   else
     panic_impossible ();
@@ -944,7 +944,7 @@ column_min (const tree_constant *args, int nargin, int nargout)
 	    }
 	}
       else
-	message ("min", "nonconformant matrices");
+	error ("min: nonconformant matrices");
     }
   else
     panic_impossible ();

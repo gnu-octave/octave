@@ -267,7 +267,7 @@ get_input_from_file (char *name, int warn = 1)
     instream = fopen (name, "r");
 
   if (instream == (FILE *) NULL && warn)
-    message (name, "no such file or directory");
+    warning ("%s: no such file or directory", name);
 
   if (reading_m_file || reading_script_file)
     mf_instream = instream;

@@ -1212,7 +1212,7 @@ builtin_pwd (const tree_constant *args, int nargin, int nargout)
 
       if (!directory)
 	{
-	  message ("pwd", "can't find working directory!");
+	  warning ("pwd: can't find working directory!");
 	  delete buffer;
 	}
     }

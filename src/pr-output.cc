@@ -1177,8 +1177,7 @@ set_format_style (int argc, char **argv)
 		    }
 		  else
 		    {
-		      message ("format",
-			       "unrecognized option `short %s'", *argv);
+		      error ("format: unrecognized option `short %s'", *argv);
 		      return;
 		    }
 		}
@@ -1205,8 +1204,7 @@ set_format_style (int argc, char **argv)
 		    }
 		  else
 		    {
-		      message ("format",
-			       "unrecognized option `long %s'", *argv);
+		      error ("format: unrecognized option `long %s'", *argv);
 		      return;
 		    }
 		}
@@ -1216,7 +1214,7 @@ set_format_style (int argc, char **argv)
 	      set_output_prec_and_fw (15, 24);
 	    }
 	  else if (strcmp (*argv, "hex") == 0)
-	    message ("format", "format state `hex' not implemented");
+	    error ("format: format state `hex' not implemented yet");
 	  else if (strcmp (*argv, "+") == 0)
 	    {
 	      init_format_state ();
@@ -1238,11 +1236,11 @@ set_format_style (int argc, char **argv)
 	      free_format = 1;
 	    }
 	  else if (strcmp (*argv, "compact") == 0)
-	    message ("format", "format state `compact' not implemented");
+	    error ("format: format state `compact' not implemented yet");
 	  else if (strcmp (*argv, "loose") == 0)
-	    message ("format", "format state `loose' not implemented");
+	    error ("format: format state `loose' not implemented yet");
 	  else
-	    message ("format", "unrecognized format state `%s'", *argv);
+	    error ("format: unrecognized format state `%s'", *argv);
 	}
       else
 	usage ("format [format_state]");

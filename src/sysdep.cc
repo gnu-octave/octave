@@ -40,8 +40,7 @@ static void
 malloc_handler (int code)
 {
   if (code == 5)
-    message ("malloc_handler",
-	     "hopefully recoverable malloc error: freeing wild pointer");
+    warning ("hopefully recoverable malloc error: freeing wild pointer");
   else
     {
       panic ("probably irrecoverable malloc error: code %d", code);

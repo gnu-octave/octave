@@ -249,9 +249,9 @@ do_history (int argc, char **argv)
       if (sscanf (*argv, "%d", &limit) != 1)
         {
 	  if (*argv[0] == '-')
-	    message ("history", "unrecognized option `%s'", *argv);
+	    error ("history: unrecognized option `%s'", *argv);
 	  else
-	    message ("history", "bad non-numeric arg `%s'", *argv);
+	    error ("history: bad non-numeric arg `%s'", *argv);
 	  return;
         }
     }

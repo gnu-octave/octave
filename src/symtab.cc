@@ -893,7 +893,7 @@ symbol_table::lookup (const char *nm, int insert = 0, int warn = 0)
       return new_sym;
     }
   else if (warn)
-    message ("lookup", "symbol`%s' not found", nm);
+    warning ("lookup: symbol`%s' not found", nm);
 
   return (symbol_record *) NULL;
 }

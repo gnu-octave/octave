@@ -627,7 +627,7 @@ is_valid_function (tree_constant& arg, char *warn_for, int warn = 0)
   if (! arg.is_string_type ())
     {
       if (warn)
-	message (warn_for, "expecting function name as argument");
+	error ("%s: expecting function name as argument", warn_for);
       return ans;
     }
 
@@ -650,8 +650,8 @@ is_valid_function (tree_constant& arg, char *warn_for, int warn = 0)
   if (ans == NULL_TREE || ! sr->is_function ())
     {
       if (warn)
-	message (warn_for, "the symbol `%s' is not valid as a function",
-		 fcn_name);
+	error ("%s: the symbol `%s' is not valid as a function",
+	       warn_for, fcn_name);
       ans = NULL_TREE;
     }
 
@@ -670,8 +670,8 @@ takes_correct_nargs (tree *fcn, int expected_nargin, char *warn_for,
   if (nargs != e_nargs)
     {
       if (warn)
-	message (warn_for, "expecting function to take %d argument%c", 
-		 e_nargs, s_plural (e_nargs));
+	error ("%s: expecting function to take %d argument%c", 
+	       warn_for, e_nargs, s_plural (e_nargs));
       return 0;
     }
   return 1;

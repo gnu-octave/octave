@@ -76,9 +76,8 @@ inverse (const tree_constant& a)
 	    double rcond = 0.0;
 	    Matrix minv = m.inverse (info, rcond);
 	    if (info == -1)
-	      message ("inverse",
-		       "matrix singular to machine precision, rcond = %g",
-		       rcond);
+	      warning ("inverse: matrix singular to machine precision,\
+ rcond = %g", rcond);
 	    else
 	      retval = tree_constant (minv);
 	  }
@@ -101,9 +100,8 @@ inverse (const tree_constant& a)
 	    double rcond = 0.0;
 	    ComplexMatrix minv = m.inverse (info, rcond);
 	    if (info == -1)
-	      message ("inverse",
-		       "matrix singular to machine precision, rcond = %g",
-		       rcond);
+	      warning ("inverse: matrix singular to machine precision,\
+ rcond = %g", rcond);
 	    else
 	      retval = tree_constant (minv);
 	  }

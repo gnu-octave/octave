@@ -48,7 +48,7 @@ F77_FUNC (xstopx, XSTOPX) (const char *s, long int slen)
 {
   /* Skip printing message if it is just a single blank character.  */
   if (s && slen > 0 && ! (slen == 1 && *s == ' '))
-    (*current_liboctave_error_handler) ("%.*s", s, slen);
+    (*current_liboctave_error_handler) ("%.*s", slen, s);
 
   longjmp (f77_context, 1);
 }

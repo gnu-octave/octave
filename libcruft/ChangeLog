@@ -1,3 +1,11 @@
+2002-06-27  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* slatec-err/xermsg.f (XERMSG): If MAXMES .LT. 0, messages may be
+	printed an unlimited number of times.
+	* slatec-err/j4save.f (J4SAVE) Default for MAXMES is now -1.
+
+	* misc/f77-fcn.c (xstopx): Pass args in proper order.
+
 2002-05-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* ordered-qz/dsubsp.f (DSUBSP): Delete decl for unused variable J.

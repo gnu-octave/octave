@@ -467,6 +467,9 @@ at which the integrand is singular.\n\n", },
   { "quit", 1, 0, builtin_quit,
     "exit Octave gracefully\n", },
 
+  { "qzval", 3, 1, builtin_qzval,
+    "x = qzval(a,b): compute generalized eigenvalues \n", },
+
   { "rand", 2, 1, builtin_rand,
     "matrices with random elements\n", },
 

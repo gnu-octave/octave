@@ -100,6 +100,7 @@ extern tree_constant *builtin_qpsol (tree_constant *, int, int);
 extern tree_constant *builtin_qr (tree_constant *, int, int);
 extern tree_constant *builtin_quad (tree_constant *, int, int);
 extern tree_constant *builtin_quit (tree_constant *, int, int);
+extern tree_constant *builtin_qzval (tree_constant *, int, int);
 extern tree_constant *builtin_rand (tree_constant *, int, int);
 extern tree_constant *builtin_replot (tree_constant *, int, int);
 extern tree_constant *builtin_setstr (tree_constant *, int, int);

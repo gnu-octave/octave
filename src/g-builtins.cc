@@ -1279,6 +1279,24 @@ builtin_qr (tree_constant *args, int nargin, int nargout)
 }
 
 /*
+ * generalized eigenvalues via qz
+ */
+tree_constant *
+builtin_qzval (tree_constant *args, int nargin, int nargout)
+{
+  tree_constant *retval = NULL_TREE_CONST;
+
+  if (nargin == 3 && nargout < 2)
+    DLD_BUILTIN (args, nargin, nargout, qzvalue,
+		 retval = qzvalue (args, nargin, nargout);)
+  else
+    usage ("x = qzval (A,B): compute generalized eigenvalues of \n\
+  the matrix pencil (A - lambda B).  A and B must be real matrices.\n");
+
+  return retval;
+}
+
+/*
  * Random numbers.
  */
 tree_constant *

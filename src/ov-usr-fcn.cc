@@ -661,7 +661,7 @@ f ()\n\
 @end example\n\
 \n\
 @noindent\n\
-will cause @code{nargout} to return 0 inside the function code{f} and\n\
+will cause @code{nargout} to return 0 inside the function @code{f} and\n\
 \n\
 @example\n\
 [s, t] = f ()\n\

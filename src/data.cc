@@ -1510,13 +1510,8 @@ is equivalent to calling it with an argument of 1.\n\
 
   if (nargin > 0 && args(nargin-1).is_string ())
     {
-      nm = args(nargin-1).string_value();
+      nm = args(nargin-1).string_value ();
       nargin--;
-
-      if (nm != "int8" && nm != "int16" && nm != "int32" && nm != "int64" &&
-	  nm != "uint8" && nm != "uint16" && nm != "uint32" && nm != "uint64"
-	  && nm != "double")
-	error ("eye: Unrecognized or illegal classname");
     }
 
   switch (nargin)

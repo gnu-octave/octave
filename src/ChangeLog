@@ -1,3 +1,13 @@
+2004-11-17  John W. Eaton  <jwe@octave.org>
+
+	* version.h (OCTAVE_VERSION): Now 2.1.62.
+	(OCTAVE_API_VERSION): Now api-v12.
+
+2004-11-17  David Bateman  <dbateman@free.fr>
+
+	* pt-arg-list.cc (F__end__): Ask dv for the number of elements
+	instead indexed_object.
+
 2004-11-16  David Bateman  <dbateman@free.fr>
 
 	* ov.h (octave_value::numel): Now virtual.  Call rep->numel ().

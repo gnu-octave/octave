@@ -25,6 +25,10 @@
 
    Written by Brian Fox (bfox@ai.mit.edu). */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #if !defined (ALREADY_HAVE_XMALLOC)
 #include <stdio.h>
 

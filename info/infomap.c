@@ -21,6 +21,10 @@
 
    Written by Brian Fox (bfox@ai.mit.edu). */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include "stdio.h"
 #include "ctype.h"
 #include "infomap.h"

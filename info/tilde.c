@@ -25,6 +25,10 @@
 
    Written by Brian Fox (bfox@ai.mit.edu). */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #if defined (__GNUC__)
 #  define alloca __builtin_alloca
 #else /* !__GNUC__ */

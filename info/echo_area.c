@@ -21,6 +21,10 @@
 
    Written by Brian Fox (bfox@ai.mit.edu). */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include "info.h"
 
 /* Non-zero means that C-g was used to quit reading input. */

@@ -21,6 +21,10 @@
 
    Written by Brian Fox (bfox@ai.mit.edu). */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include "info.h"
 
 /* Non-zero means attempt to show footnotes when displaying a new window. */

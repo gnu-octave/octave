@@ -26,6 +26,10 @@
    a header file which describes the contents.  This only does the functions
    declared with DECLARE_INFO_COMMAND. */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <stdio.h>
 #include <ctype.h>
 #include <sys/types.h>

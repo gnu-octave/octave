@@ -1,7 +1,7 @@
 # Makefile for Octave's info directory.  Adapted from the makefile for
 # texinfo/info.
 #
-# Copyright (C) 1993, 1994 Free Software Foundation, Inc.
+# Copyright (C) 1993, 1994, 1995 Free Software Foundation, Inc.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -78,6 +78,8 @@ CMDFILES = $(srcdir)/session.c $(srcdir)/echo_area.c $(srcdir)/infodoc.c \
 # The name of the program which builds documentation structure from CMDFILES.
 MAKEDOC_OBJECTS = makedoc.o xmalloc.o
 MAKEDOC_SOURCE = makedoc.c xmalloc.c
+
+ALL_CFLAGS = $(INCFLAGS) $(LDEFS) $(DEFS) $(CFLAGS)
 
 all: libinfo.a # info.info info-stnd.info
 .PHONY: all

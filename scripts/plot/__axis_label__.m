@@ -24,7 +24,7 @@
 
 ## Author: jwe
 
-function __axis_label__ (caller, text)
+function h = __axis_label__ (caller, text)
 
   if (nargin == 0)
     usage ("__axis_label__ (caller, text)");
@@ -37,6 +37,14 @@ function __axis_label__ (caller, text)
     endif
   else
     usage ("%s (text)", caller);
+  endif
+
+  ## XXX FIXME XXX -- eventually, we will return a graphics handle.  For
+  ## now, return something, so that calls that expect a handle won't
+  ## fail (at least immediately).
+
+  if (nargout > 0)
+    h = -1;
   endif
 
 endfunction

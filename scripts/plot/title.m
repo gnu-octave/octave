@@ -27,7 +27,7 @@
 
 ## Author: jwe
 
-function title (text)
+function h = title (text)
 
   if (nargin != 1)
     usage ("title (text)");
@@ -38,6 +38,14 @@ function title (text)
 		   undo_string_escapes (undo_string_escapes (text))));
   else
     error ("title: text must be a string");
+  endif
+
+  ## XXX FIXME XXX -- eventually, we will return a graphics handle.  For
+  ## now, return something, so that calls that expect a handle won't
+  ## fail (at least immediately).
+
+  if (nargout > 0)
+    h = -1;
   endif
 
 endfunction

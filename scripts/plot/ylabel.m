@@ -24,8 +24,16 @@
 
 ## Author: jwe
 
-function ylabel (varargin)
+function h = ylabel (varargin)
 
-  __axis_label__ ("ylabel", varargin{:});
+  ## XXX FIXME XXX -- eventually, we will return a graphics handle.  For
+  ## now, return something, so that calls that expect a handle won't
+  ## fail (at least immediately).
+
+  if (nargout > 0)
+    h = __axis_label__ ("ylabel", varargin{:});
+  else
+    __axis_label__ ("ylabel", varargin{:});
+  endif
 
 endfunction

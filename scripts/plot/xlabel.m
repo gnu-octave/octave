@@ -30,8 +30,16 @@
 
 ## Author: jwe
 
-function xlabel (varargin)
+function h = xlabel (varargin)
 
-  __axis_label__ ("xlabel", varargin{:});
+  ## XXX FIXME XXX -- eventually, we will return a graphics handle.  For
+  ## now, return something, so that calls that expect a handle won't
+  ## fail (at least immediately).
+
+  if (nargout > 0)
+    h = __axis_label__ ("xlabel", varargin{:});
+  else
+    __axis_label__ ("xlabel", varargin{:});
+  endif
 
 endfunction

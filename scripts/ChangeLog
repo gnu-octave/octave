@@ -1,3 +1,8 @@
+2003-10-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* plot/__axis_label__.m, plot/xlabel.m, plot/ylabel.m,
+	plot/zlabel.m, plot/title.m: Return a value if nargout > 0.
+
 2003-10-02  Quentin Spencer  <qspencer@ieee.org>
 
 	* statistics/base/mean.m: Fix missing semicolon problem.

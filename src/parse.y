@@ -80,8 +80,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
 static bool Vwarn_assign_as_truth_value;
 
-// If TRUE, generate a warning for variable swich labels.
-static bool Vwarn_variable_switch_label;
+// If TRUE, generate warning about the meaning of code changing due to
+// changes in associativity for various ops (typically for Matlab
+// compatibility).
+static bool Vwarn_associativity_change;
 
 // If TRUE, generate warning if declared function name disagrees with
 // the name of the file in which it is defined.
@@ -99,6 +101,9 @@ static bool Vwarn_missing_semicolon;
 // changes in precedence levels for various ops (typically for Matlab
 // compatibility).
 static bool Vwarn_precedence_change;
+
+// If TRUE, generate a warning for variable switch labels.
+static bool Vwarn_variable_switch_label;
 
 // Temporary symbol table pointer used to cope with bogus function syntax.
 symbol_table *tmp_local_sym_tab = 0;
@@ -1580,7 +1585,13 @@ fold (tree_binary_expression *e)
   tree_expression *op1 = e->lhs ();
   tree_expression *op2 = e->rhs ();
 
-  if (op1->is_constant () && op2->is_constant ())
+  octave_value::binary_op op_type = e->op_type ();
+
+  if (op1->is_constant () && op2->is_constant ()
+      && (! ((Vwarn_associativity_change
+	      && (op_type == POW || op_type == EPOW))
+	     || (Vwarn_precedence_change
+		 && (op_type == EXPR_OR || op_type == EXPR_OR_OR)))))
     {
       octave_value tmp = e->rvalue ();
 
@@ -1840,6 +1851,27 @@ make_anon_fcn_handle (tree_parameter_list *param_list, tree_statement *stmt)
   return retval;
 }
 
+static void
+maybe_warn_associativity_change (tree_expression *op)
+{
+  if (Vwarn_associativity_change
+      && op->paren_count () == 0 && op->is_binary_expression ())
+    {
+      tree_binary_expression *e
+	= dynamic_cast<tree_binary_expression *> (op);
+
+      octave_value::binary_op op_type = e->op_type ();
+
+      if (op_type == octave_value::op_pow
+	  || op_type == octave_value::op_el_pow)
+	{
+	  std::string op_str = octave_value::binary_op_as_string (op_type);
+
+	  warning ("meaning may have changed due to change in associativity for %s operator", op_str.c_str ());
+        }
+    }
+}
+
 // Build a binary expression.
 
 static tree_expression *
@@ -1852,10 +1884,12 @@ make_binary_op (int op, tree_expression *op1, token *tok_val,
     {
     case POW:
       t = octave_value::op_pow;
+      maybe_warn_associativity_change (op1);
       break;
 
     case EPOW:
       t = octave_value::op_el_pow;
+      maybe_warn_associativity_change (op1);
       break;
 
     case '+':
@@ -3848,6 +3882,14 @@ warn_assign_as_truth_value (void)
 }
 
 static int
+warn_associativity_change (void)
+{
+  Vwarn_associativity_change = check_preference ("warn_associativity_change");
+
+  return 0;
+}
+
+static int
 warn_function_name_clash (void)
 {
   Vwarn_function_name_clash = check_preference ("warn_function_name_clash");
@@ -3953,6 +3995,15 @@ allowing Octave to warn about other assignments used in conditional\n\
 contexts.\n\
 \n\
 The default value of @code{warn_assign_as_truth_value} is 1.\n\
+@end defvr");
+
+  DEFVAR (warn_associativity_change, true, warn_associativity_change,
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} warn_associativity_change\n\
+If the value of this variable is nonzero, Octave will warn about\n\
+possible changes in the meaning of some code due to changes in\n\
+associativity for some operators.  Associativity changes have typically\n\
+been made for Matlab compatibility.  The default value is 1.\n\
 @end defvr");
 
   DEFVAR (warn_function_name_clash, true, warn_function_name_clash,

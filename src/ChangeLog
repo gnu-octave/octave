@@ -1,3 +1,13 @@
+2005-02-23  John W. Eaton  <jwe@octave.org>
+
+	* parse.y (fold (tree_binary_expression*)): Skip constant folding
+	for some expressions to preserve warnings.
+	(Vwarn_associativity_change): New static variable.
+	(warn_associativity_change): New function.
+	(symbols_of_parse): DEFVAR warn_associativity_change.
+	(maybe_warn_associativity_change): New function.
+	(make_binary_op): Use it.
+
 2005-02-22  John W. Eaton  <jwe@octave.org>
 
 	* parse.y (POW, EPOW): Use %left associativity for compatibility.

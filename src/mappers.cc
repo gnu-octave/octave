@@ -35,6 +35,14 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #define finite(x) ((x) < DBL_MAX && (x) > -DBL_MAX)
 #endif
 
+#ifndef M_LOG10E
+#define M_LOG10E 0.43429448190325182765
+#endif
+
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
 /*
  * Double -> double mappers.
  */
@@ -42,7 +50,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 double
 arg (double x)
 {
-  return 0.0;
+  if (x < 0.0)
+    return M_PI;
+  else
+    return 0.0;
 }
 
 double
@@ -225,10 +236,6 @@ floor (const Complex& x)
   int im = (int) floor (imag (x));
   return Complex (re, im);
 }
-
-#ifndef M_LOG10E
-#define M_LOG10E 0.43429448190325182765
-#endif
 
 Complex
 log10 (const Complex& x)

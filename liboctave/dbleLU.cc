@@ -57,9 +57,9 @@ LU::LU (const Matrix& a)
   int *pvt = new int [n];
   double *tmp_data = dup (a.data (), a.length ());
   int info = 0;
-  double b;
+  double dummy = 0;
 
-  F77_FCN (dgesv, DGESV) (n, 0, tmp_data, n, ipvt, b, n, info);
+  F77_FCN (dgesv, DGESV) (n, 0, tmp_data, n, ipvt, dummy, n, info);
 
   Matrix A_fact (tmp_data, n, n);
 

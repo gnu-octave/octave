@@ -71,7 +71,7 @@ EIG::init (const Matrix& a)
   int lwork = 8*n;
   double *work = new double[lwork];
 
-  double *dummy;
+  double *dummy = 0;
   int idummy = 1;
 
   F77_FCN (dgeev, DGEEV) ("N", "V", n, tmp_data, n, wr, wi, dummy,
@@ -143,7 +143,7 @@ EIG::init (const ComplexMatrix& a)
   Complex *work = new Complex[lwork];
   double *rwork = new double[4*n];
 
-  Complex *dummy;
+  Complex *dummy = 0;
   int idummy = 1;
 
   F77_FCN (zgeev, ZGEEV) ("N", "V", n, tmp_data, n, pw, dummy, idummy,

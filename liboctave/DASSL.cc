@@ -298,8 +298,8 @@ DAE::integrate (double tout)
   else
     info[6] = 0;
 
-  double *dummy;
-  int *idummy;
+  double *dummy = 0;
+  int *idummy = 0;
 
   if (restart)
     {

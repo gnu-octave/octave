@@ -230,8 +230,8 @@ public:
   friend ostream& operator << (ostream& os, const Matrix& a);
   friend istream& operator >> (istream& is, Matrix& a);
 
-  int read (FILE *fptr, char *type);
-  int write (FILE *fptr, char *type);
+  int read (FILE *fptr, const char *type);
+  int write (FILE *fptr, const char *type);
 
 private:
 

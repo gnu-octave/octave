@@ -57,9 +57,9 @@ ComplexLU::ComplexLU (const ComplexMatrix& a)
   int *pvt = new int [n];
   Complex *tmp_data = dup (a.data (), a.length ());
   int info = 0;
-  Complex *b;
+  Complex *dummy = 0;
 
-  F77_FCN (zgesv, ZGESV) (n, 0, tmp_data, n, ipvt, b, n, info);
+  F77_FCN (zgesv, ZGESV) (n, 0, tmp_data, n, ipvt, dummy, n, info);
 
   ComplexMatrix A_fact (tmp_data, n, n);
 

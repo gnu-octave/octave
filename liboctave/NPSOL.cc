@@ -205,8 +205,7 @@ NPSOL::minimize (double& objf, int& inform, Vector& lambda)
 
   // Constraint stuff.
 
-  double dummy;
-  double *pclin = &dummy;
+  double *pclin = 0;
   Matrix clin;
   if (nclin > 0)
     {

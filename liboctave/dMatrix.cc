@@ -529,7 +529,7 @@ Matrix::inverse (int& info, double& rcond) const
     }
   else
     {
-      double *dummy;
+      double *dummy = 0;
 
       F77_FCN (dgedi, DGEDI) (tmp_data, nr, nc, ipvt, dummy, z, 1);
     }
@@ -2187,10 +2187,10 @@ operator >> (istream& is, Matrix& a)
   return is;
 }
 
-// Read an array of data froma file in binary format.
+// Read an array of data from a file in binary format.
 
 int
-Matrix::read (FILE *fptr, char *type)
+Matrix::read (FILE *fptr, const char *type)
 {
   // Allocate buffer pointers.
 
@@ -2267,7 +2267,7 @@ Matrix::read (FILE *fptr, char *type)
 // Write the data array to a file in binary format.
 
 int
-Matrix::write (FILE *fptr, char *type)
+Matrix::write (FILE *fptr, const char *type)
 {
   // Allocate buffer pointers.
 

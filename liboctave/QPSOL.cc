@@ -87,8 +87,7 @@ QPSOL::minimize (double& objf, int& inform, Vector& lambda)
 
   double bigbnd = infinite_bound ();
 
-  double dummy;
-  double *pa = &dummy;
+  double *pa = 0;
   Matrix clin;
   if (nclin > 0)
     {

@@ -801,7 +801,7 @@ ComplexMatrix::inverse (int& info, double& rcond) const
     }
   else
     {
-      Complex *dummy;
+      Complex *dummy = 0;
 
       F77_FCN (zgedi, ZGEDI) (tmp_data, nr, nc, ipvt, dummy, z, 1);
     }

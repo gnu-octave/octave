@@ -22,6 +22,10 @@ EXTERNAL_DISTFILES = $(DISTFILES)
 
 include $(TOPDIR)/Makeconf
 
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
+
 ifeq ($(SHARED_LIBS), true)
   ifdef CPICFLAG
     CPICDEP := pic/machar.o pic/dostop.o pic/f77-fcn.o

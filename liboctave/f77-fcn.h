@@ -24,9 +24,17 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #define octave_f77_uscore_h 1
 
 #if defined (F77_APPEND_UNDERSCORE)
-#define F77_FCN(f) f##_
+#if defined (F77_UPPERCASE_NAMES)
+#define F77_FCN(f, F) F##_
 #else
-#define F77_FCN(f) f
+#define F77_FCN(f, F) f##_
+#endif
+#else
+#if defined (F77_UPPERCASE_NAMES)
+#define F77_FCN(f, F) F
+#else
+#define F77_FCN(f, F) f
+#endif
 #endif
 
 #endif

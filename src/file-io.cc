@@ -1371,7 +1371,10 @@ do_scanf (const char *type, const Octave_object& args, int nargout)
       unlink (tmp_file);
 
       if (! string)
-	panic_impossible ();
+	{
+	  error ("%s: no string to scan", type); 
+	  return retval;
+	}
 
       int success = fputs (string, fptr);
       fflush (fptr);

@@ -37,6 +37,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <unistd.h>
 #endif
 
+#include <readline/tilde.h>
+
 #include "defun.h"
 #include "dirfns.h"
 #include "error.h"
@@ -44,6 +46,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-obj.h"
 #include "octave.h"
 #include "pager.h"
+#include "pathsearch.h"
 #include "sighandlers.h"
 #include "symtab.h"
 #include "tree-const.h"
@@ -52,15 +55,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "user-prefs.h"
 #include "utils.h"
 #include "variables.h"
-
-extern "C"
-{
-// XXX FIXME XXX
-#undef __FUNCTION_DEF
-#include <readline/tilde.h>
-}
-
-#include "pathsearch.h"
 
 static help_list operators[] =
 {

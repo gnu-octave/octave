@@ -54,14 +54,9 @@ Free Software Foundation, Inc.
 
 // This must come before anything that includes iostream.h...
 // (This is apparently no longer true...)
-extern "C"
-{
+
 #include "readline/readline.h"
 #include "readline/history.h"
-
-extern void free_undo_list ();
-
-extern char *xmalloc ();
 
 // Yes, this sucks, but it avoids a conflict with another readline
 // function declared in iostream.h.
@@ -92,7 +87,6 @@ gnu_readline (const char *s)
   else
 #endif
     return readline (s);
-}
 }
 
 #include "defun.h"
@@ -832,7 +826,7 @@ command_generator (const char *text, int state)
 	  if (strncmp (name, hint, hint_len) == 0)
 	    {
 	      int len = 2 + prefix_len + strlen (name);
-	      char *buf = (char *) xmalloc (len);
+	      char *buf = (char *) malloc (len);
 
 	      if (prefix)
 		{

@@ -293,6 +293,7 @@ matherr (struct exception *x)
 
   return 1;
 }
+#endif
 
 void
 sysdep_init (void)

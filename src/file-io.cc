@@ -48,6 +48,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <fcntl.h>
 
+#include <readline/tilde.h>
+
 #include <DLList.h>
 
 #include "dMatrix.h"
@@ -69,12 +71,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "variables.h"
 
-extern "C"
-{
-#include <readline/tilde.h>
-
-extern void mode_string ();
-}
+extern "C" void mode_string ();
 
 // keeps a count of args sent to printf or scanf
 static int fmt_arg_count = 0;

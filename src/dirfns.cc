@@ -46,6 +46,8 @@ Free Software Foundation, Inc.
 
 #include <strstream.h>
 
+#include <readline/tilde.h>
+
 #include "defun.h"
 #include "dirfns.h"
 #include "error.h"
@@ -64,12 +66,6 @@ Free Software Foundation, Inc.
 #include "tree-plot.h"
 #include "unwind-prot.h"
 #include "utils.h"
-
-extern "C"
-{
-#include <readline/tilde.h>
-extern char *strerror (int);
-}
 
 // Temp storage for a path.
 static char tdir[MAXPATHLEN];

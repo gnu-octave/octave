@@ -1,0 +1,276 @@
+#!/bin/sh
+# original MakeTeXPK -- make a new PK font, because one wasn't found.
+# Version of 12dec94.
+# 
+# (If you change or delete the word `original' on the previous line,
+# installation won't write this MakeTeXPK over yours.)
+#
+# This script must echo the name of the generated PK file (and nothing
+# else) to standard output. Yes, this is different from the original dvips.
+# 
+# Parameters:
+#   name dpi bdpi magnification [mode [destdir]]
+#
+#   `name' is the base name of the font, such as `cmr10'.
+#   `dpi' is the resolution the font is needed at.
+#   `bdpi' is the base resolution, used to intuit the mode to use.
+#   `magnification' is a string to pass to MF as the value of `mag'.
+#   `mode', if supplied, is the mode to use. Unless it's `default', in
+#     which case we guess. (This is so people can specify a destdir
+#     without a mode.)
+#   `destdir', if supplied, is either the absolute directory name to use
+#     (if it starts with a /) or relative to the default DESTDIR (if not).
+
+# The root of where to put the new file. (Using the sh construct
+# ${var=value} is the tersest construct that lets an environment
+# variable `var' override the value given here.)
+: ${DESTROOT=${MTPK_DESTROOT-@fontdir@}}
+
+# Define to `gsftopk' or `ps2pk' or whatever to make PK files for
+# PostScript fonts. If this is defined, PSMAPFILE must also be defined to
+# be your psfonts.map file or some equivalent.
+: ${ps_to_pk=gsftopk}
+: ${PSMAPFILE=@psheaderdir@/psfonts.map}
+
+# Location of the files that map font name parts to directory names.
+: ${NAMEMAPDIR=@fontnamedir@}
+
+# This is needed only if all the font directories were not included in
+# the compile-time path for gsftopk. 
+: ${DVIPSHEADERS=@datadir@/ghostscript/type1:}
+
+# If this directory doesn't exist, the DC fonts won't be attempted.
+: ${dcfontdir=@dcfontdir@}
+
+# If this directory doesn't exist, the Sauter stuff won't be attempted.
+: ${sauterdir=@sauterdir@}
+
+# If the true typeface directory cannot be determined from the fontname,
+# the files are installed here, relative to $DESTROOT.
+: ${default_namepart=tmp/pk}
+
+# TEMPDIR needs to be unique for each process because of the possibility
+# of processes simultaneously running this script.
+TEMPDIR=${TMPDIR-/tmp}/mtpk.$$
+
+if test $# -lt 4; then
+  echo "Usage: $0 name dpi bdpi mag [mode [destdir]]." >&2
+  exit 1
+fi
+
+NAME=$1
+DPI=$2
+BDPI=$3
+MAG=$4
+MODE=$5
+
+# DESTDIR is harder.
+case "$6" in
+  "")
+      # Nothing specified, so try to intuit the directory from the
+      # fontname. First the special cases: either $NAME matches an entire
+      # name in special.map, or it matches the abbreviation in
+      # special.map and ends with a numeral (for the pointsize).
+      # We (painfully) use only the minimal features in original awk.
+      if test -r $NAMEMAPDIR/special.map; then
+        namepart=`awk \
+'{if ($1 == NAME || (substr (NAME, 1, length ($1)) == $1 \
+                      && substr (NAME, length (NAME), 1) ~ /[0-9]/)) \
+     { print $2 "/" $3; exit; }}' NAME=$NAME $NAMEMAPDIR/special.map`
+
+        if test -z "$namepart"; then
+          # Try the normal case. Source first.
+          s_abbrev=`echo $NAME | cut -c 1-1`
+          sourcedir=`awk '{ if ($1 == s_abbrev) { print $2; exit; }}' \
+                     s_abbrev=$s_abbrev $NAMEMAPDIR/source.map`
+
+          if test -n "$sourcedir"; then
+            # We found the source. Try for the typeface.
+            t_abbrev=`echo $NAME | cut -c 2-3`
+            typefacedir=`awk '{ if ($1 == t_abbrev) { print $2; exit; }}' \
+                         t_abbrev=$t_abbrev $NAMEMAPDIR/typeface.map`
+
+            if test -n "$typefacedir"; then
+              # Found everything.
+              namepart=$sourcedir/$typefacedir
+
+            else
+              echo "$0: Could not map typeface abbreviation $t_abbrev." >&2
+            fi
+          else
+            echo "$0: Could not map source abbreviation $s_abbrev." >&2
+          fi
+        fi
+      else
+        # No map files.
+        :
+      fi
+      if test -z "$namepart"; then
+        # If we failed for whatever reason, default to a generic subdir.
+        namepart=$default_namepart
+      else
+        # Otherwise, get the `pk' in before we append the mode.
+        namepart=$namepart/pk 
+      fi
+      
+      # Finally, update the parent of the installation directory.
+      DESTROOT="$DESTROOT/$namepart"
+      ;;
+  /*) DESTDIR=$6;;           # Absolute, explicit destdir => use it.
+   *) DESTDIR=$DESTROOT/$6;; # Relative destdir => append to the default.
+esac
+
+GFNAME=$NAME.$DPI'gf'
+PKNAME=$NAME.$DPI'pk'
+
+# Clean up on normal or abnormal exit. DESTDIR changes, hence the eval.
+trap "cd /; eval rm -rf $TEMPDIR \$DESTDIR/pktmp.$$" 0 1 2 15
+
+# Allow fonts to be read and written (especially in case we make
+# directories) by everyone.  
+umask 0
+
+# Possible local customizations?
+test -r @web2cdir@/MakeTeXPK.site && . @web2cdir@/MakeTeXPK.site
+
+# Remember where we were for the paths. We'd most like to replace `.',
+# wherever it is in the path, with $SAVEPWD, but we don't have access to the
+# compile-time path. So we are conservative, and put this at the end.
+SAVEPWD=`pwd`
+
+# Go to the unique working directory.
+test -d $TEMPDIR || mkdir $TEMPDIR 
+cd $TEMPDIR || exit 1
+
+# grep for the font in $PSMAPFILE, if some ps-to-pk is claimed to be supported.
+# We have to figure out the name of the base font -- $NAME is probably
+# something like pplr, but it's rpplr or pplr0 or pplr8r that's in psfonts.map.
+pattern="^r?$NAME"'(0|8r)?([ 	]|$)' 
+test -n "$ps_to_pk" && egrep "$pattern" $PSMAPFILE >psline
+if test -s psline; then
+  # This is a PostScript font.
+  MODE=$ps_to_pk
+  case $ps_to_pk in
+       ps2pk*) special_part=`cat psline | sed -e 's/^.*"//' -e 's/".*$//'`
+               # .167 SlantFont
+               slant=`echo $special_part \
+                      | awk '{ if ($2 == SlantFont) print "-S" $1 }'`
+               extend=`echo $special_part \
+                       | awk '{ if ($2 == ExtendFont) print "-E" $1 }'`
+               cmd="$ps_to_pk -v -X$DPI $slant $extend $NAME";;
+            *) cmd="$ps_to_pk $NAME $DPI";;
+  esac
+
+  # Update DESTDIR for new mode, and check if we were spuriously called.
+  test -z "$6" && DESTDIR="$DESTROOT/$MODE"
+  if test -r $DESTDIR/$PKNAME; then # sigh, this is repeated below
+    echo "$0: $DESTDIR/$PKNAME already exists." >&2
+    echo $DESTDIR/$PKNAME
+    exit 0
+  fi
+
+  DVIPSHEADERS="$DVIPSHEADERS:$SAVEPWD"
+  export DVIPSHEADERS
+  echo "$0: Running $cmd" >&2
+  $cmd >&2 || { echo "$0: $ps_to_pk failed." >&2; exit 1; }
+
+else
+  # Try Metafont.
+  MFINPUTS="$MFINPUTS:$SAVEPWD"
+  export MFINPUTS
+
+  # If an explicit mode is not supplied, try to guess. You can get a
+  # list of extant modes from ftp.cs.umb.edu:pub/tex/modes.mf.
+  if test -z "$MODE" || test "$MODE" = default; then
+    case "$BDPI" in
+      85) MODE=sun;;
+     300) MODE=cx;;
+     600) MODE=ljfour;;
+    1270) MODE=linolo;;
+       *) echo "$0: Can't guess mode for $BDPI dpi devices." >&2
+          echo "$0: Use a config file, or update me." >&2
+          exit 1
+    esac
+  fi
+
+  # If no destination directory specified, install font in directory
+  # named for the mode.
+  test -z "$6" && DESTDIR="$DESTROOT/$MODE"
+
+  if test -r $DESTDIR/$PKNAME; then # sigh, this is repeated above
+    echo "$0: $DESTDIR/$PKNAME already exists." >&2
+    echo $DESTDIR/$PKNAME
+    exit 0
+  fi
+
+  # Run Metafont. Always use plain Metafont, since reading cmbase.mf
+  # does not noticeably slow things down. Separate the filename from the
+  # rest, since we have to use ./$NAME if we generate something.
+  cmd="mf \mode:=$MODE; mag:=$MAG; scrollmode; input"
+  echo "$0: Running $cmd $NAME" >&2
+  if $cmd $NAME </dev/null >&2; then
+    : # Success already.
+  
+  else
+    # These other cases should really be part of MakeTeXMF.
+    # First have to figure out the real magnification, which means
+    # extracting the point size from the name -- a trailing number.
+    rootname=`echo $NAME | sed 's/[0-9]*$//'`
+    pointsize=`echo $NAME | sed "s/^$rootname//"`
+    case "$pointsize" in
+      11) realsize=10.95444;;	# \magstephalf
+      14) realsize=14.4;;	# \magstep2
+      17) realsize=17.28;;	# \magstep3
+      20) realsize=20.74;;	# \magstep4
+      25) realsize=24.88;;	# \magstep5
+       *) realsize=$pointsize;;
+    esac
+    mfname=$NAME.mf
+    rm -f $mfname # We are in $TEMPDIR, so this is safe.
+
+    if test -z "$pointsize"; then
+      # No point size, so it can't be a DC or Sauter font. Give up.
+      :
+
+    elif echo $NAME | grep '^dc' >/dev/null; then
+      echo "$0: Trying DC font." >&2
+      echo "if unknown dxbase: input dxbase fi;" >$mfname
+      echo "gensize:=$realsize;" >>$mfname
+      echo "generate $rootname." >>$mfname
+      echo "$0: Running $cmd ./$NAME" >&2
+      $cmd ./$mfname </dev/null >&2
+
+    elif test -d $sauterdir; then
+      echo "$0: Trying interpolated/extrapolated (Sauter) font." >&2
+      echo "design_size:=$realsize;" >>$mfname
+      echo "input b-$rootname;" >>$mfname
+      echo "$0: Running $cmd ./$NAME" >&2
+      $cmd ./$mfname </dev/null >&2
+      # Result should go in the sauterdir, not the cm dir.
+      test -z "$6" && $DESTDIR=$sauterdir/pk/$MODE
+    fi # alternative mf sources
+  fi # first mf failed
+  
+  # If we couldn't make the font, quit.
+  test -r $GFNAME || \
+    { echo "$0: Metafont failed to make $GFNAME." >&2; exit 1; }
+
+  # Success.  Make the PK file.
+  gftopk ./$GFNAME $PKNAME || exit 1
+fi
+
+# If we get here, we've succeeded; move the final font to $DESTDIR.
+test -d $DESTDIR \
+  || mkdir $DESTDIR \
+  || { echo "$0: Could not mkdir $DESTDIR." >&2; exit 1; }
+
+# Install the PK file carefully, since others may be working simultaneously.
+mv $PKNAME $DESTDIR/pktmp.$$ \
+  || { echo "$0: Could not mv $PKNAME $DESTDIR/pktmp.$$." >&2; exit 1; }
+
+cd $DESTDIR || exit 1
+mv pktmp.$$ $PKNAME
+
+# If this line (or an equivalent) is not present, dvipsk/xdvik/dviljk
+# will think MakeTeXPK failed.  Any other output to stdout will also lose.
+echo $DESTDIR/$PKNAME

@@ -1,4 +1,4 @@
-// octave-map.cc                                   -*- C++ -*-
+// Map.cc                                               -*- C++ -*-
 /*
 
 Copyright (C) 1992, 1993, 1994 John W. Eaton

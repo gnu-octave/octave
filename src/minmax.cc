@@ -1,4 +1,4 @@
-// f-minmax.cc                                           -*- C++ -*-
+// f-minmax.cc						 -*- C++ -*-
 /*
 
 Copyright (C) 1994 John W. Eaton
@@ -41,6 +41,91 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #define MIN(a,b) ((a) < (b) ? (a) : (b))
 #endif
 
+// This file could probably be condensed quite a bit by an appropriate
+// amount of C preprocessor abuse.
+
+static Matrix
+min (double d, const Matrix& m)
+{
+  int nr = m.rows ();
+  int nc = m.columns ();
+
+  Matrix result (nr, nc);
+
+  for (int j = 0; j < nc; j++)
+    for (int i = 0; i < nr; i++)
+      {
+	double m_elem = m.elem (i, j);
+	result.elem (i, j) = MIN (d, m_elem);
+      }
+
+  return result;
+}
+
+static Matrix
+min (const Matrix& m, double d)
+{
+  int nr = m.rows ();
+  int nc = m.columns ();
+
+  Matrix result (nr, nc);
+
+  for (int j = 0; j < nc; j++)
+    for (int i = 0; i < nr; i++)
+      {
+	double m_elem = m.elem (i, j);
+	result.elem (i, j) = MIN (m_elem, d);
+      }
+
+  return result;
+}
+
+static ComplexMatrix
+min (const Complex& c, const ComplexMatrix& m)
+{
+  int nr = m.rows ();
+  int nc = m.columns ();
+
+  ComplexMatrix result (nr, nc);
+
+  double abs_c = abs (c);
+
+  for (int j = 0; j < nc; j++)
+    for (int i = 0; i < nr; i++)
+      {
+	double abs_m_elem = abs (m.elem (i, j));
+	if (abs_c < abs_m_elem)
+	  result.elem (i, j) = c;
+	else
+	  result.elem (i, j) = m.elem (i, j);
+      }
+
+  return result;
+}
+
+static ComplexMatrix
+min (const ComplexMatrix& m, const Complex& c)
+{
+  int nr = m.rows ();
+  int nc = m.columns ();
+
+  ComplexMatrix result (nr, nc);
+
+  double abs_c = abs (c);
+
+  for (int j = 0; j < nc; j++)
+    for (int i = 0; i < nr; i++)
+      {
+	double abs_m_elem = abs (m.elem (i, j));
+	if (abs_m_elem < abs_c)
+	  result.elem (i, j) = m.elem (i, j);
+	else
+	  result.elem (i, j) = c;
+      }
+
+  return result;
+}
+
 static Matrix
 min (const Matrix& a, const Matrix& b)
 {
@@ -81,12 +166,94 @@ min (const ComplexMatrix& a, const ComplexMatrix& b)
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
       {
-        double abs_a_elem = abs (a.elem (i, j));
-        double abs_b_elem = abs (b.elem (i, j));
-        if (abs_a_elem < abs_b_elem)
-          result.elem (i, j) = a.elem (i, j);
-        else
-          result.elem (i, j) = b.elem (i, j);
+	double abs_a_elem = abs (a.elem (i, j));
+	double abs_b_elem = abs (b.elem (i, j));
+	if (abs_a_elem < abs_b_elem)
+	  result.elem (i, j) = a.elem (i, j);
+	else
+	  result.elem (i, j) = b.elem (i, j);
+      }
+
+  return result;
+}
+
+static Matrix
+max (double d, const Matrix& m)
+{
+  int nr = m.rows ();
+  int nc = m.columns ();
+
+  Matrix result (nr, nc);
+
+  for (int j = 0; j < nc; j++)
+    for (int i = 0; i < nr; i++)
+      {
+	double m_elem = m.elem (i, j);
+	result.elem (i, j) = MAX (d, m_elem);
+      }
+
+  return result;
+}
+
+static Matrix
+max (const Matrix& m, double d)
+{
+  int nr = m.rows ();
+  int nc = m.columns ();
+
+  Matrix result (nr, nc);
+
+  for (int j = 0; j < nc; j++)
+    for (int i = 0; i < nr; i++)
+      {
+	double m_elem = m.elem (i, j);
+	result.elem (i, j) = MAX (m_elem, d);
+      }
+
+  return result;
+}
+
+static ComplexMatrix
+max (const Complex& c, const ComplexMatrix& m)
+{
+  int nr = m.rows ();
+  int nc = m.columns ();
+
+  ComplexMatrix result (nr, nc);
+
+  double abs_c = abs (c);
+
+  for (int j = 0; j < nc; j++)
+    for (int i = 0; i < nr; i++)
+      {
+	double abs_m_elem = abs (m.elem (i, j));
+	if (abs_c > abs_m_elem)
+	  result.elem (i, j) = c;
+	else
+	  result.elem (i, j) = m.elem (i, j);
+      }
+
+  return result;
+}
+
+static ComplexMatrix
+max (const ComplexMatrix& m, const Complex& c)
+{
+  int nr = m.rows ();
+  int nc = m.columns ();
+
+  ComplexMatrix result (nr, nc);
+
+  double abs_c = abs (c);
+
+  for (int j = 0; j < nc; j++)
+    for (int i = 0; i < nr; i++)
+      {
+	double abs_m_elem = abs (m.elem (i, j));
+	if (abs_m_elem > abs_c)
+	  result.elem (i, j) = m.elem (i, j);
+	else
+	  result.elem (i, j) = c;
       }
 
   return result;
@@ -132,17 +299,16 @@ max (const ComplexMatrix& a, const ComplexMatrix& b)
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
       {
-        double abs_a_elem = abs (a.elem (i, j));
-        double abs_b_elem = abs (b.elem (i, j));
-        if (abs_a_elem > abs_b_elem)
-          result.elem (i, j) = a.elem (i, j);
-        else
-          result.elem (i, j) = b.elem (i, j);
+	double abs_a_elem = abs (a.elem (i, j));
+	double abs_b_elem = abs (b.elem (i, j));
+	if (abs_a_elem > abs_b_elem)
+	  result.elem (i, j) = a.elem (i, j);
+	else
+	  result.elem (i, j) = b.elem (i, j);
       }
 
   return result;
 }
-
 
 DEFUN_DLD_BUILTIN ("min", Fmin, Smin, 3, 2,
   "min (X): minimum value(s) of a vector (matrix)")
@@ -183,7 +349,7 @@ DEFUN_DLD_BUILTIN ("min", Fmin, Smin, 3, 2,
 	}
       else if (arg1.is_complex_scalar ())
 	{
-          retval(0) = arg1.complex_value ();
+	  retval(0) = arg1.complex_value ();
 	}
       else if (arg1.is_real_type ())
 	{
@@ -218,7 +384,7 @@ DEFUN_DLD_BUILTIN ("min", Fmin, Smin, 3, 2,
   else if (nargin == 1 && nargout == 2)
     {
       if (arg1.is_real_scalar ())
-        {
+	{
 	  retval(1) = 1;
 	  retval(0) = arg1.double_value ();
 	}
@@ -267,30 +433,72 @@ DEFUN_DLD_BUILTIN ("min", Fmin, Smin, 3, 2,
 	{
 	  gripe_wrong_type_arg ("min", arg1);
 	  return retval;
-        }
+	}
     }
   else if (nargin == 2)
     {
-      if (arg1.rows () == arg2.rows ()
-	  && arg1.columns () == arg2.columns ())
+      int arg1_is_scalar = arg1.is_scalar_type ();
+      int arg2_is_scalar = arg2.is_scalar_type ();
+
+      int arg1_is_complex = arg1.is_complex_type ();
+      int arg2_is_complex = arg2.is_complex_type ();
+
+      if (arg1_is_scalar)
 	{
-	  if (arg1.is_real_type () && arg2.is_real_type ())
+	  if (arg1_is_complex || arg2_is_complex)
+	    {
+	      Complex c1 = arg1.complex_value ();
+	      ComplexMatrix m2 = arg2.complex_matrix_value ();
+	      if (! error_state)
+		{
+		  ComplexMatrix result = min (c1, m2);
+		  if (! error_state)
+		    retval(0) = result;
+		}
+	    }
+	  else
+	    {
+	      double d1 = arg1.double_value ();
+	      Matrix m2 = arg2.matrix_value ();
+
+	      if (! error_state)
+		{
+		  Matrix result = min (d1, m2);
+		  if (! error_state)
+		    retval(0) = result;
+		}
+	    }
+	}
+      else if (arg2_is_scalar)
+	{
+	  if (arg1_is_complex || arg2_is_complex)
+	    {
+	      ComplexMatrix m1 = arg1.complex_matrix_value ();
+
+	      if (! error_state)
+		{
+		  Complex c2 = arg2.complex_value ();
+		  ComplexMatrix result = min (m1, c2);
+		  if (! error_state)
+		    retval(0) = result;
+		}
+	    }
+	  else
 	    {
 	      Matrix m1 = arg1.matrix_value ();
 
 	      if (! error_state)
 		{
-		  Matrix m2 = arg2.matrix_value ();
-
+		  double d2 = arg2.double_value ();
+		  Matrix result = min (m1, d2);
 		  if (! error_state)
-		    {
-		      Matrix result = min (m1, m2);
-		      if (! error_state)
-			retval(0) = result;
-		    }
+		    retval(0) = result;
 		}
 	    }
-	  else if (arg1.is_complex_type () || arg2.is_complex_type ())
+	}
+      else
+	{
+	  if (arg1_is_complex || arg2_is_complex)
 	    {
 	      ComplexMatrix m1 = arg1.complex_matrix_value ();
 
@@ -308,12 +516,21 @@ DEFUN_DLD_BUILTIN ("min", Fmin, Smin, 3, 2,
 	    }
 	  else
 	    {
-	      gripe_wrong_type_arg ("min", arg1);
-	      return retval;
+	      Matrix m1 = arg1.matrix_value ();
+
+	      if (! error_state)
+		{
+		  Matrix m2 = arg2.matrix_value ();
+
+		  if (! error_state)
+		    {
+		      Matrix result = min (m1, m2);
+		      if (! error_state)
+			retval(0) = result;
+		    }
+		}
 	    }
 	}
-      else
-	error ("min: nonconformant matrices");
     }
   else
     panic_impossible ();
@@ -360,23 +577,31 @@ DEFUN_DLD_BUILTIN ("max", Fmax, Smax, 3, 2,
 	}
       else if (arg1.is_complex_scalar ())
 	{
-          retval(0) = arg1.complex_value ();
+	  retval(0) = arg1.complex_value ();
 	}
       else if (arg1.is_real_type ())
 	{
 	  Matrix m = arg1.matrix_value ();
-	  if (m.rows () == 1)
-	    retval(0) = m.row_max ();
-	  else
-	    retval(0) = tree_constant (m.column_max (), 0);
+
+	  if (! error_state)
+	    {
+	      if (m.rows () == 1)
+		retval(0) = m.row_max ();
+	      else
+		retval(0) = tree_constant (m.column_max (), 0);
+	    }
 	}
       else if (arg1.is_complex_type ())
 	{
 	  ComplexMatrix m = arg1.complex_matrix_value ();
-	  if (m.rows () == 1)
-	    retval(0) = m.row_max ();
-	  else
-	    retval(0) = tree_constant (m.column_max (), 0);
+
+	  if (! error_state)
+	    {
+	      if (m.rows () == 1)
+		retval(0) = m.row_max ();
+	      else
+		retval(0) = tree_constant (m.column_max (), 0);
+	    }
 	}
       else
 	{
@@ -399,29 +624,37 @@ DEFUN_DLD_BUILTIN ("max", Fmax, Smax, 3, 2,
       else if (arg1.is_real_type ())
 	{
 	  Matrix m = arg1.matrix_value ();
-	  if (m.rows () == 1)
+
+	  if (! error_state)
 	    {
-	      retval(1) = m.row_max_loc ();
-	      retval(0) = m.row_max ();
-	    }
-	  else
-	    {
-	      retval(1) = tree_constant (m.column_max_loc (), 0);
-	      retval(0) = tree_constant (m.column_max (), 0);
+	      if (m.rows () == 1)
+		{
+		  retval(1) = m.row_max_loc ();
+		  retval(0) = m.row_max ();
+		}
+	      else
+		{
+		  retval(1) = tree_constant (m.column_max_loc (), 0);
+		  retval(0) = tree_constant (m.column_max (), 0);
+		}
 	    }
 	}
       else if (arg1.is_complex_type ())
 	{
 	  ComplexMatrix m = arg1.complex_matrix_value ();
-	  if (m.rows () == 1)
+
+	  if (! error_state)
 	    {
-	      retval(1) = m.row_max_loc ();
-	      retval(0) = m.row_max ();
-	    }
-	  else
-	    {
-	      retval(1) = tree_constant (m.column_max_loc (), 0);
-	      retval(0) = tree_constant (m.column_max (), 0);
+	      if (m.rows () == 1)
+		{
+		  retval(1) = m.row_max_loc ();
+		  retval(0) = m.row_max ();
+		}
+	      else
+		{
+		  retval(1) = tree_constant (m.column_max_loc (), 0);
+		  retval(0) = tree_constant (m.column_max (), 0);
+		}
 	    }
 	}
       else
@@ -432,50 +665,100 @@ DEFUN_DLD_BUILTIN ("max", Fmax, Smax, 3, 2,
     }
   else if (nargin == 2)
     {
-      if (arg1.rows () == arg2.rows ()
-	  && arg1.columns () == arg2.columns ())
+      int arg1_is_scalar = arg1.is_scalar_type ();
+      int arg2_is_scalar = arg2.is_scalar_type ();
+
+      int arg1_is_complex = arg1.is_complex_type ();
+      int arg2_is_complex = arg2.is_complex_type ();
+
+      if (arg1_is_scalar)
 	{
-// XXX FIXME XXX -- I don't think this is quite right.
-          if (arg1.is_real_scalar ())
-            {
-	      double result;
-	      double a_elem = arg1.double_value ();
-	      double b_elem = arg2.double_value ();
-	      result = MAX (a_elem, b_elem);
-	      retval(0) = result;
-	    }
-	  else if (arg1.is_complex_scalar ())
+	  if (arg1_is_complex || arg2_is_complex)
 	    {
-	      Complex result;
-	      Complex a_elem = arg1.complex_value ();
-	      Complex b_elem = arg2.complex_value ();
-	      if (abs (a_elem) > abs (b_elem))
-		result = a_elem;
-	      else
-		result = b_elem;
-	      retval(0) = result;
+	      Complex c1 = arg1.complex_value ();
+	      ComplexMatrix m2 = arg2.complex_matrix_value ();
+	      if (! error_state)
+		{
+		  ComplexMatrix result = max (c1, m2);
+		  if (! error_state)
+		    retval(0) = result;
+		}
 	    }
-	  else if (arg1.is_real_type ())
+	  else
 	    {
-	      Matrix result;
-	      result = max (arg1.matrix_value (), arg2.matrix_value ());
-	      retval(0) = result;
+	      double d1 = arg1.double_value ();
+	      Matrix m2 = arg2.matrix_value ();
+
+	      if (! error_state)
+		{
+		  Matrix result = max (d1, m2);
+		  if (! error_state)
+		    retval(0) = result;
+		}
 	    }
-	  else if (arg1.is_complex_type ())
+	}
+      else if (arg2_is_scalar)
+	{
+	  if (arg1_is_complex || arg2_is_complex)
 	    {
-	      ComplexMatrix result;
-	      result = max (arg1.complex_matrix_value (),
-			    arg2.complex_matrix_value ());
-	      retval(0) = result;
+	      ComplexMatrix m1 = arg1.complex_matrix_value ();
+
+	      if (! error_state)
+		{
+		  Complex c2 = arg2.complex_value ();
+		  ComplexMatrix result = max (m1, c2);
+		  if (! error_state)
+		    retval(0) = result;
+		}
 	    }
-	  else 
+	  else
 	    {
-	      gripe_wrong_type_arg ("max", arg1);
-	      return retval;
+	      Matrix m1 = arg1.matrix_value ();
+
+	      if (! error_state)
+		{
+		  double d2 = arg2.double_value ();
+		  Matrix result = max (m1, d2);
+		  if (! error_state)
+		    retval(0) = result;
+		}
 	    }
 	}
       else
-	error ("max: nonconformant matrices");
+	{
+	  if (arg1_is_complex || arg2_is_complex)
+	    {
+	      ComplexMatrix m1 = arg1.complex_matrix_value ();
+
+	      if (! error_state)
+		{
+		  ComplexMatrix m2 = arg2.complex_matrix_value ();
+
+		  if (! error_state)
+		    {
+		      ComplexMatrix result = max (m1, m2);
+		      if (! error_state)
+			retval(0) = result;
+		    }
+		}
+	    }
+	  else
+	    {
+	      Matrix m1 = arg1.matrix_value ();
+
+	      if (! error_state)
+		{
+		  Matrix m2 = arg2.matrix_value ();
+
+		  if (! error_state)
+		    {
+		      Matrix result = max (m1, m2);
+		      if (! error_state)
+			retval(0) = result;
+		    }
+		}
+	    }
+	}
     }
   else
     panic_impossible ();

@@ -216,11 +216,8 @@ libkpathsea-target:
 
 liboctave.$(LIBEXT): $(LIBOCTAVE_OBJECTS) libkpathsea-target
 	rm -f $@
-	rm -rf kpse-tmp
-	mkdir kpse-tmp
-	( cd kpse-tmp; $(AR) x ../$(LIBKPATHSEA) )
-	$(TEMPLATE_AR) $(TEMPLATE_ARFLAGS) $@ $(LIBOCTAVE_OBJECTS) kpse-tmp/*.o
-	rm -rf kpse-tmp
+	$(TEMPLATE_AR) $(TEMPLATE_ARFLAGS) $@ $(LIBOCTAVE_OBJECTS) \
+	  ../kpathsea/STATIC/*.o
 	$(RANLIB) $@
 
 liboctave.$(SHLEXT_VER): liboctave.$(SHLEXT)
@@ -230,7 +227,7 @@ liboctave.$(SHLEXT_VER): liboctave.$(SHLEXT)
 liboctave.$(SHLEXT): $(LIBOCTAVE_PICOBJ) libkpathsea-target
 	rm -f $@
 	$(SH_LD) $(SH_LDFLAGS) $(SONAME_FLAGS) -o $@ \
-	$(LIBOCTAVE_PICOBJ) $(LINK_DEPS) $(LIBKPATHSEA) 
+	$(LIBOCTAVE_PICOBJ) ../kpathsea/SHARED/*.o $(LINK_DEPS)
 
 $(LIBOCTAVE_PICOBJ): stmp-pic
 

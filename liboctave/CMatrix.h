@@ -28,11 +28,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #pragma interface
 #endif
 
-#include <Complex.h>
-
 #include "MArray.h"
 
 #include "mx-defs.h"
+#include "oct-cmplx.h"
 
 class ComplexMatrix : public MArray2<Complex>
 {

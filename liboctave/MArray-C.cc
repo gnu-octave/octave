@@ -26,7 +26,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "MArray.h"
 #include "MArray.cc"
 
-#include <Complex.h>
+#include "oct-cmplx.h"
 
 template class MArray<Complex>;
 template class MArray2<Complex>;

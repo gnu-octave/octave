@@ -89,7 +89,7 @@ IDX_VEC_REP::idx_vector_rep (const ColumnVector& v)
   colon_equiv = 0;
   colon = 0;
 
-  int len = v.length ();
+  len = v.length ();
 
   orig_nr = len;
   orig_nc = 1;
@@ -302,10 +302,10 @@ IDX_VEC_REP::maybe_convert_one_zero_to_idx (int z_len, int prefer_zero_one)
 	  assert (num_ones + num_zeros == len);
 
 	  int *new_data = new int [num_ones];
-	  int count = 0;
+	  int k = 0;
 	  for (int i = 0; i < len; i++)
 	    if (data[i] == 0)
-	      new_data[count++] = i;
+	      new_data[k++] = i;
 
 	  delete [] data;
 	  len = num_ones;
@@ -340,40 +340,40 @@ IDX_VEC_REP::checkelem (int n) const
 }
 
 static inline int
-intcmp (int *i, int *j)
+intcmp (int *ii, int *jj)
 {
-  return (*i - *j);
+  return (*ii - *jj);
 }
 
 static inline void
-sort_data (int *d, int len)
+sort_data (int *d, int l)
 {
-  qsort ((void *) d, len, sizeof (int),
+  qsort ((void *) d, l, sizeof (int),
 	 (int (*)(const void*, const void*)) intcmp);
 }
 
 static inline int
-make_uniq (int *d, int len)
+make_uniq (int *d, int l)
 {
   int k = 0;
-  for (int i = 1; i < len; i++)
+  for (int ii = 1; k < l; ii++)
     {
-      if (d[i] != d[k])
+      if (d[ii] != d[k])
 	{
 	  k++;
-	  d[k] = d[i];
+	  d[k] = d[ii];
 	}
     }
   return k+1;
 }
 
 static inline int *
-copy_data (const int *d, int len)
+copy_data (const int *d, int l)
 {
-  int *new_data = new int [len];
+  int *new_data = new int [l];
 
-  for (int i = 0; i < len; i++)
-    new_data[i] = d[i];
+  for (int ii = 0; ii < l; ii++)
+    new_data[ii] = d[ii];
 
   return new_data;
 }
@@ -425,8 +425,8 @@ IDX_VEC_REP::shorten (int n)
 ostream&
 IDX_VEC_REP::print (ostream& os) const
 {
-  for (int i = 0; i < len; i++)
-    os << data[i] << "\n";
+  for (int ii = 0; ii < len; ii++)
+    os << data[ii] << "\n";
   return os;
 }
 
@@ -452,8 +452,8 @@ IDX_VEC_REP::freeze (int z_len, const char *tag,
 	{
 	  maybe_convert_one_zero_to_idx (z_len, prefer_zero_one);
 
-	  int max_val = max ();
-	  int min_val = min ();
+	  max_val = max ();
+	  min_val = min ();
 
 	  if (min_val < 0)
 	    {

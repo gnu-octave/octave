@@ -420,6 +420,8 @@ Array<T>::reshape (const dim_vector& new_dims) const
       else
 	(*current_liboctave_error_handler) ("reshape: size mismatch");
     }
+  else
+    retval = *this;
 
   return retval;
 }

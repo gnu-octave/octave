@@ -45,6 +45,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <pwd.h>
 
+#include <readline/tilde.h>
+
 #include "getopt.h"
 
 #include "lo-error.h"
@@ -352,13 +354,16 @@ parse_and_execute (FILE *f, int print)
 }
 
 void
-parse_and_execute (const char *s, int print, int verbose)
+parse_and_execute (const char *s, int print, int verbose,
+		   const char *warn_for)
 {
   begin_unwind_frame ("parse_and_execute_2");
 
   unwind_protect_int (reading_script_file);
+  unwind_protect_ptr (curr_fcn_file_full_name);
 
   reading_script_file = 1;
+  curr_fcn_file_full_name = s;
 
   FILE *f = get_input_from_file (s, 0);
   if (f)
@@ -383,6 +388,8 @@ parse_and_execute (const char *s, int print, int verbose)
       if (verbose)
 	cout << "done." << endl;
     }
+  else if (warn_for)
+    error ("%s: unable to open file `%s'", warn_for, s);
 
   run_unwind_frame ("parse_and_execute_2");
 }
@@ -401,7 +408,19 @@ script file but without requiring the file to be named `FILE.m'.")
     {
       const char *file = args(0).string_value ();
 
-      parse_and_execute (file, 1);
+      if (! error_state)
+	{
+	  file = tilde_expand (file);
+
+	  parse_and_execute (file, 1, 0, "source");
+
+	  if (error_state)
+	    error ("source: error sourcing file `%s'", file);
+
+	  delete [] file;
+	}
+      else
+	error ("source: expecting file name as argument");
     }
   else
     print_usage ("source");
@@ -698,6 +717,7 @@ main (int argc, char **argv)
     {
       reading_script_file = 1;
       curr_fcn_file_name = argv[optind];
+      curr_fcn_file_full_name = curr_fcn_file_name;
 
       FILE *infile = get_input_from_file (curr_fcn_file_name);
 
@@ -708,7 +728,7 @@ main (int argc, char **argv)
 	  bind_builtin_variable ("program_invocation_name",
 				 curr_fcn_file_name);
 
-	  char *tmp = strrchr (curr_fcn_file_name, '/');
+	  const char *tmp = strrchr (curr_fcn_file_name, '/');
 	  tmp = tmp ? tmp+1 : curr_fcn_file_name;
 
 	  bind_builtin_variable ("program_name", tmp);

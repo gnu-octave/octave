@@ -459,15 +459,19 @@ generate_completion (const std::string& text, int state)
 	      else
 		retval = name;
 
-	      if (matches == 1 && looks_like_struct (retval))
-		{
-		  // Don't append anything, since we don't know
-		  // whether it should be '(' or '.'.
-		  command_editor::set_completion_append_character ('\0');
-		}
-	      else
-		command_editor::set_completion_append_character
-		  (Vcompletion_append_char);
+	      // XXX FIXME XXX -- looks_like_struct is broken for now,
+	      // so it always returns false.
+
+ 	      if (matches == 1 && looks_like_struct (retval))
+ 		{
+ 		  // Don't append anything, since we don't know
+ 		  // whether it should be '(' or '.'.
+
+ 		  command_editor::set_completion_append_character ('\0');
+ 		}
+ 	      else
+ 		command_editor::set_completion_append_character
+ 		  (Vcompletion_append_char);
 
 	      break;
 	    }

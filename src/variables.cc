@@ -271,6 +271,24 @@ get_struct_elts (const std::string& text)
   return retval;
 }
 
+static inline bool
+is_variable (const std::string& name)
+{
+  bool retval = false;
+
+  if (! name.empty ())
+    {
+      symbol_record *sr = curr_sym_tab->lookup (name);
+
+      if (! sr)
+	sr = fbi_sym_tab->lookup (name);
+
+      retval = (sr  && sr->is_variable ());
+    }
+
+  return retval;
+}
+
 string_vector
 generate_struct_completions (const std::string& text,
 			     std::string& prefix, std::string& hint)
@@ -287,34 +305,48 @@ generate_struct_completions (const std::string& text,
 	hint = text.substr (pos+1);
 
       prefix = text.substr (0, pos);
+
+      std::string base_name = prefix;
+
+      pos = base_name.find_first_of ("{(.");
+
+      if (pos != NPOS)
+	base_name = base_name.substr (0, pos);
+
+      if (is_variable (base_name))
+	{
+	  int parse_status;
+
+	  unwind_protect::begin_frame ("generate_struct_completions");
+
+	  unwind_protect_str (Vwarning_option);
+	  unwind_protect_bool (discard_error_messages);
+	  unwind_protect_int (error_state);
+
+	  Vwarning_option = "off";
+	  discard_error_messages = true;
+
+	  octave_value tmp = eval_string (prefix, true, parse_status);
+
+	  unwind_protect::run_frame ("generate_struct_completions");
+
+	  if (tmp.is_defined () && tmp.is_map ())
+	    names = tmp.map_keys ();
+	}
     }
-
-  int parse_status;
-
-  unwind_protect::begin_frame ("generate_struct_completions");
-
-  unwind_protect_str (Vwarning_option);
-  unwind_protect_bool (discard_error_messages);
-  unwind_protect_int (error_state);
-
-  Vwarning_option = "off";
-  discard_error_messages = true;
-
-  octave_value tmp = eval_string (prefix, true, parse_status);
-
-  unwind_protect::run_frame ("generate_struct_completions");
-
-  if (tmp.is_defined () && tmp.is_map ())
-    names = tmp.map_keys ();
 
   return names;
 }
+
+// XXX FIXME XXX -- this will have to be much smarter to work
+// "correctly".
 
 bool
 looks_like_struct (const std::string& text)
 {
   bool retval = false;
 
+#if 0
   symbol_record *sr = curr_sym_tab->lookup (text);
 
   if (sr && ! sr->is_function ())
@@ -336,6 +368,7 @@ looks_like_struct (const std::string& text)
 
       retval = (tmp.is_defined () && tmp.is_map ());
     }
+#endif
 
   return retval;
 }

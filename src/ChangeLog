@@ -1,3 +1,9 @@
+2002-11-13  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* variables.cc (is_variable): New static function.
+	(generate_struct_completions): Only evaluate objects that look
+	like variables.
+
 2002-11-12  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pt-jump.h, pt-jump.cc (tree_break_expression,

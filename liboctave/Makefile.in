@@ -155,9 +155,13 @@ install: all
 	if [ "$$linkdir" = $(includedir) ] ; then \
 	  true ; \
 	else \
-	  rm -rf $$linkdir ; \
-	fi ; \
-	$(LN_S) $(includedir) $$linkdir
+	  if [ -d $$linkdir ] ; then \
+	    mv $$linkdir $$linkdir.old ; \
+	  else \
+	    rm -f $$linkdir ; \
+	  fi ; \
+	  $(LN_S) $(includedir) $$linkdir ; \
+	fi
 .PHONY: install
 
 uninstall:

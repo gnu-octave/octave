@@ -1,0 +1,40 @@
+# types
+cdm ComplexDiagMatrix DM CDiagMatrix.h YES
+cm ComplexMatrix M CMatrix.h YES
+cnda ComplexNDArray ND CNDArray.h YES
+cs Complex S oct-cmplx.h NO
+dm DiagMatrix DM dDiagMatrix.h YES
+m Matrix M dMatrix.h YES
+nda NDArray ND dNDArray.h YES
+s double S NONE NO
+# ops
+cdm cdm dm B
+cdm dm cdm B
+cm cs cdm B
+cm cs dm B
+cm cs m BCL real NONE 0.0 boolMatrix.h
+cnda cs nda BCL real NONE 0.0 boolMatrix.h boolNDArray.h
+cm cdm cs B
+cm cdm cm B 0.0
+cm cdm m B 0.0
+cm cdm s B
+cm cm cdm B 0.0
+cm cm dm B 0.0
+cm cm m BCL real NONE 0.0 boolMatrix.h
+cnda cnda nda BCL real NONE 0.0 boolMatrix.h boolNDArray.h
+cm cm s BCL real NONE 0.0 boolMatrix.h
+cnda cnda s BCL real NONE 0.0 boolMatrix.h boolNDArray.h
+cm dm cs B
+cm dm cm B 0.0
+cm m cs BCL NONE real 0.0 boolMatrix.h
+cnda nda cs BCL NONE real 0.0 boolMatrix.h boolNDArray.h
+cm m cdm B 0.0
+cm m cm BCL NONE real 0.0 boolMatrix.h
+cnda nda cnda BCL NONE real 0.0 boolMatrix.h boolNDArray.h
+cm s cdm B
+cm s cm BCL NONE real 0.0 boolMatrix.h
+cnda s cnda BCL NONE real 0.0 boolMatrix.h boolNDArray.h
+m dm m B 0.0
+m dm s B
+m m dm B 0.0
+m s dm B

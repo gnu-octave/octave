@@ -1,3 +1,9 @@
+2003-10-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* OPERATORS/op-cm-m.cc, OPERATORS/op-cm-s.cc,
+	OPERATORS/op-cs-m.cc, OPERATORS/op-m-cm.cc, OPERATORS/op-s-cm.cc:
+	Include headers for N-d operators.
+
 2003-10-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* ops.h (DEFNDUNOP_OP, DEFNDUNOP_FN, DEFNDBINOP_OP,

@@ -1,3 +1,30 @@
+2003-10-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* mx-cdm-cm.cc, mx-cdm-cm.h, mx-cdm-cs.cc, mx-cdm-cs.h,
+	mx-cdm-dm.cc, mx-cdm-dm.h, mx-cdm-m.cc, mx-cdm-m.h, mx-cdm-s.cc,
+	mx-cdm-s.h, mx-cm-cdm.cc, mx-cm-cdm.h, mx-cm-dm.cc, mx-cm-dm.h,
+	mx-cm-m.cc, mx-cm-m.h, mx-cm-s.cc, mx-cm-s.h, mx-cs-cdm.cc,
+	mx-cs-cdm.h, mx-cs-dm.cc, mx-cs-dm.h, mx-cs-m.cc, mx-cs-m.h,
+	mx-dm-cdm.cc, mx-dm-cdm.h, mx-dm-cm.cc, mx-dm-cm.h, mx-dm-cs.cc,
+	mx-dm-cs.h, mx-dm-m.cc, mx-dm-m.h, mx-dm-s.cc, mx-dm-s.h,
+	mx-m-cdm.cc, mx-m-cdm.h, mx-m-cm.cc, mx-m-cm.h, mx-m-cs.cc,
+	mx-m-cs.h, mx-m-dm.cc, mx-m-dm.h, mx-ops.h, mx-s-cdm.cc,
+	mx-s-cdm.h, mx-s-cm.cc, mx-s-cm.h, mx-s-dm.cc, mx-s-dm.h,
+	vx-ccv-cv.cc, vx-ccv-cv.h, vx-ccv-s.cc, vx-ccv-s.h, vx-crv-rv.cc,
+	vx-crv-rv.h, vx-crv-s.cc, vx-crv-s.h, vx-cs-cv.cc, vx-cs-cv.h,
+	vx-cs-rv.cc, vx-cs-rv.h, vx-cv-ccv.cc, vx-cv-ccv.h, vx-cv-cs.cc,
+	vx-cv-cs.h, vx-rv-crv.cc, vx-rv-crv.h, vx-rv-cs.cc, vx-rv-cs.h,
+	vx-s-ccv.cc, vx-s-ccv.h, vx-s-crv.cc, vx-s-crv.h: Delete.  These
+	files are now automatically generated.
+
+	* Makefile.in ($(VX_OP_INC), $(VX_OP_SRC), $(MX_OP_INC),
+	$(MX_OP_SRC)): Generate lists with new mk-ops.awk script.
+	Add rules to generate these files and mx-ops.h.
+	(stamp-prereq): Depend on these files.
+
+	* mx-ops, vx-ops, mk-ops.awk: New files.
+	* Makefile.in (DISTFILES): Add them to the list.
+
 2003-10-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* NDArray.cc (NDArray::NDArray (const boolNDArray),

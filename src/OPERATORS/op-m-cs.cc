@@ -30,6 +30,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "mx-m-cs.h"
 #include "mx-cs-m.h"
+#include "mx-nda-cs.h"
+#include "mx-cs-nda.h"
 
 #include "gripes.h"
 #include "oct-obj.h"

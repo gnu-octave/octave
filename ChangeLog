@@ -1,3 +1,8 @@
+2003-10-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makeconf.in (AWK): Substitute and export it.
+	* configure.in: Also check for AWK.
+
 2003-10-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in (AC_PREREQ): Require 2.57.

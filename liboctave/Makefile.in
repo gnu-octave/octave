@@ -37,15 +37,9 @@ MATRIX_INC := Array.h Array2.h Array3.h ArrayN.h DiagArray2.h \
 	dNDArray.h dRowVector.h dbleAEPBAL.h dbleCHOL.h dbleDET.h \
 	dbleHESS.h dbleLU.h dbleQR.h dbleQRP.h dbleSCHUR.h dbleSVD.h
 
-MX_OP_INC := mx-cdm-cm.h mx-cdm-cs.h mx-cdm-dm.h mx-cdm-m.h \
-	mx-cdm-s.h mx-cm-cdm.h mx-cm-dm.h mx-cm-m.h mx-cm-s.h \
-	mx-cs-cdm.h mx-cs-dm.h mx-cs-m.h mx-dm-cdm.h mx-dm-cm.h \
-	mx-dm-cs.h mx-dm-m.h mx-dm-s.h mx-m-cdm.h mx-m-cm.h \
-	mx-m-cs.h mx-m-dm.h mx-s-cdm.h mx-s-cm.h mx-s-dm.h
+MX_OP_INC := $(shell $(AWK) -f $(srcdir)/mk-ops.awk prefix=mx list_h_files=1 $(srcdir)/mx-ops)
 
-VX_OP_INC := vx-ccv-s.h vx-crv-s.h vx-cs-cv.h vx-cs-rv.h vx-cv-cs.h \
-	vx-rv-cs.h vx-s-ccv.h vx-s-crv.h \
-	vx-rv-crv.h vx-cv-ccv.h vx-crv-rv.h vx-ccv-cv.h
+VX_OP_INC := $(shell $(AWK) -f $(srcdir)/mk-ops.awk prefix=vx list_h_files=1 $(srcdir)/vx-ops)
 
 OPTS_INC_DATA := DASPK-opts.in DASRT-opts.in DASSL-opts.in \
 	LSODE-opts.in NLEqn-opts.in ODESSA-opts.in Quad-opts.in
@@ -89,15 +83,9 @@ MATRIX_SRC := Array-flags.cc CColVector.cc CDiagMatrix.cc CMatrix.cc \
 	dbleCHOL.cc dbleDET.cc dbleHESS.cc dbleLU.cc \
 	dbleQR.cc dbleQRP.cc dbleSCHUR.cc dbleSVD.cc
 
-MX_OP_SRC := mx-cdm-cm.cc mx-cdm-cs.cc mx-cdm-dm.cc mx-cdm-m.cc \
-	mx-cdm-s.cc mx-cm-cdm.cc mx-cm-dm.cc mx-cm-m.cc mx-cm-s.cc \
-	mx-cs-cdm.cc mx-cs-dm.cc mx-cs-m.cc mx-dm-cdm.cc mx-dm-cm.cc \
-	mx-dm-cs.cc mx-dm-m.cc mx-dm-s.cc mx-m-cdm.cc mx-m-cm.cc \
-	mx-m-cs.cc mx-m-dm.cc mx-s-cdm.cc mx-s-cm.cc mx-s-dm.cc
+MX_OP_SRC := $(shell $(AWK) -f $(srcdir)/mk-ops.awk prefix=mx list_cc_files=1 $(srcdir)/mx-ops)
 
-VX_OP_SRC := vx-ccv-s.cc vx-crv-s.cc vx-cs-cv.cc vx-cs-rv.cc vx-cv-cs.cc \
-	vx-rv-cs.cc vx-s-ccv.cc vx-s-crv.cc \
-	vx-rv-crv.cc vx-cv-ccv.cc vx-crv-rv.cc vx-ccv-cv.cc
+VX_OP_SRC := $(shell $(AWK) -f $(srcdir)/mk-ops.awk prefix=vx list_cc_files=1 $(srcdir)/vx-ops)
 
 LIBOCTAVE_CXX_SOURCES := Bounds.cc CollocWt.cc \
 	DASPK.cc DASRT.cc DASSL.cc FEGrid.cc LinConst.cc \
@@ -142,8 +130,8 @@ EXTRAS := mx-inlines.cc kpse.cc
 
 INCLUDES_FOR_INSTALL := $(INCLUDES) $(TEMPLATE_SRC) $(EXTRAS)
 
-DISTFILES := Makefile.in ChangeLog $(SOURCES) $(INCLUDES) $(EXTRAS) \
-	$(OPTS_INC_DATA)
+DISTFILES := Makefile.in ChangeLog mk-ops.awk mx-ops vx-ops \
+	$(SOURCES) $(INCLUDES) $(EXTRAS) $(OPTS_INC_DATA)
 
 ifeq ($(SHARED_LIBS), true)
   BINDISTLIBS = liboctave/liboctave
@@ -190,7 +178,7 @@ pic:
 	  mkdir pic; \
 	fi
 
-stamp-prereq: $(OPTS_INC)
+stamp-prereq: $(OPTS_INC) $(VX_OP_INC) $(VX_OP_SRC) $(MX_OP_INC) $(MX_OP_SRC)
 	touch stamp-prereq
 
 ifeq ($(SHARED_LIBS), true)
@@ -326,6 +314,17 @@ $(OPTS_INC) : %.h : %.in $(top_srcdir)/mk-opts.pl
 	@echo making $@ from $<
 	@perl $(top_srcdir)/mk-opts.pl --opt-class-header $< > $@-t
 	@$(top_srcdir)/move-if-change $@-t $@
+
+$(VX_OP_INC) $(VX_OP_SRC) : $(srcdir)/mk-ops.awk vx-ops
+	$(AWK) -f $(srcdir)/mk-ops.awk prefix=vx $(srcdir)/vx-ops
+
+$(MX_OP_INC) $(MX_OP_SRC) : $(srcdir)/mk-ops.awk mx-ops
+	$(AWK) -f $(srcdir)/mk-ops.awk prefix=mx $(srcdir)/mx-ops
+
+mx-ops.h : $(srcdir)/mk-ops.awk mx-ops
+	$(AWK) -f $(srcdir)/mk-ops.awk make_inclusive_header=mx-ops.h > $@.t
+	@$(top_srcdir)/move-if-change $@-t $@
+
 
 # If missing, GNU make attempts to create them in the reverse of the
 # order in which they are listed here.  We rely on that fact to ensure

@@ -32,16 +32,24 @@
 function retval = int2str (x)
 
   if (nargin == 1)
-    x = round (x);
+    x = round (real(x));
+    sz = size(x);
+    nd = ndims (x);
     nc = columns (x);
     if (nc > 1)
-      ifmt = get_fmt (x(:,1), 0);
-      rfmt = get_fmt (x(:,2:end), 2);
+      idx = cell ();
+      for i = 1:nd
+	idx {i} = 1:sz(i);
+      endfor
+      idx(2) = 1;
+      ifmt = get_fmt (x(idx{:}), 0);
+      idx(2) = 2:sz(2);
+      rfmt = get_fmt (x(idx{:}), 2);
       fmt = strcat (ifmt, repmat (rfmt, 1, nc-1), "\n")
     else
       fmt = strcat (get_fmt (x, 0), "\n");
     endif
-    tmp = sprintf (fmt, round (x.'));
+    tmp = sprintf (fmt, permute (x, [2, 1, 3 : nd]));
     tmp(end) = "";
     retval = split (tmp, "\n");
   else

@@ -1,3 +1,14 @@
+2004-04-23  David Bateman  <dbateman@free.fr>
+
+	* general/int2str.m: Treat only real part of argument, and treat
+	NDArrays by stacking the slices through the matrix vertically.
+
+	* general/num2str.m: Improve format of integer matrices, and the
+	conversion of complex matrices added. Treat NDArrays by stacking
+	the slices through the matrix vertically.
+
+	* deprecated/com2str.m: Moved here from general subdirectory.
+
 2004-04-22  John W. Eaton  <jwe@octave.org>
 
 	* quaternion/qtransvmat.m: Use continuation characters to make

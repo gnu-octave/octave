@@ -52,7 +52,10 @@ max (const Matrix& a, const Matrix& b)
   int nr = a.rows ();
   int nc = a.columns ();
   if (nr != b.rows () || nc != b.columns ())
-    FAIL;
+    {
+      error ("two-arg max expecting args of same size");
+      return Matrix ();
+    }
 
   Matrix result (nr, nc);
 
@@ -73,7 +76,10 @@ max (const ComplexMatrix& a, const ComplexMatrix& b)
   int nr = a.rows ();
   int nc = a.columns ();
   if (nr != b.rows () || nc != b.columns ())
-    FAIL;
+    {
+      error ("two-arg max expecting args of same size");
+      return ComplexMatrix ();
+    }
 
   ComplexMatrix result (nr, nc);
 
@@ -97,7 +103,10 @@ min (const Matrix& a, const Matrix& b)
   int nr = a.rows ();
   int nc = a.columns ();
   if (nr != b.rows () || nc != b.columns ())
-    FAIL;
+    {
+      error ("two-arg min expecting args of same size");
+      return Matrix ();
+    }
 
   Matrix result (nr, nc);
 
@@ -118,7 +127,10 @@ min (const ComplexMatrix& a, const ComplexMatrix& b)
   int nr = a.rows ();
   int nc = a.columns ();
   if (nr != b.rows () || nc != b.columns ())
-    FAIL;
+    {
+      error ("two-arg min expecting args of same size");
+      return ComplexMatrix ();
+    }
 
   ComplexMatrix result (nr, nc);
 

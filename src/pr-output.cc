@@ -1323,8 +1323,13 @@ pr_col_num_header (std::ostream& os, int total_width, int max_width,
 {
   if (total_width > max_width && Vsplit_long_rows)
     {
-      if (col != 0 && ! compact_format)
-	os << "\n\n";
+      if (col != 0)
+	{
+	  if (compact_format)
+	    os << "\n";
+	  else
+	    os << "\n\n";
+	}
 
       int num_cols = lim - col;
 
@@ -2185,6 +2190,7 @@ init_format_state (void)
   bank_format = false;
   hex_format = 0;
   bit_format = 0;
+  compact_format = false;
   print_e = false;
   print_big_e = false;
   print_g = false;
@@ -2470,14 +2476,17 @@ ans =\n\
 @end group\n\
 @end example\n\
 \n\
-@item hex\n\
+@itemx native-hex\n\
 Print the hexadecimal representation numbers as they are stored in\n\
 memory.  For example, on a workstation which stores 8 byte real values\n\
 in IEEE format with the least significant byte first, the value of\n\
 @code{pi} when printed in @code{hex} format is @code{400921fb54442d18}.\n\
 This format only works for numeric values.\n\
 \n\
-@item bit\n\
+@item hex\n\
+The same as @code{native-hex}, but always print the most significant\n\
+byte first.\n\
+@item native-bit\n\
 Print the bit representation of numbers as stored in memory.\n\
 For example, the value of @code{pi} is\n\
 \n\
@@ -2492,6 +2501,14 @@ For example, the value of @code{pi} is\n\
 printed in bit format on a workstation which stores 8 byte real values\n\
 in IEEE format with the least significant byte first.  This format only\n\
 works for numeric types.\n\
+@item bit\n\
+The same as @code{native-bit}, but always print the most significant\n\
+bits first.\n\
+@item compact\n\
+Remove extra blank space around column number labels.\n\
+@item loose\n\
+Insert blank lines above and below column number labels (this is the\n\
+default).\n\
 @end table\n\
 \n\
 By default, Octave will try to print numbers with at least 5 significant\n\

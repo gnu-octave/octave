@@ -1,0 +1,120 @@
+dnl configure.in
+dnl
+dnl Process this file with autoconf to produce a configure script.
+dnl
+dnl Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
+### 
+### This file is part of Octave.
+### 
+### Octave is free software; you can redistribute it and/or modify it
+### under the terms of the GNU General Public License as published by the
+### Free Software Foundation; either version 2, or (at your option) any
+### later version.
+### 
+### Octave is distributed in the hope that it will be useful, but WITHOUT
+### ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+### FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+### for more details.
+### 
+### You should have received a copy of the GNU General Public License
+### along with Octave; see the file COPYING.  If not, write to the Free
+### Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+
+AC_REVISION()
+AC_PREREQ(2.0)
+AC_INIT(info.c)
+AC_CONFIG_HEADER(config.h)
+
+AC_CANONICAL_HOST
+if test -z "$host"; then
+  host=unknown
+fi
+canonical_host_type=$host
+if test "$host" = unknown; then
+  AC_MSG_WARN([configuring Info for unknown system type
+])
+fi
+
+### some defaults
+
+AC_PREFIX_DEFAULT(/usr/local)
+
+### See which C compiler to use (we expect to find gcc).
+
+AC_PROG_CC
+AC_PROG_CPP
+AC_PROG_GCC_TRADITIONAL
+
+### Special checks for odd OS specific things.
+
+AC_ISC_POSIX
+AC_MINIX
+AC_AIX
+AC_CHECK_LIB(sun, getpwnam)
+
+### Does the C compiler handle alloca() and const correctly?
+
+AC_ALLOCA
+AC_C_CONST
+
+### Checks for header files.
+
+AC_HEADER_STDC
+AC_CHECK_HEADERS(pwd.h string.h unistd.h sys/time.h sys/fcntl.h)
+AC_CHECK_HEADERS(sys/ttold.h sys/ptem.h)
+AC_TIME_WITH_SYS_TIME
+
+### Use sgtty on Ultrix so that using DEC Migrate to convert a Mips
+### binary to an Alpha binary will work.  Also on Alpha/OSF to avoid
+### a readline bug.
+
+case "$canonical_host_type" in
+  mips-dec-ultrix* | alpha-dec-osf*)
+    AC_CHECK_HEADER(sgtty.h, [AC_DEFINE(HAVE_SGTTY_H, 1)], [])
+
+    if test "$ac_cv_header_sgtty_h" = no; then
+      AC_CHECK_HEADERS(termios.h termio.h sgtty.h, [break], [])
+    fi
+  ;;
+  *)
+    AC_CHECK_HEADERS(termios.h termio.h sgtty.h, [break], [])
+  ;;
+esac
+
+if test "$ac_cv_header_termios_h" = yes \
+    || test "$ac_cv_header_termio_h" = yes \
+    || test "$ac_cv_header_sgtty_h" = yes; then
+  true
+else
+  AC_MSG_ERROR([I couldn't find termios.h, termio.h, or sgtty.h!])
+fi
+
+### Checks for functions.
+
+AC_CHECK_FUNCS(setvbuf getcwd bzero bcopy rindex stricmp strnicmp strerror)
+
+### Checks for OS specific cruft.
+
+AC_FUNC_SETVBUF_REVERSED
+
+TERMLIBS=""
+for termlib in termcap terminfo curses termlib ; do
+  AC_CHECK_LIB(${termlib}, main, [TERMLIBS="${TERMLIBS} -l${termlib}"])
+  case "${TERMLIBS}" in
+    *-l${termlib}*)
+      AC_MSG_RESULT([defining TERMLIBS to be $TERMLIBS])
+      break
+    ;;
+  esac
+done
+AC_SUBST(TERMLIBS)
+
+### Checks for other programs.
+
+AC_PROG_RANLIB
+
+AC_PROG_INSTALL
+
+### Do the substitutions.
+
+AC_OUTPUT([Makefile])

@@ -54,7 +54,7 @@ DIRS_TO_MAKE = $(bindir) $(libdir) $(octincludedir) $(fcnfiledir) \
   `echo $(localfcnfilepath) | awk -F: '{for (i=1; i<=NF; i++) print $i}'` \
   `echo $(localoctfilepath) | awk -F: '{for (i=1; i<=NF; i++) print $i}'`
 
-all: octave-bug $(SUBDIRS)
+all: octave-bug mkoctfile $(SUBDIRS)
 .PHONY: all
 
 octave-bug: octave-bug.in Makeconf octMakefile

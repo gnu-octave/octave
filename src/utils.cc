@@ -55,7 +55,25 @@ Free Software Foundation, Inc.
 #include <iostream.h>
 #include <strstream.h>
 #include <fstream.h>
+
+// This mess suggested by the autoconf manual.
+// unistd.h defines _POSIX_VERSION on POSIX.1 systems.
+#if defined(DIRENT) || defined(_POSIX_VERSION)
 #include <dirent.h>
+#define NLENGTH(dirent) (strlen((dirent)->d_name))
+#else /* not (DIRENT or _POSIX_VERSION) */
+#define dirent direct
+#define NLENGTH(dirent) ((dirent)->d_namlen)
+#ifdef SYSNDIR
+#include <sys/ndir.h>
+#endif /* SYSNDIR */
+#ifdef SYSDIR
+#include <sys/dir.h>
+#endif /* SYSDIR */
+#ifdef NDIR
+#include <ndir.h>
+#endif /* NDIR */
+#endif /* not (DIRENT or _POSIX_VERSION) */
 
 #ifndef HAVE_STRCASECMP
 extern "C"
@@ -70,8 +88,6 @@ extern "C"
 extern int strncasecmp (const char*, const char*, size_t);
 }
 #endif
-
-#define NLENGTH(dirent) (strlen((dirent)->d_name))
 
 extern "C"
 {
@@ -261,7 +277,9 @@ raw_mode (int on)
 
 	s.c_lflag &= ~(ICANON|ECHO|ECHOE|ECHOK|ECHONL);
 	s.c_oflag |=  (OPOST|ONLCR);
+#if ! defined (NeXT)
 	s.c_oflag &= ~(OCRNL|ONOCR|ONLRET);
+#endif
 	s.c_cc[VMIN] = 1;
 	s.c_cc[VTIME] = 0;
       }      
@@ -294,7 +312,9 @@ raw_mode (int on)
 
 	s.c_lflag &= ~(ICANON|ECHO|ECHOE|ECHOK|ECHONL);
 	s.c_oflag |=  (OPOST|ONLCR);
+#if ! defined (NeXT)
 	s.c_oflag &= ~(OCRNL|ONOCR|ONLRET);
+#endif
 	s.c_cc[VMIN] = 1;
 	s.c_cc[VTIME] = 0;
       }      

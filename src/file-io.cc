@@ -91,10 +91,10 @@ file_info::file_info (int n, const char *nm, FILE *t, const char *md)
 
 file_info::file_info (const file_info& f)
 {
-  file_number = f._number;
-  file_name = strsave (f._name);
-  file_fptr = f._fptr;
-  file_mode = strsave (f._mode);
+  file_number = f.file_number;
+  file_name = strsave (f.file_name);
+  file_fptr = f.file_fptr;
+  file_mode = strsave (f.file_mode);
 }
 
 file_info&
@@ -102,7 +102,7 @@ file_info::operator = (const file_info& f)
 {
   if (this != & f)
     {
-      file_number = f._number;
+      file_number = f.file_number;
       delete [] file_name;
       file_name = strsave (f.file_name);
       file_fptr = f.file_fptr;

@@ -245,8 +245,8 @@ public:
   int is_system_fcn_file (void) const;
 
   int takes_varargs (void) const;
-  void va_start (void);
-  tree_constant va_arg (void);
+  void octave_va_start (void);
+  tree_constant octave_va_arg (void);
 
   void stash_function_name (char *s);
   char *function_name (void);

@@ -396,7 +396,7 @@ symbols_of_pager (void)
     "path to pager binary");
 
   DEFVAR (page_output_immediately, 1.0, 0, page_output_immediately,
-    "if possible, send output intended for the screen through the pager");
+    "if paging output, start sending it as soon as it is available");
 
   DEFVAR (page_screen_output, 1.0, 0, page_screen_output,
     "if possible, send output intended for the screen through the pager");

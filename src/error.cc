@@ -352,15 +352,15 @@ warning (const char *fmt, ...)
 {
   if (Vwarning_option != "off")
     {
+      if (Vwarning_option == "backtrace" && ! warning_state)
+	pr_where ("warning");
+
       va_list args;
       va_start (args, fmt);
       vwarning ("warning", fmt, args);
       va_end (args);
 
       warning_state = 1;
-
-      if (Vwarning_option == "backtrace")
-	pr_where ("warning");
 
       if ((interactive || forced_interactive)
 	  && Vdebug_on_warning && curr_function)

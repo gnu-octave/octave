@@ -69,8 +69,13 @@ void
 check_version (const std::string& version, const std::string& fcn)
 {
   if (version != OCTAVE_VERSION)
-    warning ("incompatible version %s found in function `%s'",
-	     version.c_str (), fcn.c_str ());
+    {
+      warning ("incompatible version %s found in function `%s'",
+	       version.c_str (), fcn.c_str ());
+      warning ("this can lead to incorrect results or other failures");
+      warning ("you can fix this problem by recmpiling this .oct file");
+
+    }
 }
 
 // Install variables and functions in the symbol tables.

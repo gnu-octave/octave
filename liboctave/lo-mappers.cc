@@ -79,10 +79,10 @@ real (double x)
 double
 xround (double x)
 {
-#if defined HAVE_ROUND
+#if defined (HAVE_ROUND)
   return round (x);
 #else
-  return (x < 0 ? ceil (x - 0.5) : floor (x + 0.5);
+  return x > 0 ? floor (x + 0.5) : ceil (x - 0.5);
 #endif
 }
 
@@ -90,6 +90,7 @@ double
 signum (double x)
 {
   double tmp = 0.0;
+
   if (x < 0.0)
     tmp = -1.0;
   else if (x > 0.0)

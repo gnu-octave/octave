@@ -280,7 +280,8 @@ recover_from_parsing_function (void);
 
 // Make an index expression.
 static tree_index_expression *
-make_index_expression (tree_expression *expr, tree_argument_list *args);
+make_index_expression (tree_expression *expr, tree_argument_list *args,
+		       tree_index_expression::type);
 
 // Make an indirect reference expression.
 static tree_indirect_ref *
@@ -311,6 +312,11 @@ set_stmt_print_flag (tree_statement_list *, char, bool);
     { \
       global_command = 0; \
       yyerrok; \
+      if (symtab_context) \
+        { \
+	  curr_sym_tab = symtab_context; \
+	  symtab_context = 0; \
+        } \
       if (interactive || forced_interactive) \
 	YYACCEPT; \
       else \
@@ -691,11 +697,25 @@ parsing_indir	: // empty
 postfix_expr	: primary_expr
 		  { $$ = $1; }
 		| postfix_expr '(' ')'
-		  { $$ = make_index_expression ($1, 0); }
+		  {
+		    $$ = make_index_expression ($1, 0,
+						tree_index_expression::paren);
+		  }
 		| postfix_expr '(' arg_list ')'
-		  { $$ = make_index_expression ($1, $3); }
+		  {
+		    $$ = make_index_expression ($1, $3,
+						tree_index_expression::paren);
+		  }
+		| postfix_expr '{' '}'
+		  {
+		    $$ = make_index_expression ($1, 0,
+						tree_index_expression::brace);
+		  }
 		| postfix_expr '{' arg_list '}'
-		  { $$ = make_index_expression ($1, $3); }
+		  {
+		    $$ = make_index_expression ($1, $3,
+						tree_index_expression::brace);
+		  }
 		| postfix_expr PLUS_PLUS
 		  { $$ = make_postfix_op (PLUS_PLUS, $1, $2); }
 		| postfix_expr MINUS_MINUS
@@ -832,7 +852,10 @@ assign_expr	: assign_lhs '=' expression
 		;
 
 word_list_cmd	: identifier word_list
-		  { $$ = make_index_expression ($1, $2); }
+		  {
+		    $$ = make_index_expression ($1, $2,
+						tree_index_expression::paren);
+		  }
 		;
 
 word_list	: TEXT
@@ -2567,7 +2590,8 @@ recover_from_parsing_function (void)
 // Make an index expression.
 
 static tree_index_expression *
-make_index_expression (tree_expression *expr, tree_argument_list *args)
+make_index_expression (tree_expression *expr, tree_argument_list *args,
+		       tree_index_expression::type t)
 {
   tree_index_expression *retval = 0;
 
@@ -2576,7 +2600,7 @@ make_index_expression (tree_expression *expr, tree_argument_list *args)
 
   expr->mark_postfix_indexed ();
 
-  retval =  new tree_index_expression (expr, args, l, c);
+  retval =  new tree_index_expression (expr, args, l, c, t);
 
   return retval;
 }

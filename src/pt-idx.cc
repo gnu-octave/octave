@@ -40,9 +40,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 tree_index_expression::tree_index_expression (tree_expression *e,
 					      tree_argument_list *lst,
-					      int l, int c)
+					      int l, int c, type t)
   : tree_expression (l, c), expr (e), list (lst),
-    arg_nm (lst ? lst->get_arg_names () : string_vector ()) { }
+    itype (t), arg_nm (lst ? lst->get_arg_names () : string_vector ()) { }
 
 tree_index_expression::~tree_index_expression (void)
 {

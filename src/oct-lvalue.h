@@ -29,6 +29,7 @@ class octave_value_list;
 #include <string>
 
 #include "oct-obj.h"
+#include "pt-idx.h"
 #include "symtab.h"
 
 // XXX FIXME XXX -- eliminate the following kluge?
@@ -50,7 +51,7 @@ public:
     : val (v), idx (), chg_fcn (f), struct_elt_name (nm), index_set (false) { }
 
   octave_lvalue (const octave_lvalue& vr)
-    : val (vr.val), idx (vr.idx), chg_fcn (vr.chg_fcn),
+    : val (vr.val), idx (vr.idx), itype (vr.itype), chg_fcn (vr.chg_fcn),
       struct_elt_name (vr.struct_elt_name), index_set (vr.index_set) { }
 
   octave_lvalue& operator = (const octave_lvalue& vr)
@@ -59,6 +60,7 @@ public:
 	{
 	  val = vr.val;
 	  idx = vr.idx;
+	  itype = vr.itype;
 	  chg_fcn = vr.chg_fcn;
 	  struct_elt_name = vr.struct_elt_name;
 	  index_set = vr.index_set;
@@ -85,7 +87,9 @@ public:
       return val->struct_elt_ref (nm);
     }
 
-  void set_index (const octave_value_list& i);
+  void set_index (const octave_value_list& i,
+		  tree_index_expression::type t
+		    = tree_index_expression::unknown);
 
   void clear_index (void) { idx = octave_value_list (); }
 
@@ -107,6 +111,8 @@ private:
   octave_value *val;
 
   octave_value_list idx;
+
+  tree_index_expression::type itype;
 
   symbol_record::change_function chg_fcn;
 

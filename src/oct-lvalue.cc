@@ -57,11 +57,13 @@ octave_lvalue::assign (octave_value::assign_op op, const octave_value& rhs)
 }
 
 void
-octave_lvalue::set_index (const octave_value_list& i)
+octave_lvalue::set_index (const octave_value_list& i,
+			  tree_index_expression::type t)
 {
   if (! index_set)
     {
       idx = i;
+      itype = t;
       index_set = true;
     }
   else

@@ -46,8 +46,15 @@ tree_index_expression : public tree_expression
 {
 public:
 
+  enum type
+    {
+      unknown,
+      paren,
+      brace
+    };
+
   tree_index_expression (tree_expression *e = 0, tree_argument_list *lst = 0,
-			 int l = -1, int c = -1);
+			 int l = -1, int c = -1, type t = paren);
 
   ~tree_index_expression (void);
 
@@ -83,6 +90,8 @@ private:
   tree_expression *expr;
 
   tree_argument_list *list;
+
+  type itype;
 
   string_vector arg_nm;
 

@@ -1,5 +1,14 @@
 2002-05-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* parse.y (ABORT_PARSE): Maybe restore symbol table context too.
+
+	* pt-idx.h (tree_index_expression::type): New enum.
+	(tree_index_expression::etype): New data member.
+	* pt-idx.h (tree_index_expression::tree_index_expression):
+	New arg, t, to set type of index.
+	* parse.y (make_index_expression): Likewise.
+	Change all callers.
+
 	* ov-base.cc (cell_conv): New conversion function.
 	(install_base_type_conversions): Install it.
 	Install conversion for indexed assignment of octave_cells to

@@ -46,6 +46,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "help.h"
 #include "defun.h"
 
+#ifdef USE_GNU_INFO
 extern "C"
 {
 #include "info/info.h"
@@ -57,11 +58,18 @@ extern int index_entry_exists ();
 extern int do_info_index_search ();
 extern void finish_info_session ();
 extern char *replace_in_documentation ();
+}
+#endif
 
+extern "C"
+{
 // XXX FIXME XXX
 #undef __FUNCTION_DEF
 #include <readline/tilde.h>
+}
 
+extern "C"
+{
 #define boolean kpathsea_boolean
 #define false kpathsea_false
 #define true kpathsea_true
@@ -319,8 +327,10 @@ Use the command `help -i <topic>' to search the manual index.\n"
 static void
 additional_help_message (ostrstream& output_buf)
 {
+#ifdef USE_GNU_INFO
   if (! user_pref.suppress_verbose_help_message)
     output_buf << VERBOSE_HELP_MESSAGE;
+#endif
 }
 
 void
@@ -514,6 +524,7 @@ simple_help (void)
   maybe_page_output (output_buf);
 }
 
+#ifdef USE_GNU_INFO
 static int
 try_info (const char *string, int force = 0)
 {
@@ -575,6 +586,47 @@ try_info (const char *string, int force = 0)
 
   return status;
 }
+#endif
+
+static void
+help_from_info (int argc, char **argv)
+{
+#ifdef USE_GNU_INFO
+  if (argc == 1)
+    {
+      volatile sig_handler *old_sigint_handler;
+      old_sigint_handler = signal (SIGINT, SIG_IGN);
+
+      try_info (0, 1);
+
+      signal (SIGINT, old_sigint_handler);
+    }
+  else
+    {
+      while (--argc > 0)
+	{
+	  argv++;
+
+	  if (! *argv || ! **argv)
+	    continue;
+
+	  volatile sig_handler *old_sigint_handler;
+	  old_sigint_handler = signal (SIGINT, SIG_IGN);
+
+	  if (! try_info (*argv))
+	    {
+	      message ("help", "sorry, `%s' is not indexed in the manual",
+		       *argv); 
+	      sleep (2);
+	    }
+
+	  signal (SIGINT, old_sigint_handler);
+	}
+    }
+#else
+  message (0, "sorry, help -i is not available in this version of Octave");
+#endif
+}
 
 int
 help_from_list (ostrstream& output_buf, const help_list *list,
@@ -601,10 +653,71 @@ help_from_list (ostrstream& output_buf, const help_list *list,
   return 0;
 }
 
+static void
+builtin_help (int argc, char **argv)
+{
+  ostrstream output_buf;
+
+  help_list *op_help_list = operator_help ();
+  help_list *kw_help_list = keyword_help ();
+
+  while (--argc > 0)
+    {
+      argv++;
+
+      if (! *argv || ! **argv)
+	continue;
+
+      if (help_from_list (output_buf, op_help_list, *argv, 0))
+	continue;
+
+      if (help_from_list (output_buf, kw_help_list, *argv, 0))
+	continue;
+
+      symbol_record *sym_rec = lookup_by_name (*argv, 0);
+
+      if (sym_rec && sym_rec->is_defined ())
+	{
+	  char *h = sym_rec->help ();
+	  if (h && *h)
+	    {
+	      print_symbol_type (output_buf, sym_rec, *argv, 1);
+	      output_buf << "\n" << h << "\n";
+	      continue;
+	    }
+	}
+
+      char *path = fcn_file_in_path (*argv);
+      char *h = get_help_from_file (path);
+      if (h && *h)
+	{
+	  output_buf << *argv << " is the file:\n"
+	    << path << "\n\n" << h << "\n";
+	  delete [] h;
+	  delete [] path;
+	  continue;
+	}
+      delete [] path;
+
+      output_buf << "\nhelp: sorry, `" << *argv << "' is not documented\n"; 
+    }
+
+  additional_help_message (output_buf);
+  output_buf << ends;
+  maybe_page_output (output_buf);
+}
+
+#ifdef USE_GNU_INFO
 DEFUN_TEXT ("help", Fhelp, Shelp, -1, 1,
   "help [-i] [topic ...]\n\
 \n\
 print cryptic yet witty messages")
+#else
+DEFUN_TEXT ("help", Fhelp, Shelp, -1, 1,
+  "help [topic ...]\n\
+\n\
+print cryptic yet witty messages")
+#endif
 {
   Octave_object retval;
 
@@ -621,91 +734,11 @@ print cryptic yet witty messages")
 	  argc--;
 	  argv++;
 
-	  if (argc == 1)
-	    {
-	      volatile sig_handler *old_sigint_handler;
-	      old_sigint_handler = signal (SIGINT, SIG_IGN);
-
-	      try_info (0, 1);
-
-	      signal (SIGINT, old_sigint_handler);
-	    }
-	  else
-	    {
-	      while (--argc > 0)
-		{
-		  argv++;
-
-		  if (! *argv || ! **argv)
-		    continue;
-
-		  volatile sig_handler *old_sigint_handler;
-		  old_sigint_handler = signal (SIGINT, SIG_IGN);
-
-		  if (! try_info (*argv))
-		    {
-		      message ("help",
-			       "sorry, `%s' is not indexed in the manual",
-			       *argv); 
-		      sleep (2);
-		    }
-
-		  signal (SIGINT, old_sigint_handler);
-		}
-	    }
+	  help_from_info (argc, argv);
 	}
       else
 	{
-	  ostrstream output_buf;
-
-	  help_list *op_help_list = operator_help ();
-	  help_list *kw_help_list = keyword_help ();
-
-	  while (--argc > 0)
-	    {
-	      argv++;
-
-	      if (! *argv || ! **argv)
-		continue;
-
-	      if (help_from_list (output_buf, op_help_list, *argv, 0))
-		continue;
-
-	      if (help_from_list (output_buf, kw_help_list, *argv, 0))
-		continue;
-
-	      symbol_record *sym_rec = lookup_by_name (*argv, 0);
-
-	      if (sym_rec && sym_rec->is_defined ())
-		{
-		  char *h = sym_rec->help ();
-		  if (h && *h)
-		    {
-		      print_symbol_type (output_buf, sym_rec, *argv, 1);
-		      output_buf << "\n" << h << "\n";
-		      continue;
-		    }
-		}
-
-	      char *path = fcn_file_in_path (*argv);
-	      char *h = get_help_from_file (path);
-	      if (h && *h)
-		{
-		  output_buf << *argv << " is the file:\n"
-		    << path << "\n\n" << h << "\n";
-		  delete [] h;
-		  delete [] path;
-		  continue;
-		}
-	      delete [] path;
-
-	      output_buf << "\nhelp: sorry, `" << *argv
-		<< "' is not documented\n"; 
-	    }
-
-	  additional_help_message (output_buf);
-	  output_buf << ends;
-	  maybe_page_output (output_buf);
+	  builtin_help (argc, argv);
 	}
     }
 

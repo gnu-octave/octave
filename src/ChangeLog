@@ -1,3 +1,7 @@
+2005-02-10  Driss Ghaddab  <driss.ghaddab@free.fr>
+
+	* cutils.c (octave_usleep) [HAVE_POLL]: Fix typo.
+
 2005-02-10  John W. Eaton  <jwe@octave.org>
 
 	* variables.cc (symbol_exist): Don't search path if explicitly

@@ -102,10 +102,11 @@ octave_usleep (unsigned int useconds)
 
   {
     struct pollfd pfd;
+
     int delay = usec / 1000;
 
     if (delay > 0)
-      poll (&fd, 0, delay);
+      poll (&pfd, 0, delay);
   }
 
 #endif

@@ -1,3 +1,7 @@
+2003-01-05  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lo-cutils.c: Define _XOPEN_SOURCE.
+
 2003-01-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* getopt.h: Update to version from kpathsearch, so we will install

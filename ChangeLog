@@ -1,5 +1,8 @@
 2003-01-04  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* octMakefile.in (CONF_DISTFILES): Include acx_blas.m4 and
+	acx_lapack.m4.
+
 	* configure.in (BUILD_CC, BUILD_CFLAGS, BUILD_CXX,
 	BUILD_CXXFLAGS): Kluge for Sun C/C++.
 

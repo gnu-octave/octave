@@ -32,6 +32,13 @@ Software Foundation, Inc.
 #include <config.h>
 #endif
 
+/* This gives us a better chance of finding a prototype for strptime
+   on some systems.  */
+
+#if ! defined (_XOPEN_SOURCE)
+#define _XOPEN_SOURCE
+#endif
+
 #ifdef HAVE_UNISTD_H
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>

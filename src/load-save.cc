@@ -827,11 +827,13 @@ read_binary_data (std::istream& is, bool swap,
   if (swap)
     swap_4_bytes (X_CAST (char *, &name_len));
 
-  char name[name_len+1];
-  name[name_len] = '\0';
-  if (! is.read (X_CAST (char *, name), name_len))
-    goto data_read_error;
-  retval = name;
+  {
+    OCTAVE_LOCAL_BUFFER (char, name, name_len+1);
+    name[name_len] = '\0';
+    if (! is.read (X_CAST (char *, name), name_len))
+      goto data_read_error;
+    retval = name;
+  }
 
   is.read (X_CAST (char *, &doc_len), 4);
   if (! is)
@@ -839,11 +841,13 @@ read_binary_data (std::istream& is, bool swap,
   if (swap)
     swap_4_bytes (X_CAST (char *, &doc_len));
 
-  char tdoc[doc_len+1];
-  tdoc[doc_len] = '\0';
-  if (! is.read (X_CAST (char *, tdoc), doc_len))
-    goto data_read_error;
-  doc = tdoc;
+  {
+    OCTAVE_LOCAL_BUFFER (char, tdoc, doc_len+1);
+    tdoc[doc_len] = '\0';
+    if (! is.read (X_CAST (char *, tdoc), doc_len))
+      goto data_read_error;
+    doc = tdoc;
+  }
 
   if (! is.read (X_CAST (char *, &tmp), 1))
     goto data_read_error;
@@ -2341,60 +2345,63 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
   // supposed to include it, but apparently not all files do.  Either
   // way, I think this should work.
 
-  OCTAVE_LOCAL_BUFFER (char, name, len+1);
-  if (! is.read (X_CAST (char *, name), len))
-    goto data_read_error;
-  name[len] = '\0';
-  retval = name;
-
-  dlen = nr * nc;
-  if (dlen < 0)
-    goto data_read_error;
-
-  if (order)
-    {
-      int tmp = nr;
-      nr = nc;
-      nc = tmp;
-    }
-
-  re.resize (nr, nc);
-
-  read_mat_binary_data (is, re.fortran_vec (), prec, dlen, swap, flt_fmt);
-
-  if (! is || error_state)
-    {
-      error ("load: reading matrix data for `%s'", name);
+  {
+    OCTAVE_LOCAL_BUFFER (char, name, len+1);
+    name[len] = '\0';
+    if (! is.read (X_CAST (char *, name), len))
       goto data_read_error;
-    }
+    retval = name;
 
-  if (imag)
-    {
-      Matrix im (nr, nc);
+    dlen = nr * nc;
+    if (dlen < 0)
+      goto data_read_error;
 
-      read_mat_binary_data (is, im.fortran_vec (), prec, dlen, swap, flt_fmt);
+    if (order)
+      {
+	int tmp = nr;
+	nr = nc;
+	nc = tmp;
+      }
+
+      re.resize (nr, nc);
+
+      read_mat_binary_data (is, re.fortran_vec (), prec, dlen, swap, flt_fmt);
 
       if (! is || error_state)
 	{
-	  error ("load: reading imaginary matrix data for `%s'", name);
+	  error ("load: reading matrix data for `%s'", name);
 	  goto data_read_error;
 	}
 
-      ComplexMatrix ctmp (nr, nc);
+      if (imag)
+	{
+	  Matrix im (nr, nc);
 
-      for (int j = 0; j < nc; j++)
-	for (int i = 0; i < nr; i++)
-	  ctmp (i, j) = Complex (re (i, j), im (i, j));
+	  read_mat_binary_data (is, im.fortran_vec (), prec, dlen, swap,
+				flt_fmt);
 
-      tc = order ? ctmp.transpose () : ctmp;
+	  if (! is || error_state)
+	    {
+	      error ("load: reading imaginary matrix data for `%s'", name);
+	      goto data_read_error;
+	    }
+
+	  ComplexMatrix ctmp (nr, nc);
+
+	  for (int j = 0; j < nc; j++)
+	    for (int i = 0; i < nr; i++)
+	      ctmp (i, j) = Complex (re (i, j), im (i, j));
+
+	  tc = order ? ctmp.transpose () : ctmp;
+	}
+      else
+	tc = order ? re.transpose () : re;
+
+      if (type == 1)
+	tc = tc.convert_to_str ();
+
+      return retval;
     }
-  else
-    tc = order ? re.transpose () : re;
-
-  if (type == 1)
-    tc = tc.convert_to_str ();
-
-  return retval;
 
  data_read_error:
   error ("load: trouble reading binary file `%s'", filename.c_str ());

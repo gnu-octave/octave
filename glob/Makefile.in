@@ -64,3 +64,5 @@ realcean: distclean
 # For inside the C library.
 glob.tar glob.tar.Z:
 	$(MAKE) -C .. $@
+
+install:

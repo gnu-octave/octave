@@ -1,3 +1,7 @@
+Fri Jul 19 13:02:05 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: If using g77 on alpha, don't add -fpe1 to FFLAGS.
+
 Mon Jul 15 14:26:48 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* config.sub: Update to new version from FSF (gcc sources).

@@ -38,10 +38,12 @@
 function y = logical (x)
 
   if (nargin == 1)
-    if (! islogical (x))
+    if (islogical (x) || isempty (x))
+      y = x;
+    elseif (isnumeric (x))
       y = x != 0;
     else
-      y = x;
+      error ("logical not defined for type `%s'", typeinfo (x));
     endif
   else
     usage ("logical (x)");

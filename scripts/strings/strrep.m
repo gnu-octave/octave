@@ -60,8 +60,8 @@ function t = strrep (s, x, y)
     jump = length(y) - length(x);
     if (jump > 0)     # s expands
       di = ones(size(s));
-      di (ind) = 1 + jump * ones (length (ind), 1);
-      t (cumsum (di)) = s
+      di(ind) = 1 + jump * ones (length (ind), 1);
+      t(cumsum (di)) = s;
     elseif (jump < 0) # s contracts
       di = ones (jump * length (ind) + length (s), 1);
       di (ind + jump * [0:length(ind)-1]) = 1 - jump * ones(length(ind), 1);
@@ -76,15 +76,15 @@ function t = strrep (s, x, y)
     ind = ind + jump * [0:length(ind)-1];
     repeat = [1:length(y)]' * ones (1, length (ind));
     dest = ones (length (y), 1) * ind + repeat - 1;
-    t (dest) = y (repeat);
+    t(dest) = y(repeat);
   else                        # deletion
     ## Build an index vector of all locations where the target was found
     ## in the search string, and zap them. 
-    t = toascii(s);
+    t = toascii (s);
     repeat = [1:length(x)]' * ones (1, length (ind));
     delete = ones (length (x), 1) * ind + repeat - 1;
-    t (delete) = [];
-    t = setstr(t);
+    t(delete) = [];
+    t = setstr (t);
   endif
 
 endfunction

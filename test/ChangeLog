@@ -1,3 +1,11 @@
+2000-06-07  Ben Sapp <bsapp@nua.lampf.lanl.gov>
+
+	* octave.test/quad/quad-1.m: Use absolute value of difference
+	from expected value when comparing with sqrt (eps).  Potential
+	problems like this were noticed by Przemek Klosowski
+	<przemek@rrdjazz.nist.gov>.
+	* octave.test/quad/quad-2.m: Likewise.
+
 1999-10-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* octave.test/system/mktime-1.m (t): Compare whole seconds only.

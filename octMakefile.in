@@ -23,8 +23,8 @@ DISTFILES = BUGS COPYING INSTALL INSTALL.OCTAVE Makefile.in \
 	SENDING-PATCHES THANKS configure configure.in config.guess \
 	config.sub move-if-change octave.sh octave-bug.in \
 	octave-mode.el aclocal.m4 install-sh doinstall.sh \
-	mkinstalldirs config.h.in acconfig.h MAKEINFO.PATCH \
-	ChangeLog ChangeLog.[0-9] 
+	mkinstalldirs config.h.in acconfig.h config.h.bot \
+	MAKEINFO.PATCH ChangeLog ChangeLog.[0-9] 
 
 # Complete directory trees to distribute.
 DISTDIRS = kpathsea make plplot

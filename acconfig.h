@@ -73,6 +73,9 @@
 /* Use GNU info for extended help system. */
 #undef USE_GNU_INFO
 
+/* Use plplot for plotting. */
+#undef USE_PLPLOT
+
 /* Use GNU readline for command line editing and history. */
 #undef USE_READLINE
 

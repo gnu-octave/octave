@@ -52,15 +52,20 @@ find_nonzero_elem_idx (const T& nda, int nargout)
     }
 
   // If the original argument was a row vector, force a row vector of
-  // the overall indices to be returned. 
+  // the overall indices to be returned.  But see below for scalar
+  // case...
 
   int result_nr = count;
   int result_nc = 1;
+
+  bool scalar_arg = false;
 
   if (nda.ndims () == 2 && nda.rows () == 1)
     {
       result_nr = 1;
       result_nc = count;
+
+      scalar_arg = (nda.columns () == 1);
     }
 
   Matrix idx (result_nr, result_nc);
@@ -105,6 +110,8 @@ find_nonzero_elem_idx (const T& nda, int nargout)
 	    }
 	}
     }
+  else if (scalar_arg)
+    val.resize (dim_vector (0, 0));
 
   switch (nargout)
     {

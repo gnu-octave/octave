@@ -1,3 +1,8 @@
+2005-02-07  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/find.cc (find_nonzero_elem_idx): Return [] instead
+	of [](1x0) for scalar arg of zero.
+
 2005-02-06  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/gplot.l (tmp_files): Delete.

@@ -244,3 +244,13 @@ target_host_type = @target_host_type@
 	    sed -e 's/$*\.o/& $@/g' -e 's,$(srcdir)/,,g' > $@.tmp ; \
 	fi
 	@mv $@.tmp $@
+
+define SUBDIR_FOR_COMMAND
+for dir in $(SUBDIRS); \
+do \
+  echo making $@ in $$dir; \
+  cd $$dir; \
+  $(MAKE) $@; \
+  cd ..; \
+done
+endef

@@ -1753,9 +1753,8 @@ TC_REP::force_numeric (int force_str_conv)
       {
 	if (! force_str_conv && ! user_pref.implicit_str_to_num_ok)
 	  {
-	    ::error ("failed to convert `%s' to a numeric type --", str_obj);
-	    ::error ("default conversion turned off");
-
+	    ::error ("string to numeric conversion failed --\
+ default conversion turned off");
 	    return;
 	  }
 

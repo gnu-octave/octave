@@ -41,14 +41,15 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 extern "C"
 {
-  int F77_FUNC (dgemv, DGEMV) (const char*, const int&, const int&,
-			      const double&, const double*,
-			      const int&, const double*, const int&,
-			      const double&, double*, const int&,
-			      long);
+  F77_RET_T
+  F77_FUNC (dgemv, DGEMV) (F77_CONST_CHAR_ARG_DECL,
+			   const int&, const int&, const double&,
+			   const double*, const int&, const double*,
+			   const int&, const double&, double*, const int&
+			   F77_CHAR_ARG_LEN_DECL);
 
   double F77_FUNC (ddot, DDOT) (const int&, const double*, const int&,
-			       const double*, const int&);
+				const double*, const int&);
 }
 
 // Row Vector class.
@@ -223,8 +224,10 @@ operator * (const RowVector& v, const Matrix& a)
 	  retval.resize (a_nc);
 	  double *y = retval.fortran_vec ();
 
-	  F77_XFCN (dgemv, DGEMV, ("T", a_nr, a_nc, 1.0, a.data (),
-				   ld, v.data (), 1, 0.0, y, 1, 1L));
+	  F77_XFCN (dgemv, DGEMV, (F77_CONST_CHAR_ARG2 ("T", 1),
+				   a_nr, a_nc, 1.0, a.data (),
+				   ld, v.data (), 1, 0.0, y, 1
+				   F77_CHAR_ARG_LEN (1)));
 
 	  if (f77_exception_encountered)
 	    (*current_liboctave_error_handler)

@@ -41,53 +41,66 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 extern "C"
 {
-  int F77_FUNC (zbesj, ZBESJ) (const double&, const double&,
-			       const double&, const int&, const int&,
-			       double*, double*, int&, int&);
+  F77_RET_T
+  F77_FUNC (zbesj, ZBESJ) (const double&, const double&, const double&,
+			   const int&, const int&, double*, double*,
+			   int&, int&);
 
-  int F77_FUNC (zbesy, ZBESY) (const double&, const double&,
-			       const double&, const int&, const int&,
-			       double*, double*, int&,
-			       double*, double*, int&);
+  F77_RET_T
+  F77_FUNC (zbesy, ZBESY) (const double&, const double&, const double&,
+			   const int&, const int&, double*, double*,
+			   int&, double*, double*, int&);
 
-  int F77_FUNC (zbesi, ZBESI) (const double&, const double&,
-			       const double&, const int&, const int&,
-			       double*, double*, int&, int&);
+  F77_RET_T
+  F77_FUNC (zbesi, ZBESI) (const double&, const double&, const double&,
+			   const int&, const int&, double*, double*,
+			   int&, int&);
 
-  int F77_FUNC (zbesk, ZBESK) (const double&, const double&,
-			       const double&, const int&, const int&,
-			       double*, double*, int&, int&);
+  F77_RET_T
+  F77_FUNC (zbesk, ZBESK) (const double&, const double&, const double&,
+			   const int&, const int&, double*, double*,
+			   int&, int&);
 
-  int F77_FUNC (zbesh, ZBESH) (const double&, const double&,
-			       const double&, const int&, const int&,
-			       const int&, double*, double*, int&, int&);
+  F77_RET_T
+  F77_FUNC (zbesh, ZBESH) (const double&, const double&, const double&,
+			   const int&, const int&, const int&, double*,
+			   double*, int&, int&);
 
-  int F77_FUNC (zairy, ZAIRY) (const double&, const double&,
-			       const int&, const int&,
-			       double&, double&, int&, int&);
+  F77_RET_T
+  F77_FUNC (zairy, ZAIRY) (const double&, const double&, const int&,
+			   const int&, double&, double&, int&, int&);
 
-  int F77_FUNC (zbiry, ZBIRY) (const double&, const double&,
-			       const int&, const int&,
-			       double&, double&, int&);
+  F77_RET_T
+  F77_FUNC (zbiry, ZBIRY) (const double&, const double&, const int&,
+			   const int&, double&, double&, int&);
 
-  int F77_FUNC (xdacosh, XDACOSH) (const double&, double&);
+  F77_RET_T
+  F77_FUNC (xdacosh, XDACOSH) (const double&, double&);
 
-  int F77_FUNC (xdasinh, XDASINH) (const double&, double&);
+  F77_RET_T
+  F77_FUNC (xdasinh, XDASINH) (const double&, double&);
 
-  int F77_FUNC (xdatanh, XDATANH) (const double&, double&);
+  F77_RET_T
+  F77_FUNC (xdatanh, XDATANH) (const double&, double&);
 
-  int F77_FUNC (xderf, XDERF) (const double&, double&);
+  F77_RET_T
+  F77_FUNC (xderf, XDERF) (const double&, double&);
 
-  int F77_FUNC (xderfc, XDERFC) (const double&, double&);
+  F77_RET_T
+  F77_FUNC (xderfc, XDERFC) (const double&, double&);
 
-  int F77_FUNC (xdbetai, XDBETAI) (const double&, const double&,
-				   const double&, double&);
+  F77_RET_T
+  F77_FUNC (xdbetai, XDBETAI) (const double&, const double&,
+			       const double&, double&);
 
-  int F77_FUNC (xdgamma, XDGAMMA) (const double&, double&);
+  F77_RET_T
+  F77_FUNC (xdgamma, XDGAMMA) (const double&, double&);
 
-  int F77_FUNC (xgammainc, XGAMMAINC) (const double&, const double&, double&);
+  F77_RET_T
+  F77_FUNC (xgammainc, XGAMMAINC) (const double&, const double&, double&);
 
-  int F77_FUNC (dlgams, DLGAMS) (const double&, double&, double&);
+  F77_RET_T
+  F77_FUNC (dlgams, DLGAMS) (const double&, double&, double&);
 }
 
 #if !defined (HAVE_ACOSH)

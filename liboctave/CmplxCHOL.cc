@@ -34,8 +34,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 extern "C"
 {
-  int F77_FUNC (zpotrf, ZPOTRF) (const char*, const int&, Complex*,
-				const int&, int&, long);
+  F77_RET_T
+  F77_FUNC (zpotrf, ZPOTRF) (F77_CONST_CHAR_ARG_DECL,
+			     const int&, Complex*, const int&, int&
+			     F77_CHAR_ARG_LEN_DECL);
 }
 
 int
@@ -57,7 +59,8 @@ ComplexCHOL::init (const ComplexMatrix& a)
   chol_mat = a;
   Complex *h = chol_mat.fortran_vec ();
 
-  F77_XFCN (zpotrf, ZPOTRF, ("U", n, h, n, info, 1L));
+  F77_XFCN (zpotrf, ZPOTRF, (F77_CONST_CHAR_ARG2 ("U", 1), n, h, n, info
+			     F77_CHAR_ARG_LEN (1)));
 
   if (f77_exception_encountered)
     (*current_liboctave_error_handler) ("unrecoverable error in zpotrf");

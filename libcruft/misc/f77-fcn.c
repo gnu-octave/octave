@@ -38,7 +38,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
    called us.  Then the calling function should do whatever cleanup
    is necessary.  */
 
-void
+F77_RET_T
 F77_FUNC (xstopx, XSTOPX) (const char *s, long int slen)
 {
   f77_exception_encountered = 1;
@@ -48,6 +48,8 @@ F77_FUNC (xstopx, XSTOPX) (const char *s, long int slen)
     (*current_liboctave_error_handler) ("%.*s", slen, s);
 
   octave_jump_to_enclosing_context ();
+
+  F77_RETURN (0)
 }
 
 /*

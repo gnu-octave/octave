@@ -36,17 +36,21 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 typedef int (*hybrd1_fcn_ptr) (int*, double*, double*, int*);
 
-extern "C"
-int F77_FUNC (hybrd1, HYBRD1) (hybrd1_fcn_ptr, const int&, double*,
-			      double*, const double&, int&, double*,
-			      const int&);
-
 typedef int (*hybrj1_fcn_ptr) (int*, double*, double*, double*, int*, int*);
 
 extern "C"
-int F77_FUNC (hybrj1, HYBRJ1) (hybrj1_fcn_ptr, const int&, double*,
-			      double*, double*, const int&, const
-			      double&, int&, double*, const int&);
+{
+  F77_RET_T
+  F77_FUNC (hybrd1, HYBRD1) (hybrd1_fcn_ptr, const int&, double*,
+			     double*, const double&, int&, double*,
+			     const int&);
+
+
+  F77_RET_T
+  F77_FUNC (hybrj1, HYBRJ1) (hybrj1_fcn_ptr, const int&, double*,
+			     double*, double*, const int&, const
+			     double&, int&, double*, const int&);
+}
 
 static NLFunc::nonlinear_fcn user_fun;
 static NLFunc::jacobian_fcn user_jac;

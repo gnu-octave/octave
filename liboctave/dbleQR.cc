@@ -34,13 +34,13 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 extern "C"
 {
-  int F77_FUNC (dgeqrf, DGEQRF) (const int&, const int&, double*,
-				const int&, double*, double*,
-				const int&, int&); 
+  F77_RET_T
+  F77_FUNC (dgeqrf, DGEQRF) (const int&, const int&, double*, const int&,
+			     double*, double*, const int&, int&); 
 
-  int F77_FUNC (dorgqr, DORGQR) (const int&, const int&, const int&,
-				double*, const int&, double*, double*,
-				const int&, int&);
+  F77_RET_T
+  F77_FUNC (dorgqr, DORGQR) (const int&, const int&, const int&, double*,
+			     const int&, double*, double*, const int&, int&);
 }
 
 QR::QR (const Matrix& a, QR::type qr_type)

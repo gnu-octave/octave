@@ -43,23 +43,31 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 extern "C"
 {
-  int F77_FUNC (dggbal, DGGBAL) (const char* JOB, const int& N,
-				double* A, const int& LDA, double* B,
-				const int& LDB, int& ILO, int& IHI,
-				double* LSCALE, double* RSCALE,
-				double* WORK, int& INFO, long);
+  F77_RET_T
+  F77_FUNC (dggbal, DGGBAL) (F77_CONST_CHAR_ARG_DECL, const int& N,
+			     double* A, const int& LDA, double* B,
+			     const int& LDB, int& ILO, int& IHI,
+			     double* LSCALE, double* RSCALE,
+			     double* WORK, int& INFO
+			     F77_CHAR_ARG_LEN_DECL);
 
-  int F77_FUNC (dggbak, DGGBAK) (const char* JOB, const char* SIDE,
-				const int& N, const int& ILO,
-				const int& IHI, double* LSCALE,
-				double* RSCALE, int& M,	double* V,
-				const int& LDV, int& INFO, long, long);
+  F77_RET_T
+  F77_FUNC (dggbak, DGGBAK) (F77_CONST_CHAR_ARG_DECL,
+			     F77_CONST_CHAR_ARG_DECL,
+			     const int& N, const int& ILO,
+			     const int& IHI, double* LSCALE,
+			     double* RSCALE, int& M,	double* V,
+			     const int& LDV, int& INFO
+			     F77_CHAR_ARG_LEN_DECL
+			     F77_CHAR_ARG_LEN_DECL);
 
-  int F77_FUNC (zggbal, ZGGBAL) (const char* JOB, const int& N,
-				Complex* A, const int& LDA, Complex* B,
-				const int& LDB, int& ILO, int& IHI,
-				double* LSCALE, double* RSCALE,
-				double* WORK, int& INFO, long);
+  F77_RET_T
+  F77_FUNC (zggbal, ZGGBAL) (F77_CONST_CHAR_ARG_DECL, const int& N,
+			     Complex* A, const int& LDA, Complex* B,
+			     const int& LDB, int& ILO, int& IHI,
+			     double* LSCALE, double* RSCALE,
+			     double* WORK, int& INFO
+			     F77_CHAR_ARG_LEN_DECL);
 }
 
 DEFUN_DLD (balance, args, nargout,
@@ -239,10 +247,11 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
 	    cbb = ComplexMatrix (bb);
   
 	  F77_XFCN (zggbal, ZGGBAL,
-		    (&job, nn, caa.fortran_vec(), nn,
-		     cbb.fortran_vec(), nn, ilo, ihi,
-		     lscale.fortran_vec(), rscale.fortran_vec(),
-		     work.fortran_vec(), info, 1L));
+		    (F77_CONST_CHAR_ARG2 (&job, 1),
+		     nn, caa.fortran_vec (), nn, cbb.fortran_vec (),
+		     nn, ilo, ihi, lscale.fortran_vec (),
+		     rscale.fortran_vec (), work.fortran_vec (), info
+		     F77_CHAR_ARG_LEN (1)));
 
 	  if (f77_exception_encountered)
 	    {
@@ -255,9 +264,11 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
 	  // real matrices case
 
 	  F77_XFCN (dggbal, DGGBAL,
-		    (&job,  nn, aa.fortran_vec(), nn, bb.fortran_vec(),
-		     nn, ilo, ihi, lscale.fortran_vec(),
-		     rscale.fortran_vec(), work.fortran_vec(), info, 1L));
+		    (F77_CONST_CHAR_ARG2 (&job, 1),
+		     nn, aa.fortran_vec (), nn, bb.fortran_vec (),
+		     nn, ilo, ihi, lscale.fortran_vec (),
+		     rscale.fortran_vec (), work.fortran_vec (), info
+		     F77_CHAR_ARG_LEN  (1)));
       
 	  if (f77_exception_encountered)
 	    {
@@ -281,9 +292,12 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
   
       // left first
       F77_XFCN (dggbak, DGGBAK,
-		(&job, "L", nn, ilo, ihi, lscale.fortran_vec(),
-		 rscale.fortran_vec(), nn, Pl.fortran_vec(),
-		 nn, info, 1L, 1L));
+		(F77_CONST_CHAR_ARG2 (&job, 1),
+		 F77_CONST_CHAR_ARG2 ("L", 1),
+		 nn, ilo, ihi, lscale.fortran_vec (),
+		 rscale.fortran_vec(), nn, Pl.fortran_vec (), nn, info
+		 F77_CHAR_ARG_LEN (1)
+		 F77_CHAR_ARG_LEN (1)));
       
       if (f77_exception_encountered)
 	{
@@ -293,9 +307,12 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
       
       // then right
       F77_XFCN (dggbak, DGGBAK,
-		(&job, "R", nn, ilo, ihi, lscale.fortran_vec(),
-		 rscale.fortran_vec(), nn, Pr.fortran_vec(),
-		 nn, info, 1L, 1L));
+		(F77_CONST_CHAR_ARG2 (&job, 1),
+		 F77_CONST_CHAR_ARG2 ("R", 1),
+		 nn, ilo, ihi, lscale.fortran_vec (),
+		 rscale.fortran_vec (), nn, Pr.fortran_vec (), nn, info
+		 F77_CHAR_ARG_LEN (1)
+		 F77_CHAR_ARG_LEN (1)));
 
       if (f77_exception_encountered)
 	{

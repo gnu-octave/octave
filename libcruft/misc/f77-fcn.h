@@ -77,12 +77,99 @@ extern "C" {
 /* So we can check to see if an exception has occurred. */
 extern int f77_exception_encountered;
 
-extern void
-F77_FUNC (xstopx, XSTOPX) (const char *s, long int slen) GCC_ATTR_NORETURN;
-
 #if !defined (F77_FCN)
 #define F77_FCN(f, F) F77_FUNC (f, F)
 #endif
+
+#if defined (F77_USES_CRAY_CALLING_CONVENTION)
+
+#include <fortran.h>
+#define F77_CHAR_ARG(x) octave_make_cray_ftn_ch_dsc (x, strlen (x))
+#define F77_CONST_CHAR_ARG(x) \
+  octave_make_cray_const_ftn_ch_dsc (x, strlen (x))
+#define F77_CHAR_ARG2(x, l) octave_make_cray_fcd (x, l)
+#define F77_CONST_CHAR_ARG2(x, l) octave_make_cray_const_fcd (x, l)
+#define F77_CXX_STRING_ARG(x) \
+  octave_make_cray_const_ftn_ch_dsc (x.c_str (), x.length ())
+#define F77_CHAR_ARG_LEN(l)
+#define F77_CHAR_ARG_DECL octave_cray_fcd
+#define F77_CONST_CHAR_ARG_DECL octave_cray_fcd
+#define F77_CHAR_ARG_LEN_DECL
+#define F77_RET_T int
+#define F77_RETURN(retval) return retval;
+
+// XXX FIXME XXX -- these should work for SV1 or Y-MP systems but will
+// need to be changed for others.
+
+union octave_cray_descriptor
+{
+  union
+  {
+    const char *const_ptr;
+    const char *ptr;
+  };
+  struct
+  {
+    unsigned off : 6;
+    unsigned len : 26;
+    unsigned add : 32;
+  } mask;
+};
+
+typedef void *octave_cray_ftn_ch_dsc;
+
+static inline octave_cray_ftn_ch_dsc
+octave_make_cray_ftn_ch_dsc (char *ptr_arg, unsigned long len_arg)
+{
+  octave_cray_descriptor desc;
+  desc.ptr = ptr_arg;
+  desc.mask.len = len_arg << 3;
+  return *((octave_cray_fortran_character_descriptor *) &f);
+}
+
+static inline octave_cray_ftn_ch_dsc
+octave_make_cray_const_ftn_ch_dsc (const char *ptr_arg, unsigned long len_arg)
+{
+  octave_cray_descriptor desc;
+  desc.const_ptr = ptr_arg;
+  desc.mask.len = len_arg << 3;
+  return *((octave_cray_fcd *) &f);
+}
+
+#elif defined (F77_USES_VISUAL_FORTRAN_CALLING_CONVENTION)
+
+#define F77_CHAR_ARG(x) x, strlen (x)
+#define F77_CONST_CHAR_ARG(x) F77_CHAR_ARG (x)
+#define F77_CHAR_ARG2(x, l) x, l
+#define F77_CONST_CHAR_ARG2(x, l) F77_CHAR_ARG2 (x, l)
+#define F77_CXX_STRING_ARG(x) F77_CONST_CHAR_ARG2 (x.c_str (), x.length ())
+#define F77_CHAR_ARG_LEN(l)
+#define F77_CHAR_ARG_DECL char *, int
+#define F77_CONST_CHAR_ARG_DECL const char *, int
+#define F77_CHAR_ARG_LEN_DECL
+#define F77_RET_T void
+#define F77_RETURN(retval)
+
+#else
+
+// Assume f2c-compatible calling convention
+
+#define F77_CHAR_ARG(x) x
+#define F77_CONST_CHAR_ARG(x) F77_CHAR_ARG (x)
+#define F77_CHAR_ARG2(x, l) x
+#define F77_CONST_CHAR_ARG2(x, l) F77_CHAR_ARG2 (x, l)
+#define F77_CXX_STRING_ARG(x) F77_CONST_CHAR_ARG2 (x.c_str (), x.length ())
+#define F77_CHAR_ARG_LEN(l) , (long) l
+#define F77_CHAR_ARG_DECL char *
+#define F77_CONST_CHAR_ARG_DECL const char *
+#define F77_CHAR_ARG_LEN_DECL , long
+#define F77_RET_T int
+#define F77_RETURN(retval) return retval;
+
+#endif
+
+extern F77_RET_T
+F77_FUNC (xstopx, XSTOPX) (const char *s, long int slen) GCC_ATTR_NORETURN;
 
 #ifdef __cplusplus
 }

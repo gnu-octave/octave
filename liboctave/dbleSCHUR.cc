@@ -36,13 +36,18 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 extern "C"
 {
-  int F77_FUNC (dgeesx, DGEESX) (const char*, const char*,
-				SCHUR::select_function, const char*,
-				const int&, double*, const int&,
-				int&, double*, double*, double*,
-				const int&, double&, double&, double*,
-				const int&, int*, const int&, int*,
-				int&, long, long, long);
+  F77_RET_T
+  F77_FUNC (dgeesx, DGEESX) (F77_CONST_CHAR_ARG_DECL,
+			     F77_CONST_CHAR_ARG_DECL,
+			     SCHUR::select_function,
+			     F77_CONST_CHAR_ARG_DECL,
+			     const int&, double*, const int&, int&,
+			     double*, double*, double*, const int&,
+			     double&, double&, double*, const int&,
+			     int*, const int&, int*, int&
+			     F77_CHAR_ARG_LEN_DECL
+			     F77_CHAR_ARG_LEN_DECL
+			     F77_CHAR_ARG_LEN_DECL);
 }
 
 static int
@@ -118,10 +123,15 @@ SCHUR::init (const Matrix& a, const std::string& ord)
   Array<int> iwork (liwork);
   int *piwork = iwork.fortran_vec ();
 
-  F77_XFCN (dgeesx, DGEESX, (&jobvs, &sort, selector, &sense, n, s,
-			     n, sdim, pwr, pwi, q, n, rconde, rcondv,
-			     pwork, lwork, piwork, liwork, pbwork,
-			     info, 1L, 1L, 1L));
+  F77_XFCN (dgeesx, DGEESX, (F77_CONST_CHAR_ARG2 (&jobvs, 1),
+			     F77_CONST_CHAR_ARG2 (&sort, 1),
+			     selector,
+			     F77_CONST_CHAR_ARG2 (&sense, 1),
+			     n, s, n, sdim, pwr, pwi, q, n, rconde, rcondv,
+			     pwork, lwork, piwork, liwork, pbwork, info
+			     F77_CHAR_ARG_LEN (1)
+			     F77_CHAR_ARG_LEN (1)
+			     F77_CHAR_ARG_LEN (1)));
 
   if (f77_exception_encountered)
     (*current_liboctave_error_handler) ("unrecoverable error in dgeesx");

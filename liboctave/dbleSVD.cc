@@ -35,11 +35,15 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 extern "C"
 {
-  int F77_FUNC (dgesvd, DGESVD) (const char*, const char*, const int&,
-				const int&, double*, const int&,
-				double*, double*, const int&, double*,
-				const int&, double*, const int&, int&,
-				long, long);
+  F77_RET_T
+  F77_FUNC (dgesvd, DGESVD) (F77_CONST_CHAR_ARG_DECL,
+			     F77_CONST_CHAR_ARG_DECL,
+			     const int&, const int&, double*,
+			     const int&, double*, double*,
+			     const int&, double*, const int&,
+			     double*, const int&, int&
+			     F77_CHAR_ARG_LEN_DECL
+			     F77_CHAR_ARG_LEN_DECL);
 }
 
 Matrix
@@ -136,9 +140,12 @@ SVD::init (const Matrix& a, SVD::type svd_type)
 
   Array<double> work (1);
 
-  F77_XFCN (dgesvd, DGESVD, (&jobu, &jobv, m, n, tmp_data, m, s_vec,
-			     u, m, vt, nrow_vt, work.fortran_vec (),
-			     lwork, info, 1L, 1L));
+  F77_XFCN (dgesvd, DGESVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),
+			     F77_CONST_CHAR_ARG2 (&jobv, 1),
+			     m, n, tmp_data, m, s_vec, u, m, vt,
+			     nrow_vt, work.fortran_vec (), lwork, info
+			     F77_CHAR_ARG_LEN (1)
+			     F77_CHAR_ARG_LEN (1)));
 
   if (f77_exception_encountered)
     (*current_liboctave_error_handler) ("unrecoverable error in dgesvd");
@@ -147,10 +154,12 @@ SVD::init (const Matrix& a, SVD::type svd_type)
       lwork = static_cast<int> (work(0));
       work.resize (lwork);
 
-      F77_XFCN (dgesvd, DGESVD, (&jobu, &jobv, m, n, tmp_data, m,
-				 s_vec, u, m, vt, nrow_vt,
-				 work.fortran_vec (), lwork, info, 1L,
-				 1L));
+      F77_XFCN (dgesvd, DGESVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),
+				 F77_CONST_CHAR_ARG2 (&jobv, 1),
+				 m, n, tmp_data, m, s_vec, u, m, vt,
+				 nrow_vt, work.fortran_vec (), lwork, info
+				 F77_CHAR_ARG_LEN (1)
+				 F77_CHAR_ARG_LEN (1)));
 
       if (f77_exception_encountered)
 	(*current_liboctave_error_handler) ("unrecoverable error in dgesvd");

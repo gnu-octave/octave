@@ -1,5 +1,9 @@
 2003-10-27  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* DLD-FUNCTIONS/balance.cc, DLD-FUNCTIONS/qz.cc:
+	Use new F77 arg macros in declarations of external Fortran
+	subroutines and for calling them.
+
 	* ops.h (DEFNDUNOP_OP, DEFNDUNOP_FN): New arg e, to name value
 	extractor function prefix.
 	* OPERATORS/op-bm-bm.cc, OPERATORS/op-cm-cm.cc,	OPERATORS/op-m-m.cc:

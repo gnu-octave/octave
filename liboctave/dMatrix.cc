@@ -59,64 +59,90 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 extern "C"
 {
-  int F77_FUNC (dgebal, DGEBAL) (const char*, const int&, double*,
-                                const int&, int&, int&, double*,
-                                int&, long, long);
+  F77_RET_T
+  F77_FUNC (dgebal, DGEBAL) (F77_CONST_CHAR_ARG_DECL,
+			     const int&, double*, const int&, int&,
+			     int&, double*, int&
+			     F77_CHAR_ARG_LEN_DECL);
 
-  int F77_FUNC (dgebak, DGEBAK) (const char*, const char*, const int&,
-                                const int&, const int&, double*,
-                                const int&, double*, const int&,
-                                int&, long, long);
+  F77_RET_T
+  F77_FUNC (dgebak, DGEBAK) (F77_CONST_CHAR_ARG_DECL,
+			     F77_CONST_CHAR_ARG_DECL,
+			     const int&, const int&, const int&, double*,
+			     const int&, double*, const int&, int&
+			     F77_CHAR_ARG_LEN_DECL
+			     F77_CHAR_ARG_LEN_DECL);
 
-  int F77_FUNC (dgemm, DGEMM) (const char*, const char*, const int&,
-			      const int&, const int&, const double&,
-			      const double*, const int&,
-			      const double*, const int&,
-			      const double&, double*, const int&,
-			      long, long);
 
-  int F77_FUNC (dgetrf, DGETRF) (const int&, const int&, double*, const int&,
+  F77_RET_T
+  F77_FUNC (dgemm, DGEMM) (F77_CONST_CHAR_ARG_DECL,
+			   F77_CONST_CHAR_ARG_DECL,
+			   const int&, const int&, const int&,
+			   const double&, const double*, const int&,
+			   const double*, const int&, const double&,
+			   double*, const int&
+			   F77_CHAR_ARG_LEN_DECL
+			   F77_CHAR_ARG_LEN_DECL);
+
+  F77_RET_T
+  F77_FUNC (dgetrf, DGETRF) (const int&, const int&, double*, const int&,
 		      int*, int&);
 
-  int F77_FUNC (dgetrs, DGETRS) (const char*, const int&, const int&, 
-				const double*, const int&,
-				const int*, double*, const int&, int&);
+  F77_RET_T
+  F77_FUNC (dgetrs, DGETRS) (F77_CONST_CHAR_ARG_DECL, const int&, const int&, 
+			     const double*, const int&,
+			     const int*, double*, const int&, int&
+			     F77_CHAR_ARG_LEN_DECL);
 
-  int F77_FUNC (dgetri, DGETRI) (const int&, double*, const int&, const int*,
-				double*, const int&, int&);
+  F77_RET_T
+  F77_FUNC (dgetri, DGETRI) (const int&, double*, const int&, const int*,
+			     double*, const int&, int&);
 
-  int F77_FUNC (dgecon, DGECON) (const char*, const int&, double*, 
-				 const int&, const double&, double&, 
-				 double*, int*, int&);
+  F77_RET_T
+  F77_FUNC (dgecon, DGECON) (F77_CONST_CHAR_ARG_DECL, const int&, double*, 
+			     const int&, const double&, double&, 
+			     double*, int*, int&
+			     F77_CHAR_ARG_LEN_DECL);
 
-  int F77_FUNC (dgelss, DGELSS) (const int&, const int&, const int&,
-				double*, const int&, double*,
-				const int&, double*, double&, int&,
-				double*, const int&, int&);
+  F77_RET_T
+  F77_FUNC (dgelss, DGELSS) (const int&, const int&, const int&,
+			     double*, const int&, double*,
+			     const int&, double*, double&, int&,
+			     double*, const int&, int&);
 
   // Note that the original complex fft routines were not written for
   // double complex arguments.  They have been modified by adding an
   // implicit double precision (a-h,o-z) statement at the beginning of
   // each subroutine.
 
-  int F77_FUNC (cffti, CFFTI) (const int&, Complex*);
+  F77_RET_T
+  F77_FUNC (cffti, CFFTI) (const int&, Complex*);
 
-  int F77_FUNC (cfftf, CFFTF) (const int&, Complex*, Complex*);
+  F77_RET_T
+  F77_FUNC (cfftf, CFFTF) (const int&, Complex*, Complex*);
 
-  int F77_FUNC (cfftb, CFFTB) (const int&, Complex*, Complex*);
+  F77_RET_T
+  F77_FUNC (cfftb, CFFTB) (const int&, Complex*, Complex*);
 
-  int F77_FUNC (dlartg, DLARTG) (const double&, const double&, double&,
-				double&, double&);
+  F77_RET_T
+  F77_FUNC (dlartg, DLARTG) (const double&, const double&, double&,
+			     double&, double&);
 
-  int F77_FUNC (dtrsyl, DTRSYL) (const char*, const char*, const int&,
-				const int&, const int&, const double*,
-				const int&, const double*, const int&,
-				const double*, const int&, double&,
-				int&, long, long);
+  F77_RET_T
+  F77_FUNC (dtrsyl, DTRSYL) (F77_CONST_CHAR_ARG_DECL,
+			     F77_CONST_CHAR_ARG_DECL,
+			     const int&, const int&, const int&,
+			     const double*, const int&, const double*,
+			     const int&, const double*, const int&,
+			     double&, int&
+			     F77_CHAR_ARG_LEN_DECL
+			     F77_CHAR_ARG_LEN_DECL);
 
-  int F77_FUNC (xdlange, XDLANGE) (const char*, const int&,
-				  const int&, const double*,
-				  const int&, double*, double&); 
+  F77_RET_T
+  F77_FUNC (xdlange, XDLANGE) (F77_CONST_CHAR_ARG_DECL, const int&,
+			       const int&, const double*,
+			       const int&, double*, double&
+			       F77_CHAR_ARG_LEN_DECL); 
 }
 
 // Matrix class.
@@ -669,8 +695,10 @@ Matrix::inverse (int& info, double& rcond, int force, int calc_cond) const
 	      char job = '1';
 	      Array<int> iz (nc);
 	      int *piz = iz.fortran_vec ();
-	      F77_XFCN (dgecon, DGECON, (&job, nc, tmp_data, nr, anorm, 
-					 rcond, pz, piz, info));
+	      F77_XFCN (dgecon, DGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
+					 nc, tmp_data, nr, anorm, 
+					 rcond, pz, piz, info
+					 F77_CHAR_ARG_LEN (1)));
 
 	      if (f77_exception_encountered)
 		(*current_liboctave_error_handler) 
@@ -685,7 +713,7 @@ Matrix::inverse (int& info, double& rcond, int force, int calc_cond) const
 	  else
 	    {
 	      F77_XFCN (dgetri, DGETRI, (nc, tmp_data, nr, pipvt,
-				       pz, lwork, info));
+					 pz, lwork, info));
 
 	      if (f77_exception_encountered)
 		(*current_liboctave_error_handler)
@@ -1130,8 +1158,10 @@ Matrix::determinant (int& info, double& rcond, int calc_cond) const
 		  Array<int> iz (nc);
 		  int *piz = iz.fortran_vec ();
 
-		  F77_XFCN (dgecon, DGECON, (&job, nc, tmp_data, nr, anorm, 
-					     rcond, pz, piz, info));
+		  F77_XFCN (dgecon, DGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
+					     nc, tmp_data, nr, anorm, 
+					     rcond, pz, piz, info
+					     F77_CHAR_ARG_LEN (1)));
 
 		  if (f77_exception_encountered)
 		    (*current_liboctave_error_handler) 
@@ -1245,8 +1275,10 @@ Matrix::solve (const Matrix& b, int& info, double& rcond,
 	    {
 	      // Now calculate the condition number for non-singular matrix.
 	      char job = '1';
-	      F77_XFCN (dgecon, DGECON, (&job, nc, tmp_data, nr, anorm, 
-					 rcond, pz, piz, info));
+	      F77_XFCN (dgecon, DGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
+					 nc, tmp_data, nr, anorm, 
+					 rcond, pz, piz, info
+					 F77_CHAR_ARG_LEN (1)));
 	      
 	      if (f77_exception_encountered)
 		(*current_liboctave_error_handler) 
@@ -1276,8 +1308,10 @@ Matrix::solve (const Matrix& b, int& info, double& rcond,
 		  int b_nc = b.cols ();
 
 		  char job = 'N';
-		  F77_XFCN (dgetrs, DGETRS, (&job, nr, b_nc, tmp_data, nr,
-					     pipvt, result, b.rows(), info)); 
+		  F77_XFCN (dgetrs, DGETRS, (F77_CONST_CHAR_ARG2 (&job, 1),
+					     nr, b_nc, tmp_data, nr,
+					     pipvt, result, b.rows(), info
+					     F77_CHAR_ARG_LEN (1)));
 		
 		  if (f77_exception_encountered)
 		    (*current_liboctave_error_handler)
@@ -1392,8 +1426,10 @@ Matrix::solve (const ColumnVector& b, int& info, double& rcond,
 	    {
 	      // Now calculate the condition number for non-singular matrix.
 	      char job = '1';
-	      F77_XFCN (dgecon, DGECON, (&job, nc, tmp_data, nr, anorm, 
-					 rcond, pz, piz, info));
+	      F77_XFCN (dgecon, DGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
+					 nc, tmp_data, nr, anorm, 
+					 rcond, pz, piz, info
+					 F77_CHAR_ARG_LEN (1)));
 	      
 	      if (f77_exception_encountered)
 		(*current_liboctave_error_handler) 
@@ -1421,8 +1457,10 @@ Matrix::solve (const ColumnVector& b, int& info, double& rcond,
 		  double *result = retval.fortran_vec ();
 
 		  char job = 'N';
-		  F77_XFCN (dgetrs, DGETRS, (&job, nr, 1, tmp_data, nr, pipvt,
-					     result, b.length(), info)); 
+		  F77_XFCN (dgetrs, DGETRS, (F77_CONST_CHAR_ARG2 (&job, 1),
+					     nr, 1, tmp_data, nr, pipvt,
+					     result, b.length(), info
+					     F77_CHAR_ARG_LEN (1)));
 
 		  if (f77_exception_encountered)
 		    (*current_liboctave_error_handler)
@@ -1728,13 +1766,17 @@ Matrix::expm (void) const
 
   // permutation first
   char job = 'P';
-  F77_XFCN (dgebal, DGEBAL, (&job, nc, p_m, nc, ilo, ihi,
-			     dpermute.fortran_vec (), info, 1L, 1L));
+  F77_XFCN (dgebal, DGEBAL, (F77_CONST_CHAR_ARG2 (&job, 1),
+			     nc, p_m, nc, ilo, ihi,
+			     dpermute.fortran_vec (), info
+			     F77_CHAR_ARG_LEN (1)));
 
   // then scaling
   job = 'S';
-  F77_XFCN (dgebal, DGEBAL, (&job, nc, p_m, nc, ilos, ihis,
-			     dscale.fortran_vec (), info, 1L, 1L));
+  F77_XFCN (dgebal, DGEBAL, (F77_CONST_CHAR_ARG2 (&job, 1),
+			     nc, p_m, nc, ilos, ihis,
+			     dscale.fortran_vec (), info
+			     F77_CHAR_ARG_LEN (1)));
 
   if (f77_exception_encountered)
     {
@@ -1747,8 +1789,10 @@ Matrix::expm (void) const
   ColumnVector work(nc);
   double inf_norm;
   
-  F77_XFCN (xdlange, XDLANGE, ("I", nc, nc, m.fortran_vec (), nc,
-			       work.fortran_vec (), inf_norm));
+  F77_XFCN (xdlange, XDLANGE, (F77_CONST_CHAR_ARG2 ("I", 1),
+			       nc, nc, m.fortran_vec (), nc,
+			       work.fortran_vec (), inf_norm
+			       F77_CHAR_ARG_LEN (1)));
   
   if (f77_exception_encountered)
     {
@@ -1936,9 +1980,12 @@ operator * (const ColumnVector& v, const RowVector& a)
       retval.resize (len, a_len);
       double *c = retval.fortran_vec ();
 	  
-      F77_XFCN (dgemm, DGEMM, ("N", "N", len, a_len, 1, 1.0,
-			       v.data (), len, a.data (), 1, 0.0,
-			       c, len, 1L, 1L));
+      F77_XFCN (dgemm, DGEMM, (F77_CONST_CHAR_ARG2 ("N", 1),
+			       F77_CONST_CHAR_ARG2 ("N", 1),
+			       len, a_len, 1, 1.0, v.data (), len,
+			       a.data (), 1, 0.0, c, len
+			       F77_CHAR_ARG_LEN (1)
+			       F77_CHAR_ARG_LEN (1)));
 
       if (f77_exception_encountered)
 	(*current_liboctave_error_handler)
@@ -3020,8 +3067,12 @@ Sylvester (const Matrix& a, const Matrix& b, const Matrix& c)
   double *pb = sch_b.fortran_vec ();
   double *px = cx.fortran_vec ();
 
-  F77_XFCN (dtrsyl, DTRSYL, ("N", "N", 1, a_nr, b_nr, pa, a_nr, pb,
-			     b_nr, px, a_nr, scale, info, 1L, 1L));
+  F77_XFCN (dtrsyl, DTRSYL, (F77_CONST_CHAR_ARG2 ("N", 1),
+			     F77_CONST_CHAR_ARG2 ("N", 1),
+			     1, a_nr, b_nr, pa, a_nr, pb,
+			     b_nr, px, a_nr, scale, info
+			     F77_CHAR_ARG_LEN (1)
+			     F77_CHAR_ARG_LEN (1)));
 
 
   if (f77_exception_encountered)
@@ -3063,9 +3114,12 @@ operator * (const Matrix& m, const Matrix& a)
 	  retval.resize (nr, a_nc);
 	  double *c = retval.fortran_vec ();
 
-	  F77_XFCN (dgemm, DGEMM, ("N", "N", nr, a_nc, nc, 1.0,
-				   m.data (), ld, a.data (), lda, 0.0,
-				   c, nr, 1L, 1L));
+	  F77_XFCN (dgemm, DGEMM, (F77_CONST_CHAR_ARG2 ("N", 1),
+				   F77_CONST_CHAR_ARG2 ("N", 1),
+				   nr, a_nc, nc, 1.0, m.data (),
+				   ld, a.data (), lda, 0.0, c, nr
+				   F77_CHAR_ARG_LEN (1)
+				   F77_CHAR_ARG_LEN (1)));
 
 	  if (f77_exception_encountered)
 	    (*current_liboctave_error_handler)

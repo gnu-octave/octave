@@ -364,8 +364,9 @@ rmachar(ibeta,it,irnd,ngrd,machep,negep,iexp,minexp,
 
 }
 
-void
-F77_FUNC(machar,MACHAR) (REAL *xmin, REAL *xmax, REAL *epsneg, REAL *eps, REAL *log10_ibeta)
+F77_RET_T
+F77_FUNC (machar, MACHAR) (REAL *xmin, REAL *xmax, REAL *epsneg,
+			   REAL *eps, REAL *log10_ibeta)
 {
   int ibeta, iexp, irnd, it, machep, maxexp, minexp, negep, ngrd;
 
@@ -373,4 +374,6 @@ F77_FUNC(machar,MACHAR) (REAL *xmin, REAL *xmax, REAL *epsneg, REAL *eps, REAL *
 	   &maxexp, eps, epsneg, xmin, xmax);
 
   *log10_ibeta = log10 ((REAL) ibeta);
+
+  F77_RETURN (0)
 }

@@ -35,25 +35,39 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 extern "C"
 {
-  int F77_FUNC (dgeev, DGEEV) (const char*, const char*, const int&,
-			      double*, const int&, double*, double*,
-			      double*, const int&, double*,
-			      const int&, double*, const int&, int&,
-			      long, long);
+  F77_RET_T
+  F77_FUNC (dgeev, DGEEV) (F77_CONST_CHAR_ARG_DECL,
+			   F77_CONST_CHAR_ARG_DECL,
+			   const int&, double*, const int&, double*,
+			   double*, double*, const int&, double*,
+			   const int&, double*, const int&, int&
+			   F77_CHAR_ARG_LEN_DECL
+			   F77_CHAR_ARG_LEN_DECL);
 
-  int F77_FUNC (zgeev, ZGEEV) (const char*, const char*, const int&,
-			      Complex*, const int&, Complex*,
-			      Complex*, const int&, Complex*,
-			      const int&, Complex*, const int&,
-			      double*, int&, long, long);
+  F77_RET_T
+  F77_FUNC (zgeev, ZGEEV) (F77_CONST_CHAR_ARG_DECL,
+			   F77_CONST_CHAR_ARG_DECL,
+			   const int&, Complex*, const int&, Complex*,
+			   Complex*, const int&, Complex*, const int&,
+			   Complex*, const int&, double*, int&
+			   F77_CHAR_ARG_LEN_DECL
+			   F77_CHAR_ARG_LEN_DECL);
 
-  int F77_FUNC (dsyev, DSYEV) (const char*, const char*, const int&,
-			      double*, const int&, double*, double*,
-			      const int&, int&, long, long);
+  F77_RET_T
+  F77_FUNC (dsyev, DSYEV) (F77_CONST_CHAR_ARG_DECL,
+			   F77_CONST_CHAR_ARG_DECL,
+			   const int&, double*, const int&, double*,
+			   double*, const int&, int&
+			   F77_CHAR_ARG_LEN_DECL
+			   F77_CHAR_ARG_LEN_DECL);
 
-  int F77_FUNC (zheev, ZHEEV) (const char*, const char*, const int&,
-			      Complex*, const int&, double*, Complex*,
-			      const int&, double*, int&, long, long);
+  F77_RET_T
+  F77_FUNC (zheev, ZHEEV) (F77_CONST_CHAR_ARG_DECL,
+			   F77_CONST_CHAR_ARG_DECL,
+			   const int&, Complex*, const int&, double*,
+			   Complex*, const int&, double*, int&
+			   F77_CHAR_ARG_LEN_DECL
+			   F77_CHAR_ARG_LEN_DECL);
 }
 
 int
@@ -94,8 +108,12 @@ EIG::init (const Matrix& a)
   double *dummy = 0;
   int idummy = 1;
 
-  F77_XFCN (dgeev, DGEEV, ("N", "V", n, tmp_data, n, pwr, pwi, dummy,
-			   idummy, pvr, n, pwork, lwork, info, 1L, 1L));
+  F77_XFCN (dgeev, DGEEV, (F77_CONST_CHAR_ARG2 ("N", 1),
+			   F77_CONST_CHAR_ARG2 ("V", 1),
+			   n, tmp_data, n, pwr, pwi, dummy,
+			   idummy, pvr, n, pwork, lwork, info
+			   F77_CHAR_ARG_LEN (1)
+			   F77_CHAR_ARG_LEN (1)));
 
   if (f77_exception_encountered || info < 0)
     (*current_liboctave_error_handler) ("unrecoverable error in dgeev");
@@ -170,8 +188,11 @@ EIG::symmetric_init (const Matrix& a)
   Array<double> work (lwork);
   double *pwork = work.fortran_vec ();
 
-  F77_XFCN (dsyev, DSYEV, ("V", "U", n, tmp_data, n, pwr, pwork,
-			   lwork, info, 1L, 1L));
+  F77_XFCN (dsyev, DSYEV, (F77_CONST_CHAR_ARG2 ("V", 1),
+			   F77_CONST_CHAR_ARG2 ("U", 1),
+			   n, tmp_data, n, pwr, pwork, lwork, info
+			   F77_CHAR_ARG_LEN (1)
+			   F77_CHAR_ARG_LEN (1)));
 
   if (f77_exception_encountered || info < 0)
     (*current_liboctave_error_handler) ("unrecoverable error in dsyev");
@@ -225,8 +246,12 @@ EIG::init (const ComplexMatrix& a)
   Complex *dummy = 0;
   int idummy = 1;
 
-  F77_XFCN (zgeev, ZGEEV, ("N", "V", n, tmp_data, n, pw, dummy, idummy,
-			   pv, n, pwork, lwork, prwork, info, 1L, 1L));
+  F77_XFCN (zgeev, ZGEEV, (F77_CONST_CHAR_ARG2 ("N", 1),
+			   F77_CONST_CHAR_ARG2 ("V", 1),
+			   n, tmp_data, n, pw, dummy, idummy,
+			   pv, n, pwork, lwork, prwork, info
+			   F77_CHAR_ARG_LEN (1)
+			   F77_CHAR_ARG_LEN (1)));
 
   if (f77_exception_encountered || info < 0)
     (*current_liboctave_error_handler) ("unrecoverable error in zgeev");
@@ -271,8 +296,11 @@ EIG::hermitian_init (const ComplexMatrix& a)
   Array<double> rwork (lrwork);
   double *prwork = rwork.fortran_vec ();
 
-  F77_XFCN (zheev, ZHEEV, ("V", "U", n, tmp_data, n, pwr, pwork,
-			   lwork, prwork, info, 1L, 1L));
+  F77_XFCN (zheev, ZHEEV, (F77_CONST_CHAR_ARG2 ("V", 1),
+			   F77_CONST_CHAR_ARG2 ("U", 1),
+			   n, tmp_data, n, pwr, pwork, lwork, prwork, info
+			   F77_CHAR_ARG_LEN (1)
+			   F77_CHAR_ARG_LEN (1)));
 
   if (f77_exception_encountered || info < 0)
     (*current_liboctave_error_handler) ("unrecoverable error in zheev");

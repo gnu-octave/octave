@@ -53,12 +53,15 @@ typedef int (*daspk_psol_ptr) (const int&, const double&,
 			       double*, int*);
 
 extern "C"
-int F77_FUNC (ddaspk, DDASPK) (daspk_fcn_ptr, const int&, double&,
-			      double*, double*, double&, const int*,
-			      const double*, const double*, int&,
-			      double*, const int&, int*, const int&,
-			      const double*, const int*,
-			      daspk_jac_ptr, daspk_psol_ptr);
+{
+  F77_RET_T
+  F77_FUNC (ddaspk, DDASPK) (daspk_fcn_ptr, const int&, double&,
+			     double*, double*, double&, const int*,
+			     const double*, const double*, int&,
+			     double*, const int&, int*, const int&,
+			     const double*, const int*,
+			     daspk_jac_ptr, daspk_psol_ptr);
+}
 
 static DAEFunc::DAERHSFunc user_fun;
 static DAEFunc::DAEJacFunc user_jac;

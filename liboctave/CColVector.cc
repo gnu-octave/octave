@@ -41,11 +41,12 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 extern "C"
 {
-  int F77_FUNC (zgemv, ZGEMV) (const char*, const int&, const int&,
-			      const Complex&, const Complex*,
-			      const int&, const Complex*, const int&,
-			      const Complex&, Complex*, const int&,
-			      long);
+  F77_RET_T
+  F77_FUNC (zgemv, ZGEMV) (F77_CONST_CHAR_ARG_DECL,
+			   const int&, const int&, const Complex&,
+			   const Complex*, const int&, const Complex*,
+			   const int&, const Complex&, Complex*, const int&
+			   F77_CHAR_ARG_LEN_DECL);
 }
 
 // Complex Column Vector class
@@ -350,8 +351,10 @@ operator * (const ComplexMatrix& m, const ComplexColumnVector& a)
 	  retval.resize (nr);
 	  Complex *y = retval.fortran_vec ();
 
-	  F77_XFCN (zgemv, ZGEMV, ("N", nr, nc, 1.0, m.data (), ld,
-				   a.data (), 1, 0.0, y, 1, 1L));
+	  F77_XFCN (zgemv, ZGEMV, (F77_CONST_CHAR_ARG2 ("N", 1),
+				   nr, nc, 1.0, m.data (), ld,
+				   a.data (), 1, 0.0, y, 1
+				   F77_CHAR_ARG_LEN (1)));
 
 	  if (f77_exception_encountered)
 	    (*current_liboctave_error_handler)

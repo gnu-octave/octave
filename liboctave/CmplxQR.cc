@@ -34,13 +34,15 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 extern "C"
 {
-  int F77_FUNC (zgeqrf, ZGEQRF) (const int&, const int&, Complex*,
-				const int&, Complex*, Complex*,
-				const int&, int&); 
+  F77_RET_T
+  F77_FUNC (zgeqrf, ZGEQRF) (const int&, const int&, Complex*,
+			     const int&, Complex*, Complex*,
+			     const int&, int&); 
 
-  int F77_FUNC (zungqr, ZUNGQR) (const int&, const int&, const int&,
-				Complex*, const int&, Complex*,
-				Complex*, const int&, int&);
+  F77_RET_T
+  F77_FUNC (zungqr, ZUNGQR) (const int&, const int&, const int&,
+			     Complex*, const int&, Complex*,
+			     Complex*, const int&, int&);
 }
 
 ComplexQR::ComplexQR (const ComplexMatrix& a, QR::type qr_type)

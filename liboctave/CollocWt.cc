@@ -36,13 +36,15 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 extern "C"
 {
-  int F77_FUNC (jcobi, JCOBI) (int&, int&, int&, int&, double&,
-			      double&, double*, double*, double*,
-			      double*);
+  F77_RET_T
+  F77_FUNC (jcobi, JCOBI) (int&, int&, int&, int&, double&,
+			   double&, double*, double*, double*,
+			   double*);
 
-  int F77_FUNC (dfopr, DFOPR) (int&, int&, int&, int&, int&, int&,
-			      double*, double*, double*, double*,
-			      double*);
+  F77_RET_T
+  F77_FUNC (dfopr, DFOPR) (int&, int&, int&, int&, int&, int&,
+			   double*, double*, double*, double*,
+			   double*);
 }
 
 // Error handling.

@@ -34,12 +34,15 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 extern "C"
 {
-  int F77_FUNC (zgesvd, ZGESVD) (const char*, const char*, const int&,
-				const int&, Complex*, const int&,
-				double*, Complex*, const int&,
-				Complex*, const int&, Complex*,
-				const int&, double*, int&, long,
-				long);
+  F77_RET_T
+  F77_FUNC (zgesvd, ZGESVD) (F77_CONST_CHAR_ARG_DECL,
+			     F77_CONST_CHAR_ARG_DECL,
+			     const int&, const int&, Complex*,
+			     const int&, double*, Complex*, const int&,
+			     Complex*, const int&, Complex*, const int&,
+			     double*, int&
+			     F77_CHAR_ARG_LEN_DECL
+			     F77_CHAR_ARG_LEN_DECL);
 }
 
 ComplexMatrix
@@ -141,10 +144,13 @@ ComplexSVD::init (const ComplexMatrix& a, SVD::type svd_type)
 
   Array<Complex> work (1);
 
-  F77_XFCN (zgesvd, ZGESVD, (&jobu, &jobv, m, n, tmp_data, m, s_vec,
-			     u, m, vt, nrow_vt, work.fortran_vec (),
-			     lwork, rwork.fortran_vec (), info, 1L,
-			     1L));
+  F77_XFCN (zgesvd, ZGESVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),
+			     F77_CONST_CHAR_ARG2 (&jobv, 1),
+			     m, n, tmp_data, m, s_vec, u, m, vt,
+			     nrow_vt, work.fortran_vec (), lwork,
+			     rwork.fortran_vec (), info
+			     F77_CHAR_ARG_LEN (1)
+			     F77_CHAR_ARG_LEN (1)));
 
   if (f77_exception_encountered)
     (*current_liboctave_error_handler) ("unrecoverable error in zgesvd");
@@ -153,11 +159,13 @@ ComplexSVD::init (const ComplexMatrix& a, SVD::type svd_type)
       lwork = static_cast<int> (work(0).real ());
       work.resize (lwork);
 
-      F77_XFCN (zgesvd, ZGESVD, (&jobu, &jobv, m, n, tmp_data, m,
-				 s_vec, u, m, vt, nrow_vt,
-				 work.fortran_vec (), lwork,
-				 rwork.fortran_vec (),
-				 info, 1L, 1L));
+      F77_XFCN (zgesvd, ZGESVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),
+				 F77_CONST_CHAR_ARG2 (&jobv, 1),
+				 m, n, tmp_data, m, s_vec, u, m, vt,
+				 nrow_vt, work.fortran_vec (), lwork,
+				 rwork.fortran_vec (), info
+				 F77_CHAR_ARG_LEN (1)
+				 F77_CHAR_ARG_LEN (1)));
 
       if (f77_exception_encountered)
 	(*current_liboctave_error_handler) ("unrecoverable error in zgesvd");

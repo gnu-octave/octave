@@ -43,8 +43,9 @@ template class base_lu <Matrix, double, Matrix, double>;
 
 extern "C"
 {
-  int F77_FUNC (dgetrf, DGETRF) (const int&, const int&, double*,
-				const int&, int*, int&);
+  F77_RET_T
+  F77_FUNC (dgetrf, DGETRF) (const int&, const int&, double*,
+			     const int&, int*, int&);
 }
 
 LU::LU (const Matrix& a)

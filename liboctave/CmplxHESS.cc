@@ -34,23 +34,29 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 extern "C"
 {
-  int F77_FUNC (zgebal, ZGEBAL) (const char*, const int&, Complex*,
-				const int&, int&, int&, double*, int&,
-				long, long);
+  F77_RET_T
+  F77_FUNC (zgebal, ZGEBAL) (F77_CONST_CHAR_ARG_DECL,
+			     const int&, Complex*, const int&,
+			     int&, int&, double*, int&
+			     F77_CHAR_ARG_LEN_DECL);
  
-  int F77_FUNC (zgehrd, ZGEHRD) (const int&, const int&, const int&,
-				Complex*, const int&, Complex*,
-				Complex*, const int&, int&, long,
-				long);
+  F77_RET_T
+  F77_FUNC (zgehrd, ZGEHRD) (const int&, const int&, const int&,
+			     Complex*, const int&, Complex*,
+			     Complex*, const int&, int&);
  
-  int F77_FUNC (zunghr, ZUNGHR) (const int&, const int&, const int&,
-				Complex*, const int&, Complex*,
-				Complex*, const int&, int&, long, long);
+  F77_RET_T
+  F77_FUNC (zunghr, ZUNGHR) (const int&, const int&, const int&,
+			     Complex*, const int&, Complex*,
+			     Complex*, const int&, int&);
 
-  int F77_FUNC (zgebak, ZGEBAK) (const char*, const char*, const int&,
-				const int&, const int&, double*,
-				const int&, Complex*, const int&,
-				int&, long, long);
+  F77_RET_T
+  F77_FUNC (zgebak, ZGEBAK) (F77_CONST_CHAR_ARG_DECL,
+			     F77_CONST_CHAR_ARG_DECL,
+			     const int&, const int&, const int&, double*,
+			     const int&, Complex*, const int&, int&
+			     F77_CHAR_ARG_LEN_DECL
+			     F77_CHAR_ARG_LEN_DECL);
 }
 
 int
@@ -81,8 +87,9 @@ ComplexHESS::init (const ComplexMatrix& a)
   Array<double> scale (n);
   double *pscale = scale.fortran_vec ();
 
-  F77_XFCN (zgebal, ZGEBAL, (&job, n, h, n, ilo, ihi, pscale, info,
-			     1L, 1L));
+  F77_XFCN (zgebal, ZGEBAL, (F77_CONST_CHAR_ARG2 (&job, 1),
+			     n, h, n, ilo, ihi, pscale, info
+			     F77_CHAR_ARG_LEN (1)));
 
   if (f77_exception_encountered)
     (*current_liboctave_error_handler) ("unrecoverable error in zgebal");
@@ -94,8 +101,7 @@ ComplexHESS::init (const ComplexMatrix& a)
       Array<Complex> work (lwork);
       Complex *pwork = work.fortran_vec ();
 
-      F77_XFCN (zgehrd, ZGEHRD, (n, ilo, ihi, h, n, ptau, pwork, lwork,
-				 info, 1L, 1L));
+      F77_XFCN (zgehrd, ZGEHRD, (n, ilo, ihi, h, n, ptau, pwork, lwork, info));
 
       if (f77_exception_encountered)
 	(*current_liboctave_error_handler) ("unrecoverable error in zgehrd");
@@ -105,15 +111,18 @@ ComplexHESS::init (const ComplexMatrix& a)
 	  Complex *z = unitary_hess_mat.fortran_vec ();
 
 	  F77_XFCN (zunghr, ZUNGHR, (n, ilo, ihi, z, n, ptau, pwork,
-				     lwork, info, 1L, 1L));
+				     lwork, info));
 
 	  if (f77_exception_encountered)
 	    (*current_liboctave_error_handler)
 	      ("unrecoverable error in zunghr");
 	  else
 	    {
-	      F77_XFCN (zgebak, ZGEBAK, (&job, &side, n, ilo, ihi,
-					 pscale, n, z, n, info, 1L, 1L));
+	      F77_XFCN (zgebak, ZGEBAK, (F77_CONST_CHAR_ARG2 (&job, 1),
+					 F77_CONST_CHAR_ARG2 (&side, 1),
+					 n, ilo, ihi, pscale, n, z, n, info
+					 F77_CHAR_ARG_LEN (1)
+					 F77_CHAR_ARG_LEN (1)));
 
 	      if (f77_exception_encountered)
 		(*current_liboctave_error_handler)

@@ -35,14 +35,19 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 extern "C"
 {
-  int F77_FUNC (dgebal, DGEBAL) (const char*, const int&, double*,
-				const int&, int&, int&, double*,
-				int&, long, long);
+  F77_RET_T
+  F77_FUNC (dgebal, DGEBAL) (F77_CONST_CHAR_ARG_DECL,
+			     const int&, double*, const int&, int&,
+			     int&, double*, int&
+			     F77_CHAR_ARG_LEN_DECL);
 
-  int F77_FUNC (dgebak, DGEBAK) (const char*, const char*, const int&,
-				const int&, const int&, double*,
-				const int&, double*, const int&,
-				int&, long, long);
+  F77_RET_T
+  F77_FUNC (dgebak, DGEBAK) (F77_CONST_CHAR_ARG_DECL,
+			     F77_CONST_CHAR_ARG_DECL,
+			     const int&, const int&, const int&, double*,
+			     const int&, double*, const int&, int&
+			     F77_CHAR_ARG_LEN_DECL
+			     F77_CHAR_ARG_LEN_DECL);
 }
 
 int
@@ -68,8 +73,9 @@ AEPBALANCE::init (const Matrix& a, const std::string& balance_job)
 
   char job = balance_job[0];
 
-  F77_XFCN (dgebal, DGEBAL, (&job, n, p_balanced_mat, n, ilo, ihi,
-			     pscale, info, 1L, 1L));
+  F77_XFCN (dgebal, DGEBAL, (F77_CONST_CHAR_ARG2 (&job, 1),
+			     n, p_balanced_mat, n, ilo, ihi, pscale, info
+			     F77_CHAR_ARG_LEN (1)));
 
   if (f77_exception_encountered)
     (*current_liboctave_error_handler) ("unrecoverable error in dgebal");
@@ -83,8 +89,12 @@ AEPBALANCE::init (const Matrix& a, const std::string& balance_job)
 
       char side = 'R';
 
-      F77_XFCN (dgebak, DGEBAK, (&job, &side, n, ilo, ihi, pscale, n,
-				 p_balancing_mat, n, info, 1L, 1L));
+      F77_XFCN (dgebak, DGEBAK, (F77_CONST_CHAR_ARG2 (&job, 1),
+				 F77_CONST_CHAR_ARG2 (&side, 1),
+				 n, ilo, ihi, pscale, n,
+				 p_balancing_mat, n, info
+				 F77_CHAR_ARG_LEN (1)
+				 F77_CHAR_ARG_LEN (1)));
 
       if (f77_exception_encountered)
 	(*current_liboctave_error_handler) ("unrecoverable error in dgebak");

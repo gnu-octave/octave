@@ -34,8 +34,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 extern "C"
 {
-  int F77_FUNC (dpotrf, DPOTRF) (const char*, const int&, double*,
-				const int&, int&, long);
+  F77_RET_T
+  F77_FUNC (dpotrf, DPOTRF) (F77_CONST_CHAR_ARG_DECL, const int&,
+			     double*, const int&, int&
+			     F77_CHAR_ARG_LEN_DECL);
 }
 
 int
@@ -56,7 +58,9 @@ CHOL::init (const Matrix& a)
   chol_mat = a;
   double *h = chol_mat.fortran_vec ();
 
-  F77_XFCN (dpotrf, DPOTRF, ("U", n, h, n, info, 1L));
+  F77_XFCN (dpotrf, DPOTRF, (F77_CONST_CHAR_ARG2 ("U", 1),
+			     n, h, n, info
+			     F77_CHAR_ARG_LEN (1)));
 
   if (f77_exception_encountered)
     (*current_liboctave_error_handler) ("unrecoverable error in dpotrf");

@@ -53,11 +53,14 @@ typedef int (*odessa_dfdp_ptr) (int*, const double&, double*,
 
 
 extern "C"
-int F77_FUNC (odessa, ODESSA) (odessa_fcn_ptr, odessa_dfdp_ptr, int*,
-                               double*, double*, double&, double&,
-                               int&, double&, const double*, int&, 
-                               int&, int*, double*, int&, int*, int&,
-                               odessa_jac_ptr, int&);
+{
+  F77_RET_T
+  F77_FUNC (odessa, ODESSA) (odessa_fcn_ptr, odessa_dfdp_ptr, int*,
+			     double*, double*, double&, double&,
+			     int&, double&, const double*, int&, 
+			     int&, int*, double*, int&, int*, int&,
+			     odessa_jac_ptr, int&);
+}
 
 template class Array<Matrix>;
 

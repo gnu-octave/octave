@@ -63,65 +63,90 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 extern "C"
 {
-  int F77_FUNC (zgebal, ZGEBAL) (const char*, const int&, Complex*,
-                                const int&, int&, int&, double*, int&,
-                                long, long);
+  F77_RET_T
+  F77_FUNC (zgebal, ZGEBAL) (F77_CONST_CHAR_ARG_DECL,
+			     const int&, Complex*, const int&, int&,
+			     int&, double*, int&
+			     F77_CHAR_ARG_LEN_DECL);
 
-  int F77_FUNC (dgebak, DGEBAK) (const char*, const char*, const int&,
-                                const int&, const int&, double*,
-                                const int&, double*, const int&,
-                                int&, long, long);
+  F77_RET_T
+  F77_FUNC (dgebak, DGEBAK) (F77_CONST_CHAR_ARG_DECL,
+			     F77_CONST_CHAR_ARG_DECL,
+			     const int&, const int&, const int&, double*,
+			     const int&, double*, const int&, int&
+			     F77_CHAR_ARG_LEN_DECL
+			     F77_CHAR_ARG_LEN_DECL);
 
-  int F77_FUNC (zgemm, ZGEMM) (const char*, const char*, const int&,
-			      const int&, const int&, const Complex&,
-			      const Complex*, const int&,
-			      const Complex*, const int&,
-			      const Complex&, Complex*, const int&, 
-			      long, long);
+  F77_RET_T
+  F77_FUNC (zgemm, ZGEMM) (F77_CONST_CHAR_ARG_DECL,
+			   F77_CONST_CHAR_ARG_DECL,
+			   const int&, const int&, const int&,
+			   const Complex&, const Complex*, const int&,
+			   const Complex*, const int&, const Complex&,
+			   Complex*, const int&
+			   F77_CHAR_ARG_LEN_DECL
+			   F77_CHAR_ARG_LEN_DECL);
 
-  int F77_FUNC (zgetrf, ZGETRF) (const int&, const int&, Complex*, const int&,
-			      int*, int&);
+  F77_RET_T
+  F77_FUNC (zgetrf, ZGETRF) (const int&, const int&, Complex*, const int&,
+			     int*, int&);
 
-  int F77_FUNC (zgetrs, ZGETRS) (const char*, const int&, const int&, 
-			      Complex*, const int&,
-			      const int*, Complex*, const int&, int&);
+  F77_RET_T
+  F77_FUNC (zgetrs, ZGETRS) (F77_CONST_CHAR_ARG_DECL,
+			     const int&, const int&, Complex*, const int&,
+			     const int*, Complex*, const int&, int&
+			     F77_CHAR_ARG_LEN_DECL);
 
-  int F77_FUNC (zgetri, ZGETRI) (const int&, Complex*, const int&, const int*,
-			      Complex*, const int&, int&);
+  F77_RET_T
+  F77_FUNC (zgetri, ZGETRI) (const int&, Complex*, const int&, const int*,
+			     Complex*, const int&, int&);
 
-  int F77_FUNC (zgecon, ZGECON) (const char*, const int&, Complex*, 
-				 const int&, const double&, double&, 
-				 Complex*, double*, int&);
+  F77_RET_T
+  F77_FUNC (zgecon, ZGECON) (F77_CONST_CHAR_ARG_DECL,
+			     const int&, Complex*, 
+			     const int&, const double&, double&, 
+			     Complex*, double*, int&
+			     F77_CHAR_ARG_LEN_DECL);
 
-  int F77_FUNC (zgelss, ZGELSS) (const int&, const int&, const int&,
-				Complex*, const int&, Complex*,
-				const int&, double*, double&, int&,
-				Complex*, const int&, double*, int&);
+  F77_RET_T
+  F77_FUNC (zgelss, ZGELSS) (const int&, const int&, const int&,
+			     Complex*, const int&, Complex*,
+			     const int&, double*, double&, int&,
+			     Complex*, const int&, double*, int&);
 
   // Note that the original complex fft routines were not written for
   // double complex arguments.  They have been modified by adding an
   // implicit double precision (a-h,o-z) statement at the beginning of
   // each subroutine.
 
-  int F77_FUNC (cffti, CFFTI) (const int&, Complex*);
+  F77_RET_T
+  F77_FUNC (cffti, CFFTI) (const int&, Complex*);
 
-  int F77_FUNC (cfftf, CFFTF) (const int&, Complex*, Complex*);
+  F77_RET_T
+  F77_FUNC (cfftf, CFFTF) (const int&, Complex*, Complex*);
 
-  int F77_FUNC (cfftb, CFFTB) (const int&, Complex*, Complex*);
+  F77_RET_T
+  F77_FUNC (cfftb, CFFTB) (const int&, Complex*, Complex*);
 
-  int F77_FUNC (zlartg, ZLARTG) (const Complex&, const Complex&,
-				double&, Complex&, Complex&);
+  F77_RET_T
+  F77_FUNC (zlartg, ZLARTG) (const Complex&, const Complex&,
+			     double&, Complex&, Complex&);
 
-  int F77_FUNC (ztrsyl, ZTRSYL) (const char*, const char*, const int&,
-				const int&, const int&,
-				const Complex*, const int&,
-				const Complex*, const int&, 
-				const Complex*, const int&, double&,
-				int&, long, long);
+  F77_RET_T
+  F77_FUNC (ztrsyl, ZTRSYL) (F77_CONST_CHAR_ARG_DECL,
+			     F77_CONST_CHAR_ARG_DECL,
+			     const int&, const int&, const int&,
+			     const Complex*, const int&,
+			     const Complex*, const int&,
+			     const Complex*, const int&, double&, int&
+			     F77_CHAR_ARG_LEN_DECL
+			     F77_CHAR_ARG_LEN_DECL);
 
-  int F77_FUNC (xzlange, XZLANGE) (const char*, const int&,
-				  const int&, const Complex*,
-				  const int&, double*, double&); 
+  F77_RET_T
+  F77_FUNC (xzlange, XZLANGE) (F77_CONST_CHAR_ARG_DECL,
+			       const int&, const int&, const Complex*,
+			       const int&, double*, double&
+			       F77_CHAR_ARG_LEN_DECL);
 }
 
 static const Complex Complex_NaN_result (octave_NaN, octave_NaN);
@@ -1002,8 +1027,10 @@ ComplexMatrix::inverse (int& info, double& rcond, int force,
 	      char job = '1';
 	      Array<double> rz (2 * nc);
 	      double *prz = rz.fortran_vec ();
-	      F77_XFCN (zgecon, ZGECON, (&job, nc, tmp_data, nr, anorm, 
-					 rcond, pz, prz, info));
+	      F77_XFCN (zgecon, ZGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
+					 nc, tmp_data, nr, anorm, 
+					 rcond, pz, prz, info
+					 F77_CHAR_ARG_LEN (1)));
 
 	      if (f77_exception_encountered)
 		(*current_liboctave_error_handler) 
@@ -1018,7 +1045,7 @@ ComplexMatrix::inverse (int& info, double& rcond, int force,
 	  else
 	    {
 	      F77_XFCN (zgetri, ZGETRI, (nc, tmp_data, nr, pipvt,
-				       pz, lwork, info));
+					 pz, lwork, info));
 
 	      if (f77_exception_encountered)
 		(*current_liboctave_error_handler)
@@ -1465,8 +1492,10 @@ ComplexMatrix::determinant (int& info, double& rcond, int calc_cond) const
 		  Array<double> rz (2*nr);
 		  double *prz = rz.fortran_vec ();
 		  
-		  F77_XFCN (zgecon, ZGECON, (&job, nc, tmp_data, nr, anorm, 
-					     rcond, pz, prz, info));
+		  F77_XFCN (zgecon, ZGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
+					     nc, tmp_data, nr, anorm, 
+					     rcond, pz, prz, info
+					     F77_CHAR_ARG_LEN (1)));
 
 		  if (f77_exception_encountered)
 		    (*current_liboctave_error_handler) 
@@ -1609,8 +1638,10 @@ ComplexMatrix::solve (const ComplexMatrix& b, int& info, double& rcond,
 	    {
 	      // Now calculate the condition number for non-singular matrix.
 	      char job = '1';
-	      F77_XFCN (zgecon, ZGECON, (&job, nc, tmp_data, nr, anorm, 
-					 rcond, pz, prz, info));
+	      F77_XFCN (zgecon, ZGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
+					 nc, tmp_data, nr, anorm, 
+					 rcond, pz, prz, info
+					 F77_CHAR_ARG_LEN (1)));
 
 	      if (f77_exception_encountered)
 		(*current_liboctave_error_handler) 
@@ -1640,8 +1671,10 @@ ComplexMatrix::solve (const ComplexMatrix& b, int& info, double& rcond,
 		  int b_nc = b.cols ();
 
 		  char job = 'N';
-		  F77_XFCN (zgetrs, ZGETRS, (&job, nr, b_nc, tmp_data, nr,
-					     pipvt, result, b.rows(), info)); 
+		  F77_XFCN (zgetrs, ZGETRS, (F77_CONST_CHAR_ARG2 (&job, 1),
+					     nr, b_nc, tmp_data, nr,
+					     pipvt, result, b.rows(), info
+					     F77_CHAR_ARG_LEN (1))); 
 
 		  if (f77_exception_encountered)
 		    (*current_liboctave_error_handler)
@@ -1758,8 +1791,10 @@ ComplexMatrix::solve (const ComplexColumnVector& b, int& info,
 	    {
 	      // Now calculate the condition number for non-singular matrix.
 	      char job = '1';
-	      F77_XFCN (zgecon, ZGECON, (&job, nc, tmp_data, nr, anorm, 
-					 rcond, pz, prz, info));
+	      F77_XFCN (zgecon, ZGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
+					 nc, tmp_data, nr, anorm,
+					 rcond, pz, prz, info
+					 F77_CHAR_ARG_LEN (1)));
 
 	      if (f77_exception_encountered)
 		(*current_liboctave_error_handler) 
@@ -1787,8 +1822,10 @@ ComplexMatrix::solve (const ComplexColumnVector& b, int& info,
 		  Complex *result = retval.fortran_vec ();
 
 		  char job = 'N';
-		  F77_XFCN (zgetrs, ZGETRS, (&job, nr, 1, tmp_data, nr, pipvt,
-					     result, b.length(), info)); 
+		  F77_XFCN (zgetrs, ZGETRS, (F77_CONST_CHAR_ARG2 (&job, 1),
+					     nr, 1, tmp_data, nr, pipvt,
+					     result, b.length(), info
+					     F77_CHAR_ARG_LEN (1))); 
 
 		  if (f77_exception_encountered)
 		    (*current_liboctave_error_handler)
@@ -2079,8 +2116,10 @@ ComplexMatrix::expm (void) const
 
   // Permute first
   char job = 'P';
-  F77_XFCN (zgebal, ZGEBAL, (&job, nc, mp, nc, ilo, ihi,
-            dpermute.fortran_vec (), info, 1L, 1L));
+  F77_XFCN (zgebal, ZGEBAL, (F77_CONST_CHAR_ARG2 (&job, 1),
+			     nc, mp, nc, ilo, ihi,
+			     dpermute.fortran_vec (), info
+			     F77_CHAR_ARG_LEN (1)));
 
   if (f77_exception_encountered)
     {
@@ -2090,8 +2129,10 @@ ComplexMatrix::expm (void) const
 
   // then scale
   job = 'S';
-  F77_XFCN (zgebal, ZGEBAL, (&job, nc, mp, nc, ilos, ihis,
-            dscale.fortran_vec (), info, 1L, 1L));
+  F77_XFCN (zgebal, ZGEBAL, (F77_CONST_CHAR_ARG2 (&job, 1),
+			     nc, mp, nc, ilos, ihis,
+			     dscale.fortran_vec (), info
+			     F77_CHAR_ARG_LEN (1)));
 
   if (f77_exception_encountered)
     {
@@ -2104,8 +2145,10 @@ ComplexMatrix::expm (void) const
   ColumnVector work (nc);
   double inf_norm;
 
-  F77_XFCN (xzlange, XZLANGE, ("I", nc, nc, m.fortran_vec (), nc,
-			       work.fortran_vec (), inf_norm));
+  F77_XFCN (xzlange, XZLANGE, (F77_CONST_CHAR_ARG2 ("I", 1),
+			       nc, nc, m.fortran_vec (), nc,
+			       work.fortran_vec (), inf_norm
+			       F77_CHAR_ARG_LEN (1)));
 
   if (f77_exception_encountered)
     {
@@ -2246,9 +2289,12 @@ operator * (const ComplexColumnVector& v, const ComplexRowVector& a)
       retval.resize (len, a_len);
       Complex *c = retval.fortran_vec ();
 
-      F77_XFCN (zgemm, ZGEMM, ("N", "N", len, a_len, 1, 1.0,
-			       v.data (), len, a.data (), 1, 0.0,
-			       c, len, 1L, 1L)); 
+      F77_XFCN (zgemm, ZGEMM, (F77_CONST_CHAR_ARG2 ("N", 1),
+			       F77_CONST_CHAR_ARG2 ("N", 1),
+			       len, a_len, 1, 1.0, v.data (), len,
+			       a.data (), 1, 0.0, c, len
+			       F77_CHAR_ARG_LEN (1)
+			       F77_CHAR_ARG_LEN (1)));
 
       if (f77_exception_encountered)
 	(*current_liboctave_error_handler)
@@ -3130,9 +3176,12 @@ Sylvester (const ComplexMatrix& a, const ComplexMatrix& b,
   Complex *pb = sch_b.fortran_vec ();
   Complex *px = cx.fortran_vec ();
   
-  F77_XFCN (ztrsyl, ZTRSYL, ("N", "N", 1, a_nr, b_nr, pa, a_nr, pb,
-			     b_nr, px, a_nr, scale,
-			     info, 1L, 1L));
+  F77_XFCN (ztrsyl, ZTRSYL, (F77_CONST_CHAR_ARG2 ("N", 1),
+			     F77_CONST_CHAR_ARG2 ("N", 1),
+			     1, a_nr, b_nr, pa, a_nr, pb,
+			     b_nr, px, a_nr, scale, info
+			     F77_CHAR_ARG_LEN (1)
+			     F77_CHAR_ARG_LEN (1)));
 
   if (f77_exception_encountered)
     (*current_liboctave_error_handler) ("unrecoverable error in ztrsyl");
@@ -3185,9 +3234,12 @@ operator * (const ComplexMatrix& m, const ComplexMatrix& a)
 	  retval.resize (nr, a_nc);
 	  Complex *c = retval.fortran_vec ();
 
-	  F77_XFCN (zgemm, ZGEMM, ("N", "N", nr, a_nc, nc, 1.0,
-				   m.data (), ld, a.data (), lda, 0.0,
-				   c, nr, 1L, 1L));
+	  F77_XFCN (zgemm, ZGEMM, (F77_CONST_CHAR_ARG2 ("N", 1),
+				   F77_CONST_CHAR_ARG2 ("N", 1),
+				   nr, a_nc, nc, 1.0, m.data (),
+				   ld, a.data (), lda, 0.0, c, nr
+				   F77_CHAR_ARG_LEN (1)
+				   F77_CHAR_ARG_LEN (1)));
 
 	  if (f77_exception_encountered)
 	    (*current_liboctave_error_handler)

@@ -44,12 +44,15 @@ typedef int (*dassl_jac_ptr) (const double&, const double*, const double*,
 			      double*, const double&, double*, int*);
 
 extern "C"
-int F77_FUNC (ddassl, DDASSL) (dassl_fcn_ptr, const int&, double&,
-			       double*, double*, double&, const int*,
-			       const double*, const double*, int&,
-			       double*, const int&, int*, const int&,
-			       const double*, const int*,
-			       dassl_jac_ptr);
+{
+  F77_RET_T
+  F77_FUNC (ddassl, DDASSL) (dassl_fcn_ptr, const int&, double&,
+			     double*, double*, double&, const int*,
+			     const double*, const double*, int&,
+			     double*, const int&, int*, const int&,
+			     const double*, const int*,
+			     dassl_jac_ptr);
+}
 
 static DAEFunc::DAERHSFunc user_fun;
 static DAEFunc::DAEJacFunc user_jac;

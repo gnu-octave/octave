@@ -45,10 +45,13 @@ typedef int (*lsode_jac_ptr) (const int&, const double&, double*,
 			      int&);
 
 extern "C"
-int F77_FUNC (lsode, LSODE) (lsode_fcn_ptr, int&, double*, double&,
-			     double&, int&, double&, const double*, int&,
-			     int&, int&, double*, int&, int*, int&,
-			     lsode_jac_ptr, int&);
+{
+  F77_RET_T
+  F77_FUNC (lsode, LSODE) (lsode_fcn_ptr, int&, double*, double&,
+			   double&, int&, double&, const double*, int&,
+			   int&, int&, double*, int&, int*, int&,
+			   lsode_jac_ptr, int&);
+}
 
 static ODEFunc::ODERHSFunc user_fun;
 static ODEFunc::ODEJacFunc user_jac;

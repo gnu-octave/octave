@@ -1,3 +1,15 @@
+2003-10-27  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-rand.cc, CColVector.cc, CMatrix.cc, CRowVector.cc,
+	CmplxAEPBAL.cc CmplxCHOL.cc, CmplxHESS.cc, CmplxLU.cc, CmplxQR.cc,
+	CmplxQRP.cc, CmplxSCHUR.cc, CmplxSVD.cc, CollocWt.cc, DASPK.cc,
+	DASRT.cc, DASSL.cc, EIG.cc, LSODE.cc,  NLEqn.cc, ODESSA.cc,
+	Quad.cc, dColVector.cc, dMatrix.cc, dRowVector.cc, dbleAEPBAL.cc,
+	dbleCHOL.cc, dbleHESS.cc, dbleLU.cc, dbleQR.cc, dbleQRP.cc,
+	dbleSCHUR.cc, dbleSVD.cc, lo-specfun.cc:
+	Use new F77 arg macros in declarations of external Fortran
+	subroutines and for calling them.
+
 2003-10-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Array.cc (Array<T>::resize_no_fill (const dim_vector&)):

@@ -61,66 +61,90 @@ typedef int (*sort_function) (const int& LSIZE, const double& ALPHA,
 
 extern "C"
 {
-  int F77_FUNC (dggbal, DGGBAL) (const char* JOB, const int& N,
-				double* A, const int& LDA, double* B,
-				const int& LDB, int& ILO, int& IHI,
-				double* LSCALE, double* RSCALE,
-				double* WORK, int& INFO, long);
+  F77_RET_T
+  F77_FUNC (dggbal, DGGBAL) (F77_CONST_CHAR_ARG_DECL,
+			     const int& N, double* A, const int& LDA,
+			     double* B, const int& LDB, int& ILO,
+			     int& IHI, double* LSCALE, double* RSCALE,
+			     double* WORK, int& INFO
+			     F77_CHAR_ARG_LEN_DECL);
 
-  int F77_FUNC (dggbak, DGGBAK) (const char* JOB, const char* SIDE,
-				const int& N, const int& ILO,
-				const int& IHI, double* LSCALE,
-				double* RSCALE, int& M, double* V,
-				const int& LDV, int& INFO, long, long);
+  F77_RET_T
+  F77_FUNC (dggbak, DGGBAK) (F77_CONST_CHAR_ARG_DECL,
+			     F77_CONST_CHAR_ARG_DECL,
+			     const int& N, const int& ILO,
+			     const int& IHI, double* LSCALE,
+			     double* RSCALE, int& M, double* V,
+			     const int& LDV, int& INFO
+			     F77_CHAR_ARG_LEN_DECL
+			     F77_CHAR_ARG_LEN_DECL);
 
-  int F77_FUNC (dgghrd, DGGHRD) (const char* COMPQ, const char* COMPZ,
-				const int& N, const int& ILO,
-				const int& IHI, double* A,
-				const int& LDA, double* B,
-				const int& LDB, double* Q,
-				const int& LDQ, double* Z,
-				const int& LDZ, int& INFO, long, long);
+  F77_RET_T
+  F77_FUNC (dgghrd, DGGHRD) (F77_CONST_CHAR_ARG_DECL,
+			     F77_CONST_CHAR_ARG_DECL,
+			     const int& N, const int& ILO,
+			     const int& IHI, double* A,
+			     const int& LDA, double* B,
+			     const int& LDB, double* Q,
+			     const int& LDQ, double* Z,
+			     const int& LDZ, int& INFO
+			     F77_CHAR_ARG_LEN_DECL
+			     F77_CHAR_ARG_LEN_DECL);
 
-  int F77_FUNC (dhgeqz, DHGEQZ) (const char* JOB, const char* COMPQ,
-				const char* COMPZ, const int& N,
-				const int& ILO, const int& IHI,
-				double* A, const int& LDA, double* B,
-				const int& LDB, double* ALPHAR,
-				double* ALPHAI, double* BETA, double* Q,
-				const int& LDQ, double* Z,
-				const int& LDZ, double* WORK,
-				const int& LWORK, int& INFO,
-				long, long, long);
+  F77_RET_T
+  F77_FUNC (dhgeqz, DHGEQZ) (F77_CONST_CHAR_ARG_DECL,
+			     F77_CONST_CHAR_ARG_DECL,
+			     F77_CONST_CHAR_ARG_DECL,
+			     const int& N, const int& ILO, const int& IHI,
+			     double* A, const int& LDA, double* B,
+			     const int& LDB, double* ALPHAR,
+			     double* ALPHAI, double* BETA, double* Q,
+			     const int& LDQ, double* Z,
+			     const int& LDZ, double* WORK,
+			     const int& LWORK, int& INFO
+			     F77_CHAR_ARG_LEN_DECL
+			     F77_CHAR_ARG_LEN_DECL
+			     F77_CHAR_ARG_LEN_DECL);
 
-  int F77_FUNC (dlag2, DLAG2) (double* A, const int& LDA, double* B,
-			      const int& LDB, const double& SAFMIN,
-			      double& SCALE1, double& SCALE2,
-			      double& WR1, double& WR2, double& WI);
+  F77_RET_T
+  F77_FUNC (dlag2, DLAG2) (double* A, const int& LDA, double* B,
+			   const int& LDB, const double& SAFMIN,
+			   double& SCALE1, double& SCALE2,
+			   double& WR1, double& WR2, double& WI);
 
   // Van Dooren's code (netlib.org: toms/590) for reordering
   // GEP.  Only processes Z, not Q.
-  int F77_FUNC (dsubsp, DSUBSP) (const int& NMAX, const int& N, double* A,
-				double* B, double* Z, sort_function,
-				const double& EPS, int& NDIM, int& FAIL,
-				int* IND);
+  F77_RET_T
+  F77_FUNC (dsubsp, DSUBSP) (const int& NMAX, const int& N, double* A,
+			     double* B, double* Z, sort_function,
+			     const double& EPS, int& NDIM, int& FAIL,
+			     int* IND);
 
   // documentation for DTGEVC incorrectly states that VR, VL are
   // complex*16; they are declared in DTGEVC as double precision
   // (probably a cut and paste problem fro ZTGEVC)
-  int F77_FUNC (dtgevc, DTGEVC) (const char* SIDE, const char* HOWMNY,
-				int* SELECT, const int& N, double* A,
-				const int& LDA, double* B,
-				const int& LDB, double* VL,
-				const int& LDVL, double* VR,
-				const int& LDVR, const int& MM,
-				int& M, double* WORK, int& INFO,
-				long, long);
+  F77_RET_T
+  F77_FUNC (dtgevc, DTGEVC) (F77_CONST_CHAR_ARG_DECL,
+			     F77_CONST_CHAR_ARG_DECL,
+			     int* SELECT, const int& N, double* A,
+			     const int& LDA, double* B,
+			     const int& LDB, double* VL,
+			     const int& LDVL, double* VR,
+			     const int& LDVR, const int& MM,
+			     int& M, double* WORK, int& INFO
+			     F77_CHAR_ARG_LEN_DECL
+			     F77_CHAR_ARG_LEN_DECL);
 
-  int F77_FUNC (xdlamch, XDLAMCH) (const char* cmach, double& retval, long);
+  F77_RET_T
+  F77_FUNC (xdlamch, XDLAMCH) (F77_CONST_CHAR_ARG_DECL,
+			       double& retval
+			       F77_CHAR_ARG_LEN_DECL);
 
-  int F77_FUNC (xdlange, XDLANGE) (const char*, const int&,
-                                  const int&, const double*,
-                                  const int&, double*, double&);
+  F77_RET_T
+  F77_FUNC (xdlange, XDLANGE) (F77_CONST_CHAR_ARG_DECL,
+			       const int&, const int&, const double*,
+			       const int&, double*, double&
+			       F77_CHAR_ARG_LEN_DECL);
 }
 
 // fcrhp, fin, fout, folhp:
@@ -286,7 +310,9 @@ See also: balance, dare, eig, schur\n\
 	}
 
       // overflow constant required by dlag2
-      F77_FUNC (xdlamch, XDLAMCH) ("S", safmin, 1L);
+      F77_FUNC (xdlamch, XDLAMCH) (F77_CONST_CHAR_ARG2 ("S", 1),
+				   safmin
+				   F77_CHAR_ARG_LEN (1));
 
 #ifdef DEBUG_EIG
       std::cout << "qz: initial value of safmin=" << setiosflags (std::ios::scientific)
@@ -301,7 +327,9 @@ See also: balance, dare, eig, schur\n\
 	  std::cout << "qz: DANGER WILL ROBINSON: safmin is 0!" << std::endl;
 #endif
 
-	  F77_FUNC (xdlamch, XDLAMCH) ("E", safmin, 1L);
+	  F77_FUNC (xdlamch, XDLAMCH) (F77_CONST_CHAR_ARG2 ("E", 1),
+				       safmin
+				       F77_CHAR_ARG_LEN (1));
 
 #ifdef DEBUG_EIG
 	  std::cout << "qz: safmin set to " << setiosflags (std::ios::scientific)
@@ -405,7 +433,7 @@ See also: balance, dare, eig, schur\n\
 	}
 
   // always perform permutation balancing
-  char bal_job = 'P';
+  const char bal_job = 'P';
   RowVector lscale(nn), rscale(nn), work(6*nn);
 
   if (complex_case)
@@ -421,9 +449,11 @@ See also: balance, dare, eig, schur\n\
 #endif
 
       F77_XFCN (dggbal, DGGBAL,
-		(&bal_job,  nn, aa.fortran_vec(), nn, bb.fortran_vec(),
-		 nn, ilo, ihi, lscale.fortran_vec(),
-		 rscale.fortran_vec(), work.fortran_vec(), info, 1L));
+		(F77_CONST_CHAR_ARG2 (&bal_job, 1),
+		 nn, aa.fortran_vec (), nn, bb.fortran_vec (),
+		 nn, ilo, ihi, lscale.fortran_vec (),
+		 rscale.fortran_vec (), work.fortran_vec (), info
+		 F77_CHAR_ARG_LEN (1)));
 
       if (f77_exception_encountered)
 	{
@@ -439,9 +469,13 @@ See also: balance, dare, eig, schur\n\
   if (compq == 'V')
     {
       F77_XFCN (dggbak, DGGBAK,
-		(&bal_job, "L", nn, ilo, ihi, lscale.fortran_vec(),
-		 rscale.fortran_vec(), nn, QQ.fortran_vec(),
-		 nn, info, 1L, 1L));
+		(F77_CONST_CHAR_ARG2 (&bal_job, 1),
+		 F77_CONST_CHAR_ARG2 ("L", 1),
+		 nn, ilo, ihi, lscale.fortran_vec (),
+		 rscale.fortran_vec (), nn, QQ.fortran_vec (),
+		 nn, info
+		 F77_CHAR_ARG_LEN (1)
+		 F77_CHAR_ARG_LEN (1)));
 
 #ifdef DEBUG
       if (compq == 'V')
@@ -458,10 +492,14 @@ See also: balance, dare, eig, schur\n\
   // then right
   if (compz == 'V')
     {
-      F77_XFCN (dggbak, DGGBAK, (&bal_job, "R",
-				 nn, ilo, ihi, lscale.fortran_vec(),
-				 rscale.fortran_vec(), nn, ZZ.fortran_vec(),
-				 nn, info, 1L, 1L));
+      F77_XFCN (dggbak, DGGBAK,
+		(F77_CONST_CHAR_ARG2 (&bal_job, 1),
+		 F77_CONST_CHAR_ARG2 ("R", 1),
+		 nn, ilo, ihi, lscale.fortran_vec (),
+		 rscale.fortran_vec (), nn, ZZ.fortran_vec (),
+		 nn, info
+		 F77_CHAR_ARG_LEN (1)
+		 F77_CHAR_ARG_LEN (1)));
 
 #ifdef DEBUG
       if (compz == 'V')
@@ -538,9 +576,13 @@ See also: balance, dare, eig, schur\n\
 
       // reduce  to generalized hessenberg form
       F77_XFCN (dgghrd, DGGHRD,
-		(&compq, &compz, nn, ilo, ihi, aa.fortran_vec(),
-		 nn, bb.fortran_vec(), nn, QQ.fortran_vec(), nn,
-		 ZZ.fortran_vec(), nn, info, 1L, 1L));
+		(F77_CONST_CHAR_ARG2 (&compq, 1),
+		 F77_CONST_CHAR_ARG2 (&compz, 1),
+		 nn, ilo, ihi, aa.fortran_vec (),
+		 nn, bb.fortran_vec (), nn, QQ.fortran_vec (), nn,
+		 ZZ.fortran_vec (), nn, info
+		 F77_CHAR_ARG_LEN (1)
+		 F77_CHAR_ARG_LEN (1)));
 
       if (f77_exception_encountered)
 	{
@@ -553,12 +595,16 @@ See also: balance, dare, eig, schur\n\
 
       // reduce to generalized Schur form
       F77_XFCN (dhgeqz, DHGEQZ,
-		(&qz_job, &compq, &compz, nn, ilo, ihi,
-		 aa.fortran_vec(), nn, bb.fortran_vec(), nn,
-		 alphar.fortran_vec(), alphai.fortran_vec(),
-		 betar.fortran_vec(), QQ.fortran_vec(), nn,
-		 ZZ.fortran_vec(), nn, work.fortran_vec(), nn, info,
-		 1L, 1L, 1L));
+		(F77_CONST_CHAR_ARG2 (&qz_job, 1),
+		 F77_CONST_CHAR_ARG2 (&compq, 1),
+		 F77_CONST_CHAR_ARG2 (&compz, 1),
+		 nn, ilo, ihi, aa.fortran_vec (), nn, bb.fortran_vec (),
+		 nn, alphar.fortran_vec (), alphai.fortran_vec (),
+		 betar.fortran_vec (), QQ.fortran_vec (), nn,
+		 ZZ.fortran_vec (), nn, work.fortran_vec (), nn, info
+		 F77_CHAR_ARG_LEN (1)
+		 F77_CHAR_ARG_LEN (1)
+		 F77_CHAR_ARG_LEN (1)));
 
       if (f77_exception_encountered)
 	{
@@ -615,8 +661,10 @@ See also: balance, dare, eig, schur\n\
 	  double inf_norm;
 
 	  F77_XFCN (xdlange, XDLANGE,
-		    ("I", nn, nn, aa.fortran_vec (), nn,
-		     work.fortran_vec (), inf_norm));
+		    (F77_CONST_CHAR_ARG2 ("I", 1),
+		     nn, nn, aa.fortran_vec (), nn,
+		     work.fortran_vec (), inf_norm
+		     F77_CHAR_ARG_LEN (1)));
 
 	  double eps = DBL_EPSILON*inf_norm*nn;
 
@@ -643,8 +691,8 @@ See also: balance, dare, eig, schur\n\
 	  Array<int> ind (nn);
 
 	  F77_XFCN (dsubsp, DSUBSP,
-		    (nn, nn, aa.fortran_vec(), bb.fortran_vec(),
-		     ZZ.fortran_vec(), sort_test, eps, ndim, fail,
+		    (nn, nn, aa.fortran_vec (), bb.fortran_vec (),
+		     ZZ.fortran_vec (), sort_test, eps, ndim, fail,
 		     ind.fortran_vec ()));
 
 #ifdef DEBUG
@@ -825,10 +873,13 @@ See also: balance, dare, eig, schur\n\
 	  VR = ZZ;
 
 	  F77_XFCN (dtgevc, DTGEVC,
-		    (&side, &howmny, select, nn, aa.fortran_vec(),
-		     nn, bb.fortran_vec(), nn, VL.fortran_vec(), nn,
-		     VR.fortran_vec(), nn, nn, m, work.fortran_vec(),
-		     info, 1L, 1L));
+		    (F77_CONST_CHAR_ARG2 (&side, 1),
+		     F77_CONST_CHAR_ARG2 (&howmny, 1),
+		     select, nn, aa.fortran_vec (), nn, bb.fortran_vec (),
+		     nn, VL.fortran_vec (), nn, VR.fortran_vec (), nn, nn,
+		     m, work.fortran_vec (), info
+		     F77_CHAR_ARG_LEN (1)
+		     F77_CHAR_ARG_LEN (1)));
 
 	  if (f77_exception_encountered)
 	    {

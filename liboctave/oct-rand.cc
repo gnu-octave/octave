@@ -42,19 +42,23 @@ static bool initialized = false;
 
 extern "C"
 {
-  int F77_FUNC (dgennor, DGENNOR) (const double&, const double&,
-				  double&);
+  F77_RET_T
+  F77_FUNC (dgennor, DGENNOR) (const double&, const double&, double&);
 
-  int F77_FUNC (dgenunf, DGENUNF) (const double&, const double&,
-				  double&);
+  F77_RET_T
+  F77_FUNC (dgenunf, DGENUNF) (const double&, const double&, double&);
 
-  int F77_FUNC (setall, SETALL) (const int&, const int&);
+  F77_RET_T
+  F77_FUNC (setall, SETALL) (const int&, const int&);
 
-  int F77_FUNC (getsd, GETSD) (int&, int&);
+  F77_RET_T
+  F77_FUNC (getsd, GETSD) (int&, int&);
 
-  int F77_FUNC (setsd, SETSD) (const int&, const int&);
+  F77_RET_T
+  F77_FUNC (setsd, SETSD) (const int&, const int&);
 
-  int F77_FUNC (setcgn, SETCGN) (const int&);
+  F77_RET_T
+  F77_FUNC (setcgn, SETCGN) (const int&);
 }
 
 static int

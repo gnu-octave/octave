@@ -45,17 +45,20 @@ int quad_integration_error = 0;
 typedef int (*quad_fcn_ptr) (double*, int&, double*);
 			      
 extern "C"
-int F77_FUNC (dqagp, DQAGP) (quad_fcn_ptr, const double&, const double&,
-			    const int&, const double*, const double&,
-			    const double&, double&, double&, int&,
-			    int&, const int&, const int&, int&, int*,
-			    double*);
+{
+  F77_RET_T
+  F77_FUNC (dqagp, DQAGP) (quad_fcn_ptr, const double&, const double&,
+			   const int&, const double*, const double&,
+			   const double&, double&, double&, int&,
+			   int&, const int&, const int&, int&, int*,
+			   double*);
 
-extern "C"
-int F77_FUNC (dqagi, DQAGI) (quad_fcn_ptr, const double&, const int&,
-			    const double&, const double&, double&,
-			    double&, int&, int&, const int&,
-			    const int&, int&, int*, double*); 
+  F77_RET_T
+  F77_FUNC (dqagi, DQAGI) (quad_fcn_ptr, const double&, const int&,
+			   const double&, const double&, double&,
+			   double&, int&, int&, const int&,
+			   const int&, int&, int*, double*); 
+}
 
 static int
 user_function (double *x, int& ierr, double *result)

@@ -1,5 +1,15 @@
 2003-10-27  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* misc/f77-fcn.c (xstopx): Return type is now F77_RET_T.
+	Use F77_RETURN.
+	* misc/machar.c (machar): Likewise.
+
+	* misc/f77-fcn.h (F77_CHAR_ARG, F77_CONST_CHAR_ARG, F77_CHAR_ARG2,
+	F77_CONST_CHAR_ARG2, F77_CXX_STRING_ARG, F77_CHAR_ARG_LEN,
+	F77_CHAR_ARG_DECL, F77_CONST_CHAR_ARG_DECL, F77_CHAR_ARG_LEN_DECL,
+	F77_RET_T, F77_RETURN): New macros.
+	[F77_USES_CRAY_CALLING_CONVENTION]: New data conversion functions.
+
 	* misc/quit.h (octave_interrupt_hook, octave_bad_alloc_hook):
 	Move function pointer declarations inside __cplusplus section.
 

@@ -59,6 +59,7 @@ std::string Vdata_dir;
 std::string Vlibexec_dir;
 std::string Varch_lib_dir;
 std::string Vlocal_arch_lib_dir;
+std::string Vlocal_ver_arch_lib_dir;
 std::string Vfcn_file_dir;
 
 // The path that will be searched for programs that we execute.
@@ -142,6 +143,12 @@ static void
 set_default_local_arch_lib_dir (void)
 {
   Vlocal_arch_lib_dir = subst_octave_home (OCTAVE_LOCALARCHLIBDIR);
+}
+
+static void
+set_default_local_ver_arch_lib_dir (void)
+{
+  Vlocal_ver_arch_lib_dir = subst_octave_home (OCTAVE_LOCALVERARCHLIBDIR);
 }
 
 static void
@@ -282,6 +289,8 @@ install_defaults (void)
 
   set_default_local_arch_lib_dir ();
 
+  set_default_local_ver_arch_lib_dir ();
+
   set_default_fcn_file_dir ();
 
   set_default_bin_dir ();
@@ -335,8 +344,11 @@ exec_path (void)
     {
       Vexec_path = s;
 
-      std::string std_path = Vlocal_arch_lib_dir + std::string (SEPCHAR_STR)
-	+ Varch_lib_dir + std::string (SEPCHAR_STR) + Vbin_dir;
+      std::string std_path
+	= Vlocal_ver_arch_lib_dir + std::string	(SEPCHAR_STR)
+	+ Vlocal_arch_lib_dir + std::string (SEPCHAR_STR)
+	+ Varch_lib_dir + std::string (SEPCHAR_STR)
+	+ Vbin_dir;
 
       std::string path;
 

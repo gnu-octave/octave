@@ -1,3 +1,20 @@
+2000-02-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in (octincludedir): Delete trailing /octave here.
+	* Makeconf.in (mk-includedir-link): Append it here.
+	(MKOCTFILE_INCFLAGS): Use both -I$(octincludedir) and
+	-I$(octincludedir)/octave.
+
+	* configure.in (localveroctfiledir, localverarchlibdir,
+	localverfcnfiledir): New variables.
+	(localfcnfilepath): Prepend localverfcnfiledir.
+	(localoctfilepath): Prepend localveroctfiledir.
+	* Makeconf.in: Substitute them here.
+
+	* Makeconf.in (do-subst-default-vals): Substitute
+	OCTAVE_LOCALVERARCHLIBDIR, OCTAVE_LOCALVERFCNFILEDIR,
+	OCTAVE_LOCALVEROCTFILEDIR.
+
 2000-02-08  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* config.guess: Update to latest from subversions.gnu.org.

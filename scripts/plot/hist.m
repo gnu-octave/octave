@@ -18,7 +18,7 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} hist (@var{y}, @var{x})
+## @deftypefn {Function File} {} hist (@var{y}, @var{x}, @var{norm})
 ## Produce histogram counts or plots.
 ##
 ## With one vector input argument, plot a histogram of the values with
@@ -31,6 +31,9 @@
 ## with the width of the bins determined from the adjacent values in
 ## the vector.
 ##
+## If third argument is provided, the histogram is normalised such that
+## the sum of the bars is equal to @var{norm}.
+##
 ## Extreme values are lumped in the first and last bins.
 ##
 ## With two output arguments, produce the values @var{nn} and @var{xx} such
@@ -40,10 +43,10 @@
 
 ## Author: jwe
 
-function [nn, xx] = hist (y, x)
+function [nn, xx] = hist (y, x, norm)
 
   if (nargin < 1 || nargin > 2)
-    usage ("[nn, xx] = hist (y, x)");
+    usage ("[nn, xx] = hist (y, x, norm)");
   endif
 
   if (is_vector (y))
@@ -58,7 +61,8 @@ function [nn, xx] = hist (y, x)
     delta = (max_val - min_val) / n / 2;
     x = linspace (min_val+delta, max_val-delta, n);
     cutoff = x + delta;
-  elseif (nargin == 2)
+  else
+    ## nargin is either 2 or 3
     if (is_scalar (x))
       n = x;
       if (n <= 0)
@@ -89,6 +93,11 @@ function [nn, xx] = hist (y, x)
     freq (i) = sum (y >= cutoff (i-1) & y < cutoff (i));
   endfor
   freq (n) = sum (y >= cutoff (n-1));
+
+  if (nargin == 3)
+    ## Normalise the histogram.
+    freq = freq / length(y) * norm;
+  endif
 
   if (nargout > 0)
     nn = freq;

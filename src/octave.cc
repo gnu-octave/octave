@@ -209,7 +209,7 @@ execute_startup_files (void)
       // Execute commands from the site-wide configuration file.
       // First from the file $(prefix)/lib/octave/site/m/octaverc
       // (if it exists), then from the file
-      // $(prefix)/lib/octave/$(version)/m/octaverc (if it exists).
+      // $(prefix)/share/octave/$(version)/m/octaverc (if it exists).
 
       parse_and_execute (Vlocal_site_defaults_file, verbose);
 

@@ -698,6 +698,9 @@ specified option.\n\
   m ["localoctfiledir"] = OCTAVE_LOCALOCTFILEDIR;
   m ["localoctfilepath"] = OCTAVE_LOCALOCTFILEPATH;
   m ["localstartupfiledir"] = OCTAVE_LOCALSTARTUPFILEDIR;
+  m ["localverarchlibdir"] = OCTAVE_LOCALVERARCHLIBDIR;
+  m ["localverfcnfiledir"] = OCTAVE_LOCALVERFCNFILEDIR;
+  m ["localveroctfiledir"] = OCTAVE_LOCALVEROCTFILEDIR;
   m ["man1dir"] = OCTAVE_MAN1DIR;
   m ["man1ext"] = OCTAVE_MAN1EXT;
   m ["mandir"] = OCTAVE_MANDIR;

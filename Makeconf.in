@@ -199,7 +199,8 @@ infofile = @infofile@
 # These variables hold the values specific to Octave.  They are
 # based on the values of the standard Make variables above.
 
-# Where to install Octave's include files.  The default is
+# Where to install Octave's include files (they will actually be
+# installed in a subdirectory called octave).  The default is
 # ${includedir}/octave-${version}
 octincludedir = @octincludedir@
 
@@ -214,6 +215,7 @@ fcnfiledir = @fcnfiledir@
 # ${fcnfiledir}.  This should be a colon-separated list of
 # directories.
 localfcnfiledir = @localfcnfiledir@
+localverfcnfiledir = @localverfcnfiledir@
 localfcnfilepath = @localfcnfilepath@
 
 # Where to put executables to be run by Octave rather than
@@ -225,6 +227,7 @@ archlibdir = @archlibdir@
 # Where to put executables to be run by Octave rather than by the
 # user that are specific to this site.
 localarchlibdir = @localarchlibdir@
+localverarchlibdir = @localverarchlibdir@
 
 # Where to put object files that will by dynamically loaded.
 # This path usually includes the Octave version and configuration
@@ -237,6 +240,7 @@ octfiledir = @octfiledir@
 # (i.e. customizations), before consulting ${octfiledir}.  This should
 # be a colon-separated list of directories.
 localoctfiledir = @localoctfiledir@
+localveroctfiledir = @localveroctfiledir@
 localoctfilepath = @localoctfilepath@
 
 # Where Octave will search to find its function files.  Before
@@ -253,7 +257,8 @@ imagepath = @imagepath@
 canonical_host_type = @canonical_host_type@
 
 # The -I flags to use for the mkoctfile script.
-MKOCTFILE_INCFLAGS = -I$(octincludedir) -I$(includedir)
+MKOCTFILE_INCFLAGS = \
+  -I$(octincludedir) -I$(octincludedir)/octave -I$(includedir)
 
 # The following pattern rules and the substitution functions require
 # GNU make.  If you don't have it, get it!
@@ -416,6 +421,9 @@ sed < $< > $@.tmp \
   -e "s;%OCTAVE_LOCALFCNFILEPATH%;\"${localfcnfilepath}\";" \
   -e "s;%OCTAVE_LOCALOCTFILEDIR%;\"${localoctfiledir}\";" \
   -e "s;%OCTAVE_LOCALOCTFILEPATH%;\"${localoctfilepath}\";" \
+  -e "s;%OCTAVE_LOCALVERARCHLIBDIR%;\"${localverarchlibdir}\";" \
+  -e "s;%OCTAVE_LOCALVERFCNFILEDIR%;\"${localverfcnfiledir}\";" \
+  -e "s;%OCTAVE_LOCALVEROCTFILEDIR%;\"${localveroctfiledir}\";" \
   -e "s;%OCTAVE_MAN1DIR%;\"${man1dir}\";" \
   -e "s;%OCTAVE_MAN1EXT%;\"${man1ext}\";" \
   -e "s;%OCTAVE_MANDIR%;\"${mandir}\";" \
@@ -426,13 +434,14 @@ sed < $< > $@.tmp \
 $(top_srcdir)/move-if-change $@.tmp $@
 endef
 
-# Make a relative symbolic link from $includedir/octave to $octincludedir. 
+# Make a relative symbolic link from $includedir/octave to
+# $octincludedir/octave.
 
 # XXX FIXME XXX -- this assumes that $octincludedir is a subdirectory
 # of $includedir.
 
 define mk-includedir-link
-src=`echo $(octincludedir) | sed 's|^$(includedir)/*||'`; \
+src=`echo $(octincludedir)/octave | sed 's|^$(includedir)/*||'`; \
 echo $$src; \
 if [ "$$src" = "octave" ]; then \
   true; \

@@ -350,17 +350,17 @@ install-lib:
 .PHONY: install-lib
 
 install-inc:
-	$(top_srcdir)/mkinstalldirs $(octincludedir)
+	$(top_srcdir)/mkinstalldirs $(octincludedir)/octave
 	for f in $(INCLUDES); do \
-	  rm -f $(octincludedir)/$$f; \
-	  $(INSTALL_DATA) $(srcdir)/$$f $(octincludedir)/$$f; \
+	  rm -f $(octincludedir)/octave/$$f; \
+	  $(INSTALL_DATA) $(srcdir)/$$f $(octincludedir)/octave/$$f; \
 	done
 	for f in defaults.h oct-conf.h oct-gperf.h; do \
-	  rm -f $(octincludedir)/$$f; \
+	  rm -f $(octincludedir)/octave/$$f; \
 	  if [ -f $$f ]; then \
-	    $(INSTALL_DATA) $$f $(octincludedir)/$$f ; \
+	    $(INSTALL_DATA) $$f $(octincludedir)/octave/$$f ; \
 	  else \
-	    $(INSTALL_DATA) $(srcdir)/$$f $(octincludedir)/$$f ; \
+	    $(INSTALL_DATA) $(srcdir)/$$f $(octincludedir)/octave/$$f ; \
 	  fi ; \
 	done
 	$(mk-includedir-link)
@@ -372,7 +372,7 @@ uninstall:
 	rm -f $(octlibdir)/liboctinterp.$(SHLEXT)
 	rm -f $(octlibdir)/liboctinterp.$(SHLEXT_VER)
 	for f in $(INCLUDES) defaults.h oct-conf.h; do \
-	  rm -f $(octincludedir)/$$f; \
+	  rm -f $(octincludedir)/octave/$$f; \
 	done
 .PHONY: uninstall
 

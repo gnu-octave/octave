@@ -116,6 +116,18 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define OCTAVE_LOCALSTARTUPFILEDIR OCTAVE_LOCALFCNFILEDIR "/startup"
 #endif
 
+#ifndef OCTAVE_LOCALVERARCHLIBDIR
+#define OCTAVE_LOCALVERARCHLIBDIR %OCTAVE_LOCALVERARCHLIBDIR%
+#endif
+
+#ifndef OCTAVE_LOCALVERFCNFILEDIR
+#define OCTAVE_LOCALVERFCNFILEDIR %OCTAVE_LOCALVERFCNFILEDIR%
+#endif
+
+#ifndef OCTAVE_LOCALVEROCTFILEDIR
+#define OCTAVE_LOCALVEROCTFILEDIR %OCTAVE_LOCALVEROCTFILEDIR%
+#endif
+
 #ifndef OCTAVE_MAN1DIR
 #define OCTAVE_MAN1DIR %OCTAVE_MAN1DIR%
 #endif
@@ -156,6 +168,7 @@ extern std::string Vdata_dir;
 extern std::string Vlibexec_dir;
 extern std::string Varch_lib_dir;
 extern std::string Vlocal_arch_lib_dir;
+extern std::string Vlocal_ver_arch_lib_dir;
 extern std::string Vfcn_file_dir;
 
 // The path that will be searched for programs that we execute.

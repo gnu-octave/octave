@@ -62,6 +62,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-obj.h"
 #include "pt-exp.h"
 #include "pt-fvc.h"
+#include "syscalls.h"
 #include "unwind-prot.h"
 #include "user-prefs.h"
 #include "utils.h"
@@ -1882,6 +1883,8 @@ install_builtin_variables (void)
   install_builtin_variables_6 ();
   install_builtin_variables_7 ();
   install_builtin_variables_8 ();
+
+  symbols_of_syscalls ();
 }
 
 // Deleting names from the symbol tables.

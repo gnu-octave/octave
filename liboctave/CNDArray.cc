@@ -658,7 +658,7 @@ concat (const ComplexNDArray& ra, const ComplexNDArray& rb,
 	const Array<int>& ra_idx)
 {
   ComplexNDArray retval (ra);
-  if (ra.numel () > 0)
+  if (rb.numel () > 0)
     retval.insert (rb, ra_idx);
   return retval;
 }
@@ -668,7 +668,7 @@ concat (const ComplexNDArray& ra, const NDArray& rb, const Array<int>& ra_idx)
 {
   ComplexNDArray retval (ra);
   ComplexNDArray tmp (rb);
-  if (ra.numel () > 0)
+  if (rb.numel () > 0)
     retval.insert (tmp, ra_idx);
   return retval;
 }
@@ -677,7 +677,7 @@ ComplexNDArray
 concat (const NDArray& ra, const ComplexNDArray& rb, const Array<int>& ra_idx)
 {
   ComplexNDArray retval (ra);
-  if (ra.numel () > 0)
+  if (rb.numel () > 0)
     retval.insert (rb, ra_idx);
   return retval;
 }

@@ -422,7 +422,7 @@ public:
     // Larger or equal since dim has been decremented by one.
 
     if (dim >= nb)
-      elem (dim) = elem (dim)++;
+      elem (dim)++;
     else
       elem (dim) += dvb(dim);
 

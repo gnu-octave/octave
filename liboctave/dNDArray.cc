@@ -796,7 +796,7 @@ NDArray
 concat (const NDArray& ra, const NDArray& rb, const Array<int>& ra_idx)
 {
   NDArray retval (ra);
-  if (ra.numel () > 0)
+  if (rb.numel () > 0)
     retval.insert (rb, ra_idx);
   return retval;
 }

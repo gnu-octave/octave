@@ -53,7 +53,7 @@ charNDArray
 concat (const charNDArray& ra, const charNDArray& rb, const Array<int>& ra_idx)
 {
   charNDArray retval (ra);
-  if (ra.numel () > 0)
+  if (rb.numel () > 0)
     retval.insert (rb, ra_idx);
   return retval;
 }
@@ -65,7 +65,7 @@ concat (const charNDArray& ra, const NDArray& rb, const Array<int>& ra_idx)
   charNDArray tmp (rb.dims ());
   int nel = rb.numel ();
 
-  if (ra.numel () == 0)
+  if (rb.numel () == 0)
     return retval;
 
   for (int i = 0; i < nel; i++)
@@ -123,6 +123,9 @@ concat (const NDArray& ra, const charNDArray& rb, const Array<int>& ra_idx)
 	  retval.elem (i) = static_cast<char>(ival);
 	}
     }
+
+  if (rb.numel () == 0)
+    return retval;
 
   retval.insert (rb, ra_idx);
   return retval;

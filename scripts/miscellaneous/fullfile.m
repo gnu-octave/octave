@@ -18,9 +18,8 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Built-in Function} {[@var{dir}, @var{name}, @var{ext}, @var{ver}] =} fullfile (@var{filename})
-## Return the directory, name, extension, and version components of
-## @var{filename}.
+## @deftypefn {Function File} {@var{filename} =} fullfile (@var{dir1}, @var{dir2}, @dots{}, @var{file})
+## Return a complete filename constructed from the given components.
 ## @end deftypefn
 
 function filename = fullfile (varargin)

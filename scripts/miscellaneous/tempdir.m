@@ -18,9 +18,8 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Built-in Function} {[@var{dir}, @var{name}, @var{ext}, @var{ver}] =} fullfile (@var{filename})
-## Return the directory, name, extension, and version components of
-## @var{filename}.
+## @deftypefn {Function File} {@var{dir} =} fullfile ()
+## Return the name of the system's directory for temporary files.
 ## @end deftypefn
 
 function dirname = tempdir ()

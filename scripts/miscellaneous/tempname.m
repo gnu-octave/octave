@@ -18,7 +18,7 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Built-in Function} {filename = } tempname ()
+## @deftypefn {Function File} {filename = } tempname ()
 ## This function is an alias for @code{tmpnam}.
 ## @end deftypefn
 

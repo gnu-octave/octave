@@ -1,5 +1,13 @@
 2004-04-06  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* configure.in: Delete code for --with-ieee754.
+	Use OCTAVE_IEEE754_DATA_FORMAT.
+
+	* aclocal.m4 (OCTAVE_IEEE754_DATA_FORMAT): New macro, based on
+	configure.in code for HAVE_IEEE754_COMPLIANCE.
+
+2004-04-06  David Bateman  <dbateman@free.fr>
+
   	* configure.in : add the option --with-ieee754 and use it to define
 	HAVE_IEEE754_COMPLIANCE
 

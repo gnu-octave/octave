@@ -774,3 +774,32 @@ fi
 AC_SUBST([SED], $octave_cv_path_sed)
 AC_MSG_RESULT([$SED])
 ])
+# OCTAVE_IEEE754_DATA_FORMAT
+# --------------
+# Check for IEEE 754 data format.
+AC_DEFUN([OCTAVE_IEEE754_DATA_FORMAT],
+[AC_MSG_CHECKING([for IEEE 754 data format])
+AC_CACHE_VAL(octave_cv_ieee754_data_format,
+[AC_TRY_RUN([
+int
+main (void) 
+{
+  typedef union { unsigned char c[8]; double d; } ieeebytes;
+   
+  ieeebytes l = {0x1c, 0xbc, 0x6e, 0xf2, 0x54, 0x8b, 0x11, 0x43};
+  ieeebytes b = {0x43, 0x11, 0x8b, 0x54, 0xf2, 0x6e, 0xbc, 0x1c};
+
+  return l.d != 1234567891234567.0 && b.d != 1234567891234567.0;
+}],
+  octave_cv_ieee754_data_format=yes,
+  octave_cv_ieee754_data_format=no,
+  octave_cv_ieee754_data_format=no)])
+if test "$cross_compiling" = yes; then
+  AC_MSG_RESULT([$octave_cv_ieee754_data_format assumed for cross compilation])
+else
+  AC_MSG_RESULT($octave_cv_ieee754_data_format)
+fi
+if test "$octave_cv_ieee754_data_format" = yes; then
+  AC_DEFINE(HAVE_IEEE754_DATA_FORMAT, 1, [Define if your system uses IEEE 754 data format.])
+fi
+])

@@ -37,12 +37,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ov-cx-mat.h"
 #include "oct-sort.cc"
 
-/* If we are IEEE 754 or IEEE 854 compliant, then we can use the trick of
- * casting doubles as unsigned eight byte integers, and with a little
- * bit of magic we can automatically sort the NaN's correctly.
- */
+// If we have IEEE 754 data format, then we can use the trick of
+// casting doubles as unsigned eight byte integers, and with a little
+// bit of magic we can automatically sort the NaN's correctly.
 
-#if defined(HAVE_IEEE754_COMPLIANCE) && defined(EIGHT_BYTE_INT)
+#if defined (HAVE_IEEE754_DATA_FORMAT) && defined (EIGHT_BYTE_INT)
 
 static inline unsigned EIGHT_BYTE_INT FloatFlip(unsigned EIGHT_BYTE_INT f)
 {
@@ -123,7 +122,7 @@ mx_sort (NDArray &m, bool return_idx, int dim)
   for (unsigned int i = 0; i < (unsigned int)dim; i++)
     stride *= dv(i);
 
-#if defined(HAVE_IEEE754_COMPLIANCE) && defined(EIGHT_BYTE_INT)
+#if defined (HAVE_IEEE754_DATA_FORMAT) && defined (EIGHT_BYTE_INT)
   double *v = m.fortran_vec ();
 
   unsigned EIGHT_BYTE_INT *p = (unsigned EIGHT_BYTE_INT *)v;
@@ -151,9 +150,9 @@ mx_sort (NDArray &m, bool return_idx, int dim)
 	    }
 	  offset += offset2 * stride * ns;
 
-	  /* Flip the data in the vector so that int compares on 
-	   * IEEE754 give the correct ordering
-	   */
+	  // Flip the data in the vector so that int compares on
+	  // IEEE754 give the correct ordering.
+
 	  for (unsigned int i = 0; i < ns; i++)
 	    {
 	      vi[i]->vec = FloatFlip (p[i*stride + offset]);
@@ -162,19 +161,19 @@ mx_sort (NDArray &m, bool return_idx, int dim)
 
 	  indexed_ieee754_sort.sort (vi, ns);
 
-	  /* Flip the data out of the vector so that int compares on
-	   *  IEEE754 give the correct ordering
-	   */
+	  // Flip the data out of the vector so that int compares on
+	  // IEEE754 give the correct ordering
+
 	  for (unsigned int i = 0; i < ns; i++)
 	    {
 	      p[i*stride + offset] = IFloatFlip (vi[i]->vec);
 	      idx(i*stride + offset) = vi[i]->indx;
 	    }
 
-	  /* There are two representations of NaN. One will be sorted to
-	   * the beginning of the vector and the other to the end. If it
-	   * will be sorted to the beginning, fix things up.
-	   */
+	  // There are two representations of NaN.  One will be sorted
+	  // to the beginning of the vector and the other to the end.
+	  // If it will be sorted to the beginning, fix things up.
+
 	  if (lo_ieee_signbit (octave_NaN))
 	    {
 	      unsigned int i = 0;
@@ -205,24 +204,25 @@ mx_sort (NDArray &m, bool return_idx, int dim)
 	{
 	  for (unsigned int j = 0; j < iter; j++)
 	    {
-	      /* Flip the data in the vector so that int compares on 
-	       * IEEE754 give the correct ordering
-	       */
+	      // Flip the data in the vector so that int compares on
+	      // IEEE754 give the correct ordering.
+
 	      for (unsigned int i = 0; i < ns; i++)
 		p[i] = FloatFlip (p[i]);
 	      
 	      ieee754_sort.sort (p, ns);
 
-	      /* Flip the data out of the vector so that int compares on
-	       *  IEEE754 give the correct ordering
-	       */
+	      // Flip the data out of the vector so that int compares
+	      // on IEEE754 give the correct ordering.
+
 	      for (unsigned int i = 0; i < ns; i++)
 		p[i] = IFloatFlip (p[i]);
 
-	      /* There are two representations of NaN. One will be sorted to
-	       * the beginning of the vector and the other to the end. If it
-	       * will be sorted to the beginning, fix things up.
-	       */
+	      // There are two representations of NaN.  One will be
+	      // sorted to the beginning of the vector and the other
+	      // to the end.  If it will be sorted to the beginning,
+	      // fix things up.
+
 	      if (lo_ieee_signbit (octave_NaN))
 		{
 		  unsigned int i = 0;
@@ -253,24 +253,25 @@ mx_sort (NDArray &m, bool return_idx, int dim)
 		}
 	      offset += offset2 * stride * ns;
 
-	      /* Flip the data in the vector so that int compares on 
-	       * IEEE754 give the correct ordering
-	       */
+	      // Flip the data in the vector so that int compares on
+	      // IEEE754 give the correct ordering.
+
 	      for (unsigned int i = 0; i < ns; i++)
 		vi[i] = FloatFlip (p[i*stride + offset]);
 
 	      ieee754_sort.sort (vi, ns);
 
-	      /* Flip the data out of the vector so that int compares on
-	       *  IEEE754 give the correct ordering
-	       */
+	      // Flip the data out of the vector so that int compares
+	      // on IEEE754 give the correct ordering.
+
 	      for (unsigned int i = 0; i < ns; i++)
 		p[i*stride + offset] = IFloatFlip (vi[i]);
 	      
-	      /* There are two representations of NaN. One will be sorted to
-	       * the beginning of the vector and the other to the end. If it
-	       * will be sorted to the beginning, fix things up.
-	       */
+	      // There are two representations of NaN. One will be
+	      // sorted to the beginning of the vector and the other
+	      // to the end. If it will be sorted to the beginning,
+	      // fix things up.
+
 	      if (lo_ieee_signbit (octave_NaN))
 		{
 		  unsigned int i = 0;
@@ -598,7 +599,6 @@ ordered lists.\n\
 
   return retval;
 }
-
 
 /*
 ;;; Local Variables: ***

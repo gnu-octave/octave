@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.451 $)
+AC_REVISION($Revision: 1.452 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -431,48 +431,7 @@ if test -n "$mpi_lib"; then
       AC_DEFINE(HAVE_MPI, 1, [Define if MPI is available.])])])
 fi
 
-
-# Check for IEEE 754 compliance
-AC_ARG_WITH(ieee754, [  --with-ieee754          force IEEE754 compliance],
-	  with_ieee754=$withval, with_ieee754=no)
-
-AC_MSG_CHECKING([IEEE 754 compliance])
-if test "$with_ieee754" = yes; then
-  AC_MSG_RESULT(forced)
-else
-  # Test for conformance to IEEE 754 or IEEE 854 standards
-  # Need to temporarily change the quote to print "[]"
-  changequote(<-, ->)dnl
-  cat > conftest.c << EOF
-  int main (void) 
-  {
-     /* Test for IEEE754 floating point representation. */
-     union { unsigned char c[8]; double d; }
-     l = {{0x1c, 0xbc, 0x6e, 0xf2, 0x54, 0x8b, 0x11, 0x43}},
-     b = {{0x43, 0x11, 0x8b, 0x54, 0xf2, 0x6e, 0xbc, 0x1c}};
-     return l.d!=1234567891234567.0 && b.d!=1234567891234567.0;
-  }
-EOF
-  changequote([, ])dnl
-
-  ac_try="$CC -o conftest conftest.c"
-  if AC_TRY_EVAL(ac_try) ; then
-    ac_try="./conftest"
-    if AC_TRY_EVAL(ac_try) ; then
-      with_ieee754=yes
-      AC_MSG_RESULT(yes)
-    else
-      AC_MSG_RESULT(no)
-    fi
-  else	
-    AC_MSG_RESULT(no)
-  fi
-  rm -f conftest*
-fi
-
-if test "$with_ieee754" = yes; then
-  AC_DEFINE(HAVE_IEEE754_COMPLIANCE, 1, [Define if the system is IEEE754 complant.])
-fi
+OCTAVE_IEEE754_DATA_FORMAT
 
 # ----------------------------------------------------------------------
 

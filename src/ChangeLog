@@ -1,3 +1,10 @@
+2003-10-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* data.cc (fill_matrix): Remove trailing singletons before
+	allocating the result matrix.
+
+	* input.cc (get_user_input): Don't forget about the diary here.
+
 2003-10-28  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* ov-list.h (octave_list::nelem): Delete.

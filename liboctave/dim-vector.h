@@ -85,7 +85,9 @@ protected:
 	{
 	  int dv_ndims = dv ? dv->ndims : 0;
 
-	  for (int i = 0; i < dv_ndims; i++)
+	  int min_len = n < dv_ndims ? n : dv_ndims;
+
+	  for (int i = 0; i < min_len; i++)
 	    dims[i] = dv->dims[i];
 
 	  for (int i = dv_ndims; i < n; i++)

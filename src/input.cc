@@ -548,6 +548,8 @@ get_user_input (const octave_value_list& args, bool debug, int nargout)
 
   flush_octave_stdout ();
 
+  octave_diary << prompt;
+
   std::string input_buf = gnu_readline (prompt.c_str (), true);
 
   if (! input_buf.empty ())
@@ -556,6 +558,11 @@ get_user_input (const octave_value_list& args, bool debug, int nargout)
 	command_history::add (input_buf);
 
       size_t len = input_buf.length ();
+
+      octave_diary << input_buf;
+
+      if (input_buf[len - 1] != '\n')
+	octave_diary << "\n";
 
       if (len < 1)
 	{

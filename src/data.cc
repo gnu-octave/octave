@@ -1027,6 +1027,16 @@ fill_matrix (const octave_value_list& args, double val, const char *fcn)
     {
       ndim = dims.length ();
 
+      for (int i = ndim-1; i > 1; i--)
+	{
+	  if (dims(i) == 1)
+	    ndim--;
+	  else
+	    break;
+	}
+
+      dims.resize (ndim);
+
       check_dimensions (dims, fcn);
 
       if (! error_state)

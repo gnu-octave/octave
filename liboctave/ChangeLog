@@ -1,3 +1,8 @@
+2003-10-29  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* dim-vector.h (dim_vector_rep::dim_vector_rep (int, const
+	dim_vector&)): Correctly handle case of n < dv->ndims.
+
 2003-10-28  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* dim-vector.h (dim_vector::any_zero): New function.

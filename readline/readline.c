@@ -25,9 +25,9 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <fcntl.h>
-#if !defined (NO_SYS_FILE)
+#if defined (HAVE_SYS_FILE)
 #  include <sys/file.h>
-#endif /* !NO_SYS_FILE */
+#endif /* HAVE_SYS_FILE */
 #include <signal.h>
 
 #if defined (HAVE_UNISTD_H)

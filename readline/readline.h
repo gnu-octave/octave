@@ -167,6 +167,11 @@ extern char *rl_completer_word_break_characters;
    unless they also appear within this list. */
 extern char *rl_completer_quote_characters;
 
+/* Character to add after a single completion alternative matches
+   at the end of line.  By default this is a space.
+   Nothing is added if this is '\0'. */
+extern char rl_completion_append_character;
+
 /* List of characters that are word break characters, but should be left
    in TEXT when it is passed to the completion function.  The shell uses
    this to help determine what kind of completing to do. */

@@ -1,3 +1,7 @@
+2004-09-16  John W. Eaton  <jwe@octave.org>
+
+	* variables.cc (symbol_out_of_date): Always look in LOADPATH.
+
 2004-09-15  John W. Eaton  <jwe@octave.org>
 
 	* OPERATORS/op-int-conv.cc: Define and install bool to int

@@ -772,19 +772,28 @@ symbol_out_of_date (symbol_record *sr)
 		{
 		  time_t tp = tmp->time_parsed ();
 
-		  std::string fname;
+		  std::string nm = tmp->name ();
 
-		  if (tmp->is_dld_function ())
-		    fname = ff;
-		  else
-		    fname = fcn_file_in_path (ff);
+		  string_vector names (2);
 
-		  tmp->mark_fcn_file_up_to_date (octave_time ());
+		  names[0] = nm + ".oct";
+		  names[1] = nm + ".m";
 
-		  file_stat fs (fname);
+		  std::string file = octave_env::make_absolute
+		    (Vload_path_dir_path.find_first_of (names),
+		     octave_env::getcwd ());
 
-		  if (fs && fs.is_newer (tp))
+		  if (file != ff)
 		    retval = true;
+		  else
+		    {
+		      tmp->mark_fcn_file_up_to_date (octave_time ());
+
+		      file_stat fs (ff);
+
+		      if (fs && fs.is_newer (tp))
+			retval = true;
+		    }
 		}
 	    }
 	}

@@ -25,6 +25,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "config.h"
 #endif
 
+#include <float.h>
 #include <limits.h>
 #include <string.h>
 #include <iostream.h>
@@ -117,12 +118,13 @@ LOSE! LOSE!
 
 #define swap_1_bytes(x,y)
 
-#define LS_DO_READ(TYPE,data,size,len,stream) \
+#define LS_DO_READ(TYPE,swap,data,size,len,stream) \
   do \
     { \
       volatile TYPE *ptr = (TYPE *) data; \
       stream.read ((TYPE *) ptr, size * len); \
-      swap_ ## size ## _bytes ((char *) ptr, len); \
+      if (swap) \
+        swap_ ## size ## _bytes ((char *) ptr, len); \
       TYPE tmp = ptr[0]; \
       for (int i = len - 1; i > 0; i--) \
         data[i] = ptr[i]; \
@@ -130,17 +132,19 @@ LOSE! LOSE!
     } \
   while (0)
 
+// Have to use copy here to avoid writing over data accessed via
+// Matrix::data().
+
 #define LS_DO_WRITE(TYPE,data,size,len,stream) \
   do \
     { \
       char tmp_type = (char) type; \
       stream.write (&tmp_type, 1); \
-      volatile TYPE *ptr = (TYPE *) data; \
-      TYPE tmp = (TYPE) data[0]; \
-      for (int i = 1; i < len; i++) \
+      TYPE *ptr = new TYPE [len]; \
+      for (int i = 0; i < len; i++) \
         ptr[i] = (TYPE) data[i]; \
-      ptr[0] = tmp; \
       stream.write ((TYPE *) ptr, size * len); \
+      delete [] ptr ; \
     } \
   while (0)
 
@@ -221,25 +225,49 @@ swap_8_bytes (char *t, int len)
 #if defined (IEEE_LITTLE_ENDIAN)
 
 static void
-IEEE_big_to_IEEE_little (double *d, int len)
+IEEE_big_double_to_IEEE_little_double (double *d, int len)
 {
   swap_8_bytes ((char *) d, len);
 }
 
 static void
-VAX_D_to_IEEE_little (double *d, int len)
+VAX_D_double_to_IEEE_little_double (double *d, int len)
 {
   error ("unable to convert from VAX D float to IEEE little endian format");
 }
 
 static void
-VAX_G_to_IEEE_little (double *d, int len)
+VAX_G_double_to_IEEE_little_double (double *d, int len)
 {
   error ("unable to convert from VAX G float to IEEE little endian format");
 }
 
 static void
-Cray_to_IEEE_little (double *d, int len)
+Cray_to_IEEE_little_double (double *d, int len)
+{
+  error ("unable to convert from Cray to IEEE little endian format");
+}
+
+static void
+IEEE_big_float_to_IEEE_little_float (float *d, int len)
+{
+  swap_4_bytes ((char *) d, len);
+}
+
+static void
+VAX_D_float_to_IEEE_little_float (float *d, int len)
+{
+  error ("unable to convert from VAX D float to IEEE little endian format");
+}
+
+static void
+VAX_G_float_to_IEEE_little_float (float *d, int len)
+{
+  error ("unable to convert from VAX G float to IEEE little endian format");
+}
+
+static void
+Cray_to_IEEE_little_float (float *d, int len)
 {
   error ("unable to convert from Cray to IEEE little endian format");
 }
@@ -247,25 +275,49 @@ Cray_to_IEEE_little (double *d, int len)
 #elif defined (IEEE_BIG_ENDIAN)
 
 static void
-IEEE_little_to_IEEE_big (double *d, int len)
+IEEE_little_double_to_IEEE_big_double (double *d, int len)
 {
   swap_8_bytes ((char *) d, len);
 }
 
 static void
-VAX_D_to_IEEE_big (double *d, int len)
+VAX_D_double_to_IEEE_big_double (double *d, int len)
 {
   error ("unable to convert from VAX D float to IEEE big endian format");
 }
 
 static void
-VAX_G_to_IEEE_big (double *d, int len)
+VAX_G_double_to_IEEE_big_double (double *d, int len)
 {
   error ("unable to convert from VAX G float to IEEE big endian format");
 }
 
 static void
-Cray_to_IEEE_big (double *d, int len)
+Cray_to_IEEE_big_double (double *d, int len)
+{
+  error ("unable to convert from Cray to IEEE big endian format");
+}
+
+static void
+IEEE_little_float_to_IEEE_big_float (float *d, int len)
+{
+  swap_4_bytes ((char *) d, len);
+}
+
+static void
+VAX_D_float_to_IEEE_big_float (float *d, int len)
+{
+  error ("unable to convert from VAX D float to IEEE big endian format");
+}
+
+static void
+VAX_G_float_to_IEEE_big_float (float *d, int len)
+{
+  error ("unable to convert from VAX G float to IEEE big endian format");
+}
+
+static void
+Cray_to_IEEE_big_float (float *d, int len)
 {
   error ("unable to convert from Cray to IEEE big endian format");
 }
@@ -273,25 +325,49 @@ Cray_to_IEEE_big (double *d, int len)
 #elif defined (VAX_D_FLOAT)
 
 static void
-IEEE_little_to_VAX_D (double *d, int len)
+IEEE_little_double_to_VAX_D_double (double *d, int len)
 {
   error ("unable to convert from IEEE little endian to VAX D float format");
 }
 
 static void
-IEEE_big_to_VAX_D (double *d, int len)
+IEEE_big_double_to_VAX_D_double (double *d, int len)
 {
   error ("unable to convert from IEEE big endian to VAX D float format");
 }
 
 static void
-VAX_G_to_VAX_D (double *d, int len)
+VAX_G_double_to_VAX_D_double (double *d, int len)
 {
   error ("unable to convert from VAX G float to VAX D float format");
 }
 
 static void
-Cray_to_VAX_D (double *d, int len)
+Cray_to_VAX_D_double (double *d, int len)
+{
+  error ("unable to convert from Cray to VAX D float format");
+}
+
+static void
+IEEE_little_float_to_VAX_D_float (float *d, int len)
+{
+  error ("unable to convert from IEEE little endian to VAX D float format");
+}
+
+static void
+IEEE_big_float_to_VAX_D_float (float *d, int len)
+{
+  error ("unable to convert from IEEE big endian to VAX D float format");
+}
+
+static void
+VAX_G_float_to_VAX_D_float (float *d, int len)
+{
+  error ("unable to convert from VAX G float to VAX D float format");
+}
+
+static void
+Cray_to_VAX_D_float (float *d, int len)
 {
   error ("unable to convert from Cray to VAX D float format");
 }
@@ -299,25 +375,49 @@ Cray_to_VAX_D (double *d, int len)
 #elif defined (VAX_G_FLOAT)
 
 static void
-IEEE_little_to_VAX_G (double *d, int len)
+IEEE_little_double_to_VAX_G_double (double *d, int len)
 {
   error ("unable to convert from IEEE little endian to VAX G float format");
 }
 
 static void
-IEEE_big_to_VAX_G (double *d, int len)
+IEEE_big_double_to_VAX_G_double (double *d, int len)
 {
   error ("unable to convert from IEEE big endian to VAX G float format");
 }
 
 static void
-VAX_D_to_VAX_G (double *d, int len)
+VAX_D_double_to_VAX_G_double (double *d, int len)
 {
   error ("unable to convert from VAX D float to VAX G float format");
 }
 
 static void
-Cray_to_VAX_G (double *d, int len)
+Cray_to_VAX_G_double (double *d, int len)
+{
+  error ("unable to convert from VAX G float to VAX G float format");
+}
+
+static void
+IEEE_little_float_to_VAX_G_float (float *d, int len)
+{
+  error ("unable to convert from IEEE little endian to VAX G float format");
+}
+
+static void
+IEEE_big_float_to_VAX_G_float (float *d, int len)
+{
+  error ("unable to convert from IEEE big endian to VAX G float format");
+}
+
+static void
+VAX_D_float_to_VAX_G_float (float *d, int len)
+{
+  error ("unable to convert from VAX D float to VAX G float format");
+}
+
+static void
+Cray_to_VAX_G_float (float *d, int len)
 {
   error ("unable to convert from VAX G float to VAX G float format");
 }
@@ -325,7 +425,107 @@ Cray_to_VAX_G (double *d, int len)
 #endif
 
 static void
-do_float_format_conversion (double *data, int len,
+do_double_format_conversion (double *data, int len,
+			     floating_point_format fmt)
+{
+  switch (fmt)
+    {
+#if defined (IEEE_LITTLE_ENDIAN)
+
+    case LS_IEEE_LITTLE:
+      break;
+
+    case LS_IEEE_BIG:
+      IEEE_big_double_to_IEEE_little_double (data, len);
+      break;
+
+    case LS_VAX_D:
+      VAX_D_double_to_IEEE_little_double (data, len);
+      break;
+
+    case LS_VAX_G:
+      VAX_G_double_to_IEEE_little_double (data, len);
+      break;
+
+    case LS_CRAY:
+      Cray_to_IEEE_little_double (data, len);
+      break;
+
+#elif defined (IEEE_BIG_ENDIAN)
+
+    case LS_IEEE_LITTLE:
+      IEEE_little_double_to_IEEE_big_double (data, len);
+      break;
+
+    case LS_IEEE_BIG:
+      break;
+
+    case LS_VAX_D:
+      VAX_D_double_to_IEEE_big_double (data, len);
+      break;
+
+    case LS_VAX_G:
+      VAX_G_double_to_IEEE_big_double (data, len);
+      break;
+
+    case LS_CRAY:
+      Cray_to_IEEE_big_double (data, len);
+      break;
+
+#elif defined (VAX_D_FLOAT)
+
+    case LS_IEEE_LITTLE:
+      IEEE_little_double_to_VAX_D_double (data, len);
+      break;
+
+    case LS_IEEE_BIG:
+      IEEE_big_double_to_VAX_D_double (data, len);
+      break;
+
+    case LS_VAX_D:
+      break;
+
+    case LS_VAX_G:
+      VAX_G_double_to_VAX_D_double (data, len);
+      break;
+
+    case LS_CRAY:
+      Cray_to_VAX_D_double (data, len);
+      break;
+
+#elif defined (VAX_G_FLOAT)
+
+    case LS_IEEE_LITTLE:
+      IEEE_little_double_to_VAX_G_double (data, len);
+      break;
+
+    case LS_IEEE_BIG:
+      IEEE_big_double_to_VAX_G_double (data, len);
+      break;
+
+    case LS_VAX_D:
+      VAX_D_double_to_VAX_G_double (data, len);
+      break;
+
+    case LS_VAX_G:
+      break;
+
+    case LS_CRAY:
+      Cray_to_VAX_G_double (data, len);
+      break;
+
+#else
+LOSE! LOSE!
+#endif
+
+    default:
+      panic_impossible ();
+      break;
+    }
+}
+
+static void
+do_float_format_conversion (float *data, int len,
 			    floating_point_format fmt)
 {
   switch (fmt)
@@ -336,82 +536,82 @@ do_float_format_conversion (double *data, int len,
       break;
 
     case LS_IEEE_BIG:
-      IEEE_big_to_IEEE_little (data, len);
+      IEEE_big_float_to_IEEE_little_float (data, len);
       break;
 
     case LS_VAX_D:
-      VAX_D_to_IEEE_little (data, len);
+      VAX_D_float_to_IEEE_little_float (data, len);
       break;
 
     case LS_VAX_G:
-      VAX_G_to_IEEE_little (data, len);
+      VAX_G_float_to_IEEE_little_float (data, len);
       break;
 
     case LS_CRAY:
-      Cray_to_IEEE_little (data, len);
+      Cray_to_IEEE_little_float (data, len);
       break;
 
 #elif defined (IEEE_BIG_ENDIAN)
 
     case LS_IEEE_LITTLE:
-      IEEE_little_to_IEEE_big (data, len);
+      IEEE_little_float_to_IEEE_big_float (data, len);
       break;
 
     case LS_IEEE_BIG:
       break;
 
     case LS_VAX_D:
-      VAX_D_to_IEEE_big (data, len);
+      VAX_D_float_to_IEEE_big_float (data, len);
       break;
 
     case LS_VAX_G:
-      VAX_G_to_IEEE_big (data, len);
+      VAX_G_float_to_IEEE_big_float (data, len);
       break;
 
     case LS_CRAY:
-      Cray_to_IEEE_big (data, len);
+      Cray_to_IEEE_big_float (data, len);
       break;
 
 #elif defined (VAX_D_FLOAT)
 
     case LS_IEEE_LITTLE:
-      IEEE_little_to_VAX_D (data, len);
+      IEEE_little_float_to_VAX_D_float (data, len);
       break;
 
     case LS_IEEE_BIG:
-      IEEE_big_to_VAX_D (data, len);
+      IEEE_big_float_to_VAX_D_float (data, len);
       break;
 
     case LS_VAX_D:
       break;
 
     case LS_VAX_G:
-      VAX_G_to_VAX_D (data, len);
+      VAX_G_float_to_VAX_D_float (data, len);
       break;
 
     case LS_CRAY:
-      Cray_to_VAX_D (data, len);
+      Cray_to_VAX_D_float (data, len);
       break;
 
 #elif defined (VAX_G_FLOAT)
 
     case LS_IEEE_LITTLE:
-      IEEE_little_to_VAX_G (data, len);
+      IEEE_little_float_to_VAX_G_float (data, len);
       break;
 
     case LS_IEEE_BIG:
-      IEEE_big_to_VAX_G (data, len);
+      IEEE_big_float_to_VAX_G_float (data, len);
       break;
 
     case LS_VAX_D:
-      VAX_D_to_VAX_G (data, len);
+      VAX_D_float_to_VAX_G_float (data, len);
       break;
 
     case LS_VAX_G:
       break;
 
     case LS_CRAY:
-      Cray_to_VAX_G (data, len);
+      Cray_to_VAX_G_float (data, len);
       break;
 
 #else
@@ -431,32 +631,44 @@ read_doubles (istream& is, double *data, save_type type, int len,
   switch (type)
     {
     case LS_U_CHAR:
-      LS_DO_READ (unsigned char, data, 1, len, is);
+      LS_DO_READ (unsigned char, swap, data, 1, len, is);
       break;
 
     case LS_U_SHORT:
-      LS_DO_READ (unsigned TWO_BYTE_INT, data, 2, len, is);
+      LS_DO_READ (unsigned TWO_BYTE_INT, swap, data, 2, len, is);
       break;
 
     case LS_U_INT:
-      LS_DO_READ (unsigned FOUR_BYTE_INT, data, 4, len, is);
+      LS_DO_READ (unsigned FOUR_BYTE_INT, swap, data, 4, len, is);
       break;
 
     case LS_CHAR:
-      LS_DO_READ (signed char, data, 1, len, is);
+      LS_DO_READ (signed char, swap, data, 1, len, is);
       break;
 
     case LS_SHORT:
-      LS_DO_READ (TWO_BYTE_INT, data, 2, len, is);
+      LS_DO_READ (TWO_BYTE_INT, swap, data, 2, len, is);
       break;
 
     case LS_INT:
-      LS_DO_READ (FOUR_BYTE_INT, data, 4, len, is);
+      LS_DO_READ (FOUR_BYTE_INT, swap, data, 4, len, is);
+      break;
+
+    case LS_FLOAT:
+      {
+	volatile float *ptr = (float *) data;
+	is.read (data, 4 * len);
+	do_float_format_conversion ((float *) data, len, fmt);
+	float tmp = ptr[0];
+	for (int i = len - 1; i > 0; i--)
+	  data[i] = ptr[i];
+	data[0] = tmp;
+      }
       break;
 
     case LS_DOUBLE:
       is.read (data, 8 * len);
-      do_float_format_conversion (data, len, fmt);
+      do_double_format_conversion (data, len, fmt);
       break;
 
     default:
@@ -466,7 +678,7 @@ read_doubles (istream& is, double *data, save_type type, int len,
 }
 
 static void
-write_doubles (ostream& os, double *data, save_type type, int len)
+write_doubles (ostream& os, const double *data, save_type type, int len)
 {
   switch (type)
     {
@@ -492,6 +704,10 @@ write_doubles (ostream& os, double *data, save_type type, int len)
 
     case LS_INT:
       LS_DO_WRITE (FOUR_BYTE_INT, data, 4, len, os);
+      break;
+
+    case LS_FLOAT:
+      LS_DO_WRITE (float, data, 4, len, os);
       break;
 
     case LS_DOUBLE:
@@ -612,8 +828,56 @@ all_parts_int (const ComplexMatrix& m, double& max_val, double& min_val)
   return 1;
 }
 
-// Shouldn't this be implemented in terms of other functions that are
-// already available?
+static int
+too_large_for_float (const Matrix& m)
+{
+  int nr = m.rows ();
+  int nc = m.columns ();
+
+  for (int j = 0; j < nc; j++)
+    for (int i = 0; i < nr; i++)
+      {
+	Complex val = m.elem (i, j);
+
+	double r_val = real (val);
+	double i_val = imag (val);
+
+	if (r_val > FLT_MAX
+	    || i_val > FLT_MAX
+	    || r_val < FLT_MIN
+	    || i_val < FLT_MIN)
+	  return 1;
+      }
+
+  return 0;
+}
+
+static int
+too_large_for_float (const ComplexMatrix& m)
+{
+  int nr = m.rows ();
+  int nc = m.columns ();
+
+  for (int j = 0; j < nc; j++)
+    for (int i = 0; i < nr; i++)
+      {
+	Complex val = m.elem (i, j);
+
+	double r_val = real (val);
+	double i_val = imag (val);
+
+	if (r_val > FLT_MAX
+	    || i_val > FLT_MAX
+	    || r_val < FLT_MIN
+	    || i_val < FLT_MIN)
+	  return 1;
+      }
+
+  return 0;
+}
+
+// XXX FIXME XXX -- shouldn't this be implemented in terms of other
+// functions that are already available?
 
 // Install a variable with name NAME and the value specified TC in the
 // symbol table.  If FORCE is nonzero, replace any existing definition
@@ -1184,11 +1448,12 @@ read_binary_data (istream& is, int swap, floating_point_format fmt,
     {
     case 1:
       {
-	double dtmp;
-	if (! is.read (&dtmp, 8))
+	if (! is.read (&tmp, 1))
 	  goto data_read_error;
-	if (swap)
-	  swap_8_bytes ((char *) &dtmp);
+	double dtmp;
+	read_doubles (is, &dtmp, (save_type) tmp, 1, swap, fmt);
+	if (! is)
+	  goto data_read_error;
 	tc = dtmp;
       }
       break;
@@ -1218,11 +1483,12 @@ read_binary_data (istream& is, int swap, floating_point_format fmt,
 
     case 3:
       {
-	Complex ctmp;
-	if (! is.read (&ctmp, 16))
+	if (! is.read (&tmp, 1))
 	  goto data_read_error;
-	if (swap)
-	  swap_8_bytes ((char *) &ctmp, 2);
+	Complex ctmp;
+	read_doubles (is, (double *) &ctmp, (save_type) tmp, 2, swap, fmt);
+	if (! is)
+	  goto data_read_error;
 	tc = ctmp;
       }
       break;
@@ -1243,7 +1509,8 @@ read_binary_data (istream& is, int swap, floating_point_format fmt,
 	ComplexMatrix m (nr, nc);
 	Complex *im = m.fortran_vec ();
 	int len = nr * nc;
-	read_doubles (is, (double *) im, (save_type) tmp, 2*len, swap, fmt);
+	read_doubles (is, (double *) im, (save_type) tmp, 2*len,
+		      swap, fmt);
 	if (! is)
 	  goto data_read_error;
 	tc = m;
@@ -1272,6 +1539,8 @@ read_binary_data (istream& is, int swap, floating_point_format fmt,
 
     case 6:
       {
+	if (! is.read (&tmp, 1))
+	  goto data_read_error;
 	double bas, lim, inc;
 	if (! is.read (&bas, 8))
 	  goto data_read_error;
@@ -1314,16 +1583,11 @@ read_mat_binary_data (istream& is, double *data, int precision,
   switch (precision)
     {
     case 0:
-      {
-	if (! is.read (data, 8*len))
-	  return;
-
-	do_float_format_conversion (data, len, flt_fmt);
-      }
+      read_doubles (is, data, LS_DOUBLE, len, swap, flt_fmt);
       break;
 
     case 1:
-      error ("load: reading 32 bit floating point data unsupported");
+      read_doubles (is, data, LS_FLOAT, len, swap, flt_fmt);
       break;
 
     case 2:
@@ -1576,7 +1840,7 @@ matches_patterns (char **patterns, int num_pat, char *name)
 
 static int
 read_binary_file_header (istream& is, int& swap,
-			 floating_point_format flt_fmt, int quiet = 0) 
+			 floating_point_format& flt_fmt, int quiet = 0) 
 {
   int magic_len = 10;
   char magic [magic_len+1];
@@ -1972,7 +2236,7 @@ get_save_type (double max_val, double min_val)
 
 static int
 save_binary_data (ostream& os, const tree_constant& tc, char *name,
-		  char *doc, int mark_as_global) 
+		  char *doc, int mark_as_global, int save_as_floats) 
 {
   int fail = 0;
 
@@ -1999,6 +2263,8 @@ save_binary_data (ostream& os, const tree_constant& tc, char *name,
     {
       tmp = 1;
       os.write (&tmp, 1);
+      tmp = (char) LS_DOUBLE;
+      os.write (&tmp, 1);
       double tmp = tc.double_value ();
       os.write (&tmp, 8);
     }
@@ -2013,18 +2279,30 @@ save_binary_data (ostream& os, const tree_constant& tc, char *name,
       os.write (&nc, 4);
       int len = nr * nc;
       save_type st = LS_DOUBLE;
-      if (len > 8192)
+      if (save_as_floats)
+	{
+	  if (too_large_for_float (m))
+	    {
+	      warning ("save: some values too large to save as floats --");
+	      warning ("save: saving as doubles instead");
+	    }
+	  else
+	    st = LS_FLOAT;
+	}
+      else if (len > 8192) // XXX FIXME XXX -- make this configurable.
 	{
 	  double max_val, min_val;
 	  if (all_parts_int (m, max_val, min_val))
 	    st = get_save_type (max_val, min_val);
 	}
-      double *mtmp = m.fortran_vec ();
+      const double *mtmp = m.data ();
       write_doubles (os, mtmp, st, len);
     }
   else if (tc.is_complex_scalar ())
     {
       tmp = 3;
+      os.write (&tmp, 1);
+      tmp = (char) LS_DOUBLE;
       os.write (&tmp, 1);
       Complex tmp = tc.complex_value ();
       os.write (&tmp, 16);
@@ -2040,14 +2318,24 @@ save_binary_data (ostream& os, const tree_constant& tc, char *name,
       os.write (&nc, 4);
       int len = nr * nc;
       save_type st = LS_DOUBLE;
-      if (len > 4096)
+      if (save_as_floats)
+	{
+	  if (too_large_for_float (m))
+	    {
+	      warning ("save: some values too large to save as floats --");
+	      warning ("save: saving as doubles instead");
+	    }
+	  else
+	    st = LS_FLOAT;
+	}
+      else if (len > 4096) // XXX FIXME XXX -- make this configurable.
 	{
 	  double max_val, min_val;
 	  if (all_parts_int (m, max_val, min_val))
 	    st = get_save_type (max_val, min_val);
 	}
-      Complex *mtmp = m.fortran_vec ();
-      write_doubles (os, (double *) mtmp, st, 2*len);
+      const Complex *mtmp = m.data ();
+      write_doubles (os, (const double *) mtmp, st, 2*len);
     }
   else if (tc.is_string ())
     {
@@ -2063,6 +2351,8 @@ save_binary_data (ostream& os, const tree_constant& tc, char *name,
   else if (tc.is_range ())
     {
       tmp = 6;
+      os.write (&tmp, 1);
+      tmp = (char) LS_DOUBLE;
       os.write (&tmp, 1);
       Range r = tc.range_value ();
       double bas = r.base ();
@@ -2168,7 +2458,8 @@ save_ascii_data (ostream& os, const tree_constant& tc,
 // Save the info from sr on stream os in the format specified by fmt.
 
 static void
-do_save (ostream& os, symbol_record *sr, load_save_format fmt)
+do_save (ostream& os, symbol_record *sr, load_save_format fmt,
+	 int save_as_floats)
 {
   if (! sr->is_variable ())
     {
@@ -2191,7 +2482,7 @@ do_save (ostream& os, symbol_record *sr, load_save_format fmt)
       break;
 
     case LS_BINARY:
-      save_binary_data (os, tc, name, help, global);
+      save_binary_data (os, tc, name, help, global, save_as_floats);
       break;
 
     default:
@@ -2206,7 +2497,7 @@ do_save (ostream& os, symbol_record *sr, load_save_format fmt)
 
 static int
 save_vars (ostream& os, char *pattern, int save_builtins,
-	   load_save_format fmt)
+	   load_save_format fmt, int save_as_floats)
 {
   int count;
 
@@ -2219,7 +2510,7 @@ save_vars (ostream& os, char *pattern, int save_builtins,
 
   for (i = 0; i < count; i++)
     {
-      do_save (os, vars[i], fmt);
+      do_save (os, vars[i], fmt, save_as_floats);
 
       if (error_state)
 	break;
@@ -2236,7 +2527,7 @@ save_vars (ostream& os, char *pattern, int save_builtins,
 
       for (i = 0; i < count; i++)
 	{
-	  do_save (os, vars[i], fmt);
+	  do_save (os, vars[i], fmt, save_as_floats);
 
 	  if (error_state)
 	    break;
@@ -2262,7 +2553,7 @@ get_default_save_format (void)
 }
 
 DEFUN_TEXT ("save", Fsave, Ssave, -1, 1,
-  "save [-ascii] [-binary] [-save-builtins] file [pattern ...]\n\
+  "save [-ascii] [-binary] [-float-binary] [-save-builtins] file [pattern ...]\n\
 \n\
 save variables in a file")
 {
@@ -2277,6 +2568,8 @@ save variables in a file")
 // stored in a user preference variable.
 
   int save_builtins = 0;
+
+  int save_as_floats = 0;
 
   load_save_format format = get_default_save_format ();
 
@@ -2294,6 +2587,14 @@ save variables in a file")
 	  argc--;
 	  argv++;
 	}
+      else if (strcmp (*argv, "-float-binary") == 0
+	       || strcmp (*argv, "-f") == 0)
+	{
+	  format = LS_BINARY;
+	  save_as_floats = 1;
+	  argc--;
+	  argv++;
+	}
       else if (strcmp (*argv, "-save-builtins") == 0)
 	{
 	  save_builtins = 1;
@@ -2307,6 +2608,13 @@ save variables in a file")
   if (argc < 1)
     {
       print_usage ("save");
+      DELETE_ARGV;
+      return retval;
+    }
+
+  if (save_as_floats && format == LS_ASCII)
+    {
+      error ("save: cannot specify both -ascii and -float-binary");
       DELETE_ARGV;
       return retval;
     }
@@ -2362,14 +2670,17 @@ save variables in a file")
 
   if (argc == 0)
     {
-      save_vars (stream, "*", save_builtins, format);
+      save_vars (stream, "*", save_builtins, format, save_as_floats);
     }
   else
     {
       while (argc-- > 0)
 	{
-	  if (! save_vars (stream, *argv, save_builtins, format))
-	    warning ("save: no such variable `%s'", *argv);
+	  if (! save_vars (stream, *argv, save_builtins, format,
+			   save_as_floats))
+	    {
+	      warning ("save: no such variable `%s'", *argv);
+	    }
 
 	  argv++;
 	}

@@ -1133,8 +1133,8 @@ do_scanf_conv (std::istream& is, const scanf_format_elt& fmt,
 }
 
 template void
-do_scanf_conv (std::istream&, const scanf_format_elt&, int*, Matrix&,
-	       double*, int&, int&, int, int, bool);
+do_scanf_conv (std::istream&, const scanf_format_elt&, int*,
+	       Matrix&, double*, int&, int&, int, int, bool);
 
 template void
 do_scanf_conv (std::istream&, const scanf_format_elt&, long int*,
@@ -1142,6 +1142,18 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, long int*,
 
 template void
 do_scanf_conv (std::istream&, const scanf_format_elt&, short int*,
+	       Matrix&, double*, int&, int&, int, int, bool);
+
+template void
+do_scanf_conv (std::istream&, const scanf_format_elt&, unsigned int*,
+	       Matrix&, double*, int&, int&, int, int, bool);
+
+template void
+do_scanf_conv (std::istream&, const scanf_format_elt&, unsigned long int*,
+	       Matrix&, double*, int&, int&, int, int, bool);
+
+template void
+do_scanf_conv (std::istream&, const scanf_format_elt&, unsigned short int*,
 	       Matrix&, double*, int&, int&, int, int, bool);
 
 #if 0
@@ -1481,7 +1493,7 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 		  DO_PCT_CONVERSION ();
 		  break;
 
-		case 'd': case 'i': case 'o': case 'u': case 'x':
+		case 'd': case 'i':
 		  {
 		    switch (elt->modifier)
 		      {
@@ -1506,6 +1518,40 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 		      default:
 			{
 			  int tmp;
+			  do_scanf_conv (is, *elt, &tmp, mval, data,
+					 data_index, conversion_count,
+					 nr, max_size, discard);
+			}
+			break;
+		      }
+		  }
+		  break;
+
+		case 'o': case 'u': case 'x':
+		  {
+		    switch (elt->modifier)
+		      {
+		      case 'h':
+			{
+			  unsigned short int tmp;
+			  do_scanf_conv (is, *elt, &tmp, mval, data,
+					 data_index, conversion_count,
+					 nr, max_size, discard);
+			}
+			break;
+
+		      case 'l':
+			{
+			  unsigned long int tmp;
+			  do_scanf_conv (is, *elt, &tmp, mval, data,
+					 data_index, conversion_count,
+					 nr, max_size, discard);
+			}
+			break;
+
+		      default:
+			{
+			  unsigned int tmp;
 			  do_scanf_conv (is, *elt, &tmp, mval, data,
 					 data_index, conversion_count,
 					 nr, max_size, discard);
@@ -1723,9 +1769,23 @@ octave_base_stream::do_oscanf (const scanf_format_elt *elt,
 	      }
 	      break;
 
-	    case 'd': case 'i': case 'o': case 'u': case 'x':
+	    case 'd': case 'i':
 	      {
 		int tmp;
+
+		if (OCTAVE_SCAN (is, *elt, &tmp))
+		  {
+		    if (! discard)
+		      retval = static_cast<double> (tmp);
+		  }
+		else
+		  quit = true;
+	      }
+	      break;
+
+	    case 'o': case 'u': case 'x':
+	      {
+		long int tmp;
 
 		if (OCTAVE_SCAN (is, *elt, &tmp))
 		  {
@@ -2161,6 +2221,12 @@ do_printf_conv (std::ostream&, const char*, int, int, int, int);
 template int						   
 do_printf_conv (std::ostream&, const char*, int, int, int, long);
 							   
+template int
+do_printf_conv (std::ostream&, const char*, int, int, int, unsigned int);
+							   
+template int						   
+do_printf_conv (std::ostream&, const char*, int, int, int, unsigned long);
+							   
 template int						   
 do_printf_conv (std::ostream&, const char*, int, int, int, double);
 							   
@@ -2244,17 +2310,29 @@ octave_base_stream::do_printf (printf_format_list& fmt_list,
 		    {
 		      switch (elt->type)
 			{
-			case 'd': case 'i': case 'o': case 'x':
-			case 'X': case 'u': case 'c':
+			case 'd': case 'i': case 'c':
 			  {
 			    if (elt->modifier == 'l')
-			      retval
-				+= do_printf_conv (os, fmt, nsa, sa_1, sa_2,
-						   static_cast<long> (val));
+			      retval += do_printf_conv
+				(os, fmt, nsa, sa_1, sa_2,
+				 static_cast<long int> (val));
 			    else
-			      retval
-				+= do_printf_conv (os, fmt, nsa, sa_1, sa_2,
-						   static_cast<int> (val));
+			      retval += do_printf_conv
+				(os, fmt, nsa, sa_1, sa_2,
+				 static_cast<int> (val));
+			  }
+			  break;
+
+			case 'o': case 'x': case 'X': case 'u':
+			  {
+			    if (elt->modifier == 'l')
+			      retval += do_printf_conv
+				(os, fmt, nsa, sa_1, sa_2,
+				 static_cast<unsigned long int> (val));
+			    else
+			      retval += do_printf_conv
+				(os, fmt, nsa, sa_1, sa_2,
+				 static_cast<unsigned int> (val));
 			  }
 			  break;
 

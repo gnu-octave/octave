@@ -279,7 +279,7 @@ OCTAVE_INT_BITCMP_OP (^)
   octave_int<T1> \
   operator OP (const octave_int<T1>& x, const T2& y) \
   { \
-    return x.value () OP y; \
+    return ((x.value () OP y) > std::numeric_limits<T1>::max ()) ? 0 : (x.value () OP y); \
   }
 
 OCTAVE_INT_BITSHIFT_OP (<<)
@@ -287,12 +287,13 @@ OCTAVE_INT_BITSHIFT_OP (>>)
 
 template <class T>
 octave_int<T>
-bitshift (const octave_int<T>& a, int n)
+bitshift (const octave_int<T>& a, int n,
+	  const octave_int<T>& mask = std::numeric_limits<T>::max ())
 {
   if (n > 0)
-    return a << n;
+    return (a.value () << n) & mask.value ();
   else if (n < 0)
-    return a >> -n;
+    return (a.value () >> -n) & mask.value ();
   else
     return a;
 }

@@ -16,35 +16,36 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{X} =} bitget (@var{a},@var{n})
-## returns the status of bit(s) @var{n} of unsigned integers in @var{a}
+## Return the status of bit(s) @var{n} of unsigned integers in @var{a}
 ## the lowest significant bit is @var{n} = 1.
 ##
 ## @example
-## bitget(100,8:-1:1)
+## bitget (100, 8:-1:1)
 ## @result{} 0  1  1  0  0  1  0  0 
 ## @end example
-## @seealso{bitand,bitor,bitxor,bitset,bitcmp,bitshift,bitmax}
+## @seealso{bitand, bitor, bitxor, bitset, bitcmp, bitshift, bitmax}
 ## @end deftypefn
 
 ## Liberally based of the version by Kai Habel from octave-forge
 
 function X = bitget (A, n)
+
   if (nargin != 2)
-    usage ("bitget(A,n)");
+    usage ("bitget (A, n)");
   endif
 
-  cname = class(A);
+  cname = class (A);
   if (strcmp (cname, "double"))
     Amax = log2 (bitmax) + 1;
-  elseif strcmp("uint",substr(cname,1,4))
-    Amax = eval([cname, " (log2 (double (intmax (cname))) + 1);"]);
+  elseif strcmp ("uint", substr (cname, 1, 4))
+    Amax = eval ([cname, " (log2 (double (intmax (cname))) + 1);"]);
   else
-    Amax = eval([cname, " (log2 (double (intmax (cname))) + 2);"]);
+    Amax = eval ([cname, " (log2 (double (intmax (cname))) + 2);"]);
   endif
 
-  Aone = eval([ cname, "(1);"]);
-  m = eval([cname, " (n(:));"]);
-  if (any(m < Aone) || any( m > Amax))
+  Aone = eval ([ cname, "(1);"]);
+  m = eval ([cname, " (n(:));"]);
+  if (any (m < Aone) || any (m > Amax))
     error ("n must be in the range [1,%d]", Amax);
   endif
 

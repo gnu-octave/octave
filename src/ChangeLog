@@ -1,5 +1,10 @@
 2004-07-27  John W. Eaton  <jwe@octave.org>
 
+	* bitfcns.cc (DO_BITSHIFT): Pass mask to bitshift.
+	(bitshift (double, int, EIGHT_BYTE_INT): New arg, mask.
+	(DO_UBITSHIFT, DO_SBITSHIFT): Use bitshfit, not operator >>.
+	Use nbits function from octave_int type to set bits_in_type.
+
 	* ov-struct.cc (Fisfield): Only print usage message if number of
 	arguments is incorrect.  Return false for invalid arguments.
 	From Andy Adler <adler@site.uottawa.ca>.

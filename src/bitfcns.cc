@@ -265,7 +265,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 DEFUN (bitand, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} bitand (@var{x}, @var{y})\n\
-calculates the bitwise AND of nonnegative integers.\n\
+Return the bitwise AND of nonnegative integers.\n\
 @var{x}, @var{y} must be in range [0..bitmax]\n\
 @end deftypefn\n\
 @seealso{bitor, bitxor, bitset, bitget, bitcmp, bitshift, bitmax}")
@@ -276,7 +276,7 @@ calculates the bitwise AND of nonnegative integers.\n\
 DEFUN (bitor, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} bitor (@var{x}, @var{y})\n\
-calculates the bitwise OR of nonnegative integers.\n\
+Return the bitwise OR of nonnegative integers.\n\
 @var{x}, @var{y} must be in range [0..bitmax]\n\
 @end deftypefn\n\
 @seealso{bitor, bitxor, bitset, bitget, bitcmp, bitshift, bitmax}")
@@ -287,7 +287,7 @@ calculates the bitwise OR of nonnegative integers.\n\
 DEFUN (bitxor, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} bitxor (@var{x}, @var{y})\n\
-calculates the bitwise XOR of nonnegative integers.\n\
+Return the bitwise XOR of nonnegative integers.\n\
 @var{x}, @var{y} must be in range [0..bitmax]\n\
 @end deftypefn\n\
 @seealso{bitand, bitor, bitset, bitget, bitcmp, bitshift, bitmax}")
@@ -296,14 +296,14 @@ calculates the bitwise XOR of nonnegative integers.\n\
 }
 
 static EIGHT_BYTE_INT
-bitshift (const double& a, int n)
+bitshift (double a, int n, EIGHT_BYTE_INT mask)
 {
   if (n > 0)
-    return static_cast<EIGHT_BYTE_INT> (a) << n;
+    return (static_cast<EIGHT_BYTE_INT> (a) << n) & mask;
   else if (n < 0)
-    return static_cast<EIGHT_BYTE_INT> (a) >> -n;
+    return (static_cast<EIGHT_BYTE_INT> (a) >> -n) & mask;
   else
-    return static_cast<EIGHT_BYTE_INT> (a);
+    return static_cast<EIGHT_BYTE_INT> (a) & mask;
 }
 
 // Note that the bitshift operators are undefined if shifted by more
@@ -342,12 +342,12 @@ bitshift (const double& a, int n)
 		    if (static_cast<int> (n(k)) >= bits_in_type) \
 		      result(i+k) = 0; \
 		    else \
-		      result(i+k) = bitshift (m(i), static_cast<int> (n(k))) & mask; \
+		      result(i+k) = bitshift (m(i), static_cast<int> (n(k)), mask); \
 		else \
 		  if (static_cast<int> (n(i)) >= bits_in_type) \
 		    result(i) = 0;					\
 		  else 						\
-		    result(i) = bitshift (m(i), static_cast<int> (n(i))) & mask; \
+		    result(i) = bitshift (m(i), static_cast<int> (n(i)), mask); \
  \
 	      retval = result; \
 	    } \
@@ -361,11 +361,11 @@ bitshift (const double& a, int n)
 #define DO_UBITSHIFT(T, N) \
   do \
     { \
-      int bits_in_type = sizeof (octave_ ## T) << 3; \
+      int bits_in_type = octave_ ## T :: nbits (); \
       T ## NDArray m = m_arg.T ## _array_value (); \
 	octave_ ## T mask = ~0ULL; \
-      if ((N) < static_cast<int> (sizeof (octave_ ## T) << 3)) \
-	mask = mask >> ((sizeof (octave_ ## T) << 3) - (N)); \
+      if ((N) < bits_in_type) \
+	mask = bitshift (mask, (N) - bits_in_type); \
       else if ((N) < 1) \
 	mask = 0; \
       DO_BITSHIFT (T); \
@@ -375,11 +375,11 @@ bitshift (const double& a, int n)
 #define DO_SBITSHIFT(T, N) \
   do \
     { \
-      int bits_in_type = sizeof (octave_ ## T) << 3; \
+      int bits_in_type = octave_ ## T :: nbits (); \
       T ## NDArray m = m_arg.T ## _array_value (); \
 	octave_ ## T mask = -1; \
-      if ((N) < static_cast<int>(sizeof (octave_ ## T) << 3)) \
-	mask = mask >> ((sizeof (octave_ ## T) << 3) - (N)); \
+      if ((N) < bits_in_type) \
+	mask = bitshift (mask, (N) - bits_in_type); \
       else if ((N) < 1) \
 	mask = 0; \
       DO_BITSHIFT (T); \
@@ -390,10 +390,10 @@ DEFUN (bitshift, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Function File} {} bitshift (@var{a}, @var{k})\n\
 @deftypefnx {Function File} {} bitshift (@var{a}, @var{k}, @var{n})\n\
-return a @var{k} bit shift of @var{n}- digit unsigned\n\
-integers in @var{a}. A positive @var{k} leads to a left shift.\n\
-A negative value to a right shift. If @var{n} is omitted it defaults\n\
-to log2(bitmax)+1. \n\
+Return a @var{k} bit shift of @var{n}- digit unsigned\n\
+integers in @var{a}.  A positive @var{k} leads to a left shift.\n\
+A negative value to a right shift.  If @var{n} is omitted it defaults\n\
+to log2(bitmax)+1.\n\
 @var{n} must be in range [1,log2(bitmax)+1] usually [1,33]\n\
 \n\
 @example\n\
@@ -420,15 +420,23 @@ bitshift ([1, 10], 2, [3,4])\n\
 
   if (nargin == 2 || nargin == 3)
     {
-      NDArray n = args(1).array_value ();
       int nbits = 64;
       
-      if (nargin == 3)
+      NDArray n = args(1).array_value ();
+
+      if (error_state)
+	error ("bitshift: expecting integer as second argument");
+      else
 	{
-	  nbits = args(2).nint_value ();
+	  if (nargin == 3)
+	    {
+	      nbits = args(2).int_value ();
 	  
-	  if (nbits < 0)
-	    error ("bitshift: number of bits to mask must be positive");
+	      if (error_state)
+		error ("bitshift: expecting integer as third argument");
+	      else if (nbits < 0)
+		error ("bitshift: number of bits to mask must be positive");
+	    }
 	}
 
       if (error_state)
@@ -477,8 +485,8 @@ bitshift ([1, 10], 2, [3,4])\n\
 DEFUN (bitmax, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} bitmax ()\n\
-Returns the largest integer that can be represented as a floating point\n\
-value. That is for IEEE-754 compatiable systems with @code{2^53 - 1}.\n\
+Return the largest integer that can be represented as a floating point\n\
+value.  On IEEE-754 compatiable systems, @code{bitmax} is @code{2^53 - 1}.\n\
 @end deftypefn")
 {
   octave_value retval;

@@ -16,7 +16,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{X} =} bitcmp (@var{a},@var{k})
-## returns the @var{k}-bit complement of integers in @var{a}. If
+## Return the @var{k}-bit complement of integers in @var{a}.  If
 ## @var{k} is omitted @code{k = log2(bitmax) + 1} is assumed.
 ##
 ## @example
@@ -36,30 +36,30 @@
 function X = bitcmp (A, n)
   
   if (nargin < 1 || nargin > 2)
-    usage ("bitcmp(A,n)");
+    usage ("bitcmp (A, n)");
   endif
 
-  cname = class(A);
+  cname = class (A);
   if (strcmp (cname, "double"))
     Bmax = bitmax;
     Amax = log2 (Bmax) + 1;
-  elseif strcmp("uint",substr(cname,1,4))
-    Bmax = intmax(cname);
-    Amax = eval([cname, " (log2 (double (intmax (cname))) + 1);"]);
+  elseif strcmp ("uint", substr (cname, 1, 4))
+    Bmax = intmax (cname);
+    Amax = eval ([cname, " (log2 (double (intmax (cname))) + 1);"]);
   else
-    Bmax = eval([cname, " (-1);"]);
-    Amax = eval([cname, " (log2 (double (intmax (cname))) + 2);"]);
+    Bmax = eval ([cname, " (-1);"]);
+    Amax = eval ([cname, " (log2 (double (intmax (cname))) + 2);"]);
   endif
 
-  Aone = eval([ cname, "(1);"]);
+  Aone = eval ([ cname, "(1);"]);
   if (nargin == 2)
-    m = eval([cname, " (n(:));"]);
-    if (any(m < Aone) || any( m > Amax))
+    m = eval ([cname, " (n(:));"]);
+    if (any (m < Aone) || any (m > Amax))
       error ("n must be in the range [1,%d]", Amax);
     endif
-    X = bitxor(A, bitshift(Bmax, -n));
+    X = bitxor (A, bitshift (Bmax, -n));
   else
-    X = bitxor(A, Bmax);
+    X = bitxor (A, Bmax);
   endif
 
 endfunction

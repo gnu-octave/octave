@@ -1,3 +1,8 @@
+2004-07-27  John W. Eaton  <jwe@octave.org>
+
+	* oct-inttypes.h (bitshift): New arg, MASK.
+	(OCTAVE_INT_BITSHIFT_OP): Bitshift does not saturate.
+
 2004-07-23  John W. Eaton  <jwe@octave.org>
 
 	* Array.cc (Array<T>::reshape): Return *this if no change in size.

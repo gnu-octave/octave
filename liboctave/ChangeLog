@@ -1,4 +1,8 @@
-2000-01-21  John W. Eaton  <jwe@bevo.che.wisc.edu>
+2000-01-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* strptime.c: Only include langinfo.h if _LIBC is defined.
+
+2000-01-21  A. Scottedward Hodel <a.s.hodel@eng.auburn.edu>
 
 	* CMatrix.cc (ComplexMatrix::expm): Apply permutation and scaling
 	operations directly in step 2 and reverse step 2.

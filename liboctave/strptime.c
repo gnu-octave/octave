@@ -28,7 +28,9 @@
 #endif
 
 #include <ctype.h>
-#include <langinfo.h>
+#ifdef _LIBC
+#  include <langinfo.h>
+#endif
 #include <limits.h>
 #include <string.h>
 #include <time.h>

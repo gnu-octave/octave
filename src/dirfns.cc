@@ -72,6 +72,9 @@ Free Software Foundation, Inc.
 #include "utils.h"
 #include "variables.h"
 
+// The current working directory.
+static string Vcurrent_directory;
+
 // Non-zero means follow symbolic links that point to directories just
 // as if they are real directories.
 static int follow_symbolic_links = 1;
@@ -578,6 +581,31 @@ otherwise prints an error message and returns -1.")
     retval (0) = (double) status;
 
   return retval;
+}
+
+static int
+pwd (void)
+{
+  int status = 0;
+
+  string s = builtin_string_variable ("PWD");
+
+  if (s.empty ())
+    {
+      gripe_invalid_value_specified ("PWD");
+      status = -1;
+    }
+  else
+    Vcurrent_directory = s;
+
+  return status;
+}
+
+void
+symbols_of_dirfns (void)
+{
+  DEFCONST (PWD, get_working_directory ("initialize_globals"), 0, pwd,
+    "current working directory");
 }
 
 /*

@@ -27,8 +27,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #pragma interface
 #endif
 
-#include <cstdlib>
-
 #include <string>
 
 #include "ov-fcn.h"
@@ -44,7 +42,7 @@ octave_builtin : public octave_function
 {
 public:
 
-  octave_builtin (void) { abort (); }
+  octave_builtin (void) { }
 
   typedef octave_value_list (*fcn) (const octave_value_list&, int);
 
@@ -79,7 +77,11 @@ protected:
 
 private:
 
-  octave_builtin (const octave_builtin& m);
+  // No copying!
+
+  octave_builtin (const octave_builtin& ob);
+
+  octave_builtin& operator = (const octave_builtin& ob);
 
   DECLARE_OCTAVE_ALLOCATOR
 

@@ -168,8 +168,6 @@ public:
 
 private:
 
-  octave_user_function (const octave_user_function& m);
-
   // List of arguments for this function.  These are local variables.
   tree_parameter_list *param_list;
 
@@ -255,6 +253,13 @@ private:
 
   void bind_automatic_vars (const string_vector& arg_names, int nargin,
 			    int nargout, const octave_value_list& va_args);
+
+
+  // No copying!
+
+  octave_user_function (const octave_user_function& fn);
+
+  octave_user_function& operator = (const octave_user_function& fn);
 
   DECLARE_OCTAVE_ALLOCATOR
 

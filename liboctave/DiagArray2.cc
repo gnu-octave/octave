@@ -39,42 +39,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // A two-dimensional array with diagonal elements only.
 
-#if 0
-template <class T>
-T&
-DiagArray2<T>::elem (int r, int c)
-{
-  static T foo (0);
-  return (r == c) ? Array<T>::xelem (r) : foo;
-}
-
-template <class T>
-T&
-DiagArray2<T>::checkelem (int r, int c)
-{
-  static T foo (0);
-  if (r < 0 || c < 0 || r >= dim1 () || c >= dim2 ())
-    {
-      (*current_liboctave_error_handler) ("range error in DiagArray2");
-      return foo;
-    }
-  return (r == c) ? Array<T>::xelem (r) : foo;
-}
-
-template <class T>
-T&
-DiagArray2<T>::operator () (int r, int c)
-{
-  static T foo (0);
-  if (r < 0 || c < 0 || r >= dim1 () || c >= dim2 ())
-    {
-      (*current_liboctave_error_handler) ("range error in DiagArray2");
-      return foo;
-    }
-  return (r == c) ? Array<T>::xelem (r) : foo;
-}
-#endif
-
 template <class T>
 T
 DiagArray2<T>::elem (int r, int c) const
@@ -86,7 +50,7 @@ template <class T>
 T
 DiagArray2<T>::checkelem (int r, int c) const
 {
-  if (r < 0 || c < 0 || r >= dim1 () || c >= dim2 ())
+  if (r < 0 || c < 0 || r >= this->dim1 () || c >= this->dim2 ())
     {
       (*current_liboctave_error_handler) ("range error in DiagArray2");
       return T ();
@@ -98,7 +62,7 @@ template <class T>
 T
 DiagArray2<T>::operator () (int r, int c) const
 {
-  if (r < 0 || c < 0 || r >= dim1 () || c >= dim2 ())
+  if (r < 0 || c < 0 || r >= this->dim1 () || c >= this->dim2 ())
     {
       (*current_liboctave_error_handler) ("range error in DiagArray2");
       return T ();
@@ -131,18 +95,18 @@ DiagArray2<T>::resize (int r, int c)
       return;
     }
 
-  if (r == dim1 () && c == dim2 ())
+  if (r == this->dim1 () && c == this->dim2 ())
     return;
 
   typename Array<T>::ArrayRep *old_rep = Array<T>::rep;
-  const T *old_data = data ();
-  int old_len = length ();
+  const T *old_data = this->data ();
+  int old_len = this->length ();
 
   int new_len = r < c ? r : c;
 
   Array<T>::rep = new typename Array<T>::ArrayRep (new_len);
 
-  dimensions = dim_vector (r, c);
+  this->dimensions = dim_vector (r, c);
 
   if (old_data && old_len > 0)
     {
@@ -166,18 +130,18 @@ DiagArray2<T>::resize (int r, int c, const T& val)
       return;
     }
 
-  if (r == dim1 () && c == dim2 ())
+  if (r == this->dim1 () && c == this->dim2 ())
     return;
 
   typename Array<T>::ArrayRep *old_rep = Array<T>::rep;
-  const T *old_data = data ();
-  int old_len = length ();
+  const T *old_data = this->data ();
+  int old_len = this->length ();
 
   int new_len = r < c ? r : c;
 
   Array<T>::rep = new typename Array<T>::ArrayRep (new_len);
 
-  dimensions = dim_vector (r, c);
+  this->dimensions = dim_vector (r, c);
 
   int min_len = old_len < new_len ? old_len : new_len;
 

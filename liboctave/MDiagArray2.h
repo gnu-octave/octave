@@ -79,7 +79,7 @@ public:
       int len = nr < nc ? nr : nc;
 
       for (int i = 0; i < len; i++)
-	retval.xelem (i, i) = xelem (i, i);
+	retval.xelem (i, i) = this->xelem (i, i);
 
       return retval;
     }

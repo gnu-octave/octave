@@ -76,6 +76,19 @@ octave_scalar::do_index_op (const octave_value_list& idx, int resize_ok)
   return retval;
 }
 
+std::streamoff
+octave_scalar::streamoff_value (void) const
+{
+  std::streamoff retval (-1);
+
+  if (D_NINT (scalar) == scalar)
+    retval = std::streamoff (static_cast<long> (scalar));
+  else
+    error ("conversion to streamoff value failed");
+
+  return retval;
+}
+
 octave_value
 octave_scalar::convert_to_str_internal (bool, bool) const
 {

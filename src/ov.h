@@ -548,7 +548,9 @@ public:
 
   virtual int stream_number (void) const;
 
-  virtual streamoff_array streamoff_value (void) const;
+  virtual std::streamoff streamoff_value (void) const;
+
+  virtual streamoff_array streamoff_array_value (void) const;
 
   virtual octave_function *function_value (bool silent = false);
 
@@ -779,7 +781,7 @@ OV_BINOP_FN (op_struct_ref)
     { \
       t_id = octave_value_typeinfo::register_type (t::t_name, \
 						   t::c_name, \
-						   octave_value (new t)); \
+						   octave_value (new t ())); \
     }
 
 // If TRUE, print a warning for assignments like

@@ -100,6 +100,8 @@ public:
   ComplexNDArray complex_array_value (bool = false) const
     { return ComplexNDArray (dim_vector (1, 1), Complex (scalar)); }
 
+  std::streamoff streamoff_value (void) const;
+
   octave_value convert_to_str_internal (bool pad, bool force) const;
 
   void increment (void) { ++scalar; }

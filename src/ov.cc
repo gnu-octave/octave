@@ -930,10 +930,16 @@ octave_value::stream_number (void) const
   return rep->stream_number ();
 }
 
-streamoff_array
+std::streamoff
 octave_value::streamoff_value (void) const
 {
   return rep->streamoff_value ();
+}
+
+streamoff_array
+octave_value::streamoff_array_value (void) const
+{
+  return rep->streamoff_array_value ();
 }
 
 octave_function *

@@ -466,11 +466,20 @@ octave_base_value::stream_value (void) const
   return retval;
 }
 
-streamoff_array
+std::streamoff
 octave_base_value::streamoff_value (void) const
 {
-  streamoff_array retval;
+  std::streamoff retval;
   gripe_wrong_type_arg ("octave_base_value::streamoff_value()", type_name ());
+  return retval;
+}
+
+streamoff_array
+octave_base_value::streamoff_array_value (void) const
+{
+  streamoff_array retval;
+  gripe_wrong_type_arg ("octave_base_value::streamoff_array_value()",
+			type_name ());
   return retval;
 }
 

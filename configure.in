@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.440 $)
+AC_REVISION($Revision: 1.441 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -1282,13 +1282,16 @@ esac
 AC_MSG_RESULT([defining UGLY_DEFS to be $UGLY_DEFS])
 AC_SUBST(UGLY_DEFS)
 
-### Maybe add -Wall and -Wshadow to compiler flags now that we're
+### Maybe add -Wall, -W, and -Wshadow to compiler flags now that we're
 ### done feature testing. 
 
 if test -z "$EXTERN_CFLAGS"; then
   OCTAVE_CC_FLAG(-Wall, [
 	WARN_CFLAGS="$WARN_CFLAGS -Wall";
 	AC_MSG_RESULT([adding -Wall to WARN_CFLAGS])])
+  OCTAVE_CC_FLAG(-W, [
+	WARN_CFLAGS="$WARN_CFLAGS -W";
+	AC_MSG_RESULT([adding -W to WARN_CFLAGS])])
   OCTAVE_CC_FLAG(-Wshadow, [
 	WARN_CFLAGS="$WARN_CFLAGS -Wshadow";
 	AC_MSG_RESULT([adding -Wshadow to WARN_CFLAGS])])
@@ -1298,6 +1301,9 @@ if test -z "$EXTERN_CXXFLAGS"; then
   OCTAVE_CXX_FLAG(-Wall, [
     WARN_CXXFLAGS="$WARN_CXXFLAGS -Wall";
     AC_MSG_RESULT([adding -Wall to WARN_CXXFLAGS])])
+  OCTAVE_CXX_FLAG(-W, [
+    WARN_CXXFLAGS="$WARN_CXXFLAGS -W";
+    AC_MSG_RESULT([adding -W to WARN_CXXFLAGS])])
   OCTAVE_CXX_FLAG(-Wshadow, [
     WARN_CXXFLAGS="$WARN_CXXFLAGS -Wshadow";
     AC_MSG_RESULT([adding -Wshadow to WARN_CXXFLAGS])])

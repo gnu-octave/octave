@@ -226,7 +226,9 @@ public:
 
   int stream_number (void) const;
 
-  streamoff_array streamoff_value (void) const;
+  std::streamoff streamoff_value (void) const;
+
+  streamoff_array streamoff_array_value (void) const;
 
   octave_function *function_value (bool silent);
 

@@ -39,6 +39,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "error.h"
 #include "ov-base.h"
 #include "ov-base-mat.h"
+#include "ov-streamoff.h"
 #include "ov-typeinfo.h"
 
 class Octave_map;
@@ -102,6 +103,8 @@ public:
   ComplexMatrix complex_matrix_value (bool = false) const;
 
   NDArray array_value (bool = false) const { return matrix; }
+
+  streamoff_array streamoff_array_value (void) const;
 
   void increment (void) { matrix += 1.0; }
 

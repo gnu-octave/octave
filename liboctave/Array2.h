@@ -69,18 +69,15 @@ public:
   Array2<T>& operator = (const Array2<T>& a)
     {
       if (this != &a)
-	{
-	  Array<T>::operator = (a);
-
-	  dimensions = a.dimensions;
-	}
+	Array<T>::operator = (a);
 
       return *this;
     }
 
-  void resize (int r, int c) { resize_no_fill (r, c); }
+  void resize (int r, int c) { this->resize_no_fill (r, c); }
 
-  void resize (int r, int c, const T& val) { resize_and_fill (r, c, val); }
+  void resize (int r, int c, const T& val)
+    { this->resize_and_fill (r, c, val); }
 
   Array2<T>& insert (const Array2<T>& a, int r, int c)
     {

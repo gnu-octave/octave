@@ -558,12 +558,15 @@ octave_user_function::print_code_function_trailer (void)
 void
 octave_user_function::install_automatic_vars (void)
 {
-  argn_sr = sym_tab->lookup ("argn", true);
-  nargin_sr = sym_tab->lookup ("nargin", true);
-  nargout_sr = sym_tab->lookup ("nargout", true);
+  if (sym_tab)
+    {
+      argn_sr = sym_tab->lookup ("argn", true);
+      nargin_sr = sym_tab->lookup ("nargin", true);
+      nargout_sr = sym_tab->lookup ("nargout", true);
 
-  if (takes_varargs ())
-    varargin_sr = sym_tab->lookup ("varargin", true);
+      if (takes_varargs ())
+	varargin_sr = sym_tab->lookup ("varargin", true);
+    }
 }
 
 void

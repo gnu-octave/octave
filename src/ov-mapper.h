@@ -27,8 +27,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #pragma interface
 #endif
 
-#include <cstdlib>
-
 #include <string>
 
 #include "oct-obj.h"
@@ -45,7 +43,7 @@ octave_mapper : public octave_function
 {
 public:
 
-  octave_mapper (void) { abort (); }
+  octave_mapper (void) { }
 
   typedef int (*ch_mapper) (int);
   typedef bool (*d_b_mapper) (double);
@@ -86,8 +84,6 @@ public:
 
 private:
 
-  octave_mapper (const octave_mapper& m);
-
   octave_value apply (const octave_value& arg) const;
 
   // ch_map_fcn is a kluge.
@@ -120,6 +116,12 @@ private:
   // (e.g., sqrt (-1)).
 
   bool can_ret_cmplx_for_real;
+
+  // No copying!
+
+  octave_mapper (const octave_mapper& om);
+
+  octave_mapper& operator = (const octave_mapper& om);
 
   DECLARE_OCTAVE_ALLOCATOR
 

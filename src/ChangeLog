@@ -1,22 +1,61 @@
+2003-11-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-stream.cc (octave_stream::seek): Extract std::streamoff from
+	tc_offset instead of int.
+
+	* ov-re-mat.cc (octave_matrix::double_value): Use numel, not length.
+
+	* ov-re-mat.cc (octave_matrix::streamoff_array_value): New function.
+	* ov-re-mat.h: Provide decl.
+
+	* ov-scalar.cc (octave_scalar::streamoff_value): New function.
+	* ov-scalar.h: Provide decl.
+
+	* ov.cc (octave_value::streamoff_array_value,
+	octave_value::streamoff_value): New functions.
+	* ov.h: Provide decls.
+
+	* ov-base.cc (octave_base_value::streamoff_array_value,
+	octave_base_value::streamoff_value): New functions.
+	* ov-base.h: Provide decls.
+
+	* ov-usr-fcn.cc (install_automatic_vars): Don't do anything unless
+	sym_tab is defined.
+
+	* ov-streamoff.h, ov-streamoff.cc, OPERATORS/op-streamoff.cc:
+	New files.
+
+	* ov-cell.h (octave_value_cell::is_matrix_type): New function.
+
+	* ov-mapper.h (octave_mapper::octave_mapper): No copying.
+	* ov-fcn.h (octave_function::octave_function): Likewise.
+	* ov-usr-fcn.h (octave_function::octave_function): Likewise.
+	* ov-builtin.h (octave_builtin::octave_builtin): Likewise.
+	* ov-dld-fcn.h (octave_dld_function::octave_dld_function): Likewise.
+
 2003-11-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
-	* ov-dld-fcn.h (octave_dld_function::octave_dld_function): 
-	Make public, but abort if called.
-	* ov-builtin.h (octave_builtin::octave_builtin): Likewise.
+	* ov-mapper.h (octave_mapper::octave_mapper): Make public.
+	Provide copy constructor and assignment operator.
 	* ov-fcn.h (octave_function::octave_function): Likewise.
+	* ov-builtin.h (octave_builtin::octave_builtin): Likewise.
+	* ov-dld-fcn.h (octave_dld_function::octave_dld_function): Likewise.
 
 	* ov-typeinfo.cc (octave_value_typeinfo::register_type,
 	octave_value_typeinfo::do_register_type): New arg, val.
+	Save it	in vals array.
 	(octave_value_typeinfo::lookup_type,
 	octave_value_typeinfo::do_lookup_type): New functions.
 	* ov-typeinfo.h: Provide decl.
+	(octave_value_typeinfo::vals): New data member.
+	(octave_value_typeinfo::octave_value_typeinfo): Initialize it.
 
 	* ov.h (DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA): Pass
 
 	* ov.h (DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA): Define register_type
 	here.  Also pass an empty object of the to-be-registered type to
 	register_type.
-	(DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA): Declare register type
+	(DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA): Declare register_type
 	here, but don't define it.
 
 2003-11-21  John W. Eaton  <jwe@bevo.che.wisc.edu>

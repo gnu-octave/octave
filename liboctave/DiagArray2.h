@@ -31,7 +31,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cassert>
 #include <cstdlib>
 
-#include "Array2.h"
+#include "Array.h"
 #include "lo-error.h"
 
 class idx_vector;
@@ -111,59 +111,38 @@ friend class Proxy;
 protected:
 
   DiagArray2 (T *d, int r, int c) : Array<T> (d, r < c ? r : c)
-    { dimensions = dim_vector (r, c); }
+    { Array<T>::dimensions = dim_vector (r, c); }
 
 public:
 
   DiagArray2 (void) : Array<T> (dim_vector (0, 0)) { }
 
   DiagArray2 (int r, int c) : Array<T> (r < c ? r : c)
-    { dimensions = dim_vector (r, c); }
+    { this->dimensions = dim_vector (r, c); }
 
   DiagArray2 (int r, int c, const T& val) : Array<T> (r < c ? r : c)
     {
-      dimensions = dim_vector (r, c);
+      this->dimensions = dim_vector (r, c);
 
       fill (val);
     }
 
   DiagArray2 (const Array<T>& a) : Array<T> (a)
-    { dimensions = dim_vector (a.length (), a.length ()); }
+    { this->dimensions = dim_vector (a.length (), a.length ()); }
 
   DiagArray2 (const DiagArray2<T>& a) : Array<T> (a)
-    { dimensions = a.dims (); }
+    { this->dimensions = a.dims (); }
 
   ~DiagArray2 (void) { }
 
   DiagArray2<T>& operator = (const DiagArray2<T>& a)
     {
       if (this != &a)
-	{
-	  Array<T>::operator = (a);
-	  dimensions = a.dims ();
-	}
+	Array<T>::operator = (a);
 
       return *this;
     }
 
-#if 0
-  operator Array2<T> () const
-    {
-      int nr = dim1 ();
-      int nc = dim2 ();
-
-      Array2<T> retval (nr, nc,  T (0));
-
-      int len = nr < nc ? nr : nc;
-
-      for (int i = 0; i < len; i++)
-	retval.xelem (i, i) = xelem (i, i);
-
-      return retval;
-    }
-#endif
-
-#if 1
   Proxy elem (int r, int c)
     {
       return Proxy (this, r, c);
@@ -171,7 +150,7 @@ public:
 
   Proxy checkelem (int r, int c)
     {
-      if (r < 0 || c < 0 || r >= dim1 () || c >= dim2 ())
+      if (r < 0 || c < 0 || r >= this->dim1 () || c >= this->dim2 ())
 	{
 	  (*current_liboctave_error_handler) ("range error in DiagArray2");
 	  return Proxy (0, r, c);
@@ -182,7 +161,7 @@ public:
 
   Proxy operator () (int r, int c)
     {
-      if (r < 0 || c < 0 || r >= dim1 () || c >= dim2 ())
+      if (r < 0 || c < 0 || r >= this->dim1 () || c >= this->dim2 ())
 	{
 	  (*current_liboctave_error_handler) ("range error in DiagArray2");
 	  return Proxy (0, r, c);
@@ -190,11 +169,6 @@ public:
       else
 	return Proxy (this, r, c);
   }
-#else
-  T& elem (int r, int c);
-  T& checkelem (int r, int c);
-  T& operator () (int r, int c);
-#endif
 
   T elem (int r, int c) const;
   T checkelem (int r, int c) const;

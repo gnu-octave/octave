@@ -83,7 +83,7 @@ public:
     }
 
   void resize (const dim_vector& dv)
-    { Array<T>::resize_no_fill (dv); }
+    { this->resize_no_fill (dv); }
 
   void resize (const dim_vector& dv, const T& val)
     { Array<T>::resize (dv, val); }

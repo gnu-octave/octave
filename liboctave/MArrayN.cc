@@ -61,14 +61,18 @@ MArrayN<T>&
 operator += (MArrayN<T>& a, const MArrayN<T>& b)
 {
   int l = a.length ();
+
   if (l > 0)
     {
-      int bl = b.length ();
-      if (l != bl)
-	gripe_nonconformant ("operator +=", l, bl);
+      dim_vector a_dims = a.dims ();
+      dim_vector b_dims = b.dims ();
+
+      if (a_dims != b_dims)
+	gripe_nonconformant ("operator +=", a_dims, b_dims);
       else
 	DO_VV_OP2 (+=);
     }
+
   return a;
 }
 
@@ -77,11 +81,14 @@ MArrayN<T>&
 operator -= (MArrayN<T>& a, const MArrayN<T>& b)
 {
   int l = a.length ();
+
   if (l > 0)
     {
-      int bl = b.length ();
-      if (l != bl)
-	gripe_nonconformant ("operator -=", l, bl);
+      dim_vector a_dims = a.dims ();
+      dim_vector b_dims = b.dims ();
+
+      if (a_dims != b_dims)
+	gripe_nonconformant ("operator -=", a_dims, b_dims);
       else
 	DO_VV_OP2 (-=);
     }

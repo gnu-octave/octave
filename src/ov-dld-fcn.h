@@ -27,8 +27,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #pragma interface
 #endif
 
-#include <cstdlib>
-
 #include <string>
 
 #include "oct-shlib.h"
@@ -49,7 +47,7 @@ octave_dld_function : public octave_builtin
 {
 public:
 
-  octave_dld_function (void) { abort (); }
+  octave_dld_function (void) { }
 
   octave_dld_function (octave_builtin::fcn ff, const octave_shlib& shl,
 		       const std::string& nm = std::string (),
@@ -73,8 +71,6 @@ public:
 
 private:
 
-  octave_dld_function (const octave_dld_function& m);
-
   octave_shlib sh_lib;
 
   // The time the file was last checked to see if it needs to be
@@ -85,6 +81,12 @@ private:
   // system function.  This affects whether we check the time stamp
   // on the file to see if it has changed.
   bool system_fcn_file;
+
+  // No copying!
+
+  octave_dld_function (const octave_dld_function& fn);
+
+  octave_dld_function& operator = (const octave_dld_function& fn);
 
   DECLARE_OCTAVE_ALLOCATOR
 

@@ -1,3 +1,19 @@
+2003-11-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* MArrayN.cc (operator -=, operator +=): Check dimensions, not
+	just length.
+
+	* Array2.h, Array3.h, DiagArray2.h, DiagArray2.cc, MDiagArray2.h,
+	ArrayN.h:  Add this-> or Base:: qualifiers for references to
+	non-dependent member functions and data as needed.
+
+	* DiagArray2.h, DiagArray2.cc: Delete unused code.
+
+	* Array2.h (Array2<T>::operator =): Don't copy dimensions here.
+	* Array3.h (Array3<T>::operator =): Likewise.
+	* DiagArray2.h (DiagArray2<T>::operator =): Likewise.
+	Include Array.h, not Array2.h.
+
 2003-11-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* str-vec.cc (list_in_columns): Fix previous change.

@@ -82,8 +82,7 @@ octave_matrix::double_value (bool) const
 {
   double retval = lo_ieee_nan_value ();
 
-  // XXX FIXME XXX -- maybe this should be a function, valid_as_scalar()
-  if (rows () > 0 && columns () > 0)
+  if (numel () > 0)
     {
       // XXX FIXME XXX -- is warn_fortran_indexing the right variable here?
       if (Vwarn_fortran_indexing)
@@ -133,6 +132,29 @@ ComplexMatrix
 octave_matrix::complex_matrix_value (bool) const
 {
   return ComplexMatrix (matrix.matrix_value ());
+}
+
+streamoff_array
+octave_matrix::streamoff_array_value (void) const
+{
+  streamoff_array retval (dims ());
+
+  int nel = numel ();
+
+  for (int i = 0; i < nel; i++)
+    {
+      double d = matrix(i);
+
+      if (D_NINT (d) == d)
+	retval(i) = std::streamoff (static_cast<long> (d));
+      else
+	{
+	  error ("conversion to streamoff_array value failed");
+	  break;
+	}
+    }
+
+  return retval;
 }
 
 octave_value

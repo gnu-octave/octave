@@ -122,6 +122,7 @@ protected:
 
   octave_value_typeinfo (void)
     : num_types (0), types (init_tab_sz, std::string ()),
+      vals (init_tab_sz),
       unary_ops (octave_value::num_unary_ops, init_tab_sz,
 		 (unary_op_fcn) 0),
       non_const_unary_ops (octave_value::num_unary_ops, init_tab_sz,

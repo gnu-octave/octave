@@ -43,6 +43,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-stdstrm.h"
 #include "oct-stream.h"
 #include "oct-obj.h"
+#include "ov-streamoff.h"
 #include "utils.h"
 
 // Possible values for conv_err:
@@ -2697,12 +2698,12 @@ octave_stream::seek (const octave_value& tc_offset,
 {
   int retval = -1;
 
-  int conv_err = 0;
+  std::streamoff xoffset = tc_offset.streamoff_value ();
 
-  int xoffset = convert_to_valid_int (tc_offset, conv_err);
-
-  if (! conv_err)
+  if (! error_state)
     {
+      int conv_err = 0;
+
       std::ios::seekdir origin = std::ios::beg;
 
       if (tc_origin.is_string ())

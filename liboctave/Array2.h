@@ -120,9 +120,9 @@ public:
   T& xelem (int i, int j) { return Array<T>::xelem (d1*j+i); }
   T xelem (int i, int j) const { return Array<T>::xelem (d1*j+i); }
 
-  // Note that the following element references don't use
-  // Array2<T>::xelem() because they still need to make use of the
-  // code in Array<T> that checks the reference count.
+  // Note that the following element selection methods don't use
+  // xelem() because they need to make use of the code in
+  // Array<T>::elem() that checks the reference count.
 
   T& checkelem (int i, int j)
     {
@@ -137,13 +137,13 @@ public:
 	return Array<T>::elem (d1*j+i);
     }
 
-#if defined (BOUNDS_CHECKING)
-  T& elem (int i, int j) { return checkelem (i, j); }
-#else
   T& elem (int i, int j) { return Array<T>::elem (d1*j+i); }
-#endif
 
+#if defined (BOUNDS_CHECKING)
+  T& operator () (int i, int j) { return checkelem (i, j); }
+#else
   T& operator () (int i, int j) { return elem (i, j); }
+#endif
 
   T checkelem (int i, int j) const
     {
@@ -159,13 +159,13 @@ public:
 	return Array<T>::elem (d1*j+i);
     }
 
-#if defined (BOUNDS_CHECKING)
-  T elem (int i, int j) const { return checkelem (i, j); }
-#else
   T elem (int i, int j) const { return Array<T>::elem (d1*j+i); }
-#endif
 
+#if defined (BOUNDS_CHECKING)
+  T operator () (int i, int j) const { return checkelem (i, j); }
+#else
   T operator () (int i, int j) const { return elem (i, j); }
+#endif
 
   T range_error (const char *fcn, int i, int j) const;
   T& range_error (const char *fcn, int i, int j);

@@ -99,17 +99,53 @@ public:
 
   int dim3 (void) const { return d3; }
 
-  T& elem (int i, int j, int k) { return Array2<T>::elem (i, d2*k+j); }
-  T& checkelem (int i, int j, int k);
-  T& operator () (int i, int j, int k) { return checkelem (i, j, k); }
-
-  // No checking.
+  // No checking of any kind, ever.
 
   T& xelem (int i, int j, int k) { return Array2<T>::xelem (i, d2*k+j); }
+  T xelem (int i, int j, int k) const { return Array2<T>::xelem (i, d2*k+j); }
 
-  T elem (int i, int j, int k) const;
-  T checkelem (int i, int j, int k) const;
-  T operator () (int i, int j, int k) const;
+  // Note that the following element selection methods don't use
+  // xelem() because they need to make use of the code in
+  // Array<T>::elem() that checks the reference count.
+
+  T& checkelem (int i, int j, int k)
+    {
+      if (i < 0 || j < 0 || k < 0 || i >= d1 || j >= d2 || k >= d3)
+	{
+	  (*current_liboctave_error_handler) ("range error");
+	  static T foo;
+	  return foo;
+	}
+      return Array2<T>::elem (i, d2*k+j);
+    }
+
+  T& elem (int i, int j, int k) { return Array2<T>::elem (i, d2*k+j); }
+
+#if defined (BOUNDS_CHECKING)
+  T& operator () (int i, int j, int k) { return checkelem (i, j, k); }
+#else
+  T& operator () (int i, int j, int k) { return elem (i, j, k); }
+#endif
+
+  T checkelem (int i, int j, int k) const
+    {
+      if (i < 0 || j < 0 || k < 0 || i >= d1 || j >= d2 || k >= d3)
+	{
+	  (*current_liboctave_error_handler) ("range error");
+	  T foo;
+	  static T *bar = &foo;
+	  return foo;
+	}
+      return Array2<T>::elem (i, d1*k+j);
+    }
+
+  T elem (int i, int j, int k) const { return Array2<T>::elem (i, d2*k+j); }
+
+#if defined (BOUNDS_CHECKING)
+  T operator () (int i, int j, int k) const { return checkelem (i, j, k); }
+#else
+  T operator () (int i, int j, int k) const { return elem (i, j, k); }
+#endif
 
   void resize (int n, int m, int k);
   void resize (int n, int m, int k, const T& val);

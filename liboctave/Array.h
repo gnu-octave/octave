@@ -182,17 +182,17 @@ public:
 	}
     }
 
-#if defined (BOUNDS_CHECKING)
-  T& elem (int n) { return checkelem (n); }
-#else
   T& elem (int n)
     {
       make_unique ();
       return xelem (n);
     }
-#endif
 
+#if defined (BOUNDS_CHECKING)
+  T& operator () (int n) { return checkelem (n); }
+#else
   T& operator () (int n) { return elem (n); }
+#endif
 
   T Array<T>::checkelem (int n) const
     {
@@ -202,13 +202,13 @@ public:
 	return xelem (n);
     }
 
-#if defined (BOUNDS_CHECKING)
-  T Array<T>::elem (int n) const { return checkelem (n); }
-#else
   T Array<T>::elem (int n) const { return xelem (n); }
-#endif
 
+#if defined (BOUNDS_CHECKING)
+  T Array<T>::operator () (int n) const { return checkelem (n); }
+#else
   T Array<T>::operator () (int n) const { return elem (n); }
+#endif
 
   void resize (int n);
   void resize (int n, const T& val);

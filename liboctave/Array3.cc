@@ -45,54 +45,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Three dimensional array class.
 
 template <class T>
-T&
-Array3<T>::checkelem (int i, int j, int k)
-{
-  if (i < 0 || j < 0 || k < 0 || i >= d1 || j >= d2 || k >= d3)
-    {
-      (*current_liboctave_error_handler) ("range error");
-      static T foo;
-      return foo;
-    }
-  return Array2<T>::elem (i, d2*k+j);
-}
-
-template <class T>
-T
-Array3<T>::elem (int i, int j, int k) const
-{
-  return Array2<T>::elem (i, d2*k+j);
-}
-
-template <class T>
-T
-Array3<T>::checkelem (int i, int j, int k) const
-{
-  if (i < 0 || j < 0 || k < 0 || i >= d1 || j >= d2 || k >= d3)
-    {
-      (*current_liboctave_error_handler) ("range error");
-      T foo;
-      static T *bar = &foo;
-      return foo;
-    }
-  return Array2<T>::elem (i, d1*k+j);
-}
-
-template <class T>
-T
-Array3<T>::operator () (int i, int j, int k) const
-{
-  if (i < 0 || j < 0 || k < 0 || i >= d1 || j >= d2 || k >= d3)
-    {
-      (*current_liboctave_error_handler) ("range error");
-      T foo;
-      static T *bar = &foo;
-      return foo;
-    }
-  return Array2<T>::elem (i, d2*k+j);
-}
-
-template <class T>
 void
 Array3<T>::resize (int n, int m, int k)
 {

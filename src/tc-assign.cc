@@ -1423,8 +1423,8 @@ tree_constant_rep::do_matrix_assignment (tree_constant& rhs,
 	if (nr == 0)
 	  new_nr = rhs_nr;
 
-	if (! indexed_assign_conforms (new_nr, jv.capacity (),
-				       rhs_nr, rhs_nc))
+	if (indexed_assign_conforms (new_nr, jv.capacity (),
+				     rhs_nr, rhs_nc))
 	  {
 	    maybe_resize (new_nr-1, jv.max ());
 	    if (error_state)

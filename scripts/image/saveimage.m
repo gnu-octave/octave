@@ -132,7 +132,7 @@ function saveimage (filename, img, img_form, map)
         && ((map(1,1) == 0 && map(2,1) == 255)
             || (map(1,1) == 255 && map(2,1) == 0)));
 
-  img = img';
+  img = round (img');
   [img_nr, img_nc] = size (img);
 
   img_sz = img_nr * img_nc;

@@ -14,15 +14,17 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{dl}, @var{d2l}] =} logistic_regression_derivatives (@var{x}, @var{z}, @var{z1}, @var{g}, @var{g1}, @var{p})
 ## Called by logistic_regression.  Calculates derivates of the
 ## log-likelihood for ordinal logistic regression model.
+## @end deftypefn
 
 ## Author:  Gordon K. Smyth <gks@maths.uq.oz.au>
 ## Adapted-By:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  Derivates of log-likelihood in logistic regression
 
-function [dl, d2l] ...
-      = logistic_regression_derivatives (x, z, z1, g, g1, p)
+function [dl, d2l] = logistic_regression_derivatives (x, z, z1, g, g1, p)
 
   ## first derivative
   v = g .* (1 - g) ./ p; v1 = g1 .* (1 - g1) ./ p;

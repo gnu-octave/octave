@@ -14,34 +14,45 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  cor_test (X, Y [, ALTERNATIVE [, METHOD]])
+## -*- texinfo -*-
+## @deftypefn {Function File} {} cor_test (@var{x}, @var{y}, @var{alt}, @var{method})
+## Test whether two samples @var{x} and @var{y} come from uncorrelated
+## populations.
 ##
-## Test whether two samples X and Y come from uncorrelated populations.
+## The optional argument string @var{alt} describes the alternative
+## hypothesis, and can be @code{"!="} or @code{"<>"} (non-zero),
+## @code{">"} (greater than 0), or @code{"<"} (less than 0).  The
+## default is the two-sided case.
 ##
-## The optional argument string ALTERNATIVE describes the alternative
-## hypothesis, and can be "!=" or "<>" (non-zero), ">" (greater than 0),
-## or "<" (less than 0).  The default is the two-sided case.
-##
-## The optional argument string METHOD specifies on which correlation
-## coefficient the test should be based.
-## If METHOD is "pearson" (default), the (usual) Pearson's product
-## moment correlation coefficient is used.  In this case, the data
-## should come from a bivariate normal distribution.  Otherwise, the
-## other two methods offer nonparametric alternatives.
-## If METHOD is "kendall", then Kendall's rank correlation tau is used.
-## If METHOD is "spearman", then Spearman's rank correlation rho is used.
-## Only the first character is necessary.
+## The optional argument string @var{method} specifies on which
+## correlation coefficient the test should be based.  If @var{method} is
+## @code{"pearson"} (default), the (usual) Pearson's product moment
+## correlation coefficient is used.  In this case, the data should come
+## from a bivariate normal distribution.  Otherwise, the other two
+## methods offer nonparametric alternatives. If @var{method} is
+## @code{"kendall"}, then Kendall's rank correlation tau is used.  If
+## @var{method} is @code{"spearman"}, then Spearman's rank correlation
+## rho is used.  Only the first character is necessary.
 ##
 ## The output is a structure with the following elements:
-##      pval            The p-value of the test.
-##      stat            The value of the test statistic.
-##      dist            The distribution of the test statistic.
-##      params          The parameters of the null distribution of the
-##                      test statistic.
-##      alternative     The alternative hypothesis.
-##      method          The method used for testing.
 ##
-## If no output argument is given, the pval is displayed.
+## @table @var
+## @item pval
+## The p-value of the test.
+## @item stat
+## The value of the test statistic.
+## @item dist
+## The distribution of the test statistic.
+## @item params
+## The parameters of the null distribution of the test statistic.
+## @item alternative
+## The alternative hypothesis.
+## @item method
+## The method used for testing.
+## @end table
+##
+## If no output argument is given, the p-value is displayed.
+## @end deftypefn
 
 ## Author:  FL <Friedrich.Leisch@ci.tuwien.ac.at>
 ## Adapted-by:  KH <Kurt.Hornik@ci.tuwien.ac.at>

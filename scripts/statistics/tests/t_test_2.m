@@ -14,25 +14,25 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  [pval, t, df] = t_test_2 (x, y [, alt])
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{pval}, @var{t}, @var{df}] =} t_test_2 (@var{x}, @var{y}, @var{alt})
 ## For two samples x and y from normal distributions with unknown means
 ## and unknown equal variances, perform a two-sample t-test of the null
-## hypothesis of equal means.
-## Under the null, the test statistic t follows a Student distribution
-## with df degrees of freedom.
+## hypothesis of equal means.  Under the null, the test statistic
+## @var{t} follows a Student distribution with @var{df} degrees of
+## freedom.
 ##
-## With the optional argument string alt, the alternative of interest
-## can be selected.
-## If alt is "!=" or "<>", the null is tested against the two-sided
-## alternative mean(x) != mean(y).
-## If alt is ">", the one-sided alternative mean(x) > mean(y) is used,
-## similarly for "<".
-## The default is the two-sided case.
+## With the optional argument string @var{alt}, the alternative of
+## interest can be selected.  If @var{alt} is @code{"!="} or
+## @code{"<>"}, the null is tested against the two-sided alternative
+## @code{mean (@var{x}) != mean (@var{y})}.  If @var{alt} is @code{">"},
+## the one-sided alternative @code{mean (@var{x}) > mean (@var{y})} is
+## used.  Similarly for @code{"<"}.  The default is the two-sided case.
 ##
-## pval is the p-value of the test.
+## The p-value of the test is returned in @var{pval}.
 ##
 ## If no output argument is given, the p-value of the test is displayed.
+## @end deftypefn
 
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  Student's two-sample t test

@@ -14,21 +14,28 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  [pval, Tsq] = hotelling_test_2 (x, y)
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{pval}, @var{Tsq}] =} hotelling_test_2 (@var{x}, @var{y})
+## For two samples @var{x} from multivariate normal distributions with
+## the same number of variables (columns), unknown means and unknown
+## equal covariance matrices, test the null hypothesis @code{mean
+## (@var{x}) == mean (@var{y})}.
 ##
-## For two samples x from multivariate normal distributions with the
-## same number of variables (columns), unknown means and unknown equal
-## covariance matrices, test the null hypothesis mean (x) == mean (y).
+## Hotelling's two-sample T^2 is returned in @var{Tsq}.  Under the null,
 ##
-## Tsq is Hotelling's two-sample T^2.  Under the null,
-##    (n_x+n_y-p-1) T^2 / (p(n_x+n_y-2))
-## has an F distribution with p and n_x+n_y-p-1 degrees of freedom,
-## where n_x and n_y are the sample sizes and p is the number of
-## variables.
+## @example
+## (n_x+n_y-p-1) T^2 / (p(n_x+n_y-2))
+## @end example
 ##
-## pval is the p-value of the test.
+## @noindent
+## has an F distribution with @math{p} and @math{n_x+n_y-p-1} degrees of
+## freedom, where @math{n_x} and @math{n_y} are the sample sizes and
+## @math{p} is the number of variables.
+##
+## The p-value of the test is returned in @var{pval}.
 ##
 ## If no output argument is given, the p-value of the test is displayed.
+## @end deftypefn
 
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  Compare means of two multivariate normals

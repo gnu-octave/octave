@@ -14,19 +14,21 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  [pval, Tsq] = hotelling_test (x, m)
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{pval}, @var{Tsq}] =} hotelling_test (@var{x}, @var{m})
+## For a sample @var{x} from a multivariate normal distribution with unknown
+## mean and covariance matrix, test the null hypothesis that @code{mean
+## (@var{x}) == @var{m}}.
 ##
-## For a sample x from a multivariate normal distribution with unknown
-## mean and covariance matrix, test the null hypothesis that mean (x) ==
-## m.
+## Hotelling's T^2 is returned in @var{Tsq}.  Under the null,
+## @math{(n-p) T^2 / (p(n-1))} has an F distribution with @math{p} and
+## @math{n-p} degrees of freedom, where @math{n} and @math{p} are the
+## numbers of samples and variables, respectively.
 ##
-## Tsq is Hotelling's T^2.  Under the null, (n-p) T^2 / (p(n-1)) has an
-## F distribution with p and n-p degrees of freedom, where n and p are
-## the numbers of samples and variables, respectively.
-##
-## pval is the p-value of the test.
+## The p-value of the test is returned in @var{pval}.
 ##
 ## If no output argument is given, the p-value of the test is displayed.
+## @end deftypefn
 
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  Test for mean of a multivariate normal

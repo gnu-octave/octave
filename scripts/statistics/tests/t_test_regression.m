@@ -14,26 +14,26 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  [pval, t, df] = t_test_regression (y, X, R [, r] [, alt])
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{pval}, @var{t}, @var{df}] =} t_test_regression (@var{y}, @var{x}, @var{R}, @var{r}, @var{alt})
+## Perform an t test for the null hypothesis @code{@var{R} * @var{b} =
+## @var{r}} in a classical normal regression model @code{@var{y} =
+## @var{X} * @var{b} + @var{e}}.  Under the null, the test statistic @var{t}
+## follows a @var{t} distribution with @var{df} degrees of freedom.
 ##
-## Performs an t test for the null hypothesis R * b = r in a classical
-## normal regression model y = X * b + e.
-## Under the null, the test statistic t follows a t distribution with
-## df degrees of freedom.
+## If @var{r} is omitted, a value of 0 is assumed.
 ##
-## r is taken as 0 if not given explicitly.
+## With the optional argument string @var{alt}, the alternative of
+## interest can be selected.  If @var{alt} is @code{"!="} or
+## @code{"<>"}, the null is tested against the two-sided alternative
+## @code{@var{R} * @var{b} != @var{r}}.  If @var{alt} is @code{">"}, the
+## one-sided alternative @code{@var{R} * @var{b} > @var{r}} is used.
+## Similarly for @var{"<"}.  The default is the two-sided case.
 ##
-## With the optional argument string alt, the alternative of interest
-## can be selected.
-## If alt is "!=" or "<>", the null is tested against the two-sided
-## alternative R * b != r.
-## If alt is ">", the one-sided alternative R * b > r is used,
-## similarly for "<".
-## The default is the two-sided case.
-##
-## pval is the p-value of the test.
+## The p-value of the test is returned in @var{pval}.
 ##
 ## If no output argument is given, the p-value of the test is displayed.
+## @end deftypefn
 
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  Test one linear hypothesis in linear regression model

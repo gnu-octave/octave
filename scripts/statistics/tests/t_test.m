@@ -14,24 +14,25 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  [pval, t, df] = t_test (x, m [, alt])
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{pval}, @var{t}, @var{df}] =} t_test (@var{x}, @var{m}, @var{alt})
+## For a sample @var{x} from a normal distribution with unknown mean and
+## variance, perform a t-test of the null hypothesis @code{mean
+## (@var{x}) == @var{m}}.  Under the null, the test statistic @var{t}
+## follows a Student distribution with @code{@var{df} = length (@var{x})
+## - 1} degrees of freedom.
 ##
-## For a sample x from a normal distribution with unknown mean and
-## variance, perform a t-test of the null hypothesis mean(x) == m.
-## Under the null, the test statistic t follows a Student distribution
-## with df = length (x) - 1 degrees of freedom.
+## With the optional argument string @var{alt}, the alternative of
+## interest can be selected.  If @var{alt} is @code{"!="} or
+## @code{"<>"}, the null is tested against the two-sided alternative
+## @code{mean (@var{x}) != @var{m}}.  If @var{alt} is @code{">"}, the
+## one-sided alternative @code{mean (@var{x}) > @var{m}} is considered,
+## similarly for @var{"<"}.  The default is the two-sided case.
 ##
-## With the optional argument string alt, the alternative of interest
-## can be selected.
-## If alt is "!=" or "<>", the null is tested against the two-sided
-## alternative mean(x) != m.
-## If alt is ">", the one-sided alternative mean(x) > m is considered,
-## similarly for "<".
-## The default is the two-sided case.
-##
-## pval is the p-value of the test.
+## The p-value of the test is returned in @var{pval}.
 ##
 ## If no output argument is given, the p-value of the test is displayed.
+## @end deftypefn
 
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  Student's one-sample t test

@@ -14,25 +14,25 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  [pval, z] = z_test (x, m, v [, alt])
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{pval}, @var{z}] =} z_test (@var{x}, @var{m}, @var{v}, @var{alt})
+## Perform a Z-test of the null hypothesis @code{mean (@var{x}) ==
+## @var{m}} for a sample @var{x} from a normal distribution with unknown
+## mean and known variance @var{v}.  Under the null, the test statistic
+## @var{z} follows a standard normal distribution.
 ##
-## Perform a Z-test of the null hypothesis mean(x) == m for a sample x
-## from a normal distribution with unknown mean and known variance v.
-## Under the null, the test statistic z follows a standard normal
-## distribution.
+## With the optional argument string @var{alt}, the alternative of
+## interest can be selected.  If @var{alt} is @code{"!="} or
+## @code{"<>"}, the null is tested against the two-sided alternative
+## @code{mean (@var{x}) != @var{m}}.  If @var{alt} is @code{">"}, the
+## one-sided alternative @code{mean (@var{x}) > @var{m}} is considered,
+## similarly for @code{"<"}.  The default is the two-sided case.
 ##
-## With the optional argument string alt, the alternative of interest
-## can be selected.
-## If alt is "!=" or "<>", the null is tested against the two-sided
-## alternative mean(x) != m.
-## If alt is ">", the one-sided alternative mean(x) > m is considered,
-## similarly for "<".
-## The default is the two-sided case.
-##
-## pval is the p-value of the test.
+## The p-value of the test is returned in @var{pval}.
 ##
 ## If no output argument is given, the p-value of the test is displayed
 ## along with some information.
+## @end deftypefn
 
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  Test for mean of a normal sample with known variance

@@ -14,41 +14,60 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## Performs ordinal logistic regression.
+## -*- texinfo -*-
+## @deftypefn {Functio File} {[@var{theta}, @var{beta}, @var{dev}, @var{dl}, @var{d2l}, @var{p}] =} logistic_regression (@var{y}, @var{x}, @var{print}, @var{theta}, @var{beta})
+## Perform ordinal logistic regression.
 ##
-## Suppose Y takes values in k ordered categories, and let gamma_i (x)
-## be the cumulative probability that Y falls in one of the first i
-## categories given the covariate x.  Then
-##   [theta, beta] =
-##     logistic_regression (y, x)
+## Suppose @var{y} takes values in @var{k} ordered categories, and let
+## @code{gamma_i (@var{x})} be the cumulative probability that @var{y}
+## falls in one of the first @var{i} categories given the covariate
+## @var{x}.  Then
+##
+## @example
+## [theta, beta] = logistic_regression (y, x)
+## @end example
+##
+## @noindent
 ## fits the model
-##   logit (gamma_i (x)) = theta_i - beta' * x,   i = 1, ..., k-1.
-## The number of ordinal categories, k, is taken to be the number of
-## distinct values of round (y) .  If k equals 2, y is binary and the
-## model is ordinary logistic regression. X is assumed to have full
-## column rank.
 ##
-##   theta = logistic_regression (y)
+## @example
+## logit (gamma_i (x)) = theta_i - beta' * x,   i = 1, ..., k-1
+## @end example
+##
+## The number of ordinal categories, @var{k}, is taken to be the number
+## of distinct values of @code{round (@var{y})}.  If @var{k} equals 2,
+## @var{y} is binary and the model is ordinary logistic regression.  The
+## matrix @var{x} is assumed to have full column rank.
+##
+## Given @var{y} only, @code{theta = logistic_regression (y)}
 ## fits the model with baseline logit odds only.
 ##
 ## The full form is
-##   [theta, beta, dev, dl, d2l, gamma] =
-##     logistic_regression (y, x, print, theta, beta)
-## in which all output arguments and all input arguments except y are
-## optional.
 ##
-## print = 1 requests summary information about the fitted model to be
-## displayed; print = 2 requests information about convergence at each
-## iteration. Other values request no information to be displayed. The
-## input arguments `theta' and `beta' give initial estimates for theta
-## and beta.
+## @example
+## [theta, beta, dev, dl, d2l, gamma]
+##    = logistic_regression (y, x, print, theta, beta)
+## @end example
 ##
-## `dev' holds minus twice the log-likelihood.
+## @noindent
+## in which all output arguments and all input arguments except @var{y}
+## are optional.
 ##
-## `dl' and `d2l' are the vector of first and the matrix of second
-## derivatives of the log-likelihood with respect to theta and beta.
+## Stting @var{print} to 1 requests summary information about the fitted
+## model to be displayed.  Setting @var{print} to 2 requests information
+## about convergence at each iteration.  Other values request no
+## information to be displayed.  The input arguments @var{theta} and
+## @var{beta} give initial estimates for @var{theta} and @var{beta}.
 ##
-## `p' holds estimates for the conditional distribution of Y given x.
+## The returned value @var{dev} holds minus twice the log-likelihood.
+##
+## The returned values @var{dl} and @var{d2l} are the vector of first
+## and the matrix of second derivatives of the log-likelihood with
+## respect to @var{theta} and @var{beta}.
+##
+## @var{p} holds estimates for the conditional distribution of @var{y}
+## given @var{x}.
+## @end deftypefn
 
 ## Original for MATLAB written by Gordon K Smyth <gks@maths.uq.oz.au>,
 ## U of Queensland, Australia, on Nov 19, 1990.  Last revision Aug 3,
@@ -62,7 +81,7 @@
 ## logistic_regression_likelihood.
 
 function [theta, beta, dev, dl, d2l, p] ...
-      = logistic_regression (y, x, print, theta, beta)
+  = logistic_regression (y, x, print, theta, beta)
 
   ## check input
   y = round (vec (y));

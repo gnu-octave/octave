@@ -11,11 +11,12 @@ you would like to help improve Octave in this area, please contact
 
 @menu
 * Basic Statistical Functions::  
+* Tests::                       
 * Models::                      
 * Distributions::               
 @end menu
 
-@node Basic Statistical Functions, Models, Statistics, Statistics
+@node Basic Statistical Functions, Tests, Statistics, Statistics
 @section Basic Statistical Functions
 
 @DOCSTRING(mean)
@@ -81,8 +82,60 @@ you would like to help improve Octave in this area, please contact
 @node Tests, Models, Basic Statistical Functions, Statistics
 @section Tests
 
-@node Models, Distributions, Basic Statistical Functions, Statistics
+@DOCSTRING(anova)
+
+@DOCSTRING(bartlett_test)
+
+@DOCSTRING(chisquare_test_homogeneity)
+
+@DOCSTRING(chisquare_test_independence)
+
+@DOCSTRING(cor_test)
+
+@DOCSTRING(f_test_regression)
+
+@DOCSTRING(hotelling_test)
+
+@DOCSTRING(hotelling_test_2)
+
+@DOCSTRING(kolmogorov_smirnov_test)
+
+@DOCSTRING(kolmogorov_smirnov_test_2)
+
+@DOCSTRING(kruskal_wallis_test)
+
+@DOCSTRING(manova)
+
+@DOCSTRING(mcnemar_test)
+
+@DOCSTRING(prop_test_2)
+
+@DOCSTRING(run_test)
+
+@DOCSTRING(sign_test)
+
+@DOCSTRING(t_test)
+
+@DOCSTRING(t_test_2)
+
+@DOCSTRING(t_test_regression)
+
+@DOCSTRING(u_test)
+
+@DOCSTRING(var_test)
+
+@DOCSTRING(welch_test)
+
+@DOCSTRING(wilcoxon_test)
+
+@DOCSTRING(z_test)
+
+@DOCSTRING(z_test_2)
+
+@node Models, Distributions, Tests, Statistics
 @section Models
+
+@DOCSTRING(logistic_regression)
 
 @node Distributions,  , Models, Statistics
 @section Distributions

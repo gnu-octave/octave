@@ -14,25 +14,24 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  [pval, f, df_num, df_den] = var_test (x, y [, alt])
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{pval}, @var{f}, @var{df_num}, @var{df_den}] =} var_test (@var{x}, @var{y}, @var{alt})
+## For two samples @var{x} and @var{y} from normal distributions with
+## unknown means and unknown variances, perform an F-test of the null
+## hypothesis of equal variances.  Under the null, the test statistic f
+## follows an F-distribution with df_num and df_den degrees of freedom.
 ##
-## For two samples x and y from normal distributions with unknown
-## means and unknown variances, perform an F-test of the null
-## hypothesis of equal variances.
-## Under the null, the test statistic f follows an F-distribution
-## with df_num and df_den degrees of freedom.
+## With the optional argument string @var{alt}, the alternative of
+## interest can be selected.  If @var{alt} is @code{"!="} or
+## @code{"<>"}, the null is tested against the two-sided alternative
+## @code{var (@var{x}) != var (@var{y})}.  If @var{alt} is @code{">"},
+## the one-sided alternative @code{var (@var{x}) > var (@var{y})} is
+## used, similarly for "<".  The default is the two-sided case.
 ##
-## With the optional argument string alt, the alternative of interest
-## can be selected.
-## If alt is "!=" or "<>", the null is tested against the two-sided
-## alternative var(x) != var(y).
-## If alt is ">", the one-sided alternative var(x) > var(y) is used,
-## similarly for "<".
-## The default is the two-sided case.
-##
-## pval is the p-value of the test.
+## The p-value of the test is returned in @var{pval}.
 ##
 ## If no output argument is given, the p-value of the test is displayed.
+## @end deftypefn
 
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  F test to compare two variances

@@ -14,17 +14,20 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  [pval, chisq, df] = mcnemar_test (x)
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{pval}, @var{chisq}, @var{df}] =} mcnemar_test (@var{x})
+## For a square contingency table @var{x} of data cross-classified on
+## the row and column variables, McNemar's test can be used for testing
+## the null hypothesis of symmetry of the classification probabilities.
 ##
-## For a square contingency table x of data cross-classified on the row
-## and column variables, McNemar's test can be used for testing the null
-## hypothesis of symmetry of the classification probabilities.
+## Under the null, @var{chisq} is approximately distributed as chisquare
+## with @var{df} degrees of freedom.
 ##
-## Under the null, chisq is approximately distributed as chisquare with
-## df degrees of freedom, and pval is the p-value (1 minus the CDF of
-## this distribution at chisq) of the test.
+## The p-value (1 minus the CDF of this distribution at @var{chisq}) is
+## returned in @var{pval}.
 ##
 ## If no output argument is given, the p-value of the test is displayed.
+## @end deftypefn
 
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  McNemar's test for symmetry

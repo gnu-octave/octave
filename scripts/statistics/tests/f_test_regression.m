@@ -14,18 +14,21 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  [pval, f, df_num, df_den] = f_test_regression (y, X, R [, r])
-##
-## Performs an F test for the null hypothesis R * b = r in a classical
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{pval}, @var{f}, @var{df_num}, @var{df_den}] =} f_test_regression (@var{y}, @var{X}, @var{R}, @var{r})
+## Perform an F test for the null hypothesis R * b = r in a classical
 ## normal regression model y = X * b + e.
 ##
-## Under the null, the test statistic f follows an F distribution with
-## df_num and df_den degrees of freedom;  pval is the p-value (1 minus
-## the CDF of this distribution at f) of the test.
+## Under the null, the test statistic @var{f} follows an F distribution
+## with @var{df_num} and @var{df_den} degrees of freedom.
 ##
-## If not given explicitly, r = 0.
+## The p-value (1 minus the CDF of this distribution at @var{f}) is
+## returned in @var{pval}.
+##
+## If not given explicitly, @var{r} = 0.
 ##
 ## If no output argument is given, the p-value is displayed.
+## @end deftypefn
 
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  Test linear hypotheses in linear regression model

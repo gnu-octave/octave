@@ -14,16 +14,18 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  [pval, chisq, df] = chisquare_test_independence (X)
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{pval}, @var{chisq}, @var{df}] =} chisquare_test_independence (@var{x})
 ## Perform a chi-square test for indepence based on the contingency
-## table X.
+## table @var{x}.  Under the null hypothesis of independence,
+## @var{chisq} approximately has a chi-square distribution with
+## @var{df} degrees of freedom.
 ##
-## Under the null hypothesis of independence, chisq approximately has a
-## chi-square distribution with df degrees of freedom. pval is the
-## p-value (1 minus the CDF of this distribution at chisq) of the test.
+## The p-value (1 minus the CDF of this distribution at chisq) of the
+## test is returned in @var{pval}.
 ##
 ## If no output argument is given, the p-value is displayed.
+## @end deftypefn
 
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  Chi-square test for independence

@@ -14,19 +14,22 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  [pval, chisq, df] = chisquare_test_homogeneity (x, y, c)
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{pval}, @var{chisq}, @var{df}] =} chisquare_test_homogeneity (@var{x}, @var{y}, @var{c})
+## Given two samples @var{x} and @var{y}, perform a chisquare test for
+## homogeneity of the null hypothesis that @var{x} and @var{y} come from
+## the same distribution, based on the partition induced by the
+## (strictly increasing) entries of @var{c}.
 ##
-## Given two samples x and y, perform a chisquare test for homogeneity
-## of the null hypothesis that x and y come from the same distribution,
-## based on the partition induced by the (strictly increasing) entries
-## of c.
+## For large samples, the test statistic @var{chisq} approximately follows a
+## chisquare distribution with @var{df} = @code{length (@var{c})}
+## degrees of freedom.
 ##
-## For large samples, the test statistic chisq approximately follows a
-## chisquare distribution with df = length(c) degrees pf freedom. pval
-## is the p-value (1 minus the CDF of this distribution at chisq) of the
-## test.
+## The p-value (1 minus the CDF of this distribution at @var{chisq}) is
+## returned in @var{pval}.
 ##
 ## If no output argument is given, the p-value is displayed.
+## @end deftypefn
 
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  Chi-square test for homogeneity

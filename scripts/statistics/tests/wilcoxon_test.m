@@ -14,24 +14,24 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  [pval, z] = wilcoxon_test (x, y [, alt])
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{pval}, @var{z}] =} wilcoxon_test (@var{x}, @var{y}, @var{alt})
+## For two matched-pair sample vectors @var{x} and @var{y}, perform a
+## Wilcoxon signed-rank test of the null hypothesis PROB (@var{x} >
+## @var{y}) == 1/2.  Under the null, the test statistic @var{z}
+## approximately follows a standard normal distribution.
 ##
-## For two matched-pair sample vectors x and y, perform a Wilcoxon
-## signed-rank test of the null hypothesis PROB(x > y) == 1/2.
-## Under the null, the test statistic z approximately follows a
-## standard normal distribution.
+## With the optional argument string @var{alt}, the alternative of
+## interest can be selected.  If @var{alt} is @code{"!="} or
+## @code{"<>"}, the null is tested against the two-sided alternative
+## PROB (@var{x} > @var{y}) != 1/2.  If alt is @code{">"}, the one-sided
+## alternative PROB (@var{x} > @var{y}) > 1/2 is considered, similarly
+## for @code{"<"}.  The default is the two-sided case.
 ##
-## With the optional argument string alt, the alternative of interest
-## can be selected.
-## If alt is "!=" or "<>", the null is tested against the two-sided
-## alternative PROB(x > y) != 1/2.
-## If alt is ">", the one-sided alternative PROB(x > y) > 1/2 is
-## considered, similarly for "<".
-## The default is the two-sided case.
-##
-## pval is the p-value of the test.
+## The p-value of the test is returned in @var{pval}.
 ##
 ## If no output argument is given, the p-value of the test is displayed.
+## @end deftypefn
 
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  Wilcoxon signed-rank test

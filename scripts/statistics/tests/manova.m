@@ -14,21 +14,21 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  manova (Y, g)
-##
-## Performs a one-way multivariate analysis of variance (MANOVA). The
+## -*- texinfo -*-
+## @deftypefn {Function File} {} manova (@var{y}, @var{g})
+## Perform a one-way multivariate analysis of variance (MANOVA). The
 ## goal is to test whether the p-dimensional population means of data
-## taken from k different groups are all equal.  All data are assumed
-## drawn independently from p-dimensional normal distributions with the
-## same covariance matrix.
+## taken from @var{k} different groups are all equal.  All data are
+## assumed drawn independently from p-dimensional normal distributions
+## with the same covariance matrix.
 ##
-## Y is the data matrix.  As usual, rows are observations and columns
-## are variables.  g is the vector of corresponding group labels (e.g.,
-## numbers from 1 to k), so that necessarily, length (g) must be the
-## same as rows (Y).
+## The data matrix is given by @var{y}.  As usual, rows are observations
+## and columns are variables.  The vector @var{g} specifies the
+## corresponding group labels (e.g., numbers from 1 to @var{k}).
 ##
 ## The LR test statistic (Wilks' Lambda) and approximate p-values are
 ## computed and displayed.
+## @end deftypefn
 
 ## Three test statistics (Wilks, Hotelling-Lawley, and Pillai-Bartlett)
 ## and corresponding approximate p-values are calculated and displayed.

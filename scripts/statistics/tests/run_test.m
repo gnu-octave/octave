@@ -14,13 +14,16 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  [pval, chisq] = run_test (x)
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{pval}, @var{chisq}] =} run_test (@var{x})
+## Perform a chi-square test with 6 degrees of freedom based on the
+## upward runs in the columns of @var{x}.  Can be used to test whether
+## @var{x} contains independent data.
 ##
-## Performs a chi-square test with 6 degrees of freedom based on the
-## upward runs in the columns of x.  Can be used to test whether x
-## contains independent data.
+## The p-value of the test is returned in @var{pval}.
 ##
-## If no output argument is given, the pval is displayed.
+## If no output argument is given, the p-value is displayed.
+## @end deftypefn
 
 ## Author:  FL <Friedrich.Leisch@ci.tuwien.ac.at>
 ## Description:  Run test for independence

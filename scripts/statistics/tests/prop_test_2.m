@@ -14,25 +14,25 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  [pval, z] = prop_test_2 (x1, n1, x2, n2 [, alt])
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{pval}, @var{z}] =} prop_test_2 (@var{x1}, @var{n1}, @var{x2}, @var{n2}, @var{alt})
+## If @var{x1} and @var{n1} are the counts of successes and trials in
+## one sample, and @var{x2} and @var{n2} those in a second one, test the
+## null hypothesis that the success probabilities @var{p1} and @var{p2}
+## are the same.  Under the null, the test statistic @var{z}
+## approximately follows a standard normal distribution.
 ##
-## If x1 and n1 are the counts of successes and trials in one sample,
-## and x2 and n2 those in a second one, test the null hypothesis that
-## the success probabilities p1 and p2 are the same.
-## Under the null, the test statistic z approximately follows a
-## standard normal distribution.
-##
-## With the optional argument string alt, the alternative of interest
-## can be selected.
-## If alt is "!=" or "<>", the null is tested against the two-sided
-## alternative p1 != p2.
-## If alt is ">", the one-sided alternative p1 > p2 is used, similarly
-## for "<".
+## With the optional argument string @var{alt}, the alternative of
+## interest can be selected.  If @var{alt} is @code{"!="} or
+## @code{"<>"}, the null is tested against the two-sided alternative
+## @var{p1} != @var{p2}.  If @var{alt} is @code{">"}, the one-sided
+## alternative @var{p1} > @var{p2} is used, similarly for @code{"<"}.
 ## The default is the two-sided case.
 ##
-## pval is the p-value of the test.
+## The p-value of the test is returned in @var{pval}.
 ##
 ## If no output argument is given, the p-value of the test is displayed.
+## @end deftypefn
 
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  Compare two proportions

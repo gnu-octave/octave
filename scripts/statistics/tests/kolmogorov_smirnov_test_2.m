@@ -14,26 +14,27 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  [pval, ks] = kolmogorov_smirnov_test_2 (x, y [, alt])
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{pval}, @var{ks}] =} kolmogorov_smirnov_test_2 (@var{x}, @var{y}, @var{alt})
+## Perform a 2-sample Kolmogorov-Smirnov test of the null hypothesis
+## that the samples @var{x} and @var{y} come from the same (continuous)
+## distribution.  I.e., if F and G are the CDFs corresponding to the
+## @var{x} and @var{y} samples, respectively, then the null is that F ==
+## G.
 ##
-## Performs a 2-sample Kolmogorov-Smirnov test of the null hypothesis
-## that the samples x and y come from the same (continuous) distribution.
-## I.e., if F and G are the CDFs corresponding to the x and y samples,
-## respectively, then the null is that F == G.
+## With the optional argument string @var{alt}, the alternative of
+## interest can be selected.  If @var{alt} is @code{"!="} or
+## @code{"<>"}, the null is tested against the two-sided alternative F
+## != G.  In this case, the test statistic @var{ks} follows a two-sided
+## Kolmogorov-Smirnov distribution.  If @var{alt} is @code{">"}, the
+## one-sided alternative F > G is considered, similarly for @code{"<"}.
+## In this case, the test statistic @var{ks} has a one-sided
+## Kolmogorov-Smirnov distribution.  The default is the two-sided case.
 ##
-## With the optional argument string alt, the alternative of interest
-## can be selected.
-## If alt is "!=" or "<>", the null is tested against the two-sided
-## alternative F != G.  In this case, the test statistic ks follows a
-## two-sided Kolmogorov-Smirnov distribution.
-## If alt is ">", the one-sided alternative F > G is considered,
-## similarly for "<".  In this case, the test statistic ks has a
-## one-sided Kolmogorov-Smirnov distribution.
-## The default is the two-sided case.
-##
-## pval is the p-value of the test.
+## The p-value of the test is returned in @var{pval}.
 ##
 ## If no output argument is given, the p-value is displayed.
+## @end deftypefn
 
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  Two-sample Kolmogorov-Smirnov test

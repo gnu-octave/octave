@@ -14,15 +14,17 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{g}, @var{g1}, @var{p}, @var{dev}] =} logistic_regression_likelihood (@var{y}, @var{x}, @var{beta}, @var{z}, @var{z1})
 ## Calculates likelihood for the ordinal logistic regression model.
 ## Called by logistic_regression.
+## @end deftypefn
 
 ## Author:  Gordon K. Smyth <gks@maths.uq.oz.au>
 ## Adapted-By:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  Likelihood in logistic regression
 
-function [g, g1, p, dev] ...
-      = logistic_regression_likelihood (y, x, beta, z, z1)
+function [g, g1, p, dev] = logistic_regression_likelihood (y, x, beta, z, z1)
 
   e = exp ([z, x] * beta); e1 = exp ([z1, x] * beta);
   g = e ./ (1 + e); g1 = e1 ./ (1 + e1);

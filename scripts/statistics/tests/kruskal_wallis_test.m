@@ -14,19 +14,23 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  [pval, k, df] = kruskal_wallis_test (x1, ...)
-##
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{pval}, @var{k}, @var{df}] =} kruskal_wallis_test (@var{x1}, @dots{})
 ## Perform a Kruskal-Wallis one-factor "analysis of variance".
 ##
-## Suppose a variable is observed for k > 1 different groups, and let
-## x1, ..., xk be the corresponding data vectors.
+## Suppose a variable is observed for @var{k} > 1 different groups, and
+## let @var{x1}, @dots{}, @var{xk} be the corresponding data vectors.
 ##
 ## Under the null hypothesis that the ranks in the pooled sample are not
-## affected by the group memberships, the test statistic k is
-## approximately chi-square with df = k - 1 degrees of freedom. pval is
-## the p-value (1 minus the CDF of this distribution at k) of this test.
+## affected by the group memberships, the test statistic @var{k} is
+## approximately chi-square with @var{df} = @var{k} - 1 degrees of
+## freedom.
 ##
-## If no output argument is given, the pval is displayed.
+## The p-value (1 minus the CDF of this distribution at @var{k}) is
+## returned in @var{pval}.
+##
+## If no output argument is given, the p-value is displayed.
+## @end deftypefn
 
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  Kruskal-Wallis test

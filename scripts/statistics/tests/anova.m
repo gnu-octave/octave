@@ -14,26 +14,30 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## Performs a one-way analysis of variance (ANOVA).  The goal is to test
-## whether the population means of data taken from k different groups
-## are all equal.
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{pval}, @var{f}, @var{df_b}, @var{df_w}] =} anova (@var{y}, @var{g})
+## Perform a one-way analysis of variance (ANOVA).  The goal is to test
+## whether the population means of data taken from @var{k} different
+## groups are all equal.
 ##
-## anova (y, g) provides all data in a single vector y;  g is the vector
-## of corresponding group labels (e.g., numbers from 1 to k). This is
-## the general form which does not impose any restriction on the number
-## of data in each group or the group labels (other than that they must
-## be scalars).
+## Data may be given in a single vector @var{y} with groups specified by
+## a corresponding vector of group labels @var{g} (e.g., numbers from 1
+## to @var{k}). This is the general form which does not impose any
+## restriction on the number of data in each group or the group labels.
 ##
-## anova (y), where y is a matrix, treats each column as a group. This
-## form is only appropriate for balanced ANOVA where the numbers of
-## samples from each group are all equal.
+## If @var{y} is a matrix and @var{g} is omitted, each column of @var{y}
+## is treated as a group.  This form is only appropriate for balanced
+## ANOVA in which the numbers of samples from each group are all equal.
 ##
-## Under the null of constant means, the statistic f follows an F
-## distribution with df_b and df_w degrees of freedom.  pval is the
-## p-value (1 minus the CDF of this distribution at f) of the test.
+## Under the null of constant means, the statistic @var{f} follows an F
+## distribution with @var{df_b} and @var{df_w} degrees of freedom.
+##
+## The p-value (1 minus the CDF of this distribution at @var{f}) is
+## returned in @var{pval}.
 ##
 ## If no output argument is given, the standard one-way ANOVA table is
 ## printed.
+## @end deftypefn
 
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  One-way analysis of variance (ANOVA)

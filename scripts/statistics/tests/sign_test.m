@@ -14,24 +14,26 @@
 ## along with this file.  If not, write to the Free Software Foundation,
 ## 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-## usage:  [pval, b, n] = sign_test (x, y [, alt])
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{pval}, @var{b}, @var{n}] =} sign_test (@var{x}, @var{y}, @var{alt})
+## For two matched-pair samples @var{x} and @var{y}, perform a sign test
+## of the null hypothesis PROB (@var{x} > @var{y}) == PROB (@var{x} <
+## @var{y}) == 1/2.  Under the null, the test statistic @var{b} roughly
+## follows a binomial distribution with parameters @code{@var{n} = sum
+## (@var{x} != @var{y})} and @var{p} = 1/2.
 ##
-## For two matched-pair samples x and y, perform a sign test of the
-## null hypothesis PROB(x > y) == PROB(x < y) == 1/2.
-## Under the null, the test statistic b roughly follows a binomial
-## distribution with parameters n = sum (x != y) and p = 1/2.
-##
-## With the optional argument alt, the alternative of interest can be
-## selected.
-## If alt is "!=" or "<>", the null hypothesis is tested against the
-## two-sided alternative PROB(x < y) != 1/2.
-## If alt is ">", the one-sided alternative PROB(x > y) > 1/2 ("x is
-## stochastically greater than y") is considered, similarly for "<".
+## With the optional argument @code{alt}, the alternative of interest
+## can be selected.  If @var{alt} is @code{"!="} or @code{"<>"}, the
+## null hypothesis is tested against the two-sided alternative PROB
+## (@var{x} < @var{y}) != 1/2.  If @var{alt} is @code{">"}, the
+## one-sided alternative PROB (@var{x} > @var{y}) > 1/2 ("x is
+## stochastically greater than y") is considered, similarly for @code{"<"}.
 ## The default is the two-sided case.
 ##
-## pval is the p-value of the test.
+## The p-value of the test is returned in @var{pval}.
 ##
 ## If no output argument is given, the p-value of the test is displayed.
+## @end deftypefn
 
 ## Author:  KH <Kurt.Hornik@ci.tuwien.ac.at>
 ## Description:  Sign test

@@ -115,7 +115,7 @@ install uninstall tags TAGS clean mostlyclean distclean maintainer-clean::
 
 maintainer-clean distclean::
 	rm -f octMakefile octave-bug Makefile Makeconf config.cache \
-	config.h config.log config.status Makerules.f77
+	config.h config.log config.status Makerules.f77 mk-oct-links
 
 # Now that things are under RCS control, we need to do the recursive
 # chmod so that the distributed files end up with reasonable modes.

@@ -206,7 +206,7 @@ ac_include ../make/misc.make
 mostlyclean::
 	rm -f kpsewhich
 distclean::
-	rm -f paths.h texmf.cnf texmf.sed
+	rm -f paths.h texmf.cnf texmf.sed so_locations
 
 ac_include ../make/rdepend.make
 absolute.o: absolute.c $(kpathsea_srcdir)/config.h ./c-auto.h $(kpathsea_srcdir)/c-std.h \

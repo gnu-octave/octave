@@ -133,12 +133,12 @@ clean:
 	rm -f info funs.h doc.c makedoc $(OBJECTS) $(MAKEDOC_OBJECTS)
 
 distclean: clean texclean
-	rm -f Makefile config.status *~ core core.* *.BAK TAGS
+	rm -f Makefile config.status config.h *~ core core.* *.BAK TAGS
 
 mostlyclean: clean
 
 maintainer-clean: distclean
-	rm -f funs.h doc.c config.h info.info info-stnd.info
+	rm -f funs.h doc.c info.info info-stnd.info
 
 local-dist:
 	ln $(DISTFILES) ../`cat ../.fname`/info

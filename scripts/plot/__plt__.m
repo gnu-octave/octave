@@ -27,7 +27,7 @@ function plot_int (x1, x2)
       nc = tmp;
     endif
     x1_i = imag (x1);
-    if (any (x1_i))
+    if (any (any (x1_i)))
       x2 = x1_i;
       x1 = real (x1);
     else
@@ -37,10 +37,10 @@ function plot_int (x1, x2)
   endif
 
   if (nargin <= 2)
-    if (any (imag (x1)))
+    if (any (any (imag (x1))))
       x1 = real (x1);
     endif
-    if (any (imag (x2)))
+    if (any (any (imag (x2))))
       x2 = real (x2);
     endif
     if (is_scalar (x1))

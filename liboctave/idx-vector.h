@@ -191,79 +191,31 @@ private:
 
 public:
 
-  idx_vector (void)
-    {
-      rep = new idx_vector_rep ();
-      rep->count = 1;
-    }
+  idx_vector (void) : rep (new idx_vector_rep ()) { }
 
-  idx_vector (const ColumnVector& v)
-    {
-      rep = new idx_vector_rep (v);
-      rep->count = 1;
-    }
+  idx_vector (const ColumnVector& v) : rep (new idx_vector_rep (v)) { }
 
-  idx_vector (const NDArray& nda)
-    {
-      rep = new idx_vector_rep (nda);
-      rep->count = 1;
-    }
+  idx_vector (const NDArray& nda) : rep (new idx_vector_rep (nda)) { }
 
   template <class U>
-  idx_vector (const intNDArray<U>& inda)
-    {
-      rep = new idx_vector_rep (inda);
-      rep->count = 1;
-    }
+  idx_vector (const intNDArray<U>& inda) : rep (new idx_vector_rep (inda)) { }
 
-  idx_vector (const Range& r)
-    {
-      rep = new idx_vector_rep (r);
-      rep->count = 1;
-    }
+  idx_vector (const Range& r) : rep (new idx_vector_rep (r)) { }
 
-  idx_vector (double d)
-    {
-      rep = new idx_vector_rep (d);
-      rep->count = 1;
-    }
+  idx_vector (double d) : rep (new idx_vector_rep (d)) { }
 
-  idx_vector (int i)
-    {
-      rep = new idx_vector_rep (i);
-      rep->count = 1;
-    }
+  idx_vector (int i) : rep (new idx_vector_rep (i)) { }
 
-  idx_vector (char c)
-    {
-      rep = new idx_vector_rep (c);
-      rep->count = 1;
-    }
+  idx_vector (char c) : rep (new idx_vector_rep (c)) { }
 
-  idx_vector (bool b)
-    {
-      rep = new idx_vector_rep (b);
-      rep->count = 1;
-    }
+  idx_vector (bool b) : rep (new idx_vector_rep (b)) { }
 
   template <class U>
-  idx_vector (const octave_int<U>& i)
-    {
-      rep = new idx_vector_rep (i);
-      rep->count = 1;
-    }
+  idx_vector (const octave_int<U>& i) : rep (new idx_vector_rep (i)) { }
 
-  idx_vector (const boolNDArray& bnda)
-    {
-      rep = new idx_vector_rep (bnda);
-      rep->count = 1;
-    }
+  idx_vector (const boolNDArray& bnda) : rep (new idx_vector_rep (bnda)) { }
 
-  idx_vector (const idx_vector& a)
-    {
-      rep = a.rep;
-      rep->count++;
-    }
+  idx_vector (const idx_vector& a) : rep (a.rep) { rep->count++; }
 
   ~idx_vector (void)
     {

@@ -224,7 +224,7 @@ public:
 
   Array (const Array<T>& a, const dim_vector& dv);
 
-  ~Array (void);
+  virtual ~Array (void);
 
   Array<T>& operator = (const Array<T>& a)
     {

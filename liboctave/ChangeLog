@@ -1,3 +1,11 @@
+2004-09-08  John W. Eaton  <jwe@octave.org>
+
+	* Array.h (Array::~Array): Declare virtual.
+
+	* idx-vector.h (idx_vector::idx_vector): Initialize rep in member
+	initializaion list.  Don't set rep->count since the rep
+	constructor does that.
+
 2004-09-07  John W. Eaton  <jwe@octave.org>
 
 	* data-conv.cc (oct_data_conv::string_to_data_type): Handle dt_logical.

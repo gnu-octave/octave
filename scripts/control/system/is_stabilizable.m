@@ -55,7 +55,7 @@ function [retval, U] = is_stabilizable (a, b, tol)
     elseif(nargin > 2)
       usage("[retval,U] = is_stabilizable(sys{,tol})");
     endif
-    [a,b] = sys2ss(sys);
+    [a,b] = sys2ss(a);
   else
     ## a,b arguments sent directly.
     if(nargin > 3)

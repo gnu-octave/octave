@@ -1,3 +1,7 @@
+2001-04-18  A. Scottedward Hodel <a.s.hodel@eng.auburn.edu>
+
+	* control/system/is_stabilizable.m: Pass a to sys2ss, not sys.
+
 2001-02-28  Kai Habel  <kai.habel@gmx.de>
 
     * general/cart2pol.m: New file.

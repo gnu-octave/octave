@@ -33,13 +33,21 @@ class tree_constant;
 extern Pix return_valid_file (const tree_constant& arg);
 
 extern tree_constant *fclose_internal (const tree_constant *args);
+extern tree_constant *feof_internal (const tree_constant *args,
+				     int nargin, int nargout);
+extern tree_constant *ferror_internal (const tree_constant *args,
+                                       int nargin, int nargout);
 extern tree_constant *fflush_internal (const tree_constant *args);
 extern tree_constant *fgets_internal (const tree_constant *args, int nargout);
 extern tree_constant *fopen_internal (const tree_constant *args);
+extern tree_constant *fread_internal (const tree_constant *args,
+				      int nargin, int nargout);
 extern tree_constant *freport_internal (void);
 extern tree_constant *frewind_internal (const tree_constant *args);
 extern tree_constant *fseek_internal (const tree_constant *args, int nargin);
 extern tree_constant *ftell_internal (const tree_constant *args);
+extern tree_constant *fwrite_internal (const tree_constant *args,
+				       int nargin, int nargout);
 
 extern void initialize_file_io (void);
 

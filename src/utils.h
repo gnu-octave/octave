@@ -79,7 +79,8 @@ extern int almost_match (const char *std, const char *s,
 extern int keyword_almost_match (const char **std, int *min_len,
 				 const char *s, int min_toks_to_match,
 				 int max_toks);
-extern char **get_fcn_file_names (int& ffl_len, const char *dir, int no_suffix);
+extern char **get_fcn_file_names (int& ffl_len, const char *dir,
+				  int no_suffix); 
 extern char **get_fcn_file_names (int& ffl_len, int no_suffix);
 extern int NINT (double x);
 extern double D_NINT (double x);

@@ -39,6 +39,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "tree.h"
 #include "help.h"
 #include "pager.h"
+#include "sysdep.h"
 #include "mappers.h"
 #include "variables.h"
 #include "user-prefs.h"
@@ -304,6 +305,16 @@ where x, xdot, and res are vectors, and t is a scalar.", },
   { "fclose", 2, 1, builtin_fclose,
     "fclose (\"filename\" or filenum): close a file", },
 
+  { "feof", 3, 1, builtin_feof,
+    "eof = feof (filenum)\n\n\
+ Returns a non zero eof for an end of file condition for the\n\
+ file specified by \"filenum\" from fopen", },
+
+  { "ferror", 3, 1, builtin_ferror,
+    "error = ferror (filenum)\n\n\
+ Returns a non zero \"error\" for an error condition on the\n\
+ file specified by \"filenum\" from fopen", },
+
   { "feval", -1, 1, builtin_feval,
     "feval (\"name\", args, ...): evaluate first argument as function", },
 
@@ -335,6 +346,17 @@ where x, xdot, and res are vectors, and t is a scalar.", },
 
   { "fprintf", -1, 1, builtin_fprintf,
     "fprintf (\"file\", \"fmt\", ...)", },
+
+  { "fread", 3, 1, builtin_fread,
+    "[data, count] = fread (filenum, size, \"precision\")\n\n\
+ Reads data in binary form of type \"precision\" from a file.\n\n\
+ filenum   : file number from fopen\n\
+ size      : size specification for the Data matrix\n\
+ precision : type of data to read, valid types are\n\n\
+               'char',   'schar', 'short',  'int',  'long', 'float'\n\
+               'double', 'uchar', 'ushort', 'uint', 'ulong'\n\n\
+ data      : matrix in which the data is stored\n\
+ count     : number of elements read", },
 
   { "freport", 1, 1, builtin_freport,
     "freport (): list open files and their status", },
@@ -390,6 +412,16 @@ where y and x are vectors.", },
   { "ftell", 2, 1, builtin_ftell,
     "position = ftell (\"filename\" or filenum): returns the current file position", },
 
+  { "fwrite", 3, 1, builtin_fwrite,
+    "count = fwrite (filenum, Data, \"precision\")\n\n\
+ Writes data to a file in binary form of size \"precision\"\n\n\
+ filenum   : file number from fopen\n\
+ Data      : matrix of elements to be written\n\
+ precision : type of data to read, valid types are\n\n\
+               'char',   'schar', 'short',  'int',  'long', 'float'\n\
+               'double', 'uchar', 'ushort', 'uint', 'ulong'\n\n\
+ count     : number of elements written", },
+
   { "getenv", 2, 1, builtin_getenv,
     "getenv (\"string\"): get environment variable values", },
 
@@ -397,7 +429,6 @@ where y and x are vectors.", },
     "G = givens (x, y): compute orthogonal matrix G = [c s; -conj (s) c]\n\
       such that G [x; y] = [*; 0]  (x, y scalars)\n\n\
       [c, s] = givens (x, y) returns the (c, s) values themselves.", },
-  
 
   { "hess", 2, 2, builtin_hess,
     "[P, H] = hess (A) or H = hess (A): Hessenberg decomposition", },
@@ -898,50 +929,17 @@ install_builtins (void)
   tmp =  new tree_constant (2.0);
   bind_builtin_variable ("stderr", tmp, 1, 1);
 
-// If using 1.0 / 0.0 doesn't work, you might also try using a very
-// large constant like 1.0e100000.
-
-#if defined (HAVE_ISINF) || defined (HAVE_FINITE)
-#ifdef linux
-  double tmp_inf = HUGE_VAL;
-#else
-  double tmp_inf = 1.0 / 0.0;
-#endif
-
-  tmp = new tree_constant (tmp_inf);
+  tmp = new tree_constant (octave_Inf);
   bind_builtin_variable ("Inf", tmp, 1, 1);
 
-  tmp = new tree_constant (tmp_inf);
+  tmp = new tree_constant (octave_Inf);
   bind_builtin_variable ("inf", tmp, 1, 1);
 
-#else
-
-// This is sort of cheesy, but what can we do, other than blowing it
-// off completely, or writing an entire IEEE emulation package?
-
-  tmp = new tree_constant (DBL_MAX);
-  bind_builtin_variable ("Inf", tmp, 1, 1);
-
-  tmp = new tree_constant (DBL_MAX);
-  bind_builtin_variable ("inf", tmp, 1, 1);
-#endif
-
-// If 0.0 / 0.0 fails to produce a NaN, you might also try
-// something like Inf / Inf.
-
-#if defined (HAVE_ISNAN)
-#ifdef linux
-  double tmp_nan = NAN;
-#else
-  double tmp_nan = 0.0 / 0.0;
-#endif
-
-  tmp = new tree_constant (tmp_nan);
+  tmp = new tree_constant (octave_NaN);
   bind_builtin_variable ("NaN", tmp, 1, 1);
 
-  tmp = new tree_constant (tmp_nan);
+  tmp = new tree_constant (octave_NaN);
   bind_builtin_variable ("nan", tmp, 1, 1);
-#endif
 }
 
 int

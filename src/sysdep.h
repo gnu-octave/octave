@@ -26,6 +26,12 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 extern void sysdep_init (void);
 
+// Octave's idea of infinity.
+extern double octave_Inf;
+
+// Octave's idea of not a number.
+extern double octave_NaN;
+
 #endif
 
 /*

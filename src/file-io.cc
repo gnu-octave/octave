@@ -31,9 +31,12 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <unistd.h>
 #include <string.h>
 #include <stdio.h>
+#include <errno.h>
 #include <stdlib.h>
 #include <strstream.h>
 #include <ctype.h>
+
+#include "Matrix.h"
 
 #include "statdefs.h"
 #include "file-io.h"
@@ -43,6 +46,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "error.h"
 #include "utils.h"
 #include "pager.h"
+#include "sysdep.h"
+#include "mappers.h"
 
 // keeps a count of how many files are open and in the file list
 static int file_count = 0;
@@ -65,6 +70,9 @@ class file_info
   const char *name (void) const;
   FILE *fptr (void) const;
   const char *mode (void) const;
+
+  int eof (void) const;
+  int error (void) const;
 
  private:
   int file_number;
@@ -159,6 +167,10 @@ initialize_file_io (void)
   file_count = 3;
 }
 
+/*
+ * Given a file name or number, return a pointer to the corresponding
+ * open file.  If the file has not already been opened, return NULL.
+ */
 Pix
 return_valid_file (const tree_constant& arg)
 {
@@ -1191,6 +1203,382 @@ do_scanf (const char *type, const tree_constant *args, int nargin, int nargout)
 
   if (tmp_file_open)
     fclose (fptr);
+
+  return retval;
+}
+
+/*
+ * Find out how many elements are left.
+ *
+ *   size is the size of the elements
+ *   nr is the number of rows or columns in the matrix
+ */
+static long
+get_whats_left (FILE *fptr, int size, int nn)
+{
+  long curr_pos = ftell (fptr);
+
+  fseek (fptr, 0, SEEK_END);
+  long end_of_file = ftell (fptr);
+
+  fseek (fptr, end_of_file, SEEK_SET);
+
+  long len = end_of_file - curr_pos;
+
+  long num_items = len / size / nn;
+
+  if (len > num_items * size * nn)
+    num_items++;
+
+  return num_items;
+}
+
+static void
+get_size_conv (const char *preci, int& size, Matrix::conversion& conv,
+	       const char *warn)
+{
+// Get type and number of bytes per element to read.
+
+  char *prec = strdup (preci);
+  char *ip = prec;
+
+  while (*ip > 0)
+    {
+      tolower (*ip);
+      ip++;
+    }
+
+  if (strcmp (prec, "uchar") == 0)
+    {
+      size = 1;
+      conv = Matrix::CNV_UCHAR;
+    }
+  else if (strcmp (prec, "char") == 0)
+    {
+      size = 1;
+      conv = Matrix::CNV_CHAR;
+    }
+  else if (strcmp (prec, "schar") == 0)
+    {
+      size = 1;
+      conv = Matrix::CNV_CHAR;
+// Some systems may need this??
+// size = 1;
+// conv = CNV_SCHAR;
+    }
+  else if (strcmp (prec, "short") == 0)
+    {
+      size = 2;
+      conv = Matrix::CNV_SHORT;
+    }
+  else if (strcmp (prec, "ushort") == 0)
+    {
+      size = 2;
+      conv = Matrix::CNV_USHORT;
+    }
+  else if (strcmp (prec, "int") == 0)
+    {
+      size = 4;
+      conv = Matrix::CNV_INT;
+    }
+  else if (strcmp (prec, "uint") == 0)
+    {
+      size = 4;
+      conv = Matrix::CNV_UINT;
+    }
+  else if (strcmp (prec, "long") == 0)
+    {
+      size = 4;
+      conv = Matrix::CNV_LONG;
+    }
+  else if (strcmp (prec, "ulong") == 0)
+    {
+      size = 4;
+      conv = Matrix::CNV_ULONG;
+    }
+  else if (strcmp (prec, "float") == 0)
+    {
+      size = 4;
+      conv = Matrix::CNV_FLOAT;
+    }
+  else if (strcmp (prec, "double") == 0)
+    {
+      size = 8;
+      conv = Matrix::CNV_DOUBLE;
+    }
+  else
+    {
+      error ("%s: precision: \'%s\' unknown", warn, prec);
+      size = -1;
+      conv = Matrix::CNV_UNKNOWN;
+    }
+
+  delete [] prec;
+
+  return;
+}
+
+/*
+ * Read binary data from a file.
+ *
+ *   [data, count] = fread (fid, size, 'precision')
+ *
+ *     fid       : the file id from fopen
+ *     size      : the size of the matrix or vector or scaler to read
+ *
+ *                 n	  : reads n elements of a column vector
+ *                 inf	  : reads to the end of file (default)
+ *                 [m, n] : reads enough elements to fill the matrix
+ *                          the number of columns can be inf
+ *
+ *     precision : type of the element.  Can be:
+ *
+ *                 char, uchar, schar, short, ushort, int, uint,
+ *                 long, ulong, float, double
+ *
+ *                 Default  is uchar.
+ *
+ *     data	 : output data
+ *     count	 : number of elements read
+ */
+tree_constant *
+fread_internal (const tree_constant *args, int nargin, int nargout)
+{
+  tree_constant *retval = NULL_TREE_CONST;
+
+  Pix p = file_io_get_file (args[1], "r", "fread");
+
+  if (p == (Pix) NULL)
+    return retval;
+
+// Get type and number of bytes per element to read.
+  char *prec = "uchar";
+  if (nargin > 3)
+    {
+      if (args[3].is_string_type ())
+	prec = args[3].string_value ();
+      else
+	{
+	  error ("fread: precision must be a specified as a string");
+	  return retval;
+	}
+    }
+
+  int size;
+  Matrix::conversion conv;
+  get_size_conv (prec, size, conv, "fread");
+  if (size < 0)
+    return retval;
+
+// Get file info.
+  file_info file = file_list (p);
+  FILE * fptr = file.fptr ();
+
+// Set up matrix to read into.  If specified in arguments use that
+// number, otherwise read everyting left in file.
+
+  double dnr = 1.0;
+  double dnc = 1.0;
+  int nr = 1;
+  int nc = 1;
+
+  if (nargin > 2)
+    {
+// tree_constant tmpa = args[2].make_numeric (); // ??
+
+      if (args[2].is_scalar_type ())
+	{
+	  tree_constant tmpa = args[2].make_numeric ();
+
+	  dnr = 1.0;
+	  dnc = tmpa.double_value ();
+	}
+      else if (args[2].is_matrix_type ())
+	{
+// tree_constant tmpa = args[2].make_numeric (); // ??
+      Matrix tmpm = args[2].to_matrix ();
+      nr = tmpm.rows ();
+      nc = tmpm.columns ();
+
+      if(nr != 1 || nc > 2)
+	{
+	  error ("fread: Illegal size specification\n");
+	  print_usage ("fread");
+	  return retval;
+	}
+      dnr = tmpm.elem (0, 0);
+      dnc = tmpm.elem (0, 1);
+    }
+
+    if ((xisinf (dnr)) && (xisinf (dnc)))
+      {
+	error ("fread: number of rows and columns cannot both be infinite\n");
+	return retval;
+      }
+
+    if (xisinf (dnr))
+      {
+	nc = NINT (dnc);
+	nr = get_whats_left (fptr, size, nc);
+      }
+    else if (xisinf (dnc))
+      {
+	nr = NINT (dnr);
+	nc = get_whats_left (fptr, size, nr);
+      }
+    else
+      {
+	nr = NINT (dnr);
+	nc = NINT (dnc);
+      }
+    }
+  else
+    {
+// No size parameter, read what's left of the file.
+      nr = 1;
+      nc = get_whats_left (fptr, size, nr);
+    }
+
+  Matrix m (nr, nc, octave_NaN);
+
+// Read data.
+
+  int count = m.read (fptr, size, conv);
+
+  if (nargout > 1)
+    {
+      retval = new tree_constant[3];
+      retval[1] = tree_constant ((double) count);
+    }
+  else
+    retval = new tree_constant[2];
+
+  retval[0] = tree_constant (m);
+
+  return retval;
+}
+
+/*
+ * Write binary data to a file.
+ *
+ *   count = fwrite (fid, data, 'precision')
+ *
+ *    fid	: file id from fopen
+ *    Data	: data to be written
+ *    precision	: type of output element.  Can be:
+ *
+ *                char, uchar, schar, short, ushort, int, uint,
+ *                long, float, double
+ *
+ *                 Default is uchar.
+ *
+ *    count     : the number of elements written
+ */
+tree_constant *
+fwrite_internal (const tree_constant *args, int nargin, int nargout)
+{
+  tree_constant *retval = NULL_TREE_CONST;
+
+  Pix p = file_io_get_file (args[1], "a+", "fwrite");
+
+  if (p == (Pix) NULL)
+    return retval;
+
+// Get type and number of bytes per element to read.
+  char *prec = "uchar";
+  if (nargin > 3)
+    {
+      if (args[3].is_string_type ())
+	prec = args[3].string_value ();
+      else
+	{
+	  error ("fwrite: precision must be a specified as a string");
+	  return retval;
+	}
+    }
+
+  int size;
+  Matrix::conversion conv;
+  get_size_conv(prec, size, conv, "fwrite");
+  if (size < 0)
+    return retval;
+
+// Get file info.
+  file_info file = file_list (p);
+
+// Write the matrix data.
+  tree_constant tmpa = args[2].make_numeric ();
+
+  Matrix tmpm = tmpa.to_matrix ();
+
+  int count = tmpm.write (file.fptr(), size, conv);
+
+  retval = new tree_constant[2];
+  retval[0] = tree_constant ((double) count);
+
+  return retval;
+}
+
+/*
+ * Check for an EOF condition on a file opened by fopen.
+ *
+ *   eof = feof (fid)
+ *
+ *     fid : file id from fopen
+ *     eof : non zero for an end of file condition
+ */
+tree_constant *
+feof_internal (const tree_constant *args, int nargin, int nargout)
+{
+  tree_constant *retval = NULL_TREE_CONST;
+
+// Get file info.
+  Pix p = return_valid_file (args[1]);
+
+  if (p == (Pix) NULL)
+    return retval;
+
+  file_info file = file_list (p);
+
+  retval = new tree_constant[2];
+  retval[0] = tree_constant (feof (file.fptr ()));
+
+  return retval;
+}
+
+/*
+ * Check for an error condition on a file opened by fopen.
+ *
+ *   [message, errnum] = ferror (fid)
+ *
+ *     fid     : file id from fopen
+ *     message : system error message
+ *     errnum  : error number
+ */
+tree_constant *
+ferror_internal (const tree_constant *args, int nargin, int nargout)
+{
+  tree_constant *retval = NULL_TREE_CONST;
+
+// Get file info.
+  Pix p = return_valid_file (args[1]);
+
+  if (p == (Pix) NULL)
+    return retval;
+
+  file_info file = file_list (p);
+
+  int ierr = ferror (file.fptr ());
+
+  if (nargout > 1)
+    {
+      retval = new tree_constant[3];
+      retval[1] = tree_constant ((double) ierr);
+    }
+  else
+    retval = new tree_constant[2];
+
+  retval[0] = tree_constant (strsave (strerror (ierr)));
 
   return retval;
 }

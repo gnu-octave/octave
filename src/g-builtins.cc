@@ -582,6 +582,38 @@ builtin_fclose (const tree_constant *args, int nargin, int nargout)
 }
 
 /*
+ * Check file for EOF condition.
+ */
+tree_constant *
+builtin_feof (const tree_constant *args, int nargin, int nargout)
+{
+  tree_constant *retval = NULL_TREE_CONST;
+
+  if (nargin < 1)
+    print_usage ("feof");
+  else
+    retval = feof_internal (args, nargin, nargout);
+
+  return retval;
+}
+
+/*
+ * Check file for error condition.
+ */
+tree_constant *
+builtin_ferror (const tree_constant *args, int nargin, int nargout)
+{
+  tree_constant *retval = NULL_TREE_CONST;
+
+  if (nargin < 1)
+    print_usage ("ferror");
+  else
+    retval = ferror_internal (args, nargin, nargout);
+
+  return retval;
+}
+
+/*
  * Evaluate first argument as a function.
  */
 tree_constant *
@@ -598,7 +630,7 @@ builtin_feval (const tree_constant *args, int nargin, int nargout)
 }
 
 /*
- * Flushing output to a file
+ * Flushing output to a file.
  */
 tree_constant *
 builtin_fflush (const tree_constant *args, int nargin, int nargout)
@@ -614,7 +646,7 @@ builtin_fflush (const tree_constant *args, int nargin, int nargout)
 }
 
 /*
- * Fast Fourier Transform
+ * Fast Fourier Transform.
  */
 tree_constant *
 builtin_fft (const tree_constant *args, int nargin, int nargout)
@@ -634,7 +666,7 @@ builtin_fft (const tree_constant *args, int nargin, int nargout)
 }
 
 /*
- * get a string from a file
+ * Get a string from a file.
  */
 tree_constant *
 builtin_fgets (const tree_constant *args, int nargin, int nargout)
@@ -721,7 +753,23 @@ builtin_fprintf (const tree_constant *args, int nargin, int nargout)
 }
 
 /*
- * rewind a file
+ * Read binary data from a file.
+ */
+tree_constant *
+builtin_fread (const tree_constant *args, int nargin, int nargout)
+{
+  tree_constant *retval = NULL_TREE_CONST;
+
+  if (nargin < 2)
+    print_usage ("fread");
+  else
+    retval = fread_internal (args, nargin, nargout);
+
+  return retval;
+}
+
+/*
+ * Rewind a file.
  */
 tree_constant *
 builtin_frewind (const tree_constant *args, int nargin, int nargout)
@@ -737,7 +785,7 @@ builtin_frewind (const tree_constant *args, int nargin, int nargout)
 }
 
 /*
- * report on open files
+ * Report on open files.
  */
 tree_constant *
 builtin_freport (const tree_constant *args, int nargin, int nargout)
@@ -769,7 +817,7 @@ builtin_fscanf (const tree_constant *args, int nargin, int nargout)
 }
 
 /*
- * seek a point in a file for reading and/or writing 
+ * Seek a point in a file for reading and/or writing.
  */
 tree_constant *
 builtin_fseek (const tree_constant *args, int nargin, int nargout)
@@ -851,7 +899,7 @@ builtin_fsqp_options (const tree_constant *args, int nargin, int nargout)
 }
 
 /*
- * tell current position of file
+ * Tell current position of file.
  */
 tree_constant *
 builtin_ftell (const tree_constant *args, int nargin, int nargout)
@@ -862,6 +910,22 @@ builtin_ftell (const tree_constant *args, int nargin, int nargout)
     print_usage ("ftell");
   else
     retval = ftell_internal (args);
+
+  return retval;
+}
+
+/*
+ * Write binary data to a file.
+ */
+tree_constant *
+builtin_fwrite (const tree_constant *args, int nargin, int nargout)
+{
+  tree_constant *retval = NULL_TREE_CONST;
+
+  if (nargin < 3)
+    print_usage ("fwrite");
+  else
+    retval = fwrite_internal (args, nargin, nargout);
 
   return retval;
 }
@@ -890,7 +954,7 @@ builtin_getenv (const tree_constant *args, int nargin, int nargout)
 }
 
 /*
- * Inverse Fast Fourier Transform
+ * Inverse Fast Fourier Transform.
  */
 tree_constant *
 builtin_ifft (const tree_constant *args, int nargin, int nargout)
@@ -1721,7 +1785,7 @@ builtin_syl (const tree_constant *args, int nargin, int nargout)
 }
 
 /*
- * Schur Decomposition
+ * Schur Decomposition.
  */
 tree_constant *
 builtin_schur (const tree_constant *args, int nargin, int nargout)
@@ -1738,7 +1802,7 @@ builtin_schur (const tree_constant *args, int nargin, int nargout)
 }
 
 /*
- * Givens rotation
+ * Givens rotation.
  */
 tree_constant *
 builtin_givens (const tree_constant *args, int nargin, int nargout)
@@ -1754,7 +1818,7 @@ builtin_givens (const tree_constant *args, int nargin, int nargout)
 }
 
 /*
- * Hessenberg Decomposition
+ * Hessenberg Decomposition.
  */
 tree_constant *
 builtin_hess (const tree_constant *args, int nargin, int nargout)

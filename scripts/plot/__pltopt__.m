@@ -70,7 +70,7 @@ function fmt = plot_opt (caller, opt)
   set_steps = 0;
   set_boxes = 0;
   set_errbars = 0;
-  more = 1;
+  more_opts = 1;
 
   WITH = "w";
   LINES = "l";
@@ -91,7 +91,7 @@ function fmt = plot_opt (caller, opt)
     error ("plot_opt: argument must be a string");
   endif
 
-  while (more)
+  while (more_opts)
 
 # First get next char.
 
@@ -99,7 +99,7 @@ function fmt = plot_opt (caller, opt)
       [char, opt] = sscanf (opt, "%c %s");
     else
       char = opt;
-      more = 0;
+      more_opts = 0;
     endif
 
 # Now set flags based on char.

@@ -62,6 +62,9 @@ octave_syscalls
 
   static pid_t waitpid (pid_t, int);
   static pid_t waitpid (pid_t, int, std::string&);
+
+  static int kill (pid_t, int);
+  static int kill (pid_t, int, std::string&);
 };
 
 #endif

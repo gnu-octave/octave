@@ -321,6 +321,35 @@ octave_syscalls::waitpid (pid_t pid, int options, std::string& msg)
   return status;
 }
 
+int
+octave_syscalls::kill (pid_t pid, int sig)
+{
+  std::string msg;
+  return kill (pid, sig, msg);
+}
+
+int
+octave_syscalls::kill (pid_t pid, int sig, std::string& msg)
+{
+  msg = std::string ();
+
+  int status = -1;
+
+#if defined (HAVE_KILL)
+  status = ::kill (pid, sig);
+
+  if (status < 0)
+    {
+      using namespace std;
+      msg = ::strerror (errno);
+    }
+#else
+  msg = NOT_SUPPORTED ("kill");
+#endif
+
+  return status;
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

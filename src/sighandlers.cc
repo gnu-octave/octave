@@ -42,6 +42,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "defun.h"
 #include "error.h"
 #include "load-save.h"
+#include "oct-map.h"
 #include "pager.h"
 #include "pt-bp.h"
 #include "sighandlers.h"
@@ -493,6 +494,154 @@ install_signal_handlers (void)
 #endif
 }
 
+static Octave_map
+make_sig_struct (void)
+{
+  Octave_map m;
+
+#ifdef SIGABRT
+  m ["ABRT"](0) = SIGABRT;
+#endif
+
+#ifdef SIGALRM
+  m ["ALRM"](0) = SIGALRM;
+#endif
+
+#ifdef SIGBUS
+  m ["BUS"](0) = SIGBUS;
+#endif
+
+#ifdef SIGCHLD
+  m ["CHLD"](0) = SIGCHLD;
+#endif
+
+#ifdef SIGCLD
+  m ["CLD"](0) = SIGCLD;
+#endif
+
+#ifdef SIGCONT
+  m ["CONT"](0) = SIGCONT;
+#endif
+
+#ifdef SIGEMT
+  m ["EMT"](0) = SIGEMT;
+#endif
+
+#ifdef SIGFPE
+  m ["FPE"](0) = SIGFPE;
+#endif
+
+#ifdef SIGHUP
+  m ["HUP"](0) = SIGHUP;
+#endif
+
+#ifdef SIGILL
+  m ["ILL"](0) = SIGILL;
+#endif
+
+#ifdef SIGINFO
+  m ["INFO"](0) = SIGINFO;
+#endif
+
+#ifdef SIGINT
+  m ["INT"](0) = SIGINT;
+#endif
+
+#ifdef SIGIOT
+  m ["IOT"](0) = SIGIOT;
+#endif
+
+#ifdef SIGLOST
+  m ["LOST"](0) = SIGLOST;
+#endif
+
+#ifdef SIGPIPE
+  m ["PIPE"](0) = SIGPIPE;
+#endif
+
+#ifdef SIGPOLL
+  m ["POLL"](0) = SIGPOLL;
+#endif
+
+#ifdef SIGPROF
+  m ["PROF"](0) = SIGPROF;
+#endif
+
+#ifdef SIGPWR
+  m ["PWR"](0) = SIGPWR;
+#endif
+
+#ifdef SIGQUIT
+  m ["QUIT"](0) = SIGQUIT;
+#endif
+
+#ifdef SIGSEGV
+  m ["SEGV"](0) = SIGSEGV;
+#endif
+
+#ifdef SIGSTOP
+  m ["STOP"](0) = SIGSTOP;
+#endif
+
+#ifdef SIGSYS
+  m ["SYS"](0) = SIGSYS;
+#endif
+
+#ifdef SIGTERM
+  m ["TERM"](0) = SIGTERM;
+#endif
+
+#ifdef SIGTRAP
+  m ["TRAP"](0) = SIGTRAP;
+#endif
+
+#ifdef SIGTSTP
+  m ["TSTP"](0) = SIGTSTP;
+#endif
+
+#ifdef SIGTTIN
+  m ["TTIN"](0) = SIGTTIN;
+#endif
+
+#ifdef SIGTTOU
+  m ["TTOU"](0) = SIGTTOU;
+#endif
+
+#ifdef SIGURG
+  m ["URG"](0) = SIGURG;
+#endif
+
+#ifdef SIGUSR1
+  m ["USR1"](0) = SIGUSR1;
+#endif
+
+#ifdef SIGUSR2
+  m ["USR2"](0) = SIGUSR2;
+#endif
+
+#ifdef SIGVTALRM
+  m ["VTALRM"](0) = SIGVTALRM;
+#endif
+
+#ifdef SIGIO
+  m ["IO"](0) = SIGIO;
+#endif
+
+#ifdef SIGWINCH
+  m ["WINCH"](0) = SIGWINCH;
+#endif
+
+#ifdef SIGXCPU
+  m ["XCPU"](0) = SIGXCPU;
+#endif
+
+#ifdef SIGXFSZ
+  m ["XFSZ"](0) = SIGXFSZ;
+#endif
+
+  return m;
+}
+
 octave_child_list *octave_child_list::instance = 0;
 
 bool
@@ -633,6 +782,12 @@ debugging mode when it receives an interrupt signal (typically\n\
 generated with @kbd{C-c}).  If a second interrupt signal is received\n\
 before reaching the debugging mode, a normal interrupt will occur.\n\
 The default value is 0.\n\
+@end defvr");
+
+  DEFCONST (SIG, make_sig_struct (),
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} SIG\n\
+Structure of Unix signal names and their defined values.\n\
 @end defvr");
 }
 

@@ -1,3 +1,9 @@
+2003-01-10  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-syscalls.cc (octave_syscalls::kill): New function.
+	* oct-syscalls.h: Provide decl.
+	
+
 2003-01-06  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* dMatrix.cc (Matrix::read): Set size and return immediately if

@@ -101,7 +101,7 @@ system-dependent error message.\n\
   octave_value_list retval;
 
   retval(1) = std::string ();
-  retval(0) = -1.0;
+  retval(0) = -1;
 
   int nargin = args.length ();
 
@@ -162,7 +162,7 @@ error message.\n\
   octave_value_list retval;
 
   retval(1) = std::string ();
-  retval(0) = -1.0;
+  retval(0) = -1;
 
   int nargin = args.length ();
 
@@ -275,7 +275,7 @@ system-dependent error message.\n\
   octave_value_list retval;
 
   retval(1) = std::string ();
-  retval(0) = -1.0;
+  retval(0) = -1;
 
   int nargin = args.length ();
 
@@ -341,7 +341,7 @@ action.  A system dependent error message will be waiting in @var{msg}.\n\
   octave_value_list retval;
 
   retval(1) = std::string ();
-  retval(0) = -1.0;
+  retval(0) = -1;
 
   int nargin = args.length ();
 
@@ -369,7 +369,7 @@ Return the process group id of the current process.\n\
   octave_value_list retval;
 
   retval(1) = std::string ();
-  retval(0) = -1.0;
+  retval(0) = -1;
 
   int nargin = args.length ();
 
@@ -494,6 +494,58 @@ Return the real user id of the current process.\n\
   return retval;
 }
 
+DEFUN (kill, args, ,
+  "-*- textinfo -*-\n\
+@deftypefn {Built-in Function} {[@var{err}, @var{msg}] =} kill (@var{pid}, @var{sig})\n\
+Send signal @var{sig} to process @var{pid}.\n\
+\n\
+If @var{pid} is positive, then signal @var{sig} is sent to @var{pid}.\n\
+\n\
+If @var{pid} is 0, then signal @var{sig} is sent to every process\n\
+in the process group of the current process.\n\
+\n\
+If @var{pid} is -1, then signal @var{sig} is sent to every process\n\
+except process 1.\n\
+\n\
+If @var{pid} is less than -1, then signal @var{sig} is sent to every\n\
+process in the process group @var{-pid}.\n\
+\n\
+If @var{sig} is 0, then no signal is sent, but error checing is still\n\
+performed.\n\
+\n\
+Return 0 if sucessful, otherwise return -1.\n\
+@end deftypefn")
+{
+  octave_value_list retval;
+
+  retval(1) = std::string ();
+  retval(0) = -1;
+
+  if (args.length () == 2)
+    {
+      pid_t pid = args(0).int_value (true);
+
+      if (! error_state)
+	{
+	  int sig = args(1).int_value (true);
+
+	  if (! error_state)
+	    {
+	      std::string msg;
+
+	      int status = octave_syscalls::kill (pid, sig, msg);
+
+	      retval(1) = msg;
+	      retval(0) = status;
+	    }
+	}
+    }
+  else
+    print_usage ("kill");
+
+  return retval;
+}
+
 DEFUN (lstat, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{info}, @var{err}, @var{msg}] =} lstat (@var{file})\n\
@@ -513,13 +565,13 @@ See stat.\n\
 	  if (fs)
 	    {
 	      retval(2) = std::string ();
-	      retval(1) = 0.0;
+	      retval(1) = 0;
 	      retval(0) = mk_stat_map (fs);
 	    }
 	  else
 	    {
 	      retval(2) = fs.error ();
-	      retval(1) = -1.0;
+	      retval(1) = -1;
 	      retval(0) = Matrix ();
 	    }
 	}
@@ -545,7 +597,7 @@ system-dependent error message.\n\
   octave_value_list retval;
 
   retval(1) = std::string ();
-  retval(0) = -1.0;
+  retval(0) = -1;
 
   int nargin = args.length ();
 
@@ -599,7 +651,7 @@ system-dependent error message.\n\
   octave_value_list retval;
 
   retval(2) = std::string ();
-  retval(1) = -1.0;
+  retval(1) = -1;
   retval(0) = Matrix ();
 
   int nargin = args.length ();
@@ -738,13 +790,13 @@ For example,\n\
 	  if (fs)
 	    {
 	      retval(2) = std::string ();
-	      retval(1) = 0.0;
+	      retval(1) = 0;
 	      retval(0) = octave_value (mk_stat_map (fs));
 	    }
 	  else
 	    {
 	      retval(2) = fs.error ();
-	      retval(1) = -1.0;
+	      retval(1) = -1;
 	      retval(0) = Matrix ();
 	    }
 	}
@@ -768,7 +820,7 @@ system-dependent error message.\n\
   octave_value_list retval;
 
   retval(1) = std::string ();
-  retval(0) = -1.0;
+  retval(0) = -1;
 
   int nargin = args.length ();
 
@@ -838,7 +890,7 @@ message.\n\
   octave_value_list retval;
 
   retval(1) = std::string ();
-  retval(0) = -1.0;
+  retval(0) = -1;
 
   int nargin = args.length ();
 

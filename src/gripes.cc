@@ -125,7 +125,6 @@ gripe_data_conversion (const char *from, const char *to)
 void
 gripe_wrong_type_arg (const char *name, const string& s)
 {
-  string type = tc.type_name ();
   error ("%s: wrong type argument `%s'", name, s.c_str ());
 }
 

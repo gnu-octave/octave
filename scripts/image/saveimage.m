@@ -141,7 +141,7 @@ function saveimage (filename, img, img_form, map)
   img_sz = img_nr * img_nc;
   img = reshape (img, img_sz, 1);
 
-  idx = find (img >= map_nr - 1);
+  idx = find (img > map_nr);
   img (idx) = ones (size (idx)) * map_nr;
 
   idx = find (img <= 0);

@@ -1841,32 +1841,21 @@ operator * (const Matrix& m, const Matrix& a)
 // other operations.
 
 Matrix
-map (d_d_Mapper f, const Matrix& a)
+Matrix::map (d_d_Mapper f) const
 {
-  Matrix b (a);
-  b.map (f);
-  return b;
+  Matrix b (*this);
+  return b.apply (f);
 }
 
-Matrix
-map (d_c_Mapper f, const ComplexMatrix& a)
-{
-  int a_nc = a.cols ();
-  int a_nr = a.rows ();
-  Matrix b (a_nr, a_nc);
-  for (int j = 0; j < a_nc; j++)
-    for (int i = 0; i < a_nr; i++)
-      b.elem (i, j) = f (a.elem (i, j));
-  return b;
-}
-
-void
-Matrix::map (d_d_Mapper f)
+Matrix&
+Matrix::apply (d_d_Mapper f)
 {
   double *d = fortran_vec (); // Ensures only one reference to my privates!
 
   for (int i = 0; i < length (); i++)
     d[i] = f (d[i]);
+
+  return *this;
 }
 
 bool

@@ -1,3 +1,11 @@
+Thu Feb 13 17:35:20 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: Update config for shared libraries.
+	* Makefile.in (stamp-shared): Use $(SH_LD) $(SH_LDFLAGS) instead
+	of $(CXX) -shared.
+
+	* Makefile.in (stamp-picdir): Silence noise about making pic.
+
 Sat Jan 25 22:33:56 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (bin-dist): New target.

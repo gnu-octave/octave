@@ -139,8 +139,10 @@ public:
 
   // other operations
 
-  friend ComplexRowVector map (c_c_Mapper f, const ComplexRowVector& a);
-  void map (c_c_Mapper f);
+  ComplexRowVector map (c_c_Mapper f) const;
+  RowVector map (d_c_Mapper f) const;
+
+  ComplexRowVector& apply (c_c_Mapper f);
 
   Complex min (void) const;
   Complex max (void) const;

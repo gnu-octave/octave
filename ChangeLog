@@ -1,5 +1,12 @@
 Thu Feb 13 16:25:09 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* configure.in (SH_LD, SH_LDFLAGS): New variables.
+	* Makeconf.in: Substitute them.
+
+	* configure.in (SH_LIBS, SH_FLIBS, SH_TERMLIBS): Delete.
+
+	* Makeconf.in (SH_LIBS, SH_FLIBS, SH_TERMLIBS): Delete.
+
 	* octave-bug.in: Reinstate RLD_FLAG.
 	* mkoctfile.in: Likewise.
 	* Makeconf.in: Likewise.

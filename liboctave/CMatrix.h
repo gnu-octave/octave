@@ -317,8 +317,10 @@ public:
 
   // other operations
 
-  friend ComplexMatrix map (c_c_Mapper f, const ComplexMatrix& a);
-  void map (c_c_Mapper f);
+  ComplexMatrix map (c_c_Mapper f) const;
+  Matrix map (d_c_Mapper f) const;
+
+  ComplexMatrix& apply (c_c_Mapper f);
 
   bool any_element_is_inf_or_nan (void) const;
   bool all_elements_are_real (void) const;

@@ -201,6 +201,7 @@ public:
 
   friend Matrix map (d_d_Mapper f, const Matrix& a);
   friend Matrix map (d_c_Mapper f, const ComplexMatrix& a);
+
   void map (d_d_Mapper f);
 
   Matrix all (void) const;

@@ -1,5 +1,13 @@
 Thu Feb 13 03:02:08 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Makefile.in (stamp-prereq): Depend on stamp-picdir.
+	(all): Don't depend on stamp-prereq or stamp-picdir.
+	(stamp-tinst, stamp-interp, libtinst.a, liboctinterp.a):
+	Do depend on stamp-prereq.
+	(stamp-picdir): Silence noise about making pic.
+	(stamp-tinst, stamp-interp): Use $(SH_LD) $(SH_LDFLAGS) instead of
+	$(CXX) -shared.
+
 	* oct-conf.h.in: Reinstate RLD_FLAG.
 	* toplev.cc (octave_config_info): Likewise.
 

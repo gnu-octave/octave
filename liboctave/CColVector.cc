@@ -726,18 +726,38 @@ operator * (const ComplexDiagMatrix& m, const ComplexColumnVector& a)
 // other operations
 
 ComplexColumnVector
-map (c_c_Mapper f, const ComplexColumnVector& a)
+ComplexColumnVector::map (c_c_Mapper f) const
 {
-  ComplexColumnVector b (a);
-  b.map (f);
-  return b;
+  ComplexColumnVector b (*this);
+  return b.apply (f);
 }
 
-void
-ComplexColumnVector::map (c_c_Mapper f)
+ColumnVector
+ComplexColumnVector::map (d_c_Mapper f) const
 {
+  const Complex *d = data ();
+
+  int len = length ();
+
+  ColumnVector retval (len);
+
+  double *r = retval.fortran_vec ();
+
+  for (int i = 0; i < len; i++)
+    r[i] = f (d[i]);
+
+  return retval;
+}
+
+ComplexColumnVector&
+ComplexColumnVector::apply (c_c_Mapper f)
+{
+  Complex *d = fortran_vec (); // Ensures only one reference to my privates!
+
   for (int i = 0; i < length (); i++)
-    elem (i) = f (elem (i));
+    d[i] = f (d[i]);
+
+  return *this;
 }
 
 Complex

@@ -1,5 +1,15 @@
 Thu Feb 13 13:50:21 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Makefile.in (stamp-history, stamp-readline): Use $(SH_LD)
+	$(SH_LDFLAGS) instead of $(CXX) -shared.
+
+	* configure.in (SH_TERMLIBS): Delete.
+	Update config for shared libraries.
+
+	* Makefile.in (SH_TERMLIBS): Delete.
+
+	* Makefile.in (stamp-picdir): Silence noise about making pic.
+
 	* configure.in (TERMLIBS): Search in same order as in Octave's
 	top-level configure script.
 

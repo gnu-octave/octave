@@ -54,11 +54,12 @@ $(LIBCRUFT): $(LIBCRUFT_DEPS)
 .PRECIOUS: $(LIBCRUFT_OBJS)
 
 stamp-picdir:
-	if [ "$(SHARED_LIBS)" = true ]; then \
+	@if $(SHARED_LIBS); then \
 	  if [ -n "$(FPICFLAG)" ]; then \
 	    if [ -d pic ]; then \
 	      true ; \
 	    else \
+	      echo "mkdir pic" ; \
 	      mkdir pic ; \
 	    fi ; \
 	  fi ; \

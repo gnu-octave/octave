@@ -172,8 +172,10 @@ public:
 
   // other operations
 
-  friend ComplexColumnVector map (c_c_Mapper f, const ComplexColumnVector& a);
-  void map (c_c_Mapper f);
+  ComplexColumnVector map (c_c_Mapper f) const;
+  ColumnVector map (d_c_Mapper f) const;
+
+  ComplexColumnVector& apply (c_c_Mapper f);
 
   Complex min (void) const;
   Complex max (void) const;

@@ -21,7 +21,6 @@ SHLEXT = @SHLEXT@
 SHARED_LIBS = @SHARED_LIBS@
 
 TERMLIBS = @TERMLIBS@
-SH_TERMLIBS = @SH_TERMLIBS@
 
 LIBS_TO_INSTALL = libreadline.a libhistory.a
 
@@ -136,9 +135,18 @@ THINGS_TO_TAR = $(SOURCES) $(SUPPORT)
 all: stamp-picdir libreadline.a libhistory.a stamp-readline stamp-history
 
 stamp-picdir:
-	if [ -n "$(CPICFLAG)" ]; then \
-	  if [ -d pic ]; then true; else mkdir pic ; fi ; \
-	else true; fi
+	@if $(SHARED_LIBS); then \
+	  if [ -n "$(CPICFLAG)" ]; then \
+	    if [ -d pic ]; then \
+	      true ; \
+	    else \
+	      echo "mkdir pic" ; \
+	      mkdir pic ; \
+	    fi ; \
+	  else \
+	    true ; \
+	  fi ; \
+	fi
 	touch stamp-picdir
 
 libreadline.a: $(OBJECTS)
@@ -153,13 +161,13 @@ libhistory.a: history.o
 
 stamp-readline: $(PICOBJ)
 	if $(SHARED_LIBS); then \
-	  $(CC) -shared -o libreadline.$(SHLEXT) $(PICOBJ) $(SH_TERMLIBS); \
+	  $(SH_LD) $(SH_LDFLAGS) -o libreadline.$(SHLEXT) $(PICOBJ) ; \
 	fi
 	touch stamp-readline
 
 stamp-history: $(HIST_PICOBJ)
 	if $(SHARED_LIBS); then \
-	  $(CC) -shared -o libhistory.$(SHLEXT) $(HIST_PICOBJ); \
+	  $(SH_LD) $(SH_LDFLAGS) -o libhistory.$(SHLEXT) $(HIST_PICOBJ); \
 	fi
 	touch stamp-history
 

@@ -1,3 +1,10 @@
+Thu Feb 13 17:33:41 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (stamp-shared): Use $(SH_LD) $(SH_LDFLAGS) instead
+	of $(CXX) -shared.
+
+	* Makerules.in (stamp-picdir): Silence noise about making pic.
+
 Mon Jan 27 15:52:29 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Version 2.0.2 released.

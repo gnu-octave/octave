@@ -81,9 +81,9 @@ public:
 
   // other operations
 
-  friend RowVector map (d_d_Mapper f, const RowVector& a);
-  friend RowVector map (d_c_Mapper f, const ComplexRowVector& a);
-  void map (d_d_Mapper f);
+  RowVector map (d_d_Mapper f) const;
+
+  RowVector& apply (d_d_Mapper f);
 
   double min (void) const;
   double max (void) const;

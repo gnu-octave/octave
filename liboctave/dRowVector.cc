@@ -255,28 +255,21 @@ operator * (const RowVector& v, const Matrix& a)
 // other operations
 
 RowVector
-map (d_d_Mapper f, const RowVector& a)
+RowVector::map (d_d_Mapper f) const
 {
-  RowVector b (a);
-  b.map (f);
-  return b;
+  RowVector b (*this);
+  return b.apply (f);
 }
 
-RowVector
-map (d_c_Mapper f, const ComplexRowVector& a)
+RowVector&
+RowVector::apply (d_d_Mapper f)
 {
-  int a_len = a.length ();
-  RowVector b (a_len);
-  for (int i = 0; i < a_len; i++)
-    b.elem (i) = f (a.elem (i));
-  return b;
-}
+  double *d = fortran_vec (); // Ensures only one reference to my privates!
 
-void
-RowVector::map (d_d_Mapper f)
-{
   for (int i = 0; i < length (); i++)
-    elem (i) = f (elem (i));
+    d[i] = f (d[i]);
+
+  return *this;
 }
 
 double

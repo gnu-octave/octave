@@ -21,7 +21,7 @@ dnl Copyright (C) 1996 John W. Eaton
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA. 
 
-AC_REVISION($Revision: 1.254 $)
+AC_REVISION($Revision: 1.255 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -385,12 +385,19 @@ CPICFLAG=-fPIC
 CXXPICFLAG=-fPIC
 FPICFLAG=-fPIC
 SHLEXT=so
+SH_LD="$CC"
+SH_LDFLAGS=-shared
 RLD_FLAG=
 case "$canonical_host_type" in
+  *-*-386bsd* | *-*-openbsd* | *-*-netbsd* | *-*-freebsd*)
+    SH_LD=ld
+    SH_LDFLAGS=-Bshareable
+  ;;
   alpha-dec-osf*)
     CPICFLAG=
     CXXPICFLAG=
     FPICFLAG=
+    SH_LDFLAGS="-Xlinker -exepct_unresolved -Xlinker '*'"
     RLD_FLAG='-Xlinker -rpath -Xlinker $(libdir)'
   ;;
 changequote(,)dnl
@@ -449,11 +456,17 @@ AC_MSG_RESULT([defining CPICFLAG to be $CPICFLAG])
 AC_MSG_RESULT([defining CXXPICFLAG to be $CXXPICFLAG])
 AC_MSG_RESULT([defining SHLEXT to be $SHLEXT])
 AC_MSG_RESULT([defining DLFCN_DIR to be $DLFCN_DIR])
+AC_MSG_RESULT([defining SH_LD to be $SH_LD])
+AC_MSG_RESULT([defining SH_LDFLAGS to be $SH_LDFLAGS])
+AC_MSG_RESULT([defining RLD_FLAG to be $RLD_FLAG])
 AC_SUBST(FPICFLAG)
 AC_SUBST(CPICFLAG)
 AC_SUBST(CXXPICFLAG)
 AC_SUBST(SHLEXT)
 AC_SUBST(DLFCN_DIR)
+AC_SUBST(SH_LD)
+AC_SUBST(SH_LDFLAGS)
+AC_SUBST(RLD_FLAG)
 
 ### Allow compilation of smaller kernel.  This only works if some form
 ### of dynamic linking is also supported and used.
@@ -1035,25 +1048,6 @@ case "$YACC" in
 esac
 
 AC_PROG_LN_S
-
-### Kluge for SunOS 4.x vs. shared libraries.
-
-SH_LIBS="$LIBS"
-SH_FLIBS="$FLIBS"
-SH_TERMLIBS="$TERMLIBS"
-case "$canonical_host_type" in
-  *-*-sunos4*)
-    SH_LIBS=
-    SH_FLIBS=
-    SH_TERMLIBS=
-  ;;
-esac
-AC_MSG_RESULT([defining SH_LIBS to be $SH_LIBS])
-AC_MSG_RESULT([defining SH_FLIBS to be $SH_FLIBS])
-AC_MSG_RESULT([defining SH_TERMLIBS to be $SH_TERMLIBS])
-AC_SUBST(SH_LIBS)
-AC_SUBST(SH_FLIBS)
-AC_SUBST(SH_TERMLIBS)
 
 AC_CHECK_PROG(RUNTEST, runtest, runtest, [])
 AC_CHECK_PROG(EXPECT, expect, expect, [])

@@ -203,9 +203,9 @@ public:
 
   // other operations
 
-  friend Matrix map (d_d_Mapper f, const Matrix& a);
-  friend Matrix map (d_c_Mapper f, const ComplexMatrix& a);
-  void map (d_d_Mapper f);
+  Matrix map (d_d_Mapper f) const;
+
+  Matrix& apply (d_d_Mapper f);
 
   bool any_element_is_negative (void) const;
   bool any_element_is_inf_or_nan (void) const;

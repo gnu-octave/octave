@@ -32,16 +32,10 @@ CXXFLAGS_NO_PT_FLAGS = $(filter-out $(PT_FLAGS), $(ALL_CXXFLAGS))
 ifeq ($(OCTAVE_LITE), true)
   ifdef CXXPICFLAG
     %.oct : pic/%.o
-	  $(CXX) -shared -o $@ $< \
-	    $(OCTAVE_LFLAGS) \
-	    $(OCTAVE_LIBS) \
-	    $(FLIBS) $(LEXLIB) $(TERMLIBS) $(LIBS)
+	  $(CXX) -shared -o $@ $<
   else
     %.oct : %.o
-	  $(CXX) -shared -o $@ $< \
-	    $(OCTAVE_LFLAGS) \
-	    $(OCTAVE_LIBS) \
-	    $(FLIBS) $(LEXLIB) $(TERMLIBS) $(LIBS)
+	  $(CXX) -shared -o $@ $<
   endif
 endif
 
@@ -177,10 +171,10 @@ else
   BINDISTFILES = octave $(OCT_FILES)
 endif
 
-all: stamp-prereq stamp-picdir libraries $(OCT_FILES) octave
+all: libraries $(OCT_FILES) octave
 .PHONY: all
 
-stamp-prereq: defaults.h oct-conf.h
+stamp-prereq: stamp-picdir defaults.h oct-conf.h
 	touch stamp-prereq
 
 octave: octave.o builtins.o $(DLD_STATIC_OBJ) libraries
@@ -191,11 +185,12 @@ octave: octave.o builtins.o $(DLD_STATIC_OBJ) libraries
 	$(FLIBS) $(LEXLIB) $(TERMLIBS) $(LIBS)
 
 stamp-picdir:
-	if [ "$(SHARED_LIBS)" = true ] || [ "$(OCTAVE_LITE)" = true ]; then \
+	@if $(SHARED_LIBS) || [ "$(OCTAVE_LITE)" = true ]; then \
 	  if [ -n "$(CPICFLAG)" ] || [ -n "$(CXXPICFLAG)" ]; then \
 	    if [ -d pic ]; then \
 	      true ; \
 	    else \
+	      echo "mkdir pic" ; \
 	      mkdir pic ; \
 	    fi ; \
 	  fi ; \
@@ -206,31 +201,25 @@ stamp-picdir:
 
 libraries: liboctinterp.a libtinst.a stamp-interp stamp-tinst
 
-liboctinterp.a: $(OBJECTS)
+liboctinterp.a: stamp-prereq $(OBJECTS)
 	$(AR) $(ARFLAGS) liboctinterp.a $(OBJECTS)
 	$(RANLIB) liboctinterp.a
 
-libtinst.a: $(TI_OBJ)
+libtinst.a: stamp-prereq $(TI_OBJ)
 	$(AR) $(ARFLAGS) libtinst.a $(TI_OBJ)
 	$(RANLIB) libtinst.a
 
-stamp-interp: $(PICOBJ)
+stamp-interp: stamp-prereq $(PICOBJ)
 	if $(SHARED_LIBS); then \
-	  $(CXX) -shared -o liboctinterp.$(SHLEXT) $(PICOBJ) \
-	    $(OCTAVE_LFLAGS) \
-	    -loctave -lcruft -ltinst -lreadline -lkpathsea \
-	    $(SH_TERMLIBS) $(SH_LIBS) ; \
+	  $(SH_LD) $(SH_LDFLAGS) -o liboctinterp.$(SHLEXT) $(PICOBJ) ; \
 	else \
 	  true ; \
 	fi
 	touch stamp-interp
 
-stamp-tinst: $(TI_PICOBJ)
+stamp-tinst: stamp-prereq $(TI_PICOBJ)
 	if $(SHARED_LIBS); then \
-	  $(CXX) -shared -o libtinst.$(SHLEXT) $(TI_PICOBJ) \
-	    $(OCTAVE_LFLAGS) \
-	    -loctinterp -loctave -lcruft -lreadline -lkpathsea \
-	    $(SH_TERMLIBS) $(SH_LIBS) ; \
+	  $(SH_LD) $(SH_LDFLAGS) -o libtinst.$(SHLEXT) $(TI_PICOBJ) ; \
 	else \
 	  true ; \
 	fi

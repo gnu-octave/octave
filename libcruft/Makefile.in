@@ -69,8 +69,7 @@ endif
 
 stamp-shared: $(CRUFT_PICOBJ)
 	if $(SHARED_LIBS); then \
-	  $(CC) -shared -o libcruft.$(SHLEXT) $(CRUFT_PICOBJ) \
-	    $(SH_FLIBS) -lm ; \
+	  $(SH_LD) $(SH_LDFLAGS) -o libcruft.$(SHLEXT) $(CRUFT_PICOBJ) ; \
 	else \
 	  true ; \
 	fi

@@ -2929,19 +2929,36 @@ quotient (const Matrix& m, const ComplexMatrix& a)
 // other operations
 
 ComplexMatrix
-map (c_c_Mapper f, const ComplexMatrix& a)
+ComplexMatrix::map (c_c_Mapper f) const
 {
-  ComplexMatrix b (a);
-  b.map (f);
-  return b;
+  ComplexMatrix b (*this);
+  return b.apply (f);
 }
 
-void
-ComplexMatrix::map (c_c_Mapper f)
+Matrix
+ComplexMatrix::map (d_c_Mapper f) const
 {
-  for (int j = 0; j < cols (); j++)
-    for (int i = 0; i < rows (); i++)
-      elem (i, j) = f (elem (i, j));
+  const Complex *d = data ();
+
+  Matrix retval (rows (), columns ());
+
+  double *r = retval.fortran_vec ();
+
+  for (int i = 0; i < length (); i++)
+    r[i] = f (d[i]);
+
+  return retval;
+}
+
+ComplexMatrix&
+ComplexMatrix::apply (c_c_Mapper f)
+{
+  Complex *d = fortran_vec (); // Ensures only one reference to my privates!
+
+  for (int i = 0; i < length (); i++)
+    d[i] = f (d[i]);
+
+  return *this;
 }
 
 bool

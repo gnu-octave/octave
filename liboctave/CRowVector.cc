@@ -636,18 +636,38 @@ quotient (const RowVector& v, const ComplexRowVector& a)
 // other operations
 
 ComplexRowVector
-map (c_c_Mapper f, const ComplexRowVector& a)
+ComplexRowVector::map (c_c_Mapper f) const
 {
-  ComplexRowVector b (a);
-  b.map (f);
-  return b;
+  ComplexRowVector b (*this);
+  return b.apply (f);
 }
 
-void
-ComplexRowVector::map (c_c_Mapper f)
+RowVector
+ComplexRowVector::map (d_c_Mapper f) const
 {
+  const Complex *d = data ();
+
+  int len = length ();
+
+  RowVector retval (len);
+
+  double *r = retval.fortran_vec ();
+
+  for (int i = 0; i < len; i++)
+    r[i] = f (d[i]);
+
+  return retval;
+}
+
+ComplexRowVector&
+ComplexRowVector::apply (c_c_Mapper f)
+{
+  Complex *d = fortran_vec (); // Ensures only one reference to my privates!
+
   for (int i = 0; i < length (); i++)
-    elem (i) = f (elem (i));
+    d[i] = f (d[i]);
+
+  return *this;
 }
 
 Complex

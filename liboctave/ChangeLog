@@ -1,5 +1,11 @@
 Thu Feb 13 14:35:19 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Makefile.in (stamp-prereq): Depend on stamp-picdir.
+	(all): Don't depend on stamp-prereq or stamp-picdir.
+	(liboctave.a, stamp-shared): Do depend on stamp-prereq.
+	(stamp-picdir): Silence noise about making pic.
+	(stamp-shared): Use $(SH_LD) $(SH_LDFLAGS) instead of $(CXX) -shared.
+
 	* Array2-idx.h (Array2<T>::index (idx_vector&, idx_vector&)):
 	Fix typo in last change. 
 

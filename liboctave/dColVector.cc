@@ -282,28 +282,21 @@ operator * (const DiagMatrix& m, const ColumnVector& a)
 // other operations
 
 ColumnVector
-map (d_d_Mapper f, const ColumnVector& a)
+ColumnVector::map (d_d_Mapper f) const
 {
-  ColumnVector b (a);
-  b.map (f);
-  return b;
+  ColumnVector b (*this);
+  return b.apply (f);
 }
 
-ColumnVector
-map (d_c_Mapper f, const ComplexColumnVector& a)
+ColumnVector&
+ColumnVector::apply (d_d_Mapper f)
 {
-  int a_len = a.length ();
-  ColumnVector b (a_len);
-  for (int i = 0; i < a_len; i++)
-    b.elem (i) = f (a.elem (i));
-  return b;
-}
+  double *d = fortran_vec (); // Ensures only one reference to my privates!
 
-void
-ColumnVector::map (d_d_Mapper f)
-{
   for (int i = 0; i < length (); i++)
-    elem (i) = f (elem (i));
+    d[i] = f (d[i]);
+
+  return *this;
 }
 
 double

@@ -46,11 +46,6 @@ extern "C"
 extern int strncasecmp (const char*, const char*, size_t);
 #endif
 
-#define boolean kpathsea_boolean
-#define false kpathsea_false
-#define true kpathsea_true
-#include <kpathsea/pathsearch.h>
-
 #if defined (HAVE_TERMIOS_H)
 #include <termios.h>
 #elif defined (HAVE_TERMIO_H)
@@ -85,6 +80,7 @@ LOSE! LOSE!
 
 #include "SLStack.h"
 
+#include "pathsearch.h"
 #include "procstream.h"
 #include "user-prefs.h"
 #include "variables.h"

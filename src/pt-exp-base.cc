@@ -2106,7 +2106,7 @@ tree_multi_assignment_expression::eval (int print, int nargout,
       int last_was_scalar_type = 0;
       for (Pix p = lhs->first (); p != 0; lhs->next (p))
 	{
-	  tree_index_expression *lhs_expr = (*lhs) (p);
+	  tree_index_expression *lhs_expr = lhs->operator () (p);
 
 	  if (i < nargout)
 	    {

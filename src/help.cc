@@ -68,13 +68,7 @@ extern "C"
 #include <readline/tilde.h>
 }
 
-extern "C"
-{
-#define boolean kpathsea_boolean
-#define false kpathsea_false
-#define true kpathsea_true
-#include <kpathsea/pathsearch.h>
-}
+#include "pathsearch.h"
 
 static help_list operators[] =
 {
@@ -516,6 +510,7 @@ simple_help (void)
 	      delete [] names;
 	    }
 	}
+
       path_elt = kpse_path_element (0);
     }
 

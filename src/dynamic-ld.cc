@@ -32,16 +32,9 @@ extern "C"
 #ifdef WITH_DLD
 #include <dld/dld.h>
 #endif
-
-#define boolean kpathsea_boolean
-#define false kpathsea_false
-#define true kpathsea_true
-#include <kpathsea/pathsearch.h>
-#undef true
-#undef false
-#undef boolean
 }
 
+#include "pathsearch.h"
 #include "dynamic-ld.h"
 #include "tree-const.h"
 #include "user-prefs.h"

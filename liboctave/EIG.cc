@@ -32,15 +32,17 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 extern "C"
 {
-  int F77_FCN (dgeev) (const char*, const char*, const int&, double*,
-		       const int&, double*, double*, double*,
-		       const int&, double*, const int&, double*,
-		       const int&, int&, long, long);
+  int F77_FCN (dgeev, DGEEV) (const char*, const char*, const int&,
+			      double*, const int&, double*, double*,
+			      double*, const int&, double*,
+			      const int&, double*, const int&, int&,
+			      long, long);
 
-  int F77_FCN (zgeev) (const char*, const char*, const int&, Complex*,
-		       const int&, Complex*, Complex*, const int&,
-		       Complex*, const int&, Complex*, const int&,
-		       double*, int&, long, long);
+  int F77_FCN (zgeev, ZGEEV) (const char*, const char*, const int&,
+			      Complex*, const int&, Complex*,
+			      Complex*, const int&, Complex*,
+			      const int&, Complex*, const int&,
+			      double*, int&, long, long);
 }
 
 int
@@ -68,8 +70,8 @@ EIG::init (const Matrix& a)
   double *dummy;
   int idummy = 1;
 
-  F77_FCN (dgeev) ("N", "V", n, tmp_data, n, wr, wi, dummy,
-		   idummy, pvr, n, work, lwork, info, 1L, 1L);
+  F77_FCN (dgeev, DGEEV) ("N", "V", n, tmp_data, n, wr, wi, dummy,
+			  idummy, pvr, n, work, lwork, info, 1L, 1L);
 
   lambda.resize (n);
   v.resize (n, n);
@@ -140,8 +142,8 @@ EIG::init (const ComplexMatrix& a)
   Complex *dummy;
   int idummy = 1;
 
-  F77_FCN (zgeev) ("N", "V", n, tmp_data, n, pw, dummy, idummy, pvr,
-		   n, work, lwork, rwork, info, 1L, 1L);
+  F77_FCN (zgeev, ZGEEV) ("N", "V", n, tmp_data, n, pw, dummy, idummy,
+			  pvr, n, work, lwork, rwork, info, 1L, 1L);
 
   delete [] tmp_data;
   delete [] work;

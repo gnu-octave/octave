@@ -31,14 +31,17 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 extern "C"
 {
-  int F77_FCN (ddassl) (int (*)(const double&, double*, double*,
-				double*, int&, double*, int*),
-			const int&, double&, double*, double*,
-			double&, const int*, const double&,
-			const double&, int&, double*, const int&, 
-			int*, const int&, const double*, const int*,
-			int (*)(const double&, double*, double*,
-				double*, const double&, double*, int*));
+  int F77_FCN (ddassl, DDASSL) (int (*)(const double&, double*,
+					double*, double*, int&,
+					double*, int*),
+				const int&, double&, double*, double*,
+				double&, const int*, const double&,
+				const double&, int&, double*,
+				const int&, int*, const int&,
+				const double*, const int*, 
+				int (*)(const double&, double*,
+					double*, double*, const
+					double&, double*, int*));
 }
 
 static DAEFunc::DAERHSFunc user_fun;
@@ -300,9 +303,9 @@ DAE::integrate (double tout)
 
 // again:
 
-  F77_FCN (ddassl) (ddassl_f, n, t, px, pxdot, tout, info,
-		    rel_tol, abs_tol, idid, rwork, lrw, iwork,
-		    liw, dummy, idummy, ddassl_j);
+  F77_FCN (ddassl, DDASSL) (ddassl_f, n, t, px, pxdot, tout, info,
+			    rel_tol, abs_tol, idid, rwork, lrw, iwork,
+			    liw, dummy, idummy, ddassl_j);
 
   switch (idid)
     {

@@ -35,14 +35,15 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 extern "C"
 {
-  int F77_FCN (lsode) (int (*)(const int&, const double&, double*,
-			       double*, int&),
-		       int&, double*, double&, double&, int&,
-		       double&, double&, int&, int&, int&,
-		       double*, int&, int*, int&,
-		       int (*)(const int&, const double&, double*,
-			       const int&, const int&, double*,
-			       const int&), int&);
+  int F77_FCN (lsode, LSODE) (int (*)(const int&, const double&,
+				      double*, double*, int&),
+			      int&, double*, double&, double&, int&,
+			      double&, double&, int&, int&, int&,
+			      double*, int&, int*, int&,
+			      int (*)(const int&, const double&,
+				      double*, const int&, const int&,
+				      double*, const int&),
+			      int&);
 }
 
 static ODEFunc::ODERHSFunc user_fun;
@@ -243,7 +244,7 @@ ODE::integrate (double tout)
 
  again:
 
-  (void) F77_FCN (lsode) (lsode_f, n, xp, t, tout, itol, rel_tol,
+  F77_FCN (lsode, LSODE) (lsode_f, n, xp, t, tout, itol, rel_tol,
 			  abs_tol, itask, istate, iopt, rwork, lrw,
 			  iwork, liw, lsode_j, method_flag);
 

@@ -32,8 +32,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 extern "C"
 {
-  int F77_FCN (dpotrf) (const char*, const int&, double*, const int&,
-			int&, long);
+  int F77_FCN (dpotrf, DPOTRF) (const char*, const int&, double*,
+				const int&, int&, long);
 }
 
 int
@@ -52,7 +52,7 @@ CHOL::init (const Matrix& a)
 
   double *h = dup (a.data (), a.length ());
 
-  F77_FCN (dpotrf) ("U", n, h, n, info, 1L);
+  F77_FCN (dpotrf, DPOTRF) ("U", n, h, n, info, 1L);
 
   chol_mat = Matrix (h, n, n);
 

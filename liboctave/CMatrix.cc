@@ -42,36 +42,37 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 extern "C"
 {
-  int F77_FCN (zgemm) (const char*, const char*, const int&,
-		       const int&, const int&, const Complex&,
-		       const Complex*, const int&, const Complex*,
-		       const int&, const Complex&, Complex*, const int&,
-		       long, long);
+  int F77_FCN (zgemm, ZGEMM) (const char*, const char*, const int&,
+			      const int&, const int&, const Complex&,
+			      const Complex*, const int&,
+			      const Complex*, const int&,
+			      const Complex&, Complex*, const int&, 
+			      long, long);
 
-  int F77_FCN (zgeco) (Complex*, const int&, const int&, int*,
-		       double&, Complex*);
+  int F77_FCN (zgeco, ZGECO) (Complex*, const int&, const int&, int*,
+			      double&, Complex*);
 
-  int F77_FCN (zgedi) (Complex*, const int&, const int&, int*,
-		       Complex*, Complex*, const int&);
+  int F77_FCN (zgedi, ZGEDI) (Complex*, const int&, const int&, int*,
+			      Complex*, Complex*, const int&);
 
-  int F77_FCN (zgesl) (Complex*, const int&, const int&, int*,
-		       Complex*, const int&);
+  int F77_FCN (zgesl, ZGESL) (Complex*, const int&, const int&, int*,
+			      Complex*, const int&);
 
-  int F77_FCN (zgelss) (const int&, const int&, const int&, Complex*,
-			const int&, Complex*, const int&, double*,
-			double&, int&, Complex*, const int&,
-			double*, int&);
+  int F77_FCN (zgelss, ZGELSS) (const int&, const int&, const int&,
+				Complex*, const int&, Complex*,
+				const int&, double*, double&, int&,
+				Complex*, const int&, double*, int&);
 
 // Note that the original complex fft routines were not written for
 // double complex arguments.  They have been modified by adding an
 // implicit double precision (a-h,o-z) statement at the beginning of
 // each subroutine.
 
-  int F77_FCN (cffti) (const int&, Complex*);
+  int F77_FCN (cffti, CFFTI) (const int&, Complex*);
 
-  int F77_FCN (cfftf) (const int&, Complex*, Complex*);
+  int F77_FCN (cfftf, CFFTF) (const int&, Complex*, Complex*);
 
-  int F77_FCN (cfftb) (const int&, Complex*, Complex*);
+  int F77_FCN (cfftb, CFFTB) (const int&, Complex*, Complex*);
 }
 
 /*
@@ -788,7 +789,7 @@ ComplexMatrix::inverse (int& info, double& rcond) const
   Complex *z = new Complex [nr];
   Complex *tmp_data = dup (data (), len);
 
-  F77_FCN (zgeco) (tmp_data, nr, nc, ipvt, rcond, z);
+  F77_FCN (zgeco, ZGECO) (tmp_data, nr, nc, ipvt, rcond, z);
 
   volatile double rcond_plus_one = rcond + 1.0;
   if (rcond_plus_one == 1.0)
@@ -800,7 +801,7 @@ ComplexMatrix::inverse (int& info, double& rcond) const
     {
       Complex *dummy;
 
-      F77_FCN (zgedi) (tmp_data, nr, nc, ipvt, dummy, z, 1);
+      F77_FCN (zgedi, ZGEDI) (tmp_data, nr, nc, ipvt, dummy, z, 1);
     }
 
   delete [] ipvt;
@@ -867,10 +868,10 @@ ComplexMatrix::fourier (void) const
   Complex *wsave = new Complex [nn];
   Complex *tmp_data = dup (data (), length ());
 
-  F77_FCN (cffti) (npts, wsave);
+  F77_FCN (cffti, CFFTI) (npts, wsave);
 
   for (int j = 0; j < nsamples; j++)
-    F77_FCN (cfftf) (npts, &tmp_data[npts*j], wsave);
+    F77_FCN (cfftf, CFFTF) (npts, &tmp_data[npts*j], wsave);
 
   delete [] wsave;
 
@@ -898,10 +899,10 @@ ComplexMatrix::ifourier (void) const
   Complex *wsave = new Complex [nn];
   Complex *tmp_data = dup (data (), length ());
 
-  F77_FCN (cffti) (npts, wsave);
+  F77_FCN (cffti, CFFTI) (npts, wsave);
 
   for (int j = 0; j < nsamples; j++)
-    F77_FCN (cfftb) (npts, &tmp_data[npts*j], wsave);
+    F77_FCN (cfftb, CFFTB) (npts, &tmp_data[npts*j], wsave);
 
   for (j = 0; j < npts*nsamples; j++)
     tmp_data[j] = tmp_data[j] / (double) npts;
@@ -932,10 +933,10 @@ ComplexMatrix::fourier2d (void) const
   Complex *wsave = new Complex [nn];
   Complex *tmp_data = dup (data (), length ());
 
-  F77_FCN (cffti) (npts, wsave);
+  F77_FCN (cffti, CFFTI) (npts, wsave);
 
   for (int j = 0; j < nsamples; j++)
-    F77_FCN (cfftf) (npts, &tmp_data[npts*j], wsave);
+    F77_FCN (cfftf, CFFTF) (npts, &tmp_data[npts*j], wsave);
 
   delete [] wsave;
 
@@ -945,14 +946,14 @@ ComplexMatrix::fourier2d (void) const
   wsave = new Complex [nn];
   Complex *row = new Complex[npts];
 
-  F77_FCN (cffti) (npts, wsave);
+  F77_FCN (cffti, CFFTI) (npts, wsave);
 
   for (j = 0; j < nsamples; j++)
     {
       for (int i = 0; i < npts; i++)
 	row[i] = tmp_data[i*nr + j];
 
-      F77_FCN (cfftf) (npts, row, wsave);
+      F77_FCN (cfftf, CFFTF) (npts, row, wsave);
 
       for (i = 0; i < npts; i++)
 	tmp_data[i*nr + j] = row[i];
@@ -985,10 +986,10 @@ ComplexMatrix::ifourier2d (void) const
   Complex *wsave = new Complex [nn];
   Complex *tmp_data = dup (data (), length ());
 
-  F77_FCN (cffti) (npts, wsave);
+  F77_FCN (cffti, CFFTI) (npts, wsave);
 
   for (int j = 0; j < nsamples; j++)
-    F77_FCN (cfftb) (npts, &tmp_data[npts*j], wsave);
+    F77_FCN (cfftb, CFFTB) (npts, &tmp_data[npts*j], wsave);
 
   delete [] wsave;
 
@@ -1001,14 +1002,14 @@ ComplexMatrix::ifourier2d (void) const
   wsave = new Complex [nn];
   Complex *row = new Complex[npts];
 
-  F77_FCN (cffti) (npts, wsave);
+  F77_FCN (cffti, CFFTI) (npts, wsave);
 
   for (j = 0; j < nsamples; j++)
     {
       for (int i = 0; i < npts; i++)
 	row[i] = tmp_data[i*nr + j];
 
-      F77_FCN (cfftb) (npts, row, wsave);
+      F77_FCN (cfftb, CFFTB) (npts, row, wsave);
 
       for (i = 0; i < npts; i++)
 	tmp_data[i*nr + j] = row[i] / (double) npts;
@@ -1058,7 +1059,7 @@ ComplexMatrix::determinant (int& info, double& rcond) const
       Complex *z = new Complex [nr];
       Complex *tmp_data = dup (data (), length ());
 
-      F77_FCN (zgeco) (tmp_data, nr, nr, ipvt, rcond, z);
+      F77_FCN (zgeco, ZGECO) (tmp_data, nr, nr, ipvt, rcond, z);
 
       volatile double rcond_plus_one = rcond + 1.0;
       if (rcond_plus_one == 1.0)
@@ -1069,7 +1070,7 @@ ComplexMatrix::determinant (int& info, double& rcond) const
       else
 	{
 	  Complex d[2];
-	  F77_FCN (zgedi) (tmp_data, nr, nr, ipvt, d, z, 10);
+	  F77_FCN (zgedi, ZGEDI) (tmp_data, nr, nr, ipvt, d, z, 10);
 	  retval = ComplexDET (d);
 	}
 
@@ -1139,7 +1140,7 @@ ComplexMatrix::solve (const ComplexMatrix& b, int& info, double& rcond) const
   Complex *z = new Complex [nr];
   Complex *tmp_data = dup (data (), length ());
 
-  F77_FCN (zgeco) (tmp_data, nr, nr, ipvt, rcond, z);
+  F77_FCN (zgeco, ZGECO) (tmp_data, nr, nr, ipvt, rcond, z);
 
   volatile double rcond_plus_one = rcond + 1.0;
   if (rcond_plus_one == 1.0)
@@ -1151,7 +1152,7 @@ ComplexMatrix::solve (const ComplexMatrix& b, int& info, double& rcond) const
       Complex *result = dup (b.data (), b.length ());
 
       for (int j = 0; j < b_nc; j++)
-	F77_FCN (zgesl) (tmp_data, nr, nr, ipvt, &result[nr*j], 0);
+	F77_FCN (zgesl, ZGESL) (tmp_data, nr, nr, ipvt, &result[nr*j], 0);
 
       retval = ComplexMatrix (result, b_nr, b_nc);
     }
@@ -1200,7 +1201,7 @@ ComplexMatrix::solve (const ComplexColumnVector& b, int& info,
   Complex *z = new Complex [nr];
   Complex *tmp_data = dup (data (), length ());
 
-  F77_FCN (zgeco) (tmp_data, nr, nr, ipvt, rcond, z);
+  F77_FCN (zgeco, ZGECO) (tmp_data, nr, nr, ipvt, rcond, z);
 
   volatile double rcond_plus_one = rcond + 1.0;
   if (rcond_plus_one == 1.0)
@@ -1211,7 +1212,7 @@ ComplexMatrix::solve (const ComplexColumnVector& b, int& info,
     {
       Complex *result = dup (b.data (), b_len);
 
-      F77_FCN (zgesl) (tmp_data, nr, nr, ipvt, result, 0);
+      F77_FCN (zgesl, ZGESL) (tmp_data, nr, nr, ipvt, result, 0);
 
       retval = ComplexColumnVector (result, b_len);
     }
@@ -1280,8 +1281,8 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, int& info, int& rank) const
   lrwork = lrwork > 1 ? lrwork : 1;
   double *rwork = new double [lrwork];
 
-  F77_FCN (zgelss) (m, n, nrhs, tmp_data, m, presult, nrr, s,
-		    rcond, rank, work, lwork, rwork, info);
+  F77_FCN (zgelss, ZGELSS) (m, n, nrhs, tmp_data, m, presult, nrr, s,
+			    rcond, rank, work, lwork, rwork, info);
 
   ComplexMatrix retval (n, nrhs);
   for (j = 0; j < nrhs; j++)
@@ -1353,8 +1354,8 @@ ComplexMatrix::lssolve (const ComplexColumnVector& b, int& info,
   lrwork = lrwork > 1 ? lrwork : 1;
   double *rwork = new double [lrwork];
 
-  F77_FCN (zgelss) (m, n, nrhs, tmp_data, m, presult, nrr, s,
-		    rcond, rank, work, lwork, rwork, info);
+  F77_FCN (zgelss, ZGELSS) (m, n, nrhs, tmp_data, m, presult, nrr, s,
+			    rcond, rank, work, lwork, rwork, info);
 
   ComplexColumnVector retval (n);
   for (i = 0; i < n; i++)
@@ -1401,8 +1402,8 @@ operator * (const ComplexColumnVector& v, const ComplexRowVector& a)
 
   Complex *c = new Complex [len * a_len];
 
-  F77_FCN (zgemm) ("N", "N", len, a_len, 1, 1.0, v.data (), len,
-		   a.data (), 1, 0.0, c, len, 1L, 1L);
+  F77_FCN (zgemm, ZGEMM) ("N", "N", len, a_len, 1, 1.0, v.data (),
+			  len, a.data (), 1, 0.0, c, len, 1L, 1L);
 
   return ComplexMatrix (c, len, a_len);
 }
@@ -2445,8 +2446,8 @@ operator * (const ComplexMatrix& m, const ComplexMatrix& a)
 
   Complex *c = new Complex [nr*a_nc];
 
-  F77_FCN (zgemm) ("N", "N", nr, a_nc, nc, 1.0, m.data (),
-		   ld, a.data (), lda, 0.0, c, nr, 1L, 1L);
+  F77_FCN (zgemm, ZGEMM) ("N", "N", nr, a_nc, nc, 1.0, m.data (), ld,
+			  a.data (), lda, 0.0, c, nr, 1L, 1L);
 
   return ComplexMatrix (c, nr, a_nc);
 }

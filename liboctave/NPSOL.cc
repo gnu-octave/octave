@@ -40,18 +40,18 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 extern "C"
 {
-  int F77_FCN (npoptn) (const char*, long);
+  int F77_FCN (npoptn, NPOPTN) (const char*, long);
 
-  int F77_FCN (npsol) (int&, int&, int&, int&, int&, int&, double*,
-		       double*, double*,
-		       int (*)(int&, const int&, const int&, const
-			       int&, int*, double*, double*, double*,
-			       int*),
-		       int (*)(int&, const int&, double*, double*,
-			       double*, int*),
-		       int&, int&, int*, double*, double*, double*,
-		       double&, double*, double*, double*, int*, int&,
-		       double*, int&);
+  int F77_FCN (npsol, NPSOL) (int&, int&, int&, int&, int&, int&,
+			      double*, double*, double*,
+			      int (*)(int&, const int&, const int&,
+				      const int&, int*, double*,
+				      double*, double*, int*),
+			      int (*)(int&, const int&, double*,
+				      double*, double*, int*),
+			      int&, int&, int*, double*, double*,
+			      double*, double&, double*, double*,
+			      double*, int*, int&, double*, int&);
 }
 
 // XXX FIXME XXX -- would be nice to not have to have this global
@@ -288,22 +288,23 @@ NPSOL::minimize (double& objf, int& inform, Vector& lambda)
   pass_options_to_npsol ();
 
   if (! user_jac && ! user_grad)
-    F77_FCN (npoptn) ("Derivative Level 0", 18L);
+    F77_FCN (npoptn, NPOPTN) ("Derivative Level 0", 18L);
   else if (! user_jac && user_grad)
-    F77_FCN (npoptn) ("Derivative Level 1", 18L);
+    F77_FCN (npoptn, NPOPTN) ("Derivative Level 1", 18L);
   else if (user_jac && ! user_grad)
-    F77_FCN (npoptn) ("Derivative Level 2", 18L);
+    F77_FCN (npoptn, NPOPTN) ("Derivative Level 2", 18L);
   else if (user_jac && user_grad)
-    F77_FCN (npoptn) ("Derivative Level 3", 18L);
+    F77_FCN (npoptn, NPOPTN) ("Derivative Level 3", 18L);
 
   int attempt = 0;
   while (attempt++ < 5)
     {
 
-      F77_FCN (npsol) (n, nclin, ncnln, nrowa, nrowj, nrowr, pclin,
-		       clow, cup, npsol_confun, npsol_objfun, inform,
-		       iter, istate, c, cjac, pclambda, objf, objgrd, r,
-		       px, iw, leniw, w, lenw);
+      F77_FCN (npsol, NPSOL) (n, nclin, ncnln, nrowa, nrowj, nrowr,
+			      pclin, clow, cup, npsol_confun,
+			      npsol_objfun, inform, iter, istate, c,
+			      cjac, pclambda, objf, objgrd, r, px, iw,
+			      leniw, w, lenw);
 
       if (inform == 6 || inform == 1)
 	continue;
@@ -692,8 +693,8 @@ NPSOL_options::verify_level (void) const
 void
 NPSOL_options::pass_options_to_npsol (void)
 {
-  F77_FCN (npoptn) ("Nolist", 6L);
-  F77_FCN (npoptn) ("Defaults", 8L);
+  F77_FCN (npoptn, NPOPTN) ("Nolist", 6L);
+  F77_FCN (npoptn, NPOPTN) ("Defaults", 8L);
 
   if (x_central_difference_interval > 0.0)
     set_option ("Central Difference", x_central_difference_interval);
@@ -749,7 +750,7 @@ NPSOL_options::set_option (const char *key, int opt)
   buf << key << " " << opt << ends;
   char *command = buf.str ();
   size_t len = strlen (command);
-  F77_FCN (npoptn) (command, (long) len);
+  F77_FCN (npoptn, NPOPTN) (command, (long) len);
   delete [] command;
 }
 
@@ -760,7 +761,7 @@ NPSOL_options::set_option (const char *key, double opt)
   buf << key << " " << opt << ends;
   char *command = buf.str ();
   size_t len = strlen (command);
-  F77_FCN (npoptn) (command, (long) len);
+  F77_FCN (npoptn, NPOPTN) (command, (long) len);
   delete [] command;
 }
 

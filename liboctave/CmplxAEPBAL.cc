@@ -31,12 +31,14 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 extern "C"
 {
-  int F77_FCN (zgebal) (const char*, const int&, Complex*, const int&,
-                        int&, int&, double*, int&, long, long);
+  int F77_FCN (zgebal, ZGEBAL) (const char*, const int&, Complex*,
+				const int&, int&, int&, double*, int&,
+				long, long);
  
-  int F77_FCN (zgebak) (const char*, const char*, const int&, const int&,
-			const int&, double*, const int&, Complex*, 
-			const int&, int&, long, long);
+  int F77_FCN (zgebak, ZGEBAK) (const char*, const char*, const int&,
+				const int&, const int&, double*, const
+				int&, Complex*, const int&, int&,
+				long, long);
 }
 
 int
@@ -56,8 +58,9 @@ ComplexAEPBALANCE::init (const ComplexMatrix& a, const char *balance_job)
 
   balanced_mat = a;
 
-  F77_FCN (zgebal) (balance_job, n, balanced_mat.fortran_vec (),
-		    n, ilo, ihi, scale, info, 1L, 1L);
+  F77_FCN (zgebal, ZGEBAL) (balance_job, n,
+			    balanced_mat.fortran_vec (), n, ilo, ihi,
+			    scale, info, 1L, 1L);
 
 // Initialize balancing matrix to identity.
 
@@ -65,8 +68,9 @@ ComplexAEPBALANCE::init (const ComplexMatrix& a, const char *balance_job)
   for (int i = 0; i < n; i++)
     balancing_mat (i, i) = 1.0;
 
-  F77_FCN (zgebak) (balance_job, "R", n, ilo, ihi, scale, n, 
-		    balancing_mat.fortran_vec (), n, info, 1L, 1L);
+  F77_FCN (zgebak, ZGEBAK) (balance_job, "R", n, ilo, ihi, scale, n, 
+			    balancing_mat.fortran_vec (), n, info, 1L,
+			    1L);
 
   delete [] scale;
 

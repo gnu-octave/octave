@@ -32,8 +32,9 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 extern "C"
 {
-  int F77_FCN (zgesv) (const int&, const int&, Complex*, const int&,
-		       int*, Complex*, const int&, int&);
+  int F77_FCN (zgesv, ZGESV) (const int&, const int&, Complex*,
+			      const int&, int*, Complex*, const int&,
+			      int&);
 }
 
 ComplexLU::ComplexLU (const ComplexMatrix& a)
@@ -54,7 +55,7 @@ ComplexLU::ComplexLU (const ComplexMatrix& a)
   int info = 0;
   Complex *b;
 
-  F77_FCN (zgesv) (n, 0, tmp_data, n, ipvt, b, n, info);
+  F77_FCN (zgesv, ZGESV) (n, 0, tmp_data, n, ipvt, b, n, info);
 
   ComplexMatrix A_fact (tmp_data, n, n);
 

@@ -38,13 +38,14 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 extern "C"
 {
-  int F77_FCN (dgemv) (const char*, const int&, const int&,
-		       const double&, const double*, const int&,
-		       const double*, const int&, const double&,
-		       double*, const int&, long);
+  int F77_FCN (dgemv, DGEMV) (const char*, const int&, const int&,
+			      const double&, const double*,
+			      const int&, const double*, const int&,
+			      const double&, double*, const int&,
+			      long);
 
-  double F77_FCN (ddot) (const int&, const double*, const int&,
-			 const double*, const int&);
+  double F77_FCN (ddot, DDOT) (const int&, const double*, const int&,
+			       const double*, const int&);
 }
 
 /*
@@ -230,8 +231,8 @@ operator * (const RowVector& v, const Matrix& a)
 
   double *y = new double [len];
 
-  F77_FCN (dgemv) ("T", a_nc, a_nr, 1.0, a.data (), ld, v.data (),
-		   1, 0.0, y, 1, 1L);
+  F77_FCN (dgemv, DGEMV) ("T", a_nc, a_nr, 1.0, a.data (), ld,
+			  v.data (), 1, 0.0, y, 1, 1L);
 
   return RowVector (y, len);
 }
@@ -359,7 +360,7 @@ operator * (const RowVector& v, const ColumnVector& a)
       return 0.0;
     }
 
-  return F77_FCN (ddot) (len, v.data (), 1, a.data (), 1);
+  return F77_FCN (ddot, DDOT) (len, v.data (), 1, a.data (), 1);
 }
 
 Complex

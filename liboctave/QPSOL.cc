@@ -35,18 +35,21 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 extern "C"
 {
-  int F77_FCN (qpsol) (int&, int&, int&, int&, int&, int&, int&, int&,
-		       double&, double*, double*, double*, double*,
-		       double*, double*,
-		       int (*)(const int&, const int&, const int&,
-			       const int&, double*, double*, double*),
-		       int&, int&, int&, int*, double*, int&, int&,
-		       double&, double*, int*, int&, double*, int&);
+  int F77_FCN (qpsol, QPSOL) (int&, int&, int&, int&, int&, int&,
+			      int&, int&, double&, double*, double*,
+			      double*, double*, double*, double*,
+			      int (*)(const int&, const int&,
+				      const int&, const int&, double*,
+				      double*, double*),
+			      int&, int&, int&, int*, double*, int&,
+			      int&, double&, double*, int*, int&,
+			      double*, int&);
 
-  int F77_FCN (dgemv) (const char*, const int&, const int&,
-		       const double&, const double*, const int&,
-		       const double*, const int&, const double&,
-		       double*, const int&, long);
+  int F77_FCN (dgemv, DGEMV) (const char*, const int&, const int&,
+			      const double&, const double*,
+			      const int&, const double*, const int&,
+			      const double&, double*, const int&,
+			      long);
 }
 
 int
@@ -61,7 +64,8 @@ qphess (const int& n, const int& nrowh, const int& ncolh,
     }
   else
     {
-      F77_FCN (dgemv) ("N", n, n, 1.0, hess, n, x, 1, 0.0, hx, 1, 1L);
+      F77_FCN (dgemv, DGEMV) ("N", n, n, 1.0, hess, n, x, 1, 0.0, hx,
+			      1, 1L);
     }
 
   return 0;
@@ -149,10 +153,11 @@ QPSOL::minimize (double& objf, int& inform, Vector& lambda)
   int *iw = new int [leniw];
   double *w = new double [lenw];
 
-  F77_FCN (qpsol) (itmax, msglvl, n, nclin, nctotl, ncon, n,
-		   n, bigbnd, pa, pbl, pbu, pc, featol, ph, qphess,
-		   cold, lp, orthog, istate, px, inform, iter,
-		   objf, pclambda, iw, leniw, w, lenw);
+  F77_FCN (qpsol, QPSOL) (itmax, msglvl, n, nclin, nctotl, ncon, n,
+			  n, bigbnd, pa, pbl, pbu, pc, featol, ph,
+			  qphess, cold, lp, orthog, istate, px,
+			  inform, iter, objf, pclambda, iw, leniw, w,
+			  lenw);
 
   delete [] pbl;
   delete [] pbu;

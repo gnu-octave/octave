@@ -32,20 +32,23 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 extern "C"
 {
-  int F77_FCN (zgebal) (const char*, const int&, Complex*, const int&,
-                        int&, int&, double*, int&, long, long);
+  int F77_FCN (zgebal, ZGEBAL) (const char*, const int&, Complex*,
+				const int&, int&, int&, double*, int&,
+				long, long);
  
-  int F77_FCN (zgehrd) (const int&, const int&, const int&, Complex*,
-                        const int&, Complex*, Complex*, const int&,
-                        int&, long, long);
+  int F77_FCN (zgehrd, ZGEHRD) (const int&, const int&, const int&,
+				Complex*, const int&, Complex*,
+				Complex*, const int&, int&, long,
+				long);
  
-  int F77_FCN (zunghr) (const int&, const int&, const int&, Complex*,
-                        const int&, Complex*, Complex*, const int&,
-                        int&, long, long);
+  int F77_FCN (zunghr, ZUNGHR) (const int&, const int&, const int&,
+				Complex*, const int&, Complex*,
+				Complex*, const int&, int&, long, long);
 
-  int F77_FCN (zgebak) (const char*, const char*, const int&, const int&,
-			const int&, double*, const int&, Complex*,
-			const int&, int&, long, long);
+  int F77_FCN (zgebak, ZGEBAK) (const char*, const char*, const int&,
+				const int&, const int&, double*,
+				const int&, Complex*, const int&,
+				int&, long, long);
 }
 
 int
@@ -76,15 +79,19 @@ ComplexHESS::init (const ComplexMatrix& a)
    Complex *work = new Complex [lwork];
    Complex *z = new Complex [n*n];
 
-   F77_FCN (zgebal) (job, n, h, n, ilo, ihi, scale, info, 1L, 1L);
+   F77_FCN (zgebal, ZGEBAL) (job, n, h, n, ilo, ihi, scale, info, 1L,
+			     1L);
 
-   F77_FCN (zgehrd) (n, ilo, ihi, h, n, tau, work, lwork, info, 1L, 1L);
+   F77_FCN (zgehrd, ZGEHRD) (n, ilo, ihi, h, n, tau, work, lwork,
+			     info, 1L, 1L);
 
    copy (z, h, n*n);
 
-   F77_FCN (zunghr) (n, ilo, ihi, z, n, tau, work, lwork, info, 1L, 1L);
+   F77_FCN (zunghr, ZUNGHR) (n, ilo, ihi, z, n, tau, work, lwork,
+			     info, 1L, 1L);
 
-   F77_FCN (zgebak) (job, side, n, ilo, ihi, scale, n, z, n, info, 1L, 1L); 
+   F77_FCN (zgebak, ZGEBAK) (job, side, n, ilo, ihi, scale, n, z, n,
+			     info, 1L, 1L);
 
    hess_mat = ComplexMatrix (h, n, n);
    unitary_hess_mat = ComplexMatrix (z, n, n);

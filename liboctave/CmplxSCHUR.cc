@@ -32,11 +32,13 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 extern "C"
 {
-  int F77_FCN (zgeesx) (const char*, const char*, int (*)(const Complex&),
-			const char*, const int&, Complex*, const int&,
-			int&, Complex*, Complex*, const int&, double&,
-			double&, Complex*, const int&, double*, int*,
-			int&, long, long);
+  int F77_FCN (zgeesx, ZGEESX) (const char*, const char*,
+				int (*)(const Complex&), 
+				const char*, const int&, Complex*,
+				const int&, int&, Complex*, Complex*,
+				const int&, double&, double&,
+				Complex*, const int&, double*, int*,
+				int&, long, long);
 }
 
 static int
@@ -95,21 +97,24 @@ ComplexSCHUR::init (const ComplexMatrix& a, const char *ord)
 
   if (*ord == 'A' || *ord == 'a')
     {
-      F77_FCN (zgeesx) (jobvs, sort, complex_select_ana, sense,
-			n, s, n, sdim, w, q, n, rconde, rcondv,
-			work, lwork, rwork, bwork, info, 1L, 1L);
+      F77_FCN (zgeesx, ZGEESX) (jobvs, sort, complex_select_ana,
+				sense, n, s, n, sdim, w, q, n, rconde,
+				rcondv, work, lwork, rwork, bwork,
+				info, 1L, 1L);
     }
   else if (*ord == 'D' || *ord == 'd')
     {
-      F77_FCN (zgeesx) (jobvs, sort, complex_select_dig, sense,
-			n, s, n, sdim, w, q, n, rconde, rcondv,
-			work, lwork, rwork, bwork, info, 1L, 1L);
+      F77_FCN (zgeesx, ZGEESX) (jobvs, sort, complex_select_dig,
+				sense, n, s, n, sdim, w, q, n, rconde,
+				rcondv, work, lwork, rwork, bwork,
+				info, 1L, 1L);
     }
   else
     {
-      F77_FCN (zgeesx) (jobvs, sort, (void *) 0, sense, n, s,
-			n, sdim, w, q, n, rconde, rcondv, work,
-			lwork, rwork, bwork, info, 1L, 1L);
+      F77_FCN (zgeesx, ZGEESX) (jobvs, sort, (void *) 0, sense, n, s,
+				n, sdim, w, q, n, rconde, rcondv,
+				work, lwork, rwork, bwork, info, 1L,
+				1L);
     }
 
   schur_mat = ComplexMatrix (s, n, n);

@@ -42,16 +42,18 @@ int quad_integration_error = 0;
 
 extern "C"
 {
-  int F77_FCN (dqagp) (const double (*)(double*, int&),
-		       const double&, const double&, const int&,
-		       const double*, const double&, const double&,
-		       double&, double&, int&, int&, const int&,
-		       const int&, int&, int*, double*);
+  int F77_FCN (dqagp, DQAGP) (const double (*)(double*, int&),
+			      const double&, const double&,
+			      const int&, const double*,
+			      const double&, const double&, double&,
+			      double&, int&, int&, const int&,
+			      const int&, int&, int*, double*);
 
-  int F77_FCN (dqagi) (const double (*)(double*, int&), const double&,
-		       const int&, const double&, const double&,
-		       double&, double&, int&, int&, const int&,
-		       const int&, int&, int*, double*); 
+  int F77_FCN (dqagi, DQAGI) (const double (*)(double*, int&),
+			      const double&, const int&,
+			      const double&, const double&, double&,
+			      double&, int&, int&, const int&,
+			      const int&, int&, int*, double*); 
 }
 
 Quad::Quad (integrand_fcn fcn)
@@ -175,9 +177,10 @@ DefQuad::integrate (int& ier, int& neval, double& abserr)
   double abs_tol = absolute_tolerance ();
   double rel_tol = relative_tolerance ();
 
-  F77_FCN (dqagp) (user_function, lower_limit, upper_limit, npts,
-		   points, abs_tol, rel_tol, result, abserr,
-		   neval, ier, leniw, lenw, last, iwork, work);
+  F77_FCN (dqagp, DQAGP) (user_function, lower_limit, upper_limit,
+			  npts, points, abs_tol, rel_tol, result,
+			  abserr, neval, ier, leniw, lenw, last,
+			  iwork, work);
 
   delete [] iwork;
   delete [] work;
@@ -243,9 +246,9 @@ IndefQuad::integrate (int& ier, int& neval, double& abserr)
   double abs_tol = absolute_tolerance ();
   double rel_tol = relative_tolerance ();
 
-  F77_FCN (dqagi) (user_function, bound, inf, abs_tol, rel_tol,
-		   result, abserr, neval, ier, leniw, lenw,
-		   last, iwork, work);
+  F77_FCN (dqagi, DQAGI) (user_function, bound, inf, abs_tol, rel_tol,
+			  result, abserr, neval, ier, leniw, lenw,
+			  last, iwork, work);
 
   delete [] iwork;
   delete [] work;

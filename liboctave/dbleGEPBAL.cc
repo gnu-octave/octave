@@ -32,21 +32,23 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 extern "C"
 {
-  int F77_FCN (dgebak) (const char*, const char*, const int&, const int&,
-			const int&, double*, const int&, double*, const int&,
-			int&, long, long);
+  int F77_FCN (dgebak, DGEBAK) (const char*, const char*, const int&,
+				const int&, const int&, double*,
+				const int&, double*, const int&, int&,
+				long, long);
 
-  int F77_FCN (reduce) (const int&, const int&, double*,
-	   	        const int&, double*,
-			int&, int&, double*, double*);
+  int F77_FCN (reduce, REDUCE) (const int&, const int&, double*,
+				const int&, double*, int&, int&,
+				double*, double*);
 
-  int F77_FCN (scaleg) (const int&, const int&, double*,
-	   	        const int&, double*,
-			const int&, const int&, double*, double*, double*);
+  int F77_FCN (scaleg, SCALEG) (const int&, const int&, double*,
+				const int&, double*, const int&,
+				const int&, double*, double*,
+				double*);
 
-  int F77_FCN (gradeq) (const int&, const int&, double*,
-	   	        const int&, double*,
-			int&, int&, double*, double*);
+  int F77_FCN (gradeq, GRADEQ) (const int&, const int&, double*,
+				const int&, double*, int&, int&,
+				double*, double*);
 }
 
 int
@@ -105,9 +107,9 @@ GEPBALANCE::init (const Matrix& a, const Matrix& b, const char *balance_job)
 
   if (*balance_job == 'P' || *balance_job == 'B')
     {
-      F77_FCN (reduce) (n, n, balanced_a_mat.fortran_vec (),
-			n, balanced_b_mat.fortran_vec (), ilo, ihi,
-			cscale, wk.fortran_vec ());
+      F77_FCN (reduce, REDUCE) (n, n, balanced_a_mat.fortran_vec (),
+				n, balanced_b_mat.fortran_vec (), ilo,
+				ihi, cscale, wk.fortran_vec ());
     }
   else
     {
@@ -122,9 +124,9 @@ GEPBALANCE::init (const Matrix& a, const Matrix& b, const char *balance_job)
 
   if ((*balance_job == 'S' || *balance_job == 'B') && ilo != ihi)
     {
-      F77_FCN (scaleg) (n, n, balanced_a_mat.fortran_vec (), 
-			n, balanced_b_mat.fortran_vec (), ilo, ihi,
-			cscale, cperm, wk.fortran_vec ());
+      F77_FCN (scaleg, SCALEG) (n, n, balanced_a_mat.fortran_vec (), 
+				n, balanced_b_mat.fortran_vec (), ilo,
+				ihi, cscale, cperm, wk.fortran_vec ());
     }
   else
     {
@@ -148,14 +150,16 @@ GEPBALANCE::init (const Matrix& a, const Matrix& b, const char *balance_job)
 
 // Column permutations/scaling.
 
-  F77_FCN (dgebak) (balance_job, "R", n, ilo, ihi, cscale, n, 
-		    right_balancing_mat.fortran_vec (), n, info,
-		    1L, 1L);
+  F77_FCN (dgebak, DGEBAK) (balance_job, "R", n, ilo, ihi, cscale, n, 
+			    right_balancing_mat.fortran_vec (), n,
+			    info, 1L, 1L);
     
 // Row permutations/scaling.
 
-  F77_FCN (dgebak) (balance_job, "L", n, ilo, ihi, wk.fortran_vec (), n,
-		    left_balancing_mat.fortran_vec (), n, info, 1L, 1L);
+  F77_FCN (dgebak, DGEBAK) (balance_job, "L", n, ilo, ihi,
+			    wk.fortran_vec (), n,
+			    left_balancing_mat.fortran_vec (), n,
+			    info, 1L, 1L);
 
 // XXX FIXME XXX --- these four lines need to be added and debugged.
 // GEPBALANCE::init will work without them, though, so here they are.
@@ -163,9 +167,9 @@ GEPBALANCE::init (const Matrix& a, const Matrix& b, const char *balance_job)
 #if 0
   if ((*balance_job == 'P' || *balance_job == 'B') && ilo != ihi)
     {
-      F77_FCN (gradeq) (n, n, balanced_a_mat.fortran_vec (),
-			n, balanced_b_mat.fortran_vec (), ilo, ihi,
-			cperm, wk.fortran_vec ());
+      F77_FCN (gradeq, GRADEQ) (n, n, balanced_a_mat.fortran_vec (),
+				n, balanced_b_mat.fortran_vec (), ilo,
+				ihi, cperm, wk.fortran_vec ());
     }
 #endif
 

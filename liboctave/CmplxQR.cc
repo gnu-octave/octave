@@ -32,11 +32,13 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 extern "C"
 {
-  int F77_FCN (zgeqrf) (const int&, const int&, Complex*, const int&,
-			Complex*, Complex*, const int&, int&);
+  int F77_FCN (zgeqrf, ZGEQRF) (const int&, const int&, Complex*,
+				const int&, Complex*, Complex*,
+				const int&, int&); 
 
-  int F77_FCN (zungqr) (const int&, const int&, const int&, Complex*,
-			const int&, Complex*, Complex*, const int&, int&);
+  int F77_FCN (zungqr, ZUNGQR) (const int&, const int&, const int&,
+				Complex*, const int&, Complex*,
+				Complex*, const int&, int&);
 }
 
 ComplexQR::ComplexQR (const ComplexMatrix& a, QR::type qr_type)
@@ -66,7 +68,8 @@ ComplexQR::ComplexQR (const ComplexMatrix& a, QR::type qr_type)
   else
     tmp_data = dup (a.data (), a.length ());
 
-  F77_FCN (zgeqrf) (m, n, tmp_data, m, tau, work, lwork, info);
+  F77_FCN (zgeqrf, ZGEQRF) (m, n, tmp_data, m, tau, work, lwork,
+			    info);
 
   delete [] work;
 
@@ -103,7 +106,8 @@ ComplexQR::ComplexQR (const ComplexMatrix& a, QR::type qr_type)
       lwork = 32*m;
       work = new Complex[lwork];
 
-      F77_FCN (zungqr) (m, m, min_mn, tmp_data, m, tau, work, lwork, info);
+      F77_FCN (zungqr, ZUNGQR) (m, m, min_mn, tmp_data, m, tau, work,
+				lwork, info);
 
       q = ComplexMatrix (tmp_data, m, m);
       q.resize (m, n2);

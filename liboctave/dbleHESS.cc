@@ -32,21 +32,22 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 extern "C"
 {
-  int F77_FCN (dgebal) (const char*, const int&, double*,
-                        const int&, int&, int&, double*,
-                        int&, long, long);
+  int F77_FCN (dgebal, DGEBAL) (const char*, const int&, double*,
+				const int&, int&, int&, double*,
+				int&, long, long);
 
-  int F77_FCN (dgehrd) (const int&, const int&, const int&,
-                        double*, const int&, double*, double*,
-                        const int&, int&, long, long);
+  int F77_FCN (dgehrd, DGEHRD) (const int&, const int&, const int&,
+				double*, const int&, double*, double*,
+				const int&, int&, long, long);
 
-  int F77_FCN (dorghr) (const int&, const int&, const int&,
-                        double*, const int&, double*, double*,
-                        const int&, int&, long, long);
+  int F77_FCN (dorghr, DORGHR) (const int&, const int&, const int&,
+				double*, const int&, double*, double*,
+				const int&, int&, long, long);
 
-  int F77_FCN (dgebak) (const char*, const char*, const int&, const int&,
-			const int&, double*, const int&, double*, const int&,
-			int&, long, long);
+  int F77_FCN (dgebak, DGEBAK) (const char*, const char*, const int&,
+				const int&, const int&, double*,
+				const int&, double*, const int&, int&,
+				long, long);
 }
 
 int
@@ -76,15 +77,19 @@ HESS::init (const Matrix& a)
   double *z = new double [n*n];
   double *work = new double [lwork];
 
-  F77_FCN (dgebal) (jobbal, n, h, n, ilo, ihi, scale, info, 1L, 1L);
+  F77_FCN (dgebal, DGEBAL) (jobbal, n, h, n, ilo, ihi, scale, info,
+			    1L, 1L);
 
-  F77_FCN (dgehrd) (n, ilo, ihi, h, n, tau, work, lwork, info, 1L, 1L);
+  F77_FCN (dgehrd, DGEHRD) (n, ilo, ihi, h, n, tau, work, lwork, info,
+			    1L, 1L);
 
   copy (z, h, n*n);
 
-  F77_FCN (dorghr) (n, ilo, ihi, z, n, tau, work, lwork, info, 1L, 1L);
+  F77_FCN (dorghr, DORGHR) (n, ilo, ihi, z, n, tau, work, lwork, info,
+			    1L, 1L);
 
-  F77_FCN (dgebak) (jobbal, side, n, ilo, ihi, scale, n, z, n, info, 1L, 1L);
+  F77_FCN (dgebak, DGEBAK) (jobbal, side, n, ilo, ihi, scale, n, z, n,
+			    info, 1L, 1L);
 
 // We need to clear out all of the area below the sub-diagonal which was used
 // to store the unitary matrix.

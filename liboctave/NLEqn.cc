@@ -35,13 +35,16 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 extern "C"
 {
-  int F77_FCN (hybrd1) (int (*)(int*, double*, double*, int*),
-			const int&, double*, double*, const double&,
-			int&, double*, const int&);
+  int F77_FCN (hybrd1, HYBRD1) (int (*)(int*, double*, double*, int*),
+				const int&, double*, double*,
+				const double&, int&, double*,
+				const int&);
 
-  int F77_FCN (hybrj1) (int (*)(int*, double*, double*, double*, int*, int*),
-			const int&, double*, double*, double*, const int&,
-			const double&, int&, double*, const int&);
+  int F77_FCN (hybrj1) (int (*)(int*, double*, double*, double*, int*,
+				int*),
+			const int&, double*, double*, double*,
+			const int&, const double&, int&, double*,
+			const int&);
 }
 
 static nonlinear_fcn user_fun;
@@ -227,8 +230,8 @@ NLEqn::solve (int& info)
       double *wa = new double [lwa];
       double *fjac = new double [n*n];
 
-      F77_FCN (hybrj1) (hybrj1_fcn, n, px, fvec, fjac, n, tol, info,
-			wa, lwa);
+      F77_FCN (hybrj1, HYBRJ1) (hybrj1_fcn, n, px, fvec, fjac, n, tol,
+				info, wa, lwa);
 
       delete [] wa;
       delete [] fjac;
@@ -238,7 +241,8 @@ NLEqn::solve (int& info)
       int lwa = (n*(3*n+13))/2;
       double *wa = new double [lwa];
 
-      F77_FCN (hybrd1) (hybrd1_fcn, n, px, fvec, tol, info, wa, lwa);
+      F77_FCN (hybrd1, HYBRD1) (hybrd1_fcn, n, px, fvec, tol, info,
+				wa, lwa);
 
       delete [] wa;
     }

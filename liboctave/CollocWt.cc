@@ -33,11 +33,13 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 extern "C"
 {
-  int F77_FCN (jcobi) (int&, int&, int&, int&, double&, double&,
-		       double*, double*, double*, double*); 
+  int F77_FCN (jcobi, JCOBI) (int&, int&, int&, int&, double&,
+			      double&, double*, double*, double*,
+			      double*);
 
-  int F77_FCN (dfopr) (int&, int&, int&, int&, int&, int&,
-		       double*, double*, double*, double*, double*);
+  int F77_FCN (dfopr, DFOPR) (int&, int&, int&, int&, int&, int&,
+			      double*, double*, double*, double*,
+			      double*);
 }
 
 // Error handling.
@@ -275,8 +277,8 @@ CollocWt::init (void)
 
 // Compute roots.
 
-  F77_FCN (jcobi) (nt, n, inc_left, inc_right, Alpha, Beta,
-		   dif1, dif2, dif3, pr);
+  F77_FCN (jcobi, JCOBI) (nt, n, inc_left, inc_right, Alpha, Beta,
+			  dif1, dif2, dif3, pr);
 
   int id;
   int i, j;
@@ -286,8 +288,8 @@ CollocWt::init (void)
   id = 1;
   for (i = 1; i <= nt; i++)
     {
-      F77_FCN (dfopr) (nt, n, inc_left, inc_right, i, id, dif1,
-		       dif2, dif3, pr, vect); 
+      F77_FCN (dfopr, DFOPR) (nt, n, inc_left, inc_right, i, id, dif1,
+			      dif2, dif3, pr, vect); 
 
       for (j = 0; j < nt; j++)
 	A (i-1, j) = vect[j];
@@ -298,8 +300,8 @@ CollocWt::init (void)
   id = 2;
   for (i = 1; i <= nt; i++)
     {
-      F77_FCN (dfopr) (nt, n, inc_left, inc_right, i, id, dif1,
-		       dif2, dif3, pr, vect); 
+      F77_FCN (dfopr, DFOPR) (nt, n, inc_left, inc_right, i, id, dif1,
+			      dif2, dif3, pr, vect); 
 
       for (j = 0; j < nt; j++)
 	B (i-1, j) = vect[j];
@@ -309,8 +311,8 @@ CollocWt::init (void)
 
   id = 3;
   double *pq = q.fortran_vec ();
-  F77_FCN (dfopr) (nt, n, inc_left, inc_right, i, id, dif1,
-		   dif2, dif3, pr, pq);
+  F77_FCN (dfopr, DFOPR) (nt, n, inc_left, inc_right, i, id, dif1,
+			  dif2, dif3, pr, pq);
 
   delete [] dif1;
   delete [] dif2;

@@ -32,12 +32,13 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 extern "C"
 {
-  int F77_FCN (dgeesx) (const char*, const char*,
-			int (*)(const double&, const double&),
-			const char*, const int&, double*, const int&,
-			int&, double*, double*, double*, const int&,
-			double&, double&, double*, const int&, int*,
-			const int&, int*, int&, long, long);
+  int F77_FCN (dgeesx, DGEESX) (const char*, const char*,
+				int (*)(const double&, const double&),
+				const char*, const int&, double*,
+				const int&, int&, double*, double*,
+				double*, const int&, double&, double&,
+				double*, const int&, int*, const int&,
+				int*, int&, long, long);
 }
 
 static int
@@ -100,23 +101,25 @@ SCHUR::init (const Matrix& a, const char *ord)
 
   if (*ord == 'A' || *ord == 'a')
     {
-      F77_FCN (dgeesx) (jobvs, sort, select_ana, sense, n, s, n,
-			sdim, wr, wi, q, n, rconde, rcondv, work,
-			lwork, iwork, liwork, bwork, info, 1L, 1L);
+      F77_FCN (dgeesx, DGEESX) (jobvs, sort, select_ana, sense, n, s,
+				n, sdim, wr, wi, q, n, rconde, rcondv,
+				work, lwork, iwork, liwork, bwork,
+				info, 1L, 1L);
     }
   else if (*ord == 'D' || *ord == 'd')
     {
-      F77_FCN (dgeesx) (jobvs, sort, select_dig, sense, n, s, n,
-			sdim, wr, wi, q, n, rconde, rcondv, work,
-			lwork, iwork, liwork, bwork, info, 1L, 1L);
+      F77_FCN (dgeesx, DGEESX) (jobvs, sort, select_dig, sense, n, s,
+				n, sdim, wr, wi, q, n, rconde, rcondv,
+				work, lwork, iwork, liwork, bwork,
+				info, 1L, 1L);
       
     }
   else
     {
-      F77_FCN (dgeesx) (jobvs, sort, (void *) 0, sense, n, s,
-			n, sdim, wr, wi, q, n, rconde, rcondv,
-			work, lwork, iwork, liwork, bwork, info,
-			1L, 1L);
+      F77_FCN (dgeesx, DGEESX) (jobvs, sort, (void *) 0, sense, n, s,
+				n, sdim, wr, wi, q, n, rconde, rcondv,
+				work, lwork, iwork, liwork, bwork,
+				info, 1L, 1L);
     }
 
   schur_mat = Matrix (s, n, n);

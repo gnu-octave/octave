@@ -186,7 +186,7 @@ $$ x(t_0) = x_0, \\dot{x}(t_0) = \\dot{x}_0 $$\n\
 @ifinfo\n\
 \n\
 @example\n\
-0 = f (xdot, x, t)\n\
+0 = f (x, xdot, t)\n\
 @end example\n\
 \n\
 with\n\

@@ -45,73 +45,89 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 #endif
 
+#include "lo-error.h"
 #include "lo-ieee.h"
 #include "mach-info.h"
 
 void
 octave_ieee_init (void)
 {
+  // Default values.  DBL_MAX is not right for NaN and NA, but do you
+  // have a better suggestion?  If you don't have IEEE floating point
+  // values, there are many parts of Octave that will not work
+  // correctly.
+
+  octave_Inf = octave_NaN = octave_NA = DBL_MAX;
+
   oct_mach_info::float_format ff = oct_mach_info::native_float_format ();
 
-  if (ff == oct_mach_info::flt_fmt_vax_d
-      || ff == oct_mach_info::flt_fmt_vax_g
-      || ff == oct_mach_info::flt_fmt_cray)
+  switch (ff)
     {
-      octave_Inf = octave_NaN = octave_NA = DBL_MAX;
-    }
-  else
-    {
-#if defined (HAVE_ISINF) || defined (HAVE_FINITE)
+    case oct_mach_info::flt_fmt_ieee_big_endian:
+    case oct_mach_info::flt_fmt_ieee_little_endian:
+      {
+	// Don't optimize away tmp_inf / tmp_inf to generate octave_NaN.
+
+	volatile double tmp_inf;
 
 #if defined (SCO)
-      double tmp = 1.0;
-      octave_Inf = 1.0 / (tmp - tmp);
+	volatile double tmp = 1.0;
+	tmp_inf = 1.0 / (tmp - tmp);
 #elif defined (__alpha__) && defined (__osf__)
-      extern unsigned int DINFINITY[2];
-      octave_Inf =  (*(X_CAST(double *, DINFINITY)));
+	extern unsigned int DINFINITY[2];
+	tmp_inf =  (*(X_CAST(double *, DINFINITY)));
 #else
-      double tmp = 1e+10;
-      octave_Inf = tmp;
-      for (;;)
-	{
-	  octave_Inf *= 1e+10;
-	  if (octave_Inf == tmp)
-	    break;
-	  tmp = octave_Inf;
-	}
+	double tmp = 1e+10;
+	tmp_inf = tmp;
+	for (;;)
+	  {
+	    tmp_inf *= 1e+10;
+	    if (tmp_inf == tmp)
+	      break;
+	    tmp = tmp_inf;
+	  }
 #endif
-
-#endif
-
-#if defined (HAVE_ISNAN)
 
 #if defined (__alpha__) && defined (__osf__)
-      extern unsigned int DQNAN[2];
-      octave_NaN = (*(X_CAST(double *, DQNAN)));
+	extern unsigned int DQNAN[2];
+	octave_NaN = (*(X_CAST(double *, DQNAN)));
 #else
-      octave_NaN = octave_Inf / octave_Inf;
+	octave_NaN = tmp_inf / tmp_inf;
 #endif
 
-      // This is patterned after code in R.
+	octave_Inf = tmp_inf;
 
-      if (ff == oct_mach_info::flt_fmt_ieee_big_endian)
-	{
-	  lo_ieee_hw = 0;
-	  lo_ieee_lw = 1;
-	}
-      else
-	{
-	  lo_ieee_hw = 1;
-	  lo_ieee_lw = 0;
-	}
+	// This is patterned after code in R.
 
-      lo_ieee_double t;
-      t.word[lo_ieee_hw] = LO_IEEE_NA_HW;
-      t.word[lo_ieee_lw] = LO_IEEE_NA_LW;
+	if (ff == oct_mach_info::flt_fmt_ieee_big_endian)
+	  {
+	    lo_ieee_hw = 0;
+	    lo_ieee_lw = 1;
+	  }
+	else
+	  {
+	    lo_ieee_hw = 1;
+	    lo_ieee_lw = 0;
+	  }
 
-      octave_NA = t.value;
+	lo_ieee_double t;
+	t.word[lo_ieee_hw] = LO_IEEE_NA_HW;
+	t.word[lo_ieee_lw] = LO_IEEE_NA_LW;
 
-#endif
+	octave_NA = t.value;
+      }
+      break;
+
+    case oct_mach_info::flt_fmt_cray:
+    case oct_mach_info::flt_fmt_vax_d:
+    case oct_mach_info::flt_fmt_vax_g:
+      break;
+
+    default:
+      // If the format is unknown, then you will probably not have a
+      // useful system, but we will just issue a warning and go on...
+      (*current_liboctave_warning_handler)
+	("lo_ieee_init: unrecognized floating point format!");
     }
 }
 

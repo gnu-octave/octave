@@ -100,6 +100,9 @@ bool buffer_error_messages = false;
 // TRUE means error messages are turned off.
 bool discard_error_messages = false;
 
+// TRUE means warning messages are turned off.
+bool discard_warning_messages = false;
+
 // The message buffer.
 static OSSTREAM *error_message_buffer = 0;
 
@@ -117,6 +120,9 @@ reset_error_handler (void)
 static void
 vwarning (const char *name, const char *fmt, va_list args)
 {
+  if (discard_warning_messages)
+    return;
+
   flush_octave_stdout ();
 
   OSSTREAM output_buf;
@@ -358,7 +364,8 @@ warning (const char *fmt, ...)
     {
       if (curr_sym_tab != top_level_sym_tab
 	  && Vwarning_option == "backtrace"
-	  && ! warning_state)
+	  && ! warning_state
+	  && ! discard_warning_messages)
 	pr_where ("warning");
 
       va_list args;

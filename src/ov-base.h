@@ -219,7 +219,7 @@ public:
 
   boolMatrix bool_matrix_value (void) const;
 
-  octave_value convert_to_str (bool pad = false) const;
+  octave_value convert_to_str_internal (bool pad = false) const;
 
   void convert_to_row_or_column_vector (void);
 

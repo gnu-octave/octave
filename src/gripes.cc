@@ -164,6 +164,12 @@ gripe_implicit_conversion (const char *from, const char *to)
 }
 
 void
+gripe_implicit_conversion (const std::string& from, const std::string& to)
+{
+  warning ("implicit conversion from %s to %s", from.c_str (), to.c_str ());
+}
+
+void
 gripe_divide_by_zero (void)
 {
   if (Vwarn_divide_by_zero)

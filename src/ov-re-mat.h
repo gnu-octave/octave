@@ -102,7 +102,7 @@ public:
 
   void decrement (void) { matrix -= 1.0; }
 
-  octave_value convert_to_str (bool pad = false) const;
+  octave_value convert_to_str_internal (bool pad = false) const;
 
 private:
 

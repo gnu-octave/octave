@@ -57,15 +57,18 @@ function m = moment (x, p, opt)
   endif
 
   if (nargin == 3)
-    tmp = implicit_str_to_num_ok;
-    implicit_str_to_num_ok = "true";
-    if any (opt == "c")
-      x = x - ones (nr, 1) * sum (x) / nr;
-    endif
-    if any (opt == "a")
-      x = abs (x);
-    endif
-    implicit_str_to_num_ok = tmp;
+    tmp = warn_str_to_num;
+    unwind_protect
+      warn_str_to_num = 0;
+      if any (opt == "c")
+	x = x - ones (nr, 1) * sum (x) / nr;
+      endif
+      if any (opt == "a")
+	x = abs (x);
+      endif
+    unwind_protect_cleanup
+      warn_str_to_num = tmp;
+    end_unwind_protect
   endif
 
   m = sum(x .^ p) / nr;

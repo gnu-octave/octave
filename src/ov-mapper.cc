@@ -117,9 +117,8 @@ octave_mapper::apply (const octave_value& arg) const
 {
   octave_value retval;
 
-  // XXX FIXME XXX -- is_real_type can return true for strings if
-  // implicit_str_to_num_ok is nonzero.  Should it really work that
-  // way?
+  // XXX FIXME XXX -- is_real_type can return true.  Should it really
+  // work that way?
 
   if (arg.is_real_type () && ! (arg.is_string () && ch_map_fcn))
     {

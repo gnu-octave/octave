@@ -368,7 +368,7 @@ set prog_output "\n... getenv:.*"
 do_test getenv-3.m
 
 set test getenv-4
-set prog_output "error:.*"
+set prog_output "warning:.*"
 do_test getenv-4.m
 
 set test putenv-1
@@ -384,7 +384,7 @@ set prog_output "\n... putenv:.*"
 do_test putenv-3.m
 
 set test putenv-4
-set prog_output "error:.*"
+set prog_output "warning:.*"
 do_test putenv-4.m
 
 set test cd-1

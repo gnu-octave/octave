@@ -199,7 +199,7 @@ set prog_output "\n... schur:.*"
 do_test schur-2.m
 
 set test schur-3
-set prog_output "error:.*"
+set prog_output "warning:.*"
 do_test schur-3.m
 
 set test schur-4

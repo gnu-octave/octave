@@ -145,7 +145,7 @@ All Octave abbrevs start with a grave accent (`).")
     "define_all_return_values" "do_fortran_indexing" "e"
     "echo_executing_commands" "empty_list_elements_ok" "eps"
     "error_text" "gnuplot_binary" "history_file"
-    "history_size" "ignore_function_time_stamp" "implicit_str_to_num_ok"
+    "history_size" "ignore_function_time_stamp"
     "inf" "nan" "nargin"
     "output_max_field_width" "output_precision"
     "page_output_immediately" "page_screen_output" "pi"
@@ -160,8 +160,8 @@ All Octave abbrevs start with a grave accent (`).")
     "suppress_verbose_help_message" "treat_neg_dim_as_zero"
     "warn_assign_as_truth_value" "warn_comma_in_global_decl"
     "warn_divide_by_zero" "warn_function_name_clash"
-    "warn_imag_to_real"
-    "warn_missing_semicolon" "whitespace_in_literal_matrix")
+    "warn_imag_to_real" "warn_missing_semicolon"
+     "warn_num_to_str" "warn_str_to_num" "whitespace_in_literal_matrix")
   "Builtin variables in Octave.")
 
 (defvar octave-function-header-regexp

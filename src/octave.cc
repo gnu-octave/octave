@@ -352,8 +352,6 @@ maximum_braindamage (void)
   bind_builtin_variable ("define_all_return_values", true);
   bind_builtin_variable ("do_fortran_indexing", true);
   bind_builtin_variable ("fixed_point_format", true);
-  bind_builtin_variable ("implicit_num_to_str_ok", true);
-  bind_builtin_variable ("implicit_str_to_num_ok", true);
   bind_builtin_variable ("initialize_global_variables", true);
   bind_builtin_variable ("page_screen_output", false);
   bind_builtin_variable ("prefer_column_vectors", false);

@@ -82,21 +82,19 @@ static bool Vsilent_functions;
 // for A already defined and a matrix type.
 bool Vdo_fortran_indexing;
 
-// Should `[97, 98, 99, "123"]' be a string?
-bool Vimplicit_num_to_str_ok;
+// Should we warn about conversions from complex to real?
+int Vwarn_imag_to_real;
 
-// Should we allow things like:
+// Should we print a warning when converting `[97, 98, 99, "123"]'
+// to a character string?
+bool Vwarn_num_to_str;
+
+// If TRUE, warn for operations like
 //
 //   octave> 'abc' + 0
 //   97 98 99
 //
-// to happen?  A positive value means yes.  A negative value means
-// yes, but print a warning message.  Zero means it should be
-// considered an error.
-int Vimplicit_str_to_num_ok;
-
-// Should we warn about conversions from complex to real?
-int Vwarn_imag_to_real;
+int Vwarn_str_to_num;
 
 // If TRUE, create column vectors when doing assignments like:
 //
@@ -1128,6 +1126,17 @@ octave_value::complex_vector_value (bool force_string_conv,
   return retval;
 }
 
+octave_value
+octave_value::convert_to_str (bool pad) const
+{
+  octave_value retval = convert_to_str_internal (pad);
+
+  if (is_numeric_type () && Vwarn_num_to_str)
+    gripe_implicit_conversion (type_name (), retval.type_name ());
+
+  return retval;
+}
+
 void
 octave_value::print_with_name (std::ostream& output_buf,
 			       const std::string& name, 
@@ -1754,25 +1763,25 @@ do_fortran_indexing (void)
 }
 
 static int
-implicit_num_to_str_ok (void)
-{
-  Vimplicit_num_to_str_ok = check_preference ("implicit_num_to_str_ok");
-
-  return 0;
-}
-
-static int
-implicit_str_to_num_ok (void)
-{
-  Vimplicit_str_to_num_ok = check_preference ("implicit_str_to_num_ok");
-
-  return 0;
-}
-
-static int
 warn_imag_to_real (void)
 {
   Vwarn_imag_to_real = check_preference ("warn_imag_to_real");
+
+  return 0;
+}
+
+static int
+warn_num_to_str (void)
+{
+  Vwarn_num_to_str = check_preference ("warn_num_to_str");
+
+  return 0;
+}
+
+static int
+warn_str_to_num (void)
+{
+  Vwarn_str_to_num = check_preference ("warn_str_to_num");
 
   return 0;
 }
@@ -1858,33 +1867,6 @@ If the value of @code{do_fortran_indexing} is nonzero, Octave allows \n\
 you to select elements of a two-dimensional matrix using a single index\n\
 by treating the matrix as a single vector created from the columns of\n\
 the matrix.  The default value is 0. \n\
-@end defvr");
-
-  DEFVAR (implicit_num_to_str_ok, false, implicit_num_to_str_ok,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} implicit_num_to_str_ok\n\
-If the value of @code{implicit_num_to_str_ok} is nonzero, implicit\n\
-conversions of numbers to their ASCII character equivalents are\n\
-allowed when strings are constructed using a mixture of strings and\n\
-numbers in matrix notation.  Otherwise, an error message is printed and\n\
-control is returned to the top level. The default value is 0.  For\n\
-example,\n\
-\n\
-@example\n\
-@group\n\
-[ \"f\", 111, 111 ]\n\
-     @result{} \"foo\"\n\
-@end group\n\
-@end example\n\
-@end defvr");
-
-  DEFVAR (implicit_str_to_num_ok, false, implicit_str_to_num_ok,
-    "-*- texinfo -*-\n\
-@defvr {Built-in Variable} implicit_str_to_num_ok\n\
-If the value of @code{implicit_str_to_num_ok} is nonzero, implicit\n\
-conversions of strings to their numeric ASCII equivalents are allowed.\n\
-Otherwise, an error message is printed and control is returned to the\n\
-top level.  The default value is 0.\n\
 @end defvr");
 
   DEFVAR (prefer_column_vectors, true, prefer_column_vectors,
@@ -1985,6 +1967,40 @@ is issued when Octave encounters a division by zero.  If the value is\n\
 If the value of @code{warn_imag_to_real} is nonzero, a warning is\n\
 printed for implicit conversions of complex numbers to real numbers.\n\
 The default value is 0.\n\
+@end defvr");
+
+  DEFVAR (warn_num_to_str, true, warn_num_to_str,
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} warn_num_to_str\n\
+If the value of @code{warn_num_to_str} is nonzero, a warning is\n\
+printed for implicit conversions of numbers to their ASCII character\n\
+equivalents when strings are constructed using a mixture of strings and\n\
+numbers in matrix notation.  For example,\n\
+\n\
+@example\n\
+@group\n\
+[ \"f\", 111, 111 ]\n\
+     @result{} \"foo\"\n\
+@end group\n\
+@end example\n\
+elicits a warning if @code{warn_num_to_str} is nonzero.  The default\n\
+value is 1.\n\
+@end defvr");
+
+  DEFVAR (warn_str_to_num, false, warn_str_to_num,
+    "-*- texinfo -*-\n\
+@defvr {Built-in Variable} warn_str_to_num\n\
+If the value of @code{warn_str_to_num} is nonzero, a warning is printed\n\
+for implicit conversions of strings to their numeric ASCII equivalents.\n\
+For example,\n\
+@example\n\
+@group\n\
+\"abc\" + 0\n\
+     @result{} 97 98 99\n\
+@end group\n\
+@end example\n\
+elicits a warning if @code{warn_str_to_num} is nonzero.  The default\n\
+value is 0.\n\
 @end defvr");
 }
 

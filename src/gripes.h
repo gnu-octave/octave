@@ -90,6 +90,9 @@ extern void
 gripe_implicit_conversion (const char *from, const char *to);
 
 extern void
+gripe_implicit_conversion (const std::string& from, const std::string& to);
+
+extern void
 gripe_divide_by_zero (void);
 
 #endif

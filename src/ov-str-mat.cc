@@ -152,18 +152,10 @@ octave_char_matrix_str::matrix_value (bool force_string_conv) const
 {
   Matrix retval;
 
-  int flag = force_string_conv;
-
-  if (! flag)
-    flag = Vimplicit_str_to_num_ok;
-
-  if (flag < 0)
+  if (! force_string_conv && Vwarn_str_to_num)
     gripe_implicit_conversion ("string", "real matrix");
 
-  if (flag)
-    retval = Matrix (matrix);
-  else
-    gripe_invalid_conversion ("string", "real matrix");
+  retval = Matrix (matrix);
 
   return retval;
 }

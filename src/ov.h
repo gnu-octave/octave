@@ -536,8 +536,10 @@ public:
   // class wants a certain kind of constant, he should simply ask for
   // it, and we should convert it if possible.
 
-  virtual octave_value convert_to_str (bool pad = false) const
-    { return rep->convert_to_str (pad); }
+  octave_value convert_to_str (bool pad = false) const;
+
+  virtual octave_value convert_to_str_internal (bool pad = false) const
+    { return rep->convert_to_str_internal (pad); }
 
   virtual void convert_to_row_or_column_vector (void)
     { rep->convert_to_row_or_column_vector (); }
@@ -723,18 +725,16 @@ OV_BINOP_FN (op_struct_ref)
 // for A already defined and a matrix type.
 extern bool Vdo_fortran_indexing;
 
-// Should `[97, 98, 99, "123"]' be a string?
-extern bool Vimplicit_num_to_str_ok;
+// Should we print a warning when converting `[97, 98, 99, "123"]'
+// to a character string?
+extern bool Vwarn_num_to_str;
 
-// Should we allow things like:
+// If TRUE, warn for operations like
 //
 //   octave> 'abc' + 0
 //   97 98 99
 //
-// to happen?  A positive value means yes.  A negative value means
-// yes, but print a warning message.  Zero means it should be
-// considered an error.
-extern int Vimplicit_str_to_num_ok;
+extern int Vwarn_str_to_num;
 
 // Should we warn about conversions from complex to real?
 extern int Vwarn_imag_to_real;

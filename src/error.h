@@ -52,6 +52,9 @@ extern bool buffer_error_messages;
 // TRUE means error messages are turned off.
 extern bool discard_error_messages;
 
+// TRUE means warning messages are turned off.
+extern bool discard_warning_messages;
+
 // The current warning state.  Valid values are "on", "off",
 // "backtrace", or "debug".
 extern std::string Vwarning_option;

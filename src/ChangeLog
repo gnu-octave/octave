@@ -1,5 +1,54 @@
 2003-07-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* ov.cc (octave_value::convert_to_str): Call convert_to_str_internal.
+	(octave_value::convert_to_str_internal): New virtual function.
+	Rename all derived class convert_to_str functions to match.	
+
+	* variables.cc (generate_struct_completions): Set
+	discard_warning_messages, not Vwarning_option.  Also protect
+	warning_state.
+
+	* parse.y (fold): Temporarily discard warning messages.
+	Also protect warning_state.
+
+	* error.cc (discard_warning_messages): New variable.
+	(vwarning): Use it.
+	(warning): Don't print backtrace if discard_warning_messages is true.
+
+	* ov.cc (octave_value::convert_to_str):
+	Handle type conversion warning here.
+
+	* gripes.cc (gripe_implicit_conversion):
+	New function accepting std::string args.
+
+	* octave.cc (maximum_braindamage): Don't set
+	implicit_num_to_str_ok or implicit_str_to_num_ok.
+
+	* ov-base.cc (octave_base_value::char_matrix_value):
+	Vimplicit_num_to_str_ok no longer exists.
+	(octave_base_value::all_strings): Likewise.
+	(octave_base_value::string_value): Likewise.
+
+	* ov-str-mat.cc (octave_char_matrix_str::matrix_value): Warn based
+	on Vwarn_str_to_num instead of Vimplicit_str_to_num_ok.
+
+	* ov.cc (Vwarn_num_to_str, Vwarn_str_to_num): New variables.
+	(warn_num_to_str, warn_str_to_num): New functions.
+	(symbols_of_ov): Add DEFVARs for warn_num_to_str and Vwarn_str_to_num.
+	* ov.h (Vwarn_num_to_str, Vwarn_str_to_num): Provide decl.
+
+	* ov.cc (Vimplicit_num_to_str_ok, Vimplicit_str_to_num_ok):
+	Delete unused variables.
+	(implicit_num_to_str_ok, implicit_str_to_num_ok):
+	Delete unused functions.
+	(symbols_of_ov): Delete DEFVARs for implicit_num_to_str_ok and
+	implicit_str_to_num_ok.
+	* ov.h (Vimplicit_num_to_str_ok, Vimplicit_str_to_num_ok):
+	Delete decls.
+
+	* pt-mat.cc (tree_matrix::rvalue): Vimplicit_num_to_str_ok no
+	longer exists.
+
 	* ov.cc (Vwarn_imag_to_real): New variable.
 	(warn_imag_to_real): New function.
 	(symbols_of_ov): Add DEFVAR for warn_imag_to_real.

@@ -189,9 +189,9 @@ Data Types}, for more information about creating matrices.
 
 @DOCSTRING(undo_string_escapes)
 
-@DOCSTRING(implicit_num_to_str_ok)
+@DOCSTRING(warn_num_to_str)
 
-@DOCSTRING(implicit_str_to_num_ok)
+@DOCSTRING(warn_str_to_num)
 
 @DOCSTRING(warn_single_quote_string)
 

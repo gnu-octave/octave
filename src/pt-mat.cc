@@ -486,7 +486,7 @@ tree_matrix::rvalue (void)
       some_strings_p = tmp.some_strings_p ();
       all_empty_p = tmp.all_empty_p ();
 
-      frc_str_conv = Vimplicit_num_to_str_ok && some_strings_p;
+      frc_str_conv = some_strings_p;
 
       if (all_strings_p)
 	chm.resize (nr, nc, Vstring_fill_char);

@@ -2,9 +2,10 @@
 
 	* emacs/octave-mod.el (octave-variables): Include
 	DEFAULT_EXEC_PATH, DEFAULT_LOAD_PATH, crash_dumps_octave_core,
-	sighup_dumps_octave_core, sigterm_dumps_octave_core, and
-	warn_imag_to_real in the list.
-	Delete ok_to_lose_imaginary_part from list.	
+	sighup_dumps_octave_core, sigterm_dumps_octave_core,
+	warn_imag_to_real, warn_num_to_str, and warn_str_to_num in the list.
+	Delete ok_to_lose_imaginary_part, implicit_num_to_str_ok, and
+	implicit_str_to_num_ok from the list.
 
 2003-07-08  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

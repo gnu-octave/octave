@@ -439,12 +439,14 @@ generate_struct_completions (const std::string& text,
 
 	  unwind_protect::begin_frame ("generate_struct_completions");
 
-	  unwind_protect_str (Vwarning_option);
-	  unwind_protect_bool (discard_error_messages);
 	  unwind_protect_int (error_state);
+	  unwind_protect_int (warning_state);
 
-	  Vwarning_option = "off";
+	  unwind_protect_bool (discard_error_messages);
+	  unwind_protect_bool (discard_warning_messages);
+
 	  discard_error_messages = true;
+	  discard_warning_messages = true;
 
 	  octave_value tmp = eval_string (prefix, true, parse_status);
 

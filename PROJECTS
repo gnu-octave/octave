@@ -241,16 +241,6 @@ Interpreter:
 
   * Fix the parser so that
 
-      function foo ()
-        implicit_str_to_num_ok = 1;
-        '#' + 0;
-      endfunction
-
-    succeeds, even when implicit_str_to_num_ok is 0 at the time the
-    function is parsed.
-
-  * Fix the parser so that
-
       if (expr) 'this is a string' end
 
     is parsed as IF expr STRING END.

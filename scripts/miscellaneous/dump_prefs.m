@@ -74,8 +74,6 @@ function dump_prefs (file)
               "history_file";
               "history_size";
               "ignore_function_time_stamp";
-              "implicit_num_to_str_ok";
-              "implicit_str_to_num_ok";
               "initialize_global_variables";
               "max_recursion_depth";
               "output_max_field_width";
@@ -105,6 +103,8 @@ function dump_prefs (file)
               "warn_future_time_stamp";
               "warn_imag_to_real";
               "warn_missing_semicolon";
+              "warn_num_to_str";
+              "warn_str_to_num";
               "warn_variable_switch_label";
               "whitespace_in_literal_matrix"];
 

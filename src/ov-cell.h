@@ -98,7 +98,7 @@ public:
 
   octave_value_list list_value (void) const;
 
-  octave_value convert_to_str (bool pad = false) const
+  octave_value convert_to_str_internal (bool pad = false) const
     { return all_strings (pad); }
 
   string_vector all_strings (bool pad = false) const;

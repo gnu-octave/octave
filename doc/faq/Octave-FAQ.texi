@@ -725,8 +725,6 @@ variables may have been introduced since this document was last updated.
   do_fortran_indexing = 1.0
   empty_list_elements_ok = 1.0
   fixed_point_format = 1.0
-  implicit_num_to_str_ok = 1.0
-  implicit_str_to_num_ok = 1.0
   page_screen_output = 0.0
   prefer_column_vectors = 0.0
   prefer_zero_one_indexing = 1.0

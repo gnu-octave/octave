@@ -1734,9 +1734,13 @@ fold (tree_binary_expression *e)
   unwind_protect::begin_frame ("fold_binary_expression");
 
   unwind_protect_int (error_state);
+  unwind_protect_int (warning_state);
 
   unwind_protect_bool (discard_error_messages);
+  unwind_protect_bool (discard_warning_messages);
+
   discard_error_messages = true;
+  discard_warning_messages = true;
 
   tree_expression *op1 = e->lhs ();
   tree_expression *op2 = e->rhs ();
@@ -1780,9 +1784,13 @@ fold (tree_unary_expression *e)
   unwind_protect::begin_frame ("fold_unary_expression");
 
   unwind_protect_int (error_state);
+  unwind_protect_int (warning_state);
 
   unwind_protect_bool (discard_error_messages);
+  unwind_protect_bool (discard_warning_messages);
+
   discard_error_messages = true;
+  discard_warning_messages = true;
 
   tree_expression *op = e->operand ();
 
@@ -1827,9 +1835,13 @@ finish_colon_expression (tree_colon_expression *e)
   unwind_protect::begin_frame ("finish_colon_expression");
 
   unwind_protect_int (error_state);
+  unwind_protect_int (warning_state);
 
   unwind_protect_bool (discard_error_messages);
+  unwind_protect_bool (discard_warning_messages);
+
   discard_error_messages = true;
+  discard_warning_messages = true;
 
   tree_expression *base = e->base ();
   tree_expression *limit = e->limit ();
@@ -2803,9 +2815,13 @@ finish_matrix (tree_matrix *m)
   unwind_protect::begin_frame ("finish_matrix");
 
   unwind_protect_int (error_state);
+  unwind_protect_int (warning_state);
 
   unwind_protect_bool (discard_error_messages);
+  unwind_protect_bool (discard_warning_messages);
+
   discard_error_messages = true;
+  discard_warning_messages = true;
 
   if (m->all_elements_are_constant ())
     {

@@ -15,15 +15,15 @@ set prog_output "ans = 1"
 do_test ismatrix-4.m
 
 set test ismatrix-5
-set prog_output "ans = 1"
+set prog_output "ans = 0"
 do_test ismatrix-5.m
 
 set test ismatrix-6
-set prog_output "ans = 1"
+set prog_output "ans = 0"
 do_test ismatrix-6.m
 
 set test ismatrix-7
-set prog_output "ans = 1"
+set prog_output "ans = 0"
 do_test ismatrix-7.m
 
 set test ismatrix-8
@@ -55,11 +55,11 @@ set prog_output "ans = 0"
 do_test isvector-4.m
 
 set test isvector-5
-set prog_output "ans = 1"
+set prog_output "ans = 0"
 do_test isvector-5.m
 
 set test isvector-6
-set prog_output "ans = 1"
+set prog_output "ans = 0"
 do_test isvector-6.m
 
 set test isvector-7
@@ -95,7 +95,7 @@ set prog_output "ans = 0"
 do_test isscalar-4.m
 
 set test isscalar-5
-set prog_output "ans = 1"
+set prog_output "ans = 0"
 do_test isscalar-5.m
 
 set test isscalar-6
@@ -135,7 +135,7 @@ set prog_output "ans = 1"
 do_test issquare-4.m
 
 set test issquare-5
-set prog_output "ans = 1"
+set prog_output "ans = 0"
 do_test issquare-5.m
 
 set test issquare-6
@@ -143,7 +143,7 @@ set prog_output "ans = 0"
 do_test issquare-6.m
 
 set test issquare-7
-set prog_output "ans = 1"
+set prog_output "ans = 0"
 do_test issquare-7.m
 
 set test issquare-8
@@ -179,7 +179,7 @@ set prog_output "ans = 1"
 do_test issymmetric-4.m
 
 set test issymmetric-5
-set prog_output "ans = 1"
+set prog_output "ans = 0"
 do_test issymmetric-5.m
 
 set test issymmetric-6
@@ -187,7 +187,7 @@ set prog_output "ans = 0"
 do_test issymmetric-6.m
 
 set test issymmetric-7
-set prog_output "ans = 1"
+set prog_output "ans = 0"
 do_test issymmetric-7.m
 
 set test issymmetric-8

@@ -57,7 +57,7 @@ extern "C"
 }
 
 // The number of lines we\'ve plotted so far.
-int plot_line_count;
+int plot_line_count = 0;
 
 // Is this a parametric plot?  Makes a difference for 3D plotting.
 int parametric_plot = 0;
@@ -159,16 +159,10 @@ tree_plot_command::eval (void)
   if (error_state)
     return;
 
-  for (Pix p = plot_list->first () ; p != 0; plot_list->next (p))
+  if (plot_list)
     {
-      subplot *ptr = plot_list->operator () (p);
+      int status = plot_list->print (ndim, plot_buf);
 
-      plot_line_count++;
-
-      if (p != plot_list->first ())
-	plot_buf << ",\\\n  ";
-
-      int status = ptr->print (ndim, plot_buf);
       if (status < 0)
 	return;
     }
@@ -196,95 +190,32 @@ tree_plot_command::eval (void)
     }
 }
 
-int
-subplot::print (int ndim, ostrstream& plot_buf)
+void
+tree_plot_command::print_code (ostream& os)
 {
-  int nc = 0;
-  if (plot_data)
+  print_code_indent (os);
+
+  switch (ndim)
     {
-      tree_constant data = plot_data->eval (0);
-      if (! error_state && data.is_defined ())
-	{
-	  char *file = 0;
-	  if (data.is_string_type ())
-	    {
-	      file = tilde_expand (data.string_value ());
-	      ifstream ftmp (file);
-	      if (ftmp)
-		{
-		  plot_buf << " \"" << file << '"';
-		  free (file);
-		  goto have_existing_file_or_command;
-		}
-	      else
-		{
-		  free (file);
-		  file = 0;
-
-// Opening as a file failed.  Let's try passing it along as a plot
-// command.
-		  plot_buf << " " << data.string_value ();
-		  goto have_existing_file_or_command;
-		}
-	    }
-
-	  nc = data.columns ();
-	  switch (ndim)
-	    {
-	    case 2:
-	      file = save_in_tmp_file (data, ndim);
-	      break;
-	    case 3:
-	      file = save_in_tmp_file (data, ndim, parametric_plot);
-	      break;
-	    default:
-	      panic_impossible ();
-	      break;
-	    }
-
-	  if (file)
-	    {
-	      mark_for_deletion (file);
-	      plot_buf << " \"" << file << '"';
-	    }
-	}
-      else
-	return -1;
-    }
-  else
-    return -1;
-
- have_existing_file_or_command:
-
-  if (using)
-    {
-      int status = using->print (ndim, nc, plot_buf);
-      if (status < 0)
-	return -1;
+    case 1:
+      os << "replot";
+      break;
+    case 2:
+      os << "gplot";
+      break;
+    case 3:
+      os << "gsplot";
+      break;
+    default:
+      panic_impossible ();
+      break;
     }
 
-  if (title)
-    {
-      tree_constant tmp = title->eval (0);
-      if (! error_state && tmp.is_string_type ())
-	plot_buf << " title " << '"' << tmp.string_value () << '"';
-      else
-	{
-	  warning ("line title must be a string");
-	  plot_buf << " title " << '"' << "line " << plot_line_count << '"';
-	}
-    }
-  else
-    plot_buf << " title " << '"' << "line " << plot_line_count << '"';
+  if (range)
+    range->print_code (os);
 
-  if (style)
-    {
-      int status = style->print (plot_buf);
-      if (status < 0)
-	return -1;
-    }
-
-  return 0;
+  if (plot_list)
+    plot_list->print_code (os);
 }
 
 plot_limits::plot_limits (void)
@@ -345,6 +276,19 @@ plot_limits::print (int ndim, ostrstream& plot_buf)
     z_range->print (plot_buf);
 }
 
+void
+plot_limits::print_code (ostream& os)
+{
+  if (x_range)
+    x_range->print_code (os);
+
+  if (y_range)
+    y_range->print_code (os);
+
+  if (z_range)
+    z_range->print_code (os);
+}
+
 plot_range::plot_range (void)
 {
   lower = 0;
@@ -401,6 +345,22 @@ plot_range::print (ostrstream& plot_buf)
     }
 
   plot_buf << "]";
+}
+
+void
+plot_range::print_code (ostream& os)
+{
+  os << " [";
+
+  if (lower)
+    lower->print_code (os);
+
+  os << ":";
+
+  if (upper)
+    upper->print_code (os);
+
+  os << "]";
 }
 
 subplot_using::subplot_using (void)
@@ -496,6 +456,20 @@ subplot_using::print (int ndim, int n_max, ostrstream& plot_buf)
   return 0;
 }
 
+void
+subplot_using::print_code (ostream& os)
+{
+  os << " using ";
+  for (int i = 0; i < qualifier_count; i++)
+    {
+      if (i > 0)
+	os << ":";
+
+      if (x[i])
+	x[i]->print_code (os);
+    }
+}
+
 subplot_style::subplot_style (void)
 {
   style = 0;
@@ -573,6 +547,177 @@ subplot_style::print (ostrstream& plot_buf)
     return -1;
 
   return 0;
+}
+
+void
+subplot_style::print_code (ostream& os)
+{
+  os << " with " << style;
+
+  if (linetype)
+    {
+      os << " ";
+      linetype->print_code (os);
+      os << " ";
+    }
+
+  if (pointtype)
+    {
+      os << " ";
+      pointtype->print_code (os);
+      os << " ";
+    }
+}
+
+int
+subplot::print (int ndim, ostrstream& plot_buf)
+{
+  int nc = 0;
+  if (plot_data)
+    {
+      tree_constant data = plot_data->eval (0);
+      if (! error_state && data.is_defined ())
+	{
+	  char *file = 0;
+	  if (data.is_string_type ())
+	    {
+	      file = tilde_expand (data.string_value ());
+	      ifstream ftmp (file);
+	      if (ftmp)
+		{
+		  plot_buf << " \"" << file << '"';
+		  free (file);
+		  goto have_existing_file_or_command;
+		}
+	      else
+		{
+		  free (file);
+		  file = 0;
+
+// Opening as a file failed.  Let's try passing it along as a plot
+// command.
+		  plot_buf << " " << data.string_value ();
+		  goto have_existing_file_or_command;
+		}
+	    }
+
+	  nc = data.columns ();
+	  switch (ndim)
+	    {
+	    case 2:
+	      file = save_in_tmp_file (data, ndim);
+	      break;
+	    case 3:
+	      file = save_in_tmp_file (data, ndim, parametric_plot);
+	      break;
+	    default:
+	      panic_impossible ();
+	      break;
+	    }
+
+	  if (file)
+	    {
+	      mark_for_deletion (file);
+	      plot_buf << " \"" << file << '"';
+	    }
+	}
+      else
+	return -1;
+    }
+  else
+    return -1;
+
+ have_existing_file_or_command:
+
+  if (using)
+    {
+      int status = using->print (ndim, nc, plot_buf);
+      if (status < 0)
+	return -1;
+    }
+
+  if (title)
+    {
+      tree_constant tmp = title->eval (0);
+      if (! error_state && tmp.is_string_type ())
+	plot_buf << " title " << '"' << tmp.string_value () << '"';
+      else
+	{
+	  warning ("line title must be a string");
+	  plot_buf << " title " << '"' << "line " << plot_line_count << '"';
+	}
+    }
+  else
+    plot_buf << " title " << '"' << "line " << plot_line_count << '"';
+
+  if (style)
+    {
+      int status = style->print (plot_buf);
+      if (status < 0)
+	return -1;
+    }
+
+  return 0;
+}
+
+void
+subplot::print_code (ostream& os)
+{
+  if (plot_data)
+    plot_data->print_code (os);
+
+  if (using)
+    using->print_code (os);
+
+  if (title)
+    title->print_code (os);
+
+  if (style)
+    style->print_code (os);
+}
+
+int
+subplot_list::print (int ndim, ostrstream& plot_buf)
+{
+  int status = 0;
+
+  for (Pix p = first (); p != 0; next (p))
+    {
+      subplot *elt = this->operator () (p);
+
+      plot_line_count++;
+
+      if (p != first ())
+	plot_buf << ",\\\n  ";
+
+      status = elt->print (ndim, plot_buf);
+
+      if (status < 0)
+	break;
+    }
+
+  return status;
+}
+
+void
+subplot_list::print_code (ostream& os)
+{
+  Pix p = first ();
+
+  while (p)
+    {
+      subplot *elt = this->operator () (p);
+
+      next (p);
+
+      if (elt)
+	{
+	  elt->print_code (os);
+
+	  if (p)
+	    os << ", ";
+	}
+    }
 }
 
 char *

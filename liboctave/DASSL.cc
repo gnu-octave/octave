@@ -115,9 +115,9 @@ DASSL::DASSL (const ColumnVector& state, const ColumnVector& deriv,
 
 DASSL::~DASSL (void)
 {
-  delete info;
-  delete rwork;
-  delete iwork;
+  delete [] info;
+  delete [] rwork;
+  delete [] iwork;
 }
 
 void

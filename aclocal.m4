@@ -220,8 +220,13 @@ dnl
     flibs="$flibs $arg"
   fi
 done
+if test -n "$ld_run_path"; then
+  flibs_result="$ld_run_path $flibs"
+else
+  flibs_result="$flibs"
+fi
 changequote([, ])dnl
-octave_cv_flibs="$ld_run_path $flibs"])
+octave_cv_flibs="$flibs_result"])
 FLIBS="$octave_cv_flibs"
 AC_MSG_RESULT([$FLIBS])])
 

@@ -541,8 +541,7 @@ command_history::goto_mark (void)
 void
 command_history::read (bool must_exist)
 {
-  if (instance_ok ())
-    instance->do_read (must_exist);
+  read (file (), must_exist);
 }
 
 void
@@ -555,8 +554,7 @@ command_history::read (const std::string& f, bool must_exist)
 void
 command_history::read_range (int from, int to, bool must_exist)
 {
-  if (instance_ok ())
-    instance->do_read_range (from, to, must_exist);
+  read_range (file (), from, to, must_exist);
 }
 
 void
@@ -720,22 +718,10 @@ command_history::do_goto_mark (void)
 }
 
 void
-command_history::do_read (bool must_exist)
-{
-  do_read (xfile, must_exist);
-}
-
-void
 command_history::do_read (const std::string& f, bool)
 {
   if (f.empty ())
     error ("command_history::read: missing file name");
-}
-
-void
-command_history::do_read_range (int from, int to, bool must_exist)
-{
-  do_read_range (xfile, from, to, must_exist);
 }
 
 void

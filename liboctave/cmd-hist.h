@@ -159,11 +159,7 @@ protected:
 
   virtual void do_goto_mark (void);
 
-  virtual void do_read (bool);
-
   virtual void do_read (const std::string&, bool);
-
-  virtual void do_read_range (int, int, bool);
 
   virtual void do_read_range (const std::string&, int, int, bool);
 

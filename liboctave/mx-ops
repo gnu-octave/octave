@@ -1,4 +1,14 @@
 # types
+#
+# key typename object-type header fwd-decl-ok
+#
+# object-type is one of
+#
+#   S:  scalar
+#   M:  matrix
+#   DM: diagonal matrix
+#   ND: N-d array
+#
 b bool S NONE NO
 bm boolMatrix ND boolMatrix.h YES
 bnda boolNDArray ND boolNDArray.h YES
@@ -10,7 +20,27 @@ dm DiagMatrix DM dDiagMatrix.h YES
 m Matrix M dMatrix.h YES
 nda NDArray ND dNDArray.h YES
 s double S NONE NO
+i8 octave_int8 S oct-inttypes.h YES
+ui8 octave_uint8 S oct-inttypes.h YES
+i16 octave_int16 S oct-inttypes.h YES
+ui16 octave_uint16 S oct-inttypes.h YES
+i32 octave_int32 S oct-inttypes.h YES
+ui32 octave_uint32 S oct-inttypes.h YES
+i8nda int8NDArray ND int8NDArray.h YES
+ui8nda uint8NDArray ND uint8NDArray.h YES
+i16nda int16NDArray ND int16NDArray.h YES
+ui16nda uint16NDArray ND uint16NDArray.h YES
+i32nda int32NDArray ND int32NDArray.h YES
+ui32nda uint32NDArray ND uint32NDArray.h YES
 # ops
+# result_t lhs_t rhs_t op-type lhs_conv rhs_conv zero_val headers ...
+#
+# op-type is one of
+#
+#  B: binary ops, + - * /
+#  C: comparison ops, < <= == != >= >
+#  L: logical ops, & |
+#
 cdm cdm dm B
 cdm dm cdm B
 cm cs cdm B
@@ -41,3 +71,15 @@ m dm m B 0.0
 m dm s B
 m m dm B 0.0
 m s dm B
+i8nda s i8nda BCL NONE NONE 0 boolMatrix.h boolNDArray.h
+i8nda i8nda s BCL NONE NONE 0 boolMatrix.h boolNDArray.h
+ui8nda s ui8nda BCL NONE NONE 0 boolMatrix.h boolNDArray.h
+ui8nda ui8nda s BCL NONE NONE 0 boolMatrix.h boolNDArray.h
+i16nda s i16nda BCL NONE NONE 0 boolMatrix.h boolNDArray.h
+i16nda i16nda s BCL NONE NONE 0 boolMatrix.h boolNDArray.h
+ui16nda s ui16nda BCL NONE NONE 0 boolMatrix.h boolNDArray.h
+ui16nda ui16nda s BCL NONE NONE 0 boolMatrix.h boolNDArray.h
+i32nda s i32nda BCL NONE NONE 0 boolMatrix.h boolNDArray.h
+i32nda i32nda s BCL NONE NONE 0 boolMatrix.h boolNDArray.h
+ui32nda s ui32nda BCL NONE NONE 0 boolMatrix.h boolNDArray.h
+ui32nda ui32nda s BCL NONE NONE 0 boolMatrix.h boolNDArray.h

@@ -28,6 +28,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream>
 
 #include "data-conv.h"
+#include "lo-ieee.h"
 
 typedef signed char octave_int8_t;
 typedef TWO_BYTE_INT octave_int16_t;
@@ -246,7 +247,13 @@ public:
 
   octave_int<T> operator - (void) const
   {
-    return std::numeric_limits<T>::is_signed ? -ival : 0;
+    // Can't just return -ival because signed types are not
+    // symmetric, which causes things like -intmin("int32") to be the
+    // same as intmin("int32") instead of intmax("int32") (which is
+    // what we should get with saturation semantics).
+
+    return std::numeric_limits<T>::is_signed ?
+      OCTAVE_INT_FIT_TO_RANGE (- static_cast<double> (ival), T) : 0;
   }
 
   operator double (void) const { return static_cast<double> (value ()); }
@@ -279,7 +286,8 @@ public:
   {
     double t = static_cast<double> (value ());
     double tx = static_cast<double> (x.value ());
-    ival = OCTAVE_INT_FIT_TO_RANGE (t / tx, T);
+    double r = (t == 0 && tx == 0) ? 0 : round (t / tx);
+    ival = OCTAVE_INT_FIT_TO_RANGE (r, T);
     return *this;
   }
 
@@ -310,13 +318,13 @@ private:
 };
 
 template <class T>
-T
-pow (const T& a, const T& b)
+octave_int<T>
+pow (const octave_int<T>& a, const octave_int<T>& b)
 {
-  T retval;
+  octave_int<T> retval;
 
-  T zero = T (0);
-  T one = T (1);
+  octave_int<T> zero = octave_int<T> (0);
+  octave_int<T> one = octave_int<T> (1);
 
   if (b == zero)
     retval = one;
@@ -324,8 +332,8 @@ pow (const T& a, const T& b)
     retval = zero;
   else
     {
-      T a_val = a;
-      T b_val = b;
+      octave_int<T> a_val = a;
+      octave_int<T> b_val = b;
 
       retval = a;
 
@@ -344,6 +352,26 @@ pow (const T& a, const T& b)
     }
 
   return retval;
+}
+
+template <class T>
+octave_int<T>
+pow (double a, const octave_int<T>& b)
+{
+  double tb = static_cast<double> (b.value ());
+  double r = pow (a, tb);
+  r = lo_ieee_isnan (r) ? 0 : round (r);
+  return OCTAVE_INT_FIT_TO_RANGE (r, T);
+}
+
+template <class T>
+octave_int<T>
+pow (const octave_int<T>& a, double b)
+{
+  double ta = static_cast<double> (a.value ());
+  double r = pow (ta, b);
+  r = lo_ieee_isnan (r) ? 0 : round (r);
+  return OCTAVE_INT_FIT_TO_RANGE (r, T);
 }
 
 template <class T>
@@ -389,7 +417,50 @@ typedef octave_int<octave_uint64_t> octave_uint64;
 OCTAVE_INT_BIN_OP(+)
 OCTAVE_INT_BIN_OP(-)
 OCTAVE_INT_BIN_OP(*)
-OCTAVE_INT_BIN_OP(/)
+
+template <class T1, class T2>
+octave_int<typename octave_int_binop_traits<T1, T2>::TR>
+operator / (const octave_int<T1>& x, const octave_int<T2>& y)
+{
+  double tx = static_cast<double> (x.value ());
+  double ty = static_cast<double> (y.value ());
+  double r = (tx == 0 && ty == 0) ? 0 : tx / ty;
+  return OCTAVE_INT_FIT_TO_RANGE2 (r, T1, T2);
+}
+
+#define OCTAVE_INT_DOUBLE_BIN_OP(OP) \
+ \
+  template <class T> \
+  octave_int<T> \
+  operator OP (const octave_int<T>& x, double y) \
+  { \
+    double tx = static_cast<double> (x.value ()); \
+    double r = round (tx OP y); \
+    r = lo_ieee_isnan (r) ? 0 : round (r); \
+    return OCTAVE_INT_FIT_TO_RANGE (r, T); \
+  }
+
+OCTAVE_INT_DOUBLE_BIN_OP(+)
+OCTAVE_INT_DOUBLE_BIN_OP(-)
+OCTAVE_INT_DOUBLE_BIN_OP(*)
+OCTAVE_INT_DOUBLE_BIN_OP(/)
+
+#define OCTAVE_DOUBLE_INT_BIN_OP(OP) \
+ \
+  template <class T> \
+  octave_int<T> \
+  operator OP (double x, const octave_int<T>& y) \
+  { \
+    double ty = static_cast<double> (y.value ()); \
+    double r = x OP ty; \
+    r = lo_ieee_isnan (r) ? 0 : round (r); \
+    return OCTAVE_INT_FIT_TO_RANGE (r, T); \
+  }
+
+OCTAVE_DOUBLE_INT_BIN_OP(+)
+OCTAVE_DOUBLE_INT_BIN_OP(-)
+OCTAVE_DOUBLE_INT_BIN_OP(*)
+OCTAVE_DOUBLE_INT_BIN_OP(/)
 
 #define OCTAVE_INT_BITCMP_OP(OP) \
  \

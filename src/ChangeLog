@@ -1,3 +1,16 @@
+2004-09-01  John W. Eaton  <jwe@octave.org>
+
+	* OPERATORS/op-i8-i8.cc, OPERATORS/op-i16-i16.cc,
+	OPERATORS/op-i32-i32.cc, OPERATORS/op-i64-i64.cc,
+	OPERATORS/op-ui8-ui8.cc, OPERATORS/op-ui16-ui16.cc,
+	OPERATORS/op-ui32-ui32.cc, OPERATORS/op-ui64-ui64.cc:
+	Define and install mixed assignment ops.
+	* op-int.h: Define mixed integer/double ops.
+	Define simple division ops.
+
+	* ov-complex.h (octave_complex_scalar): New typedef to simplify
+	various macros where naming consistency matters.
+
 2004-08-31  David Bateman  <dbateman@free.fr>
 
 	* OPERATORS/op-int.h (ss_pow, ms_el_pow, mm_el_pow): New power 

@@ -1,3 +1,14 @@
+2004-09-01  John W. Eaton  <jwe@octave.org>
+
+	* oct-inttypes.h (pow, operator +, operator -, operator *,
+	operator /): Handle mixed integer/double ops.  If op generates a
+	NaN, set result to 0.
+	(octave_int::operator - (void)): Convert to double, then negate,
+	then fit to range.
+
+	* mx-ops: Define integer types.  Include declarations for mixed
+	integer/double ops.
+
 2004-08-31  John W. Eaton  <jwe@octave.org>
 
 	* oct-inttypes.h (pow): Args now const reference.

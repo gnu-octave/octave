@@ -147,6 +147,8 @@ private:
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
 
+typedef octave_complex octave_complex_scalar;
+
 #endif
 
 /*

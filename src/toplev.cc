@@ -619,11 +619,8 @@ do_system (const string& cmd_str, bool return_output)
 	{
 	  if (return_output)
 	    output_buf.put (ch);
-
-	  if (user_pref.page_screen_output)
-	    octave_stdout.put (ch);
 	  else
-	    cout.put (ch);
+	    octave_stdout.put (ch);
 	}
 
       status = cmd->close ();
@@ -637,6 +634,8 @@ do_system (const string& cmd_str, bool return_output)
 
       if (return_output)
 	{
+	  output_buf << ends;
+
 	  char *msg = output_buf.str ();
 
 	  retval(1) = (double) status;

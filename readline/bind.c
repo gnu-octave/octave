@@ -24,9 +24,9 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <fcntl.h>
-#if !defined (NO_SYS_FILE)
+#if defined (HAVE_SYS_FILE)
 #  include <sys/file.h>
-#endif /* !NO_SYS_FILE */
+#endif /* HAVE_SYS_FILE */
 #include <signal.h>
 
 #if defined (HAVE_UNISTD_H)
@@ -93,9 +93,14 @@ static int glean_key_from_name ();
 
 #if defined (HAVE_STRCASECMP)
 #define stricmp strcasecmp
+#else
+static int stricmp ();
+#endif
+
+#if defined (HAVE_STRNCASECMP)
 #define strnicmp strncasecmp
 #else
-static int stricmp (), strnicmp ();
+static int strnicmp ();
 #endif
 
 #if defined (STATIC_MALLOC)

@@ -28,9 +28,9 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <fcntl.h>
-#if !defined (NO_SYS_FILE)
+#if defined (HAVE_SYS_FILE)
 #  include <sys/file.h>
-#endif /* !NO_SYS_FILE */
+#endif /* HAVE_SYS_FILE */
 
 #if defined (HAVE_UNISTD_H)
 #  include <unistd.h>
@@ -216,6 +216,11 @@ char *rl_completer_word_break_characters = (char *)NULL;
    rl_completer_word_break_characters are treated as any other character,
    unless they also appear within this list. */
 char *rl_completer_quote_characters = (char *)NULL;
+
+/* Character to add after a single completion alternative matches
+   at the end of line.  By default this is a space.
+   Nothing is added if this is '\0'. */
+char rl_completion_append_character = ' ';
 
 /* List of characters that are word break characters, but should be left
    in TEXT when it is passed to the completion function.  The shell uses
@@ -742,7 +747,8 @@ rl_complete_internal (what_to_do)
 	     If this was the only match, and we are hacking files,
 	     check the file to see if it was a directory.  If so,
 	     add a '/' to the name.  If not, and we are at the end
-	     of the line, then add a space. */
+	     of the line, then add rl_completion_append_character,
+	     usually a space. */
 	  if (matches[1])
 	    {
 	      if (what_to_do == '!')
@@ -758,8 +764,11 @@ rl_complete_internal (what_to_do)
 	      if (quote_char)
 		temp_string[temp_string_index++] = quote_char;
 
-	      temp_string[temp_string_index++] = delimiter ? delimiter : ' ';
-	      temp_string[temp_string_index++] = '\0';
+	      temp_string[temp_string_index++] = delimiter ? delimiter
+		: rl_completion_append_character;
+
+	      if (rl_completion_append_character)
+		temp_string[temp_string_index++] = '\0';
 
 	      if (rl_filename_completion_desired)
 		{

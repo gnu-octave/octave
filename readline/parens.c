@@ -34,7 +34,21 @@ rl_insert_close (count, invoking_key)
 #else /* PAREN_MATCHING */
 
 #include <stdio.h>
+/* With SunOS 4.1.x at least, and Ultrix 4.x, sys/types.h won't define
+   the  FD_XXX macros if _POSIX_SOURCE is defined */
+#if defined (_POSIX_SOURCE) && (defined (sun) || defined (ultrix))
+#undef _POSIX_SOURCE
+#endif
+/* On the Alpha, we have to have _OSF_SOURCE defined for sys/types.h
+   to define the FD_XXX macros. */
+#if defined (__alpha__) && ! defined (_OSF_SOURCE)
+#define _OSF_SOURCE
+#endif
 #include <sys/types.h>
+/* AIX (any others?) defines the FD_XXX macros in sys/select.h */
+#if defined (HAVE_SYS_SELECT_H)
+#include <sys/select.h>
+#endif
 #if defined (FD_SET)
 #  include <sys/time.h>
 #endif /* FD_SET */

@@ -24,9 +24,9 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <fcntl.h>
-#if !defined (NO_SYS_FILE)
+#if defined (HAVE_SYS_FILE)
 #  include <sys/file.h>
-#endif /* !NO_SYS_FILE */
+#endif /* HAVE_SYS_FILE */
 #include <signal.h>
 
 #if defined (HAVE_UNISTD_H)
@@ -64,15 +64,10 @@ extern int _rl_meta_flag;
 
 extern void free_undo_list ();
 
-#if defined (VOID_SIGHANDLER)
-#  define sighandler void
-#else
-#  define sighandler int
-#endif /* VOID_SIGHANDLER */
-
 /* This typedef is equivalant to the one for Function; it allows us
    to say SigHandler *foo = signal (SIGKILL, SIG_IGN); */
-typedef sighandler SigHandler ();
+typedef RETSIGTYPE SigHandler ();
+
 
 #if defined (__GO32__)
 #  undef HANDLE_SIGNALS
@@ -94,7 +89,7 @@ extern char *xmalloc (), *xrealloc ();
 #if defined (SIGWINCH)
 static SigHandler *old_sigwinch = (SigHandler *)NULL;
 
-static sighandler
+static RETSIGTYPE
 rl_handle_sigwinch (sig)
      int sig;
 {
@@ -108,9 +103,9 @@ rl_handle_sigwinch (sig)
       old_sigwinch != (SigHandler *)SIG_IGN &&
       old_sigwinch != (SigHandler *)SIG_DFL)
     (*old_sigwinch) (sig);
-#if !defined (VOID_SIGHANDLER)
+#if RETSIGTYPE != void
   return (0);
-#endif /* VOID_SIGHANDLER */
+#endif
 }
 #endif  /* SIGWINCH */
 
@@ -128,7 +123,7 @@ static SigHandler
 #endif /* !SHELL */
 
 /* Handle an interrupt character. */
-static sighandler
+static RETSIGTYPE
 rl_signal_handler (sig)
      int sig;
 {
@@ -198,9 +193,9 @@ rl_signal_handler (sig)
       rl_set_signals ();
     }
 
-#if !defined (VOID_SIGHANDLER)
+#if RETSIGTYPE != void
   return (0);
-#endif /* !VOID_SIGHANDLER */
+#endif
 }
 
 #if defined (HAVE_POSIX_SIGNALS)

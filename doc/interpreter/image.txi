@@ -39,6 +39,10 @@ contact @email{bug-octave@@bevo.che.wisc.edu}.
 
 @DOCSTRING(ntsc2rgb)
 
+@DOCSTRING(hsv2rgb)
+
+@DOCSTRING(rgb2hsv)
+
 @DOCSTRING(ocean)
 
 @DOCSTRING(rgb2ind)

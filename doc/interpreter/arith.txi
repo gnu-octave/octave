@@ -14,6 +14,7 @@ will work for real and complex scalar or matrix arguments.
 * Trigonometry::                
 * Sums and Products::           
 * Special Functions::           
+* Coordinate Transformations::
 * Mathematical Constants::      
 @end menu
 
@@ -157,7 +158,7 @@ sin ([1, 2; 3, 4])
 
 @DOCSTRING(sumsq)
 
-@node Special Functions, Mathematical Constants, Sums and Products, Arithmetic
+@node Special Functions, Coordinate Transformations, Sums and Products, Arithmetic
 @section Special Functions
 
 @DOCSTRING(besselj)
@@ -188,7 +189,18 @@ sin ([1, 2; 3, 4])
 
 @DOCSTRING(duplication_matrix)
 
-@node Mathematical Constants,  , Special Functions, Arithmetic
+@node Coordinate Transformations, Mathematical Constants, Special Functions, Arithmetic
+@section Coordinate Transformations
+
+@DOCSTRING(cart2pol)
+
+@DOCSTRING(pol2cart)
+
+@DOCSTRING(cart2sph)
+
+@DOCSTRING(sph2cart)
+
+@node Mathematical Constants,  , Coordinate Transformations, Arithmetic
 @section Mathematical Constants
 
 @DOCSTRING(I)

@@ -398,7 +398,7 @@ octave_env::do_get_host_name (void) const
     {
       char hostname[256];
 
-      int status = gethostname (hostname, 255);
+      int status = octave_gethostname (hostname, 255);
 
       host_name = (status < 0) ? "unknown" : hostname;
     }

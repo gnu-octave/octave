@@ -1,3 +1,9 @@
+2001-02-28  Albert Chin-A-Young  <china@thewrittenword.com>
+
+	* configure.in: Check for getpwnam in libsun only after checking
+	default libraries first.  Check for gethostname in libsocket only
+	after checking default libraries first.	
+
 2001-02-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in: Allow for using f2c when setting functions to look

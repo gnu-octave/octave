@@ -21,7 +21,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA. 
 
-AC_REVISION($Revision: 1.340 $)
+AC_REVISION($Revision: 1.341 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -853,8 +853,8 @@ AC_SUBST(OCTAVE_LITE)
 AC_ISC_POSIX
 AC_MINIX
 AC_AIX
-AC_CHECK_LIB(sun, getpwnam)
-AC_CHECK_LIB(socket, gethostname)
+AC_CHECK_FUNC(getpwnam, , AC_CHECK_LIB(sun, getpwnam))
+AC_CHECK_FUNC(gethostname, , AC_CHECK_LIB(socket, gethostname))
 
 ### How big are ints and how are they oriented?  These could probably
 ### be eliminated in favor of run-time checks.
@@ -953,7 +953,7 @@ AC_SUBST(GLOB_INCFLAGS)
 
 AC_CHECK_FUNCS(atexit bcopy bzero dup2 endgrent endpwent execvp \
   fcntl fork getcwd getegid geteuid getgid getgrent getgrgid \
-  getgrnam gethostname getpgrp getpid getppid getpwent getpwnam \
+  getgrnam getpgrp getpid getppid getpwent \
   getpwuid gettimeofday getuid getwd link localtime_r lstat \
   memmove mkdir mkfifo on_exit pipe poll putenv readlink rename \
   rindex rmdir select setgrent setpwent setvbuf sigaction sigpending \

@@ -203,7 +203,7 @@ command line.
 @example
 printf ("%s", program_name);
 for i = 1:nargin
-  printf (" %s", argv(i));
+  printf (" %s", nth (argv, i));
 endfor
 printf ("\n");
 @end example

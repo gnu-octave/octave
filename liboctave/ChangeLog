@@ -1,3 +1,13 @@
+2001-02-28  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lo-cutils.c (octave_gethostname): New function.
+	* lo-utils.h: Provide declaration.
+	* oct-env.cc (octave_env::do_get_host_name):
+	Call octave_gethostname, instead of gethostname.
+
+	* lo-cutils.c (gethostname): Define here.
+	* lo-sysdep.cc: Not here.
+
 2001-02-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* lo-cutils.c: Don't declare strptime.

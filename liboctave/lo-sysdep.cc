@@ -20,14 +20,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-/*
-
-The function gethostname was adapted from a similar function from GNU
-Bash, the Bourne Again SHell, copyright (C) 1987, 1989, 1991 Free
-Software Foundation, Inc.
-
-*/
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -40,10 +32,6 @@ Software Foundation, Inc.
 #include <sys/types.h>
 #endif
 #include <unistd.h>
-#endif
-
-#if ! defined (HAVE_GETHOSTNAME) && defined (HAVE_SYS_UTSNAME_H)
-#include <sys/utsname.h>
 #endif
 
 #include "lo-error.h"
@@ -99,26 +87,6 @@ octave_chdir (const std::string& path)
   return chdir (path.c_str ());
 #endif
 }
-
-#if ! defined (HAVE_GETHOSTNAME) && defined (HAVE_SYS_UTSNAME_H)
-
-int
-gethostname (char *name, int namelen)
-{
-  int i;
-  struct utsname ut;
-
-  --namelen;
-
-  uname (&ut);
-  i = strlen (ut.nodename) + 1;
-  strncpy (name, ut.nodename, i < namelen ? i : namelen);
-  name[namelen] = '\0';
-
-  return 0;
-}
-
-#endif
 
 /*
 ;;; Local Variables: ***

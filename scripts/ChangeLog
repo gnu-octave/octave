@@ -1,3 +1,17 @@
+2001-02-28  Kai Habel  <kai.habel@gmx.de>
+
+    * general/cart2pol.m: New file.
+    * general/pol2cart.m: New file.
+    * general/cart2sph.m: New file.
+    * general/sph2cart.m: New file.
+    * image/rgb2hsv.m: New file.
+    * image/hsv2rgb.m: New file.
+
+2001-02-26  Paul Kienzle  <pkienzle@kienzle.powernet.co.uk>
+
+	* plot/meshgrid.m: Avoid for loops.
+	* plot/meshdom.m: Likewise.
+
 2001-02-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* linear-algebra/norm.m: Use sqrt instead of ^0.5.

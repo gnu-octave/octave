@@ -20,11 +20,27 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
+/*
+
+The function gethostname was adapted from a similar function from GNU
+Bash, the Bourne Again SHell, copyright (C) 1987, 1989, 1991 Free
+Software Foundation, Inc.
+
+*/
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 
+#ifdef HAVE_UNISTD_H
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
+#include <unistd.h>
+#endif
+
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 
 void
@@ -40,7 +56,33 @@ oct_strptime (const char *buf, const char *format, struct tm *tm)
   return (char *) strptime (buf, format, tm);
 }
 
+#if ! defined (HAVE_GETHOSTNAME) && defined (HAVE_SYS_UTSNAME_H)
 
+#include <sys/utsname.h>
+
+int
+gethostname (char *name, int namelen)
+{
+  int i;
+  struct utsname ut;
+
+  --namelen;
+
+  uname (&ut);
+  i = strlen (ut.nodename) + 1;
+  strncpy (name, ut.nodename, i < namelen ? i : namelen);
+  name[namelen] = '\0';
+
+  return 0;
+}
+
+#endif
+
+int
+octave_gethostname (char *name, int namelen)
+{
+  return gethostname (name, namelen);
+}
 
 /*
 ;;; Local Variables: ***

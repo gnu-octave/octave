@@ -474,9 +474,9 @@ to be installed, which unfortunately still does not come with GNU Emacs
 (it does with XEmacs).  It can be retrieved from any GNU Emacs Lisp Code
 Directory archive, e.g.@:
 @url{ftp://ftp.cis.ohio-state.edu/pub/gnu/emacs/elisp-archive},
-in the @file{packages} subdirectory.  The alpha version of an enhanced
-version of gnuserv is available at 
-@url{ftp://ftp.wellfleet.com/netman/psmith/emacs/gnuserv-2.1alpha.tar.gz}.
+in the @file{packages} subdirectory.  A recent version of gnuserv is
+available from
+@url{http://www.meltin.net/hacks/emacs/src/gnuserv-3.12.2.tar.gz}.
 
 If @file{gnuserv} is installed, add the lines
 @lisp

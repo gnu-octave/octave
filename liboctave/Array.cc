@@ -32,7 +32,6 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #endif
 
 #include "Array.h"
-#include "lo-error.h"
 
 /*
  * The real representation of all arrays.

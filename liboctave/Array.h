@@ -28,6 +28,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma interface
 #endif
 
+#include "lo-error.h"
+
 // Classes we declare.
 
 template <class T> class ArrayRep;
@@ -310,12 +312,12 @@ public:
   T& checkelem (int r, int c);
   T& operator () (int r, int c);
 #else
-  Proxy elem (int r, int c)
+  inline Proxy elem (int r, int c)
   {
     return Proxy (this, r, c);
   }
 
-  Proxy checkelem (int r, int c)
+  inline Proxy checkelem (int r, int c)
   {
     if (r < 0 || c < 0 || r >= nr || c >= nc)
       {
@@ -326,7 +328,7 @@ public:
       return Proxy (this, r, c);
   }
 
-  Proxy operator () (int r, int c)
+  inline Proxy operator () (int r, int c)
   {
     if (r < 0 || c < 0 || r >= nr || c >= nc)
       {
@@ -350,8 +352,8 @@ public:
 
 private:
 
-  T get (int i) { return Array<T>::elem (i); }
-  void set (const T& val, int i) { Array<T>::elem (i) = val; }
+  inline T get (int i) { return Array<T>::elem (i); }
+  inline void set (const T& val, int i) { Array<T>::elem (i) = val; }
 };
 
 #if defined (__GNUG__) && ! defined (USE_EXTERNAL_TEMPLATES)

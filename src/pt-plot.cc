@@ -169,6 +169,9 @@ open_plot_stream (void)
       sigemptyset (&set);
       sigaddset (&set, SIGINT);
       sigprocmask (SIG_BLOCK, &set, &oset);
+#else
+     volatile octave_interrupt_handler *old_interrupt_handler
+	= octave_ignore_interrupts ();
 #endif
 
       plot_stream = new oprocstream (plot_prog.c_str ());
@@ -194,6 +197,8 @@ open_plot_stream (void)
 
 #if defined (HAVE_POSIX_SIGNALS)
       sigprocmask (SIG_SETMASK, &oset, 0);
+#else
+      octave_set_interrupt_handler (old_interrupt_handler);
 #endif
     }
 

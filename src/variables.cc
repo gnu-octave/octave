@@ -1487,8 +1487,8 @@ install_builtin_variables (void)
 
   DEFVAR ("default_save_format", SBV_default_save_format, "ascii",
 	  0, 0, 1, sv_default_save_format,
-    "default format for files created with save, may be either\n\
-\"binary\" or \"text\""); 
+    "default format for files created with save, may be one of\n\
+\"binary\", \"text\", or \"mat-binary\""); 
 
   DEFVAR ("do_fortran_indexing", SBV_do_fortran_indexing, "false", 0, 0,
 	  1, do_fortran_indexing,

@@ -99,6 +99,11 @@ int using_readline = 1;
 int using_readline = 0;
 #endif
 
+#if defined (USE_READLINE)
+// This is from readline's rltty.c:
+extern "C" void rl_deprep_terminal (void);
+#endif
+
 // Nonzero means we printed messages about reading startup files.
 int reading_startup_message_printed = 0;
 
@@ -297,7 +302,11 @@ script file but without requiring the file to be named `FILE.m'.")
 void
 clean_up_and_exit (int retval)
 {
+#if defined (USE_READLINE)
+  rl_deprep_terminal ();
+#else
   raw_mode (0);
+#endif
 
   octave_command_history.clean_up_and_save ();
 

@@ -626,6 +626,18 @@ DEFUN (tilde_expand, args, ,
   return retval;
 }
 
+#if defined (__EMX__) && defined (OS2)
+
+DEFUN_TEXT (extproc, , ,
+  "extproc : ignored by Octave")
+{
+  return octave_value_list ();
+}
+
+DEFALIAS (EXTPROC, extproc);
+
+#endif
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

@@ -1,5 +1,13 @@
 Wed Nov 20 00:35:57 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* toplev.cc [USE_READLINE] (clean_up_and_exit):
+	Call rl_deprep_terminal() to restore terminal settings.
+
+	* sysdep.cc [__EMX__ && OS2] (Fextproc): New command.
+	[__EMX__ && OS2] (FEXTPROC): Alias for Fextproc.
+
+	* Version 1.93.
+
 	* sysdep.cc (octave_chdir): [__EMX__]: Make copy of string before
 	converting to upper case.
 

@@ -1,7 +1,7 @@
 2004-01-22  Petter Risholm  <risholm@stud.ntnu.no>
 
-	* Array.cc (Array<T>::assign2): Check for RHS dimensions larger
-	than 2.
+	* Array.cc (Array<T>::resize_and_fill): Correctly copy old elements.
+	(Array<T>::assign2): Check for RHS dimensions larger than 2.
 
 2004-01-21  Petter Risholm  <risholm@stud.ntnu.no>
 

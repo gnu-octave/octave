@@ -68,9 +68,6 @@
 #undef WITH_DL
 
 /* Define if using dld for dynamic linking of object files. */
-#undef WITH_DLD
-
-/* Define if using dld for dynamic linking of object files. */
 #undef WITH_SHL
 
 /* Define if using some method of dynamic linking. */

@@ -149,9 +149,7 @@ sigchld_handler (int /* sig */)
   int status;
   pid_t pid = wait (&status);
 
-  if (pid < 0)
-    error ("sigchld_handler: internal error: wait failed");
-  else
+  if (pid > 0)
     {
       if (WIFEXITED (status) || WIFSIGNALLED (status))
 	{

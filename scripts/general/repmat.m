@@ -28,7 +28,8 @@
 ## Author: Paul Kienzle <pkienzle@kienzle.powernet.co.uk>
 ## Created: July 2000
 
-function x = repmat (b, m, n)
+function x = repmat (a, m, n)
+
   if (nargin < 2 || nargin > 3)
     usage ("repmat (a, m, n)");
   endif

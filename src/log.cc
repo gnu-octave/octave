@@ -35,7 +35,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "user-prefs.h"
 #include "utils.h"
 
-// XXX FIXME XXX -- the next two functions should really be just one...
+// XXX FIXME XXX -- the next two functions should really be just
+// one...
 
 DEFUN_DLD_BUILTIN ("logm", Flogm, Slogm, 2, 1,
   "logm (X): matrix logarithm")

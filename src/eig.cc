@@ -99,7 +99,7 @@ DEFUN_DLD_BUILTIN ("eig", Feig, Seig, 2, 1,
     }
   else
     {
-// Blame it on Matlab.
+      // Blame it on Matlab.
 
       ComplexDiagMatrix d (result.eigenvalues ());
 

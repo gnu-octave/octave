@@ -382,7 +382,7 @@ DEFUN_DLD_BUILTIN ("min", Fmin, Smin, 3, 2,
     {
     case 2:
       arg2 = args(1);
-// Fall through...
+      // Fall through...
 
     case 1:
       arg1 = args(0);
@@ -610,7 +610,7 @@ DEFUN_DLD_BUILTIN ("max", Fmax, Smax, 3, 2,
     {
     case 2:
       arg2 = args(1);
-// Fall through...
+      // Fall through...
 
     case 1:
       arg1 = args(0);

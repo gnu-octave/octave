@@ -75,8 +75,8 @@ where OPT is an optional single character argument as follows: \n\
   char *bal_job;
   int my_nargin;		// # args w/o optional string arg
 
-// Determine if balancing option is listed.  Set my_nargin to the
-// number of matrix inputs.
+  // Determine if balancing option is listed.  Set my_nargin to the
+  // number of matrix inputs.
 
   if (args(nargin-1).is_string ())
     {
@@ -94,7 +94,7 @@ where OPT is an optional single character argument as follows: \n\
   int a_nr = arg_a.rows ();
   int a_nc = arg_a.columns ();
 
-// Check argument 1 dimensions.
+  // Check argument 1 dimensions.
 
   int arg_is_empty = empty_arg ("balance", a_nr, a_nc);
 
@@ -109,7 +109,7 @@ where OPT is an optional single character argument as follows: \n\
       return retval;
     }
 
-// Extract argument 1 parameter for both AEP and GEP.
+  // Extract argument 1 parameter for both AEP and GEP.
 
   Matrix aa;
   ComplexMatrix caa;
@@ -121,13 +121,13 @@ where OPT is an optional single character argument as follows: \n\
   if (error_state)
     return retval;
 
-// Treat AEP/ GEP cases.
+  // Treat AEP/GEP cases.
 
   switch (my_nargin)
     {
     case 1:
       
-// Algebraic eigenvalue problem.
+      // Algebraic eigenvalue problem.
 
       if (arg_a.is_complex_type ())
 	{
@@ -157,16 +157,16 @@ where OPT is an optional single character argument as follows: \n\
 
     case 2:
       {
-// Generalized eigenvalue problem.
+	// Generalized eigenvalue problem.
 
-// 1st we have to check argument 2 dimensions and type...
+	// 1st we have to check argument 2 dimensions and type...
 
 	tree_constant arg_b = args(1);
 
 	int b_nr = arg_b.rows ();
 	int b_nc = arg_b.columns ();
       
-// Check argument 2 dimensions -- must match arg 1.
+	// Check argument 2 dimensions -- must match arg 1.
 
 	if (b_nr != b_nc || b_nr != a_nr)
 	  {
@@ -174,8 +174,8 @@ where OPT is an optional single character argument as follows: \n\
 	    return retval;
 	  }
       
-// Now, extract the second matrix...
-// Extract argument 1 parameter for both AEP and GEP.
+	// Now, extract the second matrix...
+	// Extract argument 1 parameter for both AEP and GEP.
 
 	Matrix bb;
 	ComplexMatrix cbb;
@@ -187,7 +187,7 @@ where OPT is an optional single character argument as follows: \n\
 	if (error_state)
 	  return retval;
 
-// Both matrices loaded, now let's check what kind of arithmetic:
+	// Both matrices loaded, now let's check what kind of arithmetic:
 
 	if (arg_a.is_complex_type () || arg_b.is_complex_type ())
 	  {
@@ -197,8 +197,8 @@ where OPT is an optional single character argument as follows: \n\
 	    if (arg_b.is_real_type ())
 	      cbb = bb;
 
-// Compute magnitudes of elements for balancing purposes.
-// Surely there's a function I can call someplace!
+	    // Compute magnitudes of elements for balancing purposes.
+	    // Surely there's a function I can call someplace!
 
 	    for (int i = 0; i < a_nr; i++)
 	      for (int j = 0; j < a_nc; j++)

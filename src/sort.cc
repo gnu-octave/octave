@@ -209,7 +209,8 @@ sort the columns of X, optionally return sort index")
 	    }
 	  else
 	    {
-// Sorts m in place, optionally computes index Matrix.
+	      // Sorts m in place, optionally computes index Matrix.
+
 	      Matrix idx;
 	      mx_sort (m, idx, return_idx);
 
@@ -240,7 +241,8 @@ sort the columns of X, optionally return sort index")
 	    }
 	  else
 	    {
-// Sorts cm in place, optionally computes index Matrix.
+	      // Sorts cm in place, optionally computes index Matrix.
+
 	      Matrix idx;
 	      mx_sort (cm, idx, return_idx);
 

@@ -92,7 +92,7 @@ DEFUN_DLD_BUILTIN ("syl", Fsyl, Ssyl, 4, 1,
   else if (arg_a_is_empty || arg_b_is_empty || arg_c_is_empty)
     return retval;
 
-// Arguments are not empty, so check for correct dimensions.
+  // Arguments are not empty, so check for correct dimensions.
 
   if (a_nr != a_nc || b_nr != b_nc)
     {
@@ -105,14 +105,13 @@ DEFUN_DLD_BUILTIN ("syl", Fsyl, Ssyl, 4, 1,
       return retval;
     }
   
-// Dimensions look o.k., let's solve the problem.
+  // Dimensions look o.k., let's solve the problem.
 
     if (arg_a.is_complex_type ()
 	|| arg_b.is_complex_type ()
 	|| arg_c.is_complex_type ())
       {
-
-// Do everything in complex arithmetic;
+	// Do everything in complex arithmetic;
 
 	ComplexMatrix ca = arg_a.complex_matrix_value ();
 
@@ -129,12 +128,12 @@ DEFUN_DLD_BUILTIN ("syl", Fsyl, Ssyl, 4, 1,
 	if (error_state)
 	  return retval;
 
-// Compute Schur decompositions
+	// Compute Schur decompositions
 
 	ComplexSCHUR as (ca, "U");
 	ComplexSCHUR bs (cb, "U");
   
-// Transform cc to new coordinates.
+	// Transform cc to new coordinates.
 
 	ComplexMatrix ua = as.unitary_matrix ();
 	ComplexMatrix sch_a = as.schur_matrix ();
@@ -143,7 +142,8 @@ DEFUN_DLD_BUILTIN ("syl", Fsyl, Ssyl, 4, 1,
   
 	ComplexMatrix cx = ua.hermitian () * cc * ub;
   
-// Solve the sylvester equation, back-transform, and return the solution.
+	// Solve the sylvester equation, back-transform, and return
+	// the solution.
   
 	double scale;
 	int info;
@@ -160,8 +160,7 @@ DEFUN_DLD_BUILTIN ("syl", Fsyl, Ssyl, 4, 1,
       }
     else
       {
-
-// Do everything in real arithmetic;
+	// Do everything in real arithmetic.
 
 	Matrix ca = arg_a.matrix_value ();
 
@@ -178,12 +177,12 @@ DEFUN_DLD_BUILTIN ("syl", Fsyl, Ssyl, 4, 1,
 	if (error_state)
 	  return retval;
 
-// Compute Schur decompositions.
+	// Compute Schur decompositions.
 
 	SCHUR as (ca, "U");
 	SCHUR bs (cb, "U");
   
-// Transform cc to new coordinates.
+	// Transform cc to new coordinates.
 
 	Matrix ua = as.unitary_matrix ();
 	Matrix sch_a = as.schur_matrix ();
@@ -192,7 +191,8 @@ DEFUN_DLD_BUILTIN ("syl", Fsyl, Ssyl, 4, 1,
   
 	Matrix cx = ua.transpose () * cc * ub;
   
-// Solve the sylvester equation, back-transform, and return the solution.
+	// Solve the sylvester equation, back-transform, and return
+	// the solution.
   
 	double scale;
 	int info;

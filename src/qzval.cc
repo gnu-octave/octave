@@ -89,7 +89,7 @@ A and B must be real matrices.")
   else if (arg_a_is_empty || arg_b_is_empty)
     return retval;
 
-// Arguments are not empty, so check for correct dimensions.
+  // Arguments are not empty, so check for correct dimensions.
 
   if (a_nr != a_nc || b_nr != b_nc)
     {
@@ -103,7 +103,7 @@ A and B must be real matrices.")
       return retval;
     }
   
-// Dimensions look o.k., let's solve the problem.
+  // Dimensions look o.k., let's solve the problem.
 
   if (arg_a.is_complex_type () || arg_b.is_complex_type ())
     {
@@ -111,7 +111,7 @@ A and B must be real matrices.")
       return retval;
     }
 
-// Do everything in real arithmetic.
+  // Do everything in real arithmetic.
 
   Matrix jnk (a_nr, a_nr, 0.0);
 
@@ -122,7 +122,7 @@ A and B must be real matrices.")
   long matz = 0;
   int info;
 
-// XXX FIXME ??? XXX
+  // XXX FIXME ??? XXX
   double eps = DBL_EPSILON;
 
   Matrix ca = arg_a.matrix_value ();
@@ -135,7 +135,7 @@ A and B must be real matrices.")
   if (error_state)
     return retval;
 
-// Use EISPACK qz functions.
+  // Use EISPACK qz functions.
 
   F77_FCN (qzhes, QZHES) (a_nr, a_nr, ca.fortran_vec (),
 			  cb.fortran_vec (), matz,
@@ -153,7 +153,7 @@ A and B must be real matrices.")
 			  alfi.fortran_vec (), beta.fortran_vec (),
 			  matz, jnk.fortran_vec ());
 
-// Count and extract finite generalized eigenvalues.
+  // Count and extract finite generalized eigenvalues.
 
   int i;
   int cnt = 0;
@@ -170,8 +170,7 @@ A and B must be real matrices.")
     {
       if (beta (i) != 0)
 	{
-
-// Finite generalized eigenvalue.
+	  // Finite generalized eigenvalue.
 
 	  cnt--;
 	  cx (cnt) = (alfr (i) + Im * alfi (i)) / beta (i);

@@ -70,7 +70,7 @@ DEFUN_DLD_BUILTIN ("expm", Fexpm, Sexpm, 2, 1,
 
   tree_constant arg = args(0);
 
-// Constants for matrix exponential calculation.
+  // Constants for matrix exponential calculation.
 
   static double padec [] =
     {
@@ -110,8 +110,7 @@ DEFUN_DLD_BUILTIN ("expm", Fexpm, Sexpm, 2, 1,
 
   if (arg.is_real_type ())
     {
-
-// Compute the exponential.
+      // Compute the exponential.
 
       Matrix m = arg.matrix_value ();
 
@@ -120,7 +119,7 @@ DEFUN_DLD_BUILTIN ("expm", Fexpm, Sexpm, 2, 1,
 
       double trshift = 0;		// trace shift value
 
-// Preconditioning step 1: trace normalization.
+      // Preconditioning step 1: trace normalization.
 
       for (i = 0; i < nc; i++)
 	trshift += m.elem (i, i);
@@ -128,13 +127,13 @@ DEFUN_DLD_BUILTIN ("expm", Fexpm, Sexpm, 2, 1,
       for (i = 0; i < nc; i++)
 	m.elem (i, i) -= trshift;
 
-// Preconditioning step 2: balancing.
+      // Preconditioning step 2: balancing.
 
       AEPBALANCE mbal (m, balance_job);
       m = mbal.balanced_matrix ();
       Matrix d = mbal.balancing_matrix ();
 
-// Preconditioning step 3: scaling.
+      // Preconditioning step 3: scaling.
 
       ColumnVector work(nc);
       inf_norm = F77_FCN (dlange, DLANGE) ("I", nc, nc,
@@ -143,7 +142,7 @@ DEFUN_DLD_BUILTIN ("expm", Fexpm, Sexpm, 2, 1,
 
       sqpow = (int) (1.0 + log (inf_norm) / log (2.0));
 
-// Check whether we need to square at all.
+      // Check whether we need to square at all.
 
       if (sqpow < 0)
 	sqpow = 0;
@@ -155,12 +154,12 @@ DEFUN_DLD_BUILTIN ("expm", Fexpm, Sexpm, 2, 1,
 	  m = m / inf_norm;
 	}
 
-// npp, dpp: pade' approx polynomial matrices.
+      // npp, dpp: pade' approx polynomial matrices.
 
       Matrix npp (nc, nc, 0.0);
       Matrix dpp = npp;
 
-// now powers a^8 ... a^1.
+      // Now powers a^8 ... a^1.
 
       minus_one_j = -1;
       for (j = 7; j >= 0; j--)
@@ -169,7 +168,8 @@ DEFUN_DLD_BUILTIN ("expm", Fexpm, Sexpm, 2, 1,
 	  dpp = m * dpp + m * (minus_one_j * padec[j]);
 	  minus_one_j *= -1;
 	}
-// Zero power.
+
+      // Zero power.
 
       dpp = -dpp;
       for(j = 0; j < nc; j++)
@@ -178,11 +178,11 @@ DEFUN_DLD_BUILTIN ("expm", Fexpm, Sexpm, 2, 1,
 	  dpp.elem (j, j) += 1.0;
 	}
 
-// Compute pade approximation = inverse (dpp) * npp.
+      // Compute pade approximation = inverse (dpp) * npp.
 
       Matrix result = dpp.solve (npp);
 
-// Reverse preconditioning step 3: repeated squaring.
+      // Reverse preconditioning step 3: repeated squaring.
 
       while (sqpow)
 	{
@@ -190,7 +190,7 @@ DEFUN_DLD_BUILTIN ("expm", Fexpm, Sexpm, 2, 1,
 	  sqpow--;
 	}
 
-// Reverse preconditioning step 2: inverse balancing.
+      // Reverse preconditioning step 2: inverse balancing.
 
       result = result.transpose();
       d = d.transpose ();
@@ -198,7 +198,7 @@ DEFUN_DLD_BUILTIN ("expm", Fexpm, Sexpm, 2, 1,
       result = d.solve (result);
       result = result.transpose ();
 
-// Reverse preconditioning step 1: fix trace normalization.
+      // Reverse preconditioning step 1: fix trace normalization.
 
       result = result * exp (trshift);
 
@@ -213,7 +213,7 @@ DEFUN_DLD_BUILTIN ("expm", Fexpm, Sexpm, 2, 1,
 
       Complex trshift = 0.0;		// trace shift value
 
-// Preconditioning step 1: trace normalization.
+      // Preconditioning step 1: trace normalization.
 
       for (i = 0; i < nc; i++)
 	trshift += m.elem (i, i);
@@ -221,13 +221,13 @@ DEFUN_DLD_BUILTIN ("expm", Fexpm, Sexpm, 2, 1,
       for (i = 0; i < nc; i++)
 	m.elem (i, i) -= trshift;
 
-// Preconditioning step 2: eigenvalue balancing.
+      // Preconditioning step 2: eigenvalue balancing.
 
       ComplexAEPBALANCE mbal (m, balance_job);
       m = mbal.balanced_matrix ();
       ComplexMatrix d = mbal.balancing_matrix ();
 
-// Preconditioning step 3: scaling.
+      // Preconditioning step 3: scaling.
 
       ColumnVector work (nc);
       inf_norm = F77_FCN (zlange, ZLANGE) ("I", nc, nc,
@@ -236,7 +236,7 @@ DEFUN_DLD_BUILTIN ("expm", Fexpm, Sexpm, 2, 1,
 
       sqpow = (int) (1.0 + log (inf_norm) / log (2.0));
 
-// Check whether we need to square at all.
+      // Check whether we need to square at all.
 
       if (sqpow < 0)
 	sqpow = 0;
@@ -248,12 +248,12 @@ DEFUN_DLD_BUILTIN ("expm", Fexpm, Sexpm, 2, 1,
 	  m = m / inf_norm;
 	}
 
-// npp, dpp: pade' approx polynomial matrices.
+      // npp, dpp: pade' approx polynomial matrices.
 
       ComplexMatrix npp (nc, nc, 0.0);
       ComplexMatrix dpp = npp;
 
-// Now powers a^8 ... a^1.
+      // Now powers a^8 ... a^1.
 
       minus_one_j = -1;
       for (j = 7; j >= 0; j--)
@@ -263,7 +263,7 @@ DEFUN_DLD_BUILTIN ("expm", Fexpm, Sexpm, 2, 1,
 	  minus_one_j *= -1;
 	}
 
-// Zero power.
+      // Zero power.
 
       dpp = -dpp;
       for (j = 0; j < nc; j++)
@@ -272,11 +272,11 @@ DEFUN_DLD_BUILTIN ("expm", Fexpm, Sexpm, 2, 1,
 	  dpp.elem (j, j) += 1.0;
 	}
 
-// Compute pade approximation = inverse (dpp) * npp.
+      // Compute pade approximation = inverse (dpp) * npp.
 
       ComplexMatrix result = dpp.solve (npp);
 	
-// Reverse preconditioning step 3: repeated squaring.
+      // Reverse preconditioning step 3: repeated squaring.
 
       while (sqpow)
 	{
@@ -284,9 +284,9 @@ DEFUN_DLD_BUILTIN ("expm", Fexpm, Sexpm, 2, 1,
 	  sqpow--;
 	}
 
-// reverse preconditioning step 2: inverse balancing XXX FIXME XXX:
-// should probably do this with lapack calls instead of a complete
-// matrix inversion.
+      // Reverse preconditioning step 2: inverse balancing.
+      // XXX FIXME XXX -- should probably do this with Lapack calls
+      // instead of a complete matrix inversion.
 
       result = result.transpose ();
       d = d.transpose ();
@@ -294,7 +294,7 @@ DEFUN_DLD_BUILTIN ("expm", Fexpm, Sexpm, 2, 1,
       result = d.solve (result);
       result = result.transpose ();
 
-// Reverse preconditioning step 1: fix trace normalization.
+      // Reverse preconditioning step 1: fix trace normalization.
 
       result = result * exp (trshift);
 

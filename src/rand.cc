@@ -128,10 +128,11 @@ rand (SEED, N)        -- set seed")
   static int initialized = 0;
   if (! initialized)
     {
-// Make the random number generator give us a different sequence every
-// time we start octave unless we specifically set the seed.  The
-// technique used below will cycle monthly, but it it does seem to
-// work ok to give fairly different seeds each time Octave starts.
+      // Make the random number generator give us a different sequence
+      // every time we start octave unless we specifically set the
+      // seed.  The technique used below will cycle monthly, but it it
+      // does seem to work ok to give fairly different seeds each time
+      // Octave starts.
 
 #if 0
       int s0 = 1234567890;
@@ -214,7 +215,8 @@ rand (SEED, N)        -- set seed")
 	}
       else if (tmp.is_matrix_type ())
 	{
-// XXX FIXME XXX -- this should probably use the function from data.cc.
+	  // XXX FIXME XXX -- this should probably use the function
+	  // from data.cc.
 
 	  Matrix a = args(0).matrix_value ();
 

@@ -37,7 +37,8 @@ DEFUN_DLD_BUILTIN ("lp_solve", Flp_solve, Slp_solve, 11, 3,
 {
   Octave_object retval;
 
-// Force a bad value of inform, and empty matrices for x and phi.
+  // Force a bad value of inform, and empty matrices for x and phi.
+
   Matrix m;
   retval(2) = -1.0;
   retval(1) = m;

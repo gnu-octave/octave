@@ -273,7 +273,8 @@ Handle all of the following:
 
 #if defined (NPSOL_MISSING)
 
-// Force a bad value of inform, and empty matrices for x, phi, and lambda.
+  // Force a bad value of inform, and empty matrices for x, phi, and
+  // lambda.
 
   retval.resize (4, Matrix ());
 
@@ -445,6 +446,7 @@ Handle all of the following:
       if (! npsol_constraints)
 	{
 	  // Produce error message.
+
 	  is_valid_function (args(nargin-2), "npsol", 1);
 	}
       else

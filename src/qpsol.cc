@@ -79,7 +79,8 @@ Handle all of the following:
 
 #if defined (QPSOL_MISSING)
 
-// Force a bad value of inform, and empty matrices for x, phi, and lambda.
+  // Force a bad value of inform, and empty matrices for x, phi, and
+  // lambda.
 
   retval.resize (4, Matrix ());
 

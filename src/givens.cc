@@ -91,7 +91,9 @@ such that G [x; y] = [*; 0]  (x, y scalars)\n\
       if (error_state)
 	return retval;
 
-      cx = x;			// copy to complex just in case
+      // Convert to complex just in case...
+
+      cx = x;
     }
 
   if (arg_b.is_complex_type ())
@@ -108,10 +110,12 @@ such that G [x; y] = [*; 0]  (x, y scalars)\n\
       if (error_state)
 	return retval;
 
-      cy = y;			// copy to complex just in case
+      // Convert to complex just in case...
+
+      cy = y;
     }
 
-// Now compute the rotation.
+  // Now compute the rotation.
 
   double cc;
   if (arg_a.is_complex_type () || arg_b.is_complex_type ())
@@ -122,7 +126,7 @@ such that G [x; y] = [*; 0]  (x, y scalars)\n\
 
       switch (nargout)
 	{
-	case 0:		// output a matrix
+	case 0:
 	case 1:
 	  {
 	    ComplexMatrix g (2, 2);
@@ -135,7 +139,7 @@ such that G [x; y] = [*; 0]  (x, y scalars)\n\
 	  }
 	  break;
    
-	case 2:		// output scalar values
+	case 2:
 	  retval(0) = cc;
 	  retval(1) = cs;
 	  break;
@@ -153,7 +157,7 @@ such that G [x; y] = [*; 0]  (x, y scalars)\n\
 
       switch (nargout)
 	{
-	case 0:		// output a matrix
+	case 0:
 	case 1:
 	  {
 	    Matrix g (2, 2);
@@ -166,7 +170,7 @@ such that G [x; y] = [*; 0]  (x, y scalars)\n\
 	  }
 	  break;
    
-	case 2:		// output scalar values
+	case 2:
 	  retval(0) = cc;
 	  retval(1) = s;
 	  break;

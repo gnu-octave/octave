@@ -47,8 +47,8 @@ find_to_fortran_idx (const ColumnVector i_idx, const ColumnVector j_idx,
 	for (int i = 0; i < count; i++)
 	  tmp (i) = nr * (j_idx (i) - 1.0) + i_idx (i);
 
-// If the original argument was a row vector, force a row vector of
-// indices to be returned.
+	// If the original argument was a row vector, force a row
+	// vector of indices to be returned.
 
 	retval(0) = tree_constant (tmp, (nr != 1));
       }
@@ -56,14 +56,18 @@ find_to_fortran_idx (const ColumnVector i_idx, const ColumnVector j_idx,
 
     case 3:
       retval(2) = val;
-// Fall through!
+      // Fall through!
 
     case 2:
       retval(1) = tree_constant (j_idx, 1);
       retval(0) = tree_constant (i_idx, 1);
-// If you want this to work more like Matlab, use the following line
-// instead of the previous one.
-//    retval(0) = tree_constant (i_idx, (nr != 1));
+
+      // If you want this to work more like Matlab, use
+      //
+      //    retval(0) = tree_constant (i_idx, (nr != 1));
+      //
+      // instead of the previous statement.
+
       break;
 
     default:

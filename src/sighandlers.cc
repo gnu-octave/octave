@@ -74,6 +74,7 @@ static sigset_t octave_signal_mask;
 #if defined (MUST_REINSTALL_SIGHANDLERS)
 #define MAYBE_REINSTALL_SIGHANDLER(sig, handler) \
   octave_set_signal_handler (sig, handler)
+#define REINSTALL_USES_SIG 1
 #else
 #define MAYBE_REINSTALL_SIGHANDLER(sig, handler) \
   do { } while (0)
@@ -82,6 +83,7 @@ static sigset_t octave_signal_mask;
 #if defined (__EMX__)
 #define MAYBE_ACK_SIGNAL(sig) \
   octave_set_signal_handler (sig, SIG_ACK)
+#define ACK_USES_SIG 1
 #else
 #define MAYBE_ACK_SIGNAL(sig) \
   do { } while (0)
@@ -266,7 +268,11 @@ sigfpe_handler (int /* sig */)
 // for SIGINT only.
 
 static RETSIGTYPE
+#if defined (ACK_USES_SIG) || defined (REINSTALL_USES_SIG)
 sigint_handler (int sig)
+#else
+sigint_handler (int)
+#endif
 {
   MAYBE_ACK_SIGNAL (sig);
 

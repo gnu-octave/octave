@@ -36,6 +36,10 @@ License as published by the Free Software Foundation.
 #if !defined (_Stack_h)
 #define _Stack_h 1
 
+#if defined (__GNUG__)
+#pragma interface
+#endif
+
 template <class T>
 class
 Stack
@@ -58,6 +62,7 @@ Stack
   virtual void clear (void) = 0;
 
   void error (const char *msg);
+
   virtual int OK (void) = 0;
 };
 

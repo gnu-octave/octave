@@ -26,15 +26,22 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include "SLList.h"
+#include "SLList.cc"
+
+#include "Stack.h"
+#include "Stack.cc"
+
 #include "SLStack.h"
+#include "SLStack.cc"
 
 #include <string>
 
-// We already have SLList<string>, so we don't need to make them here.
+template class SLNode<string>;
+template class SLList<string>;
 
-// template class SLNode<string>;
-// template class SLList<string>;
 template class Stack<string>;
+
 template class SLStack<string>;
 
 /*

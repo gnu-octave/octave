@@ -19,6 +19,10 @@ Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #ifndef _SLList_h
 #define _SLList_h 1
 
+#if defined (__GNUG__)
+#pragma interface
+#endif
+
 #include <Pix.h>
 #include <BaseSLList.h>
 
@@ -47,7 +51,7 @@ public:
     SLList(const SLList<T>& a) : BaseSLList() { copy(a); }
     SLList<T>&            operator = (const SLList<T>& a)
 	{ BaseSLList::operator=((const BaseSLList&) a); return *this; }
-  ~SLList (void) { clear (); }
+    ~SLList (void);
 
     Pix prepend(const T& item) {return BaseSLList::prepend(&item);}
     Pix append(const T& item) {return BaseSLList::append(&item);}

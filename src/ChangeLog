@@ -1,3 +1,14 @@
+Tue Dec 10 00:31:13 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* SLList-expr.cc SLList-misc.cc SLList-plot.cc SLList-str.cc
+	SLList-tc.cc SLList-tm.cc SLList.h SLStack-i.cc SLStack-pc.cc
+	SLStack-str.cc SLStack-sym.cc SLStack-tok.cc SLStack-ue.cc
+	SLStack-ui.cc, pt-mat.cc: Include Stack.h, Stack.cc, SLStack.cc,
+	and SLList.cc as necessary.
+
+	* Stack.cc, SLStack.cc, SLList.cc: New files.
+	* Makefile.in (SOURCES): Add them to the list.
+
 Mon Dec  9 12:03:45 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (install-bin): Use $(EXE) suffix so install will

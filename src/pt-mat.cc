@@ -247,6 +247,9 @@ tm_row_const::tm_row_const_rep::eval_warning (const char *msg, int l,
     ::warning ("%s near line %d, column %d", msg, l, c);
 }
 
+#include "SLList.h"
+#include "SLList.cc"
+
 template class SLNode<tm_row_const>;
 template class SLList<tm_row_const>;
 

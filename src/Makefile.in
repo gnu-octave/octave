@@ -90,10 +90,9 @@ INCLUDES := builtins.h data.h defun.h defun-dld.h \
 	op-str-str.h
 
 TI_SRC := Array-oc.cc Array-os.cc Array-tc.cc Map-fnc.cc Map-tc.cc \
-	SLList-expr.cc SLList-misc.cc SLList-plot.cc SLList-str.cc \
-	SLList-tc.cc SLList-tm.cc SLStack-i.cc SLStack-pc.cc \
-	SLStack-str.cc SLStack-sym.cc SLStack-tok.cc SLStack-ue.cc \
-	SLStack-ui.cc
+	SLList-expr.cc SLList-misc.cc SLList-plot.cc SLList-tc.cc \
+	SLList-tm.cc SLStack-i.cc SLStack-pc.cc SLStack-str.cc \
+	SLStack-sym.cc SLStack-tok.cc SLStack-ue.cc SLStack-ui.cc
 
 TI_OBJ := $(patsubst %.cc, %.o, $(TI_SRC))
 
@@ -104,10 +103,11 @@ ifeq ($(SHARED_LIBS), true)
   endif
 endif
 
-SOURCES := BaseSLList.cc Map.cc data.cc defaults.cc \
-	dirfns.cc dynamic-ld.cc error.cc file-io.cc fn-cache.cc gripes.cc \
-	help.cc input.cc lex.l load-save.cc mappers.cc oct-fstrm.cc \
-	oct-hist.cc oct-iostrm.cc oct-map.cc oct-obj.cc oct-prcstrm.cc \
+SOURCES := BaseSLList.cc Map.cc SLList.cc SLStack.cc Stack.cc \
+	data.cc defaults.cc dirfns.cc dynamic-ld.cc error.cc \
+	file-io.cc fn-cache.cc gripes.cc help.cc input.cc lex.l \
+	load-save.cc mappers.cc oct-fstrm.cc oct-hist.cc \
+	oct-iostrm.cc oct-map.cc oct-obj.cc oct-prcstrm.cc \
 	oct-procbuf.cc oct-stdstrm.cc oct-stream.cc oct-strstrm.cc \
 	pager.cc parse.y pr-output.cc procstream.cc pt-base.cc \
 	pt-cmd.cc pt-const.cc pt-exp-base.cc pt-exp.cc pt-fcn.cc \

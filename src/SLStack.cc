@@ -27,6 +27,7 @@ Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #include "SLStack.h"
 
 template <class T>
+SLStack<T>&
 SLStack<T>::operator = (const SLStack<T>& s)
 {
   if (this != &s)

@@ -9,13 +9,19 @@ Summary of changes for version 2.0:
     do work, but they print an annoying warning message to try to get
     people to switch to using gset.)
 
+  * Dynamic linking works on more systems using dlopen() and friends
+    (most modern Unix systems) or shl_load() and friends (HP/UX
+    systems).  A simple example is provided in examples/hello.cc.
+    For this feature to work, you must configure Octave with
+    --enable-shared.  You may also need to have a shared-library
+    version of libg++ and libstdc++.
+
   * New data types can be added to Octave by writing a C++ class.  On
     systems that support dynamic linking, new data types can be added
     to an already running Octave binary.  A simple example appears in
     the file examples/make_int.cc.  Other examples are the standard
     Octave data types defined in the files src/ov*.{h,cc} and
-    src/op-*.cc.  [This feature should be better documented by the
-    time 2.0 is released].
+    src/op-*.cc.
 
   * The configure option --enable-bounds-check turns on bounds
     checking on element references for Octave's internal array and

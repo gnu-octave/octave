@@ -589,7 +589,7 @@ builtin_feof (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
-  if (nargin < 1)
+  if (nargin != 2)
     print_usage ("feof");
   else
     retval = feof_internal (args, nargin, nargout);
@@ -605,7 +605,7 @@ builtin_ferror (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
-  if (nargin < 1)
+  if (nargin != 2)
     print_usage ("ferror");
   else
     retval = ferror_internal (args, nargin, nargout);
@@ -760,7 +760,7 @@ builtin_fread (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
-  if (nargin < 2)
+  if (nargin < 2 || nargin > 4)
     print_usage ("fread");
   else
     retval = fread_internal (args, nargin, nargout);
@@ -922,7 +922,7 @@ builtin_fwrite (const tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
 
-  if (nargin < 3)
+  if (nargin < 3 || nargin > 4)
     print_usage ("fwrite");
   else
     retval = fwrite_internal (args, nargin, nargout);

@@ -305,15 +305,15 @@ where x, xdot, and res are vectors, and t is a scalar.", },
   { "fclose", 2, 1, builtin_fclose,
     "fclose (\"filename\" or filenum): close a file", },
 
-  { "feof", 3, 1, builtin_feof,
-    "eof = feof (filenum)\n\n\
- Returns a non zero eof for an end of file condition for the\n\
- file specified by \"filenum\" from fopen", },
+  { "feof", 2, 1, builtin_feof,
+    "error = feof (\"filename\" or filenum)\n\n\
+ Returns a non zero value for an end of file condition for the\n\
+ file specified by \"filename\" filenum from fopen", },
 
-  { "ferror", 3, 1, builtin_ferror,
-    "error = ferror (filenum)\n\n\
- Returns a non zero \"error\" for an error condition on the\n\
- file specified by \"filenum\" from fopen", },
+  { "ferror", 2, 1, builtin_ferror,
+    "error = ferror (\"filename\" or filenum)\n\n\
+ Returns a non zero value for an error condition on the\n\
+ file specified by \"filename\" or filenum from fopen", },
 
   { "feval", -1, 1, builtin_feval,
     "feval (\"name\", args, ...): evaluate first argument as function", },
@@ -347,7 +347,7 @@ where x, xdot, and res are vectors, and t is a scalar.", },
   { "fprintf", -1, 1, builtin_fprintf,
     "fprintf (\"file\", \"fmt\", ...)", },
 
-  { "fread", 3, 1, builtin_fread,
+  { "fread", 4, 2, builtin_fread,
     "[data, count] = fread (filenum, size, \"precision\")\n\n\
  Reads data in binary form of type \"precision\" from a file.\n\n\
  filenum   : file number from fopen\n\
@@ -412,7 +412,7 @@ where y and x are vectors.", },
   { "ftell", 2, 1, builtin_ftell,
     "position = ftell (\"filename\" or filenum): returns the current file position", },
 
-  { "fwrite", 3, 1, builtin_fwrite,
+  { "fwrite", 4, 1, builtin_fwrite,
     "count = fwrite (filenum, Data, \"precision\")\n\n\
  Writes data to a file in binary form of size \"precision\"\n\n\
  filenum   : file number from fopen\n\

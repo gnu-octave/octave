@@ -339,7 +339,9 @@ static void xfclose (FILE *f, const char *filename);
 
 unsigned long xftell (FILE *f, char *filename);
 
+#ifndef WIN32
 static void xclosedir (DIR *d);
+#endif
 
 static void *xmalloc (unsigned size);
 
@@ -2800,6 +2802,7 @@ xftell (FILE *f, char *filename)
   return where;
 }
 
+#ifndef WIN32
 void
 xclosedir (DIR *d)
 {
@@ -2812,6 +2815,7 @@ xclosedir (DIR *d)
     FATAL ("closedir failed");
 #endif
 }
+#endif
 
 /* xmalloc.c: malloc with error checking.  */
 
@@ -2881,7 +2885,7 @@ int
 dir_p (const char *fn)
 {
 #ifdef WIN32
-  int fa = GetFileAttributes(fn);
+  unsigned int fa = GetFileAttributes(fn);
   return (fa != 0xFFFFFFFF && (fa & FILE_ATTRIBUTE_DIRECTORY));
 #else
   struct stat stats;
@@ -3282,12 +3286,20 @@ kpse_truncate_filename (const char *name)
    kinds of devices.  */
 
 #ifdef WIN32
-#define READABLE(fn, st) \
-  (GetFileAttributes(fn) != 0xFFFFFFFF && \
-   !(GetFileAttributes(fn) & FILE_ATTRIBUTE_DIRECTORY))
+static inline bool
+READABLE (const char *fn, struct stat&)
+{
+  return (GetFileAttributes(fn) != 0xFFFFFFFF
+	  && !(GetFileAttributes(fn) & FILE_ATTRIBUTE_DIRECTORY));
+}
 #else
-#define READABLE(fn, st) \
-  (access (fn, R_OK) == 0 && stat (fn, &(st)) == 0 && !S_ISDIR (st.st_mode))
+static inline bool
+READABLE (const char *fn, struct stat& st)
+{
+  return (access (fn, R_OK) == 0
+	  && stat (fn, &(st)) == 0
+	  && !S_ISDIR (st.st_mode));
+}
 #endif
 
 /* POSIX invented the brain-damage of not necessarily truncating

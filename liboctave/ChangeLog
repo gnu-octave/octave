@@ -1,3 +1,9 @@
+2003-04-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* kpse.cc (xclosedir): Don't define or declare for Windows.
+	(READABLE): Now a static function to avoid warnings from MinGW
+	compiler.	
+
 2003-04-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* kpse.cc: Move most functions from kpse-xfns.c here and make

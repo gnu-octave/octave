@@ -74,7 +74,7 @@ check: all
 .PHONY: check
 
 install uninstall clean mostlyclean distclean maintainer-clean::
-	$(SUBDIR_FOR_COMMAND)
+	@$(subdir-for-command)
 
 install::
 	$(top_srcdir)/mkinstalldirs $(libdir)

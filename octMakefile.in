@@ -103,7 +103,7 @@ maintainer-clean::
 	@echo ""
 
 install uninstall tags TAGS clean mostlyclean distclean maintainer-clean::
-	$(SUBDIR_FOR_COMMAND)
+	@$(subdir-for-command)
 .PHONY: install uninstall tags clean mostlyclean distclean maintainer-clean
 
 maintainer-clean distclean::

@@ -43,7 +43,7 @@ $(SUBDIRS):
 .PHONY: $(SUBDIRS)
 
 install uninstall clean mostlyclean distclean maintainer-clean::
-	$(SUBDIR_FOR_COMMAND)
+	@$(subdir-for-command)
 .PHONY: install uninstall clean mostlyclean distclean maintainer-clean
 
 install::

@@ -257,12 +257,10 @@ target_host_type = @target_host_type@
 	fi
 	@mv $@.tmp $@
 
-define SUBDIR_FOR_COMMAND
-for dir in $(SUBDIRS); \
-do \
-  echo making $@ in $$dir; \
-  cd $$dir; \
-  $(MAKE) $@; \
-  cd ..; \
-done
+define do-subdir-for-command
+echo making $@ in $d; cd $d; $(MAKE) $@; cd ..;
+endef
+
+define subdir-for-command
+$(foreach d, $(SUBDIRS), $(do-subdir-for-command))
 endef

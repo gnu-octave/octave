@@ -344,8 +344,15 @@ where y and x are vectors.\n\n", },
   { "getenv", 2, 1, builtin_getenv,
     "get environment variable values\n", },
 
+  { "givens", 3, 2, builtin_givens,
+    "Givens rotation:\n\
+  G = givens(x,y) returns an orthogonal matrix G = [c s; -conj(s) c] such\n\
+    that G[x;y] = [*;0]  (x,y scalars)\n\
+  [c,s] = givens(x,y) returns the (c,s) values themselves.",},
+  
+
   { "hess", 2, 2, builtin_hess,
-    "Hessenburg decomposition\n",},
+    "Hessenberg decomposition\n",},
 
   { "home", 1, 0, builtin_clc,
     "clear screen\n", },

@@ -44,8 +44,8 @@ for file in $DEF_FILES; do
 done
 
 for file in $VAR_FILES; do
-  file=`echo $file | sed 's/-/_/g'`
-  echo "extern void symbols_of_${file} (void);"
+  f=`echo $file | sed 's/-/_/g'`
+  echo "extern void symbols_of_${f} (void);"
 done
 
 cat << \EOF
@@ -56,8 +56,8 @@ install_builtin_variables (void)
 EOF
 
 for file in $VAR_FILES; do
-  file=`echo $file | sed 's/-/_/g'`
-  echo "  symbols_of_${file} ();"
+  f=`echo $file | sed 's/-/_/g'`
+  echo "  symbols_of_${f} ();"
 done
 
 cat << \EOF

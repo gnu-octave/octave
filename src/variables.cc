@@ -51,7 +51,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "str-vec.h"
 
 #include <defaults.h>
-#include "data.h"
 #include "defun.h"
 #include "dirfns.h"
 #include "dynamic-ld.h"
@@ -63,7 +62,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "input.h"
 #include "lex.h"
 #include "load-save.h"
-#include "mappers.h"
 #include "oct-hist.h"
 #include "toplev.h"
 #include "pager.h"
@@ -77,11 +75,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-obj.h"
 #include "pt-id.h"
 #include "pt-indir.h"
-#include "pt-mat.h"
-#include "pt-misc.h"
-#include "pt-plot.h"
 #include "pr-output.h"
-#include "syscalls.h"
 #include "toplev.h"
 #include "unwind-prot.h"
 #include "utils.h"
@@ -1649,7 +1643,7 @@ saving_history (void)
 // XXX FIXME XXX -- there still may be better places for some of these
 // to be defined.
 
-static void
+void
 symbols_of_variables (void)
 {
   DEFVAR (ans, , 0, 0,

@@ -542,8 +542,6 @@ extern int list_indent;
 extern void increment_list_indent (void);
 extern void decrement_list_indent (void);
 
-extern void symbols_of_value (void);
-
 extern void install_types (void);
 
 #endif

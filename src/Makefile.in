@@ -80,11 +80,7 @@ INCLUDES := builtins.h defun.h defun-dld.h \
 	ov-cx-mat.h ov-ch-mat.h ov-list.h ov-struct.h ov-scalar.h \
 	ov-range.h ov-complex.h ov-va-args.h ov-colon.h ov-base.h \
 	ov-str-mat.h ov-bool-mat.h ov-bool.h ov-file.h ov.h \
-	ov-typeinfo.h ops.h op-b-b.h op-bm-bm.h op-cm-cm.h \
-	op-cm-cs.h op-cm-m.h op-cm-s.h op-cs-cm.h op-cs-cs.h \
-	op-cs-m.h op-cs-s.h op-m-cm.h op-m-cs.h op-m-m.h \
-	op-m-s.h op-s-cm.h op-s-cs.h op-s-m.h op-s-s.h \
-	op-str-str.h oct-sym.h oct-fcn.h oct-builtin.h \
+	ov-typeinfo.h ops.h oct-sym.h oct-fcn.h oct-builtin.h \
 	oct-mapper.h oct-usr-fcn.h
 
 TI_SRC := Array-oc.cc Array-os.cc Array-tc.cc Map-fnc.cc Map-tc.cc \
@@ -100,6 +96,11 @@ ifeq ($(SHARED_LIBS), true)
     TI_PICOBJ := $(addprefix pic/, $(TI_OBJ))
   endif
 endif
+
+OP_SOURCES := op-b-b.cc op-bm-bm.cc op-cm-cm.cc op-cm-cs.cc \
+	op-cm-m.cc op-cm-s.cc op-cs-cm.cc op-cs-cs.cc op-cs-m.cc \
+	op-cs-s.cc op-m-cm.cc op-m-cs.cc op-m-m.cc op-m-s.cc \
+	op-s-cm.cc op-s-cs.cc op-s-m.cc op-s-s.cc op-str-str.cc 
 
 SOURCES := BaseSLList.cc Map.cc SLList.cc SLStack.cc Stack.cc \
 	data.cc defaults.cc dirfns.cc dynamic-ld.cc error.cc \
@@ -117,12 +118,8 @@ SOURCES := BaseSLList.cc Map.cc SLList.cc SLStack.cc Stack.cc \
 	ov-list.cc ov-re-mat.cc ov-cx-mat.cc ov-range.cc ov-scalar.cc \
 	ov-complex.cc ov-str-mat.cc ov-struct.cc ov-va-args.cc \
 	ov-colon.cc ov-bool-mat.cc ov-bool.cc ov-file.cc ov.cc \
-	ov-typeinfo.cc ops.cc op-b-b.cc op-bm-bm.cc op-cm-cm.cc \
-	op-cm-cs.cc op-cm-m.cc op-cm-s.cc op-cs-cm.cc op-cs-cs.cc \
-	op-cs-m.cc op-cs-s.cc op-m-cm.cc op-m-cs.cc op-m-m.cc \
-	op-m-s.cc op-s-cm.cc op-s-cs.cc op-s-m.cc op-s-s.cc \
-	op-str-str.cc oct-fcn.cc oct-builtin.cc oct-mapper.cc \
-	oct-usr-fcn.cc
+	ov-typeinfo.cc oct-fcn.cc oct-builtin.cc oct-mapper.cc \
+	oct-usr-fcn.cc $(OP_SOURCES)
 
 OBJECTS_4 := $(SOURCES)
 OBJECTS_3 := $(patsubst %.l, %.o, $(OBJECTS_4))
@@ -140,7 +137,7 @@ endif
 
 # Ugh.
 
-DEP_4 := $(SOURCES) $(DLD_SRC) $(TI_SRC) builtins.cc octave.cc
+DEP_4 := $(SOURCES) $(DLD_SRC) $(TI_SRC) builtins.cc ops.cc octave.cc
 DEP_3 := $(patsubst %.l, %.cc, $(DEP_4))
 DEP_2 := $(patsubst %.y, %.cc, $(DEP_3))
 DEP_1 := $(patsubst %.c, %.d, $(DEP_2))
@@ -251,6 +248,11 @@ builtins.cc: $(DEF_FILES) mkbuiltins
 	@echo $(DEF_FILES) > def-files
 	@echo $(VAR_FILES) > var-files
 	@$(srcdir)/mkbuiltins def-files var-files > $@.t
+	@$(top_srcdir)/move-if-change $@.t $@
+
+ops.cc: $(OP_SOURCES) mkops
+	@echo making $@ from $(OP_SOURCES)
+	@$(srcdir)/mkops $(OP_SOURCES) > $@.t
 	@$(top_srcdir)/move-if-change $@.t $@
 
 $(DEF_FILES): mkdefs defun-int.h defun-dld.h defun.h defaults.h oct-conf.h

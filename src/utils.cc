@@ -69,7 +69,6 @@ extern "C" int strncasecmp (const char*, const char*, size_t);
 #include "gripes.h"
 #include "help.h"
 #include "input.h"
-#include "mappers.h"
 #include "oct-hist.h"
 #include "oct-obj.h"
 #include "pager.h"

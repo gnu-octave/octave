@@ -1004,7 +1004,7 @@ warn_divide_by_zero (void)
 }
 
 void
-symbols_of_value (void)
+symbols_of_ov (void)
 {
   DEFVAR (do_fortran_indexing, 0.0, 0, do_fortran_indexing,
     "allow single indices for matrices");

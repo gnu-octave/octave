@@ -1,0 +1,37 @@
+#!/bin/sh
+
+cat << \EOF
+// DO NOT EDIT!  Generated automatically by mkbuiltins.
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+extern void install_base_type_conversions (void);
+
+EOF
+
+for file in "$@"; do
+  f=`echo $file | sed 's/^op-//; s/\.cc//; s/-/_/g'`
+  echo "extern void install_${f}_ops (void);"
+done
+
+cat << \EOF
+
+void
+install_ops (void)
+{
+  install_base_type_conversions ();
+
+EOF
+
+for file in "$@"; do
+  f=`echo $file | sed 's/^op-//; s/\.cc//; s/-/_/g'`
+  echo "  install_${f}_ops ();"
+done
+
+cat << \EOF
+}
+EOF
+
+exit 0

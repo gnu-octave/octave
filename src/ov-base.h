@@ -206,8 +206,6 @@ private:
 
 #endif
 
-extern void install_base_type_conversions (void);
-
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

@@ -275,56 +275,96 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 DEFUN_DLD (min, args, nargout,
   "-*- texinfo -*-\n\
+@deftypefn {Mapping Function} {} min (@var{x}, @var{y})\n\
+@deftypefnx {Mapping Function} {[@var{w}, @var{iw}] =} min (@var{x})\n\
+@cindex Utility Functions\n\
 For a vector argument, return the minimum value.  For a matrix\n\
 argument, return the minimum value from each column, as a row\n\
-vector.  Thus,\n\
+vector.\n\
+For two matrices (or a matrix and scalar),\n\
+return the pair-wise minimum.\n\
+Thus,\n\
 \n\
 @example\n\
 min (min (@var{x}))\n\
 @end example\n\
 \n\
 @noindent\n\
-returns the smallest element of @var{x}.\n\
+returns the smallest element of @var{x}, and\n\
+\n\
+@example\n\
+@group\n\
+min (2:5, pi)\n\
+    @result{}  2.0000  3.0000  3.1416  3.1416\n\
+@end group\n\
+@end example\n\
+@noindent\n\
+compares each element of the range @code{2:5} with @code{pi}, and\n\
+returns a row vector of the minimum values.\n\
 \n\
 For complex arguments, the magnitude of the elements are used for\n\
 comparison.\n\
 \n\
-If called with two output arguments, also returns the index of the\n\
+If called with one input and two output arguments,\n\
+@code{min} also returns the first index of the\n\
 minimum value(s). Thus,\n\
-@example\n\
-[x, ix] = min ([1, 3, 0, 2, 5])\n\
-@end example\n\
 \n\
-@noindent\n\
-returns @var{x} = 0 and @var{ix} = 3.")
+@example\n\
+@group\n\
+[x, ix] = min ([1, 3, 0, 2, 5])\n\
+    @result{}  x = 0\n\
+        ix = 3\n\
+@end group\n\
+@end example\n\
+@end deftypefn")
 {
   MINMAX_BODY (min);
 }
 
 DEFUN_DLD (max, args, nargout,
   "-*- texinfo -*-\n\
+@deftypefn {Mapping Function} {} max (@var{x}, @var{y})\n\
+@deftypefnx {Mapping Function} {[@var{w}, @var{iw}] =} max (@var{x})\n\
+@cindex Utility Functions\n\
 For a vector argument, return the maximum value.  For a matrix\n\
 argument, return the maximum value from each column, as a row\n\
-vector.  Thus,\n\
+vector.\n\
+For two matrices (or a matrix and scalar),\n\
+return the pair-wise maximum.\n\
+Thus,\n\
 \n\
 @example\n\
 max (max (@var{x}))\n\
 @end example\n\
 \n\
 @noindent\n\
-returns the largest element of @var{x}.\n\
+returns the largest element of @var{x}, and\n\
+\n\
+@example\n\
+@group\n\
+max (2:5, pi)\n\
+    @result{}  3.1416  3.1416  4.0000  5.0000\n\
+@end group\n\
+@end example\n\
+@noindent\n\
+compares each element of the range @code{2:5} with @code{pi}, and\n\
+returns a row vector of the maximum values.\n\
 \n\
 For complex arguments, the magnitude of the elements are used for\n\
 comparison.\n\
 \n\
-If called with two output arguments, also returns the index of the\n\
+If called with one input and two output arguments,\n\
+@code{max} also returns the first index of the\n\
 maximum value(s). Thus,\n\
-@example\n\
-[x, ix] = max([1, 3, 5, 2, 5])\n\
-@end example\n\
 \n\
-@noindent\n\
-returns @var{x} = 5 and @var{ix} = 3.")
+@example\n\
+@group\n\
+[x, ix] = max ([1, 3, 5, 2, 5])\n\
+    @result{}  x = 5\n\
+        ix = 3\n\
+@end group\n\
+@end example\n\
+@end deftypefn")
 {
   MINMAX_BODY (max);
 }

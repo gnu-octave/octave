@@ -1304,6 +1304,10 @@ fill_matrix (const octave_value_list& args, double val, const char *fcn)
 	      retval = NDArray (dims, val);
 	      break;
 
+	    case oct_data_conv::dt_logical:
+	      retval = boolNDArray (dims, val);
+	      break;
+
 	    default:
 	      error ("%s: invalid class name", fcn);
 	      break;
@@ -1441,6 +1445,10 @@ identity_matrix (int nr, int nc, oct_data_conv::data_type dt)
 	case oct_data_conv::dt_single: // XXX FIXME XXX
 	case oct_data_conv::dt_double:
 	  retval = identity_matrix<NDArray> (nr, nc);
+	  break;
+
+	case oct_data_conv::dt_logical:
+	  retval = identity_matrix<boolNDArray> (nr, nc);
 	  break;
 
 	default:

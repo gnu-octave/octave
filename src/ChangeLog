@@ -1,3 +1,8 @@
+2004-09-10  John W. Eaton  <jwe@octave.org>
+
+	* data.cc (fill_matrix, identity_matrix):
+	Also allow logical data type.
+
 2004-09-10  David Bateman  <dbateman@free.fr>
 
 	* ov-intx.h (OCTAVE_VALUE_INT_MATRIX_T::double_value,

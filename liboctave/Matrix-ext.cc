@@ -229,6 +229,69 @@ GEPBALANCE::init (const Matrix& a, const Matrix& b, const char *balance_job)
 }
 
 /*
+ * CHOL stuff
+ */
+
+int
+CHOL::init (const Matrix& a)
+{
+  if (a.nr != a.nc)
+    FAIL;
+
+  char uplo = 'U';
+
+  int n = a.nc;
+  int info;
+
+  double *h = dup (a.data, a.len);
+
+  F77_FCN (dpotrf) (&uplo, &n, h, &n, &info, 1L);
+
+  chol_mat = Matrix (h, n, n);
+
+// If someone thinks of a more graceful way of doing this (or faster for
+// that matter :-)), please let me know!
+
+  if (n > 1)
+    for (int j = 0; j < a.nc; j++)
+      for (int i = j+1; i < a.nr; i++)
+        chol_mat.elem (i, j) = 0.0;
+
+
+  return info;
+}
+
+
+int
+ComplexCHOL::init (const ComplexMatrix& a)
+{
+   if (a.nr != a.nc)
+     FAIL;
+
+   char uplo = 'U';
+
+   int n = a.nc;
+   int info;
+
+   Complex *h = dup (a.data, a.len);
+
+   F77_FCN (zpotrf) (&uplo, &n, h, &n, &info, 1L);
+
+   chol_mat = ComplexMatrix (h, n, n);
+
+// If someone thinks of a more graceful way of doing this (or faster for
+// that matter :-)), please let me know!
+
+  if (n > 1)
+    for (int j = 0; j < a.nc; j++)
+      for (int i = j+1; i < a.nr; i++)
+        chol_mat.elem (i, j) = 0.0;
+
+   return info;
+}
+
+
+/*
  * HESS stuff
  */
 

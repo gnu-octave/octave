@@ -139,6 +139,9 @@ extern "C"
 			const double*, int*, double*, const int*,
 			int*);
 
+  int F77_FCN (dpotrf) (const char*, const int*, double*, const int*,
+			int*, long);
+
 //
 // fortran functions for generalized eigenvalue problems
 //
@@ -239,6 +242,10 @@ extern "C"
 			const double*, int*, Complex*, const int*,
 			double*, int*);
 
+  int F77_FCN (zpotrf) (const char*, const int*, Complex*, const int*,
+			int*, long);
+
+
 // Note that the original complex fft routines were not written for
 // double complex arguments.  They have been modified by adding an
 // implicit double precision (a-h,o-z) statement at the beginning of
@@ -265,6 +272,8 @@ class ComplexDiagMatrix;
 class AEPBALANCE;
 class ComplexAEPBALANCE;
 class GEPBALANCE;
+class CHOL;
+class ComplexCHOL;
 class DET;
 class ComplexDET;
 class EIG;
@@ -290,6 +299,7 @@ friend class DiagMatrix;
 friend class ComplexMatrix;
 friend class ComplexDiagMatrix;
 friend class AEPBALANCE;
+friend class CHOL;
 friend class EIG;
 friend class GEPBALANCE;
 friend class HESS;
@@ -514,7 +524,7 @@ public:
 
 // conversions
 
-  double *fortran_vec (void);
+  double *fortran_vec (void) const;
 
 private:
   int nr;
@@ -566,7 +576,7 @@ inline double Matrix::checkelem (int r, int c) const
 inline double Matrix::operator () (int r, int c) const
   { return checkelem (r, c); }
 
-inline double *Matrix::fortran_vec (void) { return data; }
+inline double *Matrix::fortran_vec (void) const { return data; }
 
 /*
  * Column Vector class
@@ -681,7 +691,7 @@ public:
 
 // conversions
 
-  double *fortran_vec (void);
+  double *fortran_vec (void) const;
 
 private:
   int len;
@@ -727,7 +737,7 @@ ColumnVector::checkelem (int n) const
 
 inline double ColumnVector::operator () (int n) const { return checkelem (n); }
 
-inline double *ColumnVector::fortran_vec (void) { return data; }
+inline double *ColumnVector::fortran_vec (void) const { return data; }
 
 /*
  * Row Vector class
@@ -848,7 +858,7 @@ public:
 
 // conversions
 
-  double *fortran_vec (void);
+  double *fortran_vec (void) const;
 
 private:
   int len;
@@ -894,7 +904,7 @@ RowVector::checkelem (int n) const
 
 inline double RowVector::operator () (int n) const { return checkelem (n); }
 
-inline double *RowVector::fortran_vec (void) { return data; }
+inline double *RowVector::fortran_vec (void) const { return data; }
 
 /*
  * Diagonal Matrix class
@@ -1100,6 +1110,7 @@ friend class DiagMatrix;
 friend class ComplexRowVector;
 friend class ComplexDiagMatrix;
 friend class ComplexAEPBALANCE;
+friend class ComplexCHOL;
 friend class EIG;
 friend class ComplexHESS;
 friend class ComplexSVD;
@@ -1350,7 +1361,7 @@ public:
 
 // conversions
 
-  Complex *fortran_vec (void);
+  Complex *fortran_vec (void) const;
 
 private:
   int nr;
@@ -1404,7 +1415,7 @@ inline Complex ComplexMatrix::checkelem (int r, int c) const
 inline Complex ComplexMatrix::operator () (int r, int c) const
   { return checkelem (r, c); }
 
-inline Complex *ComplexMatrix::fortran_vec (void) { return data; }
+inline Complex *ComplexMatrix::fortran_vec (void) const { return data; }
 
 /*
  * Complex Column Vector class
@@ -1548,7 +1559,7 @@ public:
 
 // conversions
 
-  Complex *fortran_vec (void);
+  Complex *fortran_vec (void) const;
 
 private:
   int len;
@@ -1598,7 +1609,7 @@ ComplexColumnVector::checkelem (int n) const
 inline Complex ComplexColumnVector::operator () (int n) const
   { return checkelem (n); }
 
-inline Complex *ComplexColumnVector::fortran_vec (void) { return data; }
+inline Complex *ComplexColumnVector::fortran_vec (void) const { return data; }
 
 /*
  * Complex Row Vector class
@@ -1744,7 +1755,7 @@ public:
 
 // conversions
 
-  Complex *fortran_vec (void);
+  Complex *fortran_vec (void) const;
 
 private:
   int len;
@@ -1792,7 +1803,7 @@ ComplexRowVector::checkelem (int n) const
 inline Complex ComplexRowVector::operator () (int n) const
   { return checkelem (n); }
 
-inline Complex *ComplexRowVector::fortran_vec (void) { return data; }
+inline Complex *ComplexRowVector::fortran_vec (void) const { return data; }
 
 /*
  * Complex Diagonal Matrix class
@@ -2288,7 +2299,90 @@ inline Matrix GEPBALANCE::right_balancing_matrix (void) const
   { return right_balancing_mat; }
 
 /*
- * Result of a Hessenbug Decomposition
+ * Result of a Cholesky Factorization
+ */
+
+class CHOL
+{
+friend class Matrix;
+
+public:
+  CHOL (void) {}
+
+  CHOL (const Matrix& a);
+  CHOL (const Matrix& a, int& info);
+
+  CHOL (const CHOL& a);
+
+  CHOL& operator = (const CHOL& a);
+  Matrix chol_matrix (void) const;
+  friend ostream& operator << (ostream& os, const CHOL& a);
+
+private:
+  int init (const Matrix& a);
+
+  Matrix chol_mat;
+};
+
+inline CHOL::CHOL (const Matrix& a) {init (a); }
+inline CHOL::CHOL (const Matrix& a, int& info) { info = init (a); }
+inline CHOL::CHOL (const CHOL& a) { chol_mat = a.chol_mat; }
+
+inline CHOL&
+CHOL::operator = (const CHOL& a)
+{
+  chol_mat = a.chol_mat;
+
+  return *this;
+}
+
+inline Matrix CHOL::chol_matrix (void) const { return chol_mat; }
+
+/*
+ * Result of a Cholesky Factorization
+ */
+
+class ComplexCHOL
+{
+friend class ComplexMatrix;
+
+public:
+  ComplexCHOL (void) {}
+  ComplexCHOL (const ComplexMatrix& a);
+  ComplexCHOL (const ComplexMatrix& a, int& info);
+  ComplexCHOL (const ComplexCHOL& a);
+  ComplexCHOL& operator = (const ComplexCHOL& a);
+  ComplexMatrix chol_matrix (void) const;
+
+  friend ostream& operator << (ostream& os, const ComplexCHOL& a);
+
+private:
+  int init (const ComplexMatrix& a);
+
+  ComplexMatrix chol_mat;
+};
+
+inline ComplexCHOL::ComplexCHOL (const ComplexMatrix& a) { init (a); }
+inline ComplexCHOL::ComplexCHOL (const ComplexMatrix& a, int& info)
+  { info = init (a); }
+
+inline ComplexCHOL::ComplexCHOL (const ComplexCHOL& a)
+  { chol_mat = a.chol_mat; }
+
+inline ComplexCHOL&
+ComplexCHOL::operator = (const ComplexCHOL& a)
+{
+  chol_mat = a.chol_mat;
+
+  return *this;
+}
+
+inline ComplexMatrix ComplexCHOL::chol_matrix (void) const
+  { return chol_mat; }
+
+  
+/*
+ * Result of a Hessenberg Decomposition
  */
 
 class HESS
@@ -2317,11 +2411,13 @@ private:
 
 inline HESS::HESS (const Matrix& a) {init (a); }
 inline HESS::HESS (const Matrix& a, int& info) { info = init(a); }
+
 inline HESS::HESS (const HESS& a)
 {
   hess_mat = a.hess_mat;
   unitary_hess_mat = a.unitary_hess_mat;
 }
+
 inline HESS&
 HESS::operator = (const HESS& a)
 {
@@ -2330,11 +2426,12 @@ HESS::operator = (const HESS& a)
 
   return *this;
 }
+
 inline Matrix HESS::hess_matrix (void) const { return hess_mat; }
 inline Matrix HESS::unitary_hess_matrix (void) const {return unitary_hess_mat;}
 
 /*
- * Result of a Hessenburg Decomposition
+ * Result of a Hessenberg Decomposition
  */
 
 class ComplexHESS
@@ -2415,7 +2512,6 @@ private:
 };
 
 inline SCHUR::SCHUR (const Matrix& a, const char *ord) { init (a, ord); }
-
 inline SCHUR::SCHUR (const Matrix& a, const char *ord, int& info) 
   { info = init (a, ord); }
 
@@ -2488,6 +2584,7 @@ ComplexSCHUR::operator = (const ComplexSCHUR& a, const char *ord)
 
   return *this;
 }
+
 inline ComplexMatrix ComplexSCHUR::schur_matrix (void) const
   { return schur_mat; }
 
@@ -2528,7 +2625,6 @@ private:
 };
 
 inline SVD::SVD (const Matrix& a) { init (a); }
-
 inline SVD::SVD (const Matrix& a, int& info) { info = init (a); }
 
 inline SVD::SVD (const SVD& a)

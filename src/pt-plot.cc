@@ -602,8 +602,12 @@ subplot_style::print (ostrstream& plot_buf)
 int
 subplot_style::errorbars (void)
 {
-  return (almost_match ("errorbars", sp_style, 1, 0)
-	  || almost_match ("boxerrorbars", sp_style, 5, 0));
+  return (almost_match ("boxerrorbars", sp_style, 5, 0)
+	  || almost_match ("boxxyerrorbars", sp_style, 4, 0)
+	  || almost_match ("errorbars", sp_style, 1, 0)
+	  || almost_match ("xerrorbars", sp_style, 2, 0)
+	  || almost_match ("xyerrorbars", sp_style, 2, 0)
+	  || almost_match ("yerrorbars", sp_style, 1, 0));
 }
 
 void
@@ -647,9 +651,9 @@ subplot::extract_plot_data (int ndim, octave_value& data)
     {
       int nc = retval.columns ();
 
-      if (nc < 3 || nc > 4)
+      if (nc < 3 || nc > 6)
 	{
-	  error ("plots with errorbars require 3 or 4 columns of data");
+	  error ("plots with errorbars require 3 to 6 columns of data");
 	  error ("but %d were provided", nc);
 	  return octave_value ();
 	}

@@ -850,13 +850,22 @@ plot_style_token (const string& s)
     {
       "boxes",
       "boxerrorbars",
+      "boxxyerrorbars",
+      "candlesticks",
       "dots",
       "errorbars",
+      "financebars",
+      "fsteps",
+      "histeps",
       "impulses",
       "lines",
       "linespoints",
       "points",
       "steps",
+      "vector",
+      "xerrorbars",
+      "xyerrorbars",
+      "yerrorbars",
       0,
     };
 

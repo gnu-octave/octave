@@ -569,11 +569,8 @@ style		: WITH STYLE
 		  { $$ = new subplot_style ($2->text ()); }
 		| WITH STYLE expression
 		  { $$ = new subplot_style ($2->text (), $3); }
-		| WITH STYLE expression bogus_syntax expression
-		  { $$ = new subplot_style ($2->text (), $3, $5); }
-		;
-
-bogus_syntax	: // empty
+		| WITH STYLE expression expression
+		  { $$ = new subplot_style ($2->text (), $3, $4); }
 		;
 
 ans_expression	: expression

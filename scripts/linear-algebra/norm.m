@@ -1,4 +1,4 @@
-# Copyright (C) 1993 John W. Eaton
+# Copyright (C) 1993, 1994 John W. Eaton
 # 
 # This file is part of Octave.
 # 
@@ -45,6 +45,11 @@ function retval = norm (x, p)
 
   if (nargin < 1 || nargin > 2)
     error ("usage: norm (x [, p])")
+  endif
+
+  if (isempty (x))
+    retval = [];
+    return;
   endif
 
 # Do we have a vector or matrix as the first argument?

@@ -1,7 +1,7 @@
 // unwind-prot.cc                                              -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993 John W. Eaton
+Copyright (C) 1992, 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -25,11 +25,15 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "config.h"
 #endif
 
+#if defined (__GNUG__)
+#pragma implementation
+#endif
+
 #include <stddef.h>
 
 #include "SLStack.h"
 
-#include "Matrix.h"
+#include "CMatrix.h"
 
 #include "unwind-prot.h"
 #include "error.h"
@@ -37,43 +41,43 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 unwind_elem::unwind_elem (void)
 {
-  _tag = (char *) NULL;
-  _fptr = (cleanup_func) NULL;
-  _ptr = (void *) NULL;
+  unwind_elem_tag = (char *) NULL;
+  unwind_elem_fptr = (cleanup_func) NULL;
+  unwind_elem_ptr = (void *) NULL;
 }
 
 unwind_elem::unwind_elem (char *t)
 {
-  _tag = strsave (t);
-  _fptr = (cleanup_func) NULL;
-  _ptr = (void *) NULL;
+  unwind_elem_tag = strsave (t);
+  unwind_elem_fptr = (cleanup_func) NULL;
+  unwind_elem_ptr = (void *) NULL;
 }
 
 unwind_elem::unwind_elem (cleanup_func f, void *p)
 {
-  _tag = (char *) NULL;
-  _fptr = f;
-  _ptr = p;
+  unwind_elem_tag = (char *) NULL;
+  unwind_elem_fptr = f;
+  unwind_elem_ptr = p;
 }
 
 unwind_elem::unwind_elem (const unwind_elem& el)
 {
-  _tag = strsave (el._tag);
-  _fptr = el._fptr;
-  _ptr = el._ptr;
+  unwind_elem_tag = strsave (el.unwind_elem_tag);
+  unwind_elem_fptr = el.unwind_elem_fptr;
+  unwind_elem_ptr = el.unwind_elem_ptr;
 }
 
 unwind_elem::~unwind_elem (void)
 {
-  delete [] _tag;
+  delete [] unwind_elem_tag;
 }
 
 unwind_elem&
 unwind_elem::operator = (const unwind_elem& el)
 {
-  _tag = strsave (el._tag);
-  _fptr = el._fptr;
-  _ptr = el._ptr;
+  unwind_elem_tag = strsave (el.unwind_elem_tag);
+  unwind_elem_fptr = el.unwind_elem_fptr;
+  unwind_elem_ptr = el.unwind_elem_ptr;
 
   return *this;
 }
@@ -81,19 +85,19 @@ unwind_elem::operator = (const unwind_elem& el)
 char *
 unwind_elem::tag (void)
 {
-  return _tag;
+  return unwind_elem_tag;
 }
 
 cleanup_func
 unwind_elem::fptr (void)
 {
-  return _fptr;
+  return unwind_elem_fptr;
 }
 
 void *
 unwind_elem::ptr (void)
 {
-  return _ptr;
+  return unwind_elem_ptr;
 }
 
 static SLStack <unwind_elem> unwind_protect_list;

@@ -33,8 +33,9 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <float.h>
 #include <Complex.h>
 
+#include "dMatrix.h"
+#include "CMatrix.h"
 #include "Range.h"
-#include "Matrix.h"
 
 #include "tree-const.h"
 #include "variables.h"

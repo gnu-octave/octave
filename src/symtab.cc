@@ -27,6 +27,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "config.h"
 #endif
 
+#if defined (__GNUG__)
+#pragma implementation
+#endif
+
 #include "symtab.h"
 #include "error.h"
 #include "variables.h"

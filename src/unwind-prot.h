@@ -24,6 +24,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_unwind_prot_h)
 #define octave_unwind_prot_h 1
 
+#if defined (__GNUG__)
+#pragma interface
+#endif
+
 typedef void (*cleanup_func)(void *ptr);
 
 void add_unwind_protect (cleanup_func fptr, void *ptr);
@@ -51,7 +55,8 @@ void unwind_protect_var_internal (void *ptr, void *value, size_t size);
 #define unwind_protect_var(i) \
   unwind_protect_var_internal ((void *) &(i), (void *) &(i), sizeof (int))
 
-class unwind_elem
+class
+unwind_elem
 {
  public:
   unwind_elem (void);
@@ -67,9 +72,9 @@ class unwind_elem
   void *ptr (void);
 
  private:
-  char *_tag;
-  cleanup_func _fptr;
-  void *_ptr;
+  char *unwind_elem_tag;
+  cleanup_func unwind_elem_fptr;
+  void *unwind_elem_ptr;
 };
 
 #endif

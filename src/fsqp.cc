@@ -1,7 +1,7 @@
 // f-fsqp.cc                                           -*- C++ -*-
 /*
 
-Copyright (C) 1993 John W. Eaton
+Copyright (C) 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -34,8 +34,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "f-fsqp.h"
 
 // Global pointers for user defined functions required by fsqp.
-static tree *fsqp_objective;
-static tree *fsqp_constraints;
+// static tree *fsqp_objective;
+// static tree *fsqp_constraints;
 
 #ifdef WITH_DLD
 tree_constant *

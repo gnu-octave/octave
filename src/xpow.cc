@@ -1,7 +1,7 @@
 // xpow.cc                                               -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993 John W. Eaton
+Copyright (C) 1992, 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -29,7 +29,12 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <Complex.h>
 
 #include "xpow.h"
-#include "Matrix.h"
+#include "dMatrix.h"
+#include "CMatrix.h"
+#include "dDiagMatrix.h"
+#include "CDiagMatrix.h"
+#include "CColVector.h"
+#include "EIG.h"
 #include "tree-const.h"
 #include "error.h"
 

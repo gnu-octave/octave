@@ -25,7 +25,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "config.h"
 #endif
 
-#include "Matrix.h"
+#include "dMatrix.h"
+#include "CMatrix.h"
 
 #include "tree-const.h"
 #include "user-prefs.h"

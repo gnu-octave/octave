@@ -1,7 +1,7 @@
 // f-svd.cc                                           -*- C++ -*-
 /*
 
-Copyright (C) 1993 John W. Eaton
+Copyright (C) 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -25,7 +25,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "config.h"
 #endif
 
-#include "Matrix.h"
+#include "dbleSVD.h"
+#include "CmplxSVD.h"
 
 #include "tree-const.h"
 #include "user-prefs.h"

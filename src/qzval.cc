@@ -1,7 +1,7 @@
 // tc-qzval.cc                                           -*- C++ -*-
 /*
 
-Copyright (C) 1993 John W. Eaton
+Copyright (C) 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -29,7 +29,9 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #include <float.h>
 
-#include "Matrix.h"
+#include "dMatrix.h"
+#include "dColVector.h"
+#include "CColVector.h"
 #include "f77-uscore.h"
 
 #include "tree-const.h"

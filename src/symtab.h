@@ -24,6 +24,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_symtab_h)
 #define octave_symtab_h 1
 
+#if defined (__GNUG__)
+#pragma interface
+#endif
+
 #include <stdlib.h>
 #include <string.h>
 #include <iostream.h>

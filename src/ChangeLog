@@ -1,3 +1,7 @@
+2001-02-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* data.cc (DATA_REDUCTION): Allow FCN(x,0) to be equivalent to FCN(x).
+
 2001-02-06  Mumit Khan  <khan@nanotech.wisc.edu>
 
 	* oct-stream.cc (octave_scan): Partially implement and specialize

@@ -125,7 +125,7 @@
 
 2000-10-12  Cai Jianming <caijianming@yahoo.co.uk>
 
-	dMatrix.cc (Matrix::cumprod (int) const): New arg, DIM.
+	* dMatrix.cc (Matrix::cumprod (int) const): New arg, DIM.
 	(Matrix::cumsum (int) const): Likewise.
 	(Matrix::prod (int) const): Likewise.
 	(Matrix::sum (int) const): Likewise.

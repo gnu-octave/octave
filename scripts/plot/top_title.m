@@ -38,6 +38,9 @@ function top_title (text)
     gset title;
     eval (sprintf ("gset top_title \"%s\"",
 		   undo_string_escapes (undo_string_escapes (text))));
+    if (automatic_replot)
+      replot
+    endif
   else
     error ("error: top_title: text must be a string");
   endif

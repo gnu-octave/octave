@@ -26,11 +26,6 @@
 ## axis.  The third and fourth specify the limits for the y axis, and the
 ## fifth and sixth specify the limits for the z axis.
 ##
-## If your plot is already drawn, then you need to use @code{replot} before
-## the new axis limits will take effect.  You can get this to happen
-## automatically by setting the built-in variable @code{automatic_replot}
-## to a nonzero value.
-##
 ## Without any arguments, @code{axis} turns autoscaling on.  
 ##
 ## With one output argument, @code{x=axis} returns the current axes 
@@ -174,7 +169,7 @@ function curr_axis = axis (ax, varargin)
       gset yrange [] writeback;
       gset zrange [] writeback;
       ## XXX FIXME XXX if writeback were set in plot, no need to replot here.
-      replot; 
+      replot
       gset noautoscale x;
       gset noautoscale y;
       gset noautoscale z;
@@ -268,6 +263,8 @@ function curr_axis = axis (ax, varargin)
 
   if (nargin > 1)
     axis (varargin{:});
+  elseif (automatic_replot)
+    replot
   endif
 endfunction
 

@@ -1,3 +1,8 @@
+2005-02-21  John W. Eaton  <jwe@octave.org>
+
+	* plot/grid.m, plot/plot_border.m, plot/title.m, plot/top_title.m,
+	plot/__axis_label__.m: Issue replot command.
+
 2005-02-09  John W. Eaton  <jwe@octave.org>
 
 	* polynomial/polyderiv.m: Force P to be a row vector.

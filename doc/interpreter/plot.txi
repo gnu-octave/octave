@@ -341,8 +341,6 @@ The command @code{shg} is equivalent to executing @code{replot} without
 any arguments.
 @end deffn
 
-@DOCSTRING(automatic_replot)
-
 Note that NaN values in the plot data are automatically omitted, and
 Inf values are converted to a very large value before calling gnuplot.
 

@@ -19,8 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} title (@var{string})
-## Specify a title for a plot.  If you already have a plot displayed, use
-## the command @code{replot} to redisplay it with the new title.
+## Specify a title for a plot.
 ## @end deftypefn
 ##
 ## @seealso{plot, semilogx, semilogy, loglog, polar, mesh, contour,
@@ -37,6 +36,9 @@ function h = title (text)
   if (isstr (text))
     eval (sprintf ("gset title \"%s\"",
 		   undo_string_escapes (undo_string_escapes (text))));
+    if (automatic_replot)
+      replot
+    endif
   else
     error ("title: text must be a string");
   endif

@@ -32,6 +32,9 @@ function h = __axis_label__ (caller, text)
     if (isstr (text))
       eval (sprintf ("gset %s \"%s\"", caller,
 		     undo_string_escapes (undo_string_escapes (text))));
+      if (automatic_replot)
+	replot
+      endif
     else
       error ("%s: text must be a string", caller);
     endif

@@ -35,22 +35,31 @@ function grid (x)
 
   usage_msg = "grid (\"on\" | \"off\")";
 
+  do_replot = false;
+
   if (nargin == 0)
     gset grid;
+    do_replot = true;
   elseif (nargin == 1)
     if (isstr (x))
       if (strcmp ("off", x))
         gset nogrid;
+	do_replot = true;
       elseif (strcmp ("on", x))
         gset grid;
+	do_replot = true;
       else
-    usage (usage_msg);
+	usage (usage_msg);
       endif
     else
       error ("grid: argument must be a string");
     endif
   else
     usage (usage_msg);
+  endif
+
+  if (do_replot && automatic_replot)
+    replot
   endif
 
 endfunction

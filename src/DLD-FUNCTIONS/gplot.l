@@ -432,25 +432,12 @@ send_to_plot_stream (const std::string& cmd)
     }
 
   int replot_len = Vgnuplot_command_replot.length ();
-  int splot_len = Vgnuplot_command_splot.length ();
-  int plot_len = Vgnuplot_command_plot.length ();
 
   bool is_replot = (Vgnuplot_command_replot == cmd.substr (0, replot_len));
-  bool is_splot = (Vgnuplot_command_splot == cmd.substr (0, splot_len));
-  bool is_plot = (Vgnuplot_command_plot == cmd.substr (0, plot_len));
 
-  if (plot_line_count == 0 && is_replot)
-    error ("replot: no previous plot");
-  else
+  if (! (plot_line_count == 0 && is_replot))
     {
       *plot_stream << cmd;
-
-      if (! (is_replot || is_splot || is_plot)
-	  && plot_line_count > 0
-	  && Vautomatic_replot)
-	{
-	  *plot_stream << Vgnuplot_command_replot << Vgnuplot_command_end;
-	}
 
       plot_stream->flush ();
     }
@@ -947,7 +934,7 @@ makeplot (std::string caller, std::string args) throw (gpt_parse_error)
         }
 
       if (plottok_or_end_p (tok))
-	throw gpt_parse_error ("must have something to plot");
+	return 1;
       else
 	{
 	  std::string file;
@@ -967,7 +954,7 @@ makeplot (std::string caller, std::string args) throw (gpt_parse_error)
 	      plot_expr_str += std::string (yytext) + " ";
 	      plot_expr_str += read_until (plottok_or_end_p, tok);
 
-	      int status;
+	      int status = 0;
 	      octave_value tmp_data = eval_string (plot_expr_str,
 						   true, status);
 
@@ -983,7 +970,7 @@ makeplot (std::string caller, std::string args) throw (gpt_parse_error)
 		  file = file_ops::tilde_expand (tmp_data.string_value ());
 		  // XXX FIXME XXX -- perhaps should check if the file exists?
 		  outstr += file + " ";
-                }
+		}
 	      else
 		{
 		  switch (ndim)
@@ -1000,14 +987,14 @@ makeplot (std::string caller, std::string args) throw (gpt_parse_error)
 		    default:
 		      gripe_2_or_3_dim_plot ();
 		      break;
-                    }
+		    }
 
 		  if (file.length () > 0)
 		    {
 		      mark_for_deletion (file);
 		      outstr += "'" + file + "' ";
 		    }
-                }
+		}
             }
         }
 

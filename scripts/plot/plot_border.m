@@ -110,4 +110,8 @@ function plot_border (varargin)
     eval (sprintf ("gset border %d", border));
   endif
 
+  if (automatic_replot)
+    replot
+  endif
+
 endfunction

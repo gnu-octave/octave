@@ -395,13 +395,29 @@ get_fcn_file_names (int& num, const char *dir, int no_suffix)
       while ((entry = readdir (dirp)) != 0)
 	{
 	  int len = NLENGTH (entry);
+#ifdef WITH_DLD
+	  if ((len > 2
+	       && entry->d_name[len-2] == '.'
+	       && entry->d_name[len-1] == 'm')
+	      || (len > 4
+		  && entry->d_name[len-4] == '.'
+		  && entry->d_name[len-3] == 'o'
+		  && entry->d_name[len-2] == 'c'
+		  && entry->d_name[len-1] == 't'))
+#else
 	  if (len > 2
 	      && entry->d_name[len-2] == '.'
 	      && entry->d_name[len-1] == 'm')
+#endif
 	    {
 	      retval[i] = strsave (entry->d_name);
 	      if (no_suffix)
-		retval[i][len-2] = '\0';
+		{
+		  if (retval[i][len-1] == 'm')
+		    retval[i][len-2] = '\0';
+		  else
+		    retval[i][len-4] = '\0';
+		}
 
 	      i++;
 

@@ -36,7 +36,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "mx-base.h"
 
 #include "oct-obj.h"
-#include "oct-str.h"
 #include "tree-base.h"
 #include "tree-expr.h"
 

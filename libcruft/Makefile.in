@@ -55,7 +55,7 @@ check: all
 
 install:
 	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $(MDEFINES) $@; cd ..; done
-	if test -d $(libdir) ; then true ; else $(TOPDIR)/mkpath $(libdir) ; fi
+	$(srcdir)/mkinstalldirs $(libdir)
 	rm -f $(libdir)/libcruft.a
 	$(INSTALL_DATA) libcruft.a $(libdir)/libcruft.a
 	$(RANLIB) $(libdir)/libcruft.a

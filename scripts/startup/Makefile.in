@@ -31,8 +31,7 @@ all:
 .PHONY: all
 
 install: all
-	if test -d $(fcnfiledir)/$(script_sub_dir) ; then true ; \
-	else $(TOPDIR)/mkpath $(fcnfiledir)/$(script_sub_dir) ; fi
+	$(srcdir)/mkinstalldirs $(fcnfiledir)/$(script_sub_dir)
 	if test -f $(fcnfiledir)/$(script_sub_dir)/octaverc ; then true ; \
 	else \
 	  $(INSTALL_DATA) $(srcdir)/octaverc \

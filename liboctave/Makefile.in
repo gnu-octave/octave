@@ -70,12 +70,10 @@ check: all
 .PHONY: check
 
 install: all
-	if test -d $(libdir) ; then true ; else $(TOPDIR)/mkpath $(libdir) ; fi
+	$(srcdir)/mkinstalldirs $(libdir) $(includedir)
 	rm -f $(libdir)/liboctave.a
 	$(INSTALL_DATA) liboctave.a $(libdir)/liboctave.a
 	$(RANLIB) $(libdir)/liboctave.a
-	if test -d $(includedir) ; then true ; \
-	else $(TOPDIR)/mkpath $(includedir) ; fi
 	for f in $(INCLUDES) $(TEMPLATE_SRC) ; do \
 	  rm -f $(includedir)/$$f ; \
 	  $(INSTALL_DATA) $(srcdir)/$$f $(includedir)/$$f ; \

@@ -126,8 +126,7 @@ check: all
 .PHONY: check
 
 install: all
-	if test -d $(infodir) ; then true ; \
-	else $(TOPDIR)/mkpath $(infodir) ; fi
+	$(srcdir)/mkinstalldirs $(infodir) $(mandir)
 	if test -d $(infodir) ; then \
 	  rm -f $(infodir)/octave.info* ; \
 	  if test -f octave.info ; then \
@@ -140,8 +139,6 @@ install: all
 	    done ; \
 	  fi ; \
 	fi
-	if test -d $(mandir) ; then true ; \
-	else $(TOPDIR)/mkpath $(mandir) ; fi
 	if test -d $(mandir) ; then \
 	  rm -f $(mandir)/octave.$(manext) ; \
 	  $(INSTALL_DATA) $(srcdir)/octave.1 $(mandir)/octave.$(manext) ; \

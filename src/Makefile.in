@@ -150,11 +150,10 @@ check: all
 .PHONY: check
 
 install: all
-	if test -d $(bindir) ; then true ; else $(TOPDIR)/mkpath $(bindir) ; fi
+	$(srcdir)/mkinstalldirs $(bindir) $(libdir)
 	rm -f $(bindir)/octave
 	$(INSTALL) octave $(bindir)/octave-$(version)
 	ln $(bindir)/octave-$(version) $(bindir)/octave
-	if test -d $(libdir) ; then true ; else $(TOPDIR)/mkpath $(libdir) ; fi
 	if $(OCTAVE_LITE) && $(WITH_DLD) ; then \
 	  $(INSTALL_DATA) liboctdld.a $(libdir)/liboctdld.a ; \
 	fi

@@ -37,20 +37,17 @@ octtopnm: octtopnm.o
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) octtopnm.o -o octtopnm
 
 install: all
-	if test -d $(fcnfiledir)/$(script_sub_dir) ; then true ; \
-	else $(TOPDIR)/mkpath $(fcnfiledir)/$(script_sub_dir) ; fi
+	$(srcdir)/mkinstalldirs $(fcnfiledir)/$(script_sub_dir)
 	for f in $(FCN_FILES_NO_DIR) ; do \
 	  rm -f $(fcnfiledir)/$(script_sub_dir)/$$f ; \
 	  $(INSTALL_DATA) $(srcdir)/$$f $(fcnfiledir)/$(script_sub_dir)/$$f ; \
 	done
-	if test -d $(fcnfiledir)/imagelib ; then true ; \
-	else $(TOPDIR)/mkpath $(fcnfiledir)/imagelib ; fi
+	$(srcdir)/mkinstalldirs $(fcnfiledir)/imagelib
 	for f in $(IMAGE_FILES_NO_DIR) ; do \
 	  rm -f $(fcnfiledir)/imagelib/$$f ; \
 	  $(INSTALL_DATA) $(srcdir)/$$f $(fcnfiledir)/imagelib/$$f ; \
 	done
-	if test -d $(archlibdir) ; then true ; \
-	else $(TOPDIR)/mkpath $(archlibdir) ; fi
+	$(srcdir)/mkinstalldirs $(archlibdir)
 	$(INSTALL_PROGRAM) octtopnm $(archlibdir)/octtopnm
 .PHONY: install
 

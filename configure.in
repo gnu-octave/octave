@@ -22,7 +22,7 @@ dnl Copyright (C) 1996, 1997 John W. Eaton
 ### 02111-1307, USA. 
 
 AC_INIT
-AC_REVISION($Revision: 1.371 $)
+AC_REVISION($Revision: 1.372 $)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -869,8 +869,8 @@ AC_SUBST(GLOB_INCFLAGS)
 AC_CHECK_FUNCS(atexit bcopy bzero dup2 endgrent endpwent execvp \
   fcntl fork getcwd getegid geteuid getgid getgrent getgrgid \
   getgrnam getpgrp getpid getppid getpwent \
-  getpwuid gettimeofday getuid getwd _kbhit link localtime_r lstat \
-  memmove mkdir mkfifo on_exit pipe poll putenv readlink rename \
+  getpwuid gettimeofday getuid getwd _kbhit kill link localtime_r lstat \
+  memmove mkdir mkfifo on_exit pipe poll putenv raise readlink rename \
   rindex rmdir select setgrent setpwent setvbuf sigaction sigpending \
   sigprocmask sigsuspend stat strcasecmp strdup strerror strftime \
   stricmp strncasecmp strnicmp strptime symlink tempnam umask unlink \

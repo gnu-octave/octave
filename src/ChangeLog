@@ -3,6 +3,26 @@
 	* version.h (OCTAVE_VERSION): Now 2.1.54.
 	(OCTAVE_API_VERSION): Now api-v5.
 
+	* Makefile.in (DLD_XSRC): Always include fftw_wisdom.cc.
+
+	* DLD-FUNCTIONS/fftw_wisdom.cc:
+	Rename from DLD-FUNCTIONS/fft_wisdom.cc.
+	(Vfftw_wisdom_prog): Delete extern decl.
+	(Ffftw_wisdom): Rename from Ffft_wisdom.
+	Use Vfftw_wisdom_prog instead of Vwisdom_prog.
+	Always define function.  Signal error if not configured to use FFTW3.
+
+	* defaults.cc (symbols_of_defaults): Rename WISDOM_PROGRAM to be
+	FFTW_WISDOM_PROGRAM.
+	(Vfftw_wisdom_prog): Rename from Vwisdom_prog.
+	(fftw_wisdom_program): Rename from wisdom_program.
+	For simplicity, always define FFTW_WISDOM_PROGRAM even when not
+	using fftw3.
+	(set_default_wisdom_prog): Look for OCTAVE_FFTW_WISDOM_PROGRAM in
+	the environment instead of OCTAVE_WISDOM_PROGRAM.
+	(set_default_fftw_wisdom_prog): Rename from set_default_wisdom_prog.
+	* defaults.h.in (Vfftw_wisdom_prog): Provide extern decl.
+
 2004-02-16 David Bateman <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/fft.cc: Adapt for Nd arrays, combine with ifft.cc.

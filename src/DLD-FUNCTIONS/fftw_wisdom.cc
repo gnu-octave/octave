@@ -24,27 +24,26 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#if defined (HAVE_FFTW3)
 #include <fftw3.h>
+#endif
 
-#include "file-ops.h"
-#include "lo-sstream.h"
-#include "oct-env.h"
 #include "defaults.h"
-#include "lo-mappers.h"
 #include "defun-dld.h"
 #include "error.h"
+#include "file-ops.h"
 #include "gripes.h"
+#include "lo-mappers.h"
+#include "lo-sstream.h"
+#include "oct-env.h"
 #include "oct-obj.h"
-#include "utils.h"
 #include "sighandlers.h"
+#include "utils.h"
 
-// Name of the FFTW wisdom program we'd like to use.
-extern std::string Vwisdom_prog;
-
-DEFUN_DLD (fft_wisdom, args, ,
+DEFUN_DLD (fftw_wisdom, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} fft_wisdom (@var{file}, @var{ow})\n\
-@deftypefnx {Loadable Function} {} fft_wisdom (@var{n})\n\
+@deftypefn {Loadable Function} {} fftw_wisdom (@var{file}, @var{ow})\n\
+@deftypefnx {Loadable Function} {} fftw_wisdom (@var{n})\n\
 \n\
 This function is used to manipulate the FFTW wisdom data. It can\n\
 be used to load previously stored wisdom from a file, create wisdom\n\
@@ -53,7 +52,7 @@ data can be used to significantly accelerate the calculation of the FFTs,\n\
 but is only profitable if the same FFT is called many times due to the\n\
 overhead in calculating the wisdom data.\n\
 \n\
-Called with a single string argument, @code{fft_wisdom (@var{file})}\n\
+Called with a single string argument, @code{fftw_wisdom (@var{file})}\n\
 will load the wisdom data found in @var{file}. If @var{file} does\n\
 not exist, then the current wisdom used by FFTW is saved to this\n\
 file. If the flag @var{ow} is non-zero, then even if @var{file}\n\
@@ -86,11 +85,14 @@ Octave.\n\
 @seealso {fft, ifft, fft2, ifft2, fftn, ifftn}")
 {
   octave_value retval;
+
+#if defined (HAVE_FFTW3)
+
   int nargin = args.length();
 
   if (nargin < 1 || nargin > 2)
     {
-      print_usage ("fft_wisdom");
+      print_usage ("fftw_wisdom");
       return retval;
     }
 
@@ -119,7 +121,7 @@ Octave.\n\
 	{
 	  FILE *ifile = fopen (wisdom.c_str (), "r");
 	  if (! fftw_import_wisdom_from_file (ifile))
-	    error ("fft_wisdom: can not import wisdom from file"); 
+	    error ("fftw_wisdom: can not import wisdom from file"); 
 	  fclose (ifile);
 	}
 
@@ -130,7 +132,7 @@ Octave.\n\
 
       if (error_state)
 	{
-	  error ("fft_wisdom: argument must be a matrix or a string");
+	  error ("fftw_wisdom: argument must be a matrix or a string");
 	  return retval;
 	}
 
@@ -138,12 +140,12 @@ Octave.\n\
 
       if (name.empty ())
 	{
-	  error ("fft_wisdom: can not open temporary file");
+	  error ("fftw_wisdom: can not open temporary file");
 	  return retval;
 	}
 
       OSSTREAM cmd_buf; 
-      cmd_buf << Vwisdom_prog << " -n -o \"" << name << "\"";
+      cmd_buf << Vfftw_wisdom_prog << " -n -o \"" << name << "\"";
 
       for (int k = 0; k < m.rows (); k++)
 	{
@@ -178,13 +180,19 @@ Octave.\n\
 	{
 	  FILE *ifile = fopen (name.c_str (), "r");
 	  if (! fftw_import_wisdom_from_file (ifile))
-	    error ("fft_wisdom: can not import wisdom from temporary file"); 
+	    error ("fftw_wisdom: can not import wisdom from temporary file"); 
 	  fclose (ifile);
 	}
       else
-	error ("fft_wisdom: error running %s", Vwisdom_prog.c_str ());
+	error ("fftw_wisdom: error running %s", Vfftw_wisdom_prog.c_str ());
 
     }
+
+#else
+
+  error ("fftw_wisdom: this copy of Octave was not configured to use FFTW3");
+
+#endif
 
   return retval;
 }

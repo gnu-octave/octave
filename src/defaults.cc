@@ -92,10 +92,8 @@ std::string Vimagepath;
 std::string Vlocal_site_defaults_file;
 std::string Vsite_defaults_file;
 
-#ifdef HAVE_FFTW3
-// Name of the FFTW wisdom program
-std::string Vwisdom_prog;
-#endif
+// Name of the FFTW wisdom program.
+std::string Vfftw_wisdom_prog;
 
 // Each element of A and B should be directory names.  For each
 // element of A not in the list B, execute SCRIPT_FILE in that
@@ -315,18 +313,16 @@ set_default_info_prog (void)
     Vinfo_prog = std::string (oct_info_prog);
 }
 
-#ifdef HAVE_FFTW3
 static void
-set_default_wisdom_prog (void)
+set_default_fftw_wisdom_prog (void)
 {
-  std::string oct_wisdom_prog = octave_env::getenv ("OCTAVE_WISDOM_PROGRAM");
+  std::string oct_wisdom_prog = octave_env::getenv ("OCTAVE_FFTW_WISDOM_PROGRAM");
 
   if (oct_wisdom_prog.empty ())
-    Vwisdom_prog = "fftw-wisdom";
+    Vfftw_wisdom_prog = "fftw-wisdom";
   else
-    Vwisdom_prog = std::string (oct_wisdom_prog);
+    Vfftw_wisdom_prog = std::string (oct_wisdom_prog);
 }
-#endif
 
 static void
 set_default_editor (void)
@@ -418,9 +414,7 @@ install_defaults (void)
 
   set_default_info_prog ();
 
-#ifdef HAVE_FFTW3
-  set_default_wisdom_prog ();
-#endif
+  set_default_fftw_wisdom_prog ();
 
   set_default_editor ();
 
@@ -506,25 +500,23 @@ exec_path (void)
   return status;
 }
 
-#ifdef HAVE_FFTW3
 static int
-wisdom_prog (void)
+fftw_wisdom_prog (void)
 {
   int status = 0;
 
-  std::string s = builtin_string_variable ("WISDOM_PROGRAM");
+  std::string s = builtin_string_variable ("FFTW_WISDOM_PROGRAM");
 
   if (s.empty ())
     {
-      gripe_invalid_value_specified ("WISDOM_PROGRAM");
+      gripe_invalid_value_specified ("FFTW_WISDOM_PROGRAM");
       status = -1;
     }
   else
-    Vwisdom_prog = s;
+    Vfftw_wisdom_prog = s;
 
   return status;
 }
-#endif
 
 static int
 default_exec_path (void)
@@ -629,17 +621,15 @@ value is used as the default.  Otherwise, @code{EDITOR} is set to\n\
 @code{\"emacs\"}.\n\
 @end defvr");
 
-#ifdef HAVE_FFTW3
-  DEFVAR (WISDOM_PROGRAM, Vwisdom_prog, wisdom_prog,
+  DEFVAR (FFTW_WISDOM_PROGRAM, Vfftw_wisdom_prog, fftw_wisdom_prog,
     "-*- texinfo -*-\n\
-@defvr {Built-in Variable} WISDOM_PROGRAM\n\
+@defvr {Built-in Variable} FFTW_WISDOM_PROGRAM\n\
 A string naming the FFTW wisdom program to use to create wisdom data\n\
 to accelerate Fourier transforms. If the environment variable\n\
 @code{OCTAVE_WISDOM_PROGRAM} is set when Octave starts, its value is used\n\
 as the default. Otherwise, @code{WISDOM_PROGRAM} is set to\n\
 @code{\"fftw-wisdom\"}.\n\
 @end defvr");
-#endif
   
   DEFVAR (EXEC_PATH, Vexec_path, exec_path,
     "-*- texinfo -*-\n\

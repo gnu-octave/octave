@@ -166,8 +166,8 @@ builtin_balance (tree_constant *args, int nargin, int nargout)
 {
   tree_constant *retval = NULL_TREE_CONST;
   if (nargin <= 1 || nargin > 4 || nargout < 1 || nargout > 4)
-    usage ("[aa {,dd}] = balance (a, {opt}) or \n\
-[aa, bb {,cc, dd}] = balance (a, b {,opt}), opt = 'P' or 'S'");
+    usage ("[{dd,} aa] = balance (a, {opt}) or \n\
+[{cc, dd,} aa, bb] = balance (a, b {,opt}), opt = 'P' or 'S'");
   else
     {
       DLD_BUILTIN (args, nargin, nargout, balance,
@@ -1596,7 +1596,23 @@ builtin_schur (tree_constant *args, int nargin, int nargout)
 }
 
 /*
- * Hessenburg Decomposition
+ * Givens rotation
+ */
+tree_constant *
+builtin_givens (tree_constant *args, int nargin, int nargout)
+{
+  tree_constant *retval = NULL_TREE_CONST;
+
+  if (nargin == 3 && (nargout == 1 || nargout == 2 ))
+    retval = givens (args, nargin, nargout);
+  else
+    usage ("[c, s] = givens (x,y)\n            G = givens (x,y)");
+
+  return retval;
+}
+
+/*
+ * Hessenberg Decomposition
  */
 tree_constant *
 builtin_hess (tree_constant *args, int nargin, int nargout)

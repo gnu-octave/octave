@@ -433,6 +433,7 @@ do_double_format_conversion (double *data, int len,
 	  gripe_unrecognized_float_fmt ();
 	  break;
 	}
+      break;
 
     case OCTAVE_IEEE_BIG:
       switch (fmt)
@@ -460,6 +461,7 @@ do_double_format_conversion (double *data, int len,
 	  gripe_unrecognized_float_fmt ();
 	  break;
 	}
+      break;
 
     case OCTAVE_VAX_D:
       switch (fmt)
@@ -487,6 +489,7 @@ do_double_format_conversion (double *data, int len,
 	  gripe_unrecognized_float_fmt ();
 	  break;
 	}
+      break;
 
     case OCTAVE_VAX_G:
       switch (fmt)
@@ -514,6 +517,7 @@ do_double_format_conversion (double *data, int len,
 	  gripe_unrecognized_float_fmt ();
 	  break;
 	}
+      break;
 
     default:
       panic_impossible ();
@@ -552,6 +556,7 @@ do_float_format_conversion (float *data, int len,
 	  gripe_unrecognized_float_fmt ();
 	  break;
 	}
+      break;
 
     case OCTAVE_IEEE_BIG:
       switch (fmt)
@@ -579,6 +584,7 @@ do_float_format_conversion (float *data, int len,
 	  gripe_unrecognized_float_fmt ();
 	  break;
 	}
+      break;
 
     case OCTAVE_VAX_D:
       switch (fmt)
@@ -606,6 +612,7 @@ do_float_format_conversion (float *data, int len,
 	  gripe_unrecognized_float_fmt ();
 	  break;
 	}
+      break;
 
     case OCTAVE_VAX_G:
       switch (fmt)
@@ -633,6 +640,7 @@ do_float_format_conversion (float *data, int len,
 	  gripe_unrecognized_float_fmt ();
 	  break;
 	}
+      break;
 
     default:
       panic_impossible ();

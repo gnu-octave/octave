@@ -16,7 +16,7 @@ include $(TOPDIR)/Makeconf
 SOURCES =
 
 TEXINFO = ack.texi amuse.texi arith.texi bugs.texi bugs1.texi \
-	conf.texi control.texi cp-idx.texi diffeq.texi expr.texi \
+	control.texi cp-idx.texi diffeq.texi expr.texi \
 	extend.texi fcn.texi fn-idx.texi gpl.texi help.texi \
 	history.texi hsuser.texi install.texi install1.texi \
 	intro.texi invoke.texi io.texi linalg.texi matrix.texi \
@@ -29,10 +29,10 @@ LIB_TEXINFO = liboctave.texi
 
 ALL_TEXINFO = $(TEXINFO) $(LIB_TEXINFO)
 
-FORMATTED =  octave.dvi octave.ps octave.info octave.info-[0-9]* \
-	liboctave.info liboctave.info-[0-9]*
+FORMATTED =  octave.dvi octave.ps octave.info octave.info-[0-9]*
+#	liboctave.info liboctave.info-[0-9]*
 
-DISTFILES = Makefile.in conf.texi.in texinfo.tex \
+DISTFILES = Makefile.in conf.texi.in conf.texi texinfo.tex \
 	$(ALL_TEXINFO) $(FORMATTED)
 
 SPELL = $(patsubst %.texi, %.spell, $(ALL_TEXINFO))
@@ -42,23 +42,23 @@ SPELL = $(patsubst %.texi, %.spell, $(ALL_TEXINFO))
 	sed -e 's/@@/ at /g' -e 's/@[a-zA-Z]*//g' $< | spell > $@.tmp
 	mv $@.tmp $@
 
-all: octave.info octave.dvi octave.ps \
-	liboctave.info liboctave.dvi liboctave.ps
+all: octave.info octave.dvi octave.ps
+#	liboctave.info liboctave.dvi liboctave.ps
 .PHONY: all
 
-octave.info: $(TEXINFO)
+octave.info: $(TEXINFO) conf.texi
 	-makeinfo -I$(srcdir) octave.texi
 
-octave.dvi: $(TEXINFO)
+octave.dvi: $(TEXINFO) conf.texi
 	texi2dvi $(srcdir)/octave.texi
 
 octave.ps: octave.dvi
 	dvips -o octave.ps octave.dvi
 
-liboctave.info: $(LIB_TEXINFO)
+liboctave.info: $(LIB_TEXINFO) conf.texi
 	-makeinfo -I$(srcdir) liboctave.texi
 
-liboctave.dvi: $(LIB_TEXINFO)
+liboctave.dvi: $(LIB_TEXINFO) conf.texi
 	texi2dvi $(srcdir)/liboctave.texi
 
 liboctave.ps: liboctave.dvi
@@ -109,16 +109,16 @@ install: all
 	      $(INSTALL_DATA) $$f $(infodir)/`basename $$f` ; \
 	    done ; \
 	  fi ; \
-	  rm -f $(infodir)/liboctave.info* ; \
-	  if test -f liboctave.info ; then \
-	    for f in liboctave.info* ; do \
-	      $(INSTALL_DATA) $$f $(infodir)/$$f ; \
-	    done ; \
-	  else \
-	    for f in $(srcdir)/liboctave.info* ; do \
-	      $(INSTALL_DATA) $$f $(infodir)/`basename $$f` ; \
-	    done ; \
-	  fi ; \
+#	  rm -f $(infodir)/liboctave.info* ; \
+#	  if test -f liboctave.info ; then \
+#	    for f in liboctave.info* ; do \
+#	      $(INSTALL_DATA) $$f $(infodir)/$$f ; \
+#	    done ; \
+#	  else \
+#	    for f in $(srcdir)/liboctave.info* ; do \
+#	      $(INSTALL_DATA) $$f $(infodir)/`basename $$f` ; \
+#	    done ; \
+#	  fi ; \
 	fi
 .PHONY: install
 

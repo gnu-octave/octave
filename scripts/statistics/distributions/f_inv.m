@@ -58,13 +58,6 @@ function inv = f_inv (x, m, n)
 	      .* n(k) ./ m(k));
   endif
 
-  ## should we really only allow for positive integer m, n?
-  k = find ((m != round (m)) | (n != round (n)));
-  if (any (k))
-    warning ("f_inv: m and n should be positive integers");
-    inv(k) = NaN * ones (1, length (k));
-  endif
-
   inv = reshape (inv, r, c);
 
 endfunction

@@ -37,14 +37,4 @@ function inv = chisquare_inv (x, n)
 
   inv = gamma_inv (x, n / 2, 1 / 2);
 
-  ## Allow only for (positive) integer n.
-  k = find (n != round (n));
-  if (any (k))
-    warning ("chisquare_inv: n should be positive integer");
-    [r, c] = size (x);
-    inv = reshape (inv, 1, r * c);
-    inv(k) = NaN * ones (1, length (k));
-    inv = reshape (inv, r, c);
-  endif
-
 endfunction

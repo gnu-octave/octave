@@ -1,3 +1,21 @@
+2001-02-09  David Livings  <david.livings@asa.co.uk>
+
+	* statistics/tests/welch_test.m: Fix typo.
+
+	* statistics/distributions/chisquare_cdf.m:
+	Don't restrict inputs to be only positive integers.
+	* statistics/distributions/chisquare_inv.m: Likewise.
+	* statistics/distributions/chisquare_pdf.m: Likewise.
+	* statistics/distributions/chisquare_rnd.m: Likewise.
+	* statistics/distributions/f_cdf.m: Likewise.
+	* statistics/distributions/f_inv.m: Likewise.
+	* statistics/distributions/f_pdf.m: Likewise.
+	* statistics/distributions/f_rnd.m: Likewise.
+	* statistics/distributions/t_cdf.m: Likewise.
+	* statistics/distributions/t_inv.m: Likewise.
+	* statistics/distributions/t_pdf.m: Likewise.
+	* statistics/distributions/t_rnd.m: Likewise.
+
 2001-02-08  Paul Kienzle  <pkienzle@kienzle.powernet.co.uk>
 
 	* strings/dec2base.m: New file.

@@ -37,14 +37,4 @@ function pdf = chisquare_pdf (x, n)
 
   pdf = gamma_pdf (x, n / 2, 1 / 2);
 
-  ## should we really only allow for positive integer n?
-  k = find (n != round (n));
-  if (any (k))
-    warning ("chisquare_pdf: n should be positive integer");
-    [r, c] = size (x);
-    pdf = reshape (pdf, 1, r * c);
-    pdf(k) = NaN * ones (1, length (k));
-    pdf = reshape (pdf, r, c);
-  endif
-
 endfunction

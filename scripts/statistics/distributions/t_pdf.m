@@ -52,13 +52,6 @@ function pdf = t_pdf (x, n)
 	      ./ (sqrt (n(k)) .* beta (n(k)/2, 1/2)));
   endif
 
-  ## should we really only allow for positive integer n?
-  k = find (n != round (n));
-  if (any (k))
-    warning ("t_pdf: n should be positive integer");
-    pdf(k) = NaN * ones (1, length (k));
-  endif
-
   pdf = reshape (pdf, r, c);
 
 endfunction

@@ -49,12 +49,12 @@ function rnd = t_rnd (n, r, c)
   n = reshape (n, 1, s);
   rnd = zeros (1, s);
 
-  k = find (!(n > 0) | !(n < Inf) | !(n == round (n)));
+  k = find (!(n > 0) | !(n < Inf));
   if (any (k))
     rnd(k) = NaN * ones (1, length (k));
   endif
 
-  k = find ((n > 0) & (n < Inf) & (n == round (n)));
+  k = find ((n > 0) & (n < Inf));
   if (any (k))
     rnd(k) = t_inv (rand (1, length (k)), n(k));
   endif

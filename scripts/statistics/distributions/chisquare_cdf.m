@@ -37,14 +37,4 @@ function cdf = chisquare_cdf (x, n)
 
   cdf = gamma_cdf (x, n / 2, 1 / 2);
 
-  ## should we really only allow for positive integer n?
-  k = find (n != round (n));
-  if (any (k))
-    warning ("chisquare_cdf: n should be positive integer");
-    [r, c] = size (x);
-    cdf = reshape (cdf, 1, r * c);
-    cdf(k) = NaN * ones (1, length (k));
-    cdf = reshape (cdf, r, c);
-  endif
-
 endfunction

@@ -60,13 +60,6 @@ function cdf = t_cdf (x, n)
     endif
   endif
 
-  ## should we really only allow for positive integer n?
-  k = find (n != round (n));
-  if (any (k))
-    warning ("t_cdf: n should be positive integer");
-    cdf(k) = NaN * ones (1, length (k));
-  endif
-
   cdf = reshape (cdf, r, c);
 
 endfunction

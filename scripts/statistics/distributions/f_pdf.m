@@ -55,13 +55,6 @@ function pdf = f_pdf (x, m, n)
 	      .* (m(k) ./ n(k)) ./ beta (m(k) / 2, n(k) / 2));
   endif
 
-  ## should we really only allow for positive integer m, n?
-  k = find ((m != round (m)) | (n != round (n)));
-  if (any (k))
-    warning ("f_pdf: m and n should be positive integers");
-    pdf(k) = NaN * ones (1, length (k));
-  endif
-
   pdf = reshape (pdf, r, c);
 
 endfunction

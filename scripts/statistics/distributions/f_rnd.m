@@ -55,14 +55,14 @@ function rnd = f_rnd (m, n, r, c)
   n = reshape (n, 1, s);
   rnd = zeros (1, s);
 
-  k = find (!(m > 0) | !(m < Inf) | !(m == round (m)) |
-            !(n > 0) | !(n < Inf) | !(n == round (n)));
+  k = find (!(m > 0) | !(m < Inf) |
+            !(n > 0) | !(n < Inf));
   if (any (k))
     rnd(k) = NaN * ones (1, length (k));
   endif
 
-  k = find ((m > 0) & (m < Inf) & (m == round (m)) &
-            (n > 0) & (n < Inf) & (n == round (n)));
+  k = find ((m > 0) & (m < Inf) &
+            (n > 0) & (n < Inf));
   if (any (k))
     rnd(k) = f_inv (rand (1, length (k)), m(k), n(k));
   endif

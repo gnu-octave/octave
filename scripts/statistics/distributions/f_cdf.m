@@ -57,13 +57,6 @@ function cdf = f_cdf (x, m, n)
     cdf(k) = 1 - betai (n(k) / 2, m(k) / 2, 1 ./ (1 + m(k) .* x(k) ./ n(k)));
   endif
 
-  ## should we really only allow for positive integer m, n?
-  k = find ((m != round (m)) | (n != round (n)));
-  if (any (k))
-    warning ("f_cdf: m and n should be positive integers");
-    cdf(k) = NaN * ones (1, length (k));
-  endif
-
   cdf = reshape (cdf, r, c);
 
 endfunction

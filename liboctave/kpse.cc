@@ -29,6 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 #include "kpse-xfns.h"
 #include "kpse.h"
 
+#include "lo-error.h"
 #include "lo-sstream.h"
 #include "oct-env.h"
 #include "oct-passwd.h"
@@ -204,47 +205,23 @@ extern int fclose (FILE *);
 /* This should be called only after a system call fails.  Don't exit
    with status `errno', because that might be 256, which would mean
    success (exit statuses are truncated to eight bits).  */
-#define FATAL_PERROR(str) do { \
-  fputs ("pathsearch: ", stderr); \
-  perror (str); exit (EXIT_FAILURE); } while (0)
+#define FATAL_PERROR(str) \
+  do \
+    { \
+      fputs ("pathsearch: ", stderr); \
+      perror (str); exit (EXIT_FAILURE); \
+    } \
+  while (0)
 
-#define START_FATAL() do { \
-  fputs ("pathsearch: fatal: ", stderr);
-#define END_FATAL() fputs (".\n", stderr); exit (1); } while (0)
-
-#define FATAL(str)							\
-  START_FATAL (); fputs (str, stderr); END_FATAL ()
-#define FATAL1(str, e1)							\
-  START_FATAL (); fprintf (stderr, str, e1); END_FATAL ()
-#define FATAL2(str, e1, e2)						\
-  START_FATAL (); fprintf (stderr, str, e1, e2); END_FATAL ()
-#define FATAL3(str, e1, e2, e3)						\
-  START_FATAL (); fprintf (stderr, str, e1, e2, e3); END_FATAL ()
-#define FATAL4(str, e1, e2, e3, e4)					\
-  START_FATAL (); fprintf (stderr, str, e1, e2, e3, e4); END_FATAL ()
-#define FATAL5(str, e1, e2, e3, e4, e5)					\
-  START_FATAL (); fprintf (stderr, str, e1, e2, e3, e4, e5); END_FATAL ()
-#define FATAL6(str, e1, e2, e3, e4, e5, e6)				\
-  START_FATAL (); fprintf (stderr, str, e1, e2, e3, e4, e5, e6); END_FATAL ()
-
-#define START_WARNING() do { fputs ("warning: ", stderr)
-#define END_WARNING() fputs (".\n", stderr); fflush (stderr); } while (0)
-
-#define WARNING(str)							\
-  START_WARNING (); fputs (str, stderr); END_WARNING ()
-#define WARNING1(str, e1)						\
-  START_WARNING (); fprintf (stderr, str, e1); END_WARNING ()
-#define WARNING2(str, e1, e2)						\
-  START_WARNING (); fprintf (stderr, str, e1, e2); END_WARNING ()
-#define WARNING3(str, e1, e2, e3)					\
-  START_WARNING (); fprintf (stderr, str, e1, e2, e3); END_WARNING ()
-#define WARNING4(str, e1, e2, e3, e4)					\
-  START_WARNING (); fprintf (stderr, str, e1, e2, e3, e4); END_WARNING ()
-
-/* (Re)Allocate N items of type T using xmalloc/xrealloc.  */
-#define XTALLOC(n, t) ((t *) xmalloc ((n) * sizeof (t)))
-#define XTALLOC1(t) XTALLOC (1, t)
-#define XRETALLOC(addr, n, t) ((addr) = (t *) xrealloc (addr, (n) * sizeof(t)))
+#define FATAL(str) \
+  do \
+    { \
+      fputs ("pathsearch: fatal: ", stderr); \
+      fputs (str, stderr); \
+      fputs (".\n", stderr); \
+      exit (1); \
+    } \
+  while (0)
 
 extern "C" char *xbasename (const char *name);
 
@@ -352,33 +329,6 @@ xfclose (FILE *f, const std::string& filename)
     FATAL_PERROR (filename.c_str ());
 }
 
-/* Return the concatenation of S1 and S2.  See `concatn.c' for a
-   `concatn', which takes a variable number of arguments.  */
-
-static char *
-concat (const char *s1, const char *s2)
-{
-  char *answer = (char *) xmalloc (strlen (s1) + strlen (s2) + 1);
-  strcpy (answer, s1);
-  strcat (answer, s2);
-
-  return answer;
-}
-
-/* concat3.c: concatenate three strings.  */
-
-static char *
-concat3 (const char *s1, const char *s2, const char *s3)
-{
-  char *answer
-    = (char *) xmalloc (strlen (s1) + strlen (s2) + strlen (s3) + 1);
-  strcpy (answer, s1);
-  strcat (answer, s2);
-  strcat (answer, s3);
-
-  return answer;
-}
-
 /* A single (key,value) pair.  */
 
 struct hash_element_type
@@ -427,8 +377,7 @@ hash_create (unsigned size)
   return ret;
 }
 
-/* Whether or not KEY is already in MAP, insert it and VALUE.  Do not
-   duplicate the strings, in case they're being purposefully shared.  */
+/* Whether or not KEY is already in MAP, insert it and VALUE.  */
 
 static void
 hash_insert (hash_table_type *table, const std::string& key,
@@ -1573,7 +1522,7 @@ brace_expand (const std::string& text_arg)
   /* What if there isn't a matching close brace? */
   if (! c)
     {
-      WARNING1 ("%s: Unmatched {", text);
+      (*current_liboctave_warning_handler) ("%s: Unmatched {", text);
       free (preamble);		/* Same as result[0]; see initialization. */
       result[0] = xstrdup (text);
       return (result);
@@ -1762,19 +1711,6 @@ brace_gobbler (const char *text, int *indx, int satisfy)
 #define DEFAULT_TEXMFDBS "/usr/local/share/texmf:/var/tmp/texfonts"
 #endif
 
-/* Perhaps we could use this for path values themselves; for now, we use
-   it only for the program_enabled_p value.  */
-typedef enum
-{
-  kpse_src_implicit,   /* C initialization to zero */
-  kpse_src_compile,    /* configure/compile-time default */
-  kpse_src_texmf_cnf,  /* texmf.cnf, the kpathsea config file */
-  kpse_src_client_cnf, /* application config file, e.g., config.ps */
-  kpse_src_env,        /* environment variable */
-  kpse_src_x,          /* X Window System resource */
-  kpse_src_cmdline     /* command-line option */
-} kpse_src_type;
-
 /* For each file format, we record the following information.  The main
    thing that is not part of this structure is the environment variable
    lists. They are used directly in tex-file.c. We could incorporate
@@ -1793,12 +1729,6 @@ typedef struct
   std::string cnf_path;	     /* From texmf.cnf.  */
   std::string default_path;  /* If all else fails.  */
   string_vector suffix;	     /* For kpse_find_file to check for/append.  */
-  bool suffix_search_only;   /* Only search with a suffix?  */
-  std::string program;	     /* ``mktexpk'', etc.  */
-  std::string program_args;  /* Args to `program'.  */
-  bool program_enabled_p;    /* Invoke `program'?  */
-  kpse_src_type program_enable_level; /* Who said to invoke `program'.  */
-  bool binmode;		     /* The files must be opened in binary mode. */
 } kpse_format_info_type;
 
 /* The sole variable of that type, indexed by `kpse_file_format_type'.
@@ -1809,13 +1739,17 @@ static kpse_format_info_type kpse_format_info;
 
 /* And EXPAND_DEFAULT calls kpse_expand_default on try_path and the
    present info->path.  */
-#define EXPAND_DEFAULT(try_path, source_string)			\
-  if (! try_path.empty ())					\
-    {								\
-      info->raw_path = try_path;				\
-      info->path = kpse_expand_default (try_path, info->path);	\
-      info->path_source = source_string;			\
-    }
+#define EXPAND_DEFAULT(try_path, source_string) \
+  do \
+    { \
+      if (! try_path.empty ()) \
+        { \
+          info.raw_path = try_path;	\
+          info.path = kpse_expand_default (try_path, info.path); \
+          info.path_source = source_string;	\
+        } \
+    } \
+  while (0)
 
 /* Find the final search path to use for the format entry INFO, given
    the compile-time default (DEFAULT_PATH), and the environment
@@ -1824,15 +1758,13 @@ static kpse_format_info_type kpse_format_info;
    `client_path' member must already be set upon entry.  */
 
 static void
-init_path (kpse_format_info_type *info, const char *default_path, ...)
+init_path (kpse_format_info_type& info, const char *default_path, ...)
 {
-  char *env_name;
-  char *var = NULL;
   va_list ap;
 
   va_start (ap, default_path);
 
-  info->default_path = default_path;
+  info.default_path = default_path;
 
   /* First envvar that's set to a nonempty value will exit the loop.  If
      none are set, we want the first cnf entry that matches.  Find the
@@ -1840,12 +1772,16 @@ init_path (kpse_format_info_type *info, const char *default_path, ...)
      list twice -- because of the PVAR?C macro, that would mean having
      to create a str_list and then use it twice.  Yuck.  */
 
+  char *env_name;
+
+  std::string var;
+
   while ((env_name = va_arg (ap, char *)) != NULL)
     {
       /* Since sh doesn't like envvar names with `.', check PATH_prog
 	 rather than PATH.prog.  */
 
-      if (! var)
+      if (var.empty ())
 	{
 	  /* Try simply PATH.  */
 	  std::string env_value = octave_env::getenv (env_name);
@@ -1854,7 +1790,7 @@ init_path (kpse_format_info_type *info, const char *default_path, ...)
 	    var = env_name;
 	}
 
-      if (var && ! info->cnf_path.empty ())
+      if (! var.empty () && ! info.cnf_path.empty ())
 	break;
     }
 
@@ -1867,21 +1803,21 @@ init_path (kpse_format_info_type *info, const char *default_path, ...)
      bottom are guaranteed to exist.  */
 
   /* Assume we can reliably start with the compile-time default.  */
-  info->path = info->raw_path = info->default_path;
-  info->path_source = "compile-time paths.h";
+  info.path = info.raw_path = info.default_path;
+  info.path_source = "compile-time paths.h";
 
-  EXPAND_DEFAULT (info->cnf_path, "texmf.cnf");
-  EXPAND_DEFAULT (info->client_path, "program config file");
+  EXPAND_DEFAULT (info.cnf_path, "texmf.cnf");
+  EXPAND_DEFAULT (info.client_path, "program config file");
 
-  if (var)
+  if (! var.empty ())
     {
       std::string val = octave_env::getenv (var);
-      EXPAND_DEFAULT (val, concat (var, " environment variable"));
+      EXPAND_DEFAULT (val, var + " environment variable");
     }
 
-  EXPAND_DEFAULT (info->override_path, "application override variable");
-  std::string tmp = kpse_brace_expand (info->path);
-  info->path = tmp;
+  EXPAND_DEFAULT (info.override_path, "application override variable");
+  std::string tmp = kpse_brace_expand (info.path);
+  info.path = tmp;
 }
 
 static std::string
@@ -1920,7 +1856,7 @@ kpse_init_format (void)
     return kpse_format_info.path;
 
   kpse_format_info.type = "ls-R";
-  init_path (&kpse_format_info, DEFAULT_TEXMFDBS, DB_ENVS, NULL);
+  init_path (kpse_format_info, DEFAULT_TEXMFDBS, DB_ENVS, NULL);
   kpse_format_info.suffix.append (std::string ("ls-R"));
   kpse_format_info.path = remove_dbonly (kpse_format_info.path);
 
@@ -1965,21 +1901,6 @@ kpse_init_format (void)
 	{
 	  fputs (" (none)\n", stderr);
 	}
-
-      DEBUGF  ("  other suffixes =");
-
-      DEBUGF1 ("  search only with suffix = %d\n",
-	       kpse_format_info.suffix_search_only);
-
-      DEBUGF1 ("  runtime generation program = %s\n", MAYBE (program));
-
-      DEBUGF1 ("  extra program args = %s\n", MAYBE (program_args));
-
-      DEBUGF1 ("  program enabled = %d\n",
-	       kpse_format_info.program_enabled_p);
-
-      DEBUGF1 ("  program enable level = %d\n",
-	       kpse_format_info.program_enable_level);
     }
 #endif /* KPSE_DEBUG */
 
@@ -2139,8 +2060,12 @@ db_build (hash_table_type *table, const std::string& db_filename)
 
       if (file_count == 0)
 	{
-	  WARNING1 ("kpathsea: No usable entries in %s", db_filename.c_str ());
-	  WARNING ("kpathsea: See the manual for how to generate ls-R");
+	  (*current_liboctave_warning_handler)
+	    ("kpathsea: No usable entries in %s", db_filename.c_str ());
+
+	  (*current_liboctave_warning_handler)
+	    ("kpathsea: See the manual for how to generate ls-R");
+
 	  db_file = NULL;
 	}
       else
@@ -2681,7 +2606,10 @@ static void
 cache (const char *key, str_llist_type *value)
 {
   cache_length++;
-  XRETALLOC (the_cache, cache_length, cache_entry);
+
+  the_cache = (cache_entry *) xrealloc (the_cache,
+					cache_length * sizeof (cache_entry));
+
   the_cache[cache_length - 1].key = xstrdup (key);
   the_cache[cache_length - 1].value = value;
 }
@@ -3121,8 +3049,9 @@ expand (std::string &expansion, const std::string& var)
 {
   if (expanding_p (var))
     {
-      WARNING1 ("kpathsea: variable `%s' references itself (eventually)",
-		var.c_str ());
+      (*current_liboctave_warning_handler)
+	("kpathsea: variable `%s' references itself (eventually)",
+	 var.c_str ());
     }
   else
     {
@@ -3198,7 +3127,8 @@ kpse_var_expand (const std::string& src)
 
 	      if (var_end == src_len)
 		{
-		  WARNING1 ("%s: No matching } for ${", src.c_str ());
+		  (*current_liboctave_warning_handler)
+		    ("%s: No matching } for ${", src.c_str ());
 		  i = var_end - 1; /* will incr to eos at top of loop */
 		}
 	      else
@@ -3210,8 +3140,10 @@ kpse_var_expand (const std::string& src)
 	  else
 	    {
 	      /* $<something-else>: error.  */
-	      WARNING2 ("%s: Unrecognized variable construct `$%c'",
-			src.c_str (), src[i]);
+	      (*current_liboctave_warning_handler)
+		("%s: Unrecognized variable construct `$%c'",
+		 src.c_str (), src[i]);
+
 	      /* Just ignore those chars and keep going.  */
 	    }
 	}

@@ -29,12 +29,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Map.h"
 #include "Map.cc"
 
-template class Map<string>;
-template class CHNode<string>;
-template class CHMap<string>;
-
-template static int goodCHptr (CHNode<string> *t);
-template static unsigned int CHptr_to_index (CHNode<string> *t);
+template class Map<std::string>;
+template class CHNode<std::string>;
+template class CHMap<std::string>;
 
 /*
 ;;; Local Variables: ***

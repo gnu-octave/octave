@@ -22,7 +22,7 @@
 ## Compute the frequency response of a system.
 ## inputs:
 ##   sys: system data structure (must be either purely continuous or discrete;
-#	 see is_digital)
+##	 see is_digital)
 ##   w: frequency values for evaluation.
 ##      if sys is continuous, then nichols evaluates G(jw)
 ##      if sys is discrete, then nichols evaluates G(exp(jwT)), where T=sys.tsam

@@ -50,7 +50,7 @@ function y = zgfmul(a,b,c,d,x)
 
     Fj(aridx) = Fj(aridx) - 1;      # off diagonal entries of F1
     Fj(acidx) = Fj(acidx) - 1;
-    # diagonal entry of F1
+    ## diagonal entry of F1
     Fj(jj) = length(aridx)+length(acidx) + length(bidx) + length(cidx);
     
     if(!isempty(bidx)) Fj(n+bidx) = 1;     endif # B' incidence

@@ -1,3 +1,11 @@
+2005-02-18  John W. Eaton  <jwe@octave.org>
+
+	* Array.cc (Array<T>::permute): Allow permutation vector longer
+	than number of dimenensions of permuted matrix.
+
+	* Array.cc (Array<T>::permute): Use zero-based indexing for perm_vec.
+	* Array-util.cc (calc_permutated_idx): Likewise.
+
 2005-02-10  David Bateman  <dbateman@free.fr>
 
 	* CNDArray.cc (ComplexNDarray::operator !): Change sense of test.

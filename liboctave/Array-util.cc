@@ -461,9 +461,9 @@ calc_permutated_idx (const Array<int>& old_idx,
   for (int i = 0; i < n_el; i++)
     {
       if (inv)
-	retval(perm_vec(i)-1) = old_idx(i);
+	retval(perm_vec(i)) = old_idx(i);
       else
-	retval(i) = old_idx(perm_vec(i)-1);
+	retval(i) = old_idx(perm_vec(i));
     }
 
   return retval;

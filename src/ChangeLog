@@ -1,3 +1,10 @@
+2005-02-18  John W. Eaton  <jwe@octave.org>
+
+	* data.cc (do_permute): Use zero-based indexing for permutation
+	vector that is passed to octave_value::permute method.
+	Allow permutation vector longer	than number of dimenensions of
+	permuted matrix.
+
 2005-02-16  John W. Eaton  <jwe@octave.org>
 
 	* ov-base-mat.h (octave_base_matrix::squeeze): Explicitly convert

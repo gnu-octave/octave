@@ -430,43 +430,54 @@ Array<T>::permute (const Array<int>& perm_vec, bool inv) const
   dim_vector dv = dims ();
   dim_vector dv_new;
 
-  int nd = dv.length ();
+  int perm_vec_len = perm_vec.length ();
 
-  dv_new.resize (nd);
+  if (perm_vec_len < dv.length ())
+    (*current_liboctave_error_handler)
+      ("%s: invalid permutation vector", inv ? "ipermute" : "permute");
+
+  dv_new.resize (perm_vec_len);
+
+  // Append singleton dimensions as needed.
+  dv.resize (perm_vec_len, 1);
+
+  const Array<T> tmp = reshape (dv);
 
   // Need this array to check for identical elements in permutation array.
-  Array<bool> checked (nd, false);
+  Array<bool> checked (perm_vec_len, false);
 
   // Find dimension vector of permuted array.
-  for (int i = 0; i < nd; i++)
+  for (int i = 0; i < perm_vec_len; i++)
     {
-      int perm_el = perm_vec.elem (i);
+      int perm_elt = perm_vec.elem (i);
 
-      if (perm_el > dv.length () || perm_el < 1)
+      if (perm_elt >= perm_vec_len || perm_elt < 0)
 	{
 	  (*current_liboctave_error_handler)
-	    ("permutation vector contains an invalid element");
+	    ("%s: permutation vector contains an invalid element",
+	     inv ? "ipermute" : "permute");
 
 	  return retval;
 	}
 
-      if (checked.elem(perm_el - 1))
+      if (checked.elem(perm_elt))
 	{
 	  (*current_liboctave_error_handler)
-	    ("PERM cannot contain identical elements");
+	    ("%s: permutation vector cannot contain identical elements",
+	     inv ? "ipermute" : "permute");
 
 	  return retval;
 	}
       else
-	checked.elem(perm_el - 1) = true;
+	checked.elem(perm_elt) = true;
 
-      dv_new (i) = dv (perm_el - 1);
+      dv_new(i) = dv(perm_elt);
     }
 
   retval.resize (dv_new);
 
   // Index array to the original array.
-  Array<int> old_idx (nd, 0);
+  Array<int> old_idx (perm_vec_len, 0);
 
   // Number of elements in Array (should be the same for
   // both the permuted array and original array).
@@ -478,7 +489,7 @@ Array<T>::permute (const Array<int>& perm_vec, bool inv) const
       // Get the idx of permuted array.
       Array<int> new_idx = calc_permutated_idx (old_idx, perm_vec, inv);
 
-      retval.elem (new_idx) = elem (old_idx);
+      retval.elem (new_idx) = tmp.elem (old_idx);
 
       increment_index (old_idx, dv);
     }

@@ -863,9 +863,17 @@ do_permute (const octave_value_list& args, bool inv, const std::string& fname)
 {
   octave_value retval;
 
-  if (args.length () == 2 && args(1).length () == args(0).dims ().length ())
+  if (args.length () == 2 && args(1).length () >= args(1).ndims ())
     {
       Array<int> vec = args(1).int_vector_value ();
+
+      // XXX FIXME XXX -- maybe we shoudl create an idx_vector object
+      // here and pass that to permute?
+
+      int n = vec.length ();
+
+      for (int i = 0; i < n; i++)
+	vec(i)--;
 
       octave_value ret = args(0).permute (vec, inv);
 

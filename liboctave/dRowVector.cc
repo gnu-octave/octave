@@ -343,7 +343,7 @@ linspace (double x1, double x2, int n)
 {
   RowVector retval;
 
-  if (n > 0)
+  if (n > 1)
     {
       retval.resize (n);
       double delta = (x2 - x1) / (n - 1);
@@ -352,6 +352,20 @@ linspace (double x1, double x2, int n)
 	retval.elem (i) = x1 + i * delta;
       retval.elem (n-1) = x2;
     }
+  else if (n == 1)
+    {
+      if (x1 == x2)
+	{
+	  retval.resize (1);
+	  retval.elem (0) = x1;
+	}
+      else
+	(*current_liboctave_error_handler)
+	  ("linspace: npoints is 1, but x1 != x2");
+    }
+  else
+    (*current_liboctave_error_handler)
+      ("linspace: npoints must be greater than 0");
 
   return retval;
 }

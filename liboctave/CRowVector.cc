@@ -791,6 +791,20 @@ linspace (const Complex& x1, const Complex& x2, int n)
 	retval.elem (i) = x1 + 1.0 * i * delta;
       retval.elem (n-1) = x2;
     }
+  else if (n == 1)
+    {
+      if (x1 == x2)
+	{
+	  retval.resize (1);
+	  retval.elem (0) = x1;
+	}
+      else
+	(*current_liboctave_error_handler)
+	  ("linspace: npoints is 1, but x1 != x2");
+    }
+  else
+    (*current_liboctave_error_handler)
+      ("linspace: npoints must be greater than 0");
 
   return retval;
 }

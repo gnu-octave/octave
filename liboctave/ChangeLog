@@ -1,3 +1,11 @@
+1999-10-26  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* CRowVector.cc (linspace): Allow npoints == 1 if x1 == x2.
+	* dRowVector.cc (linspace): Ditto.
+
+	* oct-time.cc (Fstrftime): Don't save or delete tm_zone.
+	(octave_time::octave_time (const octave_base_tm&)): Likewise.
+
 1999-10-21  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* DASSL.cc (DASSL::do_integrate (double)): If we have a function

@@ -1,5 +1,7 @@
 1999-10-26  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* data.cc (Flinspace): Let linspace functions handle errors.
+
 	* mkgendoc (print_doc_string): Handle quoted names.
 
 	* file-io.cc (symbols_of_file_io): Use DEFCONSTX for SEEK_SET,

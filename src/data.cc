@@ -1140,40 +1140,35 @@ See also: logspace")
 
   if (! error_state)
     {
-      if (npoints > 1)
+      octave_value arg_1 = args(0);
+      octave_value arg_2 = args(1);
+
+      if (arg_1.is_complex_type () || arg_2.is_complex_type ())
 	{
-	  octave_value arg_1 = args(0);
-	  octave_value arg_2 = args(1);
+	  Complex x1 = arg_1.complex_value ();
+	  Complex x2 = arg_2.complex_value ();
 
-	  if (arg_1.is_complex_type () || arg_2.is_complex_type ())
+	  if (! error_state)
 	    {
-	      Complex x1 = arg_1.complex_value ();
-	      Complex x2 = arg_2.complex_value ();
+	      ComplexRowVector rv = linspace (x1, x2, npoints);
 
 	      if (! error_state)
-		{
-		  ComplexRowVector rv = linspace (x1, x2, npoints);
-
-		  if (! error_state)
-		    retval (0) = octave_value (rv, 0);
-		}
-	    }
-	  else
-	    {
-	      double x1 = arg_1.double_value ();
-	      double x2 = arg_2.double_value ();
-
-	      if (! error_state)
-		{
-		  RowVector rv = linspace (x1, x2, npoints);
-
-		  if (! error_state)
-		    retval (0) = octave_value (rv, 0);
-		}
+		retval (0) = octave_value (rv, 0);
 	    }
 	}
       else
-	error ("linspace: npoints must be greater than 2");
+	{
+	  double x1 = arg_1.double_value ();
+	  double x2 = arg_2.double_value ();
+
+	  if (! error_state)
+	    {
+	      RowVector rv = linspace (x1, x2, npoints);
+
+	      if (! error_state)
+		retval (0) = octave_value (rv, 0);
+	    }
+	}
     }
 
   return retval;

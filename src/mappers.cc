@@ -167,7 +167,7 @@ acosh (X): compute the inverse hyperbolic cosine of X for each element of X.\n\
 @end deftypefn");
 
   DEFUN_MAPPER (angle, 0, 0, 0, arg, arg, 0, 0.0, 0.0, 0,
-    "See arg.")
+    "See arg.");
 
   DEFUN_MAPPER (arg, 0, 0, 0, arg, arg, 0, 0.0, 0.0, 0,
     "-*- texinfo -*-\n\

@@ -32,14 +32,14 @@ DISTFILES = $(CONF_DISTFILES) \
 DISTDIRS = emacs glob kpathsea make # plplot
 
 # Subdirectories in which to run `make all'.
-SUBDIRS = @INFO_DIR@ @PLPLOT_DIR@ @READLINE_DIR@ glob kpathsea \
-	libcruft liboctave src scripts doc
+SUBDIRS = @INFO_DIR@ @PLPLOT_DIR@ @READLINE_DIR@ @DLFCN_DIR@ glob \
+	kpathsea libcruft liboctave src scripts doc
 
 # Subdirectories in which ot run `make conf-dist'.
 CONF_DISTSUBDIRS = src
 
 # Subdirectories in which to run `make dist'.
-DISTSUBDIRS = libcruft liboctave info readline src scripts test doc 
+DISTSUBDIRS = libcruft liboctave info readline dlfcn src scripts test doc 
 
 BINDISTFILES = COPYING ChangeLog NEWS README THANKS INSTALL.OCTAVE \
 	BUGS PROJECTS octave-bug octave.sh doinstall.sh \

@@ -33,7 +33,7 @@ all: FORCE
 
 # plplot should go in TARGETS if we start distributing it.
 
-TARGETS = octave-bug libcruft liboctave kpathsea info readline \
+TARGETS = octave-bug libcruft liboctave kpathsea info readline dlfcn \
 	src scripts doc check octave.info INSTALL.OCTAVE BUGS \
 	install uninstall tags TAGS clean-tar dist-z links-for-dist dist-tar \
 	clean-dist-tar dist links-for-bin-dist bin-dist-tar \

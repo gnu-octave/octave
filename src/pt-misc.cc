@@ -1,0 +1,328 @@
+// tree-misc.cc                                          -*- C++ -*-
+/*
+
+Copyright (C) 1992, 1993, 1994 John W. Eaton
+
+This file is part of Octave.
+
+Octave is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2, or (at your option) any
+later version.
+
+Octave is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with Octave; see the file COPYING.  If not, write to the Free
+Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+
+*/
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#if defined (__GNUG__)
+#pragma implementation
+#endif
+
+#include <sys/types.h>
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+
+#include "error.h"
+#include "tree.h"
+#include "tree-misc.h"
+#include "tree-expr.h"
+#include "tree-const.h"
+#include "user-prefs.h"
+#include "oct-obj.h"
+
+// Nonzero means we're breaking out of a loop.
+extern int breaking;
+
+// Nonzero means we're jumping to the end of a loop.
+extern int continuing;
+
+// Nonzero means we're returning from a function.
+extern int returning;
+
+// A list of commands to be executed.
+
+tree_statement::~tree_statement (void)
+{
+  delete command;
+  delete expression;
+}
+
+tree_constant
+tree_statement_list::eval (int print)
+{
+  int pf;
+  tree_constant retval;
+
+  if (error_state)
+    return retval;
+
+  for (Pix p = first (); p != 0; next (p))
+    {
+      tree_statement *elt = this->operator () (p);
+
+      if (print == 0)
+	pf = 0;
+      else
+	pf = elt->print_flag;
+
+      tree_command *cmd = elt->command;
+      tree_expression *expr = elt->expression;
+
+      if (cmd || expr)
+	{
+	  if (cmd)
+	    cmd->eval ();
+	  else
+	    retval = expr->eval (pf);
+
+	  if (error_state)
+	    return tree_constant ();
+
+	  if (breaking || continuing)
+	    break;
+
+	  if (returning)
+	    break;
+	}
+      else
+	retval = tree_constant ();
+    }
+  return retval;
+}
+
+Octave_object
+tree_argument_list::convert_to_const_vector (void)
+{
+  int len = length () + 1;
+
+  Octave_object args;
+  args.resize (len);
+
+// args[0] may eventually hold something useful, like the function
+// name.
+  Pix p = first ();
+  for (int k = 1; k < len; k++)
+    {
+      tree_expression *elt = this->operator () (p);
+      if (elt)
+	{
+	  args(k) = elt->eval (0);
+	  if (error_state)
+	    {
+	      ::error ("evaluating argument list element number %d", k);
+	      break;
+	    }
+	  next (p);
+	}
+      else
+	{
+	  args(k) = tree_constant ();
+	  break;
+	}
+    }
+  return args;
+}
+
+// Parameter lists.
+
+void
+tree_parameter_list::mark_as_formal_parameters (void)
+{
+  for (Pix p = first (); p != 0; next (p))
+    {
+      tree_identifier *elt = this->operator () (p);
+      elt->mark_as_formal_parameter ();
+    }
+}
+
+void
+tree_parameter_list::define_from_arg_vector (const Octave_object& args)
+{
+  if (args.length () <= 0)
+    return;
+
+  int nargin = args.length ();
+
+  int expected_nargin = length () + 1;
+
+  Pix p = first ();
+
+  for (int i = 1; i < expected_nargin; i++)
+    {
+      tree_identifier *elt = this->operator () (p);
+
+      tree_constant *tmp = 0;
+
+      if (i < nargin)
+	{
+	  if (args(i).is_defined ()
+	      && (args(i).const_type () == tree_constant_rep::magic_colon))
+	    {
+	      ::error ("invalid use of colon in function argument list");
+	      return;
+	    }
+	  tmp = new tree_constant (args(i));
+	}
+
+      elt->define (tmp);
+
+      next (p);
+    }
+}
+
+Octave_object
+tree_parameter_list::convert_to_const_vector (void)
+{
+  int nout = length ();
+
+  Octave_object retval;
+  retval.resize (nout);
+
+  int i = 0;
+
+  for (Pix p = first (); p != 0; next (p))
+    {
+      tree_identifier *elt = this->operator () (p);
+
+      if (elt->is_defined ())
+	retval(i) = elt->eval (0);
+
+      i++;
+    }
+
+  return retval;
+}
+
+int
+tree_parameter_list::is_defined (void)
+{
+  int status = 1;
+
+  for (Pix p = first (); p != 0; next (p))
+    {
+      tree_identifier *elt = this->operator () (p);
+
+      if (! elt->is_defined ())
+	{
+	  status = 0;
+	  break;
+	}
+    }
+
+  return status;
+}
+
+void
+tree_global::eval (void)
+{
+  if (ident)
+    {
+      ident->link_to_global ();
+    }
+  else if (assign_expr)
+    {
+      tree_identifier *id = assign_expr->left_hand_side ();
+
+      if (id)
+	id->link_to_global ();
+
+      assign_expr->eval (0);
+    }
+}
+
+void
+tree_global_init_list::eval (void)
+{
+  for (Pix p = first (); p != 0; next (p))
+    {
+      tree_global *t = this->operator () (p);
+      t->eval ();
+    }
+}
+
+int
+tree_if_clause::eval (void)
+{
+  if (expr)
+    {
+      tree_constant t1 = expr->eval (0);
+
+      if (error_state || t1.is_undefined ())
+	return 0;
+
+      if (t1.rows () == 0 || t1.columns () == 0)
+	{
+	  int flag = user_pref.propagate_empty_matrices;
+	  if (flag < 0)
+	    warning ("if: empty matrix used in conditional");
+	  else if (flag == 0)
+	    {
+	      ::error ("if: empty matrix used in conditional");
+	      return 0;
+	    }
+	  t1 = tree_constant (0.0);
+	}
+      else if (! t1.is_scalar_type ())
+	{
+	  tree_constant t2 = t1.all ();
+	  t1 = t2.all ();
+	}
+
+      int expr_value = 0;
+      tree_constant_rep::constant_type t = t1.const_type ();
+      if (t == tree_constant_rep::scalar_constant)
+	expr_value = (int) t1.double_value ();
+      else if (t == tree_constant_rep::complex_scalar_constant)
+	expr_value = t1.complex_value () != 0.0;
+      else
+	panic_impossible ();
+
+      if (expr_value)
+	{
+	  if (list)
+	    list->eval (1);
+
+	  return 1;
+	}
+    }
+  else
+    {
+      if (list)
+	list->eval (1);
+
+      return 1;
+    }
+
+  return 0;
+}
+
+void
+tree_if_command_list::eval (void)
+{
+  for (Pix p = first (); p != 0; next (p))
+    {
+      tree_if_clause *t = this->operator () (p);
+
+      if (t->eval () || error_state)
+	break;
+    }
+}
+
+/*
+;;; Local Variables: ***
+;;; mode: C++ ***
+;;; page-delimiter: "^/\\*" ***
+;;; End: ***
+*/

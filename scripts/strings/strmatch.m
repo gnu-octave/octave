@@ -59,7 +59,7 @@ function idx = strmatch (s, A, exact)
     s(s == 0) = " ";
     A(A == 0) = " ";
     match = s(ones(size(A,1),1),:) == A(:,1:length(s));
-    if (length(s) == 1)
+    if (length (s) == 1)
       idx = find (match);
     else
       idx = find (all (match')');

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996-2004 John W. Eaton
+Copyright (C) 1996-2005 John W. Eaton
 
 This file is part of Octave.
 
@@ -23,9 +23,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_version_h)
 #define octave_version_h 1
 
-#define OCTAVE_VERSION "2.1.cvs"
+#define OCTAVE_VERSION "2.9.0"
 
-#define OCTAVE_API_VERSION "api-cvs"
+#define OCTAVE_API_VERSION "api-v14"
 
 #define OCTAVE_COPYRIGHT \
   "Copyright (C) 2005 John W. Eaton."

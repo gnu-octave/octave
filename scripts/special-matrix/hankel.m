@@ -23,14 +23,14 @@ function retval = hankel (c, r)
 # Return the Hankel matrix constructed given the first column
 # c, and (optionally) the last row r.
 #
-# If the second argument is omitted, the last row is taken to be the
-# same as the first column.  If the last element of c is not the same
-# as the first element of r, the last element of c is used.
+# If the second argument is omitted, zeros are inserted below the main
+# anti-diagonal.  If the last element of c is not the same as the first 
+# element of r, the last element of c is used.
 #
 # See also: vander, hadamard, hilb, invhilb, toeplitz
 
   if (nargin == 1)
-    r = c;
+    r = zeros (size (c));
   elseif (nargin != 2)
     usage ("hankel (c, r)");
   endif
@@ -42,6 +42,10 @@ function retval = hankel (c, r)
     error ("hankel: expecting vector arguments")
   endif
 
+  if (nargin == 1) 
+    r (1) = c (length (c));
+  endif
+
   if (c_nc != 1)
     c = c.';
   endif
@@ -50,14 +54,14 @@ function retval = hankel (c, r)
     r = r.';
   endif
 
-  if (r (1) != c (1))
+  nc = length (r);
+  nr = length (c);
+
+  if (r (1) != c (nr))
     warning ("hankel: column wins anti-diagonal conflict");
   endif
 
 # This should probably be done with the colon operator...
-
-  nc = length (r);
-  nr = length (c);
 
   retval = zeros (nr, nc);
 

@@ -37,6 +37,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "idx-vector.h"
 #include "mx-base.h"
 #include "oct-alloc.h"
+#include "oct-time.h"
 #include "str-vec.h"
 
 class Cell;
@@ -157,7 +158,13 @@ public:
   enum all_va_args { all_va_args_t };
 
   octave_value (void);
+  octave_value (short int i);
+  octave_value (unsigned short int i);
   octave_value (int i);
+  octave_value (unsigned int i);
+  octave_value (long int i);
+  octave_value (unsigned long int i);
+  octave_value (octave_time t);
   octave_value (double d);
   octave_value (const Cell& m);
   octave_value (const Matrix& m);
@@ -408,11 +415,31 @@ public:
 
   octave_value eval (void) { return *this; }
 
+  virtual short int
+  short_value (bool req_int = false, bool frc_str_conv = false) const
+    { return rep->short_value (req_int, frc_str_conv); }
+
+  virtual unsigned short int
+  ushort_value (bool req_int = false, bool frc_str_conv = false) const
+    { return rep->ushort_value (req_int, frc_str_conv); }
+
   virtual int int_value (bool req_int = false, bool frc_str_conv = false) const
     { return rep->int_value (req_int, frc_str_conv); }
 
+  virtual unsigned int
+  uint_value (bool req_int = false, bool frc_str_conv = false) const
+    { return rep->uint_value (req_int, frc_str_conv); }
+
   virtual int nint_value (bool frc_str_conv = false) const
     { return rep->nint_value (frc_str_conv); }
+
+  virtual long int
+  long_value (bool req_int = false, bool frc_str_conv = false) const
+    { return rep->long_value (req_int, frc_str_conv); }
+
+  virtual unsigned long int
+  ulong_value (bool req_int = false, bool frc_str_conv = false) const
+    { return rep->ulong_value (req_int, frc_str_conv); }
 
   virtual double double_value (bool frc_str_conv = false) const
     { return rep->double_value (frc_str_conv); }

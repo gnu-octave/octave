@@ -694,7 +694,7 @@ Return the current value of the system-dependent variable errno.\n\
   octave_value retval;
 
   if (args.length () == 0)
-    retval = static_cast<double> (errno);
+    retval = errno;
   else
     print_usage ("errno");
 

@@ -28,6 +28,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include <climits>
+
 #include <iostream>
 
 #include "lo-ieee.h"
@@ -196,28 +198,39 @@ octave_base_value::print_info (std::ostream& os,
   os << "no info for type: " << type_name () << "\n";
 }
 
-int
-octave_base_value::int_value (bool require_int, bool frc_str_conv) const
-{
-  int retval = 0;
+#define INT_CONV_METHOD(T, F, MIN_LIMIT, MAX_LIMIT) \
+  T \
+  octave_base_value::F ## _value (bool require_int, bool frc_str_conv) const \
+  { \
+    T retval = 0; \
+ \
+    double d = double_value (frc_str_conv); \
+ \
+    if (! error_state) \
+      { \
+	if (require_int && D_NINT (d) != d) \
+	  error ("conversion of %g to " #T " value failed", d); \
+	else if (d < MIN_LIMIT || d > MAX_LIMIT) \
+	  error ("conversion of %g to short int out of range (%d, %d)", \
+		 d, MIN_LIMIT, MAX_LIMIT); \
+	else \
+	  retval = static_cast<T> (d); \
+      } \
+    else \
+      gripe_wrong_type_arg ("octave_base_value::" #F "_value ()", \
+			    type_name ()); \
+ \
+    return retval; \
+  }
 
-  double d = double_value (frc_str_conv);
+INT_CONV_METHOD (short int, short, SHRT_MIN, SHRT_MAX)
+INT_CONV_METHOD (unsigned short int, ushort, 0, USHRT_MAX)
 
-  if (! error_state)
-    {
-      if (require_int && D_NINT (d) != d)
-	{
-	  error ("conversion to integer value failed");
-	  return retval;
-	}
+INT_CONV_METHOD (int, int, INT_MIN, INT_MAX)
+INT_CONV_METHOD (unsigned int, uint, 0, UINT_MAX)
 
-      retval = static_cast<int> (d);
-    }
-  else
-    gripe_wrong_type_arg ("octave_base_value::int_value ()", type_name ());
-
-  return retval;
-}
+INT_CONV_METHOD (long int, long, LONG_MIN, LONG_MAX)
+INT_CONV_METHOD (unsigned long int, ulong, 0, ULONG_MAX)
 
 int
 octave_base_value::nint_value (bool frc_str_conv) const

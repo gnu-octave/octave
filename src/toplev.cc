@@ -547,7 +547,7 @@ variable @code{status} to the integer @samp{2}.\n\
 		  panic_impossible ();
 		}
 	      else
-		retval(0) = static_cast<double> (pid);
+		retval(0) = pid;
 #else
  	      error ("asynchronous system calls are not supported");
 #endif

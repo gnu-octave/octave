@@ -166,9 +166,19 @@ public:
 
   bool is_dld_function (void) const { return false; }
 
+  short int short_value (bool = false, bool = false) const;
+
+  unsigned short int ushort_value (bool = false, bool = false) const;
+
   int int_value (bool = false, bool = false) const;
 
+  unsigned int uint_value (bool = false, bool = false) const;
+
   int nint_value (bool = false) const;
+
+  long int long_value (bool = false, bool = false) const;
+
+  unsigned long int ulong_value (bool = false, bool = false) const;
 
   double double_value (bool = false) const;
 

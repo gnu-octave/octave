@@ -343,8 +343,44 @@ octave_value::octave_value (void)
   rep->count = 1;
 }
 
+octave_value::octave_value (short int i)
+  : rep (new octave_scalar (i))
+{
+  rep->count = 1;
+}
+
+octave_value::octave_value (unsigned short int i)
+  : rep (new octave_scalar (i))
+{
+  rep->count = 1;
+}
+
 octave_value::octave_value (int i)
   : rep (new octave_scalar (i))
+{
+  rep->count = 1;
+}
+
+octave_value::octave_value (unsigned int i)
+  : rep (new octave_scalar (i))
+{
+  rep->count = 1;
+}
+
+octave_value::octave_value (long int i)
+  : rep (new octave_scalar (i))
+{
+  rep->count = 1;
+}
+
+octave_value::octave_value (unsigned long int i)
+  : rep (new octave_scalar (i))
+{
+  rep->count = 1;
+}
+
+octave_value::octave_value (octave_time t)
+  : rep (new octave_scalar (t))
 {
   rep->count = 1;
 }

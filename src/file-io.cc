@@ -246,7 +246,7 @@ If there are no more characters to read, @code{fgetl} returns @minus{}1.\n\
 
 	  if (! err)
 	    {
-	      retval(1) = static_cast<double> (tmp.length ());
+	      retval(1) = tmp.length ();
 	      retval(0) = tmp;
 	    }
 	}
@@ -292,7 +292,7 @@ If there are no more characters to read, @code{fgets} returns @minus{}1.\n\
 
 	  if (! err)
 	    {
-	      retval(1) = static_cast<double> (tmp.length ());
+	      retval(1) = tmp.length ();
 	      retval(0) = tmp;
 	    }
 	}
@@ -623,7 +623,7 @@ from the beginning of the file @var{fid}.\n\
       octave_stream os = octave_stream_list::lookup (args(0), "ftell");
 
       if (! error_state)
-	retval = static_cast<double> (os.tell ());
+	retval = os.tell ();
     }
   else
     print_usage ("ftell");
@@ -949,7 +949,7 @@ string is treated as an end-of-file condition.\n\
 		      // position will clear it.
 		      std::string errmsg = os.error ();
 
-		      retval(3) = static_cast<double> (os.tell () + 1);
+		      retval(3) = os.tell () + 1;
 		      retval(2) = errmsg;
 		      retval(1) = count;
 		      retval(0) = tmp;

@@ -1,5 +1,28 @@
 2002-12-31  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* syscalls.cc (Fmkfifo): Use long_value instead of cast.
+
+	* ov.h (octave_value::short_value, octave_value::ushort_value,
+	octave_value::uint_value, octave_value::long_value,
+	octave_value::ulong_value): New functions.
+
+	* syscalls.cc (mk_stat_map, Fgetegid, getgid, geteuid): Likewise.
+	Delete unnecessary casts.
+	* file-io.cc (Ffgetl, Ffgets, Fftell, Fsscanf): Likewise.
+	* toplev.cc (Fsystem): Likewise.
+
+	* ov-file.h (octave_file::double_value,	octave_file::scalar_value):
+	Delete unnecessry cast.
+
+	* ov.cc (octave_value::octave_value): Add constructors for
+	octave_time, short int, unsigned short int, unsigned int, long
+	int, unsigned long int, 
+
+	* ov.h (octave_value::do_subsref (const std::string&, const
+	octave_value_list&)): Rename from subsref.  Change all derived classes.
+
+	* input.cc (generate_completion): Delete unused variable prefix_len.
+
 	* ov.h (DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA): Delete volatile
 	qualifier for decls of static_type_id and t_id.
 	(DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA): Likewise, for def of t_id.

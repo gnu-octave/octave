@@ -66,23 +66,23 @@ mk_stat_map (const file_stat& fs)
   Octave_map m;
 
   m["dev"](0) = static_cast<double> (fs.dev ());
-  m["ino"](0) = static_cast<double> (fs.ino ());
+  m["ino"](0) = fs.ino ();
   m["modestr"](0) = fs.mode_as_string ();
-  m["nlink"](0) = static_cast<double> (fs.nlink ());
-  m["uid"](0) = static_cast<double> (fs.uid ());
-  m["gid"](0) = static_cast<double> (fs.gid ());
+  m["nlink"](0) = fs.nlink ();
+  m["uid"](0) = fs.uid ();
+  m["gid"](0) = fs.gid ();
 #if defined (HAVE_STRUCT_STAT_ST_RDEV)
   m["rdev"](0) = static_cast<double> (fs.rdev ());
 #endif
-  m["size"](0) = static_cast<double> (fs.size ());
-  m["atime"](0) = static_cast<double> (fs.atime ());
-  m["mtime"](0) = static_cast<double> (fs.mtime ());
-  m["ctime"](0) = static_cast<double> (fs.ctime ());
+  m["size"](0) = fs.size ();
+  m["atime"](0) = fs.atime ();
+  m["mtime"](0) = fs.mtime ();
+  m["ctime"](0) = fs.ctime ();
 #if defined (HAVE_STRUCT_STAT_ST_BLKSIZE)
-  m["blksize"](0) = static_cast<double> (fs.blksize ());
+  m["blksize"](0) = fs.blksize ();
 #endif
 #if defined (HAVE_STRUCT_STAT_ST_BLOCKS)
-  m["blocks"](0) = static_cast<double> (fs.blocks ());
+  m["blocks"](0) = fs.blocks ();
 #endif
 
   return m;
@@ -433,7 +433,7 @@ Return the effective group id of the current process.\n\
   int nargin = args.length ();
 
   if (nargin == 0)
-    retval = static_cast<double> (octave_syscalls::getegid ());
+    retval = octave_syscalls::getegid ();
   else
     print_usage ("getegid");
 
@@ -451,7 +451,7 @@ Return the real group id of the current process.\n\
   int nargin = args.length ();
 
   if (nargin == 0)
-    retval = static_cast<double> (octave_syscalls::getgid ());
+    retval = octave_syscalls::getgid ();
   else
     print_usage ("getgid");
 
@@ -469,7 +469,7 @@ Return the effective user id of the current process.\n\
   int nargin = args.length ();
 
   if (nargin == 0)
-    retval = static_cast<double> (octave_syscalls::geteuid ());
+    retval = octave_syscalls::geteuid ();
   else
     print_usage ("geteuid");
 
@@ -487,7 +487,7 @@ Return the real user id of the current process.\n\
   int nargin = args.length ();
 
   if (nargin == 0)
-    retval = static_cast<double> (octave_syscalls::getuid ());
+    retval = octave_syscalls::getuid ();
   else
     print_usage ("getuid");
 
@@ -557,16 +557,21 @@ system-dependent error message.\n\
 
 	  if (args(1).is_scalar_type ())
 	    {
-	      long mode = static_cast<long> (args(1).double_value ());
+	      long mode = args(1).long_value ();
 
-	      std::string msg;
+	      if (! error_state)
+		{
+		  std::string msg;
 
-	      int status = file_ops::mkfifo (name, mode, msg);
+		  int status = file_ops::mkfifo (name, mode, msg);
 
-	      retval(0) = status;
+		  retval(0) = status;
 
-	      if (status < 0)
-		retval(1) = msg;
+		  if (status < 0)
+		    retval(1) = msg;
+		}
+	      else
+		error ("mkfifo: invalid MODE");
 	    }
 	  else
 	    error ("mkfifo: MODE must be an integer");

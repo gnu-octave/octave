@@ -326,100 +326,10 @@ along with a warning if the value of the built-in variable
 @cindex Variable-length argument lists
 @cindex @code{...}
 
-Octave has a real mechanism for handling functions that take an
-unspecified number of arguments, so it is not necessary to place an
-upper bound on the number of optional arguments that a function can
-accept.
-
-@c XXX FIXME XXX -- should we add a note about why this feature is not
-@c compatible with Matlab 5?
-
-Here is an example of a function that uses the new syntax to print a
-header followed by an unspecified number of values:
-
-@example
-function foo (heading, ...)
-  disp (heading);
-  va_start ();
-  ## Pre-decrement to skip `heading' arg.
-  while (--nargin)
-    disp (va_arg ());
-  endwhile
-endfunction
-@end example
-
-The ellipsis that marks the variable argument list may only appear once
-and must be the last element in the list of arguments.
-
-@DOCSTRING(va_arg)
-
-@DOCSTRING(va_start)
-
-Sometimes it is useful to be able to pass all unnamed arguments to
-another function.  The keyword @var{all_va_args} makes this very easy to
-do.  For example,
-
-@example
-@group
-function f (...)
-  while (nargin--)
-    disp (va_arg ())
-  endwhile
-endfunction
-
-function g (...)
-  f ("begin", all_va_args, "end")
-endfunction
-
-g (1, 2, 3)
-
-     @print{} begin
-     @print{} 1
-     @print{} 2
-     @print{} 3
-     @print{} end
-@end group
-@end example
-
-@defvr {Keyword} all_va_args
-This keyword stands for the entire list of optional argument, so it is
-possible to use it more than once within the same function without
-having to call @code{va_start}.  It can only be used within functions
-that take a variable number of arguments.  It is an error to use it in
-other contexts.
-@end defvr
-
 @node Variable-length Return Lists
 @section Variable-length Return Lists
 @cindex Variable-length return lists
 @cindex @code{...}
-
-Octave also has a real mechanism for handling functions that return an
-unspecified number of values, so it is no longer necessary to place an
-upper bound on the number of outputs that a function can produce.
-
-Here is an example of a function that uses a variable-length return list
-to produce @var{n} values:
-
-@example
-@group
-function [...] = f (n, x)
-  for i = 1:n
-    vr_val (i * x);
-  endfor
-endfunction
-
-[dos, quatro] = f (2, 2)
-     @result{} dos = 2
-     @result{} quatro = 4
-@end group
-@end example
-
-As with variable argument lists, the ellipsis that marks the variable
-return list may only appear once and must be the last element in the
-list of returned values.
-
-@DOCSTRING(vr_val)
 
 @node Returning From a Function
 @section Returning From a Function

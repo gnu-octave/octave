@@ -40,7 +40,7 @@ octave_base_stdiostream::~octave_base_stdiostream (void)
 // Position a stream at OFFSET relative to ORIGIN.
 
 int
-octave_base_stdiostream::seek (streampos offset, ios::seek_dir origin)
+octave_base_stdiostream::seek (streamoff offset, ios::seek_dir origin)
 {
   int retval = -1;
 

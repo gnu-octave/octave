@@ -1,3 +1,12 @@
+Mon Jan 20 11:16:21 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in (RLD_FLAG): For sparc-sun-sunos4*, remove space
+	between -L and $(libdir).
+
+Sun Jan 19 15:57:20 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makeconf.in, configure.in: Delete FUGLY.
+
 Wed Jan  8 23:12:02 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in (DEFAULT_PAGER): On cygwin32 systems, also look for

@@ -148,8 +148,7 @@ libhistory.a: history.o
 
 stamp-readline: $(PICOBJ)
 	if $(SHARED_LIBS); then \
-	  $(CC) -shared -o libreadline.$(SHLEXT) $(PICOBJ) \
-	  $(SH_TERMLIBS); \
+	  $(CC) -shared -o libreadline.$(SHLEXT) $(PICOBJ) $(SH_TERMLIBS); \
 	fi
 	touch stamp-readline
 

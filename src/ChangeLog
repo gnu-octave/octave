@@ -1,3 +1,17 @@
+Mon Jan 20 11:11:12 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* file-io.cc: Don't include "syswait.h" here.
+
+Sun Jan 19 22:38:45 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-stream.h (octave_base_stream::seek): Declare offset arg as
+	streamoff, not streampos.
+	(octave_stream::seek): Likewise.
+	* oct-strstrm.h (octave_base_strstream::seek): Likewise.
+	* oct-stdstrm.h (octave_base_stdiostream::seek): Likewise.
+	* oct-iostrm.h (octave_base_iostream::seek): Likewise.
+	* oct-fstrm.h (octave_fstream::seek): Likewise.
+
 Fri Jan 17 18:13:10 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* file-io.cc (Ffflush): Handle stdout as a special case.

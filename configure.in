@@ -21,7 +21,7 @@ dnl Copyright (C) 1996 John W. Eaton
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ### 02111-1307, USA. 
 
-AC_REVISION($Revision: 1.244 $)
+AC_REVISION($Revision: 1.245 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -413,7 +413,7 @@ changequote([,])dnl
   ;;
   sparc-sun-sunos4*)
     FPICFLAG=-PIC
-    RLD_FLAG='-L $(libdir)'
+    RLD_FLAG='-L$(libdir)'
   ;;
   sparc-sun-solaris2*)
     FPICFLAG=-PIC
@@ -534,13 +534,10 @@ else
   AC_CHECK_PROGS(F77, g77 f77 f90 xlf cf77 fc)
 fi
 
-FUGLY=
 have_fortran_compiler=false
 have_f2c=false
 
 if $use_g77; then
-  FUGLY=-fugly
-  AC_MSG_RESULT([defining FUGLY to be $FUGLY])
   OCTAVE_FLIBS
   AC_DEFINE(F77_APPEND_UNDERSCORE, 1)
   AC_MSG_RESULT([defining F77_APPEND_UNDERSCORE to be 1])
@@ -665,7 +662,6 @@ FC=$F77
 AC_SUBST(FC)
 AC_SUBST(F77)
 AC_SUBST(FFLAGS)
-AC_SUBST(FUGLY)
 AC_SUBST(FLIBS)
 AC_SUBST(F2C)
 AC_SUBST(F2CFLAGS)
@@ -1139,7 +1135,7 @@ CXX_EXTRAS="$HOST_CXXFLAGS $NO_IMPLICIT_TEMPLATES $GCC_IEEE_FP_FLAG"
 if test -z "$F77"; then
   FORT="$F2C $F2CFLAGS"
 else
-  FORT="$F77 $FFLAGS $FUGLY"
+  FORT="$F77 $FFLAGS"
 fi
 
 AC_MSG_RESULT([

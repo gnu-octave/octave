@@ -109,7 +109,7 @@ BSD_init (void)
 }
 #endif
 
-#if defined NeXT
+#if defined (NeXT)
 extern "C"
 {
   typedef void (*_cplus_fcn_int) (int);
@@ -184,9 +184,9 @@ sysdep_init (void)
 {
 #if defined (__386BSD__) || defined (__FreeBSD__)
   BSD_init ();
-#elif defined NeXT
+#elif defined (NeXT)
   NeXT_init ();
-#elif defined __EMX__
+#elif defined (__EMX__)
   OS2_init ();
 #elif defined (SCO)
   SCO_init ();

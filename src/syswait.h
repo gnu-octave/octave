@@ -33,6 +33,15 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <sys/wait.h>
 #endif
 
+// NeXT has sys/wait.h, but it is not compatible with POSIX.1, so we
+// try to define waitpid in terms of wait4.
+
+#if defined (NeXT)
+#include <sys/wait.h>
+#define waitpid(a, b, c) \
+  wait4 ((a) == -1 ? 0 : (a), (union wait *)(b), c, 0)
+#endif
+
 #ifndef WIFEXITED
 #define WIFEXITED(stat_val) (((stat_val) & 255) == 0)
 #endif

@@ -1,5 +1,5 @@
 # Makefile for texinfo/info.	-*- Indented-Text -*-
-# $Id: Makefile.in,v 1.36 1997-01-15 21:18:57 jwe Exp $
+# $Id: Makefile.in,v 1.37 1997-01-20 17:25:41 jwe Exp $
 # 
 # Copyright (C) 1993,96 Free Software Foundation, Inc.
 
@@ -95,7 +95,7 @@ CMDFILES = $(srcdir)/session.c $(srcdir)/echo_area.c $(srcdir)/infodoc.c \
 	   $(srcdir)/footnotes.c $(srcdir)/variables.c
 
 # The name of the program which builds documentation structure from CMDFILES.
-MAKEDOC_OBJECTS = makedoc.o clib.o xmalloc.o
+MAKEDOC_OBJECTS = makedoc.o clib.o xmalloc.o $(LIBOBJS)
 MAKEDOC_SOURCE = makedoc.c clib.c xmalloc.c
 
 infofiles = info.info info-stnd.info

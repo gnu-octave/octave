@@ -20,13 +20,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-// Written by John C. Campbell <jcc@bevo.che.wisc.edu>
-//
-// Thomas Baier <baier@ci.tuwien.ac.at> added the following functions:
-//
-//   popen    pclose    execute  sync_system  async_system
-//   waitpid  mkfifo   unlink
+// Originally written by John C. Campbell <jcc@bevo.che.wisc.edu>
 
+// Completely rewritten by John W. Eaton <jwe@bevo.che.wisc.edu>,
+// April 1996.
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>

@@ -42,7 +42,7 @@ public:
 
   // Position a stream at OFFSET relative to ORIGIN.
 
-  int seek (streampos offset, ios::seek_dir origin);
+  int seek (streamoff offset, ios::seek_dir origin);
 
   // Return current stream position.
 

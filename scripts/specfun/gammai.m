@@ -17,34 +17,10 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## -*- texinfo -*-
-## @deftypefn {Mapping Function} {} gammai (@var{a}, @var{x})
-## Computes the incomplete gamma function,
-## @iftex
-## @tex
-## $$
-##  \gamma (a, x) = {\displaystyle\int_0^x e^{-t} t^{a-1} dt \over \Gamma (a)}
-## $$
-## @end tex
-## @end iftex
-## @ifinfo
+## This function is provided for compatibility with older versions of
+## Octave.  New programs should use gammainc instead.
 ##
-## @smallexample
-##                               x
-##                     1        /
-## gammai (a, x) = ---------    | exp (-t) t^(a-1) dt
-##                 gamma (a)    /
-##                           t=0
-## @end smallexample
-## @end ifinfo
-##
-## If @var{a} is scalar, then @code{gammai (@var{a}, @var{x})} is returned
-## for each element of @var{x} and vice versa.
-##
-## If neither @var{a} nor @var{x} is scalar, the sizes of @var{a} and
-## @var{x} must agree, and @var{gammai} is applied element-by-element.
-## @end deftypefn
-## @seealso{gamma and lgamma}
+## gammai (a, x) is the same as gammainc (x, a).
 
 ## Author: jwe
 ## Created: 30 Jan 1998

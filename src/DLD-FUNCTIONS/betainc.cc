@@ -33,13 +33,31 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 
 DEFUN_DLD (betainc, args, ,
-  "betainc (x, a, b)\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Mapping Function} {} betainc (@var{x}, @var{a}, @var{b})\n\
+Return the incomplete Beta function,\n\
+@iftex\n\
+@tex\n\
+$$\n\
+ \\beta (a, b, x) = B (a, b)^{-1} \\int_0^x t^{(a-z)} (1-t)^{(b-1)} dt.\n\
+$$\n\
+@end tex\n\
+@end iftex\n\
+@ifinfo\n\
 \n\
-Compute the incomplete beta function\n\
+@smallexample\n\
+                                    x\n\
+                                   /\n\
+betai (a, b, x) = beta (a, b)^(-1) | t^(a-1) (1-t)^(b-1) dt.\n\
+                                   /\n\
+                                t=0\n\
+@end smallexample\n\
+@end ifinfo\n\
 \n\
-  betainc(x,a,b) = beta(a,b)^(-1) \\int_0^x t^(a-1) (1-t)^(b-1) dt\n\
-\n\
-The sizes of x, a, and b must agree.")
+If x has more than one component, both @var{a} and @var{b} must be\n\
+scalars.  If @var{x} is a scalar, @var{a} and @var{b} must be of\n\
+compatible dimensions.\n\
+@end deftypefn")
 {
   octave_value retval;
 

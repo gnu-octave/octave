@@ -164,7 +164,7 @@ sin ([1, 2; 3, 4])
 
 @DOCSTRING(beta)
 
-@DOCSTRING(betai)
+@DOCSTRING(betainc)
 
 @DOCSTRING(bincoeff)
 
@@ -176,7 +176,7 @@ sin ([1, 2; 3, 4])
 
 @DOCSTRING(gamma)
 
-@DOCSTRING(gammai)
+@DOCSTRING(gammainc)
 
 @DOCSTRING(lgamma)
 

@@ -33,17 +33,34 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 
 DEFUN_DLD (gammainc, args, ,
-  "gammainc (x, a)\n\
+  "-*- texinfo -*-
+@deftypefn {Mapping Function} {} gammainc (@var{x}, @var{a})\n\
+Computes the incomplete gamma function,\n\
+@iftex\n\
+@tex\n\
+$$\n\
+ \\gamma (a, x) = {\\displaystyle\\int_0^x e^{-t} t^{a-1} dt \\over \\Gamma (a)}\n\
+$$\n\
+@end tex\n\
+@end iftex\n\
+@ifinfo\n\
 \n\
-Compute the incomplete gamma function\n\
+@smallexample\n\
+                              x\n\
+                    1        /\n\
+gammainc (a, x) = ---------    | exp (-t) t^(a-1) dt\n\
+                gamma (a)    /\n\
+                          t=0\n\
+@end smallexample\n\
+@end ifinfo\n\
 \n\
-  gammainc(x,a) = (\\int_0^x exp(-t) t^(a-1) dt) / gamma(a).\n\
+If @var{a} is scalar, then @code{gammainc (@var{a}, @var{x})} is returned\n\
+for each element of @var{x} and vice versa.\n\
 \n\
-If a is scalar, then gammainc(x,a) is returned for each element of x\n\
-and vice versa.\n\
-\n\
-If neither a nor x is scalar, the sizes of a and x must agree, and\n\
-gammainc is applied for corresponding elements of x and a.")
+If neither @var{a} nor @var{x} is scalar, the sizes of @var{a} and\n\
+@var{x} must agree, and @var{gammainc} is applied element-by-element.\n\
+@end deftypefn\n\
+@seealso{gamma and lgamma}")
 {
   octave_value retval;
 

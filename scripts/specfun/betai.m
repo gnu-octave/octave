@@ -17,31 +17,10 @@
 ## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
 ## 02111-1307, USA.
 
-## -*- texinfo -*-
-## @deftypefn {Mapping Function} {} betai (@var{a}, @var{b}, @var{x})
-## Return the incomplete Beta function,
-## @iftex
-## @tex
-## $$
-##  \beta (a, b, x) = B (a, b)^{-1} \int_0^x t^{(a-z)} (1-t)^{(b-1)} dt.
-## $$
-## @end tex
-## @end iftex
-## @ifinfo
+## This function is provided for compatibility with older versions of
+## Octave.  New programs should use betainc instead.
 ##
-## @smallexample
-##                                     x
-##                                    /
-## betai (a, b, x) = beta (a, b)^(-1) | t^(a-1) (1-t)^(b-1) dt.
-##                                    /
-##                                 t=0
-## @end smallexample
-## @end ifinfo
-##
-## If x has more than one component, both @var{a} and @var{b} must be
-## scalars.  If @var{x} is a scalar, @var{a} and @var{b} must be of
-## compatible dimensions.
-## @end deftypefn
+## betai (a, b, x) is the same as betainc (x, a, b).
 
 ## Author: jwe
 ## Created: 30 Jan 1998

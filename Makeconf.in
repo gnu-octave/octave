@@ -3,10 +3,10 @@
 # Common configuration rules for all of octave's Makefiles.
 #
 # John W. Eaton
-# jwe@che.utexas.edu
+# jwe@bevo.che.wisc.edu
+# University of Wisconsin-Madison
 # Department of Chemical Engineering
-# The University of Texas at Austin
-
+ 
 SHELL = /bin/sh
 
 #### Start of system configuration section. ####

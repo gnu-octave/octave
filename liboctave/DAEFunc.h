@@ -1,7 +1,7 @@
 // DAEFunc.h                                             -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993 John W. Eaton
+Copyright (C) 1992, 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -21,8 +21,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
-#if !defined (_DAEFunc_h)
-#define _DAEFunc_h 1
+#if !defined (octave_DAEFunc_h)
+#define octave_DAEFunc_h 1
+
+extern "C++" {
 
 #include "Matrix.h"
 
@@ -71,4 +73,13 @@ protected:
   DAEJacFunc jac;
 };
 
+} // extern "C++"
+
 #endif
+
+/*
+;;; Local Variables: ***
+;;; mode: C++ ***
+;;; page-delimiter: "^/\\*" ***
+;;; End: ***
+*/

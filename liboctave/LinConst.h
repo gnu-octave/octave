@@ -1,7 +1,7 @@
 // LinConst.h                                                -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993 John W. Eaton
+Copyright (C) 1992, 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -21,8 +21,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
-#if !defined (_LinConst_h)
-#define _LinConst_h 1
+#if !defined (octave_LinConst_h)
+#define octave_LinConst_h 1
+
+extern "C++" {
 
 #include <float.h>
 
@@ -122,6 +124,8 @@ LinConst::set_constraint_matrix (const Matrix& amat)
 
   return *this;
 }
+
+} // extern "C++"
 
 #endif
 

@@ -21,8 +21,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
-#if !defined (_QPSOL_h)
-#define _QPSOL_h 1
+#if !defined (octave_QPSOL_h)
+#define octave_QPSOL_h 1
+
+extern "C++" {
 
 #ifndef QPSOL_MISSING
 
@@ -121,6 +123,8 @@ QPSOL::operator = (const QPSOL& a)
 }
 
 #endif /* QPSOL_MISSING */
+
+} // extern "C++"
 
 #endif
 

@@ -21,8 +21,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
-#if !defined (_ODE_h)
-#define _ODE_h 1
+#if !defined (octave_ODE_h)
+#define octave_ODE_h 1
+
+extern "C++" {
 
 class ostream;
 
@@ -128,6 +130,8 @@ private:
 		      double *pd, int *nrowpd);
 
 };
+
+} // extern "C++"
 
 #endif
 

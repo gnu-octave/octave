@@ -1,7 +1,7 @@
 // f77-uscore.h                                          -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993 John W. Eaton
+Copyright (C) 1992, 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -21,8 +21,8 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
-#if !defined (_f77_uscore_h)
-#define _f77_uscore_h 1
+#if !defined (octave_f77_uscore_h)
+#define octave_f77_uscore_h 1
 
 #if defined (F77_APPEND_UNDERSCORE)
 #define F77_FCN(f) f##_

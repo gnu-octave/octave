@@ -21,8 +21,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
-#if !defined (_NLEqn_h)
-#define _NLEqn_h 1
+#if !defined (octave_NLEqn_h)
+#define octave_NLEqn_h 1
+
+extern "C++" {
 
 #include "Matrix.h"
 #include "NLFunc.h"
@@ -88,6 +90,8 @@ class NLEqn : public NLFunc, public NLEqn_options
 
   void error (const char* msg);
 };
+
+} // extern "C++"
 
 #endif
 

@@ -1,7 +1,7 @@
 // FEGrid.h                                                -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993 John W. Eaton
+Copyright (C) 1992, 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -21,8 +21,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
-#if !defined (_FEGrid_h)
-#define _FEGrid_h 1
+#if !defined (octave_FEGrid_h)
+#define octave_FEGrid_h 1
+
+extern "C++" {
 
 class ostream;
 
@@ -80,6 +82,8 @@ inline double FEGrid::right (void) const
 
 inline Vector FEGrid::element_boundaries (void) const
   { return elem; }
+
+} // extern "C++"
 
 #endif
 

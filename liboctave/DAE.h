@@ -21,8 +21,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
-#if !defined (_DAE_h)
-#define _DAE_h 1
+#if !defined (octave_DAE_h)
+#define octave_DAE_h 1
+
+extern "C++" {
 
 #include "ODE.h"
 #include "DAEFunc.h"
@@ -85,4 +87,13 @@ private:
 
 };
 
+} // extern "C++"
+
 #endif
+
+/*
+;;; Local Variables: ***
+;;; mode: C++ ***
+;;; page-delimiter: "^/\\*" ***
+;;; End: ***
+*/

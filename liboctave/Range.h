@@ -1,7 +1,7 @@
 // Range.h                                               -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993 John W. Eaton
+Copyright (C) 1992, 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -21,8 +21,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
-#if !defined (_Range_h)
-#define _Range_h 1
+#if !defined (octave_Range_h)
+#define octave_Range_h 1
+
+extern "C++" {
 
 class istream;
 class ostream;
@@ -107,6 +109,8 @@ inline int Range::nelem (void) const { return rng_nelem; }
 inline void Range::set_base (double b) { rng_base = b;  }
 inline void Range::set_limit (double l) { rng_limit = l; }
 inline void Range::set_inc (double i) { rng_inc = i;   }
+
+} // extern "C++"
 
 #endif
 

@@ -1,7 +1,7 @@
 // LP.h                                                -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993 John W. Eaton
+Copyright (C) 1992, 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -21,8 +21,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
-#if !defined (_LP_h)
-#define _LP_h 1
+#if !defined (octave_LP_h)
+#define octave_LP_h 1
+
+extern "C++" {
 
 #include "Matrix.h"
 #include "Bounds.h"
@@ -53,6 +55,8 @@ class LP
   Bounds bnds;
   LinConst lc;
 };
+
+} // extern "C++"
 
 #endif
 

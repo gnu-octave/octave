@@ -21,8 +21,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
-#if !defined (_NPSOL_h)
-#define _NPSOL_h 1
+#if !defined (octave_NPSOL_h)
+#define octave_NPSOL_h 1
+
+extern "C++" {
 
 #ifndef NPSOL_MISSING
 
@@ -187,6 +189,8 @@ inline NPSOL::NPSOL (const NPSOL& a) : NLP (a.x, a.phi, a.bnds, a.lc, a.nlc)
   { }
 
 #endif /* NPSOL_MISSING */
+
+} // extern "C++"
 
 #endif
 

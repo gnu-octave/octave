@@ -21,8 +21,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
-#if !defined (_Quad_h)
-#define _Quad_h 1
+#if !defined (octave_Quad_h)
+#define octave_Quad_h 1
+
+extern "C++" {
 
 #include "Matrix.h"
 
@@ -131,6 +133,8 @@ class IndefQuad : public Quad
   double bound;
   IntegralType type;
 };
+
+} // extern "C++"
 
 #endif
 

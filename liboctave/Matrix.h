@@ -28,8 +28,10 @@ represented by some sort of inheritance tree...
 
 */
 
-#if !defined (_Matrix_h)
-#define _Matrix_h 1
+#if !defined (octave_Matrix_h)
+#define octave_Matrix_h 1
+
+extern "C++" {
 
 #include <stdlib.h>
 #include <stddef.h>
@@ -2448,6 +2450,8 @@ inline ComplexMatrix ComplexQR::R (void) const
 {
   return r;
 }
+
+} // extern "C++"
 
 #endif
 

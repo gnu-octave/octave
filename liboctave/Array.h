@@ -21,8 +21,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 */
 
-#if !defined (_Array_h)
-#define _Array_h 1
+#if !defined (octave_Array_h)
+#define octave_Array_h 1
+
+extern "C++" {
 
 #include "lo-error.h"
 
@@ -357,6 +359,8 @@ public:
 #if defined (__GNUG__) && ! defined (USE_EXTERNAL_TEMPLATES)
 #include "Array.cc"
 #endif
+
+} // extern "C++"
 
 #endif
 

@@ -206,6 +206,7 @@ octave_pager_stream::octave_pager_stream (void) : ostream (), pb (0)
 
 octave_pager_stream::~octave_pager_stream (void)
 {
+  really_flush_to_pager = 1;
   flush ();
   delete pb;
 }

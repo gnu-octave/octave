@@ -2764,7 +2764,7 @@ ComplexMatrix::column_min_loc (void) const
 	  if (column_is_real_only)
 	    {
 	      double res = 0;
-	      double tmp = real (elem (i, j));
+	      double tmp = real (elem (0, j));
 	      for (int i = 1; i < nr; i++)
 		if (real (elem (i, j)) < tmp)
 		  res = i;
@@ -2865,7 +2865,7 @@ ComplexMatrix::column_max_loc (void) const
 	  if (column_is_real_only)
 	    {
 	      double res = 0;
-	      double tmp = real (elem (i, j));
+	      double tmp = real (elem (0, j));
 	      for (int i = 1; i < nr; i++)
 		if (real (elem (i, j)) > tmp)
 		  res = i;

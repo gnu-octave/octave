@@ -18,16 +18,18 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{c} =} horzcat (@var{a}, @var{b})
-## Equivalent to @code{c = [a, b]}.
+## @deftypefn {Function File} {@var{c} =} horzcat (@var{a}, @var{b}, @dots{})
+## Equivalent to @code{c = [a, b, ...]}.
 ## @end deftypefn
 
-function c = horzcat (a, b)
+function c = horzcat (varargin)
 
-  if (nargin == 2)
-    c = [a, b];
+  ## This is just a quick fix for compatibility.
+
+  if (nargin > 1)
+    c = [ varargin{:} ];
   else
-    usage ("horzcat (a, b)");
+    usage ("horzcat (a, b, ...)");
   endif
 
 endfunction

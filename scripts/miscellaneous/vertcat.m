@@ -18,16 +18,21 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{c} =} vertcat (@var{a}, @var{b})
-## Equivalent to @code{c = [a; b]}.
+## @deftypefn {Function File} {@var{c} =} vertcat (@var{a}, @var{b}, @dots{})
+## Equivalent to @code{c = [a; b; ...]}.
 ## @end deftypefn
 
-function c = vertcat (a, b)
+function c = vertcat (varargin)
 
-  if (nargin == 2)
-    c = [a, b];
+  ## This is just a quick fix for compatibility.
+
+  if (nargin > 1)
+    for i = 1:nargin
+      varargin{i} = varargin{i}.';
+    endfor
+    c = [ varargin{:} ].';
   else
-    usage ("vertcat (a, b)");
+    usage ("vertcat (a, b, ...)");
   endif
 
 endfunction

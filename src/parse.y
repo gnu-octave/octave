@@ -127,6 +127,9 @@ bool input_from_command_line_file = true;
 // an eval() statement.
 bool evaluating_function_body = false;
 
+// Keep track of symbol table information when parsing functions.
+static symbol_table *symtab_context = 0;
+
 // Forward declarations for some functions defined at the bottom of
 // the file.
 
@@ -1049,6 +1052,15 @@ except_command	: UNWIND stash_comment opt_sep opt_list CLEANUP
 // Some `subroutines' for function definitions
 // ===========================================
 
+save_symtab	: // empty
+		  {
+		    if (symtab_context)
+		      panic_impossible ();
+
+		    symtab_context = curr_sym_tab;
+		  }
+		;
+		   
 global_symtab	: // empty
 		  { curr_sym_tab = global_sym_tab; }
 		;
@@ -1173,8 +1185,8 @@ return_list_end	: global_symtab ']'
 // Function definition
 // ===================
 
-function_beg	: FCN stash_comment global_symtab
-		  { $$ = $2; }
+function_beg	: save_symtab FCN stash_comment global_symtab
+		  { $$ = $3; }
 		;
 
 function	: function_beg function2
@@ -2538,7 +2550,11 @@ finish_function (tree_parameter_list *ret_list,
 static void
 recover_from_parsing_function (void)
 {
-  curr_sym_tab = top_level_sym_tab;
+  if (! symtab_context)
+    panic_impossible ();
+
+  curr_sym_tab = symtab_context;
+  symtab_context = 0;
 
   lexer_flags.defining_func = false;
   lexer_flags.beginning_of_function = false;

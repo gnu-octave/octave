@@ -1,3 +1,11 @@
+2002-04-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* parse.y (save_symtab): New non-terminal.  Save current symbol
+	table context here.
+	(function_beg): Use it.
+	(symtab_context): New file-scope variable.
+	(recover_from_parsing_function): Restore symbol table context here.
+
 2002-04-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* load-save.cc (get_lines_and_columns): Handle CRLF as line

@@ -2,6 +2,9 @@ Tue Dec 10 00:31:13 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Version 2.0 released.
 
+	* pr-output.cc (set_format_style): Don't try to access argv unless
+	argc > 1.
+
 	* SLList-expr.cc SLList-misc.cc SLList-plot.cc SLList-str.cc
 	SLList-tc.cc SLList-tm.cc SLList.h SLStack-i.cc SLStack-pc.cc
 	SLStack-str.cc SLStack-sym.cc SLStack-tok.cc SLStack-ue.cc

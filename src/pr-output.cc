@@ -1551,10 +1551,11 @@ static void
 set_format_style (int argc, const string_vector& argv)
 {
   int idx = 1;
-  string arg = argv[idx++];
 
   if (--argc > 0)
     {
+      string arg = argv[idx++];
+
       if (arg == "short")
 	{
 	  if (--argc > 0)

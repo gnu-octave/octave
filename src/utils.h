@@ -34,16 +34,6 @@ class string_vector;
 
 extern char *strsave (const char *);
 
-#if 0
-extern char *strconcat (const char *, const char *);
-#endif
-
-extern void discard_until (istream&, char);
-
-#if 0
-extern char *read_until (istream&, char);
-#endif
-
 extern string search_path_for_file (const string&, const string&);
 extern string file_in_path (const string&, const string&);
 extern string fcn_file_in_path (const string&);

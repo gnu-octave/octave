@@ -1,3 +1,9 @@
+Sun Nov 30 17:55:20 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* slatec-fn/xdgami.f, slatec-fn/xdbetai.f, slatec-fn/xderfc.f,
+	slatec-fn/xderf.f, slatec-fn/xdatanh.f, slatec-fn/xdasinh.f,
+	slatec-fn/xdacosh.f: New files.
+
 Sat Nov 29 13:02:14 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* specfun/ribesl.f (ribesl): Use d1mach to get machine parameters.

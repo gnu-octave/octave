@@ -1,5 +1,14 @@
 1999-10-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Makefile.in (dist, bin-dist): Use `$(MAKE) -C dir' instead of
+	`cd dir; $(MAKE); cd ..'.
+	($(SUBDIRS)): Likewise.
+
+	* statistics/Makefile.in ($(SUBDIRS)): Likewise.
+
+	* statistics/Makefile.in (bin-dist): Use `$(MAKE) -C dir' instead
+	of `cd dir; $(MAKE)'.
+
 	* gethelp.cc, mkdoc: New files.
 	* Makefile.in: Use them to create DOCSTRINGS file from .m file
 	sources.

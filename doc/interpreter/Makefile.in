@@ -18,7 +18,9 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
-SOURCES = arith.txi audio.txi basics.txi bugs.txi control.txi \
+MAIN_SOURCE := octave.txi
+
+SUB_SOURCE := arith.txi audio.txi basics.txi bugs.txi control.txi \
 	cp-idx.txi data.txi diffeq.txi emacs.txi errors.txi \
 	eval.txi expr.txi fn-idx.txi func.txi gpl.txi \
 	grammar.txi image.txi install.txi intro.txi io.txi \
@@ -28,8 +30,13 @@ SOURCES = arith.txi audio.txi basics.txi bugs.txi control.txi \
 	strings.txi struct.txi system.txi tips.txi var.txi \
 	vr-idx.txi
 
+SOURCES := $(MAIN_SOURCE) $(SUB_SOURCE)
 
-TEXINFO = $(SOURCES:.txi=.texi)
+MAIN_TEXINFO := $(MAIN_SOURCE:.txi=.texi)
+
+SUB_TEXINFO := $(SUB_SOURCE:.txi=.texi)
+
+TEXINFO := $(MAIN_TEXINFO) $(SUB_TEXINFO)
 
 FORMATTED = octave.dvi octave.ps octave.info octave.info-[0-9]* octave_*.html
 
@@ -56,7 +63,13 @@ SPELL = $(patsubst %.texi, %.spell, $(TEXINFO))
 all: octave.info octave.dvi octave.ps octave_toc.html
 .PHONY: all
 
-$(TEXINFO): munge-texi
+DOCSTRINGS = $(TOPDIR)/src/DOCSTRINGS $(TOPDIR)/scripts/DOCSTRINGS
+
+$(TEXINFO): $(DOCSTRINGS) munge-texi
+
+# Kluge: if the DOCSTRING files are present, assume they are current.
+$(DOCSTRINGS):
+	$(MAKE) -C $(dir $@) $(notdir $@)
 
 %.texi : %.txi
 	./munge-texi \
@@ -64,13 +77,13 @@ $(TEXINFO): munge-texi
 	  -d $(TOPDIR)/scripts/DOCSTRINGS < $< > $@.t
 	$(top_srcdir)/move-if-change $@.t $@
 
-octave.info: $(TEXINFO) ../conf.texi
-	-makeinfo -I$(srcdir) -I$(srcdir)/.. octave.texi
+octave.info: $(MAIN_TEXINFO) $(SUB_TEXINFO) ../conf.texi
+	-makeinfo -I$(srcdir) -I$(srcdir)/.. $<
 
-octave.dvi: $(TEXINFO) ../conf.texi
+octave.dvi: $(MAIN_TEXINFO) $(SUB_TEXINFO) ../conf.texi
 	-TEXINPUTS="$(srcdir):$(srcdir)/..:$(TEXINPUTS):"; \
 	  export TEXINPUTS; \
-	  $(TEXI2DVI) octave.texi
+	  $(TEXI2DVI) $<
 
 octave.ps: octave.dvi
 	-dvips -o octave.ps octave.dvi
@@ -79,19 +92,18 @@ octave.ps: octave.dvi
 	rm -f INSTALL
 	-makeinfo -D INSTALLONLY \
 	  --no-validate --no-headers --no-split --output INSTALL \
-	  -I$(srcdir) -I$(srcdir)/.. $(srcdir)/install.texi
+	  -I$(srcdir) -I$(srcdir)/.. $<
 	mv INSTALL ../../INSTALL.OCTAVE
 
 ../../BUGS: bugs.texi
 	rm -f BUGS
 	-makeinfo -D BUGSONLY \
 	  --no-validate --no-headers --no-split --output BUGS \
-	  -I$(srcdir) -I$(srcdir)/.. $(srcdir)/bugs.texi
+	  -I$(srcdir) -I$(srcdir)/.. $<
 	mv BUGS ../../BUGS
 
-octave_toc.html:
-	-texi2html -expandinfo -split_chapter -I$(srcdir)/.. \
-	  octave.texi
+octave_toc.html: $(MAIN_TEXINFO) $(SUB_TEXINFO)
+	-texi2html -expandinfo -split_chapter -I$(srcdir)/.. $<
 
 check: all
 .PHONY: check

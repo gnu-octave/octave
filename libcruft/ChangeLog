@@ -1,3 +1,8 @@
+1999-10-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (dist): Use `$(MAKE) -C dir' instead of `cd dir;
+	$(MAKE); cd ..'.
+
 1999-10-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* dassl/dpotrf.f, dassl/dpotf2.f: Move to lapack subdirectory.

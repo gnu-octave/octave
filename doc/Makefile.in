@@ -31,17 +31,13 @@ BINDISTSUBDIRS = $(SUBDIRS)
 all: $(SUBDIRS)
 .PHONY: all
 
-../INSTALL.OCTAVE:
-	cd interpreter; $(MAKE) ../../INSTALL.OCTAVE
-.PHONY: ../INSTALL.OCTAVE
-
-../BUGS:
-	cd interpreter; $(MAKE) ../../BUGS
-.PHONY: ../BUGS
+../BUGS ../INSTALL.OCTAVE:
+	$(MAKE) -C interpreter ../$@
+.PHONY: ../BUGS ../INSTALL.OCTAVE
 
 $(SUBDIRS):
 	echo making all in $@
-	cd $@; $(MAKE) all
+	$(MAKE) -C $@ all
 .PHONY: $(SUBDIRS)
 
 install install-strip uninstall clean mostlyclean distclean maintainer-clean::
@@ -66,9 +62,9 @@ maintainer-clean::
 
 dist:
 	ln $(DISTFILES) ../`cat ../.fname`/doc
-	for dir in $(DISTSUBDIRS); do mkdir ../`cat ../.fname`/doc/$$dir; cd $$dir; $(MAKE) $@; cd ..; done
+	for dir in $(DISTSUBDIRS); do mkdir ../`cat ../.fname`/doc/$$dir; $(MAKE) -C $$dir $@; done
 .PHONY: dist
 
 bin-dist:
-	for dir in $(BINDISTSUBDIRS); do mkdir ../`cat ../.fname`/doc/$$dir; cd $$dir; $(MAKE) $@; cd ..; done
+	for dir in $(BINDISTSUBDIRS); do mkdir ../`cat ../.fname`/doc/$$dir; $(MAKE) -C $$dir $@; done
 .PHONY: bin-dist

@@ -80,28 +80,24 @@ mkoctfile: mkoctfile.in Makeconf octMakefile
 
 $(SUBDIRS):
 	echo making all in $@
-	cd $@; $(MAKE) all
+	$(MAKE) -C $@ all
 .PHONY: $(SUBDIRS)
 
 check:
-	cd test; $(MAKE) check
+	$(MAKE) -C test check
 .PHONY: check
 
 kpathsea.info:
-	cd kpathsea; $(MAKE) kpathsea.info
+	$(MAKE) -C kpathsea kpathsea.info
 .PHONY: kpathsea.info
 
 octave.info:
-	cd doc/interpreter; $(MAKE) octave.info
+	$(MAKE) -C doc/interpreter octave.info
 .PHONY: octave.info
 
-INSTALL.OCTAVE:
-	cd doc; $(MAKE) ../INSTALL.OCTAVE
-.PHONY: INSTALL.OCTAVE
-
-BUGS:
-	cd doc; $(MAKE) ../BUGS
-.PHONY: BUGS
+BUGS INSTALL.OCTAVE:
+	$(MAKE) -C doc ../$@
+.PHONY: BUGS INSTALL.OCTAVE
 
 install install-strip ::
 	$(top_srcdir)/mkinstalldirs $(DIRS_TO_MAKE)
@@ -153,9 +149,7 @@ dist: dist-info-files
 	for dir in $(DISTDIRS); do ln -s ../$$dir `cat .fname`; done
 	for dir in $(DISTSUBDIRS); do \
 	  mkdir `cat .fname`/$$dir; \
-	  cd $$dir; \
-	  $(MAKE) dist; \
-	  cd ..; \
+	  $(MAKE) -C $$dir dist; \
 	done
 	tar chf `cat .fname`.tar `cat .fname`
 	rm -rf `cat .fname`
@@ -202,9 +196,7 @@ conf-dist:
 	ln $(CONF_DISTFILES) `cat .fname`
 	for dir in $(CONF_DISTSUBDIRS); do \
 	  mkdir `cat .fname`/$$dir; \
-	  cd $$dir; \
-	  $(MAKE) conf-dist; \
-	  cd ..; \
+	  $(MAKE) -C $$dir conf-dist; \
 	done
 	tar chf `cat .fname`.tar `cat .fname`
 	rm -rf `cat .fname`
@@ -229,9 +221,7 @@ binary-dist: VERSION ARCH octave-bug dist-info-files
 	ln $(BINDISTFILES) `cat .fname`
 	for dir in $(BINDISTSUBDIRS); do \
 	  mkdir `cat .fname`/$$dir; \
-	  cd $$dir; \
-	  $(MAKE) bin-dist; \
-	  cd ..; \
+	  $(MAKE) -C $$dir bin-dist; \
 	done
 	tar chf `cat .fname`.tar `cat .fname`
 	rm -rf `cat .fname`

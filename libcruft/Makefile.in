@@ -41,7 +41,7 @@ all: $(SUBDIRS) shared-lib
 
 $(SUBDIRS):
 	echo making all in $@
-	cd $@; $(MAKE) all
+	$(MAKE) -C $@ all
 .PHONY: $(SUBDIRS)
 
 # XXX FIXME XXX -- this should build the shared library directly from
@@ -137,7 +137,7 @@ maintainer-clean::
 	if $(SHARED_LIBS); then rm -f *.$(SHLEXT_VER); fi
 
 dist:
-	for dir in $(SUBDIRS); do mkdir ../`cat ../.fname`/libcruft/$$dir; cd $$dir; $(MAKE) $@; cd ..; done
+	for dir in $(SUBDIRS); do mkdir ../`cat ../.fname`/libcruft/$$dir; $(MAKE) -C $$dir $@; done
 	ln $(DISTFILES) ../`cat ../.fname`/libcruft
 .PHONY: dist
 

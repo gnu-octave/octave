@@ -1,5 +1,12 @@
 1999-10-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* interpreter/Makefile.in ($(TEXINFO)): Depend on $(DOCSTRINGS).
+	($(DOCSTRINGS)): New rule.
+
+	* Makefile.in (dist, bin-dist): Use `$(MAKE) -C dir' instead of
+	`cd dir; $(MAKE); cd ..'.
+	(../BUGS, ../INSTALL.OCTAVE, $(SUBDIRS)) Likewise.
+
 	* interpreter/*.txi: Rename from *.txi.
 	* interpreter/munge-texi.cc: New file.
 	* interpreter/Makefile.in: Use it to create .texi files from .txi

@@ -41,7 +41,7 @@ all: $(SUBDIRS) DOCSTRINGS
 
 $(SUBDIRS):
 	echo making all in $@
-	cd $@; $(MAKE) all
+	$(MAKE) -C $@ all
 .PHONY: $(SUBDIRS)
 
 DOCSTRINGS: gethelp mkdoc
@@ -78,9 +78,9 @@ maintainer-clean::
 
 dist:
 	ln $(DISTFILES) ../`cat ../.fname`/scripts
-	for dir in $(DISTSUBDIRS); do mkdir ../`cat ../.fname`/scripts/$$dir; cd $$dir; $(MAKE) $@; cd ..; done
+	for dir in $(DISTSUBDIRS); do mkdir ../`cat ../.fname`/scripts/$$dir; $(MAKE) -C $$dir $@; done
 .PHONY: dist
 
 bin-dist:
-	for dir in $(BINDISTSUBDIRS); do mkdir ../`cat ../.fname`/scripts/$$dir; cd $$dir; $(MAKE) $@; cd ..; done
+	for dir in $(BINDISTSUBDIRS); do mkdir ../`cat ../.fname`/scripts/$$dir; $(MAKE) -c $$dir $@; done
 .PHONY: bin-dist

@@ -25,7 +25,7 @@ DISTFILES = BUGS COPYING INSTALL INSTALL.OCTAVE Makefile.in \
 DISTDIRS = bsd-math dld kpathsea
 
 # Subdirectories to run make in for the primary targets.
-SUBDIRS = libcruft liboctave @DLD_DIR@ info readline src doc scripts 
+SUBDIRS = libcruft liboctave @DLD_DIR@ info readline kpathsea src doc scripts 
 
 # Subdirectories to run `make dist' in
 DISTSUBDIRS = $(SUBDIRS) test

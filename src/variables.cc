@@ -127,9 +127,12 @@ is_valid_function (const tree_constant& arg, char *warn_for, int warn)
 {
   tree_fvc *ans = 0;
 
-  const char *fcn_name = arg.string_value ();
+  const char *fcn_name = 0;
 
-  if (error_state)
+  if (arg.is_string ())
+    fcn_name = arg.string_value ();
+
+  if (! fcn_name || error_state)
     {
       if (warn)
 	error ("%s: expecting function name as argument", warn_for);

@@ -1,3 +1,9 @@
+2004-02-05  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Array.cc (Array<T>::assignN): Simplify.
+	Allow assignments to succeed if number if indices is less than the
+	number of RHS dimensions.
+
 2004-02-05  Petter Risholm  <risholm@stud.ntnu.no>
 
 	* Array.cc (Array<T>::maybe_delete_elements): Reshape LHS

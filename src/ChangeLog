@@ -1,5 +1,16 @@
 2003-12-16  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* lex.l (is_keyword): Also allow varargout_kw if
+	lexer_flags.looking_at_return_list is false provided that we are
+	defining a function and we haven't seen the function name yet.
+	* parse.y (return_list): Don't require [] around varargout.
+
+	* DLD-FUNCTIONS/find.cc (DO_FIND_OP): Delete macro.
+	(find_to_fortran_idx): Delete.  Move guts of function to
+	find_nonzero_elem_idx.
+	(find_nonzero_elem_idx): Now a template function.  Handle overall
+	array index here too.  Make it N-d aware.
+
 	* pt-pr-code.cc (tree_print_code::visit_complex_for_command, 
 	tree_print_code::visit_octave_user_function_header,
 	tree_print_code::visit_matrix, tree_print_code::visit_cell,

@@ -1222,6 +1222,13 @@ return_list	: return_list_beg return_list_end
 		    tmp->mark_varargs_only ();
 		    $$ = tmp;
 		  }
+		| VARARGOUT
+		  {
+		    lexer_flags.looking_at_return_list = false;
+		    tree_parameter_list *tmp = new tree_parameter_list ();
+		    tmp->mark_varargs_only ();
+		    $$ = tmp;
+		  }
 		| return_list_beg return_list1 return_list_end
 		  {
 		    lexer_flags.looking_at_return_list = false;

@@ -31,39 +31,81 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gripes.h"
 #include "oct-obj.h"
 
-#define DO_FIND_OP(T) \
-  do \
-    { \
-      T tmp (count); \
- \
-      for (int i = 0; i < count; i++) \
-	tmp (i) = nr * (j_idx(i) - 1.0) + i_idx(i); \
- \
-      retval(0) = tmp; \
-    } \
-  while (0)
+inline double real (double x) { return x; }
 
-
-static octave_value_list
-find_to_fortran_idx (const ColumnVector i_idx, const ColumnVector j_idx,
-		     const octave_value& val, int nr, int nargout)
+template <typename T>
+octave_value_list
+find_nonzero_elem_idx (const T& nda, int nargout)
 {
-  octave_value_list retval;
+  octave_value_list retval (((nargout == 0) ? 1 : nargout), Matrix ());
+
+  int count = 0;
+
+  int nel = nda.nelem ();
+
+  for (int i = 0; i < nel; i++)
+    {
+      OCTAVE_QUIT;
+
+      if (nda(i) != 0.0)
+	count++;
+    }
+
+  if (count == 0)
+    return retval;
+
+  ColumnVector idx (count);
+
+  ColumnVector i_idx (count);
+  ColumnVector j_idx (count);
+
+  T val (dim_vector (count, 1));
+
+  count = 0;
+
+  int nr = nda.rows ();
+
+  int i = 0;
+  int j = 0;
+
+  for (int k = 0; k < nel; k++)
+    {
+      OCTAVE_QUIT;
+
+      if (nda(k) != 0.0)
+	{
+	  idx(count) = k + 1;
+
+	  i_idx(count) = i + 1;
+	  j_idx(count) = j + 1;
+
+	  val(count) = nda(k);
+
+	  count++;
+	}
+
+      i++;
+
+      if (i == nr)
+	{
+	  i = 0;
+
+	  j++;
+	}
+    }
 
   switch (nargout)
     {
     case 0:
     case 1:
       {
-	// If the original argument was a row vector, force a row
-	// vector of indices to be returned.
+	// If the original argument was a row vector, force a row vector of
+	// the overall indices to be returned. 
 
-	int count = i_idx.length ();
-
-	if (nr == 1)
-	  DO_FIND_OP (RowVector);
+	if (nda.ndims () == 2 && nda.rows () == 1)
+	  retval(0) = idx.transpose ();
 	else
-	  DO_FIND_OP (ColumnVector);
+	  retval(0) = idx;
       }
       break;
 
@@ -84,95 +126,9 @@ find_to_fortran_idx (const ColumnVector i_idx, const ColumnVector j_idx,
   return retval;
 }
 
-static octave_value_list
-find_nonzero_elem_idx (const Matrix& m, int nargout)
-{
-  int count = 0;
-  int m_nr = m.rows ();
-  int m_nc = m.columns ();
+template octave_value_list find_nonzero_elem_idx (const NDArray&, int);
 
-  int i, j;
-  for (j = 0; j < m_nc; j++)
-    for (i = 0; i < m_nr; i++)
-      {
-	OCTAVE_QUIT;
-
-	if (m (i, j) != 0.0)
-	  count++;
-      }
-
-  octave_value_list retval (((nargout == 0) ? 1 : nargout), Matrix ());
-
-  if (count == 0)
-    return retval;
-
-  ColumnVector i_idx (count);
-  ColumnVector j_idx (count);
-  ColumnVector v (count);
-
-  count = 0;
-  for (j = 0; j < m_nc; j++)
-    for (i = 0; i < m_nr; i++)
-      {
-	OCTAVE_QUIT;
-
-	double d = m (i, j);
-	if (d != 0.0)
-	  {
-	    i_idx (count) = i + 1;
-	    j_idx (count) = j + 1;
-	    v (count) = d;
-	    count++;
-	  }
-      }
-
-  return find_to_fortran_idx (i_idx, j_idx, octave_value (v), m_nr, nargout);
-}
-
-static octave_value_list
-find_nonzero_elem_idx (const ComplexMatrix& m, int nargout)
-{
-  int count = 0;
-  int m_nr = m.rows ();
-  int m_nc = m.columns ();
-
-  int i, j;
-  for (j = 0; j < m_nc; j++)
-    for (i = 0; i < m_nr; i++)
-      {
-	OCTAVE_QUIT;
-
-	if (m (i, j) != 0.0)
-	  count++;
-      }
-
-  octave_value_list retval (((nargout == 0) ? 1 : nargout), Matrix ());
-
-  if (count == 0)
-    return retval;
-
-  ColumnVector i_idx (count);
-  ColumnVector j_idx (count);
-  ComplexColumnVector v (count);
-
-  count = 0;
-  for (j = 0; j < m_nc; j++)
-    for (i = 0; i < m_nr; i++)
-      {
-	OCTAVE_QUIT;
-
-	Complex c = m (i, j);
-	if (c != 0.0)
-	  {
-	    i_idx (count) = i + 1;
-	    j_idx (count) = j + 1;
-	    v (count) = c;
-	    count++;
-	  }
-      }
-
-  return find_to_fortran_idx (i_idx, j_idx, octave_value (v), m_nr, nargout);
-}
+template octave_value_list find_nonzero_elem_idx (const ComplexNDArray&, int);
 
 DEFUN_DLD (find, args, nargout,
   "-*- texinfo -*-\n\
@@ -227,17 +183,17 @@ containing the nonzero values.  For example,\n\
 
   if (arg.is_real_type ())
     {
-      Matrix m = arg.matrix_value ();
+      NDArray nda = arg.array_value ();
 
       if (! error_state)
-	retval = find_nonzero_elem_idx (m, nargout);
+	retval = find_nonzero_elem_idx (nda, nargout);
     }
   else if (arg.is_complex_type ())
     {
-      ComplexMatrix m = arg.complex_matrix_value ();
+      ComplexNDArray cnda = arg.complex_array_value ();
 
       if (! error_state)
-	retval = find_nonzero_elem_idx (m, nargout);
+	retval = find_nonzero_elem_idx (cnda, nargout);
     }
   else
     {

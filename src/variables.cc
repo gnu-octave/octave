@@ -1639,11 +1639,13 @@ default_return_value");
 	  split_long_rows,
     "split long matrix rows instead of wrapping");
 
+#ifdef USE_GNU_INFO
   DEFVAR ("suppress_verbose_help_message",
 	  SBV_suppress_verbose_help_message, "false", 0, 0, 1,
 	  suppress_verbose_help_message,
     "suppress printing of message pointing to additional help in the\n\
 help and usage functions");
+#endif
 
   DEFVAR ("stdin", SBV_stdin, 0.0, 0, 1, 1, 0,
     "file number of the standard input stream");

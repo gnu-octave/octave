@@ -21,7 +21,7 @@ function retval = orth (A, tol)
 
   if (nargin == 1)
     tol = max (size (A)) * s (1) * eps;
-  else if (nargin != 2)
+  elseif (nargin != 2)
     usage ("orth (A [, tol])"); 
   endif
 

@@ -942,6 +942,15 @@ DEFUN ("system", Fsystem, Ssystem, 2, 1,
 
       int status = cmd.close ();
 
+// The value in status is as returned by waitpid.  If the process
+// exited normally, extract the actual exit status of the command.
+// Otherwise, return 127 as a failure code.
+
+      if ((status & 0xff) == 0)
+	status = (status & 0xff00) >> 8;
+      else
+	status = 127;
+
       if (nargout > 0 || nargin > 1)
 	{
 	  char *msg = output_buf.str ();

@@ -138,6 +138,12 @@
 ##   6       brown            there exists
 ## @end example
 ##
+## The @var{fmt} argument can also be used to assign key titles.
+## To do so, include the desired title between semi-colons after the
+## formatting sequence described above, e.g. "+3;Key Title;"
+## Note that the last semi-colon is required and will generate an error if
+## it is left out.
+##
 ## Here are some plot examples:
 ##
 ## @example
@@ -154,6 +160,14 @@
 ##
 ## This command will plot the data in the variable @code{b} will be plotted
 ## with points displayed as @samp{*}.
+##
+## @example
+## t = 0:0.1:6.3;
+## plot (t, cos(t), "-;cos(t);", t, sin(t), "+3;sin(t);");
+## @end example
+##
+## This will plot the cosine and sine functions and label them accordingly
+## in the key.
 ## @end deftypefn
 ## @seealso{semilogx, semilogy, loglog, polar, mesh, contour, __pltopt__
 ## bar, stairs, gplot, gsplot, replot, xlabel, ylabel, and title}

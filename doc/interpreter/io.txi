@@ -85,6 +85,8 @@ values with @code{disp} and through the normal echoing mechanism.
 
 @DOCSTRING(ans)
 
+@DOCSTRING(fdisp)
+
 @DOCSTRING(disp)
 
 @DOCSTRING(format)

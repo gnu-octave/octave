@@ -1751,34 +1751,6 @@ octave_print_internal (std::ostream& os, const charMatrix& chm,
     }
 }
 
-DEFUN (disp, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} disp (@var{x})\n\
-Display the value of @var{x}.  For example,\n\
-\n\
-@example\n\
-disp (\"The value of pi is:\"), disp (pi)\n\
-\n\
-     @print{} the value of pi is:\n\
-     @print{} 3.1416\n\
-@end example\n\
-\n\
-@noindent\n\
-Note that the output from @code{disp} always ends with a newline.\n\
-@end deftypefn")
-{
-  octave_value_list retval;
-
-  int nargin = args.length ();
-
-  if (nargin == 1)
-    args(0).print (octave_stdout);
-  else
-    print_usage ("disp");
-
-  return retval;
-}
-
 static void
 init_format_state (void)
 {

@@ -37,8 +37,8 @@ extern "C++" {
 #define Vector ColumnVector
 #endif
 
-typedef Vector (*nonlinear_fcn) (Vector&);
-typedef Matrix (*jacobian_fcn) (Vector&);
+typedef Vector (*nonlinear_fcn) (const Vector&);
+typedef Matrix (*jacobian_fcn) (const Vector&);
 
 class NLFunc
 {

@@ -453,33 +453,12 @@ make_diag (const octave_value& a, const octave_value& b)
       return retval;
     }
 
-  int n = ABS (k) + 1;
-
   if (a.is_real_type ())
     {
-      if (a.is_scalar_type ())
-	{
-	  double d = a.double_value ();
+      Matrix m = a.matrix_value ();
 
-	  if (k == 0)
-	    retval = d;
-	  else if (k > 0)
-	    {
-	      Matrix m (n, n, 0.0);
-	      m (0, k) = d;
-	      retval = m;
-	    }
-	  else if (k < 0)
-	    {
-	      Matrix m (n, n, 0.0);
-	      m (-k, 0) = d;
-	      retval = m;
-	    }
-	}
-      else if (a.is_matrix_type ())
+      if (! error_state)
 	{
-	  Matrix m = a.matrix_value ();
-
 	  int nr = m.rows ();
 	  int nc = m.columns ();
 
@@ -493,34 +472,13 @@ make_diag (const octave_value& a, const octave_value& b)
 	      retval = d;
 	    }
 	}
-      else
-	gripe_wrong_type_arg ("diag", a);
     }
   else if (a.is_complex_type ())
     {
-      if (a.is_scalar_type ())
-	{
-	  Complex c = a.complex_value ();
+      ComplexMatrix cm = a.complex_matrix_value ();
 
-	  if (k == 0)
-	    retval = c;
-	  else if (k > 0)
-	    {
-	      ComplexMatrix m (n, n, 0.0);
-	      m (0, k) = c;
-	      retval = m;
-	    }
-	  else if (k < 0)
-	    {
-	      ComplexMatrix m (n, n, 0.0);
-	      m (-k, 0) = c;
-	      retval = m;
-	    }
-	}
-      else if (a.is_matrix_type ())
+      if (! error_state)
 	{
-	  ComplexMatrix cm = a.complex_matrix_value ();
-
 	  int nr = cm.rows ();
 	  int nc = cm.columns ();
 
@@ -534,8 +492,6 @@ make_diag (const octave_value& a, const octave_value& b)
 	      retval = d;
 	    }
 	}
-      else
-	gripe_wrong_type_arg ("diag", a);
     }
   else
     gripe_wrong_type_arg ("diag", a);

@@ -1,5 +1,10 @@
 1999-10-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* data.cc (make_diag (const octave_value&, const octave_value&)):
+	Delete special cases for scalars and simply attempt conversion of
+	first arg to a matrix value.  If that fails, we will still see an
+	error message.
+
 	* Makefile.in (DISTFILES): Add mkgendoc to the list.
 
 1999-10-19  John W. Eaton  <jwe@bevo.che.wisc.edu>

@@ -80,6 +80,7 @@ extern char **get_m_file_names (int& mfl_len, const char *dir, int no_suffix);
 extern char **get_m_file_names (int& mfl_len, int no_suffix);
 extern int NINT (double x);
 extern double D_NINT (double x);
+extern void delete_ppchar (char **);
 
 #endif
 

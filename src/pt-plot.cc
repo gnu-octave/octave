@@ -1038,11 +1038,22 @@ close_plot_stream (void)
   plot_line_count = 0;
 }
 
+// This should maybe reset other things too?
+
+void
+reinitialize_gnuplot (void)
+{
+  send_to_plot_stream ("set title\n");
+  send_to_plot_stream ("set xlabel\n");
+  send_to_plot_stream ("set ylabel\n");
+}
+
 DEFUN ("clearplot", Fclearplot, Sclearplot, 0, 0,
   "clearplot (): clear the plot window")
 {
   Octave_object retval;
   send_to_plot_stream ("clear\n");
+  reinitialize_gnuplot ();
   return retval;
 }
 

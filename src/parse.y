@@ -886,6 +886,7 @@ func_def2	: identifier safe local_symtab func_def3
  with M-file name `%s.m'", id_name, curr_m_file_name);
 
 			    $1->rename (curr_m_file_name);
+			    id_name = $1->name ();
 			  }
 
 			$4->stash_m_file_name (curr_m_file_name);
@@ -899,6 +900,8 @@ func_def2	: identifier safe local_symtab func_def3
 			warning ("function `%s' defined within\
  script file `%s.m'", id_name, curr_m_file_name);
 		      }
+
+		    top_level_sym_tab->clear (id_name);
 
 		    $4->stash_function_name (id_name);
 

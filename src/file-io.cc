@@ -325,7 +325,7 @@ DEFUN (fopen, args, ,
     ieee-be  --  IEEE little endian\n\
     vaxd     --  VAX D floating format\n\
     vaxg     --  VAX G floating format\n\
-    cray     --  Cray floating format\n
+    cray     --  Cray floating format\n\
 \n\
   however, conversions are currently only supported for ieee-be, and\n\
   ieee-le formats.\n\
@@ -908,10 +908,10 @@ Reads data in binary form of type PRECISION from a file.\n\
     ieee-be  --  IEEE little endian\n\
     vaxd     --  VAX D floating format\n\
     vaxg     --  VAX G floating format\n\
-    cray     --  Cray floating format\n
+    cray     --  Cray floating format\n\
 \n\
-  however, conversions are currently only supported for ieee-be, and\n\
-  ieee-le formats.\n\
+              however, conversions are currently only supported for\n\
+              ieee-be, and ieee-le formats.\n\
 \n\
 \n\
   DATA      : matrix in which the data is stored\n\

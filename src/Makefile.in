@@ -37,7 +37,13 @@ XALL_CXXFLAGS = $(subst -fexternal-templates, , $(ALL_CXXFLAGS))
 	@echo making $@ from $<
 	@$(CXXCPP) -c $(CPPFLAGS) $(XALL_CXXFLAGS) -DMAKE_BUILTINS $< \
 	  | $(srcdir)/mkdefs > $@.tmp
-	@mv $@.tmp $@
+	@if test "`wc $@.tmp | awk '{print $3}'`" -ne 0 ; then \
+	  mv $@.tmp $@ ; \
+	else \
+	  echo "error: $@ is empty!" 1>&2 ; \
+	  rm -f $@.tmp ; \
+	  exit 1 ; \
+	fi
 
 DLD_SRC = f-balance.cc f-chol.cc f-colloc.cc f-dassl.cc f-det.cc \
 	f-eig.cc f-expm.cc f-fft.cc f-find.cc \
@@ -45,7 +51,6 @@ DLD_SRC = f-balance.cc f-chol.cc f-colloc.cc f-dassl.cc f-det.cc \
 	f-inv.cc f-log.cc f-lpsolve.cc f-lsode.cc f-lu.cc \
 	f-minmax.cc f-npsol.cc f-qpsol.cc f-qr.cc f-quad.cc f-qzval.cc \
 	f-rand.cc f-schur.cc f-sort.cc f-svd.cc f-syl.cc
-
 
 DLD_OBJ = f-balance.o f-chol.o f-colloc.o f-dassl.o f-det.o f-eig.o \
 	f-expm.o f-fft.o f-find.o f-fsolve.o \

@@ -282,7 +282,7 @@ save_binary_data (std::ostream& os, const octave_value& tc,
   os.write (X_CAST (char *, &doc_len), 4);
   os << doc;
 
-  char tmp;
+  unsigned char tmp;
 
   tmp = mark_as_global;
   os.write (X_CAST (char *, &tmp), 1);

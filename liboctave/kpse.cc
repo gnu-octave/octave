@@ -343,7 +343,7 @@ xfopen (const std::string& filename, const char *mode)
 static void
 xfclose (FILE *f, const std::string& filename)
 {
-  assert (f);
+  assert (f != 0);
 
   if (! fclose (f))
     FATAL_PERROR (filename.c_str ());

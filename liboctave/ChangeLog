@@ -1,3 +1,12 @@
+2004-02-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* boolNDArray.h (boolNDArray::boolNDArray): Declare dim_vector
+	reference arg const.
+
+2004-01-30  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Array-flags.cc: Include Array-flags.h, not Array.h.  Doh.
+
 2004-01-30  Jakub Bogusz  <qboosh@pld-linux.org>
 
 	* Array-flags.h (liboctave_wfi_flag, liboctave_wrore_flag):

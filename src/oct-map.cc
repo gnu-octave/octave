@@ -235,7 +235,7 @@ Octave_map::assign (const std::string& k, const Cell& rhs)
     {
       map[k] = rhs;
 
-      dimensions = dim_vector (1, 1);
+      dimensions = rhs.dims ();
     }
   else
     {

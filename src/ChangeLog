@@ -1,3 +1,8 @@
+2004-02-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-map.cc (Octave_map::assign (const std::string, const Cell&)):
+	Set dimensions to RHS dimensions, not 1x1.
+
 2004-01-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* ov-bool.cc, ov-cx-mat.cc, ov-re-mat.cc, ov-str-mat.cc:
@@ -1598,7 +1603,7 @@
 	not OCTAVE_VERSION.  Mismatch is now fatal.
 	* defun-int.h (DEFINE_FUN_INSTALLER_FUN3): Pass
 	OCTAVE_API_VERSION instead of OCTAVE_VERSION to check_version.
-	* version.h (OCTAVE_API_VERSION): New macro.
+	* version.h (OCTAVE_API_VERSION): New macro, initial value api-v1.
 
 	* defaults.cc (Vdefault_exec_path): New static variable.
 	(set_default_default_exec_path): New function.
@@ -1616,6 +1621,10 @@
 
 	* toplev.cc (octave_config_info): Key for OCTAVE_CONF_DEFS should
 	be DEFS, not UGLY_DEFS.
+
+2003-06-27  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* version.h (OCTAVE_VERSION): Now 2.1.50.
 
 2003-06-26  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
@@ -1693,6 +1702,10 @@
 	(gnuplot_has_multiplot): Delete.
 	(symbols_of_pt_plot): Delete DEFVAR for gnuplot_has_multiplot.
 
+2003-05-28  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* version.h (OCTAVE_VERSION): Now 2.1.49.
+
 2003-05-28  Teemu Ikonen <tpikonen@pcu.helsinki.fi>
 
 	* load-save.cc (save_mat5_binary_element, save_mat_binary_data):
@@ -1722,6 +1735,14 @@
 
 	* lex.l: Use yyunput (X, yytext) instead of unput (X) for newer
 	versions of flex.
+
+2003-05-06  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* version.h (OCTAVE_VERSION): Now 2.1.48.
+
+2003-05-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* version.h (OCTAVE_VERSION): Now 2.1.47.
 
 2003-05-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

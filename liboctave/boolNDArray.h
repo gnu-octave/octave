@@ -45,9 +45,9 @@ public:
   
   boolNDArray (void) : ArrayN<bool> () { }
 
-  boolNDArray (dim_vector& dv) : ArrayN<bool> (dv) { }
+  boolNDArray (const dim_vector& dv) : ArrayN<bool> (dv) { }
 
-  boolNDArray (dim_vector& dv, const bool& val)
+  boolNDArray (const dim_vector& dv, const bool& val)
     : ArrayN<bool> (dv, val) { }
   
   boolNDArray (const boolNDArray& a) : ArrayN<bool> (a) { }

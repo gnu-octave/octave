@@ -25,6 +25,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "config.h"
 #endif
 
+#include <sys/types.h>
 #include <iostream.h>
 
 #include "Matrix.h"
@@ -4816,6 +4817,211 @@ operator >> (istream& is, ComplexMatrix& a)
     }
 
   return is;
+}
+
+/*
+ * Read an array of data froma file in binary format.
+ */
+int
+Matrix::read (FILE *fptr, int size, Matrix::conversion conv)
+{
+// Allocate buffer pointers.
+
+  union
+    {
+      void *vd;
+      char *ch;
+      u_char *uc;
+//    s_char *sc; // Some systems may need this?
+      short *sh;
+      u_short *us;
+      int *in;
+      u_int *ui;
+      long *ln;
+      u_long *ul;
+      float *fl;
+      double *db;
+    }
+  buf;
+
+  buf.db = fortran_vec ();
+
+// Read data directly into matrix data array.
+
+  int count = fread (buf.ch, size, length (), fptr);
+
+// Convert data to double.
+
+  int k;
+
+  switch (conv)
+    {
+    case CNV_DOUBLE:
+      break;
+
+    case CNV_CHAR:
+      for (k = count - 1; k > -1; k--)
+	buf.db[k] = buf.ch[k];
+      break;
+
+    case CNV_UCHAR:
+      for (k = count - 1; k > -1; k--)
+	buf.db[k] = buf.uc[k];
+      break;
+
+// Some systems may need this??
+//    case CNV_SCHAR:
+//      for (k = count - 1; k > -1; k--)
+//	buf.db[k] = buf.sc[k];
+//      break;
+
+    case CNV_SHORT:
+      for (k = count - 1; k > -1; k--)
+	buf.db[k] = buf.sh[k];
+      break;
+
+    case CNV_USHORT:
+      for (k = count - 1; k > -1; k--)
+	buf.db[k] = buf.us[k];
+      break;
+
+    case CNV_INT:
+      for (k = count - 1; k > -1; k--)
+	buf.db[k] = buf.in[k];
+      break;
+
+    case CNV_UINT:
+      for (k = count - 1; k > -1; k--)
+	buf.db[k] = buf.ui[k];
+      break;
+
+    case CNV_LONG:
+      for (k = count - 1; k > -1; k--)
+	buf.db[k] = buf.ln[k];
+      break;
+
+    case CNV_ULONG:
+      for (k = count - 1; k > -1; k--)
+	buf.db[k] = buf.ul[k];
+      break;
+
+    case CNV_FLOAT:
+      for (k = count - 1; k > -1; k--)
+	buf.db[k] = buf.fl[k];
+      break;
+
+    default:
+      return 0;
+    }
+
+  return count;
+}
+
+/*
+ * Write the data array to a file in binary format.
+ */
+int
+Matrix::write (FILE *fptr, int size, Matrix::conversion conv)
+{
+// Allocate buffer pointers.
+
+  union
+    {
+      void *vd;
+      char *ch;
+      u_char *uc;
+//    s_char *sc; // Some systems may need this?
+      short *sh;
+      u_short *us;
+      int *in;
+      u_int *ui;
+      long *ln;
+      u_long *ul;
+      float *fl;
+      double *db;
+    }
+  buf;
+
+  int len = length ();
+
+  if (conv != CNV_DOUBLE)
+    buf.db = new double [len];
+
+  double *bufi = fortran_vec ();
+
+// Convert from double to correct size.
+
+  int k;
+
+  switch (conv)
+    {
+    case CNV_DOUBLE:
+      buf.db = bufi;
+      break;
+
+    case CNV_CHAR:
+      for (k = 0; k < len; k++)
+	buf.ch[k] = (char) bufi[k];
+      break;
+
+    case CNV_UCHAR:
+      for (k = 0; k < len; k++)
+	buf.uc[k] = (u_char) bufi[k];
+      break;
+
+// Some systems may need this?
+//    case CNV_SCHAR:
+//      for (k = 0; k < len; k++)
+//	buf.uc[k] = (s_char) bufi[k];
+//      break;
+
+    case CNV_SHORT:
+      for (k = 0; k < len; k++)
+	buf.sh[k] = (short) bufi[k];
+      break;
+
+    case CNV_USHORT:
+      for (k = 0; k < len; k++)
+	buf.us[k] = (u_short) bufi[k];
+      break;
+
+    case CNV_INT:
+      for (k = 0; k < len; k++)
+	buf.in[k] = (int) bufi[k];
+      break;
+
+    case CNV_UINT:
+      for (k = 0; k < len; k++)
+	buf.ui[k] = (u_int) bufi[k];
+      break;
+
+    case CNV_LONG:
+      for (k = 0; k < len; k++)
+	buf.ln[k] = (long) bufi[k];
+      break;
+
+    case CNV_ULONG:
+      for (k = 0; k < len; k++)
+	buf.ul[k] = (u_long) bufi[k];
+      break;
+
+    case CNV_FLOAT:
+      for (k = 0; k < len; k++)
+	buf.fl[k] = (float) bufi[k];
+      break;
+
+    default:
+      return 0;
+  }
+
+// Write data from converted matrix data array.
+
+  int count = fwrite (buf.ch, size, length (), fptr);
+
+  if (conv != CNV_DOUBLE)
+    delete [] buf.db;
+
+  return count;
 }
 
 /*

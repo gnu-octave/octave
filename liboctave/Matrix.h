@@ -36,6 +36,7 @@ represented by some sort of inheritance tree...
 #include <math.h>
 #include <assert.h>
 #include <iostream.h>
+#include <stdio.h>
 // #include <iomanip.h>  // We don\'t use this yet.
 #include <Complex.h>
 
@@ -280,6 +281,26 @@ public:
 
   friend ostream& operator << (ostream& os, const Matrix& a);
   friend istream& operator >> (istream& is, Matrix& a);
+
+  enum conversion
+    {
+      CNV_UNKNOWN,
+      CNV_UCHAR,
+      CNV_CHAR,
+      CNV_SCHAR,
+      CNV_SHORT,
+      CNV_USHORT,
+      CNV_INT,
+      CNV_UINT,
+      CNV_LONG,
+      CNV_ULONG,
+      CNV_FLOAT,
+      CNV_DOUBLE,
+    };
+
+
+  int read (FILE *fptr, int size, Matrix::conversion);
+  int write (FILE *fptr, int size, Matrix::conversion);
 
 // Until templates really work with g++:
 

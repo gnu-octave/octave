@@ -148,12 +148,13 @@ make_subs_cell (tree_argument_list *args, const string_vector& arg_nm)
 }
 
 static inline octave_value_list
-make_value_list (tree_argument_list *args, const string_vector& arg_nm)
+make_value_list (tree_argument_list *args, const string_vector& arg_nm,
+		 const octave_value *object)
 {
   octave_value_list retval;
 
   if (args)
-    retval = args->convert_to_const_vector ();
+    retval = args->convert_to_const_vector (object);
 
   if (! error_state)
     {
@@ -274,11 +275,11 @@ tree_index_expression::rvalue (int nargout)
 	  switch (type[i])
 	    {
 	    case '(':
-	      idx.push_back (make_value_list (*p_args, *p_arg_nm));
+	      idx.push_back (make_value_list (*p_args, *p_arg_nm, &tmp));
 	      break;
 
 	    case '{':
-	      idx.push_back (make_value_list (*p_args, *p_arg_nm));
+	      idx.push_back (make_value_list (*p_args, *p_arg_nm, &tmp));
 	      break;
 
 	    case '.':
@@ -335,42 +336,44 @@ tree_index_expression::lvalue (void)
   std::list<string_vector>::iterator p_arg_nm = arg_nm.begin ();
   std::list<tree_expression *>::iterator p_dyn_field = dyn_field.begin ();
 
-  for (int i = 0; i < n; i++)
-    {
-      switch (type[i])
-	{
-	case '(':
-	  idx.push_back (make_value_list (*p_args, *p_arg_nm));
-	  break;
-
-	case '{':
-	  idx.push_back (make_value_list (*p_args, *p_arg_nm));
-	  break;
-
-	case '.':
-	  {
-	    idx.push_back (octave_value (get_struct_index (p_arg_nm, p_dyn_field)));
-
-	    if (error_state)
-	      eval_error ();
-	  }
-	  break;
-
-	default:
-	  panic_impossible ();
-	}
-
-      if (error_state)
-	break;
-
-      p_args++;
-      p_arg_nm++;
-      p_dyn_field++;
-    }
+  retval = expr->lvalue ();
 
   if (! error_state)
     {
-      retval = expr->lvalue ();
+      const octave_value *tmp = retval.object ();
+
+      for (int i = 0; i < n; i++)
+	{
+	  switch (type[i])
+	    {
+	    case '(':
+	      idx.push_back (make_value_list (*p_args, *p_arg_nm, tmp));
+	      break;
+
+	    case '{':
+	      idx.push_back (make_value_list (*p_args, *p_arg_nm, tmp));
+	      break;
+
+	    case '.':
+	      {
+		idx.push_back (octave_value (get_struct_index (p_arg_nm, p_dyn_field)));
+
+		if (error_state)
+		  eval_error ();
+	      }
+	      break;
+
+	    default:
+	      panic_impossible ();
+	    }
+
+	  if (error_state)
+	    break;
+
+	  p_args++;
+	  p_arg_nm++;
+	  p_dyn_field++;
+	}
 
       if (! error_state)
 	retval.set_index (type, idx);

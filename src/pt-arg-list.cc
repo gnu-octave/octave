@@ -33,6 +33,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "str-vec.h"
 
+#include "defun.h"
 #include "error.h"
 #include "oct-obj.h"
 #include "ov.h"
@@ -42,6 +43,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "pt-pr-code.h"
 #include "pt-walk.h"
 #include "toplev.h"
+#include "unwind-prot.h"
 
 // Argument lists.
 
@@ -88,9 +90,51 @@ tree_argument_list::all_elements_are_constant (void) const
   return true;
 }
 
-octave_value_list
-tree_argument_list::convert_to_const_vector (void)
+static const octave_value *indexed_object = 0;
+static int index_position = 0;
+
+DEFCONSTFUN (__end__, , ,
+  "internal function")
 {
+  octave_value retval;
+
+  if (indexed_object)
+    {
+      switch (index_position)
+	{
+	case -1:
+	  // XXX FIXME XXX -- we really want "numel" here.
+	  retval = indexed_object->rows () * indexed_object->columns ();
+	  break;
+
+	case 0:
+	  retval = indexed_object->rows ();
+	  break;
+
+	case 1:
+	  retval = indexed_object->columns ();
+	  break;
+
+	default:
+	  ::error ("__end__: internal error");
+	  break;
+	}
+    }
+  else
+    ::error ("__end__: internal error");
+
+  return retval;
+}
+
+octave_value_list
+tree_argument_list::convert_to_const_vector (const octave_value *object)
+{
+  unwind_protect::begin_frame ("convert_to_const_vector");
+
+  unwind_protect_ptr (indexed_object);
+
+  indexed_object = object;
+
   int len = length ();
 
   // XXX FIXME XXX -- would be nice to know in advance how largs args
@@ -105,6 +149,8 @@ tree_argument_list::convert_to_const_vector (void)
   int j = 0;
   for (int k = 0; k < len; k++)
     {
+      index_position = (len == 1) ? -1 : k;
+
       tree_expression *elt = *p++;
 
       if (elt)
@@ -159,6 +205,8 @@ tree_argument_list::convert_to_const_vector (void)
     }
 
   args.resize (j);
+
+  unwind_protect::run_frame ("convert_to_const_vector");
 
   return args;
 }

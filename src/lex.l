@@ -1108,7 +1108,10 @@ is_keyword (const std::string& s)
  	  break;
 
 	case end_kw:
-	  yylval.tok_val = new token (token::simple_end, l, c);
+	  if (lexer_flags.looking_at_object_index)
+	    return 0;
+	  else
+	    yylval.tok_val = new token (token::simple_end, l, c);
 	  break;
 
 	case end_try_catch_kw:
@@ -2383,7 +2386,11 @@ handle_identifier (void)
 	}
     }
 
-  // Find the token in the symbol table.
+  // Find the token in the symbol table.  Beware the magic
+  // transformation of the end keyword...
+
+  if (tok == "end")
+    tok = "__end__";    
 
   yylval.tok_val = new token (lookup_identifier (tok),
 			      input_line_number,
@@ -2537,6 +2544,9 @@ lexical_feedback::init (void)
   // Not parsing a matrix or the left hand side of multi-value
   // assignment statement.
   looking_at_matrix_or_assign_lhs = false;
+
+  // Not parsing an object index.
+  looking_at_object_index = false;
 
   // Next token can be identifier.
   cant_be_identifier = false;

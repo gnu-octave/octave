@@ -97,7 +97,8 @@ install_builtin_mapper (octave_mapper *mf)
 
 void
 install_builtin_function (octave_builtin::fcn f, const std::string& name,
-			  const std::string& doc, bool is_text_fcn)
+			  const std::string& doc, bool is_text_fcn,
+			  bool /* can_hide_function -- not yet implemented */)
 {
   symbol_record *sym_rec = fbi_sym_tab->lookup (name, true);
 

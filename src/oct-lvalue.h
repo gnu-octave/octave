@@ -85,6 +85,8 @@ public:
   octave_value value (void)
     { return idx.empty () ? *val : val->subsref (type, idx); }
 
+  const octave_value *object (void) const { return val; }
+
 private:
 
   octave_value *val;

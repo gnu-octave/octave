@@ -162,6 +162,9 @@ public:
   // multi-value assignment statement.
   bool looking_at_matrix_or_assign_lhs;
 
+  // TRUE means we're parsing an indexing operation for an object.
+  bool looking_at_object_index;
+
   // GAG.  Stupid kludge so that [[1,2][3,4]] will work.
   bool do_comma_insert;
 

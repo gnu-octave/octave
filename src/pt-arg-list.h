@@ -63,7 +63,7 @@ public:
 
   bool all_elements_are_constant (void) const;
 
-  octave_value_list convert_to_const_vector (void);
+  octave_value_list convert_to_const_vector (const octave_value *object = 0);
 
   string_vector get_arg_names (void) const;
 

@@ -332,15 +332,14 @@ symbol_record::link_to_builtin_variable (void)
     alias (tmp_sym);
 }
 
-
 octave_lvalue
 symbol_record::variable_reference (void)
 {
-  if (Vvariables_can_hide_functions <= 0
+  if ((Vvariables_can_hide_functions <= 0 || ! can_hide_function)
       && (is_function ()
 	  || (! is_defined () && is_valid_function (nm))))
     {
-      if (Vvariables_can_hide_functions < 0)
+      if (Vvariables_can_hide_functions < 0 && can_hide_function)
 	warning ("variable `%s' hides function", nm.c_str ());
       else
 	{

@@ -221,13 +221,16 @@ public:
 
   symbol_record (void)
     : formal_param (0), linked_to_global (0), tagged_static (0),
-      nm (), chg_fcn (0), definition (new symbol_def ()),
-      next_elem (0) { }
+      can_hide_function (1), nm (), chg_fcn (0),
+      definition (new symbol_def ()), next_elem (0) { }
+
+  // XXX FIXME XXX -- kluge alert!  We obviously need a better way of
+  // handling allow_shadow!
 
   symbol_record (const std::string& n, symbol_record *nxt)
     : formal_param (0), linked_to_global (0), tagged_static (0),
-      nm (n), chg_fcn (0), definition (new symbol_def ()),
-      next_elem (nxt) { }
+      can_hide_function (n != "__end__"), nm (n), chg_fcn (0),
+      definition (new symbol_def ()), next_elem (nxt) { }
 
   ~symbol_record (void) { }
 
@@ -356,6 +359,7 @@ private:
   unsigned int formal_param : 1;
   unsigned int linked_to_global : 1;
   unsigned int tagged_static : 1;
+  unsigned int can_hide_function : 1;
 
   std::string nm;
   change_function chg_fcn;

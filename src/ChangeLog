@@ -1,9 +1,38 @@
+2002-12-21  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* pt-arg-list.cc (indexed_object, indexed_position):
+	New file-scope static variables.
+	(tree_argument_list::convert_to_const_vector): New arg, object.
+	Protect and set indexed_object and indexed_position.
+	(F__end__): New function.
+
+	* octave-lvalue.h (octave_lvalue::object): New member function.
+	* pt-idx.cc (make_value_list): New arg, object.  Change all
+	callers.  Pass object to convert_to_const_vector.
+
+	* lex.h (lexical_feedback.looking_at_object_index): New data member.
+	* lex.l (lexical_feedback::init): Initialize it.
+	(is_keyword): If looking at object index, end is not a keyword.
+	(handle_identifier): If end is not a keyword, transform it to __end__.
+	* parse.y (begin_obj_idx): New non-terminal.
+	(postfix_expr): Use it.
+
+	* defun.cc (install_builtin_function): New arg, can_hide_function.
+	* defun-int.h: Fix decl.
+	(DEFCONSTFUN_INTERNAL): New macro.
+	* defun.h (DEFCONSTFUN): New macro.
+	* mkbuiltins (XDEFCONSTFUN_INTERNAL): New macro.
+	* mkgendoc: Likewise.
+	* Makefile.in (DEFUN_PATTERN): Make it work for DEFCONSTFUN too.
+	* symtab.h (symbol_record::can_hide_function): New data member.
+	(symbol_record::symbol_record): Initialize it.
+	* symtab.cc (symbol_record::variable_reference): Also check
+	can_hide_function flag.
+
 2002-12-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* DLD-FUNCTIONS/time.cc (extract_tm): Use int_value() instead of
 	casting double_value() to int.
-
-	* DLD-FUNCITONS/time.cc ()
 
 	* ov.cc (octave_value::next_subsref): Arg "skip" is now size_t.
 

@@ -42,7 +42,8 @@ install_builtin_mapper (octave_mapper *mf);
 
 extern void
 install_builtin_function (octave_builtin::fcn f, const std::string& name,
-			  const std::string& doc, bool is_text_fcn = false);
+			  const std::string& doc, bool is_text_fcn = false,
+			  bool can_hide_function = true);
 
 extern void
 install_builtin_variable (const std::string& n, const octave_value& v,
@@ -107,6 +108,11 @@ typedef bool (*octave_dld_fcn_installer) (const octave_shlib&);
     XDEFUN_INTERNAL (name, args_name, nargout_name, is_text_fcn, doc) \
   END_INSTALL_BUILTIN
 
+#define DEFCONSTFUN_INTERNAL(name, args_name, nargout_name, is_text_fcn, doc) \
+  BEGIN_INSTALL_BUILTIN \
+    XDEFCONSTFUN_INTERNAL (name, args_name, nargout_name, is_text_fcn, doc) \
+  END_INSTALL_BUILTIN
+
 #define DEFUNX_INTERNAL(name, fname, args_name, nargout_name, \
 			is_text_fcn, doc) \
   BEGIN_INSTALL_BUILTIN \
@@ -159,6 +165,9 @@ typedef bool (*octave_dld_fcn_installer) (const octave_shlib&);
 // that the internal functions all have the same signature.
 
 #define DEFUN_INTERNAL(name, args_name, nargout_name, is_text_fcn, doc) \
+  DECLARE_FUN (name, args_name, nargout_name)
+
+#define DEFCONSTFUN_INTERNAL(name, args_name, nargout_name, is_text_fcn, doc) \
   DECLARE_FUN (name, args_name, nargout_name)
 
 #define DEFUNX_INTERNAL(name, fname, args_name, nargout_name, \

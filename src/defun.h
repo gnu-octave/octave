@@ -101,6 +101,10 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #define DEFUN_TEXT DEFCMD
 
+// This is a function with a name that can't be hidden by a variable.
+#define DEFCONSTFUN(name, args_name, nargout_name, doc) \
+  DEFCONSTFUN_INTERNAL (name, args_name, nargout_name, true, doc)
+
 // Define a mapper function.
 //
 //   name is the name of the function, unquoqted.

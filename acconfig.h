@@ -64,8 +64,14 @@
 /* Use GNU readline for command line editing and history. */
 #undef USE_READLINE
 
+/* Define if using dlopen/dlsym for dynamic linking of object files. */
+#undef WITH_DL
+
 /* Define if using dld for dynamic linking of object files. */
 #undef WITH_DLD
+
+/* Define if using dld for dynamic linking of object files. */
+#undef WITH_SHL
 
 
 /* Leave that blank line there!!  Autoheader needs it.

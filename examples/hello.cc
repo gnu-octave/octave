@@ -84,13 +84,13 @@ Returns all arguments in reverse order.")
 
   // The octave_value_list class is a zero-based array of octave_value
   // objects.  The declaration for the octave_value class is in the
-  // file pt-const.h.  The print() method will send its output to
+  // file ov.h.  The print() method will send its output to
   // octave_stdout, so it will also end up going through the pager.
 
   for (int i = 0; i < nargin; i++)
     {
       octave_value tmp = args (i);
-      tmp.print ();
+      tmp.print (octave_stdout);
       retval (nargin-i-1) = tmp;
     }
 

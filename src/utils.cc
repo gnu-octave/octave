@@ -57,14 +57,16 @@ extern "C" int strncasecmp (const char*, const char*, size_t);
 
 #include "SLStack.h"
 
+#include "dir-ops.h"
+#include "file-ops.h"
 #include "file-stat.h"
 #include "oct-cmplx.h"
 #include "oct-env.h"
+#include "pathsearch.h"
 #include "str-vec.h"
 
 #include <defaults.h>
 #include "defun.h"
-#include "dir-ops.h"
 #include "dirfns.h"
 #include "error.h"
 #include "gripes.h"
@@ -72,7 +74,6 @@ extern "C" int strncasecmp (const char*, const char*, size_t);
 #include "oct-hist.h"
 #include "oct-obj.h"
 #include "pager.h"
-#include "pathsearch.h"
 #include "sysdep.h"
 #include "toplev.h"
 #include "unwind-prot.h"
@@ -227,9 +228,12 @@ empty_arg (const char *name, int nr, int nc)
 // See if the given file is in the path.
 
 string
-search_path_for_file (const string& path, const string& name)
+search_path_for_file (const string& path, const string& name,
+		      bool do_tilde_expansion)
 {
-  dir_path p (path);
+  string tmp_path = do_tilde_expansion ? file_ops::tilde_expand (path) : path;
+
+  dir_path p (tmp_path);
 
   return octave_env::make_absolute (p.find (name), octave_env::getcwd ());
 }
@@ -269,7 +273,7 @@ file_in_path (const string& name, const string& suffix)
   if (! suffix.empty ())
     nm.append (suffix);
 
-  return search_path_for_file (Vload_path, nm);
+  return search_path_for_file (Vload_path, nm, false);
 }
 
 // See if there is an function file in the path.  If so, return the

@@ -25,11 +25,11 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <string>
 
-class string_vector;
-
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
+
+#include "str-vec.h"
 
 struct
 file_ops
@@ -48,6 +48,16 @@ file_ops
 
   static string tempnam (const string&, const string&);
   static string tempnam (const string&, const string&, string&);
+
+  typedef string (*tilde_expansion_hook) (const string&);
+
+  static tilde_expansion_hook tilde_expansion_preexpansion_hook;
+
+  static tilde_expansion_hook tilde_expansion_failure_hook;
+
+  static string_vector tilde_additional_prefixes;
+
+  static string_vector tilde_additional_suffixes;
 
   static string tilde_expand (const string&);
   static string_vector tilde_expand (const string_vector&);

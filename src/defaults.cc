@@ -42,6 +42,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <defaults.h>
 #include "defun.h"
 #include "error.h"
+#include "file-ops.h"
 #include "gripes.h"
 #include "help.h"
 #include "ov.h"
@@ -384,7 +385,7 @@ loadpath (void)
       status = -1;
     }
   else
-    Vload_path = maybe_add_default_load_path (s);
+    Vload_path = file_ops::tilde_expand (maybe_add_default_load_path (s));
 
   return status;
 }

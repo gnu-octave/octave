@@ -1,3 +1,13 @@
+Fri Jun  6 04:30:57 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* utils.cc (search_path_for_file): New arg, do_tilde_expansion.
+	If TRUE, perform tilde expansion on path before searching.
+	(file_in_path): Call search_path_for_file with do_tilde_expansion
+	set to false, since we've already performed tilde expansion on the
+	load path.
+
+	* defaults.cc (loadpath): Perform tilde expansion here.
+
 Thu Jun  5 01:42:39 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in: Make building of static library optional.

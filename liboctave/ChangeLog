@@ -1,3 +1,11 @@
+Fri Jun  6 04:27:40 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* file-ops.cc (file_ops::tilde_expand): Steal more code from bash
+	to do better job expanding tildes.
+
+	* str-vec.cc (string_vector::string_vector (const char * const *):
+	Use temporary variable to compute length.
+
 Thu Jun  5 01:44:43 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in: Make building of static library optional.

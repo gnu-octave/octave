@@ -47,7 +47,9 @@ string_vector::string_vector (const char * const *s)
 {
   int n = 0;
 
-  while (*s++)
+  const char * const *t = s;
+
+  while (*t++)
     n++;
 
   resize (n);

@@ -304,7 +304,15 @@ if [ -n "$f77files" ]; then
       ;;
     esac
     if [ -n "$F77" ]; then
-      o=$b.o
+      if [ -n "$outputfile" ]; then
+	if $link; then 
+	  o=$b.o
+	else
+	  o=$outputfile
+	fi
+      else
+        o=$b.o
+      fi
       objfiles="$objfiles $o"
       cmd="$F77 -c $FPICFLAG $ALL_FFLAGS $pass_on_options $f -o $o"
       $dbg $cmd
@@ -325,7 +333,15 @@ if [ -n "$cfiles" ]; then
   for f in $cfiles; do
     if [ -n  "$CC" ]; then
       b=`echo $f | $SED 's,\.c$,,'`
-      o=$b.o
+      if [ -n "$outputfile" ]; then
+	if $link; then
+	  o=$b.o
+	else
+	  o=$outputfile
+	fi
+      else
+	o=$b.o
+      fi
       objfiles="$objfiles $o"
       cmd="$CC -c $CPPFLAGS $CPICFLAG $ALL_CFLAGS $pass_on_options $incflags $defs $f -o $o"
       $dbg $cmd
@@ -350,7 +366,15 @@ if [ -n "$ccfiles" ]; then
 	  b=`echo $f | $SED 's,\.cpp$,,'`
 	;;
       esac
-      o=$b.o
+      if [ -n "$outputfile" ]; then
+	if $link; then
+	  o=$b.o
+	else
+	  o=$outputfile
+	fi
+      else
+	o=$b.o
+      fi
       objfiles="$objfiles $o"
       cmd="$CXX -c $CPPFLAGS $CXXPICFLAG $ALL_CXXFLAGS $pass_on_options $incflags $defs $f -o $o"
       $dbg $cmd

@@ -1,5 +1,7 @@
 2002-08-17  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* DLD-FUNCTIONS/dasrt.cc: Include <iostream> not <iostream.h>.
+
 	* pager.h: Include lo-sstream.h and use macros instead of using
 	strstreambuf class directly.
 

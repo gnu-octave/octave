@@ -119,5 +119,4 @@ function sys = sysupdate (sys, opt)
     sys.stname = __sysdefstname__ (sys.n, sys.nz);
   endif
 
-
 endfunction

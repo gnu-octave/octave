@@ -27,6 +27,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "f77-fcn.h"
 #include "lo-error.h"
 #include "oct-rand.h"
+#include "oct-time.h"
 
 // Possible distributions of random numbers.  This was handled with an
 // enum, but unwind_protecting that doesn't work so well.
@@ -79,17 +80,13 @@ force_to_fit_range (int i, int lo, int hi)
 static void
 do_initialization (void)
 {
-  time_t now;
-  struct tm *tm;
+  octave_localtime tm;
  
-  time (&now);
-  tm = localtime (&now);
- 
-  int hour = tm->tm_hour + 1;
-  int minute = tm->tm_min + 1;
-  int second = tm->tm_sec + 1;
+  int hour = tm.hour() + 1;
+  int minute = tm.min() + 1;
+  int second = tm.sec() + 1;
 
-  int s0 = tm->tm_mday * hour * minute * second;
+  int s0 = tm.mday() * hour * minute * second;
   int s1 = hour * minute * second;
 
   s0 = force_to_fit_range (s0, 1, 2147483563);

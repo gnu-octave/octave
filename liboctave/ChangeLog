@@ -1,3 +1,7 @@
+2003-05-16  Paul Kienzle <pkienzle@users.sf.net>
+
+	* oct-rand.cc: Use liboctave's clock layer instead of the system clock.
+
 2003-05-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in: Handle DESTDIR.

@@ -1048,32 +1048,34 @@ variable	: indirect_ref
 		  }
 		;
 
-in_param_list	: // empty
+param_list_beg	: '('
 		  { lexer_flags.looking_at_parameter_list = 1; }
 		;
 
-param_list	: '(' ')'
+param_list_end	: ')'
+		  { lexer_flags.looking_at_parameter_list = 1; }
+		;
+
+param_list	: param_list_beg param_list_end
 		  {
 		    lexer_flags.quote_is_transpose = 0;
 		    $$ = 0;
 		  }
-		| '(' ELLIPSIS ')'
+		| param_list_beg ELLIPSIS param_list_end
 		  {
 		    lexer_flags.quote_is_transpose = 0;
 		    tree_parameter_list *tmp = new tree_parameter_list ();
 		    tmp->mark_varargs_only ();
 		    $$ = tmp;
 		  }
-		| param_list1 ')'
+		| param_list1 param_list_end
 		  {
-		    lexer_flags.looking_at_parameter_list = 0;
 		    lexer_flags.quote_is_transpose = 0;
 		    $1->mark_as_formal_parameters ();
 		    $$ = $1;
 		  }
-		| param_list1 ',' ELLIPSIS ')'
+		| param_list1 ',' ELLIPSIS param_list_end
 		  {
-		    lexer_flags.looking_at_parameter_list = 0;
 		    lexer_flags.quote_is_transpose = 0;
 		    $1->mark_as_formal_parameters ();
 		    $1->mark_varargs ();
@@ -1081,14 +1083,14 @@ param_list	: '(' ')'
 		  }
 		;
 
-param_list1	: '(' in_param_list identifier
-		  { $$ = new tree_parameter_list ($3); }
+param_list1	: param_list_beg identifier
+		  { $$ = new tree_parameter_list ($2); }
 		| param_list1 ',' identifier
 		  {
 		    $1->append ($3);
 		    $$ = $1;
 		  }
-		| '(' error
+		| param_list_beg error
 		  {
 		    yyerror ("invalid parameter list");
 		    $$ = 0;

@@ -771,7 +771,22 @@ display the definition of each NAME that refers to a function")
 	  if (! *argv || ! **argv)
 	    continue;
 
-	  symbol_record *sym_rec = lookup_by_name (*argv, 0);
+	  char *id = strsave (*argv);
+	  char *elts = 0;
+	  char *ptr = strchr (id, '.');
+	  if (ptr)
+	    {
+	      *ptr = '\0';
+
+	      elts = ptr + 1;
+	      ptr = strrchr (elts, '.');
+	      if (ptr)
+		*ptr = '\0';
+	      else
+		elts = 0;
+	    }
+
+	  symbol_record *sym_rec = lookup_by_name (id, 0);
 
 	  if (sym_rec)
 	    {
@@ -791,35 +806,52 @@ display the definition of each NAME that refers to a function")
 		output_buf << *argv << " is a builtin text-function\n";
 	      else if (sym_rec->is_builtin_function ())
 		output_buf << *argv << " is a builtin function\n";
-	      else if (sym_rec->is_user_variable ())
+	      else if (sym_rec->is_user_variable ()
+		       || sym_rec->is_builtin_variable ())
 		{
 		  tree_fvc *defn = sym_rec->def ();
 
+		  assert (defn->is_constant ());
+
+		  tree_constant *tmp = (tree_constant *) defn;
+
+		  int var_ok = 1;
+		  if (tmp && tmp->is_map ())
+		    {
+		      if (elts && *elts)
+			{
+			  tree_constant ult;
+			  ult = tmp->lookup_map_element (elts, 0, 1);
+
+			  if (! ult.is_defined ())
+			    var_ok = 0;			    
+			}
+		    }
+		  
 		  if (nargout == 0 && ! quiet)
-		    output_buf << *argv << " is a user-defined variable\n";
+		    {
+		      output_buf << *argv;
+		      if (sym_rec->is_user_variable ())
+			output_buf << " is a user-defined variable\n";
+		      else
+			output_buf << " is a built-in variable\n";
+		    }
 
-		  defn->print_code (output_buf);
+		  if (! tmp->is_map ())
+		    {
+		      tmp->print_code (output_buf);
 
-		  if (nargout == 0)
-		    output_buf << "\n";
-		}
-	      else if (sym_rec->is_builtin_variable ())
-		{
-		  tree_fvc *defn = sym_rec->def ();
-
-		  if (nargout == 0 && ! quiet)
-		    output_buf << *argv << " is a builtin variable\n";
-
-		  defn->print_code (output_buf);
-
-		  if (nargout == 0)
-		    output_buf << "\n";
+		      if (nargout == 0)
+			output_buf << "\n";
+		    }
 		}
 	      else
 		output_buf << "type: `" << *argv << "' has unknown type!\n";
 	    }
 	  else
 	    output_buf << "type: `" << *argv << "' undefined\n";
+
+	  delete [] id;
 	}
 
       output_buf << ends;

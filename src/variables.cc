@@ -1440,11 +1440,15 @@ void
 bind_ans (const tree_constant& val, int print)
 {
   static symbol_record *sr = global_sym_tab->lookup ("ans", 1, 0);
-  static tree_identifier ans_id (sr);
 
+  tree_identifier *ans_id = new tree_identifier (sr);
   tree_constant *tmp = new tree_constant (val);
 
-  tree_simple_assignment_expression tmp_ass (&ans_id, tmp, 1, 1);
+  // XXX FIXME XXX -- making ans_id static, passing its address to
+  // tree_simple_assignment_expression along with a flag to not delete
+  // it seems to create a memory leak.  Hmm.
+
+  tree_simple_assignment_expression tmp_ass (ans_id, tmp, 0, 1);
 
   tmp_ass.eval (print);
 }

@@ -49,12 +49,12 @@ public:
   Vector deriv (void);
 
   virtual void initialize (const Vector& x, double t);
-  virtual void initialize (const Vector& x, Vector& xdot, double t);
+  virtual void initialize (const Vector& x, const Vector& xdot, double t);
 
   Vector integrate (double t);
 
-  Matrix integrate (const Vector& tout, Matrix& xdot_out);
-  Matrix integrate (const Vector& tout, Matrix& xdot_out,
+  Matrix integrate (const Vector& tout, const Matrix& xdot_out);
+  Matrix integrate (const Vector& tout, const Matrix& xdot_out,
 		    const Vector& tcrit); 
 
 protected:

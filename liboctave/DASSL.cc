@@ -350,7 +350,7 @@ DAE::integrate (double tout)
 }
 
 Matrix
-DAE::integrate (const Vector& tout, Matrix& xdot_out)
+DAE::integrate (const Vector& tout, const Matrix& xdot_out)
 {
   Matrix retval;
   int n_out = tout.capacity ();
@@ -385,7 +385,8 @@ DAE::integrate (const Vector& tout, Matrix& xdot_out)
 }
 
 Matrix
-DAE::integrate (const Vector& tout, Matrix& xdot_out, const Vector& tcrit)
+DAE::integrate (const Vector& tout, const Matrix& xdot_out,
+		const Vector& tcrit) 
 {
   Matrix retval;
   int n_out = tout.capacity ();

@@ -60,7 +60,7 @@ function polar_int_2 (theta, rho, fmt)
       endif
       [r_nr, r_nc] = size (rho);
       if (t_nr != r_nr)
-	rho = rho'
+	rho = rho';
 	tmp = r_nr;
 	r_nr = r_nc;
 	r_nc = tmp;
@@ -83,7 +83,7 @@ function polar_int_2 (theta, rho, fmt)
       endif
       [t_nr, t_nc] = size (theta);
       if (r_nr != t_nr)
-	theta = rho'
+	theta = theta';
 	tmp = t_nr;
 	t_nr = t_nc;
 	t_nc = tmp;

@@ -41,6 +41,9 @@ function freqz_plot(w,h)
 
       ## Protect graph state.
 
+      replot_state = automatic_replot;
+      automatic_replot = 0;
+
       subplot (311);
       gset lmargin 10;
       axis ("labely");
@@ -84,6 +87,8 @@ function freqz_plot(w,h)
       gset lmargin;
       gset tmargin;
       oneplot ();
+
+      automatic_replot = replot_state;
 
     end_unwind_protect
 

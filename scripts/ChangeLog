@@ -1,3 +1,7 @@
+2003-11-19  Quentin Spencer  <qspencer@ieee.org>
+
+	* signal/freqz_plot.m: Save and restore automatic_replot too.
+
 2003-11-18  Danilo Piazzalunga  <danilopiazza@libero.it>
 
 	* statistics/base/iqr.m: Handle matrices.

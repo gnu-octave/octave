@@ -849,15 +849,37 @@ TC_REP::do_vector_assign (const tree_constant& rhs, idx_vector& iv)
 
       if (nr == 1)
 	{
-	  for (int i = 0; i < iv.capacity (); i++)
-	    REP_ELEM_ASSIGN (0, iv.elem (i), rhs_m.elem (0, i),
-			     rhs_cm.elem (0, i), rhs.is_real_type ());
+	  if (rhs_nr == 1)
+	    {
+	      for (int i = 0; i < iv.capacity (); i++)
+		REP_ELEM_ASSIGN (0, iv.elem (i), rhs_m.elem (0, i),
+				 rhs_cm.elem (0, i), rhs.is_real_type ());
+	    }
+	  else if (rhs_nc == 1)
+	    {
+	      for (int i = 0; i < iv.capacity (); i++)
+		REP_ELEM_ASSIGN (0, iv.elem (i), rhs_m.elem (i, 0),
+				 rhs_cm.elem (i, 0), rhs.is_real_type ());
+	    }
+	  else
+	    panic_impossible ();
 	}
       else if (nc == 1)
 	{
-	  for (int i = 0; i < iv.capacity (); i++)
-	    REP_ELEM_ASSIGN (iv.elem (i), 0, rhs_m.elem (i, 0),
-			     rhs_cm.elem (i, 0), rhs.is_real_type ());
+	  if (rhs_nr == 1)
+	    {
+	      for (int i = 0; i < iv.capacity (); i++)
+		REP_ELEM_ASSIGN (iv.elem (i), 0, rhs_m.elem (0, i),
+				 rhs_cm.elem (0, i), rhs.is_real_type ());
+	    }
+	  else if (rhs_nc == 1)
+	    {
+	      for (int i = 0; i < iv.capacity (); i++)
+		REP_ELEM_ASSIGN (iv.elem (i), 0, rhs_m.elem (i, 0),
+				 rhs_cm.elem (i, 0), rhs.is_real_type ());
+	    }
+	  else
+	    panic_impossible ();
 	}
       else
 	panic_impossible ();

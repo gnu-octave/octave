@@ -66,11 +66,13 @@ TC_REP::do_index (const Octave_object& args)
       switch (args.length ())
 	{
 	case 2:
-	  if (args(1).rows () != 0 && args(1).columns () != 0)
+	  if (! args(1).is_magic_colon ()
+	      && args(1).rows () != 0 && args(1).columns () != 0)
 	    goto index_error;
 
 	case 1:
-	  if (args(0).rows () != 0 && args(0).columns () != 0)
+	  if (! args(0).is_magic_colon ()
+	      && args(0).rows () != 0 && args(0).columns () != 0)
 	    goto index_error;
 
 	  return Matrix ();
@@ -148,7 +150,7 @@ TC_REP::do_scalar_index (const Octave_object& args) const
 	      {
 		Matrix mj = arg.matrix_value ();
 
-		idx_vector j (mj, user_pref.do_fortran_indexing, "");
+		idx_vector j (mj, user_pref.do_fortran_indexing, "", 1);
 		if (! j)
 		  return retval;
 
@@ -176,7 +178,7 @@ TC_REP::do_scalar_index (const Octave_object& args) const
 	      {
 		Matrix mi = arg.matrix_value ();
 
-		idx_vector i (mi, user_pref.do_fortran_indexing, "");
+		idx_vector i (mi, user_pref.do_fortran_indexing, "", 1);
 		if (! i)
 		  return retval;
 
@@ -490,12 +492,6 @@ TC_REP::fortran_style_matrix_index (const Matrix& mi) const
       idx_vector iv (mi, 1, "", len);
       if (! iv)
 	return retval;
-
-      if (iv.max () >= nr * nc || iv.min () < 0)
-	{
-	  error ("matrix index out of range");
-	  return retval;
-	}
 
       int result_size = iv.length ();
 
@@ -943,7 +939,13 @@ TC_REP::do_matrix_index (const Range& ri,
       break;
 
     case magic_colon:
-      retval = do_matrix_index (ri, magic_colon);
+      {
+	if (index_check (ri, "row") < 0)
+	  return tree_constant ();
+	if (range_max_check (tree_to_mat_idx (ri.max ()), 0, nr, nc) < 0)
+	  return tree_constant ();
+	retval = do_matrix_index (ri, magic_colon);
+      }
       break;
 
     default:

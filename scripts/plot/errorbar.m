@@ -1,4 +1,4 @@
-## Copyright (C) 2000-2002 Teemu Ikonen
+## Copyright (C) 2000, 2001, 2002 Teemu Ikonen
 ##
 ## This file is part of Octave.
 ##
@@ -119,7 +119,9 @@ function errorbar (varargin)
   gset nologscale x;
   gset nologscale y;
   gset nopolar;
-    
-  __errcomm__ ("errorbar", varargin);
+
+  length (varargin)
+
+  __errcomm__ ("errorbar", varargin{:});
 
 endfunction

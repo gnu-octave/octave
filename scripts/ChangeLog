@@ -1,3 +1,11 @@
+2002-07-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* plot/loglogerr.m: Likewise.
+
+	* plot/semilogyerr.m: Likewise.
+
+	* plot/semilogxerr.m: Use varargin instead of old style varargs.
+
 2002-07-25  Teemu Ikonen <tpikonen@pcu.helsinki.fi>
 
 	* plot/__errcomm__.m: New file.  Common functionality for error plots.

@@ -72,9 +72,9 @@ function fmt = __pltopt1__ (caller, opt)
     ## First get next char.
 
     if (max (size (opt)) > 1)
-#      [char, opt] = sscanf (opt, "%c %s", "C");
-       char = opt(1);
-       opt = opt(2:length(opt));
+      ## [char, opt] = sscanf (opt, "%c %s", "C");
+      char = opt(1);
+      opt = opt(2:length(opt));
     else
       char = opt;
       more_opts = 0;
@@ -106,7 +106,7 @@ function fmt = __pltopt1__ (caller, opt)
     elseif (strcmp (char, "~"))
       set_yerrbars = 1;
     elseif (strcmp (char, ">"))
-      set_xerrbars = 1;  
+      set_xerrbars = 1;
     elseif (strcmp (char, "#"))
       set_boxes = 1;
     elseif (strcmp (char, "0") || strcmp (char, "1") ...
@@ -227,11 +227,11 @@ function fmt = __pltopt1__ (caller, opt)
   endif
 
   if (strcmp (fmt, WITH))
-      if(strcmp (caller, "__errplot"))
-          fmt = strcat (fmt, " ", YERRORBARS);
-      else
-          fmt = strcat (fmt, " ", LINES);
-      endif      
+    if (strcmp (caller, "__errplot__"))
+      fmt = strcat (fmt, " ", YERRORBARS);
+    else
+      fmt = strcat (fmt, " ", LINES);
+    endif
   endif
 
   if (set_color)

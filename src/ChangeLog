@@ -1,3 +1,8 @@
+2005-01-18  John W. Eaton  <jwe@octave.org>
+
+	* file-io.cc (Fmkstemp): Fix doc string.  Error message belongs in
+	third output value.  From Mats Jansson <mats.e.jansson@home.se>.
+
 2005-01-12  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/find.cc (Ffind): Make it work for character strings.

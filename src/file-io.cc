@@ -1797,7 +1797,7 @@ system-dependent error message.\n\
 
 DEFUN (mkstemp, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{fid}, @var{name}, @var{msg}] =} tmpfile (@var{template}, @var{delete})\n\
+@deftypefn {Built-in Function} {[@var{fid}, @var{name}, @var{msg}] =} mkstemp (@var{template}, @var{delete})\n\
 Return the file ID corresponding to a new temporary file with a unique\n\
 name created from @var{template}.  The last six characters of @var{template}\n\
 must be @code{XXXXXX} and these are replaced with a string that makes the\n\
@@ -1841,7 +1841,7 @@ error message.\n\
 	  if (fd < 0)
 	    {
 	      using namespace std;
-	      retval(1) = ::strerror (errno);
+	      retval(2) = ::strerror (errno);
 	      retval(0) = fd;
 	    }
 	  else
@@ -1872,7 +1872,7 @@ error message.\n\
 	      else
 		{
 		  using namespace std;
-		  retval(1) = ::strerror (errno);
+		  retval(2) = ::strerror (errno);
 		  retval(0) = -1;
 		}
 	    }

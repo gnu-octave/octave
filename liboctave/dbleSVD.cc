@@ -78,13 +78,14 @@ SVD::init (const Matrix& a, SVD::type svd_type)
   int m = a.rows ();
   int n = a.cols ();
 
-  double *tmp_data = dup (a.data (), a.length ());
+  Matrix atmp = a;
+  double *tmp_data = atmp.fortran_vec ();
 
   int min_mn = m < n ? m : n;
   int max_mn = m > n ? m : n;
 
-  char *jobu = "A";
-  char *jobv = "A";
+  char jobu = 'A';
+  char jobv = 'A';
 
   int ncol_u = m;
   int nrow_vt = n;
@@ -94,12 +95,12 @@ SVD::init (const Matrix& a, SVD::type svd_type)
   switch (svd_type)
     {
     case SVD::economy:
-      jobu = jobv ="S";
+      jobu = jobv = 'S';
       ncol_u = nrow_vt = nrow_s = ncol_s = min_mn;
       break;
 
     case SVD::sigma_only:
-      jobu = jobv ="N";
+      jobu = jobv = 'N';
       ncol_u = nrow_vt = 1;
       break;
 
@@ -109,32 +110,37 @@ SVD::init (const Matrix& a, SVD::type svd_type)
 
   type_computed = svd_type;
 
-  double *u = (*jobu == 'N' ? 0 : new double[m * ncol_u]);
-  double *s_vec  = new double[min_mn];
-  double *vt = (*jobv == 'N' ? 0 : new double[nrow_vt * n]);
+  if (jobu != 'N')
+    left_sm.resize (n, ncol_u);
+
+  double *u = left_sm.fortran_vec ();
+
+  sigma.resize (nrow_s, ncol_s);
+  double *s_vec  = sigma.fortran_vec ();
+
+  if (jobv != 'N')
+    right_sm.resize (nrow_vt, n);
+
+  double *vt = right_sm.fortran_vec ();
 
   int tmp1 = 3*min_mn + max_mn;
   int tmp2 = 5*min_mn - 4;
   int lwork = tmp1 > tmp2 ? tmp1 : tmp2;
-  double *work = new double[lwork];
 
-  F77_FCN (dgesvd, DGESVD) (jobu, jobv, m, n, tmp_data, m, s_vec, u,
-			    m, vt, nrow_vt, work, lwork, info, 1L,
-			    1L);
+  Array<double> work (lwork);
+  double *pwork = work.fortran_vec ();
 
-  if (*jobu != 'N')
-    left_sm = Matrix (u, m, ncol_u);
+  F77_XFCN (dgesvd, DGESVD, (&jobu, &jobv, m, n, tmp_data, m, s_vec,
+			     u, m, vt, nrow_vt, pwork, lwork, info,
+			     1L, 1L));
 
-  sigma = DiagMatrix (s_vec, nrow_s, ncol_s);
-
-  if (*jobv != 'N')
+  if (f77_exception_encountered)
+    (*current_liboctave_error_handler) ("unrecoverable error in dgesvd");
+  else
     {
-      Matrix vt_m (vt, nrow_vt, n);
-      right_sm = vt_m.transpose ();
+      if (jobv != 'N')
+	right_sm = right_sm.transpose ();
     }
-
-  delete [] tmp_data;
-  delete [] work;
 
   return info;
 }

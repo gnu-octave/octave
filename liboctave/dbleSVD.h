@@ -69,6 +69,8 @@ public:
       return *this;
     }
 
+  ~SVD (void) { }
+
   DiagMatrix singular_values (void) const { return sigma; }
 
   Matrix left_singular_matrix (void) const;

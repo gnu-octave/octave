@@ -82,6 +82,8 @@ private:
   Matrix schur_mat;
   Matrix unitary_mat;
 
+  select_function selector;
+
   int init (const Matrix& a, const string& ord);
 };
 

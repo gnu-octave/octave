@@ -82,6 +82,8 @@ private:
   ComplexMatrix schur_mat;
   ComplexMatrix unitary_mat;
 
+  select_function selector;
+
   int init (const ComplexMatrix& a, const string& ord);
 };
 

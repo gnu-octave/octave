@@ -71,20 +71,21 @@ SCHUR::init (const Matrix& a, const string& ord)
       return -1;
     }
 
-  char *jobvs = "V";
-  char *sense = "N";
-  char *sort = "N";
+  char jobvs = 'V';
+  char sense = 'N';
+  char sort = 'N';
 
   char ord_char = ord.empty () ? 'U' : ord[0];
 
   if (ord_char == 'A' || ord_char == 'D' || ord_char == 'a' || ord_char == 'd')
-    sort = "S";
+    sort = 'S';
 
-  select_function selector = 0;
   if (ord_char == 'A' || ord_char == 'a')
     selector = select_ana;
   else if (ord_char == 'D' || ord_char == 'd')
     selector = select_dig;
+  else
+    selector = 0;
 
   int n = a_nc;
   int lwork = 8 * n;
@@ -124,7 +125,7 @@ SCHUR::init (const Matrix& a, const string& ord)
   int *piwork = iwork.fortran_vec ();
 
 
-  F77_XFCN (dgeesx, DGEESX, (jobvs, sort, selector, sense, n, s,
+  F77_XFCN (dgeesx, DGEESX, (&jobvs, &sort, selector, &sense, n, s,
 			     n, sdim, pwr, pwi, q, n, rconde, rcondv,
 			     pwork, lwork, piwork, liwork, pbwork,
 			     info, 1L, 1L));

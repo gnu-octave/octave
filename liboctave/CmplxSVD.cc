@@ -83,8 +83,8 @@ ComplexSVD::init (const ComplexMatrix& a, SVD::type svd_type)
   int min_mn = m < n ? m : n;
   int max_mn = m > n ? m : n;
 
-  char *jobu = "A";
-  char *jobv = "A";
+  char jobu = 'A';
+  char jobv = 'A';
 
   int ncol_u = m;
   int nrow_vt = n;
@@ -94,12 +94,12 @@ ComplexSVD::init (const ComplexMatrix& a, SVD::type svd_type)
   switch (svd_type)
     {
     case SVD::economy:
-      jobu = jobv ="S";
+      jobu = jobv = 'S';
       ncol_u = nrow_vt = nrow_s = ncol_s = min_mn;
       break;
 
     case SVD::sigma_only:
-      jobu = jobv ="N";
+      jobu = jobv = 'N';
       ncol_u = nrow_vt = 1;
       break;
 
@@ -109,33 +109,40 @@ ComplexSVD::init (const ComplexMatrix& a, SVD::type svd_type)
 
   type_computed = svd_type;
 
-  Complex *u = (*jobu == 'N' ? 0 : new Complex[m * ncol_u]);
-  double *s_vec  = new double[min_mn];
-  Complex *vt = (*jobv == 'N' ? 0 : new Complex[nrow_vt * n]);
+  if (jobu != 'N')
+    left_sm.resize (m, ncol_u);
+
+  Complex *u = left_sm.fortran_vec ();
+
+  sigma.resize (nrow_s, ncol_s);
+  double *s_vec = sigma.fortran_vec ();
+
+  if (jobv != 'N')
+    right_sm.resize (nrow_vt, n);
+
+  Complex *vt = right_sm.fortran_vec ();
 
   int lwork = 2*min_mn + max_mn;
-  Complex *work = new Complex[lwork];
+
+  Array<Complex> work (lwork);
+  Complex *pwork = work.fortran_vec ();
 
   int lrwork = 5*max_mn;
-  double *rwork = new double[lrwork];
 
-  F77_FCN (zgesvd, ZGESVD) (jobu, jobv, m, n, tmp_data, m, s_vec, u,
-			    m, vt, nrow_vt, work, lwork, rwork, info,
-			    1L, 1L);
+  Array<double> rwork (lrwork);
+  double *prwork = rwork.fortran_vec ();
 
-  if (*jobu != 'N')
-    left_sm = ComplexMatrix (u, m, ncol_u);
+  F77_XFCN (zgesvd, ZGESVD, (&jobu, &jobv, m, n, tmp_data, m, s_vec, u,
+			     m, vt, nrow_vt, pwork, lwork, prwork, info,
+			     1L, 1L));
 
-  sigma = DiagMatrix (s_vec, nrow_s, ncol_s);
-
-  if (*jobv != 'N')
+  if (f77_exception_encountered)
+    (*current_liboctave_error_handler) ("unrecoverable error in zgesvd");
+  else
     {
-      ComplexMatrix vt_m (vt, nrow_vt, n);
-      right_sm = vt_m.hermitian ();
+      if (jobv != 'N')
+	right_sm = right_sm.hermitian ();
     }
-
-  delete [] tmp_data;
-  delete [] work;
 
   return info;
 }

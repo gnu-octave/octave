@@ -604,6 +604,24 @@ ComplexRowVector::map (c_c_Mapper f)
     elem (i) = f (elem (i));
 }
 
+ComplexRowVector
+linspace (const Complex& x1, const Complex& x2, int n)
+{
+  ComplexRowVector retval;
+
+  if (n > 0)
+    {
+      retval.resize (n);
+      Complex delta = (x2 - x1) / (n - 1);
+      retval.elem (0) = x1;
+      for (int i = 1; i < n-1; i++)
+	retval.elem (i) = x1 + i * delta;
+      retval.elem (n-1) = x2;
+    }
+
+  return retval;
+}
+
 Complex
 ComplexRowVector::min (void) const
 {

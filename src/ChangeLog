@@ -1,3 +1,29 @@
+2004-09-15  John W. Eaton  <jwe@octave.org>
+
+	* ov-cell.cc (octave_cell::subsref): Pass nargout to next_subsref.
+	* ov-builtin.cc (octave_builtin::subsref): Likewise.
+	* ov-fcn-handle.cc (octave_fcn_handle::subsref): Likewise.
+	* ov-list.cc (octave_list::subsref): Likewise.
+	* ov-mapper.cc (octave_mapper::subsref): Likewise.
+	* ov-struct.cc (octave_struct::subsref): Likewise.
+	* ov-usr-fcn.cc (octave_user_function::subsref): Likewise.
+
+	* ov-struct.cc, ov-struct.h (octave_struct::subsref (const
+	std::string&, const std::list<octave_value_list>&, int)):
+	Define this version.
+	(octave_struct::subsref (const std::string&, const
+	std::list<octave_value_list>&)): Panic in this version.
+	* ov-list.cc, ov-list.h: Likewise.
+	* ov-cell.cc, ov-cell.h: Likewise.
+
+	* ov.cc (octave_value::subsref (int, const std::string&, const
+	std::list<octave_value_list>&, size_t)): New function.
+	* ov.h: Provide decl.	
+
+	* ov-cell.h (octave_cell::is_constant): Return false.
+	* ov-struct.h (octave_struct::is_constant): Delete.
+	* ov-list.h (octave_list::is_constant): Delete.
+
 2004-09-14  David Bateman  <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/sort.cc (mx_sort (charNDArray&, bool, int)):

@@ -36,6 +36,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Cell.h"
 #include "defun.h"
 #include "error.h"
+#include "ov.h"
 #include "ov-list.h"
 #include "unwind-prot.h"
 
@@ -60,11 +61,11 @@ octave_list::octave_list (const Cell& c)
     data(i) = c(i);
 }
 
-octave_value
+octave_value_list
 octave_list::subsref (const std::string& type,
-		      const std::list<octave_value_list>& idx)
+		      const std::list<octave_value_list>& idx, int nargout)
 {
-  octave_value retval;
+  octave_value_list retval;
 
   switch (type[0])
     {
@@ -78,7 +79,7 @@ octave_list::subsref (const std::string& type,
 
 	    Cell tmp = data.index (i);
 
-	    retval = octave_value (new octave_list (tmp));
+	    retval(0) = octave_value (new octave_list (tmp));
 	  }
 	else
 	  error ("only one index allowed for lists");
@@ -96,9 +97,9 @@ octave_list::subsref (const std::string& type,
 	    Cell tmp = data.index (i);
 
 	    if (tmp.length () == 1)
-	      retval = tmp(0);
+	      retval(0) = tmp(0);
 	    else
-	      retval = octave_value (tmp, true);
+	      retval(0) = octave_value (tmp, true);
 	  }
 	else
 	  error ("only one index allowed for lists");
@@ -116,7 +117,14 @@ octave_list::subsref (const std::string& type,
       panic_impossible ();
     }
 
-  return retval.next_subsref (type, idx);
+  // XXX FIXME XXX -- perhaps there should be an
+  // octave_value_list::next_subsref member function?  See also
+  // octave_user_function::subsref.
+
+  if (idx.size () > 1)
+    retval = retval(0).next_subsref (nargout, type, idx);
+
+  return retval;
 }
 
 octave_value

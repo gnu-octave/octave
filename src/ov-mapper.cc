@@ -265,8 +265,12 @@ octave_mapper::subsref (const std::string& type,
 
   return retval;
 
-  // XXX FIXME XXX
-  //  return retval.next_subsref (type, idx);
+  // XXX FIXME XXX -- perhaps there should be an
+  // octave_value_list::next_subsref member function?  See also
+  // and octave_builtin::subsref.
+
+  if (idx.size () > 1)
+    retval = retval(0).next_subsref (nargout, type, idx);
 }
 
 octave_value_list

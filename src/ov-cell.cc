@@ -58,16 +58,16 @@ DEFINE_OCTAVE_ALLOCATOR (octave_cell);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_cell, "cell", "cell");
 
-octave_value
+octave_value_list
 octave_cell::subsref (const std::string& type,
-		      const std::list<octave_value_list>& idx)
+		      const std::list<octave_value_list>& idx, int nargout)
 {
-  octave_value retval;
+  octave_value_list retval;
 
   switch (type[0])
     {
     case '(':
-      retval = do_index_op (idx.front ());
+      retval(0) = do_index_op (idx.front ());
       break;
 
     case '{':
@@ -79,7 +79,7 @@ octave_cell::subsref (const std::string& type,
 	    Cell tcell = tmp.cell_value ();
 
 	    if (tcell.length () == 1)
-	      retval = tcell(0,0);
+	      retval(0) = tcell(0,0);
 	    else
 	      {
 		int n = tcell.numel ();
@@ -92,7 +92,7 @@ octave_cell::subsref (const std::string& type,
 		    lst(i) = tcell(i);
 		  }
 
-		retval = octave_value (lst, true);
+		retval(0) = octave_value (lst, true);
 	      }
 	  }
       }
@@ -109,7 +109,14 @@ octave_cell::subsref (const std::string& type,
       panic_impossible ();
     }
 
-  return retval.next_subsref (type, idx);
+  // XXX FIXME XXX -- perhaps there should be an
+  // octave_value_list::next_subsref member function?  See also
+  // octave_user_function::subsref.
+
+  if (idx.size () > 1)
+    retval = retval(0).next_subsref (nargout, type, idx);
+
+  return retval;
 }
 
 octave_value

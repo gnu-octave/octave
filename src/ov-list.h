@@ -66,15 +66,16 @@ public:
   octave_value *clone (void) const { return new octave_list (*this); }
   octave_value *empty_clone (void) const { return new octave_list (); }
 
-  octave_value subsref (const std::string& type,
-			const std::list<octave_value_list>& idx);
-
-  octave_value_list subsref (const std::string&,
-			     const std::list<octave_value_list>&, int)
+  octave_value subsref (const std::string&,
+			const std::list<octave_value_list>&)
     {
       panic_impossible ();
       return octave_value_list ();
     }
+
+  octave_value_list subsref (const std::string& type,
+			     const std::list<octave_value_list>& idx,
+			     int nargout);
 
   octave_value do_index_op (const octave_value_list& idx, int resize_ok);
 
@@ -89,8 +90,6 @@ public:
   size_t byte_size (void) const;
 
   bool is_defined (void) const { return true; }
-
-  bool is_constant (void) const { return true; }
 
   bool is_list (void) const { return true; }
 

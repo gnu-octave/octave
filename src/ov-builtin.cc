@@ -91,7 +91,7 @@ octave_builtin::subsref (const std::string& type,
   // for exmaple?
 
   if (idx.size () > 1)
-    retval = retval(0).next_subsref (type, idx);
+    retval = retval(0).next_subsref (nargout, type, idx);
 
   return retval;
 }

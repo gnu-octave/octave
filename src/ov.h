@@ -318,6 +318,11 @@ public:
 			     std::list<octave_value_list>& idx,
 			     size_t skip = 1);
 
+  octave_value_list next_subsref (int nargout,
+				  const std::string& type, const
+				  std::list<octave_value_list>& idx,
+				  size_t skip = 1);
+
   virtual octave_value do_index_op (const octave_value_list& idx,
 				    int resize_ok)
     { return rep->do_index_op (idx, resize_ok); }

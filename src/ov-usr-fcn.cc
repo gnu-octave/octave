@@ -318,7 +318,7 @@ octave_user_function::subsref (const std::string& type,
   // octave_builtin::subsref.
 
   if (idx.size () > 1)
-    retval = retval(0).next_subsref (type, idx);
+    retval = retval(0).next_subsref (nargout, type, idx);
 
   return retval;
 }

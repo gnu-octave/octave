@@ -860,15 +860,9 @@ too_large_for_float (const Matrix& m)
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
       {
-	Complex val = m.elem (i, j);
+	double val = m.elem (i, j);
 
-	double r_val = real (val);
-	double i_val = imag (val);
-
-	if (r_val > FLT_MAX
-	    || i_val > FLT_MAX
-	    || r_val < FLT_MIN
-	    || i_val < FLT_MIN)
+	if (val > FLT_MAX || val < FLT_MIN)
 	  return 1;
       }
 

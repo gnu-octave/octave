@@ -67,16 +67,23 @@ extern "C" {
   do \
     { \
       jmp_buf saved_f77_context; \
+      f77_exception_encountered = 0; \
       copy_f77_context ((char *) f77_context, (char *) saved_f77_context, \
 			sizeof (jmp_buf)); \
       if (setjmp (f77_context)) \
-	F77_XFCN_ERROR (f, F); \
+	{ \
+	  f77_exception_encountered = 1; \
+	  F77_XFCN_ERROR (f, F); \
+	} \
       else \
 	F77_FCN (f, F) args; \
       copy_f77_context ((char *) saved_f77_context, (char *) f77_context, \
 			sizeof (jmp_buf)); \
     } \
   while (0)
+
+/* So we can check to see if an exception has occurred. */
+extern int f77_exception_encountered;
 
 /* For setjmp/longjmp. */
 extern jmp_buf f77_context;

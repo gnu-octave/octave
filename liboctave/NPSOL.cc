@@ -285,10 +285,9 @@ NPSOL::do_minimize (double& objf, int& inform, ColumnVector& lambda)
 		 istate, c, cjac, pclambda, objf, objgrd, r, px, iw,
 		 leniw, w, lenw));
 
-      // XXX FIXME XXX -- need to know if an exception that resulted
-      // in a call to xstopx has occurred...
-
-      if (inform == 6 || inform == 1)
+      if (f77_exception_encountered)
+	(*current_liboctave_error_handler) ("unrecoverable error in npsol");
+      else if (inform == 6 || inform == 1)
 	continue;
       else
 	break;

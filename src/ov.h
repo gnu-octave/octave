@@ -658,16 +658,16 @@ OV_BINOP_FN (op_struct_ref)
   public: \
     int type_id (void) const { return t_id; } \
     std::string type_name (void) const { return t_name; } \
-    static volatile int static_type_id (void) { return t_id; } \
+    static int static_type_id (void) { return t_id; } \
     static void register_type (void) \
       { t_id = octave_value_typeinfo::register_type (t_name); } \
  \
   private: \
-    static volatile int t_id; \
+    static int t_id; \
     static const std::string t_name;
 
 #define DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(t, n) \
-  volatile int t::t_id (-1); \
+  int t::t_id (-1); \
   const std::string t::t_name (n)
 
 // If TRUE, allow assignments like

@@ -74,7 +74,11 @@ public:
 
   string operator[] (int i) const { return Array<string>::elem (i); }
 
-  void qsort (void) { Array<string>::qsort (str_vec_compare); }
+  string_vector& qsort (void)
+    {
+      Array<string>::qsort (str_vec_compare);
+      return *this;
+    }
 };
 
 #endif

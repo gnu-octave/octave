@@ -494,8 +494,7 @@ simple_help (void)
 
 	  if (elt_dir)
 	    {
-	      int count;
-	      string_vector names = get_fcn_file_names (count, elt_dir, 0);
+	      string_vector names = get_fcn_file_names (elt_dir);
 
 	      output_buf << "\n*** function files in "
 		<< make_absolute (elt_dir, the_current_working_directory)

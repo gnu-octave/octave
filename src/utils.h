@@ -61,10 +61,9 @@ keyword_almost_match (const char **std, int *min_len,
 		      const string& s, int min_toks_to_match,
 		      int max_toks);
 
-extern string_vector get_fcn_file_names (int& ffl_len, const char *dir,
-					 int no_suffix); 
+extern string_vector get_fcn_file_names (const string&, int = 0);
 
-extern string_vector get_fcn_file_names (int& ffl_len, int no_suffix);
+extern string_vector get_fcn_file_names (int& ffl_len, int = 0);
 
 extern int NINT (double x);
 extern double D_NINT (double x);

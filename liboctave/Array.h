@@ -188,7 +188,7 @@ public:
 
   T *fortran_vec (void);
 
-  void qsort (int (*compare) (const void *, const void *))
+  Array<T>& qsort (int (*compare) (const void *, const void *))
     {
       if (rep->count > 1)
 	{
@@ -197,6 +197,8 @@ public:
 	}
 
       rep->qsort (compare);
+
+      return *this;
     }
 
 #ifdef HEAVYWEIGHT_INDEXING

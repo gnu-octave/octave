@@ -60,6 +60,7 @@ extern "C" int strncasecmp (const char*, const char*, size_t);
 #include "str-vec.h"
 
 #include "defun.h"
+#include "dir-ops.h"
 #include "dirfns.h"
 #include "error.h"
 #include "gripes.h"
@@ -71,7 +72,6 @@ extern "C" int strncasecmp (const char*, const char*, size_t);
 #include "pager.h"
 #include "pathsearch.h"
 #include "sysdep.h"
-#include "sysdir.h"
 #include "toplev.h"
 #include "unwind-prot.h"
 #include "user-prefs.h"
@@ -315,57 +315,53 @@ keyword_almost_match (const char **std, int *min_len, const string& s,
 }
 
 string_vector
-get_fcn_file_names (int& num, const char *dir, int no_suffix)
+get_fcn_file_names (const string& name, int no_suffix)
 {
-  static int num_max = 256;
-  string_vector retval (num_max);
-  int i = 0;
+  string_vector retval;
 
-  DIR *dirp = opendir (dir);
-  if (dirp)
+  dir_entry dir (name);
+
+  if (dir)
     {
-      struct dirent *entry;
-      while ((entry = readdir (dirp)) != 0)
+      string_vector tmp = dir.read ();
+
+      int max_len = tmp.length ();
+
+      retval.resize (max_len);
+
+      int k = 0;
+      int i;
+      for (i = 0; i < max_len; i++)
 	{
-	  int len = NLENGTH (entry);
+	  string entry = tmp[i];
+
+	  int len = entry.length ();
+
 #if defined (WITH_DYNAMIC_LINKING)
 	  if ((len > 2
-	       && entry->d_name[len-2] == '.'
-	       && entry->d_name[len-1] == 'm')
+	       && entry[len-2] == '.' && entry[len-1] == 'm')
 	      || (len > 4
-		  && entry->d_name[len-4] == '.'
-		  && entry->d_name[len-3] == 'o'
-		  && entry->d_name[len-2] == 'c'
-		  && entry->d_name[len-1] == 't'))
+		  && entry[len-4] == '.' && entry[len-3] == 'o'
+		  && entry[len-2] == 'c' && entry[len-1] == 't'))
 #else
 	  if (len > 2
-	      && entry->d_name[len-2] == '.'
-	      && entry->d_name[len-1] == 'm')
+	      && entry[len-2] == '.' && entry[len-1] == 'm')
 #endif
 	    {
-	      retval[i] = entry->d_name;
 	      if (no_suffix)
 		{
-		  if (retval[i][len-1] == 'm')
-		    retval[i][len-2] = '\0';
+		  if (entry[len-1] == 'm')
+		    entry.resize (len-2);
 		  else
-		    retval[i][len-4] = '\0';
+		    entry.resize (len-4);
 		}
 
-	      i++;
-
-	      if (i == num_max - 1)
-		{
-		  num_max += 256;
-		  retval.resize (num_max);
-		}
+	      retval[k++] = entry;
 	    }
 	}
-      closedir (dirp);
-    }
 
-  num = i;
-  retval.resize (num);
+      retval.resize (i);
+    }
 
   return retval;
 }
@@ -390,13 +386,13 @@ get_fcn_file_names (int& num, int no_suffix)
 
 	  if (elt_dir)
 	    {
-	      int tmp_num;
-	      string_vector names
-		= get_fcn_file_names (tmp_num, elt_dir, no_suffix);
+	      string_vector names = get_fcn_file_names (elt_dir, no_suffix);
 
-	      if (i + tmp_num >= num_max - 1)
+	      int tmp_num = names.length ();
+
+	      if (i + tmp_num > num_max)
 		{
-		  num_max += 1024;
+		  num_max += tmp_num;
 		  retval.resize (num_max);
 		}
 

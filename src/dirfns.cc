@@ -51,6 +51,7 @@ Free Software Foundation, Inc.
 #include "str-vec.h"
 
 #include "defun.h"
+#include "dir-ops.h"
 #include "dirfns.h"
 #include "error.h"
 #include "file-ops.h"
@@ -62,7 +63,6 @@ Free Software Foundation, Inc.
 #include "procstream.h"
 #include "pt-plot.h"
 #include "sysdep.h"
-#include "sysdir.h"
 #include "toplev.h"
 #include "unwind-prot.h"
 #include "utils.h"
@@ -446,79 +446,31 @@ named directory.  If sucessful, returns 0; otherwise an error message
 is printed.")
 {
   Octave_object retval;
-  charMatrix dirlist;
-  int status = 0;
 
   if (args.length () == 1)
     {
       string dirname = args(0).string_value ();
 
       if (error_state)
-	{
-	  status = -1;
-	  gripe_wrong_type_arg ("readdir", args(0));
-	}
+	gripe_wrong_type_arg ("readdir", args(0));
       else
 	{
-	  string tmp = oct_tilde_expand (dirname);
-
-	  DIR *dir = opendir (tmp.c_str ());
+	  dir_entry dir (oct_tilde_expand (dirname));
 
 	  if (dir)
 	    {
-	      int count = 0;
-	      int max_len = 0;
-
-	      struct dirent *dir_entry;
-
-	      while ((dir_entry = readdir (dir)))
-		{
-		  count++;
-		  int len = strlen (dir_entry->d_name);
-		  if (len > max_len)
-		    max_len = len;
-		}
-
-	      rewinddir (dir);
-
-	      dirlist.resize (count, max_len, 0);
-
-	      while ((dir_entry = readdir (dir)))
-		{
-		  if (--count < 0)
-		    break;
-
-		  dirlist.insert (dir_entry->d_name, count, 0);
-		}
-
-#if defined (CLOSEDIR_VOID)
-	      closedir (dir);
-#else
-	      if (closedir (dir) < 0)
-		{
-		  status = -1;
-		  error ("%s", strerror (errno));
-		}
-#endif
-
-	      if (count != 0)
-		{
-		  status = -1;
-		  error ("readdir: failed reading directory");
-		}
+	      string_vector dirlist = dir.read ();
+	      retval(0) = dirlist.qsort ();
 	    }
 	  else
 	    {
-	      status = -1;
-	      error ("%s", strerror (errno));
+	      string msg = dir.error ();
+	      error ("%s", msg.c_str ());
 	    }
 	}
     }
   else
     print_usage ("readdir");
-
-  if (status == 0)
-    retval(0) = tree_constant (dirlist, 1);
 
   return retval;
 }

@@ -289,5 +289,5 @@ snapshot-version:
 		 datestring); \
 	  next; \
 	} { print $$0 }' src/version.h > src/version.h.new
-	mv src/version.h.new src/version.h
+	@(top_srcdir)/move-if-change src/version.h.new src/version.h
 .PHONY: snapshot-version

@@ -163,7 +163,7 @@ function saveimage (filename, img, img_form, map)
       if (n_long == 0)
 	n_long = 8;
       else
-	n_long = 1 + nlong;
+	n_long++;
       endif
 
       idx = 1:8:img_sz;

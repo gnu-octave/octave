@@ -1097,8 +1097,11 @@ is_keyword (char *s)
 static symbol_record *
 lookup_identifier (char *name)
 {
-  symbol_record *gsr = global_sym_tab->lookup (name, 0, 0);
+  symbol_record *lsr = curr_sym_tab->lookup (name, 0, 0);
+  if (lsr != (symbol_record *) NULL)
+    return lsr;
 
+  symbol_record *gsr = global_sym_tab->lookup (name, 0, 0);
   if (curr_sym_tab == top_level_sym_tab && gsr != (symbol_record *) NULL)
     return gsr;
 

@@ -49,6 +49,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #define M_PI 3.14159265358979323846
 #endif
 
+#if defined (HAVE_LGAMMA) && ! defined (SIGNGAM_DECLARED)
+extern int signgam;
+#endif
+
 /*
  * Double -> double mappers.
  */

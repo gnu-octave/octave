@@ -68,6 +68,9 @@
    directory tree as the sources. */
 #undef RUN_IN_PLACE
 
+/* Define if math.h declares signgam. */
+#undef SIGNGAM_DECLARED
+
 /* To quiet autoheader. */
 #undef SMART_PUTENV
 

@@ -48,6 +48,7 @@ struct user_preferences
   int resize_on_range_error;
   int return_last_computed_value;
   int save_precision;
+  int saving_history;
   int silent_functions;
   int split_long_rows;
   int struct_levels_to_print;
@@ -100,6 +101,7 @@ extern int propagate_empty_matrices (void);
 extern int read_only_constants (void);
 extern int resize_on_range_error (void);
 extern int return_last_computed_value (void);
+extern int saving_history (void);
 extern int silent_functions (void);
 extern int split_long_rows (void);
 extern int struct_levels_to_print (void);

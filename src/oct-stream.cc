@@ -2827,30 +2827,30 @@ octave_stream::mode_as_string (int mode)
   if (in_mode == std::ios::in)
     retval = "r";
   else if (in_mode == std::ios::out 
-           || in_mode == std::ios::out | std::ios::trunc)
+           || in_mode == (std::ios::out | std::ios::trunc))
     retval = "w";
-  else if (in_mode == std::ios::out | std::ios::app)
+  else if (in_mode == (std::ios::out | std::ios::app))
     retval = "a";
-  else if (in_mode == std::ios::in | std::ios::out)
+  else if (in_mode == (std::ios::in | std::ios::out))
     retval = "r+";
-  else if (in_mode == std::ios::in | std::ios::out | std::ios::trunc)
+  else if (in_mode == (std::ios::in | std::ios::out | std::ios::trunc))
     retval = "w+";
-  else if (in_mode == std::ios::in | std::ios::out | std::ios::ate)
+  else if (in_mode == (std::ios::in | std::ios::out | std::ios::ate))
     retval = "a+";
-  else if (in_mode == std::ios::in | std::ios::binary)
+  else if (in_mode == (std::ios::in | std::ios::binary))
     retval = "rb";
-  else if (in_mode == std::ios::out | std::ios::binary
-           || in_mode == std::ios::out | std::ios::trunc | std::ios::binary)
+  else if (in_mode == (std::ios::out | std::ios::binary)
+	   || in_mode == (std::ios::out | std::ios::trunc | std::ios::binary))
     retval = "wb";
-  else if (in_mode == std::ios::out | std::ios::app | std::ios::binary)
+  else if (in_mode == (std::ios::out | std::ios::app | std::ios::binary))
     retval = "ab";
-  else if (in_mode == std::ios::in | std::ios::out | std::ios::binary)
+  else if (in_mode == (std::ios::in | std::ios::out | std::ios::binary))
     retval = "r+b";
-  else if (in_mode == std::ios::in | std::ios::out | std::ios::trunc 
-           | std::ios::binary)
+  else if (in_mode == (std::ios::in | std::ios::out | std::ios::trunc 
+		       | std::ios::binary))
     retval = "w+b";
-  else if (in_mode == std::ios::in | std::ios::out | std::ios::ate
-           | std::ios::binary)
+  else if (in_mode == (std::ios::in | std::ios::out | std::ios::ate
+		       | std::ios::binary))
     retval = "a+b";
 
   return retval;

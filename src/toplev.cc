@@ -864,12 +864,10 @@ information.")
 {
   octave_value retval;
 
-#if defined (WITH_DYNAMIC_LINKING)
-#if defined (WITH_DL) || defined (WITH_SHL)
+#if defined (WITH_DYNAMIC_LINKING) && (defined (WITH_DL) || defined (WITH_SHL))
   bool octave_supports_dynamic_linking = true;
 #else
   bool octave_supports_dynamic_linking = false;
-#endif
 #endif
 
   Octave_map m;

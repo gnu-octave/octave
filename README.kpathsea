@@ -1,10 +1,8 @@
 The code in the files
 
-  liboctave/kpse.h
   liboctave/kpse.cc
   liboctave/kpse-xfns.h
-  liboctave/kpse-xfns.cc
-  liboctave/kpse-config.h
+  liboctave/kpse-xfns.c
 
 was adapted from the kpathsearch library.  We don't use kpathsearch
 directly now because it has too many TeX-specific things that are not

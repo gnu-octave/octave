@@ -6,7 +6,7 @@
 # University of Wisconsin-Madison
 # Department of Chemical Engineering
 
-TARGETS = octave-bug mkoctfile libcruft liboctave kpathsea info dlfcn \
+TARGETS = octave-bug mkoctfile libcruft liboctave kpathsea dlfcn \
 	src scripts doc check octave.info INSTALL.OCTAVE BUGS \
 	install install-strip uninstall tags TAGS dist conf-dist \
 	snapshot snapshot-version
@@ -90,7 +90,6 @@ help: header-msg
 	@echo ""
 	@echo "  dlfcn                make all in subdirectory dlfcn"
 	@echo "  doc                  make all in subdirectory doc"
-	@echo "  info                 make all in subdirectory info"
 	@echo "  kpathsea             make all in subdirectory kpathsea"
 	@echo "  libcruft             make all in subdirectory libcruft"
 	@echo "  liboctave            make all in subdirectory liboctave"

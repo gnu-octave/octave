@@ -45,7 +45,7 @@ INSTALL_SUBDIRS = @INFO_DIR@ libcruft liboctave src scripts doc examples
 CONF_DISTSUBDIRS = src
 
 # Subdirectories in which to run `make dist'.
-DISTSUBDIRS = libcruft liboctave info dlfcn src scripts \
+DISTSUBDIRS = libcruft liboctave dlfcn src scripts \
 	test doc emacs examples
 
 XBINDISTFILES = BUGS COPYING INSTALL INSTALL.OCTAVE NEWS NEWS.[0-9] \
@@ -57,7 +57,7 @@ BINDISTFILES = $(addprefix $(srcdir)/, $(XBINDISTFILES)) \
 	octave-bug config.status config.h VERSION ARCH
 
 # Subdirectories in which to run `make bin-dist'.
-BINDISTSUBDIRS = libcruft liboctave src info scripts doc emacs examples
+BINDISTSUBDIRS = libcruft liboctave src scripts doc emacs examples
 
 # Subdirectories in which to run clean targets.
 CLEANSUBDIRS = $(DISTSUBDIRS) glob kpathsea
@@ -243,7 +243,7 @@ binary-dist: VERSION ARCH octave-bug dist-info-files
 	find `cat .fname` \( -perm 766 -o -perm 676 -o -perm 667 \
 	  -o -perm 776 -o -perm 677 -o -perm 767 \) -print | \
 	  xargs chmod a+x scripts
-	strip src/octave info/info
+	strip src/octave
 	tar cf `cat .fname`.tar `cat .fname`
 	rm -rf `cat .fname`
 	gzip --best `cat .fname`.tar

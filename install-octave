@@ -210,10 +210,6 @@ echo "installing octave-bug as $bindir/octave-bug"
 cp octave-bug $bindir/octave-bug
 chmod 755 $bindir/octave-bug
 
-echo "installing info as $archlibdir/info"
-cp info/info $archlibdir/info
-chmod 755 $archlibdir/info
-
 if test -f LIBRARIES; then
   echo "installing shared libraries in $libdir"
   for f in `cat LIBRARIES`

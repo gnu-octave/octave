@@ -66,9 +66,8 @@
 /* Define if you don't have QPSOL. */
 #undef QPSOL_MISSING
 
-/* Define to make Octave look for info files and function files in the
-   directory tree as the sources. */
-#undef RUN_IN_PLACE
+/* Use GNU info for extended help system. */
+#undef USE_GNU_INFO
 
 /* Define if math.h declares signgam. */
 #undef SIGNGAM_DECLARED

@@ -1704,7 +1704,19 @@ handle_identifier (const string& tok, int spc_gobbled)
   if (lexer_flags.looking_at_indirect_ref)
     {
       maybe_unput_comma (spc_gobbled);
-      TOK_PUSH_AND_RETURN (tok, TEXT_ID);
+
+      yylval.tok_val = new token (tok, input_line_number,
+				  current_input_column);
+
+      token_stack.push (yylval.tok_val);
+
+      lexer_flags.cant_be_identifier = 0;
+      lexer_flags.quote_is_transpose = 1;
+      lexer_flags.convert_spaces_to_comma = 1;
+
+      current_input_column += yyleng;
+
+      return TEXT_ID;
     }
 
   // If we have a regular keyword, or a plot STYLE, return it.

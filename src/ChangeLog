@@ -1,3 +1,12 @@
+Mon Mar 17 10:53:29 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lex.l (handle_identifier): When handling indirect_ref, set
+	lexer_flags.quote_is_transpose to 1 so that a.b' to work as
+	expected.
+
+	* parse.y (param_list_beg, param_list_end): New nonterminals.
+	(param_list, param_list1): Use them.
+
 Wed Mar 12 16:57:28 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (install-strip): New target.

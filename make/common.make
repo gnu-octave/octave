@@ -19,11 +19,12 @@ CFLAGS = @CFLAGS@ $(XCFLAGS)
 CPPFLAGS = $(XCPPFLAGS) -I. -I$(srcdir) \
 	   -I$(kpathsea_parent) -I$(kpathsea_srcdir_parent) \
 	   $(prog_cflags) @CPPFLAGS@ $(DEFS) 
-.c.o:
-	[ -z "$(CPICFLAG)" ] ||\
-	  $(CC) $(CPPFLAGS) $(CPICFLAG) $(CFLAGS) -c $< -o pic/$@
+
+%.o : %.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $<
-.SUFFIXES: .c .o
+
+pic/%.o : %.c
+	$(CC) $(CPPFLAGS) $(CPICFLAG) $(CFLAGS) -c $< -o $@
 
 # Installation.
 INSTALL = @INSTALL@

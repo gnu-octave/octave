@@ -1,3 +1,7 @@
+2004-03-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in: Check for -mieee instead of -mieee-with-inexact.
+
 2004-02-20  Per Persson  <persquare@mac.com>
 
 	* mkoctfile.in (LINK_DEPS): Include $LDFLAGS in the list.

@@ -697,7 +697,7 @@ extern int Vpropagate_empty_matrices;
 
 extern bool Vresize_on_range_error;
 
-void symbols_of_pt_const (void);
+extern void symbols_of_pt_const (void);
 
 #endif
 

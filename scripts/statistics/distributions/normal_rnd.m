@@ -51,6 +51,11 @@ function rnd = normal_rnd (m, v, r, c)
       error ("normal_rnd: c must be a positive integer");
     endif
     sz = [r, c];
+
+    if (any (size (m) != 1) && ((length (size (m)) != length (sz)) ||
+				any (size (m) != sz)))
+      error ("normal_rnd: m and v must be scalar or of size [r, c]");
+    endif
   elseif (nargin == 3)
     if (isscalar (r) && (r > 0))
       sz = [r, r];
@@ -58,6 +63,11 @@ function rnd = normal_rnd (m, v, r, c)
       sz = r(:)';
     else
       error ("normal_rnd: r must be a postive integer or vector");
+    endif
+
+    if (any (size (m) != 1) && ((length (size (m)) != length (sz)) ||
+				any (size (m) != sz)))
+      error ("normal_rnd: m and v must be scalar or of size sz");
     endif
   elseif (nargin == 2)
     sz = size(m);

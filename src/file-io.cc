@@ -436,7 +436,13 @@ DEFUN (frewind, args, ,
 DEFUN (fseek, args, ,
   "fseek (FILENUM, OFFSET [, ORIGIN])\n\
 \n\
-set file position for reading or writing")
+set file position for reading or writing.\n\
+\n\
+ORIGIN may be one of:\n\
+\n\
+  SEEK_SET : offset is relative to the beginning of the file (default)\n\
+  SEEK_CUR : offset is relative to the current position\n\
+  SEEK_END : offset is relative to the end of the file")
 {
   double retval = -1.0;
 
@@ -449,7 +455,7 @@ set file position for reading or writing")
       if (os)
 	{
 	  octave_value origin_arg = (nargin == 3)
-	    ? args(2) : octave_value (0.0);
+	    ? args(2) : octave_value (-1.0);
 
 	  retval = (double) os->seek (args(1), origin_arg);
 	}
@@ -1320,13 +1326,16 @@ printed.")
 void
 symbols_of_file_io (void)
 {
-  DEFCONST (SEEK_SET, 0.0, 0, 0,
+  // NOTE: the values of SEEK_SET, SEEK_CUR, and SEEK_END have to be
+  // this way for Matlab compatibility.
+
+  DEFCONST (SEEK_SET, -1.0, 0, 0,
     "used with fseek to position file relative to the beginning");
 
-  DEFCONST (SEEK_CUR, 1.0, 0, 0,
+  DEFCONST (SEEK_CUR, 0.0, 0, 0,
     "used with fseek to position file relative to the current position");
 
-  DEFCONST (SEEK_END, 2.0, 0, 0,
+  DEFCONST (SEEK_END, 1.0, 0, 0,
     "used with fseek to position file relative to the end");
 
   DEFCONSTX ("stdin", SBV_stdin, 0.0, 0, 0,

@@ -2025,26 +2025,36 @@ octave_stream::seek (const octave_value& tc_offset,
 
   if (! conv_err)
     {
-      int xorigin = convert_to_valid_int (tc_origin, conv_err);
-
       ios::seek_dir origin = ios::beg;
 
-      // XXX FIXME XXX -- matlab allows origin to be:
-      //
-      //  "bof" or -1  ==  ios::beg
-      //  "cof" or  0  ==  ios::cur
-      //  "eof" or  1  ==  ios::end
-
-      if (! conv_err)
+      if (tc_origin.is_string ())
 	{
-	  if (xorigin == 0)
+	  string xorigin = tc_origin.string_value ();
+
+	  if (xorigin == "bof")
 	    origin = ios::beg;
-	  else if (xorigin == 1)
+	  else if (xorigin == "cof")
 	    origin = ios::cur;
-	  else if (xorigin == 2)
+	  else if (xorigin == "eof")
 	    origin = ios::end;
 	  else
 	    conv_err = -1;
+	}
+      else
+	{
+	  int xorigin = convert_to_valid_int (tc_origin, conv_err);
+
+	  if (! conv_err)
+	    {
+	      if (xorigin == -1)
+		origin = ios::beg;
+	      else if (xorigin == 0)
+		origin = ios::cur;
+	      else if (xorigin == 1)
+		origin = ios::end;
+	      else
+		conv_err = -1;
+	    }
 	}
 
       if (! conv_err)

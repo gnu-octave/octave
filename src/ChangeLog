@@ -1,3 +1,10 @@
+Wed Jul 24 05:08:07 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* file-io.cc (symbols_of_file_io): Redefine values of SEEK_SET,
+	SEEK_CUR, and SEEK_END for Matlab compatibility.
+	* oct-stream.cc (seek): Check for compatible values of ORIGIN arg.
+	Also handle "bof", "cof", and "eof".
+
 Fri Jul 19 15:24:36 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* pt-const.cc: When creating octave_value_reps from ComplexMatrix
@@ -5,7 +12,7 @@ Fri Jul 19 15:24:36 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 Tue Jul 16 10:53:42 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
-	* input.cc (decode_prompt_string): Swap meanings of \h anbd \H.
+	* input.cc (decode_prompt_string): Swap meanings of \h and \H.
 
 Mon Jul 15 16:01:51 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

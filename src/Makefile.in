@@ -95,7 +95,7 @@ INCLUDES := arith-ops.h builtins.h data.h defun.h defun-dld.h \
 	unwind-prot.h utils.h variables.h version.h \
 	xdiv.h xpow.h Map.h SLStack.h Stack.h
 
-TI_SRC := Array-oc.cc Array-os.cc Array-tc.cc Map-tc.cc \
+TI_SRC := Array-oc.cc Array-os.cc Array-tc.cc Map-fnc.cc Map-tc.cc \
 	SLList-expr.cc SLList-misc.cc SLList-plot.cc SLList-str.cc \
 	SLList-tc.cc SLList-tm.cc SLStack-i.cc SLStack-pc.cc \
 	SLStack-str.cc SLStack-sym.cc SLStack-tok.cc SLStack-ue.cc \

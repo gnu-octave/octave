@@ -722,12 +722,12 @@ symbol_table::fcn_list (void)
 char **
 symbol_table::list (int& count)
 {
+  count = 0;
   int n = size ();
   if (n == 0)
     return (char **) NULL;
 
   char **symbols = new char * [n+1];
-  count = 0;
   for (int i = 0; i < HASH_TABLE_SIZE; i++)
     {
       symbol_record *ptr = table[i].next ();
@@ -745,12 +745,12 @@ symbol_table::list (int& count)
 char **
 symbol_table::var_list (int& count)
 {
+  count = 0;
   int n = size ();
   if (n == 0)
     return (char **) NULL;
 
   char **symbols = new char * [n+1];
-  count = 0;
   for (int i = 0; i < HASH_TABLE_SIZE; i++)
     {
       symbol_record *ptr = table[i].next ();
@@ -769,12 +769,12 @@ symbol_table::var_list (int& count)
 char **
 symbol_table::fcn_list (int& count)
 {
+  count = 0;
   int n = size ();
   if (n == 0)
     return (char **) NULL;
 
   char **symbols = new char * [n+1];
-  count = 0;
   for (int i = 0; i < HASH_TABLE_SIZE; i++)
     {
       symbol_record *ptr = table[i].next ();

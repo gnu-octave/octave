@@ -144,18 +144,22 @@ more_than_a_screenful (const char *s)
 int
 octave_pager_buf::sync (void)
 {
+  bool page_output = user_pref.page_screen_output;
+  bool page_immediately = user_pref.page_output_immediately;
+
   if (really_flush_to_pager
-      || (user_pref.page_screen_output && user_pref.page_output_immediately)
-      || ! user_pref.page_screen_output)
+      || (page_output && page_immediately)
+      || ! page_output)
     {
       sputc ('\0');
 
       char *buf = eback ();
 
       bool bypass_pager = (! interactive
+			   || ! page_output
 			   || (really_flush_to_pager
-			       && user_pref.page_screen_output
-			       && ! user_pref.page_output_immediately
+			       && page_output
+			       && ! page_immediately
 			       && ! more_than_a_screenful (buf)));
 
       do_sync (buf, bypass_pager);

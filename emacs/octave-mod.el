@@ -87,6 +87,7 @@ All Octave abbrevs start with a grave accent (`).")
     (define-abbrev octave-abbrev-table "`r" "return" nil)
     (define-abbrev octave-abbrev-table "`s" "switch" nil)
     (define-abbrev octave-abbrev-table "`t" "try" nil)
+    (define-abbrev octave-abbrev-table "`u" "until ()" nil)
     (define-abbrev octave-abbrev-table "`up" "unwind_protect" nil)
     (define-abbrev octave-abbrev-table "`upc" "unwind_protect_cleanup" nil)
     (define-abbrev octave-abbrev-table "`w" "while ()" nil)
@@ -101,12 +102,12 @@ All Octave abbrevs start with a grave accent (`).")
   "Regexp to match the start of an Octave comment up to its body.")
 
 (defvar octave-begin-keywords
-  '("for" "function" "if" "switch" "try" "unwind_protect" "while"))
+  '("do" "for" "function" "if" "switch" "try" "unwind_protect" "while"))
 (defvar octave-else-keywords
   '("case" "catch" "else" "elseif" "otherwise" "unwind_protect_cleanup"))
 (defvar octave-end-keywords
   '("end" "endfor" "endfunction" "endif" "endswitch" "end_try_catch"
-    "end_unwind_protect" "endwhile"))
+    "end_unwind_protect" "endwhile" "until"))
 
 (defvar octave-reserved-words
   (append octave-begin-keywords
@@ -353,7 +354,8 @@ newline or semicolon after an else or end keyword."
 (defvar octave-block-else-or-end-regexp
   (concat octave-block-else-regexp "\\|" octave-block-end-regexp))
 (defvar octave-block-match-alist
-  '(("for" . ("end" "endfor"))
+  '(("do" . ("until"))
+    ("for" . ("end" "endfor"))
     ("function" . ("end" "endfunction"))
     ("if" . ("else" "elseif" "end" "endif"))
     ("switch" . ("case" "otherwise" "end" "endswitch"))

@@ -186,11 +186,6 @@ static tree_command *
 make_while_command (token *while_tok, tree_expression *expr,
 		    tree_statement_list *body, token *end_tok);
 
-// Build a do-while command.
-static tree_command *
-make_do_while_command (token *do_tok, tree_statement_list *body,
-		       tree_expression *expr);
-
 // Build a do-until command.
 static tree_command *
 make_do_until_command (token *do_tok, tree_statement_list *body,
@@ -957,11 +952,6 @@ default_case	: OTHERWISE opt_sep opt_list
 loop_command	: WHILE expression opt_sep opt_list END
 		  {
 		    if (! ($$ = make_while_command ($1, $2, $4, $5)))
-		      ABORT_PARSE;
-		  }
-		| DO opt_sep opt_list WHILE expression
-		  {
-		    if (! ($$ = make_do_while_command ($1, $3, $5)))
 		      ABORT_PARSE;
 		  }
 		| DO opt_sep opt_list UNTIL expression
@@ -2088,28 +2078,6 @@ make_while_command (token *while_tok, tree_expression *expr,
 
       retval = new tree_while_command (expr, body, l, c);
     }
-
-  return retval;
-}
-
-// Build a do-while command.
-
-static tree_command *
-make_do_while_command (token *do_tok, tree_statement_list *body,
-		       tree_expression *expr)
-{
-  tree_command *retval = 0;
-
-  maybe_warn_assign_as_truth_value (expr);
-
-  // We have to do this because while can also be used to begin a loop.
-  lexer_flags.looping -= 2;
-  promptflag++;
-
-  int l = do_tok->line ();
-  int c = do_tok->column ();
-
-  retval = new tree_do_while_command (expr, body, l, c);
 
   return retval;
 }

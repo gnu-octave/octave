@@ -115,49 +115,6 @@ tree_while_command::accept (tree_walker& tw)
   tw.visit_while_command (*this);
 }
 
-// Do-While
-
-void
-tree_do_while_command::eval (void)
-{
-  if (error_state)
-    return;
-
-  if (! expr)
-    panic_impossible ();
-
-  for (;;)
-    {
-      if (list)
-	{
-	  list->eval ();
-
-	  if (error_state)
-	    {
-	      eval_error ();
-	      return;
-	    }
-	}
-
-      if (quit_loop_now () || ! expr->is_logically_true ("do-while"))
-	break;
-    }
-}
-
-void
-tree_do_while_command::eval_error (void)
-{
-  if (error_state > 0)
-    ::error ("evaluating do-while command near line %d, column %d",
-	     line (), column ());
-}
-
-void
-tree_do_while_command::accept (tree_walker& tw)
-{
-  tw.visit_do_while_command (*this);
-}
-
 // Do-Until
 
 void

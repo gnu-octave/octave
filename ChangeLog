@@ -1,3 +1,10 @@
+2000-01-27  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* emacs/octave-mod.el (octave-begin-keywords): Add "do".
+	(octave-end-keywords): Add "until".
+	(octave-abbrev-table): Add "u" as abbrev for "until ()"
+	(octave-block-match-alist): Add do-until.
+
 2000-01-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in: Don't look for the sunmath library.

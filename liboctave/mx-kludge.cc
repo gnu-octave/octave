@@ -1,7 +1,7 @@
 // kludge.cc                                             -*- C++ -*-
 /*
 
-Copyright (C) 19921994 John W. Eaton
+Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
 
 This file is part of Octave.
 

@@ -1,7 +1,7 @@
 //                                        -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993, 1994 John W. Eaton
+Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton
 
 This file is part of Octave.
 
@@ -100,15 +100,15 @@ QRP::QRP (const Matrix& a, QR::type qr_type)
   delete [] jpvt;
   delete [] work;
 
-  int m2;
+  int n2;
   if (qr_type == QR::economy && m > n)
     {
-      m2 = n;
+      n2 = n;
       r.resize (n, n, 0.0);
     }
   else
     {
-      m2 = m;
+      n2 = m;
       r.resize (m, n, 0.0);
     }
 
@@ -126,6 +126,7 @@ QRP::QRP (const Matrix& a, QR::type qr_type)
 		    &lwork, &info);
 
   q = Matrix (tmp_data, m, m);
+  q.resize (m, n2);
 
   delete [] tau;
   delete [] work;

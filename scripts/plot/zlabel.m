@@ -26,16 +26,8 @@
 ## Created: 3 July 95
 ## Adapted-By: jwe
 
-function zlabel (text)
+function zlabel (...)
 
-  if (nargin != 1)
-    usage ("zlabel (text)");
-  endif
-
-  if (isstr (text))
-    eval (sprintf ("gset zlabel \"%s\"", text));
-  else
-    error ("error: zlabel: text must be a string");
-  endif
+  __axis_label__ ("zlabel", all_va_args);
 
 endfunction

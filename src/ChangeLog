@@ -1,3 +1,10 @@
+2000-01-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* variables.cc (Fexist): Return 6 for built-in constants.
+
+	* pt-plot.cc (Fgshow): Don't append " " after last arg.
+	(Fgset): Likewise.
+
 2000-01-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* ov-base-mat.h (octave_base_matrix::length): Return 0 for empty

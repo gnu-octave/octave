@@ -24,17 +24,8 @@
 
 ## Author: jwe
 
-function ylabel (text)
+function ylabel (...)
 
-  if (nargin != 1)
-    usage ("ylabel (text)");
-  endif
-
-  if (isstr (text))
-    command = sprintf ("gset ylabel \"%s\"", text);
-    eval (command);
-  else
-    error ("ylabel: text must be a string");
-  endif
+  __axis_label__ ("ylabel", all_va_args);
 
 endfunction

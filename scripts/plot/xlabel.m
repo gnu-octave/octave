@@ -30,17 +30,8 @@
 
 ## Author: jwe
 
-function xlabel (text)
+function xlabel (...)
 
-  if (nargin != 1)
-    usage ("xlabel (text)");
-  endif
-
-  if (isstr (text))
-    command = sprintf ("gset xlabel \"%s\"", text);
-    eval (command);
-  else
-    error ("xlabel: text must be a string");
-  endif
+  __axis_label__ ("xlabel", all_va_args);
 
 endfunction

@@ -1120,15 +1120,22 @@ Set plotting options for gnuplot\n\
 	{
 	  delete [] gnuplot_terminal_type;
 	  ostrstream buf;
-	  for (int i = 2; i < argc; i++)
+	  int i;
+	  for (i = 2; i < argc-1; i++)
 	    buf << argv[i] << " ";
+	  if (i < argc)
+	    buf << argv[i];
 	  buf << Vgnuplot_command_end << ends;
 	  gnuplot_terminal_type = buf.str ();
 	}
     }
 
-  for (int i = 0; i < argc; i++)
+  int i;
+  for (i = 0; i < argc-1; i++)
     plot_buf << argv[i] << " ";
+
+  if (i < argc)
+    plot_buf << argv[i];
 
   plot_buf << Vgnuplot_command_end << ends;
 
@@ -1165,8 +1172,11 @@ Show plotting options.\n\
 
   ostrstream plot_buf;
 
-  for (int i = 0; i < argc; i++)
+  int i;
+  for (i = 0; i < argc-1; i++)
     plot_buf << argv[i] << " ";
+  if (i < argc)
+    plot_buf << argv[i];
 
   plot_buf << Vgnuplot_command_end << ends;
 

@@ -411,8 +411,8 @@ DEFUN (exist, args, ,
 @deftypefn {Built-in Function} {} exist (@var{name})\n\
 Return 1 if the name exists as a variable, 2 if the name (after\n\
 appending @samp{.m}) is a function file in the path, 3 if the name is a\n\
-@samp{.oct} file in the path, or 5 if the name is a built-in function.\n\
-Otherwise, return 0.\n\
+@samp{.oct} file in the path, 5 if the name is a built-in function, or\n\
+6 is the name is a built-in constant.  Otherwise, return 0.\n\
 \n\
 This function also returns 2 if a regular file called @var{name}\n\
 exists in Octave's @code{LOADPATH}.  If you want information about\n\
@@ -464,6 +464,10 @@ other types of files, you should use some combination of the functions\n\
   else if (sr && sr->is_builtin_function ())
     {
       retval = 5.0;
+    }
+  else if (sr && sr->is_builtin_constant ())
+    {
+      retval = 6.0;
     }
   else if (sr && sr->is_user_function ())
     {

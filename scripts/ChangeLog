@@ -1,5 +1,11 @@
 2000-01-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* plot/__axis_label__.m: New function.
+	Undo string escapes in text twice(!) before sending to gnuplot.
+	* plot/xlabel.m: Use it.
+	* plot/ylabel.m: Ditto.
+	* plot/zlabel.m: Ditto.
+
 	* plot/mesh.m: Fix error message to reflect reality.
 
 2000-01-24  Cyril Humbert <humbert@phobos.univ-mlv.fr>

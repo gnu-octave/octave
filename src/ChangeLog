@@ -1,3 +1,7 @@
+2000-04-11  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* sysdep.cc (kbhit): Also clear cin if at EOF.
+
 2000-04-11  Joao Cardoso <jcardoso@inescn.pt>
 
 	* sysdep.cc (kbhit): New arg, wait.

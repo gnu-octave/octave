@@ -215,10 +215,7 @@ raw_mode (bool on, bool wait)
 #if defined (ONLRET)
 	s.c_oflag &= ~(ONLRET);
 #endif
-	if (wait)
-	  s.c_cc[VMIN] = 1;
-	else
-	  s.c_cc[VMIN] = 0;		
+	s.c_cc[VMIN] = wait ? 1 : 0;
 	s.c_cc[VTIME] = 0;
       }      
     else
@@ -227,6 +224,7 @@ raw_mode (bool on, bool wait)
 
 	s = save_term;
       }
+
     tcsetattr (tty_fd, TCSAFLUSH, &s);
   }
 #elif defined (HAVE_TERMIO_H)
@@ -260,11 +258,7 @@ raw_mode (bool on, bool wait)
 #if defined (ONLRET)
 	s.c_oflag &= ~(ONLRET);
 #endif
-	if (wait)
-	  s.c_cc[VMIN] = 1;
-	else
-	  s.c_cc[VMIN] = 0;		
-	s.c_cc[VTIME] = 0;
+	s.c_cc[VMIN] = wait ? 1 : 0;
       }      
     else
       {
@@ -272,6 +266,7 @@ raw_mode (bool on, bool wait)
 
 	s = save_term;
       }
+
     ioctl (tty_fd, TCSETAW, &s);
   }
 #elif defined (HAVE_SGTTY_H)
@@ -303,6 +298,7 @@ raw_mode (bool on, bool wait)
 
 	s = save_term;
       }
+
     ioctl (tty_fd, TIOCSETN, &s);
   }
 #else
@@ -317,12 +313,15 @@ LOSE! LOSE!
 int
 kbhit (bool wait)
 {
-  int c;
-  raw_mode (1, wait);
-  c = std::cin.get ();
-  if (std::cin.fail())
-	  std::cin.clear ();
-  raw_mode (0, 1);
+  raw_mode (true, wait);
+
+  int c = std::cin.get ();
+
+  if (std::cin.fail () || std::cin.eof ())
+    std::cin.clear ();
+
+  raw_mode (false, true);
+
   return c;
 }
 
@@ -431,19 +430,12 @@ returning the empty string if no key is available.\n\
 
   // XXX FIXME XXX -- add timeout and default value args?
 
-  int nargin = args.length ();
-	
   if (interactive)
     {
-    	int c;
+      int c = kbhit (args.length () == 0);
 
-	if (nargin == 1)
-	  c = kbhit (false);
-      	else
-	  c = kbhit (true);
-
-	if (c == -1)
-	  c = 0;
+      if (c == -1)
+	c = 0;
 
       char *s = new char [2];
       s[0] = c;

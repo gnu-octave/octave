@@ -1,3 +1,8 @@
+2004-12-02  Pascal A. Dupuis  <Pascal.Dupuis@esat.kuleuven.ac.be>
+
+	* strings/deblank.m: Remove all trailing whitespace (check with
+	isspace), not just SPC.
+
 2004-12-02  Balint Reczey  <balint_reczey@yahoo.com>
 
 	* statistics/base/moment.m: Fix argument parsing for N-d arrays.

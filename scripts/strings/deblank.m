@@ -35,7 +35,7 @@ function t = deblank (s)
 
   if (isstr (s))
 
-    k = find (s != " " & s != "\0");
+    k = find (! isspace (x) & s != "\0");
     if (isempty (s) || isempty (k))
       t = "";
     else

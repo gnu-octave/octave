@@ -934,6 +934,7 @@ subplot::print_code (ostream& os)
     style->print_code (os);
 }
 
+int
 subplot_list::print (int ndim, ostrstream& plot_buf)
 {
   int status = 0;
@@ -1037,7 +1038,15 @@ close_plot_stream (void)
   plot_line_count = 0;
 }
 
-DEFUN ("closeplot", Fcloseplot, Scloseplot, 1, 0,
+DEFUN ("clearplot", Fclearplot, Sclearplot, 0, 0,
+  "clearplot (): clear the plot window")
+{
+  Octave_object retval;
+  send_to_plot_stream ("clear\n");
+  return retval;
+}
+
+DEFUN ("closeplot", Fcloseplot, Scloseplot, 0, 0,
   "closeplot (): close the stream to plotter")
 {
   Octave_object retval;
@@ -1045,7 +1054,7 @@ DEFUN ("closeplot", Fcloseplot, Scloseplot, 1, 0,
   return retval;
 }
 
-DEFUN_TEXT ("hold", Fhold, Shold, -1, 1,
+DEFUN_TEXT ("hold", Fhold, Shold, 1, 0,
   "hold [on|off]\n\
 \n\
 determine whether the plot window is cleared before the next line is\n\
@@ -1088,7 +1097,7 @@ Return 1 if hold is on, otherwise return 0.")
   return (double) (! clear_before_plotting);
 }
 
-DEFUN ("purge_tmp_files", Fpurge_tmp_files, Spurge_tmp_files, 5, 1,
+DEFUN ("purge_tmp_files", Fpurge_tmp_files, Spurge_tmp_files, 0, 0,
   "delete temporary data files used for plotting")
 {
   Octave_object retval;
@@ -1096,7 +1105,7 @@ DEFUN ("purge_tmp_files", Fpurge_tmp_files, Spurge_tmp_files, 5, 1,
   return retval;
 }
 
-DEFUN_TEXT ("set", Fset, Sset, -1, 1,
+DEFUN_TEXT ("set", Fset, Sset, -1, 0,
   "set [options]\n\
 \n\
 set plotting options")
@@ -1130,7 +1139,7 @@ set plotting options")
   return retval;
 }
 
-DEFUN_TEXT ("show", Fshow, Sshow, -1, 1,
+DEFUN_TEXT ("show", Fshow, Sshow, -1, 0,
   "show [options]\n\
 \n\
 show plotting options")

@@ -231,7 +231,7 @@ static tree_index_expression *make_index_expression
 %token FCN SCREW_TWO
 %token ELLIPSIS
 %token END_OF_INPUT
-%token USING TITLE WITH COLON OPEN_BRACE CLOSE_BRACE
+%token USING TITLE WITH COLON OPEN_BRACE CLOSE_BRACE CLEAR
 
 // Nonterminals we construct.
 %type <tree_type> input
@@ -405,6 +405,12 @@ statement	: command
 		  { $$ = new tree_statement ($1); }
 		| ans_expression
 		  { $$ = new tree_statement ($1); }
+		| PLOT CLEAR
+		  {
+		    symbol_record *sr = lookup_by_name ("clearplot", 0);
+		    tree_identifier *id = new tree_identifier (sr);
+		    $$ = new tree_statement (id);
+		  }
 		;
 
 plot_command	: PLOT plot_command1

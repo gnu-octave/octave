@@ -937,6 +937,11 @@ is_plot_keyword (char *s)
       past_plot_range = 1;
       return WITH;
     }
+  else if (almost_match ("clear", s))
+    {
+      past_plot_range = 1;
+      return CLEAR;
+    }
   else
     {
       return 0;
@@ -1355,6 +1360,11 @@ strip_trailing_whitespace (char *s)
 static int
 handle_identifier (char *tok, int next_tok_is_eq)
 {
+// It is almost always an error for an identifier to be followed
+// directly by another identifier.  Special cases are handled below.
+
+  cant_be_identifier = 1;
+
 // If we are expecting a structure element, we just want to return
 // TEXT_ID, which is a string that is also a valid identifier.
 
@@ -1365,8 +1375,8 @@ handle_identifier (char *tok, int next_tok_is_eq)
       TOK_RETURN (TEXT_ID);
     }
 
-// If we have a regular keyword, or a plot STYLE, return it.  STYLE is
-// special only because it can't be followed by an identifier.
+// If we have a regular keyword, or a plot STYLE, return it.  Keywords
+// can be followed by identifiers (TOK_RETURN handles that).
 
   int kw_token = is_keyword (tok);
   if (kw_token)
@@ -1375,7 +1385,6 @@ handle_identifier (char *tok, int next_tok_is_eq)
 	{
 	  current_input_column += yyleng;
 	  quote_is_transpose = 0;
-	  cant_be_identifier = 1;
 	  convert_spaces_to_comma = 1;
 	  return kw_token;
 	}
@@ -1383,7 +1392,7 @@ handle_identifier (char *tok, int next_tok_is_eq)
 	TOK_RETURN (kw_token);
     }
 
-// See if we have a plot keyword (title, using, or with).
+// See if we have a plot keyword (title, using, with, or clear).
 
   int plot_option_kw = is_plot_keyword (tok);
   if (plotting && cant_be_identifier && plot_option_kw)
@@ -1396,11 +1405,6 @@ handle_identifier (char *tok, int next_tok_is_eq)
 
   if (plotting && ! in_plot_range)
     past_plot_range = 1;
-
-// It is always an error for an identifier to be followed directly by
-// another identifier.
-
-  cant_be_identifier = 1;
 
 // If we are looking at a text style function, set up to gobble its
 // arguments.  These are also reserved words, but only because it

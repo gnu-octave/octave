@@ -402,6 +402,7 @@ list		: list1
 		  }
 		| list1 comma_nl_sep
 		  {
+		    maybe_warn_missing_semi ($1);
 		    $$ = $1;
 		  }
 		| list1 semi_sep

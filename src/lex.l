@@ -443,7 +443,7 @@ EXPON	([DdEe][+-]?{D}+)
 			  if (! in_brace_or_paren.empty ())
 			    in_brace_or_paren.pop ();
 
-			  if (plotting)
+			  if (plotting && ! past_plot_range)
 			    {
 			      in_plot_range = 0;
 			      RETURN (CLOSE_BRACE);
@@ -460,6 +460,8 @@ EXPON	([DdEe][+-]?{D}+)
 			  quote_is_transpose = 1;
 			  cant_be_identifier = 1;
 			  convert_spaces_to_comma = 1;
+			  if (plotting && ! in_plot_range)
+			    past_plot_range = 1;
 			  current_input_column += yyleng;
 			  DO_COMMA_INSERT_CHECK;
 			  return IMAG_NUM;
@@ -474,6 +476,8 @@ EXPON	([DdEe][+-]?{D}+)
 			  quote_is_transpose = 1;
 			  cant_be_identifier = 1;
 			  convert_spaces_to_comma = 1;
+			  if (plotting && ! in_plot_range)
+			    past_plot_range = 1;
 			  current_input_column += yyleng;
 			  DO_COMMA_INSERT_CHECK;
 			  return NUM;
@@ -481,7 +485,7 @@ EXPON	([DdEe][+-]?{D}+)
 
 \[{S}*		{
 		  in_brace_or_paren.push (1);
-		  if (plotting)
+		  if (plotting && ! past_plot_range)
 		    {
 		      in_plot_range = 1;
 		      RETURN (OPEN_BRACE);
@@ -543,6 +547,9 @@ EXPON	([DdEe][+-]?{D}+)
 			  return plot_option_kw;
 			}
 		    }
+
+		  if (plotting && ! in_plot_range)
+		    past_plot_range = 1;
 
 		  if (plotting && in_plot_style)
 		    {
@@ -723,12 +730,28 @@ EXPON	([DdEe][+-]?{D}+)
 "&&"		{ BIN_OP_RETURN (EXPR_AND); }
 "|"		{ BIN_OP_RETURN (EXPR_OR); }
 "&"		{ BIN_OP_RETURN (EXPR_AND); }
-"!"		{ RETURN (EXPR_NOT); }
-"~"		{ BIN_OP_RETURN (EXPR_NOT); }
+"!"		{
+		  if (plotting && ! in_plot_range)
+		    past_plot_range = 1;
+		  RETURN (EXPR_NOT);
+		}
+"~"		{
+		  if (plotting && ! in_plot_range)
+		    past_plot_range = 1;
+		  BIN_OP_RETURN (EXPR_NOT);
+		}
 "<"		{ BIN_OP_RETURN (EXPR_LT); }
 ">"		{ BIN_OP_RETURN (EXPR_GT); }
-"+"		{ BIN_OP_RETURN ('+'); }
-"-"		{ BIN_OP_RETURN ('-'); }
+"+"		{ 
+		  if (plotting && ! in_plot_range)
+		    past_plot_range = 1;
+		  BIN_OP_RETURN ('+');
+		}
+"-"		{
+		  if (plotting && ! in_plot_range)
+		    past_plot_range = 1;
+		  BIN_OP_RETURN ('-');
+		}
 "**"		{ BIN_OP_RETURN (POW); }
 "*"		{ BIN_OP_RETURN ('*'); }
 "/"		{ BIN_OP_RETURN ('/'); }
@@ -738,6 +761,8 @@ EXPON	([DdEe][+-]?{D}+)
 "^"		{ BIN_OP_RETURN (POW); }
 "="		{ RETURN ('='); }
 "("		{
+		  if (plotting && ! in_plot_range)
+		    past_plot_range = 1;
 		  in_brace_or_paren.push (0);
 		  RETURN ('(');
 		}
@@ -798,6 +823,7 @@ reset_parser (void)
   current_input_column = 0;
   do_comma_insert = 0;
   plotting = 0;
+  past_plot_range = 0;
   in_plot_range = 0;
   in_plot_using = 0;
   in_plot_style = 0;
@@ -982,9 +1008,9 @@ is_plot_keyword (char *s)
   if (almost_match ("title", s))
     return TITLE;
   else if (almost_match ("using", s))
-    { in_plot_using = 1; return USING; }
+    { in_plot_using = 1; past_plot_range = 1; return USING; }
   else if (almost_match ("with", s))
-    { in_plot_style = 1; return WITH; }
+    { in_plot_style = 1; past_plot_range = 1; return WITH; }
   else
     return 0;
 }

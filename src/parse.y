@@ -88,6 +88,10 @@ char help_buf [HELP_BUF_LENGTH];
 // Nonzero means we're working on a plot command.
 int plotting = 0;
 
+// Nonzero means we've seen something that means we must be past the
+// range part of a plot command.
+int past_plot_range = 0;
+
 // Nonzero means we're looking at the range part of a plot command.
 int in_plot_range = 0;
 
@@ -395,6 +399,7 @@ plot_command	: PLOT plot_command1
 		    tree_subplot_list *tmp = $2->reverse ();
 		    $$ = new tree_plot_command (tmp, $1);
 		    plotting = 0;
+		    past_plot_range = 0;
 		    in_plot_range = 0;
 		    in_plot_using = 0;
 		    in_plot_style = 0;
@@ -404,6 +409,7 @@ plot_command	: PLOT plot_command1
 		    tree_subplot_list *tmp = $3->reverse ();
 		    $$ = new tree_plot_command (tmp, $2, $1);
 		    plotting = 0;
+		    past_plot_range = 0;
 		    in_plot_range = 0;
 		    in_plot_using = 0;
 		    in_plot_style = 0;

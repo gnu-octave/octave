@@ -355,9 +355,10 @@ extern int errno;
   // relative names into absolute ones, so prepend the working
   // directory if the path is not absolute.
 
-  name = octave_env::make_absolute (name);
+  std::string absolute_name
+    = octave_env::make_absolute (name, octave_env::getcwd ());
 
-  size_t resolved_size = name.length ();
+  size_t resolved_size = absolute_name.length ();
 
   while (1)
     {
@@ -365,7 +366,8 @@ extern int errno;
 
       OCTAVE_LOCAL_BUFFER (char, resolved, resolved_size);
 
-      resolved_len = ::resolvepath (name, resolved, resolved_size);
+      int resolved_len
+	= ::resolvepath (absolute_name.c_str (), resolved, resolved_size);
 
       if (resolved_len < 0)
 	break;

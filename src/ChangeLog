@@ -5,6 +5,11 @@
 	Allow permutation vector longer	than number of dimenensions of
 	permuted matrix.
 
+2005-02-17  John W. Eaton  <jwe@octave.org>
+
+	* version.h (OCTAVE_API_VERSION): Now 2.1.64-cvs.
+	(OCTAVE_API_VERSION): Now api-v12-cvs.
+
 2005-02-16  John W. Eaton  <jwe@octave.org>
 
 	* ov-base-mat.h (octave_base_matrix::squeeze): Explicitly convert

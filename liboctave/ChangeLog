@@ -1,5 +1,13 @@
 2005-02-18  John W. Eaton  <jwe@octave.org>
 
+	* file-ops.cc (file_ops::canonicalize_file_name) [HAVE_RESOLVEPATH]:
+	Pass current directory to octave_env::make_absolute.
+	Save value returned from octave_env::make_absolute in local var.
+	Pass const char*, not std::string as first arg of resolvepath.
+	Provide decl for resolved_len.
+
+2005-02-18  John W. Eaton  <jwe@octave.org>
+
 	* Array.cc (Array<T>::permute): Allow permutation vector longer
 	than number of dimenensions of permuted matrix.
 

@@ -326,7 +326,7 @@ operator - (const KL_MAT_TYPE& a, const KL_MAT_TYPE& b)
     }
 
   if (r == 0 || c == 0)
-    return KL_MAT_TYPE ();
+    return KL_MAT_TYPE (r, c);
 
   int l = a.length ();
   DO_VV_OP (-);
@@ -346,7 +346,7 @@ product (const KL_MAT_TYPE& a, const KL_MAT_TYPE& b)
     }
 
   if (r == 0 || c == 0)
-    return KL_MAT_TYPE ();
+    return KL_MAT_TYPE (r, c);
 
   int l = a.length ();
   DO_VV_OP (*);
@@ -366,7 +366,7 @@ quotient (const KL_MAT_TYPE& a, const KL_MAT_TYPE& b)
     }
 
   if (r == 0 || c == 0)
-    return KL_MAT_TYPE ();
+    return KL_MAT_TYPE (r, c);
 
   int l = a.length ();
   DO_VV_OP (/);

@@ -393,8 +393,8 @@ Array2<T>::insert (const Array2<T>& a, int r, int c)
 {
   int a_rows = a.rows ();
   int a_cols = a.cols ();
-  if (r < 0 || r + a_rows - 1 > rows ()
-      || c < 0 || c + a_cols - 1 > cols ())
+
+  if (r < 0 || r + a_rows > rows () || c < 0 || c + a_cols > cols ())
     {
       (*current_liboctave_error_handler) ("range error for insert");
       return *this;

@@ -361,7 +361,7 @@ assign (Array2<LT>& lhs, const Array2<RT>& rhs)
 			}
 		    }
 		}
-	      else if (rhs_nr == 1 && rhs_nc == 1)
+	      else if (rhs_nr == 1 && rhs_nc == 1 && n > 0 && m > 0)
 		{
 		  RT scalar = rhs.elem (0, 0);
 

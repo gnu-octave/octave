@@ -21,13 +21,13 @@ INSTALL_DATA = @INSTALL_DATA@
 SOURCES =
 
 TEXINFO = array.texi bugs.texi conf.texi cp-idx.texi diffeq.texi \
-	factor.texi fn-idx.texi gpl.texi install.texi intro.texi \
-	liboctave.texi matvec.texi nleqn.texi ode.texi optim.texi \
-	preface.texi quad.texi range.texi
+	error.texi factor.texi fn-idx.texi gpl.texi install.texi \
+	intro.texi liboctave.texi matvec.texi nleqn.texi ode.texi \
+	optim.texi preface.texi quad.texi range.texi
 
 FORMATTED = liboctave.dvi liboctave.ps liboctave.info liboctave.info-[0-9]*
 
-DISTFILES = Makefile.in conf.texi $(TEXINFO) $(FORMATTED)
+DISTFILES = Makefile.in conf.texi gpl.texi $(TEXINFO) $(FORMATTED)
 
 SPELL = $(patsubst %.texi, %.spell, $(TEXINFO))
 

@@ -32,7 +32,8 @@ TEXINFO = amuse.texi arith.texi bugs.texi bugs1.texi control.texi \
 
 FORMATTED =  octave.dvi octave.ps octave.info octave.info-[0-9]*
 
-DISTFILES = Makefile.in dir octave.1 conf.texi $(TEXINFO) $(FORMATTED)
+DISTFILES = Makefile.in dir octave.1 conf.texi gpl.texi \
+	$(TEXINFO) $(FORMATTED)
 
 SPELL = $(patsubst %.texi, %.spell, $(ALL_TEXINFO))
 
@@ -66,7 +67,7 @@ conf.texi: $(srcdir)/../../src/version.h ../../Makeconf Makefile \
 	fi
 
 octave.info: $(TEXINFO) conf.texi
-	-makeinfo -I$(srcdir) -I$(srcdir)/.. $(srcdir)/octave.texi
+	-makeinfo -I$(srcdir) $(srcdir)/octave.texi
 
 octave.dvi: $(TEXINFO) conf.texi
 	-TEXINPUTS="$(srcdir):$(srcdir)/..:$(TEXINPUTS):" ; \

@@ -36,6 +36,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "defaults.h"
 #include "defun.h"
 #include "error.h"
+#include "gripes.h"
 #include "help.h"
 #include "input.h"
 #include "oct-obj.h"
@@ -58,6 +59,18 @@ static string diary_file;
 // The diary file.
 static ofstream external_diary_file;
 
+// The shell command to run as the pager.
+static string Vpager_binary;
+
+// TRUE means that if output is going to the pager, it is sent as soon
+// as it is available.  Otherwise, it is buffered and only sent to the
+// pager when it is time to print another prompt.
+static bool Vpage_output_immediately;
+
+// TRUE means all output intended for the screen should be passed
+// through the pager.
+static bool Vpage_screen_output;
+
 static sig_handler *saved_sigint_handler = 0;
 
 static int really_flush_to_pager = 0;
@@ -75,7 +88,7 @@ do_sync (const char *msg, bool bypass_pager)
 	    {
 	      if (! external_pager)
 		{
-		  string pgr = user_pref.pager_binary;
+		  string pgr = Vpager_binary;
 
 		  if (! pgr.empty ())
 		    {
@@ -144,22 +157,19 @@ more_than_a_screenful (const char *s)
 int
 octave_pager_buf::sync (void)
 {
-  bool page_output = user_pref.page_screen_output;
-  bool page_immediately = user_pref.page_output_immediately;
-
   if (really_flush_to_pager
-      || (page_output && page_immediately)
-      || ! page_output)
+      || (Vpage_screen_output && Vpage_output_immediately)
+      || ! Vpage_screen_output)
     {
       sputc ('\0');
 
       char *buf = eback ();
 
       bool bypass_pager = (! interactive
-			   || ! page_output
+			   || ! Vpage_screen_output
 			   || (really_flush_to_pager
-			       && page_output
-			       && ! page_immediately
+			       && Vpage_screen_output
+			       && ! Vpage_output_immediately
 			       && ! more_than_a_screenful (buf)));
 
       do_sync (buf, bypass_pager);
@@ -397,10 +407,44 @@ default_pager (void)
   return pager_binary;
 }
 
+static int
+pager_binary (void)
+{
+  int status = 0;
+
+  string s = builtin_string_variable ("PAGER");
+
+  if (s.empty ())
+    {
+      gripe_invalid_value_specified ("PAGER");
+      status = -1;
+    }
+  else
+    Vpager_binary = s;
+
+  return status;
+}
+
+static int
+page_output_immediately (void)
+{
+  Vpage_output_immediately = check_preference ("page_output_immediately");
+
+  return 0;
+}
+
+static int
+page_screen_output (void)
+{
+  Vpage_screen_output = check_preference ("page_screen_output");
+
+  return 0;
+}
+
 void
 symbols_of_pager (void)
 {
-  DEFVAR (PAGER, default_pager (), 0, sv_pager_binary,
+  DEFVAR (PAGER, default_pager (), 0, pager_binary,
     "path to pager binary");
 
   DEFVAR (page_output_immediately, 0.0, 0, page_output_immediately,

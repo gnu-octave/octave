@@ -34,6 +34,13 @@ class istream;
 class ostrstream;
 class tree_constant;
 
+// Tell g++ that jump_to_top_level doesn't return;
+
+#ifdef __GNUG__
+typedef void v_fcn_v (void);
+volatile v_fcn_v jump_to_top_level;
+#endif
+
 extern char *strsave (const char *);
 extern char *strconcat (const char *, const char *);
 extern void discard_until (istream&, char);

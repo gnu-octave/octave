@@ -32,6 +32,13 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
   panic ("impossible state reached in file `%s' at line %d", \
 	 __FILE__, __LINE__)
 
+// Tell g++ that panic doesn't return;
+
+#ifdef __GNUG__
+typedef void v_fcn_cpc_x (const char *, ...);
+volatile v_fcn_cpc_x panic;
+#endif
+
 extern void message (const char *name, const char *fmt, ...);
 extern void usage (const char *fmt, ...);
 extern void warning (const char *fmt, ...);

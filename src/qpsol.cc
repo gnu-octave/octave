@@ -142,10 +142,10 @@ Handle all of the following:
       Matrix A = args[nargin-2].to_matrix ();
       ColumnVector llb = args[nargin-3].to_vector ();
 
-      LinConst linear_constraints (llb, A, lub);
-
       if (! linear_constraints_ok (x, llb, A, lub, "qpsol", 1))
 	return retval;
+
+      LinConst linear_constraints (llb, A, lub);
 
       if (nargin == 9)
 	{

@@ -35,7 +35,7 @@ procstreambase::procstreambase (const char *command, int mode)
   pb_init ();
 
   if (! pb.open (command, mode))
-    std::set (std::ios::badbit);
+    std::ios::setstate (std::ios::badbit);
 }
 
 void
@@ -44,7 +44,7 @@ procstreambase::open (const char *command, int mode)
   clear ();
 
   if (! pb.open (command, mode))
-    std::set (std::ios::badbit);
+    std::ios::setstate (std::ios::badbit);
 }
 
 int
@@ -55,7 +55,7 @@ procstreambase::close (void)
   if (is_open ())
     {
       if (! pb.close ())
-	std::set (std::ios::failbit);
+	std::ios::setstate (std::ios::failbit);
 
       status = pb.wait_status ();
     }

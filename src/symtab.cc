@@ -181,10 +181,7 @@ symbol_def::document (const char *h)
 int
 symbol_def::save (ostream& os, int mark_as_global)
 {
-  if (definition)
-    return definition->save (os, mark_as_global);
-  else
-    return 0;
+  return definition->save (os, mark_as_global);
 }
 
 int
@@ -531,28 +528,23 @@ symbol_record::document (const char *h)
 int
 symbol_record::save (ostream& os, int mark_as_global = 0)
 {
-  int status = 0;
+  int status = -1;
 
 // This is a kludge, but hey, it doesn't make sense to save them
 // anyway, does it?  Even if it did, we would just have trouble trying
 // to read NaN and Inf on lots of systems anyway...
-
-  if (is_read_only ())
-    {
-      warning ("save: sorry, can't save read-only variable `%s'", nm);
-      status = -1;
-    }
-  else if (is_function ())
-    {
-      warning ("save: sorry, can't save function `%s'", nm);
-      status = -1;
-    }
-  else
-    {
+//
 // Should we also save the help string?  Maybe someday.
 
+  if (is_read_only ())
+    warning ("save: sorry, can't save read-only variable `%s'", nm);
+  else if (is_function ())
+    warning ("save: sorry, can't save function `%s'", nm);
+  else if (! is_defined ())
+    warning ("save: sorry, can't save undefined variable `%s'", nm);
+  else
+    {
       os << "# name: " << nm << "\n";
-
       status = definition->save (os, mark_as_global);
     }
 

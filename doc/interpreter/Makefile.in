@@ -79,7 +79,7 @@ $(DOCSTRINGS):
 	./munge-texi \
 	  -d $(TOPDIR)/src/DOCSTRINGS \
 	  -d $(TOPDIR)/scripts/DOCSTRINGS < $< > $@.t
-	$(top_srcdir)/move-if-change $@.t $@
+	mv $@.t $@
 
 octave.info: $(MAIN_TEXINFO) $(SUB_TEXINFO) ../conf.texi
 	-makeinfo -I$(srcdir) -I$(srcdir)/.. $<

@@ -2,6 +2,7 @@
 
 	* interpreter/Makefile.in (dist): Remove .texi files first, so
 	they will have timestamps newer than the $(DOCSTRINGS) files.
+	(%.texi : %.txi): Use mv instead of move-if-change.
 
 	* interpreter/Map-s.cc: New file.
 	* interpreter/munge-texi.cc: Use old libg++ Map class instead of

@@ -25,6 +25,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "config.h"
 #endif
 
+#include <sys/types.h>
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 #include <new.h>
 #include <signal.h>
 
@@ -56,55 +60,31 @@ octave_new_handler (void)
   clean_up_and_exit (1);
 }
 
-// Some of these may eventually perform different actions...
-
 static RETSIGTYPE
-sigabrt_handler (int i)
+generic_sig_handler (int i)
 {
-  my_friendly_exit ("SIGABRT", i);
-}
+  my_friendly_exit (sys_siglist[i], i);
 
-static RETSIGTYPE
-sigalrm_handler (int i)
-{
-  my_friendly_exit ("SIGALRM", i);
-}
-
-static RETSIGTYPE
-sigbus_handler (int i)
-{
-  my_friendly_exit ("SIGBUS", i);
-}
-
-static RETSIGTYPE
-sigemt_handler (int i)
-{
-  my_friendly_exit ("SIGEMT", i);
-}
-
-static RETSIGTYPE
-sigfpe_handler (int i)
-{
-  my_friendly_exit ("SIGFPE", i);
-}
-
-static RETSIGTYPE
-sighup_handler (int i)
-{
-  my_friendly_exit ("SIGHUP", i);
-}
-
-static RETSIGTYPE
-sigill_handler (int i)
-{
-  my_friendly_exit ("SIGILL", i);
+#if RETSIGTYPE == void
+  return;
+#else
+  return 0;
+#endif
 }
 
 // Handle SIGINT by restarting the parser (see octave.cc).
 
+// XXX FIXME XXX -- it would probably be good to try to use POSIX
+// signal interface if it is available.
+
 static RETSIGTYPE
 sigint_handler (int i)
 {
+// Can this ever cause trouble on systems that don't forget signal
+// handlers when they are invoked?
+
+  signal (SIGINT, sigint_handler);
+
   if (can_interrupt)
     {
       jump_to_top_level ();
@@ -119,20 +99,13 @@ sigint_handler (int i)
 }
 
 static RETSIGTYPE
-sigiot_handler (int i)
-{
-  my_friendly_exit ("SIGIOT", i);
-}
-
-static RETSIGTYPE
-siglost_handler (int i)
-{
-  my_friendly_exit ("SIGLOST", i);
-}
-
-static RETSIGTYPE
 sigpipe_handler (int i)
 {
+// Can this ever cause trouble on systems that don't forget signal
+// handlers when they are invoked?
+
+  signal (SIGPIPE, sigpipe_handler);
+
   if (pipe_handler_error_count++ == 0)
     message (0, "broken pipe");
 
@@ -147,78 +120,6 @@ sigpipe_handler (int i)
 #endif
 }
 
-static RETSIGTYPE
-sigpoll_handler (int i)
-{
-  my_friendly_exit ("SIGPOLL", i);
-}
-
-static RETSIGTYPE
-sigprof_handler (int i)
-{
-  my_friendly_exit ("SIGPROF", i);
-}
-
-static RETSIGTYPE
-sigquit_handler (int i)
-{
-  my_friendly_exit ("SIGQUIT", i);
-}
-
-static RETSIGTYPE
-sigsegv_handler (int i)
-{
-  my_friendly_exit ("SIGSEGV", i);
-}
-
-static RETSIGTYPE
-sigsys_handler (int i)
-{
-  my_friendly_exit ("SIGSYS", i);
-}
-
-static RETSIGTYPE
-sigterm_handler (int i)
-{
-  my_friendly_exit ("SIGTERM", i);
-}
-
-static RETSIGTYPE
-sigtrap_handler (int i)
-{
-  my_friendly_exit ("SIGTRAP", i);
-}
-
-static RETSIGTYPE
-sigusr1_handler (int i)
-{
-  my_friendly_exit ("SIGUSR1", i);
-}
-
-static RETSIGTYPE
-sigusr2_handler (int i)
-{
-  my_friendly_exit ("SIGUSR2", i);
-}
-
-static RETSIGTYPE
-sigvtalrm_handler (int i)
-{
-  my_friendly_exit ("SIGVTALRM", i);
-}
-
-static RETSIGTYPE
-sigxcpu_handler (int i)
-{
-  my_friendly_exit ("SIGXCPU", i);
-}
-
-static RETSIGTYPE
-sigxfsz_handler (int i)
-{
-  my_friendly_exit ("SIGXFSZ", i);
-}
-
 // Install all the handlers for the signals we might care about.
 
 void
@@ -227,31 +128,31 @@ install_signal_handlers (void)
   set_new_handler (octave_new_handler);
 
 #ifdef SIGABRT
-  signal (SIGABRT, sigabrt_handler);
+  signal (SIGABRT, generic_sig_handler);
 #endif
 
 #ifdef SIGALRM
-  signal (SIGALRM, sigalrm_handler);
+  signal (SIGALRM, generic_sig_handler);
 #endif
 
 #ifdef SIGBUS
-  signal (SIGBUS, sigbus_handler);
+  signal (SIGBUS, generic_sig_handler);
 #endif
 
 #ifdef SIGEMT
-  signal (SIGEMT, sigemt_handler);
+  signal (SIGEMT, generic_sig_handler);
 #endif
 
 #ifdef SIGFPE
-  signal (SIGFPE, sigfpe_handler);
+  signal (SIGFPE, generic_sig_handler);
 #endif
 
 #ifdef SIGHUP
-  signal (SIGHUP, sighup_handler);
+  signal (SIGHUP, generic_sig_handler);
 #endif
 
 #ifdef SIGILL
-  signal (SIGILL, sigill_handler);
+  signal (SIGILL, generic_sig_handler);
 #endif
 
 #ifdef SIGINT
@@ -259,11 +160,11 @@ install_signal_handlers (void)
 #endif
 
 #ifdef SIGIOT
-  signal (SIGIOT, sigiot_handler);
+  signal (SIGIOT, generic_sig_handler);
 #endif
 
 #ifdef SIGLOST
-  signal (SIGLOST, siglost_handler);
+  signal (SIGLOST, generic_sig_handler);
 #endif
 
 #ifdef SIGPIPE
@@ -271,51 +172,51 @@ install_signal_handlers (void)
 #endif
 
 #ifdef SIGPOLL
-  signal (SIGPOLL, sigpoll_handler);
+  signal (SIGPOLL, generic_sig_handler);
 #endif
 
 #ifdef SIGPROF
-  signal (SIGPROF, sigprof_handler);
+  signal (SIGPROF, generic_sig_handler);
 #endif
 
 #ifdef SIGQUIT
-  signal (SIGQUIT, sigquit_handler);
+  signal (SIGQUIT, generic_sig_handler);
 #endif
 
 #ifdef SIGSEGV
-  signal (SIGSEGV, sigsegv_handler);
+  signal (SIGSEGV, generic_sig_handler);
 #endif
 
 #ifdef SIGSYS
-  signal (SIGSYS, sigsys_handler);
+  signal (SIGSYS, generic_sig_handler);
 #endif
 
 #ifdef SIGTERM
-  signal (SIGTERM, sigterm_handler);
+  signal (SIGTERM, generic_sig_handler);
 #endif
 
 #ifdef SIGTRAP
-  signal (SIGTRAP, sigtrap_handler);
+  signal (SIGTRAP, generic_sig_handler);
 #endif
 
 #ifdef SIGUSR1
-  signal (SIGUSR1, sigusr1_handler);
+  signal (SIGUSR1, generic_sig_handler);
 #endif
 
 #ifdef SIGUSR2
-  signal (SIGUSR2, sigusr2_handler);
+  signal (SIGUSR2, generic_sig_handler);
 #endif
 
 #ifdef SIGVTALRM
-  signal (SIGVTALRM, sigvtalrm_handler);
+  signal (SIGVTALRM, generic_sig_handler);
 #endif
 
 #ifdef SIGXCPU
-  signal (SIGXCPU, sigxcpu_handler);
+  signal (SIGXCPU, generic_sig_handler);
 #endif
 
 #ifdef SIGXFSZ
-  signal (SIGXFSZ, sigxfsz_handler);
+  signal (SIGXFSZ, generic_sig_handler);
 #endif
 }
 

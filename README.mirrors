@@ -1,1 +1,23 @@
-ftp.univie.ac.at	packages/octave
+If you have trouble transferring Octave from this site, you might try
+one of those listed below.  They mirror the /pub/octave directory on
+ftp.che.wisc.edu.
+
+  site				directory
+  ----				---------
+  ftp.eos.hokudai.ac.jp		/pub/GNU/misc/octave
+  ftp.math.uni-hamburg.de	/pub/soft/math/octave
+  ftp.task.gda.pl		/pub/software/octave
+
+The latest Octave sources may also be found on the official Free
+Software Foundation ftp site, ftp://prep.ai.mit.edu/pub/gnu, which is
+also mirrored on many sites around the world.
+
+The web page http://ftpsearch.ntnu.no/ftpsearch is another useful
+resource for locating software that is available via anonymous ftp.
+
+John W. Eaton
+jwe@bevo.che.wisc.edu
+University of Wisconsin-Madison
+Department of Chemical Engineering
+
+Fri Aug 22 15:49:17 1997

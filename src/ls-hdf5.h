@@ -45,9 +45,9 @@ public:
 
   hdf5_fstreambase (const char *name, int mode, int /* prot */ = 0)
     {
-      if (mode == std::ios::in)
+      if (mode & std::ios::in)
 	file_id = H5Fopen (name, H5F_ACC_RDONLY, H5P_DEFAULT);
-      else if (mode == std::ios::out)
+      else if (mode & std::ios::out)
 	file_id = H5Fcreate (name, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
 
       if (file_id < 0)
@@ -70,9 +70,9 @@ public:
     {
       clear ();
 
-      if (mode == std::ios::in)
+      if (mode & std::ios::in)
 	file_id = H5Fopen (name, H5F_ACC_RDONLY, H5P_DEFAULT);
-      else if (mode == std::ios::out)
+      else if (mode & std::ios::out)
 	file_id = H5Fcreate (name, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
 
       if (file_id < 0)
@@ -91,10 +91,12 @@ public:
 
   hdf5_ifstream () : hdf5_fstreambase (), std::istream (0) { }
 
-  hdf5_ifstream (const char *name, int mode = std::ios::in, int prot = 0)
+  hdf5_ifstream (const char *name, int mode = std::ios::in|std::ios::binary,
+		 int prot = 0)
     : hdf5_fstreambase (name, mode, prot), std::istream (0) { }
 
-  void open (const char *name, int mode = std::ios::in, int prot = 0)
+  void open (const char *name, int mode = std::ios::in|std::ios::binary,
+	     int prot = 0)
     { hdf5_fstreambase::open (name, mode, prot); }
 };
 
@@ -104,10 +106,12 @@ public:
 
   hdf5_ofstream () : hdf5_fstreambase (), std::ostream (0) { }
 
-  hdf5_ofstream (const char *name, int mode = std::ios::out, int prot = 0)
+  hdf5_ofstream (const char *name, int mode = std::ios::out|std::ios::binary,
+		 int prot = 0)
     : hdf5_fstreambase (name, mode, prot), std::ostream (0) { }
 
-  void open (const char *name, int mode = std::ios::out, int prot = 0)
+  void open (const char *name, int mode = std::ios::out|std::ios::binary,
+	     int prot = 0)
     { hdf5_fstreambase::open (name, mode, prot); }
 };
 

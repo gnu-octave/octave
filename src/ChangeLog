@@ -1,3 +1,11 @@
+2005-03-29  John W. Eaton  <jwe@octave.org>
+
+	* ls-hdf5.h (hdf5_fstreambase::hdf5_fstreambase,
+	hdf5_fstreambase::open): Use & instead of == to test whether mode
+	is std::ios::in or std::ios::out.
+	(hd5_ifstream::istream, hd5_ifstream::open, hd5_ofstream::istream,
+	hd5_ofstream::open): Default mode now includes binary flag.
+
 2005-03-28  John W. Eaton  <jwe@octave.org>
 
 	* oct-stream.cc (octave_stream::write): For compatibility, Write

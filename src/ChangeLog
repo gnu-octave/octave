@@ -1,3 +1,7 @@
+2004-11-12  John W. Eaton  <jwe@octave.org>
+
+	* version.h (OCTAVE_VERSION): Now 2.1.62.
+
 2004-11-09  John W. Eaton  <jwe@octave.org>
 
 	* OPERATORS/op-int-concat.cc: New file for mixed integer/other

@@ -761,8 +761,12 @@ You should be using using glpk instead")
 
   Octave_map extra;
 
-  extra.assign ("lambda", octave_value (lambda));
-  extra.assign ("redcosts", octave_value (redcosts));
+  if (! isMIP)
+    {
+      extra.assign ("lambda", octave_value (lambda));
+      extra.assign ("redcosts", octave_value (redcosts));
+    }
+
   extra.assign ("time", octave_value (time));
   extra.assign ("mem", octave_value (mem));
 

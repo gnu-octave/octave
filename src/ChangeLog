@@ -3,6 +3,7 @@
 	* DLD-FUNCTIONS/__glpk__.cc (F__glpk__): Accept lpsolver and
 	save_pb in param arg instead of as separate args.
 	Arg list now matches new interface for glpk.m.
+	Don't return lambda and redcosts fields in extra if isMIP.
 
 	* toplev.cc (do_octave_atexit): Call reset_error_handler before
 	each call to feval.

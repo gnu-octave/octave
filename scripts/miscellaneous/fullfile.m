@@ -26,6 +26,9 @@ function filename = fullfile (varargin)
 
   if (nargin > 0)
     filename = varargin{1};
+    if (length (filename) < 1)
+      filename = ".";
+    endif
     if (strcmp (filename(end), "/"))
       filename(end) = "";
     endif

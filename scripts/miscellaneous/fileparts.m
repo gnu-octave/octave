@@ -29,6 +29,9 @@ function [directory, name, extension, version] = fileparts (filename)
     if (isstr (filename))
       ds = rindex (filename, filesep);
       es = rindex (filename, ".");
+      if (es < ds)
+	es = length(filename)+1;
+      endif
       directory = filename(1:ds-1);
       name = filename(ds+1:es-1);
       extension = filename(es:end);

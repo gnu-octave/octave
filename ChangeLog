@@ -1,3 +1,7 @@
+2003-12-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* INSTALL: Update to newer version from autoconf.
+
 2003-11-26  Cyril Humbert  <Cyril.Humbert@univ-mlv.fr>
 
 	* octave-config.in (--m-site-dir): Echo $LOCALVERFCNFILEDIR, not

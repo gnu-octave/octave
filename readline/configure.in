@@ -8,7 +8,6 @@ fi
 target_host_type=$host
 canonical_host_type=$host
 
-
 ### some defaults
 
 AC_PREFIX_DEFAULT(/usr/local)
@@ -81,6 +80,13 @@ case "$canonical_host_type" in
 esac
 AC_MSG_RESULT([defining SH_TERMLIBS to be $SH_TERMLIBS])
 AC_SUBST(SH_TERMLIBS)
+
+case "$canonical_host_type" in
+  *-*-sco*)
+    AC_DEFINE(USG, 1)
+    AC_MSG_RESULT([defining USG to be 1])
+  ;;
+esac
 
 AC_HEADER_DIRENT
 AC_HEADER_STDC

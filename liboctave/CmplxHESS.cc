@@ -60,59 +60,82 @@ ComplexHESS::init (const ComplexMatrix& a)
 {
   int a_nr = a.rows ();
   int a_nc = a.cols ();
-   if (a_nr != a_nc)
-     {
-       (*current_liboctave_error_handler)
-	 ("ComplexHESS requires square matrix");
-       return -1;
-     }
 
-   char *job = "N";
-   char *side = "R";
+  if (a_nr != a_nc)
+    {
+      (*current_liboctave_error_handler)
+	("ComplexHESS requires square matrix");
+      return -1;
+    }
 
-   int n = a_nc;
-   int lwork = 32 * n;
-   int info;
-   int ilo;
-   int ihi;
+  char job = 'N';
+  char side = 'R';
 
-   Complex *h = dup (a.data (), a.length ());
+  int n = a_nc;
+  int lwork = 32 * n;
+  int info;
+  int ilo;
+  int ihi;
 
-   double *scale = new double [n];
-   Complex *tau = new Complex [n-1];
-   Complex *work = new Complex [lwork];
-   Complex *z = new Complex [n*n];
+  hess_mat = a;
+  Complex *h = hess_mat.fortran_vec ();
 
-   F77_FCN (zgebal, ZGEBAL) (job, n, h, n, ilo, ihi, scale, info, 1L,
-			     1L);
+  Array<double> scale (n);
+  double *pscale = scale.fortran_vec ();
 
-   F77_FCN (zgehrd, ZGEHRD) (n, ilo, ihi, h, n, tau, work, lwork,
-			     info, 1L, 1L);
+  F77_XFCN (zgebal, ZGEBAL, (&job, n, h, n, ilo, ihi, pscale, info,
+			     1L, 1L));
 
-   copy (z, h, n*n);
+  if (f77_exception_encountered)
+    (*current_liboctave_error_handler) ("unrecoverable error in zgebal");
+  else
+    {
+      Array<Complex> tau (n-1);
+      Complex *ptau = tau.fortran_vec ();
 
-   F77_FCN (zunghr, ZUNGHR) (n, ilo, ihi, z, n, tau, work, lwork,
-			     info, 1L, 1L);
+      Array<Complex> work (lwork);
+      Complex *pwork = work.fortran_vec ();
 
-   F77_FCN (zgebak, ZGEBAK) (job, side, n, ilo, ihi, scale, n, z, n,
-			     info, 1L, 1L);
+      F77_XFCN (zgehrd, ZGEHRD, (n, ilo, ihi, h, n, ptau, pwork, lwork,
+				 info, 1L, 1L));
 
-   hess_mat = ComplexMatrix (h, n, n);
-   unitary_hess_mat = ComplexMatrix (z, n, n);
+      if (f77_exception_encountered)
+	(*current_liboctave_error_handler) ("unrecoverable error in zgehrd");
+      else
+	{
+	  unitary_hess_mat = hess_mat;
+	  Complex *z = unitary_hess_mat.fortran_vec ();
 
-  // If someone thinks of a more graceful way of doing this (or faster
-  // for that matter :-)), please let me know!
+	  F77_XFCN (zunghr, ZUNGHR, (n, ilo, ihi, z, n, ptau, pwork,
+				     lwork, info, 1L, 1L));
 
-   if (n > 2)
-     for (int j = 0; j < a_nc; j++)
-       for (int i = j+2; i < a_nr; i++)
-         hess_mat.elem (i, j) = 0;
+	  if (f77_exception_encountered)
+	    (*current_liboctave_error_handler)
+	      ("unrecoverable error in zunghr");
+	  else
+	    {
+	      F77_XFCN (zgebak, ZGEBAK, (&job, &side, n, ilo, ihi,
+					 pscale, n, z, n, info, 1L, 1L));
 
-   delete [] work;
-   delete [] tau;
-   delete [] scale;
+	      if (f77_exception_encountered)
+		(*current_liboctave_error_handler)
+		  ("unrecoverable error in zgebak");
+	      else
+		{
+		  // If someone thinks of a more graceful way of
+		  // doing this (or faster for that matter :-)),
+		  // please let me know!
 
-   return info;
+		  if (n > 2)
+		    for (int j = 0; j < a_nc; j++)
+		      for (int i = j+2; i < a_nr; i++)
+			hess_mat.elem (i, j) = 0;
+		}
+	    }
+	}
+    }
+
+  return info;
 }
 
 /*

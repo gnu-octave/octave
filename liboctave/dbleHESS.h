@@ -56,6 +56,8 @@ public:
       return *this;
     }
 
+  ~HESS (void) { }
+
   Matrix hess_matrix (void) const { return hess_mat; }
 
   Matrix unitary_hess_matrix (void) const { return unitary_hess_mat; }

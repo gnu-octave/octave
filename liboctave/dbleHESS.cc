@@ -59,14 +59,15 @@ HESS::init (const Matrix& a)
 {
   int a_nr = a.rows ();
   int a_nc = a.cols ();
+
   if (a_nr != a_nc)
     {
       (*current_liboctave_error_handler) ("HESS requires square matrix");
       return -1;
     }
 
-  char *jobbal = "N";
-  char *side = "R";
+  char job = 'N';
+  char side = 'R';
 
   int n = a_nc;
   int lwork = 32 * n;
@@ -74,44 +75,63 @@ HESS::init (const Matrix& a)
   int ilo;
   int ihi;
 
-  double *h = dup (a.data (), a.length ());
+  hess_mat = a;
+  double *h = hess_mat.fortran_vec ();
 
-  double *tau = new double [n+1];
-  double *scale = new double [n];
-  double *z = new double [n*n];
-  double *work = new double [lwork];
+  Array<double> scale (n);
+  double *pscale = scale.fortran_vec ();
 
-  F77_FCN (dgebal, DGEBAL) (jobbal, n, h, n, ilo, ihi, scale, info,
-			    1L, 1L);
+  F77_XFCN (dgebal, DGEBAL, (&job, n, h, n, ilo, ihi, pscale, info,
+			     1L, 1L));
 
-  F77_FCN (dgehrd, DGEHRD) (n, ilo, ihi, h, n, tau, work, lwork, info,
-			    1L, 1L);
+  if (f77_exception_encountered)
+    (*current_liboctave_error_handler) ("unrecoverable error in dgebal");
+  else
+    {
+      Array<double> tau (n-1);
+      double *ptau = tau.fortran_vec ();
 
-  copy (z, h, n*n);
+      Array<double> work (lwork);
+      double *pwork = work.fortran_vec ();
 
-  F77_FCN (dorghr, DORGHR) (n, ilo, ihi, z, n, tau, work, lwork, info,
-			    1L, 1L);
+      F77_XFCN (dgehrd, DGEHRD, (n, ilo, ihi, h, n, ptau, pwork,
+				 lwork, info, 1L, 1L));
 
-  F77_FCN (dgebak, DGEBAK) (jobbal, side, n, ilo, ihi, scale, n, z, n,
-			    info, 1L, 1L);
+      if (f77_exception_encountered)
+	(*current_liboctave_error_handler) ("unrecoverable error in dgehrd");
+      else
+	{
+	  unitary_hess_mat = hess_mat;
+	  double *z = unitary_hess_mat.fortran_vec ();
 
-  // We need to clear out all of the area below the sub-diagonal which
-  // was used to store the unitary matrix.
+	  F77_XFCN (dorghr, DORGHR, (n, ilo, ihi, z, n, ptau, pwork,
+				     lwork, info, 1L, 1L));
 
-  hess_mat = Matrix (h, n, n);
-  unitary_hess_mat = Matrix (z, n, n);
+	  if (f77_exception_encountered)
+	    (*current_liboctave_error_handler)
+	      ("unrecoverable error in dorghr");
+	  else
+	    {
+	      F77_XFCN (dgebak, DGEBAK, (&job, &side, n, ilo, ihi,
+					 pscale, n, z, n, info, 1L, 1L));
 
-  // If someone thinks of a more graceful way of doing this (or faster
-  // for that matter :-)), please let me know! 
+	      if (f77_exception_encountered)
+		(*current_liboctave_error_handler)
+		  ("unrecoverable error in dgebak");
+	      else
+		{
+		  // If someone thinks of a more graceful way of doing
+		  // this (or faster for that matter :-)), please let
+		  // me know!
 
-  if (n > 2)
-    for (int j = 0; j < a_nc; j++)
-      for (int i = j+2; i < a_nr; i++)
-        hess_mat.elem (i, j) = 0;
-
-  delete [] tau;
-  delete [] work;
-  delete [] scale;
+		  if (n > 2)
+		    for (int j = 0; j < a_nc; j++)
+		      for (int i = j+2; i < a_nr; i++)
+			hess_mat.elem (i, j) = 0;
+		}
+	    }
+	}
+    }
 
   return info;
 }

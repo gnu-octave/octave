@@ -56,6 +56,8 @@ public:
       return *this;
     }
 
+  ~ComplexHESS (void) { }
+
   ComplexMatrix hess_matrix (void) const { return hess_mat; }
 
   ComplexMatrix unitary_hess_matrix (void) const

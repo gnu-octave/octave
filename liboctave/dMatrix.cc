@@ -524,43 +524,54 @@ Matrix::inverse (int& info) const
 Matrix
 Matrix::inverse (int& info, double& rcond, int force) const
 {
+  Matrix retval;
+
   int nr = rows ();
   int nc = cols ();
-  int len = length ();
+
   if (nr != nc || nr == 0 || nc == 0)
-    {
-      (*current_liboctave_error_handler) ("inverse requires square matrix");
-      return Matrix ();
-    }
-
-  info = 0;
-
-  int *ipvt = new int [nr];
-  double *z = new double [nr];
-  double *tmp_data = dup (data (), len);
-
-  F77_FCN (dgeco, DGECO) (tmp_data, nr, nc, ipvt, rcond, z);
-
-  volatile double rcond_plus_one = rcond + 1.0;
-
-  if (rcond_plus_one == 1.0)
-    info = -1;
-
-  if (info == -1 && ! force)
-    {
-      copy (tmp_data, data (), len);  // Restore matrix contents.
-    }
+    (*current_liboctave_error_handler) ("inverse requires square matrix");
   else
     {
-      double *dummy = 0;
+      info = 0;
 
-      F77_FCN (dgedi, DGEDI) (tmp_data, nr, nc, ipvt, dummy, z, 1);
+      Array<int> ipvt (nr);
+      int *pipvt = ipvt.fortran_vec ();
+
+      Array<double> z (nr);
+      double *pz = z.fortran_vec ();
+
+      retval = *this;
+      double *tmp_data = retval.fortran_vec ();
+
+      F77_XFCN (dgeco, DGECO, (tmp_data, nr, nc, pipvt, rcond, pz));
+
+      if (f77_exception_encountered)
+	(*current_liboctave_error_handler) ("unrecoverable error in dgeco");
+      else
+	{
+	  volatile double rcond_plus_one = rcond + 1.0;
+
+	  if (rcond_plus_one == 1.0)
+	    info = -1;
+
+	  if (info == -1 && ! force)
+	    retval = *this; // Restore matrix contents.
+	  else
+	    {
+	      double *dummy = 0;
+
+	      F77_XFCN (dgedi, DGEDI, (tmp_data, nr, nc, pipvt, dummy,
+				       pz, 1));
+
+	      if (f77_exception_encountered)
+		(*current_liboctave_error_handler)
+		  ("unrecoverable error in dgedi");
+	    }
+	}
     }
 
-  delete [] ipvt;
-  delete [] z;
-
-  return Matrix (tmp_data, nr, nc);
+  return retval;
 }
 
 Matrix
@@ -603,9 +614,13 @@ Matrix::pseudo_inverse (double tol)
 ComplexMatrix
 Matrix::fourier (void) const
 {
+  ComplexMatrix retval;
+
   int nr = rows ();
   int nc = cols ();
+
   int npts, nsamples;
+
   if (nr == 1 || nc == 1)
     {
       npts = nr > nc ? nr : nc;
@@ -618,25 +633,31 @@ Matrix::fourier (void) const
     }
 
   int nn = 4*npts+15;
-  Complex *wsave = new Complex [nn];
-  Complex *tmp_data = make_complex (data (), length ());
 
-  F77_FCN (cffti, CFFTI) (npts, wsave);
+  Array<Complex> wsave (nn);
+  Complex *pwsave = wsave.fortran_vec ();
+
+  retval = *this;
+  Complex *tmp_data = retval.fortran_vec ();
+
+  F77_FCN (cffti, CFFTI) (npts, pwsave);
 
   for (int j = 0; j < nsamples; j++)
-    F77_FCN (cfftf, CFFTF) (npts, &tmp_data[npts*j], wsave);
+    F77_FCN (cfftf, CFFTF) (npts, &tmp_data[npts*j], pwsave);
 
-  delete [] wsave;
-
-  return ComplexMatrix (tmp_data, nr, nc);
+  return retval;
 }
 
 ComplexMatrix
 Matrix::ifourier (void) const
 {
+  ComplexMatrix retval;
+
   int nr = rows ();
   int nc = cols ();
+
   int npts, nsamples;
+
   if (nr == 1 || nc == 1)
     {
       npts = nr > nc ? nr : nc;
@@ -649,28 +670,34 @@ Matrix::ifourier (void) const
     }
 
   int nn = 4*npts+15;
-  Complex *wsave = new Complex [nn];
-  Complex *tmp_data = make_complex (data (), length ());
 
-  F77_FCN (cffti, CFFTI) (npts, wsave);
+  Array<Complex> wsave (nn);
+  Complex *pwsave = wsave.fortran_vec ();
+
+  retval = *this;
+  Complex *tmp_data = retval.fortran_vec ();
+
+  F77_FCN (cffti, CFFTI) (npts, pwsave);
 
   for (int j = 0; j < nsamples; j++)
-    F77_FCN (cfftb, CFFTB) (npts, &tmp_data[npts*j], wsave);
+    F77_FCN (cfftb, CFFTB) (npts, &tmp_data[npts*j], pwsave);
 
   for (int j = 0; j < npts*nsamples; j++)
     tmp_data[j] = tmp_data[j] / (double) npts;
 
-  delete [] wsave;
-
-  return ComplexMatrix (tmp_data, nr, nc);
+  return retval;
 }
 
 ComplexMatrix
 Matrix::fourier2d (void) const
 {
+  ComplexMatrix retval;
+
   int nr = rows ();
   int nc = cols ();
+
   int npts, nsamples;
+
   if (nr == 1 || nc == 1)
     {
       npts = nr > nc ? nr : nc;
@@ -683,47 +710,54 @@ Matrix::fourier2d (void) const
     }
 
   int nn = 4*npts+15;
-  Complex *wsave = new Complex [nn];
-  Complex *tmp_data = make_complex (data (), length ());
 
-  F77_FCN (cffti, CFFTI) (npts, wsave);
+  Array<Complex> wsave (nn);
+  Complex *pwsave = wsave.fortran_vec ();
+
+  retval = *this;
+  Complex *tmp_data = retval.fortran_vec ();
+
+  F77_FCN (cffti, CFFTI) (npts, pwsave);
 
   for (int j = 0; j < nsamples; j++)
-    F77_FCN (cfftf, CFFTF) (npts, &tmp_data[npts*j], wsave);
-
-  delete [] wsave;
+    F77_FCN (cfftf, CFFTF) (npts, &tmp_data[npts*j], pwsave);
 
   npts = nc;
   nsamples = nr;
   nn = 4*npts+15;
-  wsave = new Complex [nn];
-  Complex *row = new Complex[npts];
 
-  F77_FCN (cffti, CFFTI) (npts, wsave);
+  wsave.resize (nn);
+  pwsave = wsave.fortran_vec ();
+
+  Array<Complex> row (npts);
+  Complex *prow = row.fortran_vec ();
+
+  F77_FCN (cffti, CFFTI) (npts, pwsave);
 
   for (int j = 0; j < nsamples; j++)
     {
       for (int i = 0; i < npts; i++)
-	row[i] = tmp_data[i*nr + j];
+	prow[i] = tmp_data[i*nr + j];
 
-      F77_FCN (cfftf, CFFTF) (npts, row, wsave);
+      F77_FCN (cfftf, CFFTF) (npts, prow, pwsave);
 
       for (int i = 0; i < npts; i++)
-	tmp_data[i*nr + j] = row[i];
+	tmp_data[i*nr + j] = prow[i];
     }
 
-  delete [] wsave;
-  delete [] row;
-
-  return ComplexMatrix (tmp_data, nr, nc);
+  return retval;
 }
 
 ComplexMatrix
 Matrix::ifourier2d (void) const
 {
+  ComplexMatrix retval;
+
   int nr = rows ();
   int nc = cols ();
+
   int npts, nsamples;
+
   if (nr == 1 || nc == 1)
     {
       npts = nr > nc ? nr : nc;
@@ -736,15 +770,17 @@ Matrix::ifourier2d (void) const
     }
 
   int nn = 4*npts+15;
-  Complex *wsave = new Complex [nn];
-  Complex *tmp_data = make_complex (data (), length ());
 
-  F77_FCN (cffti, CFFTI) (npts, wsave);
+  Array<Complex> wsave (nn);
+  Complex *pwsave = wsave.fortran_vec ();
+
+  retval = *this;
+  Complex *tmp_data = retval.fortran_vec ();
+
+  F77_FCN (cffti, CFFTI) (npts, pwsave);
 
   for (int j = 0; j < nsamples; j++)
-    F77_FCN (cfftb, CFFTB) (npts, &tmp_data[npts*j], wsave);
-
-  delete [] wsave;
+    F77_FCN (cfftb, CFFTB) (npts, &tmp_data[npts*j], pwsave);
 
   for (int j = 0; j < npts*nsamples; j++)
     tmp_data[j] = tmp_data[j] / (double) npts;
@@ -752,26 +788,27 @@ Matrix::ifourier2d (void) const
   npts = nc;
   nsamples = nr;
   nn = 4*npts+15;
-  wsave = new Complex [nn];
-  Complex *row = new Complex[npts];
 
-  F77_FCN (cffti, CFFTI) (npts, wsave);
+  wsave.resize (nn);
+  pwsave = wsave.fortran_vec ();
+
+  Array<Complex> row (npts);
+  Complex *prow = row.fortran_vec ();
+
+  F77_FCN (cffti, CFFTI) (npts, pwsave);
 
   for (int j = 0; j < nsamples; j++)
     {
       for (int i = 0; i < npts; i++)
-	row[i] = tmp_data[i*nr + j];
+	prow[i] = tmp_data[i*nr + j];
 
-      F77_FCN (cfftb, CFFTB) (npts, row, wsave);
+      F77_FCN (cfftb, CFFTB) (npts, prow, pwsave);
 
       for (int i = 0; i < npts; i++)
-	tmp_data[i*nr + j] = row[i] / (double) npts;
+	tmp_data[i*nr + j] = prow[i] / (double) npts;
     }
 
-  delete [] wsave;
-  delete [] row;
-
-  return ComplexMatrix (tmp_data, nr, nc);
+  return retval;
 }
 
 DET
@@ -807,29 +844,42 @@ Matrix::determinant (int& info, double& rcond) const
   else
     {
       info = 0;
-      int *ipvt = new int [nr];
 
-      double *z = new double [nr];
-      double *tmp_data = dup (data (), length ());
+      Array<int> ipvt (nr);
+      int *pipvt = ipvt.fortran_vec ();
 
-      F77_FCN (dgeco, DGECO) (tmp_data, nr, nr, ipvt, rcond, z);
+      Array<double> z (nr);
+      double *pz = z.fortran_vec ();
 
-      volatile double rcond_plus_one = rcond + 1.0;
-      if (rcond_plus_one == 1.0)
-	{
-	  info = -1;
-	  retval = DET ();
-	}
+      Matrix atmp = *this;
+      double *tmp_data = atmp.fortran_vec ();
+
+      F77_XFCN (dgeco, DGECO, (tmp_data, nr, nr, pipvt, rcond, pz));
+
+      if (f77_exception_encountered)
+	(*current_liboctave_error_handler) ("unrecoverable error in dgeco");
       else
 	{
-	  double d[2];
-	  F77_FCN (dgedi, DGEDI) (tmp_data, nr, nr, ipvt, d, z, 10);
-	  retval = DET (d);
-	}
+	  volatile double rcond_plus_one = rcond + 1.0;
 
-      delete [] tmp_data;
-      delete [] ipvt;
-      delete [] z;
+	  if (rcond_plus_one == 1.0)
+	    {
+	      info = -1;
+	      retval = DET ();
+	    }
+	  else
+	    {
+	      double d[2];
+
+	      F77_XFCN (dgedi, DGEDI, (tmp_data, nr, nr, pipvt, d, pz, 10));
+
+	      if (f77_exception_encountered)
+		(*current_liboctave_error_handler)
+		  ("unrecoverable error in dgedi");
+	      else
+		retval = DET (d);
+	    }
+	}
     }
 
   return retval;
@@ -857,40 +907,58 @@ Matrix::solve (const Matrix& b, int& info, double& rcond) const
 
   int nr = rows ();
   int nc = cols ();
+
   if (nr == 0 || nc == 0 || nr != nc || nr != b.rows ())
-    {
-      (*current_liboctave_error_handler)
-	("matrix dimension mismatch solution of linear equations");
-      return Matrix ();
-    }
-
-  info = 0;
-  int *ipvt = new int [nr];
-
-  double *z = new double [nr];
-  double *tmp_data = dup (data (), length ());
-
-  F77_FCN (dgeco, DGECO) (tmp_data, nr, nr, ipvt, rcond, z);
-
-  volatile double rcond_plus_one = rcond + 1.0;
-  if (rcond_plus_one == 1.0)
-    {
-      info = -2;
-    }
+    (*current_liboctave_error_handler)
+      ("matrix dimension mismatch solution of linear equations");
   else
     {
-      double *result = dup (b.data (), b.length ());
+      info = 0;
 
-      int b_nc = b.cols ();
-      for (int j = 0; j < b_nc; j++)
-	F77_FCN (dgesl, DGESL) (tmp_data, nr, nr, ipvt, &result[nr*j], 0);
+      Array<int> ipvt (nr);
+      int *pipvt = ipvt.fortran_vec ();
 
-      retval = Matrix (result, b.rows (), b_nc);
+      Array<double> z (nr);
+      double *pz = z.fortran_vec ();
+
+      Matrix atmp = *this;
+      double *tmp_data = atmp.fortran_vec ();
+
+      F77_XFCN (dgeco, DGECO, (tmp_data, nr, nr, pipvt, rcond, pz));
+
+      if (f77_exception_encountered)
+	(*current_liboctave_error_handler) ("unrecoverable error in dgeco");
+      else
+	{
+	  volatile double rcond_plus_one = rcond + 1.0;
+
+	  if (rcond_plus_one == 1.0)
+	    {
+	      info = -2;
+	    }
+	  else
+	    {
+	      retval = b;
+	      double *result = retval.fortran_vec ();
+
+	      int b_nc = b.cols ();
+
+	      for (volatile int j = 0; j < b_nc; j++)
+		{
+		  F77_XFCN (dgesl, DGESL, (tmp_data, nr, nr, pipvt,
+					   &result[nr*j], 0)); 
+
+		  if (f77_exception_encountered)
+		    {
+		      (*current_liboctave_error_handler)
+			("unrecoverable error in dgesl");
+
+		      break;
+		    }
+		}
+	    }
+	}
     }
-
-  delete [] tmp_data;
-  delete [] ipvt;
-  delete [] z;
 
   return retval;
 }
@@ -937,40 +1005,49 @@ Matrix::solve (const ColumnVector& b, int& info, double& rcond) const
 
   int nr = rows ();
   int nc = cols ();
+
   if (nr == 0 || nc == 0 || nr != nc || nr != b.length ())
-    {
-      (*current_liboctave_error_handler)
-	("matrix dimension mismatch solution of linear equations");
-      return ColumnVector ();
-    }
-
-  info = 0;
-  int *ipvt = new int [nr];
-
-  double *z = new double [nr];
-  double *tmp_data = dup (data (), length ());
-
-  F77_FCN (dgeco, DGECO) (tmp_data, nr, nr, ipvt, rcond, z);
-
-  volatile double rcond_plus_one = rcond + 1.0;
-  if (rcond_plus_one == 1.0)
-    {
-      info = -2;
-    }
+    (*current_liboctave_error_handler)
+      ("matrix dimension mismatch solution of linear equations");
   else
     {
-      int b_len = b.length ();
+      info = 0;
 
-      double *result = dup (b.data (), b_len);
+      Array<int> ipvt (nr);
+      int *pipvt = ipvt.fortran_vec ();
 
-      F77_FCN (dgesl, DGESL) (tmp_data, nr, nr, ipvt, result, 0);
+      Array<double> z (nr);
+      double *pz = z.fortran_vec ();
 
-      retval = ColumnVector (result, b_len);
+      Matrix atmp = *this;
+      double *tmp_data = atmp.fortran_vec ();
+
+      F77_XFCN (dgeco, DGECO, (tmp_data, nr, nr, pipvt, rcond, pz));
+
+      if (f77_exception_encountered)
+	(*current_liboctave_error_handler)
+	  ("unrecoverable error in dgeco");
+      else
+	{
+	  volatile double rcond_plus_one = rcond + 1.0;
+
+	  if (rcond_plus_one == 1.0)
+	    {
+	      info = -2;
+	    }
+	  else
+	    {
+	      retval = b;
+	      double *result = retval.fortran_vec ();
+
+	      F77_XFCN (dgesl, DGESL, (tmp_data, nr, nr, pipvt, result, 0));
+
+	      if (f77_exception_encountered)
+		(*current_liboctave_error_handler)
+		  ("unrecoverable error in dgesl");
+	    }
+	}
     }
-
-  delete [] tmp_data;
-  delete [] ipvt;
-  delete [] z;
 
   return retval;
 }
@@ -1014,51 +1091,62 @@ Matrix::lssolve (const Matrix& b, int& info) const
 Matrix
 Matrix::lssolve (const Matrix& b, int& info, int& rank) const
 {
+  Matrix retval;
+
   int nrhs = b.cols ();
 
   int m = rows ();
   int n = cols ();
 
   if (m == 0 || n == 0 || m != b.rows ())
-    {
-      (*current_liboctave_error_handler)
-	("matrix dimension mismatch in solution of least squares problem");
-      return Matrix ();
-    }
-
-  double *tmp_data = dup (data (), length ());
-
-  int nrr = m > n ? m : n;
-  Matrix result (nrr, nrhs);
-
-  for (int j = 0; j < nrhs; j++)
-    for (int i = 0; i < m; i++)
-      result.elem (i, j) = b.elem (i, j);
-
-  double *presult = result.fortran_vec ();
-
-  int len_s = m < n ? m : n;
-  double *s = new double [len_s];
-  double rcond = -1.0;
-  int lwork;
-  if (m < n)
-    lwork = 3*m + (2*m > nrhs ? (2*m > n ? 2*m : n) : (nrhs > n ? nrhs : n));
+    (*current_liboctave_error_handler)
+      ("matrix dimension mismatch in solution of least squares problem");
   else
-    lwork = 3*n + (2*n > nrhs ? (2*n > m ? 2*n : m) : (nrhs > m ? nrhs : m));
+    {
+      Matrix atmp = *this;
+      double *tmp_data = atmp.fortran_vec ();
 
-  double *work = new double [lwork];
+      int nrr = m > n ? m : n;
+      Matrix result (nrr, nrhs);
 
-  F77_FCN (dgelss, DGELSS) (m, n, nrhs, tmp_data, m, presult, nrr, s,
-			    rcond, rank, work, lwork, info);
+      for (int j = 0; j < nrhs; j++)
+	for (int i = 0; i < m; i++)
+	  result.elem (i, j) = b.elem (i, j);
 
-  Matrix retval (n, nrhs);
-  for (int j = 0; j < nrhs; j++)
-    for (int i = 0; i < n; i++)
-      retval.elem (i, j) = result.elem (i, j);
+      double *presult = result.fortran_vec ();
 
-  delete [] tmp_data;
-  delete [] s;
-  delete [] work;
+      int len_s = m < n ? m : n;
+      Array<double> s (len_s);
+      double *ps = s.fortran_vec ();
+
+      double rcond = -1.0;
+
+      int lwork;
+      if (m < n)
+	lwork = 3*m + (2*m > nrhs
+		       ? (2*m > n ? 2*m : n)
+		       : (nrhs > n ? nrhs : n));
+      else
+	lwork = 3*n + (2*n > nrhs
+		       ? (2*n > m ? 2*n : m)
+		       : (nrhs > m ? nrhs : m));
+
+      Array<double> work (lwork);
+      double *pwork = work.fortran_vec ();
+
+      F77_XFCN (dgelss, DGELSS, (m, n, nrhs, tmp_data, m, presult, nrr, ps,
+				 rcond, rank, pwork, lwork, info));
+
+      if (f77_exception_encountered)
+	(*current_liboctave_error_handler) ("unrecoverable error in dgelss");
+      else
+	{
+	  retval.resize (n, nrhs);
+	  for (int j = 0; j < nrhs; j++)
+	    for (int i = 0; i < n; i++)
+	      retval.elem (i, j) = result.elem (i, j);
+	}
+    }
 
   return retval;
 }
@@ -1105,49 +1193,60 @@ Matrix::lssolve (const ColumnVector& b, int& info) const
 ColumnVector
 Matrix::lssolve (const ColumnVector& b, int& info, int& rank) const
 {
+  ColumnVector retval;
+
   int nrhs = 1;
 
   int m = rows ();
   int n = cols ();
 
   if (m == 0 || n == 0 || m != b.length ())
-    {
-      (*current_liboctave_error_handler)
-	("matrix dimension mismatch in solution of least squares problem");
-      return ColumnVector ();
-    }
-
-  double *tmp_data = dup (data (), length ());
-
-  int nrr = m > n ? m : n;
-  ColumnVector result (nrr);
-
-  for (int i = 0; i < m; i++)
-    result.elem (i) = b.elem (i);
-
-  double *presult = result.fortran_vec ();
-
-  int len_s = m < n ? m : n;
-  double *s = new double [len_s];
-  double rcond = -1.0;
-  int lwork;
-  if (m < n)
-    lwork = 3*m + (2*m > nrhs ? (2*m > n ? 2*m : n) : (nrhs > n ? nrhs : n));
+    (*current_liboctave_error_handler)
+      ("matrix dimension mismatch in solution of least squares problem");
   else
-    lwork = 3*n + (2*n > nrhs ? (2*n > m ? 2*n : m) : (nrhs > m ? nrhs : m));
+    {
+      Matrix atmp = *this;
+      double *tmp_data = atmp.fortran_vec ();
 
-  double *work = new double [lwork];
+      int nrr = m > n ? m : n;
+      ColumnVector result (nrr);
 
-  F77_FCN (dgelss, DGELSS) (m, n, nrhs, tmp_data, m, presult, nrr, s,
-			    rcond, rank, work, lwork, info);
+      for (int i = 0; i < m; i++)
+	result.elem (i) = b.elem (i);
 
-  ColumnVector retval (n);
-  for (int i = 0; i < n; i++)
-    retval.elem (i) = result.elem (i);
+      double *presult = result.fortran_vec ();
 
-  delete [] tmp_data;
-  delete [] s;
-  delete [] work;
+      int len_s = m < n ? m : n;
+      Array<double> s (len_s);
+      double *ps = s.fortran_vec ();
+
+      double rcond = -1.0;
+
+      int lwork;
+      if (m < n)
+	lwork = 3*m + (2*m > nrhs
+		       ? (2*m > n ? 2*m : n)
+		       : (nrhs > n ? nrhs : n));
+      else
+	lwork = 3*n + (2*n > nrhs
+		       ? (2*n > m ? 2*n : m)
+		       : (nrhs > m ? nrhs : m));
+
+      Array<double> work (lwork);
+      double *pwork = work.fortran_vec ();
+
+      F77_XFCN (dgelss, DGELSS, (m, n, nrhs, tmp_data, m, presult, nrr,
+				 ps, rcond, rank, pwork, lwork, info));
+
+      if (f77_exception_encountered)
+	(*current_liboctave_error_handler) ("unrecoverable error in dgelss");
+      else
+	{
+	  retval.resize (n);
+	  for (int i = 0; i < n; i++)
+	    retval.elem (i) = result.elem (i);
+	}
+    }
 
   return retval;
 }
@@ -1387,24 +1486,32 @@ Matrix::operator ! (void) const
 Matrix
 operator * (const ColumnVector& v, const RowVector& a)
 {
+  Matrix retval;
+
   int len = v.length ();
   int a_len = a.length ();
+
   if (len != a_len)
+    (*current_liboctave_error_handler)
+      ("nonconformant vector multiplication attempted");
+  else
     {
-      (*current_liboctave_error_handler)
-	("nonconformant vector multiplication attempted");
-      return Matrix ();
+      if (len != 0)
+	{
+	  retval.resize (len, a_len);
+	  double *c = retval.fortran_vec ();
+
+	  F77_XFCN (dgemm, DGEMM, ("N", "N", len, a_len, 1, 1.0,
+				   v.data (), len, a.data (), 1, 0.0,
+				   c, len, 1L, 1L));
+
+	  if (f77_exception_encountered)
+	    (*current_liboctave_error_handler)
+	      ("unrecoverable error in dgemm");
+	}
     }
 
-  if (len == 0)
-    return Matrix (len, len, 0.0);
-
-  double *c = new double [len * a_len];
-
-  F77_FCN (dgemm, DGEMM) ("N", "N", len, a_len, 1, 1.0, v.data (),
-			  len, a.data (), 1, 0.0, c, len, 1L, 1L);
-
-  return Matrix (c, len, a_len);
+  return retval;
 }
 
 // diagonal matrix by scalar -> matrix operations
@@ -1490,52 +1597,61 @@ operator - (const Matrix& m, const DiagMatrix& a)
 Matrix
 operator * (const Matrix& m, const DiagMatrix& a)
 {
+  Matrix retval;
+
   int nr = m.rows ();
   int nc = m.cols ();
+
   int a_nr = a.rows ();
   int a_nc = a.cols ();
+
   if (nc != a_nr)
+    (*current_liboctave_error_handler)
+      ("nonconformant matrix multiplication attempted");
+  else
     {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix multiplication attempted");
-      return Matrix ();
-    }
-
-  if (nr == 0 || nc == 0 || a_nc == 0)
-    return Matrix (nr, a_nc, 0.0);
-
-  double *c = new double [nr*a_nc];
-  double *ctmp = 0;
-
-  int a_len = a.length ();
-  for (int j = 0; j < a_len; j++)
-    {
-      int idx = j * nr;
-      ctmp = c + idx;
-      if (a.elem (j, j) == 1.0)
-	{
-	  for (int i = 0; i < nr; i++)
-	    ctmp[i] = m.elem (i, j);
-	}
-      else if (a.elem (j, j) == 0.0)
-	{
-	  for (int i = 0; i < nr; i++)
-	    ctmp[i] = 0.0;
-	}
+      if (nr == 0 || nc == 0 || a_nc == 0)
+	retval.resize (nr, a_nc, 0.0);
       else
 	{
-	  for (int i = 0; i < nr; i++)
-	    ctmp[i] = a.elem (j, j) * m.elem (i, j);
+	  retval.resize (nr, a_nc);
+	  double *c = retval.fortran_vec ();
+
+	  double *ctmp = 0;
+
+	  int a_len = a.length ();
+
+	  for (int j = 0; j < a_len; j++)
+	    {
+	      int idx = j * nr;
+	      ctmp = c + idx;
+
+	      if (a.elem (j, j) == 1.0)
+		{
+		  for (int i = 0; i < nr; i++)
+		    ctmp[i] = m.elem (i, j);
+		}
+	      else if (a.elem (j, j) == 0.0)
+		{
+		  for (int i = 0; i < nr; i++)
+		    ctmp[i] = 0.0;
+		}
+	      else
+		{
+		  for (int i = 0; i < nr; i++)
+		    ctmp[i] = a.elem (j, j) * m.elem (i, j);
+		}
+	    }
+
+	  if (a_nr < a_nc)
+	    {
+	      for (int i = nr * nc; i < nr * a_nc; i++)
+		ctmp[i] = 0.0;
+	    }
 	}
     }
 
-  if (a_nr < a_nc)
-    {
-      for (int i = nr * nc; i < nr * a_nc; i++)
-	ctmp[i] = 0.0;
-    }
-
-  return Matrix (c, nr, a_nc);
+  return retval;
 }
 
 // diagonal matrix by matrix -> matrix operations
@@ -1637,29 +1753,40 @@ operator * (const DiagMatrix& m, const Matrix& a)
 Matrix
 operator * (const Matrix& m, const Matrix& a)
 {
+  Matrix retval;
+
   int nr = m.rows ();
   int nc = m.cols ();
+
   int a_nr = a.rows ();
   int a_nc = a.cols ();
+
   if (nc != a_nr)
+    (*current_liboctave_error_handler)
+      ("nonconformant matrix multiplication attempted");
+  else
     {
-      (*current_liboctave_error_handler)
-	("nonconformant matrix multiplication attempted");
-      return Matrix ();
+      if (nr == 0 || nc == 0 || a_nc == 0)
+	retval.resize (nr, a_nc, 0.0);
+      else
+	{
+	  int ld  = nr;
+	  int lda = a_nr;
+
+	  retval.resize (nr, a_nc);
+	  double *c = retval.fortran_vec ();
+
+	  F77_XFCN (dgemm, DGEMM, ("N", "N", nr, a_nc, nc, 1.0,
+				   m.data (), ld, a.data (), lda, 0.0,
+				   c, nr, 1L, 1L));
+
+	  if (f77_exception_encountered)
+	    (*current_liboctave_error_handler)
+	      ("unrecoverable error in dgemm");
+	}
     }
 
-  if (nr == 0 || nc == 0 || a_nc == 0)
-    return Matrix (nr, a_nc, 0.0);
-
-  int ld  = nr;
-  int lda = a_nr;
-
-  double *c = new double [nr*a_nc];
-
-  F77_FCN (dgemm, DGEMM) ("N", "N", nr, a_nc, nc, 1.0, m.data (),
-			  ld, a.data (), lda, 0.0, c, nr, 1L, 1L);
-
-  return Matrix (c, nr, a_nc);
+  return retval;
 }
 
 // other operations.

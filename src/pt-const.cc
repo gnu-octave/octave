@@ -1419,16 +1419,6 @@ TC_REP::char_matrix_value (int force_str_conv) const
   int flag = force_str_conv;
   if (! flag)
     flag = user_pref.implicit_str_to_num_ok;
-#if 0
-
-  if (flag < 0)
-    warn_implicit_conversion ("string", "complex matrix");
-
-  if (flag)
-    retval = ComplexMatrix (*char_matrix);
-  else
-    gripe_invalid_conversion ("complex", "real matrix");
-#endif
 
   switch (type_tag)
     {
@@ -1438,7 +1428,8 @@ TC_REP::char_matrix_value (int force_str_conv) const
       break;
 
     default:
-      gripe_invalid_conversion (type_as_string (), "string");
+      if (! (rows () == 0 && columns () == 0))
+	gripe_invalid_conversion (type_as_string (), "string");
       break;
     }
 
@@ -2973,11 +2964,25 @@ TC_REP::assign (tree_constant& rhs, const Octave_object& args)
 
   tree_constant rhs_tmp = rhs;
 
-  if (! (is_string () && rhs.is_string ()))
-    rhs_tmp.force_numeric ();
+  if (! (is_string ()
+	 && (rhs_tmp.is_string ()
+	     || rhs_tmp.is_zero_by_zero ())))
+    {
+      rhs_tmp.force_numeric ();
 
-  if (error_state)
-    return;
+      if (error_state)
+	return;
+    }
+
+  if (rhs_tmp.is_string
+      && rhs_tmp.rows () == 1
+      && rhs_tmp.columns () == 0)
+    {
+      rhs_tmp.force_numeric (1);
+
+      if (error_state)
+	return;
+    }
 
   // An assignment to a range will normally require a conversion to a
   // vector in the end anyway, since it will normally destroy the
@@ -2987,70 +2992,83 @@ TC_REP::assign (tree_constant& rhs, const Octave_object& args)
   // Ranges.
 
   if (is_defined () && ! (is_numeric_type () || is_string ()))
-    force_numeric ();
+    {
+      force_numeric ();
+
+      if (error_state)
+	return;
+    }
+
+  if (! rhs_tmp.is_zero_by_zero ())
+    {
+      maybe_widen (rhs_tmp.const_type ());
+
+      if (error_state)
+	return;
+    }
+
+  set_index (args, rhs_tmp.is_complex_type ());
 
   if (error_state)
     return;
 
-  maybe_widen (rhs_tmp.const_type ());
-
-  set_index (args, rhs_tmp.is_complex_type ());
-
-  if (! error_state)
+  switch (type_tag)
     {
-      switch (type_tag)
-	{
-	case complex_matrix_constant:
+    case complex_matrix_constant:
+      {
+	switch (rhs_tmp.const_type ())
 	  {
-	    switch (rhs_tmp.const_type ())
-	      {
-	      case complex_scalar_constant:
-	      case complex_matrix_constant:
-		::assign (*complex_matrix, rhs_tmp.complex_matrix_value ());
-		break;
+	  case complex_scalar_constant:
+	  case complex_matrix_constant:
+	    ::assign (*complex_matrix, rhs_tmp.complex_matrix_value ());
+	    break;
 
-	      case scalar_constant:
-	      case matrix_constant:
-		::assign (*complex_matrix, rhs_tmp.matrix_value ());
-		break;
+	  case scalar_constant:
+	  case matrix_constant:
+	    ::assign (*complex_matrix, rhs_tmp.matrix_value ());
+	    break;
 
-	      default:
-		panic_impossible ();;
-		break;
-	      }
+	  default:
+	    panic_impossible ();;
+	    break;
 	  }
-	  break;
+      }
+      break;
 
-	case scalar_constant:
-	case matrix_constant:
+    case scalar_constant:
+    case matrix_constant:
+      {
+	switch (rhs_tmp.const_type ())
 	  {
-	    switch (rhs_tmp.const_type ())
-	      {
-	      case scalar_constant:
-	      case matrix_constant:
-		::assign (*matrix, rhs_tmp.matrix_value ());
-		break;
+	  case scalar_constant:
+	  case matrix_constant:
+	    ::assign (*matrix, rhs_tmp.matrix_value ());
+	    break;
 
-	      case char_matrix_constant:
-		::assign (*matrix, rhs_tmp.char_matrix_value ());
-		break;
+	  case char_matrix_constant:
+	    ::assign (*matrix, rhs_tmp.char_matrix_value ());
+	    break;
 
-	      default:
-		panic_impossible ();
-		break;
-	      }
+	  default:
+	    panic_impossible ();
+	    break;
 	  }
-	  break;
+      }
+      break;
 
-	case char_matrix_constant:
-	case char_matrix_constant_str:
-	  ::assign (*char_matrix, rhs_tmp.char_matrix_value ());
-	  break;
+    case char_matrix_constant:
+      ::assign (*char_matrix, rhs_tmp.char_matrix_value ());
+      break;
 
-	default:
-	  panic_impossible ();
-	  break;
-	}
+    case char_matrix_constant_str:
+      ::assign (*char_matrix, rhs_tmp.char_matrix_value ());
+      if (char_matrix->rows () == 0 && char_matrix->columns () == 0)
+	char_matrix->resize (1, 0);
+      break;
+
+    default:
+      panic_impossible ();
+      break;
     }
 }
 

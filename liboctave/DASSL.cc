@@ -25,6 +25,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "config.h"
 #endif
 
+#if defined (__GNUG__)
+#pragma implementation
+#endif
+
 #include "DAE.h"
 #include "f77-uscore.h"
 #include "lo-error.h"
@@ -56,15 +60,15 @@ DAE::DAE (void)
   integration_error = 0;
   restart = 1;
 
-  DAEFunc::set_function (NULL);
-  DAEFunc::set_jacobian_function (NULL);
+  DAEFunc::set_function (0);
+  DAEFunc::set_jacobian_function (0);
 
   liw = 0;
   lrw = 0;
 
   info  = new int [15];
-  iwork = (int *) NULL;
-  rwork = (double *) NULL;
+  iwork = (int *) 0;
+  rwork = (double *) 0;
 
   for (int i = 0; i < 15; i++)
     info [i] = 0;
@@ -81,8 +85,8 @@ DAE::DAE (int size)
   integration_error = 0;
   restart = 1;
 
-  DAEFunc::set_function (NULL);
-  DAEFunc::set_jacobian_function (NULL);
+  DAEFunc::set_function (0);
+  DAEFunc::set_jacobian_function (0);
 
   liw = 20 + n;
   lrw = 40 + 9*n + n*n;
@@ -250,10 +254,10 @@ DAE::integrate (double tout)
 {
   integration_error = 0;
 
-  if (DAEFunc::jac == NULL)
-    iwork [4] = 0;
-  else
+  if (DAEFunc::jac)
     iwork [4] = 1;
+  else
+    iwork [4] = 0;
 
   double *px    = x.fortran_vec ();
   double *pxdot = xdot.fortran_vec ();
@@ -298,7 +302,7 @@ DAE::integrate (double tout)
       info[0] = 0;
     }
 
- again:
+// again:
 
   F77_FCN (ddassl) (ddassl_f, &n, &t, px, pxdot, &tout, info,
 		    &rel_tol, &abs_tol, &idid, rwork, &lrw, iwork,

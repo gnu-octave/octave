@@ -24,7 +24,12 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_NLConst_h)
 #define octave_NLConst_h 1
 
-#include "Matrix.h"
+#if defined (__GNUG__)
+#pragma interface
+#endif
+
+class ColumnVector;
+
 #include "Bounds.h"
 #include "NLFunc.h"
 
@@ -40,7 +45,7 @@ public:
 
   NLConst (void);
   NLConst (int n);
-  NLConst (const Vector lb, const NLFunc f, const ColumnVector ub);
+  NLConst (const Vector& lb, const NLFunc f, const Vector& ub);
   NLConst (const NLConst& a);
 
   NLConst& operator = (const NLConst& a);

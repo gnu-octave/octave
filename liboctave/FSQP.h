@@ -24,9 +24,12 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_FSQP_h)
 #define octave_FSQP_h 1
 
+#if defined (__GNUG__)
+#pragma interface
+#endif
+
 #ifndef FSQP_MISSING
 
-#include "Matrix.h"
 #include "NLP.h"
 
 extern "C++" {

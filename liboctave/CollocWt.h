@@ -24,11 +24,16 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_CollocWt_h)
 #define octave_CollocWt_h 1
 
-#include "Matrix.h"
-
-extern "C++" {
+#if defined (__GNUG__)
+#pragma interface
+#endif
 
 class ostream;
+
+#include "dMatrix.h"
+#include "dColVector.h"
+
+extern "C++" {
 
 #ifndef Vector
 #define Vector ColumnVector

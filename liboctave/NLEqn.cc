@@ -25,9 +25,15 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "config.h"
 #endif
 
+#if defined (__GNUG__)
+#pragma implementation
+#endif
+
 #include <float.h>
+#include <math.h>
 
 #include "NLEqn.h"
+#include "dMatrix.h"
 #include "f77-uscore.h"
 #include "lo-error.h"
 
@@ -221,16 +227,7 @@ NLEqn::solve (int& info)
   user_fun = fun;
   user_jac = jac;
 
-  if (jac == NULL)
-    {
-      int lwa = (n*(3*n+13))/2;
-      double *wa = new double [lwa];
-
-      F77_FCN (hybrd1) (hybrd1_fcn, &n, px, fvec, &tol, &tmp_info, wa, &lwa);
-
-      delete [] wa;
-    }
-  else
+  if (jac)
     {
       int lwa = (n*(n+13))/2;
       double *wa = new double [lwa];
@@ -241,6 +238,15 @@ NLEqn::solve (int& info)
 
       delete [] wa;
       delete [] fjac;
+    }
+  else
+    {
+      int lwa = (n*(3*n+13))/2;
+      double *wa = new double [lwa];
+
+      F77_FCN (hybrd1) (hybrd1_fcn, &n, px, fvec, &tol, &tmp_info, wa, &lwa);
+
+      delete [] wa;
     }
 
   Vector retval;

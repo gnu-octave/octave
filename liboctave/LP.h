@@ -24,7 +24,11 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_LP_h)
 #define octave_LP_h 1
 
-#include "Matrix.h"
+#if defined (__GNUG__)
+#pragma interface
+#endif
+
+#include "dColVector.h"
 #include "Bounds.h"
 #include "LinConst.h"
 

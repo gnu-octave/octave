@@ -1,7 +1,7 @@
 // NLConst.cc                                            -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993 John W. Eaton
+Copyright (C) 1992, 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -25,6 +25,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "config.h"
 #endif
 
+#if defined (__GNUG__)
+#pragma implementation
+#endif
+
 #include "NLConst.h"
 
 NLConst::NLConst (void) : Bounds (), NLFunc ()
@@ -35,7 +39,7 @@ NLConst::NLConst (int n) : Bounds (n), NLFunc ()
 {
 }
 
-NLConst::NLConst (const Vector l, const NLFunc f, const Vector u)
+NLConst::NLConst (const Vector& l, const NLFunc f, const Vector& u)
   : Bounds (l, u), NLFunc (f)
 {
 }

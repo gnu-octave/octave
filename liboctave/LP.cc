@@ -1,7 +1,7 @@
 // LP.cc                                                -*- C++ -*-
 /*
 
-Copyright (C) 1992, 1993 John W. Eaton
+Copyright (C) 1992, 1993, 1994 John W. Eaton
 
 This file is part of Octave.
 
@@ -23,6 +23,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
+#endif
+
+#if defined (__GNUG__)
+#pragma implementation
 #endif
 
 #include "LP.h"

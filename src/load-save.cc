@@ -2448,7 +2448,7 @@ save_mat_binary_data (ostream& os, const tree_constant& tc, char *name)
       double tmp = tc.double_value ();
       os.write (&tmp, 8);
     }
-  else if (tc.is_real_matrix ())
+  else if (tc.is_real_matrix () || tc.is_range ())
     {
       Matrix m = tc.matrix_value ();
       os.write (m.data (), 8 * len);

@@ -165,7 +165,7 @@ LIBS_TO_INSTALL = liboctinterp.a libtinst.a \
 LIBS = @LIBS@
 
 DISTFILES = Makefile.in mkdefs mkbuiltins mk-oct-links.in \
-	defaults.h.in octave.gperf oct-gperf.h \
+	defaults.h.in oct-conf.h.in octave.gperf oct-gperf.h \
 	octave.cc parse.cc lex.cc y.tab.h \
 	$(INCLUDES) $(DLD_SRC) $(SOURCES) $(TEMPLATE_SRC) $(TI_SRC)
 
@@ -173,7 +173,7 @@ all: stamp-prereq stamp-picdir libraries \
 	$(OCT_FILES) octave
 .PHONY: all
 
-stamp-prereq: defaults.h
+stamp-prereq: defaults.h oct-conf.h
 	touch stamp-prereq
 
 octave: octave.o builtins.o $(DLD_STATIC_OBJ) libraries
@@ -222,9 +222,9 @@ builtins.cc: $(DEF_FILES) mkbuiltins
 	@$(srcdir)/mkbuiltins $(DEF_FILES) > $@.tmp
 	@$(top_srcdir)/move-if-change $@.tmp $@
 
-$(DEF_FILES): mkdefs defun-int.h defun-dld.h defun.h defaults.h
+$(DEF_FILES): mkdefs defun-int.h defun-dld.h defun.h defaults.h oct-conf.h
 
-$(MAKEDEPS): defaults.h oct-gperf.h
+$(MAKEDEPS): defaults.h oct-gperf.h oct-conf.h
 
 check: all
 .PHONY: check
@@ -259,7 +259,7 @@ install-inc:
 	  rm -f $(includedir)/$$f ; \
 	  $(INSTALL_DATA) $(srcdir)/$$f $(includedir)/$$f ; \
 	done
-	for f in defaults.h oct-gperf.h ; do \
+	for f in defaults.h oct-conf.h oct-gperf.h ; do \
 	  rm -f $(includedir)/$$f ; \
 	  $(INSTALL_DATA) $$f $(includedir)/$$f ; \
 	done
@@ -279,7 +279,9 @@ install-inc:
 uninstall:
 	rm -f $(bindir)/octave
 	for f in $(LIBS_TO_INSTALL); do rm -f $(libdir)/$$f; done
-	for f in $(INCLUDES) defaults.h; do rm -f $(includedir)/$$f; done
+	for f in $(INCLUDES) defaults.h oct-conf.h; do \
+	  rm -f $(includedir)/$$f; \
+	done
 .PHONY: uninstall
 
 tags: $(SOURCES) $(DLD_SRC) $(TI_SRC)
@@ -289,7 +291,7 @@ TAGS: $(SOURCES) $(DLD_SRC) $(TI_SRC)
 	etags $(SOURCES) $(DLD_SRC) $(TI_SRC)
 
 clean:
-	rm -f *.a *.o *.d *.def pic/*.o builtins.cc defaults.h
+	rm -f *.a *.o *.d *.def pic/*.o builtins.cc defaults.h oct-conf.h
 	if $(SHARED_LIBS); then rm -f *.$(SHLEXT); fi
 .PHONY: clean
 
@@ -312,13 +314,13 @@ maintainer-clean: distclean
 local-dist: parse.cc lex.cc oct-gperf.h
 	ln $(DISTFILES) ../`cat ../.fname`/src
 	rm -f parse.cc lex.cc y.tab.h y.output yy.lex.c
-	rm -f oct-gperf.h defaults.h *.d *.def
+	rm -f oct-gperf.h defaults.h oct-conf.h *.d *.def
 .PHONY: local-dist
 
 dist: parse.cc lex.cc oct-gperf.h
 	ln $(DISTFILES) ../`cat ../.fname`/src
 	rm -f parse.cc lex.cc y.tab.h y.output yy.lex.c
-	rm -f oct-gperf.h defaults.h *.d *.def builtins.cc
+	rm -f oct-gperf.h defaults.h oct-conf.h *.d *.def builtins.cc
 .PHONY: dist
 
 conf-dist:
@@ -327,30 +329,11 @@ conf-dist:
 
 # Special rules -- these files need special things to be defined.
 
-defaults.h: defaults.h.in ../Makeconf Makefile
-	@echo "making $@ from $<"
-	@(sed < $< > $@.tmp \
-	  -e "s;%DEFAULT_PAGER%;\"${DEFAULT_PAGER}\";" \
-	  -e "s;%OCTAVE_PREFIX%;\"${prefix}\";" \
-	  -e "s;%OCTAVE_EXEC_PREFIX%;\"${exec_prefix}\";" \
-	  -e "s;%OCTAVE_DATADIR%;\"${datadir}\";" \
-	  -e "s;%OCTAVE_BINDIR%;\"${bindir}\";" \
-	  -e "s;%OCTAVE_LIBDIR%;\"${libdir}\";" \
-	  -e "s;%OCTAVE_INFODIR%;\"${infodir}\";" \
-	  -e "s;%OCTAVE_FCNFILEDIR%;\"${fcnfiledir}\";" \
-	  -e "s;%OCTAVE_LOCALFCNFILEDIR%;\"${localfcnfiledir}\";" \
-	  -e "s;%OCTAVE_LOCALFCNFILEPATH%;\"${localfcnfilepath}\";" \
-	  -e "s;%OCTAVE_ARCHLIBDIR%;\"${archlibdir}\";" \
-	  -e "s;%OCTAVE_OCTFILEDIR%;\"${octfiledir}\";" \
-	  -e "s;%OCTAVE_LOCALOCTFILEPATH%;\"${localoctfilepath}\";" \
-	  -e "s;%OCTAVE_FCNFILEPATH%;\"${fcnfilepath}\";" \
-	  -e "s;%OCTAVE_IMAGEPATH%;\"${imagepath}\";" \
-	  -e "s;%TARGET_HOST_TYPE%;\"${target_host_type}\";" \
-	  -e "s;%FLIB_LIST%;\"${FLIB_LIST}\";" \
-	  -e "s;%FLIB_PATH%;\"${FLIB_PATH}\";" \
-	  -e "s;%CXXLIB_LIST%;\"${CXXLIB_LIST}\";" \
-	  -e "s;%CXXLIB_PATH%;\"${CXXLIB_PATH}\";")
-	@$(top_srcdir)/move-if-change $@.tmp $@
+defaults.h: ../Makeconf Makefile
+	@$(do-subst-default-vals)
+
+oct-conf.h: ../Makeconf Makefile
+	@$(do-subst-config-vals)
 
 oct-gperf.h: octave.gperf
 	@echo "making $@ from $<"

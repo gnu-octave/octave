@@ -163,16 +163,17 @@ libexecdir = @libexecdir@
 
 # The prefix for Octave's include file directory.  The default is
 # ${prefix}/include
-topincludedir = @topincludedir@
+includedir = @includedir@
 
 # Where to install Octave's include files.  The default is
-# ${topincludedir}/octave-${version}
-includedir = @includedir@
+# ${includedir}/octave-${version}
+octincludedir = @octincludedir@
 
 # Where to install Octave's man pages, and what extension they should
 # have.  The default is ${prefix}/man/man1
 mandir = @mandir@
-manext = 1
+man1dir = @man1dir@
+man1ext = @man1ext@
 
 # Where to install and expect the info files describing Octave..
 infodir = @infodir@
@@ -294,8 +295,8 @@ $(foreach d, $(SUBDIRS), $(do-subdir-for-command))
 endef
 
 define do-subst-config-vals
-echo making $@ from $(srcdir)/$@.in
-sed < $(srcdir)/$@.in > $@.tmp \
+echo "making $@ from $<"
+sed < $< > $@.tmp \
   -e "s;%VERSION%;\"${version}\";" \
   -e "s;%config_opts%;\"${config_opts}\";" \
   -e "s;%TARGET_HOST_TYPE%;\"${target_host_type}\";" \
@@ -306,7 +307,7 @@ sed < $(srcdir)/$@.in > $@.tmp \
   -e "s;%F2CFLAGS%;\"${F2CFLAGS}\";" \
   -e "s;%FLIBS%;\"${FLIBS}\";" \
   -e "s;%CPPFLAGS%;\"${CPPFLAGS}\";" \
-  -e "s;%INCFLAGS%;\"-I${topincludedir} -I${includedir}\";" \
+  -e "s;%INCFLAGS%;\"-I${includedir} -I${octincludedir}\";" \
   -e "s;%CC%;\"${CC}\";" \
   -e "s;%CC_VERSION%;\"${CC_VERSION}\";" \
   -e "s;%CFLAGS%;\"${BUG_CFLAGS}\";" \
@@ -333,8 +334,8 @@ $(top_srcdir)/move-if-change $@.tmp $@
 endef
 
 define do-subst-default-vals
-echo "making $@ from $(srcdir)/$@.in"
-sed < $(srcdir)/$@.in > $@.tmp \
+echo "making $@ from $<"
+sed < $< > $@.tmp \
   -e "s;%DEFAULT_PAGER%;\"${DEFAULT_PAGER}\";" \
   -e "s;%OCTAVE_PREFIX%;\"${prefix}\";" \
   -e "s;%OCTAVE_EXEC_PREFIX%;\"${exec_prefix}\";" \

@@ -159,27 +159,27 @@ install-lib:
 .PHONY: install-lib
 
 install-inc:
-	$(top_srcdir)/mkinstalldirs $(includedir)
+	$(top_srcdir)/mkinstalldirs $(octincludedir)
 	for f in $(INCLUDES) $(TEMPLATE_SRC) ; do \
-	  rm -f $(includedir)/$$f ; \
-	  $(INSTALL_DATA) $(srcdir)/$$f $(includedir)/$$f ; \
+	  rm -f $(octincludedir)/$$f ; \
+	  $(INSTALL_DATA) $(srcdir)/$$f $(octincludedir)/$$f ; \
 	done
-	linkdir=`echo $(includedir) | sed 's/-$(version)$$//'` ; \
-	if [ "$$linkdir" = $(includedir) ] ; then \
+	linkdir=`echo $(octincludedir) | sed 's/-$(version)$$//'` ; \
+	if [ "$$linkdir" = $(octincludedir) ] ; then \
 	  true ; \
 	else \
 	  if [ -d $$linkdir ] ; then \
 	    true ; \
 	  else \
 	    rm -f $$linkdir ; \
-	    $(LN_S) $(includedir) $$linkdir ; \
+	    $(LN_S) $(octincludedir) $$linkdir ; \
 	  fi ; \
 	fi
 .PHONY: install-inc
 
 uninstall:
 	rm -f $(libdir)/liboctave.a $(libdir)/liboctave.$(SHLEXT)
-	for f in $(INCLUDES) ; do rm -f $(includedir)/$$f ; done
+	for f in $(INCLUDES) ; do rm -f $(octincludedir)/$$f ; done
 .PHONY: uninstall
 
 tags: $(SOURCES)

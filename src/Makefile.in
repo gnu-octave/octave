@@ -254,24 +254,24 @@ install-lib:
 .PHONY: install-lib
 
 install-inc:
-	$(top_srcdir)/mkinstalldirs $(includedir)
+	$(top_srcdir)/mkinstalldirs $(octincludedir)
 	for f in $(INCLUDES) ; do \
-	  rm -f $(includedir)/$$f ; \
-	  $(INSTALL_DATA) $(srcdir)/$$f $(includedir)/$$f ; \
+	  rm -f $(octincludedir)/$$f ; \
+	  $(INSTALL_DATA) $(srcdir)/$$f $(octincludedir)/$$f ; \
 	done
 	for f in defaults.h oct-conf.h oct-gperf.h ; do \
-	  rm -f $(includedir)/$$f ; \
-	  $(INSTALL_DATA) $$f $(includedir)/$$f ; \
+	  rm -f $(octincludedir)/$$f ; \
+	  $(INSTALL_DATA) $$f $(octincludedir)/$$f ; \
 	done
-	linkdir=`echo $(includedir) | sed 's/-$(version)$$//'` ; \
-	if [ "$$linkdir" = $(includedir) ] ; then \
+	linkdir=`echo $(octincludedir) | sed 's/-$(version)$$//'` ; \
+	if [ "$$linkdir" = $(octincludedir) ] ; then \
 	  true ; \
 	else \
 	  if [ -d $$linkdir ] ; then \
 	    true ; \
 	  else \
 	    rm -f $$linkdir ; \
-	    $(LN_S) $(includedir) $$linkdir ; \
+	    $(LN_S) $(octincludedir) $$linkdir ; \
 	  fi ; \
 	fi
 .PHONY: install-lib
@@ -280,7 +280,7 @@ uninstall:
 	rm -f $(bindir)/octave
 	for f in $(LIBS_TO_INSTALL); do rm -f $(libdir)/$$f; done
 	for f in $(INCLUDES) defaults.h oct-conf.h; do \
-	  rm -f $(includedir)/$$f; \
+	  rm -f $(octincludedir)/$$f; \
 	done
 .PHONY: uninstall
 

@@ -20,7 +20,7 @@ dnl Copyright (C) 1996 John W. Eaton
 ### along with Octave; see the file COPYING.  If not, write to the Free
 ### Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-AC_REVISION($Revision: 1.200 $)
+AC_REVISION($Revision: 1.201 $)
 AC_PREREQ(2.9)
 AC_INIT(src/octave.cc)
 AC_CONFIG_HEADER(config.h)
@@ -39,19 +39,13 @@ if test "$host" = unknown; then
 fi
 AC_SUBST(target_host_type)
 
-### some defaults
-
 AC_PREFIX_DEFAULT(/usr/local)
 
-exec_prefix='$(prefix)'
-bindir='$(exec_prefix)/bin'
-datadir='$(prefix)/share'
-libdir='$(exec_prefix)/lib'
-libexecdir='$(exec_prefix)/libexec'
-topincludedir='$(prefix)/include'
-includedir='$(topincludedir)/octave-$(version)'
-mandir='$(prefix)/man/man1'
-infodir='$(prefix)/info'
+### some defaults
+
+man1dir='$(mandir)/man1'
+man1ext='.1'
+octincludedir='$(includedir)/octave-$(version)'
 fcnfiledir='$(datadir)/octave/$(version)/m'
 localfcnfiledir='$(datadir)/octave/site/m'
 localfcnfilepath='$(localfcnfiledir)//'
@@ -72,6 +66,8 @@ AC_MSG_RESULT([defining libexecdir to be $libexecdir])
 AC_MSG_RESULT([defining topincludedir to be $topincludedir])
 AC_MSG_RESULT([defining includedir to be $includedir])
 AC_MSG_RESULT([defining mandir to be $mandir])
+AC_MSG_RESULT([defining man1dir to be $man1dir])
+AC_MSG_RESULT([defining man1ext to be $man1ext])
 AC_MSG_RESULT([defining infodir to be $infodir])
 AC_MSG_RESULT([defining fcnfiledir to be $fcnfiledir])
 AC_MSG_RESULT([defining localfcnfiledir to be $localfcnfiledir])
@@ -89,9 +85,11 @@ AC_SUBST(bindir)
 AC_SUBST(datadir)
 AC_SUBST(libdir)
 AC_SUBST(libexecdir)
-AC_SUBST(topincludedir)
 AC_SUBST(includedir)
+AC_SUBST(octincludedir)
 AC_SUBST(mandir)
+AC_SUBST(man1dir)
+AC_SUBST(man1ext)
 AC_SUBST(infodir)
 AC_SUBST(fcnfiledir)
 AC_SUBST(localfcnfiledir)

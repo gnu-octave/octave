@@ -154,7 +154,8 @@ long_options long_opts[] =
 static void
 intern_argv (int argc, char **argv)
 {
-  bind_builtin_variable ("nargin", static_cast<double> (argc-1), 1, 1, 0);
+  bind_builtin_variable ("nargin", static_cast<double> (argc-1),
+			 true, true, 0);
 
   octave_value_list octave_argv;
 
@@ -166,8 +167,8 @@ intern_argv (int argc, char **argv)
 
     }
 
-  bind_builtin_variable ("argv", octave_argv, 1, 1, 0);
-  bind_builtin_variable ("__argv__", octave_argv, 1, 1, 0);
+  bind_builtin_constant ("argv", octave_argv, true, true);
+  bind_builtin_constant ("__argv__", octave_argv, true, true);
 }
 
 static void

@@ -95,6 +95,11 @@ extern void bind_global_error_variable (void);
 extern void clear_global_error_variable (void *);
 
 extern void
+bind_builtin_constant (const string&, const octave_value&,
+		       bool protect = false, bool eternal = false,
+		       const string& help = string ());
+
+extern void
 bind_builtin_variable (const string&, const octave_value&,
 		       bool protect = false, bool eternal = false,
 		       symbol_record::change_function f = 0,

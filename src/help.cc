@@ -398,7 +398,7 @@ additional_help_message (ostream& os)
 {
   if (! Vsuppress_verbose_help_message)
     os << "\n\
-Additional help for builtin functions, operators, and variables\n\
+Additional help for built-in functions, operators, and variables\n\
 is available in the on-line version of the manual.  Use the command\n\
 `help -i <topic>' to search the manual index.\n";
 
@@ -418,10 +418,15 @@ display_names_from_help_list (ostream& os, help_list *list,
 			      const char *desc)
 {
   int count = 0;
+
   string_vector symbols = names (list, count);
+
   if (! symbols.empty ())
     {
       os << "\n*** " << desc << ":\n\n";
+
+      symbols.qsort ();
+
       symbols.list_in_columns (os);
     }
 }
@@ -464,16 +469,16 @@ print_symbol_type (ostream& os, symbol_record *sym_rec,
   else if (sym_rec->is_text_function ())
     {
       if (print)
-	os << name << " is a builtin text-function\n";
+	os << name << " is a built-in text-function\n";
       else
-	retval = "builtin text-function";
+	retval = "built-in text-function";
     }
   else if (sym_rec->is_builtin_function ())
     {
       if (print)
-	os << name << " is a builtin function\n";
+	os << name << " is a built-in function\n";
       else
-	retval = "builtin function";
+	retval = "built-in function";
     }
   else if (sym_rec->is_user_variable ())
     {
@@ -485,9 +490,16 @@ print_symbol_type (ostream& os, symbol_record *sym_rec,
   else if (sym_rec->is_builtin_variable ())
     {
       if (print)
-	os << name << " is a builtin variable\n";
+	os << name << " is a built-in variable\n";
       else
-	retval = "builtin variable";
+	retval = "built-in variable";
+    }
+  else if (sym_rec->is_builtin_constant ())
+    {
+      if (print)
+	os << name << " is a built-in constant\n";
+      else
+	retval = "built-in variable";
     }
   else
     {
@@ -518,7 +530,8 @@ display_symtab_names (ostream& os, const string_vector& names,
   do \
     { \
       int count; \
-      string_vector names = global_sym_tab->name_list (count, 0, 0, 1, type); \
+      string_vector names \
+	= global_sym_tab->name_list (count, string_vector (), true, type); \
       display_symtab_names (octave_stdout, names, count, msg); \
     } \
   while (0)
@@ -538,14 +551,16 @@ simple_help (void)
 
   // XXX FIXME XXX -- is this distinction needed?
 
+  LIST_SYMBOLS (symbol_record::BUILTIN_CONSTANT, "built-in constants");
+
+  LIST_SYMBOLS (symbol_record::BUILTIN_VARIABLE, "built-in variables");
+
   LIST_SYMBOLS (symbol_record::TEXT_FUNCTION,
 		"text functions (these names are also reserved)");
 
   LIST_SYMBOLS (symbol_record::MAPPER_FUNCTION, "mapper functions");
 
   LIST_SYMBOLS (symbol_record::BUILTIN_FUNCTION, "general functions");
-
-  LIST_SYMBOLS (symbol_record::BUILTIN_VARIABLE, "builtin variables");
 
   // Also need to list variables and currently compiled functions from
   // the symbol table, if there are any.
@@ -566,6 +581,8 @@ simple_help (void)
 	    = octave_env::make_absolute (dirs[i], octave_env::getcwd ());
 
 	  octave_stdout << "\n*** function files in " << dir << ":\n\n";
+
+	  names.qsort ();
 
 	  names.list_in_columns (octave_stdout);
 	}
@@ -857,11 +874,12 @@ display the definition of each NAME that refers to a function")
 	      // Fwhich.
 
 	      else if (sym_rec->is_text_function ())
-		output_buf << argv[i] << " is a builtin text-function\n";
+		output_buf << argv[i] << " is a built-in text-function\n";
 	      else if (sym_rec->is_builtin_function ())
-		output_buf << argv[i] << " is a builtin function\n";
+		output_buf << argv[i] << " is a built-in function\n";
 	      else if (sym_rec->is_user_variable ()
-		       || sym_rec->is_builtin_variable ())
+		       || sym_rec->is_builtin_variable ()
+		       || sym_rec->is_builtin_constant ())
 		{
 		  octave_value defn = sym_rec->def ();
 
@@ -883,8 +901,12 @@ display the definition of each NAME that refers to a function")
 
 			      if (sym_rec->is_user_variable ())
 				output_buf << " is a user-defined variable\n";
-			      else
+			      else if (sym_rec->is_builtin_variable ())
 				output_buf << " is a built-in variable\n";
+			      else if (sym_rec->is_builtin_constant ())
+				output_buf << " is a built-in constant\n";
+			      else
+				panic_impossible ();
 			    }
 			  else
 			    {

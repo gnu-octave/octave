@@ -857,6 +857,10 @@ do_who (int argc, const string_vector& argv)
   if (show_builtins)
     {
       pad_after += global_sym_tab->maybe_list
+	("*** built-in constants:", pats, octave_stdout,
+	 show_verbose, symbol_record::BUILTIN_CONSTANT, SYMTAB_ALL_SCOPES);
+
+      pad_after += global_sym_tab->maybe_list
 	("*** built-in variables:", pats, octave_stdout,
 	 show_verbose, symbol_record::BUILTIN_VARIABLE, SYMTAB_ALL_SCOPES);
 
@@ -952,6 +956,32 @@ bind_ans (const octave_value& val, bool print)
       if (print)
 	val.print_with_name (octave_stdout, "ans");
     }
+}
+
+// Give a global constant a definition.  This will insert the symbol
+// in the global table if necessary.
+
+// How is this different than install_builtin_constant?  Are both
+// functions needed?
+
+void
+bind_builtin_constant (const string& name, const octave_value& val,
+		       bool protect, bool eternal, const string& help)
+{
+  symbol_record *sym_rec = global_sym_tab->lookup (name, true);
+  sym_rec->unprotect ();
+
+  string tmp_help = help.empty () ? sym_rec->help () : help;
+
+  sym_rec->define_builtin_const (val);
+
+  sym_rec->document (tmp_help);
+
+  if (protect)
+    sym_rec->protect ();
+
+  if (eternal)
+    sym_rec->make_eternal ();
 }
 
 // Give a global variable a definition.  This will insert the symbol

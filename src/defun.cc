@@ -105,21 +105,7 @@ void
 install_builtin_constant (const string& name, const octave_value& val,
 			  bool protect, const string& help)
 {
-  symbol_record *sym_rec = global_sym_tab->lookup (name, true);
-  sym_rec->unprotect ();
-
-  string tmp_help = help.empty () ? sym_rec->help () : help;
-
-  sym_rec->define_builtin_const (val);
-
-  sym_rec->document (tmp_help);
-
-  if (protect)
-    sym_rec->protect ();
-
-  // XXX FIXME XXX -- shouldn't constants be eternal?
-  //  if (eternal)
-  //    sym_rec->make_eternal ();
+  bind_builtin_constant (name, val, protect, false, help);
 }
 
 void

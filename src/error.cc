@@ -301,7 +301,7 @@ bind_global_error_variable (void)
 
   char *error_text = error_message_buffer->str ();
 
-  bind_builtin_variable ("__error_text__", error_text, 1);
+  bind_builtin_constant ("__error_text__", error_text, true);
 
   delete [] error_text;
 
@@ -316,7 +316,7 @@ clear_global_error_variable (void *)
   delete error_message_buffer;
   error_message_buffer = 0;
 
-  bind_builtin_variable ("__error_text__", "", 1);
+  bind_builtin_constant ("__error_text__", "", true);
 }
 
 static int

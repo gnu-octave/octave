@@ -36,13 +36,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 struct
 scanf_format_elt
 {
-  scanf_format_elt (const char *txt = 0, bool d = false,
+  scanf_format_elt (const char *txt = 0, int w = 0, bool d = false,
 		    char typ = '\0', char mod = '\0')
-    : text (txt), discard (d), type (typ), modifier (mod) { }
+    : text (txt), width (w), discard (d), type (typ), modifier (mod) { }
 
   ~scanf_format_elt (void) { delete text; }
 
   const char *text;
+  int width;
   bool discard;
   char type;
   char modifier;
@@ -58,6 +59,13 @@ public:
   ~scanf_format_list (void);
 
   int num_conversions (void) { return nconv; }
+
+  // The length can be different than the number of conversions.
+  // For example, "x %d y %d z" has 2 conversions but the length of
+  // the list is 3 because of the characters that appear after the
+  // last conversion.
+
+  int length (void) { return list.length (); }
 
   const scanf_format_elt *first (void)
     {
@@ -101,14 +109,16 @@ private:
   // Temporary buffer.
   ostrstream *buf;
 
-  void add_elt_to_list (bool discard, char type, char modifier,
+  void add_elt_to_list (int width, bool discard, char type, char modifier,
 			int& num_elts);
 
-  void process_conversion (const string& s, int& i, int n, bool& discard,
-			   char& type, char& modifier, int& num_elts);
+  void process_conversion (const string& s, int& i, int n, int& width,
+			   bool& discard, char& type, char& modifier,
+			   int& num_elts);
 
-  int finish_conversion (const string& s, int& i, int n, bool discard,
-			 char& type, char modifier, int& num_elts);
+  int finish_conversion (const string& s, int& i, int n, int& width,
+			 bool discard, char& type, char modifier,
+			 int& num_elts);
   // No copying!
 
   scanf_format_list (const scanf_format_list&);
@@ -326,6 +336,10 @@ private:
 
   octave_value scanf (const string& fmt, const Matrix& size, int& count);
 
+  octave_value do_oscanf (const scanf_format_elt *elt);
+
+  octave_value_list oscanf (const string& fmt);
+
   // Functions that are defined for all output streams (output streams
   // are those that define os).
 
@@ -396,6 +410,8 @@ public:
 	     octave_base_stream::arch_type at);
 
   octave_value scanf (const string& fmt, const Matrix& size, int& count);
+
+  octave_value_list oscanf (const string& fmt);
 
   int printf (const string& fmt, const octave_value_list& args);
 

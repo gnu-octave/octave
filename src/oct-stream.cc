@@ -24,6 +24,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include <cstring>
+
 #include <iomanip.h>
 #include <strstream.h>
 
@@ -149,6 +151,7 @@ scanf_format_list::scanf_format_list (const string& s)
 
   int i = 0;
 
+  int width = 0;
   bool discard = false;
   char modifier = '\0';
   char type = '\0';
@@ -164,11 +167,13 @@ scanf_format_list::scanf_format_list (const string& s)
 
       if (s[i] == '%')
 	{
-	  process_conversion (s, i, n, discard, type, modifier, num_elts);
+	  process_conversion (s, i, n, width, discard, type, modifier,
+			      num_elts);
 	  have_more = (buf != 0);
 	}
       else
 	{
+	  width = 0;
 	  discard = false;
 	  modifier = '\0';
 	  type = '\0';
@@ -183,7 +188,7 @@ scanf_format_list::scanf_format_list (const string& s)
     }
 
   if (have_more)
-    add_elt_to_list (discard, type, modifier, num_elts);
+    add_elt_to_list (width, discard, type, modifier, num_elts);
 
   list.resize (num_elts);
 
@@ -202,7 +207,7 @@ scanf_format_list::~scanf_format_list (void)
 }
 
 void
-scanf_format_list::add_elt_to_list (bool discard, char type,
+scanf_format_list::add_elt_to_list (int width, bool discard, char type,
 				    char modifier, int& num_elts)
 {
   if (buf)
@@ -216,7 +221,7 @@ scanf_format_list::add_elt_to_list (bool discard, char type,
 	  if (*text)
 	    {
 	      scanf_format_elt *elt
-		= new scanf_format_elt (text, discard, type, modifier);
+		= new scanf_format_elt (text, width, discard, type, modifier);
 
 	      if (num_elts == list.length ())
 		list.resize (2 * num_elts);
@@ -234,10 +239,11 @@ scanf_format_list::add_elt_to_list (bool discard, char type,
 
 void
 scanf_format_list::process_conversion (const string& s, int& i, int n,
-				       bool& discard, char& type,
+				       int& width, bool& discard, char& type,
 				       char& modifier, int& num_elts)
 
 {
+  width = 0;
   discard = false;
   modifier = '\0';
   type = '\0';
@@ -266,10 +272,16 @@ scanf_format_list::process_conversion (const string& s, int& i, int n,
 	    nconv = -1;
 	  else
 	    {
+	      char c = s[i++];
+	      width = width * 10 + c - '0';
 	      have_width = true;
-	      *buf << s[i++];
+	      *buf << c;
 	      while (i < n && isdigit (s[i]))
-		*buf << s[i++];
+		{
+		  c = s[i++];
+		  width = width * 10 + c - '0';
+		  *buf << c;
+		}
 	    }
 	  break;
 
@@ -309,7 +321,7 @@ scanf_format_list::process_conversion (const string& s, int& i, int n,
 
 	fini:
 	  {
-	    if (finish_conversion (s, i, n, discard, type,
+	    if (finish_conversion (s, i, n, width, discard, type,
 				   modifier, num_elts) == 0)
 	      return;
 	  }
@@ -329,7 +341,7 @@ scanf_format_list::process_conversion (const string& s, int& i, int n,
 
 int
 scanf_format_list::finish_conversion (const string& s, int& i, int n,
-				      bool discard, char& type,
+				      int& width, bool discard, char& type,
 				      char modifier, int& num_elts)
 {
   int retval = 0;
@@ -365,23 +377,12 @@ scanf_format_list::finish_conversion (const string& s, int& i, int n,
 	    retval = nconv = -1;
 	}
       else
-	{
-	  // XXX FIXME XXX -- this is a kludge, and probably not the
-	  // right thing to do here.
-
-	  if (type == 's')
-	    {
-	      *buf << 'c';
-	      i++;
-	    }
-	  else
-	    *buf << s[i++];
-	}
+	*buf << s[i++];
 
       nconv++;
 
       if (nconv > 0)
-	add_elt_to_list (discard, type, modifier, num_elts);
+	add_elt_to_list (width, discard, type, modifier, num_elts);
     }
 
   return retval;
@@ -396,7 +397,8 @@ scanf_format_list::printme (void) const
     {
       scanf_format_elt *elt = list.elem (i);
 
-      cerr << elt->discard << "\t"
+      cerr << elt->width << "\t"
+	   << elt->discard << "\t"
 	   << elt->type << "\t"
 	   << elt->modifier << "\t"
 	   << undo_string_escapes (elt->text) << "\n";
@@ -742,7 +744,7 @@ octave_base_stream::do_gets (int max_len, bool& err,
 
   if (isp)
     {
-      istream is = *isp;
+      istream& is = *isp;
 
       // XXX FIXME XXX -- this should probably be converted to use
       // sstream when that is available.
@@ -867,7 +869,7 @@ octave_base_stream::do_read (int nr, int nc, data_type dt, int skip,
 
   if (isp)
     {
-      istream is = *isp;
+      istream& is = *isp;
 
       for (;;)
 	{
@@ -1037,8 +1039,6 @@ octave_base_stream::read (const Matrix& size, data_type dt, int skip,
 #define do_scanf_conv(is, fmt, valptr, mval, data, idx, max_size, discard) \
   do \
     { \
-      is.clear (); \
- \
       is.scan (fmt, valptr); \
  \
       if (is) \
@@ -1104,7 +1104,7 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 
   if (isp)
     {
-      istream is = *isp;
+      istream& is = *isp;
 
       const scanf_format_elt *elt = fmt_list.first ();
 
@@ -1112,11 +1112,6 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 
       for (;;)
 	{
-	  // Restore format flags in case we had to change them (note
-	  // 'c' conversion below).
-
-	  is.setf (flags);
-
 	  if (elt)
 	    {
 	      if (nr > 0 && nc > 0 && count == max_size)
@@ -1137,8 +1132,7 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 		  {
 		    int dummy;
 
-		    do_scanf_conv (is, fmt, &dummy, mval, data, count,
-				   max_size, discard);
+		    is.scan (fmt, &dummy);
 		  }
 		  break;
 
@@ -1176,15 +1170,55 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 
 		case 's':
 		  {
-		    char tmp;
+		    int len = strlen (fmt);
+		    char *tmp_fmt = new char [len+1];
+		    strcpy (tmp_fmt, fmt);
+		    if (tmp_fmt[len-1] == 's')
+		      tmp_fmt[len-1] = 'c';
 
-		    do_scanf_conv (is, fmt, &tmp, mval, data, count,
-				   max_size, discard);
+		    int width = elt->width ? elt->width : 1;
+
+		    char *tmp = new char [width+1];
+
+		    is.scan (tmp_fmt, tmp);
+
+		    delete [] tmp_fmt;
+
+		    tmp[width] = '\0';
+
+		    if (is)
+		      {
+			int i = 0;
+
+			if (! discard)
+			  {
+			    while (i < width && tmp[i] != '\0')
+			      {
+				if (count == max_size)
+				  {
+				    max_size *= 2;
+
+				    if (nr > 0)
+				      mval.resize (nr, max_size / nr, 0.0);
+				    else
+				      mval.resize (max_size, 1, 0.0);
+
+				    data = mval.fortran_vec ();
+				  }
+
+				data[count++] = tmp[i++];
+			      }
+			  }
+		      }
+
+		    delete [] tmp;
+
+		    is.setf (flags);
 		  }
 		  break;
 
 		case 'p': case '[':
-		  error ("fscanf: unrecognized format specifier");
+		  error ("fscanf: unsupported format specifier");
 		  break;
 
 		default:
@@ -1273,10 +1307,6 @@ octave_value
 octave_base_stream::scanf (const string& fmt, const Matrix& size,
 			   int& count)
 {
-  // XXX FIXME XXX -- is this the right thing to do?
-  if (name () == "stdin")
-    fail = false;
-
   octave_value retval = Matrix ();
 
   count = 0;
@@ -1285,11 +1315,226 @@ octave_base_stream::scanf (const string& fmt, const Matrix& size,
 
   if (isp)
     {
-      istream is = *isp;
+      istream& is = *isp;
 
       scanf_format_list fmt_list (fmt);
 
       switch (fmt_list.num_conversions ())
+	{
+	case -1:
+	  ::error ("fscanf: invalid format specified");
+	  break;
+
+	case 0:
+	  {
+	    const scanf_format_elt *elt = fmt_list.first ();
+
+	    if (elt)
+	      {
+		is.clear ();
+
+		is.scan (elt->text);
+
+		if (! is)
+		  {
+		    error ("fscanf: read error");
+
+		    // XXX FIXME XXX -- is this the right thing to do?
+
+		    if (name () == "stdin")
+		      {
+			is.clear ();
+
+			// Skip to end of line.
+
+			bool err;
+			do_gets (-1, err, false, "fscanf");
+		      }
+		  }
+	      }
+	  }
+	  break;
+
+	default:
+	  {
+	    int nr = -1;
+	    int nc = -1;
+
+	    get_size (size, nr, nc, "fscanf");
+
+	    if (! error_state)
+	      retval = do_scanf (fmt_list, nr, nc, count);
+	  }
+	  break;
+	}
+    }
+  else
+    invalid_operation ("fscanf", "writing");
+
+  return retval;
+}
+
+#define do_oscanf_num_conv(is, fmt, valptr) \
+  do \
+    { \
+      streambuf *isb = is.rdbuf (); \
+ \
+      if (isb->scan (fmt, valptr) > 0) \
+	{ \
+	  if (! discard && is) \
+	    retval = (double) (*valptr); \
+	} \
+      else \
+	error ("fscanf: conversion failed"); \
+    } \
+  while (0)
+
+#define do_oscanf_str_conv(is, fmt, sptr, maxlen) \
+  do \
+    { \
+      streambuf *isb = is.rdbuf (); \
+ \
+      if (isb->scan (fmt, sptr) > 0) \
+	{ \
+	  if (! discard && is) \
+	    { \
+	      sptr[maxlen] = '\0'; \
+	      retval = sptr; \
+	    } \
+	} \
+      else \
+	error ("fscanf: conversion failed"); \
+    } \
+  while (0)
+
+octave_value
+octave_base_stream::do_oscanf (const scanf_format_elt *elt)
+{
+  octave_value retval = Matrix ();
+
+  istream *isp = input_stream ();
+
+  if (isp)
+    {
+      istream& is = *isp;
+
+      ios::fmtflags flags = is.flags ();
+
+      if (elt)
+	{
+	  const char *fmt = elt->text;
+
+	  bool discard = elt->discard;
+
+	  switch (elt->type)
+	    {
+	    case '%':
+	      {
+		int dummy;
+
+		is.scan (fmt, &dummy);
+	      }
+	      break;
+
+	    case 'd': case 'i': case 'o': case 'u': case 'x':
+	      {
+		int tmp;
+
+		do_oscanf_num_conv (is, fmt, &tmp);
+	      }
+	      break;
+
+	    case 'e': case 'f': case 'g':
+	      {
+		if (elt->modifier == 'l')
+		  {
+		    double tmp;
+
+		    do_oscanf_num_conv (is, fmt, &tmp);
+		  }
+		else
+		  {
+		    float tmp;
+
+		    do_oscanf_num_conv (is, fmt, &tmp);
+		  }
+	      }
+	      break;
+
+	    case 'c':
+	      {
+		is.unsetf (ios::skipws);
+
+		int width = elt->width ? elt->width : 1;
+
+		char *tmp = new char[width + 1];
+
+		do_oscanf_str_conv (is, fmt, tmp, width);
+
+		is.setf (flags);
+
+		delete [] tmp;
+	      }
+	      break;
+
+	    case 's':
+	      {
+		// XXX FIXME XXX -- this must be fixed!
+
+		int width = 65535;
+		char *tmp = new char [width+1];
+		do_oscanf_str_conv (is, fmt, tmp, width);
+		delete [] tmp;
+	      }
+	      break;
+
+	    case 'p': case '[':
+	      error ("fscanf: unsupported format specifier");
+	      break;
+
+	    default:
+	      error ("fscanf: internal format error");
+	      break;
+	    }
+	}
+
+      if (ok () && is.fail ())
+	{
+	  error ("fscanf: read error");
+      
+	  // XXX FIXME XXX -- is this the right thing to do?
+	  // What about other streams?
+	  if (name () == "stdin")
+	    {
+	      is.clear ();
+
+	      // Skip to end of line.
+
+	      bool err;
+	      do_gets (-1, err, false, "fscanf");
+	    }
+	}
+    }
+
+  return retval;
+}
+
+octave_value_list
+octave_base_stream::oscanf (const string& fmt)
+{
+  octave_value_list retval;
+
+  istream *isp = input_stream ();
+
+  if (isp)
+    {
+      istream& is = *isp;
+
+      scanf_format_list fmt_list (fmt);
+
+      int nconv = fmt_list.num_conversions ();
+
+      switch (nconv)
 	{
 	case -1:
 	  ::error ("fscanf: invalid format specified");
@@ -1331,13 +1576,25 @@ octave_base_stream::scanf (const string& fmt, const Matrix& size,
 
 	default:
 	  {
-	    int nr = -1;
-	    int nc = -1;
+	    int len = fmt_list.length ();
 
-	    get_size (size, nr, nc, "fscanf");
+	    retval.resize (nconv, Matrix ());
 
-	    if (! error_state)
-	      retval = do_scanf (fmt_list, nr, nc, count);
+	    const scanf_format_elt *elt = fmt_list.first ();
+
+	    for (int i = 0; i < nconv; i++)
+	      {
+		retval (i) = do_oscanf (elt);
+
+		if (! ok ())
+		  break;
+
+		elt = fmt_list.next ();
+	      }
+
+	    // Pick up any trailing stuff.
+	    if (ok () && len > nconv)
+	      do_oscanf (elt);
 	  }
 	  break;
 	}
@@ -1393,7 +1650,7 @@ octave_base_stream::do_write (const double *data, int n, data_type dt,
 
   if (osp)
     {
-      ostream os = *osp;
+      ostream& os = *osp;
 
       // XXX FIXME XXX -- maybe there should be a special case for
       // skip == 0.
@@ -1714,7 +1971,7 @@ octave_base_stream::do_printf (printf_format_list& fmt_list,
 
   if (osp)
     {
-      ostream os = *osp;
+      ostream& os = *osp;
 
       const printf_format_elt *elt = fmt_list.first ();
 
@@ -1844,7 +2101,7 @@ octave_base_stream::printf (const string& fmt, const octave_value_list& args)
 
   if (osp)
     {
-      ostream os = *osp;
+      ostream& os = *osp;
 
       printf_format_list fmt_list (fmt);
 
@@ -1895,7 +2152,7 @@ octave_base_stream::puts (const string& s)
 
   if (osp)
     {
-      ostream os = *osp;
+      ostream& os = *osp;
 
       os << s;
 
@@ -2146,6 +2403,17 @@ octave_stream::scanf (const string& fmt, const Matrix& size, int& count)
   return retval;
 }
 
+octave_value_list
+octave_stream::oscanf (const string& fmt)
+{
+  octave_value_list retval;
+
+  if (stream_ok ("fscanf"))
+    retval = rep->oscanf (fmt);
+
+  return retval;
+}
+
 int
 octave_stream::printf (const string& fmt, const octave_value_list& args)
 {
@@ -2204,8 +2472,6 @@ octave_stream::error (bool clear, int& errno)
 
   if (stream_ok ("ferror", false))
     retval = rep->error (clear, errno);
-
-  cerr << retval;
 
   return retval;
 }

@@ -592,16 +592,19 @@ matrix A.  SIZE is optional.  If present, it can be one of\n\
 \n\
 If it is omitted, a value of Inf is assumed.\n\
 \n\
-The number of items successfully read is returned in COUNT")
+The number of items successfully read is returned in COUNT.\n\
+\n\
+[A, B, ...] = fscanf (FILENUM, FORMAT, \"C\")\n\
+\n\
+Read from FILENUM according to FORMAT, with each conversion specifier\n\
+in FORMAT corresponding to a single scalar return value.  This form is\n\
+more `C-like', and also compatible with previous versions of Octave")
 {
   octave_value_list retval;
 
-  retval (1) = 0.0;
-  retval (0) = Matrix ();
-
   int nargin = args.length ();
 
-  if (nargin == 2 || nargin == 3)
+  if (nargin == 3 && args(2).is_string ())
     {
       octave_stream *os = octave_stream_list::lookup (args(0));
 
@@ -611,18 +614,7 @@ The number of items successfully read is returned in COUNT")
 	    {
 	      string fmt = args(1).string_value ();
 
-	      int count = 0;
-
-	      Matrix size = (nargin == 3)
-		? args(2).matrix_value () : Matrix (1, 1, octave_Inf);
-
-	      if (! error_state)
-		{
-		  octave_value tmp = os->scanf (fmt, size, count);
-
-		  retval(1) = (double) count;
-		  retval(0) = tmp;
-		}
+	      retval = os->oscanf (fmt);
 	    }
 	  else
 	    ::error ("fscanf: format must be a string");
@@ -631,7 +623,42 @@ The number of items successfully read is returned in COUNT")
 	gripe_invalid_file_id ("fscanf");
     }
   else
-    print_usage ("fscanf");
+    {
+      retval (1) = 0.0;
+      retval (0) = Matrix ();
+
+      if (nargin == 2 || nargin == 3)
+	{
+	  octave_stream *os = octave_stream_list::lookup (args(0));
+
+	  if (os)
+	    {
+	      if (args(1).is_string ())
+		{
+		  string fmt = args(1).string_value ();
+
+		  int count = 0;
+
+		  Matrix size = (nargin == 3)
+		    ? args(2).matrix_value () : Matrix (1, 1, octave_Inf);
+
+		  if (! error_state)
+		    {
+		      octave_value tmp = os->scanf (fmt, size, count);
+
+		      retval(1) = (double) count;
+		      retval(0) = tmp;
+		    }
+		}
+	      else
+		::error ("fscanf: format must be a string");
+	    }
+	  else
+	    gripe_invalid_file_id ("fscanf");
+	}
+      else
+	print_usage ("fscanf");
+    }
 
   return retval;
 }
@@ -639,7 +666,7 @@ The number of items successfully read is returned in COUNT")
 DEFUN (sscanf, args, ,
   "[A, COUNT, ERRMSG, INDEX] = sscanf (STRING, FORMAT, SIZE)\n\
 \n\
-Read from FILENUM according to FORMAT, returning the result in the\n\
+Read from STRING according to FORMAT, returning the result in the\n\
 matrix A.  SIZE is optional.  If present, it can be one of\n\
 \n\
        Inf : read as much as possible, returning a column vector\n\
@@ -654,19 +681,20 @@ If it is omitted, a value of Inf is assumed.\n\
 The number of items successfully read is returned in COUNT.  If an\n\
 error occurs, ERRMSG contains the text of the corresponding error\n\
 message.  INDEX contains the index of the next character to be read\n\
-from STRING")
+from STRING\n\
+\n\
+[A, B, ...] = sscanf (STRING, FORMAT, \"C\")\n\
+\n\
+Read from STRING according to FORMAT, with each conversion specifier\n\
+in FORMAT corresponding to a single scalar return value.  This form is\n\
+more `C-like', and also compatible with previous versions of Octave")
 {
   octave_value_list retval;
 
   int nargin = args.length ();
 
-  if (nargin == 2 || nargin == 3)
+  if (nargin == 3 && args(2).is_string ())
     {
-      retval(3) = -1.0;
-      retval(2) = "unknown error";
-      retval(1) = 0.0;
-      retval(0) = Matrix ();
-
       if (args(0).is_string ())
 	{
 	  string data = args(0).string_value ();
@@ -681,22 +709,7 @@ from STRING")
 		{
 		  string fmt = args(1).string_value ();
 
-		  int count = 0;
-
-		  Matrix size = (nargin == 3)
-		    ? args(2).matrix_value () : Matrix (1, 1, octave_Inf);
-
-		  octave_value tmp = os.scanf (fmt, size, count);
-
-		  // XXX FIXME XXX -- is this the right thing to do?
-		  // Extract error message first, because getting
-		  // position will clear it.
-		  string errmsg = os.error ();
-
-		  retval(3) = (double) (os.tell () + 1);
-		  retval(2) = errmsg;
-		  retval(1) = (double) count;
-		  retval(0) = tmp;
+		  retval = os.oscanf (fmt);
 		}
 	      else
 		::error ("sscanf: format must be a string");
@@ -708,9 +721,73 @@ from STRING")
 	::error ("sscanf: first argument must be a string");
     }
   else
-    print_usage ("sscanf");
+    {
+      if (nargin == 2 || nargin == 3)
+	{
+	  retval(3) = -1.0;
+	  retval(2) = "unknown error";
+	  retval(1) = 0.0;
+	  retval(0) = Matrix ();
+
+	  if (args(0).is_string ())
+	    {
+	      string data = args(0).string_value ();
+
+	      octave_istrstream istr (data);
+
+	      octave_stream os (&istr, true);
+
+	      if (os)
+		{
+		  if (args(1).is_string ())
+		    {
+		      string fmt = args(1).string_value ();
+
+		      int count = 0;
+
+		      Matrix size = (nargin == 3)
+			? args(2).matrix_value () : Matrix (1, 1, octave_Inf);
+
+		      octave_value tmp = os.scanf (fmt, size, count);
+
+		      // XXX FIXME XXX -- is this the right thing to do?
+		      // Extract error message first, because getting
+		      // position will clear it.
+		      string errmsg = os.error ();
+
+		      retval(3) = (double) (os.tell () + 1);
+		      retval(2) = errmsg;
+		      retval(1) = (double) count;
+		      retval(0) = tmp;
+		    }
+		  else
+		    ::error ("sscanf: format must be a string");
+		}
+	      else
+		::error ("sscanf: unable to create temporary input buffer");
+	    }
+	  else
+	    ::error ("sscanf: first argument must be a string");
+	}
+      else
+	print_usage ("sscanf");
+    }
 
   return retval;
+}
+
+DEFUN (scanf, args, nargout,
+  "scanf (FORMAT) is equivalent to fscanf (stdin, FORMAT)")
+{
+  int nargin = args.length ();
+
+  octave_value_list tmp_args (nargin+1, octave_value ());
+
+  tmp_args (0) = 0.0;
+  for (int i = 0; i < nargin; i++)
+    tmp_args (i+1) = args (i);
+
+  return Ffscanf (tmp_args, nargout);
 }
 
 static octave_value

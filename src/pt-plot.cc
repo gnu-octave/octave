@@ -33,9 +33,10 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
+#include <string.h>
 #include <iostream.h>
-#include <fstream.h>
 #include <strstream.h>
+#include <fstream.h>
 
 #include "SLStack.h"
 #include "procstream.h"
@@ -70,6 +71,76 @@ static SLStack <char *> tmp_files;
 
 // Pipe to gnuplot.
 static oprocstream plot_stream;
+
+static void
+open_plot_stream (void)
+{
+  static int initialized = 0;
+
+  if (! plot_stream.is_open ())
+    {
+      plot_line_count = 0;
+
+      char *plot_prog = user_pref.gnuplot_binary;
+      if (plot_prog)
+	{
+	  plot_stream.open (plot_prog);
+	  if (! plot_stream.is_open ())
+	    {
+	      warning ("plot: unable to open pipe to `%s'",
+		       plot_prog);
+
+	      if (strcmp (plot_prog, "gnuplot") != 0)
+		{
+		  warning ("having trouble finding plotting program.");
+		  warning ("trying again with `gnuplot'");
+		  goto last_chance;
+		}
+	    }
+	}
+      else
+	{
+	last_chance:
+
+	  plot_stream.open ("gnuplot");
+
+	  if (! plot_stream.is_open ())
+	    error ("plot: unable to open pipe to `%s'", plot_prog);
+	}
+    }
+
+  if (! initialized)
+    {
+      initialized = 1;
+      plot_stream << "set data style lines\n";
+    }
+}
+
+static int
+send_to_plot_stream (const char *cmd)
+{
+// From sighandlers.cc:
+  extern int pipe_handler_error_count;
+
+  if (! plot_stream.is_open ())
+    {
+      open_plot_stream ();
+
+      if (error_state)
+	return -1;
+    }
+
+  if (plot_line_count == 0 && strncmp (cmd, "replot", 6) == 0)
+    error ("replot: no previous plot");
+  else
+    {
+      plot_stream << cmd;
+      plot_stream.flush ();
+      pipe_handler_error_count = 0;
+    }
+
+  return 0;
+}
 
 // Plotting, eh?
 
@@ -108,6 +179,8 @@ tree_plot_command::eval (void)
 {
   if (error_state)
     return;
+
+  open_plot_stream ();
 
   ostrstream plot_buf;
 
@@ -769,62 +842,6 @@ cleanup_tmp_files (void)
       unlink (filename);
       delete [] filename;
     }
-}
-
-int
-send_to_plot_stream (const char *cmd)
-{
-// From sighandlers.cc:
-  extern int pipe_handler_error_count;
-
-  static int initialized = 0;
-
-  if (! plot_stream.is_open ())
-    {
-      plot_line_count = 0;
-
-      char *plot_prog = user_pref.gnuplot_binary;
-      if (plot_prog)
-	{
-	  plot_stream.open (plot_prog);
-	  if (! plot_stream.is_open ())
-	    {
-	      warning ("plot: unable to open pipe to `%s'",
-		       plot_prog);
-
-	      if (strcmp (plot_prog, "gnuplot") != 0)
-		{
-		  warning ("having trouble finding plotting program.");
-		  warning ("trying again with `gnuplot'");
-		  goto last_chance;
-		}
-	    }
-	}
-      else
-	{
-	last_chance:
-
-	  plot_stream.open ("gnuplot");
-
-	  if (! plot_stream.is_open ())
-	    {
-	      error ("plot: unable to open pipe to `%s'", plot_prog);
-	      return -1;
-	    }
-	}
-    }
-
-  if (! initialized)
-    {
-      initialized = 1;
-      plot_stream << "set data style lines\n";
-    }
-
-  plot_stream << cmd;
-  plot_stream.flush ();
-  pipe_handler_error_count = 0;
-
-  return 0;
 }
 
 void

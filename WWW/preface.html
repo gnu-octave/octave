@@ -1,0 +1,164 @@
+<!doctype html public "-//IETF//DTD HTML Strict//EN">
+<html>
+<head>
+<title> Preface to the Octave Manual </title>
+</head>
+
+<body>
+<h2>Preface</h2>
+<p>
+Octave was originally intended to be companion software for an
+undergraduate-level textbook on chemical reactor design being written by
+James B. Rawlings of the University of Wisconsin-Madison and John
+G. Ekerdt of the University of Texas.
+</p>
+
+<p>
+Clearly, Octave is now much more than just another `courseware' package
+with limited utility beyond the classroom.  Although our initial goals
+were somewhat vague, we knew that we wanted to create something that
+would enable students to solve realistic problems, and that they could
+use for many things other than chemical reactor design problems.
+</p>
+
+<p>
+There are those who would say that we should be teaching the students
+Fortran instead, because that is the computer language of engineering,
+but every time we have tried that, the students have spent far too much
+time trying to figure out why their Fortran code crashes and not enough
+time learning about chemical engineering.  With Octave, most students
+pick up the basics quickly, and are using it confidently in just a few
+hours.
+</p>
+
+<p>
+Although it was originally intended to be used to teach reactor design,
+it has been used in several other undergraduate and graduate
+courses in the Chemical Engineering Department at the University of
+Texas, and the math department at the University of Texas has been using
+it for teaching differential equations and linear algebra as well.  If
+you find it useful, please let us know.  We are always interested to
+find out how Octave is being used in other places.
+</p>
+
+<p>
+Virtually everyone thinks that the name Octave has something to do with
+music, but it is actually the name of a former
+<a href="http://www.engr.orst.edu/~reed/CSTR/profs.html">professor</a>
+of mine who wrote a famous textbook on chemical reaction engineering,
+and who was also well known for his ability to do quick `back of the
+envelope' calculations.  We hope that this software will make it
+possible for many people to do more ambitious computations just as
+easily.
+</p>
+
+<p>
+Everyone is encouraged to share this software with others under the
+terms of the
+<a href="cgi-bin/info2www?(octave)Copying">GNU General Public License</a>
+as described at the beginning of this manual.  You are also encouraged
+to help make Octave more useful by writing and contributing additional
+functions for it, and by reporting any problems you may have.
+</p>
+
+<p>
+Many people have already contributed to Octave's development.  In
+addition to John W. Eaton, the following people have helped write parts
+of Octave or helped out in various other ways.
+</p>
+
+<ul>
+<li><em>Karl Berry</em> (karl@cs.umb.edu) wrote the <tt>kpathsea</tt> library
+that allows Octave to recursively search directory paths for function
+and script files.</li>
+
+<li><em>Georg Beyerle</em> (gbeyerle@awi-potsdam.de) contributed code to
+save values in Matlab's <tt>.mat</tt>-file format, and has provided
+many useful bug reports and suggestions.</li>
+
+<li><em>John Campbell</em> (jcc@bevo.che.wisc.edu) wrote most of the file
+and C-style input and output functions.</li>
+
+<li><em>Brian Fox</em> (bfox@gnu.ai.mit.edu) wrote the <tt>readline</tt>
+library used for command history editing, and the portion of this
+manual that documents it.</li>
+
+<li><em>A. Scottedward Hodel</em> (scotte@eng.auburn.edu) contributed a
+number of functions including <tt>expm</tt>, <tt>qzval</tt>,
+<tt>qzhess</tt>, <tt>syl</tt>, <tt>lyap</tt>, and <tt>balance</tt>.</li>
+
+<li><em>Kurt Hornik</em> (Kurt.Hornik@ci.tuwien.ac.at) provided the
+<tt>corrcoef</tt>, <tt>cov</tt>, <tt>kurtosis</tt>, <tt>pinv</tt>, and
+<tt>skewness</tt> functions.</li>
+
+<li><em>Phil Johnson</em> (johnsonp@nicco.sscnet.ucla.edu) has helped to
+make Linux releases available.</li>
+
+<li><em>Friedrich Leisch</em> (leisch@ci.tuwien.ac.at) provided the
+<tt>mahalanobis</tt> function.</li>
+
+<li><em>Ken Neighbors</em> (wkn@leland.stanford.edu) has provided many
+useful bug reports and comments on Matlab compatibility.</li>
+
+<li><em>Rick Niles</em> (niles@axp745.gsfc.nasa.gov) rewrote Octave's
+plotting functions to add line styles and the ability to specify an
+unlimited number of lines in a single call.  He also continues to
+track down odd incompatibilities and bugs.</li>
+
+<li><em>Mark Odegard</em> (meo@sugarland.unocal.com) provided the initial
+implementation of <tt>fread</tt>, <tt>fwrite</tt>, <tt>feof</tt>, and
+<tt>ferror</tt>.</li>
+
+<li><em>Tony Richardson</em> (tony@guts.biomed.uakron.edu) wrote Octave's
+image processing functions as well as most of the original polynomial
+functions.</li>
+
+<li><em>R. Bruce Tenison</em> (Bruce.Tenison@eng.auburn.edu) wrote the
+<tt>hess</tt> and <tt>schur</tt> functions.</li>
+
+<li><em>Teresa Twaroch</em> (twaroch@ci.tuwien.ac.at) provided the functions
+<tt>gls</tt> and <tt>ols</tt>.</li>
+
+<li><em>Fook Fah Yap</em> (ffy@eng.cam.ac.uk) provided the <tt>fft</tt> and
+<tt>ifft</tt> functions and valuable bug reports for early versions.
+</ul>
+
+<p>
+Special thanks to the following people and organizations for
+supporting the development of Octave:
+</p>
+
+<ul>
+<li><em>Digital Equipment Corporation</em>, for an equipment grant as part
+of their External Research Program.</li>
+
+<li><em>Sun Microsystems</em>, Inc., for an Academic Equipment grant.</li>
+
+<li><em>International Business Machines, Inc.</em>, for providing equipment
+as part of a grant to the University of Texas College of Engineering.</li>
+
+<li><em>Texaco Chemical Company</em>, for providing funding to continue the
+development of this software.</li>
+
+<li><em>The University of Texas College of Engineering</em>, for providing a
+Challenge for Excellence Research Supplement, and for providing an
+Academic Development Funds grant.</li>
+
+<li><em>The State of Texas</em>, for providing funding through the Texas
+Advanced Technology Program under Grant No. 003658-078.</li>
+
+<li><em>Noel Bell</em>, Senior Engineer, Texaco Chemical Company, Austin
+Texas.</li>
+
+<li><em>James B. Rawlings</em>, Professor, University of Wisconsin-Madison,
+Department of Chemical Engineering.</li>
+
+<li><em>Richard Stallman</em>, for writing GNU.</li>
+</ul>
+
+<p>
+This project would not have been possible without the GNU software used
+in and used to produce Octave.
+</p>
+</body>
+</html>

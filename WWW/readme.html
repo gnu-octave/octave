@@ -1,0 +1,120 @@
+<!doctype html public "-//IETF//DTD HTML Strict//EN">
+<html>
+<head>
+<title> Octave -- a high-level language for numerical computations </title>
+</head>
+
+<h3>Copyright (C) 1996 John W. Eaton</h3>
+
+<h4>Overview</h4>
+<p>
+Octave is a high-level language, primarily intended for numerical
+computations.  It provides a convenient command line interface for
+solving linear and nonlinear problems numerically.
+</p>
+
+<p>
+Octave is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2, or (at your option) any
+later version.
+</p>
+
+<p>
+Octave is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the file COPYING for more
+details.
+</p>
+
+<h4>Availability</h4>
+<p>
+The latest released version of Octave is always available via
+anonymous ftp from <a href="ftp://ftp.che.wisc.edu/pub/octave">
+ftp.che.wisc.edu</a> in the directory /pub/octave.
+Complete source and binaries for several popular systems are
+available.
+</p>
+
+<h4>Installation and Bugs</h4>
+<p>
+Octave requires approximately 25MB of disk storage to unpack and
+install (significantly 	less if you don't compile with debugging
+symbols).  In order to build Octave, you will need a current version
+of g++, libg++, and GNU make.  Octave is known to compile on the
+following systems:
+</p>
+
+<ul>
+<li>SPARCstation 2 SunOS 4.1.2</li>
+<li>IBM RS/6000 AIX 3.2.x</li>
+<li>DECstation 5000/240 Ultrix 4.2a</li>
+<li>i486 Linux</li>
+<li>i486 NetBSD (without IEEE floating point support)</li>
+<li>HP 9000/7xx HP-UX 9.x</li>
+<li>SGI Irix 4.04</li>
+<li>NeXT NeXTStep ?</li>
+</ul>
+
+<p>
+See the notes in the files INSTALL and INSTALL.OCTAVE for more
+specific installation instructions, including directions for
+installing Octave from a binary distribution.
+</p>
+
+<p>
+The file BUGS contains a recommended procedure for reporting bugs, as
+well as a list of known problems.
+</p>
+
+<h4>Binary Distributions</h4>
+<p>
+Binary copies of Octave are now distributed for several popular Unix
+systems.  To save disk space, the complete source code for Octave is
+no longer included with the binary distribution, but should be
+available in the same place as the binaries.  If not, please contact
+bug-octave@bevo.che.wisc.edu.
+</p>
+
+<p>
+The file INSTALL.OCTAVE contains specific installation instructions,
+for installing Octave from a binary distribution.
+</p>
+
+<h4>Implemenation</h4>
+<p>
+Octave is being developed with the Free Software Foundation's make,
+bison (a replacement for YACC), flex (a replacement for lex), gcc/g++,
+and libg++ on a SPARCstation II and a DECstation 5000/240.  It should
+be possible to install it on any machine that runs GCC/G++.  It may
+also be possible to install it using other implementations of these
+tools, but it will most certainly require much more work.  Do yourself
+a favor and get the GNU development tools, either via anonymous ftp
+from prep.ai.mit.edu or by writing the Free Software Foundation, 675
+Mass Ave, Cambridge, MA 02139, USA.
+</p>
+
+<p>
+The underlying numerical solvers are currently standard Fortran ones
+like Lapack, Linpack, Odepack, the Blas, etc., packaged in a library
+of C++ classes (see the files in the libcruft and liboctave
+subdirectories).  If possible, the Fortran subroutines are compiled
+with the system's Fortran compiler, and called directly from the C++
+functions.  If that's not possible, they are translated with f2c and
+compiled with a C compiler.  Better performance is usually achieved if
+the intermediate translation to C is avoided.
+</p>
+
+<p>
+The library of C++ classes may also be useful by itself.
+</p>
+
+<h4>Author</h4>
+<p>
+<a href="http://www.che.wisc.edu/~jwe">John W. Eaton</a><br>
+<a href="mailto:jwe@bevo.che.wisc.edu"><i>jwe@bevo.che.wisc.edu</i></a><br>
+University of Wisconsin<br>
+Department of Chemical Engineering<br>
+Madison WI 53719
+</body>
+</html>

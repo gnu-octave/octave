@@ -73,7 +73,10 @@ public:
   void assign (octave_value::assign_op, const octave_value&);
 
   octave_lvalue struct_elt_ref (const string& nm)
-    { return val->struct_elt_ref (nm); }
+    {
+      val->make_unique ();
+      return val->struct_elt_ref (nm);
+    }
 
   void set_index (const octave_value_list& i) { idx = i; }
 

@@ -451,6 +451,15 @@ Interpreter:
 
   * Make it possible to mark variables and functions as read-only.
 
+  * Provide a built-in function for applying a scalar function to an
+    array.  Be sure to note in the manual that this is not the
+    preferred way to write a function that can handle vector/matrix
+    arguments because there is a significant overhead for function
+    calls.  If you are really looking to make a function work for
+    vector/matrix arguments and you want it to run fast, you should
+    write it in terms of the existing vector/matrix operators as much
+    as possible.
+
 -------
 History:
 -------

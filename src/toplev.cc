@@ -301,10 +301,22 @@ Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.\n\
 
 // Execute a shell command.
 
+static int cmd_status = 0;
+
+static void
+cmd_death_handler (pid_t, int status)
+{
+  cmd_status = status;
+}
+
 static void
 cleanup_iprocstream (void *p)
 {
-  delete static_cast<iprocstream *> (p);
+  iprocstream *cmd = static_cast<iprocstream *> (p);
+
+  octave_child_list::remove (cmd->pid ());
+
+  delete cmd;
 }
 
 static octave_value_list
@@ -314,40 +326,52 @@ run_command_and_return_output (const string& cmd_str)
 
   iprocstream *cmd = new iprocstream (cmd_str.c_str ());
 
-  unwind_protect::add (cleanup_iprocstream, cmd);
+  cmd_status = -1;
 
-  int status = 127;
-
-  if (cmd && *cmd)
+  if (cmd)
     {
-      ostrstream output_buf;
+      octave_child_list::insert (cmd->pid (), cmd_death_handler);
 
-      char ch;
-      while (cmd->get (ch))
-	output_buf.put (ch);
+      unwind_protect::add (cleanup_iprocstream, cmd);
 
-      status = cmd->close ();
+      if (*cmd)
+	{
+	  ostrstream output_buf;
 
-      // The value in status is as returned by waitpid.  If the
-      // process exited normally, extract the actual exit status of
-      // the command.  Otherwise, return 127 as a failure code.
+	  char ch;
+	  while (cmd->get (ch))
+	    output_buf.put (ch);
 
-      if (WIFEXITED (status))
-	status = WEXITSTATUS (status);
+	  cmd->close ();
 
-      output_buf << ends;
+	  // One way or another, cmd_death_handler should be called
+	  // when the process exits, and it will save the exit status
+	  // of the command in cmd_status.
 
-      char *msg = output_buf.str ();
+	  // The value in cmd_status is as returned by waitpid.  If
+	  // the process exited normally, extract the actual exit
+	  // status of the command.  Otherwise, return 127 as a
+	  // failure code.
 
-      retval(1) = static_cast<double> (status);
-      retval(0) = msg;
+	  if (WIFEXITED (cmd_status))
+	    cmd_status = WEXITSTATUS (cmd_status);
+	  else
+	    cmd_status = 127;
 
-      delete [] msg;
+	  output_buf << ends;
+
+	  char *msg = output_buf.str ();
+
+	  retval(1) = (double) cmd_status;
+	  retval(0) = msg;
+
+	  delete [] msg;
+	}
+
+      unwind_protect::run ();
     }
   else
     error ("unable to start subprocess for `%s'", cmd_str.c_str ());
-
-  unwind_protect::run ();
 
   return retval;
 }

@@ -136,6 +136,8 @@ SCO_init (void)
 }
 #endif
 
+// XXX FIXME XXX -- some systems define struct __exception.
+
 #if defined (EXCEPTION_IN_MATH)
 extern "C"
 int

@@ -1,3 +1,8 @@
+Mon Jun 23 09:16:56 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* configure.in (BOUNDS_CHECKING): Fix comment, allow bounds
+	checking to be enabled.
+
 Fri Jun 20 14:26:17 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* configure.in: Define SH_LD, SH_LDFLAGS, and RLD_FLAG for

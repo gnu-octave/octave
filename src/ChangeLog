@@ -1,3 +1,15 @@
+Wed Jun 25 13:31:06 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* oct-lvalue.h (octave_lvalue::struct_elt_ref): Ensure val is unique.
+
+Fri Jun 20 12:33:35 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* toplev.cc (cmd_death_handler): New function.
+	(run_command_and_return_output): Insert pid of command in
+	octave_child_list along with pointer to cmd_death_handler so we
+	can get the exit status without having to block SIGCHLD.
+	(cleanup_iprocstream): Remove pid of command from octave_child_list.
+
 Sun Jun 15 16:11:13 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* OPERATORS/op-cs-s.cc (ldiv): Doh, v1 is complex, v2 is real.

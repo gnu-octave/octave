@@ -258,8 +258,14 @@ a function.")
 	    }
 	}
     }
-  else if (sr && sr->is_function ())
-    retval = 2.0;
+  else if (sr && sr->is_builtin_function ())
+    {
+      retval = 5.0;
+    }
+  else if (sr && sr->is_user_function ())
+    {
+      retval = 2.0;
+    }
   else
     {
       char *path = fcn_file_in_path (name);
@@ -270,9 +276,18 @@ a function.")
 	}
       else
 	{
-	  struct stat buf;
-	  if (stat (name, &buf) == 0 && S_ISREG (buf.st_mode))
-	    retval = 2.0;
+	  path = oct_file_in_path (name);
+	  if (path)
+	    {
+	      delete [] path;
+	      retval = 3.0;
+	    }
+	  else
+	    {
+	      struct stat buf;
+	      if (stat (name, &buf) == 0 && S_ISREG (buf.st_mode))
+		retval = 2.0;
+	    }
 	}
     }
 

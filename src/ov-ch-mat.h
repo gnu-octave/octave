@@ -82,17 +82,9 @@ public:
   bool is_char_matrix (void) const { return true; }
   bool is_real_matrix (void) const { return true; }
 
-  octave_value all (void) const { return matrix.all (); }
-  octave_value any (void) const { return matrix.any (); }
-
   bool is_real_type (void) const { return true; }
 
-  bool is_matrix_type (void) const { return true; }
-
-  bool is_numeric_type (void) const { return true; }
-
   bool valid_as_scalar_index (void) const;
-  bool valid_as_zero_index (void) const;
 
   double double_value (bool = false) const;
 

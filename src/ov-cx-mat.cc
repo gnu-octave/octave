@@ -179,13 +179,6 @@ octave_complex_matrix::valid_as_scalar_index (void) const
   return false;
 }
 
-bool
-octave_complex_matrix::valid_as_zero_index (void) const
-{
-  // XXX FIXME XXX
-  return false;
-}
-
 double
 octave_complex_matrix::double_value (bool force_conversion) const
 {

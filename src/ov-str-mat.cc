@@ -147,13 +147,6 @@ octave_char_matrix_str::valid_as_scalar_index (void) const
   error ("octave_char_matrix_str::valid_as_scalar_index(): not implemented");
   return retval;
 }
-bool
-octave_char_matrix_str::valid_as_zero_index (void) const
-{
-  bool retval = false;
-  error ("octave_char_matrix_str::valid_as_zero_index(): not implemented");
-  return retval;
-}
 
 Matrix
 octave_char_matrix_str::matrix_value (bool force_string_conv) const

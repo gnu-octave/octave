@@ -78,6 +78,13 @@ public:
     return r > c ? r : c;
   }
 
+  octave_value all (void) const { return matrix.all (); }
+  octave_value any (void) const { return matrix.any (); }
+
+  bool is_matrix_type (void) const { return true; }
+
+  bool is_numeric_type (void) const { return true; }
+
   bool is_defined (void) const { return true; }
 
   bool is_constant (void) const { return true; }

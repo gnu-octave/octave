@@ -94,8 +94,9 @@ public:
 
   bool is_matrix_type (void) const { return Vimplicit_str_to_num_ok; }
 
+  bool is_numeric_type (void) const { return Vimplicit_str_to_num_ok; }
+
   bool valid_as_scalar_index (void) const;
-  bool valid_as_zero_index (void) const;
 
   Matrix matrix_value (bool = false) const;
 

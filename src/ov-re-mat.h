@@ -78,37 +78,13 @@ public:
 
   void assign (const octave_value_list& idx, const Matrix& rhs);
 
-  void assign_struct_elt (assign_op, const string& elt_nm,
-			  const octave_value& rhs);
-
-  void assign_struct_elt (assign_op, const string& elt_nm,
-			  const octave_value_list& idx,
-			  const octave_value& rhs);
-
   idx_vector index_vector (void) const { return idx_vector (matrix); }
-
-  octave_value
-  do_struct_elt_index_op (const string& nm, const octave_value_list& idx,
-			  bool silent);
-
-  octave_value do_struct_elt_index_op (const string& nm, bool silent);
-
-  octave_lvalue struct_elt_ref (octave_value *parent, const string& nm);
 
   bool is_real_matrix (void) const { return true; }
 
-  octave_value all (void) const { return matrix.all (); }
-  octave_value any (void) const { return matrix.any (); }
-
   bool is_real_type (void) const { return true; }
 
-  bool is_matrix_type (void) const { return true; }
-
-  bool is_numeric_type (void) const { return true; }
-
   bool valid_as_scalar_index (void) const;
-
-  bool valid_as_zero_index (void) const { return is_zero_by_zero (); }
 
   double double_value (bool = false) const;
 

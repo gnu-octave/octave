@@ -1,15 +1,19 @@
+Thu Nov 19 14:30:25 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-re-mat.h (octave_matrix_value): Delete experimental code for
+	handling structure references for things like .rows, .cols, etc.
+
 Wed Nov 18 01:18:46 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
-	* ov-base-mat.cc (octave_base_matrix::is_true): New function.
-	* ov-bool-mat.cc (octave_bool_matrix::is_true): Delete.
-	* ov-ch-mat.cc (octave_char_matrix::is_true): Delete.
-	* ov-cx-mat.cc (octave_complex_matrix::is_true): Delete.
-	* ov-re-mat.cc (octave_matrix::is_true): Delete.
+	* Makefile.in (VAR_FILES): Be more careful about matching.
+	(DEF_FILES): Likewise.
 
-	* ov-base-mat.cc (octave_base_matrix::do_index_op): New function.
-	* ov-bool-mat.cc (octave_bool_matrix::do_index_op): Delete.
-	* ov-cx-mat.cc (octave_complex_matrix::do_index_op): Delete.
-	* ov-re-mat.cc (octave_matrix::do_index_op): Delete.
+	* ov-base-mat.h, ov-base-mat.cc, ov-bool-mat.h, ov-bool-mat.cc,
+	ov-ch-mat.h, ov-ch-mat.cc, ov-cx-mat.h, ov-cx-mat.cc,
+	ov-re-mat.h, ov-re-mat.cc: Move default definition of all, any,
+	is_matrix_type, is_numeric_type, valid_as_zero_index, and
+	do_index_op to base class.
+	Provide definitions that override the defaults where necessary.
 
 	* mappers.cc: Don't include lo-specfun.h.
 

@@ -29,19 +29,21 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
-#include <sys/types.h>
+#include <cfloat>
+#include <cstdio>
+
 #include <iostream.h>
-#include <stdio.h>
-#include <float.h>
+
+#include <sys/types.h> // XXX FIXME XXX
 
 #include <Complex.h>
 
-#include "mx-base.h"
 #include "dbleDET.h"
 #include "dbleSVD.h"
-#include "mx-inlines.cc"
-#include "lo-error.h"
 #include "f77-uscore.h"
+#include "lo-error.h"
+#include "mx-base.h"
+#include "mx-inlines.cc"
 
 // Fortran functions we call.
 

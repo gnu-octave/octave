@@ -29,8 +29,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
+#include <climits>
+
 #include <iostream.h>
-#include <limits.h>
 
 #include "Range.h"
 #include "dMatrix.h"

@@ -29,13 +29,14 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <config.h>
 #endif
 
-#include <math.h>
+#include <cmath>
+
 #include <iostream.h>
 
-#include "dMatrix.h"
-#include "dColVector.h"
-#include "dRowVector.h"
 #include "QLD.h"
+#include "dColVector.h"
+#include "dMatrix.h"
+#include "dRowVector.h"
 #include "f77-uscore.h"
 
 extern "C"

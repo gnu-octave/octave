@@ -23,7 +23,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #ifdef sun
 
-#include <assert.h>
+#include <cassert>
 
 // I think that this is really only needed if linking to Fortran
 // compiled libraries on a Sun.  It should never be called.

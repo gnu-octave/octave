@@ -1,3 +1,11 @@
+2000-03-31   Paul Kienzle  <pkienzle@kienzle.powernet.co.uk>
+
+	* image/image.m: Allow image (A) or image (x, y, A).
+	* image/imagesc.m: Likewise.
+
+	* image/image.m: If zoom is not supplied, or if it is an empty
+	matrix, autoscale the image.
+
 2000-03-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* plot/title.m, plot/bottom_title.m, plot/top_title.m: 

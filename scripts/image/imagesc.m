@@ -18,11 +18,15 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} imagesc (@var{x}, @var{zoom})
-## Display a scaled version of the matrix @var{x} as a color image.  The
+## @deftypefn {Function File} {} imagesc (@var{A}, @var{zoom})
+## @deftypefnx {Function File} {} imagesc (@var{x}, @var{y}, @var{A}, @var{zoom})
+## Display a scaled version of the matrix @var{A} as a color image.  The
 ## matrix is scaled so that its entries are indices into the current
 ## colormap.  The scaled matrix is returned.  If @var{zoom} is omitted, a
-## value of 4 is assumed.
+## comfortable size is chosen.
+##
+## The axis values corresponding to the matrix elements are specified in
+## @var{x} and @var{y}.  At present they are ignored.
 ## @end deftypefn
 ## @seealso{image and imshow}
 
@@ -30,29 +34,37 @@
 ## Created: July 1994
 ## Adapted-By: jwe
 
-function y = imagesc (x, zoom)
+function B = imagesc (x, y, A, zoom)
 
-  if (nargin < 1 || nargin > 2)
-    usage ("imagesc (matrix, [zoom])");
+  if (nargin < 1 || nargin > 4)
+    usage ("imagesc (matrix, zoom) or imagesc (x, y, matrix, zoom)");
   elseif (nargin == 1)
-    zoom = 4;
+    A = x;
+    zoom = [];
+    x = y = [];
+  elseif (nargin == 2)
+    A = x;
+    zoom = y;
+    x = y = [];
+  elseif (nargin == 3)
+    zoom = [];
   endif
 
-  [ high, wide ] = size (x);
+  [high, wide] = size (A);
 
-  maxval = max (max (x));
-  minval = min (min (x));
+  maxval = max (max (A));
+  minval = min (min (A));
 
   ## Rescale matrix so that all values are in the range 0 to
   ## length (colormap) inclusive.
 
   if (maxval == minval)
-    y = ones (high, wide);
+    B = ones (high, wide);
   else
     ## Rescale values to between 1 and length (colormap) inclusive.
-    y = round ((x - minval) / (maxval - minval) * (rows (colormap) - 1)) + 1;
+    B = round ((A - minval) / (maxval - minval) * (rows (colormap) - 1)) + 1;
   endif
 
-  image (y, zoom);
+  image (x, y, B, zoom);
 
 endfunction

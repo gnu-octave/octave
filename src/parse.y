@@ -133,6 +133,9 @@ static tree_expression *maybe_convert_to_ans_assign (tree_expression *expr);
 // test in a logical expression.
 static void maybe_warn_assign_as_truth_value (tree_expression *expr);
 
+// Build a constant.
+static tree_constant *make_constant (int op, token *tok_val);
+
 // Build a binary expression.
 static tree_expression *make_binary_op
 	 (int op, tree_expression *op1,	token *tok_val, tree_expression *op2);
@@ -834,20 +837,11 @@ simple_expr	: simple_expr1
 		;
 
 simple_expr1	: NUM
-		  {
-		    tree_constant *tmp = new tree_constant ($1->number ());
-		    tmp->stash_original_text ($1->text_rep ());
-		    $$ = tmp;
-		  }
+		  { $$ = make_constant (NUM, $1); }
 		| IMAG_NUM
-		  {
-		    Complex c (0.0, $1->number ());
-		    tree_constant *tmp = new tree_constant (c);
-		    tmp->stash_original_text ($1->text_rep ());
-		    $$ = tmp;
-		  }
+		  { $$ = make_constant (IMAG_NUM, $1); }
 		| TEXT
-		  { $$ = new tree_constant ($1->string ()); }
+		  { $$ = make_constant (TEXT, $1); }
 		| '(' expression ')'
 		  {
 		    $2->in_parens++;
@@ -903,12 +897,12 @@ word_list_cmd	: identifier word_list
 
 word_list	: TEXT
 		  {
-		    tree_constant *tmp = new tree_constant ($1->string ());
+		    tree_constant *tmp = make_constant (TEXT, $1);
 		    $$ = new tree_argument_list (tmp);
 		  }
 		| word_list TEXT
 		  {
-		    tree_constant *tmp = new tree_constant ($2->string ());
+		    tree_constant *tmp = make_constant (TEXT, $2);
 		    $1->append (tmp);
 		  }
 		;
@@ -1012,7 +1006,7 @@ func_def2	: identifier safe local_symtab func_def3
 			  {
 			    if (user_pref.warn_function_name_clash)
 			      warning ("function name `%s' does not agree\
- with function file name `%s.m'", id_name, curr_fcn_file_name);
+ with function file name `%s'", id_name, curr_fcn_file_full_name);
 
 			    global_sym_tab->rename (id_name,
 						    curr_fcn_file_name);
@@ -1031,10 +1025,11 @@ func_def2	: identifier safe local_symtab func_def3
 		    else if (! (input_from_tmp_history_file
 				|| input_from_startup_file)
 			     && reading_script_file
+			     && curr_fcn_file_name
 			     && strcmp (curr_fcn_file_name, id_name) == 0)
 		      {
 			warning ("function `%s' defined within\
- script file `%s.m'", id_name, curr_fcn_file_name);
+ script file `%s'", id_name, curr_fcn_file_full_name);
 		      }
 
 		    top_level_sym_tab->clear (id_name);
@@ -1246,7 +1241,7 @@ yyerror (char *s)
 
   if (reading_fcn_file || reading_script_file)
     output_buf << "parse error near line " << input_line_number
-	       << " of file " << curr_fcn_file_name << ".m:";
+	       << " of file " << curr_fcn_file_full_name;
   else
     output_buf << "parse error:";
 
@@ -1412,7 +1407,10 @@ maybe_convert_to_ans_assign (tree_expression *expr)
       static symbol_record *sr = global_sym_tab->lookup ("ans", 1, 0);
       tree_identifier *ans_id = new tree_identifier (sr);
 
-      return new tree_simple_assignment_expression (ans_id, expr, 0, 1);
+      int l = expr->line ();
+      int c = expr->column ();
+
+      return new tree_simple_assignment_expression (ans_id, expr, 0, 1, l, c);
     }
 }
 
@@ -1428,6 +1426,43 @@ maybe_warn_assign_as_truth_value (tree_expression *expr)
     {
       warning ("suggest parenthesis around assignment used as truth value");
     }
+}
+
+// Make a constant.
+
+static tree_constant *
+make_constant (int op, token *tok_val)
+{
+  int l = tok_val->line ();
+  int c = tok_val->column ();
+
+  tree_constant *retval;
+
+  switch (op)
+    {
+    case NUM:
+      retval = new tree_constant (tok_val->number (), l, c);
+      retval->stash_original_text (tok_val->text_rep ());
+      break;
+
+    case IMAG_NUM:
+      {
+	Complex C (0.0, tok_val->number ());
+	retval = new tree_constant (C, l, c);
+	retval->stash_original_text (tok_val->text_rep ());
+      }
+      break;
+
+    case TEXT:
+      retval = new tree_constant (tok_val->string (), l, c);
+      break;
+
+    default:
+      panic_impossible ();
+      break;
+    }
+
+  return retval;
 }
 
 // Build a binary expression.
@@ -1692,16 +1727,9 @@ maybe_warn_missing_semi (tree_statement_list *t)
   if (defining_func && user_pref.warn_missing_semicolon)
     {
       tree_statement *tmp = t->rear();
+
       if (tmp->is_expression ())
-	{
-	  char *fname = input_from_command_line_file
-	    ? curr_fcn_file_name : fcn_file_in_path (curr_fcn_file_name);
-
-	  warning ("missing semicolon near line %d, column %d in file `%s'",
-		   tmp->line (), tmp->column (), fname);
-
-	  if (fname != curr_fcn_file_name)
-	    delete [] fname;
-	}
+	warning ("missing semicolon near line %d, column %d in file `%s'",
+		 tmp->line (), tmp->column (), curr_fcn_file_full_name);
     }
 }

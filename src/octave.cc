@@ -374,10 +374,8 @@ static void
 verbose_usage (void)
 {
   cout << "\n"
-       << "  Octave, version " << version_string
-       << ".  Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton.\n"
-       << "  This is free software with ABSOLUTELY NO WARRANTY.\n"
-       << "\n"
+       << OCTAVE_STARTUP_BANNER
+       << "\n\n"
        << "  usage: " << usage_string
        << "\n\n"
        << "     V : enable verbose output in some cases\n"
@@ -548,10 +546,7 @@ main (int argc, char **argv)
   init_dynamic_linker ();
 
   if (! inhibit_startup_message)
-    cout << "Octave, version " << version_string
-	 << ".  Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton.\n"
-	 << "This is free software with ABSOLUTELY NO WARRANTY.\n"
-	 << "For details, type `warranty'.\n" << endl;
+    cout << OCTAVE_STARTUP_MESSAGE "\n" << endl;
 
   if (read_init_files)
     {
@@ -734,8 +729,7 @@ DEFUN ("warranty", Fwarranty, Swarranty, 0, 0,
 
   ostrstream output_buf;
   output_buf << "\n    Octave, version " << version_string
-	     << ".  Copyright (C) 1992, 1993, 1994, 1995 John W. Eaton\n"
-	     << "\n\
+	     << ".  " OCTAVE_COPYRIGHT "\n\n\
     This program is free software; you can redistribute it and/or modify\n\
     it under the terms of the GNU General Public License as published by\n\
     the Free Software Foundation; either version 2 of the License, or\n\

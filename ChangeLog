@@ -1,3 +1,7 @@
+1999-10-19  Geoff Jacobsen <geoffj@casquet.inet.net.nz>
+
+	* autogen.sh: New file.
+
 1999-10-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* octMakefile.in: Use `$(MAKE) -C dir' instead of `cd dir; $(MAKE)'.

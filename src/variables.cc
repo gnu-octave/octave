@@ -835,7 +835,10 @@ builtin_string_variable (const std::string& name)
 
   // It is a prorgramming error to look for builtins that aren't.
 
-  assert (sr);
+  // Use != here to avoid possible conversion to int of smaller type
+  // than the sr pointer.
+
+  assert (sr != 0);
 
   std::string retval;
 
@@ -859,7 +862,10 @@ builtin_real_scalar_variable (const std::string& name, double& d)
 
   // It is a prorgramming error to look for builtins that aren't.
 
-  assert (sr);
+  // Use != here to avoid possible conversion to int of smaller type
+  // than the sr pointer.
+
+  assert (sr != 0);
 
   octave_value val = sr->def ();
 
@@ -881,7 +887,10 @@ builtin_any_variable (const std::string& name)
 
   // It is a prorgramming error to look for builtins that aren't.
 
-  assert (sr);
+  // Use != here to avoid possible conversion to int of smaller type
+  // than the sr pointer.
+
+  assert (sr != 0);
 
   return sr->def ();
 }
@@ -1256,7 +1265,10 @@ bind_builtin_variable (const std::string& varname, const octave_value& val,
   // It is a programming error for a builtin symbol to be missing.
   // Besides, we just inserted it, so it must be there.
 
-  assert (sr);
+  // Use != here to avoid possible conversion to int of smaller type
+  // than the sr pointer.
+
+  assert (sr != 0);
 
   sr->unprotect ();
 

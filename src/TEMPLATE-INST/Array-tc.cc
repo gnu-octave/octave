@@ -37,8 +37,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "oct-obj.h"
 
-template class Array<octave_value>;
-
 template<>
 octave_value
 Array<octave_value>::resize_fill_value (void)
@@ -46,6 +44,8 @@ Array<octave_value>::resize_fill_value (void)
   static octave_value retval = octave_value (Matrix ());
   return retval;
 }
+
+template class Array<octave_value>;
 
 template int assign (Array<octave_value>&, const Array<octave_value>&);
 

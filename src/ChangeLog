@@ -1,5 +1,16 @@
 2003-01-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* ov-usr-fcn.cc (octave_vr_val): Assert vr_list != 0, not vr_list.
+	* variables.cc (builtin_string_variable, builtin_any_variable,
+	builtin_real_scalar_variable, bind_builtin_variable): Likewise.
+
+	* TEMPLATE-INST/Array-tc.cc: Provide specialization of
+	Array<octave_value>::resize_fill_value before instantiation of
+	Array<octave_value>.
+
+	* oct-obj.h (octave_value_list::operator delete): Define version
+	of delete operator to correspond to placement new operator.
+
 	* mkgendoc: In generated code, define __USE_STD_IOSTREAM if using
 	Compaq C++.
 

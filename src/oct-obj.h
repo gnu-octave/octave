@@ -57,13 +57,16 @@ public:
   void *operator new (size_t size)
     { return allocator.alloc (size); }
 
+  void operator delete (void *p, size_t size)
+    { allocator.free (p, size); }
+
   // XXX FIXME XXX -- without this, I have errors with the stack of
   // octave_value_list objects in ov-usr-fcn.h.  Why?
   void *operator new (size_t size, void *p)
     { return ::operator new (size, p); }
 
-  void operator delete (void *p, size_t size)
-    { allocator.free (p, size); }
+  void operator delete (void *p, void *)
+    { return ::operator delete (p, static_cast<void *> (0)); }
 
   octave_value_list& operator = (const octave_value_list& obj)
     {

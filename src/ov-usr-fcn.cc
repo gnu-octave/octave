@@ -198,7 +198,10 @@ octave_user_function::takes_var_return (void) const
 void
 octave_user_function::octave_vr_val (const octave_value& val)
 {
-  assert (vr_list);
+  // Use != here to avoid possible conversion to int of smaller type
+  // than the vr_list pointer.
+
+  assert (vr_list != 0);
 
   vr_list->append (val);
 }

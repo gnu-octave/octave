@@ -104,7 +104,10 @@ public:
 //  Matrix (double a) : Array2<double> (1, 1, a) { }
 
   Matrix& operator = (const Matrix& a)
-    { return Array2<double>::operator = (a); }
+    {
+      Array2<double>::operator = (a);
+      return *this;
+    }
 
   int operator == (const Matrix& a) const;
   int operator != (const Matrix& a) const;
@@ -298,6 +301,8 @@ private:
 
 class ColumnVector : public Array<double>
 {
+friend class RowVector;
+
 public:
 
   ColumnVector (void) : Array<double> () { }
@@ -308,7 +313,10 @@ public:
 //  ColumnVector (double a) : Array<double> (1, a) { }
 
   ColumnVector& operator = (const ColumnVector& a)
-    { return Array<double>::operator = (a); }
+    {
+      Array<double>::operator = (a);
+      return *this;
+    }
 
 //  operator Array<double>& () const { return *this; }
 
@@ -409,6 +417,8 @@ private:
 
 class RowVector : public Array<double>
 {
+friend class ColumnVector;
+
 public:
 
   RowVector (void) : Array<double> () { }
@@ -419,7 +429,10 @@ public:
 //  RowVector (double a) : Array<double> (1, a) { }
 
   RowVector& operator = (const RowVector& a)
-    { return Array<double>::operator = (a); }
+    {
+      Array<double>::operator = (a);
+      return *this;
+    }
 
 //  operator Array<double>& () const { return *this; }
 
@@ -533,7 +546,10 @@ public:
 //  DiagMatrix (double a) : DiagArray<double> (1, a) { }
 
   DiagMatrix& operator = (const DiagMatrix& a)
-    { return DiagArray<double>::operator = (a); }
+    {
+      DiagArray<double>::operator = (a);
+      return *this;
+    }
 
 //  operator DiagArray<double>& () const { return *this; }
 
@@ -671,7 +687,10 @@ public:
 //  ComplexMatrix (const Complex& a) : Array2<Complex> (1, 1, a) { }
 
   ComplexMatrix& operator = (const ComplexMatrix& a)
-    { return Array2<Complex>::operator = (a); }
+    {
+      Array2<Complex>::operator = (a);
+      return *this;
+    }
 
 //  operator Array2<Complex>& () const { return *this; }
 
@@ -892,6 +911,8 @@ private:
 
 class ComplexColumnVector : public Array<Complex>
 {
+friend class ComplexRowVector;
+
 public:
 
   ComplexColumnVector (void) : Array<Complex> () { }
@@ -905,7 +926,10 @@ public:
 //  ComplexColumnVector (const Complex& a) : Array<Complex> (1, a) { }
 
   ComplexColumnVector& operator = (const ComplexColumnVector& a)
-    { return Array<Complex>::operator = (a); }
+    {
+      Array<Complex>::operator = (a);
+      return *this;
+    }
 
 //  operator Array<Complex>& () const { return *this; }
 
@@ -1015,6 +1039,8 @@ private:
 
 class ComplexRowVector : public Array<Complex>
 {
+friend class ComplexColumnVector;
+
 public:
 
   ComplexRowVector (void) : Array<Complex> () { }
@@ -1027,7 +1053,10 @@ public:
 //  ComplexRowVector (const Complex& a) : Array<Complex> (1, a) { }
 
   ComplexRowVector& operator = (const ComplexRowVector& a)
-    { return Array<Complex>::operator = (a); }
+    {
+      Array<Complex>::operator = (a);
+      return *this;
+    }
 
 //  operator Array<Complex>& () const { return *this; }
 
@@ -1157,7 +1186,10 @@ public:
 //  ComplexDiagMatrix (const Complex& a) : DiagArray<Complex> (1, a) { }
 
   ComplexDiagMatrix& operator = (const ComplexDiagMatrix& a)
-    { return DiagArray<Complex>::operator = (a); }
+    {
+      DiagArray<Complex>::operator = (a);
+      return *this;
+    }
 
 //  operator DiagArray<Complex>& () const { return *this; }
 
@@ -1341,11 +1373,16 @@ AEPBALANCE::operator = (const AEPBALANCE& a)
 
   return *this;
 }
+
 inline Matrix AEPBALANCE::balanced_matrix (void) const
-  { return balanced_mat; }
+{
+  return balanced_mat;
+}
 
 inline Matrix AEPBALANCE::balancing_matrix (void) const
-  { return balancing_mat; }
+{
+  return balancing_mat;
+}
 
 /*
  * Result of a Complex balancing operation
@@ -1377,7 +1414,7 @@ private:
 inline ComplexAEPBALANCE::ComplexAEPBALANCE (const ComplexMatrix& a,
 					     const char * balance_job)
 {
-  init(a, balance_job); 
+  init (a, balance_job); 
 }
 
 inline ComplexAEPBALANCE::ComplexAEPBALANCE (const ComplexAEPBALANCE& a)
@@ -1396,10 +1433,14 @@ ComplexAEPBALANCE::operator = (const ComplexAEPBALANCE& a)
 }
 
 inline ComplexMatrix ComplexAEPBALANCE::balanced_matrix (void) const
-  { return balanced_mat; }
+{
+  return balanced_mat;
+}
 
 inline ComplexMatrix ComplexAEPBALANCE::balancing_matrix (void) const
-  { return balancing_mat; }
+{
+  return balancing_mat;
+}
 
 /*
  * Result of a Determinant calculation.
@@ -1430,12 +1471,24 @@ private:
   double det [2];
 };
 
-inline DET::DET (const DET& a) { det[0] = a.det[0]; det[1] = a.det[1]; }
+inline DET::DET (const DET& a)
+{
+  det[0] = a.det[0];
+  det[1] = a.det[1];
+}
 
 inline DET& DET::operator = (const DET& a)
-  { det[0] = a.det[0]; det[1] = a.det[1]; return *this; }
+{
+  det[0] = a.det[0];
+  det[1] = a.det[1];
+  return *this;
+}
 
-inline DET::DET (const double *d) { det[0] = d[0]; det[1] = d[1]; }
+inline DET::DET (const double *d)
+{
+  det[0] = d[0];
+  det[1] = d[1];
+}
 
 /*
  * Result of a Determinant calculation.
@@ -1467,13 +1520,23 @@ private:
 };
 
 inline ComplexDET::ComplexDET (const ComplexDET& a)
-  { det[0] = a.det[0]; det[1] = a.det[1]; }
+{
+  det[0] = a.det[0];
+  det[1] = a.det[1];
+}
 
 inline ComplexDET& ComplexDET::operator = (const ComplexDET& a)
-  { det[0] = a.det[0]; det[1] = a.det[1]; return *this; }
+{
+  det[0] = a.det[0];
+  det[1] = a.det[1];
+  return *this;
+}
 
 inline ComplexDET::ComplexDET (const Complex *d)
-  { det[0] = d[0]; det[1] = d[1]; }
+{
+  det[0] = d[0];
+  det[1] = d[1];
+}
 
 /*
  * Result of a GEP Balance operation
@@ -1511,7 +1574,7 @@ private:
 };
 
 inline GEPBALANCE::GEPBALANCE (const Matrix& a, const Matrix& b, 
-  const char * balance_job) 
+			       const char * balance_job) 
 {
   init (a, b, balance_job); 
 }
@@ -1536,16 +1599,24 @@ GEPBALANCE::operator = (const GEPBALANCE& a)
 }
 
 inline Matrix GEPBALANCE::balanced_a_matrix (void) const 
-  { return balanced_a_mat; }
+{
+  return balanced_a_mat;
+}
 
 inline Matrix GEPBALANCE::balanced_b_matrix (void) const 
-  { return balanced_b_mat; }
+{
+  return balanced_b_mat;
+}
 
 inline Matrix GEPBALANCE::left_balancing_matrix (void) const 
-  { return left_balancing_mat; }
+{
+  return left_balancing_mat;
+}
 
 inline Matrix GEPBALANCE::right_balancing_matrix (void) const 
-  { return right_balancing_mat; }
+{
+  return right_balancing_mat;
+}
 
 /*
  * Result of a Cholesky Factorization
@@ -1575,9 +1646,20 @@ private:
   Matrix chol_mat;
 };
 
-inline CHOL::CHOL (const Matrix& a) {init (a); }
-inline CHOL::CHOL (const Matrix& a, int& info) { info = init (a); }
-inline CHOL::CHOL (const CHOL& a) { chol_mat = a.chol_mat; }
+inline CHOL::CHOL (const Matrix& a)
+{
+  init (a);
+}
+
+inline CHOL::CHOL (const Matrix& a, int& info)
+{
+  info = init (a);
+}
+
+inline CHOL::CHOL (const CHOL& a)
+{
+  chol_mat = a.chol_mat;
+}
 
 inline CHOL&
 CHOL::operator = (const CHOL& a)
@@ -1615,12 +1697,20 @@ private:
   ComplexMatrix chol_mat;
 };
 
-inline ComplexCHOL::ComplexCHOL (const ComplexMatrix& a) { init (a); }
+inline ComplexCHOL::ComplexCHOL (const ComplexMatrix& a)
+{
+  init (a);
+}
+
 inline ComplexCHOL::ComplexCHOL (const ComplexMatrix& a, int& info)
-  { info = init (a); }
+{
+  info = init (a);
+}
 
 inline ComplexCHOL::ComplexCHOL (const ComplexCHOL& a)
-  { chol_mat = a.chol_mat; }
+{
+  chol_mat = a.chol_mat;
+}
 
 inline ComplexCHOL&
 ComplexCHOL::operator = (const ComplexCHOL& a)
@@ -1631,7 +1721,9 @@ ComplexCHOL::operator = (const ComplexCHOL& a)
 }
 
 inline ComplexMatrix ComplexCHOL::chol_matrix (void) const
-  { return chol_mat; }
+{
+  return chol_mat;
+}
 
   
 /*
@@ -1664,8 +1756,15 @@ private:
   Matrix unitary_hess_mat;
 };
 
-inline HESS::HESS (const Matrix& a) {init (a); }
-inline HESS::HESS (const Matrix& a, int& info) { info = init(a); }
+inline HESS::HESS (const Matrix& a)
+{
+  init (a);
+}
+
+inline HESS::HESS (const Matrix& a, int& info)
+{
+  info = init (a);
+}
 
 inline HESS::HESS (const HESS& a)
 {
@@ -1682,8 +1781,15 @@ HESS::operator = (const HESS& a)
   return *this;
 }
 
-inline Matrix HESS::hess_matrix (void) const { return hess_mat; }
-inline Matrix HESS::unitary_hess_matrix (void) const {return unitary_hess_mat;}
+inline Matrix HESS::hess_matrix (void) const
+{
+  return hess_mat;
+}
+
+inline Matrix HESS::unitary_hess_matrix (void) const
+{
+  return unitary_hess_mat;
+}
 
 /*
  * Result of a Hessenberg Decomposition
@@ -1713,9 +1819,15 @@ private:
   ComplexMatrix unitary_hess_mat;
 };
 
-inline ComplexHESS::ComplexHESS (const ComplexMatrix& a) { init(a); }
+inline ComplexHESS::ComplexHESS (const ComplexMatrix& a)
+{
+  init (a);
+}
+
 inline ComplexHESS::ComplexHESS (const ComplexMatrix& a, int& info)
-  { info = init(a); }
+{
+  info = init (a);
+}
 
 inline ComplexHESS::ComplexHESS (const ComplexHESS& a)
 {
@@ -1733,10 +1845,14 @@ ComplexHESS::operator = (const ComplexHESS& a)
 }
 
 inline ComplexMatrix ComplexHESS::hess_matrix (void) const
-  { return hess_mat; }
+{
+  return hess_mat;
+}
 
 inline ComplexMatrix ComplexHESS::unitary_hess_matrix (void) const
-  { return unitary_hess_mat; }
+{
+  return unitary_hess_mat;
+}
 
 /*
  * Result of a Schur Decomposition
@@ -1770,9 +1886,15 @@ private:
   Matrix unitary_mat;
 };
 
-inline SCHUR::SCHUR (const Matrix& a, const char *ord) { init (a, ord); }
+inline SCHUR::SCHUR (const Matrix& a, const char *ord)
+{
+  init (a, ord);
+}
+
 inline SCHUR::SCHUR (const Matrix& a, const char *ord, int& info) 
-  { info = init (a, ord); }
+{
+  info = init (a, ord);
+}
 
 inline SCHUR::SCHUR (const SCHUR& a, const char *ord)
 {
@@ -1789,8 +1911,15 @@ SCHUR::operator = (const SCHUR& a)
   return *this;
 }
 
-inline Matrix SCHUR::schur_matrix (void) const { return schur_mat; }
-inline Matrix SCHUR::unitary_matrix (void) const { return unitary_mat; }
+inline Matrix SCHUR::schur_matrix (void) const
+{
+  return schur_mat;
+}
+
+inline Matrix SCHUR::unitary_matrix (void) const
+{
+  return unitary_mat;
+}
 
 /*
  * Result of a Schur Decomposition
@@ -1825,11 +1954,15 @@ private:
 };
 
 inline ComplexSCHUR::ComplexSCHUR (const ComplexMatrix& a, const char *ord) 
-  { init (a,ord); }
+{
+  init (a,ord);
+}
 
 inline ComplexSCHUR::ComplexSCHUR (const ComplexMatrix& a, const char *ord,
 				   int& info)
-  { info = init (a,ord); }
+{
+  info = init (a,ord);
+}
 
 inline ComplexSCHUR::ComplexSCHUR (const ComplexSCHUR& a, const char *ord)
 {
@@ -1847,10 +1980,14 @@ ComplexSCHUR::operator = (const ComplexSCHUR& a)
 }
 
 inline ComplexMatrix ComplexSCHUR::schur_matrix (void) const
-  { return schur_mat; }
+{
+  return schur_mat;
+}
 
 inline ComplexMatrix ComplexSCHUR::unitary_matrix (void) const
-  { return unitary_mat; }
+{
+  return unitary_mat;
+}
 
 
 /*
@@ -1887,8 +2024,15 @@ private:
   Matrix right_sm;
 };
 
-inline SVD::SVD (const Matrix& a) { init (a); }
-inline SVD::SVD (const Matrix& a, int& info) { info = init (a); }
+inline SVD::SVD (const Matrix& a)
+{
+  init (a);
+}
+
+inline SVD::SVD (const Matrix& a, int& info)
+{
+  info = init (a);
+}
 
 inline SVD::SVD (const SVD& a)
 {
@@ -1907,9 +2051,20 @@ SVD::operator = (const SVD& a)
   return *this;
 }
 
-inline DiagMatrix SVD::singular_values (void) const { return sigma; }
-inline Matrix SVD::left_singular_matrix (void) const { return left_sm; }
-inline Matrix SVD::right_singular_matrix (void) const { return right_sm; }
+inline DiagMatrix SVD::singular_values (void) const
+{
+  return sigma;
+}
+
+inline Matrix SVD::left_singular_matrix (void) const
+{
+  return left_sm;
+}
+
+inline Matrix SVD::right_singular_matrix (void) const
+{
+  return right_sm;
+}
 
 /*
  * Result of a Singular Value Decomposition.
@@ -1945,9 +2100,15 @@ private:
   ComplexMatrix right_sm;
 };
 
-inline ComplexSVD::ComplexSVD (const ComplexMatrix& a) { init (a); }
+inline ComplexSVD::ComplexSVD (const ComplexMatrix& a)
+{
+  init (a);
+}
+
 inline ComplexSVD::ComplexSVD (const ComplexMatrix& a, int& info)
-  { info = init (a); } 
+{
+  info = init (a);
+} 
 
 inline ComplexSVD::ComplexSVD (const ComplexSVD& a)
 {
@@ -1967,13 +2128,19 @@ ComplexSVD::operator = (const ComplexSVD& a)
 }
 
 inline DiagMatrix ComplexSVD::singular_values (void) const
-  { return sigma; }
+{
+  return sigma;
+}
 
 inline ComplexMatrix ComplexSVD::left_singular_matrix (void) const
-  { return left_sm; }
+{
+  return left_sm;
+}
 
 inline ComplexMatrix ComplexSVD::right_singular_matrix (void) const
-  { return right_sm; }
+{
+  return right_sm;
+}
 
 /*
  * Result of an Eigenvalue computation.
@@ -2012,20 +2179,48 @@ private:
   ComplexMatrix v;
 };
 
-inline EIG::EIG (const Matrix& a) { init (a); }
-inline EIG::EIG (const Matrix& a, int& info) { info = init (a); }
+inline EIG::EIG (const Matrix& a)
+{
+  init (a);
+}
 
-inline EIG::EIG (const ComplexMatrix& a) { init (a); }
-inline EIG::EIG (const ComplexMatrix& a, int& info) { info = init (a); }
+inline EIG::EIG (const Matrix& a, int& info)
+{
+  info = init (a);
+}
 
-inline EIG::EIG (const EIG& a) { lambda = a.lambda; v = a.v; }
+inline EIG::EIG (const ComplexMatrix& a)
+{
+  init (a);
+}
+
+inline EIG::EIG (const ComplexMatrix& a, int& info)
+{
+  info = init (a);
+}
+
+inline EIG::EIG (const EIG& a)
+{
+  lambda = a.lambda;
+  v = a.v;
+}
 
 inline EIG& EIG::operator = (const EIG& a)
-  { lambda = a.lambda; v = a.v; return *this; }
+{
+  lambda = a.lambda;
+  v = a.v;
+  return *this;
+}
 
-inline ComplexColumnVector EIG::eigenvalues (void) const { return lambda; } 
+inline ComplexColumnVector EIG::eigenvalues (void) const
+{
+  return lambda;
+}
 
-inline ComplexMatrix EIG::eigenvectors (void) const { return v; }
+inline ComplexMatrix EIG::eigenvectors (void) const
+{
+  return v;
+}
 
 /*
  * Result of an LU decomposition.
@@ -2058,14 +2253,35 @@ private:
   Matrix p;
 };
 
-inline LU::LU (const LU& a) { l = a.l; u = a.u; p = a.p; }
+inline LU::LU (const LU& a)
+{
+  l = a.l;
+  u = a.u;
+  p = a.p;
+}
 
 inline LU& LU::operator = (const LU& a)
-  { l = a.l; u = a.u; p = a.p; return *this; }
+{
+  l = a.l;
+  u = a.u;
+  p = a.p;
+  return *this;
+}
 
-inline Matrix LU::L (void) const { return l; }
-inline Matrix LU::U (void) const { return u; }
-inline Matrix LU::P (void) const { return p; }
+inline Matrix LU::L (void) const
+{
+  return l;
+}
+
+inline Matrix LU::U (void) const
+{
+  return u;
+}
+
+inline Matrix LU::P (void) const
+{
+  return p;
+}
 
 class ComplexLU
 {
@@ -2094,14 +2310,35 @@ private:
   Matrix p;
 };
 
-inline ComplexLU::ComplexLU (const ComplexLU& a) { l = a.l; u = a.u; p = a.p; }
+inline ComplexLU::ComplexLU (const ComplexLU& a)
+{
+  l = a.l;
+  u = a.u;
+  p = a.p;
+}
 
 inline ComplexLU& ComplexLU::operator = (const ComplexLU& a)
-  { l = a.l; u = a.u; p = a.p; return *this; }
+{
+  l = a.l;
+  u = a.u;
+  p = a.p;
+  return *this;
+}
 
-inline ComplexMatrix ComplexLU::L (void) const { return l; }
-inline ComplexMatrix ComplexLU::U (void) const { return u; }
-inline Matrix ComplexLU::P (void) const { return p; }
+inline ComplexMatrix ComplexLU::L (void) const
+{
+  return l;
+}
+
+inline ComplexMatrix ComplexLU::U (void) const
+{
+  return u;
+}
+
+inline Matrix ComplexLU::P (void) const
+{
+  return p;
+}
 
 /*
  * Result of a QR decomposition.
@@ -2130,12 +2367,28 @@ private:
   Matrix r;
 };
 
-inline QR::QR (const QR& a) { q = a.q; r = a.r; }
+inline QR::QR (const QR& a)
+{
+  q = a.q;
+  r = a.r;
+}
 
-inline QR& QR::operator = (const QR& a) { q = a.q; r = a.r; return *this; }
+inline QR& QR::operator = (const QR& a)
+{
+  q = a.q;
+  r = a.r;
+  return *this;
+}
 
-inline Matrix QR::Q (void) const { return q; }
-inline Matrix QR::R (void) const { return r; }
+inline Matrix QR::Q (void) const
+{
+  return q;
+}
+
+inline Matrix QR::R (void) const
+{
+  return r;
+}
 
 class ComplexQR
 {
@@ -2160,13 +2413,28 @@ private:
   ComplexMatrix r;
 };
 
-inline ComplexQR::ComplexQR (const ComplexQR& a) { q = a.q; r = a.r; }
+inline ComplexQR::ComplexQR (const ComplexQR& a)
+{
+  q = a.q;
+  r = a.r;
+}
 
 inline ComplexQR& ComplexQR::operator = (const ComplexQR& a)
-  { q = a.q; r = a.r; return *this; }
+{
+  q = a.q;
+  r = a.r;
+  return *this;
+}
 
-inline ComplexMatrix ComplexQR::Q (void) const { return q; }
-inline ComplexMatrix ComplexQR::R (void) const { return r; }
+inline ComplexMatrix ComplexQR::Q (void) const
+{
+  return q;
+}
+
+inline ComplexMatrix ComplexQR::R (void) const
+{
+  return r;
+}
 
 #endif
 

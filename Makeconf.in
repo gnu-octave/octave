@@ -335,6 +335,7 @@ sed < $< \
   -e "s;%OCTAVE_CONF_AR%;\"${AR}\";" \
   -e "s;%OCTAVE_CONF_ARFLAGS%;\"${ARFLAGS}\";" \
   -e "s;%OCTAVE_CONF_BLAS_LIBS%;\"${BLAS_LIBS}\";" \
+  -e "s;%OCTAVE_CONF_CANONICAL_HOST_TYPE%;\"${canonical_host_type}\";" \
   -e "s;%OCTAVE_CONF_CC%;\"${CC}\";" \
   -e "s;%OCTAVE_CONF_CC_VERSION%;\"${CC_VERSION}\";" \
   -e "s;%OCTAVE_CONF_CFLAGS%;\"${CFLAGS}\";" \

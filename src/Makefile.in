@@ -334,7 +334,7 @@ mostlyclean:
 .PHONY: mostlyclean
 
 distclean: clean
-	rm -f Makefile octave .fname so_locations
+	rm -f Makefile octave .fname so_locations mk-oct-links
 	rm -f stamp-picdir stamp-tinst stamp-interp stamp-prereq
 	-rmdir pic
 .PHONY: distclean

@@ -1,5 +1,9 @@
 Sat Oct 12 13:40:21 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* Makefile.in (distclean): Also delete mk-oct-links.
+
+Fri Oct 11 13:13:13 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
 	Changes for Octave's new type system:
 
 	* arith-ops.cc: Delete.

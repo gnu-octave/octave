@@ -1,3 +1,8 @@
+2002-04-27  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DLD-FUNCTIONS/daspk.cc: New file.
+	* Makefile.in (DLD_XSRC): Add it to the list.
+
 2002-04-25  Paul Kienzle <pkienzle@users.sf.net>
 
 	* DLD-FUNCTIONS/kron.cc: New file.

@@ -1,3 +1,8 @@
+2002-04-27  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* DASPK.h, DASPK.cc: New files.
+	* Makefile.in: Add them to the appropriate lists.
+
 2002-04-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Array2-idx.h (Array2<T>::index (idx_vector&, idx_vector&) const):

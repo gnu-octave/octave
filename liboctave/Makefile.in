@@ -44,7 +44,7 @@ VX_OP_INC := vx-ccv-s.h vx-crv-s.h vx-cs-cv.h vx-cs-rv.h vx-cv-cs.h \
 	vx-rv-cs.h vx-s-ccv.h vx-s-crv.h \
 	vx-rv-crv.h vx-cv-ccv.h vx-crv-rv.h vx-ccv-cv.h
 
-INCLUDES := Bounds.h CollocWt.h DAE.h DAEFunc.h DASSL.h FEGrid.h \
+INCLUDES := Bounds.h CollocWt.h DAE.h DAEFunc.h DASPK.h DASSL.h FEGrid.h \
 	LinConst.h LP.h LPsolve.h LSODE.h NLConst.h NLEqn.h NLFunc.h \
 	NLP.h ODE.h ODEFunc.h Objective.h QP.h Quad.h Range.h base-de.h \
 	base-min.h byte-swap.h cmd-edit.h cmd-hist.h data-conv.h \
@@ -84,16 +84,14 @@ VX_OP_SRC := vx-ccv-s.cc vx-crv-s.cc vx-cs-cv.cc vx-cs-rv.cc vx-cv-cs.cc \
 	vx-rv-cs.cc vx-s-ccv.cc vx-s-crv.cc \
 	vx-rv-crv.cc vx-cv-ccv.cc vx-crv-rv.cc vx-ccv-cv.cc
 
-LIBOCTAVE_CXX_SOURCES := Bounds.cc CollocWt.cc DAE.cc DASSL.cc FEGrid.cc \
-	LinConst.cc LPsolve.cc LSODE.cc NLEqn.cc Quad.cc Range.cc \
-	data-conv.cc dir-ops.cc file-ops.cc \
-	file-stat.cc glob-match.cc \
-	idx-vector.cc lo-ieee.cc lo-mappers.cc lo-specfun.cc \
-	lo-sysdep.cc lo-utils.cc mach-info.cc oct-alloc.cc \
-	oct-env.cc oct-fftw.cc oct-group.cc \
-	oct-passwd.cc oct-shlib.cc \
-	oct-syscalls.cc oct-time.cc prog-args.cc \
-	str-vec.cc \
+LIBOCTAVE_CXX_SOURCES := Bounds.cc CollocWt.cc DAE.cc DASPK.cc \
+	DASSL.cc FEGrid.cc LinConst.cc LPsolve.cc LSODE.cc \
+	NLEqn.cc Quad.cc Range.cc data-conv.cc dir-ops.cc \
+	file-ops.cc file-stat.cc glob-match.cc idx-vector.cc \
+	lo-ieee.cc lo-mappers.cc lo-specfun.cc lo-sysdep.cc \
+	lo-utils.cc mach-info.cc oct-alloc.cc oct-env.cc \
+	oct-fftw.cc oct-group.cc oct-passwd.cc oct-shlib.cc \
+	oct-syscalls.cc oct-time.cc prog-args.cc str-vec.cc \
 	$(TEMPLATE_SRC) \
 	$(TI_SRC) \
 	$(MATRIX_SRC) \

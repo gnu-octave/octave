@@ -1138,7 +1138,8 @@ DEFUN (pclose, args, ,
 }
 
 DEFUN (octave_tmp_file_name, args, ,
- "octave_tmp_file_name ()")
+ "octave_tmp_file_name ()\n\
+Return unique temporary file name.")
 {
   octave_value retval;
 

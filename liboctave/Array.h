@@ -66,8 +66,6 @@ protected:
     int len;
     int count;
 
-    ArrayRep& operator = (const ArrayRep& a);
-
     ArrayRep (T *d, int l) : data (d), len (l), count (1) { }
 
     ArrayRep (void) : data (0), len (0), count (1) { }
@@ -86,7 +84,7 @@ protected:
         for (int i = 0; i < len; i++)
 	  data[i] = a.data[i];
       }
-
+ 
     ~ArrayRep (void) { delete [] data; }
 
     int length (void) const { return len; }
@@ -105,6 +103,12 @@ protected:
       {
 	octave_qsort (data, static_cast<size_t> (len), sizeof (T), compare);
       }
+
+  private:
+
+    // No assignment!
+
+    ArrayRep& operator = (const ArrayRep& a);
   };
 
   //--------------------------------------------------------------------
@@ -237,6 +241,8 @@ public:
   static int get_size (int r, int c);
   static int get_size (int r, int c, int p);
   static int get_size (const dim_vector& dims);
+
+  int compute_index (const Array<int>& ra_idx) const;
 
   T range_error (const char *fcn, int n) const;
   T& range_error (const char *fcn, int n);
@@ -388,8 +394,6 @@ public:
   T operator () (const Array<int>& ra_idx) const { return elem (ra_idx); }
 #endif
 
-  int compute_index (const Array<int>& ra_idx) const;
-
 protected:
 
   void resize_no_fill (int n);
@@ -444,6 +448,8 @@ public:
 
   int ndims (void) const { return dimensions.length (); }
 
+  void maybe_delete_dims (void);
+
   void clear_index (void);
 
   void set_index (const idx_vector& i);
@@ -464,8 +470,6 @@ public:
 
   void maybe_delete_elements (Array<idx_vector>& ra_idx, const T& rfv);
 
-  void maybe_delete_dims (void);
-
   Array<T> value (void);
 
   Array<T> index (idx_vector& i, int resize_ok = 0,
@@ -485,8 +489,6 @@ public:
 
   //  static T resize_fill_value (void) { return T (); }
 
-  void print_info (std::ostream& os, const std::string& prefix) const;
-
   template <class LT, class RT>
   friend int
   assign (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv);
@@ -502,6 +504,8 @@ public:
   template <class LT, class RT>
   friend int
   assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv);
+
+  void print_info (std::ostream& os, const std::string& prefix) const;
 };
 
 template <class LT, class RT>

@@ -1936,141 +1936,13 @@ get_file_format (const char *fname, const char *orig_fname)
   return retval;
 }
 
-DEFUN_TEXT ("load", Fload, Sload, -1, 1,
-  "load [-force] [-ascii] [-binary] [-mat-binary] file [pattern ...]\n
-\n\
-Load variables from a file.\n\
-\n\
-If no argument is supplied to select a format, load tries to read the
-named file as an Octave binary, then as a .mat file, and then as an
-Octave text file.\n\
-\n\
-If the option -force is given, variables with the same names as those
-found in the file will be replaced with the values read from the file.")
+static Octave_object
+do_load (istream& stream, const char *orig_fname, int force,
+	 load_save_format format, floating_point_format flt_fmt,
+	 int list_only, int swap, int verbose, char **argv,
+	 int argc, int nargout)
 {
   Octave_object retval;
-
-  DEFINE_ARGV("load");
-
-  argc--;
-  argv++;
-
-  int force = 0;
-
-// It isn't necessary to have the default load format stored in a user
-// preference variable since we can determine the type of file as we
-// are reading.
-
-  load_save_format format = LS_UNKNOWN;
-
-  int list_only = 0;
-  int verbose = 0;
-
-  while (argc > 0)
-    {
-      if (strcmp (*argv, "-force") == 0 || strcmp (*argv, "-f") == 0)
-	{
-	  force++;
-	  argc--;
-	  argv++;
-	}
-      else if (strcmp (*argv, "-list") == 0 || strcmp (*argv, "-l") == 0)
-	{
-	  list_only = 1;
-	  argc--;
-	  argv++;
-	}
-      else if (strcmp (*argv, "-verbose") == 0 || strcmp (*argv, "-v") == 0)
-	{
-	  verbose = 1;
-	  argc--;
-	  argv++;
-	}
-      else if (strcmp (*argv, "-ascii") == 0 || strcmp (*argv, "-a") == 0)
-	{
-	  format = LS_ASCII;
-	  argc--;
-	  argv++;
-	}
-      else if (strcmp (*argv, "-binary") == 0 || strcmp (*argv, "-b") == 0)
-	{
-	  format = LS_BINARY;
-	  argc--;
-	  argv++;
-	}
-      else if (strcmp (*argv, "-mat-binary") == 0 || strcmp (*argv, "-m") == 0)
-	{
-	  format = LS_MAT_BINARY;
-	  argc--;
-	  argv++;
-	}
-      else
-	break;
-    }
-
-  if (argc < 1)
-    {
-      error ("load: you must specify a single file to read");
-      DELETE_ARGV;
-      return retval;
-    }
-
-  char *orig_fname = *argv;
-  static istream stream;
-  static ifstream file;
-  if (strcmp (*argv, "-") == 0)
-    {
-      if (format == LS_UNKNOWN)
-	{
-	  error ("load: must specify file format if reading from stdin");
-	  DELETE_ARGV;
-	  return retval;
-	}
-      stream = cin;
-    }
-  else
-    {
-      char *fname = tilde_expand (*argv);
-
-      if (format == LS_UNKNOWN)
-	format = get_file_format (fname, orig_fname);
-
-      if (format == LS_UNKNOWN)
-	{
-	  DELETE_ARGV;
-	  return retval;
-	}
-
-      argv++;
-      argc--;
-
-      unsigned mode = ios::in;
-      if (format == LS_BINARY || format == LS_MAT_BINARY)
-	mode |= ios::bin;
-
-      file.open (fname, mode);
-
-      if (! file)
-	{
-	  error ("load: couldn't open input file `%s'", orig_fname);
-	  DELETE_ARGV;
-	  return retval;
-	}
-      stream = file;
-    }
-
-  int swap = 0;
-  floating_point_format flt_fmt = LS_UNKNOWN_FLT_FMT;
-
-  if (format == LS_BINARY)
-    {
-      if (read_binary_file_header (file, swap, flt_fmt) < 0)
-	{
-	  file.close ();
-	  DELETE_ARGV;
-	  return retval;
-	}
-    }
 
   ostrstream output_buf;
   int count = 0;
@@ -2164,8 +2036,152 @@ found in the file will be replaced with the values read from the file.")
 	maybe_page_output (output_buf);
     }
 
-  if (file);
-    file.close ();
+  return retval;
+}
+
+DEFUN_TEXT ("load", Fload, Sload, -1, 1,
+  "load [-force] [-ascii] [-binary] [-mat-binary] file [pattern ...]\n
+\n\
+Load variables from a file.\n\
+\n\
+If no argument is supplied to select a format, load tries to read the
+named file as an Octave binary, then as a .mat file, and then as an
+Octave text file.\n\
+\n\
+If the option -force is given, variables with the same names as those
+found in the file will be replaced with the values read from the file.")
+{
+  Octave_object retval;
+
+  DEFINE_ARGV ("load");
+
+  argc--;
+  argv++;
+
+  int force = 0;
+
+// It isn't necessary to have the default load format stored in a user
+// preference variable since we can determine the type of file as we
+// are reading.
+
+  load_save_format format = LS_UNKNOWN;
+
+  int list_only = 0;
+  int verbose = 0;
+
+  while (argc > 0)
+    {
+      if (strcmp (*argv, "-force") == 0 || strcmp (*argv, "-f") == 0)
+	{
+	  force++;
+	  argc--;
+	  argv++;
+	}
+      else if (strcmp (*argv, "-list") == 0 || strcmp (*argv, "-l") == 0)
+	{
+	  list_only = 1;
+	  argc--;
+	  argv++;
+	}
+      else if (strcmp (*argv, "-verbose") == 0 || strcmp (*argv, "-v") == 0)
+	{
+	  verbose = 1;
+	  argc--;
+	  argv++;
+	}
+      else if (strcmp (*argv, "-ascii") == 0 || strcmp (*argv, "-a") == 0)
+	{
+	  format = LS_ASCII;
+	  argc--;
+	  argv++;
+	}
+      else if (strcmp (*argv, "-binary") == 0 || strcmp (*argv, "-b") == 0)
+	{
+	  format = LS_BINARY;
+	  argc--;
+	  argv++;
+	}
+      else if (strcmp (*argv, "-mat-binary") == 0 || strcmp (*argv, "-m") == 0)
+	{
+	  format = LS_MAT_BINARY;
+	  argc--;
+	  argv++;
+	}
+      else
+	break;
+    }
+
+  if (argc < 1)
+    {
+      error ("load: you must specify a single file to read");
+      DELETE_ARGV;
+      return retval;
+    }
+
+  char *orig_fname = *argv;
+
+  floating_point_format flt_fmt = LS_UNKNOWN_FLT_FMT;
+
+  int swap = 0;
+
+  if (strcmp (*argv, "-") == 0)
+    {
+      argc--;
+      argv++;
+
+      if (format != LS_UNKNOWN)
+	{
+// XXX FIXME XXX -- if we have already seen EOF on a previous call,
+// how do we fix up the state of cin so that we can get additional
+// input?  I'm afraid that we can't fix this using cin only.
+
+	  retval = do_load (cin, orig_fname, force, format, flt_fmt,
+			    list_only, swap, verbose, argv, argc,
+			    nargout);
+	}
+      else
+	error ("load: must specify file format if reading from stdin");
+    }
+  else
+    {
+      char *fname = tilde_expand (*argv);
+
+      if (format == LS_UNKNOWN)
+	format = get_file_format (fname, orig_fname);
+
+      if (format != LS_UNKNOWN)
+	{
+	  argv++;
+	  argc--;
+
+	  unsigned mode = ios::in;
+	  if (format == LS_BINARY || format == LS_MAT_BINARY)
+	    mode |= ios::bin;
+
+	  ifstream file (fname, mode);
+
+	  if (file)
+	    {
+	      if (format == LS_BINARY)
+		{
+		  if (read_binary_file_header (file, swap, flt_fmt) < 0)
+		    {
+		      file.close ();
+		      DELETE_ARGV;
+		      return retval;
+		    }
+		}
+
+	      retval = do_load (file, orig_fname, force, format,
+				flt_fmt, list_only, swap, verbose,
+				argv, argc, nargout);
+
+	      file.close ();
+	    }
+	  else
+	    error ("load: couldn't open input file `%s'", orig_fname);
+	}
+    }
 
   DELETE_ARGV;
 
@@ -2632,6 +2648,46 @@ get_default_save_format (void)
   return retval;
 }
 
+static void
+write_binary_header (ostream& stream, load_save_format format)
+{
+  if (format == LS_BINARY)
+    {
+#if defined (WORDS_BIGENDIAN)
+      stream << "Octave-1-B";
+#else
+      stream << "Octave-1-L";
+#endif
+
+      char tmp = (char) NATIVE_FLOAT_FORMAT;
+      stream.write (&tmp, 1);
+    }
+}
+
+static void
+save_vars (char **argv, int argc, ostream& os, int save_builtins,
+	   load_save_format fmt, int save_as_floats)
+{
+  write_binary_header (os, fmt);
+
+  if (argc == 0)
+    {
+      save_vars (os, "*", save_builtins, fmt, save_as_floats);
+    }
+  else
+    {
+      while (argc-- > 0)
+	{
+	  if (! save_vars (os, *argv, save_builtins, fmt, save_as_floats))
+	    {
+	      warning ("save: no such variable `%s'", *argv);
+	    }
+
+	  argv++;
+	}
+    }
+}
+
 DEFUN_TEXT ("save", Fsave, Ssave, -1, 1,
   "save [-ascii] [-binary] [-float-binary] [-mat-binary] \
      [-save-builtins] file [pattern ...]\n\
@@ -2640,7 +2696,7 @@ save variables in a file")
 {
   Octave_object retval;
 
-  DEFINE_ARGV("save");
+  DEFINE_ARGV ("save");
 
   argc--;
   argv++;
@@ -2706,17 +2762,16 @@ save variables in a file")
       return retval;
     }
 
-// Not declaring these static causes trouble on some systems with
-// g++/libg++ iostream.  Hmm.
-
-  static ostream stream;
-  static ofstream file;
-
   if (strcmp (*argv, "-") == 0)
     {
+      argc--;
+      argv++;
+
 // XXX FIXME XXX -- should things intended for the screen end up in a 
 // tree_constant (string)?
-      stream = cout;
+
+      save_vars (argv, argc, cout, save_builtins, format,
+		 save_as_floats);
     }
   else if (argc == 1 && glob_pattern_p (*argv)) // Guard against things
     {						// like `save a*',
@@ -2735,50 +2790,20 @@ save variables in a file")
       if (format == LS_BINARY || format == LS_MAT_BINARY)
 	mode |= ios::bin;
 
-      file.open (fname);
+      ofstream file (fname, mode);
 
-      if (! file)
+      if (file)
+	{
+	  save_vars (argv, argc, file, save_builtins, format,
+		     save_as_floats);
+	}
+      else
 	{
 	  error ("save: couldn't open output file `%s'", *argv);
 	  DELETE_ARGV;
 	  return retval;
 	}
-      stream = file;
-
     }
-
-  if (format == LS_BINARY)
-    {
-#if defined (WORDS_BIGENDIAN)
-      stream << "Octave-1-B";
-#else
-      stream << "Octave-1-L";
-#endif
-
-      char tmp = (char) NATIVE_FLOAT_FORMAT;
-      stream.write (&tmp, 1);
-    }
-
-  if (argc == 0)
-    {
-      save_vars (stream, "*", save_builtins, format, save_as_floats);
-    }
-  else
-    {
-      while (argc-- > 0)
-	{
-	  if (! save_vars (stream, *argv, save_builtins, format,
-			   save_as_floats))
-	    {
-	      warning ("save: no such variable `%s'", *argv);
-	    }
-
-	  argv++;
-	}
-    }
-
-  if (file);
-    file.close ();
 
   DELETE_ARGV;
 

@@ -35,8 +35,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 template class intNDArray<octave_uint8>;
 
-template octave_uint8 pow (const octave_uint8& a, const octave_uint8& b);
-
 template
 std::ostream&
 operator << (std::ostream& os, const intNDArray<octave_uint8>& a);

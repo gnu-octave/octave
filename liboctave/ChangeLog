@@ -1,4 +1,18 @@
+2004-11-18  John W. Eaton  <jwe@octave.org>
+
+	* int32NDArray.cc (pow): Delete instantiation.
+	* int16NDArray.cc (pow): Likewise.
+	* int8NDArray.cc (pow): Likewise.
+	* uint32NDArray.cc (pow): Likewise.
+	* uint16NDArray.cc (pow): Likewise.
+	* uint8NDArray.cc (pow): Likewise.
+
 2004-11-17  John W. Eaton  <jwe@octave.org>
+
+	* kpse.cc (str_llist_float, str_llist_add, kpse_var_expand):
+	Now static.
+	(DB_ENVS, DB_HASH_SIZE, DB_NAME, ALIAS_NAME, ALIAS_HASH_SIZE,
+	DEFAULT_TEXMFDBS): Delete unused macros.
 
 	* Array.cc (Array<T>::index): Call generic N-d indexing function
 	if idx_arg is N-d.

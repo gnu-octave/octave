@@ -1652,12 +1652,6 @@ brace_gobbler (const std::string& text, int& indx, int satisfy)
   return c;
 }
 
-/* An external database to avoid filesystem lookups.  */
-
-#ifndef DEFAULT_TEXMFDBS
-#define DEFAULT_TEXMFDBS "/usr/local/share/texmf:/var/tmp/texfonts"
-#endif
-
 /* For each file format, we record the following information.  The main
    thing that is not part of this structure is the environment variable
    lists. They are used directly in tex-file.c. We could incorporate
@@ -1682,8 +1676,6 @@ struct kpse_format_info_type
    Initialized by calls to `kpse_find_file' for `kpse_init_format'.  */
 static kpse_format_info_type kpse_format_info;
 
-#define DB_ENVS "TEXMFDBS"
-
 /* And EXPAND_DEFAULT calls kpse_expand_default on try_path and the
    present info->path.  */
 #define EXPAND_DEFAULT(try_path, source_string) \
@@ -1700,23 +1692,7 @@ static kpse_format_info_type kpse_format_info;
 
 static hash_table_type db; /* The hash table for all the ls-R's.  */
 
-/* SMALL: The old size of the hash table was 7603, with the assumption
-   that a minimal ls-R bas about 3500 entries.  But a typical ls-R will
-   be more like double that size.  */
-#ifndef DB_HASH_SIZE
-#define DB_HASH_SIZE 15991
-#endif
-#ifndef DB_NAME
-#define DB_NAME "ls-R"
-#endif
-
 static hash_table_type alias_db;
-#ifndef ALIAS_NAME
-#define ALIAS_NAME "aliases"
-#endif
-#ifndef ALIAS_HASH_SIZE
-#define ALIAS_HASH_SIZE 1009
-#endif
 
 static string_vector db_dir_list;
 
@@ -2448,7 +2424,7 @@ fopen (const char *filename, const char *mode)
 
 /* Add the new string STR to the end of the list L.  */
 
-void
+static void
 str_llist_add (str_llist_type *l, const std::string& str)
 {
   str_llist_elt_type *e;
@@ -2474,7 +2450,7 @@ str_llist_add (str_llist_type *l, const std::string& str)
    directory, and looking for the file in all the directories in between
    is thus a waste.  */
 
-void
+static void
 str_llist_float (str_llist_type *l, str_llist_elt_type *mover)
 {
   str_llist_elt_type *last_moved, *unmoved;
@@ -2589,7 +2565,7 @@ expand (std::string &expansion, const std::string& var)
 /* Maybe we should support some or all of the various shell ${...}
    constructs, especially ${var-value}.  */
 
-std::string
+static std::string
 kpse_var_expand (const std::string& src)
 {
   std::string expansion;

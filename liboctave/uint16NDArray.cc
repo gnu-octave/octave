@@ -35,8 +35,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 template class intNDArray<octave_uint16>;
 
-template octave_uint16 pow (const octave_uint16& a, const octave_uint16& b);
-
 template
 std::ostream&
 operator << (std::ostream& os, const intNDArray<octave_uint16>& a);

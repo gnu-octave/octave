@@ -32,6 +32,17 @@ Summary of changes for version 2.1:
     prefer_zero_one_indexing, so it has been removed.  Logical values
     are automatically converted to numeric values where appropriate.
 
+  * If the argument to lsode that names the user-supplied function is
+    a 2-element string array, the second element is taken as the name
+    of the Jacobian function.  The named function should have the
+    following form:
+
+      JAC = f (X, T)
+
+    where JAC is the Jacobian matrix of partial derivatives of the
+    right-hand-side functions that define the set of differential
+    equations with respect to the state vector X.
+
 Summary of changes for version 2.0.5:
 ------------------------------------
 

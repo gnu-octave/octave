@@ -23,21 +23,21 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if !defined (octave_variables_h)
 #define octave_variables_h 1
 
+class octave_symbol;
 class symbol_record;
 class symbol_table;
 
-class tree_fvc;
 class tree_identifier;
 class tree_indirect_ref;
 class octave_value;
 class octave_value_list;
+class octave_builtin;
+class octave_mapper;
 class string_vector;
 
 #include <string>
 
 #include "ov.h"
-
-struct builtin_mapper_function;
 
 typedef int (*sv_Function)(void);
 
@@ -90,18 +90,6 @@ private:
 
 typedef octave_value_list (*Octave_builtin_fcn)(const octave_value_list&, int);
 
-struct builtin_function
-{
-  builtin_function (const string& n, bool itf, Octave_builtin_fcn f,
-		    const string& h)
-    : name (n), is_text_fcn (itf), fcn (f), help_string (h) { }
-
-  string name;
-  bool is_text_fcn;
-  Octave_builtin_fcn fcn;
-  string help_string;
-};
-
 extern void initialize_symbol_tables (void);
 
 extern bool lookup (symbol_record *s, bool exec_script = true);
@@ -131,20 +119,24 @@ extern bool is_mapper_function_name (const string&);
 extern bool is_builtin_function_name (const string&);
 extern bool is_globally_visible (const string&);
 
-extern tree_fvc *is_valid_function (const octave_value&, const string&,
-				    bool warn = false); 
+extern octave_symbol *
+is_valid_function (const octave_value&, const string&, bool warn = false); 
 
-tree_fvc *extract_function (const octave_value& arg, const string& warn_for,
-			    const string& fname, const string& header,
-			    const string& trailer);
+octave_symbol *
+extract_function (const octave_value& arg, const string& warn_for,
+		  const string& fname, const string& header,
+		  const string& trailer);
 
 extern string_vector make_name_list (void);
 
-extern void install_builtin_mapper (const builtin_mapper_function& mf);
+extern void
+install_builtin_mapper (octave_mapper *mf);
 
-extern void install_builtin_function (const builtin_function& gf);
+extern void
+install_builtin_function (octave_builtin *f, bool is_text_fcn = false);
 
-extern void install_builtin_variable (const builtin_variable& v);
+extern void
+install_builtin_variable (const builtin_variable& v);
 
 extern void
 install_builtin_variable_as_function (const string& name,
@@ -161,11 +153,11 @@ extern void bind_global_error_variable (void);
 
 extern void clear_global_error_variable (void *);
 
-extern void bind_builtin_variable (const string&, const octave_value&,
-				   bool protect = false,
-				   bool eternal = false,
-				   sv_Function f = (sv_Function) 0,
-				   const string& help = string ());
+extern void
+bind_builtin_variable (const string&, const octave_value&,
+		       bool protect = false, bool eternal = false,
+		       sv_Function f = (sv_Function) 0,
+		       const string& help = string ());
 
 extern void install_builtin_variables (void);
 

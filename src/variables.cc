@@ -46,6 +46,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include "file-ops.h"
+#include "lo-mappers.h"
 #include "oct-glob.h"
 #include "str-vec.h"
 
@@ -69,11 +70,15 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "parse.h"
 #include "symtab.h"
 #include "sysdep.h"
+#include "oct-sym.h"
+#include "oct-builtin.h"
+#include "oct-mapper.h"
+#include "oct-usr-fcn.h"
 #include "pt-const.h"
 #include "oct-obj.h"
 #include "pt-exp.h"
-#include "pt-fcn.h"
-#include "pt-fvc.h"
+#include "pt-id.h"
+#include "pt-indir.h"
 #include "pt-mat.h"
 #include "pt-plot.h"
 #include "pr-output.h"
@@ -237,10 +242,10 @@ is_globally_visible (const string& name)
 
 // Is this octave_value a valid function?
 
-tree_fvc *
+octave_symbol *
 is_valid_function (const octave_value& arg, const string& warn_for, bool warn)
 {
-  tree_fvc *ans = 0;
+  octave_symbol *ans = 0;
 
   string fcn_name;
 
@@ -274,12 +279,12 @@ is_valid_function (const octave_value& arg, const string& warn_for, bool warn)
   return ans;
 }
 
-tree_fvc *
+octave_symbol *
 extract_function (const octave_value& arg, const string& warn_for,
 		  const string& fname, const string& header,
 		  const string& trailer)
 {
-  tree_fvc *retval = 0;
+  octave_symbol *retval = 0;
 
   retval = is_valid_function (arg, warn_for, 0);
 
@@ -449,7 +454,7 @@ symbol_out_of_date (symbol_record *sr)
 
   if (sr)
     {
-      tree_fvc *ans = sr->def ();
+      octave_symbol *ans = sr->def ();
       if (ans)
 	{
 	  string ff = ans->fcn_file_name ();
@@ -843,12 +848,10 @@ get_global_value (const string& nm)
 
   if (sr)
     {
-      // Do something with the value in foo.
-
-      tree_fvc *sr_def = sr->def ();
+      octave_symbol *sr_def = sr->def ();
 
       if (sr_def)
-	retval  = sr_def->eval (true);
+	retval  = sr_def->eval ();
       else
 	error ("get_global_by_name: undefined symbol `%s'", nm.c_str ());
     }
@@ -907,7 +910,7 @@ builtin_string_variable (const string& name)
 
   string retval;
 
-  tree_fvc *defn = sr->def ();
+  octave_symbol *defn = sr->def ();
 
   if (defn)
     {
@@ -934,7 +937,7 @@ builtin_real_scalar_variable (const string& name, double& d)
 
   assert (sr);
 
-  tree_fvc *defn = sr->def ();
+  octave_symbol *defn = sr->def ();
 
   if (defn)
     {
@@ -963,7 +966,7 @@ builtin_any_variable (const string& name)
 
   assert (sr);
 
-  tree_fvc *defn = sr->def ();
+  octave_symbol *defn = sr->def ();
 
   if (defn)
     retval = defn->eval ();
@@ -1405,31 +1408,34 @@ character, but may not be combined.")
 // Install variables and functions in the symbol tables.
 
 void
-install_builtin_mapper (const builtin_mapper_function& mf)
+install_builtin_mapper (octave_mapper *mf)
 {
-  symbol_record *sym_rec = global_sym_tab->lookup (mf.name, true);
+  symbol_record *sym_rec = global_sym_tab->lookup (mf->name (), true);
+
+  unsigned int t
+    = symbol_def::BUILTIN_FUNCTION | symbol_def::MAPPER_FUNCTION;
+
   sym_rec->unprotect ();
-
-  tree_builtin *def = new tree_builtin (mf, mf.name);
-
-  sym_rec->define (def);
-
-  sym_rec->document (mf.help_string);
+  sym_rec->define (mf, t);
+  sym_rec->document (mf->doc_string ());
   sym_rec->make_eternal ();
   sym_rec->protect ();
 }
 
 void
-install_builtin_function (const builtin_function& f)
+install_builtin_function (octave_builtin *f, bool is_text_fcn)
 {
-  symbol_record *sym_rec = global_sym_tab->lookup (f.name, true);
+  symbol_record *sym_rec = global_sym_tab->lookup (f->name (), true);
+
+  unsigned int t
+    = symbol_def::BUILTIN_FUNCTION | symbol_def::MAPPER_FUNCTION;
+
+  if (is_text_fcn)
+    t |= symbol_def::TEXT_FUNCTION;
+
   sym_rec->unprotect ();
-
-  tree_builtin *def = new tree_builtin (f.fcn, f.name);
-
-  sym_rec->define (def, f.is_text_fcn);
-
-  sym_rec->document (f.help_string);
+  sym_rec->define (f, t);
+  sym_rec->document (f->doc_string ());
   sym_rec->make_eternal ();
   sym_rec->protect ();
 }
@@ -1705,10 +1711,10 @@ install_builtin_variables (void)
   symbols_of_input ();
   symbols_of_lex ();
   symbols_of_load_save ();
+  symbols_of_oct_usr_fcn ();
   symbols_of_pager ();
   symbols_of_parse ();
   symbols_of_pr_output ();
-  symbols_of_pt_fcn ();
   symbols_of_pt_mat ();
   symbols_of_pt_plot ();
   symbols_of_syscalls ();

@@ -25,6 +25,7 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "config.h"
 #endif
 
+#include <new.h>
 #include <signal.h>
 
 #include "sighandlers.h"
@@ -46,9 +47,16 @@ my_friendly_exit (const char *sig_name, int sig_number)
   clean_up_and_exit (sig_number);
 }
 
-/*
- * Some of these may eventually perform different actions...
- */
+// I know, not really a signal handler.
+
+static void
+octave_new_handler (void)
+{
+  error ("new: virtual memory exhausted -- stopping myself");
+  clean_up_and_exit (1);
+}
+
+// Some of these may eventually perform different actions...
 
 static RETSIGTYPE
 sigabrt_handler (int i)
@@ -92,9 +100,8 @@ sigill_handler (int i)
   my_friendly_exit ("SIGILL", i);
 }
 
-/*
- * Handle SIGINT by restarting the parser (see octave.cc).
- */
+// Handle SIGINT by restarting the parser (see octave.cc).
+
 static RETSIGTYPE
 sigint_handler (int i)
 {
@@ -212,12 +219,13 @@ sigxfsz_handler (int i)
   my_friendly_exit ("SIGXFSZ", i);
 }
 
-/*
- * Install all the handlers for the signals we might care about.
- */
+// Install all the handlers for the signals we might care about.
+
 void
 install_signal_handlers (void)
 {
+  set_new_handler (octave_new_handler);
+
 #ifdef SIGABRT
   signal (SIGABRT, sigabrt_handler);
 #endif

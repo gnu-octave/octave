@@ -1,3 +1,9 @@
+2002-04-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* parse.y (input): Call YYACCEPT for END_OF_INPUT.
+	(parse_and_execute): Handle change in yyparse return value semantics.
+	* toplev.cc (main_loop): Likewise.
+
 2002-03-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* parse.y (parse_fcn_file): Call error if there is no input file.

@@ -466,7 +466,7 @@ input		: input1
 		  {
 		    global_command = 0;
 		    promptflag = 1;
-		    YYABORT;
+		    YYACCEPT;
 		  }
 		| simple_list parse_error
 		  { ABORT_PARSE; }
@@ -2774,6 +2774,8 @@ parse_and_execute (FILE *f)
 	  if (quit)
 	    break;
 	}
+      else
+	break;
     }
   while (retval == 0);
 

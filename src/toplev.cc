@@ -165,6 +165,8 @@ main_loop (void)
 		command_editor::increment_current_command_number ();
 	    }
 	}
+      else
+	break;
     }
   while (retval == 0);
 

@@ -57,17 +57,8 @@ double octave_NaN;
 // Octave's idea of a missing value.
 double octave_NA;
 
-static int hw;
-static int lw;
-
-typedef union
-{
-  double value;
-  unsigned int word[2];
-} ieee_double;
-
-#define NA_HW 0x7ff00000
-#define NA_LW 1954
+int lo_ieee_hw;
+int lo_ieee_lw;
 
 void
 octave_ieee_init (void)
@@ -112,52 +103,22 @@ octave_ieee_init (void)
 
   if (ff == oct_mach_info::ieee_big_endian)
     {
-      hw = 0;
-      lw = 1;
+      lo_ieee_hw = 0;
+      lo_ieee_lw = 1;
     }
   else
     {
-      hw = 1;
-      lw = 0;
+      lo_ieee_hw = 1;
+      lo_ieee_lw = 0;
     }
 
-  ieee_double t;
-  t.word[hw] = NA_HW;
-  t.word[lw] = NA_LW;
+  lo_ieee_double t;
+  t.word[lo_ieee_hw] = LO_IEEE_NA_HW;
+  t.word[lo_ieee_lw] = LO_IEEE_NA_LW;
 
   octave_NA = t.value;
 
 #endif
-}
-
-#if defined (SCO)
-
-extern "C" int
-isnan (double x)
-{
-  return (IsNANorINF (x) && NaN (x) && ! IsINF (x)) ? 1 : 0;
-}
-
-extern "C" int
-isinf (double x)
-{
-  return (IsNANorINF (x) && IsINF (x)) ? 1 : 0;
-}
-
-#endif
-
-extern "C" int
-lo_ieee_is_NA (double x)
-{
-  ieee_double t;
-  t.value = x;
-  return (isnan (x) && t.word[lw] == NA_LW) ? 1 : 0;
-}
-
-extern "C" int
-lo_ieee_is_NaN_or_NA (double x)
-{
-  return isnan (x);
 }
 
 /*

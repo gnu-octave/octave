@@ -1,3 +1,19 @@
+2002-09-27  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Makefile.in (LIBOCTAVE_C_SOURCES): Add lo-cieee.c to the list.
+	* lo-cieee.c: New file.
+	(lo_ieee_is_NaN_or_NA): Move here from lo-ieee.cc.
+	(lo_ieee_is_NA): Likewise.
+	[SCO] (isinf, isnan): Likewise.
+	* lo-ieee.h: Now all extern "C".
+	(LO_IEEE_NA_HW, LO_IEEE_NA_LW): Move here from lo-ieee.cc and
+	rename from NA_HW and NA_LW.
+	(lo_ieee_double): Move typedef here from lo-ieee.cc and rename
+	from ieee_double.
+	(lo_ieee_hw, lo_ieee_low): Provide decl.
+	* lo-ieee.cc (lo_ieee_hw, lo_ieee_low): Rename from hw and lw.
+	Now extern.
+
 2002-09-26  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Array.cc, Array.h, Array2.cc, Array2.h, Array3.cc, Array3.h,

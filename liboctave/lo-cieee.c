@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 1996, 1997 John W. Eaton
+Copyright (C) 2002 John W. Eaton
 
 This file is part of Octave.
 
@@ -20,49 +20,62 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
-#if !defined (octave_liboctave_ieee_h)
-#define octave_liboctave_ieee_h 1
-
-#ifdef	__cplusplus
-extern "C" {
+#ifdef HAVE_CONFIG_H
+#include <config.h>
 #endif
 
-// Octave's idea of infinity.
-extern double octave_Inf;
+#include <float.h>
+#include <math.h>
 
-// Octave's idea of not a number.
-extern double octave_NaN;
+#if defined (HAVE_FLOATINGPOINT_H)
+#include <floatingpoint.h>
+#endif
 
-// Octave's idea of a missing value.
-extern double octave_NA;
+#if defined (HAVE_IEEEFP_H)
+#include <ieeefp.h>
+#endif
 
-void octave_ieee_init (void);
+#if defined (HAVE_NAN_H)
+#if defined (SCO)
+#define _IEEE 1
+#endif
+#include <nan.h>
+#if defined (SCO)
+#undef _IEEE
+#endif
+#endif
 
-int lo_ieee_is_NA (double);
-int lo_ieee_is_NaN_or_NA (double);
+#include "lo-ieee.h"
 
 #if defined (SCO)
-int isnan (double);
-int isinf (double);
-#endif
 
-extern int lo_ieee_hw;
-extern int lo_ieee_lw;
-
-typedef union
+int
+isnan (double x)
 {
-  double value;
-  unsigned int word[2];
-} lo_ieee_double;
-
-#define LO_IEEE_NA_HW 0x7ff00000
-#define LO_IEEE_NA_LW 1954
-
-#ifdef	__cplusplus
+  return (IsNANorINF (x) && NaN (x) && ! IsINF (x)) ? 1 : 0;
 }
-#endif
+
+int
+isinf (double x)
+{
+  return (IsNANorINF (x) && IsINF (x)) ? 1 : 0;
+}
 
 #endif
+
+int
+lo_ieee_is_NA (double x)
+{
+  lo_ieee_double t;
+  t.value = x;
+  return (isnan (x) && t.word[lo_ieee_lw] == LO_IEEE_NA_LW) ? 1 : 0;
+}
+
+int
+lo_ieee_is_NaN_or_NA (double x)
+{
+  return isnan (x);
+}
 
 /*
 ;;; Local Variables: ***

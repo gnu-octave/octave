@@ -109,8 +109,8 @@ LIBOCTAVE_CXX_SOURCES := Bounds.cc CollocWt.cc \
 	$(VX_OP_SRC)
 
 LIBOCTAVE_C_SOURCES := f2c-main.c filemode.c getopt.c getopt1.c \
-	lo-cutils.c mkdir.c oct-getopt.c rename.c rmdir.c strftime.c \
-	strptime.c tempname.c tempnam.c
+	lo-cieee.c lo-cutils.c mkdir.c oct-getopt.c rename.c \
+	rmdir.c strftime.c strptime.c tempname.c tempnam.c
 
 LIBOCTAVE_SOURCES := $(LIBOCTAVE_CXX_SOURCES) $(LIBOCTAVE_C_SOURCES)
 

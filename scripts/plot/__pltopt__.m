@@ -51,7 +51,7 @@ function fmt = plot_opt (caller, opt)
 #   plotted in some future version of Octave.
 #
 #   The color line styles have the following meanings on terminals
-#   that do not support color.
+#   that support color.
 #
 #     Number  Gnuplot colors     (lines)points style
 #       1       red                 "*"

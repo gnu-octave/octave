@@ -71,12 +71,16 @@ QLD::minimize (double& objf, int& inform)
   int lwar = n*(3*n + 15)/2 + m + 100;
   int liwar = n + 100;
 
-  double *war = new double [lwar];
-  int *iwar = new int [liwar];
+  Array<double> war (lwar);
+  double *pwar = war.fortran_vec ();
 
-  iwar[0] = 0;
+  Array<int> iwar (liwar);
+  int *piwar = iwar.fortran_vec ();
 
-  double *u = new double [m+n+n + 100];
+  iwar.elem (0) = 0;
+
+  Array<double> u (m+n+n + 100);
+  double *pu = u.fortran_vec ();
 
   int iout = 0;
 
@@ -112,17 +116,18 @@ QLD::minimize (double& objf, int& inform)
   int mmax = m > 0 ? m : 1;
 
   iprint = 1;
-  F77_FCN (qld, QLD) (m, me, mmax, n, n, ph, pc, pa, pb, pxl, pxu, px,
-		      u, iout, inform, iprint, war, lwar, iwar,
-		      liwar);
+  F77_XFCN (qld, QLD, (m, me, mmax, n, n, ph, pc, pa, pb, pxl, pxu, px,
+		       pu, iout, inform, iprint, pwar, lwar, piwar,
+		       liwar));
 
-  delete [] war;
-  delete [] iwar;
-  delete [] u;
-
-  objf = (x.transpose () * H * x) / 2.0;
-  if (c.capacity () > 0)
-    objf += c.transpose () * x;
+  if (f77_exception_encountered)
+    (*current_liboctave_error_handler) ("unrecoverable error in qld");
+  else
+    {
+      objf = (x.transpose () * H * x) / 2.0;
+      if (c.capacity () > 0)
+	objf += c.transpose () * x;
+    }
 
   return x;
 }

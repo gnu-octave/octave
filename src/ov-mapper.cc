@@ -67,6 +67,39 @@ any_element_greater_than (const Matrix& a, double val)
   return false;
 }
 
+// In most cases, we could use the map member function from the Matrix
+// classes, but as currently implemented, they don't allow us to
+// detect errors and abort properly.  So use these macros to do the
+// looping here instead.
+
+#define MAPPER_LOOP_2(T, F, M, CONV, R) \
+  do \
+    { \
+      int nr = M.rows (); \
+      int nc = M.cols (); \
+ \
+      T result (nr, nc); \
+ \
+      for (int j = 0; j < nc; j++) \
+	{ \
+	   for (int i = 0; i < nr; i++) \
+	     { \
+		result (i, j) = CONV (F (M (i, j))); \
+ \
+		if (error_state) \
+		  return retval; \
+	     } \
+	} \
+      retval = R; \
+    } \
+  while (0)
+
+#define MAPPER_LOOP_1(T, F, M, CONV) \
+  MAPPER_LOOP_2 (T, F, M, CONV, result)
+
+#define MAPPER_LOOP(T, F, M) \
+  MAPPER_LOOP_1 (T, F, M, )
+
 octave_value
 octave_mapper::apply (const octave_value& arg) const
 {
@@ -84,49 +117,19 @@ octave_mapper::apply (const octave_value& arg) const
 
 	  if (! error_state)
 	    {
-	      int nr = chm.rows ();
-	      int nc = chm.cols ();
-
 	      switch (flag)
 		{
 		case 0:
-		  {
-		    boolMatrix result (nr, nc);
-
-		    // islapha and friends can return any nonzero value
-		    // to mean true, but we want to return true or
-		    // false only.
-
-		    for (int j = 0; j < nc; j++)
-		      for (int i = 0; i < nr; i++)
-			result (i, j) = ch_map_fcn (chm (i, j)) ? true : false;
-
-		    retval = result;
-		  }
+		  MAPPER_LOOP_1 (boolMatrix, ch_map_fcn, chm, bool);
 		  break;
 
 		case 1:
-		  {
-		    Matrix result (nr, nc);
-
-		    for (int j = 0; j < nc; j++)
-		      for (int i = 0; i < nr; i++)
-			result (i, j) = ch_map_fcn (chm (i, j));
-
-		    retval = result;
-		  }
+		  MAPPER_LOOP (Matrix, ch_map_fcn, chm);
 		  break;
 
 		case 2:
-		  {
-		    charMatrix result (nr, nc);
-
-		    for (int j = 0; j < nc; j++)
-		      for (int i = 0; i < nr; i++)
-			result (i, j) = ch_map_fcn (chm (i, j));
-
-		    retval = octave_value (result, true);
-		  }
+		  MAPPER_LOOP_2 (charMatrix, ch_map_fcn, chm, ,
+				 octave_value (result, true));
 		  break;
 
 		default:
@@ -172,18 +175,15 @@ octave_mapper::apply (const octave_value& arg) const
 		      || any_element_greater_than (m, upper_limit)))
 		{
 		  if (c_c_map_fcn)
-		    {
-		      ComplexMatrix cm (m);
-		      retval = cm.map (c_c_map_fcn);
-		    }
+		    MAPPER_LOOP (ComplexMatrix, c_c_map_fcn, m);
 		  else
 		    error ("%s: unable to handle real arguments",
 			   name().c_str ());
 		}
 	      else if (d_d_map_fcn)
-		retval = m.map (d_d_map_fcn);
+		MAPPER_LOOP (Matrix, d_d_map_fcn, m);
 	      else if (d_b_map_fcn)
-		retval = m.map (d_b_map_fcn);
+		MAPPER_LOOP (boolMatrix, d_b_map_fcn, m);
 	      else
 		error ("%s: unable to handle real arguments",
 		       name().c_str ());
@@ -213,11 +213,11 @@ octave_mapper::apply (const octave_value& arg) const
 		return retval;
 
 	      if (d_c_map_fcn)
-		retval = cm.map (d_c_map_fcn);
+		MAPPER_LOOP (Matrix, d_c_map_fcn, cm);
 	      else if (c_c_map_fcn)
-		retval = cm.map (c_c_map_fcn);
+		MAPPER_LOOP (ComplexMatrix, c_c_map_fcn, cm);
 	      else if (c_b_map_fcn)
-		retval = cm.map (c_b_map_fcn);
+		MAPPER_LOOP (boolMatrix, c_b_map_fcn, cm);
 	      else
 		error ("%s: unable to handle complex arguments",
 		       name().c_str ());

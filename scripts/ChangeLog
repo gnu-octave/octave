@@ -1,3 +1,7 @@
+2002-06-27  Paul Kienzle <pkienzle@jazz.ncnr.nist.gov>
+
+	* statistics/distributions/gamma_pdf.m: Avoid overflow in more cases.
+
 2002-05-01  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* skip-autoheader: New file, for autogen.sh.

@@ -50,10 +50,16 @@ function pdf = gamma_pdf (x, a, b)
     pdf (k) = NaN * ones (length (k), 1);
   endif
 
-  k = find ((x > 0) & (a > 0) & (b > 0));
+  k = find ((x > 0) & (a > 0) & (a <= 1) & (b > 0));
   if (any (k))
     pdf(k) = ((b(k) .^ a(k)) .* (x(k) .^ (a(k) - 1))
 	      .* exp(-b(k) .* x(k)) ./ gamma (a(k)));
+  endif
+
+  k = find ((x > 0) & (a > 1) & (b > 0));
+  if (any (k))
+    pdf(k) = exp (a(k) .* log (b(k)) + (a(k)-1) .* log (x(k))
+		  - b(k) .* x(k) - lgamma (a(k)));
   endif
 
   pdf = reshape (pdf, r, c);

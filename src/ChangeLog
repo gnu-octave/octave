@@ -1,3 +1,25 @@
+2002-06-26  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-mapper.cc (MAPPER_LOOP, MAPPER_LOOP_1, MAPPER_LOOP_2): New	macros.
+	(octave_mapper::apply): Use them to inline the mapper loops.
+
+	* pt-unop.cc (tree_prefix_expression::rvalue): Ensure that the
+	operand is defined for op_incr and op_decr.
+	(tree_postfix_expression::rvalue): Likewise.
+	From Ben Sapp <bsapp@lanl.gov>.
+
+2002-06-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-mapper.cc (octave_mapper::apply): Exit loops on error.
+
+2002-06-03  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* ov-struct.cc (octave_struct::print_raw): Print field names with
+	data types if Vstruct_levels_to_print is 0.
+	(octave_struct::print_name_tag): Don't emit newline if
+	Vstruct_levels_to_print is negative.
+	* ov.cc (struct_levels_to_print): Allow negative values too.
+
 2002-05-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* DLD-FUNCTIONS/lsode.cc (Flsode): Also return istate and error

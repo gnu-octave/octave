@@ -74,15 +74,20 @@ tree_prefix_expression::rvalue (void)
     {
       if (etype == octave_value::op_incr || etype == octave_value::op_decr)
 	{
-	  octave_lvalue ref = op->lvalue ();
+	  op->rvalue ();
 
-	  if (error_state)
-	    eval_error ();
-	  else if (ref.is_defined ())
+	  if (! error_state)
 	    {
-	      ref.do_unary_op (etype);
+	      octave_lvalue ref = op->lvalue ();
 
-	      retval = ref.value ();
+	      if (! error_state && ref.is_defined ())
+		{
+		  ref.do_unary_op (etype);
+
+		  retval = ref.value ();
+		}
+	      else
+		eval_error ();
 	    }
 	  else
 	    eval_error ();
@@ -91,9 +96,7 @@ tree_prefix_expression::rvalue (void)
 	{
 	  octave_value val = op->rvalue ();
 
-	  if (error_state)
-	    eval_error ();
-	  else if (val.is_defined ())
+	  if (! error_state && val.is_defined ())
 	    {
 	      retval = ::do_unary_op (etype, val);
 
@@ -155,15 +158,20 @@ tree_postfix_expression::rvalue (void)
     {
       if (etype == octave_value::op_incr || etype == octave_value::op_decr)
 	{
-	  octave_lvalue ref = op->lvalue ();
+	  op->rvalue ();
 
-	  if (error_state)
-	    eval_error ();
-	  else if (ref.is_defined ())
+	  if (! error_state)
 	    {
-	      retval = ref.value ();
+	      octave_lvalue ref = op->lvalue ();
 
-	      ref.do_unary_op (etype);
+	      if (! error_state && ref.is_defined ())
+		{
+		  retval = ref.value ();
+
+		  ref.do_unary_op (etype);
+		}
+	      else
+		eval_error ();
 	    }
 	  else
 	    eval_error ();
@@ -172,9 +180,7 @@ tree_postfix_expression::rvalue (void)
 	{
 	  octave_value val = op->rvalue ();
 
-	  if (error_state)
-	    eval_error ();
-	  else if (val.is_defined ())
+	  if (! error_state && val.is_defined ())
 	    {
 	      retval = ::do_unary_op (etype, val);
 

@@ -31,20 +31,23 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "oct-fftw.h"
 #include "quit.h"
 
-// Helper class to create and cache fftw plans for both 1d and 2d. This
-// implementation uses FFTW_ESTIMATE to create the plans, which in theory
-// is suboptimal, but provides quite reasonable performance.
+// Helper class to create and cache fftw plans for both 1d and
+// 2d. This implementation uses FFTW_ESTIMATE to create the plans,
+// which in theory is suboptimal, but provides quite reasonable
+// performance.
 
 // Also note that if FFTW_ESTIMATE is not used the planner in FFTW3
-// destroys the input and output arrays. So with the form of the 
-// current code we definitely want FFTW_ESTIMATE!! However, we use
-// any wsidom that is available, either in a FFTW3 system wide file
-// or as supplied by the user.
+// destroys the input and output arrays. So with the form of the
+// current code we definitely want FFTW_ESTIMATE!! However, we use any
+// wsidom that is available, either in a FFTW3 system wide file or as
+// supplied by the user.
 
-// XXX FIXME XXX If we can ensure 16 byte alignment in Array<T> (<T> *data)
-// the FFTW3 can use SIMD instructions for further acceleration.
+// XXX FIXME XXX -- if we can ensure 16 byte alignment in Array<T>
+// (<T> *data) the FFTW3 can use SIMD instructions for further
+// acceleration.
 
-// Note that it is profitable to store the FFTW3 plans, for small ffts
+// Note that it is profitable to store the FFTW3 plans, for small
+// ffts.
 
 class
 octave_fftw_planner
@@ -65,22 +68,47 @@ private:
 
   int plan_flags;
 
+  // XXX FIXME XXX -- perhaps this should be split into two classes?
+
   // Plan for fft and ifft of complex values
   fftw_plan plan[2];
-  int d[2];  // dist
-  int s[2];  // stride
-  int r[2];  // rank
-  int h[2];  // howmany
-  dim_vector n[2]; // dims
+
+  // dist
+  int d[2];
+
+  // stride
+  int s[2];
+
+  // rank
+  int r[2];
+
+  // howmany
+  int h[2];
+
+  // dims
+  dim_vector n[2];
+
   bool simd_align[2];
+
 
   // Plan for fft of real values
   fftw_plan rplan;
-  int rd;  // dist
-  int rs;  // stride
-  int rr;  // rank
-  int rh;  // howmany
-  dim_vector rn; // dims
+
+  // dist
+  int rd;
+
+  // stride
+  int rs;
+
+  // rank
+  int rr;
+
+  // howmany
+  int rh;
+
+  // dims
+  dim_vector rn;
+
   bool rsimd_align;
 };
 
@@ -98,7 +126,7 @@ octave_fftw_planner::octave_fftw_planner (void)
   rsimd_align = false;
   rn = dim_vector ();
 
-  // If we have a system wide wisdom file, import it
+  // If we have a system wide wisdom file, import it.
   fftw_import_system_wisdom ();
 }
 
@@ -116,21 +144,25 @@ octave_fftw_planner::create_plan (int dir, const int rank,
   bool create_new_plan = false;
   bool ioalign = CHECK_SIMD_ALIGNMENT (in) && CHECK_SIMD_ALIGNMENT (out);
 
-  // Don't create a new plan if we have a non SIMD plan already
-  // but can do SIMD. This prevents endlessly recreating plans
-  // if we change the alignment
+  // Don't create a new plan if we have a non SIMD plan already but
+  // can do SIMD.  This prevents endlessly recreating plans if we
+  // change the alignment.
+
   if (plan[which] == 0 || d[which] != dist || s[which] != stride
       || r[which] != rank || h[which] != howmany
       || ((ioalign != simd_align[which]) ? !ioalign : false))
     create_new_plan = true;
   else
-    // We still might not have the same shape of array
-    for (int i = 0; i < rank; i++)
-      if (dims(i) != n[which](i))
-	{
-	  create_new_plan = true;
-	  break;
-	}
+    {
+      // We still might not have the same shape of array.
+
+      for (int i = 0; i < rank; i++)
+	if (dims(i) != n[which](i))
+	  {
+	    create_new_plan = true;
+	    break;
+	  }
+    }
 
   if (create_new_plan)
     {
@@ -149,8 +181,10 @@ octave_fftw_planner::create_plan (int dir, const int rank,
       if (*cur_plan_p)
 	fftw_destroy_plan (*cur_plan_p);
 
-      // Note reversal of dimensions for column major storage in FFTW
+      // Note reversal of dimensions for column major storage in FFTW.
+
       OCTAVE_LOCAL_BUFFER (int, tmp, rank);
+
       for (int i = 0, j = rank-1; i < rank; i++, j--)
 	tmp[i] = dims(j);
 
@@ -176,20 +210,24 @@ octave_fftw_planner::create_plan (const int rank, const dim_vector dims,
   bool create_new_plan = false;
   bool ioalign = CHECK_SIMD_ALIGNMENT (in) && CHECK_SIMD_ALIGNMENT (out);
 
-  // Don't create a new plan if we have a non SIMD plan already
-  // but can do SIMD. This prevents endlessly recreating plans
-  // if we change the alignment
+  // Don't create a new plan if we have a non SIMD plan already but
+  // can do SIMD.  This prevents endlessly recreating plans if we
+  // change the alignment.
+
   if (rplan == 0 || rd != dist || rs != stride || rr != rank
       || rh != howmany || ((ioalign != rsimd_align) ? !ioalign : false))
     create_new_plan = true;
   else
-    // We still might not have the same shape of array
-    for (int i = 0; i < rank; i++)
-      if (dims(i) != rn(i))
-	{
-	  create_new_plan = true;
-	  break;
-	}
+    {
+      // We still might not have the same shape of array.
+
+      for (int i = 0; i < rank; i++)
+	if (dims(i) != rn(i))
+	  {
+	    create_new_plan = true;
+	    break;
+	  }
+    }
 
   if (create_new_plan)
     {
@@ -208,8 +246,10 @@ octave_fftw_planner::create_plan (const int rank, const dim_vector dims,
       if (*cur_plan_p)
 	fftw_destroy_plan (*cur_plan_p);
 
-      // Note reversal of dimensions for column major storage in FFTW
+      // Note reversal of dimensions for column major storage in FFTW.
+
       OCTAVE_LOCAL_BUFFER (int, tmp, rank);
+
       for (int i = 0, j = rank-1; i < rank; i++, j--)
 	tmp[i] = dims(j);
 
@@ -318,7 +358,8 @@ octave_fftw::fft (const double *in, Complex *out, size_t npts,
   fftw_execute_dft_r2c (plan, (const_cast<double *>(in)),
 			reinterpret_cast<fftw_complex *> (out));
 
-  // Need to create other half of the transform
+  // Need to create other half of the transform.
+
   convert_packcomplex_1d (out, nsamples, npts, stride, dist);
 
   return 0;
@@ -372,7 +413,8 @@ octave_fftw::fftNd (const double *in, Complex *out, const int rank,
     dist *= dv(i);
 
   // Fool with the position of the start of the output matrix, so that
-  // creating other half of the matrix won't cause cache problems
+  // creating other half of the matrix won't cause cache problems.
+
   int offset = (dv.numel () / dv(0)) * ((dv(0) - 1) / 2); 
   
   fftw_plan plan = fftw_planner.create_plan (rank, dv, 1, 1, dist,
@@ -381,7 +423,8 @@ octave_fftw::fftNd (const double *in, Complex *out, const int rank,
   fftw_execute_dft_r2c (plan, (const_cast<double *>(in)),
 			reinterpret_cast<fftw_complex *> (out+ offset));
 
-  // Need to create other half of the transform
+  // Need to create other half of the transform.
+
   convert_packcomplex_Nd (out, dv);
 
   return 0;

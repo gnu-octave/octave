@@ -16,10 +16,10 @@ Summary of changes since version 2.0.5:
   * New built-in variable `print_rhs_assign_val' controls what is
     printed when an assignment expression is evaluated.  If it is
     zero, the value of the variable on the left hand side (after the
-    assignment) is printed.  Nonzero, the value of the right hand side
-    (i.e., the result of the expression) is printed.  The default
-    value of is zero, so the behavior is the same as in previous
-    versions of Octave.
+    assignment) is printed.  If it is nonzero, the value of the right
+    hand side (i.e., the result of the expression) is printed.  The
+    default value of is zero, so the behavior is the same as in
+    previous versions of Octave.
 
   * tmpnam now takes two optional arguments, DIR, and PREFIX.  For
     example, tmpnam ("/foo", "bar-") returns a file name like

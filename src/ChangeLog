@@ -1,5 +1,19 @@
 Thu May 15 11:48:10 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* pt-select.h, pt-select.cc (class tree_if_command_list,
+	class tree_if_clause, class tree_switch_case_list,
+	class tree_switch_case): Move here from pt-misc.h, pt-misc.cc.
+	* pt-decl.h, pt-decl.cc (class tree_decl_init_list,
+	class tree_decl_elt): Move here from pt-mist.h, pt-misc.cc
+
+	* pt-arg-list.h, pt-stmt.h: New files, extracted from pt-misc.h.
+	* pt-arg-list.cc, pt-stmt.cc: New files, extracted from pt-misc.cc.
+
+	* pt-decl.h, pt-except.h, pt-jump.h, pt-loop.h, pt-select.h:
+	New files, extraced from pt-cmd.h.
+	* pt-decl.cc, pt-except.cc, pt-jump.cc, pt-loop.cc, pt-select.cc:
+	New files, extraced from pt-cmd.cc.
+
 	* pt-unop.h, pt-binop.h, pt-colon.h, pt-idx.h, pt-assign.h:
 	New files, extracted from pt-exp.h
 	* pt-unop.cc, pt-binop.cc, pt-colon.cc, pt-idx.cc, pt-assign.cc:

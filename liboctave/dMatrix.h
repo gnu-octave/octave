@@ -242,9 +242,11 @@ private:
   Matrix (double *d, int r, int c) : MArray2<double> (d, r, c) { }
 };
 
-Matrix Givens (double, double);
+extern Matrix Givens (double, double);
 
-Matrix Sylvester (const Matrix&, const Matrix&, const Matrix&);
+extern Matrix Sylvester (const Matrix&, const Matrix&, const Matrix&);
+
+extern ComplexColumnVector Qzval (const Matrix& a, const Matrix& b);
 
 #endif
 

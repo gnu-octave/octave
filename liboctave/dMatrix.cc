@@ -96,6 +96,17 @@ extern "C"
   double F77_FCN (dlange, DLANGE) (const char*, const int&,
 				   const int&, const double*,
 				   const int&, double*); 
+
+  int F77_FCN (qzhes, QZHES) (const int&, const int&, double*,
+			      double*, const long&, double*);
+ 
+  int F77_FCN (qzit, QZIT) (const int&, const int&, double*, double*,
+			    const double&, const long&, double*,
+			    int&);
+ 
+  int F77_FCN (qzval, QZVAL) (const int&, const int&, double*,
+			      double*, double*, double*, double*,
+			      const long&, double*);
 }
 
 // Matrix class.
@@ -2680,6 +2691,96 @@ Sylvester (const Matrix& a, const Matrix& b, const Matrix& c)
   
       retval = -ua*cx*ub.transpose ();
     }
+
+  return retval;
+}
+
+ComplexColumnVector
+Qzval (const Matrix& a, const Matrix& b)
+{
+  ComplexColumnVector retval;
+
+  int a_nr = a.rows();
+  int a_nc = a.cols();
+
+  int b_nr = b.rows();
+  int b_nc = b.cols();
+
+  if (a_nr == a_nc)
+    {
+      if (a_nr == b_nr && a_nc == b_nc)
+	{
+	  if (a_nr != 0)
+	    {
+	      Matrix jnk (a_nr, a_nr, 0.0);
+	      double *pjnk = jnk.fortran_vec ();
+
+	      ColumnVector alfr (a_nr);
+	      double *palfr = alfr.fortran_vec ();
+
+	      ColumnVector alfi (a_nr);
+	      double *palfi = alfr.fortran_vec ();
+
+	      ColumnVector beta (a_nr);
+	      double *pbeta = alfr.fortran_vec ();
+
+	      Matrix atmp = a;
+	      double *pa = atmp.fortran_vec ();
+
+	      Matrix btmp = b;
+	      double *pb = btmp.fortran_vec ();
+
+	      long matz = 0;
+	      int info;
+
+	      // XXX FIXME ??? XXX
+	      double eps = DBL_EPSILON;
+
+	      F77_FCN (qzhes, QZHES) (a_nr, a_nr, pa, pb, matz, pjnk);
+
+	      F77_FCN (qzit, QZIT) (a_nr, a_nr, pa, pb, eps, matz, pjnk, info);
+
+	      if (! info)
+		{
+		  F77_FCN (qzval, QZVAL) (a_nr, a_nr, pa, pb, palfr,
+					  palfi, pbeta, matz, pjnk);
+
+		  // Count and extract finite generalized eigenvalues.
+
+		  int cnt = 0;
+
+		  for (int i = 0; i < a_nr; i++)
+		    if (beta.elem (i) != 0)
+		      cnt++;
+
+		  ComplexColumnVector cx (cnt, 0.0);
+
+		  Complex Im (0, 1);
+
+		  for (int i = 0; i < a_nr; i++)
+		    {
+		      if (beta.elem (i) != 0)
+			{
+			  // Finite generalized eigenvalue.
+
+			  cnt--;
+			  cx.elem (cnt) = (alfr.elem (i) + Im * alfi.elem (i))
+			    / beta.elem (i);
+			}
+		    }
+
+		  retval = cx;
+		}
+	      else
+		(*current_liboctave_error_handler)
+		  ("qzval: trouble in qzit, info = %d", info);
+	    }
+	}
+      else
+	(*current_liboctave_error_handler) ("nonconformant matrices");
+    }
+  else
+    (*current_liboctave_error_handler) ("qzval: square matrices required");
 
   return retval;
 }

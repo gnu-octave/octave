@@ -49,19 +49,20 @@ OPTS_INC_DATA := DASPK-opts.in DASRT-opts.in DASSL-opts.in \
 
 OPTS_INC := $(OPTS_INC_DATA:.in=.h)
 
-INCLUDES := Bounds.h CollocWt.h DAE.h DAEFunc.h DAERT.h DAERTFunc.h \
-	DASPK.h DASRT.h DASSL.h FEGrid.h LinConst.h \
-	LP.h LPsolve.h LSODE.h NLConst.h NLEqn.h NLFunc.h NLP.h \
-	ODE.h ODEFunc.h ODES.h ODESFunc.h ODESSA.h Objective.h \
-	QP.h Quad.h Range.h base-de.h base-min.h byte-swap.h \
-	cmd-edit.h cmd-hist.h data-conv.h dir-ops.h file-ops.h \
-	file-stat.h getopt.h glob-match.h idx-vector.h lo-ieee.h \
-	lo-mappers.h lo-specfun.h lo-sysdep.h lo-utils.h mach-info.h \
-	oct-alloc.h oct-cmplx.h oct-env.h oct-fftw.h oct-getopt.h \
-	oct-group.h oct-kpse.h oct-passwd.h oct-rl-edit.h \
-	oct-rl-hist.h oct-shlib.h oct-syscalls.h oct-time.h \
-	pathlen.h pathsearch.h prog-args.h statdefs.h str-vec.h\
-	sun-utils.h sysdir.h systime.h syswait.h \
+INCLUDES := Bounds.h CollocWt.h DAE.h DAEFunc.h DAERT.h \
+	DAERTFunc.h DASPK.h DASRT.h DASSL.h FEGrid.h \
+	LinConst.h LP.h LPsolve.h LSODE.h NLConst.h NLEqn.h \
+	NLFunc.h NLP.h ODE.h ODEFunc.h ODES.h ODESFunc.h \
+	ODESSA.h Objective.h QP.h Quad.h Range.h base-de.h \
+	base-min.h byte-swap.h cmd-edit.h cmd-hist.h \
+	data-conv.h dir-ops.h file-ops.h file-stat.h getopt.h \
+	glob-match.h idx-vector.h lo-ieee.h lo-mappers.h \
+	lo-specfun.h lo-sstream.h lo-sysdep.h lo-utils.h \
+	mach-info.h oct-alloc.h oct-cmplx.h oct-env.h oct-fftw.h \
+	oct-getopt.h oct-group.h oct-kpse.h oct-passwd.h \
+	oct-rl-edit.h oct-rl-hist.h oct-shlib.h oct-syscalls.h \
+	oct-time.h pathlen.h pathsearch.h prog-args.h statdefs.h \
+	str-vec.h sun-utils.h sysdir.h systime.h syswait.h \
 	$(OPTS_INC) \
 	$(MATRIX_INC) \
 	$(MX_OP_INC) \

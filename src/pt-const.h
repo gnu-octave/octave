@@ -609,11 +609,11 @@ public:
 
   tree_constant eval (int print_result)
     {
-      if (! is_scalar_type ())
-	rep->maybe_mutate ();
-
       if (print_result)
-	print ();
+	{
+	  rep->maybe_mutate ();  // XXX FIXME XXX -- is this necessary?
+	  print ();
+	}
 
       return *this;
     }

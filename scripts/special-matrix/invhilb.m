@@ -66,7 +66,7 @@
 ##
 ## @seealso{hankel, vander, sylvester_matrix, hilb, and toeplitz}
 
-## Author: Dirk Laurie <dirk@siegfried.wisk.sun.ac.za>
+## Author: Dirk Laurie <dlaurie@na-net.ornl.gov>
 
 function retval = invhilb (n)
 

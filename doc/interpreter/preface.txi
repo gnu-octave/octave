@@ -160,7 +160,7 @@ also maintains the collection of conributed code at
 Bill Lash @email{lash@@tellabs.com} provided the @code{unwrap} function.
 
 @item
-Dirk Laurie @email{dirk@@calvyn.puk.ac.za} rewrote @code{invhilb} to be
+Dirk Laurie @email{dlaurie@@na-net.ornl.gov} rewrote @code{invhilb} to be
 faster and more accurate.
 
 @item

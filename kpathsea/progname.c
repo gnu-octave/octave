@@ -566,7 +566,7 @@ kpse_set_program_name P2C(const_string, argv0, const_string, progname)
   free (sdir_parent);
   free (sdir_grandparent);
 
-#ifndef PROGRAM_INVOCATION_NAME
+#ifndef HAVE_PROGRAM_INVOCATION_NAME
   program_invocation_short_name = (string)basename (program_invocation_name);
 #endif
 

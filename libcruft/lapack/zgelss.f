@@ -4,7 +4,7 @@
 *  -- LAPACK driver routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     June 30, 1999
+*     October 31, 1999
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDB, LWORK, M, N, NRHS, RANK
@@ -92,7 +92,7 @@
 *          this value as the first entry of the WORK array, and no error
 *          message related to LWORK is issued by XERBLA.
 *
-*  RWORK   (workspace) DOUBLE PRECISION array, dimension (5*min(M,N)-1)
+*  RWORK   (workspace) DOUBLE PRECISION array, dimension (5*min(M,N))
 *
 *  INFO    (output) INTEGER
 *          = 0:  successful exit
@@ -171,7 +171,7 @@
 *
 *           Path 1a - overdetermined, with many more rows than columns
 *
-*           Space needed for ZBDSQR is BDSPAC = 5*N-1
+*           Space needed for ZBDSQR is BDSPAC = 5*N
 *
             MM = N
             MAXWRK = MAX( MAXWRK, N+N*ILAENV( 1, 'ZGEQRF', ' ', M, N,
@@ -201,7 +201,7 @@
 *              Path 2a - underdetermined, with many more columns
 *              than rows
 *
-*              Space needed for ZBDSQR is BDSPAC = 5*M-1
+*              Space needed for ZBDSQR is BDSPAC = 5*M
 *
                MAXWRK = M + M*ILAENV( 1, 'ZGELQF', ' ', M, N, -1, -1 )
                MAXWRK = MAX( MAXWRK, 3*M+M*M+2*M*
@@ -221,7 +221,7 @@
 *
 *              Path 2 - underdetermined
 *
-*              Space needed for ZBDSQR is BDSPAC = 5*M-1
+*              Space needed for ZBDSQR is BDSPAC = 5*M
 *
                MAXWRK = 2*M + ( N+M )*ILAENV( 1, 'ZGEBRD', ' ', M, N,
      $                  -1, -1 )

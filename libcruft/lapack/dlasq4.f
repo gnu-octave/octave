@@ -4,7 +4,7 @@
 *  -- LAPACK auxiliary routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     June 30, 1999
+*     October 31, 1999
 *
 *     .. Scalar Arguments ..
       INTEGER            I0, N0, N0IN, PP, TTYPE
@@ -16,7 +16,8 @@
 *
 *  Purpose
 *  =======
-*  DLASQ4 computes an approximation TAU to the smallest eigenvalue
+*
+*  DLASQ4 computes an approximation TAU to the smallest eigenvalue 
 *  using values of d from the previous transform.
 *
 *  I0    (input) INTEGER
@@ -68,10 +69,10 @@
       DOUBLE PRECISION   CNST1, CNST2, CNST3
       PARAMETER          ( CNST1 = 0.5630D0, CNST2 = 1.010D0,
      $                   CNST3 = 1.050D0 )
-      DOUBLE PRECISION   QURTR, THIRD, HALF, ZERO, ONE, TWO, HNDRD
+      DOUBLE PRECISION   QURTR, THIRD, HALF, ZERO, ONE, TWO, HUNDRD
       PARAMETER          ( QURTR = 0.250D0, THIRD = 0.3330D0,
      $                   HALF = 0.50D0, ZERO = 0.0D0, ONE = 1.0D0,
-     $                   TWO = 2.0D0, HNDRD = 100.0D0 )
+     $                   TWO = 2.0D0, HUNDRD = 100.0D0 )
 *     ..
 *     .. Local Scalars ..
       INTEGER            I4, NN, NP
@@ -83,7 +84,7 @@
 *     .. Save statement ..
       SAVE               G
 *     ..
-*     .. Data statements ..
+*     .. Data statement ..
       DATA               G / ZERO /
 *     ..
 *     .. Executable Statements ..
@@ -96,7 +97,7 @@
          TTYPE = -1
          RETURN
       END IF
-*
+*       
       NN = 4*N0 + PP
       IF( N0IN.EQ.N0 ) THEN
 *
@@ -133,30 +134,40 @@
 *
 *              Case 4.
 *
+               TTYPE = -4
+               S = QURTR*DMIN
                IF( DMIN.EQ.DN ) THEN
                   GAM = DN
                   A2 = ZERO
+                  IF( Z( NN-5 ) .GT. Z( NN-7 ) )
+     $               RETURN
                   B2 = Z( NN-5 ) / Z( NN-7 )
                   NP = NN - 9
                ELSE
                   NP = NN - 2*PP
                   B2 = Z( NP-2 )
                   GAM = DN1
+                  IF( Z( NP-4 ) .GT. Z( NP-2 ) )
+     $               RETURN
                   A2 = Z( NP-4 ) / Z( NP-2 )
+                  IF( Z( NN-9 ) .GT. Z( NN-11 ) )
+     $               RETURN
                   B2 = Z( NN-9 ) / Z( NN-11 )
                   NP = NN - 13
                END IF
 *
 *              Approximate contribution to norm squared from I < NN-1.
 *
-               IF( B2.EQ.ZERO )
-     $            GO TO 20
                A2 = A2 + B2
                DO 10 I4 = NP, 4*I0 - 1 + PP, -4
+                  IF( B2.EQ.ZERO )
+     $               GO TO 20
                   B1 = B2
+                  IF( Z( I4 ) .GT. Z( I4-2 ) )
+     $               RETURN
                   B2 = B2*( Z( I4 ) / Z( I4-2 ) )
                   A2 = A2 + B2
-                  IF( HNDRD*MAX( B2, B1 ).LT.A2 .OR. CNST1.LT.A2 )
+                  IF( HUNDRD*MAX( B2, B1 ).LT.A2 .OR. CNST1.LT.A2 ) 
      $               GO TO 20
    10          CONTINUE
    20          CONTINUE
@@ -164,16 +175,15 @@
 *
 *              Rayleigh quotient residual bound.
 *
-               IF( A2.LT.CNST1 ) THEN
-                  S = GAM*( ONE-SQRT( A2 ) ) / ( ONE+A2 )
-               ELSE
-                  S = QURTR*GAM
-               END IF
-               TTYPE = -4
+               IF( A2.LT.CNST1 )
+     $            S = GAM*( ONE-SQRT( A2 ) ) / ( ONE+A2 )
             END IF
          ELSE IF( DMIN.EQ.DN2 ) THEN
 *
 *           Case 5.
+*
+            TTYPE = -5
+            S = QURTR*DMIN
 *
 *           Compute contribution to norm squared from I > NN-2.
 *
@@ -181,32 +191,32 @@
             B1 = Z( NP-2 )
             B2 = Z( NP-6 )
             GAM = DN2
+            IF( Z( NP-8 ).GT.B2 .OR. Z( NP-4 ).GT.B1 )
+     $         RETURN
             A2 = ( Z( NP-8 ) / B2 )*( ONE+Z( NP-4 ) / B1 )
 *
 *           Approximate contribution to norm squared from I < NN-2.
 *
             IF( N0-I0.GT.2 ) THEN
                B2 = Z( NN-13 ) / Z( NN-15 )
-               IF( B2.EQ.ZERO )
-     $            GO TO 40
                A2 = A2 + B2
                DO 30 I4 = NN - 17, 4*I0 - 1 + PP, -4
+                  IF( B2.EQ.ZERO )
+     $               GO TO 40
                   B1 = B2
+                  IF( Z( I4 ) .GT. Z( I4-2 ) )
+     $               RETURN
                   B2 = B2*( Z( I4 ) / Z( I4-2 ) )
                   A2 = A2 + B2
-                  IF( HNDRD*MAX( B2, B1 ).LT.A2 .OR. CNST1.LT.A2 )
+                  IF( HUNDRD*MAX( B2, B1 ).LT.A2 .OR. CNST1.LT.A2 ) 
      $               GO TO 40
    30          CONTINUE
    40          CONTINUE
                A2 = CNST3*A2
             END IF
 *
-            IF( A2.LT.CNST1 ) THEN
-               S = GAM*( ONE-SQRT( A2 ) ) / ( ONE+A2 )
-            ELSE
-               S = QURTR*GAM / ( ONE+A2 )
-            END IF
-            TTYPE = -5
+            IF( A2.LT.CNST1 )
+     $         S = GAM*( ONE-SQRT( A2 ) ) / ( ONE+A2 )
          ELSE
 *
 *           Case 6, no information to guide us.
@@ -226,19 +236,25 @@
 *
 *        One eigenvalue just deflated. Use DMIN1, DN1 for DMIN and DN.
 *
-         IF( DMIN1.EQ.DN1 .AND. DMIN2.EQ.DN2 ) THEN
+         IF( DMIN1.EQ.DN1 .AND. DMIN2.EQ.DN2 ) THEN 
 *
 *           Cases 7 and 8.
 *
+            TTYPE = -7
+            S = THIRD*DMIN1
+            IF( Z( NN-5 ).GT.Z( NN-7 ) )
+     $         RETURN
             B1 = Z( NN-5 ) / Z( NN-7 )
             B2 = B1
             IF( B2.EQ.ZERO )
      $         GO TO 60
             DO 50 I4 = 4*N0 - 9 + PP, 4*I0 - 1 + PP, -4
                A2 = B1
+               IF( Z( I4 ).GT.Z( I4-2 ) )
+     $            RETURN
                B1 = B1*( Z( I4 ) / Z( I4-2 ) )
                B2 = B2 + B1
-               IF( HNDRD*MAX( B1, A2 ).LT.B2 )
+               IF( HUNDRD*MAX( B1, A2 ).LT.B2 ) 
      $            GO TO 60
    50       CONTINUE
    60       CONTINUE
@@ -246,11 +262,9 @@
             A2 = DMIN1 / ( ONE+B2**2 )
             GAP2 = HALF*DMIN2 - A2
             IF( GAP2.GT.ZERO .AND. GAP2.GT.B2*A2 ) THEN
-               S = MAX( A2*( ONE-CNST2*A2*( B2 / GAP2 )*B2 ),
-     $             THIRD*DMIN1 )
-               TTYPE = -7
-            ELSE
-               S = MAX( A2*( ONE-CNST2*B2 ), THIRD*DMIN1 )
+               S = MAX( S, A2*( ONE-CNST2*A2*( B2 / GAP2 )*B2 ) )
+            ELSE 
+               S = MAX( S, A2*( ONE-CNST2*B2 ) )
                TTYPE = -8
             END IF
          ELSE
@@ -269,15 +283,21 @@
 *
 *        Cases 10 and 11.
 *
-         IF( DMIN2.EQ.DN2 .AND. TWO*Z( NN-5 ).LT.Z( NN-7 ) ) THEN
+         IF( DMIN2.EQ.DN2 .AND. TWO*Z( NN-5 ).LT.Z( NN-7 ) ) THEN 
+            TTYPE = -10
+            S = THIRD*DMIN2
+            IF( Z( NN-5 ).GT.Z( NN-7 ) )
+     $         RETURN
             B1 = Z( NN-5 ) / Z( NN-7 )
             B2 = B1
             IF( B2.EQ.ZERO )
      $         GO TO 80
             DO 70 I4 = 4*N0 - 9 + PP, 4*I0 - 1 + PP, -4
+               IF( Z( I4 ).GT.Z( I4-2 ) )
+     $            RETURN
                B1 = B1*( Z( I4 ) / Z( I4-2 ) )
                B2 = B2 + B1
-               IF( HNDRD*B1.LT.B2 )
+               IF( HUNDRD*B1.LT.B2 )
      $            GO TO 80
    70       CONTINUE
    80       CONTINUE
@@ -286,12 +306,10 @@
             GAP2 = Z( NN-7 ) + Z( NN-9 ) -
      $             SQRT( Z( NN-11 ) )*SQRT( Z( NN-9 ) ) - A2
             IF( GAP2.GT.ZERO .AND. GAP2.GT.B2*A2 ) THEN
-               S = MAX( A2*( ONE-CNST2*A2*( B2 / GAP2 )*B2 ),
-     $             THIRD*DMIN2 )
-            ELSE
-               S = MAX( A2*( ONE-CNST2*B2 ), THIRD*DMIN2 )
+               S = MAX( S, A2*( ONE-CNST2*A2*( B2 / GAP2 )*B2 ) )
+            ELSE 
+               S = MAX( S, A2*( ONE-CNST2*B2 ) )
             END IF
-            TTYPE = -10
          ELSE
             S = QURTR*DMIN2
             TTYPE = -11
@@ -300,7 +318,7 @@
 *
 *        Case 12, more than two eigenvalues deflated. No information.
 *
-         S = ZERO
+         S = ZERO 
          TTYPE = -12
       END IF
 *

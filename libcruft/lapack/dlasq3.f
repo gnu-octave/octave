@@ -4,7 +4,7 @@
 *  -- LAPACK auxiliary routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     December 22, 1999
+*     October 31, 1999
 *
 *     .. Scalar Arguments ..
       LOGICAL            IEEE
@@ -223,7 +223,7 @@
 *
             Z( 4*N0+PP-1 ) = ZERO
             GO TO 70
-         ELSE IF( Z( 4*N0-PP ).LE.ZERO ) THEN
+         ELSE IF( Z( 4*N0+PP ).LE.ZERO ) THEN
 *
 *           Possible unnecessary underflow in the e's.
 *           Call safe dqd.
@@ -231,7 +231,7 @@
             Z( 4*N0+PP-1 ) = ZERO
             DMIN = ZERO
             GO TO 70
-         ELSE IF( DMIN.EQ.ZERO .AND. TAU.EQ.ZERO ) THEN
+         ELSE IF( DMIN.EQ.ZERO .AND. DMIN1.LE.ZERO ) THEN
 *
 *           Possible unnecessary underflow in the d's.
 *           Call safe dqd.

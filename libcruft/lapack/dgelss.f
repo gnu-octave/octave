@@ -4,7 +4,7 @@
 *  -- LAPACK driver routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     June 30, 1999
+*     October 31, 1999
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDB, LWORK, M, N, NRHS, RANK
@@ -175,7 +175,7 @@
 *
 *           Compute workspace needed for DBDSQR
 *
-            BDSPAC = MAX( 1, 5*N-4 )
+            BDSPAC = MAX( 1, 5*N )
             MAXWRK = MAX( MAXWRK, 3*N+( MM+N )*
      $               ILAENV( 1, 'DGEBRD', ' ', MM, N, -1, -1 ) )
             MAXWRK = MAX( MAXWRK, 3*N+NRHS*
@@ -191,7 +191,7 @@
 *
 *           Compute workspace needed for DBDSQR
 *
-            BDSPAC = MAX( 1, 5*M-4 )
+            BDSPAC = MAX( 1, 5*M )
             MINWRK = MAX( 3*M+NRHS, 3*M+N, BDSPAC )
             IF( N.GE.MNTHR ) THEN
 *

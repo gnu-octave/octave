@@ -3,7 +3,7 @@
 *  -- LAPACK routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     September 30, 1994
+*     October 31, 1999
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -197,6 +197,8 @@
                CALL ZHER2( UPLO, I, -ONE, A( 1, I+1 ), 1, TAU, 1, A,
      $                     LDA )
 *
+            ELSE
+               A( I, I ) = DBLE( A( I, I ) )
             END IF
             A( I, I+1 ) = E( I )
             D( I+1 ) = A( I+1, I+1 )
@@ -240,6 +242,8 @@
                CALL ZHER2( UPLO, N-I, -ONE, A( I+1, I ), 1, TAU( I ), 1,
      $                     A( I+1, I+1 ), LDA )
 *
+            ELSE
+               A( I+1, I+1 ) = DBLE( A( I+1, I+1 ) )
             END IF
             A( I+1, I ) = E( I )
             D( I ) = A( I, I )

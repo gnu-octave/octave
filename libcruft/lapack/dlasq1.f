@@ -3,7 +3,7 @@
 *  -- LAPACK routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     June 30, 1999
+*     October 31, 1999 
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, N
@@ -26,13 +26,7 @@
 *  1994,
 *
 *  and the present implementation is described in "An implementation of
-*  dqds", LAPACK technical report.
-*
-*  Note : DLASQ1 works only on machines which follow ieee-754
-*  floating-point standard in their handling of infinities and NaNs.
-*  Normal execution of DLASQ1 may create NaNs and infinities and hence
-*  may abort due to a floating point exception in environments which
-*  do not conform to the ieee standard.
+*  the dqds Algorithm (Positive Case)", LAPACK Working Note.
 *
 *  Arguments
 *  =========
@@ -50,17 +44,17 @@
 *        of the bidiagonal matrix whose SVD is desired.
 *        On exit, E is overwritten.
 *
-*  WORK  (workspace) DOUBLE PRECISION array, dimension (2*N)
+*  WORK  (workspace) DOUBLE PRECISION array, dimension (4*N)
 *
 *  INFO  (output) INTEGER
-*        = 0:  successful exit
-*        < 0:  if INFO = -i, the i-th argument had an illegal value
+*        = 0: successful exit
+*        < 0: if INFO = -i, the i-th argument had an illegal value
 *        > 0: the algorithm failed
-*              = 1, a split was marked by a positive value in E
-*              = 2, current block of Z not diagonalized after 30*N
-*                   iterations (in inner while loop)
-*              = 3, termination criterion of outer while loop not met
-*                   (program created more than N unreduced blocks)
+*             = 1, a split was marked by a positive value in E
+*             = 2, current block of Z not diagonalized after 30*N
+*                  iterations (in inner while loop)
+*             = 3, termination criterion of outer while loop not met 
+*                  (program created more than N unreduced blocks)
 *
 *  =====================================================================
 *
@@ -70,10 +64,10 @@
 *     ..
 *     .. Local Scalars ..
       INTEGER            I, IINFO
-      DOUBLE PRECISION   EPS, SCALE, SFMIN, SIGMN, SIGMX
+      DOUBLE PRECISION   EPS, SCALE, SAFMIN, SIGMN, SIGMX
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DCOPY, DLAS2, DLASCL, DLASQ2, DLASRT, XERBLA
+      EXTERNAL           DLAS2, DLASQ2, DLASRT, XERBLA
 *     ..
 *     .. External Functions ..
       DOUBLE PRECISION   DLAMCH
@@ -114,7 +108,7 @@
 *
       IF( SIGMX.EQ.ZERO ) THEN
          CALL DLASRT( 'D', N, D, IINFO )
-         GO TO 50
+         RETURN
       END IF
 *
       DO 20 I = 1, N
@@ -125,13 +119,13 @@
 *     input data makes scaling by a power of the radix pointless).
 *
       EPS = DLAMCH( 'Precision' )
-      SFMIN = DLAMCH( 'Safe minimum' )
-      SCALE = SQRT( EPS / SFMIN )
+      SAFMIN = DLAMCH( 'Safe minimum' )
+      SCALE = SQRT( EPS / SAFMIN )
       CALL DCOPY( N, D, 1, WORK( 1 ), 2 )
       CALL DCOPY( N-1, E, 1, WORK( 2 ), 2 )
       CALL DLASCL( 'G', 0, 0, SIGMX, SCALE, 2*N-1, 1, WORK, 2*N-1,
      $             IINFO )
-*
+*         
 *     Compute the q's and e's.
 *
       DO 30 I = 1, 2*N - 1
@@ -148,7 +142,6 @@
          CALL DLASCL( 'G', 0, 0, SCALE, SIGMX, N, 1, D, N, IINFO )
       END IF
 *
-   50 CONTINUE
       RETURN
 *
 *     End of DLASQ1

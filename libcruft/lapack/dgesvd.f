@@ -4,7 +4,7 @@
 *  -- LAPACK driver routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     June 30, 1999
+*     October 31, 1999
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBU, JOBVT
@@ -115,7 +115,7 @@
 *
 *  LWORK   (input) INTEGER
 *          The dimension of the array WORK. LWORK >= 1.
-*          LWORK >= MAX(3*MIN(M,N)+MAX(M,N),5*MIN(M,N)-4).
+*          LWORK >= MAX(3*MIN(M,N)+MAX(M,N),5*MIN(M,N)).
 *          For good performance, LWORK should generally be larger.
 *
 *          If LWORK = -1, then a workspace query is assumed; the routine
@@ -214,7 +214,7 @@
 *
 *           Compute space needed for DBDSQR
 *
-            BDSPAC = MAX( 3*N, 5*N-4 )
+            BDSPAC = 5*N
             IF( M.GE.MNTHR ) THEN
                IF( WNTUN ) THEN
 *
@@ -387,7 +387,7 @@
 *
 *           Compute space needed for DBDSQR
 *
-            BDSPAC = MAX( 3*M, 5*M-4 )
+            BDSPAC = 5*M
             IF( N.GE.MNTHR ) THEN
                IF( WNTVN ) THEN
 *

@@ -1,12 +1,13 @@
       SUBROUTINE DLASQ5( I0, N0, Z, PP, TAU, DMIN, DMIN1, DMIN2, DN,
-     $                   DNM1, DNM2 )
+     $                   DNM1, DNM2, IEEE )
 *
 *  -- LAPACK auxiliary routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     June 30, 1999
+*     October 31, 1999
 *
 *     .. Scalar Arguments ..
+      LOGICAL            IEEE
       INTEGER            I0, N0, PP
       DOUBLE PRECISION   DMIN, DMIN1, DMIN2, DN, DNM1, DNM2, TAU
 *     ..
@@ -16,7 +17,9 @@
 *
 *  Purpose
 *  =======
-*  DLASQ5 computes one dqds transform in ping-pong form.
+*
+*  DLASQ5 computes one dqds transform in ping-pong form, one
+*  version for IEEE machines another for non IEEE machines.
 *
 *  Arguments
 *  =========
@@ -55,8 +58,15 @@
 *  DNM2  (output) DOUBLE PRECISION
 *        d(N0-2).
 *
+*  IEEE  (input) LOGICAL
+*        Flag for IEEE or non IEEE arithmetic.
+*
 *  =====================================================================
 *
+*     .. Parameter ..
+      DOUBLE PRECISION   ZERO
+      PARAMETER          ( ZERO = 0.0D0 )
+*     ..
 *     .. Local Scalars ..
       INTEGER            J4, J4P2
       DOUBLE PRECISION   D, EMIN, TEMP
@@ -70,48 +80,112 @@
      $   RETURN
 *
       J4 = 4*I0 + PP - 3
-      EMIN = Z( J4+4 )
+      EMIN = Z( J4+4 ) 
       D = Z( J4 ) - TAU
       DMIN = D
+      DMIN1 = -Z( J4 )
 *
-      IF( PP.EQ.0 ) THEN
-         DO 10 J4 = 4*I0, 4*( N0-3 ), 4
-            Z( J4-2 ) = D + Z( J4-1 )
-            TEMP = Z( J4+1 ) / Z( J4-2 )
-            D = D*TEMP - TAU
-            DMIN = MIN( DMIN, D )
-            Z( J4 ) = Z( J4-1 )*TEMP
-            EMIN = MIN( Z( J4 ), EMIN )
-   10    CONTINUE
+      IF( IEEE ) THEN
+*
+*        Code for IEEE arithmetic.
+*
+         IF( PP.EQ.0 ) THEN
+            DO 10 J4 = 4*I0, 4*( N0-3 ), 4
+               Z( J4-2 ) = D + Z( J4-1 ) 
+               TEMP = Z( J4+1 ) / Z( J4-2 )
+               D = D*TEMP - TAU
+               DMIN = MIN( DMIN, D )
+               Z( J4 ) = Z( J4-1 )*TEMP
+               EMIN = MIN( Z( J4 ), EMIN )
+   10       CONTINUE
+         ELSE
+            DO 20 J4 = 4*I0, 4*( N0-3 ), 4
+               Z( J4-3 ) = D + Z( J4 ) 
+               TEMP = Z( J4+2 ) / Z( J4-3 )
+               D = D*TEMP - TAU
+               DMIN = MIN( DMIN, D )
+               Z( J4-1 ) = Z( J4 )*TEMP
+               EMIN = MIN( Z( J4-1 ), EMIN )
+   20       CONTINUE
+         END IF
+*
+*        Unroll last two steps. 
+*
+         DNM2 = D
+         DMIN2 = DMIN
+         J4 = 4*( N0-2 ) - PP
+         J4P2 = J4 + 2*PP - 1
+         Z( J4-2 ) = DNM2 + Z( J4P2 )
+         Z( J4 ) = Z( J4P2+2 )*( Z( J4P2 ) / Z( J4-2 ) )
+         DNM1 = Z( J4P2+2 )*( DNM2 / Z( J4-2 ) ) - TAU
+         DMIN = MIN( DMIN, DNM1 )
+*
+         DMIN1 = DMIN
+         J4 = J4 + 4
+         J4P2 = J4 + 2*PP - 1
+         Z( J4-2 ) = DNM1 + Z( J4P2 )
+         Z( J4 ) = Z( J4P2+2 )*( Z( J4P2 ) / Z( J4-2 ) )
+         DN = Z( J4P2+2 )*( DNM1 / Z( J4-2 ) ) - TAU
+         DMIN = MIN( DMIN, DN )
+*
       ELSE
-         DO 20 J4 = 4*I0, 4*( N0-3 ), 4
-            Z( J4-3 ) = D + Z( J4 )
-            TEMP = Z( J4+2 ) / Z( J4-3 )
-            D = D*TEMP - TAU
-            DMIN = MIN( DMIN, D )
-            Z( J4-1 ) = Z( J4 )*TEMP
-            EMIN = MIN( Z( J4-1 ), EMIN )
-   20    CONTINUE
+*
+*        Code for non IEEE arithmetic.
+*
+         IF( PP.EQ.0 ) THEN
+            DO 30 J4 = 4*I0, 4*( N0-3 ), 4
+               Z( J4-2 ) = D + Z( J4-1 ) 
+               IF( D.LE.ZERO ) THEN
+                  RETURN
+               ELSE 
+                  Z( J4 ) = Z( J4+1 )*( Z( J4-1 ) / Z( J4-2 ) )
+                  D = Z( J4+1 )*( D / Z( J4-2 ) ) - TAU
+               END IF
+               DMIN = MIN( DMIN, D )
+               EMIN = MIN( EMIN, Z( J4 ) )
+   30       CONTINUE
+         ELSE
+            DO 40 J4 = 4*I0, 4*( N0-3 ), 4
+               Z( J4-3 ) = D + Z( J4 ) 
+               IF( D.LE.ZERO ) THEN
+                  RETURN
+               ELSE 
+                  Z( J4-1 ) = Z( J4+2 )*( Z( J4 ) / Z( J4-3 ) )
+                  D = Z( J4+2 )*( D / Z( J4-3 ) ) - TAU
+               END IF
+               DMIN = MIN( DMIN, D )
+               EMIN = MIN( EMIN, Z( J4-1 ) )
+   40       CONTINUE
+         END IF
+*
+*        Unroll last two steps. 
+*
+         DNM2 = D
+         DMIN2 = DMIN
+         J4 = 4*( N0-2 ) - PP
+         J4P2 = J4 + 2*PP - 1
+         Z( J4-2 ) = DNM2 + Z( J4P2 )
+         IF( DNM2.LE.ZERO ) THEN
+            RETURN
+         ELSE
+            Z( J4 ) = Z( J4P2+2 )*( Z( J4P2 ) / Z( J4-2 ) )
+            DNM1 = Z( J4P2+2 )*( DNM2 / Z( J4-2 ) ) - TAU
+         END IF
+         DMIN = MIN( DMIN, DNM1 )
+*
+         DMIN1 = DMIN
+         J4 = J4 + 4
+         J4P2 = J4 + 2*PP - 1
+         Z( J4-2 ) = DNM1 + Z( J4P2 )
+         IF( DNM1.LE.ZERO ) THEN
+            RETURN
+         ELSE
+            Z( J4 ) = Z( J4P2+2 )*( Z( J4P2 ) / Z( J4-2 ) )
+            DN = Z( J4P2+2 )*( DNM1 / Z( J4-2 ) ) - TAU
+         END IF
+         DMIN = MIN( DMIN, DN )
+*
       END IF
-*
-*     Unroll last two steps.
-*
-      DNM2 = D
-      DMIN2 = DMIN
-      J4 = 4*( N0-2 ) - PP
-      J4P2 = J4 + 2*PP - 1
-      Z( J4-2 ) = DNM2 + Z( J4P2 )
-      Z( J4 ) = Z( J4P2+2 )*( Z( J4P2 ) / Z( J4-2 ) )
-      DNM1 = Z( J4P2+2 )*( DNM2 / Z( J4-2 ) ) - TAU
-      DMIN = MIN( DMIN, DNM1 )
-*
-      DMIN1 = DMIN
-      J4 = J4 + 4
-      J4P2 = J4 + 2*PP - 1
-      Z( J4-2 ) = DNM1 + Z( J4P2 )
-      Z( J4 ) = Z( J4P2+2 )*( Z( J4P2 ) / Z( J4-2 ) )
-      DN = Z( J4P2+2 )*( DNM1 / Z( J4-2 ) ) - TAU
-      DMIN = MIN( DMIN, DN )
 *
       Z( J4+2 ) = DN
       Z( 4*N0-PP ) = EMIN

@@ -1,9 +1,9 @@
       SUBROUTINE DLASQ2( N, Z, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.0) --
+*  -- LAPACK routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     June 30, 1999
+*     October 31, 1999 
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, N
@@ -15,7 +15,7 @@
 *  Purpose
 *  =======
 *
-*  DLASQ2 computes all the eigenvalues of the symmetric positive
+*  DLASQ2 computes all the eigenvalues of the symmetric positive 
 *  definite tridiagonal matrix associated with the qd array Z to high
 *  relative accuracy are computed to high relative accuracy, in the
 *  absence of denormalization, underflow and overflow.
@@ -26,11 +26,10 @@
 *  Z(1,3,5,,..). The tridiagonal is L*U or, if you prefer, the
 *  symmetric tridiagonal to which it is similar.
 *
-*  Note : DLASQ2 works only on machines which follow ieee-754
-*  floating-point standard in their handling of infinities and NaNs.
-*  Normal execution of DLASQ2 may create NaNs and infinities and hence
-*  may abort due to a floating point exception in environments which
-*  do not conform to the ieee standard.
+*  Note : DLASQ2 defines a logical variable, IEEE, which is true
+*  on machines which follow ieee-754 floating-point standard in their
+*  handling of infinities and NaNs, and false otherwise. This variable
+*  is passed to DLASQ3.
 *
 *  Arguments
 *  =========
@@ -41,9 +40,10 @@
 *  Z     (workspace) DOUBLE PRECISION array, dimension ( 4*N )
 *        On entry Z holds the qd array. On exit, entries 1 to N hold
 *        the eigenvalues in decreasing order, Z( 2*N+1 ) holds the
-*        trace, Z( 2*N+2 ) holds the sum of the eigenvalues, Z( 2*N+3 )
-*        holds the iteration count, Z( 2*N+4 ) holds NDIVS/NIN^2, and
-*        Z( 2*N+5 ) holds the percentage of shifts that failed.
+*        trace, and Z( 2*N+2 ) holds the sum of the eigenvalues. If
+*        N > 2, then Z( 2*N+3 ) holds the iteration count, Z( 2*N+4 )
+*        holds NDIVS/NIN^2, and Z( 2*N+5 ) holds the percentage of
+*        shifts that failed.
 *
 *  INFO  (output) INTEGER
 *        = 0: successful exit
@@ -55,7 +55,7 @@
 *              = 1, a split was marked by a positive value in E
 *              = 2, current block of Z not diagonalized after 30*N
 *                   iterations (in inner while loop)
-*              = 3, termination criterion of outer while loop not met
+*              = 3, termination criterion of outer while loop not met 
 *                   (program created more than N unreduced blocks)
 *
 *  Further Details
@@ -69,36 +69,39 @@
 *     .. Parameters ..
       DOUBLE PRECISION   CBIAS
       PARAMETER          ( CBIAS = 1.50D0 )
-      DOUBLE PRECISION   ZERO, HALF, ONE, TWO, FOUR, TEN, HNDRD
+      DOUBLE PRECISION   ZERO, HALF, ONE, TWO, FOUR, HUNDRD
       PARAMETER          ( ZERO = 0.0D0, HALF = 0.5D0, ONE = 1.0D0,
-     $                   TWO = 2.0D0, FOUR = 4.0D0, TEN = 10.0D0,
-     $                   HNDRD = 100.0D0 )
+     $                     TWO = 2.0D0, FOUR = 4.0D0, HUNDRD = 100.0D0 )
 *     ..
 *     .. Local Scalars ..
-      INTEGER            I0, I4, IINFO, IPN4, ITER, IWHILA, IWHILB, K,
+      LOGICAL            IEEE
+      INTEGER            I0, I4, IINFO, IPN4, ITER, IWHILA, IWHILB, K, 
      $                   N0, NBIG, NDIV, NFAIL, PP, SPLT
-      DOUBLE PRECISION   D, DESIG, DMIN, DMIN1, DMIN2, DN, DN1, DN2, E,
-     $                   EMAX, EMIN, EPS, EPS2, OLDEMN, QMAX, QMIN, S,
-     $                   SIGMA, T, TAU, TEMP, TRACE, ZMAX
+      DOUBLE PRECISION   D, DESIG, DMIN, E, EMAX, EMIN, EPS, OLDEMN, 
+     $                   QMAX, QMIN, S, SAFMIN, SIGMA, T, TEMP, TOL, 
+     $                   TOL2, TRACE, ZMAX
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DLASQ3, DLASQ5, DLASRT, XERBLA
+      EXTERNAL           DLASQ3, DLASRT, XERBLA
 *     ..
 *     .. External Functions ..
+      INTEGER            ILAENV
       DOUBLE PRECISION   DLAMCH
-      EXTERNAL           DLAMCH
+      EXTERNAL           DLAMCH, ILAENV
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          ABS, DBLE, MAX, MIN, SQRT
+      INTRINSIC          DBLE, MAX, MIN, SQRT
 *     ..
 *     .. Executable Statements ..
-*
+*      
 *     Test the input arguments.
 *     (in case DLASQ2 is not called by DLASQ1)
 *
       INFO = 0
-      EPS = DLAMCH( 'Precision' )*TEN
-      EPS2 = EPS**2
+      EPS = DLAMCH( 'Precision' )
+      SAFMIN = DLAMCH( 'Safe minimum' )
+      TOL = EPS*HUNDRD
+      TOL2 = TOL**2
 *
       IF( N.LT.0 ) THEN
          INFO = -1
@@ -129,8 +132,8 @@
             Z( 1 ) = D
          END IF
          Z( 5 ) = Z( 1 ) + Z( 2 ) + Z( 3 )
-         IF( Z( 2 ).GT.Z( 3 )*EPS2 ) THEN
-            T = HALF*( ( Z( 1 )-Z( 3 ) )+Z( 2 ) )
+         IF( Z( 2 ).GT.Z( 3 )*TOL2 ) THEN
+            T = HALF*( ( Z( 1 )-Z( 3 ) )+Z( 2 ) ) 
             S = Z( 3 )*( Z( 2 ) / T )
             IF( S.LE.T ) THEN
                S = Z( 3 )*( Z( 2 ) / ( T*( ONE+SQRT( ONE+S / T ) ) ) )
@@ -143,9 +146,6 @@
          END IF
          Z( 2 ) = Z( 3 )
          Z( 6 ) = Z( 2 ) + Z( 1 )
-         Z( 7 ) = ZERO
-         Z( 8 ) = ZERO
-         Z( 9 ) = ZERO
          RETURN
       END IF
 *
@@ -154,40 +154,47 @@
       Z( 2*N ) = ZERO
       EMIN = Z( 2 )
       QMAX = ZERO
+      ZMAX = ZERO
       D = ZERO
       E = ZERO
 *
-      DO 10 K = 1, N
+      DO 10 K = 1, 2*( N-1 ), 2
          IF( Z( K ).LT.ZERO ) THEN
             INFO = -( 200+K )
             CALL XERBLA( 'DLASQ2', 2 )
             RETURN
-         ELSE IF( Z( N+K ).LT.ZERO ) THEN
-            INFO = -( 200+N+K )
+         ELSE IF( Z( K+1 ).LT.ZERO ) THEN
+            INFO = -( 200+K+1 )
             CALL XERBLA( 'DLASQ2', 2 )
             RETURN
          END IF
          D = D + Z( K )
-         E = E + Z( N+K )
+         E = E + Z( K+1 )
          QMAX = MAX( QMAX, Z( K ) )
+         EMIN = MIN( EMIN, Z( K+1 ) )
+         ZMAX = MAX( QMAX, ZMAX, Z( K+1 ) )
    10 CONTINUE
-      ZMAX = QMAX
-      DO 20 K = 1, N - 1
-         EMIN = MIN( EMIN, Z( N+K ) )
-         ZMAX = MAX( ZMAX, Z( N+K ) )
-   20 CONTINUE
+      IF( Z( 2*N-1 ).LT.ZERO ) THEN
+         INFO = -( 200+2*N-1 )
+         CALL XERBLA( 'DLASQ2', 2 )
+         RETURN
+      END IF
+      D = D + Z( 2*N-1 )
+      QMAX = MAX( QMAX, Z( 2*N-1 ) )
+      ZMAX = MAX( QMAX, ZMAX )
 *
 *     Check for diagonality.
 *
       IF( E.EQ.ZERO ) THEN
+         DO 20 K = 2, N
+            Z( K ) = Z( 2*K-1 )
+   20    CONTINUE
          CALL DLASRT( 'D', N, Z, IINFO )
          Z( 2*N-1 ) = D
          RETURN
       END IF
 *
       TRACE = D + E
-      I0 = 1
-      N0 = N
 *
 *     Check for zero data.
 *
@@ -195,15 +202,23 @@
          Z( 2*N-1 ) = ZERO
          RETURN
       END IF
-*
+*         
+*     Check whether the machine is IEEE conformable.
+*         
+      IEEE = ILAENV( 10, 'DLASQ2', 'N', 1, 2, 3, 4 ).EQ.1 .AND.
+     $       ILAENV( 11, 'DLASQ2', 'N', 1, 2, 3, 4 ).EQ.1      
+*         
 *     Rearrange data for locality: Z=(q1,qq1,e1,ee1,q2,qq2,e2,ee2,...).
 *
       DO 30 K = 2*N, 2, -2
-         Z( 2*K ) = ZERO
-         Z( 2*K-1 ) = Z( K )
-         Z( 2*K-2 ) = ZERO
-         Z( 2*K-3 ) = Z( K-1 )
+         Z( 2*K ) = ZERO 
+         Z( 2*K-1 ) = Z( K ) 
+         Z( 2*K-2 ) = ZERO 
+         Z( 2*K-3 ) = Z( K-1 ) 
    30 CONTINUE
+*
+      I0 = 1
+      N0 = N
 *
 *     Reverse the qd-array, if warranted.
 *
@@ -225,47 +240,39 @@
 *
       DO 80 K = 1, 2
 *
-         IF( EMIN.LE.EPS2*QMAX ) THEN
+         D = Z( 4*N0+PP-3 )
+         DO 50 I4 = 4*( N0-1 ) + PP, 4*I0 + PP, -4
+            IF( Z( I4-1 ).LE.TOL2*D ) THEN
+               Z( I4-1 ) = -ZERO
+               D = Z( I4-3 )
+            ELSE
+               D = Z( I4-3 )*( D / ( D+Z( I4-1 ) ) )
+            END IF
+   50    CONTINUE
 *
-*           Li's reverse test.
+*        dqd maps Z to ZZ plus Li's test.
 *
-            D = Z( 4*N0+PP-3 )
-            DO 50 I4 = 4*( N0-1 ) + PP, 4*I0 + PP, -4
-               IF( Z( I4-1 ).LE.EPS2*D ) THEN
-                  Z( I4-1 ) = -ZERO
-                  D = Z( I4-3 )
-               ELSE
-                  D = Z( I4-3 )*( D / ( D+Z( I4-1 ) ) )
-               END IF
-   50       CONTINUE
-*
-*           dqd maps Z to ZZ plus Li's test.
-*
-            EMIN = Z( 4*I0+PP+1 )
-            D = Z( 4*I0+PP-3 )
-            DO 60 I4 = 4*I0 + PP, 4*( N0-1 ) + PP, 4
-               IF( Z( I4-1 ).LE.EPS2*D ) THEN
-                  Z( I4-1 ) = -ZERO
-                  Z( I4-2*PP-2 ) = D
-                  Z( I4-2*PP ) = ZERO
-                  D = Z( I4+1 )
-                  EMIN = ZERO
-               ELSE
-                  Z( I4-2*PP-2 ) = D + Z( I4-1 )
-                  Z( I4-2*PP ) = Z( I4+1 )*( Z( I4-1 ) /
-     $                           Z( I4-2*PP-2 ) )
-                  D = Z( I4+1 )*( D / Z( I4-2*PP-2 ) )
-                  EMIN = MIN( EMIN, Z( I4-2*PP ) )
-               END IF
-   60       CONTINUE
-            Z( 4*N0-PP-2 ) = D
-         ELSE
-            TAU = ZERO
-            CALL DLASQ5( I0, N0, Z, PP, TAU, DMIN, DMIN1, DMIN2, DN,
-     $                   DN1, DN2 )
-*
-            EMIN = Z( 4*N0 )
-         END IF
+         EMIN = Z( 4*I0+PP+1 )
+         D = Z( 4*I0+PP-3 )
+         DO 60 I4 = 4*I0 + PP, 4*( N0-1 ) + PP, 4
+            Z( I4-2*PP-2 ) = D + Z( I4-1 )
+            IF( Z( I4-1 ).LE.TOL2*D ) THEN
+               Z( I4-1 ) = -ZERO
+               Z( I4-2*PP-2 ) = D
+               Z( I4-2*PP ) = ZERO
+               D = Z( I4+1 )
+            ELSE IF( SAFMIN*Z( I4+1 ).LT.Z( I4-2*PP-2 ) .AND.
+     $               SAFMIN*Z( I4-2*PP-2 ).LT.Z( I4+1 ) ) THEN
+               TEMP = Z( I4+1 ) / Z( I4-2*PP-2 )
+               Z( I4-2*PP ) = Z( I4-1 )*TEMP
+               D = D*TEMP
+            ELSE
+               Z( I4-2*PP ) = Z( I4+1 )*( Z( I4-1 ) / Z( I4-2*PP-2 ) )
+               D = Z( I4+1 )*( D / Z( I4-2*PP-2 ) )
+            END IF
+            EMIN = MIN( EMIN, Z( I4-2*PP ) )
+   60    CONTINUE 
+         Z( 4*N0-PP-2 ) = D
 *
 *        Now find qmax.
 *
@@ -284,14 +291,14 @@
       NDIV = 2*( N0-I0 )
 *
       DO 140 IWHILA = 1, N + 1
-         IF( N0.LT.1 )
+         IF( N0.LT.1 ) 
      $      GO TO 150
 *
-*        While array unfinished do
+*        While array unfinished do 
 *
 *        E(N0) holds the value of SIGMA when submatrix in I0:N0
 *        splits from the rest of the array, but is negated.
-*
+*      
          DESIG = ZERO
          IF( N0.EQ.N ) THEN
             SIGMA = ZERO
@@ -306,8 +313,12 @@
 *        Find last unreduced submatrix's top index I0, find QMAX and
 *        EMIN. Find Gershgorin-type bound if Q's much greater than E's.
 *
-         EMAX = ZERO
-         EMIN = ABS( Z( 4*N0-5 ) )
+         EMAX = ZERO 
+         IF( N0.GT.I0 ) THEN
+            EMIN = ABS( Z( 4*N0-5 ) )
+         ELSE
+            EMIN = ZERO
+         END IF
          QMIN = Z( 4*N0-3 )
          QMAX = QMIN
          DO 90 I4 = 4*N0, 8, -4
@@ -320,7 +331,7 @@
             QMAX = MAX( QMAX, Z( I4-7 )+Z( I4-5 ) )
             EMIN = MIN( EMIN, Z( I4-5 ) )
    90    CONTINUE
-         I4 = 4
+         I4 = 4 
 *
   100    CONTINUE
          I0 = I4 / 4
@@ -335,32 +346,32 @@
 *
 *        Now I0:N0 is unreduced. PP = 0 for ping, PP = 1 for pong.
 *
-         PP = 0
+         PP = 0 
 *
          NBIG = 30*( N0-I0+1 )
          DO 120 IWHILB = 1, NBIG
-            IF( I0.GT.N0 )
+            IF( I0.GT.N0 ) 
      $         GO TO 130
 *
 *           While submatrix unfinished take a good dqds step.
 *
             CALL DLASQ3( I0, N0, Z, PP, DMIN, SIGMA, DESIG, QMAX, NFAIL,
-     $                   ITER, NDIV )
+     $                   ITER, NDIV, IEEE )
 *
             PP = 1 - PP
 *
 *           When EMIN is very small check for splits.
 *
             IF( PP.EQ.0 .AND. N0-I0.GE.3 ) THEN
-               IF( Z( 4*N0 ).LE.EPS2*QMAX .OR. Z( 4*N0-1 ).LE.EPS2*
-     $             SIGMA ) THEN
+               IF( Z( 4*N0 ).LE.TOL2*QMAX .OR.
+     $             Z( 4*N0-1 ).LE.TOL2*SIGMA ) THEN
                   SPLT = I0 - 1
                   QMAX = Z( 4*I0-3 )
                   EMIN = Z( 4*I0-1 )
                   OLDEMN = Z( 4*I0 )
                   DO 110 I4 = 4*I0, 4*( N0-3 ), 4
-                     IF( Z( I4 ).LE.EPS2*Z( I4-3 ) .OR. Z( I4-1 ).LE.
-     $                   EPS2*SIGMA ) THEN
+                     IF( Z( I4 ).LE.TOL2*Z( I4-3 ) .OR.
+     $                   Z( I4-1 ).LE.TOL2*SIGMA ) THEN
                         Z( I4-1 ) = -SIGMA
                         SPLT = I4 / 4
                         QMAX = ZERO
@@ -392,16 +403,16 @@
       INFO = 3
       RETURN
 *
-*     end IWHILA
+*     end IWHILA   
 *
   150 CONTINUE
-*
+*      
 *     Move q's to the front.
-*
+*      
       DO 160 K = 2, N
          Z( K ) = Z( 4*K-3 )
   160 CONTINUE
-*
+*      
 *     Sort and compute sum of eigenvalues.
 *
       CALL DLASRT( 'D', N, Z, IINFO )
@@ -413,11 +424,11 @@
 *
 *     Store trace, sum(eigenvalues) and information on performance.
 *
-      Z( 2*N+1 ) = TRACE
+      Z( 2*N+1 ) = TRACE 
       Z( 2*N+2 ) = E
       Z( 2*N+3 ) = DBLE( ITER )
       Z( 2*N+4 ) = DBLE( NDIV ) / DBLE( N**2 )
-      Z( 2*N+5 ) = HNDRD*NFAIL / DBLE( ITER )
+      Z( 2*N+5 ) = HUNDRD*NFAIL / DBLE( ITER )
       RETURN
 *
 *     End of DLASQ2

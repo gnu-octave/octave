@@ -4,7 +4,7 @@
 *  -- LAPACK driver routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     June 30, 1999
+*     October 31, 1999
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBU, JOBVT
@@ -119,8 +119,7 @@
 *          this value as the first entry of the WORK array, and no error
 *          message related to LWORK is issued by XERBLA.
 *
-*  RWORK   (workspace) DOUBLE PRECISION array, dimension
-*                                  (max(3*min(M,N),5*min(M,N)-4))
+*  RWORK   (workspace) DOUBLE PRECISION array, dimension (5*min(M,N))
 *          On exit, if INFO > 0, RWORK(1:MIN(M,N)-1) contains the
 *          unconverged superdiagonal elements of an upper bidiagonal
 *          matrix B whose diagonal is in S (not necessarily sorted).
@@ -221,7 +220,7 @@
      $    N.GT.0 ) THEN
          IF( M.GE.N ) THEN
 *
-*           Space needed for ZBDSQR is BDSPAC = MAX( 3*N, 5*N-4 )
+*           Space needed for ZBDSQR is BDSPAC = 5*N
 *
             IF( M.GE.MNTHR ) THEN
                IF( WNTUN ) THEN
@@ -383,7 +382,7 @@
             END IF
          ELSE
 *
-*           Space needed for ZBDSQR is BDSPAC = MAX( 3*M, 5*M-4 )
+*           Space needed for ZBDSQR is BDSPAC = 5*M
 *
             IF( N.GE.MNTHR ) THEN
                IF( WNTVN ) THEN

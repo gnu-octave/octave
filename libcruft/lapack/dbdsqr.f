@@ -4,7 +4,7 @@
 *  -- LAPACK routine (version 3.0) --
 *     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
 *     Courant Institute, Argonne National Lab, and Rice University
-*     June 30, 1999
+*     October 31, 1999
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -95,9 +95,7 @@
 *          The leading dimension of the array C.
 *          LDC >= max(1,N) if NCC > 0; LDC >=1 if NCC = 0.
 *
-*  WORK    (workspace) DOUBLE PRECISION array, dimension
-*            2*N  if only singular values wanted (NCVT = NRU = NCC = 0)
-*            max( 1, 4*N-4 ) otherwise
+*  WORK    (workspace) DOUBLE PRECISION array, dimension (4*N)
 *
 *  INFO    (output) INTEGER
 *          = 0:  successful exit

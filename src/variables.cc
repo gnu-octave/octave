@@ -437,7 +437,7 @@ DEFUN ("is_global", Fis_global, Sis_global, 2, 1,
   "is_global (X): return 1 if the string X names a global variable\n\
 otherwise, return 0.")
 {
-  Octave_object retval (0.0);
+  Octave_object retval = 0.0;
 
   int nargin = args.length ();
 

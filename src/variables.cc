@@ -1029,7 +1029,10 @@ With -x, exclude the named variables")
       if (argc > 1)
 	{
 	  if (argv[idx] == "-x")
-	    exclusive = 1;
+	    {
+	      idx++;
+	      exclusive = 1;
+	    }
 	}
 
       int lcount = 0;

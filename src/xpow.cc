@@ -488,9 +488,10 @@ elem_xpow (double a, const ComplexMatrix& b)
   int nc = b.cols ();
 
   ComplexMatrix result (nr, nc);
+  Complex atmp (a);
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      result (i, j) = pow (a, b (i, j));
+      result (i, j) = pow (atmp, b (i, j));
 
   return result;
 }
@@ -600,7 +601,7 @@ elem_xpow (const Matrix& a, const Complex& b)
   ComplexMatrix result (nr, nc);
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      result (i, j) = pow (a (i, j), b);
+      result (i, j) = pow (Complex (a (i, j)), b);
 
   return result;
 }
@@ -624,7 +625,7 @@ elem_xpow (const Matrix& a, const ComplexMatrix& b)
   ComplexMatrix result (nr, nc);
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      result (i, j) = pow (a (i, j), b (i, j));
+      result (i, j) = pow (Complex (a (i, j)), b (i, j));
 
   return result;
 }

@@ -91,8 +91,7 @@ documents it.
 
 @item
 Klaus Gebhardt @email{gebhardt@@crunch.ikp.physik.th-darmstadt.de}
-ported Octave to OS/2 and worked with Michel Juillard
-@email{juillard@@msh-paris.fr} on the port to DOS.
+ported Octave to OS/2.
 
 @item
 A. Scottedward Hodel @email{A.S.Hodel@@eng.auburn.edu} contributed a number
@@ -112,10 +111,6 @@ new ideas for improving Octave.
 @item
 Phil Johnson @email{johnsonp@@nicco.sscnet.ucla.edu} has helped to make
 Linux releases available.
-
-@item
-Michel Juillard @email{juillard@@msh-paris.fr} ported Octave to DOS
-systems.
 
 @item
 Friedrich Leisch @email{leisch@@ci.tuwien.ac.at} provided the

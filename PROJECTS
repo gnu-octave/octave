@@ -454,6 +454,12 @@ Interpreter:
     function that gives all the basic information, then write who and
     whos as M-files.
 
+  * Make whos work for structure elements:
+
+      prot  type               rows   cols  name
+      ====  ====               ====   ====  ====
+      wd   matrix                m      n  struct.x
+
   * On systems that support matherr(), make it possible for users to
     enable the printing of warning messages.
 

@@ -1,3 +1,15 @@
+Thu Jan  8 11:54:33 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* xpow.cc (elem_xpow): If second arg of pow is complex, make sure
+	first arg is also complex.
+
+	* symtab.cc (symbol_table::rename): Properly insert new item at
+	the front of the list to avoid losing the rest of the items.
+
+Thu Dec 11 23:30:03 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* variables.cc (Fclear): Increment index to skip -x arg.
+
 Tue Dec  9 02:45:35 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makefile.in (INCLUDES): Don't forget Pix.h.

@@ -405,6 +405,7 @@ symbol_table::rename (const string& old_name, const string& new_name)
 	      prev->chain (ptr->next ());
 
 	      index = hash (new_name);
+	      ptr->chain (table[index].next ());
 	      table[index].chain (ptr);
 
 	      return;

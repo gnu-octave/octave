@@ -1,3 +1,7 @@
+Tue Jan 13 14:59:56 1998  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* readline.h (rl_dispatching): Add missing extern in declaration.
+
 Thu Jul 10 18:26:56 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* acconfig.h: Add #undefs for FIONREAD_IN_SYS_IOCTL,

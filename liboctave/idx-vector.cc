@@ -472,6 +472,9 @@ sort_data (int *d, int l)
 static inline int
 make_uniq (int *d, int l)
 {
+  if (l < 2)
+    return l;
+
   int k = 0;
   for (int ii = 1; ii < l; ii++)
     {
@@ -547,10 +550,13 @@ IDX_VEC_REP::is_colon_equiv (int n, int sort_uniq)
 void
 IDX_VEC_REP::sort (bool uniq)
 {
-  sort_data (data, len);
+  if (len > 1)
+    {
+      sort_data (data, len);
 
-  if (uniq)
-    len = make_uniq (data, len);
+      if (uniq)
+	len = make_uniq (data, len);
+    }
 }
 
 void

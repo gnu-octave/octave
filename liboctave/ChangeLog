@@ -1,3 +1,12 @@
+Thu Dec 18 14:53:45 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* idx-vector.cc (IDX_VEC_REP::sort): Don't do anything unless len > 1.
+	(make_uniq): Likewise.
+
+Fri Dec 12 10:58:33 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lo-ieee.cc (octave_ieee_init): Check for linux before __alpha__.
+
 Sun Nov 30 14:59:12 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* lo-mappers.cc: Include cmath and lo-specfun.h, not oct-math.h.

@@ -170,6 +170,8 @@ Summary of changes for version 2.1.x:
 
   * The function sumsq now computes sum (x .* conj (x)) for complex values.
 
+  * Octave now uses readline version 2.1 and kpathsea 3.0.
+
   * New configure option, --enable-readline.
 
   * New configure option, --enable-static.

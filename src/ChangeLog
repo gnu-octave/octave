@@ -1,3 +1,13 @@
+2004-10-22  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/filter.cc: Remove some unnecessary parens.
+
+2004-10-22  David Bateman  <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/filter.cc (filter (MArray<T>&, MArray<T>&,
+	MArrayN<T>&, MArrayN<T>&, int)): If value to filter is
+	dimensionality 2 it might still be a vector, use special case.
+
 2004-10-21  John W. Eaton  <jwe@octave.org>
 
 	* ov-base.cc (INT_CONV_METHOD): Apply saturation semantics here too.

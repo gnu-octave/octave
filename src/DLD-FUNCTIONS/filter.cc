@@ -71,7 +71,7 @@ filter (MArray<T>& b, MArray<T>& a, MArrayN<T>& x, MArrayN<T>& si,
     }
 
   dim_vector x_dims = x.dims ();
-  if ((dim < 0) || (dim > x_dims.length ()))
+  if (dim < 0 || dim > x_dims.length ())
     {
       error ("filter: filtering over invalid dimension");
       return y;
@@ -88,14 +88,13 @@ filter (MArray<T>& b, MArray<T>& a, MArrayN<T>& x, MArrayN<T>& si,
       return y;
     }
 
-  if (si_dims.length() == 1)
+  if (si_dims.length () == 1)
     {
-      // Special case as x_dims.length() might be 2, but be a vector
-      if (x_dims.length() > 2 || 
-	  (x_dims.length () == 2 && ((x_dims(0) != 1 ||
-				      x_dims(1) != si_dims(0)) &&
-				     (x_dims(1) != 1 || 
-				      x_dims(0) != si_dims(0)))))
+      // Special case as x_dims.length () might be 2, but be a vector.
+      if (x_dims.length () > 2
+	  || (x_dims.length () == 2
+	      && (x_dims(0) != 1 || x_dims(1) != si_dims(0))
+	      && (x_dims(1) != 1 || x_dims(0) != si_dims(0))))
 	{
 	  error ("filter: dimensionality of si and x must agree");
 	  return y;
@@ -129,7 +128,7 @@ filter (MArray<T>& b, MArray<T>& a, MArrayN<T>& x, MArrayN<T>& si,
       b = b / norm;
     }
 
-  if ((a_len <= 1) && (si_len <= 0))
+  if (a_len <= 1 && si_len <= 0)
     return b(0) * x;
 
   y.resize (x_dims, 0.0);
@@ -229,7 +228,7 @@ filter (MArray<T>& b, MArray<T>& a, MArrayN<T>& x, int dim = -1)
   if (dim < 0)
     {
       // Find first non-singleton dimension
-      while ((dim < x_dims.length()) && (x_dims (dim) <= 1))
+      while (dim < x_dims.length () && x_dims (dim) <= 1)
 	dim++;
   
       // All dimensions singleton, pick first dimension
@@ -382,7 +381,7 @@ $$\n\
     {
       // Find first non-singleton dimension
       dim = 0;
-      while ((dim < x_dims.length()) && (x_dims (dim) <= 1))
+      while (dim < x_dims.length () && x_dims (dim) <= 1)
 	dim++;
   
       // All dimensions singleton, pick first dimension
@@ -423,7 +422,7 @@ $$\n\
 	      dim_vector si_dims = args (3).dims ();
 	      bool si_is_vector = true;
 	      for (int i=0; i < si_dims.length (); i++)
-		if ((si_dims (i) != 1) && (si_dims (i) < si_dims.numel ()))
+		if (si_dims (i) != 1 && si_dims (i) < si_dims.numel ())
 		  {
 		    si_is_vector = false;
 		    break;
@@ -481,7 +480,7 @@ $$\n\
 	      dim_vector si_dims = args (3).dims ();
 	      bool si_is_vector = true;
 	      for (int i=0; i < si_dims.length (); i++)
-		if ((si_dims (i) != 1) && (si_dims (i) < si_dims.numel ()))
+		if (si_dims (i) != 1 && si_dims (i) < si_dims.numel ())
 		  {
 		    si_is_vector = false;
 		    break;

@@ -1,0 +1,495 @@
+// f-minmax.cc                                           -*- C++ -*-
+/*
+
+Copyright (C) 1994 John W. Eaton
+
+This file is part of Octave.
+
+Octave is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2, or (at your option) any
+later version.
+
+Octave is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with Octave; see the file COPYING.  If not, write to the Free
+Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+
+*/
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include <math.h>
+
+#include "tree-const.h"
+#include "error.h"
+#include "f-minmax.h"
+
+#ifndef MAX
+#define MAX(a,b) ((a) > (b) ? (a) : (b))
+#endif
+
+#ifndef MIN
+#define MIN(a,b) ((a) < (b) ? (a) : (b))
+#endif
+
+static Matrix
+min (const Matrix& a, const Matrix& b)
+{
+  int nr = a.rows ();
+  int nc = a.columns ();
+  if (nr != b.rows () || nc != b.columns ())
+    {
+      error ("two-arg min expecting args of same size");
+      return Matrix ();
+    }
+
+  Matrix result (nr, nc);
+
+  for (int j = 0; j < nc; j++)
+    for (int i = 0; i < nr; i++)
+      {
+	double a_elem = a.elem (i, j);
+	double b_elem = b.elem (i, j);
+	result.elem (i, j) = MIN (a_elem, b_elem);
+      }
+
+  return result;
+}
+
+static ComplexMatrix
+min (const ComplexMatrix& a, const ComplexMatrix& b)
+{
+  int nr = a.rows ();
+  int nc = a.columns ();
+  if (nr != b.rows () || nc != b.columns ())
+    {
+      error ("two-arg min expecting args of same size");
+      return ComplexMatrix ();
+    }
+
+  ComplexMatrix result (nr, nc);
+
+  for (int j = 0; j < nc; j++)
+    for (int i = 0; i < nr; i++)
+      {
+        double abs_a_elem = abs (a.elem (i, j));
+        double abs_b_elem = abs (b.elem (i, j));
+        if (abs_a_elem < abs_b_elem)
+          result.elem (i, j) = a.elem (i, j);
+        else
+          result.elem (i, j) = b.elem (i, j);
+      }
+
+  return result;
+}
+
+static Matrix
+max (const Matrix& a, const Matrix& b)
+{
+  int nr = a.rows ();
+  int nc = a.columns ();
+  if (nr != b.rows () || nc != b.columns ())
+    {
+      error ("two-arg max expecting args of same size");
+      return Matrix ();
+    }
+
+  Matrix result (nr, nc);
+
+  for (int j = 0; j < nc; j++)
+    for (int i = 0; i < nr; i++)
+      {
+	double a_elem = a.elem (i, j);
+	double b_elem = b.elem (i, j);
+	result.elem (i, j) = MAX (a_elem, b_elem);
+      }
+
+  return result;
+}
+
+static ComplexMatrix
+max (const ComplexMatrix& a, const ComplexMatrix& b)
+{
+  int nr = a.rows ();
+  int nc = a.columns ();
+  if (nr != b.rows () || nc != b.columns ())
+    {
+      error ("two-arg max expecting args of same size");
+      return ComplexMatrix ();
+    }
+
+  ComplexMatrix result (nr, nc);
+
+  for (int j = 0; j < nc; j++)
+    for (int i = 0; i < nr; i++)
+      {
+        double abs_a_elem = abs (a.elem (i, j));
+        double abs_b_elem = abs (b.elem (i, j));
+        if (abs_a_elem > abs_b_elem)
+          result.elem (i, j) = a.elem (i, j);
+        else
+          result.elem (i, j) = b.elem (i, j);
+      }
+
+  return result;
+}
+
+Octave_object
+column_min (const Octave_object& args, int nargout)
+{
+  Octave_object retval;
+
+  tree_constant arg1;
+  tree_constant arg2;
+  tree_constant_rep::constant_type arg1_type =
+    tree_constant_rep::unknown_constant;
+  tree_constant_rep::constant_type arg2_type =
+    tree_constant_rep::unknown_constant;
+
+  int nargin = args.length ();
+
+  switch (nargin)
+    {
+    case 3:
+      arg2 = args(2).make_numeric ();
+      arg2_type = arg2.const_type ();
+// Fall through...
+    case 2:
+      arg1 = args(1).make_numeric ();
+      arg1_type = arg1.const_type ();
+      break;
+    default:
+      panic_impossible ();
+      break;
+    }
+
+  if (nargin == 2 && (nargout == 1 || nargout == 0))
+    {
+      retval.resize (1);
+      switch (arg1_type)
+	{
+        case tree_constant_rep::scalar_constant:
+	  retval(0) = arg1.double_value ();
+          break;
+        case tree_constant_rep::complex_scalar_constant:
+          retval(0) = arg1.complex_value ();
+          break;
+        case tree_constant_rep::matrix_constant:
+          {
+  	    Matrix m = arg1.matrix_value ();
+	    if (m.rows () == 1)
+	      retval(0) = m.row_min ();
+	    else
+	      retval(0) = tree_constant (m.column_min (), 0);
+ 	  }
+          break;
+        case tree_constant_rep::complex_matrix_constant:
+          {
+            ComplexMatrix m = arg1.complex_matrix_value ();
+            if (m.rows () == 1)
+              retval(0) = m.row_min ();
+            else
+              retval(0) = tree_constant (m.column_min (), 0);
+          }
+	  break;
+	default:
+	  panic_impossible ();
+	  break;
+	}
+    }
+  else if (nargin == 2 && nargout == 2)
+    {
+      retval.resize (2);
+      switch (arg1_type)
+        {
+	case tree_constant_rep::scalar_constant:
+	  {
+	    retval(0) = arg1.double_value ();
+	    retval(1) = 1;
+	  }
+          break;
+	case tree_constant_rep::complex_scalar_constant:
+	  {
+	    retval(0) = arg1.complex_value ();
+	    retval(1) = 1;
+	  }
+          break;
+	case tree_constant_rep::matrix_constant:
+	  {
+	    Matrix m = arg1.matrix_value ();
+	    if (m.rows () == 1)
+	      {
+		retval(0) = m.row_min ();
+		retval(1) = m.row_min_loc ();
+	      }
+	    else
+	      {
+		retval(0) = tree_constant (m.column_min (), 0);
+		retval(1) = tree_constant (m.column_min_loc (), 0);
+	      }
+	  }
+          break;
+	case tree_constant_rep::complex_matrix_constant:
+	  {
+	    ComplexMatrix m = arg1.complex_matrix_value ();
+	    if (m.rows () == 1)
+	      {
+		retval(0) = m.row_min ();
+		retval(1) = m.row_min_loc ();
+	      }
+	    else
+	      {
+		retval(0) = tree_constant (m.column_min (), 0);
+		retval(1) = tree_constant (m.column_min_loc (), 0);
+	      }
+	  }
+          break;
+	default:
+	  panic_impossible ();
+	  break;
+        }
+    }
+  else if (nargin == 3)
+    {
+      if (arg1.rows () == arg2.rows ()
+	  && arg1.columns () == arg2.columns ())
+	{
+	  retval.resize (1);
+          switch (arg1_type)
+            {
+	    case tree_constant_rep::scalar_constant:
+	      {
+		double result;
+		double a_elem = arg1.double_value ();
+		double b_elem = arg2.double_value ();
+		result = MIN (a_elem, b_elem);
+		retval(0) = result;
+	      }
+              break;
+	    case tree_constant_rep::complex_scalar_constant:
+	      {
+		Complex result;
+		Complex a_elem = arg1.complex_value ();
+		Complex b_elem = arg2.complex_value ();
+		if (abs (a_elem) < abs (b_elem))
+		  result = a_elem;
+		else
+		  result = b_elem;
+		retval(0) = result;
+	      }
+              break;
+	    case tree_constant_rep::matrix_constant:
+	      {
+		Matrix result;
+		result = min (arg1.matrix_value (), arg2.matrix_value ());
+		retval(0) = result;
+	      }
+              break;
+	    case tree_constant_rep::complex_matrix_constant:
+	      {
+		ComplexMatrix result;
+		result = min (arg1.complex_matrix_value (),
+			      arg2.complex_matrix_value ());
+		retval(0) = result;
+	      }
+	      break;
+	    default:
+	      panic_impossible ();
+	      break;
+	    }
+	}
+      else
+	error ("min: nonconformant matrices");
+    }
+  else
+    panic_impossible ();
+
+  return retval;
+}
+
+Octave_object
+column_max (const Octave_object& args, int nargout)
+{
+  Octave_object retval;
+
+  tree_constant arg1;
+  tree_constant arg2;
+  tree_constant_rep::constant_type arg1_type =
+    tree_constant_rep::unknown_constant;
+  tree_constant_rep::constant_type arg2_type =
+    tree_constant_rep::unknown_constant;
+
+  int nargin = args.length ();
+
+  switch (nargin)
+    {
+    case 3:
+      arg2 = args(2).make_numeric ();
+      arg2_type = arg2.const_type ();
+// Fall through...
+    case 2:
+      arg1 = args(1).make_numeric ();
+      arg1_type = arg1.const_type ();
+      break;
+    default:
+      panic_impossible ();
+      break;
+    }
+
+  if (nargin == 2 && (nargout == 1 || nargout == 0))
+    {
+      retval.resize (1);
+      switch (arg1_type)
+	{
+        case tree_constant_rep::scalar_constant:
+	  retval(0) = arg1.double_value ();
+          break;
+        case tree_constant_rep::complex_scalar_constant:
+          retval(0) = arg1.complex_value ();
+          break;
+        case tree_constant_rep::matrix_constant:
+          {
+  	    Matrix m = arg1.matrix_value ();
+	    if (m.rows () == 1)
+	      retval(0) = m.row_max ();
+	    else
+	      retval(0) = tree_constant (m.column_max (), 0);
+ 	  }
+          break;
+        case tree_constant_rep::complex_matrix_constant:
+          {
+            ComplexMatrix m = arg1.complex_matrix_value ();
+            if (m.rows () == 1)
+              retval(0) = m.row_max ();
+            else
+              retval(0) = tree_constant (m.column_max (), 0);
+          }
+	  break;
+	default:
+	  panic_impossible ();
+	  break;
+	}
+    }
+  else if (nargin == 2 && nargout == 2)
+    {
+      retval.resize (2);
+      switch (arg1_type)
+        {
+	case tree_constant_rep::scalar_constant:
+	  {
+	    retval(0) = arg1.double_value ();
+	    retval(1) = 1;
+	  }
+          break;
+	case tree_constant_rep::complex_scalar_constant:
+	  {
+	    retval(0) = arg1.complex_value ();
+	    retval(1) = 1;
+	  }
+          break;
+	case tree_constant_rep::matrix_constant:
+	  {
+	    Matrix m = arg1.matrix_value ();
+	    if (m.rows () == 1)
+	      {
+		retval(0) = m.row_max ();
+		retval(1) = m.row_max_loc ();
+	      }
+	    else
+	      {
+		retval(0) = tree_constant (m.column_max (), 0);
+		retval(1) = tree_constant (m.column_max_loc (), 0);
+	      }
+	  }
+          break;
+	case tree_constant_rep::complex_matrix_constant:
+	  {
+	    ComplexMatrix m = arg1.complex_matrix_value ();
+	    if (m.rows () == 1)
+	      {
+		retval(0) = m.row_max ();
+		retval(1) = m.row_max_loc ();
+	      }
+	    else
+	      {
+		retval(0) = tree_constant (m.column_max (), 0);
+		retval(1) = tree_constant (m.column_max_loc (), 0);
+	      }
+	  }
+          break;
+	default:
+	  panic_impossible ();
+	  break;
+        }
+    }
+  else if (nargin == 3)
+    {
+      if (arg1.rows () == arg2.rows ()
+	  && arg1.columns () == arg2.columns ())
+	{
+	  retval.resize (1);
+          switch (arg1_type)
+            {
+	    case tree_constant_rep::scalar_constant:
+	      {
+		double result;
+		double a_elem = arg1.double_value ();
+		double b_elem = arg2.double_value ();
+		result = MAX (a_elem, b_elem);
+		retval(0) = result;
+	      }
+              break;
+	    case tree_constant_rep::complex_scalar_constant:
+	      {
+		Complex result;
+		Complex a_elem = arg1.complex_value ();
+		Complex b_elem = arg2.complex_value ();
+		if (abs (a_elem) > abs (b_elem))
+		  result = a_elem;
+		else
+		  result = b_elem;
+		retval(0) = result;
+	      }
+              break;
+	    case tree_constant_rep::matrix_constant:
+	      {
+		Matrix result;
+		result = max (arg1.matrix_value (), arg2.matrix_value ());
+		retval(0) = result;
+	      }
+              break;
+	    case tree_constant_rep::complex_matrix_constant:
+	      {
+		ComplexMatrix result;
+		result = max (arg1.complex_matrix_value (),
+			      arg2.complex_matrix_value ());
+		retval(0) = result;
+	      }
+	      break;
+	    default:
+	      panic_impossible ();
+	      break;
+	    }
+	}
+      else
+	error ("max: nonconformant matrices");
+    }
+  else
+    panic_impossible ();
+
+  return retval;
+}
+
+/*
+;;; Local Variables: ***
+;;; mode: C++ ***
+;;; page-delimiter: "^/\\*" ***
+;;; End: ***
+*/

@@ -1,0 +1,6 @@
+@set EDITION 4.2-beta
+@set VERSION 4.2-beta
+@set UPDATED 2001 Feb 5
+@set UPDATE-MONTH Feb 2001
+
+@set LASTCHANGE Mon Feb  5 09:10:18 EST 2001

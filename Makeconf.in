@@ -134,10 +134,13 @@ bindir = @bindir@
 datadir = @datadir@
 
 # Where to install and expect libraries like libcruft.a, liboctave.a,
-# and libreadline.a, executable files to be run by Octave rather than
-# directly by users, and other architecture-dependent data.
-# ${archlibdir} is a subdirectory of this. 
+# and libreadline.a and other architecture-dependent data.  The
+# directory ${archlibdir} is a subdirectory of this.  
 libdir = @libdir@
+
+# Where to install and expect executable programs to be run by Octave
+# rather than directly by users.
+libexecdir = @libexecdir@
 
 # Where to install Octave's include files.  The default is
 # ${prefix}/include/octave

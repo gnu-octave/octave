@@ -1240,10 +1240,10 @@ for the file.  Valid values are\n\
 @item \"native\"\n\
 The format of the current machine.\n\
 \n\
-@item \"ieee-le\"\n\
+@item \"ieee-be\"\n\
 IEEE big endian.\n\
 \n\
-@item \"ieee-be\"\n\
+@item \"ieee-le\"\n\
 IEEE little endian.\n\
 \n\
 @item \"vaxd\"\n\

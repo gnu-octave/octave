@@ -1,3 +1,8 @@
+2003-10-24  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* emacs/octave-mod.el (octave-mode-syntax-table): Allow % to be a
+	comment character.
+
 2003-10-23  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Makeconf.in (AWK): Substitute and export it.

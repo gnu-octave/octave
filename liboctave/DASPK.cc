@@ -172,6 +172,7 @@ ddaspk_psol (const int& neq, const double& time, const double *state,
 	     double *, int*)
 {
   abort ();
+  return 0;
 }
 
 int

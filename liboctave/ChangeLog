@@ -1,3 +1,8 @@
+2002-05-22  Mumit Khan <khan@nanotech.wisc.edu>
+
+	* DASPK.cc (ddaspk_psol): Return value.
+	* oct-rl-edit.c: Use /* ... */ to comment.
+
 2002-05-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* DASSL.h (DASSL_options::init): Undo previous change.

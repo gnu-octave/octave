@@ -68,15 +68,15 @@ octave_rl_enable_paren_matching (int val)
   rl_variable_bind ("blink-matching-paren", val ? "1" : "0");
 }
 
-// It would be much simpler if we could just call _rl_clear_screen to
-// only clear the screen, but it is not a public function, and on some
-// systems, it is not exported from shared library versions of
-// readline, so we can't use it.
-//
-// Instead, temporarily redefine the redisplay function to do nothing.
-//
-// XXX FIXME XXX -- It would be safer to do this when protected from
-// interrupts...
+/* It would be much simpler if we could just call _rl_clear_screen to
+   only clear the screen, but it is not a public function, and on some
+   systems, it is not exported from shared library versions of
+   readline, so we can't use it.
+
+   Instead, temporarily redefine the redisplay function to do nothing.
+
+   XXX FIXME XXX -- It would be safer to do this when protected from
+   interrupts... */
 
 static void
 no_redisplay (void)

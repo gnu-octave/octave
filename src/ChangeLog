@@ -1,3 +1,10 @@
+2002-05-22  Mumit Khan <khan@nanotech.wisc.edu>
+
+	* debug.cc: Include cstdlib instead of stdlib.h. Include cstring.
+	(dbtype): Use strchr instead of index.
+	* TEMPLATE-INST/Array-tc.cc (Array<octave_value>::resize_fill_value):
+	Fix template specialization syntax.
+
 2002-05-17  Mumit Khan <khan@nanotech.wisc.edu>
 
 	* c-file-ptr-stream.h (OCTAVE_STD_FILEBUF): New macro to handle

@@ -39,6 +39,7 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 template class Array<octave_value>;
 
+template<>
 octave_value
 Array<octave_value>::resize_fill_value (void)
 {

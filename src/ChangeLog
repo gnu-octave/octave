@@ -1,5 +1,11 @@
 2004-03-09  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* version.h (OCTAVE_WWW_STATEMENT): New macro.
+	(OCTAVE_STARTUP_MESSAGE): Include it here.
+	(OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_WARRANTY_AND_BUGS): And here.
+
+	* octave.cc (verbose_usage): Use OCTAVE_WWW_STATEMENT here.
+
 	* DLD-FUNCTIONS/find.cc (find_nonzero_elem_idx): If there are no
 	nonzero elements, return [](0x1) or [](1x0), not [](0x0).
 	Correctly preserve orientation for row vectors.

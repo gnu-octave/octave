@@ -40,6 +40,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   "There is ABSOLUTELY NO WARRANTY; not even for MERCHANTIBILITY or\n\
 FITNESS FOR A PARTICULAR PURPOSE."
 
+#define OCTAVE_WWW_STATEMENT \
+  "Additional information about Octave is available at http://www.octave.org."
+
 #define OCTAVE_CONTRIB_STATEMENT \
   "Please contribute if you find this software useful.\n\
 For more information, visit http://www.octave.org/help-wanted.html"
@@ -60,6 +63,8 @@ http://www.octave.org/bugs.html to learn how to write a helpful report)."
 #define X_OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_WARRANTY_AND_BUGS(ARG) \
   OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_AND_WARRANTY \
   ARG \
+  OCTAVE_WWW_STATEMENT "\n\n" \
+  OCTAVE_CONTRIB_STATEMENT "\n\n" \
   OCTAVE_BUGS_STATEMENT
 
 #define OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_WARRANTY_AND_BUGS \
@@ -67,7 +72,7 @@ http://www.octave.org/bugs.html to learn how to write a helpful report)."
 
 #define OCTAVE_STARTUP_MESSAGE \
   X_OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_WARRANTY_AND_BUGS \
-    ("  For details, type `warranty'.\n\n" OCTAVE_CONTRIB_STATEMENT "\n\n")
+    ("  For details, type `warranty'.\n\n")
 
 #endif
 

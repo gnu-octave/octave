@@ -319,9 +319,8 @@ Options:\n\
   --version, -v           Print version number and exit.\n\
 \n\
   FILE                    Execute commands from FILE.\n\
-\n\
-Additional information about Octave is available via the WWW at\n\
-http://www.octave.org.\n\
+\n"
+OCTAVE_WWW_STATEMENT "\n\
 \n"
 OCTAVE_CONTRIB_STATEMENT "\n\
 \n"

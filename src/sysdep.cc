@@ -91,12 +91,6 @@ extern "C" void _rl_output_character_function ();
 #define STDIN_FILENO 1
 #endif
 
-// Octave's idea of infinity.
-double octave_Inf;
-
-// Octave's idea of not a number.
-double octave_NaN;
-
 // Nonzero if the machine we are running on is big-endian.
 int octave_words_big_endian;
 
@@ -124,51 +118,6 @@ NeXT_init (void)
   malloc_error (malloc_handler);
 }
 #endif
-
-static void
-octave_ieee_init (void)
-{
-#if defined (HAVE_ISINF) || defined (HAVE_FINITE)
-
-// Some version of gcc on some old version of Linux used to crash when
-// trying to make Inf and NaN.
-
-#if defined (HAVE_INFINITY)
-  octave_Inf = (double) infinity ();
-#elif defined (linux)
-  octave_Inf = HUGE_VAL;
-#elif defined (__alpha__)
-  extern unsigned int DINFINITY[2];
-  octave_Inf =  (*((double *) (DINFINITY)));
-#else
-  double tmp = 1e+10;
-  octave_Inf = tmp;
-  for (;;)
-    {
-      octave_Inf *= 1e+10;
-      if (octave_Inf == tmp)
-	break;
-      tmp = octave_Inf;
-    }
-#endif
-
-#endif
-
-#if defined (HAVE_ISNAN)
-
-#if defined (HAVE_QUIET_NAN)
-  octave_NaN = (double) quiet_nan ();
-#elif defined (linux)
-  octave_NaN = NAN;
-#elif defined (__alpha__)
-  extern unsigned int DQNAN[2];
-  octave_NaN = (*((double *) (DQNAN)));
-#else
-  octave_NaN = octave_Inf / octave_Inf;
-#endif
-
-#endif
-}
 
 static void
 ten_little_endians (void)

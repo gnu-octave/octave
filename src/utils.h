@@ -29,6 +29,8 @@ class ostrstream;
 
 #include <string>
 
+#include "lo-utils.h"
+
 class Octave_object;
 class string_vector;
 
@@ -52,11 +54,6 @@ keyword_almost_match (const char **std, int *min_len,
 extern string_vector get_fcn_file_names (const string&, int = 0);
 
 extern string_vector get_fcn_file_names (int = 0);
-
-extern int NINT (double x);
-extern double D_NINT (double x);
-
-extern string_vector make_argv (const Octave_object&, const string&);
 
 extern int empty_arg (const char *name, int nr, int nc);
 

@@ -26,6 +26,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <string>
 
+#include "lo-ieee.h"
+
 extern void sysdep_init (void);
 
 extern void raw_mode (int);
@@ -37,12 +39,6 @@ extern int octave_chdir (const string&);
 #if !defined (HAVE_GETHOSTNAME) && defined (HAVE_SYS_UTSNAME_H)
 extern int gethostname (char *, int);
 #endif
-
-// Octave's idea of infinity.
-extern double octave_Inf;
-
-// Octave's idea of not a number.
-extern double octave_NaN;
 
 // Nonzero if the machine we are running on is big-endian.
 extern int octave_words_big_endian;

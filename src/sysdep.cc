@@ -495,26 +495,6 @@ DEFUN ("isieee", Fisieee, Sisieee, 1, 1,
   return retval;
 }
 
-DEFUN ("realmax", Frealmax, Srealmax, 0, 1,
-  "realmax (): return largest representable floating point number")
-{
-  Octave_object retval;
-
-  retval = DBL_MAX;
-
-  return retval;
-}
-
-DEFUN ("realmin", Frealmin, Srealmin, 0, 1,
-  "realmin (): return smallest representable floating point number")
-{
-  Octave_object retval;
-
-  retval = DBL_MIN;
-
-  return retval;
-}
-
 #if !defined (HAVE_GETHOSTNAME) && defined (HAVE_SYS_UTSNAME_H)
 extern "C"
 {

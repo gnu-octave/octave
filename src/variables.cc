@@ -1486,6 +1486,12 @@ install_builtin_variables (void)
 	  "true", 0, 0, 1, propagate_empty_matrices,
     "operations on empty matrices return an empty matrix, not an error");
 
+  DEFVAR ("realmax", SBV_realmax, DBL_MAX, 1, 1, 1, 0,
+    "realmax (): return largest representable floating point number");
+
+  DEFVAR ("realmin", SBV_realmin, DBL_MIN, 1, 1, 1, 0,
+    "realmin (): return smallest representable floating point number");
+
   DEFVAR ("resize_on_range_error", SBV_resize_on_range_error, "true", 0,
 	  0, 1, resize_on_range_error,
     "enlarge matrices on assignment");

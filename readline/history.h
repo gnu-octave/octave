@@ -22,6 +22,10 @@
 #ifndef _HISTORY_H_
 #define _HISTORY_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #if !defined (_FUNCTION_DEF)
 #  define _FUNCTION_DEF
 typedef int Function ();
@@ -219,5 +223,9 @@ extern int history_quotes_inhibit_expansion;
    history expansion should be treated as a special case for the calling
    application and not expanded. */
 extern Function *history_inhibit_expansion_function;
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* !_HISTORY_H_ */

@@ -23,6 +23,10 @@
 #if !defined (_READLINE_H_)
 #define _READLINE_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #if defined (READLINE_LIBRARY)
 #  include "keymaps.h"
 #  include "tilde.h"
@@ -403,6 +407,10 @@ extern int rl_inhibit_completion;
 
 #if !defined (savestring)
 extern char *savestring ();	/* XXX backwards compatibility */
+#endif
+
+#ifdef __cplusplus
+}
 #endif
 
 #endif /* _READLINE_H_ */

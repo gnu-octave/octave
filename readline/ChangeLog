@@ -1,3 +1,9 @@
+Thu May 22 16:00:10 1997  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* history.h, readline.h [__cplusplus]: Add extern "C" declarations.
+
+	* rlconf.h: Enable paren matching.
+
 Tue Mar 23 14:36:51 1993  Brian Fox  (bfox@eos.crseo.ucsb.edu)
 
 	* readline.c (rl_copy): Changed name to rl_copy_text.

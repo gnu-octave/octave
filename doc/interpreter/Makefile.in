@@ -126,7 +126,7 @@ check: all
 .PHONY: check
 
 install: all
-	$(srcdir)/mkinstalldirs $(infodir) $(mandir)
+	$(top_srcdir)/mkinstalldirs $(infodir) $(mandir)
 	if test -d $(infodir) ; then \
 	  rm -f $(infodir)/octave.info* ; \
 	  if test -f octave.info ; then \

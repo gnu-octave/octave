@@ -150,7 +150,7 @@ check: all
 .PHONY: check
 
 install: all
-	$(srcdir)/mkinstalldirs $(bindir) $(libdir)
+	$(top_srcdir)/mkinstalldirs $(bindir) $(libdir)
 	rm -f $(bindir)/octave
 	$(INSTALL) octave $(bindir)/octave-$(version)
 	ln $(bindir)/octave-$(version) $(bindir)/octave

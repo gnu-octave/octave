@@ -112,7 +112,7 @@ BUGS.info:
 .PHONY: BUGS.info
 
 install:
-	$(srcdir)/mkinstalldirs $(DIRS_TO_MAKE)
+	$(top_srcdir)/mkinstalldirs $(DIRS_TO_MAKE)
 	install -m 755 octave-bug $(bindir)/octave-bug
 	for dir in $(SUBDIRS); do echo making $@ in $$dir; cd $$dir; $(MAKE) $@; cd ..; done
 .PHONY: install

@@ -135,7 +135,15 @@ protected:
 
   typename Array<T>::ArrayRep *rep;
 
+public:
+
+  // !!! WARNING !!! -- this is public because template friends don't
+  // work properly with versions of gcc earlier than 3.3.  You should
+  // not access this data member directly!
+
   dim_vector dimensions;
+
+protected:
 
   idx_vector *idx;
   int idx_count;
@@ -394,7 +402,13 @@ public:
   T operator () (const Array<int>& ra_idx) const { return elem (ra_idx); }
 #endif
 
-protected:
+  // !!! WARNING !!! -- the following resize_no_fill and
+  // resize_and_fill functions are public because template friends
+  // don't work properly with versions of gcc earlier than 3.3.  You
+  // should use these functions only in classes that are derived
+  // from Array<T>.
+
+  // protected:
 
   void resize_no_fill (int n);
 
@@ -489,24 +503,28 @@ public:
 
   //  static T resize_fill_value (void) { return T (); }
 
-  template <class LT, class RT>
-  friend int
-  assign (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv);
-
-  template <class LT, class RT>
-  friend int
-  assign1 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv);
-
-  template <class LT, class RT>
-  friend int
-  assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv);
-
-  template <class LT, class RT>
-  friend int
-  assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv);
-
   void print_info (std::ostream& os, const std::string& prefix) const;
 };
+
+// NOTE: these functions should be friends of the Array<T> class and
+// Array<T>::dimensions should be protected, not public, but we can't
+// do that because of bugs in gcc prior to 3.3.
+
+template <class LT, class RT>
+/* friend */ int
+assign (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv);
+
+template <class LT, class RT>
+/* friend */ int
+assign1 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv);
+
+template <class LT, class RT>
+/* friend */ int
+assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv);
+
+template <class LT, class RT>
+/* friend */ int
+assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv);
 
 template <class LT, class RT>
 int

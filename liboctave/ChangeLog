@@ -1,3 +1,22 @@
+2003-09-20  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* Array.h (dimensions): Now public.
+	template <class LT, class RT>
+	(assign (Array<LT>&, const Array<RT>&, const LT&),
+	assign1 (Array<LT>&, const Array<RT>&, const LT&),
+	assign2 (Array<LT>&, const Array<RT>&, const LT&),
+	assignN (Array<LT>&, const Array<RT>&, const LT&),
+	resize_no_fill (int),
+	resize_no_fill (int, int),
+	resize_no_fill (int, int, int),
+	resize_no_fill (const dim_vector&),
+	resize_and_fill (int, const T&),
+	resize_and_fill (int, int, const T&),
+	resize_and_fill (int, int, int, const T&),
+	resize_and_fill (const dim_vector&, const T&)): Now public.
+
+	* Array.cc: Include <climits>.
+
 2003-09-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* Array.cc: Merge Array-idx.h.

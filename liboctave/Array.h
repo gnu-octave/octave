@@ -65,8 +65,8 @@ class ArrayRep
 private:
 
   T *data;
-  int count;
   int len;
+  int count;
 
   ArrayRep<T>& operator = (const ArrayRep<T>& a);  
 

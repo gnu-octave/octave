@@ -1,3 +1,9 @@
+2002-07-25  John W. Eaton  <jwe@bevo.che.wisc.edu>
+
+	* lo-specfun.cc (gammainc): New arg, err, for scalar version.
+	Use it in matrix versions to avoid spewing multiple errors.
+	Call xgammainc instead of dgamit.
+
 2002-07-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* CMatrix.cc (ComplexMatrix::ComplexMatrix (const boolMatrix&)): 

@@ -81,7 +81,7 @@ extern "C"
 
   int F77_FUNC (xdgamma, XDGAMMA) (const double&, double&);
 
-  int F77_FUNC (xdgamit, XDGAMIT) (const double&, const double&, double&);
+  int F77_FUNC (xgammainc, XGAMMAINC) (const double&, const double&, double&);
 
   int F77_FUNC (dlgams, DLGAMS) (const double&, double&, double&);
 }
@@ -841,16 +841,21 @@ betainc (const Matrix& x, const Matrix& a, const Matrix& b)
 // XXX FIXME XXX -- there is still room for improvement here...
 
 double
-gammainc (double x, double a)
+gammainc (double x, double a, bool& err)
 {
   double retval;
 
-  F77_XFCN (xdgamit, XDGAMIT, (a, x, retval));
+  err = false;
 
-  if (x == 0.0)
-    retval = 0.0;
-  else if (x > 0.0)
-    retval = exp (a * log (x) + log (retval));
+  if (a < 0.0 || x < 0.0)
+    {
+      (*current_liboctave_error_handler)
+	("gammainc: A and X must be non-negative");
+
+      err = true;
+    }
+  else
+    F77_XFCN (xgammainc, XGAMMAINC, (a, x, retval));
 
   return retval;
 }
@@ -861,11 +866,23 @@ gammainc (double x, const Matrix& a)
   int nr = a.rows ();
   int nc = a.cols ();
 
-  Matrix retval (nr, nc);
+  Matrix result (nr, nc);
+  Matrix retval;
+
+  bool err;
 
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      retval(i,j) = gammainc (x, a(i,j));
+      {
+	result(i,j) = gammainc (x, a(i,j), err);
+
+	if (err)
+	  goto done;
+      }
+
+  retval = result;
+
+ done:
 
   return retval;
 }
@@ -876,11 +893,23 @@ gammainc (const Matrix& x, double a)
   int nr = x.rows ();
   int nc = x.cols ();
 
-  Matrix retval (nr, nc);
+  Matrix result (nr, nc);
+  Matrix retval;
+
+  bool err;
 
   for (int j = 0; j < nc; j++)
     for (int i = 0; i < nr; i++)
-      retval(i,j) = gammainc (x(i,j), a);
+      {
+	result(i,j) = gammainc (x(i,j), a, err);
+
+	if (err)
+	  goto done;
+      }
+
+  retval = result;
+
+ done:
 
   return retval;
 }
@@ -888,6 +917,7 @@ gammainc (const Matrix& x, double a)
 Matrix
 gammainc (const Matrix& x, const Matrix& a)
 {
+  Matrix result;
   Matrix retval;
 
   int nr = x.rows ();
@@ -898,16 +928,27 @@ gammainc (const Matrix& x, const Matrix& a)
 
   if (nr == a_nr && nc == a_nc)
     {
-      retval.resize (nr, nc);
+      result.resize (nr, nc);
+
+      bool err;
 
       for (int j = 0; j < nc; j++)
 	for (int i = 0; i < nr; i++)
-	  retval(i,j) = gammainc (x(i,j), a(i,j));
+	  {
+	    result(i,j) = gammainc (x(i,j), a(i,j), err);
+
+	    if (err)
+	      goto done;
+	  }
+
+      retval = result;
     }
   else
     (*current_liboctave_error_handler)
       ("gammainc: nonconformant arguments (arg 1 is %dx%d, arg 2 is %dx%d)",
        nr, nc, a_nr, a_nc);
+
+ done:
 
   return retval;
 }

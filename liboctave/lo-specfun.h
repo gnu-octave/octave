@@ -188,10 +188,16 @@ extern Matrix betainc (const Matrix& x, double a, const Matrix& b);
 extern Matrix betainc (const Matrix& x, const Matrix& a, double b);
 extern Matrix betainc (const Matrix& x, const Matrix& a, const Matrix& b);
 
-extern double gammainc (double x, double a);
+extern double gammainc (double x, double a, bool& err);
 extern Matrix gammainc (double x, const Matrix& a);
 extern Matrix gammainc (const Matrix& x, double a);
 extern Matrix gammainc (const Matrix& x, const Matrix& a);
+
+inline double gammainc (double x, double a)
+{
+  bool err;
+  return gammainc (x, a, err);
+}
 
 #endif
 

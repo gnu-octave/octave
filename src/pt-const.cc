@@ -1433,6 +1433,8 @@ tree_constant_rep::load (istream& is)
   else
     ::error ("failed to extract keyword specifying value type");
 
+  delete [] tag;
+
   return is_global;
 }
 

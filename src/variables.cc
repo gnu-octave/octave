@@ -449,18 +449,15 @@ is_globally_visible (const char *name)
  *
  *  #[ \t]*keyword[ \t]*:[ \t]*string-value\n
  *
- * Returns a pointer to a static variable which is only valid until
- * the next time this function is called.
+ * Returns a pointer to new storage.  The caller is responsible for
+ * deleting it.
  */
 char *
 extract_keyword (istream& is, char *keyword)
 {
   ostrstream buf;
 
-  static char *retval = (char *) NULL;
-
-  delete [] retval;
-  retval = (char *) NULL;
+  char *retval = (char *) NULL;
 
   char c;
   while (is.get (c))

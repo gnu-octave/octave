@@ -735,10 +735,12 @@ builtin_load (int argc, char **argv)
     }
 
   int count = 0;
+  char *nm = (char *) NULL;
   for (;;)
     {
 // Read name for this entry or break on EOF.
-      char *nm = extract_keyword (stream, "name");
+      delete [] nm;
+      nm = extract_keyword (stream, "name");
       if (nm == (char *) NULL)
 	{
 	  if (count == 0)
@@ -932,7 +934,9 @@ builtin_save (int argc, char **argv)
 	  for (i = 0; i < count; i++)
 	    {
 	      if (fnmatch (*argv, lvars[i], __FNM_FLAGS) == 0
-		  && curr_sym_tab->save (stream, lvars[i], 0, prec) != 0)
+		  && curr_sym_tab->save (stream, lvars[i],
+					 is_globally_visible (lvars[i]),
+					 prec) != 0)
 		saved_or_error++;
 	    }
 

@@ -1,5 +1,10 @@
 2002-11-12  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* toplev.cc (octave_initialized): New global variable.
+	(main_loop): Set it to true here.
+	* sighandlers.cc (sigint_handler): Exit immediately if we have not
+	finished init process.
+
 	* load-save.cc (extract_keyword): Return std::string, not char *.
 	Change all uses.
 	(read_ascii_data): Likewise.

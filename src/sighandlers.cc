@@ -283,6 +283,9 @@ sigint_handler (int)
 
   MAYBE_REINSTALL_SIGHANDLER (sig, sigint_handler);
 
+  if (! octave_initialized)
+    exit (1);
+
   if (can_interrupt)
     {
 #if defined (USE_EXCEPTIONS_FOR_INTERRUPTS)

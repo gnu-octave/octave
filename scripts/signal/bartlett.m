@@ -44,10 +44,7 @@ function c = bartlett (m)
   else
     m = m - 1;
     n = fix (m / 2);
-    c (1 : n+1) = 2 * (0 : n)' / m;
-    c (n+2 : m+1) = 2 - 2 * (n+1 : m)'/m;
+    c = [2*(0:n)/m, 2-2*(n+1:m)/m]';
   endif
-
-  c = c';
 
 endfunction

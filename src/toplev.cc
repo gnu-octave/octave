@@ -78,6 +78,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // TRUE means we are exiting via the builtin exit or quit functions.
 static bool quitting_gracefully = false;
 
+// TRUE means we've processed all the init code and we are good to go.
+bool octave_initialized = false;
+
 // Current command to execute.
 tree_statement_list *global_command = 0;
 
@@ -107,6 +110,8 @@ main_loop (void)
   can_interrupt = true;
 
   octave_catch_interrupts ();
+
+  octave_initialized = true;
 
   // The big loop.
 

@@ -244,11 +244,11 @@ octave_dlopen_shlib::open (const std::string& f, bool warn_future)
       int flags = 0;
 
 #if defined (RTLD_LAZY)
-      flags |= RTLD_LAZY
+      flags |= RTLD_LAZY;
 #endif
 
 #if defined (RTLD_GLOBAL)
-      flags |= RTLD_GLOBAL
+      flags |= RTLD_GLOBAL;
 #endif
       
       library = dlopen (file.c_str (), flags);

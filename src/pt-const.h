@@ -24,12 +24,17 @@ Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #if !defined (octave_tree_const_h)
 #define octave_tree_const_h 1
 
+#if defined (__GNUG__)
+#pragma interface
+#endif
+
 #include <stdlib.h>
 
 #include "builtins.h"
 #include "tree-base.h"
-#include "Matrix.h" // Needed for some inline functions.
-#include "Range.h"  // Ditto.
+
+#include "mx-base.h"
+#include "Range.h"
 
 class idx_vector;
 
@@ -230,17 +235,13 @@ public:
   tree_constant_rep (double d);
   tree_constant_rep (const Matrix& m);
   tree_constant_rep (const DiagMatrix& d);
-  tree_constant_rep (const RowVector& v);
   tree_constant_rep (const RowVector& v, int pcv);
-  tree_constant_rep (const ColumnVector& v);
   tree_constant_rep (const ColumnVector& v, int pcv);
 
   tree_constant_rep (const Complex& c);
   tree_constant_rep (const ComplexMatrix& m);
   tree_constant_rep (const ComplexDiagMatrix& d);
-  tree_constant_rep (const ComplexRowVector& v);
   tree_constant_rep (const ComplexRowVector& v, int pcv);
-  tree_constant_rep (const ComplexColumnVector& v);
   tree_constant_rep (const ComplexColumnVector& v, int pcv);
 
   tree_constant_rep (const char *s);
@@ -535,7 +536,8 @@ private:
  * this should be ahead of the tree_constant_rep class, but that
  * causes problems with my version of g++ (~2.2.2)...
  */
-class tree_constant : public tree
+class
+tree_constant : public tree
 {
 friend class tree_constant_rep;
 
@@ -549,13 +551,9 @@ public:
     { rep = new tree_constant_rep (m); rep->count = 1; }
   tree_constant (const DiagMatrix& d)
     { rep = new tree_constant_rep (d); rep->count = 1; }
-  tree_constant (const RowVector& v)
-    { rep = new tree_constant_rep (v); rep->count = 1; }
-  tree_constant (const RowVector& v, int pcv)
+  tree_constant (const RowVector& v, int pcv = -1)
     { rep = new tree_constant_rep (v, pcv); rep->count = 1; }
-  tree_constant (const ColumnVector& v)
-    { rep = new tree_constant_rep (v); rep->count = 1; }
-  tree_constant (const ColumnVector& v, int pcv)
+  tree_constant (const ColumnVector& v, int pcv = -1)
     { rep = new tree_constant_rep (v, pcv); rep->count = 1; }
 
   tree_constant (const Complex& c)
@@ -564,13 +562,9 @@ public:
     { rep = new tree_constant_rep (m); rep->count = 1; }
   tree_constant (const ComplexDiagMatrix& d)
     { rep = new tree_constant_rep (d); rep->count = 1; }
-  tree_constant (const ComplexRowVector& v)
-    { rep = new tree_constant_rep (v); rep->count = 1; }
-  tree_constant (const ComplexRowVector& v, int pcv)
+  tree_constant (const ComplexRowVector& v, int pcv = -1)
     { rep = new tree_constant_rep (v, pcv); rep->count = 1; }
-  tree_constant (const ComplexColumnVector& v)
-    { rep = new tree_constant_rep (v); rep->count = 1; }
-  tree_constant (const ComplexColumnVector& v, int pcv)
+  tree_constant (const ComplexColumnVector& v, int pcv = -1)
     { rep = new tree_constant_rep (v, pcv); rep->count = 1; }
 
   tree_constant (const char *s)
@@ -726,9 +720,7 @@ public:
   tree_constant convert_to_str (void) { return rep->convert_to_str (); }
 
   void convert_to_row_or_column_vector (void)
-    {
-      rep->convert_to_row_or_column_vector ();
-    }
+    { rep->convert_to_row_or_column_vector (); }
 
   int is_true (void) const { return rep->is_true (); }
 

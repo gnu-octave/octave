@@ -128,39 +128,42 @@ class NPSOL : public NLP, public NPSOL_options
 {
  public:
 
-  NPSOL (void) : NLP () { }
+  NPSOL (void)
+    : NLP (), NPSOL_options () { }
 
-  NPSOL (const ColumnVector& x, const Objective& phi) : NLP (x, phi) { }
+  NPSOL (const ColumnVector& x, const Objective& phi)
+    : NLP (x, phi), NPSOL_options () { }
 
-  NPSOL (const ColumnVector& x, const Objective& phi,
-	 const Bounds& b) : NLP (x, phi, b) { }
+  NPSOL (const ColumnVector& x, const Objective& phi, const Bounds& b)
+    : NLP (x, phi, b), NPSOL_options () { }
 
   NPSOL (const ColumnVector& x, const Objective& phi, const Bounds& b,
-	 const LinConst& lc) : NLP (x, phi, b, lc) { }
+	 const LinConst& lc)
+    : NLP (x, phi, b, lc), NPSOL_options () { }
 
   NPSOL (const ColumnVector& x, const Objective& phi, const Bounds& b,
 	 const LinConst& lc, const NLConst& nlc)
-    : NLP (x, phi, b, lc, nlc) { }
+    : NLP (x, phi, b, lc, nlc), NPSOL_options () { }
 
-  NPSOL (const ColumnVector& x, const Objective& phi,
-	 const LinConst& lc) : NLP (x, phi, lc) { }
+  NPSOL (const ColumnVector& x, const Objective& phi, const LinConst& lc)
+    : NLP (x, phi, lc), NPSOL_options () { }
 
   NPSOL (const ColumnVector& x, const Objective& phi, const LinConst& lc,
-	 const NLConst& nlc) : NLP (x, phi, lc, nlc) { }
+	 const NLConst& nlc)
+    : NLP (x, phi, lc, nlc), NPSOL_options () { }
 
   NPSOL (const ColumnVector& x, const Objective& phi,
-	 const NLConst& nlc) : NLP (x, phi, nlc) { }
+	 const NLConst& nlc)
+    : NLP (x, phi, nlc), NPSOL_options () { }
 
   NPSOL (const ColumnVector& x, const Objective& phi, const Bounds& b,
-	 const NLConst& nlc) : NLP (x, phi, b, nlc) { }
+	 const NLConst& nlc)
+    : NLP (x, phi, b, nlc), NPSOL_options () { }
 
-  NPSOL (const NPSOL& a) : NLP (a.x, a.phi, a.bnds, a.lc, a.nlc) { }
+  NPSOL (const NPSOL& a)
+    : NLP (a), NPSOL_options () { }
 
   ColumnVector do_minimize (double& objf, int& inform, ColumnVector& lambda);
-
-  NPSOL& option (char *s);
-
- private:
 };
 
 // XXX FIXME XXX -- would be nice to not have to have this global

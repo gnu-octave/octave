@@ -308,8 +308,8 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
   }
 
 %{
-// It's a pain in the ass to decide whether to insert a comma after
-// seeing a ']' character...
+// It's also a pain in the ass to decide whether to insert a comma
+// after seeing a ']' character...
 //
 // For this and the next two rules, we're looking at ']', and we
 // need to know if the next token is '='.
@@ -323,55 +323,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 // It would have been so much easier if the delimiters were simply
 // different for the expression on the left hand side of the equals
 // operator.
-//
-// XXX FIXME XXX -- these could probably be combined, since we have to
-// look ahead anyway, we could just as easily check for the next token
-// being `=' or `=='. 
 %}
-
-<MATRIX>{SNL}*\]{S}*/== {
-
-    if (! in_brace_or_paren.empty ())
-      {
-	in_brace_or_paren.pop ();
-	braceflag--;
-      }
-
-    if (braceflag == 0)
-      {
-	if (! defining_func)
-	  promptflag++;
-	BEGIN 0;
-      }
-    fixup_column_count (yytext);
-    quote_is_transpose = 0;
-    cant_be_identifier = 0;
-    convert_spaces_to_comma = 1;
-    return ']';
-  }
-
-<MATRIX>{SNL}*\]{S}*/= {
-    if (! in_brace_or_paren.empty ())
-      {
-	in_brace_or_paren.pop ();
-	braceflag--;
-      }
-
-    if (braceflag == 0)
-      {
-	BEGIN 0;
-	if (! defining_func)
-	  promptflag++;
-      }
-    fixup_column_count (yytext);
-    quote_is_transpose = 0;
-    cant_be_identifier = 0;
-    convert_spaces_to_comma = 1;
-    if (maybe_screwed_again)
-      return SCREW_TWO;
-    else
-      return ']';
-  }
 
 <MATRIX>{SNL}*\]{S}* {
     fixup_column_count (yytext);
@@ -388,24 +340,46 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?))
 	  promptflag++;
 	BEGIN 0;
       }
-    else if (user_pref.commas_in_literal_matrix != 2)
+     
+    int c1 = yyinput ();
+
+    if (c1 == '=')
       {
-	int c0 = yytext[yyleng-1];
-	int spc_prev = (c0 == ' ' || c0 == '\t');
-	int bin_op = next_token_is_bin_op (spc_prev, yytext);
-	int postfix_un_op = next_token_is_postfix_unary_op (spc_prev, yytext);
+	quote_is_transpose = 0;
+	cant_be_identifier = 0;
+	convert_spaces_to_comma = 1;
 
-	int c1 = yyinput ();
+	int c2 = yyinput ();
+        unput (c2);
 	unput (c1);
-	int other_op = match_any (c1, ",;\n]");
 
-	if (! (postfix_un_op || bin_op || other_op
-	       || in_brace_or_paren.empty ())
-	    && in_brace_or_paren.top ()
-	    && convert_spaces_to_comma)
+	if (c2 != '=' && maybe_screwed_again)
+	  return SCREW_TWO;
+	else
+	  return ']';
+      }
+    else
+      {
+	unput (c1);
+
+	if (braceflag && user_pref.commas_in_literal_matrix != 2)
 	  {
-	    unput (',');
-	    return ']';
+	    int c0 = yytext[yyleng-1];
+	    int spc_prev = (c0 == ' ' || c0 == '\t');
+	    int bin_op = next_token_is_bin_op (spc_prev, yytext);
+	    int postfix_un_op = next_token_is_postfix_unary_op
+	      (spc_prev, yytext);
+
+	    int other_op = match_any (c1, ",;\n]");
+
+	    if (! (postfix_un_op || bin_op || other_op
+		   || in_brace_or_paren.empty ())
+		&& in_brace_or_paren.top ()
+		&& convert_spaces_to_comma)
+	      {
+		unput (',');
+		return ']';
+	      }
 	  }
       }
 

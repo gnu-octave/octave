@@ -88,7 +88,6 @@ GCC_IEEE_FP_FLAG = @GCC_IEEE_FP_FLAG@
 ALL_CFLAGS = $(INCFLAGS) $(DEFS) $(GCC_IEEE_FP_FLAG) $(CFLAGS)
 BUG_CFLAGS = $(DEFS) $(GCC_IEEE_FP_FLAG) $(CFLAGS)
 
-
 CXX = @CXX@
 CXX_VERSION = @CXX_VERSION@
 CXXCPP = @CXXCPP@
@@ -112,12 +111,8 @@ ALL_LDFLAGS = $(LIBFLAGS) $(GCC_IEEE_FP_FLAG) $(LD_STATIC_FLAG) $(LDFLAGS)
 RLD_FLAG = @RLD_FLAG@
 
 FLIBS = @FLIBS@
-FLIB_LIST = @FLIB_LIST@
-FLIB_PATH = @FLIB_PATH@
 
 CXXLIBS = @CXXLIBS@
-CXXLIB_LIST = @CXXLIB_LIST@
-CXXLIB_PATH = @CXXLIB_PATH@
 
 TERMLIBS = @TERMLIBS@
 LIBPLPLOT = @LIBPLPLOT@
@@ -133,9 +128,10 @@ config_opts = @config_opts@
 # A shell command to extract the version number from version.h.
 getversion = sed -e '/VERSION/!d' -e 's/.*"\(.*\)".*$$/\1/' -e q
 
-# The version number.  TOPDIR is something like `.' or `..' or `../..'
-# and gets us back up to the top level of the source tree.
-version := $(shell $(getversion) $(srcdir)/$(TOPDIR)/src/version.h)
+# Look for version.h to get version information.
+xfiles := $(TOPDIR)/src/version.h $(srcdir)/$(TOPDIR)/src/version.h
+version_file := $(firstword $(foreach file, $(xfiles), $(wildcard $(file))))
+version := $(shell $(getversion) $(version_file))
 
 # ==================== Where To Install Things ====================
 
@@ -360,10 +356,6 @@ sed < $< > $@.tmp \
   -e "s;%OCTAVE_LOCALOCTFILEPATH%;\"${localoctfilepath}\";" \
   -e "s;%OCTAVE_FCNFILEPATH%;\"${fcnfilepath}\";" \
   -e "s;%OCTAVE_IMAGEPATH%;\"${imagepath}\";" \
-  -e "s;%TARGET_HOST_TYPE%;\"${target_host_type}\";" \
-  -e "s;%FLIB_LIST%;\"${FLIB_LIST}\";" \
-  -e "s;%FLIB_PATH%;\"${FLIB_PATH}\";" \
-  -e "s;%CXXLIB_LIST%;\"${CXXLIB_LIST}\";" \
-  -e "s;%CXXLIB_PATH%;\"${CXXLIB_PATH}\";"
+  -e "s;%TARGET_HOST_TYPE%;\"${target_host_type}\";"
 $(top_srcdir)/move-if-change $@.tmp $@
 endef

@@ -1,5 +1,8 @@
 Fri Nov  8 09:54:59 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* defaults.h.in (CXXLIB_LIST, CXXLIB_PATH, FLIB_LIST, FLIB_PATH):
+	Delete.
+
 	* Makefile.in (install-oct): Use $(INSTALL_PROGRAM) for .oct files.
 
 Thu Nov  7 07:59:07 1996  John W. Eaton  <jwe@bevo.che.wisc.edu>

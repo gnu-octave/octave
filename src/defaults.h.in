@@ -102,22 +102,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define TARGET_HOST_TYPE %TARGET_HOST_TYPE%
 #endif
 
-#ifndef FLIB_LIST
-#define FLIB_LIST %FLIB_LIST%
-#endif
-
-#ifndef FLIB_PATH
-#define FLIB_PATH %FLIB_PATH%
-#endif
-
-#ifndef CXXLIB_LIST
-#define CXXLIB_LIST %CXXLIB_LIST%
-#endif
-
-#ifndef CXXLIB_PATH
-#define CXXLIB_PATH %CXXLIB_PATH%
-#endif
-
 extern string Voctave_home;
 
 extern string Vbin_dir;

@@ -167,9 +167,6 @@ This section contains a list of problems (and some apparent problems
 that don't really mean anything is wrong) that may show up during
 installation of Octave.
 
-@c XXX FIXME XXX --- this might be a good place to explain the terms for
-@c FSQP and NPSOL.
-
 @itemize @bullet
 @item
 If @code{configure} fails when trying to create its output files, you

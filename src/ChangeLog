@@ -1,3 +1,7 @@
+2004-04-29  David Bateman  <dbateman@free.fr>
+
+	* load-save.cc (Fload, Fsave): Accept -mat as well as -mat-binary.
+
 2004-04-27  David Bateman  <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/sort.cc: Add missing "class" keywords to template

@@ -557,9 +557,6 @@ variables saved in the file @file{data}, use the command\n\
 load data\n\
 @end example\n\
 \n\
-Octave will refuse to overwrite existing variables unless you use the\n\
-option @samp{-force}.\n\
-\n\
 If a variable that is not marked as global is loaded from a file when a\n\
 global symbol with the same name already exists, it is loaded in the\n\
 global symbol table.  Also, if a variable is marked as global in a file\n\
@@ -584,8 +581,9 @@ Valid options for @code{load} are listed in the following table.\n\
 \n\
 @table @code\n\
 @item -force\n\
-Force variables currently in memory to be overwritten by variables with\n\
-the same name found in the file.\n\
+The @samp{-force} option is accepted but ignored for backward\n\
+compatiability. Octave now overwrites variables currently in memeory with\n\
+the same name as those found in the file.\n\
 \n\
 @item -ascii\n\
 Force Octave to assume the file is in Octave's text format.\n\
@@ -593,7 +591,8 @@ Force Octave to assume the file is in Octave's text format.\n\
 @item -binary\n\
 Force Octave to assume the file is in Octave's binary format.\n\
 \n\
-@item -mat-binary\n\
+@item -mat\n\
+@itemx -mat-binary\n\
 Force Octave to assume the file is in @sc{Matlab}'s binary format.\n\
 \n\
 @item -mat4-binary\n\
@@ -611,9 +610,9 @@ HAVE_HDF5_HELP_STRING
 
 "\n\
 @item -import\n\
-The @samp{-import} is acceptted but ignored for backward compatiability.\n\
-Octave can now support multi-dimensional HDF data and automatically modifies\n\
-variable names if they are invalid Octave identifiers.\n\
+The @samp{-import} is accepted but ignored for backward compatiability.\n\
+Octave can now support multi-dimensional HDF data and automatically\n\
+modifies variable names if they are invalid Octave identifiers.\n\
 \n\
 @end table\n\
 @end deffn")
@@ -642,7 +641,8 @@ variable names if they are invalid Octave identifiers.\n\
     {
       if (argv[i] == "-force" || argv[i] == "-f")
 	{
-	  force = true;
+	  // Silently ignore this
+	  // warning ("load: -force ignored");
 	}
       else if (argv[i] == "-list" || argv[i] == "-l")
 	{
@@ -660,7 +660,7 @@ variable names if they are invalid Octave identifiers.\n\
 	{
 	  format = LS_BINARY;
 	}
-      else if (argv[i] == "-mat-binary" || argv[i] == "-m")
+      else if (argv[i] == "-mat-binary" || argv[i] == "-mat" || argv[i] == "-m")
 	{
 	  format = LS_MAT5_BINARY;
 	}
@@ -1213,7 +1213,8 @@ Save the data in Octave's binary data format but only using single\n\
 precision.  You should use this format only if you know that all the\n\
 values to be saved can be represented in single precision.\n\
 \n\
-@item -mat-binary\n\
+@item -mat\n\
+@itemx -mat-binary\n\
 Save the data in @sc{Matlab}'s binary data format.\n\
 \n\
 @item -mat4-binary\n\
@@ -1313,7 +1314,7 @@ the file @file{data} in Octave's binary format.\n\
 	  return retval;
 #endif /* ! HAVE_HDF5 */
 	}
-      else if (argv[i] == "-mat-binary" || argv[i] == "-m")
+      else if (argv[i] == "-mat-binary" || argv[i] == "-mat" || argv[i] == "-m")
 	{
 	  format = LS_MAT5_BINARY;
 	}

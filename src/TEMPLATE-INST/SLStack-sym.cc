@@ -37,13 +37,6 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "symtab.h"
 
-extern template class SLNode<unsigned>;
-extern template class SLList<unsigned>;
-
-extern template class Stack<unsigned>;
-
-extern template class SLStack<unsigned>;
-
 template class SLNode<symbol_record::symbol_def *>;
 template class SLList<symbol_record::symbol_def *>;
 

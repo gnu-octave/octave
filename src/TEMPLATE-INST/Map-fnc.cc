@@ -39,9 +39,6 @@ template class Map<file_name_cache_elt>;
 template class CHNode<file_name_cache_elt>;
 template class CHMap<file_name_cache_elt>;
 
-template static int goodCHptr (CHNode<file_name_cache_elt> *t);
-template static unsigned int CHptr_to_index (CHNode<file_name_cache_elt> *t);
-
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

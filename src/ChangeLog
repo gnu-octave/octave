@@ -1,9 +1,27 @@
 2000-02-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* TEMPLATE-INST/SLStack-sym.cc: Delete meaningless `extern
+	template' declarations.
+	* TEMPLATE-INST/Array-tc.cc: Ditto.
+
+	* TEMPLATE-INST/Map-fnc.cc: Don't try to instantiate goodCHptr or
+	CHptr_to_index here.
+	* TEMPLATE-INST/Map-tc.cc: Likewise.
+
+	* load-save.cc (read_binary_file_header): Declare magic_len `const'.
+
+	* token.h (token::token (const token&), token::operator=):
+	Delete unnecessary definitions.
+
+	* oct-stream.cc (octave_stream::mode_as_string): Use
+	std::ios::binary, not std::ios::bin.
+	* load-save.cc (Fsave, Fload, save_user_variables): Likewise.
+
 	* DLD-FUNCTIONS/qz.cc (Fqz): Use Array<int> class instead of
 	trying to create automatic int array with variable size.
 
 	* variables.cc (F__dump_symbol_info__): Fix continuation char.
+	* mappers.cc (Ftoupper): Likewise.
 	* DLD-FUNCTIONS/besselj.cc (Fairy, Fbesselj): Likewise.
 	* DLD-FUNCTIONS/chol.cc (Fchol): Likewise.
 	* DLD-FUNCTIONS/det.cc (Fdet): Likewise.
@@ -23,9 +41,12 @@
 
 	* token.h (token::token_type, token::end_tok_type,
 	token::plot_tok_type): Delete extraneous comma from enum decls.
+	* load-save.cc (load_save_format): Likewise.
 
 	* pt-idx.cc (tree_index_expression::tree_index_expression):
 	Delete default arg values.
+	* oct-fstrm.cc (octave_fstream::octave_fstream): Likewise.
+	* oct-stream.cc (octave_stream::octave_stream): Likewise.
 
 	* siglist.h, siglist.c: New files.
 	* Makefile.in: Add them to the appropriate lists.

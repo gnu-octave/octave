@@ -37,10 +37,9 @@ octave_fstream::create (const std::string& nm_arg, std::ios::openmode md,
   return octave_stream (new octave_fstream (nm_arg, md, flt_fmt));
 }
 
-octave_fstream::octave_fstream
-  (const std::string& nm_arg,
-   std::ios::openmode md = std::ios::in|std::ios::out,
-   oct_mach_info::float_format flt_fmt)
+octave_fstream::octave_fstream (const std::string& nm_arg,
+				std::ios::openmode md,
+				oct_mach_info::float_format flt_fmt)
   : octave_base_stream (md, flt_fmt), nm (nm_arg)
 {
   // Override default protection of 0664 so that umask will appear to

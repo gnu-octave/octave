@@ -80,7 +80,7 @@ enum load_save_format
     LS_BINARY,
     LS_MAT_ASCII,
     LS_MAT_BINARY,
-    LS_UNKNOWN,
+    LS_UNKNOWN
   };
 
 // Return TRUE if S is a valid identifier.
@@ -988,7 +988,7 @@ get_mat_data_input_line (std::istream& is)
 static void
 get_lines_and_columns (std::istream& is, const std::string& filename, int& nr, int& nc)
 {
-  streampos pos = is.tellg ();
+  std::streampos pos = is.tellg ();
 
   int file_line_number = 0;
 
@@ -1464,8 +1464,8 @@ read_binary_file_header (std::istream& is, bool& swap,
 			 oct_mach_info::float_format& flt_fmt,
 			 bool quiet = false)
 {
-  int magic_len = 10;
-  char magic [magic_len+1];
+  const int magic_len = 10;
+  char magic[magic_len+1];
   is.read (magic, magic_len);
   magic[magic_len] = '\0';
   if (strncmp (magic, "Octave-1-L", magic_len) == 0)
@@ -1827,7 +1827,7 @@ Force Octave to assume the file is in @sc{Matlab}'s binary format.\n\
 
 	  unsigned mode = std::ios::in;
 	  if (format == LS_BINARY || format == LS_MAT_BINARY)
-	    mode |= std::ios::bin;
+	    mode |= std::ios::binary;
 
 	  std::ifstream file (fname.c_str (), mode);
 
@@ -2541,7 +2541,7 @@ save_user_variables (void)
 
       unsigned mode = std::ios::out|std::ios::trunc;
       if (format == LS_BINARY || format == LS_MAT_BINARY)
-	mode |= std::ios::bin;
+	mode |= std::ios::binary;
 
       std::ofstream file (fname, mode);
 
@@ -2708,7 +2708,7 @@ the file @file{data} in Octave's binary format.\n\
 
       unsigned mode = std::ios::out;
       if (format == LS_BINARY || format == LS_MAT_BINARY)
-	mode |= std::ios::bin;
+	mode |= std::ios::binary;
 
       mode |= append ? std::ios::ate : std::ios::trunc;
 

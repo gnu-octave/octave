@@ -67,7 +67,8 @@ public:
 
   token (int l = -1, int c = -1);
   token (const std::string& s, int l = -1, int c = -1);
-  token (double d, const std::string& s = std::string (), int l = -1, int c = -1);
+  token (double d, const std::string& s = std::string (),
+	 int l = -1, int c = -1);
   token (end_tok_type t, int l = -1, int c = -1);
   token (plot_tok_type t, int l = -1, int c = -1);
   token (symbol_record *s, int l = -1, int c = -1);
@@ -86,7 +87,11 @@ public:
   std::string text_rep (void);
 
 private:
+
+  // No copying!
+
   token (const token& tok);
+
   token& operator = (const token& tok);
 
   int line_num;

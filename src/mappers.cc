@@ -597,7 +597,7 @@ are left unchanged.  For example,\n\
 \n\
 @example\n\
 @group\n\
-toupper (\"MiXeD cAsE 123\")
+toupper (\"MiXeD cAsE 123\")\n\
      @result{} \"MIXED CASE 123\"\n\
 @end group\n\
 @end example\n\

@@ -2394,7 +2394,7 @@ octave_base_stream::invalid_operation (const char *op, const char *rw)
   error (msg);
 }
 
-octave_stream::octave_stream (octave_base_stream *bs = 0)
+octave_stream::octave_stream (octave_base_stream *bs)
   : rep (bs)
 {
   if (rep)
@@ -2789,28 +2789,28 @@ octave_stream::mode_as_string (int mode)
       retval = "a+";
       break;
 
-    case std::ios::in | std::ios::bin:
+    case std::ios::in | std::ios::binary:
       retval = "rb";
       break;
 
-    case std::ios::out | std::ios::bin:
-    case std::ios::out | std::ios::trunc | std::ios::bin:
+    case std::ios::out | std::ios::binary:
+    case std::ios::out | std::ios::trunc | std::ios::binary:
       retval = "wb";
       break;
 
-    case std::ios::out | std::ios::app | std::ios::bin:
+    case std::ios::out | std::ios::app | std::ios::binary:
       retval = "ab";
       break;
 
-    case std::ios::in | std::ios::out | std::ios::bin:
+    case std::ios::in | std::ios::out | std::ios::binary:
       retval = "r+b";
       break;
 
-    case std::ios::in | std::ios::out | std::ios::trunc | std::ios::bin:
+    case std::ios::in | std::ios::out | std::ios::trunc | std::ios::binary:
       retval = "w+b";
       break;
 
-    case std::ios::in | std::ios::out | std::ios::app | std::ios::bin:
+    case std::ios::in | std::ios::out | std::ios::app | std::ios::binary:
       retval = "a+b";
       break;
 

@@ -131,17 +131,6 @@ token::text_rep (void)
   return orig_text;
 }
 
-token::token (const token& /* tok */)
-{
-  panic_impossible ();
-}
-
-token&
-token::operator = (const token& /* tok */)
-{
-  panic_impossible ();
-}
-
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

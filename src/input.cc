@@ -444,7 +444,14 @@ do_input_echo (const char *input_string)
     {
       ostrstream buf;
 
-      if (! forced_interactive)
+      if (forced_interactive)
+	{
+	  char *ps = (promptflag > 0) ? user_pref.ps1 : user_pref.ps2;
+	  char *prefix = decode_prompt_string (ps);
+	  buf << prefix;
+	  delete [] prefix;
+	}
+      else
 	{
 	  char *prefix = decode_prompt_string (user_pref.ps4);
 	  buf << prefix;

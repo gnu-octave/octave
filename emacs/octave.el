@@ -5,7 +5,7 @@
 ;; Author: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
 ;; Author: John Eaton <jwe@bevo.che.wisc.edu>
 ;; Maintainer: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>
-;; Version: 0.8.6
+;; Version: 0.8.7
 ;; Keywords: languages
 
 ;; This file is not yet a part of GNU Emacs.  It is part of Octave.
@@ -34,7 +34,7 @@
 
 ;;; Code:
 
-(defconst octave-version "0.8.6")
+(defconst octave-version "0.8.7")
 (defconst octave-help-address
   "Kurt.Hornik@ci.tuwien.ac.at"
   "Address for Octave mode bug reports")
@@ -264,7 +264,7 @@ name are given by the first and third parenthetical grouping.")
 (defvar octave-text-functions
   '("casesen" "cd" "chdir" "clear" "diary" "dir" "document" "echo"
     "edit_history" "format" "help" "history" "hold" "load" "ls" "more"
-    "run_history" "save" "gset" "gshow" "type" "which" "who" "whos")
+    "run_history" "save" "set" "show" "type" "which" "who" "whos")
   "Octave text functions (these names are also reserved.")
 
 (defvar octave-variables
@@ -1070,71 +1070,74 @@ automatically breaks the line at a previous space, inserting
 (defun octave-fill-paragraph (&optional arg)
  "Fills paragraph, handling Octave comments."
  (interactive "P")
- (let ((end (progn (forward-paragraph) (point)))
-       (beg (progn
-	      (forward-paragraph -1)
-	      (skip-chars-forward " \t\n")
-	      (beginning-of-line)
-	      (point)))
-       (cfc (current-fill-column))
-       (ind (calculate-octave-indent))
-       comment-prefix)
-   (save-restriction
-     (goto-char beg)
-     (narrow-to-region beg end)
-     (if (listp ind) (setq ind (nth 1 ind)))
-     (while (not (eobp))
-       (condition-case nil
-	   (octave-indent-line ind)
-	 (error nil))
-       (if (and (> ind 0)
-		(not
-		 (save-excursion
-		   (beginning-of-line)
-		   (looking-at "^\\s-*\\($\\|\\s<+\\)"))))
-	   (setq ind 0))
-       (move-to-column cfc)
-       ;; First check whether we need to combine non-empty comment lines
-       (if (and (< (current-column) cfc)
-		(octave-in-comment-p)
-		(not (save-excursion
-		       (beginning-of-line)
-		       (looking-at "^\\s-*\\s<+\\s-*$"))))
-	   ;; This is a nonempty comment line which does not extend past
-	   ;; the fill column.  If it is followed by an nonempty comment
-	   ;; line with the same comment prefix, try to combine them,
-	   ;; and repeat this until either we reach the fill-column or
-	   ;; there is nothing more to combine.
-	   (progn
-	     ;; Get the comment prefix
-	     (save-excursion
-	       (beginning-of-line)
-	       (while (and (re-search-forward "\\s<+")
-			   (not (octave-in-comment-p))))
-	       (setq comment-prefix (match-string 0)))
-	     ;; And keep combining ...
-	     (while (and (< (current-column) cfc)
-			 (save-excursion
-			   (forward-line 1)
-			   (and (looking-at (concat "^\\s-*"
-						    comment-prefix
-						    "\\S<"))
-				(not (looking-at (concat "^\\s-*"
-							 comment-prefix
-							 "\\s-*$"))))))
-	       (delete-char 1)
-	       (re-search-forward comment-prefix)
-	       (delete-region (match-beginning 0) (match-end 0))
-	       (fixup-whitespace)
-	       (move-to-column cfc))))
-       (forward-word 1)
-       (delete-horizontal-space)
-       (if (or (< (current-column) cfc)
-	       (and (= (current-column) cfc) (eolp)))
-	   (forward-line 1)
-	 (if (not (eolp)) (insert " "))
-	 (octave-auto-fill))))
-   t))
+ (save-excursion 
+   (let ((end (progn (forward-paragraph) (point)))
+	 (beg (progn
+		(forward-paragraph -1)
+		(skip-chars-forward " \t\n")
+		(beginning-of-line)
+		(point)))
+	 (cfc (current-fill-column))
+	 (ind (calculate-octave-indent))
+	 comment-prefix)
+     (save-restriction
+       (goto-char beg)
+       (narrow-to-region beg end)
+       (if (listp ind) (setq ind (nth 1 ind)))
+       (while (not (eobp))
+	 (condition-case nil
+	     (octave-indent-line ind)
+	   (error nil))
+	 (if (and (> ind 0)
+		  (not
+		   (save-excursion
+		     (beginning-of-line)
+		     (looking-at "^\\s-*\\($\\|\\s<+\\)"))))
+	     (setq ind 0))
+	 (move-to-column cfc)
+	 ;; First check whether we need to combine non-empty comment lines
+	 (if (and (< (current-column) cfc)
+		  (octave-in-comment-p)
+		  (not (save-excursion
+			 (beginning-of-line)
+			 (looking-at "^\\s-*\\s<+\\s-*$"))))
+	     ;; This is a nonempty comment line which does not extend
+	     ;; past the fill column.  If it is followed by an nonempty
+	     ;; comment line with the same comment prefix, try to
+	     ;; combine them, and repeat this until either we reach the
+	     ;; fill-column or there is nothing more to combine.
+	     (progn
+	       ;; Get the comment prefix
+	       (save-excursion
+		 (beginning-of-line)
+		 (while (and (re-search-forward "\\s<+")
+			     (not (octave-in-comment-p))))
+		 (setq comment-prefix (match-string 0)))
+	       ;; And keep combining ...
+	       (while (and (< (current-column) cfc)
+			   (save-excursion
+			     (forward-line 1)
+			     (and (looking-at
+				   (concat "^\\s-*"
+					   comment-prefix
+					   "\\S<"))
+				  (not (looking-at
+					(concat "^\\s-*"
+						comment-prefix
+						"\\s-*$"))))))
+		 (delete-char 1)
+		 (re-search-forward comment-prefix)
+		 (delete-region (match-beginning 0) (match-end 0))
+		 (fixup-whitespace)
+		 (move-to-column cfc))))
+	 (skip-chars-forward "^ \t\n")
+	 (delete-horizontal-space)
+	 (if (or (< (current-column) cfc)
+		 (and (= (current-column) cfc) (eolp)))
+	     (forward-line 1)
+	   (if (not (eolp)) (insert " "))
+	   (octave-auto-fill))))
+     t)))
 
 
 ;;; Completions

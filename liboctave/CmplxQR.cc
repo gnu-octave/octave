@@ -74,7 +74,7 @@ ComplexQR::init (const ComplexMatrix& a, QR::type qr_type)
   int info = 0;
 
   ComplexMatrix A_fact;
-  if (m > n)
+  if (m > n && qr_type != QR::economy)
     {
       A_fact.resize (m, m);
       A_fact.insert (a, 0, 0);
@@ -106,18 +106,12 @@ ComplexQR::init (const ComplexMatrix& a, QR::type qr_type)
 	}
       else
 	{
-	  volatile int n2;
+	  int n2 = (qr_type == QR::economy) ? min_mn : m;
 
 	  if (qr_type == QR::economy && m > n)
-	    {
-	      n2 = n;
-	      r.resize (n, n, 0.0);
-	    }
+	    r.resize (n, n, 0.0);
 	  else
-	    {
-	      n2 = m;
-	      r.resize (m, n, 0.0);
-	    }
+	    r.resize (m, n, 0.0);
 
 	  for (int j = 0; j < n; j++)
 	    {
@@ -126,11 +120,11 @@ ComplexQR::init (const ComplexMatrix& a, QR::type qr_type)
 		r.elem (i, j) = A_fact.elem (i, j);
 	    }
 
-	  lwork = 32*m;
+	  lwork = 32 * n2;
 	  work.resize (lwork);
 	  Complex *pwork = work.fortran_vec ();
 
-	  F77_XFCN (zungqr, ZUNGQR, (m, m, min_mn, tmp_data, m, ptau,
+	  F77_XFCN (zungqr, ZUNGQR, (m, n2, min_mn, tmp_data, m, ptau,
 				     pwork, lwork, info));
 
 	  if (f77_exception_encountered)

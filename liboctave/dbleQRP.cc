@@ -67,7 +67,8 @@ QRP::init (const Matrix& a, QR::type qr_type)
       return;
     }
 
-  Array<double> tau (m < n ? m : n);
+  int min_mn = m < n ? m : n;
+  Array<double> tau (min_mn);
   double *ptau = tau.fortran_vec ();
 
   int lwork = 3*n > 32*m ? 3*n : 32*m;
@@ -77,7 +78,7 @@ QRP::init (const Matrix& a, QR::type qr_type)
   int info = 0;
 
   Matrix A_fact = a;
-  if (m > n)
+  if (m > n && qr_type != QR::economy)
     A_fact.resize (m, m, 0.0);
 
   double *tmp_data = A_fact.fortran_vec ();
@@ -109,12 +110,12 @@ QRP::init (const Matrix& a, QR::type qr_type)
 	    p.elem (jpvt.elem (j) - 1, j) = 1.0;
 	}
 
+      int n2 = (qr_type == QR::economy) ? min_mn : m;
+
       if (qr_type == QR::economy && m > n)
 	r.resize (n, n, 0.0);
       else
 	r.resize (m, n, 0.0);
-
-      int min_mn = m < n ? m : n;
 
       for (int j = 0; j < n; j++)
 	{
@@ -122,10 +123,6 @@ QRP::init (const Matrix& a, QR::type qr_type)
 	  for (int i = 0; i <= limit; i++)
 	    r.elem (i, j) = A_fact.elem (i, j);
 	}
-
-      int n2 = m;
-      if (qr_type == QR::economy)
-	n2 = min_mn;
 
       F77_XFCN (dorgqr, DORGQR, (m, n2, min_mn, tmp_data, m, ptau,
 				 pwork, lwork, info));

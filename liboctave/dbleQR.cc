@@ -71,14 +71,9 @@ QR::init (const Matrix& a, QR::type qr_type)
 
   int info = 0;
 
-  Matrix A_fact;
-  if (m > n)
-    {
-      A_fact.resize (m, m);
-      A_fact.insert (a, 0, 0);
-    }
-  else
-    A_fact = a;
+  Matrix A_fact = a;
+  if (m > n && qr_type != QR::economy)
+      A_fact.resize (m, m, 0.0);
 
   double *tmp_data = A_fact.fortran_vec ();
 
@@ -104,18 +99,12 @@ QR::init (const Matrix& a, QR::type qr_type)
 	}
       else
 	{
-	  volatile int n2;
+	  int n2 = (qr_type == QR::economy) ? min_mn : m;
 
 	  if (qr_type == QR::economy && m > n)
-	    {
-	      n2 = n;
-	      r.resize (n, n, 0.0);
-	    }
+	    r.resize (n, n, 0.0);
 	  else
-	    {
-	      n2 = m;
-	      r.resize (m, n, 0.0);
-	    }
+	    r.resize (m, n, 0.0);
 
 	  for (int j = 0; j < n; j++)
 	    {
@@ -124,11 +113,11 @@ QR::init (const Matrix& a, QR::type qr_type)
 		r.elem (i, j) = tmp_data[m*j+i];
 	    }
 
-	  lwork = 32*m;
+	  lwork = 32 * n2;
 	  work.resize (lwork);
 	  double *pwork = work.fortran_vec ();
 
-	  F77_XFCN (dorgqr, DORGQR, (m, m, min_mn, tmp_data, m, ptau,
+	  F77_XFCN (dorgqr, DORGQR, (m, n2, min_mn, tmp_data, m, ptau,
 				     pwork, lwork, info));
 
 	  if (f77_exception_encountered)

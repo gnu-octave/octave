@@ -66,6 +66,9 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #error lex.l requires flex version 2.5.4 or later
 #endif
 
+// TRUE means that we have encountered EOF on the input stream.
+bool parser_end_of_input = false;
+
 // Flags that need to be shared between the lexer and parser.
 lexical_feedback lexer_flags;
 
@@ -761,6 +764,7 @@ reset_parser (void)
   BEGIN 0;
   error_state = 0;
   warning_state = 0;
+  parser_end_of_input = false;
 
   // We do want a prompt by default.
   promptflag = 1;

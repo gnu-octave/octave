@@ -1,7 +1,19 @@
 2002-04-02  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
+	* lex.l, lex.h (parser_end_of_input): New global variable.
+	(reset_parser): Reset it here.
+	* parse.y (input): Set it to TRUE on EOF.
+	(parse_and_executed): Save and restore it, check it to correctly
+	break out of parse-execute loop.
+	(parse_fcn_file): Likewise.
+	(eval_string): Likewise.
+	* toplev.cc (main_loop): Likewise.
+	
+
 	* parse.y (input): Call YYACCEPT for END_OF_INPUT.
+	Return no-op command for bare newline.
 	(parse_and_execute): Handle change in yyparse return value semantics.
+
 	* toplev.cc (main_loop): Likewise.
 
 2002-03-25  John W. Eaton  <jwe@bevo.che.wisc.edu>

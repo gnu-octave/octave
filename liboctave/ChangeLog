@@ -1,3 +1,11 @@
+2002-04-02  Paul Kienzle <pkienzle@users.sf.net>
+
+        * CmplxQR.cc (ComplexQR::init): Use economy QR decomposition
+	internally when the user requests it.
+	* CmplxQRP.cc (ComplexQRP::init): Ditto.
+	* dbleQR.cc (QR::init): Ditto.
+	* dbleQRP.cc (QRP::init): Ditto.
+
 2002-02-22  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
 	* oct-fftw.cc (octave_fftw::fft2d): Avoid having to find a

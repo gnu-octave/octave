@@ -1,5 +1,9 @@
 2002-04-02  Paul Kienzle <pkienzle@users.sf.net>
 
+	* linear-algebra/cross.m: Accept nx3 and 3xn matrices, in addition
+	to vectors.  Issue a warning in the case x matches y' but return a
+	column vector as Octave currently does.
+
 	* plot/contour.m: Set default number of levels for contour(x,y,z).
 
 	* control/system/starp.m: Leave more of the documentation

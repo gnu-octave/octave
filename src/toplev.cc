@@ -125,48 +125,51 @@ main_loop (void)
 
       retval = yyparse ();
 
-      if (retval == 0 && global_command)
+      if (retval == 0)
 	{
-	  global_command->eval ();
-
-	  delete global_command;
-
-	  global_command = 0;
-
-	  if (! (interactive || forced_interactive))
+	  if (global_command)
 	    {
-	      bool quit = (tree_return_command::returning
-			   || tree_break_command::breaking);
+	      global_command->eval ();
 
-	      if (tree_return_command::returning)
-		tree_return_command::returning = 0;
+	      delete global_command;
 
-	      if (tree_break_command::breaking)
-		tree_break_command::breaking--;
+	      global_command = 0;
 
-	      if (quit)
-		break;
-	    }
-
-	  if (error_state)
-	    {
 	      if (! (interactive || forced_interactive))
 		{
-		  // We should exit with a non-zero status.
-		  retval = 1;
-		  break;
+		  bool quit = (tree_return_command::returning
+			       || tree_break_command::breaking);
+
+		  if (tree_return_command::returning)
+		    tree_return_command::returning = 0;
+
+		  if (tree_break_command::breaking)
+		    tree_break_command::breaking--;
+
+		  if (quit)
+		    break;
+		}
+
+	      if (error_state)
+		{
+		  if (! (interactive || forced_interactive))
+		    {
+		      // We should exit with a non-zero status.
+		      retval = 1;
+		      break;
+		    }
+		}
+	      else
+		{
+		  if (octave_completion_matches_called)
+		    octave_completion_matches_called = false;	    
+		  else
+		    command_editor::increment_current_command_number ();
 		}
 	    }
-	  else
-	    {
-	      if (octave_completion_matches_called)
-		octave_completion_matches_called = false;	    
-	      else
-		command_editor::increment_current_command_number ();
-	    }
+	  else if (parser_end_of_input)
+	    break;
 	}
-      else
-	break;
     }
   while (retval == 0);
 

@@ -197,6 +197,9 @@ private:
   lexical_feedback& operator = (const lexical_feedback&);
 };
 
+// TRUE means that we have encountered EOF on the input stream.
+extern bool parser_end_of_input;
+
 // Flags that need to be shared between the lexer and parser.
 extern lexical_feedback lexer_flags;
 

@@ -462,12 +462,6 @@ input		: input1
 		    promptflag = 1;
 		    YYACCEPT;
 		  }
-		| END_OF_INPUT
-		  {
-		    global_command = 0;
-		    promptflag = 1;
-		    YYACCEPT;
-		  }
 		| simple_list parse_error
 		  { ABORT_PARSE; }
 		| parse_error
@@ -476,6 +470,11 @@ input		: input1
 
 input1		: '\n'
 		  { $$ = 0; }
+		| END_OF_INPUT
+		  {
+		    parser_end_of_input = 1;
+		    $$ = 0;
+		  }
 		| simple_list
 		  { $$ = $1; }
 		| simple_list '\n'
@@ -2732,10 +2731,12 @@ parse_and_execute (FILE *f)
   unwind_protect_bool (line_editing);
   unwind_protect_bool (input_from_command_line_file);
   unwind_protect_bool (get_input_from_eval_string);
+  unwind_protect_bool (parser_end_of_input);
 
   line_editing = false;
   input_from_command_line_file = false;
   get_input_from_eval_string = false;
+  parser_end_of_input = false;
 
   unwind_protect_ptr (curr_sym_tab);
 
@@ -2746,36 +2747,39 @@ parse_and_execute (FILE *f)
 
       retval = yyparse ();
 
-      if (retval == 0 && global_command)
-	{
-	  global_command->eval ();
-
-	  delete global_command;
-
-	  global_command = 0;
-
-	  bool quit = (tree_return_command::returning
-		       || tree_break_command::breaking);
-
-	  if (tree_return_command::returning)
-	    tree_return_command::returning = 0;
-
-	  if (tree_break_command::breaking)
-	    tree_break_command::breaking--;
-
-	  if (error_state)
+      if (retval == 0)
+        {
+          if (global_command)
 	    {
-	      error ("near line %d of file `%s'", input_line_number,
-		     curr_fcn_file_full_name.c_str ());
+	      global_command->eval ();
 
-	      break;
+	      delete global_command;
+
+	      global_command = 0;
+
+	      bool quit = (tree_return_command::returning
+			   || tree_break_command::breaking);
+
+	      if (tree_return_command::returning)
+		tree_return_command::returning = 0;
+
+	      if (tree_break_command::breaking)
+		tree_break_command::breaking--;
+
+	      if (error_state)
+		{
+		  error ("near line %d of file `%s'", input_line_number,
+			 curr_fcn_file_full_name.c_str ());
+
+		  break;
+		}
+
+	      if (quit)
+		break;
 	    }
-
-	  if (quit)
+	  else if (parser_end_of_input)
 	    break;
-	}
-      else
-	break;
+        }
     }
   while (retval == 0);
 
@@ -3141,12 +3145,14 @@ parse_fcn_file (const std::string& ff, bool exec_script, bool force_script = fal
 	  unwind_protect_bool (reading_fcn_file);
 	  unwind_protect_bool (input_from_command_line_file);
 	  unwind_protect_bool (get_input_from_eval_string);
+	  unwind_protect_bool (parser_end_of_input);
 
 	  Vecho_executing_commands = ECHO_OFF;
 	  Vsaving_history = false;
 	  reading_fcn_file = true;
 	  input_from_command_line_file = false;
 	  get_input_from_eval_string = false;
+	  parser_end_of_input = false;
 
 	  YY_BUFFER_STATE old_buf = current_buffer ();
 	  YY_BUFFER_STATE new_buf = create_buffer (ffile);
@@ -3406,11 +3412,13 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
   unwind_protect_bool (get_input_from_eval_string);
   unwind_protect_bool (input_from_eval_string_pending);
   unwind_protect_bool (input_from_command_line_file);
+  unwind_protect_bool (parser_end_of_input);
   unwind_protect_str (current_eval_string);
 
   get_input_from_eval_string = true;
   input_from_eval_string_pending = true;
   input_from_command_line_file = false;
+  parser_end_of_input = false;
   current_eval_string = s;
 
   unwind_protect_ptr (global_command);
@@ -3431,22 +3439,25 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
 
       tree_statement_list *command = global_command;
 
-      if (parse_status == 0 && command)
+      if (parse_status == 0)
         {
-	  retval = command->eval (silent, nargout);
+	  if (command)
+	    {
+	      retval = command->eval (silent, nargout);
 
-	  delete command;
+	      delete command;
 
-	  command = 0;
+	      command = 0;
 
-	  if (error_state
-	      || tree_return_command::returning
-	      || tree_break_command::breaking
-	      || tree_continue_command::continuing)
+	      if (error_state
+		  || tree_return_command::returning
+		  || tree_break_command::breaking
+		  || tree_continue_command::continuing)
+		break;
+	    }
+	  else if (parser_end_of_input)
 	    break;
-	}
-      else
-	break;
+        }
     }
   while (parse_status == 0);
 

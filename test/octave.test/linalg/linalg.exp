@@ -186,6 +186,10 @@ set test qr-6
 set prog_output "\n... qr:.*"
 do_test qr-6.m
 
+set test qr-7
+set prog_output "ans = 1";
+do_test qr-7.m
+
 set test schur-1
 set prog_output "ans = 1"
 do_test schur-1.m

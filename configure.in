@@ -346,12 +346,18 @@ esac
 
 # Check to see if we have IEEE math functions, and if so, which ones.
 #
+# For Linux: add -mieee-fp flag to CFLAGS when checking for IEEE FP
+# functions, otherwise we may not find them.
+#
 # Also check for some additional trig functions that aren't ANSI but
 # are often available.  If they are missing, we try to replace them
 # with functions from the BSD/NET2 math library.
 
 AC_HAVE_LIBRARY(-lm)dnl
+XCFLAGS=$CFLAGS
+CFLAGS="$CFLAGS $GCC_IEEE_FP_FLAG"
 AC_HAVE_FUNCS(finite isnan isinf)dnl
+CFLAGS=$XCFLAGS
 AC_REPLACE_FUNCS(acosh asinh atanh)dnl
 
 if test -n "$LIBOBJS"; then

@@ -142,7 +142,7 @@ octave_int_fit_to_range (const T1& x, const T2& mn, const T2& mx)
 // This should always be OK because the maximum value should always be
 // positive.
 
-#define US_S_FTR(T1, T2, TC) \
+#define OCTAVE_US_S_FTR(T1, T2, TC) \
   template <> \
   inline T2 \
   octave_int_fit_to_range<T1, T2> (const T1& x, const T2&, const T2& mx) \
@@ -150,26 +150,26 @@ octave_int_fit_to_range (const T1& x, const T2& mn, const T2& mx)
     return x > static_cast<TC> (mx) ? mx : x; \
   }
 
-#define US_S_FTR_FCNS(T) \
-  US_S_FTR(T, char, unsigned char) \
-  US_S_FTR(T, signed char, unsigned char) \
-  US_S_FTR(T, short, unsigned short) \
-  US_S_FTR(T, int, unsigned int) \
-  US_S_FTR(T, long, unsigned long) \
-  US_S_FTR(T, long long, unsigned long long)
+#define OCTAVE_US_S_FTR_FCNS(T) \
+  OCTAVE_US_S_FTR (T, char, unsigned char) \
+  OCTAVE_US_S_FTR (T, signed char, unsigned char) \
+  OCTAVE_US_S_FTR (T, short, unsigned short) \
+  OCTAVE_US_S_FTR (T, int, unsigned int) \
+  OCTAVE_US_S_FTR (T, long, unsigned long) \
+  OCTAVE_US_S_FTR (T, long long, unsigned long long)
 
-US_S_FTR_FCNS (unsigned char)
-US_S_FTR_FCNS (unsigned short)
-US_S_FTR_FCNS (unsigned int)
-US_S_FTR_FCNS (unsigned long)
-US_S_FTR_FCNS (unsigned long long)
+OCTAVE_US_S_FTR_FCNS (unsigned char)
+OCTAVE_US_S_FTR_FCNS (unsigned short)
+OCTAVE_US_S_FTR_FCNS (unsigned int)
+OCTAVE_US_S_FTR_FCNS (unsigned long)
+OCTAVE_US_S_FTR_FCNS (unsigned long long)
 
 // If X is signed and the new type is unsigned, then we only have to
 // check the lower limit (which will always be 0 for an unsigned
 // type).  The upper limit will be enforced correctly by converting to
 // the new type, even if the type of X is wider than the new type.
 
-#define S_US_FTR(T1, T2) \
+#define OCTAVE_S_US_FTR(T1, T2) \
   template <> \
   inline T2 \
   octave_int_fit_to_range<T1, T2> (const T1& x, const T2&, const T2&) \
@@ -177,19 +177,19 @@ US_S_FTR_FCNS (unsigned long long)
     return x < 0 ? 0 : x; \
   }
 
-#define S_US_FTR_FCNS(T) \
-  S_US_FTR(T, unsigned char) \
-  S_US_FTR(T, unsigned short) \
-  S_US_FTR(T, unsigned int) \
-  S_US_FTR(T, unsigned long) \
-  S_US_FTR(T, unsigned long long)
+#define OCTAVE_S_US_FTR_FCNS(T) \
+  OCTAVE_S_US_FTR (T, unsigned char) \
+  OCTAVE_S_US_FTR (T, unsigned short) \
+  OCTAVE_S_US_FTR (T, unsigned int) \
+  OCTAVE_S_US_FTR (T, unsigned long) \
+  OCTAVE_S_US_FTR (T, unsigned long long)
 
-S_US_FTR_FCNS (char)
-S_US_FTR_FCNS (signed char)
-S_US_FTR_FCNS (short)
-S_US_FTR_FCNS (int)
-S_US_FTR_FCNS (long)
-S_US_FTR_FCNS (long long)
+OCTAVE_S_US_FTR_FCNS (char)
+OCTAVE_S_US_FTR_FCNS (signed char)
+OCTAVE_S_US_FTR_FCNS (short)
+OCTAVE_S_US_FTR_FCNS (int)
+OCTAVE_S_US_FTR_FCNS (long)
+OCTAVE_S_US_FTR_FCNS (long long)
 
 #define OCTAVE_INT_FIT_TO_RANGE(r, T) \
   octave_int_fit_to_range (r, \
@@ -405,7 +405,6 @@ typedef octave_int<octave_uint32_t> octave_uint32;
 typedef octave_int<octave_uint64_t> octave_uint64;
 
 #define OCTAVE_INT_BIN_OP(OP) \
- \
   template <class T1, class T2> \
   octave_int<typename octave_int_binop_traits<T1, T2>::TR> \
   operator OP (const octave_int<T1>& x, const octave_int<T2>& y) \
@@ -431,7 +430,6 @@ operator / (const octave_int<T1>& x, const octave_int<T2>& y)
 }
 
 #define OCTAVE_INT_DOUBLE_BIN_OP(OP) \
- \
   template <class T> \
   octave_int<T> \
   operator OP (const octave_int<T>& x, double y) \
@@ -448,7 +446,6 @@ OCTAVE_INT_DOUBLE_BIN_OP(*)
 OCTAVE_INT_DOUBLE_BIN_OP(/)
 
 #define OCTAVE_DOUBLE_INT_BIN_OP(OP) \
- \
   template <class T> \
   octave_int<T> \
   operator OP (double x, const octave_int<T>& y) \
@@ -497,7 +494,6 @@ OCTAVE_DOUBLE_INT_CMP_OP (==)
 OCTAVE_DOUBLE_INT_CMP_OP (!=)
 
 #define OCTAVE_INT_BITCMP_OP(OP) \
- \
   template <class T> \
   octave_int<T> \
   operator OP (const octave_int<T>& x, const octave_int<T>& y) \
@@ -538,18 +534,12 @@ bitshift (const octave_int<T>& a, int n,
     return a;
 }
 
-// XXX FIXME XXX -- need partial specializations for int64 and uint64
-// types.
-
 #define OCTAVE_INT_CMP_OP(OP) \
- \
   template <class T1, class T2> \
   bool \
   operator OP (const octave_int<T1>& x, const octave_int<T2>& y) \
   { \
-    double tx = static_cast<double> (x.value ()); \
-    double ty = static_cast<double> (y.value ()); \
-    return tx OP ty; \
+    return x.value () OP y.value (); \
   }
 
 OCTAVE_INT_CMP_OP (<)
@@ -558,6 +548,77 @@ OCTAVE_INT_CMP_OP (>=)
 OCTAVE_INT_CMP_OP (>)
 OCTAVE_INT_CMP_OP (==)
 OCTAVE_INT_CMP_OP (!=)
+
+// The following apply if the unsigned type is at least as wide as the
+// signed type (then we can cast postive signed values to the unsigned
+// type and compare).
+
+#define OCTAVE_US_TYPE1_CMP_OP_DECL(OP, LTZ_VAL, UT, ST) \
+  bool operator OP (const octave_int<UT>& lhs, const octave_int<ST>& rhs);
+
+#define OCTAVE_US_TYPE1_CMP_OP_DECLS(UT, ST) \
+  OCTAVE_US_TYPE1_CMP_OP_DECL (<, false, UT, ST) \
+  OCTAVE_US_TYPE1_CMP_OP_DECL (<=, false, UT, ST) \
+  OCTAVE_US_TYPE1_CMP_OP_DECL (>=, true, UT, ST) \
+  OCTAVE_US_TYPE1_CMP_OP_DECL (>, true, UT, ST) \
+  OCTAVE_US_TYPE1_CMP_OP_DECL (==, false, UT, ST) \
+  OCTAVE_US_TYPE1_CMP_OP_DECL (!=, true, UT, ST)
+
+#define OCTAVE_SU_TYPE1_CMP_OP_DECL(OP, LTZ_VAL, ST, UT) \
+  bool operator OP (const octave_int<ST>& lhs, const octave_int<UT>& rhs);
+
+#define OCTAVE_SU_TYPE1_CMP_OP_DECLS(ST, UT) \
+  OCTAVE_SU_TYPE1_CMP_OP_DECL (<, true, ST, UT) \
+  OCTAVE_SU_TYPE1_CMP_OP_DECL (<=, true, ST, UT) \
+  OCTAVE_SU_TYPE1_CMP_OP_DECL (>=, false, ST, UT) \
+  OCTAVE_SU_TYPE1_CMP_OP_DECL (>, false, ST, UT) \
+  OCTAVE_SU_TYPE1_CMP_OP_DECL (==, false, ST, UT) \
+  OCTAVE_SU_TYPE1_CMP_OP_DECL (!=, true, ST, UT)
+
+#define OCTAVE_TYPE1_CMP_OP_DECLS(UT, ST) \
+  OCTAVE_US_TYPE1_CMP_OP_DECLS (UT, ST) \
+  OCTAVE_SU_TYPE1_CMP_OP_DECLS (ST, UT)
+
+OCTAVE_TYPE1_CMP_OP_DECLS (octave_uint32_t, octave_int8_t)
+OCTAVE_TYPE1_CMP_OP_DECLS (octave_uint32_t, octave_int16_t)
+OCTAVE_TYPE1_CMP_OP_DECLS (octave_uint32_t, octave_int32_t)
+
+OCTAVE_TYPE1_CMP_OP_DECLS (octave_uint64_t, octave_int8_t)
+OCTAVE_TYPE1_CMP_OP_DECLS (octave_uint64_t, octave_int16_t)
+OCTAVE_TYPE1_CMP_OP_DECLS (octave_uint64_t, octave_int32_t)
+OCTAVE_TYPE1_CMP_OP_DECLS (octave_uint64_t, octave_int64_t)
+
+// The following apply if the signed type is wider than the unsigned
+// type (then we can cast unsigned values to the signed type and
+// compare if the signed value is positive).
+
+#define OCTAVE_US_TYPE2_CMP_OP_DECL(OP, LTZ_VAL, UT, ST) \
+  bool operator OP (const octave_int<UT>& lhs, const octave_int<ST>& rhs);
+
+#define OCTAVE_US_TYPE2_CMP_OP_DECLS(ST, UT) \
+  OCTAVE_US_TYPE2_CMP_OP_DECL (<, false, ST, UT) \
+  OCTAVE_US_TYPE2_CMP_OP_DECL (<=, false, ST, UT) \
+  OCTAVE_US_TYPE2_CMP_OP_DECL (>=, true, ST, UT) \
+  OCTAVE_US_TYPE2_CMP_OP_DECL (>, true, ST, UT) \
+  OCTAVE_US_TYPE2_CMP_OP_DECL (==, false, ST, UT) \
+  OCTAVE_US_TYPE2_CMP_OP_DECL (!=, true, ST, UT)
+
+#define OCTAVE_SU_TYPE2_CMP_OP_DECL(OP, LTZ_VAL, ST, UT) \
+  bool operator OP (const octave_int<ST>& lhs, const octave_int<UT>& rhs);
+
+#define OCTAVE_SU_TYPE2_CMP_OP_DECLS(ST, UT) \
+  OCTAVE_SU_TYPE2_CMP_OP_DECL (<, true, ST, UT) \
+  OCTAVE_SU_TYPE2_CMP_OP_DECL (<=, true, ST, UT) \
+  OCTAVE_SU_TYPE2_CMP_OP_DECL (>=, false, ST, UT) \
+  OCTAVE_SU_TYPE2_CMP_OP_DECL (>, false, ST, UT) \
+  OCTAVE_SU_TYPE2_CMP_OP_DECL (==, false, ST, UT) \
+  OCTAVE_SU_TYPE2_CMP_OP_DECL (!=, true, ST, UT)
+
+#define OCTAVE_TYPE2_CMP_OP_DECLS(UT, ST) \
+  OCTAVE_US_TYPE2_CMP_OP_DECLS (UT, ST) \
+  OCTAVE_SU_TYPE2_CMP_OP_DECLS (ST, UT)
+
+OCTAVE_TYPE2_CMP_OP_DECLS (octave_uint32_t, octave_int64_t)
 
 #define OCTAVE_INT_CONCAT_FN(TYPE) \
 intNDArray< TYPE > \
@@ -574,16 +635,32 @@ intNDArray< TYPE > \
 concat (const intNDArray< TYPE >& ra, const intNDArray< TYPE >& rb, \
 	const Array<int>& ra_idx);
 
-#undef OCTAVE_INT_TRAIT
 #undef OCTAVE_INT_BINOP_TRAIT
-#undef OCTAVE_INT_MIN_VAL
-#undef OCTAVE_INT_MAX_VAL
+#undef OCTAVE_US_S_FTR
+#undef OCTAVE_US_S_FTR_FCNS
+#undef OCTAVE_S_US_FTR
+#undef OCTAVE_S_US_FTR_FCNS
 #undef OCTAVE_INT_FIT_TO_RANGE
 #undef OCTAVE_INT_MIN_VAL2
 #undef OCTAVE_INT_MAX_VAL2
 #undef OCTAVE_INT_FIT_TO_RANGE2
 #undef OCTAVE_INT_BIN_OP
+#undef OCTAVE_INT_DOUBLE_BIN_OP
+#undef OCTAVE_DOUBLE_INT_BIN_OP
+#undef OCTAVE_INT_DOUBLE_CMP_OP
+#undef OCTAVE_DOUBLE_INT_CMP_OP
+#undef OCTAVE_INT_BITCMP_OP
 #undef OCTAVE_INT_CMP_OP
+#undef OCTAVE_US_TYPE1_CMP_OP_DECL
+#undef OCTAVE_US_TYPE1_CMP_OP_DECLS
+#undef OCTAVE_SU_TYPE1_CMP_OP_DECL
+#undef OCTAVE_SU_TYPE1_CMP_OP_DECLS
+#undef OCTAVE_TYPE1_CMP_OP_DECLS
+#undef OCTAVE_US_TYPE2_CMP_OP_DECL
+#undef OCTAVE_US_TYPE2_CMP_OP_DECLS
+#undef OCTAVE_SU_TYPE2_CMP_OP_DECL
+#undef OCTAVE_SU_TYPE2_CMP_OP_DECLS
+#undef OCTAVE_TYPE2__DECLS
 
 #endif
 

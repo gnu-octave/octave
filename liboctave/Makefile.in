@@ -72,7 +72,8 @@ TEMPLATE_SRC := Array.cc ArrayN.cc DiagArray2.cc \
 
 TI_SRC := Array-C.cc Array-b.cc Array-ch.cc Array-i.cc Array-d.cc \
 	Array-s.cc Array-so.cc Array-str.cc Array-idx-vec.cc \
-	MArray-C.cc MArray-ch.cc MArray-i.cc MArray-d.cc MArray-s.cc
+	MArray-C.cc MArray-ch.cc MArray-i.cc MArray-d.cc MArray-s.cc \
+	oct-inttypes.cc
 
 MATRIX_SRC := Array-flags.cc Array-util.cc CColVector.cc \
 	CDiagMatrix.cc CMatrix.cc CNDArray.cc CRowVector.cc \

@@ -1,3 +1,16 @@
+2004-11-08  John W. Eaton  <jwe@octave.org>
+
+	* oct-inttypes.cc: New file.
+	* Makefile.in (TI_SRC): Add it to the list.
+	* oct-inttypes.h (OCTAVE_US_TYPE1_CMP_OP, OCTAVE_US_TYPE1_CMP_OPS,
+	OCTAVE_SU_TYPE1_CMP_OP, OCTAVE_SU_TYPE1_CMP_OPS,
+	OCTAVE_TYPE1_CMP_OPS, OCTAVE_US_TYPE2_CMP_OP,
+	OCTAVE_US_TYPE2_CMP_OPS, OCTAVE_SU_TYPE2_CMP_OP,
+	OCTAVE_SU_TYPE2_CMP_OPS, OCTAVE_TYPE2_CMP_OPS):
+	New macros for comparison operations.  Avoid potential
+	problems with default conversions when comparing signed and
+	unsigned values.
+
 2004-11-03  John W. Eaton  <jwe@octave.org>
 
 	* dMatrix.cc (Matrix::inverse): Return info == -1 for any failure.

@@ -10,6 +10,9 @@
 # ask octave to tell us the version number
 version=`./octave -v 2>/dev/null | awk '/version/ { print $NF }'`
 
+# ask octave to tell us the target host type
+target_host_type=`echo computer | ./octave -q`
+
 if test -z "$version"
 then
   echo "doinstall.sh: unable to extract version number from Octave!"
@@ -80,7 +83,8 @@ fcnfiledir="$datadir/octave/$version/m"
 # to this site (i.e. customizations), before consulting
 # ${fcnfiledir}.  This should be a colon-separated list of
 # directories.
-localfcnfilepath="$datadir/octave/site/m//"
+localfcnfiledir="$datadir/octave/site/m"
+localfcnfilepath="$localfcnfiledir//"
 
 # Where to put executables to be run by Octave rather than
 # the user.  This path usually includes the Octave version
@@ -98,7 +102,8 @@ octfiledir="$libdir/octave/$version/oct/$target_host_type"
 # dynamically loaded and that are specific to this site
 # (i.e. customizations), before consulting ${octfiledir}.  This should
 # be a colon-separated list of directories.
-localoctfilepath="$datadir/octave/site/oct/$target_host_type//"
+localoctfiledir="$datadir/octave/site/oct/$target_host_type"
+localoctfilepath="$localoctfiledir//"
 
 # Where Octave will search to find its function files.  Before
 # changing this, check to see if your purpose wouldn't
@@ -122,7 +127,8 @@ Installing octave in subdirectories of $prefix.
 EOF
 
 DIRS_TO_MAKE="$bindir $datadir $libdir $includedir $mandir $infodir \
-  $fcnfiledir $archlibdir $octfiledir $imagedir" 
+  $fcnfiledir $archlibdir $octfiledir $imagedir \
+  $localfcnfiledir $localoctfiledir"
 
 ./mkinstalldirs $DIRS_TO_MAKE
 chmod 755 $DIRS_TO_MAKE

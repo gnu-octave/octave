@@ -1,3 +1,14 @@
+2004-08-09  John W. Eaton  <jwe@octave.org>
+
+	* idx-vector.h (idx_vector::idx_vector_rep::tree_to_mat_idx
+	(const octave_int<U>&)): New member function. 
+	(idx_vector::idx_vector_rep::tree_to_mat_idx (double, bool&),
+	idx_vector::idx_vector_rep::tree_to_mat_idx (int)):
+	Now member functions instead of static in idx-vector.cc.
+	(idx_vector::idx_vector_rep::idx_vector_rep (const octave_int<U>&),
+	idx_vector::idx_vector_rep::idx_vector_rep (const intNDArray<U>&)):
+	New template constructors.
+
 2004-08-05  John W. Eaton  <jwe@octave.org>
 
 	* EIG.cc (EIG::init): Add volatile qualifier to nvr decl.

@@ -59,8 +59,8 @@ IDX_VEC_REP::idx_vector_rep (const IDX_VEC_REP& a)
     }
 }
 
-static inline int
-tree_to_mat_idx (double x, bool& conversion_error)
+int
+IDX_VEC_REP::tree_to_mat_idx (double x, bool& conversion_error)
 {
   int retval = -1;
 
@@ -77,12 +77,6 @@ tree_to_mat_idx (double x, bool& conversion_error)
     retval = static_cast<int> (x - 1);
 
   return retval;
-}
-
-static inline int
-tree_to_mat_idx (int i)
-{
-  return i - 1;
 }
 
 static inline bool

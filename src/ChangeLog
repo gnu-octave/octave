@@ -1,3 +1,8 @@
+2004-08-09  John W. Eaton  <jwe@octave.org>
+
+	* ov-intx.h (OCTAVE_VALUE_INT_MATRIX_T::index_vector,
+	OCTAVE_VALUE_INT_SCALAR_T::index_vector): New functions.
+
 2004-08-06  David Bateman  <dbateman@free.fr>
 
 	* OPERATORS/op-struct.cc: New file.

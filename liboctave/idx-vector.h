@@ -30,6 +30,8 @@ Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream>
 
 #include "dim-vector.h"
+#include "oct-inttypes.h"
+#include "intNDArray.h"
 
 class ColumnVector;
 class boolNDArray;
@@ -56,6 +58,35 @@ private:
 
     idx_vector_rep (const NDArray& nda);
 
+    template <class U>
+    idx_vector_rep (const intNDArray<U>& inda)
+      : data (0), len (inda.length ()), num_zeros (0), num_ones (0),
+	max_val (0), min_val (0), count (1), frozen_at_z_len (0),
+	frozen_len (0), colon (0), one_zero (0), initialized (0),
+	frozen (0), colon_equiv_checked (0), colon_equiv (0),
+	orig_dims (inda.dims ())
+    {
+      if (len == 0)
+	{
+	  initialized = 1;
+	  return;
+	}
+      else
+	{
+	  data = new int [len];
+
+	  bool conversion_error = false;
+
+	  for (int i = 0; i < len; i++)
+	    data[i] = tree_to_mat_idx (inda.elem (i), conversion_error);
+
+	  if (conversion_error)
+	    return;
+	}
+
+      init_state ();
+    }
+
     idx_vector_rep (const Range& r);
 
     idx_vector_rep (double d);
@@ -65,6 +96,21 @@ private:
     idx_vector_rep (char c);
 
     idx_vector_rep (bool b);
+
+    template <class U>
+    idx_vector_rep (const octave_int<U>& i)
+      : data (0), len (1), num_zeros (0), num_ones (0),
+	max_val (0), min_val (0), count (1), frozen_at_z_len (0),
+	frozen_len (0), colon (0), one_zero (0), initialized (0),
+	frozen (0), colon_equiv_checked (0), colon_equiv (0),
+	orig_dims (1, 1)
+    {
+      data = new int [len];
+
+      data[0] = tree_to_mat_idx (i);
+
+      init_state ();
+    }
 
     idx_vector_rep (const boolNDArray& bnda);
 
@@ -134,6 +180,13 @@ private:
     void init_state (void);
 
     void maybe_convert_one_zero_to_idx (int z_len);
+
+    int tree_to_mat_idx (double x, bool& conversion_error);
+
+    int tree_to_mat_idx (int i) { return i - 1; }
+
+    template <class U> int tree_to_mat_idx (const octave_int<U>& i)
+      { return i.value () - 1; }
   };
 
 public:
@@ -153,6 +206,13 @@ public:
   idx_vector (const NDArray& nda)
     {
       rep = new idx_vector_rep (nda);
+      rep->count = 1;
+    }
+
+  template <class U>
+  idx_vector (const intNDArray<U>& inda)
+    {
+      rep = new idx_vector_rep (inda);
       rep->count = 1;
     }
 
@@ -183,6 +243,13 @@ public:
   idx_vector (bool b)
     {
       rep = new idx_vector_rep (b);
+      rep->count = 1;
+    }
+
+  template <class U>
+  idx_vector (const octave_int<U>& i)
+    {
+      rep = new idx_vector_rep (i);
       rep->count = 1;
     }
 

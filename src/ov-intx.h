@@ -71,6 +71,8 @@ public:
       return retval;
     }
 
+  idx_vector index_vector (void) const { return idx_vector (matrix); }
+
 private:
 
   DECLARE_OCTAVE_ALLOCATOR
@@ -118,6 +120,8 @@ public:
       retval (0) = double (scalar);
       return retval;
     }
+
+  idx_vector index_vector (void) const { return idx_vector (scalar); }
 
 private:
 

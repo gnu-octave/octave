@@ -210,7 +210,7 @@ Complex
 atanh (const Complex& x)
 {
   static Complex i (0, 1);
-  Complex retval = log ((i + x) / (i - x)) / 2.0;
+  Complex retval = log ((1 + x) / (1 - x)) / 2.0;
   return retval;
 }
 
